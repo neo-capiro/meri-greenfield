@@ -69,8 +69,8 @@
     },
     {
       "path": "../../apps/control/product-access/http.mjs",
-      "sha256": "d202540f9d9892350adf5a1bbfd8686a8322bdc1e9b3734f72f232e1ced41074",
-      "bytes": 9194
+      "sha256": "3e636edde46932c6a79f7e9f8ccfbe340c82108b2fc7869fb0f6d6c8bfe2b3df",
+      "bytes": 9527
     },
     {
       "path": "../../apps/control/settings/documents.mjs",
@@ -79,8 +79,8 @@
     },
     {
       "path": "../../apps/control/settings/routes.mjs",
-      "sha256": "6a48091839c474f781e2db79f9640492005ec71a578ba1edf9aeda17f30bf2fb",
-      "bytes": 1526
+      "sha256": "07b995b89c965674b3820b634fab3dab58b171aa1d5a48e7ccb587c005659601",
+      "bytes": 1553
     },
     {
       "path": "../../apps/control/settings/user-application/protocol.mjs",

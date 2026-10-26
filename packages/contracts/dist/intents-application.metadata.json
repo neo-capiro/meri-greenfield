@@ -136,8 +136,8 @@
     },
     {
       "path": "../../apps/control/product-access/http.mjs",
-      "sha256": "d202540f9d9892350adf5a1bbfd8686a8322bdc1e9b3734f72f232e1ced41074",
-      "bytes": 9194
+      "sha256": "3e636edde46932c6a79f7e9f8ccfbe340c82108b2fc7869fb0f6d6c8bfe2b3df",
+      "bytes": 9527
     },
     {
       "path": "../../apps/control/schedules/application-http.mjs",

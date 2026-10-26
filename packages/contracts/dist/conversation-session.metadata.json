@@ -29,10 +29,10 @@
     }
   ],
   "browserInputs": [
-    "../../node_modules/canonicalize/lib/canonicalize.js",
     "artifacts-0.2/artifact-formats.mjs",
     "conversation-session/receive.mjs",
     "document-application/boundary.mjs",
+    "node_modules/canonicalize/lib/canonicalize.js",
     "session-receipt/validate.mjs",
     "session:validator"
   ],

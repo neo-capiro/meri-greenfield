@@ -74,7 +74,7 @@ var __commonJS = (cb, mod) => function __require() {
   }
 };
 var require_ucs2length = __commonJS({
-  "../../node_modules/ajv/dist/runtime/ucs2length.js"(exports) {
+  "node_modules/ajv/dist/runtime/ucs2length.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     function ucs2length(str) {

@@ -25,8 +25,8 @@
     },
     {
       "path": "../../apps/control/conversations/history/store.mjs",
-      "sha256": "f33d9a1212f27eb6937b6c33f3c216e537ab065fd22af3f4cf9707f7ce125c3a",
-      "bytes": 10616
+      "sha256": "bcb14a87ab12e61bb145ff206bb85495237b546677a957741f8452a3c6ff6ca7",
+      "bytes": 10638
     },
     {
       "path": "../../apps/control/conversations/next-run-reservation.mjs",
@@ -45,18 +45,18 @@
     },
     {
       "path": "conversation-history/schema.mjs",
-      "sha256": "14f46594e1627dcac28aa563fab60d2fa23e0243219d48fb6c99b2c16fe1238d",
-      "bytes": 4958
+      "sha256": "3b69485f0f6ecf3d3508877d5dde166ab4495e289a9d380e02daffaca4d0c84f",
+      "bytes": 5036
     },
     {
       "path": "conversation-history/semantics.mjs",
-      "sha256": "4e252089f86fba5aa0a45d4d22928fa5334ca5a5c3101b9763699bfad0e4fa04",
-      "bytes": 10284
+      "sha256": "90147e2351d306f9a3c1e738bb85e895cc2060f7f4248f271cc39e0ed2f5c5ce",
+      "bytes": 10506
     },
     {
       "path": "conversation-history/shape.mjs",
-      "sha256": "797cdcc60a17a710ab9f4ebc6f8beb768a6a1ae89d80562b21bb9d68201f91d9",
-      "bytes": 916
+      "sha256": "6b933284cdfe6b6021d4b9b6531ac6a56156682983ea7f6bc85109a7026061a5",
+      "bytes": 1116
     },
     {
       "path": "conversation-history/validate.mjs",
@@ -64,9 +64,14 @@
       "bytes": 1271
     },
     {
+      "path": "conversation-sources/hearing-semantics.mjs",
+      "sha256": "522a5859ad108ce09a1c514dbf15dd08bf10ca71ed727884a8f18619c69373f9",
+      "bytes": 4205
+    },
+    {
       "path": "conversation-sources/protocol.mjs",
-      "sha256": "729d714c12512b70af46f49ab9fe2df56364ca75eb51049f10c212f95abc30d4",
-      "bytes": 1055
+      "sha256": "160eaa367751d8c331105abdd0faf25bf109c8eb673da784550822a3415ca3c4",
+      "bytes": 1815
     },
     {
       "path": "conversation-sources/semantics.mjs",
@@ -75,8 +80,8 @@
     },
     {
       "path": "dist/conversation-application.schema.json",
-      "sha256": "ad2934b39f1c4d2129f4cc1da4bbb0f7119be642d9ee493166053c782e68f1e0",
-      "bytes": 47035
+      "sha256": "7670cdd66e53e70697bf4b6b6f427fb030f4c9be0194bfcd65028cdabdb65a1a",
+      "bytes": 71773
     },
     {
       "path": "document-application/boundary.mjs",
@@ -85,8 +90,8 @@
     },
     {
       "path": "generate-history.mjs",
-      "sha256": "560dee548f133c5d0cf1fc4ff8f4ea4ce6a6c23f79d6bc59e5d60bc993e033ce",
-      "bytes": 8963
+      "sha256": "bdd31b86a78acf7288d64e51807e5efe511810e3c20743bd56879df520429b92",
+      "bytes": 9234
     },
     {
       "path": "meri.schema.json",
@@ -97,14 +102,30 @@
       "path": "native-bill-text-source.schema.json",
       "sha256": "5f9a74897ca8783ca6caf4284509cb2646bdbd0394453ec8b3bbf20b25d34054",
       "bytes": 10452
+    },
+    {
+      "path": "native-hearing-source.schema.json",
+      "sha256": "0fed29b409bd3ec1eb6a2bfd5c5f77bf3bfdaeaef55765263b78ba8665644b1a",
+      "bytes": 8290
+    },
+    {
+      "path": "retrieval-0.2/hearing-fragments.mjs",
+      "sha256": "24e106caa79140d31feb65bc79c816197b38220b0c30a42ec86ba8c6deed6174",
+      "bytes": 787
+    },
+    {
+      "path": "retrieval-0.2/public-domain-hearings.schema.json",
+      "sha256": "a66098535b31a672767f224e155695266299a176f7de715e38bcbebf8d81f4ca",
+      "bytes": 36999
     }
   ],
-  "schemaSha256": "1fe4a81825aac84fdddb4d8bbb932e3c8b7bd3c095bc5eee04b7f6cd72b93c63",
+  "schemaSha256": "3b31b1ae2273d6ab5cb66a4e915236d958939252d6c7fb71bdd30202ecac67af",
   "browserInputs": [
     "artifacts-0.2/artifact-formats.mjs",
     "conversation-history/conversation-history-receiver.mjs",
     "conversation-history/protocol.mjs",
     "conversation-history/semantics.mjs",
+    "conversation-sources/hearing-semantics.mjs",
     "conversation-sources/semantics.mjs",
     "document-application/boundary.mjs",
     "history-generated:./generated-validator.mjs",
@@ -112,6 +133,7 @@
     "node_modules/ajv/dist/runtime/equal.js",
     "node_modules/ajv/dist/runtime/ucs2length.js",
     "node_modules/canonicalize/lib/canonicalize.js",
-    "node_modules/fast-deep-equal/index.js"
+    "node_modules/fast-deep-equal/index.js",
+    "retrieval-0.2/hearing-fragments.mjs"
   ]
 }

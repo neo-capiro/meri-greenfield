@@ -404,7 +404,10 @@ export interface CanonicalModelSelectionC59B527F {
 }
 export interface ConversationHistoryEvent {
   sequence: number;
-  event: Canonical_UIEvent_1691B714 | Canonical_NativeBillTextSourceEvent_8E4E610B;
+  event:
+    | Canonical_UIEvent_1691B714
+    | Canonical_NativeBillTextSourceEvent_8E4E610B
+    | Canonical_NativeHearingSourceEvent_685F6175;
 }
 export interface Canonical_SourceEvidenceD9008775 {
   sourceId: string;
@@ -466,6 +469,112 @@ export interface Canonical_NativeBillTextSource_4D549Cac {
     paginationComplete: boolean;
     truncated: boolean;
   };
+}
+export interface Canonical_NativeHearingSourceEvent_685F6175 {
+  contractVersion: '0.1.0';
+  eventId: string;
+  binding: Canonical_RunBinding_84F2304C;
+  sequence: number;
+  createdAt: string;
+  /**
+   * @minItems 1
+   */
+  scopes: [Canonical_ScopeF882Edb5, ...Canonical_ScopeF882Edb5[]];
+  type: 'source.native-hearing-record';
+  data: Canonical_NativeHearingSourceF31B5A94;
+}
+export interface Canonical_NativeHearingSourceF31B5A94 {
+  schemaVersion: 'meri.native-hearing-source/1';
+  deliveryId: string;
+  operation: {
+    id: 'search_committee_hearings';
+    version: '0.2.0';
+  };
+  requestSha256: string;
+  argumentsSha256: string;
+  resultSha256: string;
+  executionSha256: string;
+  policyRevision: string;
+  source: {
+    recordId: string;
+    provenance: Canonical_HearingProvenanceBf0528Dd;
+  };
+  page: {
+    part: number;
+    format: 'json' | 'json_fragment';
+    characterStart: number;
+    characterEnd: number;
+    totalCharacters: number;
+    contentComplete: boolean;
+    payloadSha256: string;
+  };
+  selection: {
+    recordsView: 'published' | 'briefs' | 'reconciliation';
+    hearingId: string;
+    recordId: string;
+    clientId: string | null;
+    asOf: string | null;
+    cursor: string | null;
+  };
+  coverage: Canonical_HearingCoverageCe9Cf8B6;
+}
+export interface Canonical_HearingProvenanceBf0528Dd {
+  adapter: 'hearings';
+  sourceTable:
+    | 'committee_hearing'
+    | 'official_hearing_transcript'
+    | 'public_hearing_transcript_segment'
+    | 'public_hearing_insight'
+    | 'tenant_hearing_relevance'
+    | 'published_legislative_record'
+    | 'intel_hearing_record_briefs'
+    | 'intel_hearing_record_reconciliation';
+  sourceRecordId: string;
+  hearingId: string | null;
+  contentHash: string;
+  sourceKey?: string;
+  tenantId?: string;
+  historical?: boolean;
+}
+export interface Canonical_HearingCoverageCe9Cf8B6 {
+  requestedDomains: ['hearings'];
+  /**
+   * @maxItems 1
+   */
+  searchedDomains: [] | ['hearings'];
+  requestedEntityCount: number;
+  searchedEntityCount: number;
+  recordsEvaluated: number;
+  recordsReturned: number;
+  paginationComplete: boolean;
+  /**
+   * @maxItems 1
+   */
+  unavailableSources: [] | ['hearings'];
+  /**
+   * @minItems 1
+   * @maxItems 1
+   */
+  sources: [Canonical_HearingSourceCoverage_0301Fc6C];
+  complete: false;
+  stopReason: string;
+}
+export interface Canonical_HearingSourceCoverage_0301Fc6C {
+  domain: 'hearings';
+  sourceStatus: 'healthy' | 'degraded' | 'unavailable' | 'unauthorized' | 'unsupported' | 'error';
+  total?: number;
+  returned: number;
+  recordsEvaluated: number;
+  requestedEntityCount: number;
+  searchedEntityCount: number;
+  pagesRead: number;
+  hasMore: boolean;
+  nextCursor?: string;
+  truncated: boolean;
+  paginationComplete: boolean;
+  coverageComplete: false;
+  lastSyncAt?: string;
+  stopReason: string;
 }
 export interface ConversationHistoryPendingTurn {
   sourceBinding: Canonical_RunBinding_84F2304C;

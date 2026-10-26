@@ -1,12 +1,16 @@
 /** Owned public bytes only; no pack, installation, database or provider. */
 import test from 'node:test';import assert from 'node:assert/strict';import {readFile} from 'node:fs/promises';import {hash} from 'node:crypto';
 import {receiveBillTextSourceRequest as request,receiveBillTextSourceResponse as receive,receiveNativeBillTextSourceEvent as event,billTextSourceErrors} from '@capiro/meri-contracts/conversation-sources';
+import {receiveHearingSourceRequest,receiveHearingSourceResponse,receiveNativeHearingSourceEvent,receiveHearingMediaRequest,receiveHearingMediaResponse} from '@capiro/meri-contracts/conversation-sources';
 import {receiveConversationRequest,receiveConversationResponse,createConversationCursor,receiveConversationEvent} from '@capiro/meri-contracts/conversation-application';
 import {receiveConversationHistoryRequest,receiveConversationHistoryResponse} from '@capiro/meri-contracts/conversation-history';
 import {validateShape} from '../validate.mjs';
 import {assertConversationHistoryResponse} from '../conversation-history/validate.mjs';
 import {proof} from '../../../apps/control/conversations/sources/test/fixture.mjs';
 import {releaseBillTextPage} from '../../../apps/control/conversations/sources/bill-text.mjs';
+import {hearingProof} from '../../../apps/control/conversations/sources/test/hearing-fixture.mjs';
+import {releaseHearingPage} from '../../../apps/control/conversations/sources/hearing-record.mjs';
+import {mediaResult} from '../../../apps/control/conversations/sources/test/hearing-media-fixture.mjs';
 import {transcript} from './conversation-history-fixture.mjs';
 import {createMeriEventStream} from '../../ui-stream/dist/producer.js';
 const bytes=v=>new TextEncoder().encode(JSON.stringify(v)),schemaVersion='meri.bill-text-source-read/1';
@@ -33,4 +37,25 @@ test('current conversation event and history receivers admit native source while
  assert.deepEqual(receiveConversationEvent(bytes(native),createConversationCursor(view,0)).event,native);
  assert.throws(()=>validateShape('UIEvent',native));assert.throws(()=>validateShape('SourceEvidence',{...source.data,authorizationDecisionId:null}));
  assert.equal(hash('sha256',await readFile(new URL('../meri.schema.json',import.meta.url)),'hex'),'e3de878198bbd557843ac440e48664ad5175eecd99f7ec932021ffc465bf8c5b');
+});
+
+test('generated public hearing source and history exports preserve the exact saved reference',async()=>{
+ const p=hearingProof(),source=p.event,q=receiveHearingSourceRequest(bytes({...input(source),schemaVersion:'meri.hearing-source-read/1'})),body={schemaVersion:'meri.hearing-source-read/1',event:source,current:releaseHearingPage(source,p.result)};
+ assert.deepEqual(receiveNativeHearingSourceEvent(bytes(source)),source);assert.deepEqual(await receiveHearingSourceResponse(200,bytes(body),q),body);
+ await assert.rejects(receiveHearingSourceResponse(200,bytes(body),structuredClone(q)),/UNADMITTED/);
+ const wrong=structuredClone(body);wrong.event.binding.runId='00000099-0000-4000-8000-000000000000';await assert.rejects(receiveHearingSourceResponse(200,bytes(wrong),q));
+ const page=transcript(),run=page.latestRun;Object.assign(run,{binding:source.binding,scopes:source.scopes,policyRevision:source.data.policyRevision,state:'running'});page.turns[0].run=structuredClone(run);page.conversation={...page.conversation,conversationId:source.binding.conversationId,owner:{tenantId:source.binding.tenantId,actorId:source.binding.actorId},scopes:source.scopes,policyRevision:source.data.policyRevision};
+ const native={...source,sequence:1};page.events=[{sequence:1,event:native}];
+ const historyRequest=receiveConversationHistoryRequest('transcript',bytes({conversationId:source.binding.conversationId}));assert.deepEqual((await receiveConversationHistoryResponse('transcript',200,bytes(page),historyRequest)).events[0].event,native);
+ assert.throws(()=>validateShape('UIEvent',native));
+});
+
+test('generated public hearing media exports bind manifest and playback to the saved hearing',async()=>{
+ const {event:source}=hearingProof();
+ for(const playback of [null,{epochId:'epoch',positionMs:1500}]){
+  const q=receiveHearingMediaRequest(bytes({...input(source),schemaVersion:'meri.hearing-media-read/1',playback})),result=mediaResult(source,playback),body={schemaVersion:'meri.hearing-media-read/1',event:source,current:{source:result.source,media:result.media}};
+  assert.deepEqual(await receiveHearingMediaResponse(200,bytes(body),q),body);await assert.rejects(receiveHearingMediaResponse(200,bytes(body),structuredClone(q)),/UNADMITTED/);
+  const wrong=structuredClone(body);wrong.current.source.recordId='other';await assert.rejects(receiveHearingMediaResponse(200,bytes(wrong),q));
+  if(playback){const wrongTime=structuredClone(body);wrongTime.current.media.playback.startMs=1501;await assert.rejects(receiveHearingMediaResponse(200,bytes(wrongTime),q));}
+ }
 });
