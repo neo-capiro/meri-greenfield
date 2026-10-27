@@ -8,6 +8,7 @@ import {own,data,nativeSignal} from '../../packages/contracts/commands-0.2/execu
 import {canonicalSha256} from '../../packages/contracts/validate.mjs';
 import {createOperationLifetime} from '../../packages/runtime/operation-lifetime.mjs';
 import {compileProductMaterialPlan,verifyProductMaterial,productMaterialPolicy,productMaterialIdentity} from './material-init-plan.mjs';
+import {configurationMaxBytes} from './config.mjs';
 
 const {directory:root,maxBytes,configurationNames}=productMaterialPolicy;
 const receipts=new WeakMap(),hex64=/^[a-f0-9]{64}$/u;
@@ -40,16 +41,17 @@ function prepared(expected,bundle){
   // Bound the closed JSON before retaining its snapshot; one Secrets Manager SecretString is at most 65,536 bytes.
   if(!Array.isArray(raw.files)||raw.files.length>20)fail('BUNDLE_REFUSED');
   const b=data(raw);if(Buffer.byteLength(JSON.stringify(b),'utf8')>65536)fail('BUNDLE_REFUSED');
-  const paths=Object.keys(e.sha256ByPath),files=new Map();
+  const paths=Object.keys(e.sha256ByPath),files=new Map(),configurationPath=`${root}/${configurationNames[e.role]}`;
   if(b.files.length!==paths.length)fail('INVENTORY_REFUSED');
   for(const value of b.files){
    const f=own(value,['path','base64']);
-   if(!paths.includes(f.path)||files.has(f.path)||typeof f.base64!=='string'||f.base64.length<4||f.base64.length>4*Math.ceil(maxBytes/3))fail('INVENTORY_REFUSED');
+   const limit=f.path===configurationPath?configurationMaxBytes(e.role):maxBytes;
+   if(!paths.includes(f.path)||files.has(f.path)||typeof f.base64!=='string'||f.base64.length<4||f.base64.length>4*Math.ceil(limit/3))fail('INVENTORY_REFUSED');
    const bytes=Buffer.from(f.base64,'base64');decoded.push(bytes);
-   if(bytes.length<1||bytes.length>maxBytes||bytes.toString('base64')!==f.base64||sha(bytes)!==e.sha256ByPath[f.path])fail('CONTENT_REFUSED');
+   if(bytes.length<1||bytes.length>limit||bytes.toString('base64')!==f.base64||sha(bytes)!==e.sha256ByPath[f.path])fail('CONTENT_REFUSED');
    files.set(f.path,bytes);
   }
-  const configurationPath=`${root}/${configurationNames[e.role]}`,json=bytes=>JSON.parse(new TextDecoder('utf-8',{fatal:true}).decode(bytes));
+  const json=bytes=>JSON.parse(new TextDecoder('utf-8',{fatal:true}).decode(bytes));
   const configuration=json(files.get(configurationPath));
   const plan=compileProductMaterialPlan({role:e.role,configuration,runtimeUser:e.runtimeUser});
   if(plan.requiredFiles.length!==files.size||plan.requiredFiles.some(file=>!files.has(file.path)))fail('INVENTORY_REFUSED');

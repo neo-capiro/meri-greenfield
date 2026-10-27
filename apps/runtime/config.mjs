@@ -15,6 +15,9 @@ import {compileMemoryConfiguration} from './product-ports/memory.mjs';
 import {compileRoutinesCoreConfiguration} from './native-authority/routines-configuration.mjs';
 import {compileObjectiveGenerationConfiguration} from './objective-generation/configuration.mjs';
 export {compileControlUserPreferencesConfiguration};
+// Control carries the full read roster in its capability and admission policies.
+// Other role configurations and individual secret files retain their 32 KiB bound.
+export const configurationMaxBytes=role=>role==='control'?40*1024:32*1024;
 export const fault=code=>Object.assign(new Error(code),{code});
 const requireValue=(condition,code='RUNTIME_CONFIGURATION')=>{if(!condition)throw fault(code);};
 const integer=(n,min,max)=>Number.isSafeInteger(n)&&n>=min&&n<=max;
@@ -95,7 +98,7 @@ export function validateConfiguration(raw,role){
  if(c.agentcore!==undefined){requireValue(role==='control');compileAgentCoreConfiguration(c.agentcore);}
  return Object.freeze(c);
 }
-export async function loadConfiguration(path,role){file(path);const bytes=await readFile(path);requireValue(bytes.length<=32768);let raw;try{raw=JSON.parse(new TextDecoder('utf-8',{fatal:true}).decode(bytes));}catch{throw fault('RUNTIME_CONFIGURATION');}return validateConfiguration(raw,role);}
+export async function loadConfiguration(path,role){file(path);const bytes=await readFile(path);requireValue(bytes.length<=configurationMaxBytes(role));let raw;try{raw=JSON.parse(new TextDecoder('utf-8',{fatal:true}).decode(bytes));}catch{throw fault('RUNTIME_CONFIGURATION');}return validateConfiguration(raw,role);}
 export async function readSecret(path){
  file(path);let handle;try{handle=await open(path,constants.O_RDONLY|constants.O_NOFOLLOW);const stat=await handle.stat();requireValue(stat.isFile()&&stat.size>0&&stat.size<=32768&&(stat.mode&0o077)===0&&stat.uid===process.getuid(),'RUNTIME_SECRET_FILE');const bytes=await handle.readFile();requireValue(bytes.length<=32768,'RUNTIME_SECRET_FILE');return bytes;}catch{throw fault('RUNTIME_SECRET_FILE');}finally{await handle?.close();}
 }

@@ -306,6 +306,19 @@ test('approved reads allow valid narrowed role capabilities and reject invalid a
  for(const extra of [{maxTurns:20},{model:'deployment-model'}])assert.throws(()=>RV.parsePolicy({...policy,runtime:{...policy.runtime,...extra}}),{code:'RUNTIME_VALUES_REFUSED'});
 });
 
+test('the complete 87-read roster survives all six rendered control lists',async()=>{
+ const example=JSON.parse(await readFile(new URL('deployment-inputs.json',import.meta.url),'utf8'));
+ const operations=[...example.features.reads.approvedReads.operations,...[
+  'get_certification_status','get_state_rule_status','search_sam_opportunities','get_research_portfolio_share_links',
+ ].map(id=>({id,version:'0.2.0'}))];
+ assert.equal(operations.length,87);assert.equal(new Set(operations.map(x=>x.id)).size,87);
+ const rendered=await render(withFeatures({sourceEnabled:true,reads:{...READS,approvedReads:{...APPROVED_READS,operations}},userPreferences:{enabled:true},tenantSettings:{enabled:true},intents:{enabled:true}}),{featureSecrets:featureSecrets()});
+ const control=config(rendered,'control'),platform=control.capabilityPlatform;
+ for(const list of [control.agentcore.approvedReads.operations,platform.maximum.activeReadOperations,platform.defaults.activeReadOperations,...Object.values(platform.roleCeilings).map(x=>x.activeReadOperations)])assert.deepEqual(list,operations);
+ assert.ok(rendered.roles.control.configBytes.length<=40*1024);
+ assert.ok(Buffer.byteLength(JSON.stringify(rendered.roles.control.bundle))<=65536);
+});
+
 test('Stage 3: feature material rides the existing control/material secret; templates carry digests, never the secret',async()=>{
  const {STAGE3_FAMILIES,nextRevisions,stage3RenderInput,buildStage3Bindings,synthesizeStage3}=await import('./stage3-bindings.mjs');
  const {parseLatestTsv}=await import('./stage3-deploy.mjs');
