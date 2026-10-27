@@ -87,4 +87,105 @@ GitHub checks: none observed for the pushed branches from this environment; repo
 
 ## 5. Coverage note against the existing rows
 
-Scan in progress at this commit; the per-row coverage and concrete findings follow in the next revision of this document.
+**Status of this section: report only. No scan finding below was fixed, and none was independently re-verified by Fable against running code.** Six read-only static scans were run (no tests, no database, no live target). Each line cites file and line as reported by the scan; root or the fixing author must confirm before changing code. Severity is the scanner's. Paths: `BE` = `capiro-backend/apps/api/src`, `FE` = `capiro-frontend/apps/web/src`, Meri paths are repo-relative.
+
+### 5.1 Coverage by existing handoff area
+
+| Area | Scanned | Findings | Not covered |
+| --- | --- | --- | --- |
+| Sharing, 16H rows 1-14 | yes | 7 (2 medium, 1 medium-low, 2 low-medium, 2 low) | global request loggers, FE proxy token handling, CSP for the frozen logo, snapshot immutability |
+| F09 SQL and saved reads | yes | 4 (1 medium, 3 low) | Hill Day, newsletter and document-version owners; whether the "current version versus pinned version" default for ordinary chat/PE is implemented (unverified, not a defect); real PostgreSQL behaviour |
+| F10-F11 tasks and native actions | yes | 4 (2 medium, 1 low-medium, 1 low) | Intel owner receipt fields behind watch/client-record; whether Core `CLAIMABLE_STATUSES` includes `failed_retryable` |
+| Mail | yes | 4 (1 low-medium, 3 low) | offset>0 pages validated only in the dispatcher; attachment download-by-id endpoint |
+| Runtime | yes | 3 (1 medium, 2 low) | idle-stop code, Temporal worker, full SDK session and continuation owners |
+| Research Portfolio module | yes | 11 backend defects (D1-D11) plus frontend gaps | import compensation body, rules service beyond guards, DI-row owners, S09-S15 |
+
+"No defect found" is not acceptance. Rows below with no finding keep their `PASS / FAIL / NOT RUN` status for root and Hermes.
+
+### 5.2 Sharing (16H) findings
+
+1. **Medium, rows 14 and 6.** Core ignores the conversation's selected client on Meri publish and revoke. `BE/research-portfolios/research-portfolio-meri-tools.service.ts:147,287-314`: only the list tool compares `selectedClientId`; publish and revoke do not. The only client check is Meri-side (`apps/runtime/native-authority/research-sharing-client.mjs:48`). A client-A conversation could publish for or revoke a client-B link if the user has editor access, B is linked and B is not walled. Revoke takes only a `linkId`. Fix proposed: require `input.clientId === selectedClientId`, and for revoke load the link and compare its client. Test: `research-portfolio-share-meri.spec.ts`.
+2. **Medium-low, row 14.** `revokeRow` (`research-portfolio-share.service.ts` ~790-806) skips the client wall and returns link details (client and snapshot names) for a walled client. Needs the link id. Fix: `assertResearchPortfolioClientAccess` on the non-admin path.
+3. **Medium-low, row 2.** `findLiveLink` (~700-704) returns not-found while `lockedUntil` is in the future, and `dashboard()` and `logo()` use it, so five wrong PINs by anyone with the link end already-unlocked viewers' sessions for 15 minutes. Whether intended is unclear. Fix: apply the lock only in `verifyPin` and `availability`.
+4. **Low-medium, rows 2 and 4.** Every public call with a real token takes `SELECT ... FOR UPDATE` on the tenant row, the FE polls every 15 s per viewer, and `scryptSync` runs inside that transaction. The attempt throttle is per process and in memory.
+5. **Low, rows 2 and 14.** The admin UI shows "locked" while `failedPinAttempts >= 5` even after the lock expired (`FE/features/modules/research-portfolios/share/ResearchSharing.tsx:499`); `lockedUntil` is not in the DTO.
+6. **Low-medium, row 10.** `DashboardDesigner.tsx:202-244`: the cell key handler does not ignore Alt/Ctrl/Meta combinations (Alt+ArrowLeft becomes a widget move) and does not check `event.target === event.currentTarget` (Delete on the focused resize button removes the widget).
+7. **Low, row 10.** Focus is lost to `<body>` after keyboard delete (`DashboardDesigner.tsx:214-216,367-375`).
+
+No defect reported for rows 1, 3, 4 (unavailable states), 5, 7, 8, 9, 11, 12, 13 on static reading. Notable observations for root: published links keep working after unlink or archive (row 8; confirm that matches the specification); there are no cookies, the view token travels in the request body (row 13 cookie criteria do not apply as written); the tenant switch is audited as a settings stamp only.
+
+### 5.3 F09 SQL and saved-reads findings
+
+1. **Medium (or design gap).** The compiler does not prevent parent-total fan-out. `BE/meri/analytics/sql-query-compiler.ts:128-176` accepts SUM/AVG/COUNT over any joined column, and `SUM(DISTINCT ...)`. Only prose in `public-sql-registry.ts:425,428` tells the model to aggregate parents in a CTE first. Same for `client_campaign_recipients` joined to `client_outreach_campaigns`. If the accepted design deliberately leaves this to the model, reclassify.
+2. **Low.** Private SQL is not covered by the saved-owner `readSource` denial: `apps/gateway/sources/retained-reads/http-transport.mjs:29-30` defines `privateData` after the check and leaves `capiro-data` out of the denied group list, so an injected `readSource` could serve `client_records` outside Core's interactive admission. Fix: `(savedOwner||privateData)&&readSource` denies.
+3. **Low.** Timestamp output loses microseconds (`BE/meri/analytics/sql-query-output.ts` ~24-32, JS `Date` milliseconds) although the Meri validator accepts six fractional digits.
+4. **Low.** `42P08` and `42P18` (conflicting parameter types) are not in the `INVALID_QUERY` SQLSTATE lists of `analytics-db.service.ts:169-175` and `private-sql-db.service.ts:159-175`, so they surface as `SOURCE_UNAVAILABLE`.
+
+Optional data-semantics note: budget-position and project relations have no retirement predicate while `program_elements` excludes retired PEs, so position sums by PE code include retired PEs without saying so.
+
+Checked with no defect: exact numeric strings and nulls, honest truncation and coverage flags, 14 private projections evaluated at query time with the live wall, revocation re-check before and after the transaction, selected-client scope cannot be broadened, 17 saved-read kinds (7 Core and 10 Workspace), Strategy kinds require a client, PlannerTask versus EngagementTask separation, read-only roles and no interpolation. Observation: in a client-selected conversation most saved-read kinds fail closed by design, so document traversal is unavailable in client chats.
+
+### 5.4 F10-F11 tasks and native actions findings
+
+1. **Medium.** `apps/control/intents/approval.mjs` `decideLegislativeDocument` (from line 168) catches every owner error as `NOT_DISPATCHED` and ignores `error.effect`, although the client throws `effect:'unknown'` after the request was sent (`apps/runtime/native-authority/legislative-document-client.mjs` ~335). A possibly recorded approval is reported as a refusal. Sharing and research-action branch on `effect==='none'`. Fix: branch on effect, otherwise `UNKNOWN`. Test: `apps/control/intents/test/legislative-document.test.mjs`.
+2. **Medium (Core watch).** Pre-effect validation failures after approval are recorded as `outcome_unknown`. `BE/meri/watch-actions/keyword-watch.adapter.ts:66-67`, `defense-budget-watch.adapter.ts:308-309`, `client-watchlist.adapter.ts:189`, and the catch in `meri-action-proposal.service.ts`. Meri `watch-action-validation.mjs:17-23` and Core `watchRequestSchema` accept combinations the owners later reject (keyword subscribe/resume with null `sourceRevision`, defense-budget subscribe with null reason, null `clientId`). The approval is consumed, the proposal stays UNKNOWN and the UI says it will not be sent again, though nothing was sent.
+3. **Low-medium.** `approval.mjs` expiry checks (lines ~108, 183, 202, 223, 245, 267, 290) run before any owner read, so replaying a decision after expiry gets a definite refusal even when the effect already succeeded and the response was lost. Fix: read the recorded state first.
+4. **Low.** Four owners map all pre-send errors to `UNKNOWN`, discarding `effect:'none'` and `ACCESS_DENIED` (`approval.mjs` lines ~187, 206, 227, 249).
+
+Checked with no defect: task.create writes an `EngagementTask` (not PlannerTask); access is re-checked under the proposal lock at approval and release; start-another and reload; task.update is an unconditional title/status/dueDate patch with no CAS, assignee or clearing; MF13 list is actor/tenant/conversation keyed; idempotency keys are server-derived; save_note PASS/WARN/BLOCK mapping; legislative `complete`, `selection_only` and `unknown` stay distinct; four watch owners match Core's supported matrix; approve and dismiss idempotency; frontend uncertain recovery only refreshes.
+
+### 5.5 Mail findings
+
+1. **Low-medium, requirement 2.** Reply and reply-all do not quote the original: `BE/engagement/single-mail-reply.ts:286-347`, `microsoft/microsoft-send-payload.ts:66-67`, `google/gmail-send.service.ts:221-231`. Graph replies require the body to equal the editor HTML; reply subject must equal the original exactly, so no "Re:" prefix is added. Thread headers are preserved. Confirm whether deliberate.
+2. **Low.** `FE/features/meri/screens/settings/connections-view.ts:178-184` compares scope counts, not sets, so extra granted scopes can hide a missing Gmail scope; "Needs setup" does not show the reconnect reason.
+3. **Low.** The reply button is labelled with the contact name but the real recipient is `reply.to[0]`, which may be a Reply-To address (`FE/features/portfolio/relationships/thread/NativeMailReply.tsx` ~135-142).
+4. **Low.** The thread read exposes account, thread, message id and `receivedAt` but no folder or Internet Message-ID (`BE/engagement/mail-thread-pages.ts:95-100,214-225`); Meri candidate pages do carry `internetMessageId`.
+
+Contract looseness, enforced by Core and not a bug: `packages/contracts/commands-0.2/mail-send-validation.mjs:9-23` accepts a private-user scope with a client id and does not check reply or forward recipient shape.
+
+Checked with no defect: tenant and account attribution, reply-all recipient rules, send-time recipient proof, forward bounds and escaping, provider source re-read before send, approval-gated native send, ambiguous outcomes read back and never re-sent, incoming-file limits, quarantine, parent access, no path traversal, scope health never auto-grants, bounded Meri mail reads with disclosed truncation.
+
+### 5.6 Runtime findings
+
+1. **Medium.** `apps/runtime/conversation-runner.mjs:111-117`: the uncommitted-workspace retention runs after the inner try/finally, so if `selectedSkills.close()` or `sdkSession.close()` throws, retention is skipped and the next turn in the same warm session fails restore verification with a file-count mismatch. Fix: put retention in its own finally. Test: `apps/runtime/artifacts/test/native-files-runner.test.mjs`.
+2. **Low.** `apps/runtime/artifacts/workspace-restore.mjs` `retainedDirectory` never prunes `<workspace>.uncommitted[.n]`; after 1000 the next failed run reports `RUNNER_CLEANUP_UNKNOWN`, and retained bytes persist after access is revoked until the session ends.
+3. **Low.** `apps/runtime/telemetry/turn-context.mjs:92` classifies any failed turn that saw a Core 503 or timeout as `upstream-unavailable`, over-counting `TimeoutFailures`.
+
+Checked with no defect: session reuse only for identical tenant, actor, conversation, scopes and plan; the session id is routing only; serialized turns; no custom warm pool; HMAC per-run credential with expiry and phase checks and final release re-observation; no database credentials in the runner; per-run telemetry counters; cursor-ordered streaming with authority re-check per page; gateway rejects model-supplied authority keys and binds read context to run identity.
+
+### 5.7 Research Portfolio module findings (backend D1-D11, frontend gaps)
+
+Backend, under `BE/research-portfolios/`:
+
+- **D1 Medium-high (privacy).** `research-portfolios.service.ts:131-146`: `detail()` builds its denied-client set only from currently linked clients, so `client_linked` and `client_unlinked` events for a walled, since-unlinked client still appear in `recentEvents`. `changes.service.ts:306-309` uses `fetchDeniedClientIds` and hides them.
+- **D2 Medium.** `research-portfolio-phase11.service.ts:114-141`: `addReviewNote` ignores `idempotencyKey` (the Meri tool passes `operationKey`), has no archive guard, and the idempotent `ReviewService.addNote` (`review.service.ts:1715`) has no callers. A retried approved proposal inserts duplicate notes.
+- **D3 Medium.** `output.service.ts:222,253,263,267,353`: create, cancel, retry, reconcile and save-to-client require only `viewer`; `reconcileOperation` and `createSnapshot` require `editor`. A viewer can cancel or retry another user's output job and, past the wall, file into a client's Client Files.
+- **D4 Medium.** `research-portfolios.service.ts:298-326`: `decideMembers` can set an unresolved member to `included`, bypassing `resolveMember`.
+- **D5 Low-medium.** `analytics.service.ts:95-114`: snapshots can be created on an archived portfolio.
+- **D6 Medium.** `changes.service.ts:225-231,284-291`: resuming a subscription sets `active:true` without resetting baseline and checkpoint, so paused-period events are delivered at once (RP-09, S05).
+- **D7 Low-medium.** `phase11.service.ts:74-103`: bookmark create ignores `idempotencyKey`, does not validate kind or target, has no archive guard and has no `P2002` handling.
+- **D8 Low.** `meri-action-preview.ts:136-139` (my Core commit) gives every manage action the effect text "Core applies this action once ... after you confirm", which is untrue for list actions; `rule_preview` is `readOnly` yet persists a preview row. Reported against code I wrote: the effect text should follow `spec.readOnly`.
+- **D9 Low.** Tour state, `update` mode and `decideMembers` disposition are unvalidated, giving 500s on over-long or invalid values.
+- **D10 Low (frontend).** Settings, Snapshots and Reviews controls ignore archived state and then 409.
+- **D11 Low.** Output and snapshot idempotent replay is not bound to the requesting actor; `ReviewService.loadAuthorized` returns 403 where others return 404; concurrent first writes return 500 (no `P2002` handling).
+
+Per-row verdicts (code gap versus evidence only), from the scan:
+
+| Rows | Verdict |
+| --- | --- |
+| RP-01, RP-02, RP-05, RP-06, RP-09, RP-10 | code gaps D1 to D6 above; remaining proof is evidence |
+| RP-03, RP-04, RP-07, RP-08 | backend evidence only; frontend rules panel and import worksheet UI not found (see below) |
+| MX-01 | evidence only, plus D2, D7, D8 |
+| MX-02 | code gap: no frontend open path for a saved draft |
+| MX-03 | frontend code gap: no five-step tour component found; backend state endpoint exists |
+| OP-01 to OP-04 | evidence only (BLOCKED rows unchanged) |
+| S04, S05, S06, S07, S16, S17 | frontend code gaps (below) |
+| S01, S02, S03, S08 | evidence only, apart from D10 |
+| DI-01 to DI-11, S09 to S15 | not owned by this module; not scanned |
+
+Frontend gaps (one grep was partly cut by a shell quoting error, so re-run before relying on it): detail tabs are overview, members, changes, analytics, reviews, settings, snapshots, subscriptions and sharing. No component was found for rules, imports and operations, outputs and CSV, save to Client Files, bookmarks, review notes or assignment, watch conversion, fit refresh or the tour. The register names `ResearchPortfolioRulesPanel`, `ResearchPortfolioAnalyticsPanel` and a tour component, and none exists in `FE`. If they live elsewhere, the register's "native controls exist" claims need a path; otherwise S04-S07, S16, S17, RP-03, RP-08 and MX-03 are code gaps, not evidence gaps. This is the largest remaining implementation scope for "finish all existing Research Portfolio requirements" and needs a root decision on slicing and ownership.
+
+### 5.8 Notes on my own deliverables raised by the scan
+
+- Core `manage_research_portfolio` approval labelling (D8) is in the Core commit I pushed; I did not change it after the scan, per instruction.
+- None of the scan findings touch the MO-05 reads or intents I added, except D8, D2 and D7, which are Core behaviour my new Meri intents call.
