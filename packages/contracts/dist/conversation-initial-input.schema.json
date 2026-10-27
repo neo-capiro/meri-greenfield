@@ -1,12 +1,12 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "urn:meri:conversation-initial-input:1.0.0",
+  "$id": "urn:meri:conversation-initial-input:1.1.0",
   "$defs": {
     "ConversationInitialInputRequest": {
-      "$ref": "#/$defs/Canonical_ConversationInputRequest_c9b90727"
+      "$ref": "#/$defs/Canonical_ConversationInputRequest_e4b64829"
     },
     "ConversationInitialInputExpectedContext": {
-      "$ref": "#/$defs/Canonical_ConversationInputExpectedContext_dd73f02f"
+      "$ref": "#/$defs/Canonical_ConversationInputExpectedContext_1060a8f8"
     },
     "ConversationInitialInputAllocation": {
       "type": "object",
@@ -182,7 +182,7 @@
       ],
       "additionalProperties": false
     },
-    "Canonical_Canonical_Canonical_WindowRequest_f314f340_6bb8c023_8e6cffcb": {
+    "Canonical_Canonical_Canonical_WindowRequest_f314f340_1539ab45_3f1d9432": {
       "oneOf": [
         {
           "type": "object",
@@ -393,7 +393,7 @@
         }
       ]
     },
-    "Canonical_Canonical_Canonical_skillId_31e12e8e_cae56271_2bec58ad": {
+    "Canonical_Canonical_Canonical_skillId_31e12e8e_22efe610_e9408e1d": {
       "type": "string",
       "enum": [
         "quick_skill.research_company",
@@ -412,11 +412,11 @@
         "quick_skill.regulatory_docket_brief"
       ]
     },
-    "Canonical_Canonical_Canonical_skillVersion_7e2af095_7f0f4343_d657b779": {
+    "Canonical_Canonical_Canonical_skillVersion_7e2af095_1261fee6_2fa8d99b": {
       "type": "string",
       "pattern": "^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)$"
     },
-    "Canonical_Canonical_ConversationSubmitRequest_1ec41363_35a4f454": {
+    "Canonical_Canonical_ConversationSubmitRequest_368891d1_2cab42c3": {
       "type": "object",
       "properties": {
         "requestId": {
@@ -430,16 +430,16 @@
           "pattern": "\\S"
         },
         "windowRequest": {
-          "$ref": "#/$defs/Canonical_Canonical_Canonical_WindowRequest_f314f340_6bb8c023_8e6cffcb"
+          "$ref": "#/$defs/Canonical_Canonical_Canonical_WindowRequest_f314f340_1539ab45_3f1d9432"
         },
         "skill": {
           "type": "object",
           "properties": {
             "skillId": {
-              "$ref": "#/$defs/Canonical_Canonical_Canonical_skillId_31e12e8e_cae56271_2bec58ad"
+              "$ref": "#/$defs/Canonical_Canonical_Canonical_skillId_31e12e8e_22efe610_e9408e1d"
             },
             "skillVersion": {
-              "$ref": "#/$defs/Canonical_Canonical_Canonical_skillVersion_7e2af095_7f0f4343_d657b779"
+              "$ref": "#/$defs/Canonical_Canonical_Canonical_skillVersion_7e2af095_1261fee6_2fa8d99b"
             }
           },
           "required": [
@@ -485,18 +485,51 @@
             "effort"
           ],
           "additionalProperties": false
+        },
+        "documentRevision": {
+          "type": "object",
+          "properties": {
+            "artifactId": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+            },
+            "versionId": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+            },
+            "objectSha256": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            }
+          },
+          "required": [
+            "artifactId",
+            "versionId",
+            "objectSha256"
+          ],
+          "additionalProperties": false
         }
       },
       "required": [
         "requestId",
         "prompt"
       ],
-      "additionalProperties": false
+      "additionalProperties": false,
+      "not": {
+        "properties": {
+          "skill": {},
+          "documentRevision": {}
+        },
+        "required": [
+          "skill",
+          "documentRevision"
+        ]
+      }
     },
-    "Canonical_ConversationInputRequest_c9b90727": {
-      "$ref": "#/$defs/Canonical_Canonical_ConversationSubmitRequest_1ec41363_35a4f454"
+    "Canonical_ConversationInputRequest_e4b64829": {
+      "$ref": "#/$defs/Canonical_Canonical_ConversationSubmitRequest_368891d1_2cab42c3"
     },
-    "Canonical_ConversationInputExpectedContext_dd73f02f": {
+    "Canonical_ConversationInputExpectedContext_1060a8f8": {
       "type": "object",
       "properties": {
         "tenantId": {

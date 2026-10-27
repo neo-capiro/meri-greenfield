@@ -45,7 +45,7 @@ export function createRuntimeDocumentIntentPreparers(configuration){
  const nativeCredentialFor=method(c.nativeCredentials,'nativeCredentialFor');method(c.optionsOwner,'resolve');
  const app=createRuntimeArtifactApplication({sessions:c.sessions,optionsOwner:c.optionsOwner,now:c.now,limits,...(c.retention===undefined?{}:{retention:c.retention})});
  const revisionSource=revision?createRuntimeDocumentRevisionSource({sessions:c.sessions,optionsOwner:c.optionsOwner,now:c.now,limits,...(c.retention===undefined?{}:{retention:c.retention})}):null;
- const preparers=[...DOCUMENT_INTENT_OPERATIONS,...ANALYSIS_INTENT_OPERATIONS].map(id=>{
+ const preparers=[...DOCUMENT_INTENT_OPERATIONS,...(revision?[]:ANALYSIS_INTENT_OPERATIONS)].map(id=>{
   const entry=catalog.operations.find(row=>row.operation.id===id);
   const descriptor={operation:entry.operation,requiredGrants:entry.requiredGrants,sourceRequirements:entry.sourceRequirements};
   const analysis=ANALYSIS_INTENT_OPERATIONS.includes(id);

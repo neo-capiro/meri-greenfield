@@ -12,10 +12,10 @@ export type ConversationHistoryEnvelope =
   | ConversationHistoryManageRequest
   | ConversationHistorySummariesResponse
   | ConversationHistoryManageResponse;
-export type CanonicalRequestId_32De93Cd = string;
-export type CanonicalPrompt_7Bf1Da21 = string;
-export type CanonicalSkillBa3B01C2 = Canonical_ConversationSkillAssetPin_338818F9 | null;
-export type Canonical_CanonicalSkillId_31E12E8ECae56271 =
+export type CanonicalRequestId_3765852A = string;
+export type CanonicalPromptA43Ae781 = string;
+export type CanonicalSkill_8E4A257C = Canonical_ConversationSkillAssetPin_3299812A | null;
+export type Canonical_CanonicalSkillId_31E12E8E_22Efe610 =
   | 'quick_skill.research_company'
   | 'quick_skill.relationship_brief'
   | 'quick_skill.client_changes'
@@ -30,9 +30,9 @@ export type Canonical_CanonicalSkillId_31E12E8ECae56271 =
   | 'quick_skill.hearing_watch'
   | 'quick_skill.representation_lookup'
   | 'quick_skill.regulatory_docket_brief';
-export type Canonical_CanonicalSkillVersion_7E2Af095_7F0F4343 = string;
-export type CanonicalWindow_97Bd6970 = Canonical_Canonical_NormalizedWindowE50Ec0Ed_8A69A7E3 | null;
-export type Canonical_Canonical_NormalizedWindowE50Ec0Ed_8A69A7E3 =
+export type Canonical_CanonicalSkillVersion_7E2Af095_1261Fee6 = string;
+export type CanonicalWindow_8Fda570A = Canonical_Canonical_NormalizedWindowE50Ec0Ed_02Bd54F8 | null;
+export type Canonical_Canonical_NormalizedWindowE50Ec0Ed_02Bd54F8 =
   | {
       basis: 'calendar-week' | 'calendar-month' | 'calendar-year' | 'relative-duration' | 'explicit';
       startInclusive: string;
@@ -53,8 +53,8 @@ export type Canonical_Canonical_NormalizedWindowE50Ec0Ed_8A69A7E3 =
   | {
       basis: 'unbounded';
     };
-export type CanonicalWindowRequest_19242Ce9 = Canonical_Canonical_WindowRequestF314F340_6Bb8C023 | null;
-export type Canonical_Canonical_WindowRequestF314F340_6Bb8C023 =
+export type CanonicalWindowRequestFf00Da14 = Canonical_Canonical_WindowRequestF314F340_1539Ab45 | null;
+export type Canonical_Canonical_WindowRequestF314F340_1539Ab45 =
   | {
       basis: 'calendar-week';
       offset: -1 | 0;
@@ -383,24 +383,30 @@ export interface ConversationHistoryTurn {
   lastSequence: number;
 }
 export interface ConversationHistoryStoredRequest {
-  requestId: CanonicalRequestId_32De93Cd;
-  prompt: CanonicalPrompt_7Bf1Da21;
-  skill: CanonicalSkillBa3B01C2;
-  window: CanonicalWindow_97Bd6970;
-  windowRequest?: CanonicalWindowRequest_19242Ce9;
-  modelSelection?: CanonicalModelSelectionC59B527F;
+  requestId: CanonicalRequestId_3765852A;
+  prompt: CanonicalPromptA43Ae781;
+  skill: CanonicalSkill_8E4A257C;
+  window: CanonicalWindow_8Fda570A;
+  windowRequest?: CanonicalWindowRequestFf00Da14;
+  modelSelection?: CanonicalModelSelection_66Cdc638;
+  documentRevision?: CanonicalDocumentRevision_70B23E7E;
 }
-export interface Canonical_ConversationSkillAssetPin_338818F9 {
-  skillId: Canonical_CanonicalSkillId_31E12E8ECae56271;
-  skillVersion: Canonical_CanonicalSkillVersion_7E2Af095_7F0F4343;
+export interface Canonical_ConversationSkillAssetPin_3299812A {
+  skillId: Canonical_CanonicalSkillId_31E12E8E_22Efe610;
+  skillVersion: Canonical_CanonicalSkillVersion_7E2Af095_1261Fee6;
   manifestSha256: string;
   proseSha256: string;
   catalogSha256: string;
 }
-export interface CanonicalModelSelectionC59B527F {
+export interface CanonicalModelSelection_66Cdc638 {
   provider: 'bedrock' | 'claude-api';
   modelId: string;
   effort: null | ('low' | 'medium' | 'high' | 'xhigh' | 'max');
+}
+export interface CanonicalDocumentRevision_70B23E7E {
+  artifactId: string;
+  versionId: string;
+  objectSha256: string;
 }
 export interface ConversationHistoryEvent {
   sequence: number;
@@ -906,8 +912,8 @@ export type ConversationHistoryResponse<R extends ConversationHistoryRoute>=Conv
 export declare class ConversationHistoryResponseError extends Error {readonly code:string;}
 export declare const conversationHistoryMetadata: {
   "packageVersion": "0.1.15",
-  "historyVersion": "1.1.0",
-  "schemaId": "urn:meri:conversation-history:1.1.0",
+  "historyVersion": "1.2.0",
+  "schemaId": "urn:meri:conversation-history:1.2.0",
   "routes": {
     "list": {
       "method": "POST",

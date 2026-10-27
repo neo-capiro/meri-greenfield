@@ -31,6 +31,7 @@ import {createRuntimePreviewCustody} from '../artifacts/preview-custody.mjs';
 import {isRendererPort} from '../../artifacts/renderer.mjs';
 import {compileRuntimeArtifactsConfiguration} from '../artifacts/configuration.mjs';
 import {registerDocumentsSessionBinder,bindDocumentsSessions} from '../artifacts/session-binding.mjs';
+import {createDocumentRevisionRunOwner} from '../artifacts/revision-composition.mjs';
 import {createRuntimeDocumentIntentPreparers} from '../artifacts/intent-preparers.mjs';
 import {registerDocumentIntentOwner} from '../artifacts/intent-binding.mjs';
 import {createSelectedDocumentExecution} from '../artifacts/selected-documents.mjs';
@@ -106,16 +107,18 @@ export function documentsFamily(owners={}){
   const readDecision=value=>{const reader=intentsComposition(context).readDecision;if(!reader)throw fault();return reader(value);};
   const filing=filingEnabled?createSelectedAttachmentFilingExecution({bound:late.current,optionsOwner:late.owner,resolveVersion,readDecision,now,maxRequestMs:configuration.limits.requestMs,limits,
    source:Object.fromEntries(['register','execute','read'].map(name=>[name,value=>{const source=intentsComposition(context).filingSource;if(!source)throw fault();return source[name](value);}]))}):undefined;
-  if(o.nativeCredentials)registerDocumentIntentOwner(context,value=>{
+  const revision=createDocumentRevisionRunOwner({bound:late.current,optionsOwner:late.owner,now,limits});
+  if(o.nativeCredentials)registerDocumentIntentOwner(context,async value=>{
    const bound=late.current(),selectedClientId=value.clientResolution?.clientId;
    if(!bound||retention&&!bound.retention||!(selectedClientId===null||typeof selectedClientId==='string'))return [];
+   const selection=await revision.selectionFor({binding:value.binding,signal:value.signal});
    const documents=createRuntimeDocumentIntentPreparers({binding:value.binding,selectedClientId,sessions:bound.sessions,optionsOwner:late.owner,nativeCredentials:o.nativeCredentials,now,
-    limits,...(bound.retention?{retention:bound.retention}:{})});
+    limits,...(selection?{revision:selection}:{}),...(bound.retention?{retention:bound.retention}:{})});
    if(!filing||selectedClientId===null||typeof value.readCurrent!=='function')return documents;
    return [...documents,createRuntimeAttachmentFilingPreparer({pool,binding:value.binding,scopes:value.scopes,selectedClientId,policyRevision:value.policyRevision,expiresAtMs:value.expiresAtMs,
     readCurrent:value.readCurrent,bound,optionsOwner:late.owner,resolveVersion,now,limits})];
   },createSelectedDocumentExecution({bound:late.current,pool,optionsOwner:late.owner,now,maxRequestMs:configuration.limits.requestMs,maxOutputBytes:configuration.agentcore.maxOutputBytes,
-   readDecision}),filing);
+   readDecision}),filing,revision);
   return {ports:{artifactStore:storage,artifactOptionsOwner:late.owner,...retentionPorts}};
  };
 }

@@ -296,6 +296,11 @@ export interface ConversationSubmitRequest {
     modelId: string;
     effort: null | ('low' | 'medium' | 'high' | 'xhigh' | 'max');
   };
+  documentRevision?: {
+    artifactId: string;
+    versionId: string;
+    objectSha256: string;
+  };
 }
 export interface ConversationHistoryRequest {
   after?: number;
@@ -373,6 +378,11 @@ export interface ConversationStoredRequest {
     provider: 'bedrock' | 'claude-api';
     modelId: string;
     effort: null | ('low' | 'medium' | 'high' | 'xhigh' | 'max');
+  };
+  documentRevision?: {
+    artifactId: string;
+    versionId: string;
+    objectSha256: string;
   };
 }
 export interface ConversationSkillAssetPin {
@@ -683,8 +693,8 @@ export interface ConversationCursor {readonly conversationId:string; readonly af
 export declare class ConversationResponseError extends Error {readonly code:string;}
 export declare const conversationApplicationMetadata: {
   "packageVersion": "0.1.15",
-  "schemaId": "urn:meri:conversation-application:0.1.0",
-  "wireContractVersion": "0.1.0",
+  "schemaId": "urn:meri:conversation-application:0.2.0",
+  "wireContractVersion": "0.2.0",
   "routes": {
     "submit": {
       "method": "POST",

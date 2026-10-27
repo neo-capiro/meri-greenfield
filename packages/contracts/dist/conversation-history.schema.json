@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "urn:meri:conversation-history:1.1.0",
+  "$id": "urn:meri:conversation-history:1.2.0",
   "$defs": {
     "ConversationMetadata": {
       "type": "object",
@@ -461,22 +461,25 @@
       "type": "object",
       "properties": {
         "requestId": {
-          "$ref": "#/$defs/Canonical_requestId_32de93cd"
+          "$ref": "#/$defs/Canonical_requestId_3765852a"
         },
         "prompt": {
-          "$ref": "#/$defs/Canonical_prompt_7bf1da21"
+          "$ref": "#/$defs/Canonical_prompt_a43ae781"
         },
         "skill": {
-          "$ref": "#/$defs/Canonical_skill_ba3b01c2"
+          "$ref": "#/$defs/Canonical_skill_8e4a257c"
         },
         "window": {
-          "$ref": "#/$defs/Canonical_window_97bd6970"
+          "$ref": "#/$defs/Canonical_window_8fda570a"
         },
         "windowRequest": {
-          "$ref": "#/$defs/Canonical_windowRequest_19242ce9"
+          "$ref": "#/$defs/Canonical_windowRequest_ff00da14"
         },
         "modelSelection": {
-          "$ref": "#/$defs/Canonical_modelSelection_c59b527f"
+          "$ref": "#/$defs/Canonical_modelSelection_66cdc638"
+        },
+        "documentRevision": {
+          "$ref": "#/$defs/Canonical_documentRevision_70b23e7e"
         }
       },
       "required": [
@@ -485,7 +488,22 @@
         "skill",
         "window"
       ],
-      "additionalProperties": false
+      "additionalProperties": false,
+      "if": {
+        "properties": {
+          "documentRevision": {}
+        },
+        "required": [
+          "documentRevision"
+        ]
+      },
+      "then": {
+        "properties": {
+          "skill": {
+            "type": "null"
+          }
+        }
+      }
     },
     "ConversationPromptLineage": {
       "oneOf": [
@@ -823,17 +841,17 @@
       ],
       "additionalProperties": false
     },
-    "Canonical_requestId_32de93cd": {
+    "Canonical_requestId_3765852a": {
       "type": "string",
       "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
     },
-    "Canonical_prompt_7bf1da21": {
+    "Canonical_prompt_a43ae781": {
       "type": "string",
       "minLength": 1,
       "maxLength": 100000,
       "pattern": "\\S"
     },
-    "Canonical_Canonical_skillId_31e12e8e_cae56271": {
+    "Canonical_Canonical_skillId_31e12e8e_22efe610": {
       "type": "string",
       "enum": [
         "quick_skill.research_company",
@@ -852,18 +870,18 @@
         "quick_skill.regulatory_docket_brief"
       ]
     },
-    "Canonical_Canonical_skillVersion_7e2af095_7f0f4343": {
+    "Canonical_Canonical_skillVersion_7e2af095_1261fee6": {
       "type": "string",
       "pattern": "^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)$"
     },
-    "Canonical_ConversationSkillAssetPin_338818f9": {
+    "Canonical_ConversationSkillAssetPin_3299812a": {
       "type": "object",
       "properties": {
         "skillId": {
-          "$ref": "#/$defs/Canonical_Canonical_skillId_31e12e8e_cae56271"
+          "$ref": "#/$defs/Canonical_Canonical_skillId_31e12e8e_22efe610"
         },
         "skillVersion": {
-          "$ref": "#/$defs/Canonical_Canonical_skillVersion_7e2af095_7f0f4343"
+          "$ref": "#/$defs/Canonical_Canonical_skillVersion_7e2af095_1261fee6"
         },
         "manifestSha256": {
           "type": "string",
@@ -887,17 +905,17 @@
       ],
       "additionalProperties": false
     },
-    "Canonical_skill_ba3b01c2": {
+    "Canonical_skill_8e4a257c": {
       "anyOf": [
         {
-          "$ref": "#/$defs/Canonical_ConversationSkillAssetPin_338818f9"
+          "$ref": "#/$defs/Canonical_ConversationSkillAssetPin_3299812a"
         },
         {
           "type": "null"
         }
       ]
     },
-    "Canonical_Canonical_NormalizedWindow_e50ec0ed_8a69a7e3": {
+    "Canonical_Canonical_NormalizedWindow_e50ec0ed_02bd54f8": {
       "oneOf": [
         {
           "type": "object",
@@ -1026,17 +1044,17 @@
         }
       ]
     },
-    "Canonical_window_97bd6970": {
+    "Canonical_window_8fda570a": {
       "anyOf": [
         {
-          "$ref": "#/$defs/Canonical_Canonical_NormalizedWindow_e50ec0ed_8a69a7e3"
+          "$ref": "#/$defs/Canonical_Canonical_NormalizedWindow_e50ec0ed_02bd54f8"
         },
         {
           "type": "null"
         }
       ]
     },
-    "Canonical_Canonical_WindowRequest_f314f340_6bb8c023": {
+    "Canonical_Canonical_WindowRequest_f314f340_1539ab45": {
       "oneOf": [
         {
           "type": "object",
@@ -1247,17 +1265,17 @@
         }
       ]
     },
-    "Canonical_windowRequest_19242ce9": {
+    "Canonical_windowRequest_ff00da14": {
       "anyOf": [
         {
-          "$ref": "#/$defs/Canonical_Canonical_WindowRequest_f314f340_6bb8c023"
+          "$ref": "#/$defs/Canonical_Canonical_WindowRequest_f314f340_1539ab45"
         },
         {
           "type": "null"
         }
       ]
     },
-    "Canonical_modelSelection_c59b527f": {
+    "Canonical_modelSelection_66cdc638": {
       "type": "object",
       "properties": {
         "provider": {
@@ -1292,6 +1310,29 @@
         "provider",
         "modelId",
         "effort"
+      ],
+      "additionalProperties": false
+    },
+    "Canonical_documentRevision_70b23e7e": {
+      "type": "object",
+      "properties": {
+        "artifactId": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+        },
+        "versionId": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+        },
+        "objectSha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        }
+      },
+      "required": [
+        "artifactId",
+        "versionId",
+        "objectSha256"
       ],
       "additionalProperties": false
     },

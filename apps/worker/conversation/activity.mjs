@@ -12,6 +12,7 @@ import {describeSkillPlugin} from '../../../packages/skills/plugin.mjs';
 import {createTextProjector} from './text-projector.mjs';
 import {createSdkReadAhead} from './sdk-read-ahead.mjs';
 import {buildConversationOptions} from './options.mjs';
+import {documentRevisionContextSuffix} from './document-revision.mjs';
 import {requestContextSuffix} from './request-context.mjs';
 import {assertAutomaticClientContext} from './automatic-client-context.mjs';
 import {createConversationInput} from './continuation/input.mjs';
@@ -132,6 +133,7 @@ export function createConversationActivity({runOwner,prepareRuntime,query=sdkQue
    }
    // Add application context to the full native preset, never replace the SDK system prompt.
    options.systemPrompt.append+=requestContextSuffix({window:saved.request.window,scopes:saved.run.scopes,skill:saved.request.skill,automaticClientContext});
+   options.systemPrompt.append+=documentRevisionContextSuffix(saved.request,saved.documentRevisionContext);
     options.hooks=mergeHookSets([options.hooks??{},nativeAudit.hooks]);
     setupLife?.check();setupLife?.close();setupLife=undefined;
     diagnostic('stage','activity-running');await publish('run.status',{state:'running',reasonCode:null});

@@ -4,6 +4,7 @@ import {createTurnTelemetry} from './telemetry/turn-context.mjs';
 import {countingPool} from './telemetry/counting.mjs';
 import {Connection,Client} from '@temporalio/client';
 import {createPostgresConversationStore} from '../control/conversations/postgres-store.mjs';
+import {documentRevisionSourceFor} from './artifacts/intent-binding.mjs';
 import {createConversationService} from '../control/conversations/service.mjs';
 import {createTemporalConversationDispatcher} from '../control/conversations/temporal-dispatch.mjs';
 import {createActionSessionOwner} from '../control/action-host/session/owner.mjs';
@@ -133,7 +134,7 @@ export function assembleControl(options){
  // observation. User sessions and Core remain on public admission and business-data paths.
  const createWorkerService=({credential,binding})=>{
   const localSessions=createExecutionSessions({execution,credential,binding,now});
-  const localBasic=createConversationService({sessions:localSessions,store:workerModelPolicy?{...store,readModelPolicy:workerModelPolicy}:store,dispatcher,versions:configuration.versions,modelCatalog:configuration.models,now,maxRequestMs:configuration.limits.requestMs,...(capabilityPolicy?{capabilityPolicy,readCapabilityRole}:{}),...(ports.selectedSkillAdmission?{selectedSkillAdmission:ports.selectedSkillAdmission}:{}),...(ports.selectedOutputPublication?{selectedOutputPublication:ports.selectedOutputPublication}:{}),...(retention?{retention:retention.gate}:{})});
+  const localBasic=createConversationService({...(productContext?{documentRevisionSource:value=>documentRevisionSourceFor(productContext,value)}:{}),sessions:localSessions,store:workerModelPolicy?{...store,readModelPolicy:workerModelPolicy}:store,dispatcher,versions:configuration.versions,modelCatalog:configuration.models,now,maxRequestMs:configuration.limits.requestMs,...(capabilityPolicy?{capabilityPolicy,readCapabilityRole}:{}),...(ports.selectedSkillAdmission?{selectedSkillAdmission:ports.selectedSkillAdmission}:{}),...(ports.selectedOutputPublication?{selectedOutputPublication:ports.selectedOutputPublication}:{}),...(retention?{retention:retention.gate}:{})});
   const localService=createConversationLifecycleService({service:localBasic,store,dispatcher,sessions:localSessions,now,maxRequestMs:configuration.limits.requestMs,reconcileOriginal:createOriginalReconciler({native,now,timeoutMs:configuration.limits.requestMs}),nativeAdmission:ports.continuationAdmission,approvals:ports.approvals,retention:retention?retention.gate:null});
   return telemetry?telemetry.observeRunOwner(localService):localService;
  };
