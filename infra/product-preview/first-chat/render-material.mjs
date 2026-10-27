@@ -9,7 +9,7 @@ import {syncBuiltinESMExports} from 'node:module';
 import {fileURLToPath,pathToFileURL} from 'node:url';
 import {canonicalSha256} from '../../../packages/contracts/validate.mjs';
 import {assertModelCatalog} from '../../../packages/contracts/model-selection.mjs';
-import {validateConfiguration} from '../../../apps/runtime/config.mjs';
+import {configurationMaxBytes,validateConfiguration} from '../../../apps/runtime/config.mjs';
 import {productWorkerTrustsPinnedServerCa} from '../../../apps/runtime/cli.mjs';
 import {CONTROL_NODE_CA_FILE,productControlTrustsCompositeCa} from '../../../apps/runtime/control-ca-bundle.mjs';
 import {compileAgentCoreConfiguration} from '../../../apps/runtime/agentcore-configuration.mjs';
@@ -454,7 +454,7 @@ function validateRenderedLinux(roles,{workerEnvironment,controlEnvironment}){
   try{validateStaticProductDelivery({expected:roles[role].expected,bundle:roles[role].bundle});}catch(error){fail('RENDER_VALIDATION_REFUSED',`${role} static delivery ${error.code??error.message}`);}
   const expectedBytes=Buffer.byteLength(JSON.stringify(roles[role].expected),'utf8'),bundleBytes=Buffer.byteLength(JSON.stringify(roles[role].bundle),'utf8');
   if(expectedBytes>8192||bundleBytes>65536)fail('RENDER_VALIDATION_REFUSED',`${role} expected ${expectedBytes}/8192 or bundle ${bundleBytes}/65536 bytes`);
-  if(roles[role].configBytes.length>32768)fail('RENDER_VALIDATION_REFUSED',`${role} config exceeds 32768 bytes`);
+  if(roles[role].configBytes.length>configurationMaxBytes(role))fail('RENDER_VALIDATION_REFUSED',`${role} config exceeds ${configurationMaxBytes(role)} bytes`);
  }
 }
 
