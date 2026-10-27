@@ -1,8 +1,8 @@
 {
   "contractVersion": "0.2.0",
   "catalogId": "meri.retrieval",
-  "catalogVersion": "0.2.20",
-  "sourceRegistryCommit": "67eece81b61b28c9875cdf3182b2cffd99d8d460",
+  "catalogVersion": "0.2.21",
+  "sourceRegistryCommit": "ed85eb9c1dc5eb7638ae373a627ab3b29743e500",
   "originals": [
     {
       "id": "manage_research_portfolio",
@@ -8696,7 +8696,7 @@
       ],
       "sourceRequirements": [
         {
-          "sourceId": "workspace_documents",
+          "sourceId": "stored_owner_records",
           "authority": "authoritative",
           "purpose": "evidence"
         }
