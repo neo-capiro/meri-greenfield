@@ -1,8 +1,8 @@
 {
   "contractVersion": "0.2.0",
   "catalogId": "meri.retrieval",
-  "catalogVersion": "0.2.20",
-  "sourceRegistryCommit": "67eece81b61b28c9875cdf3182b2cffd99d8d460",
+  "catalogVersion": "0.2.21",
+  "sourceRegistryCommit": "ed85eb9c1dc5eb7638ae373a627ab3b29743e500",
   "originals": [
     {
       "id": "manage_research_portfolio",
@@ -1351,6 +1351,26 @@
       "boundary": "Conversation-scoped Research Portfolio sharing. Core owns current authority and the signed-in user confirmation; no address or PIN in history, model results or reads.",
       "replacement": {
         "id": "revoke_research_portfolio_share_link",
+        "version": "0.2.0"
+      },
+      "state": "mapped"
+    },
+    {
+      "id": "read_saved_record",
+      "disposition": "selected",
+      "boundary": "Read existing owner-authorized saved Workspace library, document/version/comment, Hill Day, newsletter or Core billing/usage/contact/own LegiWatch records. Exact saved versions do not fall back to current content. General supports all kinds. Selected-client conversation supports only explicit matching library or LegiWatch client filters; other kinds require General.",
+      "replacement": {
+        "id": "read_saved_record",
+        "version": "0.2.0"
+      },
+      "state": "mapped"
+    },
+    {
+      "id": "read_saved_strategy_records",
+      "disposition": "selected",
+      "boundary": "Read saved Planner projects/tasks/events and complete saved Strategy or Objective versions for an explicit currently authorized client. Planner tasks differ from Engagement tasks. Follow nextCursor; activity summaries do not contain before/after history.",
+      "replacement": {
+        "id": "read_saved_strategy_records",
         "version": "0.2.0"
       },
       "state": "mapped"
@@ -8340,7 +8360,7 @@
         "Current installation, authorization and source availability are required; catalog publication alone enables nothing.",
         "Coverage is ingested and query-bounded; unknown source freshness/version is null. Empty output is not complete source absence.",
         "Derived query rows do not become immutable source evidence cards. Use canonical source readers for full evidence.",
-        "Client-record SQL covers current client objectives and recorded activity only. General may query currently visible clients or narrow to one; selected-client chat cannot broaden scope. Saved jobs have no interactive private SQL admission."
+        "Client-record SQL covers the fourteen published current-authorized client projections, including saved profiles, teams, targets, engagement and outreach tracking. Saved records are not fresh enrichment. General may narrow to an authorized client; selected-client chat cannot broaden. Saved jobs have no private SQL admission."
       ],
       "positiveExamples": [
         "Inspect the declared stored projection within the current authorized source scope."
@@ -8357,11 +8377,11 @@
       ],
       "inputSchema": {
         "id": "urn:meri:retrieval:capiro-data:0.2.0#/$defs/CapiroDataDescribeRequest",
-        "sha256": "3244d5c69ce73d26528b07f9bfc89329e252ff4fe5887df616c8bd03d974480e"
+        "sha256": "862b0f2e22bb6208a0f0396d173fd96fb3b8ccd9fd0f3590da512d440f3c6c43"
       },
       "outputSchema": {
         "id": "urn:meri:retrieval:capiro-data:0.2.0#/$defs/CapiroDataDescribeOutput",
-        "sha256": "3244d5c69ce73d26528b07f9bfc89329e252ff4fe5887df616c8bd03d974480e"
+        "sha256": "862b0f2e22bb6208a0f0396d173fd96fb3b8ccd9fd0f3590da512d440f3c6c43"
       },
       "aliases": [],
       "sideEffect": "none",
@@ -8406,7 +8426,7 @@
         "Current installation, authorization and source availability are required; catalog publication alone enables nothing.",
         "Coverage is ingested and query-bounded; unknown source freshness/version is null. Empty output is not complete source absence.",
         "Derived query rows do not become immutable source evidence cards. Use canonical source readers for full evidence.",
-        "Client-record SQL covers current client objectives and recorded activity only. General may query currently visible clients or narrow to one; selected-client chat cannot broaden scope. Saved jobs have no interactive private SQL admission."
+        "Client-record SQL covers the fourteen published current-authorized client projections, including saved profiles, teams, targets, engagement and outreach tracking. Saved records are not fresh enrichment. General may narrow to an authorized client; selected-client chat cannot broaden. Saved jobs have no private SQL admission."
       ],
       "positiveExamples": [
         "Inspect the declared stored projection within the current authorized source scope."
@@ -8423,11 +8443,11 @@
       ],
       "inputSchema": {
         "id": "urn:meri:retrieval:capiro-data:0.2.0#/$defs/CapiroDataQueryRequest",
-        "sha256": "3244d5c69ce73d26528b07f9bfc89329e252ff4fe5887df616c8bd03d974480e"
+        "sha256": "862b0f2e22bb6208a0f0396d173fd96fb3b8ccd9fd0f3590da512d440f3c6c43"
       },
       "outputSchema": {
         "id": "urn:meri:retrieval:capiro-data:0.2.0#/$defs/CapiroDataQueryOutput",
-        "sha256": "3244d5c69ce73d26528b07f9bfc89329e252ff4fe5887df616c8bd03d974480e"
+        "sha256": "862b0f2e22bb6208a0f0396d173fd96fb3b8ccd9fd0f3590da512d440f3c6c43"
       },
       "aliases": [],
       "sideEffect": "none",
@@ -8654,6 +8674,136 @@
       ],
       "fixtureIds": [
         "catalog.binding.revoke_research_portfolio_share_link"
+      ]
+    },
+    {
+      "operation": {
+        "id": "read_saved_record",
+        "version": "0.2.0"
+      },
+      "displayName": "Read saved Workspace and Core records",
+      "whenToUse": "Read existing owner-authorized saved Workspace library, document/version/comment, Hill Day, newsletter or Core billing/usage/contact/own LegiWatch records. Exact saved versions do not fall back to current content. General supports all kinds. Selected-client conversation supports only explicit matching library or LegiWatch client filters; other kinds require General.",
+      "limitations": [
+        "Same interactive user and current domain guards only. Saved jobs are unavailable.",
+        "Coverage is current owner state, not a frozen cross-page snapshot or complete inventory.",
+        "The full UTF-8 envelope is bounded to 262144 bytes; an oversized saved record refuses rather than silently truncating its contents."
+      ],
+      "positiveExamples": [
+        "Inspect the declared stored projection within the current authorized source scope."
+      ],
+      "negativeExamples": [
+        "Treat a model selector, empty page, cursor, timestamp or reported coverage as proof of authorization, freshness or exhaustive absence."
+      ],
+      "sourceRequirements": [
+        {
+          "sourceId": "stored_owner_records",
+          "authority": "authoritative",
+          "purpose": "evidence"
+        }
+      ],
+      "inputSchema": {
+        "id": "urn:meri:retrieval:saved-records:0.2.0#/$defs/SavedRecordRequest",
+        "sha256": "1f20112d6d92a46c3372391e41be06eda6962fff1f6f98efe18f3050ba6f5058"
+      },
+      "outputSchema": {
+        "id": "urn:meri:retrieval:saved-records:0.2.0#/$defs/SavedRecordOutput",
+        "sha256": "1f20112d6d92a46c3372391e41be06eda6962fff1f6f98efe18f3050ba6f5058"
+      },
+      "aliases": [],
+      "sideEffect": "none",
+      "requiredGrants": [
+        "tool.read"
+      ],
+      "approvalBoundary": "none",
+      "handler": null,
+      "availability": "unimplemented",
+      "qualification": "pending",
+      "retry": {
+        "maxRetries": 0,
+        "retryableCodes": [],
+        "unknownOutcome": "reconcile-before-retry"
+      },
+      "replacement": null,
+      "requirementIds": [
+        "R-01",
+        "R-04",
+        "R-05"
+      ],
+      "ticketIds": [
+        "REL-02"
+      ],
+      "gateIds": [
+        "RG-02",
+        "RG-05",
+        "RG-07"
+      ],
+      "fixtureIds": [
+        "catalog.binding.read_saved_record"
+      ]
+    },
+    {
+      "operation": {
+        "id": "read_saved_strategy_records",
+        "version": "0.2.0"
+      },
+      "displayName": "Read saved Planner and Strategy records",
+      "whenToUse": "Read saved Planner projects/tasks/events and complete saved Strategy or Objective versions for an explicit currently authorized client. Planner tasks differ from Engagement tasks. Follow nextCursor; activity summaries do not contain before/after history.",
+      "limitations": [
+        "Same interactive user and current domain guards only. Saved jobs are unavailable.",
+        "Coverage is current owner state, not a frozen cross-page snapshot or complete inventory.",
+        "The full UTF-8 envelope is bounded to 262144 bytes; an oversized saved record refuses rather than silently truncating its contents."
+      ],
+      "positiveExamples": [
+        "Inspect the declared stored projection within the current authorized source scope."
+      ],
+      "negativeExamples": [
+        "Treat a model selector, empty page, cursor, timestamp or reported coverage as proof of authorization, freshness or exhaustive absence."
+      ],
+      "sourceRequirements": [
+        {
+          "sourceId": "strategies_work",
+          "authority": "authoritative",
+          "purpose": "evidence"
+        }
+      ],
+      "inputSchema": {
+        "id": "urn:meri:retrieval:strategy-saved-records:0.2.0#/$defs/StrategySavedRequest",
+        "sha256": "4455bdb376e88af991eb81800faadb78428f113f37b7063a584f0f9ebf611b2a"
+      },
+      "outputSchema": {
+        "id": "urn:meri:retrieval:strategy-saved-records:0.2.0#/$defs/StrategySavedOutput",
+        "sha256": "4455bdb376e88af991eb81800faadb78428f113f37b7063a584f0f9ebf611b2a"
+      },
+      "aliases": [],
+      "sideEffect": "none",
+      "requiredGrants": [
+        "tool.read"
+      ],
+      "approvalBoundary": "none",
+      "handler": null,
+      "availability": "unimplemented",
+      "qualification": "pending",
+      "retry": {
+        "maxRetries": 0,
+        "retryableCodes": [],
+        "unknownOutcome": "reconcile-before-retry"
+      },
+      "replacement": null,
+      "requirementIds": [
+        "R-01",
+        "R-04",
+        "R-05"
+      ],
+      "ticketIds": [
+        "REL-02"
+      ],
+      "gateIds": [
+        "RG-02",
+        "RG-05",
+        "RG-07"
+      ],
+      "fixtureIds": [
+        "catalog.binding.read_saved_strategy_records"
       ]
     }
   ]

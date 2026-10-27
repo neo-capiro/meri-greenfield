@@ -1,0 +1,2609 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:meri:retrieval:strategy-saved-records:0.2.0",
+  "$defs": {
+    "StrategySavedRequest": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kind",
+        "clientId"
+      ],
+      "properties": {
+        "kind": {
+          "type": "string",
+          "enum": [
+            "planner_projects",
+            "planner_tasks",
+            "planner_task",
+            "planner_events",
+            "strategy_versions",
+            "strategy_activity",
+            "objective_versions"
+          ]
+        },
+        "clientId": {
+          "type": "string",
+          "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$"
+        },
+        "cursor": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 2048
+        },
+        "archived": {
+          "type": "boolean"
+        },
+        "target": {
+          "type": "string",
+          "enum": [
+            "task",
+            "project"
+          ]
+        },
+        "id": {
+          "type": "string",
+          "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$"
+        },
+        "projectId": {
+          "type": "string",
+          "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$"
+        },
+        "strategyId": {
+          "type": "string",
+          "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$"
+        },
+        "objectiveId": {
+          "type": "string",
+          "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$"
+        }
+      }
+    },
+    "StrategySavedOutput": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "version": {
+              "const": "0.1.0"
+            },
+            "kind": {
+              "const": "planner_projects"
+            },
+            "clientId": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "observedAt": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "items": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "source": {
+                    "type": "object",
+                    "properties": {
+                      "relation": {
+                        "type": "string"
+                      },
+                      "id": {
+                        "type": "string",
+                        "format": "uuid"
+                      },
+                      "contentSha256": {
+                        "type": "string",
+                        "pattern": "^[0-9a-f]{64}$"
+                      }
+                    },
+                    "required": [
+                      "relation",
+                      "id",
+                      "contentSha256"
+                    ],
+                    "additionalProperties": false
+                  },
+                  "record": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "string",
+                        "format": "uuid"
+                      },
+                      "ownerId": {
+                        "type": "string"
+                      },
+                      "version": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 9007199254740991
+                      },
+                      "archived": {
+                        "type": "boolean"
+                      },
+                      "createdAt": {
+                        "type": "string",
+                        "format": "date-time"
+                      },
+                      "updatedAt": {
+                        "type": "string",
+                        "format": "date-time"
+                      },
+                      "access": {
+                        "type": "string",
+                        "enum": [
+                          "admin",
+                          "editor",
+                          "commenter",
+                          "viewer"
+                        ]
+                      },
+                      "name": {
+                        "type": "string"
+                      },
+                      "description": {
+                        "type": "string"
+                      },
+                      "color": {
+                        "type": "string"
+                      },
+                      "privacy": {
+                        "type": "string",
+                        "enum": [
+                          "private",
+                          "team"
+                        ]
+                      },
+                      "allocationEditors": {
+                        "type": "string",
+                        "enum": [
+                          "admins",
+                          "admins_and_editors"
+                        ]
+                      },
+                      "defaultView": {
+                        "type": "string",
+                        "enum": [
+                          "list",
+                          "board",
+                          "calendar",
+                          "timeline",
+                          "gantt"
+                        ]
+                      },
+                      "sections": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "id": {
+                              "type": "string"
+                            },
+                            "name": {
+                              "type": "string"
+                            }
+                          },
+                          "required": [
+                            "id",
+                            "name"
+                          ],
+                          "additionalProperties": false
+                        }
+                      },
+                      "fields": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "id": {
+                              "type": "string"
+                            },
+                            "name": {
+                              "type": "string"
+                            },
+                            "type": {
+                              "type": "string",
+                              "enum": [
+                                "text",
+                                "number",
+                                "date",
+                                "select",
+                                "multi_select"
+                              ]
+                            },
+                            "options": {
+                              "type": "array",
+                              "items": {
+                                "type": "string"
+                              }
+                            }
+                          },
+                          "required": [
+                            "id",
+                            "name",
+                            "type",
+                            "options"
+                          ],
+                          "additionalProperties": false
+                        }
+                      },
+                      "members": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "userId": {
+                              "type": "string"
+                            },
+                            "role": {
+                              "type": "string",
+                              "enum": [
+                                "admin",
+                                "editor",
+                                "commenter",
+                                "viewer"
+                              ]
+                            }
+                          },
+                          "required": [
+                            "userId",
+                            "role"
+                          ],
+                          "additionalProperties": false
+                        }
+                      },
+                      "startOn": {
+                        "anyOf": [
+                          {
+                            "type": "string"
+                          },
+                          {
+                            "type": "null"
+                          }
+                        ]
+                      },
+                      "dueOn": {
+                        "anyOf": [
+                          {
+                            "type": "string"
+                          },
+                          {
+                            "type": "null"
+                          }
+                        ]
+                      },
+                      "health": {
+                        "type": "string",
+                        "enum": [
+                          "on_track",
+                          "at_risk",
+                          "off_track",
+                          "on_hold",
+                          "complete"
+                        ]
+                      },
+                      "clientId": {
+                        "anyOf": [
+                          {
+                            "type": "string",
+                            "format": "uuid"
+                          },
+                          {
+                            "type": "null"
+                          }
+                        ]
+                      }
+                    },
+                    "required": [
+                      "id",
+                      "ownerId",
+                      "version",
+                      "archived",
+                      "createdAt",
+                      "updatedAt",
+                      "access",
+                      "name",
+                      "description",
+                      "color",
+                      "privacy",
+                      "defaultView",
+                      "sections",
+                      "fields",
+                      "members",
+                      "startOn",
+                      "dueOn",
+                      "health",
+                      "clientId"
+                    ],
+                    "additionalProperties": false
+                  }
+                },
+                "required": [
+                  "source",
+                  "record"
+                ],
+                "additionalProperties": false
+              },
+              "maxItems": 100
+            },
+            "nextCursor": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 2048
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "coverage": {
+              "type": "object",
+              "properties": {
+                "scope": {
+                  "const": "selected_client"
+                },
+                "sourceUniverseComplete": {
+                  "const": false
+                },
+                "representation": {
+                  "type": "string",
+                  "enum": [
+                    "owner_records",
+                    "activity_summaries"
+                  ]
+                },
+                "rowLimit": {
+                  "const": 100
+                },
+                "maxOutputBytes": {
+                  "const": 262144
+                },
+                "byteTruncated": {
+                  "type": "boolean"
+                },
+                "limitations": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "maxItems": 20
+                }
+              },
+              "required": [
+                "scope",
+                "sourceUniverseComplete",
+                "representation",
+                "rowLimit",
+                "maxOutputBytes",
+                "byteTruncated",
+                "limitations"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "version",
+            "kind",
+            "clientId",
+            "observedAt",
+            "items",
+            "nextCursor",
+            "coverage"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "version": {
+              "const": "0.1.0"
+            },
+            "kind": {
+              "const": "planner_tasks"
+            },
+            "clientId": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "observedAt": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "items": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "source": {
+                    "type": "object",
+                    "properties": {
+                      "relation": {
+                        "type": "string"
+                      },
+                      "id": {
+                        "type": "string",
+                        "format": "uuid"
+                      },
+                      "contentSha256": {
+                        "type": "string",
+                        "pattern": "^[0-9a-f]{64}$"
+                      }
+                    },
+                    "required": [
+                      "relation",
+                      "id",
+                      "contentSha256"
+                    ],
+                    "additionalProperties": false
+                  },
+                  "record": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "string",
+                        "format": "uuid"
+                      },
+                      "ownerId": {
+                        "type": "string"
+                      },
+                      "version": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 9007199254740991
+                      },
+                      "archived": {
+                        "type": "boolean"
+                      },
+                      "createdAt": {
+                        "type": "string",
+                        "format": "date-time"
+                      },
+                      "updatedAt": {
+                        "type": "string",
+                        "format": "date-time"
+                      },
+                      "access": {
+                        "type": "string",
+                        "enum": [
+                          "admin",
+                          "editor",
+                          "commenter",
+                          "viewer"
+                        ]
+                      },
+                      "name": {
+                        "type": "string"
+                      },
+                      "description": {
+                        "type": "string"
+                      },
+                      "status": {
+                        "type": "string",
+                        "enum": [
+                          "todo",
+                          "in_progress",
+                          "blocked",
+                          "done"
+                        ]
+                      },
+                      "priority": {
+                        "type": "string",
+                        "enum": [
+                          "none",
+                          "low",
+                          "medium",
+                          "high"
+                        ]
+                      },
+                      "subtype": {
+                        "type": "string",
+                        "enum": [
+                          "task",
+                          "milestone",
+                          "approval"
+                        ]
+                      },
+                      "approval": {
+                        "type": "string",
+                        "enum": [
+                          "pending",
+                          "approved",
+                          "rejected",
+                          "changes_requested"
+                        ]
+                      },
+                      "startOn": {
+                        "anyOf": [
+                          {
+                            "type": "string"
+                          },
+                          {
+                            "type": "null"
+                          }
+                        ]
+                      },
+                      "dueOn": {
+                        "anyOf": [
+                          {
+                            "type": "string"
+                          },
+                          {
+                            "type": "null"
+                          }
+                        ]
+                      },
+                      "startTime": {
+                        "anyOf": [
+                          {
+                            "type": "string"
+                          },
+                          {
+                            "type": "null"
+                          }
+                        ]
+                      },
+                      "dueTime": {
+                        "anyOf": [
+                          {
+                            "type": "string"
+                          },
+                          {
+                            "type": "null"
+                          }
+                        ]
+                      },
+                      "timeZone": {
+                        "anyOf": [
+                          {
+                            "type": "string"
+                          },
+                          {
+                            "type": "null"
+                          }
+                        ]
+                      },
+                      "assigneeId": {
+                        "anyOf": [
+                          {
+                            "type": "string"
+                          },
+                          {
+                            "type": "null"
+                          }
+                        ]
+                      },
+                      "parentId": {
+                        "anyOf": [
+                          {
+                            "type": "string"
+                          },
+                          {
+                            "type": "null"
+                          }
+                        ]
+                      },
+                      "dependencies": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        }
+                      },
+                      "collaborators": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        }
+                      },
+                      "tags": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        }
+                      },
+                      "memberships": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "projectId": {
+                              "type": "string"
+                            },
+                            "sectionId": {
+                              "anyOf": [
+                                {
+                                  "type": "string"
+                                },
+                                {
+                                  "type": "null"
+                                }
+                              ]
+                            },
+                            "position": {
+                              "type": "number"
+                            }
+                          },
+                          "required": [
+                            "projectId",
+                            "sectionId",
+                            "position"
+                          ],
+                          "additionalProperties": false
+                        }
+                      },
+                      "customValues": {
+                        "type": "object",
+                        "additionalProperties": {
+                          "anyOf": [
+                            {
+                              "type": "string"
+                            },
+                            {
+                              "type": "number"
+                            },
+                            {
+                              "type": "array",
+                              "items": {
+                                "type": "string"
+                              }
+                            },
+                            {
+                              "type": "null"
+                            }
+                          ]
+                        }
+                      },
+                      "estimateMinutes": {
+                        "type": "number"
+                      },
+                      "recurrence": {
+                        "anyOf": [
+                          {
+                            "type": "object",
+                            "properties": {
+                              "frequency": {
+                                "type": "string",
+                                "enum": [
+                                  "daily",
+                                  "weekly",
+                                  "monthly",
+                                  "yearly",
+                                  "periodically"
+                                ]
+                              },
+                              "interval": {
+                                "type": "integer",
+                                "minimum": 0,
+                                "maximum": 9007199254740991
+                              },
+                              "basedOn": {
+                                "type": "string",
+                                "enum": [
+                                  "due_date",
+                                  "completion_date"
+                                ]
+                              },
+                              "weekdays": {
+                                "type": "array",
+                                "items": {
+                                  "type": "integer",
+                                  "minimum": 0,
+                                  "maximum": 6
+                                }
+                              },
+                              "endsOn": {
+                                "anyOf": [
+                                  {
+                                    "type": "string"
+                                  },
+                                  {
+                                    "type": "null"
+                                  }
+                                ]
+                              },
+                              "anchorOn": {
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "frequency",
+                              "interval"
+                            ],
+                            "additionalProperties": false
+                          },
+                          {
+                            "type": "null"
+                          }
+                        ]
+                      },
+                      "clientId": {
+                        "anyOf": [
+                          {
+                            "type": "string",
+                            "format": "uuid"
+                          },
+                          {
+                            "type": "null"
+                          }
+                        ]
+                      },
+                      "meetingId": {
+                        "anyOf": [
+                          {
+                            "type": "string"
+                          },
+                          {
+                            "type": "null"
+                          }
+                        ]
+                      },
+                      "completedAt": {
+                        "anyOf": [
+                          {
+                            "type": "string",
+                            "format": "date-time"
+                          },
+                          {
+                            "type": "null"
+                          }
+                        ]
+                      },
+                      "actualMinutes": {
+                        "type": "number"
+                      }
+                    },
+                    "required": [
+                      "id",
+                      "ownerId",
+                      "version",
+                      "archived",
+                      "createdAt",
+                      "updatedAt",
+                      "access",
+                      "name",
+                      "description",
+                      "status",
+                      "priority",
+                      "subtype",
+                      "approval",
+                      "startOn",
+                      "dueOn",
+                      "assigneeId",
+                      "parentId",
+                      "dependencies",
+                      "collaborators",
+                      "tags",
+                      "memberships",
+                      "customValues",
+                      "estimateMinutes",
+                      "recurrence",
+                      "clientId",
+                      "meetingId",
+                      "completedAt",
+                      "actualMinutes"
+                    ],
+                    "additionalProperties": false
+                  }
+                },
+                "required": [
+                  "source",
+                  "record"
+                ],
+                "additionalProperties": false
+              },
+              "maxItems": 100
+            },
+            "nextCursor": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 2048
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "coverage": {
+              "type": "object",
+              "properties": {
+                "scope": {
+                  "const": "selected_client"
+                },
+                "sourceUniverseComplete": {
+                  "const": false
+                },
+                "representation": {
+                  "type": "string",
+                  "enum": [
+                    "owner_records",
+                    "activity_summaries"
+                  ]
+                },
+                "rowLimit": {
+                  "const": 100
+                },
+                "maxOutputBytes": {
+                  "const": 262144
+                },
+                "byteTruncated": {
+                  "type": "boolean"
+                },
+                "limitations": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "maxItems": 20
+                }
+              },
+              "required": [
+                "scope",
+                "sourceUniverseComplete",
+                "representation",
+                "rowLimit",
+                "maxOutputBytes",
+                "byteTruncated",
+                "limitations"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "version",
+            "kind",
+            "clientId",
+            "observedAt",
+            "items",
+            "nextCursor",
+            "coverage"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "version": {
+              "const": "0.1.0"
+            },
+            "kind": {
+              "const": "planner_task"
+            },
+            "clientId": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "observedAt": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "items": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "source": {
+                    "type": "object",
+                    "properties": {
+                      "relation": {
+                        "type": "string"
+                      },
+                      "id": {
+                        "type": "string",
+                        "format": "uuid"
+                      },
+                      "contentSha256": {
+                        "type": "string",
+                        "pattern": "^[0-9a-f]{64}$"
+                      }
+                    },
+                    "required": [
+                      "relation",
+                      "id",
+                      "contentSha256"
+                    ],
+                    "additionalProperties": false
+                  },
+                  "record": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "string",
+                        "format": "uuid"
+                      },
+                      "ownerId": {
+                        "type": "string"
+                      },
+                      "version": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 9007199254740991
+                      },
+                      "archived": {
+                        "type": "boolean"
+                      },
+                      "createdAt": {
+                        "type": "string",
+                        "format": "date-time"
+                      },
+                      "updatedAt": {
+                        "type": "string",
+                        "format": "date-time"
+                      },
+                      "access": {
+                        "type": "string",
+                        "enum": [
+                          "admin",
+                          "editor",
+                          "commenter",
+                          "viewer"
+                        ]
+                      },
+                      "name": {
+                        "type": "string"
+                      },
+                      "description": {
+                        "type": "string"
+                      },
+                      "status": {
+                        "type": "string",
+                        "enum": [
+                          "todo",
+                          "in_progress",
+                          "blocked",
+                          "done"
+                        ]
+                      },
+                      "priority": {
+                        "type": "string",
+                        "enum": [
+                          "none",
+                          "low",
+                          "medium",
+                          "high"
+                        ]
+                      },
+                      "subtype": {
+                        "type": "string",
+                        "enum": [
+                          "task",
+                          "milestone",
+                          "approval"
+                        ]
+                      },
+                      "approval": {
+                        "type": "string",
+                        "enum": [
+                          "pending",
+                          "approved",
+                          "rejected",
+                          "changes_requested"
+                        ]
+                      },
+                      "startOn": {
+                        "anyOf": [
+                          {
+                            "type": "string"
+                          },
+                          {
+                            "type": "null"
+                          }
+                        ]
+                      },
+                      "dueOn": {
+                        "anyOf": [
+                          {
+                            "type": "string"
+                          },
+                          {
+                            "type": "null"
+                          }
+                        ]
+                      },
+                      "startTime": {
+                        "anyOf": [
+                          {
+                            "type": "string"
+                          },
+                          {
+                            "type": "null"
+                          }
+                        ]
+                      },
+                      "dueTime": {
+                        "anyOf": [
+                          {
+                            "type": "string"
+                          },
+                          {
+                            "type": "null"
+                          }
+                        ]
+                      },
+                      "timeZone": {
+                        "anyOf": [
+                          {
+                            "type": "string"
+                          },
+                          {
+                            "type": "null"
+                          }
+                        ]
+                      },
+                      "assigneeId": {
+                        "anyOf": [
+                          {
+                            "type": "string"
+                          },
+                          {
+                            "type": "null"
+                          }
+                        ]
+                      },
+                      "parentId": {
+                        "anyOf": [
+                          {
+                            "type": "string"
+                          },
+                          {
+                            "type": "null"
+                          }
+                        ]
+                      },
+                      "dependencies": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        }
+                      },
+                      "collaborators": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        }
+                      },
+                      "tags": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        }
+                      },
+                      "memberships": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "projectId": {
+                              "type": "string"
+                            },
+                            "sectionId": {
+                              "anyOf": [
+                                {
+                                  "type": "string"
+                                },
+                                {
+                                  "type": "null"
+                                }
+                              ]
+                            },
+                            "position": {
+                              "type": "number"
+                            }
+                          },
+                          "required": [
+                            "projectId",
+                            "sectionId",
+                            "position"
+                          ],
+                          "additionalProperties": false
+                        }
+                      },
+                      "customValues": {
+                        "type": "object",
+                        "additionalProperties": {
+                          "anyOf": [
+                            {
+                              "type": "string"
+                            },
+                            {
+                              "type": "number"
+                            },
+                            {
+                              "type": "array",
+                              "items": {
+                                "type": "string"
+                              }
+                            },
+                            {
+                              "type": "null"
+                            }
+                          ]
+                        }
+                      },
+                      "estimateMinutes": {
+                        "type": "number"
+                      },
+                      "recurrence": {
+                        "anyOf": [
+                          {
+                            "type": "object",
+                            "properties": {
+                              "frequency": {
+                                "type": "string",
+                                "enum": [
+                                  "daily",
+                                  "weekly",
+                                  "monthly",
+                                  "yearly",
+                                  "periodically"
+                                ]
+                              },
+                              "interval": {
+                                "type": "integer",
+                                "minimum": 0,
+                                "maximum": 9007199254740991
+                              },
+                              "basedOn": {
+                                "type": "string",
+                                "enum": [
+                                  "due_date",
+                                  "completion_date"
+                                ]
+                              },
+                              "weekdays": {
+                                "type": "array",
+                                "items": {
+                                  "type": "integer",
+                                  "minimum": 0,
+                                  "maximum": 6
+                                }
+                              },
+                              "endsOn": {
+                                "anyOf": [
+                                  {
+                                    "type": "string"
+                                  },
+                                  {
+                                    "type": "null"
+                                  }
+                                ]
+                              },
+                              "anchorOn": {
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "frequency",
+                              "interval"
+                            ],
+                            "additionalProperties": false
+                          },
+                          {
+                            "type": "null"
+                          }
+                        ]
+                      },
+                      "clientId": {
+                        "anyOf": [
+                          {
+                            "type": "string",
+                            "format": "uuid"
+                          },
+                          {
+                            "type": "null"
+                          }
+                        ]
+                      },
+                      "meetingId": {
+                        "anyOf": [
+                          {
+                            "type": "string"
+                          },
+                          {
+                            "type": "null"
+                          }
+                        ]
+                      },
+                      "completedAt": {
+                        "anyOf": [
+                          {
+                            "type": "string",
+                            "format": "date-time"
+                          },
+                          {
+                            "type": "null"
+                          }
+                        ]
+                      },
+                      "actualMinutes": {
+                        "type": "number"
+                      }
+                    },
+                    "required": [
+                      "id",
+                      "ownerId",
+                      "version",
+                      "archived",
+                      "createdAt",
+                      "updatedAt",
+                      "access",
+                      "name",
+                      "description",
+                      "status",
+                      "priority",
+                      "subtype",
+                      "approval",
+                      "startOn",
+                      "dueOn",
+                      "assigneeId",
+                      "parentId",
+                      "dependencies",
+                      "collaborators",
+                      "tags",
+                      "memberships",
+                      "customValues",
+                      "estimateMinutes",
+                      "recurrence",
+                      "clientId",
+                      "meetingId",
+                      "completedAt",
+                      "actualMinutes"
+                    ],
+                    "additionalProperties": false
+                  }
+                },
+                "required": [
+                  "source",
+                  "record"
+                ],
+                "additionalProperties": false
+              },
+              "maxItems": 100
+            },
+            "nextCursor": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 2048
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "coverage": {
+              "type": "object",
+              "properties": {
+                "scope": {
+                  "const": "selected_client"
+                },
+                "sourceUniverseComplete": {
+                  "const": false
+                },
+                "representation": {
+                  "type": "string",
+                  "enum": [
+                    "owner_records",
+                    "activity_summaries"
+                  ]
+                },
+                "rowLimit": {
+                  "const": 100
+                },
+                "maxOutputBytes": {
+                  "const": 262144
+                },
+                "byteTruncated": {
+                  "type": "boolean"
+                },
+                "limitations": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "maxItems": 20
+                }
+              },
+              "required": [
+                "scope",
+                "sourceUniverseComplete",
+                "representation",
+                "rowLimit",
+                "maxOutputBytes",
+                "byteTruncated",
+                "limitations"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "version",
+            "kind",
+            "clientId",
+            "observedAt",
+            "items",
+            "nextCursor",
+            "coverage"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "version": {
+              "const": "0.1.0"
+            },
+            "kind": {
+              "const": "planner_events"
+            },
+            "clientId": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "observedAt": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "items": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "source": {
+                    "type": "object",
+                    "properties": {
+                      "relation": {
+                        "type": "string"
+                      },
+                      "id": {
+                        "type": "string",
+                        "format": "uuid"
+                      },
+                      "contentSha256": {
+                        "type": "string",
+                        "pattern": "^[0-9a-f]{64}$"
+                      }
+                    },
+                    "required": [
+                      "relation",
+                      "id",
+                      "contentSha256"
+                    ],
+                    "additionalProperties": false
+                  },
+                  "record": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "string",
+                        "format": "uuid"
+                      },
+                      "taskId": {
+                        "anyOf": [
+                          {
+                            "type": "string"
+                          },
+                          {
+                            "type": "null"
+                          }
+                        ]
+                      },
+                      "projectId": {
+                        "anyOf": [
+                          {
+                            "type": "string"
+                          },
+                          {
+                            "type": "null"
+                          }
+                        ]
+                      },
+                      "resourceId": {
+                        "anyOf": [
+                          {
+                            "type": "string"
+                          },
+                          {
+                            "type": "null"
+                          }
+                        ]
+                      },
+                      "time": {
+                        "type": "object",
+                        "properties": {
+                          "workedOn": {
+                            "type": "string"
+                          },
+                          "timeZone": {
+                            "type": "string"
+                          },
+                          "billable": {
+                            "type": "boolean"
+                          },
+                          "projectId": {
+                            "anyOf": [
+                              {
+                                "type": "string"
+                              },
+                              {
+                                "type": "null"
+                              }
+                            ]
+                          },
+                          "category": {
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "workedOn",
+                          "timeZone",
+                          "billable",
+                          "projectId",
+                          "category"
+                        ],
+                        "additionalProperties": false
+                      },
+                      "timeEditable": {
+                        "type": "boolean"
+                      },
+                      "timesheet": {
+                        "type": "object",
+                        "properties": {
+                          "weekOn": {
+                            "type": "string"
+                          },
+                          "userId": {
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "weekOn",
+                          "userId"
+                        ],
+                        "additionalProperties": false
+                      },
+                      "budgetThreshold": {
+                        "type": "object",
+                        "properties": {
+                          "projectId": {
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "projectId"
+                        ],
+                        "additionalProperties": false
+                      },
+                      "goalSnapshot": {
+                        "type": "object",
+                        "properties": {
+                          "status": {
+                            "type": "string",
+                            "enum": [
+                              "on_track",
+                              "at_risk",
+                              "off_track",
+                              "achieved",
+                              "partial",
+                              "missed",
+                              "dropped"
+                            ]
+                          },
+                          "measurement": {
+                            "type": "string",
+                            "enum": [
+                              "manual",
+                              "task_completion",
+                              "project_task_completion",
+                              "project_milestone_completion",
+                              "task_list_completion",
+                              "subgoal_percentage",
+                              "subgoal_total"
+                            ]
+                          },
+                          "target": {
+                            "type": "number"
+                          },
+                          "startValue": {
+                            "type": "number"
+                          },
+                          "direction": {
+                            "type": "string",
+                            "enum": [
+                              "increase",
+                              "decrease"
+                            ]
+                          },
+                          "unit": {
+                            "type": "string"
+                          },
+                          "value": {
+                            "type": "number"
+                          },
+                          "percentage": {
+                            "type": "number"
+                          }
+                        },
+                        "required": [
+                          "status",
+                          "measurement",
+                          "target",
+                          "startValue",
+                          "direction",
+                          "unit"
+                        ],
+                        "additionalProperties": false
+                      },
+                      "goalUpdate": {
+                        "type": "object",
+                        "properties": {
+                          "title": {
+                            "type": "string"
+                          },
+                          "sections": {
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "id": {
+                                  "type": "string"
+                                },
+                                "title": {
+                                  "type": "string"
+                                },
+                                "text": {
+                                  "type": "string"
+                                }
+                              },
+                              "required": [
+                                "id",
+                                "title",
+                                "text"
+                              ],
+                              "additionalProperties": false
+                            }
+                          }
+                        },
+                        "required": [
+                          "title",
+                          "sections"
+                        ],
+                        "additionalProperties": false
+                      },
+                      "actorId": {
+                        "type": "string"
+                      },
+                      "kind": {
+                        "type": "string",
+                        "enum": [
+                          "created",
+                          "updated",
+                          "comment",
+                          "status",
+                          "time",
+                          "archived",
+                          "restored",
+                          "reminder",
+                          "goal_status",
+                          "goal_progress",
+                          "timesheet_status",
+                          "budget_threshold"
+                        ]
+                      },
+                      "text": {
+                        "type": "string"
+                      },
+                      "minutes": {
+                        "anyOf": [
+                          {
+                            "type": "number"
+                          },
+                          {
+                            "type": "null"
+                          }
+                        ]
+                      },
+                      "createdAt": {
+                        "type": "string",
+                        "format": "date-time"
+                      },
+                      "version": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 9007199254740991
+                      },
+                      "editedAt": {
+                        "anyOf": [
+                          {
+                            "type": "string",
+                            "format": "date-time"
+                          },
+                          {
+                            "type": "null"
+                          }
+                        ]
+                      },
+                      "editedBy": {
+                        "anyOf": [
+                          {
+                            "type": "string"
+                          },
+                          {
+                            "type": "null"
+                          }
+                        ]
+                      },
+                      "recordedBy": {
+                        "type": "string"
+                      },
+                      "removed": {
+                        "type": "boolean"
+                      }
+                    },
+                    "required": [
+                      "id",
+                      "taskId",
+                      "projectId",
+                      "actorId",
+                      "kind",
+                      "text",
+                      "minutes",
+                      "createdAt"
+                    ],
+                    "additionalProperties": false
+                  }
+                },
+                "required": [
+                  "source",
+                  "record"
+                ],
+                "additionalProperties": false
+              },
+              "maxItems": 100
+            },
+            "nextCursor": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 2048
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "coverage": {
+              "type": "object",
+              "properties": {
+                "scope": {
+                  "const": "selected_client"
+                },
+                "sourceUniverseComplete": {
+                  "const": false
+                },
+                "representation": {
+                  "type": "string",
+                  "enum": [
+                    "owner_records",
+                    "activity_summaries"
+                  ]
+                },
+                "rowLimit": {
+                  "const": 100
+                },
+                "maxOutputBytes": {
+                  "const": 262144
+                },
+                "byteTruncated": {
+                  "type": "boolean"
+                },
+                "limitations": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "maxItems": 20
+                }
+              },
+              "required": [
+                "scope",
+                "sourceUniverseComplete",
+                "representation",
+                "rowLimit",
+                "maxOutputBytes",
+                "byteTruncated",
+                "limitations"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "version",
+            "kind",
+            "clientId",
+            "observedAt",
+            "items",
+            "nextCursor",
+            "coverage"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "version": {
+              "const": "0.1.0"
+            },
+            "kind": {
+              "const": "strategy_versions"
+            },
+            "clientId": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "observedAt": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "items": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "source": {
+                    "type": "object",
+                    "properties": {
+                      "relation": {
+                        "type": "string"
+                      },
+                      "id": {
+                        "type": "string",
+                        "format": "uuid"
+                      },
+                      "contentSha256": {
+                        "type": "string",
+                        "pattern": "^[0-9a-f]{64}$"
+                      }
+                    },
+                    "required": [
+                      "relation",
+                      "id",
+                      "contentSha256"
+                    ],
+                    "additionalProperties": false
+                  },
+                  "record": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "string",
+                        "format": "uuid"
+                      },
+                      "strategyId": {
+                        "type": "string",
+                        "format": "uuid"
+                      },
+                      "snapshot": {
+                        "type": "object",
+                        "properties": {
+                          "meta": {
+                            "type": "object",
+                            "properties": {
+                              "id": {
+                                "type": "string",
+                                "format": "uuid"
+                              },
+                              "clientId": {
+                                "type": "string",
+                                "format": "uuid"
+                              },
+                              "title": {
+                                "type": "string"
+                              },
+                              "type": {
+                                "type": "string"
+                              },
+                              "goal": {
+                                "anyOf": [
+                                  {
+                                    "type": "string"
+                                  },
+                                  {
+                                    "type": "null"
+                                  }
+                                ]
+                              },
+                              "meriContext": {
+                                "anyOf": [
+                                  {
+                                    "type": "string"
+                                  },
+                                  {
+                                    "type": "null"
+                                  }
+                                ]
+                              },
+                              "meriSummary": {
+                                "anyOf": [
+                                  {
+                                    "type": "string"
+                                  },
+                                  {
+                                    "type": "null"
+                                  }
+                                ]
+                              },
+                              "targetDate": {
+                                "anyOf": [
+                                  {
+                                    "type": "string"
+                                  },
+                                  {
+                                    "type": "null"
+                                  }
+                                ]
+                              },
+                              "ownerUserId": {
+                                "type": "string"
+                              },
+                              "createdByUserId": {
+                                "type": "string"
+                              },
+                              "createdAt": {
+                                "type": "string",
+                                "format": "date-time"
+                              }
+                            },
+                            "required": [
+                              "id",
+                              "clientId",
+                              "title",
+                              "type",
+                              "goal",
+                              "meriContext",
+                              "meriSummary",
+                              "targetDate",
+                              "ownerUserId",
+                              "createdByUserId",
+                              "createdAt"
+                            ],
+                            "additionalProperties": false
+                          },
+                          "nodes": {
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "id": {
+                                  "type": "string"
+                                },
+                                "kind": {
+                                  "type": "string"
+                                },
+                                "subject": {
+                                  "type": "string"
+                                },
+                                "title": {
+                                  "type": "string"
+                                },
+                                "note": {
+                                  "anyOf": [
+                                    {
+                                      "type": "string"
+                                    },
+                                    {
+                                      "type": "null"
+                                    }
+                                  ]
+                                },
+                                "ownerUserId": {
+                                  "anyOf": [
+                                    {
+                                      "type": "string"
+                                    },
+                                    {
+                                      "type": "null"
+                                    }
+                                  ]
+                                },
+                                "status": {
+                                  "type": "string"
+                                },
+                                "startsOn": {
+                                  "type": "string"
+                                },
+                                "endsOn": {
+                                  "anyOf": [
+                                    {
+                                      "type": "string"
+                                    },
+                                    {
+                                      "type": "null"
+                                    }
+                                  ]
+                                },
+                                "openEnded": {
+                                  "type": "boolean"
+                                },
+                                "dependsOnIds": {
+                                  "type": "array",
+                                  "items": {
+                                    "type": "string"
+                                  }
+                                },
+                                "targetRef": {},
+                                "provenance": {},
+                                "meriAuthored": {
+                                  "type": "boolean"
+                                },
+                                "createdByUserId": {
+                                  "type": "string"
+                                },
+                                "createdAt": {
+                                  "type": "string",
+                                  "format": "date-time"
+                                }
+                              },
+                              "required": [
+                                "id",
+                                "kind",
+                                "subject",
+                                "title",
+                                "note",
+                                "ownerUserId",
+                                "status",
+                                "startsOn",
+                                "endsOn",
+                                "openEnded",
+                                "dependsOnIds",
+                                "meriAuthored",
+                                "createdByUserId",
+                                "createdAt"
+                              ],
+                              "additionalProperties": false
+                            }
+                          }
+                        },
+                        "required": [
+                          "meta",
+                          "nodes"
+                        ],
+                        "additionalProperties": false
+                      },
+                      "authorKind": {
+                        "type": "string"
+                      },
+                      "authorUserId": {
+                        "anyOf": [
+                          {
+                            "type": "string"
+                          },
+                          {
+                            "type": "null"
+                          }
+                        ]
+                      },
+                      "note": {
+                        "anyOf": [
+                          {
+                            "type": "string"
+                          },
+                          {
+                            "type": "null"
+                          }
+                        ]
+                      },
+                      "restoredFromVersionId": {
+                        "anyOf": [
+                          {
+                            "type": "string",
+                            "format": "uuid"
+                          },
+                          {
+                            "type": "null"
+                          }
+                        ]
+                      },
+                      "coalescible": {
+                        "type": "boolean"
+                      },
+                      "createdAt": {
+                        "type": "string",
+                        "format": "date-time"
+                      }
+                    },
+                    "required": [
+                      "id",
+                      "strategyId",
+                      "snapshot",
+                      "authorKind",
+                      "authorUserId",
+                      "note",
+                      "restoredFromVersionId",
+                      "coalescible",
+                      "createdAt"
+                    ],
+                    "additionalProperties": false
+                  }
+                },
+                "required": [
+                  "source",
+                  "record"
+                ],
+                "additionalProperties": false
+              },
+              "maxItems": 100
+            },
+            "nextCursor": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 2048
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "coverage": {
+              "type": "object",
+              "properties": {
+                "scope": {
+                  "const": "selected_client"
+                },
+                "sourceUniverseComplete": {
+                  "const": false
+                },
+                "representation": {
+                  "type": "string",
+                  "enum": [
+                    "owner_records",
+                    "activity_summaries"
+                  ]
+                },
+                "rowLimit": {
+                  "const": 100
+                },
+                "maxOutputBytes": {
+                  "const": 262144
+                },
+                "byteTruncated": {
+                  "type": "boolean"
+                },
+                "limitations": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "maxItems": 20
+                }
+              },
+              "required": [
+                "scope",
+                "sourceUniverseComplete",
+                "representation",
+                "rowLimit",
+                "maxOutputBytes",
+                "byteTruncated",
+                "limitations"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "version",
+            "kind",
+            "clientId",
+            "observedAt",
+            "items",
+            "nextCursor",
+            "coverage"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "version": {
+              "const": "0.1.0"
+            },
+            "kind": {
+              "const": "strategy_activity"
+            },
+            "clientId": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "observedAt": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "items": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "source": {
+                    "type": "object",
+                    "properties": {
+                      "relation": {
+                        "type": "string"
+                      },
+                      "id": {
+                        "type": "string",
+                        "format": "uuid"
+                      },
+                      "contentSha256": {
+                        "type": "string",
+                        "pattern": "^[0-9a-f]{64}$"
+                      }
+                    },
+                    "required": [
+                      "relation",
+                      "id",
+                      "contentSha256"
+                    ],
+                    "additionalProperties": false
+                  },
+                  "record": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "string",
+                        "format": "uuid"
+                      },
+                      "actorUserId": {
+                        "anyOf": [
+                          {
+                            "type": "string"
+                          },
+                          {
+                            "type": "null"
+                          }
+                        ]
+                      },
+                      "authorKind": {
+                        "type": "string"
+                      },
+                      "action": {
+                        "type": "string"
+                      },
+                      "entityType": {
+                        "const": "strategy"
+                      },
+                      "entityId": {
+                        "type": "string",
+                        "format": "uuid"
+                      },
+                      "occurredAt": {
+                        "type": "string",
+                        "format": "date-time"
+                      }
+                    },
+                    "required": [
+                      "id",
+                      "actorUserId",
+                      "authorKind",
+                      "action",
+                      "entityType",
+                      "entityId",
+                      "occurredAt"
+                    ],
+                    "additionalProperties": false
+                  }
+                },
+                "required": [
+                  "source",
+                  "record"
+                ],
+                "additionalProperties": false
+              },
+              "maxItems": 100
+            },
+            "nextCursor": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 2048
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "coverage": {
+              "type": "object",
+              "properties": {
+                "scope": {
+                  "const": "selected_client"
+                },
+                "sourceUniverseComplete": {
+                  "const": false
+                },
+                "representation": {
+                  "type": "string",
+                  "enum": [
+                    "owner_records",
+                    "activity_summaries"
+                  ]
+                },
+                "rowLimit": {
+                  "const": 100
+                },
+                "maxOutputBytes": {
+                  "const": 262144
+                },
+                "byteTruncated": {
+                  "type": "boolean"
+                },
+                "limitations": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "maxItems": 20
+                }
+              },
+              "required": [
+                "scope",
+                "sourceUniverseComplete",
+                "representation",
+                "rowLimit",
+                "maxOutputBytes",
+                "byteTruncated",
+                "limitations"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "version",
+            "kind",
+            "clientId",
+            "observedAt",
+            "items",
+            "nextCursor",
+            "coverage"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "version": {
+              "const": "0.1.0"
+            },
+            "kind": {
+              "const": "objective_versions"
+            },
+            "clientId": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "observedAt": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "items": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "source": {
+                    "type": "object",
+                    "properties": {
+                      "relation": {
+                        "type": "string"
+                      },
+                      "id": {
+                        "type": "string",
+                        "format": "uuid"
+                      },
+                      "contentSha256": {
+                        "type": "string",
+                        "pattern": "^[0-9a-f]{64}$"
+                      }
+                    },
+                    "required": [
+                      "relation",
+                      "id",
+                      "contentSha256"
+                    ],
+                    "additionalProperties": false
+                  },
+                  "record": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "string",
+                        "format": "uuid"
+                      },
+                      "clientId": {
+                        "type": "string",
+                        "format": "uuid"
+                      },
+                      "objectiveId": {
+                        "type": "string",
+                        "format": "uuid"
+                      },
+                      "version": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 9007199254740991
+                      },
+                      "operation": {
+                        "type": "string"
+                      },
+                      "actorUserId": {
+                        "type": "string"
+                      },
+                      "snapshot": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "format": "uuid"
+                          },
+                          "clientId": {
+                            "type": "string",
+                            "format": "uuid"
+                          },
+                          "requestId": {
+                            "type": "string"
+                          },
+                          "outcome": {
+                            "type": "string"
+                          },
+                          "governmentProblem": {
+                            "type": "string"
+                          },
+                          "askType": {
+                            "anyOf": [
+                              {
+                                "type": "string"
+                              },
+                              {
+                                "type": "null"
+                              }
+                            ]
+                          },
+                          "minimumWin": {
+                            "type": "string"
+                          },
+                          "limits": {
+                            "type": "string"
+                          },
+                          "ownerUserId": {
+                            "anyOf": [
+                              {
+                                "type": "string"
+                              },
+                              {
+                                "type": "null"
+                              }
+                            ]
+                          },
+                          "status": {
+                            "type": "string"
+                          },
+                          "version": {
+                            "type": "integer",
+                            "minimum": 0,
+                            "maximum": 9007199254740991
+                          },
+                          "readyAt": {
+                            "anyOf": [
+                              {
+                                "type": "string",
+                                "format": "date-time"
+                              },
+                              {
+                                "type": "null"
+                              }
+                            ]
+                          },
+                          "reviewRequestedAt": {
+                            "anyOf": [
+                              {
+                                "type": "string",
+                                "format": "date-time"
+                              },
+                              {
+                                "type": "null"
+                              }
+                            ]
+                          },
+                          "createdAt": {
+                            "type": "string",
+                            "format": "date-time"
+                          },
+                          "updatedAt": {
+                            "type": "string",
+                            "format": "date-time"
+                          },
+                          "deletedAt": {
+                            "anyOf": [
+                              {
+                                "type": "string",
+                                "format": "date-time"
+                              },
+                              {
+                                "type": "null"
+                              }
+                            ]
+                          },
+                          "readiness": {
+                            "type": "object",
+                            "properties": {
+                              "checklist": {
+                                "type": "object",
+                                "properties": {
+                                  "outcome": {
+                                    "type": "boolean"
+                                  },
+                                  "governmentProblem": {
+                                    "type": "boolean"
+                                  },
+                                  "askType": {
+                                    "type": "boolean"
+                                  },
+                                  "minimumWin": {
+                                    "type": "boolean"
+                                  }
+                                },
+                                "required": [
+                                  "outcome",
+                                  "governmentProblem",
+                                  "askType",
+                                  "minimumWin"
+                                ],
+                                "additionalProperties": false
+                              },
+                              "completedFields": {
+                                "type": "integer",
+                                "minimum": 0,
+                                "maximum": 9007199254740991
+                              },
+                              "requiredFields": {
+                                "const": 4
+                              },
+                              "isReady": {
+                                "type": "boolean"
+                              }
+                            },
+                            "required": [
+                              "checklist",
+                              "completedFields",
+                              "requiredFields",
+                              "isReady"
+                            ],
+                            "additionalProperties": false
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "clientId",
+                          "requestId",
+                          "outcome",
+                          "governmentProblem",
+                          "askType",
+                          "minimumWin",
+                          "limits",
+                          "ownerUserId",
+                          "status",
+                          "version",
+                          "readyAt",
+                          "reviewRequestedAt",
+                          "createdAt",
+                          "updatedAt",
+                          "deletedAt",
+                          "readiness"
+                        ],
+                        "additionalProperties": false
+                      },
+                      "createdAt": {
+                        "type": "string",
+                        "format": "date-time"
+                      }
+                    },
+                    "required": [
+                      "id",
+                      "clientId",
+                      "objectiveId",
+                      "version",
+                      "operation",
+                      "actorUserId",
+                      "snapshot",
+                      "createdAt"
+                    ],
+                    "additionalProperties": false
+                  }
+                },
+                "required": [
+                  "source",
+                  "record"
+                ],
+                "additionalProperties": false
+              },
+              "maxItems": 100
+            },
+            "nextCursor": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 2048
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "coverage": {
+              "type": "object",
+              "properties": {
+                "scope": {
+                  "const": "selected_client"
+                },
+                "sourceUniverseComplete": {
+                  "const": false
+                },
+                "representation": {
+                  "type": "string",
+                  "enum": [
+                    "owner_records",
+                    "activity_summaries"
+                  ]
+                },
+                "rowLimit": {
+                  "const": 100
+                },
+                "maxOutputBytes": {
+                  "const": 262144
+                },
+                "byteTruncated": {
+                  "type": "boolean"
+                },
+                "limitations": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "maxItems": 20
+                }
+              },
+              "required": [
+                "scope",
+                "sourceUniverseComplete",
+                "representation",
+                "rowLimit",
+                "maxOutputBytes",
+                "byteTruncated",
+                "limitations"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "version",
+            "kind",
+            "clientId",
+            "observedAt",
+            "items",
+            "nextCursor",
+            "coverage"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    }
+  }
+}

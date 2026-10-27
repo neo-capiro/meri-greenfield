@@ -34,6 +34,8 @@ export const GENERAL_READ_TARIFF_ASSUMPTION_KEYS=Object.freeze({
  webSearchProviderDuckDuckGo:Object.freeze({configKey:'CLIO_WEB_SEARCH_PROVIDER',configValue:'duckduckgo'}),
 });
 export const GENERAL_READ_TARIFFS=Object.freeze({
+ 'read_saved_strategy_records@0.2.0':Object.freeze({chargeMicrousd:1,class:'db',evidence:'Fixed canonical saved-record owner HTTP reads only; no paid provider operation.'}),
+ 'read_saved_record@0.2.0':Object.freeze({chargeMicrousd:1,class:'db',evidence:'Fixed canonical saved-record owner HTTP reads only; no paid provider operation.'}),
  'describe_capiro_data@0.2.0':Object.freeze({chargeMicrousd:1,class:'db',evidence:'Core curated public relation metadata only; no paid provider call. Source/image qualification remains required.'}),
  'query_capiro_data@0.2.0':Object.freeze({chargeMicrousd:1,class:'db',evidence:'Core bounded read-only analytics query over curated public projections; no paid provider call. Source/image qualification remains required.'}),
  'actions.query@0.2.0':Object.freeze({chargeMicrousd:1,class:'db',evidence:"Core tools/query_action_items: Capiro database only, no outbound paid call"}),

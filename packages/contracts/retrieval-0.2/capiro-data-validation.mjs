@@ -68,7 +68,7 @@ export function createCapiroDataValidators({validateShape}){
   function normalizeInput(id,raw,context={}){
     const input=snapshotOperationData(raw);validateShape(definition(id),input);
     const scope=privateScope(input,context);
-    if(scope&&id==='describe_capiro_data'&&input.relations&&(input.relations.length>2||input.relations.some(name=>!['client_objectives','client_activity'].includes(name))))fail();
+    if(scope&&id==='describe_capiro_data'&&input.relations&&(input.relations.length>14||input.relations.some(name=>!['client_objectives','client_activity','client_team_roster','client_account_owners','client_targets','client_profiles','client_profile_codes','client_people','client_contacts','client_engagement_tasks','client_action_items','client_tracked_bills','client_outreach_campaigns','client_campaign_recipients'].includes(name))))fail();
     if(id==='query_capiro_data'&&(Buffer.byteLength(input.sql,'utf8')>16384||bytes(input.parameters)>32768||
       input.parameters.some(value=>typeof value==='number'&&(!Number.isFinite(value)||Math.abs(value)>Number.MAX_SAFE_INTEGER))))fail();
     return {input,metadata:scope?{scope:'client_records',clientId:scope.clientId,absenceEvidence:false}:{scope:'public_curated_relations',absenceEvidence:false}};

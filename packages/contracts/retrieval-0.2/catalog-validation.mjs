@@ -14,6 +14,12 @@ const federal = result => ({input: result.query, metadata: {queryScope: result.q
 export const CATALOG_OPERATION_BINDINGS = Object.freeze([
   ...['get_research_portfolio_share_links','publish_research_portfolio_share_link','revoke_research_portfolio_share_link'].map((id,index)=>Object.freeze({id,nativeId:id,group:'research-portfolio-sharing',input:['ResearchShareListInput','ResearchSharePublishInput','ResearchShareRevokeInput'][index],output:index?'ResearchSharePrepared':'ResearchShareListOutput',version:'0.2.0',contextKeys:Object.freeze(['binding','selectedClientId','visibleClientIds']),
     normalize:(v,request,context)=>({input:v.researchShareValidators.normalizeInput(id,request,context)}),outputAssert:(v,page,request,context)=>v.researchShareValidators.assertOutput(id,page,request,context)})),
+ Object.freeze({id:'read_saved_strategy_records',nativeId:'read_saved_strategy_records',group:'strategy-saved-records',input:'StrategySavedRequest',output:'StrategySavedOutput',version:'0.2.0',contextKeys:Object.freeze(['strategySavedScope']),
+  normalize:(v,request,context)=>v.strategySavedValidators.normalizeInput('read_saved_strategy_records',request,context),
+  outputAssert:(v,page,request,context)=>v.strategySavedValidators.assertOutput('read_saved_strategy_records',page,request,context)}),
+ Object.freeze({id:'read_saved_record',nativeId:'read_saved_record',group:'saved-records',input:'SavedRecordRequest',output:'SavedRecordOutput',version:'0.2.0',contextKeys:Object.freeze(['savedRecordScope']),
+  normalize:(v,request,context)=>v.savedRecordValidators.normalizeInput('read_saved_record',request,context),
+  outputAssert:(v,page,request,context)=>v.savedRecordValidators.assertOutput('read_saved_record',page,request,context)}),
   ...['describe_capiro_data','query_capiro_data'].map((id,index)=>Object.freeze({id,nativeId:id,group:'capiro-data',
     input:index?'CapiroDataQueryRequest':'CapiroDataDescribeRequest',output:index?'CapiroDataQueryOutput':'CapiroDataDescribeOutput',version:'0.2.0',contextKeys:Object.freeze(['capiroDataScope']),
     normalize:(v,request,context)=>v.capiroDataValidators.normalizeInput(id,request,context),
@@ -420,7 +426,7 @@ function assertCatalog(catalog) {
   validateShape('Catalog', catalog);
   unique(catalog.originals.map(row => row.id), 'native capability');
   const selected = catalog.originals.filter(row => row.disposition === 'selected');
-  const additive = ['get_research_portfolio_share_links','publish_research_portfolio_share_link','revoke_research_portfolio_share_link','describe_capiro_data','query_capiro_data','list_connected_app_reads','read_connected_app','list_teams_channels','get_teams_channel_messages'];
+  const additive = ['get_research_portfolio_share_links','publish_research_portfolio_share_link','revoke_research_portfolio_share_link','read_saved_strategy_records','read_saved_record','describe_capiro_data','query_capiro_data','list_connected_app_reads','read_connected_app','list_teams_channels','get_teams_channel_messages'];
   if (selected.filter(row=>!additive.includes(row.id)).length !== 96 || catalog.originals.length - selected.length !== 43) fail('D012 disposition mismatch');
   const operations = new Map();
   const aliases = new Map();
