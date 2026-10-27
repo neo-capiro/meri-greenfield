@@ -16,6 +16,8 @@ import {scheduledConversationFixture} from '../../control/schedules/test/schedul
 import {NOW as inboxNow} from '../../control/schedules/test/scheduled-dispatch-harness.mjs';
 import {id} from '../../control/conversations/test/store-fixture.mjs';
 import {receiveConversationHistoryRequest,receiveConversationHistoryResponse} from '../../../packages/contracts/dist/conversation-history.mjs';
+import {createActionSessionOwner,routineManagementSessions} from '../../control/action-host/session/owner.mjs';
+import {canonicalSha256 as hash} from '../../../packages/contracts/validate.mjs';
 const configuration={sourceEnabled:false,limits:{requestMs:100,requestBytes:131072},native:{maxResponseBytes:131072}};
 const request=path=>new Request('https://synthetic.invalid'+path,{method:'POST',headers:{authorization:'Bearer synthetic','content-type':'application/json'},body:'{}'});
 test('fixed routines routes are public only and absent owner is unavailable',async()=>{
@@ -96,4 +98,22 @@ test('enabled routines without the canonical retention serving gate remain unava
   const app=createRuntimeProductApplications({configuration,sessions:f.sessions,ports:captureRuntimePorts({routinesApplicationFactory:feature}),now:f.now});
   assert.equal((await app.handle(request(ROUTINE_PATHS.list))).status,503);assert.equal(feature.state(),'unavailable');assert.deepEqual(feature.intentPreparersFor({}),[]);assert.equal(f.preparations.state.rows.size,0);
  }finally{f.close();}
+});
+
+test('compiled feature exposes cold management through its captured session configuration and exact public route',async()=>{
+ const f=await applicationFixture();let sessions;try{
+  let execution=0,retentionReads=0,bound=0;const forbidden=()=>{execution++;throw Error('execution context must not resolve');};
+  const {template,workflow,limits}=f.contextConfiguration,versions={imageDigest:'sha256:'+'a'.repeat(64),sdk:'0.3.295',cli:'2.1.295',contracts:'0.1.0',skillsDigest:'b'.repeat(64),checkpointFormat:'0.1.0'};
+  const management={session:{versions,policyRevision:'p1',async readCurrent({clientId}){const current={kind:'routine-management',principal:{tenantId:'tenant-a',actorId:'owner-a'},scopes:[{tenantId:'tenant-a',kind:'private-user',resourceId:'owner-a',policyRevision:'p1'}],selectedClientId:clientId,membershipRevision:'a'.repeat(64)};return {...current,contextRevision:hash(current),checkedAtMs:f.now(),expiresAtMs:f.now()+30000};}},
+   policy:{async check(call){return {authorized:true,current:call.selection.current,selectionSha256:call.selectionSha256,destinationResolution:null,limits:null,checkedAtMs:f.now(),expiresAtMs:f.now()+5000};}},bind(owner){assert.ok(routineManagementSessions(owner));bound++;}};
+  const feature=createRuntimeRoutinesFeature({enabled:true,pool:f.pool,client:f.client,context:{template,workflow,limits,policy:{check:forbidden}},contextOwnerFactory:()=>({resolve:forbidden,authorizeRequest:forbidden}),management,now:f.now,newId:f.newId,limits:{maxRequestMs:5000,maxRequestBytes:131072,maxResponseBytes:131072}});
+  const ports=captureRuntimePorts({routinesApplicationFactory:feature});
+  sessions=createActionSessionOwner({mode:'process-local',verifyIdentity:forbidden,resolveContext:forbidden,now:f.now,limits:{maxSessions:4,maxRequestMs:5000,maxTtlMs:30000,maxFactBytes:65536},management:ports.routinesApplicationFactory.managementSessionConfiguration()});
+  const app=createRuntimeProductApplications({configuration,sessions,ports,retention:{async assertServable(){retentionReads++;throw Error('run-free management has no conversation retention');}},now:f.now});
+  const routes=createControlRouteApplications({assembly:app,candidate:{handle(){throw Error('private');}}});
+  const send=(path,body,credential)=>routes.public.handle(new Request('https://synthetic.invalid'+path,{method:'POST',headers:{authorization:'Bearer '+credential,'content-type':'application/json'},body:JSON.stringify(body)}));
+  const response=await send('/api/routines/session',{clientId:null},'synthetic-native');assert.equal(response.status,200);const session=await response.json();
+  const list=await send(ROUTINE_PATHS.list,{},session.credential);assert.equal(list.status,200);assert.deepEqual((await list.json()).page.rows,[]);
+  assert.equal((await routes.private.handle(request('/api/routines/session'))).status,404);assert.equal(bound,1);assert.equal(execution,0);assert.equal(retentionReads,0);assert.equal(feature.state(),'composed');
+ }finally{sessions?.close();f.close();}
 });

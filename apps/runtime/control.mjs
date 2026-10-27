@@ -110,7 +110,8 @@ export function assembleControl(options){
  const memoryRetentionBound=Boolean(productContext&&retention&&bindMemoryRetention(productContext,retention.gate));
  const store=createPostgresConversationStore({pool,now,modelCatalog:configuration.models,onPublished:event=>{turnTelemetry.bind(event.binding);turnTelemetry.summary(event);},...(retention?{retentionGate:retention.gate,retentionHead:retention.startup.ledger?.head}:{}),
   ...(ports.transitionAuthority?{transitionAuthority:ports.transitionAuthority}:{}),...(ports.conversationManagement?{assertConversationActive:ports.conversationManagement.assertActiveBinding}:{})});
- const sessions=createActionSessionOwner({mode:'process-local',verifyIdentity:ports.identityContext.verifyIdentity,resolveContext:ports.identityContext.resolveContext,...(ports.identityContext.withAuthority?{withAuthority:ports.identityContext.withAuthority}:{}),now,...(ports.conversationMembership?{membership:ports.conversationMembership}:{}),...(ports.transitionAuthority?{
+ const management=ports.routinesApplicationFactory?.managementSessionConfiguration?.();
+ const sessions=createActionSessionOwner({mode:'process-local',verifyIdentity:ports.identityContext.verifyIdentity,resolveContext:ports.identityContext.resolveContext,...(ports.identityContext.withAuthority?{withAuthority:ports.identityContext.withAuthority}:{}),...(management?{management}:{}),now,...(ports.conversationMembership?{membership:ports.conversationMembership}:{}),...(ports.transitionAuthority?{
   readTransition:({signal,...input})=>store.lifecycle.readTransition({...input,signal},()=>signal?.throwIfAborted()),
   resolveTransitionContext:ports.identityContext.resolveTransitionContext,
  }:{}),limits:{maxSessions:configuration.sessions.maxSessions,maxRequestMs:configuration.limits.requestMs,maxTtlMs:configuration.sessions.maxTtlMs,maxFactBytes:131072}});

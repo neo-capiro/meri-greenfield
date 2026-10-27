@@ -19,6 +19,7 @@ import {HISTORY_PATHS} from '../control/conversations/history/protocol.mjs';
 import {runtimeArtifactRecovery} from './artifacts/composition.mjs';
 import {USER_PREFERENCES_PATHS,userPreferencesUnavailable} from '../control/settings/user-application/protocol.mjs';
 import {ROUTINE_PATHS,routinesUnavailable} from '../control/schedules/application-http.mjs';
+import {ROUTINE_MANAGEMENT_SESSION_PATH} from '../../packages/contracts/schedules-0.2/application-protocol.mjs';
 import {INTENT_PATHS} from '../control/intents/http.mjs';
 import {TENANT_SETTINGS_PATHS} from '../control/settings/tenant-application/protocol.mjs';
 import {MEMORY_PATHS,memoryUnavailable} from '../control/memory/protocol.mjs';
@@ -39,6 +40,7 @@ export function captureRuntimePorts(value={}){
  const artifactStore=c.artifactStore===undefined?undefined:Object.freeze({...methods(c.artifactStore,['verifyPrivate']),...(c.artifactStore.objects===undefined?{}:{objects:methods(c.artifactStore.objects,['put','get'])})});
  const routineFactory=c.routinesApplicationFactory===undefined?undefined:methods(c.routinesApplicationFactory,['create','state']);
  const routineHistory=c.routinesApplicationFactory===undefined?undefined:optionalMethod(c.routinesApplicationFactory,'historyCurrentness'),routineInboxState=c.routinesApplicationFactory===undefined?undefined:optionalMethod(c.routinesApplicationFactory,'inboxState');
+ const routineManagement=c.routinesApplicationFactory===undefined?undefined:optionalMethod(c.routinesApplicationFactory,'managementSessionConfiguration');
  if(artifactStore){const recovery=runtimeArtifactRecovery(c.artifactStore)??capturedArtifactRecovery.get(c.artifactStore);if(recovery)capturedArtifactRecovery.set(artifactStore,recovery);}
  const captured=Object.freeze({
   configuredOwners:Object.freeze(Object.keys(c).filter(k=>c[k]!==undefined)),
@@ -51,7 +53,7 @@ export function captureRuntimePorts(value={}){
   ...(c.actionApplicationFactory===undefined?{}:{actionApplicationFactory:methods(c.actionApplicationFactory,['create','state'])}),
   ...(c.taskCommandApplication===undefined?{}:{taskCommandApplication:methods(c.taskCommandApplication,['handle'])}),
   ...(c.taskCommandApplicationFactory===undefined?{}:{taskCommandApplicationFactory:methods(c.taskCommandApplicationFactory,['create','state'])}),
-  ...(routineFactory===undefined?{}:{routinesApplicationFactory:Object.freeze({...routineFactory,...(routineHistory===undefined?{}:{historyCurrentness:routineHistory}),...(routineInboxState===undefined?{}:{inboxState:routineInboxState})})}),
+  ...(routineFactory===undefined?{}:{routinesApplicationFactory:Object.freeze({...routineFactory,...(routineHistory===undefined?{}:{historyCurrentness:routineHistory}),...(routineInboxState===undefined?{}:{inboxState:routineInboxState}),...(routineManagement===undefined?{}:{managementSessionConfiguration:routineManagement})})}),
   ...(c.conversationMembership===undefined?{}:{conversationMembership:methods(c.conversationMembership,['admit','recheck'])}),
   ...(c.conversationCurrentness===undefined?{}:{conversationCurrentness:methods(c.conversationCurrentness,['assertCurrent'])}),
   ...(c.conversationManagement===undefined?{}:{conversationManagement:methods(c.conversationManagement,['forRequest','assertActiveBinding'])}),
@@ -107,7 +109,7 @@ export function createRuntimeProductApplications({configuration,sessions,ports,n
  const nativeFiles=ports.executionOwner&&ports.artifactStore?.objects&&ports.sdkSessionSnapshot?.readFiles&&conversationStore?createNativeFileApplication({owner:createNativeFileOwner({store:conversationStore,execution:ports.executionOwner,objects:ports.artifactStore.objects,snapshot:ports.sdkSessionSnapshot,...(ports.objectiveSelection?{objectiveSelection:ports.objectiveSelection}:{}),now,maxRequestMs:configuration.limits.requestMs,...(retention?{retention}:{})}),now,maxRequestMs:configuration.limits.requestMs}):null;
  return Object.freeze({downloads:Object.freeze({open:input=>downloads.open(input),state:()=>downloads.state()}),handle(request){const path=new URL(request.url).pathname;
   if(Object.values(USER_PREFERENCES_PATHS).includes(path))return userPreferences?userPreferences.handle(request):userPreferencesUnavailable();
-  if(Object.values(ROUTINE_PATHS).includes(path))return routines?routines.handle(request):routinesUnavailable();
+  if(path===ROUTINE_MANAGEMENT_SESSION_PATH||Object.values(ROUTINE_PATHS).includes(path))return routines?routines.handle(request):routinesUnavailable();
   if(Object.values(INTENT_PATHS).includes(path))return ports.intentApplication?ports.intentApplication.handle(request):Response.json({error:{code:'INTENTS_UNAVAILABLE',outcome:'NOT_DISPATCHED'}},{status:503,headers:{'cache-control':'no-store','x-content-type-options':'nosniff'}});
   if(Object.values(TENANT_SETTINGS_PATHS).includes(path))return ports.settingsApplication?ports.settingsApplication.handle(request):Response.json({error:{code:'SETTINGS_UNAVAILABLE',outcome:'NOT_DISPATCHED'}},{status:503,headers:{'cache-control':'no-store','x-content-type-options':'nosniff'}});
   if(Object.values(MEMORY_PATHS).includes(path))return ports.memoryApplication?ports.memoryApplication.handle(request):memoryUnavailable();

@@ -6,6 +6,8 @@ import {scheduleToolValidators as validators,validateShape as toolShape} from '.
 import {assertScheduleIntent} from '../../../packages/contracts/schedules-0.2/lifecycle-validation.mjs';
 import {allocation} from '../../gateway/budget/tool-budget-binding.mjs';
 import {createRequestCurrent} from '../action-host/current.mjs';
+import {routineManagementSessions} from '../action-host/session/owner.mjs';
+import {createOperationLifetime} from '../../../packages/runtime/operation-lifetime.mjs';
 import {storageMethod} from '../../artifacts/storage/boundary.mjs';
 import {SCHEDULED_MERI_INBOX_DESTINATION} from './scheduled-conversation-currentness.mjs';
 
@@ -13,13 +15,19 @@ const same=(a,b)=>hash(a)===hash(b),uuid=/^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[
 const limitKeys=['maxCostMicrousd','maxRuntimeSeconds','retryLimit'];
 const fault=code=>Object.assign(Error(`SCHEDULE_CONTEXT_${code}`),{code:`SCHEDULE_CONTEXT_${code}`});
 const fail=code=>{throw fault(code);};
+const identityOf=current=>current.kind==='routine-management'?current.principal:{tenantId:current.binding.tenantId,actorId:current.binding.actorId};
+const managementSelection=current=>Object.fromEntries(['kind','principal','scopes','selectedClientId','membershipRevision','contextRevision'].map(key=>[key,current[key]]));
+const currentState=(current,expiresAtMs)=>data(current.kind==='routine-management'?{...managementSelection(current),versions:current.versions,checkedAtMs:current.checkedAtMs,expiresAtMs}:{binding:current.binding,scopes:current.scopes,selectedClientId:current.selectedClientId,checkedAtMs:current.checkedAtMs,expiresAtMs});
+// This is only local correlation. Core reauthorizes EVERY original resource scope before release/effect.
+const scopedResource=(scopes,current)=>current.kind!=='routine-management'||current.selectedClientId===null?same(scopes,current.scopes):
+ Array.isArray(scopes)&&scopes.some(scope=>same(scope,current.scopes[0]))&&scopes.every(scope=>scope.tenantId===current.principal.tenantId&&scope.policyRevision===current.scopes[0].policyRevision&&(scope.kind!=='private-user'||scope.resourceId===current.principal.actorId));
 function limits(value){
  const v=data(own(value,limitKeys));
  if(limitKeys.some(key=>!Number.isSafeInteger(v[key])||v[key]<(key==='retryLimit'?0:1)))fail('POLICY');return v;
 }
 function native(value,binding){
  const v=data(value);
- if(!same(v.binding,binding)||new Set(v.scopes.map(s=>s.policyRevision)).size!==1)fail('ACCESS_DENIED');return v;
+ if(v.kind!=='routine-management'&&!same(v.binding,binding)||new Set(v.scopes.map(s=>s.policyRevision)).size!==1)fail('ACCESS_DENIED');return v;
 }
 
 /** policy.check({selection,selectionSha256,signal,limitDeadline}) returns exactly
@@ -29,10 +37,11 @@ function native(value,binding){
  * retained allocation callers still have to match their original manifest and run.
  * managementExpiresAtMs admits only list and future-only cancellation, bounded by the actual session expiry. */
 export function createScheduleRuntimeContext(configuration){
- let c,executionLimits=null,contextExpiresAtMs,template,workflow,bounds,ports,checkPolicy,readFiring,commandContext,prepareCancellation;
+ let c,executionLimits=null,contextExpiresAtMs,template,workflow,bounds,ports,checkPolicy,readFiring,commandContext,prepareCancellation,management=null;
  try{
-  c=own(configuration,['sessions','commandContext','template','workflow','scheduleOwner','policy','now','newId','limits'],['allocationJson','executionLimits','managementExpiresAtMs','runCancellation']);
-  commandContext=data(own(c.commandContext,['binding','clientResolution']));validateShape('RunBinding',commandContext.binding);
+  c=own(configuration,['sessions','template','workflow','scheduleOwner','policy','now','newId','limits'],['commandContext','allocationJson','executionLimits','managementExpiresAtMs','managementCurrent','runCancellation']);
+  if(c.managementCurrent===undefined){commandContext=data(own(c.commandContext,['binding','clientResolution']));validateShape('RunBinding',commandContext.binding);}
+  else{management=routineManagementSessions(c.sessions);if(!management||c.commandContext!==undefined||c.allocationJson!==undefined||c.executionLimits!==undefined||c.runCancellation!==undefined||c.managementCurrent.kind!=='routine-management')fail('CONFIGURATION');validateShape('RuntimeVersions',c.managementCurrent.versions);}
   template=data(own(c.template,['taskId','version','manifestSha256']));workflow=data(own(c.workflow,['taskQueue','workflowIdPrefix']));
   bounds=data(own(c.limits,['maxRequestMs','maxFactBytes','retryLimit']));
   if([c.allocationJson,c.executionLimits,c.managementExpiresAtMs].filter(value=>value!==undefined).length!==1)fail('CONFIGURATION');
@@ -53,6 +62,12 @@ export function createScheduleRuntimeContext(configuration){
  }catch{throw fault('CONFIGURATION');}
 
  async function policy({phase,operation,request,currentSchedule,proposal,current,scheduleBinding,life}){
+  if(management!==null){
+   const selected=managementSelection(current),selection=data({phase,operation,request,currentSchedule,proposal,current:selected,scheduleBinding}),selectionSha256=hash(selection),started=c.now();
+   const r=data(own(await life.run(signal=>checkPolicy({selection,selectionSha256,authentication:current.managementAuthentication,signal,limitDeadline:life.limitDeadline})),['authorized','selectionSha256','current','destinationResolution','limits','checkedAtMs','expiresAtMs']));
+   if(r.authorized!==true||r.selectionSha256!==selectionSha256||!same(r.current,selected)||r.destinationResolution!==null||r.limits!==null||!Number.isSafeInteger(r.checkedAtMs)||r.checkedAtMs<started||r.checkedAtMs>c.now()||!Number.isSafeInteger(r.expiresAtMs)||r.expiresAtMs<=c.now())fail('POLICY');
+   life.limitDeadline(r.expiresAtMs);life.check();return r;
+  }
   const selection=data({phase,operation,request,currentSchedule,proposal,current:{binding:current.binding,scopes:current.scopes,selectedClientId:current.selectedClientId},scheduleBinding}),selectionSha256=hash(selection),started=c.now();
   const r=data(own(await life.run(signal=>checkPolicy({selection,selectionSha256,signal,limitDeadline:life.limitDeadline})),
    ['authorized','selectionSha256','binding','scopes','selectedClientId','destinationResolution','limits','checkedAtMs','expiresAtMs']));
@@ -69,8 +84,8 @@ export function createScheduleRuntimeContext(configuration){
   if(operation==='schedule_task'){if(raw!==null)fail('STALE');return null;}
   const r=data(own(raw,['projection','generation','activeIntent','intent']));validateShape('ScheduleProjection',r.projection);
   if(r.activeIntent!==null||!Number.isSafeInteger(r.generation)||r.generation<1||r.projection.scheduleId!==scheduleId||r.projection.state==='cancelled'||
-   !same(r.projection.owner,{tenantId:current.binding.tenantId,actorId:current.binding.actorId})||!same(r.projection.scopes,current.scopes))fail('STALE');
-  const i=assertScheduleIntent(r.intent,current.binding.tenantId);
+   !same(r.projection.owner,identityOf(current))||!scopedResource(r.projection.scopes,current))fail('STALE');
+  const i=assertScheduleIntent(r.intent,identityOf(current).tenantId);
   if(i.generation!==r.generation||!same(i.projection,r.projection))fail('STALE');
   return data({projection:r.projection,generation:r.generation,projectionSha256:hash(r.projection)});
  }
@@ -78,14 +93,14 @@ export function createScheduleRuntimeContext(configuration){
  function authorizationSnapshot(raw,current,scheduleId){
   const r=data(own(raw,['projection','generation','activeIntent','intent']));validateShape('ScheduleProjection',r.projection);
   if(!Number.isSafeInteger(r.generation)||r.generation<0||r.projection.scheduleId!==scheduleId||
-   !same(r.projection.owner,{tenantId:current.binding.tenantId,actorId:current.binding.actorId})||!same(r.projection.scopes,current.scopes)||
+   !same(r.projection.owner,identityOf(current))||!scopedResource(r.projection.scopes,current)||
    r.activeIntent!==null&&(typeof r.activeIntent!=='string'||!uuid.test(r.activeIntent)))fail('STALE');
   if(r.generation===0){if(r.intent!==null||r.activeIntent===null)fail('STALE');}
-  else{const i=assertScheduleIntent(r.intent,current.binding.tenantId);if(i.generation!==r.generation||!same(i.projection,r.projection))fail('STALE');}
+  else{const i=assertScheduleIntent(r.intent,identityOf(current).tenantId);if(i.generation!==r.generation||!same(i.projection,r.projection))fail('STALE');}
   return data({...r,projectionSha256:hash(r.projection)});
  }
  function approved(binding,prepared,current,phase){
-  if(!binding||binding.callerIdentity?.tenantId!==current.binding.tenantId||binding.callerIdentity?.actorId!==current.binding.actorId||typeof binding.bindingSha256!=='string'||!/^[a-f0-9]{64}$/u.test(binding.bindingSha256))fail('ACCESS_DENIED');
+  if(!binding||!same(binding.callerIdentity,identityOf(current))||typeof binding.bindingSha256!=='string'||!/^[a-f0-9]{64}$/u.test(binding.bindingSha256))fail('ACCESS_DENIED');
   if(prepared.intent){if(!same(binding.intent,prepared.intent))fail('ACCESS_DENIED');}
   else if(binding.selection?!same(binding.selection,prepared.selection):binding.operation!==prepared.operation||!same(binding.request,prepared.input)||!same(binding.context.owner,prepared.context.owner))fail('ACCESS_DENIED');
   const decision=binding.approval??binding.context?.approval;
@@ -93,11 +108,19 @@ export function createScheduleRuntimeContext(configuration){
   if(decision!==undefined&&decision!==null){
    validateShape('ApprovalDecision',decision);
    if(decision.decision!=='approved'||decision.proposalId!==prepared.intent.intentId||decision.commandSha256!==prepared.intentSha256||
-    !same(decision.approver,{tenantId:current.binding.tenantId,actorId:current.binding.actorId})||decision.policyRevision!==current.scopes[0].policyRevision||Date.parse(decision.decidedAt)>c.now()||Date.parse(decision.expiresAt)<=c.now())fail('ACCESS_DENIED');
+    !same(decision.approver,identityOf(current))||decision.policyRevision!==current.scopes[0].policyRevision||Date.parse(decision.decidedAt)>c.now()||Date.parse(decision.expiresAt)<=c.now())fail('ACCESS_DENIED');
   }
  }
 
  function requestCurrent(call){
+  if(management!==null){
+   const cutoff=Math.min(call.deadlineMs,c.now()+bounds.maxRequestMs,contextExpiresAtMs),selected=managementSelection(c.managementCurrent),versions=c.managementCurrent.versions;
+   return {deadline:()=>cutoff,async run(signal,body){const life=createOperationLifetime({deadlineMs:cutoff,now:c.now,signal:signal??call.signal,errorFactory:code=>fault(code)});try{return await body(life);}finally{life.close();}},
+    async fresh(life){const started=c.now(),answer=await life.run(signal=>management.authenticate({credential:call.credential,signal,deadlineMs:cutoff})),a=answer.authentication,current=answer.current;
+     if(a.kind!=='routine-management'||current.authenticationSha256!==hash(a)||!same(managementSelection(current),selected)||!same(current.versions,versions)||a.principal.tenantId!==current.principal.tenantId||a.principal.actorId!==current.principal.actorId||
+      current.checkedAtMs<started||current.checkedAtMs>c.now()||current.expiresAtMs<=c.now()||a.expiresAtMs<=c.now())fail('ACCESS_DENIED');
+     life.limitDeadline(Math.min(current.expiresAtMs,a.expiresAtMs));life.check();return {authentication:a,current:data({...current,managementAuthentication:a})};}};
+  }
   return createRequestCurrent({...call,deadlineMs:Math.min(call.deadlineMs,c.now()+bounds.maxRequestMs,contextExpiresAtMs),ports,now:c.now,commandContext,maxBytes:bounds.maxFactBytes});
  }
  function admittedRequest(operation,raw){
@@ -112,13 +135,13 @@ export function createScheduleRuntimeContext(configuration){
   const request=admittedRequest(call.operation,call.request),current=requestCurrent(call);
   return current.run(call.signal,async life=>{
    const first=(await current.fresh(life)).current;native(first,first.binding);
-   const read=async()=>request.scheduleId===undefined?null:authorizationSnapshot(await life.run(()=>readFiring({tenantId:first.binding.tenantId,scheduleId:request.scheduleId},life.check)),first,request.scheduleId);
+   const read=async()=>request.scheduleId===undefined?null:authorizationSnapshot(await life.run(()=>readFiring({tenantId:identityOf(first).tenantId,scheduleId:request.scheduleId},life.check)),first,request.scheduleId);
    const before=await read(),receipt=await policy({phase:'before_preparation_release',operation:call.operation,request,currentSchedule:before,proposal:null,current:first,scheduleBinding:null,life});
    if(!same(before,await read()))fail('STALE');
    const last=native((await current.fresh(life)).current,first.binding);
    if(!same(last.scopes,first.scopes)||last.selectedClientId!==first.selectedClientId)fail('ACCESS_DENIED');
    const expiresAtMs=Math.min(current.deadline(),receipt.expiresAtMs,last.expiresAtMs);life.limitDeadline(expiresAtMs);life.check();
-   return data({binding:last.binding,scopes:last.scopes,selectedClientId:last.selectedClientId,checkedAtMs:c.now(),expiresAtMs});
+   return currentState({...last,checkedAtMs:c.now()},expiresAtMs);
   });
  }
 
@@ -130,7 +153,7 @@ export function createScheduleRuntimeContext(configuration){
   if(proposal&&(proposal.status!=='approval_required'||proposal.operation!==call.operation))fail('REQUEST');
   const current=requestCurrent(call);
   return current.run(call.signal,async life=>{
-   const first=(await current.fresh(life)).current,identity={tenantId:first.binding.tenantId,actorId:first.binding.actorId},list=call.operation==='list_scheduled_tasks';native(first,first.binding);
+   const first=(await current.fresh(life)).current,identity=identityOf(first),list=call.operation==='list_scheduled_tasks';native(first,first.binding);
    const scheduleId=list?null:proposal?.projection.scheduleId??request.scheduleId??c.newId(),intentId=list?null:proposal?.proposalId??c.newId();
    if(!list&&(!uuid.test(scheduleId)||!uuid.test(intentId)||scheduleId===intentId))fail('CONFIGURATION');
    const read=async()=>list?null:saved(await life.run(()=>readFiring({tenantId:identity.tenantId,scheduleId},life.check)),call.operation,first,scheduleId);
@@ -170,8 +193,22 @@ export function createScheduleRuntimeContext(configuration){
      return data({authorized:true,bindingSha256:binding.bindingSha256,callerIdentity:identity,expiresAtMs});
     });
    }
-   return Object.freeze({context,prepared,current:data({binding:last.binding,scopes:last.scopes,selectedClientId:last.selectedClientId,expiresAtMs:Math.min(current.deadline(),receipt.expiresAtMs,last.expiresAtMs)}),authorize});
+   const expiresAtMs=Math.min(current.deadline(),receipt.expiresAtMs,last.expiresAtMs);
+   return Object.freeze({context,prepared,current:management===null?data({binding:last.binding,scopes:last.scopes,selectedClientId:last.selectedClientId,expiresAtMs}):currentState(last,expiresAtMs),authorize});
   });
  }
  return Object.freeze({resolve,authorizeRequest});
+}
+
+/** The existing schedule context/lifecycle, selected by a genuine management-purpose session. */
+export function createRoutineManagementContextOwner(configuration){
+ const c=own(configuration,['sessions','template','workflow','scheduleOwner','policy','now','newId','limits']),sessions=routineManagementSessions(c.sessions);
+ if(!sessions)fail('CONFIGURATION');
+ async function owner(value){
+  const call=own(value,['credential','operation','request','deadlineMs'],['signal','proposal']),request=validators.normalizeRequest(call.operation,call.request);
+  if(!(call.operation==='list_scheduled_tasks'||call.operation==='cancel_scheduled_task'&&request.running==='leave'&&request.runs.length===0))fail('ACCESS_DENIED');
+  const {current}=await sessions.authenticate({credential:call.credential,signal:call.signal,deadlineMs:call.deadlineMs});
+  return createScheduleRuntimeContext({...c,managementCurrent:current,managementExpiresAtMs:current.expiresAtMs});
+ }
+ return Object.freeze({async resolve(value){return (await owner(value)).resolve(value);},async authorizeRequest(value){return (await owner(value)).authorizeRequest(value);}});
 }

@@ -7,6 +7,7 @@ import {own,data,nativeSignal} from '../../../../packages/contracts/commands-0.2
 import {assertNativeConversationScope} from '../../../../packages/contracts/runtime-0.2/session.mjs';
 import {createOperationLifetime} from '../../../../packages/runtime/operation-lifetime.mjs';
 import {markAuthorityUnavailable,isAuthorityUnavailable} from '../../../../packages/runtime/authority-availability.mjs';
+import {receiveRoutineManagementSessionReceipt} from '../../../../packages/contracts/dist/intents-application.mjs';
 const hash=x=>createHash('sha256').update(x).digest('hex'),same=(a,b)=>canonicalSha256(a)===canonicalSha256(b);
 const uuid=/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/u;
 const transitionKeys=['controlId','intent','inputSha256','sourceBinding','targetBinding','scopes','selectedClientId','policyRevision','admissionReceiptId','retirementReceiptId','checkpointId','checkpointSha256','sourceRequestSha256','contextSha256','targetSessionId','resumeSessionAt'];
@@ -19,6 +20,9 @@ const currentReaders=new WeakMap();
 export const authenticatedCurrentState=owner=>currentReaders.get(owner);
 const currentIssuers=new WeakMap();
 const runBorrowers=new WeakMap();
+const managementOwners=new WeakMap();
+/** Trusted routines composition only. This facet never brands a conversation or execution session. */
+export const routineManagementSessions=owner=>managementOwners.get(owner);
 /** Trusted in-process borrowing only. The caller must still authenticate/recheck; borrowing grants no authority. */
 export const borrowedRunSession=owner=>runBorrowers.get(owner);
 /** Trusted per-request composition (worker HTTP): issuance plus the binding, scopes and selected client its own complete resolve
@@ -49,7 +53,7 @@ export function assertActionSessionReceipt(value,at){
 }
 const publicContext=(binding,selectedClientId)=>({tenantId:binding.tenantId,actorId:binding.actorId,conversationId:binding.conversationId,runId:binding.runId,selectedClientId});
 export function createActionSessionOwner(configuration){
- const {mode,verifyIdentity,resolveContext,now=Date.now,limits,readTransition,resolveTransitionContext,membership,withAuthority,refusals=createSessionRefusalDiagnostics()}=own(configuration,['mode','verifyIdentity','resolveContext','limits'],['now','readTransition','resolveTransitionContext','membership','withAuthority','refusals']);
+ const {mode,verifyIdentity,resolveContext,now=Date.now,limits,readTransition,resolveTransitionContext,membership,withAuthority,management,refusals=createSessionRefusalDiagnostics()}=own(configuration,['mode','verifyIdentity','resolveContext','limits'],['now','readTransition','resolveTransitionContext','membership','withAuthority','management','refusals']);
  const l=data(own(limits,['maxSessions','maxRequestMs','maxTtlMs','maxFactBytes']));
  if(mode!=='process-local'||typeof verifyIdentity!=='function'||typeof resolveContext!=='function'||typeof now!=='function'||Object.values(l).some(n=>!Number.isSafeInteger(n)||n<1)||l.maxSessions>1000||l.maxRequestMs>30000||l.maxTtlMs>300000||l.maxFactBytes>131072)deny('SESSION_CONFIGURATION');
  if(typeof refusals!=='function')deny('SESSION_CONFIGURATION');
@@ -57,6 +61,9 @@ export function createActionSessionOwner(configuration){
  if((readTransition!==undefined||resolveTransitionContext!==undefined)&&(typeof readTransition!=='function'||typeof resolveTransitionContext!=='function'))deny('SESSION_CONFIGURATION');
  const member=membership===undefined?null:own(membership,['admit','recheck']);
  if(member!==null&&Object.values(member).some(method=>typeof method!=='function'))deny('SESSION_CONFIGURATION');
+ const managementConfig=management===undefined?null:own(management,['readCurrent','versions','policyRevision']);
+ if(managementConfig!==null){validateShape('RuntimeVersions',managementConfig.versions);if(typeof managementConfig.readCurrent!=='function'||types.isProxy(managementConfig.readCurrent)||typeof managementConfig.policyRevision!=='string'||!managementConfig.policyRevision||managementConfig.policyRevision.length>256)deny('SESSION_CONFIGURATION');}
+ const managementVersions=managementConfig===null?null:data(managementConfig.versions);
  const sessions=new Map(),ids=new Map(),credentials=new WeakMap();let closed=false;
  function active(signal){const at=now();if(closed||signal?.aborted||!Number.isSafeInteger(at)||at<0)deny();return at;}
  function remove(r){sessions.delete(r.digest);ids.delete(r.sessionId);credentials.delete(r);r.nativeCredential='';r.receipts.clear();}
@@ -156,6 +163,7 @@ export function createActionSessionOwner(configuration){
  }
  const authenticateSession=value=>authenticate(value,false);
  async function readCurrentState(value){const {authentication,signal,deadlineMs}=own(value,['authentication'],['signal','deadlineMs']),a=data(authentication);const r=ids.get(a.principal?.sessionId);valid(r,signal);if(!r.receipts.has(canonicalSha256(a)))deny();const t=life(Math.min(deadlineMs??r.expiresAtMs,r.expiresAtMs),signal);
+  if(r.management===true){t.close();deny();}
   const progress={};try{const current=await resolve(r.nativeCredential,boundHints(r),t,r,Infinity,progress);valid(r,t.signal);r.expiresAtMs=current.expiresAtMs;t.check();const out=currentReceipt(r,a,current,t);release(r,t);return out;}catch(error){rejectRecheck(r,t,error,progress);}finally{t.close();}
  }
  async function verifyTransition(value){
@@ -212,6 +220,48 @@ export function createActionSessionOwner(configuration){
   return Object.freeze({credential:best.nativeCredential,expiresAtMs:best.expiresAtMs});
  }
  const owner=Object.freeze({issue:value=>issue(value,{relayEligible:true,withCurrent:false}),issueDerived:value=>issue(value,{relayEligible:false,withCurrent:false}),authenticateSession,readCurrentState,verifyTransition,nativeCredentialFor,revoke(credential){if(typeof credential!=='string')deny();const r=sessions.get(hash(credential));if(r)remove(r);},close(){closed=true;for(const r of sessions.values())remove(r);},status:()=>data({mode,closed,sessions:sessions.size})});
+ if(managementConfig!==null){
+  async function observeManagement(nativeCredential,clientId,t,record){
+   const started=active(t.signal),r=fact(await t.run(signal=>managementConfig.readCurrent({credential:nativeCredential,clientId,policyRevision:managementConfig.policyRevision,signal,deadlineMs:t.deadline()})),
+    ['kind','principal','scopes','selectedClientId','membershipRevision','contextRevision','checkedAtMs','expiresAtMs'],started,t);
+   own(r.principal,['tenantId','actorId']);validateShape('Identity',r.principal);
+   if(r.kind!=='routine-management'||r.selectedClientId!==clientId||!Array.isArray(r.scopes)||r.scopes.length!==1||!(/^[a-f0-9]{64}$/u.test(r.membershipRevision))||!(/^[a-f0-9]{64}$/u.test(r.contextRevision)))deny();
+   const scope={kind:clientId===null?'private-user':'client',tenantId:r.principal.tenantId,resourceId:clientId??r.principal.actorId,policyRevision:managementConfig.policyRevision};validateShape('Scope',scope);
+   const {checkedAtMs,expiresAtMs,...context}=r;
+   if(!same(r.scopes,[scope])||r.contextRevision!==canonicalSha256({kind:r.kind,principal:r.principal,scopes:r.scopes,selectedClientId:r.selectedClientId,membershipRevision:r.membershipRevision})||record&&(!same(record.context,context)||!same(record.versions,managementVersions)))deny();
+   if(record)valid(record,t.signal);return {context:data(context),expiresAtMs:Math.min(expiresAtMs,record?.expiresAtMs??Infinity)};
+  }
+  async function issueManagement(value){
+   const v=own(value,['identityCredential','clientId'],['signal','deadlineMs']);
+   if(typeof v.identityCredential!=='string'||!v.identityCredential||v.identityCredential.length>8192||!/^[\x21-\x7e]+$/u.test(v.identityCredential)||v.clientId!==null&&(typeof v.clientId!=='string'||!uuid.test(v.clientId)))deny();
+   const t=life(v.deadlineMs,v.signal);let record;
+   try{
+    const started=active(t.signal);for(const r of sessions.values())if(r.expiresAtMs<=started)remove(r);if(sessions.size>=l.maxSessions)deny('SESSION_CAPACITY');
+    const current=await observeManagement(v.identityCredential,v.clientId,t);active(t.signal);t.check();if(sessions.size>=l.maxSessions)deny('SESSION_CAPACITY');
+    const credential=`routine_session_${randomBytes(32).toString('base64url')}`,sessionId=randomUUID();
+    record={...current,management:true,versions:managementVersions,expiresAtMs:Math.min(current.expiresAtMs,started+l.maxTtlMs),relayEligible:false,digest:hash(credential),sessionId,sessionRevision:randomUUID(),nativeCredential:v.identityCredential,receipts:new Set()};
+    sessions.set(record.digest,record);ids.set(sessionId,record);credentials.set(record,credential);
+    const context={...record.context.principal,selectedClientId:v.clientId},receipt=receiveRoutineManagementSessionReceipt(JSON.stringify({kind:'routine-management',credential,expiresAtMs:record.expiresAtMs,context}),context,active(t.signal));
+    release(record,t);return receipt;
+   }catch(error){if(record)remove(record);if(isAuthorityUnavailable(error))throw markAuthorityUnavailable(new ActionSessionError('SESSION_AUTHORITY_UNAVAILABLE'));if(errors.has(error))throw error;deny();}finally{t.close();}
+  }
+  async function authenticateManagement(value){
+   const v=own(value,['credential'],['signal','deadlineMs']);if(typeof v.credential!=='string'||!/^routine_session_[A-Za-z0-9_-]{43}$/u.test(v.credential))deny();
+   const r=sessions.get(hash(v.credential));valid(r,v.signal);if(r.management!==true)deny();const t=life(Math.min(v.deadlineMs??r.expiresAtMs,r.expiresAtMs),v.signal);
+   try{
+    const fresh=await observeManagement(r.nativeCredential,r.context.selectedClientId,t,r);r.expiresAtMs=fresh.expiresAtMs;valid(r,t.signal);
+    const authentication=data({kind:'routine-management',principal:{sessionId:r.sessionId,...r.context.principal},sessionRevision:r.sessionRevision,checkedAtMs:active(t.signal),expiresAtMs:r.expiresAtMs});
+    r.receipts.add(canonicalSha256(authentication));if(r.receipts.size>64)r.receipts.delete(r.receipts.values().next().value);
+    const current=data({...r.context,versions:r.versions,authenticationSha256:canonicalSha256(authentication),checkedAtMs:active(t.signal),expiresAtMs:r.expiresAtMs});release(r,t);return data({authentication,current});
+   }catch(error){rejectRecheck(r,t,error,{step:'context'});}finally{t.close();}
+  }
+  function managementCredential(value){
+   const v=own(value,['authentication'],['signal']);nativeSignal(v.signal);const a=data(v.authentication),r=ids.get(a.principal?.sessionId);valid(r,v.signal);
+   if(r.management!==true||a.kind!=='routine-management'||!r.receipts.has(canonicalSha256(a))||a.expiresAtMs<=active(v.signal))deny();
+   return data({credential:r.nativeCredential,expiresAtMs:r.expiresAtMs});
+  }
+  managementOwners.set(owner,Object.freeze({issue:issueManagement,authenticate:authenticateManagement,nativeCredentialFor:managementCredential}));
+ }
  runBorrowers.set(owner,input=>{
   const {binding,selectedClientId,signal}=own(input,['binding','selectedClientId'],['signal']);validateShape('RunBinding',binding);nativeSignal(signal);const at=active(signal);
   // The live session was bound before the worker took the run, so its attempt/worker/fence predate the runner's; those are

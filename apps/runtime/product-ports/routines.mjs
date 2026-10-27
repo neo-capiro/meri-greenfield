@@ -41,6 +41,7 @@ import {routineCancellationTrust} from '../native-authority/routines-cancellatio
 import {createRoutinesRunControl} from '../native-authority/routines-run-control.mjs';
 import {readSecret as readRuntimeSecret} from '../config.mjs';
 import {registerRoutineIntentOwner} from '../routines-intents.mjs';
+import {routineManagementSessions} from '../../control/action-host/session/owner.mjs';
 const fault=code=>Object.assign(new Error(code),{code});
 /** Who must produce each owner before routines can be enabled in production. */
 export const PRODUCTION_ROUTINE_OWNERS=Object.freeze({
@@ -80,13 +81,15 @@ function captureTransport(transport){
 const unavailable=Object.freeze({state:()=>'unavailable',inboxState:()=>'unavailable',create:()=>createRoutinesApplication({enabled:false})});
 /** Core-produced owners over the trusted control context. Construction is inert: no secret read, request, query or RPC. */
 function coreOwners({core,configuration,pool,client,now,newId,transport}){
- const maxRequestMs=configuration.limits.requestMs,relay=createReadCredentialRelay();
+ const maxRequestMs=configuration.limits.requestMs,relay=createReadCredentialRelay(),managementRelay=createReadCredentialRelay();
  const getServiceSecret=createRoutinesServiceSecret({file:core.serviceSecretFile,reservedFiles:routinesReservedSecretFiles(configuration),readSecret:transport.readSecret??readRuntimeSecret});
- const wires=createRoutinesCoreClient({origin:core.origin,nativeCredentials:relay.port,getServiceSecret,now,maxRequestMs,...(transport.fetchImpl===undefined?{}:{fetchImpl:transport.fetchImpl})});
+ const wires=createRoutinesCoreClient({origin:core.origin,nativeCredentials:relay.port,managementCredentials:managementRelay.port,getServiceSecret,now,maxRequestMs,...(transport.fetchImpl===undefined?{}:{fetchImpl:transport.fetchImpl})});
  const taskQueue=configuration.temporal?.taskQueue;if(typeof taskQueue!=='string')throw fault('ROUTINES_CONFIGURATION');
  const runControl=createRoutinesRunControl({trust:routineCancellationTrust(core.cancellationProof),ledger:createPostgresRunCancelProofLedger({pool}),
   store:createPostgresConversationStore({pool,now}),dispatcher:createTemporalConversationDispatcher({client,taskQueue,now,maxRequestMs}),now,maxRequestMs,...(newId===undefined?{}:{newId})});
- return Object.freeze({sessionRelay:relay,policy:Object.freeze({check:wires.policyCheck}),runControl,cancellationProofs:Object.freeze({issue:wires.cancellationProof})});
+ const policyRevision=configuration.agentcore?.policyRevision??configuration.nativeCandidate?.qualification?.policyRevision;
+ const management=typeof policyRevision==='string'?Object.freeze({session:Object.freeze({readCurrent:wires.managementCurrent,versions:configuration.versions,policyRevision}),policy:Object.freeze({check:wires.managementPolicyCheck}),bind:sessions=>managementRelay.bind(routineManagementSessions(sessions))}):undefined;
+ return Object.freeze({sessionRelay:relay,policy:Object.freeze({check:wires.policyCheck}),runControl,cancellationProofs:Object.freeze({issue:wires.cancellationProof}),...(management===undefined?{}:{management})});
 }
 /** Family builder over optional trusted owners; `createRoutinesFamily` retains the closed unavailable fallback.
  * `transport` ({fetchImpl, readSecret}) is a trusted test seam only; production uses global fetch and the runtime secret reader. */
@@ -103,6 +106,7 @@ export function routinesFamily(owners,transport){
    context:{...captured.context,policy:produced?.policy??captured.context.policy},
    runControl:produced?.runControl??captured.runControl,retirement:captured.retirement,
    ...(produced===null?{}:{cancellationProofs:produced.cancellationProofs,sessionRelay:produced.sessionRelay}),
+   ...(produced?.management===undefined?{}:{management:produced.management}),
    ...(captured.readConsents===undefined?{}:{readConsents:captured.readConsents}),...(captured.log===undefined?{}:{log:captured.log}),
    ...(captured.contextOwnerFactory===undefined?{}:{contextOwnerFactory:captured.contextOwnerFactory}),
    limits:{maxRequestMs:configuration.limits.requestMs,maxRequestBytes:configuration.limits.requestBytes,maxResponseBytes:configuration.native.maxResponseBytes}});

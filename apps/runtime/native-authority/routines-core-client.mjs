@@ -17,6 +17,7 @@
  * and consumed only by routines-run-control.mjs. Core answers only HTTP 200 JSON; every other answer refuses. */
 import {createHash} from 'node:crypto';
 import {types} from 'node:util';
+import {markAuthorityUnavailable} from '../../../packages/runtime/authority-availability.mjs';
 import {own,data,nativeSignal} from '../../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {canonicalSha256 as hash,validateShape} from '../../../packages/contracts/validate.mjs';
 import {retainedOrigin} from '../../../packages/contracts/runtime-0.2/retained-reads.mjs';
@@ -24,7 +25,7 @@ import {createOperationLifetime} from '../../../packages/runtime/operation-lifet
 import {readJsonResponse,responseBody,cancelBody} from '../../gateway/sources/json-response.mjs';
 import {SCHEDULED_MERI_INBOX_DESTINATION} from '../../control/schedules/scheduled-conversation-currentness.mjs';
 
-export const ROUTINES_CORE_ROUTES=Object.freeze({policy:'/api/clio/routines/policy/check',cancellationProof:'/api/clio/routines/cancellation-proof',unattendedGrant:'/api/clio/routines/unattended-grant',current:'/api/internal/routines/current',reads:'/api/internal/routines/reads'});
+export const ROUTINES_CORE_ROUTES=Object.freeze({policy:'/api/clio/routines/policy/check',managementCurrent:'/api/clio/routines/management/current',managementPolicy:'/api/clio/routines/management/policy/check',cancellationProof:'/api/clio/routines/cancellation-proof',unattendedGrant:'/api/clio/routines/unattended-grant',current:'/api/internal/routines/current',reads:'/api/internal/routines/reads'});
 const FIRE_PHASES=['before_admission','before_start','before_stop'],HEX64=/^[a-f0-9]{64}$/u;
 /** Core's receipt ceiling: Meri's own request bound (`maxRequestMs` ≤ 30000 across the routines owners). */
 export const ROUTINE_RECEIPT_MAX_MS=30000;
@@ -54,15 +55,16 @@ export function createRoutinesServiceSecret(configuration){
 }
 
 export function createRoutinesCoreClient(configuration){
- let c,origin,nativeCredentialFor;
+ let c,origin,nativeCredentialFor,managementCredentialFor;
  try{
-  c=own(configuration,['origin','getServiceSecret','now'],['nativeCredentials','fetchImpl','maxRequestMs']);origin=retainedOrigin(c.origin);
+  c=own(configuration,['origin','getServiceSecret','now'],['nativeCredentials','managementCredentials','fetchImpl','maxRequestMs']);origin=retainedOrigin(c.origin);
   // The relay port (read-credential-relay.mjs) or the action-session owner itself: only its own `nativeCredentialFor` is borrowed.
   // Absent (the schedule worker has no sessions), the attended wires refuse and only the service-identity wire C is reachable.
   if(c.nativeCredentials!==undefined){
    if(!c.nativeCredentials||typeof c.nativeCredentials!=='object'||types.isProxy(c.nativeCredentials))throw Error();
    const method=Object.getOwnPropertyDescriptor(c.nativeCredentials,'nativeCredentialFor');if(!method||!Object.hasOwn(method,'value'))throw Error();nativeCredentialFor=method.value;
   }
+  if(c.managementCredentials!==undefined){const port=own(c.managementCredentials,['nativeCredentialFor']);managementCredentialFor=port.nativeCredentialFor;if(typeof managementCredentialFor!=='function'||types.isProxy(managementCredentialFor))throw Error();}
   for(const fn of [nativeCredentialFor??(()=>{}),c.getServiceSecret,c.now,c.fetchImpl??globalThis.fetch])if(typeof fn!=='function'||types.isProxy(fn))throw Error();
   if(c.maxRequestMs!==undefined&&(!Number.isSafeInteger(c.maxRequestMs)||c.maxRequestMs<1||c.maxRequestMs>30000))throw Error();
  }catch{throw Object.assign(Error('ROUTINES_CONFIGURATION'),{code:'ROUTINES_CONFIGURATION'});}
@@ -73,6 +75,11 @@ export function createRoutinesCoreClient(configuration){
  }
  /** One live-session lookup: the exact run binding and selected client, a well-formed token, unexpired. */
  function bearer(selected,signal){
+  if(selected.bootstrapCredential!==undefined){if(typeof selected.bootstrapCredential!=='string'||!TOKEN.test(selected.bootstrapCredential))refuse('REQUEST');return {credential:selected.bootstrapCredential,expiresAtMs:Number.MAX_SAFE_INTEGER};}
+  if(selected.managementAuthentication!==undefined){
+   let issued;try{if(!managementCredentialFor)throw Error();issued=data(own(managementCredentialFor({authentication:selected.managementAuthentication,signal}),['credential','expiresAtMs']));}catch{refuse('SESSION_UNAVAILABLE');}
+   if(typeof issued.credential!=='string'||!TOKEN.test(issued.credential)||!Number.isSafeInteger(issued.expiresAtMs)||issued.expiresAtMs<=now())refuse('SESSION_UNAVAILABLE');return issued;
+  }
   if(nativeCredentialFor===undefined)refuse('SESSION_UNAVAILABLE');
   let issued;try{issued=data(own(Reflect.apply(nativeCredentialFor,c.nativeCredentials,[{binding:selected.binding,selectedClientId:selected.selectedClientId,...(signal===undefined?{}:{signal})}]),['credential','expiresAtMs']));}catch{refuse('SESSION_UNAVAILABLE');}
   if(typeof issued.credential!=='string'||!TOKEN.test(issued.credential)||!Number.isSafeInteger(issued.expiresAtMs)||issued.expiresAtMs<=now())refuse('SESSION_UNAVAILABLE');
@@ -126,6 +133,40 @@ export function createRoutinesCoreClient(configuration){
   return data({authorized:true,selectionSha256:r.selectionSha256,binding:r.binding,scopes:r.scopes,selectedClientId:r.selectedClientId,
    destinationResolution:r.destinationResolution,limits:r.limits,checkedAtMs,expiresAtMs});
  }
+ function managementCurrentShape(value){
+  const r=data(own(value,['kind','principal','scopes','selectedClientId','membershipRevision','contextRevision']));validateShape('Identity',r.principal);
+  if(r.kind!=='routine-management'||!Array.isArray(r.scopes)||r.scopes.length!==1||r.selectedClientId!==null&&!UUID.test(r.selectedClientId)||!HEX64.test(r.membershipRevision)||!HEX64.test(r.contextRevision))refuse('INVALID_RESULT');
+  const scope=r.scopes[0];validateShape('Scope',scope);
+  if(scope.tenantId!==r.principal.tenantId||scope.kind!==(r.selectedClientId===null?'private-user':'client')||scope.resourceId!==(r.selectedClientId??r.principal.actorId)||
+   r.contextRevision!==hash({kind:r.kind,principal:r.principal,scopes:r.scopes,selectedClientId:r.selectedClientId,membershipRevision:r.membershipRevision}))refuse('INVALID_RESULT');return r;
+ }
+ function managementTimes(r,answer){
+  if(!Number.isSafeInteger(r.checkedAtMs)||!Number.isSafeInteger(r.expiresAtMs)||r.expiresAtMs<=r.checkedAtMs||r.expiresAtMs-r.checkedAtMs>ROUTINE_RECEIPT_MAX_MS)refuse('INVALID_RESULT');
+  const checkedAtMs=now(),expiresAtMs=Math.min(answer.started+r.expiresAtMs-r.checkedAtMs,answer.sessionExpiresAtMs);
+  if(!Number.isSafeInteger(checkedAtMs)||checkedAtMs<answer.started||expiresAtMs<=checkedAtMs)refuse('EXPIRED');return {checkedAtMs,expiresAtMs};
+ }
+ /** Initial management admission uses the actual signed-in bearer. It never asks for or resolves a run. */
+ async function managementCurrent(value){
+  let v;try{v=own(value,['credential','clientId','policyRevision','deadlineMs'],['signal']);nativeSignal(v.signal);
+   if(v.clientId!==null&&!UUID.test(v.clientId)||typeof v.policyRevision!=='string'||!v.policyRevision||v.policyRevision.length>256||!Number.isSafeInteger(v.deadlineMs))throw Error();
+  }catch{refuse('REQUEST');}
+  const answer=await post(ROUTINES_CORE_ROUTES.managementCurrent,{selected:{bootstrapCredential:v.credential},body:{clientId:v.clientId,policyRevision:v.policyRevision},signal:v.signal,deadlineMs:v.deadlineMs,maxResponseBytes:16384}).catch(error=>{if(['ROUTINES_CORE_UNAVAILABLE','ROUTINES_CORE_DEADLINE'].includes(error?.code))markAuthorityUnavailable(error);throw error;});
+  try{const r=data(own(answer.value,['kind','principal','scopes','selectedClientId','membershipRevision','contextRevision','checkedAtMs','expiresAtMs'])),{checkedAtMs,expiresAtMs,...raw}=r,current=managementCurrentShape(raw);
+   if(current.selectedClientId!==v.clientId||current.scopes[0].policyRevision!==v.policyRevision)refuse('REFUSED');return data({...current,...managementTimes(r,answer)});
+  }catch(error){throw owned(error)?error:fault('INVALID_RESULT');}
+ }
+ /** The exact fresh management session relays the bearer only for this closed list/future-cancellation policy. */
+ async function managementPolicyCheck(value){
+  let v,s,current;try{v=own(value,['selection','selectionSha256','authentication'],['signal','limitDeadline']);nativeSignal(v.signal);s=data(own(v.selection,['phase','operation','request','currentSchedule','proposal','current','scheduleBinding']));current=managementCurrentShape(s.current);
+   const a=data(v.authentication);if(a.kind!=='routine-management'||a.principal.tenantId!==current.principal.tenantId||a.principal.actorId!==current.principal.actorId||v.selectionSha256!==hash(s)||
+    !(s.operation==='list_scheduled_tasks'||s.operation==='cancel_scheduled_task'&&['pause','delete'].includes(s.request.mode)&&s.request.running==='leave'&&Array.isArray(s.request.runs)&&s.request.runs.length===0))throw Error();
+  }catch{refuse('REQUEST');}
+  const answer=await post(ROUTINES_CORE_ROUTES.managementPolicy,{selected:{managementAuthentication:v.authentication},body:{selection:s,selectionSha256:v.selectionSha256},signal:v.signal,maxResponseBytes:65536});
+  try{const r=data(own(answer.value,['authorized','selectionSha256','current','destinationResolution','limits','checkedAtMs','expiresAtMs']));
+   if(r.authorized!==true||r.selectionSha256!==v.selectionSha256||!same(r.current,current)||r.destinationResolution!==null||r.limits!==null)refuse('REFUSED');
+   return data({...r,...managementTimes(r,answer)});
+  }catch(error){throw owned(error)?error:fault('INVALID_RESULT');}
+ }
  /** Wire B. `{attended, intent, intentSha256, decision, targets, signal, deadlineMs}` → `{proof, jti}` (unverified here). */
  async function cancellationProof(value){
   let v,intent,decision,targets,selected;
@@ -173,5 +214,5 @@ export function createRoutinesCoreClient(configuration){
    !Number.isSafeInteger(r.checkedAtMs)||!Number.isSafeInteger(r.effectExpiresAtMs)||r.effectExpiresAtMs<=r.checkedAtMs||r.effectExpiresAtMs<=now())refuse('INVALID_RESULT');
   return data({...r,checkedAtMs:now()});
  }
- return Object.freeze({origin,attended:nativeCredentialFor!==undefined,policyCheck,cancellationProof,unattendedGrant,current});
+ return Object.freeze({origin,attended:nativeCredentialFor!==undefined,policyCheck,managementCurrent,managementPolicyCheck,cancellationProof,unattendedGrant,current});
 }
