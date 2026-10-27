@@ -20,6 +20,7 @@ const unseal=async dir=>{await chmod(dir,0o700);for(const e of await readdir(dir
 test('Q04: fourteen identities, explicit new default, frozen old PE pin and no implicit version fallback',()=>{
  assert.equal(new Set(listSkills().map(s=>s.skillId)).size,14);
  assert.equal(describeSkillPlugin().skills.length,14);
+ assert.deepEqual(describeSkillPlugin().skills.map(s=>s.skillId.replace('quick_skill.','')),['client_changes','commitments_audit','funding_opportunity_match','hearing_watch','mail_history','meeting_prep','pe_deep_dive','portfolio_changes','portfolio_overlap','regulatory_docket_brief','relationship_brief','representation_lookup','research_company','bill_watch']);
  assert.equal(describeSkillPlugin().skills.find(s=>s.skillId===old.pin.skillId).skillVersion,'1.1.0');
  assert.equal(describeSkillPlugin({selection:old.pin}).skills.find(s=>s.skillId===old.pin.skillId).skillVersion,'1.0.0');
  assert.equal(old.pin.manifestSha256,'6c39f93daeb9c824cbbd37d0ced433dfa0a14d0454e41bd2ba4d3b0e5f4379d9');

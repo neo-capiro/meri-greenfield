@@ -14,13 +14,14 @@ const freeze=value=>{if(value&&typeof value==='object'){Object.values(value).for
 /** Derived from the immutable identity; a present frontmatter name must agree, and an asset without SDK frontmatter is listed as excluded.
  * @param {{selection?:any}} [options] @returns {Readonly<SkillPluginDescription>} */
 export function describeSkillPlugin({selection}={}){
- const skills=[],excluded=[];
+ const skills=[],excluded=[],order=[];
  const selected=selection===undefined?undefined:selectSkill(selection.skillId,selection.skillVersion);
  if(selected&&canonicalSha256(selected.pin)!==canonicalSha256(selection))fail('SKILL_PLUGIN_SELECTION_PIN');
  for(const {skillId,skillVersion} of listSkills()){
   const {prose,pin}=selectSkill(skillId,skillVersion),expected='meri-'+skillId.replace(/^quick_skill\./u,'').replaceAll('_','-'),front=FRONTMATTER.exec(prose)?.[1];
   if(front===undefined){excluded.push({skillId,skillVersion,reason:'NO_SDK_FRONTMATTER'});continue;}
   if(NAME.exec(front)?.[1]!==expected||!NO_MODEL_INVOCATION.test(front))fail('SKILL_PLUGIN_FRONTMATTER');
+  if(!order.includes(skillId))order.push(skillId);
   const preferred=selected?.pin.skillId===skillId?selected.pin.skillVersion:assets.sdkDefaults?.[skillId];
   if(preferred!==undefined&&skillVersion!==preferred){excluded.push({skillId,skillVersion,reason:'NOT_SELECTED_SDK_VERSION'});continue;}
   skills.push({skillId,skillVersion,name:expected,proseSha256:pin.proseSha256});
@@ -28,7 +29,7 @@ export function describeSkillPlugin({selection}={}){
  if(selected&&!skills.some(s=>s.skillId===selected.pin.skillId&&s.skillVersion===selected.pin.skillVersion))fail('SKILL_PLUGIN_SELECTION_REFUSED');
  for(const [skillId,skillVersion]of Object.entries(assets.sdkDefaults??{}))if(!skills.some(s=>s.skillId===skillId&&(selected?.pin.skillId===skillId||s.skillVersion===skillVersion)))fail('SKILL_PLUGIN_DEFAULT_REFUSED');
  if(new Set(skills.map(s=>s.name)).size!==skills.length)fail('SKILL_PLUGIN_NAME_COLLISION');
- const order=[...new Set(listSkills().map(s=>s.skillId))];skills.sort((a,b)=>order.indexOf(a.skillId)-order.indexOf(b.skillId));
+ skills.sort((a,b)=>order.indexOf(a.skillId)-order.indexOf(b.skillId));
  return freeze({name:PLUGIN_NAME,version:'1.0.0',skills,excluded});
 }
 /** Writes `.claude-plugin/plugin.json` and `skills/<name>/SKILL.md` into a fresh owner-only directory; refuses an existing target and removes everything it created on failure.

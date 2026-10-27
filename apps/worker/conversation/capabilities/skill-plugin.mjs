@@ -62,8 +62,8 @@ export function createSkillPlugin(policy,{skillPluginDirectory,cwd}){
   canUseTool:async()=>({behavior:'deny',message:'Skill not admitted'})});
 }
 /** G3: the run's read-only skill plugin copy. The runner (conversation-runner.mjs prepareRuntime) materializes the image's original
- * skills (`packages/skills`: assets.json catalog pins, the same assets `skillsDigest` measures) into the one run-invariant path
- * `sdkSkillPluginDirectory(configParentDirectory)` under the admitted private SDK configuration parent, then seals it read-only and
+ * skills (`packages/skills`: assets.json catalog pins, the same assets `skillsDigest` measures) into the path for the exact selected pin
+ * `sdkSkillPluginDirectory(configParentDirectory,selection)` under the admitted private SDK configuration parent, then seals it read-only and
  * verifies the exact tree before passing the plugin directory to the native SDK options.
  * An existing copy (a later run of the same task) is never rewritten: it must verify exactly, or the run refuses.
  *

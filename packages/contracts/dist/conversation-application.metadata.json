@@ -169,8 +169,8 @@
     },
     {
       "path": "../skills/plugin.mjs",
-      "sha256": "8d07ae4330e90feca8843e703103c97b6d9cd785c2097262b3586e87eaa1ca46",
-      "bytes": 4576
+      "sha256": "e2b9bcd9a3e55052e4f7b03cf14f7e5bac784b00761dd28937805ec3e6d4ab51",
+      "bytes": 4579
     },
     {
       "path": "conversation-application/feedback-schema.mjs",
