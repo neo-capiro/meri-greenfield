@@ -49,6 +49,8 @@ export type IntentsApplicationEnvelope =
   | IntentsWatchItem
   | IntentsWithheldWatchItem
   | IntentsResearchShareItem
+  | IntentsSavedNoteItem
+  | IntentsWithheldSavedNoteItem
   | IntentsWithheldResearchShareItem
   | IntentsProposalItem
   | IntentsItem
@@ -1886,6 +1888,8 @@ export type Canonical_ResearchShareProposalStatus_9Aaf7F45 =
   | 'dismissed'
   | 'expired';
 export type IntentsItem =
+  | IntentsSavedNoteItem
+  | IntentsWithheldSavedNoteItem
   | IntentsPendingItem
   | IntentsUnknownItem
   | IntentsFailedItem
@@ -3855,6 +3859,50 @@ export interface IntentsResearchShareItem {
   kind: 'research_share';
   proposal: Canonical_ResearchShareProposal_1Cdbd32E;
   proposalStatus: Canonical_ResearchShareProposalStatus_9Aaf7F45 | 'unavailable';
+}
+export interface IntentsSavedNoteItem {
+  deliveryId: IntentsDeliveryId;
+  createdAt: string;
+  operation: IntentsOperation;
+  state: 'prepared';
+  kind: 'saved_note';
+  result: Canonical_SavedNoteResult_85Af7219;
+}
+export interface Canonical_SavedNoteResult_85Af7219 {
+  status: 'saved' | 'withheld' | 'blocked' | 'unknown' | 'failed';
+  operation: 'save_note';
+  binding: Canonical_RunBinding_84F2304C;
+  /**
+   * @minItems 1
+   * @maxItems 1
+   */
+  scopes: [Canonical_ScopeF882Edb5];
+  destination?: ('meeting' | 'client_document' | 'general') | null;
+  noteId?: string | null;
+  meetingNoteId?: string | null;
+  documentId?: string | null;
+  location?: string | null;
+  indexingStatus?: ('indexed' | 'pending' | 'not_indexed') | null;
+  readiness?: ('ready' | 'indexing' | 'indexed' | 'private' | 'scanning' | 'unavailable') | null;
+  reused?: boolean | null;
+  bodyHash: string;
+  bodyLength: number;
+  proposalId: string;
+  policyOutcome: 'PASS' | 'WARN' | 'BLOCK';
+  createdAt: string;
+  expiresAt: string;
+  recordedAt: string;
+  generatedAt?: string | null;
+  errorCode?: string | null;
+  errorMessage?: string | null;
+}
+export interface IntentsWithheldSavedNoteItem {
+  deliveryId: IntentsDeliveryId;
+  createdAt: string;
+  operation: IntentsOperation;
+  state: 'prepared';
+  kind: 'saved_note';
+  withheld: true;
 }
 export interface IntentsWithheldResearchShareItem {
   deliveryId: IntentsDeliveryId;
