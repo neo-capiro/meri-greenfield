@@ -13,6 +13,7 @@ export type IntentsApplicationEnvelope =
   | Canonical_BizdevProposalA770314C
   | Canonical_WatchProposal_14Eddeec
   | Canonical_ResearchShareProposal_1Cdbd32E
+  | Canonical_ResearchActionProposal_081Cad69
   | Canonical_ApprovalDecision_5E8Bdbcf
   | Canonical_TaskCreateArguments_1202C301
   | Canonical_TaskUpdateArguments_48509A7A
@@ -48,6 +49,8 @@ export type IntentsApplicationEnvelope =
   | IntentsWithheldBizdevItem
   | IntentsWatchItem
   | IntentsWithheldWatchItem
+  | IntentsResearchActionItem
+  | IntentsWithheldResearchActionItem
   | IntentsResearchShareItem
   | IntentsSavedNoteItem
   | IntentsWithheldSavedNoteItem
@@ -78,6 +81,7 @@ export type IntentsNativeProposal =
 export type IntentsProposal =
   | IntentsNativeProposal
   | Canonical_ResearchShareProposal_1Cdbd32E
+  | Canonical_ResearchActionProposal_081Cad69
   | Canonical_LegiwatchProposal_1F841734
   | Canonical_WatchProposal_14Eddeec
   | Canonical_ClientRecordProposalB620B25B
@@ -1877,6 +1881,16 @@ export type Canonical_WatchStatus_828649Ac =
   | 'blocked'
   | 'dismissed'
   | 'expired';
+export type Canonical_ResearchActionProposalStatusBca9B5Cd =
+  | 'proposed'
+  | 'executing'
+  | 'succeeded'
+  | 'failed_retryable'
+  | 'failed_terminal'
+  | 'outcome_unknown'
+  | 'blocked'
+  | 'dismissed'
+  | 'expired';
 export type Canonical_ResearchShareProposalStatus_9Aaf7F45 =
   | 'proposed'
   | 'executing'
@@ -1904,6 +1918,8 @@ export type IntentsItem =
   | IntentsProposalItem
   | IntentsResearchShareItem
   | IntentsWithheldResearchShareItem
+  | IntentsResearchActionItem
+  | IntentsWithheldResearchActionItem
   | IntentsLegiwatchItem
   | IntentsWithheldLegiwatchItem
   | IntentsWatchItem
@@ -1963,6 +1979,13 @@ export type IntentsDecideResponse =
       deliveryId: IntentsDeliveryId;
       proposalId: string;
       decision: Canonical_ApprovalDecision_5E8Bdbcf;
+    }
+  | {
+      status: 'research_action_decided';
+      deliveryId: IntentsDeliveryId;
+      proposalId: string;
+      proposalStatus: Canonical_ResearchActionProposalStatusBca9B5Cd;
+      resultSummary?: Canonical_ResearchActionResultSummary_40527Cb3;
     }
   | {
       status: 'research_share_decided';
@@ -2386,6 +2409,296 @@ export interface Canonical_ResearchSharePublishBound_63909893 {
 export interface Canonical_ResearchShareRevokeInputB01195Fc {
   conversationId: string;
   linkId: string;
+}
+export interface Canonical_ResearchActionProposal_081Cad69 {
+  kind: 'research_action';
+  proposalId: string;
+  commandSha256: string;
+  binding: Canonical_RunBinding_84F2304C;
+  /**
+   * @minItems 1
+   * @maxItems 1
+   */
+  scopes: [Canonical_ScopeF882Edb5];
+  operation:
+    | 'manage_research_portfolio'
+    | 'create_research_portfolio_snapshot'
+    | 'request_research_portfolio_output'
+    | 'save_research_portfolio_output_to_client'
+    | 'watch_research_portfolio'
+    | 'update_research_portfolio_change_state'
+    | 'create_research_portfolio_bookmark'
+    | 'add_research_portfolio_review_note'
+    | 'prepare_research_portfolio_brief'
+    | 'prepare_research_portfolio_meeting';
+  request:
+    | Canonical_ResearchActionManageBound_8B5450A3
+    | Canonical_ResearchActionSnapshotBound_3E932D2D
+    | Canonical_ResearchActionOutputBound_43Ec0527
+    | Canonical_ResearchActionSaveOutputBoundD0981E39
+    | Canonical_ResearchActionWatchBound_39Fddaa7
+    | Canonical_ResearchActionChangeStateBoundB09Be19C
+    | Canonical_ResearchActionBookmarkBound_22B0A591
+    | Canonical_ResearchActionReviewNoteBound_10F0C889
+    | Canonical_ResearchActionBriefBound_1468Baf3
+    | Canonical_ResearchActionMeetingBoundAa72483C;
+  preview: Canonical_ResearchActionPreview_7B7Dfa31;
+  createdAt: string;
+  expiresAt: string;
+}
+export interface Canonical_ResearchActionManageBound_8B5450A3 {
+  conversationId: string;
+  action:
+    | 'portfolio_create'
+    | 'portfolio_update'
+    | 'portfolio_archive'
+    | 'portfolio_restore'
+    | 'grants_list'
+    | 'client_links_list'
+    | 'members_list'
+    | 'grant_upsert'
+    | 'grant_delete'
+    | 'client_link_create'
+    | 'client_link_delete'
+    | 'member_create'
+    | 'members_decide'
+    | 'member_resolve'
+    | 'rule_preview'
+    | 'rule_publish'
+    | 'review_assign'
+    | 'review_decide'
+    | 'reviews_bulk_decide'
+    | 'annual_review_get'
+    | 'annual_review_refresh'
+    | 'annual_review_reopen'
+    | 'import_create'
+    | 'import_action'
+    | 'subscriptions_list'
+    | 'deliveries_list'
+    | 'subscription_update'
+    | 'bookmark_update'
+    | 'bookmark_delete'
+    | 'fit_refresh'
+    | 'watch_conversion_preview'
+    | 'watch_conversion_apply'
+    | 'output_get'
+    | 'output_cancel'
+    | 'output_retry'
+    | 'output_reconcile'
+    | 'snapshots_list'
+    | 'snapshot_get'
+    | 'taxonomy_get'
+    | 'templates_list'
+    | 'template_version_get'
+    | 'operation_reconcile'
+    | 'comparison_list'
+    | 'comparison_get'
+    | 'comparison_create'
+    | 'comparison_revise'
+    | 'comparison_archive'
+    | 'comparison_restore'
+    | 'comparison_add_selection';
+  /**
+   * Parameters of the selected Core management action, validated by Core against that action’s own schema; the idempotent key is derived by Meri, never supplied.
+   */
+  parameters: {};
+  confirmed: true;
+}
+export interface Canonical_ResearchActionSnapshotBound_3E932D2D {
+  conversationId: string;
+  name: string;
+  expectedRevision: number;
+  operationKey: string;
+}
+export interface Canonical_ResearchActionOutputBound_43Ec0527 {
+  conversationId: string;
+  snapshotId?: string;
+  operationKey: string;
+}
+export interface Canonical_ResearchActionSaveOutputBoundD0981E39 {
+  conversationId: string;
+  outputId: string;
+  clientId: string;
+  operationKey: string;
+}
+export interface Canonical_ResearchActionWatchBound_39Fddaa7 {
+  conversationId: string;
+}
+export interface Canonical_ResearchActionChangeStateBoundB09Be19C {
+  conversationId: string;
+  eventId: string;
+  action: 'seen' | 'acknowledged' | 'dismissed' | 'undo';
+  expectedRevision?: number;
+}
+export interface Canonical_ResearchActionBookmarkBound_22B0A591 {
+  conversationId: string;
+  targetKind: 'member' | 'snapshot' | 'evidence' | 'review' | 'import' | 'output' | 'other';
+  targetId: string;
+  label?: string | null;
+  note?: string | null;
+  operationKey: string;
+}
+export interface Canonical_ResearchActionReviewNoteBound_10F0C889 {
+  conversationId: string;
+  reviewId: string;
+  body: string;
+  expectedRevision: number;
+  operationKey: string;
+}
+export interface Canonical_ResearchActionBriefBound_1468Baf3 {
+  conversationId: string;
+  confirmed: true;
+  operationKey: string;
+}
+export interface Canonical_ResearchActionMeetingBoundAa72483C {
+  conversationId: string;
+  confirmed: true;
+  meetingId?: string;
+  /**
+   * @maxItems 20
+   */
+  selectedReviewIds?:
+    | []
+    | [string]
+    | [string, string]
+    | [string, string, string]
+    | [string, string, string, string]
+    | [string, string, string, string, string]
+    | [string, string, string, string, string, string]
+    | [string, string, string, string, string, string, string]
+    | [string, string, string, string, string, string, string, string]
+    | [string, string, string, string, string, string, string, string, string]
+    | [string, string, string, string, string, string, string, string, string, string]
+    | [string, string, string, string, string, string, string, string, string, string, string]
+    | [string, string, string, string, string, string, string, string, string, string, string, string]
+    | [string, string, string, string, string, string, string, string, string, string, string, string, string]
+    | [string, string, string, string, string, string, string, string, string, string, string, string, string, string]
+    | [
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string
+      ]
+    | [
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string
+      ]
+    | [
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string
+      ]
+    | [
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string
+      ]
+    | [
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string
+      ]
+    | [
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string
+      ];
+  operationKey: string;
+}
+export interface Canonical_ResearchActionPreview_7B7Dfa31 {
+  label: string;
+  portfolioId?: string;
+  clientName?: string;
+  fields?: {
+    [k: string]: string | number | boolean | null;
+  };
 }
 export interface Canonical_LegiwatchProposal_1F841734 {
   kind: 'legiwatch_action';
@@ -3851,6 +4164,43 @@ export interface IntentsWithheldWatchItem {
   kind: 'watch_action';
   withheld: true;
 }
+export interface IntentsResearchActionItem {
+  deliveryId: IntentsDeliveryId;
+  createdAt: string;
+  operation: IntentsOperation;
+  state: 'prepared';
+  kind: 'research_action';
+  proposal: Canonical_ResearchActionProposal_081Cad69;
+  result: Canonical_ResearchActionDecided_2D61F0Bf | 'unavailable';
+}
+export interface Canonical_ResearchActionDecided_2D61F0Bf {
+  proposalStatus: Canonical_ResearchActionProposalStatusBca9B5Cd;
+  resultSummary?: Canonical_ResearchActionResultSummary_40527Cb3;
+}
+export interface Canonical_ResearchActionResultSummary_40527Cb3 {
+  client?: {
+    id?: string;
+    name?: string;
+  };
+  [k: string]:
+    | string
+    | number
+    | boolean
+    | null
+    | {
+        id?: string;
+        name?: string;
+      }
+    | undefined;
+}
+export interface IntentsWithheldResearchActionItem {
+  deliveryId: IntentsDeliveryId;
+  createdAt: string;
+  operation: IntentsOperation;
+  state: 'prepared';
+  kind: 'research_action';
+  withheld: true;
+}
 export interface IntentsResearchShareItem {
   deliveryId: IntentsDeliveryId;
   createdAt: string;
@@ -4433,6 +4783,7 @@ export type IntentsWatchProposal=Canonical_WatchProposal_14Eddeec;
 export type IntentsLegiwatchProposal=Canonical_LegiwatchProposal_1F841734;
 export type IntentsBizdevProposal=Canonical_BizdevProposalA770314C;
 export type IntentsResearchShareProposal=Canonical_ResearchShareProposal_1Cdbd32E;
+export type IntentsResearchActionProposal=Canonical_ResearchActionProposal_081Cad69;
 export type RoutinesProposal=Canonical_PendingProposal_8E88D951;
 export type RoutinesApproveResponse=Canonical_Acknowledged_1Fa14Cd2;
 export type RoutinesListRequest=Canonical_ListScheduledTasksRequest_294Adc6C;

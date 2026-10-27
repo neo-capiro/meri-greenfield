@@ -1,0 +1,1996 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:meri:retrieval:research-portfolio-workflow:0.2.0",
+  "title": "Meri Research Portfolio workflow reads 0.2.0 (MO-05)",
+  "description": "Conversation-scoped Research Portfolio workflow reads served by Core `/api/clio/tools/<operation>` inside its trusted current-turn envelope. Shapes mirror the Core DTOs (`@capiro/shared` research-portfolios); Core owns the portfolio grant, client walls and revision facts. Validation grants no authority.",
+  "$defs": {
+    "ResearchWorkflowConversationInput": {
+      "type": "object",
+      "properties": {
+        "conversationId": {
+          "type": "string",
+          "format": "uuid"
+        }
+      },
+      "required": [
+        "conversationId"
+      ],
+      "additionalProperties": false
+    },
+    "ResearchWorkflowReviewsInput": {
+      "type": "object",
+      "properties": {
+        "conversationId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "lane": {
+          "enum": [
+            "mine",
+            "team",
+            "deferred",
+            "resolved"
+          ]
+        }
+      },
+      "required": [
+        "conversationId"
+      ],
+      "additionalProperties": false
+    },
+    "ResearchWorkflowImportsInput": {
+      "type": "object",
+      "properties": {
+        "conversationId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "jobId": {
+          "type": "string",
+          "format": "uuid"
+        }
+      },
+      "required": [
+        "conversationId"
+      ],
+      "additionalProperties": false
+    },
+    "ResearchWorkflowOperationInput": {
+      "type": "object",
+      "properties": {
+        "conversationId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "operationId": {
+          "type": "string",
+          "format": "uuid"
+        }
+      },
+      "required": [
+        "conversationId",
+        "operationId"
+      ],
+      "additionalProperties": false
+    },
+    "ResearchWorkflowFinancialBasis": {
+      "type": "object",
+      "properties": {
+        "requestEdition": {
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 200
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "fundingFiscalYear": {
+          "type": "integer"
+        },
+        "stage": {
+          "type": "string",
+          "maxLength": 200
+        },
+        "metric": {
+          "enum": [
+            "funding",
+            "quantity",
+            "unit_cost"
+          ]
+        },
+        "unit": {
+          "enum": [
+            "usd_millions",
+            "units",
+            "usd_millions_per_unit"
+          ]
+        },
+        "currency": {
+          "const": "USD"
+        },
+        "priceBasis": {
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 200
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "knownAt": {
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 64
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "requestEdition",
+        "fundingFiscalYear",
+        "stage",
+        "metric",
+        "unit",
+        "currency",
+        "priceBasis",
+        "knownAt"
+      ],
+      "additionalProperties": false
+    },
+    "ResearchWorkflowContribution": {
+      "type": "object",
+      "properties": {
+        "contributionId": {
+          "type": "string",
+          "maxLength": 400
+        },
+        "memberId": {
+          "type": "string",
+          "maxLength": 400
+        },
+        "targetKind": {
+          "enum": [
+            "program",
+            "program_element",
+            "project",
+            "budget_line",
+            "award"
+          ]
+        },
+        "targetId": {
+          "type": "string",
+          "maxLength": 400
+        },
+        "label": {
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 2000
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "basis": {
+          "anyOf": [
+            {
+              "$ref": "urn:meri:retrieval:research-portfolio-workflow:0.2.0#/$defs/ResearchWorkflowFinancialBasis"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "value": {
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 200
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "disposition": {
+          "enum": [
+            "included",
+            "excluded",
+            "overlap",
+            "incompatible",
+            "missing",
+            "unavailable",
+            "withheld"
+          ]
+        },
+        "sourceDisposition": {
+          "anyOf": [
+            {
+              "enum": [
+                "observed",
+                "missing",
+                "partial",
+                "unavailable",
+                "withheld"
+              ]
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "reason": {
+          "type": "string",
+          "maxLength": 4000
+        },
+        "sourceObservationId": {
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 400
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "sourceRevisionIds": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "maxLength": 2000
+          },
+          "maxItems": 10000
+        },
+        "evidence": {
+          "type": "array",
+          "items": {
+            "$ref": "urn:meri:retrieval:research-portfolio:0.2.0#/$defs/ResearchPortfolioJsonObject"
+          },
+          "maxItems": 1000
+        },
+        "dedupKey": {
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 400
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "overlapsContributionId": {
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 400
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "contributionId",
+        "memberId",
+        "targetKind",
+        "targetId",
+        "label",
+        "basis",
+        "value",
+        "disposition",
+        "reason",
+        "sourceObservationId",
+        "sourceRevisionIds",
+        "evidence",
+        "dedupKey",
+        "overlapsContributionId"
+      ],
+      "additionalProperties": false
+    },
+    "ResearchWorkflowCompatibleTotal": {
+      "type": "object",
+      "properties": {
+        "basis": {
+          "$ref": "urn:meri:retrieval:research-portfolio-workflow:0.2.0#/$defs/ResearchWorkflowFinancialBasis"
+        },
+        "value": {
+          "type": "string",
+          "maxLength": 200
+        },
+        "contributionCount": {
+          "type": "integer",
+          "minimum": 0
+        }
+      },
+      "required": [
+        "basis",
+        "value",
+        "contributionCount"
+      ],
+      "additionalProperties": false
+    },
+    "ResearchWorkflowAnalyticsOutput": {
+      "type": "object",
+      "properties": {
+        "portfolioId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "portfolioRevision": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "calculationVersion": {
+          "enum": [
+            "research-portfolio-analytics-v1",
+            "research-portfolio-analytics-v2"
+          ]
+        },
+        "availability": {
+          "enum": [
+            "available",
+            "partial",
+            "unavailable"
+          ]
+        },
+        "totals": {
+          "type": "array",
+          "items": {
+            "$ref": "urn:meri:retrieval:research-portfolio-workflow:0.2.0#/$defs/ResearchWorkflowCompatibleTotal"
+          },
+          "maxItems": 1000
+        },
+        "contributions": {
+          "type": "array",
+          "items": {
+            "$ref": "urn:meri:retrieval:research-portfolio-workflow:0.2.0#/$defs/ResearchWorkflowContribution"
+          },
+          "maxItems": 10000
+        },
+        "coverage": {
+          "type": "object",
+          "properties": {
+            "eligibleMembers": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "supportedMembers": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "includedContributions": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "excludedContributions": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "overlapContributions": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "unavailableMembers": {
+              "type": "integer",
+              "minimum": 0
+            }
+          },
+          "required": [
+            "eligibleMembers",
+            "supportedMembers",
+            "includedContributions",
+            "excludedContributions",
+            "overlapContributions",
+            "unavailableMembers"
+          ],
+          "additionalProperties": false
+        },
+        "limitations": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "maxLength": 2000
+          },
+          "maxItems": 10000
+        },
+        "observedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "readAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "portfolioId",
+        "portfolioRevision",
+        "calculationVersion",
+        "availability",
+        "totals",
+        "contributions",
+        "coverage",
+        "limitations",
+        "observedAt",
+        "readAt"
+      ],
+      "additionalProperties": false
+    },
+    "ResearchWorkflowBookmark": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "portfolioId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "userId": {
+          "type": "string",
+          "maxLength": 400
+        },
+        "targetKind": {
+          "enum": [
+            "member",
+            "snapshot",
+            "evidence",
+            "review",
+            "import",
+            "output",
+            "other"
+          ]
+        },
+        "targetId": {
+          "type": "string",
+          "maxLength": 400
+        },
+        "label": {
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 2000
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "note": {
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 4000
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "id",
+        "portfolioId",
+        "userId",
+        "targetKind",
+        "targetId",
+        "label",
+        "note",
+        "createdAt",
+        "updatedAt"
+      ],
+      "additionalProperties": false
+    },
+    "ResearchWorkflowBookmarksOutput": {
+      "type": "array",
+      "items": {
+        "$ref": "urn:meri:retrieval:research-portfolio-workflow:0.2.0#/$defs/ResearchWorkflowBookmark"
+      },
+      "maxItems": 10000
+    },
+    "ResearchWorkflowFitBasis": {
+      "type": "object",
+      "properties": {
+        "calculationVersion": {
+          "type": "string",
+          "maxLength": 200
+        },
+        "scoreBasis": {
+          "const": "direct_qualified_pe_association_share"
+        },
+        "portfolioRevision": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "ruleVersionIds": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "maxLength": 2000
+          },
+          "maxItems": 10000
+        },
+        "capabilityFingerprint": {
+          "type": "string",
+          "maxLength": 400
+        },
+        "sourceBasisFingerprint": {
+          "type": "string",
+          "maxLength": 400
+        },
+        "basisFingerprint": {
+          "type": "string",
+          "maxLength": 400
+        },
+        "totalIncludedMemberCount": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "supportedMemberCount": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "matchedMemberCount": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "limitations": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "maxLength": 2000
+          },
+          "maxItems": 10000
+        }
+      },
+      "required": [
+        "calculationVersion",
+        "scoreBasis",
+        "portfolioRevision",
+        "ruleVersionIds",
+        "capabilityFingerprint",
+        "sourceBasisFingerprint",
+        "basisFingerprint",
+        "totalIncludedMemberCount",
+        "supportedMemberCount",
+        "matchedMemberCount",
+        "limitations"
+      ],
+      "additionalProperties": false
+    },
+    "ResearchWorkflowFitMemberMatch": {
+      "type": "object",
+      "properties": {
+        "memberId": {
+          "type": "string",
+          "maxLength": 400
+        },
+        "targetKind": {
+          "enum": [
+            "program",
+            "program_element",
+            "project",
+            "budget_line",
+            "award"
+          ]
+        },
+        "targetId": {
+          "type": "string",
+          "maxLength": 400
+        },
+        "matched": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "capabilityIds": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "maxLength": 2000
+          },
+          "maxItems": 10000
+        },
+        "reasons": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "maxLength": 2000
+          },
+          "maxItems": 10000
+        },
+        "sourceDocumentIds": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "maxLength": 2000
+          },
+          "maxItems": 10000
+        }
+      },
+      "required": [
+        "memberId",
+        "targetKind",
+        "targetId",
+        "matched",
+        "capabilityIds",
+        "reasons",
+        "sourceDocumentIds"
+      ],
+      "additionalProperties": false
+    },
+    "ResearchWorkflowFitRuleMatch": {
+      "type": "object",
+      "properties": {
+        "ruleVersionId": {
+          "type": "string",
+          "maxLength": 400
+        },
+        "matched": {
+          "type": "boolean"
+        },
+        "reason": {
+          "type": "string",
+          "maxLength": 4000
+        },
+        "result": {
+          "enum": [
+            "match",
+            "nonmatch",
+            "unknown"
+          ]
+        }
+      },
+      "required": [
+        "ruleVersionId",
+        "matched",
+        "reason"
+      ],
+      "additionalProperties": false
+    },
+    "ResearchWorkflowFitResult": {
+      "type": "object",
+      "properties": {
+        "portfolioId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "clientId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "clientName": {
+          "type": "string",
+          "maxLength": 1000
+        },
+        "fitScore": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "availability": {
+          "enum": [
+            "available",
+            "partial",
+            "unavailable"
+          ]
+        },
+        "versionId": {
+          "type": "string",
+          "maxLength": 400
+        },
+        "basis": {
+          "$ref": "urn:meri:retrieval:research-portfolio-workflow:0.2.0#/$defs/ResearchWorkflowFitBasis"
+        },
+        "memberMatches": {
+          "type": "array",
+          "items": {
+            "$ref": "urn:meri:retrieval:research-portfolio-workflow:0.2.0#/$defs/ResearchWorkflowFitMemberMatch"
+          },
+          "maxItems": 10000
+        },
+        "ruleMatches": {
+          "type": "array",
+          "items": {
+            "$ref": "urn:meri:retrieval:research-portfolio-workflow:0.2.0#/$defs/ResearchWorkflowFitRuleMatch"
+          },
+          "maxItems": 10000
+        },
+        "refreshedAt": {
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 64
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "portfolioId",
+        "clientId",
+        "clientName",
+        "fitScore",
+        "ruleMatches",
+        "refreshedAt"
+      ],
+      "additionalProperties": false
+    },
+    "ResearchWorkflowFitOutput": {
+      "type": "object",
+      "properties": {
+        "portfolioId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "clientFits": {
+          "type": "array",
+          "items": {
+            "$ref": "urn:meri:retrieval:research-portfolio-workflow:0.2.0#/$defs/ResearchWorkflowFitResult"
+          },
+          "maxItems": 1000
+        },
+        "availability": {
+          "enum": [
+            "available",
+            "partial",
+            "unavailable"
+          ]
+        },
+        "limitations": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "maxLength": 2000
+          },
+          "maxItems": 10000
+        },
+        "calculatedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "portfolioId",
+        "clientFits",
+        "calculatedAt"
+      ],
+      "additionalProperties": false
+    },
+    "ResearchWorkflowReviewEvidence": {
+      "type": "object",
+      "properties": {
+        "sourceRevisionId": {
+          "type": "string",
+          "maxLength": 400
+        },
+        "locator": {
+          "$ref": "urn:meri:retrieval:research-portfolio:0.2.0#/$defs/ResearchPortfolioJsonObject"
+        },
+        "quote": {
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 20000
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "stance": {
+          "enum": [
+            "for",
+            "against"
+          ]
+        }
+      },
+      "required": [
+        "sourceRevisionId",
+        "locator",
+        "quote",
+        "stance"
+      ],
+      "additionalProperties": false
+    },
+    "ResearchWorkflowReview": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "tenantId": {
+          "type": "string",
+          "maxLength": 400
+        },
+        "portfolioId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "targetKind": {
+          "enum": [
+            "program",
+            "program_element",
+            "project",
+            "budget_line",
+            "award",
+            "rule",
+            "portfolio"
+          ]
+        },
+        "targetId": {
+          "type": "string",
+          "maxLength": 400
+        },
+        "trigger": {
+          "enum": [
+            "rule_change",
+            "annual_continuity",
+            "import",
+            "dispute",
+            "manual"
+          ]
+        },
+        "triggerIdentity": {
+          "type": "string",
+          "maxLength": 400
+        },
+        "dependencyIdentity": {
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 400
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "assigneeUserId": {
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 400
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "reason": {
+          "type": "string",
+          "maxLength": 4000
+        },
+        "evidenceFor": {
+          "type": "array",
+          "items": {
+            "$ref": "urn:meri:retrieval:research-portfolio-workflow:0.2.0#/$defs/ResearchWorkflowReviewEvidence"
+          },
+          "maxItems": 1000
+        },
+        "evidenceAgainst": {
+          "type": "array",
+          "items": {
+            "$ref": "urn:meri:retrieval:research-portfolio-workflow:0.2.0#/$defs/ResearchWorkflowReviewEvidence"
+          },
+          "maxItems": 1000
+        },
+        "revision": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "triggerFingerprint": {
+          "type": "string",
+          "maxLength": 400
+        },
+        "status": {
+          "enum": [
+            "open",
+            "assigned",
+            "deferred",
+            "resolved",
+            "cancelled"
+          ]
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "resolvedAt": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "date-time"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "id",
+        "tenantId",
+        "portfolioId",
+        "targetKind",
+        "targetId",
+        "trigger",
+        "triggerIdentity",
+        "dependencyIdentity",
+        "assigneeUserId",
+        "reason",
+        "evidenceFor",
+        "evidenceAgainst",
+        "revision",
+        "triggerFingerprint",
+        "status",
+        "createdAt",
+        "updatedAt",
+        "resolvedAt"
+      ],
+      "additionalProperties": false
+    },
+    "ResearchWorkflowReviewsOutput": {
+      "type": "array",
+      "items": {
+        "$ref": "urn:meri:retrieval:research-portfolio-workflow:0.2.0#/$defs/ResearchWorkflowReview"
+      },
+      "maxItems": 10000
+    },
+    "ResearchWorkflowRuleNode": {
+      "anyOf": [
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "enum": [
+                "and",
+                "or"
+              ]
+            },
+            "clauses": {
+              "type": "array",
+              "items": {
+                "$ref": "urn:meri:retrieval:research-portfolio-workflow:0.2.0#/$defs/ResearchWorkflowRuleNode"
+              },
+              "maxItems": 1000
+            }
+          },
+          "required": [
+            "kind",
+            "clauses"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "not"
+            },
+            "clause": {
+              "$ref": "urn:meri:retrieval:research-portfolio-workflow:0.2.0#/$defs/ResearchWorkflowRuleNode"
+            }
+          },
+          "required": [
+            "kind",
+            "clause"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "condition"
+            },
+            "field": {
+              "type": "string",
+              "maxLength": 400
+            },
+            "operator": {
+              "enum": [
+                "eq",
+                "neq",
+                "in",
+                "not_in",
+                "contains",
+                "exists",
+                "gte",
+                "lte"
+              ]
+            },
+            "value": {
+              "anyOf": [
+                {
+                  "anyOf": [
+                    {
+                      "type": "string",
+                      "maxLength": 4000
+                    },
+                    {
+                      "type": "number"
+                    },
+                    {
+                      "type": "boolean"
+                    }
+                  ]
+                },
+                {
+                  "type": "array",
+                  "items": {
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "maxLength": 4000
+                      },
+                      {
+                        "type": "number"
+                      },
+                      {
+                        "type": "boolean"
+                      }
+                    ]
+                  },
+                  "maxItems": 1000
+                }
+              ]
+            }
+          },
+          "required": [
+            "kind",
+            "field",
+            "operator",
+            "value"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "ResearchWorkflowRuleVersion": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "version": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "schemaVersion": {
+          "const": 1
+        },
+        "expression": {
+          "$ref": "urn:meri:retrieval:research-portfolio-workflow:0.2.0#/$defs/ResearchWorkflowRuleNode"
+        },
+        "readableExpression": {
+          "type": "string",
+          "maxLength": 20000
+        },
+        "mode": {
+          "enum": [
+            "manual",
+            "rules",
+            "hybrid"
+          ]
+        },
+        "qualificationPolicy": {
+          "$ref": "urn:meri:retrieval:research-portfolio:0.2.0#/$defs/ResearchPortfolioJsonObject"
+        },
+        "taxonomyVersionId": {
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 400
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "templateVersionId": {
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 400
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "previewHash": {
+          "type": "string",
+          "maxLength": 400
+        },
+        "authorUserId": {
+          "type": "string",
+          "maxLength": 400
+        },
+        "predecessorId": {
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 400
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "publishedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "recompute": {
+          "anyOf": [
+            {
+              "type": "object",
+              "properties": {
+                "operationId": {
+                  "type": "string",
+                  "maxLength": 400
+                },
+                "status": {
+                  "enum": [
+                    "queued",
+                    "running",
+                    "partial",
+                    "completed",
+                    "failed",
+                    "cancelled"
+                  ]
+                }
+              },
+              "required": [
+                "operationId",
+                "status"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "id",
+        "version",
+        "schemaVersion",
+        "expression",
+        "readableExpression",
+        "mode",
+        "qualificationPolicy",
+        "taxonomyVersionId",
+        "templateVersionId",
+        "previewHash",
+        "authorUserId",
+        "predecessorId",
+        "publishedAt",
+        "recompute"
+      ],
+      "additionalProperties": false
+    },
+    "ResearchWorkflowRulesOutput": {
+      "type": "array",
+      "items": {
+        "$ref": "urn:meri:retrieval:research-portfolio-workflow:0.2.0#/$defs/ResearchWorkflowRuleVersion"
+      },
+      "maxItems": 10000
+    },
+    "ResearchWorkflowImportRow": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "tenantId": {
+          "type": "string",
+          "maxLength": 400
+        },
+        "portfolioId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "importJobId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "worksheetKind": {
+          "enum": [
+            "membership",
+            "rules",
+            "reviews"
+          ]
+        },
+        "sheetName": {
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 400
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "rowNumber": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "rowIdentity": {
+          "type": "string",
+          "maxLength": 400
+        },
+        "rawCells": {
+          "$ref": "urn:meri:retrieval:research-portfolio:0.2.0#/$defs/ResearchPortfolioJsonObject"
+        },
+        "parsedData": {
+          "$ref": "urn:meri:retrieval:research-portfolio:0.2.0#/$defs/ResearchPortfolioJsonObject"
+        },
+        "repairs": {
+          "$ref": "urn:meri:retrieval:research-portfolio:0.2.0#/$defs/ResearchPortfolioJsonObject"
+        },
+        "validationIssues": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "maxLength": 2000
+          },
+          "maxItems": 10000
+        },
+        "selected": {
+          "type": "boolean"
+        },
+        "previewClassification": {
+          "anyOf": [
+            {
+              "enum": [
+                "resolved",
+                "duplicate",
+                "invalid",
+                "ambiguous",
+                "unresolved",
+                "inaccessible"
+              ]
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "previewReason": {
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 4000
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "finalOutcome": {
+          "anyOf": [
+            {
+              "enum": [
+                "applied",
+                "skipped",
+                "conflict",
+                "failed",
+                "unknown"
+              ]
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "finalReason": {
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 4000
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "finalDisposition": {
+          "$ref": "urn:meri:retrieval:research-portfolio:0.2.0#/$defs/ResearchPortfolioJsonObject"
+        },
+        "expectedRevision": {
+          "anyOf": [
+            {
+              "type": "integer",
+              "minimum": 0
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "canonicalTargetKey": {
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 400
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "targetKind": {
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 400
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "targetId": {
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 400
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "id",
+        "tenantId",
+        "portfolioId",
+        "importJobId",
+        "worksheetKind",
+        "sheetName",
+        "rowNumber",
+        "rowIdentity",
+        "rawCells",
+        "parsedData",
+        "repairs",
+        "validationIssues",
+        "selected",
+        "previewClassification",
+        "previewReason",
+        "finalOutcome",
+        "finalReason",
+        "finalDisposition",
+        "expectedRevision",
+        "canonicalTargetKey",
+        "targetKind",
+        "targetId",
+        "createdAt",
+        "updatedAt"
+      ],
+      "additionalProperties": false
+    },
+    "ResearchWorkflowImportMappingVersion": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "version": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "mapping": {
+          "$ref": "urn:meri:retrieval:research-portfolio:0.2.0#/$defs/ResearchPortfolioJsonObject"
+        },
+        "schemaVersion": {
+          "type": "string",
+          "maxLength": 200
+        },
+        "authorUserId": {
+          "type": "string",
+          "maxLength": 400
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "id",
+        "version",
+        "mapping",
+        "schemaVersion",
+        "authorUserId",
+        "createdAt"
+      ],
+      "additionalProperties": false
+    },
+    "ResearchWorkflowImportAttempt": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "operationKey": {
+          "type": "string",
+          "maxLength": 400
+        },
+        "action": {
+          "enum": [
+            "preview",
+            "apply",
+            "pause",
+            "resume",
+            "cancel",
+            "retry",
+            "reconcile",
+            "compensate"
+          ]
+        },
+        "outcome": {
+          "enum": [
+            "succeeded",
+            "known_failure",
+            "unknown"
+          ]
+        },
+        "checkpoint": {
+          "$ref": "urn:meri:retrieval:research-portfolio:0.2.0#/$defs/ResearchPortfolioJsonObject"
+        },
+        "errorCode": {
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 400
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "receipt": {
+          "$ref": "urn:meri:retrieval:research-portfolio:0.2.0#/$defs/ResearchPortfolioJsonObject"
+        },
+        "actorUserId": {
+          "type": "string",
+          "maxLength": 400
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "id",
+        "operationKey",
+        "action",
+        "outcome",
+        "checkpoint",
+        "errorCode",
+        "receipt",
+        "actorUserId",
+        "createdAt"
+      ],
+      "additionalProperties": false
+    },
+    "ResearchWorkflowImportEffect": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "importRowId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "effectFingerprint": {
+          "type": "string",
+          "maxLength": 400
+        },
+        "effectKind": {
+          "type": "string",
+          "maxLength": 400
+        },
+        "canonicalTargetKey": {
+          "type": "string",
+          "maxLength": 400
+        },
+        "targetId": {
+          "type": "string",
+          "maxLength": 400
+        },
+        "targetRevisionAtApply": {
+          "anyOf": [
+            {
+              "type": "integer",
+              "minimum": 0
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "payload": {
+          "$ref": "urn:meri:retrieval:research-portfolio:0.2.0#/$defs/ResearchPortfolioJsonObject"
+        },
+        "appliedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "id",
+        "importRowId",
+        "effectFingerprint",
+        "effectKind",
+        "canonicalTargetKey",
+        "targetId",
+        "targetRevisionAtApply",
+        "payload",
+        "appliedAt"
+      ],
+      "additionalProperties": false
+    },
+    "ResearchWorkflowImportCompensationReceipt": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "operationKey": {
+          "type": "string",
+          "maxLength": 400
+        },
+        "previewHash": {
+          "type": "string",
+          "maxLength": 400
+        },
+        "status": {
+          "enum": [
+            "previewed",
+            "committed",
+            "failed"
+          ]
+        },
+        "effects": {
+          "type": "array",
+          "items": {
+            "$ref": "urn:meri:retrieval:research-portfolio:0.2.0#/$defs/ResearchPortfolioJsonObject"
+          },
+          "maxItems": 1000
+        },
+        "actorUserId": {
+          "type": "string",
+          "maxLength": 400
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "id",
+        "operationKey",
+        "previewHash",
+        "status",
+        "effects",
+        "actorUserId",
+        "createdAt"
+      ],
+      "additionalProperties": false
+    },
+    "ResearchWorkflowImportDetail": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "tenantId": {
+          "type": "string",
+          "maxLength": 400
+        },
+        "portfolioId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "operationKey": {
+          "type": "string",
+          "maxLength": 400
+        },
+        "worksheetKind": {
+          "enum": [
+            "membership",
+            "rules",
+            "reviews"
+          ]
+        },
+        "status": {
+          "enum": [
+            "created",
+            "mapped",
+            "previewed",
+            "applying",
+            "paused",
+            "completed",
+            "partial",
+            "failed",
+            "cancelled",
+            "unknown",
+            "needs_reconciliation",
+            "compensated"
+          ]
+        },
+        "originalHash": {
+          "type": "string",
+          "maxLength": 400
+        },
+        "originalSize": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "fileName": {
+          "type": "string",
+          "maxLength": 1000
+        },
+        "mediaType": {
+          "type": "string",
+          "maxLength": 400
+        },
+        "originalStorageKey": {
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 2000
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "fileMetadata": {
+          "$ref": "urn:meri:retrieval:research-portfolio:0.2.0#/$defs/ResearchPortfolioJsonObject"
+        },
+        "parserVersion": {
+          "type": "string",
+          "maxLength": 200
+        },
+        "schemaVersion": {
+          "type": "string",
+          "maxLength": 200
+        },
+        "targetRevision": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "checkpoint": {
+          "anyOf": [
+            {
+              "$ref": "urn:meri:retrieval:research-portfolio:0.2.0#/$defs/ResearchPortfolioJsonObject"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "leaseOwner": {
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 400
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "leaseUntil": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "date-time"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "rowCount": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "appliedCount": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "rows": {
+          "type": "array",
+          "items": {
+            "$ref": "urn:meri:retrieval:research-portfolio-workflow:0.2.0#/$defs/ResearchWorkflowImportRow"
+          },
+          "maxItems": 10000
+        },
+        "mappings": {
+          "type": "array",
+          "items": {
+            "$ref": "urn:meri:retrieval:research-portfolio-workflow:0.2.0#/$defs/ResearchWorkflowImportMappingVersion"
+          },
+          "maxItems": 1000
+        },
+        "attempts": {
+          "type": "array",
+          "items": {
+            "$ref": "urn:meri:retrieval:research-portfolio-workflow:0.2.0#/$defs/ResearchWorkflowImportAttempt"
+          },
+          "maxItems": 1000
+        },
+        "effects": {
+          "type": "array",
+          "items": {
+            "$ref": "urn:meri:retrieval:research-portfolio-workflow:0.2.0#/$defs/ResearchWorkflowImportEffect"
+          },
+          "maxItems": 10000
+        },
+        "compensationReceipts": {
+          "type": "array",
+          "items": {
+            "$ref": "urn:meri:retrieval:research-portfolio-workflow:0.2.0#/$defs/ResearchWorkflowImportCompensationReceipt"
+          },
+          "maxItems": 1000
+        }
+      },
+      "required": [
+        "id",
+        "tenantId",
+        "portfolioId",
+        "operationKey",
+        "worksheetKind",
+        "status",
+        "originalHash",
+        "originalSize",
+        "fileName",
+        "mediaType",
+        "originalStorageKey",
+        "fileMetadata",
+        "parserVersion",
+        "schemaVersion",
+        "targetRevision",
+        "checkpoint",
+        "leaseOwner",
+        "leaseUntil",
+        "rowCount",
+        "appliedCount",
+        "createdAt",
+        "updatedAt",
+        "rows",
+        "mappings",
+        "attempts",
+        "effects",
+        "compensationReceipts"
+      ],
+      "additionalProperties": false
+    },
+    "ResearchWorkflowImportsOutput": {
+      "anyOf": [
+        {
+          "$ref": "urn:meri:retrieval:research-portfolio-workflow:0.2.0#/$defs/ResearchWorkflowImportDetail"
+        },
+        {
+          "type": "array",
+          "items": {
+            "$ref": "urn:meri:retrieval:research-portfolio-workflow:0.2.0#/$defs/ResearchWorkflowImportDetail"
+          },
+          "maxItems": 20
+        }
+      ]
+    },
+    "ResearchWorkflowOperationOutput": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "portfolioId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "kind": {
+          "enum": [
+            "import",
+            "recompute",
+            "output",
+            "snapshot",
+            "client_filing"
+          ]
+        },
+        "status": {
+          "enum": [
+            "queued",
+            "running",
+            "completed",
+            "partial",
+            "failed",
+            "cancelled",
+            "outcome_unknown",
+            "paused"
+          ]
+        },
+        "actorUserId": {
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 400
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "domainStatus": {
+          "type": "string",
+          "maxLength": 400
+        },
+        "limitations": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "maxLength": 2000
+          },
+          "maxItems": 10000
+        },
+        "label": {
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 2000
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "startedAt": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "date-time"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "completedAt": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "date-time"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "lastErrorCode": {
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 400
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "lastError": {
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 4000
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "retryCount": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "id",
+        "portfolioId",
+        "kind",
+        "status",
+        "actorUserId",
+        "domainStatus",
+        "limitations",
+        "label",
+        "startedAt",
+        "completedAt",
+        "lastErrorCode",
+        "lastError",
+        "retryCount",
+        "createdAt",
+        "updatedAt"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

@@ -8,8 +8,7 @@
       "properties": {
         "conversationId": {
           "type": "string",
-          "format": "uuid",
-          "pattern": "^[a-f0-9-]+$"
+          "format": "uuid"
         }
       },
       "required": [
@@ -22,23 +21,19 @@
       "properties": {
         "conversationId": {
           "type": "string",
-          "format": "uuid",
-          "pattern": "^[a-f0-9-]+$"
+          "format": "uuid"
         },
         "snapshotId": {
           "type": "string",
-          "format": "uuid",
-          "pattern": "^[a-f0-9-]+$"
+          "format": "uuid"
         },
         "designId": {
           "type": "string",
-          "format": "uuid",
-          "pattern": "^[a-f0-9-]+$"
+          "format": "uuid"
         },
         "clientId": {
           "type": "string",
-          "format": "uuid",
-          "pattern": "^[a-f0-9-]+$"
+          "format": "uuid"
         },
         "branding": {
           "type": "boolean"
@@ -58,13 +53,11 @@
       "properties": {
         "conversationId": {
           "type": "string",
-          "format": "uuid",
-          "pattern": "^[a-f0-9-]+$"
+          "format": "uuid"
         },
         "linkId": {
           "type": "string",
-          "format": "uuid",
-          "pattern": "^[a-f0-9-]+$"
+          "format": "uuid"
         }
       },
       "required": [
@@ -78,23 +71,19 @@
       "properties": {
         "conversationId": {
           "type": "string",
-          "format": "uuid",
-          "pattern": "^[a-f0-9-]+$"
+          "format": "uuid"
         },
         "snapshotId": {
           "type": "string",
-          "format": "uuid",
-          "pattern": "^[a-f0-9-]+$"
+          "format": "uuid"
         },
         "designId": {
           "type": "string",
-          "format": "uuid",
-          "pattern": "^[a-f0-9-]+$"
+          "format": "uuid"
         },
         "clientId": {
           "type": "string",
-          "format": "uuid",
-          "pattern": "^[a-f0-9-]+$"
+          "format": "uuid"
         },
         "branding": {
           "type": "boolean"
@@ -129,8 +118,7 @@
       "properties": {
         "portfolioId": {
           "type": "string",
-          "format": "uuid",
-          "pattern": "^[a-f0-9-]+$"
+          "format": "uuid"
         },
         "enabled": {
           "type": "boolean"
@@ -184,18 +172,15 @@
       "properties": {
         "id": {
           "type": "string",
-          "format": "uuid",
-          "pattern": "^[a-f0-9-]+$"
+          "format": "uuid"
         },
         "portfolioId": {
           "type": "string",
-          "format": "uuid",
-          "pattern": "^[a-f0-9-]+$"
+          "format": "uuid"
         },
         "clientId": {
           "type": "string",
-          "format": "uuid",
-          "pattern": "^[a-f0-9-]+$"
+          "format": "uuid"
         },
         "clientName": {
           "type": "string",
@@ -203,8 +188,7 @@
         },
         "snapshotId": {
           "type": "string",
-          "format": "uuid",
-          "pattern": "^[a-f0-9-]+$"
+          "format": "uuid"
         },
         "snapshotName": {
           "type": "string",
@@ -214,8 +198,7 @@
           "anyOf": [
             {
               "type": "string",
-              "format": "uuid",
-              "pattern": "^[a-f0-9-]+$"
+              "format": "uuid"
             },
             {
               "type": "null"
@@ -238,8 +221,7 @@
         },
         "publishedByUserId": {
           "type": "string",
-          "format": "uuid",
-          "pattern": "^[a-f0-9-]+$"
+          "format": "uuid"
         },
         "publishedAt": {
           "type": "string",
@@ -359,8 +341,7 @@
         },
         "proposalId": {
           "type": "string",
-          "format": "uuid",
-          "pattern": "^[a-f0-9-]+$"
+          "format": "uuid"
         },
         "commandSha256": {
           "type": "string",
@@ -408,8 +389,7 @@
             },
             "portfolioId": {
               "type": "string",
-              "format": "uuid",
-              "pattern": "^[a-f0-9-]+$"
+              "format": "uuid"
             }
           },
           "required": [

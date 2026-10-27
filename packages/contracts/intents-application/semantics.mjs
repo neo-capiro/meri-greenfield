@@ -43,6 +43,12 @@ async function proposal(value,conversationId){
   const {commandSha256,...bound}=value,s=value.scopes[0],selected=value.context.selectedClientId;
   if(await sha(bound)!==commandSha256||value.binding.conversationId!==conversationId||value.context.conversationId!==conversationId||parsed(value.expiresAt)<=parsed(value.createdAt)||s.tenantId!==value.binding.tenantId||s.kind!==(selected===null?'private-user':'client')||s.resourceId!==(selected??value.binding.actorId)||selected!==null&&value.request.clientId!==selected)conflict();return;
  }
+ if(value.kind==='research_action'){
+  const {commandSha256,...bound}=value,[s]=value.scopes;
+  if(await sha(bound)!==commandSha256||value.binding.conversationId!==conversationId||value.request.conversationId!==conversationId||s.tenantId!==value.binding.tenantId||parsed(value.expiresAt)<=parsed(value.createdAt)||
+   value.operation==='save_research_portfolio_output_to_client'&&s.kind==='client'&&value.request.clientId!==s.resourceId)conflict();
+  return;
+ }
  if(value.kind==='research_share'){
   const {commandSha256,...bound}=value,publishing=value.operation==='publish_research_portfolio_share_link';
   if(await sha(bound)!==commandSha256||value.binding.conversationId!==conversationId||value.request.conversationId!==conversationId||
@@ -209,6 +215,11 @@ async function item(value,conversationId){
  if(value.kind==='client_record_action'){if(!Object.hasOwn(value,'proposal'))return;if(value.operation.id!==value.proposal.operation)conflict();await proposal(value.proposal,conversationId);if(value.result!=='unavailable')await clientRecordResult(value.result,value.proposal);return;}
  if(value.kind==='bizdev_action'){if(!Object.hasOwn(value,'proposal'))return;if(value.operation.id!==value.proposal.operation)conflict();await proposal(value.proposal,conversationId);if(value.result!=='unavailable')bizdevResult(value.result,value.proposal);return;}
  if(value.kind==='watch_action'){if(!Object.hasOwn(value,'proposal'))return;if(value.operation.id!==value.proposal.operation)conflict();await proposal(value.proposal,conversationId);if(value.result!=='unavailable')watchResult(value.result,value.proposal);return;}
+ if(value.kind==='research_action'){
+  if(!Object.hasOwn(value,'proposal'))return;
+  if(value.operation.id!==value.proposal.operation)conflict();await proposal(value.proposal,conversationId);
+  if(value.result!=='unavailable'&&value.result.resultSummary!==undefined&&value.result.proposalStatus!=='succeeded')conflict();return;
+ }
  if(value.kind==='research_share'){
   if(!Object.hasOwn(value,'proposal'))return;
   if(value.operation.id!==value.proposal.operation)conflict();await proposal(value.proposal,conversationId);return;
@@ -261,6 +272,11 @@ export async function decide(value,request,retained){
  }
  if(retained.kind==='watch_action'){
   if(value.status!=='watch_decided'||retained.proposalId!==request.proposalId||retained.commandSha256!==request.commandSha256||value.deliveryId!==request.deliveryId||value.proposalId!==request.proposalId)conflict();watchResult(value.result,retained);return value;
+ }
+ if(retained.kind==='research_action'){
+  if(value.status!=='research_action_decided'||retained.proposalId!==request.proposalId||retained.commandSha256!==request.commandSha256||value.deliveryId!==request.deliveryId||value.proposalId!==request.proposalId)conflict();
+  if(value.resultSummary!==undefined&&(request.decision!=='approved'||value.proposalStatus!=='succeeded'))conflict();
+  return value;
  }
  if(retained.kind==='research_share'){
   if(value.status!=='research_share_decided'||retained.proposalId!==request.proposalId||retained.commandSha256!==request.commandSha256||value.deliveryId!==request.deliveryId||value.proposalId!==request.proposalId)conflict();
