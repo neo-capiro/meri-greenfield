@@ -1,8 +1,8 @@
 {
   "contractVersion": "0.2.0",
   "catalogId": "meri.retrieval",
-  "catalogVersion": "0.2.18",
-  "sourceRegistryCommit": "1bcb847e7f344011522785969fb6528e7f809f55",
+  "catalogVersion": "0.2.19",
+  "sourceRegistryCommit": "7c1e509f3fdb3b9eb81758a3df413b7ada9321f9",
   "originals": [
     {
       "id": "manage_research_portfolio",

@@ -553,7 +553,7 @@
           "pattern": "^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)$"
         },
         "sourceRegistryCommit": {
-          "const": "1bcb847e7f344011522785969fb6528e7f809f55"
+          "const": "7c1e509f3fdb3b9eb81758a3df413b7ada9321f9"
         },
         "originals": {
           "type": "array",
