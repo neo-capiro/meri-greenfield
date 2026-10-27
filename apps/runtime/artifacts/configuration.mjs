@@ -30,7 +30,7 @@
  * Meri-local owners that startup composes (`./authority-composition.mjs`). */
 const fault=()=>Object.assign(new Error('ARTIFACT_CONFIGURATION'),{code:'ARTIFACT_CONFIGURATION'});
 const REQUIRED=Object.freeze(['region','bucket','prefix','expectedBucketOwner','kmsKeyId']);
-const KEYS=Object.freeze(['enabled',...REQUIRED,'authority','executor','pdfAdmission','renderer']);
+const KEYS=Object.freeze(['enabled',...REQUIRED,'authority','executor','pdfAdmission','renderer','publicationPagedWrites']);
 const EXECUTOR_KEYS=Object.freeze(['pythonExecutable','nodeExecutable','pptxModulePath','tempRoot','timeoutMs']),EXECUTOR_PATHS=Object.freeze(['pythonExecutable','nodeExecutable','pptxModulePath','tempRoot']);
 const REGION=/^[a-z]{2}(?:-gov)?-[a-z]+-[0-9]$/u,BUCKET=/^[a-z0-9][a-z0-9.-]{1,61}[a-z0-9]$/u,OWNER=/^[0-9]{12}$/u;
 const AUTHORITY_KEYS=Object.freeze(['origin','serviceSecretFile']),SECRET_FILE=/^\/[A-Za-z0-9._\/-]{1,4095}$/u;
@@ -48,6 +48,8 @@ export function compileRuntimeArtifactsConfiguration(configuration){
  const a=plain(raw);
  if(typeof a.enabled!=='boolean')throw fault();
  if(a.pdfAdmission!==undefined&&typeof a.pdfAdmission!=='boolean')throw fault();
+ // This enables writes to an already explicitly upgraded root, never an automatic upgrade.
+ if(a.publicationPagedWrites!==undefined&&typeof a.publicationPagedWrites!=='boolean')throw fault();
  if(a.renderer!==undefined){const renderer=plain(a.renderer,['enabled','imageDigest']);
   if(typeof renderer.enabled!=='boolean'||typeof renderer.imageDigest!=='string'||!/^sha256:[a-f0-9]{64}$/u.test(renderer.imageDigest))throw fault();
   a.renderer=Object.freeze(renderer);

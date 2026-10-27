@@ -8,7 +8,7 @@ export async function recoverArtifact(owner,baseVersionId,requestValue,contextVa
  try{
   if(!evidence||Object.keys(evidence).sort().join()!=='invocationId,requestSha256,versionId'||!/^sdk:[a-f0-9]{64}$/u.test(evidence.invocationId)||!uuid.test(evidence.versionId)||evidence.requestSha256!==requestSha256||request.format==='sandbox'||context.analysisAdmission)fail('ARTIFACT_REPLAY_EVIDENCE');
   const action=baseVersionId===null?'artifact.generate':'artifact.revise',resource={versionId:baseVersionId,object:null,assetObjects:context.assets.map(a=>a.object)};
-  await authority(life,action,resource,requestSha256,context);await servable(life,context);await recoverTenant(life,context);
+  await authority(life,action,resource,requestSha256,context);await servable(life,context);await recoverTenant(life,context,evidence.versionId);
   const candidate=await life.run(signal=>versions.read({kind:'artifact-replay',versionId:evidence.versionId,requestSha256,resultSha256:null},signal));
   const record=scopeVersion(candidate,evidence.versionId,context);
   if(record.requestSha256!==requestSha256||record.specSha256!==v.hash(request)||record.version.parentVersionId!==baseVersionId||v.hash(record.version.binding)!==v.hash(context.binding)||v.hash(record.version.evidence)!==v.hash(context.evidence))fail('ARTIFACT_REPLAY_EVIDENCE');

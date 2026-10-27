@@ -88,7 +88,7 @@ export function documentsFamily(owners={}){
   const retentionPorts=retention?{retentionLedgerSink:createS3RetentionLedgerSink({...s3,now,maxRequestMs:configuration.limits.requestMs}),
    ...(configuration.retention.purge?.enabled?{retentionStorage:createRuntimeRetentionStorage({...s3,now,maxRequestMs:Math.min(configuration.limits.requestMs,3000)})}:{})}:{};
   const storage=createRuntimeArtifactStorage({s3,versionsPool:pool,now,maxRequestMs:configuration.limits.requestMs,
-   ...(retention?{custody:{journal:artifactRecovery.journal,retention:artifactRecovery.retention,evidenceS3:s3,enabled:true}}:{})});
+   ...(retention?{custody:{journal:artifactRecovery.journal,retention:artifactRecovery.retention,evidenceS3:s3,enabled:true,publicationPagedWrites:declared.publicationPagedWrites??false}}:{})});
   // Composed disabled: without a declared Core authority origin the supplied authority is never reached.
   if(o.authority===undefined||declared.authority===undefined)return {ports:{artifactStore:storage,...retentionPorts}};
   if(Object.hasOwn(o.authority,'origin')&&o.authority.origin!==declared.authority.origin||Object.hasOwn(o.authority,'now')&&o.authority.now!==now)throw fault();

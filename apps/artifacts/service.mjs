@@ -2,6 +2,7 @@ import {createHash} from 'node:crypto';
 import {createOperationLifetime} from '../../packages/runtime/operation-lifetime.mjs';
 import {recoverArtifact} from './recovery.mjs';
 import {readArtifactLibrary} from './library.mjs';
+import {readPagedArtifactHistory} from './history-page.mjs';
 import {ARTIFACT_MIME_TYPES as mime,artifactFilename as filenameFor} from '../../packages/contracts/artifacts-0.2/artifact-formats.mjs';
 const sha=bytes=>createHash('sha256').update(bytes).digest('hex');
 const fail=code=>{throw Object.assign(new Error(code),{code});};
@@ -18,7 +19,7 @@ export function createArtifactService({validators:v,authorize,versions,objects,e
     const subjects=[{tenantId:context.binding.tenantId,kind:'conversation',subjectId:context.binding.conversationId}];
     if(record){const b=record.version.binding;if(b.conversationId!==context.binding.conversationId)subjects.push({tenantId:b.tenantId,kind:'conversation',subjectId:b.conversationId});subjects.push({tenantId:b.tenantId,kind:'artifact',subjectId:record.version.artifactId});}
     for(const subject of subjects)await life.run(()=>retention.assertServable(subject));life.check();}
-  async function recoverTenant(life,context){if(versions.recoverTenant)await life.run(signal=>versions.recoverTenant(context.binding.tenantId,signal));life.check();}
+  async function recoverTenant(life,context,versionId=null){if(versionId!==null&&versions.recoverVersion)await life.run(signal=>versions.recoverVersion(context.binding.tenantId,versionId,signal));else if(versions.recoverTenant)await life.run(signal=>versions.recoverTenant(context.binding.tenantId,signal));life.check();}
   function scopeVersion(record,id,context){
     closed(record,['version','spec','specSha256','requestSha256','inspection']);record=v.snapshot(record);record.version=v.version(record.version);record.spec=v.request(record.spec);
     if(record.version.versionId!==id||record.version.binding.tenantId!==context.binding.tenantId||record.version.binding.actorId!==context.binding.actorId||record.version.binding.conversationId!==context.binding.conversationId||!same(record.version.scopes,context.scopes)||!same(record.version.object.scopes,record.version.scopes)||record.specSha256!==v.hash(record.spec))fail('ARTIFACT_VERSION_CONTEXT');
@@ -59,7 +60,7 @@ export function createArtifactService({validators:v,authorize,versions,objects,e
     const action=baseVersionId===null?'artifact.generate':'artifact.revise';
     let resource={versionId:baseVersionId,object:null,assetObjects:context.assets.map(a=>a.object)};
     try{
-      receipt=await authority(life,action,resource,requestSha256,context);await servable(life,context);await recoverTenant(life,context);
+      receipt=await authority(life,action,resource,requestSha256,context);await servable(life,context);await recoverTenant(life,context,baseVersionId);
       if(baseVersionId!==null){
         readBase=scopeVersion(await life.run(signal=>versions.read(baseVersionId,signal)),baseVersionId,context);
         if(readBase.spec.operation!==request.operation||readBase.spec.format!==request.format)fail('ARTIFACT_REVISION_FORMAT');
@@ -97,7 +98,7 @@ export function createArtifactService({validators:v,authorize,versions,objects,e
     const context=v.context(contextValue),life=operation(context,options.signal),action=download?'artifact.download':'artifact.inspect';
     const requestSha256=v.hash({action,versionId,context});let resource={versionId,object:null,assetObjects:[]};
     try{
-      await authority(life,action,resource,requestSha256,context);await servable(life,context);await recoverTenant(life,context);
+      await authority(life,action,resource,requestSha256,context);await servable(life,context);await recoverTenant(life,context,versionId);
       const record=scopeVersion(await life.run(signal=>versions.read(versionId,signal)),versionId,context);
       resource={...resource,object:record.version.object};await authority(life,action,resource,requestSha256,context);await servable(life,context,record);
       const bytes=await bytesFor(life,record.version.object,context.maxBytes);
@@ -115,7 +116,8 @@ export function createArtifactService({validators:v,authorize,versions,objects,e
     if(typeof versions.history!=='function')fail('UNAVAILABLE');
     const context=v.context(contextValue),life=operation(context,options.signal),action='artifact.inspect',resource={versionId:query.versionId,object:null,assetObjects:[]},requestSha256=v.hash({action,intent:'history',query,context});
     try{
-      await authority(life,action,resource,requestSha256,context);await servable(life,context);await recoverTenant(life,context);
+      await authority(life,action,resource,requestSha256,context);await servable(life,context);await recoverTenant(life,context,query.versionId);
+      if(typeof versions.publicationSnapshot==='function'){const publication=await life.run(signal=>versions.publicationSnapshot(context.binding.tenantId,signal));if(publication.paged)return await readPagedArtifactHistory({v,versions,scopeVersion,authority,servable},query,context,life,resource,requestSha256,publication);}
       const result=v.snapshot(await life.run(signal=>versions.history(query.versionId,signal)));closed(result,['artifactId','anchorVersionId','headVersionId','records']);
       if(result.anchorVersionId!==query.versionId||!Array.isArray(result.records)||!result.records.length||result.records.length>1024)fail('ARTIFACT_HISTORY_RESULT');
       const records=result.records.map(record=>scopeVersion(record,record.version?.versionId,context)),ids=new Set();

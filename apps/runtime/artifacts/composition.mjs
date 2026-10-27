@@ -16,11 +16,12 @@ export function createRuntimeArtifactStorage(options){const c=own(options,['s3',
  let versions,previews,recover,record;
  if(c.custody===undefined)versions=createPostgresArtifactVersions({pool:c.versionsPool,now:c.now,...deadline});
  else{
-  const p=own(c.custody,['journal','retention','evidenceS3'],['tenantId','artifactId','enabled']),enabled=p.enabled===undefined?false:p.enabled;
+  const p=own(c.custody,['journal','retention','evidenceS3'],['tenantId','artifactId','enabled','publicationPagedWrites']),enabled=p.enabled===undefined?false:p.enabled;
   if(typeof enabled!=='boolean')throw Error('ARTIFACT_RUNTIME_CONFIGURATION');
-  if(p.artifactId!==undefined){const owner=createPostgresS3PreviewCustody({journal:p.journal,retention:p.retention,versionsPool:c.versionsPool,evidenceS3:p.evidenceS3,tenantId:p.tenantId,artifactId:p.artifactId,now:c.now,enabled,...deadline});versions=owner.versions;previews=owner.previews;recover=signal=>owner.recovery.reconcileExclusive(signal);}
+  if(p.artifactId!==undefined){const owner=createPostgresS3PreviewCustody({journal:p.journal,retention:p.retention,versionsPool:c.versionsPool,evidenceS3:p.evidenceS3,tenantId:p.tenantId,artifactId:p.artifactId,now:c.now,enabled,publicationPagedWrites:p.publicationPagedWrites??false,...deadline});versions=owner.versions;previews=owner.previews;recover=signal=>owner.recovery.reconcileExclusive(signal);}
   else{const evidence=own(p.evidenceS3,['client','bucket','prefix','expectedBucketOwner','kmsKeyId']);
-   const publication=p.tenantId===undefined?{publications:createS3ArtifactPublications({...evidence,now:c.now,enabled,...deadline})}:{publication:createS3ArtifactPublication({...evidence,tenantId:p.tenantId,now:c.now,enabled,...deadline}),tenantId:p.tenantId};
+   const pagedWritesEnabled=p.publicationPagedWrites??false;
+   const publication=p.tenantId===undefined?{publications:createS3ArtifactPublications({...evidence,now:c.now,enabled,pagedWritesEnabled,...deadline})}:{publication:createS3ArtifactPublication({...evidence,tenantId:p.tenantId,now:c.now,enabled,pagedWritesEnabled,...deadline}),tenantId:p.tenantId};
    versions=createPostgresArtifactVersions({pool:c.versionsPool,now:c.now,journal:p.journal,retention:p.retention,...publication,...deadline});
    // Retention startup certifies its own ledger only. Dynamic artifact projections recover on authenticated tenant access.
    recover=p.tenantId===undefined?async()=>undefined:signal=>versions.recoverExclusive(signal);}
