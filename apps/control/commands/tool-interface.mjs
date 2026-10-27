@@ -22,7 +22,7 @@ export function createCommandToolInterface(options){
    instant(value.createdAt)>at||instant(value.expiresAt)<=at||instant(value.expiresAt)<=instant(value.createdAt))deny('COMMAND_PREPARATION_REFUSED');
   lifetime.limitDeadline(instant(value.expiresAt));
   const input=normalize(value.request);if(value.inputSha256!==canonicalSha256(input))deny('COMMAND_PREPARATION_REFUSED');
-  const command={contractVersion:action==='task.update'?'0.2.0':'0.1.0',commandId:value.commandId,binding,action,
+  const command={contractVersion:['task.update','mail.send'].includes(action)?'0.2.0':'0.1.0',commandId:value.commandId,binding,action,
    arguments:input.arguments,attachments:input.attachments,scopes:value.scopes,idempotencyKey:value.idempotencyKey};
   const proposal={proposalId:value.proposalId,command,commandSha256:canonicalSha256(command),createdAt:value.createdAt,expiresAt:value.expiresAt,requiredApprover:value.requiredApprover};
   assertProposal(proposal,trusted.commandContext);

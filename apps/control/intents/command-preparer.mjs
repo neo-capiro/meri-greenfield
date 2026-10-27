@@ -12,7 +12,7 @@ import {createCommandToolInterface} from '../commands/tool-interface.mjs';
 import {data,own} from '../../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {canonicalSha256} from '../../../packages/contracts/validate.mjs';
 import {intentFault} from './faults.mjs';
-export const COMMAND_INTENT_OPERATIONS=Object.freeze({create_task:'task.create',update_task:'task.update',save_chat_attachments:'artifact.file'});
+export const COMMAND_INTENT_OPERATIONS=Object.freeze({mail_send:'mail.send',create_task:'task.create',update_task:'task.update',save_chat_attachments:'artifact.file'});
 /** @param {{commandOptions:object}} configuration the exact `createCommandToolInterface` options of the trusted composition */
 export function createCommandIntentPreparer(configuration){
  const {commandOptions}=own(configuration,['commandOptions']),options=own(commandOptions,['operation','action','outputShape','commandContext','validators','assertProposal','approvalMetadataOwner','executor','now','limits']);

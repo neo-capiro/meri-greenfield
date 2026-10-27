@@ -96,6 +96,9 @@
           "$ref": "#/$defs/Canonical_TaskUpdateApprovalProposal_1f70e582"
         },
         {
+          "$ref": "#/$defs/Canonical_MailSendApprovalProposal_c6ab2c41"
+        },
+        {
           "$ref": "#/$defs/Canonical_DocumentDraftApprovalProposal_834c2460"
         }
       ]
@@ -127,6 +130,67 @@
     },
     "IntentsTaskUpdateArguments": {
       "$ref": "#/$defs/Canonical_TaskUpdateArguments_48509a7a"
+    },
+    "IntentsMailSendArguments": {
+      "$ref": "#/$defs/Canonical_MailSendArguments_016b3776"
+    },
+    "IntentsMailSendContext": {
+      "$ref": "#/$defs/Canonical_MailSendContext_7d8b78f1"
+    },
+    "IntentsMailSendCommand": {
+      "$ref": "#/$defs/Canonical_MailSendCommand_981e52ba"
+    },
+    "IntentsMailSendResult": {
+      "$ref": "#/$defs/Canonical_MailSendResult_65b7ed94"
+    },
+    "IntentsNativeMailOutcome": {
+      "type": "object",
+      "properties": {
+        "execution": {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "native-mail"
+            },
+            "proposalId": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$"
+            },
+            "commandSha256": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            "idempotencyKey": {
+              "type": "string",
+              "minLength": 1
+            },
+            "binding": {
+              "$ref": "#/$defs/Canonical_RunBinding_84f2304c"
+            },
+            "approvalDecisionSha256": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            }
+          },
+          "required": [
+            "kind",
+            "proposalId",
+            "commandSha256",
+            "idempotencyKey",
+            "binding",
+            "approvalDecisionSha256"
+          ],
+          "additionalProperties": false
+        },
+        "result": {
+          "$ref": "#/$defs/Canonical_MailSendResult_65b7ed94"
+        }
+      },
+      "required": [
+        "execution",
+        "result"
+      ],
+      "additionalProperties": false
     },
     "IntentsArtifactFileArguments": {
       "$ref": "#/$defs/Canonical_ArtifactFileArguments_6f2b3978"
@@ -266,6 +330,9 @@
         },
         {
           "$ref": "#/$defs/IntentsNativeTaskOutcome"
+        },
+        {
+          "$ref": "#/$defs/IntentsNativeMailOutcome"
         },
         {
           "$ref": "#/$defs/IntentsNativeArtifactFileOutcome"
@@ -1970,6 +2037,260 @@
       ],
       "additionalProperties": false
     },
+    "Canonical_MailSendArguments_016b3776": {
+      "type": "object",
+      "properties": {
+        "mode": {
+          "enum": [
+            "send",
+            "reply",
+            "reply_all",
+            "forward"
+          ]
+        },
+        "clientId": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "senderConnectionId": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+        },
+        "senderEmail": {
+          "type": "string",
+          "minLength": 3,
+          "maxLength": 254
+        },
+        "to": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 50,
+          "items": {
+            "type": "string",
+            "minLength": 3,
+            "maxLength": 254
+          }
+        },
+        "cc": {
+          "type": "array",
+          "maxItems": 10,
+          "items": {
+            "type": "string",
+            "minLength": 3,
+            "maxLength": 254
+          }
+        },
+        "bcc": {
+          "type": "array",
+          "maxItems": 10,
+          "items": {
+            "type": "string",
+            "minLength": 3,
+            "maxLength": 254
+          }
+        },
+        "subject": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 300
+        },
+        "bodyHtml": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 50000
+        },
+        "files": {
+          "type": "array",
+          "maxItems": 5,
+          "items": {
+            "type": "object",
+            "properties": {
+              "attachmentId": {
+                "type": "string",
+                "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+              },
+              "fileName": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 255
+              },
+              "contentType": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 255
+              },
+              "bytes": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 3145728
+              },
+              "sha256": {
+                "type": "string",
+                "pattern": "^[a-f0-9]{64}$"
+              }
+            },
+            "required": [
+              "attachmentId",
+              "fileName",
+              "contentType",
+              "bytes",
+              "sha256"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "original": {
+          "anyOf": [
+            {
+              "type": "object",
+              "properties": {
+                "threadId": {
+                  "type": "string",
+                  "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+                },
+                "messageId": {
+                  "type": "string",
+                  "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+                },
+                "updatedAt": {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                "bodySha256": {
+                  "anyOf": [
+                    {
+                      "type": "string",
+                      "pattern": "^[a-f0-9]{64}$"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                }
+              },
+              "required": [
+                "threadId",
+                "messageId",
+                "updatedAt",
+                "bodySha256"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "mode",
+        "clientId",
+        "senderConnectionId",
+        "senderEmail",
+        "to",
+        "cc",
+        "bcc",
+        "subject",
+        "bodyHtml",
+        "files",
+        "original"
+      ],
+      "additionalProperties": false
+    },
+    "Canonical_MailSendCommand_981e52ba": {
+      "type": "object",
+      "properties": {
+        "contractVersion": {
+          "const": "0.2.0"
+        },
+        "commandId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "binding": {
+          "$ref": "#/$defs/Canonical_RunBinding_84f2304c"
+        },
+        "action": {
+          "const": "mail.send"
+        },
+        "arguments": {
+          "$ref": "#/$defs/Canonical_MailSendArguments_016b3776"
+        },
+        "attachments": {
+          "type": "array",
+          "maxItems": 0
+        },
+        "scopes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Canonical_Scope_f882edb5"
+          },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "idempotencyKey": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        }
+      },
+      "required": [
+        "contractVersion",
+        "commandId",
+        "binding",
+        "action",
+        "arguments",
+        "attachments",
+        "scopes",
+        "idempotencyKey"
+      ],
+      "additionalProperties": false
+    },
+    "Canonical_MailSendApprovalProposal_c6ab2c41": {
+      "type": "object",
+      "properties": {
+        "proposalId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "command": {
+          "$ref": "#/$defs/Canonical_MailSendCommand_981e52ba"
+        },
+        "commandSha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "pattern": "Z$"
+        },
+        "expiresAt": {
+          "type": "string",
+          "format": "date-time",
+          "pattern": "Z$"
+        },
+        "requiredApprover": {
+          "$ref": "#/$defs/Canonical_Identity_aba0a4e9"
+        }
+      },
+      "required": [
+        "proposalId",
+        "command",
+        "commandSha256",
+        "createdAt",
+        "expiresAt",
+        "requiredApprover"
+      ],
+      "additionalProperties": false
+    },
     "Canonical_DocumentDraftArguments_deaaba57": {
       "type": "object",
       "properties": {
@@ -2262,7 +2583,7 @@
       ],
       "additionalProperties": false
     },
-    "Canonical_LegiwatchRequest_5cff194f": {
+    "Canonical_SuggestionLegiwatchRequest_d59a433f": {
       "type": "object",
       "properties": {
         "clientId": {
@@ -2328,6 +2649,114 @@
       ],
       "additionalProperties": false
     },
+    "Canonical_RelevanceRequest_3250901f": {
+      "type": "object",
+      "properties": {
+        "clientId": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^[a-f0-9]{8}-[a-f0-9]{4}-[1-8][a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "folderId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 250
+        },
+        "jurisdiction": {
+          "type": "string",
+          "pattern": "^[A-Z]{2}$"
+        },
+        "sessionKey": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 60
+        },
+        "fields": {
+          "type": "array",
+          "items": {
+            "enum": [
+              "title",
+              "bill_text",
+              "amendment_text"
+            ]
+          },
+          "maxItems": 3,
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "billId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 250
+        },
+        "explanation": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 2000
+        },
+        "documentId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 250
+        },
+        "start": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "end": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        },
+        "quote": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 2000
+        },
+        "previewHash": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "requestKey": {
+          "type": "string",
+          "minLength": 8,
+          "maxLength": 180
+        }
+      },
+      "required": [
+        "clientId",
+        "folderId",
+        "jurisdiction",
+        "sessionKey",
+        "fields",
+        "billId",
+        "explanation",
+        "documentId",
+        "start",
+        "end",
+        "quote",
+        "previewHash",
+        "requestKey"
+      ],
+      "additionalProperties": false
+    },
+    "Canonical_LegiwatchRequest_5cff194f": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/Canonical_SuggestionLegiwatchRequest_d59a433f"
+        },
+        {
+          "$ref": "#/$defs/Canonical_RelevanceRequest_3250901f"
+        }
+      ]
+    },
     "Canonical_LegiwatchContext_a906d964": {
       "type": "object",
       "properties": {
@@ -2388,7 +2817,10 @@
           "maxItems": 1
         },
         "operation": {
-          "const": "apply_legiwatch_suggestion"
+          "enum": [
+            "apply_legiwatch_suggestion",
+            "save_legiwatch_relevance"
+          ]
         },
         "proposalId": {
           "type": "string",
@@ -2513,6 +2945,170 @@
         "dueDate"
       ],
       "additionalProperties": false
+    },
+    "Canonical_MailSendContext_7d8b78f1": {
+      "type": "object",
+      "properties": {
+        "binding": {
+          "$ref": "#/$defs/Canonical_RunBinding_84f2304c"
+        }
+      },
+      "required": [
+        "binding"
+      ],
+      "additionalProperties": false
+    },
+    "Canonical_MailSendResult_65b7ed94": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "state": {
+              "const": "failed"
+            },
+            "intentId": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+            },
+            "requestKey": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+            },
+            "retryable": {
+              "const": false
+            }
+          },
+          "required": [
+            "state",
+            "intentId",
+            "requestKey",
+            "retryable"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "state": {
+              "const": "accepted"
+            },
+            "intentId": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+            },
+            "requestKey": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+            },
+            "retryable": {
+              "const": false
+            },
+            "threadId": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+            },
+            "messageId": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+            },
+            "provider": {
+              "enum": [
+                "gmail",
+                "microsoft_graph"
+              ]
+            },
+            "senderConnectionId": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+            },
+            "senderEmail": {
+              "type": "string",
+              "minLength": 3,
+              "maxLength": 254
+            },
+            "mode": {
+              "enum": [
+                "send",
+                "reply",
+                "reply_all",
+                "forward"
+              ]
+            },
+            "original": {
+              "anyOf": [
+                {
+                  "type": "object",
+                  "properties": {
+                    "threadId": {
+                      "type": "string",
+                      "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+                    },
+                    "messageId": {
+                      "type": "string",
+                      "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+                    },
+                    "updatedAt": {
+                      "type": "string",
+                      "format": "date-time"
+                    },
+                    "bodySha256": {
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "pattern": "^[a-f0-9]{64}$"
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    }
+                  },
+                  "required": [
+                    "threadId",
+                    "messageId",
+                    "updatedAt",
+                    "bodySha256"
+                  ],
+                  "additionalProperties": false
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "signaturePolicy": {
+              "const": "actor"
+            },
+            "signatureAppended": {
+              "type": "boolean"
+            },
+            "mailboxConfirmation": {
+              "enum": [
+                null,
+                "pending",
+                "confirmed"
+              ]
+            }
+          },
+          "required": [
+            "state",
+            "intentId",
+            "requestKey",
+            "retryable",
+            "threadId",
+            "messageId",
+            "provider",
+            "senderConnectionId",
+            "senderEmail",
+            "mode",
+            "original",
+            "signaturePolicy",
+            "signatureAppended",
+            "mailboxConfirmation"
+          ],
+          "additionalProperties": false
+        }
+      ]
     },
     "Canonical_ArtifactFileArguments_6f2b3978": {
       "type": "object",
@@ -4435,11 +5031,11 @@
         "expired"
       ]
     },
-    "Canonical_LegiwatchReceipt_706f9465": {
+    "Canonical_SuggestionLegiwatchReceipt_d2466c8d": {
       "type": "object",
       "properties": {
         "request": {
-          "$ref": "#/$defs/Canonical_LegiwatchRequest_5cff194f"
+          "$ref": "#/$defs/Canonical_SuggestionLegiwatchRequest_d59a433f"
         },
         "outcome": {
           "enum": [
@@ -4508,6 +5104,65 @@
         "payload"
       ],
       "additionalProperties": false
+    },
+    "Canonical_RelevanceReceipt_ef963586": {
+      "type": "object",
+      "properties": {
+        "request": {
+          "$ref": "#/$defs/Canonical_RelevanceRequest_3250901f"
+        },
+        "outcome": {
+          "const": "suggested"
+        },
+        "payload": {
+          "type": "object",
+          "properties": {
+            "binding": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            "suggestionId": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{8}-[a-f0-9]{4}-[1-8][a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$"
+            },
+            "version": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 9007199254740991
+            },
+            "origin": {
+              "const": "semantic"
+            },
+            "state": {
+              "const": "pending"
+            }
+          },
+          "required": [
+            "binding",
+            "suggestionId",
+            "version",
+            "origin",
+            "state"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "request",
+        "outcome",
+        "payload"
+      ],
+      "additionalProperties": false
+    },
+    "Canonical_LegiwatchReceipt_706f9465": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/Canonical_SuggestionLegiwatchReceipt_d2466c8d"
+        },
+        {
+          "$ref": "#/$defs/Canonical_RelevanceReceipt_ef963586"
+        }
+      ]
     },
     "Canonical_LegiwatchCoreResult_c5ab3126": {
       "type": "object",

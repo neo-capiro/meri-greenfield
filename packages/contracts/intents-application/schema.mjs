@@ -4,6 +4,7 @@ const UUID='^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$',DELI
 export const INTENT_PHASES=Object.freeze(['awaiting_approval','approved','rejected','expired','executing','completed','unknown','unknown_decision']);
 const pub=name=>({$ref:'urn:meri:contracts:0.1.0#/$defs/'+name});
 const task=name=>({$ref:'urn:meri:commands:task-create:0.2.0#/$defs/'+name});
+const mail=name=>({$ref:'urn:meri:commands:mail-send:0.2.0#/$defs/'+name});
 const update=name=>({$ref:'urn:meri:commands:task-update:0.2.0#/$defs/'+name});
 const document=name=>({$ref:'urn:meri:commands:document-draft:0.2.0#/$defs/'+name});
 const memory=name=>({$ref:'urn:meri:commands:memory-propose:0.2.0#/$defs/'+name});
@@ -21,20 +22,25 @@ export function intentsSchema({errorStatuses,errorOutcomes,failureCodes,fieldPat
  IntentsOperation:object({id:{type:'string',pattern:'^[a-z][a-z_]{0,62}$'},version:{const:'0.2.0'}}),
  IntentsListRequest:object({conversationId:ref('IntentsConversationId'),after:{anyOf:[ref('IntentsDeliveryId'),{type:'null'}]},limit:{type:'integer',minimum:1,maximum:50}},['conversationId']),
  IntentsDecideRequest:object({conversationId:ref('IntentsConversationId'),deliveryId:ref('IntentsDeliveryId'),proposalId:{type:'string',pattern:UUID},commandSha256:{type:'string',pattern:'^[a-f0-9]{64}$'},decision:{enum:['approved','rejected']}}),
- IntentsNativeProposal:{oneOf:[pub('ApprovalProposal'),update('TaskUpdateApprovalProposal'),document('DocumentDraftApprovalProposal')]},
+ IntentsNativeProposal:{oneOf:[pub('ApprovalProposal'),update('TaskUpdateApprovalProposal'),mail('MailSendApprovalProposal'),document('DocumentDraftApprovalProposal')]},
  IntentsProposal:{oneOf:[ref('IntentsNativeProposal'),sharing('ResearchShareProposal'),legiwatch('LegiwatchProposal')]},
  IntentsLegiwatchProposal:legiwatch('LegiwatchProposal'),
  IntentsResearchShareProposal:sharing('ResearchShareProposal'),
  IntentsDecision:pub('ApprovalDecision'),
  IntentsTaskCreateArguments:task('TaskCreateArguments'),
  IntentsTaskUpdateArguments:update('TaskUpdateArguments'),
+ IntentsMailSendArguments:mail('MailSendArguments'),
+ IntentsMailSendContext:mail('MailSendContext'),
+ IntentsMailSendCommand:mail('MailSendCommand'),
+ IntentsMailSendResult:mail('MailSendResult'),
+ IntentsNativeMailOutcome:object({execution:object({kind:{const:'native-mail'},proposalId:{type:'string',pattern:UUID},commandSha256:{type:'string',pattern:'^[a-f0-9]{64}$'},idempotencyKey:{type:'string',minLength:1},binding:pub('RunBinding'),approvalDecisionSha256:{type:'string',pattern:'^[a-f0-9]{64}$'}}),result:mail('MailSendResult')}),
  IntentsArtifactFileArguments:filing('ArtifactFileArguments'),
  IntentsNativeTaskOutcome:object({execution:object({kind:{const:'native-task'},proposalId:{type:'string',pattern:UUID},commandSha256:{type:'string',pattern:'^[a-f0-9]{64}$'},
   idempotencyKey:{type:'string',minLength:1},binding:pub('RunBinding'),completedAt:{type:'string',pattern:MILLIS},approvalDecisionSha256:{type:'string',pattern:'^[a-f0-9]{64}$'}}),
   result:{oneOf:[task('TaskCreateResult'),update('TaskUpdateResult')]}}),
  IntentsNativeArtifactFileOutcome:object({execution:object({kind:{const:'native-artifact-file'},proposalId:{type:'string',pattern:UUID},commandSha256:{type:'string',pattern:'^[a-f0-9]{64}$'},
   idempotencyKey:{type:'string',minLength:1},binding:pub('RunBinding'),completedAt:{type:'string',pattern:MILLIS},approvalDecisionSha256:{type:'string',pattern:'^[a-f0-9]{64}$'}}),result:filing('ArtifactFileResult')}),
- IntentsExecutionOutcome:{oneOf:[object({receipt:pub('CommandReceipt'),result:task('TaskCreateResult')}),ref('IntentsNativeTaskOutcome'),ref('IntentsNativeArtifactFileOutcome'),artifact('ArtifactCreatedResult')]},
+ IntentsExecutionOutcome:{oneOf:[object({receipt:pub('CommandReceipt'),result:task('TaskCreateResult')}),ref('IntentsNativeTaskOutcome'),ref('IntentsNativeMailOutcome'),ref('IntentsNativeArtifactFileOutcome'),artifact('ArtifactCreatedResult')]},
  IntentsExecution:{oneOf:[object({state:{const:'executing'}}),object({state:{const:'unknown'}}),object({state:{const:'completed'},outcome:ref('IntentsExecutionOutcome')})]},
  IntentsPendingItem:item({state:{const:'pending'}}),
  IntentsUnknownItem:item({state:{const:'unknown'}}),

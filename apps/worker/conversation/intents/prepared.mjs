@@ -10,9 +10,9 @@
 import {own,data} from '../../../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {assertProposalIntegrity,canonicalSha256,validateShape} from '../../../../packages/contracts/validate.mjs';
 import {artifactValidators,scheduleToolValidators,researchShareValidators,legiwatchValidators,validateShape as toolShape} from '../../../../packages/contracts/retrieval-0.2/validate.mjs';
-import {assertTaskUpdateProposal} from '../../../../packages/contracts/commands-0.2/validate.mjs';
+import {assertMailSendProposal,assertTaskUpdateProposal} from '../../../../packages/contracts/commands-0.2/validate.mjs';
 import {assertMemoryReviewResult} from '../../../../packages/contracts/commands-0.2/memory-review-result.mjs';
-const ACTIONS=Object.freeze({create_task:'task.create',update_task:'task.update',save_chat_attachments:'artifact.file'});
+const ACTIONS=Object.freeze({mail_send:'mail.send',create_task:'task.create',update_task:'task.update',save_chat_attachments:'artifact.file'});
 const refuse=()=>{throw Object.assign(Error('INVALID_RESULT'),{code:'INVALID_RESULT'});};
 /** @param {any} b @param {any} binding */
 const sameRun=(b,binding)=>b?.tenantId===binding.tenantId&&b?.actorId===binding.actorId&&b?.conversationId===binding.conversationId;
@@ -47,7 +47,7 @@ export function assertPreparedResult(owner,operation,value,binding,current){
   }
   if(owner==='command'){
    own(v,['status','proposal']);const p=v.proposal;
-   if(operation.id==='update_task')assertTaskUpdateProposal(p,{binding:p?.command?.binding});else assertProposalIntegrity(p);
+   if(operation.id==='mail_send')assertMailSendProposal(p,{binding:p?.command?.binding});else if(operation.id==='update_task')assertTaskUpdateProposal(p,{binding:p?.command?.binding});else assertProposalIntegrity(p);
    if(v.status!=='approval_required'||p.command.action!==ACTIONS[/** @type {keyof typeof ACTIONS} */(operation.id)]||!sameRun(p.command.binding,binding)||!currentScopes(p.command.scopes,binding,current.scopes)||p.requiredApprover?.tenantId!==binding.tenantId||Date.parse(p.createdAt)>current.nowMs||Date.parse(p.expiresAt)<=current.nowMs)refuse();
    return {status:'approval_required',reference:p.proposalId,value:v};
   }

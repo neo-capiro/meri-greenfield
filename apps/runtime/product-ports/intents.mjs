@@ -137,6 +137,7 @@ function compose(context,transport){
   revokeDecision:decisions?value=>decisions.revoke(value):null,
   /** Original proposal plus current attended session; Core owns task mutation and durable replay. */
   tasks:core?Object.freeze({execute:value=>core.forwarder.executeTask(value),read:value=>core.forwarder.readTaskExecution(value)}):null,
+  mail:core?Object.freeze({execute:value=>core.forwarder.executeMail(value),read:value=>core.forwarder.readMailExecution(value)}):null,
   filingSource:core?createCoreFilingClient({origin:core.forwarder.origin,credentials:{getCredentials:value=>core.forwarder.filingCredentials(value)},now,
    maxRequestMs:Math.min(c.configuration.limits.requestMs,30000),...(transport.fetchImpl?{fetchImpl:transport.fetchImpl}:{})}):null,
   approvalSessions:()=>core?core.relay.state():'absent'};
@@ -148,7 +149,7 @@ function compose(context,transport){
  const composed=composeIntentApprovals({pool:c.pool,native:c.native,decisions,
   documents:{execute:value=>{const owner=documentApprovalOwnerFor(context);if(!owner)throw executionOwnerUnavailable();return owner.execute(value);},read:value=>{const owner=documentApprovalOwnerFor(context);if(!owner)throw executionOwnerUnavailable();return owner.read(value);}},
   filing:{execute:value=>{const owner=filingApprovalOwnerFor(context);if(!owner)throw executionOwnerUnavailable();return owner.execute(value);},read:value=>{const owner=filingApprovalOwnerFor(context);if(!owner)throw executionOwnerUnavailable();return owner.read(value);}},
-  ...(core?{tasks:{execute:value=>core.forwarder.executeTask(value),read:value=>core.forwarder.readTaskExecution(value)},sharing:{read:value=>core.sharing.read(value),decide:value=>core.sharing.decide(value)},legiwatch:{read:value=>core.legiwatch.read(value),decide:value=>core.legiwatch.decide(value)}}:{}),
+  ...(core?{mail:{execute:value=>core.forwarder.executeMail(value),read:value=>core.forwarder.readMailExecution(value)},tasks:{execute:value=>core.forwarder.executeTask(value),read:value=>core.forwarder.readTaskExecution(value)},sharing:{read:value=>core.sharing.read(value),decide:value=>core.sharing.decide(value)},legiwatch:{read:value=>core.legiwatch.read(value),decide:value=>core.legiwatch.decide(value)}}:{}),
   gate,now,limits,retention,enabled:true});
  return Object.freeze({...shared,state:'composed',reason:null,application:composed.app,owner:composed.owner});
 }

@@ -268,7 +268,7 @@ test('generated bundle is independent of the checkout layout',async()=>{
 });
 test('metadata, paths and vocabularies describe the canonical mounted approval actions',async()=>{
  assert.deepEqual(intentsPaths,INTENT_PATHS);assert.deepEqual(intentsMetadata.routes,{list:{method:'POST',path:'/api/conversations/intents/list',response:'json'},decide:{method:'POST',path:'/api/conversations/intents/decide',response:'json'}});
- assert.deepEqual(intentsMetadata.errorStatuses,protocol.INTENTS_ERROR_STATUSES);assert.deepEqual(intentsMetadata.approvableActions,protocol.INTENTS_APPROVABLE_ACTIONS);assert.deepEqual(intentsMetadata.approvableActions,['task.create','task.update','document.draft','artifact.file']);assert.deepEqual(intentsMetadata.failureCodes,protocol.INTENTS_FAILURE_CODES);
+ assert.deepEqual(intentsMetadata.errorStatuses,protocol.INTENTS_ERROR_STATUSES);assert.deepEqual(intentsMetadata.approvableActions,protocol.INTENTS_APPROVABLE_ACTIONS);assert.deepEqual(intentsMetadata.approvableActions,['task.create','task.update','document.draft','artifact.file','mail.send']);assert.deepEqual(intentsMetadata.failureCodes,protocol.INTENTS_FAILURE_CODES);
  assert.deepEqual(intentsMetadata.errorOutcomes,['NOT_DISPATCHED','UNKNOWN','RESULT_NOT_RELEASED']);assert.equal(Object.keys(intentsMetadata.routes).length,2,'no approve/execute route exists in this contract');
  assert(Object.isFrozen(intentsMetadata)&&Object.isFrozen(intentsMetadata.errorStatuses));
  const schema=JSON.parse(await readFile(new URL('../dist/intents-application.schema.json',import.meta.url),'utf8')),text=JSON.stringify(schema);

@@ -19,9 +19,9 @@ if(!('error'in listed))for(const entry of listed.intents){if(entry.state==='prep
 if(!('error'in decided)&&decided.status==='executed'){
  if('receipt'in decided.outcome){const commandSha256:string=decided.outcome.receipt.commandSha256;void commandSha256;}
  else if('version'in decided.outcome){const versionId:string=decided.outcome.version.versionId;void versionId;}
- else {const kind:'native-task'|'native-artifact-file'=decided.outcome.execution.kind;void kind;
+ else {const kind:'native-task'|'native-artifact-file'|'native-mail'=decided.outcome.execution.kind;void kind;
   if('id'in decided.outcome.result){const taskId:string=decided.outcome.result.id;void taskId;}
-  else {const files=decided.outcome.result.files;const commandSha256:string=decided.outcome.result.commandSha256;void files;void commandSha256;}}
+  else if('files'in decided.outcome.result){const files=decided.outcome.result.files;const commandSha256:string=decided.outcome.result.commandSha256;void files;void commandSha256;}}
 }
 if('command'in retained&&retained.command.action==='task.update'){const taskId:string=retained.command.arguments.taskId;void taskId;}
 if('command'in retained&&retained.command.action==='document.draft'){
@@ -51,3 +51,6 @@ if(!('error'in listed))for(const entry of listed.intents){if(entry.state==='prep
 if(!('error'in decided)&&decided.status==='executed'&&!('receipt'in decided.outcome)&&!('version'in decided.outcome)&&decided.outcome.execution.kind==='native-artifact-file'){
  const kind:'native-artifact-file'=decided.outcome.execution.kind;void kind;
 }
+
+if('command'in retained&&retained.command.action==='mail.send'){const sender:string=retained.command.arguments.senderEmail;void sender;}
+if(!('error'in decided)&&decided.status==='executed'&&!('receipt'in decided.outcome)&&!('version'in decided.outcome)&&'state'in decided.outcome.result){const state:'accepted'|'failed'=decided.outcome.result.state;void state;}

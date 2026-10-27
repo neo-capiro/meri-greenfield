@@ -3,6 +3,7 @@
  * Rules mirror the canonical owners: approval.mjs (decision/lifetime reads), validate.mjs assertProposalIntegrity, and commands-0.2
  * execution-intent.mjs `outcome` plus task-create-validation.mjs, and the selected-document artifact publication owner. */
 import canonicalize from 'canonicalize';
+import {createMailSendValidators} from '../commands-0.2/mail-send-validation.mjs';
 import {ARTIFACT_MIME_TYPES,assertNativeArtifactEvidenceBinding} from '../artifacts-0.2/artifact-formats.mjs';
 import {validators} from './generated-validator.mjs';
 import {intentsMetadata} from './generated-protocol.mjs';
@@ -11,6 +12,7 @@ import {assertRoutineProposal} from './routines.mjs';
 const same=(a,b)=>canonicalize(a)===canonicalize(b);
 const sha=async value=>Array.from(new Uint8Array(await globalThis.crypto.subtle.digest('SHA-256',new TextEncoder().encode(canonicalize(value)))),byte=>byte.toString(16).padStart(2,'0')).join('');
 const conflict=()=>fail('INTENTS_CORRELATION');
+const mail=createMailSendValidators({snapshotOperationData:value=>value,canonicalSha256:canonicalize,validateShape(name,value){if(!validators['Intents'+name]?.(value))conflict();}});
 /** Proposal and decision times are read as approval.mjs reads them: any date-time the schema admits (ending Z) that Date.parse accepts. */
 const parsed=value=>{const at=typeof value==='string'?Date.parse(value):NaN;if(!Number.isSafeInteger(at))conflict();return at;};
 /** Receipts and task results use the canonical execution boundary's exact spelling (commands-0.2/execution-boundary.mjs instant). */
@@ -40,6 +42,7 @@ async function proposal(value,conversationId){
   if(patch.title!==undefined&&patch.title.trim()!==patch.title)conflict();
   if(patch.dueDate!==undefined&&exact(patch.dueDate)%86400000!==0)conflict();
  }
+ if(command.action==='mail.send'){try{mail.assertMailSendCommand(command,{binding:command.binding});exact(value.createdAt);exact(value.expiresAt);if(value.requiredApprover.actorId!==command.binding.actorId)conflict();}catch{conflict();}}
  if(command.action==='document.draft') {
   exact(value.createdAt);exact(value.expiresAt);
   if(command.arguments.title.trim()!==command.arguments.title||command.arguments.title.length>200||
@@ -73,6 +76,10 @@ function documentOutcome(value,command) {
 async function outcome(value,retained,decisionValue){
  const command=retained.command,receipt=value.receipt,result=value.result;
  if(command.action==='document.draft')return documentOutcome(value,command);
+ if(value.execution?.kind==='native-mail'){
+  const e=value.execution;if(command.action!=='mail.send'||e.proposalId!==retained.proposalId||e.commandSha256!==retained.commandSha256||e.idempotencyKey!==command.idempotencyKey||!same(e.binding,command.binding)||decisionValue&&e.approvalDecisionSha256!==await sha(decisionValue))conflict();
+  try{mail.assertMailSendResult(result,command,retained.proposalId);}catch{conflict();}return;
+ }
  if(value.execution?.kind==='native-task'||value.execution?.kind==='native-artifact-file'){
   const e=value.execution;
   if(e.proposalId!==retained.proposalId||e.commandSha256!==retained.commandSha256||e.idempotencyKey!==command.idempotencyKey||!same(e.binding,command.binding)||

@@ -125,7 +125,8 @@
                 "get_business_development_brief",
                 "resolve_business_development_source",
                 "preview_legiwatch_relevance",
-                "save_legiwatch_relevance"
+                "save_legiwatch_relevance",
+                "mail_send"
               ]
             },
             "disposition": {
@@ -572,8 +573,8 @@
           "items": {
             "$ref": "urn:meri:retrieval:catalog:0.2.0#/$defs/NativeMapping"
           },
-          "minItems": 150,
-          "maxItems": 150,
+          "minItems": 151,
+          "maxItems": 151,
           "uniqueItems": true
         },
         "operations": {

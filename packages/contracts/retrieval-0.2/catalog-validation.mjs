@@ -60,6 +60,10 @@ export const CATALOG_OPERATION_BINDINGS = Object.freeze([
     contextKeys:Object.freeze(['commandContext','command','proposal']),dispatchProfile:'command-execution/1',
     normalize:(v,request,context,binding)=>v.commandToolValidators.normalizeCommandToolInput(binding.action,request,clock(context,binding.contextKeys)),
     outputAssert:(v,page,request,context,binding)=>v.commandToolValidators.assertCommandToolOutput(binding.action,binding.output,page,request,clock(context,binding.contextKeys))}),
+  Object.freeze({id:'mail_send',nativeId:'mail_send',action:'mail.send',group:'command-tools',input:'MailSendToolRequest',output:'MailSendToolResult',version:'0.2.0',
+    contextKeys:Object.freeze(['commandContext','command','proposal']),dispatchProfile:'command-execution/1',
+    normalize:(v,request,context,binding)=>v.commandToolValidators.normalizeCommandToolInput(binding.action,request,clock(context,binding.contextKeys)),
+    outputAssert:(v,page,request,context,binding)=>v.commandToolValidators.assertCommandToolOutput(binding.action,binding.output,page,request,clock(context,binding.contextKeys))}),
   Object.freeze({id:'update_task',nativeId:'update_task',action:'task.update',group:'command-tools',input:'TaskUpdateToolRequest',output:'TaskUpdateToolResult',version:'0.2.0',
     contextKeys:Object.freeze(['commandContext','command','proposal']),dispatchProfile:'command-execution/1',
     normalize:(v,request,context,binding)=>v.commandToolValidators.normalizeCommandToolInput(binding.action,request,clock(context,binding.contextKeys)),
@@ -434,7 +438,7 @@ function assertCatalog(catalog) {
   validateShape('Catalog', catalog);
   unique(catalog.originals.map(row => row.id), 'native capability');
   const selected = catalog.originals.filter(row => row.disposition === 'selected');
-  const additive = ['get_research_portfolio_share_links','publish_research_portfolio_share_link','revoke_research_portfolio_share_link','read_saved_strategy_records','read_saved_record','describe_capiro_data','query_capiro_data','list_connected_app_reads','read_connected_app','list_teams_channels','get_teams_channel_messages'];
+  const additive = ['mail_send','get_research_portfolio_share_links','publish_research_portfolio_share_link','revoke_research_portfolio_share_link','read_saved_strategy_records','read_saved_record','describe_capiro_data','query_capiro_data','list_connected_app_reads','read_connected_app','list_teams_channels','get_teams_channel_messages'];
   if (selected.filter(row=>!additive.includes(row.id)).length !== 104 || catalog.originals.length - selected.length !== 35) fail('D012 disposition mismatch');
   const operations = new Map();
   const aliases = new Map();

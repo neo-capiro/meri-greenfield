@@ -1398,6 +1398,16 @@
         "version": "0.2.0"
       },
       "state": "mapped"
+    },
+    {
+      "id": "mail_send",
+      "disposition": "selected",
+      "boundary": "Additive approved native mail command; current Core mailbox/original/file authority and SingleMailLedger own all effects. Legacy send_email/reply_email names remain excluded.",
+      "replacement": {
+        "id": "mail_send",
+        "version": "0.2.0"
+      },
+      "state": "mapped"
     }
   ],
   "operations": [
@@ -1430,11 +1440,11 @@
       ],
       "inputSchema": {
         "id": "urn:meri:retrieval:mail:0.2.0#/$defs/MailThreadInput",
-        "sha256": "d45681f76ba5f5d7f65b7385ab1e1c3deb9626d4166e55fc6039e88bc3d804e6"
+        "sha256": "e2be34336f7c9f370c3f9e3b8db7f99e92c2d16399716266f1e27eb6819811aa"
       },
       "outputSchema": {
         "id": "urn:meri:retrieval:mail:0.2.0#/$defs/MailThreadSourcePage",
-        "sha256": "d45681f76ba5f5d7f65b7385ab1e1c3deb9626d4166e55fc6039e88bc3d804e6"
+        "sha256": "e2be34336f7c9f370c3f9e3b8db7f99e92c2d16399716266f1e27eb6819811aa"
       },
       "aliases": [
         "get_email_thread"
@@ -1496,11 +1506,11 @@
       ],
       "inputSchema": {
         "id": "urn:meri:retrieval:mail:0.2.0#/$defs/MailListInput",
-        "sha256": "d45681f76ba5f5d7f65b7385ab1e1c3deb9626d4166e55fc6039e88bc3d804e6"
+        "sha256": "e2be34336f7c9f370c3f9e3b8db7f99e92c2d16399716266f1e27eb6819811aa"
       },
       "outputSchema": {
         "id": "urn:meri:retrieval:mail:0.2.0#/$defs/MailCandidateSourcePage",
-        "sha256": "d45681f76ba5f5d7f65b7385ab1e1c3deb9626d4166e55fc6039e88bc3d804e6"
+        "sha256": "e2be34336f7c9f370c3f9e3b8db7f99e92c2d16399716266f1e27eb6819811aa"
       },
       "aliases": [
         "list_emails"
@@ -1562,11 +1572,11 @@
       ],
       "inputSchema": {
         "id": "urn:meri:retrieval:mail:0.2.0#/$defs/MailSearchInput",
-        "sha256": "d45681f76ba5f5d7f65b7385ab1e1c3deb9626d4166e55fc6039e88bc3d804e6"
+        "sha256": "e2be34336f7c9f370c3f9e3b8db7f99e92c2d16399716266f1e27eb6819811aa"
       },
       "outputSchema": {
         "id": "urn:meri:retrieval:mail:0.2.0#/$defs/MailCandidateSourcePage",
-        "sha256": "d45681f76ba5f5d7f65b7385ab1e1c3deb9626d4166e55fc6039e88bc3d804e6"
+        "sha256": "e2be34336f7c9f370c3f9e3b8db7f99e92c2d16399716266f1e27eb6819811aa"
       },
       "aliases": [
         "search_emails"
@@ -7589,11 +7599,11 @@
       ],
       "inputSchema": {
         "id": "urn:meri:commands:tool-interface:0.2.0#/$defs/TaskCreateToolRequest",
-        "sha256": "7c394fc336eeb91435d38b57e45180af838fd898e33f0e0f8e34fe8dcf4e8842"
+        "sha256": "cfa1c4085a098ba2a228ed42c67998013387ca8d0679033ecd3581e618bd0c63"
       },
       "outputSchema": {
         "id": "urn:meri:commands:tool-interface:0.2.0#/$defs/TaskCreateToolResult",
-        "sha256": "7c394fc336eeb91435d38b57e45180af838fd898e33f0e0f8e34fe8dcf4e8842"
+        "sha256": "cfa1c4085a098ba2a228ed42c67998013387ca8d0679033ecd3581e618bd0c63"
       },
       "aliases": [],
       "sideEffect": "source-command",
@@ -7656,11 +7666,11 @@
       ],
       "inputSchema": {
         "id": "urn:meri:commands:tool-interface:0.2.0#/$defs/TaskUpdateToolRequest",
-        "sha256": "7c394fc336eeb91435d38b57e45180af838fd898e33f0e0f8e34fe8dcf4e8842"
+        "sha256": "cfa1c4085a098ba2a228ed42c67998013387ca8d0679033ecd3581e618bd0c63"
       },
       "outputSchema": {
         "id": "urn:meri:commands:tool-interface:0.2.0#/$defs/TaskUpdateToolResult",
-        "sha256": "7c394fc336eeb91435d38b57e45180af838fd898e33f0e0f8e34fe8dcf4e8842"
+        "sha256": "cfa1c4085a098ba2a228ed42c67998013387ca8d0679033ecd3581e618bd0c63"
       },
       "aliases": [],
       "sideEffect": "source-command",
@@ -7724,11 +7734,11 @@
       ],
       "inputSchema": {
         "id": "urn:meri:commands:tool-interface:0.2.0#/$defs/MemoryProposeToolRequest",
-        "sha256": "7c394fc336eeb91435d38b57e45180af838fd898e33f0e0f8e34fe8dcf4e8842"
+        "sha256": "cfa1c4085a098ba2a228ed42c67998013387ca8d0679033ecd3581e618bd0c63"
       },
       "outputSchema": {
         "id": "urn:meri:commands:tool-interface:0.2.0#/$defs/MemoryProposeToolResult",
-        "sha256": "7c394fc336eeb91435d38b57e45180af838fd898e33f0e0f8e34fe8dcf4e8842"
+        "sha256": "cfa1c4085a098ba2a228ed42c67998013387ca8d0679033ecd3581e618bd0c63"
       },
       "aliases": [],
       "sideEffect": "proposal",
@@ -7792,11 +7802,11 @@
       ],
       "inputSchema": {
         "id": "urn:meri:commands:tool-interface:0.2.0#/$defs/ArtifactFileToolRequest",
-        "sha256": "7c394fc336eeb91435d38b57e45180af838fd898e33f0e0f8e34fe8dcf4e8842"
+        "sha256": "cfa1c4085a098ba2a228ed42c67998013387ca8d0679033ecd3581e618bd0c63"
       },
       "outputSchema": {
         "id": "urn:meri:commands:tool-interface:0.2.0#/$defs/ArtifactFileToolResult",
-        "sha256": "7c394fc336eeb91435d38b57e45180af838fd898e33f0e0f8e34fe8dcf4e8842"
+        "sha256": "cfa1c4085a098ba2a228ed42c67998013387ca8d0679033ecd3581e618bd0c63"
       },
       "aliases": [],
       "sideEffect": "source-command",
@@ -9349,6 +9359,71 @@
       ],
       "fixtureIds": [
         "catalog.binding.save_legiwatch_relevance"
+      ]
+    },
+    {
+      "operation": {
+        "id": "mail_send",
+        "version": "0.2.0"
+      },
+      "displayName": "Propose native mail",
+      "whenToUse": "Prepare the exact sender, complete recipient list, body, original and eligible outgoing file proofs for explicit attended approval. Core owns sending and retained receipt recovery.",
+      "limitations": [
+        "Mailbox provider acceptance is not proof of delivery. Pending, sending, unknown and accepted-without-local-receipt attempts never authorize another send.",
+        "Reply/reply-all use the exact selected active original and visible recipient proof. Forward currently supports complete plain text up to 6000 characters without incoming files; unsupported originals require the mailbox handoff.",
+        "Signature policy is current actor signature. Files require canonical server-calculated digest and current distribution/scanning/parent authority; missing proof is refused."
+      ],
+      "positiveExamples": [
+        "Prepare and review the exact normalized command, then use its immutable proposal and original idempotency identity."
+      ],
+      "negativeExamples": [
+        "Do not infer a sender or newest original, invent Bcc or aliases, omit selected files, resend an uncertain attempt, or claim delivery from acceptance."
+      ],
+      "sourceRequirements": [
+        {
+          "sourceId": "capiro_commands",
+          "authority": "authoritative",
+          "purpose": "enumeration"
+        }
+      ],
+      "inputSchema": {
+        "id": "urn:meri:commands:tool-interface:0.2.0#/$defs/MailSendToolRequest",
+        "sha256": "cfa1c4085a098ba2a228ed42c67998013387ca8d0679033ecd3581e618bd0c63"
+      },
+      "outputSchema": {
+        "id": "urn:meri:commands:tool-interface:0.2.0#/$defs/MailSendToolResult",
+        "sha256": "cfa1c4085a098ba2a228ed42c67998013387ca8d0679033ecd3581e618bd0c63"
+      },
+      "aliases": [],
+      "sideEffect": "source-command",
+      "requiredGrants": [
+        "command.execute"
+      ],
+      "approvalBoundary": "immutable-proposal",
+      "handler": null,
+      "availability": "unimplemented",
+      "qualification": "pending",
+      "retry": {
+        "maxRetries": 0,
+        "retryableCodes": [],
+        "unknownOutcome": "reconcile-before-retry"
+      },
+      "replacement": null,
+      "requirementIds": [
+        "R-01",
+        "R-04",
+        "R-05"
+      ],
+      "ticketIds": [
+        "REL-02"
+      ],
+      "gateIds": [
+        "RG-02",
+        "RG-05",
+        "RG-07"
+      ],
+      "fixtureIds": [
+        "native-mail.command"
       ]
     }
   ]

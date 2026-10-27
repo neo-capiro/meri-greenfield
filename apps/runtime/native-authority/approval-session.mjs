@@ -14,7 +14,7 @@ export function nativeApprovalScope(proposal){
 export async function currentNativeApprovalSession({store,sessions,retention,now,proposal,signal,check=()=>{}}){
  assertNativeApprovalProposal(proposal);
  const source=proposal.command.binding,scopes=proposal.command.scopes,{selectedClientId}=nativeApprovalScope(proposal);
- return currentAttendedSession({store,sessions,retention,now,binding:source,scopes,selectedClientId,signal,check,allowInitialTask:['task.create','task.update'].includes(proposal.command.action)});
+ return currentAttendedSession({store,sessions,retention,now,binding:source,scopes,selectedClientId,signal,check,allowInitialTask:['task.create','task.update','mail.send'].includes(proposal.command.action)});
 }
 /** Same live conversation/session owner for Core-governed sharing; no synthetic native command. */
 export async function currentAttendedSession({store,sessions,retention,now,binding:source,scopes,selectedClientId,signal,check=()=>{},allowInitialTask=false}){

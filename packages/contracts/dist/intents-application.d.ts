@@ -13,6 +13,11 @@ export type IntentsApplicationEnvelope =
   | Canonical_ApprovalDecision_5E8Bdbcf
   | Canonical_TaskCreateArguments_1202C301
   | Canonical_TaskUpdateArguments_48509A7A
+  | Canonical_MailSendArguments_016B3776
+  | Canonical_MailSendContext_7D8B78F1
+  | Canonical_MailSendCommand_981E52Ba
+  | IntentsMailSendResult
+  | IntentsNativeMailOutcome
   | Canonical_ArtifactFileArguments_6F2B3978
   | IntentsNativeTaskOutcome
   | IntentsNativeArtifactFileOutcome
@@ -55,15 +60,47 @@ export type IntentsDeliveryId = string;
 export type IntentsNativeProposal =
   | Canonical_ApprovalProposalD1A3E74F
   | Canonical_TaskUpdateApprovalProposal_1F70E582
+  | Canonical_MailSendApprovalProposalC6Ab2C41
   | Canonical_DocumentDraftApprovalProposal_834C2460;
 export type IntentsProposal =
   IntentsNativeProposal | Canonical_ResearchShareProposal_1Cdbd32E | Canonical_LegiwatchProposal_1F841734;
+export type Canonical_LegiwatchRequest_5Cff194F =
+  Canonical_SuggestionLegiwatchRequestD59A433F | Canonical_RelevanceRequest_3250901F;
+export type IntentsMailSendResult =
+  | {
+      state: 'failed';
+      intentId: string;
+      requestKey: string;
+      retryable: false;
+    }
+  | {
+      state: 'accepted';
+      intentId: string;
+      requestKey: string;
+      retryable: false;
+      threadId: string;
+      messageId: string;
+      provider: 'gmail' | 'microsoft_graph';
+      senderConnectionId: string;
+      senderEmail: string;
+      mode: 'send' | 'reply' | 'reply_all' | 'forward';
+      original: {
+        threadId: string;
+        messageId: string;
+        updatedAt: string;
+        bodySha256: string | null;
+      } | null;
+      signaturePolicy: 'actor';
+      signatureAppended: boolean;
+      mailboxConfirmation: null | 'pending' | 'confirmed';
+    };
 export type IntentsExecutionOutcome =
   | {
       receipt: Canonical_CommandReceiptAc49Ee1E;
       result: Canonical_TaskCreateResult_0501C509;
     }
   | IntentsNativeTaskOutcome
+  | IntentsNativeMailOutcome
   | IntentsNativeArtifactFileOutcome
   | Canonical_ArtifactCreatedResult_183A755E;
 export type Canonical_ArtifactVersion_7F9C56Fa =
@@ -310,6 +347,8 @@ export type Canonical_LegiwatchStatusCbe9731F =
   | 'blocked'
   | 'dismissed'
   | 'expired';
+export type Canonical_LegiwatchReceipt_706F9465 =
+  Canonical_SuggestionLegiwatchReceiptD2466C8D | Canonical_RelevanceReceiptEf963586;
 export type Canonical_ResearchShareProposalStatus_9Aaf7F45 =
   | 'proposed'
   | 'executing'
@@ -527,6 +566,199 @@ export interface Canonical_TaskUpdateArguments_48509A7A {
     dueDate?: string;
   };
 }
+export interface Canonical_MailSendApprovalProposalC6Ab2C41 {
+  proposalId: string;
+  command: Canonical_MailSendCommand_981E52Ba;
+  commandSha256: string;
+  createdAt: string;
+  expiresAt: string;
+  requiredApprover: Canonical_IdentityAba0A4E9;
+}
+export interface Canonical_MailSendCommand_981E52Ba {
+  contractVersion: '0.2.0';
+  commandId: string;
+  binding: Canonical_RunBinding_84F2304C;
+  action: 'mail.send';
+  arguments: Canonical_MailSendArguments_016B3776;
+  /**
+   * @maxItems 0
+   */
+  attachments: [];
+  /**
+   * @minItems 1
+   */
+  scopes: [Canonical_ScopeF882Edb5, ...Canonical_ScopeF882Edb5[]];
+  idempotencyKey: string;
+}
+export interface Canonical_MailSendArguments_016B3776 {
+  mode: 'send' | 'reply' | 'reply_all' | 'forward';
+  clientId: string | null;
+  senderConnectionId: string;
+  senderEmail: string;
+  /**
+   * @minItems 1
+   * @maxItems 50
+   */
+  to: [string, ...string[]];
+  /**
+   * @maxItems 10
+   */
+  cc:
+    | []
+    | [string]
+    | [string, string]
+    | [string, string, string]
+    | [string, string, string, string]
+    | [string, string, string, string, string]
+    | [string, string, string, string, string, string]
+    | [string, string, string, string, string, string, string]
+    | [string, string, string, string, string, string, string, string]
+    | [string, string, string, string, string, string, string, string, string]
+    | [string, string, string, string, string, string, string, string, string, string];
+  /**
+   * @maxItems 10
+   */
+  bcc:
+    | []
+    | [string]
+    | [string, string]
+    | [string, string, string]
+    | [string, string, string, string]
+    | [string, string, string, string, string]
+    | [string, string, string, string, string, string]
+    | [string, string, string, string, string, string, string]
+    | [string, string, string, string, string, string, string, string]
+    | [string, string, string, string, string, string, string, string, string]
+    | [string, string, string, string, string, string, string, string, string, string];
+  subject: string;
+  bodyHtml: string;
+  /**
+   * @maxItems 5
+   */
+  files:
+    | []
+    | [
+        {
+          attachmentId: string;
+          fileName: string;
+          contentType: string;
+          bytes: number;
+          sha256: string;
+        }
+      ]
+    | [
+        {
+          attachmentId: string;
+          fileName: string;
+          contentType: string;
+          bytes: number;
+          sha256: string;
+        },
+        {
+          attachmentId: string;
+          fileName: string;
+          contentType: string;
+          bytes: number;
+          sha256: string;
+        }
+      ]
+    | [
+        {
+          attachmentId: string;
+          fileName: string;
+          contentType: string;
+          bytes: number;
+          sha256: string;
+        },
+        {
+          attachmentId: string;
+          fileName: string;
+          contentType: string;
+          bytes: number;
+          sha256: string;
+        },
+        {
+          attachmentId: string;
+          fileName: string;
+          contentType: string;
+          bytes: number;
+          sha256: string;
+        }
+      ]
+    | [
+        {
+          attachmentId: string;
+          fileName: string;
+          contentType: string;
+          bytes: number;
+          sha256: string;
+        },
+        {
+          attachmentId: string;
+          fileName: string;
+          contentType: string;
+          bytes: number;
+          sha256: string;
+        },
+        {
+          attachmentId: string;
+          fileName: string;
+          contentType: string;
+          bytes: number;
+          sha256: string;
+        },
+        {
+          attachmentId: string;
+          fileName: string;
+          contentType: string;
+          bytes: number;
+          sha256: string;
+        }
+      ]
+    | [
+        {
+          attachmentId: string;
+          fileName: string;
+          contentType: string;
+          bytes: number;
+          sha256: string;
+        },
+        {
+          attachmentId: string;
+          fileName: string;
+          contentType: string;
+          bytes: number;
+          sha256: string;
+        },
+        {
+          attachmentId: string;
+          fileName: string;
+          contentType: string;
+          bytes: number;
+          sha256: string;
+        },
+        {
+          attachmentId: string;
+          fileName: string;
+          contentType: string;
+          bytes: number;
+          sha256: string;
+        },
+        {
+          attachmentId: string;
+          fileName: string;
+          contentType: string;
+          bytes: number;
+          sha256: string;
+        }
+      ];
+  original: {
+    threadId: string;
+    messageId: string;
+    updatedAt: string;
+    bodySha256: string | null;
+  } | null;
+}
 export interface Canonical_DocumentDraftApprovalProposal_834C2460 {
   proposalId: string;
   command: Canonical_DocumentDraftCommand_7Eb6C44C;
@@ -601,7 +833,7 @@ export interface Canonical_LegiwatchProposal_1F841734 {
    * @maxItems 1
    */
   scopes: [Canonical_ScopeF882Edb5];
-  operation: 'apply_legiwatch_suggestion';
+  operation: 'apply_legiwatch_suggestion' | 'save_legiwatch_relevance';
   proposalId: string;
   request: Canonical_LegiwatchRequest_5Cff194F;
   context: Canonical_LegiwatchContextA906D964;
@@ -609,7 +841,7 @@ export interface Canonical_LegiwatchProposal_1F841734 {
   expiresAt: string;
   commandSha256: string;
 }
-export interface Canonical_LegiwatchRequest_5Cff194F {
+export interface Canonical_SuggestionLegiwatchRequestD59A433F {
   clientId: string | null;
   folderId: string;
   jurisdiction: string;
@@ -617,6 +849,32 @@ export interface Canonical_LegiwatchRequest_5Cff194F {
   suggestionId: string;
   expectedVersion: number;
   action: 'add' | 'dismiss' | 'exclude' | 'restore' | 'undo';
+  requestKey: string;
+}
+export interface Canonical_RelevanceRequest_3250901F {
+  clientId: string | null;
+  folderId: string;
+  jurisdiction: string;
+  sessionKey: string;
+  /**
+   * @minItems 1
+   * @maxItems 3
+   */
+  fields:
+    | ['title' | 'bill_text' | 'amendment_text']
+    | ['title' | 'bill_text' | 'amendment_text', 'title' | 'bill_text' | 'amendment_text']
+    | [
+        'title' | 'bill_text' | 'amendment_text',
+        'title' | 'bill_text' | 'amendment_text',
+        'title' | 'bill_text' | 'amendment_text'
+      ];
+  billId: string;
+  explanation: string;
+  documentId: string;
+  start: number;
+  end: number;
+  quote: string;
+  previewHash: string;
   requestKey: string;
 }
 export interface Canonical_LegiwatchContextA906D964 {
@@ -639,6 +897,20 @@ export interface Canonical_TaskCreateArguments_1202C301 {
   title: string;
   clientId: string | null;
   dueDate: string | null;
+}
+export interface Canonical_MailSendContext_7D8B78F1 {
+  binding: Canonical_RunBinding_84F2304C;
+}
+export interface IntentsNativeMailOutcome {
+  execution: {
+    kind: 'native-mail';
+    proposalId: string;
+    commandSha256: string;
+    idempotencyKey: string;
+    binding: Canonical_RunBinding_84F2304C;
+    approvalDecisionSha256: string;
+  };
+  result: IntentsMailSendResult;
 }
 export interface Canonical_ArtifactFileArguments_6F2B3978 {
   clientId: string;
@@ -1232,8 +1504,8 @@ export interface Canonical_LegiwatchCoreResultC5Ab3126 {
   status: Canonical_LegiwatchStatusCbe9731F;
   receipt: Canonical_LegiwatchReceipt_706F9465 | null;
 }
-export interface Canonical_LegiwatchReceipt_706F9465 {
-  request: Canonical_LegiwatchRequest_5Cff194F;
+export interface Canonical_SuggestionLegiwatchReceiptD2466C8D {
+  request: Canonical_SuggestionLegiwatchRequestD59A433F;
   outcome:
     'added' | 'already_present' | 'dismissed' | 'excluded' | 'pending' | 'stale' | 'undone' | 'undo_conflict' | 'held';
   payload: {
@@ -1242,6 +1514,17 @@ export interface Canonical_LegiwatchReceipt_706F9465 {
     decisionId: string | null;
     version: number;
     action: 'add' | 'dismiss' | 'exclude' | 'restore' | 'undo';
+  };
+}
+export interface Canonical_RelevanceReceiptEf963586 {
+  request: Canonical_RelevanceRequest_3250901F;
+  outcome: 'suggested';
+  payload: {
+    binding: string;
+    suggestionId: string;
+    version: number;
+    origin: 'semantic';
+    state: 'pending';
   };
 }
 export interface IntentsWithheldLegiwatchItem {
@@ -1893,13 +2176,14 @@ export declare const intentsMetadata:{
     "task.create",
     "task.update",
     "document.draft",
-    "artifact.file"
+    "artifact.file",
+    "mail.send"
   ],
   "semantics": {
     "list": "read-only durable history of this conversation's prepared intents; next is the last returned deliveryId when more remain, otherwise null",
     "decision": "approved or rejected is recorded by the canonical decision owner for exactly the named proposal, command hash and approver; display, stream or model text never approves",
     "execution": "only actions in approvableActions execute; any other prepared proposal answers INTENT_NOT_APPROVABLE and stays prepared",
-    "executed": "status executed returns the actual owner outcome: Core native task.create/task.update execution and result, a historical task.create receipt/result, or document.draft ArtifactCreatedResult after publication; approval alone remains approved or indeterminate",
+    "executed": "status executed returns the actual owner outcome: Core native task.create/task.update execution and result, a historical task.create receipt/result, document.draft ArtifactCreatedResult after publication, or native mail accepted/failed durable attempt (provider acceptance is not delivery); approval alone remains approved or indeterminate",
     "correlation": "a list answer is admitted against its captured list request; a decide answer is admitted against the captured decide request and the proposal admitted from an earlier list answer; rejected and indeterminate replies carry no conversation or command of their own, so only that retained proposal binds them to the request's conversation and approver",
     "uncertainty": "UNKNOWN and RESULT_NOT_RELEASED mean a decision or effect may exist: repeat the identical decide request or read list; never prepare a second proposal",
     "withheld": "withheld items carry no content because the caller no longer sees a client scope of the retained command",
