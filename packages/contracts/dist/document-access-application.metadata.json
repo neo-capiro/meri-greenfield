@@ -131,8 +131,8 @@
     },
     {
       "path": "../../apps/control/document-application/index.mjs",
-      "sha256": "ed5eb408ff280e528bef4d73b8c1d2fdd69d52fda595192b4cc0d7189b60259f",
-      "bytes": 10326
+      "sha256": "2b57b6eaee18c069efd6600c2155e740377fdd5a6fec297df443cc2fdb6cf37d",
+      "bytes": 10622
     },
     {
       "path": "artifacts-0.2/artifact-formats.mjs",
