@@ -6,6 +6,7 @@ import {retainedOrigin} from '../../packages/contracts/runtime-0.2/retained-read
 import {createBillTextSourceCapture} from '../control/conversations/sources/bill-text.mjs';
 import {createHearingSourceCapture} from '../control/conversations/sources/hearing-record.mjs';
 import {createReadsOwner} from './reads-owner.mjs';
+import {createBillWatchReadPolicy} from './selected/bill-watch-read-policy.mjs';
 import {createReadsApplication} from './reads-http.mjs';
 import {prepareReadFamilies,GENERAL_READ_ADAPTER_FAMILIES} from './read-families.mjs';
 
@@ -36,7 +37,7 @@ export async function createControlReadsComposer(configuration){
   if(typeof capabilityPolicy?.forRun!=='function')deny('CONFIGURATION');
   const createGateway=value=>families.createGateway({...value,capabilityPolicy,readCapabilityRole,...(objectiveCore?{objectiveCore}:{}),...(routineCore?{routineCore}:{})});
   const captures=conversationStore?[createBillTextSourceCapture({store:conversationStore,defaultCongress:c.defaultCongress}),createHearingSourceCapture({store:conversationStore})]:[];
-  return createReadsApplication({owner:createReadsOwner({execution,binding,approvedReads,createGateway,now,...(conversationStore?{async captureSource(call){for(const capture of captures)await capture(call);}}:{})}),approvedReads,now});
+  return createReadsApplication({owner:createReadsOwner({execution,binding,approvedReads,createGateway,now,assertReadArguments:createBillWatchReadPolicy({store:conversationStore,binding}),...(conversationStore?{async captureSource(call){for(const capture of captures)await capture(call);}}:{})}),approvedReads,now});
  }
  return Object.freeze({createReadsRuntime,familyIds,missing:families.missing.map(id=>`source-composition:${id}`)});
 }

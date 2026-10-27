@@ -109,4 +109,14 @@ test('Bill Watch old and new explicit selections materialize distinct exact SDK 
  }
  await assert.rejects(verifySkillPluginTree(oldPath,{selection:current.pin}),/SKILL_PLUGIN_TREE_REFUSED/u);
  assert.equal(await readFile(join(oldPath,'skills','meri-bill-watch','SKILL.md'),'utf8'),old.prose);
+ for(const selection of [undefined,selectSkill('quick_skill.mail_history','1.0.0').pin]){
+  const directory=sdkSkillPluginDirectory(root,selection);await prepareRunSkillPlugin(directory,{selection});
+  await assert.rejects(readFile(join(directory,'skills','meri-bill-watch','SKILL.md'),'utf8'),{code:'ENOENT'});
+  await verifySkillPluginTree(directory,{selection});
+  assert.equal(describeSkillPlugin({selection,execution:true}).skills.length,13);
+ }
+ assert.equal(describeSkillPlugin().skills.length,14,'launcher inventory is not unselected execution availability');
+ assert.equal(describeSkillPlugin({selection:current.pin,execution:true}).skills.length,14);
+ for(const selection of [{skillId:current.pin.skillId,skillVersion:'1.1.0'},{...current.pin,proseSha256:'0'.repeat(64)}])
+  assert.throws(()=>sdkSkillPluginDirectory(root,selection),/SKILL_PLUGIN_SELECTION_PIN/u);
 });

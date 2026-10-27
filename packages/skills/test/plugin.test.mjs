@@ -16,7 +16,7 @@ test('the plugin description derives every name from the immutable index and exc
 
 test('materialization writes the manifest and byte-exact SKILL.md files, refuses an existing target and stays owner-only',async t=>{
  const root=await mkdtemp(join(tmpdir(),'meri-skill-plugin-')),directory=join(root,'plugin');t.after(()=>rm(root,{recursive:true,force:true}));
- const result=await materializeSkillPlugin({directory}),d=describeSkillPlugin();
+ const result=await materializeSkillPlugin({directory}),d=describeSkillPlugin({execution:true});
  assert.deepEqual(result.skills,d.skills);assert.equal(result.directory,directory);
  const manifest=JSON.parse(await readFile(join(directory,'.claude-plugin','plugin.json'),'utf8'));assert.deepEqual(Object.keys(manifest),['name','version','description']);assert.equal(manifest.name,PLUGIN_NAME);
  assert.deepEqual((await readdir(join(directory,'skills'))).sort(),d.skills.map(s=>s.name).sort());

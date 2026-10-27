@@ -18,10 +18,10 @@ const unavailable=new Set(['STORE_UNAVAILABLE','STORE_COMMIT_UNKNOWN','STORE_REL
 const uuid=value=>typeof value==='string'&&/^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/u.test(value);
 
 export function createReadsOwner(configuration){
- const c=own(configuration,['binding','execution','createGateway'],['approvedReads','now','captureSource']);
+ const c=own(configuration,['binding','execution','createGateway'],['approvedReads','now','captureSource','assertReadArguments']);
  const binding=data(c.binding),config=c.approvedReads===undefined?undefined:assertNativeReadConfiguration(c.approvedReads),now=c.now??Date.now;
  validateShape('RunBinding',binding);
- if(typeof now!=='function'||typeof c.createGateway!=='function'||c.captureSource!==undefined&&typeof c.captureSource!=='function')deny('CONFIGURATION');
+ if(typeof now!=='function'||typeof c.createGateway!=='function'||c.captureSource!==undefined&&typeof c.captureSource!=='function'||c.assertReadArguments!==undefined&&typeof c.assertReadArguments!=='function')deny('CONFIGURATION');
  const authenticate=storageMethod(c.execution,'authenticate');
  async function handle(operation,raw,credential,signal,operationDeadlineMs,onPublicationStart){let life,publicationStarted=false,publicationSettled=false;try{
   if(!config?.enabled)deny('UNAVAILABLE');nativeSignal(signal);
@@ -67,7 +67,8 @@ export function createReadsOwner(configuration){
   const before=await snapshot();let result;
   if(operation==='execute'){
    if(request.installationId!==before.installation.installationId||request.executionCatalogSha256!==before.installation.executionCatalogSha256||!eligible(before).some(op=>same(op,request.operation)))deny('UNAVAILABLE');
-   await current();result=await life.run(signal=>execute({operation:request.operation,arguments:request.arguments,deliveryId:request.deliveryId,signal}));
+   await current();if(c.assertReadArguments)await life.run(signal=>c.assertReadArguments({request,current:pinned,signal,check:life.check}));
+   result=await life.run(signal=>execute({operation:request.operation,arguments:request.arguments,deliveryId:request.deliveryId,signal}));
    if(typeof result!=='string'||Buffer.byteLength(result,'utf8')>config.maxResponseBytes)deny('INVALID_RESULT');
   }
   await current();const after=await snapshot();
