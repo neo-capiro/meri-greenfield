@@ -131,9 +131,19 @@
       "manifestSha256": "27391e1eb9db904dc48587a5aa6013daafce423329f53c7360964ce0f079372d",
       "proseSha256": "a4a9461db01d8737da84f5ee01783ee1d736cf7a9a2090f63b2705da1cb65065",
       "catalogSha256": "56bd5d1eef3de6a36cdd2d73fa39d993f4e17eaad95d4a46024f17035d9d15cf"
+    },
+    {
+      "skillId": "quick_skill.bill_watch",
+      "skillVersion": "1.1.0",
+      "manifestPath": "./originals/bill_watch/1.1.0/manifest.json",
+      "prosePath": "./originals/bill_watch/1.1.0/SKILL.md",
+      "manifestSha256": "d8c3f776a56f7a67ff2d0fb2fae4a2704e5bd45173ee2c2200232a41085b875e",
+      "proseSha256": "e24b8793dc674f76eff3eb55b61cd76198a4ddde146ff723af4a0787da0f7e1a",
+      "catalogSha256": "1f901f26ec134e1585ff12541c3344fda77da1fb07f599f8d59e9338ecaa6eb6"
     }
   ],
   "sdkDefaults": {
-    "quick_skill.pe_deep_dive": "1.1.0"
+    "quick_skill.pe_deep_dive": "1.1.0",
+    "quick_skill.bill_watch": "1.1.0"
   }
 }

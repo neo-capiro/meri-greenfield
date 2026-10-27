@@ -1,0 +1,129 @@
+{
+  "contractVersion": "0.2.0",
+  "skillId": "quick_skill.bill_watch",
+  "skillVersion": "1.1.0",
+  "prose": {
+    "id": "urn:meri:original:bill-watch:1.1.0",
+    "sha256": "e24b8793dc674f76eff3eb55b61cd76198a4ddde146ff723af4a0787da0f7e1a"
+  },
+  "requiredSources": [
+    {
+      "sourceId": "client_knowledge_profile",
+      "authority": "derived",
+      "purpose": "evidence"
+    },
+    {
+      "sourceId": "tracked_bills",
+      "authority": "derived",
+      "purpose": "evidence"
+    },
+    {
+      "sourceId": "bill_text",
+      "authority": "derived",
+      "purpose": "evidence"
+    },
+    {
+      "sourceId": "federal_legislation",
+      "authority": "derived",
+      "purpose": "evidence"
+    },
+    {
+      "sourceId": "state_legislation",
+      "authority": "derived",
+      "purpose": "evidence"
+    },
+    {
+      "sourceId": "state_status_votes",
+      "authority": "derived",
+      "purpose": "evidence"
+    }
+  ],
+  "allowedOperations": [
+    {
+      "id": "get_client_context",
+      "version": "0.3.0"
+    },
+    {
+      "id": "search_tracked_bills",
+      "version": "0.2.0"
+    },
+    {
+      "id": "search_congress_bills",
+      "version": "0.2.0"
+    },
+    {
+      "id": "get_bill_status",
+      "version": "0.2.0"
+    },
+    {
+      "id": "read_bill_text",
+      "version": "0.2.0"
+    },
+    {
+      "id": "search_state_bills",
+      "version": "0.2.0"
+    },
+    {
+      "id": "get_state_bill_status",
+      "version": "0.2.0"
+    }
+  ],
+  "subjectKinds": [
+    "client"
+  ],
+  "windowBases": [
+    "calendar-week",
+    "calendar-month",
+    "explicit",
+    "unbounded"
+  ],
+  "completion": {
+    "requireAllSources": true,
+    "allowDisclosedPartial": true,
+    "negativeClaims": "complete-covered-only",
+    "rubric": [
+      {
+        "id": "client-footprint",
+        "requirement": "Retain the selected client interest and evidenced state footprint; inferred or missing geography remains uncertain and each profile section keeps coverage.",
+        "evidenceRequired": true
+      },
+      {
+        "id": "federal-and-state-status",
+        "requirement": "Separate federal and each relevant state bill identity/session, recorded status/date, action evidence, client relevance and next check; disclose unchecked states and bounded searches.",
+        "evidenceRequired": true
+      },
+      {
+        "id": "canonical-state-reads",
+        "requirement": "Read state status only using retained canonical keys; no designation fallback, fabricated state key or claim that metadata supplies immutable state bill text.",
+        "evidenceRequired": true
+      },
+      {
+        "id": "decisive-evidence",
+        "requirement": "Bind federal legal wording to exact bill-text version/passages and separate sourced facts, conflicts, inference and proposed impact; state wording remains unverified without a qualified text read.",
+        "evidenceRequired": true
+      },
+      {
+        "id": "coverage",
+        "requirement": "Show profile/tracking/federal/state freshness, pagination, budget and decisive-read limits; no complete-universe or no-bills claim from partial coverage.",
+        "evidenceRequired": true
+      }
+    ]
+  },
+  "approval": {
+    "mutations": "separate-immutable-proposal",
+    "autoCreateTasks": false
+  },
+  "budgets": {
+    "maxTurns": 12,
+    "maxToolCalls": 24,
+    "maxRecoveryAttempts": 0,
+    "maxRuntimeSeconds": 60,
+    "maxCostMicroUSD": 1000,
+    "maxOutputBytes": 1048576
+  },
+  "versionPolicy": {
+    "existingRuns": "pin-immutable",
+    "resume": "exact-or-explicit-migration",
+    "fork": "preserve-unless-explicit-reselection"
+  }
+}
