@@ -1270,10 +1270,13 @@
     },
     {
       "id": "save_business_development_brief",
-      "disposition": "deferred",
-      "boundary": "BizDev-specific saved brief workflow is outside initial commands.",
-      "replacement": null,
-      "state": "deferred"
+      "disposition": "selected",
+      "boundary": "Prepare one approved, explicit saved-version edit of the current five-section business-development brief for the persisted prospect conversation; Core/Intel own prospect-scope authorization, exact expectedVersionNumber/citation indexes, optimistic version and the durable saved-version receipt. No scoring, source resolution, ingestion or automatic retry.",
+      "replacement": {
+        "id": "save_business_development_brief",
+        "version": "0.2.0"
+      },
+      "state": "mapped"
     },
     {
       "id": "get_business_development_recent_changes",
@@ -9560,6 +9563,71 @@
       ],
       "fixtureIds": [
         "catalog.binding.update_client_profile"
+      ]
+    },
+    {
+      "operation": {
+        "id": "save_business_development_brief",
+        "version": "0.2.0"
+      },
+      "displayName": "Prepare a saved business-development brief edit",
+      "whenToUse": "Propose one exact saved-version edit of the current five-section business-development brief for the signed-in user to confirm.",
+      "limitations": [
+        "Requires the current persisted prospect conversation, the exact expectedVersionNumber and citation indexes of the version being edited.",
+        "No scoring, source resolution, ingestion, subscription or automatic retry.",
+        "A refused or unconfirmed outcome does not mean the brief was saved."
+      ],
+      "positiveExamples": [
+        "Prepare to save this exact five-section edit to the prospect's current brief version."
+      ],
+      "negativeExamples": [
+        "Invent citations, edit an unseen version, or retry an unknown effect."
+      ],
+      "sourceRequirements": [
+        {
+          "sourceId": "business_development",
+          "authority": "authoritative",
+          "purpose": "evidence"
+        }
+      ],
+      "inputSchema": {
+        "id": "urn:meri:retrieval:bizdev-action:0.2.0#/$defs/BizdevInput",
+        "sha256": "64317eb6eb8d32845c6c5ff07f2e9a86389d284feffbdd02bfabb2b7a510016e"
+      },
+      "outputSchema": {
+        "id": "urn:meri:retrieval:bizdev-action:0.2.0#/$defs/BizdevPrepared",
+        "sha256": "64317eb6eb8d32845c6c5ff07f2e9a86389d284feffbdd02bfabb2b7a510016e"
+      },
+      "aliases": [],
+      "sideEffect": "source-command",
+      "requiredGrants": [
+        "command.execute"
+      ],
+      "approvalBoundary": "immutable-proposal",
+      "handler": null,
+      "availability": "unimplemented",
+      "qualification": "pending",
+      "retry": {
+        "maxRetries": 0,
+        "retryableCodes": [],
+        "unknownOutcome": "reconcile-before-retry"
+      },
+      "replacement": null,
+      "requirementIds": [
+        "R-01",
+        "R-04",
+        "R-05"
+      ],
+      "ticketIds": [
+        "REL-02"
+      ],
+      "gateIds": [
+        "RG-02",
+        "RG-05",
+        "RG-07"
+      ],
+      "fixtureIds": [
+        "catalog.binding.save_business_development_brief"
       ]
     }
   ]

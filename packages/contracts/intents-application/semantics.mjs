@@ -28,6 +28,12 @@ async function proposal(value,conversationId){
   const {commandSha256,...bound}=value,s=value.scopes[0],selected=value.context.selectedClientId;
   if(value.operation!==(Object.hasOwn(value.request,'previewHash')?'save_legiwatch_relevance':'apply_legiwatch_suggestion')||Object.hasOwn(value.request,'previewHash')&&(!value.request.explanation.trim()||value.request.end-value.request.start!==value.request.quote.length||value.request.quote.length>2000||new Set(value.request.fields).size!==value.request.fields.length)||await sha(bound)!==commandSha256||value.binding.conversationId!==conversationId||value.context.conversationId!==conversationId||parsed(value.expiresAt)<=parsed(value.createdAt)||s.tenantId!==value.binding.tenantId||s.kind!==(selected===null?'private-user':'client')||s.resourceId!==(selected??value.binding.actorId)||selected!==null&&value.request.clientId!==selected)conflict();return;
  }
+ if(value.kind==='bizdev_action'){
+  // The saved brief edit is bound to the persisted prospect conversation the run owns: a prospect linked to a client runs under that client's scope, an
+  // unlinked prospect under the actor's private scope. A null client is never widened to a general scope.
+  const {commandSha256,...bound}=value,s=value.scopes[0],linked=value.context.linkedClientId;
+  if(await sha(bound)!==commandSha256||value.binding.conversationId!==conversationId||value.context.conversationId!==conversationId||value.request.conversationId!==conversationId||parsed(value.expiresAt)<=parsed(value.createdAt)||s.tenantId!==value.binding.tenantId||s.kind!==(linked===null?'private-user':'client')||s.resourceId!==(linked??value.binding.actorId))conflict();return;
+ }
  if(value.kind==='research_share'){
   const {commandSha256,...bound}=value,publishing=value.operation==='publish_research_portfolio_share_link';
   if(await sha(bound)!==commandSha256||value.binding.conversationId!==conversationId||value.request.conversationId!==conversationId||
@@ -140,12 +146,19 @@ async function legiwatchResult(value,retained){
  if(value.receipt!==null&&retained.operation==='save_legiwatch_relevance'){const r=value.receipt;if(!same(r.request,retained.request)||r.outcome!=='suggested'||r.payload.origin!=='semantic'||r.payload.state!=='pending'||r.payload.binding!==await sha([retained.request.previewHash,retained.request.requestKey]))conflict();return;}
  if(value.receipt!==null){const r=value.receipt,p=r.payload;if(!same(r.request,retained.request)||p.suggestionId!==retained.request.suggestionId||p.action!==retained.request.action||p.version!==retained.request.expectedVersion+1)conflict();}
 }
+function bizdevResult(value,retained){
+ if(value.proposalId!==retained.proposalId||!same(value.request,retained.request)||!same(value.context,retained.context)||value.createdAt!==retained.createdAt||value.expiresAt!==retained.expiresAt||(value.status==='succeeded')!==(value.receipt!==null))conflict();
+ // Only a confirmed saved version is a receipt: the expected version's immediate successor, with the brief's current version equal to it. A refused or
+ // ambiguous outcome carries no receipt and is never relabelled as saved.
+ if(value.receipt!==null){const r=value.receipt,v=r.version;if(!same(r.request,retained.request)||r.tool!=='save_business_development_brief'||r.status!=='saved'||v.versionNumber!==retained.request.expectedVersionNumber+1||r.brief.currentVersionNumber!==v.versionNumber)conflict();}
+}
 async function item(value,conversationId){
  // The journal's createdAt is a bare millisecond-spelling pattern in the schema (no calendar check) and the journal writes toISOString(): read it exactly, so
  // an impossible day such as 2026-02-30 can not roll into March.
  exact(value.createdAt);
  if(value.kind==='legiwatch_action'){if(!Object.hasOwn(value,'proposal'))return;if(value.operation.id!==value.proposal.operation)conflict();await proposal(value.proposal,conversationId);if(value.result!=='unavailable')await legiwatchResult(value.result,value.proposal);return;}
  if(value.kind==='client_record_action'){if(!Object.hasOwn(value,'proposal'))return;if(value.operation.id!==value.proposal.operation)conflict();await proposal(value.proposal,conversationId);if(value.result!=='unavailable')await clientRecordResult(value.result,value.proposal);return;}
+ if(value.kind==='bizdev_action'){if(!Object.hasOwn(value,'proposal'))return;if(value.operation.id!==value.proposal.operation)conflict();await proposal(value.proposal,conversationId);if(value.result!=='unavailable')bizdevResult(value.result,value.proposal);return;}
  if(value.kind==='research_share'){
   if(!Object.hasOwn(value,'proposal'))return;
   if(value.operation.id!==value.proposal.operation)conflict();await proposal(value.proposal,conversationId);return;
@@ -189,6 +202,9 @@ export async function decide(value,request,retained){
  }
  if(retained.kind==='client_record_action'){
   if(value.status!=='client_record_decided'||retained.proposalId!==request.proposalId||retained.commandSha256!==request.commandSha256||value.deliveryId!==request.deliveryId||value.proposalId!==request.proposalId)conflict();await clientRecordResult(value.result,retained);return value;
+ }
+ if(retained.kind==='bizdev_action'){
+  if(value.status!=='bizdev_decided'||retained.proposalId!==request.proposalId||retained.commandSha256!==request.commandSha256||value.deliveryId!==request.deliveryId||value.proposalId!==request.proposalId)conflict();bizdevResult(value.result,retained);return value;
  }
  if(retained.kind==='research_share'){
   if(value.status!=='research_share_decided'||retained.proposalId!==request.proposalId||retained.commandSha256!==request.commandSha256||value.deliveryId!==request.deliveryId||value.proposalId!==request.proposalId)conflict();

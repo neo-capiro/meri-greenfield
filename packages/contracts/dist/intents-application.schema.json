@@ -116,6 +116,9 @@
         },
         {
           "$ref": "#/$defs/Canonical_ClientRecordProposal_b620b25b"
+        },
+        {
+          "$ref": "#/$defs/Canonical_BizdevProposal_a770314c"
         }
       ]
     },
@@ -124,6 +127,9 @@
     },
     "IntentsLegiwatchProposal": {
       "$ref": "#/$defs/Canonical_LegiwatchProposal_1f841734"
+    },
+    "IntentsBizdevProposal": {
+      "$ref": "#/$defs/Canonical_BizdevProposal_a770314c"
     },
     "IntentsResearchShareProposal": {
       "$ref": "#/$defs/Canonical_ResearchShareProposal_1cdbd32e"
@@ -945,6 +951,83 @@
       ],
       "additionalProperties": false
     },
+    "IntentsBizdevItem": {
+      "type": "object",
+      "properties": {
+        "deliveryId": {
+          "$ref": "#/$defs/IntentsDeliveryId"
+        },
+        "createdAt": {
+          "type": "string",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$"
+        },
+        "operation": {
+          "$ref": "#/$defs/IntentsOperation"
+        },
+        "state": {
+          "const": "prepared"
+        },
+        "kind": {
+          "const": "bizdev_action"
+        },
+        "proposal": {
+          "$ref": "#/$defs/Canonical_BizdevProposal_a770314c"
+        },
+        "result": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Canonical_BizdevCoreResult_f44012f2"
+            },
+            {
+              "const": "unavailable"
+            }
+          ]
+        }
+      },
+      "required": [
+        "deliveryId",
+        "createdAt",
+        "operation",
+        "state",
+        "kind",
+        "proposal",
+        "result"
+      ],
+      "additionalProperties": false
+    },
+    "IntentsWithheldBizdevItem": {
+      "type": "object",
+      "properties": {
+        "deliveryId": {
+          "$ref": "#/$defs/IntentsDeliveryId"
+        },
+        "createdAt": {
+          "type": "string",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$"
+        },
+        "operation": {
+          "$ref": "#/$defs/IntentsOperation"
+        },
+        "state": {
+          "const": "prepared"
+        },
+        "kind": {
+          "const": "bizdev_action"
+        },
+        "withheld": {
+          "const": true
+        }
+      },
+      "required": [
+        "deliveryId",
+        "createdAt",
+        "operation",
+        "state",
+        "kind",
+        "withheld"
+      ],
+      "additionalProperties": false
+    },
     "IntentsResearchShareItem": {
       "type": "object",
       "properties": {
@@ -1151,6 +1234,12 @@
         },
         {
           "$ref": "#/$defs/IntentsWithheldClientRecordItem"
+        },
+        {
+          "$ref": "#/$defs/IntentsBizdevItem"
+        },
+        {
+          "$ref": "#/$defs/IntentsWithheldBizdevItem"
         }
       ]
     },
@@ -1227,6 +1316,31 @@
             },
             "result": {
               "$ref": "#/$defs/Canonical_ClientRecordCoreResult_cb1df09e"
+            }
+          },
+          "required": [
+            "status",
+            "deliveryId",
+            "proposalId",
+            "result"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "status": {
+              "const": "bizdev_decided"
+            },
+            "deliveryId": {
+              "$ref": "#/$defs/IntentsDeliveryId"
+            },
+            "proposalId": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$"
+            },
+            "result": {
+              "$ref": "#/$defs/Canonical_BizdevCoreResult_f44012f2"
             }
           },
           "required": [
@@ -3660,6 +3774,206 @@
         },
         "context": {
           "$ref": "#/$defs/Canonical_ClientRecordContext_6cea2055"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "expiresAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "commandSha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        }
+      },
+      "required": [
+        "kind",
+        "binding",
+        "scopes",
+        "operation",
+        "proposalId",
+        "request",
+        "context",
+        "createdAt",
+        "expiresAt",
+        "commandSha256"
+      ],
+      "additionalProperties": false
+    },
+    "Canonical_BizdevSection_433874a1": {
+      "type": "object",
+      "properties": {
+        "text": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4000
+        },
+        "citationIndexes": {
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "minimum": 0
+          }
+        }
+      },
+      "required": [
+        "text",
+        "citationIndexes"
+      ],
+      "additionalProperties": false
+    },
+    "Canonical_BizdevSections_b2a43546": {
+      "type": "object",
+      "properties": {
+        "companyAndFirmImplication": {
+          "$ref": "#/$defs/Canonical_BizdevSection_433874a1"
+        },
+        "verifiedEvidence": {
+          "$ref": "#/$defs/Canonical_BizdevSection_433874a1"
+        },
+        "judgment": {
+          "$ref": "#/$defs/Canonical_BizdevSection_433874a1"
+        },
+        "practicalAction": {
+          "$ref": "#/$defs/Canonical_BizdevSection_433874a1"
+        },
+        "missingInformation": {
+          "$ref": "#/$defs/Canonical_BizdevSection_433874a1"
+        }
+      },
+      "required": [
+        "companyAndFirmImplication",
+        "verifiedEvidence",
+        "judgment",
+        "practicalAction",
+        "missingInformation"
+      ],
+      "additionalProperties": false
+    },
+    "Canonical_BizdevRequest_377bb4ab": {
+      "type": "object",
+      "properties": {
+        "conversationId": {
+          "type": "string",
+          "format": "uuid",
+          "pattern": "^[a-f0-9-]+$"
+        },
+        "expectedVersionNumber": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 2147483646
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 300
+        },
+        "sections": {
+          "$ref": "#/$defs/Canonical_BizdevSections_b2a43546"
+        },
+        "requestKey": {
+          "type": "string",
+          "minLength": 8,
+          "maxLength": 180
+        }
+      },
+      "required": [
+        "conversationId",
+        "expectedVersionNumber",
+        "sections",
+        "requestKey"
+      ],
+      "additionalProperties": false
+    },
+    "Canonical_BizdevContext_894be03e": {
+      "type": "object",
+      "properties": {
+        "conversationId": {
+          "type": "string",
+          "format": "uuid",
+          "pattern": "^[a-f0-9-]+$"
+        },
+        "prospectId": {
+          "type": "string",
+          "format": "uuid",
+          "pattern": "^[a-f0-9-]+$"
+        },
+        "prospectName": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "canonicalOrganizationId": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "uuid",
+              "pattern": "^[a-f0-9-]+$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "linkedClientId": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "uuid",
+              "pattern": "^[a-f0-9-]+$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "scopeVersion": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        }
+      },
+      "required": [
+        "conversationId",
+        "prospectId",
+        "prospectName",
+        "canonicalOrganizationId",
+        "linkedClientId",
+        "scopeVersion"
+      ],
+      "additionalProperties": false
+    },
+    "Canonical_BizdevProposal_a770314c": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "const": "bizdev_action"
+        },
+        "binding": {
+          "$ref": "#/$defs/Canonical_RunBinding_84f2304c"
+        },
+        "scopes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Canonical_Scope_f882edb5"
+          },
+          "minItems": 1,
+          "maxItems": 1
+        },
+        "operation": {
+          "const": "save_business_development_brief"
+        },
+        "proposalId": {
+          "type": "string",
+          "format": "uuid",
+          "pattern": "^[a-f0-9-]+$"
+        },
+        "request": {
+          "$ref": "#/$defs/Canonical_BizdevRequest_377bb4ab"
+        },
+        "context": {
+          "$ref": "#/$defs/Canonical_BizdevContext_894be03e"
         },
         "createdAt": {
           "type": "string",
@@ -6315,6 +6629,177 @@
           "anyOf": [
             {
               "$ref": "#/$defs/Canonical_ClientRecordReceipt_8a925d68"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "version",
+        "proposalId",
+        "request",
+        "context",
+        "createdAt",
+        "expiresAt",
+        "status",
+        "receipt"
+      ],
+      "additionalProperties": false
+    },
+    "Canonical_BizdevStatus_fbac340b": {
+      "enum": [
+        "proposed",
+        "approved",
+        "executing",
+        "succeeded",
+        "failed_retryable",
+        "failed_terminal",
+        "outcome_unknown",
+        "blocked",
+        "dismissed",
+        "expired"
+      ]
+    },
+    "Canonical_BizdevReceipt_dbab7eca": {
+      "type": "object",
+      "properties": {
+        "request": {
+          "$ref": "#/$defs/Canonical_BizdevRequest_377bb4ab"
+        },
+        "binding": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "tool": {
+          "const": "save_business_development_brief"
+        },
+        "status": {
+          "const": "saved"
+        },
+        "generatedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "brief": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "format": "uuid",
+              "pattern": "^[a-f0-9-]+$"
+            },
+            "title": {
+              "type": "string"
+            },
+            "status": {
+              "enum": [
+                "draft",
+                "archived"
+              ]
+            },
+            "currentVersionNumber": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "updatedAt": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          "required": [
+            "id",
+            "title",
+            "status",
+            "currentVersionNumber",
+            "updatedAt"
+          ],
+          "additionalProperties": false
+        },
+        "version": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "format": "uuid",
+              "pattern": "^[a-f0-9-]+$"
+            },
+            "versionNumber": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "createdAt": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "citationCount": {
+              "type": "integer",
+              "minimum": 0
+            }
+          },
+          "required": [
+            "id",
+            "versionNumber",
+            "createdAt",
+            "citationCount"
+          ],
+          "additionalProperties": false
+        },
+        "reused": {
+          "type": "boolean"
+        },
+        "prospectName": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        }
+      },
+      "required": [
+        "request",
+        "binding",
+        "tool",
+        "status",
+        "generatedAt",
+        "brief",
+        "version",
+        "reused",
+        "prospectName"
+      ],
+      "additionalProperties": false
+    },
+    "Canonical_BizdevCoreResult_f44012f2": {
+      "type": "object",
+      "properties": {
+        "version": {
+          "const": "0.1.0"
+        },
+        "proposalId": {
+          "type": "string",
+          "format": "uuid",
+          "pattern": "^[a-f0-9-]+$"
+        },
+        "request": {
+          "$ref": "#/$defs/Canonical_BizdevRequest_377bb4ab"
+        },
+        "context": {
+          "$ref": "#/$defs/Canonical_BizdevContext_894be03e"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "expiresAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "status": {
+          "$ref": "#/$defs/Canonical_BizdevStatus_fbac340b"
+        },
+        "receipt": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Canonical_BizdevReceipt_dbab7eca"
             },
             {
               "type": "null"

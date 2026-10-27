@@ -117,8 +117,8 @@
     },
     {
       "path": "../../apps/control/intents/approval.mjs",
-      "sha256": "56f934ee586d004ad1109f52fe5d1c5a3f6516082c9a9219b73318725c179764",
-      "bytes": 30215
+      "sha256": "f5ef6a9ca021b00e17ddff826f198346f45daf443e4c1509cb3761e0d33e707e",
+      "bytes": 33099
     },
     {
       "path": "../../apps/control/intents/faults.mjs",
@@ -212,8 +212,8 @@
     },
     {
       "path": "generate-intents.mjs",
-      "sha256": "b8ee66cebedd8fa9f14a0dfc3597e5d179a26e2de2e70960a5a3af9208a77ec7",
-      "bytes": 13080
+      "sha256": "3c971fe9ef3f8462d560ded6dfdf2a82278114f5c5905d58a3c644cec0251083",
+      "bytes": 13146
     },
     {
       "path": "intents-application/boundary.mjs",
@@ -242,18 +242,23 @@
     },
     {
       "path": "intents-application/schema.mjs",
-      "sha256": "a08b8b33b0571bf294744f8a6b15b55a1d32610b2dc82baf2b0cd617c9fcc44b",
-      "bytes": 11998
+      "sha256": "6fbb7dcb9efa4d50cf17ed2b9494e8d89def41ab535a90b09af3efb3bbb8c1cc",
+      "bytes": 12630
     },
     {
       "path": "intents-application/semantics.mjs",
-      "sha256": "ad258d3fcf0d36001ff706c66921c13c30ee7c3aa220337505ea249c560ea0aa",
-      "bytes": 19069
+      "sha256": "aec29c6475348fcbcea4352d705f607eb59d3d29f553a57d518c3f49d4014a95",
+      "bytes": 21231
     },
     {
       "path": "meri.schema.json",
       "sha256": "e3de878198bbd557843ac440e48664ad5175eecd99f7ec932021ffc465bf8c5b",
       "bytes": 50043
+    },
+    {
+      "path": "retrieval-0.2/bizdev-action.schema.json",
+      "sha256": "64317eb6eb8d32845c6c5ff07f2e9a86389d284feffbdd02bfabb2b7a510016e",
+      "bytes": 9673
     },
     {
       "path": "retrieval-0.2/client-record-action.schema.json",
@@ -296,7 +301,7 @@
       "bytes": 24305
     }
   ],
-  "schemaSha256": "5fc6b7e01093d958b362a01a6b2418629e125914ac7e0ea7cc26110a9772f24d",
+  "schemaSha256": "7ba7cdee59555a0f2128a5d2eb8de81837a3ea2f39f8b9ac8714ce0feaf14279",
   "browserInputs": [
     "artifacts-0.2/artifact-formats.mjs",
     "commands-0.2/mail-send-validation.mjs",

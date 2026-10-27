@@ -12,7 +12,7 @@ function scopes(raw,binding){
  if(new Set(raw.map(hash)).size!==raw.length)deny();return raw;
 }
 function resultScopes(owner,result,original){
- if((owner==='research-sharing'||owner==='legiwatch'||owner==='client-record')){if(result.status!=='approval_required'||hash(result.proposal?.binding)!==hash(original.binding))deny();return result.proposal.scopes;}
+ if((owner==='research-sharing'||owner==='legiwatch'||owner==='client-record'||owner==='bizdev')){if(result.status!=='approval_required'||hash(result.proposal?.binding)!==hash(original.binding))deny();return result.proposal.scopes;}
  if(owner==='memory'){
   const review=assertMemoryReviewResult(result);
   if(hash(review.binding)!==hash(original.binding))deny();return review.scopes;
@@ -60,7 +60,7 @@ export function createIntentResultRelease({authority,binding,now}){
    const {receipt,prior}=await check({...call,result});if(prior===null)deny();
    const ss=scopes(resultScopes(owner,result,prior),binding),originalScopes=new Set(prior.scopes.map(hash)),currentScopes=new Set(receipt.scopes.map(hash));
    if(ss.some(s=>!originalScopes.has(hash(s))||!currentScopes.has(hash(s))))deny();
-   if(owner==='command'||(owner==='research-sharing'||owner==='legiwatch'||owner==='client-record')){
+   if(owner==='command'||(owner==='research-sharing'||owner==='legiwatch'||owner==='client-record'||owner==='bizdev')){
     const expiry=Date.parse(result.proposal.expiresAt);if(!Number.isSafeInteger(expiry)||expiry<=now())deny();call.life.limitDeadline(expiry);
    }
    call.life.check();return result;

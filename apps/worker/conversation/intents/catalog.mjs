@@ -15,7 +15,7 @@ import catalog from '../../../../packages/contracts/retrieval-0.2/catalog.json' 
 export const INTENT_SERVER_NAME='meri_intents';
 export const INTENT_TOOL_PREFIX=`mcp__${INTENT_SERVER_NAME}__`;
 /** @typedef {{id:string,version:string}} OperationRef */
-/** @typedef {'command'|'schedule'|'document'|'artifact'|'memory'|'research-sharing'|'legiwatch'|'client-record'} OwnerKind */
+/** @typedef {'command'|'schedule'|'document'|'artifact'|'memory'|'research-sharing'|'legiwatch'|'client-record'|'bizdev'} OwnerKind */
 /** @typedef {{operation:OperationRef,tool:string,owner:OwnerKind,unavailable:string|null}} IntentRow */
 const op=(/** @type {string} */id)=>Object.freeze({id,version:'0.2.0'});
 const row=(/** @type {string} */id,/** @type {string} */tool,/** @type {OwnerKind} */owner,/** @type {string|null} */unavailable=null)=>Object.freeze({operation:op(id),tool,owner,unavailable});
@@ -26,6 +26,7 @@ export const INTENT_ROWS=Object.freeze([
  row('save_legiwatch_relevance','propose_legiwatch_relevance','legiwatch'),
  row('mail_send','propose_mail','command'),
  row('apply_legiwatch_suggestion','propose_legiwatch_suggestion','legiwatch'),
+ row('save_business_development_brief','prepare_business_development_brief','bizdev'),
  row('publish_research_portfolio_share_link','propose_research_share','research-sharing'),
  row('revoke_research_portfolio_share_link','propose_research_share_revocation','research-sharing'),
  row('create_word','request_document','document'),

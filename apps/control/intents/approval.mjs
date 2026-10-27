@@ -18,7 +18,7 @@
  * Construction is inert. `enabled` defaults to false. */
 import {canonicalSha256 as hash,validateShape} from '../../../packages/contracts/validate.mjs';
 import {assertNativeApprovalProposal} from '../../../packages/contracts/commands-0.2/validate.mjs';
-import {artifactValidators as artifacts,scheduleToolValidators,researchShareValidators,legiwatchValidators,clientRecordValidators,validateShape as artifactShape} from '../../../packages/contracts/retrieval-0.2/validate.mjs';
+import {artifactValidators as artifacts,scheduleToolValidators,researchShareValidators,legiwatchValidators,bizdevValidators,clientRecordValidators,validateShape as artifactShape} from '../../../packages/contracts/retrieval-0.2/validate.mjs';
 import {data,own,nativeSignal} from '../../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {createOperationLifetime} from '../../../packages/runtime/operation-lifetime.mjs';
 import {ProductError,productFailure} from '../product-access/errors.mjs';
@@ -65,7 +65,7 @@ function commandProposal(entry){
  return result.proposal;
 }
 export function createIntentApprovalOwner(configuration){
- const c=own(configuration,['journal','now','limits'],['decisions','documents','tasks','filing','mail','sharing','legiwatch','clientRecord','enabled']);
+ const c=own(configuration,['journal','now','limits'],['decisions','documents','tasks','filing','mail','sharing','legiwatch','clientRecord','bizdev','enabled']);
  const journal=own(c.journal,['read','list'],['claim','settle']),limits=data(c.limits);own(limits,['maxRequestMs']);
  if(typeof journal.read!=='function'||typeof journal.list!=='function'||typeof c.now!=='function'||typeof(c.enabled??false)!=='boolean'||
   !Number.isSafeInteger(limits.maxRequestMs)||limits.maxRequestMs<1||limits.maxRequestMs>30000)throw new ProductError('PRODUCT_CONFIGURATION');
@@ -78,6 +78,7 @@ export function createIntentApprovalOwner(configuration){
  const sharing=c.sharing===undefined?undefined:own(c.sharing,['decide','read']);
  if(c.clientRecord!==undefined)own(c.clientRecord,['decide','read']);
  if(c.legiwatch!==undefined)own(c.legiwatch,['decide','read']);
+ if(c.bizdev!==undefined)own(c.bizdev,['decide','read']);
  if(sharing&&Object.values(sharing).some(f=>typeof f!=='function'))throw new ProductError('PRODUCT_CONFIGURATION');
  if(filing&&Object.values(filing).some(f=>typeof f!=='function'))throw new ProductError('PRODUCT_CONFIGURATION');
  if(tasks&&Object.values(tasks).some(f=>typeof f!=='function'))throw new ProductError('PRODUCT_CONFIGURATION');
@@ -119,6 +120,7 @@ export function createIntentApprovalOwner(configuration){
    const entry=await readEntry(life,principal,r.conversationId,r.deliveryId);
    if(entry?.state==='PREPARED'&&entry.outcome?.result?.proposal?.kind==='legiwatch_action')return await decideLegiwatch(life,principal,entry,r);
    if(entry?.state==='PREPARED'&&entry.outcome?.result?.proposal?.kind==='client_record_action')return await decideClientRecord(life,principal,entry,r);
+   if(entry?.state==='PREPARED'&&entry.outcome?.result?.proposal?.kind==='bizdev_action')return await decideBizdev(life,principal,entry,r);
    if(entry?.state==='PREPARED'&&entry.outcome?.result?.proposal?.kind==='research_share')return await decideSharing(life,principal,entry,r);
    const proposal=approvable(entry,r,principal);
    const approver=data({tenantId:principal.tenantId,actorId:principal.actorId});
@@ -177,6 +179,28 @@ export function createIntentApprovalOwner(configuration){
   catch{fail('APPROVAL_DECISION_UNKNOWN','UNKNOWN');}
   try{clientRecordValidators.coreResult(result,p);}catch{fail('INTENT_RESULT_NOT_RELEASED','RESULT_NOT_RELEASED');}
   return data({status:'client_record_decided',deliveryId:r.deliveryId,proposalId:p.proposalId,result});
+ }
+ function bizdevProposal(entry,principal,conversationId){
+  let p;try{bizdevValidators.assertOutput(entry.outcome.result);p=entry.outcome.result.proposal;
+   const {requestKey,...input}=p.request;
+   if(entry.record.operation.id!==p.operation||entry.record.operation.version!=='0.2.0'||hash(input)!==entry.record.argumentsSha256||!same(p.binding,entry.outcome.release.binding)||p.scopes.some(s=>!entry.outcome.release.scopes.some(original=>same(s,original)))||!same(conversationOf(p.binding),{tenantId:principal.tenantId,actorId:principal.actorId,conversationId}))throw Error();
+  }catch{fail('INTENT_JOURNAL_UNAVAILABLE');}return p;
+ }
+ // The saved brief edit is only visible to a principal who holds the prospect's own scope: the linked client when the prospect is linked, otherwise the
+ // actor's private scope. A null client is never treated as a general or shared scope.
+ const bizdevVisible=(p,principal)=>visible(p.scopes,principal)&&(p.context.linkedClientId===null||principal.clientIds.includes(p.context.linkedClientId));
+ async function decideBizdev(life,principal,entry,r){
+  const p=bizdevProposal(entry,principal,r.conversationId);
+  if(p.proposalId!==r.proposalId||p.commandSha256!==r.commandSha256)fail('INTENT_MISMATCH','NOT_DISPATCHED');
+  if(!bizdevVisible(p,principal))fail('INTENT_SCOPE_WITHHELD','NOT_DISPATCHED');
+  if(instant(p.expiresAt)<=c.now())fail('INTENT_EXPIRED','NOT_DISPATCHED');
+  if(typeof c.bizdev?.decide!=='function')fail('APPROVAL_OWNER_UNAVAILABLE','NOT_DISPATCHED');
+  life.limitDeadline(instant(p.expiresAt));let result;
+  try{result=await life.run(signal=>c.bizdev.decide({proposal:p,decision:r.decision,signal,deadlineMs:life.deadline()}));}
+  catch{fail('APPROVAL_DECISION_UNKNOWN','UNKNOWN');}
+  try{bizdevValidators.coreResult(result,p);}catch{fail('INTENT_RESULT_NOT_RELEASED','RESULT_NOT_RELEASED');}
+  // A refused or ambiguous outcome stays in the released Core status; it is never relabelled as a saved brief here.
+  return data({status:'bizdev_decided',deliveryId:r.deliveryId,proposalId:p.proposalId,result});
  }
  /** Core action proposals already own the confirmation and atomic effect. Never mint a native ApprovalDecision. */
  function sharingProposal(entry,principal,conversationId){
@@ -240,6 +264,12 @@ export function createIntentApprovalOwner(configuration){
    if(!clientRecordVisible(proposal,principal))return {...base,state:'prepared',kind:'client_record_action',withheld:true};
    let current='unavailable';if(typeof c.clientRecord?.read==='function')try{current=clientRecordValidators.coreResult(await life.run(signal=>c.clientRecord.read({proposal,signal,deadlineMs:life.deadline()})),proposal);}catch(error){if(['DEADLINE','CANCELLED'].includes(error?.code))throw error;}
    return {...base,state:'prepared',kind:'client_record_action',proposal,result:current};
+  }
+  if(result?.proposal?.kind==='bizdev_action'){
+   const proposal=bizdevProposal(entry,principal,conversationId);
+   if(!bizdevVisible(proposal,principal))return {...base,state:'prepared',kind:'bizdev_action',withheld:true};
+   let current='unavailable';if(typeof c.bizdev?.read==='function')try{current=bizdevValidators.coreResult(await life.run(signal=>c.bizdev.read({proposal,signal,deadlineMs:life.deadline()})),proposal);}catch(error){if(['DEADLINE','CANCELLED'].includes(error?.code))throw error;}
+   return {...base,state:'prepared',kind:'bizdev_action',proposal,result:current};
   }
   if(result?.proposal?.kind==='research_share'){
    const proposal=sharingProposal(entry,principal,conversationId);

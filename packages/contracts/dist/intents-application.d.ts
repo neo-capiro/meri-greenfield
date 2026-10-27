@@ -10,6 +10,7 @@ export type IntentsApplicationEnvelope =
   | IntentsProposal
   | Canonical_ClientRecordProposalB620B25B
   | Canonical_LegiwatchProposal_1F841734
+  | Canonical_BizdevProposalA770314C
   | Canonical_ResearchShareProposal_1Cdbd32E
   | Canonical_ApprovalDecision_5E8Bdbcf
   | Canonical_TaskCreateArguments_1202C301
@@ -40,6 +41,8 @@ export type IntentsApplicationEnvelope =
   | IntentsClientRecordItem
   | IntentsWithheldLegiwatchItem
   | IntentsWithheldClientRecordItem
+  | IntentsBizdevItem
+  | IntentsWithheldBizdevItem
   | IntentsResearchShareItem
   | IntentsWithheldResearchShareItem
   | IntentsProposalItem
@@ -69,7 +72,8 @@ export type IntentsProposal =
   | IntentsNativeProposal
   | Canonical_ResearchShareProposal_1Cdbd32E
   | Canonical_LegiwatchProposal_1F841734
-  | Canonical_ClientRecordProposalB620B25B;
+  | Canonical_ClientRecordProposalB620B25B
+  | Canonical_BizdevProposalA770314C;
 export type Canonical_LegiwatchRequest_5Cff194F =
   Canonical_SuggestionLegiwatchRequestD59A433F | Canonical_RelevanceRequest_3250901F;
 export type Canonical_ClientRecordRequestE2A54772 =
@@ -1818,6 +1822,17 @@ export type Canonical_ClientRecordReceipt_8A925D68 =
        */
       rowErrors: string[];
     };
+export type Canonical_BizdevStatusFbac340B =
+  | 'proposed'
+  | 'approved'
+  | 'executing'
+  | 'succeeded'
+  | 'failed_retryable'
+  | 'failed_terminal'
+  | 'outcome_unknown'
+  | 'blocked'
+  | 'dismissed'
+  | 'expired';
 export type Canonical_ResearchShareProposalStatus_9Aaf7F45 =
   | 'proposed'
   | 'executing'
@@ -1846,7 +1861,9 @@ export type IntentsItem =
   | IntentsLegiwatchItem
   | IntentsWithheldLegiwatchItem
   | IntentsClientRecordItem
-  | IntentsWithheldClientRecordItem;
+  | IntentsWithheldClientRecordItem
+  | IntentsBizdevItem
+  | IntentsWithheldBizdevItem;
 export type IntentsDecideResponse =
   | {
       status: 'legiwatch_decided';
@@ -1859,6 +1876,12 @@ export type IntentsDecideResponse =
       deliveryId: IntentsDeliveryId;
       proposalId: string;
       result: Canonical_ClientRecordCoreResultCb1Df09E;
+    }
+  | {
+      status: 'bizdev_decided';
+      deliveryId: IntentsDeliveryId;
+      proposalId: string;
+      result: Canonical_BizdevCoreResultF44012F2;
     }
   | {
       status: 'rejected';
@@ -2508,6 +2531,48 @@ export interface Canonical_ClientRecordContext_6Cea2055 {
   identityRevision: string;
   membershipRevision: string;
   contextRevision: string;
+}
+export interface Canonical_BizdevProposalA770314C {
+  kind: 'bizdev_action';
+  binding: Canonical_RunBinding_84F2304C;
+  /**
+   * @minItems 1
+   * @maxItems 1
+   */
+  scopes: [Canonical_ScopeF882Edb5];
+  operation: 'save_business_development_brief';
+  proposalId: string;
+  request: Canonical_BizdevRequest_377Bb4Ab;
+  context: Canonical_BizdevContext_894Be03E;
+  createdAt: string;
+  expiresAt: string;
+  commandSha256: string;
+}
+export interface Canonical_BizdevRequest_377Bb4Ab {
+  conversationId: string;
+  expectedVersionNumber: number;
+  title?: string;
+  sections: Canonical_BizdevSectionsB2A43546;
+  requestKey: string;
+}
+export interface Canonical_BizdevSectionsB2A43546 {
+  companyAndFirmImplication: Canonical_BizdevSection_433874A1;
+  verifiedEvidence: Canonical_BizdevSection_433874A1;
+  judgment: Canonical_BizdevSection_433874A1;
+  practicalAction: Canonical_BizdevSection_433874A1;
+  missingInformation: Canonical_BizdevSection_433874A1;
+}
+export interface Canonical_BizdevSection_433874A1 {
+  text: string;
+  citationIndexes: number[];
+}
+export interface Canonical_BizdevContext_894Be03E {
+  conversationId: string;
+  prospectId: string;
+  prospectName: string;
+  canonicalOrganizationId: string | null;
+  linkedClientId: string | null;
+  scopeVersion: string;
 }
 export interface Canonical_ApprovalDecision_5E8Bdbcf {
   proposalId: string;
@@ -3187,6 +3252,55 @@ export interface IntentsWithheldClientRecordItem {
   kind: 'client_record_action';
   withheld: true;
 }
+export interface IntentsBizdevItem {
+  deliveryId: IntentsDeliveryId;
+  createdAt: string;
+  operation: IntentsOperation;
+  state: 'prepared';
+  kind: 'bizdev_action';
+  proposal: Canonical_BizdevProposalA770314C;
+  result: Canonical_BizdevCoreResultF44012F2 | 'unavailable';
+}
+export interface Canonical_BizdevCoreResultF44012F2 {
+  version: '0.1.0';
+  proposalId: string;
+  request: Canonical_BizdevRequest_377Bb4Ab;
+  context: Canonical_BizdevContext_894Be03E;
+  createdAt: string;
+  expiresAt: string;
+  status: Canonical_BizdevStatusFbac340B;
+  receipt: Canonical_BizdevReceiptDbab7Eca | null;
+}
+export interface Canonical_BizdevReceiptDbab7Eca {
+  request: Canonical_BizdevRequest_377Bb4Ab;
+  binding: string;
+  tool: 'save_business_development_brief';
+  status: 'saved';
+  generatedAt: string;
+  brief: {
+    id: string;
+    title: string;
+    status: 'draft' | 'archived';
+    currentVersionNumber: number;
+    updatedAt: string;
+  };
+  version: {
+    id: string;
+    versionNumber: number;
+    createdAt: string;
+    citationCount: number;
+  };
+  reused: boolean;
+  prospectName: string;
+}
+export interface IntentsWithheldBizdevItem {
+  deliveryId: IntentsDeliveryId;
+  createdAt: string;
+  operation: IntentsOperation;
+  state: 'prepared';
+  kind: 'bizdev_action';
+  withheld: true;
+}
 export interface IntentsResearchShareItem {
   deliveryId: IntentsDeliveryId;
   createdAt: string;
@@ -3722,6 +3836,7 @@ export interface RoutinesErrorResponse {
 }
 
 export type IntentsLegiwatchProposal=Canonical_LegiwatchProposal_1F841734;
+export type IntentsBizdevProposal=Canonical_BizdevProposalA770314C;
 export type IntentsResearchShareProposal=Canonical_ResearchShareProposal_1Cdbd32E;
 export type RoutinesProposal=Canonical_PendingProposal_8E88D951;
 export type RoutinesApproveResponse=Canonical_Acknowledged_1Fa14Cd2;

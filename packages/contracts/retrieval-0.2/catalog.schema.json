@@ -128,7 +128,8 @@
                 "save_legiwatch_relevance",
                 "mail_send",
                 "create_client",
-                "update_client_profile"
+                "update_client_profile",
+                "save_business_development_brief"
               ]
             },
             "disposition": {
@@ -212,8 +213,7 @@
                 "compare_funding_opportunities",
                 "build_opportunity_action_plan",
                 "get_business_development_brief",
-                "resolve_business_development_source",
-                "save_business_development_brief"
+                "resolve_business_development_source"
               ]
             },
             "disposition": {

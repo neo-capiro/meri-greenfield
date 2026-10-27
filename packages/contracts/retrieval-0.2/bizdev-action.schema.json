@@ -1,0 +1,422 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:meri:retrieval:bizdev-action:0.2.0",
+  "$defs": {
+    "BizdevSection": {
+      "type": "object",
+      "properties": {
+        "text": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4000
+        },
+        "citationIndexes": {
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "minimum": 0
+          }
+        }
+      },
+      "required": [
+        "text",
+        "citationIndexes"
+      ],
+      "additionalProperties": false
+    },
+    "BizdevSections": {
+      "type": "object",
+      "properties": {
+        "companyAndFirmImplication": {
+          "$ref": "#/$defs/BizdevSection"
+        },
+        "verifiedEvidence": {
+          "$ref": "#/$defs/BizdevSection"
+        },
+        "judgment": {
+          "$ref": "#/$defs/BizdevSection"
+        },
+        "practicalAction": {
+          "$ref": "#/$defs/BizdevSection"
+        },
+        "missingInformation": {
+          "$ref": "#/$defs/BizdevSection"
+        }
+      },
+      "required": [
+        "companyAndFirmImplication",
+        "verifiedEvidence",
+        "judgment",
+        "practicalAction",
+        "missingInformation"
+      ],
+      "additionalProperties": false
+    },
+    "BizdevInput": {
+      "type": "object",
+      "properties": {
+        "conversationId": {
+          "type": "string",
+          "format": "uuid",
+          "pattern": "^[a-f0-9-]+$"
+        },
+        "expectedVersionNumber": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 2147483646
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 300
+        },
+        "sections": {
+          "$ref": "#/$defs/BizdevSections"
+        }
+      },
+      "required": [
+        "conversationId",
+        "expectedVersionNumber",
+        "sections"
+      ],
+      "additionalProperties": false
+    },
+    "BizdevRequest": {
+      "type": "object",
+      "properties": {
+        "conversationId": {
+          "type": "string",
+          "format": "uuid",
+          "pattern": "^[a-f0-9-]+$"
+        },
+        "expectedVersionNumber": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 2147483646
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 300
+        },
+        "sections": {
+          "$ref": "#/$defs/BizdevSections"
+        },
+        "requestKey": {
+          "type": "string",
+          "minLength": 8,
+          "maxLength": 180
+        }
+      },
+      "required": [
+        "conversationId",
+        "expectedVersionNumber",
+        "sections",
+        "requestKey"
+      ],
+      "additionalProperties": false
+    },
+    "BizdevContext": {
+      "type": "object",
+      "properties": {
+        "conversationId": {
+          "type": "string",
+          "format": "uuid",
+          "pattern": "^[a-f0-9-]+$"
+        },
+        "prospectId": {
+          "type": "string",
+          "format": "uuid",
+          "pattern": "^[a-f0-9-]+$"
+        },
+        "prospectName": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "canonicalOrganizationId": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "uuid",
+              "pattern": "^[a-f0-9-]+$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "linkedClientId": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "uuid",
+              "pattern": "^[a-f0-9-]+$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "scopeVersion": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        }
+      },
+      "required": [
+        "conversationId",
+        "prospectId",
+        "prospectName",
+        "canonicalOrganizationId",
+        "linkedClientId",
+        "scopeVersion"
+      ],
+      "additionalProperties": false
+    },
+    "BizdevStatus": {
+      "enum": [
+        "proposed",
+        "approved",
+        "executing",
+        "succeeded",
+        "failed_retryable",
+        "failed_terminal",
+        "outcome_unknown",
+        "blocked",
+        "dismissed",
+        "expired"
+      ]
+    },
+    "BizdevReceipt": {
+      "type": "object",
+      "properties": {
+        "request": {
+          "$ref": "#/$defs/BizdevRequest"
+        },
+        "binding": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "tool": {
+          "const": "save_business_development_brief"
+        },
+        "status": {
+          "const": "saved"
+        },
+        "generatedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "brief": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "format": "uuid",
+              "pattern": "^[a-f0-9-]+$"
+            },
+            "title": {
+              "type": "string"
+            },
+            "status": {
+              "enum": [
+                "draft",
+                "archived"
+              ]
+            },
+            "currentVersionNumber": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "updatedAt": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          "required": [
+            "id",
+            "title",
+            "status",
+            "currentVersionNumber",
+            "updatedAt"
+          ],
+          "additionalProperties": false
+        },
+        "version": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "format": "uuid",
+              "pattern": "^[a-f0-9-]+$"
+            },
+            "versionNumber": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "createdAt": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "citationCount": {
+              "type": "integer",
+              "minimum": 0
+            }
+          },
+          "required": [
+            "id",
+            "versionNumber",
+            "createdAt",
+            "citationCount"
+          ],
+          "additionalProperties": false
+        },
+        "reused": {
+          "type": "boolean"
+        },
+        "prospectName": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        }
+      },
+      "required": [
+        "request",
+        "binding",
+        "tool",
+        "status",
+        "generatedAt",
+        "brief",
+        "version",
+        "reused",
+        "prospectName"
+      ],
+      "additionalProperties": false
+    },
+    "BizdevCoreResult": {
+      "type": "object",
+      "properties": {
+        "version": {
+          "const": "0.1.0"
+        },
+        "proposalId": {
+          "type": "string",
+          "format": "uuid",
+          "pattern": "^[a-f0-9-]+$"
+        },
+        "request": {
+          "$ref": "#/$defs/BizdevRequest"
+        },
+        "context": {
+          "$ref": "#/$defs/BizdevContext"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "expiresAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "status": {
+          "$ref": "#/$defs/BizdevStatus"
+        },
+        "receipt": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/BizdevReceipt"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "version",
+        "proposalId",
+        "request",
+        "context",
+        "createdAt",
+        "expiresAt",
+        "status",
+        "receipt"
+      ],
+      "additionalProperties": false
+    },
+    "BizdevProposal": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "const": "bizdev_action"
+        },
+        "binding": {
+          "$ref": "urn:meri:contracts:0.1.0#/$defs/RunBinding"
+        },
+        "scopes": {
+          "type": "array",
+          "items": {
+            "$ref": "urn:meri:contracts:0.1.0#/$defs/Scope"
+          },
+          "minItems": 1,
+          "maxItems": 1
+        },
+        "operation": {
+          "const": "save_business_development_brief"
+        },
+        "proposalId": {
+          "type": "string",
+          "format": "uuid",
+          "pattern": "^[a-f0-9-]+$"
+        },
+        "request": {
+          "$ref": "#/$defs/BizdevRequest"
+        },
+        "context": {
+          "$ref": "#/$defs/BizdevContext"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "expiresAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "commandSha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        }
+      },
+      "required": [
+        "kind",
+        "binding",
+        "scopes",
+        "operation",
+        "proposalId",
+        "request",
+        "context",
+        "createdAt",
+        "expiresAt",
+        "commandSha256"
+      ],
+      "additionalProperties": false
+    },
+    "BizdevPrepared": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "const": "approval_required"
+        },
+        "proposal": {
+          "$ref": "#/$defs/BizdevProposal"
+        }
+      },
+      "required": [
+        "status",
+        "proposal"
+      ],
+      "additionalProperties": false
+    }
+  }
+}
