@@ -1,5 +1,6 @@
 /** Task-update transport over attended preparation and the canonical native approval/effect owner. */
 import {createOperationLifetime} from '../../../packages/runtime/operation-lifetime.mjs';
+import {isAuthorityUnavailable} from '../../../packages/runtime/authority-availability.mjs';
 import {CommandError,own,data} from '../../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {assertTaskUpdateProposal} from '../../../packages/contracts/commands-0.2/validate.mjs';
 import {jsonBody,response,errorResponse,fail} from '../action-application/http.mjs';
@@ -20,7 +21,7 @@ export function createTaskCommandApplication(configuration){
    if(info.intent==='prepare'&&(typeof body.requestId!=='string'||!/^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/iu.test(body.requestId)))fail('INVALID_REQUEST');life.check();
    const started=now();let raw;
    try{raw=await life.run(signal=>resolveSession({credential:info.credential,intent:info.intent,signal,deadlineMs:cutoff}));}
-   catch{life.check();fail('UNAUTHENTICATED',401);}
+   catch(error){life.check();if(isAuthorityUnavailable(error))fail('UNAVAILABLE',502);fail('UNAUTHENTICATED',401);}
    const session=taskSession(raw,info.intent,started,now,shrink);
    let result;
    if(info.intent==='prepare'){
