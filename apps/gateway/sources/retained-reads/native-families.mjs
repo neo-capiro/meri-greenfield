@@ -1,5 +1,6 @@
 /** Eligibility of finite native tool producers; data only. Source presence never grants installation or authority. */
 export const NATIVE_READ_FAMILIES=Object.freeze([
+ 'legiwatch-review','legislative-comparisons',
  'research-portfolio-sharing','saved-records','strategy-saved-records','capiro-data','connected-apps','teams-channels',
  'bill-text','public-reports','acquisition-personnel','disclosures','legislative-directory',
  'pe-references','federal-legislation','state-legislation','stored-intelligence','regulatory-dockets','intelligence-summary',
@@ -12,7 +13,7 @@ export const NATIVE_READ_OPERATION_SUBSETS=Object.freeze({
  'research-legal-legislation':Object.freeze(['search_legislative_research','get_legal_reference']),
  'research-legal-news':Object.freeze(['search_legiwatch_news']),
  'outreach-query':Object.freeze(['query_outreach']),
- 'business-development':Object.freeze(['get_business_development_context','get_business_development_recent_changes','get_business_development_evidence']),
+ 'business-development':Object.freeze(['get_business_development_context','get_business_development_recent_changes','get_business_development_evidence','get_business_development_brief','resolve_business_development_source']),
 });
 export const nativeReadOperationAllowed=(family,id)=>NATIVE_READ_FAMILIES.includes(family)&&
  (!Object.hasOwn(NATIVE_READ_OPERATION_SUBSETS,family)||NATIVE_READ_OPERATION_SUBSETS[family].includes(id));

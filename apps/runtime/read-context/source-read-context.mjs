@@ -77,14 +77,14 @@ function privateDataContext(proof,native){
 function savedOwnerContext(proof,native,group){
  const selected=proof.subject.kind==='client'||proof.subject.entityType==='client'?clientSubject(proof,native):null;
  if(selected===null&&(proof.subject.kind!=='personal'||proof.subject.entityType!=='user'))refuse('ACCESS_DENIED');
- const selector=group==='strategy-saved-records'?proof.request.clientId:savedRecordClientSelector(proof.request);
+ const selector=['strategy-saved-records','legiwatch-review','legislative-comparisons'].includes(group)?proof.request.clientId:savedRecordClientSelector(proof.request);
  const clientId=typeof selector==='string'?selector.toLowerCase():null;
  if(selector!==null&&(clientId===null||!UUID.test(clientId)))refuse('INVALID_ARGUMENTS');
  if(selected!==null&&clientId!==selected)refuse('ACCESS_DENIED');
  assertNativeVisibleClients(native,clientId===null?[]:[clientId]);
  if(![native.identityRevision,native.membershipRevision].every(v=>typeof v==='string'&&/^[a-f0-9]{64}$/u.test(v)))refuse('UNAVAILABLE');
  const revisions={identityRevision:native.identityRevision,membershipRevision:native.membershipRevision};
- return group==='strategy-saved-records'?{strategySavedScope:{clientId,...revisions}}:
+ return ['legiwatch-review','legislative-comparisons'].includes(group)?{legiwatchReviewScope:{clientId,...revisions}}:group==='strategy-saved-records'?{strategySavedScope:{clientId,...revisions}}:
   {savedRecordScope:{clientId:selected,tenantId:proof.subject.tenantId,...revisions}};
 }
 
@@ -111,7 +111,7 @@ export function createSourceReadContext({contract,proof,native,defaultCongress,n
   if(selectedClientId===null&&(proof.subject.kind!=='personal'||proof.subject.entityType!=='user'||proof.subject.entityIds[0]!==proof.binding.actorId))refuse('ACCESS_DENIED');
   return {binding:proof.binding,selectedClientId,visibleClientIds:[...native.clientIds]};
  }
- if(['saved-records','strategy-saved-records'].includes(group))return savedOwnerContext(proof,native,group);
+ if(['saved-records','strategy-saved-records','legiwatch-review','legislative-comparisons'].includes(group))return savedOwnerContext(proof,native,group);
  // Recompute on final release: membership changes must also fence aggregate rows with no client IDs.
  if(group==='capiro-data'&&proof.request.source==='client_records')return privateDataContext(proof,native);
  if(group==='connected-apps'||group==='teams-channels'){

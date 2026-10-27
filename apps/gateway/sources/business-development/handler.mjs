@@ -8,6 +8,8 @@ const ROUTES=Object.freeze({
  get_business_development_context:'/api/clio/tools/get_business_development_context',
  get_business_development_evidence:'/api/clio/tools/get_business_development_evidence',
  get_business_development_recent_changes:'/api/clio/tools/get_business_development_recent_changes',
+ get_business_development_brief:'/api/clio/tools/get_business_development_brief',
+ resolve_business_development_source:'/api/clio/tools/resolve_business_development_source',
 });
 
 export function createBusinessDevelopmentHandlers(configuration,operations){

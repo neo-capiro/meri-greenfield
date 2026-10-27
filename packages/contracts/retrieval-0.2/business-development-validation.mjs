@@ -9,6 +9,8 @@ export const BUSINESS_DEVELOPMENT_OPERATION_IDS = Object.freeze([
   'get_business_development_context',
   'get_business_development_evidence',
   'get_business_development_recent_changes',
+  'get_business_development_brief',
+  'resolve_business_development_source',
 ]);
 
 export function createBusinessDevelopmentValidators({ validateShape, schema }) {
@@ -19,7 +21,7 @@ export function createBusinessDevelopmentValidators({ validateShape, schema }) {
   const outputs = new Map(Object.entries(schema.$defs)
     .filter(([, value]) => BUSINESS_DEVELOPMENT_OPERATION_IDS.includes(value.properties?.tool?.const))
     .map(([name, value]) => [value.properties.tool.const, name]));
-  if (outputs.size !== 3) fail('Business-development schema operation mismatch');
+  if (outputs.size !== 5) fail('Business-development schema operation mismatch');
   const descriptive = new Set(schema.$defs.BizDevDescriptiveFactKey.enum);
   const excerpt = '…[truncated]';
 
@@ -89,6 +91,46 @@ export function createBusinessDevelopmentValidators({ validateShape, schema }) {
         fail('Evidence coverage flags do not match the producer projection');
       if ((value.identityBasis === 'unresolved_prospect') !== (value.canonicalEntityId === null && value.canonicalName === null) ||
           (value.canonicalEntityId === null) !== (value.canonicalName === null)) fail('Dossier identity basis mismatch');
+    } else if (definition === 'BusinessDevelopmentBriefOutput') {
+      if (Buffer.byteLength(JSON.stringify(value),'utf8') > 262144) fail('Saved brief exceeds output limit');
+      if (value.brief === null) {
+        if (!value.message || value.data !== undefined || value.citationsSummary !== undefined) fail('Missing brief is not generated content');
+        return;
+      }
+      if (value.message !== undefined) fail('Saved brief cannot carry an absence message');
+      const citations=value.brief.citations;
+      for (const section of Object.values(value.brief.sections))
+        if (section.citationIndexes.some(index=>index>=citations.length)) fail('Saved brief citation index is out of range');
+      if (!citations.length) {
+        if (value.data !== undefined || value.citationsSummary !== undefined) fail('Empty citation list has no compact rows');
+        return;
+      }
+      if (!value.data || !value.citationsSummary) fail('Saved citations require compact row coverage');
+      countWindow(value.citationsSummary.total,value.citationsSummary.returned,value.citationsSummary.truncated,value.data,12);
+      if (value.citationsSummary.total!==citations.length) fail('Full saved citation index was changed');
+      value.data.forEach((row,index)=>{const citation=citations[index];
+        if (row.id!==citation.recordId||row.title!==citation.title||row.url!==citation.locator||row.sourceFamily!==citation.sourceFamily||
+          row.snippet!==[citation.originalSourceName,citation.stage?`stage: ${citation.stage}`:null].filter(Boolean).join(' — ')) fail('Compact citation substituted source');
+      });
+    } else if (definition === 'BusinessDevelopmentSourceOutput') {
+      if (Buffer.byteLength(JSON.stringify(value),'utf8') > 262144) fail('Saved source exceeds output limit');
+      if (!value.resolvable) {
+        if (!value.limitation||!value.message||value.results!==undefined||value.basis!==undefined||value.basisNote!==undefined||
+          (value.limitation==='source_changed')!==(value.citation!==null)) fail('Unresolved citation cannot become evidence');
+        return;
+      }
+      if (!value.citation||!value.basis||value.limitation!==undefined||value.message!==undefined) fail('Resolved source is incomplete');
+      if (value.basis==='none') {
+        if (value.results!==undefined||!value.basisNote) fail('Metadata-only citation is not a current source');
+        return;
+      }
+      if (!value.results||value.results.length!==1||value.basis==='snapshot_only'&&!value.basisNote||
+        value.basis==='current_dossier'&&value.basisNote!==undefined) fail('Source basis is misrepresented');
+      const row=value.results[0];assertFacts(row);
+      if(row.basis!==value.basis)fail('Resolved source basis mismatch');
+      for(const key of ['recordId','title','locator','sourceFamily','originalSourceName','stage'])
+        if(row.citation[key]!==value.citation[key])fail('Resolved citation metadata mismatch');
+      if((row.recordId??row.originalSourceId??'(no record id)')!==value.citation.recordId||row.sourceFamily!==value.citation.sourceFamily)fail('Resolved source identity mismatch');
     } else {
       if (value.alerts.returned !== value.alerts.items.length || value.alerts.returned > value.alerts.limit)
         fail('Recent changes returned/limit mismatch');

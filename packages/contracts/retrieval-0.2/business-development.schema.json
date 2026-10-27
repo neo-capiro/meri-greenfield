@@ -9,7 +9,9 @@
       "enum": [
         "get_business_development_context",
         "get_business_development_evidence",
-        "get_business_development_recent_changes"
+        "get_business_development_recent_changes",
+        "get_business_development_brief",
+        "resolve_business_development_source"
       ]
     },
     "BusinessDevelopmentContextInput": {
@@ -1078,6 +1080,694 @@
         "alerts"
       ],
       "additionalProperties": false
+    },
+    "BusinessDevelopmentBriefInput": {
+      "type": "object",
+      "properties": {
+        "conversationId": {
+          "type": "string",
+          "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$"
+        }
+      },
+      "required": [
+        "conversationId"
+      ],
+      "additionalProperties": false
+    },
+    "BusinessDevelopmentSourceInput": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "conversationId": {
+          "type": "string",
+          "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$"
+        },
+        "citationIndex": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        }
+      },
+      "required": [
+        "conversationId",
+        "citationIndex"
+      ]
+    },
+    "BizDevBriefCitation": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "sourceFamily": {
+          "type": "string"
+        },
+        "recordId": {
+          "type": "string"
+        },
+        "locator": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "originalSourceName": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "originalSourceId": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "eventDate": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "sourceUpdatedAt": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "retrievedAt": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "title": {
+          "type": "string"
+        },
+        "relationshipStrength": {
+          "type": "string"
+        },
+        "stage": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "sourceFamily",
+        "recordId",
+        "locator",
+        "originalSourceName",
+        "originalSourceId",
+        "eventDate",
+        "sourceUpdatedAt",
+        "retrievedAt",
+        "title",
+        "relationshipStrength",
+        "stage"
+      ]
+    },
+    "BizDevSavedBrief": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "status": {
+          "enum": [
+            "draft",
+            "archived"
+          ]
+        },
+        "currentVersionNumber": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "sections": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "companyAndFirmImplication": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "text": {
+                  "type": "string"
+                },
+                "provenance": {
+                  "enum": [
+                    "generated",
+                    "edited"
+                  ]
+                },
+                "citationIndexes": {
+                  "type": "array",
+                  "items": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 9007199254740991
+                  },
+                  "uniqueItems": true
+                }
+              },
+              "required": [
+                "text",
+                "provenance",
+                "citationIndexes"
+              ]
+            },
+            "verifiedEvidence": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "text": {
+                  "type": "string"
+                },
+                "provenance": {
+                  "enum": [
+                    "generated",
+                    "edited"
+                  ]
+                },
+                "citationIndexes": {
+                  "type": "array",
+                  "items": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 9007199254740991
+                  },
+                  "uniqueItems": true
+                }
+              },
+              "required": [
+                "text",
+                "provenance",
+                "citationIndexes"
+              ]
+            },
+            "judgment": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "text": {
+                  "type": "string"
+                },
+                "provenance": {
+                  "enum": [
+                    "generated",
+                    "edited"
+                  ]
+                },
+                "citationIndexes": {
+                  "type": "array",
+                  "items": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 9007199254740991
+                  },
+                  "uniqueItems": true
+                }
+              },
+              "required": [
+                "text",
+                "provenance",
+                "citationIndexes"
+              ]
+            },
+            "practicalAction": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "text": {
+                  "type": "string"
+                },
+                "provenance": {
+                  "enum": [
+                    "generated",
+                    "edited"
+                  ]
+                },
+                "citationIndexes": {
+                  "type": "array",
+                  "items": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 9007199254740991
+                  },
+                  "uniqueItems": true
+                }
+              },
+              "required": [
+                "text",
+                "provenance",
+                "citationIndexes"
+              ]
+            },
+            "missingInformation": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "text": {
+                  "type": "string"
+                },
+                "provenance": {
+                  "enum": [
+                    "generated",
+                    "edited"
+                  ]
+                },
+                "citationIndexes": {
+                  "type": "array",
+                  "items": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 9007199254740991
+                  },
+                  "uniqueItems": true
+                }
+              },
+              "required": [
+                "text",
+                "provenance",
+                "citationIndexes"
+              ]
+            }
+          },
+          "required": [
+            "companyAndFirmImplication",
+            "verifiedEvidence",
+            "judgment",
+            "practicalAction",
+            "missingInformation"
+          ]
+        },
+        "citations": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/BizDevBriefCitation"
+          }
+        }
+      },
+      "required": [
+        "id",
+        "title",
+        "status",
+        "currentVersionNumber",
+        "updatedAt",
+        "sections",
+        "citations"
+      ]
+    },
+    "BusinessDevelopmentBriefOutput": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "tool": {
+          "const": "get_business_development_brief"
+        },
+        "generatedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "brief": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/BizDevSavedBrief"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "message": {
+          "type": "string"
+        },
+        "data": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "title": {
+                "type": "string"
+              },
+              "url": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "snippet": {
+                "type": "string"
+              },
+              "sourceFamily": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "id",
+              "title",
+              "url",
+              "snippet",
+              "sourceFamily"
+            ]
+          },
+          "maxItems": 12
+        },
+        "citationsSummary": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "total": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "returned": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "truncated": {
+              "type": "boolean"
+            },
+            "note": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "total",
+            "returned",
+            "truncated",
+            "note"
+          ]
+        }
+      },
+      "required": [
+        "tool",
+        "generatedAt",
+        "brief"
+      ]
+    },
+    "BizDevResolvedSourceRow": {
+      "type": "object",
+      "properties": {
+        "sourceFamily": {
+          "type": "string",
+          "enum": [
+            "capiro_canonical_identity",
+            "capiro_prospect_state",
+            "usaspending_contract",
+            "usaspending_assistance",
+            "sam_entity",
+            "sam_opportunity",
+            "tango_vehicle",
+            "lda_filing",
+            "pdl_company",
+            "pdl_people"
+          ]
+        },
+        "recordId": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "locator": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "originalSourceName": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "originalSourceId": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "claimType": {
+          "type": "string",
+          "enum": [
+            "identity",
+            "government_exposure",
+            "relevant_signal",
+            "footprint",
+            "lobbying",
+            "people"
+          ]
+        },
+        "relationshipStrength": {
+          "type": "string",
+          "enum": [
+            "direct",
+            "conditional",
+            "thematic",
+            "unresolved"
+          ]
+        },
+        "eventDate": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "effectiveDate": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "fiscalYear": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "stage": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "enum": [
+            "requested",
+            "authorized",
+            "obligated",
+            "awarded",
+            "ceiling",
+            "forecast",
+            null
+          ]
+        },
+        "sourceUpdatedAt": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "retrievedAt": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "scopeChecked": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "status": {
+          "$ref": "#/$defs/BizDevEvidenceStatus"
+        },
+        "title": {
+          "type": "string"
+        },
+        "facts": {
+          "$ref": "#/$defs/BizDevEvidenceFacts"
+        },
+        "id": {
+          "type": "string"
+        },
+        "url": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "snippet": {
+          "type": "string"
+        },
+        "factsTruncated": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/BizDevDescriptiveFactKey"
+          },
+          "maxItems": 5,
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "factsOmitted": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/BizDevEvidenceFactKey"
+          },
+          "maxItems": 45,
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "factsOmittedNote": {
+          "const": "These factual fields were too large to include exactly and were omitted rather than cut; treat them as unsupported here."
+        },
+        "basis": {
+          "enum": [
+            "current_dossier",
+            "snapshot_only"
+          ]
+        },
+        "citation": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "sourceFamily": {
+              "type": "string"
+            },
+            "recordId": {
+              "type": "string"
+            },
+            "locator": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "originalSourceName": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "title": {
+              "type": "string"
+            },
+            "stage": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          "required": [
+            "sourceFamily",
+            "recordId",
+            "locator",
+            "originalSourceName",
+            "title",
+            "stage"
+          ]
+        }
+      },
+      "required": [
+        "sourceFamily",
+        "recordId",
+        "locator",
+        "originalSourceName",
+        "originalSourceId",
+        "claimType",
+        "relationshipStrength",
+        "eventDate",
+        "effectiveDate",
+        "fiscalYear",
+        "stage",
+        "sourceUpdatedAt",
+        "retrievedAt",
+        "scopeChecked",
+        "status",
+        "title",
+        "facts",
+        "id",
+        "url",
+        "snippet",
+        "basis",
+        "citation"
+      ],
+      "additionalProperties": false
+    },
+    "BusinessDevelopmentSourceOutput": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "tool": {
+          "const": "resolve_business_development_source"
+        },
+        "generatedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "resolvable": {
+          "type": "boolean"
+        },
+        "limitation": {
+          "enum": [
+            "citation_index_out_of_range",
+            "brief_not_found",
+            "source_changed"
+          ]
+        },
+        "message": {
+          "type": "string"
+        },
+        "citation": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/BizDevBriefCitation"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "basis": {
+          "enum": [
+            "current_dossier",
+            "snapshot_only",
+            "none"
+          ]
+        },
+        "basisNote": {
+          "type": "string"
+        },
+        "results": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/BizDevResolvedSourceRow"
+          },
+          "minItems": 1,
+          "maxItems": 1
+        }
+      },
+      "required": [
+        "tool",
+        "generatedAt",
+        "resolvable",
+        "citation"
+      ]
     }
   }
 }

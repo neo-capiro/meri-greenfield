@@ -1,0 +1,515 @@
+{
+  "provenance": "Synthetic fixtures through actual Core shared comparison helpers and current receiving projection; no DB or provider execution.",
+  "rows": [
+    {
+      "name": "exact",
+      "id": "compare_florida_budget_amounts",
+      "input": {
+        "clientId": null,
+        "folderId": null,
+        "leftId": "left",
+        "leftRevision": "r1",
+        "rightId": "right",
+        "rightRevision": "r2",
+        "jurisdiction": "FL",
+        "sessionKey": ""
+      },
+      "page": {
+        "version": "0.1.0",
+        "tool": "compare_florida_budget_amounts",
+        "generatedAt": "2026-10-27T04:12:13.090Z",
+        "selection": {
+          "clientId": null,
+          "folderId": null,
+          "leftId": "left",
+          "leftRevision": "r1",
+          "rightId": "right",
+          "rightRevision": "r2",
+          "jurisdiction": "FL",
+          "sessionKey": ""
+        },
+        "data": {
+          "left": {
+            "id": "left",
+            "projectId": "project",
+            "fiscalYear": "2027",
+            "periodStart": "2026-07-01",
+            "periodEnd": "2027-06-30",
+            "currency": "USD",
+            "fund": "GR",
+            "basis": "recurring",
+            "measure": "money",
+            "minorUnits": "900719925474099300",
+            "state": "amount",
+            "stage": "request",
+            "chamber": "house",
+            "offer": null,
+            "sourceRevision": "r1",
+            "documentId": "doc",
+            "locator": "page 2",
+            "unitMultiplier": "1",
+            "allocationBasis": "project",
+            "qualified": true
+          },
+          "right": {
+            "id": "right",
+            "projectId": "project",
+            "fiscalYear": "2027",
+            "periodStart": "2026-07-01",
+            "periodEnd": "2027-06-30",
+            "currency": "USD",
+            "fund": "GR",
+            "basis": "recurring",
+            "measure": "money",
+            "minorUnits": "900719925474099301",
+            "state": "amount",
+            "stage": "request",
+            "chamber": "house",
+            "offer": null,
+            "sourceRevision": "r2",
+            "documentId": "doc",
+            "locator": "page 2",
+            "unitMultiplier": "1",
+            "allocationBasis": "project",
+            "qualified": true
+          },
+          "comparable": true,
+          "reasons": [],
+          "deltaMinorUnits": "1",
+          "percentage": "0.00%"
+        },
+        "effects": [],
+        "coverage": {
+          "basis": "exact_source_pair",
+          "sourceUniverseComplete": false,
+          "maxOutputBytes": 262144,
+          "limitations": [
+            "Selected immutable source revisions only; no missing, truncated or cross-pair results are synthesized."
+          ]
+        }
+      }
+    },
+    {
+      "name": "incomparable",
+      "id": "compare_florida_budget_amounts",
+      "input": {
+        "clientId": null,
+        "folderId": null,
+        "leftId": "left",
+        "leftRevision": "r1",
+        "rightId": "right",
+        "rightRevision": "r2",
+        "jurisdiction": "FL",
+        "sessionKey": ""
+      },
+      "page": {
+        "version": "0.1.0",
+        "tool": "compare_florida_budget_amounts",
+        "generatedAt": "2026-10-27T04:12:13.090Z",
+        "selection": {
+          "clientId": null,
+          "folderId": null,
+          "leftId": "left",
+          "leftRevision": "r1",
+          "rightId": "right",
+          "rightRevision": "r2",
+          "jurisdiction": "FL",
+          "sessionKey": ""
+        },
+        "data": {
+          "left": {
+            "id": "left",
+            "projectId": "project",
+            "fiscalYear": "2027",
+            "periodStart": "2026-07-01",
+            "periodEnd": "2027-06-30",
+            "currency": "USD",
+            "fund": "GR",
+            "basis": "recurring",
+            "measure": "money",
+            "minorUnits": "900719925474099300",
+            "state": "amount",
+            "stage": "request",
+            "chamber": "house",
+            "offer": null,
+            "sourceRevision": "r1",
+            "documentId": "doc",
+            "locator": "page 2",
+            "unitMultiplier": "1",
+            "allocationBasis": "project",
+            "qualified": true
+          },
+          "right": {
+            "id": "right",
+            "projectId": "project",
+            "fiscalYear": "2028",
+            "periodStart": "2026-07-01",
+            "periodEnd": "2027-06-30",
+            "currency": "USD",
+            "fund": "GR",
+            "basis": "recurring",
+            "measure": "money",
+            "minorUnits": "900719925474099300",
+            "state": "amount",
+            "stage": "request",
+            "chamber": "house",
+            "offer": null,
+            "sourceRevision": "r2",
+            "documentId": "doc",
+            "locator": "page 2",
+            "unitMultiplier": "1",
+            "allocationBasis": "project",
+            "qualified": true,
+            "valueRole": "vetoed_amount"
+          },
+          "comparable": false,
+          "reasons": [
+            "INCOMPATIBLE_VALUE_ROLE",
+            "INCOMPATIBLE_fiscalYear"
+          ],
+          "deltaMinorUnits": null,
+          "percentage": null
+        },
+        "effects": [],
+        "coverage": {
+          "basis": "exact_source_pair",
+          "sourceUniverseComplete": false,
+          "maxOutputBytes": 262144,
+          "limitations": [
+            "Selected immutable source revisions only; no missing, truncated or cross-pair results are synthesized."
+          ]
+        }
+      }
+    },
+    {
+      "name": "zero",
+      "id": "compare_florida_budget_amounts",
+      "input": {
+        "clientId": null,
+        "folderId": null,
+        "leftId": "left",
+        "leftRevision": "r1",
+        "rightId": "right",
+        "rightRevision": "r2",
+        "jurisdiction": "FL",
+        "sessionKey": ""
+      },
+      "page": {
+        "version": "0.1.0",
+        "tool": "compare_florida_budget_amounts",
+        "generatedAt": "2026-10-27T04:12:13.090Z",
+        "selection": {
+          "clientId": null,
+          "folderId": null,
+          "leftId": "left",
+          "leftRevision": "r1",
+          "rightId": "right",
+          "rightRevision": "r2",
+          "jurisdiction": "FL",
+          "sessionKey": ""
+        },
+        "data": {
+          "left": {
+            "id": "left",
+            "projectId": "project",
+            "fiscalYear": "2027",
+            "periodStart": "2026-07-01",
+            "periodEnd": "2027-06-30",
+            "currency": "USD",
+            "fund": "GR",
+            "basis": "recurring",
+            "measure": "money",
+            "minorUnits": "0",
+            "state": "amount",
+            "stage": "request",
+            "chamber": "house",
+            "offer": null,
+            "sourceRevision": "r1",
+            "documentId": "doc",
+            "locator": "page 2",
+            "unitMultiplier": "1",
+            "allocationBasis": "project",
+            "qualified": true
+          },
+          "right": {
+            "id": "right",
+            "projectId": "project",
+            "fiscalYear": "2027",
+            "periodStart": "2026-07-01",
+            "periodEnd": "2027-06-30",
+            "currency": "USD",
+            "fund": "GR",
+            "basis": "recurring",
+            "measure": "money",
+            "minorUnits": "1",
+            "state": "amount",
+            "stage": "request",
+            "chamber": "house",
+            "offer": null,
+            "sourceRevision": "r2",
+            "documentId": "doc",
+            "locator": "page 2",
+            "unitMultiplier": "1",
+            "allocationBasis": "project",
+            "qualified": true
+          },
+          "comparable": true,
+          "reasons": [
+            "ZERO_BASELINE_PERCENTAGE_UNDEFINED"
+          ],
+          "deltaMinorUnits": "1",
+          "percentage": null
+        },
+        "effects": [],
+        "coverage": {
+          "basis": "exact_source_pair",
+          "sourceUniverseComplete": false,
+          "maxOutputBytes": 262144,
+          "limitations": [
+            "Selected immutable source revisions only; no missing, truncated or cross-pair results are synthesized."
+          ]
+        }
+      }
+    },
+    {
+      "name": "versions",
+      "id": "compare_legislative_versions",
+      "input": {
+        "clientId": null,
+        "folderId": null,
+        "leftId": "left",
+        "leftRevision": "r1",
+        "rightId": "right",
+        "rightRevision": "r2",
+        "jurisdiction": "FL",
+        "sessionKey": "2027",
+        "allowCrossBill": false
+      },
+      "page": {
+        "version": "0.1.0",
+        "tool": "compare_legislative_versions",
+        "generatedAt": "2026-10-27T04:12:13.094Z",
+        "selection": {
+          "clientId": null,
+          "folderId": null,
+          "leftId": "left",
+          "leftRevision": "r1",
+          "rightId": "right",
+          "rightRevision": "r2",
+          "jurisdiction": "FL",
+          "sessionKey": "2027",
+          "allowCrossBill": false
+        },
+        "data": {
+          "version": "exact-line-lcs-v1",
+          "left": {
+            "id": "left",
+            "billId": "bill",
+            "jurisdiction": "FL",
+            "sessionKey": "2027",
+            "revision": "r1",
+            "contentHash": "hash-left",
+            "extractorVersion": "extractor-1",
+            "sourceUrl": "https://example.test/source",
+            "kind": "bill_text",
+            "publishedDate": null,
+            "observedAt": "2026-10-27T00:00:00.000Z",
+            "complete": true
+          },
+          "right": {
+            "id": "right",
+            "billId": "bill",
+            "jurisdiction": "FL",
+            "sessionKey": "2027",
+            "revision": "r2",
+            "contentHash": "hash-right",
+            "extractorVersion": "extractor-1",
+            "sourceUrl": "https://example.test/source",
+            "kind": "bill_text",
+            "publishedDate": null,
+            "observedAt": "2026-10-27T00:00:00.000Z",
+            "complete": true
+          },
+          "changes": [
+            {
+              "kind": "unchanged",
+              "text": "line 😀",
+              "left": {
+                "text": "line 😀",
+                "locator": "page 1",
+                "start": 0,
+                "end": 7
+              },
+              "right": {
+                "text": "line 😀",
+                "locator": "page 2",
+                "start": 0,
+                "end": 7
+              }
+            },
+            {
+              "kind": "removed",
+              "text": "old",
+              "left": {
+                "text": "old",
+                "locator": "page 1",
+                "start": 8,
+                "end": 11
+              },
+              "right": null
+            },
+            {
+              "kind": "added",
+              "text": "new",
+              "left": null,
+              "right": {
+                "text": "new",
+                "locator": "page 2",
+                "start": 8,
+                "end": 11
+              }
+            }
+          ],
+          "classification": "textual_change",
+          "warning": "Text comparison does not establish adoption, enactment or legal effect. Original legislative underline/strike-through may be absent from extracted text.",
+          "scope": {
+            "clientId": null,
+            "folderId": null,
+            "jurisdiction": "FL",
+            "sessionKey": "2027"
+          }
+        },
+        "effects": [],
+        "coverage": {
+          "basis": "exact_source_pair",
+          "sourceUniverseComplete": false,
+          "maxOutputBytes": 262144,
+          "limitations": [
+            "Selected immutable source revisions only; no missing, truncated or cross-pair results are synthesized."
+          ]
+        }
+      }
+    },
+    {
+      "name": "cross-session",
+      "id": "compare_legislative_versions",
+      "input": {
+        "clientId": null,
+        "folderId": null,
+        "leftId": "left",
+        "leftRevision": "r1",
+        "rightId": "right",
+        "rightRevision": "r2",
+        "jurisdiction": "FL",
+        "sessionKey": "2027",
+        "allowCrossBill": true,
+        "rightSessionKey": "2028"
+      },
+      "page": {
+        "version": "0.1.0",
+        "tool": "compare_legislative_versions",
+        "generatedAt": "2026-10-27T04:12:13.095Z",
+        "selection": {
+          "clientId": null,
+          "folderId": null,
+          "leftId": "left",
+          "leftRevision": "r1",
+          "rightId": "right",
+          "rightRevision": "r2",
+          "jurisdiction": "FL",
+          "sessionKey": "2027",
+          "allowCrossBill": true,
+          "rightSessionKey": "2028"
+        },
+        "data": {
+          "version": "exact-line-lcs-v1",
+          "left": {
+            "id": "left",
+            "billId": "bill",
+            "jurisdiction": "FL",
+            "sessionKey": "2027",
+            "revision": "r1",
+            "contentHash": "hash-left",
+            "extractorVersion": "extractor-1",
+            "sourceUrl": "https://example.test/source",
+            "kind": "bill_text",
+            "publishedDate": null,
+            "observedAt": "2026-10-27T00:00:00.000Z",
+            "complete": true
+          },
+          "right": {
+            "id": "right",
+            "billId": "another",
+            "jurisdiction": "FL",
+            "sessionKey": "2028",
+            "revision": "r2",
+            "contentHash": "hash-right",
+            "extractorVersion": "extractor-1",
+            "sourceUrl": "https://example.test/source",
+            "kind": "bill_text",
+            "publishedDate": null,
+            "observedAt": "2026-10-27T00:00:00.000Z",
+            "complete": true
+          },
+          "changes": [
+            {
+              "kind": "unchanged",
+              "text": "line 😀",
+              "left": {
+                "text": "line 😀",
+                "locator": "page 1",
+                "start": 0,
+                "end": 7
+              },
+              "right": {
+                "text": "line 😀",
+                "locator": "page 2",
+                "start": 0,
+                "end": 7
+              }
+            },
+            {
+              "kind": "removed",
+              "text": "old",
+              "left": {
+                "text": "old",
+                "locator": "page 1",
+                "start": 8,
+                "end": 11
+              },
+              "right": null
+            },
+            {
+              "kind": "added",
+              "text": "new",
+              "left": null,
+              "right": {
+                "text": "new",
+                "locator": "page 2",
+                "start": 8,
+                "end": 11
+              }
+            }
+          ],
+          "classification": "textual_change",
+          "warning": "Text comparison does not establish adoption, enactment or legal effect. Original legislative underline/strike-through may be absent from extracted text.",
+          "scope": {
+            "clientId": null,
+            "folderId": null,
+            "jurisdiction": "FL",
+            "sessionKey": "2027"
+          }
+        },
+        "effects": [],
+        "coverage": {
+          "basis": "exact_source_pair",
+          "sourceUniverseComplete": false,
+          "maxOutputBytes": 262144,
+          "limitations": [
+            "Selected immutable source revisions only; no missing, truncated or cross-pair results are synthesized."
+          ]
+        }
+      }
+    }
+  ]
+}

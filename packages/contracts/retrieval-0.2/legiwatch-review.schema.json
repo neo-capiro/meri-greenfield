@@ -1,0 +1,663 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:meri:retrieval:legiwatch-review:0.2.0",
+  "$defs": {
+    "LegiwatchReviewRequest": {
+      "type": "object",
+      "properties": {
+        "view": {
+          "enum": [
+            "folders",
+            "suggestions",
+            "rules",
+            "workflows"
+          ]
+        },
+        "clientId": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^[a-f0-9]{8}-[a-f0-9]{4}-[1-8][a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "folderId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 250
+        },
+        "jurisdiction": {
+          "type": "string",
+          "pattern": "^[A-Z]{2}$"
+        },
+        "sessionKey": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 60
+        },
+        "cursor": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 250
+        }
+      },
+      "required": [
+        "view",
+        "clientId"
+      ],
+      "additionalProperties": false
+    },
+    "LegiwatchReviewFolder": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 250
+        },
+        "clientId": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^[a-f0-9]{8}-[a-f0-9]{4}-[1-8][a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "name": {
+          "type": "string"
+        },
+        "code": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "archived": {
+          "const": false
+        },
+        "ownerClerkId": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "otherUserAccess": {
+          "type": "string"
+        },
+        "defaultSession": {
+          "type": "string"
+        },
+        "jurisdiction": {
+          "type": "string"
+        },
+        "version": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "canEdit": {
+          "type": "boolean"
+        },
+        "canManage": {
+          "type": "boolean"
+        },
+        "count": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        }
+      },
+      "required": [
+        "id",
+        "clientId",
+        "name",
+        "code",
+        "archived",
+        "ownerClerkId",
+        "otherUserAccess",
+        "defaultSession",
+        "jurisdiction",
+        "version",
+        "canEdit",
+        "canManage",
+        "count"
+      ],
+      "additionalProperties": false
+    },
+    "LegiwatchReviewSuggestion": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 250
+        },
+        "rule_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 250
+        },
+        "rule_version": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "run_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 250
+        },
+        "folder_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 250
+        },
+        "bill_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 250
+        },
+        "fingerprint": {
+          "type": "string"
+        },
+        "version": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "state": {
+          "type": "string"
+        },
+        "decision_id": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 250
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "payload": {
+          "type": "object",
+          "properties": {
+            "bill": {
+              "type": "object",
+              "additionalProperties": true
+            },
+            "sourceFingerprint": {
+              "type": "string"
+            },
+            "folderVersion": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "stateVersion": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "coverage": {
+              "type": "object",
+              "properties": {
+                "complete": {
+                  "type": "boolean"
+                },
+                "inspectedDocuments": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9007199254740991
+                },
+                "missing": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              },
+              "required": [
+                "complete",
+                "inspectedDocuments",
+                "missing"
+              ],
+              "additionalProperties": false
+            },
+            "matches": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "additionalProperties": true
+              }
+            },
+            "sourceScope": {
+              "type": "object",
+              "properties": {
+                "jurisdiction": {
+                  "type": "string",
+                  "pattern": "^[A-Z]{2}$"
+                },
+                "sessionKey": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 60
+                },
+                "fields": {
+                  "type": "array",
+                  "items": {
+                    "enum": [
+                      "title",
+                      "bill_text",
+                      "amendment_text"
+                    ]
+                  },
+                  "maxItems": 3,
+                  "minItems": 1
+                }
+              },
+              "required": [
+                "jurisdiction",
+                "sessionKey",
+                "fields"
+              ],
+              "additionalProperties": false
+            },
+            "origin": {
+              "enum": [
+                "deterministic",
+                "semantic"
+              ]
+            },
+            "explanation": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "bill",
+            "sourceFingerprint",
+            "folderVersion",
+            "stateVersion",
+            "coverage",
+            "matches",
+            "sourceScope",
+            "origin"
+          ],
+          "additionalProperties": true
+        }
+      },
+      "required": [
+        "id",
+        "rule_id",
+        "rule_version",
+        "run_id",
+        "folder_id",
+        "bill_id",
+        "fingerprint",
+        "version",
+        "state",
+        "decision_id",
+        "payload"
+      ],
+      "additionalProperties": false
+    },
+    "LegiwatchReviewRule": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 250
+        },
+        "name": {
+          "type": "string"
+        },
+        "version": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "state": {
+          "enum": [
+            "needs_review",
+            "active",
+            "paused"
+          ]
+        },
+        "config": {
+          "type": "object",
+          "properties": {
+            "folderIds": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 250
+              }
+            },
+            "scope": {
+              "type": "object",
+              "properties": {
+                "jurisdiction": {
+                  "type": "string",
+                  "pattern": "^[A-Z]{2}$"
+                },
+                "sessionKey": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 60
+                },
+                "fields": {
+                  "type": "array",
+                  "items": {
+                    "enum": [
+                      "title",
+                      "bill_text",
+                      "amendment_text"
+                    ]
+                  },
+                  "maxItems": 3,
+                  "minItems": 1
+                }
+              },
+              "required": [
+                "jurisdiction",
+                "sessionKey",
+                "fields"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "folderIds",
+            "scope"
+          ],
+          "additionalProperties": true
+        },
+        "activation": {
+          "anyOf": [
+            {
+              "type": "object",
+              "additionalProperties": true
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "issues": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "compiled": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": true
+          }
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "version",
+        "state",
+        "config",
+        "activation",
+        "issues",
+        "compiled"
+      ],
+      "additionalProperties": false
+    },
+    "LegiwatchReviewWorkflow": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 250
+        },
+        "workflow_id": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 250
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "template": {
+          "type": "string"
+        },
+        "input_hash": {
+          "type": "string"
+        },
+        "input": {
+          "type": "object",
+          "properties": {
+            "folderIds": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 250
+              }
+            }
+          },
+          "required": [
+            "folderIds"
+          ],
+          "additionalProperties": true
+        },
+        "state": {
+          "type": "string"
+        },
+        "reason": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "steps": {
+          "type": "object",
+          "additionalProperties": true
+        }
+      },
+      "required": [
+        "id",
+        "workflow_id",
+        "template",
+        "input_hash",
+        "input",
+        "state",
+        "reason",
+        "steps"
+      ],
+      "additionalProperties": false
+    },
+    "LegiwatchReviewFoldersData": {
+      "type": "object",
+      "properties": {
+        "folders": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/LegiwatchReviewFolder"
+          }
+        }
+      },
+      "required": [
+        "folders"
+      ],
+      "additionalProperties": false
+    },
+    "LegiwatchReviewSuggestionsData": {
+      "type": "object",
+      "properties": {
+        "rows": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/LegiwatchReviewSuggestion"
+          },
+          "maxItems": 50
+        },
+        "next": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 250
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "rows",
+        "next"
+      ],
+      "additionalProperties": false
+    },
+    "LegiwatchReviewRulesData": {
+      "type": "object",
+      "properties": {
+        "rows": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/LegiwatchReviewRule"
+          },
+          "maxItems": 201
+        }
+      },
+      "required": [
+        "rows"
+      ],
+      "additionalProperties": false
+    },
+    "LegiwatchReviewWorkflowsData": {
+      "type": "object",
+      "properties": {
+        "rows": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/LegiwatchReviewWorkflow"
+          },
+          "maxItems": 100
+        }
+      },
+      "required": [
+        "rows"
+      ],
+      "additionalProperties": false
+    },
+    "LegiwatchReviewOutput": {
+      "type": "object",
+      "properties": {
+        "version": {
+          "const": "0.1.0"
+        },
+        "tool": {
+          "const": "get_legiwatch_review"
+        },
+        "generatedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "selection": {
+          "$ref": "#/$defs/LegiwatchReviewRequest"
+        },
+        "data": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/LegiwatchReviewFoldersData"
+            },
+            {
+              "$ref": "#/$defs/LegiwatchReviewSuggestionsData"
+            },
+            {
+              "$ref": "#/$defs/LegiwatchReviewRulesData"
+            },
+            {
+              "$ref": "#/$defs/LegiwatchReviewWorkflowsData"
+            }
+          ]
+        },
+        "effects": {
+          "type": "array",
+          "maxItems": 0
+        },
+        "coverage": {
+          "type": "object",
+          "properties": {
+            "basis": {
+              "const": "current_owner_read"
+            },
+            "sourceUniverseComplete": {
+              "const": false
+            },
+            "maxOutputBytes": {
+              "const": 262144
+            },
+            "ownerRowLimit": {
+              "enum": [
+                null,
+                50,
+                201,
+                100
+              ]
+            },
+            "limitations": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          "required": [
+            "basis",
+            "sourceUniverseComplete",
+            "maxOutputBytes",
+            "ownerRowLimit",
+            "limitations"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "version",
+        "tool",
+        "generatedAt",
+        "selection",
+        "data",
+        "effects",
+        "coverage"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

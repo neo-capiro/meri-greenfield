@@ -522,10 +522,13 @@
     },
     {
       "id": "get_legiwatch_review",
-      "disposition": "deferred",
-      "boundary": "Saved LegiWatch review workflow and its state semantics require separate acceptance.",
-      "replacement": null,
-      "state": "deferred"
+      "disposition": "selected",
+      "boundary": "Current interactive user reads existing authorized folders, paged suggestions, rules and workflow history through the canonical Intel owner. No effects.",
+      "replacement": {
+        "id": "get_legiwatch_review",
+        "version": "0.2.0"
+      },
+      "state": "mapped"
     },
     {
       "id": "search_legiwatch_news",
@@ -549,10 +552,13 @@
     },
     {
       "id": "compare_florida_budget_amounts",
-      "disposition": "deferred",
-      "boundary": "Florida-specific budget comparison workflow needs explicit units, provenance and expected-value fixtures.",
-      "replacement": null,
-      "state": "deferred"
+      "disposition": "selected",
+      "boundary": "Compare two exact observation IDs and source revisions. Preserve FY, period, fund, recurring basis, measure, allocation or veto role, stage, source locators and exact minor-unit strings. Incompatible observations return reasons and no delta.",
+      "replacement": {
+        "id": "compare_florida_budget_amounts",
+        "version": "0.2.0"
+      },
+      "state": "mapped"
     },
     {
       "id": "prepare_legiwatch_briefing",
@@ -583,10 +589,13 @@
     },
     {
       "id": "compare_legislative_versions",
-      "disposition": "deferred",
-      "boundary": "Legislative version comparison behavior and legal-reference fidelity need separate qualification.",
-      "replacement": null,
-      "state": "deferred"
+      "disposition": "selected",
+      "boundary": "Compare complete extracted source revisions with exact line ranges and source metadata. Cross-bill/session comparisons require explicit intent. Classification is extraction/text evidence, never adoption, enactment or legal effect.",
+      "replacement": {
+        "id": "compare_legislative_versions",
+        "version": "0.2.0"
+      },
+      "state": "mapped"
     },
     {
       "id": "save_legislative_research",
@@ -1229,17 +1238,23 @@
     },
     {
       "id": "get_business_development_brief",
-      "disposition": "deferred",
-      "boundary": "BizDev brief composition and persisted-versus-generated behavior need explicit scope and fixtures.",
-      "replacement": null,
-      "state": "deferred"
+      "disposition": "selected",
+      "boundary": "Read the current saved five-section brief and full citation index for an explicitly owned persisted prospect conversation. Preserve generated versus edited section provenance; missing saved brief is not a generated replacement.",
+      "replacement": {
+        "id": "get_business_development_brief",
+        "version": "0.2.0"
+      },
+      "state": "mapped"
     },
     {
       "id": "resolve_business_development_source",
-      "disposition": "deferred",
-      "boundary": "BizDev source resolution behavior may involve provider actions; precise boundary is unqualified.",
-      "replacement": null,
-      "state": "deferred"
+      "disposition": "selected",
+      "boundary": "Resolve an exact zero-based saved citation index through the existing prospect owner. Preserve current_dossier, snapshot_only or none basis; unresolved/source-changed citation metadata is not evidence. This does not refresh or ingest sources.",
+      "replacement": {
+        "id": "resolve_business_development_source",
+        "version": "0.2.0"
+      },
+      "state": "mapped"
     },
     {
       "id": "save_business_development_brief",
@@ -2720,11 +2735,11 @@
       ],
       "inputSchema": {
         "id": "urn:meri:retrieval:business-development:0.2.0#/$defs/BusinessDevelopmentContextInput",
-        "sha256": "fff7362e49e0d981b1aeaeec881ea2e72e2fa263d9f64dfad94456fd50b330f1"
+        "sha256": "482dcd8474a37f268db5a83b477de4eb47d55d000087ff9d0d97e87d099662c4"
       },
       "outputSchema": {
         "id": "urn:meri:retrieval:business-development:0.2.0#/$defs/BusinessDevelopmentContextOutput",
-        "sha256": "fff7362e49e0d981b1aeaeec881ea2e72e2fa263d9f64dfad94456fd50b330f1"
+        "sha256": "482dcd8474a37f268db5a83b477de4eb47d55d000087ff9d0d97e87d099662c4"
       },
       "aliases": [],
       "sideEffect": "none",
@@ -2790,11 +2805,11 @@
       ],
       "inputSchema": {
         "id": "urn:meri:retrieval:business-development:0.2.0#/$defs/BusinessDevelopmentEvidenceInput",
-        "sha256": "fff7362e49e0d981b1aeaeec881ea2e72e2fa263d9f64dfad94456fd50b330f1"
+        "sha256": "482dcd8474a37f268db5a83b477de4eb47d55d000087ff9d0d97e87d099662c4"
       },
       "outputSchema": {
         "id": "urn:meri:retrieval:business-development:0.2.0#/$defs/BusinessDevelopmentEvidenceOutput",
-        "sha256": "fff7362e49e0d981b1aeaeec881ea2e72e2fa263d9f64dfad94456fd50b330f1"
+        "sha256": "482dcd8474a37f268db5a83b477de4eb47d55d000087ff9d0d97e87d099662c4"
       },
       "aliases": [],
       "sideEffect": "none",
@@ -2860,11 +2875,11 @@
       ],
       "inputSchema": {
         "id": "urn:meri:retrieval:business-development:0.2.0#/$defs/BusinessDevelopmentRecentChangesInput",
-        "sha256": "fff7362e49e0d981b1aeaeec881ea2e72e2fa263d9f64dfad94456fd50b330f1"
+        "sha256": "482dcd8474a37f268db5a83b477de4eb47d55d000087ff9d0d97e87d099662c4"
       },
       "outputSchema": {
         "id": "urn:meri:retrieval:business-development:0.2.0#/$defs/BusinessDevelopmentRecentChangesOutput",
-        "sha256": "fff7362e49e0d981b1aeaeec881ea2e72e2fa263d9f64dfad94456fd50b330f1"
+        "sha256": "482dcd8474a37f268db5a83b477de4eb47d55d000087ff9d0d97e87d099662c4"
       },
       "aliases": [],
       "sideEffect": "none",
@@ -8872,6 +8887,332 @@
       ],
       "fixtureIds": [
         "catalog.binding.apply_legiwatch_suggestion"
+      ]
+    },
+    {
+      "operation": {
+        "id": "get_legiwatch_review",
+        "version": "0.2.0"
+      },
+      "displayName": "Read current LegiWatch review",
+      "whenToUse": "Inspect currently authorized folders, exact suggestion IDs and versions, rule configuration or workflow state. Use suggestions with an exact folder, jurisdiction and session; follow its next cursor before proposing a decision.",
+      "limitations": [
+        "Interactive current identity and conversation scope only; no saved-job credentials.",
+        "A source error is not an empty result. Rules/workflows retain owner limits; coverage never asserts a complete universe.",
+        "Source evidence and coverage are preserved; semantic relevance remains inference, not quoted authority.",
+        "The UTF-8 envelope is bounded to 262144 bytes; oversize refuses without silent truncation."
+      ],
+      "positiveExamples": [
+        "Read this exact folder and session before proposing a suggestion action."
+      ],
+      "negativeExamples": [
+        "Activate a subscription, infer no changes from partial history, or act on a stale suggestion version."
+      ],
+      "sourceRequirements": [
+        {
+          "sourceId": "legiwatch_suggestions",
+          "authority": "authoritative",
+          "purpose": "evidence"
+        }
+      ],
+      "inputSchema": {
+        "id": "urn:meri:retrieval:legiwatch-review:0.2.0#/$defs/LegiwatchReviewRequest",
+        "sha256": "ae0eead3f05b898246a04aa00c2bde787a80cd6aa224ed7dc31a7393f2d06388"
+      },
+      "outputSchema": {
+        "id": "urn:meri:retrieval:legiwatch-review:0.2.0#/$defs/LegiwatchReviewOutput",
+        "sha256": "ae0eead3f05b898246a04aa00c2bde787a80cd6aa224ed7dc31a7393f2d06388"
+      },
+      "aliases": [],
+      "sideEffect": "none",
+      "requiredGrants": [
+        "tool.read"
+      ],
+      "approvalBoundary": "none",
+      "handler": null,
+      "availability": "unimplemented",
+      "qualification": "pending",
+      "retry": {
+        "maxRetries": 0,
+        "retryableCodes": [],
+        "unknownOutcome": "reconcile-before-retry"
+      },
+      "replacement": null,
+      "requirementIds": [
+        "R-01",
+        "R-04",
+        "R-05"
+      ],
+      "ticketIds": [
+        "REL-02"
+      ],
+      "gateIds": [
+        "RG-02",
+        "RG-05",
+        "RG-07"
+      ],
+      "fixtureIds": [
+        "catalog.binding.get_legiwatch_review"
+      ]
+    },
+    {
+      "operation": {
+        "id": "compare_florida_budget_amounts",
+        "version": "0.2.0"
+      },
+      "displayName": "Compare exact Florida budget amount observations",
+      "whenToUse": "Compare two exact observation IDs and source revisions. Preserve FY, period, fund, recurring basis, measure, allocation or veto role, stage, source locators and exact minor-unit strings. Incompatible observations return reasons and no delta.",
+      "limitations": [
+        "Existing current tenant/member/client/folder or persisted prospect owner authority is required; selectors grant nothing.",
+        "Whole UTF-8 output is bounded to 262144 bytes; oversized results refuse rather than silently truncating source content.",
+        "No effect, fresh ingestion, source-universe completeness or currentness is implied."
+      ],
+      "positiveExamples": [
+        "Compare two exact observation IDs and source revisions. Preserve FY, period, fund, recurring basis, measure, allocation or veto role, stage, source locators and exact minor-unit strings. Incompatible observations return reasons and no delta."
+      ],
+      "negativeExamples": [
+        "Treat partial or saved evidence as current exhaustive source truth, or execute a write through this read."
+      ],
+      "sourceRequirements": [
+        {
+          "sourceId": "florida_budget",
+          "authority": "derived",
+          "purpose": "evidence"
+        }
+      ],
+      "inputSchema": {
+        "id": "urn:meri:retrieval:legislative-comparisons:0.2.0#/$defs/BudgetComparisonRequest",
+        "sha256": "177dfc8efc8a38a214583cb00c71b59ef34ec4bfc941a015d0d44a7c8444723c"
+      },
+      "outputSchema": {
+        "id": "urn:meri:retrieval:legislative-comparisons:0.2.0#/$defs/BudgetComparisonOutput",
+        "sha256": "177dfc8efc8a38a214583cb00c71b59ef34ec4bfc941a015d0d44a7c8444723c"
+      },
+      "aliases": [],
+      "sideEffect": "none",
+      "requiredGrants": [
+        "tool.read"
+      ],
+      "approvalBoundary": "none",
+      "handler": null,
+      "availability": "unimplemented",
+      "qualification": "pending",
+      "retry": {
+        "maxRetries": 0,
+        "retryableCodes": [],
+        "unknownOutcome": "reconcile-before-retry"
+      },
+      "replacement": null,
+      "requirementIds": [
+        "R-01",
+        "R-04",
+        "R-05"
+      ],
+      "ticketIds": [
+        "REL-02"
+      ],
+      "gateIds": [
+        "RG-02",
+        "RG-05",
+        "RG-07"
+      ],
+      "fixtureIds": [
+        "catalog.binding.compare_florida_budget_amounts"
+      ]
+    },
+    {
+      "operation": {
+        "id": "compare_legislative_versions",
+        "version": "0.2.0"
+      },
+      "displayName": "Compare exact legislative source versions",
+      "whenToUse": "Compare complete extracted source revisions with exact line ranges and source metadata. Cross-bill/session comparisons require explicit intent. Classification is extraction/text evidence, never adoption, enactment or legal effect.",
+      "limitations": [
+        "Existing current tenant/member/client/folder or persisted prospect owner authority is required; selectors grant nothing.",
+        "Whole UTF-8 output is bounded to 262144 bytes; oversized results refuse rather than silently truncating source content.",
+        "No effect, fresh ingestion, source-universe completeness or currentness is implied."
+      ],
+      "positiveExamples": [
+        "Compare complete extracted source revisions with exact line ranges and source metadata. Cross-bill/session comparisons require explicit intent. Classification is extraction/text evidence, never adoption, enactment or legal effect."
+      ],
+      "negativeExamples": [
+        "Treat partial or saved evidence as current exhaustive source truth, or execute a write through this read."
+      ],
+      "sourceRequirements": [
+        {
+          "sourceId": "research_legal_legislation",
+          "authority": "derived",
+          "purpose": "evidence"
+        }
+      ],
+      "inputSchema": {
+        "id": "urn:meri:retrieval:legislative-comparisons:0.2.0#/$defs/VersionComparisonRequest",
+        "sha256": "177dfc8efc8a38a214583cb00c71b59ef34ec4bfc941a015d0d44a7c8444723c"
+      },
+      "outputSchema": {
+        "id": "urn:meri:retrieval:legislative-comparisons:0.2.0#/$defs/VersionComparisonOutput",
+        "sha256": "177dfc8efc8a38a214583cb00c71b59ef34ec4bfc941a015d0d44a7c8444723c"
+      },
+      "aliases": [],
+      "sideEffect": "none",
+      "requiredGrants": [
+        "tool.read"
+      ],
+      "approvalBoundary": "none",
+      "handler": null,
+      "availability": "unimplemented",
+      "qualification": "pending",
+      "retry": {
+        "maxRetries": 0,
+        "retryableCodes": [],
+        "unknownOutcome": "reconcile-before-retry"
+      },
+      "replacement": null,
+      "requirementIds": [
+        "R-01",
+        "R-04",
+        "R-05"
+      ],
+      "ticketIds": [
+        "REL-02"
+      ],
+      "gateIds": [
+        "RG-02",
+        "RG-05",
+        "RG-07"
+      ],
+      "fixtureIds": [
+        "catalog.binding.compare_legislative_versions"
+      ]
+    },
+    {
+      "operation": {
+        "id": "get_business_development_brief",
+        "version": "0.2.0"
+      },
+      "displayName": "Read saved prospect brief",
+      "whenToUse": "Read the current saved five-section brief and full citation index for an explicitly owned persisted prospect conversation. Preserve generated versus edited section provenance; missing saved brief is not a generated replacement.",
+      "limitations": [
+        "Existing current tenant/member/client/folder or persisted prospect owner authority is required; selectors grant nothing.",
+        "Whole UTF-8 output is bounded to 262144 bytes; oversized results refuse rather than silently truncating source content.",
+        "No effect, fresh ingestion, source-universe completeness or currentness is implied."
+      ],
+      "positiveExamples": [
+        "Read the current saved five-section brief and full citation index for an explicitly owned persisted prospect conversation. Preserve generated versus edited section provenance; missing saved brief is not a generated replacement."
+      ],
+      "negativeExamples": [
+        "Treat partial or saved evidence as current exhaustive source truth, or execute a write through this read."
+      ],
+      "sourceRequirements": [
+        {
+          "sourceId": "business_development",
+          "authority": "derived",
+          "purpose": "evidence"
+        }
+      ],
+      "inputSchema": {
+        "id": "urn:meri:retrieval:business-development:0.2.0#/$defs/BusinessDevelopmentBriefInput",
+        "sha256": "482dcd8474a37f268db5a83b477de4eb47d55d000087ff9d0d97e87d099662c4"
+      },
+      "outputSchema": {
+        "id": "urn:meri:retrieval:business-development:0.2.0#/$defs/BusinessDevelopmentBriefOutput",
+        "sha256": "482dcd8474a37f268db5a83b477de4eb47d55d000087ff9d0d97e87d099662c4"
+      },
+      "aliases": [],
+      "sideEffect": "none",
+      "requiredGrants": [
+        "tool.read"
+      ],
+      "approvalBoundary": "none",
+      "handler": null,
+      "availability": "unimplemented",
+      "qualification": "pending",
+      "retry": {
+        "maxRetries": 0,
+        "retryableCodes": [],
+        "unknownOutcome": "reconcile-before-retry"
+      },
+      "replacement": null,
+      "requirementIds": [
+        "R-01",
+        "R-04",
+        "R-05"
+      ],
+      "ticketIds": [
+        "REL-02"
+      ],
+      "gateIds": [
+        "RG-02",
+        "RG-05",
+        "RG-07"
+      ],
+      "fixtureIds": [
+        "catalog.binding.get_business_development_brief"
+      ]
+    },
+    {
+      "operation": {
+        "id": "resolve_business_development_source",
+        "version": "0.2.0"
+      },
+      "displayName": "Resolve saved prospect brief citation",
+      "whenToUse": "Resolve an exact zero-based saved citation index through the existing prospect owner. Preserve current_dossier, snapshot_only or none basis; unresolved/source-changed citation metadata is not evidence. This does not refresh or ingest sources.",
+      "limitations": [
+        "Existing current tenant/member/client/folder or persisted prospect owner authority is required; selectors grant nothing.",
+        "Whole UTF-8 output is bounded to 262144 bytes; oversized results refuse rather than silently truncating source content.",
+        "No effect, fresh ingestion, source-universe completeness or currentness is implied."
+      ],
+      "positiveExamples": [
+        "Resolve an exact zero-based saved citation index through the existing prospect owner. Preserve current_dossier, snapshot_only or none basis; unresolved/source-changed citation metadata is not evidence. This does not refresh or ingest sources."
+      ],
+      "negativeExamples": [
+        "Treat partial or saved evidence as current exhaustive source truth, or execute a write through this read."
+      ],
+      "sourceRequirements": [
+        {
+          "sourceId": "business_development",
+          "authority": "derived",
+          "purpose": "evidence"
+        }
+      ],
+      "inputSchema": {
+        "id": "urn:meri:retrieval:business-development:0.2.0#/$defs/BusinessDevelopmentSourceInput",
+        "sha256": "482dcd8474a37f268db5a83b477de4eb47d55d000087ff9d0d97e87d099662c4"
+      },
+      "outputSchema": {
+        "id": "urn:meri:retrieval:business-development:0.2.0#/$defs/BusinessDevelopmentSourceOutput",
+        "sha256": "482dcd8474a37f268db5a83b477de4eb47d55d000087ff9d0d97e87d099662c4"
+      },
+      "aliases": [],
+      "sideEffect": "none",
+      "requiredGrants": [
+        "tool.read"
+      ],
+      "approvalBoundary": "none",
+      "handler": null,
+      "availability": "unimplemented",
+      "qualification": "pending",
+      "retry": {
+        "maxRetries": 0,
+        "retryableCodes": [],
+        "unknownOutcome": "reconcile-before-retry"
+      },
+      "replacement": null,
+      "requirementIds": [
+        "R-01",
+        "R-04",
+        "R-05"
+      ],
+      "ticketIds": [
+        "REL-02"
+      ],
+      "gateIds": [
+        "RG-02",
+        "RG-05",
+        "RG-07"
+      ],
+      "fixtureIds": [
+        "catalog.binding.resolve_business_development_source"
       ]
     }
   ]

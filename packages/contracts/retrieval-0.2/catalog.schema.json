@@ -118,7 +118,12 @@
                 "revoke_research_portfolio_share_link",
                 "read_saved_record",
                 "read_saved_strategy_records",
-                "apply_legiwatch_suggestion"
+                "apply_legiwatch_suggestion",
+                "get_legiwatch_review",
+                "compare_florida_budget_amounts",
+                "compare_legislative_versions",
+                "get_business_development_brief",
+                "resolve_business_development_source"
               ]
             },
             "disposition": {
