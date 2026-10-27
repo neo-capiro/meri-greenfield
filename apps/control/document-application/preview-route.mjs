@@ -2,8 +2,8 @@
  * artifact read path and cannot reach budget reservation or settlement.
  *   POST /api/documents/preview-publish {versionId} -> {status, preview}  (render once, store, commit the immutable record)
  *   POST /api/documents/preview         {versionId} -> the preview PDF, inline, no-store, sandboxed
- * Without trusted `previewOptions` both routes are 503 PREVIEW_UNAVAILABLE. A Word-bound application previews only Word-family
- * versions and an Excel-bound one only workbooks (the same format admission as inspect/download). */
+ * Without trusted `previewOptions` both routes are 503 PREVIEW_UNAVAILABLE. Preview routes retain the configured writer-format
+ * admission; inspect/download use the separate six-format read admission. */
 import {createHash} from 'node:crypto';
 import {createArtifactService} from '../../artifacts/service.mjs';
 import {createArtifactPreviewService} from '../../artifacts/preview/service.mjs';
