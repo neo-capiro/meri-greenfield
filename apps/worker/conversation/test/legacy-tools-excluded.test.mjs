@@ -1,5 +1,5 @@
 /** Remaining owner exclusions after the explicit 27 October Wave4 amendment.
- * The historical43-name input stays intact; only eight named authorizations are removed from this guard.
+ * The historical43-name input stays intact; only ten named authorizations are removed from this guard.
  * The guard covers catalog, original manifests, resolver and SDK surface, without granting runtime access. */
 import test from 'node:test';import assert from 'node:assert/strict';
 import {readFileSync,readdirSync,existsSync,realpathSync} from 'node:fs';
@@ -17,14 +17,14 @@ import {readToolName} from '../reads/tools.mjs';
 import {INTENT_ROWS,NOT_INTENTS,intentToolName} from '../intents/catalog.mjs';
 import {binding,id} from '../../../control/conversations/test/application-fixture.mjs';
 import {plugin,preparedWorkspace} from './capability-fixture.mjs';
-const AUTHORIZED=Object.freeze(["get_legiwatch_review", "compare_florida_budget_amounts", "compare_legislative_versions", "preview_legiwatch_relevance", "save_legiwatch_relevance", "apply_legiwatch_suggestion", "get_business_development_brief", "resolve_business_development_source"]);
+const AUTHORIZED=Object.freeze(["get_legiwatch_review", "compare_florida_budget_amounts", "compare_legislative_versions", "preview_legiwatch_relevance", "save_legiwatch_relevance", "apply_legiwatch_suggestion", "get_business_development_brief", "resolve_business_development_source", "create_client", "update_client_profile"]);
 const LEGACY_TOOLS=Object.freeze(exclusions.groups.flatMap(group=>group.tools).filter(name=>!AUTHORIZED.includes(name)));
 const prepared=preparedWorkspace(binding.conversationId);
 // The production SDK workspace contract is POSIX; on Windows the same current-drive directory has a rooted slash spelling.
 const cwd=process.platform==='win32'?prepared.replace(/^[A-Za-z]:/u,'').replaceAll('\\','/'):prepared;
 assert.equal(realpathSync(cwd),realpathSync(prepared));
 
-test('only eight explicit Wave4 authorizations amend the historical43 names',()=>{assert.deepEqual(exclusions.wave4Amendment.authorizedOperations,AUTHORIZED);assert.equal(exclusions.groups.flatMap(group=>group.tools).length,43);assert.equal(LEGACY_TOOLS.length,35);assert.equal(new Set(LEGACY_TOOLS).size,35);});
+test('only ten explicit Wave4 authorizations amend the historical43 names',()=>{assert.deepEqual(exclusions.wave4Amendment.authorizedOperations,AUTHORIZED);assert.equal(exclusions.groups.flatMap(group=>group.tools).length,43);assert.equal(LEGACY_TOOLS.length,33);assert.equal(new Set(LEGACY_TOOLS).size,33);});
 
 test('every excluded name is deferred in the catalog originals and absent from catalog operations and aliases',()=>{
  const originals=new Map(catalog.originals.map(o=>[o.id,o])),operationNames=new Set(catalog.operations.flatMap(o=>[o.operation.id,sdkToolName(o.operation),...(o.aliases??[])]));
@@ -47,7 +47,7 @@ test('no excluded name can enter the SDK tool surface the worker builds',()=>{
  const subagents=createSubagents(assertCapabilityPolicy({subagents:true,workspaceTools:true}),{latch:()=>{}});
  const originalReads=listSkills().flatMap(s=>selectSkill(s.skillId,s.skillVersion).manifest.allowedOperations.map(op=>`mcp__meri_original_reads__${sdkToolName(op)}`));
  const generalReads=familyReads().map(readToolName);assert.ok(generalReads.length>0,'the general read surface is scanned');
- const intents=[...INTENT_ROWS.flatMap(r=>[intentToolName(r.tool),r.tool,r.operation.id]),...Object.keys(NOT_INTENTS)];assert.equal(INTENT_ROWS.length,16,'the governed intent surface is scanned');
+ const intents=[...INTENT_ROWS.flatMap(r=>[intentToolName(r.tool),r.tool,r.operation.id]),...Object.keys(NOT_INTENTS)];assert.equal(INTENT_ROWS.length,18,'the governed intent surface is scanned');
  const surface=new Set([...BUILTIN_TOOL_NAMES,...WORKSPACE_TOOLS,...SUBAGENT_TYPES,...full.tools,...full.allowedTools,...(full.skills??[]),...Object.keys(full.agents),...Object.values(subagents.agents).flatMap(a=>a.tools),...originalReads,...generalReads,...intents]);
  for(const name of LEGACY_TOOLS){for(const entry of surface){assert.notEqual(entry,name,name);assert.equal(entry.endsWith('__'+name),false,`${entry} exposes ${name}`);assert.equal(entry.endsWith(':'+name),false,`${entry} exposes ${name}`);}}
 });
@@ -57,7 +57,7 @@ test('the only browser code on this branch (the qualification probe) calls no ex
  for(const name of LEGACY_TOOLS)assert.equal(new RegExp(`\\b${name}\\b`,'u').test(source),false,name);
 });
 
-test('the general read server derives its never-register list from the same35 remaining catalog originals',()=>{
+test('the general read server derives its never-register list from the same33 remaining catalog originals',()=>{
  assert.deepEqual([...DEFERRED_ORIGINALS].sort(),[...LEGACY_TOOLS].sort());
 });
 

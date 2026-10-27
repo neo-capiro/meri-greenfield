@@ -1069,10 +1069,13 @@
     },
     {
       "id": "create_client",
-      "disposition": "deferred",
-      "boundary": "Client creation is outside initial commands; source transaction and audit invariants not qualified.",
-      "replacement": null,
-      "state": "deferred"
+      "disposition": "selected",
+      "boundary": "Prepare exact client record changes for canonical current-scoped policy approval. Read-only receipt recovery never replays an unknown effect.",
+      "replacement": {
+        "id": "create_client",
+        "version": "0.2.0"
+      },
+      "state": "mapped"
     },
     {
       "id": "create_task",
@@ -1096,10 +1099,13 @@
     },
     {
       "id": "update_client_profile",
-      "disposition": "deferred",
-      "boundary": "Client profile mutation is outside initial commands; field/lifecycle policy not qualified.",
-      "replacement": null,
-      "state": "deferred"
+      "disposition": "selected",
+      "boundary": "Prepare exact client record changes for canonical current-scoped policy approval. Read-only receipt recovery never replays an unknown effect.",
+      "replacement": {
+        "id": "update_client_profile",
+        "version": "0.2.0"
+      },
+      "state": "mapped"
     },
     {
       "id": "find_contacts",
@@ -2521,7 +2527,7 @@
         "Pending contract only; null handler, no enabled source or executable skill.",
         "Source requirements are design declarations; current grants, availability and actual producer authority remain unqualified.",
         "A name is a selector. Tenant membership alone does not authorize every client; trusted source policy must authorize each returned tenant record.",
-        "Compatibility guidance is untrusted reported text and grants no creation, update or approval authority. create_client remains deferred.",
+        "Compatibility guidance is untrusted reported text and grants no creation, update or approval authority. Creation requires the separate current-scoped create_client proposal and explicit approval.",
         "Empty/null results and reported counts establish no authoritative absence, exhaustive enumeration, freshness, source health or snapshot stability.",
         "This frozen success projection declares no request/provenance envelope. A qualified adapter must bind results to the authorized request and preserve upstream failures."
       ],
@@ -6056,11 +6062,11 @@
       ],
       "inputSchema": {
         "id": "urn:meri:retrieval:florida-budget:0.2.0#/$defs/FloridaBudgetRequest",
-        "sha256": "6098fcf619cd1d0a1bd32e11480f4785580aac7c214312e627c365ba48eb4ff7"
+        "sha256": "208ed8bdb80ba62d69ad5f9a6fe6203581ef65d153d0339080d93d4c4a1e9132"
       },
       "outputSchema": {
         "id": "urn:meri:retrieval:florida-budget:0.2.0#/$defs/FloridaBudgetOutput",
-        "sha256": "6098fcf619cd1d0a1bd32e11480f4785580aac7c214312e627c365ba48eb4ff7"
+        "sha256": "208ed8bdb80ba62d69ad5f9a6fe6203581ef65d153d0339080d93d4c4a1e9132"
       },
       "aliases": [],
       "sideEffect": "none",
@@ -9424,6 +9430,136 @@
       ],
       "fixtureIds": [
         "native-mail.command"
+      ]
+    },
+    {
+      "operation": {
+        "id": "create_client",
+        "version": "0.2.0"
+      },
+      "displayName": "Prepare create client",
+      "whenToUse": "Prepare explicit user-requested client record changes for confirmation.",
+      "limitations": [
+        "Core owns current tenant, conversation, visible client and governing policy.",
+        "No automatic retries after an unknown effect.",
+        "Profile patches are unconditional; row outcomes can be partial or unchanged. Creation preserves registry confirmation, billing and enrichment owners."
+      ],
+      "positiveExamples": [
+        "Propose these sourced and explicitly requested client details."
+      ],
+      "negativeExamples": [
+        "Invent an expected version, clear unsupported scalar fields, or claim unknown or partial changes completed."
+      ],
+      "sourceRequirements": [
+        {
+          "sourceId": "clients",
+          "authority": "authoritative",
+          "purpose": "evidence"
+        }
+      ],
+      "inputSchema": {
+        "id": "urn:meri:retrieval:client-record-action:0.2.0#/$defs/CreateClientInput",
+        "sha256": "9e9225391978d21470ce1d6c0a5fb7f13029aeb59815488ae4c570c15f35c862"
+      },
+      "outputSchema": {
+        "id": "urn:meri:retrieval:client-record-action:0.2.0#/$defs/ClientRecordPrepared",
+        "sha256": "9e9225391978d21470ce1d6c0a5fb7f13029aeb59815488ae4c570c15f35c862"
+      },
+      "aliases": [],
+      "sideEffect": "source-command",
+      "requiredGrants": [
+        "command.execute"
+      ],
+      "approvalBoundary": "immutable-proposal",
+      "handler": null,
+      "availability": "unimplemented",
+      "qualification": "pending",
+      "retry": {
+        "maxRetries": 0,
+        "retryableCodes": [],
+        "unknownOutcome": "reconcile-before-retry"
+      },
+      "replacement": null,
+      "requirementIds": [
+        "R-01",
+        "R-04",
+        "R-05"
+      ],
+      "ticketIds": [
+        "REL-02"
+      ],
+      "gateIds": [
+        "RG-02",
+        "RG-05",
+        "RG-07"
+      ],
+      "fixtureIds": [
+        "catalog.binding.create_client"
+      ]
+    },
+    {
+      "operation": {
+        "id": "update_client_profile",
+        "version": "0.2.0"
+      },
+      "displayName": "Prepare update client profile",
+      "whenToUse": "Prepare explicit user-requested client record changes for confirmation.",
+      "limitations": [
+        "Core owns current tenant, conversation, visible client and governing policy.",
+        "No automatic retries after an unknown effect.",
+        "Profile patches are unconditional; row outcomes can be partial or unchanged. Creation preserves registry confirmation, billing and enrichment owners."
+      ],
+      "positiveExamples": [
+        "Propose these sourced and explicitly requested client details."
+      ],
+      "negativeExamples": [
+        "Invent an expected version, clear unsupported scalar fields, or claim unknown or partial changes completed."
+      ],
+      "sourceRequirements": [
+        {
+          "sourceId": "clients",
+          "authority": "authoritative",
+          "purpose": "evidence"
+        }
+      ],
+      "inputSchema": {
+        "id": "urn:meri:retrieval:client-record-action:0.2.0#/$defs/UpdateClientProfileInput",
+        "sha256": "9e9225391978d21470ce1d6c0a5fb7f13029aeb59815488ae4c570c15f35c862"
+      },
+      "outputSchema": {
+        "id": "urn:meri:retrieval:client-record-action:0.2.0#/$defs/ClientRecordPrepared",
+        "sha256": "9e9225391978d21470ce1d6c0a5fb7f13029aeb59815488ae4c570c15f35c862"
+      },
+      "aliases": [],
+      "sideEffect": "source-command",
+      "requiredGrants": [
+        "command.execute"
+      ],
+      "approvalBoundary": "immutable-proposal",
+      "handler": null,
+      "availability": "unimplemented",
+      "qualification": "pending",
+      "retry": {
+        "maxRetries": 0,
+        "retryableCodes": [],
+        "unknownOutcome": "reconcile-before-retry"
+      },
+      "replacement": null,
+      "requirementIds": [
+        "R-01",
+        "R-04",
+        "R-05"
+      ],
+      "ticketIds": [
+        "REL-02"
+      ],
+      "gateIds": [
+        "RG-02",
+        "RG-05",
+        "RG-07"
+      ],
+      "fixtureIds": [
+        "catalog.binding.update_client_profile"
       ]
     }
   ]

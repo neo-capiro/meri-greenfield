@@ -20,6 +20,10 @@ const exact=value=>{const at=Date.parse(value);if(!Number.isSafeInteger(at)||new
 const STABLE=['tenantId','actorId','conversationId','runId'];
 /** The retained proposal must describe itself: its hash is the canonical hash of its command, it belongs to the requested conversation and tenant. */
 async function proposal(value,conversationId){
+ if(value.kind==='client_record_action'){
+  const {commandSha256,...bound}=value,selected=value.context.selectedClientId,[s]=value.scopes;
+  if(value.operation!==value.request.operation||await sha(bound)!==commandSha256||value.binding.conversationId!==conversationId||value.context.conversationId!==conversationId||parsed(value.expiresAt)<=parsed(value.createdAt)||s.tenantId!==value.binding.tenantId||s.kind!==(selected===null?'private-user':'client')||s.resourceId!==(selected??value.binding.actorId)||value.operation==='update_client_profile'&&selected!==null&&value.request.input.clientId!==selected)conflict();return;
+ }
  if(value.kind==='legiwatch_action'){
   const {commandSha256,...bound}=value,s=value.scopes[0],selected=value.context.selectedClientId;
   if(value.operation!==(Object.hasOwn(value.request,'previewHash')?'save_legiwatch_relevance':'apply_legiwatch_suggestion')||Object.hasOwn(value.request,'previewHash')&&(!value.request.explanation.trim()||value.request.end-value.request.start!==value.request.quote.length||value.request.quote.length>2000||new Set(value.request.fields).size!==value.request.fields.length)||await sha(bound)!==commandSha256||value.binding.conversationId!==conversationId||value.context.conversationId!==conversationId||parsed(value.expiresAt)<=parsed(value.createdAt)||s.tenantId!==value.binding.tenantId||s.kind!==(selected===null?'private-user':'client')||s.resourceId!==(selected??value.binding.actorId)||selected!==null&&value.request.clientId!==selected)conflict();return;
@@ -122,6 +126,15 @@ function phase(item){
  if(d!==null&&typeof d==='object'){if(p!==d.decision)conflict();return;}
  if(!(d===null?['awaiting_approval','expired']:['expired','unknown_decision']).includes(p))conflict();
 }
+async function clientRecordResult(value,retained){
+ if(value.proposalId!==retained.proposalId||!same(value.request,retained.request)||!same(value.context,retained.context)||value.createdAt!==retained.createdAt||value.expiresAt!==retained.expiresAt||(value.status==='succeeded')!==(value.receipt!==null))conflict();
+ if(value.receipt===null)return;const r=value.receipt,input=retained.request.input;if(!same(r.request,retained.request))conflict();
+ if(retained.operation==='create_client'){if(r.outcome!=='created'||r.client.name!==input.name||input.ldaClientId!==undefined&&r.ldaMatch?.ldaClientId!==input.ldaClientId)conflict();return;}
+ const names=['name','website','description','productDescription','primaryContactName','primaryContactEmail','primaryContactPhone','sectorTag','uei','cageCode','issueCodes','naicsCodes','pscCodes'].filter(k=>Object.hasOwn(input,k));
+ if(r.clientId!==input.clientId||!same([...r.fieldsWritten].sort(),names.sort()))conflict();
+ const changed=r.fieldsWritten.length+r.facilitiesCreated.length+r.capabilitiesCreated.length+r.peopleCreated.length+r.peopleUpdated.length>0;
+ if(r.outcome!==(r.rowErrors.length?(changed?'partially_updated':'not_updated'):(changed?'updated':'unchanged')))conflict();
+}
 async function legiwatchResult(value,retained){
  if(value.proposalId!==retained.proposalId||!same(value.request,retained.request)||!same(value.context,retained.context)||value.createdAt!==retained.createdAt||value.expiresAt!==retained.expiresAt||(value.status==='succeeded')!==(value.receipt!==null))conflict();
  if(value.receipt!==null&&retained.operation==='save_legiwatch_relevance'){const r=value.receipt;if(!same(r.request,retained.request)||r.outcome!=='suggested'||r.payload.origin!=='semantic'||r.payload.state!=='pending'||r.payload.binding!==await sha([retained.request.previewHash,retained.request.requestKey]))conflict();return;}
@@ -132,6 +145,7 @@ async function item(value,conversationId){
  // an impossible day such as 2026-02-30 can not roll into March.
  exact(value.createdAt);
  if(value.kind==='legiwatch_action'){if(!Object.hasOwn(value,'proposal'))return;if(value.operation.id!==value.proposal.operation)conflict();await proposal(value.proposal,conversationId);if(value.result!=='unavailable')await legiwatchResult(value.result,value.proposal);return;}
+ if(value.kind==='client_record_action'){if(!Object.hasOwn(value,'proposal'))return;if(value.operation.id!==value.proposal.operation)conflict();await proposal(value.proposal,conversationId);if(value.result!=='unavailable')await clientRecordResult(value.result,value.proposal);return;}
  if(value.kind==='research_share'){
   if(!Object.hasOwn(value,'proposal'))return;
   if(value.operation.id!==value.proposal.operation)conflict();await proposal(value.proposal,conversationId);return;
@@ -172,6 +186,9 @@ export async function decide(value,request,retained){
  await proposal(retained,request.conversationId);
  if(retained.kind==='legiwatch_action'){
   if(value.status!=='legiwatch_decided'||retained.proposalId!==request.proposalId||retained.commandSha256!==request.commandSha256||value.deliveryId!==request.deliveryId||value.proposalId!==request.proposalId)conflict();await legiwatchResult(value.result,retained);return value;
+ }
+ if(retained.kind==='client_record_action'){
+  if(value.status!=='client_record_decided'||retained.proposalId!==request.proposalId||retained.commandSha256!==request.commandSha256||value.deliveryId!==request.deliveryId||value.proposalId!==request.proposalId)conflict();await clientRecordResult(value.result,retained);return value;
  }
  if(retained.kind==='research_share'){
   if(value.status!=='research_share_decided'||retained.proposalId!==request.proposalId||retained.commandSha256!==request.commandSha256||value.deliveryId!==request.deliveryId||value.proposalId!==request.proposalId)conflict();

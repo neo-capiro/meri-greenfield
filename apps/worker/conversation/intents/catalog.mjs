@@ -15,12 +15,14 @@ import catalog from '../../../../packages/contracts/retrieval-0.2/catalog.json' 
 export const INTENT_SERVER_NAME='meri_intents';
 export const INTENT_TOOL_PREFIX=`mcp__${INTENT_SERVER_NAME}__`;
 /** @typedef {{id:string,version:string}} OperationRef */
-/** @typedef {'command'|'schedule'|'document'|'artifact'|'memory'|'research-sharing'|'legiwatch'} OwnerKind */
+/** @typedef {'command'|'schedule'|'document'|'artifact'|'memory'|'research-sharing'|'legiwatch'|'client-record'} OwnerKind */
 /** @typedef {{operation:OperationRef,tool:string,owner:OwnerKind,unavailable:string|null}} IntentRow */
 const op=(/** @type {string} */id)=>Object.freeze({id,version:'0.2.0'});
 const row=(/** @type {string} */id,/** @type {string} */tool,/** @type {OwnerKind} */owner,/** @type {string|null} */unavailable=null)=>Object.freeze({operation:op(id),tool,owner,unavailable});
 /** @type {readonly IntentRow[]} */
 export const INTENT_ROWS=Object.freeze([
+ row('create_client','propose_create_client','client-record'),
+ row('update_client_profile','propose_update_client_profile','client-record'),
  row('save_legiwatch_relevance','propose_legiwatch_relevance','legiwatch'),
  row('mail_send','propose_mail','command'),
  row('apply_legiwatch_suggestion','propose_legiwatch_suggestion','legiwatch'),

@@ -126,7 +126,9 @@
                 "resolve_business_development_source",
                 "preview_legiwatch_relevance",
                 "save_legiwatch_relevance",
-                "mail_send"
+                "mail_send",
+                "create_client",
+                "update_client_profile"
               ]
             },
             "disposition": {

@@ -1,0 +1,1027 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:meri:retrieval:client-record-action:0.2.0",
+  "$defs": {
+    "CreateClientInput": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 300
+        },
+        "website": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 500
+        },
+        "description": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4000
+        },
+        "sectorTag": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 120
+        },
+        "primaryContactName": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "primaryContactEmail": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "primaryContactPhone": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 60
+        },
+        "ldaClientId": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 2147483647
+        },
+        "skipLdaCheck": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "name"
+      ],
+      "additionalProperties": false
+    },
+    "UpdateClientProfileInput": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 300
+        },
+        "website": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 500
+        },
+        "description": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4000
+        },
+        "sectorTag": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 120
+        },
+        "primaryContactName": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "primaryContactEmail": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "primaryContactPhone": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 60
+        },
+        "clientId": {
+          "type": "string",
+          "format": "uuid",
+          "pattern": "^[a-f0-9-]+$"
+        },
+        "productDescription": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4000
+        },
+        "uei": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 12
+        },
+        "cageCode": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 5
+        },
+        "issueCodes": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 120
+          },
+          "maxItems": 100
+        },
+        "naicsCodes": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 120
+          },
+          "maxItems": 100
+        },
+        "pscCodes": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 120
+          },
+          "maxItems": 100
+        },
+        "provenance": {
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "object",
+              "properties": {
+                "sourceUrl": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 2048
+                },
+                "confidence": {
+                  "enum": [
+                    "high",
+                    "medium",
+                    "low"
+                  ]
+                }
+              },
+              "required": [
+                "sourceUrl",
+                "confidence"
+              ],
+              "additionalProperties": false
+            },
+            "website": {
+              "type": "object",
+              "properties": {
+                "sourceUrl": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 2048
+                },
+                "confidence": {
+                  "enum": [
+                    "high",
+                    "medium",
+                    "low"
+                  ]
+                }
+              },
+              "required": [
+                "sourceUrl",
+                "confidence"
+              ],
+              "additionalProperties": false
+            },
+            "description": {
+              "type": "object",
+              "properties": {
+                "sourceUrl": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 2048
+                },
+                "confidence": {
+                  "enum": [
+                    "high",
+                    "medium",
+                    "low"
+                  ]
+                }
+              },
+              "required": [
+                "sourceUrl",
+                "confidence"
+              ],
+              "additionalProperties": false
+            },
+            "productDescription": {
+              "type": "object",
+              "properties": {
+                "sourceUrl": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 2048
+                },
+                "confidence": {
+                  "enum": [
+                    "high",
+                    "medium",
+                    "low"
+                  ]
+                }
+              },
+              "required": [
+                "sourceUrl",
+                "confidence"
+              ],
+              "additionalProperties": false
+            },
+            "primaryContactName": {
+              "type": "object",
+              "properties": {
+                "sourceUrl": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 2048
+                },
+                "confidence": {
+                  "enum": [
+                    "high",
+                    "medium",
+                    "low"
+                  ]
+                }
+              },
+              "required": [
+                "sourceUrl",
+                "confidence"
+              ],
+              "additionalProperties": false
+            },
+            "primaryContactEmail": {
+              "type": "object",
+              "properties": {
+                "sourceUrl": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 2048
+                },
+                "confidence": {
+                  "enum": [
+                    "high",
+                    "medium",
+                    "low"
+                  ]
+                }
+              },
+              "required": [
+                "sourceUrl",
+                "confidence"
+              ],
+              "additionalProperties": false
+            },
+            "primaryContactPhone": {
+              "type": "object",
+              "properties": {
+                "sourceUrl": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 2048
+                },
+                "confidence": {
+                  "enum": [
+                    "high",
+                    "medium",
+                    "low"
+                  ]
+                }
+              },
+              "required": [
+                "sourceUrl",
+                "confidence"
+              ],
+              "additionalProperties": false
+            },
+            "sectorTag": {
+              "type": "object",
+              "properties": {
+                "sourceUrl": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 2048
+                },
+                "confidence": {
+                  "enum": [
+                    "high",
+                    "medium",
+                    "low"
+                  ]
+                }
+              },
+              "required": [
+                "sourceUrl",
+                "confidence"
+              ],
+              "additionalProperties": false
+            },
+            "uei": {
+              "type": "object",
+              "properties": {
+                "sourceUrl": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 2048
+                },
+                "confidence": {
+                  "enum": [
+                    "high",
+                    "medium",
+                    "low"
+                  ]
+                }
+              },
+              "required": [
+                "sourceUrl",
+                "confidence"
+              ],
+              "additionalProperties": false
+            },
+            "cageCode": {
+              "type": "object",
+              "properties": {
+                "sourceUrl": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 2048
+                },
+                "confidence": {
+                  "enum": [
+                    "high",
+                    "medium",
+                    "low"
+                  ]
+                }
+              },
+              "required": [
+                "sourceUrl",
+                "confidence"
+              ],
+              "additionalProperties": false
+            },
+            "issueCodes": {
+              "type": "object",
+              "properties": {
+                "sourceUrl": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 2048
+                },
+                "confidence": {
+                  "enum": [
+                    "high",
+                    "medium",
+                    "low"
+                  ]
+                }
+              },
+              "required": [
+                "sourceUrl",
+                "confidence"
+              ],
+              "additionalProperties": false
+            },
+            "naicsCodes": {
+              "type": "object",
+              "properties": {
+                "sourceUrl": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 2048
+                },
+                "confidence": {
+                  "enum": [
+                    "high",
+                    "medium",
+                    "low"
+                  ]
+                }
+              },
+              "required": [
+                "sourceUrl",
+                "confidence"
+              ],
+              "additionalProperties": false
+            },
+            "pscCodes": {
+              "type": "object",
+              "properties": {
+                "sourceUrl": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 2048
+                },
+                "confidence": {
+                  "enum": [
+                    "high",
+                    "medium",
+                    "low"
+                  ]
+                }
+              },
+              "required": [
+                "sourceUrl",
+                "confidence"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [],
+          "additionalProperties": false
+        },
+        "facilities": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 200
+              },
+              "addressLine": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 300
+              },
+              "city": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 120
+              },
+              "state": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 2
+              },
+              "zip": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 10
+              },
+              "congressionalDistrict": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 4
+              },
+              "notes": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 2000
+              },
+              "employeeCount": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 10000000
+              }
+            },
+            "required": [
+              "name"
+            ],
+            "additionalProperties": false
+          },
+          "maxItems": 50
+        },
+        "capabilities": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 200
+              },
+              "type": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 60
+              },
+              "description": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 4000
+              },
+              "sector": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 120
+              },
+              "notes": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 2000
+              }
+            },
+            "required": [
+              "name"
+            ],
+            "additionalProperties": false
+          },
+          "maxItems": 50
+        },
+        "people": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 200
+              },
+              "title": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 200
+              },
+              "email": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 200
+              },
+              "phone": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 60
+              },
+              "role": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 120
+              },
+              "lastContact": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 40
+              },
+              "notes": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 2000
+              }
+            },
+            "required": [
+              "name"
+            ],
+            "additionalProperties": false
+          },
+          "maxItems": 50
+        }
+      },
+      "required": [
+        "clientId"
+      ],
+      "additionalProperties": false
+    },
+    "ClientRecordRequest": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "operation": {
+              "const": "create_client"
+            },
+            "input": {
+              "$ref": "#/$defs/CreateClientInput"
+            }
+          },
+          "required": [
+            "operation",
+            "input"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "operation": {
+              "const": "update_client_profile"
+            },
+            "input": {
+              "$ref": "#/$defs/UpdateClientProfileInput"
+            }
+          },
+          "required": [
+            "operation",
+            "input"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "ClientRecordContext": {
+      "type": "object",
+      "properties": {
+        "conversationId": {
+          "type": "string",
+          "format": "uuid",
+          "pattern": "^[a-f0-9-]+$"
+        },
+        "selectedClientId": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "uuid",
+              "pattern": "^[a-f0-9-]+$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "identityRevision": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "membershipRevision": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "contextRevision": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        }
+      },
+      "required": [
+        "conversationId",
+        "selectedClientId",
+        "identityRevision",
+        "membershipRevision",
+        "contextRevision"
+      ],
+      "additionalProperties": false
+    },
+    "ClientRecordStatus": {
+      "enum": [
+        "proposed",
+        "approved",
+        "executing",
+        "succeeded",
+        "failed_retryable",
+        "failed_terminal",
+        "outcome_unknown",
+        "blocked",
+        "dismissed",
+        "expired"
+      ]
+    },
+    "ClientRecordCoreResult": {
+      "type": "object",
+      "properties": {
+        "version": {
+          "const": "0.1.0"
+        },
+        "proposalId": {
+          "type": "string",
+          "format": "uuid",
+          "pattern": "^[a-f0-9-]+$"
+        },
+        "request": {
+          "$ref": "#/$defs/ClientRecordRequest"
+        },
+        "context": {
+          "$ref": "#/$defs/ClientRecordContext"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "expiresAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "status": {
+          "$ref": "#/$defs/ClientRecordStatus"
+        },
+        "receipt": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ClientRecordReceipt"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "version",
+        "proposalId",
+        "request",
+        "context",
+        "createdAt",
+        "expiresAt",
+        "status",
+        "receipt"
+      ],
+      "additionalProperties": false
+    },
+    "ClientRecordProposal": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "const": "client_record_action"
+        },
+        "binding": {
+          "$ref": "urn:meri:contracts:0.1.0#/$defs/RunBinding"
+        },
+        "scopes": {
+          "type": "array",
+          "items": {
+            "$ref": "urn:meri:contracts:0.1.0#/$defs/Scope"
+          },
+          "minItems": 1,
+          "maxItems": 1
+        },
+        "operation": {
+          "enum": [
+            "create_client",
+            "update_client_profile"
+          ]
+        },
+        "proposalId": {
+          "type": "string",
+          "format": "uuid",
+          "pattern": "^[a-f0-9-]+$"
+        },
+        "request": {
+          "$ref": "#/$defs/ClientRecordRequest"
+        },
+        "context": {
+          "$ref": "#/$defs/ClientRecordContext"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "expiresAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "commandSha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        }
+      },
+      "required": [
+        "kind",
+        "binding",
+        "scopes",
+        "operation",
+        "proposalId",
+        "request",
+        "context",
+        "createdAt",
+        "expiresAt",
+        "commandSha256"
+      ],
+      "additionalProperties": false
+    },
+    "ClientRecordPrepared": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "const": "approval_required"
+        },
+        "proposal": {
+          "$ref": "#/$defs/ClientRecordProposal"
+        }
+      },
+      "required": [
+        "status",
+        "proposal"
+      ],
+      "additionalProperties": false
+    },
+    "ClientRecordReceipt": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "request": {
+              "$ref": "#/$defs/ClientRecordRequest"
+            },
+            "outcome": {
+              "const": "created"
+            },
+            "created": {
+              "const": true
+            },
+            "client": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "format": "uuid",
+                  "pattern": "^[a-f0-9-]+$"
+                },
+                "name": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 300
+                },
+                "website": {
+                  "anyOf": [
+                    {
+                      "type": "string",
+                      "minLength": 0,
+                      "maxLength": 500
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                }
+              },
+              "required": [
+                "id",
+                "name",
+                "website"
+              ],
+              "additionalProperties": false
+            },
+            "ldaMatch": {
+              "anyOf": [
+                {
+                  "type": "object",
+                  "properties": {
+                    "ldaClientId": {
+                      "type": "integer",
+                      "minimum": 1,
+                      "maximum": 2147483647
+                    },
+                    "name": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 300
+                    },
+                    "totalFilings": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 9007199254740991
+                    },
+                    "latestFilingYear": {
+                      "anyOf": [
+                        {
+                          "type": "integer"
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    }
+                  },
+                  "required": [
+                    "ldaClientId",
+                    "name",
+                    "totalFilings",
+                    "latestFilingYear"
+                  ],
+                  "additionalProperties": false
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          },
+          "required": [
+            "request",
+            "outcome",
+            "created",
+            "client",
+            "ldaMatch"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "request": {
+              "$ref": "#/$defs/ClientRecordRequest"
+            },
+            "outcome": {
+              "enum": [
+                "updated",
+                "partially_updated",
+                "not_updated",
+                "unchanged"
+              ]
+            },
+            "tool": {
+              "const": "update_client_profile"
+            },
+            "updated": {
+              "const": true
+            },
+            "clientId": {
+              "type": "string",
+              "format": "uuid",
+              "pattern": "^[a-f0-9-]+$"
+            },
+            "clientName": {
+              "type": "string",
+              "minLength": 0,
+              "maxLength": 300
+            },
+            "fieldsWritten": {
+              "type": "array",
+              "items": {
+                "enum": [
+                  "name",
+                  "website",
+                  "description",
+                  "productDescription",
+                  "primaryContactName",
+                  "primaryContactEmail",
+                  "primaryContactPhone",
+                  "sectorTag",
+                  "uei",
+                  "cageCode",
+                  "issueCodes",
+                  "naicsCodes",
+                  "pscCodes"
+                ]
+              },
+              "maxItems": 13
+            },
+            "facilitiesCreated": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 0,
+                "maxLength": 4000
+              },
+              "maxItems": 150
+            },
+            "capabilitiesCreated": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 0,
+                "maxLength": 4000
+              },
+              "maxItems": 150
+            },
+            "peopleCreated": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 0,
+                "maxLength": 4000
+              },
+              "maxItems": 150
+            },
+            "peopleUpdated": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 0,
+                "maxLength": 4000
+              },
+              "maxItems": 150
+            },
+            "skipped": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 0,
+                "maxLength": 4000
+              },
+              "maxItems": 150
+            },
+            "rowErrors": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 0,
+                "maxLength": 4000
+              },
+              "maxItems": 150
+            }
+          },
+          "required": [
+            "request",
+            "outcome",
+            "tool",
+            "updated",
+            "clientId",
+            "clientName",
+            "fieldsWritten",
+            "facilitiesCreated",
+            "capabilitiesCreated",
+            "peopleCreated",
+            "peopleUpdated",
+            "skipped",
+            "rowErrors"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    }
+  }
+}

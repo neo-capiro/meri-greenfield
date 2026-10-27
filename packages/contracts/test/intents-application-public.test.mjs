@@ -263,7 +263,7 @@ test('generated bundle is independent of the checkout layout',async()=>{
  const layout=/\.\.\/|(?<![A-Za-z0-9])[A-Za-z]:[\\/](?!\/)|\/(?:home|Users)\/|wt-/u;
  assert(!layout.test(source),'no parent-relative, drive-letter, home or worktree path anywhere in the bundle');
  const labels=[...source.matchAll(/^\/\/ (.+)$/gmu)].map(m=>m[1]).filter(label=>/\.m?js$/u.test(label));
- assert(labels.length>=5&&labels.every(label=>/^(?:node_modules\/|intents-generated:\.\/generated-|(?:intents-application|document-application)\/|artifacts-0\.2\/artifact-formats\.mjs$|schedules-0\.2\/application-protocol\.mjs$)/u.test(label)),labels.join(', '));
+ assert(labels.length>=5&&labels.every(label=>/^(?:node_modules\/|intents-generated:\.\/generated-|(?:intents-application|document-application)\/|artifacts-0\.2\/artifact-formats\.mjs$|schedules-0\.2\/application-protocol\.mjs$|commands-0\.2\/mail-send-validation\.mjs$)/u.test(label)),labels.join(', '));
  assert(metadata.browserInputs.every(entry=>!layout.test(entry)));
 });
 test('metadata, paths and vocabularies describe the canonical mounted approval actions',async()=>{

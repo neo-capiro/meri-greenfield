@@ -96,9 +96,11 @@
       "save_legiwatch_relevance",
       "apply_legiwatch_suggestion",
       "get_business_development_brief",
-      "resolve_business_development_source"
+      "resolve_business_development_source",
+      "create_client",
+      "update_client_profile"
     ],
-    "limits": "Only these eight historical tool exclusions are superseded in this source increment. Research Portfolio remains deferred; legacy send_email/reply_email and direct canonical-memory writes remain excluded. Native mail is the distinct mail_send approved command. Authorization is not a release or live acceptance receipt.",
+    "limits": "Only these ten historical tool exclusions are superseded in this source increment. Research Portfolio remains deferred; legacy send_email/reply_email and direct canonical-memory writes remain excluded. Native mail is the distinct mail_send approved command. Authorization is not a release or live acceptance receipt.",
     "history": "The original 43-name groups, quoted 15 October direction and historical scope-ledger receipts remain immutable historical accounting; the worker exclusion guard applies this explicit finite amendment."
   }
 }
