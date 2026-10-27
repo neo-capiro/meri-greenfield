@@ -15,8 +15,8 @@ const versions={imageDigest:'sha256:'+'a'.repeat(64),sdk:'0.3.295',cli:'2.1.295'
 async function fixture(t){
  const f=await applicationFixture();t.after(()=>f.close());
  const configuration={sourceEnabled:true,intents:{enabled:true},routines:{enabled:true},limits:{requestMs:5000,requestBytes:131072},native:{maxResponseBytes:131072}};
- const nativeState={runState:'running',reserved:false};
- const store={async read(){return {run:{binding,scopes:f.scopes(),versions,policyRevision:'p1',state:nativeState.runState}};},async readModelPolicy(){return {maxBudgetMicroUsd:2000000};},nextRuns:{async current(){return {reserved:nativeState.reserved,binding,scopes:f.scopes(),policyRevision:'p1'};}}};
+ const nativeState={runState:'running',versions,reserved:false};
+ const store={async read(){return {run:{binding,scopes:f.scopes(),versions:nativeState.versions,policyRevision:'p1',state:nativeState.runState}};},async readModelPolicy(){return {maxBudgetMicroUsd:2000000};},nextRuns:{async current(){return {reserved:nativeState.reserved,binding,scopes:f.scopes(),policyRevision:'p1'};}}};
  const {template,workflow,limits,policy}=f.contextConfiguration;
  const context={configuration,pool:f.pool,client:{...f.client,connection:{withDeadline:(_deadline,fn)=>fn(),withAbortSignal:(_signal,fn)=>fn()}},now:f.now};
  const family=routinesFamily({context:{template,workflow,limits,policy},newId:f.newId,runControl:{async cancel(){throw Error('unexpected');}},retirement:{async retire(){throw Error('unexpected');}},
@@ -82,8 +82,9 @@ async function createRoutine(f){
  const prepared=await f.prepare(),response=await f.post('approve',approveBody(prepared));
  assert.equal(response.status,200,await response.clone().text());return prepared.proposal.projection.scheduleId;
 }
-for(const runState of ['failed','cancelled'])test(`existing session lists and stops future firings after ${runState} without starting model work`,async t=>{
+for(const [runState,changedImage] of [['failed',false],['cancelled',false],['completed',true],['failed',true],['cancelled',true]])test(`existing session lists and stops future firings after ${runState}${changedImage?' and a changed image':''} without starting model work`,async t=>{
  const f=await fixture(t),scheduleId=await createRoutine(f);f.nativeState.runState=runState;
+ if(changedImage)f.nativeState.versions={...versions,imageDigest:'sha256:'+'c'.repeat(64)};
  const listed=await f.post('list',{limit:1,historyLimit:0});assert.equal(listed.status,200,await listed.clone().text());
  assert.equal((await listed.json()).page.rows[0].projection.scheduleId,scheduleId);
  for(const mode of ['pause','delete']){
@@ -112,8 +113,20 @@ for(const runState of ['failed','cancelled'])test(`terminal ${runState} manageme
  assert.deepEqual(f.temporal.calls,before,'terminal management cannot widen or retire running work');
 });
 
-test('terminal routine management retains current policy, owner, head and generation fences',async t=>{
+test('changed image does not enable create, update or current-work cancellation for an existing running session',async t=>{
+ const f=await fixture(t),scheduleId=await createRoutine(f),update=await f.prepare('update_scheduled_task',{...routineRequest(),scheduleId},2);
+ f.nativeState.versions={...versions,imageDigest:'sha256:'+'c'.repeat(64)};const before={...f.temporal.calls};
+ for(const [operation,request] of [['schedule_task',routineRequest()],['update_scheduled_task',{...routineRequest(),scheduleId}],
+  ['cancel_scheduled_task',{scheduleId,mode:'pause',running:'request_cancel',runs:[],note:'Stop current work'}]]){
+  const response=await f.post('prepare',{requestId:`changed-image-${operation}`,operation,request});assert.notEqual(response.status,200);
+ }
+ assert.notEqual((await f.post('approve',approveBody(update))).status,200);
+ assert.deepEqual(f.temporal.calls,before,'a historical image cannot authorize execution changes or current-work retirement');
+});
+
+test('terminal routine management after a changed image retains current policy, owner, head, retention and generation fences',async t=>{
  const f=await fixture(t),scheduleId=await createRoutine(f);f.nativeState.runState='failed';
+ f.nativeState.versions={...versions,imageDigest:'sha256:'+'c'.repeat(64)};
  const request={scheduleId,mode:'pause',running:'leave',runs:[],note:'Pause the selected generation'};
  const prepare=async requestId=>{const r=await f.post('prepare',{requestId,operation:'cancel_scheduled_task',request});assert.equal(r.status,200,await r.clone().text());return {...await r.json(),request};};
  const first=await prepare('terminal-pause-first'),stale=await prepare('terminal-pause-stale');
@@ -121,6 +134,8 @@ test('terminal routine management retains current policy, owner, head and genera
  assert.notEqual((await f.post('approve',approveBody(stale))).status,200);assert.deepEqual(f.temporal.calls,after);
  f.nativeState.reserved=true;assert.notEqual((await f.post('list',{})).status,200);f.nativeState.reserved=false;
  f.state.allowed=false;assert.notEqual((await f.post('list',{})).status,200);f.state.allowed=true;
+ f.state.retentionRefused=true;assert.notEqual((await f.post('list',{})).status,200);f.state.retentionRefused=false;
+ f.state.revoked=true;assert.notEqual((await f.post('list',{})).status,200);f.state.revoked=false;
  f.state.actorId='another-actor';assert.notEqual((await f.post('list',{})).status,200);
  assert.deepEqual(f.temporal.calls,after);
 });
