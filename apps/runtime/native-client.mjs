@@ -17,7 +17,7 @@ const startupOperations=new Set([
  'runner/execution','runner/execution/settle',
  'runner/native/bootstrap','runner/native/admitted','runner/native/prepare',
  'runner/native/verify','runner/native/start','runner/native/started',
- 'runner/runtime','runner/publish','runner/record-usage','runner/checkpoint/capture','runner/checkpoint/complete','runner/files/restore',
+ 'runner/outreach/complete','runner/outreach/fail','runner/runtime','runner/publish','runner/record-usage','runner/checkpoint/capture','runner/checkpoint/complete','runner/files/restore',
  'runner/session/register','runner/session/load','runner/session/append',
  'runner/next-controls','runner/claim-control','runner/ack-control','runner/record-checkpoint',
 ]);

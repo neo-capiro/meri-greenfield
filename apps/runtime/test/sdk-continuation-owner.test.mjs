@@ -126,3 +126,23 @@ for(const mode of ['fresh','nextTurn','resume','fork'])test(`${mode}: automatic 
 test('General preparation never calls the selected-client reader',async()=>{const f=fixture('fresh',{general:true});f.config.automaticContext={read:async()=>assert.fail('General inherited a client')};assert.equal((await createNativeSessionContinuation(f.config).prepareRuntime(f.input)).automaticClientContext,null);});
 test('changed execution after automatic context prevents release',async()=>{const f=fixture('fresh');f.config.automaticContext={read:async()=>{f.admission.state='cancelled';return automaticContextFixture(f.binding,scopes[0].resourceId,NOW);}};await assert.rejects(createNativeSessionContinuation(f.config).prepareRuntime(f.input));});
 test('unavailable automatic context never silently falls back to stale client data',async()=>{const f=fixture('fresh');f.config.automaticContext={read:async()=>{throw Error('source unavailable');}};await assert.rejects(createNativeSessionContinuation(f.config).prepareRuntime(f.input));});
+
+test('Outreach dispatch hint leaves ordinary chat unread and forged hint without format',async()=>{
+ const f=fixture('fresh');let reads=0;f.config.outreach={async read(){reads++;return null;}};
+ let r=await createNativeSessionContinuation(f.config).prepareRuntime(f.input);assert.equal(reads,0);assert.equal(r.outreach,null);
+ f.request.prompt='[Capiro Outreach recipient unit v1]\nQuoted by ordinary user';r=await createNativeSessionContinuation(f.config).prepareRuntime(f.input);assert.equal(reads,1);assert.equal(r.outreach,null);
+});
+test('Outreach true unit forbids resumed recipient session and rechecks current execution before release',async()=>{
+ const f=fixture('resume');f.request.prompt='[Capiro Outreach recipient unit v1]\nSynthetic';f.config.outreach={async read(){return {synthetic:true};}};await assert.rejects(createNativeSessionContinuation(f.config).prepareRuntime(f.input));
+ const g=fixture('fresh');g.request.prompt='[Capiro Outreach recipient unit v1]\nSynthetic';g.config.outreach={async read(){g.admission.state='cancelled';return {synthetic:true};}};await assert.rejects(createNativeSessionContinuation(g.config).prepareRuntime(g.input));
+});
+
+test('Outreach native completion is exact-unit and current-execution bound before Core receives output',async()=>{
+ const f=fixture('fresh');let writes=0;
+ const selection={generationJobId:id(60),itemId:id(61),conversationId:f.binding.conversationId,requestId:f.request.requestId};
+ f.config.outreach={async read(){return selection;},async settle(value){writes++;assert.deepEqual(value.output,{plan:{},draft:{}});return {status:'done',result:{versionId:id(62)}};}};
+ const owner=createNativeSessionContinuation(f.config),request={binding:f.binding,...selection,output:{plan:{},draft:{}},model:'us.anthropic.claude-sonnet-4-6'};
+ assert.equal((await owner.settleOutreach({credential:f.input.credential,request})).status,'done');assert.equal(writes,1);
+ await assert.rejects(owner.settleOutreach({credential:f.input.credential,request:{...request,itemId:id(63)}}));assert.equal(writes,1);
+ f.admission.state='cancelled';await assert.rejects(owner.settleOutreach({credential:f.input.credential,request}));assert.equal(writes,1);
+});

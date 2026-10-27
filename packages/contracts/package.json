@@ -1,6 +1,6 @@
 {
   "name": "@capiro/meri-contracts",
-  "version": "0.1.15",
+  "version": "0.1.16",
   "private": true,
   "license": "UNLICENSED",
   "type": "module",
@@ -10,11 +10,17 @@
     "validate.mjs",
     "objective-generation.mjs",
     "objective-generation.d.ts",
+    "outreach-generation.mjs",
+    "outreach-generation.d.ts",
     "dist",
     "README.md",
     "THIRD-PARTY-NOTICES.md"
   ],
   "exports": {
+    "./outreach-generation": {
+      "types": "./outreach-generation.d.ts",
+      "default": "./outreach-generation.mjs"
+    },
     "./objective-generation": {
       "types": "./objective-generation.d.ts",
       "default": "./objective-generation.mjs"

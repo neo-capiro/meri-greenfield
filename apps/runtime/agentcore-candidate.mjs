@@ -22,6 +22,8 @@ import {createDurableSdkSessionOwner} from './sdk-session-owner.mjs';
 import {createNativeSessionContinuation} from './sdk-continuation-owner.mjs';
 import {createObjectiveSelectionOwner} from './objective-generation/selection-owner.mjs';
 import {createPostgresObjectiveRunStartStore} from './objective-source/postgres-run-starts.mjs';
+import {createOutreachCore} from './outreach-generation/core.mjs';
+import {assertOutreachRequest,outreachIdentity} from '../../packages/runtime/outreach-generation.mjs';
 import {createAutomaticClientContextReader} from './automatic-client-context.mjs';
 import {createObjectiveCorePorts} from './objective-generation/core-ports.mjs';
 import {createNativeSessionContinuationApplication} from './sdk-continuation-http.mjs';
@@ -250,7 +252,18 @@ export function assembleAgentCoreCandidate({configuration,pool,provider,controlC
   const packet=await automaticReader.read({binding,selectedClientId,credential:access.credential,signal,deadlineMs});
   await access.verify();return packet;
  }});
- const sdkSessionSnapshot=createNativeSessionContinuation({store,execution,versions,maxOutputBytes:config.maxOutputBytes,objectiveSelection,automaticContext,...(routineCore?{routineCore}:{}),now,maxRequestMs:requestMs});
+ const outreachCore=createOutreachCore({origin:config.identity.origin,fetchImpl:coreFetch,now,maxRequestMs:requestMs});
+ const outreach={async read({binding,run,request,selectedClientId,signal,deadlineMs}){
+  const context=await contextFor({binding,run,signal});if(context.selectedClientId!==selectedClientId)refuse();
+  const access=await nativeAccess({binding,run,context,signal});
+  const value=await outreachCore.read({conversationId:binding.conversationId},{credential:access.credential,signal,deadlineMs});
+  await access.verify();return value===null?null:assertOutreachRequest(value,{binding,request,selectedClientId});
+ },async settle({binding,run,selection,output,model,errorCode,signal,deadlineMs}){
+  const context=await contextFor({binding,run,signal}),access=await nativeAccess({binding,run,context,signal});
+  const result=await outreachCore[errorCode===undefined?'complete':'fail']({...outreachIdentity(selection),...(errorCode===undefined?{output,model}:{errorCode})},{credential:access.credential,signal,deadlineMs});
+  await access.verify();return result;
+ }};
+ const sdkSessionSnapshot=createNativeSessionContinuation({store,execution,versions,maxOutputBytes:config.maxOutputBytes,objectiveSelection,outreach,automaticContext,...(routineCore?{routineCore}:{}),now,maxRequestMs:requestMs});
  const runtime=createNativeSessionContinuationApplication({owner:sdkSessionSnapshot,now,maxRequestMs:requestMs});
  let outerApplication,closed=false;
  async function reads(request){
@@ -272,7 +285,7 @@ export function assembleAgentCoreCandidate({configuration,pool,provider,controlC
   if(closed)return absent('EXECUTION_UNAVAILABLE');
   const path=new URL(request.url).pathname;
   const answer=await control.handle(request);if(answer!==null)return answer;
-  if(path==='/v1/runner/runtime')return runtime.handle(request);
+  if(['/v1/runner/runtime','/v1/runner/outreach/complete','/v1/runner/outreach/fail'].includes(path))return runtime.handle(request);
   if(path.startsWith('/v1/runner/reads/'))return reads(request);
   if(path.startsWith('/v1/runner/session/'))return outerApplication?outerApplication.handle(request):absent('SDK_SESSION_UNAVAILABLE');
   if(/^\/v1\/runner\/intents\/(availability|prepare)$/u.test(path))return outerApplication?outerApplication.handle(request):absent('UNAVAILABLE');
