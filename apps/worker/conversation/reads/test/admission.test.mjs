@@ -26,6 +26,6 @@ for(const id of IDS){
   const f=await make(id);assert.equal(await connect(t,f,{skill:{allowedOperations:[],budgets:{maxToolCalls:1,maxOutputBytes:65536}}}),null);
   const snapshot=await f.port.readAvailability(),m=await connect(t,f);assert.ok(m);const result=await m.call();assert.equal(result.isError,undefined,JSON.stringify(result));
   const receipt=m.runtime.receipts()[0];assert.equal(receipt.executionCatalogSha256,snapshot.installation.executionCatalogSha256);assert.deepEqual(receipt.operation,f.operation);
-  assert.equal(f.calls.length,1);
+  if(id==='get_florida_budget_project')assert.deepEqual(f.calls,['/api/clio/application-authority/current','/api/clio/tools/get_florida_budget_project','/api/clio/application-authority/current']);else assert.equal(f.calls.length,1);
  });
 }

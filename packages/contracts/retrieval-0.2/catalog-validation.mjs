@@ -167,7 +167,7 @@ export const CATALOG_OPERATION_BINDINGS = Object.freeze([
     normalize: (v, request, context, binding) => (v.normalizeSamOpportunitiesInput(binding.id, request, clock(context, binding.contextKeys))),
     outputAssert: (v, page, request, context, binding) => v.assertSamOpportunitiesOutput(binding.id, page, request, clock(context, binding.contextKeys))}),
   Object.freeze({id: 'get_florida_budget_project', nativeId: 'get_florida_budget_project', group: 'florida-budget', input: 'FloridaBudgetRequest', output: 'FloridaBudgetOutput', version: '0.2.0',
-    contextKeys: Object.freeze(["asOf"]),
+    contextKeys: Object.freeze(["asOf", "legiwatchReviewScope"]),
     normalize: (v, request, context, binding) => (v.floridaBudgetValidators.normalizeInput(binding.id, request, clock(context, binding.contextKeys))),
     outputAssert: (v, page, request, context, binding) => v.floridaBudgetValidators.assertResult(binding.id, page, request, clock(context, binding.contextKeys))}),
   Object.freeze({id: 'get_state_bill_status', nativeId: 'get_state_bill_status', group: 'state-status-votes', input: 'StateBillStatusRequest', output: 'StateBillStatusOutput', version: '0.2.0',

@@ -112,6 +112,11 @@ export function createSourceReadContext({contract,proof,native,defaultCongress,n
   return {binding:proof.binding,selectedClientId,visibleClientIds:[...native.clientIds]};
  }
  if(['saved-records','strategy-saved-records','legiwatch-review','legislative-comparisons'].includes(group))return savedOwnerContext(proof,native,group);
+ if(group==='florida-budget'){
+  const asOf=priorContext?.asOf??new Date(now()).toISOString();
+  const request=contract.normalizeInput(proof.request,{asOf}).input;
+  return {asOf,...savedOwnerContext({...proof,request},native,'legislative-comparisons')};
+ }
  // Recompute on final release: membership changes must also fence aggregate rows with no client IDs.
  if(group==='capiro-data'&&proof.request.source==='client_records')return privateDataContext(proof,native);
  if(group==='connected-apps'||group==='teams-channels'){

@@ -6016,12 +6016,12 @@
         "version": "0.2.0"
       },
       "displayName": "Get florida budget project",
-      "whenToUse": "Inspect the declared source projection through a qualified source owner under current authorization.",
+      "whenToUse": "Read stored Florida budget projects and their amount observation IDs/sourceRevision before comparing an exact pair; preserve FY, units, stage and publisher qualifiers.",
       "limitations": [
         "Pending private contract only; null handler, no enabled source or executable skill.",
         "Source requirements are design declarations; current grants, feature flags, availability and producer authority remain unqualified.",
         "Local source validation does not qualify current identity, source access, result release or runtime.",
-        "Client names and UUIDs are selectors resolved by the canonical Core read owner. Returned folder/session/client scope is checked against those selectors; no separate scope grant is inferred. Current tenant, client, folder, membership, wall, feature and internal-guard enforcement remain execution prerequisites.",
+        "Native reads require an explicit client UUID matching the selected client, or General scope with null client. Core current identity and the existing Intel membership, folder, wall and feature owner enforce access before releasing source rows; model selectors are not grants.",
         "Projects, recent amounts, documents, amount observations and events preserve their distinct caps and nullable projections. Raw JSON is inert opaque stored data; it is not guaranteed to conform to a BudgetAmount DTO.",
         "Requests, chamber alternatives, offers, allocations and vetoes do not establish awarded amounts. Exact monetary meanings and fiscal stages remain distinct; no aggregation, currentness or completeness claim is implemented."
       ],
@@ -6040,11 +6040,11 @@
       ],
       "inputSchema": {
         "id": "urn:meri:retrieval:florida-budget:0.2.0#/$defs/FloridaBudgetRequest",
-        "sha256": "a8eaa03c28b882940aeaa7d34a75c00730db974818f5f79c582e4ee264464fa8"
+        "sha256": "6098fcf619cd1d0a1bd32e11480f4785580aac7c214312e627c365ba48eb4ff7"
       },
       "outputSchema": {
         "id": "urn:meri:retrieval:florida-budget:0.2.0#/$defs/FloridaBudgetOutput",
-        "sha256": "a8eaa03c28b882940aeaa7d34a75c00730db974818f5f79c582e4ee264464fa8"
+        "sha256": "6098fcf619cd1d0a1bd32e11480f4785580aac7c214312e627c365ba48eb4ff7"
       },
       "aliases": [],
       "sideEffect": "none",
