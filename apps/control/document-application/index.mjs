@@ -7,7 +7,7 @@ import {ARTIFACT_MIME_TYPES,artifactFilename,nativeArtifactDisposition} from '..
 import {createArtifactService} from '../../artifacts/service.mjs';
 import {createPostgresArtifactService} from '../../artifacts/postgres-service.mjs';
 import {configuration,requestCurrent,data,own,same,v} from './current.mjs';
-import {admitsDocumentFormat,admitsDocumentMime} from './format-admission.mjs';
+import {admitDocumentFormats,admitsDocumentFormat,admitsDocumentMime} from './format-admission.mjs';
 import {errorResponse as bodyErrorResponse} from '../action-application/http.mjs';
 import {requestInfo,jsonBody,response,errorResponse,fail} from './http.mjs';
 import {previewConfiguration,previewRoute} from './preview-route.mjs';
@@ -55,11 +55,14 @@ async function nativeFile({config,current,life,versionId,intent,state}){
  if(Buffer.byteLength(JSON.stringify(result))>config.limits.maxResponseBytes)fail('DOCUMENT_RESPONSE_LIMIT',413);return response(result);
 }
 export function createDocumentApplication(options){
- const config=configuration(options),context=config.options.context,admission=config.formatAdmission;config.preview=previewConfiguration(config.previewOptions);
+ const config=configuration(options),context=config.options.context;config.preview=previewConfiguration(config.previewOptions);
  return Object.freeze({async handle(request){
   let life;const state={};
   try{
    const info=requestInfo(request);if(!config.enabled)fail('UNAVAILABLE',503);
+   // Retained versions use the six-format read contract, independently of PDF generation admission.
+   // Write and preview routes keep their configured renderer/admission requirements.
+   const admission=['inspect','download'].includes(info.intent)?admitDocumentFormats({pdf:true}):config.formatAdmission;
    const at=config.now();if(!Number.isSafeInteger(at)||at<0)fail('DOCUMENT_CLOCK',500);
    const deadlineMs=Math.min(at+config.limits.maxRequestMs,context.deadlineMs);
    life=createOperationLifetime({deadlineMs,now:config.now,signal:info.signal,errorFactory:code=>new CommandError(code)});
