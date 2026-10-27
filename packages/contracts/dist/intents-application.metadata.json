@@ -117,8 +117,8 @@
     },
     {
       "path": "../../apps/control/intents/approval.mjs",
-      "sha256": "5e02971a8fc09a7afe966c9af6fd539c167110deee6ee4d802cdf40f3ea62352",
-      "bytes": 36035
+      "sha256": "637644688605e7a1724a0a2de361d8002c14235d285ecf68efa05202fc531e0a",
+      "bytes": 38737
     },
     {
       "path": "../../apps/control/intents/faults.mjs",
@@ -212,8 +212,8 @@
     },
     {
       "path": "generate-intents.mjs",
-      "sha256": "71118d4047dc9b2412806000f9b93189a29a19c0496a6e5dbd4e331403eef2d3",
-      "bytes": 13202
+      "sha256": "4678e364bfc8f840cee9b38a86f8bf3f508cdc19fc1dd2fc5ab90f6355af45b4",
+      "bytes": 13266
     },
     {
       "path": "intents-application/boundary.mjs",
@@ -242,13 +242,13 @@
     },
     {
       "path": "intents-application/schema.mjs",
-      "sha256": "745860d4d6f80d3f9a83b0097dd433a011a47322f18e3ffc7862f2444accd42a",
-      "bytes": 13438
+      "sha256": "01172dcc9bdbe19fc541c63f99a3be0d94e0150957f3814e4578646ec9629337",
+      "bytes": 14050
     },
     {
       "path": "intents-application/semantics.mjs",
-      "sha256": "6f9fb2e2bbc7beb3327b57a4957863700b3d26fa9daaeecdef985a646f879d73",
-      "bytes": 23699
+      "sha256": "6873983679e41e6fbeaebbf717ed68f6cca5af958becbdf8e89668a4e9c52336",
+      "bytes": 25425
     },
     {
       "path": "meri.schema.json",
@@ -286,6 +286,11 @@
       "bytes": 10889
     },
     {
+      "path": "retrieval-0.2/watch-action.schema.json",
+      "sha256": "cea59f030384577183dd7a908ca5d8ce8c008ddd840d94f9d6f164315878489d",
+      "bytes": 10659
+    },
+    {
       "path": "schedules-0.2/application-protocol.mjs",
       "sha256": "aca5ec8b8fa966991a6faf4f55b61e82694a76badebc5f6746f0fa3835478e9f",
       "bytes": 864
@@ -306,7 +311,7 @@
       "bytes": 24305
     }
   ],
-  "schemaSha256": "785290ce61048669f27d1d94f5e487b37e0b34e44c9211edbfdcc3ba56dbc64e",
+  "schemaSha256": "efffe4aa33e0516b53c2b7d17abf8aae1a964bbc52d8f4dd3c2a0124f98e7019",
   "browserInputs": [
     "artifacts-0.2/artifact-formats.mjs",
     "commands-0.2/mail-send-validation.mjs",

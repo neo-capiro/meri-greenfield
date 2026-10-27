@@ -115,6 +115,9 @@
           "$ref": "#/$defs/Canonical_LegiwatchProposal_1f841734"
         },
         {
+          "$ref": "#/$defs/Canonical_WatchProposal_14eddeec"
+        },
+        {
           "$ref": "#/$defs/Canonical_ClientRecordProposal_b620b25b"
         },
         {
@@ -133,6 +136,9 @@
     },
     "IntentsBizdevProposal": {
       "$ref": "#/$defs/Canonical_BizdevProposal_a770314c"
+    },
+    "IntentsWatchProposal": {
+      "$ref": "#/$defs/Canonical_WatchProposal_14eddeec"
     },
     "IntentsResearchShareProposal": {
       "$ref": "#/$defs/Canonical_ResearchShareProposal_1cdbd32e"
@@ -1108,6 +1114,83 @@
       ],
       "additionalProperties": false
     },
+    "IntentsWatchItem": {
+      "type": "object",
+      "properties": {
+        "deliveryId": {
+          "$ref": "#/$defs/IntentsDeliveryId"
+        },
+        "createdAt": {
+          "type": "string",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$"
+        },
+        "operation": {
+          "$ref": "#/$defs/IntentsOperation"
+        },
+        "state": {
+          "const": "prepared"
+        },
+        "kind": {
+          "const": "watch_action"
+        },
+        "proposal": {
+          "$ref": "#/$defs/Canonical_WatchProposal_14eddeec"
+        },
+        "result": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Canonical_WatchCoreResult_1c60295e"
+            },
+            {
+              "const": "unavailable"
+            }
+          ]
+        }
+      },
+      "required": [
+        "deliveryId",
+        "createdAt",
+        "operation",
+        "state",
+        "kind",
+        "proposal",
+        "result"
+      ],
+      "additionalProperties": false
+    },
+    "IntentsWithheldWatchItem": {
+      "type": "object",
+      "properties": {
+        "deliveryId": {
+          "$ref": "#/$defs/IntentsDeliveryId"
+        },
+        "createdAt": {
+          "type": "string",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$"
+        },
+        "operation": {
+          "$ref": "#/$defs/IntentsOperation"
+        },
+        "state": {
+          "const": "prepared"
+        },
+        "kind": {
+          "const": "watch_action"
+        },
+        "withheld": {
+          "const": true
+        }
+      },
+      "required": [
+        "deliveryId",
+        "createdAt",
+        "operation",
+        "state",
+        "kind",
+        "withheld"
+      ],
+      "additionalProperties": false
+    },
     "IntentsResearchShareItem": {
       "type": "object",
       "properties": {
@@ -1310,6 +1393,12 @@
           "$ref": "#/$defs/IntentsWithheldLegiwatchItem"
         },
         {
+          "$ref": "#/$defs/IntentsWatchItem"
+        },
+        {
+          "$ref": "#/$defs/IntentsWithheldWatchItem"
+        },
+        {
           "$ref": "#/$defs/IntentsClientRecordItem"
         },
         {
@@ -1452,6 +1541,31 @@
             },
             "result": {
               "$ref": "#/$defs/Canonical_BizdevCoreResult_f44012f2"
+            }
+          },
+          "required": [
+            "status",
+            "deliveryId",
+            "proposalId",
+            "result"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "status": {
+              "const": "watch_decided"
+            },
+            "deliveryId": {
+              "$ref": "#/$defs/IntentsDeliveryId"
+            },
+            "proposalId": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$"
+            },
+            "result": {
+              "$ref": "#/$defs/Canonical_WatchCoreResult_1c60295e"
             }
           },
           "required": [
@@ -3171,6 +3285,206 @@
         },
         "context": {
           "$ref": "#/$defs/Canonical_LegiwatchContext_a906d964"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "expiresAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "commandSha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        }
+      },
+      "required": [
+        "kind",
+        "binding",
+        "scopes",
+        "operation",
+        "proposalId",
+        "request",
+        "context",
+        "createdAt",
+        "expiresAt",
+        "commandSha256"
+      ],
+      "additionalProperties": false
+    },
+    "Canonical_WatchRequest_1e607664": {
+      "type": "object",
+      "properties": {
+        "family": {
+          "enum": [
+            "legiwatch_keyword",
+            "business_development_prospect",
+            "defense_budget_target",
+            "client_watchlist"
+          ]
+        },
+        "clientId": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "uuid",
+              "pattern": "^[a-f0-9-]+$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "targetKind": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 40
+        },
+        "targetKey": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 180,
+          "pattern": "^[A-Za-z0-9._:-]+$"
+        },
+        "operation": {
+          "enum": [
+            "subscribe",
+            "pause",
+            "resume",
+            "unsubscribe",
+            "set_delivery"
+          ]
+        },
+        "expectedVersion": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 2147483646
+        },
+        "sourceRevision": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 180,
+              "pattern": "^[A-Za-z0-9._:-]+$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "reason": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 2000
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "enabled": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "requestKey": {
+          "type": "string",
+          "minLength": 8,
+          "maxLength": 180
+        }
+      },
+      "required": [
+        "family",
+        "clientId",
+        "targetKind",
+        "targetKey",
+        "operation",
+        "expectedVersion",
+        "requestKey"
+      ],
+      "additionalProperties": false
+    },
+    "Canonical_WatchContext_e72a3a40": {
+      "type": "object",
+      "properties": {
+        "conversationId": {
+          "type": "string",
+          "format": "uuid",
+          "pattern": "^[a-f0-9-]+$"
+        },
+        "selectedClientId": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "uuid",
+              "pattern": "^[a-f0-9-]+$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "identityRevision": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "membershipRevision": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "contextRevision": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        }
+      },
+      "required": [
+        "conversationId",
+        "selectedClientId",
+        "identityRevision",
+        "membershipRevision",
+        "contextRevision"
+      ],
+      "additionalProperties": false
+    },
+    "Canonical_WatchProposal_14eddeec": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "const": "watch_action"
+        },
+        "binding": {
+          "$ref": "#/$defs/Canonical_RunBinding_84f2304c"
+        },
+        "scopes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Canonical_Scope_f882edb5"
+          },
+          "minItems": 1,
+          "maxItems": 1
+        },
+        "operation": {
+          "const": "watch_action"
+        },
+        "proposalId": {
+          "type": "string",
+          "format": "uuid",
+          "pattern": "^[a-f0-9-]+$"
+        },
+        "request": {
+          "$ref": "#/$defs/Canonical_WatchRequest_1e607664"
+        },
+        "context": {
+          "$ref": "#/$defs/Canonical_WatchContext_e72a3a40"
         },
         "createdAt": {
           "type": "string",
@@ -7505,6 +7819,170 @@
           "anyOf": [
             {
               "$ref": "#/$defs/Canonical_BizdevReceipt_dbab7eca"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "version",
+        "proposalId",
+        "request",
+        "context",
+        "createdAt",
+        "expiresAt",
+        "status",
+        "receipt"
+      ],
+      "additionalProperties": false
+    },
+    "Canonical_WatchStatus_828649ac": {
+      "enum": [
+        "proposed",
+        "approved",
+        "executing",
+        "succeeded",
+        "failed_retryable",
+        "failed_terminal",
+        "outcome_unknown",
+        "blocked",
+        "dismissed",
+        "expired"
+      ]
+    },
+    "Canonical_WatchReceipt_f63ece6d": {
+      "type": "object",
+      "properties": {
+        "request": {
+          "$ref": "#/$defs/Canonical_WatchRequest_1e607664"
+        },
+        "owner": {
+          "enum": [
+            "legiwatch_keyword",
+            "business_development_prospect",
+            "defense_budget_target",
+            "client_watchlist"
+          ]
+        },
+        "binding": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "operation": {
+          "enum": [
+            "subscribe",
+            "pause",
+            "resume",
+            "unsubscribe",
+            "set_delivery"
+          ]
+        },
+        "targetKey": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 180,
+          "pattern": "^[A-Za-z0-9._:-]+$"
+        },
+        "identity": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 180
+        },
+        "state": {
+          "enum": [
+            "active",
+            "paused",
+            "needs_review",
+            "ended",
+            "unsubscribed"
+          ]
+        },
+        "version": {
+          "anyOf": [
+            {
+              "type": "integer",
+              "minimum": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "deliveryEnabled": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "eventId": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 180
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "alreadyInState": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "request",
+        "owner",
+        "binding",
+        "operation",
+        "targetKey",
+        "identity",
+        "state",
+        "version",
+        "deliveryEnabled",
+        "eventId",
+        "alreadyInState"
+      ],
+      "additionalProperties": false
+    },
+    "Canonical_WatchCoreResult_1c60295e": {
+      "type": "object",
+      "properties": {
+        "version": {
+          "const": "0.1.0"
+        },
+        "proposalId": {
+          "type": "string",
+          "format": "uuid",
+          "pattern": "^[a-f0-9-]+$"
+        },
+        "request": {
+          "$ref": "#/$defs/Canonical_WatchRequest_1e607664"
+        },
+        "context": {
+          "$ref": "#/$defs/Canonical_WatchContext_e72a3a40"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "expiresAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "status": {
+          "$ref": "#/$defs/Canonical_WatchStatus_828649ac"
+        },
+        "receipt": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Canonical_WatchReceipt_f63ece6d"
             },
             {
               "type": "null"
