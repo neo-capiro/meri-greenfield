@@ -18,18 +18,18 @@ const at=1000000;
 async function nativeFixture({general=false}={}){
  const f=await applicationFixture(),b=f.contextConfiguration.commandContext.binding,selectedClientId=general?null:f.contextConfiguration.commandContext.clientResolution.clientId;
  const scopes=[{tenantId:b.tenantId,kind:general?'private-user':'client',resourceId:selectedClientId??b.actorId,policyRevision:'p1'}];
- const state={binding:b,selectedClientId,scopes,runState:'running',versions,budget:2000000,reserved:false,reads:0,policyHook:null};
+ const state={binding:b,selectedClientId,scopes,runState:'running',versions,budget:2000000,budgetReads:0,budgetUnavailable:false,reserved:false,reads:0,policyHook:null};
  const authentication={principal:{sessionId:'synthetic-session',tenantId:b.tenantId,actorId:b.actorId,conversationId:b.conversationId,runId:b.runId},sessionRevision:'one',checkedAtMs:f.now(),expiresAtMs:f.now()+60000};
  const sessions={async authenticateSession(){return authentication;},async readCurrentState(){return {authenticationSha256:hash(authentication),binding:state.binding,scopes:state.scopes,selectedClientId:state.selectedClientId,checkedAtMs:f.now(),expiresAtMs:f.now()+60000};}};
  const store={async read(){state.reads++;return {run:{binding:state.binding,scopes:state.scopes,versions:state.versions,policyRevision:'p1',state:state.runState}};},
-  async readModelPolicy(){return {maxBudgetMicroUsd:state.budget};},nextRuns:{async current(){return {reserved:state.reserved,binding:state.binding,scopes:state.scopes,policyRevision:'p1'};}}};
+  async readModelPolicy(){state.budgetReads++;if(state.budgetUnavailable)throw Error('model settings unavailable');return {maxBudgetMicroUsd:state.budget};},nextRuns:{async current(){return {reserved:state.reserved,binding:state.binding,scopes:state.scopes,policyRevision:'p1'};}}};
  const policy={async check({selectionSha256}){await state.policyHook?.();return {authorized:true,selectionSha256,binding:b,scopes,selectedClientId,destinationResolution:null,limits:null,checkedAtMs:f.now(),expiresAtMs:f.now()+10000};}};
  const {template,workflow,limits}=f.contextConfiguration;
  const owner=createNativeRoutinesContextOwner({base:{template,workflow,limits,policy,versions,maxRuntimeSeconds:900},sessions,scheduleOwner:f.owner,store,now:f.now,newId:f.newId});
- return {...f,state,owner,request:{credential:'opaque-synthetic',operation:'list_scheduled_tasks',request:{},deadlineMs:f.now()+5000}};
+ return {...f,state,owner,store,request:{credential:'opaque-synthetic',operation:'list_scheduled_tasks',request:{},deadlineMs:f.now()+5000}};
 }
 
-test('native routines use current session/run/model policy and work after a completed invocation',async()=>{
+test('native routines use current session/run and Core policy after a completed invocation',async()=>{
  const f=await nativeFixture();try{
   for(const runState of ['running','completed','waiting-for-approval']){
    f.state.runState=runState;const result=await f.owner.authorizeRequest(f.request);assert.deepEqual(result.binding,f.state.binding);
@@ -87,16 +87,49 @@ for(const general of [false,true])test(`native ${general?'General':'client'} rou
  }finally{await f.close();}
 });
 
-test('native routine list still refuses changed selection, non-image versions, successor reservation and model policy drift',async()=>{
+test('native routine list still refuses changed selection, non-image versions and successor reservation',async()=>{
  for(const change of [s=>{s.binding={...s.binding,actorId:'another'};},s=>{s.selectedClientId='10000000-0000-4000-8000-000000000099';},
   ...['sdk','cli','contracts','checkpointFormat'].map(key=>s=>{s.versions={...s.versions,[key]:'9.9.9'};}),
   s=>{s.versions={...s.versions,skillsDigest:'d'.repeat(64)};},s=>{s.versions={...s.versions,imageDigest:'invalid'};},
-  s=>{const {imageDigest,...rest}=s.versions;s.versions=rest;},s=>{s.reserved=true;},s=>{s.budget=0;}]){
+  s=>{const {imageDigest,...rest}=s.versions;s.versions=rest;},s=>{s.reserved=true;}]){
   const f=await nativeFixture();try{change(f.state);await assert.rejects(f.owner.authorizeRequest(f.request));}finally{await f.close();}
  }
- for(const change of [s=>{s.budget=1000000;},s=>{s.reserved=true;}]){
+ for(const change of [s=>{s.reserved=true;}]){
   const f=await nativeFixture();try{f.state.policyHook=()=>change(f.state);await assert.rejects(f.owner.authorizeRequest(f.request));}finally{await f.close();}
  }
+});
+
+for(const general of [false,true])test(`persisted ${general?'General':'client'} management does not read missing, zero or changed model policy`,async()=>{
+ const f=await nativeFixture({general});try{
+  f.state.runState='completed';f.state.budget=0;
+  await f.owner.authorizeRequest(f.request);
+  f.state.budgetUnavailable=true;await f.owner.authorizeRequest(f.request);
+  f.state.budget=2000000;f.state.budgetUnavailable=false;f.state.policyHook=()=>{f.state.budget=0;f.state.budgetUnavailable=true;};
+  assert.deepEqual((await f.owner.authorizeRequest(f.request)).binding,f.state.binding);assert.equal(f.state.budgetReads,0);
+ }finally{await f.close();}
+});
+
+test('initial bindings retain positive model policy and drift refusal for routine list',async()=>{
+ const f=await nativeFixture();try{
+  const record={binding:f.state.binding,versions,selectedClientId:f.state.selectedClientId,policyRevision:'p1',expiresAtMs:f.now()+10000};
+  f.store.readOptional=async()=>null;f.store.initialBindings={async readPreparation(){return {record,recordSha256:hash(record)};}};
+  f.store.readCurrentModelPolicy=f.store.readModelPolicy;
+  f.state.budget=0;await assert.rejects(f.owner.authorizeRequest(f.request));
+  f.state.budget=2000000;f.state.budgetUnavailable=true;await assert.rejects(f.owner.authorizeRequest(f.request));
+  f.state.budgetUnavailable=false;await f.owner.authorizeRequest(f.request);
+  f.state.policyHook=()=>{f.state.budget=1000000;};await assert.rejects(f.owner.authorizeRequest(f.request));assert.ok(f.state.budgetReads>0);
+  f.state.budget=2000000;f.state.policyHook=()=>{f.state.budget=0;f.store.readOptional=f.store.read;};
+  await assert.rejects(f.owner.authorizeRequest(f.request),'persisting an initial run cannot remove its already-required model bounds');
+ }finally{await f.close();}
+});
+
+test('persisted management cannot fall back to an initial binding after the run disappears',async()=>{
+ const f=await nativeFixture();try{
+  const record={binding:f.state.binding,versions,selectedClientId:f.state.selectedClientId,policyRevision:'p1',expiresAtMs:f.now()+10000};
+  f.store.initialBindings={async readPreparation(){return {record,recordSha256:hash(record)};}};f.store.readCurrentModelPolicy=f.store.readModelPolicy;
+  f.state.policyHook=()=>{f.store.readOptional=async()=>null;};
+  await assert.rejects(f.owner.authorizeRequest(f.request));assert.equal(f.state.budgetReads,0);
+ }finally{await f.close();}
 });
 
 test('native stop requires the exact owner binding and durable physical-stop proof',async()=>{

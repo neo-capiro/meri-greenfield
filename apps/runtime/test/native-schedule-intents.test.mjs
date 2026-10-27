@@ -15,8 +15,8 @@ const versions={imageDigest:'sha256:'+'a'.repeat(64),sdk:'0.3.295',cli:'2.1.295'
 async function fixture(t){
  const f=await applicationFixture();t.after(()=>f.close());
  const configuration={sourceEnabled:true,intents:{enabled:true},routines:{enabled:true},limits:{requestMs:5000,requestBytes:131072},native:{maxResponseBytes:131072}};
- const nativeState={runState:'running',versions,reserved:false};
- const store={async read(){return {run:{binding,scopes:f.scopes(),versions:nativeState.versions,policyRevision:'p1',state:nativeState.runState}};},async readModelPolicy(){return {maxBudgetMicroUsd:2000000};},nextRuns:{async current(){return {reserved:nativeState.reserved,binding,scopes:f.scopes(),policyRevision:'p1'};}}};
+ const nativeState={runState:'running',versions,reserved:false,budget:2000000,budgetReads:0,budgetUnavailable:false};
+ const store={async read(){return {run:{binding,scopes:f.scopes(),versions:nativeState.versions,policyRevision:'p1',state:nativeState.runState}};},async readModelPolicy(){nativeState.budgetReads++;if(nativeState.budgetUnavailable)throw Error('model settings unavailable');return {maxBudgetMicroUsd:nativeState.budget};},nextRuns:{async current(){return {reserved:nativeState.reserved,binding,scopes:f.scopes(),policyRevision:'p1'};}}};
  const {template,workflow,limits,policy}=f.contextConfiguration;
  const context={configuration,pool:f.pool,client:{...f.client,connection:{withDeadline:(_deadline,fn)=>fn(),withAbortSignal:(_signal,fn)=>fn()}},now:f.now};
  const family=routinesFamily({context:{template,workflow,limits,policy},newId:f.newId,runControl:{async cancel(){throw Error('unexpected');}},retirement:{async retire(){throw Error('unexpected');}},
@@ -126,6 +126,7 @@ test('changed image does not enable create, update or current-work cancellation 
 
 test('terminal routine management after a changed image retains current policy, owner, head, retention and generation fences',async t=>{
  const f=await fixture(t),scheduleId=await createRoutine(f);f.nativeState.runState='failed';
+ f.nativeState.budget=0;f.nativeState.budgetUnavailable=true;
  f.nativeState.versions={...versions,imageDigest:'sha256:'+'c'.repeat(64)};
  const request={scheduleId,mode:'pause',running:'leave',runs:[],note:'Pause the selected generation'};
  const prepare=async requestId=>{const r=await f.post('prepare',{requestId,operation:'cancel_scheduled_task',request});assert.equal(r.status,200,await r.clone().text());return {...await r.json(),request};};
@@ -138,4 +139,38 @@ test('terminal routine management after a changed image retains current policy, 
  f.state.revoked=true;assert.notEqual((await f.post('list',{})).status,200);f.state.revoked=false;
  f.state.actorId='another-actor';assert.notEqual((await f.post('list',{})).status,200);
  assert.deepEqual(f.temporal.calls,after);
+});
+
+for(const modelPolicy of ['zero','unavailable','changed'])test(`exact-session public management remains available with ${modelPolicy} model policy`,async t=>{
+ const f=await fixture(t),scheduleId=await createRoutine(f);f.nativeState.runState='failed';f.nativeState.budgetReads=0;
+ f.nativeState.versions={...versions,imageDigest:'sha256:'+'c'.repeat(64)};
+ if(modelPolicy==='zero')f.nativeState.budget=0;
+ if(modelPolicy==='unavailable')f.nativeState.budgetUnavailable=true;
+ if(modelPolicy==='changed')f.state.policyHook=()=>{f.nativeState.budget=0;f.nativeState.budgetUnavailable=true;};
+ const listed=await f.post('list',{limit:1,historyLimit:0});assert.equal(listed.status,200,await listed.clone().text());
+ assert.equal((await listed.json()).page.rows[0].projection.scheduleId,scheduleId);
+ for(const mode of ['pause','delete']){
+  const request={scheduleId,mode,running:'leave',runs:[],note:'Stop future firings'},before={...f.temporal.calls};
+  const response=await f.post('prepare',{requestId:`budget-${mode}`,operation:'cancel_scheduled_task',request});assert.equal(response.status,200,await response.clone().text());
+  const prepared={...await response.json(),request};assert.equal(prepared.status,'approval_required');assert.deepEqual(f.temporal.calls,before);
+  const approved=await f.post('approve',approveBody(prepared));assert.equal(approved.status,200,await approved.clone().text());
+  const result=await approved.json();assert.equal(result.receipt.physicalStopProven,false);assert.equal(result.receipt.projection.state,mode==='pause'?'paused':'cancelled');
+  const after={...f.temporal.calls};assert.equal(after[mode==='pause'?'patch':'delete'],1);
+  const replay=await f.post('approve',approveBody(prepared));assert.equal(replay.status,200);assert.deepEqual(await replay.json(),result);assert.deepEqual(f.temporal.calls,after);
+ }
+ assert.equal(f.nativeState.budgetReads,0);assert.equal(f.temporal.calls.create,1);assert.equal(f.temporal.calls.update,0);
+});
+
+for(const modelPolicy of ['zero','unavailable','changed'])test(`execution preparation and approval still refuse ${modelPolicy} model policy`,async t=>{
+ const f=await fixture(t),scheduleId=await createRoutine(f),update=await f.prepare('update_scheduled_task',{...routineRequest(),scheduleId},2),before={...f.temporal.calls};
+ if(modelPolicy==='zero')f.nativeState.budget=0;
+ if(modelPolicy==='unavailable')f.nativeState.budgetUnavailable=true;
+ if(modelPolicy==='changed')f.state.policyHook=()=>{f.nativeState.budget=1000000;};
+ for(const [operation,request] of [['schedule_task',routineRequest()],['update_scheduled_task',{...routineRequest(),scheduleId}],
+  ['cancel_scheduled_task',{scheduleId,mode:'pause',running:'request_cancel',runs:[],note:'Stop current work'}]]){
+  if(modelPolicy==='changed')f.nativeState.budget=2000000;
+  assert.notEqual((await f.post('prepare',{requestId:`budget-denial-${operation}`,operation,request})).status,200);
+ }
+ if(modelPolicy==='changed')f.nativeState.budget=2000000;
+ assert.notEqual((await f.post('approve',approveBody(update))).status,200);assert.deepEqual(f.temporal.calls,before);
 });

@@ -87,6 +87,45 @@ test('canonical normalization is exposed without context and hostile request aut
  }finally{f.close();}
 });
 
+test('management context lists and prepares approved future pause/delete without execution limits',async()=>{
+ const f=await fixture();try{
+  const created=await f.context.resolve(f.call());await f.acknowledge(created.prepared.intent);
+  const {allocationJson,...base}=f.config,managementExpiresAtMs=NOW+10000;
+  const context=createScheduleRuntimeContext({...base,managementExpiresAtMs});
+  assert.throws(()=>createScheduleRuntimeContext({...f.config,managementExpiresAtMs}),{code:'SCHEDULE_CONTEXT_CONFIGURATION'});
+  assert.throws(()=>createScheduleRuntimeContext({...base,managementExpiresAtMs,executionLimits:{expiresAtMs:NOW+10000,maxCostMicrousd:1,maxRuntimeSeconds:1,retryLimit:0}}),{code:'SCHEDULE_CONTEXT_CONFIGURATION'});
+  const listed=await context.resolve(f.call('list_scheduled_tasks',{request:{}}));assert.deepEqual(listed.prepared.input,{afterScheduleId:null,limit:20,historyLimit:10});
+  for(const mode of ['pause','delete']){
+   const out=await context.resolve(f.call('cancel_scheduled_task',{request:{scheduleId:created.prepared.intent.projection.scheduleId,mode,running:'leave',runs:[],note:'Stop future firings'}}));
+   assert.equal(out.prepared.proposal.status,'approval_required');assert.equal(out.context.scheduleContext.approval,null);
+   assert.equal(out.prepared.intent.projection.maxCostMicrousd,created.prepared.intent.projection.maxCostMicrousd,'retained schedule bounds are not fabricated or widened');
+   const binding=f.approve(out.prepared);assert.equal((await out.authorize({phase:'before_dispatch',binding})).authorized,true);
+  }
+ }finally{f.close();}
+});
+
+test('management context refuses execution operations before any preparation or authority work',async()=>{
+ const f=await fixture();try{
+  const {allocationJson,...base}=f.config,context=createScheduleRuntimeContext({...base,managementExpiresAtMs:NOW+10000});
+  const before=[f.state.ids,f.state.fetches.length,f.state.policies.length,f.state.reads];
+  for(const [operation,raw] of [['schedule_task',request()],['update_scheduled_task',{...request(),scheduleId:id(30)}],
+   ['cancel_scheduled_task',{scheduleId:id(30),mode:'pause',running:'request_cancel',runs:[],note:'Stop running work'}]]){
+   for(const method of ['resolve','authorizeRequest'])await assert.rejects(context[method](f.call(operation,{request:raw})),{code:'SCHEDULE_CONTEXT_ACCESS_DENIED'});
+  }
+  assert.deepEqual([f.state.ids,f.state.fetches.length,f.state.policies.length,f.state.reads],before);
+ }finally{f.close();}
+});
+
+test('management context keeps current policy and its actual session expiry',async()=>{
+ const f=await fixture();try{
+  const {allocationJson,...base}=f.config,context=createScheduleRuntimeContext({...base,managementExpiresAtMs:NOW+100});
+  const call=()=>f.call('list_scheduled_tasks',{request:{}});
+  assert.equal((await context.authorizeRequest(call())).expiresAtMs,NOW+100);
+  f.state.allowed=false;await assert.rejects(context.authorizeRequest(call()),{code:'SCHEDULE_CONTEXT_POLICY'});f.state.allowed=true;
+  f.state.now=NOW+100;await assert.rejects(context.authorizeRequest(call()));
+ }finally{f.close();}
+});
+
 test('actual opaque session and native adapters produce exact owner, generic task, fixed workflow and capped proposal',async()=>{
  const f=await fixture();try{const out=await f.context.resolve(f.call()),p=out.prepared.intent;
   assert.deepEqual(p.projection.owner,{tenantId:binding.tenantId,actorId:binding.actorId});assert.deepEqual(p.projection.scopes,f.scopes());
