@@ -1,5 +1,5 @@
 // @ts-check
-/** The one registry of governed conversational write requests (`meri_intents`, proposal P10, approved by the owner on
+/** The one registry of conversational write requests (`meri_intents`, proposal P10, approved by the owner on
  * 15 Oct 2026). It covers the 11 accepted INTENT-ROUTE capabilities plus the two finite Research Portfolio sharing intents.
  * Each row names the intent tool, the canonical owner kind that PREPARES it, and, where no canonical owner can prepare
  * it yet, the explicit reason it stays unavailable. Display text and schema identities come only from the canonical
@@ -10,17 +10,19 @@
  * - `schedule`: `apps/control/schedules/tool-interface.mjs` with a trusted context whose `approval` is null.
  * - `document`: the artifact write owner behind `apps/control/document-application` (immutable draft version).
  * - `artifact`: the artifact analysis owner (no governed route yet).
- * - `memory`: the governed memory candidate producer, submitted for Core review. */
+ * - `memory`: the governed memory candidate producer, submitted for Core review.
+ * - `note`: current Core note owner; static PASS saves once without approval. */
 import catalog from '../../../../packages/contracts/retrieval-0.2/catalog.json' with {type:'json'};
 export const INTENT_SERVER_NAME='meri_intents';
 export const INTENT_TOOL_PREFIX=`mcp__${INTENT_SERVER_NAME}__`;
 /** @typedef {{id:string,version:string}} OperationRef */
-/** @typedef {'command'|'schedule'|'document'|'artifact'|'memory'|'research-sharing'|'legiwatch'|'client-record'|'bizdev'|'legislative-document'|'watch'} OwnerKind */
+/** @typedef {'command'|'schedule'|'document'|'artifact'|'memory'|'research-sharing'|'legiwatch'|'client-record'|'bizdev'|'legislative-document'|'watch'|'note'} OwnerKind */
 /** @typedef {{operation:OperationRef,tool:string,owner:OwnerKind,unavailable:string|null}} IntentRow */
 const op=(/** @type {string} */id)=>Object.freeze({id,version:'0.2.0'});
 const row=(/** @type {string} */id,/** @type {string} */tool,/** @type {OwnerKind} */owner,/** @type {string|null} */unavailable=null)=>Object.freeze({operation:op(id),tool,owner,unavailable});
 /** @type {readonly IntentRow[]} */
 export const INTENT_ROWS=Object.freeze([
+ row('save_note','save_note','note'),
  row('watch_action','propose_watch','watch'),
  row('create_client','propose_create_client','client-record'),
  row('update_client_profile','propose_update_client_profile','client-record'),

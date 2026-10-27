@@ -1,5 +1,5 @@
 /** Remaining owner exclusions after the explicit 27 October Wave4 amendment.
- * The historical43-name input stays intact; only thirteen named authorizations are removed from this guard.
+ * The historical43-name input stays intact; only fourteen named authorizations are removed from this guard.
  * The guard covers catalog, original manifests, resolver and SDK surface, without granting runtime access. */
 import test from 'node:test';import assert from 'node:assert/strict';
 import {readFileSync,readdirSync,existsSync,realpathSync} from 'node:fs';
@@ -17,14 +17,14 @@ import {readToolName} from '../reads/tools.mjs';
 import {INTENT_ROWS,NOT_INTENTS,intentToolName} from '../intents/catalog.mjs';
 import {binding,id} from '../../../control/conversations/test/application-fixture.mjs';
 import {plugin,preparedWorkspace} from './capability-fixture.mjs';
-const AUTHORIZED=Object.freeze(["get_legiwatch_review", "compare_florida_budget_amounts", "compare_legislative_versions", "preview_legiwatch_relevance", "save_legiwatch_relevance", "apply_legiwatch_suggestion", "get_business_development_brief", "resolve_business_development_source", "create_client", "update_client_profile", "save_business_development_brief", "prepare_legiwatch_briefing", "save_legislative_research"]);
+const AUTHORIZED=Object.freeze(["get_legiwatch_review", "compare_florida_budget_amounts", "compare_legislative_versions", "preview_legiwatch_relevance", "save_legiwatch_relevance", "apply_legiwatch_suggestion", "get_business_development_brief", "resolve_business_development_source", "create_client", "update_client_profile", "save_business_development_brief", "prepare_legiwatch_briefing", "save_legislative_research", "save_note"]);
 const LEGACY_TOOLS=Object.freeze(exclusions.groups.flatMap(group=>group.tools).filter(name=>!AUTHORIZED.includes(name)));
 const prepared=preparedWorkspace(binding.conversationId);
 // The production SDK workspace contract is POSIX; on Windows the same current-drive directory has a rooted slash spelling.
 const cwd=process.platform==='win32'?prepared.replace(/^[A-Za-z]:/u,'').replaceAll('\\','/'):prepared;
 assert.equal(realpathSync(cwd),realpathSync(prepared));
 
-test('only thirteen explicit Wave4 authorizations amend the historical43 names',()=>{assert.deepEqual(exclusions.wave4Amendment.authorizedOperations,AUTHORIZED);assert.equal(exclusions.groups.flatMap(group=>group.tools).length,43);assert.equal(LEGACY_TOOLS.length,30);assert.equal(new Set(LEGACY_TOOLS).size,30);});
+test('only fourteen explicit Wave4 authorizations amend the historical43 names',()=>{assert.deepEqual(exclusions.wave4Amendment.authorizedOperations,AUTHORIZED);assert.equal(exclusions.groups.flatMap(group=>group.tools).length,43);assert.equal(LEGACY_TOOLS.length,29);assert.equal(new Set(LEGACY_TOOLS).size,29);});
 
 test('every excluded name is deferred in the catalog originals and absent from catalog operations and aliases',()=>{
  const originals=new Map(catalog.originals.map(o=>[o.id,o])),operationNames=new Set(catalog.operations.flatMap(o=>[o.operation.id,sdkToolName(o.operation),...(o.aliases??[])]));

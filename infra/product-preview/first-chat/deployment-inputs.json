@@ -509,6 +509,10 @@
           {
             "id": "preview_legiwatch_relevance",
             "version": "0.2.0"
+          },
+          {
+            "id": "inspect_watch_state",
+            "version": "0.2.0"
           }
         ]
       },
@@ -902,6 +906,10 @@
           },
           {
             "id": "preview_legiwatch_relevance",
+            "version": "0.2.0"
+          },
+          {
+            "id": "inspect_watch_state",
             "version": "0.2.0"
           }
         ]
@@ -1298,6 +1306,10 @@
             {
               "id": "preview_legiwatch_relevance",
               "version": "0.2.0"
+            },
+            {
+              "id": "inspect_watch_state",
+              "version": "0.2.0"
             }
           ]
         },
@@ -1691,6 +1703,10 @@
             },
             {
               "id": "preview_legiwatch_relevance",
+              "version": "0.2.0"
+            },
+            {
+              "id": "inspect_watch_state",
               "version": "0.2.0"
             }
           ]
@@ -2086,6 +2102,10 @@
             {
               "id": "preview_legiwatch_relevance",
               "version": "0.2.0"
+            },
+            {
+              "id": "inspect_watch_state",
+              "version": "0.2.0"
             }
           ]
         }
@@ -2461,6 +2481,10 @@
           },
           {
             "id": "preview_legiwatch_relevance",
+            "version": "0.2.0"
+          },
+          {
+            "id": "inspect_watch_state",
             "version": "0.2.0"
           }
         ],

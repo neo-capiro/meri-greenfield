@@ -1,0 +1,472 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:meri:retrieval:note-action:0.2.0",
+  "$defs": {
+    "SavedNoteRequest": {
+      "type": "object",
+      "properties": {
+        "body": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 40000
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 160
+        },
+        "clientId": {
+          "type": "string",
+          "format": "uuid",
+          "pattern": "^[a-f0-9-]+$"
+        },
+        "meetingId": {
+          "type": "string",
+          "format": "uuid",
+          "pattern": "^[a-f0-9-]+$"
+        },
+        "confidential": {
+          "type": "boolean"
+        },
+        "accessLevel": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 80
+        }
+      },
+      "required": [
+        "body"
+      ],
+      "additionalProperties": false
+    },
+    "SavedNoteReceipt": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/SavedNoteReceiptMeeting"
+        },
+        {
+          "$ref": "#/$defs/SavedNoteReceiptClientDocument"
+        },
+        {
+          "$ref": "#/$defs/SavedNoteReceiptGeneral"
+        }
+      ]
+    },
+    "SavedNoteReceiptMeeting": {
+      "type": "object",
+      "properties": {
+        "destination": {
+          "const": "meeting"
+        },
+        "noteId": {
+          "type": "string",
+          "format": "uuid",
+          "pattern": "^[a-f0-9-]+$"
+        },
+        "meetingNoteId": {
+          "type": "string",
+          "format": "uuid",
+          "pattern": "^[a-f0-9-]+$"
+        },
+        "meetingNoteStatus": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "confidential": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "accessLevel": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "readiness": {
+          "const": "ready"
+        },
+        "bodyHash": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "generatedAt": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "date-time"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "destination",
+        "noteId",
+        "meetingNoteId",
+        "meetingNoteStatus",
+        "confidential",
+        "accessLevel",
+        "readiness",
+        "bodyHash",
+        "generatedAt"
+      ],
+      "additionalProperties": false
+    },
+    "SavedNoteReceiptClientDocument": {
+      "type": "object",
+      "properties": {
+        "destination": {
+          "const": "client_document"
+        },
+        "noteId": {
+          "type": "string",
+          "format": "uuid",
+          "pattern": "^[a-f0-9-]+$"
+        },
+        "documentId": {
+          "type": "string",
+          "format": "uuid",
+          "pattern": "^[a-f0-9-]+$"
+        },
+        "location": {
+          "type": "string",
+          "minLength": 1
+        },
+        "indexingStatus": {
+          "anyOf": [
+            {
+              "type": "string",
+              "enum": [
+                "indexed",
+                "pending",
+                "not_indexed"
+              ]
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "reused": {
+          "type": "boolean"
+        },
+        "readiness": {
+          "type": "string",
+          "enum": [
+            "ready",
+            "indexing",
+            "indexed",
+            "private",
+            "scanning",
+            "unavailable"
+          ]
+        },
+        "bodyHash": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "generatedAt": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "date-time"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "destination",
+        "noteId",
+        "documentId",
+        "location",
+        "indexingStatus",
+        "reused",
+        "readiness",
+        "bodyHash",
+        "generatedAt"
+      ],
+      "additionalProperties": false
+    },
+    "SavedNoteReceiptGeneral": {
+      "type": "object",
+      "properties": {
+        "destination": {
+          "const": "general"
+        },
+        "noteId": {
+          "type": "string",
+          "format": "uuid",
+          "pattern": "^[a-f0-9-]+$"
+        },
+        "clientId": {
+          "const": null
+        },
+        "readiness": {
+          "const": "ready"
+        },
+        "bodyHash": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "generatedAt": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "date-time"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "destination",
+        "noteId",
+        "clientId",
+        "readiness",
+        "bodyHash",
+        "generatedAt"
+      ],
+      "additionalProperties": false
+    },
+    "SavedNoteResult": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "string",
+          "enum": [
+            "saved",
+            "withheld",
+            "blocked",
+            "unknown",
+            "failed"
+          ]
+        },
+        "operation": {
+          "const": "save_note"
+        },
+        "binding": {
+          "$ref": "urn:meri:contracts:0.1.0#/$defs/RunBinding"
+        },
+        "scopes": {
+          "type": "array",
+          "items": {
+            "$ref": "urn:meri:contracts:0.1.0#/$defs/Scope"
+          },
+          "minItems": 1,
+          "maxItems": 1
+        },
+        "destination": {
+          "anyOf": [
+            {
+              "type": "string",
+              "enum": [
+                "meeting",
+                "client_document",
+                "general"
+              ]
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "noteId": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "uuid",
+              "pattern": "^[a-f0-9-]+$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "meetingNoteId": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "uuid",
+              "pattern": "^[a-f0-9-]+$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "documentId": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "uuid",
+              "pattern": "^[a-f0-9-]+$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "location": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "indexingStatus": {
+          "anyOf": [
+            {
+              "type": "string",
+              "enum": [
+                "indexed",
+                "pending",
+                "not_indexed"
+              ]
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "readiness": {
+          "anyOf": [
+            {
+              "type": "string",
+              "enum": [
+                "ready",
+                "indexing",
+                "indexed",
+                "private",
+                "scanning",
+                "unavailable"
+              ]
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "reused": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "bodyHash": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "bodyLength": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 40000
+        },
+        "proposalId": {
+          "type": "string",
+          "format": "uuid",
+          "pattern": "^[a-f0-9-]+$"
+        },
+        "policyOutcome": {
+          "type": "string",
+          "enum": [
+            "PASS",
+            "WARN",
+            "BLOCK"
+          ]
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "expiresAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "recordedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "generatedAt": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "date-time"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "errorCode": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "errorMessage": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "status",
+        "operation",
+        "binding",
+        "scopes",
+        "bodyHash",
+        "bodyLength",
+        "proposalId",
+        "policyOutcome",
+        "createdAt",
+        "expiresAt",
+        "recordedAt"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

@@ -63,7 +63,8 @@ async function proposal(value,conversationId){
  }
  if(command.action==='mail.send'){try{mail.assertMailSendCommand(command,{binding:command.binding});exact(value.createdAt);exact(value.expiresAt);if(value.requiredApprover.actorId!==command.binding.actorId)conflict();}catch{conflict();}}
  if(command.action==='document.draft') {
-  exact(value.createdAt);exact(value.expiresAt);
+  exact(value.createdAt);
+ if(value.kind==='saved_note'){savedNote(value,conversationId);return;}exact(value.expiresAt);
   if(command.arguments.title.trim()!==command.arguments.title||command.arguments.title.length>200||
    command.arguments.baseVersionId!==null&&command.arguments.baseVersionId.toLowerCase()!==command.arguments.baseVersionId)conflict();
  }
@@ -181,6 +182,23 @@ function watchResult(value,retained){
  if(value.proposalId!==retained.proposalId||!same(value.request,retained.request)||!same(value.context,retained.context)||value.createdAt!==retained.createdAt||value.expiresAt!==retained.expiresAt||(value.status==='succeeded')!==(value.receipt!==null))conflict();
  // The receipt must name this exact owner, verb and target; a substituted target is never a released result.
  if(value.receipt!==null){const r=value.receipt;if(!same(r.request,retained.request)||r.owner!==retained.request.family||r.operation!==retained.request.operation||r.targetKey!==retained.request.targetKey)conflict();}
+}
+function savedNote(value,conversationId){
+ if(value.operation.id!=='save_note'||value.operation.version!=='0.2.0')conflict();
+ if(!Object.hasOwn(value,'result'))return;
+ const r=value.result,s=r.scopes[0],b=r.binding;
+ if(b.conversationId!==conversationId||s.tenantId!==b.tenantId||!(s.kind==='client'&&/^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/u.test(s.resourceId)||s.kind==='private-user'&&s.resourceId===b.actorId))conflict();
+ if(parsed(r.expiresAt)<=parsed(r.createdAt))conflict();parsed(r.recordedAt);
+ const absent=keys=>keys.every(key=>r[key]===null||r[key]===undefined);
+ if(r.status==='saved'){
+  if(r.policyOutcome!=='PASS'||!r.noteId||!r.destination||!r.readiness||!absent(['errorCode']))conflict();
+  if(r.destination==='meeting'){if(!r.meetingNoteId||r.readiness!=='ready'||!absent(['documentId','location','indexingStatus','reused']))conflict();}
+  else if(r.destination==='client_document'){if(!r.documentId||!r.location||typeof r.reused!=='boolean'||!absent(['meetingNoteId']))conflict();}
+  else if(r.readiness!=='ready'||!absent(['meetingNoteId','documentId','location','indexingStatus','reused']))conflict();
+ }else{
+  if(!absent(['destination','noteId','meetingNoteId','documentId','location','indexingStatus','readiness','reused']))conflict();
+  if(r.status==='withheld'&&r.policyOutcome!=='WARN'||r.status==='blocked'&&r.policyOutcome!=='BLOCK'||['unknown','failed'].includes(r.status)&&!r.errorCode)conflict();
+ }
 }
 async function item(value,conversationId){
  // The journal's createdAt is a bare millisecond-spelling pattern in the schema (no calendar check) and the journal writes toISOString(): read it exactly, so

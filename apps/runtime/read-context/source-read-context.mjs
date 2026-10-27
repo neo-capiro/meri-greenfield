@@ -1,5 +1,5 @@
 /** Finite CONTROL contexts over current native facts. Selectors never create a client grant. */
-import {publicDomainDatasetRegistry} from '../../../packages/contracts/retrieval-0.2/validate.mjs';
+import {watchValidators,publicDomainDatasetRegistry} from '../../../packages/contracts/retrieval-0.2/validate.mjs';
 import {nativeReadFault} from '../../../packages/contracts/runtime-0.2/reads.mjs';
 import {MODE_READ_OPERATIONS} from '../../../packages/contracts/native-read-observation-0.2/validate.mjs';
 import {captureHearingClientReference,captureHearingClientSelection} from '../../gateway/sources/public-domain-hearings/request-context.mjs';
@@ -105,6 +105,14 @@ export function assertSourceReadRequest(contract,request,subject){
 
 export function createSourceReadContext({contract,proof,native,defaultCongress,now,priorContext,clientReferenceObservation,modeObservation}){
  const group=contract.binding.group;
+ if(group==='watch-state'){
+  const target=watchValidators.target(proof.request),selectedClientId=proof.subject.kind==='client'||proof.subject.entityType==='client'?clientSubject(proof,native):null;
+  if(selectedClientId===null&&(proof.subject.kind!=='personal'||proof.subject.entityType!=='user'||proof.subject.entityIds.length!==1||proof.subject.entityIds[0]!==proof.binding.actorId))refuse('ACCESS_DENIED');
+  if(selectedClientId!==null&&target.clientId!==selectedClientId)refuse('ACCESS_DENIED');
+  assertNativeVisibleClients(native,target.clientId===null?[]:[target.clientId]);
+  if(![native.identityRevision,native.membershipRevision].every(v=>typeof v==='string'&&/^[a-f0-9]{64}$/u.test(v)))refuse('UNAVAILABLE');
+  return {watchStateScope:{selectedClientId,identityRevision:native.identityRevision,membershipRevision:native.membershipRevision}};
+ }
  if(group==='research-portfolio-sharing'){
   if(proof.request.conversationId!==proof.binding.conversationId||!Array.isArray(native.clientIds))refuse('ACCESS_DENIED');
   const selectedClientId=proof.subject.kind==='client'?clientSubject(proof,native):null;

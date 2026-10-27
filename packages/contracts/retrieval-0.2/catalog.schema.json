@@ -132,7 +132,9 @@
                 "save_business_development_brief",
                 "prepare_legiwatch_briefing",
                 "save_legislative_research",
-                "watch_action"
+                "watch_action",
+                "save_note",
+                "inspect_watch_state"
               ]
             },
             "disposition": {
@@ -201,7 +203,6 @@
                 "save_legiwatch_relevance",
                 "create_meeting_brief",
                 "draft_policy_memo",
-                "save_note",
                 "send_email",
                 "reply_email",
                 "confirm_memory",
@@ -353,7 +354,8 @@
           "enum": [
             "none",
             "immutable-proposal",
-            "qualified-source-review"
+            "qualified-source-review",
+            "current-source-policy"
           ]
         },
         "handler": {
@@ -576,8 +578,8 @@
           "items": {
             "$ref": "urn:meri:retrieval:catalog:0.2.0#/$defs/NativeMapping"
           },
-          "minItems": 152,
-          "maxItems": 152,
+          "minItems": 153,
+          "maxItems": 153,
           "uniqueItems": true
         },
         "operations": {

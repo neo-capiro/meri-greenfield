@@ -9,7 +9,7 @@
  * - document: `{status:'draft', version}` with an immutable artifact version in `generationStatus:'draft'`. */
 import {own,data} from '../../../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {assertProposalIntegrity,canonicalSha256,validateShape} from '../../../../packages/contracts/validate.mjs';
-import {artifactValidators,scheduleToolValidators,researchShareValidators,legiwatchValidators,watchValidators,bizdevValidators,legislativeDocumentValidators,clientRecordValidators,validateShape as toolShape} from '../../../../packages/contracts/retrieval-0.2/validate.mjs';
+import {artifactValidators,scheduleToolValidators,researchShareValidators,legiwatchValidators,savedNoteValidators,watchValidators,bizdevValidators,legislativeDocumentValidators,clientRecordValidators,validateShape as toolShape} from '../../../../packages/contracts/retrieval-0.2/validate.mjs';
 import {assertMailSendProposal,assertTaskUpdateProposal} from '../../../../packages/contracts/commands-0.2/validate.mjs';
 import {assertMemoryReviewResult} from '../../../../packages/contracts/commands-0.2/memory-review-result.mjs';
 const ACTIONS=Object.freeze({mail_send:'mail.send',create_task:'task.create',update_task:'task.update',save_chat_attachments:'artifact.file'});
@@ -21,9 +21,9 @@ const currentScopes=(scopes,binding,current)=>Array.isArray(scopes)&&scopes.leng
  validateShape('Scope',s);return s.tenantId===binding.tenantId&&current.some(c=>canonicalSha256(c)===canonicalSha256(s));
 });
 /**
- * @param {'command'|'schedule'|'document'|'artifact'|'memory'|'research-sharing'|'legiwatch'|'watch'|'client-record'|'bizdev'|'legislative-document'} owner @param {{id:string,version:string}} operation @param {unknown} value @param {any} binding
+ * @param {'note'|'command'|'schedule'|'document'|'artifact'|'memory'|'research-sharing'|'legiwatch'|'watch'|'client-record'|'bizdev'|'legislative-document'} owner @param {{id:string,version:string}} operation @param {unknown} value @param {any} binding
  * @param {{scopes:any[],nowMs:number}} current
- * @returns {{status:'approval_required'|'draft'|'analysis_pending'|'review_pending',reference:string,value:any}}
+ * @returns {{status:'approval_required'|'draft'|'analysis_pending'|'review_pending'|'saved'|'withheld'|'blocked'|'unknown'|'failed',reference:string,value:any}}
  */
 export function assertPreparedResult(owner,operation,value,binding,current){
  try{
@@ -88,6 +88,13 @@ export function assertPreparedResult(owner,operation,value,binding,current){
    own(v,['status','version']);const r=v.version;
    if(v.status!=='draft'||r?.generationStatus!=='draft'||typeof r.versionId!=='string'||!sameRun(r.binding,binding)||!currentScopes(r.scopes,binding,current.scopes))refuse();
    return {status:'draft',reference:r.versionId,value:v};
+  }
+  if(owner==='note'){
+   // A saved note is a static PASS, not a proposal: the recorded result is the closed saved-note envelope and
+   // its own truthful status. It is admitted for this run's tenant, conversation and current scopes only.
+   const e=savedNoteValidators.envelope(v);
+   if(operation.id!=='save_note'||operation.version!=='0.2.0'||!sameRun(e.binding,binding)||!currentScopes(e.scopes,binding,current.scopes))refuse();
+   return {status:e.status,reference:e.status==='saved'?e.noteId:e.proposalId,value:v};
   }
   return refuse();
  }catch{return refuse();}

@@ -1,7 +1,7 @@
 // @ts-check
 /** Intent rows → SDK tool definitions. One tool per intent name (for example `request_document`), whose `operation`
  * selects among that tool's available capabilities. Descriptions derive only from canonical catalog descriptors.
- * Annotations are never read-only: every intent prepares a proposal or draft and is reviewed before any effect. */
+ * Annotations are never read-only: governed writes prepare review; direct policy-PASS notes may save immediately. */
 import {tool} from '@anthropic-ai/claude-agent-sdk';
 import {z} from 'zod';
 import {intentDescriptor,intentToolName} from './catalog.mjs';
@@ -10,7 +10,7 @@ const MAX_DESCRIPTION=4096;
 export const INTENT_ANNOTATIONS=Object.freeze({readOnlyHint:false,destructiveHint:false,idempotentHint:true,openWorldHint:false});
 /** @param {readonly import('./catalog.mjs').IntentRow[]} rows */
 function description(rows){
- const lines=[rows.every(row=>row.owner==='memory')?'Submit a memory candidate for governed Core review. The result is pending review, never saved or published memory, and requires no task approval.':'Prepare a write request for the user to review. This never applies a change: it returns an immutable proposal that the user must approve in Meri, or an immutable draft version.'];
+ const lines=[rows.every(row=>row.owner==='note')?'Save the requested note once through the current Core owner. A static PASS may write immediately; there is no approval step. Report only the returned saved, withheld, blocked, unknown or failed outcome. Never retry an unknown save.':rows.every(row=>row.owner==='memory')?'Submit a memory candidate for governed Core review. The result is pending review, never saved or published memory, and requires no task approval.':'Prepare a write request for the user to review. This never applies a change: it returns an immutable proposal that the user must approve in Meri, or an immutable draft version.'];
  for(const r of rows){const d=intentDescriptor(r.operation);
   lines.push(`operation "${r.operation.id}": ${d.displayName}. ${d.whenToUse}`);
   for(const example of d.negativeExamples??[])lines.push(`  Do not: ${example}`);

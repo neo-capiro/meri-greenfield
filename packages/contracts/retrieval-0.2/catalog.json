@@ -716,10 +716,13 @@
     },
     {
       "id": "save_note",
-      "disposition": "deferred",
-      "boundary": "Source note mutation is not selected; local drafting and native artifacts remain required.",
-      "replacement": null,
-      "state": "deferred"
+      "disposition": "selected",
+      "boundary": "Direct current Core note policy: PASS executes once; no approval or implicit retry. Meeting, client Files and General receipt semantics remain distinct.",
+      "replacement": {
+        "id": "save_note",
+        "version": "0.2.0"
+      },
+      "state": "mapped"
     },
     {
       "id": "save_chat_attachments",
@@ -1430,6 +1433,16 @@
       "boundary": "Prepare user-initiated watch subscription action for explicit approval; Core owns authorization, optimistic version and durable receipt. No subscription activation or model execution.",
       "replacement": {
         "id": "watch_action",
+        "version": "0.2.0"
+      },
+      "state": "mapped"
+    },
+    {
+      "id": "inspect_watch_state",
+      "disposition": "selected",
+      "boundary": "Additive read of one exact current watch target through the canonical Core inspect owner. No proposal, mutation, inferred version or inventory expansion.",
+      "replacement": {
+        "id": "inspect_watch_state",
         "version": "0.2.0"
       },
       "state": "mapped"
@@ -9843,6 +9856,136 @@
       ],
       "fixtureIds": [
         "catalog.binding.watch_action"
+      ]
+    },
+    {
+      "operation": {
+        "id": "save_note",
+        "version": "0.2.0"
+      },
+      "displayName": "Save a note",
+      "whenToUse": "Save explicitly requested note text to the current permitted meeting, client Files or General owner. Core policy PASS executes once without an approval card.",
+      "limitations": [
+        "Current attended Core authority is required. The caller cannot supply conversation identity or a request key.",
+        "A client Files note can remain private, scanning or indexing; stored is not ready or governed memory.",
+        "WARN is withheld, BLOCK refused, and unconfirmed effects remain unknown with no automatic resend."
+      ],
+      "positiveExamples": [
+        "Save these requested meeting notes and report the actual destination receipt."
+      ],
+      "negativeExamples": [
+        "Retry an unknown save, claim an unconfirmed receipt, invent a ready file or treat this as governed memory."
+      ],
+      "sourceRequirements": [
+        {
+          "sourceId": "capiro_commands",
+          "authority": "authoritative",
+          "purpose": "evidence"
+        }
+      ],
+      "inputSchema": {
+        "id": "urn:meri:retrieval:note-action:0.2.0#/$defs/SavedNoteRequest",
+        "sha256": "beeb0b46232b0ae4078e44b9bd99b3c85687b46d434d9a88c0c072c77a879a43"
+      },
+      "outputSchema": {
+        "id": "urn:meri:retrieval:note-action:0.2.0#/$defs/SavedNoteResult",
+        "sha256": "beeb0b46232b0ae4078e44b9bd99b3c85687b46d434d9a88c0c072c77a879a43"
+      },
+      "aliases": [],
+      "sideEffect": "source-command",
+      "requiredGrants": [
+        "command.execute"
+      ],
+      "approvalBoundary": "current-source-policy",
+      "handler": null,
+      "availability": "unimplemented",
+      "qualification": "pending",
+      "retry": {
+        "maxRetries": 0,
+        "retryableCodes": [],
+        "unknownOutcome": "reconcile-before-retry"
+      },
+      "replacement": null,
+      "requirementIds": [
+        "R-01",
+        "R-04",
+        "R-05"
+      ],
+      "ticketIds": [
+        "REL-02"
+      ],
+      "gateIds": [
+        "RG-02",
+        "RG-05",
+        "RG-07"
+      ],
+      "fixtureIds": [
+        "catalog.binding.save_note"
+      ]
+    },
+    {
+      "operation": {
+        "id": "inspect_watch_state",
+        "version": "0.2.0"
+      },
+      "displayName": "Inspect one current watch target",
+      "whenToUse": "Read the canonical current state, identity and supported version of one exact watch target before preparing a lifecycle action.",
+      "limitations": [
+        "One exact authorized target only; this is not a watch inventory or source-universe claim.",
+        "No subscription, pause, resume, delivery change, proposal or retry occurs.",
+        "A null version is preserved when the canonical owner has no version; it is never inferred."
+      ],
+      "positiveExamples": [
+        "Inspect the current state of this exact keyword rule before preparing a pause."
+      ],
+      "negativeExamples": [
+        "List every watch across clients or activate a subscription."
+      ],
+      "sourceRequirements": [
+        {
+          "sourceId": "watch_action",
+          "authority": "authoritative",
+          "purpose": "evidence"
+        }
+      ],
+      "inputSchema": {
+        "id": "urn:meri:retrieval:watch-state:0.2.0#/$defs/WatchStateRequest",
+        "sha256": "961fed28829afb0ff9333775732a8477a0ab72c3a5f0f9e359615e19523b58b9"
+      },
+      "outputSchema": {
+        "id": "urn:meri:retrieval:watch-state:0.2.0#/$defs/WatchStateOutput",
+        "sha256": "961fed28829afb0ff9333775732a8477a0ab72c3a5f0f9e359615e19523b58b9"
+      },
+      "aliases": [],
+      "sideEffect": "none",
+      "requiredGrants": [
+        "tool.read"
+      ],
+      "approvalBoundary": "none",
+      "handler": null,
+      "availability": "unimplemented",
+      "qualification": "pending",
+      "retry": {
+        "maxRetries": 0,
+        "retryableCodes": [],
+        "unknownOutcome": "reconcile-before-retry"
+      },
+      "replacement": null,
+      "requirementIds": [
+        "R-01",
+        "R-04",
+        "R-05"
+      ],
+      "ticketIds": [
+        "REL-02"
+      ],
+      "gateIds": [
+        "RG-02",
+        "RG-05",
+        "RG-07"
+      ],
+      "fixtureIds": [
+        "catalog.binding.inspect_watch_state"
       ]
     }
   ]

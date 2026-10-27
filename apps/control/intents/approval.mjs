@@ -18,7 +18,7 @@
  * Construction is inert. `enabled` defaults to false. */
 import {canonicalSha256 as hash,validateShape} from '../../../packages/contracts/validate.mjs';
 import {assertNativeApprovalProposal} from '../../../packages/contracts/commands-0.2/validate.mjs';
-import {artifactValidators as artifacts,scheduleToolValidators,researchShareValidators,legiwatchValidators,watchValidators,bizdevValidators,legislativeDocumentValidators,clientRecordValidators,validateShape as artifactShape} from '../../../packages/contracts/retrieval-0.2/validate.mjs';
+import {artifactValidators as artifacts,scheduleToolValidators,researchShareValidators,legiwatchValidators,savedNoteValidators,watchValidators,bizdevValidators,legislativeDocumentValidators,clientRecordValidators,validateShape as artifactShape} from '../../../packages/contracts/retrieval-0.2/validate.mjs';
 import {data,own,nativeSignal} from '../../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {createOperationLifetime} from '../../../packages/runtime/operation-lifetime.mjs';
 import {ProductError,productFailure} from '../product-access/errors.mjs';
@@ -336,6 +336,17 @@ async function decideWatch(life,principal,entry,r){
     artifactShape('ResearchShareProposalStatus',current.proposalStatus);proposalStatus=current.proposalStatus;
    }catch(error){if(['DEADLINE','CANCELLED'].includes(error?.code))throw error;}
    return {...base,state:'prepared',kind:'research_share',proposal,proposalStatus};
+  }
+  if(result?.operation==='save_note'){
+   // A saved note is a static PASS, never a proposal: its history item is the recorded envelope itself, so there
+   // is nothing here to decide or to execute, and a note the caller can no longer see is withheld entire.
+   let envelope;try{envelope=data(savedNoteValidators.envelope(result));}catch{fail('INTENT_JOURNAL_UNAVAILABLE');}
+   const release=entry.outcome.release;
+   if(base.operation.id!=='save_note'||base.operation.version!=='0.2.0'||!same(envelope.binding,release?.binding)||
+    !Array.isArray(release.scopes)||envelope.scopes.some(scope=>!release.scopes.some(original=>same(scope,original)))||
+    !same(conversationOf(envelope.binding),{tenantId:principal.tenantId,actorId:principal.actorId,conversationId}))fail('INTENT_JOURNAL_UNAVAILABLE');
+   if(!visible(envelope.scopes,principal))return {...base,state:'prepared',kind:'saved_note',withheld:true};
+   return {...base,state:'prepared',kind:'saved_note',result:envelope};
   }
   if(result?.status==='review_pending'||base.operation.id==='save_memory'&&!commandProposal(entry)){
    let review;try{review=assertMemoryReviewResult(result);}catch{fail('INTENT_JOURNAL_UNAVAILABLE');}
