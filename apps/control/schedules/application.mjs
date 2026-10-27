@@ -17,6 +17,9 @@ import {randomUUID} from 'node:crypto';
 
 const same=(a,b)=>hash(a)===hash(b),digest=/^[a-f0-9]{64}$/u,uuid=/^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/u;
 const deny=(code='ACCESS_DENIED',outcome='NOT_DISPATCHED')=>{throw Object.assign(Error('ROUTINES_'+code),{code:'ROUTINES_'+code,outcome});};
+// FAILED custody keeps the existing closed failure vocabulary. REFUSED is a definite denied preparation, not a transport outage.
+const managementRefusal=code=>deny(code==='REFUSED'?'ACCESS_DENIED':code,'NOT_DISPATCHED');
+const managementFailureCode=error=>/(?:^|_)STALE$/u.test(error?.code)?'STALE':/(?:^|_)(?:REQUEST|INVALID_REQUEST)$/u.test(error?.code)?'INVALID_REQUEST':/(?:^|_)UNAVAILABLE$/u.test(error?.code)?'UNAVAILABLE':'REFUSED';
 const mutation=operation=>{if(!SCHEDULE_INTENT_OPERATIONS.includes(operation))deny('INVALID_REQUEST');return operation;};
 const principal=current=>current.kind==='routine-management'?current.principal:{tenantId:current.binding.tenantId,actorId:current.binding.actorId};
 const sameCurrent=(a,b)=>a.kind==='routine-management'||b.kind==='routine-management'?a.kind===b.kind&&same(principal(a),principal(b))&&same(a.scopes,b.scopes)&&same(a.versions,b.versions):same(a.binding,b.binding);
@@ -72,7 +75,7 @@ export function createRoutinesService(configuration){
  }
  function acknowledged(i){return validateShape('ScheduleMutationOutput',{operation:i.operation,status:'acknowledged',receipt:{operation:i.operation,intentId:i.intentId,generation:i.generation,projection:i.projection,outcome:'ACKNOWLEDGED',physicalStopProven:false}});}
  function managementRetained(row,body,auth){
-  if(!row||row.state==='PENDING')deny('UNKNOWN','UNKNOWN');if(row.state==='FAILED')deny(row.outcome.code);
+  if(!row||row.state==='PENDING')deny('UNKNOWN','UNKNOWN');if(row.state==='FAILED')managementRefusal(row.outcome.code);
   const request=validators.normalizeRequest(body.operation,body.request),p=row.outcome.proposal,record=row.record;
   if(row.key.tenantId!==auth.principal.tenantId||row.key.actorId!==auth.principal.actorId||record.operation!==body.operation||record.requestSha256!==hash({operation:body.operation,request})||
    !same(record.scopes,auth.scopes)||record.selectedClientId!==auth.selectedClientId||!same(record.versions,{...auth.versions,imageDigest:record.versions.imageDigest})||
@@ -97,9 +100,10 @@ export function createRoutinesService(configuration){
    // Classify only its definite local admission refusals; never relabel a custody COMMIT or an effect outcome.
    const refused=error?.outcome==='NOT_DISPATCHED'||['SCHEDULE_CONTEXT_ACCESS_DENIED','SCHEDULE_CONTEXT_POLICY','SCHEDULE_CONTEXT_STALE','SCHEDULE_CONTEXT_REQUEST'].includes(error?.code);
    if(!settled&&refused){
-    try{await l.run(()=>c.managementPreparations.settle({key,claimId,state:'FAILED',outcome:{code:'REFUSED'}},l.check));}
+    const code=managementFailureCode(error);
+    try{await l.run(()=>c.managementPreparations.settle({key,claimId,state:'FAILED',outcome:{code}},l.check));}
     catch{deny('UNKNOWN','UNKNOWN');}
-    deny('REFUSED','NOT_DISPATCHED');
+    managementRefusal(code);
    }
    throw error;
   }

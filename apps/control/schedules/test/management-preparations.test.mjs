@@ -5,6 +5,8 @@ import {createActionSessionOwner,routineManagementSessions} from '../../action-h
 import {createRoutineManagementContextOwner} from '../runtime-context.mjs';
 import {createRoutineManagementPreparations} from '../management-preparations.mjs';
 import {createRoutinesService} from '../application.mjs';
+import {createRoutinesApplication} from '../application-http.mjs';
+import {receiveRoutinesResponse} from '../../../../packages/contracts/dist/intents-application.mjs';
 import {applicationFixture,binding,clientId,id} from './application-fixture.mjs';
 const versions={imageDigest:'sha256:'+'a'.repeat(64),sdk:'0.3.295',cli:'2.1.295',contracts:'0.1.0',skillsDigest:'b'.repeat(64),checkpointFormat:'0.1.0'};
 // Seed a coherent historical projection and its acknowledged generation together.
@@ -20,16 +22,17 @@ function preparationPool(){const rows=new Map(),state={loseCommit:false,claimed:
  },release(){}};}};
 }
 async function fixture(){
- const f=await applicationFixture(),created=await f.prepare();await f.approve(created);const pool=preparationPool(),preparations=createRoutineManagementPreparations({pool}),state={versions:{...versions},policyCalls:[],modelCalls:0,policyAllowed:true,revokedScope:null,refusePhase:null};
+ const f=await applicationFixture(),created=await f.prepare();await f.approve(created);const pool=preparationPool(),preparations=createRoutineManagementPreparations({pool}),state={versions:{...versions},policyCalls:[],modelCalls:0,policyAllowed:true,revokedScope:null,refusePhase:null,refuseCode:null};
  const forbidden=()=>{state.modelCalls++;throw Error('no execution identity');};
  function sessionOwner(){return createActionSessionOwner({mode:'process-local',verifyIdentity:forbidden,resolveContext:forbidden,now:f.now,refusals:()=>{},limits:{maxSessions:4,maxRequestMs:5000,maxTtlMs:30000,maxFactBytes:65536},management:{versions:state.versions,policyRevision:f.state.policyRevision,async readCurrent({clientId:choice}){
   const current={kind:'routine-management',principal:{tenantId:binding.tenantId,actorId:binding.actorId},scopes:choice===null?[{tenantId:binding.tenantId,kind:'private-user',resourceId:binding.actorId,policyRevision:f.state.policyRevision}]:f.scopes(),selectedClientId:choice,membershipRevision:'a'.repeat(64)};
   return {...current,contextRevision:hash(current),checkedAtMs:f.now(),expiresAtMs:f.now()+30000};}}});}
  const owners=[];
  async function login(selectedClientId=clientId){const sessions=sessionOwner();owners.push(sessions);const session=await routineManagementSessions(sessions).issue({identityCredential:'synthetic-native',clientId:selectedClientId});
-  const contextOwner=createRoutineManagementContextOwner({sessions,scheduleOwner:f.owner,now:f.now,newId:f.newId,template:f.contextConfiguration.template,workflow:f.contextConfiguration.workflow,limits:f.contextConfiguration.limits,policy:{async check(call){state.policyCalls.push(call.selection);const resources=[call.selection.currentSchedule,call.selection.proposal,call.selection.scheduleBinding?.resource].filter(Boolean);return {authorized:state.policyAllowed&&call.selection.phase!==state.refusePhase&&!resources.some(resource=>(resource.projection??resource).scopes?.some(scope=>scope.resourceId===state.revokedScope)),selectionSha256:call.selectionSha256,current:call.selection.current,destinationResolution:null,limits:null,checkedAtMs:f.now(),expiresAtMs:f.now()+5000};}}});
+  const contextOwner=createRoutineManagementContextOwner({sessions,scheduleOwner:f.owner,now:f.now,newId:f.newId,template:f.contextConfiguration.template,workflow:f.contextConfiguration.workflow,limits:f.contextConfiguration.limits,policy:{async check(call){state.policyCalls.push(call.selection);if(call.selection.phase==='resolve'&&state.refuseCode)throw Object.assign(Error(state.refuseCode),{code:state.refuseCode,...(state.refuseCode==='ROUTINES_UNAVAILABLE'?{outcome:'NOT_DISPATCHED'}:{})});const resources=[call.selection.currentSchedule,call.selection.proposal,call.selection.scheduleBinding?.resource].filter(Boolean);return {authorized:state.policyAllowed&&call.selection.phase!==state.refusePhase&&!resources.some(resource=>(resource.projection??resource).scopes?.some(scope=>scope.resourceId===state.revokedScope)),selectionSha256:call.selectionSha256,current:call.selection.current,destinationResolution:null,limits:null,checkedAtMs:f.now(),expiresAtMs:f.now()+5000};}}});
   const service=createRoutinesService({...f.config,contextOwner,managementPreparations:preparations,retention:{assertServable:forbidden}});
-  return {session,sessions,call:(method,request)=>service[method]({credential:session.credential,request,deadlineMs:f.now()+4500})};
+  const http=createRoutinesApplication({service,now:f.now,limits:{maxRequestMs:4000,maxRequestBytes:131072,maxResponseBytes:2097152}});
+  return {session,sessions,http:request=>http.handle(new Request('https://synthetic.invalid/api/routines/prepare',{method:'POST',headers:{authorization:'Bearer '+session.credential,'content-type':'application/json'},body:JSON.stringify(request)})),call:(method,request)=>service[method]({credential:session.credential,request,deadlineMs:f.now()+4500})};
  }
  const request={scheduleId:created.proposal.projection.scheduleId,mode:'pause',running:'leave',runs:[],note:'Stop future firings'},body=requestId=>({requestId,operation:'cancel_scheduled_task',request});
  const decision=p=>({operation:'cancel_scheduled_task',request,proposalId:p.proposal.proposalId,intentSha256:p.proposal.intentSha256,decision:'approved'});
@@ -89,10 +92,10 @@ test('legacy secondary-scope refusal and wrong selected-client anchor do not pre
 
 test('definite post-claim preparation refusal settles FAILED and exact replay returns its stored refusal without reminting',async()=>{
  const h=await fixture();try{const a=await h.login(),before={...h.f.temporal.calls};h.state.refusePhase='resolve';
-  await assert.rejects(a.call('prepare',h.body('refused')),error=>error.code==='ROUTINES_REFUSED'&&error.outcome==='NOT_DISPATCHED');
+  await assert.rejects(a.call('prepare',h.body('refused')),error=>error.code==='ROUTINES_ACCESS_DENIED'&&error.outcome==='NOT_DISPATCHED');
   assert.equal(h.pool.state.claimed,1);const row=[...h.pool.rows.values()][0];assert.equal(row.state,'FAILED');assert.deepEqual(row.outcome,{code:'REFUSED'});assert.equal(row.proposal_id,null);
   h.state.refusePhase=null;const ids=h.f.state.ids;
-  await assert.rejects(a.call('prepare',h.body('refused')),error=>error.code==='ROUTINES_REFUSED'&&error.outcome==='NOT_DISPATCHED');
+  await assert.rejects(a.call('prepare',h.body('refused')),error=>error.code==='ROUTINES_ACCESS_DENIED'&&error.outcome==='NOT_DISPATCHED');
   assert.equal(h.f.state.ids,ids);assert.equal(h.pool.state.claimed,1);assert.deepEqual(h.f.temporal.calls,before);
  }finally{h.close();}
 });
@@ -103,5 +106,27 @@ test('unestablished failed settlement retains PENDING/UNKNOWN and no identical r
   assert.equal([...h.pool.rows.values()][0].state,'PENDING');h.state.refusePhase=null;h.pool.state.failFailedSettlement=false;const ids=h.f.state.ids;
   await assert.rejects(a.call('prepare',h.body('failed-settlement')),error=>error.outcome==='UNKNOWN');
   assert.equal(h.f.state.ids,ids);assert.equal(h.pool.state.claimed,1);assert.deepEqual(h.f.temporal.calls,before);
+ }finally{h.close();}
+});
+
+for(const [cause,stored,code,status]of [
+ ['SCHEDULE_CONTEXT_ACCESS_DENIED','REFUSED','ROUTINES_ACCESS_DENIED',403],
+ ['SCHEDULE_CONTEXT_POLICY','REFUSED','ROUTINES_ACCESS_DENIED',403],
+ ['SCHEDULE_CONTEXT_STALE','STALE','ROUTINES_STALE',409],
+ ['SCHEDULE_CONTEXT_REQUEST','INVALID_REQUEST','ROUTINES_INVALID_REQUEST',400],
+ ['ROUTINES_UNAVAILABLE','UNAVAILABLE','ROUTINES_UNAVAILABLE',503],
+])test(`definite ${cause} retains its closed cause and exact public HTTP status across replay`,async()=>{
+ const h=await fixture();try{const a=await h.login(),request=h.body('http-refusal');h.state.refuseCode=cause;
+  const first=await a.http(request);assert.equal(first.status,status);const text=await first.text();
+  assert.deepEqual(JSON.parse(text),{error:{code,outcome:'NOT_DISPATCHED'}});assert.deepEqual(await receiveRoutinesResponse('prepare',status,text,{request}),JSON.parse(text));
+  const row=[...h.pool.rows.values()][0];assert.equal(row.state,'FAILED');assert.deepEqual(row.outcome,{code:stored});
+  const ids=h.f.state.ids,claims=h.pool.state.claimed;h.state.refuseCode=null;const replay=await a.http(request);
+  assert.equal(replay.status,status);assert.equal(await replay.text(),text);assert.equal(h.f.state.ids,ids);assert.equal(h.pool.state.claimed,claims);assert.equal(h.state.modelCalls,0);
+ }finally{h.close();}
+});
+test('HTTP uncertain failed settlement stays UNKNOWN502 and cannot borrow the definite refusal mapping',async()=>{
+ const h=await fixture();try{const a=await h.login();h.state.refuseCode='SCHEDULE_CONTEXT_ACCESS_DENIED';h.pool.state.failFailedSettlement=true;
+  const request=h.body('http-uncertain'),response=await a.http(request);assert.equal(response.status,502);const text=await response.text();
+  assert.deepEqual(JSON.parse(text),{error:{code:'ROUTINES_UNKNOWN',outcome:'UNKNOWN'}});assert.deepEqual(await receiveRoutinesResponse('prepare',502,text,{request}),JSON.parse(text));assert.equal([...h.pool.rows.values()][0].state,'PENDING');
  }finally{h.close();}
 });
