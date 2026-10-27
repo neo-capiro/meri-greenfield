@@ -83,6 +83,18 @@ export type IntentsProposal =
   | Canonical_LegislativeDocumentProposal_3D80036F;
 export type Canonical_LegiwatchRequest_5Cff194F =
   Canonical_SuggestionLegiwatchRequestD59A433F | Canonical_RelevanceRequest_3250901F;
+export type Canonical_WatchRequest_1E607664 = {
+  family: 'legiwatch_keyword' | 'business_development_prospect' | 'defense_budget_target' | 'client_watchlist';
+  clientId: string | null;
+  targetKind: string;
+  targetKey: string;
+  operation: 'subscribe' | 'pause' | 'resume' | 'unsubscribe' | 'set_delivery';
+  expectedVersion: number;
+  sourceRevision: string | null;
+  reason: string | null;
+  enabled: boolean | null;
+  requestKey: string;
+};
 export type Canonical_ClientRecordRequestE2A54772 =
   | {
       operation: 'create_client';
@@ -2445,18 +2457,6 @@ export interface Canonical_WatchProposal_14Eddeec {
   createdAt: string;
   expiresAt: string;
   commandSha256: string;
-}
-export interface Canonical_WatchRequest_1E607664 {
-  family: 'legiwatch_keyword' | 'business_development_prospect' | 'defense_budget_target' | 'client_watchlist';
-  clientId: string | null;
-  targetKind: string;
-  targetKey: string;
-  operation: 'subscribe' | 'pause' | 'resume' | 'unsubscribe' | 'set_delivery';
-  expectedVersion: number;
-  sourceRevision?: string | null;
-  reason?: string | null;
-  enabled?: boolean | null;
-  requestKey: string;
 }
 export interface Canonical_WatchContextE72A3A40 {
   conversationId: string;

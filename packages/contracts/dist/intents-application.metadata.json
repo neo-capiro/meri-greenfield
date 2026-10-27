@@ -287,8 +287,8 @@
     },
     {
       "path": "retrieval-0.2/watch-action.schema.json",
-      "sha256": "cea59f030384577183dd7a908ca5d8ce8c008ddd840d94f9d6f164315878489d",
-      "bytes": 10659
+      "sha256": "44a20e48a523d83d4669f166b30478944aa95585a4caa379e93a82566713b568",
+      "bytes": 16441
     },
     {
       "path": "schedules-0.2/application-protocol.mjs",
@@ -311,7 +311,7 @@
       "bytes": 24305
     }
   ],
-  "schemaSha256": "efffe4aa33e0516b53c2b7d17abf8aae1a964bbc52d8f4dd3c2a0124f98e7019",
+  "schemaSha256": "f36a83db9ce41a94eed4a9582507f954e597a15386b49dbf6157e75c617f6ba8",
   "browserInputs": [
     "artifacts-0.2/artifact-formats.mjs",
     "commands-0.2/mail-send-validation.mjs",
