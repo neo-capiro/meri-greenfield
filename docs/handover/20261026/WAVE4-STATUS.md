@@ -264,7 +264,7 @@ Mail/MF12 source union preserves current sharing source and every unrelated blob
 
 SQL shared composition now preserves fresh Meri main10309b24 and accepted Q03C47547ba5. Root applied the exact five-path private-contract proposal at86e1dab5e/tree1ecea25f. Final Core provenance/catalog/package generation, distribution, credentials, migrations and deployment are still pending; this is an intermediate source composition, not an activated SQL release. The Core closure author continues current-source schema10/credential-owner work. Parallel sessions also prepare Graph native qualification and bounded runtime qualification; root owns the sole release lock.
 
-## Current checkpoint — 26 October 2026, 23:57 UTC
+## Earlier checkpoint — 26 October 2026, 23:57 UTC
 
 **Q07 semantic-source/index integration is excluded**, following “Skip 6 semantic.” Structured public/private SQL continues. Broader Research Portfolio remains deferred; the explicitly requested backend185/frontend240 sharing pair is the only exception. Onboarding, rich Office editing, full M7 and M6 remain outside this wave.
 
@@ -280,3 +280,18 @@ SQL target preflight read catalog only over strict TLS: the existing analytics r
 Root independently accepted Graph recovery87c16706/treea7fdd014 and fast-forwarded the combined SQL/mail checkout. The exact unchanged eight-case native fixture passed8/8 against4503 pinned source files and nine matching used Prisma models; no provider fetch, task resources absent, inventories preserved and owned Node process absent. Original7/8 failure and dependency/build limitations remain recorded. Two service responsibility findings have root acceptance. Final source must also preserve the incoming prerequisite-edge correction before catalog provenance is frozen.
 
 Current parallel assignments are root release/integration; a4 sharing prerequisite edge correction; s3 broader business projections; task_approval_author runtime native fixture preparation. Four slots active. Q07 is excluded; eleven grouped workstreams remain. No provider send or model submission occurred in this checkpoint.
+
+
+## Current checkpoint — 27 October 2026, 00:37 UTC
+
+The sharing pair is shipped and its named synthetic preview flow has passed: backend185 on Core19 and frontend240 on FE43, with prerequisite edge corrections186/187. The designer/save, synthetic snapshot/client association, user-set PIN, publication, public dashboard rendering and revocation all worked. The saved expiry is exactly seven days after publication. The previously authenticated viewer was denied after revocation and reload. The test link is revoked and synthetic sharing is off; its design and audit record remain. Elapsed seven-day expiry and PIN rotation were not exercised live; existing focused evidence remains separate. No customer data or external recipients were used.
+
+Ten grouped workstreams remain after this sharing acceptance: initial SQL activation; broader business SQL; saved records; Strategy/history; consumer cutover; mail; tasks/approvals; LegiWatch/client/note actions; runtime qualification; and document/final closeout. Q07 semantic integration remains excluded and broader Research Portfolio deferred. Prior eleven-workstream counts are superseded. No completion percentage or ETA is asserted.
+
+Independent composition review accepts Core7c1e509f/tree3ee48dfc and Meria403684f/treed4c62b54. Core preserves the accepted SQL/mail/task union and merged186/187 routes. Meri retains Wave3 source10309b24, all14 skill identities/15 assets and original skill pins. Contracts0.1.17/catalog0.2.19 bind the final Core source; all69 physical archive members and266 metadata references match. PR183/285 are updated drafts. Root submitted one Core build at00:33:52UTC; no SQL migration, query secret/bootstrap or SQL deployment has run yet.
+
+Broader Q03 team/ownership/stored-target proposal667b8223 passes22/22 actual PostgreSQL cases with18 clean-admission assertions around nine drift probes. Canonical Meri replay accepts32 actual envelopes and rejects32 wrong-scope variants. Both earlier fixture failures are retained, including the confounded21/1 attempt whose later eight negatives are not evidence. Disposable resources and owned processes are absent; source remains unchanged. Follow-on integration/new migration/package remains separate from the initial two-view release.
+
+Timeline reply candidate76ee25a0 is in independent review, including canonical single-recipient scope, receipt lifetime, collapse/refresh cleanup and mobile bounds. Reply-all remains review-only. Runtime qualification has not yet run its database/S3 gate: two network-none import-only attempts exposed missing locked Temporal and ECS dependencies, with exact cleanup and unchanged persistent resources. The helper is now resolving the complete static dependency closure before another allocation. No model or provider send occurred.
+
+All four slots remain active. Root owns release/integration; a4 prepares the initial SQL activation operator offline; s3 reviews Timeline then prepares Meri image operators offline; task_approval_author completes runtime dependency custody. Root remains sole cloud/deployment operator.
