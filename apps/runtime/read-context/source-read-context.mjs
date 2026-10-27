@@ -12,6 +12,8 @@ import {captureBusinessDevelopmentResource} from '../../gateway/sources/business
 import {captureFundingClientSelection,assertFundingClientSubject} from '../../gateway/sources/funding-opportunities/request-context.mjs';
 import {captureClientKnowledgeSearchSelection,assertClientKnowledgeSearchSubject} from '../../gateway/sources/client-knowledge-search/request-context.mjs';
 
+import {savedRecordClientSelector} from '../../../packages/contracts/retrieval-0.2/saved-records-validation.mjs';
+
 const UUID=/^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/u;
 const refuse=code=>{throw nativeReadFault(code);};
 const lineageGroups=new Set(['facility-representation','district-nexus','tracked-bills']);
@@ -72,6 +74,20 @@ function privateDataContext(proof,native){
  return {capiroDataScope:{clientId,identityRevision:native.identityRevision,membershipRevision:native.membershipRevision}};
 }
 
+function savedOwnerContext(proof,native,group){
+ const selected=proof.subject.kind==='client'||proof.subject.entityType==='client'?clientSubject(proof,native):null;
+ if(selected===null&&(proof.subject.kind!=='personal'||proof.subject.entityType!=='user'))refuse('ACCESS_DENIED');
+ const selector=group==='strategy-saved-records'?proof.request.clientId:savedRecordClientSelector(proof.request);
+ const clientId=typeof selector==='string'?selector.toLowerCase():null;
+ if(selector!==null&&(clientId===null||!UUID.test(clientId)))refuse('INVALID_ARGUMENTS');
+ if(selected!==null&&clientId!==selected)refuse('ACCESS_DENIED');
+ assertNativeVisibleClients(native,clientId===null?[]:[clientId]);
+ if(![native.identityRevision,native.membershipRevision].every(v=>typeof v==='string'&&/^[a-f0-9]{64}$/u.test(v)))refuse('UNAVAILABLE');
+ const revisions={identityRevision:native.identityRevision,membershipRevision:native.membershipRevision};
+ return group==='strategy-saved-records'?{strategySavedScope:{clientId,...revisions}}:
+  {savedRecordScope:{clientId:selected,tenantId:proof.subject.tenantId,...revisions}};
+}
+
 /** Reject unsupported source fallback before observing or disclosing any native credential. */
 export function assertSourceReadRequest(contract,request,subject){
  if(contract.binding.group==='state-status-votes')assertStoredStateRequest(contract.descriptor.operation,request);
@@ -95,6 +111,7 @@ export function createSourceReadContext({contract,proof,native,defaultCongress,n
   if(selectedClientId===null&&(proof.subject.kind!=='personal'||proof.subject.entityType!=='user'||proof.subject.entityIds[0]!==proof.binding.actorId))refuse('ACCESS_DENIED');
   return {binding:proof.binding,selectedClientId,visibleClientIds:[...native.clientIds]};
  }
+ if(['saved-records','strategy-saved-records'].includes(group))return savedOwnerContext(proof,native,group);
  // Recompute on final release: membership changes must also fence aggregate rows with no client IDs.
  if(group==='capiro-data'&&proof.request.source==='client_records')return privateDataContext(proof,native);
  if(group==='connected-apps'||group==='teams-channels'){

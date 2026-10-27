@@ -115,7 +115,9 @@
                 "query_capiro_data",
                 "get_research_portfolio_share_links",
                 "publish_research_portfolio_share_link",
-                "revoke_research_portfolio_share_link"
+                "revoke_research_portfolio_share_link",
+                "read_saved_record",
+                "read_saved_strategy_records"
               ]
             },
             "disposition": {
@@ -563,8 +565,8 @@
           "items": {
             "$ref": "urn:meri:retrieval:catalog:0.2.0#/$defs/NativeMapping"
           },
-          "minItems": 148,
-          "maxItems": 148,
+          "minItems": 150,
+          "maxItems": 150,
           "uniqueItems": true
         },
         "operations": {

@@ -681,7 +681,19 @@
         "name": {
           "enum": [
             "client_objectives",
-            "client_activity"
+            "client_activity",
+            "client_team_roster",
+            "client_account_owners",
+            "client_targets",
+            "client_profiles",
+            "client_profile_codes",
+            "client_people",
+            "client_contacts",
+            "client_engagement_tasks",
+            "client_action_items",
+            "client_tracked_bills",
+            "client_outreach_campaigns",
+            "client_campaign_recipients"
           ]
         },
         "description": {
@@ -815,7 +827,19 @@
               "name": {
                 "enum": [
                   "client_objectives",
-                  "client_activity"
+                  "client_activity",
+                  "client_team_roster",
+                  "client_account_owners",
+                  "client_targets",
+                  "client_profiles",
+                  "client_profile_codes",
+                  "client_people",
+                  "client_contacts",
+                  "client_engagement_tasks",
+                  "client_action_items",
+                  "client_tracked_bills",
+                  "client_outreach_campaigns",
+                  "client_campaign_recipients"
                 ]
               },
               "sourceAsOf": {
@@ -842,7 +866,7 @@
             ]
           },
           "minItems": 1,
-          "maxItems": 2
+          "maxItems": 14
         }
       },
       "required": [
@@ -923,7 +947,7 @@
             "$ref": "#/$defs/CapiroDataPrivateRelation"
           },
           "minItems": 1,
-          "maxItems": 2
+          "maxItems": 14
         },
         "limits": {
           "$ref": "#/$defs/CapiroDataDescribeLimits"
@@ -1000,11 +1024,23 @@
           "items": {
             "enum": [
               "client_objectives",
-              "client_activity"
+              "client_activity",
+              "client_team_roster",
+              "client_account_owners",
+              "client_targets",
+              "client_profiles",
+              "client_profile_codes",
+              "client_people",
+              "client_contacts",
+              "client_engagement_tasks",
+              "client_action_items",
+              "client_tracked_bills",
+              "client_outreach_campaigns",
+              "client_campaign_recipients"
             ]
           },
           "minItems": 1,
-          "maxItems": 2,
+          "maxItems": 14,
           "uniqueItems": true
         },
         "rowLimitReached": {
