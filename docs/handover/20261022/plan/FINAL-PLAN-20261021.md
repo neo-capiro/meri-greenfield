@@ -1,5 +1,7 @@
 # Capiro and Meri Final Plan
 
+> **27 October current entry point:** [Wave 4 deployment stopping point](../../20261027/WAVE-4-HANDOFF.md), [Fable handoff](../../20261027/FABLE-HANDOFF.md) and [Wave 5 briefs](../../20261027/WAVE5-BRIEFS.md). Fable owns Wave 4 bug fixes and all existing Research Portfolio requirements under Neo's latest scope change; root integrates/deploys, Hermes reviews and accepts. Wave 5 reconciles current M5/M7 allocations and bounded A5 intake without duplicating Fable. Wave 4 remains OPEN. Dated schedules and role assignments below remain historical.
+
 > **25 October checkpoint:** [WAVE-2-HANDOFF](../../20261025/WAVE-2-HANDOFF.md) owns newer source/live/acceptance facts. Its current roles and [PROCESS templates](../PROCESS.md#6-current-templates) supersede dated roles below. Wave 2 remains IN PROGRESS; source/image qualification is not final authenticated acceptance.
 
 > **Current decision — 24 October 2026.** Neo approved the real Claude Agent SDK on **AgentCore Runtime standard V1**, conversation-scoped isolation, durable native SDK/artifact restore and canonical Core permissions. This replaces per-turn Fargate and the S3 custom warm-pool mechanism. The [migration plan and completion matrix](AGENTCORE-RUNTIME-MIGRATION-20261024.md) are current; this dated plan retains the complete ticket index and acceptance outcomes.

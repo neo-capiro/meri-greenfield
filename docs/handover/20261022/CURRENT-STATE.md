@@ -1,6 +1,6 @@
-# Current Wave 2 release state
+# Current Capiro and Meri release state
 
-> **25 October current entry point:** [Wave 2 in-progress handoff](../20261025/WAVE-2-HANDOFF.md), [user acceptance checklist](../20261025/WAVE-2-USER-ACCEPTANCE.md) and [current PROCESS templates](PROCESS.md#6-current-templates). Root only orchestrates at Ultra; helpers use xhigh; existing Release is the sole AWS operator. The dated receipts/roles below are historical where superseded; no #202 post without Neo.
+> **27 October current entry point:** [Wave 4 deployment stopping point](../20261027/WAVE-4-HANDOFF.md), [Fable bug-fix and Research Portfolio handoff](../20261027/FABLE-HANDOFF.md), [complete Wave 4 item inventory](../20261027/WAVE4-ITEM-INVENTORY.md), and [Wave 5 startup packet](../20261027/WAVE-5-ORCHESTRATOR-HANDOFF.md). Fable returns PRs to root for deployment; Hermes owns independent review and subsequent acceptance. Existing Release is the sole shared target operator. Wave 4 is OPEN. The dated receipts/roles below are historical where superseded; no #202 post without Neo.
 
 ## Successor audit — 25 October 2026
 

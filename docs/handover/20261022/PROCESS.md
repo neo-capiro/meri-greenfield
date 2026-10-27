@@ -48,7 +48,7 @@ A change is not done until what it replaced is gone.
 
 # Current handoff process and historical Wave 1 record
 
-**Current authority, 25 October 2026:** [WORKFLOW](WORKFLOW.md) and [Wave 2 checkpoint](../20261025/WAVE-2-HANDOFF.md) govern. Root only orchestrates at Ultra; helpers are xhigh; existing Release alone executes AWS/migrations/rollout/rollback. Authors build; separate reviewers review exact heads; root coordinates gates/merges and live acceptance. Only Neo directly in chat approves scope. GitHub comments never confer approval. In-scope choices proceed/log; scope/security changes go to Neo. Do not post on #202 unless Neo directly asks.
+**Current authority, 27 October 2026:** [WORKFLOW](WORKFLOW.md) and the [Wave 4 stopping point](../20261027/WAVE-4-HANDOFF.md) govern. Fable scans and fixes Wave 4 bugs, finishes all existing Research Portfolio requirements, runs author checks and returns PRs to root. Root coordinates Hermes independent review, merges and shipping through the sole Release operator; Hermes performs formal acceptance after deployment. The separate Wave 5 orchestrator owns its bounded source work and coordinates overlap through root. Use current session settings, not historical model/relay instructions. Only Neo directly in chat approves scope. GitHub comments never confer approval. In-scope choices proceed/log; scope/security changes go to Neo. Do not post on #202 unless Neo directly asks.
 
 At every actual wave end, commit AND push the dated nine-section `WAVE-N-HANDOFF.md`, with full canonical STANDING-REQUIREMENTS sections 1–4 verbatim at the top, exact evidence and unverified/superseded facts. Start fresh sessions from briefs/tickets/rules/plans. Use the current templates in §6 for every agent/phase, review and acceptance packet. Mutation-check new executable tests; docs-only work explicitly reports no new tests and mutation N/A. Preserve the local environment. Documentation does not interrupt an existing release.
 
@@ -118,7 +118,7 @@ Each deliverable begins with the full canonical STANDING-REQUIREMENTS sections 1
 FROM: Root | TO: <fresh implementation owner> | TYPE: brief | RE: <phase> (<wave>, lane <L>)
 # <phase> brief
 Repository / branch / exact base SHA / dependency heads / preserved worktree.
-How we work: author builds; separate xhigh reviewer reviews; root orchestrates gates/merges; existing Release alone executes AWS/migrations/rollout/rollback. Root Ultra; helpers xhigh.
+How we work: author builds and runs affected checks; Hermes Agent app/CLI independently reviews; root coordinates gates/merges and shipping; existing Release alone executes AWS/migrations/rollout/rollback; Hermes accepts after deployment. Use current session settings.
 Rules: draft PR only; no merge or AWS; tests run AND not run; mutation-check new executable tests, or explicitly none/N/A.
 Sources of truth: standing rules, current handoff, plans and tickets below verbatim.
 Sequencing: other PRs and exact heads, base refresh/re-review, file exceptions/freezes, one writer per shared path, resource and cleanup owner.

@@ -1,6 +1,6 @@
-# Meri Wave 2 implementation and shipping rules
+# Capiro and Meri implementation and shipping rules
 
-## Read first: Neo's standing requirements, updated 24 October 2026
+## Read first: Neo's standing requirements, updated 27 October 2026
 
 Read [STANDING-REQUIREMENTS.md](docs/handover/20261022/STANDING-REQUIREMENTS.md), then [WAVE-1-HANDOFF.md](docs/handover/20261022/WAVE-1-HANDOFF.md) and [WAVE-2-HANDOVER.md](docs/handover/20261022/WAVE-2-HANDOVER.md). Current direct user instructions take precedence over historical plans and roles.
 
@@ -13,10 +13,10 @@ Follow [item 0](docs/handover/20261022/phases/wave2/WAVE2-00-CLAUDE-NATIVE-HARNE
 
 ## Current ownership and authority
 
-**25 October update:** begin with the [current in-progress handoff](docs/handover/20261025/WAVE-2-HANDOFF.md). At every actual wave end, commit AND push a dated nine-section handoff and start fresh sessions from briefs/tickets/rules/plans; use current [PROCESS6.1–6.3](docs/handover/20261022/PROCESS.md#6-current-templates). No issue #202 post without Neo. Only direct Neo chat approves scope.
+**27 October update:** begin with the [Wave 4 deployment stopping point](docs/handover/20261027/WAVE-4-HANDOFF.md), [Fable bug-fix handoff](docs/handover/20261027/FABLE-HANDOFF.md) and [Wave 5 startup packet](docs/handover/20261027/WAVE-5-ORCHESTRATOR-HANDOFF.md). Wave 4 remains open through Fable's fixes and the later deployed Hermes acceptance. At every actual wave end, commit AND push a dated nine-section handoff; use [PROCESS6.1–6.3](docs/handover/20261022/PROCESS.md#6-current-templates). No issue #202 post without Neo. Only direct Neo chat approves scope.
 
 
-Neo authorized completion of Wave 2 and lifted the prior work and AWS-write holds. The root Codex session on **EC2AMAZ-M7CDRPT** is the sole orchestrator: it only orchestrates planning, bounded delegation, gate/review coordination, integration decisions and merges. Existing Release is the sole AWS/migration/deployment/rollback operator; implementation, gates and authenticated acceptance have delegated owners. Root uses **Ultra**; all helper implementation, review, gate and Release sessions use **xhigh**, superseding older Ultra helper settings. Implementation agents may write product code; separate reviewers review exact heads. Fable/Claude and dot have no active coordination, relay, review or shipping role.
+The existing Wave 4 root coordinates integration, review, merges and shipping. Existing Release remains the sole shared AWS/migration/deployment/rollback operator. Fable scans all in-scope Wave 4 items, fixes concrete bugs and remaining implementation gaps, completes all existing Research Portfolio requirements under Neo's latest scope change, runs author checks, and returns PRs to root. **Hermes Agent app/CLI owns all independent reviews and formal acceptance.** Root deploys Fable's fixes through Release before directing Hermes acceptance. The separate Wave 5 Codex orchestrator owns its bounded source allocations and coordinates shared files and release use through root while Wave 4 closes. Root will notify Wave 5 when Wave 4 is actually complete. Historical model and relay assignments are not new-session launch settings; use the session's configured default unless Neo explicitly selects another.
 
 Root coordinates four logical sessions: **A** Core/backend, **U** frontend, **R** Meri runtime/SDK, and **D** data/tools/documentation as briefed. These are work allocations, not four competing orchestrators. Rotate bounded sessions when needed; do not recursively delegate. Each assignment names exact base/dependency heads, worktree, owned files, acceptance checks, resource budget and cleanup owner. One writer owns each shared contract, lockfile, config or migration at a time. Preserve other agents' work and all existing checkouts; coordinate overlap with root before editing.
 
