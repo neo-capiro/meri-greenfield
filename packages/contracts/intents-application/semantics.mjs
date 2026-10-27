@@ -63,8 +63,7 @@ async function proposal(value,conversationId){
  }
  if(command.action==='mail.send'){try{mail.assertMailSendCommand(command,{binding:command.binding});exact(value.createdAt);exact(value.expiresAt);if(value.requiredApprover.actorId!==command.binding.actorId)conflict();}catch{conflict();}}
  if(command.action==='document.draft') {
-  exact(value.createdAt);
- if(value.kind==='saved_note'){savedNote(value,conversationId);return;}exact(value.expiresAt);
+  exact(value.createdAt);exact(value.expiresAt);
   if(command.arguments.title.trim()!==command.arguments.title||command.arguments.title.length>200||
    command.arguments.baseVersionId!==null&&command.arguments.baseVersionId.toLowerCase()!==command.arguments.baseVersionId)conflict();
  }
@@ -204,6 +203,8 @@ async function item(value,conversationId){
  // The journal's createdAt is a bare millisecond-spelling pattern in the schema (no calendar check) and the journal writes toISOString(): read it exactly, so
  // an impossible day such as 2026-02-30 can not roll into March.
  exact(value.createdAt);
+ if(value.kind==='saved_note'){savedNote(value,conversationId);return;}
+ if(value.kind==='saved_note'){savedNote(value,conversationId);return;}
  if(value.kind==='legiwatch_action'){if(!Object.hasOwn(value,'proposal'))return;if(value.operation.id!==value.proposal.operation)conflict();await proposal(value.proposal,conversationId);if(value.result!=='unavailable')await legiwatchResult(value.result,value.proposal);return;}
  if(value.kind==='legislative_document_action'){if(!Object.hasOwn(value,'proposal'))return;if(value.operation.id!==value.proposal.operation)conflict();await proposal(value.proposal,conversationId);if(value.result!=='unavailable')legislativeDocumentResult(value.result,value.proposal);return;}
  if(value.kind==='client_record_action'){if(!Object.hasOwn(value,'proposal'))return;if(value.operation.id!==value.proposal.operation)conflict();await proposal(value.proposal,conversationId);if(value.result!=='unavailable')await clientRecordResult(value.result,value.proposal);return;}
