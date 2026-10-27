@@ -52,6 +52,24 @@ test('the open record is what a row advertises only while its canonical schema c
  assert.equal(advertised('schedule_task').properties,undefined);
 });
 
+test('management advertises closed disjoint reads and confirmed writes from its canonical input',()=>{
+ const resolved=intentRowArguments(row('manage_research_portfolio'));
+ assert.equal(resolved.mode,'canonical');
+ assert.equal(intentToolArguments([row('manage_research_portfolio')]).mode,'canonical');
+ const schema=advertised('manage_research_portfolio');
+ assert.equal(schema.oneOf.length,2);
+ for(const branch of schema.oneOf){assert.equal(branch.additionalProperties,false);assert.ok(branch.required.includes('action'));}
+ const input={conversationId:'71000000-0000-4000-8000-000000000001',parameters:{}};
+ for(const action of schema.oneOf[0].properties.action.enum)assert.equal(parses(resolved.arguments,{...input,action}),true,action);
+ for(const action of schema.oneOf[1].properties.action.enum){
+  assert.equal(parses(resolved.arguments,{...input,action,confirmed:true}),true,action);
+  assert.equal(parses(resolved.arguments,{...input,action}),false,action);
+ }
+ for(const value of [{...input,action:'not_an_action'},{...input,action:'grants_list',extra:true},{...input,action:'grants_list',confirmed:false},
+  {...input,action:'rule_preview'}, {...input,confirmed:true}, {action:'grants_list',parameters:{}}, {...input,action:'grants_list',parameters:[]}])
+  assert.equal(parses(resolved.arguments,value),false,JSON.stringify(value));
+});
+
 test('the memory tool advertises exactly the fields its owner admits',()=>{
  const schema=advertised('save_memory');
  assert.equal(schema.type,'object');assert.equal(schema.additionalProperties,false);assert.deepEqual(schema.required,['content']);

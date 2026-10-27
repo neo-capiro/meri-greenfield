@@ -41,6 +41,31 @@ test('unconvertible/widened schemas fail configuration; union, required and arra
  assert.equal(isNarrowerOrEqual({type:'string'},{type:['string','null'],maxLength:2}),false);
  assert.equal(isNarrowerOrEqual({type:'string'},{type:['string','null'],maxLength:2,unevaluatedProperties:false}),false);
 });
+
+test('oneOf containment proves only required disjoint scalar discriminators and preserves branch constraints',()=>{
+ const branch=action=>({type:'object',properties:{action,confirmed:{const:true}},required:['action'],additionalProperties:false});
+ const canonical={oneOf:[branch({enum:['list','get']}),{...branch({enum:['create','update']}),required:['action','confirmed']}]};
+ assert.equal(isNarrowerOrEqual(structuredClone(canonical),canonical),true);
+ const mixed={oneOf:[branch({const:'list'}),branch({enum:['create','update']})]};
+ assert.equal(isNarrowerOrEqual(mixed,mixed),true);
+ for(const change of [
+  x=>{x.oneOf[1].properties.action.enum.push('list');},
+  x=>{delete x.oneOf[1].properties.action;},
+  x=>{x.oneOf[1].required=['confirmed'];},
+  x=>{x.oneOf[1].properties.action={enum:[]};},
+  x=>{x.oneOf[1].properties.action={enum:[{kind:'create'}]};},
+  x=>{x.oneOf[1].properties.action={const:['create']};},
+  x=>{x.oneOf[1].properties.action={type:'string'};},
+  x=>{delete x.oneOf[1].type;}
+ ]){
+  const ambiguous=structuredClone(canonical);change(ambiguous);
+  assert.equal(isNarrowerOrEqual(ambiguous,ambiguous),false,String(change));
+ }
+ for(const change of [x=>{x.oneOf[1].additionalProperties=true;},x=>{x.oneOf[1].required=['action'];},x=>{x.oneOf[1].properties.action.enum.push('delete');}]){
+  const wider=structuredClone(canonical);change(wider);
+  assert.equal(isNarrowerOrEqual(wider,canonical),false,String(change));
+ }
+});
 test('contacts canonical bytes and receipt hashes are preserved with a separate deferred-tool notice',async()=>{
  const f=await fixture('tenant-contacts','find_contacts',{scene:familyCase('tenant-contacts','find_contacts')});
  const runtime=await createGeneralReadRuntime({binding:f.binding,scopes:f.scopes,policy,port:f.port,now:f.now,deadlineMs:f.deadlineMs});
