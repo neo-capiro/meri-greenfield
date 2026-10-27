@@ -4,7 +4,7 @@ import {open,lstat,realpath,readdir} from 'node:fs/promises';
 import {constants} from 'node:fs';
 import {createHash} from 'node:crypto';
 import {posix} from 'node:path';
-import {validateConfiguration} from './config.mjs';
+import {configurationMaxBytes,validateConfiguration} from './config.mjs';
 
 const root='/run/meri', mode=0o600, maxBytes=32768;
 const names=Object.freeze({control:'control.json','temporal-worker':'worker.json','schedule-worker':'schedule-worker.json'});
@@ -59,7 +59,7 @@ export function compileProductMaterialPlan({role,configuration,runtimeUser}){
  for(const [path,purposes] of files){if(purposes.size>1)refuse();if(path!==configurationPath)direct(path);}
  const dynamicMaterialDirectory=null;
 
- const requiredFiles=Object.freeze([...files].sort(([a],[b])=>a.localeCompare(b)).map(([path,purposes])=>Object.freeze({path,purposes:Object.freeze([...purposes].sort()),mode:'0600',maxBytes})));
+ const requiredFiles=Object.freeze([...files].sort(([a],[b])=>a.localeCompare(b)).map(([path,purposes])=>Object.freeze({path,purposes:Object.freeze([...purposes].sort()),mode:'0600',maxBytes:path===configurationPath?configurationMaxBytes(role):maxBytes})));
  const plan=Object.freeze({schemaVersion:1,role,containerName:role,configurationPath,materialDirectory:root,runtimeUser,uid,gid,
   directoryMode:'0700',requiredFiles,requiresTokenRotation:false,
   dynamicMaterialDirectory});
@@ -76,7 +76,7 @@ export async function verifyProductMaterial(plan,{expectedSha256ByPath}={}){
  let directory;try{directory=await lstat(root);if(!directory.isDirectory()||directory.isSymbolicLink()||directory.uid!==ownerUid||directory.gid!==ownerGid||(directory.mode&0o777)!==0o700||await realpath(root)!==root)refuse();
   const entries=await readdir(root);if(entries.length!==paths.length||entries.some(name=>!paths.includes(`${root}/${name}`)))refuse();}catch{refuse();}
  let parsed;
- for(const {path} of plan.requiredFiles){
+ for(const {path,maxBytes} of plan.requiredFiles){
   let handle,bytes;try{
    // A foreign FIFO at an expected path must not block the preflight before fstat can reject it.
    handle=await open(path,constants.O_RDONLY|constants.O_NOFOLLOW|constants.O_NONBLOCK);const st=await handle.stat();
