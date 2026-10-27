@@ -18,10 +18,10 @@ const at=1000000;
 async function nativeFixture({general=false}={}){
  const f=await applicationFixture(),b=f.contextConfiguration.commandContext.binding,selectedClientId=general?null:f.contextConfiguration.commandContext.clientResolution.clientId;
  const scopes=[{tenantId:b.tenantId,kind:general?'private-user':'client',resourceId:selectedClientId??b.actorId,policyRevision:'p1'}];
- const state={binding:b,selectedClientId,scopes,runState:'running',budget:2000000,reserved:false,reads:0,policyHook:null};
+ const state={binding:b,selectedClientId,scopes,runState:'running',versions,budget:2000000,reserved:false,reads:0,policyHook:null};
  const authentication={principal:{sessionId:'synthetic-session',tenantId:b.tenantId,actorId:b.actorId,conversationId:b.conversationId,runId:b.runId},sessionRevision:'one',checkedAtMs:f.now(),expiresAtMs:f.now()+60000};
  const sessions={async authenticateSession(){return authentication;},async readCurrentState(){return {authenticationSha256:hash(authentication),binding:state.binding,scopes:state.scopes,selectedClientId:state.selectedClientId,checkedAtMs:f.now(),expiresAtMs:f.now()+60000};}};
- const store={async read(){state.reads++;return {run:{binding:state.binding,scopes:state.scopes,versions,policyRevision:'p1',state:state.runState}};},
+ const store={async read(){state.reads++;return {run:{binding:state.binding,scopes:state.scopes,versions:state.versions,policyRevision:'p1',state:state.runState}};},
   async readModelPolicy(){return {maxBudgetMicroUsd:state.budget};},nextRuns:{async current(){return {reserved:state.reserved,binding:state.binding,scopes:state.scopes,policyRevision:'p1'};}}};
  const policy={async check({selectionSha256}){await state.policyHook?.();return {authorized:true,selectionSha256,binding:b,scopes,selectedClientId,destinationResolution:null,limits:null,checkedAtMs:f.now(),expiresAtMs:f.now()+10000};}};
  const {template,workflow,limits}=f.contextConfiguration;
@@ -68,12 +68,21 @@ test('native occurrence templates use each approved owner and scope, and retirem
  assert.deepEqual(derived.context.template,task);assert.equal(Object.hasOwn(derived.context,'allocationJson'),false);assert.equal(typeof derived.contextOwnerFactory,'function');
 });
 
-test('native routines refuse changed selection, terminal refusal, successor reservation and model policy drift',async()=>{
+for(const general of [false,true])test(`native routine list remains available after failed or cancelled ${general?'General':'client'} work`,async()=>{
+ const f=await nativeFixture({general});try{
+  for(const runState of ['failed','cancelled']){
+   f.state.runState=runState;const current=await f.owner.authorizeRequest(f.request);
+   assert.deepEqual(current.binding,f.state.binding);assert.deepEqual(current.scopes,f.state.scopes);
+  }
+ }finally{await f.close();}
+});
+
+test('native routine list still refuses changed selection, image, successor reservation and model policy drift',async()=>{
  for(const change of [s=>{s.binding={...s.binding,actorId:'another'};},s=>{s.selectedClientId='10000000-0000-4000-8000-000000000099';},
-  s=>{s.runState='cancelled';},s=>{s.runState='failed';},s=>{s.reserved=true;},s=>{s.budget=0;}]){
+  s=>{s.versions={...s.versions,imageDigest:'sha256:'+'c'.repeat(64)};},s=>{s.reserved=true;},s=>{s.budget=0;}]){
   const f=await nativeFixture();try{change(f.state);await assert.rejects(f.owner.authorizeRequest(f.request));}finally{await f.close();}
  }
- for(const change of [s=>{s.budget=1000000;},s=>{s.reserved=true;},s=>{s.runState='cancelled';}]){
+ for(const change of [s=>{s.budget=1000000;},s=>{s.reserved=true;}]){
   const f=await nativeFixture();try{f.state.policyHook=()=>change(f.state);await assert.rejects(f.owner.authorizeRequest(f.request));}finally{await f.close();}
  }
 });
