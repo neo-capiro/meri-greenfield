@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {compileProductMaterialPlan,verifyProductMaterial} from './material-delivery.mjs';
+import {configurationMaxBytes} from '../../apps/runtime/config.mjs';
 import {runtimeUser as user,materialRoot as root,controlMaterialConfiguration as control,workerMaterialConfiguration as worker} from './material-test-fixture.mjs';
 
 const plan=(role,configuration)=>compileProductMaterialPlan({role,configuration,runtimeUser:user});
@@ -12,7 +13,7 @@ test('control plan derives exactly the canonical static files without per-run or
  ].map(name=>root+name).sort());
  assert.deepEqual(p.requiredFiles.find(file=>file.path===c.native.capabilityFile).purposes,['native-capability']);
  assert.equal(p.containerName,'control');assert.equal(p.configurationPath,root+'control.json');
- assert.equal(p.directoryMode,'0700');assert.ok(p.requiredFiles.every(file=>file.mode==='0600'&&file.maxBytes===32768));
+ assert.equal(p.directoryMode,'0700');assert.ok(p.requiredFiles.every(file=>file.mode==='0600'&&file.maxBytes===(file.path===p.configurationPath?configurationMaxBytes(p.role):32768)));
  assert.equal(p.uid,1000);assert.equal(p.gid,1000);assert.equal(p.requiresTokenRotation,false);
  assert.equal(p.dynamicMaterialDirectory,null);
  assert.equal(JSON.stringify(p).includes('synthetic-existing'),false,'the plan carries paths and constraints, not values');
