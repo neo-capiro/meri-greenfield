@@ -117,8 +117,8 @@
     },
     {
       "path": "../../apps/control/intents/approval.mjs",
-      "sha256": "a890998c8d16515e622709da28089cbebfe32bbbaa526295dc5b2b000d8e7641",
-      "bytes": 42937
+      "sha256": "3858079233bdf6c954786bee044388ae5b2db2d69a99963132c2142cf510e94c",
+      "bytes": 41778
     },
     {
       "path": "../../apps/control/intents/faults.mjs",
@@ -287,8 +287,8 @@
     },
     {
       "path": "retrieval-0.2/research-portfolio-action.schema.json",
-      "sha256": "0056432e8f5a84e084972d3f5a458bde7102cb97f48132427a7f336b0a68ab39",
-      "bytes": 22587
+      "sha256": "27820cd262ed0bec31825150d7548df60747b26e07ebf6d07a5f3b55fa863fb9",
+      "bytes": 25983
     },
     {
       "path": "retrieval-0.2/research-portfolio-sharing.schema.json",
@@ -321,7 +321,7 @@
       "bytes": 24305
     }
   ],
-  "schemaSha256": "f757773c1905b08f9d9b98e4ad35c7bda1159ee5adfc1c7c34f90547f9f7c3f3",
+  "schemaSha256": "9fc2fec9e073e43fdb390af7423910dc178bfb96f1f79a116380c0cfaf151979",
   "browserInputs": [
     "artifacts-0.2/artifact-formats.mjs",
     "commands-0.2/mail-send-validation.mjs",

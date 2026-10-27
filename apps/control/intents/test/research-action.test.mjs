@@ -10,6 +10,9 @@ import {createIntentMount} from '../mount.mjs';
 import {assertPreparedResult} from '../../../worker/conversation/intents/prepared.mjs';
 import {binding as seedBinding,id} from '../../conversations/test/store-fixture.mjs';
 import {receiveIntentsResponse} from '../../../../packages/contracts/dist/intents-application.mjs';
+import {intentToolArguments} from '../../../worker/conversation/intents/schema.mjs';
+import {intentRow} from '../../../worker/conversation/intents/catalog.mjs';
+import {preparedResult} from '../../../worker/conversation/intents/results.mjs';
 const NOW=1800000000000,delivery=n=>'sdk:'+String(n).padStart(64,'0');
 function mount({binding,scopes,preparers}){
  const rows=new Map(),key=k=>JSON.stringify(k),clone=structuredClone;
@@ -45,6 +48,10 @@ function setup(operation='create_research_portfolio_snapshot',{selected=true}={}
   getCredentials:async()=>({credential:'user-session',expiresAtMs:NOW+60000}),async fetchImpl(url,init){
    const path=new URL(url).pathname,body=init.body===undefined?null:JSON.parse(init.body);state.paths.push({path,method:init.method});state.bodies.push(body);
    assert.equal(init.headers.authorization,'Bearer user-session');assert.equal(init.headers['x-internal-service-secret'],'service-secret');assert.equal(init.redirect,'error');assert.equal(init.credentials,'omit');
+   if(path==='/api/clio/tools/manage_research_portfolio'){
+    assert.deepEqual(body.currentTurn,{tenantId:binding.tenantId,userId:binding.actorId,conversationId:binding.conversationId,selectedClientId:selected?clientId:null});
+    state.afterRead?.();return Response.json(state.readResult??[]);
+   }
    if(path==='/api/clio/action-proposals'&&init.method==='POST'){
     state.prepares++;assert.equal(body.version,1);assert.deepEqual(body.currentTurn,{tenantId:binding.tenantId,userId:binding.actorId,conversationId:binding.conversationId,selectedClientId:selected?clientId:null});
     assert.equal(body.proposal.tool,operation);assert.equal(body.proposal.surface,'chat');assert.equal(body.proposal.conversationId,binding.conversationId);
@@ -82,6 +89,29 @@ test('every governed action prepares once through Core, binds the delivery key, 
   const after=await f.list();assert.equal(after.intents[0].result.proposalStatus,'succeeded');assert.deepEqual(after.intents[0].result.resultSummary,SUMMARY[operation]);
   await receiveIntentsResponse('list',200,JSON.stringify(after),{request:{conversationId:f.binding.conversationId}});
  }
+});
+
+test('pure management reads use current Core data without creating a proposal, journal entry or approval',async()=>{
+ const f=setup('manage_research_portfolio'),request={conversationId:f.binding.conversationId,action:'grants_list',parameters:{}},call={...f.call,arguments:request};
+ const result=await f.prepare(call);assert.equal(result.status,'read');assert.deepEqual(result.result,[]);
+ assert.equal(f.state.prepares,0);assert.equal(f.state.effects,0);assert.equal(f.store.rows.size,0);assert.deepEqual((await f.list()).intents,[]);
+ const admitted=assertPreparedResult('research-action',f.call.operation,result,f.binding,{scopes:f.scopes,nowMs:NOW});assert.equal(admitted.status,'read');
+ assert.match(preparedResult(JSON.stringify(result),admitted.status).content[1].text,/no approval is needed/i);
+ await f.prepare(call);assert.equal(f.state.paths.length,2,'a repeated pure read observes current data instead of replaying an approval row');
+ const advertised=intentToolArguments([intentRow(f.call.operation)]);assert.equal(advertised.arguments.safeParse(request).success,true);
+});
+test('management read rejects unknown fields, revoked rights and foreign conversation without an approval journal',async()=>{
+ const f=setup('manage_research_portfolio'),request={conversationId:f.binding.conversationId,action:'grants_list',parameters:{}},call={...f.call,arguments:request};
+ f.state.readResult=[{secret:'must not leak'}];await assert.rejects(f.prepare(call));assert.equal(f.store.rows.size,0);
+ f.state.readResult=[];f.state.afterRead=()=>{f.state.scopeRevoked=true;};await assert.rejects(f.prepare(call),{code:'ACCESS_DENIED'});assert.equal(f.store.rows.size,0);
+ const before=f.state.paths.length;await assert.rejects(f.prepare({...call,arguments:{...request,conversationId:id(999)}}),{code:'INVALID_ARGUMENTS'});assert.equal(f.state.paths.length,before);
+});
+test('unknown actions and writes without confirmation never take the management read path; persisted rule preview remains governed',async()=>{
+ const f=setup('manage_research_portfolio');
+ for(const action of ['unknown_action','portfolio_archive','rule_preview'])await assert.rejects(f.prepare({...f.call,arguments:{conversationId:f.binding.conversationId,action,parameters:{}}}),{code:'INVALID_ARGUMENTS'});
+ assert.equal(f.state.paths.length,0);assert.equal(f.store.rows.size,0);
+ const prepared=await f.prepare({...f.call,arguments:{conversationId:f.binding.conversationId,action:'rule_preview',parameters:{},confirmed:true}});
+ assert.equal(prepared.status,'approval_required');assert.equal(f.state.prepares,1);assert.equal(f.state.effects,0);assert.equal(f.store.rows.size,1);
 });
 test('lost preparation acknowledgement never repeats a Core proposal',async()=>{
  const f=setup();f.state.loseCreate=true;await assert.rejects(f.prepare(),{code:'UNKNOWN'});f.state.loseCreate=false;

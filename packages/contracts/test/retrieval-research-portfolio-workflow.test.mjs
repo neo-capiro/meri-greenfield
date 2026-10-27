@@ -60,7 +60,10 @@ test('governed actions derive the one operation key, refuse model-supplied keys 
  const manage=actions.normalizeInput('manage_research_portfolio',{conversationId:binding.conversationId,action:'portfolio_archive',parameters:{expectedRevision:3},confirmed:true},{binding});
  assert.equal(actions.bind('manage_research_portfolio',manage,KEY).parameters.idempotencyKey,KEY);
  assert.equal(actions.bind('manage_research_portfolio',{...manage,action:'import_action',parameters:{jobId:U('a'),importAction:'apply'}},KEY).parameters.operationKey,KEY);
- for(const action of RESEARCH_MANAGEMENT_READ_ONLY_ACTIONS)assert.deepEqual(actions.bind('manage_research_portfolio',{...manage,action,parameters:{}},KEY).parameters,{});
+ for(const action of RESEARCH_MANAGEMENT_READ_ONLY_ACTIONS){
+  const request={conversationId:binding.conversationId,action,parameters:{}};assert.equal(actions.isManagementRead('manage_research_portfolio',request,{binding}),true);
+  assert.throws(()=>actions.bind('manage_research_portfolio',request,KEY),'pure reads cannot become approval proposals');
+ }
  for(const parameters of [{idempotencyKey:'mine'},{operationKey:'mine'},{portfolioId:U('9')},{scopeVersion:'x'}])assert.throws(()=>actions.normalizeInput('manage_research_portfolio',{conversationId:binding.conversationId,action:'portfolio_archive',parameters,confirmed:true},{binding}));
  assert.throws(()=>actions.normalizeInput('manage_research_portfolio',{conversationId:binding.conversationId,action:'portfolio_archive',parameters:{},confirmed:false},{binding}));
  assert.throws(()=>actions.normalizeInput('manage_research_portfolio',{conversationId:binding.conversationId,action:'nuke_portfolio',parameters:{},confirmed:true},{binding}));

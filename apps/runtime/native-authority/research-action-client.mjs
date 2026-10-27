@@ -53,6 +53,11 @@ export function createResearchActionCoreClient({origin,getCredentials,getService
   return validators.decided({proposalStatus:p.status,...(summary===undefined?{}:{resultSummary:summary})});
  }
  return Object.freeze({
+  async readManagement({binding,selectedClientId,request,signal,deadlineMs}){
+   if(!validators.isManagementRead('manage_research_portfolio',request,{binding}))refuse('INVALID_ARGUMENTS');
+   const result=await call({binding,selectedClientId,signal,deadlineMs},'POST','/api/clio/tools/manage_research_portfolio',{version:1,input:request,currentTurn:{tenantId:binding.tenantId,userId:binding.actorId,conversationId:binding.conversationId,selectedClientId}});
+   return validators.managementResult(request.action,result);
+  },
   async prepare({binding,selectedClientId,operation,request,operationKey,signal,deadlineMs}){
    if(!RESEARCH_ACTION_INTENTS.includes(operation))refuse('INVALID_ARGUMENTS');
    const bound=validators.bind(operation,validators.normalizeInput(operation,request,{binding}),operationKey),selection={binding,selectedClientId,signal,deadlineMs};

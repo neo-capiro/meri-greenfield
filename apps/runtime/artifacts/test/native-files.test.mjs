@@ -60,6 +60,14 @@ test('a cancelled or expired cleanup refuses before creating anything and leaves
  f.clock(1000);assert.deepEqual(target.owner.retain({deadlineMs:1500}),{retained:true,retainedPath:`${target.workspace}.uncommitted`},'the same tree is retained once the cleanup is live');
  assert.equal(await readFile(join(target.workspace+'.uncommitted','pending.txt'),'utf8'),'synthetic');
 });
+test('retention beyond the numbered slots preserves earlier evidence and still empties the workspace',async t=>{
+ const f=await fixture(t),target=await f.tree('target');
+ for(let n=0;n<1000;n++)await mkdir(target.workspace+'.uncommitted'+(n?'.'+n:''));
+ await writeFile(target.workspace+'.uncommitted/earlier.txt','preserved');await writeFile(join(target.workspace,'pending.txt'),'new evidence');
+ const result=target.owner.retain({deadlineMs:1500});assert.equal(result.retained,true);assert.ok(result.retainedPath.startsWith(target.workspace+'.uncommitted-'));
+ assert.equal(await readFile(join(result.retainedPath,'pending.txt'),'utf8'),'new evidence');
+ assert.equal(await readFile(target.workspace+'.uncommitted/earlier.txt','utf8'),'preserved');assert.deepEqual(await readdir(target.workspace),[]);
+});
 test('warm executable mismatch refuses without changing the file',async t=>{const f=await fixture(t),target=await f.tree('target'),file=join(target.workspace,'answer');await writeFile(file,'retained',{mode:0o600});const captured=target.owner.capture(),state=retained(captured);await chmod(file,0o700);await assert.rejects(target.owner.restore({state,files:bytes(captured.files),taskFiles:[]}),/WORKSPACE_RESTORE_REFUSED/);assert.equal(await readFile(file,'utf8'),'retained');});
 test('warm empty manifest refuses an outside directory symlink without following it',async t=>{const f=await fixture(t),target=await f.tree('target'),outside=join(f.root,'outside');await mkdir(outside);await writeFile(join(outside,'secret'),'protected');await symlink(outside,join(target.workspace,'empty'),'dir');await assert.rejects(target.owner.restore({state:retained({files:[],taskFiles:[]}),files:[],taskFiles:[]}),/WORKSPACE_CAPTURE_REFUSED/);assert.equal(await readFile(join(outside,'secret'),'utf8'),'protected');});
 test('warm verification refuses a directory changed during observation without erasing the late file',async t=>{const f=await fixture(t),target=await f.tree('target'),empty=join(target.workspace,'empty');await mkdir(empty);const read=fs.readdirSync;let changed=false;fs.readdirSync=(p,...args)=>{const result=read(p,...args);if(p===empty&&!changed){changed=true;fs.writeFileSync(join(empty,'late'),'preserve');}return result;};syncBuiltinESMExports();try{await assert.rejects(target.owner.restore({state:retained({files:[],taskFiles:[]}),files:[],taskFiles:[]}),/WORKSPACE_CAPTURE_REFUSED/);}finally{fs.readdirSync=read;syncBuiltinESMExports();}assert.equal(await readFile(join(empty,'late'),'utf8'),'preserve');});

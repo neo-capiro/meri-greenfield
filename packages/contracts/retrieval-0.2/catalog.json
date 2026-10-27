@@ -7,7 +7,7 @@
     {
       "id": "manage_research_portfolio",
       "disposition": "selected",
-      "boundary": "MO-05 conversation-scoped Research Portfolio action prepared for the signed-in user’s explicit confirmation through Core action proposals. Core owns current authority, idempotent effects and receipts; no model execution, automatic retry or research-scope retargeting.",
+      "boundary": "MO-05 conversation-scoped mixed management: pure read subactions use the authorized Core tool route directly; changes use immutable Core approval proposals. Current permissions and research scope are checked by Core for both.",
       "replacement": {
         "id": "manage_research_portfolio",
         "version": "0.2.0"
@@ -10494,7 +10494,7 @@
         "version": "0.2.0"
       },
       "displayName": "Prepare a Research Portfolio management action",
-      "whenToUse": "Prepare one exact native Research Portfolio management action (lifecycle, grants, client links, members, rules, reviews, annual continuity, imports, subscriptions, bookmarks, fit refresh, watch conversion, outputs, snapshots, templates, saved comparisons) for the signed-in user to confirm.",
+      "whenToUse": "Read current Research Portfolio management lists and details directly, or prepare a change for the signed-in user to confirm. Pure reads never create an approval proposal; rule_preview persists a preview and requires confirmation.",
       "limitations": [
         "Core checks the current conversation receipt, portfolio grant, selected client and tenant walls at preparation and again at the user’s decision.",
         "The operation key is derived by the intent delivery owner; a model-supplied key is refused. An unknown outcome is reconciled through its Core owner, never replayed.",
@@ -10515,11 +10515,11 @@
       ],
       "inputSchema": {
         "id": "urn:meri:retrieval:research-portfolio-action:0.2.0#/$defs/ResearchActionManageInput",
-        "sha256": "0056432e8f5a84e084972d3f5a458bde7102cb97f48132427a7f336b0a68ab39"
+        "sha256": "27820cd262ed0bec31825150d7548df60747b26e07ebf6d07a5f3b55fa863fb9"
       },
       "outputSchema": {
-        "id": "urn:meri:retrieval:research-portfolio-action:0.2.0#/$defs/ResearchActionPrepared",
-        "sha256": "0056432e8f5a84e084972d3f5a458bde7102cb97f48132427a7f336b0a68ab39"
+        "id": "urn:meri:retrieval:research-portfolio-action:0.2.0#/$defs/ResearchManagementOutput",
+        "sha256": "27820cd262ed0bec31825150d7548df60747b26e07ebf6d07a5f3b55fa863fb9"
       },
       "aliases": [],
       "sideEffect": "source-command",
@@ -10580,11 +10580,11 @@
       ],
       "inputSchema": {
         "id": "urn:meri:retrieval:research-portfolio-action:0.2.0#/$defs/ResearchActionSnapshotInput",
-        "sha256": "0056432e8f5a84e084972d3f5a458bde7102cb97f48132427a7f336b0a68ab39"
+        "sha256": "27820cd262ed0bec31825150d7548df60747b26e07ebf6d07a5f3b55fa863fb9"
       },
       "outputSchema": {
         "id": "urn:meri:retrieval:research-portfolio-action:0.2.0#/$defs/ResearchActionPrepared",
-        "sha256": "0056432e8f5a84e084972d3f5a458bde7102cb97f48132427a7f336b0a68ab39"
+        "sha256": "27820cd262ed0bec31825150d7548df60747b26e07ebf6d07a5f3b55fa863fb9"
       },
       "aliases": [],
       "sideEffect": "source-command",
@@ -10645,11 +10645,11 @@
       ],
       "inputSchema": {
         "id": "urn:meri:retrieval:research-portfolio-action:0.2.0#/$defs/ResearchActionOutputInput",
-        "sha256": "0056432e8f5a84e084972d3f5a458bde7102cb97f48132427a7f336b0a68ab39"
+        "sha256": "27820cd262ed0bec31825150d7548df60747b26e07ebf6d07a5f3b55fa863fb9"
       },
       "outputSchema": {
         "id": "urn:meri:retrieval:research-portfolio-action:0.2.0#/$defs/ResearchActionPrepared",
-        "sha256": "0056432e8f5a84e084972d3f5a458bde7102cb97f48132427a7f336b0a68ab39"
+        "sha256": "27820cd262ed0bec31825150d7548df60747b26e07ebf6d07a5f3b55fa863fb9"
       },
       "aliases": [],
       "sideEffect": "source-command",
@@ -10710,11 +10710,11 @@
       ],
       "inputSchema": {
         "id": "urn:meri:retrieval:research-portfolio-action:0.2.0#/$defs/ResearchActionSaveOutputInput",
-        "sha256": "0056432e8f5a84e084972d3f5a458bde7102cb97f48132427a7f336b0a68ab39"
+        "sha256": "27820cd262ed0bec31825150d7548df60747b26e07ebf6d07a5f3b55fa863fb9"
       },
       "outputSchema": {
         "id": "urn:meri:retrieval:research-portfolio-action:0.2.0#/$defs/ResearchActionPrepared",
-        "sha256": "0056432e8f5a84e084972d3f5a458bde7102cb97f48132427a7f336b0a68ab39"
+        "sha256": "27820cd262ed0bec31825150d7548df60747b26e07ebf6d07a5f3b55fa863fb9"
       },
       "aliases": [],
       "sideEffect": "source-command",
@@ -10775,11 +10775,11 @@
       ],
       "inputSchema": {
         "id": "urn:meri:retrieval:research-portfolio-action:0.2.0#/$defs/ResearchActionWatchInput",
-        "sha256": "0056432e8f5a84e084972d3f5a458bde7102cb97f48132427a7f336b0a68ab39"
+        "sha256": "27820cd262ed0bec31825150d7548df60747b26e07ebf6d07a5f3b55fa863fb9"
       },
       "outputSchema": {
         "id": "urn:meri:retrieval:research-portfolio-action:0.2.0#/$defs/ResearchActionPrepared",
-        "sha256": "0056432e8f5a84e084972d3f5a458bde7102cb97f48132427a7f336b0a68ab39"
+        "sha256": "27820cd262ed0bec31825150d7548df60747b26e07ebf6d07a5f3b55fa863fb9"
       },
       "aliases": [],
       "sideEffect": "source-command",
@@ -10840,11 +10840,11 @@
       ],
       "inputSchema": {
         "id": "urn:meri:retrieval:research-portfolio-action:0.2.0#/$defs/ResearchActionChangeStateInput",
-        "sha256": "0056432e8f5a84e084972d3f5a458bde7102cb97f48132427a7f336b0a68ab39"
+        "sha256": "27820cd262ed0bec31825150d7548df60747b26e07ebf6d07a5f3b55fa863fb9"
       },
       "outputSchema": {
         "id": "urn:meri:retrieval:research-portfolio-action:0.2.0#/$defs/ResearchActionPrepared",
-        "sha256": "0056432e8f5a84e084972d3f5a458bde7102cb97f48132427a7f336b0a68ab39"
+        "sha256": "27820cd262ed0bec31825150d7548df60747b26e07ebf6d07a5f3b55fa863fb9"
       },
       "aliases": [],
       "sideEffect": "source-command",
@@ -10905,11 +10905,11 @@
       ],
       "inputSchema": {
         "id": "urn:meri:retrieval:research-portfolio-action:0.2.0#/$defs/ResearchActionBookmarkInput",
-        "sha256": "0056432e8f5a84e084972d3f5a458bde7102cb97f48132427a7f336b0a68ab39"
+        "sha256": "27820cd262ed0bec31825150d7548df60747b26e07ebf6d07a5f3b55fa863fb9"
       },
       "outputSchema": {
         "id": "urn:meri:retrieval:research-portfolio-action:0.2.0#/$defs/ResearchActionPrepared",
-        "sha256": "0056432e8f5a84e084972d3f5a458bde7102cb97f48132427a7f336b0a68ab39"
+        "sha256": "27820cd262ed0bec31825150d7548df60747b26e07ebf6d07a5f3b55fa863fb9"
       },
       "aliases": [],
       "sideEffect": "source-command",
@@ -10970,11 +10970,11 @@
       ],
       "inputSchema": {
         "id": "urn:meri:retrieval:research-portfolio-action:0.2.0#/$defs/ResearchActionReviewNoteInput",
-        "sha256": "0056432e8f5a84e084972d3f5a458bde7102cb97f48132427a7f336b0a68ab39"
+        "sha256": "27820cd262ed0bec31825150d7548df60747b26e07ebf6d07a5f3b55fa863fb9"
       },
       "outputSchema": {
         "id": "urn:meri:retrieval:research-portfolio-action:0.2.0#/$defs/ResearchActionPrepared",
-        "sha256": "0056432e8f5a84e084972d3f5a458bde7102cb97f48132427a7f336b0a68ab39"
+        "sha256": "27820cd262ed0bec31825150d7548df60747b26e07ebf6d07a5f3b55fa863fb9"
       },
       "aliases": [],
       "sideEffect": "source-command",
@@ -11035,11 +11035,11 @@
       ],
       "inputSchema": {
         "id": "urn:meri:retrieval:research-portfolio-action:0.2.0#/$defs/ResearchActionBriefInput",
-        "sha256": "0056432e8f5a84e084972d3f5a458bde7102cb97f48132427a7f336b0a68ab39"
+        "sha256": "27820cd262ed0bec31825150d7548df60747b26e07ebf6d07a5f3b55fa863fb9"
       },
       "outputSchema": {
         "id": "urn:meri:retrieval:research-portfolio-action:0.2.0#/$defs/ResearchActionPrepared",
-        "sha256": "0056432e8f5a84e084972d3f5a458bde7102cb97f48132427a7f336b0a68ab39"
+        "sha256": "27820cd262ed0bec31825150d7548df60747b26e07ebf6d07a5f3b55fa863fb9"
       },
       "aliases": [],
       "sideEffect": "source-command",
@@ -11100,11 +11100,11 @@
       ],
       "inputSchema": {
         "id": "urn:meri:retrieval:research-portfolio-action:0.2.0#/$defs/ResearchActionMeetingInput",
-        "sha256": "0056432e8f5a84e084972d3f5a458bde7102cb97f48132427a7f336b0a68ab39"
+        "sha256": "27820cd262ed0bec31825150d7548df60747b26e07ebf6d07a5f3b55fa863fb9"
       },
       "outputSchema": {
         "id": "urn:meri:retrieval:research-portfolio-action:0.2.0#/$defs/ResearchActionPrepared",
-        "sha256": "0056432e8f5a84e084972d3f5a458bde7102cb97f48132427a7f336b0a68ab39"
+        "sha256": "27820cd262ed0bec31825150d7548df60747b26e07ebf6d07a5f3b55fa863fb9"
       },
       "aliases": [],
       "sideEffect": "source-command",

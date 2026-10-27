@@ -23,7 +23,7 @@ const currentScopes=(scopes,binding,current)=>Array.isArray(scopes)&&scopes.leng
 /**
  * @param {'note'|'command'|'schedule'|'document'|'artifact'|'memory'|'research-sharing'|'research-action'|'legiwatch'|'watch'|'client-record'|'bizdev'|'legislative-document'} owner @param {{id:string,version:string}} operation @param {unknown} value @param {any} binding
  * @param {{scopes:any[],nowMs:number}} current
- * @returns {{status:'approval_required'|'draft'|'analysis_pending'|'review_pending'|'saved'|'withheld'|'blocked'|'unknown'|'failed',reference:string,value:any}}
+ * @returns {{status:'approval_required'|'draft'|'analysis_pending'|'review_pending'|'saved'|'withheld'|'blocked'|'unknown'|'failed'|'read',reference:string,value:any}}
  */
 export function assertPreparedResult(owner,operation,value,binding,current){
  try{
@@ -61,6 +61,11 @@ export function assertPreparedResult(owner,operation,value,binding,current){
    return {status:'approval_required',reference:p.proposalId,value:v};
   }
   if(owner==='research-action'){
+   if(v.status==='read'){
+    const read=researchActionValidators.managementRead(v);validateShape('RunBinding',read.binding);
+    if(operation.id!==read.operation||operation.version!=='0.2.0'||!sameRun(read.binding,binding)||!currentScopes(read.scopes,binding,current.scopes)||Date.parse(read.observedAt)>current.nowMs||Date.parse(read.expiresAt)<=current.nowMs)refuse();
+    return {status:'read',reference:read.request.conversationId,value:read};
+   }
    toolShape('ResearchActionPrepared',v);const p=researchActionValidators.assertProposal(v.proposal);
    if(p.operation!==operation.id||operation.version!=='0.2.0'||!sameRun(p.binding,binding)||!currentScopes(p.scopes,binding,current.scopes)||Date.parse(p.createdAt)>current.nowMs||Date.parse(p.expiresAt)<=current.nowMs)refuse();
    return {status:'approval_required',reference:p.proposalId,value:v};

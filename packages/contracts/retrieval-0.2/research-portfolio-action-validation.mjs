@@ -1,6 +1,8 @@
-/** MO-05 governed Research Portfolio writes. Closed DTOs over Core action proposals: Core owns proposal creation, the
+/** MO-05 Research Portfolio management and writes. Pure management reads return bounded native DTOs directly.
+ * Closed DTOs over Core action proposals: Core owns proposal creation, the
  * signed-in user decision, idempotent effects and receipts. Validation supplies no authority and never reconstructs one. */
 import {snapshotOperationData} from './operation-contracts.mjs';
+import {assertResearchManagementResult} from './research-management-read-validation.mjs';
 export const RESEARCH_ACTION_INTENTS=Object.freeze(['manage_research_portfolio','create_research_portfolio_snapshot','request_research_portfolio_output',
  'save_research_portfolio_output_to_client','watch_research_portfolio','update_research_portfolio_change_state','create_research_portfolio_bookmark',
  'add_research_portfolio_review_note','prepare_research_portfolio_brief','prepare_research_portfolio_meeting']);
@@ -16,7 +18,7 @@ export const RESEARCH_MANAGEMENT_IDEMPOTENT_ACTIONS=Object.freeze(['portfolio_cr
  'client_link_create','client_link_delete','member_create','members_decide','member_resolve','rule_publish','review_assign','review_decide','reviews_bulk_decide',
  'annual_review_refresh','annual_review_reopen','watch_conversion_apply']);
 export const RESEARCH_MANAGEMENT_OPERATION_KEY_ACTIONS=Object.freeze(['import_create','import_action']);
-export const RESEARCH_MANAGEMENT_READ_ONLY_ACTIONS=Object.freeze(['grants_list','client_links_list','members_list','rule_preview','annual_review_get','subscriptions_list',
+export const RESEARCH_MANAGEMENT_READ_ONLY_ACTIONS=Object.freeze(['grants_list','client_links_list','members_list','annual_review_get','subscriptions_list',
  'deliveries_list','watch_conversion_preview','output_get','snapshots_list','snapshot_get','taxonomy_get','templates_list','template_version_get','comparison_list','comparison_get']);
 const KEY=/^meri-rp-[a-f0-9]{64}$/u,fail=()=>{throw Error('RESEARCH_ACTION_CONTRACT');};
 export function createResearchActionValidators({validateShape,canonicalSha256}){
@@ -54,10 +56,19 @@ export function createResearchActionValidators({validateShape,canonicalSha256}){
   return p;
  }
  function assertOutput(operation,value,request,context={}){
+  if(isManagementRead(operation,request,context)){const result=managementRead(value);if(canonicalSha256(result.request)!==canonicalSha256(request))fail();return result;}
   const input=normalizeInput(operation,request,context),result=shape('ResearchActionPrepared',value),p=assertProposal(result.proposal);
   if(p.operation!==operation||canonicalSha256(unbind(operation,p.request))!==canonicalSha256(input))fail();
   return result;
  }
  const decided=value=>shape('ResearchActionDecided',value);
- return Object.freeze({normalizeInput,bind,unbind,assertProposal,assertOutput,decided});
+ const isManagementRead=(operation,request,context={})=>operation==='manage_research_portfolio'&&RESEARCH_MANAGEMENT_READ_ONLY_ACTIONS.includes(normalizeInput(operation,request,context).action);
+ const managementResult=(action,value)=>assertResearchManagementResult(action,value,shape);
+ function managementRead(value){
+  const v=shape('ResearchManagementReadResult',value),keys=['status','operation','binding','scopes','request','result','observedAt','expiresAt'];
+  if(!v||typeof v!=='object'||Array.isArray(v)||Object.keys(v).length!==keys.length||keys.some(key=>!Object.hasOwn(v,key))||v.status!=='read'||!isManagementRead(v.operation,v.request,{binding:v.binding}))fail();
+  if(!Array.isArray(v.scopes)||!v.scopes.length||v.scopes.length>100||v.scopes.some(scope=>scope.tenantId!==v.binding.tenantId)||!Number.isFinite(Date.parse(v.observedAt))||!(Date.parse(v.expiresAt)>Date.parse(v.observedAt)))fail();
+  managementResult(v.request.action,v.result);return v;
+ }
+ return Object.freeze({normalizeInput,bind,unbind,assertProposal,assertOutput,decided,isManagementRead,managementResult,managementRead});
 }

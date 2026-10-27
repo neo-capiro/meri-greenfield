@@ -6,6 +6,15 @@ const binding={runId:'11111111-1111-4111-8111-111111111111',attemptId:'22222222-
 const terminal=(sequence=3)=>({binding,sequence,type:'run.status',data:{state:'completed'}});
 function fixture(service='control',options={}){const lines=[];let at=100;const telemetry=createTurnTelemetry({service,write:line=>lines.push(JSON.parse(line)),now:()=>at,...options});return {lines,telemetry,tick:n=>{at=n;}};}
 
+test('terminal timeout classification does not inherit an earlier recovered Core failure',()=>{
+ for(const reasonCode of ['EXECUTION_FAILED','DEADLINE']){
+  const {telemetry,lines}=fixture();telemetry.within(binding,()=>telemetry.recordCore('context','503',1));
+  telemetry.summary({binding,sequence:3,type:'run.status',data:{state:'failed',reasonCode}});
+  assert.equal(lines.find(line=>line.event==='meri.turn.summary').timeoutClass,reasonCode==='DEADLINE'?'deadline':'none');
+  assert.equal(lines.find(line=>line.event==='meri.turn.counters').core.context['503'],1);
+ }
+});
+
 test('nested provisional attribution adopts counts once and terminal waits for final recheck',async()=>{
  const {lines,telemetry,tick}=fixture();
  await telemetry.provisional(async()=>{

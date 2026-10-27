@@ -3,6 +3,7 @@ import test from 'node:test';import assert from 'node:assert/strict';
 import {createLegiwatchCoreClient} from '../../../runtime/native-authority/legiwatch-client.mjs';
 import {createLegiwatchPreparer} from '../legiwatch-preparer.mjs';
 import {createIntentApprovalOwner} from '../approval.mjs';
+import {productFailure} from '../../product-access/errors.mjs';
 import {legiwatchValidators,resolveOperationContract} from '../../../../packages/contracts/retrieval-0.2/validate.mjs';
 import {canonicalSha256 as hash} from '../../../../packages/contracts/validate.mjs';
 import {createIntentMount} from '../mount.mjs';
@@ -59,6 +60,23 @@ test('lost prepare acknowledgement stays UNKNOWN without another POST',async()=>
 test('lost effect acknowledgement recovers by read without redispatch',async()=>{
  const f=setup(),{proposal}=await f.prepare();f.state.loseDecide=true;await assert.rejects(f.decide(proposal),/APPROVAL_DECISION_UNKNOWN/);
  const before=f.state.paths.filter(p=>p.endsWith('/decide_legiwatch_suggestion')).length;f.state.loseDecide=false;const history=await f.list();assert.equal(history.intents[0].result.status,'succeeded');assert.equal(f.state.paths.filter(p=>p.endsWith('/decide_legiwatch_suggestion')).length,before);assert.equal(f.state.effects,1);
+});
+test('expired approval retry recovers the recorded effect only by reading its owner',async()=>{
+ const f=setup(),{proposal}=await f.prepare();f.state.loseDecide=true;await assert.rejects(f.decide(proposal),/APPROVAL_DECISION_UNKNOWN/);
+ const before=f.state.paths.filter(p=>p.endsWith('/decide_legiwatch_suggestion')).length;
+ const owner=createIntentApprovalOwner({journal:f.store.port,legiwatch:{read:f.client.read,decide:f.client.decide},now:()=>NOW+50001,limits:{maxRequestMs:5000},enabled:true});
+ const result=await owner.decide({principal:f.principal,request:f.decideRequest(proposal)});
+ assert.equal(result.result.status,'succeeded');assert.equal(f.state.effects,1);
+ assert.equal(f.state.paths.filter(p=>p.endsWith('/decide_legiwatch_suggestion')).length,before);
+ await assert.rejects(owner.decide({principal:{...f.principal,clientIds:[]},request:f.decideRequest(proposal)}),/INTENT_SCOPE_WITHHELD/);
+});
+test('a pre-send owner refusal stays definite while a sent decision stays unknown',async()=>{
+ const f=setup(),{proposal}=await f.prepare();
+ for(const effect of ['none','unknown']){
+  const owner=createIntentApprovalOwner({journal:f.store.port,legiwatch:{read:f.client.read,decide:async()=>{throw Object.assign(Error('ACCESS_DENIED'),{code:'ACCESS_DENIED',effect});}},now:()=>NOW,limits:{maxRequestMs:5000},enabled:true});
+  await assert.rejects(owner.decide({principal:f.principal,request:f.decideRequest(proposal)}),e=>e.message===(effect==='none'?'APPROVER_REFUSED':'APPROVAL_DECISION_UNKNOWN')&&productFailure(e)?.outcome===(effect==='none'?'NOT_DISPATCHED':'UNKNOWN'));
+ }
+ assert.equal(f.state.effects,0);
 });
 test('dismiss never changes a suggestion',async()=>{const f=setup(),{proposal}=await f.prepare();assert.equal((await f.decide(proposal,'rejected')).result.status,'dismissed');assert.equal(f.state.effects,0);});
 test('foreign selector, injected request key and tampered command digest refuse',async()=>{
