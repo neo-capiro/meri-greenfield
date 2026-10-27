@@ -8,6 +8,7 @@ import {createCapiroApplicationAuthorityClient} from '../../control/action-host/
 import {createConversationAuthorityReader} from './conversation-authority.mjs';
 import {createClientReferenceReader} from './client-reference.mjs';
 import {createReadModeObservationReader} from './read-mode-observation.mjs';
+import {createChatAttachmentSourceReader} from './chat-attachment-source.mjs';
 import {readJsonResponse,responseBody,cancelBody} from '../../gateway/sources/json-response.mjs';
 import {safeFailure} from '../../gateway/dispatch/operation-result.mjs';
 const SHA=/^[a-f0-9]{64}$/u,UUID=/^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/u;
@@ -44,6 +45,7 @@ export function createNativeToolAuthorityClient(configuration={}){
  const readConversation=createConversationAuthorityReader({available,authorityClient:resourceIdentity,now,maxRequestMs});
  const readClientReference=createClientReferenceReader({available,origin,fetchImpl:c.fetchImpl,authorityClient:resourceIdentity,now,maxRequestMs});
  const readModeObservation=createReadModeObservationReader({available,origin,fetchImpl:c.fetchImpl,authorityClient:resourceIdentity,now,maxRequestMs});
+ const readChatAttachmentSource=createChatAttachmentSourceReader({available,origin,fetchImpl:c.fetchImpl,now,maxRequestMs,binding:c.binding,selectedClientId:c.selectedClientId});
  /** Ordinary actor-owned integration inventory, including disconnected stored mail. Core's `listIntegrations` already selects
   * the caller's tenant and the connections the caller created, and its Settings projection carries neither identifier, so
   * ownership is Core's statement and is not re-derived from the rows. These IDs only select data; every mail read still
@@ -70,5 +72,5 @@ export function createNativeToolAuthorityClient(configuration={}){
   }
   life.check();return result.sort((a,b)=>a.id.localeCompare(b.id));
  }catch(error){throw failure(error);}finally{try{if(acquired)cancelBody(responseBody(acquired));}catch{}life?.close();}}
- return Object.freeze({available,origin,readCurrent,readConversation,readClientReference,readModeObservation,readMailboxes});
+ return Object.freeze({available,origin,readCurrent,readConversation,readClientReference,readModeObservation,readChatAttachmentSource,readMailboxes});
 }

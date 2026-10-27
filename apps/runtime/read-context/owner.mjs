@@ -16,6 +16,8 @@ import {captureBusinessDevelopmentResource} from '../../gateway/sources/business
 import {assertNativeConversationAuthority} from './conversation-authority.mjs';
 import {assertNativeClientReferenceObservation,CLIENT_REFERENCE_MAX_REQUEST_MS} from './client-reference.mjs';
 import {assertNativeReadModeObservation} from './read-mode-observation.mjs';
+import {assertChatAttachmentSource} from './chat-attachment-source.mjs';
+import {attachmentSelection} from '../../gateway/sources/client-knowledge-attachments/request-context.mjs';
 import {MODE_READ_OPERATIONS} from '../../../packages/contracts/native-read-observation-0.2/validate.mjs';
 import {createSourceReadContext,assertNativeVisibleClients,assertNativeResultClientIds,assertSourceReadRequest,sourceReadClientReference,assertSourceReadReferenceSubject} from './source-read-context.mjs';
 const same=(a,b)=>hash(a)===hash(b),refuse=code=>{throw nativeReadFault(code);};
@@ -32,12 +34,13 @@ export function createReadContextOwner(configuration){
  const c=own(configuration,['binding','expiresAtMs'],['current','executionSha256','approvedReads','coreAuthority','getNativeCredential','getServiceSecret','getReadModeServiceSecret','defaultCongress','now','enabled']),binding=data(c.binding),now=c.now??Date.now,enabled=c.enabled??false;
  validateShape('RunBinding',binding);if(typeof now!=='function'||typeof enabled!=='boolean'||!Number.isSafeInteger(c.expiresAtMs)||c.defaultCongress!==undefined&&(!Number.isSafeInteger(c.defaultCongress)||c.defaultCongress<1||c.defaultCongress>2147483647))refuse('CONFIGURATION');
  for(const name of ['getNativeCredential','getServiceSecret','getReadModeServiceSecret'])if(c[name]!==undefined&&(typeof c[name]!=='function'||types.isProxy(c[name])))refuse('CONFIGURATION');
- const core=c.coreAuthority===undefined?undefined:own(c.coreAuthority,['available','origin','readCurrent'],['readConversation','readClientReference','readModeObservation','readMailboxes']),origin=core?.origin===undefined?undefined:retainedOrigin(core.origin);
+ const core=c.coreAuthority===undefined?undefined:own(c.coreAuthority,['available','origin','readCurrent'],['readConversation','readClientReference','readModeObservation','readChatAttachmentSource','readMailboxes']),origin=core?.origin===undefined?undefined:retainedOrigin(core.origin);
  const approved=c.approvedReads===undefined?undefined:assertNativeReadConfiguration(c.approvedReads);
  const available=Boolean(enabled&&typeof c.current==='function'&&typeof c.executionSha256==='string'&&approved?.enabled&&core?.available===true&&origin&&c.getNativeCredential&&c.getServiceSecret);
  const currentCore=available?storageMethod(c.coreAuthority,'readCurrent'):null,
   readConversation=available&&typeof core.readConversation==='function'?storageMethod(c.coreAuthority,'readConversation'):null,
   readClientReference=available&&typeof core.readClientReference==='function'?storageMethod(c.coreAuthority,'readClientReference'):null,
+  readChatAttachmentSource=available&&typeof core.readChatAttachmentSource==='function'?storageMethod(c.coreAuthority,'readChatAttachmentSource'):null,
   readModeObservation=available&&typeof core.readModeObservation==='function'?storageMethod(c.coreAuthority,'readModeObservation'):null,pins=new WeakMap();
  function observation(raw){const v=data(own(raw,['binding','subject','operation','request','requestSha256','policyRevision','sourceIds','deadlineMs']));validateShape('RunBinding',v.binding);assertSubject(v.subject,v.binding);readShape('OperationRef',v.operation);
   const contract=resolveOperationContract(v.operation);if(!nativeReadOperationAllowed(contract.binding.group,v.operation.id)||contract.descriptor.sideEffect!=='none'||contract.descriptor.approvalBoundary!=='none')refuse('ACCESS_DENIED');if(['bill-text','federal-legislation'].includes(contract.binding.group)&&c.defaultCongress===undefined)refuse('UNAVAILABLE');
@@ -46,6 +49,7 @@ export function createReadContextOwner(configuration){
   assertSourceReadRequest(contract,v.request,v.subject);
   if(sourceReadClientReference(contract,v.request)!==null&&!readClientReference)refuse('UNAVAILABLE');
   if(MODE_READ_OPERATIONS.includes(v.operation.id)&&(!readModeObservation||!c.getReadModeServiceSecret))refuse('UNAVAILABLE');
+  if(contract.binding.group==='client-knowledge-attachments'){attachmentSelection(v.request,v.subject,v.binding);if(!readChatAttachmentSource)refuse('UNAVAILABLE');}
   if(contract.binding.group==='business-development'&&!readConversation&&captureBusinessDevelopmentResource(v.operation,v.request,v.subject).clientId!==null)refuse('UNAVAILABLE');
   if(!same(v.binding,binding)||v.subject.policyRevision!==v.policyRevision||v.requestSha256!==hash(v.request)||!same([...v.sourceIds].sort(),[...new Set(contract.descriptor.sourceRequirements.map(s=>s.sourceId))].sort())||!Number.isSafeInteger(v.deadlineMs))refuse('ACCESS_DENIED');
   if(!approved.operations.some(op=>same(op,v.operation)))refuse('ACCESS_DENIED');return v;}
@@ -63,13 +67,22 @@ export function createReadContextOwner(configuration){
     !same(current.execution.binding,binding)||proof.subject.scopes.some(scope=>!current.scopes.some(parent=>same(scope,parent))))refuse('ACCESS_DENIED');
    limit(current.execution.expiresAtMs);return current;
   }
+  async function observeAttachmentSource(credential){
+   const selection=attachmentSelection(proof.request,proof.subject,binding);
+   const serviceSecret=await life.run(signal=>c.getServiceSecret({binding,operation:proof.operation,origin,requestSha256:proof.requestSha256,signal,deadlineMs:cutoff}));
+   if(!token(serviceSecret))refuse('UNAVAILABLE');await admission();const started=now();
+   const observed=assertChatAttachmentSource(await life.run(signal=>readChatAttachmentSource({credential,serviceSecret,sourceConversationId:selection.sourceConversationId,signal,deadlineMs:cutoff})),{binding,...selection,started,now,deadlineMs:cutoff});
+   limit(observed.expiresAtMs);return observed;
+  }
   /** Final result release re-observes the canonical current Core context: a client selection lost
    * after the source value was produced withholds that value. The original expiry still bounds the call. */
   async function observeRelease(proof,prior){
    const started=now(),fresh=assertNativeToolAuthority(await life.run(signal=>currentCore({credential:prior.credential,signal,deadlineMs:cutoff})),{started,now});
    const {modeObservation,clientReference}=prior.vector;
+   const attachmentObservation=proof.operation.id==='read_chat_attachments'?await observeAttachmentSource(prior.credential):null;
    const context=createSourceReadContext({contract:resolveOperationContract(proof.operation),proof,native:fresh,defaultCongress:c.defaultCongress,now,priorContext:prior.context,
     ...(modeObservation?{modeObservation}:{}),
+    ...(attachmentObservation?{attachmentObservation}:{}),
     ...(clientReference?{clientReferenceObservation:{reference:clientReference.reference,clientId:clientReference.clientId}}:{})});
    if(!same(context,prior.context))refuse('ACCESS_DENIED');
    limit(fresh.expiresAtMs);
@@ -86,7 +99,8 @@ export function createReadContextOwner(configuration){
    const began=now(),native=assertNativeToolAuthority(await life.run(signal=>currentCore({credential,signal,deadlineMs:cutoff})),{started:began,now});limit(native.expiresAtMs);
    // Equality is permitted only for the canonical Core UUID principal already captured by native startup. No conversion/mapping.
    if(native.principal.tenantId!==binding.tenantId||native.principal.actorId!==binding.actorId)refuse('UNAVAILABLE');
-   const contract=resolveOperationContract(proof.operation);let conversation=null,clientReferenceObservation=null,modeObservation=null;
+   const contract=resolveOperationContract(proof.operation);let conversation=null,clientReferenceObservation=null,modeObservation=null,attachmentObservation=null;
+   if(contract.binding.group==='client-knowledge-attachments')attachmentObservation=await observeAttachmentSource(credential);
    if(contract.binding.group==='business-development'){
     const resource=captureBusinessDevelopmentResource(proof.operation,proof.request,proof.subject);
     // Client tasks retain their exact private resource upper bound. Personal tasks use the native
@@ -121,6 +135,7 @@ export function createReadContextOwner(configuration){
    }
    const context=createSourceReadContext({contract,proof,native,defaultCongress:c.defaultCongress,now,priorContext:pins.get(scopeSignal)?.context,
     ...(modeObservation?{modeObservation}:{}),
+    ...(attachmentObservation?{attachmentObservation}:{}),
     ...(clientReferenceObservation?{clientReferenceObservation:{reference:clientReferenceObservation.reference,clientId:clientReferenceObservation.clientId}}:{})});
    contract.normalizeInput(proof.request,context);
    const after=await admission();if(!same(executionSelection(before),executionSelection(after)))refuse('ACCESS_DENIED');

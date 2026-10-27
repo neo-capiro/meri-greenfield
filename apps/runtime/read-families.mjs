@@ -55,6 +55,8 @@ export function prepareReadFamilies({familyIds,coreOrigin,fetchImpl,now,newId,ca
   }
   const families={};
   for(const family of familyIds){
+   // The legacy attachment owner requires a genuine interactive current-turn observation; saved jobs have no such bearer.
+   if(job&&family==='client-knowledge-attachments')continue;
    if(NATIVE_READ_FAMILIES.includes(family))families[family]={origin:coreOrigin,fetchImpl,maxRequestMs:approvedReads.maxExecuteMs,maxResponseBytes:approvedReads.maxResponseBytes,
     ...(readSource?{readSource}:{credentialsForCall:credentials.credentialsForCall}),...(family==='client-registry'?{authorizeResultForCall:credentials.authorizeResultForCall}:{})};
    else if(ORDINARY_FAMILIES.has(family)){

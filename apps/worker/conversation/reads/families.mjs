@@ -22,6 +22,7 @@ export const READ_FAMILIES=Object.freeze({'watch-state':Object.freeze({clientSco
  'tenant-contacts':Object.freeze({clientScope:'optional'}),
  'entity-candidates':Object.freeze({clientScope:'optional'}),
  'client-knowledge-profile':Object.freeze({clientScope:'optional'}),
+ 'client-knowledge-attachments':Object.freeze({clientScope:'optional'}),
  'client-documents':Object.freeze({clientScope:'optional'}),
  'client-knowledge-memory':Object.freeze({clientScope:'optional'}),
  'client-knowledge-monday':Object.freeze({clientScope:'required'}),
