@@ -84,11 +84,6 @@
               "type": "null"
             }
           ]
-        },
-        "requestKey": {
-          "type": "string",
-          "minLength": 8,
-          "maxLength": 180
         }
       },
       "required": [
@@ -98,9 +93,141 @@
         "targetKey",
         "operation",
         "expectedVersion",
-        "requestKey"
+        "sourceRevision",
+        "reason",
+        "enabled"
       ],
-      "additionalProperties": false
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "family": {
+                "const": "legiwatch_keyword"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "operation": {
+                "enum": [
+                  "subscribe",
+                  "pause",
+                  "resume",
+                  "unsubscribe",
+                  "set_delivery"
+                ]
+              },
+              "targetKind": {
+                "enum": [
+                  "keyword_rule"
+                ]
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "family": {
+                "const": "business_development_prospect"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "operation": {
+                "enum": [
+                  "subscribe",
+                  "pause",
+                  "resume",
+                  "unsubscribe"
+                ]
+              },
+              "targetKind": {
+                "enum": [
+                  "prospect"
+                ]
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "family": {
+                "const": "defense_budget_target"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "operation": {
+                "enum": [
+                  "subscribe",
+                  "resume",
+                  "unsubscribe"
+                ]
+              },
+              "targetKind": {
+                "enum": [
+                  "program",
+                  "pe",
+                  "project",
+                  "capability"
+                ]
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "family": {
+                "const": "client_watchlist"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "operation": {
+                "enum": [
+                  "subscribe",
+                  "pause"
+                ]
+              },
+              "targetKind": {
+                "enum": [
+                  "client_tracker_watchlist"
+                ]
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "operation": {
+                "const": "set_delivery"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "enabled": {
+                "type": "boolean"
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "enabled": {
+                "type": "null"
+              }
+            }
+          }
+        }
+      ]
     },
     "WatchRequest": {
       "type": "object",
@@ -198,9 +325,142 @@
         "targetKey",
         "operation",
         "expectedVersion",
+        "sourceRevision",
+        "reason",
+        "enabled",
         "requestKey"
       ],
-      "additionalProperties": false
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "family": {
+                "const": "legiwatch_keyword"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "operation": {
+                "enum": [
+                  "subscribe",
+                  "pause",
+                  "resume",
+                  "unsubscribe",
+                  "set_delivery"
+                ]
+              },
+              "targetKind": {
+                "enum": [
+                  "keyword_rule"
+                ]
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "family": {
+                "const": "business_development_prospect"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "operation": {
+                "enum": [
+                  "subscribe",
+                  "pause",
+                  "resume",
+                  "unsubscribe"
+                ]
+              },
+              "targetKind": {
+                "enum": [
+                  "prospect"
+                ]
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "family": {
+                "const": "defense_budget_target"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "operation": {
+                "enum": [
+                  "subscribe",
+                  "resume",
+                  "unsubscribe"
+                ]
+              },
+              "targetKind": {
+                "enum": [
+                  "program",
+                  "pe",
+                  "project",
+                  "capability"
+                ]
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "family": {
+                "const": "client_watchlist"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "operation": {
+                "enum": [
+                  "subscribe",
+                  "pause"
+                ]
+              },
+              "targetKind": {
+                "enum": [
+                  "client_tracker_watchlist"
+                ]
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "operation": {
+                "const": "set_delivery"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "enabled": {
+                "type": "boolean"
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "enabled": {
+                "type": "null"
+              }
+            }
+          }
+        }
+      ]
     },
     "WatchContext": {
       "type": "object",

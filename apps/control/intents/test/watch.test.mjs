@@ -3,7 +3,7 @@ import test from 'node:test';import assert from 'node:assert/strict';
 import {createWatchCoreClient} from '../../../runtime/native-authority/watch-client.mjs';
 import {createWatchPreparer} from '../watch-preparer.mjs';
 import {createIntentApprovalOwner} from '../approval.mjs';
-import {watchValidators,resolveOperationContract} from '../../../../packages/contracts/retrieval-0.2/validate.mjs';
+import {watchValidators,validateShape,resolveOperationContract} from '../../../../packages/contracts/retrieval-0.2/validate.mjs';
 import {canonicalSha256 as hash} from '../../../../packages/contracts/validate.mjs';
 import {createIntentMount} from '../mount.mjs';
 import {assertPreparedResult} from '../../../worker/conversation/intents/prepared.mjs';
@@ -97,4 +97,25 @@ test('catalog maps one prepare-only operation',async()=>{
  const f=setup(),p=await f.prepare(),c=resolveOperationContract(f.call.operation);
  c.assertOutput(p,{request:f.request});
  assert.throws(()=>assertPreparedResult('watch',f.call.operation,{status:'executed',proposal:p.proposal},f.binding,{scopes:f.scopes,nowMs:NOW}));
+});
+
+test('advertised model WatchInput accepts the preparer arguments and refuses a caller request key',()=>{
+ const f=setup();validateShape('WatchInput',f.request);
+ assert.throws(()=>validateShape('WatchInput',{...f.request,requestKey:'caller-request-key'}));
+});
+test('generated watch receiver enforces canonical family verb target and delivery constraints',async()=>{
+ const f=setup();await f.prepare();const base=await f.list(),request={conversationId:f.binding.conversationId};
+ await receiveIntentsResponse('list',200,JSON.stringify(base),{request});
+ for(const changed of [
+  {family:'client_watchlist',targetKind:'client_tracker_watchlist',operation:'unsubscribe'},
+  {family:'defense_budget_target',targetKind:'pe',operation:'pause'},
+  {targetKind:'prospect'},
+  {operation:'set_delivery',enabled:null},
+  {operation:'pause',enabled:true},
+ ]){
+  const value=structuredClone(base),item=value.intents[0];Object.assign(item.proposal.request,changed);
+  const {commandSha256,...bound}=item.proposal;item.proposal.commandSha256=hash(bound);item.result.request=structuredClone(item.proposal.request);
+  assert.throws(()=>watchValidators.request(item.proposal.request));
+  await assert.rejects(receiveIntentsResponse('list',200,JSON.stringify(value),{request}));
+ }
 });
