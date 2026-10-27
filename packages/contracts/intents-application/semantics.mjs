@@ -20,6 +20,11 @@ const exact=value=>{const at=Date.parse(value);if(!Number.isSafeInteger(at)||new
 const STABLE=['tenantId','actorId','conversationId','runId'];
 /** The retained proposal must describe itself: its hash is the canonical hash of its command, it belongs to the requested conversation and tenant. */
 async function proposal(value,conversationId){
+ if(value.kind==='legislative_document_action'){
+  const {commandSha256,...bound}=value,selected=value.context.selectedClientId,[s]=value.scopes;
+  if(await sha(bound)!==commandSha256||value.binding.conversationId!==conversationId||value.context.conversationId!==conversationId||parsed(value.expiresAt)<=parsed(value.createdAt)||s.tenantId!==value.binding.tenantId||s.kind!==(selected===null?'private-user':'client')||s.resourceId!==(selected??value.binding.actorId)||selected!==null&&value.request.clientId!==selected)conflict();
+  legislativeDocumentRequest(value.operation,value.request);return;
+ }
  if(value.kind==='client_record_action'){
   const {commandSha256,...bound}=value,selected=value.context.selectedClientId,[s]=value.scopes;
   if(value.operation!==value.request.operation||await sha(bound)!==commandSha256||value.binding.conversationId!==conversationId||value.context.conversationId!==conversationId||parsed(value.expiresAt)<=parsed(value.createdAt)||s.tenantId!==value.binding.tenantId||s.kind!==(selected===null?'private-user':'client')||s.resourceId!==(selected??value.binding.actorId)||value.operation==='update_client_profile'&&selected!==null&&value.request.input.clientId!==selected)conflict();return;
@@ -132,6 +137,22 @@ function phase(item){
  if(d!==null&&typeof d==='object'){if(p!==d.decision)conflict();return;}
  if(!(d===null?['awaiting_approval','expired']:['expired','unknown_decision']).includes(p))conflict();
 }
+/** Browser correlation of the canonical owner's closed selection and durable effect; no authority is granted here. */
+function legislativeDocumentRequest(operation,request){
+ const briefing=operation==='prepare_legiwatch_briefing';
+ if(briefing!==Object.hasOwn(request,'template')||request.citations.some(c=>c.end<=c.start))conflict();
+ if(briefing&&!Number.isFinite(Date.parse(request.cutoff)))conflict();
+}
+function legislativeDocumentResult(value,retained){
+ if(value.operation!==retained.operation||value.proposalId!==retained.proposalId||!same(value.request,retained.request)||!same(value.context,retained.context)||value.createdAt!==retained.createdAt||value.expiresAt!==retained.expiresAt)conflict();
+ const r=value.receipt;
+ if(value.status==='succeeded'){
+  if(r===null||value.effect!==r.state||!same(r.request,retained.request))conflict();
+  if(r.state==='complete'){
+   if(typeof r.documentId!=='string'||!/^[a-zA-Z0-9-]{1,100}$/u.test(r.documentId)||r.location!=='/workspace/draft/'+r.documentId)conflict();
+  }else if(r.documentId!==null||r.location!==null)conflict();
+ }else if(r!==null||(value.effect!==null&&value.effect!=='unknown')||value.status==='outcome_unknown'&&value.effect!=='unknown')conflict();
+}
 async function clientRecordResult(value,retained){
  if(value.proposalId!==retained.proposalId||!same(value.request,retained.request)||!same(value.context,retained.context)||value.createdAt!==retained.createdAt||value.expiresAt!==retained.expiresAt||(value.status==='succeeded')!==(value.receipt!==null))conflict();
  if(value.receipt===null)return;const r=value.receipt,input=retained.request.input;if(!same(r.request,retained.request))conflict();
@@ -157,6 +178,7 @@ async function item(value,conversationId){
  // an impossible day such as 2026-02-30 can not roll into March.
  exact(value.createdAt);
  if(value.kind==='legiwatch_action'){if(!Object.hasOwn(value,'proposal'))return;if(value.operation.id!==value.proposal.operation)conflict();await proposal(value.proposal,conversationId);if(value.result!=='unavailable')await legiwatchResult(value.result,value.proposal);return;}
+ if(value.kind==='legislative_document_action'){if(!Object.hasOwn(value,'proposal'))return;if(value.operation.id!==value.proposal.operation)conflict();await proposal(value.proposal,conversationId);if(value.result!=='unavailable')legislativeDocumentResult(value.result,value.proposal);return;}
  if(value.kind==='client_record_action'){if(!Object.hasOwn(value,'proposal'))return;if(value.operation.id!==value.proposal.operation)conflict();await proposal(value.proposal,conversationId);if(value.result!=='unavailable')await clientRecordResult(value.result,value.proposal);return;}
  if(value.kind==='bizdev_action'){if(!Object.hasOwn(value,'proposal'))return;if(value.operation.id!==value.proposal.operation)conflict();await proposal(value.proposal,conversationId);if(value.result!=='unavailable')bizdevResult(value.result,value.proposal);return;}
  if(value.kind==='research_share'){
@@ -199,6 +221,9 @@ export async function decide(value,request,retained){
  await proposal(retained,request.conversationId);
  if(retained.kind==='legiwatch_action'){
   if(value.status!=='legiwatch_decided'||retained.proposalId!==request.proposalId||retained.commandSha256!==request.commandSha256||value.deliveryId!==request.deliveryId||value.proposalId!==request.proposalId)conflict();await legiwatchResult(value.result,retained);return value;
+ }
+ if(retained.kind==='legislative_document_action'){
+  if(value.status!=='legislative_document_decided'||retained.proposalId!==request.proposalId||retained.commandSha256!==request.commandSha256||value.deliveryId!==request.deliveryId||value.proposalId!==request.proposalId)conflict();legislativeDocumentResult(value.result,retained);return value;
  }
  if(retained.kind==='client_record_action'){
   if(value.status!=='client_record_decided'||retained.proposalId!==request.proposalId||retained.commandSha256!==request.commandSha256||value.deliveryId!==request.deliveryId||value.proposalId!==request.proposalId)conflict();await clientRecordResult(value.result,retained);return value;

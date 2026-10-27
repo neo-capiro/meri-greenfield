@@ -562,10 +562,13 @@
     },
     {
       "id": "prepare_legiwatch_briefing",
-      "disposition": "deferred",
-      "boundary": "Specialized Research Portfolio or LegiWatch source workflow is outside initial commands; exact authorization, side effects and fixture scope require separate acceptance.",
-      "replacement": null,
-      "state": "deferred"
+      "disposition": "selected",
+      "boundary": "Prepare one exact briefing draft from the current authorized folder, jurisdiction/session, cut-off and cited source revisions for explicit approval; Intel EditorialService owns source and current-context checks, the request-key/input-hash lock, the canonical selection and any Workspace export. No publish, send or schedule.",
+      "replacement": {
+        "id": "prepare_legiwatch_briefing",
+        "version": "0.2.0"
+      },
+      "state": "mapped"
     },
     {
       "id": "search_legislative_research",
@@ -599,10 +602,13 @@
     },
     {
       "id": "save_legislative_research",
-      "disposition": "deferred",
-      "boundary": "Specialized Research Portfolio or LegiWatch source workflow is outside initial commands; exact authorization, side effects and fixture scope require separate acceptance.",
-      "replacement": null,
-      "state": "deferred"
+      "disposition": "selected",
+      "boundary": "Save one reviewed research draft from the current authorized client/folder, session and exact cited document revisions for explicit approval; Intel ResearchService owns source and current-context checks, the request-key/input-hash lock, the canonical selection and any Workspace export. No publish, send or schedule.",
+      "replacement": {
+        "id": "save_legislative_research",
+        "version": "0.2.0"
+      },
+      "state": "mapped"
     },
     {
       "id": "preview_legiwatch_relevance",
@@ -9628,6 +9634,140 @@
       ],
       "fixtureIds": [
         "catalog.binding.save_business_development_brief"
+      ]
+    },
+    {
+      "operation": {
+        "id": "prepare_legiwatch_briefing",
+        "version": "0.2.0"
+      },
+      "displayName": "Prepare a LegiWatch briefing draft",
+      "whenToUse": "Prepare one exact private editable briefing draft from the currently authorized folder, jurisdiction and session, cut-off and cited source revisions for the signed-in user to confirm.",
+      "limitations": [
+        "Requires the exact folder, jurisdiction/session, template, cut-off, timezone and cited source kind/id/revision; the owner re-reads every source for current permission and staleness.",
+        "A saved selection alone is not a completed document; an unconfigured Workspace export returns no draft receipt and no workspace location.",
+        "No approval, publish, send, schedule or automatic retry of an unknown effect."
+      ],
+      "positiveExamples": [
+        "Prepare this exact briefing draft for explicit approval."
+      ],
+      "negativeExamples": [
+        "Publish, send or schedule a briefing.",
+        "Invent a citation, locator or source revision.",
+        "Retry an effect whose outcome is unknown."
+      ],
+      "sourceRequirements": [
+        {
+          "sourceId": "legiwatch_editorial",
+          "authority": "authoritative",
+          "purpose": "evidence"
+        }
+      ],
+      "inputSchema": {
+        "id": "urn:meri:retrieval:legislative-document-action:0.2.0#/$defs/LegislativeDocumentBriefingInput",
+        "sha256": "47230549827ba0f31936c0eb5d77ae426bc7e34365ba0f969b1b1f284d523973"
+      },
+      "outputSchema": {
+        "id": "urn:meri:retrieval:legislative-document-action:0.2.0#/$defs/LegislativeDocumentPrepared",
+        "sha256": "47230549827ba0f31936c0eb5d77ae426bc7e34365ba0f969b1b1f284d523973"
+      },
+      "aliases": [],
+      "sideEffect": "source-command",
+      "requiredGrants": [
+        "command.execute"
+      ],
+      "approvalBoundary": "immutable-proposal",
+      "handler": null,
+      "availability": "unimplemented",
+      "qualification": "pending",
+      "retry": {
+        "maxRetries": 0,
+        "retryableCodes": [],
+        "unknownOutcome": "reconcile-before-retry"
+      },
+      "replacement": null,
+      "requirementIds": [
+        "R-01",
+        "R-04",
+        "R-05"
+      ],
+      "ticketIds": [
+        "REL-02"
+      ],
+      "gateIds": [
+        "RG-02",
+        "RG-05",
+        "RG-07"
+      ],
+      "fixtureIds": [
+        "catalog.binding.prepare_legiwatch_briefing"
+      ]
+    },
+    {
+      "operation": {
+        "id": "save_legislative_research",
+        "version": "0.2.0"
+      },
+      "displayName": "Save a reviewed legislative research draft",
+      "whenToUse": "Save one reviewed private research draft from the currently authorized client/folder context, jurisdiction and session and exact cited document revisions for the signed-in user to confirm.",
+      "limitations": [
+        "Requires the exact jurisdiction/session, cited document id/revision and quote slices at their locators; the owner re-reads every document for current permission and staleness.",
+        "A saved selection alone is not a completed document; the receipt states complete, selection-only or unknown and never upgrades one.",
+        "No approval, publish, send, schedule or automatic retry of an unknown effect."
+      ],
+      "positiveExamples": [
+        "Save this exact reviewed research draft for explicit approval."
+      ],
+      "negativeExamples": [
+        "Publish, send or schedule research.",
+        "Invent a document version, statutory citation or quote offset.",
+        "Retry an effect whose outcome is unknown."
+      ],
+      "sourceRequirements": [
+        {
+          "sourceId": "legislative_research",
+          "authority": "authoritative",
+          "purpose": "evidence"
+        }
+      ],
+      "inputSchema": {
+        "id": "urn:meri:retrieval:legislative-document-action:0.2.0#/$defs/LegislativeDocumentResearchInput",
+        "sha256": "47230549827ba0f31936c0eb5d77ae426bc7e34365ba0f969b1b1f284d523973"
+      },
+      "outputSchema": {
+        "id": "urn:meri:retrieval:legislative-document-action:0.2.0#/$defs/LegislativeDocumentPrepared",
+        "sha256": "47230549827ba0f31936c0eb5d77ae426bc7e34365ba0f969b1b1f284d523973"
+      },
+      "aliases": [],
+      "sideEffect": "source-command",
+      "requiredGrants": [
+        "command.execute"
+      ],
+      "approvalBoundary": "immutable-proposal",
+      "handler": null,
+      "availability": "unimplemented",
+      "qualification": "pending",
+      "retry": {
+        "maxRetries": 0,
+        "retryableCodes": [],
+        "unknownOutcome": "reconcile-before-retry"
+      },
+      "replacement": null,
+      "requirementIds": [
+        "R-01",
+        "R-04",
+        "R-05"
+      ],
+      "ticketIds": [
+        "REL-02"
+      ],
+      "gateIds": [
+        "RG-02",
+        "RG-05",
+        "RG-07"
+      ],
+      "fixtureIds": [
+        "catalog.binding.save_legislative_research"
       ]
     }
   ]

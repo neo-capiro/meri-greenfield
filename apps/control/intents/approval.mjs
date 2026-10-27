@@ -18,7 +18,7 @@
  * Construction is inert. `enabled` defaults to false. */
 import {canonicalSha256 as hash,validateShape} from '../../../packages/contracts/validate.mjs';
 import {assertNativeApprovalProposal} from '../../../packages/contracts/commands-0.2/validate.mjs';
-import {artifactValidators as artifacts,scheduleToolValidators,researchShareValidators,legiwatchValidators,bizdevValidators,clientRecordValidators,validateShape as artifactShape} from '../../../packages/contracts/retrieval-0.2/validate.mjs';
+import {artifactValidators as artifacts,scheduleToolValidators,researchShareValidators,legiwatchValidators,bizdevValidators,legislativeDocumentValidators,clientRecordValidators,validateShape as artifactShape} from '../../../packages/contracts/retrieval-0.2/validate.mjs';
 import {data,own,nativeSignal} from '../../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {createOperationLifetime} from '../../../packages/runtime/operation-lifetime.mjs';
 import {ProductError,productFailure} from '../product-access/errors.mjs';
@@ -65,7 +65,7 @@ function commandProposal(entry){
  return result.proposal;
 }
 export function createIntentApprovalOwner(configuration){
- const c=own(configuration,['journal','now','limits'],['decisions','documents','tasks','filing','mail','sharing','legiwatch','clientRecord','bizdev','enabled']);
+ const c=own(configuration,['journal','now','limits'],['decisions','documents','tasks','filing','mail','sharing','legiwatch','clientRecord','bizdev','legislativeDocument','enabled']);
  const journal=own(c.journal,['read','list'],['claim','settle']),limits=data(c.limits);own(limits,['maxRequestMs']);
  if(typeof journal.read!=='function'||typeof journal.list!=='function'||typeof c.now!=='function'||typeof(c.enabled??false)!=='boolean'||
   !Number.isSafeInteger(limits.maxRequestMs)||limits.maxRequestMs<1||limits.maxRequestMs>30000)throw new ProductError('PRODUCT_CONFIGURATION');
@@ -79,6 +79,7 @@ export function createIntentApprovalOwner(configuration){
  if(c.clientRecord!==undefined)own(c.clientRecord,['decide','read']);
  if(c.legiwatch!==undefined)own(c.legiwatch,['decide','read']);
  if(c.bizdev!==undefined)own(c.bizdev,['decide','read']);
+ if(c.legislativeDocument!==undefined)own(c.legislativeDocument,['decide','read']);
  if(sharing&&Object.values(sharing).some(f=>typeof f!=='function'))throw new ProductError('PRODUCT_CONFIGURATION');
  if(filing&&Object.values(filing).some(f=>typeof f!=='function'))throw new ProductError('PRODUCT_CONFIGURATION');
  if(tasks&&Object.values(tasks).some(f=>typeof f!=='function'))throw new ProductError('PRODUCT_CONFIGURATION');
@@ -121,6 +122,7 @@ export function createIntentApprovalOwner(configuration){
    if(entry?.state==='PREPARED'&&entry.outcome?.result?.proposal?.kind==='legiwatch_action')return await decideLegiwatch(life,principal,entry,r);
    if(entry?.state==='PREPARED'&&entry.outcome?.result?.proposal?.kind==='client_record_action')return await decideClientRecord(life,principal,entry,r);
    if(entry?.state==='PREPARED'&&entry.outcome?.result?.proposal?.kind==='bizdev_action')return await decideBizdev(life,principal,entry,r);
+   if(entry?.state==='PREPARED'&&entry.outcome?.result?.proposal?.kind==='legislative_document_action')return await decideLegislativeDocument(life,principal,entry,r);
    if(entry?.state==='PREPARED'&&entry.outcome?.result?.proposal?.kind==='research_share')return await decideSharing(life,principal,entry,r);
    const proposal=approvable(entry,r,principal);
    const approver=data({tenantId:principal.tenantId,actorId:principal.actorId});
@@ -149,7 +151,27 @@ export function createIntentApprovalOwner(configuration){
   }catch{fail('INTENT_JOURNAL_UNAVAILABLE');}return p;
  }
  const legiwatchVisible=(p,principal)=>visible(p.scopes,principal)&&(p.request.clientId===null||principal.clientIds.includes(p.request.clientId));
- async function decideLegiwatch(life,principal,entry,r){
+ function legislativeDocumentProposal(entry,principal,conversationId){
+ let p;try{legislativeDocumentValidators.assertOutput(entry.record.operation.id,entry.outcome.result);p=entry.outcome.result.proposal;
+  const {requestKey,...request}=p.request,input=legislativeDocumentValidators.normalizeInput(p.operation,request);
+  if(entry.record.operation.id!==p.operation||entry.record.operation.version!=='0.2.0'||hash(input)!==entry.record.argumentsSha256||
+   !same(p.binding,entry.outcome.release.binding)||p.scopes.some(scope=>!entry.outcome.release.scopes.some(original=>same(scope,original)))||
+   !same(conversationOf(p.binding),{tenantId:principal.tenantId,actorId:principal.actorId,conversationId}))throw Error();
+ }catch{fail('INTENT_JOURNAL_UNAVAILABLE');}return p;
+}
+const legislativeDocumentVisible=(p,principal)=>visible(p.scopes,principal)&&(p.context.selectedClientId===null||principal.clientIds.includes(p.context.selectedClientId));
+async function decideLegislativeDocument(life,principal,entry,r){
+ const p=legislativeDocumentProposal(entry,principal,r.conversationId);
+ if(p.proposalId!==r.proposalId||p.commandSha256!==r.commandSha256)fail('INTENT_MISMATCH','NOT_DISPATCHED');
+ if(!legislativeDocumentVisible(p,principal))fail('INTENT_SCOPE_WITHHELD','NOT_DISPATCHED');
+ if(typeof c.legislativeDocument?.decide!=='function')fail('APPROVAL_OWNER_UNAVAILABLE','NOT_DISPATCHED');
+ let result;
+ try{result=await life.run(signal=>c.legislativeDocument.decide({proposal:p,decision:r.decision,signal,deadlineMs:life.deadline()}));}
+ catch(error){if(['DEADLINE','CANCELLED'].includes(error?.code))throw error;fail('APPROVAL_OWNER_UNAVAILABLE','NOT_DISPATCHED');}
+ try{legislativeDocumentValidators.coreResult(p.operation,result,p);}catch{fail('INTENT_RESULT_NOT_RELEASED','RESULT_NOT_RELEASED');}
+ return data({status:'legislative_document_decided',deliveryId:r.deliveryId,proposalId:p.proposalId,result});
+}
+async function decideLegiwatch(life,principal,entry,r){
   const p=legiwatchProposal(entry,principal,r.conversationId);
   if(p.proposalId!==r.proposalId||p.commandSha256!==r.commandSha256)fail('INTENT_MISMATCH','NOT_DISPATCHED');
   if(!legiwatchVisible(p,principal))fail('INTENT_SCOPE_WITHHELD','NOT_DISPATCHED');
@@ -270,6 +292,12 @@ export function createIntentApprovalOwner(configuration){
    if(!bizdevVisible(proposal,principal))return {...base,state:'prepared',kind:'bizdev_action',withheld:true};
    let current='unavailable';if(typeof c.bizdev?.read==='function')try{current=bizdevValidators.coreResult(await life.run(signal=>c.bizdev.read({proposal,signal,deadlineMs:life.deadline()})),proposal);}catch(error){if(['DEADLINE','CANCELLED'].includes(error?.code))throw error;}
    return {...base,state:'prepared',kind:'bizdev_action',proposal,result:current};
+  }
+  if(result?.proposal?.kind==='legislative_document_action'){
+   const proposal=legislativeDocumentProposal(entry,principal,conversationId);
+   if(!legislativeDocumentVisible(proposal,principal))return {...base,state:'prepared',kind:'legislative_document_action',withheld:true};
+   let current='unavailable';if(typeof c.legislativeDocument?.read==='function')try{current=legislativeDocumentValidators.coreResult(proposal.operation,await life.run(signal=>c.legislativeDocument.read({proposal,signal,deadlineMs:life.deadline()})),proposal);}catch(error){if(['DEADLINE','CANCELLED'].includes(error?.code))throw error;}
+   return {...base,state:'prepared',kind:'legislative_document_action',proposal,result:current};
   }
   if(result?.proposal?.kind==='research_share'){
    const proposal=sharingProposal(entry,principal,conversationId);

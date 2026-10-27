@@ -21,7 +21,7 @@ import {DOCUMENT_INTENT_OPERATIONS} from './document-preparer.mjs';
 import {ANALYSIS_INTENT_OPERATIONS} from './analysis-preparer.mjs';
 import {MEMORY_COMMAND_OPERATION} from '../memory/command-options.mjs';
 const DELIVERY=/^sdk:[a-f0-9]{64}$/u,AVAILABILITY_MS=30000;
-const OWNERS=Object.freeze({bizdev:['save_business_development_brief'],'client-record':['create_client','update_client_profile'],legiwatch:['apply_legiwatch_suggestion','save_legiwatch_relevance'],'research-sharing':['publish_research_portfolio_share_link','revoke_research_portfolio_share_link'],command:Object.keys(COMMAND_INTENT_OPERATIONS),schedule:SCHEDULE_INTENT_OPERATIONS,document:DOCUMENT_INTENT_OPERATIONS,artifact:ANALYSIS_INTENT_OPERATIONS,memory:[MEMORY_COMMAND_OPERATION.id]});
+const OWNERS=Object.freeze({'legislative-document':['prepare_legiwatch_briefing','save_legislative_research'],bizdev:['save_business_development_brief'],'client-record':['create_client','update_client_profile'],legiwatch:['apply_legiwatch_suggestion','save_legiwatch_relevance'],'research-sharing':['publish_research_portfolio_share_link','revoke_research_portfolio_share_link'],command:Object.keys(COMMAND_INTENT_OPERATIONS),schedule:SCHEDULE_INTENT_OPERATIONS,document:DOCUMENT_INTENT_OPERATIONS,artifact:ANALYSIS_INTENT_OPERATIONS,memory:[MEMORY_COMMAND_OPERATION.id]});
 const CODES=new Set(INTENT_FAILURE_CODES);
 const closed=code=>CODES.has(code)?code:'UNKNOWN';
 /** @param {{binding:object,preparers:readonly object[],journalStore:object,now:()=>number,limits:{maxRequestMs:number},enabled?:boolean,resultRelease?:object}} configuration */

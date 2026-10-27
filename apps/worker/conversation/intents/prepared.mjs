@@ -9,7 +9,7 @@
  * - document: `{status:'draft', version}` with an immutable artifact version in `generationStatus:'draft'`. */
 import {own,data} from '../../../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {assertProposalIntegrity,canonicalSha256,validateShape} from '../../../../packages/contracts/validate.mjs';
-import {artifactValidators,scheduleToolValidators,researchShareValidators,legiwatchValidators,bizdevValidators,clientRecordValidators,validateShape as toolShape} from '../../../../packages/contracts/retrieval-0.2/validate.mjs';
+import {artifactValidators,scheduleToolValidators,researchShareValidators,legiwatchValidators,bizdevValidators,legislativeDocumentValidators,clientRecordValidators,validateShape as toolShape} from '../../../../packages/contracts/retrieval-0.2/validate.mjs';
 import {assertMailSendProposal,assertTaskUpdateProposal} from '../../../../packages/contracts/commands-0.2/validate.mjs';
 import {assertMemoryReviewResult} from '../../../../packages/contracts/commands-0.2/memory-review-result.mjs';
 const ACTIONS=Object.freeze({mail_send:'mail.send',create_task:'task.create',update_task:'task.update',save_chat_attachments:'artifact.file'});
@@ -21,7 +21,7 @@ const currentScopes=(scopes,binding,current)=>Array.isArray(scopes)&&scopes.leng
  validateShape('Scope',s);return s.tenantId===binding.tenantId&&current.some(c=>canonicalSha256(c)===canonicalSha256(s));
 });
 /**
- * @param {'command'|'schedule'|'document'|'artifact'|'memory'|'research-sharing'|'legiwatch'|'client-record'|'bizdev'} owner @param {{id:string,version:string}} operation @param {unknown} value @param {any} binding
+ * @param {'command'|'schedule'|'document'|'artifact'|'memory'|'research-sharing'|'legiwatch'|'client-record'|'bizdev'|'legislative-document'} owner @param {{id:string,version:string}} operation @param {unknown} value @param {any} binding
  * @param {{scopes:any[],nowMs:number}} current
  * @returns {{status:'approval_required'|'draft'|'analysis_pending'|'review_pending',reference:string,value:any}}
  */
@@ -42,6 +42,11 @@ export function assertPreparedResult(owner,operation,value,binding,current){
   }
   if(owner==='bizdev'){
    bizdevValidators.assertOutput(v);const p=v.proposal;
+   if(p.operation!==operation.id||operation.version!=='0.2.0'||!sameRun(p.binding,binding)||!currentScopes(p.scopes,binding,current.scopes)||Date.parse(p.createdAt)>current.nowMs||Date.parse(p.expiresAt)<=current.nowMs)refuse();
+   return {status:'approval_required',reference:p.proposalId,value:v};
+  }
+  if(owner==='legislative-document'){
+   legislativeDocumentValidators.assertOutput(operation.id,v);const p=v.proposal;
    if(p.operation!==operation.id||operation.version!=='0.2.0'||!sameRun(p.binding,binding)||!currentScopes(p.scopes,binding,current.scopes)||Date.parse(p.createdAt)>current.nowMs||Date.parse(p.expiresAt)<=current.nowMs)refuse();
    return {status:'approval_required',reference:p.proposalId,value:v};
   }

@@ -1,0 +1,247 @@
+{
+  "purpose": "Synthetic exact frozen Core request/receipt functions, transpiled without owner changes; no service/DB/network execution",
+  "coreHead": "8d4d6584c70ef779f8829edaadd7f8bf336a7afa",
+  "coreFiles": [
+    {
+      "sourcePath": "apps/api/src/meri/legislative-document-action.contract.ts",
+      "sourceSha256": "f5500710daf044b1c407341fd87acb0bf13f1d4dc84def764cb267dfb3927fd4",
+      "compiledSha256": "e26184e2c51f7e1532b7e37724cd531fdbcc69261699e0a479b6b9df76826fb5"
+    },
+    {
+      "sourcePath": "apps/api/src/meri/native-approvals/native-approval.contract.ts",
+      "sourceSha256": "975c856f02405588540d55b4e2826ecf22bb152b3c66107054600aad9c664ba3",
+      "compiledSha256": "a53aaf2fcf013f45282f316ef7f600f717a5c7b998d4c76e864b1bc4876536a8"
+    }
+  ],
+  "cases": [
+    {
+      "operation": "prepare_legiwatch_briefing",
+      "input": {
+        "folderId": "00000009-0000-4000-8000-000000000009",
+        "template": "research_update",
+        "title": "Synthetic briefing",
+        "analysis": "Exact synthetic analysis",
+        "cutoff": "2026-10-27T00:00:00.000Z",
+        "timezone": "UTC",
+        "sources": [],
+        "citations": [
+          {
+            "kind": "news",
+            "id": "n1",
+            "revision": "r1",
+            "locator": "body",
+            "start": 0,
+            "end": 4,
+            "quote": "text"
+          }
+        ]
+      },
+      "request": {
+        "clientId": null,
+        "folderId": "00000009-0000-4000-8000-000000000009",
+        "template": "research_update",
+        "title": "Synthetic briefing",
+        "analysis": "Exact synthetic analysis",
+        "cutoff": "2026-10-27T00:00:00.000Z",
+        "timezone": "UTC",
+        "sources": [],
+        "citations": [
+          {
+            "kind": "news",
+            "id": "n1",
+            "revision": "r1",
+            "locator": "body",
+            "start": 0,
+            "end": 4,
+            "quote": "text"
+          }
+        ],
+        "requestKey": "meri-legislative-document-f0bd9a93798162544b3eb26db608d96302974ed3815a8b8e5cca476a09d817fd"
+      },
+      "complete": {
+        "request": {
+          "clientId": null,
+          "folderId": "00000009-0000-4000-8000-000000000009",
+          "template": "research_update",
+          "title": "Synthetic briefing",
+          "analysis": "Exact synthetic analysis",
+          "cutoff": "2026-10-27T00:00:00.000Z",
+          "timezone": "UTC",
+          "sources": [],
+          "citations": [
+            {
+              "kind": "news",
+              "id": "n1",
+              "revision": "r1",
+              "locator": "body",
+              "start": 0,
+              "end": 4,
+              "quote": "text"
+            }
+          ],
+          "requestKey": "meri-legislative-document-f0bd9a93798162544b3eb26db608d96302974ed3815a8b8e5cca476a09d817fd"
+        },
+        "state": "complete",
+        "selectionId": "selection-1",
+        "documentId": "draft-1",
+        "location": "/workspace/draft/draft-1",
+        "reused": false
+      },
+      "selectionOnly": {
+        "request": {
+          "clientId": null,
+          "folderId": "00000009-0000-4000-8000-000000000009",
+          "template": "research_update",
+          "title": "Synthetic briefing",
+          "analysis": "Exact synthetic analysis",
+          "cutoff": "2026-10-27T00:00:00.000Z",
+          "timezone": "UTC",
+          "sources": [],
+          "citations": [
+            {
+              "kind": "news",
+              "id": "n1",
+              "revision": "r1",
+              "locator": "body",
+              "start": 0,
+              "end": 4,
+              "quote": "text"
+            }
+          ],
+          "requestKey": "meri-legislative-document-f0bd9a93798162544b3eb26db608d96302974ed3815a8b8e5cca476a09d817fd"
+        },
+        "state": "selection_only",
+        "selectionId": "selection-1",
+        "documentId": null,
+        "location": null,
+        "reused": false
+      }
+    },
+    {
+      "operation": "save_legislative_research",
+      "input": {
+        "jurisdiction": "FL",
+        "sessionKey": "regular",
+        "title": "Synthetic research",
+        "analysis": "Exact synthetic analysis",
+        "allowCrossBill": true,
+        "rightSessionKey": "special",
+        "documents": [
+          {
+            "id": "d1",
+            "revision": "r1",
+            "sessionKey": "special"
+          }
+        ],
+        "citations": [
+          {
+            "documentId": "d1",
+            "revision": "r1",
+            "locator": "s1",
+            "start": 0,
+            "end": 4,
+            "quote": "text"
+          }
+        ]
+      },
+      "request": {
+        "clientId": null,
+        "folderId": null,
+        "jurisdiction": "FL",
+        "sessionKey": "regular",
+        "title": "Synthetic research",
+        "analysis": "Exact synthetic analysis",
+        "documents": [
+          {
+            "id": "d1",
+            "revision": "r1",
+            "sessionKey": "special"
+          }
+        ],
+        "citations": [
+          {
+            "documentId": "d1",
+            "revision": "r1",
+            "locator": "s1",
+            "start": 0,
+            "end": 4,
+            "quote": "text"
+          }
+        ],
+        "allowCrossBill": true,
+        "rightSessionKey": "special",
+        "requestKey": "meri-legislative-document-a4dc442c3fbe92eab8a04bd27b66f8c478e89db173162e176d5aedb399c10d4c"
+      },
+      "complete": {
+        "request": {
+          "clientId": null,
+          "folderId": null,
+          "jurisdiction": "FL",
+          "sessionKey": "regular",
+          "title": "Synthetic research",
+          "analysis": "Exact synthetic analysis",
+          "documents": [
+            {
+              "id": "d1",
+              "revision": "r1",
+              "sessionKey": "special"
+            }
+          ],
+          "citations": [
+            {
+              "documentId": "d1",
+              "revision": "r1",
+              "locator": "s1",
+              "start": 0,
+              "end": 4,
+              "quote": "text"
+            }
+          ],
+          "allowCrossBill": true,
+          "rightSessionKey": "special",
+          "requestKey": "meri-legislative-document-a4dc442c3fbe92eab8a04bd27b66f8c478e89db173162e176d5aedb399c10d4c"
+        },
+        "state": "complete",
+        "selectionId": "selection-1",
+        "documentId": "draft-1",
+        "location": "/workspace/draft/draft-1",
+        "reused": false
+      },
+      "selectionOnly": {
+        "request": {
+          "clientId": null,
+          "folderId": null,
+          "jurisdiction": "FL",
+          "sessionKey": "regular",
+          "title": "Synthetic research",
+          "analysis": "Exact synthetic analysis",
+          "documents": [
+            {
+              "id": "d1",
+              "revision": "r1",
+              "sessionKey": "special"
+            }
+          ],
+          "citations": [
+            {
+              "documentId": "d1",
+              "revision": "r1",
+              "locator": "s1",
+              "start": 0,
+              "end": 4,
+              "quote": "text"
+            }
+          ],
+          "allowCrossBill": true,
+          "rightSessionKey": "special",
+          "requestKey": "meri-legislative-document-a4dc442c3fbe92eab8a04bd27b66f8c478e89db173162e176d5aedb399c10d4c"
+        },
+        "state": "selection_only",
+        "selectionId": "selection-1",
+        "documentId": null,
+        "location": null,
+        "reused": false
+      }
+    }
+  ]
+}

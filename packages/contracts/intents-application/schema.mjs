@@ -11,6 +11,7 @@ const memory=name=>({$ref:'urn:meri:commands:memory-propose:0.2.0#/$defs/'+name}
 const filing=name=>({$ref:'urn:meri:commands:artifact-file:0.2.0#/$defs/'+name});
 const artifact=name=>({$ref:'urn:meri:artifacts:0.2.0#/$defs/'+name});
 const schedule=name=>({$ref:'urn:meri:schedules:tool-interface:0.2.0#/$defs/'+name});
+const legislativeDocument=name=>({$ref:'urn:meri:retrieval:legislative-document-action:0.2.0#/$defs/'+name});
 const clientRecord=name=>({$ref:'urn:meri:retrieval:client-record-action:0.2.0#/$defs/'+name});
 const legiwatch=name=>({$ref:'urn:meri:retrieval:legiwatch-action:0.2.0#/$defs/'+name});
 const bizdev=name=>({$ref:'urn:meri:retrieval:bizdev-action:0.2.0#/$defs/'+name});
@@ -25,7 +26,7 @@ export function intentsSchema({errorStatuses,errorOutcomes,failureCodes,fieldPat
  IntentsListRequest:object({conversationId:ref('IntentsConversationId'),after:{anyOf:[ref('IntentsDeliveryId'),{type:'null'}]},limit:{type:'integer',minimum:1,maximum:50}},['conversationId']),
  IntentsDecideRequest:object({conversationId:ref('IntentsConversationId'),deliveryId:ref('IntentsDeliveryId'),proposalId:{type:'string',pattern:UUID},commandSha256:{type:'string',pattern:'^[a-f0-9]{64}$'},decision:{enum:['approved','rejected']}}),
  IntentsNativeProposal:{oneOf:[pub('ApprovalProposal'),update('TaskUpdateApprovalProposal'),mail('MailSendApprovalProposal'),document('DocumentDraftApprovalProposal')]},
- IntentsProposal:{oneOf:[ref('IntentsNativeProposal'),sharing('ResearchShareProposal'),legiwatch('LegiwatchProposal'),clientRecord('ClientRecordProposal'),bizdev('BizdevProposal')]},
+ IntentsProposal:{oneOf:[ref('IntentsNativeProposal'),sharing('ResearchShareProposal'),legiwatch('LegiwatchProposal'),clientRecord('ClientRecordProposal'),bizdev('BizdevProposal'),legislativeDocument('LegislativeDocumentProposal')]},
  IntentsClientRecordProposal:clientRecord('ClientRecordProposal'),
  IntentsLegiwatchProposal:legiwatch('LegiwatchProposal'),
  IntentsBizdevProposal:bizdev('BizdevProposal'),
@@ -59,6 +60,8 @@ export function intentsSchema({errorStatuses,errorOutcomes,failureCodes,fieldPat
  IntentsWithheldScheduleItem:item({state:{const:'prepared'},kind:{const:'schedule_proposal'},withheld:{const:true}}),
  IntentsWithheldProposalItem:item({state:{const:'prepared'},kind:{const:'proposal'},withheld:{const:true}}),
  IntentsLegiwatchItem:item({state:{const:'prepared'},kind:{const:'legiwatch_action'},proposal:legiwatch('LegiwatchProposal'),result:{anyOf:[legiwatch('LegiwatchCoreResult'),{const:'unavailable'}]}}),
+ IntentsLegislativeDocumentItem:item({state:{const:'prepared'},kind:{const:'legislative_document_action'},proposal:legislativeDocument('LegislativeDocumentProposal'),result:{anyOf:[legislativeDocument('LegislativeDocumentCoreResult'),{const:'unavailable'}]}}),
+ IntentsWithheldLegislativeDocumentItem:item({state:{const:'prepared'},kind:{const:'legislative_document_action'},withheld:{const:true}}),
  IntentsClientRecordItem:item({state:{const:'prepared'},kind:{const:'client_record_action'},proposal:clientRecord('ClientRecordProposal'),result:{anyOf:[clientRecord('ClientRecordCoreResult'),{const:'unavailable'}]}}),
  IntentsWithheldLegiwatchItem:item({state:{const:'prepared'},kind:{const:'legiwatch_action'},withheld:{const:true}}),
  IntentsWithheldClientRecordItem:item({state:{const:'prepared'},kind:{const:'client_record_action'},withheld:{const:true}}),
@@ -68,9 +71,10 @@ export function intentsSchema({errorStatuses,errorOutcomes,failureCodes,fieldPat
  IntentsWithheldResearchShareItem:item({state:{const:'prepared'},kind:{const:'research_share'},withheld:{const:true}}),
  IntentsProposalItem:item({state:{const:'prepared'},kind:{const:'proposal'},proposal:ref('IntentsNativeProposal'),decision:{anyOf:[ref('IntentsDecision'),{type:'null'},{const:'unavailable'}]},
   execution:{anyOf:[ref('IntentsExecution'),{type:'null'},{const:'unavailable'}]},phase:{enum:[...INTENT_PHASES]}}),
- IntentsItem:{oneOf:['Pending','Unknown','Failed','Draft','WithheldDraft','MemoryReview','WithheldMemoryReview','ScheduleProposal','ScheduleReview','WithheldSchedule','WithheldProposal','Proposal','ResearchShare','WithheldResearchShare','Legiwatch','WithheldLegiwatch','ClientRecord','WithheldClientRecord','Bizdev','WithheldBizdev'].map(name=>ref('Intents'+name+'Item'))},
+ IntentsItem:{oneOf:['Pending','Unknown','Failed','Draft','WithheldDraft','MemoryReview','WithheldMemoryReview','ScheduleProposal','ScheduleReview','WithheldSchedule','WithheldProposal','Proposal','ResearchShare','WithheldResearchShare','Legiwatch','WithheldLegiwatch','ClientRecord','WithheldClientRecord','Bizdev','WithheldBizdev','LegislativeDocument','WithheldLegislativeDocument'].map(name=>ref('Intents'+name+'Item'))},
  IntentsListResponse:object({conversationId:ref('IntentsConversationId'),intents:{type:'array',items:ref('IntentsItem'),maxItems:50},next:{anyOf:[ref('IntentsDeliveryId'),{type:'null'}]}}),
  IntentsDecideResponse:{oneOf:[
+  object({status:{const:'legislative_document_decided'},deliveryId:ref('IntentsDeliveryId'),proposalId:{type:'string',pattern:UUID},result:legislativeDocument('LegislativeDocumentCoreResult')}),
   object({status:{const:'legiwatch_decided'},deliveryId:ref('IntentsDeliveryId'),proposalId:{type:'string',pattern:UUID},result:legiwatch('LegiwatchCoreResult')}),
   object({status:{const:'client_record_decided'},deliveryId:ref('IntentsDeliveryId'),proposalId:{type:'string',pattern:UUID},result:clientRecord('ClientRecordCoreResult')}),
   object({status:{const:'bizdev_decided'},deliveryId:ref('IntentsDeliveryId'),proposalId:{type:'string',pattern:UUID},result:bizdev('BizdevCoreResult')}),

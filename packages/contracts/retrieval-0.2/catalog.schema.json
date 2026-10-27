@@ -129,7 +129,9 @@
                 "mail_send",
                 "create_client",
                 "update_client_profile",
-                "save_business_development_brief"
+                "save_business_development_brief",
+                "prepare_legiwatch_briefing",
+                "save_legislative_research"
               ]
             },
             "disposition": {
@@ -193,9 +195,7 @@
                 "find_path_to",
                 "get_legiwatch_review",
                 "compare_florida_budget_amounts",
-                "prepare_legiwatch_briefing",
                 "compare_legislative_versions",
-                "save_legislative_research",
                 "preview_legiwatch_relevance",
                 "save_legiwatch_relevance",
                 "create_meeting_brief",
