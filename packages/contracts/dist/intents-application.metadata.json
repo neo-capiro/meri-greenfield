@@ -147,8 +147,8 @@
     },
     {
       "path": "../../apps/control/schedules/application.mjs",
-      "sha256": "054ebb700a632de91247b0d7b204908e941e5388b2b4411876d82d52e9be1bd7",
-      "bytes": 16577
+      "sha256": "2d72bc70195cb1ec7b541594f7684e19cdf97706acd8a091a3d5039e1a05cd7a",
+      "bytes": 21302
     },
     {
       "path": "artifacts-0.2/artifact-formats.mjs",

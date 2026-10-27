@@ -30,8 +30,8 @@ test('detail/error status correlation cannot be borrowed for another run or trea
  assert.throws(()=>receiveRunIndexResponse('detail',200,bytes({error:{code:'RUN_INDEX_NOT_FOUND'}}),admitted));
  assert.throws(()=>receiveRunIndexResponse('detail',404,bytes({error:{code:'RUN_INDEX_NOT_FOUND',outcome:'NOT_DISPATCHED'}}),admitted));
 });
-test('new named wire metadata preserves ordinary history protocol version and package manifest',()=>{
+test('new named wire metadata keeps run wire separate from the explicitly extended ordinary history family',()=>{
  const metadata=JSON.parse(readFileSync(new URL('../dist/conversation-history.metadata.json',import.meta.url)));
- assert.equal(metadata.historyVersion,'1.1.0');assert.equal(metadata.runIndex.version,'1.0.0');
- assert.equal(metadata.schemaId,'urn:meri:conversation-history:1.1.0');assert.equal(metadata.runIndex.schemaId,'urn:meri:run-index:1.0.0');
+ assert.equal(metadata.historyVersion,'1.2.0');assert.equal(metadata.runIndex.version,'1.0.0');
+ assert.equal(metadata.schemaId,'urn:meri:conversation-history:1.2.0');assert.equal(metadata.runIndex.schemaId,'urn:meri:run-index:1.0.0');
 });

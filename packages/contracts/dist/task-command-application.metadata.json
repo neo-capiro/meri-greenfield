@@ -99,8 +99,8 @@
     },
     {
       "path": "../../apps/runtime/product-applications.mjs",
-      "sha256": "f202c4fd0ceff361fef4d263a8267e9b279f789765524825984e915f5c05a1e1",
-      "bytes": 17939
+      "sha256": "0b75816f6d94578efa4ffc039c79bce46f741ebf5bdcb68030513f43b713bbb3",
+      "bytes": 19160
     },
     {
       "path": "commands-0.2/native-task-outcome-schema.mjs",
