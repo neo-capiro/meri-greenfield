@@ -48,13 +48,15 @@ A change is not done until what it replaced is gone.
 
 # Fable finding dispositions — 27 October 2026
 
+**Current authority — user-requested stopping point:** the existing Wave 5 orchestrator `01a17d3b-4cf1-7f21-a8ac-f0aa7cd0380d` now coordinates and finishes the remaining Wave 4 work. Existing Release chat `01a17ae6` remains the sole shared target operator; Hermes Agent app/CLI remains the independent review and acceptance owner. The old Wave 4 root stops product and release work at reviewed source integration. Follow the [Wave 4 to Wave 5 takeover](WAVE4-TO-WAVE5-TAKEOVER.md) for the exact remaining sequence and owner references. Earlier root/Fable assignments below are retained history, not a second active orchestration lane.
+
 This is the canonical summary of the returned scan and recorded author/Hermes evidence. It is documentation-only, not another review or a live acceptance verdict. The detailed root packet is `work/fable-closeout-20261027/FINAL-FABLE-FINDING-DISPOSITIONS.txt`; this summary advances its cutoff to the final source reviews below.
 
 ## Count and evidence boundaries
 
 The original [return](FABLE-WAVE4-BUGFIX-HANDOFF.md) contains **33 numbered findings**: seven sharing, four SQL, four actions, four mail, three runtime and eleven Research Portfolio D1–D11. The eleven D findings are already inside33. SH/SQ/AC/MA/RT are the stable author aliases for the corresponding numbered lists in sections5.2–5.6; D1–D11 are the original literal IDs. Fable's native UI prose was unnumbered: it names twelve atomic controls when combined phrases are separated, plus saved-draft Open under MX-02. Its grouped eleven-row handoff table is a useful grouping, not an additional verified defect count.
 
-**Source-reviewed does not mean deployed or accepted.** The current source union is reviewed; the required DI-07/S15/S14 amendment below is still in progress. Meri's image is built but not deployed. Historical16H has no complete row PASS; all final-cohort live claims await the actual Release/Hermes receipts. Reuse accepted unchanged evidence rather than starting a new blanket campaign.
+**Source-reviewed does not mean deployed or accepted.** The full source union, including the final DI-07/S15/S14 read projections, is now reviewed and merged. Meri’s image is built but not deployed. All final-cohort live claims await Release/Hermes receipts; historical 16H has no complete row PASS. Wave 5 now coordinates these remaining obligations; reuse accepted unchanged evidence.
 
 ## Exact source and evidence keys
 
@@ -70,7 +72,7 @@ The original [return](FABLE-WAVE4-BUGFIX-HANDOFF.md) contains **33 numbered find
 | FE-native / evidence-mail | `dbc617dd28bd85ddf76ab7ea312bdb887ccaa3ca` / `b24bd23a35fc68033a8371c9ecc14376628e14c6`. |
 | FE-import / comparison | `f31390b372d624d20532d751ef401fbc37aa303e` / `a23e83adea6253db35b939d148b8eb8623b51cf4`. |
 | FE-bulk / members / lane | `52d2f3e02fad52b214804a637bd76d8b27a78659` / `4397c3abfd3cd367eccc36eb50fd44245ddf7ac9` / `4482db9f369b78760fb3558720fe9d3015190df7`. |
-| Final source | Core `96a4f2d21d38b3118dfe6a0c7e99512e45734289`; FE functional `6fdf4e5f68247856381910e9498a017d2aca97e0`, both Hermes source PASS. FE architecture registry `a46307e7f933fe46d629994316c956408247126b` records final approvals with zero blockers. |
+| Final source | Core merge `8d77e225fe3c16c891190654efeea8050978aaf8` = reviewed `b49f010174de9a2dfaa598f327caf62761138283` / tree `360fe212a3ef699ecb2e5cf7359671ede3d4cf32`; FE merge `d96087ae977465ccaec8e25f728e2a80acb1ebd4` = reviewed `77987943e56c876e4810a320a8209e61bfa340ef` / tree `330e0f1a672a8d0322bad9613624ae9d86495b04` (functional `cbf9d5bc78b8817ca5f91adee870cbe5dceec53c`). Source/architecture and affected author gates PASS. |
 
 Evidence below uses root-workspace-relative paths:
 
@@ -126,9 +128,11 @@ Follow-on source-approved work includes exact contribution/source-basis drilldow
 
 Fable's absent `ResearchPortfolioAnalyticsPanel` name was not a missing-route verdict: the actual `ResearchAnalytics` owner was extended with contribution/evidence controls. Source presence does not establish qualified corpus totals, exact stored bytes, compensation correctness or live accessibility.
 
+Finite configuration evidence: Hermes session `20261027_162332_09851d`, `work/hermes-review/final-release-configuration/REVIEW.txt`, SHA256 `8b2e831509a5322791b63ec34063387d49d3b8471e9e3b2e053d11c5c8039f60`, PASS for the frozen Core four-appends/IAM and preserved-edge candidates. It verifies 63/63 input bindings and structural preservation; IAM simulations remain hypothetical. Existing versioned TemplateURL transport is required. Historical object-version context, final image/flag/material composition, target apply/readback and live acceptance are not claimed by that review.
+
 ## Required amendment and release boundary
 
-**DI-07/S15 and S14 are still in progress:** isolated authors are adding the missing existing-data read projections for stored locators, before/after and correction impact, and governed Coverage readback. Reuse current canonical owners and authorization. No new database/schema/migration/catalog/package changes, corpus ingestion, graph store, provider command or requalification service is allocated. Do not invent missing source bytes/locators/denominators. Report exact amendment source, meaningful affected checks and Hermes review; root integrates it before filling actual deployment/acceptance fields.
+**DI-07/S15 and S14 source complete:** exact existing-data locators, before/after/correction impact and governed Coverage readback are implemented, independently reviewed and merged at the final pins above. Canonical read owners and current authorization are retained. No database/schema/migration/package change, new corpus, graph store, provider command or requalification service was introduced. Missing bytes/locators/denominators remain explicit unavailable states. Wave 5 now coordinates deployment, actual corpus gaps and Hermes acceptance.
 
 Meri337e ARM64 image SHA256 `7eabf413c51ce089d860b1426836cb1904e665e2483c10c5bf2d12a4e672734b` was built once, native runtime probes passed and scan completed with zero findings. **Not deployed.** Final Core/frontend builds/serving state, activated RP registry, installed catalog0.2.23 receipt, effective flags/routes, compatible rollback and Hermes acceptance require actual Release receipts. Earlier migrations remain successful immutable history; none is introduced by this amendment or replayed to refresh proof.
 
