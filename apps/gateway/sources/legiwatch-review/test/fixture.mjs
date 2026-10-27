@@ -1,0 +1,17 @@
+/** Synthetic Intel-shaped records passed through the actual public receiver. */
+import {resolveOperationContract} from '../../../../../packages/contracts/retrieval-0.2/validate.mjs';
+import {billTextCase,readContext} from '../../bill-text/test/fixture.mjs';
+export const clientId='dddddddd-dddd-4ddd-8ddd-dddddddddddd';
+export function legiwatchCase({view='suggestions',selected=false}={}){
+ const scene=billTextCase(),operation={id:'get_legiwatch_review',version:'0.2.0'},contract=resolveOperationContract(operation),{authority,state,now,wire}=scene;
+ const request={view,clientId,...(view==='folders'?{}:{folderId:'folder'}),...(view==='suggestions'?{jurisdiction:'US',sessionKey:'119'}:{})};
+ if(selected)Object.assign(authority.subject,{kind:'client',entityType:'client',entityIds:[clientId],scopes:[{tenantId:authority.binding.tenantId,kind:'client',resourceId:clientId,policyRevision:authority.subject.policyRevision}]});
+ authority.decision.operation='get_legiwatch_review@0.2.0';authority.sourceIds=contract.descriptor.sourceRequirements.map(s=>s.sourceId);
+ const normalizationContext={legiwatchReviewScope:{clientId,identityRevision:'a'.repeat(64),membershipRevision:'b'.repeat(64)}};
+ const suggestion={id:'s001',rule_id:'rule',rule_version:2,run_id:'run',folder_id:'folder',bill_id:'119-hr-1',fingerprint:'source',version:3,state:'pending',decision_id:null,payload:{bill:{id:'119-hr-1',title:'Source 界',optional:null},sourceFingerprint:'source',folderVersion:2,stateVersion:0,coverage:{complete:false,inspectedDocuments:1,missing:['bill_text']},matches:[{document:{id:'title:119-hr-1',revision:'r1',sourceUrl:'https://congress.gov/bill/119/house-bill/1'},evaluation:{outcome:'match'}}],sourceScope:{jurisdiction:'US',sessionKey:'119',fields:['title']},origin:'deterministic'}};
+ const data=view==='suggestions'?{rows:[suggestion],next:null}:view==='folders'?{folders:[{id:'folder',clientId,name:'Folder',code:null,archived:false,ownerClerkId:'user_synthetic',otherUserAccess:'read_change',defaultSession:'119',jurisdiction:'US',version:0,canEdit:true,canManage:true,count:1}]}:view==='rules'?{rows:[{id:'rule',name:'Rule',version:2,state:'paused',config:{folderIds:['folder'],scope:{jurisdiction:'US',sessionKey:'119',fields:['title']},cadence:'realtime'},activation:null,issues:[],compiled:[]}]}:{rows:[{id:'workflow',workflow_id:null,template:'added_bill_review',input_hash:'hash',input:{folderIds:['folder'],sessionKey:'119'},state:'partial',reason:'RETRY_REQUIRED',steps:{draftId:'draft'}}]};
+ const page={version:'0.1.0',tool:operation.id,generatedAt:new Date(now()).toISOString(),selection:request,data,effects:[],coverage:{basis:'current_owner_read',sourceUniverseComplete:false,maxOutputBytes:262144,ownerRowLimit:({folders:null,suggestions:50,rules:201,workflows:100})[view],limitations:['Current owner state, not an exhaustive universe.']}};
+ const transport={...scene.transport,async fetchImpl(url,options){wire.push({url,options,body:JSON.parse(options.body)});const value=structuredClone(state.page??page);state.resultMutator?.(value);state.afterSource?.();return state.responseFactory?state.responseFactory(value):Response.json(value);}};
+ const call=()=>{const normalized=contract.normalizeInput(request,normalizationContext);return {request,input:normalized.input,argumentsSha256:normalized.argumentsSha256,normalizationContext,authority:readContext(authority)};};
+ return {...scene,family:'legiwatch-review',operation,contract,arguments:request,normalizationContext,transport,page,call,visibleClientIds:[clientId]};
+}
