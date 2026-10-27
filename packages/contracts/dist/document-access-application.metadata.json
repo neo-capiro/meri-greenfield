@@ -186,8 +186,8 @@
     },
     {
       "path": "retrieval-0.2/catalog.json",
-      "sha256": "815c7df7243e9745487e1a6fb318b6c98ac010a9792deb8b5aa0b3b8251a5763",
-      "bytes": 405468
+      "sha256": "8454be70200838ef7cc4c1ed72626b5a7bd6e338ef61ca7f6c5ae28894f1747c",
+      "bytes": 447819
     }
   ],
   "schemaSha256": "dee465abebca2faeead7486a04ef2eebde89b733f066de123f3c73888910a308",

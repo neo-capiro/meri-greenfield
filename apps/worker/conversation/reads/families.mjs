@@ -30,6 +30,7 @@ export const READ_FAMILIES=Object.freeze({'watch-state':Object.freeze({clientSco
  'research-portfolio-evidence':Object.freeze({clientScope:'optional'}),
  'research-portfolio':Object.freeze({clientScope:'optional'}),
  'research-portfolio-sharing':Object.freeze({clientScope:'optional',operationIds:Object.freeze(['get_research_portfolio_share_links'])}),
+ 'research-portfolio-workflow':Object.freeze({clientScope:'optional'}),
  'florida-budget':Object.freeze({clientScope:'optional'}),
  'bill-text':Object.freeze({clientScope:'optional'}),
  'public-reports':Object.freeze({clientScope:'optional'}),

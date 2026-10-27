@@ -16,6 +16,7 @@ const clientRecord=name=>({$ref:'urn:meri:retrieval:client-record-action:0.2.0#/
 const legiwatch=name=>({$ref:'urn:meri:retrieval:legiwatch-action:0.2.0#/$defs/'+name});
 const bizdev=name=>({$ref:'urn:meri:retrieval:bizdev-action:0.2.0#/$defs/'+name});
 const sharing=name=>({$ref:'urn:meri:retrieval:research-portfolio-sharing:0.2.0#/$defs/'+name});
+const researchAction=name=>({$ref:'urn:meri:retrieval:research-portfolio-action:0.2.0#/$defs/'+name});
 const watch=name=>({$ref:'urn:meri:retrieval:watch-action:0.2.0#/$defs/'+name});
 const note=name=>({$ref:'urn:meri:retrieval:note-action:0.2.0#/$defs/'+name});
 const ref=name=>({$ref:'#/$defs/'+name});
@@ -28,12 +29,13 @@ export function intentsSchema({errorStatuses,errorOutcomes,failureCodes,fieldPat
  IntentsListRequest:object({conversationId:ref('IntentsConversationId'),after:{anyOf:[ref('IntentsDeliveryId'),{type:'null'}]},limit:{type:'integer',minimum:1,maximum:50}},['conversationId']),
  IntentsDecideRequest:object({conversationId:ref('IntentsConversationId'),deliveryId:ref('IntentsDeliveryId'),proposalId:{type:'string',pattern:UUID},commandSha256:{type:'string',pattern:'^[a-f0-9]{64}$'},decision:{enum:['approved','rejected']}}),
  IntentsNativeProposal:{oneOf:[pub('ApprovalProposal'),update('TaskUpdateApprovalProposal'),mail('MailSendApprovalProposal'),document('DocumentDraftApprovalProposal')]},
- IntentsProposal:{oneOf:[ref('IntentsNativeProposal'),sharing('ResearchShareProposal'),legiwatch('LegiwatchProposal'),watch('WatchProposal'),clientRecord('ClientRecordProposal'),bizdev('BizdevProposal'),legislativeDocument('LegislativeDocumentProposal')]},
+ IntentsProposal:{oneOf:[ref('IntentsNativeProposal'),sharing('ResearchShareProposal'),researchAction('ResearchActionProposal'),legiwatch('LegiwatchProposal'),watch('WatchProposal'),clientRecord('ClientRecordProposal'),bizdev('BizdevProposal'),legislativeDocument('LegislativeDocumentProposal')]},
  IntentsClientRecordProposal:clientRecord('ClientRecordProposal'),
  IntentsLegiwatchProposal:legiwatch('LegiwatchProposal'),
  IntentsBizdevProposal:bizdev('BizdevProposal'),
  IntentsWatchProposal:watch('WatchProposal'),
  IntentsResearchShareProposal:sharing('ResearchShareProposal'),
+ IntentsResearchActionProposal:researchAction('ResearchActionProposal'),
  IntentsDecision:pub('ApprovalDecision'),
  IntentsTaskCreateArguments:task('TaskCreateArguments'),
  IntentsTaskUpdateArguments:update('TaskUpdateArguments'),
@@ -72,13 +74,15 @@ export function intentsSchema({errorStatuses,errorOutcomes,failureCodes,fieldPat
  IntentsWithheldBizdevItem:item({state:{const:'prepared'},kind:{const:'bizdev_action'},withheld:{const:true}}),
  IntentsWatchItem:item({state:{const:'prepared'},kind:{const:'watch_action'},proposal:watch('WatchProposal'),result:{anyOf:[watch('WatchCoreResult'),{const:'unavailable'}]}}),
  IntentsWithheldWatchItem:item({state:{const:'prepared'},kind:{const:'watch_action'},withheld:{const:true}}),
+ IntentsResearchActionItem:item({state:{const:'prepared'},kind:{const:'research_action'},proposal:researchAction('ResearchActionProposal'),result:{anyOf:[researchAction('ResearchActionDecided'),{const:'unavailable'}]}}),
+ IntentsWithheldResearchActionItem:item({state:{const:'prepared'},kind:{const:'research_action'},withheld:{const:true}}),
  IntentsResearchShareItem:item({state:{const:'prepared'},kind:{const:'research_share'},proposal:sharing('ResearchShareProposal'),proposalStatus:{anyOf:[sharing('ResearchShareProposalStatus'),{const:'unavailable'}]}}),
 IntentsSavedNoteItem:item({state:{const:'prepared'},kind:{const:'saved_note'},result:note('SavedNoteResult')}),
 IntentsWithheldSavedNoteItem:item({state:{const:'prepared'},kind:{const:'saved_note'},withheld:{const:true}}),
  IntentsWithheldResearchShareItem:item({state:{const:'prepared'},kind:{const:'research_share'},withheld:{const:true}}),
  IntentsProposalItem:item({state:{const:'prepared'},kind:{const:'proposal'},proposal:ref('IntentsNativeProposal'),decision:{anyOf:[ref('IntentsDecision'),{type:'null'},{const:'unavailable'}]},
   execution:{anyOf:[ref('IntentsExecution'),{type:'null'},{const:'unavailable'}]},phase:{enum:[...INTENT_PHASES]}}),
- IntentsItem:{oneOf:['SavedNote','WithheldSavedNote','Pending','Unknown','Failed','Draft','WithheldDraft','MemoryReview','WithheldMemoryReview','ScheduleProposal','ScheduleReview','WithheldSchedule','WithheldProposal','Proposal','ResearchShare','WithheldResearchShare','Legiwatch','WithheldLegiwatch','Watch','WithheldWatch','ClientRecord','WithheldClientRecord','Bizdev','WithheldBizdev','LegislativeDocument','WithheldLegislativeDocument'].map(name=>ref('Intents'+name+'Item'))},
+ IntentsItem:{oneOf:['SavedNote','WithheldSavedNote','Pending','Unknown','Failed','Draft','WithheldDraft','MemoryReview','WithheldMemoryReview','ScheduleProposal','ScheduleReview','WithheldSchedule','WithheldProposal','Proposal','ResearchShare','WithheldResearchShare','ResearchAction','WithheldResearchAction','Legiwatch','WithheldLegiwatch','Watch','WithheldWatch','ClientRecord','WithheldClientRecord','Bizdev','WithheldBizdev','LegislativeDocument','WithheldLegislativeDocument'].map(name=>ref('Intents'+name+'Item'))},
  IntentsListResponse:object({conversationId:ref('IntentsConversationId'),intents:{type:'array',items:ref('IntentsItem'),maxItems:50},next:{anyOf:[ref('IntentsDeliveryId'),{type:'null'}]}}),
  IntentsDecideResponse:{oneOf:[
   object({status:{const:'legislative_document_decided'},deliveryId:ref('IntentsDeliveryId'),proposalId:{type:'string',pattern:UUID},result:legislativeDocument('LegislativeDocumentCoreResult')}),
@@ -89,6 +93,7 @@ IntentsWithheldSavedNoteItem:item({state:{const:'prepared'},kind:{const:'saved_n
   object({status:{const:'rejected'},deliveryId:ref('IntentsDeliveryId'),proposalId:{type:'string',pattern:UUID},decision:ref('IntentsDecision')}),
   object({status:{const:'executed'},deliveryId:ref('IntentsDeliveryId'),proposalId:{type:'string',pattern:UUID},decision:ref('IntentsDecision'),outcome:ref('IntentsExecutionOutcome')}),
   object({status:{const:'indeterminate'},deliveryId:ref('IntentsDeliveryId'),proposalId:{type:'string',pattern:UUID},decision:ref('IntentsDecision')}),
+  object({status:{const:'research_action_decided'},deliveryId:ref('IntentsDeliveryId'),proposalId:{type:'string',pattern:UUID},proposalStatus:researchAction('ResearchActionProposalStatus'),resultSummary:researchAction('ResearchActionResultSummary')},['status','deliveryId','proposalId','proposalStatus']),
   object({status:{const:'research_share_decided'},deliveryId:ref('IntentsDeliveryId'),proposalId:{type:'string',pattern:UUID},proposalStatus:sharing('ResearchShareProposalStatus'),oneTimeResult:sharing('ResearchShareOneTimeResult')},['status','deliveryId','proposalId','proposalStatus']),
  ]},
  IntentsErrorResponse:object({error:object({code:{type:'string',enum:Object.keys(errorStatuses)},outcome:{type:'string',enum:[...errorOutcomes]},field:{type:'string',pattern:fieldPattern}},['code'])}),

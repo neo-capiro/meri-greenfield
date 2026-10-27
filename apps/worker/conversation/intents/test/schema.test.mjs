@@ -14,6 +14,12 @@ const parses=(schema,value)=>schema.safeParse(value).success;
 
 test('every intent row advertises its canonical schema, a declared narrowing, or none at all',()=>{
  assert.deepEqual(Object.fromEntries(INTENT_ROWS.map(r=>[r.operation.id,intentRowArguments(r).mode])),{
+  save_note:'record',watch_action:'record',create_client:'canonical',update_client_profile:'record',save_legiwatch_relevance:'canonical',mail_send:'canonical',
+  apply_legiwatch_suggestion:'record',save_business_development_brief:'record',prepare_legiwatch_briefing:'record',save_legislative_research:'record',
+  publish_research_portfolio_share_link:'canonical',revoke_research_portfolio_share_link:'canonical',
+  manage_research_portfolio:'canonical',create_research_portfolio_snapshot:'canonical',request_research_portfolio_output:'canonical',save_research_portfolio_output_to_client:'canonical',
+  watch_research_portfolio:'canonical',update_research_portfolio_change_state:'canonical',create_research_portfolio_bookmark:'canonical',add_research_portfolio_review_note:'canonical',
+  prepare_research_portfolio_brief:'canonical',prepare_research_portfolio_meeting:'canonical',
   create_word:'declared',create_excel:'declared',create_powerpoint:'declared',run_analysis:'record',
   schedule_task:'record',update_scheduled_task:'record',cancel_scheduled_task:'canonical',
   create_task:'canonical',update_task:'canonical',save_memory:'declared',save_chat_attachments:'canonical'});

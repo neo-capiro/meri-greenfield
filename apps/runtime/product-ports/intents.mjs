@@ -39,7 +39,8 @@ import {documentApprovalOwnerFor,filingApprovalOwnerFor} from '../artifacts/inte
 import {createCoreFilingClient} from '../artifacts/core-filing-client.mjs';
 import {currentNativeApprovalSession,currentAttendedSession} from '../native-authority/approval-session.mjs';
 import {createResearchSharingCoreClient} from '../native-authority/research-sharing-client.mjs';
-import {researchShareValidators,legiwatchValidators,watchValidators,bizdevValidators,legislativeDocumentValidators,clientRecordValidators} from '../../../packages/contracts/retrieval-0.2/validate.mjs';
+import {createResearchActionCoreClient} from '../native-authority/research-action-client.mjs';
+import {researchShareValidators,researchActionValidators,legiwatchValidators,watchValidators,bizdevValidators,legislativeDocumentValidators,clientRecordValidators} from '../../../packages/contracts/retrieval-0.2/validate.mjs';
 const fault=code=>Object.assign(new Error(code),{code});
 /** The runtime secret reader, loaded on first use: `../config.mjs` imports this module for its configuration validator. */
 const runtimeReadSecret=async path=>(await import('../config.mjs')).readSecret(path);
@@ -110,6 +111,14 @@ function approvalForwarder(context,c,intents,now,transport){
    const current=await currentAttendedSession({...attended,now,binding:proposal.binding,scopes:proposal.scopes,selectedClientId,signal,check(){signal?.throwIfAborted();if(now()>=deadlineMs)throw fault('DEADLINE');}});
    return relay.port.nativeCredentialFor({binding:current.binding,selectedClientId,signal});
   }});
+ const researchAction=createResearchActionCoreClient({origin:core.origin,now,maxRequestMs:Math.min(c.configuration.limits?.requestMs??10000,30000),...(transport.fetchImpl?{fetchImpl:transport.fetchImpl}:{}),
+  getServiceSecret:createRoutinesServiceSecret({file:core.serviceSecretFile,reservedFiles:reserved,readSecret}),reservedCredentials:createReservedCredentialDigests({files:reserved,readSecret}),
+  async getCredentials({proposal,signal,deadlineMs}){
+   researchActionValidators.assertProposal(proposal);if(!attended)throw executionOwnerUnavailable();
+   const selectedClientId=proposal.scopes[0].kind==='client'?proposal.scopes[0].resourceId:null;
+   const current=await currentAttendedSession({...attended,now,binding:proposal.binding,scopes:proposal.scopes,selectedClientId,signal,check(){signal?.throwIfAborted();if(now()>=deadlineMs)throw fault('DEADLINE');}});
+   return relay.port.nativeCredentialFor({binding:current.binding,selectedClientId,signal});
+  }});
  const legiwatch=createLegiwatchCoreClient({origin:core.origin,now,maxRequestMs:Math.min(c.configuration.limits?.requestMs??10000,30000),...(transport.fetchImpl?{fetchImpl:transport.fetchImpl}:{}),
   getServiceSecret:createRoutinesServiceSecret({file:core.serviceSecretFile,reservedFiles:reserved,readSecret}),reservedCredentials:createReservedCredentialDigests({files:reserved,readSecret}),
   async getCredentials({proposal,signal,deadlineMs}){
@@ -151,7 +160,7 @@ function approvalForwarder(context,c,intents,now,transport){
    const current=await currentAttendedSession({...attended,now,binding:proposal.binding,scopes:proposal.scopes,selectedClientId,signal,check(){signal?.throwIfAborted();if(now()>=deadlineMs)throw fault('DEADLINE');}});
    return relay.port.nativeCredentialFor({binding:current.binding,selectedClientId,signal});
   }});
- return Object.freeze({forwarder,sharing,legiwatch,watch,clientRecord,bizdev,legislativeDocument,relay,bind(sessions,retention,store){relay.bind(sessions);attended={sessions,retention,store};}});
+ return Object.freeze({forwarder,sharing,researchAction,legiwatch,watch,clientRecord,bizdev,legislativeDocument,relay,bind(sessions,retention,store){relay.bind(sessions);attended={sessions,retention,store};}});
 }
 function compose(context,transport){
  let c;try{c=own(context,CONTEXT_KEYS,['artifactRecovery']);}catch{throw fault('PRODUCT_PORTS_CONFIGURATION');}
@@ -186,7 +195,7 @@ function compose(context,transport){
  const composed=composeIntentApprovals({pool:c.pool,native:c.native,decisions,
   documents:{execute:value=>{const owner=documentApprovalOwnerFor(context);if(!owner)throw executionOwnerUnavailable();return owner.execute(value);},read:value=>{const owner=documentApprovalOwnerFor(context);if(!owner)throw executionOwnerUnavailable();return owner.read(value);}},
   filing:{execute:value=>{const owner=filingApprovalOwnerFor(context);if(!owner)throw executionOwnerUnavailable();return owner.execute(value);},read:value=>{const owner=filingApprovalOwnerFor(context);if(!owner)throw executionOwnerUnavailable();return owner.read(value);}},
-  ...(core?{watch:{read:value=>core.watch.read(value),decide:value=>core.watch.decide(value)},legislativeDocument:{read:value=>core.legislativeDocument.read(value),decide:value=>core.legislativeDocument.decide(value)},bizdev:{read:value=>core.bizdev.read(value),decide:value=>core.bizdev.decide(value)},mail:{execute:value=>core.forwarder.executeMail(value),read:value=>core.forwarder.readMailExecution(value)},tasks:{execute:value=>core.forwarder.executeTask(value),read:value=>core.forwarder.readTaskExecution(value)},sharing:{read:value=>core.sharing.read(value),decide:value=>core.sharing.decide(value)},legiwatch:{read:value=>core.legiwatch.read(value),decide:value=>core.legiwatch.decide(value)},clientRecord:{read:value=>core.clientRecord.read(value),decide:value=>core.clientRecord.decide(value)}}:{}),
+  ...(core?{watch:{read:value=>core.watch.read(value),decide:value=>core.watch.decide(value)},legislativeDocument:{read:value=>core.legislativeDocument.read(value),decide:value=>core.legislativeDocument.decide(value)},bizdev:{read:value=>core.bizdev.read(value),decide:value=>core.bizdev.decide(value)},mail:{execute:value=>core.forwarder.executeMail(value),read:value=>core.forwarder.readMailExecution(value)},tasks:{execute:value=>core.forwarder.executeTask(value),read:value=>core.forwarder.readTaskExecution(value)},sharing:{read:value=>core.sharing.read(value),decide:value=>core.sharing.decide(value)},researchAction:{read:value=>core.researchAction.read(value),decide:value=>core.researchAction.decide(value)},legiwatch:{read:value=>core.legiwatch.read(value),decide:value=>core.legiwatch.decide(value)},clientRecord:{read:value=>core.clientRecord.read(value),decide:value=>core.clientRecord.decide(value)}}:{}),
   gate,now,limits,retention,enabled:true});
  return Object.freeze({...shared,state:'composed',reason:null,application:composed.app,owner:composed.owner});
 }

@@ -1,15 +1,18 @@
 {
   "contractVersion": "0.2.0",
   "catalogId": "meri.retrieval",
-  "catalogVersion": "0.2.22",
+  "catalogVersion": "0.2.23",
   "sourceRegistryCommit": "87ea34a812c56524644e4983b215ded5ce8a8f7d",
   "originals": [
     {
       "id": "manage_research_portfolio",
-      "disposition": "deferred",
-      "boundary": "Specialized Research Portfolio or LegiWatch source workflow is outside initial commands; exact authorization, side effects and fixture scope require separate acceptance.",
-      "replacement": null,
-      "state": "deferred"
+      "disposition": "selected",
+      "boundary": "MO-05 conversation-scoped Research Portfolio action prepared for the signed-in user’s explicit confirmation through Core action proposals. Core owns current authority, idempotent effects and receipts; no model execution, automatic retry or research-scope retargeting.",
+      "replacement": {
+        "id": "manage_research_portfolio",
+        "version": "0.2.0"
+      },
+      "state": "mapped"
     },
     {
       "id": "get_research_portfolio",
@@ -23,10 +26,13 @@
     },
     {
       "id": "get_research_portfolio_analytics",
-      "disposition": "deferred",
-      "boundary": "Portfolio analytics has domain scoring and aggregation semantics beyond source reads; fixture and scope not agreed.",
-      "replacement": null,
-      "state": "deferred"
+      "disposition": "selected",
+      "boundary": "MO-05 conversation-scoped Research Portfolio workflow read through Core’s trusted current-turn transport. Core owns the portfolio grant, linked-client walls and revision facts; the read never manages, writes or widens the research scope.",
+      "replacement": {
+        "id": "get_research_portfolio_analytics",
+        "version": "0.2.0"
+      },
+      "state": "mapped"
     },
     {
       "id": "get_research_portfolio_changes",
@@ -40,108 +46,153 @@
     },
     {
       "id": "create_research_portfolio_snapshot",
-      "disposition": "deferred",
-      "boundary": "Specialized Research Portfolio or LegiWatch source workflow is outside initial commands; exact authorization, side effects and fixture scope require separate acceptance.",
-      "replacement": null,
-      "state": "deferred"
+      "disposition": "selected",
+      "boundary": "MO-05 conversation-scoped Research Portfolio action prepared for the signed-in user’s explicit confirmation through Core action proposals. Core owns current authority, idempotent effects and receipts; no model execution, automatic retry or research-scope retargeting.",
+      "replacement": {
+        "id": "create_research_portfolio_snapshot",
+        "version": "0.2.0"
+      },
+      "state": "mapped"
     },
     {
       "id": "request_research_portfolio_output",
-      "disposition": "deferred",
-      "boundary": "Specialized Research Portfolio or LegiWatch source workflow is outside initial commands; exact authorization, side effects and fixture scope require separate acceptance.",
-      "replacement": null,
-      "state": "deferred"
+      "disposition": "selected",
+      "boundary": "MO-05 conversation-scoped Research Portfolio action prepared for the signed-in user’s explicit confirmation through Core action proposals. Core owns current authority, idempotent effects and receipts; no model execution, automatic retry or research-scope retargeting.",
+      "replacement": {
+        "id": "request_research_portfolio_output",
+        "version": "0.2.0"
+      },
+      "state": "mapped"
     },
     {
       "id": "save_research_portfolio_output_to_client",
-      "disposition": "deferred",
-      "boundary": "Portfolio-specific filing workflow is not selected; narrow verified-artifact filing is a separate proposed command.",
-      "replacement": null,
-      "state": "deferred"
+      "disposition": "selected",
+      "boundary": "MO-05 conversation-scoped Research Portfolio action prepared for the signed-in user’s explicit confirmation through Core action proposals. Core owns current authority, idempotent effects and receipts; no model execution, automatic retry or research-scope retargeting.",
+      "replacement": {
+        "id": "save_research_portfolio_output_to_client",
+        "version": "0.2.0"
+      },
+      "state": "mapped"
     },
     {
       "id": "watch_research_portfolio",
-      "disposition": "deferred",
-      "boundary": "Specialized Research Portfolio or LegiWatch source workflow is outside initial commands; exact authorization, side effects and fixture scope require separate acceptance.",
-      "replacement": null,
-      "state": "deferred"
+      "disposition": "selected",
+      "boundary": "MO-05 conversation-scoped Research Portfolio action prepared for the signed-in user’s explicit confirmation through Core action proposals. Core owns current authority, idempotent effects and receipts; no model execution, automatic retry or research-scope retargeting.",
+      "replacement": {
+        "id": "watch_research_portfolio",
+        "version": "0.2.0"
+      },
+      "state": "mapped"
     },
     {
       "id": "update_research_portfolio_change_state",
-      "disposition": "deferred",
-      "boundary": "Specialized Research Portfolio or LegiWatch source workflow is outside initial commands; exact authorization, side effects and fixture scope require separate acceptance.",
-      "replacement": null,
-      "state": "deferred"
+      "disposition": "selected",
+      "boundary": "MO-05 conversation-scoped Research Portfolio action prepared for the signed-in user’s explicit confirmation through Core action proposals. Core owns current authority, idempotent effects and receipts; no model execution, automatic retry or research-scope retargeting.",
+      "replacement": {
+        "id": "update_research_portfolio_change_state",
+        "version": "0.2.0"
+      },
+      "state": "mapped"
     },
     {
       "id": "get_research_portfolio_bookmarks",
-      "disposition": "deferred",
-      "boundary": "Portfolio bookmark workflow is not required by defined v1; private-source access still needs an inventory decision.",
-      "replacement": null,
-      "state": "deferred"
+      "disposition": "selected",
+      "boundary": "MO-05 conversation-scoped Research Portfolio workflow read through Core’s trusted current-turn transport. Core owns the portfolio grant, linked-client walls and revision facts; the read never manages, writes or widens the research scope.",
+      "replacement": {
+        "id": "get_research_portfolio_bookmarks",
+        "version": "0.2.0"
+      },
+      "state": "mapped"
     },
     {
       "id": "create_research_portfolio_bookmark",
-      "disposition": "deferred",
-      "boundary": "Specialized Research Portfolio or LegiWatch source workflow is outside initial commands; exact authorization, side effects and fixture scope require separate acceptance.",
-      "replacement": null,
-      "state": "deferred"
+      "disposition": "selected",
+      "boundary": "MO-05 conversation-scoped Research Portfolio action prepared for the signed-in user’s explicit confirmation through Core action proposals. Core owns current authority, idempotent effects and receipts; no model execution, automatic retry or research-scope retargeting.",
+      "replacement": {
+        "id": "create_research_portfolio_bookmark",
+        "version": "0.2.0"
+      },
+      "state": "mapped"
     },
     {
       "id": "get_research_portfolio_fit",
-      "disposition": "deferred",
-      "boundary": "Portfolio fit scoring is a specialized business workflow; no agreed behavior or benchmark.",
-      "replacement": null,
-      "state": "deferred"
+      "disposition": "selected",
+      "boundary": "MO-05 conversation-scoped Research Portfolio workflow read through Core’s trusted current-turn transport. Core owns the portfolio grant, linked-client walls and revision facts; the read never manages, writes or widens the research scope.",
+      "replacement": {
+        "id": "get_research_portfolio_fit",
+        "version": "0.2.0"
+      },
+      "state": "mapped"
     },
     {
       "id": "get_research_portfolio_reviews",
-      "disposition": "deferred",
-      "boundary": "Portfolio review workflow parity is not agreed; relevant records may be inventoried separately.",
-      "replacement": null,
-      "state": "deferred"
+      "disposition": "selected",
+      "boundary": "MO-05 conversation-scoped Research Portfolio workflow read through Core’s trusted current-turn transport. Core owns the portfolio grant, linked-client walls and revision facts; the read never manages, writes or widens the research scope.",
+      "replacement": {
+        "id": "get_research_portfolio_reviews",
+        "version": "0.2.0"
+      },
+      "state": "mapped"
     },
     {
       "id": "add_research_portfolio_review_note",
-      "disposition": "deferred",
-      "boundary": "Specialized Research Portfolio or LegiWatch source workflow is outside initial commands; exact authorization, side effects and fixture scope require separate acceptance.",
-      "replacement": null,
-      "state": "deferred"
+      "disposition": "selected",
+      "boundary": "MO-05 conversation-scoped Research Portfolio action prepared for the signed-in user’s explicit confirmation through Core action proposals. Core owns current authority, idempotent effects and receipts; no model execution, automatic retry or research-scope retargeting.",
+      "replacement": {
+        "id": "add_research_portfolio_review_note",
+        "version": "0.2.0"
+      },
+      "state": "mapped"
     },
     {
       "id": "get_research_portfolio_rules",
-      "disposition": "deferred",
-      "boundary": "Portfolio rule-management surface is not part of the initial workspace or command set.",
-      "replacement": null,
-      "state": "deferred"
+      "disposition": "selected",
+      "boundary": "MO-05 conversation-scoped Research Portfolio workflow read through Core’s trusted current-turn transport. Core owns the portfolio grant, linked-client walls and revision facts; the read never manages, writes or widens the research scope.",
+      "replacement": {
+        "id": "get_research_portfolio_rules",
+        "version": "0.2.0"
+      },
+      "state": "mapped"
     },
     {
       "id": "get_research_portfolio_imports",
-      "disposition": "deferred",
-      "boundary": "Portfolio import administration is separate scope; no import workflow selected.",
-      "replacement": null,
-      "state": "deferred"
+      "disposition": "selected",
+      "boundary": "MO-05 conversation-scoped Research Portfolio workflow read through Core’s trusted current-turn transport. Core owns the portfolio grant, linked-client walls and revision facts; the read never manages, writes or widens the research scope.",
+      "replacement": {
+        "id": "get_research_portfolio_imports",
+        "version": "0.2.0"
+      },
+      "state": "mapped"
     },
     {
       "id": "get_research_portfolio_operations",
-      "disposition": "deferred",
-      "boundary": "Portfolio operations diagnostics is a specialized workflow with unqualified permissions.",
-      "replacement": null,
-      "state": "deferred"
+      "disposition": "selected",
+      "boundary": "MO-05 conversation-scoped Research Portfolio workflow read through Core’s trusted current-turn transport. Core owns the portfolio grant, linked-client walls and revision facts; the read never manages, writes or widens the research scope.",
+      "replacement": {
+        "id": "get_research_portfolio_operations",
+        "version": "0.2.0"
+      },
+      "state": "mapped"
     },
     {
       "id": "prepare_research_portfolio_brief",
-      "disposition": "deferred",
-      "boundary": "Specialized Research Portfolio or LegiWatch source workflow is outside initial commands; exact authorization, side effects and fixture scope require separate acceptance.",
-      "replacement": null,
-      "state": "deferred"
+      "disposition": "selected",
+      "boundary": "MO-05 conversation-scoped Research Portfolio action prepared for the signed-in user’s explicit confirmation through Core action proposals. Core owns current authority, idempotent effects and receipts; no model execution, automatic retry or research-scope retargeting.",
+      "replacement": {
+        "id": "prepare_research_portfolio_brief",
+        "version": "0.2.0"
+      },
+      "state": "mapped"
     },
     {
       "id": "prepare_research_portfolio_meeting",
-      "disposition": "deferred",
-      "boundary": "Specialized Research Portfolio or LegiWatch source workflow is outside initial commands; exact authorization, side effects and fixture scope require separate acceptance.",
-      "replacement": null,
-      "state": "deferred"
+      "disposition": "selected",
+      "boundary": "MO-05 conversation-scoped Research Portfolio action prepared for the signed-in user’s explicit confirmation through Core action proposals. Core owns current authority, idempotent effects and receipts; no model execution, automatic retry or research-scope retargeting.",
+      "replacement": {
+        "id": "prepare_research_portfolio_meeting",
+        "version": "0.2.0"
+      },
+      "state": "mapped"
     },
     {
       "id": "get_research_evidence",
@@ -9986,6 +10037,1105 @@
       ],
       "fixtureIds": [
         "catalog.binding.inspect_watch_state"
+      ]
+    },
+    {
+      "operation": {
+        "id": "get_research_portfolio_analytics",
+        "version": "0.2.0"
+      },
+      "displayName": "Read Research Portfolio analytics",
+      "whenToUse": "Read the compatible-basis financial projection and contribution ledger of the current Research Portfolio conversation.",
+      "limitations": [
+        "Core checks the current conversation receipt, portfolio grant, selected client and tenant walls on every read.",
+        "Compatible-basis totals only; missing, withheld, unsupported and zero stay distinct.",
+        "Current projection at Core read time; no snapshot comparison or recompute."
+      ],
+      "positiveExamples": [
+        "Read the current portfolio analytics, including unavailable and withheld contributions."
+      ],
+      "negativeExamples": [
+        "Treat an unavailable or withheld contribution as zero, or invent a private source behind a figure."
+      ],
+      "sourceRequirements": [
+        {
+          "sourceId": "research_portfolios",
+          "authority": "authoritative",
+          "purpose": "evidence"
+        }
+      ],
+      "inputSchema": {
+        "id": "urn:meri:retrieval:research-portfolio-workflow:0.2.0#/$defs/ResearchWorkflowConversationInput",
+        "sha256": "c3d942524cbe33763dc4fdb04eb029134e2d8e877706e30123e7e1e9ed4a9c67"
+      },
+      "outputSchema": {
+        "id": "urn:meri:retrieval:research-portfolio-workflow:0.2.0#/$defs/ResearchWorkflowAnalyticsOutput",
+        "sha256": "c3d942524cbe33763dc4fdb04eb029134e2d8e877706e30123e7e1e9ed4a9c67"
+      },
+      "aliases": [],
+      "sideEffect": "none",
+      "requiredGrants": [
+        "tool.read"
+      ],
+      "approvalBoundary": "none",
+      "handler": null,
+      "availability": "unimplemented",
+      "qualification": "pending",
+      "retry": {
+        "maxRetries": 0,
+        "retryableCodes": [],
+        "unknownOutcome": "reconcile-before-retry"
+      },
+      "replacement": null,
+      "requirementIds": [
+        "R-01",
+        "R-04",
+        "R-05"
+      ],
+      "ticketIds": [
+        "REL-02"
+      ],
+      "gateIds": [
+        "RG-02",
+        "RG-05",
+        "RG-07"
+      ],
+      "fixtureIds": [
+        "catalog.binding.get_research_portfolio_analytics"
+      ]
+    },
+    {
+      "operation": {
+        "id": "get_research_portfolio_bookmarks",
+        "version": "0.2.0"
+      },
+      "displayName": "List my Research Portfolio bookmarks",
+      "whenToUse": "List the signed-in user’s bookmarks in the current Research Portfolio conversation.",
+      "limitations": [
+        "Core checks the current conversation receipt, portfolio grant, selected client and tenant walls on every read.",
+        "Own bookmarks only; creation is a separate approved action."
+      ],
+      "positiveExamples": [
+        "List the bookmarks the user saved in this portfolio."
+      ],
+      "negativeExamples": [
+        "Create, edit or delete a bookmark, or list another user’s private bookmarks."
+      ],
+      "sourceRequirements": [
+        {
+          "sourceId": "research_portfolios",
+          "authority": "authoritative",
+          "purpose": "evidence"
+        }
+      ],
+      "inputSchema": {
+        "id": "urn:meri:retrieval:research-portfolio-workflow:0.2.0#/$defs/ResearchWorkflowConversationInput",
+        "sha256": "c3d942524cbe33763dc4fdb04eb029134e2d8e877706e30123e7e1e9ed4a9c67"
+      },
+      "outputSchema": {
+        "id": "urn:meri:retrieval:research-portfolio-workflow:0.2.0#/$defs/ResearchWorkflowBookmarksOutput",
+        "sha256": "c3d942524cbe33763dc4fdb04eb029134e2d8e877706e30123e7e1e9ed4a9c67"
+      },
+      "aliases": [],
+      "sideEffect": "none",
+      "requiredGrants": [
+        "tool.read"
+      ],
+      "approvalBoundary": "none",
+      "handler": null,
+      "availability": "unimplemented",
+      "qualification": "pending",
+      "retry": {
+        "maxRetries": 0,
+        "retryableCodes": [],
+        "unknownOutcome": "reconcile-before-retry"
+      },
+      "replacement": null,
+      "requirementIds": [
+        "R-01",
+        "R-04",
+        "R-05"
+      ],
+      "ticketIds": [
+        "REL-02"
+      ],
+      "gateIds": [
+        "RG-02",
+        "RG-05",
+        "RG-07"
+      ],
+      "fixtureIds": [
+        "catalog.binding.get_research_portfolio_bookmarks"
+      ]
+    },
+    {
+      "operation": {
+        "id": "get_research_portfolio_fit",
+        "version": "0.2.0"
+      },
+      "displayName": "Read Research Portfolio client fit",
+      "whenToUse": "Read the current versioned client-fit result of the current Research Portfolio conversation.",
+      "limitations": [
+        "Core checks the current conversation receipt, portfolio grant, selected client and tenant walls on every read.",
+        "Explicit direct qualified PE association basis; partial or unavailable fit is reported, never inferred."
+      ],
+      "positiveExamples": [
+        "Read the current fit score and basis for each linked, currently visible client."
+      ],
+      "negativeExamples": [
+        "Refresh or recompute fit, or score a client the user cannot see."
+      ],
+      "sourceRequirements": [
+        {
+          "sourceId": "research_portfolios",
+          "authority": "authoritative",
+          "purpose": "evidence"
+        }
+      ],
+      "inputSchema": {
+        "id": "urn:meri:retrieval:research-portfolio-workflow:0.2.0#/$defs/ResearchWorkflowConversationInput",
+        "sha256": "c3d942524cbe33763dc4fdb04eb029134e2d8e877706e30123e7e1e9ed4a9c67"
+      },
+      "outputSchema": {
+        "id": "urn:meri:retrieval:research-portfolio-workflow:0.2.0#/$defs/ResearchWorkflowFitOutput",
+        "sha256": "c3d942524cbe33763dc4fdb04eb029134e2d8e877706e30123e7e1e9ed4a9c67"
+      },
+      "aliases": [],
+      "sideEffect": "none",
+      "requiredGrants": [
+        "tool.read"
+      ],
+      "approvalBoundary": "none",
+      "handler": null,
+      "availability": "unimplemented",
+      "qualification": "pending",
+      "retry": {
+        "maxRetries": 0,
+        "retryableCodes": [],
+        "unknownOutcome": "reconcile-before-retry"
+      },
+      "replacement": null,
+      "requirementIds": [
+        "R-01",
+        "R-04",
+        "R-05"
+      ],
+      "ticketIds": [
+        "REL-02"
+      ],
+      "gateIds": [
+        "RG-02",
+        "RG-05",
+        "RG-07"
+      ],
+      "fixtureIds": [
+        "catalog.binding.get_research_portfolio_fit"
+      ]
+    },
+    {
+      "operation": {
+        "id": "get_research_portfolio_reviews",
+        "version": "0.2.0"
+      },
+      "displayName": "List Research Portfolio reviews",
+      "whenToUse": "List reviews of the current Research Portfolio conversation by lane (mine, team, deferred, resolved).",
+      "limitations": [
+        "Core checks the current conversation receipt, portfolio grant, selected client and tenant walls on every read.",
+        "Review decisions, assignments and notes are separate approved actions."
+      ],
+      "positiveExamples": [
+        "List the reviews assigned to me, or the team, deferred or resolved lanes."
+      ],
+      "negativeExamples": [
+        "Decide, assign or annotate a review, or infer a decision from an open review."
+      ],
+      "sourceRequirements": [
+        {
+          "sourceId": "research_portfolios",
+          "authority": "authoritative",
+          "purpose": "evidence"
+        }
+      ],
+      "inputSchema": {
+        "id": "urn:meri:retrieval:research-portfolio-workflow:0.2.0#/$defs/ResearchWorkflowReviewsInput",
+        "sha256": "c3d942524cbe33763dc4fdb04eb029134e2d8e877706e30123e7e1e9ed4a9c67"
+      },
+      "outputSchema": {
+        "id": "urn:meri:retrieval:research-portfolio-workflow:0.2.0#/$defs/ResearchWorkflowReviewsOutput",
+        "sha256": "c3d942524cbe33763dc4fdb04eb029134e2d8e877706e30123e7e1e9ed4a9c67"
+      },
+      "aliases": [],
+      "sideEffect": "none",
+      "requiredGrants": [
+        "tool.read"
+      ],
+      "approvalBoundary": "none",
+      "handler": null,
+      "availability": "unimplemented",
+      "qualification": "pending",
+      "retry": {
+        "maxRetries": 0,
+        "retryableCodes": [],
+        "unknownOutcome": "reconcile-before-retry"
+      },
+      "replacement": null,
+      "requirementIds": [
+        "R-01",
+        "R-04",
+        "R-05"
+      ],
+      "ticketIds": [
+        "REL-02"
+      ],
+      "gateIds": [
+        "RG-02",
+        "RG-05",
+        "RG-07"
+      ],
+      "fixtureIds": [
+        "catalog.binding.get_research_portfolio_reviews"
+      ]
+    },
+    {
+      "operation": {
+        "id": "get_research_portfolio_rules",
+        "version": "0.2.0"
+      },
+      "displayName": "List Research Portfolio rule versions",
+      "whenToUse": "List the published rule versions of the current Research Portfolio conversation.",
+      "limitations": [
+        "Core checks the current conversation receipt, portfolio grant, selected client and tenant walls on every read.",
+        "Published versions only; rule preview and publication are management actions requiring approval."
+      ],
+      "positiveExamples": [
+        "List the published rule versions and their recompute status."
+      ],
+      "negativeExamples": [
+        "Preview, publish or edit a rule, or treat a preview as published."
+      ],
+      "sourceRequirements": [
+        {
+          "sourceId": "research_portfolios",
+          "authority": "authoritative",
+          "purpose": "evidence"
+        }
+      ],
+      "inputSchema": {
+        "id": "urn:meri:retrieval:research-portfolio-workflow:0.2.0#/$defs/ResearchWorkflowConversationInput",
+        "sha256": "c3d942524cbe33763dc4fdb04eb029134e2d8e877706e30123e7e1e9ed4a9c67"
+      },
+      "outputSchema": {
+        "id": "urn:meri:retrieval:research-portfolio-workflow:0.2.0#/$defs/ResearchWorkflowRulesOutput",
+        "sha256": "c3d942524cbe33763dc4fdb04eb029134e2d8e877706e30123e7e1e9ed4a9c67"
+      },
+      "aliases": [],
+      "sideEffect": "none",
+      "requiredGrants": [
+        "tool.read"
+      ],
+      "approvalBoundary": "none",
+      "handler": null,
+      "availability": "unimplemented",
+      "qualification": "pending",
+      "retry": {
+        "maxRetries": 0,
+        "retryableCodes": [],
+        "unknownOutcome": "reconcile-before-retry"
+      },
+      "replacement": null,
+      "requirementIds": [
+        "R-01",
+        "R-04",
+        "R-05"
+      ],
+      "ticketIds": [
+        "REL-02"
+      ],
+      "gateIds": [
+        "RG-02",
+        "RG-05",
+        "RG-07"
+      ],
+      "fixtureIds": [
+        "catalog.binding.get_research_portfolio_rules"
+      ]
+    },
+    {
+      "operation": {
+        "id": "get_research_portfolio_imports",
+        "version": "0.2.0"
+      },
+      "displayName": "Read Research Portfolio import jobs",
+      "whenToUse": "Read the all-row import job detail, or the recent import jobs, of the current Research Portfolio conversation.",
+      "limitations": [
+        "Core checks the current conversation receipt, portfolio grant, selected client and tenant walls on every read.",
+        "Recent jobs are bounded to the twenty most recent; import actions are separate approved management actions."
+      ],
+      "positiveExamples": [
+        "Read the rows, attempts, effects and compensation receipts of one import job."
+      ],
+      "negativeExamples": [
+        "Start, retry, cancel or compensate an import, or treat a previewed row as applied."
+      ],
+      "sourceRequirements": [
+        {
+          "sourceId": "research_portfolios",
+          "authority": "authoritative",
+          "purpose": "evidence"
+        }
+      ],
+      "inputSchema": {
+        "id": "urn:meri:retrieval:research-portfolio-workflow:0.2.0#/$defs/ResearchWorkflowImportsInput",
+        "sha256": "c3d942524cbe33763dc4fdb04eb029134e2d8e877706e30123e7e1e9ed4a9c67"
+      },
+      "outputSchema": {
+        "id": "urn:meri:retrieval:research-portfolio-workflow:0.2.0#/$defs/ResearchWorkflowImportsOutput",
+        "sha256": "c3d942524cbe33763dc4fdb04eb029134e2d8e877706e30123e7e1e9ed4a9c67"
+      },
+      "aliases": [],
+      "sideEffect": "none",
+      "requiredGrants": [
+        "tool.read"
+      ],
+      "approvalBoundary": "none",
+      "handler": null,
+      "availability": "unimplemented",
+      "qualification": "pending",
+      "retry": {
+        "maxRetries": 0,
+        "retryableCodes": [],
+        "unknownOutcome": "reconcile-before-retry"
+      },
+      "replacement": null,
+      "requirementIds": [
+        "R-01",
+        "R-04",
+        "R-05"
+      ],
+      "ticketIds": [
+        "REL-02"
+      ],
+      "gateIds": [
+        "RG-02",
+        "RG-05",
+        "RG-07"
+      ],
+      "fixtureIds": [
+        "catalog.binding.get_research_portfolio_imports"
+      ]
+    },
+    {
+      "operation": {
+        "id": "get_research_portfolio_operations",
+        "version": "0.2.0"
+      },
+      "displayName": "Read a Research Portfolio operation",
+      "whenToUse": "Read one import, recompute, output, snapshot or client-filing operation of the current Research Portfolio conversation.",
+      "limitations": [
+        "Core checks the current conversation receipt, portfolio grant, selected client and tenant walls on every read.",
+        "Status is the durable operation record; outcome_unknown remains unknown until reconciled by its owner."
+      ],
+      "positiveExamples": [
+        "Read the status and limitations of one exact operation."
+      ],
+      "negativeExamples": [
+        "Reconcile, retry or cancel an operation, or treat outcome_unknown as failed or completed."
+      ],
+      "sourceRequirements": [
+        {
+          "sourceId": "research_portfolios",
+          "authority": "authoritative",
+          "purpose": "evidence"
+        }
+      ],
+      "inputSchema": {
+        "id": "urn:meri:retrieval:research-portfolio-workflow:0.2.0#/$defs/ResearchWorkflowOperationInput",
+        "sha256": "c3d942524cbe33763dc4fdb04eb029134e2d8e877706e30123e7e1e9ed4a9c67"
+      },
+      "outputSchema": {
+        "id": "urn:meri:retrieval:research-portfolio-workflow:0.2.0#/$defs/ResearchWorkflowOperationOutput",
+        "sha256": "c3d942524cbe33763dc4fdb04eb029134e2d8e877706e30123e7e1e9ed4a9c67"
+      },
+      "aliases": [],
+      "sideEffect": "none",
+      "requiredGrants": [
+        "tool.read"
+      ],
+      "approvalBoundary": "none",
+      "handler": null,
+      "availability": "unimplemented",
+      "qualification": "pending",
+      "retry": {
+        "maxRetries": 0,
+        "retryableCodes": [],
+        "unknownOutcome": "reconcile-before-retry"
+      },
+      "replacement": null,
+      "requirementIds": [
+        "R-01",
+        "R-04",
+        "R-05"
+      ],
+      "ticketIds": [
+        "REL-02"
+      ],
+      "gateIds": [
+        "RG-02",
+        "RG-05",
+        "RG-07"
+      ],
+      "fixtureIds": [
+        "catalog.binding.get_research_portfolio_operations"
+      ]
+    },
+    {
+      "operation": {
+        "id": "manage_research_portfolio",
+        "version": "0.2.0"
+      },
+      "displayName": "Prepare a Research Portfolio management action",
+      "whenToUse": "Prepare one exact native Research Portfolio management action (lifecycle, grants, client links, members, rules, reviews, annual continuity, imports, subscriptions, bookmarks, fit refresh, watch conversion, outputs, snapshots, templates, saved comparisons) for the signed-in user to confirm.",
+      "limitations": [
+        "Core checks the current conversation receipt, portfolio grant, selected client and tenant walls at preparation and again at the user’s decision.",
+        "The operation key is derived by the intent delivery owner; a model-supplied key is refused. An unknown outcome is reconciled through its Core owner, never replayed.",
+        "Parameters follow the Core action schema for the selected action; read-only management actions still pass through the same confirmation because Core registers the tool as side-effecting."
+      ],
+      "positiveExamples": [
+        "Prepare an archive of this portfolio at its current revision for confirmation."
+      ],
+      "negativeExamples": [
+        "Execute a management action without confirmation, invent an expected revision, or retarget another portfolio."
+      ],
+      "sourceRequirements": [
+        {
+          "sourceId": "research_portfolios",
+          "authority": "authoritative",
+          "purpose": "evidence"
+        }
+      ],
+      "inputSchema": {
+        "id": "urn:meri:retrieval:research-portfolio-action:0.2.0#/$defs/ResearchActionManageInput",
+        "sha256": "0056432e8f5a84e084972d3f5a458bde7102cb97f48132427a7f336b0a68ab39"
+      },
+      "outputSchema": {
+        "id": "urn:meri:retrieval:research-portfolio-action:0.2.0#/$defs/ResearchActionPrepared",
+        "sha256": "0056432e8f5a84e084972d3f5a458bde7102cb97f48132427a7f336b0a68ab39"
+      },
+      "aliases": [],
+      "sideEffect": "source-command",
+      "requiredGrants": [
+        "command.execute"
+      ],
+      "approvalBoundary": "immutable-proposal",
+      "handler": null,
+      "availability": "unimplemented",
+      "qualification": "pending",
+      "retry": {
+        "maxRetries": 0,
+        "retryableCodes": [],
+        "unknownOutcome": "reconcile-before-retry"
+      },
+      "replacement": null,
+      "requirementIds": [
+        "R-01",
+        "R-04",
+        "R-05"
+      ],
+      "ticketIds": [
+        "REL-02"
+      ],
+      "gateIds": [
+        "RG-02",
+        "RG-05",
+        "RG-07"
+      ],
+      "fixtureIds": [
+        "catalog.binding.manage_research_portfolio"
+      ]
+    },
+    {
+      "operation": {
+        "id": "create_research_portfolio_snapshot",
+        "version": "0.2.0"
+      },
+      "displayName": "Prepare an immutable Research Portfolio snapshot",
+      "whenToUse": "Prepare an immutable, idempotent snapshot of the current Research Portfolio at an exact revision for the signed-in user to confirm.",
+      "limitations": [
+        "Core checks the current conversation receipt, portfolio grant, selected client and tenant walls at preparation and again at the user’s decision.",
+        "The operation key is derived by the intent delivery owner; a model-supplied key is refused. An unknown outcome is reconciled through its Core owner, never replayed.",
+        "A stale expected revision is refused by Core at execution."
+      ],
+      "positiveExamples": [
+        "Prepare a named snapshot at the current portfolio revision."
+      ],
+      "negativeExamples": [
+        "Treat a prepared snapshot as created, or guess the expected revision."
+      ],
+      "sourceRequirements": [
+        {
+          "sourceId": "research_portfolios",
+          "authority": "authoritative",
+          "purpose": "evidence"
+        }
+      ],
+      "inputSchema": {
+        "id": "urn:meri:retrieval:research-portfolio-action:0.2.0#/$defs/ResearchActionSnapshotInput",
+        "sha256": "0056432e8f5a84e084972d3f5a458bde7102cb97f48132427a7f336b0a68ab39"
+      },
+      "outputSchema": {
+        "id": "urn:meri:retrieval:research-portfolio-action:0.2.0#/$defs/ResearchActionPrepared",
+        "sha256": "0056432e8f5a84e084972d3f5a458bde7102cb97f48132427a7f336b0a68ab39"
+      },
+      "aliases": [],
+      "sideEffect": "source-command",
+      "requiredGrants": [
+        "command.execute"
+      ],
+      "approvalBoundary": "immutable-proposal",
+      "handler": null,
+      "availability": "unimplemented",
+      "qualification": "pending",
+      "retry": {
+        "maxRetries": 0,
+        "retryableCodes": [],
+        "unknownOutcome": "reconcile-before-retry"
+      },
+      "replacement": null,
+      "requirementIds": [
+        "R-01",
+        "R-04",
+        "R-05"
+      ],
+      "ticketIds": [
+        "REL-02"
+      ],
+      "gateIds": [
+        "RG-02",
+        "RG-05",
+        "RG-07"
+      ],
+      "fixtureIds": [
+        "catalog.binding.create_research_portfolio_snapshot"
+      ]
+    },
+    {
+      "operation": {
+        "id": "request_research_portfolio_output",
+        "version": "0.2.0"
+      },
+      "displayName": "Prepare a Research Portfolio CSV output",
+      "whenToUse": "Prepare the configured durable CSV output of the current Research Portfolio or one of its snapshots for the signed-in user to confirm.",
+      "limitations": [
+        "Core checks the current conversation receipt, portfolio grant, selected client and tenant walls at preparation and again at the user’s decision.",
+        "The operation key is derived by the intent delivery owner; a model-supplied key is refused. An unknown outcome is reconciled through its Core owner, never replayed.",
+        "The returned job lifecycle may be partial, failed, cancelled or outcome-unknown; completion is observed through the operation read."
+      ],
+      "positiveExamples": [
+        "Prepare a CSV output of the latest snapshot."
+      ],
+      "negativeExamples": [
+        "Treat the prepared request as a completed file, or download bytes from history."
+      ],
+      "sourceRequirements": [
+        {
+          "sourceId": "research_portfolios",
+          "authority": "authoritative",
+          "purpose": "evidence"
+        }
+      ],
+      "inputSchema": {
+        "id": "urn:meri:retrieval:research-portfolio-action:0.2.0#/$defs/ResearchActionOutputInput",
+        "sha256": "0056432e8f5a84e084972d3f5a458bde7102cb97f48132427a7f336b0a68ab39"
+      },
+      "outputSchema": {
+        "id": "urn:meri:retrieval:research-portfolio-action:0.2.0#/$defs/ResearchActionPrepared",
+        "sha256": "0056432e8f5a84e084972d3f5a458bde7102cb97f48132427a7f336b0a68ab39"
+      },
+      "aliases": [],
+      "sideEffect": "source-command",
+      "requiredGrants": [
+        "command.execute"
+      ],
+      "approvalBoundary": "immutable-proposal",
+      "handler": null,
+      "availability": "unimplemented",
+      "qualification": "pending",
+      "retry": {
+        "maxRetries": 0,
+        "retryableCodes": [],
+        "unknownOutcome": "reconcile-before-retry"
+      },
+      "replacement": null,
+      "requirementIds": [
+        "R-01",
+        "R-04",
+        "R-05"
+      ],
+      "ticketIds": [
+        "REL-02"
+      ],
+      "gateIds": [
+        "RG-02",
+        "RG-05",
+        "RG-07"
+      ],
+      "fixtureIds": [
+        "catalog.binding.request_research_portfolio_output"
+      ]
+    },
+    {
+      "operation": {
+        "id": "save_research_portfolio_output_to_client",
+        "version": "0.2.0"
+      },
+      "displayName": "Prepare saving a Research Portfolio output to Client Files",
+      "whenToUse": "Prepare saving one completed Research Portfolio output through the canonical Client Files writer for the signed-in user to confirm.",
+      "limitations": [
+        "Core checks the current conversation receipt, portfolio grant, selected client and tenant walls at preparation and again at the user’s decision.",
+        "The operation key is derived by the intent delivery owner; a model-supplied key is refused. An unknown outcome is reconciled through its Core owner, never replayed.",
+        "Requires a completed output and a linked, currently authorized client; the receipt names the actual attachment."
+      ],
+      "positiveExamples": [
+        "Prepare saving the completed CSV output to the linked client’s files."
+      ],
+      "negativeExamples": [
+        "Save to a client that is not linked and currently visible, or claim a file was saved before the receipt."
+      ],
+      "sourceRequirements": [
+        {
+          "sourceId": "research_portfolios",
+          "authority": "authoritative",
+          "purpose": "evidence"
+        }
+      ],
+      "inputSchema": {
+        "id": "urn:meri:retrieval:research-portfolio-action:0.2.0#/$defs/ResearchActionSaveOutputInput",
+        "sha256": "0056432e8f5a84e084972d3f5a458bde7102cb97f48132427a7f336b0a68ab39"
+      },
+      "outputSchema": {
+        "id": "urn:meri:retrieval:research-portfolio-action:0.2.0#/$defs/ResearchActionPrepared",
+        "sha256": "0056432e8f5a84e084972d3f5a458bde7102cb97f48132427a7f336b0a68ab39"
+      },
+      "aliases": [],
+      "sideEffect": "source-command",
+      "requiredGrants": [
+        "command.execute"
+      ],
+      "approvalBoundary": "immutable-proposal",
+      "handler": null,
+      "availability": "unimplemented",
+      "qualification": "pending",
+      "retry": {
+        "maxRetries": 0,
+        "retryableCodes": [],
+        "unknownOutcome": "reconcile-before-retry"
+      },
+      "replacement": null,
+      "requirementIds": [
+        "R-01",
+        "R-04",
+        "R-05"
+      ],
+      "ticketIds": [
+        "REL-02"
+      ],
+      "gateIds": [
+        "RG-02",
+        "RG-05",
+        "RG-07"
+      ],
+      "fixtureIds": [
+        "catalog.binding.save_research_portfolio_output_to_client"
+      ]
+    },
+    {
+      "operation": {
+        "id": "watch_research_portfolio",
+        "version": "0.2.0"
+      },
+      "displayName": "Prepare a Research Portfolio watch",
+      "whenToUse": "Prepare an explicit quiet-first in-app watch on the current Research Portfolio for the signed-in user to confirm.",
+      "limitations": [
+        "Core checks the current conversation receipt, portfolio grant, selected client and tenant walls at preparation and again at the user’s decision.",
+        "The operation key is derived by the intent delivery owner; a model-supplied key is refused. An unknown outcome is reconciled through its Core owner, never replayed.",
+        "Immediate in-app cadence only; delivery stays dark until the configured channel is enabled by its owner."
+      ],
+      "positiveExamples": [
+        "Prepare an in-app watch on this portfolio."
+      ],
+      "negativeExamples": [
+        "Subscribe automatically, send email, or treat the baseline as a historical change feed."
+      ],
+      "sourceRequirements": [
+        {
+          "sourceId": "research_portfolios",
+          "authority": "authoritative",
+          "purpose": "evidence"
+        }
+      ],
+      "inputSchema": {
+        "id": "urn:meri:retrieval:research-portfolio-action:0.2.0#/$defs/ResearchActionWatchInput",
+        "sha256": "0056432e8f5a84e084972d3f5a458bde7102cb97f48132427a7f336b0a68ab39"
+      },
+      "outputSchema": {
+        "id": "urn:meri:retrieval:research-portfolio-action:0.2.0#/$defs/ResearchActionPrepared",
+        "sha256": "0056432e8f5a84e084972d3f5a458bde7102cb97f48132427a7f336b0a68ab39"
+      },
+      "aliases": [],
+      "sideEffect": "source-command",
+      "requiredGrants": [
+        "command.execute"
+      ],
+      "approvalBoundary": "immutable-proposal",
+      "handler": null,
+      "availability": "unimplemented",
+      "qualification": "pending",
+      "retry": {
+        "maxRetries": 0,
+        "retryableCodes": [],
+        "unknownOutcome": "reconcile-before-retry"
+      },
+      "replacement": null,
+      "requirementIds": [
+        "R-01",
+        "R-04",
+        "R-05"
+      ],
+      "ticketIds": [
+        "REL-02"
+      ],
+      "gateIds": [
+        "RG-02",
+        "RG-05",
+        "RG-07"
+      ],
+      "fixtureIds": [
+        "catalog.binding.watch_research_portfolio"
+      ]
+    },
+    {
+      "operation": {
+        "id": "update_research_portfolio_change_state",
+        "version": "0.2.0"
+      },
+      "displayName": "Prepare a Research Portfolio change-state update",
+      "whenToUse": "Prepare marking one portfolio event seen, acknowledged, dismissed or undone for the current recipient, for the signed-in user to confirm.",
+      "limitations": [
+        "Core checks the current conversation receipt, portfolio grant, selected client and tenant walls at preparation and again at the user’s decision.",
+        "The operation key is derived by the intent delivery owner; a model-supplied key is refused. An unknown outcome is reconciled through its Core owner, never replayed.",
+        "Optimistic revision checking applies when expectedRevision is supplied."
+      ],
+      "positiveExamples": [
+        "Prepare acknowledging one listed change event."
+      ],
+      "negativeExamples": [
+        "Change another recipient’s state or dismiss events the user has not reviewed."
+      ],
+      "sourceRequirements": [
+        {
+          "sourceId": "research_portfolios",
+          "authority": "authoritative",
+          "purpose": "evidence"
+        }
+      ],
+      "inputSchema": {
+        "id": "urn:meri:retrieval:research-portfolio-action:0.2.0#/$defs/ResearchActionChangeStateInput",
+        "sha256": "0056432e8f5a84e084972d3f5a458bde7102cb97f48132427a7f336b0a68ab39"
+      },
+      "outputSchema": {
+        "id": "urn:meri:retrieval:research-portfolio-action:0.2.0#/$defs/ResearchActionPrepared",
+        "sha256": "0056432e8f5a84e084972d3f5a458bde7102cb97f48132427a7f336b0a68ab39"
+      },
+      "aliases": [],
+      "sideEffect": "source-command",
+      "requiredGrants": [
+        "command.execute"
+      ],
+      "approvalBoundary": "immutable-proposal",
+      "handler": null,
+      "availability": "unimplemented",
+      "qualification": "pending",
+      "retry": {
+        "maxRetries": 0,
+        "retryableCodes": [],
+        "unknownOutcome": "reconcile-before-retry"
+      },
+      "replacement": null,
+      "requirementIds": [
+        "R-01",
+        "R-04",
+        "R-05"
+      ],
+      "ticketIds": [
+        "REL-02"
+      ],
+      "gateIds": [
+        "RG-02",
+        "RG-05",
+        "RG-07"
+      ],
+      "fixtureIds": [
+        "catalog.binding.update_research_portfolio_change_state"
+      ]
+    },
+    {
+      "operation": {
+        "id": "create_research_portfolio_bookmark",
+        "version": "0.2.0"
+      },
+      "displayName": "Prepare a Research Portfolio bookmark",
+      "whenToUse": "Prepare bookmarking one member, snapshot, evidence item, review, import or output of the current Research Portfolio for the signed-in user to confirm.",
+      "limitations": [
+        "Core checks the current conversation receipt, portfolio grant, selected client and tenant walls at preparation and again at the user’s decision.",
+        "The operation key is derived by the intent delivery owner; a model-supplied key is refused. An unknown outcome is reconciled through its Core owner, never replayed.",
+        "Idempotent per delivery; an existing bookmark of the same item is returned by Core."
+      ],
+      "positiveExamples": [
+        "Prepare a bookmark of the reviewed snapshot with a short label."
+      ],
+      "negativeExamples": [
+        "Bookmark on behalf of another user or infer the target id."
+      ],
+      "sourceRequirements": [
+        {
+          "sourceId": "research_portfolios",
+          "authority": "authoritative",
+          "purpose": "evidence"
+        }
+      ],
+      "inputSchema": {
+        "id": "urn:meri:retrieval:research-portfolio-action:0.2.0#/$defs/ResearchActionBookmarkInput",
+        "sha256": "0056432e8f5a84e084972d3f5a458bde7102cb97f48132427a7f336b0a68ab39"
+      },
+      "outputSchema": {
+        "id": "urn:meri:retrieval:research-portfolio-action:0.2.0#/$defs/ResearchActionPrepared",
+        "sha256": "0056432e8f5a84e084972d3f5a458bde7102cb97f48132427a7f336b0a68ab39"
+      },
+      "aliases": [],
+      "sideEffect": "source-command",
+      "requiredGrants": [
+        "command.execute"
+      ],
+      "approvalBoundary": "immutable-proposal",
+      "handler": null,
+      "availability": "unimplemented",
+      "qualification": "pending",
+      "retry": {
+        "maxRetries": 0,
+        "retryableCodes": [],
+        "unknownOutcome": "reconcile-before-retry"
+      },
+      "replacement": null,
+      "requirementIds": [
+        "R-01",
+        "R-04",
+        "R-05"
+      ],
+      "ticketIds": [
+        "REL-02"
+      ],
+      "gateIds": [
+        "RG-02",
+        "RG-05",
+        "RG-07"
+      ],
+      "fixtureIds": [
+        "catalog.binding.create_research_portfolio_bookmark"
+      ]
+    },
+    {
+      "operation": {
+        "id": "add_research_portfolio_review_note",
+        "version": "0.2.0"
+      },
+      "displayName": "Prepare a Research Portfolio review note",
+      "whenToUse": "Prepare appending an immutable note to one review of the current Research Portfolio for the signed-in user to confirm.",
+      "limitations": [
+        "Core checks the current conversation receipt, portfolio grant, selected client and tenant walls at preparation and again at the user’s decision.",
+        "The operation key is derived by the intent delivery owner; a model-supplied key is refused. An unknown outcome is reconciled through its Core owner, never replayed.",
+        "Append-only; a stale review revision is refused by Core."
+      ],
+      "positiveExamples": [
+        "Prepare a note on the assigned review at its current revision."
+      ],
+      "negativeExamples": [
+        "Decide the review, edit an existing note, or invent evidence."
+      ],
+      "sourceRequirements": [
+        {
+          "sourceId": "research_portfolios",
+          "authority": "authoritative",
+          "purpose": "evidence"
+        }
+      ],
+      "inputSchema": {
+        "id": "urn:meri:retrieval:research-portfolio-action:0.2.0#/$defs/ResearchActionReviewNoteInput",
+        "sha256": "0056432e8f5a84e084972d3f5a458bde7102cb97f48132427a7f336b0a68ab39"
+      },
+      "outputSchema": {
+        "id": "urn:meri:retrieval:research-portfolio-action:0.2.0#/$defs/ResearchActionPrepared",
+        "sha256": "0056432e8f5a84e084972d3f5a458bde7102cb97f48132427a7f336b0a68ab39"
+      },
+      "aliases": [],
+      "sideEffect": "source-command",
+      "requiredGrants": [
+        "command.execute"
+      ],
+      "approvalBoundary": "immutable-proposal",
+      "handler": null,
+      "availability": "unimplemented",
+      "qualification": "pending",
+      "retry": {
+        "maxRetries": 0,
+        "retryableCodes": [],
+        "unknownOutcome": "reconcile-before-retry"
+      },
+      "replacement": null,
+      "requirementIds": [
+        "R-01",
+        "R-04",
+        "R-05"
+      ],
+      "ticketIds": [
+        "REL-02"
+      ],
+      "gateIds": [
+        "RG-02",
+        "RG-05",
+        "RG-07"
+      ],
+      "fixtureIds": [
+        "catalog.binding.add_research_portfolio_review_note"
+      ]
+    },
+    {
+      "operation": {
+        "id": "prepare_research_portfolio_brief",
+        "version": "0.2.0"
+      },
+      "displayName": "Prepare a Research Portfolio brief draft",
+      "whenToUse": "Prepare an owner-private, unreviewed editable brief draft from current Research Portfolio evidence for the signed-in user to confirm.",
+      "limitations": [
+        "Core checks the current conversation receipt, portfolio grant, selected client and tenant walls at preparation and again at the user’s decision.",
+        "The operation key is derived by the intent delivery owner; a model-supplied key is refused. An unknown outcome is reconciled through its Core owner, never replayed.",
+        "The receipt names the actual artifact and source lineage; no provider send or task selection."
+      ],
+      "positiveExamples": [
+        "Prepare an editable brief draft from the current portfolio evidence."
+      ],
+      "negativeExamples": [
+        "Send the brief, select tasks automatically, or present the draft as reviewed."
+      ],
+      "sourceRequirements": [
+        {
+          "sourceId": "research_portfolios",
+          "authority": "authoritative",
+          "purpose": "evidence"
+        }
+      ],
+      "inputSchema": {
+        "id": "urn:meri:retrieval:research-portfolio-action:0.2.0#/$defs/ResearchActionBriefInput",
+        "sha256": "0056432e8f5a84e084972d3f5a458bde7102cb97f48132427a7f336b0a68ab39"
+      },
+      "outputSchema": {
+        "id": "urn:meri:retrieval:research-portfolio-action:0.2.0#/$defs/ResearchActionPrepared",
+        "sha256": "0056432e8f5a84e084972d3f5a458bde7102cb97f48132427a7f336b0a68ab39"
+      },
+      "aliases": [],
+      "sideEffect": "source-command",
+      "requiredGrants": [
+        "command.execute"
+      ],
+      "approvalBoundary": "immutable-proposal",
+      "handler": null,
+      "availability": "unimplemented",
+      "qualification": "pending",
+      "retry": {
+        "maxRetries": 0,
+        "retryableCodes": [],
+        "unknownOutcome": "reconcile-before-retry"
+      },
+      "replacement": null,
+      "requirementIds": [
+        "R-01",
+        "R-04",
+        "R-05"
+      ],
+      "ticketIds": [
+        "REL-02"
+      ],
+      "gateIds": [
+        "RG-02",
+        "RG-05",
+        "RG-07"
+      ],
+      "fixtureIds": [
+        "catalog.binding.prepare_research_portfolio_brief"
+      ]
+    },
+    {
+      "operation": {
+        "id": "prepare_research_portfolio_meeting",
+        "version": "0.2.0"
+      },
+      "displayName": "Prepare a Research Portfolio meeting draft",
+      "whenToUse": "Prepare an owner-private, unreviewed editable meeting-preparation draft from current Research Portfolio evidence for the signed-in user to confirm.",
+      "limitations": [
+        "Core checks the current conversation receipt, portfolio grant, selected client and tenant walls at preparation and again at the user’s decision.",
+        "The operation key is derived by the intent delivery owner; a model-supplied key is refused. An unknown outcome is reconciled through its Core owner, never replayed.",
+        "An optional owned internal meeting and up to twenty selected reviews bind the draft; no provider send."
+      ],
+      "positiveExamples": [
+        "Prepare a meeting draft bound to an owned internal meeting and selected reviews."
+      ],
+      "negativeExamples": [
+        "Send invitations, create tasks automatically, or present the draft as reviewed."
+      ],
+      "sourceRequirements": [
+        {
+          "sourceId": "research_portfolios",
+          "authority": "authoritative",
+          "purpose": "evidence"
+        }
+      ],
+      "inputSchema": {
+        "id": "urn:meri:retrieval:research-portfolio-action:0.2.0#/$defs/ResearchActionMeetingInput",
+        "sha256": "0056432e8f5a84e084972d3f5a458bde7102cb97f48132427a7f336b0a68ab39"
+      },
+      "outputSchema": {
+        "id": "urn:meri:retrieval:research-portfolio-action:0.2.0#/$defs/ResearchActionPrepared",
+        "sha256": "0056432e8f5a84e084972d3f5a458bde7102cb97f48132427a7f336b0a68ab39"
+      },
+      "aliases": [],
+      "sideEffect": "source-command",
+      "requiredGrants": [
+        "command.execute"
+      ],
+      "approvalBoundary": "immutable-proposal",
+      "handler": null,
+      "availability": "unimplemented",
+      "qualification": "pending",
+      "retry": {
+        "maxRetries": 0,
+        "retryableCodes": [],
+        "unknownOutcome": "reconcile-before-retry"
+      },
+      "replacement": null,
+      "requirementIds": [
+        "R-01",
+        "R-04",
+        "R-05"
+      ],
+      "ticketIds": [
+        "REL-02"
+      ],
+      "gateIds": [
+        "RG-02",
+        "RG-05",
+        "RG-07"
+      ],
+      "fixtureIds": [
+        "catalog.binding.prepare_research_portfolio_meeting"
       ]
     }
   ]
