@@ -146,6 +146,8 @@ The frozen sharing lifecycle is intentionally distinct from authenticated intern
 
 The historical tables below remain verbatim. Their old `PARTIAL` or `BLOCKED` labels do not prove present defects or completion. Neither Fable's static scan nor the current author reports assessed DI-01–DI-11 and S09–S15 comprehensively. Keep the following concrete requirements open for current-owner reconciliation and evidence; do not silently call them complete because a component name exists, and do not assume each requires new code.
 
+Core's later bounded owner map, `work/fable-closeout-20261027/CORE-RECOVERED-SCOPE-MAP-39e0837ea.txt`, identifies existing DI-01–DI-11/S09–S15/OP-01–OP-04 services and routes. It confirmed one additional defect: context-occurrence canonical evidence skipped the source document's eligible/qualified check. Fix `39e0837eac3f2349b84de96c456664ea43bf27a9` retains diagnostic reads while refusing ineligible/unqualified publication (three author regression cases); independent review/deployment remain pending. The map explicitly leaves actual corpus denominators, historical cycles, exact locators, native browser behavior and operational qualification unaccepted. Source ownership is now traced; those evidence dependencies remain concrete and are not filled by fabricated data or another service.
+
 | Recovered rows | Precise requirement not established by this closeout packet |
 | --- | --- |
 | DI-01/DI-02, S11/S12, AT-10 | Required program/PE narratives and exact evidence; planned/completed milestone precision and history; all four Research segments and five dossier tabs with authoritative URL state and real-subject proof. |
