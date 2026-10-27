@@ -2,6 +2,187 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "urn:meri:document-access-application:0.2.0",
   "$defs": {
+    "DocumentPreviewRequest": {
+      "type": "object",
+      "properties": {
+        "versionId": {
+          "type": "string",
+          "pattern": "^[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[1-8][a-fA-F0-9]{3}-[89aAbB][a-fA-F0-9]{3}-[a-fA-F0-9]{12}$"
+        }
+      },
+      "required": [
+        "versionId"
+      ],
+      "additionalProperties": false
+    },
+    "DocumentPreviewRecord": {
+      "type": "object",
+      "properties": {
+        "recordVersion": {
+          "const": "meri.artifact-preview.proposal-1"
+        },
+        "previewId": {
+          "type": "string",
+          "pattern": "^[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[1-8][a-fA-F0-9]{3}-[89aAbB][a-fA-F0-9]{3}-[a-fA-F0-9]{12}$"
+        },
+        "versionId": {
+          "type": "string",
+          "pattern": "^[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[1-8][a-fA-F0-9]{3}-[89aAbB][a-fA-F0-9]{3}-[a-fA-F0-9]{12}$"
+        },
+        "artifactId": {
+          "type": "string",
+          "pattern": "^[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[1-8][a-fA-F0-9]{3}-[89aAbB][a-fA-F0-9]{3}-[a-fA-F0-9]{12}$"
+        },
+        "tenantId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "conversationId": {
+          "type": "string",
+          "pattern": "^[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[1-8][a-fA-F0-9]{3}-[89aAbB][a-fA-F0-9]{3}-[a-fA-F0-9]{12}$"
+        },
+        "source": {
+          "type": "object",
+          "properties": {
+            "sha256": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            "bytes": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 16777216
+            },
+            "mimeType": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "required": [
+            "sha256",
+            "bytes",
+            "mimeType"
+          ],
+          "additionalProperties": false
+        },
+        "preview": {
+          "type": "object",
+          "properties": {
+            "object": {
+              "$ref": "#/$defs/Canonical_ObjectReference_a099bd1c"
+            },
+            "mimeType": {
+              "const": "application/pdf"
+            },
+            "pages": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 500
+            }
+          },
+          "required": [
+            "object",
+            "mimeType",
+            "pages"
+          ],
+          "additionalProperties": false
+        },
+        "conversion": {
+          "type": "object",
+          "properties": {
+            "method": {
+              "enum": [
+                "source-pdf",
+                "office-pdf"
+              ]
+            },
+            "inputSha256": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            "outputSha256": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            "qualificationId": {
+              "anyOf": [
+                {
+                  "type": "null"
+                },
+                {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 128
+                }
+              ]
+            },
+            "imageDigest": {
+              "anyOf": [
+                {
+                  "type": "null"
+                },
+                {
+                  "type": "string",
+                  "pattern": "^sha256:[a-f0-9]{64}$"
+                }
+              ]
+            }
+          },
+          "required": [
+            "method",
+            "inputSha256",
+            "outputSha256",
+            "qualificationId",
+            "imageDigest"
+          ],
+          "additionalProperties": false
+        },
+        "status": {
+          "const": "published"
+        },
+        "nativeQualified": {
+          "const": false
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "recordVersion",
+        "previewId",
+        "versionId",
+        "artifactId",
+        "tenantId",
+        "conversationId",
+        "source",
+        "preview",
+        "conversion",
+        "status",
+        "nativeQualified",
+        "createdAt"
+      ],
+      "additionalProperties": false
+    },
+    "DocumentPreviewPublication": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "enum": [
+            "existing",
+            "published"
+          ]
+        },
+        "preview": {
+          "$ref": "#/$defs/DocumentPreviewRecord"
+        }
+      },
+      "required": [
+        "status",
+        "preview"
+      ],
+      "additionalProperties": false
+    },
     "DocumentVersion": {
       "allOf": [
         {
@@ -750,52 +931,6 @@
       ],
       "additionalProperties": false
     },
-    "Canonical_RunBinding_84f2304c": {
-      "type": "object",
-      "properties": {
-        "tenantId": {
-          "type": "string",
-          "minLength": 1,
-          "maxLength": 128
-        },
-        "actorId": {
-          "type": "string",
-          "minLength": 1,
-          "maxLength": 128
-        },
-        "conversationId": {
-          "type": "string",
-          "format": "uuid"
-        },
-        "runId": {
-          "type": "string",
-          "format": "uuid"
-        },
-        "attemptId": {
-          "type": "string",
-          "format": "uuid"
-        },
-        "workerId": {
-          "type": "string",
-          "format": "uuid"
-        },
-        "writerFence": {
-          "type": "integer",
-          "minimum": 1,
-          "maximum": 9007199254740991
-        }
-      },
-      "required": [
-        "tenantId",
-        "actorId",
-        "conversationId",
-        "runId",
-        "attemptId",
-        "workerId",
-        "writerFence"
-      ],
-      "additionalProperties": false
-    },
     "Canonical_Scope_f882edb5": {
       "type": "object",
       "properties": {
@@ -870,6 +1005,52 @@
         "sha256",
         "bytes",
         "scopes"
+      ],
+      "additionalProperties": false
+    },
+    "Canonical_RunBinding_84f2304c": {
+      "type": "object",
+      "properties": {
+        "tenantId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "actorId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "conversationId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "runId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "attemptId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "workerId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "writerFence": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        }
+      },
+      "required": [
+        "tenantId",
+        "actorId",
+        "conversationId",
+        "runId",
+        "attemptId",
+        "workerId",
+        "writerFence"
       ],
       "additionalProperties": false
     },

@@ -64,8 +64,8 @@ export function createDocumentApplication(options){
   try{
    const info=requestInfo(request);if(!config.enabled)fail('UNAVAILABLE',503);
    // Retained versions use the six-format read contract, independently of PDF generation admission.
-   // Write and preview routes keep their configured renderer/admission requirements.
-   const admission=['inspect','download','history','list'].includes(info.intent)?admitDocumentFormats({pdf:true}):config.formatAdmission;
+   // Preview publication reads a retained source; its own renderer gate governs conversion. PDF generation remains explicit.
+   const admission=['inspect','download','history','list','preview','preview-publish'].includes(info.intent)?admitDocumentFormats({pdf:true}):config.formatAdmission;
    const at=config.now();if(!Number.isSafeInteger(at)||at<0)fail('DOCUMENT_CLOCK',500);
    const deadlineMs=Math.min(at+config.limits.maxRequestMs,context.deadlineMs);
    life=createOperationLifetime({deadlineMs,now:config.now,signal:info.signal,errorFactory:code=>new CommandError(code)});

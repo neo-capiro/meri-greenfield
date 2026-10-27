@@ -2,8 +2,8 @@
  * artifact read path and cannot reach budget reservation or settlement.
  *   POST /api/documents/preview-publish {versionId} -> {status, preview}  (render once, store, commit the immutable record)
  *   POST /api/documents/preview         {versionId} -> the preview PDF, inline, no-store, sandboxed
- * Without trusted `previewOptions` both routes are 503 PREVIEW_UNAVAILABLE. Preview routes retain the configured writer-format
- * admission; inspect/download use the separate six-format read admission. */
+ * Without trusted `previewOptions` both routes are 503 PREVIEW_UNAVAILABLE. Retained sources use six-format read admission;
+ * the preview owner refuses unsupported formats and requires the qualified converter for Office sources. */
 import {createHash} from 'node:crypto';
 import {createArtifactService} from '../../artifacts/service.mjs';
 import {createArtifactPreviewService} from '../../artifacts/preview/service.mjs';
@@ -41,5 +41,7 @@ export async function previewRoute({config,admission,current,life,intent,version
  if(!Buffer.isBuffer(result.bytes)||result.bytes.length!==object.bytes||createHash('sha256').update(result.bytes).digest('hex')!==object.sha256||result.preview.source.sha256!==record.object.sha256||result.bytes.length>config.limits.maxResponseBytes)fail('DOCUMENT_RESULT_REFUSED',502);
  const bytes=Buffer.from(result.bytes);await current.fresh();current.check();
  return new Response(bytes,{status:200,headers:{'content-type':result.preview.preview.mimeType,'content-disposition':`inline; filename="${record.filename}.preview.pdf"`,'content-length':String(bytes.length),
-  'cache-control':'no-store','x-content-type-options':'nosniff','content-security-policy':"sandbox; default-src 'none'"}});
+  'cache-control':'no-store','x-content-type-options':'nosniff','content-security-policy':"sandbox; default-src 'none'",
+  'x-meri-preview-id':result.preview.previewId,'x-meri-preview-source-version':record.versionId,'x-meri-preview-source-sha256':record.object.sha256,
+  'x-meri-preview-sha256':object.sha256,'x-meri-preview-pages':String(result.preview.preview.pages),'x-meri-preview-record-sha256':v.hash(result.preview)}});
 }

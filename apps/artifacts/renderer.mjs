@@ -54,10 +54,10 @@ export function createRendererPort({admission,transformer}){
  ports.add(port);return port;
 }
 /** The LibreOffice binding: the admitted executable must be exactly the configured one. */
-export function createLibreOfficeRendererPort({admission,executable,tempRoot}){
+export function createLibreOfficeRendererPort({admission,executable,tempRoot,run}){
  const result=admit(admission);if(!result.admission)return unavailable(result.reason,result.missing);
  if(typeof executable!=='string'||executable!==result.admission.executable||typeof tempRoot!=='string'||!isAbsolute(tempRoot))return unavailable('RENDERER_ADMISSION_INVALID');
- return createRendererPort({admission,transformer:createLibreOfficeTransformer({executable,tempRoot})});
+ return createRendererPort({admission,transformer:createLibreOfficeTransformer({executable,tempRoot,...(run?{run}:{})})});
 }
 /** True only for ports constructed by this module (raw converters and look-alike objects are refused by composition). */
 export const isRendererPort=value=>ports.has(value);

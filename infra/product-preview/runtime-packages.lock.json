@@ -69,6 +69,38 @@
       "source": "https://packages.wolfi.dev/os/aarch64/py3.13-pip-base-26.2.2-r0.apk",
       "sha256": "83d295f369d1396bae0e9a84b6014e9857dba40a1ac4d5215662c34d229e01ce",
       "bytes": 3999807
+    },
+    {
+      "name": "libreoffice-26.8",
+      "version": "26.8.2.2-r0",
+      "architecture": "aarch64",
+      "source": "https://packages.wolfi.dev/os/aarch64/libreoffice-26.8-26.8.2.2-r0.apk",
+      "sha256": "4655365de9a2bb2c75ddea905364dfe36026b24996924c65c7dc8645222c6739",
+      "bytes": 290487999
+    },
+    {
+      "name": "bubblewrap",
+      "version": "0.13.1-r0",
+      "architecture": "aarch64",
+      "source": "https://packages.wolfi.dev/os/aarch64/bubblewrap-0.13.1-r0.apk",
+      "sha256": "e2fe9d841badfe86280ac708786a21b951e1dc7874a0949705da44447dd881e1",
+      "bytes": 90446
+    },
+    {
+      "name": "util-linux-misc",
+      "version": "2.42.4-r1",
+      "architecture": "aarch64",
+      "source": "https://packages.wolfi.dev/os/aarch64/util-linux-misc-2.42.4-r1.apk",
+      "sha256": "f1c58ed46eded3d8751b43c221aa968a386e9a8e628684e4db802070538cf266",
+      "bytes": 3101763
+    },
+    {
+      "name": "font-liberation",
+      "version": "2.1.5-r6",
+      "architecture": "aarch64",
+      "source": "https://packages.wolfi.dev/os/aarch64/font-liberation-2.1.5-r6.apk",
+      "sha256": "2f0ff74cd04a5c9c6a43404bb058e6fcf6e02b64d24d7f9f29740fee51372cd2",
+      "bytes": 2496092
     }
   ],
   "pythonRequirements": "infra/product-preview/runtime-packages/requirements.lock.txt",
@@ -86,5 +118,11 @@
       "advisory": "https://github.com/nodejs/undici/security/advisories/GHSA-xjj6-f33q-929c",
       "qualification": "Complete official package replacement only; npm 12.2.1 upstream is unchanged otherwise and has not released this fix. Build compares every other npm file against its original tarball and verifies the replacement bytes, node-gyp resolution and declared semver range."
     }
+  },
+  "rendererProvenance": {
+    "packageIndex": "https://packages.wolfi.dev/os/aarch64/APKINDEX.tar.gz",
+    "packageIndexSha256": "97c23edf5277170536df92875ea88f68be6a8048d4c55f3dd0e3c3c91762c1e4",
+    "retrievedOn": "2026-10-27",
+    "qualification": "Unqualified source installation pins. Exact ARM image must pass observed no-network/non-root/read-only/no-credentials/limited child sandbox and Office/PDF corpus acceptance before renderer availability."
   }
 }

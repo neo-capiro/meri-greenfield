@@ -18,7 +18,9 @@
  *       pptxModulePath,              // absolute POSIX path of the pinned pptxgenjs module directory
  *       tempRoot,                    // absolute POSIX directory for per-generation temporary trees (a task-local mount, e.g. /tmp)
  *       timeoutMs?                   // 1..60000, default 30000
- *     }
+ *     },
+ *     renderer?: {enabled, imageDigest}, // trusted deployment selection; admission still requires an observed native sandbox
+ *     pdfAdmission?: boolean             // generation switch, effective only with the available renderer port
  *   }
  *
  * The five storage keys are required when `enabled` is true and validated whenever present. Publication custody uses each
@@ -28,7 +30,7 @@
  * Meri-local owners that startup composes (`./authority-composition.mjs`). */
 const fault=()=>Object.assign(new Error('ARTIFACT_CONFIGURATION'),{code:'ARTIFACT_CONFIGURATION'});
 const REQUIRED=Object.freeze(['region','bucket','prefix','expectedBucketOwner','kmsKeyId']);
-const KEYS=Object.freeze(['enabled',...REQUIRED,'authority','executor']);
+const KEYS=Object.freeze(['enabled',...REQUIRED,'authority','executor','pdfAdmission','renderer']);
 const EXECUTOR_KEYS=Object.freeze(['pythonExecutable','nodeExecutable','pptxModulePath','tempRoot','timeoutMs']),EXECUTOR_PATHS=Object.freeze(['pythonExecutable','nodeExecutable','pptxModulePath','tempRoot']);
 const REGION=/^[a-z]{2}(?:-gov)?-[a-z]+-[0-9]$/u,BUCKET=/^[a-z0-9][a-z0-9.-]{1,61}[a-z0-9]$/u,OWNER=/^[0-9]{12}$/u;
 const AUTHORITY_KEYS=Object.freeze(['origin','serviceSecretFile']),SECRET_FILE=/^\/[A-Za-z0-9._\/-]{1,4095}$/u;
@@ -45,6 +47,11 @@ export function compileRuntimeArtifactsConfiguration(configuration){
  const raw=configuration?.artifacts;if(raw===undefined)return null;
  const a=plain(raw);
  if(typeof a.enabled!=='boolean')throw fault();
+ if(a.pdfAdmission!==undefined&&typeof a.pdfAdmission!=='boolean')throw fault();
+ if(a.renderer!==undefined){const renderer=plain(a.renderer,['enabled','imageDigest']);
+  if(typeof renderer.enabled!=='boolean'||typeof renderer.imageDigest!=='string'||!/^sha256:[a-f0-9]{64}$/u.test(renderer.imageDigest))throw fault();
+  a.renderer=Object.freeze(renderer);
+ }
  if(a.enabled)for(const key of REQUIRED)if(!Object.hasOwn(a,key))throw fault();
  if(a.region!==undefined&&(typeof a.region!=='string'||!REGION.test(a.region)))throw fault();
  if(a.bucket!==undefined&&(typeof a.bucket!=='string'||!BUCKET.test(a.bucket)||a.bucket.endsWith('--x-s3')||a.bucket.includes('..')))throw fault();

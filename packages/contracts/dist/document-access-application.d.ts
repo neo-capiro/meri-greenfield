@@ -8,7 +8,9 @@ export type DocumentAccessApplicationEnvelope =
   | DocumentInspectionResponse
   | DocumentHistoryResponse
   | DocumentListResponse
-  | DocumentErrorResponse;
+  | DocumentErrorResponse
+  | DocumentPreviewRequest
+  | DocumentPreviewPublication;
 export type DocumentInspectionResponse =
   | {
       version: DocumentVersion;
@@ -354,6 +356,41 @@ export interface DocumentErrorResponse {
     outcome: 'NOT_DISPATCHED' | 'UNKNOWN' | 'RESULT_NOT_RELEASED' | 'READ_UNAVAILABLE';
   };
 }
+export interface DocumentPreviewRequest {
+  versionId: string;
+}
+export interface DocumentPreviewPublication {
+  status: 'existing' | 'published';
+  preview: DocumentPreviewRecord;
+}
+export interface DocumentPreviewRecord {
+  recordVersion: 'meri.artifact-preview.proposal-1';
+  previewId: string;
+  versionId: string;
+  artifactId: string;
+  tenantId: string;
+  conversationId: string;
+  source: {
+    sha256: string;
+    bytes: number;
+    mimeType: string;
+  };
+  preview: {
+    object: Canonical_ObjectReferenceA099Bd1C;
+    mimeType: 'application/pdf';
+    pages: number;
+  };
+  conversion: {
+    method: 'source-pdf' | 'office-pdf';
+    inputSha256: string;
+    outputSha256: string;
+    qualificationId: null | string;
+    imageDigest: null | string;
+  };
+  status: 'published';
+  nativeQualified: false;
+  createdAt: string;
+}
 
 export type DocumentAccessRoute = 'inspect' | 'download' | 'history' | 'list';
 declare const admittedRequest: unique symbol;
@@ -485,3 +522,13 @@ export declare const documentAccessMetadata:{
 export declare function receiveDocumentRequest<R extends DocumentAccessRoute>(route:R,utf8Bytes:Uint8Array):AdmittedDocumentRequest<R>;
 export declare function receiveDocumentResponse<R extends DocumentAccessRoute>(route:R,httpStatus:number,utf8Bytes:Uint8Array,request:AdmittedDocumentRequest<R>):Promise<DocumentResponse<R>>;
 export declare function receiveDocumentDownload<V extends AdmittedDocumentVersion>(response:Response,version:V,options?:DocumentDownloadOptions):Promise<DocumentDownload<V>>;
+export declare const documentPreviewVersion:'0.1.0';
+export declare const documentPreviewMetadata:Readonly<{contractVersion:'0.1.0';publish:Readonly<{method:'POST';path:'/api/documents/preview-publish';response:'json';effect:'write'}>;read:Readonly<{method:'POST';path:'/api/documents/preview';response:'bytes';effect:'read'}>;maxBytes:8388608;maxPages:500;nativeQualified:false}>;
+declare const admittedPreviewRequest:unique symbol;
+export type DocumentPreviewAction='publish'|'read';
+export type AdmittedDocumentPreviewRequest<A extends DocumentPreviewAction>=Readonly<DocumentPreviewRequest>&{readonly[admittedPreviewRequest]:A};
+export type AdmittedGeneratedDocumentVersion=Readonly<DocumentVersion>&{readonly[admittedVersion]:true};
+export interface DocumentPreview<V extends AdmittedGeneratedDocumentVersion=AdmittedGeneratedDocumentVersion>{readonly version:V;readonly bytes:Uint8Array<ArrayBuffer>;readonly preview:Readonly<{previewId:string;sourceVersionId:string;sourceSha256:string;sha256:string;pages:number;recordSha256:string;nativeQualified:false}>;}
+export declare function receiveDocumentPreviewRequest<A extends DocumentPreviewAction>(action:A,utf8Bytes:Uint8Array):AdmittedDocumentPreviewRequest<A>;
+export declare function receiveDocumentPreviewPublication(httpStatus:number,utf8Bytes:Uint8Array,request:AdmittedDocumentPreviewRequest<'publish'>,version:AdmittedGeneratedDocumentVersion):DocumentPreviewPublication|DocumentErrorResponse;
+export declare function receiveDocumentPreview<V extends AdmittedGeneratedDocumentVersion>(response:Response,version:V,options?:DocumentDownloadOptions):Promise<DocumentPreview<V>>;

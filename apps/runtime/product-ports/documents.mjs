@@ -27,6 +27,8 @@ import {S3Client} from '../../artifacts/storage/s3-sdk.mjs';
 import {storageMethod} from '../../artifacts/storage/boundary.mjs';
 import {own} from '../../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {createRuntimeArtifactStorage,createRuntimeDocumentOptionsComposer} from '../artifacts/composition.mjs';
+import {createRuntimePreviewCustody} from '../artifacts/preview-custody.mjs';
+import {isRendererPort} from '../../artifacts/renderer.mjs';
 import {compileRuntimeArtifactsConfiguration} from '../artifacts/configuration.mjs';
 import {registerDocumentsSessionBinder,bindDocumentsSessions} from '../artifacts/session-binding.mjs';
 import {createRuntimeDocumentIntentPreparers} from '../artifacts/intent-preparers.mjs';
@@ -66,7 +68,8 @@ function lateBoundOptionsOwner({authority,compose}){
  * body,requestSha256,deadlineMs,signal})` -> `{artifactOptions,selectedClientId,credential,limits,enabled?,recheck}` or null) and
  * `executor` (`createFixedRuntimeArtifactExecutor(...)` over approved image paths) must be supplied together. */
 export function documentsFamily(owners={}){
- const o=own(owners,[],['authority','executor','createS3Client','nativeCredentials']);
+ const o=own(owners,[],['authority','executor','createS3Client','nativeCredentials','renderer']);
+ if(o.renderer!==undefined&&!isRendererPort(o.renderer))throw fault();
  if(o.createS3Client!==undefined&&!ordinary(o.createS3Client))throw fault();
  if(o.nativeCredentials!==undefined)storageMethod(o.nativeCredentials,'nativeCredentialFor');
  if((o.authority===undefined)!==(o.executor===undefined))throw fault();
@@ -88,7 +91,10 @@ export function documentsFamily(owners={}){
   // Composed disabled: without a declared Core authority origin the supplied authority is never reached.
   if(o.authority===undefined||declared.authority===undefined)return {ports:{artifactStore:storage,...retentionPorts}};
   if(Object.hasOwn(o.authority,'origin')&&o.authority.origin!==declared.authority.origin||Object.hasOwn(o.authority,'now')&&o.authority.now!==now)throw fault();
-  const late=lateBoundOptionsOwner({authority:o.authority,compose:(sessions,store)=>createRuntimeDocumentOptionsComposer({storage,executor:o.executor,pool,sessions,store,now})});
+  const previewStoreForContext=retention?createRuntimePreviewCustody({journal:artifactRecovery.journal,retention:artifactRecovery.retention,
+   versionsPool:pool,evidenceS3:s3,versions:storage.versions,now,maxRequestMs:configuration.limits.requestMs}):undefined;
+  const late=lateBoundOptionsOwner({authority:o.authority,compose:(sessions,store)=>createRuntimeDocumentOptionsComposer({storage,executor:o.executor,pool,sessions,store,now,
+   ...(o.renderer?{renderer:o.renderer}:{}),pdfAdmission:declared.pdfAdmission===true,...(previewStoreForContext?{previewStoreForContext}:{})})});
   registerDocumentsSessionBinder(context,late.bind);
   const limits={maxRequestMs:configuration.limits.requestMs,maxRequestBytes:configuration.limits.requestBytes,maxResponseBytes:configuration.native.maxResponseBytes};
   const filingEnabled=retention&&configuration.intents?.enabled===true&&configuration.intents.core!==undefined;

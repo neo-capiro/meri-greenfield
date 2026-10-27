@@ -90,6 +90,7 @@ export async function qualifyLibreOfficeRenderer(options){
  // The probe reports getcwd(), which resolves symlinks, so the workspace parent is compared with the resolved temp root.
  const evaluation=evaluateRendererSandbox(observation,{tempRoot:await realpath(c.tempRoot).catch(()=>null)});
  const admission={rendererId:'libreoffice',rendererVersion:version,executable:c.executable,imageDigest:c.imageDigest,qualificationId:c.qualificationId,sandbox:{...evaluation.sandbox}};
- const port=createLibreOfficeRendererPort({admission,executable:c.executable,tempRoot:c.tempRoot});
+ // The probe and every later conversion must use the identical host-owned child runner, including its namespace boundary.
+ const port=createLibreOfficeRendererPort({admission,executable:c.executable,tempRoot:c.tempRoot,run:c.run});
  return {port,admission,evaluation,receipt:{...receipt,state:port.state,reason:port.reason,missingRequirements:[...port.missingRequirements]}};
 }

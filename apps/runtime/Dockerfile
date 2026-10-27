@@ -59,6 +59,15 @@ RUN test "$(uname -m)" = aarch64 && \
     apk add --no-cache bash=5.3-r14 libatomic=16.2.0-r1 libstdc++=16.2.0-r1 \
       python-3.13=3.13.16_git20261016-r2 py3.13-pip=26.2.2-r0 py3.13-pip-base=26.2.2-r0 && \
     test "$(python3.13 --version)" = 'Python 3.13.16'
+# Fixed native renderer owner; apk still verifies package signatures and resolves native dependencies.
+# The source lock records these exact official archives. Availability is established by the child probe on the built image.
+ADD --checksum=sha256:4655365de9a2bb2c75ddea905364dfe36026b24996924c65c7dc8645222c6739 https://packages.wolfi.dev/os/aarch64/libreoffice-26.8-26.8.2.2-r0.apk /tmp/meri-renderer-libreoffice.apk
+ADD --checksum=sha256:e2fe9d841badfe86280ac708786a21b951e1dc7874a0949705da44447dd881e1 https://packages.wolfi.dev/os/aarch64/bubblewrap-0.13.1-r0.apk /tmp/meri-renderer-bubblewrap.apk
+ADD --checksum=sha256:f1c58ed46eded3d8751b43c221aa968a386e9a8e628684e4db802070538cf266 https://packages.wolfi.dev/os/aarch64/util-linux-misc-2.42.4-r1.apk /tmp/meri-renderer-limits.apk
+ADD --checksum=sha256:2f0ff74cd04a5c9c6a43404bb058e6fcf6e02b64d24d7f9f29740fee51372cd2 https://packages.wolfi.dev/os/aarch64/font-liberation-2.1.5-r6.apk /tmp/meri-renderer-fonts.apk
+RUN apk add --no-cache /tmp/meri-renderer-libreoffice.apk /tmp/meri-renderer-bubblewrap.apk /tmp/meri-renderer-limits.apk /tmp/meri-renderer-fonts.apk && \
+    test -x /usr/lib/libreoffice/program/soffice && test -x /usr/bin/bwrap && test -x /usr/bin/prlimit && \
+    rm /tmp/meri-renderer-libreoffice.apk /tmp/meri-renderer-bubblewrap.apk /tmp/meri-renderer-limits.apk /tmp/meri-renderer-fonts.apk
 # Wolfi uses glibc. Copy only Node/npm from the official builder; the final
 # image retains Wolfi's Python, native dependencies and system CA trust.
 COPY --from=builder /usr/local/bin/node /usr/local/bin/node

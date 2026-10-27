@@ -39,8 +39,8 @@ export async function generateDocumentAccessContracts({check=false,toolchainRoot
   for(const m of body.matchAll(/fail\('([A-Z_]+)'(?:,(\d+))?\)/gu))statuses[m[1]]=Number(m[2]??400);
   const errorStatuses=Object.fromEntries(Object.entries(statuses).sort(([a],[b])=>a.localeCompare(b)));
   // Preview owner and format vocabulary: recorded so a change to either forces regeneration and a fresh review of the semantics text.
-  for(const path of ['../../apps/artifacts/preview/render.mjs','../../apps/artifacts/preview/service.mjs','artifacts-0.2/artifact-formats.mjs','retrieval-0.2/catalog.json','document-application/boundary.mjs','document-application/download.mjs','generate-document-access.mjs',
-   ...['README.md','schema.mjs','protocol.mjs','receive.mjs'].map(name=>'document-access-application/'+name)])await record(path);
+  for(const path of ['../../apps/artifacts/preview/render.mjs','../../apps/artifacts/preview/service.mjs','../../apps/artifacts/preview/record.mjs','../../apps/control/document-application/preview-route.mjs','artifacts-0.2/artifact-formats.mjs','retrieval-0.2/catalog.json','document-application/boundary.mjs','document-application/download.mjs','generate-document-access.mjs',
+   ...['README.md','schema.mjs','protocol.mjs','receive.mjs','preview.mjs','preview-schema.mjs'].map(name=>'document-access-application/'+name)])await record(path);
   const byOperation=operationFormats(),producible=new Set(Object.values(byOperation).flat());
   if(DOCUMENT_ACCESS_FORMATS.some(format=>!producible.has(format))||[...producible].some(format=>!DOCUMENT_ACCESS_FORMATS.includes(format)))throw Error('Document format admission does not match the artifact format vocabulary');
   const config={formats:[...DOCUMENT_ACCESS_FORMATS],mimeTypes:{...ARTIFACT_MIME_TYPES},previewFormats:await previewFormats(),operationFormats:byOperation,errorStatuses},metadata=createDocumentAccessMetadata(config);
@@ -50,7 +50,7 @@ export async function generateDocumentAccessContracts({check=false,toolchainRoot
     if(!seen.has(full)){const original=originals.get(id);if(!original)throw Error('Missing schema owner '+id);const name='Canonical_'+fragment.split('/').at(-1)+'_'+hash(full).slice(0,8);seen.set(full,name);let target=original.schema;for(const token of fragment.split('/').slice(1))target=target[token.replaceAll('~1','/').replaceAll('~0','~')];if(!target)throw Error('Missing canonical pointer '+full);defs[name]=transform(target,id);}out[key]='#/$defs/'+seen.get(full);
    }return out;}
   root.$defs={...transform(root.$defs,root.$id),...defs};
-  const names=['DocumentInspectRequest','DocumentDownloadRequest','DocumentHistoryRequest','DocumentListRequest','DocumentInspectionResponse','DocumentHistoryResponse','DocumentListResponse','DocumentErrorResponse'],exportNames=['validateInspectRequest','validateDownloadRequest','validateHistoryRequest','validateListRequest','validateInspection','validateHistory','validateList','validateError'];
+  const names=['DocumentInspectRequest','DocumentDownloadRequest','DocumentHistoryRequest','DocumentListRequest','DocumentInspectionResponse','DocumentHistoryResponse','DocumentListResponse','DocumentErrorResponse','DocumentPreviewRequest','DocumentPreviewPublication'],exportNames=['validateInspectRequest','validateDownloadRequest','validateHistoryRequest','validateListRequest','validateInspection','validateHistory','validateList','validateError','validatePreviewRequest','validatePreviewPublication'];
   const ajv=new Ajv({strict:true,allErrors:false,code:{source:true,esm:true}});formats(ajv);ajv.addSchema(root);const refs={};names.forEach((name,i)=>{const ref=root.$id+'#/$defs/'+name;ajv.compile({$ref:ref});refs[exportNames[i]]=ref;});
   const generated=standalone(ajv,refs),statusSource='export const errorStatuses='+JSON.stringify(errorStatuses)+';';
   const protocol='import {createDocumentAccessMetadata} from '+JSON.stringify(fileURLToPath(new URL('document-access-application/protocol.mjs',HERE)))+';export const documentAccessMetadata=createDocumentAccessMetadata('+JSON.stringify(config)+');';
@@ -79,6 +79,16 @@ export declare const documentAccessMetadata:${JSON.stringify(metadata,null,2)};
 export declare function receiveDocumentRequest<R extends DocumentAccessRoute>(route:R,utf8Bytes:Uint8Array):AdmittedDocumentRequest<R>;
 export declare function receiveDocumentResponse<R extends DocumentAccessRoute>(route:R,httpStatus:number,utf8Bytes:Uint8Array,request:AdmittedDocumentRequest<R>):Promise<DocumentResponse<R>>;
 export declare function receiveDocumentDownload<V extends AdmittedDocumentVersion>(response:Response,version:V,options?:DocumentDownloadOptions):Promise<DocumentDownload<V>>;
+export declare const documentPreviewVersion:'0.1.0';
+export declare const documentPreviewMetadata:Readonly<{contractVersion:'0.1.0';publish:Readonly<{method:'POST';path:'/api/documents/preview-publish';response:'json';effect:'write'}>;read:Readonly<{method:'POST';path:'/api/documents/preview';response:'bytes';effect:'read'}>;maxBytes:8388608;maxPages:500;nativeQualified:false}>;
+declare const admittedPreviewRequest:unique symbol;
+export type DocumentPreviewAction='publish'|'read';
+export type AdmittedDocumentPreviewRequest<A extends DocumentPreviewAction>=Readonly<DocumentPreviewRequest>&{readonly[admittedPreviewRequest]:A};
+export type AdmittedGeneratedDocumentVersion=Readonly<DocumentVersion>&{readonly[admittedVersion]:true};
+export interface DocumentPreview<V extends AdmittedGeneratedDocumentVersion=AdmittedGeneratedDocumentVersion>{readonly version:V;readonly bytes:Uint8Array<ArrayBuffer>;readonly preview:Readonly<{previewId:string;sourceVersionId:string;sourceSha256:string;sha256:string;pages:number;recordSha256:string;nativeQualified:false}>;}
+export declare function receiveDocumentPreviewRequest<A extends DocumentPreviewAction>(action:A,utf8Bytes:Uint8Array):AdmittedDocumentPreviewRequest<A>;
+export declare function receiveDocumentPreviewPublication(httpStatus:number,utf8Bytes:Uint8Array,request:AdmittedDocumentPreviewRequest<'publish'>,version:AdmittedGeneratedDocumentVersion):DocumentPreviewPublication|DocumentErrorResponse;
+export declare function receiveDocumentPreview<V extends AdmittedGeneratedDocumentVersion>(response:Response,version:V,options?:DocumentDownloadOptions):Promise<DocumentPreview<V>>;
 `;
   const schemaBytes=JSON.stringify(root,null,2)+'\n',outputs=new Map([
    ['document-access-application.mjs','// Generated self-contained browser receiving boundary. No authority or deployment acceptance.\n'+bundled.outputFiles[0].text],['document-access-application.d.ts',declarations+api],['document-access-application.schema.json',schemaBytes],

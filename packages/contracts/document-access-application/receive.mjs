@@ -6,6 +6,7 @@ import {ARTIFACT_MIME_TYPES,assertNativeArtifactEvidenceBinding} from '../artifa
 import {fail,parseBytes,admittedRequests,admittedVersions,admitNativeInspection} from '../document-application/boundary.mjs';
 export {DocumentResponseError} from '../document-application/boundary.mjs';
 export {receiveDocumentDownload} from '../document-application/download.mjs';
+export {documentPreviewVersion,documentPreviewMetadata,receiveDocumentPreviewRequest,receiveDocumentPreviewPublication,receiveDocumentPreview} from './preview.mjs';
 export {documentAccessVersion} from './protocol.mjs';
 export {documentAccessMetadata};
 const validators=Object.freeze({inspect:validateInspectRequest,download:validateDownloadRequest,history:validateHistoryRequest,list:validateListRequest});

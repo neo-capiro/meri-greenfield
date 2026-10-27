@@ -1,6 +1,7 @@
 // Build-time projection of the canonical artifact contract (artifacts-0.2) onto the document read routes. Unlike the frozen
 // document-application projection (docx/txt/xlsx), every canonical inspection variant is admitted: docx, txt, xlsx, pptx, pdf and zip.
 import {ARTIFACT_MIME_TYPES} from '../artifacts-0.2/artifact-formats.mjs';
+import {documentPreviewDefinitions} from './preview-schema.mjs';
 export const DOCUMENT_ACCESS_SCHEMA_ID='urn:meri:document-access-application:0.2.0';
 /** The artifact vocabulary's own formats; the canonical schema must supply exactly one inspection variant for each. */
 export const DOCUMENT_ACCESS_FORMATS=Object.freeze(Object.keys(ARTIFACT_MIME_TYPES));
@@ -17,7 +18,7 @@ export function documentAccessSchema(artifact,errorStatuses){
  // The document application releases only draft/pending versions (apps/control/document-application/index.mjs version()); a status the producer never emits is not admitted.
  const version={allOf:[{$ref:'urn:meri:artifacts:0.2.0#/$defs/ArtifactVersion'},{type:'object',properties:{generationStatus:{const:'draft'},previewStatus:{const:'pending'},filename:{type:'string',pattern:'^[A-Za-z0-9._ -]{1,125}$'},mimeType:{enum:Object.values(ARTIFACT_MIME_TYPES)}}}]};
  return {$schema:'https://json-schema.org/draft/2020-12/schema',$id:DOCUMENT_ACCESS_SCHEMA_ID,$defs:{
-  DocumentVersion:version,
+  ...documentPreviewDefinitions(),DocumentVersion:version,
   DocumentInspectRequest:object({versionId:uuid}),DocumentDownloadRequest:object({versionId:uuid}),
   DocumentHistoryRequest:object({versionId:uuid,limit:{type:'integer',minimum:1,maximum:100},cursor}),
   DocumentHistoryResponse:object({anchorVersionId:uuid,artifactId:uuid,headVersionId:uuid,versions:{type:'array',minItems:1,maxItems:100,items:ref('DocumentVersion')},nextCursor:cursor}),
