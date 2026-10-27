@@ -3,6 +3,29 @@ import {receiveRoutinesRequest as request,receiveRoutinesResponse as receive,rou
 import {routinesPublicFixture,routinesPublicExamples} from './routines-application-fixture.mjs';
 import {id,binding} from '../../../apps/control/schedules/test/application-fixture.mjs';
 import {workflowId} from '../../../apps/control/conversations/temporal-dispatch.mjs';
+import {routineManagementSessionPath,receiveRoutineManagementSessionRequest as managementRequest,receiveRoutineManagementSessionReceipt as managementReceipt} from '../dist/intents-application.mjs';
+import {receiveConversationSessionReceipt} from '../dist/conversation-session.mjs';
+test('cold routine session receiver binds explicit client or General without any conversation or execution authority',()=>{
+ for(const clientId of [null,id(12)]){
+  assert.deepEqual(managementRequest(JSON.stringify({clientId})),{clientId});
+  const context={tenantId:'synthetic-tenant',actorId:'synthetic-actor',selectedClientId:clientId};
+  const receipt={kind:'routine-management',credential:'routine_session_'+'A'.repeat(43),expiresAtMs:2000,context};
+  const received=managementReceipt(JSON.stringify(receipt),context,1000);
+  assert.deepEqual(received,receipt);assert(Object.isFrozen(received));assert(Object.isFrozen(received.context));
+  const ordinaryContext={...context,conversationId:id(1),runId:id(2)};
+  assert.throws(()=>receiveConversationSessionReceipt(new TextEncoder().encode(JSON.stringify(receipt)),new TextEncoder().encode(JSON.stringify({...ordinaryContext,scopeKind:clientId===null?'general':'client'})),1000));
+  assert.throws(()=>managementReceipt(JSON.stringify({credential:'action_session_'+'A'.repeat(43),expiresAtMs:2000,context:ordinaryContext}),context,1000));
+ }
+ assert.equal(routineManagementSessionPath,'/api/routines/session');
+});
+test('management receiver rejects authority selectors, foreign context, expired or substituted receipt and oversized lifetime',()=>{
+ const context={tenantId:'synthetic-tenant',actorId:'synthetic-actor',selectedClientId:null};
+ const receipt={kind:'routine-management',credential:'routine_session_'+'A'.repeat(43),expiresAtMs:2000,context};
+ for(const value of [{},{clientId:'bad'},{clientId:null,runId:id(1)},{clientId:null,conversationId:id(2)},{clientId:null,policyRevision:'chosen'},{clientId:null,versions:{}},{clientId:null,executionLimits:{}}])assert.throws(()=>managementRequest(JSON.stringify(value)));
+ for(const expected of [{...context,tenantId:'other'},{...context,actorId:'other'},{...context,selectedClientId:id(3)},{...context,runId:id(2)}])assert.throws(()=>managementReceipt(JSON.stringify(receipt),expected,1000));
+ for(const value of [{...receipt,kind:'conversation'},{...receipt,credential:'action_session_'+'A'.repeat(43)},{...receipt,expiresAtMs:1000},{...receipt,expiresAtMs:301001},{...receipt,context:{...context,runId:id(2)}},{...receipt,binding}])assert.throws(()=>managementReceipt(JSON.stringify(value),context,1000));
+ for(const at of [-1,NaN,Infinity,1000.5])assert.throws(()=>managementReceipt(JSON.stringify(receipt),context,at));
+});
 test('all four actual HTTP outputs pass browser receiving boundary, including before/after reconciliation',async()=>{
  const examples=await routinesPublicExamples(),proposal=examples.prepare.json.proposal;
  for(const key of Object.keys(examples)){const route=key.startsWith('reconcile')?'reconcile':key,e=examples[key];await request(route,JSON.stringify(e.request));

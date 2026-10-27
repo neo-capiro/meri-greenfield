@@ -2,14 +2,22 @@
 import canonicalize from 'canonicalize';
 import {validators} from './generated-validator.mjs';
 import {parseText,expectedData,fail} from './boundary.mjs';
-import {ROUTINE_PATHS,routineErrorStatus} from '../schedules-0.2/application-protocol.mjs';
+import {ROUTINE_PATHS,ROUTINE_MANAGEMENT_SESSION_PATH,routineErrorStatus} from '../schedules-0.2/application-protocol.mjs';
 export const routinesPaths=ROUTINE_PATHS;
+export const routineManagementSessionPath=ROUTINE_MANAGEMENT_SESSION_PATH;
 export const routinesMetadata=Object.freeze({version:'0.1.0',routes:ROUTINE_PATHS,limits:{requestBytes:131072,responseBytes:2097152}});
 const stem=Object.freeze({prepare:'Prepare',approve:'Approve',list:'List',reconcile:'Reconcile'});
 const same=(a,b)=>canonicalize(a)===canonicalize(b),conflict=()=>fail('ROUTINES_CORRELATION');
 const check=(name,value)=>{if(!validators[name]?.(value))fail('ROUTINES_SHAPE');return value;};
 const freeze=value=>{if(value&&typeof value==='object'&&!Object.isFrozen(value)){Object.values(value).forEach(freeze);Object.freeze(value);}return value;};
 const routeName=route=>{if(typeof route!=='string'||!Object.hasOwn(stem,route))fail('ROUTINES_ROUTE');return stem[route];};
+/** Distinct scope-only receipt. Successful validation is no execution or conversation authority. */
+export function receiveRoutineManagementSessionRequest(jsonText){return freeze(check('RoutinesManagementSessionRequest',parseText(jsonText,4096)));}
+export function receiveRoutineManagementSessionReceipt(jsonText,expected,at){
+ const context=check('RoutinesManagementContext',expectedData(expected,4096)),receipt=check('RoutinesManagementSessionReceipt',parseText(jsonText,4096));
+ if(!Number.isSafeInteger(at)||at<0||receipt.expiresAtMs<=at||receipt.expiresAtMs-at>300000||!same(receipt.context,context))conflict();
+ return freeze(receipt);
+}
 /** Match all user-reviewed fields. Trusted workflow/task selections stay with the server owner. */
 export function assertRoutineProposal(proposal,operation,request){
  check('RoutinesProposal',proposal);

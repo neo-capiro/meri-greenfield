@@ -1,4 +1,13 @@
 import {receiveRoutinesRequest,receiveRoutinesResponse,routinesPaths,type RoutinesProposal,type RoutinesApproveResponse,type RoutinesListRequest,type RoutinesListResponse} from '@capiro/meri-contracts/routines-application';
+import {receiveRoutineManagementSessionRequest,receiveRoutineManagementSessionReceipt,routineManagementSessionPath,type RoutinesManagementSessionReceipt} from '@capiro/meri-contracts/routines-application';
+const selection=receiveRoutineManagementSessionRequest('{"clientId":null}');
+const management:RoutinesManagementSessionReceipt=receiveRoutineManagementSessionReceipt('{}',{tenantId:'synthetic',actorId:'synthetic',selectedClientId:selection.clientId},1000);
+const kind:'routine-management'=management.kind;void kind;
+const managementPath:'/api/routines/session'=routineManagementSessionPath;void managementPath;
+// @ts-expect-error a management session has no run authority
+void management.context.runId;
+// @ts-expect-error a cold management request cannot select a conversation
+void selection.conversationId;
 const request:RoutinesListRequest=await receiveRoutinesRequest('list','{}');
 const result=await receiveRoutinesResponse('list',200,'{}',{request});
 if(!('error' in result)){const page:RoutinesListResponse=result;const rows=page.page.rows;void rows;}
