@@ -38,6 +38,8 @@ export type IntentsApplicationEnvelope =
   | IntentsWithheldScheduleItem
   | IntentsWithheldProposalItem
   | IntentsLegiwatchItem
+  | IntentsLegislativeDocumentItem
+  | IntentsWithheldLegislativeDocumentItem
   | IntentsClientRecordItem
   | IntentsWithheldLegiwatchItem
   | IntentsWithheldClientRecordItem
@@ -73,7 +75,8 @@ export type IntentsProposal =
   | Canonical_ResearchShareProposal_1Cdbd32E
   | Canonical_LegiwatchProposal_1F841734
   | Canonical_ClientRecordProposalB620B25B
-  | Canonical_BizdevProposalA770314C;
+  | Canonical_BizdevProposalA770314C
+  | Canonical_LegislativeDocumentProposal_3D80036F;
 export type Canonical_LegiwatchRequest_5Cff194F =
   Canonical_SuggestionLegiwatchRequestD59A433F | Canonical_RelevanceRequest_3250901F;
 export type Canonical_ClientRecordRequestE2A54772 =
@@ -368,6 +371,18 @@ export type Canonical_LegiwatchStatusCbe9731F =
   | 'expired';
 export type Canonical_LegiwatchReceipt_706F9465 =
   Canonical_SuggestionLegiwatchReceiptD2466C8D | Canonical_RelevanceReceiptEf963586;
+export type Canonical_LegislativeDocumentStatus_63289936 =
+  | 'proposed'
+  | 'approved'
+  | 'executing'
+  | 'succeeded'
+  | 'failed_retryable'
+  | 'failed_terminal'
+  | 'outcome_unknown'
+  | 'blocked'
+  | 'dismissed'
+  | 'expired';
+export type Canonical_LegislativeDocumentEffect_69D4Cb58 = 'complete' | 'selection_only' | 'unknown';
 export type Canonical_ClientRecordStatus_58565696 =
   | 'proposed'
   | 'approved'
@@ -1863,8 +1878,16 @@ export type IntentsItem =
   | IntentsClientRecordItem
   | IntentsWithheldClientRecordItem
   | IntentsBizdevItem
-  | IntentsWithheldBizdevItem;
+  | IntentsWithheldBizdevItem
+  | IntentsLegislativeDocumentItem
+  | IntentsWithheldLegislativeDocumentItem;
 export type IntentsDecideResponse =
+  | {
+      status: 'legislative_document_decided';
+      deliveryId: IntentsDeliveryId;
+      proposalId: string;
+      result: Canonical_LegislativeDocumentCoreResult_05815D48;
+    }
   | {
       status: 'legiwatch_decided';
       deliveryId: IntentsDeliveryId;
@@ -2574,6 +2597,392 @@ export interface Canonical_BizdevContext_894Be03E {
   linkedClientId: string | null;
   scopeVersion: string;
 }
+export interface Canonical_LegislativeDocumentProposal_3D80036F {
+  kind: 'legislative_document_action';
+  binding: Canonical_RunBinding_84F2304C;
+  /**
+   * @minItems 1
+   * @maxItems 1
+   */
+  scopes: [Canonical_ScopeF882Edb5];
+  operation: 'prepare_legiwatch_briefing' | 'save_legislative_research';
+  proposalId: string;
+  request:
+    Canonical_LegislativeDocumentBriefingRequest_9E6E443D | Canonical_LegislativeDocumentResearchRequest_80582Baa;
+  context: Canonical_LegislativeDocumentContext_6C736Cef;
+  createdAt: string;
+  expiresAt: string;
+  commandSha256: string;
+}
+export interface Canonical_LegislativeDocumentBriefingRequest_9E6E443D {
+  clientId: string | null;
+  folderId: string;
+  jurisdiction?: string;
+  sessionKey?: string;
+  template: 'research_update' | 'daily_legislative_brief' | 'morning_news_brief';
+  title: string;
+  analysis: string;
+  cutoff: string;
+  timezone: string;
+  /**
+   * @maxItems 50
+   */
+  sources: Canonical_LegislativeDocumentSourceD053De86[];
+  /**
+   * @minItems 1
+   * @maxItems 150
+   */
+  citations: [Canonical_LegislativeDocumentCitationC039Aff7, ...Canonical_LegislativeDocumentCitationC039Aff7[]];
+  requestKey: string;
+}
+export interface Canonical_LegislativeDocumentSourceD053De86 {
+  kind: string;
+  id: string;
+  revision: string;
+}
+export interface Canonical_LegislativeDocumentCitationC039Aff7 {
+  kind: string;
+  id: string;
+  revision: string;
+  locator: string;
+  start: number;
+  end: number;
+  quote: string;
+}
+export interface Canonical_LegislativeDocumentResearchRequest_80582Baa {
+  clientId: string | null;
+  folderId: string | null;
+  jurisdiction: string;
+  sessionKey: string;
+  title: string;
+  analysis: string;
+  /**
+   * @minItems 1
+   * @maxItems 10
+   */
+  documents:
+    | [
+        {
+          id: string;
+          revision: string;
+          sessionKey?: string;
+        }
+      ]
+    | [
+        {
+          id: string;
+          revision: string;
+          sessionKey?: string;
+        },
+        {
+          id: string;
+          revision: string;
+          sessionKey?: string;
+        }
+      ]
+    | [
+        {
+          id: string;
+          revision: string;
+          sessionKey?: string;
+        },
+        {
+          id: string;
+          revision: string;
+          sessionKey?: string;
+        },
+        {
+          id: string;
+          revision: string;
+          sessionKey?: string;
+        }
+      ]
+    | [
+        {
+          id: string;
+          revision: string;
+          sessionKey?: string;
+        },
+        {
+          id: string;
+          revision: string;
+          sessionKey?: string;
+        },
+        {
+          id: string;
+          revision: string;
+          sessionKey?: string;
+        },
+        {
+          id: string;
+          revision: string;
+          sessionKey?: string;
+        }
+      ]
+    | [
+        {
+          id: string;
+          revision: string;
+          sessionKey?: string;
+        },
+        {
+          id: string;
+          revision: string;
+          sessionKey?: string;
+        },
+        {
+          id: string;
+          revision: string;
+          sessionKey?: string;
+        },
+        {
+          id: string;
+          revision: string;
+          sessionKey?: string;
+        },
+        {
+          id: string;
+          revision: string;
+          sessionKey?: string;
+        }
+      ]
+    | [
+        {
+          id: string;
+          revision: string;
+          sessionKey?: string;
+        },
+        {
+          id: string;
+          revision: string;
+          sessionKey?: string;
+        },
+        {
+          id: string;
+          revision: string;
+          sessionKey?: string;
+        },
+        {
+          id: string;
+          revision: string;
+          sessionKey?: string;
+        },
+        {
+          id: string;
+          revision: string;
+          sessionKey?: string;
+        },
+        {
+          id: string;
+          revision: string;
+          sessionKey?: string;
+        }
+      ]
+    | [
+        {
+          id: string;
+          revision: string;
+          sessionKey?: string;
+        },
+        {
+          id: string;
+          revision: string;
+          sessionKey?: string;
+        },
+        {
+          id: string;
+          revision: string;
+          sessionKey?: string;
+        },
+        {
+          id: string;
+          revision: string;
+          sessionKey?: string;
+        },
+        {
+          id: string;
+          revision: string;
+          sessionKey?: string;
+        },
+        {
+          id: string;
+          revision: string;
+          sessionKey?: string;
+        },
+        {
+          id: string;
+          revision: string;
+          sessionKey?: string;
+        }
+      ]
+    | [
+        {
+          id: string;
+          revision: string;
+          sessionKey?: string;
+        },
+        {
+          id: string;
+          revision: string;
+          sessionKey?: string;
+        },
+        {
+          id: string;
+          revision: string;
+          sessionKey?: string;
+        },
+        {
+          id: string;
+          revision: string;
+          sessionKey?: string;
+        },
+        {
+          id: string;
+          revision: string;
+          sessionKey?: string;
+        },
+        {
+          id: string;
+          revision: string;
+          sessionKey?: string;
+        },
+        {
+          id: string;
+          revision: string;
+          sessionKey?: string;
+        },
+        {
+          id: string;
+          revision: string;
+          sessionKey?: string;
+        }
+      ]
+    | [
+        {
+          id: string;
+          revision: string;
+          sessionKey?: string;
+        },
+        {
+          id: string;
+          revision: string;
+          sessionKey?: string;
+        },
+        {
+          id: string;
+          revision: string;
+          sessionKey?: string;
+        },
+        {
+          id: string;
+          revision: string;
+          sessionKey?: string;
+        },
+        {
+          id: string;
+          revision: string;
+          sessionKey?: string;
+        },
+        {
+          id: string;
+          revision: string;
+          sessionKey?: string;
+        },
+        {
+          id: string;
+          revision: string;
+          sessionKey?: string;
+        },
+        {
+          id: string;
+          revision: string;
+          sessionKey?: string;
+        },
+        {
+          id: string;
+          revision: string;
+          sessionKey?: string;
+        }
+      ]
+    | [
+        {
+          id: string;
+          revision: string;
+          sessionKey?: string;
+        },
+        {
+          id: string;
+          revision: string;
+          sessionKey?: string;
+        },
+        {
+          id: string;
+          revision: string;
+          sessionKey?: string;
+        },
+        {
+          id: string;
+          revision: string;
+          sessionKey?: string;
+        },
+        {
+          id: string;
+          revision: string;
+          sessionKey?: string;
+        },
+        {
+          id: string;
+          revision: string;
+          sessionKey?: string;
+        },
+        {
+          id: string;
+          revision: string;
+          sessionKey?: string;
+        },
+        {
+          id: string;
+          revision: string;
+          sessionKey?: string;
+        },
+        {
+          id: string;
+          revision: string;
+          sessionKey?: string;
+        },
+        {
+          id: string;
+          revision: string;
+          sessionKey?: string;
+        }
+      ];
+  /**
+   * @minItems 1
+   * @maxItems 100
+   */
+  citations: [
+    Canonical_LegislativeDocumentSelectionCitationD6E0702C,
+    ...Canonical_LegislativeDocumentSelectionCitationD6E0702C[]
+  ];
+  allowCrossBill?: boolean;
+  rightSessionKey?: string;
+  requestKey: string;
+}
+export interface Canonical_LegislativeDocumentSelectionCitationD6E0702C {
+  documentId: string;
+  revision: string;
+  locator: string;
+  start: number;
+  end: number;
+  quote: string;
+}
+export interface Canonical_LegislativeDocumentContext_6C736Cef {
+  conversationId: string;
+  selectedClientId: string | null;
+  identityRevision: string;
+  membershipRevision: string;
+  contextRevision: string;
+}
 export interface Canonical_ApprovalDecision_5E8Bdbcf {
   proposalId: string;
   commandSha256: string;
@@ -3216,6 +3625,45 @@ export interface Canonical_RelevanceReceiptEf963586 {
     origin: 'semantic';
     state: 'pending';
   };
+}
+export interface IntentsLegislativeDocumentItem {
+  deliveryId: IntentsDeliveryId;
+  createdAt: string;
+  operation: IntentsOperation;
+  state: 'prepared';
+  kind: 'legislative_document_action';
+  proposal: Canonical_LegislativeDocumentProposal_3D80036F;
+  result: Canonical_LegislativeDocumentCoreResult_05815D48 | 'unavailable';
+}
+export interface Canonical_LegislativeDocumentCoreResult_05815D48 {
+  version: '0.1.0';
+  proposalId: string;
+  status: Canonical_LegislativeDocumentStatus_63289936;
+  operation: 'prepare_legiwatch_briefing' | 'save_legislative_research';
+  request:
+    Canonical_LegislativeDocumentBriefingRequest_9E6E443D | Canonical_LegislativeDocumentResearchRequest_80582Baa;
+  context: Canonical_LegislativeDocumentContext_6C736Cef;
+  createdAt: string;
+  expiresAt: string;
+  receipt: Canonical_LegislativeDocumentReceipt_70F3Ce37 | null;
+  effect: Canonical_LegislativeDocumentEffect_69D4Cb58 | null;
+}
+export interface Canonical_LegislativeDocumentReceipt_70F3Ce37 {
+  state: 'complete' | 'selection_only';
+  selectionId: string | null;
+  documentId: string | null;
+  location: string | null;
+  reused: boolean;
+  request:
+    Canonical_LegislativeDocumentBriefingRequest_9E6E443D | Canonical_LegislativeDocumentResearchRequest_80582Baa;
+}
+export interface IntentsWithheldLegislativeDocumentItem {
+  deliveryId: IntentsDeliveryId;
+  createdAt: string;
+  operation: IntentsOperation;
+  state: 'prepared';
+  kind: 'legislative_document_action';
+  withheld: true;
 }
 export interface IntentsClientRecordItem {
   deliveryId: IntentsDeliveryId;

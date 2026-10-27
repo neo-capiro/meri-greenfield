@@ -117,8 +117,8 @@
     },
     {
       "path": "../../apps/control/intents/approval.mjs",
-      "sha256": "f5ef6a9ca021b00e17ddff826f198346f45daf443e4c1509cb3761e0d33e707e",
-      "bytes": 33099
+      "sha256": "5e02971a8fc09a7afe966c9af6fd539c167110deee6ee4d802cdf40f3ea62352",
+      "bytes": 36035
     },
     {
       "path": "../../apps/control/intents/faults.mjs",
@@ -212,8 +212,8 @@
     },
     {
       "path": "generate-intents.mjs",
-      "sha256": "3c971fe9ef3f8462d560ded6dfdf2a82278114f5c5905d58a3c644cec0251083",
-      "bytes": 13146
+      "sha256": "71118d4047dc9b2412806000f9b93189a29a19c0496a6e5dbd4e331403eef2d3",
+      "bytes": 13202
     },
     {
       "path": "intents-application/boundary.mjs",
@@ -242,13 +242,13 @@
     },
     {
       "path": "intents-application/schema.mjs",
-      "sha256": "6fbb7dcb9efa4d50cf17ed2b9494e8d89def41ab535a90b09af3efb3bbb8c1cc",
-      "bytes": 12630
+      "sha256": "745860d4d6f80d3f9a83b0097dd433a011a47322f18e3ffc7862f2444accd42a",
+      "bytes": 13438
     },
     {
       "path": "intents-application/semantics.mjs",
-      "sha256": "aec29c6475348fcbcea4352d705f607eb59d3d29f553a57d518c3f49d4014a95",
-      "bytes": 21231
+      "sha256": "6f9fb2e2bbc7beb3327b57a4957863700b3d26fa9daaeecdef985a646f879d73",
+      "bytes": 23699
     },
     {
       "path": "meri.schema.json",
@@ -264,6 +264,11 @@
       "path": "retrieval-0.2/client-record-action.schema.json",
       "sha256": "9e9225391978d21470ce1d6c0a5fb7f13029aeb59815488ae4c570c15f35c862",
       "bytes": 26483
+    },
+    {
+      "path": "retrieval-0.2/legislative-document-action.schema.json",
+      "sha256": "47230549827ba0f31936c0eb5d77ae426bc7e34365ba0f969b1b1f284d523973",
+      "bytes": 18455
     },
     {
       "path": "retrieval-0.2/legiwatch-action.schema.json",
@@ -301,7 +306,7 @@
       "bytes": 24305
     }
   ],
-  "schemaSha256": "7ba7cdee59555a0f2128a5d2eb8de81837a3ea2f39f8b9ac8714ce0feaf14279",
+  "schemaSha256": "785290ce61048669f27d1d94f5e487b37e0b34e44c9211edbfdcc3ba56dbc64e",
   "browserInputs": [
     "artifacts-0.2/artifact-formats.mjs",
     "commands-0.2/mail-send-validation.mjs",
