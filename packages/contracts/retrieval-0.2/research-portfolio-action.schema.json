@@ -1,0 +1,1017 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:meri:retrieval:research-portfolio-action:0.2.0",
+  "title": "Meri Research Portfolio governed actions 0.2.0 (MO-05)",
+  "description": "The ten conversation-scoped Research Portfolio writes prepared through Core action proposals (`/api/clio/action-proposals`, trusted current-turn transport). Core owns proposal creation, the signed-in user decision, idempotent effects and receipts; Meri binds only the delivery-derived operation key. Validation grants no authority.",
+  "$defs": {
+    "ResearchActionManageInput": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "conversationId": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "action": {
+              "enum": [
+                "grants_list",
+                "client_links_list",
+                "members_list",
+                "annual_review_get",
+                "subscriptions_list",
+                "deliveries_list",
+                "watch_conversion_preview",
+                "output_get",
+                "snapshots_list",
+                "snapshot_get",
+                "taxonomy_get",
+                "templates_list",
+                "template_version_get",
+                "comparison_list",
+                "comparison_get"
+              ]
+            },
+            "parameters": {
+              "type": "object",
+              "maxProperties": 64,
+              "description": "Parameters of the selected Core management action, validated by Core against that action’s own schema; the idempotent key is derived by Meri, never supplied."
+            },
+            "confirmed": {
+              "const": true
+            }
+          },
+          "required": [
+            "conversationId",
+            "action",
+            "parameters"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "conversationId": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "action": {
+              "enum": [
+                "portfolio_create",
+                "portfolio_update",
+                "portfolio_archive",
+                "portfolio_restore",
+                "grant_upsert",
+                "grant_delete",
+                "client_link_create",
+                "client_link_delete",
+                "member_create",
+                "members_decide",
+                "member_resolve",
+                "rule_preview",
+                "rule_publish",
+                "review_assign",
+                "review_decide",
+                "reviews_bulk_decide",
+                "annual_review_refresh",
+                "annual_review_reopen",
+                "import_create",
+                "import_action",
+                "subscription_update",
+                "bookmark_update",
+                "bookmark_delete",
+                "fit_refresh",
+                "watch_conversion_apply",
+                "output_cancel",
+                "output_retry",
+                "output_reconcile",
+                "operation_reconcile",
+                "comparison_create",
+                "comparison_revise",
+                "comparison_archive",
+                "comparison_restore",
+                "comparison_add_selection"
+              ]
+            },
+            "parameters": {
+              "type": "object",
+              "maxProperties": 64,
+              "description": "Parameters of the selected Core management action, validated by Core against that action’s own schema; the idempotent key is derived by Meri, never supplied."
+            },
+            "confirmed": {
+              "const": true
+            }
+          },
+          "required": [
+            "conversationId",
+            "action",
+            "parameters",
+            "confirmed"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "ResearchActionSnapshotInput": {
+      "type": "object",
+      "properties": {
+        "conversationId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "expectedRevision": {
+          "type": "integer",
+          "minimum": 0
+        }
+      },
+      "required": [
+        "conversationId",
+        "name",
+        "expectedRevision"
+      ],
+      "additionalProperties": false
+    },
+    "ResearchActionOutputInput": {
+      "type": "object",
+      "properties": {
+        "conversationId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "snapshotId": {
+          "type": "string",
+          "format": "uuid"
+        }
+      },
+      "required": [
+        "conversationId"
+      ],
+      "additionalProperties": false
+    },
+    "ResearchActionSaveOutputInput": {
+      "type": "object",
+      "properties": {
+        "conversationId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "outputId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "clientId": {
+          "type": "string",
+          "format": "uuid"
+        }
+      },
+      "required": [
+        "conversationId",
+        "outputId",
+        "clientId"
+      ],
+      "additionalProperties": false
+    },
+    "ResearchActionWatchInput": {
+      "type": "object",
+      "properties": {
+        "conversationId": {
+          "type": "string",
+          "format": "uuid"
+        }
+      },
+      "required": [
+        "conversationId"
+      ],
+      "additionalProperties": false
+    },
+    "ResearchActionChangeStateInput": {
+      "type": "object",
+      "properties": {
+        "conversationId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "eventId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "action": {
+          "enum": [
+            "seen",
+            "acknowledged",
+            "dismissed",
+            "undo"
+          ]
+        },
+        "expectedRevision": {
+          "type": "integer",
+          "minimum": 0
+        }
+      },
+      "required": [
+        "conversationId",
+        "eventId",
+        "action"
+      ],
+      "additionalProperties": false
+    },
+    "ResearchActionBookmarkInput": {
+      "type": "object",
+      "properties": {
+        "conversationId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "targetKind": {
+          "enum": [
+            "member",
+            "snapshot",
+            "evidence",
+            "review",
+            "import",
+            "output",
+            "other"
+          ]
+        },
+        "targetId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 400
+        },
+        "label": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 2000
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "note": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 4000
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "conversationId",
+        "targetKind",
+        "targetId"
+      ],
+      "additionalProperties": false
+    },
+    "ResearchActionReviewNoteInput": {
+      "type": "object",
+      "properties": {
+        "conversationId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "reviewId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "body": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 20000
+        },
+        "expectedRevision": {
+          "type": "integer",
+          "minimum": 0
+        }
+      },
+      "required": [
+        "conversationId",
+        "reviewId",
+        "body",
+        "expectedRevision"
+      ],
+      "additionalProperties": false
+    },
+    "ResearchActionBriefInput": {
+      "type": "object",
+      "properties": {
+        "conversationId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "confirmed": {
+          "const": true
+        }
+      },
+      "required": [
+        "conversationId",
+        "confirmed"
+      ],
+      "additionalProperties": false
+    },
+    "ResearchActionMeetingInput": {
+      "type": "object",
+      "properties": {
+        "conversationId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "confirmed": {
+          "const": true
+        },
+        "meetingId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "selectedReviewIds": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "maxItems": 20,
+          "uniqueItems": true
+        }
+      },
+      "required": [
+        "conversationId",
+        "confirmed"
+      ],
+      "additionalProperties": false
+    },
+    "ResearchActionManageBound": {
+      "type": "object",
+      "properties": {
+        "conversationId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "action": {
+          "enum": [
+            "portfolio_create",
+            "portfolio_update",
+            "portfolio_archive",
+            "portfolio_restore",
+            "grant_upsert",
+            "grant_delete",
+            "client_link_create",
+            "client_link_delete",
+            "member_create",
+            "members_decide",
+            "member_resolve",
+            "rule_preview",
+            "rule_publish",
+            "review_assign",
+            "review_decide",
+            "reviews_bulk_decide",
+            "annual_review_refresh",
+            "annual_review_reopen",
+            "import_create",
+            "import_action",
+            "subscription_update",
+            "bookmark_update",
+            "bookmark_delete",
+            "fit_refresh",
+            "watch_conversion_apply",
+            "output_cancel",
+            "output_retry",
+            "output_reconcile",
+            "operation_reconcile",
+            "comparison_create",
+            "comparison_revise",
+            "comparison_archive",
+            "comparison_restore",
+            "comparison_add_selection"
+          ]
+        },
+        "parameters": {
+          "type": "object",
+          "maxProperties": 64,
+          "description": "Parameters of the selected Core management action, validated by Core against that action’s own schema; the idempotent key is derived by Meri, never supplied."
+        },
+        "confirmed": {
+          "const": true
+        }
+      },
+      "required": [
+        "conversationId",
+        "action",
+        "parameters",
+        "confirmed"
+      ],
+      "additionalProperties": false
+    },
+    "ResearchActionSnapshotBound": {
+      "type": "object",
+      "properties": {
+        "conversationId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "expectedRevision": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "operationKey": {
+          "type": "string",
+          "pattern": "^meri-rp-[a-f0-9]{64}$"
+        }
+      },
+      "required": [
+        "conversationId",
+        "name",
+        "expectedRevision",
+        "operationKey"
+      ],
+      "additionalProperties": false
+    },
+    "ResearchActionOutputBound": {
+      "type": "object",
+      "properties": {
+        "conversationId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "snapshotId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "operationKey": {
+          "type": "string",
+          "pattern": "^meri-rp-[a-f0-9]{64}$"
+        }
+      },
+      "required": [
+        "conversationId",
+        "operationKey"
+      ],
+      "additionalProperties": false
+    },
+    "ResearchActionSaveOutputBound": {
+      "type": "object",
+      "properties": {
+        "conversationId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "outputId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "clientId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "operationKey": {
+          "type": "string",
+          "pattern": "^meri-rp-[a-f0-9]{64}$"
+        }
+      },
+      "required": [
+        "conversationId",
+        "outputId",
+        "clientId",
+        "operationKey"
+      ],
+      "additionalProperties": false
+    },
+    "ResearchActionWatchBound": {
+      "type": "object",
+      "properties": {
+        "conversationId": {
+          "type": "string",
+          "format": "uuid"
+        }
+      },
+      "required": [
+        "conversationId"
+      ],
+      "additionalProperties": false
+    },
+    "ResearchActionChangeStateBound": {
+      "type": "object",
+      "properties": {
+        "conversationId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "eventId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "action": {
+          "enum": [
+            "seen",
+            "acknowledged",
+            "dismissed",
+            "undo"
+          ]
+        },
+        "expectedRevision": {
+          "type": "integer",
+          "minimum": 0
+        }
+      },
+      "required": [
+        "conversationId",
+        "eventId",
+        "action"
+      ],
+      "additionalProperties": false
+    },
+    "ResearchActionBookmarkBound": {
+      "type": "object",
+      "properties": {
+        "conversationId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "targetKind": {
+          "enum": [
+            "member",
+            "snapshot",
+            "evidence",
+            "review",
+            "import",
+            "output",
+            "other"
+          ]
+        },
+        "targetId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 400
+        },
+        "label": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 2000
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "note": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 4000
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "operationKey": {
+          "type": "string",
+          "pattern": "^meri-rp-[a-f0-9]{64}$"
+        }
+      },
+      "required": [
+        "conversationId",
+        "targetKind",
+        "targetId",
+        "operationKey"
+      ],
+      "additionalProperties": false
+    },
+    "ResearchActionReviewNoteBound": {
+      "type": "object",
+      "properties": {
+        "conversationId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "reviewId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "body": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 20000
+        },
+        "expectedRevision": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "operationKey": {
+          "type": "string",
+          "pattern": "^meri-rp-[a-f0-9]{64}$"
+        }
+      },
+      "required": [
+        "conversationId",
+        "reviewId",
+        "body",
+        "expectedRevision",
+        "operationKey"
+      ],
+      "additionalProperties": false
+    },
+    "ResearchActionBriefBound": {
+      "type": "object",
+      "properties": {
+        "conversationId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "confirmed": {
+          "const": true
+        },
+        "operationKey": {
+          "type": "string",
+          "pattern": "^meri-rp-[a-f0-9]{64}$"
+        }
+      },
+      "required": [
+        "conversationId",
+        "confirmed",
+        "operationKey"
+      ],
+      "additionalProperties": false
+    },
+    "ResearchActionMeetingBound": {
+      "type": "object",
+      "properties": {
+        "conversationId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "confirmed": {
+          "const": true
+        },
+        "meetingId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "selectedReviewIds": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "maxItems": 20,
+          "uniqueItems": true
+        },
+        "operationKey": {
+          "type": "string",
+          "pattern": "^meri-rp-[a-f0-9]{64}$"
+        }
+      },
+      "required": [
+        "conversationId",
+        "confirmed",
+        "operationKey"
+      ],
+      "additionalProperties": false
+    },
+    "ResearchActionPreview": {
+      "type": "object",
+      "properties": {
+        "label": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "portfolioId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "clientName": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 1000
+        },
+        "fields": {
+          "type": "object",
+          "additionalProperties": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 4000
+              },
+              {
+                "type": "number"
+              },
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "maxProperties": 64
+        }
+      },
+      "required": [
+        "label"
+      ],
+      "additionalProperties": false
+    },
+    "ResearchActionProposalStatus": {
+      "enum": [
+        "proposed",
+        "executing",
+        "succeeded",
+        "failed_retryable",
+        "failed_terminal",
+        "outcome_unknown",
+        "blocked",
+        "dismissed",
+        "expired"
+      ]
+    },
+    "ResearchActionResultSummary": {
+      "type": "object",
+      "properties": {
+        "client": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 100
+            },
+            "name": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 200
+            }
+          },
+          "required": [],
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": {
+        "anyOf": [
+          {
+            "type": "string",
+            "maxLength": 4000
+          },
+          {
+            "type": "number"
+          },
+          {
+            "type": "boolean"
+          },
+          {
+            "type": "null"
+          }
+        ]
+      },
+      "maxProperties": 64
+    },
+    "ResearchActionProposal": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "const": "research_action"
+        },
+        "proposalId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "commandSha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "binding": {
+          "$ref": "urn:meri:contracts:0.1.0#/$defs/RunBinding"
+        },
+        "scopes": {
+          "type": "array",
+          "items": {
+            "$ref": "urn:meri:contracts:0.1.0#/$defs/Scope"
+          },
+          "minItems": 1,
+          "maxItems": 1
+        },
+        "operation": {
+          "enum": [
+            "manage_research_portfolio",
+            "create_research_portfolio_snapshot",
+            "request_research_portfolio_output",
+            "save_research_portfolio_output_to_client",
+            "watch_research_portfolio",
+            "update_research_portfolio_change_state",
+            "create_research_portfolio_bookmark",
+            "add_research_portfolio_review_note",
+            "prepare_research_portfolio_brief",
+            "prepare_research_portfolio_meeting"
+          ]
+        },
+        "request": {
+          "anyOf": [
+            {
+              "$ref": "urn:meri:retrieval:research-portfolio-action:0.2.0#/$defs/ResearchActionManageBound"
+            },
+            {
+              "$ref": "urn:meri:retrieval:research-portfolio-action:0.2.0#/$defs/ResearchActionSnapshotBound"
+            },
+            {
+              "$ref": "urn:meri:retrieval:research-portfolio-action:0.2.0#/$defs/ResearchActionOutputBound"
+            },
+            {
+              "$ref": "urn:meri:retrieval:research-portfolio-action:0.2.0#/$defs/ResearchActionSaveOutputBound"
+            },
+            {
+              "$ref": "urn:meri:retrieval:research-portfolio-action:0.2.0#/$defs/ResearchActionWatchBound"
+            },
+            {
+              "$ref": "urn:meri:retrieval:research-portfolio-action:0.2.0#/$defs/ResearchActionChangeStateBound"
+            },
+            {
+              "$ref": "urn:meri:retrieval:research-portfolio-action:0.2.0#/$defs/ResearchActionBookmarkBound"
+            },
+            {
+              "$ref": "urn:meri:retrieval:research-portfolio-action:0.2.0#/$defs/ResearchActionReviewNoteBound"
+            },
+            {
+              "$ref": "urn:meri:retrieval:research-portfolio-action:0.2.0#/$defs/ResearchActionBriefBound"
+            },
+            {
+              "$ref": "urn:meri:retrieval:research-portfolio-action:0.2.0#/$defs/ResearchActionMeetingBound"
+            }
+          ]
+        },
+        "preview": {
+          "$ref": "urn:meri:retrieval:research-portfolio-action:0.2.0#/$defs/ResearchActionPreview"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "expiresAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "kind",
+        "proposalId",
+        "commandSha256",
+        "binding",
+        "scopes",
+        "operation",
+        "request",
+        "preview",
+        "createdAt",
+        "expiresAt"
+      ],
+      "additionalProperties": false
+    },
+    "ResearchActionPrepared": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "const": "approval_required"
+        },
+        "proposal": {
+          "$ref": "urn:meri:retrieval:research-portfolio-action:0.2.0#/$defs/ResearchActionProposal"
+        }
+      },
+      "required": [
+        "status",
+        "proposal"
+      ],
+      "additionalProperties": false
+    },
+    "ResearchActionDecided": {
+      "type": "object",
+      "properties": {
+        "proposalStatus": {
+          "$ref": "urn:meri:retrieval:research-portfolio-action:0.2.0#/$defs/ResearchActionProposalStatus"
+        },
+        "resultSummary": {
+          "$ref": "urn:meri:retrieval:research-portfolio-action:0.2.0#/$defs/ResearchActionResultSummary"
+        }
+      },
+      "required": [
+        "proposalStatus"
+      ],
+      "additionalProperties": false
+    },
+    "ResearchActionManageReadInput": {
+      "type": "object",
+      "properties": {
+        "conversationId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "action": {
+          "enum": [
+            "grants_list",
+            "client_links_list",
+            "members_list",
+            "annual_review_get",
+            "subscriptions_list",
+            "deliveries_list",
+            "watch_conversion_preview",
+            "output_get",
+            "snapshots_list",
+            "snapshot_get",
+            "taxonomy_get",
+            "templates_list",
+            "template_version_get",
+            "comparison_list",
+            "comparison_get"
+          ]
+        },
+        "parameters": {
+          "type": "object",
+          "maxProperties": 64,
+          "description": "Parameters of the selected Core management action, validated by Core against that action’s own schema; the idempotent key is derived by Meri, never supplied."
+        },
+        "confirmed": {
+          "const": true
+        }
+      },
+      "required": [
+        "conversationId",
+        "action",
+        "parameters"
+      ],
+      "additionalProperties": false
+    },
+    "ResearchManagementReadResult": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "const": "read"
+        },
+        "operation": {
+          "const": "manage_research_portfolio"
+        },
+        "binding": {
+          "$ref": "urn:meri:contracts:0.1.0#/$defs/RunBinding"
+        },
+        "scopes": {
+          "type": "array",
+          "items": {
+            "$ref": "urn:meri:contracts:0.1.0#/$defs/Scope"
+          },
+          "minItems": 1,
+          "maxItems": 1
+        },
+        "request": {
+          "$ref": "urn:meri:retrieval:research-portfolio-action:0.2.0#/$defs/ResearchActionManageReadInput"
+        },
+        "result": {
+          "$ref": "urn:meri:retrieval:research-portfolio:0.2.0#/$defs/ResearchPortfolioJsonValue"
+        },
+        "observedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "expiresAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "status",
+        "operation",
+        "binding",
+        "scopes",
+        "request",
+        "result",
+        "observedAt",
+        "expiresAt"
+      ],
+      "additionalProperties": false
+    },
+    "ResearchManagementOutput": {
+      "oneOf": [
+        {
+          "$ref": "urn:meri:retrieval:research-portfolio-action:0.2.0#/$defs/ResearchActionPrepared"
+        },
+        {
+          "$ref": "urn:meri:retrieval:research-portfolio-action:0.2.0#/$defs/ResearchManagementReadResult"
+        }
+      ]
+    }
+  }
+}

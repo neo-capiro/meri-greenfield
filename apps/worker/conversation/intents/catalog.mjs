@@ -1,6 +1,7 @@
 // @ts-check
 /** The one registry of conversational write requests (`meri_intents`, proposal P10, approved by the owner on
- * 15 Oct 2026). It covers the 11 accepted INTENT-ROUTE capabilities plus the two finite Research Portfolio sharing intents.
+ * 15 Oct 2026). It covers the 11 accepted INTENT-ROUTE capabilities, the two finite Research Portfolio sharing intents and the
+ * ten MO-05 governed Research Portfolio actions (27 Oct 2026).
  * Each row names the intent tool, the canonical owner kind that PREPARES it, and, where no canonical owner can prepare
  * it yet, the explicit reason it stays unavailable. Display text and schema identities come only from the canonical
  * catalog descriptor. Data only, safe to import.
@@ -16,7 +17,7 @@ import catalog from '../../../../packages/contracts/retrieval-0.2/catalog.json' 
 export const INTENT_SERVER_NAME='meri_intents';
 export const INTENT_TOOL_PREFIX=`mcp__${INTENT_SERVER_NAME}__`;
 /** @typedef {{id:string,version:string}} OperationRef */
-/** @typedef {'command'|'schedule'|'document'|'artifact'|'memory'|'research-sharing'|'legiwatch'|'client-record'|'bizdev'|'legislative-document'|'watch'|'note'} OwnerKind */
+/** @typedef {'command'|'schedule'|'document'|'artifact'|'memory'|'research-sharing'|'research-action'|'legiwatch'|'client-record'|'bizdev'|'legislative-document'|'watch'|'note'} OwnerKind */
 /** @typedef {{operation:OperationRef,tool:string,owner:OwnerKind,unavailable:string|null}} IntentRow */
 const op=(/** @type {string} */id)=>Object.freeze({id,version:'0.2.0'});
 const row=(/** @type {string} */id,/** @type {string} */tool,/** @type {OwnerKind} */owner,/** @type {string|null} */unavailable=null)=>Object.freeze({operation:op(id),tool,owner,unavailable});
@@ -34,6 +35,16 @@ export const INTENT_ROWS=Object.freeze([
  row('save_legislative_research','propose_legislative_research','legislative-document'),
  row('publish_research_portfolio_share_link','propose_research_share','research-sharing'),
  row('revoke_research_portfolio_share_link','propose_research_share_revocation','research-sharing'),
+ row('manage_research_portfolio','propose_research_portfolio_management','research-action'),
+ row('create_research_portfolio_snapshot','propose_research_portfolio_snapshot','research-action'),
+ row('request_research_portfolio_output','propose_research_portfolio_output','research-action'),
+ row('save_research_portfolio_output_to_client','propose_research_portfolio_output','research-action'),
+ row('watch_research_portfolio','propose_research_portfolio_watch','research-action'),
+ row('update_research_portfolio_change_state','propose_research_portfolio_change_state','research-action'),
+ row('create_research_portfolio_bookmark','propose_research_portfolio_bookmark','research-action'),
+ row('add_research_portfolio_review_note','propose_research_portfolio_review_note','research-action'),
+ row('prepare_research_portfolio_brief','prepare_research_portfolio_draft','research-action'),
+ row('prepare_research_portfolio_meeting','prepare_research_portfolio_draft','research-action'),
  row('create_word','request_document','document'),
  row('create_excel','request_document','document'),
  row('create_powerpoint','request_document','document'),

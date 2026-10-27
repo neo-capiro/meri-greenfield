@@ -113,7 +113,7 @@ export function createSourceReadContext({contract,proof,native,defaultCongress,n
   if(![native.identityRevision,native.membershipRevision].every(v=>typeof v==='string'&&/^[a-f0-9]{64}$/u.test(v)))refuse('UNAVAILABLE');
   return {watchStateScope:{selectedClientId,identityRevision:native.identityRevision,membershipRevision:native.membershipRevision}};
  }
- if(group==='research-portfolio-sharing'){
+ if(group==='research-portfolio-sharing'||group==='research-portfolio-workflow'){
   if(proof.request.conversationId!==proof.binding.conversationId||!Array.isArray(native.clientIds))refuse('ACCESS_DENIED');
   const selectedClientId=proof.subject.kind==='client'?clientSubject(proof,native):null;
   if(selectedClientId===null&&(proof.subject.kind!=='personal'||proof.subject.entityType!=='user'||proof.subject.entityIds[0]!==proof.binding.actorId))refuse('ACCESS_DENIED');

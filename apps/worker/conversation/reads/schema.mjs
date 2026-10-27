@@ -61,10 +61,24 @@ function inapplicable(key,schema){
  if(['minimum','maximum','exclusiveMinimum','exclusiveMaximum','multipleOf'].includes(key))return !['integer','number'].includes(schema.type);
  return false;
 }
-/** Pairwise-disjoint oneOf branches: each requires a property whose `const` differs across branches. @param {any[]} branches */
+/** Finite scalar discriminator values; object/array equality is not proved here. @param {any} property */
+function discriminatorValues(property){
+ if(!isObject(property))return null;
+ const values=Object.hasOwn(property,'const')?[property.const]:property.enum;
+ if(!Array.isArray(values)||!values.length||!values.every(value=>value===null||['string','boolean'].includes(typeof value)||typeof value==='number'&&Number.isFinite(value)))return null;
+ return new Set(values.map(json));
+}
+/** Pairwise-disjoint oneOf branches: each requires a property with disjoint finite scalar values. @param {any[]} branches */
 function discriminated(branches){
- const keys=Object.keys(branches[0]?.properties??{}).filter(k=>branches.every(b=>b.required?.includes(k)&&b.properties?.[k]&&Object.hasOwn(b.properties[k],'const')));
- return keys.some(k=>new Set(branches.map(b=>json(b.properties[k].const))).size===branches.length);
+ const keys=Object.keys(branches[0]?.properties??{}).filter(k=>branches.every(b=>b.type==='object'&&b.required?.includes(k)&&discriminatorValues(b.properties?.[k])));
+ return keys.some(k=>{
+  const seen=new Set();
+  for(const branch of branches){
+   const values=discriminatorValues(branch.properties[k]);if(!values)return false;
+   for(const value of values){if(seen.has(value))return false;seen.add(value);}
+  }
+  return true;
+ });
 }
 /** True only when every value `advertised` accepts is accepted by `canonical`. Conservative: an unrecognised canonical
  * keyword, or any shape it cannot prove, answers false. Extra keywords in `advertised` only add constraints.

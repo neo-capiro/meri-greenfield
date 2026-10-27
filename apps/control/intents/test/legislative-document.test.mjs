@@ -8,6 +8,8 @@ import {legislativeDocumentValidators as validators, resolveOperationContract} f
 import {canonicalSha256 as hash} from '../../../../packages/contracts/validate.mjs';
 import {createLegislativeDocumentCoreClient} from '../../../../apps/runtime/native-authority/legislative-document-client.mjs';
 import {createLegislativeDocumentPreparer} from '../legislative-document-preparer.mjs';
+import {createIntentApprovalOwner} from '../approval.mjs';
+import {productFailure} from '../../product-access/errors.mjs';
 
 const BRIEFING='prepare_legiwatch_briefing',RESEARCH='save_legislative_research';
 const id=n=>String(n).padStart(8,'0')+'-0000-4000-8000-'+String(n).padStart(12,'0');
@@ -52,6 +54,16 @@ function preparerFor(operation,client){
   return createLegislativeDocumentPreparer({operation,binding,scopes,selectedClientId,client,now,
     currentRights:async()=>({scopes,expiresAtMs:now()+60000}),policyRevision:hex(1),deadlineMs});
 }
+
+test('the legislative approval owner preserves pre-send refusals and unknown sent decisions',async()=>{
+ const input=briefingInput(),{client}=coreClient({onPrepare:body=>coreResult({operation:BRIEFING,request:body.request})});
+ const prepared=await preparerFor(BRIEFING,client).prepare({arguments:input,deliveryId:id(11)}),p=prepared.proposal;
+ const entry={state:'PREPARED',record:{operation:{id:BRIEFING,version:'0.2.0'},argumentsSha256:hash(validators.normalizeInput(BRIEFING,input))},outcome:{result:prepared,release:{binding,scopes}}};
+ for(const effect of ['none','unknown']){
+  const owner=createIntentApprovalOwner({journal:{read:async()=>entry,list:async()=>({entries:[],next:null})},legislativeDocument:{read:async()=>null,decide:async()=>{throw Object.assign(Error('ACCESS_DENIED'),{code:'ACCESS_DENIED',effect});}},now,limits:{maxRequestMs:5000},enabled:true});
+  await assert.rejects(owner.decide({principal:{tenantId:binding.tenantId,actorId:binding.actorId,clientIds:[selectedClientId]},request:{conversationId:binding.conversationId,deliveryId:'sdk:'+'1'.repeat(64),proposalId:p.proposalId,commandSha256:p.commandSha256,decision:'approved'}}),e=>productFailure(e)?.code===(effect==='none'?'APPROVER_REFUSED':'APPROVAL_DECISION_UNKNOWN')&&productFailure(e)?.outcome===(effect==='none'?'NOT_DISPATCHED':'UNKNOWN'));
+ }
+});
 
 test('both operations are registered as one governed owner in the canonical catalog',()=>{
   for(const [operation,input,group] of [[BRIEFING,briefingInput(),'LegislativeDocumentBriefingInput'],[RESEARCH,researchInput(),'LegislativeDocumentResearchInput']]){

@@ -14,6 +14,12 @@ const parses=(schema,value)=>schema.safeParse(value).success;
 
 test('every intent row advertises its canonical schema, a declared narrowing, or none at all',()=>{
  assert.deepEqual(Object.fromEntries(INTENT_ROWS.map(r=>[r.operation.id,intentRowArguments(r).mode])),{
+  save_note:'record',watch_action:'record',create_client:'canonical',update_client_profile:'record',save_legiwatch_relevance:'canonical',mail_send:'canonical',
+  apply_legiwatch_suggestion:'record',save_business_development_brief:'record',prepare_legiwatch_briefing:'record',save_legislative_research:'record',
+  publish_research_portfolio_share_link:'canonical',revoke_research_portfolio_share_link:'canonical',
+  manage_research_portfolio:'canonical',create_research_portfolio_snapshot:'canonical',request_research_portfolio_output:'canonical',save_research_portfolio_output_to_client:'canonical',
+  watch_research_portfolio:'canonical',update_research_portfolio_change_state:'canonical',create_research_portfolio_bookmark:'canonical',add_research_portfolio_review_note:'canonical',
+  prepare_research_portfolio_brief:'canonical',prepare_research_portfolio_meeting:'canonical',
   create_word:'declared',create_excel:'declared',create_powerpoint:'declared',run_analysis:'record',
   schedule_task:'record',update_scheduled_task:'record',cancel_scheduled_task:'canonical',
   create_task:'canonical',update_task:'canonical',save_memory:'declared',save_chat_attachments:'canonical'});
@@ -44,6 +50,24 @@ test('the open record is what a row advertises only while its canonical schema c
  assert.equal(advertised('run_analysis').properties,undefined);
  assert.equal(parses(z.fromJSONSchema(advertised('run_analysis')),{anything:'at all'}),true);
  assert.equal(advertised('schedule_task').properties,undefined);
+});
+
+test('management advertises closed disjoint reads and confirmed writes from its canonical input',()=>{
+ const resolved=intentRowArguments(row('manage_research_portfolio'));
+ assert.equal(resolved.mode,'canonical');
+ assert.equal(intentToolArguments([row('manage_research_portfolio')]).mode,'canonical');
+ const schema=advertised('manage_research_portfolio');
+ assert.equal(schema.oneOf.length,2);
+ for(const branch of schema.oneOf){assert.equal(branch.additionalProperties,false);assert.ok(branch.required.includes('action'));}
+ const input={conversationId:'71000000-0000-4000-8000-000000000001',parameters:{}};
+ for(const action of schema.oneOf[0].properties.action.enum)assert.equal(parses(resolved.arguments,{...input,action}),true,action);
+ for(const action of schema.oneOf[1].properties.action.enum){
+  assert.equal(parses(resolved.arguments,{...input,action,confirmed:true}),true,action);
+  assert.equal(parses(resolved.arguments,{...input,action}),false,action);
+ }
+ for(const value of [{...input,action:'not_an_action'},{...input,action:'grants_list',extra:true},{...input,action:'grants_list',confirmed:false},
+  {...input,action:'rule_preview'}, {...input,confirmed:true}, {action:'grants_list',parameters:{}}, {...input,action:'grants_list',parameters:[]}])
+  assert.equal(parses(resolved.arguments,value),false,JSON.stringify(value));
 });
 
 test('the memory tool advertises exactly the fields its owner admits',()=>{

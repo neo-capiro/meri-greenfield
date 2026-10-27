@@ -18,7 +18,7 @@
  * Construction is inert. `enabled` defaults to false. */
 import {canonicalSha256 as hash,validateShape} from '../../../packages/contracts/validate.mjs';
 import {assertNativeApprovalProposal} from '../../../packages/contracts/commands-0.2/validate.mjs';
-import {artifactValidators as artifacts,scheduleToolValidators,researchShareValidators,legiwatchValidators,savedNoteValidators,watchValidators,bizdevValidators,legislativeDocumentValidators,clientRecordValidators,validateShape as artifactShape} from '../../../packages/contracts/retrieval-0.2/validate.mjs';
+import {artifactValidators as artifacts,scheduleToolValidators,researchShareValidators,researchActionValidators,legiwatchValidators,savedNoteValidators,watchValidators,bizdevValidators,legislativeDocumentValidators,clientRecordValidators,validateShape as artifactShape} from '../../../packages/contracts/retrieval-0.2/validate.mjs';
 import {data,own,nativeSignal} from '../../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {createOperationLifetime} from '../../../packages/runtime/operation-lifetime.mjs';
 import {ProductError,productFailure} from '../product-access/errors.mjs';
@@ -65,7 +65,7 @@ function commandProposal(entry){
  return result.proposal;
 }
 export function createIntentApprovalOwner(configuration){
- const c=own(configuration,['journal','now','limits'],['decisions','documents','tasks','filing','mail','sharing','legiwatch','watch','clientRecord','bizdev','legislativeDocument','enabled']);
+ const c=own(configuration,['journal','now','limits'],['decisions','documents','tasks','filing','mail','sharing','researchAction','legiwatch','watch','clientRecord','bizdev','legislativeDocument','enabled']);
  const journal=own(c.journal,['read','list'],['claim','settle']),limits=data(c.limits);own(limits,['maxRequestMs']);
  if(typeof journal.read!=='function'||typeof journal.list!=='function'||typeof c.now!=='function'||typeof(c.enabled??false)!=='boolean'||
   !Number.isSafeInteger(limits.maxRequestMs)||limits.maxRequestMs<1||limits.maxRequestMs>30000)throw new ProductError('PRODUCT_CONFIGURATION');
@@ -76,6 +76,8 @@ export function createIntentApprovalOwner(configuration){
  if(mail&&Object.values(mail).some(f=>typeof f!=='function'))throw new ProductError('PRODUCT_CONFIGURATION');
  const filing=c.filing===undefined?undefined:own(c.filing,['execute','read']);
  const sharing=c.sharing===undefined?undefined:own(c.sharing,['decide','read']);
+ const researchAction=c.researchAction===undefined?undefined:own(c.researchAction,['decide','read']);
+ if(researchAction&&Object.values(researchAction).some(f=>typeof f!=='function'))throw new ProductError('PRODUCT_CONFIGURATION');
  if(c.clientRecord!==undefined)own(c.clientRecord,['decide','read']);
  if(c.legiwatch!==undefined)own(c.legiwatch,['decide','read']);
  if(c.bizdev!==undefined)own(c.bizdev,['decide','read']);
@@ -90,6 +92,21 @@ if(c.watch!==undefined)own(c.watch,['decide','read']);
   return createOperationLifetime({deadlineMs:Math.min(Number.isSafeInteger(deadlineMs)?deadlineMs:at+limits.maxRequestMs,at+limits.maxRequestMs),now:c.now,signal,errorFactory:code=>new ProductError(code)});};
  const enabled=()=>{if(c.enabled!==true)fail('INTENT_APPROVALS_DISABLED','NOT_DISPATCHED');};
  const owned=(error,code,outcome)=>productFailure(error)&&!['PRODUCT_UNAVAILABLE'].includes(productFailure(error).code)?error:new ProductError(code,outcome);
+ const decisionFailure=error=>{
+  if(error?.effect==='none'&&typeof error.code==='string')fail(error.code==='ACCESS_DENIED'?'APPROVER_REFUSED':['DEADLINE','CANCELLED'].includes(error.code)?error.code:'APPROVAL_OWNER_UNAVAILABLE','NOT_DISPATCHED');
+  fail('APPROVAL_DECISION_UNKNOWN','UNKNOWN');
+ };
+ /** After expiry only observe the existing owner; never send a new decision or effect to recover a lost response. */
+ async function coreDecision(life,owner,proposal,decision,validate){
+  const expired=!(instant(proposal.expiresAt)>c.now());
+  if(typeof owner?.[expired?'read':'decide']!=='function')fail(expired?'APPROVAL_DECISION_UNKNOWN':'APPROVAL_OWNER_UNAVAILABLE',expired?'UNKNOWN':'NOT_DISPATCHED');
+  if(!expired)life.limitDeadline(instant(proposal.expiresAt));
+  let result;try{result=await life.run(signal=>owner[expired?'read':'decide']({proposal,decision,signal,deadlineMs:life.deadline()}));}
+  catch(error){if(expired)fail('APPROVAL_DECISION_UNKNOWN','UNKNOWN');decisionFailure(error);}
+  try{result=validate(result);}catch{fail('INTENT_RESULT_NOT_RELEASED','RESULT_NOT_RELEASED');}
+  if(expired&&['proposed','expired'].includes(result.status??result.proposalStatus))fail('INTENT_EXPIRED','NOT_DISPATCHED');
+  return result;
+ }
  async function readEntry(life,principal,conversationId,deliveryId){
   try{return await life.run(signal=>journal.read.call(c.journal,{key:{tenantId:principal.tenantId,actorId:principal.actorId,conversationId,deliveryId},signal}));}
   catch(error){const f=productFailure(error);if(f&&['DEADLINE','CANCELLED'].includes(f.code))throw error;fail('INTENT_JOURNAL_UNAVAILABLE');}
@@ -103,7 +120,6 @@ if(c.watch!==undefined)own(c.watch,['decide','read']);
   if(proposal.proposalId!==r.proposalId||proposal.commandSha256!==r.commandSha256)fail('INTENT_MISMATCH','NOT_DISPATCHED');
   if(!same(conversationOf(proposal.command.binding),{tenantId:principal.tenantId,actorId:principal.actorId,conversationId:r.conversationId}))fail('INTENT_MISMATCH','NOT_DISPATCHED');
   if(!APPROVABLE_ACTIONS.includes(proposal.command.action))fail('INTENT_NOT_APPROVABLE','NOT_DISPATCHED');
-  if(!(instant(proposal.expiresAt)>c.now()))fail('INTENT_EXPIRED','NOT_DISPATCHED');
   if(!visible(proposal.command.scopes,principal))fail('INTENT_SCOPE_WITHHELD','NOT_DISPATCHED');
   return proposal;
  }
@@ -126,10 +142,22 @@ if(c.watch!==undefined)own(c.watch,['decide','read']);
    if(entry?.state==='PREPARED'&&entry.outcome?.result?.proposal?.kind==='bizdev_action')return await decideBizdev(life,principal,entry,r);
    if(entry?.state==='PREPARED'&&entry.outcome?.result?.proposal?.kind==='legislative_document_action')return await decideLegislativeDocument(life,principal,entry,r);
    if(entry?.state==='PREPARED'&&entry.outcome?.result?.proposal?.kind==='research_share')return await decideSharing(life,principal,entry,r);
+   if(entry?.state==='PREPARED'&&entry.outcome?.result?.proposal?.kind==='research_action')return await decideResearchAction(life,principal,entry,r);
    const proposal=approvable(entry,r,principal);
    const approver=data({tenantId:principal.tenantId,actorId:principal.actorId});
    // Independent review (a required approver other than the conversation owner) needs its own owner and listing; refused here.
    if(!same(approver,proposal.requiredApprover))fail('APPROVER_REFUSED','NOT_DISPATCHED');
+   if(!(instant(proposal.expiresAt)>c.now())){
+    const current=await item(life,principal,{...entry,deliveryId:r.deliveryId},r.conversationId),decision=current.decision;
+    if(decision&&typeof decision==='object'){
+     if(!same(decision.approver,approver)||decision.decision!==r.decision)fail('APPROVAL_DECISION_REFUSED','UNKNOWN');
+     if(decision.decision==='rejected')return data({status:'rejected',deliveryId:r.deliveryId,proposalId:proposal.proposalId,decision});
+     if(current.execution?.state==='completed')return data({status:'executed',deliveryId:r.deliveryId,proposalId:proposal.proposalId,decision,outcome:current.execution.outcome});
+     return data({status:'indeterminate',deliveryId:r.deliveryId,proposalId:proposal.proposalId,decision});
+    }
+    if(decision===null&&current.execution===null)fail('INTENT_EXPIRED','NOT_DISPATCHED');
+    fail('APPROVAL_DECISION_UNKNOWN','UNKNOWN');
+   }
    if(typeof decisions?.record!=='function')fail('APPROVAL_OWNER_UNAVAILABLE','NOT_DISPATCHED');
    life.limitDeadline(instant(proposal.expiresAt));
    const started=c.now();let raw;
@@ -137,9 +165,8 @@ if(c.watch!==undefined)own(c.watch,['decide','read']);
    catch(error){
     // An owner refusal before its request left (`effect:'none'`, the Core forwarder's closed codes) recorded nothing: no live
     // approver session or a forwarded identity mismatch is APPROVER_REFUSED, an unreachable owner APPROVAL_OWNER_UNAVAILABLE.
-    if(error?.effect==='none'&&typeof error.code==='string')fail(error.code==='ACCESS_DENIED'?'APPROVER_REFUSED':['DEADLINE','CANCELLED'].includes(error.code)?error.code:'APPROVAL_OWNER_UNAVAILABLE','NOT_DISPATCHED');
     // Otherwise the owner may have recorded the decision: repeat the same request (the owner answers by proposal and approver).
-    fail('APPROVAL_DECISION_UNKNOWN','UNKNOWN');
+    decisionFailure(error);
    }
    const decision=admitDecision(raw,proposal,r.decision,approver,started);
    if(r.decision==='rejected')return data({status:'rejected',deliveryId:r.deliveryId,proposalId:proposal.proposalId,decision});
@@ -166,23 +193,14 @@ async function decideLegislativeDocument(life,principal,entry,r){
  const p=legislativeDocumentProposal(entry,principal,r.conversationId);
  if(p.proposalId!==r.proposalId||p.commandSha256!==r.commandSha256)fail('INTENT_MISMATCH','NOT_DISPATCHED');
  if(!legislativeDocumentVisible(p,principal))fail('INTENT_SCOPE_WITHHELD','NOT_DISPATCHED');
- if(typeof c.legislativeDocument?.decide!=='function')fail('APPROVAL_OWNER_UNAVAILABLE','NOT_DISPATCHED');
- let result;
- try{result=await life.run(signal=>c.legislativeDocument.decide({proposal:p,decision:r.decision,signal,deadlineMs:life.deadline()}));}
- catch(error){if(['DEADLINE','CANCELLED'].includes(error?.code))throw error;fail('APPROVAL_OWNER_UNAVAILABLE','NOT_DISPATCHED');}
- try{legislativeDocumentValidators.coreResult(p.operation,result,p);}catch{fail('INTENT_RESULT_NOT_RELEASED','RESULT_NOT_RELEASED');}
+ const result=await coreDecision(life,c.legislativeDocument,p,r.decision,value=>legislativeDocumentValidators.coreResult(p.operation,value,p));
  return data({status:'legislative_document_decided',deliveryId:r.deliveryId,proposalId:p.proposalId,result});
 }
 async function decideLegiwatch(life,principal,entry,r){
   const p=legiwatchProposal(entry,principal,r.conversationId);
   if(p.proposalId!==r.proposalId||p.commandSha256!==r.commandSha256)fail('INTENT_MISMATCH','NOT_DISPATCHED');
   if(!legiwatchVisible(p,principal))fail('INTENT_SCOPE_WITHHELD','NOT_DISPATCHED');
-  if(instant(p.expiresAt)<=c.now())fail('INTENT_EXPIRED','NOT_DISPATCHED');
-  if(typeof c.legiwatch?.decide!=='function')fail('APPROVAL_OWNER_UNAVAILABLE','NOT_DISPATCHED');
-  life.limitDeadline(instant(p.expiresAt));let result;
-  try{result=await life.run(signal=>c.legiwatch.decide({proposal:p,decision:r.decision,signal,deadlineMs:life.deadline()}));}
-  catch{fail('APPROVAL_DECISION_UNKNOWN','UNKNOWN');}
-  try{legiwatchValidators.coreResult(result,p);}catch{fail('INTENT_RESULT_NOT_RELEASED','RESULT_NOT_RELEASED');}
+  const result=await coreDecision(life,c.legiwatch,p,r.decision,value=>legiwatchValidators.coreResult(value,p));
   return data({status:'legiwatch_decided',deliveryId:r.deliveryId,proposalId:p.proposalId,result});
  }
  function clientRecordProposal(entry,principal,conversationId){
@@ -196,12 +214,7 @@ async function decideLegiwatch(life,principal,entry,r){
   const p=clientRecordProposal(entry,principal,r.conversationId);
   if(p.proposalId!==r.proposalId||p.commandSha256!==r.commandSha256)fail('INTENT_MISMATCH','NOT_DISPATCHED');
   if(!clientRecordVisible(p,principal))fail('INTENT_SCOPE_WITHHELD','NOT_DISPATCHED');
-  if(instant(p.expiresAt)<=c.now())fail('INTENT_EXPIRED','NOT_DISPATCHED');
-  if(typeof c.clientRecord?.decide!=='function')fail('APPROVAL_OWNER_UNAVAILABLE','NOT_DISPATCHED');
-  life.limitDeadline(instant(p.expiresAt));let result;
-  try{result=await life.run(signal=>c.clientRecord.decide({proposal:p,decision:r.decision,signal,deadlineMs:life.deadline()}));}
-  catch{fail('APPROVAL_DECISION_UNKNOWN','UNKNOWN');}
-  try{clientRecordValidators.coreResult(result,p);}catch{fail('INTENT_RESULT_NOT_RELEASED','RESULT_NOT_RELEASED');}
+  const result=await coreDecision(life,c.clientRecord,p,r.decision,value=>clientRecordValidators.coreResult(value,p));
   return data({status:'client_record_decided',deliveryId:r.deliveryId,proposalId:p.proposalId,result});
  }
  function bizdevProposal(entry,principal,conversationId){
@@ -217,12 +230,7 @@ async function decideLegiwatch(life,principal,entry,r){
   const p=bizdevProposal(entry,principal,r.conversationId);
   if(p.proposalId!==r.proposalId||p.commandSha256!==r.commandSha256)fail('INTENT_MISMATCH','NOT_DISPATCHED');
   if(!bizdevVisible(p,principal))fail('INTENT_SCOPE_WITHHELD','NOT_DISPATCHED');
-  if(instant(p.expiresAt)<=c.now())fail('INTENT_EXPIRED','NOT_DISPATCHED');
-  if(typeof c.bizdev?.decide!=='function')fail('APPROVAL_OWNER_UNAVAILABLE','NOT_DISPATCHED');
-  life.limitDeadline(instant(p.expiresAt));let result;
-  try{result=await life.run(signal=>c.bizdev.decide({proposal:p,decision:r.decision,signal,deadlineMs:life.deadline()}));}
-  catch{fail('APPROVAL_DECISION_UNKNOWN','UNKNOWN');}
-  try{bizdevValidators.coreResult(result,p);}catch{fail('INTENT_RESULT_NOT_RELEASED','RESULT_NOT_RELEASED');}
+  const result=await coreDecision(life,c.bizdev,p,r.decision,value=>bizdevValidators.coreResult(value,p));
   // A refused or ambiguous outcome stays in the released Core status; it is never relabelled as a saved brief here.
   return data({status:'bizdev_decided',deliveryId:r.deliveryId,proposalId:p.proposalId,result});
  }
@@ -239,12 +247,7 @@ async function decideWatch(life,principal,entry,r){
  const p=watchProposal(entry,principal,r.conversationId);
  if(p.proposalId!==r.proposalId||p.commandSha256!==r.commandSha256)fail('INTENT_MISMATCH','NOT_DISPATCHED');
  if(!watchVisible(p,principal))fail('INTENT_SCOPE_WITHHELD','NOT_DISPATCHED');
- if(instant(p.expiresAt)<=c.now())fail('INTENT_EXPIRED','NOT_DISPATCHED');
- if(typeof c.watch?.decide!=='function')fail('APPROVAL_OWNER_UNAVAILABLE','NOT_DISPATCHED');
- life.limitDeadline(instant(p.expiresAt));let result;
- try{result=await life.run(signal=>c.watch.decide({proposal:p,decision:r.decision,signal,deadlineMs:life.deadline()}));}
- catch{fail('APPROVAL_DECISION_UNKNOWN','UNKNOWN');}
- try{watchValidators.coreResult(result,p);}catch{fail('INTENT_RESULT_NOT_RELEASED','RESULT_NOT_RELEASED');}
+ const result=await coreDecision(life,c.watch,p,r.decision,value=>watchValidators.coreResult(value,p));
  return data({status:'watch_decided',deliveryId:r.deliveryId,proposalId:p.proposalId,result});
 }
 /** Core action proposals already own the confirmation and atomic effect. Never mint a native ApprovalDecision. */
@@ -261,15 +264,28 @@ async function decideWatch(life,principal,entry,r){
   const proposal=sharingProposal(entry,principal,r.conversationId);
   if(proposal.proposalId!==r.proposalId||proposal.commandSha256!==r.commandSha256)fail('INTENT_MISMATCH','NOT_DISPATCHED');
   if(!visible(proposal.scopes,principal))fail('INTENT_SCOPE_WITHHELD','NOT_DISPATCHED');
-  if(!(instant(proposal.expiresAt)>c.now()))fail('INTENT_EXPIRED','NOT_DISPATCHED');
-  if(!sharing)fail('APPROVAL_OWNER_UNAVAILABLE','NOT_DISPATCHED');life.limitDeadline(instant(proposal.expiresAt));
-  let result;try{result=data(own(await life.run(signal=>sharing.decide.call(c.sharing,{proposal,decision:r.decision,signal,deadlineMs:life.deadline()})),['proposalStatus'],['oneTimeResult']));}
-  catch(error){if(error?.effect==='none')fail(error.code==='ACCESS_DENIED'?'APPROVER_REFUSED':'APPROVAL_OWNER_UNAVAILABLE','NOT_DISPATCHED');fail('APPROVAL_DECISION_UNKNOWN','UNKNOWN');}
-  artifactShape('ResearchShareProposalStatus',result.proposalStatus);
+  const result=await coreDecision(life,c.sharing,proposal,r.decision,value=>{const result=data(own(value,['proposalStatus'],['oneTimeResult']));artifactShape('ResearchShareProposalStatus',result.proposalStatus);return result;});
   if(result.oneTimeResult!==undefined){artifactShape('ResearchShareOneTimeResult',result.oneTimeResult);
    if(r.decision!=='approved'||proposal.operation!=='publish_research_portfolio_share_link'||result.proposalStatus!=='succeeded')fail('INTENT_RESULT_NOT_RELEASED','RESULT_NOT_RELEASED');}
   // This response is never settled to the intent journal, a model event, or a result summary.
   return data({status:'research_share_decided',deliveryId:r.deliveryId,proposalId:r.proposalId,...result});
+ }
+ /** MO-05 governed Research Portfolio actions: Core action proposals own the confirmation, the idempotent effect and its receipt. */
+ function researchActionProposal(entry,principal,conversationId){
+  let p;try{
+   artifactShape('ResearchActionPrepared',entry.outcome.result);p=researchActionValidators.assertProposal(entry.outcome.result.proposal);
+   if(entry.record.operation.id!==p.operation||entry.record.operation.version!=='0.2.0'||hash(researchActionValidators.unbind(p.operation,p.request))!==entry.record.argumentsSha256||
+    !same(p.binding,entry.outcome.release.binding)||p.scopes.some(scope=>!entry.outcome.release.scopes.some(original=>same(scope,original)))||
+    !same(conversationOf(p.binding),{tenantId:principal.tenantId,actorId:principal.actorId,conversationId}))throw Error();
+  }catch{fail('INTENT_JOURNAL_UNAVAILABLE');}return p;
+ }
+ async function decideResearchAction(life,principal,entry,r){
+  const proposal=researchActionProposal(entry,principal,r.conversationId);
+  if(proposal.proposalId!==r.proposalId||proposal.commandSha256!==r.commandSha256)fail('INTENT_MISMATCH','NOT_DISPATCHED');
+  if(!visible(proposal.scopes,principal))fail('INTENT_SCOPE_WITHHELD','NOT_DISPATCHED');
+  const result=await coreDecision(life,c.researchAction,proposal,r.decision,researchActionValidators.decided);
+  if(result.resultSummary!==undefined&&(r.decision!=='approved'||result.proposalStatus!=='succeeded'))fail('INTENT_RESULT_NOT_RELEASED','RESULT_NOT_RELEASED');
+  return data({status:'research_action_decided',deliveryId:r.deliveryId,proposalId:r.proposalId,...result});
  }
  async function execute(life,principal,proposal,decision,deliveryId){
   if(['task.create','task.update','artifact.file','mail.send'].includes(proposal.command.action)){
@@ -327,6 +343,13 @@ async function decideWatch(life,principal,entry,r){
    if(!legislativeDocumentVisible(proposal,principal))return {...base,state:'prepared',kind:'legislative_document_action',withheld:true};
    let current='unavailable';if(typeof c.legislativeDocument?.read==='function')try{current=legislativeDocumentValidators.coreResult(proposal.operation,await life.run(signal=>c.legislativeDocument.read({proposal,signal,deadlineMs:life.deadline()})),proposal);}catch(error){if(['DEADLINE','CANCELLED'].includes(error?.code))throw error;}
    return {...base,state:'prepared',kind:'legislative_document_action',proposal,result:current};
+  }
+  if(result?.proposal?.kind==='research_action'){
+   const proposal=researchActionProposal(entry,principal,conversationId);
+   if(!visible(proposal.scopes,principal))return {...base,state:'prepared',kind:'research_action',withheld:true};
+   let current='unavailable';if(researchAction)try{current=researchActionValidators.decided(await life.run(signal=>researchAction.read.call(c.researchAction,{proposal,signal,deadlineMs:life.deadline()})));}
+   catch(error){if(['DEADLINE','CANCELLED'].includes(error?.code))throw error;}
+   return {...base,state:'prepared',kind:'research_action',proposal,result:current};
   }
   if(result?.proposal?.kind==='research_share'){
    const proposal=sharingProposal(entry,principal,conversationId);

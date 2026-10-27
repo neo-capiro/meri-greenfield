@@ -112,6 +112,9 @@
           "$ref": "#/$defs/Canonical_ResearchShareProposal_1cdbd32e"
         },
         {
+          "$ref": "#/$defs/Canonical_ResearchActionProposal_081cad69"
+        },
+        {
           "$ref": "#/$defs/Canonical_LegiwatchProposal_1f841734"
         },
         {
@@ -142,6 +145,9 @@
     },
     "IntentsResearchShareProposal": {
       "$ref": "#/$defs/Canonical_ResearchShareProposal_1cdbd32e"
+    },
+    "IntentsResearchActionProposal": {
+      "$ref": "#/$defs/Canonical_ResearchActionProposal_081cad69"
     },
     "IntentsDecision": {
       "$ref": "#/$defs/Canonical_ApprovalDecision_5e8bdbcf"
@@ -1191,6 +1197,83 @@
       ],
       "additionalProperties": false
     },
+    "IntentsResearchActionItem": {
+      "type": "object",
+      "properties": {
+        "deliveryId": {
+          "$ref": "#/$defs/IntentsDeliveryId"
+        },
+        "createdAt": {
+          "type": "string",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$"
+        },
+        "operation": {
+          "$ref": "#/$defs/IntentsOperation"
+        },
+        "state": {
+          "const": "prepared"
+        },
+        "kind": {
+          "const": "research_action"
+        },
+        "proposal": {
+          "$ref": "#/$defs/Canonical_ResearchActionProposal_081cad69"
+        },
+        "result": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Canonical_ResearchActionDecided_2d61f0bf"
+            },
+            {
+              "const": "unavailable"
+            }
+          ]
+        }
+      },
+      "required": [
+        "deliveryId",
+        "createdAt",
+        "operation",
+        "state",
+        "kind",
+        "proposal",
+        "result"
+      ],
+      "additionalProperties": false
+    },
+    "IntentsWithheldResearchActionItem": {
+      "type": "object",
+      "properties": {
+        "deliveryId": {
+          "$ref": "#/$defs/IntentsDeliveryId"
+        },
+        "createdAt": {
+          "type": "string",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$"
+        },
+        "operation": {
+          "$ref": "#/$defs/IntentsOperation"
+        },
+        "state": {
+          "const": "prepared"
+        },
+        "kind": {
+          "const": "research_action"
+        },
+        "withheld": {
+          "const": true
+        }
+      },
+      "required": [
+        "deliveryId",
+        "createdAt",
+        "operation",
+        "state",
+        "kind",
+        "withheld"
+      ],
+      "additionalProperties": false
+    },
     "IntentsResearchShareItem": {
       "type": "object",
       "properties": {
@@ -1459,6 +1542,12 @@
           "$ref": "#/$defs/IntentsWithheldResearchShareItem"
         },
         {
+          "$ref": "#/$defs/IntentsResearchActionItem"
+        },
+        {
+          "$ref": "#/$defs/IntentsWithheldResearchActionItem"
+        },
+        {
           "$ref": "#/$defs/IntentsLegiwatchItem"
         },
         {
@@ -1724,6 +1813,34 @@
             "deliveryId",
             "proposalId",
             "decision"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "status": {
+              "const": "research_action_decided"
+            },
+            "deliveryId": {
+              "$ref": "#/$defs/IntentsDeliveryId"
+            },
+            "proposalId": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$"
+            },
+            "proposalStatus": {
+              "$ref": "#/$defs/Canonical_ResearchActionProposalStatus_bca9b5cd"
+            },
+            "resultSummary": {
+              "$ref": "#/$defs/Canonical_ResearchActionResultSummary_40527cb3"
+            }
+          },
+          "required": [
+            "status",
+            "deliveryId",
+            "proposalId",
+            "proposalStatus"
           ],
           "additionalProperties": false
         },
@@ -2953,23 +3070,19 @@
       "properties": {
         "conversationId": {
           "type": "string",
-          "format": "uuid",
-          "pattern": "^[a-f0-9-]+$"
+          "format": "uuid"
         },
         "snapshotId": {
           "type": "string",
-          "format": "uuid",
-          "pattern": "^[a-f0-9-]+$"
+          "format": "uuid"
         },
         "designId": {
           "type": "string",
-          "format": "uuid",
-          "pattern": "^[a-f0-9-]+$"
+          "format": "uuid"
         },
         "clientId": {
           "type": "string",
-          "format": "uuid",
-          "pattern": "^[a-f0-9-]+$"
+          "format": "uuid"
         },
         "branding": {
           "type": "boolean"
@@ -3004,13 +3117,11 @@
       "properties": {
         "conversationId": {
           "type": "string",
-          "format": "uuid",
-          "pattern": "^[a-f0-9-]+$"
+          "format": "uuid"
         },
         "linkId": {
           "type": "string",
-          "format": "uuid",
-          "pattern": "^[a-f0-9-]+$"
+          "format": "uuid"
         }
       },
       "required": [
@@ -3027,8 +3138,7 @@
         },
         "proposalId": {
           "type": "string",
-          "format": "uuid",
-          "pattern": "^[a-f0-9-]+$"
+          "format": "uuid"
         },
         "commandSha256": {
           "type": "string",
@@ -3076,14 +3186,492 @@
             },
             "portfolioId": {
               "type": "string",
-              "format": "uuid",
-              "pattern": "^[a-f0-9-]+$"
+              "format": "uuid"
             }
           },
           "required": [
             "label"
           ],
           "additionalProperties": false
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "expiresAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "kind",
+        "proposalId",
+        "commandSha256",
+        "binding",
+        "scopes",
+        "operation",
+        "request",
+        "preview",
+        "createdAt",
+        "expiresAt"
+      ],
+      "additionalProperties": false
+    },
+    "Canonical_ResearchActionManageBound_8b5450a3": {
+      "type": "object",
+      "properties": {
+        "conversationId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "action": {
+          "enum": [
+            "portfolio_create",
+            "portfolio_update",
+            "portfolio_archive",
+            "portfolio_restore",
+            "grant_upsert",
+            "grant_delete",
+            "client_link_create",
+            "client_link_delete",
+            "member_create",
+            "members_decide",
+            "member_resolve",
+            "rule_preview",
+            "rule_publish",
+            "review_assign",
+            "review_decide",
+            "reviews_bulk_decide",
+            "annual_review_refresh",
+            "annual_review_reopen",
+            "import_create",
+            "import_action",
+            "subscription_update",
+            "bookmark_update",
+            "bookmark_delete",
+            "fit_refresh",
+            "watch_conversion_apply",
+            "output_cancel",
+            "output_retry",
+            "output_reconcile",
+            "operation_reconcile",
+            "comparison_create",
+            "comparison_revise",
+            "comparison_archive",
+            "comparison_restore",
+            "comparison_add_selection"
+          ]
+        },
+        "parameters": {
+          "type": "object",
+          "maxProperties": 64,
+          "description": "Parameters of the selected Core management action, validated by Core against that action’s own schema; the idempotent key is derived by Meri, never supplied."
+        },
+        "confirmed": {
+          "const": true
+        }
+      },
+      "required": [
+        "conversationId",
+        "action",
+        "parameters",
+        "confirmed"
+      ],
+      "additionalProperties": false
+    },
+    "Canonical_ResearchActionSnapshotBound_3e932d2d": {
+      "type": "object",
+      "properties": {
+        "conversationId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "expectedRevision": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "operationKey": {
+          "type": "string",
+          "pattern": "^meri-rp-[a-f0-9]{64}$"
+        }
+      },
+      "required": [
+        "conversationId",
+        "name",
+        "expectedRevision",
+        "operationKey"
+      ],
+      "additionalProperties": false
+    },
+    "Canonical_ResearchActionOutputBound_43ec0527": {
+      "type": "object",
+      "properties": {
+        "conversationId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "snapshotId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "operationKey": {
+          "type": "string",
+          "pattern": "^meri-rp-[a-f0-9]{64}$"
+        }
+      },
+      "required": [
+        "conversationId",
+        "operationKey"
+      ],
+      "additionalProperties": false
+    },
+    "Canonical_ResearchActionSaveOutputBound_d0981e39": {
+      "type": "object",
+      "properties": {
+        "conversationId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "outputId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "clientId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "operationKey": {
+          "type": "string",
+          "pattern": "^meri-rp-[a-f0-9]{64}$"
+        }
+      },
+      "required": [
+        "conversationId",
+        "outputId",
+        "clientId",
+        "operationKey"
+      ],
+      "additionalProperties": false
+    },
+    "Canonical_ResearchActionWatchBound_39fddaa7": {
+      "type": "object",
+      "properties": {
+        "conversationId": {
+          "type": "string",
+          "format": "uuid"
+        }
+      },
+      "required": [
+        "conversationId"
+      ],
+      "additionalProperties": false
+    },
+    "Canonical_ResearchActionChangeStateBound_b09be19c": {
+      "type": "object",
+      "properties": {
+        "conversationId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "eventId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "action": {
+          "enum": [
+            "seen",
+            "acknowledged",
+            "dismissed",
+            "undo"
+          ]
+        },
+        "expectedRevision": {
+          "type": "integer",
+          "minimum": 0
+        }
+      },
+      "required": [
+        "conversationId",
+        "eventId",
+        "action"
+      ],
+      "additionalProperties": false
+    },
+    "Canonical_ResearchActionBookmarkBound_22b0a591": {
+      "type": "object",
+      "properties": {
+        "conversationId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "targetKind": {
+          "enum": [
+            "member",
+            "snapshot",
+            "evidence",
+            "review",
+            "import",
+            "output",
+            "other"
+          ]
+        },
+        "targetId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 400
+        },
+        "label": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 2000
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "note": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 4000
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "operationKey": {
+          "type": "string",
+          "pattern": "^meri-rp-[a-f0-9]{64}$"
+        }
+      },
+      "required": [
+        "conversationId",
+        "targetKind",
+        "targetId",
+        "operationKey"
+      ],
+      "additionalProperties": false
+    },
+    "Canonical_ResearchActionReviewNoteBound_10f0c889": {
+      "type": "object",
+      "properties": {
+        "conversationId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "reviewId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "body": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 20000
+        },
+        "expectedRevision": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "operationKey": {
+          "type": "string",
+          "pattern": "^meri-rp-[a-f0-9]{64}$"
+        }
+      },
+      "required": [
+        "conversationId",
+        "reviewId",
+        "body",
+        "expectedRevision",
+        "operationKey"
+      ],
+      "additionalProperties": false
+    },
+    "Canonical_ResearchActionBriefBound_1468baf3": {
+      "type": "object",
+      "properties": {
+        "conversationId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "confirmed": {
+          "const": true
+        },
+        "operationKey": {
+          "type": "string",
+          "pattern": "^meri-rp-[a-f0-9]{64}$"
+        }
+      },
+      "required": [
+        "conversationId",
+        "confirmed",
+        "operationKey"
+      ],
+      "additionalProperties": false
+    },
+    "Canonical_ResearchActionMeetingBound_aa72483c": {
+      "type": "object",
+      "properties": {
+        "conversationId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "confirmed": {
+          "const": true
+        },
+        "meetingId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "selectedReviewIds": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "maxItems": 20,
+          "uniqueItems": true
+        },
+        "operationKey": {
+          "type": "string",
+          "pattern": "^meri-rp-[a-f0-9]{64}$"
+        }
+      },
+      "required": [
+        "conversationId",
+        "confirmed",
+        "operationKey"
+      ],
+      "additionalProperties": false
+    },
+    "Canonical_ResearchActionPreview_7b7dfa31": {
+      "type": "object",
+      "properties": {
+        "label": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "portfolioId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "clientName": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 1000
+        },
+        "fields": {
+          "type": "object",
+          "additionalProperties": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 4000
+              },
+              {
+                "type": "number"
+              },
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "maxProperties": 64
+        }
+      },
+      "required": [
+        "label"
+      ],
+      "additionalProperties": false
+    },
+    "Canonical_ResearchActionProposal_081cad69": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "const": "research_action"
+        },
+        "proposalId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "commandSha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "binding": {
+          "$ref": "#/$defs/Canonical_RunBinding_84f2304c"
+        },
+        "scopes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Canonical_Scope_f882edb5"
+          },
+          "minItems": 1,
+          "maxItems": 1
+        },
+        "operation": {
+          "enum": [
+            "manage_research_portfolio",
+            "create_research_portfolio_snapshot",
+            "request_research_portfolio_output",
+            "save_research_portfolio_output_to_client",
+            "watch_research_portfolio",
+            "update_research_portfolio_change_state",
+            "create_research_portfolio_bookmark",
+            "add_research_portfolio_review_note",
+            "prepare_research_portfolio_brief",
+            "prepare_research_portfolio_meeting"
+          ]
+        },
+        "request": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Canonical_ResearchActionManageBound_8b5450a3"
+            },
+            {
+              "$ref": "#/$defs/Canonical_ResearchActionSnapshotBound_3e932d2d"
+            },
+            {
+              "$ref": "#/$defs/Canonical_ResearchActionOutputBound_43ec0527"
+            },
+            {
+              "$ref": "#/$defs/Canonical_ResearchActionSaveOutputBound_d0981e39"
+            },
+            {
+              "$ref": "#/$defs/Canonical_ResearchActionWatchBound_39fddaa7"
+            },
+            {
+              "$ref": "#/$defs/Canonical_ResearchActionChangeStateBound_b09be19c"
+            },
+            {
+              "$ref": "#/$defs/Canonical_ResearchActionBookmarkBound_22b0a591"
+            },
+            {
+              "$ref": "#/$defs/Canonical_ResearchActionReviewNoteBound_10f0c889"
+            },
+            {
+              "$ref": "#/$defs/Canonical_ResearchActionBriefBound_1468baf3"
+            },
+            {
+              "$ref": "#/$defs/Canonical_ResearchActionMeetingBound_aa72483c"
+            }
+          ]
+        },
+        "preview": {
+          "$ref": "#/$defs/Canonical_ResearchActionPreview_7b7dfa31"
         },
         "createdAt": {
           "type": "string",
@@ -8204,6 +8792,74 @@
         "expiresAt",
         "status",
         "receipt"
+      ],
+      "additionalProperties": false
+    },
+    "Canonical_ResearchActionProposalStatus_bca9b5cd": {
+      "enum": [
+        "proposed",
+        "executing",
+        "succeeded",
+        "failed_retryable",
+        "failed_terminal",
+        "outcome_unknown",
+        "blocked",
+        "dismissed",
+        "expired"
+      ]
+    },
+    "Canonical_ResearchActionResultSummary_40527cb3": {
+      "type": "object",
+      "properties": {
+        "client": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 100
+            },
+            "name": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 200
+            }
+          },
+          "required": [],
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": {
+        "anyOf": [
+          {
+            "type": "string",
+            "maxLength": 4000
+          },
+          {
+            "type": "number"
+          },
+          {
+            "type": "boolean"
+          },
+          {
+            "type": "null"
+          }
+        ]
+      },
+      "maxProperties": 64
+    },
+    "Canonical_ResearchActionDecided_2d61f0bf": {
+      "type": "object",
+      "properties": {
+        "proposalStatus": {
+          "$ref": "#/$defs/Canonical_ResearchActionProposalStatus_bca9b5cd"
+        },
+        "resultSummary": {
+          "$ref": "#/$defs/Canonical_ResearchActionResultSummary_40527cb3"
+        }
+      },
+      "required": [
+        "proposalStatus"
       ],
       "additionalProperties": false
     },

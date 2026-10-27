@@ -109,11 +109,13 @@ export function assembleConversationRunner({configuration,native,query,credentia
  // The activity bounds runtime preparation (the runner/runtime call, then the local stage); see ACTIVITY_PREPARATION_MAX_MS.
  const activity=createConversationActivity({runOwner,prepareRuntime,selectedSkills,objectiveGeneration,now,...(stages?{loadMaxMs:stages.load.maxMs,loadExpiresAtMs:stages.load.expiresAtMs,runtimeMaxMs:Math.min(stages.runtime.maxMs+stages.local.maxMs,ACTIVITY_PREPARATION_MAX_MS),runtimeExpiresAtMs:stages.local.expiresAtMs,setupBudget:stages.setup,modelDeadlineMs:stages.session.expiresAtMs,executionDeadlineMs:startup.originalExpiresAtMs,terminalAttemptMs:stages.session.maxMs}:{}),...(readPort?{generalReads:readPort}:{}),...(governedIntents?{governedIntents}:{}),...(query?{query}:{}),...(lifecycle?{lifecycle}:{}),heartbeat:()=>{},diagnostics:{stage:markRunnerStage,failure:captureRunnerFailure}});
   const execute=async input=>withRunnerDiagnostics(()=>atRunnerStage('activity',async()=>{try{return await activity(input);}catch(error){captureRunnerFailure(error);throw error;}finally{markRunnerStage('runner-cleanup');
-   try{await selectedSkills.close();}catch(error){localCleanupFailed=true;throw error;}finally{await sdkSession?.close();}
+   try{try{await selectedSkills.close();}catch(error){localCleanupFailed=true;throw error;}finally{await sdkSession?.close();}}
+   finally{
    // A run that never recorded its cwd bytes leaves a conversation-local tree the durable owner cannot account for:
    // retain those bytes beside the workspace and leave the workspace empty, so the next run restores the durable state
    // instead of refusing a stale tree. Nothing is erased; a failed retention is unknown local cleanup.
    if(!workspaceRecorded&&nativeFiles&&!await attemptCleanup(signal=>nativeFiles.retain({signal,deadlineMs:now()+CLEANUP_ATTEMPT_MS}),{now,timeoutMs:CLEANUP_ATTEMPT_MS}))localCleanupFailed=true;
+   }
   }}),{binding,environment:configuration.telemetry?.environment});
  Object.defineProperty(execute,'cleanupStatus',{value:()=>{const status=sdkSession?.cleanupStatus()??{pendingInitializations:0,closed:true,failures:[],physicalStopProven:false};return {...status,failures:[...status.failures,...(localCleanupFailed?['RUNNER_CLEANUP_UNKNOWN']:[])]};}});return execute;
 }

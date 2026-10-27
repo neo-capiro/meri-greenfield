@@ -30,9 +30,11 @@ export function intentFailureResult(code,tool){
  return {isError:true,content:[{type:/** @type {const} */('text'),text:(Object.hasOwn(TEXTS,code)?TEXTS[code]:TEXTS.INTERNAL_ERROR)(tool)}]};
 }
 /** The prepared result exactly as the owner returned it, then one fixed instruction block.
- * @param {string} json @param {'approval_required'|'draft'|'analysis_pending'|'review_pending'} status */
+ * @param {string} json @param {'approval_required'|'draft'|'analysis_pending'|'review_pending'|'read'} status */
 export function preparedResult(json,status){
- const notice=status==='review_pending'
+ const notice=status==='read'
+  ?'READ RESULT: this is current owner data. No proposal or change was created; no approval is needed.'
+  :status==='review_pending'
   ?'SUBMITTED FOR REVIEW: a memory candidate is pending governed Core review. It has not been saved or published as memory. Do not ask for a task approval or say the memory was saved.'
   :status==='analysis_pending'
   ?'ANALYSIS OUTPUTS PENDING: the admitted analysis owner returned durable output references. Inspection and publication remain pending; do not say these outputs are published or filed.'

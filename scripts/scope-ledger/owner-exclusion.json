@@ -260,9 +260,26 @@
       "save_business_development_brief",
       "prepare_legiwatch_briefing",
       "save_legislative_research",
-      "save_note"
+      "save_note",
+      "manage_research_portfolio",
+      "get_research_portfolio_analytics",
+      "create_research_portfolio_snapshot",
+      "request_research_portfolio_output",
+      "save_research_portfolio_output_to_client",
+      "watch_research_portfolio",
+      "update_research_portfolio_change_state",
+      "get_research_portfolio_bookmarks",
+      "create_research_portfolio_bookmark",
+      "get_research_portfolio_fit",
+      "get_research_portfolio_reviews",
+      "add_research_portfolio_review_note",
+      "get_research_portfolio_rules",
+      "get_research_portfolio_imports",
+      "get_research_portfolio_operations",
+      "prepare_research_portfolio_brief",
+      "prepare_research_portfolio_meeting"
     ],
-    "limits": "Only these fourteen historical tool exclusions are superseded in this source increment. Research Portfolio remains deferred; legacy send_email/reply_email and direct canonical-memory writes remain excluded. Native mail is the distinct mail_send approved command. Authorization is not a release or live acceptance receipt.",
+    "limits": "Only these fourteen historical tool exclusions are superseded in this source increment. Research Portfolio remains deferred; legacy send_email/reply_email and direct canonical-memory writes remain excluded. Native mail is the distinct mail_send approved command. Authorization is not a release or live acceptance receipt. 27 October 2026 Fable handoff: Neo’s direct instruction that all existing Research Portfolio/MO-05 requirements are in scope supersedes the earlier Research Portfolio deferral, so the seventeen MO-05 names are now authorized through their canonical Core owners; the remaining twelve exclusions stay in force.",
     "history": "The original 43-name groups, quoted 15 October direction and historical scope-ledger receipts remain immutable historical accounting; the worker exclusion guard applies this explicit finite amendment."
   }
 }

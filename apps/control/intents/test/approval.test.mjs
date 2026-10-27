@@ -96,6 +96,22 @@ test('lost decision acknowledgement is UNKNOWN; repeating the same request execu
  assert.equal((await s.decide(s.request(proposal))).status,'executed');assert.deepEqual(effects(s),{fetches:1,journal:1});
 });
 
+test('expired replay reads a completed effect without recording another decision or dispatching again',async()=>{
+ const s=setup(),{proposal}=await s.prepare(),first=await s.decide(s.request(proposal));s.c.f.state.now=NOW+50000;
+ const recovered=await s.decide(s.request(proposal));assert.deepEqual(recovered,first);
+ assert.equal(s.core.state.records,1);assert.equal(s.tasks.state.dispatches,1);assert.equal(s.tasks.state.effects,1);
+ await assert.rejects(s.decide(s.request(proposal,1,'rejected')),code('APPROVAL_DECISION_REFUSED','UNKNOWN'));
+});
+
+test('expired decision with no completed effect is observed without dispatch; unavailable evidence remains unknown',async()=>{
+ const s=setup(),{proposal}=await s.prepare();s.core.state.loseRecordAck=true;
+ await assert.rejects(s.decide(s.request(proposal)),code('APPROVAL_DECISION_UNKNOWN','UNKNOWN'));
+ s.c.f.state.now=NOW+50000;assert.equal((await s.decide(s.request(proposal))).status,'indeterminate');
+ assert.equal(s.core.state.records,1);assert.equal(s.tasks.state.dispatches,0);
+ s.core.state.down=true;await assert.rejects(s.decide(s.request(proposal)),code('APPROVAL_DECISION_UNKNOWN','UNKNOWN'));
+ assert.equal(s.tasks.state.dispatches,0);
+});
+
 test('history: creation order, paging, drafts/unknowns, decision owner down reads as unavailable, withheld content on lost client access',async()=>{
  const s=setup();for(const n of [1,2,3])await s.prepare(n);
  const first=await s.list(s.principal,{limit:2});assert.deepEqual(first.intents.map(i=>i.deliveryId),[delivery(1),delivery(2)]);assert.equal(first.next,delivery(2));

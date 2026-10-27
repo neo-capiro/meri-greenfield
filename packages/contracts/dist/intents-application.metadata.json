@@ -117,8 +117,8 @@
     },
     {
       "path": "../../apps/control/intents/approval.mjs",
-      "sha256": "c112b71e6877e14b33e7c50bebc79c0bef53dea9d776998eb26d428ad32352f5",
-      "bytes": 39745
+      "sha256": "3858079233bdf6c954786bee044388ae5b2db2d69a99963132c2142cf510e94c",
+      "bytes": 41778
     },
     {
       "path": "../../apps/control/intents/faults.mjs",
@@ -212,8 +212,8 @@
     },
     {
       "path": "generate-intents.mjs",
-      "sha256": "9ba59f5d5435809a97eef53aab562e61cefb452264cd18b6c19b38cac567ae3b",
-      "bytes": 13306
+      "sha256": "837edf73e75de8d54bffa322101dec58a18710bc338efb01282c208c3224b1f6",
+      "bytes": 13392
     },
     {
       "path": "intents-application/boundary.mjs",
@@ -242,13 +242,13 @@
     },
     {
       "path": "intents-application/schema.mjs",
-      "sha256": "6004fdadb2201f21f783a7ce638a18ca2fd0acdf961d95f171704c3f7066d7c8",
-      "bytes": 14384
+      "sha256": "f9f0ea2c6792ebcb30d73e8a5f96638600628fad08143ff34b66d2034ea28b7b",
+      "bytes": 15292
     },
     {
       "path": "intents-application/semantics.mjs",
-      "sha256": "d960b44bce3ee4ba0a149d0ad69ba7d32b40361a6043da5afe96a273ce514136",
-      "bytes": 26959
+      "sha256": "3cb4338845cad706c25f8bdcae9373480703f44c72f20d21de798b27a9bcea05",
+      "bytes": 28155
     },
     {
       "path": "meri.schema.json",
@@ -286,9 +286,14 @@
       "bytes": 10098
     },
     {
+      "path": "retrieval-0.2/research-portfolio-action.schema.json",
+      "sha256": "27820cd262ed0bec31825150d7548df60747b26e07ebf6d07a5f3b55fa863fb9",
+      "bytes": 25983
+    },
+    {
       "path": "retrieval-0.2/research-portfolio-sharing.schema.json",
-      "sha256": "18ae5ea86025ef70a148b70062bfbc92dee14a9a3a0e90d74e91ff86a05ce91a",
-      "bytes": 10889
+      "sha256": "ae7fb85e8f7d3e6ba361fc06c0edd15d0ae28d8df3ffce2e7a189838c41ca562",
+      "bytes": 10141
     },
     {
       "path": "retrieval-0.2/watch-action.schema.json",
@@ -316,7 +321,7 @@
       "bytes": 24305
     }
   ],
-  "schemaSha256": "e20863f9a28783c2541331638ff2f7b2b8859fc5806316b1ea9658fb06d7dbc4",
+  "schemaSha256": "9fc2fec9e073e43fdb390af7423910dc178bfb96f1f79a116380c0cfaf151979",
   "browserInputs": [
     "artifacts-0.2/artifact-formats.mjs",
     "commands-0.2/mail-send-validation.mjs",

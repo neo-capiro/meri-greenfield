@@ -37,5 +37,5 @@ function retainedDirectory(workspace){
  for(let n=0;n<1000;n++){const candidate=n?`${workspace}.uncommitted.${n}`:`${workspace}.uncommitted`;
   try{fs.mkdirSync(candidate,{mode:0o700});}catch(error){if(error?.code==='EEXIST')continue;fail();}
   directory(candidate);return candidate;}
- fail();
+ const candidate=fs.mkdtempSync(`${workspace}.uncommitted-`);fs.chmodSync(candidate,0o700);directory(candidate);return candidate;
 }

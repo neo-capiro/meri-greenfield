@@ -7,9 +7,10 @@ import {intentFault} from './faults.mjs';
 export function createResearchSharingPreparers({binding,scopes,selectedClientId,client,now,deadlineMs,currentRights,policyRevision}){
  return RESEARCH_SHARE_INTENTS.map(id=>Object.freeze({binding,owner:'research-sharing',operation:{id,version:'0.2.0'},async prepare(raw){
   const {arguments:request,deliveryId,signal}=own(raw,['arguments','deliveryId'],['signal']);
-  validators.normalizeInput(id,request,{binding});
-  const check=async()=>{const r=await currentRights({signal,policyRevision});if(hash(r.scopes)!==hash(scopes)||r.expiresAtMs<=now())throw intentFault('ACCESS_DENIED');};
-  await check();
+  // Refusals before the owner call leave no effect: the delivery settles FAILED with the exact code instead of UNKNOWN.
+  try{validators.normalizeInput(id,request,{binding});}catch{throw intentFault('INVALID_ARGUMENTS','none');}
+  const check=async effect=>{const r=await currentRights({signal,policyRevision});if(hash(r.scopes)!==hash(scopes)||r.expiresAtMs<=now())throw intentFault('ACCESS_DENIED',effect);};
+  await check('none');
   const result=await client.prepare({binding,selectedClientId,operation:id,request,operationKey:'meri-share-'+hash({binding,deliveryId}),signal,deadlineMs});
   await check();
   const bound={kind:'research_share',binding,scopes,operation:id,...result},proposal={...bound,commandSha256:hash(bound)};

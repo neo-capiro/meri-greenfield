@@ -44,6 +44,13 @@ test('private SQL sends exact bounded canonical context only with per-call crede
   const publicCase=capiroDataCase();await publicCase.handler()(publicCase.call());assert.equal(publicCase.wire[0].options.headers['x-meri-read-correlation'],undefined);
 });
 
+test('private SQL refuses an injected source before it can bypass attended Core credentials',async()=>{
+  const request={source:'client_records',sql:'SELECT COUNT(*) AS total FROM client_objectives',parameters:[],rowLimit:2};
+  const f=capiroDataCase('query_capiro_data',{request});let reads=0;
+  await assert.rejects(f.handler({getCredentials:undefined,readSource:async()=>{reads++;return f.page;}})(f.call()),{message:'ACCESS_DENIED'});
+  assert.equal(reads,0);assert.equal(f.wire.length,0);
+});
+
 test('private source result cannot substitute a public page or a different client, even for errors',async()=>{
   const request={source:'client_records',sql:'SELECT COUNT(*) AS total FROM client_objectives',parameters:[],rowLimit:2};
   for(const mutate of [p=>p.version='0.1.0',p=>p.scope.clientId='10000000-0000-4000-8000-000000000001',p=>{delete p.scope;}]){

@@ -9,7 +9,9 @@ import {runStartFixture,NOW} from '../../objective-source/test/run-start-fixture
 import {createObjectiveSelectionOwner} from '../../objective-generation/selection-owner.mjs';
 import {result as objectiveResult} from '../../../../packages/contracts/strategy-operations-candidate/fixture-source.mjs';
 import {assertTypedResultBytes} from '../../../../packages/runtime/objective-generation-custody.mjs';
-let ownedRoot;
+import {createTaskSelectedSkills} from '../../selected/task.mjs';
+let ownedRoot,failSkillsClose=false;
+mock.module('../../selected/task.mjs',{namedExports:{createTaskSelectedSkills(configuration){const owner=createTaskSelectedSkills(configuration);return {...owner,async close(){await owner.close();if(failSkillsClose)throw Error('synthetic skill close refusal');}};}}});
 // Windows has no POSIX private-directory mode. Only that OS observation is
 // synthetic here; native Linux qualification must run the unchanged mode gate.
 if(process.platform==='win32')mock.module('node:fs/promises',{namedExports:{...fs,async lstat(path){const s=await fs.lstat(path);if(ownedRoot&&String(path).startsWith(ownedRoot))s.mode&=~0o077;return s;}}});
@@ -21,7 +23,8 @@ if(process.platform==='win32')mock.module('../../../worker/conversation/options.
 // unchanged native writer separately on Linux.
 if(process.platform==='win32')mock.module('../../../worker/conversation/objective-generation/fixed-file.mjs',{namedExports:{async writeObjectiveResultFile({cwd,bytes,descriptor,signal}){signal?.throwIfAborted();await fs.writeFile(join(cwd,descriptor.path),assertTypedResultBytes(bytes,descriptor),{flag:'wx',mode:0o600,signal});}}});
 const {assembleConversationRunner}=await import('../../conversation-runner.mjs');
-async function fixture(t,{flushFails=false,closeFails=false,captureFails=false,restoreFails=false,objective=false,emptyDirectoriesOnly=false}={}){
+async function fixture(t,{flushFails=false,closeFails=false,sessionCloseFails=false,skillCloseFails=false,captureFails=false,restoreFails=false,objective=false,emptyDirectoriesOnly=false}={}){
+ failSkillsClose=skillCloseFails;t.after(()=>{failSkillsClose=false;});
  const o=objective?runStartFixture():null,binding=o?.binding??ordinaryBinding,scopes=o?[{tenantId:o.tenantId,kind:'client',resourceId:o.clientId,policyRevision:'policy1'}]:ordinaryScopes;if(o)t.mock.timers.enable({apis:['Date'],now:NOW});
  const root=await fs.realpath(await fs.mkdtemp(join(tmpdir(),'meri-native-runner-')));ownedRoot=root;
  t.after(()=>fs.rm(root,{recursive:true,force:true}));if(process.platform==='win32'){const d=Object.getOwnPropertyDescriptor(process,'getuid');Object.defineProperty(process,'getuid',{value:()=>0,configurable:true});t.after(()=>{if(d)Object.defineProperty(process,'getuid',d);else delete process.getuid;});}
@@ -43,7 +46,7 @@ async function fixture(t,{flushFails=false,closeFails=false,captureFails=false,r
    return {binding,state:'completed',proof:{kind:'native-session',sdkSession,files,checkpointId:binding.runId,checkpointSha256:hash({sdkSession,files}),versions,scopes,sourceRequestSha256:hash(request),contextSha256:hash({window:null,skill:null,scopes}),lastEventSequence:3}};
   }throw Error('unexpected '+operation);
  }};
- const execute=assembleConversationRunner({configuration,native,credentialForBinding:async()=> 'synthetic',sessionFactory:async()=>({store:{async load(){return null;},async append(){}},async settle(){order.push('flush');if(flushFails)throw Error('synthetic flush refusal');},async close(){order.push('mirror-close');}}),
+ const execute=assembleConversationRunner({configuration,native,credentialForBinding:async()=> 'synthetic',sessionFactory:async()=>({store:{async load(){return null;},async append(){}},async settle(){order.push('flush');if(flushFails)throw Error('synthetic flush refusal');},async close(){order.push('mirror-close');if(sessionCloseFails)throw Error('synthetic session close refusal');}}),
   query({options}){queries++;assert.ok(order.includes('runner/files/restore'));if(o)assert.equal(options.outputFormat.type,'json_schema');else assert.equal(options.outputFormat,undefined);assert.equal(options.env.CLAUDE_CODE_TASK_LIST_ID,'meri');const tasks=join(options.env.CLAUDE_CONFIG_DIR,'tasks','meri');
    return {async *[Symbol.asyncIterator](){yield {type:'system',subtype:'init',session_id:sessionId};await fs.mkdir(join(workspace,'scratch','empty'),{recursive:true});await fs.mkdir(join(tasks,'empty'));if(!emptyDirectoriesOnly){await fs.writeFile(join(workspace,'answer.txt'),'exact native output');await fs.writeFile(join(tasks,'1.json'),'{"id":"1","status":"completed"}\n');}yield {type:'result',subtype:'success',is_error:false,session_id:sessionId,...(o?{structured_output:{operation:'strategy.draft',state:'succeeded',payload:objectiveResult(o.selection.request).payload,issues:[]}}:{})};},close(){order.push('close');if(closeFails)throw Error('synthetic close refusal');},async return(){order.push('drained');return {done:true};}};
   }});
@@ -62,5 +65,12 @@ test('a run that never durably recorded its cwd retains those bytes beside the w
 test('a completed run keeps its recorded warm workspace and retains nothing',async t=>{const f=await fixture(t);assert.deepEqual(await f.run(),{state:'completed'});
  assert.equal(await fs.readFile(join(f.workspace,'answer.txt'),'utf8'),'exact native output');
  await assert.rejects(fs.readdir(f.workspace+'.uncommitted'),error=>error.code==='ENOENT','a recorded tree stays in place as the run\'s durable materialization');});
+
+for(const failure of ['sessionCloseFails','skillCloseFails'])test(`failed ${failure} still retains the failed run workspace for the next warm turn`,async t=>{
+ const f=await fixture(t,{captureFails:true,[failure]:true});await assert.rejects(f.run());
+ assert.deepEqual(await fs.readdir(f.workspace),[]);
+ assert.equal(await fs.readFile(join(f.workspace+'.uncommitted','answer.txt'),'utf8'),'exact native output');
+ assert.ok(f.cleanup().failures.includes('RUNNER_CLEANUP_UNKNOWN'));
+});
 
 test('assembled Objective uses one SDK query and captures the actual fixed typed file after SessionStore flush',async t=>{const f=await fixture(t,{objective:true});assert.deepEqual(await f.run(),{state:'completed'});const {queries,upload}=f.counts();assert.equal(queries,1);const file=upload.files.find(e=>e.path===upload.typedResult.path);assert.ok(file);assert.equal(file.sha256,upload.typedResult.fileSha256);assert.equal(file.bytes,upload.typedResult.bytes);const result=JSON.parse(Buffer.from(file.base64,'base64'));assert.equal(result.execution.model,SDK_MODEL_CONFIGURATION.model);assert.equal(result.resultRef,upload.binding.runId);assert.equal(result.payload.type,'authorization');assert.equal(f.order.filter(v=>v==='runner/runtime').length,2);assert.equal(f.cleanup().closed,true);});

@@ -12,6 +12,17 @@ const searched = result => ({input: result.input, metadata: {clientScope: result
 const federal = result => ({input: result.query, metadata: {queryScope: result.queryScope, clientScope: result.clientScope}});
 
 export const CATALOG_OPERATION_BINDINGS = Object.freeze([
+  ...[['manage_research_portfolio','ResearchActionManageInput'],['create_research_portfolio_snapshot','ResearchActionSnapshotInput'],['request_research_portfolio_output','ResearchActionOutputInput'],
+    ['save_research_portfolio_output_to_client','ResearchActionSaveOutputInput'],['watch_research_portfolio','ResearchActionWatchInput'],['update_research_portfolio_change_state','ResearchActionChangeStateInput'],
+    ['create_research_portfolio_bookmark','ResearchActionBookmarkInput'],['add_research_portfolio_review_note','ResearchActionReviewNoteInput'],['prepare_research_portfolio_brief','ResearchActionBriefInput'],
+    ['prepare_research_portfolio_meeting','ResearchActionMeetingInput']].map(([id,input])=>Object.freeze({id,nativeId:id,group:'research-portfolio-action',input,output:id==='manage_research_portfolio'?'ResearchManagementOutput':'ResearchActionPrepared',version:'0.2.0',contextKeys:Object.freeze(['binding']),
+    normalize:(v,request,context)=>({input:v.researchActionValidators.normalizeInput(id,request,context)}),outputAssert:(v,page,request,context)=>v.researchActionValidators.assertOutput(id,page,request,context)})),
+  ...[['get_research_portfolio_analytics','ResearchWorkflowConversationInput','ResearchWorkflowAnalyticsOutput'],['get_research_portfolio_bookmarks','ResearchWorkflowConversationInput','ResearchWorkflowBookmarksOutput'],
+    ['get_research_portfolio_fit','ResearchWorkflowConversationInput','ResearchWorkflowFitOutput'],['get_research_portfolio_reviews','ResearchWorkflowReviewsInput','ResearchWorkflowReviewsOutput'],
+    ['get_research_portfolio_rules','ResearchWorkflowConversationInput','ResearchWorkflowRulesOutput'],['get_research_portfolio_imports','ResearchWorkflowImportsInput','ResearchWorkflowImportsOutput'],
+    ['get_research_portfolio_operations','ResearchWorkflowOperationInput','ResearchWorkflowOperationOutput']].map(([id,input,output])=>Object.freeze({id,nativeId:id,group:'research-portfolio-workflow',
+    input,output,version:'0.2.0',contextKeys:Object.freeze(['binding','selectedClientId','visibleClientIds']),
+    normalize:(v,request,context)=>({input:v.researchWorkflowValidators.normalizeInput(id,request,context)}),outputAssert:(v,page,request,context)=>v.researchWorkflowValidators.assertOutput(id,page,request,context)})),
  Object.freeze({id:'save_note',nativeId:'save_note',group:'note-action',input:'SavedNoteRequest',output:'SavedNoteResult',version:'0.2.0',contextKeys:Object.freeze([]),normalize:(v,r)=>({input:v.savedNoteValidators.request(r)}),outputAssert:(v,p,r)=>v.savedNoteValidators.result(p,r)}),
  Object.freeze({id:'compare_florida_budget_amounts',nativeId:'compare_florida_budget_amounts',group:'legislative-comparisons',input:'BudgetComparisonRequest',output:'BudgetComparisonOutput',version:'0.2.0',contextKeys:Object.freeze(['legiwatchReviewScope']),normalize:(v,r,c,b)=>v.legislativeComparisonValidators.normalizeInput(b.id,r,c),outputAssert:(v,p,r,c,b)=>v.legislativeComparisonValidators.assertOutput(b.id,p,r,c)}),
  Object.freeze({id:'compare_legislative_versions',nativeId:'compare_legislative_versions',group:'legislative-comparisons',input:'VersionComparisonRequest',output:'VersionComparisonOutput',version:'0.2.0',contextKeys:Object.freeze(['legiwatchReviewScope']),normalize:(v,r,c,b)=>v.legislativeComparisonValidators.normalizeInput(b.id,r,c),outputAssert:(v,p,r,c,b)=>v.legislativeComparisonValidators.assertOutput(b.id,p,r,c)}),
@@ -445,8 +456,10 @@ function assertCatalog(catalog) {
   validateShape('Catalog', catalog);
   unique(catalog.originals.map(row => row.id), 'native capability');
   const selected = catalog.originals.filter(row => row.disposition === 'selected');
-  const additive = ['inspect_watch_state','watch_action','mail_send','get_research_portfolio_share_links','publish_research_portfolio_share_link','revoke_research_portfolio_share_link','read_saved_strategy_records','read_saved_record','describe_capiro_data','query_capiro_data','list_connected_app_reads','read_connected_app','list_teams_channels','get_teams_channel_messages'];
-  if (selected.filter(row=>!additive.includes(row.id)).length !== 110 || catalog.originals.length - selected.length !== 29) fail('D012 disposition mismatch');
+  const additive = ['get_research_portfolio_analytics','get_research_portfolio_bookmarks','get_research_portfolio_fit','get_research_portfolio_reviews','get_research_portfolio_rules','get_research_portfolio_imports','get_research_portfolio_operations',
+    'manage_research_portfolio','create_research_portfolio_snapshot','request_research_portfolio_output','save_research_portfolio_output_to_client','watch_research_portfolio','update_research_portfolio_change_state','create_research_portfolio_bookmark','add_research_portfolio_review_note','prepare_research_portfolio_brief','prepare_research_portfolio_meeting',
+    'inspect_watch_state','watch_action','mail_send','get_research_portfolio_share_links','publish_research_portfolio_share_link','revoke_research_portfolio_share_link','read_saved_strategy_records','read_saved_record','describe_capiro_data','query_capiro_data','list_connected_app_reads','read_connected_app','list_teams_channels','get_teams_channel_messages'];
+  if (selected.filter(row=>!additive.includes(row.id)).length !== 110 || catalog.originals.length - selected.length !== 12) fail('D012 disposition mismatch');
   const operations = new Map();
   const aliases = new Map();
   for (const operation of catalog.operations) {

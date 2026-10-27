@@ -89,7 +89,7 @@ export function createTurnTelemetry({service,environment='Preview',write,now=Dat
   if(!['completed','failed','cancelled'].includes(state))return;
   stage(binding,'run.terminal');run.terminal=true;run.pending=true;
   const t0=run.stages['send.admit.received']??null,first=run.stages['delta.first.durable']??null;
-  const classification=state==='failed'?timeoutClass(event.data.reasonCode,...Object.values(run.counts.core).flatMap(row=>Object.keys(row).filter(k=>row[k]>0))):'none';
+  const classification=state==='failed'?timeoutClass(event.data.reasonCode):'none';
   emitter.emit('meri.turn.summary',{...run.binding,state,reasonCode:event.data.reasonCode??'none',t0Ms:t0,
    stages:run.stages,firstTextMs:t0===null||first===null?null:Math.max(0,first-t0),resultMs:t0===null?null:Math.max(0,run.stages['run.terminal']-t0),
    deltaPublications:run.deltas,timeoutClass:classification});
