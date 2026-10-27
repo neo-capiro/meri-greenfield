@@ -12,8 +12,12 @@ import {createHash} from 'node:crypto';
 import {canonicalSha256} from '../../../../packages/contracts/validate.mjs';
 import {describeSkillPlugin,materializeSkillPlugin,PLUGIN_NAME} from '../../../../packages/skills/plugin.mjs';
 export const SKILL_TOOL='Skill';
-/** @param {string} configParentDirectory */
-export const sdkSkillPluginDirectory=configParentDirectory=>join(configParentDirectory,'meri-skill-plugin');
+/** @param {string} configParentDirectory @param {any} [selection] */
+export const sdkSkillPluginDirectory=(configParentDirectory,selection)=>{
+ if(selection===undefined)return join(configParentDirectory,'meri-skill-plugin');
+ describeSkillPlugin({selection});
+ return join(configParentDirectory,'meri-skill-plugin-'+canonicalSha256(selection));
+};
 /** @param {string} code @returns {never} */
 const fail=code=>{throw Object.assign(Error(code),{code});};
 const MAX_PLUGIN_ENTRIES=1024,MAX_PLUGIN_DEPTH=8;
@@ -86,12 +90,12 @@ async function seal(root){
  for(const d of [...directories].reverse())await chmod(d.abs,DIRECTORY_MODE);
  await chmod(root,DIRECTORY_MODE);
 }
-/** Verifies the exact read-only tree against the image's skill pins; returns its digest. @param {string} directory @param {{uid?:number}} [options] */
-export async function verifySkillPluginTree(directory,{uid}={}){
+/** Verifies the exact read-only tree against the image's skill pins; returns its digest. @param {string} directory @param {{uid?:number,selection?:any}} [options] */
+export async function verifySkillPluginTree(directory,{uid,selection}={}){
  try{
   const root=await lstat(directory);if(root.isSymbolicLink()||!root.isDirectory()||realpathSync(directory)!==directory)fail('SKILL_PLUGIN_TREE_REFUSED');
   if(Number.isSafeInteger(uid)&&root.uid!==uid||(POSIX?(root.mode&0o777)!==DIRECTORY_MODE:false))fail('SKILL_PLUGIN_TREE_REFUSED');
-  const plugin=describeSkillPlugin(),{files,directories}=await listTree(directory);
+  const plugin=describeSkillPlugin({selection}),{files,directories}=await listTree(directory);
   for(const d of directories){const s=await lstat(d.abs);if(Number.isSafeInteger(uid)&&s.uid!==uid||POSIX&&(s.mode&0o777)!==DIRECTORY_MODE)fail('SKILL_PLUGIN_TREE_REFUSED');}
   const expectedDirectories=['.claude-plugin','skills',...plugin.skills.map(s=>`skills/${s.name}`)].sort(),expectedFiles=['.claude-plugin/plugin.json',...plugin.skills.map(s=>`skills/${s.name}/SKILL.md`)].sort();
   if(JSON.stringify(directories.map(d=>d.path).sort())!==JSON.stringify(expectedDirectories)||JSON.stringify(files.map(f=>f.path).sort())!==JSON.stringify(expectedFiles))fail('SKILL_PLUGIN_TREE_REFUSED');
@@ -107,10 +111,10 @@ export async function verifySkillPluginTree(directory,{uid}={}){
  }catch(error){if(error!==null&&typeof error==='object'&&'code' in error&&error.code==='SKILL_PLUGIN_TREE_REFUSED')throw error;fail('SKILL_PLUGIN_TREE_REFUSED');}
 }
 /** The run's skill plugin directory, materialized read-only (or an existing copy verified) before the SDK starts.
- * @param {unknown} directory @param {{uid?:number}} [options] @returns {Promise<Readonly<{directory:string,digest:string}>>} */
-export async function prepareRunSkillPlugin(directory,{uid=process.getuid?.()}={}){
+ * @param {unknown} directory @param {{uid?:number,selection?:any}} [options] @returns {Promise<Readonly<{directory:string,digest:string}>>} */
+export async function prepareRunSkillPlugin(directory,{uid=process.getuid?.(),selection}={}){
  if(typeof directory!=='string'||!isAbsolute(directory)||directory.includes('/../')||directory.endsWith('/')||directory.includes('\0'))fail('SKILL_PLUGIN_DIRECTORY_REFUSED');
  let existing=true;try{await lstat(directory);}catch(error){if(/** @type {{code?:string}} */(error)?.code!=='ENOENT')fail('SKILL_PLUGIN_DIRECTORY_REFUSED');existing=false;}
- if(!existing){await materializeSkillPlugin({directory});try{await seal(directory);}catch{fail('SKILL_PLUGIN_TREE_REFUSED');}}
- return Object.freeze({directory,digest:await verifySkillPluginTree(directory,uid===undefined?{}:{uid})});
+ if(!existing){await materializeSkillPlugin({directory,selection});try{await seal(directory);}catch{fail('SKILL_PLUGIN_TREE_REFUSED');}}
+ return Object.freeze({directory,digest:await verifySkillPluginTree(directory,{...(uid===undefined?{}:{uid}),selection})});
 }

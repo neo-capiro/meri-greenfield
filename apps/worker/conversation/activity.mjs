@@ -89,7 +89,7 @@ export function createConversationActivity({runOwner,prepareRuntime,query=sdkQue
     await preparation.run(signal=>runOwner.append({binding,event:{eventId:newId(),createdAt:new Date(now()).toISOString(),type:'run.status',data:{state:'starting',reasonCode:null}},signal}));preparation.check();preparation.close();claimed=true;
    // A run whose policy enables the skill plugin asks runtime preparation for its read-only plugin copy (the trusted skillPluginDirectory fact).
     diagnostic('stage','runtime-prepare');preparation=createOperationLifetime({deadlineMs:Math.min(now()+runtimeMaxMs,runtimeExpiresAtMs??loadExpiresAtMs??Infinity),now,signal,errorFactory:fault});const runtime=await preparation.run(signal=>prepareRuntime({binding,versions:saved.run.versions,model:saved.model,...(policy?.skillPlugin===true?{skillPlugin:true}:{}),
-    ...(lineage?{...lineage,sourceRequest,request:saved.request,scopes:saved.run.scopes}:{}),runtimeSignal:controller.signal,signal}));
+    request:saved.request,...(lineage?{...lineage,sourceRequest,scopes:saved.run.scopes}:{}),runtimeSignal:controller.signal,signal}));
     diagnostic('stage','activity-setup');life=createOperationLifetime({deadlineMs:Math.min(runtime.deadlineMs,executionDeadlineMs??Infinity),now,signal,errorFactory:fault});preparation.close();const abort=()=>controller.abort(life.signal.reason);life.signal.addEventListener('abort',abort,{once:true});
    const publish=async(type,data,eventId=newId())=>{life.check();await life.run(signal=>runOwner.append({binding,event:{eventId,createdAt:new Date(now()).toISOString(),type,data},signal}));life.check();};
     if(!same(runtime.binding,binding)||!same(runtime.versions,saved.run.versions))throw fault('RUNTIME_PIN_REFUSED');usageBasis=runtime.usageBasis;
@@ -125,7 +125,7 @@ export function createConversationActivity({runOwner,prepareRuntime,query=sdkQue
     selected=selectSkill(saved.request.skill.skillId,saved.request.skill.skillVersion);if(!same(selected.pin,saved.request.skill))throw fault('SKILL_PIN_REFUSED');
     if(skillRuntime){if(!same(skillRuntime.selected,selected)||typeof skillRuntime.finish!=='function'||typeof skillRuntime.close!=='function')throw fault('SKILL_RUNTIME_REFUSED');}
     else if(selectedSkills!==undefined){
-     const nativeSkill=describeSkillPlugin().skills.find(s=>s.skillId===selected.pin.skillId&&s.skillVersion===selected.pin.skillVersion);
+     const nativeSkill=describeSkillPlugin({selection:selected.pin}).skills.find(s=>s.skillId===selected.pin.skillId&&s.skillVersion===selected.pin.skillVersion);
      if(!nativeSkill||!policy?.skillPlugin||!policy.generalReads||generalReads===undefined||!runtime.skillPluginDirectory||policy.skillNames!==null&&!policy.skillNames.includes(nativeSkill.name))throw fault('SKILL_RUNTIME_REFUSED');
     }else assertSkillManifest(selected.manifest,catalog);
     options.maxTurns=Math.min(options.maxTurns,selected.manifest.budgets.maxTurns);options.maxBudgetUsd=Math.min(options.maxBudgetUsd,selected.manifest.budgets.maxCostMicroUSD/1000000);life.limitDeadline(now()+selected.manifest.budgets.maxRuntimeSeconds*1000);options.systemPrompt.append+='\n'+selected.prose;

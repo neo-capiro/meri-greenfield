@@ -117,7 +117,8 @@
                 "publish_research_portfolio_share_link",
                 "revoke_research_portfolio_share_link",
                 "read_saved_record",
-                "read_saved_strategy_records"
+                "read_saved_strategy_records",
+                "apply_legiwatch_suggestion"
               ]
             },
             "disposition": {
@@ -186,7 +187,6 @@
                 "save_legislative_research",
                 "preview_legiwatch_relevance",
                 "save_legiwatch_relevance",
-                "apply_legiwatch_suggestion",
                 "create_meeting_brief",
                 "draft_policy_memo",
                 "save_note",
@@ -558,7 +558,7 @@
           "pattern": "^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)$"
         },
         "sourceRegistryCommit": {
-          "const": "ed85eb9c1dc5eb7638ae373a627ab3b29743e500"
+          "const": "171c6c8989ca9ea84e4dfbf75faa41db8e7a5d19"
         },
         "originals": {
           "type": "array",

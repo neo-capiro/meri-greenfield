@@ -116,8 +116,8 @@
     },
     {
       "path": "../../apps/control/intents/approval.mjs",
-      "sha256": "845cbfea9a9ead9bf3563269bb9d031161d371813e9b9ec9743d6d54918a78e2",
-      "bytes": 24439
+      "sha256": "1fb5d34bb85acc79511d706f9003eb166c115bba0c9e74c88e9aeed3eef860f0",
+      "bytes": 27025
     },
     {
       "path": "../../apps/control/intents/faults.mjs",
@@ -201,8 +201,8 @@
     },
     {
       "path": "generate-intents.mjs",
-      "sha256": "e108fc1b57d03789e6ecb85d8b377855168e6c541631938613b7a0f8411bb9ea",
-      "bytes": 12834
+      "sha256": "e85a7cb8e721c138c2a5a41e23f12fce2f8981b6d30e9a6f31958be647720fab",
+      "bytes": 12906
     },
     {
       "path": "intents-application/boundary.mjs",
@@ -231,18 +231,23 @@
     },
     {
       "path": "intents-application/schema.mjs",
-      "sha256": "faf0b8bc6c38007584e2a66c44f4925805d874784c2ce196acbbec9f366fa823",
-      "bytes": 9869
+      "sha256": "41a2181cca4534f6f61e698612260db3330796b2d493f9b792a4f9e0ffe76fd7",
+      "bytes": 10561
     },
     {
       "path": "intents-application/semantics.mjs",
-      "sha256": "0d4809aa15f1cd7faf70c7b64214a2bf70f1e48a9498f6b5926d334774592dd0",
-      "bytes": 13267
+      "sha256": "dbca45ada5ab73d07d5bd4eada3a0ab363b9c474680ca9dd33ca75997070b69d",
+      "bytes": 14936
     },
     {
       "path": "meri.schema.json",
       "sha256": "e3de878198bbd557843ac440e48664ad5175eecd99f7ec932021ffc465bf8c5b",
       "bytes": 50043
+    },
+    {
+      "path": "retrieval-0.2/legiwatch-action.schema.json",
+      "sha256": "75c29f7f7b1c4caa84b315763b39b5b045447cfa51d0d8888db33f997ac276f3",
+      "bytes": 8768
     },
     {
       "path": "retrieval-0.2/research-portfolio-sharing.schema.json",
@@ -270,7 +275,7 @@
       "bytes": 24305
     }
   ],
-  "schemaSha256": "12280337c9f2de8462018e6800b6bbda938e5d482d8cb2c4333a3ddbfb329cc7",
+  "schemaSha256": "65cb62629bf24424a945bc0ad0e8ab99c53a94fdf51b54eb775a8df00fe805f0",
   "browserInputs": [
     "artifacts-0.2/artifact-formats.mjs",
     "document-application/boundary.mjs",

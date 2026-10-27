@@ -1,3 +1,4 @@
+import {createLegiwatchValidators} from './legiwatch-action-validation.mjs';
 import {createResearchShareValidators} from './research-portfolio-sharing-validation.mjs';
 import { executionSchemaSources, executionSchemaDependencies } from './execution-schema-sources.mjs';
 import { createExecutionToolValidators } from './execution-tool-validators.mjs';
@@ -66,7 +67,7 @@ import addFormats from 'ajv-formats';
 import { canonicalSha256 } from '../validate.mjs';
 
 export const contractVersion = '0.2.0';
-const groups = ['research-portfolio-sharing', 'strategy-saved-records', 'saved-records', 'capiro-data', 'teams-channels', 'connected-apps', 'common', 'catalog', 'retrieval', 'skill', 'mail', 'meeting-source', 'operational-reads', 'federal-market', 'data-search', 'memory-proposals', 'client-registry', 'research-portfolio', 'research-portfolio-evidence', 'business-development', 'funding-opportunities', 'client-documents', 'public-data', 'district-nexus', 'state-legislation', 'public-reports', 'disclosures', 'acquisition-personnel', 'federal-legislation', 'bill-text', 'legislative-directory', 'pe-references', 'rule-status', 'certification-status', 'stored-intelligence', 'dataset-metadata', 'facility-representation', 'state-status-votes', 'regulatory-dockets', 'tenant-contacts', 'entity-candidates', 'tracked-bills', 'intelligence-summary', 'public-web', 'sam-opportunities', 'florida-budget', 'outreach-query', 'program-elements', 'client-knowledge-search', 'client-knowledge-monday', 'client-knowledge-attachments', 'client-knowledge-memory', 'client-knowledge-profile', 'research-legal-candidates', 'public-domain-query', 'research-legal-legislation', 'action-items-complete', 'research-legal-news', 'public-domain-hearings', 'public-domain-hearing-records', ...executionSchemaSources.map(source => source.group)];
+const groups = ['legiwatch-action', 'research-portfolio-sharing', 'strategy-saved-records', 'saved-records', 'capiro-data', 'teams-channels', 'connected-apps', 'common', 'catalog', 'retrieval', 'skill', 'mail', 'meeting-source', 'operational-reads', 'federal-market', 'data-search', 'memory-proposals', 'client-registry', 'research-portfolio', 'research-portfolio-evidence', 'business-development', 'funding-opportunities', 'client-documents', 'public-data', 'district-nexus', 'state-legislation', 'public-reports', 'disclosures', 'acquisition-personnel', 'federal-legislation', 'bill-text', 'legislative-directory', 'pe-references', 'rule-status', 'certification-status', 'stored-intelligence', 'dataset-metadata', 'facility-representation', 'state-status-votes', 'regulatory-dockets', 'tenant-contacts', 'entity-candidates', 'tracked-bills', 'intelligence-summary', 'public-web', 'sam-opportunities', 'florida-budget', 'outreach-query', 'program-elements', 'client-knowledge-search', 'client-knowledge-monday', 'client-knowledge-attachments', 'client-knowledge-memory', 'client-knowledge-profile', 'research-legal-candidates', 'public-domain-query', 'research-legal-legislation', 'action-items-complete', 'research-legal-news', 'public-domain-hearings', 'public-domain-hearing-records', ...executionSchemaSources.map(source => source.group)];
 const schemaBytes = groups.map(group => readFileSync(new URL(
   executionSchemaSources.find(source => source.group === group)?.path ?? `./${group}${group === 'client-knowledge-profile' ? '-v03' : ''}.schema.json`, import.meta.url)));
 const schemas = schemaBytes.map(raw => JSON.parse(raw));
@@ -348,11 +349,12 @@ export function assertSkillContinuity(previous, next) {
 // resolve an entity/timezone boundary, load handlers, or enable source access.
 
 // Fixed source catalog snapshot; no operation handler is loaded or enabled.
+export const legiwatchValidators=createLegiwatchValidators({validateShape:validatePublicShape,canonicalSha256});
 export const researchShareValidators=createResearchShareValidators({validateShape,canonicalSha256});
 const sourceCatalog = JSON.parse(readFileSync(new URL('./catalog.json', import.meta.url)));
 export const {resolveOperationContract} = createOperationContracts({catalog: sourceCatalog,
   bindings: CATALOG_OPERATION_BINDINGS, assertCatalog, canonicalSha256,
-  validators: Object.freeze({researchShareValidators,...mailValidators, ...meetingValidators, ...operationalReadValidators,
+  validators: Object.freeze({legiwatchValidators,researchShareValidators,...mailValidators, ...meetingValidators, ...operationalReadValidators,
     ...federalMarketValidators, ...dataSearchValidators, ...memoryProposalValidators, ...clientRegistryValidators,
     ...executionToolValidators, ...researchPortfolioEvidenceValidators, ...researchPortfolioValidators, ...businessDevelopmentValidators,
     ...fundingOpportunitiesValidators, ...clientDocumentsValidators, ...publicDataValidators, ...districtNexusValidators, ...stateLegislationValidators, ...publicReportsValidators,

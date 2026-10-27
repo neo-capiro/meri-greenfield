@@ -18,7 +18,7 @@
  * Construction is inert. `enabled` defaults to false. */
 import {canonicalSha256 as hash,validateShape} from '../../../packages/contracts/validate.mjs';
 import {assertNativeApprovalProposal} from '../../../packages/contracts/commands-0.2/validate.mjs';
-import {artifactValidators as artifacts,scheduleToolValidators,researchShareValidators,validateShape as artifactShape} from '../../../packages/contracts/retrieval-0.2/validate.mjs';
+import {artifactValidators as artifacts,scheduleToolValidators,researchShareValidators,legiwatchValidators,validateShape as artifactShape} from '../../../packages/contracts/retrieval-0.2/validate.mjs';
 import {data,own,nativeSignal} from '../../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {createOperationLifetime} from '../../../packages/runtime/operation-lifetime.mjs';
 import {ProductError,productFailure} from '../product-access/errors.mjs';
@@ -64,7 +64,7 @@ function commandProposal(entry){
  return result.proposal;
 }
 export function createIntentApprovalOwner(configuration){
- const c=own(configuration,['journal','now','limits'],['decisions','documents','tasks','filing','sharing','enabled']);
+ const c=own(configuration,['journal','now','limits'],['decisions','documents','tasks','filing','sharing','legiwatch','enabled']);
  const journal=own(c.journal,['read','list'],['claim','settle']),limits=data(c.limits);own(limits,['maxRequestMs']);
  if(typeof journal.read!=='function'||typeof journal.list!=='function'||typeof c.now!=='function'||typeof(c.enabled??false)!=='boolean'||
   !Number.isSafeInteger(limits.maxRequestMs)||limits.maxRequestMs<1||limits.maxRequestMs>30000)throw new ProductError('PRODUCT_CONFIGURATION');
@@ -73,6 +73,7 @@ export function createIntentApprovalOwner(configuration){
  const tasks=c.tasks===undefined?undefined:own(c.tasks,['execute','read']);
  const filing=c.filing===undefined?undefined:own(c.filing,['execute','read']);
  const sharing=c.sharing===undefined?undefined:own(c.sharing,['decide','read']);
+ if(c.legiwatch!==undefined)own(c.legiwatch,['decide','read']);
  if(sharing&&Object.values(sharing).some(f=>typeof f!=='function'))throw new ProductError('PRODUCT_CONFIGURATION');
  if(filing&&Object.values(filing).some(f=>typeof f!=='function'))throw new ProductError('PRODUCT_CONFIGURATION');
  if(tasks&&Object.values(tasks).some(f=>typeof f!=='function'))throw new ProductError('PRODUCT_CONFIGURATION');
@@ -112,6 +113,7 @@ export function createIntentApprovalOwner(configuration){
   enabled();const r=decideRequest(request),life=lifetime(deadlineMs,signal);
   try{
    const entry=await readEntry(life,principal,r.conversationId,r.deliveryId);
+   if(entry?.state==='PREPARED'&&entry.outcome?.result?.proposal?.kind==='legiwatch_action')return await decideLegiwatch(life,principal,entry,r);
    if(entry?.state==='PREPARED'&&entry.outcome?.result?.proposal?.kind==='research_share')return await decideSharing(life,principal,entry,r);
    const proposal=approvable(entry,r,principal);
    const approver=data({tenantId:principal.tenantId,actorId:principal.actorId});
@@ -132,6 +134,25 @@ export function createIntentApprovalOwner(configuration){
    if(r.decision==='rejected')return data({status:'rejected',deliveryId:r.deliveryId,proposalId:proposal.proposalId,decision});
    return await execute(life,principal,proposal,decision,r.deliveryId);
   }catch(error){throw owned(error,'INTENT_EXECUTION_UNKNOWN','UNKNOWN');}finally{life.close();}
+ }
+ function legiwatchProposal(entry,principal,conversationId){
+  let p;try{legiwatchValidators.assertOutput(entry.outcome.result);p=entry.outcome.result.proposal;
+   const {requestKey,...input}=p.request;
+   if(entry.record.operation.id!==p.operation||entry.record.operation.version!=='0.2.0'||hash(input)!==entry.record.argumentsSha256||!same(p.binding,entry.outcome.release.binding)||p.scopes.some(s=>!entry.outcome.release.scopes.some(original=>same(s,original)))||!same(conversationOf(p.binding),{tenantId:principal.tenantId,actorId:principal.actorId,conversationId}))throw Error();
+  }catch{fail('INTENT_JOURNAL_UNAVAILABLE');}return p;
+ }
+ const legiwatchVisible=(p,principal)=>visible(p.scopes,principal)&&(p.request.clientId===null||principal.clientIds.includes(p.request.clientId));
+ async function decideLegiwatch(life,principal,entry,r){
+  const p=legiwatchProposal(entry,principal,r.conversationId);
+  if(p.proposalId!==r.proposalId||p.commandSha256!==r.commandSha256)fail('INTENT_MISMATCH','NOT_DISPATCHED');
+  if(!legiwatchVisible(p,principal))fail('INTENT_SCOPE_WITHHELD','NOT_DISPATCHED');
+  if(instant(p.expiresAt)<=c.now())fail('INTENT_EXPIRED','NOT_DISPATCHED');
+  if(typeof c.legiwatch?.decide!=='function')fail('APPROVAL_OWNER_UNAVAILABLE','NOT_DISPATCHED');
+  life.limitDeadline(instant(p.expiresAt));let result;
+  try{result=await life.run(signal=>c.legiwatch.decide({proposal:p,decision:r.decision,signal,deadlineMs:life.deadline()}));}
+  catch{fail('APPROVAL_DECISION_UNKNOWN','UNKNOWN');}
+  try{legiwatchValidators.coreResult(result,p);}catch{fail('INTENT_RESULT_NOT_RELEASED','RESULT_NOT_RELEASED');}
+  return data({status:'legiwatch_decided',deliveryId:r.deliveryId,proposalId:p.proposalId,result});
  }
  /** Core action proposals already own the confirmation and atomic effect. Never mint a native ApprovalDecision. */
  function sharingProposal(entry,principal,conversationId){
@@ -184,6 +205,12 @@ export function createIntentApprovalOwner(configuration){
   if(entry.state==='UNKNOWN')return {...base,state:'unknown'};
   if(entry.state==='FAILED')return {...base,state:'failed',code:entry.outcome.code};
   const result=entry.outcome.result;
+  if(result?.proposal?.kind==='legiwatch_action'){
+   const proposal=legiwatchProposal(entry,principal,conversationId);
+   if(!legiwatchVisible(proposal,principal))return {...base,state:'prepared',kind:'legiwatch_action',withheld:true};
+   let current='unavailable';if(typeof c.legiwatch?.read==='function')try{current=legiwatchValidators.coreResult(await life.run(signal=>c.legiwatch.read({proposal,signal,deadlineMs:life.deadline()})),proposal);}catch(error){if(['DEADLINE','CANCELLED'].includes(error?.code))throw error;}
+   return {...base,state:'prepared',kind:'legiwatch_action',proposal,result:current};
+  }
   if(result?.proposal?.kind==='research_share'){
    const proposal=sharingProposal(entry,principal,conversationId);
    if(!visible(proposal.scopes,principal))return {...base,state:'prepared',kind:'research_share',withheld:true};

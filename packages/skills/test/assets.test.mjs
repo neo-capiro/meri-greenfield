@@ -33,12 +33,13 @@ const evidence={
 test('all 14 original identities have an explicit immutable asset (bill_watch at 1.0.0 and the plugin-admissible 1.0.1); 13 absent recipes are implemented',()=>{
  assert.deepEqual([...new Set(listSkills().map(s=>s.skillId))].sort(),inventory.records.map(row=>row.fields.ID).sort());
  assert.deepEqual(listSkills().filter(s=>s.skillId==='quick_skill.bill_watch').map(s=>s.skillVersion).sort(),['1.0.0','1.0.1']);
- assert.equal(listSkills().length,15);
+ assert.equal(listSkills().length,16);
  assert.equal(Object.keys(evidence).length,13);
  for(const entry of listSkills()){
   const asset=selectSkill(entry.skillId,entry.skillVersion);validateShape('SkillManifest',asset.manifest);
   assert.equal(asset.pin.manifestSha256,canonicalSha256(asset.manifest));
-  assert.equal(asset.pin.proseSha256,sha(Buffer.from(asset.prose)));assert.equal(asset.pin.catalogSha256,assets.catalogSha256);assert.equal(asset.installationCatalogSha256,canonicalSha256(catalog));
+  const row=assets.assets.find(row=>row.skillId===entry.skillId&&row.skillVersion===entry.skillVersion);
+  assert.equal(asset.pin.proseSha256,sha(Buffer.from(asset.prose)));assert.equal(asset.pin.catalogSha256,row.catalogSha256??assets.catalogSha256);assert.equal(asset.installationCatalogSha256,canonicalSha256(catalog));
   assert.equal(asset.manifest.approval.autoCreateTasks,false);assert.equal(asset.manifest.completion.negativeClaims,'complete-covered-only');
   assert.throws(()=>assertSkillManifest(asset.manifest,catalog),/unavailable operation/u);
  }

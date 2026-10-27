@@ -23,7 +23,7 @@ export function createTaskSelectedSkills(configuration){
   const binding=data(args.binding),request=data(args.request),scopes=data(args.scopes);validateShape('RunBinding',binding);validateShape('RuntimeVersions',args.versions);
   if(args.continuation!==undefined)buildContinuationOptions(args.continuation,{binding,versions:args.versions,scopes,request,sourceRequest:args.sourceRequest});if(args.nextTurn!==undefined)buildNextTurnOptions(args.nextTurn,{binding,versions:args.versions,scopes,request,sourceRequest:args.sourceRequest});scopes.forEach(scope=>validateShape('Scope',scope));
   const selected=selectSkill(request.skill.skillId,request.skill.skillVersion);if(!same(selected.pin,request.skill))throw fault('SELECTED_TASK_PIN_REFUSED');
-  if(!describeSkillPlugin().skills.some(s=>s.skillId===selected.pin.skillId&&s.skillVersion===selected.pin.skillVersion))throw fault('SELECTED_TASK_PIN_REFUSED');
+  if(!describeSkillPlugin({selection:selected.pin}).skills.some(s=>s.skillId===selected.pin.skillId&&s.skillVersion===selected.pin.skillVersion))throw fault('SELECTED_TASK_PIN_REFUSED');
   // The other immutable skills run through the existing native SDK tools and output
   // capture. Only these two recipes have a separately approved document compiler.
   if(!selectedOutputCompiler(selected))return null;

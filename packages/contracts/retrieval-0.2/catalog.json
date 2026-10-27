@@ -1,8 +1,8 @@
 {
   "contractVersion": "0.2.0",
   "catalogId": "meri.retrieval",
-  "catalogVersion": "0.2.21",
-  "sourceRegistryCommit": "ed85eb9c1dc5eb7638ae373a627ab3b29743e500",
+  "catalogVersion": "0.2.22",
+  "sourceRegistryCommit": "171c6c8989ca9ea84e4dfbf75faa41db8e7a5d19",
   "originals": [
     {
       "id": "manage_research_portfolio",
@@ -611,10 +611,13 @@
     },
     {
       "id": "apply_legiwatch_suggestion",
-      "disposition": "deferred",
-      "boundary": "Specialized Research Portfolio or LegiWatch source workflow is outside initial commands; exact authorization, side effects and fixture scope require separate acceptance.",
-      "replacement": null,
-      "state": "deferred"
+      "disposition": "selected",
+      "boundary": "Prepare exact current LegiWatch suggestion action for explicit approval; Core/Intel own authorization, optimistic version and durable receipt. No subscription, relevance save or model execution.",
+      "replacement": {
+        "id": "apply_legiwatch_suggestion",
+        "version": "0.2.0"
+      },
+      "state": "mapped"
     },
     {
       "id": "search_crs_reports",
@@ -8804,6 +8807,71 @@
       ],
       "fixtureIds": [
         "catalog.binding.read_saved_strategy_records"
+      ]
+    },
+    {
+      "operation": {
+        "id": "apply_legiwatch_suggestion",
+        "version": "0.2.0"
+      },
+      "displayName": "Prepare a LegiWatch suggestion decision",
+      "whenToUse": "Propose one exact suggestion action from the current LegiWatch review for the signed-in user to confirm.",
+      "limitations": [
+        "Requires exact folder, jurisdiction/session, suggestion ID and current expectedVersion.",
+        "No subscription activation, relevance writing, automatic retry or new ingestion.",
+        "A stale, excluded or held receipt does not mean a bill was added."
+      ],
+      "positiveExamples": [
+        "Prepare to add this exact reviewed suggestion to its authorized folder."
+      ],
+      "negativeExamples": [
+        "Automatically subscribe, mutate an unseen suggestion, or retry an unknown effect."
+      ],
+      "sourceRequirements": [
+        {
+          "sourceId": "legiwatch_suggestions",
+          "authority": "authoritative",
+          "purpose": "evidence"
+        }
+      ],
+      "inputSchema": {
+        "id": "urn:meri:retrieval:legiwatch-action:0.2.0#/$defs/LegiwatchInput",
+        "sha256": "75c29f7f7b1c4caa84b315763b39b5b045447cfa51d0d8888db33f997ac276f3"
+      },
+      "outputSchema": {
+        "id": "urn:meri:retrieval:legiwatch-action:0.2.0#/$defs/LegiwatchPrepared",
+        "sha256": "75c29f7f7b1c4caa84b315763b39b5b045447cfa51d0d8888db33f997ac276f3"
+      },
+      "aliases": [],
+      "sideEffect": "source-command",
+      "requiredGrants": [
+        "command.execute"
+      ],
+      "approvalBoundary": "immutable-proposal",
+      "handler": null,
+      "availability": "unimplemented",
+      "qualification": "pending",
+      "retry": {
+        "maxRetries": 0,
+        "retryableCodes": [],
+        "unknownOutcome": "reconcile-before-retry"
+      },
+      "replacement": null,
+      "requirementIds": [
+        "R-01",
+        "R-04",
+        "R-05"
+      ],
+      "ticketIds": [
+        "REL-02"
+      ],
+      "gateIds": [
+        "RG-02",
+        "RG-05",
+        "RG-07"
+      ],
+      "fixtureIds": [
+        "catalog.binding.apply_legiwatch_suggestion"
       ]
     }
   ]

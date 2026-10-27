@@ -1,3 +1,5 @@
+import {createLegiwatchPreparer} from '../../control/intents/legiwatch-preparer.mjs';
+import {createLegiwatchCoreClient} from './legiwatch-client.mjs';
 /** Native intent preparation uses the active SDK execution and current Core authority. */
 import {types} from 'node:util';
 import {memoryIntentPreparersFor} from '../product-ports/memory.mjs';
@@ -56,7 +58,11 @@ export function createAgentCoreIntentResolver({context,execution,transitionAutho
    getServiceSecret:createRoutinesServiceSecret({file:sharingCore.serviceSecretFile,reservedFiles:routinesReservedSecretFiles(configuration),readSecret:async path=>(await import('../config.mjs')).readSecret(path)}),
    reservedCredentials:createReservedCredentialDigests({files:routinesReservedSecretFiles(configuration),readSecret:async path=>(await import('../config.mjs')).readSecret(path)}),
    async getCredentials(selection){await fresh(selection.signal);return nativeCredentials.nativeCredentialFor({binding,selectedClientId:first.selectedClientId,signal:selection.signal});}}):null;
-  const preparers=[...routineIntentPreparersFor(context,{binding,selectedClientId:first.selectedClientId}),...documentIntentPreparersFor(context,{binding,scopes:first.scopes,selectedClientId:first.selectedClientId,policyRevision:first.policyRevision,expiresAtMs:first.execution.expiresAtMs,
+  const nativeLegiwatch=nativeCredentials&&sharingCore?createLegiwatchCoreClient({origin:sharingCore.origin,now,maxRequestMs:configuration.limits.requestMs,...(fetchImpl?{fetchImpl}:{}),
+   getServiceSecret:createRoutinesServiceSecret({file:sharingCore.serviceSecretFile,reservedFiles:routinesReservedSecretFiles(configuration),readSecret:async path=>(await import('../config.mjs')).readSecret(path)}),
+   reservedCredentials:createReservedCredentialDigests({files:routinesReservedSecretFiles(configuration),readSecret:async path=>(await import('../config.mjs')).readSecret(path)}),
+   async getCredentials(selection){await fresh(selection.signal);return nativeCredentials.nativeCredentialFor({binding,selectedClientId:first.selectedClientId,signal:selection.signal});}}):null;
+  const preparers=[...(nativeLegiwatch?[createLegiwatchPreparer({binding,scopes:first.scopes,selectedClientId:first.selectedClientId,client:nativeLegiwatch,now,currentRights,policyRevision:first.policyRevision,deadlineMs:Math.min(deadlineMs,first.execution.expiresAtMs)})]:[]),...routineIntentPreparersFor(context,{binding,selectedClientId:first.selectedClientId}),...documentIntentPreparersFor(context,{binding,scopes:first.scopes,selectedClientId:first.selectedClientId,policyRevision:first.policyRevision,expiresAtMs:first.execution.expiresAtMs,
    async readCurrent({signal}){const rights=await currentRights({signal,policyRevision:first.policyRevision});return {binding,scopes:rights.scopes,selectedClientId:first.selectedClientId,policyRevision:first.policyRevision,checkedAtMs:rights.checkedAtMs,expiresAtMs:Math.min(rights.expiresAtMs,first.execution.expiresAtMs)};},
    clientResolution:{clientId:first.selectedClientId},signal}),
    ...(configuration.intents.core?[...createNativeTaskPreparers({pool,binding,scopes:first.scopes,selectedClientId:first.selectedClientId,policyRevision:first.policyRevision,

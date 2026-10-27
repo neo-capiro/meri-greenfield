@@ -13,7 +13,7 @@ import {buildContinuationOptions} from '../../../apps/worker/conversation/contin
 const oldCatalog='41aed2fc63dc40cafe987ee3059a13b605b7d3796c31f60ed6ca26939954bfcc';
 
 test('all fourteen immutable skills keep their existing explicit pins under the additive catalog',()=>{
-  const rows=listSkills();assert.equal(new Set(rows.map(row=>row.skillId)).size,14);
+  const rows=listSkills().filter(row=>!(row.skillId==='quick_skill.pe_deep_dive'&&row.skillVersion==='1.1.0'));assert.equal(rows.length,15);assert.equal(new Set(rows.map(row=>row.skillId)).size,14);
   for(const row of rows){
     const selected=selectSkill(row.skillId,row.skillVersion),asset=assets.assets.find(item=>item.skillId===row.skillId&&item.skillVersion===row.skillVersion);
     assert.deepEqual(selected.pin,{...row,catalogSha256:oldCatalog});

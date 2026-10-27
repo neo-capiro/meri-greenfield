@@ -8,6 +8,7 @@ export type IntentsApplicationEnvelope =
   | IntentsDecideRequest
   | IntentsNativeProposal
   | IntentsProposal
+  | Canonical_LegiwatchProposal_1F841734
   | Canonical_ResearchShareProposal_1Cdbd32E
   | Canonical_ApprovalDecision_5E8Bdbcf
   | Canonical_TaskCreateArguments_1202C301
@@ -29,6 +30,8 @@ export type IntentsApplicationEnvelope =
   | IntentsScheduleReviewItem
   | IntentsWithheldScheduleItem
   | IntentsWithheldProposalItem
+  | IntentsLegiwatchItem
+  | IntentsWithheldLegiwatchItem
   | IntentsResearchShareItem
   | IntentsWithheldResearchShareItem
   | IntentsProposalItem
@@ -53,7 +56,8 @@ export type IntentsNativeProposal =
   | Canonical_ApprovalProposalD1A3E74F
   | Canonical_TaskUpdateApprovalProposal_1F70E582
   | Canonical_DocumentDraftApprovalProposal_834C2460;
-export type IntentsProposal = IntentsNativeProposal | Canonical_ResearchShareProposal_1Cdbd32E;
+export type IntentsProposal =
+  IntentsNativeProposal | Canonical_ResearchShareProposal_1Cdbd32E | Canonical_LegiwatchProposal_1F841734;
 export type IntentsExecutionOutcome =
   | {
       receipt: Canonical_CommandReceiptAc49Ee1E;
@@ -295,6 +299,17 @@ export type CanonicalRuns_0Ce2594A =
       Canonical_Run_8D674B59,
       Canonical_Run_8D674B59
     ];
+export type Canonical_LegiwatchStatusCbe9731F =
+  | 'proposed'
+  | 'approved'
+  | 'executing'
+  | 'succeeded'
+  | 'failed_retryable'
+  | 'failed_terminal'
+  | 'outcome_unknown'
+  | 'blocked'
+  | 'dismissed'
+  | 'expired';
 export type Canonical_ResearchShareProposalStatus_9Aaf7F45 =
   | 'proposed'
   | 'executing'
@@ -319,8 +334,16 @@ export type IntentsItem =
   | IntentsWithheldProposalItem
   | IntentsProposalItem
   | IntentsResearchShareItem
-  | IntentsWithheldResearchShareItem;
+  | IntentsWithheldResearchShareItem
+  | IntentsLegiwatchItem
+  | IntentsWithheldLegiwatchItem;
 export type IntentsDecideResponse =
+  | {
+      status: 'legiwatch_decided';
+      deliveryId: IntentsDeliveryId;
+      proposalId: string;
+      result: Canonical_LegiwatchCoreResultC5Ab3126;
+    }
   | {
       status: 'rejected';
       deliveryId: IntentsDeliveryId;
@@ -569,6 +592,39 @@ export interface Canonical_ResearchSharePublishBound_63909893 {
 export interface Canonical_ResearchShareRevokeInputB01195Fc {
   conversationId: string;
   linkId: string;
+}
+export interface Canonical_LegiwatchProposal_1F841734 {
+  kind: 'legiwatch_action';
+  binding: Canonical_RunBinding_84F2304C;
+  /**
+   * @minItems 1
+   * @maxItems 1
+   */
+  scopes: [Canonical_ScopeF882Edb5];
+  operation: 'apply_legiwatch_suggestion';
+  proposalId: string;
+  request: Canonical_LegiwatchRequest_5Cff194F;
+  context: Canonical_LegiwatchContextA906D964;
+  createdAt: string;
+  expiresAt: string;
+  commandSha256: string;
+}
+export interface Canonical_LegiwatchRequest_5Cff194F {
+  clientId: string | null;
+  folderId: string;
+  jurisdiction: string;
+  sessionKey: string;
+  suggestionId: string;
+  expectedVersion: number;
+  action: 'add' | 'dismiss' | 'exclude' | 'restore' | 'undo';
+  requestKey: string;
+}
+export interface Canonical_LegiwatchContextA906D964 {
+  conversationId: string;
+  selectedClientId: string | null;
+  identityRevision: string;
+  membershipRevision: string;
+  contextRevision: string;
 }
 export interface Canonical_ApprovalDecision_5E8Bdbcf {
   proposalId: string;
@@ -1157,6 +1213,45 @@ export interface IntentsWithheldProposalItem {
   kind: 'proposal';
   withheld: true;
 }
+export interface IntentsLegiwatchItem {
+  deliveryId: IntentsDeliveryId;
+  createdAt: string;
+  operation: IntentsOperation;
+  state: 'prepared';
+  kind: 'legiwatch_action';
+  proposal: Canonical_LegiwatchProposal_1F841734;
+  result: Canonical_LegiwatchCoreResultC5Ab3126 | 'unavailable';
+}
+export interface Canonical_LegiwatchCoreResultC5Ab3126 {
+  version: '0.1.0';
+  proposalId: string;
+  request: Canonical_LegiwatchRequest_5Cff194F;
+  context: Canonical_LegiwatchContextA906D964;
+  createdAt: string;
+  expiresAt: string;
+  status: Canonical_LegiwatchStatusCbe9731F;
+  receipt: Canonical_LegiwatchReceipt_706F9465 | null;
+}
+export interface Canonical_LegiwatchReceipt_706F9465 {
+  request: Canonical_LegiwatchRequest_5Cff194F;
+  outcome:
+    'added' | 'already_present' | 'dismissed' | 'excluded' | 'pending' | 'stale' | 'undone' | 'undo_conflict' | 'held';
+  payload: {
+    binding: string;
+    suggestionId: string;
+    decisionId: string | null;
+    version: number;
+    action: 'add' | 'dismiss' | 'exclude' | 'restore' | 'undo';
+  };
+}
+export interface IntentsWithheldLegiwatchItem {
+  deliveryId: IntentsDeliveryId;
+  createdAt: string;
+  operation: IntentsOperation;
+  state: 'prepared';
+  kind: 'legiwatch_action';
+  withheld: true;
+}
 export interface IntentsResearchShareItem {
   deliveryId: IntentsDeliveryId;
   createdAt: string;
@@ -1691,6 +1786,7 @@ export interface RoutinesErrorResponse {
   };
 }
 
+export type IntentsLegiwatchProposal=Canonical_LegiwatchProposal_1F841734;
 export type IntentsResearchShareProposal=Canonical_ResearchShareProposal_1Cdbd32E;
 export type RoutinesProposal=Canonical_PendingProposal_8E88D951;
 export type RoutinesApproveResponse=Canonical_Acknowledged_1Fa14Cd2;

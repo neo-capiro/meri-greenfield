@@ -107,8 +107,14 @@
         },
         {
           "$ref": "#/$defs/Canonical_ResearchShareProposal_1cdbd32e"
+        },
+        {
+          "$ref": "#/$defs/Canonical_LegiwatchProposal_1f841734"
         }
       ]
+    },
+    "IntentsLegiwatchProposal": {
+      "$ref": "#/$defs/Canonical_LegiwatchProposal_1f841734"
     },
     "IntentsResearchShareProposal": {
       "$ref": "#/$defs/Canonical_ResearchShareProposal_1cdbd32e"
@@ -712,6 +718,83 @@
       ],
       "additionalProperties": false
     },
+    "IntentsLegiwatchItem": {
+      "type": "object",
+      "properties": {
+        "deliveryId": {
+          "$ref": "#/$defs/IntentsDeliveryId"
+        },
+        "createdAt": {
+          "type": "string",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$"
+        },
+        "operation": {
+          "$ref": "#/$defs/IntentsOperation"
+        },
+        "state": {
+          "const": "prepared"
+        },
+        "kind": {
+          "const": "legiwatch_action"
+        },
+        "proposal": {
+          "$ref": "#/$defs/Canonical_LegiwatchProposal_1f841734"
+        },
+        "result": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Canonical_LegiwatchCoreResult_c5ab3126"
+            },
+            {
+              "const": "unavailable"
+            }
+          ]
+        }
+      },
+      "required": [
+        "deliveryId",
+        "createdAt",
+        "operation",
+        "state",
+        "kind",
+        "proposal",
+        "result"
+      ],
+      "additionalProperties": false
+    },
+    "IntentsWithheldLegiwatchItem": {
+      "type": "object",
+      "properties": {
+        "deliveryId": {
+          "$ref": "#/$defs/IntentsDeliveryId"
+        },
+        "createdAt": {
+          "type": "string",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$"
+        },
+        "operation": {
+          "$ref": "#/$defs/IntentsOperation"
+        },
+        "state": {
+          "const": "prepared"
+        },
+        "kind": {
+          "const": "legiwatch_action"
+        },
+        "withheld": {
+          "const": true
+        }
+      },
+      "required": [
+        "deliveryId",
+        "createdAt",
+        "operation",
+        "state",
+        "kind",
+        "withheld"
+      ],
+      "additionalProperties": false
+    },
     "IntentsResearchShareItem": {
       "type": "object",
       "properties": {
@@ -906,6 +989,12 @@
         },
         {
           "$ref": "#/$defs/IntentsWithheldResearchShareItem"
+        },
+        {
+          "$ref": "#/$defs/IntentsLegiwatchItem"
+        },
+        {
+          "$ref": "#/$defs/IntentsWithheldLegiwatchItem"
         }
       ]
     },
@@ -942,6 +1031,31 @@
     },
     "IntentsDecideResponse": {
       "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "status": {
+              "const": "legiwatch_decided"
+            },
+            "deliveryId": {
+              "$ref": "#/$defs/IntentsDeliveryId"
+            },
+            "proposalId": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$"
+            },
+            "result": {
+              "$ref": "#/$defs/Canonical_LegiwatchCoreResult_c5ab3126"
+            }
+          },
+          "required": [
+            "status",
+            "deliveryId",
+            "proposalId",
+            "result"
+          ],
+          "additionalProperties": false
+        },
         {
           "type": "object",
           "properties": {
@@ -2145,6 +2259,172 @@
         "preview",
         "createdAt",
         "expiresAt"
+      ],
+      "additionalProperties": false
+    },
+    "Canonical_LegiwatchRequest_5cff194f": {
+      "type": "object",
+      "properties": {
+        "clientId": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "uuid",
+              "pattern": "^[a-f0-9-]+$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "folderId": {
+          "type": "string",
+          "format": "uuid",
+          "pattern": "^[a-f0-9-]+$"
+        },
+        "jurisdiction": {
+          "type": "string",
+          "pattern": "^[A-Z]{2}$"
+        },
+        "sessionKey": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 120
+        },
+        "suggestionId": {
+          "type": "string",
+          "format": "uuid",
+          "pattern": "^[a-f0-9-]+$"
+        },
+        "expectedVersion": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 2147483646
+        },
+        "action": {
+          "enum": [
+            "add",
+            "dismiss",
+            "exclude",
+            "restore",
+            "undo"
+          ]
+        },
+        "requestKey": {
+          "type": "string",
+          "minLength": 8,
+          "maxLength": 180
+        }
+      },
+      "required": [
+        "clientId",
+        "folderId",
+        "jurisdiction",
+        "sessionKey",
+        "suggestionId",
+        "expectedVersion",
+        "action",
+        "requestKey"
+      ],
+      "additionalProperties": false
+    },
+    "Canonical_LegiwatchContext_a906d964": {
+      "type": "object",
+      "properties": {
+        "conversationId": {
+          "type": "string",
+          "format": "uuid",
+          "pattern": "^[a-f0-9-]+$"
+        },
+        "selectedClientId": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "uuid",
+              "pattern": "^[a-f0-9-]+$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "identityRevision": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "membershipRevision": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "contextRevision": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        }
+      },
+      "required": [
+        "conversationId",
+        "selectedClientId",
+        "identityRevision",
+        "membershipRevision",
+        "contextRevision"
+      ],
+      "additionalProperties": false
+    },
+    "Canonical_LegiwatchProposal_1f841734": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "const": "legiwatch_action"
+        },
+        "binding": {
+          "$ref": "#/$defs/Canonical_RunBinding_84f2304c"
+        },
+        "scopes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Canonical_Scope_f882edb5"
+          },
+          "minItems": 1,
+          "maxItems": 1
+        },
+        "operation": {
+          "const": "apply_legiwatch_suggestion"
+        },
+        "proposalId": {
+          "type": "string",
+          "format": "uuid",
+          "pattern": "^[a-f0-9-]+$"
+        },
+        "request": {
+          "$ref": "#/$defs/Canonical_LegiwatchRequest_5cff194f"
+        },
+        "context": {
+          "$ref": "#/$defs/Canonical_LegiwatchContext_a906d964"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "expiresAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "commandSha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        }
+      },
+      "required": [
+        "kind",
+        "binding",
+        "scopes",
+        "operation",
+        "proposalId",
+        "request",
+        "context",
+        "createdAt",
+        "expiresAt",
+        "commandSha256"
       ],
       "additionalProperties": false
     },
@@ -4138,6 +4418,145 @@
         "projection",
         "policy",
         "cancel"
+      ],
+      "additionalProperties": false
+    },
+    "Canonical_LegiwatchStatus_cbe9731f": {
+      "enum": [
+        "proposed",
+        "approved",
+        "executing",
+        "succeeded",
+        "failed_retryable",
+        "failed_terminal",
+        "outcome_unknown",
+        "blocked",
+        "dismissed",
+        "expired"
+      ]
+    },
+    "Canonical_LegiwatchReceipt_706f9465": {
+      "type": "object",
+      "properties": {
+        "request": {
+          "$ref": "#/$defs/Canonical_LegiwatchRequest_5cff194f"
+        },
+        "outcome": {
+          "enum": [
+            "added",
+            "already_present",
+            "dismissed",
+            "excluded",
+            "pending",
+            "stale",
+            "undone",
+            "undo_conflict",
+            "held"
+          ]
+        },
+        "payload": {
+          "type": "object",
+          "properties": {
+            "binding": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            "suggestionId": {
+              "type": "string",
+              "format": "uuid",
+              "pattern": "^[a-f0-9-]+$"
+            },
+            "decisionId": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "uuid",
+                  "pattern": "^[a-f0-9-]+$"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "version": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "action": {
+              "enum": [
+                "add",
+                "dismiss",
+                "exclude",
+                "restore",
+                "undo"
+              ]
+            }
+          },
+          "required": [
+            "binding",
+            "suggestionId",
+            "decisionId",
+            "version",
+            "action"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "request",
+        "outcome",
+        "payload"
+      ],
+      "additionalProperties": false
+    },
+    "Canonical_LegiwatchCoreResult_c5ab3126": {
+      "type": "object",
+      "properties": {
+        "version": {
+          "const": "0.1.0"
+        },
+        "proposalId": {
+          "type": "string",
+          "format": "uuid",
+          "pattern": "^[a-f0-9-]+$"
+        },
+        "request": {
+          "$ref": "#/$defs/Canonical_LegiwatchRequest_5cff194f"
+        },
+        "context": {
+          "$ref": "#/$defs/Canonical_LegiwatchContext_a906d964"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "expiresAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "status": {
+          "$ref": "#/$defs/Canonical_LegiwatchStatus_cbe9731f"
+        },
+        "receipt": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Canonical_LegiwatchReceipt_706f9465"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "version",
+        "proposalId",
+        "request",
+        "context",
+        "createdAt",
+        "expiresAt",
+        "status",
+        "receipt"
       ],
       "additionalProperties": false
     },

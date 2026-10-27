@@ -36,7 +36,7 @@ function load(asset){
   if(new Set(declared).size!==required.length||declared.length!==derived.length||declared.some(id=>!derived.includes(id))||
     required.some(hash=>!legal.some(row=>canonicalSha256(row)===hash)))fail('SKILL_SOURCE_PIN');
   return snapshotPreservationData({manifest,prose,installationCatalogSha256:assets.installationCatalogSha256,pin:{skillId:asset.skillId,skillVersion:asset.skillVersion,
-    manifestSha256:asset.manifestSha256,proseSha256:asset.proseSha256,catalogSha256:assets.catalogSha256}});
+    manifestSha256:asset.manifestSha256,proseSha256:asset.proseSha256,catalogSha256:asset.catalogSha256??assets.catalogSha256}});
 }
 
 /** Explicit selection; no latest-version fallback, fuzzy routing, grants or activation. */
