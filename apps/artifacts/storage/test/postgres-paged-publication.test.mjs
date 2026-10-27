@@ -50,3 +50,22 @@ test('paged history: immutable chain pages and current head remain anchored afte
  const first=await f.service().history(query,f.context);assert.deepEqual(first.versions,[c.version,b.version]);assert.equal(first.headVersionId,c.version.versionId);const last=await f.service().history({...query,cursor:first.nextCursor},f.context);assert.deepEqual(last.versions,[f.a.version]);assert.equal(last.nextCursor,null);
  await assert.rejects(f.service().history({...query,limit:1,cursor:first.nextCursor},f.context),/HISTORY_CURSOR/);
 });
+test('library chronology: mixed ISO precision has the same newest-first ordering and tie break in legacy and paged continuation',async()=>{
+ const f=await libraryFixture(),a=libraryRecord(200),b=libraryRecord(201),c=libraryRecord(202);
+ a.version.createdAt='2026-10-13T17:59:59Z';b.version.createdAt='2026-10-13T17:59:59.001Z';c.version.createdAt='2026-10-13T17:59:59.000Z';
+ for(const r of[a,b,c])await f.sql.create().commit(commit(r));
+ const expected=[b.version,c.version,a.version,f.a.version,f.b.version,f.c.version];
+ const collect=async(owner,limit)=>{const rows=[];let cursor=null;do{const page=await owner.list({...f.query,limit,cursor},f.context);rows.push(...page.versions);cursor=page.nextCursor;}while(cursor!==null);return rows;};
+ for(const limit of[1,2,100])assert.deepEqual(await collect(f.owner(),limit),expected);
+ const p=pagedPublicationFixture(f.context.binding.tenantId,()=>NOW);p.state.index=structuredClone(f.sql.durable.state.index);await p.owner.upgrade((await p.owner.snapshot()).positionSha256);
+ const versions=f.sql.create({publication:p.create(),maxRequestMs:30000});for(const limit of[1,2,100])assert.deepEqual(await collect(f.owner({versions}),limit),expected);
+ assert.equal((await versions.read(a.version.versionId)).version.createdAt,a.version.createdAt);
+});
+test('paged list input: malformed private selectors preserve legacy refusal before any SQL or page read',async()=>{
+ const f=await pagedLibrary(),selection={tenantId:f.context.binding.tenantId,actorId:f.context.binding.actorId,conversationId:null,clientId:null},snapshot=await f.versions.publicationSnapshot(selection.tenantId);
+ for(const change of[{actorId:null},{actorId:''},{actorId:'x'.repeat(129)},{conversationId:5},{conversationId:'bad'},{clientId:[]},{clientId:'bad'}]){
+  let legacy;try{await f.sql.create().list({...selection,...change});assert.fail('legacy accepted invalid input');}catch(error){legacy=error.code;}
+  const calls=f.sql.events.length,reads=f.p.state.reads;await assert.rejects(f.versions.listPage({...selection,...change,offset:0,limit:2,positionSha256:snapshot.positionSha256}),error=>error.code===legacy);
+  assert.equal(f.sql.events.length,calls);assert.equal(f.p.state.reads,reads);
+ }
+});

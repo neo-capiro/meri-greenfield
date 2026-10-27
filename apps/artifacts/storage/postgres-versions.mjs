@@ -121,7 +121,10 @@ export function createPostgresArtifactVersions(options){const {pool,now,maxReque
   for(const proof of page.records){const id=proof.decision.record.version.versionId;try{await paged.ensure(c,life,tenant,id,{repair:true,exclusive:true});restored.push(id);}catch(error){if(!['RETENTION_SUPPRESSED','ARTIFACT_PUBLICATION_TERMINAL'].includes(error.code))throw error;suppressed.push(id);}}
   await paged.stable(life,tenant,page.positionSha256);return {positionSha256:page.positionSha256,nextOffset:page.nextOffset,restored,suppressed};
  },true));}
- async function listPage(value,signal){const q=data(own(value,['tenantId','actorId','conversationId','clientId','offset','limit','positionSha256']));return transaction(signal,async(c,life)=>{
+ async function listPage(value,signal){const q=data(own(value,['tenantId','actorId','conversationId','clientId','offset','limit','positionSha256']));owner(q.tenantId);
+  if(typeof q.actorId!=='string'||!q.actorId||q.actorId.length>128||q.conversationId!==null&&typeof q.conversationId!=='string'||q.clientId!==null&&typeof q.clientId!=='string')fail('ARTIFACT_STORAGE_INPUT');
+  if(q.conversationId!==null)uuid(q.conversationId);if(q.clientId!==null)uuid(q.clientId);
+  return transaction(signal,async(c,life)=>{
   const page=await life.run(signal=>storageMethod(owner(q.tenantId),'page')({kind:'list',offset:q.offset,limit:q.limit,positionSha256:q.positionSha256},signal));
   const records=page.records.map(p=>recordValue(p.decision.record)).filter(r=>{const b=r.version.binding,s=r.version.scopes;return b.tenantId===q.tenantId&&b.actorId===q.actorId&&(q.conversationId===null||b.conversationId===q.conversationId)&&(q.clientId===null||s.length===1&&s[0].kind==='client'&&s[0].resourceId===q.clientId);});
   return {records,nextOffset:page.nextOffset,positionSha256:page.positionSha256};

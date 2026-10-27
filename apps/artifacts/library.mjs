@@ -15,7 +15,7 @@ export async function readArtifactLibrary({v,versions,authorizeOrigin,operation,
  function candidates(value){const result=data(own(value,['records']));if(!Array.isArray(result.records)||result.records.length>1024)fail('ARTIFACT_LIBRARY_RESULT');const ids=new Set();
   const records=result.records.map(storedRecord);for(const record of records){const version=record.version,b=version.binding;
    if(b.tenantId!==selection.tenantId||b.actorId!==selection.actorId||ids.has(version.artifactId)||selection.conversationId!==null&&b.conversationId!==selection.conversationId||selection.clientId!==null&&(version.scopes.length!==1||version.scopes[0].kind!=='client'||version.scopes[0].resourceId!==selection.clientId))fail('ARTIFACT_LIBRARY_RESULT');ids.add(version.artifactId);}
-  return records.sort((a,b)=>b.version.createdAt.localeCompare(a.version.createdAt)||b.version.versionId.localeCompare(a.version.versionId));
+  return records.sort((a,b)=>Date.parse(b.version.createdAt)-Date.parse(a.version.createdAt)||b.version.versionId.localeCompare(a.version.versionId));
  }
  async function origin(record,phase,phaseStart){
   const version=record.version,receipt=data(await life.run(signal=>authorizeOrigin({version:v.snapshot(version),phase,deadlineMs:context.deadlineMs,signal})));
