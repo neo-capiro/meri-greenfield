@@ -1,3 +1,4 @@
+import {createLegislativeDocumentCoreClient} from '../native-authority/legislative-document-client.mjs';
 import {createClientRecordCoreClient} from '../native-authority/client-record-client.mjs';
 import {createLegiwatchCoreClient} from '../native-authority/legiwatch-client.mjs';
 import {createBizdevCoreClient} from '../native-authority/bizdev-client.mjs';
