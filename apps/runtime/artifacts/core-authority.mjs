@@ -10,6 +10,7 @@ import {INTENT_OPERATIONS,ArtifactAuthorityError,isArtifactAuthorityError,refuse
 
 const SHA=/^[0-9a-f]{64}$/u,UUID=/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/u,TOKEN=/^[\x21-\x7e]{1,8192}$/u;
 const PHASES=Object.freeze(['admission','effect','release']);
+const RETAINED_READ_INTENTS=Object.freeze(['inspect','history','list','download','preview']);
 const sha=value=>createHash('sha256').update(value).digest('hex');
 const lifeError=code=>new ArtifactAuthorityError(['DEADLINE','CANCELLED'].includes(code)?code:'ACCESS_DENIED');
 /** Session-owner refusals stay SESSION_REFUSED; every other foreign error becomes the given closed code. */
@@ -92,15 +93,16 @@ export function createCoreArtifactAuthority(configuration){
    const first=await observe(ports,request,life);
    const readRunOptional=capture(call.store,'readOptional');
    /** The canonical accepted conversation run. A binding the conversation owner admitted for a turn that has not been
-    * submitted yet has no run row of its own; document *reads* (inspect, download, preview) are then pinned to the
+    * submitted yet has no run row of its own; explicit retained reads are then pinned to the
     * conversation by the fresh Core observation above and by the artifact owner's own version context (identical
-    * tenant/actor/conversation/scopes), exactly as a prior-run version read is. Generation and revision still require
-    * the session's own accepted run, and a stored run always keeps the exact binding/scope/cancellation check. */
-   const conversationRead=INTENT_OPERATIONS[call.intent].every(operation=>operation!=='artifact.generate'&&operation!=='artifact.revise');
+    * tenant/actor/conversation/scopes), exactly as a prior-run version read is. Cancellation does not suppress an
+    * already published artifact; publication, retention and release checks remain the artifact owner's responsibility.
+    * Generation, revision and derived-preview publication still require the session's own non-cancelled accepted run. */
+   const conversationRead=RETAINED_READ_INTENTS.includes(call.intent);
    async function canonicalRun(observation,t){
     const saved=await t.run(()=>readRunOptional(observation.binding,{limit:1},t.check));
     if(saved===null){if(!conversationRead)refuse('ACCESS_DENIED');return null;}
-    if(canonicalSha256(saved.run?.binding)!==canonicalSha256(observation.binding)||canonicalSha256(saved.run.scopes)!==canonicalSha256(observation.scopes)||saved.run.state==='cancelled')refuse('ACCESS_DENIED');
+    if(canonicalSha256(saved.run?.binding)!==canonicalSha256(observation.binding)||canonicalSha256(saved.run.scopes)!==canonicalSha256(observation.scopes)||saved.run.state==='cancelled'&&!conversationRead)refuse('ACCESS_DENIED');
     return saved.run;
    }
    await canonicalRun(first,life);
