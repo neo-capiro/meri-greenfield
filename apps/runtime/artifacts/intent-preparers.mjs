@@ -15,6 +15,8 @@ import {createAnalysisIntentPreparer,ANALYSIS_INTENT_OPERATIONS} from '../../con
 import {intentFault} from '../../control/intents/faults.mjs';
 import {documentLimits} from '../../control/document-application/current.mjs';
 import {createRuntimeArtifactApplication} from './application.mjs';
+import {createRuntimeDocumentRevisionSource} from './revision-source.mjs';
+import {assertDocumentRevisionSelection} from '../../../packages/contracts/document-revision.mjs';
 
 const UUID=/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/u;
 const TOKEN=/^[\x21-\x7e]{1,8192}$/u;
@@ -28,9 +30,10 @@ function method(owner,name){
 
 /** Returns the canonical document and typed ZIP preparers, or [] when a required production owner is absent. No sandbox owner. */
 export function createRuntimeDocumentIntentPreparers(configuration){
- let c,binding,limits;
+ let c,binding,limits,revision;
  try{
-  c=own(configuration,['binding','selectedClientId','now','limits'],['sessions','optionsOwner','nativeCredentials','retention','borrowSession']);
+  c=own(configuration,['binding','selectedClientId','now','limits'],['sessions','optionsOwner','nativeCredentials','retention','borrowSession','revision']);
+  if(c.revision!==undefined)revision=assertDocumentRevisionSelection(c.revision);
   binding=data(c.binding);validateShape('RunBinding',binding);limits=documentLimits(c.limits);
   if(!(c.selectedClientId===null||UUID.test(c.selectedClientId??''))||typeof c.now!=='function'||types.isProxy(c.now))throw 0;
  }catch{throw intentFault('INTENT_CONFIGURATION');}
@@ -41,6 +44,7 @@ export function createRuntimeDocumentIntentPreparers(configuration){
  const authenticate=method(c.sessions,'authenticateSession'),read=method(c.sessions,'readCurrentState');
  const nativeCredentialFor=method(c.nativeCredentials,'nativeCredentialFor');method(c.optionsOwner,'resolve');
  const app=createRuntimeArtifactApplication({sessions:c.sessions,optionsOwner:c.optionsOwner,now:c.now,limits,...(c.retention===undefined?{}:{retention:c.retention})});
+ const revisionSource=revision?createRuntimeDocumentRevisionSource({sessions:c.sessions,optionsOwner:c.optionsOwner,now:c.now,limits,...(c.retention===undefined?{}:{retention:c.retention})}):null;
  const preparers=[...DOCUMENT_INTENT_OPERATIONS,...ANALYSIS_INTENT_OPERATIONS].map(id=>{
   const entry=catalog.operations.find(row=>row.operation.id===id);
   const descriptor={operation:entry.operation,requiredGrants:entry.requiredGrants,sourceRequirements:entry.sourceRequirements};
@@ -76,20 +80,22 @@ export function createRuntimeDocumentIntentPreparers(configuration){
      }
      await current();
      const writes={async execute(write,signal){
-      const body=JSON.stringify({deliveryId:write.deliveryId,request:write.request});
+      const route=write.baseVersionId===null?'create':'revise';
+      const body=JSON.stringify({deliveryId:write.deliveryId,request:write.request,...(route==='revise'?{baseVersionId:write.baseVersionId}:{})});
       // Both routing and credentials are fixed by this trusted adapter. No URL, context or bearer is model supplied.
-      const request=new Request('https://meri-control.internal/api/documents/create',{method:'POST',headers:{authorization:'Bearer '+session.credential,'content-type':'application/json','content-length':String(Buffer.byteLength(body))},body,signal});
+      const request=new Request('https://meri-control.internal/api/documents/'+route,{method:'POST',headers:{authorization:'Bearer '+session.credential,'content-type':'application/json','content-length':String(Buffer.byteLength(body))},body,signal});
       started=true;const response=await life.run(()=>app.handle(request,{deadlineMs}));
       if(response.status!==200)throw intentFault('UNKNOWN','unknown');
       const text=await life.run(()=>response.text());if(Buffer.byteLength(text)>limits.maxResponseBytes)throw intentFault('UNKNOWN','unknown');
       return JSON.parse(text);
      }};
-     const canonical=analysis?createAnalysisIntentPreparer({descriptor,binding,artifact:{writes}}):createDocumentIntentPreparer({descriptor,binding,writes});
+     const canonical=analysis?createAnalysisIntentPreparer({descriptor,binding,artifact:{writes}}):createDocumentIntentPreparer({descriptor,binding,writes,...(revision?{revision:{selection:revision,
+      read:({selection,signal})=>revisionSource.read({credential:session.credential,selection,signal,deadlineMs})}}:{})});
      const result=await canonical.prepare({...input,signal:life.signal});
      await current();life.check();return result;
     }catch(error){
      if(started)throw intentFault('UNKNOWN','unknown');
-     const code=['INVALID_ARGUMENTS','UNAVAILABLE','ACCESS_DENIED','DEADLINE','CANCELLED'].includes(error?.code)?error.code:'ACCESS_DENIED';
+     const code=['INVALID_ARGUMENTS','UNAVAILABLE','ACCESS_DENIED','CONFLICT','DEADLINE','CANCELLED'].includes(error?.code)?error.code:'ACCESS_DENIED';
      throw intentFault(code,'none');
     }finally{life?.close();}
    }});

@@ -92,7 +92,7 @@ export function createArtifactService({validators:v,authorize,versions,objects,e
       error.lifetime=life.close();throw error;
     }finally{life.close();}
   }
-  async function read(versionId,contextValue,options={},download=false){
+  async function read(versionId,contextValue,options={},download=false,revisionSource=false){
     if(typeof versionId!=='string')fail('ARTIFACT_VERSION_ID');
     const context=v.context(contextValue),life=operation(context,options.signal),action=download?'artifact.download':'artifact.inspect';
     const requestSha256=v.hash({action,versionId,context});let resource={versionId,object:null,assetObjects:[]};
@@ -103,6 +103,9 @@ export function createArtifactService({validators:v,authorize,versions,objects,e
       const bytes=await bytesFor(life,record.version.object,context.maxBytes);
       const inspection=inspectBytes(record.inspection,bytes,record.spec.format);
       await authority(life,action,resource,requestSha256,context);await servable(life,context,record);
+      // Private revision preparation receives the retained typed source only after the
+      // same byte, current-authority and retention checks as inspect. No new write or brand.
+      if(revisionSource)return {version:record.version,request:record.spec,specSha256:record.specSha256,inspection:{...inspection,currentBytesVerified:true}};
       return download?{version:record.version,bytes}:{version:record.version,inspection:{...inspection,currentBytesVerified:true}};
     }catch(error){error.lifetime=life.close();throw error;}finally{life.close();}
   }
@@ -131,5 +134,5 @@ export function createArtifactService({validators:v,authorize,versions,objects,e
   return Object.freeze({create:(request,context,options)=>generate(null,request,context,options),revise:(baseVersionId,request,context,options)=>{if(typeof baseVersionId!=='string')fail('ARTIFACT_VERSION_ID');return generate(baseVersionId,request,context,options);},
     recover:(baseVersionId,request,context,options)=>recoverArtifact({v,operation,authority,scopeVersion,bytesFor,inspectBytes,versions,servable,recoverTenant},baseVersionId,request,context,options),
     list:(query,context,options)=>readArtifactLibrary({v,versions,authorizeOrigin,operation,authority,servable,recoverTenant,now},query,context,options),
-    history,inspect:(id,context,options)=>read(id,context,options),download:(id,context,options)=>read(id,context,options,true)});
+    history,revisionSource:(id,context,options)=>read(id,context,options,false,true),inspect:(id,context,options)=>read(id,context,options),download:(id,context,options)=>read(id,context,options,true)});
 }
