@@ -14,13 +14,18 @@ export function nativeApprovalScope(proposal){
 export async function currentNativeApprovalSession({store,sessions,retention,now,proposal,signal,check=()=>{}}){
  assertNativeApprovalProposal(proposal);
  const source=proposal.command.binding,scopes=proposal.command.scopes,{selectedClientId}=nativeApprovalScope(proposal);
+ return currentAttendedSession({store,sessions,retention,now,binding:source,scopes,selectedClientId,signal,check,allowInitialTask:['task.create','task.update'].includes(proposal.command.action)});
+}
+/** Same live conversation/session owner for Core-governed sharing; no synthetic native command. */
+export async function currentAttendedSession({store,sessions,retention,now,binding:source,scopes,selectedClientId,signal,check=()=>{},allowInitialTask=false}){
+ assertNativeConversationScope({binding:source,scopes,selectedClientId});
  if(!store?.history||!sessions)fail('UNAVAILABLE');
  const serve=async()=>{if(retention)await retention.assertServable({tenantId:source.tenantId,kind:'conversation',subjectId:source.conversationId});check();};
  await serve();
  const principal={tenantId:source.tenantId,actorId:source.actorId};let history,run=null,binding;
  try{history=await store.history.transcript({principal:{...principal,clientIds:selectedClientId===null?[]:[selectedClientId]},conversationId:source.conversationId,after:0,limit:1},check);check();}
  catch(error){
-  if(!['task.create','task.update'].includes(proposal.command.action)||!['NOT_FOUND','CONVERSATION_NOT_FOUND'].includes(productFailure(error)?.code))throw error;
+  if(!allowInitialTask||!['NOT_FOUND','CONVERSATION_NOT_FOUND'].includes(productFailure(error)?.code))throw error;
   if(!store.initialBindings)fail('UNAVAILABLE');
   const record=await store.initialBindings.readConversation({principal,conversationId:source.conversationId,selectedClientId},check);check();
   if(!record)fail('ACCESS_DENIED');

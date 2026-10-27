@@ -6,7 +6,9 @@ export type IntentsApplicationEnvelope =
   | IntentsOperation
   | IntentsListRequest
   | IntentsDecideRequest
+  | IntentsNativeProposal
   | IntentsProposal
+  | Canonical_ResearchShareProposal_1Cdbd32E
   | Canonical_ApprovalDecision_5E8Bdbcf
   | Canonical_TaskCreateArguments_1202C301
   | Canonical_TaskUpdateArguments_48509A7A
@@ -27,6 +29,8 @@ export type IntentsApplicationEnvelope =
   | IntentsScheduleReviewItem
   | IntentsWithheldScheduleItem
   | IntentsWithheldProposalItem
+  | IntentsResearchShareItem
+  | IntentsWithheldResearchShareItem
   | IntentsProposalItem
   | IntentsItem
   | IntentsListResponse
@@ -45,10 +49,11 @@ export type IntentsApplicationEnvelope =
   | RoutinesErrorResponse;
 export type IntentsConversationId = string;
 export type IntentsDeliveryId = string;
-export type IntentsProposal =
+export type IntentsNativeProposal =
   | Canonical_ApprovalProposalD1A3E74F
   | Canonical_TaskUpdateApprovalProposal_1F70E582
   | Canonical_DocumentDraftApprovalProposal_834C2460;
+export type IntentsProposal = IntentsNativeProposal | Canonical_ResearchShareProposal_1Cdbd32E;
 export type IntentsExecutionOutcome =
   | {
       receipt: Canonical_CommandReceiptAc49Ee1E;
@@ -290,6 +295,16 @@ export type CanonicalRuns_0Ce2594A =
       Canonical_Run_8D674B59,
       Canonical_Run_8D674B59
     ];
+export type Canonical_ResearchShareProposalStatus_9Aaf7F45 =
+  | 'proposed'
+  | 'executing'
+  | 'succeeded'
+  | 'failed_retryable'
+  | 'failed_terminal'
+  | 'outcome_unknown'
+  | 'blocked'
+  | 'dismissed'
+  | 'expired';
 export type IntentsItem =
   | IntentsPendingItem
   | IntentsUnknownItem
@@ -302,7 +317,9 @@ export type IntentsItem =
   | IntentsScheduleReviewItem
   | IntentsWithheldScheduleItem
   | IntentsWithheldProposalItem
-  | IntentsProposalItem;
+  | IntentsProposalItem
+  | IntentsResearchShareItem
+  | IntentsWithheldResearchShareItem;
 export type IntentsDecideResponse =
   | {
       status: 'rejected';
@@ -322,6 +339,13 @@ export type IntentsDecideResponse =
       deliveryId: IntentsDeliveryId;
       proposalId: string;
       decision: Canonical_ApprovalDecision_5E8Bdbcf;
+    }
+  | {
+      status: 'research_share_decided';
+      deliveryId: IntentsDeliveryId;
+      proposalId: string;
+      proposalStatus: Canonical_ResearchShareProposalStatus_9Aaf7F45;
+      oneTimeResult?: Canonical_ResearchShareOneTimeResult_9258E7D0;
     };
 export type RoutinesPrepareRequest =
   | {
@@ -511,6 +535,40 @@ export interface Canonical_DocumentDraftArgumentsDeaaba57 {
   baseVersionId: string | null;
   title: string;
   format: 'docx';
+}
+export interface Canonical_ResearchShareProposal_1Cdbd32E {
+  kind: 'research_share';
+  proposalId: string;
+  commandSha256: string;
+  binding: Canonical_RunBinding_84F2304C;
+  /**
+   * @minItems 1
+   * @maxItems 1
+   */
+  scopes: [Canonical_ScopeF882Edb5];
+  operation: 'publish_research_portfolio_share_link' | 'revoke_research_portfolio_share_link';
+  request: Canonical_ResearchSharePublishBound_63909893 | Canonical_ResearchShareRevokeInputB01195Fc;
+  preview: {
+    label: 'Publish client share link' | 'Revoke client share link';
+    clientName?: string;
+    portfolioId?: string;
+  };
+  createdAt: string;
+  expiresAt: string;
+}
+export interface Canonical_ResearchSharePublishBound_63909893 {
+  conversationId: string;
+  snapshotId: string;
+  designId: string;
+  clientId: string;
+  branding: boolean;
+  operationKey: string;
+  previewHash: string;
+  expectedDesignVersion: number;
+}
+export interface Canonical_ResearchShareRevokeInputB01195Fc {
+  conversationId: string;
+  linkId: string;
 }
 export interface Canonical_ApprovalDecision_5E8Bdbcf {
   proposalId: string;
@@ -1099,13 +1157,30 @@ export interface IntentsWithheldProposalItem {
   kind: 'proposal';
   withheld: true;
 }
+export interface IntentsResearchShareItem {
+  deliveryId: IntentsDeliveryId;
+  createdAt: string;
+  operation: IntentsOperation;
+  state: 'prepared';
+  kind: 'research_share';
+  proposal: Canonical_ResearchShareProposal_1Cdbd32E;
+  proposalStatus: Canonical_ResearchShareProposalStatus_9Aaf7F45 | 'unavailable';
+}
+export interface IntentsWithheldResearchShareItem {
+  deliveryId: IntentsDeliveryId;
+  createdAt: string;
+  operation: IntentsOperation;
+  state: 'prepared';
+  kind: 'research_share';
+  withheld: true;
+}
 export interface IntentsProposalItem {
   deliveryId: IntentsDeliveryId;
   createdAt: string;
   operation: IntentsOperation;
   state: 'prepared';
   kind: 'proposal';
-  proposal: IntentsProposal;
+  proposal: IntentsNativeProposal;
   decision: Canonical_ApprovalDecision_5E8Bdbcf | null | 'unavailable';
   execution: IntentsExecution | null | 'unavailable';
   phase:
@@ -1125,6 +1200,10 @@ export interface IntentsListResponse {
    */
   intents: IntentsItem[];
   next: IntentsDeliveryId | null;
+}
+export interface Canonical_ResearchShareOneTimeResult_9258E7D0 {
+  sharePath: string;
+  shownOnce: true;
 }
 export interface IntentsErrorResponse {
   error: {
@@ -1612,6 +1691,7 @@ export interface RoutinesErrorResponse {
   };
 }
 
+export type IntentsResearchShareProposal=Canonical_ResearchShareProposal_1Cdbd32E;
 export type RoutinesProposal=Canonical_PendingProposal_8E88D951;
 export type RoutinesApproveResponse=Canonical_Acknowledged_1Fa14Cd2;
 export type RoutinesListRequest=Canonical_ListScheduledTasksRequest_294Adc6C;

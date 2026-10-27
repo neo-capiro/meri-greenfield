@@ -13,6 +13,11 @@ import {documentIntentPreparersFor} from '../artifacts/intent-binding.mjs';
 import {assertExecutionIdentity} from '../../control/conversations/execution-boundary.mjs';
 import {assertNativeConversationScope} from '../../../packages/contracts/runtime-0.2/session.mjs';
 import {createNativeTaskPreparers} from './native-task-preparers.mjs';
+import {createResearchSharingPreparers} from '../../control/intents/research-sharing-preparer.mjs';
+import {createResearchSharingCoreClient} from './research-sharing-client.mjs';
+import {createRoutinesServiceSecret} from './routines-core-client.mjs';
+import {routinesReservedSecretFiles} from './routines-configuration.mjs';
+import {createReservedCredentialDigests} from './approval-forwarder.mjs';
 const ordinary=fn=>typeof fn==='function'&&!types.isProxy(fn);
 const same=(a,b)=>hash(a)===hash(b);
 const configurationFault=()=>intentFault('INTENT_CONFIGURATION');
@@ -47,11 +52,16 @@ export function createAgentCoreIntentResolver({context,execution,transitionAutho
   const first=await fresh(signal);
   // Availability is a description of composed preparers, but it still belongs to the same current authorized run.
   await currentRights({signal,policyRevision:first.policyRevision});
+  const sharingCore=configuration.intents.core,nativeSharing=nativeCredentials&&sharingCore?createResearchSharingCoreClient({origin:sharingCore.origin,now,maxRequestMs:configuration.limits.requestMs,...(fetchImpl?{fetchImpl}:{}),
+   getServiceSecret:createRoutinesServiceSecret({file:sharingCore.serviceSecretFile,reservedFiles:routinesReservedSecretFiles(configuration),readSecret:async path=>(await import('../config.mjs')).readSecret(path)}),
+   reservedCredentials:createReservedCredentialDigests({files:routinesReservedSecretFiles(configuration),readSecret:async path=>(await import('../config.mjs')).readSecret(path)}),
+   async getCredentials(selection){await fresh(selection.signal);return nativeCredentials.nativeCredentialFor({binding,selectedClientId:first.selectedClientId,signal:selection.signal});}}):null;
   const preparers=[...routineIntentPreparersFor(context,{binding,selectedClientId:first.selectedClientId}),...documentIntentPreparersFor(context,{binding,scopes:first.scopes,selectedClientId:first.selectedClientId,policyRevision:first.policyRevision,expiresAtMs:first.execution.expiresAtMs,
    async readCurrent({signal}){const rights=await currentRights({signal,policyRevision:first.policyRevision});return {binding,scopes:rights.scopes,selectedClientId:first.selectedClientId,policyRevision:first.policyRevision,checkedAtMs:rights.checkedAtMs,expiresAtMs:Math.min(rights.expiresAtMs,first.execution.expiresAtMs)};},
    clientResolution:{clientId:first.selectedClientId},signal}),
    ...(configuration.intents.core?[...createNativeTaskPreparers({pool,binding,scopes:first.scopes,selectedClientId:first.selectedClientId,policyRevision:first.policyRevision,
     expiresAtMs:first.execution.expiresAtMs,currentRights,now,maxRequestMs:configuration.limits.requestMs,...(resolveClient?{async resolveClientReference(value){await fresh(value.signal);const result=await resolveClient({...value,binding,selectedClientId:first.selectedClientId});await fresh(value.signal);return result;}}:{})})]:[]),
+   ...(nativeSharing?createResearchSharingPreparers({binding,scopes:first.scopes,selectedClientId:first.selectedClientId,client:nativeSharing,now,currentRights,policyRevision:first.policyRevision,deadlineMs:Math.min(deadlineMs,first.execution.expiresAtMs)}):[]),
    ...(configuration.memory?.enabled?memoryIntentPreparersFor(context,{binding,scopes:first.scopes,selectedClientId:first.selectedClientId,policyRevision:first.policyRevision,signal,deadlineMs:Math.min(deadlineMs,first.execution.expiresAtMs),
     async readCurrent({signal}){const rights=await currentRights({signal,policyRevision:first.policyRevision});return {binding,scopes:rights.scopes,selectedClientId:first.selectedClientId,policyRevision:first.policyRevision,checkedAtMs:rights.checkedAtMs,expiresAtMs:Math.min(rights.expiresAtMs,first.execution.expiresAtMs)};}}):[])];
   if(!preparers.length)throw intentFault('UNAVAILABLE');

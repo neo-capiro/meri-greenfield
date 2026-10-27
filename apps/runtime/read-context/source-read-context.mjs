@@ -89,6 +89,12 @@ export function assertSourceReadRequest(contract,request,subject){
 
 export function createSourceReadContext({contract,proof,native,defaultCongress,now,priorContext,clientReferenceObservation,modeObservation}){
  const group=contract.binding.group;
+ if(group==='research-portfolio-sharing'){
+  if(proof.request.conversationId!==proof.binding.conversationId||!Array.isArray(native.clientIds))refuse('ACCESS_DENIED');
+  const selectedClientId=proof.subject.kind==='client'?clientSubject(proof,native):null;
+  if(selectedClientId===null&&(proof.subject.kind!=='personal'||proof.subject.entityType!=='user'||proof.subject.entityIds[0]!==proof.binding.actorId))refuse('ACCESS_DENIED');
+  return {binding:proof.binding,selectedClientId,visibleClientIds:[...native.clientIds]};
+ }
  // Recompute on final release: membership changes must also fence aggregate rows with no client IDs.
  if(group==='capiro-data'&&proof.request.source==='client_records')return privateDataContext(proof,native);
  if(group==='connected-apps'||group==='teams-channels'){

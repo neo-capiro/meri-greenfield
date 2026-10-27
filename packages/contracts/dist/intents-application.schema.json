@@ -87,7 +87,7 @@
       ],
       "additionalProperties": false
     },
-    "IntentsProposal": {
+    "IntentsNativeProposal": {
       "oneOf": [
         {
           "$ref": "#/$defs/Canonical_ApprovalProposal_d1a3e74f"
@@ -99,6 +99,19 @@
           "$ref": "#/$defs/Canonical_DocumentDraftApprovalProposal_834c2460"
         }
       ]
+    },
+    "IntentsProposal": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/IntentsNativeProposal"
+        },
+        {
+          "$ref": "#/$defs/Canonical_ResearchShareProposal_1cdbd32e"
+        }
+      ]
+    },
+    "IntentsResearchShareProposal": {
+      "$ref": "#/$defs/Canonical_ResearchShareProposal_1cdbd32e"
     },
     "IntentsDecision": {
       "$ref": "#/$defs/Canonical_ApprovalDecision_5e8bdbcf"
@@ -699,6 +712,83 @@
       ],
       "additionalProperties": false
     },
+    "IntentsResearchShareItem": {
+      "type": "object",
+      "properties": {
+        "deliveryId": {
+          "$ref": "#/$defs/IntentsDeliveryId"
+        },
+        "createdAt": {
+          "type": "string",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$"
+        },
+        "operation": {
+          "$ref": "#/$defs/IntentsOperation"
+        },
+        "state": {
+          "const": "prepared"
+        },
+        "kind": {
+          "const": "research_share"
+        },
+        "proposal": {
+          "$ref": "#/$defs/Canonical_ResearchShareProposal_1cdbd32e"
+        },
+        "proposalStatus": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Canonical_ResearchShareProposalStatus_9aaf7f45"
+            },
+            {
+              "const": "unavailable"
+            }
+          ]
+        }
+      },
+      "required": [
+        "deliveryId",
+        "createdAt",
+        "operation",
+        "state",
+        "kind",
+        "proposal",
+        "proposalStatus"
+      ],
+      "additionalProperties": false
+    },
+    "IntentsWithheldResearchShareItem": {
+      "type": "object",
+      "properties": {
+        "deliveryId": {
+          "$ref": "#/$defs/IntentsDeliveryId"
+        },
+        "createdAt": {
+          "type": "string",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$"
+        },
+        "operation": {
+          "$ref": "#/$defs/IntentsOperation"
+        },
+        "state": {
+          "const": "prepared"
+        },
+        "kind": {
+          "const": "research_share"
+        },
+        "withheld": {
+          "const": true
+        }
+      },
+      "required": [
+        "deliveryId",
+        "createdAt",
+        "operation",
+        "state",
+        "kind",
+        "withheld"
+      ],
+      "additionalProperties": false
+    },
     "IntentsProposalItem": {
       "type": "object",
       "properties": {
@@ -719,7 +809,7 @@
           "const": "proposal"
         },
         "proposal": {
-          "$ref": "#/$defs/IntentsProposal"
+          "$ref": "#/$defs/IntentsNativeProposal"
         },
         "decision": {
           "anyOf": [
@@ -810,6 +900,12 @@
         },
         {
           "$ref": "#/$defs/IntentsProposalItem"
+        },
+        {
+          "$ref": "#/$defs/IntentsResearchShareItem"
+        },
+        {
+          "$ref": "#/$defs/IntentsWithheldResearchShareItem"
         }
       ]
     },
@@ -922,6 +1018,34 @@
             "deliveryId",
             "proposalId",
             "decision"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "status": {
+              "const": "research_share_decided"
+            },
+            "deliveryId": {
+              "$ref": "#/$defs/IntentsDeliveryId"
+            },
+            "proposalId": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$"
+            },
+            "proposalStatus": {
+              "$ref": "#/$defs/Canonical_ResearchShareProposalStatus_9aaf7f45"
+            },
+            "oneTimeResult": {
+              "$ref": "#/$defs/Canonical_ResearchShareOneTimeResult_9258e7d0"
+            }
+          },
+          "required": [
+            "status",
+            "deliveryId",
+            "proposalId",
+            "proposalStatus"
           ],
           "additionalProperties": false
         }
@@ -1861,6 +1985,166 @@
         "createdAt",
         "expiresAt",
         "requiredApprover"
+      ],
+      "additionalProperties": false
+    },
+    "Canonical_ResearchSharePublishBound_63909893": {
+      "type": "object",
+      "properties": {
+        "conversationId": {
+          "type": "string",
+          "format": "uuid",
+          "pattern": "^[a-f0-9-]+$"
+        },
+        "snapshotId": {
+          "type": "string",
+          "format": "uuid",
+          "pattern": "^[a-f0-9-]+$"
+        },
+        "designId": {
+          "type": "string",
+          "format": "uuid",
+          "pattern": "^[a-f0-9-]+$"
+        },
+        "clientId": {
+          "type": "string",
+          "format": "uuid",
+          "pattern": "^[a-f0-9-]+$"
+        },
+        "branding": {
+          "type": "boolean"
+        },
+        "operationKey": {
+          "type": "string",
+          "pattern": "^meri-share-[a-f0-9]{64}$"
+        },
+        "previewHash": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "expectedDesignVersion": {
+          "type": "integer",
+          "minimum": 1
+        }
+      },
+      "required": [
+        "conversationId",
+        "snapshotId",
+        "designId",
+        "clientId",
+        "branding",
+        "operationKey",
+        "previewHash",
+        "expectedDesignVersion"
+      ],
+      "additionalProperties": false
+    },
+    "Canonical_ResearchShareRevokeInput_b01195fc": {
+      "type": "object",
+      "properties": {
+        "conversationId": {
+          "type": "string",
+          "format": "uuid",
+          "pattern": "^[a-f0-9-]+$"
+        },
+        "linkId": {
+          "type": "string",
+          "format": "uuid",
+          "pattern": "^[a-f0-9-]+$"
+        }
+      },
+      "required": [
+        "conversationId",
+        "linkId"
+      ],
+      "additionalProperties": false
+    },
+    "Canonical_ResearchShareProposal_1cdbd32e": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "const": "research_share"
+        },
+        "proposalId": {
+          "type": "string",
+          "format": "uuid",
+          "pattern": "^[a-f0-9-]+$"
+        },
+        "commandSha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "binding": {
+          "$ref": "#/$defs/Canonical_RunBinding_84f2304c"
+        },
+        "scopes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Canonical_Scope_f882edb5"
+          },
+          "minItems": 1,
+          "maxItems": 1
+        },
+        "operation": {
+          "enum": [
+            "publish_research_portfolio_share_link",
+            "revoke_research_portfolio_share_link"
+          ]
+        },
+        "request": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/Canonical_ResearchSharePublishBound_63909893"
+            },
+            {
+              "$ref": "#/$defs/Canonical_ResearchShareRevokeInput_b01195fc"
+            }
+          ]
+        },
+        "preview": {
+          "type": "object",
+          "properties": {
+            "label": {
+              "enum": [
+                "Publish client share link",
+                "Revoke client share link"
+              ]
+            },
+            "clientName": {
+              "type": "string",
+              "maxLength": 1000
+            },
+            "portfolioId": {
+              "type": "string",
+              "format": "uuid",
+              "pattern": "^[a-f0-9-]+$"
+            }
+          },
+          "required": [
+            "label"
+          ],
+          "additionalProperties": false
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "expiresAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "kind",
+        "proposalId",
+        "commandSha256",
+        "binding",
+        "scopes",
+        "operation",
+        "request",
+        "preview",
+        "createdAt",
+        "expiresAt"
       ],
       "additionalProperties": false
     },
@@ -3854,6 +4138,36 @@
         "projection",
         "policy",
         "cancel"
+      ],
+      "additionalProperties": false
+    },
+    "Canonical_ResearchShareProposalStatus_9aaf7f45": {
+      "enum": [
+        "proposed",
+        "executing",
+        "succeeded",
+        "failed_retryable",
+        "failed_terminal",
+        "outcome_unknown",
+        "blocked",
+        "dismissed",
+        "expired"
+      ]
+    },
+    "Canonical_ResearchShareOneTimeResult_9258e7d0": {
+      "type": "object",
+      "properties": {
+        "sharePath": {
+          "type": "string",
+          "pattern": "^/share/(research/)?[a-f0-9]{64}$"
+        },
+        "shownOnce": {
+          "const": true
+        }
+      },
+      "required": [
+        "sharePath",
+        "shownOnce"
       ],
       "additionalProperties": false
     },

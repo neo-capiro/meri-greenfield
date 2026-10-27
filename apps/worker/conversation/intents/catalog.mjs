@@ -1,6 +1,6 @@
 // @ts-check
 /** The one registry of governed conversational write requests (`meri_intents`, proposal P10, approved by the owner on
- * 15 Oct 2026). It covers exactly the 11 selected non-read capabilities the scope ledger routes through INTENT-ROUTE.
+ * 15 Oct 2026). It covers the 11 accepted INTENT-ROUTE capabilities plus the two finite Research Portfolio sharing intents.
  * Each row names the intent tool, the canonical owner kind that PREPARES it, and, where no canonical owner can prepare
  * it yet, the explicit reason it stays unavailable. Display text and schema identities come only from the canonical
  * catalog descriptor. Data only, safe to import.
@@ -15,12 +15,14 @@ import catalog from '../../../../packages/contracts/retrieval-0.2/catalog.json' 
 export const INTENT_SERVER_NAME='meri_intents';
 export const INTENT_TOOL_PREFIX=`mcp__${INTENT_SERVER_NAME}__`;
 /** @typedef {{id:string,version:string}} OperationRef */
-/** @typedef {'command'|'schedule'|'document'|'artifact'|'memory'} OwnerKind */
+/** @typedef {'command'|'schedule'|'document'|'artifact'|'memory'|'research-sharing'} OwnerKind */
 /** @typedef {{operation:OperationRef,tool:string,owner:OwnerKind,unavailable:string|null}} IntentRow */
 const op=(/** @type {string} */id)=>Object.freeze({id,version:'0.2.0'});
 const row=(/** @type {string} */id,/** @type {string} */tool,/** @type {OwnerKind} */owner,/** @type {string|null} */unavailable=null)=>Object.freeze({operation:op(id),tool,owner,unavailable});
 /** @type {readonly IntentRow[]} */
 export const INTENT_ROWS=Object.freeze([
+ row('publish_research_portfolio_share_link','propose_research_share','research-sharing'),
+ row('revoke_research_portfolio_share_link','propose_research_share_revocation','research-sharing'),
  row('create_word','request_document','document'),
  row('create_excel','request_document','document'),
  row('create_powerpoint','request_document','document'),

@@ -18,6 +18,14 @@ const exact=value=>{const at=Date.parse(value);if(!Number.isSafeInteger(at)||new
 const STABLE=['tenantId','actorId','conversationId','runId'];
 /** The retained proposal must describe itself: its hash is the canonical hash of its command, it belongs to the requested conversation and tenant. */
 async function proposal(value,conversationId){
+ if(value.kind==='research_share'){
+  const {commandSha256,...bound}=value,publishing=value.operation==='publish_research_portfolio_share_link';
+  if(await sha(bound)!==commandSha256||value.binding.conversationId!==conversationId||value.request.conversationId!==conversationId||
+   value.scopes.some(scope=>scope.tenantId!==value.binding.tenantId)||parsed(value.expiresAt)<=parsed(value.createdAt)||
+   publishing!==Object.hasOwn(value.request,'previewHash')||publishing!==Object.hasOwn(value.preview,'portfolioId')||value.preview.label!==(publishing?'Publish client share link':'Revoke client share link')||
+   publishing&&value.scopes[0].kind==='client'&&value.request.clientId!==value.scopes[0].resourceId)conflict();
+  return;
+ }
  const command=value.command;
  if(await sha(command)!==value.commandSha256||value.requiredApprover.tenantId!==command.binding.tenantId||command.binding.conversationId!==conversationId||
   command.scopes.some(scope=>scope.tenantId!==command.binding.tenantId)||parsed(value.expiresAt)<=parsed(value.createdAt))conflict();
@@ -107,6 +115,10 @@ async function item(value,conversationId){
  // The journal's createdAt is a bare millisecond-spelling pattern in the schema (no calendar check) and the journal writes toISOString(): read it exactly, so
  // an impossible day such as 2026-02-30 can not roll into March.
  exact(value.createdAt);
+ if(value.kind==='research_share'){
+  if(!Object.hasOwn(value,'proposal'))return;
+  if(value.operation.id!==value.proposal.operation)conflict();await proposal(value.proposal,conversationId);return;
+ }
  if(value.kind==='schedule_proposal'){
   if(!Object.hasOwn(value,'proposal'))return;
   if(value.binding.conversationId!==conversationId||value.proposal.projection.owner.tenantId!==value.binding.tenantId||value.proposal.projection.owner.actorId!==value.binding.actorId||
@@ -141,6 +153,11 @@ export async function list(value,request){
  * binding of their own, so the retained proposal is what binds them to the request's conversation and approver. */
 export async function decide(value,request,retained){
  await proposal(retained,request.conversationId);
+ if(retained.kind==='research_share'){
+  if(value.status!=='research_share_decided'||retained.proposalId!==request.proposalId||retained.commandSha256!==request.commandSha256||value.deliveryId!==request.deliveryId||value.proposalId!==request.proposalId)conflict();
+  if(value.oneTimeResult!==undefined&&(request.decision!=='approved'||value.proposalStatus!=='succeeded'||retained.operation!=='publish_research_portfolio_share_link'))conflict();
+  return value;
+ }
  // The handler refuses a proposal it cannot approve before any decision is recorded, so any 200 implies an approvable action.
  if(retained.proposalId!==request.proposalId||retained.commandSha256!==request.commandSha256||!intentsMetadata.approvableActions.includes(retained.command.action))conflict();
  if(value.deliveryId!==request.deliveryId||value.proposalId!==request.proposalId)conflict();

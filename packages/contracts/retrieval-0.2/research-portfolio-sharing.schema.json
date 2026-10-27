@@ -1,0 +1,460 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:meri:retrieval:research-portfolio-sharing:0.2.0",
+  "$comment": "Finite conversation-scoped sharing reads and Core-owned approval preparation. No address/PIN is admitted in read, model or history contracts. OneTimeResult is decision-only.",
+  "$defs": {
+    "ResearchShareListInput": {
+      "type": "object",
+      "properties": {
+        "conversationId": {
+          "type": "string",
+          "format": "uuid",
+          "pattern": "^[a-f0-9-]+$"
+        }
+      },
+      "required": [
+        "conversationId"
+      ],
+      "additionalProperties": false
+    },
+    "ResearchSharePublishInput": {
+      "type": "object",
+      "properties": {
+        "conversationId": {
+          "type": "string",
+          "format": "uuid",
+          "pattern": "^[a-f0-9-]+$"
+        },
+        "snapshotId": {
+          "type": "string",
+          "format": "uuid",
+          "pattern": "^[a-f0-9-]+$"
+        },
+        "designId": {
+          "type": "string",
+          "format": "uuid",
+          "pattern": "^[a-f0-9-]+$"
+        },
+        "clientId": {
+          "type": "string",
+          "format": "uuid",
+          "pattern": "^[a-f0-9-]+$"
+        },
+        "branding": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "conversationId",
+        "snapshotId",
+        "designId",
+        "clientId",
+        "branding"
+      ],
+      "additionalProperties": false
+    },
+    "ResearchShareRevokeInput": {
+      "type": "object",
+      "properties": {
+        "conversationId": {
+          "type": "string",
+          "format": "uuid",
+          "pattern": "^[a-f0-9-]+$"
+        },
+        "linkId": {
+          "type": "string",
+          "format": "uuid",
+          "pattern": "^[a-f0-9-]+$"
+        }
+      },
+      "required": [
+        "conversationId",
+        "linkId"
+      ],
+      "additionalProperties": false
+    },
+    "ResearchSharePublishBound": {
+      "type": "object",
+      "properties": {
+        "conversationId": {
+          "type": "string",
+          "format": "uuid",
+          "pattern": "^[a-f0-9-]+$"
+        },
+        "snapshotId": {
+          "type": "string",
+          "format": "uuid",
+          "pattern": "^[a-f0-9-]+$"
+        },
+        "designId": {
+          "type": "string",
+          "format": "uuid",
+          "pattern": "^[a-f0-9-]+$"
+        },
+        "clientId": {
+          "type": "string",
+          "format": "uuid",
+          "pattern": "^[a-f0-9-]+$"
+        },
+        "branding": {
+          "type": "boolean"
+        },
+        "operationKey": {
+          "type": "string",
+          "pattern": "^meri-share-[a-f0-9]{64}$"
+        },
+        "previewHash": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "expectedDesignVersion": {
+          "type": "integer",
+          "minimum": 1
+        }
+      },
+      "required": [
+        "conversationId",
+        "snapshotId",
+        "designId",
+        "clientId",
+        "branding",
+        "operationKey",
+        "previewHash",
+        "expectedDesignVersion"
+      ],
+      "additionalProperties": false
+    },
+    "ResearchShareSettings": {
+      "type": "object",
+      "properties": {
+        "portfolioId": {
+          "type": "string",
+          "format": "uuid",
+          "pattern": "^[a-f0-9-]+$"
+        },
+        "enabled": {
+          "type": "boolean"
+        },
+        "tenantEnabled": {
+          "type": "boolean"
+        },
+        "pinSet": {
+          "type": "boolean"
+        },
+        "pinUpdatedAt": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "date-time"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "activeLinkCount": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "updatedAt": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "date-time"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "portfolioId",
+        "enabled",
+        "tenantEnabled",
+        "pinSet",
+        "pinUpdatedAt",
+        "activeLinkCount",
+        "updatedAt"
+      ],
+      "additionalProperties": false
+    },
+    "ResearchShareLink": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid",
+          "pattern": "^[a-f0-9-]+$"
+        },
+        "portfolioId": {
+          "type": "string",
+          "format": "uuid",
+          "pattern": "^[a-f0-9-]+$"
+        },
+        "clientId": {
+          "type": "string",
+          "format": "uuid",
+          "pattern": "^[a-f0-9-]+$"
+        },
+        "clientName": {
+          "type": "string",
+          "maxLength": 1000
+        },
+        "snapshotId": {
+          "type": "string",
+          "format": "uuid",
+          "pattern": "^[a-f0-9-]+$"
+        },
+        "snapshotName": {
+          "type": "string",
+          "maxLength": 1000
+        },
+        "designId": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "uuid",
+              "pattern": "^[a-f0-9-]+$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "designVersion": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "branding": {
+          "type": "boolean"
+        },
+        "status": {
+          "enum": [
+            "active",
+            "expired",
+            "revoked"
+          ]
+        },
+        "publishedByUserId": {
+          "type": "string",
+          "format": "uuid",
+          "pattern": "^[a-f0-9-]+$"
+        },
+        "publishedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "expiresAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "revokedAt": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "date-time"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "openCount": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "lastOpenedAt": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "date-time"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "failedPinAttempts": {
+          "type": "integer",
+          "minimum": 0
+        }
+      },
+      "required": [
+        "id",
+        "portfolioId",
+        "clientId",
+        "clientName",
+        "snapshotId",
+        "snapshotName",
+        "designId",
+        "designVersion",
+        "branding",
+        "status",
+        "publishedByUserId",
+        "publishedAt",
+        "expiresAt",
+        "revokedAt",
+        "openCount",
+        "lastOpenedAt",
+        "failedPinAttempts"
+      ],
+      "additionalProperties": false
+    },
+    "ResearchShareListOutput": {
+      "type": "object",
+      "properties": {
+        "sharing": {
+          "$ref": "urn:meri:retrieval:research-portfolio-sharing:0.2.0#/$defs/ResearchShareSettings"
+        },
+        "links": {
+          "type": "array",
+          "items": {
+            "$ref": "urn:meri:retrieval:research-portfolio-sharing:0.2.0#/$defs/ResearchShareLink"
+          },
+          "maxItems": 1000
+        }
+      },
+      "required": [
+        "sharing",
+        "links"
+      ],
+      "additionalProperties": false
+    },
+    "ResearchShareProposalStatus": {
+      "enum": [
+        "proposed",
+        "executing",
+        "succeeded",
+        "failed_retryable",
+        "failed_terminal",
+        "outcome_unknown",
+        "blocked",
+        "dismissed",
+        "expired"
+      ]
+    },
+    "ResearchShareOneTimeResult": {
+      "type": "object",
+      "properties": {
+        "sharePath": {
+          "type": "string",
+          "pattern": "^/share/(research/)?[a-f0-9]{64}$"
+        },
+        "shownOnce": {
+          "const": true
+        }
+      },
+      "required": [
+        "sharePath",
+        "shownOnce"
+      ],
+      "additionalProperties": false
+    },
+    "ResearchShareProposal": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "const": "research_share"
+        },
+        "proposalId": {
+          "type": "string",
+          "format": "uuid",
+          "pattern": "^[a-f0-9-]+$"
+        },
+        "commandSha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "binding": {
+          "$ref": "urn:meri:contracts:0.1.0#/$defs/RunBinding"
+        },
+        "scopes": {
+          "type": "array",
+          "items": {
+            "$ref": "urn:meri:contracts:0.1.0#/$defs/Scope"
+          },
+          "minItems": 1,
+          "maxItems": 1
+        },
+        "operation": {
+          "enum": [
+            "publish_research_portfolio_share_link",
+            "revoke_research_portfolio_share_link"
+          ]
+        },
+        "request": {
+          "oneOf": [
+            {
+              "$ref": "urn:meri:retrieval:research-portfolio-sharing:0.2.0#/$defs/ResearchSharePublishBound"
+            },
+            {
+              "$ref": "urn:meri:retrieval:research-portfolio-sharing:0.2.0#/$defs/ResearchShareRevokeInput"
+            }
+          ]
+        },
+        "preview": {
+          "type": "object",
+          "properties": {
+            "label": {
+              "enum": [
+                "Publish client share link",
+                "Revoke client share link"
+              ]
+            },
+            "clientName": {
+              "type": "string",
+              "maxLength": 1000
+            },
+            "portfolioId": {
+              "type": "string",
+              "format": "uuid",
+              "pattern": "^[a-f0-9-]+$"
+            }
+          },
+          "required": [
+            "label"
+          ],
+          "additionalProperties": false
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "expiresAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "kind",
+        "proposalId",
+        "commandSha256",
+        "binding",
+        "scopes",
+        "operation",
+        "request",
+        "preview",
+        "createdAt",
+        "expiresAt"
+      ],
+      "additionalProperties": false
+    },
+    "ResearchSharePrepared": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "const": "approval_required"
+        },
+        "proposal": {
+          "$ref": "urn:meri:retrieval:research-portfolio-sharing:0.2.0#/$defs/ResearchShareProposal"
+        }
+      },
+      "required": [
+        "status",
+        "proposal"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

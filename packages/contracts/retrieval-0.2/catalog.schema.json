@@ -112,7 +112,10 @@
                 "list_teams_channels",
                 "get_teams_channel_messages",
                 "describe_capiro_data",
-                "query_capiro_data"
+                "query_capiro_data",
+                "get_research_portfolio_share_links",
+                "publish_research_portfolio_share_link",
+                "revoke_research_portfolio_share_link"
               ]
             },
             "disposition": {
@@ -560,8 +563,8 @@
           "items": {
             "$ref": "urn:meri:retrieval:catalog:0.2.0#/$defs/NativeMapping"
           },
-          "minItems": 145,
-          "maxItems": 145,
+          "minItems": 148,
+          "maxItems": 148,
           "uniqueItems": true
         },
         "operations": {

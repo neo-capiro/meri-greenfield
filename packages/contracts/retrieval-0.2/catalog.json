@@ -1,7 +1,7 @@
 {
   "contractVersion": "0.2.0",
   "catalogId": "meri.retrieval",
-  "catalogVersion": "0.2.19",
+  "catalogVersion": "0.2.20",
   "sourceRegistryCommit": "7c1e509f3fdb3b9eb81758a3df413b7ada9321f9",
   "originals": [
     {
@@ -1321,6 +1321,36 @@
       "boundary": "Additive public SQL read over Core-published curated relations; existing QuerySpec and source readers remain unchanged.",
       "replacement": {
         "id": "query_capiro_data",
+        "version": "0.2.0"
+      },
+      "state": "mapped"
+    },
+    {
+      "id": "get_research_portfolio_share_links",
+      "disposition": "selected",
+      "boundary": "Conversation-scoped Research Portfolio sharing. Core owns current authority and the signed-in user confirmation; no address or PIN in history, model results or reads.",
+      "replacement": {
+        "id": "get_research_portfolio_share_links",
+        "version": "0.2.0"
+      },
+      "state": "mapped"
+    },
+    {
+      "id": "publish_research_portfolio_share_link",
+      "disposition": "selected",
+      "boundary": "Conversation-scoped Research Portfolio sharing. Core owns current authority and the signed-in user confirmation; no address or PIN in history, model results or reads.",
+      "replacement": {
+        "id": "publish_research_portfolio_share_link",
+        "version": "0.2.0"
+      },
+      "state": "mapped"
+    },
+    {
+      "id": "revoke_research_portfolio_share_link",
+      "disposition": "selected",
+      "boundary": "Conversation-scoped Research Portfolio sharing. Core owns current authority and the signed-in user confirmation; no address or PIN in history, model results or reads.",
+      "replacement": {
+        "id": "revoke_research_portfolio_share_link",
         "version": "0.2.0"
       },
       "state": "mapped"
@@ -8429,6 +8459,201 @@
       ],
       "fixtureIds": [
         "catalog.binding.query_capiro_data"
+      ]
+    },
+    {
+      "operation": {
+        "id": "get_research_portfolio_share_links",
+        "version": "0.2.0"
+      },
+      "displayName": "List client share links",
+      "whenToUse": "Read metadata for client share links in the current Research Portfolio conversation.",
+      "limitations": [
+        "Core checks current conversation, Portfolio role, selected client and tenant settings.",
+        "No PIN management, automatic sending, second approver, raw address recovery or direct model effect.",
+        "Publish binds Core frozen preview hash/version; changed designs or content require a new preview and confirmation."
+      ],
+      "positiveExamples": [
+        "List client share links for the current authorized Research Portfolio."
+      ],
+      "negativeExamples": [
+        "Read or copy a share address from history, set a PIN, send a link, or execute without the signed-in user confirmation."
+      ],
+      "sourceRequirements": [
+        {
+          "sourceId": "research_portfolios",
+          "authority": "authoritative",
+          "purpose": "evidence"
+        }
+      ],
+      "inputSchema": {
+        "id": "urn:meri:retrieval:research-portfolio-sharing:0.2.0#/$defs/ResearchShareListInput",
+        "sha256": "18ae5ea86025ef70a148b70062bfbc92dee14a9a3a0e90d74e91ff86a05ce91a"
+      },
+      "outputSchema": {
+        "id": "urn:meri:retrieval:research-portfolio-sharing:0.2.0#/$defs/ResearchShareListOutput",
+        "sha256": "18ae5ea86025ef70a148b70062bfbc92dee14a9a3a0e90d74e91ff86a05ce91a"
+      },
+      "aliases": [],
+      "sideEffect": "none",
+      "requiredGrants": [
+        "tool.read"
+      ],
+      "approvalBoundary": "none",
+      "handler": null,
+      "availability": "unimplemented",
+      "qualification": "pending",
+      "retry": {
+        "maxRetries": 0,
+        "retryableCodes": [],
+        "unknownOutcome": "reconcile-before-retry"
+      },
+      "replacement": null,
+      "requirementIds": [
+        "R-01",
+        "R-04",
+        "R-05"
+      ],
+      "ticketIds": [
+        "REL-02"
+      ],
+      "gateIds": [
+        "RG-02",
+        "RG-05",
+        "RG-07"
+      ],
+      "fixtureIds": [
+        "catalog.binding.get_research_portfolio_share_links"
+      ]
+    },
+    {
+      "operation": {
+        "id": "publish_research_portfolio_share_link",
+        "version": "0.2.0"
+      },
+      "displayName": "Prepare a client share link",
+      "whenToUse": "Prepare the exact sharing request for the current signed-in user to confirm through Core.",
+      "limitations": [
+        "Core checks current conversation, Portfolio role, selected client and tenant settings.",
+        "No PIN management, automatic sending, second approver, raw address recovery or direct model effect.",
+        "Publish binds Core frozen preview hash/version; changed designs or content require a new preview and confirmation."
+      ],
+      "positiveExamples": [
+        "Prepare a client share link for the current authorized Research Portfolio."
+      ],
+      "negativeExamples": [
+        "Read or copy a share address from history, set a PIN, send a link, or execute without the signed-in user confirmation."
+      ],
+      "sourceRequirements": [
+        {
+          "sourceId": "research_portfolios",
+          "authority": "authoritative",
+          "purpose": "evidence"
+        }
+      ],
+      "inputSchema": {
+        "id": "urn:meri:retrieval:research-portfolio-sharing:0.2.0#/$defs/ResearchSharePublishInput",
+        "sha256": "18ae5ea86025ef70a148b70062bfbc92dee14a9a3a0e90d74e91ff86a05ce91a"
+      },
+      "outputSchema": {
+        "id": "urn:meri:retrieval:research-portfolio-sharing:0.2.0#/$defs/ResearchSharePrepared",
+        "sha256": "18ae5ea86025ef70a148b70062bfbc92dee14a9a3a0e90d74e91ff86a05ce91a"
+      },
+      "aliases": [],
+      "sideEffect": "source-command",
+      "requiredGrants": [
+        "command.execute"
+      ],
+      "approvalBoundary": "immutable-proposal",
+      "handler": null,
+      "availability": "unimplemented",
+      "qualification": "pending",
+      "retry": {
+        "maxRetries": 0,
+        "retryableCodes": [],
+        "unknownOutcome": "reconcile-before-retry"
+      },
+      "replacement": null,
+      "requirementIds": [
+        "R-01",
+        "R-04",
+        "R-05"
+      ],
+      "ticketIds": [
+        "REL-02"
+      ],
+      "gateIds": [
+        "RG-02",
+        "RG-05",
+        "RG-07"
+      ],
+      "fixtureIds": [
+        "catalog.binding.publish_research_portfolio_share_link"
+      ]
+    },
+    {
+      "operation": {
+        "id": "revoke_research_portfolio_share_link",
+        "version": "0.2.0"
+      },
+      "displayName": "Prepare to revoke a client share link",
+      "whenToUse": "Prepare the exact sharing request for the current signed-in user to confirm through Core.",
+      "limitations": [
+        "Core checks current conversation, Portfolio role, selected client and tenant settings.",
+        "No PIN management, automatic sending, second approver, raw address recovery or direct model effect.",
+        "Publish binds Core frozen preview hash/version; changed designs or content require a new preview and confirmation."
+      ],
+      "positiveExamples": [
+        "Prepare to revoke a client share link for the current authorized Research Portfolio."
+      ],
+      "negativeExamples": [
+        "Read or copy a share address from history, set a PIN, send a link, or execute without the signed-in user confirmation."
+      ],
+      "sourceRequirements": [
+        {
+          "sourceId": "research_portfolios",
+          "authority": "authoritative",
+          "purpose": "evidence"
+        }
+      ],
+      "inputSchema": {
+        "id": "urn:meri:retrieval:research-portfolio-sharing:0.2.0#/$defs/ResearchShareRevokeInput",
+        "sha256": "18ae5ea86025ef70a148b70062bfbc92dee14a9a3a0e90d74e91ff86a05ce91a"
+      },
+      "outputSchema": {
+        "id": "urn:meri:retrieval:research-portfolio-sharing:0.2.0#/$defs/ResearchSharePrepared",
+        "sha256": "18ae5ea86025ef70a148b70062bfbc92dee14a9a3a0e90d74e91ff86a05ce91a"
+      },
+      "aliases": [],
+      "sideEffect": "source-command",
+      "requiredGrants": [
+        "command.execute"
+      ],
+      "approvalBoundary": "immutable-proposal",
+      "handler": null,
+      "availability": "unimplemented",
+      "qualification": "pending",
+      "retry": {
+        "maxRetries": 0,
+        "retryableCodes": [],
+        "unknownOutcome": "reconcile-before-retry"
+      },
+      "replacement": null,
+      "requirementIds": [
+        "R-01",
+        "R-04",
+        "R-05"
+      ],
+      "ticketIds": [
+        "REL-02"
+      ],
+      "gateIds": [
+        "RG-02",
+        "RG-05",
+        "RG-07"
+      ],
+      "fixtureIds": [
+        "catalog.binding.revoke_research_portfolio_share_link"
       ]
     }
   ]

@@ -27,6 +27,7 @@ export const READ_FAMILIES=Object.freeze({mail:Object.freeze({clientScope:'optio
  'memory-proposals':Object.freeze({clientScope:'optional'}),
  'research-portfolio-evidence':Object.freeze({clientScope:'optional'}),
  'research-portfolio':Object.freeze({clientScope:'optional'}),
+ 'research-portfolio-sharing':Object.freeze({clientScope:'optional',operationIds:Object.freeze(['get_research_portfolio_share_links'])}),
  'florida-budget':Object.freeze({clientScope:'optional'}),
  'bill-text':Object.freeze({clientScope:'optional'}),
  'public-reports':Object.freeze({clientScope:'optional'}),

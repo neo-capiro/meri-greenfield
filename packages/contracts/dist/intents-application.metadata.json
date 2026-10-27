@@ -116,8 +116,8 @@
     },
     {
       "path": "../../apps/control/intents/approval.mjs",
-      "sha256": "32352b94f958b2eae8c09a072221328f33dd0c023de710b77aba7e0071e6467f",
-      "bytes": 20990
+      "sha256": "845cbfea9a9ead9bf3563269bb9d031161d371813e9b9ec9743d6d54918a78e2",
+      "bytes": 24439
     },
     {
       "path": "../../apps/control/intents/faults.mjs",
@@ -201,8 +201,8 @@
     },
     {
       "path": "generate-intents.mjs",
-      "sha256": "b07af88ea003af67d237118188293cad94c5c1f2fce65f18e1970b47c34464f1",
-      "bytes": 12748
+      "sha256": "e108fc1b57d03789e6ecb85d8b377855168e6c541631938613b7a0f8411bb9ea",
+      "bytes": 12834
     },
     {
       "path": "intents-application/boundary.mjs",
@@ -231,18 +231,23 @@
     },
     {
       "path": "intents-application/schema.mjs",
-      "sha256": "372a24875b3f0f07b45f1714404c1c0d138a444eec6772136b650997b24a4332",
-      "bytes": 8939
+      "sha256": "faf0b8bc6c38007584e2a66c44f4925805d874784c2ce196acbbec9f366fa823",
+      "bytes": 9869
     },
     {
       "path": "intents-application/semantics.mjs",
-      "sha256": "ff2a88467967c43644c3e79b761d4acc384a5527947462239ce5ec26de91bb37",
-      "bytes": 11869
+      "sha256": "0d4809aa15f1cd7faf70c7b64214a2bf70f1e48a9498f6b5926d334774592dd0",
+      "bytes": 13267
     },
     {
       "path": "meri.schema.json",
       "sha256": "e3de878198bbd557843ac440e48664ad5175eecd99f7ec932021ffc465bf8c5b",
       "bytes": 50043
+    },
+    {
+      "path": "retrieval-0.2/research-portfolio-sharing.schema.json",
+      "sha256": "18ae5ea86025ef70a148b70062bfbc92dee14a9a3a0e90d74e91ff86a05ce91a",
+      "bytes": 10889
     },
     {
       "path": "schedules-0.2/application-protocol.mjs",
@@ -265,7 +270,7 @@
       "bytes": 24305
     }
   ],
-  "schemaSha256": "0120aa451e8517bb202b8b0ef32504102e73f37561f82c131e36db65ab00b21c",
+  "schemaSha256": "12280337c9f2de8462018e6800b6bbda938e5d482d8cb2c4333a3ddbfb329cc7",
   "browserInputs": [
     "artifacts-0.2/artifact-formats.mjs",
     "document-application/boundary.mjs",

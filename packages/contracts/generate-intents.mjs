@@ -12,7 +12,7 @@ export async function generateIntentsContracts({check=false,toolchainRoot}={}){
  try{
   const sources=new Map(),record=async path=>{const raw=await readFile(new URL(path,HERE));sources.set(path,{path,sha256:hash(raw),bytes:raw.length});return raw;};
   const originals=new Map();
-  for(const path of ['meri.schema.json','commands-0.2/task-create.schema.json','commands-0.2/task-update.schema.json','commands-0.2/document-draft.schema.json','commands-0.2/memory-propose.schema.json','commands-0.2/artifact-file.schema.json','artifacts-0.2/artifact.schema.json','schedules-0.2/tool-interface.schema.json','schedules-0.2/lifecycle.schema.json','schedules-0.2/inspection.schema.json']){const raw=await record(path),schema=JSON.parse(raw);originals.set(schema.$id,{schema,path});}
+  for(const path of ['retrieval-0.2/research-portfolio-sharing.schema.json','meri.schema.json','commands-0.2/task-create.schema.json','commands-0.2/task-update.schema.json','commands-0.2/document-draft.schema.json','commands-0.2/memory-propose.schema.json','commands-0.2/artifact-file.schema.json','artifacts-0.2/artifact.schema.json','schedules-0.2/tool-interface.schema.json','schedules-0.2/lifecycle.schema.json','schedules-0.2/inspection.schema.json']){const raw=await record(path),schema=JSON.parse(raw);originals.set(schema.$id,{schema,path});}
   const errors=(await record('../../apps/control/product-access/errors.mjs')).toString(),fieldPattern=/const FIELD=\/(.+)\/u;/u.exec(errors)?.[1];if(!fieldPattern)throw Error('Missing canonical product error field pattern');
   for(const name of ['INTENTS_PATHS','INTENTS_LIMITS','INTENTS_ERROR_OUTCOMES','INTENTS_ERROR_STATUSES','INTENTS_APPROVABLE_ACTIONS','INTENTS_FAILURE_CODES'])if(application[name]===undefined)throw Error('Missing canonical intents declaration '+name);
   const config={paths:application.INTENTS_PATHS,limits:application.INTENTS_LIMITS,errorStatuses:application.INTENTS_ERROR_STATUSES,errorOutcomes:application.INTENTS_ERROR_OUTCOMES,failureCodes:application.INTENTS_FAILURE_CODES,approvableActions:application.INTENTS_APPROVABLE_ACTIONS,fieldPattern};
@@ -43,7 +43,7 @@ export async function generateIntentsContracts({check=false,toolchainRoot}={}){
   // Restore the public aliases using those emitted names without copying their schema or pinning generated hashes.
   const exported=[...declarations.matchAll(/export (?:interface|type) ([A-Za-z0-9_]+)/gu)].map(match=>match[1]);
   const typeKey=name=>name.replaceAll('_','').toLowerCase();
-  const aliases=['RoutinesProposal','RoutinesApproveResponse','RoutinesListRequest','RoutinesListResponse'].map(name=>{
+  const aliases=['IntentsResearchShareProposal','RoutinesProposal','RoutinesApproveResponse','RoutinesListRequest','RoutinesListResponse'].map(name=>{
    if(exported.includes(name))return '';
    const canonical=root.$defs[name].$ref.split('/').at(-1),matches=exported.filter(value=>typeKey(value)===typeKey(canonical));
    if(matches.length!==1)throw Error('Missing canonical declaration for '+name);
