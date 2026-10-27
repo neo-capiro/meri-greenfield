@@ -32,3 +32,27 @@ test('Outreach Core client uses only fixed actor-auth routes; ordinary absence a
  assert.equal(await core.read({conversationId:binding.conversationId},{credential:'synthetic-current'}),null);assert.equal(calls[0].url,'https://core.invalid/api/engagement/outreach/sdk/read');assert.equal(calls[0].init.headers.authorization,'Bearer synthetic-current');assert.equal(calls[0].init.redirect,'error');
  denied=true;await assert.rejects(core.read({conversationId:binding.conversationId},{credential:'synthetic-current'}));
 });
+test('session/allocation failure settles the claimed unit before any submit, including expired caller lifetime',async()=>{
+ for(const stage of ['session','allocation','expired']){
+  let failed=[],submits=0,time=1000;
+  const core={async claim(){return claim;},async fail(input,options){failed.push(input);assert.equal(options.signal.aborted,false);assert.ok(options.deadlineMs>time);return {status:'failed',result:null};}};
+  const app=createOutreachStartApplication({core,now:()=>time,maxRequestMs:100,sessions:{async issue(){if(stage==='session')throw Error('session refused');if(stage==='expired')time+=101;return {credential:'synthetic',context:{conversationId:claim.conversationId,selectedClientId:claim.clientId}};}},service:{async allocateInput(){throw Error('allocation refused');},async submit(){submits++;}}});
+  const r=await app.handle(request(ids));assert.equal((await r.json()).error.code,'OUTREACH_GENERATION_UNAVAILABLE');assert.equal(submits,0);assert.deepEqual(failed,[{...ids,conversationId:claim.conversationId,requestId:claim.requestId,errorCode:'generation_failed'}]);
+ }
+});
+test('lost claim or failed cleanup acknowledgement remains UNKNOWN without another claim or submit',async()=>{
+ for(const lost of ['claim','cleanup']){
+  let claims=0,failures=0,submits=0;
+  const app=createOutreachStartApplication({core:{async claim(){claims++;if(lost==='claim')throw Error('claim ACK lost');return claim;},async fail(){failures++;throw Error('cleanup ACK lost');}},sessions:{async issue(){throw Error('session refused');}},service:{async submit(){submits++;}}});
+  const r=await app.handle(request(ids));assert.equal((await r.json()).error.code,'OUTREACH_GENERATION_UNKNOWN');assert.equal(claims,1);assert.equal(failures,lost==='cleanup'?1:0);assert.equal(submits,0);
+ }
+});
+test('Core fail receives retained done/held completion rather than discarding its result',async()=>{
+ for(const status of ['done','held','failed','unknown']){
+  const result=status==='done'||status==='held'?{subject:'Retained synthetic draft',version:1}:null;
+  const core=createOutreachCore({origin:'https://core.invalid',fetchImpl:async()=>Response.json({status,result})});
+  assert.deepEqual(await core.fail({...ids,conversationId:claim.conversationId,requestId:claim.requestId,errorCode:'generation_unknown'},{credential:'synthetic-current'}),{status,result});
+ }
+ const invalid=createOutreachCore({origin:'https://core.invalid',fetchImpl:async()=>Response.json({status:'done',result:[]})});
+ await assert.rejects(invalid.fail(ids,{credential:'synthetic-current'}));
+});

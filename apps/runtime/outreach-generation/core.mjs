@@ -14,7 +14,8 @@ export function createOutreachCore({origin,fetchImpl=globalThis.fetch,now=Date.n
    const length=r.headers.get('content-length');if(length!==null&&!/^(0|[1-9][0-9]*)$/u.test(length))throw outreachFailure();
    const value=await jsonBody({body:r.body,length:length===null?null:Number(length)},524288,life,life.check);
    if(operation==='claim'||operation==='read')return operation==='read'&&value===null?null:outreachSelection(value);
-   const result=data(own(value,['status','result']));if(!(operation==='complete'?['done','held','failed']:['failed','unknown']).includes(result.status)||operation==='fail'&&result.result!==null)throw outreachFailure();
+   // Both operations can return a previously settled unit after a lost ACK.
+   const result=data(own(value,['status','result']));if(!['done','held','failed','unknown'].includes(result.status)||result.result!==null&&(typeof result.result!=='object'||Array.isArray(result.result)))throw outreachFailure();
    return result;
   }finally{life.close();}
  }
