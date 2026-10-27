@@ -73617,10 +73617,6 @@ async function item(value, conversationId) {
     savedNote(value, conversationId);
     return;
   }
-  if (value.kind === "saved_note") {
-    savedNote(value, conversationId);
-    return;
-  }
   if (value.kind === "legiwatch_action") {
     if (!Object.hasOwn(value, "proposal")) return;
     if (value.operation.id !== value.proposal.operation) conflict2();

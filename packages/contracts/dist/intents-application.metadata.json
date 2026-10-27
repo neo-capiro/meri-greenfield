@@ -247,8 +247,8 @@
     },
     {
       "path": "intents-application/semantics.mjs",
-      "sha256": "579bf64b224b0dc4bdbb1afb804a6a5eaf3850825dd4c73f40c5e4c86b6cb030",
-      "bytes": 27031
+      "sha256": "d960b44bce3ee4ba0a149d0ad69ba7d32b40361a6043da5afe96a273ce514136",
+      "bytes": 26959
     },
     {
       "path": "meri.schema.json",
