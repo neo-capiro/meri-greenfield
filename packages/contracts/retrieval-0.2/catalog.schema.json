@@ -123,7 +123,9 @@
                 "compare_florida_budget_amounts",
                 "compare_legislative_versions",
                 "get_business_development_brief",
-                "resolve_business_development_source"
+                "resolve_business_development_source",
+                "preview_legiwatch_relevance",
+                "save_legiwatch_relevance"
               ]
             },
             "disposition": {

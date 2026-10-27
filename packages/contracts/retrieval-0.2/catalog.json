@@ -606,17 +606,23 @@
     },
     {
       "id": "preview_legiwatch_relevance",
-      "disposition": "deferred",
-      "boundary": "LegiWatch relevance scoring is a specialized proposal workflow outside the initial commands.",
-      "replacement": null,
-      "state": "deferred"
+      "disposition": "selected",
+      "boundary": "Current owner evidence preview and explicit approval of a pending relevance suggestion. No automatic assignment or monitoring.",
+      "replacement": {
+        "id": "preview_legiwatch_relevance",
+        "version": "0.2.0"
+      },
+      "state": "mapped"
     },
     {
       "id": "save_legiwatch_relevance",
-      "disposition": "deferred",
-      "boundary": "Specialized Research Portfolio or LegiWatch source workflow is outside initial commands; exact authorization, side effects and fixture scope require separate acceptance.",
-      "replacement": null,
-      "state": "deferred"
+      "disposition": "selected",
+      "boundary": "Current owner evidence preview and explicit approval of a pending relevance suggestion. No automatic assignment or monitoring.",
+      "replacement": {
+        "id": "save_legiwatch_relevance",
+        "version": "0.2.0"
+      },
+      "state": "mapped"
     },
     {
       "id": "apply_legiwatch_suggestion",
@@ -8851,11 +8857,11 @@
       ],
       "inputSchema": {
         "id": "urn:meri:retrieval:legiwatch-action:0.2.0#/$defs/LegiwatchInput",
-        "sha256": "75c29f7f7b1c4caa84b315763b39b5b045447cfa51d0d8888db33f997ac276f3"
+        "sha256": "79c2f0fbbf040cf6af192af69353f0d298af0190f50d90951a94df8dbdfb1513"
       },
       "outputSchema": {
         "id": "urn:meri:retrieval:legiwatch-action:0.2.0#/$defs/LegiwatchPrepared",
-        "sha256": "75c29f7f7b1c4caa84b315763b39b5b045447cfa51d0d8888db33f997ac276f3"
+        "sha256": "79c2f0fbbf040cf6af192af69353f0d298af0190f50d90951a94df8dbdfb1513"
       },
       "aliases": [],
       "sideEffect": "source-command",
@@ -9213,6 +9219,136 @@
       ],
       "fixtureIds": [
         "catalog.binding.resolve_business_development_source"
+      ]
+    },
+    {
+      "operation": {
+        "id": "preview_legiwatch_relevance",
+        "version": "0.2.0"
+      },
+      "displayName": "Preview LegiWatch relevance",
+      "whenToUse": "Read canonical bill source evidence, then provide an exact source quote and rationale to obtain a preview hash.",
+      "limitations": [
+        "Current interactive user only. Preserve the exact source scope, evidence offsets and preview hash.",
+        "Evidence may be partial or excerpted; semantic relevance is inference, not canonical fact.",
+        "Saving produces a pending suggestion, not an assigned bill or activated watch. UNKNOWN is read-only recovery, never automatic replay."
+      ],
+      "positiveExamples": [
+        "Inspect exact source evidence before preparing a pending suggestion."
+      ],
+      "negativeExamples": [
+        "Auto-assign a bill, activate a watch, invent source quotes or replay an uncertain effect."
+      ],
+      "sourceRequirements": [
+        {
+          "sourceId": "legiwatch_suggestions",
+          "authority": "authoritative",
+          "purpose": "evidence"
+        }
+      ],
+      "inputSchema": {
+        "id": "urn:meri:retrieval:legiwatch-relevance:0.2.0#/$defs/RelevancePreviewInput",
+        "sha256": "073c1c7ab64fe948be59eebed71862c87c04cb404ded0918720510879e494d9b"
+      },
+      "outputSchema": {
+        "id": "urn:meri:retrieval:legiwatch-relevance:0.2.0#/$defs/RelevancePreviewOutput",
+        "sha256": "073c1c7ab64fe948be59eebed71862c87c04cb404ded0918720510879e494d9b"
+      },
+      "aliases": [],
+      "sideEffect": "none",
+      "requiredGrants": [
+        "tool.read"
+      ],
+      "approvalBoundary": "none",
+      "handler": null,
+      "availability": "unimplemented",
+      "qualification": "pending",
+      "retry": {
+        "maxRetries": 0,
+        "retryableCodes": [],
+        "unknownOutcome": "reconcile-before-retry"
+      },
+      "replacement": null,
+      "requirementIds": [
+        "R-01",
+        "R-04",
+        "R-05"
+      ],
+      "ticketIds": [
+        "REL-02"
+      ],
+      "gateIds": [
+        "RG-02",
+        "RG-05",
+        "RG-07"
+      ],
+      "fixtureIds": [
+        "catalog.binding.preview_legiwatch_relevance"
+      ]
+    },
+    {
+      "operation": {
+        "id": "save_legiwatch_relevance",
+        "version": "0.2.0"
+      },
+      "displayName": "Propose saving a pending LegiWatch relevance suggestion",
+      "whenToUse": "Propose the exact source-verified preview for explicit approval; the result is a pending suggestion requiring its own review.",
+      "limitations": [
+        "Current interactive user only. Preserve the exact source scope, evidence offsets and preview hash.",
+        "Evidence may be partial or excerpted; semantic relevance is inference, not canonical fact.",
+        "Saving produces a pending suggestion, not an assigned bill or activated watch. UNKNOWN is read-only recovery, never automatic replay."
+      ],
+      "positiveExamples": [
+        "Inspect exact source evidence before preparing a pending suggestion."
+      ],
+      "negativeExamples": [
+        "Auto-assign a bill, activate a watch, invent source quotes or replay an uncertain effect."
+      ],
+      "sourceRequirements": [
+        {
+          "sourceId": "legiwatch_suggestions",
+          "authority": "authoritative",
+          "purpose": "evidence"
+        }
+      ],
+      "inputSchema": {
+        "id": "urn:meri:retrieval:legiwatch-relevance:0.2.0#/$defs/RelevanceInput",
+        "sha256": "073c1c7ab64fe948be59eebed71862c87c04cb404ded0918720510879e494d9b"
+      },
+      "outputSchema": {
+        "id": "urn:meri:retrieval:legiwatch-relevance:0.2.0#/$defs/RelevancePrepared",
+        "sha256": "073c1c7ab64fe948be59eebed71862c87c04cb404ded0918720510879e494d9b"
+      },
+      "aliases": [],
+      "sideEffect": "source-command",
+      "requiredGrants": [
+        "command.execute"
+      ],
+      "approvalBoundary": "immutable-proposal",
+      "handler": null,
+      "availability": "unimplemented",
+      "qualification": "pending",
+      "retry": {
+        "maxRetries": 0,
+        "retryableCodes": [],
+        "unknownOutcome": "reconcile-before-retry"
+      },
+      "replacement": null,
+      "requirementIds": [
+        "R-01",
+        "R-04",
+        "R-05"
+      ],
+      "ticketIds": [
+        "REL-02"
+      ],
+      "gateIds": [
+        "RG-02",
+        "RG-05",
+        "RG-07"
+      ],
+      "fixtureIds": [
+        "catalog.binding.save_legiwatch_relevance"
       ]
     }
   ]

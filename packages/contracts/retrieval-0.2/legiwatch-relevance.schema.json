@@ -1,0 +1,923 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:meri:retrieval:legiwatch-relevance:0.2.0",
+  "$defs": {
+    "RelevancePreviewInput": {
+      "type": "object",
+      "properties": {
+        "clientId": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^[a-f0-9]{8}-[a-f0-9]{4}-[1-8][a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "folderId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 250
+        },
+        "jurisdiction": {
+          "type": "string",
+          "pattern": "^[A-Z]{2}$"
+        },
+        "sessionKey": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 60
+        },
+        "fields": {
+          "type": "array",
+          "items": {
+            "enum": [
+              "title",
+              "bill_text",
+              "amendment_text"
+            ]
+          },
+          "maxItems": 3,
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "billId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 250
+        },
+        "explanation": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 2000
+        },
+        "documentId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 250
+        },
+        "start": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "end": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        },
+        "quote": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 2000
+        }
+      },
+      "required": [
+        "clientId",
+        "folderId",
+        "jurisdiction",
+        "sessionKey",
+        "fields",
+        "billId"
+      ],
+      "additionalProperties": false
+    },
+    "RelevanceInput": {
+      "type": "object",
+      "properties": {
+        "clientId": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^[a-f0-9]{8}-[a-f0-9]{4}-[1-8][a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "folderId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 250
+        },
+        "jurisdiction": {
+          "type": "string",
+          "pattern": "^[A-Z]{2}$"
+        },
+        "sessionKey": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 60
+        },
+        "fields": {
+          "type": "array",
+          "items": {
+            "enum": [
+              "title",
+              "bill_text",
+              "amendment_text"
+            ]
+          },
+          "maxItems": 3,
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "billId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 250
+        },
+        "explanation": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 2000
+        },
+        "documentId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 250
+        },
+        "start": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "end": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        },
+        "quote": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 2000
+        },
+        "previewHash": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        }
+      },
+      "required": [
+        "clientId",
+        "folderId",
+        "jurisdiction",
+        "sessionKey",
+        "fields",
+        "billId",
+        "explanation",
+        "documentId",
+        "start",
+        "end",
+        "quote",
+        "previewHash"
+      ],
+      "additionalProperties": false
+    },
+    "RelevanceRequest": {
+      "type": "object",
+      "properties": {
+        "clientId": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^[a-f0-9]{8}-[a-f0-9]{4}-[1-8][a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "folderId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 250
+        },
+        "jurisdiction": {
+          "type": "string",
+          "pattern": "^[A-Z]{2}$"
+        },
+        "sessionKey": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 60
+        },
+        "fields": {
+          "type": "array",
+          "items": {
+            "enum": [
+              "title",
+              "bill_text",
+              "amendment_text"
+            ]
+          },
+          "maxItems": 3,
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "billId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 250
+        },
+        "explanation": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 2000
+        },
+        "documentId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 250
+        },
+        "start": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "end": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        },
+        "quote": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 2000
+        },
+        "previewHash": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "requestKey": {
+          "type": "string",
+          "minLength": 8,
+          "maxLength": 180
+        }
+      },
+      "required": [
+        "clientId",
+        "folderId",
+        "jurisdiction",
+        "sessionKey",
+        "fields",
+        "billId",
+        "explanation",
+        "documentId",
+        "start",
+        "end",
+        "quote",
+        "previewHash",
+        "requestKey"
+      ],
+      "additionalProperties": false
+    },
+    "RelevanceDiscovery": {
+      "type": "object",
+      "properties": {
+        "bill": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 250
+            },
+            "number": {
+              "type": "string"
+            },
+            "title": {
+              "type": "string"
+            },
+            "sponsor": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "jurisdiction": {
+              "type": "string",
+              "pattern": "^[A-Z]{2}$"
+            },
+            "sessionKey": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 60
+            },
+            "status": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "latestAction": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "latestActionAt": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "sourceUrl": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "chamber": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "summary": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "classifications": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "subjects": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "currentCommittee": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          },
+          "required": [
+            "id",
+            "number",
+            "title",
+            "sponsor",
+            "jurisdiction",
+            "sessionKey",
+            "status",
+            "latestAction",
+            "latestActionAt",
+            "sourceUrl"
+          ],
+          "additionalProperties": false
+        },
+        "documents": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 250
+              },
+              "billId": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 250
+              },
+              "kind": {
+                "enum": [
+                  "title",
+                  "bill_text",
+                  "amendment_text"
+                ]
+              },
+              "revision": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 250
+              },
+              "observationId": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 250
+              },
+              "sourceUrl": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "extractorVersion": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "text": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "maxLength": 12000
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "complete": {
+                "type": "boolean"
+              },
+              "reason": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "excerptOnly": {
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "id",
+              "billId",
+              "kind",
+              "revision",
+              "observationId",
+              "sourceUrl",
+              "extractorVersion",
+              "text",
+              "complete",
+              "reason",
+              "excerptOnly"
+            ],
+            "additionalProperties": false
+          },
+          "maxItems": 1001
+        },
+        "coverage": {
+          "type": "object",
+          "properties": {
+            "complete": {
+              "type": "boolean"
+            },
+            "inspectedDocuments": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "missing": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          "required": [
+            "complete",
+            "inspectedDocuments",
+            "missing"
+          ],
+          "additionalProperties": false
+        },
+        "effects": {
+          "type": "array",
+          "items": {},
+          "maxItems": 0
+        },
+        "previewHash": {
+          "type": "null"
+        }
+      },
+      "required": [
+        "bill",
+        "documents",
+        "coverage",
+        "effects",
+        "previewHash"
+      ],
+      "additionalProperties": false
+    },
+    "RelevanceVerified": {
+      "type": "object",
+      "properties": {
+        "input": {
+          "type": "object",
+          "properties": {
+            "scope": {
+              "type": "object",
+              "properties": {
+                "jurisdiction": {
+                  "type": "string",
+                  "pattern": "^[A-Z]{2}$"
+                },
+                "sessionKey": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 60
+                },
+                "fields": {
+                  "type": "array",
+                  "items": {
+                    "enum": [
+                      "title",
+                      "bill_text",
+                      "amendment_text"
+                    ]
+                  },
+                  "maxItems": 3,
+                  "minItems": 1,
+                  "uniqueItems": true
+                }
+              },
+              "required": [
+                "jurisdiction",
+                "sessionKey",
+                "fields"
+              ],
+              "additionalProperties": false
+            },
+            "folderId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 250
+            },
+            "billId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 250
+            },
+            "explanation": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 2000
+            },
+            "documentId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 250
+            },
+            "start": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "end": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 9007199254740991
+            },
+            "quote": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 2000
+            }
+          },
+          "required": [
+            "scope",
+            "folderId",
+            "billId",
+            "explanation",
+            "documentId",
+            "start",
+            "end",
+            "quote"
+          ],
+          "additionalProperties": false
+        },
+        "binding": {
+          "type": "object",
+          "properties": {
+            "input": {
+              "type": "object",
+              "properties": {
+                "scope": {
+                  "type": "object",
+                  "properties": {
+                    "jurisdiction": {
+                      "type": "string",
+                      "pattern": "^[A-Z]{2}$"
+                    },
+                    "sessionKey": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 60
+                    },
+                    "fields": {
+                      "type": "array",
+                      "items": {
+                        "enum": [
+                          "title",
+                          "bill_text",
+                          "amendment_text"
+                        ]
+                      },
+                      "maxItems": 3,
+                      "minItems": 1,
+                      "uniqueItems": true
+                    }
+                  },
+                  "required": [
+                    "jurisdiction",
+                    "sessionKey",
+                    "fields"
+                  ],
+                  "additionalProperties": false
+                },
+                "folderId": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 250
+                },
+                "billId": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 250
+                },
+                "explanation": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 2000
+                },
+                "documentId": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 250
+                },
+                "start": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9007199254740991
+                },
+                "end": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 9007199254740991
+                },
+                "quote": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 2000
+                }
+              },
+              "required": [
+                "scope",
+                "folderId",
+                "billId",
+                "explanation",
+                "documentId",
+                "start",
+                "end",
+                "quote"
+              ],
+              "additionalProperties": false
+            },
+            "sourceFingerprint": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            "folderVersion": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            }
+          },
+          "required": [
+            "input",
+            "sourceFingerprint",
+            "folderVersion"
+          ],
+          "additionalProperties": false
+        },
+        "previewHash": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "coverage": {
+          "type": "object",
+          "properties": {
+            "complete": {
+              "type": "boolean"
+            },
+            "inspectedDocuments": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "missing": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          "required": [
+            "complete",
+            "inspectedDocuments",
+            "missing"
+          ],
+          "additionalProperties": false
+        },
+        "effects": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "kind": {
+                "const": "pending_semantic_suggestion"
+              },
+              "automaticAssignment": {
+                "const": false
+              }
+            },
+            "required": [
+              "kind",
+              "automaticAssignment"
+            ],
+            "additionalProperties": false
+          },
+          "maxItems": 1,
+          "minItems": 1
+        }
+      },
+      "required": [
+        "input",
+        "binding",
+        "previewHash",
+        "coverage",
+        "effects"
+      ],
+      "additionalProperties": false
+    },
+    "RelevancePreviewOutput": {
+      "type": "object",
+      "properties": {
+        "version": {
+          "const": "0.1.0"
+        },
+        "tool": {
+          "const": "preview_legiwatch_relevance"
+        },
+        "generatedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "selection": {
+          "$ref": "#/$defs/RelevancePreviewInput"
+        },
+        "data": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/RelevanceDiscovery"
+            },
+            {
+              "$ref": "#/$defs/RelevanceVerified"
+            }
+          ]
+        },
+        "effects": {
+          "type": "array",
+          "maxItems": 0
+        },
+        "coverage": {
+          "type": "object",
+          "properties": {
+            "basis": {
+              "const": "current_owner_read"
+            },
+            "sourceUniverseComplete": {
+              "const": false
+            },
+            "maxOutputBytes": {
+              "const": 262144
+            },
+            "limitations": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          "required": [
+            "basis",
+            "sourceUniverseComplete",
+            "maxOutputBytes",
+            "limitations"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "version",
+        "tool",
+        "generatedAt",
+        "selection",
+        "data",
+        "effects",
+        "coverage"
+      ],
+      "additionalProperties": false
+    },
+    "RelevanceReceipt": {
+      "type": "object",
+      "properties": {
+        "request": {
+          "$ref": "#/$defs/RelevanceRequest"
+        },
+        "outcome": {
+          "const": "suggested"
+        },
+        "payload": {
+          "type": "object",
+          "properties": {
+            "binding": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            "suggestionId": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{8}-[a-f0-9]{4}-[1-8][a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$"
+            },
+            "version": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 9007199254740991
+            },
+            "origin": {
+              "const": "semantic"
+            },
+            "state": {
+              "const": "pending"
+            }
+          },
+          "required": [
+            "binding",
+            "suggestionId",
+            "version",
+            "origin",
+            "state"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "request",
+        "outcome",
+        "payload"
+      ],
+      "additionalProperties": false
+    },
+    "RelevancePrepared": {
+      "$ref": "urn:meri:retrieval:legiwatch-action:0.2.0#/$defs/LegiwatchPrepared"
+    }
+  }
+}

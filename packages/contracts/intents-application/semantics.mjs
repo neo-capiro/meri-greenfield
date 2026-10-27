@@ -20,7 +20,7 @@ const STABLE=['tenantId','actorId','conversationId','runId'];
 async function proposal(value,conversationId){
  if(value.kind==='legiwatch_action'){
   const {commandSha256,...bound}=value,s=value.scopes[0],selected=value.context.selectedClientId;
-  if(await sha(bound)!==commandSha256||value.binding.conversationId!==conversationId||value.context.conversationId!==conversationId||parsed(value.expiresAt)<=parsed(value.createdAt)||s.tenantId!==value.binding.tenantId||s.kind!==(selected===null?'private-user':'client')||s.resourceId!==(selected??value.binding.actorId)||selected!==null&&value.request.clientId!==selected)conflict();return;
+  if(value.operation!==(Object.hasOwn(value.request,'previewHash')?'save_legiwatch_relevance':'apply_legiwatch_suggestion')||Object.hasOwn(value.request,'previewHash')&&(!value.request.explanation.trim()||value.request.end-value.request.start!==value.request.quote.length||value.request.quote.length>2000||new Set(value.request.fields).size!==value.request.fields.length)||await sha(bound)!==commandSha256||value.binding.conversationId!==conversationId||value.context.conversationId!==conversationId||parsed(value.expiresAt)<=parsed(value.createdAt)||s.tenantId!==value.binding.tenantId||s.kind!==(selected===null?'private-user':'client')||s.resourceId!==(selected??value.binding.actorId)||selected!==null&&value.request.clientId!==selected)conflict();return;
  }
  if(value.kind==='research_share'){
   const {commandSha256,...bound}=value,publishing=value.operation==='publish_research_portfolio_share_link';
@@ -115,15 +115,16 @@ function phase(item){
  if(d!==null&&typeof d==='object'){if(p!==d.decision)conflict();return;}
  if(!(d===null?['awaiting_approval','expired']:['expired','unknown_decision']).includes(p))conflict();
 }
-function legiwatchResult(value,retained){
+async function legiwatchResult(value,retained){
  if(value.proposalId!==retained.proposalId||!same(value.request,retained.request)||!same(value.context,retained.context)||value.createdAt!==retained.createdAt||value.expiresAt!==retained.expiresAt||(value.status==='succeeded')!==(value.receipt!==null))conflict();
+ if(value.receipt!==null&&retained.operation==='save_legiwatch_relevance'){const r=value.receipt;if(!same(r.request,retained.request)||r.outcome!=='suggested'||r.payload.origin!=='semantic'||r.payload.state!=='pending'||r.payload.binding!==await sha([retained.request.previewHash,retained.request.requestKey]))conflict();return;}
  if(value.receipt!==null){const r=value.receipt,p=r.payload;if(!same(r.request,retained.request)||p.suggestionId!==retained.request.suggestionId||p.action!==retained.request.action||p.version!==retained.request.expectedVersion+1)conflict();}
 }
 async function item(value,conversationId){
  // The journal's createdAt is a bare millisecond-spelling pattern in the schema (no calendar check) and the journal writes toISOString(): read it exactly, so
  // an impossible day such as 2026-02-30 can not roll into March.
  exact(value.createdAt);
- if(value.kind==='legiwatch_action'){if(!Object.hasOwn(value,'proposal'))return;if(value.operation.id!==value.proposal.operation)conflict();await proposal(value.proposal,conversationId);if(value.result!=='unavailable')legiwatchResult(value.result,value.proposal);return;}
+ if(value.kind==='legiwatch_action'){if(!Object.hasOwn(value,'proposal'))return;if(value.operation.id!==value.proposal.operation)conflict();await proposal(value.proposal,conversationId);if(value.result!=='unavailable')await legiwatchResult(value.result,value.proposal);return;}
  if(value.kind==='research_share'){
   if(!Object.hasOwn(value,'proposal'))return;
   if(value.operation.id!==value.proposal.operation)conflict();await proposal(value.proposal,conversationId);return;
@@ -163,7 +164,7 @@ export async function list(value,request){
 export async function decide(value,request,retained){
  await proposal(retained,request.conversationId);
  if(retained.kind==='legiwatch_action'){
-  if(value.status!=='legiwatch_decided'||retained.proposalId!==request.proposalId||retained.commandSha256!==request.commandSha256||value.deliveryId!==request.deliveryId||value.proposalId!==request.proposalId)conflict();legiwatchResult(value.result,retained);return value;
+  if(value.status!=='legiwatch_decided'||retained.proposalId!==request.proposalId||retained.commandSha256!==request.commandSha256||value.deliveryId!==request.deliveryId||value.proposalId!==request.proposalId)conflict();await legiwatchResult(value.result,retained);return value;
  }
  if(retained.kind==='research_share'){
   if(value.status!=='research_share_decided'||retained.proposalId!==request.proposalId||retained.commandSha256!==request.commandSha256||value.deliveryId!==request.deliveryId||value.proposalId!==request.proposalId)conflict();

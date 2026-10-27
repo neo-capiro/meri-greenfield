@@ -21,6 +21,7 @@ const op=(/** @type {string} */id)=>Object.freeze({id,version:'0.2.0'});
 const row=(/** @type {string} */id,/** @type {string} */tool,/** @type {OwnerKind} */owner,/** @type {string|null} */unavailable=null)=>Object.freeze({operation:op(id),tool,owner,unavailable});
 /** @type {readonly IntentRow[]} */
 export const INTENT_ROWS=Object.freeze([
+ row('save_legiwatch_relevance','propose_legiwatch_relevance','legiwatch'),
  row('apply_legiwatch_suggestion','propose_legiwatch_suggestion','legiwatch'),
  row('publish_research_portfolio_share_link','propose_research_share','research-sharing'),
  row('revoke_research_portfolio_share_link','propose_research_share_revocation','research-sharing'),

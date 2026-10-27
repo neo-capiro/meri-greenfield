@@ -41,18 +41,18 @@ export function createLegiwatchCoreClient({origin,getCredentials,getServiceSecre
   async prepare({binding,selectedClientId,request,signal,deadlineMs}){
    validators.request(request);
    const context={conversationId:binding.conversationId,selectedClientId};
-   const result=validators.coreResult(await call({binding,selectedClientId,signal,deadlineMs},'POST',prefix+'/prepare_legiwatch_suggestion',{version:1,context,request},true),{request});
+   const result=validators.coreResult(await call({binding,selectedClientId,signal,deadlineMs},'POST',prefix+(Object.hasOwn(request,'previewHash')?'/prepare_legiwatch_relevance':'/prepare_legiwatch_suggestion'),{version:1,context,request},true),{request});
    if(result.status!=='proposed'||result.context.conversationId!==context.conversationId||result.context.selectedClientId!==selectedClientId)refuse('REFUSED','unknown');
    return result;
   },
   async read({proposal,signal,deadlineMs}){
    const p=validators.assertProposal(proposal);
-   return validators.coreResult(await call({proposal,signal,deadlineMs},'POST',prefix+'/read_legiwatch_suggestion_proposal',{version:1,proposalId:p.proposalId,context:p.context}),p);
+   return validators.coreResult(await call({proposal,signal,deadlineMs},'POST',prefix+(p.operation==='save_legiwatch_relevance'?'/read_legiwatch_relevance_proposal':'/read_legiwatch_suggestion_proposal'),{version:1,proposalId:p.proposalId,context:p.context}),p);
   },
   async decide({proposal,decision,signal,deadlineMs}){
    const p=validators.assertProposal(proposal);if(!['approved','rejected'].includes(decision))refuse('INVALID_ARGUMENTS');
    // An uncertain response is observed through read(), never replayed here automatically.
-   return validators.coreResult(await call({proposal,signal,deadlineMs},'POST',prefix+'/decide_legiwatch_suggestion',{version:1,proposalId:p.proposalId,context:p.context,decision},true),p);
+   return validators.coreResult(await call({proposal,signal,deadlineMs},'POST',prefix+(p.operation==='save_legiwatch_relevance'?'/decide_legiwatch_relevance':'/decide_legiwatch_suggestion'),{version:1,proposalId:p.proposalId,context:p.context,decision},true),p);
   },
  });
 }
