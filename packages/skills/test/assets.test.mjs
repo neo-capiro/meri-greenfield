@@ -7,6 +7,7 @@ import {fileURLToPath} from 'node:url';
 import {spawnSync} from 'node:child_process';
 import {createHash} from 'node:crypto';
 import {selectSkill,listSkills} from '../index.mjs';
+import assets from '../assets.json' with {type:'json'};
 import {validateShape,assertSkillManifest} from '../../contracts/retrieval-0.2/validate.mjs';
 import {canonicalSha256} from '../../contracts/validate.mjs';
 import catalog from '../../contracts/retrieval-0.2/catalog.json' with {type:'json'};
@@ -37,7 +38,7 @@ test('all 14 original identities have an explicit immutable asset (bill_watch at
  for(const entry of listSkills()){
   const asset=selectSkill(entry.skillId,entry.skillVersion);validateShape('SkillManifest',asset.manifest);
   assert.equal(asset.pin.manifestSha256,canonicalSha256(asset.manifest));
-  assert.equal(asset.pin.proseSha256,sha(Buffer.from(asset.prose)));assert.equal(asset.pin.catalogSha256,canonicalSha256(catalog));
+  assert.equal(asset.pin.proseSha256,sha(Buffer.from(asset.prose)));assert.equal(asset.pin.catalogSha256,assets.catalogSha256);assert.equal(asset.installationCatalogSha256,canonicalSha256(catalog));
   assert.equal(asset.manifest.approval.autoCreateTasks,false);assert.equal(asset.manifest.completion.negativeClaims,'complete-covered-only');
   assert.throws(()=>assertSkillManifest(asset.manifest,catalog),/unavailable operation/u);
  }

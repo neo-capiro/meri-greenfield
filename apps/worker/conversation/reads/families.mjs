@@ -11,6 +11,7 @@
 /** @typedef {{clientScope:'required'|'optional',requiredClientOperations?:readonly string[],operationIds?:readonly string[]}} ReadFamily */
 /** @type {Readonly<Record<string,Readonly<ReadFamily>>>} */
 export const READ_FAMILIES=Object.freeze({mail:Object.freeze({clientScope:'optional'}),
+ 'capiro-data':Object.freeze({clientScope:'optional'}),
  'connected-apps':Object.freeze({clientScope:'optional'}),
  'teams-channels':Object.freeze({clientScope:'optional'}),
  'meeting-source':Object.freeze({clientScope:'optional'}),
@@ -26,6 +27,7 @@ export const READ_FAMILIES=Object.freeze({mail:Object.freeze({clientScope:'optio
  'memory-proposals':Object.freeze({clientScope:'optional'}),
  'research-portfolio-evidence':Object.freeze({clientScope:'optional'}),
  'research-portfolio':Object.freeze({clientScope:'optional'}),
+ 'research-portfolio-sharing':Object.freeze({clientScope:'optional',operationIds:Object.freeze(['get_research_portfolio_share_links'])}),
  'florida-budget':Object.freeze({clientScope:'optional'}),
  'bill-text':Object.freeze({clientScope:'optional'}),
  'public-reports':Object.freeze({clientScope:'optional'}),

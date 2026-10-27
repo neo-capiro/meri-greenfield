@@ -469,6 +469,14 @@
           {
             "id": "search_research_sources",
             "version": "0.2.0"
+          },
+          {
+            "id": "describe_capiro_data",
+            "version": "0.2.0"
+          },
+          {
+            "id": "query_capiro_data",
+            "version": "0.2.0"
           }
         ]
       },
@@ -822,6 +830,14 @@
           },
           {
             "id": "search_research_sources",
+            "version": "0.2.0"
+          },
+          {
+            "id": "describe_capiro_data",
+            "version": "0.2.0"
+          },
+          {
+            "id": "query_capiro_data",
             "version": "0.2.0"
           }
         ]
@@ -1178,6 +1194,14 @@
             {
               "id": "search_research_sources",
               "version": "0.2.0"
+            },
+            {
+              "id": "describe_capiro_data",
+              "version": "0.2.0"
+            },
+            {
+              "id": "query_capiro_data",
+              "version": "0.2.0"
             }
           ]
         },
@@ -1531,6 +1555,14 @@
             },
             {
               "id": "search_research_sources",
+              "version": "0.2.0"
+            },
+            {
+              "id": "describe_capiro_data",
+              "version": "0.2.0"
+            },
+            {
+              "id": "query_capiro_data",
               "version": "0.2.0"
             }
           ]
@@ -1886,6 +1918,14 @@
             {
               "id": "search_research_sources",
               "version": "0.2.0"
+            },
+            {
+              "id": "describe_capiro_data",
+              "version": "0.2.0"
+            },
+            {
+              "id": "query_capiro_data",
+              "version": "0.2.0"
             }
           ]
         }
@@ -2221,6 +2261,14 @@
           },
           {
             "id": "search_research_sources",
+            "version": "0.2.0"
+          },
+          {
+            "id": "describe_capiro_data",
+            "version": "0.2.0"
+          },
+          {
+            "id": "query_capiro_data",
             "version": "0.2.0"
           }
         ],

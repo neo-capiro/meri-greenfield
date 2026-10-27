@@ -1,5 +1,6 @@
 /** Fixed source routes with bounded ordinary Core user/service credentials. */
 import {createHash} from 'node:crypto';
+import canonicalize from 'canonicalize';
 import {canonicalSha256} from '../../../../packages/contracts/validate.mjs';
 import {createDispatchLifetime} from '../../dispatch/dispatch-lifetime.mjs';
 import {deny,safeFailure} from '../../dispatch/operation-result.mjs';
@@ -24,6 +25,12 @@ export function createRetainedHttpTransport(configuration){
   const knowledgeObservation=observation==='client-knowledge-asof'&&c.contract.binding.group==='client-knowledge-search'&&c.operation.id==='search_client_knowledge';
   const modeObservation=observation==='evidence-mode'&&['public-data','program-elements'].includes(c.contract.binding.group)&&MODE_READ_OPERATIONS.includes(c.operation.id);
   const producerObservation=observation==='producer-context'&&['certification-status','rule-status','sam-opportunities'].includes(c.contract.binding.group);
+  const privateData=c.contract.binding.group==='capiro-data'&&c.request.source==='client_records';
+  if(privateData&&(c.operation.version!=='0.2.0'||!['describe_capiro_data','query_capiro_data'].includes(c.operation.id)||
+   method!=='POST'||path!==`/api/clio/tools/${c.operation.id}`||!serviceSecret||!same(body,c.request)))deny('GATEWAY_CONFIGURATION');
+  const correlation=privateData?canonicalize(frozenData({binding:c.authority.binding,subject:c.authority.subject,
+   policyRevision:c.authority.policyRevision,normalizationContext:c.normalizationContext})):undefined;
+  if(privateData&&(typeof correlation!=='string'||Buffer.byteLength(correlation,'utf8')>8192))deny('RESOURCE_LIMIT');
   if(observation!==undefined&&(!(fundingObservation||knowledgeObservation||modeObservation||producerObservation)||c.operation.version!=='0.2.0'||
    method!=='POST'||path!==`/api/clio/tools/${c.operation.id}`||!serviceSecret||!same(body,c.request)))deny('GATEWAY_CONFIGURATION');
   if(MODE_READ_OPERATIONS.includes(c.operation.id)&&!modeObservation&&!(producerObservation&&c.operation.id==='search_sam_opportunities'))deny('GATEWAY_CONFIGURATION');
@@ -49,6 +56,7 @@ export function createRetainedHttpTransport(configuration){
     const result=await fetchImpl(new URL(path,origin).href,{method,redirect:'error',credentials:'omit',cache:'no-store',signal,
      headers:{authorization:`${credentials.authorizationScheme??'Bearer'} ${credentials.bearerToken}`,accept:'application/json','accept-encoding':'identity',
       'x-meri-deadline-at':String(cutoff),
+      ...(correlation?{'x-meri-read-correlation':Buffer.from(correlation,'utf8').toString('base64url')}:{}),
       ...(observationHeader?{[NATIVE_READ_OBSERVATION_HEADER]:observationHeader}:{}),
       ...(serviceSecret?{'x-internal-service-secret':credentials.serviceSecret}:{}),...(body===undefined?{}:{'content-type':'application/json'})},
      ...(bytes===undefined?{}:{body:bytes})});

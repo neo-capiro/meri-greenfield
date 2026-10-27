@@ -8,6 +8,14 @@ if(!('error'in listed))for(const item of listed.intents){const entry:IntentsItem
 if(retained===undefined)throw new Error('no proposal admitted');
 const decided=await receiveIntentsResponse('decide',200,'{}',{request:decide,proposal:retained});
 const exactDecide:IntentsDecideResponse|IntentsErrorResponse=decided;void exactDecide;
+if(!('error'in decided)&&decided.status==='research_share_decided'&&decided.oneTimeResult){const shownOnce:true=decided.oneTimeResult.shownOnce;const sharePath:string=decided.oneTimeResult.sharePath;void shownOnce;void sharePath;}
+if(!('error'in listed))for(const entry of listed.intents){if(entry.state==='prepared'&&entry.kind==='research_share'&&!('withheld'in entry)){
+ const kind:'research_share'=entry.proposal.kind;void kind;
+ // @ts-expect-error bearer addresses are only on the fresh decision response
+ const capability=entry.oneTimeResult;void capability;
+ // @ts-expect-error Core sharing proposals are not native ApprovalDecision commands
+ const command=entry.proposal.command;void command;
+}}
 if(!('error'in decided)&&decided.status==='executed'){
  if('receipt'in decided.outcome){const commandSha256:string=decided.outcome.receipt.commandSha256;void commandSha256;}
  else if('version'in decided.outcome){const versionId:string=decided.outcome.version.versionId;void versionId;}
@@ -15,8 +23,8 @@ if(!('error'in decided)&&decided.status==='executed'){
   if('id'in decided.outcome.result){const taskId:string=decided.outcome.result.id;void taskId;}
   else {const files=decided.outcome.result.files;const commandSha256:string=decided.outcome.result.commandSha256;void files;void commandSha256;}}
 }
-if(retained.command.action==='task.update'){const taskId:string=retained.command.arguments.taskId;void taskId;}
-if(retained.command.action==='document.draft'){
+if('command'in retained&&retained.command.action==='task.update'){const taskId:string=retained.command.arguments.taskId;void taskId;}
+if('command'in retained&&retained.command.action==='document.draft'){
  const kind:'0.2.0'=retained.command.contractVersion,format:'docx'=retained.command.arguments.format;
  const preparation:string=retained.command.arguments.preparationSha256;void kind;void format;void preparation;
  // @ts-expect-error native document approval is not a task

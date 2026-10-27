@@ -18,7 +18,7 @@
  * Construction is inert. `enabled` defaults to false. */
 import {canonicalSha256 as hash,validateShape} from '../../../packages/contracts/validate.mjs';
 import {assertNativeApprovalProposal} from '../../../packages/contracts/commands-0.2/validate.mjs';
-import {artifactValidators as artifacts,scheduleToolValidators,validateShape as artifactShape} from '../../../packages/contracts/retrieval-0.2/validate.mjs';
+import {artifactValidators as artifacts,scheduleToolValidators,researchShareValidators,validateShape as artifactShape} from '../../../packages/contracts/retrieval-0.2/validate.mjs';
 import {data,own,nativeSignal} from '../../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {createOperationLifetime} from '../../../packages/runtime/operation-lifetime.mjs';
 import {ProductError,productFailure} from '../product-access/errors.mjs';
@@ -64,7 +64,7 @@ function commandProposal(entry){
  return result.proposal;
 }
 export function createIntentApprovalOwner(configuration){
- const c=own(configuration,['journal','now','limits'],['decisions','documents','tasks','filing','enabled']);
+ const c=own(configuration,['journal','now','limits'],['decisions','documents','tasks','filing','sharing','enabled']);
  const journal=own(c.journal,['read','list'],['claim','settle']),limits=data(c.limits);own(limits,['maxRequestMs']);
  if(typeof journal.read!=='function'||typeof journal.list!=='function'||typeof c.now!=='function'||typeof(c.enabled??false)!=='boolean'||
   !Number.isSafeInteger(limits.maxRequestMs)||limits.maxRequestMs<1||limits.maxRequestMs>30000)throw new ProductError('PRODUCT_CONFIGURATION');
@@ -72,6 +72,8 @@ export function createIntentApprovalOwner(configuration){
  const documents=c.documents===undefined?undefined:own(c.documents,['execute','read']);
  const tasks=c.tasks===undefined?undefined:own(c.tasks,['execute','read']);
  const filing=c.filing===undefined?undefined:own(c.filing,['execute','read']);
+ const sharing=c.sharing===undefined?undefined:own(c.sharing,['decide','read']);
+ if(sharing&&Object.values(sharing).some(f=>typeof f!=='function'))throw new ProductError('PRODUCT_CONFIGURATION');
  if(filing&&Object.values(filing).some(f=>typeof f!=='function'))throw new ProductError('PRODUCT_CONFIGURATION');
  if(tasks&&Object.values(tasks).some(f=>typeof f!=='function'))throw new ProductError('PRODUCT_CONFIGURATION');
  if(documents&&Object.values(documents).some(f=>typeof f!=='function'))throw new ProductError('PRODUCT_CONFIGURATION');
@@ -109,7 +111,9 @@ export function createIntentApprovalOwner(configuration){
  async function decide({principal,request,signal,deadlineMs}){
   enabled();const r=decideRequest(request),life=lifetime(deadlineMs,signal);
   try{
-   const proposal=approvable(await readEntry(life,principal,r.conversationId,r.deliveryId),r,principal);
+   const entry=await readEntry(life,principal,r.conversationId,r.deliveryId);
+   if(entry?.state==='PREPARED'&&entry.outcome?.result?.proposal?.kind==='research_share')return await decideSharing(life,principal,entry,r);
+   const proposal=approvable(entry,r,principal);
    const approver=data({tenantId:principal.tenantId,actorId:principal.actorId});
    // Independent review (a required approver other than the conversation owner) needs its own owner and listing; refused here.
    if(!same(approver,proposal.requiredApprover))fail('APPROVER_REFUSED','NOT_DISPATCHED');
@@ -128,6 +132,30 @@ export function createIntentApprovalOwner(configuration){
    if(r.decision==='rejected')return data({status:'rejected',deliveryId:r.deliveryId,proposalId:proposal.proposalId,decision});
    return await execute(life,principal,proposal,decision,r.deliveryId);
   }catch(error){throw owned(error,'INTENT_EXECUTION_UNKNOWN','UNKNOWN');}finally{life.close();}
+ }
+ /** Core action proposals already own the confirmation and atomic effect. Never mint a native ApprovalDecision. */
+ function sharingProposal(entry,principal,conversationId){
+  let p;try{
+   artifactShape('ResearchSharePrepared',entry.outcome.result);p=researchShareValidators.assertProposal(entry.outcome.result.proposal);
+   const {operationKey,previewHash,expectedDesignVersion,...input}=p.request;
+   if(entry.record.operation.id!==p.operation||entry.record.operation.version!=='0.2.0'||hash(input)!==entry.record.argumentsSha256||
+    !same(p.binding,entry.outcome.release.binding)||p.scopes.some(scope=>!entry.outcome.release.scopes.some(original=>same(scope,original)))||
+    !same(conversationOf(p.binding),{tenantId:principal.tenantId,actorId:principal.actorId,conversationId}))throw Error();
+  }catch{fail('INTENT_JOURNAL_UNAVAILABLE');}return p;
+ }
+ async function decideSharing(life,principal,entry,r){
+  const proposal=sharingProposal(entry,principal,r.conversationId);
+  if(proposal.proposalId!==r.proposalId||proposal.commandSha256!==r.commandSha256)fail('INTENT_MISMATCH','NOT_DISPATCHED');
+  if(!visible(proposal.scopes,principal))fail('INTENT_SCOPE_WITHHELD','NOT_DISPATCHED');
+  if(!(instant(proposal.expiresAt)>c.now()))fail('INTENT_EXPIRED','NOT_DISPATCHED');
+  if(!sharing)fail('APPROVAL_OWNER_UNAVAILABLE','NOT_DISPATCHED');life.limitDeadline(instant(proposal.expiresAt));
+  let result;try{result=data(own(await life.run(signal=>sharing.decide.call(c.sharing,{proposal,decision:r.decision,signal,deadlineMs:life.deadline()})),['proposalStatus'],['oneTimeResult']));}
+  catch(error){if(error?.effect==='none')fail(error.code==='ACCESS_DENIED'?'APPROVER_REFUSED':'APPROVAL_OWNER_UNAVAILABLE','NOT_DISPATCHED');fail('APPROVAL_DECISION_UNKNOWN','UNKNOWN');}
+  artifactShape('ResearchShareProposalStatus',result.proposalStatus);
+  if(result.oneTimeResult!==undefined){artifactShape('ResearchShareOneTimeResult',result.oneTimeResult);
+   if(r.decision!=='approved'||proposal.operation!=='publish_research_portfolio_share_link'||result.proposalStatus!=='succeeded')fail('INTENT_RESULT_NOT_RELEASED','RESULT_NOT_RELEASED');}
+  // This response is never settled to the intent journal, a model event, or a result summary.
+  return data({status:'research_share_decided',deliveryId:r.deliveryId,proposalId:r.proposalId,...result});
  }
  async function execute(life,principal,proposal,decision,deliveryId){
   if(['task.create','task.update','artifact.file'].includes(proposal.command.action)){
@@ -156,6 +184,15 @@ export function createIntentApprovalOwner(configuration){
   if(entry.state==='UNKNOWN')return {...base,state:'unknown'};
   if(entry.state==='FAILED')return {...base,state:'failed',code:entry.outcome.code};
   const result=entry.outcome.result;
+  if(result?.proposal?.kind==='research_share'){
+   const proposal=sharingProposal(entry,principal,conversationId);
+   if(!visible(proposal.scopes,principal))return {...base,state:'prepared',kind:'research_share',withheld:true};
+   let proposalStatus='unavailable';if(sharing)try{
+    const current=data(own(await life.run(signal=>sharing.read.call(c.sharing,{proposal,signal,deadlineMs:life.deadline()})),['proposalStatus']));
+    artifactShape('ResearchShareProposalStatus',current.proposalStatus);proposalStatus=current.proposalStatus;
+   }catch(error){if(['DEADLINE','CANCELLED'].includes(error?.code))throw error;}
+   return {...base,state:'prepared',kind:'research_share',proposal,proposalStatus};
+  }
   if(result?.status==='review_pending'||base.operation.id==='save_memory'&&!commandProposal(entry)){
    let review;try{review=assertMemoryReviewResult(result);}catch{fail('INTENT_JOURNAL_UNAVAILABLE');}
    if(base.operation.id!=='save_memory'||base.operation.version!=='0.2.0'||!same(review.binding,entry.outcome.release?.binding)||
