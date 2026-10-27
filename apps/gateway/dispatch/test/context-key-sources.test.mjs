@@ -13,7 +13,7 @@ const keyed=reads.filter(binding=>(binding.contextKeys??[]).length);
 
 test('every registered read with context keys has a trusted producer for each key and never uses the generic path',()=>{
  const covered=keyed.filter(binding=>registered.has(binding.id));
- assert.equal(covered.length,49);
+ assert.equal(covered.length,50);
  for(const binding of covered){
   const supply=readContextSupply(binding);
   assert.notEqual(supply.path,'generic',binding.id);

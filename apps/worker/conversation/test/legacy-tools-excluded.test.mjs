@@ -1,9 +1,10 @@
-/** Product-owner exclusion (15 Oct 2026): these 43 legacy Meri tools must never be implemented. Data-driven guard over
- * the catalog, every original skill manifest, the operation resolver and the SDK tool surface this worker can build.
- * The list is copied verbatim from the owner's list; nothing is read from outside the repository at run time. */
+/** Remaining owner exclusions after the explicit 27 October Wave4 amendment.
+ * The historical43-name input stays intact; only eight named authorizations are removed from this guard.
+ * The guard covers catalog, original manifests, resolver and SDK surface, without granting runtime access. */
 import test from 'node:test';import assert from 'node:assert/strict';
-import {readFileSync,readdirSync,existsSync} from 'node:fs';
+import {readFileSync,readdirSync,existsSync,realpathSync} from 'node:fs';
 import catalog from '../../../../packages/contracts/retrieval-0.2/catalog.json' with {type:'json'};
+import exclusions from '../../../../scripts/scope-ledger/owner-exclusion.json' with {type:'json'};
 import {resolveOperationContract} from '../../../../packages/contracts/retrieval-0.2/validate.mjs';
 import {listSkills,selectSkill} from '../../../../packages/skills/index.mjs';
 import {BUILTIN_TOOL_NAMES} from '../capabilities/workspace-tools.mjs';
@@ -16,10 +17,14 @@ import {readToolName} from '../reads/tools.mjs';
 import {INTENT_ROWS,NOT_INTENTS,intentToolName} from '../intents/catalog.mjs';
 import {binding,id} from '../../../control/conversations/test/application-fixture.mjs';
 import {plugin,preparedWorkspace} from './capability-fixture.mjs';
-const LEGACY_TOOLS=Object.freeze([ "manage_research_portfolio", "get_research_portfolio_analytics", "create_research_portfolio_snapshot", "request_research_portfolio_output", "save_research_portfolio_output_to_client", "watch_research_portfolio", "update_research_portfolio_change_state", "get_research_portfolio_bookmarks", "create_research_portfolio_bookmark", "get_research_portfolio_fit", "get_research_portfolio_reviews", "add_research_portfolio_review_note", "get_research_portfolio_rules", "get_research_portfolio_imports", "get_research_portfolio_operations", "prepare_research_portfolio_brief", "prepare_research_portfolio_meeting", "find_path_to", "get_legiwatch_review", "compare_florida_budget_amounts", "prepare_legiwatch_briefing", "compare_legislative_versions", "save_legislative_research", "preview_legiwatch_relevance", "save_legiwatch_relevance", "apply_legiwatch_suggestion", "create_meeting_brief", "draft_policy_memo", "save_note", "send_email", "reply_email", "confirm_memory", "correct_memory", "forget_memory", "get_pe_buyer_workspace", "create_client", "update_client_profile", "explain_opportunity_match", "compare_funding_opportunities", "build_opportunity_action_plan", "get_business_development_brief", "resolve_business_development_source", "save_business_development_brief"]);
-const cwd=preparedWorkspace(binding.conversationId);
+const AUTHORIZED=Object.freeze(["get_legiwatch_review", "compare_florida_budget_amounts", "compare_legislative_versions", "preview_legiwatch_relevance", "save_legiwatch_relevance", "apply_legiwatch_suggestion", "get_business_development_brief", "resolve_business_development_source"]);
+const LEGACY_TOOLS=Object.freeze(exclusions.groups.flatMap(group=>group.tools).filter(name=>!AUTHORIZED.includes(name)));
+const prepared=preparedWorkspace(binding.conversationId);
+// The production SDK workspace contract is POSIX; on Windows the same current-drive directory has a rooted slash spelling.
+const cwd=process.platform==='win32'?prepared.replace(/^[A-Za-z]:/u,'').replaceAll('\\','/'):prepared;
+assert.equal(realpathSync(cwd),realpathSync(prepared));
 
-test('the exclusion list is the owner\'s 43 distinct names',()=>{assert.equal(LEGACY_TOOLS.length,43);assert.equal(new Set(LEGACY_TOOLS).size,43);});
+test('only eight explicit Wave4 authorizations amend the historical43 names',()=>{assert.deepEqual(exclusions.wave4Amendment.authorizedOperations,AUTHORIZED);assert.equal(exclusions.groups.flatMap(group=>group.tools).length,43);assert.equal(LEGACY_TOOLS.length,35);assert.equal(new Set(LEGACY_TOOLS).size,35);});
 
 test('every excluded name is deferred in the catalog originals and absent from catalog operations and aliases',()=>{
  const originals=new Map(catalog.originals.map(o=>[o.id,o])),operationNames=new Set(catalog.operations.flatMap(o=>[o.operation.id,sdkToolName(o.operation),...(o.aliases??[])]));
@@ -42,7 +47,7 @@ test('no excluded name can enter the SDK tool surface the worker builds',()=>{
  const subagents=createSubagents(assertCapabilityPolicy({subagents:true,workspaceTools:true}),{latch:()=>{}});
  const originalReads=listSkills().flatMap(s=>selectSkill(s.skillId,s.skillVersion).manifest.allowedOperations.map(op=>`mcp__meri_original_reads__${sdkToolName(op)}`));
  const generalReads=familyReads().map(readToolName);assert.ok(generalReads.length>0,'the general read surface is scanned');
- const intents=[...INTENT_ROWS.flatMap(r=>[intentToolName(r.tool),r.tool,r.operation.id]),...Object.keys(NOT_INTENTS)];assert.equal(INTENT_ROWS.length,11,'the governed intent surface is scanned');
+ const intents=[...INTENT_ROWS.flatMap(r=>[intentToolName(r.tool),r.tool,r.operation.id]),...Object.keys(NOT_INTENTS)];assert.equal(INTENT_ROWS.length,16,'the governed intent surface is scanned');
  const surface=new Set([...BUILTIN_TOOL_NAMES,...WORKSPACE_TOOLS,...SUBAGENT_TYPES,...full.tools,...full.allowedTools,...(full.skills??[]),...Object.keys(full.agents),...Object.values(subagents.agents).flatMap(a=>a.tools),...originalReads,...generalReads,...intents]);
  for(const name of LEGACY_TOOLS){for(const entry of surface){assert.notEqual(entry,name,name);assert.equal(entry.endsWith('__'+name),false,`${entry} exposes ${name}`);assert.equal(entry.endsWith(':'+name),false,`${entry} exposes ${name}`);}}
 });
@@ -52,7 +57,7 @@ test('the only browser code on this branch (the qualification probe) calls no ex
  for(const name of LEGACY_TOOLS)assert.equal(new RegExp(`\\b${name}\\b`,'u').test(source),false,name);
 });
 
-test('the general read server derives its never-register list from the same 43 catalog originals',()=>{
+test('the general read server derives its never-register list from the same35 remaining catalog originals',()=>{
  assert.deepEqual([...DEFERRED_ORIGINALS].sort(),[...LEGACY_TOOLS].sort());
 });
 

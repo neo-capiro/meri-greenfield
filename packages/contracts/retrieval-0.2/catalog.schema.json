@@ -566,7 +566,7 @@
           "pattern": "^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)$"
         },
         "sourceRegistryCommit": {
-          "const": "171c6c8989ca9ea84e4dfbf75faa41db8e7a5d19"
+          "const": "999f5353e7b2e56fa7e082cffd6d23bc4d77f236"
         },
         "originals": {
           "type": "array",

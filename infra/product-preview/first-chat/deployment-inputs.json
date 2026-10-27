@@ -485,6 +485,30 @@
           {
             "id": "read_saved_strategy_records",
             "version": "0.2.0"
+          },
+          {
+            "id": "get_legiwatch_review",
+            "version": "0.2.0"
+          },
+          {
+            "id": "compare_florida_budget_amounts",
+            "version": "0.2.0"
+          },
+          {
+            "id": "compare_legislative_versions",
+            "version": "0.2.0"
+          },
+          {
+            "id": "get_business_development_brief",
+            "version": "0.2.0"
+          },
+          {
+            "id": "resolve_business_development_source",
+            "version": "0.2.0"
+          },
+          {
+            "id": "preview_legiwatch_relevance",
+            "version": "0.2.0"
           }
         ]
       },
@@ -854,6 +878,30 @@
           },
           {
             "id": "read_saved_strategy_records",
+            "version": "0.2.0"
+          },
+          {
+            "id": "get_legiwatch_review",
+            "version": "0.2.0"
+          },
+          {
+            "id": "compare_florida_budget_amounts",
+            "version": "0.2.0"
+          },
+          {
+            "id": "compare_legislative_versions",
+            "version": "0.2.0"
+          },
+          {
+            "id": "get_business_development_brief",
+            "version": "0.2.0"
+          },
+          {
+            "id": "resolve_business_development_source",
+            "version": "0.2.0"
+          },
+          {
+            "id": "preview_legiwatch_relevance",
             "version": "0.2.0"
           }
         ]
@@ -1226,6 +1274,30 @@
             {
               "id": "read_saved_strategy_records",
               "version": "0.2.0"
+            },
+            {
+              "id": "get_legiwatch_review",
+              "version": "0.2.0"
+            },
+            {
+              "id": "compare_florida_budget_amounts",
+              "version": "0.2.0"
+            },
+            {
+              "id": "compare_legislative_versions",
+              "version": "0.2.0"
+            },
+            {
+              "id": "get_business_development_brief",
+              "version": "0.2.0"
+            },
+            {
+              "id": "resolve_business_development_source",
+              "version": "0.2.0"
+            },
+            {
+              "id": "preview_legiwatch_relevance",
+              "version": "0.2.0"
             }
           ]
         },
@@ -1595,6 +1667,30 @@
             },
             {
               "id": "read_saved_strategy_records",
+              "version": "0.2.0"
+            },
+            {
+              "id": "get_legiwatch_review",
+              "version": "0.2.0"
+            },
+            {
+              "id": "compare_florida_budget_amounts",
+              "version": "0.2.0"
+            },
+            {
+              "id": "compare_legislative_versions",
+              "version": "0.2.0"
+            },
+            {
+              "id": "get_business_development_brief",
+              "version": "0.2.0"
+            },
+            {
+              "id": "resolve_business_development_source",
+              "version": "0.2.0"
+            },
+            {
+              "id": "preview_legiwatch_relevance",
               "version": "0.2.0"
             }
           ]
@@ -1966,6 +2062,30 @@
             {
               "id": "read_saved_strategy_records",
               "version": "0.2.0"
+            },
+            {
+              "id": "get_legiwatch_review",
+              "version": "0.2.0"
+            },
+            {
+              "id": "compare_florida_budget_amounts",
+              "version": "0.2.0"
+            },
+            {
+              "id": "compare_legislative_versions",
+              "version": "0.2.0"
+            },
+            {
+              "id": "get_business_development_brief",
+              "version": "0.2.0"
+            },
+            {
+              "id": "resolve_business_development_source",
+              "version": "0.2.0"
+            },
+            {
+              "id": "preview_legiwatch_relevance",
+              "version": "0.2.0"
             }
           ]
         }
@@ -2317,6 +2437,30 @@
           },
           {
             "id": "read_saved_strategy_records",
+            "version": "0.2.0"
+          },
+          {
+            "id": "get_legiwatch_review",
+            "version": "0.2.0"
+          },
+          {
+            "id": "compare_florida_budget_amounts",
+            "version": "0.2.0"
+          },
+          {
+            "id": "compare_legislative_versions",
+            "version": "0.2.0"
+          },
+          {
+            "id": "get_business_development_brief",
+            "version": "0.2.0"
+          },
+          {
+            "id": "resolve_business_development_source",
+            "version": "0.2.0"
+          },
+          {
+            "id": "preview_legiwatch_relevance",
             "version": "0.2.0"
           }
         ],
