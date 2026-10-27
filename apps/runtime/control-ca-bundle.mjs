@@ -4,6 +4,7 @@
 import {createHash,X509Certificate} from 'node:crypto';
 import {constants} from 'node:fs';
 import {open,mkdir,lstat,realpath,unlink,rmdir} from 'node:fs/promises';
+import {configurationMaxBytes} from './config.mjs';
 import rdsLock from './certs/rds-global-bundle.lock.json' with {type:'json'};
 
 export const CONTROL_NODE_CA_DIRECTORY='/tmp/meri-control-ca';
@@ -56,7 +57,7 @@ async function directory(identity){
 export async function materializeControlCaBundle({configurationPath,expected}){
  const identity=owner(),path={control:'/run/meri/control.json','schedule-worker':'/run/meri/schedule-worker.json'}[expected.role];
  if(path===undefined||configurationPath!==path)fail();
- const configurationBytes=await read(configurationPath,32768,{...identity,mode:0o600});
+ const configurationBytes=await read(configurationPath,configurationMaxBytes(expected.role),{...identity,mode:0o600});
  if(hash(configurationBytes)!==expected.sha256ByPath[configurationPath])fail();
  const {anchor,privateCa,bundle}=await inputs(JSON.parse(configurationBytes.toString('utf8')),identity);
  if(hash(privateCa)!==expected.sha256ByPath[anchor.file]||await realpath('/tmp')!=='/tmp')fail();

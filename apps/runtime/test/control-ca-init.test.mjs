@@ -3,6 +3,8 @@ import assert from 'node:assert/strict';
 import {readFileSync,constants} from 'node:fs';
 import {createHash,X509Certificate} from 'node:crypto';
 import rdsLock from '../certs/rds-global-bundle.lock.json' with {type:'json'};
+// Load the real configuration policy before installing the syscall-only filesystem mock.
+import {configurationMaxBytes} from '../config.mjs';
 
 // Public committed roots only. All writes below use an in-memory filesystem.
 const rdsBundle=readFileSync(new URL('../certs/rds-global-bundle.pem',import.meta.url));
@@ -133,6 +135,26 @@ for(const role of ['control','schedule-worker'])test(`${role} composer creates e
  assert.ok(create[2]&ioConstants.O_EXCL);assert.ok(create[2]&ioConstants.O_NOFOLLOW);
  assert.equal(await realComposer.verifyControlCaBundle(state.configuration,{environment:{NODE_EXTRA_CA_CERTS:output}}),true);
  assert.deepEqual(removed(state),[]);
+});
+
+for(const [role,limit] of [['control',40960],['schedule-worker',32768]])test(`${role} CA startup accepts its configuration byte limit and refuses one byte over before creating output`,async t=>{
+ assert.equal(configurationMaxBytes(role),limit);
+ const state=filesystem(t,role),file=state.files.get(state.configurationPath);
+ const minimal={...state.configuration,fixtureOnlyPadding:''},overhead=Buffer.byteLength(JSON.stringify(minimal));
+ for(const overflow of [true,false]){
+  const bytes=Buffer.from(JSON.stringify({...minimal,fixtureOnlyPadding:'x'.repeat(limit-overhead+(overflow?1:0))}));
+  assert.equal(bytes.length,limit+(overflow?1:0));file.bytes=bytes;
+  state.expected.sha256ByPath[state.configurationPath]=hash(bytes);
+  const work=realComposer.materializeControlCaBundle({configurationPath:state.configurationPath,expected:state.expected});
+  if(overflow){
+   await assert.rejects(work,{code:'STATIC_INIT_CONTROL_CA_REFUSED'});
+   assert.equal(state.files.has(directory),false);assert.equal(state.files.has(output),false);
+   assert.equal(state.calls.some(([operation])=>operation==='mkdir'),false);
+  }else{
+   assert.equal((await work).ready,true);
+   assert.deepEqual(state.files.get(output).bytes,Buffer.concat([rdsBundle,Buffer.from('\n'),privateCa]));
+  }
+ }
 });
 
 test('schedule composite refuses a foreign role/configuration pair or changed pinned inputs before creation',async t=>{
