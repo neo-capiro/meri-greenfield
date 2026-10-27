@@ -1423,6 +1423,16 @@
         "version": "0.2.0"
       },
       "state": "mapped"
+    },
+    {
+      "id": "watch_action",
+      "disposition": "selected",
+      "boundary": "Prepare user-initiated watch subscription action for explicit approval; Core owns authorization, optimistic version and durable receipt. No subscription activation or model execution.",
+      "replacement": {
+        "id": "watch_action",
+        "version": "0.2.0"
+      },
+      "state": "mapped"
     }
   ],
   "operations": [
@@ -9768,6 +9778,71 @@
       ],
       "fixtureIds": [
         "catalog.binding.save_legislative_research"
+      ]
+    },
+    {
+      "operation": {
+        "id": "watch_action",
+        "version": "0.2.0"
+      },
+      "displayName": "Prepare a watch subscription action",
+      "whenToUse": "Propose one exact watch subscription action for the signed-in user to confirm.",
+      "limitations": [
+        "Requires exact canonical family, client scope, target, operation and expected owner version. The request key is derived by the existing intent delivery owner.",
+        "No subscription activation, model execution or automatic retry.",
+        "A stale, excluded or held state does not mean a watch was modified."
+      ],
+      "positiveExamples": [
+        "Prepare to subscribe, pause, resume, unsubscribe or set delivery for an explicit watch."
+      ],
+      "negativeExamples": [
+        "Automatically modify an unseen watch, mutate state without approval, or retry an unknown effect."
+      ],
+      "sourceRequirements": [
+        {
+          "sourceId": "watch_action",
+          "authority": "authoritative",
+          "purpose": "evidence"
+        }
+      ],
+      "inputSchema": {
+        "id": "urn:meri:retrieval:watch-action:0.2.0#/$defs/WatchInput",
+        "sha256": "cea59f030384577183dd7a908ca5d8ce8c008ddd840d94f9d6f164315878489d"
+      },
+      "outputSchema": {
+        "id": "urn:meri:retrieval:watch-action:0.2.0#/$defs/WatchPrepared",
+        "sha256": "cea59f030384577183dd7a908ca5d8ce8c008ddd840d94f9d6f164315878489d"
+      },
+      "aliases": [],
+      "sideEffect": "source-command",
+      "requiredGrants": [
+        "command.execute"
+      ],
+      "approvalBoundary": "immutable-proposal",
+      "handler": null,
+      "availability": "unimplemented",
+      "qualification": "pending",
+      "retry": {
+        "maxRetries": 0,
+        "retryableCodes": [],
+        "unknownOutcome": "reconcile-before-retry"
+      },
+      "replacement": null,
+      "requirementIds": [
+        "R-01",
+        "R-04",
+        "R-05"
+      ],
+      "ticketIds": [
+        "REL-02"
+      ],
+      "gateIds": [
+        "RG-02",
+        "RG-05",
+        "RG-07"
+      ],
+      "fixtureIds": [
+        "catalog.binding.watch_action"
       ]
     }
   ]

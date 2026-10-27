@@ -47,7 +47,7 @@ test('no excluded name can enter the SDK tool surface the worker builds',()=>{
  const subagents=createSubagents(assertCapabilityPolicy({subagents:true,workspaceTools:true}),{latch:()=>{}});
  const originalReads=listSkills().flatMap(s=>selectSkill(s.skillId,s.skillVersion).manifest.allowedOperations.map(op=>`mcp__meri_original_reads__${sdkToolName(op)}`));
  const generalReads=familyReads().map(readToolName);assert.ok(generalReads.length>0,'the general read surface is scanned');
- const intents=[...INTENT_ROWS.flatMap(r=>[intentToolName(r.tool),r.tool,r.operation.id]),...Object.keys(NOT_INTENTS)];assert.equal(INTENT_ROWS.length,21,'the governed intent surface is scanned');
+ const intents=[...INTENT_ROWS.flatMap(r=>[intentToolName(r.tool),r.tool,r.operation.id]),...Object.keys(NOT_INTENTS)];assert.equal(INTENT_ROWS.length,22,'the governed intent surface is scanned');
  const surface=new Set([...BUILTIN_TOOL_NAMES,...WORKSPACE_TOOLS,...SUBAGENT_TYPES,...full.tools,...full.allowedTools,...(full.skills??[]),...Object.keys(full.agents),...Object.values(subagents.agents).flatMap(a=>a.tools),...originalReads,...generalReads,...intents]);
  for(const name of LEGACY_TOOLS){for(const entry of surface){assert.notEqual(entry,name,name);assert.equal(entry.endsWith('__'+name),false,`${entry} exposes ${name}`);assert.equal(entry.endsWith(':'+name),false,`${entry} exposes ${name}`);}}
 });

@@ -131,7 +131,8 @@
                 "update_client_profile",
                 "save_business_development_brief",
                 "prepare_legiwatch_briefing",
-                "save_legislative_research"
+                "save_legislative_research",
+                "watch_action"
               ]
             },
             "disposition": {
@@ -575,8 +576,8 @@
           "items": {
             "$ref": "urn:meri:retrieval:catalog:0.2.0#/$defs/NativeMapping"
           },
-          "minItems": 151,
-          "maxItems": 151,
+          "minItems": 152,
+          "maxItems": 152,
           "uniqueItems": true
         },
         "operations": {

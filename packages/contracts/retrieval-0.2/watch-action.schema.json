@@ -1,0 +1,486 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:meri:retrieval:watch-action:0.2.0",
+  "$defs": {
+    "WatchInput": {
+      "type": "object",
+      "properties": {
+        "family": {
+          "enum": [
+            "legiwatch_keyword",
+            "business_development_prospect",
+            "defense_budget_target",
+            "client_watchlist"
+          ]
+        },
+        "clientId": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "uuid",
+              "pattern": "^[a-f0-9-]+$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "targetKind": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 40
+        },
+        "targetKey": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 180,
+          "pattern": "^[A-Za-z0-9._:-]+$"
+        },
+        "operation": {
+          "enum": [
+            "subscribe",
+            "pause",
+            "resume",
+            "unsubscribe",
+            "set_delivery"
+          ]
+        },
+        "expectedVersion": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 2147483646
+        },
+        "sourceRevision": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 180,
+              "pattern": "^[A-Za-z0-9._:-]+$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "reason": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 2000
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "enabled": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "requestKey": {
+          "type": "string",
+          "minLength": 8,
+          "maxLength": 180
+        }
+      },
+      "required": [
+        "family",
+        "clientId",
+        "targetKind",
+        "targetKey",
+        "operation",
+        "expectedVersion",
+        "requestKey"
+      ],
+      "additionalProperties": false
+    },
+    "WatchRequest": {
+      "type": "object",
+      "properties": {
+        "family": {
+          "enum": [
+            "legiwatch_keyword",
+            "business_development_prospect",
+            "defense_budget_target",
+            "client_watchlist"
+          ]
+        },
+        "clientId": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "uuid",
+              "pattern": "^[a-f0-9-]+$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "targetKind": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 40
+        },
+        "targetKey": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 180,
+          "pattern": "^[A-Za-z0-9._:-]+$"
+        },
+        "operation": {
+          "enum": [
+            "subscribe",
+            "pause",
+            "resume",
+            "unsubscribe",
+            "set_delivery"
+          ]
+        },
+        "expectedVersion": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 2147483646
+        },
+        "sourceRevision": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 180,
+              "pattern": "^[A-Za-z0-9._:-]+$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "reason": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 2000
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "enabled": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "requestKey": {
+          "type": "string",
+          "minLength": 8,
+          "maxLength": 180
+        }
+      },
+      "required": [
+        "family",
+        "clientId",
+        "targetKind",
+        "targetKey",
+        "operation",
+        "expectedVersion",
+        "requestKey"
+      ],
+      "additionalProperties": false
+    },
+    "WatchContext": {
+      "type": "object",
+      "properties": {
+        "conversationId": {
+          "type": "string",
+          "format": "uuid",
+          "pattern": "^[a-f0-9-]+$"
+        },
+        "selectedClientId": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "uuid",
+              "pattern": "^[a-f0-9-]+$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "identityRevision": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "membershipRevision": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "contextRevision": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        }
+      },
+      "required": [
+        "conversationId",
+        "selectedClientId",
+        "identityRevision",
+        "membershipRevision",
+        "contextRevision"
+      ],
+      "additionalProperties": false
+    },
+    "WatchStatus": {
+      "enum": [
+        "proposed",
+        "approved",
+        "executing",
+        "succeeded",
+        "failed_retryable",
+        "failed_terminal",
+        "outcome_unknown",
+        "blocked",
+        "dismissed",
+        "expired"
+      ]
+    },
+    "WatchReceipt": {
+      "type": "object",
+      "properties": {
+        "request": {
+          "$ref": "#/$defs/WatchRequest"
+        },
+        "owner": {
+          "enum": [
+            "legiwatch_keyword",
+            "business_development_prospect",
+            "defense_budget_target",
+            "client_watchlist"
+          ]
+        },
+        "binding": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "operation": {
+          "enum": [
+            "subscribe",
+            "pause",
+            "resume",
+            "unsubscribe",
+            "set_delivery"
+          ]
+        },
+        "targetKey": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 180,
+          "pattern": "^[A-Za-z0-9._:-]+$"
+        },
+        "identity": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 180
+        },
+        "state": {
+          "enum": [
+            "active",
+            "paused",
+            "needs_review",
+            "ended",
+            "unsubscribed"
+          ]
+        },
+        "version": {
+          "anyOf": [
+            {
+              "type": "integer",
+              "minimum": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "deliveryEnabled": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "eventId": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 180
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "alreadyInState": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "request",
+        "owner",
+        "binding",
+        "operation",
+        "targetKey",
+        "identity",
+        "state",
+        "version",
+        "deliveryEnabled",
+        "eventId",
+        "alreadyInState"
+      ],
+      "additionalProperties": false
+    },
+    "WatchCoreResult": {
+      "type": "object",
+      "properties": {
+        "version": {
+          "const": "0.1.0"
+        },
+        "proposalId": {
+          "type": "string",
+          "format": "uuid",
+          "pattern": "^[a-f0-9-]+$"
+        },
+        "request": {
+          "$ref": "#/$defs/WatchRequest"
+        },
+        "context": {
+          "$ref": "#/$defs/WatchContext"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "expiresAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "status": {
+          "$ref": "#/$defs/WatchStatus"
+        },
+        "receipt": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/WatchReceipt"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "version",
+        "proposalId",
+        "request",
+        "context",
+        "createdAt",
+        "expiresAt",
+        "status",
+        "receipt"
+      ],
+      "additionalProperties": false
+    },
+    "WatchProposal": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "const": "watch_action"
+        },
+        "binding": {
+          "$ref": "urn:meri:contracts:0.1.0#/$defs/RunBinding"
+        },
+        "scopes": {
+          "type": "array",
+          "items": {
+            "$ref": "urn:meri:contracts:0.1.0#/$defs/Scope"
+          },
+          "minItems": 1,
+          "maxItems": 1
+        },
+        "operation": {
+          "const": "watch_action"
+        },
+        "proposalId": {
+          "type": "string",
+          "format": "uuid",
+          "pattern": "^[a-f0-9-]+$"
+        },
+        "request": {
+          "$ref": "#/$defs/WatchRequest"
+        },
+        "context": {
+          "$ref": "#/$defs/WatchContext"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "expiresAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "commandSha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        }
+      },
+      "required": [
+        "kind",
+        "binding",
+        "scopes",
+        "operation",
+        "proposalId",
+        "request",
+        "context",
+        "createdAt",
+        "expiresAt",
+        "commandSha256"
+      ],
+      "additionalProperties": false
+    },
+    "WatchPrepared": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "const": "approval_required"
+        },
+        "proposal": {
+          "$ref": "#/$defs/WatchProposal"
+        }
+      },
+      "required": [
+        "status",
+        "proposal"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

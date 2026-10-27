@@ -39,6 +39,10 @@ async function proposal(value,conversationId){
   const {commandSha256,...bound}=value,s=value.scopes[0],linked=value.context.linkedClientId;
   if(await sha(bound)!==commandSha256||value.binding.conversationId!==conversationId||value.context.conversationId!==conversationId||value.request.conversationId!==conversationId||parsed(value.expiresAt)<=parsed(value.createdAt)||s.tenantId!==value.binding.tenantId||s.kind!==(linked===null?'private-user':'client')||s.resourceId!==(linked??value.binding.actorId))conflict();return;
  }
+ if(value.kind==='watch_action'){
+  const {commandSha256,...bound}=value,s=value.scopes[0],selected=value.context.selectedClientId;
+  if(await sha(bound)!==commandSha256||value.binding.conversationId!==conversationId||value.context.conversationId!==conversationId||parsed(value.expiresAt)<=parsed(value.createdAt)||s.tenantId!==value.binding.tenantId||s.kind!==(selected===null?'private-user':'client')||s.resourceId!==(selected??value.binding.actorId)||selected!==null&&value.request.clientId!==selected)conflict();return;
+ }
  if(value.kind==='research_share'){
   const {commandSha256,...bound}=value,publishing=value.operation==='publish_research_portfolio_share_link';
   if(await sha(bound)!==commandSha256||value.binding.conversationId!==conversationId||value.request.conversationId!==conversationId||
@@ -173,6 +177,11 @@ function bizdevResult(value,retained){
  // ambiguous outcome carries no receipt and is never relabelled as saved.
  if(value.receipt!==null){const r=value.receipt,v=r.version;if(!same(r.request,retained.request)||r.tool!=='save_business_development_brief'||r.status!=='saved'||v.versionNumber!==retained.request.expectedVersionNumber+1||r.brief.currentVersionNumber!==v.versionNumber)conflict();}
 }
+function watchResult(value,retained){
+ if(value.proposalId!==retained.proposalId||!same(value.request,retained.request)||!same(value.context,retained.context)||value.createdAt!==retained.createdAt||value.expiresAt!==retained.expiresAt||(value.status==='succeeded')!==(value.receipt!==null))conflict();
+ // The receipt must name this exact owner, verb and target; a substituted target is never a released result.
+ if(value.receipt!==null){const r=value.receipt;if(!same(r.request,retained.request)||r.owner!==retained.request.family||r.operation!==retained.request.operation||r.targetKey!==retained.request.targetKey)conflict();}
+}
 async function item(value,conversationId){
  // The journal's createdAt is a bare millisecond-spelling pattern in the schema (no calendar check) and the journal writes toISOString(): read it exactly, so
  // an impossible day such as 2026-02-30 can not roll into March.
@@ -181,6 +190,7 @@ async function item(value,conversationId){
  if(value.kind==='legislative_document_action'){if(!Object.hasOwn(value,'proposal'))return;if(value.operation.id!==value.proposal.operation)conflict();await proposal(value.proposal,conversationId);if(value.result!=='unavailable')legislativeDocumentResult(value.result,value.proposal);return;}
  if(value.kind==='client_record_action'){if(!Object.hasOwn(value,'proposal'))return;if(value.operation.id!==value.proposal.operation)conflict();await proposal(value.proposal,conversationId);if(value.result!=='unavailable')await clientRecordResult(value.result,value.proposal);return;}
  if(value.kind==='bizdev_action'){if(!Object.hasOwn(value,'proposal'))return;if(value.operation.id!==value.proposal.operation)conflict();await proposal(value.proposal,conversationId);if(value.result!=='unavailable')bizdevResult(value.result,value.proposal);return;}
+ if(value.kind==='watch_action'){if(!Object.hasOwn(value,'proposal'))return;if(value.operation.id!==value.proposal.operation)conflict();await proposal(value.proposal,conversationId);if(value.result!=='unavailable')watchResult(value.result,value.proposal);return;}
  if(value.kind==='research_share'){
   if(!Object.hasOwn(value,'proposal'))return;
   if(value.operation.id!==value.proposal.operation)conflict();await proposal(value.proposal,conversationId);return;
@@ -230,6 +240,9 @@ export async function decide(value,request,retained){
  }
  if(retained.kind==='bizdev_action'){
   if(value.status!=='bizdev_decided'||retained.proposalId!==request.proposalId||retained.commandSha256!==request.commandSha256||value.deliveryId!==request.deliveryId||value.proposalId!==request.proposalId)conflict();bizdevResult(value.result,retained);return value;
+ }
+ if(retained.kind==='watch_action'){
+  if(value.status!=='watch_decided'||retained.proposalId!==request.proposalId||retained.commandSha256!==request.commandSha256||value.deliveryId!==request.deliveryId||value.proposalId!==request.proposalId)conflict();watchResult(value.result,retained);return value;
  }
  if(retained.kind==='research_share'){
   if(value.status!=='research_share_decided'||retained.proposalId!==request.proposalId||retained.commandSha256!==request.commandSha256||value.deliveryId!==request.deliveryId||value.proposalId!==request.proposalId)conflict();
