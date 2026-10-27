@@ -8580,11 +8580,11 @@
       ],
       "inputSchema": {
         "id": "urn:meri:retrieval:research-portfolio-sharing:0.2.0#/$defs/ResearchShareListInput",
-        "sha256": "18ae5ea86025ef70a148b70062bfbc92dee14a9a3a0e90d74e91ff86a05ce91a"
+        "sha256": "ae7fb85e8f7d3e6ba361fc06c0edd15d0ae28d8df3ffce2e7a189838c41ca562"
       },
       "outputSchema": {
         "id": "urn:meri:retrieval:research-portfolio-sharing:0.2.0#/$defs/ResearchShareListOutput",
-        "sha256": "18ae5ea86025ef70a148b70062bfbc92dee14a9a3a0e90d74e91ff86a05ce91a"
+        "sha256": "ae7fb85e8f7d3e6ba361fc06c0edd15d0ae28d8df3ffce2e7a189838c41ca562"
       },
       "aliases": [],
       "sideEffect": "none",
@@ -8645,11 +8645,11 @@
       ],
       "inputSchema": {
         "id": "urn:meri:retrieval:research-portfolio-sharing:0.2.0#/$defs/ResearchSharePublishInput",
-        "sha256": "18ae5ea86025ef70a148b70062bfbc92dee14a9a3a0e90d74e91ff86a05ce91a"
+        "sha256": "ae7fb85e8f7d3e6ba361fc06c0edd15d0ae28d8df3ffce2e7a189838c41ca562"
       },
       "outputSchema": {
         "id": "urn:meri:retrieval:research-portfolio-sharing:0.2.0#/$defs/ResearchSharePrepared",
-        "sha256": "18ae5ea86025ef70a148b70062bfbc92dee14a9a3a0e90d74e91ff86a05ce91a"
+        "sha256": "ae7fb85e8f7d3e6ba361fc06c0edd15d0ae28d8df3ffce2e7a189838c41ca562"
       },
       "aliases": [],
       "sideEffect": "source-command",
@@ -8710,11 +8710,11 @@
       ],
       "inputSchema": {
         "id": "urn:meri:retrieval:research-portfolio-sharing:0.2.0#/$defs/ResearchShareRevokeInput",
-        "sha256": "18ae5ea86025ef70a148b70062bfbc92dee14a9a3a0e90d74e91ff86a05ce91a"
+        "sha256": "ae7fb85e8f7d3e6ba361fc06c0edd15d0ae28d8df3ffce2e7a189838c41ca562"
       },
       "outputSchema": {
         "id": "urn:meri:retrieval:research-portfolio-sharing:0.2.0#/$defs/ResearchSharePrepared",
-        "sha256": "18ae5ea86025ef70a148b70062bfbc92dee14a9a3a0e90d74e91ff86a05ce91a"
+        "sha256": "ae7fb85e8f7d3e6ba361fc06c0edd15d0ae28d8df3ffce2e7a189838c41ca562"
       },
       "aliases": [],
       "sideEffect": "source-command",

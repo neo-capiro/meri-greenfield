@@ -11,7 +11,7 @@ async function setup({selected=false}={}){
  if(selected){scene.authority.subject.kind='client';scene.authority.subject.entityType='client';scene.authority.subject.entityIds=[client];scene.authority.subject.scopes=[{tenantId:scene.binding.tenantId,kind:'client',resourceId:client,policyRevision:scene.authority.policyRevision}];}
  scene.visibleClientIds=[client];
  scene.state.page={sharing:{portfolioId:uuid('6'),enabled:true,tenantEnabled:true,pinSet:true,pinUpdatedAt:null,activeLinkCount:0,updatedAt:null},links:[]};
- scene.transport.fetchImpl=async(url,options)=>{scene.wire.push({url,options});assert.deepEqual(JSON.parse(options.body),scene.arguments);const out=structuredClone(scene.state.page);scene.state.afterSource?.();return Response.json(out);};
+ scene.transport.fetchImpl=async(url,options)=>{scene.wire.push({url,options});assert.deepEqual(JSON.parse(options.body),{version:1,input:scene.arguments,currentTurn:{tenantId:scene.binding.tenantId,userId:scene.binding.actorId,conversationId:scene.binding.conversationId,selectedClientId:selected?client:null}});const out=structuredClone(scene.state.page);scene.state.afterSource?.();return Response.json(out);};
  return fixture(family,id,{scene});
 }
 test('actual native discovery and read serve only conversation-bound redacted metadata',async()=>{
