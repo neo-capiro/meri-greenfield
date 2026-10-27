@@ -112,7 +112,7 @@ export function createNativeRoutinesContextOwner({base,sessions,scheduleOwner,st
    // Listing and stopping future firings do not start model work. Keep execution eligibility
    // unchanged for new/updated schedules and cancellation that selects running work.
    const cancel=request.operation==='cancel_scheduled_task'?scheduleToolValidators.normalizeRequest(request.operation,request.request):null;
-   const terminalManagement=request.operation==='list_scheduled_tasks'||cancel?.running==='leave'&&cancel.runs.length===0;
+   const managementOnly=request.operation==='list_scheduled_tasks'||cancel?.running==='leave'&&cancel.runs.length===0;
    const deadlineMs=Math.min(request.deadlineMs,now()+c.limits.maxRequestMs);
    life=createOperationLifetime({now,signal:request.signal,deadlineMs,errorFactory:contextRefuse});
    const auth=data(own(await life.run(signal=>authenticate({credential:request.credential,signal,deadlineMs})),['principal','sessionRevision','checkedAtMs','expiresAtMs']));
@@ -137,8 +137,12 @@ export function createNativeRoutinesContextOwner({base,sessions,scheduleOwner,st
      const after=await store.initialBindings.readPreparation({binding:b},check);check();if(!same(initial,after))throw contextRefuse();
     }else{
      const {run}=saved,head=await readHead(b,check);policy=await readModelPolicy(b,check);check();
-     if(!same(run.binding,b)||!same(run.scopes,current.scopes)||!same(run.versions,c.versions)||run.policyRevision!==current.scopes[0].policyRevision||
-      !(['starting','running','paused','waiting-for-approval','completed'].includes(run.state)||terminalManagement&&['failed','cancelled'].includes(run.state))||head.reserved!==false||!same(head.binding,b)||
+     validateShape('RuntimeVersions',run.versions);
+     // An existing exact session may manage future firings after an image deployment.
+     // Other version compatibility and every execution operation keep the configured pins.
+     const requiredVersions=managementOnly?{...c.versions,imageDigest:run.versions.imageDigest}:c.versions;
+     if(!same(run.binding,b)||!same(run.scopes,current.scopes)||!same(run.versions,requiredVersions)||run.policyRevision!==current.scopes[0].policyRevision||
+      !(['starting','running','paused','waiting-for-approval','completed'].includes(run.state)||managementOnly&&['failed','cancelled'].includes(run.state))||head.reserved!==false||!same(head.binding,b)||
       !same(head.scopes,current.scopes)||head.policyRevision!==run.policyRevision)throw contextRefuse();
     }
     if(!Number.isSafeInteger(policy.maxBudgetMicroUsd)||policy.maxBudgetMicroUsd<1)throw contextRefuse();

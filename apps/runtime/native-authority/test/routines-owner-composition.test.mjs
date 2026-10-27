@@ -77,9 +77,21 @@ for(const general of [false,true])test(`native routine list remains available af
  }finally{await f.close();}
 });
 
-test('native routine list still refuses changed selection, image, successor reservation and model policy drift',async()=>{
+for(const general of [false,true])test(`native ${general?'General':'client'} routine list survives a changed image for the exact existing session`,async()=>{
+ const f=await nativeFixture({general});try{
+  f.state.versions={...versions,imageDigest:'sha256:'+'c'.repeat(64)};
+  for(const runState of ['running','completed','failed','cancelled']){
+   f.state.runState=runState;const current=await f.owner.authorizeRequest(f.request);
+   assert.deepEqual(current.binding,f.state.binding);assert.deepEqual(current.scopes,f.state.scopes);
+  }
+ }finally{await f.close();}
+});
+
+test('native routine list still refuses changed selection, non-image versions, successor reservation and model policy drift',async()=>{
  for(const change of [s=>{s.binding={...s.binding,actorId:'another'};},s=>{s.selectedClientId='10000000-0000-4000-8000-000000000099';},
-  s=>{s.versions={...s.versions,imageDigest:'sha256:'+'c'.repeat(64)};},s=>{s.reserved=true;},s=>{s.budget=0;}]){
+  ...['sdk','cli','contracts','checkpointFormat'].map(key=>s=>{s.versions={...s.versions,[key]:'9.9.9'};}),
+  s=>{s.versions={...s.versions,skillsDigest:'d'.repeat(64)};},s=>{s.versions={...s.versions,imageDigest:'invalid'};},
+  s=>{const {imageDigest,...rest}=s.versions;s.versions=rest;},s=>{s.reserved=true;},s=>{s.budget=0;}]){
   const f=await nativeFixture();try{change(f.state);await assert.rejects(f.owner.authorizeRequest(f.request));}finally{await f.close();}
  }
  for(const change of [s=>{s.budget=1000000;},s=>{s.reserved=true;}]){
