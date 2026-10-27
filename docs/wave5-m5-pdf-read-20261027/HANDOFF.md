@@ -1,6 +1,6 @@
 # W5-M5-01 — retained PDF reads
 
-MM-09 / WS-23 source slice. Base: `d4c37cb06b3d845fbf1f94dbc083cf53ecc15bb7` (Meri main). Author: Wave 5 M5 lane. Independent review: pending Hermes. Integration/build/deployment: existing root/Release. Acceptance: pending Hermes after deployment. This does not close M5 or MM-09.
+MM-09 / WS-23 source slice. Base: `d4c37cb06b3d845fbf1f94dbc083cf53ecc15bb7` (Meri main). Author: Wave 5 M5 lane. Independent review: Hermes source PASS at `86b59ce9e2a6cb898381b2834d3bc92df38b8a46`; the comment-only followup below awaits bounded delta review. Integration/build/deployment: existing root/Release. Acceptance: pending Hermes after deployment. This does not close M5 or MM-09.
 
 ## Behavior and ownership
 
@@ -12,6 +12,7 @@ The change reuses `admitDocumentFormats`, immutable artifact publication, canoni
 
 - `apps/control/document-application/index.mjs`: separate existing-version read admission from writer admission.
 - `apps/control/document-application/test/pdf-read-admission.test.mjs`: actual application/session/publication owner checks over isolated scripted SQL/object transports and synthetic valid PDF bytes.
+- `apps/control/document-application/preview-route.mjs`: correct the stale comment identified by Hermes F1 to distinguish configured preview/writer admission from the separate read contract. No executable change; no tests rerun for this followup. Original review report retained unchanged.
 - This handoff.
 
 ## Author verification
