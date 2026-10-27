@@ -1,4 +1,5 @@
 import {parseBytes} from '../document-application/boundary.mjs';
+export {receiveRunIndexRequest,receiveRunIndexResponse,RunIndexResponseError,RUN_INDEX_SCHEMA,RUN_DETAIL_SCHEMA,RUN_INDEX_PATHS,runIndexMetadata} from './run-receive.mjs';
 import {validateListRequest,validateTranscriptRequest,validateNextTurnRequest,validateSummariesRequest,validateManageRequest,validateListResponse,validateTranscriptResponse,validateNextTurnResponse,validateSummariesResponse,validateManageResponse,validateError} from './generated-validator.mjs';
 import {normalizeHistoryRequest,assertHistoryResponseSemantics,fail,ConversationHistoryResponseError} from './semantics.mjs';
 import {conversationHistoryMetadata,historyErrorStatuses} from './protocol.mjs';

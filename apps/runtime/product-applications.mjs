@@ -14,6 +14,8 @@ import {createConversationHistoryApplication} from '../control/conversations/his
 import {createConversationSourceApplication} from '../control/conversations/sources/http.mjs';
 import {BILL_TEXT_SOURCE_PATH} from '../../packages/contracts/conversation-sources/protocol.mjs';
 import {createConversationUsageApplication} from '../control/conversations/usage-read/http.mjs';
+import {createRunIndexApplication} from '../control/conversations/runs/http.mjs';
+import {RUN_INDEX_PATHS} from '../../packages/contracts/conversation-history/run-protocol.mjs';
 import {CONVERSATION_USAGE_PATH} from '../../packages/contracts/conversation-usage/protocol.mjs';
 import {HISTORY_PATHS} from '../control/conversations/history/protocol.mjs';
 import {runtimeArtifactRecovery} from './artifacts/composition.mjs';
@@ -100,6 +102,7 @@ export function createRuntimeProductApplications({configuration,sessions,ports,n
   limits:{maxRequestMs:configuration.limits.requestMs,maxRequestBytes:configuration.limits.requestBytes,maxResponseBytes:configuration.native.maxResponseBytes}}):null;
  const sources=historyService&&ports.conversationSourceReader?createConversationSourceApplication({store:conversationStore,history:historyService,gate:ports.conversationMembership,currentness:historyCurrentness,management:ports.conversationManagement,reader:ports.conversationSourceReader,retention,now,limits:{maxRequestMs:configuration.limits.requestMs,maxRequestBytes:configuration.limits.requestBytes,maxResponseBytes:configuration.native.maxResponseBytes}}):null;
  const usage=historyService&&typeof conversationStore.history?.usageContext==='function'&&typeof conversationStore.readUsage==='function'?createConversationUsageApplication({store:conversationStore,history:historyService,gate:ports.conversationMembership,currentness:historyCurrentness,management:ports.conversationManagement,retention,now,limits:{maxRequestMs:configuration.limits.requestMs,maxRequestBytes:configuration.limits.requestBytes,maxResponseBytes:configuration.native.maxResponseBytes}}):null;
+ const runIndex=historyService&&conversationStore.runs?createRunIndexApplication({store:conversationStore,history:historyService,gate:ports.conversationMembership,currentness:historyCurrentness,management:ports.conversationManagement,retention,now,limits:{maxRequestMs:configuration.limits.requestMs,maxRequestBytes:configuration.limits.requestBytes,maxResponseBytes:configuration.native.maxResponseBytes}}):null;
  const canonicalDocuments=createRuntimeArtifactApplication({sessions,now,limits:{maxRequestMs:configuration.limits.requestMs,maxRequestBytes:configuration.limits.requestBytes,maxResponseBytes:configuration.native.maxResponseBytes},...(ports.artifactOptionsOwner?{optionsOwner:ports.artifactOptionsOwner}:{}),...(retention===undefined?{}:{retention})});
  // Signed download links mount over the canonical document routes behind a readiness gate that trusted startup opens (or leaves closed).
  const downloads=createDownloadLinkGate({documents:canonicalDocuments,sessions,now,maxRequestMs:configuration.limits.requestMs,links:configuration.downloadLinks,suppression,authorization:ports.artifactOptionsOwner,store:ports.artifactStore});
@@ -113,6 +116,7 @@ export function createRuntimeProductApplications({configuration,sessions,ports,n
   if(Object.values(INTENT_PATHS).includes(path))return ports.intentApplication?ports.intentApplication.handle(request):Response.json({error:{code:'INTENTS_UNAVAILABLE',outcome:'NOT_DISPATCHED'}},{status:503,headers:{'cache-control':'no-store','x-content-type-options':'nosniff'}});
   if(Object.values(TENANT_SETTINGS_PATHS).includes(path))return ports.settingsApplication?ports.settingsApplication.handle(request):Response.json({error:{code:'SETTINGS_UNAVAILABLE',outcome:'NOT_DISPATCHED'}},{status:503,headers:{'cache-control':'no-store','x-content-type-options':'nosniff'}});
   if(Object.values(MEMORY_PATHS).includes(path))return ports.memoryApplication?ports.memoryApplication.handle(request):memoryUnavailable();
+  if(Object.values(RUN_INDEX_PATHS).includes(path))return runIndex?runIndex.handle(request):Response.json({error:{code:'RUN_INDEX_UNAVAILABLE'}},{status:503,headers:{'cache-control':'no-store','x-content-type-options':'nosniff'}});
   if(path===CONVERSATION_USAGE_PATH)return usage?usage.handle(request):Response.json({error:{code:'USAGE_UNAVAILABLE'}},{status:503,headers:{'cache-control':'no-store','x-content-type-options':'nosniff'}});
   if(path===BILL_TEXT_SOURCE_PATH)return sources?sources.handle(request):Response.json({error:{code:'SOURCE_REFERENCE_UNAVAILABLE'}},{status:503,headers:{'cache-control':'no-store','x-content-type-options':'nosniff'}});
   if(Object.values(HISTORY_PATHS).includes(path))return history?history.handle(request):Response.json({error:{code:'CONVERSATION_UNAVAILABLE',outcome:'NOT_DISPATCHED'}},{status:503,headers:{'cache-control':'no-store','x-content-type-options':'nosniff'}});

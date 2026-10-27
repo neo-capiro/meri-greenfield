@@ -2950,6 +2950,628 @@
         "policyRevision"
       ],
       "additionalProperties": false
+    },
+    "RunIndexListRequest": {
+      "type": "object",
+      "properties": {
+        "schemaVersion": {
+          "const": "meri.run-index/1"
+        },
+        "scope": {
+          "oneOf": [
+            {
+              "type": "object",
+              "properties": {
+                "kind": {
+                  "enum": [
+                    "all",
+                    "general"
+                  ]
+                }
+              },
+              "required": [
+                "kind"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "properties": {
+                "kind": {
+                  "const": "client"
+                },
+                "clientId": {
+                  "type": "string",
+                  "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+                }
+              },
+              "required": [
+                "kind",
+                "clientId"
+              ],
+              "additionalProperties": false
+            }
+          ]
+        },
+        "status": {
+          "enum": [
+            "all",
+            "active",
+            "terminal"
+          ]
+        },
+        "cursor": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 1024,
+              "pattern": "^[A-Za-z0-9_-]+$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "limit": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 20
+        }
+      },
+      "required": [
+        "schemaVersion",
+        "scope",
+        "status",
+        "cursor",
+        "limit"
+      ],
+      "additionalProperties": false
+    },
+    "RunIndexDetailRequest": {
+      "type": "object",
+      "properties": {
+        "schemaVersion": {
+          "const": "meri.run-detail/1"
+        },
+        "conversationId": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+        },
+        "runId": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+        }
+      },
+      "required": [
+        "schemaVersion",
+        "conversationId",
+        "runId"
+      ],
+      "additionalProperties": false
+    },
+    "RunIndexSummary": {
+      "type": "object",
+      "properties": {
+        "conversationId": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+        },
+        "runId": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "pattern": "Z$"
+        },
+        "state": {
+          "enum": [
+            "queued",
+            "starting",
+            "running",
+            "waiting-for-approval",
+            "paused",
+            "completed",
+            "failed",
+            "cancelled"
+          ]
+        },
+        "statusAt": {
+          "type": "string",
+          "format": "date-time",
+          "pattern": "Z$"
+        },
+        "lastSequence": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        },
+        "clientIds": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+          },
+          "uniqueItems": true,
+          "maxItems": 4096
+        },
+        "usage": {
+          "type": "object",
+          "properties": {
+            "recording": {
+              "enum": [
+                "not-recorded",
+                "recorded",
+                "unavailable"
+              ]
+            },
+            "sdkEstimateUsd": {
+              "anyOf": [
+                {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 9007199254.740992
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "providerBilledUsd": {
+              "type": "null"
+            }
+          },
+          "required": [
+            "recording",
+            "sdkEstimateUsd",
+            "providerBilledUsd"
+          ],
+          "additionalProperties": false
+        },
+        "references": {
+          "type": "object",
+          "properties": {
+            "conversationId": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+            },
+            "runId": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+            }
+          },
+          "required": [
+            "conversationId",
+            "runId"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "conversationId",
+        "runId",
+        "createdAt",
+        "state",
+        "statusAt",
+        "lastSequence",
+        "clientIds",
+        "usage",
+        "references"
+      ],
+      "additionalProperties": false
+    },
+    "RunIndexListResponse": {
+      "type": "object",
+      "properties": {
+        "schemaVersion": {
+          "const": "meri.run-index/1"
+        },
+        "observedAt": {
+          "type": "string",
+          "format": "date-time",
+          "pattern": "Z$"
+        },
+        "scope": {
+          "oneOf": [
+            {
+              "type": "object",
+              "properties": {
+                "kind": {
+                  "enum": [
+                    "all",
+                    "general"
+                  ]
+                }
+              },
+              "required": [
+                "kind"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "properties": {
+                "kind": {
+                  "const": "client"
+                },
+                "clientId": {
+                  "type": "string",
+                  "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+                }
+              },
+              "required": [
+                "kind",
+                "clientId"
+              ],
+              "additionalProperties": false
+            }
+          ]
+        },
+        "status": {
+          "enum": [
+            "all",
+            "active",
+            "terminal"
+          ]
+        },
+        "runs": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "conversationId": {
+                "type": "string",
+                "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+              },
+              "runId": {
+                "type": "string",
+                "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+              },
+              "createdAt": {
+                "type": "string",
+                "format": "date-time",
+                "pattern": "Z$"
+              },
+              "state": {
+                "enum": [
+                  "queued",
+                  "starting",
+                  "running",
+                  "waiting-for-approval",
+                  "paused",
+                  "completed",
+                  "failed",
+                  "cancelled"
+                ]
+              },
+              "statusAt": {
+                "type": "string",
+                "format": "date-time",
+                "pattern": "Z$"
+              },
+              "lastSequence": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 9007199254740991
+              },
+              "clientIds": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+                },
+                "uniqueItems": true,
+                "maxItems": 4096
+              },
+              "usage": {
+                "type": "object",
+                "properties": {
+                  "recording": {
+                    "enum": [
+                      "not-recorded",
+                      "recorded",
+                      "unavailable"
+                    ]
+                  },
+                  "sdkEstimateUsd": {
+                    "anyOf": [
+                      {
+                        "type": "number",
+                        "minimum": 0,
+                        "maximum": 9007199254.740992
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "providerBilledUsd": {
+                    "type": "null"
+                  }
+                },
+                "required": [
+                  "recording",
+                  "sdkEstimateUsd",
+                  "providerBilledUsd"
+                ],
+                "additionalProperties": false
+              },
+              "references": {
+                "type": "object",
+                "properties": {
+                  "conversationId": {
+                    "type": "string",
+                    "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+                  },
+                  "runId": {
+                    "type": "string",
+                    "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+                  }
+                },
+                "required": [
+                  "conversationId",
+                  "runId"
+                ],
+                "additionalProperties": false
+              }
+            },
+            "required": [
+              "conversationId",
+              "runId",
+              "createdAt",
+              "state",
+              "statusAt",
+              "lastSequence",
+              "clientIds",
+              "usage",
+              "references"
+            ],
+            "additionalProperties": false
+          },
+          "maxItems": 20
+        },
+        "nextCursor": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 1024,
+              "pattern": "^[A-Za-z0-9_-]+$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "coverage": {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "current-authorized-durable-runs"
+            },
+            "complete": {
+              "type": "boolean"
+            },
+            "snapshot": {
+              "const": false
+            }
+          },
+          "required": [
+            "kind",
+            "complete",
+            "snapshot"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "schemaVersion",
+        "observedAt",
+        "scope",
+        "status",
+        "runs",
+        "nextCursor",
+        "coverage"
+      ],
+      "additionalProperties": false
+    },
+    "RunIndexDetailResponse": {
+      "type": "object",
+      "properties": {
+        "schemaVersion": {
+          "const": "meri.run-detail/1"
+        },
+        "observedAt": {
+          "type": "string",
+          "format": "date-time",
+          "pattern": "Z$"
+        },
+        "run": {
+          "type": "object",
+          "properties": {
+            "conversationId": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+            },
+            "runId": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+            },
+            "createdAt": {
+              "type": "string",
+              "format": "date-time",
+              "pattern": "Z$"
+            },
+            "state": {
+              "enum": [
+                "queued",
+                "starting",
+                "running",
+                "waiting-for-approval",
+                "paused",
+                "completed",
+                "failed",
+                "cancelled"
+              ]
+            },
+            "statusAt": {
+              "type": "string",
+              "format": "date-time",
+              "pattern": "Z$"
+            },
+            "lastSequence": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 9007199254740991
+            },
+            "clientIds": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+              },
+              "uniqueItems": true,
+              "maxItems": 4096
+            },
+            "usage": {
+              "type": "object",
+              "properties": {
+                "recording": {
+                  "enum": [
+                    "not-recorded",
+                    "recorded",
+                    "unavailable"
+                  ]
+                },
+                "sdkEstimateUsd": {
+                  "anyOf": [
+                    {
+                      "type": "number",
+                      "minimum": 0,
+                      "maximum": 9007199254.740992
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "providerBilledUsd": {
+                  "type": "null"
+                }
+              },
+              "required": [
+                "recording",
+                "sdkEstimateUsd",
+                "providerBilledUsd"
+              ],
+              "additionalProperties": false
+            },
+            "references": {
+              "type": "object",
+              "properties": {
+                "conversationId": {
+                  "type": "string",
+                  "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+                },
+                "runId": {
+                  "type": "string",
+                  "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+                }
+              },
+              "required": [
+                "conversationId",
+                "runId"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "conversationId",
+            "runId",
+            "createdAt",
+            "state",
+            "statusAt",
+            "lastSequence",
+            "clientIds",
+            "usage",
+            "references"
+          ],
+          "additionalProperties": false
+        },
+        "continuation": {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "conversation-owner"
+            },
+            "physicalStopVerified": {
+              "const": false
+            }
+          },
+          "required": [
+            "kind",
+            "physicalStopVerified"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "schemaVersion",
+        "observedAt",
+        "run",
+        "continuation"
+      ],
+      "additionalProperties": false
+    },
+    "RunIndexErrorResponse": {
+      "type": "object",
+      "properties": {
+        "error": {
+          "type": "object",
+          "properties": {
+            "code": {
+              "enum": [
+                "INVALID_REQUEST",
+                "UNAUTHENTICATED",
+                "ACCESS_DENIED",
+                "MEMBERSHIP_REVOKED",
+                "NOT_FOUND",
+                "METHOD_NOT_ALLOWED",
+                "DEADLINE",
+                "MEMBERSHIP_CHANGED",
+                "REQUEST_TOO_LARGE",
+                "UNSUPPORTED_MEDIA_TYPE",
+                "CANCELLED",
+                "PRODUCT_UNAVAILABLE",
+                "CONVERSATION_REQUEST_INVALID",
+                "CONVERSATION_CURSOR_INVALID",
+                "CONVERSATION_NOT_FOUND",
+                "CONVERSATION_TURN_CONFLICT",
+                "CONVERSATION_MANAGEMENT_CONFLICT",
+                "CONVERSATION_RESTORE_EXPIRED",
+                "CONVERSATION_STORE_CORRUPT",
+                "CONVERSATION_TURN_UNAVAILABLE",
+                "CONVERSATION_UNAVAILABLE",
+                "RUN_INDEX_REQUEST_INVALID",
+                "RUN_INDEX_CURSOR_INVALID",
+                "RUN_INDEX_NOT_FOUND",
+                "RUN_INDEX_CORRUPT",
+                "RUN_INDEX_UNAVAILABLE"
+              ]
+            }
+          },
+          "required": [
+            "code"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "error"
+      ],
+      "additionalProperties": false
     }
   }
 }
