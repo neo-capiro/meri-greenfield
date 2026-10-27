@@ -9,25 +9,25 @@ import {applicationFixture,binding,clientId,id} from './application-fixture.mjs'
 const versions={imageDigest:'sha256:'+'a'.repeat(64),sdk:'0.3.295',cli:'2.1.295',contracts:'0.1.0',skillsDigest:'b'.repeat(64),checkpointFormat:'0.1.0'};
 // Seed a coherent historical projection and its acknowledged generation together.
 function historicalScopes(h,scopes){const row=[...h.f.sql.state.projections.values()][0];row.projection.scopes=structuredClone(scopes);row.projection_sha256=hash(row.projection);const intent=[...h.f.sql.state.intents.values()][0];intent.intent.projection=structuredClone(row.projection);intent.intent_sha256=hash(intent.intent);return row.projection;}
-function preparationPool(){const rows=new Map(),state={loseCommit:false,claimed:0};const pk=v=>v.slice(0,4).join('|');
+function preparationPool(){const rows=new Map(),state={loseCommit:false,claimed:0,failFailedSettlement:false};const pk=v=>v.slice(0,4).join('|');
  return {rows,state,async connect(){return {async query(sql,v=[]){
   if(sql==='COMMIT'){if(state.loseCommit){state.loseCommit=false;throw Error('synthetic commit acknowledgement loss');}return {rows:[]};}
   if(sql.startsWith('BEGIN')||sql==='ROLLBACK'||sql.startsWith('SET LOCAL'))return {rows:[]};
   if(sql.startsWith('INSERT INTO meri_schedules.management_preparations')){if(rows.has(pk(v)))return {rows:[],rowCount:0};state.claimed++;rows.set(pk(v),{tenant_id:v[0],actor_id:v[1],scope_sha256:v[2],request_id:v[3],claim_id:v[4],record:structuredClone(v[5]),record_sha256:v[6],state:'PENDING',proposal_id:null,outcome:null});return {rows:[],rowCount:1};}
   if(sql.startsWith('SELECT tenant_id,actor_id,scope_sha256')){const row=sql.includes('proposal_id=$4')?[...rows.values()].find(r=>r.tenant_id===v[0]&&r.actor_id===v[1]&&r.scope_sha256===v[2]&&r.proposal_id===v[3]):rows.get(pk(v));return {rows:row?[structuredClone(row)]:[]};}
-  if(sql.startsWith('UPDATE meri_schedules.management_preparations')){const row=rows.get(pk(v));Object.assign(row,{state:v[4],proposal_id:v[5],outcome:structuredClone(v[6])});return {rows:[structuredClone(row)],rowCount:1};}
+  if(sql.startsWith('UPDATE meri_schedules.management_preparations')){if(state.failFailedSettlement&&v[4]==='FAILED')throw Error('synthetic failed settlement');const row=rows.get(pk(v));Object.assign(row,{state:v[4],proposal_id:v[5],outcome:structuredClone(v[6])});return {rows:[structuredClone(row)],rowCount:1};}
   throw Error('unexpected preparation SQL');
  },release(){}};}};
 }
 async function fixture(){
- const f=await applicationFixture(),created=await f.prepare();await f.approve(created);const pool=preparationPool(),preparations=createRoutineManagementPreparations({pool}),state={versions:{...versions},policyCalls:[],modelCalls:0,policyAllowed:true,revokedScope:null};
+ const f=await applicationFixture(),created=await f.prepare();await f.approve(created);const pool=preparationPool(),preparations=createRoutineManagementPreparations({pool}),state={versions:{...versions},policyCalls:[],modelCalls:0,policyAllowed:true,revokedScope:null,refusePhase:null};
  const forbidden=()=>{state.modelCalls++;throw Error('no execution identity');};
  function sessionOwner(){return createActionSessionOwner({mode:'process-local',verifyIdentity:forbidden,resolveContext:forbidden,now:f.now,refusals:()=>{},limits:{maxSessions:4,maxRequestMs:5000,maxTtlMs:30000,maxFactBytes:65536},management:{versions:state.versions,policyRevision:f.state.policyRevision,async readCurrent({clientId:choice}){
   const current={kind:'routine-management',principal:{tenantId:binding.tenantId,actorId:binding.actorId},scopes:choice===null?[{tenantId:binding.tenantId,kind:'private-user',resourceId:binding.actorId,policyRevision:f.state.policyRevision}]:f.scopes(),selectedClientId:choice,membershipRevision:'a'.repeat(64)};
   return {...current,contextRevision:hash(current),checkedAtMs:f.now(),expiresAtMs:f.now()+30000};}}});}
  const owners=[];
  async function login(selectedClientId=clientId){const sessions=sessionOwner();owners.push(sessions);const session=await routineManagementSessions(sessions).issue({identityCredential:'synthetic-native',clientId:selectedClientId});
-  const contextOwner=createRoutineManagementContextOwner({sessions,scheduleOwner:f.owner,now:f.now,newId:f.newId,template:f.contextConfiguration.template,workflow:f.contextConfiguration.workflow,limits:f.contextConfiguration.limits,policy:{async check(call){state.policyCalls.push(call.selection);const resources=[call.selection.currentSchedule,call.selection.proposal,call.selection.scheduleBinding?.resource].filter(Boolean);return {authorized:state.policyAllowed&&!resources.some(resource=>(resource.projection??resource).scopes?.some(scope=>scope.resourceId===state.revokedScope)),selectionSha256:call.selectionSha256,current:call.selection.current,destinationResolution:null,limits:null,checkedAtMs:f.now(),expiresAtMs:f.now()+5000};}}});
+  const contextOwner=createRoutineManagementContextOwner({sessions,scheduleOwner:f.owner,now:f.now,newId:f.newId,template:f.contextConfiguration.template,workflow:f.contextConfiguration.workflow,limits:f.contextConfiguration.limits,policy:{async check(call){state.policyCalls.push(call.selection);const resources=[call.selection.currentSchedule,call.selection.proposal,call.selection.scheduleBinding?.resource].filter(Boolean);return {authorized:state.policyAllowed&&call.selection.phase!==state.refusePhase&&!resources.some(resource=>(resource.projection??resource).scopes?.some(scope=>scope.resourceId===state.revokedScope)),selectionSha256:call.selectionSha256,current:call.selection.current,destinationResolution:null,limits:null,checkedAtMs:f.now(),expiresAtMs:f.now()+5000};}}});
   const service=createRoutinesService({...f.config,contextOwner,managementPreparations:preparations,retention:{assertServable:forbidden}});
   return {session,sessions,call:(method,request)=>service[method]({credential:session.credential,request,deadlineMs:f.now()+4500})};
  }
@@ -84,5 +84,24 @@ test('legacy secondary-scope refusal and wrong selected-client anchor do not pre
   h.state.revokedScope=secondary.resourceId;await assert.rejects(a.call('prepare',h.body('revoked-secondary')));
   h.state.revokedScope=null;historicalScopes(h,[secondary]);
   await assert.rejects(a.call('prepare',h.body('wrong-anchor')));assert.deepEqual(h.f.temporal.calls,before);assert.equal(h.state.modelCalls,0);
+ }finally{h.close();}
+});
+
+test('definite post-claim preparation refusal settles FAILED and exact replay returns its stored refusal without reminting',async()=>{
+ const h=await fixture();try{const a=await h.login(),before={...h.f.temporal.calls};h.state.refusePhase='resolve';
+  await assert.rejects(a.call('prepare',h.body('refused')),error=>error.code==='ROUTINES_REFUSED'&&error.outcome==='NOT_DISPATCHED');
+  assert.equal(h.pool.state.claimed,1);const row=[...h.pool.rows.values()][0];assert.equal(row.state,'FAILED');assert.deepEqual(row.outcome,{code:'REFUSED'});assert.equal(row.proposal_id,null);
+  h.state.refusePhase=null;const ids=h.f.state.ids;
+  await assert.rejects(a.call('prepare',h.body('refused')),error=>error.code==='ROUTINES_REFUSED'&&error.outcome==='NOT_DISPATCHED');
+  assert.equal(h.f.state.ids,ids);assert.equal(h.pool.state.claimed,1);assert.deepEqual(h.f.temporal.calls,before);
+ }finally{h.close();}
+});
+
+test('unestablished failed settlement retains PENDING/UNKNOWN and no identical retry remints or dispatches',async()=>{
+ const h=await fixture();try{const a=await h.login(),before={...h.f.temporal.calls};h.state.refusePhase='resolve';h.pool.state.failFailedSettlement=true;
+  await assert.rejects(a.call('prepare',h.body('failed-settlement')),error=>error.outcome==='UNKNOWN');
+  assert.equal([...h.pool.rows.values()][0].state,'PENDING');h.state.refusePhase=null;h.pool.state.failFailedSettlement=false;const ids=h.f.state.ids;
+  await assert.rejects(a.call('prepare',h.body('failed-settlement')),error=>error.outcome==='UNKNOWN');
+  assert.equal(h.f.state.ids,ids);assert.equal(h.pool.state.claimed,1);assert.deepEqual(h.f.temporal.calls,before);
  }finally{h.close();}
 });

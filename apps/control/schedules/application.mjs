@@ -93,7 +93,14 @@ export function createRoutinesService(configuration){
    const result={status:'approval_required',proposal};await l.run(()=>c.managementPreparations.settle({key,claimId,state:'PREPARED',outcome:result},l.check));settled=true;
    const fresh=await current(v,b,l);if(!sameCurrent(fresh,auth))deny();l.check();return data(result);
   }catch(error){
-   if(!settled&&error?.outcome==='NOT_DISPATCHED')try{await l.run(()=>c.managementPreparations.settle({key,claimId,state:'FAILED',outcome:{code:'REFUSED'}},l.check));}catch{}
+   // This prepare-only phase cannot claim/dispatch a schedule or revoke consent.
+   // Classify only its definite local admission refusals; never relabel a custody COMMIT or an effect outcome.
+   const refused=error?.outcome==='NOT_DISPATCHED'||['SCHEDULE_CONTEXT_ACCESS_DENIED','SCHEDULE_CONTEXT_POLICY','SCHEDULE_CONTEXT_STALE','SCHEDULE_CONTEXT_REQUEST'].includes(error?.code);
+   if(!settled&&refused){
+    try{await l.run(()=>c.managementPreparations.settle({key,claimId,state:'FAILED',outcome:{code:'REFUSED'}},l.check));}
+    catch{deny('UNKNOWN','UNKNOWN');}
+    deny('REFUSED','NOT_DISPATCHED');
+   }
    throw error;
   }
  }
