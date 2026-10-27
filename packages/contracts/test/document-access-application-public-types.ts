@@ -21,6 +21,13 @@ if(!('error'in history)){
   await receiveDocumentDownload(new Response(),history.versions[0]!);
 }
 const preview:'docx'|'xlsx'|'pptx'|'pdf'=documentAccessMetadata.previewFormats[0];void preview;
+const listRequest=receiveDocumentRequest('list',new Uint8Array());
+const library=await receiveDocumentResponse('list',200,new Uint8Array(),listRequest);
+if(!('error'in library)){
+  const scope:'conversation'|'client'|'owner'=library.scope;const cursor:string|null=library.nextCursor;void [scope,cursor];
+  // @ts-expect-error library metadata is not admitted for byte download
+  await receiveDocumentDownload(new Response(),library.versions[0]!);
+}
 const error:DocumentResponseError|undefined=undefined;void error;
 // @ts-expect-error receiving a response never issues authority
 const authorized:{authorized:true}=response;void authorized;

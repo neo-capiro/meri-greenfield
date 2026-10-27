@@ -8,6 +8,7 @@ const ref=name=>({$ref:'#/$defs/'+name});
 const object=properties=>({type:'object',properties,required:Object.keys(properties),additionalProperties:false});
 const uuid={type:'string',pattern:'^[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[1-8][a-fA-F0-9]{3}-[89aAbB][a-fA-F0-9]{3}-[a-fA-F0-9]{12}$'};
 const cursor={anyOf:[{type:'null'},{type:'string',pattern:'^[a-f0-9]{64}$'}]};
+const scope={enum:['conversation','client','owner']};
 function absolute(value){if(Array.isArray(value))return value.map(absolute);if(!value||typeof value!=='object')return value;return Object.fromEntries(Object.entries(value).map(([k,v])=>[k,k==='$ref'&&v.startsWith('#')?'urn:meri:artifacts:0.2.0'+v:absolute(v)]));}
 export function documentAccessSchema(artifact,errorStatuses){
  const inspections=artifact.$defs.ArtifactInspection.oneOf.filter(x=>DOCUMENT_ACCESS_FORMATS.includes(x.properties.format.const)).map(absolute);
@@ -20,6 +21,8 @@ export function documentAccessSchema(artifact,errorStatuses){
   DocumentInspectRequest:object({versionId:uuid}),DocumentDownloadRequest:object({versionId:uuid}),
   DocumentHistoryRequest:object({versionId:uuid,limit:{type:'integer',minimum:1,maximum:100},cursor}),
   DocumentHistoryResponse:object({anchorVersionId:uuid,artifactId:uuid,headVersionId:uuid,versions:{type:'array',minItems:1,maxItems:100,items:ref('DocumentVersion')},nextCursor:cursor}),
+  DocumentListRequest:object({scope,limit:{type:'integer',minimum:1,maximum:100},cursor}),
+  DocumentListResponse:object({scope,versions:{type:'array',minItems:0,maxItems:100,items:ref('DocumentVersion')},nextCursor:cursor}),
   NativeArtifactFileMetadata:{$ref:'urn:meri:artifacts:0.2.0#/$defs/NativeArtifactFileMetadata'},
  DocumentInspectionResponse:{oneOf:[object({version:ref('DocumentVersion'),inspection:{oneOf:inspected}}),object({kind:{const:'native-file'},version:ref('NativeArtifactFileMetadata'),integrity:{$ref:'urn:meri:artifacts:0.2.0#/$defs/NativeArtifactFileInspection/properties/integrity'}})]},
   DocumentErrorResponse:object({error:object({code:{enum:Object.keys(errorStatuses)},outcome:{enum:['NOT_DISPATCHED','UNKNOWN','RESULT_NOT_RELEASED','READ_UNAVAILABLE']}})}),

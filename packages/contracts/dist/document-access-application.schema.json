@@ -135,6 +135,77 @@
       ],
       "additionalProperties": false
     },
+    "DocumentListRequest": {
+      "type": "object",
+      "properties": {
+        "scope": {
+          "enum": [
+            "conversation",
+            "client",
+            "owner"
+          ]
+        },
+        "limit": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 100
+        },
+        "cursor": {
+          "anyOf": [
+            {
+              "type": "null"
+            },
+            {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            }
+          ]
+        }
+      },
+      "required": [
+        "scope",
+        "limit",
+        "cursor"
+      ],
+      "additionalProperties": false
+    },
+    "DocumentListResponse": {
+      "type": "object",
+      "properties": {
+        "scope": {
+          "enum": [
+            "conversation",
+            "client",
+            "owner"
+          ]
+        },
+        "versions": {
+          "type": "array",
+          "minItems": 0,
+          "maxItems": 100,
+          "items": {
+            "$ref": "#/$defs/DocumentVersion"
+          }
+        },
+        "nextCursor": {
+          "anyOf": [
+            {
+              "type": "null"
+            },
+            {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            }
+          ]
+        }
+      },
+      "required": [
+        "scope",
+        "versions",
+        "nextCursor"
+      ],
+      "additionalProperties": false
+    },
     "NativeArtifactFileMetadata": {
       "$ref": "#/$defs/Canonical_NativeArtifactFileMetadata_f90c3fee"
     },
@@ -631,6 +702,7 @@
                 "ARTIFACT_DEADLINE",
                 "ARTIFACT_EFFECT_UNKNOWN",
                 "ARTIFACT_HISTORY_CURSOR",
+                "ARTIFACT_LIBRARY_CURSOR",
                 "ARTIFACT_PREVIEW_PENDING",
                 "ARTIFACT_PREVIEW_UNSUPPORTED",
                 "ARTIFACT_RENDERER_UNAVAILABLE",

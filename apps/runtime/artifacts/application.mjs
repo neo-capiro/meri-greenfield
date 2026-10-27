@@ -22,7 +22,7 @@ export function createRuntimeArtifactApplication(configuration){const c=own(conf
   const options=own(resolved.documentOptions,['sessions','selectedClientId','artifactOptions','now','limits'],['enabled','admitPdf','previewOptions','nativeFiles']);if(options.sessions!==c.sessions||options.now!==c.now)fail('ACCESS_DENIED');
   const innerLimits=documentLimits(options.limits),effectiveLimits=Object.fromEntries(Object.keys(limits).map(key=>[key,Math.min(limits[key],innerLimits[key])]));
   const effectiveDeadlineMs=Math.min(deadlineMs,requestStarted+effectiveLimits.maxRequestMs);life.limitDeadline(effectiveDeadlineMs);
-  const o=own(options.artifactOptions,['pool','context','validators','authorize','versions','objects','executor','now','ids'],['retention']);
+  const o=own(options.artifactOptions,['pool','context','validators','authorize','versions','objects','executor','now','ids'],['retention','authorizeOrigin']);
   if(c.retention!==undefined)o.retention=c.retention;o.context=v.context(o.context);life.limitDeadline(o.context.deadlineMs);
   const pinned=hash({intent:info.intent,body});
   async function fresh(phase){life.check();if(hash({intent:info.intent,body})!==pinned)fail('ACCESS_DENIED');

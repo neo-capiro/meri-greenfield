@@ -8,7 +8,7 @@ import {verifyArtifactVersionStorageRecord as recordValue,verifyArtifactVersionS
 export {verifyArtifactVersionStorageRecord,verifyArtifactVersionStorageRow} from './version-record.mjs';
 export function createPostgresArtifactVersions(options){const {pool,now,maxRequestMs=15000,journal=null,publication=null,publications=null,tenantId=null,retention=null}=own(options,['pool','now'],['maxRequestMs','journal','publication','publications','tenantId','retention']);configuration(now,maxRequestMs);storageMethod(pool,'connect');
  // Imports/construction remain inert. Missing durable owner is unavailable BEFORE SQL, never legacy SQL publication.
- if(journal===null||retention===null||publications===null&&(publication===null||tenantId===null)){const unavailable=async()=>fail('ARTIFACT_PUBLICATION_UNAVAILABLE');return Object.freeze({read:unavailable,readExclusive:unavailable,history:unavailable,commit:unavailable,findByObject:unavailable,recoverExclusive:unavailable,recoverTenant:unavailable});}
+ if(journal===null||retention===null||publications===null&&(publication===null||tenantId===null)){const unavailable=async()=>fail('ARTIFACT_PUBLICATION_UNAVAILABLE');return Object.freeze({read:unavailable,readExclusive:unavailable,history:unavailable,list:unavailable,commit:unavailable,findByObject:unavailable,recoverExclusive:unavailable,recoverTenant:unavailable});}
  if(publications!==null&&(publication!==null||tenantId!==null)||tenantId!==null&&(typeof tenantId!=='string'||!tenantId))fail('ARTIFACT_STORAGE_CONFIGURATION');
  const tx=storageMethod(journal,'tx'),readRetention=storageMethod(journal,'readProjection'),assertServable=storageMethod(retention,'assertServable');
  const forTenant=publications===null?null:storageMethod(publications,'forTenant'),exclusive=storageMethod(journal,'exclusive');
@@ -41,6 +41,15 @@ export function createPostgresArtifactVersions(options){const {pool,now,maxReque
   await allowed(anchor,life);const after=await current(life,tenant);if(after.positionSha256!==facts.positionSha256)fail('ARTIFACT_PUBLICATION_STALE');
   return {artifactId,anchorVersionId:versionId,headVersionId:sql.head.version_id,records};
  });}
+ /** Internal discovery candidates from canonical publication. Every public row still needs current origin authority and read(). */
+ async function list(value,signal){const q=data(own(value,['tenantId','actorId','conversationId','clientId']));owner(q.tenantId);
+  if(typeof q.actorId!=='string'||!q.actorId||q.actorId.length>128||q.conversationId!==null&&typeof q.conversationId!=='string'||q.clientId!==null&&typeof q.clientId!=='string')fail('ARTIFACT_STORAGE_INPUT');
+  if(q.conversationId!==null)uuid(q.conversationId);if(q.clientId!==null)uuid(q.clientId);
+  const life=storageLifetime({now,maxRequestMs},signal);try{const {index}=await current(life,q.tenantId),heads=new Map(index.heads.map(h=>[h.artifactId,h.versionId])),terminal=new Set(index.tombstones.map(t=>t.artifactId));
+   const records=index.decisions.map(d=>d.record).filter(r=>{const v=r.version;return heads.get(v.artifactId)===v.versionId&&!terminal.has(v.artifactId)&&v.binding.actorId===q.actorId&&(q.conversationId===null||v.binding.conversationId===q.conversationId)&&(q.clientId===null||v.scopes.length===1&&v.scopes[0].kind==='client'&&v.scopes[0].resourceId===q.clientId);});
+   life.check();return data({records});
+  }finally{life.close();}
+ }
  /** The version id whose immutable object is `objectId` within one tenant conversation (decoded and checked); ENOENT when none.
   * Unindexed JSON-path read on the existing table (no migration); an index is a separate migration proposal. */
  async function findByObject(value,signal){const q=data(own(value,['objectId','tenantId','conversationId']));uuid(q.objectId);uuid(q.conversationId);if(tenantId!==null&&q.tenantId!==tenantId)fail('ARTIFACT_STORAGE_INPUT');owner(q.tenantId);if(forTenant)await recoverTenant(q.tenantId,signal);
@@ -89,5 +98,5 @@ export function createPostgresArtifactVersions(options){const {pool,now,maxReque
  // Fixed preview recovery already owns the same exclusion. Dynamic startup has no tenant and must never guess one.
  async function recoverExclusive(signal){if(tenantId===null)fail('ARTIFACT_RECOVERY_TENANT_REQUIRED');return transaction(signal,(c,life)=>recoverTenantOnLease(c,life,tenantId),true);}
  // readExclusive is metadata validation only, for the existing recovery exclusion before the serving fence opens.
- return Object.freeze({read:(value,signal)=>readValue(value,signal),readExclusive:(value,signal)=>readValue(value,signal,true),history,commit,findByObject,recoverExclusive,recoverTenant});
+ return Object.freeze({read:(value,signal)=>readValue(value,signal),readExclusive:(value,signal)=>readValue(value,signal,true),history,list,commit,findByObject,recoverExclusive,recoverTenant});
 }

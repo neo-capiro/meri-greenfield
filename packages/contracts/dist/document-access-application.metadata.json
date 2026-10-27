@@ -16,6 +16,11 @@
       "method": "POST",
       "path": "/api/documents/history",
       "response": "json"
+    },
+    "list": {
+      "method": "POST",
+      "path": "/api/documents/list",
+      "response": "json"
     }
   },
   "formats": [
@@ -68,6 +73,7 @@
     "ARTIFACT_DEADLINE": 408,
     "ARTIFACT_EFFECT_UNKNOWN": 502,
     "ARTIFACT_HISTORY_CURSOR": 409,
+    "ARTIFACT_LIBRARY_CURSOR": 409,
     "ARTIFACT_PREVIEW_PENDING": 409,
     "ARTIFACT_PREVIEW_UNSUPPORTED": 422,
     "ARTIFACT_RENDERER_UNAVAILABLE": 503,
@@ -98,6 +104,7 @@
     "inspection": "structural facts about one exact stored version; nativeOpened, rendered and recalculated are always false, pptx visualInspection and pdf renderInspection are always pending, so no inspection describes a rendered or visually checked file",
     "download": "a download is admitted only for a version this receiver admitted from an inspect answer in the same session of use; inspect first, never a link or bytes alone",
     "history": "currently authorized metadata for one immutable artifact chain, newest first, with an anchor-correlated response and a context/query/head-bound opaque continuation; it verifies no object bytes and admits no version for download; history is not cross-conversation library discovery",
+    "list": "currently authorized original head metadata for the same owner in conversation, selected client, or owner scope; each origin requires fresh Core access and retention before release; a bounded candidate window may yield an empty page with nextCursor, without totals or hidden counts; cursors select a context/query/snapshot-bound page and convey no authority; versions are not admitted for download",
     "preview": "previewFormats are the only formats the artifact preview owner will render (any other format answers ARTIFACT_PREVIEW_UNSUPPORTED); every previewFormat except pdf also needs a qualified converter or answers ARTIFACT_RENDERER_UNAVAILABLE; this contract carries no preview route and no renderer qualification",
     "statuses": "the document application releases only generationStatus draft and previewStatus pending, so previewStatus never reports unsupported or validated here",
     "composition": "a document application instance is composed with one operation descriptor (operationFormats) and answers DOCUMENT_RESULT_REFUSED for versions of formats outside it; which descriptor serves a conversation is a composition fact this contract cannot assert",
@@ -123,8 +130,8 @@
     },
     {
       "path": "../../apps/control/document-application/current.mjs",
-      "sha256": "4244398ac67e43785cc4dc5275094d39609a9ef3eed06ed54af7a21c36c7c02f",
-      "bytes": 6439
+      "sha256": "e25ecd8c0a2e06cb4ef49be56aa04c505df6b620ccaf1c797039f6ce2c604e66",
+      "bytes": 6732
     },
     {
       "path": "../../apps/control/document-application/format-admission.mjs",
@@ -133,13 +140,13 @@
     },
     {
       "path": "../../apps/control/document-application/http.mjs",
-      "sha256": "cb9dba6d0df478a65797e856a330f82cf13e9f8a40c4459351b816d1b5ec43e0",
-      "bytes": 2681
+      "sha256": "59bbb14bdcac68633f8a4f399fefa80eae192c26a13178597bac9d1e297340e7",
+      "bytes": 2718
     },
     {
       "path": "../../apps/control/document-application/index.mjs",
-      "sha256": "2e6e0f893a7ddfcd2be4e75852a28783ff421bf13cf28751657ea8039847d8ab",
-      "bytes": 11335
+      "sha256": "4b1a96bc1f3ba4de2cc4d5c1b70d12fa448dbb01a307aacb8585e2f398fcd359",
+      "bytes": 11823
     },
     {
       "path": "artifacts-0.2/artifact-formats.mjs",
@@ -153,23 +160,23 @@
     },
     {
       "path": "document-access-application/protocol.mjs",
-      "sha256": "ae2e65af4d37e1b4e1df1443edf6f589292f9411f70d8eb9303da765091b10b8",
-      "bytes": 2712
+      "sha256": "6cb38f071793d621d6afe5af12db7f324dfb30c9ac53c95060711e297bca20ca",
+      "bytes": 3184
     },
     {
       "path": "document-access-application/README.md",
-      "sha256": "effc38d2848cf9e47ac7ce7728373c49478cdf20119bd4a09eaea7ad58bf5aa1",
-      "bytes": 7242
+      "sha256": "fc098e769869596c258b50e20994d6ba5e52be61386144e02fa91fc6a0b7460e",
+      "bytes": 8661
     },
     {
       "path": "document-access-application/receive.mjs",
-      "sha256": "a0018358ed182e02626ca8a500c7ec7bbc8f60901d6f3f119f3f8d99c15bb78b",
-      "bytes": 4591
+      "sha256": "94ca1d4739dba9a401ef0cd56d610ea29c051c4869ad4bec0c89831fff973714",
+      "bytes": 6379
     },
     {
       "path": "document-access-application/schema.mjs",
-      "sha256": "f6fa07d5fafe3da5ebd2bfe294375262d3ed9152a04be91e5f0dd1911c50fd85",
-      "bytes": 3424
+      "sha256": "0cb9aa20c47337ea9bb3c2597d558d75d2ec07b6ff2e3c16d13f4337fee365ab",
+      "bytes": 3704
     },
     {
       "path": "document-application/boundary.mjs",
@@ -183,8 +190,8 @@
     },
     {
       "path": "generate-document-access.mjs",
-      "sha256": "4a0c2671318af462ff3bb82bc0465cb15c09261503229a884b71787afce93071",
-      "bytes": 13781
+      "sha256": "1ccc8d839606550a38a4e1b5b8d5a5c2954015473599bc06a921811df1e66577",
+      "bytes": 13925
     },
     {
       "path": "meri.schema.json",
@@ -197,7 +204,7 @@
       "bytes": 447717
     }
   ],
-  "schemaSha256": "e6287522540ddfa308f092c50064911322f7afcd70a89461d408b732d4b7598f",
+  "schemaSha256": "815bd56be3962a301ceea521e396273d11d66b19406512cf16f311c923529193",
   "browserInputs": [
     "artifacts-0.2/artifact-formats.mjs",
     "document-access-application/document-access-application-receiver.mjs",

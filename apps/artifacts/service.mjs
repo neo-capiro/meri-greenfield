@@ -1,11 +1,13 @@
 import {createHash} from 'node:crypto';
 import {createOperationLifetime} from '../../packages/runtime/operation-lifetime.mjs';
 import {recoverArtifact} from './recovery.mjs';
+import {readArtifactLibrary} from './library.mjs';
 import {ARTIFACT_MIME_TYPES as mime,artifactFilename as filenameFor} from '../../packages/contracts/artifacts-0.2/artifact-formats.mjs';
 const sha=bytes=>createHash('sha256').update(bytes).digest('hex');
 const fail=code=>{throw Object.assign(new Error(code),{code});};
 const closed=(value,keys)=>{if(!value||Array.isArray(value)||Object.keys(value).sort().join()!==keys.sort().join())fail('ARTIFACT_PORT_SHAPE');};
-export function createArtifactService({validators:v,authorize,versions,objects,executor,now,ids,retention,admitRetainedEvidence}){
+export function createArtifactService({validators:v,authorize,versions,objects,executor,now,ids,retention,admitRetainedEvidence,authorizeOrigin}){
+  if(authorizeOrigin!==undefined&&typeof authorizeOrigin!=='function')fail('ARTIFACT_CONFIGURATION');
   if(admitRetainedEvidence!==undefined&&typeof admitRetainedEvidence!=='function')fail('ARTIFACT_CONFIGURATION');
   if(![authorize,now,ids,versions?.read,versions?.commit,objects?.put,objects?.get,executor?.execute].every(x=>typeof x==='function')||retention!==undefined&&typeof retention?.assertServable!=='function'||versions?.recoverTenant!==undefined&&typeof versions.recoverTenant!=='function')fail('ARTIFACT_CONFIGURATION');
   const same=(a,b)=>v.hash(a)===v.hash(b);
@@ -128,5 +130,6 @@ export function createArtifactService({validators:v,authorize,versions,objects,e
   }
   return Object.freeze({create:(request,context,options)=>generate(null,request,context,options),revise:(baseVersionId,request,context,options)=>{if(typeof baseVersionId!=='string')fail('ARTIFACT_VERSION_ID');return generate(baseVersionId,request,context,options);},
     recover:(baseVersionId,request,context,options)=>recoverArtifact({v,operation,authority,scopeVersion,bytesFor,inspectBytes,versions,servable,recoverTenant},baseVersionId,request,context,options),
+    list:(query,context,options)=>readArtifactLibrary({v,versions,authorizeOrigin,operation,authority,servable,recoverTenant,now},query,context,options),
     history,inspect:(id,context,options)=>read(id,context,options),download:(id,context,options)=>read(id,context,options,true)});
 }

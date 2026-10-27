@@ -9,8 +9,8 @@
     },
     {
       "path": "../../apps/control/document-application/current.mjs",
-      "sha256": "4244398ac67e43785cc4dc5275094d39609a9ef3eed06ed54af7a21c36c7c02f",
-      "bytes": 6439
+      "sha256": "e25ecd8c0a2e06cb4ef49be56aa04c505df6b620ccaf1c797039f6ce2c604e66",
+      "bytes": 6732
     },
     {
       "path": "../../apps/control/document-application/format-admission.mjs",
@@ -19,13 +19,13 @@
     },
     {
       "path": "../../apps/control/document-application/http.mjs",
-      "sha256": "cb9dba6d0df478a65797e856a330f82cf13e9f8a40c4459351b816d1b5ec43e0",
-      "bytes": 2681
+      "sha256": "59bbb14bdcac68633f8a4f399fefa80eae192c26a13178597bac9d1e297340e7",
+      "bytes": 2718
     },
     {
       "path": "../../apps/control/document-application/index.mjs",
-      "sha256": "2e6e0f893a7ddfcd2be4e75852a28783ff421bf13cf28751657ea8039847d8ab",
-      "bytes": 11335
+      "sha256": "4b1a96bc1f3ba4de2cc4d5c1b70d12fa448dbb01a307aacb8585e2f398fcd359",
+      "bytes": 11823
     },
     {
       "path": "artifacts-0.2/artifact.schema.json",

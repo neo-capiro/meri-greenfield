@@ -40,7 +40,7 @@ export function createRuntimeDocumentOptionsComposer(options){const c=own(option
  const storage=own(c.storage,['objects','versions'],['verifyPrivate','previews']);if(typeof c.now!=='function'||typeof c.store?.lifecycle?.readArtifactFile!=='function'||c.renderer!==undefined&&!isRendererPort(c.renderer)||typeof(c.pdfAdmission??false)!=='boolean'||c.previews!==undefined&&storage.previews!==undefined&&c.previews!==storage.previews)throw Error('ARTIFACT_RUNTIME_CONFIGURATION');
  const admitPdf=c.pdfAdmission===true&&admittedConverter(c.renderer)!==null,previews=c.previews??storage.previews;
  const previewOptions=previews===undefined?undefined:{previews,renderer:c.renderer??null,...(c.maxPreviewBytes===undefined?{}:{maxPreviewBytes:c.maxPreviewBytes})};
- return trusted=>{const o=own(trusted,['artifactOptions','selectedClientId','limits'],['enabled']),a=own(o.artifactOptions,['pool','context','validators','authorize','versions','objects','executor','now','ids'],['retention','admitRetainedEvidence']);
+ return trusted=>{const o=own(trusted,['artifactOptions','selectedClientId','limits'],['enabled']),a=own(o.artifactOptions,['pool','context','validators','authorize','versions','objects','executor','now','ids'],['retention','admitRetainedEvidence','authorizeOrigin']);
   if(a.validators!==v||a.now!==c.now)throw Error('ARTIFACT_RUNTIME_CONFIGURATION');
   const nativeFiles={async read(versionId,signal){const check=()=>{if(signal?.aborted)throw Error('ARTIFACT_CANCELLED');if(c.now()>=a.context.deadlineMs)throw Error('ARTIFACT_DEADLINE');};check();
    return c.store.lifecycle.readArtifactFile({binding:a.context.binding,scopes:a.context.scopes,selectedClientId:o.selectedClientId,versionId},check);}};

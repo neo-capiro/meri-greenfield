@@ -50,7 +50,7 @@ export async function generateDocumentAccessContracts({check=false,toolchainRoot
     if(!seen.has(full)){const original=originals.get(id);if(!original)throw Error('Missing schema owner '+id);const name='Canonical_'+fragment.split('/').at(-1)+'_'+hash(full).slice(0,8);seen.set(full,name);let target=original.schema;for(const token of fragment.split('/').slice(1))target=target[token.replaceAll('~1','/').replaceAll('~0','~')];if(!target)throw Error('Missing canonical pointer '+full);defs[name]=transform(target,id);}out[key]='#/$defs/'+seen.get(full);
    }return out;}
   root.$defs={...transform(root.$defs,root.$id),...defs};
-  const names=['DocumentInspectRequest','DocumentDownloadRequest','DocumentHistoryRequest','DocumentInspectionResponse','DocumentHistoryResponse','DocumentErrorResponse'],exportNames=['validateInspectRequest','validateDownloadRequest','validateHistoryRequest','validateInspection','validateHistory','validateError'];
+  const names=['DocumentInspectRequest','DocumentDownloadRequest','DocumentHistoryRequest','DocumentListRequest','DocumentInspectionResponse','DocumentHistoryResponse','DocumentListResponse','DocumentErrorResponse'],exportNames=['validateInspectRequest','validateDownloadRequest','validateHistoryRequest','validateListRequest','validateInspection','validateHistory','validateList','validateError'];
   const ajv=new Ajv({strict:true,allErrors:false,code:{source:true,esm:true}});formats(ajv);ajv.addSchema(root);const refs={};names.forEach((name,i)=>{const ref=root.$id+'#/$defs/'+name;ajv.compile({$ref:ref});refs[exportNames[i]]=ref;});
   const generated=standalone(ajv,refs),statusSource='export const errorStatuses='+JSON.stringify(errorStatuses)+';';
   const protocol='import {createDocumentAccessMetadata} from '+JSON.stringify(fileURLToPath(new URL('document-access-application/protocol.mjs',HERE)))+';export const documentAccessMetadata=createDocumentAccessMetadata('+JSON.stringify(config)+');';
@@ -61,15 +61,15 @@ export async function generateDocumentAccessContracts({check=false,toolchainRoot
   const leak=/^(?:\/\/ |\s+")[^\n]*(?:\.\.\/|(?<![A-Za-z0-9])[A-Za-z]:[\\/](?!\/)|\/(?:home|Users)\/)/mu.exec(bundled.outputFiles[0].text);if(leak)throw Error('Document access bundle embeds checkout layout: '+leak[0].slice(0,120));
   const declarations=await compiler.compile({title:'DocumentAccessApplicationEnvelope',anyOf:names.map(name=>({$ref:'#/$defs/'+name})),$defs:root.$defs},'DocumentAccessApplicationEnvelope',{bannerComment:'// Generated from the canonical document receiving schema (all artifact formats). No authorization implied.',additionalProperties:false,style:{singleQuote:true}});
   const api=`
-export type DocumentAccessRoute = 'inspect' | 'download' | 'history';
+export type DocumentAccessRoute = 'inspect' | 'download' | 'history' | 'list';
 declare const admittedRequest: unique symbol;
 declare const admittedVersion: unique symbol;
-export interface DocumentAccessRequestMap { inspect:DocumentInspectRequest; download:DocumentDownloadRequest; history:DocumentHistoryRequest; }
+export interface DocumentAccessRequestMap { inspect:DocumentInspectRequest; download:DocumentDownloadRequest; history:DocumentHistoryRequest; list:DocumentListRequest; }
 export type AdmittedDocumentRequest<R extends DocumentAccessRoute> = Readonly<DocumentAccessRequestMap[R]> & {readonly [admittedRequest]:R};
 export type NativeArtifactFileMetadata = Extract<DocumentInspectionResponse,{kind:'native-file'}>['version'];
 export type AdmittedDocumentVersion = Readonly<DocumentVersion|NativeArtifactFileMetadata> & {readonly [admittedVersion]:true};
 export type DocumentReceipt<T> = T extends {version:infer V} ? Omit<T,'version'> & {readonly version:Readonly<V> & {readonly [admittedVersion]:true}} : never;
-export interface DocumentAccessResponseMap {inspect:DocumentReceipt<DocumentInspectionResponse>; download:never; history:DocumentHistoryResponse;}
+export interface DocumentAccessResponseMap {inspect:DocumentReceipt<DocumentInspectionResponse>; download:never; history:DocumentHistoryResponse; list:DocumentListResponse;}
 export type DocumentResponse<R extends DocumentAccessRoute> = DocumentAccessResponseMap[R] | DocumentErrorResponse;
 export interface DocumentDownload<V extends AdmittedDocumentVersion = AdmittedDocumentVersion> {readonly version:V; readonly bytes:Uint8Array<ArrayBuffer>;}
 export interface DocumentDownloadOptions {maxBytes?:number; timeoutMs?:number; signal?:AbortSignal;}

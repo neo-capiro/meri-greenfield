@@ -4,8 +4,10 @@ export type DocumentAccessApplicationEnvelope =
   | DocumentInspectRequest
   | DocumentDownloadRequest
   | DocumentHistoryRequest
+  | DocumentListRequest
   | DocumentInspectionResponse
   | DocumentHistoryResponse
+  | DocumentListResponse
   | DocumentErrorResponse;
 export type DocumentInspectionResponse =
   | {
@@ -190,6 +192,11 @@ export interface DocumentHistoryRequest {
   limit: number;
   cursor: null | string;
 }
+export interface DocumentListRequest {
+  scope: 'conversation' | 'client' | 'owner';
+  limit: number;
+  cursor: null | string;
+}
 export interface Canonical_ArtifactVersionD54B8Ac9 {
   contractVersion: '0.1.0';
   artifactId: string;
@@ -300,6 +307,15 @@ export interface DocumentHistoryResponse {
   versions: [DocumentVersion, ...DocumentVersion[]];
   nextCursor: null | string;
 }
+export interface DocumentListResponse {
+  scope: 'conversation' | 'client' | 'owner';
+  /**
+   * @minItems 0
+   * @maxItems 100
+   */
+  versions: DocumentVersion[];
+  nextCursor: null | string;
+}
 export interface DocumentErrorResponse {
   error: {
     code:
@@ -310,6 +326,7 @@ export interface DocumentErrorResponse {
       | 'ARTIFACT_DEADLINE'
       | 'ARTIFACT_EFFECT_UNKNOWN'
       | 'ARTIFACT_HISTORY_CURSOR'
+      | 'ARTIFACT_LIBRARY_CURSOR'
       | 'ARTIFACT_PREVIEW_PENDING'
       | 'ARTIFACT_PREVIEW_UNSUPPORTED'
       | 'ARTIFACT_RENDERER_UNAVAILABLE'
@@ -338,15 +355,15 @@ export interface DocumentErrorResponse {
   };
 }
 
-export type DocumentAccessRoute = 'inspect' | 'download' | 'history';
+export type DocumentAccessRoute = 'inspect' | 'download' | 'history' | 'list';
 declare const admittedRequest: unique symbol;
 declare const admittedVersion: unique symbol;
-export interface DocumentAccessRequestMap { inspect:DocumentInspectRequest; download:DocumentDownloadRequest; history:DocumentHistoryRequest; }
+export interface DocumentAccessRequestMap { inspect:DocumentInspectRequest; download:DocumentDownloadRequest; history:DocumentHistoryRequest; list:DocumentListRequest; }
 export type AdmittedDocumentRequest<R extends DocumentAccessRoute> = Readonly<DocumentAccessRequestMap[R]> & {readonly [admittedRequest]:R};
 export type NativeArtifactFileMetadata = Extract<DocumentInspectionResponse,{kind:'native-file'}>['version'];
 export type AdmittedDocumentVersion = Readonly<DocumentVersion|NativeArtifactFileMetadata> & {readonly [admittedVersion]:true};
 export type DocumentReceipt<T> = T extends {version:infer V} ? Omit<T,'version'> & {readonly version:Readonly<V> & {readonly [admittedVersion]:true}} : never;
-export interface DocumentAccessResponseMap {inspect:DocumentReceipt<DocumentInspectionResponse>; download:never; history:DocumentHistoryResponse;}
+export interface DocumentAccessResponseMap {inspect:DocumentReceipt<DocumentInspectionResponse>; download:never; history:DocumentHistoryResponse; list:DocumentListResponse;}
 export type DocumentResponse<R extends DocumentAccessRoute> = DocumentAccessResponseMap[R] | DocumentErrorResponse;
 export interface DocumentDownload<V extends AdmittedDocumentVersion = AdmittedDocumentVersion> {readonly version:V; readonly bytes:Uint8Array<ArrayBuffer>;}
 export interface DocumentDownloadOptions {maxBytes?:number; timeoutMs?:number; signal?:AbortSignal;}
@@ -369,6 +386,11 @@ export declare const documentAccessMetadata:{
     "history": {
       "method": "POST",
       "path": "/api/documents/history",
+      "response": "json"
+    },
+    "list": {
+      "method": "POST",
+      "path": "/api/documents/list",
       "response": "json"
     }
   },
@@ -422,6 +444,7 @@ export declare const documentAccessMetadata:{
     "ARTIFACT_DEADLINE": 408,
     "ARTIFACT_EFFECT_UNKNOWN": 502,
     "ARTIFACT_HISTORY_CURSOR": 409,
+    "ARTIFACT_LIBRARY_CURSOR": 409,
     "ARTIFACT_PREVIEW_PENDING": 409,
     "ARTIFACT_PREVIEW_UNSUPPORTED": 422,
     "ARTIFACT_RENDERER_UNAVAILABLE": 503,
@@ -452,6 +475,7 @@ export declare const documentAccessMetadata:{
     "inspection": "structural facts about one exact stored version; nativeOpened, rendered and recalculated are always false, pptx visualInspection and pdf renderInspection are always pending, so no inspection describes a rendered or visually checked file",
     "download": "a download is admitted only for a version this receiver admitted from an inspect answer in the same session of use; inspect first, never a link or bytes alone",
     "history": "currently authorized metadata for one immutable artifact chain, newest first, with an anchor-correlated response and a context/query/head-bound opaque continuation; it verifies no object bytes and admits no version for download; history is not cross-conversation library discovery",
+    "list": "currently authorized original head metadata for the same owner in conversation, selected client, or owner scope; each origin requires fresh Core access and retention before release; a bounded candidate window may yield an empty page with nextCursor, without totals or hidden counts; cursors select a context/query/snapshot-bound page and convey no authority; versions are not admitted for download",
     "preview": "previewFormats are the only formats the artifact preview owner will render (any other format answers ARTIFACT_PREVIEW_UNSUPPORTED); every previewFormat except pdf also needs a qualified converter or answers ARTIFACT_RENDERER_UNAVAILABLE; this contract carries no preview route and no renderer qualification",
     "statuses": "the document application releases only generationStatus draft and previewStatus pending, so previewStatus never reports unsupported or validated here",
     "composition": "a document application instance is composed with one operation descriptor (operationFormats) and answers DOCUMENT_RESULT_REFUSED for versions of formats outside it; which descriptor serves a conversation is a composition fact this contract cannot assert",
