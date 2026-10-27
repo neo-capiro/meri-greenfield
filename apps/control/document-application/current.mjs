@@ -35,7 +35,7 @@ export function configuration(value){
  const limits=documentLimits(c.limits),context=v.context(o.context);assertNativeConversationScope({...context,selectedClientId:c.selectedClientId});
  if(c.now!==o.now||typeof c.now!=='function'||o.validators!==v||typeof o.authorize!=='function'||typeof o.ids!=='function'||typeof(c.enabled??false)!=='boolean'||typeof(c.admitPdf??false)!=='boolean')fail('DOCUMENT_CONFIGURATION',500);
  const options={...o,context,...(o.admitRetainedEvidence?{admitRetainedEvidence:syncPort(o.admitRetainedEvidence)}:{}),authorize:asyncPort(o.authorize),ids:syncPort(o.ids),
-  versions:{read:method(o.versions,'read'),commit:method(o.versions,'commit'),...(o.versions.recoverTenant?{recoverTenant:method(o.versions,'recoverTenant')}:{})},
+  versions:{read:method(o.versions,'read'),commit:method(o.versions,'commit'),...(o.versions.history?{history:method(o.versions,'history')}:{}),...(o.versions.recoverTenant?{recoverTenant:method(o.versions,'recoverTenant')}:{})},
   objects:{get:method(o.objects,'get'),put:method(o.objects,'put')},executor:{execute:method(o.executor,'execute')}};
  return {sessions:{authenticateSession:method(c.sessions,'authenticateSession'),readCurrentState:method(c.sessions,'readCurrentState')},
   options,formatAdmission:admitDocumentFormats({pdf:c.admitPdf??false}),limits,now:c.now,selectedClientId:c.selectedClientId,enabled:c.enabled??false,previewOptions:c.previewOptions,

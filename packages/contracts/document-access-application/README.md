@@ -1,6 +1,16 @@
-# Document access application contract (inspect and download, all artifact formats)
+# Document access application contract (inspect, download and immutable history)
 
-Proposed `urn:meri:document-access-application:0.1.0` browser boundary for the two document read routes `POST /api/documents/inspect` and `POST /api/documents/download` (PR190 base `29379ab1`). It is a separate, additive sibling of the frozen `document-application` 0.1.x distribution, which stays byte-identical. It grants no authority, qualifies no renderer and is not deployment, composition or runtime-mount evidence.
+Unpublished `urn:meri:document-access-application:0.2.0` browser boundary for document inspect, download and history. The history route is additive; existing inspect/download request and success shapes remain unchanged from document-access 0.1.0. The frozen `document-application` 0.1.x distribution and published package archives stay byte-identical. This document-access version is separate from the frozen root wire and `RuntimeVersions.contracts` 0.1.0; neither changes. Validation grants no authority, qualifies no renderer and is not deployment, composition or runtime-mount evidence.
+
+## Immutable history
+
+`POST /api/documents/history` accepts exactly `{versionId, limit, cursor}`: an anchor UUID, an integer limit from 1 to 100, and a null or lowercase 64-hex opaque cursor. The producer verifies that the anchor belongs to the complete authorized immutable chain before slicing. Its response is exactly `{anchorVersionId, artifactId, headVersionId, versions, nextCursor}`. The anchor echoes the request; versions run newest to oldest along exact parents. The first page starts at the head and a terminal page ends at a null parent. A continuation is bound to the current tenant/actor/conversation/scopes, anchor, limit and head snapshot. Changing any of them invalidates the continuation. A cursor is a page selector, never authorization: every page requires current Core access and retention checks before metadata release.
+
+History carries original version/provenance metadata only. It does not read or verify object bytes, report native opening/preview, or brand versions for download. The consumer must inspect an exact selected version before using the existing byte receiver. History receives only generated versions; native workspace files retain their separate inspection branch and no synthesized version chain. Archive, delete, share, comments and rename are not admitted by this route.
+
+This history route is one part of the required library. Owner/client/conversation discovery and pagination remain active work; current conversation authority must never authorize another origin implicitly. Cross-conversation metadata requires current authorization of each retained origin for the same authenticated actor and tenant before release, with client walls and retention enforced. No unimplemented discovery scope is advertised by this contract.
+
+The strict-contract policy in `packages/contracts/README.md` requires a version change when extending a closed public surface. This unpublished sibling version preserves old operation shapes; existing 0.1.22 consumers continue using their old inspect/download boundary. A new npm package allocation, generated-source review and matching consumer reception are separate from this source change. Existing 0.1.22/UI 0.1.9 archives are immutable.
 
 ## Why it exists
 

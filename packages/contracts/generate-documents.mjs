@@ -17,6 +17,13 @@ export async function generateDocumentContracts({check=false}={}){
  for(const path of httpFiles.slice(0,4)){const text=await readFile(new URL(path,HERE),'utf8');for(const m of text.matchAll(/fail\('([A-Z_]+)'(?:,(\d+))?\)/gu))statuses[m[1]]=Number(m[2]??400);}
  const shared=await readFile(new URL(httpFiles[4],HERE),'utf8'),body=shared.slice(shared.indexOf('export async function jsonBody'),shared.indexOf('export function response'));
  for(const m of body.matchAll(/fail\('([A-Z_]+)'(?:,(\d+))?\)/gu))statuses[m[1]]=Number(m[2]??400);
+ // The frozen document-application 0.1.0 receiver has no history route. This
+ // cursor refusal belongs only to document-access 0.2.0; retain every prior
+ // derived code/status and refuse an unexpected change to this new owner's status.
+ if(Object.hasOwn(statuses,'ARTIFACT_HISTORY_CURSOR')){
+  if(statuses.ARTIFACT_HISTORY_CURSOR!==409)throw Error('History cursor status changed');
+  delete statuses.ARTIFACT_HISTORY_CURSOR;
+ }
  const statusEntries=Object.fromEntries(Object.entries(statuses).sort(([a],[b])=>a.localeCompare(b)));
  const artifact=originals.get('urn:meri:artifacts:0.2.0');sources.set(artifact.path,{path:artifact.path,sha256:artifact.sha256,bytes:artifact.bytes});
  const root=documentSchema(artifact.schema,statusEntries),defs={},seen=new Map();

@@ -104,7 +104,29 @@ export function createArtifactService({validators:v,authorize,versions,objects,e
       return download?{version:record.version,bytes}:{version:record.version,inspection:{...inspection,currentBytesVerified:true}};
     }catch(error){error.lifetime=life.close();throw error;}finally{life.close();}
   }
+  async function history(queryValue,contextValue,options={}){
+    closed(queryValue,['versionId','limit','cursor']);const query=v.snapshot(queryValue);
+    if(typeof query.versionId!=='string'||!Number.isInteger(query.limit)||query.limit<1||query.limit>100||query.cursor!==null&&(typeof query.cursor!=='string'||!/^[a-f0-9]{64}$/u.test(query.cursor)))fail('ARTIFACT_HISTORY_INPUT');
+    if(typeof versions.history!=='function')fail('UNAVAILABLE');
+    const context=v.context(contextValue),life=operation(context,options.signal),action='artifact.inspect',resource={versionId:query.versionId,object:null,assetObjects:[]},requestSha256=v.hash({action,intent:'history',query,context});
+    try{
+      await authority(life,action,resource,requestSha256,context);await servable(life,context);await recoverTenant(life,context);
+      const result=v.snapshot(await life.run(signal=>versions.history(query.versionId,signal)));closed(result,['artifactId','anchorVersionId','headVersionId','records']);
+      if(result.anchorVersionId!==query.versionId||!Array.isArray(result.records)||!result.records.length||result.records.length>1024)fail('ARTIFACT_HISTORY_RESULT');
+      const records=result.records.map(record=>scopeVersion(record,record.version?.versionId,context)),ids=new Set();
+      for(let i=0;i<records.length;i++){const version=records[i].version;if(ids.has(version.versionId)||version.artifactId!==result.artifactId||version.parentVersionId!==(records[i+1]?.version.versionId??null))fail('ARTIFACT_HISTORY_RESULT');ids.add(version.versionId);}
+      if(records[0].version.versionId!==result.headVersionId||!ids.has(query.versionId))fail('ARTIFACT_HISTORY_RESULT');
+      const anchor=records.find(record=>record.version.versionId===query.versionId);resource.object=anchor.version.object;
+      await authority(life,action,resource,requestSha256,context);await servable(life,context,anchor);
+      // The cursor selects a page of this freshly authorized snapshot; it is never an authority capability.
+      const snapshotSha256=v.hash({query:{versionId:query.versionId,limit:query.limit},binding:context.binding,scopes:context.scopes,records}),cursorAt=offset=>v.hash({intent:'artifact.history',snapshotSha256,offset});let offset=0;
+      if(query.cursor!==null){offset=-1;for(let i=query.limit;i<records.length;i+=query.limit)if(cursorAt(i)===query.cursor){offset=i;break;}if(offset<0)fail('ARTIFACT_HISTORY_CURSOR');}
+      const page=records.slice(offset,offset+query.limit).map(record=>record.version),nextOffset=offset+page.length;
+      await authority(life,action,resource,requestSha256,context);await servable(life,context,anchor);
+      return {artifactId:result.artifactId,anchorVersionId:query.versionId,headVersionId:result.headVersionId,versions:page,nextCursor:nextOffset<records.length?cursorAt(nextOffset):null};
+    }catch(error){error.lifetime=life.close();throw error;}finally{life.close();}
+  }
   return Object.freeze({create:(request,context,options)=>generate(null,request,context,options),revise:(baseVersionId,request,context,options)=>{if(typeof baseVersionId!=='string')fail('ARTIFACT_VERSION_ID');return generate(baseVersionId,request,context,options);},
     recover:(baseVersionId,request,context,options)=>recoverArtifact({v,operation,authority,scopeVersion,bytesFor,inspectBytes,versions,servable,recoverTenant},baseVersionId,request,context,options),
-    inspect:(id,context,options)=>read(id,context,options),download:(id,context,options)=>read(id,context,options,true)});
+    history,inspect:(id,context,options)=>read(id,context,options),download:(id,context,options)=>read(id,context,options,true)});
 }

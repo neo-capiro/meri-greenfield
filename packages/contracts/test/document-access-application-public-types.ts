@@ -13,6 +13,13 @@ if(!('error'in response)){
   const file=await receiveDocumentDownload(new Response(),version,{maxBytes:1024});const bytes:Uint8Array<ArrayBuffer>=file.bytes;void bytes;
 }
 const route:'/api/documents/inspect'=documentAccessMetadata.routes.inspect.path;void route;
+const historyRequest=receiveDocumentRequest('history',new Uint8Array());
+const history=await receiveDocumentResponse('history',200,new Uint8Array(),historyRequest);
+if(!('error'in history)){
+  const anchor:string=history.anchorVersionId;const cursor:string|null=history.nextCursor;void [anchor,cursor];
+  // @ts-expect-error metadata history does not admit object bytes for download
+  await receiveDocumentDownload(new Response(),history.versions[0]!);
+}
 const preview:'docx'|'xlsx'|'pptx'|'pdf'=documentAccessMetadata.previewFormats[0];void preview;
 const error:DocumentResponseError|undefined=undefined;void error;
 // @ts-expect-error receiving a response never issues authority

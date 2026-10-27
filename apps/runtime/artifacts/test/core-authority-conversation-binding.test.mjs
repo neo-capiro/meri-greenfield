@@ -67,6 +67,18 @@ test('a binding admitted for a not-yet-submitted turn resolves the conversation\
  assert.equal(h.core.calls,2);assert.ok(r.expiresAtMs>h.now());
 });
 
+for(const intent of ['history','list'])test(`${intent}: current conversation read works after a run, never admits generation, and rechecks revocation`,async()=>{
+ const h=await harness({stored:null}),call=h.call({intent,body:intent==='history'?{versionId:'00000000-0000-4000-8000-00000000b009',limit:25,cursor:null}:{scope:'conversation',limit:25,cursor:null}});
+ const resolved=await h.authority.resolve(call),context=resolved.artifactOptions.context;
+ const authorization={action:'artifact.inspect',resource:null,requestSha256:call.requestSha256,binding:context.binding,scopes:context.scopes,deadlineMs:h.now()+4000};
+ assert.equal((await resolved.artifactOptions.authorize(authorization)).decision,'allow');
+ await assert.rejects(resolved.artifactOptions.authorize({...authorization,action:'artifact.generate'}),code('ACCESS_DENIED'));
+ await assert.rejects(resolved.artifactOptions.authorize({...authorization,action:'artifact.revise'}),code('ACCESS_DENIED'));
+ h.core.status=403;
+ await assert.rejects(resolved.recheck({phase:'release',intent,requestSha256:call.requestSha256,resource:null,deadlineMs:h.now()+4000}),code('ACCESS_DENIED'));
+ assert.deepEqual(h.store.calls,['readOptional'],'no new run or write allocation');
+});
+
 test('a stored run keeps the exact binding, scope and cancellation checks',async()=>{
  const run={...binding(ids.acceptedRunId),state:'completed',scopes:structuredClone(scopes)};
  const same=await harness({stored:row({...run,binding:structuredClone(binding(ids.reservedRunId))})});

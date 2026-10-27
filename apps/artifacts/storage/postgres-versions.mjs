@@ -8,7 +8,7 @@ import {verifyArtifactVersionStorageRecord as recordValue,verifyArtifactVersionS
 export {verifyArtifactVersionStorageRecord,verifyArtifactVersionStorageRow} from './version-record.mjs';
 export function createPostgresArtifactVersions(options){const {pool,now,maxRequestMs=15000,journal=null,publication=null,publications=null,tenantId=null,retention=null}=own(options,['pool','now'],['maxRequestMs','journal','publication','publications','tenantId','retention']);configuration(now,maxRequestMs);storageMethod(pool,'connect');
  // Imports/construction remain inert. Missing durable owner is unavailable BEFORE SQL, never legacy SQL publication.
- if(journal===null||retention===null||publications===null&&(publication===null||tenantId===null)){const unavailable=async()=>fail('ARTIFACT_PUBLICATION_UNAVAILABLE');return Object.freeze({read:unavailable,readExclusive:unavailable,commit:unavailable,findByObject:unavailable,recoverExclusive:unavailable,recoverTenant:unavailable});}
+ if(journal===null||retention===null||publications===null&&(publication===null||tenantId===null)){const unavailable=async()=>fail('ARTIFACT_PUBLICATION_UNAVAILABLE');return Object.freeze({read:unavailable,readExclusive:unavailable,history:unavailable,commit:unavailable,findByObject:unavailable,recoverExclusive:unavailable,recoverTenant:unavailable});}
  if(publications!==null&&(publication!==null||tenantId!==null)||tenantId!==null&&(typeof tenantId!=='string'||!tenantId))fail('ARTIFACT_STORAGE_CONFIGURATION');
  const tx=storageMethod(journal,'tx'),readRetention=storageMethod(journal,'readProjection'),assertServable=storageMethod(retention,'assertServable');
  const forTenant=publications===null?null:storageMethod(publications,'forTenant'),exclusive=storageMethod(journal,'exclusive');
@@ -31,6 +31,16 @@ export function createPostgresArtifactVersions(options){const {pool,now,maxReque
  async function readValue(value,signal,exclusive=false){return transaction(signal,async(c,life)=>{let record;
   if(typeof value!=='string')record=await replay(c,data(value),life);else{const raw=await rawVersion(c,value,life);record=await replay(c,{kind:'artifact-replay',versionId:value,requestSha256:raw.requestSha256,resultSha256:null},life);}
   await allowed(record,life,exclusive,c);const {sql}=await verified(c,record.version.binding.tenantId,record.version.artifactId,life);if(!sql.records.some(r=>same(r,record)))fail('ARTIFACT_PUBLICATION_PROJECTION_STALE');await allowed(record,life,exclusive,c);return record;},exclusive);}
+ /** Metadata only, in immutable parent order. Publication/SQL agreement and retention are checked on every read. */
+ async function history(versionId,signal){return transaction(signal,async(c,life)=>{
+  const anchor=await rawVersion(c,versionId,life),tenant=anchor.version.binding.tenantId,artifactId=anchor.version.artifactId;await allowed(anchor,life);
+  const {sql,facts}=await verified(c,tenant,artifactId,life);if(!sql.records.some(r=>same(r,anchor))||!sql.head)fail('ARTIFACT_PUBLICATION_PROJECTION_STALE');
+  const remaining=new Map(sql.records.map(r=>[r.version.versionId,r])),records=[];let id=sql.head.version_id;
+  while(id!==null){const record=remaining.get(id);if(!record)fail('ARTIFACT_VERSION_CORRUPT');remaining.delete(id);records.push(record);id=record.version.parentVersionId;}
+  if(remaining.size||!records.length)fail('ARTIFACT_VERSION_CORRUPT');
+  await allowed(anchor,life);const after=await current(life,tenant);if(after.positionSha256!==facts.positionSha256)fail('ARTIFACT_PUBLICATION_STALE');
+  return {artifactId,anchorVersionId:versionId,headVersionId:sql.head.version_id,records};
+ });}
  /** The version id whose immutable object is `objectId` within one tenant conversation (decoded and checked); ENOENT when none.
   * Unindexed JSON-path read on the existing table (no migration); an index is a separate migration proposal. */
  async function findByObject(value,signal){const q=data(own(value,['objectId','tenantId','conversationId']));uuid(q.objectId);uuid(q.conversationId);if(tenantId!==null&&q.tenantId!==tenantId)fail('ARTIFACT_STORAGE_INPUT');owner(q.tenantId);if(forTenant)await recoverTenant(q.tenantId,signal);
@@ -79,5 +89,5 @@ export function createPostgresArtifactVersions(options){const {pool,now,maxReque
  // Fixed preview recovery already owns the same exclusion. Dynamic startup has no tenant and must never guess one.
  async function recoverExclusive(signal){if(tenantId===null)fail('ARTIFACT_RECOVERY_TENANT_REQUIRED');return transaction(signal,(c,life)=>recoverTenantOnLease(c,life,tenantId),true);}
  // readExclusive is metadata validation only, for the existing recovery exclusion before the serving fence opens.
- return Object.freeze({read:(value,signal)=>readValue(value,signal),readExclusive:(value,signal)=>readValue(value,signal,true),commit,findByObject,recoverExclusive,recoverTenant});
+ return Object.freeze({read:(value,signal)=>readValue(value,signal),readExclusive:(value,signal)=>readValue(value,signal,true),history,commit,findByObject,recoverExclusive,recoverTenant});
 }

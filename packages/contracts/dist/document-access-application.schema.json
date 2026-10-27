@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "urn:meri:document-access-application:0.1.0",
+  "$id": "urn:meri:document-access-application:0.2.0",
   "$defs": {
     "DocumentVersion": {
       "allOf": [
@@ -57,6 +57,81 @@
       },
       "required": [
         "versionId"
+      ],
+      "additionalProperties": false
+    },
+    "DocumentHistoryRequest": {
+      "type": "object",
+      "properties": {
+        "versionId": {
+          "type": "string",
+          "pattern": "^[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[1-8][a-fA-F0-9]{3}-[89aAbB][a-fA-F0-9]{3}-[a-fA-F0-9]{12}$"
+        },
+        "limit": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 100
+        },
+        "cursor": {
+          "anyOf": [
+            {
+              "type": "null"
+            },
+            {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            }
+          ]
+        }
+      },
+      "required": [
+        "versionId",
+        "limit",
+        "cursor"
+      ],
+      "additionalProperties": false
+    },
+    "DocumentHistoryResponse": {
+      "type": "object",
+      "properties": {
+        "anchorVersionId": {
+          "type": "string",
+          "pattern": "^[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[1-8][a-fA-F0-9]{3}-[89aAbB][a-fA-F0-9]{3}-[a-fA-F0-9]{12}$"
+        },
+        "artifactId": {
+          "type": "string",
+          "pattern": "^[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[1-8][a-fA-F0-9]{3}-[89aAbB][a-fA-F0-9]{3}-[a-fA-F0-9]{12}$"
+        },
+        "headVersionId": {
+          "type": "string",
+          "pattern": "^[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[1-8][a-fA-F0-9]{3}-[89aAbB][a-fA-F0-9]{3}-[a-fA-F0-9]{12}$"
+        },
+        "versions": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 100,
+          "items": {
+            "$ref": "#/$defs/DocumentVersion"
+          }
+        },
+        "nextCursor": {
+          "anyOf": [
+            {
+              "type": "null"
+            },
+            {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            }
+          ]
+        }
+      },
+      "required": [
+        "anchorVersionId",
+        "artifactId",
+        "headVersionId",
+        "versions",
+        "nextCursor"
       ],
       "additionalProperties": false
     },
@@ -555,6 +630,7 @@
                 "ARTIFACT_CANCELLED",
                 "ARTIFACT_DEADLINE",
                 "ARTIFACT_EFFECT_UNKNOWN",
+                "ARTIFACT_HISTORY_CURSOR",
                 "ARTIFACT_PREVIEW_PENDING",
                 "ARTIFACT_PREVIEW_UNSUPPORTED",
                 "ARTIFACT_RENDERER_UNAVAILABLE",
