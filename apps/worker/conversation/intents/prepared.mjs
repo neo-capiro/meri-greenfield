@@ -9,10 +9,10 @@
  * - document: `{status:'draft', version}` with an immutable artifact version in `generationStatus:'draft'`. */
 import {own,data} from '../../../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {assertProposalIntegrity,canonicalSha256,validateShape} from '../../../../packages/contracts/validate.mjs';
-import {artifactValidators,scheduleToolValidators,researchShareValidators,validateShape as toolShape} from '../../../../packages/contracts/retrieval-0.2/validate.mjs';
-import {assertTaskUpdateProposal} from '../../../../packages/contracts/commands-0.2/validate.mjs';
+import {artifactValidators,scheduleToolValidators,researchShareValidators,legiwatchValidators,savedNoteValidators,watchValidators,bizdevValidators,legislativeDocumentValidators,clientRecordValidators,validateShape as toolShape} from '../../../../packages/contracts/retrieval-0.2/validate.mjs';
+import {assertMailSendProposal,assertTaskUpdateProposal} from '../../../../packages/contracts/commands-0.2/validate.mjs';
 import {assertMemoryReviewResult} from '../../../../packages/contracts/commands-0.2/memory-review-result.mjs';
-const ACTIONS=Object.freeze({create_task:'task.create',update_task:'task.update',save_chat_attachments:'artifact.file'});
+const ACTIONS=Object.freeze({mail_send:'mail.send',create_task:'task.create',update_task:'task.update',save_chat_attachments:'artifact.file'});
 const refuse=()=>{throw Object.assign(Error('INVALID_RESULT'),{code:'INVALID_RESULT'});};
 /** @param {any} b @param {any} binding */
 const sameRun=(b,binding)=>b?.tenantId===binding.tenantId&&b?.actorId===binding.actorId&&b?.conversationId===binding.conversationId;
@@ -21,15 +21,40 @@ const currentScopes=(scopes,binding,current)=>Array.isArray(scopes)&&scopes.leng
  validateShape('Scope',s);return s.tenantId===binding.tenantId&&current.some(c=>canonicalSha256(c)===canonicalSha256(s));
 });
 /**
- * @param {'command'|'schedule'|'document'|'artifact'|'memory'|'research-sharing'} owner @param {{id:string,version:string}} operation @param {unknown} value @param {any} binding
+ * @param {'note'|'command'|'schedule'|'document'|'artifact'|'memory'|'research-sharing'|'legiwatch'|'watch'|'client-record'|'bizdev'|'legislative-document'} owner @param {{id:string,version:string}} operation @param {unknown} value @param {any} binding
  * @param {{scopes:any[],nowMs:number}} current
- * @returns {{status:'approval_required'|'draft'|'analysis_pending'|'review_pending',reference:string,value:any}}
+ * @returns {{status:'approval_required'|'draft'|'analysis_pending'|'review_pending'|'saved'|'withheld'|'blocked'|'unknown'|'failed',reference:string,value:any}}
  */
 export function assertPreparedResult(owner,operation,value,binding,current){
  try{
   if(!Array.isArray(current?.scopes)||!current.scopes.length||!Number.isSafeInteger(current.nowMs))refuse();
   for(const s of current.scopes){validateShape('Scope',s);if(s.tenantId!==binding.tenantId)refuse();}
   const v=/** @type {any} */(data(value));
+  if(owner==='watch'){
+   watchValidators.assertOutput(v);const p=v.proposal;
+   if(p.operation!==operation.id||operation.version!=='0.2.0'||!sameRun(p.binding,binding)||!currentScopes(p.scopes,binding,current.scopes)||Date.parse(p.createdAt)>current.nowMs||Date.parse(p.expiresAt)<=current.nowMs)refuse();
+   return {status:'approval_required',reference:p.proposalId,value:v};
+  }
+  if(owner==='legiwatch'){
+   legiwatchValidators.assertOutput(v);const p=v.proposal;
+   if(p.operation!==operation.id||operation.version!=='0.2.0'||!sameRun(p.binding,binding)||!currentScopes(p.scopes,binding,current.scopes)||Date.parse(p.createdAt)>current.nowMs||Date.parse(p.expiresAt)<=current.nowMs)refuse();
+   return {status:'approval_required',reference:p.proposalId,value:v};
+  }
+  if(owner==='client-record'){
+   clientRecordValidators.assertOutput(v);const p=v.proposal;
+   if(p.operation!==operation.id||operation.version!=='0.2.0'||!sameRun(p.binding,binding)||!currentScopes(p.scopes,binding,current.scopes)||Date.parse(p.createdAt)>current.nowMs||Date.parse(p.expiresAt)<=current.nowMs)refuse();
+   return {status:'approval_required',reference:p.proposalId,value:v};
+  }
+  if(owner==='bizdev'){
+   bizdevValidators.assertOutput(v);const p=v.proposal;
+   if(p.operation!==operation.id||operation.version!=='0.2.0'||!sameRun(p.binding,binding)||!currentScopes(p.scopes,binding,current.scopes)||Date.parse(p.createdAt)>current.nowMs||Date.parse(p.expiresAt)<=current.nowMs)refuse();
+   return {status:'approval_required',reference:p.proposalId,value:v};
+  }
+  if(owner==='legislative-document'){
+   legislativeDocumentValidators.assertOutput(operation.id,v);const p=v.proposal;
+   if(p.operation!==operation.id||operation.version!=='0.2.0'||!sameRun(p.binding,binding)||!currentScopes(p.scopes,binding,current.scopes)||Date.parse(p.createdAt)>current.nowMs||Date.parse(p.expiresAt)<=current.nowMs)refuse();
+   return {status:'approval_required',reference:p.proposalId,value:v};
+  }
   if(owner==='research-sharing'){
    toolShape('ResearchSharePrepared',v);const p=researchShareValidators.assertProposal(v.proposal);
    if(p.operation!==operation.id||operation.version!=='0.2.0'||!sameRun(p.binding,binding)||!currentScopes(p.scopes,binding,current.scopes)||Date.parse(p.createdAt)>current.nowMs||Date.parse(p.expiresAt)<=current.nowMs)refuse();
@@ -42,7 +67,7 @@ export function assertPreparedResult(owner,operation,value,binding,current){
   }
   if(owner==='command'){
    own(v,['status','proposal']);const p=v.proposal;
-   if(operation.id==='update_task')assertTaskUpdateProposal(p,{binding:p?.command?.binding});else assertProposalIntegrity(p);
+   if(operation.id==='mail_send')assertMailSendProposal(p,{binding:p?.command?.binding});else if(operation.id==='update_task')assertTaskUpdateProposal(p,{binding:p?.command?.binding});else assertProposalIntegrity(p);
    if(v.status!=='approval_required'||p.command.action!==ACTIONS[/** @type {keyof typeof ACTIONS} */(operation.id)]||!sameRun(p.command.binding,binding)||!currentScopes(p.command.scopes,binding,current.scopes)||p.requiredApprover?.tenantId!==binding.tenantId||Date.parse(p.createdAt)>current.nowMs||Date.parse(p.expiresAt)<=current.nowMs)refuse();
    return {status:'approval_required',reference:p.proposalId,value:v};
   }
@@ -63,6 +88,13 @@ export function assertPreparedResult(owner,operation,value,binding,current){
    own(v,['status','version']);const r=v.version;
    if(v.status!=='draft'||r?.generationStatus!=='draft'||typeof r.versionId!=='string'||!sameRun(r.binding,binding)||!currentScopes(r.scopes,binding,current.scopes))refuse();
    return {status:'draft',reference:r.versionId,value:v};
+  }
+  if(owner==='note'){
+   // A saved note is a static PASS, not a proposal: the recorded result is the closed saved-note envelope and
+   // its own truthful status. It is admitted for this run's tenant, conversation and current scopes only.
+   const e=savedNoteValidators.envelope(v);
+   if(operation.id!=='save_note'||operation.version!=='0.2.0'||!sameRun(e.binding,binding)||!currentScopes(e.scopes,binding,current.scopes))refuse();
+   return {status:e.status,reference:e.status==='saved'?e.noteId:e.proposalId,value:v};
   }
   return refuse();
  }catch{return refuse();}

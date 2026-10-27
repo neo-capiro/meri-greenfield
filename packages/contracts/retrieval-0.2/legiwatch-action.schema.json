@@ -1,0 +1,410 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:meri:retrieval:legiwatch-action:0.2.0",
+  "$defs": {
+    "LegiwatchInput": {
+      "type": "object",
+      "properties": {
+        "clientId": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "uuid",
+              "pattern": "^[a-f0-9-]+$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "folderId": {
+          "type": "string",
+          "format": "uuid",
+          "pattern": "^[a-f0-9-]+$"
+        },
+        "jurisdiction": {
+          "type": "string",
+          "pattern": "^[A-Z]{2}$"
+        },
+        "sessionKey": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 120
+        },
+        "suggestionId": {
+          "type": "string",
+          "format": "uuid",
+          "pattern": "^[a-f0-9-]+$"
+        },
+        "expectedVersion": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 2147483646
+        },
+        "action": {
+          "enum": [
+            "add",
+            "dismiss",
+            "exclude",
+            "restore",
+            "undo"
+          ]
+        }
+      },
+      "required": [
+        "clientId",
+        "folderId",
+        "jurisdiction",
+        "sessionKey",
+        "suggestionId",
+        "expectedVersion",
+        "action"
+      ],
+      "additionalProperties": false
+    },
+    "LegiwatchRequest": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/SuggestionLegiwatchRequest"
+        },
+        {
+          "$ref": "urn:meri:retrieval:legiwatch-relevance:0.2.0#/$defs/RelevanceRequest"
+        }
+      ]
+    },
+    "LegiwatchContext": {
+      "type": "object",
+      "properties": {
+        "conversationId": {
+          "type": "string",
+          "format": "uuid",
+          "pattern": "^[a-f0-9-]+$"
+        },
+        "selectedClientId": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "uuid",
+              "pattern": "^[a-f0-9-]+$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "identityRevision": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "membershipRevision": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "contextRevision": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        }
+      },
+      "required": [
+        "conversationId",
+        "selectedClientId",
+        "identityRevision",
+        "membershipRevision",
+        "contextRevision"
+      ],
+      "additionalProperties": false
+    },
+    "LegiwatchStatus": {
+      "enum": [
+        "proposed",
+        "approved",
+        "executing",
+        "succeeded",
+        "failed_retryable",
+        "failed_terminal",
+        "outcome_unknown",
+        "blocked",
+        "dismissed",
+        "expired"
+      ]
+    },
+    "LegiwatchReceipt": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/SuggestionLegiwatchReceipt"
+        },
+        {
+          "$ref": "urn:meri:retrieval:legiwatch-relevance:0.2.0#/$defs/RelevanceReceipt"
+        }
+      ]
+    },
+    "LegiwatchCoreResult": {
+      "type": "object",
+      "properties": {
+        "version": {
+          "const": "0.1.0"
+        },
+        "proposalId": {
+          "type": "string",
+          "format": "uuid",
+          "pattern": "^[a-f0-9-]+$"
+        },
+        "request": {
+          "$ref": "#/$defs/LegiwatchRequest"
+        },
+        "context": {
+          "$ref": "#/$defs/LegiwatchContext"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "expiresAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "status": {
+          "$ref": "#/$defs/LegiwatchStatus"
+        },
+        "receipt": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/LegiwatchReceipt"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "version",
+        "proposalId",
+        "request",
+        "context",
+        "createdAt",
+        "expiresAt",
+        "status",
+        "receipt"
+      ],
+      "additionalProperties": false
+    },
+    "LegiwatchProposal": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "const": "legiwatch_action"
+        },
+        "binding": {
+          "$ref": "urn:meri:contracts:0.1.0#/$defs/RunBinding"
+        },
+        "scopes": {
+          "type": "array",
+          "items": {
+            "$ref": "urn:meri:contracts:0.1.0#/$defs/Scope"
+          },
+          "minItems": 1,
+          "maxItems": 1
+        },
+        "operation": {
+          "enum": [
+            "apply_legiwatch_suggestion",
+            "save_legiwatch_relevance"
+          ]
+        },
+        "proposalId": {
+          "type": "string",
+          "format": "uuid",
+          "pattern": "^[a-f0-9-]+$"
+        },
+        "request": {
+          "$ref": "#/$defs/LegiwatchRequest"
+        },
+        "context": {
+          "$ref": "#/$defs/LegiwatchContext"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "expiresAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "commandSha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        }
+      },
+      "required": [
+        "kind",
+        "binding",
+        "scopes",
+        "operation",
+        "proposalId",
+        "request",
+        "context",
+        "createdAt",
+        "expiresAt",
+        "commandSha256"
+      ],
+      "additionalProperties": false
+    },
+    "LegiwatchPrepared": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "const": "approval_required"
+        },
+        "proposal": {
+          "$ref": "#/$defs/LegiwatchProposal"
+        }
+      },
+      "required": [
+        "status",
+        "proposal"
+      ],
+      "additionalProperties": false
+    },
+    "SuggestionLegiwatchRequest": {
+      "type": "object",
+      "properties": {
+        "clientId": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "uuid",
+              "pattern": "^[a-f0-9-]+$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "folderId": {
+          "type": "string",
+          "format": "uuid",
+          "pattern": "^[a-f0-9-]+$"
+        },
+        "jurisdiction": {
+          "type": "string",
+          "pattern": "^[A-Z]{2}$"
+        },
+        "sessionKey": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 120
+        },
+        "suggestionId": {
+          "type": "string",
+          "format": "uuid",
+          "pattern": "^[a-f0-9-]+$"
+        },
+        "expectedVersion": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 2147483646
+        },
+        "action": {
+          "enum": [
+            "add",
+            "dismiss",
+            "exclude",
+            "restore",
+            "undo"
+          ]
+        },
+        "requestKey": {
+          "type": "string",
+          "minLength": 8,
+          "maxLength": 180
+        }
+      },
+      "required": [
+        "clientId",
+        "folderId",
+        "jurisdiction",
+        "sessionKey",
+        "suggestionId",
+        "expectedVersion",
+        "action",
+        "requestKey"
+      ],
+      "additionalProperties": false
+    },
+    "SuggestionLegiwatchReceipt": {
+      "type": "object",
+      "properties": {
+        "request": {
+          "$ref": "#/$defs/SuggestionLegiwatchRequest"
+        },
+        "outcome": {
+          "enum": [
+            "added",
+            "already_present",
+            "dismissed",
+            "excluded",
+            "pending",
+            "stale",
+            "undone",
+            "undo_conflict",
+            "held"
+          ]
+        },
+        "payload": {
+          "type": "object",
+          "properties": {
+            "binding": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            "suggestionId": {
+              "type": "string",
+              "format": "uuid",
+              "pattern": "^[a-f0-9-]+$"
+            },
+            "decisionId": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "uuid",
+                  "pattern": "^[a-f0-9-]+$"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "version": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "action": {
+              "enum": [
+                "add",
+                "dismiss",
+                "exclude",
+                "restore",
+                "undo"
+              ]
+            }
+          },
+          "required": [
+            "binding",
+            "suggestionId",
+            "decisionId",
+            "version",
+            "action"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "request",
+        "outcome",
+        "payload"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

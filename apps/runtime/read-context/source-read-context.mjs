@@ -1,5 +1,5 @@
 /** Finite CONTROL contexts over current native facts. Selectors never create a client grant. */
-import {publicDomainDatasetRegistry} from '../../../packages/contracts/retrieval-0.2/validate.mjs';
+import {watchValidators,publicDomainDatasetRegistry} from '../../../packages/contracts/retrieval-0.2/validate.mjs';
 import {nativeReadFault} from '../../../packages/contracts/runtime-0.2/reads.mjs';
 import {MODE_READ_OPERATIONS} from '../../../packages/contracts/native-read-observation-0.2/validate.mjs';
 import {captureHearingClientReference,captureHearingClientSelection} from '../../gateway/sources/public-domain-hearings/request-context.mjs';
@@ -77,14 +77,14 @@ function privateDataContext(proof,native){
 function savedOwnerContext(proof,native,group){
  const selected=proof.subject.kind==='client'||proof.subject.entityType==='client'?clientSubject(proof,native):null;
  if(selected===null&&(proof.subject.kind!=='personal'||proof.subject.entityType!=='user'))refuse('ACCESS_DENIED');
- const selector=group==='strategy-saved-records'?proof.request.clientId:savedRecordClientSelector(proof.request);
+ const selector=['strategy-saved-records','legiwatch-review','legiwatch-relevance','legislative-comparisons'].includes(group)?proof.request.clientId:savedRecordClientSelector(proof.request);
  const clientId=typeof selector==='string'?selector.toLowerCase():null;
  if(selector!==null&&(clientId===null||!UUID.test(clientId)))refuse('INVALID_ARGUMENTS');
  if(selected!==null&&clientId!==selected)refuse('ACCESS_DENIED');
  assertNativeVisibleClients(native,clientId===null?[]:[clientId]);
  if(![native.identityRevision,native.membershipRevision].every(v=>typeof v==='string'&&/^[a-f0-9]{64}$/u.test(v)))refuse('UNAVAILABLE');
  const revisions={identityRevision:native.identityRevision,membershipRevision:native.membershipRevision};
- return group==='strategy-saved-records'?{strategySavedScope:{clientId,...revisions}}:
+ return ['legiwatch-review','legiwatch-relevance','legislative-comparisons'].includes(group)?{legiwatchReviewScope:{clientId,...revisions}}:group==='strategy-saved-records'?{strategySavedScope:{clientId,...revisions}}:
   {savedRecordScope:{clientId:selected,tenantId:proof.subject.tenantId,...revisions}};
 }
 
@@ -105,13 +105,26 @@ export function assertSourceReadRequest(contract,request,subject){
 
 export function createSourceReadContext({contract,proof,native,defaultCongress,now,priorContext,clientReferenceObservation,modeObservation}){
  const group=contract.binding.group;
+ if(group==='watch-state'){
+  const target=watchValidators.target(proof.request),selectedClientId=proof.subject.kind==='client'||proof.subject.entityType==='client'?clientSubject(proof,native):null;
+  if(selectedClientId===null&&(proof.subject.kind!=='personal'||proof.subject.entityType!=='user'||proof.subject.entityIds.length!==1||proof.subject.entityIds[0]!==proof.binding.actorId))refuse('ACCESS_DENIED');
+  if(selectedClientId!==null&&target.clientId!==selectedClientId)refuse('ACCESS_DENIED');
+  assertNativeVisibleClients(native,target.clientId===null?[]:[target.clientId]);
+  if(![native.identityRevision,native.membershipRevision].every(v=>typeof v==='string'&&/^[a-f0-9]{64}$/u.test(v)))refuse('UNAVAILABLE');
+  return {watchStateScope:{selectedClientId,identityRevision:native.identityRevision,membershipRevision:native.membershipRevision}};
+ }
  if(group==='research-portfolio-sharing'){
   if(proof.request.conversationId!==proof.binding.conversationId||!Array.isArray(native.clientIds))refuse('ACCESS_DENIED');
   const selectedClientId=proof.subject.kind==='client'?clientSubject(proof,native):null;
   if(selectedClientId===null&&(proof.subject.kind!=='personal'||proof.subject.entityType!=='user'||proof.subject.entityIds[0]!==proof.binding.actorId))refuse('ACCESS_DENIED');
   return {binding:proof.binding,selectedClientId,visibleClientIds:[...native.clientIds]};
  }
- if(['saved-records','strategy-saved-records'].includes(group))return savedOwnerContext(proof,native,group);
+ if(['saved-records','strategy-saved-records','legiwatch-review','legiwatch-relevance','legislative-comparisons'].includes(group))return savedOwnerContext(proof,native,group);
+ if(group==='florida-budget'){
+  const asOf=priorContext?.asOf??new Date(now()).toISOString();
+  const request=contract.normalizeInput(proof.request,{asOf}).input;
+  return {asOf,...savedOwnerContext({...proof,request},native,'legislative-comparisons')};
+ }
  // Recompute on final release: membership changes must also fence aggregate rows with no client IDs.
  if(group==='capiro-data'&&proof.request.source==='client_records')return privateDataContext(proof,native);
  if(group==='connected-apps'||group==='teams-channels'){

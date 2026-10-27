@@ -1,0 +1,320 @@
+{
+  "provenance": "Actual unchanged MeriBizDevToolsService projection methods over synthetic domain results and authorization callback; no DB/current-owner acceptance.",
+  "rows": [
+    {
+      "name": "saved-brief",
+      "id": "get_business_development_brief",
+      "input": {
+        "conversationId": "b1234567-b123-4c12-8d12-e123456789ab"
+      },
+      "page": {
+        "tool": "get_business_development_brief",
+        "generatedAt": "2026-10-27T04:22:43.365Z",
+        "brief": {
+          "id": "brief",
+          "title": "Saved brief",
+          "status": "draft",
+          "currentVersionNumber": 2,
+          "updatedAt": "2026-10-27T00:00:00.000Z",
+          "sections": {
+            "companyAndFirmImplication": {
+              "text": "Saved companyAndFirmImplication 界",
+              "provenance": "edited",
+              "citationIndexes": [
+                0
+              ]
+            },
+            "verifiedEvidence": {
+              "text": "Saved verifiedEvidence 界",
+              "provenance": "generated",
+              "citationIndexes": [
+                0
+              ]
+            },
+            "judgment": {
+              "text": "Saved judgment 界",
+              "provenance": "generated",
+              "citationIndexes": [
+                0
+              ]
+            },
+            "practicalAction": {
+              "text": "Saved practicalAction 界",
+              "provenance": "generated",
+              "citationIndexes": [
+                0
+              ]
+            },
+            "missingInformation": {
+              "text": "Saved missingInformation 界",
+              "provenance": "generated",
+              "citationIndexes": [
+                0
+              ]
+            }
+          },
+          "citations": [
+            {
+              "sourceFamily": "usaspending_contract",
+              "recordId": "record",
+              "locator": "https://example.test/source",
+              "originalSourceName": "Official source",
+              "originalSourceId": "source-record",
+              "eventDate": null,
+              "sourceUpdatedAt": null,
+              "retrievedAt": null,
+              "title": "Saved evidence",
+              "relationshipStrength": "conditional",
+              "stage": "obligated"
+            }
+          ]
+        },
+        "data": [
+          {
+            "id": "record",
+            "title": "Saved evidence",
+            "url": "https://example.test/source",
+            "snippet": "Official source — stage: obligated",
+            "sourceFamily": "usaspending_contract"
+          }
+        ],
+        "citationsSummary": {
+          "total": 1,
+          "returned": 1,
+          "truncated": false,
+          "note": "All brief citations are shown as compact rows."
+        }
+      }
+    },
+    {
+      "name": "missing-brief",
+      "id": "get_business_development_brief",
+      "input": {
+        "conversationId": "b1234567-b123-4c12-8d12-e123456789ab"
+      },
+      "page": {
+        "tool": "get_business_development_brief",
+        "generatedAt": "2026-10-27T04:22:43.365Z",
+        "brief": null,
+        "message": "No saved brief exists for this prospect yet. Ask the user to create the initial brief from the Brief tab."
+      }
+    },
+    {
+      "name": "current_dossier",
+      "id": "resolve_business_development_source",
+      "input": {
+        "conversationId": "b1234567-b123-4c12-8d12-e123456789ab",
+        "citationIndex": 0
+      },
+      "page": {
+        "tool": "resolve_business_development_source",
+        "generatedAt": "2026-10-27T04:22:43.366Z",
+        "resolvable": true,
+        "citation": {
+          "sourceFamily": "usaspending_contract",
+          "recordId": "record",
+          "locator": "https://example.test/source",
+          "originalSourceName": "Official source",
+          "originalSourceId": "source-record",
+          "eventDate": null,
+          "sourceUpdatedAt": null,
+          "retrievedAt": null,
+          "title": "Saved evidence",
+          "relationshipStrength": "conditional",
+          "stage": "obligated"
+        },
+        "basis": "current_dossier",
+        "results": [
+          {
+            "sourceFamily": "usaspending_contract",
+            "recordId": "record",
+            "locator": "https://example.test/source",
+            "originalSourceName": "Official source",
+            "originalSourceId": "source-record",
+            "claimType": "government_exposure",
+            "relationshipStrength": "conditional",
+            "eventDate": null,
+            "effectiveDate": null,
+            "fiscalYear": 2027,
+            "stage": "obligated",
+            "sourceUpdatedAt": null,
+            "retrievedAt": null,
+            "scopeChecked": "synthetic saved scope",
+            "status": "available",
+            "title": "Saved evidence",
+            "facts": {
+              "amount": "9007199254740993.01",
+              "amountType": "obligated",
+              "agency": "Synthetic"
+            },
+            "id": "record",
+            "url": "https://example.test/source",
+            "snippet": "Saved evidence — Official source",
+            "basis": "current_dossier",
+            "citation": {
+              "recordId": "record",
+              "title": "Saved evidence",
+              "locator": "https://example.test/source",
+              "sourceFamily": "usaspending_contract",
+              "originalSourceName": "Official source",
+              "stage": "obligated"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "snapshot_only",
+      "id": "resolve_business_development_source",
+      "input": {
+        "conversationId": "b1234567-b123-4c12-8d12-e123456789ab",
+        "citationIndex": 0
+      },
+      "page": {
+        "tool": "resolve_business_development_source",
+        "generatedAt": "2026-10-27T04:22:43.366Z",
+        "resolvable": true,
+        "citation": {
+          "sourceFamily": "usaspending_contract",
+          "recordId": "record",
+          "locator": "https://example.test/source",
+          "originalSourceName": "Official source",
+          "originalSourceId": "source-record",
+          "eventDate": null,
+          "sourceUpdatedAt": null,
+          "retrievedAt": null,
+          "title": "Saved evidence",
+          "relationshipStrength": "conditional",
+          "stage": "obligated"
+        },
+        "basis": "snapshot_only",
+        "basisNote": "This record matches the saved brief snapshot only; it is not currently in the prospect dossier, so it may no longer be live current data.",
+        "results": [
+          {
+            "sourceFamily": "usaspending_contract",
+            "recordId": "record",
+            "locator": "https://example.test/source",
+            "originalSourceName": "Official source",
+            "originalSourceId": "source-record",
+            "claimType": "government_exposure",
+            "relationshipStrength": "conditional",
+            "eventDate": null,
+            "effectiveDate": null,
+            "fiscalYear": 2027,
+            "stage": "obligated",
+            "sourceUpdatedAt": null,
+            "retrievedAt": null,
+            "scopeChecked": "synthetic saved scope",
+            "status": "available",
+            "title": "Saved evidence",
+            "facts": {
+              "amount": "9007199254740993.01",
+              "amountType": "obligated",
+              "agency": "Synthetic"
+            },
+            "id": "record",
+            "url": "https://example.test/source",
+            "snippet": "Saved evidence — Official source",
+            "basis": "snapshot_only",
+            "citation": {
+              "recordId": "record",
+              "title": "Saved evidence",
+              "locator": "https://example.test/source",
+              "sourceFamily": "usaspending_contract",
+              "originalSourceName": "Official source",
+              "stage": "obligated"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "none",
+      "id": "resolve_business_development_source",
+      "input": {
+        "conversationId": "b1234567-b123-4c12-8d12-e123456789ab",
+        "citationIndex": 0
+      },
+      "page": {
+        "tool": "resolve_business_development_source",
+        "generatedAt": "2026-10-27T04:22:43.366Z",
+        "resolvable": true,
+        "citation": {
+          "sourceFamily": "usaspending_contract",
+          "recordId": "record",
+          "locator": "https://example.test/source",
+          "originalSourceName": "Official source",
+          "originalSourceId": "source-record",
+          "eventDate": null,
+          "sourceUpdatedAt": null,
+          "retrievedAt": null,
+          "title": "Saved evidence",
+          "relationshipStrength": "conditional",
+          "stage": "obligated"
+        },
+        "basis": "none",
+        "basisNote": "The citation resolves, but no underlying evidence record backs it in either the snapshot or the current dossier; only the saved citation metadata is available."
+      }
+    },
+    {
+      "name": "source_changed",
+      "id": "resolve_business_development_source",
+      "input": {
+        "conversationId": "b1234567-b123-4c12-8d12-e123456789ab",
+        "citationIndex": 0
+      },
+      "page": {
+        "tool": "resolve_business_development_source",
+        "generatedAt": "2026-10-27T04:22:43.366Z",
+        "resolvable": false,
+        "limitation": "source_changed",
+        "message": "Saved source unavailable",
+        "citation": {
+          "sourceFamily": "usaspending_contract",
+          "recordId": "record",
+          "locator": "https://example.test/source",
+          "originalSourceName": "Official source",
+          "originalSourceId": "source-record",
+          "eventDate": null,
+          "sourceUpdatedAt": null,
+          "retrievedAt": null,
+          "title": "Saved evidence",
+          "relationshipStrength": "conditional",
+          "stage": "obligated"
+        }
+      }
+    },
+    {
+      "name": "citation_index_out_of_range",
+      "id": "resolve_business_development_source",
+      "input": {
+        "conversationId": "b1234567-b123-4c12-8d12-e123456789ab",
+        "citationIndex": 0
+      },
+      "page": {
+        "tool": "resolve_business_development_source",
+        "generatedAt": "2026-10-27T04:22:43.366Z",
+        "resolvable": false,
+        "limitation": "citation_index_out_of_range",
+        "message": "Saved source unavailable",
+        "citation": null
+      }
+    },
+    {
+      "name": "brief_not_found",
+      "id": "resolve_business_development_source",
+      "input": {
+        "conversationId": "b1234567-b123-4c12-8d12-e123456789ab",
+        "citationIndex": 0
+      },
+      "page": {
+        "tool": "resolve_business_development_source",
+        "generatedAt": "2026-10-27T04:22:43.366Z",
+        "resolvable": false,
+        "limitation": "brief_not_found",
+        "message": "Saved source unavailable",
+        "citation": null
+      }
+    }
+  ]
+}

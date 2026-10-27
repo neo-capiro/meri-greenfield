@@ -16,7 +16,7 @@ export function createOriginalSkillAdmissionOwner(configuration){
  async function selectionReceipt({request,scopes,selectedClientId,life}){
   request=data(request);scopes=data(scopes);scopes.forEach(s=>validateShape('Scope',s));
   const selected=selectSkill(request.skill.skillId,request.skill.skillVersion);
-  if(!same(request.skill,selected.pin)||!describeSkillPlugin().skills.some(s=>s.skillId===selected.pin.skillId&&s.skillVersion===selected.pin.skillVersion))fail();
+  if(!same(request.skill,selected.pin)||!describeSkillPlugin({selection:selected.pin}).skills.some(s=>s.skillId===selected.pin.skillId&&s.skillVersion===selected.pin.skillVersion))fail();
   assertNativeConversationScope({binding,scopes,selectedClientId});assertWindow(request.window);
   if(!selected.manifest.windowBases.includes(request.window.basis))fail();
   let selection;

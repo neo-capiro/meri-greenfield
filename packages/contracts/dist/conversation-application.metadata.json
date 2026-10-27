@@ -88,14 +88,14 @@
       "bytes": 3427
     },
     {
-      "path": "../skills/./originals/pe_deep_dive/1.0.0/manifest.json",
-      "sha256": "0a7a626ea1e43de2b27b71ae1f3aba154c0d15c37ac9767d1ac154bc6ee109d6",
-      "bytes": 3256
+      "path": "../skills/./originals/pe_deep_dive/1.1.0/manifest.json",
+      "sha256": "8cec1ae57be65abbfc7bf47ee38a504090d75a4ba88cd165b0ab6b230a94e9fe",
+      "bytes": 3896
     },
     {
-      "path": "../skills/./originals/pe_deep_dive/1.0.0/SKILL.md",
-      "sha256": "8032b4dcdf812f0b8ba60de5c5f1c9cc2a633aff6f19b71dcf5feadba83b4d8e",
-      "bytes": 3373
+      "path": "../skills/./originals/pe_deep_dive/1.1.0/SKILL.md",
+      "sha256": "a4a9461db01d8737da84f5ee01783ee1d736cf7a9a2090f63b2705da1cb65065",
+      "bytes": 5812
     },
     {
       "path": "../skills/./originals/portfolio_changes/1.0.1/manifest.json",
@@ -159,18 +159,18 @@
     },
     {
       "path": "../skills/assets.json",
-      "sha256": "6db2de807eeed53f750797a29eedc8fa597d7873c078cf67585dd2be2ff12db0",
-      "bytes": 6489
+      "sha256": "5617369a6625e4a8ec9775fe204c72b28e039d6134396434bc7c7a5b40a2ba19",
+      "bytes": 7045
     },
     {
       "path": "../skills/index.mjs",
-      "sha256": "a2286dead3fd46e8e91f8917a25e96399371f6b13bbf83d93d29d846e99bf4df",
-      "bytes": 3527
+      "sha256": "ff79c6b0be3a937ca2ebfa614f5f9e15c22724323a92c2cfd2575ac29e7961fb",
+      "bytes": 3548
     },
     {
       "path": "../skills/plugin.mjs",
-      "sha256": "9b53b8e04a748955aa8d7f46f6c77a78b7514370d4f50e6c65a020f485a14a3c",
-      "bytes": 3371
+      "sha256": "e2b9bcd9a3e55052e4f7b03cf14f7e5bac784b00761dd28937805ec3e6d4ab51",
+      "bytes": 4579
     },
     {
       "path": "conversation-application/feedback-schema.mjs",

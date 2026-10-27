@@ -8,6 +8,7 @@ export function createCommandToolValidators({payloads, taskUpdate, intents, vali
   // Actions are the canonical command vocabulary. Selected tool IDs and schema
   // bindings belong exclusively to the operation registry that invokes this API.
   function domain(action) {
+    if (action === 'mail.send') return {normalize:payloads.normalizeMailSendInput,check:payloads.assertMailSendCommand};
     if (action === 'task.create') return {normalize:payloads.normalizeTaskCreateInput, check:payloads.assertTaskCreateCommand};
     if (action === 'task.update') return {normalize:taskUpdate.normalizeTaskUpdateInput, check:taskUpdate.assertTaskUpdateCommand};
     if (action === 'memory.propose') return {normalize:payloads.normalizeMemoryProposeInput, check:payloads.assertMemoryProposeCommand};
@@ -33,7 +34,8 @@ export function createCommandToolValidators({payloads, taskUpdate, intents, vali
   }
   function assertCommandToolProposal(action, raw, request, options) {
     const selected = context(options), proposal = snapshotOperationData(raw);
-    if (action === 'task.update') taskUpdate.assertTaskUpdateProposal(proposal,selected.commandContext);
+    if (action === 'mail.send') payloads.assertMailSendProposal(proposal,selected.commandContext);
+    else if (action === 'task.update') taskUpdate.assertTaskUpdateProposal(proposal,selected.commandContext);
     else assertProposalIntegrity(proposal);
     if (Object.hasOwn(selected,'command') && !same(selected.command,proposal.command)) fail();
     normalizeCommandToolInput(action,request,{commandContext:selected.commandContext,command:proposal.command});

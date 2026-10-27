@@ -1,0 +1,674 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:meri:retrieval:legislative-comparisons:0.2.0",
+  "$defs": {
+    "BudgetComparisonRequest": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "clientId": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "folderId": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 100
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "leftId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 250
+        },
+        "leftRevision": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 250
+        },
+        "rightId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 250
+        },
+        "rightRevision": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 250
+        },
+        "jurisdiction": {
+          "const": "FL"
+        },
+        "sessionKey": {
+          "type": "string",
+          "maxLength": 60
+        }
+      },
+      "required": [
+        "clientId",
+        "leftId",
+        "leftRevision",
+        "rightId",
+        "rightRevision"
+      ]
+    },
+    "VersionComparisonRequest": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "clientId": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "folderId": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 100
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "leftId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 250
+        },
+        "leftRevision": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 250
+        },
+        "rightId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 250
+        },
+        "rightRevision": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 250
+        },
+        "jurisdiction": {
+          "type": "string",
+          "pattern": "^[A-Z]{2}$"
+        },
+        "sessionKey": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 60
+        },
+        "allowCrossBill": {
+          "type": "boolean"
+        },
+        "rightSessionKey": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 60
+        }
+      },
+      "required": [
+        "clientId",
+        "leftId",
+        "leftRevision",
+        "rightId",
+        "rightRevision",
+        "jurisdiction",
+        "sessionKey"
+      ]
+    },
+    "ComparisonAmount": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 250
+        },
+        "projectId": {
+          "type": "string"
+        },
+        "fiscalYear": {
+          "type": "string"
+        },
+        "periodStart": {
+          "type": "string"
+        },
+        "periodEnd": {
+          "type": "string"
+        },
+        "currency": {
+          "const": "USD"
+        },
+        "fund": {
+          "type": "string"
+        },
+        "basis": {
+          "enum": [
+            "recurring",
+            "nonrecurring",
+            "total"
+          ]
+        },
+        "measure": {
+          "enum": [
+            "money",
+            "positions",
+            "percentage"
+          ]
+        },
+        "minorUnits": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "state": {
+          "enum": [
+            "amount",
+            "blank",
+            "omitted",
+            "embedded",
+            "unpublished"
+          ]
+        },
+        "stage": {
+          "type": "string"
+        },
+        "chamber": {
+          "type": "string"
+        },
+        "offer": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "sourceRevision": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 250
+        },
+        "documentId": {
+          "type": "string"
+        },
+        "locator": {
+          "type": "string"
+        },
+        "unitMultiplier": {
+          "type": "string"
+        },
+        "allocationBasis": {
+          "type": "string"
+        },
+        "qualified": {
+          "type": "boolean"
+        },
+        "valueRole": {
+          "enum": [
+            "allocation_amount",
+            "vetoed_amount"
+          ]
+        }
+      },
+      "required": [
+        "id",
+        "projectId",
+        "fiscalYear",
+        "periodStart",
+        "periodEnd",
+        "currency",
+        "fund",
+        "basis",
+        "measure",
+        "minorUnits",
+        "state",
+        "stage",
+        "chamber",
+        "offer",
+        "sourceRevision",
+        "documentId",
+        "locator",
+        "unitMultiplier",
+        "allocationBasis",
+        "qualified"
+      ]
+    },
+    "ComparisonSource": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 250
+        },
+        "billId": {
+          "type": "string"
+        },
+        "jurisdiction": {
+          "type": "string",
+          "pattern": "^[A-Z]{2}$"
+        },
+        "sessionKey": {
+          "type": "string"
+        },
+        "revision": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 250
+        },
+        "contentHash": {
+          "type": "string"
+        },
+        "extractorVersion": {
+          "type": "string"
+        },
+        "sourceUrl": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "kind": {
+          "type": "string"
+        },
+        "publishedDate": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "observedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "complete": {
+          "const": true
+        }
+      },
+      "required": [
+        "id",
+        "billId",
+        "jurisdiction",
+        "sessionKey",
+        "revision",
+        "contentHash",
+        "extractorVersion",
+        "sourceUrl",
+        "kind",
+        "publishedDate",
+        "observedAt",
+        "complete"
+      ]
+    },
+    "ComparisonRange": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "text": {
+          "type": "string"
+        },
+        "locator": {
+          "type": "string"
+        },
+        "start": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 2000000
+        },
+        "end": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 2000000
+        }
+      },
+      "required": [
+        "text",
+        "locator",
+        "start",
+        "end"
+      ]
+    },
+    "BudgetComparisonData": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "left": {
+          "$ref": "#/$defs/ComparisonAmount"
+        },
+        "right": {
+          "$ref": "#/$defs/ComparisonAmount"
+        },
+        "comparable": {
+          "type": "boolean"
+        },
+        "reasons": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "deltaMinorUnits": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^-?\\d+$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "percentage": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^-?\\d+\\.\\d{2}%$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "left",
+        "right",
+        "comparable",
+        "reasons",
+        "deltaMinorUnits",
+        "percentage"
+      ]
+    },
+    "VersionComparisonData": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "version": {
+          "const": "exact-line-lcs-v1"
+        },
+        "left": {
+          "$ref": "#/$defs/ComparisonSource"
+        },
+        "right": {
+          "$ref": "#/$defs/ComparisonSource"
+        },
+        "changes": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "kind": {
+                "enum": [
+                  "unchanged",
+                  "removed",
+                  "added"
+                ]
+              },
+              "text": {
+                "type": "string"
+              },
+              "left": {
+                "anyOf": [
+                  {
+                    "$ref": "#/$defs/ComparisonRange"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "right": {
+                "anyOf": [
+                  {
+                    "$ref": "#/$defs/ComparisonRange"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              }
+            },
+            "required": [
+              "kind",
+              "text",
+              "left",
+              "right"
+            ]
+          },
+          "maxItems": 20000
+        },
+        "classification": {
+          "enum": [
+            "identical_bytes",
+            "reextraction_only",
+            "layout_only",
+            "textual_change"
+          ]
+        },
+        "warning": {
+          "const": "Text comparison does not establish adoption, enactment or legal effect. Original legislative underline/strike-through may be absent from extracted text."
+        },
+        "scope": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "clientId": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "folderId": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "jurisdiction": {
+              "type": "string",
+              "pattern": "^[A-Z]{2}$"
+            },
+            "sessionKey": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "clientId",
+            "folderId",
+            "jurisdiction",
+            "sessionKey"
+          ]
+        }
+      },
+      "required": [
+        "version",
+        "left",
+        "right",
+        "changes",
+        "classification",
+        "warning",
+        "scope"
+      ]
+    },
+    "BudgetComparisonOutput": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "version": {
+          "const": "0.1.0"
+        },
+        "tool": {
+          "const": "compare_florida_budget_amounts"
+        },
+        "generatedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "selection": {
+          "$ref": "#/$defs/BudgetComparisonRequest"
+        },
+        "data": {
+          "$ref": "#/$defs/BudgetComparisonData"
+        },
+        "effects": {
+          "type": "array",
+          "items": {},
+          "maxItems": 0
+        },
+        "coverage": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "basis": {
+              "const": "exact_source_pair"
+            },
+            "sourceUniverseComplete": {
+              "const": false
+            },
+            "maxOutputBytes": {
+              "const": 262144
+            },
+            "limitations": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "minItems": 1
+            }
+          },
+          "required": [
+            "basis",
+            "sourceUniverseComplete",
+            "maxOutputBytes",
+            "limitations"
+          ]
+        }
+      },
+      "required": [
+        "version",
+        "tool",
+        "generatedAt",
+        "selection",
+        "data",
+        "effects",
+        "coverage"
+      ]
+    },
+    "VersionComparisonOutput": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "version": {
+          "const": "0.1.0"
+        },
+        "tool": {
+          "const": "compare_legislative_versions"
+        },
+        "generatedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "selection": {
+          "$ref": "#/$defs/VersionComparisonRequest"
+        },
+        "data": {
+          "$ref": "#/$defs/VersionComparisonData"
+        },
+        "effects": {
+          "type": "array",
+          "items": {},
+          "maxItems": 0
+        },
+        "coverage": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "basis": {
+              "const": "exact_source_pair"
+            },
+            "sourceUniverseComplete": {
+              "const": false
+            },
+            "maxOutputBytes": {
+              "const": 262144
+            },
+            "limitations": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "minItems": 1
+            }
+          },
+          "required": [
+            "basis",
+            "sourceUniverseComplete",
+            "maxOutputBytes",
+            "limitations"
+          ]
+        }
+      },
+      "required": [
+        "version",
+        "tool",
+        "generatedAt",
+        "selection",
+        "data",
+        "effects",
+        "coverage"
+      ]
+    }
+  }
+}

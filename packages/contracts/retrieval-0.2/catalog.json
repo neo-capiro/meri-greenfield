@@ -1,8 +1,8 @@
 {
   "contractVersion": "0.2.0",
   "catalogId": "meri.retrieval",
-  "catalogVersion": "0.2.21",
-  "sourceRegistryCommit": "ed85eb9c1dc5eb7638ae373a627ab3b29743e500",
+  "catalogVersion": "0.2.22",
+  "sourceRegistryCommit": "87ea34a812c56524644e4983b215ded5ce8a8f7d",
   "originals": [
     {
       "id": "manage_research_portfolio",
@@ -522,10 +522,13 @@
     },
     {
       "id": "get_legiwatch_review",
-      "disposition": "deferred",
-      "boundary": "Saved LegiWatch review workflow and its state semantics require separate acceptance.",
-      "replacement": null,
-      "state": "deferred"
+      "disposition": "selected",
+      "boundary": "Current interactive user reads existing authorized folders, paged suggestions, rules and workflow history through the canonical Intel owner. No effects.",
+      "replacement": {
+        "id": "get_legiwatch_review",
+        "version": "0.2.0"
+      },
+      "state": "mapped"
     },
     {
       "id": "search_legiwatch_news",
@@ -549,17 +552,23 @@
     },
     {
       "id": "compare_florida_budget_amounts",
-      "disposition": "deferred",
-      "boundary": "Florida-specific budget comparison workflow needs explicit units, provenance and expected-value fixtures.",
-      "replacement": null,
-      "state": "deferred"
+      "disposition": "selected",
+      "boundary": "Compare two exact observation IDs and source revisions. Preserve FY, period, fund, recurring basis, measure, allocation or veto role, stage, source locators and exact minor-unit strings. Incompatible observations return reasons and no delta.",
+      "replacement": {
+        "id": "compare_florida_budget_amounts",
+        "version": "0.2.0"
+      },
+      "state": "mapped"
     },
     {
       "id": "prepare_legiwatch_briefing",
-      "disposition": "deferred",
-      "boundary": "Specialized Research Portfolio or LegiWatch source workflow is outside initial commands; exact authorization, side effects and fixture scope require separate acceptance.",
-      "replacement": null,
-      "state": "deferred"
+      "disposition": "selected",
+      "boundary": "Prepare one exact briefing draft from the current authorized folder, jurisdiction/session, cut-off and cited source revisions for explicit approval; Intel EditorialService owns source and current-context checks, the request-key/input-hash lock, the canonical selection and any Workspace export. No publish, send or schedule.",
+      "replacement": {
+        "id": "prepare_legiwatch_briefing",
+        "version": "0.2.0"
+      },
+      "state": "mapped"
     },
     {
       "id": "search_legislative_research",
@@ -583,38 +592,53 @@
     },
     {
       "id": "compare_legislative_versions",
-      "disposition": "deferred",
-      "boundary": "Legislative version comparison behavior and legal-reference fidelity need separate qualification.",
-      "replacement": null,
-      "state": "deferred"
+      "disposition": "selected",
+      "boundary": "Compare complete extracted source revisions with exact line ranges and source metadata. Cross-bill/session comparisons require explicit intent. Classification is extraction/text evidence, never adoption, enactment or legal effect.",
+      "replacement": {
+        "id": "compare_legislative_versions",
+        "version": "0.2.0"
+      },
+      "state": "mapped"
     },
     {
       "id": "save_legislative_research",
-      "disposition": "deferred",
-      "boundary": "Specialized Research Portfolio or LegiWatch source workflow is outside initial commands; exact authorization, side effects and fixture scope require separate acceptance.",
-      "replacement": null,
-      "state": "deferred"
+      "disposition": "selected",
+      "boundary": "Save one reviewed research draft from the current authorized client/folder, session and exact cited document revisions for explicit approval; Intel ResearchService owns source and current-context checks, the request-key/input-hash lock, the canonical selection and any Workspace export. No publish, send or schedule.",
+      "replacement": {
+        "id": "save_legislative_research",
+        "version": "0.2.0"
+      },
+      "state": "mapped"
     },
     {
       "id": "preview_legiwatch_relevance",
-      "disposition": "deferred",
-      "boundary": "LegiWatch relevance scoring is a specialized proposal workflow outside the initial commands.",
-      "replacement": null,
-      "state": "deferred"
+      "disposition": "selected",
+      "boundary": "Current owner evidence preview and explicit approval of a pending relevance suggestion. No automatic assignment or monitoring.",
+      "replacement": {
+        "id": "preview_legiwatch_relevance",
+        "version": "0.2.0"
+      },
+      "state": "mapped"
     },
     {
       "id": "save_legiwatch_relevance",
-      "disposition": "deferred",
-      "boundary": "Specialized Research Portfolio or LegiWatch source workflow is outside initial commands; exact authorization, side effects and fixture scope require separate acceptance.",
-      "replacement": null,
-      "state": "deferred"
+      "disposition": "selected",
+      "boundary": "Current owner evidence preview and explicit approval of a pending relevance suggestion. No automatic assignment or monitoring.",
+      "replacement": {
+        "id": "save_legiwatch_relevance",
+        "version": "0.2.0"
+      },
+      "state": "mapped"
     },
     {
       "id": "apply_legiwatch_suggestion",
-      "disposition": "deferred",
-      "boundary": "Specialized Research Portfolio or LegiWatch source workflow is outside initial commands; exact authorization, side effects and fixture scope require separate acceptance.",
-      "replacement": null,
-      "state": "deferred"
+      "disposition": "selected",
+      "boundary": "Prepare exact current LegiWatch suggestion action for explicit approval; Core/Intel own authorization, optimistic version and durable receipt. No subscription, relevance save or model execution.",
+      "replacement": {
+        "id": "apply_legiwatch_suggestion",
+        "version": "0.2.0"
+      },
+      "state": "mapped"
     },
     {
       "id": "search_crs_reports",
@@ -692,10 +716,13 @@
     },
     {
       "id": "save_note",
-      "disposition": "deferred",
-      "boundary": "Source note mutation is not selected; local drafting and native artifacts remain required.",
-      "replacement": null,
-      "state": "deferred"
+      "disposition": "selected",
+      "boundary": "Direct current Core note policy: PASS executes once; no approval or implicit retry. Meeting, client Files and General receipt semantics remain distinct.",
+      "replacement": {
+        "id": "save_note",
+        "version": "0.2.0"
+      },
+      "state": "mapped"
     },
     {
       "id": "save_chat_attachments",
@@ -1051,10 +1078,13 @@
     },
     {
       "id": "create_client",
-      "disposition": "deferred",
-      "boundary": "Client creation is outside initial commands; source transaction and audit invariants not qualified.",
-      "replacement": null,
-      "state": "deferred"
+      "disposition": "selected",
+      "boundary": "Prepare exact client record changes for canonical current-scoped policy approval. Read-only receipt recovery never replays an unknown effect.",
+      "replacement": {
+        "id": "create_client",
+        "version": "0.2.0"
+      },
+      "state": "mapped"
     },
     {
       "id": "create_task",
@@ -1078,10 +1108,13 @@
     },
     {
       "id": "update_client_profile",
-      "disposition": "deferred",
-      "boundary": "Client profile mutation is outside initial commands; field/lifecycle policy not qualified.",
-      "replacement": null,
-      "state": "deferred"
+      "disposition": "selected",
+      "boundary": "Prepare exact client record changes for canonical current-scoped policy approval. Read-only receipt recovery never replays an unknown effect.",
+      "replacement": {
+        "id": "update_client_profile",
+        "version": "0.2.0"
+      },
+      "state": "mapped"
     },
     {
       "id": "find_contacts",
@@ -1226,24 +1259,33 @@
     },
     {
       "id": "get_business_development_brief",
-      "disposition": "deferred",
-      "boundary": "BizDev brief composition and persisted-versus-generated behavior need explicit scope and fixtures.",
-      "replacement": null,
-      "state": "deferred"
+      "disposition": "selected",
+      "boundary": "Read the current saved five-section brief and full citation index for an explicitly owned persisted prospect conversation. Preserve generated versus edited section provenance; missing saved brief is not a generated replacement.",
+      "replacement": {
+        "id": "get_business_development_brief",
+        "version": "0.2.0"
+      },
+      "state": "mapped"
     },
     {
       "id": "resolve_business_development_source",
-      "disposition": "deferred",
-      "boundary": "BizDev source resolution behavior may involve provider actions; precise boundary is unqualified.",
-      "replacement": null,
-      "state": "deferred"
+      "disposition": "selected",
+      "boundary": "Resolve an exact zero-based saved citation index through the existing prospect owner. Preserve current_dossier, snapshot_only or none basis; unresolved/source-changed citation metadata is not evidence. This does not refresh or ingest sources.",
+      "replacement": {
+        "id": "resolve_business_development_source",
+        "version": "0.2.0"
+      },
+      "state": "mapped"
     },
     {
       "id": "save_business_development_brief",
-      "disposition": "deferred",
-      "boundary": "BizDev-specific saved brief workflow is outside initial commands.",
-      "replacement": null,
-      "state": "deferred"
+      "disposition": "selected",
+      "boundary": "Prepare one approved, explicit saved-version edit of the current five-section business-development brief for the persisted prospect conversation; Core/Intel own prospect-scope authorization, exact expectedVersionNumber/citation indexes, optimistic version and the durable saved-version receipt. No scoring, source resolution, ingestion or automatic retry.",
+      "replacement": {
+        "id": "save_business_development_brief",
+        "version": "0.2.0"
+      },
+      "state": "mapped"
     },
     {
       "id": "get_business_development_recent_changes",
@@ -1374,6 +1416,36 @@
         "version": "0.2.0"
       },
       "state": "mapped"
+    },
+    {
+      "id": "mail_send",
+      "disposition": "selected",
+      "boundary": "Additive approved native mail command; current Core mailbox/original/file authority and SingleMailLedger own all effects. Legacy send_email/reply_email names remain excluded.",
+      "replacement": {
+        "id": "mail_send",
+        "version": "0.2.0"
+      },
+      "state": "mapped"
+    },
+    {
+      "id": "watch_action",
+      "disposition": "selected",
+      "boundary": "Prepare user-initiated watch subscription action for explicit approval; Core owns authorization, optimistic version and durable receipt. No subscription activation or model execution.",
+      "replacement": {
+        "id": "watch_action",
+        "version": "0.2.0"
+      },
+      "state": "mapped"
+    },
+    {
+      "id": "inspect_watch_state",
+      "disposition": "selected",
+      "boundary": "Additive read of one exact current watch target through the canonical Core inspect owner. No proposal, mutation, inferred version or inventory expansion.",
+      "replacement": {
+        "id": "inspect_watch_state",
+        "version": "0.2.0"
+      },
+      "state": "mapped"
     }
   ],
   "operations": [
@@ -1406,11 +1478,11 @@
       ],
       "inputSchema": {
         "id": "urn:meri:retrieval:mail:0.2.0#/$defs/MailThreadInput",
-        "sha256": "d45681f76ba5f5d7f65b7385ab1e1c3deb9626d4166e55fc6039e88bc3d804e6"
+        "sha256": "e2be34336f7c9f370c3f9e3b8db7f99e92c2d16399716266f1e27eb6819811aa"
       },
       "outputSchema": {
         "id": "urn:meri:retrieval:mail:0.2.0#/$defs/MailThreadSourcePage",
-        "sha256": "d45681f76ba5f5d7f65b7385ab1e1c3deb9626d4166e55fc6039e88bc3d804e6"
+        "sha256": "e2be34336f7c9f370c3f9e3b8db7f99e92c2d16399716266f1e27eb6819811aa"
       },
       "aliases": [
         "get_email_thread"
@@ -1472,11 +1544,11 @@
       ],
       "inputSchema": {
         "id": "urn:meri:retrieval:mail:0.2.0#/$defs/MailListInput",
-        "sha256": "d45681f76ba5f5d7f65b7385ab1e1c3deb9626d4166e55fc6039e88bc3d804e6"
+        "sha256": "e2be34336f7c9f370c3f9e3b8db7f99e92c2d16399716266f1e27eb6819811aa"
       },
       "outputSchema": {
         "id": "urn:meri:retrieval:mail:0.2.0#/$defs/MailCandidateSourcePage",
-        "sha256": "d45681f76ba5f5d7f65b7385ab1e1c3deb9626d4166e55fc6039e88bc3d804e6"
+        "sha256": "e2be34336f7c9f370c3f9e3b8db7f99e92c2d16399716266f1e27eb6819811aa"
       },
       "aliases": [
         "list_emails"
@@ -1538,11 +1610,11 @@
       ],
       "inputSchema": {
         "id": "urn:meri:retrieval:mail:0.2.0#/$defs/MailSearchInput",
-        "sha256": "d45681f76ba5f5d7f65b7385ab1e1c3deb9626d4166e55fc6039e88bc3d804e6"
+        "sha256": "e2be34336f7c9f370c3f9e3b8db7f99e92c2d16399716266f1e27eb6819811aa"
       },
       "outputSchema": {
         "id": "urn:meri:retrieval:mail:0.2.0#/$defs/MailCandidateSourcePage",
-        "sha256": "d45681f76ba5f5d7f65b7385ab1e1c3deb9626d4166e55fc6039e88bc3d804e6"
+        "sha256": "e2be34336f7c9f370c3f9e3b8db7f99e92c2d16399716266f1e27eb6819811aa"
       },
       "aliases": [
         "search_emails"
@@ -2487,7 +2559,7 @@
         "Pending contract only; null handler, no enabled source or executable skill.",
         "Source requirements are design declarations; current grants, availability and actual producer authority remain unqualified.",
         "A name is a selector. Tenant membership alone does not authorize every client; trusted source policy must authorize each returned tenant record.",
-        "Compatibility guidance is untrusted reported text and grants no creation, update or approval authority. create_client remains deferred.",
+        "Compatibility guidance is untrusted reported text and grants no creation, update or approval authority. Creation requires the separate current-scoped create_client proposal and explicit approval.",
         "Empty/null results and reported counts establish no authoritative absence, exhaustive enumeration, freshness, source health or snapshot stability.",
         "This frozen success projection declares no request/provenance envelope. A qualified adapter must bind results to the authorized request and preserve upstream failures."
       ],
@@ -2717,11 +2789,11 @@
       ],
       "inputSchema": {
         "id": "urn:meri:retrieval:business-development:0.2.0#/$defs/BusinessDevelopmentContextInput",
-        "sha256": "fff7362e49e0d981b1aeaeec881ea2e72e2fa263d9f64dfad94456fd50b330f1"
+        "sha256": "482dcd8474a37f268db5a83b477de4eb47d55d000087ff9d0d97e87d099662c4"
       },
       "outputSchema": {
         "id": "urn:meri:retrieval:business-development:0.2.0#/$defs/BusinessDevelopmentContextOutput",
-        "sha256": "fff7362e49e0d981b1aeaeec881ea2e72e2fa263d9f64dfad94456fd50b330f1"
+        "sha256": "482dcd8474a37f268db5a83b477de4eb47d55d000087ff9d0d97e87d099662c4"
       },
       "aliases": [],
       "sideEffect": "none",
@@ -2787,11 +2859,11 @@
       ],
       "inputSchema": {
         "id": "urn:meri:retrieval:business-development:0.2.0#/$defs/BusinessDevelopmentEvidenceInput",
-        "sha256": "fff7362e49e0d981b1aeaeec881ea2e72e2fa263d9f64dfad94456fd50b330f1"
+        "sha256": "482dcd8474a37f268db5a83b477de4eb47d55d000087ff9d0d97e87d099662c4"
       },
       "outputSchema": {
         "id": "urn:meri:retrieval:business-development:0.2.0#/$defs/BusinessDevelopmentEvidenceOutput",
-        "sha256": "fff7362e49e0d981b1aeaeec881ea2e72e2fa263d9f64dfad94456fd50b330f1"
+        "sha256": "482dcd8474a37f268db5a83b477de4eb47d55d000087ff9d0d97e87d099662c4"
       },
       "aliases": [],
       "sideEffect": "none",
@@ -2857,11 +2929,11 @@
       ],
       "inputSchema": {
         "id": "urn:meri:retrieval:business-development:0.2.0#/$defs/BusinessDevelopmentRecentChangesInput",
-        "sha256": "fff7362e49e0d981b1aeaeec881ea2e72e2fa263d9f64dfad94456fd50b330f1"
+        "sha256": "482dcd8474a37f268db5a83b477de4eb47d55d000087ff9d0d97e87d099662c4"
       },
       "outputSchema": {
         "id": "urn:meri:retrieval:business-development:0.2.0#/$defs/BusinessDevelopmentRecentChangesOutput",
-        "sha256": "fff7362e49e0d981b1aeaeec881ea2e72e2fa263d9f64dfad94456fd50b330f1"
+        "sha256": "482dcd8474a37f268db5a83b477de4eb47d55d000087ff9d0d97e87d099662c4"
       },
       "aliases": [],
       "sideEffect": "none",
@@ -5998,12 +6070,12 @@
         "version": "0.2.0"
       },
       "displayName": "Get florida budget project",
-      "whenToUse": "Inspect the declared source projection through a qualified source owner under current authorization.",
+      "whenToUse": "Read stored Florida budget projects and their amount observation IDs/sourceRevision before comparing an exact pair; preserve FY, units, stage and publisher qualifiers.",
       "limitations": [
         "Pending private contract only; null handler, no enabled source or executable skill.",
         "Source requirements are design declarations; current grants, feature flags, availability and producer authority remain unqualified.",
         "Local source validation does not qualify current identity, source access, result release or runtime.",
-        "Client names and UUIDs are selectors resolved by the canonical Core read owner. Returned folder/session/client scope is checked against those selectors; no separate scope grant is inferred. Current tenant, client, folder, membership, wall, feature and internal-guard enforcement remain execution prerequisites.",
+        "Native reads require an explicit client UUID matching the selected client, or General scope with null client. Core current identity and the existing Intel membership, folder, wall and feature owner enforce access before releasing source rows; model selectors are not grants.",
         "Projects, recent amounts, documents, amount observations and events preserve their distinct caps and nullable projections. Raw JSON is inert opaque stored data; it is not guaranteed to conform to a BudgetAmount DTO.",
         "Requests, chamber alternatives, offers, allocations and vetoes do not establish awarded amounts. Exact monetary meanings and fiscal stages remain distinct; no aggregation, currentness or completeness claim is implemented."
       ],
@@ -6022,11 +6094,11 @@
       ],
       "inputSchema": {
         "id": "urn:meri:retrieval:florida-budget:0.2.0#/$defs/FloridaBudgetRequest",
-        "sha256": "a8eaa03c28b882940aeaa7d34a75c00730db974818f5f79c582e4ee264464fa8"
+        "sha256": "208ed8bdb80ba62d69ad5f9a6fe6203581ef65d153d0339080d93d4c4a1e9132"
       },
       "outputSchema": {
         "id": "urn:meri:retrieval:florida-budget:0.2.0#/$defs/FloridaBudgetOutput",
-        "sha256": "a8eaa03c28b882940aeaa7d34a75c00730db974818f5f79c582e4ee264464fa8"
+        "sha256": "208ed8bdb80ba62d69ad5f9a6fe6203581ef65d153d0339080d93d4c4a1e9132"
       },
       "aliases": [],
       "sideEffect": "none",
@@ -7565,11 +7637,11 @@
       ],
       "inputSchema": {
         "id": "urn:meri:commands:tool-interface:0.2.0#/$defs/TaskCreateToolRequest",
-        "sha256": "7c394fc336eeb91435d38b57e45180af838fd898e33f0e0f8e34fe8dcf4e8842"
+        "sha256": "cfa1c4085a098ba2a228ed42c67998013387ca8d0679033ecd3581e618bd0c63"
       },
       "outputSchema": {
         "id": "urn:meri:commands:tool-interface:0.2.0#/$defs/TaskCreateToolResult",
-        "sha256": "7c394fc336eeb91435d38b57e45180af838fd898e33f0e0f8e34fe8dcf4e8842"
+        "sha256": "cfa1c4085a098ba2a228ed42c67998013387ca8d0679033ecd3581e618bd0c63"
       },
       "aliases": [],
       "sideEffect": "source-command",
@@ -7632,11 +7704,11 @@
       ],
       "inputSchema": {
         "id": "urn:meri:commands:tool-interface:0.2.0#/$defs/TaskUpdateToolRequest",
-        "sha256": "7c394fc336eeb91435d38b57e45180af838fd898e33f0e0f8e34fe8dcf4e8842"
+        "sha256": "cfa1c4085a098ba2a228ed42c67998013387ca8d0679033ecd3581e618bd0c63"
       },
       "outputSchema": {
         "id": "urn:meri:commands:tool-interface:0.2.0#/$defs/TaskUpdateToolResult",
-        "sha256": "7c394fc336eeb91435d38b57e45180af838fd898e33f0e0f8e34fe8dcf4e8842"
+        "sha256": "cfa1c4085a098ba2a228ed42c67998013387ca8d0679033ecd3581e618bd0c63"
       },
       "aliases": [],
       "sideEffect": "source-command",
@@ -7700,11 +7772,11 @@
       ],
       "inputSchema": {
         "id": "urn:meri:commands:tool-interface:0.2.0#/$defs/MemoryProposeToolRequest",
-        "sha256": "7c394fc336eeb91435d38b57e45180af838fd898e33f0e0f8e34fe8dcf4e8842"
+        "sha256": "cfa1c4085a098ba2a228ed42c67998013387ca8d0679033ecd3581e618bd0c63"
       },
       "outputSchema": {
         "id": "urn:meri:commands:tool-interface:0.2.0#/$defs/MemoryProposeToolResult",
-        "sha256": "7c394fc336eeb91435d38b57e45180af838fd898e33f0e0f8e34fe8dcf4e8842"
+        "sha256": "cfa1c4085a098ba2a228ed42c67998013387ca8d0679033ecd3581e618bd0c63"
       },
       "aliases": [],
       "sideEffect": "proposal",
@@ -7768,11 +7840,11 @@
       ],
       "inputSchema": {
         "id": "urn:meri:commands:tool-interface:0.2.0#/$defs/ArtifactFileToolRequest",
-        "sha256": "7c394fc336eeb91435d38b57e45180af838fd898e33f0e0f8e34fe8dcf4e8842"
+        "sha256": "cfa1c4085a098ba2a228ed42c67998013387ca8d0679033ecd3581e618bd0c63"
       },
       "outputSchema": {
         "id": "urn:meri:commands:tool-interface:0.2.0#/$defs/ArtifactFileToolResult",
-        "sha256": "7c394fc336eeb91435d38b57e45180af838fd898e33f0e0f8e34fe8dcf4e8842"
+        "sha256": "cfa1c4085a098ba2a228ed42c67998013387ca8d0679033ecd3581e618bd0c63"
       },
       "aliases": [],
       "sideEffect": "source-command",
@@ -8804,6 +8876,1116 @@
       ],
       "fixtureIds": [
         "catalog.binding.read_saved_strategy_records"
+      ]
+    },
+    {
+      "operation": {
+        "id": "apply_legiwatch_suggestion",
+        "version": "0.2.0"
+      },
+      "displayName": "Prepare a LegiWatch suggestion decision",
+      "whenToUse": "Propose one exact suggestion action from the current LegiWatch review for the signed-in user to confirm.",
+      "limitations": [
+        "Requires exact folder, jurisdiction/session, suggestion ID and current expectedVersion.",
+        "No subscription activation, relevance writing, automatic retry or new ingestion.",
+        "A stale, excluded or held receipt does not mean a bill was added."
+      ],
+      "positiveExamples": [
+        "Prepare to add this exact reviewed suggestion to its authorized folder."
+      ],
+      "negativeExamples": [
+        "Automatically subscribe, mutate an unseen suggestion, or retry an unknown effect."
+      ],
+      "sourceRequirements": [
+        {
+          "sourceId": "legiwatch_suggestions",
+          "authority": "authoritative",
+          "purpose": "evidence"
+        }
+      ],
+      "inputSchema": {
+        "id": "urn:meri:retrieval:legiwatch-action:0.2.0#/$defs/LegiwatchInput",
+        "sha256": "79c2f0fbbf040cf6af192af69353f0d298af0190f50d90951a94df8dbdfb1513"
+      },
+      "outputSchema": {
+        "id": "urn:meri:retrieval:legiwatch-action:0.2.0#/$defs/LegiwatchPrepared",
+        "sha256": "79c2f0fbbf040cf6af192af69353f0d298af0190f50d90951a94df8dbdfb1513"
+      },
+      "aliases": [],
+      "sideEffect": "source-command",
+      "requiredGrants": [
+        "command.execute"
+      ],
+      "approvalBoundary": "immutable-proposal",
+      "handler": null,
+      "availability": "unimplemented",
+      "qualification": "pending",
+      "retry": {
+        "maxRetries": 0,
+        "retryableCodes": [],
+        "unknownOutcome": "reconcile-before-retry"
+      },
+      "replacement": null,
+      "requirementIds": [
+        "R-01",
+        "R-04",
+        "R-05"
+      ],
+      "ticketIds": [
+        "REL-02"
+      ],
+      "gateIds": [
+        "RG-02",
+        "RG-05",
+        "RG-07"
+      ],
+      "fixtureIds": [
+        "catalog.binding.apply_legiwatch_suggestion"
+      ]
+    },
+    {
+      "operation": {
+        "id": "get_legiwatch_review",
+        "version": "0.2.0"
+      },
+      "displayName": "Read current LegiWatch review",
+      "whenToUse": "Inspect currently authorized folders, exact suggestion IDs and versions, rule configuration or workflow state. Use suggestions with an exact folder, jurisdiction and session; follow its next cursor before proposing a decision.",
+      "limitations": [
+        "Interactive current identity and conversation scope only; no saved-job credentials.",
+        "A source error is not an empty result. Rules/workflows retain owner limits; coverage never asserts a complete universe.",
+        "Source evidence and coverage are preserved; semantic relevance remains inference, not quoted authority.",
+        "The UTF-8 envelope is bounded to 262144 bytes; oversize refuses without silent truncation."
+      ],
+      "positiveExamples": [
+        "Read this exact folder and session before proposing a suggestion action."
+      ],
+      "negativeExamples": [
+        "Activate a subscription, infer no changes from partial history, or act on a stale suggestion version."
+      ],
+      "sourceRequirements": [
+        {
+          "sourceId": "legiwatch_suggestions",
+          "authority": "authoritative",
+          "purpose": "evidence"
+        }
+      ],
+      "inputSchema": {
+        "id": "urn:meri:retrieval:legiwatch-review:0.2.0#/$defs/LegiwatchReviewRequest",
+        "sha256": "ae0eead3f05b898246a04aa00c2bde787a80cd6aa224ed7dc31a7393f2d06388"
+      },
+      "outputSchema": {
+        "id": "urn:meri:retrieval:legiwatch-review:0.2.0#/$defs/LegiwatchReviewOutput",
+        "sha256": "ae0eead3f05b898246a04aa00c2bde787a80cd6aa224ed7dc31a7393f2d06388"
+      },
+      "aliases": [],
+      "sideEffect": "none",
+      "requiredGrants": [
+        "tool.read"
+      ],
+      "approvalBoundary": "none",
+      "handler": null,
+      "availability": "unimplemented",
+      "qualification": "pending",
+      "retry": {
+        "maxRetries": 0,
+        "retryableCodes": [],
+        "unknownOutcome": "reconcile-before-retry"
+      },
+      "replacement": null,
+      "requirementIds": [
+        "R-01",
+        "R-04",
+        "R-05"
+      ],
+      "ticketIds": [
+        "REL-02"
+      ],
+      "gateIds": [
+        "RG-02",
+        "RG-05",
+        "RG-07"
+      ],
+      "fixtureIds": [
+        "catalog.binding.get_legiwatch_review"
+      ]
+    },
+    {
+      "operation": {
+        "id": "compare_florida_budget_amounts",
+        "version": "0.2.0"
+      },
+      "displayName": "Compare exact Florida budget amount observations",
+      "whenToUse": "Compare two exact observation IDs and source revisions. Preserve FY, period, fund, recurring basis, measure, allocation or veto role, stage, source locators and exact minor-unit strings. Incompatible observations return reasons and no delta.",
+      "limitations": [
+        "Existing current tenant/member/client/folder or persisted prospect owner authority is required; selectors grant nothing.",
+        "Whole UTF-8 output is bounded to 262144 bytes; oversized results refuse rather than silently truncating source content.",
+        "No effect, fresh ingestion, source-universe completeness or currentness is implied."
+      ],
+      "positiveExamples": [
+        "Compare two exact observation IDs and source revisions. Preserve FY, period, fund, recurring basis, measure, allocation or veto role, stage, source locators and exact minor-unit strings. Incompatible observations return reasons and no delta."
+      ],
+      "negativeExamples": [
+        "Treat partial or saved evidence as current exhaustive source truth, or execute a write through this read."
+      ],
+      "sourceRequirements": [
+        {
+          "sourceId": "florida_budget",
+          "authority": "derived",
+          "purpose": "evidence"
+        }
+      ],
+      "inputSchema": {
+        "id": "urn:meri:retrieval:legislative-comparisons:0.2.0#/$defs/BudgetComparisonRequest",
+        "sha256": "177dfc8efc8a38a214583cb00c71b59ef34ec4bfc941a015d0d44a7c8444723c"
+      },
+      "outputSchema": {
+        "id": "urn:meri:retrieval:legislative-comparisons:0.2.0#/$defs/BudgetComparisonOutput",
+        "sha256": "177dfc8efc8a38a214583cb00c71b59ef34ec4bfc941a015d0d44a7c8444723c"
+      },
+      "aliases": [],
+      "sideEffect": "none",
+      "requiredGrants": [
+        "tool.read"
+      ],
+      "approvalBoundary": "none",
+      "handler": null,
+      "availability": "unimplemented",
+      "qualification": "pending",
+      "retry": {
+        "maxRetries": 0,
+        "retryableCodes": [],
+        "unknownOutcome": "reconcile-before-retry"
+      },
+      "replacement": null,
+      "requirementIds": [
+        "R-01",
+        "R-04",
+        "R-05"
+      ],
+      "ticketIds": [
+        "REL-02"
+      ],
+      "gateIds": [
+        "RG-02",
+        "RG-05",
+        "RG-07"
+      ],
+      "fixtureIds": [
+        "catalog.binding.compare_florida_budget_amounts"
+      ]
+    },
+    {
+      "operation": {
+        "id": "compare_legislative_versions",
+        "version": "0.2.0"
+      },
+      "displayName": "Compare exact legislative source versions",
+      "whenToUse": "Compare complete extracted source revisions with exact line ranges and source metadata. Cross-bill/session comparisons require explicit intent. Classification is extraction/text evidence, never adoption, enactment or legal effect.",
+      "limitations": [
+        "Existing current tenant/member/client/folder or persisted prospect owner authority is required; selectors grant nothing.",
+        "Whole UTF-8 output is bounded to 262144 bytes; oversized results refuse rather than silently truncating source content.",
+        "No effect, fresh ingestion, source-universe completeness or currentness is implied."
+      ],
+      "positiveExamples": [
+        "Compare complete extracted source revisions with exact line ranges and source metadata. Cross-bill/session comparisons require explicit intent. Classification is extraction/text evidence, never adoption, enactment or legal effect."
+      ],
+      "negativeExamples": [
+        "Treat partial or saved evidence as current exhaustive source truth, or execute a write through this read."
+      ],
+      "sourceRequirements": [
+        {
+          "sourceId": "research_legal_legislation",
+          "authority": "derived",
+          "purpose": "evidence"
+        }
+      ],
+      "inputSchema": {
+        "id": "urn:meri:retrieval:legislative-comparisons:0.2.0#/$defs/VersionComparisonRequest",
+        "sha256": "177dfc8efc8a38a214583cb00c71b59ef34ec4bfc941a015d0d44a7c8444723c"
+      },
+      "outputSchema": {
+        "id": "urn:meri:retrieval:legislative-comparisons:0.2.0#/$defs/VersionComparisonOutput",
+        "sha256": "177dfc8efc8a38a214583cb00c71b59ef34ec4bfc941a015d0d44a7c8444723c"
+      },
+      "aliases": [],
+      "sideEffect": "none",
+      "requiredGrants": [
+        "tool.read"
+      ],
+      "approvalBoundary": "none",
+      "handler": null,
+      "availability": "unimplemented",
+      "qualification": "pending",
+      "retry": {
+        "maxRetries": 0,
+        "retryableCodes": [],
+        "unknownOutcome": "reconcile-before-retry"
+      },
+      "replacement": null,
+      "requirementIds": [
+        "R-01",
+        "R-04",
+        "R-05"
+      ],
+      "ticketIds": [
+        "REL-02"
+      ],
+      "gateIds": [
+        "RG-02",
+        "RG-05",
+        "RG-07"
+      ],
+      "fixtureIds": [
+        "catalog.binding.compare_legislative_versions"
+      ]
+    },
+    {
+      "operation": {
+        "id": "get_business_development_brief",
+        "version": "0.2.0"
+      },
+      "displayName": "Read saved prospect brief",
+      "whenToUse": "Read the current saved five-section brief and full citation index for an explicitly owned persisted prospect conversation. Preserve generated versus edited section provenance; missing saved brief is not a generated replacement.",
+      "limitations": [
+        "Existing current tenant/member/client/folder or persisted prospect owner authority is required; selectors grant nothing.",
+        "Whole UTF-8 output is bounded to 262144 bytes; oversized results refuse rather than silently truncating source content.",
+        "No effect, fresh ingestion, source-universe completeness or currentness is implied."
+      ],
+      "positiveExamples": [
+        "Read the current saved five-section brief and full citation index for an explicitly owned persisted prospect conversation. Preserve generated versus edited section provenance; missing saved brief is not a generated replacement."
+      ],
+      "negativeExamples": [
+        "Treat partial or saved evidence as current exhaustive source truth, or execute a write through this read."
+      ],
+      "sourceRequirements": [
+        {
+          "sourceId": "business_development",
+          "authority": "derived",
+          "purpose": "evidence"
+        }
+      ],
+      "inputSchema": {
+        "id": "urn:meri:retrieval:business-development:0.2.0#/$defs/BusinessDevelopmentBriefInput",
+        "sha256": "482dcd8474a37f268db5a83b477de4eb47d55d000087ff9d0d97e87d099662c4"
+      },
+      "outputSchema": {
+        "id": "urn:meri:retrieval:business-development:0.2.0#/$defs/BusinessDevelopmentBriefOutput",
+        "sha256": "482dcd8474a37f268db5a83b477de4eb47d55d000087ff9d0d97e87d099662c4"
+      },
+      "aliases": [],
+      "sideEffect": "none",
+      "requiredGrants": [
+        "tool.read"
+      ],
+      "approvalBoundary": "none",
+      "handler": null,
+      "availability": "unimplemented",
+      "qualification": "pending",
+      "retry": {
+        "maxRetries": 0,
+        "retryableCodes": [],
+        "unknownOutcome": "reconcile-before-retry"
+      },
+      "replacement": null,
+      "requirementIds": [
+        "R-01",
+        "R-04",
+        "R-05"
+      ],
+      "ticketIds": [
+        "REL-02"
+      ],
+      "gateIds": [
+        "RG-02",
+        "RG-05",
+        "RG-07"
+      ],
+      "fixtureIds": [
+        "catalog.binding.get_business_development_brief"
+      ]
+    },
+    {
+      "operation": {
+        "id": "resolve_business_development_source",
+        "version": "0.2.0"
+      },
+      "displayName": "Resolve saved prospect brief citation",
+      "whenToUse": "Resolve an exact zero-based saved citation index through the existing prospect owner. Preserve current_dossier, snapshot_only or none basis; unresolved/source-changed citation metadata is not evidence. This does not refresh or ingest sources.",
+      "limitations": [
+        "Existing current tenant/member/client/folder or persisted prospect owner authority is required; selectors grant nothing.",
+        "Whole UTF-8 output is bounded to 262144 bytes; oversized results refuse rather than silently truncating source content.",
+        "No effect, fresh ingestion, source-universe completeness or currentness is implied."
+      ],
+      "positiveExamples": [
+        "Resolve an exact zero-based saved citation index through the existing prospect owner. Preserve current_dossier, snapshot_only or none basis; unresolved/source-changed citation metadata is not evidence. This does not refresh or ingest sources."
+      ],
+      "negativeExamples": [
+        "Treat partial or saved evidence as current exhaustive source truth, or execute a write through this read."
+      ],
+      "sourceRequirements": [
+        {
+          "sourceId": "business_development",
+          "authority": "derived",
+          "purpose": "evidence"
+        }
+      ],
+      "inputSchema": {
+        "id": "urn:meri:retrieval:business-development:0.2.0#/$defs/BusinessDevelopmentSourceInput",
+        "sha256": "482dcd8474a37f268db5a83b477de4eb47d55d000087ff9d0d97e87d099662c4"
+      },
+      "outputSchema": {
+        "id": "urn:meri:retrieval:business-development:0.2.0#/$defs/BusinessDevelopmentSourceOutput",
+        "sha256": "482dcd8474a37f268db5a83b477de4eb47d55d000087ff9d0d97e87d099662c4"
+      },
+      "aliases": [],
+      "sideEffect": "none",
+      "requiredGrants": [
+        "tool.read"
+      ],
+      "approvalBoundary": "none",
+      "handler": null,
+      "availability": "unimplemented",
+      "qualification": "pending",
+      "retry": {
+        "maxRetries": 0,
+        "retryableCodes": [],
+        "unknownOutcome": "reconcile-before-retry"
+      },
+      "replacement": null,
+      "requirementIds": [
+        "R-01",
+        "R-04",
+        "R-05"
+      ],
+      "ticketIds": [
+        "REL-02"
+      ],
+      "gateIds": [
+        "RG-02",
+        "RG-05",
+        "RG-07"
+      ],
+      "fixtureIds": [
+        "catalog.binding.resolve_business_development_source"
+      ]
+    },
+    {
+      "operation": {
+        "id": "preview_legiwatch_relevance",
+        "version": "0.2.0"
+      },
+      "displayName": "Preview LegiWatch relevance",
+      "whenToUse": "Read canonical bill source evidence, then provide an exact source quote and rationale to obtain a preview hash.",
+      "limitations": [
+        "Current interactive user only. Preserve the exact source scope, evidence offsets and preview hash.",
+        "Evidence may be partial or excerpted; semantic relevance is inference, not canonical fact.",
+        "Saving produces a pending suggestion, not an assigned bill or activated watch. UNKNOWN is read-only recovery, never automatic replay."
+      ],
+      "positiveExamples": [
+        "Inspect exact source evidence before preparing a pending suggestion."
+      ],
+      "negativeExamples": [
+        "Auto-assign a bill, activate a watch, invent source quotes or replay an uncertain effect."
+      ],
+      "sourceRequirements": [
+        {
+          "sourceId": "legiwatch_suggestions",
+          "authority": "authoritative",
+          "purpose": "evidence"
+        }
+      ],
+      "inputSchema": {
+        "id": "urn:meri:retrieval:legiwatch-relevance:0.2.0#/$defs/RelevancePreviewInput",
+        "sha256": "073c1c7ab64fe948be59eebed71862c87c04cb404ded0918720510879e494d9b"
+      },
+      "outputSchema": {
+        "id": "urn:meri:retrieval:legiwatch-relevance:0.2.0#/$defs/RelevancePreviewOutput",
+        "sha256": "073c1c7ab64fe948be59eebed71862c87c04cb404ded0918720510879e494d9b"
+      },
+      "aliases": [],
+      "sideEffect": "none",
+      "requiredGrants": [
+        "tool.read"
+      ],
+      "approvalBoundary": "none",
+      "handler": null,
+      "availability": "unimplemented",
+      "qualification": "pending",
+      "retry": {
+        "maxRetries": 0,
+        "retryableCodes": [],
+        "unknownOutcome": "reconcile-before-retry"
+      },
+      "replacement": null,
+      "requirementIds": [
+        "R-01",
+        "R-04",
+        "R-05"
+      ],
+      "ticketIds": [
+        "REL-02"
+      ],
+      "gateIds": [
+        "RG-02",
+        "RG-05",
+        "RG-07"
+      ],
+      "fixtureIds": [
+        "catalog.binding.preview_legiwatch_relevance"
+      ]
+    },
+    {
+      "operation": {
+        "id": "save_legiwatch_relevance",
+        "version": "0.2.0"
+      },
+      "displayName": "Propose saving a pending LegiWatch relevance suggestion",
+      "whenToUse": "Propose the exact source-verified preview for explicit approval; the result is a pending suggestion requiring its own review.",
+      "limitations": [
+        "Current interactive user only. Preserve the exact source scope, evidence offsets and preview hash.",
+        "Evidence may be partial or excerpted; semantic relevance is inference, not canonical fact.",
+        "Saving produces a pending suggestion, not an assigned bill or activated watch. UNKNOWN is read-only recovery, never automatic replay."
+      ],
+      "positiveExamples": [
+        "Inspect exact source evidence before preparing a pending suggestion."
+      ],
+      "negativeExamples": [
+        "Auto-assign a bill, activate a watch, invent source quotes or replay an uncertain effect."
+      ],
+      "sourceRequirements": [
+        {
+          "sourceId": "legiwatch_suggestions",
+          "authority": "authoritative",
+          "purpose": "evidence"
+        }
+      ],
+      "inputSchema": {
+        "id": "urn:meri:retrieval:legiwatch-relevance:0.2.0#/$defs/RelevanceInput",
+        "sha256": "073c1c7ab64fe948be59eebed71862c87c04cb404ded0918720510879e494d9b"
+      },
+      "outputSchema": {
+        "id": "urn:meri:retrieval:legiwatch-relevance:0.2.0#/$defs/RelevancePrepared",
+        "sha256": "073c1c7ab64fe948be59eebed71862c87c04cb404ded0918720510879e494d9b"
+      },
+      "aliases": [],
+      "sideEffect": "source-command",
+      "requiredGrants": [
+        "command.execute"
+      ],
+      "approvalBoundary": "immutable-proposal",
+      "handler": null,
+      "availability": "unimplemented",
+      "qualification": "pending",
+      "retry": {
+        "maxRetries": 0,
+        "retryableCodes": [],
+        "unknownOutcome": "reconcile-before-retry"
+      },
+      "replacement": null,
+      "requirementIds": [
+        "R-01",
+        "R-04",
+        "R-05"
+      ],
+      "ticketIds": [
+        "REL-02"
+      ],
+      "gateIds": [
+        "RG-02",
+        "RG-05",
+        "RG-07"
+      ],
+      "fixtureIds": [
+        "catalog.binding.save_legiwatch_relevance"
+      ]
+    },
+    {
+      "operation": {
+        "id": "mail_send",
+        "version": "0.2.0"
+      },
+      "displayName": "Propose native mail",
+      "whenToUse": "Prepare the exact sender, complete recipient list, body, original and eligible outgoing file proofs for explicit attended approval. Core owns sending and retained receipt recovery.",
+      "limitations": [
+        "Mailbox provider acceptance is not proof of delivery. Pending, sending, unknown and accepted-without-local-receipt attempts never authorize another send.",
+        "Reply/reply-all use the exact selected active original and visible recipient proof. Forward currently supports complete plain text up to 6000 characters without incoming files; unsupported originals require the mailbox handoff.",
+        "Signature policy is current actor signature. Files require canonical server-calculated digest and current distribution/scanning/parent authority; missing proof is refused."
+      ],
+      "positiveExamples": [
+        "Prepare and review the exact normalized command, then use its immutable proposal and original idempotency identity."
+      ],
+      "negativeExamples": [
+        "Do not infer a sender or newest original, invent Bcc or aliases, omit selected files, resend an uncertain attempt, or claim delivery from acceptance."
+      ],
+      "sourceRequirements": [
+        {
+          "sourceId": "capiro_commands",
+          "authority": "authoritative",
+          "purpose": "enumeration"
+        }
+      ],
+      "inputSchema": {
+        "id": "urn:meri:commands:tool-interface:0.2.0#/$defs/MailSendToolRequest",
+        "sha256": "cfa1c4085a098ba2a228ed42c67998013387ca8d0679033ecd3581e618bd0c63"
+      },
+      "outputSchema": {
+        "id": "urn:meri:commands:tool-interface:0.2.0#/$defs/MailSendToolResult",
+        "sha256": "cfa1c4085a098ba2a228ed42c67998013387ca8d0679033ecd3581e618bd0c63"
+      },
+      "aliases": [],
+      "sideEffect": "source-command",
+      "requiredGrants": [
+        "command.execute"
+      ],
+      "approvalBoundary": "immutable-proposal",
+      "handler": null,
+      "availability": "unimplemented",
+      "qualification": "pending",
+      "retry": {
+        "maxRetries": 0,
+        "retryableCodes": [],
+        "unknownOutcome": "reconcile-before-retry"
+      },
+      "replacement": null,
+      "requirementIds": [
+        "R-01",
+        "R-04",
+        "R-05"
+      ],
+      "ticketIds": [
+        "REL-02"
+      ],
+      "gateIds": [
+        "RG-02",
+        "RG-05",
+        "RG-07"
+      ],
+      "fixtureIds": [
+        "native-mail.command"
+      ]
+    },
+    {
+      "operation": {
+        "id": "create_client",
+        "version": "0.2.0"
+      },
+      "displayName": "Prepare create client",
+      "whenToUse": "Prepare explicit user-requested client record changes for confirmation.",
+      "limitations": [
+        "Core owns current tenant, conversation, visible client and governing policy.",
+        "No automatic retries after an unknown effect.",
+        "Profile patches are unconditional; row outcomes can be partial or unchanged. Creation preserves registry confirmation, billing and enrichment owners."
+      ],
+      "positiveExamples": [
+        "Propose these sourced and explicitly requested client details."
+      ],
+      "negativeExamples": [
+        "Invent an expected version, clear unsupported scalar fields, or claim unknown or partial changes completed."
+      ],
+      "sourceRequirements": [
+        {
+          "sourceId": "clients",
+          "authority": "authoritative",
+          "purpose": "evidence"
+        }
+      ],
+      "inputSchema": {
+        "id": "urn:meri:retrieval:client-record-action:0.2.0#/$defs/CreateClientInput",
+        "sha256": "9e9225391978d21470ce1d6c0a5fb7f13029aeb59815488ae4c570c15f35c862"
+      },
+      "outputSchema": {
+        "id": "urn:meri:retrieval:client-record-action:0.2.0#/$defs/ClientRecordPrepared",
+        "sha256": "9e9225391978d21470ce1d6c0a5fb7f13029aeb59815488ae4c570c15f35c862"
+      },
+      "aliases": [],
+      "sideEffect": "source-command",
+      "requiredGrants": [
+        "command.execute"
+      ],
+      "approvalBoundary": "immutable-proposal",
+      "handler": null,
+      "availability": "unimplemented",
+      "qualification": "pending",
+      "retry": {
+        "maxRetries": 0,
+        "retryableCodes": [],
+        "unknownOutcome": "reconcile-before-retry"
+      },
+      "replacement": null,
+      "requirementIds": [
+        "R-01",
+        "R-04",
+        "R-05"
+      ],
+      "ticketIds": [
+        "REL-02"
+      ],
+      "gateIds": [
+        "RG-02",
+        "RG-05",
+        "RG-07"
+      ],
+      "fixtureIds": [
+        "catalog.binding.create_client"
+      ]
+    },
+    {
+      "operation": {
+        "id": "update_client_profile",
+        "version": "0.2.0"
+      },
+      "displayName": "Prepare update client profile",
+      "whenToUse": "Prepare explicit user-requested client record changes for confirmation.",
+      "limitations": [
+        "Core owns current tenant, conversation, visible client and governing policy.",
+        "No automatic retries after an unknown effect.",
+        "Profile patches are unconditional; row outcomes can be partial or unchanged. Creation preserves registry confirmation, billing and enrichment owners."
+      ],
+      "positiveExamples": [
+        "Propose these sourced and explicitly requested client details."
+      ],
+      "negativeExamples": [
+        "Invent an expected version, clear unsupported scalar fields, or claim unknown or partial changes completed."
+      ],
+      "sourceRequirements": [
+        {
+          "sourceId": "clients",
+          "authority": "authoritative",
+          "purpose": "evidence"
+        }
+      ],
+      "inputSchema": {
+        "id": "urn:meri:retrieval:client-record-action:0.2.0#/$defs/UpdateClientProfileInput",
+        "sha256": "9e9225391978d21470ce1d6c0a5fb7f13029aeb59815488ae4c570c15f35c862"
+      },
+      "outputSchema": {
+        "id": "urn:meri:retrieval:client-record-action:0.2.0#/$defs/ClientRecordPrepared",
+        "sha256": "9e9225391978d21470ce1d6c0a5fb7f13029aeb59815488ae4c570c15f35c862"
+      },
+      "aliases": [],
+      "sideEffect": "source-command",
+      "requiredGrants": [
+        "command.execute"
+      ],
+      "approvalBoundary": "immutable-proposal",
+      "handler": null,
+      "availability": "unimplemented",
+      "qualification": "pending",
+      "retry": {
+        "maxRetries": 0,
+        "retryableCodes": [],
+        "unknownOutcome": "reconcile-before-retry"
+      },
+      "replacement": null,
+      "requirementIds": [
+        "R-01",
+        "R-04",
+        "R-05"
+      ],
+      "ticketIds": [
+        "REL-02"
+      ],
+      "gateIds": [
+        "RG-02",
+        "RG-05",
+        "RG-07"
+      ],
+      "fixtureIds": [
+        "catalog.binding.update_client_profile"
+      ]
+    },
+    {
+      "operation": {
+        "id": "save_business_development_brief",
+        "version": "0.2.0"
+      },
+      "displayName": "Prepare a saved business-development brief edit",
+      "whenToUse": "Propose one exact saved-version edit of the current five-section business-development brief for the signed-in user to confirm.",
+      "limitations": [
+        "Requires the current persisted prospect conversation, the exact expectedVersionNumber and citation indexes of the version being edited.",
+        "No scoring, source resolution, ingestion, subscription or automatic retry.",
+        "A refused or unconfirmed outcome does not mean the brief was saved."
+      ],
+      "positiveExamples": [
+        "Prepare to save this exact five-section edit to the prospect's current brief version."
+      ],
+      "negativeExamples": [
+        "Invent citations, edit an unseen version, or retry an unknown effect."
+      ],
+      "sourceRequirements": [
+        {
+          "sourceId": "business_development",
+          "authority": "authoritative",
+          "purpose": "evidence"
+        }
+      ],
+      "inputSchema": {
+        "id": "urn:meri:retrieval:bizdev-action:0.2.0#/$defs/BizdevInput",
+        "sha256": "64317eb6eb8d32845c6c5ff07f2e9a86389d284feffbdd02bfabb2b7a510016e"
+      },
+      "outputSchema": {
+        "id": "urn:meri:retrieval:bizdev-action:0.2.0#/$defs/BizdevPrepared",
+        "sha256": "64317eb6eb8d32845c6c5ff07f2e9a86389d284feffbdd02bfabb2b7a510016e"
+      },
+      "aliases": [],
+      "sideEffect": "source-command",
+      "requiredGrants": [
+        "command.execute"
+      ],
+      "approvalBoundary": "immutable-proposal",
+      "handler": null,
+      "availability": "unimplemented",
+      "qualification": "pending",
+      "retry": {
+        "maxRetries": 0,
+        "retryableCodes": [],
+        "unknownOutcome": "reconcile-before-retry"
+      },
+      "replacement": null,
+      "requirementIds": [
+        "R-01",
+        "R-04",
+        "R-05"
+      ],
+      "ticketIds": [
+        "REL-02"
+      ],
+      "gateIds": [
+        "RG-02",
+        "RG-05",
+        "RG-07"
+      ],
+      "fixtureIds": [
+        "catalog.binding.save_business_development_brief"
+      ]
+    },
+    {
+      "operation": {
+        "id": "prepare_legiwatch_briefing",
+        "version": "0.2.0"
+      },
+      "displayName": "Prepare a LegiWatch briefing draft",
+      "whenToUse": "Prepare one exact private editable briefing draft from the currently authorized folder, jurisdiction and session, cut-off and cited source revisions for the signed-in user to confirm.",
+      "limitations": [
+        "Requires the exact folder, jurisdiction/session, template, cut-off, timezone and cited source kind/id/revision; the owner re-reads every source for current permission and staleness.",
+        "A saved selection alone is not a completed document; an unconfigured Workspace export returns no draft receipt and no workspace location.",
+        "No approval, publish, send, schedule or automatic retry of an unknown effect."
+      ],
+      "positiveExamples": [
+        "Prepare this exact briefing draft for explicit approval."
+      ],
+      "negativeExamples": [
+        "Publish, send or schedule a briefing.",
+        "Invent a citation, locator or source revision.",
+        "Retry an effect whose outcome is unknown."
+      ],
+      "sourceRequirements": [
+        {
+          "sourceId": "legiwatch_editorial",
+          "authority": "authoritative",
+          "purpose": "evidence"
+        }
+      ],
+      "inputSchema": {
+        "id": "urn:meri:retrieval:legislative-document-action:0.2.0#/$defs/LegislativeDocumentBriefingInput",
+        "sha256": "47230549827ba0f31936c0eb5d77ae426bc7e34365ba0f969b1b1f284d523973"
+      },
+      "outputSchema": {
+        "id": "urn:meri:retrieval:legislative-document-action:0.2.0#/$defs/LegislativeDocumentPrepared",
+        "sha256": "47230549827ba0f31936c0eb5d77ae426bc7e34365ba0f969b1b1f284d523973"
+      },
+      "aliases": [],
+      "sideEffect": "source-command",
+      "requiredGrants": [
+        "command.execute"
+      ],
+      "approvalBoundary": "immutable-proposal",
+      "handler": null,
+      "availability": "unimplemented",
+      "qualification": "pending",
+      "retry": {
+        "maxRetries": 0,
+        "retryableCodes": [],
+        "unknownOutcome": "reconcile-before-retry"
+      },
+      "replacement": null,
+      "requirementIds": [
+        "R-01",
+        "R-04",
+        "R-05"
+      ],
+      "ticketIds": [
+        "REL-02"
+      ],
+      "gateIds": [
+        "RG-02",
+        "RG-05",
+        "RG-07"
+      ],
+      "fixtureIds": [
+        "catalog.binding.prepare_legiwatch_briefing"
+      ]
+    },
+    {
+      "operation": {
+        "id": "save_legislative_research",
+        "version": "0.2.0"
+      },
+      "displayName": "Save a reviewed legislative research draft",
+      "whenToUse": "Save one reviewed private research draft from the currently authorized client/folder context, jurisdiction and session and exact cited document revisions for the signed-in user to confirm.",
+      "limitations": [
+        "Requires the exact jurisdiction/session, cited document id/revision and quote slices at their locators; the owner re-reads every document for current permission and staleness.",
+        "A saved selection alone is not a completed document; the receipt states complete, selection-only or unknown and never upgrades one.",
+        "No approval, publish, send, schedule or automatic retry of an unknown effect."
+      ],
+      "positiveExamples": [
+        "Save this exact reviewed research draft for explicit approval."
+      ],
+      "negativeExamples": [
+        "Publish, send or schedule research.",
+        "Invent a document version, statutory citation or quote offset.",
+        "Retry an effect whose outcome is unknown."
+      ],
+      "sourceRequirements": [
+        {
+          "sourceId": "legislative_research",
+          "authority": "authoritative",
+          "purpose": "evidence"
+        }
+      ],
+      "inputSchema": {
+        "id": "urn:meri:retrieval:legislative-document-action:0.2.0#/$defs/LegislativeDocumentResearchInput",
+        "sha256": "47230549827ba0f31936c0eb5d77ae426bc7e34365ba0f969b1b1f284d523973"
+      },
+      "outputSchema": {
+        "id": "urn:meri:retrieval:legislative-document-action:0.2.0#/$defs/LegislativeDocumentPrepared",
+        "sha256": "47230549827ba0f31936c0eb5d77ae426bc7e34365ba0f969b1b1f284d523973"
+      },
+      "aliases": [],
+      "sideEffect": "source-command",
+      "requiredGrants": [
+        "command.execute"
+      ],
+      "approvalBoundary": "immutable-proposal",
+      "handler": null,
+      "availability": "unimplemented",
+      "qualification": "pending",
+      "retry": {
+        "maxRetries": 0,
+        "retryableCodes": [],
+        "unknownOutcome": "reconcile-before-retry"
+      },
+      "replacement": null,
+      "requirementIds": [
+        "R-01",
+        "R-04",
+        "R-05"
+      ],
+      "ticketIds": [
+        "REL-02"
+      ],
+      "gateIds": [
+        "RG-02",
+        "RG-05",
+        "RG-07"
+      ],
+      "fixtureIds": [
+        "catalog.binding.save_legislative_research"
+      ]
+    },
+    {
+      "operation": {
+        "id": "watch_action",
+        "version": "0.2.0"
+      },
+      "displayName": "Prepare a watch subscription action",
+      "whenToUse": "Propose one exact watch subscription action for the signed-in user to confirm.",
+      "limitations": [
+        "Requires exact canonical family, client scope, target, operation and expected owner version. The request key is derived by the existing intent delivery owner.",
+        "No subscription activation, model execution or automatic retry.",
+        "A stale, excluded or held state does not mean a watch was modified."
+      ],
+      "positiveExamples": [
+        "Prepare to subscribe, pause, resume, unsubscribe or set delivery for an explicit watch."
+      ],
+      "negativeExamples": [
+        "Automatically modify an unseen watch, mutate state without approval, or retry an unknown effect."
+      ],
+      "sourceRequirements": [
+        {
+          "sourceId": "watch_action",
+          "authority": "authoritative",
+          "purpose": "evidence"
+        }
+      ],
+      "inputSchema": {
+        "id": "urn:meri:retrieval:watch-action:0.2.0#/$defs/WatchInput",
+        "sha256": "44a20e48a523d83d4669f166b30478944aa95585a4caa379e93a82566713b568"
+      },
+      "outputSchema": {
+        "id": "urn:meri:retrieval:watch-action:0.2.0#/$defs/WatchPrepared",
+        "sha256": "44a20e48a523d83d4669f166b30478944aa95585a4caa379e93a82566713b568"
+      },
+      "aliases": [],
+      "sideEffect": "source-command",
+      "requiredGrants": [
+        "command.execute"
+      ],
+      "approvalBoundary": "immutable-proposal",
+      "handler": null,
+      "availability": "unimplemented",
+      "qualification": "pending",
+      "retry": {
+        "maxRetries": 0,
+        "retryableCodes": [],
+        "unknownOutcome": "reconcile-before-retry"
+      },
+      "replacement": null,
+      "requirementIds": [
+        "R-01",
+        "R-04",
+        "R-05"
+      ],
+      "ticketIds": [
+        "REL-02"
+      ],
+      "gateIds": [
+        "RG-02",
+        "RG-05",
+        "RG-07"
+      ],
+      "fixtureIds": [
+        "catalog.binding.watch_action"
+      ]
+    },
+    {
+      "operation": {
+        "id": "save_note",
+        "version": "0.2.0"
+      },
+      "displayName": "Save a note",
+      "whenToUse": "Save explicitly requested note text to the current permitted meeting, client Files or General owner. Core policy PASS executes once without an approval card.",
+      "limitations": [
+        "Current attended Core authority is required. The caller cannot supply conversation identity or a request key.",
+        "A client Files note can remain private, scanning or indexing; stored is not ready or governed memory.",
+        "WARN is withheld, BLOCK refused, and unconfirmed effects remain unknown with no automatic resend."
+      ],
+      "positiveExamples": [
+        "Save these requested meeting notes and report the actual destination receipt."
+      ],
+      "negativeExamples": [
+        "Retry an unknown save, claim an unconfirmed receipt, invent a ready file or treat this as governed memory."
+      ],
+      "sourceRequirements": [
+        {
+          "sourceId": "capiro_commands",
+          "authority": "authoritative",
+          "purpose": "evidence"
+        }
+      ],
+      "inputSchema": {
+        "id": "urn:meri:retrieval:note-action:0.2.0#/$defs/SavedNoteRequest",
+        "sha256": "beeb0b46232b0ae4078e44b9bd99b3c85687b46d434d9a88c0c072c77a879a43"
+      },
+      "outputSchema": {
+        "id": "urn:meri:retrieval:note-action:0.2.0#/$defs/SavedNoteResult",
+        "sha256": "beeb0b46232b0ae4078e44b9bd99b3c85687b46d434d9a88c0c072c77a879a43"
+      },
+      "aliases": [],
+      "sideEffect": "source-command",
+      "requiredGrants": [
+        "command.execute"
+      ],
+      "approvalBoundary": "current-source-policy",
+      "handler": null,
+      "availability": "unimplemented",
+      "qualification": "pending",
+      "retry": {
+        "maxRetries": 0,
+        "retryableCodes": [],
+        "unknownOutcome": "reconcile-before-retry"
+      },
+      "replacement": null,
+      "requirementIds": [
+        "R-01",
+        "R-04",
+        "R-05"
+      ],
+      "ticketIds": [
+        "REL-02"
+      ],
+      "gateIds": [
+        "RG-02",
+        "RG-05",
+        "RG-07"
+      ],
+      "fixtureIds": [
+        "catalog.binding.save_note"
+      ]
+    },
+    {
+      "operation": {
+        "id": "inspect_watch_state",
+        "version": "0.2.0"
+      },
+      "displayName": "Inspect one current watch target",
+      "whenToUse": "Read the canonical current state, identity and supported version of one exact watch target before preparing a lifecycle action.",
+      "limitations": [
+        "One exact authorized target only; this is not a watch inventory or source-universe claim.",
+        "No subscription, pause, resume, delivery change, proposal or retry occurs.",
+        "A null version is preserved when the canonical owner has no version; it is never inferred."
+      ],
+      "positiveExamples": [
+        "Inspect the current state of this exact keyword rule before preparing a pause."
+      ],
+      "negativeExamples": [
+        "List every watch across clients or activate a subscription."
+      ],
+      "sourceRequirements": [
+        {
+          "sourceId": "watch_action",
+          "authority": "authoritative",
+          "purpose": "evidence"
+        }
+      ],
+      "inputSchema": {
+        "id": "urn:meri:retrieval:watch-state:0.2.0#/$defs/WatchStateRequest",
+        "sha256": "961fed28829afb0ff9333775732a8477a0ab72c3a5f0f9e359615e19523b58b9"
+      },
+      "outputSchema": {
+        "id": "urn:meri:retrieval:watch-state:0.2.0#/$defs/WatchStateOutput",
+        "sha256": "961fed28829afb0ff9333775732a8477a0ab72c3a5f0f9e359615e19523b58b9"
+      },
+      "aliases": [],
+      "sideEffect": "none",
+      "requiredGrants": [
+        "tool.read"
+      ],
+      "approvalBoundary": "none",
+      "handler": null,
+      "availability": "unimplemented",
+      "qualification": "pending",
+      "retry": {
+        "maxRetries": 0,
+        "retryableCodes": [],
+        "unknownOutcome": "reconcile-before-retry"
+      },
+      "replacement": null,
+      "requirementIds": [
+        "R-01",
+        "R-04",
+        "R-05"
+      ],
+      "ticketIds": [
+        "REL-02"
+      ],
+      "gateIds": [
+        "RG-02",
+        "RG-05",
+        "RG-07"
+      ],
+      "fixtureIds": [
+        "catalog.binding.inspect_watch_state"
       ]
     }
   ]

@@ -42,6 +42,7 @@ import {readJsonResponse,responseBody,cancelBody} from '../../gateway/sources/js
 import {intentFault,INTENT_FAILURE_CODES} from '../../control/intents/faults.mjs';
 import {nativeApprovalScope} from './approval-session.mjs';
 import {nativeTaskOutcome,nativeTaskNotExecuted} from '../../control/intents/task-outcome.mjs';
+import {nativeMailOutcome} from '../../control/intents/mail-outcome.mjs';
 export const CORE_APPROVAL_ROUTES=Object.freeze({record:'/api/clio/approvals/native/record',decision:'/api/clio/approvals/native/decision',revoke:'/api/clio/approvals/native/revoke',execute:'/api/clio/approvals/native/execute',executionRead:'/api/clio/approvals/native/execution/read'});
 export const APPROVAL_FORWARDER_OPERATIONS=Object.freeze(['approval/record','approval/decision','approval/read','approval/revoke']);
 const STABLE=['tenantId','actorId','conversationId','runId'];
@@ -240,11 +241,11 @@ export function createCoreApprovalForwarder(options){
   }finally{life.close();}
  }
  /** Core owns the one atomic task effect and its retained outcome. An absent read never dispatches. */
- async function taskEffect(value,observe){
+ async function nativeEffect(value,observe,kind){
   const v=own(value,['proposal','principal','deliveryId'],['decision','signal','deadlineMs']);nativeSignal(v.signal);
   let p;try{p=data(v.proposal);assertNativeApprovalProposal(p);}catch{refuse('INVALID_ARGUMENTS');}
   const b=p.command.binding;
-  if(!['task.create','task.update'].includes(p.command.action)||v.principal.tenantId!==b.tenantId||v.principal.actorId!==b.actorId)refuse('ACCESS_DENIED');
+  if(!(kind==='mail'?p.command.action==='mail.send':['task.create','task.update'].includes(p.command.action))||v.principal.tenantId!==b.tenantId||v.principal.actorId!==b.actorId)refuse('ACCESS_DENIED');
   const life=lifetime(v.signal,v.deadlineMs);
   try{
    if(!observe)life.limitDeadline(Date.parse(p.expiresAt));
@@ -253,13 +254,13 @@ export function createCoreApprovalForwarder(options){
    const r=answer.value;if(observe&&r===null)return null;
    if(observe){
     if(r?.state==='UNKNOWN'){own(r,['state']);return r;}
-    if(r?.state==='NOT_EXECUTED')return nativeTaskNotExecuted(r,p);
+    if(kind==='task'&&r?.state==='NOT_EXECUTED')return nativeTaskNotExecuted(r,p);
     own(r,['state','outcome']);if(r.state!=='OUTCOME')refuse('UNAVAILABLE','unknown');
    }else{
     if(r?.status==='indeterminate'){own(r,['status']);return r;}
     own(r,['status','outcome']);if(r.status!=='observed')refuse('UNAVAILABLE','unknown');
    }
-   return data({...r,outcome:nativeTaskOutcome(r.outcome,p,v.decision)});
+   return data({...r,outcome:(kind==='mail'?nativeMailOutcome:nativeTaskOutcome)(r.outcome,p,v.decision)});
   }finally{life.close();}
  }
  /** The multipart filing client borrows credentials only for a retained artifact.file proposal and the exact current selector. */
@@ -290,8 +291,10 @@ export function createCoreApprovalForwarder(options){
   refuse('UNAVAILABLE');
  }
  return Object.freeze({origin,operations:APPROVAL_FORWARDER_OPERATIONS,call,record,decision,read,revoke,filingCredentials,
-  async executeTask(value){return taskEffect(value,false);},
-  async readTaskExecution(value){return taskEffect(value,true);},
+  async executeTask(value){return nativeEffect(value,false,'task');},
+  async readTaskExecution(value){return nativeEffect(value,true,'task');},
+  async executeMail(value){return nativeEffect(value,false,'mail');},
+  async readMailExecution(value){return nativeEffect(value,true,'mail');},
   /** The intents decision ports over Core (the shapes `approval.mjs` and the lifecycle read). */
   async readDecision(value){const v=await decision(value);return v.revoked?null:v.decision;},
   async getCurrent(value){const v=await decision(value);if(v.decision===null)throw Object.assign(Error('COMMAND_APPROVAL_REFUSED'),{code:'COMMAND_APPROVAL_REFUSED'});return JSON.stringify(v);}});

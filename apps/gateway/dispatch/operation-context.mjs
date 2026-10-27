@@ -13,7 +13,7 @@ import {nativeReadGroup,prepareNativeReadContext} from './native-read-context.mj
 export function assertOperationArguments(entry, request) {
   const profile = entry.contract.binding?.dispatchProfile;
   if (profile === undefined) {
-    if(retainedReadGroup(entry))try{validateShape(entry.contract.binding.group==='florida-budget'?'FloridaBudgetRequest':entry.contract.binding.input,request);}catch{deny('INVALID_ARGUMENTS');}
+    if(retainedReadGroup(entry))try{validateShape(entry.contract.binding.input,request);}catch{deny('INVALID_ARGUMENTS');}
     return;
   }
   if (!['memory-proposals/1', 'mail-candidates/1', 'dataset-metadata/1', 'portfolio-evidence/1', 'actions-complete/1', 'bound-projection/1', 'client-documents/1'].includes(profile)) deny('GATEWAY_CONFIGURATION');

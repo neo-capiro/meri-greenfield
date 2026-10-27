@@ -43,7 +43,7 @@ let documents=null;
 function documentFor(id){
  if(documents===null){
   documents=new Map();
-  for(const path of ['research-portfolio-sharing.schema.json',...executionSchemaSources.map(source=>source.path),...executionSchemaDependencies,'../meri.schema.json']){
+  for(const path of ['research-portfolio-sharing.schema.json','watch-action.schema.json','legislative-document-action.schema.json','bizdev-action.schema.json','client-record-action.schema.json','legiwatch-relevance.schema.json','legiwatch-action.schema.json','note-action.schema.json',...executionSchemaSources.map(source=>source.path),...executionSchemaDependencies,'../meri.schema.json']){
    const bytes=readFileSync(new URL(path,CONTRACTS)),doc=JSON.parse(bytes.toString('utf8'));
    if(typeof doc.$id!=='string'||documents.has(doc.$id))fail();
    documents.set(doc.$id,{doc,sha256:createHash('sha256').update(bytes).digest('hex')});

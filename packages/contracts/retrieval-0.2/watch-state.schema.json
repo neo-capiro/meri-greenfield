@@ -1,0 +1,179 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:meri:retrieval:watch-state:0.2.0",
+  "$defs": {
+    "WatchStateRequest": {
+      "type": "object",
+      "properties": {
+        "family": {
+          "enum": [
+            "legiwatch_keyword",
+            "business_development_prospect",
+            "defense_budget_target",
+            "client_watchlist"
+          ]
+        },
+        "clientId": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "uuid"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "targetKind": {
+          "enum": [
+            "keyword_rule",
+            "prospect",
+            "program",
+            "pe",
+            "project",
+            "capability",
+            "client_tracker_watchlist"
+          ]
+        },
+        "targetKey": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9._:-]{1,180}$"
+        }
+      },
+      "required": [
+        "family",
+        "clientId",
+        "targetKind",
+        "targetKey"
+      ],
+      "additionalProperties": false
+    },
+    "WatchStateOutput": {
+      "type": "object",
+      "properties": {
+        "version": {
+          "const": "0.1.0"
+        },
+        "state": {
+          "type": "object",
+          "properties": {
+            "family": {
+              "enum": [
+                "legiwatch_keyword",
+                "business_development_prospect",
+                "defense_budget_target",
+                "client_watchlist"
+              ]
+            },
+            "clientId": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "targetKind": {
+              "enum": [
+                "keyword_rule",
+                "prospect",
+                "program",
+                "pe",
+                "project",
+                "capability",
+                "client_tracker_watchlist"
+              ]
+            },
+            "targetKey": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9._:-]{1,180}$"
+            },
+            "identity": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 180
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "state": {
+              "enum": [
+                "active",
+                "paused",
+                "needs_review",
+                "ended",
+                "unsubscribed",
+                "absent"
+              ]
+            },
+            "version": {
+              "anyOf": [
+                {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 2147483646
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "deliveryEnabled": {
+              "anyOf": [
+                {
+                  "type": "boolean"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "facts": {
+              "type": "object",
+              "additionalProperties": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  },
+                  {
+                    "type": "boolean"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              }
+            }
+          },
+          "required": [
+            "family",
+            "clientId",
+            "targetKind",
+            "targetKey",
+            "identity",
+            "state",
+            "version",
+            "deliveryEnabled",
+            "facts"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "version",
+        "state"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

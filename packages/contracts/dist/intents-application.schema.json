@@ -96,6 +96,9 @@
           "$ref": "#/$defs/Canonical_TaskUpdateApprovalProposal_1f70e582"
         },
         {
+          "$ref": "#/$defs/Canonical_MailSendApprovalProposal_c6ab2c41"
+        },
+        {
           "$ref": "#/$defs/Canonical_DocumentDraftApprovalProposal_834c2460"
         }
       ]
@@ -107,8 +110,35 @@
         },
         {
           "$ref": "#/$defs/Canonical_ResearchShareProposal_1cdbd32e"
+        },
+        {
+          "$ref": "#/$defs/Canonical_LegiwatchProposal_1f841734"
+        },
+        {
+          "$ref": "#/$defs/Canonical_WatchProposal_14eddeec"
+        },
+        {
+          "$ref": "#/$defs/Canonical_ClientRecordProposal_b620b25b"
+        },
+        {
+          "$ref": "#/$defs/Canonical_BizdevProposal_a770314c"
+        },
+        {
+          "$ref": "#/$defs/Canonical_LegislativeDocumentProposal_3d80036f"
         }
       ]
+    },
+    "IntentsClientRecordProposal": {
+      "$ref": "#/$defs/Canonical_ClientRecordProposal_b620b25b"
+    },
+    "IntentsLegiwatchProposal": {
+      "$ref": "#/$defs/Canonical_LegiwatchProposal_1f841734"
+    },
+    "IntentsBizdevProposal": {
+      "$ref": "#/$defs/Canonical_BizdevProposal_a770314c"
+    },
+    "IntentsWatchProposal": {
+      "$ref": "#/$defs/Canonical_WatchProposal_14eddeec"
     },
     "IntentsResearchShareProposal": {
       "$ref": "#/$defs/Canonical_ResearchShareProposal_1cdbd32e"
@@ -121,6 +151,67 @@
     },
     "IntentsTaskUpdateArguments": {
       "$ref": "#/$defs/Canonical_TaskUpdateArguments_48509a7a"
+    },
+    "IntentsMailSendArguments": {
+      "$ref": "#/$defs/Canonical_MailSendArguments_016b3776"
+    },
+    "IntentsMailSendContext": {
+      "$ref": "#/$defs/Canonical_MailSendContext_7d8b78f1"
+    },
+    "IntentsMailSendCommand": {
+      "$ref": "#/$defs/Canonical_MailSendCommand_981e52ba"
+    },
+    "IntentsMailSendResult": {
+      "$ref": "#/$defs/Canonical_MailSendResult_65b7ed94"
+    },
+    "IntentsNativeMailOutcome": {
+      "type": "object",
+      "properties": {
+        "execution": {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "native-mail"
+            },
+            "proposalId": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$"
+            },
+            "commandSha256": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            "idempotencyKey": {
+              "type": "string",
+              "minLength": 1
+            },
+            "binding": {
+              "$ref": "#/$defs/Canonical_RunBinding_84f2304c"
+            },
+            "approvalDecisionSha256": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            }
+          },
+          "required": [
+            "kind",
+            "proposalId",
+            "commandSha256",
+            "idempotencyKey",
+            "binding",
+            "approvalDecisionSha256"
+          ],
+          "additionalProperties": false
+        },
+        "result": {
+          "$ref": "#/$defs/Canonical_MailSendResult_65b7ed94"
+        }
+      },
+      "required": [
+        "execution",
+        "result"
+      ],
+      "additionalProperties": false
     },
     "IntentsArtifactFileArguments": {
       "$ref": "#/$defs/Canonical_ArtifactFileArguments_6f2b3978"
@@ -260,6 +351,9 @@
         },
         {
           "$ref": "#/$defs/IntentsNativeTaskOutcome"
+        },
+        {
+          "$ref": "#/$defs/IntentsNativeMailOutcome"
         },
         {
           "$ref": "#/$defs/IntentsNativeArtifactFileOutcome"
@@ -712,6 +806,391 @@
       ],
       "additionalProperties": false
     },
+    "IntentsLegiwatchItem": {
+      "type": "object",
+      "properties": {
+        "deliveryId": {
+          "$ref": "#/$defs/IntentsDeliveryId"
+        },
+        "createdAt": {
+          "type": "string",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$"
+        },
+        "operation": {
+          "$ref": "#/$defs/IntentsOperation"
+        },
+        "state": {
+          "const": "prepared"
+        },
+        "kind": {
+          "const": "legiwatch_action"
+        },
+        "proposal": {
+          "$ref": "#/$defs/Canonical_LegiwatchProposal_1f841734"
+        },
+        "result": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Canonical_LegiwatchCoreResult_c5ab3126"
+            },
+            {
+              "const": "unavailable"
+            }
+          ]
+        }
+      },
+      "required": [
+        "deliveryId",
+        "createdAt",
+        "operation",
+        "state",
+        "kind",
+        "proposal",
+        "result"
+      ],
+      "additionalProperties": false
+    },
+    "IntentsLegislativeDocumentItem": {
+      "type": "object",
+      "properties": {
+        "deliveryId": {
+          "$ref": "#/$defs/IntentsDeliveryId"
+        },
+        "createdAt": {
+          "type": "string",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$"
+        },
+        "operation": {
+          "$ref": "#/$defs/IntentsOperation"
+        },
+        "state": {
+          "const": "prepared"
+        },
+        "kind": {
+          "const": "legislative_document_action"
+        },
+        "proposal": {
+          "$ref": "#/$defs/Canonical_LegislativeDocumentProposal_3d80036f"
+        },
+        "result": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Canonical_LegislativeDocumentCoreResult_05815d48"
+            },
+            {
+              "const": "unavailable"
+            }
+          ]
+        }
+      },
+      "required": [
+        "deliveryId",
+        "createdAt",
+        "operation",
+        "state",
+        "kind",
+        "proposal",
+        "result"
+      ],
+      "additionalProperties": false
+    },
+    "IntentsWithheldLegislativeDocumentItem": {
+      "type": "object",
+      "properties": {
+        "deliveryId": {
+          "$ref": "#/$defs/IntentsDeliveryId"
+        },
+        "createdAt": {
+          "type": "string",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$"
+        },
+        "operation": {
+          "$ref": "#/$defs/IntentsOperation"
+        },
+        "state": {
+          "const": "prepared"
+        },
+        "kind": {
+          "const": "legislative_document_action"
+        },
+        "withheld": {
+          "const": true
+        }
+      },
+      "required": [
+        "deliveryId",
+        "createdAt",
+        "operation",
+        "state",
+        "kind",
+        "withheld"
+      ],
+      "additionalProperties": false
+    },
+    "IntentsClientRecordItem": {
+      "type": "object",
+      "properties": {
+        "deliveryId": {
+          "$ref": "#/$defs/IntentsDeliveryId"
+        },
+        "createdAt": {
+          "type": "string",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$"
+        },
+        "operation": {
+          "$ref": "#/$defs/IntentsOperation"
+        },
+        "state": {
+          "const": "prepared"
+        },
+        "kind": {
+          "const": "client_record_action"
+        },
+        "proposal": {
+          "$ref": "#/$defs/Canonical_ClientRecordProposal_b620b25b"
+        },
+        "result": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Canonical_ClientRecordCoreResult_cb1df09e"
+            },
+            {
+              "const": "unavailable"
+            }
+          ]
+        }
+      },
+      "required": [
+        "deliveryId",
+        "createdAt",
+        "operation",
+        "state",
+        "kind",
+        "proposal",
+        "result"
+      ],
+      "additionalProperties": false
+    },
+    "IntentsWithheldLegiwatchItem": {
+      "type": "object",
+      "properties": {
+        "deliveryId": {
+          "$ref": "#/$defs/IntentsDeliveryId"
+        },
+        "createdAt": {
+          "type": "string",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$"
+        },
+        "operation": {
+          "$ref": "#/$defs/IntentsOperation"
+        },
+        "state": {
+          "const": "prepared"
+        },
+        "kind": {
+          "const": "legiwatch_action"
+        },
+        "withheld": {
+          "const": true
+        }
+      },
+      "required": [
+        "deliveryId",
+        "createdAt",
+        "operation",
+        "state",
+        "kind",
+        "withheld"
+      ],
+      "additionalProperties": false
+    },
+    "IntentsWithheldClientRecordItem": {
+      "type": "object",
+      "properties": {
+        "deliveryId": {
+          "$ref": "#/$defs/IntentsDeliveryId"
+        },
+        "createdAt": {
+          "type": "string",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$"
+        },
+        "operation": {
+          "$ref": "#/$defs/IntentsOperation"
+        },
+        "state": {
+          "const": "prepared"
+        },
+        "kind": {
+          "const": "client_record_action"
+        },
+        "withheld": {
+          "const": true
+        }
+      },
+      "required": [
+        "deliveryId",
+        "createdAt",
+        "operation",
+        "state",
+        "kind",
+        "withheld"
+      ],
+      "additionalProperties": false
+    },
+    "IntentsBizdevItem": {
+      "type": "object",
+      "properties": {
+        "deliveryId": {
+          "$ref": "#/$defs/IntentsDeliveryId"
+        },
+        "createdAt": {
+          "type": "string",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$"
+        },
+        "operation": {
+          "$ref": "#/$defs/IntentsOperation"
+        },
+        "state": {
+          "const": "prepared"
+        },
+        "kind": {
+          "const": "bizdev_action"
+        },
+        "proposal": {
+          "$ref": "#/$defs/Canonical_BizdevProposal_a770314c"
+        },
+        "result": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Canonical_BizdevCoreResult_f44012f2"
+            },
+            {
+              "const": "unavailable"
+            }
+          ]
+        }
+      },
+      "required": [
+        "deliveryId",
+        "createdAt",
+        "operation",
+        "state",
+        "kind",
+        "proposal",
+        "result"
+      ],
+      "additionalProperties": false
+    },
+    "IntentsWithheldBizdevItem": {
+      "type": "object",
+      "properties": {
+        "deliveryId": {
+          "$ref": "#/$defs/IntentsDeliveryId"
+        },
+        "createdAt": {
+          "type": "string",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$"
+        },
+        "operation": {
+          "$ref": "#/$defs/IntentsOperation"
+        },
+        "state": {
+          "const": "prepared"
+        },
+        "kind": {
+          "const": "bizdev_action"
+        },
+        "withheld": {
+          "const": true
+        }
+      },
+      "required": [
+        "deliveryId",
+        "createdAt",
+        "operation",
+        "state",
+        "kind",
+        "withheld"
+      ],
+      "additionalProperties": false
+    },
+    "IntentsWatchItem": {
+      "type": "object",
+      "properties": {
+        "deliveryId": {
+          "$ref": "#/$defs/IntentsDeliveryId"
+        },
+        "createdAt": {
+          "type": "string",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$"
+        },
+        "operation": {
+          "$ref": "#/$defs/IntentsOperation"
+        },
+        "state": {
+          "const": "prepared"
+        },
+        "kind": {
+          "const": "watch_action"
+        },
+        "proposal": {
+          "$ref": "#/$defs/Canonical_WatchProposal_14eddeec"
+        },
+        "result": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Canonical_WatchCoreResult_1c60295e"
+            },
+            {
+              "const": "unavailable"
+            }
+          ]
+        }
+      },
+      "required": [
+        "deliveryId",
+        "createdAt",
+        "operation",
+        "state",
+        "kind",
+        "proposal",
+        "result"
+      ],
+      "additionalProperties": false
+    },
+    "IntentsWithheldWatchItem": {
+      "type": "object",
+      "properties": {
+        "deliveryId": {
+          "$ref": "#/$defs/IntentsDeliveryId"
+        },
+        "createdAt": {
+          "type": "string",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$"
+        },
+        "operation": {
+          "$ref": "#/$defs/IntentsOperation"
+        },
+        "state": {
+          "const": "prepared"
+        },
+        "kind": {
+          "const": "watch_action"
+        },
+        "withheld": {
+          "const": true
+        }
+      },
+      "required": [
+        "deliveryId",
+        "createdAt",
+        "operation",
+        "state",
+        "kind",
+        "withheld"
+      ],
+      "additionalProperties": false
+    },
     "IntentsResearchShareItem": {
       "type": "object",
       "properties": {
@@ -753,6 +1232,72 @@
         "kind",
         "proposal",
         "proposalStatus"
+      ],
+      "additionalProperties": false
+    },
+    "IntentsSavedNoteItem": {
+      "type": "object",
+      "properties": {
+        "deliveryId": {
+          "$ref": "#/$defs/IntentsDeliveryId"
+        },
+        "createdAt": {
+          "type": "string",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$"
+        },
+        "operation": {
+          "$ref": "#/$defs/IntentsOperation"
+        },
+        "state": {
+          "const": "prepared"
+        },
+        "kind": {
+          "const": "saved_note"
+        },
+        "result": {
+          "$ref": "#/$defs/Canonical_SavedNoteResult_85af7219"
+        }
+      },
+      "required": [
+        "deliveryId",
+        "createdAt",
+        "operation",
+        "state",
+        "kind",
+        "result"
+      ],
+      "additionalProperties": false
+    },
+    "IntentsWithheldSavedNoteItem": {
+      "type": "object",
+      "properties": {
+        "deliveryId": {
+          "$ref": "#/$defs/IntentsDeliveryId"
+        },
+        "createdAt": {
+          "type": "string",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$"
+        },
+        "operation": {
+          "$ref": "#/$defs/IntentsOperation"
+        },
+        "state": {
+          "const": "prepared"
+        },
+        "kind": {
+          "const": "saved_note"
+        },
+        "withheld": {
+          "const": true
+        }
+      },
+      "required": [
+        "deliveryId",
+        "createdAt",
+        "operation",
+        "state",
+        "kind",
+        "withheld"
       ],
       "additionalProperties": false
     },
@@ -866,6 +1411,12 @@
     "IntentsItem": {
       "oneOf": [
         {
+          "$ref": "#/$defs/IntentsSavedNoteItem"
+        },
+        {
+          "$ref": "#/$defs/IntentsWithheldSavedNoteItem"
+        },
+        {
           "$ref": "#/$defs/IntentsPendingItem"
         },
         {
@@ -906,6 +1457,36 @@
         },
         {
           "$ref": "#/$defs/IntentsWithheldResearchShareItem"
+        },
+        {
+          "$ref": "#/$defs/IntentsLegiwatchItem"
+        },
+        {
+          "$ref": "#/$defs/IntentsWithheldLegiwatchItem"
+        },
+        {
+          "$ref": "#/$defs/IntentsWatchItem"
+        },
+        {
+          "$ref": "#/$defs/IntentsWithheldWatchItem"
+        },
+        {
+          "$ref": "#/$defs/IntentsClientRecordItem"
+        },
+        {
+          "$ref": "#/$defs/IntentsWithheldClientRecordItem"
+        },
+        {
+          "$ref": "#/$defs/IntentsBizdevItem"
+        },
+        {
+          "$ref": "#/$defs/IntentsWithheldBizdevItem"
+        },
+        {
+          "$ref": "#/$defs/IntentsLegislativeDocumentItem"
+        },
+        {
+          "$ref": "#/$defs/IntentsWithheldLegislativeDocumentItem"
         }
       ]
     },
@@ -942,6 +1523,131 @@
     },
     "IntentsDecideResponse": {
       "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "status": {
+              "const": "legislative_document_decided"
+            },
+            "deliveryId": {
+              "$ref": "#/$defs/IntentsDeliveryId"
+            },
+            "proposalId": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$"
+            },
+            "result": {
+              "$ref": "#/$defs/Canonical_LegislativeDocumentCoreResult_05815d48"
+            }
+          },
+          "required": [
+            "status",
+            "deliveryId",
+            "proposalId",
+            "result"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "status": {
+              "const": "legiwatch_decided"
+            },
+            "deliveryId": {
+              "$ref": "#/$defs/IntentsDeliveryId"
+            },
+            "proposalId": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$"
+            },
+            "result": {
+              "$ref": "#/$defs/Canonical_LegiwatchCoreResult_c5ab3126"
+            }
+          },
+          "required": [
+            "status",
+            "deliveryId",
+            "proposalId",
+            "result"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "status": {
+              "const": "client_record_decided"
+            },
+            "deliveryId": {
+              "$ref": "#/$defs/IntentsDeliveryId"
+            },
+            "proposalId": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$"
+            },
+            "result": {
+              "$ref": "#/$defs/Canonical_ClientRecordCoreResult_cb1df09e"
+            }
+          },
+          "required": [
+            "status",
+            "deliveryId",
+            "proposalId",
+            "result"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "status": {
+              "const": "bizdev_decided"
+            },
+            "deliveryId": {
+              "$ref": "#/$defs/IntentsDeliveryId"
+            },
+            "proposalId": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$"
+            },
+            "result": {
+              "$ref": "#/$defs/Canonical_BizdevCoreResult_f44012f2"
+            }
+          },
+          "required": [
+            "status",
+            "deliveryId",
+            "proposalId",
+            "result"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "status": {
+              "const": "watch_decided"
+            },
+            "deliveryId": {
+              "$ref": "#/$defs/IntentsDeliveryId"
+            },
+            "proposalId": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$"
+            },
+            "result": {
+              "$ref": "#/$defs/Canonical_WatchCoreResult_1c60295e"
+            }
+          },
+          "required": [
+            "status",
+            "deliveryId",
+            "proposalId",
+            "result"
+          ],
+          "additionalProperties": false
+        },
         {
           "type": "object",
           "properties": {
@@ -1856,6 +2562,260 @@
       ],
       "additionalProperties": false
     },
+    "Canonical_MailSendArguments_016b3776": {
+      "type": "object",
+      "properties": {
+        "mode": {
+          "enum": [
+            "send",
+            "reply",
+            "reply_all",
+            "forward"
+          ]
+        },
+        "clientId": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "senderConnectionId": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+        },
+        "senderEmail": {
+          "type": "string",
+          "minLength": 3,
+          "maxLength": 254
+        },
+        "to": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 50,
+          "items": {
+            "type": "string",
+            "minLength": 3,
+            "maxLength": 254
+          }
+        },
+        "cc": {
+          "type": "array",
+          "maxItems": 10,
+          "items": {
+            "type": "string",
+            "minLength": 3,
+            "maxLength": 254
+          }
+        },
+        "bcc": {
+          "type": "array",
+          "maxItems": 10,
+          "items": {
+            "type": "string",
+            "minLength": 3,
+            "maxLength": 254
+          }
+        },
+        "subject": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 300
+        },
+        "bodyHtml": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 50000
+        },
+        "files": {
+          "type": "array",
+          "maxItems": 5,
+          "items": {
+            "type": "object",
+            "properties": {
+              "attachmentId": {
+                "type": "string",
+                "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+              },
+              "fileName": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 255
+              },
+              "contentType": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 255
+              },
+              "bytes": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 3145728
+              },
+              "sha256": {
+                "type": "string",
+                "pattern": "^[a-f0-9]{64}$"
+              }
+            },
+            "required": [
+              "attachmentId",
+              "fileName",
+              "contentType",
+              "bytes",
+              "sha256"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "original": {
+          "anyOf": [
+            {
+              "type": "object",
+              "properties": {
+                "threadId": {
+                  "type": "string",
+                  "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+                },
+                "messageId": {
+                  "type": "string",
+                  "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+                },
+                "updatedAt": {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                "bodySha256": {
+                  "anyOf": [
+                    {
+                      "type": "string",
+                      "pattern": "^[a-f0-9]{64}$"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                }
+              },
+              "required": [
+                "threadId",
+                "messageId",
+                "updatedAt",
+                "bodySha256"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "mode",
+        "clientId",
+        "senderConnectionId",
+        "senderEmail",
+        "to",
+        "cc",
+        "bcc",
+        "subject",
+        "bodyHtml",
+        "files",
+        "original"
+      ],
+      "additionalProperties": false
+    },
+    "Canonical_MailSendCommand_981e52ba": {
+      "type": "object",
+      "properties": {
+        "contractVersion": {
+          "const": "0.2.0"
+        },
+        "commandId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "binding": {
+          "$ref": "#/$defs/Canonical_RunBinding_84f2304c"
+        },
+        "action": {
+          "const": "mail.send"
+        },
+        "arguments": {
+          "$ref": "#/$defs/Canonical_MailSendArguments_016b3776"
+        },
+        "attachments": {
+          "type": "array",
+          "maxItems": 0
+        },
+        "scopes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Canonical_Scope_f882edb5"
+          },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "idempotencyKey": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        }
+      },
+      "required": [
+        "contractVersion",
+        "commandId",
+        "binding",
+        "action",
+        "arguments",
+        "attachments",
+        "scopes",
+        "idempotencyKey"
+      ],
+      "additionalProperties": false
+    },
+    "Canonical_MailSendApprovalProposal_c6ab2c41": {
+      "type": "object",
+      "properties": {
+        "proposalId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "command": {
+          "$ref": "#/$defs/Canonical_MailSendCommand_981e52ba"
+        },
+        "commandSha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "pattern": "Z$"
+        },
+        "expiresAt": {
+          "type": "string",
+          "format": "date-time",
+          "pattern": "Z$"
+        },
+        "requiredApprover": {
+          "$ref": "#/$defs/Canonical_Identity_aba0a4e9"
+        }
+      },
+      "required": [
+        "proposalId",
+        "command",
+        "commandSha256",
+        "createdAt",
+        "expiresAt",
+        "requiredApprover"
+      ],
+      "additionalProperties": false
+    },
     "Canonical_DocumentDraftArguments_deaaba57": {
       "type": "object",
       "properties": {
@@ -2148,6 +3108,1958 @@
       ],
       "additionalProperties": false
     },
+    "Canonical_SuggestionLegiwatchRequest_d59a433f": {
+      "type": "object",
+      "properties": {
+        "clientId": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "uuid",
+              "pattern": "^[a-f0-9-]+$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "folderId": {
+          "type": "string",
+          "format": "uuid",
+          "pattern": "^[a-f0-9-]+$"
+        },
+        "jurisdiction": {
+          "type": "string",
+          "pattern": "^[A-Z]{2}$"
+        },
+        "sessionKey": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 120
+        },
+        "suggestionId": {
+          "type": "string",
+          "format": "uuid",
+          "pattern": "^[a-f0-9-]+$"
+        },
+        "expectedVersion": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 2147483646
+        },
+        "action": {
+          "enum": [
+            "add",
+            "dismiss",
+            "exclude",
+            "restore",
+            "undo"
+          ]
+        },
+        "requestKey": {
+          "type": "string",
+          "minLength": 8,
+          "maxLength": 180
+        }
+      },
+      "required": [
+        "clientId",
+        "folderId",
+        "jurisdiction",
+        "sessionKey",
+        "suggestionId",
+        "expectedVersion",
+        "action",
+        "requestKey"
+      ],
+      "additionalProperties": false
+    },
+    "Canonical_RelevanceRequest_3250901f": {
+      "type": "object",
+      "properties": {
+        "clientId": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^[a-f0-9]{8}-[a-f0-9]{4}-[1-8][a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "folderId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 250
+        },
+        "jurisdiction": {
+          "type": "string",
+          "pattern": "^[A-Z]{2}$"
+        },
+        "sessionKey": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 60
+        },
+        "fields": {
+          "type": "array",
+          "items": {
+            "enum": [
+              "title",
+              "bill_text",
+              "amendment_text"
+            ]
+          },
+          "maxItems": 3,
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "billId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 250
+        },
+        "explanation": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 2000
+        },
+        "documentId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 250
+        },
+        "start": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "end": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        },
+        "quote": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 2000
+        },
+        "previewHash": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "requestKey": {
+          "type": "string",
+          "minLength": 8,
+          "maxLength": 180
+        }
+      },
+      "required": [
+        "clientId",
+        "folderId",
+        "jurisdiction",
+        "sessionKey",
+        "fields",
+        "billId",
+        "explanation",
+        "documentId",
+        "start",
+        "end",
+        "quote",
+        "previewHash",
+        "requestKey"
+      ],
+      "additionalProperties": false
+    },
+    "Canonical_LegiwatchRequest_5cff194f": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/Canonical_SuggestionLegiwatchRequest_d59a433f"
+        },
+        {
+          "$ref": "#/$defs/Canonical_RelevanceRequest_3250901f"
+        }
+      ]
+    },
+    "Canonical_LegiwatchContext_a906d964": {
+      "type": "object",
+      "properties": {
+        "conversationId": {
+          "type": "string",
+          "format": "uuid",
+          "pattern": "^[a-f0-9-]+$"
+        },
+        "selectedClientId": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "uuid",
+              "pattern": "^[a-f0-9-]+$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "identityRevision": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "membershipRevision": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "contextRevision": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        }
+      },
+      "required": [
+        "conversationId",
+        "selectedClientId",
+        "identityRevision",
+        "membershipRevision",
+        "contextRevision"
+      ],
+      "additionalProperties": false
+    },
+    "Canonical_LegiwatchProposal_1f841734": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "const": "legiwatch_action"
+        },
+        "binding": {
+          "$ref": "#/$defs/Canonical_RunBinding_84f2304c"
+        },
+        "scopes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Canonical_Scope_f882edb5"
+          },
+          "minItems": 1,
+          "maxItems": 1
+        },
+        "operation": {
+          "enum": [
+            "apply_legiwatch_suggestion",
+            "save_legiwatch_relevance"
+          ]
+        },
+        "proposalId": {
+          "type": "string",
+          "format": "uuid",
+          "pattern": "^[a-f0-9-]+$"
+        },
+        "request": {
+          "$ref": "#/$defs/Canonical_LegiwatchRequest_5cff194f"
+        },
+        "context": {
+          "$ref": "#/$defs/Canonical_LegiwatchContext_a906d964"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "expiresAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "commandSha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        }
+      },
+      "required": [
+        "kind",
+        "binding",
+        "scopes",
+        "operation",
+        "proposalId",
+        "request",
+        "context",
+        "createdAt",
+        "expiresAt",
+        "commandSha256"
+      ],
+      "additionalProperties": false
+    },
+    "Canonical_WatchRequest_1e607664": {
+      "type": "object",
+      "properties": {
+        "family": {
+          "enum": [
+            "legiwatch_keyword",
+            "business_development_prospect",
+            "defense_budget_target",
+            "client_watchlist"
+          ]
+        },
+        "clientId": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "uuid",
+              "pattern": "^[a-f0-9-]+$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "targetKind": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 40
+        },
+        "targetKey": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 180,
+          "pattern": "^[A-Za-z0-9._:-]+$"
+        },
+        "operation": {
+          "enum": [
+            "subscribe",
+            "pause",
+            "resume",
+            "unsubscribe",
+            "set_delivery"
+          ]
+        },
+        "expectedVersion": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 2147483646
+        },
+        "sourceRevision": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 180,
+              "pattern": "^[A-Za-z0-9._:-]+$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "reason": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 2000
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "enabled": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "requestKey": {
+          "type": "string",
+          "minLength": 8,
+          "maxLength": 180
+        }
+      },
+      "required": [
+        "family",
+        "clientId",
+        "targetKind",
+        "targetKey",
+        "operation",
+        "expectedVersion",
+        "sourceRevision",
+        "reason",
+        "enabled",
+        "requestKey"
+      ],
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "family": {
+                "const": "legiwatch_keyword"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "operation": {
+                "enum": [
+                  "subscribe",
+                  "pause",
+                  "resume",
+                  "unsubscribe",
+                  "set_delivery"
+                ]
+              },
+              "targetKind": {
+                "enum": [
+                  "keyword_rule"
+                ]
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "family": {
+                "const": "business_development_prospect"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "operation": {
+                "enum": [
+                  "subscribe",
+                  "pause",
+                  "resume",
+                  "unsubscribe"
+                ]
+              },
+              "targetKind": {
+                "enum": [
+                  "prospect"
+                ]
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "family": {
+                "const": "defense_budget_target"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "operation": {
+                "enum": [
+                  "subscribe",
+                  "resume",
+                  "unsubscribe"
+                ]
+              },
+              "targetKind": {
+                "enum": [
+                  "program",
+                  "pe",
+                  "project",
+                  "capability"
+                ]
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "family": {
+                "const": "client_watchlist"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "operation": {
+                "enum": [
+                  "subscribe",
+                  "pause"
+                ]
+              },
+              "targetKind": {
+                "enum": [
+                  "client_tracker_watchlist"
+                ]
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "operation": {
+                "const": "set_delivery"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "enabled": {
+                "type": "boolean"
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "enabled": {
+                "type": "null"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "Canonical_WatchContext_e72a3a40": {
+      "type": "object",
+      "properties": {
+        "conversationId": {
+          "type": "string",
+          "format": "uuid",
+          "pattern": "^[a-f0-9-]+$"
+        },
+        "selectedClientId": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "uuid",
+              "pattern": "^[a-f0-9-]+$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "identityRevision": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "membershipRevision": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "contextRevision": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        }
+      },
+      "required": [
+        "conversationId",
+        "selectedClientId",
+        "identityRevision",
+        "membershipRevision",
+        "contextRevision"
+      ],
+      "additionalProperties": false
+    },
+    "Canonical_WatchProposal_14eddeec": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "const": "watch_action"
+        },
+        "binding": {
+          "$ref": "#/$defs/Canonical_RunBinding_84f2304c"
+        },
+        "scopes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Canonical_Scope_f882edb5"
+          },
+          "minItems": 1,
+          "maxItems": 1
+        },
+        "operation": {
+          "const": "watch_action"
+        },
+        "proposalId": {
+          "type": "string",
+          "format": "uuid",
+          "pattern": "^[a-f0-9-]+$"
+        },
+        "request": {
+          "$ref": "#/$defs/Canonical_WatchRequest_1e607664"
+        },
+        "context": {
+          "$ref": "#/$defs/Canonical_WatchContext_e72a3a40"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "expiresAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "commandSha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        }
+      },
+      "required": [
+        "kind",
+        "binding",
+        "scopes",
+        "operation",
+        "proposalId",
+        "request",
+        "context",
+        "createdAt",
+        "expiresAt",
+        "commandSha256"
+      ],
+      "additionalProperties": false
+    },
+    "Canonical_CreateClientInput_c55f4423": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 300
+        },
+        "website": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 500
+        },
+        "description": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4000
+        },
+        "sectorTag": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 120
+        },
+        "primaryContactName": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "primaryContactEmail": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "primaryContactPhone": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 60
+        },
+        "ldaClientId": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 2147483647
+        },
+        "skipLdaCheck": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "name"
+      ],
+      "additionalProperties": false
+    },
+    "Canonical_UpdateClientProfileInput_8caec89e": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 300
+        },
+        "website": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 500
+        },
+        "description": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4000
+        },
+        "sectorTag": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 120
+        },
+        "primaryContactName": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "primaryContactEmail": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "primaryContactPhone": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 60
+        },
+        "clientId": {
+          "type": "string",
+          "format": "uuid",
+          "pattern": "^[a-f0-9-]+$"
+        },
+        "productDescription": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4000
+        },
+        "uei": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 12
+        },
+        "cageCode": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 5
+        },
+        "issueCodes": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 120
+          },
+          "maxItems": 100
+        },
+        "naicsCodes": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 120
+          },
+          "maxItems": 100
+        },
+        "pscCodes": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 120
+          },
+          "maxItems": 100
+        },
+        "provenance": {
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "object",
+              "properties": {
+                "sourceUrl": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 2048
+                },
+                "confidence": {
+                  "enum": [
+                    "high",
+                    "medium",
+                    "low"
+                  ]
+                }
+              },
+              "required": [
+                "sourceUrl",
+                "confidence"
+              ],
+              "additionalProperties": false
+            },
+            "website": {
+              "type": "object",
+              "properties": {
+                "sourceUrl": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 2048
+                },
+                "confidence": {
+                  "enum": [
+                    "high",
+                    "medium",
+                    "low"
+                  ]
+                }
+              },
+              "required": [
+                "sourceUrl",
+                "confidence"
+              ],
+              "additionalProperties": false
+            },
+            "description": {
+              "type": "object",
+              "properties": {
+                "sourceUrl": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 2048
+                },
+                "confidence": {
+                  "enum": [
+                    "high",
+                    "medium",
+                    "low"
+                  ]
+                }
+              },
+              "required": [
+                "sourceUrl",
+                "confidence"
+              ],
+              "additionalProperties": false
+            },
+            "productDescription": {
+              "type": "object",
+              "properties": {
+                "sourceUrl": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 2048
+                },
+                "confidence": {
+                  "enum": [
+                    "high",
+                    "medium",
+                    "low"
+                  ]
+                }
+              },
+              "required": [
+                "sourceUrl",
+                "confidence"
+              ],
+              "additionalProperties": false
+            },
+            "primaryContactName": {
+              "type": "object",
+              "properties": {
+                "sourceUrl": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 2048
+                },
+                "confidence": {
+                  "enum": [
+                    "high",
+                    "medium",
+                    "low"
+                  ]
+                }
+              },
+              "required": [
+                "sourceUrl",
+                "confidence"
+              ],
+              "additionalProperties": false
+            },
+            "primaryContactEmail": {
+              "type": "object",
+              "properties": {
+                "sourceUrl": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 2048
+                },
+                "confidence": {
+                  "enum": [
+                    "high",
+                    "medium",
+                    "low"
+                  ]
+                }
+              },
+              "required": [
+                "sourceUrl",
+                "confidence"
+              ],
+              "additionalProperties": false
+            },
+            "primaryContactPhone": {
+              "type": "object",
+              "properties": {
+                "sourceUrl": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 2048
+                },
+                "confidence": {
+                  "enum": [
+                    "high",
+                    "medium",
+                    "low"
+                  ]
+                }
+              },
+              "required": [
+                "sourceUrl",
+                "confidence"
+              ],
+              "additionalProperties": false
+            },
+            "sectorTag": {
+              "type": "object",
+              "properties": {
+                "sourceUrl": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 2048
+                },
+                "confidence": {
+                  "enum": [
+                    "high",
+                    "medium",
+                    "low"
+                  ]
+                }
+              },
+              "required": [
+                "sourceUrl",
+                "confidence"
+              ],
+              "additionalProperties": false
+            },
+            "uei": {
+              "type": "object",
+              "properties": {
+                "sourceUrl": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 2048
+                },
+                "confidence": {
+                  "enum": [
+                    "high",
+                    "medium",
+                    "low"
+                  ]
+                }
+              },
+              "required": [
+                "sourceUrl",
+                "confidence"
+              ],
+              "additionalProperties": false
+            },
+            "cageCode": {
+              "type": "object",
+              "properties": {
+                "sourceUrl": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 2048
+                },
+                "confidence": {
+                  "enum": [
+                    "high",
+                    "medium",
+                    "low"
+                  ]
+                }
+              },
+              "required": [
+                "sourceUrl",
+                "confidence"
+              ],
+              "additionalProperties": false
+            },
+            "issueCodes": {
+              "type": "object",
+              "properties": {
+                "sourceUrl": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 2048
+                },
+                "confidence": {
+                  "enum": [
+                    "high",
+                    "medium",
+                    "low"
+                  ]
+                }
+              },
+              "required": [
+                "sourceUrl",
+                "confidence"
+              ],
+              "additionalProperties": false
+            },
+            "naicsCodes": {
+              "type": "object",
+              "properties": {
+                "sourceUrl": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 2048
+                },
+                "confidence": {
+                  "enum": [
+                    "high",
+                    "medium",
+                    "low"
+                  ]
+                }
+              },
+              "required": [
+                "sourceUrl",
+                "confidence"
+              ],
+              "additionalProperties": false
+            },
+            "pscCodes": {
+              "type": "object",
+              "properties": {
+                "sourceUrl": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 2048
+                },
+                "confidence": {
+                  "enum": [
+                    "high",
+                    "medium",
+                    "low"
+                  ]
+                }
+              },
+              "required": [
+                "sourceUrl",
+                "confidence"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [],
+          "additionalProperties": false
+        },
+        "facilities": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 200
+              },
+              "addressLine": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 300
+              },
+              "city": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 120
+              },
+              "state": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 2
+              },
+              "zip": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 10
+              },
+              "congressionalDistrict": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 4
+              },
+              "notes": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 2000
+              },
+              "employeeCount": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 10000000
+              }
+            },
+            "required": [
+              "name"
+            ],
+            "additionalProperties": false
+          },
+          "maxItems": 50
+        },
+        "capabilities": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 200
+              },
+              "type": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 60
+              },
+              "description": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 4000
+              },
+              "sector": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 120
+              },
+              "notes": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 2000
+              }
+            },
+            "required": [
+              "name"
+            ],
+            "additionalProperties": false
+          },
+          "maxItems": 50
+        },
+        "people": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 200
+              },
+              "title": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 200
+              },
+              "email": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 200
+              },
+              "phone": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 60
+              },
+              "role": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 120
+              },
+              "lastContact": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 40
+              },
+              "notes": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 2000
+              }
+            },
+            "required": [
+              "name"
+            ],
+            "additionalProperties": false
+          },
+          "maxItems": 50
+        }
+      },
+      "required": [
+        "clientId"
+      ],
+      "additionalProperties": false
+    },
+    "Canonical_ClientRecordRequest_e2a54772": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "operation": {
+              "const": "create_client"
+            },
+            "input": {
+              "$ref": "#/$defs/Canonical_CreateClientInput_c55f4423"
+            }
+          },
+          "required": [
+            "operation",
+            "input"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "operation": {
+              "const": "update_client_profile"
+            },
+            "input": {
+              "$ref": "#/$defs/Canonical_UpdateClientProfileInput_8caec89e"
+            }
+          },
+          "required": [
+            "operation",
+            "input"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "Canonical_ClientRecordContext_6cea2055": {
+      "type": "object",
+      "properties": {
+        "conversationId": {
+          "type": "string",
+          "format": "uuid",
+          "pattern": "^[a-f0-9-]+$"
+        },
+        "selectedClientId": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "uuid",
+              "pattern": "^[a-f0-9-]+$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "identityRevision": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "membershipRevision": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "contextRevision": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        }
+      },
+      "required": [
+        "conversationId",
+        "selectedClientId",
+        "identityRevision",
+        "membershipRevision",
+        "contextRevision"
+      ],
+      "additionalProperties": false
+    },
+    "Canonical_ClientRecordProposal_b620b25b": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "const": "client_record_action"
+        },
+        "binding": {
+          "$ref": "#/$defs/Canonical_RunBinding_84f2304c"
+        },
+        "scopes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Canonical_Scope_f882edb5"
+          },
+          "minItems": 1,
+          "maxItems": 1
+        },
+        "operation": {
+          "enum": [
+            "create_client",
+            "update_client_profile"
+          ]
+        },
+        "proposalId": {
+          "type": "string",
+          "format": "uuid",
+          "pattern": "^[a-f0-9-]+$"
+        },
+        "request": {
+          "$ref": "#/$defs/Canonical_ClientRecordRequest_e2a54772"
+        },
+        "context": {
+          "$ref": "#/$defs/Canonical_ClientRecordContext_6cea2055"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "expiresAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "commandSha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        }
+      },
+      "required": [
+        "kind",
+        "binding",
+        "scopes",
+        "operation",
+        "proposalId",
+        "request",
+        "context",
+        "createdAt",
+        "expiresAt",
+        "commandSha256"
+      ],
+      "additionalProperties": false
+    },
+    "Canonical_BizdevSection_433874a1": {
+      "type": "object",
+      "properties": {
+        "text": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4000
+        },
+        "citationIndexes": {
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "minimum": 0
+          }
+        }
+      },
+      "required": [
+        "text",
+        "citationIndexes"
+      ],
+      "additionalProperties": false
+    },
+    "Canonical_BizdevSections_b2a43546": {
+      "type": "object",
+      "properties": {
+        "companyAndFirmImplication": {
+          "$ref": "#/$defs/Canonical_BizdevSection_433874a1"
+        },
+        "verifiedEvidence": {
+          "$ref": "#/$defs/Canonical_BizdevSection_433874a1"
+        },
+        "judgment": {
+          "$ref": "#/$defs/Canonical_BizdevSection_433874a1"
+        },
+        "practicalAction": {
+          "$ref": "#/$defs/Canonical_BizdevSection_433874a1"
+        },
+        "missingInformation": {
+          "$ref": "#/$defs/Canonical_BizdevSection_433874a1"
+        }
+      },
+      "required": [
+        "companyAndFirmImplication",
+        "verifiedEvidence",
+        "judgment",
+        "practicalAction",
+        "missingInformation"
+      ],
+      "additionalProperties": false
+    },
+    "Canonical_BizdevRequest_377bb4ab": {
+      "type": "object",
+      "properties": {
+        "conversationId": {
+          "type": "string",
+          "format": "uuid",
+          "pattern": "^[a-f0-9-]+$"
+        },
+        "expectedVersionNumber": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 2147483646
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 300
+        },
+        "sections": {
+          "$ref": "#/$defs/Canonical_BizdevSections_b2a43546"
+        },
+        "requestKey": {
+          "type": "string",
+          "minLength": 8,
+          "maxLength": 180
+        }
+      },
+      "required": [
+        "conversationId",
+        "expectedVersionNumber",
+        "sections",
+        "requestKey"
+      ],
+      "additionalProperties": false
+    },
+    "Canonical_BizdevContext_894be03e": {
+      "type": "object",
+      "properties": {
+        "conversationId": {
+          "type": "string",
+          "format": "uuid",
+          "pattern": "^[a-f0-9-]+$"
+        },
+        "prospectId": {
+          "type": "string",
+          "format": "uuid",
+          "pattern": "^[a-f0-9-]+$"
+        },
+        "prospectName": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "canonicalOrganizationId": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "uuid",
+              "pattern": "^[a-f0-9-]+$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "linkedClientId": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "uuid",
+              "pattern": "^[a-f0-9-]+$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "scopeVersion": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        }
+      },
+      "required": [
+        "conversationId",
+        "prospectId",
+        "prospectName",
+        "canonicalOrganizationId",
+        "linkedClientId",
+        "scopeVersion"
+      ],
+      "additionalProperties": false
+    },
+    "Canonical_BizdevProposal_a770314c": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "const": "bizdev_action"
+        },
+        "binding": {
+          "$ref": "#/$defs/Canonical_RunBinding_84f2304c"
+        },
+        "scopes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Canonical_Scope_f882edb5"
+          },
+          "minItems": 1,
+          "maxItems": 1
+        },
+        "operation": {
+          "const": "save_business_development_brief"
+        },
+        "proposalId": {
+          "type": "string",
+          "format": "uuid",
+          "pattern": "^[a-f0-9-]+$"
+        },
+        "request": {
+          "$ref": "#/$defs/Canonical_BizdevRequest_377bb4ab"
+        },
+        "context": {
+          "$ref": "#/$defs/Canonical_BizdevContext_894be03e"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "expiresAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "commandSha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        }
+      },
+      "required": [
+        "kind",
+        "binding",
+        "scopes",
+        "operation",
+        "proposalId",
+        "request",
+        "context",
+        "createdAt",
+        "expiresAt",
+        "commandSha256"
+      ],
+      "additionalProperties": false
+    },
+    "Canonical_LegislativeDocumentSource_d053de86": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 40
+        },
+        "id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "revision": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        }
+      },
+      "required": [
+        "kind",
+        "id",
+        "revision"
+      ],
+      "additionalProperties": false
+    },
+    "Canonical_LegislativeDocumentCitation_c039aff7": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 40
+        },
+        "id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "revision": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "locator": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "start": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "end": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "quote": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 8000
+        }
+      },
+      "required": [
+        "kind",
+        "id",
+        "revision",
+        "locator",
+        "start",
+        "end",
+        "quote"
+      ],
+      "additionalProperties": false
+    },
+    "Canonical_LegislativeDocumentBriefingRequest_9e6e443d": {
+      "type": "object",
+      "properties": {
+        "clientId": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "uuid",
+              "pattern": "^[a-f0-9-]+$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "folderId": {
+          "type": "string",
+          "format": "uuid",
+          "pattern": "^[a-f0-9-]+$"
+        },
+        "jurisdiction": {
+          "type": "string",
+          "pattern": "^(US|[A-Z]{2})$"
+        },
+        "sessionKey": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 120
+        },
+        "template": {
+          "enum": [
+            "research_update",
+            "daily_legislative_brief",
+            "morning_news_brief"
+          ]
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "analysis": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 30000
+        },
+        "cutoff": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 40
+        },
+        "timezone": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 64
+        },
+        "sources": {
+          "type": "array",
+          "maxItems": 50,
+          "items": {
+            "$ref": "#/$defs/Canonical_LegislativeDocumentSource_d053de86"
+          }
+        },
+        "citations": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 150,
+          "items": {
+            "$ref": "#/$defs/Canonical_LegislativeDocumentCitation_c039aff7"
+          }
+        },
+        "requestKey": {
+          "type": "string",
+          "minLength": 8,
+          "maxLength": 180
+        }
+      },
+      "required": [
+        "folderId",
+        "template",
+        "title",
+        "analysis",
+        "cutoff",
+        "timezone",
+        "sources",
+        "citations",
+        "requestKey",
+        "clientId"
+      ],
+      "additionalProperties": false
+    },
+    "Canonical_LegislativeDocumentSelectionCitation_d6e0702c": {
+      "type": "object",
+      "properties": {
+        "documentId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "revision": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "locator": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "start": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "end": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "quote": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 8000
+        }
+      },
+      "required": [
+        "documentId",
+        "revision",
+        "locator",
+        "start",
+        "end",
+        "quote"
+      ],
+      "additionalProperties": false
+    },
+    "Canonical_LegislativeDocumentResearchRequest_80582baa": {
+      "type": "object",
+      "properties": {
+        "clientId": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "uuid",
+              "pattern": "^[a-f0-9-]+$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "folderId": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "uuid",
+              "pattern": "^[a-f0-9-]+$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "jurisdiction": {
+          "type": "string",
+          "pattern": "^(US|[A-Z]{2})$"
+        },
+        "sessionKey": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 60
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "analysis": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 30000
+        },
+        "documents": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 10,
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 200
+              },
+              "revision": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 200
+              },
+              "sessionKey": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 60
+              }
+            },
+            "required": [
+              "id",
+              "revision"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "citations": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 100,
+          "items": {
+            "$ref": "#/$defs/Canonical_LegislativeDocumentSelectionCitation_d6e0702c"
+          }
+        },
+        "allowCrossBill": {
+          "type": "boolean"
+        },
+        "rightSessionKey": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 60
+        },
+        "requestKey": {
+          "type": "string",
+          "minLength": 8,
+          "maxLength": 180
+        }
+      },
+      "required": [
+        "jurisdiction",
+        "sessionKey",
+        "title",
+        "analysis",
+        "documents",
+        "citations",
+        "requestKey",
+        "clientId",
+        "folderId"
+      ],
+      "additionalProperties": false
+    },
+    "Canonical_LegislativeDocumentContext_6c736cef": {
+      "type": "object",
+      "properties": {
+        "conversationId": {
+          "type": "string",
+          "format": "uuid",
+          "pattern": "^[a-f0-9-]+$"
+        },
+        "selectedClientId": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "uuid",
+              "pattern": "^[a-f0-9-]+$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "identityRevision": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "membershipRevision": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "contextRevision": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        }
+      },
+      "required": [
+        "conversationId",
+        "selectedClientId",
+        "identityRevision",
+        "membershipRevision",
+        "contextRevision"
+      ],
+      "additionalProperties": false
+    },
+    "Canonical_LegislativeDocumentProposal_3d80036f": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "const": "legislative_document_action"
+        },
+        "binding": {
+          "$ref": "#/$defs/Canonical_RunBinding_84f2304c"
+        },
+        "scopes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Canonical_Scope_f882edb5"
+          },
+          "minItems": 1,
+          "maxItems": 1
+        },
+        "operation": {
+          "enum": [
+            "prepare_legiwatch_briefing",
+            "save_legislative_research"
+          ]
+        },
+        "proposalId": {
+          "type": "string",
+          "format": "uuid",
+          "pattern": "^[a-f0-9-]+$"
+        },
+        "request": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Canonical_LegislativeDocumentBriefingRequest_9e6e443d"
+            },
+            {
+              "$ref": "#/$defs/Canonical_LegislativeDocumentResearchRequest_80582baa"
+            }
+          ]
+        },
+        "context": {
+          "$ref": "#/$defs/Canonical_LegislativeDocumentContext_6c736cef"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "expiresAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "commandSha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        }
+      },
+      "required": [
+        "kind",
+        "binding",
+        "scopes",
+        "operation",
+        "proposalId",
+        "request",
+        "context",
+        "createdAt",
+        "expiresAt",
+        "commandSha256"
+      ],
+      "additionalProperties": false
+    },
     "Canonical_ApprovalDecision_5e8bdbcf": {
       "type": "object",
       "properties": {
@@ -2233,6 +5145,170 @@
         "dueDate"
       ],
       "additionalProperties": false
+    },
+    "Canonical_MailSendContext_7d8b78f1": {
+      "type": "object",
+      "properties": {
+        "binding": {
+          "$ref": "#/$defs/Canonical_RunBinding_84f2304c"
+        }
+      },
+      "required": [
+        "binding"
+      ],
+      "additionalProperties": false
+    },
+    "Canonical_MailSendResult_65b7ed94": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "state": {
+              "const": "failed"
+            },
+            "intentId": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+            },
+            "requestKey": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+            },
+            "retryable": {
+              "const": false
+            }
+          },
+          "required": [
+            "state",
+            "intentId",
+            "requestKey",
+            "retryable"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "state": {
+              "const": "accepted"
+            },
+            "intentId": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+            },
+            "requestKey": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+            },
+            "retryable": {
+              "const": false
+            },
+            "threadId": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+            },
+            "messageId": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+            },
+            "provider": {
+              "enum": [
+                "gmail",
+                "microsoft_graph"
+              ]
+            },
+            "senderConnectionId": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+            },
+            "senderEmail": {
+              "type": "string",
+              "minLength": 3,
+              "maxLength": 254
+            },
+            "mode": {
+              "enum": [
+                "send",
+                "reply",
+                "reply_all",
+                "forward"
+              ]
+            },
+            "original": {
+              "anyOf": [
+                {
+                  "type": "object",
+                  "properties": {
+                    "threadId": {
+                      "type": "string",
+                      "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+                    },
+                    "messageId": {
+                      "type": "string",
+                      "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+                    },
+                    "updatedAt": {
+                      "type": "string",
+                      "format": "date-time"
+                    },
+                    "bodySha256": {
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "pattern": "^[a-f0-9]{64}$"
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    }
+                  },
+                  "required": [
+                    "threadId",
+                    "messageId",
+                    "updatedAt",
+                    "bodySha256"
+                  ],
+                  "additionalProperties": false
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "signaturePolicy": {
+              "const": "actor"
+            },
+            "signatureAppended": {
+              "type": "boolean"
+            },
+            "mailboxConfirmation": {
+              "enum": [
+                null,
+                "pending",
+                "confirmed"
+              ]
+            }
+          },
+          "required": [
+            "state",
+            "intentId",
+            "requestKey",
+            "retryable",
+            "threadId",
+            "messageId",
+            "provider",
+            "senderConnectionId",
+            "senderEmail",
+            "mode",
+            "original",
+            "signaturePolicy",
+            "signatureAppended",
+            "mailboxConfirmation"
+          ],
+          "additionalProperties": false
+        }
+      ]
     },
     "Canonical_ArtifactFileArguments_6f2b3978": {
       "type": "object",
@@ -4141,6 +7217,996 @@
       ],
       "additionalProperties": false
     },
+    "Canonical_LegiwatchStatus_cbe9731f": {
+      "enum": [
+        "proposed",
+        "approved",
+        "executing",
+        "succeeded",
+        "failed_retryable",
+        "failed_terminal",
+        "outcome_unknown",
+        "blocked",
+        "dismissed",
+        "expired"
+      ]
+    },
+    "Canonical_SuggestionLegiwatchReceipt_d2466c8d": {
+      "type": "object",
+      "properties": {
+        "request": {
+          "$ref": "#/$defs/Canonical_SuggestionLegiwatchRequest_d59a433f"
+        },
+        "outcome": {
+          "enum": [
+            "added",
+            "already_present",
+            "dismissed",
+            "excluded",
+            "pending",
+            "stale",
+            "undone",
+            "undo_conflict",
+            "held"
+          ]
+        },
+        "payload": {
+          "type": "object",
+          "properties": {
+            "binding": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            "suggestionId": {
+              "type": "string",
+              "format": "uuid",
+              "pattern": "^[a-f0-9-]+$"
+            },
+            "decisionId": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "uuid",
+                  "pattern": "^[a-f0-9-]+$"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "version": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "action": {
+              "enum": [
+                "add",
+                "dismiss",
+                "exclude",
+                "restore",
+                "undo"
+              ]
+            }
+          },
+          "required": [
+            "binding",
+            "suggestionId",
+            "decisionId",
+            "version",
+            "action"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "request",
+        "outcome",
+        "payload"
+      ],
+      "additionalProperties": false
+    },
+    "Canonical_RelevanceReceipt_ef963586": {
+      "type": "object",
+      "properties": {
+        "request": {
+          "$ref": "#/$defs/Canonical_RelevanceRequest_3250901f"
+        },
+        "outcome": {
+          "const": "suggested"
+        },
+        "payload": {
+          "type": "object",
+          "properties": {
+            "binding": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            "suggestionId": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{8}-[a-f0-9]{4}-[1-8][a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$"
+            },
+            "version": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 9007199254740991
+            },
+            "origin": {
+              "const": "semantic"
+            },
+            "state": {
+              "const": "pending"
+            }
+          },
+          "required": [
+            "binding",
+            "suggestionId",
+            "version",
+            "origin",
+            "state"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "request",
+        "outcome",
+        "payload"
+      ],
+      "additionalProperties": false
+    },
+    "Canonical_LegiwatchReceipt_706f9465": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/Canonical_SuggestionLegiwatchReceipt_d2466c8d"
+        },
+        {
+          "$ref": "#/$defs/Canonical_RelevanceReceipt_ef963586"
+        }
+      ]
+    },
+    "Canonical_LegiwatchCoreResult_c5ab3126": {
+      "type": "object",
+      "properties": {
+        "version": {
+          "const": "0.1.0"
+        },
+        "proposalId": {
+          "type": "string",
+          "format": "uuid",
+          "pattern": "^[a-f0-9-]+$"
+        },
+        "request": {
+          "$ref": "#/$defs/Canonical_LegiwatchRequest_5cff194f"
+        },
+        "context": {
+          "$ref": "#/$defs/Canonical_LegiwatchContext_a906d964"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "expiresAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "status": {
+          "$ref": "#/$defs/Canonical_LegiwatchStatus_cbe9731f"
+        },
+        "receipt": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Canonical_LegiwatchReceipt_706f9465"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "version",
+        "proposalId",
+        "request",
+        "context",
+        "createdAt",
+        "expiresAt",
+        "status",
+        "receipt"
+      ],
+      "additionalProperties": false
+    },
+    "Canonical_LegislativeDocumentStatus_63289936": {
+      "enum": [
+        "proposed",
+        "approved",
+        "executing",
+        "succeeded",
+        "failed_retryable",
+        "failed_terminal",
+        "outcome_unknown",
+        "blocked",
+        "dismissed",
+        "expired"
+      ]
+    },
+    "Canonical_LegislativeDocumentReceipt_70f3ce37": {
+      "type": "object",
+      "properties": {
+        "state": {
+          "enum": [
+            "complete",
+            "selection_only"
+          ]
+        },
+        "selectionId": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 200
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "documentId": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 100
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "location": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 120
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "reused": {
+          "type": "boolean"
+        },
+        "request": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Canonical_LegislativeDocumentBriefingRequest_9e6e443d"
+            },
+            {
+              "$ref": "#/$defs/Canonical_LegislativeDocumentResearchRequest_80582baa"
+            }
+          ]
+        }
+      },
+      "required": [
+        "state",
+        "selectionId",
+        "documentId",
+        "location",
+        "reused",
+        "request"
+      ],
+      "additionalProperties": false
+    },
+    "Canonical_LegislativeDocumentEffect_69d4cb58": {
+      "enum": [
+        "complete",
+        "selection_only",
+        "unknown"
+      ]
+    },
+    "Canonical_LegislativeDocumentCoreResult_05815d48": {
+      "type": "object",
+      "properties": {
+        "version": {
+          "const": "0.1.0"
+        },
+        "proposalId": {
+          "type": "string",
+          "format": "uuid",
+          "pattern": "^[a-f0-9-]+$"
+        },
+        "status": {
+          "$ref": "#/$defs/Canonical_LegislativeDocumentStatus_63289936"
+        },
+        "operation": {
+          "enum": [
+            "prepare_legiwatch_briefing",
+            "save_legislative_research"
+          ]
+        },
+        "request": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Canonical_LegislativeDocumentBriefingRequest_9e6e443d"
+            },
+            {
+              "$ref": "#/$defs/Canonical_LegislativeDocumentResearchRequest_80582baa"
+            }
+          ]
+        },
+        "context": {
+          "$ref": "#/$defs/Canonical_LegislativeDocumentContext_6c736cef"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "expiresAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "receipt": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Canonical_LegislativeDocumentReceipt_70f3ce37"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "effect": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Canonical_LegislativeDocumentEffect_69d4cb58"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "version",
+        "proposalId",
+        "status",
+        "operation",
+        "request",
+        "context",
+        "createdAt",
+        "expiresAt",
+        "receipt",
+        "effect"
+      ],
+      "additionalProperties": false
+    },
+    "Canonical_ClientRecordStatus_58565696": {
+      "enum": [
+        "proposed",
+        "approved",
+        "executing",
+        "succeeded",
+        "failed_retryable",
+        "failed_terminal",
+        "outcome_unknown",
+        "blocked",
+        "dismissed",
+        "expired"
+      ]
+    },
+    "Canonical_ClientRecordReceipt_8a925d68": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "request": {
+              "$ref": "#/$defs/Canonical_ClientRecordRequest_e2a54772"
+            },
+            "outcome": {
+              "const": "created"
+            },
+            "created": {
+              "const": true
+            },
+            "client": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "format": "uuid",
+                  "pattern": "^[a-f0-9-]+$"
+                },
+                "name": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 300
+                },
+                "website": {
+                  "anyOf": [
+                    {
+                      "type": "string",
+                      "minLength": 0,
+                      "maxLength": 500
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                }
+              },
+              "required": [
+                "id",
+                "name",
+                "website"
+              ],
+              "additionalProperties": false
+            },
+            "ldaMatch": {
+              "anyOf": [
+                {
+                  "type": "object",
+                  "properties": {
+                    "ldaClientId": {
+                      "type": "integer",
+                      "minimum": 1,
+                      "maximum": 2147483647
+                    },
+                    "name": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 300
+                    },
+                    "totalFilings": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 9007199254740991
+                    },
+                    "latestFilingYear": {
+                      "anyOf": [
+                        {
+                          "type": "integer"
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    }
+                  },
+                  "required": [
+                    "ldaClientId",
+                    "name",
+                    "totalFilings",
+                    "latestFilingYear"
+                  ],
+                  "additionalProperties": false
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          },
+          "required": [
+            "request",
+            "outcome",
+            "created",
+            "client",
+            "ldaMatch"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "request": {
+              "$ref": "#/$defs/Canonical_ClientRecordRequest_e2a54772"
+            },
+            "outcome": {
+              "enum": [
+                "updated",
+                "partially_updated",
+                "not_updated",
+                "unchanged"
+              ]
+            },
+            "tool": {
+              "const": "update_client_profile"
+            },
+            "updated": {
+              "const": true
+            },
+            "clientId": {
+              "type": "string",
+              "format": "uuid",
+              "pattern": "^[a-f0-9-]+$"
+            },
+            "clientName": {
+              "type": "string",
+              "minLength": 0,
+              "maxLength": 300
+            },
+            "fieldsWritten": {
+              "type": "array",
+              "items": {
+                "enum": [
+                  "name",
+                  "website",
+                  "description",
+                  "productDescription",
+                  "primaryContactName",
+                  "primaryContactEmail",
+                  "primaryContactPhone",
+                  "sectorTag",
+                  "uei",
+                  "cageCode",
+                  "issueCodes",
+                  "naicsCodes",
+                  "pscCodes"
+                ]
+              },
+              "maxItems": 13
+            },
+            "facilitiesCreated": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 0,
+                "maxLength": 4000
+              },
+              "maxItems": 150
+            },
+            "capabilitiesCreated": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 0,
+                "maxLength": 4000
+              },
+              "maxItems": 150
+            },
+            "peopleCreated": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 0,
+                "maxLength": 4000
+              },
+              "maxItems": 150
+            },
+            "peopleUpdated": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 0,
+                "maxLength": 4000
+              },
+              "maxItems": 150
+            },
+            "skipped": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 0,
+                "maxLength": 4000
+              },
+              "maxItems": 150
+            },
+            "rowErrors": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 0,
+                "maxLength": 4000
+              },
+              "maxItems": 150
+            }
+          },
+          "required": [
+            "request",
+            "outcome",
+            "tool",
+            "updated",
+            "clientId",
+            "clientName",
+            "fieldsWritten",
+            "facilitiesCreated",
+            "capabilitiesCreated",
+            "peopleCreated",
+            "peopleUpdated",
+            "skipped",
+            "rowErrors"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "Canonical_ClientRecordCoreResult_cb1df09e": {
+      "type": "object",
+      "properties": {
+        "version": {
+          "const": "0.1.0"
+        },
+        "proposalId": {
+          "type": "string",
+          "format": "uuid",
+          "pattern": "^[a-f0-9-]+$"
+        },
+        "request": {
+          "$ref": "#/$defs/Canonical_ClientRecordRequest_e2a54772"
+        },
+        "context": {
+          "$ref": "#/$defs/Canonical_ClientRecordContext_6cea2055"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "expiresAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "status": {
+          "$ref": "#/$defs/Canonical_ClientRecordStatus_58565696"
+        },
+        "receipt": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Canonical_ClientRecordReceipt_8a925d68"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "version",
+        "proposalId",
+        "request",
+        "context",
+        "createdAt",
+        "expiresAt",
+        "status",
+        "receipt"
+      ],
+      "additionalProperties": false
+    },
+    "Canonical_BizdevStatus_fbac340b": {
+      "enum": [
+        "proposed",
+        "approved",
+        "executing",
+        "succeeded",
+        "failed_retryable",
+        "failed_terminal",
+        "outcome_unknown",
+        "blocked",
+        "dismissed",
+        "expired"
+      ]
+    },
+    "Canonical_BizdevReceipt_dbab7eca": {
+      "type": "object",
+      "properties": {
+        "request": {
+          "$ref": "#/$defs/Canonical_BizdevRequest_377bb4ab"
+        },
+        "binding": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "tool": {
+          "const": "save_business_development_brief"
+        },
+        "status": {
+          "const": "saved"
+        },
+        "generatedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "brief": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "format": "uuid",
+              "pattern": "^[a-f0-9-]+$"
+            },
+            "title": {
+              "type": "string"
+            },
+            "status": {
+              "enum": [
+                "draft",
+                "archived"
+              ]
+            },
+            "currentVersionNumber": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "updatedAt": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          "required": [
+            "id",
+            "title",
+            "status",
+            "currentVersionNumber",
+            "updatedAt"
+          ],
+          "additionalProperties": false
+        },
+        "version": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "format": "uuid",
+              "pattern": "^[a-f0-9-]+$"
+            },
+            "versionNumber": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "createdAt": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "citationCount": {
+              "type": "integer",
+              "minimum": 0
+            }
+          },
+          "required": [
+            "id",
+            "versionNumber",
+            "createdAt",
+            "citationCount"
+          ],
+          "additionalProperties": false
+        },
+        "reused": {
+          "type": "boolean"
+        },
+        "prospectName": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        }
+      },
+      "required": [
+        "request",
+        "binding",
+        "tool",
+        "status",
+        "generatedAt",
+        "brief",
+        "version",
+        "reused",
+        "prospectName"
+      ],
+      "additionalProperties": false
+    },
+    "Canonical_BizdevCoreResult_f44012f2": {
+      "type": "object",
+      "properties": {
+        "version": {
+          "const": "0.1.0"
+        },
+        "proposalId": {
+          "type": "string",
+          "format": "uuid",
+          "pattern": "^[a-f0-9-]+$"
+        },
+        "request": {
+          "$ref": "#/$defs/Canonical_BizdevRequest_377bb4ab"
+        },
+        "context": {
+          "$ref": "#/$defs/Canonical_BizdevContext_894be03e"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "expiresAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "status": {
+          "$ref": "#/$defs/Canonical_BizdevStatus_fbac340b"
+        },
+        "receipt": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Canonical_BizdevReceipt_dbab7eca"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "version",
+        "proposalId",
+        "request",
+        "context",
+        "createdAt",
+        "expiresAt",
+        "status",
+        "receipt"
+      ],
+      "additionalProperties": false
+    },
+    "Canonical_WatchStatus_828649ac": {
+      "enum": [
+        "proposed",
+        "approved",
+        "executing",
+        "succeeded",
+        "failed_retryable",
+        "failed_terminal",
+        "outcome_unknown",
+        "blocked",
+        "dismissed",
+        "expired"
+      ]
+    },
+    "Canonical_WatchReceipt_f63ece6d": {
+      "type": "object",
+      "properties": {
+        "request": {
+          "$ref": "#/$defs/Canonical_WatchRequest_1e607664"
+        },
+        "owner": {
+          "enum": [
+            "legiwatch_keyword",
+            "business_development_prospect",
+            "defense_budget_target",
+            "client_watchlist"
+          ]
+        },
+        "binding": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "operation": {
+          "enum": [
+            "subscribe",
+            "pause",
+            "resume",
+            "unsubscribe",
+            "set_delivery"
+          ]
+        },
+        "targetKey": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 180,
+          "pattern": "^[A-Za-z0-9._:-]+$"
+        },
+        "identity": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 180
+        },
+        "state": {
+          "enum": [
+            "active",
+            "paused",
+            "needs_review",
+            "ended",
+            "unsubscribed"
+          ]
+        },
+        "version": {
+          "anyOf": [
+            {
+              "type": "integer",
+              "minimum": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "deliveryEnabled": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "eventId": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 180
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "alreadyInState": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "request",
+        "owner",
+        "binding",
+        "operation",
+        "targetKey",
+        "identity",
+        "state",
+        "version",
+        "deliveryEnabled",
+        "eventId",
+        "alreadyInState"
+      ],
+      "additionalProperties": false
+    },
+    "Canonical_WatchCoreResult_1c60295e": {
+      "type": "object",
+      "properties": {
+        "version": {
+          "const": "0.1.0"
+        },
+        "proposalId": {
+          "type": "string",
+          "format": "uuid",
+          "pattern": "^[a-f0-9-]+$"
+        },
+        "request": {
+          "$ref": "#/$defs/Canonical_WatchRequest_1e607664"
+        },
+        "context": {
+          "$ref": "#/$defs/Canonical_WatchContext_e72a3a40"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "expiresAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "status": {
+          "$ref": "#/$defs/Canonical_WatchStatus_828649ac"
+        },
+        "receipt": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Canonical_WatchReceipt_f63ece6d"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "version",
+        "proposalId",
+        "request",
+        "context",
+        "createdAt",
+        "expiresAt",
+        "status",
+        "receipt"
+      ],
+      "additionalProperties": false
+    },
     "Canonical_ResearchShareProposalStatus_9aaf7f45": {
       "enum": [
         "proposed",
@@ -4153,6 +8219,221 @@
         "dismissed",
         "expired"
       ]
+    },
+    "Canonical_SavedNoteResult_85af7219": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "string",
+          "enum": [
+            "saved",
+            "withheld",
+            "blocked",
+            "unknown",
+            "failed"
+          ]
+        },
+        "operation": {
+          "const": "save_note"
+        },
+        "binding": {
+          "$ref": "#/$defs/Canonical_RunBinding_84f2304c"
+        },
+        "scopes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Canonical_Scope_f882edb5"
+          },
+          "minItems": 1,
+          "maxItems": 1
+        },
+        "destination": {
+          "anyOf": [
+            {
+              "type": "string",
+              "enum": [
+                "meeting",
+                "client_document",
+                "general"
+              ]
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "noteId": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "uuid",
+              "pattern": "^[a-f0-9-]+$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "meetingNoteId": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "uuid",
+              "pattern": "^[a-f0-9-]+$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "documentId": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "uuid",
+              "pattern": "^[a-f0-9-]+$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "location": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "indexingStatus": {
+          "anyOf": [
+            {
+              "type": "string",
+              "enum": [
+                "indexed",
+                "pending",
+                "not_indexed"
+              ]
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "readiness": {
+          "anyOf": [
+            {
+              "type": "string",
+              "enum": [
+                "ready",
+                "indexing",
+                "indexed",
+                "private",
+                "scanning",
+                "unavailable"
+              ]
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "reused": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "bodyHash": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "bodyLength": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 40000
+        },
+        "proposalId": {
+          "type": "string",
+          "format": "uuid",
+          "pattern": "^[a-f0-9-]+$"
+        },
+        "policyOutcome": {
+          "type": "string",
+          "enum": [
+            "PASS",
+            "WARN",
+            "BLOCK"
+          ]
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "expiresAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "recordedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "generatedAt": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "date-time"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "errorCode": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "errorMessage": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "status",
+        "operation",
+        "binding",
+        "scopes",
+        "bodyHash",
+        "bodyLength",
+        "proposalId",
+        "policyOutcome",
+        "createdAt",
+        "expiresAt",
+        "recordedAt"
+      ],
+      "additionalProperties": false
     },
     "Canonical_ResearchShareOneTimeResult_9258e7d0": {
       "type": "object",

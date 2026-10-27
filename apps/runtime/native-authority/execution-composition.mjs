@@ -1,3 +1,16 @@
+import {createNoteIntentPreparer} from '../../control/intents/note-preparer.mjs';
+import {createNoteClient} from './note-client.mjs';
+import {createWatchPreparer} from '../../control/intents/watch-preparer.mjs';
+import {createWatchCoreClient} from './watch-client.mjs';
+import {createClientRecordPreparer} from '../../control/intents/client-record-preparer.mjs';
+import {createClientRecordCoreClient} from './client-record-client.mjs';
+import {createRelevancePreparer} from '../../control/intents/legiwatch-relevance-preparer.mjs';
+import {createLegiwatchPreparer} from '../../control/intents/legiwatch-preparer.mjs';
+import {createBizdevPreparer} from '../../control/intents/bizdev-preparer.mjs';
+import {createLegiwatchCoreClient} from './legiwatch-client.mjs';
+import {createBizdevCoreClient} from './bizdev-client.mjs';
+import {createLegislativeDocumentPreparer} from '../../control/intents/legislative-document-preparer.mjs';
+import {createLegislativeDocumentCoreClient} from './legislative-document-client.mjs';
 /** Native intent preparation uses the active SDK execution and current Core authority. */
 import {types} from 'node:util';
 import {memoryIntentPreparersFor} from '../product-ports/memory.mjs';
@@ -13,6 +26,7 @@ import {documentIntentPreparersFor} from '../artifacts/intent-binding.mjs';
 import {assertExecutionIdentity} from '../../control/conversations/execution-boundary.mjs';
 import {assertNativeConversationScope} from '../../../packages/contracts/runtime-0.2/session.mjs';
 import {createNativeTaskPreparers} from './native-task-preparers.mjs';
+import {createNativeMailPreparer} from './native-mail-preparer.mjs';
 import {createResearchSharingPreparers} from '../../control/intents/research-sharing-preparer.mjs';
 import {createResearchSharingCoreClient} from './research-sharing-client.mjs';
 import {createRoutinesServiceSecret} from './routines-core-client.mjs';
@@ -56,10 +70,34 @@ export function createAgentCoreIntentResolver({context,execution,transitionAutho
    getServiceSecret:createRoutinesServiceSecret({file:sharingCore.serviceSecretFile,reservedFiles:routinesReservedSecretFiles(configuration),readSecret:async path=>(await import('../config.mjs')).readSecret(path)}),
    reservedCredentials:createReservedCredentialDigests({files:routinesReservedSecretFiles(configuration),readSecret:async path=>(await import('../config.mjs')).readSecret(path)}),
    async getCredentials(selection){await fresh(selection.signal);return nativeCredentials.nativeCredentialFor({binding,selectedClientId:first.selectedClientId,signal:selection.signal});}}):null;
-  const preparers=[...routineIntentPreparersFor(context,{binding,selectedClientId:first.selectedClientId}),...documentIntentPreparersFor(context,{binding,scopes:first.scopes,selectedClientId:first.selectedClientId,policyRevision:first.policyRevision,expiresAtMs:first.execution.expiresAtMs,
+  const nativeLegiwatch=nativeCredentials&&sharingCore?createLegiwatchCoreClient({origin:sharingCore.origin,now,maxRequestMs:configuration.limits.requestMs,...(fetchImpl?{fetchImpl}:{}),
+   getServiceSecret:createRoutinesServiceSecret({file:sharingCore.serviceSecretFile,reservedFiles:routinesReservedSecretFiles(configuration),readSecret:async path=>(await import('../config.mjs')).readSecret(path)}),
+   reservedCredentials:createReservedCredentialDigests({files:routinesReservedSecretFiles(configuration),readSecret:async path=>(await import('../config.mjs')).readSecret(path)}),
+   async getCredentials(selection){await fresh(selection.signal);return nativeCredentials.nativeCredentialFor({binding,selectedClientId:first.selectedClientId,signal:selection.signal});}}):null;
+  const nativeNote=nativeCredentials&&sharingCore?createNoteClient({origin:sharingCore.origin,now,maxRequestMs:configuration.limits.requestMs,...(fetchImpl?{fetchImpl}:{}),
+   getServiceSecret:createRoutinesServiceSecret({file:sharingCore.serviceSecretFile,reservedFiles:routinesReservedSecretFiles(configuration),readSecret:async path=>(await import('../config.mjs')).readSecret(path)}),
+   reservedCredentials:createReservedCredentialDigests({files:routinesReservedSecretFiles(configuration),readSecret:async path=>(await import('../config.mjs')).readSecret(path)}),
+   async getCredentials(selection){await fresh(selection.signal);return nativeCredentials.nativeCredentialFor({binding,selectedClientId:first.selectedClientId,signal:selection.signal});}}):null;
+  const nativeWatch=nativeCredentials&&sharingCore?createWatchCoreClient({origin:sharingCore.origin,now,maxRequestMs:configuration.limits.requestMs,...(fetchImpl?{fetchImpl}:{}),
+   getServiceSecret:createRoutinesServiceSecret({file:sharingCore.serviceSecretFile,reservedFiles:routinesReservedSecretFiles(configuration),readSecret:async path=>(await import('../config.mjs')).readSecret(path)}),
+   reservedCredentials:createReservedCredentialDigests({files:routinesReservedSecretFiles(configuration),readSecret:async path=>(await import('../config.mjs')).readSecret(path)}),
+   async getCredentials(selection){await fresh(selection.signal);return nativeCredentials.nativeCredentialFor({binding,selectedClientId:first.selectedClientId,signal:selection.signal});}}):null;
+  const nativeLegislativeDocument=nativeCredentials&&sharingCore?createLegislativeDocumentCoreClient({origin:sharingCore.origin,now,maxRequestMs:configuration.limits.requestMs,...(fetchImpl?{fetchImpl}:{}),
+   getServiceSecret:createRoutinesServiceSecret({file:sharingCore.serviceSecretFile,reservedFiles:routinesReservedSecretFiles(configuration),readSecret:async path=>(await import('../config.mjs')).readSecret(path)}),
+   reservedCredentials:createReservedCredentialDigests({files:routinesReservedSecretFiles(configuration),readSecret:async path=>(await import('../config.mjs')).readSecret(path)}),
+   async getCredentials(selection){await fresh(selection.signal);return nativeCredentials.nativeCredentialFor({binding,selectedClientId:first.selectedClientId,signal:selection.signal});}}):null;
+  const nativeBizdev=nativeCredentials&&sharingCore?createBizdevCoreClient({origin:sharingCore.origin,now,maxRequestMs:configuration.limits.requestMs,...(fetchImpl?{fetchImpl}:{}),
+   getServiceSecret:createRoutinesServiceSecret({file:sharingCore.serviceSecretFile,reservedFiles:routinesReservedSecretFiles(configuration),readSecret:async path=>(await import('../config.mjs')).readSecret(path)}),
+   reservedCredentials:createReservedCredentialDigests({files:routinesReservedSecretFiles(configuration),readSecret:async path=>(await import('../config.mjs')).readSecret(path)}),
+   async getCredentials(selection){await fresh(selection.signal);return nativeCredentials.nativeCredentialFor({binding,selectedClientId:first.selectedClientId,signal:selection.signal});}}):null;
+  const nativeClientRecord=nativeCredentials&&sharingCore?createClientRecordCoreClient({origin:sharingCore.origin,now,maxRequestMs:configuration.limits.requestMs,...(fetchImpl?{fetchImpl}:{}),
+   getServiceSecret:createRoutinesServiceSecret({file:sharingCore.serviceSecretFile,reservedFiles:routinesReservedSecretFiles(configuration),readSecret:async path=>(await import('../config.mjs')).readSecret(path)}),
+   reservedCredentials:createReservedCredentialDigests({files:routinesReservedSecretFiles(configuration),readSecret:async path=>(await import('../config.mjs')).readSecret(path)}),
+   async getCredentials(selection){await fresh(selection.signal);return nativeCredentials.nativeCredentialFor({binding,selectedClientId:first.selectedClientId,signal:selection.signal});}}):null;
+  const preparers=[...(nativeNote?[createNoteIntentPreparer({binding,scopes:first.scopes,selectedClientId:first.selectedClientId,client:nativeNote,now,currentRights,policyRevision:first.policyRevision,deadlineMs:Math.min(deadlineMs,first.execution.expiresAtMs)})]:[]),...(nativeWatch?[createWatchPreparer({binding,scopes:first.scopes,selectedClientId:first.selectedClientId,client:nativeWatch,now,currentRights,policyRevision:first.policyRevision,deadlineMs:Math.min(deadlineMs,first.execution.expiresAtMs)})]:[]),...(nativeLegislativeDocument?['prepare_legiwatch_briefing','save_legislative_research'].map(operation=>createLegislativeDocumentPreparer({operation,binding,scopes:first.scopes,selectedClientId:first.selectedClientId,client:nativeLegislativeDocument,now,currentRights,policyRevision:first.policyRevision,deadlineMs:Math.min(deadlineMs,first.execution.expiresAtMs)})):[]),...(nativeBizdev?[createBizdevPreparer({binding,scopes:first.scopes,client:nativeBizdev,now,currentRights,policyRevision:first.policyRevision,deadlineMs:Math.min(deadlineMs,first.execution.expiresAtMs)})]:[]),...(nativeClientRecord?['create_client','update_client_profile'].map(operation=>createClientRecordPreparer({operation,binding,scopes:first.scopes,selectedClientId:first.selectedClientId,client:nativeClientRecord,now,currentRights,policyRevision:first.policyRevision,deadlineMs:Math.min(deadlineMs,first.execution.expiresAtMs)})):[]),...(nativeLegiwatch?[createLegiwatchPreparer({binding,scopes:first.scopes,selectedClientId:first.selectedClientId,client:nativeLegiwatch,now,currentRights,policyRevision:first.policyRevision,deadlineMs:Math.min(deadlineMs,first.execution.expiresAtMs)}),createRelevancePreparer({binding,scopes:first.scopes,selectedClientId:first.selectedClientId,client:nativeLegiwatch,now,currentRights,policyRevision:first.policyRevision,deadlineMs:Math.min(deadlineMs,first.execution.expiresAtMs)})]:[]),...routineIntentPreparersFor(context,{binding,selectedClientId:first.selectedClientId}),...documentIntentPreparersFor(context,{binding,scopes:first.scopes,selectedClientId:first.selectedClientId,policyRevision:first.policyRevision,expiresAtMs:first.execution.expiresAtMs,
    async readCurrent({signal}){const rights=await currentRights({signal,policyRevision:first.policyRevision});return {binding,scopes:rights.scopes,selectedClientId:first.selectedClientId,policyRevision:first.policyRevision,checkedAtMs:rights.checkedAtMs,expiresAtMs:Math.min(rights.expiresAtMs,first.execution.expiresAtMs)};},
    clientResolution:{clientId:first.selectedClientId},signal}),
-   ...(configuration.intents.core?[...createNativeTaskPreparers({pool,binding,scopes:first.scopes,selectedClientId:first.selectedClientId,policyRevision:first.policyRevision,
+   ...(configuration.intents.core?[createNativeMailPreparer({pool,binding,scopes:first.scopes,selectedClientId:first.selectedClientId,policyRevision:first.policyRevision,expiresAtMs:first.execution.expiresAtMs,currentRights,now,maxRequestMs:configuration.limits.requestMs}),...createNativeTaskPreparers({pool,binding,scopes:first.scopes,selectedClientId:first.selectedClientId,policyRevision:first.policyRevision,
     expiresAtMs:first.execution.expiresAtMs,currentRights,now,maxRequestMs:configuration.limits.requestMs,...(resolveClient?{async resolveClientReference(value){await fresh(value.signal);const result=await resolveClient({...value,binding,selectedClientId:first.selectedClientId});await fresh(value.signal);return result;}}:{})})]:[]),
    ...(nativeSharing?createResearchSharingPreparers({binding,scopes:first.scopes,selectedClientId:first.selectedClientId,client:nativeSharing,now,currentRights,policyRevision:first.policyRevision,deadlineMs:Math.min(deadlineMs,first.execution.expiresAtMs)}):[]),
    ...(configuration.memory?.enabled?memoryIntentPreparersFor(context,{binding,scopes:first.scopes,selectedClientId:first.selectedClientId,policyRevision:first.policyRevision,signal,deadlineMs:Math.min(deadlineMs,first.execution.expiresAtMs),

@@ -10,7 +10,7 @@
  * Data only, safe to import from the capability policy. */
 /** @typedef {{clientScope:'required'|'optional',requiredClientOperations?:readonly string[],operationIds?:readonly string[]}} ReadFamily */
 /** @type {Readonly<Record<string,Readonly<ReadFamily>>>} */
-export const READ_FAMILIES=Object.freeze({mail:Object.freeze({clientScope:'optional'}),
+export const READ_FAMILIES=Object.freeze({'watch-state':Object.freeze({clientScope:'optional'}),'legiwatch-relevance':Object.freeze({clientScope:'optional'}),'legiwatch-review':Object.freeze({clientScope:'optional'}),'legislative-comparisons':Object.freeze({clientScope:'optional'}),mail:Object.freeze({clientScope:'optional'}),
  'saved-records':Object.freeze({clientScope:'optional'}),
  'strategy-saved-records':Object.freeze({clientScope:'optional'}),
  'capiro-data':Object.freeze({clientScope:'optional'}),
@@ -53,7 +53,7 @@ export const READ_FAMILIES=Object.freeze({mail:Object.freeze({clientScope:'optio
  'public-data':Object.freeze({clientScope:'optional'}),
  'program-elements':Object.freeze({clientScope:'optional'}),
  'client-knowledge-search':Object.freeze({clientScope:'optional'}),
- 'business-development':Object.freeze({clientScope:'optional',operationIds:Object.freeze(['get_business_development_context','get_business_development_recent_changes','get_business_development_evidence']),requiredClientOperations:Object.freeze(['get_business_development_evidence'])}),
+ 'business-development':Object.freeze({clientScope:'optional',operationIds:Object.freeze(['get_business_development_context','get_business_development_recent_changes','get_business_development_evidence','get_business_development_brief','resolve_business_development_source']),requiredClientOperations:Object.freeze(['get_business_development_evidence'])}),
  'state-status-votes':Object.freeze({clientScope:'optional'}),
  'tracked-bills':Object.freeze({clientScope:'optional'}),
  'public-domain-hearings':Object.freeze({clientScope:'optional'}),

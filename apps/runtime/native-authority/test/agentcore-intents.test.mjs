@@ -106,3 +106,12 @@ test('native task metadata stored before authority loss stays uncertain and is n
  assert.notEqual((await f.post('prepare',input)).status,200);assert.equal(f.metadata.rows.size,1);assert.equal([...f.sql.state.rows.values()][0].state,'UNKNOWN');
  f.state.afterMetadata=null;f.state.revoked=false;assert.notEqual((await f.post('prepare',input)).status,200);assert.equal(f.metadata.rows.size,1);
 });
+
+
+test('current native resolver advertises direct saved-note owner beside governed write owners',async()=>{
+ const f=fixture({tasks:true,documents:false,general:true,resolveClients:true});
+ const result=await f.post('availability');assert.equal(result.status,200,await result.clone().text());
+ const ids=(await result.json()).operations.map(row=>row.id);
+ for(const operation of ['save_note','watch_action','save_business_development_brief','create_client','apply_legiwatch_suggestion','prepare_legiwatch_briefing','mail_send'])assert(ids.includes(operation),operation);
+ assert.equal(f.sql.state.rows.size,0);
+});

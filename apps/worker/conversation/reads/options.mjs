@@ -24,9 +24,14 @@ export function mergeReadOptions(mounted,reads){
  return {...mounted,mcpServers:{...(mounted.mcpServers??{}),...reads.mcpServers},allowedTools:[...(mounted.allowedTools??[]),...reads.allowedTools],
   hooks:mergeHookSets([mounted.hooks??{},reads.hooks]),canUseTool:mounted.canUseTool===undefined?reads.canUseTool:chainPermissions([mounted.canUseTool,reads.canUseTool])};
 }
-/** PROPOSAL P12 (pending owner approval of the exact text): the default prompt's source sentence is conditional on
- * whether `meri_reads` is mounted. Unmounted, the existing sentence is unchanged and remains true.
- * @param {boolean} mounted */
-export function readPromptSentence(mounted){
- return mounted?'Only the read-only institutional source tools listed for this activity are enabled; every other institutional source is unavailable.':'No institutional source tool is enabled for this activity.';
+/** Guidance follows the mounted tools; it cannot widen the profile or a selected skill.
+ * @param {boolean} mounted @param {readonly string[]} [tools] */
+export function readPromptSentence(mounted,tools=[]){
+ if(!mounted)return 'No institutional source tool is enabled for this activity.';
+ const has=(/** @type {string} */name)=>tools.includes(READ_TOOL_PREFIX+name);
+ const guidance=['Only the read-only institutional source tools listed for this activity are enabled; every other institutional source is unavailable.'];
+ if(has('describe_capiro_data')&&has('query_capiro_data'))guidance.push('For structured Capiro questions, describe_capiro_data first supplies the available relations, fields, keys and coverage; then author SELECT SQL for query_capiro_data with bound parameters. Public data is the default. For saved client business records use source client_records, preserving the current conversation scope; clientId only narrows access and never grants it. Join full declared relationship keys and page with the complete ordered key. Keep integer and decimal strings exact, preserve nulls, and report rowLimitReached, byteTruncated and authored LIMIT separately. Query coverage is not source-universe completeness. Keep canonical IDs and source locators; derived SQL rows and aggregates are not immutable source passages. Use retained decisive readers for bill text, report excerpts and consolidated PE funding. The legacy global query tools still cover twelve datasets that the SQL relations do not replace.');
+ if(has('read_saved_record'))guidance.push('Use read_saved_record for saved document/version/comment, newsletter, HillDay and LegiWatch records through their current owners. Selected-client mode permits only kinds with an authoritative matching client selector; a General-only kind must be refused in that mode, never silently broadened. Saved records do not trigger fresh research or semantic indexing.');
+ if(has('read_saved_strategy_records'))guidance.push('Use read_saved_strategy_records for saved Strategy/planner/history records with the exact client and parent selector. Follow its cursor and disclose bounded coverage; saved history is not a command to regenerate, restore or execute work.');
+ return guidance.join(' ');
 }

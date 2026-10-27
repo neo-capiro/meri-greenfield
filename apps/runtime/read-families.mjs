@@ -18,7 +18,7 @@ import {projectCapabilityRole} from './product-ports/capability-policy.mjs';
 
 export {GENERAL_READ_ADAPTER_FAMILIES};
 const key=op=>`${op.id}@${op.version}`,deny=code=>{throw nativeReadFault(code);};
-const ORDINARY_FAMILIES=new Set(['action-items-complete','memory-proposals','client-knowledge-memory','client-knowledge-monday','client-documents','client-knowledge-profile','tenant-contacts','entity-candidates','meeting-source','operational-reads','mail','research-portfolio','research-portfolio-evidence','florida-budget']);
+const ORDINARY_FAMILIES=new Set(['action-items-complete','memory-proposals','client-knowledge-memory','client-knowledge-monday','client-documents','client-knowledge-profile','tenant-contacts','entity-candidates','meeting-source','operational-reads','mail','research-portfolio','research-portfolio-evidence']);
 const uuid=digest=>`${digest.slice(0,8)}-${digest.slice(8,12)}-5${digest.slice(13,16)}-a${digest.slice(17,20)}-${digest.slice(20,32)}`;
 
 export function prepareReadFamilies({familyIds,coreOrigin,fetchImpl,now,newId,capabilityPolicy,defaultCongress,getNativeCredential,getServiceSecret,getReadModeServiceSecret,memoryContexts}){
@@ -64,7 +64,7 @@ export function prepareReadFamilies({familyIds,coreOrigin,fetchImpl,now,newId,ca
      if(family==='research-portfolio-evidence')return {binding:full.binding,bearerToken:full.bearerToken,expiresAtMs:full.expiresAtMs};
      const {serviceSecret,...credentials}=full;return credentials;
     };
-    families[family]=['action-items-complete','memory-proposals','operational-reads','research-portfolio','research-portfolio-evidence','florida-budget'].includes(family)?{...transport,origin:coreOrigin}:
+    families[family]=['action-items-complete','memory-proposals','operational-reads','research-portfolio','research-portfolio-evidence'].includes(family)?{...transport,origin:coreOrigin}:
      {...transport,endpoints:Object.fromEntries(familyOperations(family).map(op=>[op.id,new URL(`/api/clio/tools/${op.id}`,coreOrigin).href]))};
    }
    else if(family==='dataset-metadata')families[family]={registry:publicDomainDatasetRegistry};

@@ -1,3 +1,4 @@
+import {createHash} from 'node:crypto';
 import {assertMailBodySection} from './mail-utf16.mjs';
 import { canonicalSha256 } from '../validate.mjs';
 const fail = message => { throw new Error(message); };
@@ -64,6 +65,17 @@ function assertMailThreadSourcePage(page, input) {
     const source = page.sources.find(row => row.sourceId === message.sourceId);
     if (source.authority !== 'authoritative') fail('Stored mail body requires authoritative source');
     if (page.snapshotVersionId !== null && source.snapshotVersionId !== page.snapshotVersionId) fail('Mail snapshot lineage mismatch');
+    if (message.nativeActions !== undefined) {
+      if (normalized.messageId === null) fail('Native mail context requires exact selected message');
+      unique(message.nativeActions.map(a=>a.mode),'native mail action');
+      for(const a of message.nativeActions){
+        const o=a.original,recipients=[...a.to,...a.cc];
+        if(a.senderConnectionId!==message.mailboxId||o.threadId!==message.threadId||o.messageId!==message.messageId||o.updatedAt!==message.recordVersionId||
+          new Set(recipients).size!==recipients.length||a.mode==='reply'&&(a.to.length!==1||a.cc.length!==0)||a.mode==='reply_all'&&a.to.length===0||
+          (a.mode==='forward'?(recipients.length!==0||o.bodySha256!==message.contentSha256||typeof a.originalBodyText!=='string'||a.originalBodyText.length>6000||createHash('sha256').update(a.originalBodyText,'utf8').digest('hex')!==o.bodySha256):
+          o.bodySha256!==null||Object.hasOwn(a,'originalBodyText'))) fail('Native mail context lineage mismatch');
+      }
+    }
     const section = message.section, length = section.text?.length;
     if (section.endExclusive < section.start || (section.text !== null && length !== section.endExclusive - section.start)) fail('Mail UTF-16 section length mismatch');
     if (section.text === null && (!['missing', 'unknown'].includes(message.bodyCompleteness) || section.totalCodeUnits !== null || section.start !== section.endExclusive)) fail('Missing mail text cannot claim material or known size');

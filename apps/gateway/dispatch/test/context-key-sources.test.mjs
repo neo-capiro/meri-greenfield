@@ -13,7 +13,7 @@ const keyed=reads.filter(binding=>(binding.contextKeys??[]).length);
 
 test('every registered read with context keys has a trusted producer for each key and never uses the generic path',()=>{
  const covered=keyed.filter(binding=>registered.has(binding.id));
- assert.equal(covered.length,38);
+ assert.equal(covered.length,50);
  for(const binding of covered){
   const supply=readContextSupply(binding);
   assert.notEqual(supply.path,'generic',binding.id);
@@ -23,7 +23,7 @@ test('every registered read with context keys has a trusted producer for each ke
 
 test('keys without a trusted producer exist only on unregistered reads, exactly these',()=>{
  const unsupplied=keyed.filter(binding=>readContextSupply(binding).keys.some(k=>k.source===null)).map(binding=>binding.id).sort();
- assert.deepEqual(unsupplied,['get_certification_status','get_state_rule_status','read_chat_attachments','search_sam_opportunities']);
+ assert.deepEqual(unsupplied,['read_chat_attachments']);
  for(const id of unsupplied)assert.equal(registered.has(id),false,id);
 });
 
@@ -32,9 +32,9 @@ test('the classifier follows operation-context.mjs path selection',()=>{
  assert.equal(path('search_funding_opportunities'),'native');assert.equal(path('read_bill_text'),'native');
  assert.equal(readContextPath(CATALOG_OPERATION_BINDINGS.find(b=>b.id==='read_bill_text'),{nativePortsComposed:false}),'bill-text');
  for(const binding of keyed.filter(b=>registered.has(b.id)))for(const {key,source} of readContextSupply(binding,{nativePortsComposed:false}).keys)assert.ok(source,`${binding.id}.${key} without native ports`);
- assert.equal(path('get_research_portfolio'),'retained');assert.equal(path('get_florida_budget_project'),'retained');
+ assert.equal(path('get_research_portfolio'),'retained');assert.equal(path('get_florida_budget_project'),'native');
  assert.equal(path('get_client_context'),'profile:bound-projection/1');assert.equal(path('actions.query'),'profile:actions-complete/1');
- assert.equal(path('search_sam_opportunities'),'generic');
+ assert.equal(path('search_sam_opportunities'),'native');
  // bill-text has two trusted producers (native when native ports are composed, otherwise the bill-text context); both supply the key.
  assert.ok(CONTEXT_KEY_SOURCES.native.defaultCongress&&CONTEXT_KEY_SOURCES['bill-text'].defaultCongress);
 });

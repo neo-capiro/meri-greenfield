@@ -8,10 +8,19 @@ export type IntentsApplicationEnvelope =
   | IntentsDecideRequest
   | IntentsNativeProposal
   | IntentsProposal
+  | Canonical_ClientRecordProposalB620B25B
+  | Canonical_LegiwatchProposal_1F841734
+  | Canonical_BizdevProposalA770314C
+  | Canonical_WatchProposal_14Eddeec
   | Canonical_ResearchShareProposal_1Cdbd32E
   | Canonical_ApprovalDecision_5E8Bdbcf
   | Canonical_TaskCreateArguments_1202C301
   | Canonical_TaskUpdateArguments_48509A7A
+  | Canonical_MailSendArguments_016B3776
+  | Canonical_MailSendContext_7D8B78F1
+  | Canonical_MailSendCommand_981E52Ba
+  | IntentsMailSendResult
+  | IntentsNativeMailOutcome
   | Canonical_ArtifactFileArguments_6F2B3978
   | IntentsNativeTaskOutcome
   | IntentsNativeArtifactFileOutcome
@@ -29,7 +38,19 @@ export type IntentsApplicationEnvelope =
   | IntentsScheduleReviewItem
   | IntentsWithheldScheduleItem
   | IntentsWithheldProposalItem
+  | IntentsLegiwatchItem
+  | IntentsLegislativeDocumentItem
+  | IntentsWithheldLegislativeDocumentItem
+  | IntentsClientRecordItem
+  | IntentsWithheldLegiwatchItem
+  | IntentsWithheldClientRecordItem
+  | IntentsBizdevItem
+  | IntentsWithheldBizdevItem
+  | IntentsWatchItem
+  | IntentsWithheldWatchItem
   | IntentsResearchShareItem
+  | IntentsSavedNoteItem
+  | IntentsWithheldSavedNoteItem
   | IntentsWithheldResearchShareItem
   | IntentsProposalItem
   | IntentsItem
@@ -52,14 +73,74 @@ export type IntentsDeliveryId = string;
 export type IntentsNativeProposal =
   | Canonical_ApprovalProposalD1A3E74F
   | Canonical_TaskUpdateApprovalProposal_1F70E582
+  | Canonical_MailSendApprovalProposalC6Ab2C41
   | Canonical_DocumentDraftApprovalProposal_834C2460;
-export type IntentsProposal = IntentsNativeProposal | Canonical_ResearchShareProposal_1Cdbd32E;
+export type IntentsProposal =
+  | IntentsNativeProposal
+  | Canonical_ResearchShareProposal_1Cdbd32E
+  | Canonical_LegiwatchProposal_1F841734
+  | Canonical_WatchProposal_14Eddeec
+  | Canonical_ClientRecordProposalB620B25B
+  | Canonical_BizdevProposalA770314C
+  | Canonical_LegislativeDocumentProposal_3D80036F;
+export type Canonical_LegiwatchRequest_5Cff194F =
+  Canonical_SuggestionLegiwatchRequestD59A433F | Canonical_RelevanceRequest_3250901F;
+export type Canonical_WatchRequest_1E607664 = {
+  family: 'legiwatch_keyword' | 'business_development_prospect' | 'defense_budget_target' | 'client_watchlist';
+  clientId: string | null;
+  targetKind: string;
+  targetKey: string;
+  operation: 'subscribe' | 'pause' | 'resume' | 'unsubscribe' | 'set_delivery';
+  expectedVersion: number;
+  sourceRevision: string | null;
+  reason: string | null;
+  enabled: boolean | null;
+  requestKey: string;
+};
+export type Canonical_ClientRecordRequestE2A54772 =
+  | {
+      operation: 'create_client';
+      input: Canonical_CreateClientInputC55F4423;
+    }
+  | {
+      operation: 'update_client_profile';
+      input: Canonical_UpdateClientProfileInput_8Caec89E;
+    };
+export type IntentsMailSendResult =
+  | {
+      state: 'failed';
+      intentId: string;
+      requestKey: string;
+      retryable: false;
+    }
+  | {
+      state: 'accepted';
+      intentId: string;
+      requestKey: string;
+      retryable: false;
+      threadId: string;
+      messageId: string;
+      provider: 'gmail' | 'microsoft_graph';
+      senderConnectionId: string;
+      senderEmail: string;
+      mode: 'send' | 'reply' | 'reply_all' | 'forward';
+      original: {
+        threadId: string;
+        messageId: string;
+        updatedAt: string;
+        bodySha256: string | null;
+      } | null;
+      signaturePolicy: 'actor';
+      signatureAppended: boolean;
+      mailboxConfirmation: null | 'pending' | 'confirmed';
+    };
 export type IntentsExecutionOutcome =
   | {
       receipt: Canonical_CommandReceiptAc49Ee1E;
       result: Canonical_TaskCreateResult_0501C509;
     }
   | IntentsNativeTaskOutcome
+  | IntentsNativeMailOutcome
   | IntentsNativeArtifactFileOutcome
   | Canonical_ArtifactCreatedResult_183A755E;
 export type Canonical_ArtifactVersion_7F9C56Fa =
@@ -295,6 +376,1507 @@ export type CanonicalRuns_0Ce2594A =
       Canonical_Run_8D674B59,
       Canonical_Run_8D674B59
     ];
+export type Canonical_LegiwatchStatusCbe9731F =
+  | 'proposed'
+  | 'approved'
+  | 'executing'
+  | 'succeeded'
+  | 'failed_retryable'
+  | 'failed_terminal'
+  | 'outcome_unknown'
+  | 'blocked'
+  | 'dismissed'
+  | 'expired';
+export type Canonical_LegiwatchReceipt_706F9465 =
+  Canonical_SuggestionLegiwatchReceiptD2466C8D | Canonical_RelevanceReceiptEf963586;
+export type Canonical_LegislativeDocumentStatus_63289936 =
+  | 'proposed'
+  | 'approved'
+  | 'executing'
+  | 'succeeded'
+  | 'failed_retryable'
+  | 'failed_terminal'
+  | 'outcome_unknown'
+  | 'blocked'
+  | 'dismissed'
+  | 'expired';
+export type Canonical_LegislativeDocumentEffect_69D4Cb58 = 'complete' | 'selection_only' | 'unknown';
+export type Canonical_ClientRecordStatus_58565696 =
+  | 'proposed'
+  | 'approved'
+  | 'executing'
+  | 'succeeded'
+  | 'failed_retryable'
+  | 'failed_terminal'
+  | 'outcome_unknown'
+  | 'blocked'
+  | 'dismissed'
+  | 'expired';
+export type Canonical_ClientRecordReceipt_8A925D68 =
+  | {
+      request: Canonical_ClientRecordRequestE2A54772;
+      outcome: 'created';
+      created: true;
+      client: {
+        id: string;
+        name: string;
+        website: string | null;
+      };
+      ldaMatch: {
+        ldaClientId: number;
+        name: string;
+        totalFilings: number;
+        latestFilingYear: number | null;
+      } | null;
+    }
+  | {
+      request: Canonical_ClientRecordRequestE2A54772;
+      outcome: 'updated' | 'partially_updated' | 'not_updated' | 'unchanged';
+      tool: 'update_client_profile';
+      updated: true;
+      clientId: string;
+      clientName: string;
+      /**
+       * @maxItems 13
+       */
+      fieldsWritten:
+        | []
+        | [
+            | 'name'
+            | 'website'
+            | 'description'
+            | 'productDescription'
+            | 'primaryContactName'
+            | 'primaryContactEmail'
+            | 'primaryContactPhone'
+            | 'sectorTag'
+            | 'uei'
+            | 'cageCode'
+            | 'issueCodes'
+            | 'naicsCodes'
+            | 'pscCodes'
+          ]
+        | [
+            (
+              | 'name'
+              | 'website'
+              | 'description'
+              | 'productDescription'
+              | 'primaryContactName'
+              | 'primaryContactEmail'
+              | 'primaryContactPhone'
+              | 'sectorTag'
+              | 'uei'
+              | 'cageCode'
+              | 'issueCodes'
+              | 'naicsCodes'
+              | 'pscCodes'
+            ),
+            (
+              | 'name'
+              | 'website'
+              | 'description'
+              | 'productDescription'
+              | 'primaryContactName'
+              | 'primaryContactEmail'
+              | 'primaryContactPhone'
+              | 'sectorTag'
+              | 'uei'
+              | 'cageCode'
+              | 'issueCodes'
+              | 'naicsCodes'
+              | 'pscCodes'
+            )
+          ]
+        | [
+            (
+              | 'name'
+              | 'website'
+              | 'description'
+              | 'productDescription'
+              | 'primaryContactName'
+              | 'primaryContactEmail'
+              | 'primaryContactPhone'
+              | 'sectorTag'
+              | 'uei'
+              | 'cageCode'
+              | 'issueCodes'
+              | 'naicsCodes'
+              | 'pscCodes'
+            ),
+            (
+              | 'name'
+              | 'website'
+              | 'description'
+              | 'productDescription'
+              | 'primaryContactName'
+              | 'primaryContactEmail'
+              | 'primaryContactPhone'
+              | 'sectorTag'
+              | 'uei'
+              | 'cageCode'
+              | 'issueCodes'
+              | 'naicsCodes'
+              | 'pscCodes'
+            ),
+            (
+              | 'name'
+              | 'website'
+              | 'description'
+              | 'productDescription'
+              | 'primaryContactName'
+              | 'primaryContactEmail'
+              | 'primaryContactPhone'
+              | 'sectorTag'
+              | 'uei'
+              | 'cageCode'
+              | 'issueCodes'
+              | 'naicsCodes'
+              | 'pscCodes'
+            )
+          ]
+        | [
+            (
+              | 'name'
+              | 'website'
+              | 'description'
+              | 'productDescription'
+              | 'primaryContactName'
+              | 'primaryContactEmail'
+              | 'primaryContactPhone'
+              | 'sectorTag'
+              | 'uei'
+              | 'cageCode'
+              | 'issueCodes'
+              | 'naicsCodes'
+              | 'pscCodes'
+            ),
+            (
+              | 'name'
+              | 'website'
+              | 'description'
+              | 'productDescription'
+              | 'primaryContactName'
+              | 'primaryContactEmail'
+              | 'primaryContactPhone'
+              | 'sectorTag'
+              | 'uei'
+              | 'cageCode'
+              | 'issueCodes'
+              | 'naicsCodes'
+              | 'pscCodes'
+            ),
+            (
+              | 'name'
+              | 'website'
+              | 'description'
+              | 'productDescription'
+              | 'primaryContactName'
+              | 'primaryContactEmail'
+              | 'primaryContactPhone'
+              | 'sectorTag'
+              | 'uei'
+              | 'cageCode'
+              | 'issueCodes'
+              | 'naicsCodes'
+              | 'pscCodes'
+            ),
+            (
+              | 'name'
+              | 'website'
+              | 'description'
+              | 'productDescription'
+              | 'primaryContactName'
+              | 'primaryContactEmail'
+              | 'primaryContactPhone'
+              | 'sectorTag'
+              | 'uei'
+              | 'cageCode'
+              | 'issueCodes'
+              | 'naicsCodes'
+              | 'pscCodes'
+            )
+          ]
+        | [
+            (
+              | 'name'
+              | 'website'
+              | 'description'
+              | 'productDescription'
+              | 'primaryContactName'
+              | 'primaryContactEmail'
+              | 'primaryContactPhone'
+              | 'sectorTag'
+              | 'uei'
+              | 'cageCode'
+              | 'issueCodes'
+              | 'naicsCodes'
+              | 'pscCodes'
+            ),
+            (
+              | 'name'
+              | 'website'
+              | 'description'
+              | 'productDescription'
+              | 'primaryContactName'
+              | 'primaryContactEmail'
+              | 'primaryContactPhone'
+              | 'sectorTag'
+              | 'uei'
+              | 'cageCode'
+              | 'issueCodes'
+              | 'naicsCodes'
+              | 'pscCodes'
+            ),
+            (
+              | 'name'
+              | 'website'
+              | 'description'
+              | 'productDescription'
+              | 'primaryContactName'
+              | 'primaryContactEmail'
+              | 'primaryContactPhone'
+              | 'sectorTag'
+              | 'uei'
+              | 'cageCode'
+              | 'issueCodes'
+              | 'naicsCodes'
+              | 'pscCodes'
+            ),
+            (
+              | 'name'
+              | 'website'
+              | 'description'
+              | 'productDescription'
+              | 'primaryContactName'
+              | 'primaryContactEmail'
+              | 'primaryContactPhone'
+              | 'sectorTag'
+              | 'uei'
+              | 'cageCode'
+              | 'issueCodes'
+              | 'naicsCodes'
+              | 'pscCodes'
+            ),
+            (
+              | 'name'
+              | 'website'
+              | 'description'
+              | 'productDescription'
+              | 'primaryContactName'
+              | 'primaryContactEmail'
+              | 'primaryContactPhone'
+              | 'sectorTag'
+              | 'uei'
+              | 'cageCode'
+              | 'issueCodes'
+              | 'naicsCodes'
+              | 'pscCodes'
+            )
+          ]
+        | [
+            (
+              | 'name'
+              | 'website'
+              | 'description'
+              | 'productDescription'
+              | 'primaryContactName'
+              | 'primaryContactEmail'
+              | 'primaryContactPhone'
+              | 'sectorTag'
+              | 'uei'
+              | 'cageCode'
+              | 'issueCodes'
+              | 'naicsCodes'
+              | 'pscCodes'
+            ),
+            (
+              | 'name'
+              | 'website'
+              | 'description'
+              | 'productDescription'
+              | 'primaryContactName'
+              | 'primaryContactEmail'
+              | 'primaryContactPhone'
+              | 'sectorTag'
+              | 'uei'
+              | 'cageCode'
+              | 'issueCodes'
+              | 'naicsCodes'
+              | 'pscCodes'
+            ),
+            (
+              | 'name'
+              | 'website'
+              | 'description'
+              | 'productDescription'
+              | 'primaryContactName'
+              | 'primaryContactEmail'
+              | 'primaryContactPhone'
+              | 'sectorTag'
+              | 'uei'
+              | 'cageCode'
+              | 'issueCodes'
+              | 'naicsCodes'
+              | 'pscCodes'
+            ),
+            (
+              | 'name'
+              | 'website'
+              | 'description'
+              | 'productDescription'
+              | 'primaryContactName'
+              | 'primaryContactEmail'
+              | 'primaryContactPhone'
+              | 'sectorTag'
+              | 'uei'
+              | 'cageCode'
+              | 'issueCodes'
+              | 'naicsCodes'
+              | 'pscCodes'
+            ),
+            (
+              | 'name'
+              | 'website'
+              | 'description'
+              | 'productDescription'
+              | 'primaryContactName'
+              | 'primaryContactEmail'
+              | 'primaryContactPhone'
+              | 'sectorTag'
+              | 'uei'
+              | 'cageCode'
+              | 'issueCodes'
+              | 'naicsCodes'
+              | 'pscCodes'
+            ),
+            (
+              | 'name'
+              | 'website'
+              | 'description'
+              | 'productDescription'
+              | 'primaryContactName'
+              | 'primaryContactEmail'
+              | 'primaryContactPhone'
+              | 'sectorTag'
+              | 'uei'
+              | 'cageCode'
+              | 'issueCodes'
+              | 'naicsCodes'
+              | 'pscCodes'
+            )
+          ]
+        | [
+            (
+              | 'name'
+              | 'website'
+              | 'description'
+              | 'productDescription'
+              | 'primaryContactName'
+              | 'primaryContactEmail'
+              | 'primaryContactPhone'
+              | 'sectorTag'
+              | 'uei'
+              | 'cageCode'
+              | 'issueCodes'
+              | 'naicsCodes'
+              | 'pscCodes'
+            ),
+            (
+              | 'name'
+              | 'website'
+              | 'description'
+              | 'productDescription'
+              | 'primaryContactName'
+              | 'primaryContactEmail'
+              | 'primaryContactPhone'
+              | 'sectorTag'
+              | 'uei'
+              | 'cageCode'
+              | 'issueCodes'
+              | 'naicsCodes'
+              | 'pscCodes'
+            ),
+            (
+              | 'name'
+              | 'website'
+              | 'description'
+              | 'productDescription'
+              | 'primaryContactName'
+              | 'primaryContactEmail'
+              | 'primaryContactPhone'
+              | 'sectorTag'
+              | 'uei'
+              | 'cageCode'
+              | 'issueCodes'
+              | 'naicsCodes'
+              | 'pscCodes'
+            ),
+            (
+              | 'name'
+              | 'website'
+              | 'description'
+              | 'productDescription'
+              | 'primaryContactName'
+              | 'primaryContactEmail'
+              | 'primaryContactPhone'
+              | 'sectorTag'
+              | 'uei'
+              | 'cageCode'
+              | 'issueCodes'
+              | 'naicsCodes'
+              | 'pscCodes'
+            ),
+            (
+              | 'name'
+              | 'website'
+              | 'description'
+              | 'productDescription'
+              | 'primaryContactName'
+              | 'primaryContactEmail'
+              | 'primaryContactPhone'
+              | 'sectorTag'
+              | 'uei'
+              | 'cageCode'
+              | 'issueCodes'
+              | 'naicsCodes'
+              | 'pscCodes'
+            ),
+            (
+              | 'name'
+              | 'website'
+              | 'description'
+              | 'productDescription'
+              | 'primaryContactName'
+              | 'primaryContactEmail'
+              | 'primaryContactPhone'
+              | 'sectorTag'
+              | 'uei'
+              | 'cageCode'
+              | 'issueCodes'
+              | 'naicsCodes'
+              | 'pscCodes'
+            ),
+            (
+              | 'name'
+              | 'website'
+              | 'description'
+              | 'productDescription'
+              | 'primaryContactName'
+              | 'primaryContactEmail'
+              | 'primaryContactPhone'
+              | 'sectorTag'
+              | 'uei'
+              | 'cageCode'
+              | 'issueCodes'
+              | 'naicsCodes'
+              | 'pscCodes'
+            )
+          ]
+        | [
+            (
+              | 'name'
+              | 'website'
+              | 'description'
+              | 'productDescription'
+              | 'primaryContactName'
+              | 'primaryContactEmail'
+              | 'primaryContactPhone'
+              | 'sectorTag'
+              | 'uei'
+              | 'cageCode'
+              | 'issueCodes'
+              | 'naicsCodes'
+              | 'pscCodes'
+            ),
+            (
+              | 'name'
+              | 'website'
+              | 'description'
+              | 'productDescription'
+              | 'primaryContactName'
+              | 'primaryContactEmail'
+              | 'primaryContactPhone'
+              | 'sectorTag'
+              | 'uei'
+              | 'cageCode'
+              | 'issueCodes'
+              | 'naicsCodes'
+              | 'pscCodes'
+            ),
+            (
+              | 'name'
+              | 'website'
+              | 'description'
+              | 'productDescription'
+              | 'primaryContactName'
+              | 'primaryContactEmail'
+              | 'primaryContactPhone'
+              | 'sectorTag'
+              | 'uei'
+              | 'cageCode'
+              | 'issueCodes'
+              | 'naicsCodes'
+              | 'pscCodes'
+            ),
+            (
+              | 'name'
+              | 'website'
+              | 'description'
+              | 'productDescription'
+              | 'primaryContactName'
+              | 'primaryContactEmail'
+              | 'primaryContactPhone'
+              | 'sectorTag'
+              | 'uei'
+              | 'cageCode'
+              | 'issueCodes'
+              | 'naicsCodes'
+              | 'pscCodes'
+            ),
+            (
+              | 'name'
+              | 'website'
+              | 'description'
+              | 'productDescription'
+              | 'primaryContactName'
+              | 'primaryContactEmail'
+              | 'primaryContactPhone'
+              | 'sectorTag'
+              | 'uei'
+              | 'cageCode'
+              | 'issueCodes'
+              | 'naicsCodes'
+              | 'pscCodes'
+            ),
+            (
+              | 'name'
+              | 'website'
+              | 'description'
+              | 'productDescription'
+              | 'primaryContactName'
+              | 'primaryContactEmail'
+              | 'primaryContactPhone'
+              | 'sectorTag'
+              | 'uei'
+              | 'cageCode'
+              | 'issueCodes'
+              | 'naicsCodes'
+              | 'pscCodes'
+            ),
+            (
+              | 'name'
+              | 'website'
+              | 'description'
+              | 'productDescription'
+              | 'primaryContactName'
+              | 'primaryContactEmail'
+              | 'primaryContactPhone'
+              | 'sectorTag'
+              | 'uei'
+              | 'cageCode'
+              | 'issueCodes'
+              | 'naicsCodes'
+              | 'pscCodes'
+            ),
+            (
+              | 'name'
+              | 'website'
+              | 'description'
+              | 'productDescription'
+              | 'primaryContactName'
+              | 'primaryContactEmail'
+              | 'primaryContactPhone'
+              | 'sectorTag'
+              | 'uei'
+              | 'cageCode'
+              | 'issueCodes'
+              | 'naicsCodes'
+              | 'pscCodes'
+            )
+          ]
+        | [
+            (
+              | 'name'
+              | 'website'
+              | 'description'
+              | 'productDescription'
+              | 'primaryContactName'
+              | 'primaryContactEmail'
+              | 'primaryContactPhone'
+              | 'sectorTag'
+              | 'uei'
+              | 'cageCode'
+              | 'issueCodes'
+              | 'naicsCodes'
+              | 'pscCodes'
+            ),
+            (
+              | 'name'
+              | 'website'
+              | 'description'
+              | 'productDescription'
+              | 'primaryContactName'
+              | 'primaryContactEmail'
+              | 'primaryContactPhone'
+              | 'sectorTag'
+              | 'uei'
+              | 'cageCode'
+              | 'issueCodes'
+              | 'naicsCodes'
+              | 'pscCodes'
+            ),
+            (
+              | 'name'
+              | 'website'
+              | 'description'
+              | 'productDescription'
+              | 'primaryContactName'
+              | 'primaryContactEmail'
+              | 'primaryContactPhone'
+              | 'sectorTag'
+              | 'uei'
+              | 'cageCode'
+              | 'issueCodes'
+              | 'naicsCodes'
+              | 'pscCodes'
+            ),
+            (
+              | 'name'
+              | 'website'
+              | 'description'
+              | 'productDescription'
+              | 'primaryContactName'
+              | 'primaryContactEmail'
+              | 'primaryContactPhone'
+              | 'sectorTag'
+              | 'uei'
+              | 'cageCode'
+              | 'issueCodes'
+              | 'naicsCodes'
+              | 'pscCodes'
+            ),
+            (
+              | 'name'
+              | 'website'
+              | 'description'
+              | 'productDescription'
+              | 'primaryContactName'
+              | 'primaryContactEmail'
+              | 'primaryContactPhone'
+              | 'sectorTag'
+              | 'uei'
+              | 'cageCode'
+              | 'issueCodes'
+              | 'naicsCodes'
+              | 'pscCodes'
+            ),
+            (
+              | 'name'
+              | 'website'
+              | 'description'
+              | 'productDescription'
+              | 'primaryContactName'
+              | 'primaryContactEmail'
+              | 'primaryContactPhone'
+              | 'sectorTag'
+              | 'uei'
+              | 'cageCode'
+              | 'issueCodes'
+              | 'naicsCodes'
+              | 'pscCodes'
+            ),
+            (
+              | 'name'
+              | 'website'
+              | 'description'
+              | 'productDescription'
+              | 'primaryContactName'
+              | 'primaryContactEmail'
+              | 'primaryContactPhone'
+              | 'sectorTag'
+              | 'uei'
+              | 'cageCode'
+              | 'issueCodes'
+              | 'naicsCodes'
+              | 'pscCodes'
+            ),
+            (
+              | 'name'
+              | 'website'
+              | 'description'
+              | 'productDescription'
+              | 'primaryContactName'
+              | 'primaryContactEmail'
+              | 'primaryContactPhone'
+              | 'sectorTag'
+              | 'uei'
+              | 'cageCode'
+              | 'issueCodes'
+              | 'naicsCodes'
+              | 'pscCodes'
+            ),
+            (
+              | 'name'
+              | 'website'
+              | 'description'
+              | 'productDescription'
+              | 'primaryContactName'
+              | 'primaryContactEmail'
+              | 'primaryContactPhone'
+              | 'sectorTag'
+              | 'uei'
+              | 'cageCode'
+              | 'issueCodes'
+              | 'naicsCodes'
+              | 'pscCodes'
+            )
+          ]
+        | [
+            (
+              | 'name'
+              | 'website'
+              | 'description'
+              | 'productDescription'
+              | 'primaryContactName'
+              | 'primaryContactEmail'
+              | 'primaryContactPhone'
+              | 'sectorTag'
+              | 'uei'
+              | 'cageCode'
+              | 'issueCodes'
+              | 'naicsCodes'
+              | 'pscCodes'
+            ),
+            (
+              | 'name'
+              | 'website'
+              | 'description'
+              | 'productDescription'
+              | 'primaryContactName'
+              | 'primaryContactEmail'
+              | 'primaryContactPhone'
+              | 'sectorTag'
+              | 'uei'
+              | 'cageCode'
+              | 'issueCodes'
+              | 'naicsCodes'
+              | 'pscCodes'
+            ),
+            (
+              | 'name'
+              | 'website'
+              | 'description'
+              | 'productDescription'
+              | 'primaryContactName'
+              | 'primaryContactEmail'
+              | 'primaryContactPhone'
+              | 'sectorTag'
+              | 'uei'
+              | 'cageCode'
+              | 'issueCodes'
+              | 'naicsCodes'
+              | 'pscCodes'
+            ),
+            (
+              | 'name'
+              | 'website'
+              | 'description'
+              | 'productDescription'
+              | 'primaryContactName'
+              | 'primaryContactEmail'
+              | 'primaryContactPhone'
+              | 'sectorTag'
+              | 'uei'
+              | 'cageCode'
+              | 'issueCodes'
+              | 'naicsCodes'
+              | 'pscCodes'
+            ),
+            (
+              | 'name'
+              | 'website'
+              | 'description'
+              | 'productDescription'
+              | 'primaryContactName'
+              | 'primaryContactEmail'
+              | 'primaryContactPhone'
+              | 'sectorTag'
+              | 'uei'
+              | 'cageCode'
+              | 'issueCodes'
+              | 'naicsCodes'
+              | 'pscCodes'
+            ),
+            (
+              | 'name'
+              | 'website'
+              | 'description'
+              | 'productDescription'
+              | 'primaryContactName'
+              | 'primaryContactEmail'
+              | 'primaryContactPhone'
+              | 'sectorTag'
+              | 'uei'
+              | 'cageCode'
+              | 'issueCodes'
+              | 'naicsCodes'
+              | 'pscCodes'
+            ),
+            (
+              | 'name'
+              | 'website'
+              | 'description'
+              | 'productDescription'
+              | 'primaryContactName'
+              | 'primaryContactEmail'
+              | 'primaryContactPhone'
+              | 'sectorTag'
+              | 'uei'
+              | 'cageCode'
+              | 'issueCodes'
+              | 'naicsCodes'
+              | 'pscCodes'
+            ),
+            (
+              | 'name'
+              | 'website'
+              | 'description'
+              | 'productDescription'
+              | 'primaryContactName'
+              | 'primaryContactEmail'
+              | 'primaryContactPhone'
+              | 'sectorTag'
+              | 'uei'
+              | 'cageCode'
+              | 'issueCodes'
+              | 'naicsCodes'
+              | 'pscCodes'
+            ),
+            (
+              | 'name'
+              | 'website'
+              | 'description'
+              | 'productDescription'
+              | 'primaryContactName'
+              | 'primaryContactEmail'
+              | 'primaryContactPhone'
+              | 'sectorTag'
+              | 'uei'
+              | 'cageCode'
+              | 'issueCodes'
+              | 'naicsCodes'
+              | 'pscCodes'
+            ),
+            (
+              | 'name'
+              | 'website'
+              | 'description'
+              | 'productDescription'
+              | 'primaryContactName'
+              | 'primaryContactEmail'
+              | 'primaryContactPhone'
+              | 'sectorTag'
+              | 'uei'
+              | 'cageCode'
+              | 'issueCodes'
+              | 'naicsCodes'
+              | 'pscCodes'
+            )
+          ]
+        | [
+            (
+              | 'name'
+              | 'website'
+              | 'description'
+              | 'productDescription'
+              | 'primaryContactName'
+              | 'primaryContactEmail'
+              | 'primaryContactPhone'
+              | 'sectorTag'
+              | 'uei'
+              | 'cageCode'
+              | 'issueCodes'
+              | 'naicsCodes'
+              | 'pscCodes'
+            ),
+            (
+              | 'name'
+              | 'website'
+              | 'description'
+              | 'productDescription'
+              | 'primaryContactName'
+              | 'primaryContactEmail'
+              | 'primaryContactPhone'
+              | 'sectorTag'
+              | 'uei'
+              | 'cageCode'
+              | 'issueCodes'
+              | 'naicsCodes'
+              | 'pscCodes'
+            ),
+            (
+              | 'name'
+              | 'website'
+              | 'description'
+              | 'productDescription'
+              | 'primaryContactName'
+              | 'primaryContactEmail'
+              | 'primaryContactPhone'
+              | 'sectorTag'
+              | 'uei'
+              | 'cageCode'
+              | 'issueCodes'
+              | 'naicsCodes'
+              | 'pscCodes'
+            ),
+            (
+              | 'name'
+              | 'website'
+              | 'description'
+              | 'productDescription'
+              | 'primaryContactName'
+              | 'primaryContactEmail'
+              | 'primaryContactPhone'
+              | 'sectorTag'
+              | 'uei'
+              | 'cageCode'
+              | 'issueCodes'
+              | 'naicsCodes'
+              | 'pscCodes'
+            ),
+            (
+              | 'name'
+              | 'website'
+              | 'description'
+              | 'productDescription'
+              | 'primaryContactName'
+              | 'primaryContactEmail'
+              | 'primaryContactPhone'
+              | 'sectorTag'
+              | 'uei'
+              | 'cageCode'
+              | 'issueCodes'
+              | 'naicsCodes'
+              | 'pscCodes'
+            ),
+            (
+              | 'name'
+              | 'website'
+              | 'description'
+              | 'productDescription'
+              | 'primaryContactName'
+              | 'primaryContactEmail'
+              | 'primaryContactPhone'
+              | 'sectorTag'
+              | 'uei'
+              | 'cageCode'
+              | 'issueCodes'
+              | 'naicsCodes'
+              | 'pscCodes'
+            ),
+            (
+              | 'name'
+              | 'website'
+              | 'description'
+              | 'productDescription'
+              | 'primaryContactName'
+              | 'primaryContactEmail'
+              | 'primaryContactPhone'
+              | 'sectorTag'
+              | 'uei'
+              | 'cageCode'
+              | 'issueCodes'
+              | 'naicsCodes'
+              | 'pscCodes'
+            ),
+            (
+              | 'name'
+              | 'website'
+              | 'description'
+              | 'productDescription'
+              | 'primaryContactName'
+              | 'primaryContactEmail'
+              | 'primaryContactPhone'
+              | 'sectorTag'
+              | 'uei'
+              | 'cageCode'
+              | 'issueCodes'
+              | 'naicsCodes'
+              | 'pscCodes'
+            ),
+            (
+              | 'name'
+              | 'website'
+              | 'description'
+              | 'productDescription'
+              | 'primaryContactName'
+              | 'primaryContactEmail'
+              | 'primaryContactPhone'
+              | 'sectorTag'
+              | 'uei'
+              | 'cageCode'
+              | 'issueCodes'
+              | 'naicsCodes'
+              | 'pscCodes'
+            ),
+            (
+              | 'name'
+              | 'website'
+              | 'description'
+              | 'productDescription'
+              | 'primaryContactName'
+              | 'primaryContactEmail'
+              | 'primaryContactPhone'
+              | 'sectorTag'
+              | 'uei'
+              | 'cageCode'
+              | 'issueCodes'
+              | 'naicsCodes'
+              | 'pscCodes'
+            ),
+            (
+              | 'name'
+              | 'website'
+              | 'description'
+              | 'productDescription'
+              | 'primaryContactName'
+              | 'primaryContactEmail'
+              | 'primaryContactPhone'
+              | 'sectorTag'
+              | 'uei'
+              | 'cageCode'
+              | 'issueCodes'
+              | 'naicsCodes'
+              | 'pscCodes'
+            )
+          ]
+        | [
+            (
+              | 'name'
+              | 'website'
+              | 'description'
+              | 'productDescription'
+              | 'primaryContactName'
+              | 'primaryContactEmail'
+              | 'primaryContactPhone'
+              | 'sectorTag'
+              | 'uei'
+              | 'cageCode'
+              | 'issueCodes'
+              | 'naicsCodes'
+              | 'pscCodes'
+            ),
+            (
+              | 'name'
+              | 'website'
+              | 'description'
+              | 'productDescription'
+              | 'primaryContactName'
+              | 'primaryContactEmail'
+              | 'primaryContactPhone'
+              | 'sectorTag'
+              | 'uei'
+              | 'cageCode'
+              | 'issueCodes'
+              | 'naicsCodes'
+              | 'pscCodes'
+            ),
+            (
+              | 'name'
+              | 'website'
+              | 'description'
+              | 'productDescription'
+              | 'primaryContactName'
+              | 'primaryContactEmail'
+              | 'primaryContactPhone'
+              | 'sectorTag'
+              | 'uei'
+              | 'cageCode'
+              | 'issueCodes'
+              | 'naicsCodes'
+              | 'pscCodes'
+            ),
+            (
+              | 'name'
+              | 'website'
+              | 'description'
+              | 'productDescription'
+              | 'primaryContactName'
+              | 'primaryContactEmail'
+              | 'primaryContactPhone'
+              | 'sectorTag'
+              | 'uei'
+              | 'cageCode'
+              | 'issueCodes'
+              | 'naicsCodes'
+              | 'pscCodes'
+            ),
+            (
+              | 'name'
+              | 'website'
+              | 'description'
+              | 'productDescription'
+              | 'primaryContactName'
+              | 'primaryContactEmail'
+              | 'primaryContactPhone'
+              | 'sectorTag'
+              | 'uei'
+              | 'cageCode'
+              | 'issueCodes'
+              | 'naicsCodes'
+              | 'pscCodes'
+            ),
+            (
+              | 'name'
+              | 'website'
+              | 'description'
+              | 'productDescription'
+              | 'primaryContactName'
+              | 'primaryContactEmail'
+              | 'primaryContactPhone'
+              | 'sectorTag'
+              | 'uei'
+              | 'cageCode'
+              | 'issueCodes'
+              | 'naicsCodes'
+              | 'pscCodes'
+            ),
+            (
+              | 'name'
+              | 'website'
+              | 'description'
+              | 'productDescription'
+              | 'primaryContactName'
+              | 'primaryContactEmail'
+              | 'primaryContactPhone'
+              | 'sectorTag'
+              | 'uei'
+              | 'cageCode'
+              | 'issueCodes'
+              | 'naicsCodes'
+              | 'pscCodes'
+            ),
+            (
+              | 'name'
+              | 'website'
+              | 'description'
+              | 'productDescription'
+              | 'primaryContactName'
+              | 'primaryContactEmail'
+              | 'primaryContactPhone'
+              | 'sectorTag'
+              | 'uei'
+              | 'cageCode'
+              | 'issueCodes'
+              | 'naicsCodes'
+              | 'pscCodes'
+            ),
+            (
+              | 'name'
+              | 'website'
+              | 'description'
+              | 'productDescription'
+              | 'primaryContactName'
+              | 'primaryContactEmail'
+              | 'primaryContactPhone'
+              | 'sectorTag'
+              | 'uei'
+              | 'cageCode'
+              | 'issueCodes'
+              | 'naicsCodes'
+              | 'pscCodes'
+            ),
+            (
+              | 'name'
+              | 'website'
+              | 'description'
+              | 'productDescription'
+              | 'primaryContactName'
+              | 'primaryContactEmail'
+              | 'primaryContactPhone'
+              | 'sectorTag'
+              | 'uei'
+              | 'cageCode'
+              | 'issueCodes'
+              | 'naicsCodes'
+              | 'pscCodes'
+            ),
+            (
+              | 'name'
+              | 'website'
+              | 'description'
+              | 'productDescription'
+              | 'primaryContactName'
+              | 'primaryContactEmail'
+              | 'primaryContactPhone'
+              | 'sectorTag'
+              | 'uei'
+              | 'cageCode'
+              | 'issueCodes'
+              | 'naicsCodes'
+              | 'pscCodes'
+            ),
+            (
+              | 'name'
+              | 'website'
+              | 'description'
+              | 'productDescription'
+              | 'primaryContactName'
+              | 'primaryContactEmail'
+              | 'primaryContactPhone'
+              | 'sectorTag'
+              | 'uei'
+              | 'cageCode'
+              | 'issueCodes'
+              | 'naicsCodes'
+              | 'pscCodes'
+            )
+          ]
+        | [
+            (
+              | 'name'
+              | 'website'
+              | 'description'
+              | 'productDescription'
+              | 'primaryContactName'
+              | 'primaryContactEmail'
+              | 'primaryContactPhone'
+              | 'sectorTag'
+              | 'uei'
+              | 'cageCode'
+              | 'issueCodes'
+              | 'naicsCodes'
+              | 'pscCodes'
+            ),
+            (
+              | 'name'
+              | 'website'
+              | 'description'
+              | 'productDescription'
+              | 'primaryContactName'
+              | 'primaryContactEmail'
+              | 'primaryContactPhone'
+              | 'sectorTag'
+              | 'uei'
+              | 'cageCode'
+              | 'issueCodes'
+              | 'naicsCodes'
+              | 'pscCodes'
+            ),
+            (
+              | 'name'
+              | 'website'
+              | 'description'
+              | 'productDescription'
+              | 'primaryContactName'
+              | 'primaryContactEmail'
+              | 'primaryContactPhone'
+              | 'sectorTag'
+              | 'uei'
+              | 'cageCode'
+              | 'issueCodes'
+              | 'naicsCodes'
+              | 'pscCodes'
+            ),
+            (
+              | 'name'
+              | 'website'
+              | 'description'
+              | 'productDescription'
+              | 'primaryContactName'
+              | 'primaryContactEmail'
+              | 'primaryContactPhone'
+              | 'sectorTag'
+              | 'uei'
+              | 'cageCode'
+              | 'issueCodes'
+              | 'naicsCodes'
+              | 'pscCodes'
+            ),
+            (
+              | 'name'
+              | 'website'
+              | 'description'
+              | 'productDescription'
+              | 'primaryContactName'
+              | 'primaryContactEmail'
+              | 'primaryContactPhone'
+              | 'sectorTag'
+              | 'uei'
+              | 'cageCode'
+              | 'issueCodes'
+              | 'naicsCodes'
+              | 'pscCodes'
+            ),
+            (
+              | 'name'
+              | 'website'
+              | 'description'
+              | 'productDescription'
+              | 'primaryContactName'
+              | 'primaryContactEmail'
+              | 'primaryContactPhone'
+              | 'sectorTag'
+              | 'uei'
+              | 'cageCode'
+              | 'issueCodes'
+              | 'naicsCodes'
+              | 'pscCodes'
+            ),
+            (
+              | 'name'
+              | 'website'
+              | 'description'
+              | 'productDescription'
+              | 'primaryContactName'
+              | 'primaryContactEmail'
+              | 'primaryContactPhone'
+              | 'sectorTag'
+              | 'uei'
+              | 'cageCode'
+              | 'issueCodes'
+              | 'naicsCodes'
+              | 'pscCodes'
+            ),
+            (
+              | 'name'
+              | 'website'
+              | 'description'
+              | 'productDescription'
+              | 'primaryContactName'
+              | 'primaryContactEmail'
+              | 'primaryContactPhone'
+              | 'sectorTag'
+              | 'uei'
+              | 'cageCode'
+              | 'issueCodes'
+              | 'naicsCodes'
+              | 'pscCodes'
+            ),
+            (
+              | 'name'
+              | 'website'
+              | 'description'
+              | 'productDescription'
+              | 'primaryContactName'
+              | 'primaryContactEmail'
+              | 'primaryContactPhone'
+              | 'sectorTag'
+              | 'uei'
+              | 'cageCode'
+              | 'issueCodes'
+              | 'naicsCodes'
+              | 'pscCodes'
+            ),
+            (
+              | 'name'
+              | 'website'
+              | 'description'
+              | 'productDescription'
+              | 'primaryContactName'
+              | 'primaryContactEmail'
+              | 'primaryContactPhone'
+              | 'sectorTag'
+              | 'uei'
+              | 'cageCode'
+              | 'issueCodes'
+              | 'naicsCodes'
+              | 'pscCodes'
+            ),
+            (
+              | 'name'
+              | 'website'
+              | 'description'
+              | 'productDescription'
+              | 'primaryContactName'
+              | 'primaryContactEmail'
+              | 'primaryContactPhone'
+              | 'sectorTag'
+              | 'uei'
+              | 'cageCode'
+              | 'issueCodes'
+              | 'naicsCodes'
+              | 'pscCodes'
+            ),
+            (
+              | 'name'
+              | 'website'
+              | 'description'
+              | 'productDescription'
+              | 'primaryContactName'
+              | 'primaryContactEmail'
+              | 'primaryContactPhone'
+              | 'sectorTag'
+              | 'uei'
+              | 'cageCode'
+              | 'issueCodes'
+              | 'naicsCodes'
+              | 'pscCodes'
+            ),
+            (
+              | 'name'
+              | 'website'
+              | 'description'
+              | 'productDescription'
+              | 'primaryContactName'
+              | 'primaryContactEmail'
+              | 'primaryContactPhone'
+              | 'sectorTag'
+              | 'uei'
+              | 'cageCode'
+              | 'issueCodes'
+              | 'naicsCodes'
+              | 'pscCodes'
+            )
+          ];
+      /**
+       * @maxItems 150
+       */
+      facilitiesCreated: string[];
+      /**
+       * @maxItems 150
+       */
+      capabilitiesCreated: string[];
+      /**
+       * @maxItems 150
+       */
+      peopleCreated: string[];
+      /**
+       * @maxItems 150
+       */
+      peopleUpdated: string[];
+      /**
+       * @maxItems 150
+       */
+      skipped: string[];
+      /**
+       * @maxItems 150
+       */
+      rowErrors: string[];
+    };
+export type Canonical_BizdevStatusFbac340B =
+  | 'proposed'
+  | 'approved'
+  | 'executing'
+  | 'succeeded'
+  | 'failed_retryable'
+  | 'failed_terminal'
+  | 'outcome_unknown'
+  | 'blocked'
+  | 'dismissed'
+  | 'expired';
+export type Canonical_WatchStatus_828649Ac =
+  | 'proposed'
+  | 'approved'
+  | 'executing'
+  | 'succeeded'
+  | 'failed_retryable'
+  | 'failed_terminal'
+  | 'outcome_unknown'
+  | 'blocked'
+  | 'dismissed'
+  | 'expired';
 export type Canonical_ResearchShareProposalStatus_9Aaf7F45 =
   | 'proposed'
   | 'executing'
@@ -306,6 +1888,8 @@ export type Canonical_ResearchShareProposalStatus_9Aaf7F45 =
   | 'dismissed'
   | 'expired';
 export type IntentsItem =
+  | IntentsSavedNoteItem
+  | IntentsWithheldSavedNoteItem
   | IntentsPendingItem
   | IntentsUnknownItem
   | IntentsFailedItem
@@ -319,8 +1903,48 @@ export type IntentsItem =
   | IntentsWithheldProposalItem
   | IntentsProposalItem
   | IntentsResearchShareItem
-  | IntentsWithheldResearchShareItem;
+  | IntentsWithheldResearchShareItem
+  | IntentsLegiwatchItem
+  | IntentsWithheldLegiwatchItem
+  | IntentsWatchItem
+  | IntentsWithheldWatchItem
+  | IntentsClientRecordItem
+  | IntentsWithheldClientRecordItem
+  | IntentsBizdevItem
+  | IntentsWithheldBizdevItem
+  | IntentsLegislativeDocumentItem
+  | IntentsWithheldLegislativeDocumentItem;
 export type IntentsDecideResponse =
+  | {
+      status: 'legislative_document_decided';
+      deliveryId: IntentsDeliveryId;
+      proposalId: string;
+      result: Canonical_LegislativeDocumentCoreResult_05815D48;
+    }
+  | {
+      status: 'legiwatch_decided';
+      deliveryId: IntentsDeliveryId;
+      proposalId: string;
+      result: Canonical_LegiwatchCoreResultC5Ab3126;
+    }
+  | {
+      status: 'client_record_decided';
+      deliveryId: IntentsDeliveryId;
+      proposalId: string;
+      result: Canonical_ClientRecordCoreResultCb1Df09E;
+    }
+  | {
+      status: 'bizdev_decided';
+      deliveryId: IntentsDeliveryId;
+      proposalId: string;
+      result: Canonical_BizdevCoreResultF44012F2;
+    }
+  | {
+      status: 'watch_decided';
+      deliveryId: IntentsDeliveryId;
+      proposalId: string;
+      result: Canonical_WatchCoreResult_1C60295E;
+    }
   | {
       status: 'rejected';
       deliveryId: IntentsDeliveryId;
@@ -504,6 +2128,199 @@ export interface Canonical_TaskUpdateArguments_48509A7A {
     dueDate?: string;
   };
 }
+export interface Canonical_MailSendApprovalProposalC6Ab2C41 {
+  proposalId: string;
+  command: Canonical_MailSendCommand_981E52Ba;
+  commandSha256: string;
+  createdAt: string;
+  expiresAt: string;
+  requiredApprover: Canonical_IdentityAba0A4E9;
+}
+export interface Canonical_MailSendCommand_981E52Ba {
+  contractVersion: '0.2.0';
+  commandId: string;
+  binding: Canonical_RunBinding_84F2304C;
+  action: 'mail.send';
+  arguments: Canonical_MailSendArguments_016B3776;
+  /**
+   * @maxItems 0
+   */
+  attachments: [];
+  /**
+   * @minItems 1
+   */
+  scopes: [Canonical_ScopeF882Edb5, ...Canonical_ScopeF882Edb5[]];
+  idempotencyKey: string;
+}
+export interface Canonical_MailSendArguments_016B3776 {
+  mode: 'send' | 'reply' | 'reply_all' | 'forward';
+  clientId: string | null;
+  senderConnectionId: string;
+  senderEmail: string;
+  /**
+   * @minItems 1
+   * @maxItems 50
+   */
+  to: [string, ...string[]];
+  /**
+   * @maxItems 10
+   */
+  cc:
+    | []
+    | [string]
+    | [string, string]
+    | [string, string, string]
+    | [string, string, string, string]
+    | [string, string, string, string, string]
+    | [string, string, string, string, string, string]
+    | [string, string, string, string, string, string, string]
+    | [string, string, string, string, string, string, string, string]
+    | [string, string, string, string, string, string, string, string, string]
+    | [string, string, string, string, string, string, string, string, string, string];
+  /**
+   * @maxItems 10
+   */
+  bcc:
+    | []
+    | [string]
+    | [string, string]
+    | [string, string, string]
+    | [string, string, string, string]
+    | [string, string, string, string, string]
+    | [string, string, string, string, string, string]
+    | [string, string, string, string, string, string, string]
+    | [string, string, string, string, string, string, string, string]
+    | [string, string, string, string, string, string, string, string, string]
+    | [string, string, string, string, string, string, string, string, string, string];
+  subject: string;
+  bodyHtml: string;
+  /**
+   * @maxItems 5
+   */
+  files:
+    | []
+    | [
+        {
+          attachmentId: string;
+          fileName: string;
+          contentType: string;
+          bytes: number;
+          sha256: string;
+        }
+      ]
+    | [
+        {
+          attachmentId: string;
+          fileName: string;
+          contentType: string;
+          bytes: number;
+          sha256: string;
+        },
+        {
+          attachmentId: string;
+          fileName: string;
+          contentType: string;
+          bytes: number;
+          sha256: string;
+        }
+      ]
+    | [
+        {
+          attachmentId: string;
+          fileName: string;
+          contentType: string;
+          bytes: number;
+          sha256: string;
+        },
+        {
+          attachmentId: string;
+          fileName: string;
+          contentType: string;
+          bytes: number;
+          sha256: string;
+        },
+        {
+          attachmentId: string;
+          fileName: string;
+          contentType: string;
+          bytes: number;
+          sha256: string;
+        }
+      ]
+    | [
+        {
+          attachmentId: string;
+          fileName: string;
+          contentType: string;
+          bytes: number;
+          sha256: string;
+        },
+        {
+          attachmentId: string;
+          fileName: string;
+          contentType: string;
+          bytes: number;
+          sha256: string;
+        },
+        {
+          attachmentId: string;
+          fileName: string;
+          contentType: string;
+          bytes: number;
+          sha256: string;
+        },
+        {
+          attachmentId: string;
+          fileName: string;
+          contentType: string;
+          bytes: number;
+          sha256: string;
+        }
+      ]
+    | [
+        {
+          attachmentId: string;
+          fileName: string;
+          contentType: string;
+          bytes: number;
+          sha256: string;
+        },
+        {
+          attachmentId: string;
+          fileName: string;
+          contentType: string;
+          bytes: number;
+          sha256: string;
+        },
+        {
+          attachmentId: string;
+          fileName: string;
+          contentType: string;
+          bytes: number;
+          sha256: string;
+        },
+        {
+          attachmentId: string;
+          fileName: string;
+          contentType: string;
+          bytes: number;
+          sha256: string;
+        },
+        {
+          attachmentId: string;
+          fileName: string;
+          contentType: string;
+          bytes: number;
+          sha256: string;
+        }
+      ];
+  original: {
+    threadId: string;
+    messageId: string;
+    updatedAt: string;
+    bodySha256: string | null;
+  } | null;
+}
 export interface Canonical_DocumentDraftApprovalProposal_834C2460 {
   proposalId: string;
   command: Canonical_DocumentDraftCommand_7Eb6C44C;
@@ -570,6 +2387,664 @@ export interface Canonical_ResearchShareRevokeInputB01195Fc {
   conversationId: string;
   linkId: string;
 }
+export interface Canonical_LegiwatchProposal_1F841734 {
+  kind: 'legiwatch_action';
+  binding: Canonical_RunBinding_84F2304C;
+  /**
+   * @minItems 1
+   * @maxItems 1
+   */
+  scopes: [Canonical_ScopeF882Edb5];
+  operation: 'apply_legiwatch_suggestion' | 'save_legiwatch_relevance';
+  proposalId: string;
+  request: Canonical_LegiwatchRequest_5Cff194F;
+  context: Canonical_LegiwatchContextA906D964;
+  createdAt: string;
+  expiresAt: string;
+  commandSha256: string;
+}
+export interface Canonical_SuggestionLegiwatchRequestD59A433F {
+  clientId: string | null;
+  folderId: string;
+  jurisdiction: string;
+  sessionKey: string;
+  suggestionId: string;
+  expectedVersion: number;
+  action: 'add' | 'dismiss' | 'exclude' | 'restore' | 'undo';
+  requestKey: string;
+}
+export interface Canonical_RelevanceRequest_3250901F {
+  clientId: string | null;
+  folderId: string;
+  jurisdiction: string;
+  sessionKey: string;
+  /**
+   * @minItems 1
+   * @maxItems 3
+   */
+  fields:
+    | ['title' | 'bill_text' | 'amendment_text']
+    | ['title' | 'bill_text' | 'amendment_text', 'title' | 'bill_text' | 'amendment_text']
+    | [
+        'title' | 'bill_text' | 'amendment_text',
+        'title' | 'bill_text' | 'amendment_text',
+        'title' | 'bill_text' | 'amendment_text'
+      ];
+  billId: string;
+  explanation: string;
+  documentId: string;
+  start: number;
+  end: number;
+  quote: string;
+  previewHash: string;
+  requestKey: string;
+}
+export interface Canonical_LegiwatchContextA906D964 {
+  conversationId: string;
+  selectedClientId: string | null;
+  identityRevision: string;
+  membershipRevision: string;
+  contextRevision: string;
+}
+export interface Canonical_WatchProposal_14Eddeec {
+  kind: 'watch_action';
+  binding: Canonical_RunBinding_84F2304C;
+  /**
+   * @minItems 1
+   * @maxItems 1
+   */
+  scopes: [Canonical_ScopeF882Edb5];
+  operation: 'watch_action';
+  proposalId: string;
+  request: Canonical_WatchRequest_1E607664;
+  context: Canonical_WatchContextE72A3A40;
+  createdAt: string;
+  expiresAt: string;
+  commandSha256: string;
+}
+export interface Canonical_WatchContextE72A3A40 {
+  conversationId: string;
+  selectedClientId: string | null;
+  identityRevision: string;
+  membershipRevision: string;
+  contextRevision: string;
+}
+export interface Canonical_ClientRecordProposalB620B25B {
+  kind: 'client_record_action';
+  binding: Canonical_RunBinding_84F2304C;
+  /**
+   * @minItems 1
+   * @maxItems 1
+   */
+  scopes: [Canonical_ScopeF882Edb5];
+  operation: 'create_client' | 'update_client_profile';
+  proposalId: string;
+  request: Canonical_ClientRecordRequestE2A54772;
+  context: Canonical_ClientRecordContext_6Cea2055;
+  createdAt: string;
+  expiresAt: string;
+  commandSha256: string;
+}
+export interface Canonical_CreateClientInputC55F4423 {
+  name: string;
+  website?: string;
+  description?: string;
+  sectorTag?: string;
+  primaryContactName?: string;
+  primaryContactEmail?: string;
+  primaryContactPhone?: string;
+  ldaClientId?: number;
+  skipLdaCheck?: boolean;
+}
+export interface Canonical_UpdateClientProfileInput_8Caec89E {
+  name?: string;
+  website?: string;
+  description?: string;
+  sectorTag?: string;
+  primaryContactName?: string;
+  primaryContactEmail?: string;
+  primaryContactPhone?: string;
+  clientId: string;
+  productDescription?: string;
+  uei?: string;
+  cageCode?: string;
+  /**
+   * @maxItems 100
+   */
+  issueCodes?: string[];
+  /**
+   * @maxItems 100
+   */
+  naicsCodes?: string[];
+  /**
+   * @maxItems 100
+   */
+  pscCodes?: string[];
+  provenance?: {
+    name?: {
+      sourceUrl: string;
+      confidence: 'high' | 'medium' | 'low';
+    };
+    website?: {
+      sourceUrl: string;
+      confidence: 'high' | 'medium' | 'low';
+    };
+    description?: {
+      sourceUrl: string;
+      confidence: 'high' | 'medium' | 'low';
+    };
+    productDescription?: {
+      sourceUrl: string;
+      confidence: 'high' | 'medium' | 'low';
+    };
+    primaryContactName?: {
+      sourceUrl: string;
+      confidence: 'high' | 'medium' | 'low';
+    };
+    primaryContactEmail?: {
+      sourceUrl: string;
+      confidence: 'high' | 'medium' | 'low';
+    };
+    primaryContactPhone?: {
+      sourceUrl: string;
+      confidence: 'high' | 'medium' | 'low';
+    };
+    sectorTag?: {
+      sourceUrl: string;
+      confidence: 'high' | 'medium' | 'low';
+    };
+    uei?: {
+      sourceUrl: string;
+      confidence: 'high' | 'medium' | 'low';
+    };
+    cageCode?: {
+      sourceUrl: string;
+      confidence: 'high' | 'medium' | 'low';
+    };
+    issueCodes?: {
+      sourceUrl: string;
+      confidence: 'high' | 'medium' | 'low';
+    };
+    naicsCodes?: {
+      sourceUrl: string;
+      confidence: 'high' | 'medium' | 'low';
+    };
+    pscCodes?: {
+      sourceUrl: string;
+      confidence: 'high' | 'medium' | 'low';
+    };
+  };
+  /**
+   * @maxItems 50
+   */
+  facilities?: {
+    name: string;
+    addressLine?: string;
+    city?: string;
+    state?: string;
+    zip?: string;
+    congressionalDistrict?: string;
+    notes?: string;
+    employeeCount?: number;
+  }[];
+  /**
+   * @maxItems 50
+   */
+  capabilities?: {
+    name: string;
+    type?: string;
+    description?: string;
+    sector?: string;
+    notes?: string;
+  }[];
+  /**
+   * @maxItems 50
+   */
+  people?: {
+    name: string;
+    title?: string;
+    email?: string;
+    phone?: string;
+    role?: string;
+    lastContact?: string;
+    notes?: string;
+  }[];
+}
+export interface Canonical_ClientRecordContext_6Cea2055 {
+  conversationId: string;
+  selectedClientId: string | null;
+  identityRevision: string;
+  membershipRevision: string;
+  contextRevision: string;
+}
+export interface Canonical_BizdevProposalA770314C {
+  kind: 'bizdev_action';
+  binding: Canonical_RunBinding_84F2304C;
+  /**
+   * @minItems 1
+   * @maxItems 1
+   */
+  scopes: [Canonical_ScopeF882Edb5];
+  operation: 'save_business_development_brief';
+  proposalId: string;
+  request: Canonical_BizdevRequest_377Bb4Ab;
+  context: Canonical_BizdevContext_894Be03E;
+  createdAt: string;
+  expiresAt: string;
+  commandSha256: string;
+}
+export interface Canonical_BizdevRequest_377Bb4Ab {
+  conversationId: string;
+  expectedVersionNumber: number;
+  title?: string;
+  sections: Canonical_BizdevSectionsB2A43546;
+  requestKey: string;
+}
+export interface Canonical_BizdevSectionsB2A43546 {
+  companyAndFirmImplication: Canonical_BizdevSection_433874A1;
+  verifiedEvidence: Canonical_BizdevSection_433874A1;
+  judgment: Canonical_BizdevSection_433874A1;
+  practicalAction: Canonical_BizdevSection_433874A1;
+  missingInformation: Canonical_BizdevSection_433874A1;
+}
+export interface Canonical_BizdevSection_433874A1 {
+  text: string;
+  citationIndexes: number[];
+}
+export interface Canonical_BizdevContext_894Be03E {
+  conversationId: string;
+  prospectId: string;
+  prospectName: string;
+  canonicalOrganizationId: string | null;
+  linkedClientId: string | null;
+  scopeVersion: string;
+}
+export interface Canonical_LegislativeDocumentProposal_3D80036F {
+  kind: 'legislative_document_action';
+  binding: Canonical_RunBinding_84F2304C;
+  /**
+   * @minItems 1
+   * @maxItems 1
+   */
+  scopes: [Canonical_ScopeF882Edb5];
+  operation: 'prepare_legiwatch_briefing' | 'save_legislative_research';
+  proposalId: string;
+  request:
+    Canonical_LegislativeDocumentBriefingRequest_9E6E443D | Canonical_LegislativeDocumentResearchRequest_80582Baa;
+  context: Canonical_LegislativeDocumentContext_6C736Cef;
+  createdAt: string;
+  expiresAt: string;
+  commandSha256: string;
+}
+export interface Canonical_LegislativeDocumentBriefingRequest_9E6E443D {
+  clientId: string | null;
+  folderId: string;
+  jurisdiction?: string;
+  sessionKey?: string;
+  template: 'research_update' | 'daily_legislative_brief' | 'morning_news_brief';
+  title: string;
+  analysis: string;
+  cutoff: string;
+  timezone: string;
+  /**
+   * @maxItems 50
+   */
+  sources: Canonical_LegislativeDocumentSourceD053De86[];
+  /**
+   * @minItems 1
+   * @maxItems 150
+   */
+  citations: [Canonical_LegislativeDocumentCitationC039Aff7, ...Canonical_LegislativeDocumentCitationC039Aff7[]];
+  requestKey: string;
+}
+export interface Canonical_LegislativeDocumentSourceD053De86 {
+  kind: string;
+  id: string;
+  revision: string;
+}
+export interface Canonical_LegislativeDocumentCitationC039Aff7 {
+  kind: string;
+  id: string;
+  revision: string;
+  locator: string;
+  start: number;
+  end: number;
+  quote: string;
+}
+export interface Canonical_LegislativeDocumentResearchRequest_80582Baa {
+  clientId: string | null;
+  folderId: string | null;
+  jurisdiction: string;
+  sessionKey: string;
+  title: string;
+  analysis: string;
+  /**
+   * @minItems 1
+   * @maxItems 10
+   */
+  documents:
+    | [
+        {
+          id: string;
+          revision: string;
+          sessionKey?: string;
+        }
+      ]
+    | [
+        {
+          id: string;
+          revision: string;
+          sessionKey?: string;
+        },
+        {
+          id: string;
+          revision: string;
+          sessionKey?: string;
+        }
+      ]
+    | [
+        {
+          id: string;
+          revision: string;
+          sessionKey?: string;
+        },
+        {
+          id: string;
+          revision: string;
+          sessionKey?: string;
+        },
+        {
+          id: string;
+          revision: string;
+          sessionKey?: string;
+        }
+      ]
+    | [
+        {
+          id: string;
+          revision: string;
+          sessionKey?: string;
+        },
+        {
+          id: string;
+          revision: string;
+          sessionKey?: string;
+        },
+        {
+          id: string;
+          revision: string;
+          sessionKey?: string;
+        },
+        {
+          id: string;
+          revision: string;
+          sessionKey?: string;
+        }
+      ]
+    | [
+        {
+          id: string;
+          revision: string;
+          sessionKey?: string;
+        },
+        {
+          id: string;
+          revision: string;
+          sessionKey?: string;
+        },
+        {
+          id: string;
+          revision: string;
+          sessionKey?: string;
+        },
+        {
+          id: string;
+          revision: string;
+          sessionKey?: string;
+        },
+        {
+          id: string;
+          revision: string;
+          sessionKey?: string;
+        }
+      ]
+    | [
+        {
+          id: string;
+          revision: string;
+          sessionKey?: string;
+        },
+        {
+          id: string;
+          revision: string;
+          sessionKey?: string;
+        },
+        {
+          id: string;
+          revision: string;
+          sessionKey?: string;
+        },
+        {
+          id: string;
+          revision: string;
+          sessionKey?: string;
+        },
+        {
+          id: string;
+          revision: string;
+          sessionKey?: string;
+        },
+        {
+          id: string;
+          revision: string;
+          sessionKey?: string;
+        }
+      ]
+    | [
+        {
+          id: string;
+          revision: string;
+          sessionKey?: string;
+        },
+        {
+          id: string;
+          revision: string;
+          sessionKey?: string;
+        },
+        {
+          id: string;
+          revision: string;
+          sessionKey?: string;
+        },
+        {
+          id: string;
+          revision: string;
+          sessionKey?: string;
+        },
+        {
+          id: string;
+          revision: string;
+          sessionKey?: string;
+        },
+        {
+          id: string;
+          revision: string;
+          sessionKey?: string;
+        },
+        {
+          id: string;
+          revision: string;
+          sessionKey?: string;
+        }
+      ]
+    | [
+        {
+          id: string;
+          revision: string;
+          sessionKey?: string;
+        },
+        {
+          id: string;
+          revision: string;
+          sessionKey?: string;
+        },
+        {
+          id: string;
+          revision: string;
+          sessionKey?: string;
+        },
+        {
+          id: string;
+          revision: string;
+          sessionKey?: string;
+        },
+        {
+          id: string;
+          revision: string;
+          sessionKey?: string;
+        },
+        {
+          id: string;
+          revision: string;
+          sessionKey?: string;
+        },
+        {
+          id: string;
+          revision: string;
+          sessionKey?: string;
+        },
+        {
+          id: string;
+          revision: string;
+          sessionKey?: string;
+        }
+      ]
+    | [
+        {
+          id: string;
+          revision: string;
+          sessionKey?: string;
+        },
+        {
+          id: string;
+          revision: string;
+          sessionKey?: string;
+        },
+        {
+          id: string;
+          revision: string;
+          sessionKey?: string;
+        },
+        {
+          id: string;
+          revision: string;
+          sessionKey?: string;
+        },
+        {
+          id: string;
+          revision: string;
+          sessionKey?: string;
+        },
+        {
+          id: string;
+          revision: string;
+          sessionKey?: string;
+        },
+        {
+          id: string;
+          revision: string;
+          sessionKey?: string;
+        },
+        {
+          id: string;
+          revision: string;
+          sessionKey?: string;
+        },
+        {
+          id: string;
+          revision: string;
+          sessionKey?: string;
+        }
+      ]
+    | [
+        {
+          id: string;
+          revision: string;
+          sessionKey?: string;
+        },
+        {
+          id: string;
+          revision: string;
+          sessionKey?: string;
+        },
+        {
+          id: string;
+          revision: string;
+          sessionKey?: string;
+        },
+        {
+          id: string;
+          revision: string;
+          sessionKey?: string;
+        },
+        {
+          id: string;
+          revision: string;
+          sessionKey?: string;
+        },
+        {
+          id: string;
+          revision: string;
+          sessionKey?: string;
+        },
+        {
+          id: string;
+          revision: string;
+          sessionKey?: string;
+        },
+        {
+          id: string;
+          revision: string;
+          sessionKey?: string;
+        },
+        {
+          id: string;
+          revision: string;
+          sessionKey?: string;
+        },
+        {
+          id: string;
+          revision: string;
+          sessionKey?: string;
+        }
+      ];
+  /**
+   * @minItems 1
+   * @maxItems 100
+   */
+  citations: [
+    Canonical_LegislativeDocumentSelectionCitationD6E0702C,
+    ...Canonical_LegislativeDocumentSelectionCitationD6E0702C[]
+  ];
+  allowCrossBill?: boolean;
+  rightSessionKey?: string;
+  requestKey: string;
+}
+export interface Canonical_LegislativeDocumentSelectionCitationD6E0702C {
+  documentId: string;
+  revision: string;
+  locator: string;
+  start: number;
+  end: number;
+  quote: string;
+}
+export interface Canonical_LegislativeDocumentContext_6C736Cef {
+  conversationId: string;
+  selectedClientId: string | null;
+  identityRevision: string;
+  membershipRevision: string;
+  contextRevision: string;
+}
 export interface Canonical_ApprovalDecision_5E8Bdbcf {
   proposalId: string;
   commandSha256: string;
@@ -583,6 +3058,20 @@ export interface Canonical_TaskCreateArguments_1202C301 {
   title: string;
   clientId: string | null;
   dueDate: string | null;
+}
+export interface Canonical_MailSendContext_7D8B78F1 {
+  binding: Canonical_RunBinding_84F2304C;
+}
+export interface IntentsNativeMailOutcome {
+  execution: {
+    kind: 'native-mail';
+    proposalId: string;
+    commandSha256: string;
+    idempotencyKey: string;
+    binding: Canonical_RunBinding_84F2304C;
+    approvalDecisionSha256: string;
+  };
+  result: IntentsMailSendResult;
 }
 export interface Canonical_ArtifactFileArguments_6F2B3978 {
   clientId: string;
@@ -1157,6 +3646,211 @@ export interface IntentsWithheldProposalItem {
   kind: 'proposal';
   withheld: true;
 }
+export interface IntentsLegiwatchItem {
+  deliveryId: IntentsDeliveryId;
+  createdAt: string;
+  operation: IntentsOperation;
+  state: 'prepared';
+  kind: 'legiwatch_action';
+  proposal: Canonical_LegiwatchProposal_1F841734;
+  result: Canonical_LegiwatchCoreResultC5Ab3126 | 'unavailable';
+}
+export interface Canonical_LegiwatchCoreResultC5Ab3126 {
+  version: '0.1.0';
+  proposalId: string;
+  request: Canonical_LegiwatchRequest_5Cff194F;
+  context: Canonical_LegiwatchContextA906D964;
+  createdAt: string;
+  expiresAt: string;
+  status: Canonical_LegiwatchStatusCbe9731F;
+  receipt: Canonical_LegiwatchReceipt_706F9465 | null;
+}
+export interface Canonical_SuggestionLegiwatchReceiptD2466C8D {
+  request: Canonical_SuggestionLegiwatchRequestD59A433F;
+  outcome:
+    'added' | 'already_present' | 'dismissed' | 'excluded' | 'pending' | 'stale' | 'undone' | 'undo_conflict' | 'held';
+  payload: {
+    binding: string;
+    suggestionId: string;
+    decisionId: string | null;
+    version: number;
+    action: 'add' | 'dismiss' | 'exclude' | 'restore' | 'undo';
+  };
+}
+export interface Canonical_RelevanceReceiptEf963586 {
+  request: Canonical_RelevanceRequest_3250901F;
+  outcome: 'suggested';
+  payload: {
+    binding: string;
+    suggestionId: string;
+    version: number;
+    origin: 'semantic';
+    state: 'pending';
+  };
+}
+export interface IntentsLegislativeDocumentItem {
+  deliveryId: IntentsDeliveryId;
+  createdAt: string;
+  operation: IntentsOperation;
+  state: 'prepared';
+  kind: 'legislative_document_action';
+  proposal: Canonical_LegislativeDocumentProposal_3D80036F;
+  result: Canonical_LegislativeDocumentCoreResult_05815D48 | 'unavailable';
+}
+export interface Canonical_LegislativeDocumentCoreResult_05815D48 {
+  version: '0.1.0';
+  proposalId: string;
+  status: Canonical_LegislativeDocumentStatus_63289936;
+  operation: 'prepare_legiwatch_briefing' | 'save_legislative_research';
+  request:
+    Canonical_LegislativeDocumentBriefingRequest_9E6E443D | Canonical_LegislativeDocumentResearchRequest_80582Baa;
+  context: Canonical_LegislativeDocumentContext_6C736Cef;
+  createdAt: string;
+  expiresAt: string;
+  receipt: Canonical_LegislativeDocumentReceipt_70F3Ce37 | null;
+  effect: Canonical_LegislativeDocumentEffect_69D4Cb58 | null;
+}
+export interface Canonical_LegislativeDocumentReceipt_70F3Ce37 {
+  state: 'complete' | 'selection_only';
+  selectionId: string | null;
+  documentId: string | null;
+  location: string | null;
+  reused: boolean;
+  request:
+    Canonical_LegislativeDocumentBriefingRequest_9E6E443D | Canonical_LegislativeDocumentResearchRequest_80582Baa;
+}
+export interface IntentsWithheldLegislativeDocumentItem {
+  deliveryId: IntentsDeliveryId;
+  createdAt: string;
+  operation: IntentsOperation;
+  state: 'prepared';
+  kind: 'legislative_document_action';
+  withheld: true;
+}
+export interface IntentsClientRecordItem {
+  deliveryId: IntentsDeliveryId;
+  createdAt: string;
+  operation: IntentsOperation;
+  state: 'prepared';
+  kind: 'client_record_action';
+  proposal: Canonical_ClientRecordProposalB620B25B;
+  result: Canonical_ClientRecordCoreResultCb1Df09E | 'unavailable';
+}
+export interface Canonical_ClientRecordCoreResultCb1Df09E {
+  version: '0.1.0';
+  proposalId: string;
+  request: Canonical_ClientRecordRequestE2A54772;
+  context: Canonical_ClientRecordContext_6Cea2055;
+  createdAt: string;
+  expiresAt: string;
+  status: Canonical_ClientRecordStatus_58565696;
+  receipt: Canonical_ClientRecordReceipt_8A925D68 | null;
+}
+export interface IntentsWithheldLegiwatchItem {
+  deliveryId: IntentsDeliveryId;
+  createdAt: string;
+  operation: IntentsOperation;
+  state: 'prepared';
+  kind: 'legiwatch_action';
+  withheld: true;
+}
+export interface IntentsWithheldClientRecordItem {
+  deliveryId: IntentsDeliveryId;
+  createdAt: string;
+  operation: IntentsOperation;
+  state: 'prepared';
+  kind: 'client_record_action';
+  withheld: true;
+}
+export interface IntentsBizdevItem {
+  deliveryId: IntentsDeliveryId;
+  createdAt: string;
+  operation: IntentsOperation;
+  state: 'prepared';
+  kind: 'bizdev_action';
+  proposal: Canonical_BizdevProposalA770314C;
+  result: Canonical_BizdevCoreResultF44012F2 | 'unavailable';
+}
+export interface Canonical_BizdevCoreResultF44012F2 {
+  version: '0.1.0';
+  proposalId: string;
+  request: Canonical_BizdevRequest_377Bb4Ab;
+  context: Canonical_BizdevContext_894Be03E;
+  createdAt: string;
+  expiresAt: string;
+  status: Canonical_BizdevStatusFbac340B;
+  receipt: Canonical_BizdevReceiptDbab7Eca | null;
+}
+export interface Canonical_BizdevReceiptDbab7Eca {
+  request: Canonical_BizdevRequest_377Bb4Ab;
+  binding: string;
+  tool: 'save_business_development_brief';
+  status: 'saved';
+  generatedAt: string;
+  brief: {
+    id: string;
+    title: string;
+    status: 'draft' | 'archived';
+    currentVersionNumber: number;
+    updatedAt: string;
+  };
+  version: {
+    id: string;
+    versionNumber: number;
+    createdAt: string;
+    citationCount: number;
+  };
+  reused: boolean;
+  prospectName: string;
+}
+export interface IntentsWithheldBizdevItem {
+  deliveryId: IntentsDeliveryId;
+  createdAt: string;
+  operation: IntentsOperation;
+  state: 'prepared';
+  kind: 'bizdev_action';
+  withheld: true;
+}
+export interface IntentsWatchItem {
+  deliveryId: IntentsDeliveryId;
+  createdAt: string;
+  operation: IntentsOperation;
+  state: 'prepared';
+  kind: 'watch_action';
+  proposal: Canonical_WatchProposal_14Eddeec;
+  result: Canonical_WatchCoreResult_1C60295E | 'unavailable';
+}
+export interface Canonical_WatchCoreResult_1C60295E {
+  version: '0.1.0';
+  proposalId: string;
+  request: Canonical_WatchRequest_1E607664;
+  context: Canonical_WatchContextE72A3A40;
+  createdAt: string;
+  expiresAt: string;
+  status: Canonical_WatchStatus_828649Ac;
+  receipt: Canonical_WatchReceiptF63Ece6D | null;
+}
+export interface Canonical_WatchReceiptF63Ece6D {
+  request: Canonical_WatchRequest_1E607664;
+  owner: 'legiwatch_keyword' | 'business_development_prospect' | 'defense_budget_target' | 'client_watchlist';
+  binding: string;
+  operation: 'subscribe' | 'pause' | 'resume' | 'unsubscribe' | 'set_delivery';
+  targetKey: string;
+  identity: string;
+  state: 'active' | 'paused' | 'needs_review' | 'ended' | 'unsubscribed';
+  version: number | null;
+  deliveryEnabled: boolean | null;
+  eventId: string | null;
+  alreadyInState: boolean;
+}
+export interface IntentsWithheldWatchItem {
+  deliveryId: IntentsDeliveryId;
+  createdAt: string;
+  operation: IntentsOperation;
+  state: 'prepared';
+  kind: 'watch_action';
+  withheld: true;
+}
 export interface IntentsResearchShareItem {
   deliveryId: IntentsDeliveryId;
   createdAt: string;
@@ -1165,6 +3859,50 @@ export interface IntentsResearchShareItem {
   kind: 'research_share';
   proposal: Canonical_ResearchShareProposal_1Cdbd32E;
   proposalStatus: Canonical_ResearchShareProposalStatus_9Aaf7F45 | 'unavailable';
+}
+export interface IntentsSavedNoteItem {
+  deliveryId: IntentsDeliveryId;
+  createdAt: string;
+  operation: IntentsOperation;
+  state: 'prepared';
+  kind: 'saved_note';
+  result: Canonical_SavedNoteResult_85Af7219;
+}
+export interface Canonical_SavedNoteResult_85Af7219 {
+  status: 'saved' | 'withheld' | 'blocked' | 'unknown' | 'failed';
+  operation: 'save_note';
+  binding: Canonical_RunBinding_84F2304C;
+  /**
+   * @minItems 1
+   * @maxItems 1
+   */
+  scopes: [Canonical_ScopeF882Edb5];
+  destination?: ('meeting' | 'client_document' | 'general') | null;
+  noteId?: string | null;
+  meetingNoteId?: string | null;
+  documentId?: string | null;
+  location?: string | null;
+  indexingStatus?: ('indexed' | 'pending' | 'not_indexed') | null;
+  readiness?: ('ready' | 'indexing' | 'indexed' | 'private' | 'scanning' | 'unavailable') | null;
+  reused?: boolean | null;
+  bodyHash: string;
+  bodyLength: number;
+  proposalId: string;
+  policyOutcome: 'PASS' | 'WARN' | 'BLOCK';
+  createdAt: string;
+  expiresAt: string;
+  recordedAt: string;
+  generatedAt?: string | null;
+  errorCode?: string | null;
+  errorMessage?: string | null;
+}
+export interface IntentsWithheldSavedNoteItem {
+  deliveryId: IntentsDeliveryId;
+  createdAt: string;
+  operation: IntentsOperation;
+  state: 'prepared';
+  kind: 'saved_note';
+  withheld: true;
 }
 export interface IntentsWithheldResearchShareItem {
   deliveryId: IntentsDeliveryId;
@@ -1691,6 +4429,9 @@ export interface RoutinesErrorResponse {
   };
 }
 
+export type IntentsWatchProposal=Canonical_WatchProposal_14Eddeec;
+export type IntentsLegiwatchProposal=Canonical_LegiwatchProposal_1F841734;
+export type IntentsBizdevProposal=Canonical_BizdevProposalA770314C;
 export type IntentsResearchShareProposal=Canonical_ResearchShareProposal_1Cdbd32E;
 export type RoutinesProposal=Canonical_PendingProposal_8E88D951;
 export type RoutinesApproveResponse=Canonical_Acknowledged_1Fa14Cd2;
@@ -1797,13 +4538,14 @@ export declare const intentsMetadata:{
     "task.create",
     "task.update",
     "document.draft",
-    "artifact.file"
+    "artifact.file",
+    "mail.send"
   ],
   "semantics": {
     "list": "read-only durable history of this conversation's prepared intents; next is the last returned deliveryId when more remain, otherwise null",
     "decision": "approved or rejected is recorded by the canonical decision owner for exactly the named proposal, command hash and approver; display, stream or model text never approves",
     "execution": "only actions in approvableActions execute; any other prepared proposal answers INTENT_NOT_APPROVABLE and stays prepared",
-    "executed": "status executed returns the actual owner outcome: Core native task.create/task.update execution and result, a historical task.create receipt/result, or document.draft ArtifactCreatedResult after publication; approval alone remains approved or indeterminate",
+    "executed": "status executed returns the actual owner outcome: Core native task.create/task.update execution and result, a historical task.create receipt/result, document.draft ArtifactCreatedResult after publication, or native mail accepted/failed durable attempt (provider acceptance is not delivery); approval alone remains approved or indeterminate",
     "correlation": "a list answer is admitted against its captured list request; a decide answer is admitted against the captured decide request and the proposal admitted from an earlier list answer; rejected and indeterminate replies carry no conversation or command of their own, so only that retained proposal binds them to the request's conversation and approver",
     "uncertainty": "UNKNOWN and RESULT_NOT_RELEASED mean a decision or effect may exist: repeat the identical decide request or read list; never prepare a second proposal",
     "withheld": "withheld items carry no content because the caller no longer sees a client scope of the retained command",

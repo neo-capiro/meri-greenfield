@@ -1,6 +1,7 @@
 /** Current canonical result-release authorization. LOCAL PROPOSAL: the trusted startup must supply this owner;
  * listing availability or retaining a proposal never supplies authority. Original grant expiry is journaled once. */
 import {canonicalSha256 as hash,validateShape} from '../../../packages/contracts/validate.mjs';
+import {savedNoteValidators} from '../../../packages/contracts/retrieval-0.2/validate.mjs';
 import {data,own} from '../../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {intentFault} from './faults.mjs';
 import {assertMemoryReviewResult} from '../../../packages/contracts/commands-0.2/memory-review-result.mjs';
@@ -12,7 +13,14 @@ function scopes(raw,binding){
  if(new Set(raw.map(hash)).size!==raw.length)deny();return raw;
 }
 function resultScopes(owner,result,original){
- if(owner==='research-sharing'){if(result.status!=='approval_required'||hash(result.proposal?.binding)!==hash(original.binding))deny();return result.proposal.scopes;}
+ if(owner==='note'){
+  // A saved note is a static PASS, not a proposal: the recorded result is a closed saved-note envelope, and
+  // only its own scopes — still inside the original grant and the current check — may be released.
+  const envelope=savedNoteValidators.envelope(result);
+  if(hash(envelope.binding)!==hash(original.binding))deny();
+  return envelope.scopes;
+ }
+ if((owner==='research-sharing'||owner==='legiwatch'||owner==='watch'||owner==='client-record'||owner==='bizdev'||owner==='legislative-document')){if(result.status!=='approval_required'||hash(result.proposal?.binding)!==hash(original.binding))deny();return result.proposal.scopes;}
  if(owner==='memory'){
   const review=assertMemoryReviewResult(result);
   if(hash(review.binding)!==hash(original.binding))deny();return review.scopes;
@@ -60,7 +68,7 @@ export function createIntentResultRelease({authority,binding,now}){
    const {receipt,prior}=await check({...call,result});if(prior===null)deny();
    const ss=scopes(resultScopes(owner,result,prior),binding),originalScopes=new Set(prior.scopes.map(hash)),currentScopes=new Set(receipt.scopes.map(hash));
    if(ss.some(s=>!originalScopes.has(hash(s))||!currentScopes.has(hash(s))))deny();
-   if(owner==='command'||owner==='research-sharing'){
+   if(owner==='command'||(owner==='research-sharing'||owner==='legiwatch'||owner==='watch'||owner==='client-record'||owner==='bizdev'||owner==='legislative-document')){
     const expiry=Date.parse(result.proposal.expiresAt);if(!Number.isSafeInteger(expiry)||expiry<=now())deny();call.life.limitDeadline(expiry);
    }
    call.life.check();return result;

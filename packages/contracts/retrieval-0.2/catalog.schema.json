@@ -117,7 +117,24 @@
                 "publish_research_portfolio_share_link",
                 "revoke_research_portfolio_share_link",
                 "read_saved_record",
-                "read_saved_strategy_records"
+                "read_saved_strategy_records",
+                "apply_legiwatch_suggestion",
+                "get_legiwatch_review",
+                "compare_florida_budget_amounts",
+                "compare_legislative_versions",
+                "get_business_development_brief",
+                "resolve_business_development_source",
+                "preview_legiwatch_relevance",
+                "save_legiwatch_relevance",
+                "mail_send",
+                "create_client",
+                "update_client_profile",
+                "save_business_development_brief",
+                "prepare_legiwatch_briefing",
+                "save_legislative_research",
+                "watch_action",
+                "save_note",
+                "inspect_watch_state"
               ]
             },
             "disposition": {
@@ -181,15 +198,11 @@
                 "find_path_to",
                 "get_legiwatch_review",
                 "compare_florida_budget_amounts",
-                "prepare_legiwatch_briefing",
                 "compare_legislative_versions",
-                "save_legislative_research",
                 "preview_legiwatch_relevance",
                 "save_legiwatch_relevance",
-                "apply_legiwatch_suggestion",
                 "create_meeting_brief",
                 "draft_policy_memo",
-                "save_note",
                 "send_email",
                 "reply_email",
                 "confirm_memory",
@@ -202,8 +215,7 @@
                 "compare_funding_opportunities",
                 "build_opportunity_action_plan",
                 "get_business_development_brief",
-                "resolve_business_development_source",
-                "save_business_development_brief"
+                "resolve_business_development_source"
               ]
             },
             "disposition": {
@@ -342,7 +354,8 @@
           "enum": [
             "none",
             "immutable-proposal",
-            "qualified-source-review"
+            "qualified-source-review",
+            "current-source-policy"
           ]
         },
         "handler": {
@@ -558,15 +571,15 @@
           "pattern": "^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)$"
         },
         "sourceRegistryCommit": {
-          "const": "ed85eb9c1dc5eb7638ae373a627ab3b29743e500"
+          "const": "87ea34a812c56524644e4983b215ded5ce8a8f7d"
         },
         "originals": {
           "type": "array",
           "items": {
             "$ref": "urn:meri:retrieval:catalog:0.2.0#/$defs/NativeMapping"
           },
-          "minItems": 150,
-          "maxItems": 150,
+          "minItems": 153,
+          "maxItems": 153,
           "uniqueItems": true
         },
         "operations": {

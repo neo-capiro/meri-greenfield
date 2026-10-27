@@ -19,23 +19,71 @@
   "groups": [
     {
       "name": "Research Portfolio",
-      "tools": ["manage_research_portfolio", "get_research_portfolio_analytics", "create_research_portfolio_snapshot", "request_research_portfolio_output", "save_research_portfolio_output_to_client", "watch_research_portfolio", "update_research_portfolio_change_state", "get_research_portfolio_bookmarks", "create_research_portfolio_bookmark", "get_research_portfolio_fit", "get_research_portfolio_reviews", "add_research_portfolio_review_note", "get_research_portfolio_rules", "get_research_portfolio_imports", "get_research_portfolio_operations", "prepare_research_portfolio_brief", "prepare_research_portfolio_meeting"]
+      "tools": [
+        "manage_research_portfolio",
+        "get_research_portfolio_analytics",
+        "create_research_portfolio_snapshot",
+        "request_research_portfolio_output",
+        "save_research_portfolio_output_to_client",
+        "watch_research_portfolio",
+        "update_research_portfolio_change_state",
+        "get_research_portfolio_bookmarks",
+        "create_research_portfolio_bookmark",
+        "get_research_portfolio_fit",
+        "get_research_portfolio_reviews",
+        "add_research_portfolio_review_note",
+        "get_research_portfolio_rules",
+        "get_research_portfolio_imports",
+        "get_research_portfolio_operations",
+        "prepare_research_portfolio_brief",
+        "prepare_research_portfolio_meeting"
+      ]
     },
     {
       "name": "Relationships, legislation and Florida",
-      "tools": ["find_path_to", "get_legiwatch_review", "compare_florida_budget_amounts", "prepare_legiwatch_briefing", "compare_legislative_versions", "save_legislative_research", "preview_legiwatch_relevance", "save_legiwatch_relevance", "apply_legiwatch_suggestion"]
+      "tools": [
+        "find_path_to",
+        "get_legiwatch_review",
+        "compare_florida_budget_amounts",
+        "prepare_legiwatch_briefing",
+        "compare_legislative_versions",
+        "save_legislative_research",
+        "preview_legiwatch_relevance",
+        "save_legiwatch_relevance",
+        "apply_legiwatch_suggestion"
+      ]
     },
     {
       "name": "Older document and email workflows",
-      "tools": ["create_meeting_brief", "draft_policy_memo", "save_note", "send_email", "reply_email"]
+      "tools": [
+        "create_meeting_brief",
+        "draft_policy_memo",
+        "save_note",
+        "send_email",
+        "reply_email"
+      ]
     },
     {
       "name": "Direct canonical-memory writes",
-      "tools": ["confirm_memory", "correct_memory", "forget_memory"]
+      "tools": [
+        "confirm_memory",
+        "correct_memory",
+        "forget_memory"
+      ]
     },
     {
       "name": "Client and opportunity analysis",
-      "tools": ["get_pe_buyer_workspace", "create_client", "update_client_profile", "explain_opportunity_match", "compare_funding_opportunities", "build_opportunity_action_plan", "get_business_development_brief", "resolve_business_development_source", "save_business_development_brief"]
+      "tools": [
+        "get_pe_buyer_workspace",
+        "create_client",
+        "update_client_profile",
+        "explain_opportunity_match",
+        "compare_funding_opportunities",
+        "build_opportunity_action_plan",
+        "get_business_development_brief",
+        "resolve_business_development_source",
+        "save_business_development_brief"
+      ]
     }
   ],
   "referenceClasses": {
@@ -48,41 +96,173 @@
     "unrelated-identifier": "A different API with the same identifier (botocore Session.create_client)."
   },
   "knownReferences": [
-    {"path": "apps/control/document-application/mail-history/local/receipts-final/provenance.json", "class": "recorded-evidence"},
-    {"path": "apps/control/document-application/mail-history/local/receipts-utf16/provenance.json", "class": "recorded-evidence"},
-    {"path": "apps/control/document-application/mail-history/local/receipts-v2/provenance.json", "class": "recorded-evidence"},
-    {"path": "apps/control/document-application/mail-history/local/receipts/provenance.json", "class": "recorded-evidence"},
-    {"path": "apps/control/document-application/mail-history/test/fixtures.mjs", "class": "note-fixture"},
-    {"path": "apps/control/document-application/mail-history/test/retained-base-v2.json", "class": "recorded-evidence"},
-    {"path": "apps/control/document-application/relationship-brief/local/receipts-approved/provenance.json", "class": "recorded-evidence"},
-    {"path": "apps/control/document-application/relationship-brief/local/receipts-final/provenance.json", "class": "recorded-evidence"},
-    {"path": "apps/control/document-application/relationship-brief/local/receipts-release/provenance.json", "class": "recorded-evidence"},
-    {"path": "apps/control/document-application/selected-output/test/artifacts-root-inert-rerun/relationship_brief/provenance.json", "class": "recorded-evidence"},
-    {"path": "apps/control/document-application/selected-output/test/artifacts/relationship_brief/provenance.json", "class": "recorded-evidence"},
-    {"path": "apps/gateway/sources/identity-contacts/test/fixtures.mjs", "class": "note-fixture"},
-    {"path": "apps/worker/conversation/test/legacy-tools-excluded.test.mjs", "class": "guard-test", "presentOn": "fable/p2a-capability-policy-sandbox-20261015 (875b3055) and fable/a1-pause-checkpoint-20261015; absent at this base"},
-    {"path": "packages/contracts/retrieval-0.2/catalog.json", "class": "exclusion-record", "alsoCarries": "canonical-guidance: the lookup_client_registry descriptor guidance names create_client (P6)"},
-    {"path": "packages/contracts/retrieval-0.2/catalog.schema.json", "class": "exclusion-record"},
-    {"path": "packages/contracts/retrieval-0.2/tenant-contacts-validation.mjs", "class": "canonical-guidance"},
-    {"path": "packages/contracts/test/retrieval-backend-next-independent.test.mjs", "class": "negative-test"},
-    {"path": "packages/contracts/test/retrieval-business-development-independent.test.mjs", "class": "negative-test"},
-    {"path": "packages/contracts/test/retrieval-business-development.test.mjs", "class": "negative-test"},
-    {"path": "packages/contracts/test/retrieval-civic-integration-independent.test.mjs", "class": "negative-test"},
-    {"path": "packages/contracts/test/retrieval-client-registry-independent.test.mjs", "class": "negative-test"},
-    {"path": "packages/contracts/test/retrieval-client-registry.test.mjs", "class": "negative-test"},
-    {"path": "packages/contracts/test/retrieval-funding-opportunities-independent.test.mjs", "class": "negative-test"},
-    {"path": "packages/contracts/test/retrieval-funding-opportunities.test.mjs", "class": "negative-test"},
-    {"path": "packages/contracts/test/retrieval-next-bindings.test.mjs", "class": "negative-test"},
-    {"path": "packages/contracts/test/retrieval-next-integration-independent.test.mjs", "class": "negative-test"},
-    {"path": "packages/contracts/test/retrieval-research-portfolio-independent.test.mjs", "class": "negative-test"},
-    {"path": "packages/contracts/test/retrieval-research-portfolio.test.mjs", "class": "negative-test"},
-    {"path": "packages/contracts/test/retrieval-tenant-contacts-independent.test.mjs", "class": "note-fixture"},
-    {"path": "packages/contracts/test/retrieval-tenant-contacts.test.mjs", "class": "note-fixture"},
-    {"path": "scripts/general-reads/inventory.test.mjs", "class": "negative-test"},
-    {"path": "scripts/scope-ledger/ledger.test.mjs", "class": "exclusion-record"},
-    {"path": "scripts/scope-ledger/gates.json", "class": "exclusion-record"},
-    {"path": "scripts/scope-ledger/owner-exclusion.json", "class": "exclusion-record"},
-    {"path": "scripts/scope-ledger/ownership-graph.json", "class": "exclusion-record"},
-    {"path": "scripts/scope-ledger/product-capabilities.json", "class": "exclusion-record"}
-  ]
+    {
+      "path": "apps/control/document-application/mail-history/local/receipts-final/provenance.json",
+      "class": "recorded-evidence"
+    },
+    {
+      "path": "apps/control/document-application/mail-history/local/receipts-utf16/provenance.json",
+      "class": "recorded-evidence"
+    },
+    {
+      "path": "apps/control/document-application/mail-history/local/receipts-v2/provenance.json",
+      "class": "recorded-evidence"
+    },
+    {
+      "path": "apps/control/document-application/mail-history/local/receipts/provenance.json",
+      "class": "recorded-evidence"
+    },
+    {
+      "path": "apps/control/document-application/mail-history/test/fixtures.mjs",
+      "class": "note-fixture"
+    },
+    {
+      "path": "apps/control/document-application/mail-history/test/retained-base-v2.json",
+      "class": "recorded-evidence"
+    },
+    {
+      "path": "apps/control/document-application/relationship-brief/local/receipts-approved/provenance.json",
+      "class": "recorded-evidence"
+    },
+    {
+      "path": "apps/control/document-application/relationship-brief/local/receipts-final/provenance.json",
+      "class": "recorded-evidence"
+    },
+    {
+      "path": "apps/control/document-application/relationship-brief/local/receipts-release/provenance.json",
+      "class": "recorded-evidence"
+    },
+    {
+      "path": "apps/control/document-application/selected-output/test/artifacts-root-inert-rerun/relationship_brief/provenance.json",
+      "class": "recorded-evidence"
+    },
+    {
+      "path": "apps/control/document-application/selected-output/test/artifacts/relationship_brief/provenance.json",
+      "class": "recorded-evidence"
+    },
+    {
+      "path": "apps/gateway/sources/identity-contacts/test/fixtures.mjs",
+      "class": "note-fixture"
+    },
+    {
+      "path": "apps/worker/conversation/test/legacy-tools-excluded.test.mjs",
+      "class": "guard-test",
+      "presentOn": "fable/p2a-capability-policy-sandbox-20261015 (875b3055) and fable/a1-pause-checkpoint-20261015; absent at this base"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/catalog.json",
+      "class": "exclusion-record",
+      "alsoCarries": "canonical-guidance: the lookup_client_registry descriptor guidance names create_client (P6)"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/catalog.schema.json",
+      "class": "exclusion-record"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/tenant-contacts-validation.mjs",
+      "class": "canonical-guidance"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-backend-next-independent.test.mjs",
+      "class": "negative-test"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-business-development-independent.test.mjs",
+      "class": "negative-test"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-business-development.test.mjs",
+      "class": "negative-test"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-civic-integration-independent.test.mjs",
+      "class": "negative-test"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-client-registry-independent.test.mjs",
+      "class": "negative-test"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-client-registry.test.mjs",
+      "class": "negative-test"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-funding-opportunities-independent.test.mjs",
+      "class": "negative-test"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-funding-opportunities.test.mjs",
+      "class": "negative-test"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-next-bindings.test.mjs",
+      "class": "negative-test"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-next-integration-independent.test.mjs",
+      "class": "negative-test"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-research-portfolio-independent.test.mjs",
+      "class": "negative-test"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-research-portfolio.test.mjs",
+      "class": "negative-test"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-tenant-contacts-independent.test.mjs",
+      "class": "note-fixture"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-tenant-contacts.test.mjs",
+      "class": "note-fixture"
+    },
+    {
+      "path": "scripts/general-reads/inventory.test.mjs",
+      "class": "negative-test"
+    },
+    {
+      "path": "scripts/scope-ledger/ledger.test.mjs",
+      "class": "exclusion-record"
+    },
+    {
+      "path": "scripts/scope-ledger/gates.json",
+      "class": "exclusion-record"
+    },
+    {
+      "path": "scripts/scope-ledger/owner-exclusion.json",
+      "class": "exclusion-record"
+    },
+    {
+      "path": "scripts/scope-ledger/ownership-graph.json",
+      "class": "exclusion-record"
+    },
+    {
+      "path": "scripts/scope-ledger/product-capabilities.json",
+      "class": "exclusion-record"
+    }
+  ],
+  "wave4Amendment": {
+    "date": "2026-10-27",
+    "authority": "Direct Neo Wave4 implementation scope, coordinated by the root orchestrator; independent acceptance remains Hermes-owned.",
+    "authorizedOperations": [
+      "get_legiwatch_review",
+      "compare_florida_budget_amounts",
+      "compare_legislative_versions",
+      "preview_legiwatch_relevance",
+      "save_legiwatch_relevance",
+      "apply_legiwatch_suggestion",
+      "get_business_development_brief",
+      "resolve_business_development_source",
+      "create_client",
+      "update_client_profile",
+      "save_business_development_brief",
+      "prepare_legiwatch_briefing",
+      "save_legislative_research",
+      "save_note"
+    ],
+    "limits": "Only these fourteen historical tool exclusions are superseded in this source increment. Research Portfolio remains deferred; legacy send_email/reply_email and direct canonical-memory writes remain excluded. Native mail is the distinct mail_send approved command. Authorization is not a release or live acceptance receipt.",
+    "history": "The original 43-name groups, quoted 15 October direction and historical scope-ledger receipts remain immutable historical accounting; the worker exclusion guard applies this explicit finite amendment."
+  }
 }

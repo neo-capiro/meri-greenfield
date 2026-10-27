@@ -1,7 +1,7 @@
 {
   "schema": "meri-original-skill-assets/1",
   "catalogSha256": "41aed2fc63dc40cafe987ee3059a13b605b7d3796c31f60ed6ca26939954bfcc",
-  "installationCatalogSha256": "56bd5d1eef3de6a36cdd2d73fa39d993f4e17eaad95d4a46024f17035d9d15cf",
+  "installationCatalogSha256": "ac71740a28f483ea1d19b96052120e0340b9deb7a130a6bc224a863d98c3a98b",
   "assets": [
     {
       "skillId": "quick_skill.bill_watch",
@@ -122,6 +122,18 @@
       "prosePath": "./originals/bill_watch/1.0.1/SKILL.md",
       "manifestSha256": "3aa78e8d41f7a83bb0499fd96660f875cfde3c29956a7c7bfbf2e34bb9d4d67d",
       "proseSha256": "b73c8406c7525a437292ac6055bc60d5f9c1fa6b457158cf45eb125bac18f58c"
+    },
+    {
+      "skillId": "quick_skill.pe_deep_dive",
+      "skillVersion": "1.1.0",
+      "manifestPath": "./originals/pe_deep_dive/1.1.0/manifest.json",
+      "prosePath": "./originals/pe_deep_dive/1.1.0/SKILL.md",
+      "manifestSha256": "27391e1eb9db904dc48587a5aa6013daafce423329f53c7360964ce0f079372d",
+      "proseSha256": "a4a9461db01d8737da84f5ee01783ee1d736cf7a9a2090f63b2705da1cb65065",
+      "catalogSha256": "56bd5d1eef3de6a36cdd2d73fa39d993f4e17eaad95d4a46024f17035d9d15cf"
     }
-  ]
+  ],
+  "sdkDefaults": {
+    "quick_skill.pe_deep_dive": "1.1.0"
+  }
 }

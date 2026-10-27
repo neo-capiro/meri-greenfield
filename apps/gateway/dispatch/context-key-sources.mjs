@@ -9,6 +9,17 @@ const NATIVE='apps/runtime/read-context/source-read-context.mjs (createSourceRea
 /** Trusted sources per dispatch path and key. Every entry names the owner that produces the value and where it comes from. */
 export const CONTEXT_KEY_SOURCES=Object.freeze({
  native:Object.freeze({
+  legiwatchReviewScope:`explicit client selector, current visible clients and identity/membership revisions from Core, bound to the immutable conversation subject — ${NATIVE}`,
+  strategySavedScope:`explicit client selector plus current Core identity/membership revisions and selected conversation client — ${NATIVE}`,
+  savedRecordScope:`current conversation client/tenant and Core identity/membership revisions; unsupported selected-client owner kinds refuse — ${NATIVE}`,
+  capiroDataScope:`private client-record source only: immutable conversation scope and current Core identity/membership revisions; public queries have no private scope — ${NATIVE}`,
+  selectedClientId:`immutable conversation client checked against current Core visible clients — ${NATIVE}`,
+  visibleClientIds:`current Core application-authority visible client IDs — ${NATIVE}`,
+  sourceStatusAsOf:`pinned native observation clock for source status — ${NATIVE}`,
+  sourceHealthAsOf:`pinned native observation clock for source health — ${NATIVE}`,
+  stageAsOf:`pinned native observation clock for recorded rule stages — ${NATIVE}`,
+  commentAsOf:`pinned native observation clock for recorded comment periods — ${NATIVE}`,
+  comparisonLocale:`canonical runtime Collator locale pinned for this native read — ${NATIVE}`,
   asOf:`control clock at the execution's first bounded native observation, pinned for the scope and sent to Core as the trusted read observation (native-read-observation-0.2) — ${NATIVE}`,
   defaultAsOf:`control clock at the first observation when the request carries no asOfDate, pinned for the scope — ${NATIVE}`,
   defaultCongress:'control configuration `defaultCongress` (render key) — source-read-context.mjs',
@@ -26,7 +37,6 @@ export const CONTEXT_KEY_SOURCES=Object.freeze({
   clientReference:'request clientId (UUID or name), name resolved through the Core `clients/check-ref` observation and equal to the selected client — source-read-context.mjs',
  }),
  retained:Object.freeze({
-  asOf:'control clock at observation, bound into the ordinary Core read correlation — dispatch/retained-read-context.mjs',
   binding:'current gateway authority binding — dispatch/retained-read-context.mjs',
   subject:'current gateway authority subject — dispatch/retained-read-context.mjs',
  }),

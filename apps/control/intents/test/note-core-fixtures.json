@@ -1,0 +1,122 @@
+[
+  {
+    "input": {
+      "body": "  padded  ",
+      "title": "  title  ",
+      "accessLevel": "  internal  "
+    },
+    "request": {
+      "body": "padded",
+      "title": "title",
+      "accessLevel": "internal"
+    },
+    "view": {
+      "tool": "save_note",
+      "bodyHash": "bfbde032836c3c7cc059a39278eb7aa69a5157746d76bae9c8feb01a0e8dae6c",
+      "bodyLength": 6,
+      "title": "title",
+      "clientId": null,
+      "meetingId": null,
+      "confidential": null,
+      "accessLevel": "internal"
+    },
+    "receipt": {
+      "destination": "general",
+      "noteId": "00000043-0000-4000-8000-000000000000",
+      "clientId": null,
+      "readiness": "ready",
+      "bodyHash": "bfbde032836c3c7cc059a39278eb7aa69a5157746d76bae9c8feb01a0e8dae6c",
+      "generatedAt": "2027-01-15T08:00:00.000Z"
+    }
+  },
+  {
+    "input": {
+      "body": "line with trailing newline\n",
+      "title": "  title  ",
+      "accessLevel": "  internal  "
+    },
+    "request": {
+      "body": "line with trailing newline",
+      "title": "title",
+      "accessLevel": "internal"
+    },
+    "view": {
+      "tool": "save_note",
+      "bodyHash": "2261fa8c6a0ccb4d9710fc183030c7fd8d6932f1d6566734ede824daf977fa9e",
+      "bodyLength": 26,
+      "title": "title",
+      "clientId": null,
+      "meetingId": null,
+      "confidential": null,
+      "accessLevel": "internal"
+    },
+    "receipt": {
+      "destination": "general",
+      "noteId": "00000043-0000-4000-8000-000000000000",
+      "clientId": null,
+      "readiness": "ready",
+      "bodyHash": "2261fa8c6a0ccb4d9710fc183030c7fd8d6932f1d6566734ede824daf977fa9e",
+      "generatedAt": "2027-01-15T08:00:00.000Z"
+    }
+  },
+  {
+    "input": {
+      "body": "\n\nleading blanks",
+      "title": "  title  ",
+      "accessLevel": "  internal  "
+    },
+    "request": {
+      "body": "leading blanks",
+      "title": "title",
+      "accessLevel": "internal"
+    },
+    "view": {
+      "tool": "save_note",
+      "bodyHash": "7f39530f8737f13b7c9aeb66f8f3d735bd8d270bf90618aeca560044ddca2145",
+      "bodyLength": 14,
+      "title": "title",
+      "clientId": null,
+      "meetingId": null,
+      "confidential": null,
+      "accessLevel": "internal"
+    },
+    "receipt": {
+      "destination": "general",
+      "noteId": "00000043-0000-4000-8000-000000000000",
+      "clientId": null,
+      "readiness": "ready",
+      "bodyHash": "7f39530f8737f13b7c9aeb66f8f3d735bd8d270bf90618aeca560044ddca2145",
+      "generatedAt": "2027-01-15T08:00:00.000Z"
+    }
+  },
+  {
+    "input": {
+      "body": "clean",
+      "title": "  title  ",
+      "accessLevel": "  internal  "
+    },
+    "request": {
+      "body": "clean",
+      "title": "title",
+      "accessLevel": "internal"
+    },
+    "view": {
+      "tool": "save_note",
+      "bodyHash": "c7aa019146c4f7f372a754005592064c00eace39c766249a64c69e4b186a88e3",
+      "bodyLength": 5,
+      "title": "title",
+      "clientId": null,
+      "meetingId": null,
+      "confidential": null,
+      "accessLevel": "internal"
+    },
+    "receipt": {
+      "destination": "general",
+      "noteId": "00000043-0000-4000-8000-000000000000",
+      "clientId": null,
+      "readiness": "ready",
+      "bodyHash": "c7aa019146c4f7f372a754005592064c00eace39c766249a64c69e4b186a88e3",
+      "generatedAt": "2027-01-15T08:00:00.000Z"
+    }
+  }
+]

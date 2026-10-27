@@ -1,0 +1,157 @@
+{
+  "contractVersion": "0.2.0",
+  "skillId": "quick_skill.pe_deep_dive",
+  "skillVersion": "1.1.0",
+  "prose": {
+    "id": "urn:meri:original:pe-deep-dive:1.1.0",
+    "sha256": "a4a9461db01d8737da84f5ee01783ee1d736cf7a9a2090f63b2705da1cb65065"
+  },
+  "requiredSources": [
+    {
+      "sourceId": "dataset_metadata",
+      "authority": "derived",
+      "purpose": "evidence"
+    },
+    {
+      "sourceId": "capiro_data_query",
+      "authority": "derived",
+      "purpose": "evidence"
+    },
+    {
+      "sourceId": "program_elements",
+      "authority": "derived",
+      "purpose": "evidence"
+    },
+    {
+      "sourceId": "pe_references",
+      "authority": "derived",
+      "purpose": "evidence"
+    },
+    {
+      "sourceId": "bill_text",
+      "authority": "derived",
+      "purpose": "evidence"
+    },
+    {
+      "sourceId": "federal_legislation",
+      "authority": "derived",
+      "purpose": "evidence"
+    },
+    {
+      "sourceId": "stored_public_reports",
+      "authority": "derived",
+      "purpose": "evidence"
+    }
+  ],
+  "allowedOperations": [
+    {
+      "id": "describe_capiro_data",
+      "version": "0.2.0"
+    },
+    {
+      "id": "query_capiro_data",
+      "version": "0.2.0"
+    },
+    {
+      "id": "search_program_elements",
+      "version": "0.2.0"
+    },
+    {
+      "id": "get_program_element",
+      "version": "0.2.0"
+    },
+    {
+      "id": "get_pe_budget_timeline",
+      "version": "0.2.0"
+    },
+    {
+      "id": "get_pe_report_language",
+      "version": "0.2.0"
+    },
+    {
+      "id": "get_pe_contractors",
+      "version": "0.2.0"
+    },
+    {
+      "id": "get_pe_bills",
+      "version": "0.2.0"
+    },
+    {
+      "id": "read_bill_text",
+      "version": "0.2.0"
+    },
+    {
+      "id": "get_bill_status",
+      "version": "0.2.0"
+    },
+    {
+      "id": "search_cbo_cost_estimates",
+      "version": "0.2.0"
+    },
+    {
+      "id": "search_gao_reports",
+      "version": "0.2.0"
+    },
+    {
+      "id": "search_crs_reports",
+      "version": "0.2.0"
+    }
+  ],
+  "subjectKinds": [
+    "entity",
+    "client"
+  ],
+  "windowBases": [
+    "fiscal-year",
+    "explicit"
+  ],
+  "completion": {
+    "requireAllSources": true,
+    "allowDisclosedPartial": true,
+    "negativeClaims": "complete-covered-only",
+    "rubric": [
+      {
+        "id": "pe-and-fydp",
+        "requirement": "Confirm canonical PE; retain FYDP fiscal-year/stage/revision/unit and missing years.",
+        "evidenceRequired": true
+      },
+      {
+        "id": "congress-and-contractors",
+        "requirement": "Read report language, contractors and authorizing/appropriating bill versions without conflating lanes.",
+        "evidenceRequired": true
+      },
+      {
+        "id": "decisive-evidence",
+        "requirement": "Read exact material records/passages and retain source/version/hash/scope/time binding; separate free-form inference from source excerpts.",
+        "evidenceRequired": true
+      },
+      {
+        "id": "coverage",
+        "requirement": "Expose per-required-source freshness, pagination, decisive-read and history limits; absence requires complete relevant current coverage.",
+        "evidenceRequired": true
+      },
+      {
+        "id": "structured-grain",
+        "requirement": "Keep PE/project grains, position cycle, asserted FY, value kind, exact numeric strings and separate row/byte/SQL limits; query evidence is not immutable source text.",
+        "evidenceRequired": true
+      }
+    ]
+  },
+  "approval": {
+    "mutations": "separate-immutable-proposal",
+    "autoCreateTasks": false
+  },
+  "budgets": {
+    "maxTurns": 12,
+    "maxToolCalls": 24,
+    "maxRecoveryAttempts": 0,
+    "maxRuntimeSeconds": 60,
+    "maxCostMicroUSD": 1000,
+    "maxOutputBytes": 1048576
+  },
+  "versionPolicy": {
+    "existingRuns": "pin-immutable",
+    "resume": "exact-or-explicit-migration",
+    "fork": "preserve-unless-explicit-reselection"
+  }
+}

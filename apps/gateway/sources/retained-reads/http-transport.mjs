@@ -25,15 +25,15 @@ export function createRetainedHttpTransport(configuration){
   const knowledgeObservation=observation==='client-knowledge-asof'&&c.contract.binding.group==='client-knowledge-search'&&c.operation.id==='search_client_knowledge';
   const modeObservation=observation==='evidence-mode'&&['public-data','program-elements'].includes(c.contract.binding.group)&&MODE_READ_OPERATIONS.includes(c.operation.id);
   const producerObservation=observation==='producer-context'&&['certification-status','rule-status','sam-opportunities'].includes(c.contract.binding.group);
-  const savedOwner=['saved-records','strategy-saved-records'].includes(c.contract.binding.group);
+  const savedOwner=['saved-records','strategy-saved-records','legiwatch-review','legiwatch-relevance','legislative-comparisons','florida-budget'].includes(c.contract.binding.group);
   if(savedOwner&&readSource)deny('ACCESS_DENIED');
   const privateData=c.contract.binding.group==='capiro-data'&&c.request.source==='client_records';
-  const strategyData=c.contract.binding.group==='strategy-saved-records';
-  if((privateData||strategyData)&&(c.operation.version!=='0.2.0'||!(strategyData?['read_saved_strategy_records']:['describe_capiro_data','query_capiro_data']).includes(c.operation.id)||
-   method!=='POST'||path!==`/api/clio/tools/${c.operation.id}`||!serviceSecret||!same(body,c.request)))deny('GATEWAY_CONFIGURATION');
-  const correlation=privateData||strategyData?canonicalize(frozenData({binding:c.authority.binding,subject:c.authority.subject,
+  const strategyData=c.contract.binding.group==='strategy-saved-records',legiwatchData=['legiwatch-review','legiwatch-relevance','legislative-comparisons','florida-budget'].includes(c.contract.binding.group);
+  if((privateData||strategyData||legiwatchData)&&(c.operation.version!=='0.2.0'||!(legiwatchData?['get_legiwatch_review','preview_legiwatch_relevance','get_florida_budget_project','compare_florida_budget_amounts','compare_legislative_versions']:strategyData?['read_saved_strategy_records']:['describe_capiro_data','query_capiro_data']).includes(c.operation.id)||
+   method!=='POST'||path!==`/api/clio/tools/${c.operation.id}`||!serviceSecret||!same(body,c.operation.id==='get_florida_budget_project'?c.input:c.request)))deny('GATEWAY_CONFIGURATION');
+  const correlation=privateData||strategyData||legiwatchData?canonicalize(frozenData({binding:c.authority.binding,subject:c.authority.subject,
    policyRevision:c.authority.policyRevision,normalizationContext:c.normalizationContext})):undefined;
-  if((privateData||strategyData)&&(typeof correlation!=='string'||Buffer.byteLength(correlation,'utf8')>8192))deny('RESOURCE_LIMIT');
+  if((privateData||strategyData||legiwatchData)&&(typeof correlation!=='string'||Buffer.byteLength(correlation,'utf8')>8192))deny('RESOURCE_LIMIT');
   if(observation!==undefined&&(!(fundingObservation||knowledgeObservation||modeObservation||producerObservation)||c.operation.version!=='0.2.0'||
    method!=='POST'||path!==`/api/clio/tools/${c.operation.id}`||!serviceSecret||!same(body,c.request)))deny('GATEWAY_CONFIGURATION');
   if(MODE_READ_OPERATIONS.includes(c.operation.id)&&!modeObservation&&!(producerObservation&&c.operation.id==='search_sam_opportunities'))deny('GATEWAY_CONFIGURATION');

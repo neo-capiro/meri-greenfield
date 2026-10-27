@@ -148,6 +148,32 @@
         "asOf": {
           "type": "string",
           "format": "date-time"
+        },
+        "legiwatchReviewScope": {
+          "type": "object",
+          "properties": {
+            "clientId": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "format": "uuid"
+            },
+            "identityRevision": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            "membershipRevision": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            }
+          },
+          "required": [
+            "clientId",
+            "identityRevision",
+            "membershipRevision"
+          ],
+          "additionalProperties": false
         }
       },
       "required": [
