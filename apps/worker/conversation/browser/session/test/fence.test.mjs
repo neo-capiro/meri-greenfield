@@ -132,3 +132,25 @@ test('malformed calls are refused before admission',()=>{
  assert.equal(f.state().inflight,1,'an invalid settlement leaves the call tracked');
  assert.throws(()=>f.fence({reason:'because'}),code('FENCE_INVALID_REASON'));
 });
+
+test('a result arriving at the drain deadline is stale without a preceding state poll',()=>{
+ for(const delay of [6000,6001]){
+  const now=clock(),f=ready(now);
+  f.admit({requestId:'late',tool:'browser_click',timeoutMs:1000,approvalId:'approved'});
+  f.fence({reason:'takeover'});now.advance(delay);
+  assert.deepEqual(f.settle('late',{outcome:'result'}),{deliver:'reject',code:'BROWSER_STALE_RESULT'});
+  assert.equal(f.state().state,'drain-unknown');
+  assert.equal(f.state().unknownCalls[0].approvalId,'approved');
+  assert.throws(()=>f.grant({holdApplied:true}),code('TAKEOVER_DRAIN_UNKNOWN'));
+ }
+});
+
+test('a completed call cannot be replayed after lost acknowledgement or hand-back',()=>{
+ const f=ready(clock()),call={requestId:'completed',tool:'browser_click',timeoutMs:1000};
+ f.admit(call);assert.equal(f.settle(call.requestId,{outcome:'result'}).deliver,'result');
+ assert.throws(()=>f.admit(call),code('FENCE_DUPLICATE_CALL'));
+ assert.equal(f.settle(call.requestId,{outcome:'result'}).code,'BROWSER_STALE_RESULT');
+ f.fence({reason:'takeover'});f.grant({holdApplied:true});f.handBack();f.resume({explicit:true,snapshotCaptured:true});
+ assert.throws(()=>f.admit(call),code('FENCE_DUPLICATE_CALL'));
+ assert.equal(f.admit({...call,requestId:'fresh'}).epoch,f.state().controlEpoch);
+});

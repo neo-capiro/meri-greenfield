@@ -18,6 +18,18 @@ Use existing feature owners and the Claude SDK harness. Reuse public contracts, 
 
 **Checks (28 October, Node 24.22.1, Windows).** `agentcore-execution.test.mjs`: 6 passed. `execution-sessions.test.mjs`: 1 passed. Initial attempts at capability/Bash and HTTP composition checks stopped at missing local dependency imports; these are setup failures, not passing behavioral tests. Native checks remain not run.
 
+## A2 — browser takeover
+
+**Owner and behavior.** Existing `apps/worker/conversation/browser/session/{fence,input,confidentiality,destruction,activation}.mjs` owns the prepared control fence, input validation, confidential-content filter and cleanup contract. The browser host must enforce them at one execution point. Control owns current authority and short-lived single-use viewer tickets; the frontend owns the eventual viewer and explicit connecting/agent/pausing/human/reconnecting/expired/ended presentation. These are not mounted live merely because the pure state machines exist.
+
+**Source correction.** Settlement now checks the drain deadline before accepting a result even without an intervening poll. Completed request IDs remain consumed across takeover/return, so an acknowledgement loss cannot redispatch a completed effect. Unknown effects remain fenced and require reconciliation/reset; no late success creates a lease.
+
+**Dependencies and decisions.** The browser gate, native host/egress qualification, session-owner placement, authenticated relay, current Core checks, confidential sign-in/MFA filter and server-side invalidation remain prerequisites. Credentials must never enter chat, agent observations or logs. Returning control requires fresh authority and a filtered snapshot. Cleanup must expose completed versus unknown. Retained state must remain conversation-bound and single-controller even across disconnect/reconnect/revocation. Existing historical Q-X references are evidence lineage, not authorization to activate.
+
+**Acceptance and finite next slice.** Integrate the existing fence and privacy filter with a synthetic local browser-session owner and single-use viewer ticket path; demonstrate no overlapping input, no confidential frame leakage, no replay, expiry/revocation and accurate destruction outcome before any real website. Then connect shared frontend controls to those authoritative states. This batch does not claim that integration or live acceptance.
+
+**Checks.** 24 passed, 0 failed/skipped across `fence.test.mjs`, `input-activation.test.mjs`, `confidentiality.test.mjs`, including both new counterexamples. Pure source fixtures only; native browser, relay, UI and real identity-provider acceptance not run. Activation remains held.
+
 ## Remaining preparation
 
-A2 takeover, A3 authenticated sites, A4 device/browser bridge, A5 federal drafting and A7 Collabora/WOPI preparation are processed individually after this row. A6 graph/buyer/funding work is explicitly skipped. No unprocessed row is complete.
+A3 authenticated sites, A4 device/browser bridge, A5 federal drafting and A7 Collabora/WOPI preparation are processed individually after these rows. A6 graph/buyer/funding work is explicitly skipped. No unprocessed row is complete.
