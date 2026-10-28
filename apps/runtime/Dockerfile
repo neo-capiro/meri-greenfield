@@ -453,6 +453,11 @@ COPY --from=native-repo-4 /tmp/meri-native-repo /tmp/meri-native-repo
 # mandatory Rust component from the vendored crate tree inside the release asset, runs the project's own unit tests,
 # and installs the payload into a staging prefix whose every installed file is recorded by sha256. No image layer
 # carries the toolchain, the headers or the build tree, and nothing outside this stage is compiled from source.
+# The Rust toolchain tarball is expanded by the pinned xz decoder and then unpacked by tar, not by tar's own -J
+# option: the base image's tar is the busybox applet, whose internal xz support reported corrupted data/short read
+# on this archive immediately after the archive's pinned sha256 and detached signature had verified, while the
+# pinned xz=5.8.4-r0 is installed in this stage for exactly that job. The two steps are separate commands of the
+# offline RUN, so a decode failure fails the build instead of disappearing in a pipeline's exit status.
 # RUN --network=none below enforces that offline execution for the whole stage, so the configure/cargo/ctest
 # sequence cannot reach the network even if a fetch were attempted: the vendored crate tree inside the release
 # asset and FindRust's offline mode are the mechanism, and this guard is what makes the claim enforced rather
@@ -507,7 +512,7 @@ RUN --network=none \
       /tmp/meri-native-source/rust-1.99.1-aarch64-unknown-linux-gnu.tar.xz.asc /tmp/meri-native-source/rust-1.99.1-aarch64-unknown-linux-gnu.tar.xz 3> /tmp/rust-vendor.status && \
     grep -q "VALIDSIG 108F66205EAEB0AAA8DD5E1C85AB96E6FA1BE5FE" /tmp/rust-vendor.status && \
     echo "a48fb1e853be56ce9b8e2751f5464dbd5e16440cd81e237920f3a5e7e806333e  /tmp/meri-native-source/rust-1.99.1-aarch64-unknown-linux-gnu.tar.xz" | sha256sum -c - && \
-    mkdir -p /tmp/rust-extract /opt/rust && tar -xJf /tmp/meri-native-source/rust-1.99.1-aarch64-unknown-linux-gnu.tar.xz -C /tmp/rust-extract --strip-components=1 && \
+    mkdir -p /tmp/rust-extract /opt/rust && xz -dc /tmp/meri-native-source/rust-1.99.1-aarch64-unknown-linux-gnu.tar.xz > /tmp/rust.tar && tar -xf /tmp/rust.tar -C /tmp/rust-extract --strip-components=1 && \
     /tmp/rust-extract/install.sh --prefix=/opt/rust --disable-ldconfig \
       --without=rust-docs,rust-docs-json,rust-analysis >/dev/null && \
     export PATH=/opt/rust/bin:$PATH && rustc --version && cargo --version && \
