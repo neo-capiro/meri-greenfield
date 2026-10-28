@@ -11,3 +11,4 @@ export function documentIntentPreparersFor(context,value){return owners.get(cont
 export function documentApprovalOwnerFor(context){return owners.get(context)?.documents??null;}
 export function filingApprovalOwnerFor(context){return owners.get(context)?.filing??null;}
 export function documentRevisionSourceFor(context,value){const owner=owners.get(context)?.revision;if(!owner)throw Object.assign(Error('UNAVAILABLE'),{code:'UNAVAILABLE'});return owner.read(value);}
+export function selectedDocumentRevisionSourceFor(context,value){const owner=owners.get(context)?.revision;if(typeof owner?.readForSelected!=='function')throw Object.assign(Error('UNAVAILABLE'),{code:'UNAVAILABLE'});return owner.readForSelected(value);}
