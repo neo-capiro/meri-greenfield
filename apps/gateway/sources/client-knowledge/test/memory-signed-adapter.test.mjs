@@ -14,154 +14,153 @@ const invocationId='synthetic_memory_call_1';
 const sha=value=>createHash('sha256').update(value,'utf8').digest('hex');
 const response=(body,headers={})=>new Response(JSON.stringify(body),{headers:{'content-type':'application/json',...headers}});
 
-function scene() {
-  const f=createClientKnowledgeFixture('search_memory',{client:true}),wire=[],pageRequests=[],helperRequests=[],limits=[];
-  const config={endpoints:{search_memory:`${origin}${pagePath}`},now:()=>f.state.now,
-    maxRequestMs:1000,maxResponseBytes:1048576,
-    async getCredentials(pins){pageRequests.push(pins);return {...f.credentials(pins),
-      invocationId:pins.invocationId,authorizationScheme:'CapiroMeriRead',target:pins.target,
-      correlationSha256:pins.correlationSha256};},
-    async getEligibilityCredentials(pins){helperRequests.push(pins);return {...f.receiptPins(pins),
-      invocationId:pins.invocationId,pageProof:pins.pageProof,pageBodySha256:pins.pageBodySha256,
-      pageRequestSha256:pins.pageRequestSha256,resultSha256:pins.resultSha256,recordsSha256:pins.recordsSha256,
-      authorizationScheme:'CapiroMeriRead',target:pins.target,correlationSha256:pins.correlationSha256,
-      bearerToken:'SYNTHETIC_HELPER_TOKEN',serviceSecret:'SYNTHETIC_HELPER_SECRET',expiresAtMs:NOW+1000};},
+/** Current execution-boundary call context: assertReadContext owns this exact shape, with no claims/decision projection. */
+const authority=(f,maxOutputBytes=1048576)=>({binding:f.binding,subject:f.subject,executionSha256:'c'.repeat(64),
+  policyRevision:f.subject.policyRevision,scopes:f.subject.scopes,sourceIds:f.authority.sourceIds,deadlineMs:NOW+10000,maxOutputBytes});
+
+function scene({client=true,maxOutputBytes=1048576}={}) {
+  const f=createClientKnowledgeFixture('search_memory',{client}),wire=[],credentialRequests=[],limits=[];
+  // One ordinary user/service identity per call: the page and the eligibility helper each request their own
+  // narrowly bound Bearer credential for their own target. There is no separate eligibility credential port.
+  const config={endpoints:{search_memory:`${origin}${pagePath}`},now:()=>f.state.now,maxRequestMs:1000,maxResponseBytes:1048576,
+    async getCredentials(request){credentialRequests.push(request);return {...f.credentials(request),
+      invocationId:request.invocationId,authorizationScheme:'Bearer',target:request.target,correlationSha256:request.correlationSha256,
+      ...(credentialRequests.length>1?{bearerToken:'SYNTHETIC_ELIGIBILITY_TOKEN'}:{})};},
     async fetchImpl(url,options){wire.push({url,options});
-      if(url.endsWith(pagePath))return response(f.page(JSON.parse(options.body).input),
-        {'x-meri-memory-page-proof':'SYNTHETIC_PAGE_PROOF'});
+      if(url.endsWith(pagePath))return response(f.page(JSON.parse(options.body).input));
       if(url.endsWith(helperPath))return response(f.eligibility(JSON.parse(options.body)));
       throw Error('unexpected route');}};
-  const call=(changes={})=>({...f.call(),invocationId,limitReleaseDeadline:expiry=>limits.push(expiry),...changes});
+  const call=(changes={})=>({input:f.input(),request:f.args,authority:authority(f,maxOutputBytes),
+    normalizationContext:f.normalizationContext,argumentsSha256:f.contract.normalizeInput(f.args,f.normalizationContext).argumentsSha256,
+    invocationId,limitReleaseDeadline:expiry=>limits.push(expiry),...changes});
   const execute=(changes={},selection=call())=>createClientKnowledgeReadHandler({operation:f.operation,
     adapter:createSignedMemoryHttpAdapter({...config,...changes}),now:()=>f.state.now})(selection);
-  return {f,wire,pageRequests,helperRequests,limits,config,call,execute};
+  return {f,wire,credentialRequests,limits,config,call,execute};
 }
 
-test('selected-client memory uses one signed page and one distinct signed eligibility helper',async()=>{
+test('selected-client memory uses one ordinary Bearer page and one eligibility call bound to that page request',async()=>{
   const s=scene(),out=JSON.parse(await s.execute());
   assert.deepEqual(out.result,s.f.page());assert.equal(s.wire.length,2);
   assert.deepEqual(s.wire.map(row=>new URL(row.url).pathname),[pagePath,helperPath]);
   const page=s.wire[0].options,helper=s.wire[1].options;
-  assert.equal(page.headers.authorization,'CapiroMeriRead SYNTHETIC_KNOWLEDGE_TOKEN');
-  assert.equal(helper.headers.authorization,'CapiroMeriRead SYNTHETIC_HELPER_TOKEN');
+  assert.equal(page.headers.authorization,'Bearer SYNTHETIC_KNOWLEDGE_TOKEN');
+  assert.equal(helper.headers.authorization,'Bearer SYNTHETIC_ELIGIBILITY_TOKEN');
   assert.equal(page.headers['x-internal-service-secret'],'SYNTHETIC_SERVICE_SECRET');
-  assert.equal(helper.headers['x-internal-service-secret'],'SYNTHETIC_HELPER_SECRET');
+  assert.equal(helper.headers['x-internal-service-secret'],'SYNTHETIC_SERVICE_SECRET');
   assert.equal(page.headers['x-meri-read-correlation'],helper.headers['x-meri-read-correlation']);
   const correlation=Buffer.from(page.headers['x-meri-read-correlation'],'base64url').toString('utf8');
   assert.equal(correlation,canonicalize({binding:s.f.binding,subject:s.f.subject,
-    policyRevision:s.f.authority.policyRevision,normalizationContext:s.f.normalizationContext}));
-  const pageBody=JSON.parse(page.body),helperBody=JSON.parse(helper.body),pagePins=s.pageRequests[0],helperPins=s.helperRequests[0];
+    policyRevision:s.f.subject.policyRevision,normalizationContext:s.f.normalizationContext}));
+  const pageBody=JSON.parse(page.body),helperBody=JSON.parse(helper.body),pagePins=s.credentialRequests[0],helperPins=s.credentialRequests[1];
   assert.deepEqual(pageBody,{input:s.f.input(),metadata:s.f.normalized().metadata});
-  assert.equal(pagePins.invocationId,invocationId);assert.equal(pagePins.argumentsSha256,canonicalSha256(pageBody.input));
+  assert.equal(pagePins.invocationId,invocationId);assert.equal(helperPins.invocationId,invocationId);
+  assert.equal(pagePins.argumentsSha256,canonicalSha256(pageBody.input));
   assert.equal(pagePins.requestSha256,canonicalSha256(pageBody));
   assert.deepEqual(pagePins.target,{method:'POST',path:pagePath,bodySha256:sha(page.body)});
   assert.equal(pagePins.correlationSha256,sha(correlation));
-  assert.equal(helperPins.pageProof,'SYNTHETIC_PAGE_PROOF');
-  assert.equal(helperPins.pageBodySha256,sha(page.body));
-  assert.equal(helperPins.pageRequestSha256,canonicalSha256(pageBody));
-  assert.equal(helperPins.resultSha256,canonicalSha256(out.result));
-  assert.equal(helperPins.recordsSha256,canonicalSha256(helperBody.records));
-  assert.equal(helperPins.bodyJson,helper.body);
+  assert.deepEqual(pagePins.input,helperPins.input);assert.equal(helperPins.argumentsSha256,pagePins.argumentsSha256);
+  assert.equal(helperPins.requestSha256,pagePins.requestSha256);assert.equal(helperPins.policyRevision,pagePins.policyRevision);
+  assert.equal(pagePins.deadlineMs,NOW+1000);assert.equal(helperPins.deadlineMs,NOW+1000);
   assert.deepEqual(helperPins.target,{method:'POST',path:helperPath,bodySha256:sha(helper.body)});
+  assert.equal(helperBody.resultSha256,canonicalSha256(out.result));
   assert.deepEqual(helperBody.records,[{memoryItemId:out.result.records[0].recordId,
     recordSha256:canonicalSha256(out.result.records[0])}]);
   assert.deepEqual(s.limits,[NOW+1000]);
-  assert.equal(JSON.stringify(out).includes('SYNTHETIC_PAGE_PROOF'),false);
-  assert.equal(JSON.stringify(out).includes('SYNTHETIC_HELPER_TOKEN'),false);
+  for(const secret of ['SYNTHETIC_KNOWLEDGE_TOKEN','SYNTHETIC_ELIGIBILITY_TOKEN','SYNTHETIC_SERVICE_SECRET'])
+    assert.equal(JSON.stringify(out).includes(secret),false);
 });
 
-test('memory refuses personal scope and missing dispatcher provenance before credential request',async()=>{
-  const s=scene(),personal=createClientKnowledgeFixture('search_memory');
-  await assert.rejects(s.execute({},personal.call()),/ACCESS_DENIED/);
-  await assert.rejects(s.execute({},s.call({invocationId:undefined})),/ACCESS_DENIED/);
-  await assert.rejects(s.execute({},s.call({limitReleaseDeadline:undefined})),/ACCESS_DENIED/);
-  assert.equal(s.pageRequests.length,0);assert.equal(s.wire.length,0);
+test('memory admits the General personal scope and refuses a subject/input scope mismatch before credential or HTTP',async()=>{
+  const general=scene({client:false}),out=JSON.parse(await general.execute());
+  assert.deepEqual(out.result,general.f.page());assert.equal(general.credentialRequests.length,2);
+  assert.deepEqual(general.wire.map(row=>new URL(row.url).pathname),[pagePath,helperPath]);
+  const clientOnly=scene({client:true}),personalOnly=createClientKnowledgeFixture('search_memory',{client:false});
+  await assert.rejects(clientOnly.execute({},clientOnly.call({authority:authority(personalOnly)})),/ACCESS_DENIED/);
+  const personalCall=scene({client:false});
+  await assert.rejects(personalCall.execute({},personalCall.call({authority:authority(clientOnly.f)})),/ACCESS_DENIED/);
+  for(const denied of [clientOnly,personalCall]){
+    assert.equal(denied.credentialRequests.length,0);assert.equal(denied.wire.length,0);assert.deepEqual(denied.limits,[]);}
 });
 
-test('missing page proof refuses before helper issuance and strips no unverified result',async()=>{
-  const s=scene();await assert.rejects(s.execute({fetchImpl:async(url,options)=>{
-    s.wire.push({url,options});return response(s.f.page(JSON.parse(options.body).input));
-  }}),/ACCESS_DENIED/);
-  assert.equal(s.wire.length,1);assert.equal(s.helperRequests.length,0);assert.equal(s.limits.length,0);
+test('memory refuses missing dispatcher invocation provenance before any credential request',async()=>{
+  for(const change of [{invocationId:undefined},{limitReleaseDeadline:undefined}]){
+    const s=scene();await assert.rejects(s.execute({},s.call(change)),/ACCESS_DENIED/);
+    assert.equal(s.credentialRequests.length,0);assert.equal(s.wire.length,0);assert.deepEqual(s.limits,[]);}
 });
 
-test('over-budget memory page refuses before eligibility helper credential or HTTP',async()=>{
-  const s=scene();s.f.claims.budgets.maxOutputBytes=512;
+test('over-budget memory page refuses before the eligibility helper is requested',async()=>{
+  const s=scene({maxOutputBytes:512});
   await assert.rejects(s.execute(),/RESOURCE_LIMIT/);
-  assert.equal(s.pageRequests.length,1);assert.equal(s.wire.length,1);
-  assert.equal(s.helperRequests.length,0);assert.equal(s.limits.length,0);
+  assert.equal(s.credentialRequests.length,1);assert.equal(s.wire.length,1);assert.deepEqual(s.limits,[]);
 });
 
 for(const [name,change] of Object.entries({
-  bearer:r=>{r.authorizationScheme='Bearer';},
+  scheme:r=>{r.authorizationScheme='CapiroMeriRead';},
   target:r=>{r.target={...r.target,path:'/api/clio/tools/other'};},
   body:r=>{r.target={...r.target,bodySha256:'a'.repeat(64)};},
   invocation:r=>{r.invocationId='different';},
   correlation:r=>{r.correlationSha256='a'.repeat(64);},
+  emptyToken:r=>{r.bearerToken='';},
   matchingSecret:r=>{r.serviceSecret=r.bearerToken;},
+  expired:r=>{r.expiresAtMs=NOW;},
+  beyondDeadline:r=>{r.expiresAtMs=NOW+10001;},
 }))test(`memory page ${name} credential refuses before HTTP`,async()=>{
   const s=scene();await assert.rejects(s.execute({getCredentials:async pins=>{
     const r=await s.config.getCredentials(pins);change(r);return r;
-  }}),/ACCESS_DENIED/);assert.equal(s.wire.length,0);assert.equal(s.limits.length,0);
+  }}),/ACCESS_DENIED/);assert.equal(s.credentialRequests.length,1);assert.equal(s.wire.length,0);assert.deepEqual(s.limits,[]);
 });
 
 for(const [name,change] of Object.entries({
-  bearer:r=>{r.authorizationScheme='Bearer';},
-  target:r=>{r.target={...r.target,path:'/api/clio/tools/other'};},
+  scheme:r=>{r.authorizationScheme='CapiroMeriRead';},
+  target:r=>{r.target={...r.target,path:pagePath};},
   body:r=>{r.target={...r.target,bodySha256:'a'.repeat(64)};},
-  proof:r=>{r.pageProof='other';},
-  result:r=>{r.resultSha256='a'.repeat(64);},
-  token:r=>{r.bearerToken='SYNTHETIC_KNOWLEDGE_TOKEN';},
+  request:r=>{r.requestSha256='a'.repeat(64);},
+  correlation:r=>{r.correlationSha256='a'.repeat(64);},
   emptySecret:r=>{r.serviceSecret='';},
   matchingSecret:r=>{r.serviceSecret=r.bearerToken;},
+  expired:r=>{r.expiresAtMs=NOW;},
+  beyondDeadline:r=>{r.expiresAtMs=NOW+10001;},
 }))test(`memory helper ${name} credential refuses before second HTTP`,async()=>{
-  const s=scene();await assert.rejects(s.execute({getEligibilityCredentials:async pins=>{
-    const r=await s.config.getEligibilityCredentials(pins);change(r);return r;
-  }}),/ACCESS_DENIED/);assert.equal(s.wire.length,1);assert.equal(s.limits.length,0);
+  const s=scene();await assert.rejects(s.execute({getCredentials:async pins=>{
+    const r=await s.config.getCredentials(pins);if(s.credentialRequests.length>1)change(r);return r;
+  }}),/ACCESS_DENIED/);assert.equal(s.credentialRequests.length,2);assert.equal(s.wire.length,1);assert.deepEqual(s.limits,[]);
 });
 
-test('memory helper missing service identity refuses before second HTTP',async()=>{
-  const s=scene();await assert.rejects(s.execute({getEligibilityCredentials:async pins=>{
-    const r=await s.config.getEligibilityCredentials(pins);delete r.serviceSecret;return r;
-  }}),/INVALID_ARGUMENTS/);assert.equal(s.wire.length,1);assert.equal(s.limits.length,0);
+test('memory helper credential missing the ordinary service identity refuses before second HTTP',async()=>{
+  const s=scene();await assert.rejects(s.execute({getCredentials:async pins=>{
+    const r=await s.config.getCredentials(pins);if(s.credentialRequests.length>1)delete r.serviceSecret;return r;
+  }}),/INVALID_ARGUMENTS/);assert.equal(s.wire.length,1);assert.deepEqual(s.limits,[]);
 });
 
-test('ineligible current record and lost helper response never invoke final-release expiry callback',async()=>{
+test('ineligible current record and lost helper response never invoke the final-release callback',async()=>{
   const bad=scene();await assert.rejects(bad.execute({fetchImpl:async(url,options)=>{
-    bad.wire.push({url,options});if(url.endsWith(pagePath))return response(bad.f.page(JSON.parse(options.body).input),
-      {'x-meri-memory-page-proof':'SYNTHETIC_PAGE_PROOF'});
-    const r=bad.f.eligibility(JSON.parse(options.body));r.records[0].eligibleForRecall=false;return response(r);
-  }}),/ACCESS_DENIED/);assert.equal(bad.wire.length,2);assert.equal(bad.limits.length,0);
+    bad.wire.push({url,options});if(url.endsWith(pagePath))return response(bad.f.page(JSON.parse(options.body).input));
+    const receipt=bad.f.eligibility(JSON.parse(options.body));receipt.records[0].eligibleForRecall=false;return response(receipt);
+  }}),/ACCESS_DENIED/);assert.equal(bad.wire.length,2);assert.deepEqual(bad.limits,[]);
   const lost=scene();await assert.rejects(lost.execute({fetchImpl:async(url,options)=>{
-    lost.wire.push({url,options});if(url.endsWith(pagePath))return response(lost.f.page(JSON.parse(options.body).input),
-      {'x-meri-memory-page-proof':'SYNTHETIC_PAGE_PROOF'});
+    lost.wire.push({url,options});if(url.endsWith(pagePath))return response(lost.f.page(JSON.parse(options.body).input));
     throw Error('lost helper response');
-  }}));assert.equal(lost.wire.length,2);assert.equal(lost.limits.length,0);
+  }}),/INTERNAL_ERROR/);assert.equal(lost.wire.length,2);assert.deepEqual(lost.limits,[]);
 });
 
-test('signed memory accepts a bounded Core clock offset and narrows final release to receipt expiry',async()=>{
+test('memory accepts a bounded helper clock offset and narrows final release to the receipt expiry',async()=>{
   for(const checkedAtMs of [NOW-1000,NOW+500]){
-    const s=scene();const out=JSON.parse(await s.execute({fetchImpl:(url,options)=>{
-      if(!url.endsWith(helperPath))return s.config.fetchImpl(url,options);
-      return response({...s.f.eligibility(JSON.parse(options.body)),checkedAtMs});
-    }}));
-    assert.equal(out.result.tool,'search_memory');assert.deepEqual(s.limits,[NOW+1000]);
+    const s=scene();const out=JSON.parse(await s.execute({fetchImpl:(url,options)=>url.endsWith(helperPath)?
+      response({...s.f.eligibility(JSON.parse(options.body)),checkedAtMs}):s.config.fetchImpl(url,options)}));
+    assert.deepEqual(out.result,s.f.page());assert.deepEqual(s.limits,[NOW+1000]);
   }
 });
 
-test('signed memory refuses receipt clock offset or expiry beyond the five-second observation bound',async()=>{
+test('memory refuses a helper clock offset or expiry beyond the five-second observation bound',async()=>{
   for(const {checkedAtMs,expiresAtMs,maxRequestMs} of [
     {checkedAtMs:NOW-5001,expiresAtMs:NOW+1000,maxRequestMs:1000},
     {checkedAtMs:NOW+5001,expiresAtMs:NOW+7000,maxRequestMs:8000},
     {checkedAtMs:NOW+1000,expiresAtMs:NOW+7000,maxRequestMs:8000},
   ]){
-    const s=scene();await assert.rejects(s.execute({maxRequestMs,
-      getEligibilityCredentials:async pins=>({...await s.config.getEligibilityCredentials(pins),expiresAtMs:NOW+maxRequestMs}),
-      fetchImpl:(url,options)=>{
-        if(!url.endsWith(helperPath))return s.config.fetchImpl(url,options);
-        return response({...s.f.eligibility(JSON.parse(options.body)),checkedAtMs,expiresAtMs});
-      }}),/ACCESS_DENIED/);
-    assert.deepEqual(s.limits,[]);
+    const s=scene();await assert.rejects(s.execute({maxRequestMs,fetchImpl:(url,options)=>{
+      s.wire.push({url,options});const body=JSON.parse(options.body);
+      return response(url.endsWith(helperPath)?{...s.f.eligibility(body),checkedAtMs,expiresAtMs}:s.f.page(body.input));}}),/ACCESS_DENIED/);
+    assert.equal(s.wire.length,2);assert.deepEqual(s.limits,[]);
   }
 });
 
@@ -169,4 +168,9 @@ test('memory endpoint must be the exact configured signed Core page route',()=>{
   const s=scene();for(const url of [`${origin}/memory`,`${origin}${pagePath}?client=other`,`${origin}/api/clio/tools/read_monday_client_boards`,
     `http://synthetic-core.example.invalid${pagePath}`])assert.throws(()=>createSignedMemoryHttpAdapter({...s.config,
       endpoints:{search_memory:url}}),/GATEWAY_CONFIGURATION/);
+});
+
+test('the signed memory adapter accepts no retired delegated eligibility port',()=>{
+  const s=scene();for(const retired of [{getEligibilityCredentials:async()=>({})},{readMemoryEligibility:async()=>({})}])
+    assert.throws(()=>createSignedMemoryHttpAdapter({...s.config,...retired}),/INVALID_ARGUMENTS/);
 });

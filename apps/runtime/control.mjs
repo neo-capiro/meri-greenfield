@@ -52,6 +52,8 @@ import {createObjectiveGenerationReadback} from './objective-generation/retained
 import {createApprovalMetadataReadback} from '../control/commands/approval-metadata/readback.mjs';
 import {createPostgresApprovalMetadataReader} from '../control/commands/approval-metadata/postgres-store.mjs';
 import {createApprovalMetadataReaderApplication} from './agentcore-control-http.mjs';
+import {createWorkspaceGenerationApplication} from '../control/conversations/workspace-generation/application.mjs';
+import {workspaceGenerationLimits} from '../control/conversations/workspace-generation/protocol.mjs';
 import {createPostgresObjectiveRunStartStore} from './objective-source/postgres-run-starts.mjs';
 import {composeObjectiveRuns} from './native-authority/objective-runs-composition.mjs';
 import {composeRoutinesOccurrences,ROUTINES_OCCURRENCE_OWNERS} from './native-authority/routines-occurrence-composition.mjs';
@@ -224,7 +226,15 @@ export async function startControl(configuration,options={}){
   // the two fixed routes 404 — fail closed — never a half-wired receiver, and never a new dispatcher or bearer.
   const sourceEvents=composeSourceEventMount({configuration,pool,client,candidate});
   if(sourceEvents===null&&configuration.privateHttp!==undefined)process.stderr.write(JSON.stringify({event:'runtime.source.events.unavailable'})+'\n');
-  const separated=configuration.privateHttp===undefined?null:createControlRouteApplications({assembly:assembly.application,candidate:candidate?.application,objectiveReader,approvalMetadataReader,objectiveRuns:objectiveRuns.application,objectiveStart,routinesOccurrences:routinesOccurrences.application,sourceEvents});
+  // The Workspace generation leaf drives the existing conversation owner for one Workspace phase. It is
+  // composed only with the Core service secret (transport) — the turn itself always requires the current
+  // identity credential — so an undeclared secret leaves the private route absent rather than open.
+  // Its clock is this startup's own (startControl binds no `now`; the same `now:Date.now` is used by the
+  // uploads mount below), and its observation window never exceeds the configured request budget: the leaf's
+  // own runtime already clamps to the operation deadline, so a smaller (still valid) requestMs must not
+  // refuse composition of an optional route.
+  const workspaceGeneration=getCoreServiceSecret?createWorkspaceGenerationApplication({sessions:assembly.sessions,service:assembly.service,getServiceSecret:getCoreServiceSecret,now:Date.now,maxRequestMs:configuration.limits.requestMs,observeMs:Math.min(workspaceGenerationLimits.observeMs,configuration.limits.requestMs)}):null;
+  const separated=configuration.privateHttp===undefined?null:createControlRouteApplications({assembly:assembly.application,candidate:candidate?.application,objectiveReader,approvalMetadataReader,objectiveRuns:objectiveRuns.application,objectiveStart,routinesOccurrences:routinesOccurrences.application,sourceEvents,workspaceGeneration});
   const publicApplication=fence.wrap(separated?.public??mountedApplication),application=telemetry?telemetry.instrumentApplication(publicApplication):publicApplication;
   const privateApplication=separated===null?null:telemetry?telemetry.instrumentApplication(fence.wrap(separated.private)):fence.wrap(separated.private);
   async function readiness({signal}){fence.check();signal?.throwIfAborted();await pool.query("SELECT to_regclass('meri_conversations.runs') AS runs, to_regclass('meri_conversations.events') AS events, to_regclass('meri_conversations.controls') AS controls, to_regclass('meri_conversations.selected_outputs') AS selected_outputs, to_regclass('meri_conversations.initial_inputs') AS initial_inputs").then(result=>{if(!result.rows[0]||typeof result.rows[0].initial_inputs!=='string'||Object.values(result.rows[0]).some(v=>v===null))throw fault('DATABASE_SCHEMA_UNAVAILABLE');});

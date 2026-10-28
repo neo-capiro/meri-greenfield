@@ -13,14 +13,15 @@ import {OBJECTIVE_ACTIVITIES_PREFIX} from './native-authority/objective-runs-htt
 import {ROUTINES_OCCURRENCE_PREFIX} from './native-authority/routines-occurrence-http.mjs';
 import {OBJECTIVE_GENERATION_START_PATH} from './objective-generation/start-application.mjs';
 import {APPROVAL_METADATA_READ_PATH} from './agentcore-control-http.mjs';
+import {workspaceGenerationPaths} from '../control/conversations/workspace-generation/protocol.mjs';
 import {SOURCE_EVENT_BINDING_PATH,SOURCE_EVENT_PATH} from '../control/schedules/source-event-contract.mjs';
 const SOURCE_EVENT_PATHS=Object.freeze([SOURCE_EVENT_PATH,SOURCE_EVENT_BINDING_PATH]);
 const absent=()=>Response.json({error:{code:'ROUTE_NOT_FOUND'}},{status:404,headers:{'cache-control':'no-store','x-content-type-options':'nosniff'}});
 const publicPath=path=>path==='/api/conversations'||path.startsWith('/api/conversations/')||path==='/api/action-followthrough/session'||path==='/api/action-followthrough/query'||path===ROUTINE_MANAGEMENT_SESSION_PATH||Object.values(USER_PREFERENCES_PATHS).includes(path)||Object.values(taskCommandPaths).includes(path)||Object.values(ROUTINE_PATHS).includes(path)||Object.values(TENANT_SETTINGS_PATHS).includes(path)||Object.values(MEMORY_PATHS).includes(path)||path.startsWith('/api/documents/')||Boolean(matchUploadApplicationPath(path));
 const privatePath=path=>path.startsWith('/v1/')||path.startsWith('/internal/conversations/')||path.startsWith(OBJECTIVE_READER_PREFIX);
 
-export function createControlRouteApplications({assembly,candidate,router=null,poststart=null,privateIngress=null,objectiveReader=null,approvalMetadataReader=null,objectiveRuns=null,objectiveStart=null,routinesOccurrences=null,sourceEvents=null}){
- if(typeof assembly?.handle!=='function'||typeof candidate?.handle!=='function'||[objectiveReader,approvalMetadataReader,objectiveRuns,objectiveStart,routinesOccurrences,sourceEvents].some(app=>app!==null&&typeof app?.handle!=='function'))throw Error('PRIVATE_CONTROL_CONFIGURATION');
+export function createControlRouteApplications({assembly,candidate,router=null,poststart=null,privateIngress=null,objectiveReader=null,approvalMetadataReader=null,objectiveRuns=null,objectiveStart=null,routinesOccurrences=null,sourceEvents=null,workspaceGeneration=null}){
+ if(typeof assembly?.handle!=='function'||typeof candidate?.handle!=='function'||[objectiveReader,approvalMetadataReader,objectiveRuns,objectiveStart,routinesOccurrences,sourceEvents,workspaceGeneration].some(app=>app!==null&&typeof app?.handle!=='function'))throw Error('PRIVATE_CONTROL_CONFIGURATION');
  const marker=privateIngress?.issue();
  if(router!==null&&(!marker||typeof router.privateApplication?.handle!=='function'))throw Error('PRIVATE_CONTROL_CONFIGURATION');
  if(poststart!==null&&(!marker||typeof poststart.privateApplication?.handle!=='function'))throw Error('PRIVATE_CONTROL_CONFIGURATION');
@@ -31,6 +32,9 @@ export function createControlRouteApplications({assembly,candidate,router=null,p
    return publicPath(path)?assembly.handle(request):absent();}}),
   private:Object.freeze({async handle(request){const path=new URL(request.url).pathname;if(!privatePath(path))return absent();
    if(path===APPROVAL_METADATA_READ_PATH)return (approvalMetadataReader===null?null:await approvalMetadataReader.handle(request))??absent();
+   // The Workspace generation leaf: the current identity credential in the request authenticates the
+   // turn; the Core service secret is transport. Not composed, the route is absent.
+   if(Object.values(workspaceGenerationPaths).includes(path))return (workspaceGeneration===null?null:await workspaceGeneration.handle(request))??absent();
    // Core's saved-job readback stays on the private listener.
    if(path.startsWith(OBJECTIVE_READER_PREFIX))return (objectiveReader===null?null:await objectiveReader.handle(request))??absent();
    // The Temporal worker's Objective `runs` native operations (control capability only); disabled answers null, so 404.
