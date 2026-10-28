@@ -10,6 +10,13 @@ export function scheduleOwnerFixture() {
    if(sql==='BEGIN'){snapshot=structuredClone({projections:state.projections,intents:state.intents,occurrences:state.occurrences});return {rows:[]};}
    if(sql==='ROLLBACK'){Object.assign(state,snapshot);return {rows:[]};}
    if(sql==='COMMIT'||sql.startsWith('SET LOCAL')||sql.startsWith('SELECT pg_advisory'))return {rows:[]};
+   if(sql.startsWith('SELECT i.schedule_id FROM meri_schedules.intents i JOIN')){
+    const rows=[...state.intents.values()].filter(i=>{
+     const projection=state.projections.get(pk(i.tenant_id,i.schedule_id)),config=i.intent.configuration;
+     if(i.tenant_id!==p[0]||i.schedule_id===p[1]||!projection||!config||config.paused!==false||i.intent.projection.state!=='active'||JSON.stringify(config.sourceTrigger)!==JSON.stringify(p[2]))return false;
+     return projection.active_intent===i.intent_id&&['CLAIMED','DISPATCHING','UNKNOWN'].includes(i.state)||i.state==='ACKNOWLEDGED'&&i.intent.generation===Number(projection.generation)&&projection.projection.state==='active';
+    }).slice(0,1).map(i=>({schedule_id:i.schedule_id}));return {rows};
+   }
    if(sql.startsWith('SELECT intent_id FROM meri_schedules.intents'))return {rows:state.intents.has(pk(p[0],p[1]))?[{intent_id:p[1]}]:[]};
    if(sql.startsWith('SELECT * FROM meri_schedules.projections')){const r=state.projections.get(pk(p[0],p[1]));return {rows:r?[structuredClone(r)]:[]};}
    if(sql.startsWith('INSERT INTO meri_schedules.projections')){state.projections.set(pk(p[0],p[1]),{tenant_id:p[0],schedule_id:p[1],temporal_schedule_id:p[2],owner_actor_id:p[3],generation:'0',projection:structuredClone(p[4]),projection_sha256:p[5],active_intent:p[6]});return {rows:[],rowCount:1};}

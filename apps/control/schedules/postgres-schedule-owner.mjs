@@ -1,8 +1,15 @@
 import {canonicalSha256, frozenScheduleData, denySchedule,scheduleErrorCode} from '../../../packages/contracts/schedules-0.2/lifecycle-validation.mjs';
+import {assertScheduleIntent} from '../../../packages/contracts/schedules-0.3/lifecycle-validation.mjs';
 import {snapshotScheduledJobSelection} from './scheduled-job-lineage.mjs';
 import {storedReadConsent,occurrenceReadConsentFacts} from './occurrence-read-consent.mjs';
 import {SCHEDULED_ORIGIN_SQL} from './scheduled-origin-query.mjs';
 import {validateShape} from '../../../packages/contracts/validate.mjs';
+import {acknowledgedSourceEventBinding} from './source-event-binding.mjs';
+import {bindSourceEventInTransaction,lockSourceEventBinding} from './source-event-store.mjs';
+
+// One current or unresolved event routine per producer/watch. Historical cancelled/paused
+// generations remain immutable evidence but do not reserve the pair forever.
+const EVENT_CONFLICT_SQL="SELECT i.schedule_id FROM meri_schedules.intents i JOIN meri_schedules.projections p ON p.tenant_id=i.tenant_id AND p.schedule_id=i.schedule_id WHERE i.tenant_id=$1 AND i.schedule_id<>$2 AND i.intent->'configuration'->'sourceTrigger'=$3::jsonb AND i.intent->'configuration'->>'paused'='false' AND i.intent->'projection'->>'state'='active' AND ((p.active_intent=i.intent_id AND i.state IN ('CLAIMED','DISPATCHING','UNKNOWN')) OR (i.state='ACKNOWLEDGED' AND (i.intent->>'generation')::bigint=p.generation AND p.projection->>'state'='active')) LIMIT 1";
 
 // Borrow a pg 8.23.1-compatible pool configured by its owner with finite
 // connectionTimeoutMillis/query_timeout. Source cancellation is not wire cancellation.
@@ -26,6 +33,13 @@ export function createPostgresScheduleOwner({pool}) {
   async function claim(binding,check) {
     const b=frozenScheduleData(binding),i=b.intent,p=i.projection,t=p.owner.tenantId;
     return transaction(async c=>{
+      const eventBinding=acknowledgedSourceEventBinding(i);
+      if(eventBinding){
+        await lockSourceEventBinding(c,eventBinding,check);
+        const conflict=await c.query(EVENT_CONFLICT_SQL,[t,p.scheduleId,i.configuration.sourceTrigger]);check();
+        // No projection/intent or provider effect has been written at this point.
+        if(conflict.rows.length)denySchedule('SCHEDULE_SOURCE_CONFLICT');
+      }
       // Transaction advisory lock also serializes concurrent creation of a missing row.
       await c.query('SELECT pg_advisory_xact_lock(hashtextextended($1,0))',[`${t}:${p.scheduleId}`]);check();
       if((await c.query('SELECT intent_id FROM meri_schedules.intents WHERE tenant_id=$1 AND intent_id=$2',[t,i.intentId])).rows.length)denySchedule('SCHEDULE_REPLAY');check();
@@ -43,17 +57,24 @@ export function createPostgresScheduleOwner({pool}) {
   }
   async function transition(binding,state,check) {
     const b=frozenScheduleData(binding),i=b.intent,t=i.projection.owner.tenantId;
-    return transaction(async c=>{
+    const receipt=await transaction(async c=>{
+      const eventBinding=acknowledgedSourceEventBinding(i);
+      if(eventBinding)await lockSourceEventBinding(c,eventBinding,check);
       const row=(await c.query('SELECT * FROM meri_schedules.intents WHERE tenant_id=$1 AND intent_id=$2 FOR UPDATE',[t,i.intentId])).rows[0];check();
       if(!row||row.binding_sha256!==b.bindingSha256||row.intent_sha256!==canonicalSha256(i)||!(state==='DISPATCHING'?['CLAIMED']:['DISPATCHING']).includes(row.state))denySchedule('SCHEDULE_TRANSITION');
       await c.query('UPDATE meri_schedules.intents SET state=$3,updated_at=clock_timestamp() WHERE tenant_id=$1 AND intent_id=$2',[t,i.intentId,state]);check();
       if(state==='ACKNOWLEDGED')await acknowledgeProjection(c,i,check);
       return {intentId:i.intentId,bindingSha256:b.bindingSha256,state};
     },check);
+    return receipt;
   }
   async function acknowledgeProjection(c,i,check) {
     const p=i.projection,changed=await c.query('UPDATE meri_schedules.projections SET generation=$4,projection=$5,projection_sha256=$6,active_intent=NULL WHERE tenant_id=$1 AND schedule_id=$2 AND active_intent=$3 AND generation=$7',[p.owner.tenantId,p.scheduleId,i.intentId,i.generation,p,canonicalSha256(p),i.expectedGeneration]);check();
     if(changed.rowCount!==1)denySchedule('SCHEDULE_STALE');
+    // The generation and its producer lookup become durable together. An insert failure rolls
+    // back the ACK; a lost COMMIT remains UNKNOWN and uses the existing reconciliation path.
+    const eventBinding=acknowledgedSourceEventBinding(i);
+    if(eventBinding)await bindSourceEventInTransaction(c,eventBinding,check);
   }
   function storedIntent(row) {
     if(!row||canonicalSha256(row.intent)!==row.intent_sha256||row.intent.intentId!==row.intent_id||!['CLAIMED','DISPATCHING','ACKNOWLEDGED','UNKNOWN'].includes(row.state))denySchedule('SCHEDULE_CORRUPT');
@@ -85,13 +106,20 @@ export function createPostgresScheduleOwner({pool}) {
    * dispatched and is refused here; the generation/projection fence is the same one commitKnown uses. */
   async function acknowledgeReconciled(selection,check) {
     const s=frozenScheduleData(selection);
-    return transaction(async c=>{
+    const receipt=await transaction(async c=>{
+      // Discover only immutable intent bytes before the pair lock. The exact row/hash/state
+      // is read again under its row lock below; this first read grants no authority.
+      const discovered=(await c.query('SELECT intent_id,intent,intent_sha256,state FROM meri_schedules.intents WHERE tenant_id=$1 AND intent_id=$2',[s.tenantId,s.intentId])).rows[0];check();
+      if(!discovered||storedIntent(discovered).intent_sha256!==s.intentSha256)denySchedule('SCHEDULE_TRANSITION');
+      const eventBinding=acknowledgedSourceEventBinding(discovered.intent);
+      if(eventBinding)await lockSourceEventBinding(c,eventBinding,check);
       const row=(await c.query('SELECT intent_id,intent,intent_sha256,state FROM meri_schedules.intents WHERE tenant_id=$1 AND intent_id=$2 FOR UPDATE',[s.tenantId,s.intentId])).rows[0];check();
       if(!row||storedIntent(row).intent_sha256!==s.intentSha256||!['DISPATCHING','UNKNOWN'].includes(row.state))denySchedule('SCHEDULE_TRANSITION');
       await c.query("UPDATE meri_schedules.intents SET state='ACKNOWLEDGED',updated_at=clock_timestamp() WHERE tenant_id=$1 AND intent_id=$2",[s.tenantId,s.intentId]);check();
       await acknowledgeProjection(c,row.intent,check);
       return {intentId:s.intentId,state:'ACKNOWLEDGED'};
     },check);
+    return receipt;
   }
   /** Durable occurrence barrier (proposed table meri_schedules.occurrences, migration request P-R4-1): one row per scheduled
    * occurrence, written before its first effect, binds the occurrence to the exact conversation run and native workflow it may
@@ -194,14 +222,26 @@ export function createPostgresScheduleOwner({pool}) {
       return frozenScheduleData({state:s.state});
     },check);
   }
+  /** The trigger the CURRENT acknowledged generation was approved for — the same acknowledged generation the binding owner
+   *  confirms against, observed through the 0.3 lifecycle owner. Historical absence (no acknowledged generation for the
+   *  current generation, or a cancellation intent, which carries no configuration) is `unavailable`, never inferred `timed`.
+   *  An intent the 0.3 owner cannot validate establishes no trigger either, so it is `unavailable` as well. */
+  function triggerObservation(row,tenantId) {
+    if(row.intent_id===null||row.intent===null||row.intent===undefined)return {kind:'unavailable'};
+    let intent;
+    try{intent=assertScheduleIntent(row.intent,tenantId);}catch{return {kind:'unavailable'};}
+    if(!intent.configuration)return {kind:'unavailable'};
+    const trigger=intent.configuration.sourceTrigger;
+    return trigger?{kind:'source-event',sourceTrigger:{...trigger}}:{kind:'timed'};
+  }
   async function list(selection,check) {
     const s=frozenScheduleData(selection);
     if(s.scopes!==undefined){if(!Array.isArray(s.scopes)||s.scopes.length!==1)denySchedule('SCHEDULE_LIST');validateShape('Scope',s.scopes[0]);if(s.scopes[0].tenantId!==s.owner.tenantId)denySchedule('SCHEDULE_LIST');}
     return transaction(async c=>{
-      const filter=s.scopes===undefined?'':s.scopes[0].kind==='private-user'?" AND projection->'scopes'=$5::jsonb":" AND projection->'scopes' @> $5::jsonb";
-      const rows=(await c.query('SELECT projection,generation,active_intent FROM meri_schedules.projections WHERE tenant_id=$1 AND owner_actor_id=$2 AND ($3::uuid IS NULL OR schedule_id>$3::uuid)'+filter+' ORDER BY schedule_id LIMIT $4',[s.owner.tenantId,s.owner.actorId,s.afterScheduleId,s.limit+1,...(s.scopes===undefined?[]:[JSON.stringify(s.scopes)])])).rows;check();
+      const filter=s.scopes===undefined?'':s.scopes[0].kind==='private-user'?" AND p.projection->'scopes'=$5::jsonb":" AND p.projection->'scopes' @> $5::jsonb";
+      const rows=(await c.query('SELECT p.projection,p.generation,p.active_intent,i.intent_id,i.intent FROM meri_schedules.projections p LEFT JOIN meri_schedules.intents i ON i.tenant_id=p.tenant_id AND i.schedule_id=p.schedule_id AND i.state=\'ACKNOWLEDGED\' AND (i.intent->>\'generation\')::bigint=p.generation WHERE p.tenant_id=$1 AND p.owner_actor_id=$2 AND ($3::uuid IS NULL OR p.schedule_id>$3::uuid)'+filter+' ORDER BY p.schedule_id LIMIT $4',[s.owner.tenantId,s.owner.actorId,s.afterScheduleId,s.limit+1,...(s.scopes===undefined?[]:[JSON.stringify(s.scopes)])])).rows;check();
       if(s.scopes!==undefined&&rows.some(r=>s.scopes[0].kind==='private-user'?canonicalSha256(r.projection.scopes)!==canonicalSha256(s.scopes):!r.projection.scopes.some(scope=>canonicalSha256(scope)===canonicalSha256(s.scopes[0]))))denySchedule('SCHEDULE_LIST');
-      return frozenScheduleData({rows:rows.slice(0,s.limit).map(r=>({projection:r.projection,generation:Number(r.generation),unresolved:r.active_intent!==null})),hasMore:rows.length>s.limit});
+      return frozenScheduleData({rows:rows.slice(0,s.limit).map(r=>({projection:r.projection,generation:Number(r.generation),unresolved:r.active_intent!==null,trigger:triggerObservation(r,s.owner.tenantId)})),hasMore:rows.length>s.limit});
     },check);
   }
   /** Option B read consent reference (lane RD, migration 0004): the consent Core holds for this schedule's reads, as Meri last saw

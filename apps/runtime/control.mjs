@@ -55,6 +55,7 @@ import {createApprovalMetadataReaderApplication} from './agentcore-control-http.
 import {createPostgresObjectiveRunStartStore} from './objective-source/postgres-run-starts.mjs';
 import {composeObjectiveRuns} from './native-authority/objective-runs-composition.mjs';
 import {composeRoutinesOccurrences,ROUTINES_OCCURRENCE_OWNERS} from './native-authority/routines-occurrence-composition.mjs';
+import {composeSourceEventMount} from './source-event-application.mjs';
 import {createObjectiveGenerationStartApplication} from './objective-generation/start-application.mjs';
 import {compileObjectiveGenerationConfiguration} from './objective-generation/configuration.mjs';
 import {createObjectiveGenerationDispatcher} from '../control/conversations/objective-generation-dispatch.mjs';
@@ -218,7 +219,12 @@ export async function startControl(configuration,options={}){
   // template and initial-run retirement, consented per occurrence by Core's firing grant. Declared without those owners, every call refuses.
   const routinesOccurrences=composeRoutinesOccurrences({configuration,controlCapabilitySha256:capabilityDigest(capabilityBytes.toString('utf8').trim()),pool,...(candidate?.routinesOccurrenceOwners?{owners:candidate.routinesOccurrenceOwners}:{})});
   if(routinesOccurrences.state==='owners-unavailable')process.stderr.write(JSON.stringify({event:'runtime.routines.occurrences.unavailable',missing:Object.keys(ROUTINES_OCCURRENCE_OWNERS).filter(k=>k!=='consent')})+'\n');
-  const separated=configuration.privateHttp===undefined?null:createControlRouteApplications({assembly:assembly.application,candidate:candidate?.application,objectiveReader,approvalMetadataReader,objectiveRuns:objectiveRuns.application,objectiveStart,routinesOccurrences:routinesOccurrences.application});
+  // MB-05 producer events: the private listener mounts the real receiver over the same existing owners (schedule
+  // owner, conversation store, canonical scheduled-dispatch, Core wire C). A mount that cannot be composed leaves
+  // the two fixed routes 404 — fail closed — never a half-wired receiver, and never a new dispatcher or bearer.
+  const sourceEvents=composeSourceEventMount({configuration,pool,client,candidate});
+  if(sourceEvents===null&&configuration.privateHttp!==undefined)process.stderr.write(JSON.stringify({event:'runtime.source.events.unavailable'})+'\n');
+  const separated=configuration.privateHttp===undefined?null:createControlRouteApplications({assembly:assembly.application,candidate:candidate?.application,objectiveReader,approvalMetadataReader,objectiveRuns:objectiveRuns.application,objectiveStart,routinesOccurrences:routinesOccurrences.application,sourceEvents});
   const publicApplication=fence.wrap(separated?.public??mountedApplication),application=telemetry?telemetry.instrumentApplication(publicApplication):publicApplication;
   const privateApplication=separated===null?null:telemetry?telemetry.instrumentApplication(fence.wrap(separated.private)):fence.wrap(separated.private);
   async function readiness({signal}){fence.check();signal?.throwIfAborted();await pool.query("SELECT to_regclass('meri_conversations.runs') AS runs, to_regclass('meri_conversations.events') AS events, to_regclass('meri_conversations.controls') AS controls, to_regclass('meri_conversations.selected_outputs') AS selected_outputs, to_regclass('meri_conversations.initial_inputs') AS initial_inputs").then(result=>{if(!result.rows[0]||typeof result.rows[0].initial_inputs!=='string'||Object.values(result.rows[0]).some(v=>v===null))throw fault('DATABASE_SCHEMA_UNAVAILABLE');});

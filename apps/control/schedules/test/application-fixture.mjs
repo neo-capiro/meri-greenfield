@@ -25,8 +25,8 @@ function schedulePool(sql,state){return {async connect(){
  const client=await sql.pool.connect();let loseAck=false;
  return {async query(text,values=[]){
   state.scheduleQueries.push({text,values:structuredClone(values)});
-  if(text.startsWith('SELECT projection,generation,active_intent FROM meri_schedules.projections')){
-   const rows=[...sql.state.projections.values()].filter(r=>r.tenant_id===values[0]&&r.owner_actor_id===values[1]&&(values[2]===null||r.schedule_id>values[2])).sort((a,b)=>a.schedule_id.localeCompare(b.schedule_id)).slice(0,values[3]).map(r=>structuredClone({projection:r.projection,generation:r.generation,active_intent:r.active_intent}));
+  if(text.startsWith('SELECT p.projection,p.generation,p.active_intent')||text.startsWith('SELECT projection,generation,active_intent FROM meri_schedules.projections')){
+   const rows=[...sql.state.projections.values()].filter(r=>r.tenant_id===values[0]&&r.owner_actor_id===values[1]&&(values[2]===null||r.schedule_id>values[2])).sort((a,b)=>a.schedule_id.localeCompare(b.schedule_id)).slice(0,values[3]).map(r=>structuredClone({projection:r.projection,generation:r.generation,active_intent:r.active_intent,intent_id:null,intent:null}));
    return {rows,rowCount:rows.length};
   }
   const result=await client.query(text,values);

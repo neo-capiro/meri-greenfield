@@ -39,3 +39,31 @@ export function occurrenceIdentity(o){
  shape('RunBinding',binding);
  return frozenScheduleData({identity,occurrenceKey,binding,requestId:id('request'),eventId:id('event')});
 }
+
+/**
+ * MB-05: one accepted producer EVENT as an occurrence of its bound routine, reusing this same
+ * identity owner so an event occurrence names exactly one conversation/run/request and never a
+ * replacement. The workflow id is a pure function of the event identity and the bound
+ * schedule generation, and the scheduled instant is the EVENT's own instant — both server-set
+ * from the accepted event, never caller-chosen — so a redelivery after a crash derives the same
+ * occurrence while two distinct events never collide.
+ *
+ * `temporalScheduleId` is the bound schedule's identifier because the existing occurrence,
+ * barrier and dispatch owners key firings by it. It is NOT a claim that a Temporal schedule
+ * fired: an event trigger has no Temporal schedule and no cron semantics.
+ */
+export function sourceEventWorkflowId(eventKey,scheduleId,generation){
+ if(!hex64.test(eventKey)||typeof scheduleId!=='string'||!scheduleId||!Number.isSafeInteger(generation)||generation<1)denySchedule('SCHEDULE_OCCURRENCE');
+ return `source-event-${derivedUuid(canonicalSha256({domain:'meri.schedule.source-event.v1',eventKey,scheduleId,generation}),'workflow')}`;
+}
+
+export function sourceEventOccurrence(value){
+ if(!value||typeof value!=='object'||types.isProxy(value))denySchedule('SCHEDULE_OCCURRENCE');
+ const o=frozenScheduleData(value),keys=['projection','generation','task','eventKey','occurredAt','workflowId'];
+ if(Object.keys(o).length!==keys.length||!keys.every(k=>Object.hasOwn(o,k)))denySchedule('SCHEDULE_OCCURRENCE');
+ if(!hex64.test(o.eventKey))denySchedule('SCHEDULE_OCCURRENCE');
+ const occurrence=snapshotOccurrence({workflowId:o.workflowId,temporalScheduleId:o.projection.temporalScheduleId,scheduledAt:o.occurredAt,projection:o.projection,generation:o.generation,task:o.task});
+ // The workflow id is recomputed here: a caller cannot select the run identity of an event.
+ if(occurrence.workflowId!==sourceEventWorkflowId(o.eventKey,o.projection.scheduleId,o.generation))denySchedule('SCHEDULE_OCCURRENCE');
+ return occurrence;
+}
