@@ -42,7 +42,16 @@ test('profile mounts only exact active reads, with a stable list across changing
    const listing=new Client({name:'g3-list',version:'1'}),[left,right]=InMemoryTransport.createLinkedPair();
    await a.reads.sdkOptions.mcpServers.meri_reads.instance.connect(left);await listing.connect(right);
    try{assert.deepEqual((await listing.listTools()).tools.map(t=>t.name).sort(),ACTIVE.map(op=>op.id.replaceAll('.','_')).sort());}finally{await listing.close();}
-   assert.deepEqual(a.intents.sdkOptions.allowedTools,['mcp__meri_intents__request_document','mcp__meri_intents__request_analysis','mcp__meri_intents__propose_schedule','mcp__meri_intents__propose_schedule_change','mcp__meri_intents__propose_task','mcp__meri_intents__propose_task_update','mcp__meri_intents__propose_memory','mcp__meri_intents__propose_attachment_filing']);
+   assert.deepEqual(a.intents.sdkOptions.allowedTools,[
+    'save_note','propose_watch','propose_create_client','propose_update_client_profile',
+    'propose_legiwatch_relevance','propose_mail','propose_legiwatch_suggestion','prepare_business_development_brief',
+    'propose_legislative_briefing','propose_legislative_research','propose_research_share','propose_research_share_revocation',
+    'propose_research_portfolio_management','propose_research_portfolio_snapshot','propose_research_portfolio_output',
+    'propose_research_portfolio_watch','propose_research_portfolio_change_state','propose_research_portfolio_bookmark',
+    'propose_research_portfolio_review_note','prepare_research_portfolio_draft',
+    'request_document','request_analysis','propose_schedule','propose_schedule_change',
+    'propose_task','propose_task_update','propose_memory','propose_attachment_filing',
+   ].map(name=>`mcp__meri_intents__${name}`));
    // A mounted tool this run does not expose answers a typed UNAVAILABLE through the server's own hook and handler (real MCP client);
    // the port is never asked to execute or prepare (both synthetic ports throw if they are).
    const session='71000000-0000-4000-8000-000000000091',signal=new AbortController().signal;
@@ -53,8 +62,8 @@ test('profile mounts only exact active reads, with a stable list across changing
     finally{await client.close();}};
    const toolOf=index=>a.reads.sdkOptions.allowedTools[index].slice('mcp__meri_reads__'.length);
    for(const [runtime,index] of [[b.reads,0],[a.reads,2]]){const result=await call(runtime,'meri_reads',toolOf(index),{arguments:{}},`toolu_r_${index}`);assert.equal(result.isError,true);assert.match(result.content[0].text,/^UNAVAILABLE:/u);}
-   const intent=await call(b.intents,'meri_intents','request_document',{operation:'create_word',arguments:{}},'toolu_i_1');assert.equal(intent.isError,true);assert.match(intent.content[0].text,/UNAVAILABLE/u);
-   const notOffered=await call(a.intents,'meri_intents','request_document',{operation:'create_excel',arguments:{}},'toolu_i_2');assert.equal(notOffered.isError,true);assert.match(notOffered.content[0].text,/UNAVAILABLE/u);
+   const intent=await call(b.intents,'meri_intents','request_document',{operation:'create_word',arguments:{format:'txt',title:'Draft',content:{text:'Draft'}}},'toolu_i_1');assert.equal(intent.isError,true);assert.match(intent.content[0].text,/UNAVAILABLE/u);
+   const notOffered=await call(a.intents,'meri_intents','request_document',{operation:'create_excel',arguments:{format:'xlsx',title:'Book',content:{sheets:[{name:'Sheet1',rows:[[{value:'a'}]]}]}}},'toolu_i_2');assert.equal(notOffered.isError,true);assert.match(notOffered.content[0].text,/UNAVAILABLE/u);
   }finally{for(const x of [a,b,c]){await x.reads?.close();await x.intents?.close();}}
  }finally{restore();}
 });
