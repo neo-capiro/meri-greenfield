@@ -52,7 +52,10 @@ function routedPool(schedules,preparations){return {async connect(){
 }};}
 
 /** Optional cancellation is a trusted private boundary; defaults and every canonical application owner remain unchanged. */
-export async function applicationFixture({runCancellation,readConsents,log}={}){
+/** Optional trusted owners, defaults and every canonical application owner unchanged: `consentObservation` is the Core
+ * wire D port, `consentRenewal` the attended wire E port and `managementPreparations` the schedule-owned journal (the
+ * extended one for a renewal record). None is constructed here. */
+export async function applicationFixture({runCancellation,readConsents,log,consentObservation,consentRenewal,managementPreparations}={}){
  const state={now:NOW,ids:100,fetches:[],policies:[],scheduleQueries:[],allowed:true,refusePhase:null,revoked:false,actorId:binding.actorId,policyRevision:'p1',membershipRevision:'m1',policyHook:null,scheduleQueryHook:null,loseCreateAck:false,failCreateBefore:false,loseScheduleCommit:false};
  const now=()=>state.now,newId=()=>id(state.ids++),scopes=()=>[{tenantId:binding.tenantId,kind:'client',resourceId:clientId,policyRevision:state.policyRevision}],commandContext={binding,clientResolution:{reference:clientId,clientId}};
  const fetchImpl=async(url,init)=>{
@@ -86,10 +89,10 @@ export async function applicationFixture({runCancellation,readConsents,log}={}){
   const result=await temporal.scheduleClient.create(options);if(state.loseCreateAck){state.loseCreateAck=false;throw Error('synthetic provider acknowledgement lost');}return result;
  }};
  const workflowClient={connection:temporal.scheduleClient.connection,getHandle(){throw Error('unexpected workflow history reference');}};
- const config={contextOwner:context,journalStore:createPostgresIntentJournalStore({pool}),proposalReader:createPostgresScheduleProposalReader({pool}),scheduleOwner:owner,scheduleClient,workflowClient,scheduleNotFoundError:ScheduleNotFoundError,now,maxRequestMs:5000,...(runCancellation===undefined?{}:{runCancellation}),...(readConsents===undefined?{}:{readConsents}),...(log===undefined?{}:{log})};
+ const config={contextOwner:context,journalStore:createPostgresIntentJournalStore({pool}),proposalReader:createPostgresScheduleProposalReader({pool}),scheduleOwner:owner,scheduleClient,workflowClient,scheduleNotFoundError:ScheduleNotFoundError,now,maxRequestMs:5000,...(runCancellation===undefined?{}:{runCancellation}),...(readConsents===undefined?{}:{readConsents}),...(log===undefined?{}:{log}),...(consentObservation===undefined?{}:{consentObservation}),...(consentRenewal===undefined?{}:{consentRenewal}),...(managementPreparations===undefined?{}:{managementPreparations})};
  const service=createRoutinesService(config),call=(method,request,credential=session.credential)=>service[method]({credential,request,deadlineMs:now()+4500});
  const prepare=(request=routineRequest(),operation='schedule_task',requestId='request-one')=>call('prepare',{requestId,operation,request});
  const body=(prepared,request=routineRequest(),operation=prepared.proposal.operation)=>({operation,request,proposalId:prepared.proposal.proposalId,intentSha256:prepared.proposal.intentSha256});
  const approve=(prepared,request=routineRequest())=>call('approve',{...body(prepared,request),decision:'approved'});
- return {config,context,owner,sql,now,newId,sessions,session,contextConfiguration,service,state,preparations,temporal,pool,client:{schedule:scheduleClient,workflow:workflowClient},call,prepare,body,approve,scopes,close:()=>sessions.close()};
+ return {config,context,owner,sql,now,newId,sessions,session,contextConfiguration,service,state,preparations,temporal,pool,client:{schedule:scheduleClient,workflow:workflowClient},call,prepare,body,approve,scopes,consentObservation,consentRenewal,managementPreparations,close:()=>sessions.close()};
 }
