@@ -103,7 +103,7 @@ export function parseRuntimeValues(raw){
 }
 
 /** Product-family activation (header: `features`). Returns null when absent; otherwise the closed, validated entries. Pure. */
-export const FEATURE_KEYS=Object.freeze(['sourceEnabled','userPreferences','tenantSettings','intents','routines','retention','artifacts','downloadLinks','capabilityPlatform','reads','memory','objectiveGeneration']);
+export const FEATURE_KEYS=Object.freeze(['sourceEnabled','userPreferences','tenantSettings','intents','routines','retention','artifacts','downloadLinks','capabilityPlatform','reads','memory','objectiveGeneration','uploads']);
 /** --feature-secrets keys -> the deployment-inputs ARN field each must name. */
 export const FEATURE_SECRETS=Object.freeze({'reads.serviceSecret':'serviceSecretArn','reads.readModeServiceSecret':'readModeServiceSecretArn'});
 /** Exact (complete, suffixed) Secrets Manager secret ARN in this account and region. A bare name, another account/region/partition, a
@@ -190,6 +190,9 @@ export function parseFeatures(raw,{secrets={}}={}){
   }
  }
  if(f.memory!==undefined){const m=record(f.memory,'features.memory',['enabled']);out.memory={enabled:bool(m.enabled,'features.memory.enabled')};}
+ // Native upload inspection (uploads/control-lifecycle.mjs): a control-only opt-in. The digest is not declarable here — it
+ // is the deployment's own image digest, emitted by the renderer below, so an input cannot point this purpose at another host.
+ if(f.uploads!==undefined){const u=record(f.uploads,'features.uploads',['enabled']);out.uploads={enabled:bool(u.enabled,'features.uploads.enabled')};}
  if(f.objectiveGeneration!==undefined){
   let declared;try{declared=compileObjectiveGenerationConfiguration({objectiveGeneration:f.objectiveGeneration},'control');}catch{fail('RENDER_INPUT_REFUSED','features.objectiveGeneration (objective-generation/configuration.mjs)');}
   if(declared.runs&&out.reads?.enabled!==true)fail('RENDER_INPUT_REFUSED','features.objectiveGeneration reuses the reads Core service secret: it needs features.reads enabled');
@@ -360,6 +363,11 @@ export function renderMaterial({deployment,core,runtime,stage3,private:pki,nowMs
   ...(renderer?{renderer:{...renderer,imageDigest:'sha256:'+nodeDigest}}:{}),
   ...(authority?{authority:{origin:k.coreOrigin,serviceSecretFile:PATHS.readsServiceSecret}}:{})}:{enabled:false};}
  if(features.downloadLinks!==undefined)featureKeys.downloadLinks=features.downloadLinks.enabled?{enabled:true,keyFile:PATHS.downloadLinkKey,...(features.downloadLinks.ttlMs===undefined?{}:{ttlMs:features.downloadLinks.ttlMs})}:{enabled:false};
+ // Native upload inspection: the control-only remote declaration the runtime already accepts
+ // (uploads/control-lifecycle.mjs), bound to this deployment's own digest-pinned runtime image — the same
+ // digest `versions.imageDigest` records — and to the existing deployment.agentcore owner. Absent emits no
+ // key at all; `enabled:false` emits the inert declaration and nothing else, so no digest can be declared.
+ if(features.uploads!==undefined)featureKeys.uploads={native:features.uploads.enabled?{enabled:true,agentcore:{imageDigest:'sha256:'+nodeDigest}}:{enabled:false}};
  if(features.capabilityPlatform!==undefined)featureKeys.capabilityPlatform=structuredClone(features.capabilityPlatform);
  // Memory (lane M): review-only proposals over Core M2 at the Core origin, with the same Core service secret file as reads.
  if(features.memory!==undefined)featureKeys.memory=features.memory.enabled?{enabled:true,origin:k.coreOrigin,serviceSecretFile:PATHS.readsServiceSecret}:{enabled:false};
