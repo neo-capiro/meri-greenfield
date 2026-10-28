@@ -2017,10 +2017,10 @@
         "verification": "detached signature over the toolchain archive verified with the release key: exit 0; the published .sha256 and the signed stable channel manifest name the same sha256 the downloaded bytes hash to"
        },
        "buildClosure": {
-        "source": "resolved from the retained vendor-signed index 5c84e4b835a811c1624d9692f011df3de446c8011be4dedaabf6f3dbf41ec536 and pinned by the sha256 of each downloaded official archive; includes the 36 transitive packages selected by apk in the compiler-stage installation",
+        "source": "resolved from the retained vendor-signed index 5c84e4b835a811c1624d9692f011df3de446c8011be4dedaabf6f3dbf41ec536 and pinned by the sha256 of each downloaded official archive; includes the 35 transitive packages selected by apk in the compiler-stage installation",
         "architecture": "aarch64",
-        "packages": 137,
-        "totalBytes": 312482328,
+        "packages": 135,
+        "totalBytes": 279616921,
         "sizeChecks": "every downloaded archive length equals the index S: field exactly (0 mismatches)",
         "unresolvedVirtualProviders": [
          "merged-lib",
@@ -2843,13 +2843,6 @@
          },
          {
           "name": "openssl-4.0-dev",
-          "version": "4.0.3-r0",
-          "url": "https://packages.wolfi.dev/os/aarch64/openssl-4.0-dev-4.0.3-r0.apk",
-          "sha256": "f2ae39390d2a7100a8853908e2b30be995aa2455404f100e9f3d4dba908cce63",
-          "bytes": 16510022
-         },
-         {
-          "name": "openssl-4.0-dev",
           "version": "4.0.3-r8",
           "url": "https://packages.wolfi.dev/os/aarch64/openssl-4.0-dev-4.0.3-r8.apk",
           "sha256": "326f89668c2ebaee7e71e7ae48a4df6fe08936a6fcb35bb222ac0a733247bd91",
@@ -2868,13 +2861,6 @@
           "url": "https://packages.wolfi.dev/os/aarch64/openssl-4.0-libssl-4.0.3-r8.apk",
           "sha256": "0dd48c2a58466c6787d0df2ff2254623c8f470faa6d986975a4c123ef04c6a9c",
           "bytes": 535346
-         },
-         {
-          "name": "openssl-dev",
-          "version": "3.6.5-r6",
-          "url": "https://packages.wolfi.dev/os/aarch64/openssl-dev-3.6.5-r6.apk",
-          "sha256": "f240b0bfc86755345496c7002fe51ccbc380c6ad7e0a54ef34cdfd43470205a8",
-          "bytes": 16355385
          },
          {
           "name": "openssl-provider-legacy-allowed",
@@ -2989,9 +2975,17 @@
           "bytes": 46324
          }
         ],
+        "opensslProviderReconciliation": {
+         "reason": "The development closure staged three mutually exclusive OpenSSL development providers (openssl-dev 3.6.5-r6, openssl-4.0-dev 4.0.3-r0 and openssl-4.0-dev 4.0.3-r8), so the offline install aborted with 151 file-ownership collisions against the base-owned openssl-4.0-dev-4.0.3-r0. The staged set now carries exactly one OpenSSL development provider.",
+         "removed": "openssl-dev-3.6.5-r6 (16355385 B): it duplicates the usr/include/openssl, usr/lib/libcrypto.*, usr/lib/libssl.*, pkgconfig and cmake paths the pinned base already owns, which is the collision the build hit. openssl-4.0-dev-4.0.3-r0 (16510022 B): base-installed already, provides none of the development capabilities, and is superseded by the selected 4.0.3-r8 of the same package name.",
+         "selected": "openssl-4.0-dev=4.0.3-r8",
+         "selectionBasis": "curl-dev and ngtcp2-dev depend on openssl-4.0-dev by name and on pc:openssl. In the retained signed index only the 4.0 development records from 4.0.3-r1 onward provide openssl-dev/pc:openssl/pc:libssl/pc:libcrypto, and the base-installed 4.0.3-r0 provides none of them, so 4.0.3-r8 is the only provider of those capabilities in the series the staged libs (openssl-4.0-libssl/-libcrypto 4.0.3-r8) and the pinned base belong to. It has the same package name as the base-owned 4.0.3-r0, so apk applies a version upgrade instead of a path-ownership takeover.",
+         "retained": "openssl-3.6-libcrypto/-libssl 3.6.5-r6 stay staged because libldap-2.6 requires so:libcrypto.so.3 and so:libssl.so.3. The base-owned openssl-4.0-dev-4.0.3-r0 pin was removed too: the pinned base already installs that revision, the requested 4.0.3-r8 upgrades the same package name, and keeping both revisions in the declared closure would declare a set apk cannot install.",
+         "buildValidation": "Source checks only; a rebuilt image is not claimed."
+        },
         "compilerClosureCorrection": {
          "reason": "The original development repository omitted packages selected by the signed index during offline installation, including dependencies already staged only for the runtime. Stage those exact selected versions in the development repository as well.",
-         "addedPackages": 36,
+         "addedPackages": 35,
          "buildValidation": "Source checks only; a rebuilt image is not claimed."
         }
        },

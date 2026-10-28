@@ -265,7 +265,7 @@ ADD --checksum=sha256:fc36e4dd53d901cf868cbe55a000a496e84cf220317a0db8cbdfc35a97
 # Every instruction below is build-only: the compiler, the Rust toolchain, the development headers and the build tree
 # stay in stages that are not the exported stage, and the runtime stage receives only the installed payload. The
 # compiler/development closure is resolved from the same retained vendor-signed index the three native layers already
-# install from (137 official aarch64 archives, pinned by exact URL and sha256 in the ADD --checksum list and in the lock's
+# install from (136 official aarch64 archives, pinned by exact URL and sha256 in the ADD --checksum list and in the lock's
 # uploadNativeProvenance.clamavSourcePreparation.buildClosure). The ClamAV release asset, its detached signature, the
 # Cisco Talos public key and the official Rust toolchain with its release key are fetched at those exact bytes.
 #
@@ -368,7 +368,6 @@ ADD --checksum=sha256:694c0e06540eed0d944cfd6c5fc11b247e62f183b989fd615fddf79b72
 ADD --checksum=sha256:326f89668c2ebaee7e71e7ae48a4df6fe08936a6fcb35bb222ac0a733247bd91 https://packages.wolfi.dev/os/aarch64/openssl-4.0-dev-4.0.3-r8.apk /tmp/meri-native-dev-repo/aarch64/openssl-4.0-dev-4.0.3-r8.apk
 ADD --checksum=sha256:8a509f24f834724ea1927d5a37cd6e8fba5d7c98d0ea8fdea7689b27852e05fc https://packages.wolfi.dev/os/aarch64/openssl-4.0-libcrypto-4.0.3-r8.apk /tmp/meri-native-dev-repo/aarch64/openssl-4.0-libcrypto-4.0.3-r8.apk
 ADD --checksum=sha256:0dd48c2a58466c6787d0df2ff2254623c8f470faa6d986975a4c123ef04c6a9c https://packages.wolfi.dev/os/aarch64/openssl-4.0-libssl-4.0.3-r8.apk /tmp/meri-native-dev-repo/aarch64/openssl-4.0-libssl-4.0.3-r8.apk
-ADD --checksum=sha256:f240b0bfc86755345496c7002fe51ccbc380c6ad7e0a54ef34cdfd43470205a8 https://packages.wolfi.dev/os/aarch64/openssl-dev-3.6.5-r6.apk /tmp/meri-native-dev-repo/aarch64/openssl-dev-3.6.5-r6.apk
 ADD --checksum=sha256:22313fca19b8143db5d239bd14c5251416a2e35ba7418b23b64ece7701bc9785 https://packages.wolfi.dev/os/aarch64/openssl-provider-legacy-allowed-4.1.0-r0.apk /tmp/meri-native-dev-repo/aarch64/openssl-provider-legacy-allowed-4.1.0-r0.apk
 ADD --checksum=sha256:20ea3fe3b573f2671acb4461d479e0752d46c478b97c4bf85c39e9db8e797219 https://packages.wolfi.dev/os/aarch64/pcre2-dev-10.49-r1.apk /tmp/meri-native-dev-repo/aarch64/pcre2-dev-10.49-r1.apk
 ADD --checksum=sha256:b8f21e05154d0a4513e2d7e538b1335b33c2a10086ca8968371846e1000555b3 https://packages.wolfi.dev/os/aarch64/pkgconf-3.0.10-r2.apk /tmp/meri-native-dev-repo/aarch64/pkgconf-3.0.10-r2.apk
@@ -410,7 +409,6 @@ ADD --checksum=sha256:a01c937f77c6d6e3f62fe67ef6a86f663409fdadf8ae18733d1227ec46
 ADD --checksum=sha256:5a4155752fcfccad560411614c23a5023acc80b3e35baa87c22c2eb92f624ff6 https://packages.wolfi.dev/os/aarch64/nghttp3-dev-1.18.0-r3.apk /tmp/meri-native-dev-repo/aarch64/nghttp3-dev-1.18.0-r3.apk
 ADD --checksum=sha256:a4bc89b1363a9107a7b0f4177c9e81ef7aa68da7728e71b0762ee284a56209a7 https://packages.wolfi.dev/os/aarch64/ngtcp2-dev-1.25.0-r7.apk /tmp/meri-native-dev-repo/aarch64/ngtcp2-dev-1.25.0-r7.apk
 ADD --checksum=sha256:803e558008fb6525528b5a72e5d66b63f3f0d6e27305ca8d6aad9eda15e74f9e https://packages.wolfi.dev/os/aarch64/npth-1.8-r11.apk /tmp/meri-native-dev-repo/aarch64/npth-1.8-r11.apk
-ADD --checksum=sha256:f2ae39390d2a7100a8853908e2b30be995aa2455404f100e9f3d4dba908cce63 https://packages.wolfi.dev/os/aarch64/openssl-4.0-dev-4.0.3-r0.apk /tmp/meri-native-dev-repo/aarch64/openssl-4.0-dev-4.0.3-r0.apk
 ADD --checksum=sha256:e26afd62c9b1c96716d4270288bb636a434eae3d6c84425f06f233b3a5ac4449 https://packages.wolfi.dev/os/aarch64/perl-5.44.0-r4.apk /tmp/meri-native-dev-repo/aarch64/perl-5.44.0-r4.apk
 ADD --checksum=sha256:57bd0a46f5698266ca1b11243369068da735587e5b023aa3dfa9076ef4dc767b https://packages.wolfi.dev/os/aarch64/sqlite-3.54.1-r0.apk /tmp/meri-native-dev-repo/aarch64/sqlite-3.54.1-r0.apk
 ADD --checksum=sha256:46a3aba6c36df74a2e9d8dffec047ff423a3699e0d0160f05a8fd43c64829748 https://packages.wolfi.dev/os/aarch64/sqlite-dev-3.54.1-r0.apk /tmp/meri-native-dev-repo/aarch64/sqlite-dev-3.54.1-r0.apk
@@ -462,7 +460,7 @@ COPY --from=native-repo-4 /tmp/meri-native-repo /tmp/meri-native-repo
 # The upstream source requires an interpreter here: clamav-1.5.4/CMakeLists.txt 219-231 asks for
 # find_package(Libcheck REQUIRED) and find_package(Python3 REQUIRED) with ENABLE_TESTS=ON, and 256-277 runs the
 # unit-test input generators with ${Python3_EXECUTABLE} at build time and requires `${Python3_EXECUTABLE} -m
-# unittest --help` to exit 0, because this stage carries no pytest. The pinned 137-archive development closure was
+# unittest --help` to exit 0, because this stage carries no pytest. The pinned 136-archive development closure was
 # resolved for the toolchain and carries no interpreter, and the interpreter the exported runtime stage installs
 # lives in a later stage, so it cannot supply this one. The stage therefore reads the retained runtime staging set
 # - the same vendor-signed index and the same authenticated archives the runtime stage already installs python-3.13
@@ -481,7 +479,7 @@ RUN --network=none \
       libstdc++-dev=16.2.0-r2 libmilter-dev=8.18.2-r5 gpgv=2.4.9-r12 \
       glibc-2.44-dev=2.44-r10 glibc-2.44=2.44-r10 glibc-2.44-locale-posix=2.44-r10 ld-linux-2.44=2.44-r10 libcrypt1-2.44=2.44-r10 \
       zlib=1.3.2.1_rc20260921-r1 zlib-dev=1.3.2.1_rc20260921-r1 bzip2-dev=1.0.8-r28 libxml2-dev=2.15.4-r1 pcre2-dev=10.49-r1 \
-      openssl-dev=3.6.5-r6 json-c-dev=0.19-r2 curl-dev=8.23.0-r2 ncurses-dev=6.6.20261024-r0 \
+      openssl-4.0-dev=4.0.3-r8 json-c-dev=0.19-r2 curl-dev=8.23.0-r2 ncurses-dev=6.6.20261024-r0 \
       check-dev=0.15.2-r10 check=0.15.2-r10 linux-headers=7.3-r0 && \
     gcc --version | head -1 && cmake --version | head -1 && make --version | head -1 && pkg-config --version && \
     apk add --no-cache --no-network --repository /tmp/meri-native-runtime-repo --repositories-file /dev/null --update-cache \
@@ -492,7 +490,7 @@ RUN --network=none \
     python3.13 -c 'import sys; assert sys.version_info[:3] == (3, 13, 16), sys.version; print("interpreter", sys.version)' && \
     python3.13 -m unittest --help > /dev/null && \
     python3.13 -c 'import argparse, errno, functools, getpass, hashlib, http.server, logging, multiprocessing, os, pathlib, platform, random, re, shutil, signal, socket, socketserver, struct, subprocess, sys, tempfile, threading, time, typing, unittest, unittest.mock, zipfile, zlib' && \
-    for p in gcc-16.2.0-r2 binutils-2.47-r2 make-4.4.1-r15 cmake-4.4.3-r0 pkgconf-3.0.10-r2 bash-5.3-r14 xz-5.8.4-r0 libstdc++-dev-16.2.0-r2 libmilter-dev-8.18.2-r5 gpgv-2.4.9-r12 glibc-2.44-dev-2.44-r10 glibc-2.44-2.44-r10 zlib-dev-1.3.2.1_rc20260921-r1 bzip2-dev-1.0.8-r28 libxml2-dev-2.15.4-r1 pcre2-dev-10.49-r1 openssl-dev-3.6.5-r6 json-c-dev-0.19-r2 curl-dev-8.23.0-r2 ncurses-dev-6.6.20261024-r0 check-dev-0.15.2-r10 check-0.15.2-r10 linux-headers-7.3-r0; do \
+    for p in gcc-16.2.0-r2 binutils-2.47-r2 make-4.4.1-r15 cmake-4.4.3-r0 pkgconf-3.0.10-r2 bash-5.3-r14 xz-5.8.4-r0 libstdc++-dev-16.2.0-r2 libmilter-dev-8.18.2-r5 gpgv-2.4.9-r12 glibc-2.44-dev-2.44-r10 glibc-2.44-2.44-r10 zlib-dev-1.3.2.1_rc20260921-r1 bzip2-dev-1.0.8-r28 libxml2-dev-2.15.4-r1 pcre2-dev-10.49-r1 openssl-4.0-dev-4.0.3-r8 json-c-dev-0.19-r2 curl-dev-8.23.0-r2 ncurses-dev-6.6.20261024-r0 check-dev-0.15.2-r10 check-0.15.2-r10 linux-headers-7.3-r0; do \
       apk info -v | grep -qx "$p" || { echo "unexpected native development dependency $p"; exit 1; }; done && \
     if apk info -v | grep -qx glibc-dev-2.43-r13; then \
       echo "the legacy glibc-dev 2.43 family was installed beside the pinned 2.44 family"; exit 1; fi && \
