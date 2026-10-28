@@ -26,7 +26,7 @@
   "sources": [
     {
       "path": "conversation-history/protocol.mjs",
-      "sha256": "d508728eb5f6a32d781c65700ce1ef742e7fafd27b509cd54026d5cd3961515c",
+      "sha256": "f5ce9e441808b604cb19a5da687972f348c5b0c777d0a31009a9497448d841e1",
       "bytes": 2449
     },
     {

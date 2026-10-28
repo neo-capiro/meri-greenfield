@@ -4,11 +4,12 @@ export type IntentsApplicationEnvelope =
   | IntentsConversationId
   | IntentsDeliveryId
   | IntentsOperation
+  | IntentsClientRecordOperation
   | IntentsListRequest
   | IntentsDecideRequest
   | IntentsNativeProposal
   | IntentsProposal
-  | Canonical_ClientRecordProposalB620B25B
+  | Canonical_ClientRecordProposalD98D004E
   | Canonical_LegiwatchProposal_1F841734
   | Canonical_BizdevProposalA770314C
   | Canonical_WatchProposal_14Eddeec
@@ -64,15 +65,23 @@ export type IntentsApplicationEnvelope =
   | RoutinesManagementContext
   | RoutinesManagementSessionReceipt
   | RoutinesMutationRequest
-  | Canonical_PendingProposal_8E88D951
+  | Canonical_PendingProposal_667D1207
   | RoutinesPrepareRequest
   | RoutinesPrepareResponse
   | RoutinesApproveRequest
-  | Canonical_Acknowledged_1Fa14Cd2
+  | Canonical_Acknowledged_14A93840
   | RoutinesReconcileRequest
   | RoutinesReconcileResponse
-  | Canonical_ListScheduledTasksRequest_294Adc6C
-  | Canonical_ListScheduledTasksOutputD1De26C2
+  | RoutinesListRequest
+  | RoutinesListRow
+  | RoutinesListPage
+  | RoutinesListResponse
+  | RoutinesConsentObservation
+  | RoutinesRenewalLimits
+  | RoutinesConsentReviewRequest
+  | RoutinesConsentReviewResponse
+  | RoutinesConsentApproveRequest
+  | RoutinesConsentApproveResponse
   | RoutinesErrorResponse;
 export type IntentsConversationId = string;
 export type IntentsDeliveryId = string;
@@ -87,7 +96,7 @@ export type IntentsProposal =
   | Canonical_ResearchActionProposal_081Cad69
   | Canonical_LegiwatchProposal_1F841734
   | Canonical_WatchProposal_14Eddeec
-  | Canonical_ClientRecordProposalB620B25B
+  | Canonical_ClientRecordProposalD98D004E
   | Canonical_BizdevProposalA770314C
   | Canonical_LegislativeDocumentProposal_3D80036F;
 export type Canonical_LegiwatchRequest_5Cff194F =
@@ -104,14 +113,14 @@ export type Canonical_WatchRequest_1E607664 = {
   enabled: boolean | null;
   requestKey: string;
 };
-export type Canonical_ClientRecordRequestE2A54772 =
+export type Canonical_ClientRecordRequest_878F71B2 =
   | {
       operation: 'create_client';
-      input: Canonical_CreateClientInputC55F4423;
+      input: Canonical_CreateClientInput_79Aaeebd;
     }
   | {
       operation: 'update_client_profile';
-      input: Canonical_UpdateClientProfileInput_8Caec89E;
+      input: Canonical_UpdateClientProfileInputAea70647;
     };
 export type IntentsMailSendResult =
   | {
@@ -298,10 +307,6 @@ export type IntentsExecution =
       state: 'completed';
       outcome: IntentsExecutionOutcome;
     };
-export type RoutinesMutationRequest =
-  | Canonical_ScheduleTaskRequest_84A62196
-  | Canonical_UpdateScheduledTaskRequestE7C2F9Fc
-  | Canonical_CancelScheduledTaskRequestFe53799C;
 export type CanonicalOverlapD8587B68 =
   'SKIP' | 'BUFFER_ONE' | 'BUFFER_ALL' | 'CANCEL_OTHER' | 'TERMINATE_OTHER' | 'ALLOW_ALL';
 export type CanonicalCatchupWindowMsCac01906 = number;
@@ -408,7 +413,7 @@ export type Canonical_LegislativeDocumentStatus_63289936 =
   | 'dismissed'
   | 'expired';
 export type Canonical_LegislativeDocumentEffect_69D4Cb58 = 'complete' | 'selection_only' | 'unknown';
-export type Canonical_ClientRecordStatus_58565696 =
+export type Canonical_ClientRecordStatus_3705Aed4 =
   | 'proposed'
   | 'approved'
   | 'executing'
@@ -419,9 +424,9 @@ export type Canonical_ClientRecordStatus_58565696 =
   | 'blocked'
   | 'dismissed'
   | 'expired';
-export type Canonical_ClientRecordReceipt_8A925D68 =
+export type Canonical_ClientRecordReceipt_396C0292 =
   | {
-      request: Canonical_ClientRecordRequestE2A54772;
+      request: Canonical_ClientRecordRequest_878F71B2;
       outcome: 'created';
       created: true;
       client: {
@@ -437,7 +442,7 @@ export type Canonical_ClientRecordReceipt_8A925D68 =
       } | null;
     }
   | {
-      request: Canonical_ClientRecordRequestE2A54772;
+      request: Canonical_ClientRecordRequest_878F71B2;
       outcome: 'updated' | 'partially_updated' | 'not_updated' | 'unchanged';
       tool: 'update_client_profile';
       updated: true;
@@ -1950,7 +1955,7 @@ export type IntentsDecideResponse =
       status: 'client_record_decided';
       deliveryId: IntentsDeliveryId;
       proposalId: string;
-      result: Canonical_ClientRecordCoreResultCb1Df09E;
+      result: Canonical_ClientRecordCoreResultBe5C35E8;
     }
   | {
       status: 'bizdev_decided';
@@ -1997,40 +2002,122 @@ export type IntentsDecideResponse =
       proposalStatus: Canonical_ResearchShareProposalStatus_9Aaf7F45;
       oneTimeResult?: Canonical_ResearchShareOneTimeResult_9258E7D0;
     };
+export type RoutinesMutationRequest =
+  | Canonical_ScheduleTaskRequestDf098195
+  | Canonical_UpdateScheduledTaskRequest_2Bcea062
+  | Canonical_CancelScheduledTaskRequestFdcd923C;
+export type CanonicalOverlapDe9B7A1C =
+  'SKIP' | 'BUFFER_ONE' | 'BUFFER_ALL' | 'CANCEL_OTHER' | 'TERMINATE_OTHER' | 'ALLOW_ALL';
+export type CanonicalCatchupWindowMs_67F5Ffbf = number;
+export type CanonicalPauseOnFailure_319E36Bf = boolean;
+export type CanonicalRemainingActionsF333Bcc2 = number | null;
+export type CanonicalPaused_151Ea49E = boolean;
+export type CanonicalNote_299B10Ff = string;
+export type CanonicalRunNow_53Bfd55D = boolean;
+export type CanonicalRunNowOverlap_40C0E869 = 'ALLOW_ALL';
+export type CanonicalMode_3F0790A9 = 'pause' | 'delete';
+export type CanonicalNote_73Bc87F3 = string;
+export type CanonicalRunning_42C15D3C = 'leave' | 'request_cancel';
+/**
+ * @maxItems 10
+ */
+export type CanonicalRunsF594Ad9A =
+  | []
+  | [Canonical_Run_9E00C9F4]
+  | [Canonical_Run_9E00C9F4, Canonical_Run_9E00C9F4]
+  | [Canonical_Run_9E00C9F4, Canonical_Run_9E00C9F4, Canonical_Run_9E00C9F4]
+  | [Canonical_Run_9E00C9F4, Canonical_Run_9E00C9F4, Canonical_Run_9E00C9F4, Canonical_Run_9E00C9F4]
+  | [
+      Canonical_Run_9E00C9F4,
+      Canonical_Run_9E00C9F4,
+      Canonical_Run_9E00C9F4,
+      Canonical_Run_9E00C9F4,
+      Canonical_Run_9E00C9F4
+    ]
+  | [
+      Canonical_Run_9E00C9F4,
+      Canonical_Run_9E00C9F4,
+      Canonical_Run_9E00C9F4,
+      Canonical_Run_9E00C9F4,
+      Canonical_Run_9E00C9F4,
+      Canonical_Run_9E00C9F4
+    ]
+  | [
+      Canonical_Run_9E00C9F4,
+      Canonical_Run_9E00C9F4,
+      Canonical_Run_9E00C9F4,
+      Canonical_Run_9E00C9F4,
+      Canonical_Run_9E00C9F4,
+      Canonical_Run_9E00C9F4,
+      Canonical_Run_9E00C9F4
+    ]
+  | [
+      Canonical_Run_9E00C9F4,
+      Canonical_Run_9E00C9F4,
+      Canonical_Run_9E00C9F4,
+      Canonical_Run_9E00C9F4,
+      Canonical_Run_9E00C9F4,
+      Canonical_Run_9E00C9F4,
+      Canonical_Run_9E00C9F4,
+      Canonical_Run_9E00C9F4
+    ]
+  | [
+      Canonical_Run_9E00C9F4,
+      Canonical_Run_9E00C9F4,
+      Canonical_Run_9E00C9F4,
+      Canonical_Run_9E00C9F4,
+      Canonical_Run_9E00C9F4,
+      Canonical_Run_9E00C9F4,
+      Canonical_Run_9E00C9F4,
+      Canonical_Run_9E00C9F4,
+      Canonical_Run_9E00C9F4
+    ]
+  | [
+      Canonical_Run_9E00C9F4,
+      Canonical_Run_9E00C9F4,
+      Canonical_Run_9E00C9F4,
+      Canonical_Run_9E00C9F4,
+      Canonical_Run_9E00C9F4,
+      Canonical_Run_9E00C9F4,
+      Canonical_Run_9E00C9F4,
+      Canonical_Run_9E00C9F4,
+      Canonical_Run_9E00C9F4,
+      Canonical_Run_9E00C9F4
+    ];
 export type RoutinesPrepareRequest =
   | {
       requestId: string;
       operation: 'schedule_task';
-      request: Canonical_ScheduleTaskRequest_84A62196;
+      request: Canonical_ScheduleTaskRequestDf098195;
     }
   | {
       requestId: string;
       operation: 'update_scheduled_task';
-      request: Canonical_UpdateScheduledTaskRequestE7C2F9Fc;
+      request: Canonical_UpdateScheduledTaskRequest_2Bcea062;
     }
   | {
       requestId: string;
       operation: 'cancel_scheduled_task';
-      request: Canonical_CancelScheduledTaskRequestFe53799C;
+      request: Canonical_CancelScheduledTaskRequestFdcd923C;
     };
 export type RoutinesApproveRequest =
   | {
       operation: 'schedule_task';
-      request: Canonical_ScheduleTaskRequest_84A62196;
+      request: Canonical_ScheduleTaskRequestDf098195;
       proposalId: string;
       intentSha256: string;
       decision: 'approved';
     }
   | {
       operation: 'update_scheduled_task';
-      request: Canonical_UpdateScheduledTaskRequestE7C2F9Fc;
+      request: Canonical_UpdateScheduledTaskRequest_2Bcea062;
       proposalId: string;
       intentSha256: string;
       decision: 'approved';
     }
   | {
       operation: 'cancel_scheduled_task';
-      request: Canonical_CancelScheduledTaskRequestFe53799C;
+      request: Canonical_CancelScheduledTaskRequestFdcd923C;
       proposalId: string;
       intentSha256: string;
       decision: 'approved';
@@ -2038,26 +2125,41 @@ export type RoutinesApproveRequest =
 export type RoutinesReconcileRequest =
   | {
       operation: 'schedule_task';
-      request: Canonical_ScheduleTaskRequest_84A62196;
+      request: Canonical_ScheduleTaskRequestDf098195;
       proposalId: string;
       intentSha256: string;
     }
   | {
       operation: 'update_scheduled_task';
-      request: Canonical_UpdateScheduledTaskRequestE7C2F9Fc;
+      request: Canonical_UpdateScheduledTaskRequest_2Bcea062;
       proposalId: string;
       intentSha256: string;
     }
   | {
       operation: 'cancel_scheduled_task';
-      request: Canonical_CancelScheduledTaskRequestFe53799C;
+      request: Canonical_CancelScheduledTaskRequestFdcd923C;
       proposalId: string;
       intentSha256: string;
+    };
+export type Canonical_TriggerObservation_3D888Ab2 =
+  | {
+      kind: 'timed';
+    }
+  | {
+      kind: 'source-event';
+      sourceTrigger: Canonical_SourceTriggerBca20Fe1;
+    }
+  | {
+      kind: 'unavailable';
     };
 
 export interface IntentsOperation {
   id: string;
   version: '0.2.0';
+}
+export interface IntentsClientRecordOperation {
+  id: string;
+  version: '0.2.0' | '0.3.0';
 }
 export interface IntentsListRequest {
   conversationId: IntentsConversationId;
@@ -2770,7 +2872,7 @@ export interface Canonical_WatchContextE72A3A40 {
   membershipRevision: string;
   contextRevision: string;
 }
-export interface Canonical_ClientRecordProposalB620B25B {
+export interface Canonical_ClientRecordProposalD98D004E {
   kind: 'client_record_action';
   binding: Canonical_RunBinding_84F2304C;
   /**
@@ -2780,13 +2882,13 @@ export interface Canonical_ClientRecordProposalB620B25B {
   scopes: [Canonical_ScopeF882Edb5];
   operation: 'create_client' | 'update_client_profile';
   proposalId: string;
-  request: Canonical_ClientRecordRequestE2A54772;
-  context: Canonical_ClientRecordContext_6Cea2055;
+  request: Canonical_ClientRecordRequest_878F71B2;
+  context: Canonical_ClientRecordContextD84246C7;
   createdAt: string;
   expiresAt: string;
   commandSha256: string;
 }
-export interface Canonical_CreateClientInputC55F4423 {
+export interface Canonical_CreateClientInput_79Aaeebd {
   name: string;
   website?: string;
   description?: string;
@@ -2796,8 +2898,38 @@ export interface Canonical_CreateClientInputC55F4423 {
   primaryContactPhone?: string;
   ldaClientId?: number;
   skipLdaCheck?: boolean;
+  provenance?: {
+    name?: {
+      sourceUrl: string;
+      confidence: 'high' | 'medium' | 'low';
+    };
+    website?: {
+      sourceUrl: string;
+      confidence: 'high' | 'medium' | 'low';
+    };
+    description?: {
+      sourceUrl: string;
+      confidence: 'high' | 'medium' | 'low';
+    };
+    sectorTag?: {
+      sourceUrl: string;
+      confidence: 'high' | 'medium' | 'low';
+    };
+    primaryContactName?: {
+      sourceUrl: string;
+      confidence: 'high' | 'medium' | 'low';
+    };
+    primaryContactEmail?: {
+      sourceUrl: string;
+      confidence: 'high' | 'medium' | 'low';
+    };
+    primaryContactPhone?: {
+      sourceUrl: string;
+      confidence: 'high' | 'medium' | 'low';
+    };
+  };
 }
-export interface Canonical_UpdateClientProfileInput_8Caec89E {
+export interface Canonical_UpdateClientProfileInputAea70647 {
   name?: string;
   website?: string;
   description?: string;
@@ -2911,7 +3043,7 @@ export interface Canonical_UpdateClientProfileInput_8Caec89E {
     notes?: string;
   }[];
 }
-export interface Canonical_ClientRecordContext_6Cea2055 {
+export interface Canonical_ClientRecordContextD84246C7 {
   conversationId: string;
   selectedClientId: string | null;
   identityRevision: string;
@@ -3690,7 +3822,10 @@ export interface IntentsScheduleReviewItem {
   state: 'prepared';
   kind: 'schedule_proposal';
   binding: Canonical_RunBinding_84F2304C;
-  request: RoutinesMutationRequest;
+  request:
+    | Canonical_ScheduleTaskRequest_84A62196
+    | Canonical_UpdateScheduledTaskRequestE7C2F9Fc
+    | Canonical_CancelScheduledTaskRequestFe53799C;
   proposal: Canonical_PendingProposal_8E88D951;
 }
 export interface Canonical_ScheduleTaskRequest_84A62196 {
@@ -4031,21 +4166,26 @@ export interface IntentsWithheldLegislativeDocumentItem {
 export interface IntentsClientRecordItem {
   deliveryId: IntentsDeliveryId;
   createdAt: string;
-  operation: IntentsOperation;
+  operation: IntentsClientRecordOperation;
   state: 'prepared';
   kind: 'client_record_action';
-  proposal: Canonical_ClientRecordProposalB620B25B;
-  result: Canonical_ClientRecordCoreResultCb1Df09E | 'unavailable';
+  proposal: Canonical_ClientRecordProposalD98D004E;
+  result: Canonical_ClientRecordCoreResultBe5C35E8 | 'unavailable';
 }
-export interface Canonical_ClientRecordCoreResultCb1Df09E {
+export interface Canonical_ClientRecordCoreResultBe5C35E8 {
   version: '0.1.0';
   proposalId: string;
-  request: Canonical_ClientRecordRequestE2A54772;
-  context: Canonical_ClientRecordContext_6Cea2055;
+  request: Canonical_ClientRecordRequest_878F71B2;
+  context: Canonical_ClientRecordContextD84246C7;
   createdAt: string;
   expiresAt: string;
-  status: Canonical_ClientRecordStatus_58565696;
-  receipt: Canonical_ClientRecordReceipt_8A925D68 | null;
+  status: Canonical_ClientRecordStatus_3705Aed4;
+  receipt: Canonical_ClientRecordReceipt_396C0292 | null;
+  preflight: Canonical_ClientRecordPreflight_35855536 | null;
+}
+export interface Canonical_ClientRecordPreflight_35855536 {
+  duplicate: 'clear' | 'possible' | 'unknown';
+  capacity: 'allowed' | 'denied' | 'unknown';
 }
 export interface IntentsWithheldLegiwatchItem {
   deliveryId: IntentsDeliveryId;
@@ -4058,7 +4198,7 @@ export interface IntentsWithheldLegiwatchItem {
 export interface IntentsWithheldClientRecordItem {
   deliveryId: IntentsDeliveryId;
   createdAt: string;
-  operation: IntentsOperation;
+  operation: IntentsClientRecordOperation;
   state: 'prepared';
   kind: 'client_record_action';
   withheld: true;
@@ -4337,11 +4477,524 @@ export interface RoutinesManagementSessionReceipt {
   expiresAtMs: number;
   context: RoutinesManagementContext;
 }
+export interface Canonical_ScheduleTaskRequestDf098195 {
+  work?: UrnMeriWorkSelection010 | null;
+  taskInstruction: string;
+  policy: Canonical_Policy_4B15C698;
+  destinationReference: string;
+  requestedLimits: Canonical_Limits_1325D13E;
+}
+export interface UrnMeriWorkSelection010 {
+  entry: 'start-work' | 'delegate';
+  jobKind: 'research' | 'deliverable' | 'audit' | 'scheduled';
+  /**
+   * @maxItems 20
+   */
+  deliverables:
+    | []
+    | [string]
+    | [string, string]
+    | [string, string, string]
+    | [string, string, string, string]
+    | [string, string, string, string, string]
+    | [string, string, string, string, string, string]
+    | [string, string, string, string, string, string, string]
+    | [string, string, string, string, string, string, string, string]
+    | [string, string, string, string, string, string, string, string, string]
+    | [string, string, string, string, string, string, string, string, string, string]
+    | [string, string, string, string, string, string, string, string, string, string, string]
+    | [string, string, string, string, string, string, string, string, string, string, string, string]
+    | [string, string, string, string, string, string, string, string, string, string, string, string, string]
+    | [string, string, string, string, string, string, string, string, string, string, string, string, string, string]
+    | [
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string
+      ]
+    | [
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string
+      ]
+    | [
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string
+      ]
+    | [
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string
+      ]
+    | [
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string
+      ]
+    | [
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string
+      ];
+  /**
+   * @maxItems 20
+   */
+  dependencies:
+    | []
+    | [string]
+    | [string, string]
+    | [string, string, string]
+    | [string, string, string, string]
+    | [string, string, string, string, string]
+    | [string, string, string, string, string, string]
+    | [string, string, string, string, string, string, string]
+    | [string, string, string, string, string, string, string, string]
+    | [string, string, string, string, string, string, string, string, string]
+    | [string, string, string, string, string, string, string, string, string, string]
+    | [string, string, string, string, string, string, string, string, string, string, string]
+    | [string, string, string, string, string, string, string, string, string, string, string, string]
+    | [string, string, string, string, string, string, string, string, string, string, string, string, string]
+    | [string, string, string, string, string, string, string, string, string, string, string, string, string, string]
+    | [
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string
+      ]
+    | [
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string
+      ]
+    | [
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string
+      ]
+    | [
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string
+      ]
+    | [
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string
+      ]
+    | [
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string
+      ];
+}
+export interface Canonical_Policy_4B15C698 {
+  spec: Canonical_Spec_78B3Ec52;
+  overlap: CanonicalOverlapDe9B7A1C;
+  catchupWindowMs: CanonicalCatchupWindowMs_67F5Ffbf;
+  pauseOnFailure: CanonicalPauseOnFailure_319E36Bf;
+  remainingActions: CanonicalRemainingActionsF333Bcc2;
+  paused: CanonicalPaused_151Ea49E;
+  note: CanonicalNote_299B10Ff;
+  runNow: CanonicalRunNow_53Bfd55D;
+  runNowOverlap: CanonicalRunNowOverlap_40C0E869;
+  sourceTrigger?: Canonical_SourceTriggerBca20Fe1 | null;
+}
+export interface Canonical_Spec_78B3Ec52 {
+  /**
+   * @maxItems 100
+   */
+  calendars: Canonical_Calendar_2C161C76[];
+  /**
+   * @maxItems 100
+   */
+  intervals: {
+    every: number;
+    offset: number;
+  }[];
+  /**
+   * @maxItems 100
+   */
+  cronExpressions: string[];
+  /**
+   * @maxItems 100
+   */
+  skip: Canonical_Calendar_2C161C76[];
+  startAt: string | null;
+  endAt: string | null;
+  jitterMs: number;
+  timezone: string;
+}
+export interface Canonical_Calendar_2C161C76 {
+  second:
+    | '*'
+    | {
+        start: number;
+        end: number;
+        step: number;
+      }[];
+  minute:
+    | '*'
+    | {
+        start: number;
+        end: number;
+        step: number;
+      }[];
+  hour:
+    | '*'
+    | {
+        start: number;
+        end: number;
+        step: number;
+      }[];
+  dayOfMonth:
+    | '*'
+    | {
+        start: number;
+        end: number;
+        step: number;
+      }[];
+  month:
+    | '*'
+    | {
+        start:
+          | 'JANUARY'
+          | 'FEBRUARY'
+          | 'MARCH'
+          | 'APRIL'
+          | 'MAY'
+          | 'JUNE'
+          | 'JULY'
+          | 'AUGUST'
+          | 'SEPTEMBER'
+          | 'OCTOBER'
+          | 'NOVEMBER'
+          | 'DECEMBER';
+        end:
+          | 'JANUARY'
+          | 'FEBRUARY'
+          | 'MARCH'
+          | 'APRIL'
+          | 'MAY'
+          | 'JUNE'
+          | 'JULY'
+          | 'AUGUST'
+          | 'SEPTEMBER'
+          | 'OCTOBER'
+          | 'NOVEMBER'
+          | 'DECEMBER';
+        step: number;
+      }[];
+  year:
+    | '*'
+    | {
+        start: number;
+        end: number;
+        step: number;
+      }[];
+  dayOfWeek:
+    | '*'
+    | {
+        start: 'SUNDAY' | 'MONDAY' | 'TUESDAY' | 'WEDNESDAY' | 'THURSDAY' | 'FRIDAY' | 'SATURDAY';
+        end: 'SUNDAY' | 'MONDAY' | 'TUESDAY' | 'WEDNESDAY' | 'THURSDAY' | 'FRIDAY' | 'SATURDAY';
+        step: number;
+      }[];
+  comment: string;
+}
+export interface Canonical_SourceTriggerBca20Fe1 {
+  producer: 'bizdev.watch.alert.v1';
+  sourceFamily:
+    | 'federal_award'
+    | 'federal_assistance_award'
+    | 'sam_opportunity'
+    | 'tango_resource'
+    | 'lda_filing'
+    | 'acquisition_revision';
+  resourceKey: string;
+}
+export interface Canonical_Limits_1325D13E {
+  maxCostMicrousd: CanonicalMaxCostMicrousdC937E3Cc;
+  maxRuntimeSeconds: CanonicalMaxRuntimeSecondsBdcb8952;
+  retryLimit: CanonicalRetryLimitD4C050B5;
+}
+export interface Canonical_UpdateScheduledTaskRequest_2Bcea062 {
+  work?: UrnMeriWorkSelection010 | null;
+  scheduleId: string;
+  taskInstruction: string;
+  policy: Canonical_Policy_4B15C698;
+  destinationReference: string;
+  requestedLimits: Canonical_Limits_1325D13E;
+}
+export interface Canonical_CancelScheduledTaskRequestFdcd923C {
+  scheduleId: string;
+  mode: CanonicalMode_3F0790A9;
+  note: CanonicalNote_73Bc87F3;
+  running: CanonicalRunning_42C15D3C;
+  runs: CanonicalRunsF594Ad9A;
+}
+export interface Canonical_Run_9E00C9F4 {
+  workflowId: string;
+  runId: string;
+}
+export interface Canonical_PendingProposal_667D1207 {
+  operation: 'schedule_task' | 'update_scheduled_task' | 'cancel_scheduled_task';
+  status: 'approval_required';
+  proposalId: string;
+  intentSha256: string;
+  taskInstruction: string | null;
+  projection: Canonical_ScheduleProjection_607C4A02;
+  policy: Canonical_Policy_4B15C698 | null;
+  cancel: Canonical_Cancel_6A8A7Ae6 | null;
+  work?: UrnMeriWorkSelection010 | null;
+}
+export interface Canonical_Cancel_6A8A7Ae6 {
+  mode: 'pause' | 'delete';
+  note: string;
+  running: 'leave' | 'request_cancel';
+  /**
+   * @maxItems 10
+   */
+  runs:
+    | []
+    | [Canonical_Run_9E00C9F4]
+    | [Canonical_Run_9E00C9F4, Canonical_Run_9E00C9F4]
+    | [Canonical_Run_9E00C9F4, Canonical_Run_9E00C9F4, Canonical_Run_9E00C9F4]
+    | [Canonical_Run_9E00C9F4, Canonical_Run_9E00C9F4, Canonical_Run_9E00C9F4, Canonical_Run_9E00C9F4]
+    | [
+        Canonical_Run_9E00C9F4,
+        Canonical_Run_9E00C9F4,
+        Canonical_Run_9E00C9F4,
+        Canonical_Run_9E00C9F4,
+        Canonical_Run_9E00C9F4
+      ]
+    | [
+        Canonical_Run_9E00C9F4,
+        Canonical_Run_9E00C9F4,
+        Canonical_Run_9E00C9F4,
+        Canonical_Run_9E00C9F4,
+        Canonical_Run_9E00C9F4,
+        Canonical_Run_9E00C9F4
+      ]
+    | [
+        Canonical_Run_9E00C9F4,
+        Canonical_Run_9E00C9F4,
+        Canonical_Run_9E00C9F4,
+        Canonical_Run_9E00C9F4,
+        Canonical_Run_9E00C9F4,
+        Canonical_Run_9E00C9F4,
+        Canonical_Run_9E00C9F4
+      ]
+    | [
+        Canonical_Run_9E00C9F4,
+        Canonical_Run_9E00C9F4,
+        Canonical_Run_9E00C9F4,
+        Canonical_Run_9E00C9F4,
+        Canonical_Run_9E00C9F4,
+        Canonical_Run_9E00C9F4,
+        Canonical_Run_9E00C9F4,
+        Canonical_Run_9E00C9F4
+      ]
+    | [
+        Canonical_Run_9E00C9F4,
+        Canonical_Run_9E00C9F4,
+        Canonical_Run_9E00C9F4,
+        Canonical_Run_9E00C9F4,
+        Canonical_Run_9E00C9F4,
+        Canonical_Run_9E00C9F4,
+        Canonical_Run_9E00C9F4,
+        Canonical_Run_9E00C9F4,
+        Canonical_Run_9E00C9F4
+      ]
+    | [
+        Canonical_Run_9E00C9F4,
+        Canonical_Run_9E00C9F4,
+        Canonical_Run_9E00C9F4,
+        Canonical_Run_9E00C9F4,
+        Canonical_Run_9E00C9F4,
+        Canonical_Run_9E00C9F4,
+        Canonical_Run_9E00C9F4,
+        Canonical_Run_9E00C9F4,
+        Canonical_Run_9E00C9F4,
+        Canonical_Run_9E00C9F4
+      ];
+}
 export interface RoutinesPrepareResponse {
   status: 'approval_required';
-  proposal: Canonical_PendingProposal_8E88D951;
+  proposal: Canonical_PendingProposal_667D1207;
 }
-export interface Canonical_Acknowledged_1Fa14Cd2 {
+export interface Canonical_Acknowledged_14A93840 {
   operation: 'schedule_task' | 'update_scheduled_task' | 'cancel_scheduled_task';
   status: 'acknowledged';
   receipt: {
@@ -4367,275 +5020,22 @@ export interface RoutinesReconcileResponse {
       );
   reconciled: boolean;
 }
-export interface Canonical_ListScheduledTasksRequest_294Adc6C {
+export interface RoutinesListRequest {
   afterScheduleId?: string | null;
   limit?: number;
   historyLimit?: number;
+  observation?: 'consent';
 }
-export interface Canonical_ListScheduledTasksOutputD1De26C2 {
-  operation: 'list_scheduled_tasks';
-  status: 'listed';
-  page: Canonical_ListPageBb45Ad34;
-}
-export interface Canonical_ListPageBb45Ad34 {
-  operation: 'list_scheduled_tasks';
-  /**
-   * @maxItems 20
-   */
-  rows:
-    | []
-    | [Canonical_ListRow_3D1B7Bed]
-    | [Canonical_ListRow_3D1B7Bed, Canonical_ListRow_3D1B7Bed]
-    | [Canonical_ListRow_3D1B7Bed, Canonical_ListRow_3D1B7Bed, Canonical_ListRow_3D1B7Bed]
-    | [Canonical_ListRow_3D1B7Bed, Canonical_ListRow_3D1B7Bed, Canonical_ListRow_3D1B7Bed, Canonical_ListRow_3D1B7Bed]
-    | [
-        Canonical_ListRow_3D1B7Bed,
-        Canonical_ListRow_3D1B7Bed,
-        Canonical_ListRow_3D1B7Bed,
-        Canonical_ListRow_3D1B7Bed,
-        Canonical_ListRow_3D1B7Bed
-      ]
-    | [
-        Canonical_ListRow_3D1B7Bed,
-        Canonical_ListRow_3D1B7Bed,
-        Canonical_ListRow_3D1B7Bed,
-        Canonical_ListRow_3D1B7Bed,
-        Canonical_ListRow_3D1B7Bed,
-        Canonical_ListRow_3D1B7Bed
-      ]
-    | [
-        Canonical_ListRow_3D1B7Bed,
-        Canonical_ListRow_3D1B7Bed,
-        Canonical_ListRow_3D1B7Bed,
-        Canonical_ListRow_3D1B7Bed,
-        Canonical_ListRow_3D1B7Bed,
-        Canonical_ListRow_3D1B7Bed,
-        Canonical_ListRow_3D1B7Bed
-      ]
-    | [
-        Canonical_ListRow_3D1B7Bed,
-        Canonical_ListRow_3D1B7Bed,
-        Canonical_ListRow_3D1B7Bed,
-        Canonical_ListRow_3D1B7Bed,
-        Canonical_ListRow_3D1B7Bed,
-        Canonical_ListRow_3D1B7Bed,
-        Canonical_ListRow_3D1B7Bed,
-        Canonical_ListRow_3D1B7Bed
-      ]
-    | [
-        Canonical_ListRow_3D1B7Bed,
-        Canonical_ListRow_3D1B7Bed,
-        Canonical_ListRow_3D1B7Bed,
-        Canonical_ListRow_3D1B7Bed,
-        Canonical_ListRow_3D1B7Bed,
-        Canonical_ListRow_3D1B7Bed,
-        Canonical_ListRow_3D1B7Bed,
-        Canonical_ListRow_3D1B7Bed,
-        Canonical_ListRow_3D1B7Bed
-      ]
-    | [
-        Canonical_ListRow_3D1B7Bed,
-        Canonical_ListRow_3D1B7Bed,
-        Canonical_ListRow_3D1B7Bed,
-        Canonical_ListRow_3D1B7Bed,
-        Canonical_ListRow_3D1B7Bed,
-        Canonical_ListRow_3D1B7Bed,
-        Canonical_ListRow_3D1B7Bed,
-        Canonical_ListRow_3D1B7Bed,
-        Canonical_ListRow_3D1B7Bed,
-        Canonical_ListRow_3D1B7Bed
-      ]
-    | [
-        Canonical_ListRow_3D1B7Bed,
-        Canonical_ListRow_3D1B7Bed,
-        Canonical_ListRow_3D1B7Bed,
-        Canonical_ListRow_3D1B7Bed,
-        Canonical_ListRow_3D1B7Bed,
-        Canonical_ListRow_3D1B7Bed,
-        Canonical_ListRow_3D1B7Bed,
-        Canonical_ListRow_3D1B7Bed,
-        Canonical_ListRow_3D1B7Bed,
-        Canonical_ListRow_3D1B7Bed,
-        Canonical_ListRow_3D1B7Bed
-      ]
-    | [
-        Canonical_ListRow_3D1B7Bed,
-        Canonical_ListRow_3D1B7Bed,
-        Canonical_ListRow_3D1B7Bed,
-        Canonical_ListRow_3D1B7Bed,
-        Canonical_ListRow_3D1B7Bed,
-        Canonical_ListRow_3D1B7Bed,
-        Canonical_ListRow_3D1B7Bed,
-        Canonical_ListRow_3D1B7Bed,
-        Canonical_ListRow_3D1B7Bed,
-        Canonical_ListRow_3D1B7Bed,
-        Canonical_ListRow_3D1B7Bed,
-        Canonical_ListRow_3D1B7Bed
-      ]
-    | [
-        Canonical_ListRow_3D1B7Bed,
-        Canonical_ListRow_3D1B7Bed,
-        Canonical_ListRow_3D1B7Bed,
-        Canonical_ListRow_3D1B7Bed,
-        Canonical_ListRow_3D1B7Bed,
-        Canonical_ListRow_3D1B7Bed,
-        Canonical_ListRow_3D1B7Bed,
-        Canonical_ListRow_3D1B7Bed,
-        Canonical_ListRow_3D1B7Bed,
-        Canonical_ListRow_3D1B7Bed,
-        Canonical_ListRow_3D1B7Bed,
-        Canonical_ListRow_3D1B7Bed,
-        Canonical_ListRow_3D1B7Bed
-      ]
-    | [
-        Canonical_ListRow_3D1B7Bed,
-        Canonical_ListRow_3D1B7Bed,
-        Canonical_ListRow_3D1B7Bed,
-        Canonical_ListRow_3D1B7Bed,
-        Canonical_ListRow_3D1B7Bed,
-        Canonical_ListRow_3D1B7Bed,
-        Canonical_ListRow_3D1B7Bed,
-        Canonical_ListRow_3D1B7Bed,
-        Canonical_ListRow_3D1B7Bed,
-        Canonical_ListRow_3D1B7Bed,
-        Canonical_ListRow_3D1B7Bed,
-        Canonical_ListRow_3D1B7Bed,
-        Canonical_ListRow_3D1B7Bed,
-        Canonical_ListRow_3D1B7Bed
-      ]
-    | [
-        Canonical_ListRow_3D1B7Bed,
-        Canonical_ListRow_3D1B7Bed,
-        Canonical_ListRow_3D1B7Bed,
-        Canonical_ListRow_3D1B7Bed,
-        Canonical_ListRow_3D1B7Bed,
-        Canonical_ListRow_3D1B7Bed,
-        Canonical_ListRow_3D1B7Bed,
-        Canonical_ListRow_3D1B7Bed,
-        Canonical_ListRow_3D1B7Bed,
-        Canonical_ListRow_3D1B7Bed,
-        Canonical_ListRow_3D1B7Bed,
-        Canonical_ListRow_3D1B7Bed,
-        Canonical_ListRow_3D1B7Bed,
-        Canonical_ListRow_3D1B7Bed,
-        Canonical_ListRow_3D1B7Bed
-      ]
-    | [
-        Canonical_ListRow_3D1B7Bed,
-        Canonical_ListRow_3D1B7Bed,
-        Canonical_ListRow_3D1B7Bed,
-        Canonical_ListRow_3D1B7Bed,
-        Canonical_ListRow_3D1B7Bed,
-        Canonical_ListRow_3D1B7Bed,
-        Canonical_ListRow_3D1B7Bed,
-        Canonical_ListRow_3D1B7Bed,
-        Canonical_ListRow_3D1B7Bed,
-        Canonical_ListRow_3D1B7Bed,
-        Canonical_ListRow_3D1B7Bed,
-        Canonical_ListRow_3D1B7Bed,
-        Canonical_ListRow_3D1B7Bed,
-        Canonical_ListRow_3D1B7Bed,
-        Canonical_ListRow_3D1B7Bed,
-        Canonical_ListRow_3D1B7Bed
-      ]
-    | [
-        Canonical_ListRow_3D1B7Bed,
-        Canonical_ListRow_3D1B7Bed,
-        Canonical_ListRow_3D1B7Bed,
-        Canonical_ListRow_3D1B7Bed,
-        Canonical_ListRow_3D1B7Bed,
-        Canonical_ListRow_3D1B7Bed,
-        Canonical_ListRow_3D1B7Bed,
-        Canonical_ListRow_3D1B7Bed,
-        Canonical_ListRow_3D1B7Bed,
-        Canonical_ListRow_3D1B7Bed,
-        Canonical_ListRow_3D1B7Bed,
-        Canonical_ListRow_3D1B7Bed,
-        Canonical_ListRow_3D1B7Bed,
-        Canonical_ListRow_3D1B7Bed,
-        Canonical_ListRow_3D1B7Bed,
-        Canonical_ListRow_3D1B7Bed,
-        Canonical_ListRow_3D1B7Bed
-      ]
-    | [
-        Canonical_ListRow_3D1B7Bed,
-        Canonical_ListRow_3D1B7Bed,
-        Canonical_ListRow_3D1B7Bed,
-        Canonical_ListRow_3D1B7Bed,
-        Canonical_ListRow_3D1B7Bed,
-        Canonical_ListRow_3D1B7Bed,
-        Canonical_ListRow_3D1B7Bed,
-        Canonical_ListRow_3D1B7Bed,
-        Canonical_ListRow_3D1B7Bed,
-        Canonical_ListRow_3D1B7Bed,
-        Canonical_ListRow_3D1B7Bed,
-        Canonical_ListRow_3D1B7Bed,
-        Canonical_ListRow_3D1B7Bed,
-        Canonical_ListRow_3D1B7Bed,
-        Canonical_ListRow_3D1B7Bed,
-        Canonical_ListRow_3D1B7Bed,
-        Canonical_ListRow_3D1B7Bed,
-        Canonical_ListRow_3D1B7Bed
-      ]
-    | [
-        Canonical_ListRow_3D1B7Bed,
-        Canonical_ListRow_3D1B7Bed,
-        Canonical_ListRow_3D1B7Bed,
-        Canonical_ListRow_3D1B7Bed,
-        Canonical_ListRow_3D1B7Bed,
-        Canonical_ListRow_3D1B7Bed,
-        Canonical_ListRow_3D1B7Bed,
-        Canonical_ListRow_3D1B7Bed,
-        Canonical_ListRow_3D1B7Bed,
-        Canonical_ListRow_3D1B7Bed,
-        Canonical_ListRow_3D1B7Bed,
-        Canonical_ListRow_3D1B7Bed,
-        Canonical_ListRow_3D1B7Bed,
-        Canonical_ListRow_3D1B7Bed,
-        Canonical_ListRow_3D1B7Bed,
-        Canonical_ListRow_3D1B7Bed,
-        Canonical_ListRow_3D1B7Bed,
-        Canonical_ListRow_3D1B7Bed,
-        Canonical_ListRow_3D1B7Bed
-      ]
-    | [
-        Canonical_ListRow_3D1B7Bed,
-        Canonical_ListRow_3D1B7Bed,
-        Canonical_ListRow_3D1B7Bed,
-        Canonical_ListRow_3D1B7Bed,
-        Canonical_ListRow_3D1B7Bed,
-        Canonical_ListRow_3D1B7Bed,
-        Canonical_ListRow_3D1B7Bed,
-        Canonical_ListRow_3D1B7Bed,
-        Canonical_ListRow_3D1B7Bed,
-        Canonical_ListRow_3D1B7Bed,
-        Canonical_ListRow_3D1B7Bed,
-        Canonical_ListRow_3D1B7Bed,
-        Canonical_ListRow_3D1B7Bed,
-        Canonical_ListRow_3D1B7Bed,
-        Canonical_ListRow_3D1B7Bed,
-        Canonical_ListRow_3D1B7Bed,
-        Canonical_ListRow_3D1B7Bed,
-        Canonical_ListRow_3D1B7Bed,
-        Canonical_ListRow_3D1B7Bed,
-        Canonical_ListRow_3D1B7Bed
-      ];
-  hasMore: boolean;
-  nextAfterScheduleId: string | null;
-  originalRuns: Canonical_OriginalRuns_073C32E6;
-  coverage: {
-    complete: false;
-    currentRetryVerified: false;
-  };
-}
-export interface Canonical_ListRow_3D1B7Bed {
+export interface RoutinesListRow {
   projection: Canonical_ScheduleProjection_607C4A02;
   generation: number;
   unresolved: boolean;
-  inspection: Canonical_ScheduleInspectionOutput_10F44301 | null;
+  inspection: Canonical_ScheduleInspectionOutput_7Edf0Fd5 | null;
   inspectionState: 'unavailable' | 'observed';
+  trigger?: Canonical_TriggerObservation_3D888Ab2;
+  consent?: RoutinesConsentObservation;
 }
-export interface Canonical_ScheduleInspectionOutput_10F44301 {
+export interface Canonical_ScheduleInspectionOutput_7Edf0Fd5 {
   projection: Canonical_ScheduleProjection_607C4A02;
   projectionSha256: string;
   observedAt: string;
@@ -4655,105 +5055,356 @@ export interface Canonical_ScheduleInspectionOutput_10F44301 {
     /**
      * @maxItems 100
      */
-    recentActions: Canonical_ScheduleRecentActionE3Bcac7F[];
+    recentActions: Canonical_ScheduleRecentActionC6C8C32B[];
     /**
      * @maxItems 100
      */
-    runningActions: Canonical_ScheduleOriginalRun_83689F88[];
+    runningActions: Canonical_ScheduleOriginalRun_3864E77F[];
   };
   coverage: {
     historyComplete: false;
     currentRunIdentityVerified: false;
-    nextActions: Canonical_ScheduleInspectionWindowD6C325Bc;
-    recentActions: Canonical_ScheduleInspectionWindowD6C325Bc;
-    runningActions: Canonical_ScheduleInspectionWindowD6C325Bc;
+    nextActions: Canonical_ScheduleInspectionWindowE5981Dc9;
+    recentActions: Canonical_ScheduleInspectionWindowE5981Dc9;
+    runningActions: Canonical_ScheduleInspectionWindowE5981Dc9;
   };
 }
-export interface Canonical_ScheduleRecentActionE3Bcac7F {
+export interface Canonical_ScheduleRecentActionC6C8C32B {
   scheduledAt: string;
   takenAt: string;
-  workflow: Canonical_ScheduleOriginalRun_83689F88;
+  workflow: Canonical_ScheduleOriginalRun_3864E77F;
 }
-export interface Canonical_ScheduleOriginalRun_83689F88 {
+export interface Canonical_ScheduleOriginalRun_3864E77F {
   workflowId: string;
   firstExecutionRunId: string;
 }
-export interface Canonical_ScheduleInspectionWindowD6C325Bc {
+export interface Canonical_ScheduleInspectionWindowE5981Dc9 {
   observed: number;
   returned: number;
   omitted: number;
 }
-export interface Canonical_OriginalRuns_073C32E6 {
+export interface RoutinesConsentObservation {
+  state: 'active' | 'expired' | 'revoked' | 'absent' | 'unknown';
+  pinsMatched: boolean;
+  stale: boolean;
+  observedAtMs: number | null;
+  generation: number;
+  consentGeneration: number | null;
+  issuedAtMs: number | null;
+  expiresAtMs: number | null;
+  scopeCount: number | null;
+  cause: ('revocation' | 'membership' | 'client-scope') | null;
+  rightsSha256: string | null;
+}
+export interface RoutinesListPage {
+  operation: 'list_scheduled_tasks';
+  /**
+   * @maxItems 20
+   */
+  rows:
+    | []
+    | [RoutinesListRow]
+    | [RoutinesListRow, RoutinesListRow]
+    | [RoutinesListRow, RoutinesListRow, RoutinesListRow]
+    | [RoutinesListRow, RoutinesListRow, RoutinesListRow, RoutinesListRow]
+    | [RoutinesListRow, RoutinesListRow, RoutinesListRow, RoutinesListRow, RoutinesListRow]
+    | [RoutinesListRow, RoutinesListRow, RoutinesListRow, RoutinesListRow, RoutinesListRow, RoutinesListRow]
+    | [
+        RoutinesListRow,
+        RoutinesListRow,
+        RoutinesListRow,
+        RoutinesListRow,
+        RoutinesListRow,
+        RoutinesListRow,
+        RoutinesListRow
+      ]
+    | [
+        RoutinesListRow,
+        RoutinesListRow,
+        RoutinesListRow,
+        RoutinesListRow,
+        RoutinesListRow,
+        RoutinesListRow,
+        RoutinesListRow,
+        RoutinesListRow
+      ]
+    | [
+        RoutinesListRow,
+        RoutinesListRow,
+        RoutinesListRow,
+        RoutinesListRow,
+        RoutinesListRow,
+        RoutinesListRow,
+        RoutinesListRow,
+        RoutinesListRow,
+        RoutinesListRow
+      ]
+    | [
+        RoutinesListRow,
+        RoutinesListRow,
+        RoutinesListRow,
+        RoutinesListRow,
+        RoutinesListRow,
+        RoutinesListRow,
+        RoutinesListRow,
+        RoutinesListRow,
+        RoutinesListRow,
+        RoutinesListRow
+      ]
+    | [
+        RoutinesListRow,
+        RoutinesListRow,
+        RoutinesListRow,
+        RoutinesListRow,
+        RoutinesListRow,
+        RoutinesListRow,
+        RoutinesListRow,
+        RoutinesListRow,
+        RoutinesListRow,
+        RoutinesListRow,
+        RoutinesListRow
+      ]
+    | [
+        RoutinesListRow,
+        RoutinesListRow,
+        RoutinesListRow,
+        RoutinesListRow,
+        RoutinesListRow,
+        RoutinesListRow,
+        RoutinesListRow,
+        RoutinesListRow,
+        RoutinesListRow,
+        RoutinesListRow,
+        RoutinesListRow,
+        RoutinesListRow
+      ]
+    | [
+        RoutinesListRow,
+        RoutinesListRow,
+        RoutinesListRow,
+        RoutinesListRow,
+        RoutinesListRow,
+        RoutinesListRow,
+        RoutinesListRow,
+        RoutinesListRow,
+        RoutinesListRow,
+        RoutinesListRow,
+        RoutinesListRow,
+        RoutinesListRow,
+        RoutinesListRow
+      ]
+    | [
+        RoutinesListRow,
+        RoutinesListRow,
+        RoutinesListRow,
+        RoutinesListRow,
+        RoutinesListRow,
+        RoutinesListRow,
+        RoutinesListRow,
+        RoutinesListRow,
+        RoutinesListRow,
+        RoutinesListRow,
+        RoutinesListRow,
+        RoutinesListRow,
+        RoutinesListRow,
+        RoutinesListRow
+      ]
+    | [
+        RoutinesListRow,
+        RoutinesListRow,
+        RoutinesListRow,
+        RoutinesListRow,
+        RoutinesListRow,
+        RoutinesListRow,
+        RoutinesListRow,
+        RoutinesListRow,
+        RoutinesListRow,
+        RoutinesListRow,
+        RoutinesListRow,
+        RoutinesListRow,
+        RoutinesListRow,
+        RoutinesListRow,
+        RoutinesListRow
+      ]
+    | [
+        RoutinesListRow,
+        RoutinesListRow,
+        RoutinesListRow,
+        RoutinesListRow,
+        RoutinesListRow,
+        RoutinesListRow,
+        RoutinesListRow,
+        RoutinesListRow,
+        RoutinesListRow,
+        RoutinesListRow,
+        RoutinesListRow,
+        RoutinesListRow,
+        RoutinesListRow,
+        RoutinesListRow,
+        RoutinesListRow,
+        RoutinesListRow
+      ]
+    | [
+        RoutinesListRow,
+        RoutinesListRow,
+        RoutinesListRow,
+        RoutinesListRow,
+        RoutinesListRow,
+        RoutinesListRow,
+        RoutinesListRow,
+        RoutinesListRow,
+        RoutinesListRow,
+        RoutinesListRow,
+        RoutinesListRow,
+        RoutinesListRow,
+        RoutinesListRow,
+        RoutinesListRow,
+        RoutinesListRow,
+        RoutinesListRow,
+        RoutinesListRow
+      ]
+    | [
+        RoutinesListRow,
+        RoutinesListRow,
+        RoutinesListRow,
+        RoutinesListRow,
+        RoutinesListRow,
+        RoutinesListRow,
+        RoutinesListRow,
+        RoutinesListRow,
+        RoutinesListRow,
+        RoutinesListRow,
+        RoutinesListRow,
+        RoutinesListRow,
+        RoutinesListRow,
+        RoutinesListRow,
+        RoutinesListRow,
+        RoutinesListRow,
+        RoutinesListRow,
+        RoutinesListRow
+      ]
+    | [
+        RoutinesListRow,
+        RoutinesListRow,
+        RoutinesListRow,
+        RoutinesListRow,
+        RoutinesListRow,
+        RoutinesListRow,
+        RoutinesListRow,
+        RoutinesListRow,
+        RoutinesListRow,
+        RoutinesListRow,
+        RoutinesListRow,
+        RoutinesListRow,
+        RoutinesListRow,
+        RoutinesListRow,
+        RoutinesListRow,
+        RoutinesListRow,
+        RoutinesListRow,
+        RoutinesListRow,
+        RoutinesListRow
+      ]
+    | [
+        RoutinesListRow,
+        RoutinesListRow,
+        RoutinesListRow,
+        RoutinesListRow,
+        RoutinesListRow,
+        RoutinesListRow,
+        RoutinesListRow,
+        RoutinesListRow,
+        RoutinesListRow,
+        RoutinesListRow,
+        RoutinesListRow,
+        RoutinesListRow,
+        RoutinesListRow,
+        RoutinesListRow,
+        RoutinesListRow,
+        RoutinesListRow,
+        RoutinesListRow,
+        RoutinesListRow,
+        RoutinesListRow,
+        RoutinesListRow
+      ];
+  hasMore: boolean;
+  nextAfterScheduleId: string | null;
+  originalRuns: Canonical_OriginalRuns_9E3Cc8Aa;
+  coverage: {
+    complete: false;
+    currentRetryVerified: false;
+  };
+}
+export interface Canonical_OriginalRuns_9E3Cc8Aa {
   /**
    * @maxItems 10
    */
   executions:
     | []
-    | [Canonical_Execution_2B847724]
-    | [Canonical_Execution_2B847724, Canonical_Execution_2B847724]
-    | [Canonical_Execution_2B847724, Canonical_Execution_2B847724, Canonical_Execution_2B847724]
+    | [Canonical_Execution_72180299]
+    | [Canonical_Execution_72180299, Canonical_Execution_72180299]
+    | [Canonical_Execution_72180299, Canonical_Execution_72180299, Canonical_Execution_72180299]
     | [
-        Canonical_Execution_2B847724,
-        Canonical_Execution_2B847724,
-        Canonical_Execution_2B847724,
-        Canonical_Execution_2B847724
+        Canonical_Execution_72180299,
+        Canonical_Execution_72180299,
+        Canonical_Execution_72180299,
+        Canonical_Execution_72180299
       ]
     | [
-        Canonical_Execution_2B847724,
-        Canonical_Execution_2B847724,
-        Canonical_Execution_2B847724,
-        Canonical_Execution_2B847724,
-        Canonical_Execution_2B847724
+        Canonical_Execution_72180299,
+        Canonical_Execution_72180299,
+        Canonical_Execution_72180299,
+        Canonical_Execution_72180299,
+        Canonical_Execution_72180299
       ]
     | [
-        Canonical_Execution_2B847724,
-        Canonical_Execution_2B847724,
-        Canonical_Execution_2B847724,
-        Canonical_Execution_2B847724,
-        Canonical_Execution_2B847724,
-        Canonical_Execution_2B847724
+        Canonical_Execution_72180299,
+        Canonical_Execution_72180299,
+        Canonical_Execution_72180299,
+        Canonical_Execution_72180299,
+        Canonical_Execution_72180299,
+        Canonical_Execution_72180299
       ]
     | [
-        Canonical_Execution_2B847724,
-        Canonical_Execution_2B847724,
-        Canonical_Execution_2B847724,
-        Canonical_Execution_2B847724,
-        Canonical_Execution_2B847724,
-        Canonical_Execution_2B847724,
-        Canonical_Execution_2B847724
+        Canonical_Execution_72180299,
+        Canonical_Execution_72180299,
+        Canonical_Execution_72180299,
+        Canonical_Execution_72180299,
+        Canonical_Execution_72180299,
+        Canonical_Execution_72180299,
+        Canonical_Execution_72180299
       ]
     | [
-        Canonical_Execution_2B847724,
-        Canonical_Execution_2B847724,
-        Canonical_Execution_2B847724,
-        Canonical_Execution_2B847724,
-        Canonical_Execution_2B847724,
-        Canonical_Execution_2B847724,
-        Canonical_Execution_2B847724,
-        Canonical_Execution_2B847724
+        Canonical_Execution_72180299,
+        Canonical_Execution_72180299,
+        Canonical_Execution_72180299,
+        Canonical_Execution_72180299,
+        Canonical_Execution_72180299,
+        Canonical_Execution_72180299,
+        Canonical_Execution_72180299,
+        Canonical_Execution_72180299
       ]
     | [
-        Canonical_Execution_2B847724,
-        Canonical_Execution_2B847724,
-        Canonical_Execution_2B847724,
-        Canonical_Execution_2B847724,
-        Canonical_Execution_2B847724,
-        Canonical_Execution_2B847724,
-        Canonical_Execution_2B847724,
-        Canonical_Execution_2B847724,
-        Canonical_Execution_2B847724
+        Canonical_Execution_72180299,
+        Canonical_Execution_72180299,
+        Canonical_Execution_72180299,
+        Canonical_Execution_72180299,
+        Canonical_Execution_72180299,
+        Canonical_Execution_72180299,
+        Canonical_Execution_72180299,
+        Canonical_Execution_72180299,
+        Canonical_Execution_72180299
       ]
     | [
-        Canonical_Execution_2B847724,
-        Canonical_Execution_2B847724,
-        Canonical_Execution_2B847724,
-        Canonical_Execution_2B847724,
-        Canonical_Execution_2B847724,
-        Canonical_Execution_2B847724,
-        Canonical_Execution_2B847724,
-        Canonical_Execution_2B847724,
-        Canonical_Execution_2B847724,
-        Canonical_Execution_2B847724
+        Canonical_Execution_72180299,
+        Canonical_Execution_72180299,
+        Canonical_Execution_72180299,
+        Canonical_Execution_72180299,
+        Canonical_Execution_72180299,
+        Canonical_Execution_72180299,
+        Canonical_Execution_72180299,
+        Canonical_Execution_72180299,
+        Canonical_Execution_72180299,
+        Canonical_Execution_72180299
       ];
   coverage: {
     observedReferences: number;
@@ -4763,7 +5414,7 @@ export interface Canonical_OriginalRuns_073C32E6 {
     currentRetryVerified: false;
   };
 }
-export interface Canonical_Execution_2B847724 {
+export interface Canonical_Execution_72180299 {
   workflowId: string;
   runId: string;
   status: {
@@ -4773,6 +5424,81 @@ export interface Canonical_Execution_2B847724 {
   historyLength: number;
   startTime: string;
   closeTime: string | null;
+}
+export interface RoutinesListResponse {
+  operation: 'list_scheduled_tasks';
+  status: 'listed';
+  page: RoutinesListPage;
+}
+export interface RoutinesRenewalLimits {
+  maxCostMicrousd: number;
+  maxRuntimeSeconds: number;
+  retryLimit: number;
+}
+export interface RoutinesConsentReviewRequest {
+  scheduleId: string;
+}
+export interface RoutinesConsentReviewResponse {
+  status: 'review_required';
+  scheduleId: string;
+  generation: number;
+  intentSha256: string;
+  projectionSha256: string;
+  scopesSha256: string;
+  limits: RoutinesRenewalLimits;
+  intent: Canonical_Intent_60B6F0Ec;
+  consent: RoutinesConsentObservation | null;
+  reviewSha256: string;
+}
+export interface Canonical_Intent_60B6F0Ec {
+  intentId: string;
+  operation: 'schedule_task' | 'update_scheduled_task' | 'cancel_scheduled_task';
+  expectedGeneration: number;
+  generation: number;
+  previousProjectionSha256: string | null;
+  projection: Canonical_ScheduleProjection_607C4A02;
+  configuration: Canonical_ConfigurationA5Ae0B83 | null;
+  cancel: Canonical_Cancel_6A8A7Ae6 | null;
+  taskInstructionSha256?: string;
+}
+export interface Canonical_ConfigurationA5Ae0B83 {
+  spec: Canonical_Spec_78B3Ec52;
+  overlap: 'SKIP' | 'BUFFER_ONE' | 'BUFFER_ALL' | 'CANCEL_OTHER' | 'TERMINATE_OTHER' | 'ALLOW_ALL';
+  catchupWindowMs: number;
+  pauseOnFailure: boolean;
+  remainingActions: number | null;
+  paused: boolean;
+  note: string;
+  runNow: boolean;
+  runNowOverlap: 'ALLOW_ALL';
+  task: {
+    taskId: string;
+    manifestSha256: string;
+    version: number;
+    work?: UrnMeriWorkSelection010 | null;
+  };
+  workflow: {
+    workflowType: string;
+    workflowId: string;
+    taskQueue: string;
+  };
+  sourceTrigger?: Canonical_SourceTriggerBca20Fe1 | null;
+}
+export interface RoutinesConsentApproveRequest {
+  scheduleId: string;
+  reviewSha256: string;
+  requestId: string;
+  decision: 'approved';
+}
+export interface RoutinesConsentApproveResponse {
+  status: 'renewed';
+  state: 'active' | 'expired';
+  generation: number;
+  policyRevision: string;
+  issuedAtMs: number;
+  expiresAtMs: number;
+  observedAtMs: number;
+  idempotent: boolean;
 }
 export interface RoutinesErrorResponse {
   error: {
@@ -4786,17 +5512,17 @@ export type IntentsLegiwatchProposal=Canonical_LegiwatchProposal_1F841734;
 export type IntentsBizdevProposal=Canonical_BizdevProposalA770314C;
 export type IntentsResearchShareProposal=Canonical_ResearchShareProposal_1Cdbd32E;
 export type IntentsResearchActionProposal=Canonical_ResearchActionProposal_081Cad69;
-export type RoutinesProposal=Canonical_PendingProposal_8E88D951;
-export type RoutinesApproveResponse=Canonical_Acknowledged_1Fa14Cd2;
-export type RoutinesListRequest=Canonical_ListScheduledTasksRequest_294Adc6C;
-export type RoutinesListResponse=Canonical_ListScheduledTasksOutputD1De26C2;
-export type RoutinesRoute='prepare'|'approve'|'list'|'reconcile';
-export interface RoutinesRequestMap {prepare:RoutinesPrepareRequest;approve:RoutinesApproveRequest;list:RoutinesListRequest;reconcile:RoutinesReconcileRequest;}
-export interface RoutinesResponseMap {prepare:RoutinesPrepareResponse;approve:RoutinesApproveResponse;list:RoutinesListResponse;reconcile:RoutinesReconcileResponse;}
-export interface RoutinesExpectationMap {prepare:{request:RoutinesPrepareRequest};approve:{request:RoutinesApproveRequest;proposal:RoutinesProposal};list:{request:RoutinesListRequest};reconcile:{request:RoutinesReconcileRequest;proposal:RoutinesProposal};}
+export type RoutinesProposal=Canonical_PendingProposal_667D1207;
+export type RoutinesApproveResponse=Canonical_Acknowledged_14A93840;
+
+
+export type RoutinesRoute='prepare'|'approve'|'list'|'reconcile'|'consentReview'|'consentApprove';
+export interface RoutinesRequestMap {prepare:RoutinesPrepareRequest;approve:RoutinesApproveRequest;list:RoutinesListRequest;reconcile:RoutinesReconcileRequest;consentReview:RoutinesConsentReviewRequest;consentApprove:RoutinesConsentApproveRequest;}
+export interface RoutinesResponseMap {prepare:RoutinesPrepareResponse;approve:RoutinesApproveResponse;list:RoutinesListResponse;reconcile:RoutinesReconcileResponse;consentReview:RoutinesConsentReviewResponse;consentApprove:RoutinesConsentApproveResponse;}
+export interface RoutinesExpectationMap {prepare:{request:RoutinesPrepareRequest};approve:{request:RoutinesApproveRequest;proposal:RoutinesProposal};list:{request:RoutinesListRequest};reconcile:{request:RoutinesReconcileRequest;proposal:RoutinesProposal};consentReview:{request:RoutinesConsentReviewRequest};consentApprove:{request:RoutinesConsentApproveRequest;review:RoutinesConsentReviewResponse};}
 export type RoutinesResponse<R extends RoutinesRoute>=RoutinesResponseMap[R]|RoutinesErrorResponse;
-export declare const routinesPaths:Readonly<{prepare:'/api/routines/prepare';approve:'/api/routines/approve';list:'/api/routines/list';reconcile:'/api/routines/reconcile'}>;
-export declare const routinesMetadata:Readonly<{version:'0.1.0';routes:typeof routinesPaths;limits:{requestBytes:131072;responseBytes:2097152}}>;
+export declare const routinesPaths:Readonly<{prepare:'/api/routines/prepare';approve:'/api/routines/approve';list:'/api/routines/list';reconcile:'/api/routines/reconcile';consentReview:'/api/routines/consent/review';consentApprove:'/api/routines/consent/approve'}>;
+export declare const routinesMetadata:Readonly<{version:'0.2.0';routes:typeof routinesPaths;limits:{requestBytes:131072;responseBytes:2097152}}>;
 export declare function receiveRoutinesRequest<R extends RoutinesRoute>(route:R,jsonText:unknown):Promise<RoutinesRequestMap[R]>;
 export declare function receiveRoutinesResponse<R extends RoutinesRoute>(route:R,httpStatus:number,jsonText:unknown,expectation:RoutinesExpectationMap[R]):Promise<RoutinesResponse<R>>;
 export declare const routineManagementSessionPath:'/api/routines/session';

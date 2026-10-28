@@ -44,8 +44,8 @@
   "sources": [
     {
       "path": "../../apps/control/uploads/application.mjs",
-      "sha256": "e56015b95c9f7bd8c3ae5e3c84a920754daff5e90d0c9d612920991c18bd362e",
-      "bytes": 7010
+      "sha256": "a8a82c174eabd398c7f4569d48eb01ef82686035af10333c0f77e66c49f2f1f0",
+      "bytes": 7199
     },
     {
       "path": "../../apps/control/uploads/custody.mjs",
@@ -69,13 +69,13 @@
     },
     {
       "path": "../../apps/runtime/product-applications.mjs",
-      "sha256": "b16288c1aec32103cf50e6f6e2fac894047c0aa7bcca75bc2a7c83355e7c0ea7",
-      "bytes": 18661
+      "sha256": "dc2b3653a3b5f76aea221933a470e48bce689ab9a9cf1a0052484985790d986f",
+      "bytes": 20890
     },
     {
       "path": "../../apps/runtime/product-ports/uploads.mjs",
-      "sha256": "982eff2694ce8bb99181534dd10aaead83dc9e8c495afb6244e2656e7e13ca2c",
-      "bytes": 4435
+      "sha256": "22cd6dc1afc39dfe4f53a83ec17a891f2a2e57fe9f0c32a1fcfae5be1dd39b06",
+      "bytes": 5219
     },
     {
       "path": "document-application/boundary.mjs",

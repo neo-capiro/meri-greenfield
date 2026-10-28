@@ -14,8 +14,13 @@ const binding={tenantId:'synthetic',actorId:'actor',conversationId:id(1),runId:i
 const scopes=[{tenantId:'synthetic',kind:'client',resourceId:id(5),policyRevision:'p1'}];
 const run={binding,scopes,state:'queued',policyRevision:'p1',createdAt:'2026-10-13T12:00:00Z',versions:{imageDigest:'sha256:'+'a'.repeat(64),sdk:'0.3.295',cli:'2.1.295',contracts:'0.1.0',skillsDigest:'b'.repeat(64),checkpointFormat:'0.1.0'}};
 const submit={requestId:id(6),prompt:'Hello'};
-test('public skill choices preserve the fourteen active immutable assets and make no runtime availability claim',()=>{
- assert.equal(CONVERSATION_SKILLS.length,14);
+test('public skill choices preserve the fourteen active immutable originals plus the cited report and make no runtime availability claim',()=>{
+ // The current ledger is explicit: fourteen immutable originals plus the cited report that carries its catalog pin.
+ // A historical R2 record legitimately stays at fourteen; this current ledger is not that record.
+ assert.equal(CONVERSATION_SKILLS.length,15);
+ const cited=CONVERSATION_SKILLS.filter(s=>s.skillId==='quick_skill.cited_report');
+ assert.equal(cited.length,1);
+ assert.equal(CONVERSATION_SKILLS.length-cited.length,14);
  assert.deepEqual(CONVERSATION_SKILLS.map(s=>[s.skillId,s.version]),describeSkillPlugin().skills.map(s=>[s.skillId,s.skillVersion]));
  for(const descriptor of CONVERSATION_SKILLS){
   const selected=selectSkill(descriptor.skillId,descriptor.version);

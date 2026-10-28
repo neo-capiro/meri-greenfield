@@ -117,8 +117,8 @@
     },
     {
       "path": "../../apps/control/intents/approval.mjs",
-      "sha256": "3858079233bdf6c954786bee044388ae5b2db2d69a99963132c2142cf510e94c",
-      "bytes": 41778
+      "sha256": "bef3ee4cf744a4cb105c92840d4e156bf5269001d20eb07eb6006e52ad7f53e3",
+      "bytes": 42446
     },
     {
       "path": "../../apps/control/intents/faults.mjs",
@@ -147,8 +147,8 @@
     },
     {
       "path": "../../apps/control/schedules/application.mjs",
-      "sha256": "2d72bc70195cb1ec7b541594f7684e19cdf97706acd8a091a3d5039e1a05cd7a",
-      "bytes": 21302
+      "sha256": "82b89709a3913e3bbc3abf19105d8133200349606a38899335aa26b1fc3be328",
+      "bytes": 35605
     },
     {
       "path": "artifacts-0.2/artifact-formats.mjs",
@@ -212,8 +212,8 @@
     },
     {
       "path": "generate-intents.mjs",
-      "sha256": "42428c77a4b83fd0ff155e67d7c5a0c9dda6477f94b2b2922919f59cfdc9d152",
-      "bytes": 13742
+      "sha256": "3ad8b0c80682a538372e7bd2c9773267d60da3c2a032ca621b467e85a46698cb",
+      "bytes": 15124
     },
     {
       "path": "intents-application/boundary.mjs",
@@ -237,13 +237,13 @@
     },
     {
       "path": "intents-application/routines.mjs",
-      "sha256": "62d15a6198b40065b3bc0a296b391947a93191a6062e30882edc81a681ca3fc4",
-      "bytes": 5322
+      "sha256": "1cd1cd59789ffe4f66d53462a87474ae613727c93456c35ee82dcd1342863043",
+      "bytes": 8570
     },
     {
       "path": "intents-application/schema.mjs",
-      "sha256": "74f1644f2a8d67d43749f604cccb1b7912c4b1fc6ace99d4b6aae0c4278c63b2",
-      "bytes": 15872
+      "sha256": "842e4f19a3ca396a43f6d07303b19eb9a53299d4caf786019ef5154ecd54b8fd",
+      "bytes": 21448
     },
     {
       "path": "intents-application/semantics.mjs",
@@ -301,9 +301,14 @@
       "bytes": 16441
     },
     {
+      "path": "retrieval-0.3/client-record-action.schema.json",
+      "sha256": "14b5923738b0f0d530a9c841f127bb8114e9757c4ca284b7b6f2beaf325b336f",
+      "bytes": 31606
+    },
+    {
       "path": "schedules-0.2/application-protocol.mjs",
-      "sha256": "219e4c5ecd66042d34d757ef524fcd85f20a171d35cd06fb20d6b06507aec9a7",
-      "bytes": 934
+      "sha256": "2364bab1c6dea9fe5492f705e2da1cf2735530639cdbd02e27814e06cb91d202",
+      "bytes": 1026
     },
     {
       "path": "schedules-0.2/inspection.schema.json",
@@ -319,9 +324,29 @@
       "path": "schedules-0.2/tool-interface.schema.json",
       "sha256": "2de8450111ea263876553f86b895d7fe93bca65ec55bcd649421e21a6f6d3fcf",
       "bytes": 24305
+    },
+    {
+      "path": "schedules-0.3/inspection.schema.json",
+      "sha256": "211faad77a736cc1313b86fe709053462814df24bcf6f9fe6e581040c7b5b62d",
+      "bytes": 6806
+    },
+    {
+      "path": "schedules-0.3/lifecycle.schema.json",
+      "sha256": "14d9831e13b1667d50d42cc344a32769eba79c76bdd46197a615930f375847aa",
+      "bytes": 19747
+    },
+    {
+      "path": "schedules-0.3/tool-interface.schema.json",
+      "sha256": "56c169022a2759b861863e324996571a8acd3bf203cc486d3612db7828e77e64",
+      "bytes": 26258
+    },
+    {
+      "path": "work-selection.mjs",
+      "sha256": "76594c64a9a1eef3e9b7d5db1c7c75fd7611519510578276c4c0ee28682cf749",
+      "bytes": 3041
     }
   ],
-  "schemaSha256": "2b4de57182914ec3f4a46f0c250f5461253ef8b2fd45940010569d7e65f6a206",
+  "schemaSha256": "1576c5e1d6e3f28935495008b3a2fc79455f3655060f942d9d054568e7a837c8",
   "browserInputs": [
     "artifacts-0.2/artifact-formats.mjs",
     "commands-0.2/mail-send-validation.mjs",
