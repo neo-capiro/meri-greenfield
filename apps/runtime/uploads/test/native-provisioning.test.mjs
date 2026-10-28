@@ -179,7 +179,7 @@ test('every pinned upload archive is bound to an exact lock record, and the laye
  const lock=JSON.parse(await readFile(join(repoRoot,'infra','product-preview','runtime-packages.lock.json'),'utf8'));
  const records=new Map((lock.systemPackages??[]).map(record=>[record.source,record]));
  const adds=[...dockerfile.matchAll(/^ADD --checksum=sha256:([a-f0-9]{64}) (\S+) (\S+)$/gmu)]
-  .filter(match=>match[3].startsWith('/tmp/meri-upload-'));
+  .filter(match=>match[3].startsWith('/tmp/meri-native-repo/aarch64/'));
  assert.equal(adds.length>=95,true,`the upload layer pins the approved set plus the whole transitive closure (${adds.length})`);
  for(const [,checksum,url,] of adds){
   const record=records.get(url);
@@ -190,8 +190,12 @@ test('every pinned upload archive is bound to an exact lock record, and the laye
  const hashes=new Set([...records.values()].map(record=>record.sha256));
  for(const approved of APPROVED)
   assert.equal(hashes.has(approved),true,'an approved pin must stay in the lock, not be replaced by a newer provider revision');
- const install=dockerfile.split('\n').find(line=>line.startsWith('RUN apk add')&&line.includes('/tmp/meri-upload-'));
+ const install=dockerfile.replace(/\\\r?\n/gu,' ').split(/\r?\n/u)
+  .find(line=>line.startsWith('RUN ')&&line.includes('apk add ')&&line.includes(' tesseract='));
+ assert.ok(install,'the native upload install must be present');
  assert.equal(install.includes('--no-network'),true,'the upload install cannot resolve against the live index');
+ assert.equal(install.includes('--repository /tmp/meri-native-repo --repositories-file /dev/null'),true);
+ assert.equal(install.includes('from=native-repository,source=tmp/meri-native-repo,target=/tmp/meri-native-repo,readonly'),true);
  assert.equal(dockerfile.includes('packages.wolfi.dev/os/aarch64/APKINDEX'),false,'no rolling index is consumed at build');
 });
 
