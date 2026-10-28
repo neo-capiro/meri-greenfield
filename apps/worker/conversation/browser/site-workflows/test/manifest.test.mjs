@@ -1,6 +1,7 @@
 import test from 'node:test';import assert from 'node:assert/strict';
 import {validateSiteWorkflowManifest,siteWorkflowEnablement,siteWorkflowPolicy,siteSessionExpired,APPROVED_SITE_WORKFLOWS,SITE_WORKFLOW_ACTIVATION,SITE_WORKFLOW_REQUIREMENTS,SITE_SESSION_MAX_IDLE_MS,SITE_WORKFLOW_MANIFEST_SCHEMA} from '../manifest.mjs';
 import {validateBrowserPolicy} from '../../policy.mjs';
+import {canonicalSha256} from '../../../../../../packages/contracts/validate.mjs';
 /** Synthetic sites only (.example). No real site is named: Q-A1 is awaiting Neo. */
 const MAX=['https://records.example','https://idp.example','https://notices.example'];
 const code=(c,field)=>e=>e.code===c&&(field===undefined||e.field===field);
@@ -51,9 +52,17 @@ test('enablement fails closed in the shipped state and lists every unmet conditi
  assert.deepEqual(siteWorkflowEnablement(m).reasons,['SITE_WORKFLOWS_HELD','SITE_WORKFLOW_TAKEOVER_UNAVAILABLE','SITE_WORKFLOW_NOT_APPROVED','SITE_WORKFLOW_TERMS_REVIEW_MISSING','SITE_WORKFLOW_UNQUALIFIED']);
  const open={state:'open',evidence:'evidence/sites.json',requirements:SITE_WORKFLOW_REQUIREMENTS};
  const ready=v(manifest({tosReviewRef:'legal/synthetic-records-terms',qualificationEvidenceRef:'qualification/synthetic-records-1'}));
- const r=siteWorkflowEnablement(ready,{registry:[{siteId:'synthetic-records',workflowId:'download-filings',version:1}],activation:open,takeoverOpen:true});
+ const approved={siteId:'synthetic-records',workflowId:'download-filings',version:1,manifestSha256:canonicalSha256(ready)};
+ const options={registry:[approved],activation:open,takeoverOpen:true};
+ const r=siteWorkflowEnablement(ready,options);
  assert.deepEqual([r.enabled,r.reasons.length],[true,0],'only every condition together enables (synthetic inputs, not shipped state)');
  assert.equal(siteWorkflowEnablement(ready,{registry:[{siteId:'synthetic-records',workflowId:'download-filings',version:2}],activation:open,takeoverOpen:true}).enabled,false,'a different approved version does not count');
+ for(const changes of [{taskSummary:'Changed task'},{sessionTtlMs:60000},{origins:['https://records.example','https://notices.example']},{downloads:{...ready.downloads,maxFiles:4}},{sensitiveSelectors:[]}]){
+  const changed=v({...ready,...changes});
+  assert.ok(siteWorkflowEnablement(changed,options).reasons.includes('SITE_WORKFLOW_NOT_APPROVED'),'changed behavior needs renewed qualification even with unchanged version labels');
+ }
+ assert.equal(siteWorkflowEnablement(ready,{...options,registry:[{...approved,manifestSha256:undefined}]}).enabled,false);
+ for(const evidence of ['', ' ', 'bad reference'])assert.ok(siteWorkflowEnablement(ready,{...options,activation:{...open,evidence}}).reasons.includes('SITE_WORKFLOWS_HELD'));
 });
 
 test('the run policy is narrowed to the manifest and never widened; a narrowed-away sign-in origin refuses',()=>{

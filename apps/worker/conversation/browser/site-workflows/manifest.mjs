@@ -10,6 +10,7 @@
  * shipment) and nothing here stores, reads or forwards website credentials. The manifest shape is a contract proposal
  * for dot (`packages/contracts` is not edited by this lane). */
 import {own} from '../../../../../packages/contracts/commands-0.2/execution-boundary.mjs';
+import {canonicalSha256} from '../../../../../packages/contracts/validate.mjs';
 import {BROWSER_TOOLS,INTERACTION_TOOLS,DOWNLOAD_FORMATS,BROWSER_LIMITS,validateBrowserPolicy,checkBrowserUrl} from '../policy.mjs';
 import {isPublicOrigin,classifyWebUrl} from '../public-web.mjs';
 import {takeoverActivationOpen} from '../session/activation.mjs';
@@ -86,9 +87,10 @@ export function validateSiteWorkflowManifest(raw,{platformMaximumOrigins}){
  * state refuses every manifest (held activation, empty registry). */
 export function siteWorkflowEnablement(manifest,{registry=APPROVED_SITE_WORKFLOWS,activation=SITE_WORKFLOW_ACTIVATION,takeoverOpen=takeoverActivationOpen()}={}){
  const reasons=[];
- if(activation?.state!=='open'||activation.requirements!==SITE_WORKFLOW_REQUIREMENTS||typeof activation.evidence!=='string')reasons.push('SITE_WORKFLOWS_HELD');
+ if(activation?.state!=='open'||activation.requirements!==SITE_WORKFLOW_REQUIREMENTS||typeof activation.evidence!=='string'||!REF.test(activation.evidence))reasons.push('SITE_WORKFLOWS_HELD');
  if(takeoverOpen!==true)reasons.push('SITE_WORKFLOW_TAKEOVER_UNAVAILABLE');
- if(!registry.some(e=>e.siteId===manifest.siteId&&e.workflowId===manifest.workflowId&&e.version===manifest.version))reasons.push('SITE_WORKFLOW_NOT_APPROVED');
+ // Approval covers the exact credential-free manifest, not mutable content carrying an old version label.
+ if(!registry.some(e=>e.siteId===manifest.siteId&&e.workflowId===manifest.workflowId&&e.version===manifest.version&&e.manifestSha256===canonicalSha256(manifest)))reasons.push('SITE_WORKFLOW_NOT_APPROVED');
  if(manifest.tosReviewRef===null)reasons.push('SITE_WORKFLOW_TERMS_REVIEW_MISSING');
  if(manifest.qualificationEvidenceRef===null)reasons.push('SITE_WORKFLOW_UNQUALIFIED');
  return Object.freeze({enabled:reasons.length===0,reasons:Object.freeze(reasons)});
