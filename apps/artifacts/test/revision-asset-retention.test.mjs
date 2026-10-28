@@ -39,7 +39,7 @@ function fixture(){
 const row=(f,versionId)=>f.sql.state.versions.get(versionId);
 
 test('a generated asset-bearing version retains the exact original object map beside its immutable spec',async()=>{
- const h=fixture(),out=await h.deliver().execute(h.call),stored=row(h.f,out.version.versionId);
+ const h=fixture(),out=await h.deliver({retainedAssetMapWrites:true}).execute(h.call),stored=row(h.f,out.version.versionId);
  assert.deepEqual(stored.record.assets,[{id:'retained-image',object:h.object}]);
  assert.deepEqual(stored.record.spec,h.request);
  assert.equal(stored.record_sha256,v.hash(stored.record));
@@ -64,13 +64,13 @@ test('a version with no declared asset reference keeps the exact legacy envelope
 });
 
 test('a closed and reopened durable store reads the retained map and a revision preserves it exactly',async()=>{
- const h=fixture(),first=await h.deliver().execute(h.call);
+ const h=fixture(),first=await h.deliver({retainedAssetMapWrites:true}).execute(h.call);
  // A freshly constructed canonical storage owner over the same durable rows: nothing is carried in memory.
  const reopened=h.store(),parentBytes=h.f.state.objects.get(v.hash(first.version.object)).toString();
  const read=await h.service({versions:reopened}).revisionSource(first.version.versionId,h.context);
  assert.deepEqual(read.assets,[{id:'retained-image',object:h.object}]);
  assert.deepEqual(Object.keys(read).sort(),['assets',...PRIVATE_KEYS].sort());
- const revised=await h.revise(first.version.versionId,{...h.request,title:'Retained v2'});
+ const revised=await h.revise(first.version.versionId,{...h.request,title:'Retained v2'},{retainedAssetMapWrites:true});
  const child=row(h.f,revised.version.versionId),parent=row(h.f,first.version.versionId);
  assert.deepEqual(child.record.assets,[{id:'retained-image',object:h.object}]);
  assert.equal(child.record.version.parentVersionId,first.version.versionId);
@@ -143,7 +143,7 @@ test('tampered retained bytes are refused before any replacement write',async()=
 });
 
 test('a retained id presented with a changed reference cannot inherit the original bytes',async()=>{
- const h=fixture(),first=await h.deliver().execute(h.call),
+ const h=fixture(),first=await h.deliver({retainedAssetMapWrites:true}).execute(h.call),
   seen={executions:h.f.state.executions.length,gets:h.f.state.gets};
  // The same retained id presented with a changed ObjectReference: the pair is admitted only against the
  // object's actual bytes, which are absent for the changed reference, so the write is refused before the
@@ -166,9 +166,9 @@ test('a retained map mutated in the durable row is refused as an immutable proje
 });
 
 test('an asset-bearing delivery claims once, replays exactly, and a cancelled or lost claim retains nothing',async()=>{
- const h=fixture(),first=await h.deliver().execute(h.call);
+ const h=fixture(),first=await h.deliver({retainedAssetMapWrites:true}).execute(h.call);
  assert.deepEqual([...h.f.sql.state.versions.values()][0].record.assets,[{id:'retained-image',object:h.object}]);
- assert.deepEqual((await h.deliver().execute(h.call)).version,first.version);
+ assert.deepEqual((await h.deliver({retainedAssetMapWrites:true}).execute(h.call)).version,first.version);
  assert.equal(h.f.state.executions.length,1);assert.equal(h.f.state.puts,1);assert.equal(h.f.sql.state.versions.size,1);
 
  const lost=fixture();lost.f.state.loseCommit='claim';
@@ -182,12 +182,12 @@ test('an asset-bearing delivery claims once, replays exactly, and a cancelled or
 });
 
 test('suppression and a late denial withhold the retained map exactly like ordinary inspect',async()=>{
- const suppressed=fixture(),created=await suppressed.deliver().execute(suppressed.call);
+ const suppressed=fixture(),created=await suppressed.deliver({retainedAssetMapWrites:true}).execute(suppressed.call);
  suppressed.f.sql.suppressed.add(`${suppressed.f.context.binding.tenantId}:artifact:${created.version.artifactId}`);
  await assert.rejects(suppressed.service().revisionSource(created.version.versionId,suppressed.context),{code:'RETENTION_SUPPRESSED'});
  assert.equal(Object.hasOwn(row(suppressed.f,created.version.versionId).record,'assets'),true);
 
- const denied=fixture(),made=await denied.deliver().execute(denied.call);
+ const denied=fixture(),made=await denied.deliver({retainedAssetMapWrites:true}).execute(denied.call);
  denied.f.state.denied=true;
  await assert.rejects(denied.service().revisionSource(made.version.versionId,denied.context),/CURRENT_ACCESS_DENIED/);
 });
@@ -213,6 +213,8 @@ test('the retained map is an explicit deployment-activated write: off by default
 
  // A malformed activation is refused by the canonical option owners rather than coerced to a default.
  for(const bad of ['yes',1,{}]){assert.throws(()=>on.service({retainedAssetMapWrites:bad}),{code:'ARTIFACT_CONFIGURATION'});}
- await assert.rejects(on.deliver({retainedAssetMapWrites:'yes'}).execute({...on.call,deliveryId:'activated-bad'}),{code:'ARTIFACT_CONFIGURATION'});
+ // The owner refuses a malformed activation synchronously at construction (postgres-service option
+ // admission), so the refusal is a thrown configuration error before any delivery promise exists.
+ assert.throws(()=>on.deliver({retainedAssetMapWrites:'yes'}),{code:'ARTIFACT_CONFIGURATION'});
  assert.equal(on.f.sql.state.versions.size,1);
 });

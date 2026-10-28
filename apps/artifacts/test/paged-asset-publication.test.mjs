@@ -24,6 +24,9 @@ async function pagedFixture(){
  const f=nativeDocumentFixture(),
   p=pagedPublicationFixture(f.context.binding.tenantId,()=>NOW);
  await p.owner.upgrade((await p.owner.snapshot()).positionSha256);
+ // The explicit upgrade is itself one committed paged root (the journal's write() pushes a root and
+ // advances the revision), so capture it: every later assertion is relative to this real base.
+ const base={revision:p.state.revision,roots:p.state.roots.length};
  const object={objectId:randomUUID(),versionId:`SYNTHETIC_PAGED_${id(600)}`,sha256:sha(ASSET),bytes:ASSET.length,scopes:structuredClone(f.context.scopes)},
   context={...f.context,assets:[{id:'paged-image',object}]},
   request=v.request({operation:'create_word',format:'docx',title:'Paged retained',content:{blocks:[{kind:'paragraph',runs:[{text:'With an image'}]},{kind:'image',assetId:'paged-image',widthInches:1,heightInches:1}]}});
@@ -32,16 +35,16 @@ async function pagedFixture(){
   executor={async execute(input){f.state.executions.push(input);return docxExecutor.execute(input);}},
   service=(changes={})=>createArtifactService({...f.options,ids,executor,context,versions:store(),...changes}),
   call={deliveryId:'paged-retained',baseVersionId:null,request};
- return {f,p,object,context,request,call,store,service,deliver:(changes={})=>f.owner({executor,context,versions:store(),...changes})};
+ return {f,p,object,context,request,call,base,store,service,deliver:(changes={})=>f.owner({executor,context,versions:store(),...changes})};
 }
 const row=(f,versionId)=>f.sql.state.versions.get(versionId);
 
 test('an activated asset-bearing decision crosses the real paged publication owner, reads after restart and keeps its original scope',async()=>{
  const h=await pagedFixture(),first=await h.deliver({retainedAssetMapWrites:true}).execute(h.call),stored=row(h.f,first.version.versionId);
  // The publication is genuinely paged: an upgraded v2 root with page-written decisions, not a legacy envelope.
- const index=structuredClone(h.p.state.index);assert.equal(index.publicationVersion,'meri.artifact-publication-index.2');assert.ok(h.p.state.pages.size>0);assert.equal(h.p.state.revision,1);
+ const index=structuredClone(h.p.state.index);assert.equal(index.publicationVersion,'meri.artifact-publication-index.2');assert.ok(h.p.state.pages.size>0);assert.equal(h.p.state.revision,h.base.revision+1);assert.equal(h.p.state.roots.length,h.base.roots+1);
  assert.deepEqual(stored.record.assets,[{id:'paged-image',object:h.object}]);
- assert.equal(stored.record_sha256,v.hash(stored.record));assert.equal(h.p.state.roots.length,1);
+ assert.equal(stored.record_sha256,v.hash(stored.record));assert.equal(h.p.state.roots.length,h.base.roots+1);
  // The durable projection row and the canonical publication decision carry the identical record.
  assert.equal(Object.hasOwn(stored.record,'assets'),true);
  // A freshly constructed paged owner over the same rows/pages and root: nothing carried in memory.
@@ -74,15 +77,18 @@ test('paged lost-ACK leaves the root unchanged, requires targeted recovery and r
  assert.equal(lost.code,'ARTIFACT_EFFECT_UNKNOWN');assert.equal(lost.cause?.code,'ARTIFACT_PUBLICATION_ACK_UNKNOWN');
  const versionId=lost.versionId;assert.match(versionId,/^[a-f0-9-]{36}$/u);
  // The decision reached the page tree once and the root advanced exactly once: no duplicate page/root write.
- assert.equal(h.p.state.revision,before+1);assert.equal(h.p.state.roots.length,1);assert.equal(h.f.sql.state.versions.size,0);
+ assert.equal(h.p.state.revision,before+1);assert.equal(h.p.state.roots.length,h.base.roots+1);assert.equal(h.f.sql.state.versions.size,0);
  // Targeted recovery restores only the nominated version/head, then the asset map reads intact.
  await h.store().recoverVersion(h.f.context.binding.tenantId,versionId);
  const recovered=await h.service().revisionSource(versionId,h.context);
  assert.deepEqual(recovered.assets,[{id:'paged-image',object:h.object}]);
- const revision=h.p.state.revision,stored=row(h.f,versionId);
- // Replaying the identical decision is an idempotent duplicate: no new page, no new root revision.
- const replay=await h.store().commit(commit(stored.record));
- assert.equal(replay.status,'duplicate');assert.equal(h.p.state.revision,revision);assert.equal(h.p.state.roots.length,1);
+ const revision=h.p.state.revision,roots=h.p.state.roots.length,stored=row(h.f,versionId);
+ // Replaying the identical decision means presenting the SAME authority the original decision carried.
+ // A freshly synthesized invocation derives a different invocationId and is a different decision, so
+ // the canonical owner would (correctly) refuse it as an immutable conflict rather than a duplicate.
+ const decision=(await h.p.owner.readVersion(versionId)).result.decision;
+ const replay=await h.store().commit(commit(stored.record),undefined,{authorization:decision.authorization,invocation:decision.invocation});
+ assert.equal(replay.status,'duplicate');assert.equal(h.p.state.revision,revision);assert.equal(h.p.state.roots.length,roots);
  // A retained map changed in the durable projection row is refused, never re-read as a new mapping.
  stored.record.assets=[{id:'paged-image',object:{...h.object,sha256:'b'.repeat(64)}}];stored.record_sha256=v.hash(stored.record);
  const immutable=e=>e.code==='RETENTION_STORE_UNAVAILABLE'&&e.cause?.code==='ARTIFACT_IMMUTABLE_CONFLICT';
