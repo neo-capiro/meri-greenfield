@@ -59,13 +59,16 @@ export const procedureContextSuffix=admission=>PROCEDURE_CONTEXT_MARKER+JSON.str
  * grant is removed; every other entry (SDK builtins, other mounts) is left exactly as it was, so the result is
  * never broader than its input. Whether an entry is a Capiro read, and which read it is, is resolved through the
  * catalog's own spellings (reads/vocabulary.mjs) — a name this repository cannot resolve is left untouched rather
- * than guessed at. An empty result refuses the narrowing rather than stripping every tool.
+ * than guessed at. A read the procedure does not grant is never re-admitted to keep the list non-empty: the installed
+ * SDK defines `allowedTools` as the names "auto-allowed without prompting for permission" (@anthropic-ai/claude-agent-sdk
+ * sdk.d.ts), not as a restriction and not as an all-tools wildcard, so an empty result pre-approves nothing and is
+ * returned as-is (the reads runtime still refuses a call it has not exposed).
  */
 export function narrowProcedureTools(existingAllowed,grantedTools){
  if(!Array.isArray(existingAllowed)||existingAllowed.length===0)return existingAllowed;
  const granted=Array.isArray(grantedTools)?grantedTools:[];
  const next=existingAllowed.filter(name=>typeof name!=='string'||!isCapiroReadTool(name)||procedureGrantsRead(granted,name));
- return next.length===0||next.length===existingAllowed.length?existingAllowed:next;
+ return next.length===existingAllowed.length?existingAllowed:next;
 }
 
 export const procedureSelectionRefused=selection=>{try{assertProcedureSelector(selection);return false;}catch{return true;}};

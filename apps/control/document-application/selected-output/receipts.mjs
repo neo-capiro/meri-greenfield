@@ -19,7 +19,8 @@ export function approvedReceipt(raw,{source,started,now,life,previous}){
  fresh(r,started,now,life);life.limitDeadline(r.deadlineMs);if(previous&&!same({...r,checkedAtMs:0,expiresAtMs:0},{...previous,checkedAtMs:0,expiresAtMs:0}))fail('SELECTED_OUTPUT_APPROVAL_CHANGED');return r;
 }
 export function checkOutputConfiguration(documentOptions,receipt,source){
- const options=own(documentOptions,['sessions','selectedClientId','artifactOptions','now','limits'],['enabled','admitPdf','previewOptions','nativeFiles']),context=v.context(options.artifactOptions.context);
+ // Additive optional facet: the same composed document options may carry the native-result discovery port.
+ const options=own(documentOptions,['sessions','selectedClientId','artifactOptions','now','limits'],['enabled','admitPdf','previewOptions','nativeFiles','nativeResults']),context=v.context(options.artifactOptions.context);
  configuration(options);
  if(!same(context.binding,receipt.outputBinding)||!same(context.scopes,receipt.scopes)||receipt.deadlineMs>context.deadlineMs||receipt.maxBytes>context.maxBytes||options.selectedClientId!==source.sourcePins.selection.subject.entityIds[0]||options.enabled!==true)fail('SELECTED_OUTPUT_CONTEXT');
  return options;

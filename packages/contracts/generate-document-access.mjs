@@ -40,7 +40,7 @@ export async function generateDocumentAccessContracts({check=false,toolchainRoot
   const errorStatuses=Object.fromEntries(Object.entries(statuses).sort(([a],[b])=>a.localeCompare(b)));
   // Preview owner and format vocabulary: recorded so a change to either forces regeneration and a fresh review of the semantics text.
   for(const path of ['../../apps/artifacts/preview/render.mjs','../../apps/artifacts/preview/service.mjs','../../apps/artifacts/preview/record.mjs','../../apps/control/document-application/preview-route.mjs','artifacts-0.2/artifact-formats.mjs','retrieval-0.2/catalog.json','document-application/boundary.mjs','document-application/download.mjs','generate-document-access.mjs',
-   ...['README.md','schema.mjs','protocol.mjs','receive.mjs','preview.mjs','preview-schema.mjs'].map(name=>'document-access-application/'+name)])await record(path);
+   ...['README.md','schema.mjs','protocol.mjs','receive.mjs','native-results.mjs','preview.mjs','preview-schema.mjs'].map(name=>'document-access-application/'+name)])await record(path);
   const byOperation=operationFormats(),producible=new Set(Object.values(byOperation).flat());
   if(DOCUMENT_ACCESS_FORMATS.some(format=>!producible.has(format))||[...producible].some(format=>!DOCUMENT_ACCESS_FORMATS.includes(format)))throw Error('Document format admission does not match the artifact format vocabulary');
   const config={formats:[...DOCUMENT_ACCESS_FORMATS],mimeTypes:{...ARTIFACT_MIME_TYPES},previewFormats:await previewFormats(),operationFormats:byOperation,errorStatuses},metadata=createDocumentAccessMetadata(config);
@@ -73,6 +73,15 @@ export interface DocumentAccessResponseMap {inspect:DocumentReceipt<DocumentInsp
 export type DocumentResponse<R extends DocumentAccessRoute> = DocumentAccessResponseMap[R] | DocumentErrorResponse;
 export interface DocumentDownload<V extends AdmittedDocumentVersion = AdmittedDocumentVersion> {readonly version:V; readonly bytes:Uint8Array<ArrayBuffer>;}
 export interface DocumentDownloadOptions {maxBytes?:number; timeoutMs?:number; signal?:AbortSignal;}
+// Additive v1 native-result discovery receiver. Separately named and outside DocumentAccessRoute0.2: it admits no
+// version for inspect or download, carries no recorded bytes and describes only workspace-entry metadata.
+export declare const nativeResultsVersion: '1.0.0';
+export declare const NATIVE_RESULTS_MAX: 32;
+export declare const nativeResultsMetadata: Readonly<{contractVersion:'1.0.0'; route:Readonly<{method:'POST'; path:'/api/documents/results'; response:'json'}>; maxResults:32; semantics:Readonly<Record<string,string>>}>;
+export interface NativeResultSelector {readonly versionId:string; readonly path:string; readonly bytes:number; readonly sha256:string; readonly executable:boolean;}
+export interface NativeResultsSnapshot {readonly manifestId:string; readonly capturedAt:string; readonly results:readonly NativeResultSelector[]; readonly truncated:boolean;}
+export declare function receiveNativeResultsRequest(utf8Bytes:Uint8Array):Readonly<{route:'results'}>;
+export declare function receiveNativeResultsResponse(httpStatus:number,utf8Bytes:Uint8Array,request:Readonly<{route:'results'}>):Readonly<NativeResultsSnapshot & {route:'results'}>;
 export declare class DocumentResponseError extends Error {readonly code:string;}
 export declare const documentAccessVersion:'0.2.0';
 export declare const documentAccessMetadata:${JSON.stringify(metadata,null,2)};

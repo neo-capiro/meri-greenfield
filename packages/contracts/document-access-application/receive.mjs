@@ -8,6 +8,10 @@ export {DocumentResponseError} from '../document-application/boundary.mjs';
 export {receiveDocumentDownload} from '../document-application/download.mjs';
 export {documentPreviewVersion,documentPreviewMetadata,receiveDocumentPreviewRequest,receiveDocumentPreviewPublication,receiveDocumentPreview} from './preview.mjs';
 export {documentAccessVersion} from './protocol.mjs';
+// Additive v1 native-result discovery receiving boundary (separately named, contractVersion 1.0.0). It is NOT part of
+// DocumentAccessRoute0.2 and admits nothing for inspect or download; the existing inspect/download path remains the
+// only byte authority, and it re-checks Core/current context/retention before releasing anything.
+export {nativeResultsMetadata,nativeResultsVersion,NATIVE_RESULTS_MAX,receiveNativeResultsRequest,receiveNativeResultsResponse} from './native-results.mjs';
 export {documentAccessMetadata};
 const validators=Object.freeze({inspect:validateInspectRequest,download:validateDownloadRequest,history:validateHistoryRequest,list:validateListRequest});
 const same=(a,b)=>canonicalize(a)===canonicalize(b);

@@ -8,7 +8,7 @@ const getter=name=>Object.getOwnPropertyDescriptor(Request.prototype,name).get;
 export function requestInfo(request){
  if(!request||types.isProxy(request))fail('INVALID_REQUEST');
  let info;try{info=Object.fromEntries(['url','method','headers','signal','body'].map(k=>[k,getter(k).call(request)]));}catch{fail('INVALID_REQUEST');}
- const url=new URL(info.url),match=/^\/api\/documents\/(create|revise|inspect|download|history|list|preview|preview-publish)$/u.exec(url.pathname);
+ const url=new URL(info.url),match=/^\/api\/documents\/(create|revise|inspect|download|history|list|results|preview|preview-publish)$/u.exec(url.pathname);
  if(!match||url.search||url.hash)fail('NOT_FOUND',404);
  if(info.method!=='POST')fail('METHOD_NOT_ALLOWED',405);
  const content=Headers.prototype.get.call(info.headers,'content-type');

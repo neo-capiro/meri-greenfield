@@ -67,7 +67,7 @@ test('a binding admitted for a not-yet-submitted turn resolves the conversation\
  assert.equal(h.core.calls,2);assert.ok(r.expiresAtMs>h.now());
 });
 
-for(const intent of ['history','list'])test(`${intent}: current conversation read works after a run, never admits generation, and rechecks revocation`,async()=>{
+for(const intent of ['history','list','results'])test(`${intent}: current conversation read works after a run, never admits generation, and rechecks revocation`,async()=>{
  const h=await harness({stored:null}),call=h.call({intent,body:intent==='history'?{versionId:'00000000-0000-4000-8000-00000000b009',limit:25,cursor:null}:{scope:'conversation',limit:25,cursor:null}});
  const resolved=await h.authority.resolve(call),context=resolved.artifactOptions.context;
  const authorization={action:'artifact.inspect',resource:null,requestSha256:call.requestSha256,binding:context.binding,scopes:context.scopes,deadlineMs:h.now()+4000};
@@ -92,7 +92,7 @@ test('a stored run keeps the exact binding and scope checks',async()=>{
   assert.equal(h.core.calls,1,'Core is still the first observation');}
 });
 
-for(const [intent,action] of [['inspect','artifact.inspect'],['history','artifact.inspect'],['list','artifact.inspect'],['download','artifact.download'],['preview','artifact.download']])
+for(const [intent,action] of [['inspect','artifact.inspect'],['history','artifact.inspect'],['list','artifact.inspect'],['results','artifact.inspect'],['download','artifact.download'],['preview','artifact.download']])
 test(`${intent}: retained reads survive terminal origins but fresh release authority still governs`,async()=>{
  for(const state of ['completed','failed','cancelled']){
   const stored=row({binding:binding(ids.reservedRunId),scopes:structuredClone(scopes),state});

@@ -28,7 +28,7 @@ export function documentLimits(value){
  return limits;
 }
 export function configuration(value){
- const c=own(value,['sessions','selectedClientId','artifactOptions','now','limits'],['enabled','admitPdf','previewOptions','nativeFiles']);
+ const c=own(value,['sessions','selectedClientId','artifactOptions','now','limits'],['enabled','admitPdf','previewOptions','nativeFiles','nativeResults']);
  const o=own(c.artifactOptions,['pool','context','validators','authorize','versions','objects','executor','now','ids'],['retention','admitRetainedEvidence','selectedInvocationId','authorizeOrigin','retainedAssetMapWrites']);
  if(o.authorizeOrigin!==undefined&&(typeof o.authorizeOrigin!=='function'||types.isProxy(o.authorizeOrigin)))fail('DOCUMENT_CONFIGURATION',500);
  if(o.retention!==undefined&&typeof o.retention?.assertServable!=='function')fail('DOCUMENT_CONFIGURATION',500);
@@ -43,7 +43,8 @@ export function configuration(value){
   objects:{get:method(o.objects,'get'),put:method(o.objects,'put')},executor:{execute:method(o.executor,'execute')}};
  return {sessions:{authenticateSession:method(c.sessions,'authenticateSession'),readCurrentState:method(c.sessions,'readCurrentState')},
   options,formatAdmission:admitDocumentFormats({pdf:c.admitPdf??false}),limits,now:c.now,selectedClientId:c.selectedClientId,enabled:c.enabled??false,previewOptions:c.previewOptions,
-  nativeFiles:c.nativeFiles===undefined?null:{read:method(c.nativeFiles,'read')}};
+  nativeFiles:c.nativeFiles===undefined?null:{read:method(c.nativeFiles,'read')},
+  nativeResults:c.nativeResults===undefined?null:{list:method(c.nativeResults,'list')}};
 }
 export function requestCurrent(config,info,life,deadlineMs){
  const context=config.options.context;let cutoff=deadlineMs,identity=null;

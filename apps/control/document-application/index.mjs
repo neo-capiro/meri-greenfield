@@ -11,9 +11,12 @@ import {admitDocumentFormats,admitsDocumentFormat,admitsDocumentMime} from './fo
 import {errorResponse as bodyErrorResponse} from '../action-application/http.mjs';
 import {requestInfo,jsonBody,response,errorResponse,fail} from './http.mjs';
 import {previewConfiguration,previewRoute} from './preview-route.mjs';
+import {nativeResults} from './native-results.mjs';
 const uuid=value=>typeof value==='string'&&/^[a-f0-9]{8}-[a-f0-9]{4}-[1-8][a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$/iu.test(value);
 function input(value,intent,admission){
  const raw=data(value),write=['create','revise'].includes(intent);
+ // Discovery is a closed empty request: the projected run is the session's own context binding, never a caller id.
+ if(intent==='results'){own(raw,[]);return raw;}
  if(intent==='history'||intent==='list'){
   own(raw,[intent==='history'?'versionId':'scope','limit','cursor']);if((intent==='history'?!uuid(raw.versionId):!['conversation','client','owner'].includes(raw.scope))||!Number.isInteger(raw.limit)||raw.limit<1||raw.limit>100||raw.cursor!==null&&(typeof raw.cursor!=='string'||!/^[a-f0-9]{64}$/u.test(raw.cursor)))fail('INVALID_REQUEST');return raw;
  }
@@ -80,6 +83,11 @@ export function createDocumentApplication(options){
     result=created(result,call,context,admission);
    }else if(info.intent==='preview'||info.intent==='preview-publish'){
     return await previewRoute({config,admission,current,life,intent:info.intent,versionId:call.versionId,state,release:value=>version(value,context,admission,call.versionId)});
+   }else if(info.intent==='results'){
+    const results=await nativeResults({config,current,life,state});
+    if(results===null)fail('DOCUMENT_RESULT_REFUSED',502);
+    if(Buffer.byteLength(JSON.stringify(results))>config.limits.maxResponseBytes)fail('DOCUMENT_RESPONSE_LIMIT',413);
+    return response(results);
    }else if(info.intent==='list'){
     const reads=createArtifactService({...config.options,authorize:current.authorize});state.readStarted=true;
     result=await life.run(signal=>reads.list(call,context,{signal}));own(result,['scope','versions','nextCursor']);

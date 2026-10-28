@@ -17,6 +17,7 @@ export const INTENT_OPERATIONS=Object.freeze({
  create:Object.freeze(['artifact.generate']),
  revise:Object.freeze(['artifact.revise']),
  inspect:Object.freeze(['artifact.inspect']),
+ results:Object.freeze(['artifact.inspect']),
  history:Object.freeze(['artifact.inspect']),
  list:Object.freeze(['artifact.inspect']),
  download:Object.freeze(['artifact.download']),

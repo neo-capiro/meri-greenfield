@@ -10,7 +10,7 @@ import {INTENT_OPERATIONS,ArtifactAuthorityError,isArtifactAuthorityError,refuse
 
 const SHA=/^[0-9a-f]{64}$/u,UUID=/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/u,TOKEN=/^[\x21-\x7e]{1,8192}$/u;
 const PHASES=Object.freeze(['admission','effect','release']);
-const RETAINED_READ_INTENTS=Object.freeze(['inspect','history','list','download','preview']);
+const RETAINED_READ_INTENTS=Object.freeze(['inspect','history','list','results','download','preview']);
 const sha=value=>createHash('sha256').update(value).digest('hex');
 const lifeError=code=>new ArtifactAuthorityError(['DEADLINE','CANCELLED'].includes(code)?code:'ACCESS_DENIED');
 /** Session-owner refusals stay SESSION_REFUSED; every other foreign error becomes the given closed code. */

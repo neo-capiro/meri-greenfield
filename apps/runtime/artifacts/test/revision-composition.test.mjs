@@ -18,7 +18,7 @@ async function fixture(t,{sourceBacked=false,assets=null}={}){
  const object={objectId:randomUUID(),versionId:'',sha256:sha(ASSET),bytes:ASSET.length,scopes:structuredClone(f.context.scopes)};object.versionId=`SYNTHETIC_${object.objectId}`;
  if(assets==='retained'){f.context.assets=[{id:'retained-image',object}];f.state.objects.set(hash(object),Buffer.from(ASSET));}
  else if(assets==='bare')f.context.assets=[];
- const first=assets===null?await f.run():await f.owner({executor:assetExecutor(f),context:f.context}).execute({deliveryId:'native-asset-delivery',baseVersionId:null,request:assetDocument});
+ const first=assets===null?await f.run():await f.owner({executor:assetExecutor(f),context:f.context,...(assets==='retained'?{retainedAssetMapWrites:true}:{})}).execute({deliveryId:'native-asset-delivery',baseVersionId:null,request:assetDocument});
  const binding=f.context.binding,now=f.options.now;
  const state={denied:false,reads:0,phases:[],release:null},expiry=now()+30000;
  const sessions=createActionSessionOwner({mode:'process-local',now,refusals:()=>{},limits:{maxSessions:8,maxRequestMs:5000,maxTtlMs:30000,maxFactBytes:131072},

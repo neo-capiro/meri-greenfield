@@ -123,7 +123,16 @@ export const PLAN=Object.freeze([
  ['migration','apps/control/schedules/migrations/0006_management_preparation_grants.sql','8d3a2718306778e21c0ddd426c0522a1520a58dd5d6894fe162b00cc364c3b68','integration'],
  // Upload custody and least-privilege CONTROL grants: append after the exact 63-entry prefix.
  ['migration','apps/control/uploads/migrations/0001_upload_custody.sql','44c042aeb1e544c78e6ab274537ea89ccb70dd8662cec98665227c91f279a330','integration'],
- ['migration','apps/control/uploads/migrations/0002_control_grants.sql','7a18084e0fe64abd0dc241f1c163d7751691a83798f18588b82ce1f13a2d9527','integration']
+ ['migration','apps/control/uploads/migrations/0002_control_grants.sql','7a18084e0fe64abd0dc241f1c163d7751691a83798f18588b82ce1f13a2d9527','integration'],
+ // Child (SDK subagent) assignment custody stays on the existing run owner; append only ordinal 66 after the
+ // applied 65-entry prefix, so the reserved upload entries keep their ordinals and one `integration` run applies it.
+ ['migration',conversation('0030_child_assignments.sql'),'d0e5444503416bca34f8d8ae468761ee1ca0b8ce0b7c1b7364398b3c9721a9fa','integration'],
+ // Producer source-event custody: the reviewed event-table SQL then its least-privilege CONTROL grants. Append
+ // ordinals 67 and 68 after the exact 1..66 prefix, so one `integration` run applies both and the reserved
+ // upload/child entries keep their ordinals. The MR-04 reservation that follows is NOT approved and registers no
+ // placeholder ordinal here.
+ ['migration','apps/control/schedules/migrations/0007_source_events.sql','395f7c8f8ea22c5cbe92e9581f28d1992585f677cc6e09088cc897417739a5e7','integration'],
+ ['migration','apps/control/schedules/migrations/0008_source_event_grants.sql','74a0cd4c58b56044b6d96163e1cc6c54951311de175f8f0acd4232489aa53df6','integration']
 ].map(([kind,path,pinned,declaredStage],index)=>Object.freeze({ordinal:index+1,kind,path,pinned,
  name:kind==='migration'?path:`${path}#${kind.slice(6)}`,
  stage:declaredStage??(kind==='phase:temporal_grants'?'temporal':'meri')})));

@@ -6,6 +6,7 @@ import {createLocalArtifactExecutor} from '../../artifacts/local-executor.mjs';
 import {admittedConverter,isRendererPort} from '../../artifacts/renderer.mjs';
 import {createPostgresS3PreviewCustody} from '../../artifacts/preview/postgres-composition.mjs';
 import {createS3ArtifactPublications} from '../../artifacts/storage/s3-artifact-publication.mjs';
+import {projectNativeResults} from './native-result-discovery.mjs';
 const recoveryOwners=new WeakMap();
 /** Internal provenance only. Recovery cannot be supplied by a lookalike product port or a JSON configuration callback. */
 export function runtimeArtifactRecovery(storage){return recoveryOwners.get(storage)??null;}
@@ -49,5 +50,15 @@ export function createRuntimeDocumentOptionsComposer(options){const c=own(option
   const previewOptions=selectedPreviews===undefined?undefined:{previews:selectedPreviews,renderer:c.renderer??null,...(c.maxPreviewBytes===undefined?{}:{maxPreviewBytes:c.maxPreviewBytes})};
   const nativeFiles={async read(versionId,signal){const check=()=>{if(signal?.aborted)throw Error('ARTIFACT_CANCELLED');if(c.now()>=a.context.deadlineMs)throw Error('ARTIFACT_DEADLINE');};check();
    return c.store.lifecycle.readArtifactFile({binding:a.context.binding,scopes:a.context.scopes,selectedClientId:o.selectedClientId,versionId},check);}};
-  return {...o,sessions:c.sessions,now:c.now,admitPdf,nativeFiles,...(previewOptions?{previewOptions}:{}),artifactOptions:{...a,...(c.retainedAssetMapWrites===true?{retainedAssetMapWrites:true}:{}),pool:c.pool,versions:storage.versions,objects:storage.objects,executor:c.executor}};
+  // Current action-session discovery route: the projected run is this session's own context binding (its runId is the
+  // settled capture checkpoint), never a browser-supplied binding and never an execution token. Metadata only.
+  const nativeResults={async list(signal){
+   // Additive facet only: the store's settled-capture read is an EXISTING base owner. A store without it keeps every
+   // other document route working and refuses discovery with the closed composition code, never a partial list.
+   if(typeof c.store.lifecycle.readSessionCapture!=='function')throw Error('ARTIFACT_RUNTIME_CONFIGURATION');
+   const check=()=>{if(signal?.aborted)throw Error('ARTIFACT_CANCELLED');if(c.now()>=a.context.deadlineMs)throw Error('ARTIFACT_DEADLINE');};check();
+   const captured=await c.store.lifecycle.readSessionCapture({binding:a.context.binding,scopes:a.context.scopes,selectedClientId:o.selectedClientId,checkpointId:a.context.binding.runId},check);
+   if(!captured||!captured.proof?.files)return null;
+   return projectNativeResults({files:captured.proof.files,binding:captured.proof.sdkSession.binding,scopes:a.context.scopes,owner:a.context.binding});}};
+  return {...o,sessions:c.sessions,now:c.now,admitPdf,nativeFiles,nativeResults,...(previewOptions?{previewOptions}:{}),artifactOptions:{...a,...(c.retainedAssetMapWrites===true?{retainedAssetMapWrites:true}:{}),pool:c.pool,versions:storage.versions,objects:storage.objects,executor:c.executor}};
  };}

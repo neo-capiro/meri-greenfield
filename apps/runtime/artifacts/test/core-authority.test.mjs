@@ -104,7 +104,7 @@ test('golden vectors: exact request bytes and digest, accepted receipts, every l
   assert.throws(()=>assertArtifactAuthorityRequest(bad),code('ACCESS_DENIED'));
 });
 
-for(const intent of ['history','list'])test(`${intent}: explicit read intent requires correlated inspect permission`,()=>{
+for(const intent of ['history','list','results'])test(`${intent}: explicit read intent requires correlated inspect permission`,()=>{
  const first=vector.cases[0],request=assertArtifactAuthorityRequest({...first.request,intent}),receipt={...structuredClone(first.receipt),intent,operations:['artifact.inspect']};
  assert.deepEqual(assertArtifactAuthorityReceipt(receipt,request),receipt);
  for(const patch of [{intent:'inspect'},{requestSha256:'f'.repeat(64)},{operations:['artifact.generate']},{operations:['artifact.download']},{operations:['artifact.inspect','artifact.inspect']}])

@@ -66,7 +66,7 @@ test('a procedure narrows the mounted read surface and never widens it',async()=
    const kept=narrowProcedureTools(baseline,[alias]);
    assert.deepEqual(kept,[readToolName(mailRow)],'the granted read survives under its SDK name and the others do not');
    assert.ok(kept.every(name=>baseline.includes(name)),'the SDK list is never widened');
-   assert.deepEqual(narrowProcedureTools(baseline,['shell_exec']),baseline,'a grant that names no mounted read refuses to strip the list (the empty-result guard)');
+   assert.deepEqual(narrowProcedureTools(baseline,['shell_exec']),[],'a grant that names no mounted read leaves nothing auto-allowed rather than re-admitting the list');
    assert.deepEqual(narrowProcedureTools(baseline,[ACTIVE[0].id,ACTIVE[1].id,ACTIVE[2].id]),baseline,'granting every mounted read leaves the list unchanged');
   }finally{await base.reads.close();}
  });

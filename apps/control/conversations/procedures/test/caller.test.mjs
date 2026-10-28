@@ -66,13 +66,16 @@ test('all six canonical builtins resolve through the caller chain into appended 
  }
 });
 
-test('guidance narrows the SDK tool list by subset only and never adds or strips a tool',async()=>{
+test('guidance narrows the SDK tool list by subset only and never adds a tool',async()=>{
  const granted=['get_client_context'];
  // A mounted Capiro read tool the procedure did not grant is removed; SDK builtins and other mounts are untouched.
  assert.deepEqual(narrowProcedureTools(['Read','Agent','mcp__reads__get_client_context','mcp__reads__query_debriefs'],granted),
   ['Read','Agent','mcp__reads__get_client_context']);
- // Nothing to narrow, or nothing left: the input is returned unchanged rather than widened or emptied.
- for(const value of [undefined,[],['Read','Agent'],['mcp__reads__query_debriefs']])assert.deepEqual(narrowProcedureTools(value,granted),value);
+ // Nothing to narrow: the input is returned unchanged rather than widened. A list that is entirely ungranted Capiro
+ // reads is emptied: `allowedTools` is the SDK's auto-allow list (sdk.d.ts), not a restriction or a wildcard, so an
+ // empty result pre-approves nothing and never re-admits a read the procedure did not grant.
+ for(const value of [undefined,[],['Read','Agent']])assert.deepEqual(narrowProcedureTools(value,granted),value);
+ assert.deepEqual(narrowProcedureTools(['mcp__reads__query_debriefs'],granted),[],'an ungranted mounted read is removed rather than re-admitted');
  assert.deepEqual(narrowProcedureTools(['mcp__reads__get_client_context'],['get_client_context','read_client_documents']),['mcp__reads__get_client_context']);
 });
 
