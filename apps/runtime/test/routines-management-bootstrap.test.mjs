@@ -22,7 +22,7 @@ function fixture(){
  }});
  const forbidden=()=>{state.execution++;throw Error('execution owner must not be used');};
  const sessions=createActionSessionOwner({mode:'process-local',verifyIdentity:forbidden,resolveContext:forbidden,now,refusals:()=>{},limits:{maxSessions:4,maxRequestMs:3000,maxTtlMs:30000,maxFactBytes:65536},management:{readCurrent:wire.managementCurrent,versions,policyRevision:'policy'}});management=routineManagementSessions(sessions);
- const pool={async connect(){return {async query(sql,values=[]){state.queries.push({sql,values});if(sql.startsWith('SELECT projection,generation,active_intent'))return {rows:[]};if(['BEGIN','COMMIT','ROLLBACK'].includes(sql)||sql.startsWith('SET LOCAL'))return {rows:[]};throw Error('unexpected SQL');},release(){}};}};
+ const pool={async connect(){return {async query(sql,values=[]){state.queries.push({sql,values});if(sql.startsWith('SELECT p.projection,p.generation,p.active_intent'))return {rows:[]};if(['BEGIN','COMMIT','ROLLBACK'].includes(sql)||sql.startsWith('SET LOCAL'))return {rows:[]};throw Error('unexpected SQL');},release(){}};}};
  const scheduleOwner=createPostgresScheduleOwner({pool}),contextOwner=createRoutineManagementContextOwner({sessions,scheduleOwner,now,newId:()=>id(99),template:{taskId:id(4),version:1,manifestSha256:'c'.repeat(64)},workflow:{taskQueue:'routine-test',workflowIdPrefix:'routine'},policy:{check:wire.managementPolicyCheck},limits:{maxRequestMs:3000,maxFactBytes:65536,retryLimit:0}});
  const connection={withDeadline:(_deadline,fn)=>fn(),withAbortSignal:(_signal,fn)=>fn()},client={connection,getHandle:forbidden};
  const service=createRoutinesService({contextOwner,journalStore:{read:forbidden},proposalReader:{readProposal:forbidden},scheduleOwner,scheduleClient:client,workflowClient:client,scheduleNotFoundError:Error,now,maxRequestMs:3000,retention:{assertServable:forbidden}});
@@ -34,7 +34,7 @@ function fixture(){
 for(const clientId of [null,id(1)])test(`cold ${clientId===null?'General':'client'} public session and empty list require no conversation/model and scope SQL before release`,async()=>{
  const f=fixture();try{const response=await f.post('/api/routines/session',{clientId});assert.equal(response.status,200);const session=await response.json();assert.equal(session.kind,'routine-management');assert.equal(session.context.runId,undefined);
   const listed=await f.post('/api/routines/list',{},session.credential);assert.equal(listed.status,200,JSON.stringify(await listed.clone().json()));assert.deepEqual((await listed.json()).page.rows,[]);assert.equal(f.state.execution,0);
-  const query=f.state.queries.find(x=>x.sql.startsWith('SELECT projection,generation'));assert(query.sql.includes(clientId===null?"projection->'scopes'=$5::jsonb":"projection->'scopes' @> $5::jsonb"));assert.deepEqual(JSON.parse(query.values[4]),[{tenantId:'tenant',kind:clientId===null?'private-user':'client',resourceId:clientId??'actor',policyRevision:'policy'}]);
+  const query=f.state.queries.find(x=>x.sql.startsWith('SELECT p.projection,p.generation'));assert(query.sql.includes(clientId===null?"projection->'scopes'=$5::jsonb":"projection->'scopes' @> $5::jsonb"));assert.deepEqual(JSON.parse(query.values[4]),[{tenantId:'tenant',kind:clientId===null?'private-user':'client',resourceId:clientId??'actor',policyRevision:'policy'}]);
   assert(f.state.calls.every(call=>!JSON.stringify(call.body).includes('conversationId')));
  }finally{f.close();}
 });

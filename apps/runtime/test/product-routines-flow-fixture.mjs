@@ -24,7 +24,7 @@ function extendSql(h){
  const scheduleConnect=h.scheduleSql.pool.connect;
  h.scheduleSql.pool.connect=async()=>{const sql=await scheduleConnect();return {...sql,async query(text,p=[]){
   if(text.startsWith('SELECT tenant_id,generation,occurrence_key'))return {rows:structuredClone([...h.scheduleSql.state.occurrences.values()].filter(r=>r.tenant_id===p[0]&&(text.includes("effect->'binding'")?r.effect.binding.conversationId===p[1]:r.schedule_id===p[1]&&r.state==='OPEN')).slice(0,2))};
-  if(text.startsWith('SELECT projection,generation,active_intent FROM meri_schedules.projections'))return {rows:structuredClone([...h.scheduleSql.state.projections.values()].filter(r=>r.tenant_id===p[0]&&r.owner_actor_id===p[1]&&(p[2]===null||r.schedule_id>p[2])).sort((a,b)=>a.schedule_id.localeCompare(b.schedule_id)).slice(0,p[3]).map(r=>({projection:r.projection,generation:r.generation,active_intent:r.active_intent})))};
+  if(text.startsWith('SELECT p.projection,p.generation,p.active_intent')||text.startsWith('SELECT projection,generation,active_intent FROM meri_schedules.projections'))return {rows:structuredClone([...h.scheduleSql.state.projections.values()].filter(r=>r.tenant_id===p[0]&&r.owner_actor_id===p[1]&&(p[2]===null||r.schedule_id>p[2])).sort((a,b)=>a.schedule_id.localeCompare(b.schedule_id)).slice(0,p[3]).map(r=>({projection:r.projection,generation:r.generation,active_intent:r.active_intent,intent_id:null,intent:null})))};
   return sql.query(text,p);
  }};};
  const conversationConnect=h.pool.connect;
