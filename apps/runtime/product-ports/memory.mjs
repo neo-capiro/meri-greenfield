@@ -45,7 +45,8 @@ const CONTEXT_KEYS=['configuration','pool','client','native','now','canonicalPro
 const integer=(n,min,max)=>Number.isSafeInteger(n)&&n>=min&&n<=max;
 const ordinary=fn=>typeof fn==='function'&&!types.isProxy(fn)&&!types.isAsyncFunction(fn)&&!types.isGeneratorFunction(fn);
 /** Relations the composed family needs; a disabled family adds none (control.mjs readiness, as `intentTables`). */
-export const MEMORY_TABLES=Object.freeze(['meri_memory.candidates']);
+export {MEMORY_TABLES} from '../../control/memory/retention-readiness.mjs';
+import {MEMORY_TABLES} from '../../control/memory/retention-readiness.mjs';
 /** Closed control `memory` block. Absent ⇒ `{enabled:false}`; present ⇒ `{enabled:boolean, origin?, serviceSecretFile?}` where
  * `enabled:true` requires BOTH the Core https origin (the W8 receiver and decision routes live on Core's application origin) and
  * the absolute service-secret file, and `enabled:false` allows neither. Also the `config.mjs` validator for the key. */

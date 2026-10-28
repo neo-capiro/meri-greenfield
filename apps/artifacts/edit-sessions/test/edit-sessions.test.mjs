@@ -41,14 +41,18 @@ test('edit-session admission: inspect+revise edits, inspect only is read-only; P
   assert.throws(()=>admitEditSession({...base,...over}),code(c));
 });
 
-test('saves: every accepted PutFile is a draft; identical bytes add no sequence; only explicit saves publish',()=>{
+test('saves: every accepted PutFile is a private draft; explicit Save never requests publication',()=>{
  const s=(kind,sha256,draftSeq=3,draftSha256=A)=>planSave({kind,sha256,bytes:10,maxBytes:100,draftSeq,draftSha256});
  assert.deepEqual(s('autosave',B),{newDraft:true,draftSeq:4,publishCandidate:false,closedWithDraft:false});
- assert.deepEqual(s('explicit',A),{newDraft:false,draftSeq:3,publishCandidate:true,closedWithDraft:false});
+ assert.deepEqual(s('explicit',A),{newDraft:false,draftSeq:3,publishCandidate:false,closedWithDraft:false});
+ assert.deepEqual(s('explicit',B),{newDraft:true,draftSeq:4,publishCandidate:false,closedWithDraft:false});
  assert.deepEqual(s('exit',B),{newDraft:true,draftSeq:4,publishCandidate:false,closedWithDraft:true});
  assert.equal(s('autosave',A,0,null).draftSeq,1,'the first draft');
  assert.throws(()=>planSave({kind:'explicit',sha256:A,bytes:101,maxBytes:100,draftSeq:0,draftSha256:null}),code('EDITOR_DRAFT_TOO_LARGE'));
  assert.throws(()=>s('save-as',B),code('EDITOR_SAVE_INVALID'));
+ assert.throws(()=>s('publish',B),code('EDITOR_SAVE_INVALID'),'publishing must use a separate action');
+ assert.throws(()=>s('explicit',B,Number.MAX_SAFE_INTEGER),code('EDITOR_SAVE_INVALID'));
+ assert.equal(s('explicit',A,Number.MAX_SAFE_INTEGER).draftSeq,Number.MAX_SAFE_INTEGER);
 });
 
 test('publish outcomes: refusal keeps the draft, stale parent is a conflict without overwrite, anything else is an UNKNOWN barrier',()=>{

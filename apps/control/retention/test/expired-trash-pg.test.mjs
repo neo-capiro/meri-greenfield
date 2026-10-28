@@ -16,6 +16,9 @@ import {hash,subjectKey} from '../boundary.mjs';
 import {createExecutionBinding} from '../../conversations/execution-boundary.mjs';
 import {versions} from '../../conversations/test/store-fixture.mjs';
 import {makePayload} from '../../commands/approval-metadata/binding.mjs';
+import {commandKind} from '../../commands/approval-metadata/command-kind.mjs';
+import {assertMemoryRetentionSchema} from '../../memory/retention-readiness.mjs';
+import {uploadRecord} from '../../uploads/custody.mjs';
 import {record as artifactRecord} from '../../../artifacts/storage/test/sql-fixture.mjs';
 import {createSuppressionOwner} from '../suppression.mjs';
 import {buildCandidate} from '../../memory/candidate.mjs';
@@ -171,6 +174,7 @@ test(pageDiagnostic?'ordinary-role single SDK page diagnostic with rollback':'or
   assert.equal(r.current_user,'meri_control_runtime');assert.equal(r.database,DATABASE);assert.equal(r.listen,'');assert.equal(r.address,null);assert.ok(r.version>=160000&&r.version<170000);
   const role=(await pool.query('SELECT rolsuper,rolcreatedb,rolcreaterole,rolreplication,rolbypassrls,rolinherit FROM pg_roles WHERE rolname=current_user')).rows[0];assert.ok(Object.values(role).every(v=>v===false));
   await startup.start();
+  await assertMemoryRetentionSchema(pool);
  });
  if(!pageDiagnostic){
  await t.test('zero-run General registration purges without a fabricated run and preserves its identity',async()=>{
@@ -222,6 +226,34 @@ test(pageDiagnostic?'ordinary-role single SDK page diagnostic with rollback':'or
   await assert.rejects(memory.insert(input),e=>productFailure(e)?.code==='MEMORY_PROPOSAL_NOT_FOUND');
   await assert.rejects(pool.query('UPDATE meri_memory.candidates SET candidate=$2,candidate_purged_at=NULL WHERE tenant_id=$1',[f.b.tenantId,built.candidate]));
   assert.equal((await startup.purge.sweepSubject(f.subject)).coreFinalized,true);
+ });
+ await t.test('command journal body and outcome erase with approval metadata while preserving replay identities',async()=>{
+  const f=await seed();await content(f);
+  const {record, payload:approval}=f.approval,kind=commandKind(record.action),context=approval.commandContext;
+  const command={contractVersion:kind.contractVersion,commandId:record.commandId,binding:record.binding,action:record.action,arguments:kind.normalize(record.request,context),attachments:[],scopes:record.scopes,idempotencyKey:record.idempotencyKey};
+  const proposal={proposalId:record.proposalId,command,commandSha256:hash(command),createdAt:record.createdAt,expiresAt:record.expiresAt,requiredApprover:record.requiredApprover};
+  kind.assertProposal(proposal,context);
+  const payload={proposal,context},executor={contractVersion:'0.1.0',requestId:id(),capabilityId:id(),proposalId:proposal.proposalId,commandSha256:proposal.commandSha256,idempotencyKey:command.idempotencyKey,executorBinding:f.b};
+  await insert('meri_commands.command_journal',{tenant_id:f.b.tenantId,actor_id:f.b.actorId,idempotency_key:command.idempotencyKey,command_id:command.commandId,command_sha256:hash(command),proposal_sha256:hash(proposal),payload_sha256:hash(payload),payload,executor,state:'OUTCOME',outcome:{privateResult:'Private saved draft'}});
+  const p=await plan(f);assert.ok(p.rowSteps.some(step=>step.target.table==='meri_commands.command_journal'));
+  loseRowAck=true;await assert.rejects(startup.purge.sweepSubject(f.subject),e=>e.code==='RETENTION_STORE_UNAVAILABLE');
+  const row=(await pool.query('SELECT * FROM meri_commands.command_journal WHERE tenant_id=$1',[f.b.tenantId])).rows[0];
+  assert.equal(row.command_id,command.commandId);assert.equal(row.command_sha256,hash(command));assert.equal(row.proposal_sha256,hash(proposal));assert.equal(row.idempotency_key,command.idempotencyKey);
+  assert.equal(JSON.stringify(row).includes('Private'),false);assert.equal(row.state,'OUTCOME');
+  await assert.rejects(pool.query('UPDATE meri_commands.command_journal SET payload=$2 WHERE tenant_id=$1',[f.b.tenantId,payload]),/TOMBSTONE|IMMUTABLE/);
+  assert.equal((await startup.purge.sweepSubject(f.subject)).coreFinalized,true);
+ });
+ await t.test('canonical upload custody and its exact object version purge together without a fabricated run',async()=>{
+  const f=await seed({empty:true,general:true}),uploadId=id(),objectId=id();
+  const declaration={filename:'private.txt',mimeType:'text/plain',bytes:7,sha256:'f'.repeat(64)};
+  const object={objectId,versionId:'upload-fixture-version',sha256:declaration.sha256,bytes:declaration.bytes,scopes:f.scopes};
+  const record=uploadRecord({uploadId,requestId:id(),objectId,owner:{tenantId:f.b.tenantId,actorId:f.b.actorId,conversationId:f.b.conversationId,clientId:null},scopes:f.scopes,declaration,state:'stored',object,inspection:null,createdAtMs:old,updatedAtMs:old,revision:2});
+  await insert('meri_uploads.originals',{tenant_id:f.b.tenantId,owner_actor_id:f.b.actorId,conversation_id:f.b.conversationId,upload_id:uploadId,request_id:record.requestId,revision:record.revision,record,record_sha256:hash(record)});
+  objects.set(objectId+'@'+object.versionId,true);
+  const p=await plan(f);assert.ok(p.rowSteps.some(step=>step.className==='uploads'&&step.target.key.upload_id===uploadId));
+  assert.ok(p.steps.some(step=>step.objectId===objectId&&step.versionId===object.versionId));
+  assert.equal((await startup.purge.sweepSubject(f.subject)).coreFinalized,true);
+  assert.equal(await count('meri_uploads.originals',f),0);assert.equal(objects.has(objectId+'@'+object.versionId),false);
  });
  await t.test('lost committed row acknowledgement recovers by actual erased-body readback without repeating effects',async()=>{
   const f=await seed();await content(f,{entryCount:4097});const p=await plan(f);assert.equal(p.rowSteps.filter(s=>s.className==='sdkSession').length,1);loseRowAck=true;const before=rowEffects;

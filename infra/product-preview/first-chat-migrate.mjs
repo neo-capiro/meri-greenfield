@@ -134,8 +134,10 @@ export const PLAN=Object.freeze([
  ['migration','apps/control/schedules/migrations/0008_source_event_grants.sql','74a0cd4c58b56044b6d96163e1cc6c54951311de175f8f0acd4232489aa53df6','integration'],
  // MR-04 management consent renewals: the reviewed 0009 locates the two cancel-only predicates of 0005 by their own
  // definitions and adds the renewal branches. Append ordinal 69 after the exact 1..68 plan, so one `integration` run
- // applies it; nothing after ordinal 69 is reserved or registered here.
- ['migration','apps/control/schedules/migrations/0009_management_consent_renewals.sql','187a1ff83075c38cfa6c9011fb5743756c555d9b1d006fce628deacf2afeb3fc','integration']
+ // applies it while retaining the exact historical prefix.
+ ['migration','apps/control/schedules/migrations/0009_management_consent_renewals.sql','187a1ff83075c38cfa6c9011fb5743756c555d9b1d006fce628deacf2afeb3fc','integration'],
+ // Upload custody is already a canonical row owner; preserve ordinals 1..69.
+ ['migration',conversation('0031_upload_retention_targets.sql'),'4858a07a6b1751a3dbfb7bde46b0d5c14f7f98a5ebe3efed5595852b1986a103','integration']
 ].map(([kind,path,pinned,declaredStage],index)=>Object.freeze({ordinal:index+1,kind,path,pinned,
  name:kind==='migration'?path:`${path}#${kind.slice(6)}`,
  stage:declaredStage??(kind==='phase:temporal_grants'?'temporal':'meri')})));

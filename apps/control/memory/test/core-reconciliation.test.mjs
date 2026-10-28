@@ -38,7 +38,7 @@ function setup({lifecycle=true,credentials,afterFetch}={}){
 }
 const rowOf=t=>[...t.journal.rows.values()][0];
 
-for(const kind of ['addition','correction'])for(const failure of ['lost acknowledgement','cancellation','deadline'])test(`${kind} decision accepted before ${failure} stays UNKNOWN and status reconciles without another decision`,async()=>{
+for(const kind of ['addition','correction'])for(const failure of ['lost acknowledgement','cancellation','deadline'])test(`${kind} decision accepted before ${failure} reconciles without another decision and respects its original budget`,async()=>{
  const abort=new AbortController();let accepted=false;
  const t=setup({afterFetch({url,response}){
   if(url.endsWith('/owner-decision')||url.endsWith('/approve')){
@@ -51,11 +51,13 @@ for(const kind of ['addition','correction'])for(const failure of ['lost acknowle
  const memory=kind==='correction'?t.core.addMemory({tenantId:TENANT,scope:'personal',ownerUserId:ACTOR,key:'correction-key',value:'old'}):null;
  const view=memory?await t.correct(principal(),{idempotencyKey:id(1),targetMemoryId:`clio:${memory.id}`,content:'new',reason:'changed',sources:[{kind:'document',reference:'synthetic-document'}]}):
   await t.propose(principal(),{idempotencyKey:id(1),scope:'personal',content:'A fact'});
- await code(t.decide(principal(),'approved',{candidateId:view.candidateId},{signal:abort.signal}),'MEMORY_DECISION_UNCERTAIN','UNKNOWN');
+ const attempt=t.decide(principal(),'approved',{candidateId:view.candidateId},{signal:abort.signal,deadlineMs:NOW+10000});
+ if(failure==='lost acknowledgement')assert.deepEqual((await attempt).decision,{decision:'approved',outcome:'duplicate'});
+ else await code(attempt,'MEMORY_DECISION_UNCERTAIN','UNKNOWN');
  assert.equal(accepted,true);assert.equal(t.core.candidates.get(view.candidateId).status,'approved');
  const recovered=await t.status(principal(),view.candidateId);assert.equal(recovered.review.status,'approved');assert.match(recovered.review.publishedMemoryId,MEMORY_ID);
  assert.ok(recovered.review.publishedMemoryId.startsWith(kind==='addition'?'clio:':'item:'));
- await code(t.decide(principal(),'approved',{candidateId:view.candidateId}),'MEMORY_DECISION_NOT_PENDING');
+ assert.deepEqual((await t.decide(principal(),'approved',{candidateId:view.candidateId})).decision,{decision:'approved',outcome:'duplicate'});
  assert.equal(t.core.calls.filter(c=>c.path.endsWith('/owner-decision')||c.path.endsWith('/approve')).length,1);
 });
 
