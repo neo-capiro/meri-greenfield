@@ -1,0 +1,208 @@
+ASSET-HANDOFF.txt  (MB04 retained assets: durable id -> ObjectReference map)
+================================================================================
+Worker   : configured-default Hermes IMPLEMENTATION worker (no model override, no subagents)
+Parallel : explicit human request; other workers own other checkouts
+S        : C:/Users/Administrator/Documents/Codex/2026-10-27/wave5-orchestrator-20261027
+Worktree : S/work/wave5-mb04-retained-assets-20261028
+Branch   : codex/wave5-mb04-retained-assets-20261028
+Base     : e7f087421e77f2308c0bc335db396248bcc4eb15 / tree d998d8289da0773b34735074f5ca2be3d66c7382
+Author   : Codex <codex@openai.com>
+Runtime  : Windows Node 24.22.1 ("C:/Program Files/nodejs/node.exe"); retained read-only
+           node_modules links. No WSL, database, native, image, build, browser, model,
+           provider, cloud or target operation was performed or invoked.
+Written  : 2026-10-28T03:54Z
+
+1. What this closes
+-------------------
+apps/artifacts/service.mjs generation already validated the TRUSTED `context.assets` and handed the
+actual object bytes to the executor, but `versions.commit` retained only
+version/spec/specSha256/requestSha256/inspection, so the immutable spec's own
+`assetId -> ObjectReference` mapping was lost at the durability boundary. The existing private
+`revisionSource` read and apps/control/intents/document-revision.mjs therefore correctly refused
+every asset-bearing parent (no map to re-present, and nothing may be re-derived).
+
+The smallest continuation of the existing storage/revision owners: the canonical immutable version
+record may now carry that mapping, bounded and optional; the private source read carries it back;
+the intent layer treats it as the exact original mapping; the run composition re-presents it. No new
+asset platform, no duplicate journal, no browser/model asset authority, no re-render without objects.
+
+2. Changed files (exact)
+------------------------
+apps/artifacts/storage/version-record.mjs            md5 23b6fd8ac2f6c8f5c177b48d2a33a0c3 (HEAD c058565da4ac5b01bfb4b8a0753e5e5d)
+  - `assetRefs(raw,version)`: the one new optional field's validator. Absent -> `undefined`; present
+    must be a non-empty array of <= 64 `{id,object}` pairs; `own(entry,['id','object'])`; identifier
+    rule `^[A-Za-z0-9_-]{1,64}$` (exactly the canonical rule already used by
+    ArtifactContext.assets and by the spec's own `assetId`, so a durable map can never carry an
+    identifier neither trusted source could produce); no duplicate id; `v.object(...)`; every object
+    scope must be one of the version's own scopes; otherwise ARTIFACT_VERSION_CORRUPT.
+  - `recordValue`: byte ceiling computed over the record INCLUDING the map; returns `r` unchanged
+    when absent and `{...r,assets}` when present. `own(raw,[...5 required...],['assets'])`.
+  - Unchanged in that file: decode(), artifactHeadProjection(), verifyArtifactVersionStorageHead(),
+    the SQL row/head/tenant/binding/requestSha256 cross-checks, all format/mime/filename rules.
+apps/artifacts/storage/postgres-versions.mjs          md5 2a9ca76e71930b1ce8fc747bcf9bb570 (HEAD 68fa46e3af88a83742bcfe81522b44c8)
+  - `commit`: `own(value,[...same 6 keys...],['assets'])` — `assets` is a bounded optional extra that
+    flows into the same `recordValue` the publication decision is captured from. Nothing else in the
+    commit capture, SQL projection, recovery or publication path changed.
+apps/artifacts/service.mjs                            md5 ec20d1d52cc4a33a6abd285d61cdcd8d (HEAD 9ab3f09dfab0de89cf2cda41d5db2139)
+  - imports the canonical `referencedAssetIds` from control/intents/document-revision.mjs (one shared
+    walk, so the writer and the revision layer identify exactly the same declared references).
+  - `assetPins(request,context)` (line 51): declared = unique `referencedAssetIds(request)`; pins the
+    trusted context objects for exactly those ids, in declared order, `v.object(...)`d; returns
+    `undefined` when nothing is declared or the context supplies nothing — so unreferenced context
+    assets are never persisted and a request declaring an asset the context does not supply yields no
+    map at all (never a placeholder).
+  - `generate`: `pins=assetPins(request,context)`; the commit call gains
+    `...(pins===undefined?{}:{assets:v.snapshot(pins)})` (line 99). Authorization, retention, budget
+    and the pre-release object-byte read all run exactly as before, before the write.
+  - private `revisionSource` return (line 124) gains `...(record.assets===undefined?{}:{assets:record.assets})`.
+    The four legacy keys, their order of meaning and the recorded citation equality are untouched.
+  - `scopeVersion` passes the optional `assets` through the same envelope it already builds
+    (present-only), so snapshotting/freezing behaves identically for map-free records.
+apps/control/intents/document-revision.mjs            md5 25d45ad1be9b2f9ae99a5addf49bf9a8 (HEAD d7bff3a9ea2b1fa9aa17c67c2c36a09d)
+  - `retainedProvenance(version,spec,trustedAssets=undefined)`: same evidence/binding/scope rules as
+    before; when the record carries a map it must be exactly the declared references in document
+    order, each object admitted and inside the parent's own admitted scopes — a missing, extra,
+    reordered, duplicate or foreign-scoped entry is corruption (`throw 0` -> ACCESS_DENIED). Absent
+    map keeps `assets:null` and infers nothing.
+  - `preservedProvenance`: the trusted owner's re-presented pair must still equal the durable map
+    (`retained.assets!==null && !same(assets,retained.assets)` -> refused), so a substituted object
+    reference, hash or scope can never reach a replacement write.
+  - `admitDocumentRevisionSource`: `own(raw,[...5 keys...],['assets'])` and passes `source.assets` into
+    `retainedProvenance`. The existing rules (declared ids must be a subset of the retained ids,
+    preservation required, INVALID_RESULT after an unverified write) are unchanged.
+apps/runtime/artifacts/revision-composition.mjs       md5 7bad1b1d4a1216cc61dffb2bbae09503 (HEAD e234c1c55e192cb4cbf484a992d76642)
+  - after the private read, before admission: a parent whose immutable spec declares assets but whose
+    durable record retained no map is refused `UNAVAILABLE` (fails closed on both `read` and
+    `readForSelected`, before any write preparation). No mapping is inferred.
+  - the preservation callback now re-presents the record's own map (`assets:source.assets??[]`)
+    instead of always `[]`.
+Unchanged (verified, not edited): apps/runtime/artifacts/revision-source.mjs — it already returns
+`data({...source,headVersionId})`, so the map rides the private result with no code change;
+apps/artifacts/storage/artifact-publication.mjs — the canonical publication journal needed no edit
+(see section 5); service history/list/recovery; selected report compiler/execution/retention/
+output-format paths; public DocumentVersion schema, packages, dist, locks, manifests, registry.
+
+3. Tests (exact commands and results)
+-------------------------------------
+Environment note: every test run needs MERI_REVIEW_SOURCE_ROOT set to the absolute checkout root, and
+this checkout's node_modules is a locally composed link store (no install was performed).
+
+NEW   apps/artifacts/test/revision-asset-retention.test.mjs (11 tests, all pass)
+      real canonical delivery owner + createArtifactService + canonical storage/publication
+      validators over the existing scripted SQL/CAS fixture; no database, renderer or provider.
+      Covers: generate retains the exact original map beside its immutable spec and reads/verifies the
+      actual object bytes; a map-free record keeps its exact 5-key envelope, private/ inspect/download
+      DTOs and hash; close/reopen through a freshly constructed storage owner then revise preserving
+      the exact map, immutable parent linkage, artifact id and parent bytes; a delivered replacement
+      without the retained asset in trusted context retains nothing and claims nothing; the canonical
+      validator's bounds (empty/duplicate/malformed/foreign-scope/>64/malformed ObjectReference); the
+      SAME validator carrying the map through both publication invocation formats with hash-stable,
+      idempotent reads and a byte-identical map-free record; tampered retained bytes refused
+      (ARTIFACT_OBJECT_MISMATCH) before the executor runs; a retained id presented with a changed
+      reference refused before the write with no new version and the parent pair intact; a map mutated
+      in the durable row refused as RETENTION_STORE_UNAVAILABLE/ARTIFACT_IMMUTABLE_CONFLICT on both the
+      private read and the write; delivery claim/replay/cancel/lost-ACK with no duplicate map; and
+      suppression/denial withholding the map exactly like ordinary inspect.
+      `node --test apps/artifacts/test/revision-asset-retention.test.mjs` -> tests 11 pass 11 fail 0.
+ADDED apps/runtime/artifacts/test/revision-composition.test.mjs — asset-bearing parent read through
+      the real action-session/artifact owners: readForSelected carries exactly
+      assets/headVersionId/inspection/request/specSha256/version and the map, does not execute or mint
+      a session, keeps phases admission/release, and `read` keeps its legacy 3-key result; a parent
+      that declares the asset but retained no map is UNAVAILABLE on both reads. 6/6 pass.
+ADDED apps/control/intents/test/document-revision.test.mjs — the durable map must be exactly the
+      spec's declared references in document order (reversed/truncated/extended/renamed/foreign-scope
+      maps throw; a map-free record keeps `assets:null`), and a durable map must be re-presented
+      unchanged: substituted reference/scope, dropped entry and renamed entry all refused
+      ACCESS_DENIED before any write. 13/13 pass.
+SAME  apps/artifacts/test/revision-source.test.mjs, apps/artifacts/storage/test/*.test.mjs,
+      apps/runtime/artifacts/test/revision-retained-evidence.test.mjs.
+
+Focused set command (all six groups):
+  cd S/work/wave5-mb04-retained-assets-20261028
+  MERI_REVIEW_SOURCE_ROOT=<absolute checkout root> node --test \
+    apps/artifacts/test/revision-asset-retention.test.mjs apps/artifacts/test/revision-source.test.mjs \
+    apps/artifacts/storage/test/*.test.mjs \
+    apps/runtime/artifacts/test/revision-composition.test.mjs \
+    apps/runtime/artifacts/test/revision-retained-evidence.test.mjs \
+    apps/control/intents/test/document-revision.test.mjs
+
+  BASELINE (the five production files reverted in place to HEAD e7f0874, test files as-is):
+    tests 93 / pass 72 / fail 21
+  FINAL (this commit):
+    tests 94 / pass 83 / fail 11
+  comm -13 baseline.names final.names  -> EMPTY: no failure appears in the final run that was not
+  already failing at baseline. comm -23 -> exactly the 10 new asset tests, i.e. they are RED on the
+  unmodified base and GREEN with the change; the 11th new test was added afterwards and is green.
+  Raw captures: C:/ProgramData/Hermes/cache/scratch/{base2.txt,base2.names,final.txt,final.names}.
+  The 11 remaining failures are all one environmental cause, identical in both runs: package
+  `@aws-sdk/client-s3` is declared by apps/artifacts/storage/package.json but is absent from every
+  node_modules store on this machine (ERR_MODULE_NOT_FOUND at import of
+  apps/artifacts/storage/s3-sdk.mjs); installing it is a network/build operation this worker must not
+  perform. No behavioural failure remains in the focused set.
+
+4. Backward compatibility (oldbytes)
+------------------------------------
+- A record without the map is returned by `recordValue` as the identical object and hashes
+  identically: `v.hash(record)` unchanged, so every existing `record_sha256`, projection_sha256,
+  decisionSha256 and page/position hash is untouched and existing rows stay byte-identical. Proven by
+  the map-free assertions in the new tests (exact 5-key sorted key set, hash equality, private and
+  public DTO key sets) and by the REVERT-run comparison above (all pre-existing storage/revision tests
+  that pass at HEAD also pass with the change).
+- Old binaries are NOT assumed compatible with a map-bearing record: at HEAD both
+  `version-record.mjs:recordValue` (`own(raw,['version','spec','specSha256','requestSha256','inspection'])`)
+  and `postgres-versions.mjs:commit` (`own(value,[...same 6 keys...])`) reject unknown record keys, so
+  an old binary reading a new map-bearing record fails ARTIFACT_VERSION_CORRUPT. Also at HEAD
+  `document-revision.mjs` accepted `own(raw,[5 keys])` only, so an old intent reader refuses a source
+  carrying `assets`, and `revision-composition.mjs` refused EVERY asset-bearing parent
+  (`if(retained.assetIds.length)fail('UNAVAILABLE')`).
+- Map-free records therefore remain fully readable and revisable by old binaries; only a record whose
+  spec actually declares an asset reference is ever written with a map.
+
+5. Rollback / activation disposition
+------------------------------------
+- Reads are dual-format in this binary: records with and without the map are both read, and the map is
+  surfaced only on the explicit private revision-source path. Ordinary inspect/download/history/list
+  DTOs are unchanged, so nothing else in the fleet observes the new field.
+- Writes: a map is emitted only when the submitted request actually declares an asset reference and
+  the trusted context supplies that object. A deployment therefore activates this feature by
+  deploying this binary everywhere; with no asset-declaring requests there are zero map-bearing
+  records and rollback to an older binary is safe. Once any map-bearing record exists, rolling BACK
+  to an older binary would make that artifact unreadable (ARTIFACT_VERSION_CORRUPT at row decode), so
+  roll-forward is the supported floor; the new binary always reads both shapes.
+- No migration was invented: the existing SQL already stores the whole record as JSONB and no
+  schema change is required. No live upgrade, database or WSL recovery was performed (A5 owns the
+  central union / migration decision).
+- Frozen sibling compatibility (read-only inspection, nothing cherry-picked):
+  * S/work/wave5-m5-publication-pages-order-20261027 @ c898f426f10d5a490fe6aac03382806c8777765f
+  * S/work/wave5-m5-chat-attachments-20261027    @ 5fb6edf38b994a13bc08bd4854121dffda3193f0
+  Both carry the v2 paged publication files (artifact-publication-pages.mjs,
+  artifact-publication-paged-journal.mjs, postgres-paged-publication.mjs,
+  s3-artifact-publication-pages.mjs) that this base does not have. Their
+  apps/artifacts/storage/version-record.mjs is byte-identical to this base
+  (md5 c058565da4ac5b01bfb4b8a0753e5e5d in all three trees), and their
+  postgres-paged-publication.mjs imports `verifyArtifactVersionStorageRow as decode` and
+  `verifyArtifactVersionStorageHead` from that same file. The map therefore rides the SAME canonical
+  record validator in the v1 (single-index proposal-1 journal) and the v2 (paged) publication
+  formats, with no rewrite of any existing record or page hash. Neither sibling introduces a second
+  version-record writer.
+  * Merge points for the later union are one line each: sibling service.mjs:86 commit call and
+    sibling postgres-versions.mjs:67 commit own-list take the same `...(pins===undefined?{}:{assets:...})`
+    spread and the same optional `['assets']` key.
+- The known later-merge `read()` recovery composition was left untouched and is recorded exactly:
+  this base's `service.mjs` read path is
+  `await authority(life,action,resource,requestSha256,context);await servable(life,context);await recoverTenant(life,context);`
+  (line 114) followed by `scopeVersion(await versions.read(versionId,signal),versionId,context)`
+  (line 115) and the private return at line 124. The new composition guard sits in
+  revision-composition.mjs AFTER the reader returns, so it composes with either shape of that call.
+
+6. Remaining / explicitly not claimed
+-------------------------------------
+- The selected report compiler/execution join for assets is NOT done here (held out of scope). A
+  report-generated asset-bearing version now retains its map and can be read back privately, but the
+  selected-source compiler path that would consume it is owned by another worker.
+- No source-only claim of native rendering is made: the new tests exercise the canonical owner with
+  deterministic synthetic bytes and a scripted executor; no renderer, provider, database or browser
+  was invoked, and `nativeOpened` is false in every fixture inspection.
+- No claim of full MB04 completion: this closes the asset-bearing revision/retention gap only.
+- Nothing about the four parent-owned WIP selected-factory files or A5's runtime/private/migration
+  union was read or modified.

@@ -5,7 +5,15 @@
  * carries are what the user selected. A generic full replacement cannot re-derive them, so it may
  * neither drop them nor invent new ones. They survive only through a trusted owner composed with
  * this preparer that re-presents the exact retained evidence and asset objects (`preservation`)
- * for the retained parent pins; the write result is re-checked after the write as well. */
+ * for the retained parent pins; the write result is re-checked after the write as well.
+ *
+ * The durable version record may itself retain the original id -> ObjectReference asset map next to
+ * its immutable spec. When the private current-authorized source carries that map it is the exact
+ * original mapping: the trusted owner must re-present the same objects, and a substituted object,
+ * scope or hash is refused. A record written before the map existed, or an asset-bearing record whose
+ * declared references the writer could not retain, stays explicitly unavailable for revision — this
+ * module never infers a mapping, and a durable owner (not this module) is the only thing that may
+ * reconstruct one. */
 import {types} from 'node:util';
 import {data,own} from '../../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {artifactValidators as v} from '../../../packages/contracts/retrieval-0.2/validate.mjs';
@@ -23,8 +31,9 @@ export function referencedAssetIds(value){
   };
   walk(value);return found;
 }
-/** Exactly what the immutable parent retains and a full replacement must keep. */
-export function retainedProvenance(version,spec){
+/** Exactly what the immutable parent retains and a full replacement must keep.
+ * `trustedAssets` is the parent record's own retained asset map, when the durable record carries one. */
+export function retainedProvenance(version,spec,trustedAssets=undefined){
   const evidence=version.evidence.map(item=>v.nativeSourceEvidence(item));
   if(new Set(evidence.map(item=>item.citationId)).size!==evidence.length)throw 0;
   const scopes=new Set(version.scopes.map(v.hash));
@@ -35,7 +44,22 @@ export function retainedProvenance(version,spec){
   }
   const assetIds=referencedAssetIds(spec);
   if(new Set(assetIds).size!==assetIds.length)throw 0;
-  return Object.freeze({evidence,assetIds:Object.freeze(assetIds)});
+  // The durable map is the exact original mapping: the same identifiers in the same document order,
+  // each object admitted and inside the parent's own admitted scopes. A missing, extra, duplicate,
+  // foreign-scoped or rehashed entry is corruption of the retained provenance, not a new mapping.
+  let assets=null;
+  if(trustedAssets!==undefined){
+    if(!Array.isArray(trustedAssets)||trustedAssets.length!==assetIds.length)throw 0;
+    const seen=new Set();
+    assets=trustedAssets.map((entry,index)=>{
+      const asset=own(v.snapshot(entry),['id','object']);
+      if(asset.id!==assetIds[index]||seen.has(asset.id))throw 0;
+      const object=v.object(asset.object);
+      if(!same(object.scopes,version.object.scopes))throw 0;
+      seen.add(asset.id);return Object.freeze({id:asset.id,object});
+    });
+  }
+  return Object.freeze({evidence,assetIds:Object.freeze(assetIds),assets:assets===null?null:Object.freeze(assets)});
 }
 /** Verify the trusted owner's re-presented retained resources against the immutable parent. */
 function preservedProvenance(retained,value,version,specSha256){
@@ -49,12 +73,16 @@ function preservedProvenance(retained,value,version,specSha256){
     if(!same(object.scopes,version.object.scopes))throw 0;
     return Object.freeze({id:asset.id,object});
   });
+  // When the durable parent carries its own retained map, the re-presented pair must still be exactly
+  // that mapping: a substituted object reference, hash or scope is a different asset, not the retained
+  // one, so it is refused before any replacement write.
+  if(retained.assets!==null&&!same(assets,retained.assets))throw 0;
   return Object.freeze({evidence,assets:Object.freeze(assets),evidenceSha256:v.hash(evidence),assetIds:retained.assetIds,
     parent:Object.freeze({versionId:version.versionId,objectSha256:version.object.sha256,specSha256})});
 }
 export function admitDocumentRevisionSource(raw,{selection,binding,request,preservation=null}){
  try{
-  const s=assertDocumentRevisionSelection(selection),source=data(own(raw,['version','request','specSha256','inspection','headVersionId']));
+  const s=assertDocumentRevisionSelection(selection),source=data(own(raw,['version','request','specSha256','inspection','headVersionId'],['assets']));
   const version=v.version(source.version),original=v.request(source.request),{currentBytesVerified,...inspection}=source.inspection;
   v.inspection(inspection);
   if(version.artifactId!==s.artifactId||version.versionId!==s.versionId||version.object.sha256!==s.objectSha256||source.specSha256!==v.hash(original)||
@@ -62,7 +90,7 @@ export function admitDocumentRevisionSource(raw,{selection,binding,request,prese
    v.hash(version.scopes)!==v.hash(version.object.scopes)||currentBytesVerified!==true||inspection.sha256!==s.objectSha256||inspection.bytes!==version.object.bytes||inspection.format!==original.format||
    original.operation!==request.operation||original.format!==request.format)throw 0;
   if(source.headVersionId!==s.versionId)throw intentFault('CONFLICT','none');
-  const retained=retainedProvenance(version,original);
+  const retained=retainedProvenance(version,original,source.assets);
   // A full replacement cannot introduce an asset the immutable parent never had.
   for(const assetId of referencedAssetIds(request))if(!retained.assetIds.includes(assetId))throw intentFault('UNAVAILABLE','none');
   // Source-backed recipes need their existing compiler/source-access bridge. Never

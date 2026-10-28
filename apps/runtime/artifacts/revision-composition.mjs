@@ -5,7 +5,7 @@ import {canonicalSha256 as hash} from '../../../packages/contracts/validate.mjs'
 import {assertDocumentRevisionSelection,supportsSelectedDocumentRevision} from '../../../packages/contracts/document-revision.mjs';
 import {assertNativeConversationScope} from '../../../packages/contracts/runtime-0.2/session.mjs';
 import {borrowedRunSession,assertActionSessionReceipt} from '../../control/action-host/session/owner.mjs';
-import {admitDocumentRevisionSource} from '../../control/intents/document-revision.mjs';
+import {admitDocumentRevisionSource,referencedAssetIds} from '../../control/intents/document-revision.mjs';
 import {createRuntimeDocumentRevisionSource} from './revision-source.mjs';
 const fail=code=>{throw Object.assign(Error(code),{code});};
 export function createDocumentRevisionRunOwner({bound,optionsOwner,now,limits}){
@@ -29,9 +29,14 @@ export function createDocumentRevisionRunOwner({bound,optionsOwner,now,limits}){
   const session=assertActionSessionReceipt(await borrow({binding:q.binding,selectedClientId,signal:q.signal}),now());
   const reader=createRuntimeDocumentRevisionSource({sessions:current.sessions,optionsOwner,now,limits,...(current.retention?{retention:current.retention}:{})});
   const source=await reader.read({credential:session.credential,selection,deadlineMs:Math.min(q.deadlineMs,session.expiresAtMs),signal:q.signal});
+  // A parent whose immutable spec declares assets, but whose durable record retained no map of them, stays
+  // explicitly unavailable: no mapping may be inferred and the replacement may not run without its objects.
+  if(source.assets===undefined&&referencedAssetIds(source.request).length>0)fail('UNAVAILABLE');
   const admitted=admitDocumentRevisionSource(source,{selection,binding:q.binding,request:source.request,preservation:({retained})=>{
-   // The private read has just verified these exact immutable parent citations. Asset objects need their durable source owner.
-   if(retained.assetIds.length)fail('UNAVAILABLE');return {evidence:source.version.evidence,assets:[]};
+    // The private read has just verified these exact immutable parent citations and bytes. The record it
+    // read is the durable owner of the retained asset objects, so its own map is re-presented unchanged;
+    // assets the reader did not return were never retained and are never re-derived here.
+    return {evidence:source.version.evidence,assets:source.assets??[]};
   }});
   return {selection,source,admitted};
  }

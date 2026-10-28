@@ -6,7 +6,7 @@ import {assertDocumentRevisionSelection} from '../../../../packages/contracts/do
 import {createArtifactService} from '../../../artifacts/service.mjs';
 import {nativeDocumentFixture} from '../../../artifacts/test/native-document-fixture.mjs';
 import {createDocumentIntentPreparer} from '../document-preparer.mjs';import {mount,delivery} from './fixture.mjs';
-import {admitDocumentRevisionSource} from '../document-revision.mjs';
+import {admitDocumentRevisionSource,retainedProvenance} from '../document-revision.mjs';
 async function fixture(){
  const f=nativeDocumentFixture(),first=await f.run(),b=f.context.binding,entry=catalog.operations.find(x=>x.operation.id==='create_word');
  const descriptor={operation:entry.operation,requiredGrants:entry.requiredGrants,sourceRequirements:entry.sourceRequirements};
@@ -118,4 +118,40 @@ test('preserved asset objects are the parent objects; foreign, missing or invent
   assert.throws(()=>admit(value),{code:'ACCESS_DENIED',effect:'none'});
  const invented={...plain,content:{blocks:[{kind:'image',assetId:'invented-image',widthInches:1,heightInches:1}]}};
  assert.throws(()=>admitDocumentRevisionSource(raw,{selection:h.selection,binding:h.f.context.binding,request:v.request(invented)}),{code:'UNAVAILABLE',effect:'none'});
+});
+/** The parent's own durable retained map: exactly the declared references, in document order. */
+const retainedMap=(version,ids)=>ids.map(id=>({id,object:{objectId:randomUUID(),versionId:`immutable-${id}`,sha256:'c'.repeat(64),bytes:7,scopes:structuredClone(version.object.scopes)}}));
+test('the durable map is exactly the immutable spec references in document order, or it is corruption',async()=>{
+ const h=await fixture(),raw=await h.source();
+ const two={operation:'create_word',format:'docx',title:'Synthetic',content:{blocks:[{kind:'image',assetId:'first-image',widthInches:1,heightInches:1},{kind:'image',assetId:'second-image',widthInches:1,heightInches:1}]}};
+ const spec=v.request(two),map=retainedMap(raw.version,["first-image","second-image"]),reversed=[map[1],map[0]];
+ assert.deepEqual(retainedProvenance(raw.version,spec,map).assets,map);
+ assert.deepEqual(retainedProvenance(raw.version,spec,map).assetIds,['first-image','second-image']);
+ // A record written before the map existed keeps working with no mapping of its own and no inference.
+ assert.deepEqual(retainedProvenance(raw.version,spec),{evidence:retainedProvenance(raw.version,spec).evidence,assetIds:['first-image','second-image'],assets:null});
+ for(const bad of [reversed,map.slice(0,1),[...map,map[0]],map.map((entry,index)=>index?{...entry,id:'other'}:entry),
+  map.map((entry,index)=>index?entry:{...entry,object:{...entry.object,scopes:[{...raw.version.object.scopes[0],resourceId:'other'}]}})])
+  assert.throws(()=>retainedProvenance(raw.version,spec,bad));
+ // A reference hash is retained verbatim by this function: it has the map, not the bytes. The pair is
+ // refused downstream against the retained map, and the canonical owner refuses it against the object's
+ // actual bytes (revision-asset-retention.test.mjs).
+ assert.equal(retainedProvenance(raw.version,spec,map.map(entry=>({...entry,object:{...entry.object,sha256:'d'.repeat(64)}}))).assets[0].object.sha256,'d'.repeat(64));
+});
+test('a durable retained map must be re-presented unchanged and never substituted before a replacement write',async()=>{
+ const h=await fixture(),plain={operation:'create_word',format:'docx',title:'Synthetic',content:{blocks:[{kind:'paragraph',runs:[{text:'Retained text'}]}]}};
+ const withAsset={...plain,content:{blocks:[{kind:'image',assetId:'retained-image',widthInches:1,heightInches:1}]}};
+ const raw=await h.source();raw.request=v.request(withAsset);raw.specSha256=v.hash(raw.request);raw.inspection.format='docx';raw.inspection.details={paragraphs:1,tables:0,pictures:0};
+ const object={objectId:randomUUID(),versionId:'immutable-asset',sha256:'c'.repeat(64),bytes:7,scopes:structuredClone(raw.version.object.scopes)};
+ const durable={...raw,assets:[{id:'retained-image',object}]};
+ const admit=preservation=>admitDocumentRevisionSource(durable,{selection:h.selection,binding:h.f.context.binding,request:v.request(plain),preservation});
+ const admitted=admit(()=>({evidence:[],assets:[{id:'retained-image',object}]}));
+ assert.deepEqual(admitted.preserved.assets,[{id:'retained-image',object}]);
+ assert.equal(admitted.preserved.parent.objectSha256,durable.version.object.sha256);
+ // The same identifier with a substituted reference, scope or a dropped/foreign entry is not the retained
+ // asset: every one is refused before the write port is ever reached.
+ const foreign={...object,scopes:[{...raw.version.object.scopes[0],resourceId:'other'}]};
+ for(const value of [()=>({evidence:[],assets:[{id:'retained-image',object:{...object,sha256:'d'.repeat(64)}}]}),()=>({evidence:[],assets:[{id:'retained-image',object:foreign}]})])
+  assert.throws(()=>admit(value),{code:'ACCESS_DENIED',effect:'none'});
+ assert.throws(()=>admitDocumentRevisionSource({...durable,assets:[]},{selection:h.selection,binding:h.f.context.binding,request:v.request(plain),preservation:()=>({evidence:[],assets:[]})}),{code:'ACCESS_DENIED',effect:'none'});
+ assert.throws(()=>admitDocumentRevisionSource({...durable,assets:[{id:'other',object}]},{selection:h.selection,binding:h.f.context.binding,request:v.request(plain),preservation:()=>({evidence:[],assets:[{id:'other',object}]})}),{code:'ACCESS_DENIED',effect:'none'});
 });
