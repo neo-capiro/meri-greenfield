@@ -1,0 +1,67 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:meri:retrieval:skill-identity:0.3.0",
+  "title": "Meri R2 skill identity extension 0.3.0",
+  "description": "Additive identity receiver over the closed 0.2.0 skill foundation. The 0.2.0 schema is not widened, republished or rewritten; this leaf declares exactly one additional identity and the module beside it composes the 0.2.0 manifest shape with this id set in memory, so every consumer of the frozen 0.2.0 file keeps refusing an unknown identity.",
+  "$defs": {
+    "AddedSkillId": {
+      "type": "string",
+      "enum": [
+        "quick_skill.cited_report"
+      ]
+    },
+    "SkillId": {
+      "type": "string",
+      "enum": [
+        "quick_skill.research_company",
+        "quick_skill.relationship_brief",
+        "quick_skill.client_changes",
+        "quick_skill.portfolio_changes",
+        "quick_skill.portfolio_overlap",
+        "quick_skill.mail_history",
+        "quick_skill.meeting_prep",
+        "quick_skill.commitments_audit",
+        "quick_skill.funding_opportunity_match",
+        "quick_skill.pe_deep_dive",
+        "quick_skill.bill_watch",
+        "quick_skill.hearing_watch",
+        "quick_skill.representation_lookup",
+        "quick_skill.regulatory_docket_brief",
+        "quick_skill.cited_report"
+      ]
+    },
+    "SkillIdentity": {
+      "type": "object",
+      "properties": {
+        "skillId": {
+          "$ref": "#/$defs/AddedSkillId"
+        },
+        "skillVersion": {
+          "type": "string",
+          "pattern": "^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)$"
+        }
+      },
+      "required": [
+        "skillId",
+        "skillVersion"
+      ],
+      "additionalProperties": false
+    },
+    "CitedReportIdentity": {
+      "type": "object",
+      "properties": {
+        "skillId": {
+          "const": "quick_skill.cited_report"
+        },
+        "skillVersion": {
+          "const": "1.0.0"
+        }
+      },
+      "required": [
+        "skillId",
+        "skillVersion"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

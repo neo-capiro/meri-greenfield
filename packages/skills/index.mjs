@@ -4,6 +4,7 @@ import {createHash} from 'node:crypto';
 import assets from './assets.json' with {type:'json'};
 import catalog from '../contracts/retrieval-0.2/catalog.json' with {type:'json'};
 import {validateShape,assertCatalog} from '../contracts/retrieval-0.2/validate.mjs';
+import {addedSkillIdentity,assertAddedSkillManifest} from '../contracts/retrieval-0.3/validate.mjs';
 import {canonicalSha256} from '../contracts/validate.mjs';
 import {snapshotPreservationData} from '../contracts/retrieval-0.2/operation-contracts.mjs';
 
@@ -25,7 +26,9 @@ function readAsset(path){
 function load(asset){
   verifyCatalog();
   const manifest=JSON.parse(readAsset(asset.manifestPath)),prose=readAsset(asset.prosePath);
-  validateShape('SkillManifest',manifest); // Not assertSkillManifest: unavailable operations must stay unavailable.
+  // Not assertSkillManifest: unavailable operations must stay unavailable. The closed 0.2.0 foundation keeps
+  // refusing every id it does not enumerate; only an additive 0.3.0 identity uses the additive receiver.
+  if(addedSkillIdentity(manifest.skillId))assertAddedSkillManifest(manifest);else validateShape('SkillManifest',manifest);
   if(manifest.skillId!==asset.skillId||manifest.skillVersion!==asset.skillVersion||
     manifest.prose.sha256!==asset.proseSha256||digest(Buffer.from(prose))!==asset.proseSha256||
     canonicalSha256(manifest)!==asset.manifestSha256)fail('SKILL_ASSET_PIN');

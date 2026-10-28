@@ -84,11 +84,11 @@ test('Bill Watch prior sourced-document pins remain unchanged and explicitly add
  assert.throws(()=>describeSkillPlugin({selection:selectSkill('quick_skill.bill_watch','1.0.0').pin}),/SKILL_PLUGIN_SELECTION_REFUSED/u);
 });
 
-test('registered successor changes only the explicit default while keeping fourteen original identities',()=>{
+test('registered successor changes only the explicit default while keeping every original identity',()=>{
  const selected=selectSkill('quick_skill.bill_watch','1.1.0');
  assert.equal(canonicalSha256(selected.manifest),canonicalSha256(manifest));assert.equal(selected.prose,prose);
- assert.equal(new Set(listSkills().map(row=>row.skillId)).size,14);
- const plugin=describeSkillPlugin();assert.equal(plugin.skills.length,14);
+ assert.equal(new Set(listSkills().map(row=>row.skillId)).size,15);
+ const plugin=describeSkillPlugin();assert.equal(plugin.skills.length,15);
  assert.equal(plugin.skills.find(skill=>skill.skillId===selected.pin.skillId).skillVersion,'1.1.0');
  assert.equal(plugin.skills.find(skill=>skill.skillId==='quick_skill.pe_deep_dive').skillVersion,'1.1.0');
  assert.throws(()=>selectSkill('quick_skill.bill_watch','latest'),/SKILL_VERSION_UNAVAILABLE/u);
@@ -113,10 +113,10 @@ test('Bill Watch old and new explicit selections materialize distinct exact SDK 
   const directory=sdkSkillPluginDirectory(root,selection);await prepareRunSkillPlugin(directory,{selection});
   await assert.rejects(readFile(join(directory,'skills','meri-bill-watch','SKILL.md'),'utf8'),{code:'ENOENT'});
   await verifySkillPluginTree(directory,{selection});
-  assert.equal(describeSkillPlugin({selection,execution:true}).skills.length,13);
+  assert.equal(describeSkillPlugin({selection,execution:true}).skills.length,14);
  }
- assert.equal(describeSkillPlugin().skills.length,14,'launcher inventory is not unselected execution availability');
- assert.equal(describeSkillPlugin({selection:current.pin,execution:true}).skills.length,14);
+ assert.equal(describeSkillPlugin().skills.length,15,'launcher inventory is not unselected execution availability');
+ assert.equal(describeSkillPlugin({selection:current.pin,execution:true}).skills.length,15);
  for(const selection of [{skillId:current.pin.skillId,skillVersion:'1.1.0'},{...current.pin,proseSha256:'0'.repeat(64)}])
   assert.throws(()=>sdkSkillPluginDirectory(root,selection),/SKILL_PLUGIN_SELECTION_PIN/u);
 });

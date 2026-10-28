@@ -9,6 +9,7 @@ import {createHash} from 'node:crypto';
 import {selectSkill,listSkills} from '../index.mjs';
 import assets from '../assets.json' with {type:'json'};
 import {validateShape,assertSkillManifest} from '../../contracts/retrieval-0.2/validate.mjs';
+import {addedSkillIdentity,assertAddedSkillManifest} from '../../contracts/retrieval-0.3/validate.mjs';
 import {canonicalSha256} from '../../contracts/validate.mjs';
 import catalog from '../../contracts/retrieval-0.2/catalog.json' with {type:'json'};
 import inventory from '../../../docs/coordination/r2/skills.json' with {type:'json'};
@@ -27,21 +28,27 @@ const evidence={
  pe_deep_dive:['program_elements','pe_references','bill_text','federal_legislation','stored_public_reports'],
  hearing_watch:['client_knowledge_profile','public_domain_hearings','legislative_directory','tracked_bills'],
  representation_lookup:['facility_representation','state_legislation','legislative_directory','district_nexus','tenant_contacts'],
- regulatory_docket_brief:['regulatory_dockets','rule_status','research_legal_legislation','public_web']
+ regulatory_docket_brief:['regulatory_dockets','rule_status','research_legal_legislation','public_web'],
+ cited_report:['client_knowledge_search','mail','research_portfolios','artifact_versions']
 };
 
-test('all 14 original identities retain explicit immutable versions including the Bill Watch successor',()=>{
- assert.deepEqual([...new Set(listSkills().map(s=>s.skillId))].sort(),inventory.records.map(row=>row.fields.ID).sort());
+test('the original fourteen identities plus the one additive identity retain explicit immutable versions',()=>{
+ // The r2 coordination inventory documents the original fourteen; the added identity is recorded in the
+ // general cited report claim rather than by rewriting that original inventory.
+ assert.deepEqual([...new Set(listSkills().map(s=>s.skillId))].sort(),[...inventory.records.map(row=>row.fields.ID),'quick_skill.cited_report'].sort());
  assert.deepEqual(listSkills().filter(s=>s.skillId==='quick_skill.bill_watch').map(s=>s.skillVersion).sort(),['1.0.0','1.0.1','1.1.0','2.0.0']);
- assert.equal(listSkills().length,18);
- assert.equal(Object.keys(evidence).length,13);
+ assert.equal(listSkills().length,19);
+ assert.equal(Object.keys(evidence).length,14);
  for(const entry of listSkills()){
-  const asset=selectSkill(entry.skillId,entry.skillVersion);validateShape('SkillManifest',asset.manifest);
+  const asset=selectSkill(entry.skillId,entry.skillVersion);
+  // The closed 0.2.0 foundation still refuses every identity it does not enumerate; only the added identity
+  // is validated through the additive 0.3.0 receiver.
+  if(addedSkillIdentity(asset.manifest.skillId))assertAddedSkillManifest(asset.manifest);else validateShape('SkillManifest',asset.manifest);
   assert.equal(asset.pin.manifestSha256,canonicalSha256(asset.manifest));
   const row=assets.assets.find(row=>row.skillId===entry.skillId&&row.skillVersion===entry.skillVersion);
   assert.equal(asset.pin.proseSha256,sha(Buffer.from(asset.prose)));assert.equal(asset.pin.catalogSha256,row.catalogSha256??assets.catalogSha256);assert.equal(asset.installationCatalogSha256,canonicalSha256(catalog));
   assert.equal(asset.manifest.approval.autoCreateTasks,false);assert.equal(asset.manifest.completion.negativeClaims,'complete-covered-only');
-  assert.throws(()=>assertSkillManifest(asset.manifest,catalog),/unavailable operation/u);
+  assert.throws(()=>assertSkillManifest(asset.manifest,catalog),addedSkillIdentity(asset.manifest.skillId)?/must be equal to one of the allowed values/u:/unavailable operation/u);
  }
 });
 for(const [id,required]of Object.entries(evidence))test(`${id}: workflow-specific evidence and original explicit-selection prose`,()=>{
