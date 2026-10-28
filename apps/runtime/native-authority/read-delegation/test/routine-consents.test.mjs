@@ -5,13 +5,13 @@ import assert from 'node:assert/strict';
 import {canonicalSha256 as hash} from '../../../../../packages/contracts/validate.mjs';
 import {selectSkill} from '../../../../../packages/skills/index.mjs';
 import {applicationFixture,binding,scopes,id} from '../../../../control/conversations/test/application-fixture.mjs';
-import {origin as coreOrigin} from '../../native-read-credentials/test/fixture.mjs';
 import {createReadDelegationCoreClient} from '../core-client.mjs';
 import {createReadDelegationConsents} from '../consent.mjs';
 import {createRoutineReadConsents} from '../routine-consents.mjs';
 import {READ_DELEGATION_LIMITS,READ_DELEGATION_ROUTES,operationsDigest} from '../contract.mjs';
 import {delegationCoreFixture} from './fixture.mjs';
 const DAY=86400000,NATIVE='synthetic-native',code=c=>e=>e?.code===c,POLICY='b'.repeat(64),PROJECTION='c'.repeat(64);
+const coreOrigin='https://core.synthetic.invalid';
 function allocationJson(now,allowedOperations){
  const selected=selectSkill('quick_skill.relationship_brief','1.0.0'),manifest={...selected.manifest,...(allowedOperations?{allowedOperations}:{})};
  return JSON.stringify({run:Object.fromEntries(['tenantId','actorId','conversationId','runId'].map(k=>[k,binding[k]])),manifest,manifestSha256:hash(manifest),catalogSha256:selected.pin.catalogSha256,budgets:manifest.budgets,
