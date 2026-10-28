@@ -16,6 +16,8 @@ import {hash,subjectKey} from '../boundary.mjs';
 import {createExecutionBinding} from '../../conversations/execution-boundary.mjs';
 import {versions} from '../../conversations/test/store-fixture.mjs';
 import {makePayload} from '../../commands/approval-metadata/binding.mjs';
+import {commandKind} from '../../commands/approval-metadata/command-kind.mjs';
+import {assertMemoryRetentionSchema} from '../../memory/retention-readiness.mjs';
 import {record as artifactRecord} from '../../../artifacts/storage/test/sql-fixture.mjs';
 import {createSuppressionOwner} from '../suppression.mjs';
 import {buildCandidate} from '../../memory/candidate.mjs';
@@ -171,6 +173,7 @@ test(pageDiagnostic?'ordinary-role single SDK page diagnostic with rollback':'or
   assert.equal(r.current_user,'meri_control_runtime');assert.equal(r.database,DATABASE);assert.equal(r.listen,'');assert.equal(r.address,null);assert.ok(r.version>=160000&&r.version<170000);
   const role=(await pool.query('SELECT rolsuper,rolcreatedb,rolcreaterole,rolreplication,rolbypassrls,rolinherit FROM pg_roles WHERE rolname=current_user')).rows[0];assert.ok(Object.values(role).every(v=>v===false));
   await startup.start();
+  await assertMemoryRetentionSchema(pool);
  });
  if(!pageDiagnostic){
  await t.test('zero-run General registration purges without a fabricated run and preserves its identity',async()=>{
@@ -221,6 +224,22 @@ test(pageDiagnostic?'ordinary-role single SDK page diagnostic with rollback':'or
   assert.equal(row.candidate,null);assert.ok(row.candidate_purged_at);assert.equal(row.idempotency_key,built.candidate.idempotencyKey);assert.equal(row.candidate_sha256,built.candidateSha256);assert.equal(row.request_sha256,input.requestSha256);
   await assert.rejects(memory.insert(input),e=>productFailure(e)?.code==='MEMORY_PROPOSAL_NOT_FOUND');
   await assert.rejects(pool.query('UPDATE meri_memory.candidates SET candidate=$2,candidate_purged_at=NULL WHERE tenant_id=$1',[f.b.tenantId,built.candidate]));
+  assert.equal((await startup.purge.sweepSubject(f.subject)).coreFinalized,true);
+ });
+ await t.test('command journal body and outcome erase with approval metadata while preserving replay identities',async()=>{
+  const f=await seed();await content(f);
+  const {record, payload:approval}=f.approval,kind=commandKind(record.action),context=approval.commandContext;
+  const command={contractVersion:kind.contractVersion,commandId:record.commandId,binding:record.binding,action:record.action,arguments:kind.normalize(record.request,context),attachments:[],scopes:record.scopes,idempotencyKey:record.idempotencyKey};
+  const proposal={proposalId:record.proposalId,command,commandSha256:hash(command),createdAt:record.createdAt,expiresAt:record.expiresAt,requiredApprover:record.requiredApprover};
+  kind.assertProposal(proposal,context);
+  const payload={proposal,context},executor={contractVersion:'0.1.0',requestId:id(),capabilityId:id(),proposalId:proposal.proposalId,commandSha256:proposal.commandSha256,idempotencyKey:command.idempotencyKey,executorBinding:f.b};
+  await insert('meri_commands.command_journal',{tenant_id:f.b.tenantId,actor_id:f.b.actorId,idempotency_key:command.idempotencyKey,command_id:command.commandId,command_sha256:hash(command),proposal_sha256:hash(proposal),payload_sha256:hash(payload),payload,executor,state:'OUTCOME',outcome:{privateResult:'Private saved draft'}});
+  const p=await plan(f);assert.ok(p.rowSteps.some(step=>step.target.table==='meri_commands.command_journal'));
+  loseRowAck=true;await assert.rejects(startup.purge.sweepSubject(f.subject),e=>e.code==='RETENTION_STORE_UNAVAILABLE');
+  const row=(await pool.query('SELECT * FROM meri_commands.command_journal WHERE tenant_id=$1',[f.b.tenantId])).rows[0];
+  assert.equal(row.command_id,command.commandId);assert.equal(row.command_sha256,hash(command));assert.equal(row.proposal_sha256,hash(proposal));assert.equal(row.idempotency_key,command.idempotencyKey);
+  assert.equal(JSON.stringify(row).includes('Private'),false);assert.equal(row.state,'OUTCOME');
+  await assert.rejects(pool.query('UPDATE meri_commands.command_journal SET payload=$2 WHERE tenant_id=$1',[f.b.tenantId,payload]),/TOMBSTONE|IMMUTABLE/);
   assert.equal((await startup.purge.sweepSubject(f.subject)).coreFinalized,true);
  });
  await t.test('lost committed row acknowledgement recovers by actual erased-body readback without repeating effects',async()=>{
