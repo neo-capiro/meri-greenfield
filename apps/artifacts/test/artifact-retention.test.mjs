@@ -20,12 +20,21 @@ function fixture(){
  let clock=1000,seq=100;const events=[],records=new Map(),heads=new Map(),data=new Map();
  const gate={suppressed:new Set(),barrier:false,down:false,calls:[],onObjectRead:null,async assertServable(s){gate.calls.push({...s,stage:events.at(-1)?.stage??'start'});if(gate.down)throw Object.assign(Error('RETENTION_READ_UNAVAILABLE'),{code:'RETENTION_READ_UNAVAILABLE'});if(gate.barrier)throw Object.assign(Error('RETENTION_RECOVERY_BARRIER'),{code:'RETENTION_RECOVERY_BARRIER'});if(gate.suppressed.has(key(s)))throw Object.assign(Error('RETENTION_SUPPRESSED'),{code:'RETENTION_SUPPRESSED'});}};
  const authority=async x=>({receiptId:'fresh-receipt',decision:'allow',action:x.action,binding:structuredClone(x.binding),scopesSha256:hash(x.scopes),resourceSha256:hash(x.resource),requestSha256:x.requestSha256,expiresAtMs:x.deadlineMs});
- const ports={validators,now:()=>clock,ids:()=>({artifactId:id(seq++),versionId:id(seq++),objectId:id(seq++)}),authorize:async x=>{events.push({stage:'authorize'});return authority(x);},budget:{reserve:async x=>{events.push({stage:'reserve'});return {ticketId:'ticket',binding:x.binding,requestSha256:x.requestSha256,maxBytes:x.maxBytes,deadlineMs:x.deadlineMs};},settle:async x=>{events.push({stage:'settle',outcome:x.outcome});return {ticketId:x.ticketId,requestSha256:x.requestSha256,bytes:x.bytes,outcome:x.outcome,status:'settled'};}},
+ const ports={validators,now:()=>clock,ids:()=>({artifactId:id(seq++),versionId:id(seq++),objectId:id(seq++)}),authorize:async x=>{events.push({stage:'authorize'});return authority(x);},
   objects:{put:async x=>{events.push({stage:'put'});const o={objectId:x.objectId,versionId:'storage-'+sha(x.bytes),sha256:sha(x.bytes),bytes:x.bytes.length,scopes:structuredClone(x.scopes)};data.set(hash(o),Buffer.from(x.bytes));return o;},get:async o=>{events.push({stage:'get'});await gate.onObjectRead?.();return Buffer.from(data.get(hash(o)));}},
   versions:{read:async k=>{events.push({stage:'read'});return structuredClone(records.get(typeof k==='string'?k:k.versionId));},commit:async x=>{events.push({stage:'commit'});if((heads.get(x.version.artifactId)??null)!==x.expectedParentVersionId)throw Object.assign(Error('stale'),{code:'STALE'});records.set(x.version.versionId,structuredClone({version:x.version,spec:x.spec,specSha256:x.specSha256,requestSha256:x.requestSha256,inspection:x.inspection}));heads.set(x.version.artifactId,x.version.versionId);return {status:'committed',versionId:x.version.versionId,requestSha256:x.requestSha256,versionSha256:hash(x.version)};}},
   executor:{execute:async({request:r})=>{events.push({stage:'execute'});const bytes=Buffer.from(r.content.text);return {bytes,inspection:{sha256:sha(bytes),bytes:bytes.length,format:r.format,nativeOpened:false,rendered:false,recalculated:false,members:[],details:{encoding:'UTF-8',whitespace:'unchanged'}}};}},retention:gate};
  const stages=from=>events.slice(from).map(e=>e.stage);
- return {ports,events,records,gate,stages,service:()=>createArtifactService(ports),evidenceFor(versionId,c,r){const record=records.get(versionId),requestSha256=hash({request:r,context:c,baseVersionId:null});return {invocationId:'owned_'+versionId,stage:'SETTLED',reservationId:'ticket',argumentsSha256:requestSha256,maxOutputBytes:1048576,completion:{resultSha256:hash({...record,expectedParentVersionId:null}),outputBytes:record.version.object.bytes}};}};
+ const invocations=new Map();
+ return {ports,events,records,gate,stages,service(){
+  const service=createArtifactService(ports);
+  async function generate(baseVersionId,r,c){
+   const requestSha256=validators.nativeRequestSha256(r,c,baseVersionId),invocation={invocationId:'sdk:'+hash({requestSha256,sequence:seq++}),versionId:undefined,requestSha256};
+   const result=await (baseVersionId===null?service.create(r,c,{invocation}):service.revise(baseVersionId,r,c,{invocation}));
+   invocations.set(result.version.versionId,{...invocation,versionId:result.version.versionId});return result;
+  }
+  return {...service,create:(r,c)=>generate(null,r,c),revise:(base,r,c)=>generate(base,r,c)};
+ },evidenceFor(versionId){return invocations.get(versionId);}};
 }
 const conversation=c=>({tenantId:c.binding.tenantId,kind:'conversation',subjectId:c.binding.conversationId}),artifact=(c,v)=>({tenantId:c.binding.tenantId,kind:'artifact',subjectId:v.artifactId});
 test('unsuppressed behaviour is unchanged; the gate sees the bound conversation and, once a trusted record resolved the version, the artifact too, before bytes and before release; other subjects are irrelevant',async()=>{
@@ -48,7 +57,7 @@ test('a suppressed conversation refuses inspect, download, revise and create wit
  const fresh=await s.create(request('new\n'),c);assert.notEqual(fresh.version.artifactId,out.version.artifactId,'a new artifact in the same conversation is not the suppressed one');assert.equal((await s.download(fresh.version.versionId,c)).bytes.toString(),'new\n');
  f.gate.suppressed.clear();const recovered=await s.recover(null,request(),c,{evidence:f.evidenceFor(out.version.versionId,c,request())});assert.equal(recovered.version.versionId,out.version.versionId,'the same recovery succeeds once released');
 });
-test('a suppression that lands while the object bytes are being read is caught before release; a closed barrier or an unreadable journal refuses; the PostgreSQL-backed service refuses a malformed gate at construction',async()=>{
+test('a suppression that lands while the object bytes are being read is caught before release; a closed barrier or an unreadable journal refuses; the PostgreSQL-backed service refuses a malformed gate before claiming delivery',async()=>{
  const f=fixture(),s=f.service(),c=context(),out=await s.create(request(),c);
  f.gate.onObjectRead=async()=>{f.gate.suppressed.add(key(artifact(c,out.version)));f.gate.onObjectRead=null;};
  await assert.rejects(s.download(out.version.versionId,c),/RETENTION_SUPPRESSED/,'bytes already read are not released');f.gate.suppressed.clear();
@@ -56,5 +65,5 @@ test('a suppression that lands while the object bytes are being read is caught b
  f.gate.down=true;await assert.rejects(s.download(out.version.versionId,c),/RETENTION_READ_UNAVAILABLE/,'an unreadable journal never means unsuppressed');f.gate.down=false;
  assert.equal((await s.download(out.version.versionId,c)).bytes.toString(),'one\n');
  assert.throws(()=>createArtifactService({...f.ports,retention:{}}),/ARTIFACT_CONFIGURATION/);
- assert.throws(()=>createPostgresArtifactService({pool:{},allocationJson:'{}',producerContext:{},descriptor:{},context:c,validators,authority:{check(){}},authorize(){},versions:f.ports.versions,objects:f.ports.objects,executor:f.ports.executor,now:()=>1,ids:()=>({}),newReservationId:()=>'r',limits:{maxRequestMs:1000,maxResponseBytes:1024},retention:{}}),/ARTIFACT_BUDGET_CONFIGURATION/,'the durable service propagates only a well-formed gate');
+ await assert.rejects(createPostgresArtifactService({pool:{connect(){assert.fail('invalid retention must refuse before database access');}},context:c,validators,authorize:f.ports.authorize,versions:f.ports.versions,objects:f.ports.objects,executor:f.ports.executor,now:()=>1,retention:{}}).execute({deliveryId:'bad-retention',baseVersionId:null,request:request()}),/ARTIFACT_CONFIGURATION/,'the durable service propagates only a well-formed gate');
 });
