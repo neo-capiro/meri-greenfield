@@ -9,13 +9,15 @@ import {createOperationLifetime} from '../../../../packages/runtime/operation-li
 import {admitPreparedCommitmentsAudit} from '../../document-application/commitments-audit/compose.mjs';
 import {admitPreparedRelationshipBrief} from '../../document-application/relationship-brief/compose.mjs';
 import {admitPreparedReport} from '../../document-application/report-brief/compose.mjs';
+import {admitPreparedCitedReport} from '../../document-application/cited-report/compose.mjs';
 const candidates=new WeakSet(),journals=new WeakSet(),digest=x=>{if(typeof x!=='string'||!/^[a-f0-9]{64}$/u.test(x))fail('SELECTED_OUTPUT_PINS_REFUSED');return x;};
 /** The ordinary original recipes keep their admission; the sourced cited report only as its own installed version. */
-const admitted=pin=>['quick_skill.commitments_audit','quick_skill.relationship_brief'].includes(pin.skillId)||(pin.skillId==='quick_skill.bill_watch'&&pin.skillVersion==='2.0.0');
+const admitted=pin=>['quick_skill.commitments_audit','quick_skill.relationship_brief'].includes(pin.skillId)||(pin.skillId==='quick_skill.bill_watch'&&pin.skillVersion==='2.0.0')||(pin.skillId==='quick_skill.cited_report'&&pin.skillVersion==='1.0.0');
 const stableSubject=s=>{const {authorizationDecisionId,...rest}=s;return rest;};
 const originalGuard=(skill,p,c)=>skill.skillId==='quick_skill.commitments_audit'?admitPreparedCommitmentsAudit(p,c):
  skill.skillId==='quick_skill.relationship_brief'?admitPreparedRelationshipBrief(p,c):
- skill.skillId==='quick_skill.bill_watch'&&skill.skillVersion==='2.0.0'?admitPreparedReport(p,c):fail('SELECTED_OUTPUT_SKILL_REFUSED');
+ skill.skillId==='quick_skill.bill_watch'&&skill.skillVersion==='2.0.0'?admitPreparedReport(p,c):
+ skill.skillId==='quick_skill.cited_report'&&skill.skillVersion==='1.0.0'?admitPreparedCitedReport(p,c):fail('SELECTED_OUTPUT_SKILL_REFUSED');
 function pins(record){const {pending:p,prepared}=record;return {sourceBinding:p.sourceBinding,requestSha256:p.requestSha256,selectionSha256:p.selectionSha256,
  inputSha256:p.inputSha256,preparationSha256:p.preparationSha256,artifactRequestSha256:p.artifactRequestSha256,sourceContextSha256:hash(prepared.context),
  compilerReadsSha256:prepared.provenance.readsSha256,readsSha256:hash(record.reads),sourceEvidenceSha256:hash(prepared.context.evidence),sourceScopes:prepared.context.scopes};}

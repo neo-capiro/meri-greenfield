@@ -155,12 +155,12 @@ test('the selected client subject compiles the seven cited sections through the 
  // Only the byte-verifiable stored mail read becomes artifact evidence, once per stored record.
  assert.deepEqual(prepared.context.evidence.map(item=>item.citationId),[uid(23)]);
  for(const item of prepared.context.evidence)v.nativeSourceEvidence(item);
- assert.equal(prepared.evidenceSha256,v.hash(prepared.context.evidence));
+ assert.equal(preparedCitedReportEvidenceSha256(prepared),v.hash(prepared.context.evidence));
  assert.equal(prepared.provenance.readsSha256,v.hash(prepared.reads));
  assert.equal(prepared.provenance.selection.subject.kind,'client');
  assert.equal(v.hash(prepared.provenance.selection),v.hash(selected),'the whole trusted selection is pinned');
  assert.equal(prepared.provenance.parent,null);assert.equal(prepared.baseVersionId,null);
- assert.equal(preparedCitedReportEvidenceSha256(prepared),prepared.evidenceSha256);
+ assert.equal(preparedCitedReportEvidenceSha256(prepared),v.hash(prepared.context.evidence),'the prepared evidence pin is exact');
  assert.equal(renders,0,'compilation alone never reaches a renderer');
 });
 

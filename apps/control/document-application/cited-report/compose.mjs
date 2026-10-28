@@ -135,9 +135,9 @@ export function createCitedReportCompiler({readSource,readBase,now}){
    const blocks=blocksFor(input,selected,findings,conflicts,reads,retained,provenance);
    const nextContext=v.context({...context,evidence}),request=v.request({operation:'create_word',format:'docx',title:input.title,content:{blocks}});
    life.check();
-   const result=Object.freeze({request:v.snapshot(request),context:v.snapshot(nextContext),baseVersionId:base?.versionId??null,evidenceSha256:v.hash(nextContext.evidence),
+   const result=Object.freeze({request:v.snapshot(request),context:v.snapshot(nextContext),baseVersionId:base?.versionId??null,
     retainedEvidence:v.snapshot(retained),provenance:v.snapshot(provenance),findings:v.snapshot(findings),conflicts:v.snapshot(conflicts),reads:v.snapshot(reads)});
-   prepared.set(result,{requestSha256:v.hash(request),contextSha256:v.hash(nextContext),baseVersionId:result.baseVersionId,evidenceSha256:result.evidenceSha256});return result;
+   prepared.set(result,{requestSha256:v.hash(request),contextSha256:v.hash(nextContext),baseVersionId:result.baseVersionId,evidenceSha256:v.hash(nextContext.evidence)});return result;
   }finally{life.close();}
  }});
 }

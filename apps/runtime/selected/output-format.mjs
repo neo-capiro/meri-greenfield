@@ -1,12 +1,14 @@
-/** SDK output steering for the two admitted original document compilers.
+/** SDK output steering for the three admitted original document compilers.
  * The compilers remain the authority for the literal result and its source evidence. */
 const text=maxLength=>({type:'string',minLength:1,...(maxLength===undefined?{}:{maxLength})}),nullable=value=>({anyOf:[value,{type:'null'}]}),
  object=(properties,required=Object.keys(properties))=>({type:'object',properties,required,additionalProperties:false}),
  list=(items,maxItems)=>({type:'array',items,maxItems});
 const passage=(sourceId,recordText,quoteText)=>object({sourceId,recordId:recordText,recordVersionId:recordText,start:{type:'integer',minimum:0},end:{type:'integer',minimum:1},quote:quoteText});
 
-/** The two ordinary recipes keep their single admitted version; the sourced cited report is admitted by its own exact installed version. */
+/** The two ordinary recipes keep their single admitted version; the sourced cited report and the general long-form
+ * cited report are admitted by their own exact installed version. */
 export const selectedOutputCompiler=({pin})=>pin.skillId==='quick_skill.bill_watch'&&pin.skillVersion==='2.0.0'?'quick_skill.bill_watch':
+ pin.skillId==='quick_skill.cited_report'&&pin.skillVersion==='1.0.0'?'quick_skill.cited_report':
  pin.skillVersion==='1.0.0'&&['quick_skill.commitments_audit','quick_skill.relationship_brief'].includes(pin.skillId)?pin.skillId:null;
 export function selectedOutputFormat(selected){
  const {pin,manifest}=selected,skill=object(Object.fromEntries(Object.entries(pin).map(([key,value])=>[key,{const:value}]))),
@@ -28,6 +30,18 @@ export function selectedOutputFormat(selected){
     billVersion:{type:'string',pattern:'^[a-z][a-z0-9_.-]{0,31}$'},fiscalYear:{type:'integer',minimum:1900,maximum:9999},
     budgetStage:{type:'string',enum:['requested','authorized','appropriated','obligated','actual','outlay']}});
   properties={skill,title:text(200),subject:bill,asOf:{type:'string'},summary:text(2000),findings:list(finding,40),
+   conflicts:list(disclosed,20),recommendations:list(text(1000),20),limitations:list(text(1000),20)};
+ }else if(selectedOutputCompiler(selected)==='quick_skill.cited_report'){
+  // Mirror of the recipe's own private input: the seven sections, the real read locators of its citations and
+  // the disclosed conflicts. There is deliberately no subject property: the subject is the trusted selected
+  // subject, so no model output can widen or substitute the scope.
+  const citation=Object.freeze({anyOf:Object.freeze([
+    object({kind:{const:'mail'},threadId:text(36),messageId:text(36),start:{type:'integer',minimum:0},end:{type:'integer',minimum:1}}),
+    object({kind:{const:'portfolio-evidence'},portfolioId:text(36),origin:{type:'string',enum:['review','snapshot','current_continuity']},recordId:text(36)}),
+    object({kind:{const:'portfolio-evidence'},portfolioId:text(36),origin:{const:'current_continuity'}})])}),
+   finding=object({id:text(64),kind:{type:'string',enum:['excerpt','claim']},text:text(2000),citations:list(citation,10)}),
+   disclosed=object({findingId:text(64),note:text(1000)});
+  properties={skill,title:text(200),asOf:{type:'string'},summary:text(2000),findings:list(finding,40),
    conflicts:list(disclosed,20),recommendations:list(text(1000),20),limitations:list(text(1000),20)};
  }else throw Object.assign(Error('SKILL_OUTPUT_FORMAT_UNAVAILABLE'),{code:'SKILL_OUTPUT_FORMAT_UNAVAILABLE'});
  return {type:'json_schema',schema:object(properties)};

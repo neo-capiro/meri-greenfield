@@ -9,7 +9,7 @@ import {selectSkill} from '../../../../packages/skills/index.mjs';
 const fault=code=>Object.assign(Error(code),{code});
 export const sdkToolName=operation=>operation.id.replaceAll('.','_');
 /** The ordinary original recipes keep their admission; the sourced cited report is admitted only as its own installed version. */
-export const admitOriginalSkill=pin=>['quick_skill.relationship_brief','quick_skill.commitments_audit'].includes(pin.skillId)||(pin.skillId==='quick_skill.bill_watch'&&pin.skillVersion==='2.0.0');
+export const admitOriginalSkill=pin=>['quick_skill.relationship_brief','quick_skill.commitments_audit'].includes(pin.skillId)||(pin.skillId==='quick_skill.bill_watch'&&pin.skillVersion==='2.0.0')||(pin.skillId==='quick_skill.cited_report'&&pin.skillVersion==='1.0.0');
 export function createOriginalSkillServer({selected,read,timeoutMs,binding,expectedSessionId}) {
  const original=selectSkill(selected.pin.skillId,selected.pin.skillVersion);
  if(!admitOriginalSkill(original.pin)||

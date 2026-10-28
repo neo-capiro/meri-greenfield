@@ -7,6 +7,7 @@ import {createOperationLifetime} from '../../../../packages/runtime/operation-li
 import {createCommitmentsAuditCompiler} from '../../document-application/commitments-audit/compose.mjs';
 import {createRelationshipBriefCompiler} from '../../document-application/relationship-brief/compose.mjs';
 import {createCongressionalReportCompiler} from '../../document-application/report-brief/compose.mjs';
+import {createCitedReportCompiler} from '../../document-application/cited-report/compose.mjs';
 const hash=canonicalSha256,same=(a,b)=>hash(a)===hash(b),fail=code=>{throw Object.assign(Error(code),{code});};
 export function createOriginalSelectedSkillExecution(configuration){
  const c=own(configuration,['admissionForBinding','gatewayForBinding','readSelection','readContext','runtimeFactory','publishForBinding','retention','proposals','now','defaultCongress'],['outputBridge','readBase','readRevisionBase']);
@@ -22,7 +23,7 @@ export function createOriginalSelectedSkillExecution(configuration){
    const admissionPort=c.admissionForBinding(binding,{credential:args.credential}),gatewayPort=c.gatewayForBinding(binding,{credential:args.credential}),admission=own(admissionPort,['currentSkillRun'],['admitSelection']),gateway=own(gatewayPort,['execute','readForSkill']);if(typeof admission.currentSkillRun!=='function'||['readForSkill','execute'].some(k=>typeof gateway[k]!=='function'))fail('SKILL_EXECUTION_CONFIGURATION');
    const base=c.readRevisionBase?data(await life.run(signal=>c.readRevisionBase({binding,request,scopes,selection,signal}))):null;
    const compileArtifact=async call=>{if(!same(call.binding,binding)||!same(call.scopes,scopes)||!same(call.selection,selection)||!same(call.skill,request.skill))fail('SKILL_COMPILER_CONTEXT_REFUSED');
-    const sourceContext=v.context({...context,deadlineMs:Math.min(context.deadlineMs,call.deadlineMs)}),compiler=request.skill.skillId==='quick_skill.commitments_audit'?createCommitmentsAuditCompiler:request.skill.skillId==='quick_skill.relationship_brief'?createRelationshipBriefCompiler:request.skill.skillId==='quick_skill.bill_watch'&&request.skill.skillVersion==='2.0.0'?createCongressionalReportCompiler:null;if(!compiler)fail('SKILL_NOT_CONNECTED');
+    const sourceContext=v.context({...context,deadlineMs:Math.min(context.deadlineMs,call.deadlineMs)}),compiler=request.skill.skillId==='quick_skill.commitments_audit'?createCommitmentsAuditCompiler:request.skill.skillId==='quick_skill.relationship_brief'?createRelationshipBriefCompiler:request.skill.skillId==='quick_skill.bill_watch'&&request.skill.skillVersion==='2.0.0'?createCongressionalReportCompiler:request.skill.skillId==='quick_skill.cited_report'&&request.skill.skillVersion==='1.0.0'?createCitedReportCompiler:null;if(!compiler)fail('SKILL_NOT_CONNECTED');
     const prepared=await compiler({readSource:call.readSource,...(c.readBase?{readBase:c.readBase}:{}),now:c.now,defaultCongress:c.defaultCongress}).prepare(call.input,sourceContext,{selection,...(base?{base}:{}),signal:call.signal});
     if(records.size>=64&&!records.has(hash(prepared)))fail('SKILL_PREPARATION_LIMIT');records.set(hash(prepared),{prepared,binding,request,selection,reads:null,inputSha256:hash(call.input),credential:args.credential});return prepared;
    };
