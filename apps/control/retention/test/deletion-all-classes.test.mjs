@@ -15,10 +15,12 @@ const everyClass=(s,extra={})=>({...snapshot(s,{checkpoints:2,outputs:2}),nextRu
 async function prepared(f,s,raw){const inv=enumerateReferences(raw),key=subjectKey(s);f.current.inventories.set(key,inv);f.rows.seed(key,inv);for(const o of inv.objects)f.store.put(f.keyFor(o),o.versionId);
  await f.startup.suppression.suppress({principal:f.principal,subject:s,reason:'owner request'});f.clock.advance(30*day);return {inv,key,plan:planFrom(f,s,await f.startup.journal.get(key))};}
 
-test('a conversation with data in every retained conversation class and an artifact with versions are each deleted completely; retained evidence stays and is never targeted',async()=>{
+test('legacy conversation targets and artifact versions delete completely while retained evidence stays',async()=>{
  const f=composeStartup({purge:true}),s=subjectOf(),a=subjectOf('artifact');await f.startup.start();
  const {inv,key,plan}=await prepared(f,s,everyClass(s));assert.equal(plan.state,'PLANNED');
- const conversationRowClasses=rowTargetClasses.filter(c=>!['artifactVersions','schedules'].includes(c));
+ // This legacy snapshot supplies upload objects only. Canonical upload custody
+ // rows require the source decoder and are exercised by expired-trash-pg.test.mjs.
+ const conversationRowClasses=rowTargetClasses.filter(c=>!['artifactVersions','schedules','uploads'].includes(c));
  assert.deepEqual([...new Set(plan.rowSteps.map(r=>r.className))].sort(),[...conversationRowClasses].sort(),'every conversation row class has a target');
  assert.deepEqual([...new Set(inv.objects.flatMap(o=>o.classes))].sort(),['completionCheckpoints','conversation','lifecycle','selectedOutputs','uploads'].filter(c=>inv.objects.some(o=>o.classes.includes(c))).sort());
  assert.ok(inv.objects.some(o=>o.classes.includes('uploads')),'stored uploads are object targets');
