@@ -52,6 +52,12 @@ export function canonicalInputSchema(inputSchema){
 }
 const isObject=(/** @type {unknown} */v)=>v!==null&&typeof v==='object'&&!Array.isArray(v);
 const json=(/** @type {unknown} */v)=>JSON.stringify(v);
+const UUID_PATTERN=z.toJSONSchema(z.uuid()).pattern;
+/** Every allOf member constrains the same value; an exact constraint in any member is sufficient.
+ * Never look through unions, where another branch could admit a wider value. @param {any} schema @param {string} key @param {string} value @returns {boolean} */
+function hasConjunctiveConstraint(schema,key,value){
+ return isObject(schema)&&(schema[key]===value||Array.isArray(schema.allOf)&&schema.allOf.some((/** @type {any} */branch)=>hasConjunctiveConstraint(branch,key,value)));
+}
 /** A union with no other constraints can be compared branch by branch. @param {any} schema */
 const unionOnly=schema=>Array.isArray(schema.anyOf)&&Object.keys(schema).every(k=>k==='anyOf'||ANNOTATIONS.has(k));
 /** JSON Schema type-specific constraints are inert on other primitive types. @param {string} key @param {any} schema */
@@ -99,7 +105,11 @@ export function isNarrowerOrEqual(advertised,canonical){
    case 'enum':{const values=Object.hasOwn(advertised,'const')?[advertised.const]:a;if(!Array.isArray(values)||!values.every(v=>c.some((/** @type {unknown} */x)=>json(x)===json(v))))return false;break;}
    case 'minimum':case 'exclusiveMinimum':case 'minLength':case 'minItems':case 'minProperties':if(typeof a!=='number'||a<c)return false;break;
    case 'maximum':case 'exclusiveMaximum':case 'maxLength':case 'maxItems':case 'maxProperties':if(typeof a!=='number'||a>c)return false;break;
-   case 'format':case 'pattern':case 'multipleOf':if(a!==c)return false;break;
+   // Zod represents a UUID format plus an explicit pattern as allOf patterns, omitting format.
+   // Only its exact standard UUID pattern proves that format; arbitrary regex containment is not inferred.
+   case 'format':if(!hasConjunctiveConstraint(advertised,k,c)&&!(c==='uuid'&&typeof UUID_PATTERN==='string'&&hasConjunctiveConstraint(advertised,'pattern',UUID_PATTERN)))return false;break;
+   case 'pattern':if(!hasConjunctiveConstraint(advertised,k,c))return false;break;
+   case 'multipleOf':if(a!==c)return false;break;
    case 'required':if(c.length&&(!Array.isArray(a)||!c.every((/** @type {string} */name)=>a.includes(name))))return false;break;
    case 'additionalProperties':if(c===false?a!==false:!(a===false||isNarrowerOrEqual(a,c)))return false;break;
    case 'properties':{if(!isObject(a))return false;
