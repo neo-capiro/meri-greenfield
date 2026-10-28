@@ -1,12 +1,14 @@
 /** Office editor edit-session decisions (design section 4.2 and 4.4; owner answers accepted 15 October 2026: Q-O1 full
- * editing where only explicit saves publish new immutable versions, Q-O4 PDF preview-only, Q-O5 one editor per session,
+ * editing, Q-O4 PDF preview-only, Q-O5 one editor per session,
  * Q-O6 on conflict keep the draft and offer branch / reopen-on-latest / discard and never overwrite, Q-O7 no extra
  * review, Q-O8 and Q-X3 desktop only, Q-O9 drafts are a private data class).
  *
  * PREPARATION ONLY: pure decisions the WOPI host and publish pipeline will call. No bytes, storage, editor process or
  * artifact write happens here. Nothing is composed: the editor activation is held (`activation.mjs`). Branch publishing
  * needs artifact lineage with a non-head parent, a contract change proposed to dot (Q-O10); until dot accepts it the
- * branch option is not offered. */
+ * branch option is not offered. The 28 October A7 requirement supersedes the old save-to-publish coupling:
+ * Save writes a private draft; publishing is a separate explicit action. Licensing, hosting, collaboration and
+ * draft-retention choices remain undecided, and these pure decisions do not activate an editor. */
 export const EDITOR_FORMATS=Object.freeze(['docx','xlsx','pptx']);
 export const PREVIEW_ONLY_FORMATS=Object.freeze(['pdf']);
 export const SAVE_KINDS=Object.freeze(['autosave','exit','explicit']);
@@ -32,12 +34,13 @@ export function admitEditSession({format,suppressed,authority,desktop,activeEdit
 
 /** One accepted PutFile. Accepting bytes into the draft store is the durability point: no structural or native check
  * runs here, so a later failing check can never make the editor report a failed save. Identical bytes add no draft
- * sequence. Only an explicit save becomes a publish candidate. */
+ * sequence. Autosave, explicit Save and exit all preserve the published version; none requests publication. */
 export function planSave({kind,sha256,bytes,maxBytes,draftSeq,draftSha256}){
  if(!SAVE_KINDS.includes(kind)||typeof sha256!=='string'||!SHA.test(sha256)||!Number.isSafeInteger(bytes)||bytes<1||!Number.isSafeInteger(maxBytes)||maxBytes<1||!Number.isSafeInteger(draftSeq)||draftSeq<0||draftSha256!==null&&!SHA.test(draftSha256??''))throw fault('EDITOR_SAVE_INVALID');
  if(bytes>maxBytes)throw fault('EDITOR_DRAFT_TOO_LARGE');
  const same=sha256===draftSha256;
- return Object.freeze({newDraft:!same,draftSeq:same?draftSeq:draftSeq+1,publishCandidate:kind==='explicit',closedWithDraft:kind==='exit'});
+ if(!same&&!Number.isSafeInteger(draftSeq+1))throw fault('EDITOR_SAVE_INVALID');
+ return Object.freeze({newDraft:!same,draftSeq:same?draftSeq:draftSeq+1,publishCandidate:false,closedWithDraft:kind==='exit'});
 }
 
 /** Q-O6 and Q-O10: never overwrite the head; branch only once dot accepts non-head-parent lineage. */

@@ -30,9 +30,9 @@ Use existing feature owners and the Claude SDK harness. Reuse public contracts, 
 
 **Checks.** 24 passed, 0 failed/skipped across `fence.test.mjs`, `input-activation.test.mjs`, `confidentiality.test.mjs`, including both new counterexamples. Pure source fixtures only; native browser, relay, UI and real identity-provider acceptance not run. Activation remains held.
 
-## Remaining preparation
+## A6 — skipped by the user
 
-A3 authenticated sites, A4 device/browser bridge, A5 federal drafting and A7 Collabora/WOPI preparation are processed individually after these rows. A6 graph/buyer/funding work is explicitly skipped. No unprocessed row is complete.
+Graph, buyer and funding expansion has no implementation allocation in this batch. Await the user's requirements; the item 15 inventory preserves the row without inventing scope or acceptance.
 
 ## A5 — federal drafting workbench
 
@@ -71,3 +71,21 @@ A3 authenticated sites, A4 device/browser bridge, A5 federal drafting and A7 Col
 **Finite next slice and acceptance.** Once named, add one complete credential-free manifest with reviewed terms and exact digest, then qualify sign-in, reuse only within the same conversation, logout/expiry/revocation, target/data-bound approval and timeout readback using that site's actual workflow. No credential collection in chat, cross-conversation session inheritance or blind replay. Until then maintain the empty registry and explicit unavailable state.
 
 **Checks.** Six manifest/policy tests passed, including changed-content approval refusal and malformed activation evidence. Synthetic sites only. Real site, browser, sign-in and terms acceptance not run. A1 dependency follow-up also passed all 11 HTTP/session-isolation cases; capability/Bash imports still require local package setup and native SDK/filesystem proof remains unrun.
+
+## A7 — existing Collabora/WOPI preparation; live editing unavailable
+
+**Selected path and owner.** User selected the existing Collabora/WOPI preparation path on 28 October. `apps/artifacts/edit-sessions/{edit-session,wopi-locks,wopi-access-token,activation}.mjs` owns the current pure decisions. Reuse artifact immutable versions, inspect/revise authority, source/author provenance, storage and native inspection; Core still owns current user access. These modules are not a running WOPI host or a purchased production editor. `EDITOR_ACTIVATION` stays held.
+
+**Source correction.** Autosave, explicit Save and exit write private draft state only. They never propose publication. This supersedes the historical Q-O1 explicit-save coupling. Draft sequence overflow is refused. Existing separate publish outcome/reconciliation decisions preserve a draft on conflict/refusal and retain an unknown barrier until authoritative readback. The published head must remain unchanged until a separate authorized publish succeeds against its exact base and draft sequence/hash.
+
+**Current preparation limits.** Formats are DOCX/XLSX/PPTX, with PDF preview-only. Existing single-editor admission and in-memory WOPI locks are conservative preparation constraints, not an approved collaboration policy or durable implementation. Token expiry/file binding does not replace current actor/tenant/session, suppression/revocation and lock checks on every WOPI request. Private drafts need an approved durable retention owner/schema and crash/disconnect recovery before exposure; parent-owned retention files are unchanged.
+
+**Required state contract.** The eventual shared editor shell must distinguish connecting/editing, saving, saved draft, publish pending, published, conflict, locked, expired and recovery required. Show saved only after durable draft acknowledgement, published only after immutable version receipt, and unknown/recovery required after lost acknowledgement. Lock contention or stale base never overwrites. Revoked/expired sessions stop editing and publication. Recovery resumes only the same currently authorized private draft and requires reconciliation before retrying an uncertain publish.
+
+**Open decisions.** Embedded multi-tenant licensing/commercial terms, hosting/isolation placement, collaboration/locking policy, draft retention/deletion and macro/external-link/download/network policy are not approved. The current restrictive macro/link/egress defaults stay as preparation requirements; nothing enables broader behavior. No vendor contact, spending, deployment, image build or retention migration is performed.
+
+**Fidelity acceptance plan.** At least 30 representative saved Office files, covering all three formats: document sections/styles/tables/footnotes/comments/tracked changes; workbook formulas/recalculation/formats/charts/merged cells; presentation masters/fonts/tables/charts/speaker notes. Include large files, fonts, embedded objects and unsupported-feature refusal. Record source and saved hashes, visual/semantic differences and supported/unsupported outcome for every file. Test exact publish export, lock contention, stale draft/base, expiry/revocation, crash/disconnect/restart recovery and private draft cleanup. Fixture results never count as Office fidelity or live acceptance.
+
+**Finite next slice.** After the named decisions, compose one DOCX draft-only WOPI host with current authority, durable private draft acknowledgement, exact source/author provenance and recovery readback. Keep publish separate through the existing immutable revise owner. Expand only after that crossing and the representative corpus are qualified; reuse shared UI primitives and public artifact contracts rather than writing another Office editor.
+
+**Checks.** Six pure decision/token/lock tests passed, including Save/publish separation, sequence exhaustion, stale parent refusal, unknown reconciliation, held activation and token expiry/tamper/file isolation. WOPI conformance, actual Collabora, native 30-file fidelity, durable draft recovery and live acceptance are not run. Item 15 preparation is complete for allocated rows; capability delivery/activation remains limited as stated per row.
