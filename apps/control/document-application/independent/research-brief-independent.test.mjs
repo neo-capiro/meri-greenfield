@@ -110,7 +110,7 @@ test('untrusted input getter and Proxy execute no traps',async()=>{
 });
 test('recipe/prose/catalog pins and future as-of refuse before source dispatch',async()=>{
  for(const mutate of [i=>i.skill.skillVersion='9.0.0',i=>i.skill.manifestSha256='a'.repeat(64),i=>i.skill.proseSha256='b'.repeat(64),i=>i.skill.catalogSha256='c'.repeat(64),i=>i.asOf='2026-10-13T12:00:01.000Z']){
-  const i=input();mutate(i);let count=0;await assert.rejects(compiler(c=>{count++;return read(c);}).prepare(i,context()));assert.equal(count,0);
+  const i=structuredClone(input());mutate(i);let count=0;await assert.rejects(compiler(c=>{count++;return read(c);}).prepare(i,context()));assert.equal(count,0);
  }
  const prose=await readFile(new URL('../research-brief/SKILL.md',import.meta.url));assert.equal(digest(prose),briefSkillPin().proseSha256);assert.equal(v.hash(briefManifest()),briefSkillPin().manifestSha256);
 });
