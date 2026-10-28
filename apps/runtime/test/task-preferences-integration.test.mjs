@@ -5,46 +5,44 @@ import test,{mock} from 'node:test';import assert from 'node:assert/strict';impo
 import {WorkflowIdReusePolicy,WorkflowIdConflictPolicy} from '@temporalio/client';
 import {fixture as membershipFixture} from '../../control/settings/user-application/test/fixture.mjs';
 import {createSettingsPoolFixture} from '../../control/settings/test/postgres-store-fixture.mjs';
-import {commandComposition,id} from '../../control/intents/test/fixture.mjs';
-import {createTaskCommandApplication} from '../../control/task-command-application/index.mjs';
+import {standaloneFixture} from '../native-authority/test/standalone-tasks-fixture.mjs';
 import {canonicalSha256} from '../../../packages/contracts/validate.mjs';
 import {versions} from '../../control/conversations/test/store-fixture.mjs';
-import {capabilityDigest} from '../native-authority/task-verifier.mjs';
+import {agentcoreConfig} from './agentcore-fixture.mjs';
+import {MODEL_CATALOG} from '../../../packages/contracts/test/model-selection-fixture.mjs';
 import {createControlRouteApplications} from '../control-route-boundary.mjs';
 import {productReadiness} from '../product-readiness.mjs';
-mock.module('../prepared-candidate-config.mjs',{namedExports:{compilePreparedCandidateConfiguration:value=>value}});
 mock.module('../artifacts/composition.mjs',{namedExports:{runtimeArtifactRecovery(){return null;}}});
 const actualConfig=await import('../config.mjs');let active;
 mock.module('../config.mjs',{namedExports:{...actualConfig,async readSecret(path){active.events.push('secret');return Buffer.from(path==='db'?'postgres://synthetic.invalid/integration?sslmode=verify-full':'synthetic');}}});
 mock.module('pg',{namedExports:{Pool:class{constructor(){active.events.push('pool');return active.pool;}}}});
 mock.module('@temporalio/client',{namedExports:{WorkflowIdReusePolicy,WorkflowIdConflictPolicy,
- Connection:{async connect(){return {withDeadline(_at,fn){return fn();},withAbortSignal(_signal,fn){return fn();},workflowService:{async getSystemInfo(){}},async close(){active.events.push('temporal-close');}};}},
+ Connection:{async connect(){return {withDeadline(_at,fn){return fn();},withAbortSignal(_signal,fn){return fn();},workflowService:{async describeNamespace({namespace}){assert.equal(namespace,active.configuration.temporal.namespace);}},async close(){active.events.push('temporal-close');}};}},
  Client:class{workflow={async start(){assert.fail('product requests must not dispatch conversations');},getHandle(){assert.fail('product requests must not read workflows');}};}}});
 mock.module('../native-client.mjs',{namedExports:{createNativeCapabilityClient(){return active.native;}}});
-mock.module('../prepared-candidate.mjs',{namedExports:{async startPreparedCandidate({pool}){
- assert.equal(pool,active.pool);return {controlCapabilitySha256:capabilityDigest('synthetic'),native:active.native,productPorts:active.ports,
+mock.module('../agentcore-candidate.mjs',{namedExports:{async startAgentCoreCandidate({pool,configuration,nativeCredentials}){
+ assert.equal(typeof pool.query,'function');assert.equal(configuration,active.configuration);assert.equal(typeof nativeCredentials.nativeCredentialFor,'function');return {native:active.native,execution:active.execution,productPorts:active.ports,
   application:active.candidate,bindApplication(application){active.bound=application;},async close(){active.events.push('candidate-close');}};
 }}});
 mock.module('../http-server.mjs',{namedExports:{async listenRuntime(input){
  const name=input.configuration.http.port===1002?'private':'public';active.events.push('listen:'+name);active.listeners[name]=input;
  return {address:{port:input.configuration.http.port},async close(){active.events.push('listener-close:'+name);}};
 }}});
-const {assembleControl,startControl}=await import('../control.mjs');
+const {assembleControl,startControl:startActualControl}=await import('../control.mjs');
+// Borrow synthetic TLS transport; certificate validation has separate real-material coverage.
+const startControl=configuration=>startActualControl(configuration,{testOwners:{tls:async()=>({})}});
 const base={sourceEnabled:false,versions,http:{hostname:'127.0.0.1',port:1001,frontendOrigin:'https://ui.synthetic.invalid'},
  privateHttp:{hostname:'127.0.0.1',port:1002,frontendOrigin:'https://ui.synthetic.invalid'},
  limits:{requestMs:1000,requestBytes:131072,startupMs:1000,shutdownMs:1000},native:{maxResponseBytes:131072,capabilityFile:'cap'},
- nativeCandidate:{controlCapabilityFile:'cap'},database:{connectionFile:'db'},temporal:{taskQueue:'synthetic',namespace:'synthetic',address:'synthetic',tls:{caFile:'ca',certFile:'cert',keyFile:'key'}},sessions:{maxSessions:10,maxTtlMs:3000}};
+ agentcore:agentcoreConfig(),models:MODEL_CATALOG,database:{connectionFile:'db'},temporal:{taskQueue:'synthetic',namespace:'synthetic',address:'synthetic',tls:{caFile:'ca',certFile:'cert',keyFile:'key'}},sessions:{maxSessions:10,maxTtlMs:3000}};
 const paths=['/api/task-commands/prepare','/api/task-commands/execute','/api/settings/user/read','/api/settings/user/save'];
 const request=(path,body={},credential=path.startsWith('/api/settings/')?'A':'synthetic-session')=>new Request('https://meri.synthetic.invalid'+path,
  {method:'POST',headers:{authorization:'Bearer '+credential,'content-type':'application/json'},body:JSON.stringify(body)});
 const unavailable=async response=>{assert.equal(response.status,503);assert.deepEqual(await response.json(),{error:{code:'TASK_COMMAND_UNAVAILABLE',outcome:'NOT_DISPATCHED'}});};
 function scenario({sourceEnabled=false,taskOwner=true,scripts=[],schemaHook}={}){
- const membership=membershipFixture(),task=commandComposition({action:'task.update'}),sql=createSettingsPoolFixture(scripts);membership.state.now=Date.now();
- const state={membership,task,sql,events:[],listeners:{},schemaHook,taskResolutions:0,privateCalls:0,ends:0};
- const api=createTaskCommandApplication({now:()=>task.f.state.now,limits:{maxRequestMs:1000,maxRequestBytes:65536,maxResponseBytes:65536},async resolveSession(call){
-  state.taskResolutions++;assert.equal(call.credential,'synthetic-session');return {binding:task.binding,commandOptions:task.commandOptions,checkedAtMs:task.f.state.now,expiresAtMs:task.f.state.now+1000,
-   async authorizeExecution({proposal}){return {credential:'synthetic',execution:{...task.f.execution,proposalId:proposal.proposalId,commandSha256:proposal.commandSha256,idempotencyKey:proposal.command.idempotencyKey}};}};
- }});
+ const membership=membershipFixture(),task=standaloneFixture(),sql=createSettingsPoolFixture(scripts);membership.state.now=Date.now();
+ const state={membership,task,sql,events:[],listeners:{},schemaHook,taskResolutions:0,privateCalls:0,ends:0,execution:{async authenticate(){assert.fail('product requests must not authenticate SDK executions');}}};
+ const api={async handle(request){state.taskResolutions++;return task.app.handle(request);}};
  state.ports={conversationMembership:membership.gate,...(taskOwner?{taskCommandApplication:api}:{})};
  state.native={async readiness(){},async call(){assert.fail('no native capability call in product integration');}};
  state.candidate={async handle(r){state.privateCalls++;assert.equal(new URL(r.url).pathname,'/v1/native-task/probe');return Response.json({syntheticProtected:true});}};
@@ -55,7 +53,7 @@ function scenario({sourceEnabled=false,taskOwner=true,scripts=[],schemaHook}={})
  state.configuration={...base,sourceEnabled,userPreferences:{enabled:true}};active=state;return state;
 }
 function assembled(state){
- const assembly=assembleControl({configuration:state.configuration,pool:state.pool,client:{workflow:{async start(){assert.fail('no workflow dispatch');},getHandle(){assert.fail('no workflow read');}}},native:state.native,canonicalProductPorts:state.ports});
+ const assembly=assembleControl({configuration:state.configuration,pool:state.pool,client:{workflow:{async start(){assert.fail('no workflow dispatch');},getHandle(){assert.fail('no workflow read');}}},native:state.native,execution:state.execution,canonicalProductPorts:state.ports});
  return {assembly,routes:createControlRouteApplications({assembly:assembly.application,candidate:state.candidate})};
 }
 function preferenceScripts(preferences){
@@ -73,27 +71,28 @@ test('actual separate-listener startup opens preferences after schema readiness 
  try{
   const app=s.listeners.public.application;assert.ok(s.events.indexOf('settings-schema')<s.events.indexOf('listen:private'));assert.ok(s.events.indexOf('listen:private')<s.events.indexOf('listen:public'));
   assert.equal((await app.handle(request(paths[2]))).status,200);const saved=await app.handle(request(paths[3],{expectedRevision:0,preferences}));assert.equal(saved.status,200);
-  const expected={owner:{tenantId:'tenant-A',actorId:'actor-A'},revision:1,preferences};assert.deepEqual(await saved.json(),expected);assert.deepEqual(await (await app.handle(request(paths[2]))).json(),expected);
+  const expected={owner:{tenantId:'tenant-A',actorId:'actor-A'},revision:1,preferences,modelCatalog:MODEL_CATALOG};assert.deepEqual(await saved.json(),expected);assert.deepEqual(await (await app.handle(request(paths[2]))).json(),expected);
   for(const path of paths.slice(0,2))await unavailable(await app.handle(request(path)));for(const path of paths)assert.equal((await s.listeners.private.application.handle(request(path))).status,404);
-  assert.equal(s.taskResolutions,0);assert.equal(s.task.metadataCalls.prepare,0);assert.equal(s.task.f.state.fetches,0);assert.equal(s.sql.committed.filter(row=>row.kind==='audit').length,1);assert.equal(s.sql.released.length,3);assert.equal(s.privateCalls,0);
+  assert.equal(s.taskResolutions,0);assert.equal(s.task.metadata.rows.size,0);assert.equal(s.task.state.effects,0);assert.equal(s.sql.committed.filter(row=>row.kind==='audit').length,1);assert.equal(s.sql.released.length,3);assert.equal(s.privateCalls,0);
  }finally{await runtime.close();}
  assert.equal(s.ends,1);assert.equal((await s.bound.handle(request(paths[2]))).status,503);
 });
-test('explicit synthetic source-enabled composition reaches both actual APIs through the public boundary and keeps separate approval',async()=>{
+test('explicit synthetic source-enabled composition reaches both actual APIs and requires an exact explicit approval before native effects',async()=>{
  const s=scenario({sourceEnabled:true,scripts:[{steps:[{match:/^SELECT \* FROM meri_settings.user_preferences/u,rows:[]}]}]}),{assembly,routes}=assembled(s);
  try{
   await assembly.userPreferences.readiness();assert.equal((await routes.public.handle(request(paths[2]))).status,200);
-  const prepared=await routes.public.handle(request(paths[0],{arguments:{taskId:id(21),title:'Updated',status:'open'}}));assert.equal(prepared.status,200);const {proposal}=await prepared.json();
-  assert.equal(s.task.f.state.fetches,0);assert.notEqual((await routes.public.handle(request(paths[1],{proposal}))).status,200);assert.equal(s.task.f.state.fetches,0);
-  s.task.approve(proposal);const executed=await routes.public.handle(request(paths[1],{proposal}));assert.equal(executed.status,200);assert.equal((await executed.json()).status,'observed');
-  assert.equal((await routes.public.handle(request(paths[1],{proposal}))).status,200);assert.equal(s.task.f.state.fetches,1);assert.equal(s.task.f.state.http.url,'https://source.invalid/api/clio/tools/update_task');assert.deepEqual(JSON.parse(s.task.f.state.http.options.body),{taskId:id(21),title:'Updated',status:'todo'});
+  const prepared=await routes.public.handle(request(paths[0],s.task.raw));assert.equal(prepared.status,200,await prepared.clone().text());const {proposal}=await prepared.json();
+  assert.equal(s.task.state.effects,0);assert.equal(s.task.state.decisions,0);
+  const changed=structuredClone(proposal);changed.command.arguments.patch.title='Tampered';assert.notEqual((await routes.public.handle(request(paths[1],{proposal:changed}))).status,200);assert.equal(s.task.state.effects,0);assert.equal(s.task.state.decisions,0);
+  const executed=await routes.public.handle(request(paths[1],{proposal}));assert.equal(executed.status,200,await executed.clone().text());const observed=await executed.json();assert.equal(observed.status,'observed');assert.equal(observed.outcome.execution.kind,'native-task');assert.equal(observed.outcome.result.id,s.task.raw.arguments.taskId);assert.equal(observed.outcome.result.title,'Updated');assert.equal(observed.outcome.result.status,'todo');
+  assert.equal((await routes.public.handle(request(paths[1],{proposal}))).status,200);assert.equal(s.task.state.effects,1);assert.equal(s.task.state.decisions,1);
   const census=assembly.productReadiness();assert.equal(census.owners.find(owner=>owner.name==='tasks.commands').state,'composed');assert.equal(census.owners.find(owner=>owner.name==='settings.userPreferences').state,'composed');assert.equal(census.ready,false);
  }finally{assembly.close();}assert.equal(s.ends,0,'assembly must not dispose its borrowed pool');
 });
 test('source-enabled synthetic composition without a trusted task application stays closed while preferences still reads',async()=>{
  const s=scenario({sourceEnabled:true,taskOwner:false,scripts:[{steps:[{match:/^SELECT \* FROM meri_settings.user_preferences/u,rows:[]}]}]}),{assembly,routes}=assembled(s);
  try{await assembly.userPreferences.readiness();assert.equal((await routes.public.handle(request(paths[2]))).status,200);for(const path of paths.slice(0,2))await unavailable(await routes.public.handle(request(path)));
-  assert.equal(assembly.productReadiness().owners.find(owner=>owner.name==='tasks.commands').state,'unavailable');assert.equal(s.taskResolutions,0);assert.equal(s.task.f.state.fetches,0);
+  assert.equal(assembly.productReadiness().owners.find(owner=>owner.name==='tasks.commands').state,'unavailable');assert.equal(s.taskResolutions,0);assert.equal(s.task.state.effects,0);
  }finally{assembly.close();}
 });
 test('public mounts are exact and both applications remain excluded from the protected listener',async()=>{
@@ -107,7 +106,7 @@ test('public mounts are exact and both applications remain excluded from the pro
 });
 test('actual configuration takes source enablement only as an explicit boolean (G1); composition metadata cannot enable a source',()=>{
  const file=name=>resolve('synthetic-integration-inputs',name),configuration={version:1,profile:'isolated-preview',sourceEnabled:false,versions,
-  limits:base.limits,userPreferences:{enabled:true},http:base.http,database:{connectionFile:file('db')},sessions:{mode:'process-local',replicas:1,maxSessions:10,maxTtlMs:3000},
+  limits:base.limits,userPreferences:{enabled:true},agentcore:agentcoreConfig(),models:MODEL_CATALOG,http:base.http,database:{connectionFile:file('db')},sessions:{mode:'process-local',replicas:1,maxSessions:10,maxTtlMs:3000},
   temporal:{address:'temporal.synthetic.invalid:7233',namespace:'synthetic',taskQueue:'synthetic',tls:{caFile:file('ca'),certFile:file('cert'),keyFile:file('key')}},
   native:{origin:'https://control.synthetic.invalid',capabilityFile:file('cap'),loopback:false,maxResponseBytes:131072}};
  assert.equal(actualConfig.validateConfiguration(configuration,'control').sourceEnabled,false);assert.equal(actualConfig.validateConfiguration({...configuration,sourceEnabled:true},'control').sourceEnabled,true);for(const sourceEnabled of ['true',1,null])assert.throws(()=>actualConfig.validateConfiguration({...configuration,sourceEnabled},'control'),{code:'RUNTIME_CONFIGURATION'});
