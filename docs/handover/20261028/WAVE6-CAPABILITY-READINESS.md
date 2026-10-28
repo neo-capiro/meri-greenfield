@@ -34,6 +34,18 @@ Use existing feature owners and the Claude SDK harness. Reuse public contracts, 
 
 A3 authenticated sites, A4 device/browser bridge, A5 federal drafting and A7 Collabora/WOPI preparation are processed individually after these rows. A6 graph/buyer/funding work is explicitly skipped. No unprocessed row is complete.
 
+## A4 — user-device/browser bridge
+
+**Disposition and owners.** Requirements preparation only. The existing cloud browser (`apps/worker/conversation/browser/{server,runtime,workspace}.mjs`) does not accept an extension, remote CDP endpoint, local browser profile or device credential. It cannot establish device identity or consent. No demonstrated device-pairing receiver exists in this source lane. Reuse Core account authority, control conversation/run lifecycle, browser approval/receipt boundaries and the existing upload/artifact custody owner when a transport is selected; do not create another agent loop or general device connector.
+
+**Required behavior.** Pair a specifically supported device/browser to the current account with explicit consent. Show connected, active, paused, disconnected, expired and revoked states. Each operation binds user, tenant, device, conversation, selected tab/file/destination and exact input digest. Pairing grants no filesystem/profile/credential access. Explicit selected-data upload consent and consequential-action approval are separate. Pause/revoke and account switch stop admission immediately. An interrupted effect is resolved from its original receipt; reconnection never replays a spent or uncertain request. Selection changes invalidate old operation authority.
+
+**Dependencies and pending decisions.** Supported platforms, first operations, adopted transport/extension, distribution/update/licensing, managed-device policy and retention remain user decisions. Public device/session/request/receipt contracts and any persistence migration require coordinated ownership before editing. A3 is a dependency only for named website actions, not for a selected-file transfer. No pairing request or device connection is made by preparation.
+
+**Finite next slice.** After the platform/transport decision, deliver pairing plus one explicitly selected read-only tab or file operation, pause/revoke, account-switch invalidation and durable outcome readback. Keep action execution on the selected device and reuse shared connection-state UI primitives. Add no broad filesystem, clipboard, cookie or credential capability.
+
+**Acceptance.** Positive selected-resource transfer; other user/tenant/device/tab and stolen/expired pairing denial; selected hash/path and symlink denial; disconnect-before/after effect and lost acknowledgement recovery; pause/revoke/account-switch denial; no hidden credential/profile content; accurate unresolved state. Source inspection only for this row; no bridge exists to test and no live/device acceptance is claimed.
+
 ## A3 — authenticated website workflows
 
 **Owner and behavior.** `browser/site-workflows/manifest.mjs` owns credential-free workflow manifests, policy narrowing and enablement preparation. `browser/{permissions,approval-binding,downloads}.mjs` owns exact interaction approvals and download custody. Session/fence/confidentiality/destruction owners from A2 retain authentication only for the authorized conversation and stop after expiry, logout or revocation. The approved registry is empty; no site/task has been approved or enabled.
