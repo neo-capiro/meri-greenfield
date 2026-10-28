@@ -32,7 +32,7 @@ export function continuationSessionId(lineage){
  *  exclude?:{id:string,version:string}[],runBudgets?:{maxToolCalls:number,maxOutputBytes?:number,maxAggregateOutputBytes?:number},signal?:AbortSignal,mount?:'available'|'profile'}} configuration
  */
 export async function createGeneralReadRuntime(configuration){
- const c=own(configuration,['binding','scopes','policy','port','now','deadlineMs'],['timeoutMs','expectedSessionId','skill','exclude','runBudgets','signal','mount']);
+ const c=own(configuration,['binding','scopes','policy','port','now','deadlineMs'],['timeoutMs','expectedSessionId','skill','procedure','exclude','runBudgets','signal','mount']);
  const binding=data(c.binding),scopes=data(c.scopes),port=own(c.port,['readAvailability','execute']);nativeSignal(c.signal);validateShape('RunBinding',binding);
  if(!Array.isArray(scopes)||!scopes.length||typeof port.readAvailability!=='function'||typeof port.execute!=='function'||typeof c.now!=='function'||!Number.isSafeInteger(c.deadlineMs)||![undefined,'available','profile'].includes(c.mount))throw fault('READ_CONFIGURATION');
  const profile=c.mount==='profile';
@@ -48,7 +48,15 @@ export async function createGeneralReadRuntime(configuration){
  const gates=(/** @type {ReturnType<typeof assertAvailabilitySnapshot>} */snapshot)=>resolveAvailableReads({policy:c.policy,installation:snapshot.installation,discovery:snapshot.discovery,scopes,
   ...(profile?{narrowTo:mounted?.map(row=>row.operation)??[],exclude:narrowing.exclude}:narrowing)});
  /** @type {ReturnType<typeof assertAvailabilitySnapshot>|undefined} */let initial;try{initial=await read(c.signal);}catch{if(!profile)return null;}
- const {available,unavailable}=initial?gates(initial):{available:[],unavailable:[]};if(!profile&&!available.length)return null;
+ const {available:gatedAvailable,unavailable}=initial?gates(initial):{available:[],unavailable:[]};
+ // Wave5 MO01/ST16: a selected procedure intersects the mounted read surface with the capability tools it grants. The
+ // grant is matched under both spellings this catalog uses for one operation (its dotted id and its SDK tool name), and
+ // because this only filters an already-mounted set it can never widen — an unmatched grant removes a read, never adds
+ // one. An absent procedure leaves every byte as it was.
+ const procedureGranted=c.procedure===undefined?null:(c.procedure.allowedTools??[]);
+ const grantedRead=operation=>procedureGranted===null||procedureGranted.includes(operation.id)||procedureGranted.includes(operation.id.replaceAll('.','_'));
+ const available=procedureGranted===null?gatedAvailable:gatedAvailable.filter(row=>grantedRead(row.operation));
+ if(!profile&&!available.length)return null;
  const exposed=new Set(available.map(row=>canonicalSha256(row.operation)));
  // Mid-run revocation, expiry or a narrowed grant makes a listed read unavailable; it is never widened mid-run.
  const stillAvailable=async(/** @type {{id:string,version:string}} */operation,/** @type {AbortSignal} */signal)=>{

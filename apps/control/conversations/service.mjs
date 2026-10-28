@@ -29,11 +29,11 @@ const OBSERVE_PAGE_EVENTS=100;
 const OBSERVE_IDLE_POLL_MAX_MS=250;
 /** An idle observation window closes this long before its cap: more than one timer tick of lateness (Windows ~15.6 ms) plus loop lag. */
 const WINDOW_END_SLACK_MS=50;
-export function createConversationService({sessions,store,dispatcher,versions,fiscalCalendars=[],now=Date.now,newId=randomUUID,maxRequestMs=3000,selectedSkillAdmission,selectedOutputPublication,retention,capabilityPolicy,readCapabilityRole,runBudgets,modelCatalog,documentRevisionSource,uploadInputSource}){
+export function createConversationService({sessions,store,dispatcher,versions,fiscalCalendars=[],now=Date.now,newId=randomUUID,maxRequestMs=3000,selectedSkillAdmission,selectedOutputPublication,procedureAdmission,retention,capabilityPolicy,readCapabilityRole,runBudgets,modelCatalog,documentRevisionSource,uploadInputSource}){
  const captureUploadSource=uploadInputSource===undefined?undefined:createUploadSourceCapture({store});
  const readCurrent=authenticatedCurrentState(sessions);
- const admissionPort=selectedSkillAdmission===undefined?undefined:own(selectedSkillAdmission,['admitSelection'],['currentSkillRun']),publicationPort=selectedOutputPublication===undefined?undefined:own(selectedOutputPublication,['prepareEvent']);
- if(admissionPort!==undefined&&typeof admissionPort.admitSelection!=='function'||publicationPort!==undefined&&typeof publicationPort.prepareEvent!=='function')fail('CONTROL_CONFIGURATION');
+ const admissionPort=selectedSkillAdmission===undefined?undefined:own(selectedSkillAdmission,['admitSelection'],['currentSkillRun']),publicationPort=selectedOutputPublication===undefined?undefined:own(selectedOutputPublication,['prepareEvent']),procedurePort=procedureAdmission===undefined?undefined:own(procedureAdmission,['resolve']);
+ if(admissionPort!==undefined&&typeof admissionPort.admitSelection!=='function'||publicationPort!==undefined&&typeof publicationPort.prepareEvent!=='function'||procedurePort!==undefined&&typeof procedurePort.resolve!=='function')fail('CONTROL_CONFIGURATION');
  // The trusted current run capability-policy producer (apps/runtime/product-ports/capability-policy.mjs). Absent, or answering null, a loaded run
  // carries no `capabilities` and keeps first-chat behaviour; the worker validates the record (capabilities/policy.mjs readCapabilityPolicy).
  const capabilityPort=capabilityPolicy===undefined?undefined:own(capabilityPolicy,['forRun']);if(capabilityPort!==undefined&&typeof capabilityPort.forRun!=='function'||readCapabilityRole!==undefined&&typeof readCapabilityRole!=='function')fail('CONTROL_CONFIGURATION');
@@ -234,7 +234,21 @@ export function createConversationService({sessions,store,dispatcher,versions,fi
   // Publication is an observation, never permission: removal, current revocation or source drift during the write withholds text.
   await fresh();const current=assertSameUploadSource(recorded,await read(),context);await fresh();return current;
  });}
- return Object.freeze(Object.defineProperty({submit,admitInput,allocateInput,history,feedback,feedbackRead,observe,cancel,loadForExecution:args=>loadForExecution(args),publish,recordUsage,publishSelectedOutput,readUploadSource},loadWithLifecycle,{value:loadForExecution}));
+ // A procedure admission answers only for the selection the server itself persisted for this run: the worker route
+ // supplies the binding and nothing else. The control owner loads the request, the run's scope/versions and the current
+ // execution identity, re-validates the stored union with the existing contract, and re-reads both after Core answers.
+async function procedureResolve({credential,binding,signal}){validateShape('RunBinding',binding);if(procedurePort===undefined)fail('PROCEDURE_UNAVAILABLE');return operation(credential,signal,async(c,life,fresh)=>{
+ if(!same(c.binding,binding))fail('STALE_WRITER');const saved=await life.run(()=>store.read(binding,{after:0,limit:1},life.check));
+ if(!same(saved.run.binding,binding)||!same(saved.run.scopes,c.scopes)||terminal(saved.run.state))fail('SCOPE_REFUSED');
+ if(saved.request.procedure===undefined)fail('PROCEDURE_SELECTION_ABSENT');const selection=assertProcedureSelection(saved.request.procedure);
+ await fresh();
+ const admission=bounded(await life.run(signal=>procedurePort.resolve({binding,selection,scopes:c.scopes,versions:saved.run.versions,deadlineMs:life.deadline(),signal})));
+ // A run or authority that changed while Core answered releases nothing.
+ await fresh();const latest=await life.run(()=>store.read(binding,{after:0,limit:1},life.check));
+ if(!same(latest.run.binding,saved.run.binding)||!same(latest.run.scopes,saved.run.scopes)||!same(latest.request,saved.request)||terminal(latest.run.state))fail('SESSION_CHANGED');
+ return admission;
+});}
+return Object.freeze(Object.defineProperty({submit,admitInput,allocateInput,history,feedback,feedbackRead,observe,cancel,loadForExecution:args=>loadForExecution(args),publish,recordUsage,publishSelectedOutput,readUploadSource,procedureResolve},loadWithLifecycle,{value:loadForExecution}));
 }
 function failError(code){return Object.assign(new Error(code),{code});}
 /** Closed run budgets: positive integer calls and per-result bytes, and an optional run aggregate no smaller than one result. */

@@ -40,7 +40,7 @@ export function createWorkerRunApplication({execution,createService,configuratio
       !same({eventId:result.eventId,createdAt:result.createdAt,type:result.type,data:result.data},input.event))throw fault('WORKER_TERMINAL_RECEIPT_REFUSED');
   }else await fresh();
   life.check();
-  if((route[1]==='load'||route[1]==='next-controls'||route[1]==='upload-source')&&withRelease){
+  if((route[1]==='load'||route[1]==='next-controls'||route[1]==='upload-source'||route[1]==='procedure-resolve')&&withRelease){
    const subject={tenantId:pinned.execution.binding.tenantId,kind:'conversation',subjectId:pinned.execution.binding.conversationId};
    // The final execution check is awaited: suppression must be rechecked under the
    // canonical serving lock and that lock must cover response serialization.

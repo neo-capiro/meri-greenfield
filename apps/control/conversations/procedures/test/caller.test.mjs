@@ -136,9 +136,11 @@ test('the task port resolves the stored selection through the existing native tr
  const seen=[];const selection=stored('coalition_letter');
  const port=createTaskProcedurePort({now:()=>NOW,native:{async call(operation,input){seen.push({operation,input});return admissionFor(selection);}}});
  assert.equal(await port.prepare({binding,versions,request:{requestId:id(61),prompt:'x',procedure:selection},scopes,signal:new AbortController().signal}).then(value=>value.identity.id),'coalition_letter');
- assert.equal(seen.length,1);assert.equal(seen[0].operation,'procedure/resolve');
- assert.deepEqual(Object.keys(seen[0].input).sort(),['binding','scopes','selection','versions']);
- assert.equal(seen[0].input.selection.manifestDigest,selection.manifestDigest);
+ assert.equal(seen.length,1);assert.equal(seen[0].operation,'runner/procedure-resolve');
+ // Closed request: the run's binding and nothing else. The selection, versions, scope and current execution
+ // identity are loaded by control through its own service owner, never carried in this body.
+ assert.deepEqual(Object.keys(seen[0].input).sort(),['binding']);
+ assert.equal(seen[0].input.binding.conversationId,binding.conversationId);
  // No selection: the transport is never called, so an unselected run cannot reach Core through this port.
  const untouched=createTaskProcedurePort({now:()=>NOW,native:{async call(){throw Error('MUST_NOT_CALL');}}});
  assert.equal(await untouched.prepare({binding,versions,request:{requestId:id(61),prompt:'x'},scopes,signal:new AbortController().signal}),null);

@@ -109,7 +109,7 @@ export function createConversationActivity({runOwner,prepareRuntime,query=sdkQue
    // the SDK session is pinned so a replayed tool use keeps its delivery identity.
    if(policy?.generalReads||policy?.governedIntents){const skill=saved.request.skill?selectSkill(saved.request.skill.skillId,saved.request.skill.skillVersion).manifest:undefined;
     const mounts=await setupRun(signal=>createProfileMounts({policy,binding,scopes:saved.run.scopes,now,deadlineMs:runtime.deadlineMs,...(generalReads===undefined?{}:{generalReads}),...(governedIntents===undefined?{}:{governedIntents}),
-     ...(lineage?{expectedSessionId:continuationSessionId(lineage)}:{}),...(skill?{skill}:{}),exclude:skillRuntime?skillRuntime.selected.manifest.allowedOperations:[],...(runBudgets===undefined?{}:{runBudgets}),signal}));
+     ...(lineage?{expectedSessionId:continuationSessionId(lineage)}:{}),...(skill?{skill}:{}),...(procedureRuntime===undefined?{}:{procedure:procedureRuntime.policy}),exclude:skillRuntime?skillRuntime.selected.manifest.allowedOperations:[],...(runBudgets===undefined?{}:{runBudgets}),signal}));
     readRuntime=mounts.reads??undefined;intentRuntime=mounts.intents??undefined;}
    const capabilities=policy===undefined?undefined:createSdkCapabilities(policy,{runOwner,binding,cwd:runtime.cwd,...Object.fromEntries(CAPABILITY_RUNTIME_FACTS.flatMap(k=>runtime[k]===undefined?[]:[[k,runtime[k]]])),now,newId});
    if(browser!==undefined){

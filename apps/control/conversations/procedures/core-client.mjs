@@ -81,7 +81,7 @@ export function createProcedureCoreClient(configuration){
    return body;
   }catch(error){
    if(owned(error)){if(error.code==='PROCEDURE_CORE_UNAVAILABLE')markAuthorityUnavailable(error);throw error;}
-   throw fault(['DEADLINE','CANCELLED'].includes(error?.code)?error.code:'UNAVAILABLE');
+   throw Object.assign(fault(['DEADLINE','CANCELLED'].includes(error?.code)?error.code:'UNAVAILABLE'),{cause:error});
   }finally{try{if(acquired)cancelBody(responseBody(acquired));}catch{}life?.close();}
  }
  return Object.freeze({origin,resolve,attended:nativeCredentialFor!==undefined});
