@@ -2017,10 +2017,10 @@
         "verification": "detached signature over the toolchain archive verified with the release key: exit 0; the published .sha256 and the signed stable channel manifest name the same sha256 the downloaded bytes hash to"
        },
        "buildClosure": {
-        "source": "resolved from the retained vendor-signed index 5c84e4b835a811c1624d9692f011df3de446c8011be4dedaabf6f3dbf41ec536 and pinned by the sha256 of each downloaded official archive",
+        "source": "resolved from the retained vendor-signed index 5c84e4b835a811c1624d9692f011df3de446c8011be4dedaabf6f3dbf41ec536 and pinned by the sha256 of each downloaded official archive; includes the 35 transitive packages selected by apk in the compiler-stage installation",
         "architecture": "aarch64",
-        "packages": 101,
-        "totalBytes": 266859580,
+        "packages": 136,
+        "totalBytes": 310262615,
         "sizeChecks": "every downloaded archive length equals the index S: field exactly (0 mismatches)",
         "unresolvedVirtualProviders": [
          "merged-lib",
@@ -2112,6 +2112,27 @@
           "url": "https://packages.wolfi.dev/os/aarch64/cyrus-sasl-heimdal-libs-2.1.28-r58.apk",
           "sha256": "4d953f1db918d026e9a84fd630609668f8617cdbcf1a316f459bea9281f911ed",
           "bytes": 239214
+         },
+         {
+          "name": "e2fsprogs-dev",
+          "version": "1.47.4-r5",
+          "url": "https://packages.wolfi.dev/os/aarch64/e2fsprogs-dev-1.47.4-r5.apk",
+          "sha256": "a2e49f78f2e9790df467bd491e514a4e0ea301bd4bbbeaac8299bfeefe698a33",
+          "bytes": 75410
+         },
+         {
+          "name": "e2fsprogs-libs",
+          "version": "1.47.4-r5",
+          "url": "https://packages.wolfi.dev/os/aarch64/e2fsprogs-libs-1.47.4-r5.apk",
+          "sha256": "c450f4e058eb6e800fea796ff59233d7289ccdf0f9ed5b3c501dd63c7eacbf26",
+          "bytes": 304162
+         },
+         {
+          "name": "fstrim",
+          "version": "2.42.4-r1",
+          "url": "https://packages.wolfi.dev/os/aarch64/fstrim-2.42.4-r1.apk",
+          "sha256": "55010655a41ac8cfe80c701c398a150fbdbf231306c49581def5739032e90330",
+          "bytes": 69806
          },
          {
           "name": "gawk",
@@ -2226,11 +2247,25 @@
           "bytes": 2928
          },
          {
+          "name": "krb5-dev",
+          "version": "1.22.2-r5",
+          "url": "https://packages.wolfi.dev/os/aarch64/krb5-dev-1.22.2-r5.apk",
+          "sha256": "4a00f1747ade96fbb4e7d157966b99400dd1b6259c975b7ec532eeb415d23f5b",
+          "bytes": 170002
+         },
+         {
           "name": "krb5-libs",
           "version": "1.22.2-r5",
           "url": "https://packages.wolfi.dev/os/aarch64/krb5-libs-1.22.2-r5.apk",
           "sha256": "bde3fb18cc946f07cde48c022c690650ba8476f27fa973a1cbaa7a4deea36c39",
           "bytes": 1040273
+         },
+         {
+          "name": "krb5-server-ldap",
+          "version": "1.22.2-r5",
+          "url": "https://packages.wolfi.dev/os/aarch64/krb5-server-ldap-1.22.2-r5.apk",
+          "sha256": "3b8e2ff676008d11648125cf3a4477a58661f34c5487d3f2eaa0875614e48344",
+          "bytes": 73163
          },
          {
           "name": "ld-linux-2.44",
@@ -2266,6 +2301,20 @@
           "url": "https://packages.wolfi.dev/os/aarch64/libatomic-16.2.0-r1.apk",
           "sha256": "923cab5fcdc646ea76ddebfd38626998d787cc10baff0803e3365d1e2bd5ef41",
           "bytes": 30762
+         },
+         {
+          "name": "libatomic",
+          "version": "16.2.0-r2",
+          "url": "https://packages.wolfi.dev/os/aarch64/libatomic-16.2.0-r2.apk",
+          "sha256": "59c50816e05ff5e3980d4f23516208b30f03df4e6ec3461da3e2445206ba2f2a",
+          "bytes": 37287
+         },
+         {
+          "name": "libblkid",
+          "version": "2.42.4-r1",
+          "url": "https://packages.wolfi.dev/os/aarch64/libblkid-2.42.4-r1.apk",
+          "sha256": "7f732012769f0eaa784c68484d7b1b0bb4bad9000b1837c28719b5cb82377077",
+          "bytes": 231471
          },
          {
           "name": "libbrotlicommon1",
@@ -2338,11 +2387,32 @@
           "bytes": 44311
          },
          {
+          "name": "libevent",
+          "version": "2.1.13-r3",
+          "url": "https://packages.wolfi.dev/os/aarch64/libevent-2.1.13-r3.apk",
+          "sha256": "cd768fc4b4922388c88b5bfeae90726837e7938f64760afcc215801b148002dd",
+          "bytes": 400813
+         },
+         {
           "name": "libexpat1",
           "version": "2.9.0-r0",
           "url": "https://packages.wolfi.dev/os/aarch64/libexpat1-2.9.0-r0.apk",
           "sha256": "abeeb0ffa21b3ca6175cb997d9919920a26a2f50aaa61116f03ed40b1cfd764f",
           "bytes": 106888
+         },
+         {
+          "name": "libfdisk",
+          "version": "2.42.4-r1",
+          "url": "https://packages.wolfi.dev/os/aarch64/libfdisk-2.42.4-r1.apk",
+          "sha256": "3cdc633490edf569e0c1e18124b3dd26e8b916fb1c071e6a04d99b39d8d374f7",
+          "bytes": 278230
+         },
+         {
+          "name": "libffi",
+          "version": "3.8.0-r2",
+          "url": "https://packages.wolfi.dev/os/aarch64/libffi-3.8.0-r2.apk",
+          "sha256": "df5cab585fd544ce671305dc8b8187bb1ed0c8ac016e995dd129d8d6dd9c556b",
+          "bytes": 40635
          },
          {
           "name": "libgcc",
@@ -2380,6 +2450,20 @@
           "bytes": 136210
          },
          {
+          "name": "libidn2-dev",
+          "version": "2.3.8-r12",
+          "url": "https://packages.wolfi.dev/os/aarch64/libidn2-dev-2.3.8-r12.apk",
+          "sha256": "9087f8569a511c92ba766c56d5b28d505ace24d8ed2fb8b90b6ba15770618630",
+          "bytes": 24515
+         },
+         {
+          "name": "libldap-2.6",
+          "version": "2.6.14-r0",
+          "url": "https://packages.wolfi.dev/os/aarch64/libldap-2.6-2.6.14-r0.apk",
+          "sha256": "3cafd792198fb80bdf34a78c818e9f5b04f447847611a32394d1c898f8c601f8",
+          "bytes": 245768
+         },
+         {
           "name": "libldap-2.7",
           "version": "2.7.2-r0",
           "url": "https://packages.wolfi.dev/os/aarch64/libldap-2.7-2.7.2-r0.apk",
@@ -2399,6 +2483,13 @@
           "url": "https://packages.wolfi.dev/os/aarch64/libmilter-dev-8.18.2-r5.apk",
           "sha256": "1633e1cffe84476c70de08113687c462bfde6314d0b6331009abda003bae85a9",
           "bytes": 42857
+         },
+         {
+          "name": "libmount",
+          "version": "2.42.4-r1",
+          "url": "https://packages.wolfi.dev/os/aarch64/libmount-2.42.4-r1.apk",
+          "sha256": "96419166eb4979516abcd40cd1bfce94b8f20a41c7ab7712492a0861e0aeff3a",
+          "bytes": 281959
          },
          {
           "name": "libnghttp2-14",
@@ -2464,6 +2555,41 @@
           "bytes": 168130
          },
          {
+          "name": "libselinux",
+          "version": "3.11-r2",
+          "url": "https://packages.wolfi.dev/os/aarch64/libselinux-3.11-r2.apk",
+          "sha256": "6c96ee48b1ed094dd58598f3df0b2ae678a78d343b3d6f6cf25e6a59a685eea9",
+          "bytes": 365088
+         },
+         {
+          "name": "libselinux-dev",
+          "version": "3.11-r2",
+          "url": "https://packages.wolfi.dev/os/aarch64/libselinux-dev-3.11-r2.apk",
+          "sha256": "9ec2b81b2a96d0e9e730746fbb66eec5c7d4e424e7913fd08a671396426f2abe",
+          "bytes": 183551
+         },
+         {
+          "name": "libsepol",
+          "version": "3.11-r3",
+          "url": "https://packages.wolfi.dev/os/aarch64/libsepol-3.11-r3.apk",
+          "sha256": "d44df089fbd2260bba1ecc62e6cff0fa7f22382a86718fdb3f79e0f9086a92ae",
+          "bytes": 436108
+         },
+         {
+          "name": "libsepol-dev",
+          "version": "3.11-r3",
+          "url": "https://packages.wolfi.dev/os/aarch64/libsepol-dev-3.11-r3.apk",
+          "sha256": "d0234724e0763e8aa9ec5baa64dc3e964a7da5ee697b8b7b7dfc50c4bd636861",
+          "bytes": 598075
+         },
+         {
+          "name": "libsmartcols",
+          "version": "2.42.4-r1",
+          "url": "https://packages.wolfi.dev/os/aarch64/libsmartcols-2.42.4-r1.apk",
+          "sha256": "5213a123c63fa2cac483c5de6ba91418722cc95f791378f2d48f1190ab0eac65",
+          "bytes": 192952
+         },
+         {
           "name": "libstdc++",
           "version": "16.2.0-r2",
           "url": "https://packages.wolfi.dev/os/aarch64/libstdc++-16.2.0-r2.apk",
@@ -2485,6 +2611,13 @@
           "bytes": 911744
          },
          {
+          "name": "libuuid",
+          "version": "2.42.4-r1",
+          "url": "https://packages.wolfi.dev/os/aarch64/libuuid-2.42.4-r1.apk",
+          "sha256": "63ad89463dd6cbb0c682bef6aabdc9896e2708cb42c05bcc33d6bf0dd5ed3bab",
+          "bytes": 33981
+         },
+         {
           "name": "libuv",
           "version": "1.53.0-r0",
           "url": "https://packages.wolfi.dev/os/aarch64/libuv-1.53.0-r0.apk",
@@ -2497,6 +2630,34 @@
           "url": "https://packages.wolfi.dev/os/aarch64/libverto-0.3.2-r11.apk",
           "sha256": "864750d72131a29f2f383e53adad5a3e4d32f70ffb3aef6282c0276ccfa8693d",
           "bytes": 30719
+         },
+         {
+          "name": "libverto-dev",
+          "version": "0.3.2-r11",
+          "url": "https://packages.wolfi.dev/os/aarch64/libverto-dev-0.3.2-r11.apk",
+          "sha256": "5bed808ee162cc20ba04f5f0b86749da62643ca8e72a22139162529d10a2d666",
+          "bytes": 96094
+         },
+         {
+          "name": "libverto-glib",
+          "version": "0.3.2-r11",
+          "url": "https://packages.wolfi.dev/os/aarch64/libverto-glib-0.3.2-r11.apk",
+          "sha256": "7f1374be73df642f7ea38a03b3e8f5ccbc2449e6d143097314e00fee73f2ccbd",
+          "bytes": 24688
+         },
+         {
+          "name": "libverto-libev",
+          "version": "0.3.2-r11",
+          "url": "https://packages.wolfi.dev/os/aarch64/libverto-libev-0.3.2-r11.apk",
+          "sha256": "72774559b55fe81604591f5c11b7ba6bc25fe12f1d34b075b4b6e04ed6748222",
+          "bytes": 23782
+         },
+         {
+          "name": "libverto-libevent",
+          "version": "0.3.2-r11",
+          "url": "https://packages.wolfi.dev/os/aarch64/libverto-libevent-0.3.2-r11.apk",
+          "sha256": "48eb1ea91133ae7bc0f71f994cde5acdda099c9320344ec2cbad853b6f0a7de9",
+          "bytes": 23611
          },
          {
           "name": "libxcrypt",
@@ -2527,6 +2688,13 @@
           "bytes": 98881
          },
          {
+          "name": "libxml2-utils",
+          "version": "2.15.4-r1",
+          "url": "https://packages.wolfi.dev/os/aarch64/libxml2-utils-2.15.4-r1.apk",
+          "sha256": "bcff729776b35ec947672206e228292a8e483bba1ec33c3cfb4d235383f0ad00",
+          "bytes": 56955
+         },
+         {
           "name": "libzstd1",
           "version": "1.5.7-r12",
           "url": "https://packages.wolfi.dev/os/aarch64/libzstd1-1.5.7-r12.apk",
@@ -2539,6 +2707,13 @@
           "url": "https://packages.wolfi.dev/os/aarch64/linux-headers-7.3-r0.apk",
           "sha256": "bad48891f6a2ddb0af2b59c455fde722c2cdcecc52404fa396e5db9fd493a7d2",
           "bytes": 2096844
+         },
+         {
+          "name": "linux-pam",
+          "version": "1.7.3-r1",
+          "url": "https://packages.wolfi.dev/os/aarch64/linux-pam-1.7.3-r1.apk",
+          "sha256": "96fad2b9fcde9c423a80ce94979b19b501ea3ca464682248b226c2f9e7aaeb92",
+          "bytes": 972719
          },
          {
           "name": "make",
@@ -2576,6 +2751,13 @@
           "bytes": 60381
          },
          {
+          "name": "ncurses-terminfo-base",
+          "version": "6.6.20261024-r0",
+          "url": "https://packages.wolfi.dev/os/aarch64/ncurses-terminfo-base-6.6.20261024-r0.apk",
+          "sha256": "a01c937f77c6d6e3f62fe67ef6a86f663409fdadf8ae18733d1227ec469814c7",
+          "bytes": 119421
+         },
+         {
           "name": "nghttp2",
           "version": "1.70.0-r7",
           "url": "https://packages.wolfi.dev/os/aarch64/nghttp2-1.70.0-r7.apk",
@@ -2597,11 +2779,32 @@
           "bytes": 111492
          },
          {
+          "name": "nghttp3-dev",
+          "version": "1.18.0-r3",
+          "url": "https://packages.wolfi.dev/os/aarch64/nghttp3-dev-1.18.0-r3.apk",
+          "sha256": "5a4155752fcfccad560411614c23a5023acc80b3e35baa87c22c2eb92f624ff6",
+          "bytes": 469230
+         },
+         {
           "name": "ngtcp2",
           "version": "1.25.0-r7",
           "url": "https://packages.wolfi.dev/os/aarch64/ngtcp2-1.25.0-r7.apk",
           "sha256": "c5c7b02654047fceacfc5e8fc7b3b99c8a2622a807bae880aacdbfc46c76f336",
           "bytes": 222880
+         },
+         {
+          "name": "ngtcp2-dev",
+          "version": "1.25.0-r7",
+          "url": "https://packages.wolfi.dev/os/aarch64/ngtcp2-dev-1.25.0-r7.apk",
+          "sha256": "a4bc89b1363a9107a7b0f4177c9e81ef7aa68da7728e71b0762ee284a56209a7",
+          "bytes": 1194002
+         },
+         {
+          "name": "npth",
+          "version": "1.8-r11",
+          "url": "https://packages.wolfi.dev/os/aarch64/npth-1.8-r11.apk",
+          "sha256": "803e558008fb6525528b5a72e5d66b63f3f0d6e27305ca8d6aad9eda15e74f9e",
+          "bytes": 16721
          },
          {
           "name": "npth-libs",
@@ -2630,6 +2833,13 @@
           "url": "https://packages.wolfi.dev/os/aarch64/openssl-3.6-libssl-3.6.5-r6.apk",
           "sha256": "694c0e06540eed0d944cfd6c5fc11b247e62f183b989fd615fddf79b72e6247d",
           "bytes": 503280
+         },
+         {
+          "name": "openssl-4.0-dev",
+          "version": "4.0.3-r0",
+          "url": "https://packages.wolfi.dev/os/aarch64/openssl-4.0-dev-4.0.3-r0.apk",
+          "sha256": "f2ae39390d2a7100a8853908e2b30be995aa2455404f100e9f3d4dba908cce63",
+          "bytes": 16510022
          },
          {
           "name": "openssl-4.0-dev",
@@ -2674,6 +2884,13 @@
           "bytes": 866040
          },
          {
+          "name": "perl",
+          "version": "5.44.0-r4",
+          "url": "https://packages.wolfi.dev/os/aarch64/perl-5.44.0-r4.apk",
+          "sha256": "e26afd62c9b1c96716d4270288bb636a434eae3d6c84425f06f233b3a5ac4449",
+          "bytes": 11265681
+         },
+         {
           "name": "pkgconf",
           "version": "3.0.10-r2",
           "url": "https://packages.wolfi.dev/os/aarch64/pkgconf-3.0.10-r2.apk",
@@ -2695,11 +2912,39 @@
           "bytes": 338069
          },
          {
+          "name": "sqlite",
+          "version": "3.54.1-r0",
+          "url": "https://packages.wolfi.dev/os/aarch64/sqlite-3.54.1-r0.apk",
+          "sha256": "57bd0a46f5698266ca1b11243369068da735587e5b023aa3dfa9076ef4dc767b",
+          "bytes": 2155987
+         },
+         {
+          "name": "sqlite-dev",
+          "version": "3.54.1-r0",
+          "url": "https://packages.wolfi.dev/os/aarch64/sqlite-dev-3.54.1-r0.apk",
+          "sha256": "46a3aba6c36df74a2e9d8dffec047ff423a3699e0d0160f05a8fd43c64829748",
+          "bytes": 1178511
+         },
+         {
           "name": "sqlite-libs",
           "version": "3.54.1-r0",
           "url": "https://packages.wolfi.dev/os/aarch64/sqlite-libs-3.54.1-r0.apk",
           "sha256": "158a9e84fd8b3addfca5f3abfb02b754012d6e1d173d4467627d67541c5eafae",
           "bytes": 944691
+         },
+         {
+          "name": "util-linux",
+          "version": "2.42.4-r1",
+          "url": "https://packages.wolfi.dev/os/aarch64/util-linux-2.42.4-r1.apk",
+          "sha256": "c3e162065d493add318143b5b8c24e650a5c80da72abdf7d60784e743ea1713f",
+          "bytes": 66873
+         },
+         {
+          "name": "util-linux-dev",
+          "version": "2.42.4-r1",
+          "url": "https://packages.wolfi.dev/os/aarch64/util-linux-dev-2.42.4-r1.apk",
+          "sha256": "6bd1942866fefc242ddc84cc2626564afebdfb1e4ae1d29e7ee05764ad8ea0b3",
+          "bytes": 5185762
          },
          {
           "name": "wolfi-baselayout",
@@ -2736,7 +2981,12 @@
           "sha256": "4ceab8cc43bf77871362a2e01560b721013249bc86bf633d99778a3ff8c865ff",
           "bytes": 46324
          }
-        ]
+        ],
+        "compilerClosureCorrection": {
+         "reason": "The original development repository omitted packages selected by the signed index during offline installation, including dependencies already staged only for the runtime. Stage those exact selected versions in the development repository as well.",
+         "addedPackages": 35,
+         "buildValidation": "Source checks only; a rebuilt image is not claimed."
+        }
        },
        "install": {
         "buildStage": "clamav-source-build (build-only)",
@@ -2841,127 +3091,103 @@
         "scannerFeedGap": "the retained scan records only CVSS score/vector/package name/version and no fixed-version metadata, and the vendor feed's declared fixed revision (clamav-1.5 1.5.4-r2) is not published in any Wolfi or Chainguard apk repository for aarch64 or x86_64"
        },
         "compilerInterpreter": {
-         "requiredBy": "clamav-1.5.4/CMakeLists.txt 219-231 requires find_package(Libcheck REQUIRED) and find_package(Python3 REQUIRED), or EXACT when PYTHON_FIND_VERSION is defined, whenever ENABLE_TESTS=ON; 256-277 runs the unit-test input generators with ${Python3_EXECUTABLE} at build time and requires `${Python3_EXECUTABLE} -m unittest --help` to exit 0 because the stage carries no pytest",
-         "stage": "clamav-source-build (build-only)",
-         "repositoryPath": "/tmp/meri-native-runtime-repo",
-         "repository": "the retained runtime staging set (native-repository: the same vendor-signed index and the same authenticated archives the exported runtime stage already installs python-3.13 from), mounted read-only at its own path, so the interpreter costs no new source, no new checksum and no new trust decision",
-         "exclusiveRepository": "one --repository with --repositories-file /dev/null and --no-network, as the development closure install already is, so the staged signed index stays the only possible source and an incomplete closure fails the build instead of resolving elsewhere",
-         "requested": [
-          {
-           "name": "python-3.13",
-           "version": "3.13.16_git20261016-r2",
-           "filename": "python-3.13-3.13.16_git20261016-r2.apk",
-           "sha256": "ec5c434e7baeed78102d684cca26d8bad793d8408719dbed836c26f3bac7e97f",
-           "url": "https://packages.wolfi.dev/os/aarch64/python-3.13-3.13.16_git20261016-r2.apk",
-           "role": "named in the interpreter install"
-          },
-          {
-           "name": "python-3.13-base",
-           "version": "3.13.16_git20261016-r2",
-           "filename": "python-3.13-base-3.13.16_git20261016-r2.apk",
-           "sha256": "0baaae06fe50c478491eeaa686c8f443f8dd6969a3c5af8d6f2cb6c1a237519f",
-           "url": "https://packages.wolfi.dev/os/aarch64/python-3.13-base-3.13.16_git20261016-r2.apk",
-           "role": "named in the interpreter install"
-          }
-         ],
-         "resolvedFromTheRuntimeRepository": [
-          {
-           "name": "libffi",
-           "version": "3.8.0-r2",
-           "filename": "libffi-3.8.0-r2.apk",
-           "sha256": "df5cab585fd544ce671305dc8b8187bb1ed0c8ac016e995dd129d8d6dd9c556b",
-           "url": "https://packages.wolfi.dev/os/aarch64/libffi-3.8.0-r2.apk",
-           "role": "resolved by apk from the mounted retained runtime staging set"
-          },
-          {
-           "name": "libuuid",
-           "version": "2.42.4-r1",
-           "filename": "libuuid-2.42.4-r1.apk",
-           "sha256": "63ad89463dd6cbb0c682bef6aabdc9896e2708cb42c05bcc33d6bf0dd5ed3bab",
-           "url": "https://packages.wolfi.dev/os/aarch64/libuuid-2.42.4-r1.apk",
-           "role": "resolved by apk from the mounted retained runtime staging set"
-          },
-          {
-           "name": "mpdecimal",
-           "version": "4.0.1-r6",
-           "filename": "mpdecimal-4.0.1-r6.apk",
-           "sha256": "a2b0c0508b07d4e0187d7c9bd231b71d56f195a528b55815e89735d9fa8caef7",
-           "url": "https://packages.wolfi.dev/os/aarch64/mpdecimal-4.0.1-r6.apk",
-           "role": "resolved by apk from the mounted retained runtime staging set"
-          },
-          {
-           "name": "ncurses-terminfo-base",
-           "version": "6.6.20261024-r0",
-           "filename": "ncurses-terminfo-base-6.6.20261024-r0.apk",
-           "sha256": "a01c937f77c6d6e3f62fe67ef6a86f663409fdadf8ae18733d1227ec469814c7",
-           "url": "https://packages.wolfi.dev/os/aarch64/ncurses-terminfo-base-6.6.20261024-r0.apk",
-           "role": "resolved by apk from the mounted retained runtime staging set"
-          },
-          {
-           "name": "py3-pip-wheel",
-           "version": "26.2.2-r0",
-           "filename": "py3-pip-wheel-26.2.2-r0.apk",
-           "sha256": "2edcf4ac5ff50acd5a3fa804ddef9d46d8981958ddab4667bf5e333764156b55",
-           "url": "https://packages.wolfi.dev/os/aarch64/py3-pip-wheel-26.2.2-r0.apk",
-           "role": "resolved by apk from the mounted retained runtime staging set"
-          },
-          {
-           "name": "python-3.13",
-           "version": "3.13.16_git20261016-r2",
-           "filename": "python-3.13-3.13.16_git20261016-r2.apk",
-           "sha256": "ec5c434e7baeed78102d684cca26d8bad793d8408719dbed836c26f3bac7e97f",
-           "url": "https://packages.wolfi.dev/os/aarch64/python-3.13-3.13.16_git20261016-r2.apk",
-           "role": "resolved by apk from the mounted retained runtime staging set"
-          },
-          {
-           "name": "python-3.13-base",
-           "version": "3.13.16_git20261016-r2",
-           "filename": "python-3.13-base-3.13.16_git20261016-r2.apk",
-           "sha256": "0baaae06fe50c478491eeaa686c8f443f8dd6969a3c5af8d6f2cb6c1a237519f",
-           "url": "https://packages.wolfi.dev/os/aarch64/python-3.13-base-3.13.16_git20261016-r2.apk",
-           "role": "resolved by apk from the mounted retained runtime staging set"
-          }
-         ],
-         "satisfiedByTheDevelopmentClosure": "the interpreter's remaining dependencies are already installed by the pinned 101-archive development closure: glibc-2.44 2.44-r10 with ld-linux-2.44 2.44-r10 (so:libc.so.6, so:libm.so.6, so:ld-linux-aarch64.so.1), ncurses 6.6.20261024-r0 (so:libncursesw.so.6, so:libtinfo.so.6, so:libpanelw.so.6), readline 8.3-r3, gdbm 1.26-r9 (so:libgdbm.so.6, so:libgdbm_compat.so.4), xz 5.8.4-r0 (so:liblzma.so.5), zlib-dev 1.3.2.1_rc20260921-r1 (so:libz.so.1), openssl-dev 3.6.5-r6 with the openssl-4.0 libraries (so:libcrypto.so.4, so:libssl.so.4), libexpat1 2.9.0-r0, libbz2-1 1.0.8-r28, sqlite-libs 3.54.1-r0, libgcc 16.2.0-r2 and libstdc++ 16.2.0-r2",
-         "versionAssertion": "python3.13 -c 'import sys; assert sys.version_info[:3] == (3, 13, 16), sys.version; print(\"interpreter\", sys.version)'",
-         "reportedVersion": "python3.13 --version is printed into the build log immediately before the assertion",
-         "unittestAssertion": "python3.13 -m unittest --help > /dev/null",
-         "unittestAssertionReason": "the upstream block accepts pytest, then `${Python3_EXECUTABLE} -m pytest`, and otherwise requires `${Python3_EXECUTABLE} -m unittest --help` to exit 0 or it stops configure with FATAL_ERROR; this stage carries no pytest, so the unittest entry point is the one the upstream check actually applies",
-         "moduleAssertion": "python3.13 -c 'import argparse, errno, functools, getpass, hashlib, http.server, logging, multiprocessing, os, pathlib, platform, random, re, shutil, signal, socket, socketserver, struct, subprocess, sys, tempfile, threading, time, typing, unittest, unittest.mock, zipfile, zlib'",
-         "stdlibModules": [
-          "argparse",
-          "errno",
-          "functools",
-          "getpass",
-          "hashlib",
-          "http.server",
-          "logging",
-          "multiprocessing",
-          "os",
-          "pathlib",
-          "platform",
-          "random",
-          "re",
-          "shutil",
-          "signal",
-          "socket",
-          "socketserver",
-          "struct",
-          "subprocess",
-          "sys",
-          "tempfile",
-          "threading",
-          "time",
-          "typing",
-          "unittest",
-          "unittest.mock",
-          "zipfile",
-          "zlib"
-         ],
-         "pinDrift": "the development closure's own version assertion loop still runs after the interpreter install, so an interpreter install that replaced or moved a pinned development package fails the build",
-         "compilerOnly": "installed in the build-only compiler stage through a bind mount released with that RUN; the exported runtime stage keeps its own pinned python-3.13=3.13.16_git20261016-r2 install and names neither the mount nor the compiler stage's repository path",
-         "notProven": "Unqualified: no ARM build has run, so whether apk resolves this closure in stage, whether the interpreter executes the upstream unit tests and the resulting payload's behaviour, ABI, size and scan result remain unproven"
-        },
+        "requiredBy": "clamav-1.5.4/CMakeLists.txt 219-231 requires find_package(Libcheck REQUIRED) and find_package(Python3 REQUIRED), or EXACT when PYTHON_FIND_VERSION is defined, whenever ENABLE_TESTS=ON; 256-277 runs the unit-test input generators with ${Python3_EXECUTABLE} at build time and requires `${Python3_EXECUTABLE} -m unittest --help` to exit 0 because the stage carries no pytest",
+        "stage": "clamav-source-build (build-only)",
+        "repositoryPath": "/tmp/meri-native-runtime-repo",
+        "repository": "the retained runtime staging set (native-repository: the same vendor-signed index and the same authenticated archives the exported runtime stage already installs python-3.13 from), mounted read-only at its own path, so the interpreter costs no new source, no new checksum and no new trust decision",
+        "exclusiveRepository": "one --repository with --repositories-file /dev/null and --no-network, as the development closure install already is, so the staged signed index stays the only possible source and an incomplete closure fails the build instead of resolving elsewhere",
+        "requested": [
+         {
+          "name": "python-3.13",
+          "version": "3.13.16_git20261016-r2",
+          "filename": "python-3.13-3.13.16_git20261016-r2.apk",
+          "sha256": "ec5c434e7baeed78102d684cca26d8bad793d8408719dbed836c26f3bac7e97f",
+          "url": "https://packages.wolfi.dev/os/aarch64/python-3.13-3.13.16_git20261016-r2.apk",
+          "role": "named in the interpreter install"
+         },
+         {
+          "name": "python-3.13-base",
+          "version": "3.13.16_git20261016-r2",
+          "filename": "python-3.13-base-3.13.16_git20261016-r2.apk",
+          "sha256": "0baaae06fe50c478491eeaa686c8f443f8dd6969a3c5af8d6f2cb6c1a237519f",
+          "url": "https://packages.wolfi.dev/os/aarch64/python-3.13-base-3.13.16_git20261016-r2.apk",
+          "role": "named in the interpreter install"
+         }
+        ],
+        "resolvedFromTheRuntimeRepository": [
+         {
+          "name": "mpdecimal",
+          "version": "4.0.1-r6",
+          "filename": "mpdecimal-4.0.1-r6.apk",
+          "sha256": "a2b0c0508b07d4e0187d7c9bd231b71d56f195a528b55815e89735d9fa8caef7",
+          "url": "https://packages.wolfi.dev/os/aarch64/mpdecimal-4.0.1-r6.apk",
+          "role": "resolved by apk from the mounted retained runtime staging set"
+         },
+         {
+          "name": "py3-pip-wheel",
+          "version": "26.2.2-r0",
+          "filename": "py3-pip-wheel-26.2.2-r0.apk",
+          "sha256": "2edcf4ac5ff50acd5a3fa804ddef9d46d8981958ddab4667bf5e333764156b55",
+          "url": "https://packages.wolfi.dev/os/aarch64/py3-pip-wheel-26.2.2-r0.apk",
+          "role": "resolved by apk from the mounted retained runtime staging set"
+         },
+         {
+          "name": "python-3.13",
+          "version": "3.13.16_git20261016-r2",
+          "filename": "python-3.13-3.13.16_git20261016-r2.apk",
+          "sha256": "ec5c434e7baeed78102d684cca26d8bad793d8408719dbed836c26f3bac7e97f",
+          "url": "https://packages.wolfi.dev/os/aarch64/python-3.13-3.13.16_git20261016-r2.apk",
+          "role": "resolved by apk from the mounted retained runtime staging set"
+         },
+         {
+          "name": "python-3.13-base",
+          "version": "3.13.16_git20261016-r2",
+          "filename": "python-3.13-base-3.13.16_git20261016-r2.apk",
+          "sha256": "0baaae06fe50c478491eeaa686c8f443f8dd6969a3c5af8d6f2cb6c1a237519f",
+          "url": "https://packages.wolfi.dev/os/aarch64/python-3.13-base-3.13.16_git20261016-r2.apk",
+          "role": "resolved by apk from the mounted retained runtime staging set"
+         }
+        ],
+        "satisfiedByTheDevelopmentClosure": "the interpreter's remaining dependencies are already installed by the pinned 136-archive development closure: glibc-2.44 2.44-r10 with ld-linux-2.44 2.44-r10 (so:libc.so.6, so:libm.so.6, so:ld-linux-aarch64.so.1), ncurses 6.6.20261024-r0 (so:libncursesw.so.6, so:libtinfo.so.6, so:libpanelw.so.6), readline 8.3-r3, gdbm 1.26-r9 (so:libgdbm.so.6, so:libgdbm_compat.so.4), xz 5.8.4-r0 (so:liblzma.so.5), zlib-dev 1.3.2.1_rc20260921-r1 (so:libz.so.1), openssl-dev 3.6.5-r6 with the openssl-4.0 libraries (so:libcrypto.so.4, so:libssl.so.4), libexpat1 2.9.0-r0, libbz2-1 1.0.8-r28, sqlite-libs 3.54.1-r0, libgcc 16.2.0-r2 and libstdc++ 16.2.0-r2; libffi 3.8.0-r2, libuuid 2.42.4-r1 and ncurses-terminfo-base 6.6.20261024-r0 are now installed by the completed development closure as well.",
+        "versionAssertion": "python3.13 -c 'import sys; assert sys.version_info[:3] == (3, 13, 16), sys.version; print(\"interpreter\", sys.version)'",
+        "reportedVersion": "python3.13 --version is printed into the build log immediately before the assertion",
+        "unittestAssertion": "python3.13 -m unittest --help > /dev/null",
+        "unittestAssertionReason": "the upstream block accepts pytest, then `${Python3_EXECUTABLE} -m pytest`, and otherwise requires `${Python3_EXECUTABLE} -m unittest --help` to exit 0 or it stops configure with FATAL_ERROR; this stage carries no pytest, so the unittest entry point is the one the upstream check actually applies",
+        "moduleAssertion": "python3.13 -c 'import argparse, errno, functools, getpass, hashlib, http.server, logging, multiprocessing, os, pathlib, platform, random, re, shutil, signal, socket, socketserver, struct, subprocess, sys, tempfile, threading, time, typing, unittest, unittest.mock, zipfile, zlib'",
+        "stdlibModules": [
+         "argparse",
+         "errno",
+         "functools",
+         "getpass",
+         "hashlib",
+         "http.server",
+         "logging",
+         "multiprocessing",
+         "os",
+         "pathlib",
+         "platform",
+         "random",
+         "re",
+         "shutil",
+         "signal",
+         "socket",
+         "socketserver",
+         "struct",
+         "subprocess",
+         "sys",
+         "tempfile",
+         "threading",
+         "time",
+         "typing",
+         "unittest",
+         "unittest.mock",
+         "zipfile",
+         "zlib"
+        ],
+        "pinDrift": "the development closure's own version assertion loop still runs after the interpreter install, so an interpreter install that replaced or moved a pinned development package fails the build",
+        "compilerOnly": "installed in the build-only compiler stage through a bind mount released with that RUN; the exported runtime stage keeps its own pinned python-3.13=3.13.16_git20261016-r2 install and names neither the mount nor the compiler stage's repository path",
+        "notProven": "Unqualified: no ARM build has run, so whether apk resolves this closure in stage, whether the interpreter executes the upstream unit tests and the resulting payload's behaviour, ABI, size and scan result remain unproven"
+       },
        "qualification": "Unqualified source preparation. No image was built, installed, probed or scanned, so the built payload's behaviour, its size against the 3 GiB measured ceiling, its ABI and its scan result remain unproven and require a separately allocated ARM build, probe and scan."
       },
       "packageIndex": "https://packages.wolfi.dev/os/aarch64/APKINDEX.tar.gz",

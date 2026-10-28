@@ -171,10 +171,12 @@ def _layer_chain(stage):
             if instruction.split(" ", 1)[0].upper() in _LAYER_INSTRUCTIONS]
 
 
-def _staged_archives_by_stage():
+def _staged_archives_by_stage(prefix=None):
     """filename -> (checksum, stage) for every archive the Dockerfile stages into a local repository."""
     staged = {}
     for stage in _dockerfile_stages():
+        if prefix is not None and not (stage["name"] or "").startswith(prefix):
+            continue
         for instruction in stage["instructions"]:
             match = re.match(r"ADD --checksum=sha256:([0-9a-f]{64}) (\S+) (\S+)$", instruction)
             if match and match.group(3).endswith(".apk"):
@@ -553,7 +555,8 @@ class SourceBuiltClamavPayload(unittest.TestCase):
         self.assertNotIn("--allow-untrusted", DOCKERFILE)
         self.assertNotIn("http://", build.replace("/tmp/meri-native-dev-repo", ""))
         for member in self.PREP["buildClosure"]["members"]:
-            self.assertIn("ADD --checksum=sha256:%s %s" % (member["sha256"], member["url"]), DOCKERFILE,
+            self.assertIn("ADD --checksum=sha256:%s %s /tmp/meri-native-dev-repo/aarch64/%s-%s.apk" % (
+                member["sha256"], member["url"], member["name"], member["version"]), DOCKERFILE,
                           "the development closure member %s is not staged at its pinned checksum" % member["name"])
 
     def test_the_authenticated_source_and_toolchain_inputs_are_pinned(self):
@@ -703,7 +706,7 @@ class SourceBuiltClamavPayload(unittest.TestCase):
             self.assertIn("%s=%s" % (package["name"], package["version"]), install,
                           "the interpreter install leaves %s to apk's resolution instead of naming its signed "
                           "revision" % package["name"])
-        staged = _staged_archives_by_stage()
+        staged = _staged_archives_by_stage("native-repo-")
         for package in interpreter["requested"] + interpreter["resolvedFromTheRuntimeRepository"]:
             filename = "%s-%s.apk" % (package["name"], package["version"])
             self.assertIn(filename, staged, "the interpreter package %s is not staged at all" % filename)
@@ -750,7 +753,7 @@ class SourceBuiltClamavPayload(unittest.TestCase):
         """
         interpreter = self.PREP["compilerInterpreter"]
         entries, provides = _retained_index()
-        staged = _staged_archives_by_stage()
+        staged = _staged_archives_by_stage("native-repo-")
         installed = {"%s-%s" % (member["name"], member["version"])
                      for member in self.PREP["buildClosure"]["members"]}
         runtime_staged = {filename[:-4] for filename, (_, stage) in staged.items()
