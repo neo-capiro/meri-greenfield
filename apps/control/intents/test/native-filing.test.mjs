@@ -13,12 +13,24 @@ test('native filing actual preparation, approval, original result and history re
  assert.equal(publicResult.outcome.result.files[0].indexingStatus,'pending');assert.deepEqual((await s.decide()).outcome,result.outcome);assert.equal(s.state.effects,1);
  s.state.now+=120000;
  const history=await admitted(s,'list',await s.list());assert.equal(history.intents[0].phase,'completed');assert.deepEqual(history.intents[0].execution.outcome,result.outcome);
- await assert.rejects(s.decide(),code('INTENT_EXPIRED'));assert.equal(s.state.effects,1);
+ const {executes,records}=s.state,recovered=await admitted(s,'decide',await s.decide());
+ assert.equal(recovered.status,'executed');assert.deepEqual(recovered.outcome,result.outcome);
+ assert.equal(s.state.effects,1);assert.equal(s.state.executes,executes);assert.equal(s.state.records,records);
 });
 
 test('lost native filing acknowledgement recovers original outcome from history',async()=>{
  const s=await nativeFilingFixture();s.state.loseAck=true;await assert.rejects(s.decide(),code('INTENT_EXECUTION_UNKNOWN'));
+ s.state.now+=120000;
  const recovered=await admitted(s,'list',await s.list());assert.equal(recovered.intents[0].phase,'completed');assert.equal(s.state.effects,1);assert.equal(s.state.executes,1);
+ const {records}=s.state,decision=await admitted(s,'decide',await s.decide());
+ assert.deepEqual(decision.outcome,recovered.intents[0].execution.outcome);
+ assert.equal(s.state.executes,1);assert.equal(s.state.effects,1);assert.equal(s.state.records,records);
+});
+
+test('expiry cannot approve or dispatch an unexecuted filing',async()=>{
+ const s=await nativeFilingFixture();s.state.now+=120000;
+ await assert.rejects(s.decide(),code('INTENT_EXPIRED'));
+ assert.equal(s.state.records,0);assert.equal(s.state.executes,0);assert.equal(s.state.effects,0);
 });
 
 test('unknown native filing never becomes success or a failed per-file observation',async()=>{
