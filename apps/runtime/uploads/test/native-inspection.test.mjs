@@ -99,6 +99,23 @@ test('extraction refuses unsupported formats and a corrupt or failing child with
  assert.deepEqual(Object.keys(crashedReceipt),EXTRACT_KEYS);assert.equal(crashedReceipt.status,'unavailable');
 });
 
+test('malformed child outcomes cannot erase limitations or release blocked content',async()=>{
+ const bytes=Buffer.from('original'),segment={ordinal:0,text:'must not escape',method:'native',confidence:null,
+  location:{page:null,slide:null,sheet:null,rowStart:null,rowEnd:null}};
+ for(const patch of [
+  {limitations:['not a limitation code']},{limitations:['OCR_LOW_CONFIDENCE','OCR_LOW_CONFIDENCE']},
+  {limitations:Array.from({length:17},(_,i)=>`LIMIT_${i}`)},
+  {status:'unknown'},{status:'blocked',limitations:['ENCRYPTED_DOCUMENT']},
+  {status:'unavailable',limitations:['PARSER_ERROR']},{detail:'unexpected child payload'},
+ ]){
+  const childResult={status:'available',segments:[segment],limitations:[],...patch};
+  const {host}=await build(async role=>child(role,{stdout:JSON.stringify(childResult)}));
+  const receipt=await host.extractor.extract({file:fileFor(bytes),bytes,deadlineMs:Date.now()+30000});
+  assert.equal(receipt.status,'unavailable');assert.deepEqual(receipt.segments,[]);
+  assert.deepEqual(receipt.limitations,['EXTRACTOR_RECEIPT_INVALID']);
+ }
+});
+
 test('receipts satisfy the invariants of A5 createUploadInspection scanReceipt/extractionReceipt',async()=>{
  // Traced from S/work/wave5-m5-upload-custody-20261027/apps/control/uploads/extraction.mjs (read-only reference).
  const bytes=Buffer.from('payload'),file=fileFor(bytes),options={limits:{originalBytes:1e7},deadlineMs:Date.now()+30000};

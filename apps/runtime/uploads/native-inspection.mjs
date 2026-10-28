@@ -187,11 +187,13 @@ export function createUploadNativeInspection({admission,tools,definitions,defini
   if(out.exitCode===3)return extractUnavailable(file,began,'NATIVE_EXTRACTOR_CONFIGURATION');
   if(out.exitCode!==0)return extractUnavailable(file,began,'EXTRACTOR_UNAVAILABLE');
   let parsed;try{parsed=JSON.parse(out.stdout.toString('utf8'));}catch{return extractUnavailable(file,began,'EXTRACTOR_RECEIPT_INVALID');}
-  if(parsed===null||typeof parsed!=='object'||!Array.isArray(parsed.segments)||!Array.isArray(parsed.limitations))return extractUnavailable(file,began,'EXTRACTOR_RECEIPT_INVALID');
-  const limitations=[...new Set(parsed.limitations.filter(isCode))];
-  let status=['available','partial','unavailable','blocked'].includes(parsed.status)?parsed.status:'unavailable';
+  if(parsed===null||typeof parsed!=='object'||Object.keys(parsed).some(key=>!['status','segments','limitations'].includes(key))||
+   !['available','partial','unavailable','blocked'].includes(parsed.status)||!Array.isArray(parsed.segments)||!Array.isArray(parsed.limitations)||
+   parsed.limitations.length>16||parsed.limitations.some(value=>!isCode(value))||new Set(parsed.limitations).size!==parsed.limitations.length||
+   ['unavailable','blocked'].includes(parsed.status)&&parsed.segments.length)return extractUnavailable(file,began,'EXTRACTOR_RECEIPT_INVALID');
+  const limitations=[...parsed.limitations];
+  let status=parsed.status;
   if(status==='available'&&limitations.length)status='partial';
-  if(['unavailable','blocked'].includes(status)&&parsed.segments.length)status='partial';
   if(status!=='available'&&!limitations.length)limitations.push(status==='blocked'?'EXTRACTOR_BLOCKED':'EXTRACTOR_PARTIAL');
   return {sourceSha256:file.sha256,sourceBytes:file.bytes,checkedAtMs:Math.max(began,now()),status,
    tool:identity.extractor,segments:parsed.segments,limitations};
