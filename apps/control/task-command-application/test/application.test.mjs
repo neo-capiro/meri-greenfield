@@ -27,3 +27,12 @@ test('authority unavailability after preparation begins does not claim non-dispa
  assert.notEqual(response.status,200);assert.equal((await response.json()).error.outcome,'UNKNOWN');
  assert.equal(f.metadata.rows.size,1);assert.equal(f.state.effects,0);
 });
+
+test('a definite non-authentication refusal keeps its canonical reason instead of reporting 401',async()=>{
+ for(const [code,status] of [['ACCESS_DENIED',403],['DEADLINE',408]]){
+  const f=standaloneFixture();f.sessions.authenticateSession=async()=>{throw Object.assign(Error(code),{code});};
+  const response=await f.call('prepare',f.raw),body=await response.json();
+  assert.equal(response.status,status);assert.equal(body.error.code,code);assert.equal(body.error.outcome,'NOT_DISPATCHED');
+  assert.equal(f.metadata.rows.size,0);assert.equal(f.sql.state.rows.size,0);assert.equal(f.state.effects,0);
+ }
+});

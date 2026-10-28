@@ -32,12 +32,20 @@ export function response(value,status=200){return serializedResponse(JSON.string
 export function serializedResponse(text,status=200){return new Response(text,{status,headers:{'content-type':'application/json; charset=utf-8','cache-control':'no-store','x-content-type-options':'nosniff'}});}
 const codes=new Set(['ACCESS_DENIED','DEADLINE','CANCELLED','LOOKUP_REPLAY','LOOKUP_UNAVAILABLE','COMMAND_APPROVAL_REFUSED','COMMAND_AUTHORITY_REFUSED','COMMAND_PREPARATION_REFUSED','COMMAND_REFUSED','COMMAND_OUTCOME_UNKNOWN','COMMAND_COMMIT_UNCERTAIN','UNAVAILABLE']);
 const outcomes=new Set(['NOT_DISPATCHED','UNKNOWN','RESULT_NOT_RELEASED','STORED_NOT_RELEASED','NOT_STORED','READ_UNAVAILABLE']);
+/** The canonical refusal reason a rejection names, if it names one. Same ownership as `codes`: a caller that must replace a
+ * rejection with a failure of its own keeps the named reason rather than flattening a definite refusal into a generic one. */
+export function canonicalRefusalReason(error){
+ if(!error||typeof error!=='object'||types.isProxy(error))return undefined;
+ const value=key=>{const d=Object.getOwnPropertyDescriptor(error,key);return d&&Object.hasOwn(d,'value')?d.value:undefined;};
+ const rawCode=value('code'),message=value('message');
+ return codes.has(rawCode)?rawCode:codes.has(message)?message:undefined;
+}
 // Read only inert own data after excluding proxies; rejection objects are not trusted.
 function errorData(error){
  if(!error||typeof error!=='object'||types.isProxy(error))return {};
  const value=key=>{const d=Object.getOwnPropertyDescriptor(error,key);return d&&Object.hasOwn(d,'value')?d.value:undefined;};
- const application=applicationErrors.get(error),rawCode=value('code'),message=value('message'),rawOutcome=value('outcome');
- return {...application,code:application?.code??(codes.has(rawCode)?rawCode:codes.has(message)?message:undefined),outcome:outcomes.has(rawOutcome)?rawOutcome:undefined};
+ const application=applicationErrors.get(error),rawOutcome=value('outcome');
+ return {...application,code:application?.code??canonicalRefusalReason(error),outcome:outcomes.has(rawOutcome)?rawOutcome:undefined};
 }
 export function errorResponse(error,state){
  const admitted=errorData(error);let code=admitted.code??'REQUEST_FAILED',status=admitted.status??502,outcome=admitted.outcome;
