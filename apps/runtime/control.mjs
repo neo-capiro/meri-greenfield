@@ -4,7 +4,7 @@ import {createTurnTelemetry} from './telemetry/turn-context.mjs';
 import {countingPool} from './telemetry/counting.mjs';
 import {Connection,Client} from '@temporalio/client';
 import {createPostgresConversationStore} from '../control/conversations/postgres-store.mjs';
-import {documentRevisionSourceFor} from './artifacts/intent-binding.mjs';
+import {documentRevisionSourceFor,selectedDocumentRevisionSourceFor} from './artifacts/intent-binding.mjs';
 import {createConversationService} from '../control/conversations/service.mjs';
 import {createTemporalConversationDispatcher} from '../control/conversations/temporal-dispatch.mjs';
 import {createActionSessionOwner} from '../control/action-host/session/owner.mjs';
@@ -125,7 +125,7 @@ export function assembleControl(options){
   ...(retention?{retention:retention.gate}:{})});
  const dispatcher=createTemporalConversationDispatcher({client,taskQueue:configuration.temporal.taskQueue,lifecycle:true,now,maxRequestMs:configuration.limits.requestMs});
  const capabilityPolicy=configuration.capabilityPlatform===undefined?undefined:createConfiguredRunCapabilityPolicy(configuration,{pool});
- const selected=configuration.sourceEnabled&&configuration.agentcore&&createReadsRuntime?createNativeSelectedComposition({configuration,pool,store,execution,createReadsRuntime:input=>createReadsRuntime({...input,capabilityPolicy,readCapabilityRole}),serviceFor:value=>createWorkerService(value),now}):null;
+ const selected=configuration.sourceEnabled&&configuration.agentcore&&createReadsRuntime?createNativeSelectedComposition({configuration,pool,store,execution,createReadsRuntime:input=>createReadsRuntime({...input,capabilityPolicy,readCapabilityRole}),serviceFor:value=>createWorkerService(value),...(productContext?{revisionSource:value=>selectedDocumentRevisionSourceFor(productContext,value)}:{}),now}):null;
  if(selected)ports=composeRuntimePorts(ports,selected.ports);
  const uploadInputSource=ports.uploadApplicationFactory?.createSource?.({sessions,retention:retention?.gate,conversationStore:store});
  const basic=createConversationService({uploadInputSource,sessions,store,dispatcher,versions:configuration.versions,modelCatalog:configuration.models,now,maxRequestMs:configuration.limits.requestMs,...(capabilityPolicy?{capabilityPolicy,readCapabilityRole}:{}),...(ports.selectedSkillAdmission?{selectedSkillAdmission:ports.selectedSkillAdmission}:{}),...(ports.selectedOutputPublication?{selectedOutputPublication:ports.selectedOutputPublication}:{}),...(retention?{retention:retention.gate}:{})});

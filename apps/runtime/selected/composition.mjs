@@ -9,9 +9,10 @@ import {createIntentJournal} from '../../control/intents/journal.mjs';
 import {createPostgresIntentJournalStore} from '../../control/intents/postgres-journal.mjs';
 import {createNativeReadsClient} from '../reads-client.mjs';
 import {createSelectedControl} from './control.mjs';
+import {supportsSelectedDocumentRevision} from '../../../packages/contracts/document-revision.mjs';
 
 const same=(a,b)=>hash(a)===hash(b),fail=()=>{throw Object.assign(Error('SELECTED_CURRENT_REFUSED'),{code:'SELECTED_CURRENT_REFUSED'});};
-export function createNativeSelectedComposition({configuration,pool,store,execution,createReadsRuntime,serviceFor,now}){
+export function createNativeSelectedComposition({configuration,pool,store,execution,createReadsRuntime,serviceFor,revisionSource,now}){
  if(typeof execution?.authenticate!=='function'||typeof createReadsRuntime!=='function'||typeof serviceFor!=='function'||typeof now!=='function')fail();
  const approvedReads=configuration.agentcore.approvedReads,defaultCongress=configuration.reads?.defaultCongress;
  if(!approvedReads?.enabled||!Number.isSafeInteger(defaultCongress))return null;
@@ -47,11 +48,24 @@ export function createNativeSelectedComposition({configuration,pool,store,execut
     operations:installed.operations.filter(op=>selected.manifest.allowedOperations.some(allowed=>same(op,allowed))),checkedAtMs:now(),expiresAtMs:r.expiresAtMs};
   }};
  }
+ async function revisionFor({binding,request,scopes,credential,signal}){
+  if(request.documentRevision===undefined)return null;
+  if(!supportsSelectedDocumentRevision(request.skill)||typeof revisionSource!=='function')fail();
+  const fresh=await current({binding,credential,signal}),saved=await store.read(binding,{after:0,limit:1},check(signal));
+  if(!same(saved.request,request)||!same(saved.run.binding,binding)||!same(saved.run.scopes,scopes)||!same(fresh.scopes,scopes))fail();
+  const source=await revisionSource({binding,selection:request.documentRevision,deadlineMs:fresh.expiresAtMs,signal});
+  const after=await current({binding,credential,signal});if(!same(after.scopes,scopes))fail();
+  return source;
+ }
  const controller=createSelectedControl({sourceEnabled:configuration.sourceEnabled,now,
   async loadCurrentTask({binding,capability,signal}){const r=await current({binding,credential:capability,signal}),saved=await store.read(binding,{after:0,limit:1},check(signal));
    if(!same(saved.run.binding,binding)||!same(saved.run.scopes,r.scopes)||!['starting','running'].includes(saved.run.state))fail();
    return {...r,versions:saved.run.versions,request:saved.request};},
   executionOptions:{admissionForBinding:admission,gatewayForBinding,readSelection:selection,
+   async readRevisionBase(call){const source=await revisionFor(call);return source===null?null:{versionId:source.version.versionId,specSha256:source.specSha256};},
+   async readBase(call){const source=await revisionFor(call);if(source===null||source.version.versionId!==call.versionId||!same(call.context.binding,call.binding)||!same(call.context.scopes,call.scopes))fail();
+    const {currentBytesVerified,...inspection}=source.inspection;if(currentBytesVerified!==true)fail();
+    return {version:source.version,spec:source.request,specSha256:source.specSha256,inspection};},
    async readContext({binding,scopes,credential,signal}){const r=await current({binding,credential,signal});if(!same(r.scopes,scopes))fail();return {context:{binding,scopes,evidence:[],assets:[],deadlineMs:r.expiresAtMs,maxBytes:configuration.agentcore.maxOutputBytes},checkedAtMs:r.checkedAtMs,expiresAtMs:r.expiresAtMs};},
    retention:{retain:value=>retained.retain(value)},proposals,defaultCongress,
    publishForBinding:({binding,credential,...call})=>serviceFor({binding,credential}).publishSelectedOutput({binding,credential,...call})}});

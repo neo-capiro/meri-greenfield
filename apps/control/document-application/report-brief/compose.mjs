@@ -5,8 +5,8 @@ import {artifactValidators as v,assertSubject,assertWindow} from '../../../../pa
 import {own} from '../../../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {createOperationLifetime} from '../../../../packages/runtime/operation-lifetime.mjs';
 import {fail,hash,REPORT_SECTIONS,reportInput} from './input.mjs';
-import {reportManifest,reportSkillPin,reportSourceIds} from './skill.mjs';
-import {bindRead,assessFacts} from '../research-brief/evidence.mjs';
+import {reportManifest,reportSkillPin} from './skill.mjs';
+import {createReportNativeSources,assessReportFindings} from './native-source.mjs';
 const prepared=new WeakMap();
 const marker='Meri report provenance: ';
 const p=(text,style='Normal')=>({kind:'paragraph',style,runs:[{text}]});
@@ -31,7 +31,7 @@ const assetIds=value=>{
 };
 /** Immutable parent pins plus the evidence and assets the parent retained. */
 function baseProvenance(record,selection,context,input){
-  own(record,['version','spec','specSha256','requestSha256','inspection']);
+  own(record,['version','spec','specSha256','inspection'],['requestSha256']);
   v.version(record.version);v.request(record.spec);v.inspection(record.inspection);
   if(record.version.versionId!==selection.versionId||record.specSha256!==selection.specSha256||!same(record.specSha256,v.hash(record.spec))||
     record.version.binding.tenantId!==context.binding.tenantId||record.version.binding.actorId!==context.binding.actorId||
@@ -57,13 +57,13 @@ function conflictsFor(input,findings){
   const derived=findings.filter(f=>f.conflict===true&&!named.some(x=>x.findingId===f.id)).map(f=>({findingId:f.id,note:null,passages:passages(f)}));
   return [...named,...derived];
 }
-function blocksFor(input,findings,conflicts,reads,retained,provenance){
+function blocksFor(input,findings,conflicts,sources,retained,provenance){
   const s=input.subject,blocks=[p(input.title,'Title'),p('Sourced cited report | Draft for review'),
     p(`Congress ${s.congress} | Session ${s.session} | ${s.billId} | Bill version ${s.billVersion} | FY ${s.fiscalYear} | Budget stage ${s.budgetStage}`),
     p('As of '+input.asOf)];
   blocks.push(p('Summary','Heading 1'),p(input.summary),p('Draft narrative: unverified until the cited passage of every Findings entry is read and byte-bound.'));
   blocks.push(p('Scope and as-of','Heading 1'),p(`${REPORT_SECTIONS[1]}: the report covers exactly this bill identity, version, fiscal year, budget stage and as-of instant. A revision may not roll the as-of backwards.`),
-    p(`Sources requested: ${reads.map(r=>r.envelope.sources[0].sourceId).join(', ')}`));
+    p(`Sources requested: ${sources.map(source=>`${source.sourceId} (${source.operation})`).join(', ')}`));
   blocks.push(p('Findings','Heading 1'));
   for(const f of findings){blocks.push(p(`${f.id} [${f.status}${f.conflict?'; potentially conflicting cited passages':''}]: ${f.text}`));
     for(const l of f.links)blocks.push(p(`Citation: ${l.citation.sourceId} / ${l.citation.recordId} / ${l.citation.sourceVersionId}; characters ${l.citation.start}-${l.citation.end}; ${l.status}${l.citation.url?'; locator URL (not verification): '+l.citation.url:''}`));}
@@ -75,14 +75,14 @@ function blocksFor(input,findings,conflicts,reads,retained,provenance){
   input.recommendations.forEach((x,index)=>blocks.push(p(`${index+1}. ${x}`)));
   blocks.push(p('Limitations','Heading 1'),p('Missing, stale, partial, unavailable, truncated or continuation-required evidence is disclosed here and never establishes absence.'));
   input.limitations.forEach(x=>blocks.push(p('Stated limitation: '+x)));
-  for(const r of reads){const e=r.envelope;
-    blocks.push(p(`${e.sources[0].sourceId}: status ${e.status}; enumeration ${e.coverage.enumeration}; truncated ${e.coverage.truncated}; returned ${e.coverage.returnedCount}; total ${e.coverage.enumerableTotal??'unknown'}; remaining sources ${e.continuation.remainingSources.join(', ')||'none'}`));
-    e.coverage.limitations.forEach(x=>blocks.push(p('Read limitation: '+x)));}
+  for(const source of sources){
+    const c=source.coverage;
+    blocks.push(p(`${source.sourceId}: status ${source.status}${source.reason?' ('+source.reason+')':''}${c?`; pages ${c.pages}; characters ${c.offset} of ${c.totalCharacters===null?'unknown':c.totalCharacters}; complete ${c.complete}; truncated ${c.truncated}`:''}`));
+    if(source.pin)blocks.push(p(`${source.sourceId} pinned identity: bill ${source.pin.recordId}; revision ${source.pin.sourceVersionId}; version ${source.pin.versionCode}; version SHA256 ${source.pin.versionHash}; text SHA256 ${source.pin.textHash}; observed ${source.pin.observedAt}; source updated ${source.pin.sourceUpdatedAt??'unknown'}; locator ${source.pin.sourceLocator} (a locator, not verification)`));
+    if(source.sourceId==='federal_legislation'&&source.status==='read')
+      blocks.push(p(`Stored bill status: ${source.statusLabel??'unknown'}${source.statusAt?'; status at '+source.statusAt:''}; observed ${source.observed}; latest action ${source.latestAction&&source.latestAction.text?source.latestAction.text:'none'}`));
+    source.limitations.forEach(x=>blocks.push(p('Read limitation: '+x)));}
   blocks.push(p('References','Heading 1'),p('Verification means an exact excerpt was read and byte-bound. Free-form claims remain unverified.'));
-  for(const r of reads){const e=r.envelope,source=e.sources[0];
-    blocks.push(p(`${source.sourceId}: ${e.status} (${e.reasonCode}); method ${e.method}; freshness ${source.freshness}; snapshot ${source.snapshotVersionId??'unknown'}; adapter ${source.adapterVersion}`));
-    blocks.push(p(`Requested ${e.coverage.sourcesRequested.join(', ')}; checked ${e.coverage.sourcesChecked.join(', ')||'none'}; unavailable ${e.coverage.sourcesUnavailable.join(', ')||'none'}; returned ${e.coverage.returnedCount}; total ${e.coverage.enumerableTotal??'unknown'}; history ${e.coverage.historySupport}`));
-    blocks.push(p(`Source as-of ${source.asOf??'unknown'}; synchronized ${source.synchronizedAt??'unknown'}; retrieved ${source.retrievedAt}. Continuation ${e.continuation.cursor??'none'}; required reads ${e.continuation.requiredReads.join(', ')||'none'}.`));}
   for(const f of findings){blocks.push(p(`${f.id}: ${f.status}${f.conflict?'; unresolved potentially conflicting cited passages':''}`));
     for(const l of f.links)if(l.evidence){const e=l.evidence;
       blocks.push(p(`Source ${e.sourceId}; record ${e.recordId}; version ${e.sourceVersionId}; citation ${e.citationId}; run ${e.binding.runId}.`));
@@ -105,20 +105,20 @@ export function createCongressionalReportCompiler({readSource,readBase,now}){
       let parent=null,retained=[];
       if(base){const admitted=baseProvenance(v.snapshot(await life.run(signal=>readBase({versionId:base.versionId,context:v.snapshot(context),signal}))),base,context,input);
         parent=admitted.parent;retained=admitted.retainedEvidence;}
-      const reads=[];
-      for(const sourceId of reportSourceIds){
-        const selector={subject:input.subject,asOf:input.asOf},call={sourceId,selector,binding:context.binding,scopes:context.scopes,deadlineMs:context.deadlineMs};
-        reads.push(bindRead(await life.run(signal=>readSource({...v.snapshot(call),signal})),call,input.asOf));
-      }
-      const findings=assessFacts(input.findings,reads),conflicts=conflictsFor(input,findings),evidence=[...retained,...reads.flatMap(x=>x.evidence)];
+      // One native receiving session: exact canonical selectors over the trusted gateway port, no envelope.
+      const collector=createReportNativeSources({readSource,selected,subject:input.subject,context,asOf:Date.parse(input.asOf)});
+      const sources=await life.run(signal=>collector.collect(signal)),reads=collector.receipts();
+      const findings=assessReportFindings(input.findings,sources),conflicts=conflictsFor(input,findings),
+        evidence=[...retained,...sources.flatMap(source=>source.records.map(record=>record.evidence)).filter(item=>item!==null)];
       if(new Set(evidence.map(x=>x.citationId)).size!==evidence.length)fail('REPORT_RETAINED_EVIDENCE');
       const provenance={recipe:'sourced-cited-report',skill:input.skill,selection:selected,subject:input.subject,asOf:input.asOf,inputSha256:v.hash(input),
-        readsSha256:v.hash(reads),retainedEvidenceSha256:v.hash(retained),parent};
-      const nextContext=v.context({...context,evidence}),request=v.request({operation:'create_word',format:'docx',title:input.title,content:{blocks:blocksFor(input,findings,conflicts,reads,retained,provenance)}});
+        readsSha256:v.hash(reads),sourcesSha256:v.hash(sources),retainedEvidenceSha256:v.hash(retained),parent};
+      const nextContext=v.context({...context,evidence}),request=v.request({operation:'create_word',format:'docx',title:input.title,content:{blocks:blocksFor(input,findings,conflicts,sources,retained,provenance)}});
       life.check();
-      const result=Object.freeze({request:v.snapshot(request),context:v.snapshot(nextContext),baseVersionId:base?.versionId??null,evidenceSha256:v.hash(nextContext.evidence),
-        retainedEvidence:v.snapshot(retained),provenance:v.snapshot(provenance),findings:v.snapshot(findings),conflicts:v.snapshot(conflicts),reads:v.snapshot(reads)});
-      prepared.set(result,{requestSha256:v.hash(request),contextSha256:v.hash(nextContext),baseVersionId:result.baseVersionId,evidenceSha256:result.evidenceSha256});return result;
+      const result=Object.freeze({request:v.snapshot(request),context:v.snapshot(nextContext),baseVersionId:base?.versionId??null,
+        retainedEvidence:v.snapshot(retained),provenance:v.snapshot(provenance),findings:v.snapshot(findings),conflicts:v.snapshot(conflicts),
+        reads:v.snapshot(reads),coverage:v.snapshot(sources)});
+      prepared.set(result,{requestSha256:v.hash(request),contextSha256:v.hash(nextContext),baseVersionId:result.baseVersionId,evidenceSha256:v.hash(nextContext.evidence)});return result;
     }finally{life.close();}
   }});
 }

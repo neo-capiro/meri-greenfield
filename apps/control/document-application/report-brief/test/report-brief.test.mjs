@@ -9,7 +9,8 @@ import {createCongressionalReportCompiler,admitPreparedReport,preparedReportEvid
 import {bindPreparedReportArtifactOptions} from '../binding.mjs';
 import {reportManifest,reportSkillPin,reportSourceIds,reportReadOperation} from '../skill.mjs';
 import {REPORT_SECTIONS} from '../input.mjs';
-import {artifactValidators as v,assertEvidence} from '../../../../../packages/contracts/retrieval-0.2/validate.mjs';
+import {artifactValidators as v} from '../../../../../packages/contracts/retrieval-0.2/validate.mjs';
+import {nativeReportPort,REVISION} from './native-source-fixture.mjs';
 import {canonicalSha256} from '../../../../../packages/contracts/validate.mjs';
 import {assertSelectedOutput} from '../../../../../packages/contracts/selected-skills/validate.mjs';
 import {createOriginalSelectedSkillExecution} from '../../../conversations/skills/execution.mjs';
@@ -28,33 +29,24 @@ const selection=()=>({subject:{kind:'client',entityType:'client',entityIds:[clie
  window:{basis:'explicit',startInclusive:'2026-10-13T11:00:00.000Z',endExclusive:'2026-10-13T13:00:00.000Z',timezone:'UTC',weekStartsOn:null},mondayBoardIds:['101']});
 function context(){return {binding:{tenantId:'independent-report',actorId:'source-reviewer',conversationId:uid(1),runId:uid(2),attemptId:uid(3),workerId:uid(4),writerFence:1},
  scopes:[{tenantId:'independent-report',kind:'client',resourceId:client,policyRevision:policy}],evidence:[],assets:[],deadlineMs:NOW+5000,maxBytes:1048576};}
-const citation=(sourceId,text=texts[sourceId])=>({sourceId,recordId:'independent-'+sourceId,sourceVersionId:'independent-version-1',start:0,end:text.length,url:'https://example.invalid/never-fetched'});
 function input(at=stamp){return {skill:reportSkillPin(),title:'Independent sourced cited report',subject:structuredClone(subject),asOf:at,
  summary:'Draft summary: the authorization basis is recorded; no appropriation amount was read.',
  findings:[{id:'excerpt',kind:'excerpt',text:texts.bill_text,citations:[citation('bill_text')]},
-  {id:'claim',kind:'claim',text:texts.bill_text,citations:[citation('bill_text'),citation('federal_legislation')]},
+  // Two unequal excerpts of the same pinned revision: disclosed as a possible conflict, not a verdict.
+  {id:'claim',kind:'claim',text:texts.bill_text,citations:[citation('bill_text'),citation('bill_text',texts.bill_text.slice(0,-7))]},
   {id:'missing',kind:'excerpt',text:'No budget evidence was read.',citations:[citation('program_elements','No budget evidence was read.')]}],
  conflicts:[{findingId:'claim',note:'Two sources describe the same stage differently.'}],
  recommendations:['Confirm the appropriations basis before committing resources.'],
  limitations:['State docket coverage is not exhaustive.']};}
-function read(call){
- const available=call.sourceId!=='program_elements',content=texts[call.sourceId],sourceId=call.sourceId,observed=call.selector.asOf,citationId=randomUUID();
- const scopes=structuredClone(call.scopes),evidence=available?[{sourceId,recordId:'independent-'+sourceId,sourceVersionId:'independent-version-1',citationId,
-  binding:structuredClone(call.binding),contentSha256:digest(Buffer.from(content)),scopes,observedAt:observed,sourceUpdatedAt:observed}]:[];
- const envelope={contractVersion:'0.2.0',requestId:randomUUID(),traceId:randomUUID(),operation:reportReadOperation(sourceId),binding:structuredClone(call.binding),
-  subject:{kind:'client',entityType:'client',entityIds:[scopes[0].resourceId],tenantId:call.binding.tenantId,actorId:call.binding.actorId,
-   policyRevision:scopes[0].policyRevision,scopes,rosterVersionId:null},
-  window:{basis:'unbounded'},argumentsSha256:v.hash(call.selector),appliedFilters:Object.entries(call.selector.subject).map(([k,value])=>({name:k.replace(/[A-Z]/g,x=>'_'+x.toLowerCase()),valueSha256:v.hash(value)})),
-  method:'source-read',status:available?'complete':'unavailable',reasonCode:available?'OK':'SOURCE_UNAVAILABLE',retryable:false,
-  sources:[{sourceId,authority:'derived',snapshotVersionId:available?'independent-snapshot-1':null,adapterVersion:'1.0.0',status:available?'checked':'unavailable',
-   synchronizedAt:available?observed:null,asOf:available?observed:null,retrievedAt:observed,freshness:available?'fresh':'unknown'}],
-  data:available?{kind:'source-read',records:[{sourceId,recordId:evidence[0].recordId,recordVersionId:evidence[0].sourceVersionId,citationId,
-   contentSha256:evidence[0].contentSha256,scopes,content:{kind:'full-read',text:content}}]}:null,
-  coverage:{sourcesRequested:[sourceId],sourcesChecked:available?[sourceId]:[],sourcesUnavailable:available?[]:[sourceId],enumeration:available?'complete':'unknown',
-   enumerableTotal:available?1:null,returnedCount:available?1:0,truncated:false,historySupport:available?'supported':'unsupported',limitations:['Independent synthetic corpus only; actual completeness unproven.']},
-  continuation:{cursor:null,requiredReads:[],remainingSources:available?[]:[sourceId]},negativeAssertion:{kind:'none'}};
- assertEvidence(envelope);return {envelope,evidence};
-}
+// The report reads through the exact selected-runtime request shape and the actual gateway handlers, over
+// synthetic Core DTOs. The saved selection is the run's own canonical subject/window.
+const savedSelection=()=>({binding:context().binding,subject:selection().subject,window:selection().window});
+const port=()=>nativeReportPort({saved:savedSelection(),bill:subject,text:texts.bill_text});
+const mainPort=port();
+const read=mainPort.readSource;
+/** The immutable identity of each native record the synthetic transport serves. */
+const versionOf=sourceId=>sourceId==='bill_text'?REVISION:'2026-10-12T12:00:00.000Z';
+const citation=(sourceId,text=texts[sourceId])=>({sourceId,recordId:subject.billId,sourceVersionId:versionOf(sourceId),start:0,end:text.length,url:'https://example.invalid/never-fetched'});
 // The real caller always supplies the canonical selection; default it here and keep the option overridable.
 const withSelection=inner=>({prepare:(i,c,options={})=>inner.prepare(i,c,{selection:selection(),...options})});
 const compiler=readSource=>withSelection(createCongressionalReportCompiler({readSource:readSource??read,now:()=>NOW}));
@@ -66,7 +58,9 @@ const docxExecutor={async execute(x){renders++;const bytes=Buffer.from(JSON.stri
 
 test('the accepted seven-section cited report is produced in order with citations, conflicts and limitations',async()=>{
  const calls=[],result=await compiler(call=>{calls.push(call);return read(call);}).prepare(input(),context());
- assert.deepEqual(reportSourceIds,calls.map(c=>c.sourceId));
+ // Exactly the addressable declared sources are read, in declared order, through the native operations.
+ assert.deepEqual(reportSourceIds,['bill_text','federal_legislation','program_elements']);
+ assert.deepEqual(calls.map(c=>c.operation.id),['read_bill_text','get_bill_status']);
  assert.deepEqual(headings(result),[...REPORT_SECTIONS]);
  assert.deepEqual(result.context.evidence.length,2);
  for(const item of result.context.evidence)v.nativeSourceEvidence(item);
@@ -75,13 +69,15 @@ test('the accepted seven-section cited report is produced in order with citation
  assert.equal(result.findings[0].links[0].passageSha256,digest(Buffer.from(texts.bill_text)));
  assert.deepEqual(result.provenance.subject,subject);assert.deepEqual(result.provenance.skill,reportSkillPin());assert.equal(result.baseVersionId,null);
  assert.equal(result.provenance.retainedEvidenceSha256,v.hash([]));
- assert.equal(result.evidenceSha256,v.hash(result.context.evidence));
+ // The prepared object is exactly the shape the shared selected-output admission accepts.
+ assert.deepEqual(Object.keys(result).sort(),['baseVersionId','conflicts','context','coverage','findings','provenance','reads','request','retainedEvidence']);
  const document=bodyText(result);
  for(const label of ['Sourced cited report | Draft for review','Congress 119 | Session 2 | 119-s-88 | Bill version is | FY 2028 | Budget stage authorized',
-  'Two sources describe the same stage differently.','Conflicting passage 1: '+texts.bill_text,'Conflicting passage 2: '+texts.federal_legislation,
-  'Confirm the appropriations basis before committing resources.','Stated limitation: State docket coverage is not exhaustive.','Read limitation: Independent synthetic corpus only',
-  'program_elements: status unavailable','Cited passage (UTF-16 characters','locator URL (not verification)','Original skill and immutable revision provenance'])assert(document.includes(label),label);
- assert(document.includes(texts.bill_text));assert(document.includes(texts.federal_legislation));
+  'Two sources describe the same stage differently.','Conflicting passage 1: '+texts.bill_text,'Conflicting passage 2: '+texts.bill_text.slice(0,-7),
+  'Confirm the appropriations basis before committing resources.','Stated limitation: State docket coverage is not exhaustive.','Read limitation: Pinned text SHA256',
+  'program_elements: status not-read (NO_CANONICAL_SELECTOR)','Stored bill status: Introduced','Cited passage (UTF-16 characters','locator URL (not verification)','Original skill and immutable revision provenance'])assert(document.includes(label),label);
+ assert(document.includes(texts.bill_text));
+ assert(document.includes('bill_text pinned identity: bill 119-s-88; revision '+REVISION+'; version is;'));
 });
 test('a named conflict must attach to a finding that is genuinely in conflict',async()=>{
  const i=input();i.conflicts=[{findingId:'excerpt',note:'Not actually in conflict.'}];
@@ -91,20 +87,26 @@ test('a named conflict must attach to a finding that is genuinely in conflict',a
  const unknown=input();unknown.conflicts=[{findingId:'other',note:'unknown finding'}];
  await assert.rejects(compiler().prepare(unknown,context()),/REPORT_CONFLICT/);
 });
-for(const [label,edit]of [
- ['foreign actor',r=>r.envelope.binding.actorId='foreign'],['foreign tenant',r=>r.envelope.binding.tenantId='foreign'],
- ['other run',r=>r.envelope.binding.runId=uid(90)],['changed selector',r=>r.envelope.argumentsSha256='e'.repeat(64)],
- ['source operation',r=>r.envelope.operation=reportReadOperation('federal_legislation')],['source identity',r=>{r.envelope.sources[0].sourceId='federal_legislation';}],
- ['other evidence run',r=>r.evidence[0].binding.runId=uid(99)],['obsolete decision field',r=>r.evidence[0].authorizationDecisionId=uid(99)],
- ['raw text with retained hash',r=>r.envelope.data.records[0].content.text+=' altered'],['proof hash',r=>r.evidence[0].contentSha256='a'.repeat(64)],
- ['foreign evidence scope',r=>r.evidence[0].scopes[0].resourceId=uid(78)],['proof observed time',r=>r.evidence[0].observedAt='2026-10-13T12:00:01.000Z'],
- ['missing citation proof',r=>r.evidence=[]],['extra citation proof',r=>r.evidence.push({...r.evidence[0],citationId:uid(77)})],
+// Every one of these is a substitution inside the native reply the compiler actually receives. The report
+// may not launder a foreign run, a changed request, another bill/version or unequal text into evidence.
+for(const [label,edit,expected]of [
+ ['foreign actor',w=>{w.binding.actorId='foreign';},/REPORT_SOURCE_BINDING/],
+ ['foreign tenant',w=>{w.binding.tenantId='foreign';},/REPORT_SOURCE_BINDING/],
+ ['other run',w=>{w.binding.runId=uid(90);},/REPORT_SOURCE_BINDING/],
+ ['changed arguments',w=>{w.argumentsSha256='e'.repeat(64);},/REPORT_SOURCE_ARGUMENTS/],
+ ['source operation',w=>{w.operation=reportReadOperation('federal_legislation');},/REPORT_SOURCE_OPERATION/],
+ ['subject substitution',w=>{w.subject.entityIds=[uid(78)];},/REPORT_SOURCE_CONTEXT/],
+ ['bill identity substitution',w=>{w.result.billId=uid(78);},/REPORT_SOURCE_(SELECTOR|RESULT)/],
+ ['bill version substitution',w=>{w.result.versionCode='rs';},/REPORT_SOURCE_(VERSION|RESULT)/],
+ ['text substitution',w=>{w.result.text+=' altered';},/REPORT_SOURCE_(TEXT_HASH|RESULT)/],
+ ['continuation gap',w=>{w.result.coverage.locator.endOffset-=1;w.result.text=w.result.text.slice(1);},/REPORT_SOURCE_(CONTINUITY|RESULT)/],
 ])test('refusal: '+label,async()=>{
- let reads=0;await assert.rejects(compiler(call=>{reads++;const value=read(call);if(call.sourceId==='bill_text')edit(value);return value;}).prepare(input(),context()));assert.equal(reads,1);
+ let reads=0;const substituting=async call=>{reads++;const value=structuredClone(await read(call));if(call.operation.id==='read_bill_text')edit(value);return value;};
+ await assert.rejects(compiler(substituting).prepare(input(),context()),expected);assert.equal(reads,1);
 });
 test('recipe/prose/catalog pins and future as-of refuse before source dispatch',async()=>{
  for(const [mutate,expected] of [[i=>{i.skill={...i.skill,skillVersion:'9.0.0'};},0],[i=>{i.skill={...i.skill,manifestSha256:'a'.repeat(64)};},0],
-  [i=>{i.asOf='2026-10-13T12:00:01.000Z';},0],[i=>{i.conflicts=[{findingId:'excerpt',note:'x'}];},reportSourceIds.length]]){
+  [i=>{i.asOf='2026-10-13T12:00:01.000Z';},0],[i=>{i.conflicts=[{findingId:'excerpt',note:'x'}];},2]]){
   const i=input();mutate(i);let count=0;await assert.rejects(compiler(c=>{count++;return read(c);}).prepare(i,context()));
   assert.equal(count,expected);
  }
@@ -127,7 +129,7 @@ const writeCall=p=>({action:'artifact.generate',resource:{versionId:null},bindin
 test('prepared guard and binder pin the exact request, context, base and retained-evidence admission',async()=>{
  const p=await compiler().prepare(input(),context()),guard=admitPreparedReport(p,p.context);
  guard({request:p.request,baseVersionId:null});
- assert.equal(preparedReportEvidenceSha256(p),p.evidenceSha256);
+ assert.equal(preparedReportEvidenceSha256(p),v.hash(p.context.evidence));
  const mutated=structuredClone(p.context);mutated.evidence[0].contentSha256='e'.repeat(64);assert.throws(()=>admitPreparedReport(p,mutated));
  assert.throws(()=>admitPreparedReport(structuredClone(p),p.context));
  const extra=structuredClone(p.request);extra.content.blocks.push({kind:'paragraph',runs:[{text:'Extra unsupported claim'}]});
@@ -172,10 +174,12 @@ test('an evidence-bearing revision keeps the retained evidence and immutable par
  const changedSubject=structuredClone(next);changedSubject.subject.budgetStage='appropriated';
  await assert.rejects(createCongressionalReportCompiler({readSource:countingRead,readBase,now:()=>NOW}).prepare(changedSubject,f.context,{selection:selection(),base:parent}));
  assert.equal(dispatched,before);
- // A revision may not re-present the parent's evidence under the same citation identity.
- const clash=call=>{const value=read(call);if(value.evidence[0]){const id=created.version.evidence[0].citationId;value.evidence[0].citationId=id;value.envelope.data.records[0].citationId=id;}return value;};
- await assert.rejects(createCongressionalReportCompiler({readSource:clash,readBase,now:()=>NOW}).prepare(next,revisionContext,{selection:selection(),base:parent}),/REPORT_RETAINED_EVIDENCE/);
- const second=await createCongressionalReportCompiler({readSource:read,readBase,now:()=>NOW}).prepare(next,revisionContext,{selection:selection(),base:parent});
+ // Citation identity is per evidence instance, so a revision re-reads and binds its own evidence; the
+ // parent's retained evidence keeps its own identity and can never be re-presented as newly read.
+ // The revision is a different attempt of the same conversation, so its own run binding is what the port checks.
+ const revisionRead=nativeReportPort({saved:{binding:revisionContext.binding,subject:selection().subject,window:selection().window},bill:subject,text:texts.bill_text}).readSource;
+ const second=await createCongressionalReportCompiler({readSource:revisionRead,readBase,now:()=>NOW}).prepare(next,revisionContext,{selection:selection(),base:parent});
+ assert.notEqual(second.context.evidence[second.retainedEvidence.length].citationId,created.version.evidence[0].citationId);
  assert.equal(second.context.binding.runId,revisionContext.binding.runId);
  assert.equal(second.context.evidence[0].binding.runId,f.context.binding.runId);
  assert.equal(second.context.evidence[second.retainedEvidence.length].binding.runId,revisionContext.binding.runId);
