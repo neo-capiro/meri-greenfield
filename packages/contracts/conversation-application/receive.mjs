@@ -1,4 +1,5 @@
 import {assertHearingSourceEventSemantics} from '../conversation-sources/hearing-semantics.mjs';
+import {assertProcedureSelection} from '../procedure-selection.mjs';
 import {assertUploadSelections} from '../upload-selection.mjs';
 import {assertNativeSourceEventSemantics} from '../conversation-sources/semantics.mjs';
 import {assertUploadSourceEventSemantics} from '../conversation-sources/upload-semantics.mjs';
@@ -37,7 +38,7 @@ function assertWindowPair(request,window){
 }
 export function receiveConversationRequest(route,utf8Bytes){
  const validate=routeValidator(route),request=parse(utf8Bytes,conversationApplicationMetadata.limits.requestBytes);
- if(!validate(request))fail('INVALID_REQUEST');if(request.uploads!==undefined){try{assertUploadSelections(request.uploads);}catch{fail('INVALID_REQUEST');}}requests.set(request,route);return request;
+ if(!validate(request))fail('INVALID_REQUEST');if(request.procedure!==undefined){try{assertProcedureSelection(request.procedure);}catch{fail('INVALID_REQUEST');}}if(request.uploads!==undefined){try{assertUploadSelections(request.uploads);}catch{fail('INVALID_REQUEST');}}requests.set(request,route);return request;
 }
 export async function receiveConversationResponse(route,httpStatus,utf8Bytes,request,currentView){
  routeValidator(route);if(requests.get(request)!==route)fail('UNADMITTED_REQUEST');
@@ -56,6 +57,7 @@ export async function receiveConversationResponse(route,httpStatus,utf8Bytes,req
  if(route==='submit'&&result.requestId!==request.requestId)fail('REQUEST_MISMATCH');
  if(route==='submit'&&selected&&(result.requestId!==selected.requestId||selected.input&&!same(selected.input,request)))fail('REQUEST_MISMATCH');
  if(route==='history'){
+  if(result.request.procedure!==undefined){try{assertProcedureSelection(result.request.procedure);}catch{fail('INVALID_RESPONSE');}}
   if(result.request.uploads!==undefined){try{assertUploadSelections(result.request.uploads);}catch{fail('INVALID_RESPONSE');}}
   const after=request.after??0,limit=request.limit??100;let sequence=after;const ids=new Set();
   if(after>result.lastSequence||result.events.length>limit)fail('CURSOR_MISMATCH');
@@ -64,7 +66,7 @@ export async function receiveConversationResponse(route,httpStatus,utf8Bytes,req
   if(selected&&selected.requestId!==result.request.requestId)fail('REQUEST_MISMATCH');
   if(selected?.retained&&!same(result.request,selected.retained))fail('REQUEST_MISMATCH');
   if(selected?.input){const input=selected.input,saved=result.request;
-   if(!same(saved.uploads??null,input.uploads??null)||!same(saved.documentRevision??null,input.documentRevision??null)||saved.prompt!==input.prompt||!same(saved.windowRequest,input.windowRequest??null)||!same(saved.skill&&{skillId:saved.skill.skillId,skillVersion:saved.skill.skillVersion},input.skill??null)||input.modelSelection!==undefined&&!same(saved.modelSelection,input.modelSelection))fail('REQUEST_MISMATCH');
+   if(!same(saved.procedure??null,input.procedure??null)||!same(saved.uploads??null,input.uploads??null)||!same(saved.documentRevision??null,input.documentRevision??null)||saved.prompt!==input.prompt||!same(saved.windowRequest,input.windowRequest??null)||!same(saved.skill&&{skillId:saved.skill.skillId,skillVersion:saved.skill.skillVersion},input.skill??null)||input.modelSelection!==undefined&&!same(saved.modelSelection,input.modelSelection))fail('REQUEST_MISMATCH');
   }
   assertWindowPair(result.request.windowRequest,result.request.window);
  }
