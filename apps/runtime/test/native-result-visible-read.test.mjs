@@ -14,8 +14,8 @@ import {createHash} from 'node:crypto';
 const network={calls:[]};
 globalThis.fetch=(...args)=>{network.calls.push(args);throw Object.assign(Error('NETWORK_REFUSED'),{code:'NETWORK_REFUSED'});};
 
-const [{nativeFixture,binding,scopes,id,rowKey,check},{hash},{createRuntimeDocumentOptionsComposer},{artifactValidators:v},
- {createNativeResultDiscovery,isSelectableWorkspacePath},{createDocumentApplication},{executionIdentity},
+const [{nativeFixture,binding,scopes,id,check},{hash},{createRuntimeDocumentOptionsComposer},{artifactValidators:v},
+ {projectNativeResults,isSelectableWorkspacePath},{createDocumentApplication},
  {receiveNativeResultsRequest,receiveNativeResultsResponse}]=await Promise.all([
  import('../../control/conversations/test/native-next-run-fixture.mjs'),
  import('../../control/conversations/boundary.mjs'),
@@ -23,11 +23,10 @@ const [{nativeFixture,binding,scopes,id,rowKey,check},{hash},{createRuntimeDocum
  import('../../../packages/contracts/retrieval-0.2/validate.mjs'),
  import('../artifacts/native-result-discovery.mjs'),
  import('../../control/document-application/index.mjs'),
- import('../../control/conversations/execution-boundary.mjs'),
  import('../../../packages/contracts/document-access-application/native-results.mjs')]);
 
 const at=Date.parse('2026-10-15T12:00:00.000Z'),controlId=id(5000),clientId=id(5);
-const CREDENTIAL='local-mocked-session-credential',POLICY='policy1';
+const CREDENTIAL='local-mocked-session-credential';
 const report='# analysis report\nnative Bash produced this file during the run\n';
 const table='x,y\n1,2\n';
 /** Entry objects carry the raw-byte digest the journal and the release path re-verify, not a canonical-JSON digest. */
@@ -53,14 +52,20 @@ async function journal(t,{files}={}){
  return {...x,args,capture:(value=args)=>x.f.store.lifecycle.captureSession(value,check),settle:()=>x.settle(binding)};
 }
 
-test('a captured workspace file is discoverable as a bounded metadata selector, and only under current authority',async t=>{
+/** The production document-options composition (apps/runtime/artifacts/composition.mjs), unmodified: its composed
+ * `nativeResults` port is the only caller of the projection, over the REAL conversation-journal capture owner. */
+function composedPort(store,{contextBinding=binding,deadlineMs=at+20000,now=()=>at}={}){
+ const composer=createRuntimeDocumentOptionsComposer({storage:{objects:{get:async()=>{throw Error('unused');},put:async()=>null},versions:{}},
+  executor:{},pool:{},sessions:{},store,now});
+ return composer({selectedClientId:clientId,limits:{maxRequestMs:5000,maxRequestBytes:131072,maxResponseBytes:1048576},
+  artifactOptions:{pool:{},context:{binding:contextBinding,scopes,evidence:[],assets:[],deadlineMs,maxBytes:1048576},
+   validators:v,authorize:async()=>{},versions:{},objects:{get:async()=>{throw Error('unused');}},executor:{},now,ids:{}}});
+}
+
+test('a captured workspace file is discoverable as a bounded metadata selector through the composed production port',async t=>{
  const files=capturedFiles(),x=await journal(t,{files});
- const execution=executionIdentity(x.f.state.executions.get(rowKey(binding)).record);
- let mode='current',clock=at;
- const authenticate=async()=>{if(mode==='revoked')throw Object.assign(Error('SESSION_REFUSED'),{code:'SESSION_REFUSED'});
-  return {execution,versions:{},state:'running',scopes,selectedClientId:mode==='foreign-client'?id(6):clientId,policyRevision:POLICY};};
- const discovery=createNativeResultDiscovery({authenticate,store:x.f.store,selectedClientId:clientId,now:()=>clock});
- const list=()=>discovery.list({credential:CREDENTIAL,request:{binding}});
+ const composed=composedPort(x.f.store);
+ const list=()=>composed.nativeResults.list();
  const selector=bytes=>files.workspace.entries.find(e=>e.object.sha256===sha(bytes));
  // Unsettled or unpublished capture: the existing owner fence holds, nothing is projected.
  await assert.rejects(list(),/UNSETTLED|CHECKPOINT_REFUSED/);
@@ -68,7 +73,7 @@ test('a captured workspace file is discoverable as a bounded metadata selector, 
  await assert.rejects(list(),/UNSETTLED/);
  await x.settle();
  const found=await list();
- assert.equal(found.manifestId,files.workspace.manifestId);assert.equal(found.createdAt,files.workspace.createdAt);
+ assert.equal(found.manifestId,files.workspace.manifestId);assert.equal(found.capturedAt,files.workspace.createdAt);
  assert.equal(found.truncated,false);
  assert.deepEqual(found.results,[{versionId:id(7101),path:'analysis/output/report.md',bytes:report.length,sha256:sha(report),executable:false},
   {versionId:id(7103),path:'analysis/output/table.csv',bytes:table.length,sha256:sha(table),executable:false}]);
@@ -77,19 +82,16 @@ test('a captured workspace file is discoverable as a bounded metadata selector, 
  assert.equal(JSON.stringify(found).includes('1.json'),false);
  assert.equal(found.results.some(row=>row.versionId===id(7102)),false,'SDK task state is never a discoverable result');
  assert.equal(found.results.some(row=>row.versionId===selector(report).object.objectId),true);
- // Bounded: a smaller bound truncates rather than growing the answer.
- const bounded=createNativeResultDiscovery({authenticate,store:x.f.store,selectedClientId:clientId,now:()=>clock,maxResults:1});
- const one=await bounded.list({credential:CREDENTIAL,request:{binding}});
- assert.equal(one.results.length,1);assert.equal(one.truncated,true);
- // Wrong selected client, a revoked session and a rebound authority all refuse; the fence is not relaxed.
- mode='foreign-client';await assert.rejects(list(),/NATIVE_RESULT_REFUSED|INVALID_SDK_SESSION_REQUEST/);
- mode='revoked';await assert.rejects(list(),/SESSION_REFUSED|NATIVE_RESULT_REFUSED/);
- // A policy revision that moves between the read and the release check refuses; so does an expired deadline.
- mode='current';let rounds=0;
- const rebound=createNativeResultDiscovery({authenticate:async()=>{rounds+=1;return {execution,versions:{},state:'running',scopes,selectedClientId:clientId,policyRevision:rounds>1?'policy2':POLICY};},store:x.f.store,selectedClientId:clientId,now:()=>clock});
- await assert.rejects(rebound.list({credential:CREDENTIAL,request:{binding}}),/NATIVE_RESULT_REFUSED/);
- assert.equal(rounds,2,'the release check re-reads current authority after the capture projection');
- await assert.rejects(discovery.list({credential:CREDENTIAL,request:{binding},deadlineMs:at-1}),/DEADLINE/);
+ // Bounded: the production projection truncates rather than growing the answer.
+ const bounded=projectNativeResults({files,binding,scopes,owner:binding,maxResults:1});
+ assert.equal(bounded.results.length,1);assert.equal(bounded.truncated,true);
+ // The projection is bound to the session's own context: a capture read for another conversation is refused by the
+ // journal owner's own closed code (its session row is keyed by binding), so no selector is projected for it.
+ const foreign=composedPort(x.f.store,{contextBinding:{...binding,conversationId:id(7199)}});
+ await assert.rejects(foreign.nativeResults.list(),/STORE_CORRUPT|UNSETTLED|CHECKPOINT_REFUSED/);
+ // An expired request deadline refuses before the projection and releases no name.
+ const late=composedPort(x.f.store,{deadlineMs:at-1});
+ await assert.rejects(late.nativeResults.list(),/ARTIFACT_DEADLINE/);
  assert.equal(isSelectableWorkspacePath('../escape.txt'),false);
  assert.equal(isSelectableWorkspacePath('/etc/passwd'),false);
  assert.equal(isSelectableWorkspacePath('a\\b.txt'),false);

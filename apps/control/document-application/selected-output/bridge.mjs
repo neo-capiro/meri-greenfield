@@ -5,7 +5,7 @@ import {artifactValidators as v,validateShape} from '../../../../packages/contra
 import {sourcePreparation,pending,same,hash,fail} from './preparation.mjs';
 import {openOutputSession} from './session.mjs';
 import {selectedDeliveryId} from './projection.mjs';
-import {retainedAssetMap} from '../../../intents/document-revision.mjs';
+import {retainedAssetMap} from '../../intents/document-revision.mjs';
 export function createSelectedOutputBridge(configuration){
  const raw=own(configuration,['sourceAccess','now'],['approvedOutput','maxRequestMs','retainedSource']),sourceAccess=own(raw.sourceAccess,['check']),approvedOutput=raw.approvedOutput===undefined?undefined:own(raw.approvedOutput,['read']),retainedSource=raw.retainedSource===undefined?undefined:own(raw.retainedSource,['admit','sourceCall'],['retain','load','admitRetained']);
  const c={...raw,sourceAccess:{check:call=>sourceAccess.check.call(raw.sourceAccess,call)},...(approvedOutput?{approvedOutput:{read:call=>approvedOutput.read.call(raw.approvedOutput,call)}}:{}),...(retainedSource?{retainedSource:{admit:(...args)=>retainedSource.admit.call(raw.retainedSource,...args),sourceCall:p=>retainedSource.sourceCall.call(raw.retainedSource,p)}}:{})},sources=new WeakMap(),maxRequestMs=c.maxRequestMs??60000;

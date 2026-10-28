@@ -19,6 +19,7 @@ import Ajv from 'ajv';
 import {selectedOutputFormat} from '../../../../runtime/selected/output-format.mjs';
 import {createArtifactService} from '../../../../artifacts/service.mjs';
 import {nativeDocumentFixture,sha} from '../../../../artifacts/test/native-document-fixture.mjs';
+import {pagedPublicationFixture} from '../../../../artifacts/storage/test/paged-publication-fixture.mjs';
 const NOW=Date.parse('2026-10-13T12:00:00.000Z'),stamp=new Date(NOW).toISOString();
 const uid=n=>`10000000-0000-4000-8000-${String(n).padStart(12,'0')}`;
 const digest=value=>createHash('sha256').update(value).digest('hex');
@@ -283,4 +284,140 @@ test('the real report caller composes the selected run, its reads and the canoni
  // the recipe's own selection guard refuses selected identities it cannot account for
  await assert.rejects(compiler().prepare(input(),context(),{selection:{...chosen,mondayBoardIds:Array.from({length:101},(_,i)=>`board-${i}`)}}),/REPORT_SELECTION/);
  await assert.rejects(compiler().prepare(input(),context(),{selection:{...chosen,mondayBoardIds:['101','101']}}),/REPORT_SELECTION/);
+});
+
+// ---- Asset-bearing report revisions: the immutable parent's own durable retained asset map ----
+// The recipe never accepts an asset supplied by the caller — the private source context carries none and an
+// arbitrary one is refused — so an asset reaches a revision only through the parent record's own map.
+// This section drives the recipe directly with an explicit readBase seam: it pins the recipe's own contract
+// (admission, refusal, and the child context handed to the writer), not the production wiring. The
+// production crossing — public request, assembled factory, its own readBase, the real private source owner
+// and the paged artifact owner — is proven in apps/runtime/selected/test/report-production.test.mjs.
+const ASSET=Buffer.from('synthetic retained report image bytes\n');
+const imageBlock={kind:'image',assetId:'retained-image',widthInches:1,heightInches:1};
+const ids=()=>({artifactId:randomUUID(),versionId:randomUUID(),objectId:randomUUID()});
+/** The real canonical artifact owner over the accepted scripted SQL/CAS seams, with the paged publication
+ * owner explicitly upgraded to its v2 page tree (the same harness as the accepted paged asset proof). */
+async function retainedReportFixture(executor){
+ const f=nativeDocumentFixture({binding:context().binding,scopes:context().scopes}),
+  p=pagedPublicationFixture(f.context.binding.tenantId,f.options.now);
+ await p.owner.upgrade((await p.owner.snapshot()).positionSha256);
+ const base={revision:p.state.revision,roots:p.state.roots.length},
+  store=()=>f.sql.create({publication:p.create(),tenantId:f.context.binding.tenantId}),
+  object={objectId:randomUUID(),versionId:'SYNTHETIC_REPORT_ASSET',sha256:sha(ASSET),bytes:ASSET.length,scopes:structuredClone(f.context.scopes)};
+ f.state.objects.set(v.hash(object),Buffer.from(ASSET));
+ const service=(changes={})=>createArtifactService({...f.options,ids,executor,versions:store(),...changes});
+ return {f,p,base,store,object,service};
+}
+/** A real compiled report, plus the one asset it declares, written through the canonical owner. */
+async function assetBearingParent(h,executor,{activation=true}={}){
+ const first=await compiler().prepare(input(),h.f.context),
+  request=v.request({...first.request,content:{blocks:[...first.request.content.blocks,imageBlock]}}),
+  context=v.context({...first.context,assets:[{id:imageBlock.assetId,object:h.object}]});
+ const created=await h.service({executor,...(activation?{retainedAssetMapWrites:true}:{})}).create(request,context,
+  {invocation:{invocationId:'sdk:'+v.hash({deliveryId:randomUUID()}),versionId:undefined,requestSha256:v.nativeRequestSha256(request,context,null)}});
+ return {first,request,context,created};
+}
+/** The production private-read mapping, including the parent's own durable map when it carries one. */
+const readBaseFrom=h=>async({versionId,context:sent,signal})=>{
+ const source=await h.service().revisionSource(versionId,sent,{signal}),{currentBytesVerified,...inspection}=source.inspection;
+ assert.equal(currentBytesVerified,true);
+ return {version:source.version,spec:source.request,specSha256:source.specSha256,inspection,...(source.assets===undefined?{}:{assets:source.assets})};
+};
+const invocationFor=(request,context,baseVersionId)=>({invocation:{invocationId:'sdk:'+v.hash({deliveryId:randomUUID()}),versionId:undefined,requestSha256:v.nativeRequestSha256(request,context,baseVersionId)}});
+
+test('an asset-bearing retained report revision preserves the exact parent map through the real paged owner',async()=>{
+ const seen=[],executor={async execute(x){seen.push(x);return docxExecutor.execute(x);}},h=await retainedReportFixture(executor),
+  {created}=await assetBearingParent(h,executor),stored=h.f.sql.state.versions.get(created.version.versionId);
+ assert.deepEqual(stored.record.assets,[{id:'retained-image',object:h.object}]);
+ // The child is a later attempt of the same conversation, so it re-reads its own evidence while the parent's
+ // retained evidence, and now its retained assets, come only from the immutable parent.
+ const revisionContext={...h.f.context,binding:{...h.f.context.binding,runId:uid(5),attemptId:uid(6)}},
+  revisionRead=nativeReportPort({saved:{binding:revisionContext.binding,subject:selection().subject,window:selection().window},bill:subject,text:texts.bill_text}).readSource,
+  parent={versionId:created.version.versionId,specSha256:stored.record.specSha256};
+ const second=await createCongressionalReportCompiler({readSource:revisionRead,readBase:readBaseFrom(h),now:()=>NOW})
+  .prepare(input(),revisionContext,{selection:selection(),base:parent});
+ // The child re-presents exactly the parent's own assets: same ids, objects, scopes and document order.
+ assert.deepEqual(second.context.assets,[{id:'retained-image',object:h.object}]);
+ assert.deepEqual(second.request.content.blocks.filter(block=>block.kind==='image'),[imageBlock]);
+ assert.ok(bodyText(second).includes('Retained document assets (immutable parent)'));
+ assert.ok(bodyText(second).includes('Retained asset retained-image; object SHA256 '+h.object.sha256));
+ assert.deepEqual(second.retainedEvidence,created.version.evidence);
+ // The canonical owner writes the child's own map beside its immutable spec, over the real page tree.
+ const bound=bindPreparedReportArtifactOptions(second,{...h.f.options,executor,context:second.context}),
+  writeService=createArtifactService({...h.f.options,executor,...bound,ids,versions:h.store(),retainedAssetMapWrites:true}),
+  revised=await writeService.revise(created.version.versionId,second.request,second.context,invocationFor(second.request,second.context,created.version.versionId));
+ assert.equal(revised.version.parentVersionId,created.version.versionId);assert.equal(revised.version.artifactId,created.version.artifactId);
+ assert.deepEqual(h.f.sql.state.versions.get(revised.version.versionId).record.assets,[{id:'retained-image',object:h.object}]);
+ assert.equal(h.p.state.index.publicationVersion,'meri.artifact-publication-index.2');assert.ok(h.p.state.pages.size>0);
+ assert.equal(h.p.state.revision,h.base.revision+2);assert.equal(h.p.state.roots.length,h.base.roots+2);
+ // The declared asset reached the executor with its exact bytes, and it was the parent's own object.
+ assert.equal(seen.at(-1).assets.length,1);assert.equal(seen.at(-1).assets[0].bytes.toString(),ASSET.toString());
+ // Reload through a freshly constructed paged owner: nothing is carried in memory.
+ assert.deepEqual((await h.service().revisionSource(revised.version.versionId,second.context)).assets,[{id:'retained-image',object:h.object}]);
+ // Public DTOs are unchanged by retention, and the immutable parent is untouched by the child write.
+ assert.equal(Object.hasOwn(revised.version,'assets'),false);
+ assert.deepEqual(h.f.sql.state.versions.get(created.version.versionId).record.assets,[{id:'retained-image',object:h.object}]);
+});
+
+test('a declared asset whose parent retained no map stays unavailable and a map that is not the parent\'s own is refused',async()=>{
+ const seen=[],executor={async execute(x){seen.push(x);return docxExecutor.execute(x);}},h=await retainedReportFixture(executor),
+  {created}=await assetBearingParent(h,executor,{activation:false}),stored=h.f.sql.state.versions.get(created.version.versionId);
+ // Default activation OFF: the declared asset rendered, but the record carries no map at all.
+ assert.equal(Object.hasOwn(stored.record,'assets'),false);
+ assert.equal(seen.at(-1).assets.length,1);
+ let dispatched=0;const counting=call=>{dispatched++;return read(call);};
+ const parent={versionId:created.version.versionId,specSha256:stored.record.specSha256};
+ await assert.rejects(createCongressionalReportCompiler({readSource:counting,readBase:readBaseFrom(h),now:()=>NOW}).prepare(input(),h.f.context,{selection:selection(),base:parent}),/REPORT_BASE_ASSETS/);
+ assert.equal(dispatched,0,'the parent is refused before any source is dispatched');
+ // A map that is not exactly the parent's own mapping is refused, never stripped or re-derived. The
+ // map-bearing parent is a second record written with the activation on, so the parent really has one.
+ const retained=await assetBearingParent(h,executor),retainedRow=h.f.sql.state.versions.get(retained.created.version.versionId),
+  retainedBase={versionId:retained.created.version.versionId,specSha256:retainedRow.record.specSha256},
+  base=readBaseFrom(h),
+  extra=async(call)=>{const record=await base(call);return {...record,assets:[...record.assets,{id:'second-image',object:record.assets[0].object}]};};
+ await assert.rejects(createCongressionalReportCompiler({readSource:counting,readBase:extra,now:()=>NOW})
+  .prepare(input(),h.f.context,{selection:selection(),base:retainedBase}),/REPORT_BASE_ASSETS/);
+ assert.equal(dispatched,0);
+ // A rehashed object reference is shape-valid, so it is refused where bytes actually prove identity: the
+ // canonical owner's own object read, before any page or root is written.
+ const revisionContext={...h.f.context,binding:{...h.f.context.binding,runId:uid(9),attemptId:uid(10)}},
+  revisionRead=nativeReportPort({saved:{binding:revisionContext.binding,subject:selection().subject,window:selection().window},bill:subject,text:texts.bill_text}).readSource,
+  forged=async(call)=>{const record=await base(call);return {...record,assets:[{id:record.assets[0].id,object:{...record.assets[0].object,sha256:'e'.repeat(64)}}]};},
+  child=await createCongressionalReportCompiler({readSource:revisionRead,readBase:forged,now:()=>NOW})
+   .prepare(input(),revisionContext,{selection:selection(),base:retainedBase});
+ assert.equal(child.context.assets[0].object.sha256,'e'.repeat(64));
+ // The object store does hold bytes under that reference, but they do not hash to the claimed SHA256.
+ h.f.state.objects.set(v.hash(child.context.assets[0].object),Buffer.from(ASSET));
+ const roots=h.p.state.roots.length,revision=h.p.state.revision,
+  bound=bindPreparedReportArtifactOptions(child,{...h.f.options,executor,context:child.context}),
+  forgedWrite=createArtifactService({...h.f.options,executor,...bound,ids,versions:h.store(),retainedAssetMapWrites:true});
+ await assert.rejects(forgedWrite.revise(retainedBase.versionId,child.request,child.context,invocationFor(child.request,child.context,retainedBase.versionId)),{code:'ARTIFACT_OBJECT_MISMATCH'});
+ assert.equal(h.p.state.roots.length,roots);assert.equal(h.p.state.revision,revision);
+});
+
+test('the default-OFF writer keeps the retained-asset rollback floor and the prepared guard refuses erasure',async()=>{
+ const seen=[],executor={async execute(x){seen.push(x);return docxExecutor.execute(x);}},h=await retainedReportFixture(executor),
+  {created}=await assetBearingParent(h,executor),stored=h.f.sql.state.versions.get(created.version.versionId),
+  revisionContext={...h.f.context,binding:{...h.f.context.binding,runId:uid(7),attemptId:uid(8)}},
+  revisionRead=nativeReportPort({saved:{binding:revisionContext.binding,subject:selection().subject,window:selection().window},bill:subject,text:texts.bill_text}).readSource,
+  parent={versionId:created.version.versionId,specSha256:stored.record.specSha256};
+ const second=await createCongressionalReportCompiler({readSource:revisionRead,readBase:readBaseFrom(h),now:()=>NOW})
+  .prepare(input(),revisionContext,{selection:selection(),base:parent});
+ // Erasure: the prepared request pins the retained assets, so a replacement that drops the image is refused.
+ const erased=structuredClone(second.request);erased.content.blocks=erased.content.blocks.filter(block=>block.kind!=='image');
+ assert.throws(()=>admitPreparedReport(second,second.context)({request:erased,baseVersionId:created.version.versionId}),/REPORT_REQUEST_SUBSTITUTION/);
+ // Default OFF: the declared asset still reaches the executor, but the owner commits the exact legacy envelope.
+ const bound=bindPreparedReportArtifactOptions(second,{...h.f.options,executor,context:second.context}),
+  offService=createArtifactService({...h.f.options,executor,...bound,ids,versions:h.store()}),
+  off=await offService.revise(created.version.versionId,second.request,second.context,invocationFor(second.request,second.context,created.version.versionId)),
+  offStored=h.f.sql.state.versions.get(off.version.versionId);
+ assert.equal(seen.at(-1).assets.length,1,'the declared asset still reached the executor with its bytes');
+ assert.equal(Object.hasOwn(offStored.record,'assets'),false);
+ assert.deepEqual(Object.keys(offStored.record).sort(),['inspection','requestSha256','spec','specSha256','version']);
+ // That map-free child is explicitly unavailable for the next revision, never silently re-derived.
+ const childRead=async({versionId,context:sent,signal})=>{const source=await h.service().revisionSource(versionId,sent,{signal});
+  const {currentBytesVerified,...inspection}=source.inspection;return {version:source.version,spec:source.request,specSha256:source.specSha256,inspection};};
+ await assert.rejects(createCongressionalReportCompiler({readSource:read,readBase:childRead,now:()=>NOW})
+  .prepare(input(),h.f.context,{selection:selection(),base:{versionId:off.version.versionId,specSha256:offStored.record.specSha256}}),/REPORT_BASE_ASSETS/);
 });

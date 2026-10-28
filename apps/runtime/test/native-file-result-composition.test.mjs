@@ -39,18 +39,19 @@ async function journal(t,{files}={}){
  return {...x,args,capture:(value=args)=>x.f.store.lifecycle.captureSession(value,check)};
 }
 
-/** The production composition of the document options (apps/runtime/artifacts/composition.mjs), unmodified. */
-function composedNativeFiles(store){
+/** The production composition of the document options (apps/runtime/artifacts/composition.mjs), unmodified: both the
+ * native-file port and the native-result discovery port the public routes serve. */
+function composedOptions(store){
  const now=()=>at+500;
  const composer=createRuntimeDocumentOptionsComposer({storage:{objects:{get:async()=>{throw Error('unused')}},
    versions:{}},executor:{},pool:{},sessions:{},store,now});
  return composer({selectedClientId:clientId,limits:{maxRequestMs:5000,maxRequestBytes:131072,maxResponseBytes:1048576},
   artifactOptions:{pool:{},context:{binding,scopes,deadlineMs:at+5000},validators:v,
-   authorize:async()=>{},versions:{},objects:{get:async()=>{throw Error('unused')}},executor:{},now,ids:{}}}).nativeFiles;
+   authorize:async()=>{},versions:{},objects:{get:async()=>{throw Error('unused')}},executor:{},now,ids:{}}});
 }
 
 test('the composed native-file port serves only the settled captured workspace entry, as the public inspection shape',async t=>{
- const files=capturedFiles(),x=await journal(t,{files}),nativeFiles=composedNativeFiles(x.f.store);
+ const files=capturedFiles(),x=await journal(t,{files}),composed=composedOptions(x.f.store),nativeFiles=composed.nativeFiles;
  const read=versionId=>nativeFiles.read(versionId);
  // The journal refuses a recorded-but-unsettled capture (the runner's own refusal path) instead of serving bytes.
  assert.equal(await read(id(7101)),null,'an upload recorded before publication is not a public file');
@@ -74,6 +75,14 @@ test('the composed native-file port serves only the settled captured workspace e
  // The application releases this payload only while the version id still names the served entry
  // (document-application nativeFile(): selected.entry.object.objectId!==versionId -> DOCUMENT_RESULT_REFUSED).
  assert.notEqual(id(7199),selected.entry.object.objectId);
+ // The same settled capture is discoverable through the production result projection (the composed port the public
+ // results route serves): metadata-only selectors naming the captured entry's own immutable object, never task state.
+ const projected=await composed.nativeResults.list();
+ assert.deepEqual(projected,{binding,scopes,manifestId:files.workspace.manifestId,capturedAt:files.workspace.createdAt,
+  results:[{versionId:selected.entry.object.objectId,path:selected.entry.path,bytes:selected.entry.object.bytes,
+   sha256:selected.entry.object.sha256,executable:false}],truncated:false});
+ assert.equal(JSON.stringify(projected).includes('1.json'),false,'SDK task state is never a discoverable result');
+ assert.equal(projected.results.some(row=>row.versionId===id(7102)),false);
 });
 
 test('the actual SDK options admit native Bash only through the asserted attestation',async t=>{

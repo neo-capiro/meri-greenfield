@@ -7,6 +7,7 @@ import {createOperationLifetime} from '../../../../packages/runtime/operation-li
 import {fail,hash,REPORT_SECTIONS,reportInput} from './input.mjs';
 import {reportManifest,reportSkillPin} from './skill.mjs';
 import {createReportNativeSources,assessReportFindings} from './native-source.mjs';
+import {admitRetainedDocumentAssets,retainedAssetBlocks} from '../retained-assets.mjs';
 const prepared=new WeakMap();
 const marker='Meri report provenance: ';
 const p=(text,style='Normal')=>({kind:'paragraph',style,runs:[{text}]});
@@ -20,24 +21,18 @@ function reportSelection(raw,context){
     s.mondayBoardIds.some(id=>typeof id!=='string'||!id||id.length>256))fail('REPORT_SELECTION');
   return s;
 }
-const assetIds=value=>{
-  const found=[];
-  const walk=node=>{
-    if(node===null||typeof node!=='object')return;
-    if(Object.hasOwn(node,'assetId')){found.push(node.assetId);return;}
-    for(const child of Object.values(node))walk(child);
-  };
-  walk(value);return found;
-};
 /** Immutable parent pins plus the evidence and assets the parent retained. */
 function baseProvenance(record,selection,context,input){
-  own(record,['version','spec','specSha256','inspection'],['requestSha256']);
+  own(record,['version','spec','specSha256','inspection'],['requestSha256','assets']);
   v.version(record.version);v.request(record.spec);v.inspection(record.inspection);
   if(record.version.versionId!==selection.versionId||record.specSha256!==selection.specSha256||!same(record.specSha256,v.hash(record.spec))||
     record.version.binding.tenantId!==context.binding.tenantId||record.version.binding.actorId!==context.binding.actorId||
     record.version.binding.conversationId!==context.binding.conversationId||!same(record.version.scopes,context.scopes)||
     record.version.mimeType!=='application/vnd.openxmlformats-officedocument.wordprocessingml.document')fail('REPORT_BASE');
-  if(assetIds(record.spec).length)fail('REPORT_BASE_ASSETS');
+  // The parent's declared asset references survive only through its own durable retained map, admitted by
+  // the ONE canonical rule: a declared reference the writer never retained, or a map that is not exactly
+  // the parent's own mapping, stays explicitly unavailable rather than being stripped or re-derived.
+  let retainedAssets;try{retainedAssets=admitRetainedDocumentAssets(record.spec,record.assets,record.version.object.scopes);}catch{fail('REPORT_BASE_ASSETS');}
   const blocks=record.spec.content.blocks.filter(x=>x.kind==='paragraph'&&x.runs.length===1&&x.runs[0].text.startsWith(marker));
   if(blocks.length!==1)fail('REPORT_BASE');
   let prior;try{prior=JSON.parse(blocks[0].runs[0].text.slice(marker.length));}catch{fail('REPORT_BASE');}
@@ -45,7 +40,7 @@ function baseProvenance(record,selection,context,input){
   const retainedEvidence=record.version.evidence.map(item=>v.nativeSourceEvidence(item));
   for(const item of retainedEvidence)if(['tenantId','actorId','conversationId'].some(key=>item.binding[key]!==record.version.binding[key]))fail('REPORT_BASE_EVIDENCE');
   return {parent:{versionId:record.version.versionId,objectSha256:record.version.object.sha256,specSha256:record.specSha256,provenanceSha256:v.hash(prior)},
-    retainedEvidence};
+    retainedEvidence,retainedAssets};
 }
 function conflictsFor(input,findings){
   const byId=new Map(findings.map(f=>[f.id,f])),passages=f=>f.links.map(x=>x.passage).filter(x=>x!==null);
@@ -57,7 +52,7 @@ function conflictsFor(input,findings){
   const derived=findings.filter(f=>f.conflict===true&&!named.some(x=>x.findingId===f.id)).map(f=>({findingId:f.id,note:null,passages:passages(f)}));
   return [...named,...derived];
 }
-function blocksFor(input,findings,conflicts,sources,retained,provenance){
+function blocksFor(input,findings,conflicts,sources,retained,retainedAssets,provenance){
   const s=input.subject,blocks=[p(input.title,'Title'),p('Sourced cited report | Draft for review'),
     p(`Congress ${s.congress} | Session ${s.session} | ${s.billId} | Bill version ${s.billVersion} | FY ${s.fiscalYear} | Budget stage ${s.budgetStage}`),
     p('As of '+input.asOf)];
@@ -90,6 +85,7 @@ function blocksFor(input,findings,conflicts,sources,retained,provenance){
       blocks.push(p(`Full text SHA256: ${e.contentSha256}\nPassage SHA256: ${l.passageSha256}\nScope: ${JSON.stringify(e.scopes)}\nObserved ${e.observedAt}; updated ${e.sourceUpdatedAt??'unknown'}.`));}}
   if(retained.length){blocks.push(p('Retained source evidence (immutable parent)','Heading 2'));
     for(const e of retained)blocks.push(p(`Retained ${e.sourceId}; record ${e.recordId}; version ${e.sourceVersionId}; citation ${e.citationId}; run ${e.binding.runId}; content SHA256 ${e.contentSha256}; observed ${e.observedAt}.`));}
+  blocks.push(...retainedAssetBlocks(retainedAssets,p));
   blocks.push(p('Original skill and immutable revision provenance','Heading 2'),p(marker+JSON.stringify(provenance)));
   return blocks;
 }
@@ -102,9 +98,9 @@ export function createCongressionalReportCompiler({readSource,readBase,now}){
     if(base!==null){own(base,['versionId','specSha256']);if(!hash(base.specSha256)||typeof base.versionId!=='string'||!readBase)fail('REPORT_BASE');}
     const life=createOperationLifetime({deadlineMs:context.deadlineMs,now,signal,errorFactory:code=>Object.assign(new Error('REPORT_'+code),{code:'REPORT_'+code})});
     try{
-      let parent=null,retained=[];
+      let parent=null,retained=[],retainedAssets=Object.freeze({assets:null,blocks:[]});
       if(base){const admitted=baseProvenance(v.snapshot(await life.run(signal=>readBase({versionId:base.versionId,context:v.snapshot(context),signal}))),base,context,input);
-        parent=admitted.parent;retained=admitted.retainedEvidence;}
+        parent=admitted.parent;retained=admitted.retainedEvidence;retainedAssets=admitted.retainedAssets;}
       // One native receiving session: exact canonical selectors over the trusted gateway port, no envelope.
       const collector=createReportNativeSources({readSource,selected,subject:input.subject,context,asOf:Date.parse(input.asOf)});
       const sources=await life.run(signal=>collector.collect(signal)),reads=collector.receipts();
@@ -113,7 +109,7 @@ export function createCongressionalReportCompiler({readSource,readBase,now}){
       if(new Set(evidence.map(x=>x.citationId)).size!==evidence.length)fail('REPORT_RETAINED_EVIDENCE');
       const provenance={recipe:'sourced-cited-report',skill:input.skill,selection:selected,subject:input.subject,asOf:input.asOf,inputSha256:v.hash(input),
         readsSha256:v.hash(reads),sourcesSha256:v.hash(sources),retainedEvidenceSha256:v.hash(retained),parent};
-      const nextContext=v.context({...context,evidence}),request=v.request({operation:'create_word',format:'docx',title:input.title,content:{blocks:blocksFor(input,findings,conflicts,sources,retained,provenance)}});
+      const nextContext=v.context({...context,evidence,...(retainedAssets.assets===null?{}:{assets:retainedAssets.assets})}),request=v.request({operation:'create_word',format:'docx',title:input.title,content:{blocks:blocksFor(input,findings,conflicts,sources,retained,retainedAssets,provenance)}});
       life.check();
       const result=Object.freeze({request:v.snapshot(request),context:v.snapshot(nextContext),baseVersionId:base?.versionId??null,
         retainedEvidence:v.snapshot(retained),provenance:v.snapshot(provenance),findings:v.snapshot(findings),conflicts:v.snapshot(conflicts),

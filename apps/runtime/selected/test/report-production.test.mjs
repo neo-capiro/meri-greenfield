@@ -19,24 +19,10 @@ import {createActionSessionOwner} from '../../../control/action-host/session/own
 import {createDocumentRevisionRunOwner} from '../../artifacts/revision-composition.mjs';
 import {applicationFixture} from '../../../control/conversations/test/application-fixture.mjs';
 import {compositionFixture} from './composition-fixture.mjs';
-import {REPORT_NOW,REPORT_REVISION,REPORT_STAMP,REPORT_SUBJECT,REPORT_TEXTS,reportRunBinding,reportRuntimeFixture,generalReportInput} from './report-production-fixture.mjs';
+import {REPORT_NOW,REPORT_REVISION,REPORT_STAMP,REPORT_SUBJECT,REPORT_TEXTS,reportRunBinding,reportRuntimeFixture,generalReportInput,RETAINED_BYTES,RETAINED_IMAGE,docxExecutor,reportBriefInput as reportInput} from './report-production-fixture.mjs';
 
 const uid=n=>`10000000-0000-4000-8000-${String(n).padStart(12,'0')}`;
 const bill=REPORT_SUBJECT,texts=REPORT_TEXTS;
-const versionOf=sourceId=>sourceId==='bill_text'?REPORT_REVISION:'2026-10-12T12:00:00.000Z';
-const citation=(sourceId,text=texts[sourceId])=>({sourceId,recordId:bill.billId,sourceVersionId:versionOf(sourceId),start:0,end:text.length,url:'https://example.invalid/never-fetched'});
-/** The literal structured output the run's model returns: the seven-section cited report. */
-function reportInput(){return {skill:reportSkillPin(),title:'Independent sourced cited report',subject:structuredClone(bill),asOf:REPORT_STAMP,
- summary:'Draft summary: the authorization basis is recorded; no appropriation amount was read.',
- findings:[{id:'excerpt',kind:'excerpt',text:texts.bill_text,citations:[citation('bill_text')]},
-  {id:'claim',kind:'claim',text:texts.bill_text,citations:[citation('bill_text'),citation('bill_text',texts.bill_text.slice(0,-7))]},
-  {id:'missing',kind:'excerpt',text:'No budget evidence was read.',citations:[citation('program_elements','No budget evidence was read.')]}],
- conflicts:[{findingId:'claim',note:'Two sources describe the same stage differently.'}],
- recommendations:['Confirm the appropriations basis before committing resources.'],
- limitations:['State docket coverage is not exhaustive.']};}
-/** Scripted DOCX renderer: real artifact owner, synthetic bytes. Native rendering is a separate qualification. */
-const docxExecutor={async execute(x){const bytes=Buffer.from(JSON.stringify(x.request.content.blocks));
- return {bytes,inspection:{sha256:sha(bytes),bytes:bytes.length,format:'docx',nativeOpened:false,rendered:false,recalculated:false,members:[],details:{paragraphs:x.request.content.blocks.length,tables:0,pictures:0}}};}};
 const retainedRows=x=>[...x.base.state.selectedOutputs.values()].map(row=>row.projection);
 
 /** Run one production report turn and return the retained journal row. */
@@ -48,18 +34,38 @@ async function productionRun(options={}){
  return {x,runtime,outputFormat:runtime.sdkOptions.outputFormat,output,row:retainedRows(x)[0]};
  }catch(error){await x.close();throw error;}
 }
-/** The parent report version, written through the canonical artifact owner from the production report. */
-async function writeParent(prepared,revisionBinding){
+/** The parent report version, written through the canonical artifact owner from the production report.
+ * `image` adds the public schema's own image block and the trusted context object that it references; the
+ * durable retained map beside the immutable spec is written only under the explicit `activation`, exactly
+ * as the deployment's default-off writer behaves. */
+async function writeParent(prepared,revisionBinding,{image=null,activation=false}={}){
  const doc=nativeDocumentFixture({binding:revisionBinding,scopes:prepared.context.scopes});
  // The report run's own clock: the artifact owner must be current when the prepared deadline applies.
  doc.state.clock=REPORT_NOW;
  // The retained context is the prepared report's own evidence, admitted by exact hash: the canonical
  // report binder does the same against the live object it was handed.
  const admitRetainedEvidence=contextValue=>v.hash(contextValue)===v.hash(prepared.context)?undefined:1;
- const service=createArtifactService({...doc.options,executor:docxExecutor,admitRetainedEvidence,ids:()=>({artifactId:randomUUID(),versionId:randomUUID(),objectId:randomUUID()})});
- const created=await service.create(prepared.request,prepared.context,{invocation:{invocationId:'sdk:'+hash({deliveryId:randomUUID()}),versionId:undefined,
-  requestSha256:v.nativeRequestSha256(prepared.request,prepared.context,null)}});
- return {doc,created,selection:{artifactId:created.version.artifactId,versionId:created.version.versionId,objectSha256:created.version.object.sha256}};
+ const asset=image===null?null:v.object({objectId:randomUUID(),versionId:'SYNTHETIC_RETAINED_ASSET',sha256:sha(RETAINED_BYTES),bytes:RETAINED_BYTES.length,scopes:prepared.context.scopes});
+ if(asset)doc.state.objects.set(v.hash(asset),Buffer.from(RETAINED_BYTES));
+ const request=v.request(image===null?prepared.request:{...prepared.request,content:{blocks:[...prepared.request.content.blocks,image]}});
+ const context=v.context(image===null?prepared.context:{...prepared.context,assets:[{id:image.assetId,object:asset}]});
+ const service=createArtifactService({...doc.options,executor:docxExecutor,admitRetainedEvidence,ids:()=>({artifactId:randomUUID(),versionId:randomUUID(),objectId:randomUUID()}),
+  ...(activation?{retainedAssetMapWrites:true}:{})});
+ const created=await service.create(request,context,{invocation:{invocationId:'sdk:'+hash({deliveryId:randomUUID()}),versionId:undefined,
+  requestSha256:v.nativeRequestSha256(request,context,null)}});
+ return {doc,created,asset,record:await doc.options.versions.read(created.version.versionId),
+  selection:{artifactId:created.version.artifactId,versionId:created.version.versionId,objectSha256:created.version.object.sha256}};
+}
+/** One real revision of a document the harness already wrote: the compiled child request/context are the
+ * production compiler's own, so the child's durable map is the real owner's answer to re-presenting them. */
+async function writeChild(doc,baseVersionId,prepared,{activation=false}={}){
+ const admitRetainedEvidence=contextValue=>v.hash(contextValue)===v.hash(prepared.context)?undefined:1;
+ const service=createArtifactService({...doc.options,executor:docxExecutor,admitRetainedEvidence,ids:()=>({artifactId:randomUUID(),versionId:randomUUID(),objectId:randomUUID()}),
+  ...(activation?{retainedAssetMapWrites:true}:{})});
+ const created=await service.revise(baseVersionId,prepared.request,prepared.context,{invocation:{invocationId:'sdk:'+hash({deliveryId:randomUUID()}),versionId:undefined,
+  requestSha256:v.nativeRequestSha256(prepared.request,prepared.context,baseVersionId)}});
+ return {created,record:await doc.options.versions.read(created.version.versionId),
+  selection:{artifactId:created.version.artifactId,versionId:created.version.versionId,objectSha256:created.version.object.sha256}};
 }
 /** The real private revision owner over the real action-session, artifact and document-bound options. */
 function revisionOwner({doc,binding,scopes,selection,request,state}){
@@ -240,4 +246,67 @@ test('a revoked or rebound source refuses the revision read before any artifact 
  assert.equal(rebound.sourceReads,0,'a rebound scope never reaches the saved original source');
  assert.equal(written.doc.state.gets,artifactReads,'a rebound scope reads no artifact version');
  assert.equal(written.doc.state.executions.length,artifactRuns);
+});
+
+/** One asset-bearing revision lane: the accepted request, the production report run, the parent written by
+ * the real artifact owner, and the real private revision owner. Both submissions are the browser-shaped
+ * wire of the installed closed format, admitted by the real HTTP application and canonical stored-request
+ * owner: a revision submission names its skill beside the revision selection, exactly as that format
+ * requires for the two report identities. The parent this factory lane revises is the immutable version the
+ * real artifact owner wrote over the legacy-envelope publication journal (no paged v2 page tree here); the
+ * v2 paged storage owner is exercised by the compiler-level report/cited-report cases. */
+async function revisionLane(t,skillId,{image,activation}){
+ const input=skillId==='quick_skill.cited_report'?generalReportInput():reportInput();
+ const firstReport={skillId};firstReport.acceptedRequest=await publiclyAccepted(t,firstReport);
+ const first=await productionRun({report:firstReport,input});t.after(()=>first.x.close());
+ const parent=first.row.prepared,run={runId:uid(95),attemptId:uid(96)},binding=reportRunBinding(run);
+ const written=await writeParent(parent,binding,{image,activation});
+ const report={skillId,documentRevision:written.selection,run};report.acceptedRequest=await publiclyAccepted(t,report);
+ const state={revoked:false,sourceReads:0,phases:[]},
+  source=revisionOwner({doc:written.doc,binding,scopes:parent.context.scopes,selection:written.selection,request:report.acceptedRequest,state});
+ t.after(()=>source.sessions.close());await source.open();
+ return {input,first,parent,binding,written,report,state,source};
+}
+
+for(const skillId of ['quick_skill.bill_watch','quick_skill.cited_report'])test(`${skillId}: public request -> production factory -> retained parent version -> real compiler revision keeps the parent's retained asset`,async t=>{
+ const lane=await revisionLane(t,skillId,{image:RETAINED_IMAGE,activation:true}),{input,written,source}=lane;
+ // The real owner retained the declared reference's own original mapping beside the immutable spec.
+ assert.deepEqual(written.record.assets,[{id:RETAINED_IMAGE.assetId,object:written.asset}]);
+ assert.deepEqual(written.record.spec.content.blocks.filter(block=>block.kind==='image'),[RETAINED_IMAGE]);
+ // The private read the production composition consumes returns it, and only it.
+ const read=await source.owner.readForSelected({binding:lane.binding,selection:written.selection,deadlineMs:written.doc.options.now()+30000,signal:undefined});
+ assert.deepEqual(Object.keys(read).sort(),['assets','headVersionId','inspection','request','specSha256','version']);
+ assert.deepEqual(read.assets,[{id:RETAINED_IMAGE.assetId,object:written.asset}]);
+ // The production factory's own readBase returns the parent to the real compiler through the real assembly.
+ await source.open();
+ const x=await compositionFixture('',{report:lane.report,revisionOwner:source.owner});t.after(()=>x.close());
+ const executions=written.doc.state.executions.length,runtime=await x.prepare();
+ const validate=new Ajv({strict:false}).compile(runtime.sdkOptions.outputFormat.schema);assert.equal(validate(input),true,JSON.stringify(validate.errors));
+ const output=await runtime.finish({type:'result',subtype:'success',is_error:false,structured_output:input});
+ await x.task.publish({binding:x.f.configuration.binding,output});
+ const row=retainedRows(x)[0];
+ assert.equal(row.pending.baseVersionId,written.selection.versionId);
+ assert.equal(row.prepared.provenance.parent.objectSha256,written.selection.objectSha256);
+ assert.deepEqual(row.prepared.request.content.blocks.filter(block=>block.kind==='image'),[RETAINED_IMAGE]);
+ assert.deepEqual(row.prepared.context.assets,[{id:RETAINED_IMAGE.assetId,object:written.asset}]);
+ assert.deepEqual(row.prepared.retainedEvidence,written.created.version.evidence);
+ assert.equal(written.doc.state.executions.length,executions,'the revision preparation renders nothing');
+ // The child's own write is the real owner's, so the retained object survives into the next version's map.
+ const child=await writeChild(written.doc,written.selection.versionId,row.prepared,{activation:true});
+ assert.equal(child.created.version.parentVersionId,written.selection.versionId);
+ assert.deepEqual(child.record.assets,[{id:RETAINED_IMAGE.assetId,object:written.asset}]);
+ assert.deepEqual(child.record.spec.content.blocks.filter(block=>block.kind==='image'),[RETAINED_IMAGE]);
+ // A parent that declared the same reference under the default-off writer retained no map: the private
+ // read reports it explicitly unavailable rather than inventing one, and the factory's own readBase
+ // therefore refuses the revision. An ordinary older record that declared no references keeps the exact
+ // four-field DTO (asserted above on the saved original), so absence semantics are unchanged.
+ const off=await revisionLane(t,skillId,{image:RETAINED_IMAGE,activation:false});
+ assert.equal(off.written.record.assets,undefined);
+ await assert.rejects(off.source.owner.readForSelected({binding:off.binding,selection:off.written.selection,deadlineMs:off.written.doc.options.now()+30000,signal:undefined}),error=>error.code==='UNAVAILABLE');
+ await off.source.open();
+ const offRuns=off.written.doc.state.executions.length;
+ const offX=await compositionFixture('',{report:off.report,revisionOwner:off.source.owner});t.after(()=>offX.close());
+ await assert.rejects(offX.prepare());
+ assert.equal(off.written.doc.state.executions.length,offRuns,'the refused revision renders nothing');
+ assert.equal(retainedRows(offX).length,0,'the refused revision retains no pending output');
 });

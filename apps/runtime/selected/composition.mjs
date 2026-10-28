@@ -65,7 +65,11 @@ export function createNativeSelectedComposition({configuration,pool,store,execut
    async readRevisionBase(call){const source=await revisionFor(call);return source===null?null:{versionId:source.version.versionId,specSha256:source.specSha256};},
    async readBase(call){const source=await revisionFor(call);if(source===null||source.version.versionId!==call.versionId||!same(call.context.binding,call.binding)||!same(call.context.scopes,call.scopes))fail();
     const {currentBytesVerified,...inspection}=source.inspection;if(currentBytesVerified!==true)fail();
-    return {version:source.version,spec:source.request,specSha256:source.specSha256,inspection};},
+    // The private read's own optional retained asset map rides this return only, and only when the durable
+    // parent record actually carries one: an older record without a map returns the same four fields as
+    // before, so absence is preserved and the compiler decides (its own canonical rule) whether the
+    // declared references were retained. No map is inferred, re-derived or minted here.
+    return {version:source.version,spec:source.request,specSha256:source.specSha256,inspection,...(source.assets===undefined?{}:{assets:source.assets})};},
    async readContext({binding,scopes,credential,signal}){const r=await current({binding,credential,signal});if(!same(r.scopes,scopes))fail();return {context:{binding,scopes,evidence:[],assets:[],deadlineMs:r.expiresAtMs,maxBytes:configuration.agentcore.maxOutputBytes},checkedAtMs:r.checkedAtMs,expiresAtMs:r.expiresAtMs};},
    retention:{retain:value=>retained.retain(value)},proposals,defaultCongress,
    publishForBinding:({binding,credential,...call})=>serviceFor({binding,credential}).publishSelectedOutput({binding,credential,...call})}});

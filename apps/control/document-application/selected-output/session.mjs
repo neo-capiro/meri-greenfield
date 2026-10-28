@@ -15,7 +15,13 @@ export async function openOutputSession(c,source,signal){
  const fresh=async phase=>{if(await current()===null)fail('SELECTED_OUTPUT_APPROVAL_REVOKED');await access(phase);life.check();if(hash(source.prepared)!==source.sourcePins.preparationSha256)fail('SELECTED_OUTPUT_SOURCE_CHANGED');};
  try{if(await current()===null){life.close();return null;}await access('approval');projection=projectOutput(source,receipt);const authorize=options.artifactOptions.authorize,requestSha256=hashNative(projection,source);
   const artifactOptions={...options.artifactOptions,context:projection.context,selectedInvocationId:selectedInvocationId(source,receipt.approvalDecision),
-   admitRetainedEvidence(context){life.check();if(hash(source.prepared)!==source.sourcePins.preparationSha256||hash(context.evidence)!==hash(source.context.evidence)||context.evidence.some(e=>hash(e.binding)!==hash(source.context.binding)))fail('ACCESS_DENIED');projection.guard({request:projection.request,context,baseVersionId:source.sourcePins.baseVersionId});},
+   // The delivered evidence is the compiler's own set (hashed above). Its retained part is the parent's
+   // immutable evidence, bound to the run that observed it; every other item must be bound to this source run.
+   admitRetainedEvidence(context){life.check();
+    const retained=new Set((source.prepared.retainedEvidence??[]).map(hash));
+    if(hash(source.prepared)!==source.sourcePins.preparationSha256||hash(context.evidence)!==hash(source.context.evidence)||
+     context.evidence.some(item=>!retained.has(hash(item))&&hash(item.binding)!==hash(source.context.binding)))fail('ACCESS_DENIED');
+    projection.guard({request:projection.request,context,baseVersionId:source.sourcePins.baseVersionId});},
    async authorize(call){if(['artifact.generate','artifact.revise'].includes(call.action)&&(call.requestSha256!==requestSha256||call.resource.versionId!==source.sourcePins.baseVersionId))fail('ACCESS_DENIED');await fresh('effect');const result=await authorize.call(options.artifactOptions,call);await fresh('effect');return result;}};
   const app=createDocumentApplication({...options,artifactOptions});
   const send=async(route,body)=>{await fresh('effect');return life.run(signal=>app.handle(new Request('https://meri.invalid/api/documents/'+route,{method:'POST',headers:{authorization:'Bearer '+sessionCredential,'content-type':'application/json'},body:JSON.stringify(body),signal})));};

@@ -12,6 +12,7 @@ import {ARTIFACT_AUTHORITY_CONTRACT,ARTIFACT_AUTHORITY_ROUTE,INTENT_OPERATIONS,M
  artifactAuthorityStatusCode} from '../core-authority-wire.mjs';
 import {createCoreArtifactAuthorityClient} from '../core-authority-client.mjs';
 import {createArtifactAuthorityCredentials} from '../authority-credentials.mjs';
+import {createMemoryCredentialBroker} from '../../native-authority/memory-credentials.mjs';
 import {createCoreArtifactAuthority} from '../core-authority.mjs';
 import {composeDocumentsFamily} from '../authority-composition.mjs';
 import {createRuntimeArtifactApplication} from '../application.mjs';
@@ -68,20 +69,20 @@ async function liveSession({nativeCredential=BEARER,now=Date.now}={}){
  return {sessions,state,credential:issued.credential};
 }
 const descriptor=intent=>{const e=catalog.operations.find(x=>x.operation.id==='create_word');return {operation:e.operation,requiredGrants:e.requiredGrants,sourceRequirements:e.sourceRequirements};};
-function scriptedRunOptions(){
- const run={calls:[],reply:'valid',maxBytes:2097152,credential:'synthetic-run-capability'};
- run.port={async read(call){run.calls.push(call);if(run.reply==='null')return null;
-  return {allocationJson:'{"synthetic":true}',producerContext:{context:{binding:call.binding},producer:{synthetic:true}},descriptor:descriptor(call.intent),evidence:[],assets:[],maxBytes:run.maxBytes,
-   authority:{async check(){throw Object.assign(Error('ACCESS_DENIED'),{code:'ACCESS_DENIED'});}},credential:run.credential};}};
- return run;
+/** The accepted canonical-run read: the real store owner's optional run row, pinned to this binding. */
+function scriptedStore(){
+ const store={calls:[],missing:false,state:'completed'};
+ store.readOptional=async value=>{store.calls.push(value);if(store.missing)return null;
+  return {run:{binding:structuredClone(value),scopes:structuredClone(scopes),state:store.state}};};
+ return store;
 }
 async function authorityHarness({now=Date.now,nativeCredential}={}){
- const core=scriptedCore(),s=secretFiles(),run=scriptedRunOptions(),live=await liveSession({now,...(nativeCredential?{nativeCredential}:{})});
- const credentials=await createArtifactAuthorityCredentials({configuration:{nativeCandidate},serviceSecretFile:files.secret,readSecret:s.readSecret});
+ const core=scriptedCore(),s=secretFiles(),store=scriptedStore(),live=await liveSession({now,...(nativeCredential?{nativeCredential}:{})});
+ const credentials=await createArtifactAuthorityCredentials({serviceSecretFile:files.secret,readSecret:s.readSecret});
  const client=createCoreArtifactAuthorityClient({origin:ORIGIN,fetchImpl:core.fetch,now});
- const authority=createCoreArtifactAuthority({client,credentials,runOptions:run.port,now,limits});
- const call=(intent,body,extra={})=>({sessions:live.sessions,credential:live.credential,intent,body,requestSha256:canonicalSha256({intent,body}),deadlineMs:now()+5000,...extra});
- return {core,s,run,live,authority,call,now};
+ const authority=createCoreArtifactAuthority({client,credentials,now:now,limits,maxOutputBytes:1048576});
+ const call=(intent,body,extra={})=>({sessions:live.sessions,store,credential:live.credential,intent,body,requestSha256:canonicalSha256({intent,body}),deadlineMs:now()+5000,...extra});
+ return {core,s,store,live,authority,call,now};
 }
 const createBody={deliveryId:'synthetic-delivery-1',request:{operation:'create_word',format:'txt',title:'Synthetic',content:{text:'Synthetic document body'}}};
 
@@ -147,20 +148,36 @@ test('client: the golden request on the wire, Meri-clock receipt timing, and clo
 });
 
 test('credentials: the service secret is re-read per call and never a candidate credential; bearers are admitted per call only',async()=>{
- const s=secretFiles(),credentials=await createArtifactAuthorityCredentials({configuration:{nativeCandidate},serviceSecretFile:files.secret,readSecret:s.readSecret});
+ const s=secretFiles(),credentials=await createArtifactAuthorityCredentials({serviceSecretFile:files.secret,readSecret:s.readSecret});
  assert.equal(await credentials.serviceSecret(),SECRET);
  assert.equal(credentials.admitBearer(BEARER,SECRET),BEARER);
- for(const bad of [CONTROL,'synthetic-control-capability','synthetic-task-capability','synthetic-proxy-credential',SECRET,'',' x','x'.repeat(8193)])
-  assert.throws(()=>credentials.admitBearer(bad,SECRET),code('UNAVAILABLE'));
+ for(const bad of [SECRET,'',' x','x'.repeat(8193)])assert.throws(()=>credentials.admitBearer(bad,SECRET),code('UNAVAILABLE'),bad);
  s.bytes[files.secret]='synthetic-rotated-secret';assert.equal(await credentials.serviceSecret(),'synthetic-rotated-secret','rotation without restart');
- s.bytes[files.secret]=CONTROL;await assert.rejects(credentials.serviceSecret(),code('UNAVAILABLE'),'a secret file now holding the control credential');
+ // This owner's own closed guards: an unknown own key, a non-ordinary read port, a non-POSIX/relative/traversal path
+ // and an unreadable secret file (it reads the secret once at construction).
+ s.bytes[files.secret]=SECRET;
  for(const [label,options] of Object.entries({
-  reservedPath:{configuration:{nativeCandidate},serviceSecretFile:files.control,readSecret:s.readSecret},
-  candidateBytes:{configuration:{nativeCandidate},serviceSecretFile:files.secret,readSecret:secretFiles({[files.secret]:CONTROL}).readSecret},
-  unreadable:{configuration:{nativeCandidate},serviceSecretFile:'/run/meri/absent',readSecret:s.readSecret},
-  noCandidate:{configuration:{},serviceSecretFile:files.secret,readSecret:s.readSecret},
-  relative:{configuration:{nativeCandidate},serviceSecretFile:'run/meri/x',readSecret:s.readSecret},
+  absentFile:{serviceSecretFile:'/run/meri/absent',readSecret:s.readSecret},
+  nonFunctionRead:{serviceSecretFile:files.secret,readSecret:{}},
+  unknownKey:{configuration:{nativeCandidate},serviceSecretFile:files.secret,readSecret:s.readSecret},
+  traversal:{serviceSecretFile:'/run/meri/../x',readSecret:s.readSecret},
+  relative:{serviceSecretFile:'run/meri/x',readSecret:s.readSecret},
  }))await assert.rejects(createArtifactAuthorityCredentials(options),code('ARTIFACT_AUTHORITY_CONFIGURATION'),label);
+ // Marked-candidate screening no longer lives in this owner (7eea1e852 moved candidate custody to the native route's
+ // credential broker). The same denial subject is asserted against that actual owner instead of being dropped.
+ const broker=options=>createMemoryCredentialBroker({configuration:{nativeCandidate},readSecret:s.readSecret,...options});
+ const surfaceCall={tenantId:ids.tenantId,actorId:ids.actorId,purpose:'memory.read',signal:undefined,deadlineMs:Date.now()+5000};
+ for(const bad of [CONTROL,'synthetic-control-capability','synthetic-task-capability',SECRET,'',' x','x'.repeat(8193)])
+  await assert.rejects(broker({serviceSecretFile:files.secret}).surface({tenantId:ids.tenantId,actorId:ids.actorId,credential:bad,expiresAtMs:Date.now()+5000})(surfaceCall),code('MEMORY_CREDENTIAL_REFUSED'),bad);
+ s.bytes[files.secret]=CONTROL;await assert.rejects(broker({serviceSecretFile:files.secret}).serviceSecret(),code('MEMORY_CREDENTIAL_UNAVAILABLE'),'a secret file now holding the control credential');
+ s.bytes[files.secret]=SECRET;await assert.rejects(broker({serviceSecretFile:'/run/meri/absent'}).serviceSecret(),code('MEMORY_CREDENTIAL_UNAVAILABLE'),'an unreadable secret file');
+ for(const [label,options] of Object.entries({
+  reservedPath:{serviceSecretFile:files.control},
+  nonFunctionRead:{serviceSecretFile:files.secret,readSecret:{}},
+  traversal:{serviceSecretFile:'/run/meri/../x'},
+  nonString:{serviceSecretFile:0},
+  relative:{serviceSecretFile:'run/meri/x'},
+ }))assert.throws(()=>createMemoryCredentialBroker({configuration:{nativeCandidate},readSecret:s.readSecret,...options}),code('MEMORY_CREDENTIAL_CONFIGURATION'),label);
 });
 
 test('authority: one observation per resolve/recheck over the real session owner, pinned facts, Core-gated authorize',async()=>{
@@ -170,13 +187,17 @@ test('authority: one observation per resolve/recheck over the real session owner
  assert.equal(sent.authorization,'Bearer '+BEARER,'the live session native bearer (RC1 option A)');assert.equal(sent.service,SECRET);
  assert.notEqual(sent.authorization,'Bearer '+h.live.credential,'never the action-session credential');
  assert.deepEqual({...sent.request,observationId:undefined},{contract:ARTIFACT_AUTHORITY_CONTRACT,observationId:undefined,conversationId:ids.conversationId,clientId:ids.clientId,intent:'create',requestSha256:call.requestSha256});
- assert.deepEqual(Object.keys(resolved).sort(),['artifactOptions','credential','enabled','limits','recheck','selectedClientId']);
+ assert.deepEqual(Object.keys(resolved).sort(),['artifactOptions','enabled','limits','recheck','selectedClientId']);
  const o=resolved.artifactOptions;
- assert.equal(resolved.selectedClientId,ids.clientId);assert.equal(resolved.credential,'synthetic-run-capability');assert.equal(resolved.enabled,true);assert.deepEqual(resolved.limits,limits);
- assert.deepEqual(o.context.binding,binding);assert.deepEqual(o.context.scopes,scopes);assert.equal(o.context.maxBytes,limits.maxResponseBytes,'min(run 2 MiB, no Core ceiling, response 1 MiB)');
+ assert.equal(resolved.selectedClientId,ids.clientId);
+ assert.equal(Object.hasOwn(resolved,'credential'),false,'the authority result carries no credential: the native bearer stays with the live-session relay');
+ assert.doesNotMatch(JSON.stringify(resolved),new RegExp(SECRET),'the Core service secret never enters the authority result');
+ assert.equal(resolved.enabled,true);assert.deepEqual(resolved.limits,limits);
+ assert.deepEqual(o.context.binding,binding);assert.deepEqual(o.context.scopes,scopes);assert.equal(o.context.maxBytes,limits.maxResponseBytes,'min(output 1 MiB, no Core ceiling, response 1 MiB)');
  for(const key of ['pool','versions','objects','executor'])assert.equal(o[key],null,`${key} is substituted by the documents composer`);
  assert.doesNotMatch(JSON.stringify({...o,authority:null}),new RegExp(BEARER),'the native bearer never enters artifactOptions');
- assert.equal(h.run.calls.length,1);assert.deepEqual(h.run.calls[0].authority.operations,h.core.operations);
+ assert.equal(h.store.calls.length,1,'the accepted canonical run is read exactly once');
+ assert.deepEqual(h.store.calls[0],binding,'the canonical-run read is correlated to the observed binding');
  // authorize: only the intent's operations, the pinned binding/scopes, and never past the latest observation.
  const authz=extra=>o.authorize({action:'artifact.generate',resource:{versionId:null,object:null,assetObjects:[]},requestSha256:'a'.repeat(64),binding,scopes,deadlineMs:h.now()+4000,...extra});
  const receipt=await authz();
@@ -227,13 +248,20 @@ test('authority refuses before Core: forged digest, revoked session, marked bear
  await assert.rejects(h.authority.resolve({...h.call('create',createBody),requestSha256:'b'.repeat(64)}),code('ACCESS_DENIED'),'digest must pin the body');
  await assert.rejects(h.authority.resolve(h.call('create',createBody,{credential:'action_session_'+'x'.repeat(43)})),code('SESSION_REFUSED'));
  assert.equal(h.core.calls.length,0);
- h.run.reply='null';assert.equal(await h.authority.resolve(h.call('create',createBody)),null,'no Meri-local run options: unavailable');
- h.run.reply='valid';h.run.credential=BEARER;await assert.rejects(h.authority.resolve(h.call('create',createBody)),code('UNAVAILABLE'),'the run capability is never the native bearer');
- h.run.credential='synthetic-run-capability';h.core.limits={maxArtifactBytes:4096};
+ // The canonical accepted run is the store's own optional read (core-authority.mjs:102): an explicit retained read with no
+ // run row of its own is pinned by the fresh Core observation above and still resolves, while every other intent refuses.
+ h.store.missing=true;
+ assert.equal((await h.authority.resolve(h.call('download',{versionId:'00000000-0000-4000-8000-00000000f001'}))).artifactOptions.context.maxBytes,limits.maxResponseBytes,'a retained read with no run row of its own stays readable, pinned by the current observation');
+ await assert.rejects(h.authority.resolve(h.call('create',createBody)),code('ACCESS_DENIED'),'the same absent run row refuses every non-retained intent');
+ h.store.missing=false;h.store.state='cancelled';
+ await assert.rejects(h.authority.resolve(h.call('create',createBody)),code('ACCESS_DENIED'),'a cancelled run refuses generation');
+ assert.equal((await h.authority.resolve(h.call('download',{versionId:'00000000-0000-4000-8000-00000000f001'}))).artifactOptions.context.maxBytes,limits.maxResponseBytes,'cancellation never suppresses an already published artifact read');
+ h.store.state='completed';h.core.limits={maxArtifactBytes:4096};
  assert.equal((await h.authority.resolve(h.call('download',{versionId:'00000000-0000-4000-8000-00000000f001'}))).artifactOptions.context.maxBytes,4096,'Core ceiling clamps the context');
+ h.core.limits=null;
  const marked=await authorityHarness({nativeCredential:CONTROL});
- await assert.rejects(marked.authority.resolve(marked.call('create',createBody)),code('UNAVAILABLE'),'a session holding the marked control credential');
- assert.equal(marked.core.calls.length,0,'the marked control credential never reaches the artifact route');
+ await assert.rejects(marked.authority.resolve(marked.call('create',createBody)),code('SESSION_REFUSED'),'a marked control credential as the session bearer is refused at Core');
+ assert.equal(marked.core.calls.length,1,'the route relays the session credential unchanged, mints and screens nothing: Core is the rejecting owner');
  h.core.park=true;const parked=h.call('create',createBody,{deadlineMs:h.now()+80});
  await assert.rejects(h.authority.resolve(parked),code('DEADLINE'),'a parked Core is bounded by the request deadline');h.core.park=false;
  // Core's principal must be the session's tenant and actor on the FIRST observation too (not only by pin equality).
@@ -247,34 +275,37 @@ test('authority refuses before Core: forged digest, revoked session, marked bear
 
 const kmsKeyId='arn:aws:kms:us-east-1:111122223333:key/00000000-0000-4000-8000-000000000001';
 const artifacts=(extra={})=>({enabled:true,region:'us-east-1',bucket:'synthetic-artifact-bucket',prefix:'meri-artifacts',expectedBucketOwner:'111122223333',kmsKeyId,authority:{origin:ORIGIN,serviceSecretFile:files.secret},...extra});
-const control=(extra={})=>({nativeCandidate,limits:{requestMs:5000,requestBytes:131072},native:{maxResponseBytes:1048576},...extra});
+const control=(extra={})=>({nativeCandidate,limits:{requestMs:5000,requestBytes:131072},native:{maxResponseBytes:1048576},agentcore:{maxOutputBytes:1048576},...extra});
 
 test('startup composition is disabled unless every input exists, and names each gap by key only',async()=>{
- const s=secretFiles(),run=scriptedRunOptions(),executor={execute(){}};
+ const s=secretFiles(),live=await liveSession(),nativeCredentials=live.sessions,executor={execute(){}};
  const missing=async(configuration,extra={})=>(await composeDocumentsFamily({configuration,readSecret:s.readSecret,fetchImpl:async()=>{},...extra})).missing;
  // Lane X composes both Meri-local owners when their inputs exist; the production CLI supplies neither input today.
- assert.deepEqual(await missing(control({artifacts:artifacts()})),['runOptions.authorityPorts','artifacts.executor'],'the production registration today');
- assert.deepEqual(await missing(control({artifacts:{enabled:false}}),{runOptions:run.port,executor}),['artifacts.enabled']);
- assert.deepEqual(await missing(control({artifacts:artifacts({authority:undefined})}),{runOptions:run.port,executor}),['artifacts.authority']);
- assert.deepEqual(await missing({...control({artifacts:artifacts()}),nativeCandidate:undefined},{runOptions:run.port,executor}),['nativeCandidate']);
- assert.deepEqual(await missing(control({artifacts:artifacts({authority:{origin:ORIGIN,serviceSecretFile:'/run/meri/absent'}})}),{runOptions:run.port,executor}),['artifacts.authority.serviceSecretFile']);
- const composed=await composeDocumentsFamily({configuration:control({artifacts:artifacts()}),readSecret:s.readSecret,fetchImpl:async()=>{},runOptions:run.port,executor});
+ assert.deepEqual(await missing(control({artifacts:artifacts()})),['nativeCredentials','artifacts.executor'],'the production registration today');
+ assert.deepEqual(await missing(control({artifacts:{enabled:false}}),{nativeCredentials,executor}),['artifacts.enabled']);
+ assert.deepEqual(await missing(control({artifacts:artifacts({authority:undefined})}),{nativeCredentials,executor}),['artifacts.authority']);
+ assert.deepEqual(await missing({...control({artifacts:artifacts({renderer:{enabled:true,imageDigest:'sha256:'+'b'.repeat(64)}})}),agentcore:undefined},{nativeCredentials,executor}),['artifacts.renderer.agentcore']);
+ assert.deepEqual(await missing(control({artifacts:artifacts({authority:{origin:ORIGIN,serviceSecretFile:'/run/meri/absent'}})}),{nativeCredentials,executor}),['artifacts.authority.serviceSecretFile']);
+ const composed=await composeDocumentsFamily({configuration:control({artifacts:artifacts()}),readSecret:s.readSecret,fetchImpl:async()=>{},nativeCredentials,executor});
  assert.deepEqual(composed.missing,[]);assert.equal(composed.authority.origin,ORIGIN);assert.equal(typeof composed.family,'function');
  // The declaration is closed: origin must be a bare https origin equal to the session identity origin; the secret file a POSIX path.
  for(const authority of [{origin:'http://core.synthetic.invalid',serviceSecretFile:files.secret},{origin:ORIGIN+'/api',serviceSecretFile:files.secret},{origin:'https://other.synthetic.invalid',serviceSecretFile:files.secret},
   {origin:ORIGIN,serviceSecretFile:'relative'},{origin:ORIGIN,serviceSecretFile:'/run/../x'},{origin:ORIGIN},{origin:ORIGIN,serviceSecretFile:files.secret,bearerFile:'/x'}])
-  await assert.rejects(composeDocumentsFamily({configuration:control({artifacts:artifacts({authority})}),readSecret:s.readSecret}),code('ARTIFACT_AUTHORITY_CONFIGURATION'),JSON.stringify(authority));
+  await assert.rejects(composeDocumentsFamily({configuration:control({artifacts:artifacts({authority})}),readSecret:s.readSecret}),code('ARTIFACT_CONFIGURATION'),JSON.stringify(authority));
 });
 
 test('composed family through the runtime document application: Core gates admission and every effect, fail closed',async()=>{
- const now=Date.now,s=secretFiles(),run=scriptedRunOptions(),core=scriptedCore(),live=await liveSession({now});
- const {family,missing}=await composeDocumentsFamily({configuration:control({artifacts:artifacts()}),readSecret:s.readSecret,fetchImpl:core.fetch,runOptions:run.port,executor:{execute(){}},now});
+ const now=Date.now,s=secretFiles(),core=scriptedCore(),live=await liveSession({now});
+ const {family,missing}=await composeDocumentsFamily({configuration:control({artifacts:artifacts()}),readSecret:s.readSecret,fetchImpl:core.fetch,nativeCredentials:live.sessions,executor:{execute(){}},now});
  assert.deepEqual(missing,[]);
  // The family constructs the pinned SDK S3 client with no request; no path below reaches it (the versions owner refuses before IO).
  const context=Object.freeze({configuration:{...control({artifacts:artifacts()}),sessions:{maxSessions:10,maxTtlMs:30000},versions:{}},pool:Object.freeze({connect:()=>assert.fail('no SQL')}),now});
  const realFamily=family(context);
  assert.deepEqual(Object.keys(realFamily.ports),['artifactStore','artifactOptionsOwner']);
- assert.equal(bindDocumentsSessions(context,live.sessions),true);
+ // The composition's readiness contract now requires the canonical conversation store (lifecycle.readArtifactFile) and the
+ // authority's optional accepted-run read (postgres-store readOptional). Same scripted double the conversation-binding spec uses.
+ const conversationStore={lifecycle:{readArtifactFile:async()=>null},async readOptional(binding){return {run:{binding:structuredClone(binding),scopes:structuredClone(scopes),state:'completed'}};}};
+ assert.equal(bindDocumentsSessions(context,live.sessions,undefined,conversationStore),true);
  const app=createRuntimeArtifactApplication({sessions:live.sessions,now,limits,optionsOwner:captureRuntimePorts(realFamily.ports).artifactOptionsOwner});
  const send=(intent,body)=>app.handle(new Request('https://control.synthetic.invalid/api/documents/'+intent,{method:'POST',headers:{authorization:'Bearer '+live.credential,'content-type':'application/json'},body:JSON.stringify(body)}));
  const download={versionId:'00000000-0000-4000-8000-00000000f001'};
@@ -283,15 +314,17 @@ test('composed family through the runtime document application: Core gates admis
  let response=await send('download',download),body=await response.json();
  assert.equal(response.status,403);assert.deepEqual(body,{error:{code:'ACCESS_DENIED',outcome:'NOT_DISPATCHED'}});assert.equal(core.calls.length,2);
  core.onCall=null;core.status=200;
- // Core allows: resolve, admission recheck, then rechecks around the version-scoped authorize and the version read; the read itself
- // reaches the real S3/PG versions owner (which refuses without publication custody) only after Core allowed it.
+ // Core allows. The owner observes Core at admission and release only, never around every local immutable storage
+ // operation (application.mjs:78), so a download that is refused by the real S3/PG versions owner (no publication
+ // custody) sees exactly the resolve observation plus the document application's admission recheck and never a release.
  core.calls.length=0;response=await send('download',download);body=await response.json();
- assert.notEqual(response.status,200);assert.ok(core.calls.length>=4,`Core observations before the read: ${core.calls.length}`);
+ assert.notEqual(response.status,200);assert.equal(core.calls.length,2,`Core observations before the local storage refusal: ${core.calls.length}`);
  assert.ok(core.calls.every(c=>c.authorization==='Bearer '+BEARER&&c.request.intent==='download'));
- // Core changes its decision between the admission recheck and the first effect: refused before any storage read.
- core.calls.length=0;core.onCall=n=>{if(n===3)core.contextRevision=rev('context-moved');};
+ // Core changes its decision between the two observations that exist: refused at the admission recheck, before the
+ // local storage read, and again with no release observation.
+ core.calls.length=0;core.onCall=n=>{if(n===2)core.contextRevision=rev('context-moved');};
  response=await send('download',download);body=await response.json();core.onCall=null;core.contextRevision=rev('context');
- assert.equal(response.status,403);assert.equal(body.error.code,'ACCESS_DENIED');assert.equal(core.calls.length,3);
+ assert.equal(response.status,403);assert.equal(body.error.code,'ACCESS_DENIED');assert.equal(core.calls.length,2,'refused at the admission recheck; a refused request never reaches the release observation');
  // Without a declared authority origin the same supplied authority composes the store only.
  const plain=family(Object.freeze({...context,configuration:{...context.configuration,artifacts:artifacts({authority:undefined})}}));
  assert.deepEqual(Object.keys(plain.ports),['artifactStore']);

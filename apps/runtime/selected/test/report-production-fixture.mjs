@@ -5,6 +5,7 @@
 import {canonicalSha256 as hash} from '../../../../packages/contracts/validate.mjs';
 import {createHash} from 'node:crypto';
 import {resolveOperationContract} from '../../../../packages/contracts/retrieval-0.2/validate.mjs';
+import {sha} from '../../../artifacts/test/native-document-fixture.mjs';
 import {selectSkill} from '../../../../packages/skills/index.mjs';
 import {versions} from '../../../control/conversations/test/store-fixture.mjs';
 import {createExecutionBinding} from '../../../control/conversations/execution-boundary.mjs';
@@ -22,6 +23,22 @@ export const REPORT_POLICY='report-policy-1';
 export const REPORT_SUBJECT={congress:119,session:2,billId:'119-s-88',billVersion:'is',fiscalYear:2028,budgetStage:'authorized'};
 export const REPORT_TEXTS={bill_text:'Original independent source: appropriations research requires an authorization review. No appropriation amount is stated.',
  federal_legislation:'Independent status source: the enacted stage has not been established.'};
+const versionOf=sourceId=>sourceId==='bill_text'?REPORT_REVISION:'2026-10-12T12:00:00.000Z';
+const citation=(sourceId,text=REPORT_TEXTS[sourceId])=>({sourceId,recordId:REPORT_SUBJECT.billId,sourceVersionId:versionOf(sourceId),start:0,end:text.length,url:'https://example.invalid/never-fetched'});
+/** The literal structured output the congressional run's model returns: the seven-section cited report. */
+export function reportBriefInput(){return {skill:reportSkillPin(),title:'Independent sourced cited report',subject:structuredClone(REPORT_SUBJECT),asOf:REPORT_STAMP,
+ summary:'Draft summary: the authorization basis is recorded; no appropriation amount was read.',
+ findings:[{id:'excerpt',kind:'excerpt',text:REPORT_TEXTS.bill_text,citations:[citation('bill_text')]},
+  {id:'claim',kind:'claim',text:REPORT_TEXTS.bill_text,citations:[citation('bill_text'),citation('bill_text',REPORT_TEXTS.bill_text.slice(0,-7))]},
+  {id:'missing',kind:'excerpt',text:'No budget evidence was read.',citations:[citation('program_elements','No budget evidence was read.')]}],
+ conflicts:[{findingId:'claim',note:'Two sources describe the same stage differently.'}],
+ recommendations:['Confirm the appropriations basis before committing resources.'],limitations:['State docket coverage is not exhaustive.']};}
+/** The public artifact request schema's own asset-declaring block, and the bytes its object retains. */
+export const RETAINED_IMAGE={kind:'image',assetId:'retained-figure',widthInches:1.5,heightInches:1.5};
+export const RETAINED_BYTES=Buffer.from('synthetic retained figure bytes\n');
+/** Scripted DOCX renderer: real artifact owner, synthetic bytes. Native rendering is a separate qualification. */
+export const docxExecutor={async execute(x){const bytes=Buffer.from(JSON.stringify(x.request.content.blocks));
+ return {bytes,inspection:{sha256:sha(bytes),bytes:bytes.length,format:'docx',nativeOpened:false,rendered:false,recalculated:false,members:[],details:{paragraphs:x.request.content.blocks.length,tables:0,pictures:0}}};}};
 /** Synthetic bill-text pages over one pinned revision: each page carries the exact document slice. */
 function billTextSource({bill,text}){
  const scene=billTextCase('read_bill_text',{defaultCongress:bill.congress,request:{billId:bill.billId}});

@@ -304,6 +304,61 @@ test('an evidence-bearing revision keeps the retained evidence and immutable par
  assert.ok(renders>=2,'the canonical executor rendered immutable bytes');
 });
 
+// ---- Embedded assets: the immutable parent's own durable retained map survives the cited revision ----
+// This section drives the recipe directly with an explicit readBase seam: it pins the recipe's own contract,
+// not the production wiring. The production crossing — public request, assembled factory, its own readBase,
+// the real private source owner and the paged artifact owner — is proven in
+// apps/runtime/selected/test/report-production.test.mjs.
+const ASSET=Buffer.from('synthetic retained cited-report image bytes\n');
+const imageBlock={kind:'image',assetId:'retained-image',widthInches:2,heightInches:1};
+const alloc=()=>({artifactId:randomUUID(),versionId:randomUUID(),objectId:randomUUID()});
+/** A real compiled cited report declaring one asset, written through the canonical artifact owner. */
+async function assetParent({activation=true}={}){
+ const f=nativeDocumentFixture({binding,scopes});f.context.deadlineMs=NOW+5000;
+ const object={objectId:randomUUID(),versionId:'SYNTHETIC_CITED_REPORT_ASSET',sha256:sha(ASSET),bytes:ASSET.length,scopes:structuredClone(scopes)};
+ f.state.objects.set(v.hash(object),Buffer.from(ASSET));
+ const selected=selection(),first=await compile(readFactory({selected})).prepare(input(),f.context,{selection:selected}),
+  request=v.request({...first.request,content:{blocks:[...first.request.content.blocks,imageBlock]}}),
+  context=v.context({...first.context,assets:[{id:imageBlock.assetId,object}]}),
+  created=await createArtifactService({...f.options,executor:docxExecutor,ids:alloc,context,...(activation?{retainedAssetMapWrites:true}:{})})
+   .create(request,context,{invocation:{invocationId:'sdk:'+v.hash({deliveryId:randomUUID()}),versionId:undefined,requestSha256:v.nativeRequestSha256(request,context,null)}});
+ return {f,object,first,request,context,created,selected};
+}
+const readBaseFrom=f=>async({versionId,context:sent,signal})=>{
+ const source=await createArtifactService({...f.options,executor:docxExecutor,ids:alloc}).revisionSource(versionId,sent,{signal}),
+  {currentBytesVerified,...inspection}=source.inspection;assert.equal(currentBytesVerified,true);
+ return {version:source.version,spec:source.request,specSha256:source.specSha256,inspection,...(source.assets===undefined?{}:{assets:source.assets})};
+};
+test('an asset-bearing cited-report revision keeps the exact parent asset map through the canonical owner',async()=>{
+ const h=await assetParent(),stored=h.f.sql.state.versions.get(h.created.version.versionId);
+ assert.deepEqual(stored.record.assets,[{id:'retained-image',object:h.object}]);
+ const revisionContext={...h.f.context,binding:{...h.f.context.binding,runId:uid(5),attemptId:uid(6)}},
+  revisionRead=readFactory({selected:h.selected,binding:revisionContext.binding,
+   values:{'mail.read_thread':mailPage(mailRequest(),{binding:revisionContext.binding,citationId:uid(24),recordVersionId:'independent-record-version-2'})}}),
+  second=await createCitedReportCompiler({readSource:revisionRead,readBase:readBaseFrom(h.f),now:()=>NOW})
+   .prepare(input(),revisionContext,{selection:h.selected,base:{versionId:h.created.version.versionId,specSha256:stored.record.specSha256}});
+ // The child re-presents the parent's own asset, in the same document position, with the same object.
+ assert.deepEqual(second.context.assets,[{id:'retained-image',object:h.object}]);
+ assert.deepEqual(second.request.content.blocks.filter(block=>block.kind==='image'),[imageBlock]);
+ assert.ok(body(second).includes('Retained document assets (immutable parent)'));
+ assert.deepEqual(second.retainedEvidence,h.created.version.evidence);
+ const bound=bindPreparedCitedReportArtifactOptions(second,{...h.f.options,executor:docxExecutor,context:second.context}),
+  revised=await createArtifactService({...h.f.options,executor:docxExecutor,...bound,ids:alloc,retainedAssetMapWrites:true})
+   .revise(h.created.version.versionId,second.request,second.context,{invocation:{invocationId:'sdk:'+v.hash({deliveryId:randomUUID()}),versionId:undefined,requestSha256:v.nativeRequestSha256(second.request,second.context,h.created.version.versionId)}});
+ assert.equal(revised.version.parentVersionId,h.created.version.versionId);
+ assert.deepEqual(h.f.sql.state.versions.get(revised.version.versionId).record.assets,[{id:'retained-image',object:h.object}]);
+ assert.deepEqual((await createArtifactService({...h.f.options,executor:docxExecutor,ids:alloc}).revisionSource(revised.version.versionId,second.context)).assets,[{id:'retained-image',object:h.object}]);
+ assert.equal(Object.hasOwn(revised.version,'assets'),false,'the public version DTO is unchanged');
+});
+test('a cited-report parent whose declared asset retained no map is not revision-eligible',async()=>{
+ const h=await assetParent({activation:false}),stored=h.f.sql.state.versions.get(h.created.version.versionId);
+ assert.equal(Object.hasOwn(stored.record,'assets'),false);
+ const revisionRead=readFactory({selected:h.selected});
+ await assert.rejects(createCitedReportCompiler({readSource:revisionRead,readBase:readBaseFrom(h.f),now:()=>NOW})
+  .prepare(input(),h.f.context,{selection:h.selected,base:{versionId:h.created.version.versionId,specSha256:stored.record.specSha256}}),/CITED_REPORT_BASE_ASSETS/);
+ assert.equal(revisionRead.calls.length,0,'nothing is read when the parent cannot be preserved');
+});
+
 test('the prepared report admits only its own request, context and base',async()=>{
  const selected=selection(),prepared=await compile(readFactory({selected})).prepare(input(),context(),{selection:selected});
  const guard=admitPreparedCitedReport(prepared,prepared.context);
