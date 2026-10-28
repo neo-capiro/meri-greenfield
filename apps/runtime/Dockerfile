@@ -253,6 +253,148 @@ ADD --checksum=sha256:ee1d0c652a89932c9f1b3d1e8c348bd1a18329f32a1a63eaa1aaae9dd3
 ADD --checksum=sha256:ef0fed8829139b2b1ec2589d1be348855fdd6e27a0406bb4635d605c4c23131c https://packages.wolfi.dev/os/aarch64/wayland-libs-cursor-1.26.0-r3.apk /tmp/meri-native-repo/aarch64/wayland-libs-cursor-1.26.0-r3.apk
 ADD --checksum=sha256:fa871a64e10623a12ee58086b59e8a1ffe195805d3a254121bad704bb7628857 https://packages.wolfi.dev/os/aarch64/argon2-20190702-r9.apk /tmp/meri-native-repo/aarch64/argon2-20190702-r9.apk
 ADD --checksum=sha256:fc36e4dd53d901cf868cbe55a000a496e84cf220317a0db8cbdfc35a97193f55 https://packages.wolfi.dev/os/aarch64/libheif-1.23.7-r1.apk /tmp/meri-native-repo/aarch64/libheif-1.23.7-r1.apk
+# ---------------------------------------------------------------------------------------------------------
+# SCRUM-197: build-only stages for the source-built ClamAV payload.
+#
+# The retained image installs the Wolfi clamav-1.5 family (engine 1.5.2-r7, scanner and freshclam 1.5.2-r0) and the
+# retained image scan reports the seven HIGH advisories Cisco fixed in ClamAV 1.5.4 (registry
+# sha256:93bc564d18d912a0af53ec2b9c97994324b752e9f9b34000218d2898e6babe7c, COMPLETE 14:59:42). The vendor feed declares a
+# fixed revision, clamav-1.5 1.5.4-r2, that no Wolfi or Chainguard apk repository publishes for aarch64 or x86_64, so the
+# payload is built from the authenticated upstream release asset rather than replaced by a distribution package.
+#
+# Every instruction below is build-only: the compiler, the Rust toolchain, the development headers and the build tree
+# stay in stages that are not the exported stage, and the runtime stage receives only the installed payload. The
+# compiler/development closure is resolved from the same retained vendor-signed index the three native layers already
+# install from (101 official aarch64 archives, pinned by exact URL and sha256 in the ADD --checksum list and in the lock's
+# uploadNativeProvenance.clamavSourcePreparation.buildClosure). The ClamAV release asset, its detached signature, the
+# Cisco Talos public key and the official Rust toolchain with its release key are fetched at those exact bytes.
+#
+# The toolchain input is not incidental: ClamAV 1.5.x requires a Rust toolchain (cmake/FindRust.cmake requires the
+# rustc/cargo target to be aarch64-unknown-linux-gnu, and the release asset carries its 290 vendored crates in
+# .cargo/vendor so the build resolves offline), and neither the retained index nor the live Wolfi index publishes any
+# rust or cargo package for aarch64. The official Rust distribution is therefore the authenticated source for it, pinned
+# by the same URL + sha256 pattern as every other staged input, and recorded as an external input rather than presented
+# as a distribution package.
+
+FROM ${RUNTIME_IMAGE} AS native-dev-repo-1
+ADD --checksum=sha256:a418d69ce51bfeafd24a505e483b74fdb52cfc98a2d43cd8ce8d9670745801b9 https://packages.wolfi.dev/os/aarch64/bash-5.3-r14.apk /tmp/meri-native-dev-repo/aarch64/bash-5.3-r14.apk
+ADD --checksum=sha256:ed3e438fccc427064cee079dde807c7c6f6d79dc9b84aeed52f3711d57e2a7aa https://packages.wolfi.dev/os/aarch64/binutils-2.47-r2.apk /tmp/meri-native-dev-repo/aarch64/binutils-2.47-r2.apk
+ADD --checksum=sha256:ec68f956c38a01460bc0fd35f35b845e3fb15a5b43fc7838a65c5d2e9919c9a2 https://packages.wolfi.dev/os/aarch64/brotli-1.2.1-r2.apk /tmp/meri-native-dev-repo/aarch64/brotli-1.2.1-r2.apk
+ADD --checksum=sha256:bc5a02f284fa438c9ca8ae69ef708a7e5a0f890ca75639af8638ae5a352a34e8 https://packages.wolfi.dev/os/aarch64/brotli-dev-1.2.1-r2.apk /tmp/meri-native-dev-repo/aarch64/brotli-dev-1.2.1-r2.apk
+ADD --checksum=sha256:34af19f4c87d77e890c4526bce45f0f20f450a1fa9b9f706ee380e0e06ed1812 https://packages.wolfi.dev/os/aarch64/bzip2-dev-1.0.8-r28.apk /tmp/meri-native-dev-repo/aarch64/bzip2-dev-1.0.8-r28.apk
+ADD --checksum=sha256:54d05cfba6e3c49483de141bd163f7986a03ca3f6d39ca6d13756af534d2d247 https://packages.wolfi.dev/os/aarch64/c-ares-1.34.9-r0.apk /tmp/meri-native-dev-repo/aarch64/c-ares-1.34.9-r0.apk
+ADD --checksum=sha256:d2a458ae71b3f6f65302a8dd61c35f75f3eef87aeb5583a3f97523e99698cf49 https://packages.wolfi.dev/os/aarch64/ca-certificates-bundle-20261020-r0.apk /tmp/meri-native-dev-repo/aarch64/ca-certificates-bundle-20261020-r0.apk
+ADD --checksum=sha256:d312109c417fde5732c6ad001ad0363c5f81a7d148a0dc895dcab106ee0e7788 https://packages.wolfi.dev/os/aarch64/check-0.15.2-r10.apk /tmp/meri-native-dev-repo/aarch64/check-0.15.2-r10.apk
+ADD --checksum=sha256:e83abc418a9a2ea64a9b8c1a223555ddf2f3622261a85b71fa7b2c25dfa56c4b https://packages.wolfi.dev/os/aarch64/check-dev-0.15.2-r10.apk /tmp/meri-native-dev-repo/aarch64/check-dev-0.15.2-r10.apk
+ADD --checksum=sha256:05fee361fdbd9002623209173e5101935d5f0cc1c82d3cd9e1e5c6c0a55df1d3 https://packages.wolfi.dev/os/aarch64/cmake-4.4.3-r0.apk /tmp/meri-native-dev-repo/aarch64/cmake-4.4.3-r0.apk
+ADD --checksum=sha256:2be4a49b2a273992e10b009c358bf3b4932429fbf7e749534a4924df791a1454 https://packages.wolfi.dev/os/aarch64/curl-dev-8.23.0-r2.apk /tmp/meri-native-dev-repo/aarch64/curl-dev-8.23.0-r2.apk
+ADD --checksum=sha256:4d953f1db918d026e9a84fd630609668f8617cdbcf1a316f459bea9281f911ed https://packages.wolfi.dev/os/aarch64/cyrus-sasl-heimdal-libs-2.1.28-r58.apk /tmp/meri-native-dev-repo/aarch64/cyrus-sasl-heimdal-libs-2.1.28-r58.apk
+ADD --checksum=sha256:0a78805556cf6200193caa6456ffa9e589cf44718bcef5c84d207b7cf60f2850 https://packages.wolfi.dev/os/aarch64/gawk-5.4.1-r4.apk /tmp/meri-native-dev-repo/aarch64/gawk-5.4.1-r4.apk
+ADD --checksum=sha256:46b46236fe3d73b4ed55cc8cdfcf975037e3fa1413c369c0ca3015714f7a926f https://packages.wolfi.dev/os/aarch64/gcc-16.2.0-r2.apk /tmp/meri-native-dev-repo/aarch64/gcc-16.2.0-r2.apk
+ADD --checksum=sha256:7c809eeb4a0a2a7ecbbbe92a70abecfccfc5c17ea40144798e8b389dc25ac7e8 https://packages.wolfi.dev/os/aarch64/gdbm-1.26-r9.apk /tmp/meri-native-dev-repo/aarch64/gdbm-1.26-r9.apk
+ADD --checksum=sha256:ed2992c52a57877ae5006b4c212393851bf61dc4c440f6519fd207f326952c6f https://packages.wolfi.dev/os/aarch64/glibc-2.43-r13.apk /tmp/meri-native-dev-repo/aarch64/glibc-2.43-r13.apk
+ADD --checksum=sha256:5ec2e2a087ca0f82e8c66fee61ff47637d2d65232b2843aaa58d560ec4596907 https://packages.wolfi.dev/os/aarch64/glibc-2.44-2.44-r10.apk /tmp/meri-native-dev-repo/aarch64/glibc-2.44-2.44-r10.apk
+ADD --checksum=sha256:8cb458ec8470eeffbf1938401e082b437e55b384eb3a2035cccfa4e8ba75acdd https://packages.wolfi.dev/os/aarch64/glibc-2.44-dev-2.44-r10.apk /tmp/meri-native-dev-repo/aarch64/glibc-2.44-dev-2.44-r10.apk
+ADD --checksum=sha256:2b4056feb07b9abd06d58a7c1031967c5b2d4cefe128e986170dbc1deb338fa4 https://packages.wolfi.dev/os/aarch64/glibc-2.44-locale-posix-2.44-r10.apk /tmp/meri-native-dev-repo/aarch64/glibc-2.44-locale-posix-2.44-r10.apk
+ADD --checksum=sha256:b38a6630cf85f3d726b36d8a9544c3d2a643b30d182af30e0ff634a8e000e2c7 https://packages.wolfi.dev/os/aarch64/gmp-6.3.0-r12.apk /tmp/meri-native-dev-repo/aarch64/gmp-6.3.0-r12.apk
+ADD --checksum=sha256:d23f4bca40e2665011f257ee2cd84886f7ed5aa679e3a7b0837b69fb8d4b5ee6 https://packages.wolfi.dev/os/aarch64/gpgv-2.4.9-r12.apk /tmp/meri-native-dev-repo/aarch64/gpgv-2.4.9-r12.apk
+ADD --checksum=sha256:e2292206c78ed1aac2047d4be70cd3ab5992efcbba5065f1d9ceeff07c1ec437 https://packages.wolfi.dev/os/aarch64/heimdal-libs-7.8.0-r54.apk /tmp/meri-native-dev-repo/aarch64/heimdal-libs-7.8.0-r54.apk
+ADD --checksum=sha256:2732113c83570ae8c3de42dbeac422981600b51a15ee703a7ca9326ba2918954 https://packages.wolfi.dev/os/aarch64/isl-0.28-r6.apk /tmp/meri-native-dev-repo/aarch64/isl-0.28-r6.apk
+ADD --checksum=sha256:ed8464ea37ad9d4f008c17864a5b97bbe1b41969c79b4c9913921eb965db267e https://packages.wolfi.dev/os/aarch64/json-c-0.19-r2.apk /tmp/meri-native-dev-repo/aarch64/json-c-0.19-r2.apk
+ADD --checksum=sha256:437c34f849dd0d4da92743cbac5ccdaaa984e2cffc1328d069df1ca940c83ad9 https://packages.wolfi.dev/os/aarch64/json-c-dev-0.19-r2.apk /tmp/meri-native-dev-repo/aarch64/json-c-dev-0.19-r2.apk
+ADD --checksum=sha256:7a2faec0b8e9163676c73f54fc3b6a1621b99683cd9b0ebec0c40223b6bc347b https://packages.wolfi.dev/os/aarch64/jsoncpp-1.9.8-r6.apk /tmp/meri-native-dev-repo/aarch64/jsoncpp-1.9.8-r6.apk
+ADD --checksum=sha256:fc8f8f28e6472244ebad031f585fcb86a0b870c4f4e5f1415943b76afbf3e4b0 https://packages.wolfi.dev/os/aarch64/keyutils-libs-1.6.3-r41.apk /tmp/meri-native-dev-repo/aarch64/keyutils-libs-1.6.3-r41.apk
+ADD --checksum=sha256:6a933ca1514f76081d839361a01313cae7c5381a5a9e8130ef38cb75d00b20f0 https://packages.wolfi.dev/os/aarch64/krb5-conf-1.0-r10.apk /tmp/meri-native-dev-repo/aarch64/krb5-conf-1.0-r10.apk
+ADD --checksum=sha256:bde3fb18cc946f07cde48c022c690650ba8476f27fa973a1cbaa7a4deea36c39 https://packages.wolfi.dev/os/aarch64/krb5-libs-1.22.2-r5.apk /tmp/meri-native-dev-repo/aarch64/krb5-libs-1.22.2-r5.apk
+ADD --checksum=sha256:f69972a7647987c61a1a29bc7c1854458bd351fb7a191c7f51e27a683769dad0 https://packages.wolfi.dev/os/aarch64/ld-linux-2.44-2.44-r10.apk /tmp/meri-native-dev-repo/aarch64/ld-linux-2.44-2.44-r10.apk
+ADD --checksum=sha256:4ab67d18cbdb44c3b37c543b6e735583ef757696e4d11dedc88c20c165a4ee8f https://packages.wolfi.dev/os/aarch64/libacl1-2.4.0-r4.apk /tmp/meri-native-dev-repo/aarch64/libacl1-2.4.0-r4.apk
+ADD --checksum=sha256:72ec9ba6472af3213a09b9674b7bba7ea2aa1ecdf0dee09e4a24a9108db5598f https://packages.wolfi.dev/os/aarch64/libarchive-3.8.10-r0.apk /tmp/meri-native-dev-repo/aarch64/libarchive-3.8.10-r0.apk
+ADD --checksum=sha256:e137af1d7edf4b8c40589087bd9990bf52889c8808d5d9d5482cbcaae294d70f https://packages.wolfi.dev/os/aarch64/libassuan-3.0.2-r12.apk /tmp/meri-native-dev-repo/aarch64/libassuan-3.0.2-r12.apk
+ADD --checksum=sha256:923cab5fcdc646ea76ddebfd38626998d787cc10baff0803e3365d1e2bd5ef41 https://packages.wolfi.dev/os/aarch64/libatomic-16.2.0-r1.apk /tmp/meri-native-dev-repo/aarch64/libatomic-16.2.0-r1.apk
+FROM ${RUNTIME_IMAGE} AS native-dev-repo-2
+ADD --checksum=sha256:5a71e1e2255f6e85cf501b60a34584e097fe743a91bf0e60338376ddc5a24090 https://packages.wolfi.dev/os/aarch64/libbrotlicommon1-1.2.1-r2.apk /tmp/meri-native-dev-repo/aarch64/libbrotlicommon1-1.2.1-r2.apk
+ADD --checksum=sha256:29b9fcc4d55fea32dbe590a2e3de0459109c8103b6dc568e650e0e6395280a82 https://packages.wolfi.dev/os/aarch64/libbrotlidec1-1.2.1-r2.apk /tmp/meri-native-dev-repo/aarch64/libbrotlidec1-1.2.1-r2.apk
+ADD --checksum=sha256:14ba019e5e959d8f4ae06f6a6c9e1014842b730d2a10a2fbb66fb780523910f7 https://packages.wolfi.dev/os/aarch64/libbrotlienc1-1.2.1-r2.apk /tmp/meri-native-dev-repo/aarch64/libbrotlienc1-1.2.1-r2.apk
+ADD --checksum=sha256:46ce3328e2372eadeb71ef1dc179e2427cefa2264bc0e90e8749e4fee7d644f9 https://packages.wolfi.dev/os/aarch64/libbz2-1-1.0.8-r28.apk /tmp/meri-native-dev-repo/aarch64/libbz2-1-1.0.8-r28.apk
+ADD --checksum=sha256:e7e46a09271baccf16553997096d72a9059437a527f10331a12fc6a2f18c5d45 https://packages.wolfi.dev/os/aarch64/libcom_err-1.47.4-r5.apk /tmp/meri-native-dev-repo/aarch64/libcom_err-1.47.4-r5.apk
+ADD --checksum=sha256:40c7bfd615a69e8747d3a5d0ca9a37dc2a8b169bcd4c2df4b387922d9fe5b553 https://packages.wolfi.dev/os/aarch64/libcrypt1-2.44-2.44-r10.apk /tmp/meri-native-dev-repo/aarch64/libcrypt1-2.44-2.44-r10.apk
+ADD --checksum=sha256:1cd0edb0d40aaeb5281566f4c4d17583447b77b74e1bc3281de642e8e9493bf1 https://packages.wolfi.dev/os/aarch64/libcurl-openssl4-8.23.0-r2.apk /tmp/meri-native-dev-repo/aarch64/libcurl-openssl4-8.23.0-r2.apk
+ADD --checksum=sha256:9770863d1476c24a11ae86cb73366eabfd4310421b51fd1c08da9b5c5fa335c3 https://packages.wolfi.dev/os/aarch64/libedit-3.1-r20.apk /tmp/meri-native-dev-repo/aarch64/libedit-3.1-r20.apk
+ADD --checksum=sha256:73d17b8745007188c11c5d20420a60f8fbca8fae3d1633a354e73f3c78a825bf https://packages.wolfi.dev/os/aarch64/libedit-dev-3.1-r20.apk /tmp/meri-native-dev-repo/aarch64/libedit-dev-3.1-r20.apk
+ADD --checksum=sha256:8c21a68b33b354e1710bd44308b268986d59fcb2c76ef09b2ee330ae86f0f213 https://packages.wolfi.dev/os/aarch64/libev-4.33-r14.apk /tmp/meri-native-dev-repo/aarch64/libev-4.33-r14.apk
+ADD --checksum=sha256:abeeb0ffa21b3ca6175cb997d9919920a26a2f50aaa61116f03ed40b1cfd764f https://packages.wolfi.dev/os/aarch64/libexpat1-2.9.0-r0.apk /tmp/meri-native-dev-repo/aarch64/libexpat1-2.9.0-r0.apk
+ADD --checksum=sha256:c782296bb6afa9c6e183ef51bc14367e55768ba2acdbc822fccc96ac82257220 https://packages.wolfi.dev/os/aarch64/libgcc-16.2.0-r2.apk /tmp/meri-native-dev-repo/aarch64/libgcc-16.2.0-r2.apk
+ADD --checksum=sha256:7831c1a233c51524151b736fe36f268fc49945f9563d5d85020728908f0be927 https://packages.wolfi.dev/os/aarch64/libgcrypt-1.12.4-r2.apk /tmp/meri-native-dev-repo/aarch64/libgcrypt-1.12.4-r2.apk
+ADD --checksum=sha256:34c492411672a1c41cb4cec7b2fdc7ea601904e57184722279e7d849b0aac4be https://packages.wolfi.dev/os/aarch64/libgomp-16.2.0-r2.apk /tmp/meri-native-dev-repo/aarch64/libgomp-16.2.0-r2.apk
+ADD --checksum=sha256:a139291a6f58dd83c8669ba9757f26941f96d7edbaad88bbfb8f62a5c737613b https://packages.wolfi.dev/os/aarch64/libgpg-error-1.61-r6.apk /tmp/meri-native-dev-repo/aarch64/libgpg-error-1.61-r6.apk
+ADD --checksum=sha256:c9489c1f009a75967b198bf30415637505ad85ec7d7afca74ee3e76c84335bd7 https://packages.wolfi.dev/os/aarch64/libidn2-2.3.8-r12.apk /tmp/meri-native-dev-repo/aarch64/libidn2-2.3.8-r12.apk
+ADD --checksum=sha256:e5f31e389061015223f51503186e8f774c767175596769e91f30166a08e9a73f https://packages.wolfi.dev/os/aarch64/libldap-2.7-2.7.2-r0.apk /tmp/meri-native-dev-repo/aarch64/libldap-2.7-2.7.2-r0.apk
+ADD --checksum=sha256:6ae70433df5da1339a1d76e34a1ed1a715f81b0cafa242674972cbfef9b7d709 https://packages.wolfi.dev/os/aarch64/liblz4-1-1.10.0-r11.apk /tmp/meri-native-dev-repo/aarch64/liblz4-1-1.10.0-r11.apk
+ADD --checksum=sha256:1633e1cffe84476c70de08113687c462bfde6314d0b6331009abda003bae85a9 https://packages.wolfi.dev/os/aarch64/libmilter-dev-8.18.2-r5.apk /tmp/meri-native-dev-repo/aarch64/libmilter-dev-8.18.2-r5.apk
+ADD --checksum=sha256:e210213dea283409610f842a816cde531a8e9990d437897b11cc01292c52929b https://packages.wolfi.dev/os/aarch64/libnghttp2-14-1.70.0-r7.apk /tmp/meri-native-dev-repo/aarch64/libnghttp2-14-1.70.0-r7.apk
+ADD --checksum=sha256:313e59a428b17f811877c2366a515bb06327fd385c1935d8bf2c2919544ae693 https://packages.wolfi.dev/os/aarch64/libpcre2-16-0-10.49-r1.apk /tmp/meri-native-dev-repo/aarch64/libpcre2-16-0-10.49-r1.apk
+ADD --checksum=sha256:50bd4a1105a56dee8351a70875966545a2d192b1bc8624be131c787bcd813332 https://packages.wolfi.dev/os/aarch64/libpcre2-32-0-10.49-r1.apk /tmp/meri-native-dev-repo/aarch64/libpcre2-32-0-10.49-r1.apk
+ADD --checksum=sha256:951a1e197e06d20d19bfeaa71629cf5acc4f62174ae2802d071cb230b72b3d9b https://packages.wolfi.dev/os/aarch64/libpcre2-8-0-10.49-r1.apk /tmp/meri-native-dev-repo/aarch64/libpcre2-8-0-10.49-r1.apk
+ADD --checksum=sha256:4eaf3a1c51e9efd68f7f02aaaf3d875c2479a488277a7fa16d40d96080fb426a https://packages.wolfi.dev/os/aarch64/libpcre2-posix-3-10.49-r1.apk /tmp/meri-native-dev-repo/aarch64/libpcre2-posix-3-10.49-r1.apk
+ADD --checksum=sha256:eeac8fadc4a543c649d8162107f771d4ed71842585d90835ed100fd2b79ef77e https://packages.wolfi.dev/os/aarch64/libpsl-0.23.3-r4.apk /tmp/meri-native-dev-repo/aarch64/libpsl-0.23.3-r4.apk
+ADD --checksum=sha256:c10e9a3060e23622552f2cda743ff1928c13f7742230d5b4d1fe781c54a6f8f2 https://packages.wolfi.dev/os/aarch64/libpsl-dev-0.23.3-r4.apk /tmp/meri-native-dev-repo/aarch64/libpsl-dev-0.23.3-r4.apk
+ADD --checksum=sha256:ac602cb44cb8cda52879279a0df523e6e6ee3411094940e6dce22fe0c2b64810 https://packages.wolfi.dev/os/aarch64/libquadmath-16.2.0-r2.apk /tmp/meri-native-dev-repo/aarch64/libquadmath-16.2.0-r2.apk
+ADD --checksum=sha256:5ca1acf4f0606f603fcc1b73576c7a5877b575df06ed4798102697b46df86de5 https://packages.wolfi.dev/os/aarch64/librhash0-1.4.6-r8.apk /tmp/meri-native-dev-repo/aarch64/librhash0-1.4.6-r8.apk
+ADD --checksum=sha256:a004dfb5d3a07f49e3e281947f64b434a4ee683c6c597ef191bb39f749eadacc https://packages.wolfi.dev/os/aarch64/libstdc++-16.2.0-r2.apk /tmp/meri-native-dev-repo/aarch64/libstdc++-16.2.0-r2.apk
+ADD --checksum=sha256:4b7377db7cc4e62ece5c721768c180937f9b099230c04b6c7c8726f07ecdbd5e https://packages.wolfi.dev/os/aarch64/libstdc++-dev-16.2.0-r2.apk /tmp/meri-native-dev-repo/aarch64/libstdc++-dev-16.2.0-r2.apk
+ADD --checksum=sha256:540cec75eefb0f6f384701b5995f48c27f13744940a477ed23d9e119b9faa6e8 https://packages.wolfi.dev/os/aarch64/libunistring-1.5-r0.apk /tmp/meri-native-dev-repo/aarch64/libunistring-1.5-r0.apk
+ADD --checksum=sha256:d171cf3d7e817b2bc98c3e40801b7531f9af1196c9c123e05778bbfbb85ee977 https://packages.wolfi.dev/os/aarch64/libuv-1.53.0-r0.apk /tmp/meri-native-dev-repo/aarch64/libuv-1.53.0-r0.apk
+ADD --checksum=sha256:864750d72131a29f2f383e53adad5a3e4d32f70ffb3aef6282c0276ccfa8693d https://packages.wolfi.dev/os/aarch64/libverto-0.3.2-r11.apk /tmp/meri-native-dev-repo/aarch64/libverto-0.3.2-r11.apk
+ADD --checksum=sha256:9dfd2b4a72d35a1f2c146a968c2368d7cab51bc7ae7854e3dc61e8a98dfeb746 https://packages.wolfi.dev/os/aarch64/libxcrypt-4.5.2-r6.apk /tmp/meri-native-dev-repo/aarch64/libxcrypt-4.5.2-r6.apk
+FROM ${RUNTIME_IMAGE} AS native-dev-repo-3
+ADD --checksum=sha256:95675169d8ca9bec31a56f84468b5c5fe6e17c3b1a4e7361653e0b1ffe15a0db https://packages.wolfi.dev/os/aarch64/libxcrypt-dev-4.5.2-r6.apk /tmp/meri-native-dev-repo/aarch64/libxcrypt-dev-4.5.2-r6.apk
+ADD --checksum=sha256:3c76a370da61fc26789b0ac533ed76e442c9849b57564336856c7e0d224e9c8f https://packages.wolfi.dev/os/aarch64/libxml2-16-2.15.4-r1.apk /tmp/meri-native-dev-repo/aarch64/libxml2-16-2.15.4-r1.apk
+ADD --checksum=sha256:96ffa5dad67ad7918480e81ea7340cdf0b7de148cff4f5e70a1e9e513f2a8f84 https://packages.wolfi.dev/os/aarch64/libxml2-dev-2.15.4-r1.apk /tmp/meri-native-dev-repo/aarch64/libxml2-dev-2.15.4-r1.apk
+ADD --checksum=sha256:8ae2c2ac0859e5a59c1cf771d5491dcdce9f7b6e373c808d5d99ccc7a40789b2 https://packages.wolfi.dev/os/aarch64/libzstd1-1.5.7-r12.apk /tmp/meri-native-dev-repo/aarch64/libzstd1-1.5.7-r12.apk
+ADD --checksum=sha256:bad48891f6a2ddb0af2b59c455fde722c2cdcecc52404fa396e5db9fd493a7d2 https://packages.wolfi.dev/os/aarch64/linux-headers-7.3-r0.apk /tmp/meri-native-dev-repo/aarch64/linux-headers-7.3-r0.apk
+ADD --checksum=sha256:505a662fa56ce38d47e7796d1232754481ca49a243c8442044df8aeda0bdb768 https://packages.wolfi.dev/os/aarch64/make-4.4.1-r15.apk /tmp/meri-native-dev-repo/aarch64/make-4.4.1-r15.apk
+ADD --checksum=sha256:635e2c11382dc56b961e89d4f01f5e8c9433df211a79775661dcfffff717c2d6 https://packages.wolfi.dev/os/aarch64/mpc-1.4.1-r3.apk /tmp/meri-native-dev-repo/aarch64/mpc-1.4.1-r3.apk
+ADD --checksum=sha256:3dd588019e7b85a5c2061adf0cb4ed87d8591f38163a4f5ac085834000e0db13 https://packages.wolfi.dev/os/aarch64/mpfr-4.2.2-r5.apk /tmp/meri-native-dev-repo/aarch64/mpfr-4.2.2-r5.apk
+ADD --checksum=sha256:ba996028cc4f3e1b4e4f42684d051257304ca065b7bd4fa20c5ee78f8b44ecb4 https://packages.wolfi.dev/os/aarch64/ncurses-6.6.20261024-r0.apk /tmp/meri-native-dev-repo/aarch64/ncurses-6.6.20261024-r0.apk
+ADD --checksum=sha256:c8d7c18b7a9b9538e705a82ef037b08587b68271dd6d2b47c9f30b335b68b59b https://packages.wolfi.dev/os/aarch64/ncurses-dev-6.6.20261024-r0.apk /tmp/meri-native-dev-repo/aarch64/ncurses-dev-6.6.20261024-r0.apk
+ADD --checksum=sha256:bca7075b9f5eaf58f1e92cd26c537f75ffe82a3b1d6663e18085d810002da423 https://packages.wolfi.dev/os/aarch64/nghttp2-1.70.0-r7.apk /tmp/meri-native-dev-repo/aarch64/nghttp2-1.70.0-r7.apk
+ADD --checksum=sha256:7bb2cefdf22cd4f52ae86af39854d1dffda8fdb0de77c0527b40fe1911ce5823 https://packages.wolfi.dev/os/aarch64/nghttp2-dev-1.70.0-r7.apk /tmp/meri-native-dev-repo/aarch64/nghttp2-dev-1.70.0-r7.apk
+ADD --checksum=sha256:b5064f8ff42f91e2410812a7cc0e6278043132c0ef79ea6480f4c354bdd248a7 https://packages.wolfi.dev/os/aarch64/nghttp3-1.18.0-r3.apk /tmp/meri-native-dev-repo/aarch64/nghttp3-1.18.0-r3.apk
+ADD --checksum=sha256:c5c7b02654047fceacfc5e8fc7b3b99c8a2622a807bae880aacdbfc46c76f336 https://packages.wolfi.dev/os/aarch64/ngtcp2-1.25.0-r7.apk /tmp/meri-native-dev-repo/aarch64/ngtcp2-1.25.0-r7.apk
+ADD --checksum=sha256:d5efa0369a3e1d4c8dbaab613075949fdfd58b4b654180b9f86ba4fb87f0d411 https://packages.wolfi.dev/os/aarch64/npth-libs-1.8-r16.apk /tmp/meri-native-dev-repo/aarch64/npth-libs-1.8-r16.apk
+ADD --checksum=sha256:afbcc8b08af58a664a69c6e4bf60624bebdc2af3d2d5cf540c5826ebe040cf70 https://packages.wolfi.dev/os/aarch64/openssf-compiler-options-20250904-r11.apk /tmp/meri-native-dev-repo/aarch64/openssf-compiler-options-20250904-r11.apk
+ADD --checksum=sha256:bbf9738a1960100008bcc6aba188ed7ce4a84c7873ddeb4ba5b19a2dda30dc1c https://packages.wolfi.dev/os/aarch64/openssl-3.6-libcrypto-3.6.5-r6.apk /tmp/meri-native-dev-repo/aarch64/openssl-3.6-libcrypto-3.6.5-r6.apk
+ADD --checksum=sha256:694c0e06540eed0d944cfd6c5fc11b247e62f183b989fd615fddf79b72e6247d https://packages.wolfi.dev/os/aarch64/openssl-3.6-libssl-3.6.5-r6.apk /tmp/meri-native-dev-repo/aarch64/openssl-3.6-libssl-3.6.5-r6.apk
+ADD --checksum=sha256:326f89668c2ebaee7e71e7ae48a4df6fe08936a6fcb35bb222ac0a733247bd91 https://packages.wolfi.dev/os/aarch64/openssl-4.0-dev-4.0.3-r8.apk /tmp/meri-native-dev-repo/aarch64/openssl-4.0-dev-4.0.3-r8.apk
+ADD --checksum=sha256:8a509f24f834724ea1927d5a37cd6e8fba5d7c98d0ea8fdea7689b27852e05fc https://packages.wolfi.dev/os/aarch64/openssl-4.0-libcrypto-4.0.3-r8.apk /tmp/meri-native-dev-repo/aarch64/openssl-4.0-libcrypto-4.0.3-r8.apk
+ADD --checksum=sha256:0dd48c2a58466c6787d0df2ff2254623c8f470faa6d986975a4c123ef04c6a9c https://packages.wolfi.dev/os/aarch64/openssl-4.0-libssl-4.0.3-r8.apk /tmp/meri-native-dev-repo/aarch64/openssl-4.0-libssl-4.0.3-r8.apk
+ADD --checksum=sha256:f240b0bfc86755345496c7002fe51ccbc380c6ad7e0a54ef34cdfd43470205a8 https://packages.wolfi.dev/os/aarch64/openssl-dev-3.6.5-r6.apk /tmp/meri-native-dev-repo/aarch64/openssl-dev-3.6.5-r6.apk
+ADD --checksum=sha256:22313fca19b8143db5d239bd14c5251416a2e35ba7418b23b64ece7701bc9785 https://packages.wolfi.dev/os/aarch64/openssl-provider-legacy-allowed-4.1.0-r0.apk /tmp/meri-native-dev-repo/aarch64/openssl-provider-legacy-allowed-4.1.0-r0.apk
+ADD --checksum=sha256:20ea3fe3b573f2671acb4461d479e0752d46c478b97c4bf85c39e9db8e797219 https://packages.wolfi.dev/os/aarch64/pcre2-dev-10.49-r1.apk /tmp/meri-native-dev-repo/aarch64/pcre2-dev-10.49-r1.apk
+ADD --checksum=sha256:b8f21e05154d0a4513e2d7e538b1335b33c2a10086ca8968371846e1000555b3 https://packages.wolfi.dev/os/aarch64/pkgconf-3.0.10-r2.apk /tmp/meri-native-dev-repo/aarch64/pkgconf-3.0.10-r2.apk
+ADD --checksum=sha256:1276b118e8e574204601706d56e0381210c4c9c4c1393ca793add9361e4b8810 https://packages.wolfi.dev/os/aarch64/posix-cc-wrappers-2-r10.apk /tmp/meri-native-dev-repo/aarch64/posix-cc-wrappers-2-r10.apk
+ADD --checksum=sha256:8d4ae6286e3fdc2b50fdd911fe1aa474c771c5708184e721e2255283ec6d7e4e https://packages.wolfi.dev/os/aarch64/readline-8.3-r3.apk /tmp/meri-native-dev-repo/aarch64/readline-8.3-r3.apk
+ADD --checksum=sha256:158a9e84fd8b3addfca5f3abfb02b754012d6e1d173d4467627d67541c5eafae https://packages.wolfi.dev/os/aarch64/sqlite-libs-3.54.1-r0.apk /tmp/meri-native-dev-repo/aarch64/sqlite-libs-3.54.1-r0.apk
+ADD --checksum=sha256:2a6815ada2973deba196e24f4406fcd2619f6a070e693013563530705254a2b8 https://packages.wolfi.dev/os/aarch64/wolfi-baselayout-20230201-r30.apk /tmp/meri-native-dev-repo/aarch64/wolfi-baselayout-20230201-r30.apk
+ADD --checksum=sha256:d2c12615a9601d34f1500a782c38177d18417c576fe7b145e4e88b0165681874 https://packages.wolfi.dev/os/aarch64/xz-5.8.4-r0.apk /tmp/meri-native-dev-repo/aarch64/xz-5.8.4-r0.apk
+ADD --checksum=sha256:2afd54eedac80d32f8f89fedc7f2ffd68343cbfca7bd75eee475799b1dbbc300 https://packages.wolfi.dev/os/aarch64/xz-dev-5.8.4-r0.apk /tmp/meri-native-dev-repo/aarch64/xz-dev-5.8.4-r0.apk
+ADD --checksum=sha256:94eeec2403d0a8515362ba8ce6ce53d16f905d0b4f69ecf710d34db40cc1381a https://packages.wolfi.dev/os/aarch64/zlib-1.3.2.1_rc20260921-r1.apk /tmp/meri-native-dev-repo/aarch64/zlib-1.3.2.1_rc20260921-r1.apk
+ADD --checksum=sha256:4ceab8cc43bf77871362a2e01560b721013249bc86bf633d99778a3ff8c865ff https://packages.wolfi.dev/os/aarch64/zlib-dev-1.3.2.1_rc20260921-r1.apk /tmp/meri-native-dev-repo/aarch64/zlib-dev-1.3.2.1_rc20260921-r1.apk
+FROM ${RUNTIME_IMAGE} AS native-source-inputs
+ADD --checksum=sha256:1af1117a228f1b5bc7fa91a0dabc37848a99e7d25188e9be8043332ce721dfd3 https://github.com/Cisco-Talos/clamav/releases/download/clamav-1.5.4/clamav-1.5.4.tar.gz /tmp/meri-native-source/clamav-1.5.4.tar.gz
+ADD --checksum=sha256:8acf5816c3c9dc8b02a2e11f93d90d37b25845a0481e16873454df4a30a375c0 https://github.com/Cisco-Talos/clamav/releases/download/clamav-1.5.4/clamav-1.5.4.tar.gz.sig /tmp/meri-native-source/clamav-1.5.4.tar.gz.sig
+ADD --checksum=sha256:5bfca75f112f04b89cd992f5f925018e8dfc28e0e7f6e33f6a4c33ed9e29d911 https://raw.githubusercontent.com/Cisco-Talos/clamav-documentation/main/src/manual/cisco-talos.gpg /tmp/meri-native-source/cisco-talos.gpg
+ADD --checksum=sha256:e54b09a439647e006b4831eec9785cbaaf3e07ab371c3a6ee6a68e1bdb9fbc6b https://static.rust-lang.org/rust-key.gpg.ascii /tmp/meri-native-source/rust-key.gpg.ascii
+ADD --checksum=sha256:a48fb1e853be56ce9b8e2751f5464dbd5e16440cd81e237920f3a5e7e806333e https://static.rust-lang.org/dist/2026-10-15/rust-1.99.1-aarch64-unknown-linux-gnu.tar.xz /tmp/meri-native-source/rust-1.99.1-aarch64-unknown-linux-gnu.tar.xz
+ADD --checksum=sha256:56b30250065ff8b7699689ec34d34074c6a51f5c8b5a8cc6feb098b3115a3256 https://static.rust-lang.org/dist/2026-10-15/rust-1.99.1-aarch64-unknown-linux-gnu.tar.xz.asc /tmp/meri-native-source/rust-1.99.1-aarch64-unknown-linux-gnu.tar.xz.asc
+COPY infra/product-preview/native-clamav-keys/cisco-talos-keyring.gpg /tmp/meri-native-source/cisco-talos-keyring.gpg
+COPY infra/product-preview/native-clamav-keys/rust-release-keyring.gpg /tmp/meri-native-source/rust-release-keyring.gpg
+FROM ${RUNTIME_IMAGE} AS native-dev-repository
+COPY infra/product-preview/native-apk-index/aarch64-APKINDEX-5c84e4b835a811c1624d9692f011df3de446c8011be4dedaabf6f3dbf41ec536.tar.gz /tmp/meri-native-dev-repo/aarch64/APKINDEX.tar.gz
+COPY --from=native-dev-repo-1 /tmp/meri-native-dev-repo /tmp/meri-native-dev-repo
+COPY --from=native-dev-repo-2 /tmp/meri-native-dev-repo /tmp/meri-native-dev-repo
+COPY --from=native-dev-repo-3 /tmp/meri-native-dev-repo /tmp/meri-native-dev-repo
+COPY --from=native-source-inputs /tmp/meri-native-source /tmp/meri-native-source
 # Build-only assembly stage. It stages the retained vendor-signed index verbatim beside the four staging
 # partitions, assembling exactly the one local apk repository the three native layers read. It is deliberately
 # NOT the final stage, so none of these bytes become layers of the exported image: the runtime stage below
@@ -268,6 +410,93 @@ COPY --from=native-repo-1 /tmp/meri-native-repo /tmp/meri-native-repo
 COPY --from=native-repo-2 /tmp/meri-native-repo /tmp/meri-native-repo
 COPY --from=native-repo-3 /tmp/meri-native-repo /tmp/meri-native-repo
 COPY --from=native-repo-4 /tmp/meri-native-repo /tmp/meri-native-repo
+
+# The compiler stage itself. It installs the pinned development closure offline from the assembled staging repository
+# (same signed index, no network, no untrusted-file exception), authenticates the staged source bytes against the
+# pinned Cisco Talos key and the staged Rust toolchain against the Rust release key, builds ClamAV 1.5.4 with its
+# mandatory Rust component from the vendored crate tree inside the release asset, runs the project's own unit tests,
+# and installs the payload into a staging prefix whose every installed file is recorded by sha256. No image layer
+# carries the toolchain, the headers or the build tree, and nothing outside this stage is compiled from source.
+# RUN --network=none below enforces that offline execution for the whole stage, so the configure/cargo/ctest
+# sequence cannot reach the network even if a fetch were attempted: the vendored crate tree inside the release
+# asset and FindRust's offline mode are the mechanism, and this guard is what makes the claim enforced rather
+# than merely available. It is the same guard the runtime pip install and the certificate RUN already use.
+# The upstream source requires an interpreter here: clamav-1.5.4/CMakeLists.txt 219-231 asks for
+# find_package(Libcheck REQUIRED) and find_package(Python3 REQUIRED) with ENABLE_TESTS=ON, and 256-277 runs the
+# unit-test input generators with ${Python3_EXECUTABLE} at build time and requires `${Python3_EXECUTABLE} -m
+# unittest --help` to exit 0, because this stage carries no pytest. The pinned 101-archive development closure was
+# resolved for the toolchain and carries no interpreter, and the interpreter the exported runtime stage installs
+# lives in a later stage, so it cannot supply this one. The stage therefore reads the retained runtime staging set
+# - the same vendor-signed index and the same authenticated archives the runtime stage already installs python-3.13
+# from - through a read-only mount at its own path, installs the interpreter and its standard library from that one
+# repository with no configured repository and no network, and asserts the version and the imports the upstream
+# suite and input generators use. The development closure's own version assertion loop still runs after that
+# install, so the interpreter cannot silently move a pinned build dependency.
+FROM ${RUNTIME_IMAGE} AS clamav-source-build
+RUN --network=none \
+    --mount=type=bind,from=native-dev-repository,source=tmp/meri-native-dev-repo,target=/tmp/meri-native-dev-repo,readonly \
+    --mount=type=bind,from=native-dev-repository,source=tmp/meri-native-source,target=/tmp/meri-native-source,readonly \
+    --mount=type=bind,from=native-repository,source=tmp/meri-native-repo,target=/tmp/meri-native-runtime-repo,readonly \
+    apk --version && \
+    apk add --no-cache --no-network --repository /tmp/meri-native-dev-repo --repositories-file /dev/null --update-cache \
+      gcc=16.2.0-r2 binutils=2.47-r2 make=4.4.1-r15 cmake=4.4.3-r0 pkgconf=3.0.10-r2 bash=5.3-r14 xz=5.8.4-r0 \
+      libstdc++-dev=16.2.0-r2 libmilter-dev=8.18.2-r5 gpgv=2.4.9-r12 \
+      glibc-2.44-dev=2.44-r10 glibc-2.44=2.44-r10 glibc-2.44-locale-posix=2.44-r10 ld-linux-2.44=2.44-r10 libcrypt1-2.44=2.44-r10 \
+      zlib-dev=1.3.2.1_rc20260921-r1 bzip2-dev=1.0.8-r28 libxml2-dev=2.15.4-r1 pcre2-dev=10.49-r1 \
+      openssl-dev=3.6.5-r6 json-c-dev=0.19-r2 curl-dev=8.23.0-r2 ncurses-dev=6.6.20261024-r0 \
+      check-dev=0.15.2-r10 check=0.15.2-r10 linux-headers=7.3-r0 && \
+    gcc --version | head -1 && cmake --version | head -1 && make --version | head -1 && pkg-config --version && \
+    apk add --no-cache --no-network --repository /tmp/meri-native-runtime-repo --repositories-file /dev/null --update-cache \
+      python-3.13=3.13.16_git20261016-r2 python-3.13-base=3.13.16_git20261016-r2 && \
+    for pkg in python-3.13-3.13.16_git20261016-r2 python-3.13-base-3.13.16_git20261016-r2; do \
+      apk info -v | grep -qx "$pkg" || { echo "unexpected native interpreter package $pkg"; exit 1; }; done && \
+    python3.13 --version && \
+    python3.13 -c 'import sys; assert sys.version_info[:3] == (3, 13, 16), sys.version; print("interpreter", sys.version)' && \
+    python3.13 -m unittest --help > /dev/null && \
+    python3.13 -c 'import argparse, errno, functools, getpass, hashlib, http.server, logging, multiprocessing, os, pathlib, platform, random, re, shutil, signal, socket, socketserver, struct, subprocess, sys, tempfile, threading, time, typing, unittest, unittest.mock, zipfile, zlib' && \
+    for p in gcc-16.2.0-r2 binutils-2.47-r2 make-4.4.1-r15 cmake-4.4.3-r0 pkgconf-3.0.10-r2 bash-5.3-r14 xz-5.8.4-r0 libstdc++-dev-16.2.0-r2 libmilter-dev-8.18.2-r5 gpgv-2.4.9-r12 glibc-2.44-dev-2.44-r10 glibc-2.44-2.44-r10 zlib-dev-1.3.2.1_rc20260921-r1 bzip2-dev-1.0.8-r28 libxml2-dev-2.15.4-r1 pcre2-dev-10.49-r1 openssl-dev-3.6.5-r6 json-c-dev-0.19-r2 curl-dev-8.23.0-r2 ncurses-dev-6.6.20261024-r0 check-dev-0.15.2-r10 check-0.15.2-r10 linux-headers-7.3-r0; do \
+      apk info -v | grep -qx "$p" || { echo "unexpected native development dependency $p"; exit 1; }; done && \
+    if apk info -v | grep -qx glibc-dev-2.43-r13; then \
+      echo "the legacy glibc-dev 2.43 family was installed beside the pinned 2.44 family"; exit 1; fi && \
+    echo "1af1117a228f1b5bc7fa91a0dabc37848a99e7d25188e9be8043332ce721dfd3  /tmp/meri-native-source/clamav-1.5.4.tar.gz" > /tmp/clamav.sha256 && \
+    echo "8caffabffbc85f12e145c9bb69b704369d7731c98d751ac123edc130c00d81b5  /tmp/meri-native-source/cisco-talos-keyring.gpg" > /tmp/keys.sha256 && \
+    echo "97e694f136f8c106e8f94fdadf593d2fc10de3ff3f558536c41469aa5be7f635  /tmp/meri-native-source/rust-release-keyring.gpg" >> /tmp/keys.sha256 && \
+    sha256sum -c /tmp/clamav.sha256 && \
+    sha256sum -c /tmp/keys.sha256 && \
+    gpgv --keyring /tmp/meri-native-source/cisco-talos-keyring.gpg --status-fd 3 \
+      /tmp/meri-native-source/clamav-1.5.4.tar.gz.sig /tmp/meri-native-source/clamav-1.5.4.tar.gz \
+      3> /tmp/clamav-vendor.status && \
+    grep -q "VALIDSIG 5BADCA2665EF59DCF8A23D8B707F0DB480836771" /tmp/clamav-vendor.status && \
+    gpgv --keyring /tmp/meri-native-source/rust-release-keyring.gpg --status-fd 3 \
+      /tmp/meri-native-source/rust-1.99.1-aarch64-unknown-linux-gnu.tar.xz.asc /tmp/meri-native-source/rust-1.99.1-aarch64-unknown-linux-gnu.tar.xz 3> /tmp/rust-vendor.status && \
+    grep -q "VALIDSIG 108F66205EAEB0AAA8DD5E1C85AB96E6FA1BE5FE" /tmp/rust-vendor.status && \
+    echo "a48fb1e853be56ce9b8e2751f5464dbd5e16440cd81e237920f3a5e7e806333e  /tmp/meri-native-source/rust-1.99.1-aarch64-unknown-linux-gnu.tar.xz" | sha256sum -c - && \
+    mkdir -p /tmp/rust-extract /opt/rust && tar -xJf /tmp/meri-native-source/rust-1.99.1-aarch64-unknown-linux-gnu.tar.xz -C /tmp/rust-extract --strip-components=1 && \
+    /tmp/rust-extract/install.sh --prefix=/opt/rust --disable-ldconfig \
+      --without=rust-docs,rust-docs-json,rust-analysis >/dev/null && \
+    export PATH=/opt/rust/bin:$PATH && rustc --version && cargo --version && \
+    mkdir -p /usr/src && tar -xzf /tmp/meri-native-source/clamav-1.5.4.tar.gz -C /usr/src && \
+    cmake -S /usr/src/clamav-1.5.4 -B /tmp/clamav-build \
+      -D CMAKE_BUILD_TYPE=RelWithDebInfo -D CMAKE_INSTALL_PREFIX=/usr -D CMAKE_INSTALL_SYSCONFDIR=/etc \
+      -D ENABLE_APP=ON -D ENABLE_MILTER=ON -D ENABLE_CLAMONACC=ON -D ENABLE_UNRAR=ON -D ENABLE_TESTS=ON \
+      -D ENABLE_JSON_SHARED=ON -D ENABLE_EXTERNAL_MSPACK=OFF -D ENABLE_SYSTEMD=OFF -D ENABLE_MAN_PAGES=OFF \
+      -D ENABLE_EXAMPLES=OFF -D ENABLE_DOXYGEN=OFF -D ENABLE_LIBCLAMAV_ONLY=OFF -D ENABLE_STATIC_LIB=OFF \
+      -D ENABLE_SHARED_LIB=ON -D RUST_COMPILER_TARGET=aarch64-unknown-linux-gnu && \
+    cmake --build /tmp/clamav-build --parallel "$(nproc)" && \
+    ctest --test-dir /tmp/clamav-build --output-on-failure && \
+    DESTDIR=/tmp/meri-clamav-out cmake --install /tmp/clamav-build && \
+    mkdir -p /tmp/meri-clamav-out/usr/share/meri && \
+    printf '%s\n' '{"builtFrom":"the authenticated upstream release asset, not a distribution package","component":"clamav","coverage":"infra/product-preview/clamav-source-advisories.json with the check in infra/product-preview/clamav_component_coverage.py","detachedSignatureSha256":"8acf5816c3c9dc8b02a2e11f93d90d37b25845a0481e16873454df4a30a375c0","detachedSignatureUrl":"https://github.com/Cisco-Talos/clamav/releases/download/clamav-1.5.4/clamav-1.5.4.tar.gz.sig","distributionPackagesRemoved":["clamav-1.5-scanner=1.5.2-r0","clamav-1.5-freshclam=1.5.2-r0","clamav-1.5=1.5.2-r7"],"installedBy":"apps/runtime/Dockerfile, stage clamav-source-build, copied into the runtime stage from /tmp/meri-clamav-out","installedInventory":"/usr/share/meri/clamav-component-inventory.txt (sha256 of the installed executables in usr/bin and usr/sbin and of the ClamAV and freshclam shared libraries in usr/lib: the payload'\''s executable and shared-library surface, not every file the image carries; re-checked against the installed bytes in the runtime stage and verified again by the image build probe)","installedInventorySha256":"INSTALLED-INVENTORY-SHA256-PLACEHOLDER","installedInventoryCovers":"usr/bin/*, usr/sbin/*, usr/lib/libclam*.so*, usr/lib/libfreshclam*.so*","libraryRelationships":"built with ENABLE_SHARED_LIB=ON and ENABLE_STATIC_LIB=OFF, so the payload ships shared libraries only: the installed tools load libclamav and libfreshclam from /usr/lib at runtime, and libclamav links the pinned closure'\''s zlib, openssl, libxml2, pcre2, bzip2 and json-c as the image provides them. Presence and version are asserted in the runtime stage; linkage and ABI remain unverified until a real ARM build.","coverageBinding":"the image build probe in infra/product-preview/image-build.sh executes python3.13 /usr/share/meri/clamav_component_coverage.py --bind against this image'\''s own clamscan, this inventory and this provenance, and fails the build when any of them disagree","qualification":"built, installed, probed and scanned image state is unproven until a separately allocated ARM build, probe and scan","signingKeyFingerprint":"5BADCA2665EF59DCF8A23D8B707F0DB480836771","signingKeyUrl":"https://raw.githubusercontent.com/Cisco-Talos/clamav-documentation/main/src/manual/cisco-talos.gpg","upstreamReleased":"2026-08-07","upstreamSha256":"1af1117a228f1b5bc7fa91a0dabc37848a99e7d25188e9be8043332ce721dfd3","upstreamUrl":"https://github.com/Cisco-Talos/clamav/releases/download/clamav-1.5.4/clamav-1.5.4.tar.gz","upstreamVersion":"1.5.4"}' > /tmp/meri-clamav-out/usr/share/meri/clamav-component-provenance.json && \
+    ( cd /tmp/meri-clamav-out && { find usr/bin usr/sbin -type f -exec sha256sum {} + ; \
+        find usr/lib -maxdepth 1 -type f \( -name 'libclam*' -o -name 'libfreshclam*' \) -exec sha256sum {} + ; } | sort -k2 ) \
+      > /tmp/meri-clamav-out/usr/share/meri/clamav-component-inventory.txt && \
+    grep -q ' usr/lib/libclamav\.so' /tmp/meri-clamav-out/usr/share/meri/clamav-component-inventory.txt && \
+    grep -q ' usr/lib/libfreshclam\.so' /tmp/meri-clamav-out/usr/share/meri/clamav-component-inventory.txt && \
+    sed -i "s/INSTALLED-INVENTORY-SHA256-PLACEHOLDER/$(sha256sum /tmp/meri-clamav-out/usr/share/meri/clamav-component-inventory.txt | cut -d' ' -f1)/" \
+      /tmp/meri-clamav-out/usr/share/meri/clamav-component-provenance.json && \
+    grep -q '"installedInventorySha256":"[0-9a-f]\{64\}"' /tmp/meri-clamav-out/usr/share/meri/clamav-component-provenance.json && \
+    wc -l /tmp/meri-clamav-out/usr/share/meri/clamav-component-inventory.txt
+
 # The exported stage. Each native install RUN below mounts that assembled repository read-only, so apk reads
 # exactly the bytes those ADD --checksum instructions verified, from one local repository, with no network, and
 # the final image keeps only what apk installed.
@@ -330,8 +559,16 @@ RUN --mount=type=bind,from=native-repository,source=tmp/meri-native-repo,target=
 # that index's signature and its recorded package identity; the install runs with --no-network, so no dependency can be
 # silently resolved or fetched from a live index. Individual .apk files are no longer passed to apk as local paths, which
 # apk refuses as untrusted.
-# ClamAV is the scanner plus the FreshClam signed-CVD provisioner; sigtool --info is the supported
-# publisher-signature verification. Poppler and Tesseract are the PDF rasterizer and OCR engine.
+# ClamAV is NOT installed from this repository any more. The Wolfi clamav-1.5 family (engine 1.5.2-r7,
+# scanner and freshclam 1.5.2-r0) is the payload the retained scan reports seven HIGH advisories against, and the
+# vendor's declared fixed revision is unpublished, so the scanner, the FreshClam signed-CVD provisioner and
+# sigtool --info publisher-signature verification come from the source-built payload staged below instead. The
+# three Wolfi clamav-1.5 install requests are removed rather than shadowed: no distribution package record and no
+# 1.5.2 ClamAV payload remains in this image, and the component inventory records the sha256 of the replacement's
+# installed executables and shared libraries (its executable and library surface, not every file in the image).
+# The eight clamav-1.5 family archives stay in the pinned staging closure above, byte for
+# byte, as immutable pinned inputs; they are simply no longer requested by any install.
+# Poppler and Tesseract are the PDF rasterizer and OCR engine.
 # Pinned transitive native closure of the seven archives above: every archive this layer could install from the
 # rolling live Wolfi index as a transitive dependency, pinned by exact official URL and sha256 (the source lock
 # holds the same records). Without these pins the build silently takes whatever provider revision the live index
@@ -341,19 +578,43 @@ RUN --mount=type=bind,from=native-repository,source=tmp/meri-native-repo,target=
 # its members are version-locked to each other and the base's world pins them together (see the python layer above).
 RUN --mount=type=bind,from=native-repository,source=tmp/meri-native-repo,target=/tmp/meri-native-repo,readonly \
     apk add --no-cache --no-network --repository /tmp/meri-native-repo --repositories-file /dev/null --update-cache \
-      clamav-1.5-scanner=1.5.2-r0 clamav-1.5-freshclam=1.5.2-r0 clamav-1.5=1.5.2-r7 \
       tesseract=5.5.0-r2 tesseract-eng=5.5.2-r2 poppler-utils=26.03.0-r3 poppler=26.03.0-r3 \
       leptonica=1.87.0-r1 icu-libs=75.1-r42 libarchive=3.8.10-r0 openssl-3.6-libcrypto=3.6.5-r6 \
       libgcc=16.2.0-r2 libstdc++=16.2.0-r2 libatomic=16.2.0-r1 && \
-    test -x /usr/bin/clamscan && test -x /usr/bin/sigtool && test -x /usr/bin/freshclam && \
     test -x /usr/bin/tesseract && test -x /usr/bin/pdftoppm && \
-    test "$(clamscan --version | awk '{print $2}')" = 1.5.2 && \
-    test "$(sigtool --version)" = "ClamAV 1.5.2" && \
     tesseract --list-langs 2>/dev/null | grep -qx eng && \
-    for p in clamav-1.5-scanner-1.5.2-r0 clamav-1.5-freshclam-1.5.2-r0 poppler-26.03.0-r3 poppler-utils-26.03.0-r3 tesseract-5.5.0-r2 tesseract-eng-5.5.2-r2 leptonica-1.87.0-r1 clamav-1.5-1.5.2-r7 libxml2-16-2.15.4-r1 libarchive-3.8.10-r0 openssl-3.6-libcrypto-3.6.5-r6 icu-libs-75.1-r42 libgcc-16.2.0-r2 libstdc++-16.2.0-r2 libatomic-16.2.0-r1 glibc-2.44-2.44-r10; do \
+    for p in poppler-26.03.0-r3 poppler-utils-26.03.0-r3 tesseract-5.5.0-r2 tesseract-eng-5.5.2-r2 leptonica-1.87.0-r1 libxml2-16-2.15.4-r1 libarchive-3.8.10-r0 openssl-3.6-libcrypto-3.6.5-r6 icu-libs-75.1-r42 libgcc-16.2.0-r2 libstdc++-16.2.0-r2 libatomic-16.2.0-r1 glibc-2.44-2.44-r10; do \
       apk info -v | grep -qx "$p" || { echo "unexpected native dependency $p"; exit 1; }; done && \
     if apk info -v | grep -qx libstdc++-16.2.0-r1; then \
       echo "the renderer layer's libstdc++ 16.2.0-r1 survived the declared upgrade to 16.2.0-r2"; exit 1; fi
+# The source-built ClamAV payload replaces the vulnerable Wolfi payload by presence, not by PATH precedence: the
+# Wolfi clamav-1.5 packages are not installed at all, so /usr/bin/clamscan, /usr/bin/sigtool, /usr/bin/freshclam and
+# the rest of the tool surface are the built 1.5.4 binaries and nothing older sits behind them. The install prefix is
+# /usr, which is where the sandbox contract's absolute tool paths point (apps/runtime/uploads/native-sandbox.mjs),
+# so no runtime path changes and no symlink, shim or PATH ordering decides which ClamAV runs. The inventory written by
+# the build stage is re-checked against the installed bytes here, so the record is bound to what this image actually
+# carries rather than to what the build intended to install.
+COPY --from=clamav-source-build /tmp/meri-clamav-out/ /
+RUN cd / && sha256sum -c /usr/share/meri/clamav-component-inventory.txt && \
+    test -x /usr/bin/clamscan && test -x /usr/bin/sigtool && test -x /usr/bin/freshclam && \
+    test -x /usr/bin/clamdscan && test -x /usr/bin/clamdtop && test -x /usr/bin/clamconf && \
+    test -x /usr/sbin/clamd && test -x /usr/sbin/clamav-milter && test -x /usr/sbin/clamonacc && \
+    test -x /usr/bin/clambc && test -x /usr/bin/clamsubmit && test -x /usr/bin/clamav-config && \
+    test -n "$(ls /usr/lib/libclamav.so.* 2>/dev/null)" && test -n "$(ls /usr/lib/libfreshclam.so.* 2>/dev/null)" && \
+    test -n "$(ls /usr/lib/libclamunrar.so.* 2>/dev/null)" && \
+    for tool in /usr/bin/clamscan /usr/bin/sigtool /usr/bin/freshclam /usr/bin/clamdscan /usr/bin/clamdtop /usr/sbin/clamd; do \
+      "$tool" --version 2>&1 | grep -q 'ClamAV 1.5.4' || { echo "unexpected ClamAV version from $tool"; exit 1; }; done && \
+    printf 'meri-native-signature-probe\n' > /tmp/meri-sigtool-probe && \
+    test "$(sigtool --md5 /tmp/meri-sigtool-probe | awk '{print $1}')" = "$(md5sum /tmp/meri-sigtool-probe | awk '{print $1}')" && \
+    grep -q '"upstreamVersion":"1.5.4"' /usr/share/meri/clamav-component-provenance.json && \
+    ! apk info -v | grep -q '^clamav-1.5' && \
+    rm -f /tmp/meri-sigtool-probe && \
+    echo "source-built ClamAV payload installed; no clamav-1.5 distribution package is present"
+# The coverage check and its advisory table travel with the image so the retained build probe binds the recorded
+# coverage to this image's own bytes: the probe runs the check inside the built image with no network, and the
+# build fails when the binary's reported version, the installed files or the provenance record disagree.
+COPY infra/product-preview/clamav_component_coverage.py infra/product-preview/clamav-source-advisories.json /usr/share/meri/
+
 # Wolfi uses glibc. Copy only Node/npm from the official builder; the final
 # image retains Wolfi's Python, native dependencies and system CA trust.
 COPY --from=builder /usr/local/bin/node /usr/local/bin/node

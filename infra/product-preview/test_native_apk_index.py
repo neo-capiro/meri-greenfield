@@ -7,6 +7,8 @@ that repository with no network and no untrusted-file exception. They do not bui
 import hashlib
 import json
 import re
+import sys
+import tarfile
 import unittest
 from pathlib import Path
 
@@ -41,7 +43,10 @@ def _asserted_pins():
 
     The loop asserts installed name-version strings; the installs must request those same pairs by name.
     """
-    loop = re.search(r"for p in (.+?); do", DOCKERFILE)
+    loop = None
+    for candidate in re.finditer(r"for p in (.+?); do", DOCKERFILE):
+        if "unexpected native dependency" in DOCKERFILE[candidate.end():candidate.end() + 400]:
+            loop = candidate if loop is None else loop
     if loop is None:
         raise RuntimeError("the native install assertion loop is missing from the Dockerfile")
     return [(pin.rsplit("-", 2)[0], "%s-%s" % (pin.rsplit("-", 2)[1], pin.rsplit("-", 2)[2]))
@@ -166,6 +171,53 @@ def _layer_chain(stage):
             if instruction.split(" ", 1)[0].upper() in _LAYER_INSTRUCTIONS]
 
 
+def _staged_archives_by_stage():
+    """filename -> (checksum, stage) for every archive the Dockerfile stages into a local repository."""
+    staged = {}
+    for stage in _dockerfile_stages():
+        for instruction in stage["instructions"]:
+            match = re.match(r"ADD --checksum=sha256:([0-9a-f]{64}) (\S+) (\S+)$", instruction)
+            if match and match.group(3).endswith(".apk"):
+                staged[match.group(3).rsplit("/", 1)[-1]] = (match.group(1), stage["name"])
+    return staged
+
+
+_INDEX_CACHE = {}
+
+
+def _retained_index():
+    """The retained vendor-signed index parsed into entries and the capabilities their provides lines advertise.
+
+    Provides are whitespace-separated tokens, and a shared-library dependency is advertised as so-ver:<soname>
+    while a dependency names it as so:<soname>, so both spellings are indexed here.
+    """
+    if _INDEX_CACHE:
+        return _INDEX_CACHE["entries"], _INDEX_CACHE["provides"]
+    path = ROOT / LOCK["uploadNativeProvenance"]["retainedSignedIndex"]["path"]
+    with tarfile.open(path) as tar:
+        member = [item for item in tar.getmembers() if item.name.endswith("APKINDEX")][0]
+        text = tar.extractfile(member).read().decode("utf-8", "replace")
+    entries, provides = {}, {}
+    for chunk in text.split("\n\n"):
+        fields = {}
+        for line in chunk.splitlines():
+            if len(line) > 2 and line[1] == ":":
+                fields.setdefault(line[0], []).append(line[2:])
+        if "P" not in fields or "V" not in fields:
+            continue
+        name, version = fields["P"][0], fields["V"][0]
+        entry = {"name": name, "version": version, "id": "%s-%s" % (name, version),
+                 "depends": [dep for dep in fields.get("D", [""])[0].split(" ") if dep],
+                 "provides": [token for raw in fields.get("p", []) for token in raw.split() if token]}
+        entries[entry["id"]] = entry
+        for token in entry["provides"]:
+            key = token.split("=")[0]
+            for spelling in {key, key.replace("so-ver:", "so:")}:
+                provides.setdefault(spelling, []).append(entry)
+    _INDEX_CACHE["entries"], _INDEX_CACHE["provides"] = entries, provides
+    return entries, provides
+
+
 class RetainedNativeApkIndex(unittest.TestCase):
     def test_retained_index_is_verbatim_and_matches_the_lock(self):
         prov = LOCK["uploadNativeProvenance"]["retainedSignedIndex"]
@@ -189,15 +241,33 @@ class RetainedNativeApkIndex(unittest.TestCase):
                              "staged checksum differs from the lock for %s" % filename)
 
     def test_every_staged_archive_keeps_its_index_filename(self):
-        self.assertEqual(len(STAGED_NAMES), len(STAGED),
-                         "staged ADD lines parsed inconsistently: %d with a source vs %d staged archives"
-                         % (len(STAGED_NAMES), len(STAGED)))
+        """Both staging families write every archive under the filename its signed index requests.
+
+        The distribution closure and the development closure are staged into two different local
+        repositories, so a filename may legitimately appear once in each; the invariant checked here is
+        that every staged line is parsed, keeps its source filename, stays inside a local repository, and
+        that any repeated filename carries one identical checksum rather than two different archives.
+        """
+        add_lines = [line.strip() for line in DOCKERFILE.splitlines()
+                     if line.strip().startswith("ADD --checksum=") and line.strip().endswith(".apk")]
+        self.assertEqual(len(STAGED_NAMES), len(add_lines),
+                         "staged ADD lines parsed inconsistently: %d parsed vs %d archive ADD lines present"
+                         % (len(STAGED_NAMES), len(add_lines)))
+        checksums = {}
+        for checksum, source, dest in [(match.group(1), match.group(2), match.group(3))
+                                       for match in re.finditer(
+                                           r"ADD --checksum=sha256:([0-9a-f]{64}) (\S+\.apk) (\S+\.apk)",
+                                           DOCKERFILE)]:
+            filename = source.rsplit("/", 1)[-1]
+            self.assertEqual(checksums.setdefault(filename, checksum), checksum,
+                             "the same staged archive filename carries two different checksums: %s" % filename)
         for source, dest in STAGED_NAMES:
             self.assertEqual(dest.rsplit("/", 1)[-1], source.rsplit("/", 1)[-1],
                              "staged archive is not written under the filename the signed index requests, "
                              "so apk cannot open it in the repository: %s staged as %s" % (source, dest))
-            self.assertTrue(dest.startswith("%s/aarch64/" % REPO_DIR),
-                            "staged archive is outside the local repository: %s" % dest)
+            self.assertTrue(dest.startswith("%s/aarch64/" % REPO_DIR)
+                            or dest.startswith("/tmp/meri-native-dev-repo/aarch64/"),
+                            "staged archive is outside the local repositories: %s" % dest)
 
     def test_native_layers_install_from_the_local_signed_repository(self):
         self.assertEqual(len(INSTALLS), 3, "expected the python, renderer and upload native layers, found %r" % INSTALLS)
@@ -217,8 +287,14 @@ class RetainedNativeApkIndex(unittest.TestCase):
         nothing asks apk to upgrade it. All 16 names in the failing assertion block are checked at once, so the next
         build cannot fail serially on the next one of them.
         """
-        self.assertEqual(len(ASSERTED), 16,
-                         "the native assertion block no longer declares 16 packages: %r" % ASSERTED)
+        self.assertEqual(len(ASSERTED), 13,
+                         "the native assertion block no longer declares the 13 distribution packages it still "
+                         "installs: %r" % ASSERTED)
+        removed = ["clamav-1.5-scanner=1.5.2-r0", "clamav-1.5-freshclam=1.5.2-r0", "clamav-1.5=1.5.2-r7"]
+        still_requested = [pin for pin in removed if pin in INSTALL_REQUESTS]
+        self.assertEqual(still_requested, [],
+                         "the vulnerable Wolfi ClamAV packages are still installed from the retained repository: %r"
+                         % still_requested)
         unnamed = ["%s=%s" % pair for pair in ASSERTED if "%s=%s" % pair not in INSTALL_REQUESTS]
         self.assertEqual(unnamed, [],
                          "native installs leave %d asserted archive(s) to apk's provide resolution instead of "
@@ -344,7 +420,8 @@ class RetainedNativeApkIndex(unittest.TestCase):
                          % len(runtime_archives))
 
         staging = [stage["name"] for stage in stages
-                   if stage["name"] and stage["name"].startswith("native-repo-")]
+                   if stage["name"] and (stage["name"].startswith("native-repo-")
+                                         or stage["name"].startswith("native-dev-repo-"))]
         self.assertTrue(staging, "no native-repo staging stages found: %r" % names)
         staging_instructions = [instruction for stage in stages if stage["name"] in staging
                                 for instruction in stage["instructions"]]
@@ -359,28 +436,51 @@ class RetainedNativeApkIndex(unittest.TestCase):
         self.assertEqual(grouped, ordered,
                          "the grouped staging instructions are not the Dockerfile's pinned "
                          "archive lines in their original order")
-        self.assertEqual(len(grouped), len(LOCK["systemPackages"]),
-                         "staged archive count %d differs from the lock's native closure %d"
-                         % (len(grouped), len(LOCK["systemPackages"])))
+        build_closure = LOCK["uploadNativeProvenance"]["clamavSourcePreparation"]["buildClosure"]
+        expected_archives = len(LOCK["systemPackages"]) + len(build_closure["members"])
+        self.assertEqual(len(grouped), expected_archives,
+                         "staged archive count %d differs from the lock's pinned closures (%d distribution + %d "
+                         "development)" % (len(grouped), len(LOCK["systemPackages"]), len(build_closure["members"])))
 
         # The repository is assembled in a build-only stage: the retained vendor-signed index and every
         # staging partition are taken exactly once, in order, in a stage that is not the exported one.
         index_copy = "COPY %s %s/aarch64/APKINDEX.tar.gz" % (
             LOCK["uploadNativeProvenance"]["retainedSignedIndex"]["path"], REPO_DIR)
+        dev_repo_dir = "/tmp/meri-native-dev-repo"
+        dev_index_copy = "COPY %s %s/aarch64/APKINDEX.tar.gz" % (
+            LOCK["uploadNativeProvenance"]["retainedSignedIndex"]["path"], dev_repo_dir)
+        self.assertEqual([stage["name"] for stage in stages if dev_index_copy in stage["instructions"]],
+                         ["native-dev-repository"],
+                         "the development repository does not stage the retained signed index exactly once: %r"
+                         % names)
         repository = [stage for stage in stages if index_copy in stage["instructions"]]
-        self.assertEqual(len(repository), 1,
-                         "expected the retained index to be staged in exactly one stage, found %r" % names)
-        repository = repository[0]
-        self.assertIsNot(repository, runtime,
+        self.assertEqual(sorted(stage["name"] for stage in repository),
+                         ["native-repository"],
+                         "expected exactly the runtime repository stage to assemble the distribution repository, "
+                         "found %r" % names)
+        assemblies = {stage["name"]: stage for stage in repository}
+        assemblies["native-dev-repository"] = [stage for stage in stages
+                                              if stage["name"] == "native-dev-repository"][0]
+        self.assertNotIn("runtime", assemblies,
                          "the retained index and the staged archives are assembled in the runtime stage, "
                          "so the build-only repository payload becomes image content")
-        self.assertEqual(repository["instructions"],
+        distribution = assemblies["native-repository"]
+        self.assertEqual(distribution["instructions"],
                          [index_copy] + ["COPY --from=%s %s %s" % (name, REPO_DIR, REPO_DIR)
-                                         for name in staging],
-                         "the repository stage does not assemble the retained index and each staging "
-                         "partition exactly once in order: %r" % repository["instructions"])
-        self.assertLess(names.index(repository["name"]), names.index("runtime"),
-                        "the repository stage is not declared before the runtime stage: %r" % names)
+                                         for name in staging if name.startswith("native-repo-")],
+                         "the runtime repository stage does not assemble the retained index and each distribution "
+                         "staging partition exactly once in order: %r" % distribution["instructions"])
+        development = assemblies["native-dev-repository"]
+        self.assertEqual(development["instructions"],
+                         [dev_index_copy] + ["COPY --from=%s %s %s" % (name, dev_repo_dir, dev_repo_dir)
+                                             for name in staging if name.startswith("native-dev-repo-")]
+                         + ["COPY --from=native-source-inputs /tmp/meri-native-source /tmp/meri-native-source"],
+                         "the development repository stage does not assemble the retained index, each development "
+                         "staging partition and the authenticated source inputs exactly once in order: %r"
+                         % development["instructions"])
+        for name in ("native-repository", "native-dev-repository", "clamav-source-build"):
+            self.assertLess(names.index(name), names.index("runtime"),
+                            "the %s stage is not declared before the exported runtime stage: %r" % (name, names))
 
         # No runtime layer may carry those bytes, and every native install must read them through a
         # read-only mount that BuildKit releases with that RUN instead of a COPY that persists.
@@ -396,11 +496,373 @@ class RetainedNativeApkIndex(unittest.TestCase):
                          installs,
                          "the runtime stage touches the repository path outside the three native installs")
         mount = ("--mount=type=bind,from=%s,source=%s,target=%s,readonly"
-                 % (repository["name"], REPO_DIR.lstrip("/"), REPO_DIR))
+                 % ("native-repository", REPO_DIR.lstrip("/"), REPO_DIR))
         for instruction in installs:
             self.assertIn(mount, instruction,
                           "a native install does not mount the assembled repository read-only, so it would "
                           "need the repository as image content: %s" % instruction)
+
+
+class SourceBuiltClamavPayload(unittest.TestCase):
+    """SCRUM-197: the vulnerable Wolfi ClamAV payload is removed and replaced by a source-built one.
+
+    These are text and record checks over the frozen source, the lock and the retained advisory table. They are not
+    proof that the built payload installs or scans clean: that remains ARM-build, probe and scan evidence.
+    """
+
+    PREP = LOCK["uploadNativeProvenance"]["clamavSourcePreparation"]
+    STAGES = {stage["name"]: stage for stage in _dockerfile_stages() if stage["name"]}
+
+    def test_the_vulnerable_wolfi_install_requests_are_gone_and_nothing_shadows_them(self):
+        for request in self.PREP["replacedPayload"]["distributionInstallRequestsRemoved"]:
+            self.assertNotIn(request, INSTALL_REQUESTS,
+                             "the vulnerable Wolfi ClamAV package is still requested by a native install: %s" % request)
+        self.assertNotIn("clamav", " ".join(
+            instruction for instruction in self.STAGES["runtime"]["instructions"]
+            if instruction.startswith("apk add")),
+            "a runtime install still names a ClamAV distribution package")
+        self.assertIn("! apk info -v | grep -q '^clamav-1.5'", DOCKERFILE,
+                      "the runtime stage no longer asserts that no clamav-1.5 distribution package is installed")
+        for archive in self.PREP["replacedPayload"]["archivesStillStagedByteForByte"]:
+            filename = "%s-%s.apk" % (archive["name"], archive["version"])
+            self.assertEqual(STAGED.get(filename), archive["sha256"],
+                             "the preserved staging closure no longer carries %s at its pinned checksum" % filename)
+
+    def test_the_payload_is_installed_from_the_build_only_stage_into_the_sandbox_paths(self):
+        runtime = self.STAGES["runtime"]
+        self.assertIn("COPY --from=clamav-source-build /tmp/meri-clamav-out/ /", runtime["instructions"],
+                      "the runtime stage does not take the built payload from the build-only stage")
+        stage_names = [stage["name"] for stage in _dockerfile_stages()]
+        self.assertEqual(stage_names[-1], "runtime",
+                         "the exported stage is no longer the runtime stage: %r" % stage_names[-3:])
+        self.assertEqual(stage_names[-2], "clamav-source-build",
+                         "the compiler stage is not the stage immediately before the exported runtime stage")
+        self.assertIn("sha256sum -c /usr/share/meri/clamav-component-inventory.txt", DOCKERFILE,
+                      "the installed bytes are not re-checked against the recorded inventory")
+        for tool in self.PREP["install"]["toolSurface"]:
+            self.assertIn(tool, DOCKERFILE, "the installed payload's tool surface does not name %s" % tool)
+        runtime_text = " ".join(runtime["instructions"])
+        for pattern in (r"\bgcc=", r"\bg\+\+=", r"\bcmake=", r"\brustc\b", r"\bcargo\b", r"/opt/rust", r"\bclang\b"):
+            self.assertIsNone(re.search(pattern, runtime_text),
+                              "the exported runtime stage carries compiler material matching %s" % pattern)
+
+    def test_the_build_stage_installs_the_pinned_closure_offline(self):
+        build = " ".join(self.STAGES["clamav-source-build"]["instructions"])
+        self.assertIn("apk add --no-cache --no-network --repository /tmp/meri-native-dev-repo", build)
+        self.assertIn("--repositories-file /dev/null", build)
+        self.assertNotIn("--allow-untrusted", DOCKERFILE)
+        self.assertNotIn("http://", build.replace("/tmp/meri-native-dev-repo", ""))
+        for member in self.PREP["buildClosure"]["members"]:
+            self.assertIn("ADD --checksum=sha256:%s %s" % (member["sha256"], member["url"]), DOCKERFILE,
+                          "the development closure member %s is not staged at its pinned checksum" % member["name"])
+
+    def test_the_authenticated_source_and_toolchain_inputs_are_pinned(self):
+        auth = self.PREP["authentication"]
+        for url, digest, label in ((auth["tarballUrl"], auth["tarballSha256"], "release asset"),
+                                   (auth["signatureUrl"], auth["signatureSha256"], "detached signature"),
+                                   (auth["keyUrl"], auth["keySha256"], "Cisco Talos public key")):
+            self.assertIn("ADD --checksum=sha256:%s %s" % (digest, url), DOCKERFILE,
+                          "the authenticated %s is not staged at its verified checksum" % label)
+        toolchain = self.PREP["rustToolchain"]
+        self.assertIn("ADD --checksum=sha256:%s %s" % (toolchain["sha256"], toolchain["url"]), DOCKERFILE,
+                      "the Rust toolchain input is not staged at its signature-verified checksum")
+        self.assertIn(auth["keyFingerprint"], DOCKERFILE + json.dumps(self.PREP),
+                      "the verified signing-key fingerprint is not recorded anywhere")
+        keyring = self.PREP["authentication"]["keyring"]
+        rust_keyring = self.PREP["authentication"]["rustKeyring"]
+        for entry, name in ((keyring, "cisco-talos-keyring.gpg"), (rust_keyring, "rust-release-keyring.gpg")):
+            self.assertIn("COPY infra/product-preview/native-clamav-keys/%s /tmp/meri-native-source/%s" % (name, name),
+                          DOCKERFILE, "the dearmored %s is not copied into the source stage" % name)
+            self.assertIn("%s  /tmp/meri-native-source/%s" % (entry["sha256"], name), DOCKERFILE,
+                          "the dearmored %s is not pinned by sha256 inside the build" % name)
+        self.assertIn("gpgv --keyring /tmp/meri-native-source/cisco-talos-keyring.gpg", DOCKERFILE,
+                      "the build stage no longer verifies the detached signature with the pinned vendor keyring")
+        self.assertIn("VALIDSIG %s" % self.PREP["authentication"]["keyFingerprint"], DOCKERFILE,
+                      "the build stage no longer asserts the ClamAV signing fingerprint")
+        self.assertIn("VALIDSIG %s" % self.PREP["authentication"]["rustKeyFingerprint"], DOCKERFILE,
+                      "the build stage no longer asserts the Rust toolchain signing fingerprint")
+        self.assertNotIn("gpg --homedir", DOCKERFILE,
+                         "the build stage calls a gpg binary the pinned development closure does not carry")
+        self.assertEqual(auth["verificationExit"], 0)
+        self.assertIn("GOODSIG", " ".join(auth["verificationStatus"]))
+
+    def test_the_coverage_check_recognises_the_installed_version_and_flags_the_old_ones(self):
+        sys.path.insert(0, str(ROOT / "infra" / "product-preview"))
+        try:
+            import clamav_component_coverage as coverage
+        finally:
+            sys.path.pop(0)
+        table = json.loads((ROOT / "infra" / "product-preview" / "clamav-source-advisories.json")
+                           .read_text(encoding="utf-8"))
+        self.assertEqual(len(table["advisories"]), 7,
+                         "the retained advisory table no longer covers all seven advisories")
+        self.assertEqual(sorted(row["id"] for row in table["advisories"]),
+                         sorted(["CVE-2026-20337", "CVE-2026-20338", "CVE-2026-20339", "CVE-2026-20345",
+                                 "CVE-2026-20346", "CVE-2026-20347", "CVE-2026-20348"]))
+        installed = coverage.summarise(coverage.coverage(self.PREP["coverage"]["installedVersion"]))
+        self.assertEqual(installed["flagged"], [],
+                         "the pinned source-built version is not recognised as fixed for every advisory: %r" % installed)
+        for vulnerable in ("1.5.2-r0", "1.5.2-r7"):
+            flagged = coverage.summarise(coverage.coverage(vulnerable))
+            self.assertEqual(len(flagged["flagged"]), 7,
+                             "the coverage check does not flag all seven advisories for the removed payload %s: %r"
+                             % (vulnerable, flagged))
+        self.assertEqual(coverage.selftest(), 0, "the bounded vulnerable/fixed controls no longer pass")
+        recognised = coverage.summarise(coverage.coverage("1.4.6"))
+        self.assertEqual(len(recognised["outcomes"]["fixed"]), 5,
+                         "the 1.4 fixed state is not recorded as fixed for the five the 1.4.6 notes name: %r"
+                         % recognised)
+        self.assertEqual(len(recognised["outcomes"]["not-affected"]), 2,
+                         "CVE-2026-20337/20338 are not distinguished from a fixed state for a 1.4 build: %r"
+                         % recognised)
+        self.assertEqual(recognised["outcomes"]["unknown"], [],
+                         "the two 1.5-only advisories are reported as unknown for the 1.4 series")
+        older = coverage.summarise(coverage.coverage("1.4.5"))
+        self.assertEqual(sorted(older["flagged"]),
+                         ["CVE-2026-20339", "CVE-2026-20345", "CVE-2026-20346", "CVE-2026-20347",
+                          "CVE-2026-20348"],
+                         "the 1.4 LTS is not flagged for exactly the five advisories it is documented as"
+                         " affected by: %r" % older)
+
+    def test_the_advisory_table_records_the_seven_documented_affected_ranges(self):
+        documented = {"CVE-2026-20337": ["1.5.0"], "CVE-2026-20338": ["1.5.0"], "CVE-2026-20339": ["0.90"],
+                      "CVE-2026-20345": ["0.98.2"], "CVE-2026-20346": ["0.0.0", "1.5.0"],
+                      "CVE-2026-20347": ["0.0.0", "1.5.0"], "CVE-2026-20348": ["0.98.1"]}
+        table = json.loads((ROOT / "infra" / "product-preview" / "clamav-source-advisories.json")
+                           .read_text(encoding="utf-8"))
+        self.assertIn("never used", table["outcomeSemantics"],
+                      "the table no longer states that an absent release note is not evidence of absence")
+        for advisory in table["advisories"]:
+            self.assertEqual([entry["from"] for entry in advisory["affectedRanges"]], documented[advisory["id"]],
+                             "the documented affected range of %s is not retained" % advisory["id"])
+            self.assertTrue(all(entry.get("to") for entry in advisory["affectedRanges"]),
+                            "%s records an affected range with no upper bound" % advisory["id"])
+        by_id = {advisory["id"]: advisory for advisory in table["advisories"]}
+        for cve in ("CVE-2026-20337", "CVE-2026-20338"):
+            self.assertEqual(by_id[cve]["documentedUnaffectedSeries"], ["1.4"],
+                             "%s no longer records the 1.4 series as outside its affected range" % cve)
+            self.assertNotIn("do not name this advisory", json.dumps(by_id[cve]),
+                             "%s still treats the absent 1.4 note as the basis of its 1.4 state" % cve)
+        self.assertEqual(by_id["CVE-2026-20346"]["affectedRanges"][0]["to"], "1.4.5",
+                         "the '1.4.5 and earlier' range is no longer recorded as documented")
+
+    def test_the_compiler_stage_is_enforced_offline(self):
+        build = " ".join(self.STAGES["clamav-source-build"]["instructions"])
+        self.assertIn("--network=none", build,
+                      "the compiler stage can reach the network across configure, cargo, the build or ctest")
+        for option in ("-D CMAKE_BUILD_TYPE=RelWithDebInfo",
+                       "-D RUST_COMPILER_TARGET=aarch64-unknown-linux-gnu",
+                       "ctest --test-dir /tmp/clamav-build --output-on-failure",
+                       "cmake --build /tmp/clamav-build"):
+            self.assertIn(option, build, "the compiler stage no longer runs %s" % option)
+        runtime = " ".join(self.STAGES["runtime"]["instructions"])
+        self.assertIn("--network=none", runtime, "the runtime pip install no longer runs without network")
+
+    def test_the_compiler_stage_installs_a_signed_pinned_interpreter_for_the_upstream_tests(self):
+        """ENABLE_TESTS=ON makes the upstream build require an interpreter, and the development closure carries none.
+
+        clamav-1.5.4/CMakeLists.txt 219-231 requires find_package(Libcheck REQUIRED) and find_package(Python3 REQUIRED),
+        or EXACT when PYTHON_FIND_VERSION is defined, and 256-277 runs the unit-test input generators with
+        ${Python3_EXECUTABLE} at build time; because the stage carries no pytest, the same block requires
+        `${Python3_EXECUTABLE} -m unittest --help` to exit 0 or configure stops with FATAL_ERROR. The 101-archive
+        development closure was resolved for the toolchain and carries no interpreter at all, and the interpreter the
+        exported runtime stage installs is in a later stage, so it cannot supply this one. The correction reuses the
+        retained runtime staging set - the same vendor-signed index and the same authenticated archives the runtime
+        stage already installs python-3.13 from - through a read-only bind mount at its own path, installs the
+        interpreter and its standard library from that one repository with --repositories-file /dev/null and
+        --no-network, asserts the version, the stdlib imports the upstream suite uses and the exact unittest entry
+        point the upstream check names, and leaves the development closure's own assertion loop running after the
+        install so a drifting package would still fail the build. This is a text and record check: it is not proof
+        that apk resolves or that the interpreter runs, which remains ARM-build evidence.
+        """
+        build = " ".join(self.STAGES["clamav-source-build"]["instructions"])
+        interpreter = self.PREP["compilerInterpreter"]
+        self.assertIn("CMakeLists.txt", interpreter["requiredBy"])
+        self.assertIn("ENABLE_TESTS", " ".join(self.STAGES["clamav-source-build"]["instructions"]))
+        self.assertIn("--mount=type=bind,from=native-repository,source=tmp/meri-native-repo,target=%s,readonly"
+                      % interpreter["repositoryPath"], build,
+                      "the compiler stage does not read the retained runtime staging set through a read-only mount, so "
+                      "the interpreter could only come from an unauthenticated or unreviewed source")
+        installs = re.findall(r"apk add --no-cache --no-network --repository %s "
+                              r"--repositories-file /dev/null --update-cache [^&]+"
+                              % re.escape(interpreter["repositoryPath"]), build)
+        self.assertEqual(len(installs), 1,
+                         "expected exactly one interpreter install in the compiler stage, found %r" % installs)
+        install = installs[0]
+        self.assertEqual(install.count("--repository "), 1,
+                         "the interpreter install names more than one repository: %s" % install)
+        self.assertIn("--repository %s " % interpreter["repositoryPath"], install)
+        self.assertIn("--repositories-file /dev/null", install,
+                      "the interpreter install does not override the base's repositories, so a configured "
+                      "repository stays in apk's set")
+        self.assertIn("--no-network", install)
+        self.assertNotIn("--allow-untrusted", install)
+        self.assertNotIn("http://", install)
+        self.assertNotIn("https://", install)
+        for package in interpreter["requested"]:
+            self.assertIn("%s=%s" % (package["name"], package["version"]), install,
+                          "the interpreter install leaves %s to apk's resolution instead of naming its signed "
+                          "revision" % package["name"])
+        staged = _staged_archives_by_stage()
+        for package in interpreter["requested"] + interpreter["resolvedFromTheRuntimeRepository"]:
+            filename = "%s-%s.apk" % (package["name"], package["version"])
+            self.assertIn(filename, staged, "the interpreter package %s is not staged at all" % filename)
+            self.assertEqual(staged[filename][0], package["sha256"],
+                             "%s is staged at a different checksum than the lock records" % filename)
+            self.assertTrue(staged[filename][1].startswith("native-repo-"),
+                            "%s is not part of the retained runtime staging set the compiler stage mounts: %s"
+                            % (filename, staged[filename][1]))
+        for field in ("versionAssertion", "unittestAssertion", "moduleAssertion"):
+            self.assertIn(interpreter[field], build,
+                          "the compiler stage no longer asserts %s before configure and test execution" % field)
+        for module in interpreter["stdlibModules"]:
+            self.assertIn(module, interpreter["moduleAssertion"],
+                          "the recorded import assertion does not cover %s, which the upstream suite imports" % module)
+        configure = build.index("-D CMAKE_BUILD_TYPE=RelWithDebInfo")
+        for field in ("versionAssertion", "unittestAssertion", "moduleAssertion"):
+            self.assertLess(build.index(interpreter[field]), configure,
+                            "%s runs after configure starts" % field)
+        self.assertLess(build.index(interpreter["versionAssertion"]),
+                        build.index("ctest --test-dir /tmp/clamav-build"),
+                        "the interpreter is asserted after the test suite runs")
+        self.assertLess(build.index(interpreter["versionAssertion"]),
+                        build.index("unexpected native development dependency"),
+                        "the development closure's own version assertions no longer run after the interpreter "
+                        "install, so an interpreter install that replaced a pinned development package would pass")
+        runtime = " ".join(self.STAGES["runtime"]["instructions"])
+        self.assertIn("python-3.13=3.13.16_git20261016-r2", runtime,
+                      "the exported runtime stage lost its own pinned interpreter install")
+        self.assertNotIn(interpreter["repositoryPath"], runtime,
+                         "the compiler stage's interpreter repository reaches the exported runtime stage")
+        self.assertNotIn("meri-native-runtime-repo", runtime,
+                         "the exported runtime stage names the compiler stage's interpreter repository")
+        self.assertIn("Unqualified", interpreter["notProven"])
+
+    def test_the_pinned_interpreter_closure_resolves_inside_the_staged_repositories(self):
+        """Every dependency of the pinned interpreter resolves from the two staged repositories, with no new source.
+
+        The interpreter is a signed pair of archives plus the libraries it loads, so reusing the interpreter without
+        its closure would leave the stage with a binary it cannot run. This walks the retained vendor-signed index
+        from the pinned interpreter packages, resolves every capability dependency through the index's own provides
+        list, and requires each one to be either already installed by the development closure or staged in the
+        runtime partitions the compiler stage mounts. The packages the compiler stage must take from the runtime
+        staging set are asserted to be exactly the set the lock records, so the correction cannot silently widen.
+        """
+        interpreter = self.PREP["compilerInterpreter"]
+        entries, provides = _retained_index()
+        staged = _staged_archives_by_stage()
+        installed = {"%s-%s" % (member["name"], member["version"])
+                     for member in self.PREP["buildClosure"]["members"]}
+        runtime_staged = {filename[:-4] for filename, (_, stage) in staged.items()
+                          if stage.startswith("native-repo-")}
+        virtual = set(self.PREP["buildClosure"]["unresolvedVirtualProviders"])
+        self.assertTrue(installed and runtime_staged, "the staging records are absent: %d installed, %d staged"
+                        % (len(installed), len(runtime_staged)))
+        seen, queue, from_runtime, unsatisfied = set(), [], set(), []
+        for package in interpreter["requested"]:
+            queue.append("%s-%s" % (package["name"], package["version"]))
+        while queue:
+            package_id = queue.pop(0)
+            if package_id in seen:
+                continue
+            seen.add(package_id)
+            entry = entries.get(package_id)
+            if entry is None:
+                unsatisfied.append("%s is not in the retained signed index" % package_id)
+                continue
+            if package_id not in installed:
+                if package_id in runtime_staged:
+                    from_runtime.add(package_id)
+                else:
+                    unsatisfied.append("%s is neither installed by the development closure nor staged in the "
+                                       "runtime partitions" % package_id)
+            for dependency in entry["depends"]:
+                if dependency.startswith("!"):
+                    continue
+                if dependency.startswith(("so:", "cmd:", "pc:", "so-ver:")):
+                    candidates = provides.get(dependency.split("=")[0], [])
+                    chosen = ([candidate for candidate in candidates if candidate["id"] in installed]
+                              or [candidate for candidate in candidates if candidate["id"] in runtime_staged])
+                    if chosen:
+                        queue.append(chosen[0]["id"])
+                    elif dependency.split("=")[0] not in virtual:
+                        unsatisfied.append("no staged provider satisfies %s" % dependency)
+                    continue
+                name = re.split(r"[=<>~]", dependency)[0]
+                if "=" in dependency:
+                    queue.append("%s-%s" % (name, dependency.split("=", 1)[1]))
+                    continue
+                named = [entry for entry in entries.values() if entry["name"] == name]
+                if name in provides:
+                    named = named + [entry for entry in provides[name] if entry not in named]
+                chosen = ([candidate for candidate in named if candidate["id"] in installed]
+                          or [candidate for candidate in named if candidate["id"] in runtime_staged])
+                if chosen:
+                    queue.append(chosen[0]["id"])
+                elif name not in virtual:
+                    unsatisfied.append("%s names no staged package" % dependency)
+        self.assertEqual(unsatisfied, [],
+                         "the pinned interpreter's closure does not resolve from the staged repositories: %r"
+                         % unsatisfied)
+        recorded = sorted("%s-%s" % (package["name"], package["version"])
+                          for package in interpreter["resolvedFromTheRuntimeRepository"])
+        self.assertEqual(sorted(from_runtime), recorded,
+                         "the packages the compiler stage must take from the runtime staging set are not exactly the "
+                         "recorded ones")
+        for package_id in sorted(from_runtime):
+            filename = package_id + ".apk"
+            self.assertIn(filename, staged)
+            locked = {package["sha256"] for package in LOCK["systemPackages"]
+                      if "%s-%s" % (package["name"], package["version"]) == package_id}
+            self.assertEqual(locked, {staged[filename][0]},
+                             "%s is reused without matching the authenticated checksum the lock records for it"
+                             % filename)
+
+    def test_the_component_inventory_covers_both_library_families(self):
+        self.assertIn("-name 'libclam*' -o -name 'libfreshclam*'", DOCKERFILE,
+                      "the recorded inventory still omits the freshclam library family")
+        self.assertIn("grep -q ' usr/lib/libfreshclam\\.so'", DOCKERFILE,
+                      "the build stage does not assert that the freshclam library is recorded")
+        self.assertIn("find usr/bin usr/sbin -type f -exec sha256sum {} +", DOCKERFILE,
+                      "the recorded inventory no longer covers the installed executables")
+        self.assertNotIn("sha256 of every installed file", DOCKERFILE)
+        self.assertNotIn("sha256 of every installed file", json.dumps(self.PREP))
+        self.assertIn('"installedInventorySha256":"INSTALLED-INVENTORY-SHA256-PLACEHOLDER"', DOCKERFILE,
+                      "the provenance does not carry a placeholder for the inventory's own sha256")
+        self.assertIn('grep -q \'"installedInventorySha256":"[0-9a-f]\\{64\\}"\'', DOCKERFILE,
+                      "the build stage does not assert that the inventory hash was recorded")
+        self.assertIn("libfreshclam", self.PREP["install"]["componentInventory"],
+                      "the lock still describes the inventory without the freshclam library family")
+
+    def test_the_existing_image_build_hook_binds_the_coverage_check(self):
+        hook = (ROOT / "infra" / "product-preview" / "image-build.sh").read_text(encoding="utf-8")
+        self.assertIn('run 60 clamav-component-binding.log "${common[@]}" --entrypoint python3.13 '
+                      '"$image" -I -B /usr/share/meri/clamav_component_coverage.py --bind', hook,
+                      "the retained image build does not bind the coverage check to the built image")
+        self.assertIn("--network none", hook,
+                      "the common probe array is no longer network-isolated")
+        self.assertIn("0<v['Size']<=3*1024**3", hook,
+                      "the retained 3 GiB image ceiling assertion is no longer in the build hook")
+        self.assertIn("counts.get('HIGH',0)==counts.get('CRITICAL',0)==0", hook,
+                      "the retained HIGH==0 CRITICAL==0 scan gate is no longer in the build hook")
+        self.assertIn("COPY infra/product-preview/clamav_component_coverage.py "
+                      "infra/product-preview/clamav-source-advisories.json /usr/share/meri/", DOCKERFILE,
+                      "the checker is not carried in the image that the probe measures")
+        self.assertIn("$evidence/result.json", hook,
+                      "a failing probe can no longer fail the existing build result")
+        self.assertIn("binding", self.PREP["coverage"],
+                      "the lock does not record how the coverage result is bound to the built image")
+
+    def test_the_scan_gap_and_the_unqualified_state_are_recorded(self):
+        coverage = self.PREP["coverage"]
+        self.assertIn("no fixed-version", coverage["scannerFeedGap"])
+        self.assertIn("HIGH==0 CRITICAL==0", coverage["method"],
+                      "the coverage method no longer states that it does not weaken the retained gate")
+        self.assertIn("source-range", coverage["method"])
+        self.assertIn("no fixed-version", coverage["method"] + coverage["scannerFeedGap"])
+        self.assertIn("Unqualified", self.PREP["qualification"])
+        self.assertIn("Unqualified", LOCK["uploadNativeProvenance"]["qualification"])
+
 
 
 if __name__ == "__main__":

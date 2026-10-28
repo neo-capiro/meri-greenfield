@@ -38,10 +38,11 @@
  * only verified database bytes.
  *
  * No daemon, socket or global cache is touched: nothing here starts a service, and the fixed freshclam
- * configuration sets no `NotifyClamd`, so no clamd ever runs or is contacted. The pinned Wolfi `clamav-1.5`
- * package (which provides the `so:libclamav.so.12` the scanner links against) hard-depends on the rest of its own
- * family, so the `clamav-1.5-daemon`/`-milter`/`-clamdscan`/`-db`/`-libunrar` binaries are present in the image as
- * declared package dependencies; no daemon configuration exists and no child runs anything but
+ * configuration sets no `NotifyClamd`, so no clamd ever runs or is contacted. ClamAV is no longer installed from a
+ * Wolfi package at all: the source-built 1.5.4 payload provides `so:libclamav.so.12` for the scanner and the whole
+ * tool surface (daemon, milter, clamdscan, clamdtop, signature tools, UnRAR support and the database layout) under
+ * one install prefix, so `clamd`, `clamav-milter` and `clamdscan` are present because they are built, not because a
+ * distribution package pulled them in; no daemon configuration exists and no child runs anything but
  * `clamscan`/`sigtool`/`freshclam` under the observed sandbox. No live download runs here; the updater is exercised
  * through an injected fixed process port and real execution is Release.
  */

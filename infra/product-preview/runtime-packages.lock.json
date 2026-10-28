@@ -1914,6 +1914,1056 @@
     "qualification": "Unqualified source installation pins. Exact ARM image must pass observed no-network/non-root/read-only/no-credentials/limited child sandbox and Office/PDF corpus acceptance before renderer availability."
     },
     "uploadNativeProvenance": {
+      "clamavSourcePreparation": {
+       "allocation": "outputs/HERMES-NATIVE-UPSTREAM-CLAMAV-SOURCE-PREPARATION-20261028.md (sha256 a43be6d36c04de832725ba2aa326a3d012ff68050f325f8d8d7ae52f3ba4e60d)",
+       "scope": "Authenticate the official ClamAV 1.5.4 release asset, prepare a pinned aarch64 build/development closure and a build-only compiler stage, replace the vulnerable Wolfi clamav-1.5 payload coherently, and record a truthful source-built inventory and coverage path. No build, no probe, no scan, no publication.",
+       "authentication": {
+        "component": "clamav",
+        "upstreamVersion": "1.5.4",
+        "tarballUrl": "https://github.com/Cisco-Talos/clamav/releases/download/clamav-1.5.4/clamav-1.5.4.tar.gz",
+        "tarballSha256": "1af1117a228f1b5bc7fa91a0dabc37848a99e7d25188e9be8043332ce721dfd3",
+        "tarballBytes": 63702396,
+        "signatureUrl": "https://github.com/Cisco-Talos/clamav/releases/download/clamav-1.5.4/clamav-1.5.4.tar.gz.sig",
+        "signatureSha256": "8acf5816c3c9dc8b02a2e11f93d90d37b25845a0481e16873454df4a30a375c0",
+        "signatureBytes": 801,
+        "signatureFormat": "OpenPGP detached signature, v4, RSA, digest SHA1, signature class 0x00 (binary document)",
+        "signatureCreated": "1786113731 (2026-08-07)",
+        "keyUrl": "https://raw.githubusercontent.com/Cisco-Talos/clamav-documentation/main/src/manual/cisco-talos.gpg",
+        "keyPath": "src/manual/cisco-talos.gpg in Cisco-Talos/clamav-documentation, linked from docs.clamav.net/manual/Installing.html",
+        "keyFingerprint": "5BADCA2665EF59DCF8A23D8B707F0DB480836771",
+        "keyLongId": "707F0DB480836771",
+        "keyUid": "Talos (Talos, Cisco Systems Inc.) <research@sourcefire.com>",
+        "keyAlgorithm": "rsa4096 [SC]",
+        "keyCreated": "2025-03-13",
+        "keyExpires": "2027-03-13",
+        "keySha256": "5bfca75f112f04b89cd992f5f925018e8dfc28e0e7f6e33f6a4c33ed9e29d911",
+        "keyByteCopies": {
+         "vendorDocumentation": "5bfca75f112f04b89cd992f5f925018e8dfc28e0e7f6e33f6a4c33ed9e29d911",
+         "keyserverUbuntu": "7fd750db11f49ef0b6704c0bdc803ef3f804164eda53f4699cd738924de05ec0",
+         "keysOpenPgpOrg": "70511f03eec91f8588ae05eb23d58bc3e91d95426e27b0983a7fde88ddf87203"
+        },
+        "issuerMatchesKey": "the signing key id embedded in the detached signature (707F0DB480836771) is the key id of the vendor-published key",
+        "verificationCommand": "gpg --homedir <fresh> --status-fd 1 --verify clamav-1.5.4.tar.gz.sig clamav-1.5.4.tar.gz",
+        "verificationExit": 0,
+        "verificationStatus": [
+         "GOODSIG 707F0DB480836771 Talos (Talos, Cisco Systems Inc.) <research@sourcefire.com>",
+         "VALIDSIG 5BADCA2665EF59DCF8A23D8B707F0DB480836771 2026-08-07 0 1 2 00 5BADCA2665EF59DCF8A23D8B707F0DB480836771"
+        ],
+        "releaseMetadataDigest": "1af1117a228f1b5bc7fa91a0dabc37848a99e7d25188e9be8043332ce721dfd3 (GitHub release-asset metadata for clamav-1.5.4.tar.gz)",
+        "metadataVersusActual": "the release metadata digest and the sha256 computed from the downloaded bytes are equal; the metadata digest is not treated as the verification, the computed sha256 over the received bytes is",
+        "vendoredRustDependencies": ".cargo/vendor with 290 vendored crate directories plus .cargo/config.toml mapping crates-io and the two Cisco git sources to the vendored tree, so cargo builds offline",
+        "tarballMembers": 17090,
+        "attachedToLock": "uploadNativeProvenance.clamavSourcePreparation.authentication",
+        "imageProvenance": {
+         "component": "clamav",
+         "upstreamVersion": "1.5.4",
+         "upstreamReleased": "2026-08-07",
+         "builtFrom": "the authenticated upstream release asset, not a distribution package",
+         "upstreamUrl": "https://github.com/Cisco-Talos/clamav/releases/download/clamav-1.5.4/clamav-1.5.4.tar.gz",
+         "upstreamSha256": "1af1117a228f1b5bc7fa91a0dabc37848a99e7d25188e9be8043332ce721dfd3",
+         "detachedSignatureUrl": "https://github.com/Cisco-Talos/clamav/releases/download/clamav-1.5.4/clamav-1.5.4.tar.gz.sig",
+         "detachedSignatureSha256": "8acf5816c3c9dc8b02a2e11f93d90d37b25845a0481e16873454df4a30a375c0",
+         "signingKeyFingerprint": "5BADCA2665EF59DCF8A23D8B707F0DB480836771",
+         "signingKeyUrl": "https://raw.githubusercontent.com/Cisco-Talos/clamav-documentation/main/src/manual/cisco-talos.gpg",
+         "distributionPackagesRemoved": [
+          "clamav-1.5-scanner=1.5.2-r0",
+          "clamav-1.5-freshclam=1.5.2-r0",
+          "clamav-1.5=1.5.2-r7"
+         ],
+         "installedBy": "apps/runtime/Dockerfile, stage clamav-source-build, copied into the runtime stage from /tmp/meri-clamav-out",
+         "installedInventory": "/usr/share/meri/clamav-component-inventory.txt (sha256 of the installed executables in usr/bin and usr/sbin and of the ClamAV and freshclam shared libraries in usr/lib: the payload's executable and shared-library surface, not every file the image carries; re-checked against the installed bytes in the runtime stage and verified again by the image build probe)",
+         "installedInventorySha256": "written into the image's provenance at build time from the inventory file itself and checked by the image build probe, so the provenance cannot cover a different inventory",
+         "installedInventoryCovers": "usr/bin/*, usr/sbin/*, usr/lib/libclam*.so*, usr/lib/libfreshclam*.so*",
+         "libraryRelationships": "built with ENABLE_SHARED_LIB=ON and ENABLE_STATIC_LIB=OFF, so the payload ships shared libraries only: the installed tools load libclamav and libfreshclam from /usr/lib at runtime, and libclamav links the pinned closure's zlib, openssl, libxml2, pcre2, bzip2 and json-c as the image provides them. Presence and version are asserted in the runtime stage; linkage and ABI remain unverified until a real ARM build.",
+         "coverageBinding": "the image build probe in infra/product-preview/image-build.sh executes python3.13 /usr/share/meri/clamav_component_coverage.py --bind against this image's own clamscan, this inventory and this provenance, and fails the build when any of them disagree",
+         "coverage": "infra/product-preview/clamav-source-advisories.json with the check in infra/product-preview/clamav_component_coverage.py",
+         "qualification": "built, installed, probed and scanned image state is unproven until a separately allocated ARM build, probe and scan"
+        },
+        "keyring": {
+         "stagedFile": "cisco-talos-keyring.gpg",
+         "sha256": "8caffabffbc85f12e145c9bb69b704369d7731c98d751ac123edc130c00d81b5",
+         "bytes": 2789,
+         "derivedFrom": "the vendor-published ASCII-armored key above",
+         "derivedBy": "gpg --dearmor at preparation time; gpgv cannot read an armored keyring and the pinned development closure carries gpgv, not a gpg binary",
+         "verifiedLocally": "gpgv --keyring <this keyring> clamav-1.5.4.tar.gz.sig clamav-1.5.4.tar.gz -> exit 0, GOODSIG 707F0DB480836771, VALIDSIG 5BADCA2665EF59DCF8A23D8B707F0DB480836771"
+        },
+        "rustKeyFingerprint": "108F66205EAEB0AAA8DD5E1C85AB96E6FA1BE5FE",
+        "rustToolchainUrl": "https://static.rust-lang.org/dist/2026-10-15/rust-1.99.1-aarch64-unknown-linux-gnu.tar.xz",
+        "rustToolchainSha256": "a48fb1e853be56ce9b8e2751f5464dbd5e16440cd81e237920f3a5e7e806333e",
+        "rustSignatureUrl": "https://static.rust-lang.org/dist/2026-10-15/rust-1.99.1-aarch64-unknown-linux-gnu.tar.xz.asc",
+        "rustSignatureSha256": "56b30250065ff8b7699689ec34d34074c6a51f5c8b5a8cc6feb098b3115a3256",
+        "rustKeyUrl": "https://static.rust-lang.org/rust-key.gpg.ascii",
+        "rustKeySha256": "e54b09a439647e006b4831eec9785cbaaf3e07ab371c3a6ee6a68e1bdb9fbc6b",
+        "rustKeyring": {
+         "stagedFile": "rust-release-keyring.gpg",
+         "sha256": "97e694f136f8c106e8f94fdadf593d2fc10de3ff3f558536c41469aa5be7f635",
+         "bytes": 3860,
+         "derivedBy": "gpg --dearmor at preparation time",
+         "verifiedLocally": "gpgv --keyring <this keyring> <asc> <toolchain archive> -> exit 0, GOODSIG 85AB96E6FA1BE5FE, VALIDSIG 108F66205EAEB0AAA8DD5E1C85AB96E6FA1BE5FE"
+        }
+       },
+       "rustToolchain": {
+        "reason": "ClamAV 1.5.x requires a Rust toolchain (cmake/FindRust.cmake restricts RUST_COMPILER_TARGET to aarch64-unknown-linux-gnu or x86_64-unknown-linux-gnu) and no rust or cargo package exists in the retained index or in the live Wolfi aarch64 index, so the official distribution is the only authenticated source. This is an unresolved distribution-input gap, recorded rather than papered over.",
+        "version": "1.99.1",
+        "target": "aarch64-unknown-linux-gnu",
+        "bytes": 187532480,
+        "url": "https://static.rust-lang.org/dist/2026-10-15/rust-1.99.1-aarch64-unknown-linux-gnu.tar.xz",
+        "sha256": "a48fb1e853be56ce9b8e2751f5464dbd5e16440cd81e237920f3a5e7e806333e",
+        "signatureUrl": "https://static.rust-lang.org/dist/2026-10-15/rust-1.99.1-aarch64-unknown-linux-gnu.tar.xz.asc",
+        "signatureSha256": "56b30250065ff8b7699689ec34d34074c6a51f5c8b5a8cc6feb098b3115a3256",
+        "keyUrl": "https://static.rust-lang.org/rust-key.gpg.ascii",
+        "signingKeyFingerprint": "108F66205EAEB0AAA8DD5E1C85AB96E6FA1BE5FE",
+        "keyserverCorroboration": "keys.openpgp.org by fingerprint",
+        "verification": "detached signature over the toolchain archive verified with the release key: exit 0; the published .sha256 and the signed stable channel manifest name the same sha256 the downloaded bytes hash to"
+       },
+       "buildClosure": {
+        "source": "resolved from the retained vendor-signed index 5c84e4b835a811c1624d9692f011df3de446c8011be4dedaabf6f3dbf41ec536 and pinned by the sha256 of each downloaded official archive",
+        "architecture": "aarch64",
+        "packages": 101,
+        "totalBytes": 266859580,
+        "sizeChecks": "every downloaded archive length equals the index S: field exactly (0 mismatches)",
+        "unresolvedVirtualProviders": [
+         "merged-lib",
+         "merged-sbin",
+         "merged-usrsbin"
+        ],
+        "unresolvedNote": "the unresolved tokens are virtual provides (merged-lib/-sbin/-usrsbin) of packages the pinned base already installs (wolfi-baselayout), so no archive is required for them",
+        "members": [
+         {
+          "name": "bash",
+          "version": "5.3-r14",
+          "url": "https://packages.wolfi.dev/os/aarch64/bash-5.3-r14.apk",
+          "sha256": "a418d69ce51bfeafd24a505e483b74fdb52cfc98a2d43cd8ce8d9670745801b9",
+          "bytes": 750934
+         },
+         {
+          "name": "binutils",
+          "version": "2.47-r2",
+          "url": "https://packages.wolfi.dev/os/aarch64/binutils-2.47-r2.apk",
+          "sha256": "ed3e438fccc427064cee079dde807c7c6f6d79dc9b84aeed52f3711d57e2a7aa",
+          "bytes": 14883577
+         },
+         {
+          "name": "brotli",
+          "version": "1.2.1-r2",
+          "url": "https://packages.wolfi.dev/os/aarch64/brotli-1.2.1-r2.apk",
+          "sha256": "ec68f956c38a01460bc0fd35f35b845e3fb15a5b43fc7838a65c5d2e9919c9a2",
+          "bytes": 32101
+         },
+         {
+          "name": "brotli-dev",
+          "version": "1.2.1-r2",
+          "url": "https://packages.wolfi.dev/os/aarch64/brotli-dev-1.2.1-r2.apk",
+          "sha256": "bc5a02f284fa438c9ca8ae69ef708a7e5a0f890ca75639af8638ae5a352a34e8",
+          "bytes": 30807
+         },
+         {
+          "name": "bzip2-dev",
+          "version": "1.0.8-r28",
+          "url": "https://packages.wolfi.dev/os/aarch64/bzip2-dev-1.0.8-r28.apk",
+          "sha256": "34af19f4c87d77e890c4526bce45f0f20f450a1fa9b9f706ee380e0e06ed1812",
+          "bytes": 62435
+         },
+         {
+          "name": "c-ares",
+          "version": "1.34.9-r0",
+          "url": "https://packages.wolfi.dev/os/aarch64/c-ares-1.34.9-r0.apk",
+          "sha256": "54d05cfba6e3c49483de141bd163f7986a03ca3f6d39ca6d13756af534d2d247",
+          "bytes": 153219
+         },
+         {
+          "name": "ca-certificates-bundle",
+          "version": "20261020-r0",
+          "url": "https://packages.wolfi.dev/os/aarch64/ca-certificates-bundle-20261020-r0.apk",
+          "sha256": "d2a458ae71b3f6f65302a8dd61c35f75f3eef87aeb5583a3f97523e99698cf49",
+          "bytes": 118573
+         },
+         {
+          "name": "check",
+          "version": "0.15.2-r10",
+          "url": "https://packages.wolfi.dev/os/aarch64/check-0.15.2-r10.apk",
+          "sha256": "d312109c417fde5732c6ad001ad0363c5f81a7d148a0dc895dcab106ee0e7788",
+          "bytes": 80369
+         },
+         {
+          "name": "check-dev",
+          "version": "0.15.2-r10",
+          "url": "https://packages.wolfi.dev/os/aarch64/check-dev-0.15.2-r10.apk",
+          "sha256": "e83abc418a9a2ea64a9b8c1a223555ddf2f3622261a85b71fa7b2c25dfa56c4b",
+          "bytes": 38009
+         },
+         {
+          "name": "cmake",
+          "version": "4.4.3-r0",
+          "url": "https://packages.wolfi.dev/os/aarch64/cmake-4.4.3-r0.apk",
+          "sha256": "05fee361fdbd9002623209173e5101935d5f0cc1c82d3cd9e1e5c6c0a55df1d3",
+          "bytes": 31968101
+         },
+         {
+          "name": "curl-dev",
+          "version": "8.23.0-r2",
+          "url": "https://packages.wolfi.dev/os/aarch64/curl-dev-8.23.0-r2.apk",
+          "sha256": "2be4a49b2a273992e10b009c358bf3b4932429fbf7e749534a4924df791a1454",
+          "bytes": 89095
+         },
+         {
+          "name": "cyrus-sasl-heimdal-libs",
+          "version": "2.1.28-r58",
+          "url": "https://packages.wolfi.dev/os/aarch64/cyrus-sasl-heimdal-libs-2.1.28-r58.apk",
+          "sha256": "4d953f1db918d026e9a84fd630609668f8617cdbcf1a316f459bea9281f911ed",
+          "bytes": 239214
+         },
+         {
+          "name": "gawk",
+          "version": "5.4.1-r4",
+          "url": "https://packages.wolfi.dev/os/aarch64/gawk-5.4.1-r4.apk",
+          "sha256": "0a78805556cf6200193caa6456ffa9e589cf44718bcef5c84d207b7cf60f2850",
+          "bytes": 1054046
+         },
+         {
+          "name": "gcc",
+          "version": "16.2.0-r2",
+          "url": "https://packages.wolfi.dev/os/aarch64/gcc-16.2.0-r2.apk",
+          "sha256": "46b46236fe3d73b4ed55cc8cdfcf975037e3fa1413c369c0ca3015714f7a926f",
+          "bytes": 119928041
+         },
+         {
+          "name": "gdbm",
+          "version": "1.26-r9",
+          "url": "https://packages.wolfi.dev/os/aarch64/gdbm-1.26-r9.apk",
+          "sha256": "7c809eeb4a0a2a7ecbbbe92a70abecfccfc5c17ea40144798e8b389dc25ac7e8",
+          "bytes": 290199
+         },
+         {
+          "name": "glibc",
+          "version": "2.43-r13",
+          "url": "https://packages.wolfi.dev/os/aarch64/glibc-2.43-r13.apk",
+          "sha256": "ed2992c52a57877ae5006b4c212393851bf61dc4c440f6519fd207f326952c6f",
+          "bytes": 2236577
+         },
+         {
+          "name": "glibc-2.44",
+          "version": "2.44-r10",
+          "url": "https://packages.wolfi.dev/os/aarch64/glibc-2.44-2.44-r10.apk",
+          "sha256": "5ec2e2a087ca0f82e8c66fee61ff47637d2d65232b2843aaa58d560ec4596907",
+          "bytes": 2321156
+         },
+         {
+          "name": "glibc-2.44-dev",
+          "version": "2.44-r10",
+          "url": "https://packages.wolfi.dev/os/aarch64/glibc-2.44-dev-2.44-r10.apk",
+          "sha256": "8cb458ec8470eeffbf1938401e082b437e55b384eb3a2035cccfa4e8ba75acdd",
+          "bytes": 13697335
+         },
+         {
+          "name": "glibc-2.44-locale-posix",
+          "version": "2.44-r10",
+          "url": "https://packages.wolfi.dev/os/aarch64/glibc-2.44-locale-posix-2.44-r10.apk",
+          "sha256": "2b4056feb07b9abd06d58a7c1031967c5b2d4cefe128e986170dbc1deb338fa4",
+          "bytes": 99298
+         },
+         {
+          "name": "gmp",
+          "version": "6.3.0-r12",
+          "url": "https://packages.wolfi.dev/os/aarch64/gmp-6.3.0-r12.apk",
+          "sha256": "b38a6630cf85f3d726b36d8a9544c3d2a643b30d182af30e0ff634a8e000e2c7",
+          "bytes": 309430
+         },
+         {
+          "name": "gpgv",
+          "version": "2.4.9-r12",
+          "url": "https://packages.wolfi.dev/os/aarch64/gpgv-2.4.9-r12.apk",
+          "sha256": "d23f4bca40e2665011f257ee2cd84886f7ed5aa679e3a7b0837b69fb8d4b5ee6",
+          "bytes": 324075
+         },
+         {
+          "name": "heimdal-libs",
+          "version": "7.8.0-r54",
+          "url": "https://packages.wolfi.dev/os/aarch64/heimdal-libs-7.8.0-r54.apk",
+          "sha256": "e2292206c78ed1aac2047d4be70cd3ab5992efcbba5065f1d9ceeff07c1ec437",
+          "bytes": 1411373
+         },
+         {
+          "name": "isl",
+          "version": "0.28-r6",
+          "url": "https://packages.wolfi.dev/os/aarch64/isl-0.28-r6.apk",
+          "sha256": "2732113c83570ae8c3de42dbeac422981600b51a15ee703a7ca9326ba2918954",
+          "bytes": 1053977
+         },
+         {
+          "name": "json-c",
+          "version": "0.19-r2",
+          "url": "https://packages.wolfi.dev/os/aarch64/json-c-0.19-r2.apk",
+          "sha256": "ed8464ea37ad9d4f008c17864a5b97bbe1b41969c79b4c9913921eb965db267e",
+          "bytes": 52330
+         },
+         {
+          "name": "json-c-dev",
+          "version": "0.19-r2",
+          "url": "https://packages.wolfi.dev/os/aarch64/json-c-dev-0.19-r2.apk",
+          "sha256": "437c34f849dd0d4da92743cbac5ccdaaa984e2cffc1328d069df1ca940c83ad9",
+          "bytes": 93905
+         },
+         {
+          "name": "jsoncpp",
+          "version": "1.9.8-r6",
+          "url": "https://packages.wolfi.dev/os/aarch64/jsoncpp-1.9.8-r6.apk",
+          "sha256": "7a2faec0b8e9163676c73f54fc3b6a1621b99683cd9b0ebec0c40223b6bc347b",
+          "bytes": 148826
+         },
+         {
+          "name": "keyutils-libs",
+          "version": "1.6.3-r41",
+          "url": "https://packages.wolfi.dev/os/aarch64/keyutils-libs-1.6.3-r41.apk",
+          "sha256": "fc8f8f28e6472244ebad031f585fcb86a0b870c4f4e5f1415943b76afbf3e4b0",
+          "bytes": 20556
+         },
+         {
+          "name": "krb5-conf",
+          "version": "1.0-r10",
+          "url": "https://packages.wolfi.dev/os/aarch64/krb5-conf-1.0-r10.apk",
+          "sha256": "6a933ca1514f76081d839361a01313cae7c5381a5a9e8130ef38cb75d00b20f0",
+          "bytes": 2928
+         },
+         {
+          "name": "krb5-libs",
+          "version": "1.22.2-r5",
+          "url": "https://packages.wolfi.dev/os/aarch64/krb5-libs-1.22.2-r5.apk",
+          "sha256": "bde3fb18cc946f07cde48c022c690650ba8476f27fa973a1cbaa7a4deea36c39",
+          "bytes": 1040273
+         },
+         {
+          "name": "ld-linux-2.44",
+          "version": "2.44-r10",
+          "url": "https://packages.wolfi.dev/os/aarch64/ld-linux-2.44-2.44-r10.apk",
+          "sha256": "f69972a7647987c61a1a29bc7c1854458bd351fb7a191c7f51e27a683769dad0",
+          "bytes": 141420
+         },
+         {
+          "name": "libacl1",
+          "version": "2.4.0-r4",
+          "url": "https://packages.wolfi.dev/os/aarch64/libacl1-2.4.0-r4.apk",
+          "sha256": "4ab67d18cbdb44c3b37c543b6e735583ef757696e4d11dedc88c20c165a4ee8f",
+          "bytes": 34630
+         },
+         {
+          "name": "libarchive",
+          "version": "3.8.10-r0",
+          "url": "https://packages.wolfi.dev/os/aarch64/libarchive-3.8.10-r0.apk",
+          "sha256": "72ec9ba6472af3213a09b9674b7bba7ea2aa1ecdf0dee09e4a24a9108db5598f",
+          "bytes": 461368
+         },
+         {
+          "name": "libassuan",
+          "version": "3.0.2-r12",
+          "url": "https://packages.wolfi.dev/os/aarch64/libassuan-3.0.2-r12.apk",
+          "sha256": "e137af1d7edf4b8c40589087bd9990bf52889c8808d5d9d5482cbcaae294d70f",
+          "bytes": 65185
+         },
+         {
+          "name": "libatomic",
+          "version": "16.2.0-r1",
+          "url": "https://packages.wolfi.dev/os/aarch64/libatomic-16.2.0-r1.apk",
+          "sha256": "923cab5fcdc646ea76ddebfd38626998d787cc10baff0803e3365d1e2bd5ef41",
+          "bytes": 30762
+         },
+         {
+          "name": "libbrotlicommon1",
+          "version": "1.2.1-r2",
+          "url": "https://packages.wolfi.dev/os/aarch64/libbrotlicommon1-1.2.1-r2.apk",
+          "sha256": "5a71e1e2255f6e85cf501b60a34584e097fe743a91bf0e60338376ddc5a24090",
+          "bytes": 86407
+         },
+         {
+          "name": "libbrotlidec1",
+          "version": "1.2.1-r2",
+          "url": "https://packages.wolfi.dev/os/aarch64/libbrotlidec1-1.2.1-r2.apk",
+          "sha256": "29b9fcc4d55fea32dbe590a2e3de0459109c8103b6dc568e650e0e6395280a82",
+          "bytes": 47477
+         },
+         {
+          "name": "libbrotlienc1",
+          "version": "1.2.1-r2",
+          "url": "https://packages.wolfi.dev/os/aarch64/libbrotlienc1-1.2.1-r2.apk",
+          "sha256": "14ba019e5e959d8f4ae06f6a6c9e1014842b730d2a10a2fbb66fb780523910f7",
+          "bytes": 456952
+         },
+         {
+          "name": "libbz2-1",
+          "version": "1.0.8-r28",
+          "url": "https://packages.wolfi.dev/os/aarch64/libbz2-1-1.0.8-r28.apk",
+          "sha256": "46ce3328e2372eadeb71ef1dc179e2427cefa2264bc0e90e8749e4fee7d644f9",
+          "bytes": 60834
+         },
+         {
+          "name": "libcom_err",
+          "version": "1.47.4-r5",
+          "url": "https://packages.wolfi.dev/os/aarch64/libcom_err-1.47.4-r5.apk",
+          "sha256": "e7e46a09271baccf16553997096d72a9059437a527f10331a12fc6a2f18c5d45",
+          "bytes": 28092
+         },
+         {
+          "name": "libcrypt1-2.44",
+          "version": "2.44-r10",
+          "url": "https://packages.wolfi.dev/os/aarch64/libcrypt1-2.44-2.44-r10.apk",
+          "sha256": "40c7bfd615a69e8747d3a5d0ca9a37dc2a8b169bcd4c2df4b387922d9fe5b553",
+          "bytes": 24193
+         },
+         {
+          "name": "libcurl-openssl4",
+          "version": "8.23.0-r2",
+          "url": "https://packages.wolfi.dev/os/aarch64/libcurl-openssl4-8.23.0-r2.apk",
+          "sha256": "1cd0edb0d40aaeb5281566f4c4d17583447b77b74e1bc3281de642e8e9493bf1",
+          "bytes": 576681
+         },
+         {
+          "name": "libedit",
+          "version": "3.1-r20",
+          "url": "https://packages.wolfi.dev/os/aarch64/libedit-3.1-r20.apk",
+          "sha256": "9770863d1476c24a11ae86cb73366eabfd4310421b51fd1c08da9b5c5fa335c3",
+          "bytes": 118235
+         },
+         {
+          "name": "libedit-dev",
+          "version": "3.1-r20",
+          "url": "https://packages.wolfi.dev/os/aarch64/libedit-dev-3.1-r20.apk",
+          "sha256": "73d17b8745007188c11c5d20420a60f8fbca8fae3d1633a354e73f3c78a825bf",
+          "bytes": 567089
+         },
+         {
+          "name": "libev",
+          "version": "4.33-r14",
+          "url": "https://packages.wolfi.dev/os/aarch64/libev-4.33-r14.apk",
+          "sha256": "8c21a68b33b354e1710bd44308b268986d59fcb2c76ef09b2ee330ae86f0f213",
+          "bytes": 44311
+         },
+         {
+          "name": "libexpat1",
+          "version": "2.9.0-r0",
+          "url": "https://packages.wolfi.dev/os/aarch64/libexpat1-2.9.0-r0.apk",
+          "sha256": "abeeb0ffa21b3ca6175cb997d9919920a26a2f50aaa61116f03ed40b1cfd764f",
+          "bytes": 106888
+         },
+         {
+          "name": "libgcc",
+          "version": "16.2.0-r2",
+          "url": "https://packages.wolfi.dev/os/aarch64/libgcc-16.2.0-r2.apk",
+          "sha256": "c782296bb6afa9c6e183ef51bc14367e55768ba2acdbc822fccc96ac82257220",
+          "bytes": 93608
+         },
+         {
+          "name": "libgcrypt",
+          "version": "1.12.4-r2",
+          "url": "https://packages.wolfi.dev/os/aarch64/libgcrypt-1.12.4-r2.apk",
+          "sha256": "7831c1a233c51524151b736fe36f268fc49945f9563d5d85020728908f0be927",
+          "bytes": 717021
+         },
+         {
+          "name": "libgomp",
+          "version": "16.2.0-r2",
+          "url": "https://packages.wolfi.dev/os/aarch64/libgomp-16.2.0-r2.apk",
+          "sha256": "34c492411672a1c41cb4cec7b2fdc7ea601904e57184722279e7d849b0aac4be",
+          "bytes": 205721
+         },
+         {
+          "name": "libgpg-error",
+          "version": "1.61-r6",
+          "url": "https://packages.wolfi.dev/os/aarch64/libgpg-error-1.61-r6.apk",
+          "sha256": "a139291a6f58dd83c8669ba9757f26941f96d7edbaad88bbfb8f62a5c737613b",
+          "bytes": 172091
+         },
+         {
+          "name": "libidn2",
+          "version": "2.3.8-r12",
+          "url": "https://packages.wolfi.dev/os/aarch64/libidn2-2.3.8-r12.apk",
+          "sha256": "c9489c1f009a75967b198bf30415637505ad85ec7d7afca74ee3e76c84335bd7",
+          "bytes": 136210
+         },
+         {
+          "name": "libldap-2.7",
+          "version": "2.7.2-r0",
+          "url": "https://packages.wolfi.dev/os/aarch64/libldap-2.7-2.7.2-r0.apk",
+          "sha256": "e5f31e389061015223f51503186e8f774c767175596769e91f30166a08e9a73f",
+          "bytes": 249515
+         },
+         {
+          "name": "liblz4-1",
+          "version": "1.10.0-r11",
+          "url": "https://packages.wolfi.dev/os/aarch64/liblz4-1-1.10.0-r11.apk",
+          "sha256": "6ae70433df5da1339a1d76e34a1ed1a715f81b0cafa242674972cbfef9b7d709",
+          "bytes": 182866
+         },
+         {
+          "name": "libmilter-dev",
+          "version": "8.18.2-r5",
+          "url": "https://packages.wolfi.dev/os/aarch64/libmilter-dev-8.18.2-r5.apk",
+          "sha256": "1633e1cffe84476c70de08113687c462bfde6314d0b6331009abda003bae85a9",
+          "bytes": 42857
+         },
+         {
+          "name": "libnghttp2-14",
+          "version": "1.70.0-r7",
+          "url": "https://packages.wolfi.dev/os/aarch64/libnghttp2-14-1.70.0-r7.apk",
+          "sha256": "e210213dea283409610f842a816cde531a8e9990d437897b11cc01292c52929b",
+          "bytes": 116361
+         },
+         {
+          "name": "libpcre2-16-0",
+          "version": "10.49-r1",
+          "url": "https://packages.wolfi.dev/os/aarch64/libpcre2-16-0-10.49-r1.apk",
+          "sha256": "313e59a428b17f811877c2366a515bb06327fd385c1935d8bf2c2919544ae693",
+          "bytes": 268352
+         },
+         {
+          "name": "libpcre2-32-0",
+          "version": "10.49-r1",
+          "url": "https://packages.wolfi.dev/os/aarch64/libpcre2-32-0-10.49-r1.apk",
+          "sha256": "50bd4a1105a56dee8351a70875966545a2d192b1bc8624be131c787bcd813332",
+          "bytes": 257329
+         },
+         {
+          "name": "libpcre2-8-0",
+          "version": "10.49-r1",
+          "url": "https://packages.wolfi.dev/os/aarch64/libpcre2-8-0-10.49-r1.apk",
+          "sha256": "951a1e197e06d20d19bfeaa71629cf5acc4f62174ae2802d071cb230b72b3d9b",
+          "bytes": 288158
+         },
+         {
+          "name": "libpcre2-posix-3",
+          "version": "10.49-r1",
+          "url": "https://packages.wolfi.dev/os/aarch64/libpcre2-posix-3-10.49-r1.apk",
+          "sha256": "4eaf3a1c51e9efd68f7f02aaaf3d875c2479a488277a7fa16d40d96080fb426a",
+          "bytes": 15905
+         },
+         {
+          "name": "libpsl",
+          "version": "0.23.3-r4",
+          "url": "https://packages.wolfi.dev/os/aarch64/libpsl-0.23.3-r4.apk",
+          "sha256": "eeac8fadc4a543c649d8162107f771d4ed71842585d90835ed100fd2b79ef77e",
+          "bytes": 82816
+         },
+         {
+          "name": "libpsl-dev",
+          "version": "0.23.3-r4",
+          "url": "https://packages.wolfi.dev/os/aarch64/libpsl-dev-0.23.3-r4.apk",
+          "sha256": "c10e9a3060e23622552f2cda743ff1928c13f7742230d5b4d1fe781c54a6f8f2",
+          "bytes": 21920
+         },
+         {
+          "name": "libquadmath",
+          "version": "16.2.0-r2",
+          "url": "https://packages.wolfi.dev/os/aarch64/libquadmath-16.2.0-r2.apk",
+          "sha256": "ac602cb44cb8cda52879279a0df523e6e6ee3411094940e6dce22fe0c2b64810",
+          "bytes": 18687
+         },
+         {
+          "name": "librhash0",
+          "version": "1.4.6-r8",
+          "url": "https://packages.wolfi.dev/os/aarch64/librhash0-1.4.6-r8.apk",
+          "sha256": "5ca1acf4f0606f603fcc1b73576c7a5877b575df06ed4798102697b46df86de5",
+          "bytes": 168130
+         },
+         {
+          "name": "libstdc++",
+          "version": "16.2.0-r2",
+          "url": "https://packages.wolfi.dev/os/aarch64/libstdc++-16.2.0-r2.apk",
+          "sha256": "a004dfb5d3a07f49e3e281947f64b434a4ee683c6c597ef191bb39f749eadacc",
+          "bytes": 1185922
+         },
+         {
+          "name": "libstdc++-dev",
+          "version": "16.2.0-r2",
+          "url": "https://packages.wolfi.dev/os/aarch64/libstdc++-dev-16.2.0-r2.apk",
+          "sha256": "4b7377db7cc4e62ece5c721768c180937f9b099230c04b6c7c8726f07ecdbd5e",
+          "bytes": 15691789
+         },
+         {
+          "name": "libunistring",
+          "version": "1.5-r0",
+          "url": "https://packages.wolfi.dev/os/aarch64/libunistring-1.5-r0.apk",
+          "sha256": "540cec75eefb0f6f384701b5995f48c27f13744940a477ed23d9e119b9faa6e8",
+          "bytes": 911744
+         },
+         {
+          "name": "libuv",
+          "version": "1.53.0-r0",
+          "url": "https://packages.wolfi.dev/os/aarch64/libuv-1.53.0-r0.apk",
+          "sha256": "d171cf3d7e817b2bc98c3e40801b7531f9af1196c9c123e05778bbfbb85ee977",
+          "bytes": 126696
+         },
+         {
+          "name": "libverto",
+          "version": "0.3.2-r11",
+          "url": "https://packages.wolfi.dev/os/aarch64/libverto-0.3.2-r11.apk",
+          "sha256": "864750d72131a29f2f383e53adad5a3e4d32f70ffb3aef6282c0276ccfa8693d",
+          "bytes": 30719
+         },
+         {
+          "name": "libxcrypt",
+          "version": "4.5.2-r6",
+          "url": "https://packages.wolfi.dev/os/aarch64/libxcrypt-4.5.2-r6.apk",
+          "sha256": "9dfd2b4a72d35a1f2c146a968c2368d7cab51bc7ae7854e3dc61e8a98dfeb746",
+          "bytes": 106378
+         },
+         {
+          "name": "libxcrypt-dev",
+          "version": "4.5.2-r6",
+          "url": "https://packages.wolfi.dev/os/aarch64/libxcrypt-dev-4.5.2-r6.apk",
+          "sha256": "95675169d8ca9bec31a56f84468b5c5fe6e17c3b1a4e7361653e0b1ffe15a0db",
+          "bytes": 377569
+         },
+         {
+          "name": "libxml2-16",
+          "version": "2.15.4-r1",
+          "url": "https://packages.wolfi.dev/os/aarch64/libxml2-16-2.15.4-r1.apk",
+          "sha256": "3c76a370da61fc26789b0ac533ed76e442c9849b57564336856c7e0d224e9c8f",
+          "bytes": 668895
+         },
+         {
+          "name": "libxml2-dev",
+          "version": "2.15.4-r1",
+          "url": "https://packages.wolfi.dev/os/aarch64/libxml2-dev-2.15.4-r1.apk",
+          "sha256": "96ffa5dad67ad7918480e81ea7340cdf0b7de148cff4f5e70a1e9e513f2a8f84",
+          "bytes": 98881
+         },
+         {
+          "name": "libzstd1",
+          "version": "1.5.7-r12",
+          "url": "https://packages.wolfi.dev/os/aarch64/libzstd1-1.5.7-r12.apk",
+          "sha256": "8ae2c2ac0859e5a59c1cf771d5491dcdce9f7b6e373c808d5d99ccc7a40789b2",
+          "bytes": 595496
+         },
+         {
+          "name": "linux-headers",
+          "version": "7.3-r0",
+          "url": "https://packages.wolfi.dev/os/aarch64/linux-headers-7.3-r0.apk",
+          "sha256": "bad48891f6a2ddb0af2b59c455fde722c2cdcecc52404fa396e5db9fd493a7d2",
+          "bytes": 2096844
+         },
+         {
+          "name": "make",
+          "version": "4.4.1-r15",
+          "url": "https://packages.wolfi.dev/os/aarch64/make-4.4.1-r15.apk",
+          "sha256": "505a662fa56ce38d47e7796d1232754481ca49a243c8442044df8aeda0bdb768",
+          "bytes": 653670
+         },
+         {
+          "name": "mpc",
+          "version": "1.4.1-r3",
+          "url": "https://packages.wolfi.dev/os/aarch64/mpc-1.4.1-r3.apk",
+          "sha256": "635e2c11382dc56b961e89d4f01f5e8c9433df211a79775661dcfffff717c2d6",
+          "bytes": 90328
+         },
+         {
+          "name": "mpfr",
+          "version": "4.2.2-r5",
+          "url": "https://packages.wolfi.dev/os/aarch64/mpfr-4.2.2-r5.apk",
+          "sha256": "3dd588019e7b85a5c2061adf0cb4ed87d8591f38163a4f5ac085834000e0db13",
+          "bytes": 649887
+         },
+         {
+          "name": "ncurses",
+          "version": "6.6.20261024-r0",
+          "url": "https://packages.wolfi.dev/os/aarch64/ncurses-6.6.20261024-r0.apk",
+          "sha256": "ba996028cc4f3e1b4e4f42684d051257304ca065b7bd4fa20c5ee78f8b44ecb4",
+          "bytes": 616526
+         },
+         {
+          "name": "ncurses-dev",
+          "version": "6.6.20261024-r0",
+          "url": "https://packages.wolfi.dev/os/aarch64/ncurses-dev-6.6.20261024-r0.apk",
+          "sha256": "c8d7c18b7a9b9538e705a82ef037b08587b68271dd6d2b47c9f30b335b68b59b",
+          "bytes": 60381
+         },
+         {
+          "name": "nghttp2",
+          "version": "1.70.0-r7",
+          "url": "https://packages.wolfi.dev/os/aarch64/nghttp2-1.70.0-r7.apk",
+          "sha256": "bca7075b9f5eaf58f1e92cd26c537f75ffe82a3b1d6663e18085d810002da423",
+          "bytes": 1350016
+         },
+         {
+          "name": "nghttp2-dev",
+          "version": "1.70.0-r7",
+          "url": "https://packages.wolfi.dev/os/aarch64/nghttp2-dev-1.70.0-r7.apk",
+          "sha256": "7bb2cefdf22cd4f52ae86af39854d1dffda8fdb0de77c0527b40fe1911ce5823",
+          "bytes": 543399
+         },
+         {
+          "name": "nghttp3",
+          "version": "1.18.0-r3",
+          "url": "https://packages.wolfi.dev/os/aarch64/nghttp3-1.18.0-r3.apk",
+          "sha256": "b5064f8ff42f91e2410812a7cc0e6278043132c0ef79ea6480f4c354bdd248a7",
+          "bytes": 111492
+         },
+         {
+          "name": "ngtcp2",
+          "version": "1.25.0-r7",
+          "url": "https://packages.wolfi.dev/os/aarch64/ngtcp2-1.25.0-r7.apk",
+          "sha256": "c5c7b02654047fceacfc5e8fc7b3b99c8a2622a807bae880aacdbfc46c76f336",
+          "bytes": 222880
+         },
+         {
+          "name": "npth-libs",
+          "version": "1.8-r16",
+          "url": "https://packages.wolfi.dev/os/aarch64/npth-libs-1.8-r16.apk",
+          "sha256": "d5efa0369a3e1d4c8dbaab613075949fdfd58b4b654180b9f86ba4fb87f0d411",
+          "bytes": 27066
+         },
+         {
+          "name": "openssf-compiler-options",
+          "version": "20250904-r11",
+          "url": "https://packages.wolfi.dev/os/aarch64/openssf-compiler-options-20250904-r11.apk",
+          "sha256": "afbcc8b08af58a664a69c6e4bf60624bebdc2af3d2d5cf540c5826ebe040cf70",
+          "bytes": 11230
+         },
+         {
+          "name": "openssl-3.6-libcrypto",
+          "version": "3.6.5-r6",
+          "url": "https://packages.wolfi.dev/os/aarch64/openssl-3.6-libcrypto-3.6.5-r6.apk",
+          "sha256": "bbf9738a1960100008bcc6aba188ed7ce4a84c7873ddeb4ba5b19a2dda30dc1c",
+          "bytes": 2193882
+         },
+         {
+          "name": "openssl-3.6-libssl",
+          "version": "3.6.5-r6",
+          "url": "https://packages.wolfi.dev/os/aarch64/openssl-3.6-libssl-3.6.5-r6.apk",
+          "sha256": "694c0e06540eed0d944cfd6c5fc11b247e62f183b989fd615fddf79b72e6247d",
+          "bytes": 503280
+         },
+         {
+          "name": "openssl-4.0-dev",
+          "version": "4.0.3-r8",
+          "url": "https://packages.wolfi.dev/os/aarch64/openssl-4.0-dev-4.0.3-r8.apk",
+          "sha256": "326f89668c2ebaee7e71e7ae48a4df6fe08936a6fcb35bb222ac0a733247bd91",
+          "bytes": 16517240
+         },
+         {
+          "name": "openssl-4.0-libcrypto",
+          "version": "4.0.3-r8",
+          "url": "https://packages.wolfi.dev/os/aarch64/openssl-4.0-libcrypto-4.0.3-r8.apk",
+          "sha256": "8a509f24f834724ea1927d5a37cd6e8fba5d7c98d0ea8fdea7689b27852e05fc",
+          "bytes": 2155859
+         },
+         {
+          "name": "openssl-4.0-libssl",
+          "version": "4.0.3-r8",
+          "url": "https://packages.wolfi.dev/os/aarch64/openssl-4.0-libssl-4.0.3-r8.apk",
+          "sha256": "0dd48c2a58466c6787d0df2ff2254623c8f470faa6d986975a4c123ef04c6a9c",
+          "bytes": 535346
+         },
+         {
+          "name": "openssl-dev",
+          "version": "3.6.5-r6",
+          "url": "https://packages.wolfi.dev/os/aarch64/openssl-dev-3.6.5-r6.apk",
+          "sha256": "f240b0bfc86755345496c7002fe51ccbc380c6ad7e0a54ef34cdfd43470205a8",
+          "bytes": 16355385
+         },
+         {
+          "name": "openssl-provider-legacy-allowed",
+          "version": "4.1.0-r0",
+          "url": "https://packages.wolfi.dev/os/aarch64/openssl-provider-legacy-allowed-4.1.0-r0.apk",
+          "sha256": "22313fca19b8143db5d239bd14c5251416a2e35ba7418b23b64ece7701bc9785",
+          "bytes": 377292
+         },
+         {
+          "name": "pcre2-dev",
+          "version": "10.49-r1",
+          "url": "https://packages.wolfi.dev/os/aarch64/pcre2-dev-10.49-r1.apk",
+          "sha256": "20ea3fe3b573f2671acb4461d479e0752d46c478b97c4bf85c39e9db8e797219",
+          "bytes": 866040
+         },
+         {
+          "name": "pkgconf",
+          "version": "3.0.10-r2",
+          "url": "https://packages.wolfi.dev/os/aarch64/pkgconf-3.0.10-r2.apk",
+          "sha256": "b8f21e05154d0a4513e2d7e538b1335b33c2a10086ca8968371846e1000555b3",
+          "bytes": 157349
+         },
+         {
+          "name": "posix-cc-wrappers",
+          "version": "2-r10",
+          "url": "https://packages.wolfi.dev/os/aarch64/posix-cc-wrappers-2-r10.apk",
+          "sha256": "1276b118e8e574204601706d56e0381210c4c9c4c1393ca793add9361e4b8810",
+          "bytes": 3400
+         },
+         {
+          "name": "readline",
+          "version": "8.3-r3",
+          "url": "https://packages.wolfi.dev/os/aarch64/readline-8.3-r3.apk",
+          "sha256": "8d4ae6286e3fdc2b50fdd911fe1aa474c771c5708184e721e2255283ec6d7e4e",
+          "bytes": 338069
+         },
+         {
+          "name": "sqlite-libs",
+          "version": "3.54.1-r0",
+          "url": "https://packages.wolfi.dev/os/aarch64/sqlite-libs-3.54.1-r0.apk",
+          "sha256": "158a9e84fd8b3addfca5f3abfb02b754012d6e1d173d4467627d67541c5eafae",
+          "bytes": 944691
+         },
+         {
+          "name": "wolfi-baselayout",
+          "version": "20230201-r30",
+          "url": "https://packages.wolfi.dev/os/aarch64/wolfi-baselayout-20230201-r30.apk",
+          "sha256": "2a6815ada2973deba196e24f4406fcd2619f6a070e693013563530705254a2b8",
+          "bytes": 13964
+         },
+         {
+          "name": "xz",
+          "version": "5.8.4-r0",
+          "url": "https://packages.wolfi.dev/os/aarch64/xz-5.8.4-r0.apk",
+          "sha256": "d2c12615a9601d34f1500a782c38177d18417c576fe7b145e4e88b0165681874",
+          "bytes": 393429
+         },
+         {
+          "name": "xz-dev",
+          "version": "5.8.4-r0",
+          "url": "https://packages.wolfi.dev/os/aarch64/xz-dev-5.8.4-r0.apk",
+          "sha256": "2afd54eedac80d32f8f89fedc7f2ffd68343cbfca7bd75eee475799b1dbbc300",
+          "bytes": 749143
+         },
+         {
+          "name": "zlib",
+          "version": "1.3.2.1_rc20260921-r1",
+          "url": "https://packages.wolfi.dev/os/aarch64/zlib-1.3.2.1_rc20260921-r1.apk",
+          "sha256": "94eeec2403d0a8515362ba8ce6ce53d16f905d0b4f69ecf710d34db40cc1381a",
+          "bytes": 62249
+         },
+         {
+          "name": "zlib-dev",
+          "version": "1.3.2.1_rc20260921-r1",
+          "url": "https://packages.wolfi.dev/os/aarch64/zlib-dev-1.3.2.1_rc20260921-r1.apk",
+          "sha256": "4ceab8cc43bf77871362a2e01560b721013249bc86bf633d99778a3ff8c865ff",
+          "bytes": 46324
+         }
+        ]
+       },
+       "install": {
+        "buildStage": "clamav-source-build (build-only)",
+        "offlineEnforced": "the whole compiler stage runs under RUN --network=none, with the development closure mounted read-only from the build-only staging repository and apk --no-network: the vendored crate tree inside the release asset and FindRust's offline mode are the mechanism, and the network-none guard is what enforces it for configure, cargo, the build and ctest",
+        "installPrefix": "/usr",
+        "whyThisPrefix": "apps/runtime/uploads/native-sandbox.mjs pins the child sandbox's absolute tool paths (/usr/bin/clamscan, /usr/bin/tesseract, /usr/bin/pdftoppm, /usr/bin/python3.13), so the payload is installed where that contract already points and no PATH ordering decides which ClamAV runs",
+        "carriedIntoTheExportedImage": "runtime stage, COPY --from=clamav-source-build /tmp/meri-clamav-out/ /",
+        "buildOnlyEvidence": "the compiler, the Rust toolchain, the development headers and the build tree exist only in stages that are not the exported stage; no runtime instruction carries them",
+        "configuredComponents": [
+         "ENABLE_APP=ON",
+         "ENABLE_MILTER=ON",
+         "ENABLE_CLAMONACC=ON",
+         "ENABLE_UNRAR=ON",
+         "ENABLE_TESTS=ON",
+         "ENABLE_JSON_SHARED=ON",
+         "ENABLE_EXTERNAL_MSPACK=OFF",
+         "ENABLE_SYSTEMD=OFF",
+         "ENABLE_MAN_PAGES=OFF",
+         "ENABLE_STATIC_LIB=OFF",
+         "ENABLE_SHARED_LIB=ON"
+        ],
+        "toolSurface": [
+         "clamscan",
+         "sigtool",
+         "freshclam",
+         "clamd",
+         "clamdscan",
+         "clamdtop",
+         "clamconf",
+         "clambc",
+         "clamsubmit",
+         "clamav-milter",
+         "clamonacc",
+         "clamav-config",
+         "libclamav.so",
+         "libfreshclam.so",
+         "libclamunrar.so"
+        ],
+        "unitTests": "the project's own unit-test target is built (ENABLE_TESTS=ON) and run with ctest in the build stage, so a future build executes real ClamAV unit tests before the payload is installed",
+        "componentInventory": "/usr/share/meri/clamav-component-inventory.txt, written in the build stage from the payload's installed executables (usr/bin, usr/sbin) and its shared libraries (usr/lib/libclam*.so*, usr/lib/libfreshclam*.so*) and re-checked with sha256sum -c against the installed bytes in the runtime stage, so the record is bound to what the image carries. It is the component's executable and library surface, not every file the image carries: the shipped configuration files and the runtime database directories are not hashed.",
+        "provenanceFile": "/usr/share/meri/clamav-component-provenance.json (source-built, not a distribution package)"
+       },
+       "replacedPayload": {
+        "distributionInstallRequestsRemoved": [
+         "clamav-1.5-scanner=1.5.2-r0",
+         "clamav-1.5-freshclam=1.5.2-r0",
+         "clamav-1.5=1.5.2-r7"
+        ],
+        "method": "removed, not shadowed: no Wolfi clamav-1.5 package is installed, so no distribution package record and no 1.5.2 payload remains, and the runtime asserts that no clamav-1.5 package is installed",
+        "archivesStillStagedByteForByte": [
+         {
+          "name": "clamav-1.5-scanner",
+          "version": "1.5.2-r0",
+          "sha256": "5bac4b03f75d4c2548d29d135dff14e8be63493298f28dd4dae144b61f67e7ce"
+         },
+         {
+          "name": "clamav-1.5-freshclam",
+          "version": "1.5.2-r0",
+          "sha256": "c6613152d9ebb613148d4672c40f2d55abe84404ec07ae8f1195f0129312483e"
+         },
+         {
+          "name": "clamav-1.5",
+          "version": "1.5.2-r7",
+          "sha256": "13f74b6fb67cf686f49b122b81c62a42bebf8ab57b77c7ca6ae1e907ad36e603"
+         },
+         {
+          "name": "clamav-1.5-clamdscan",
+          "version": "1.5.2-r7",
+          "sha256": "5bf4b9680aad20835becb9198c7a5fa05f4716380a83ca1f6f5664c53cb09672"
+         },
+         {
+          "name": "clamav-1.5-daemon",
+          "version": "1.5.2-r7",
+          "sha256": "91d2320bbb83ecf1fe6e25ca9ce3847fb04c5782e6bcce60641ead6b2e03017e"
+         },
+         {
+          "name": "clamav-1.5-db",
+          "version": "1.5.2-r7",
+          "sha256": "691a7d174f0a79d26a650804b367cb9c0ca47c1b3a240d5f4c053ff42d7192cf"
+         },
+         {
+          "name": "clamav-1.5-libunrar",
+          "version": "1.5.2-r7",
+          "sha256": "e1d758096a91873113cae77eebc88975cc98584e511f3bfe4e086a91f1de94ac"
+         },
+         {
+          "name": "clamav-1.5-milter",
+          "version": "1.5.2-r7",
+          "sha256": "a608dda49365477ed9462b2293ece2facde211a94e5c681dfab20ef97d5b8283"
+         }
+        ],
+        "whyStillStaged": "the 190-archive pinned staging closure, its order, its URLs and its checksums are preserved unchanged; these eight archives are simply no longer requested by any install, so their bytes are neither installed nor present as a payload"
+       },
+       "coverage": {
+        "advisoryTable": "infra/product-preview/clamav-source-advisories.json",
+        "check": "infra/product-preview/clamav_component_coverage.py",
+        "method": "documented source-range recognition bound to the actual built-image component version, with bounded known-vulnerable, known-fixed and binding controls; it is evidence for the advisory-feed gap, not scanner detection, and it does not weaken the retained HIGH==0 CRITICAL==0 gate",
+        "outcomes": "each advisory and release yields one of fixed, affected, not-affected or unknown; only fixed and not-affected pass, so an affected or otherwise undescribed release always fails closed, and every advisory's documented affected range is retained in the table rather than inferred from an absent release note",
+        "binding": "the coverage result is bound to the built image by the retained image build probe (infra/product-preview/image-build.sh, the network-isolated common docker probe array): python3.13 -I -B /usr/share/meri/clamav_component_coverage.py --bind reads the version from the image's own clamscan, verifies every file the recorded inventory lists against the installed bytes, requires the provenance to declare that same version and to carry the inventory's own sha256, and fails the build (non-zero exit, as every other probe does) when any of them disagrees. The checker and the advisory table are copied into the image from the verified source tree, so the probe measures the image's own bytes rather than a host-side fixture.",
+        "installedVersion": "1.5.4",
+        "advisoriesCovered": 7,
+        "scannerFeedGap": "the retained scan records only CVSS score/vector/package name/version and no fixed-version metadata, and the vendor feed's declared fixed revision (clamav-1.5 1.5.4-r2) is not published in any Wolfi or Chainguard apk repository for aarch64 or x86_64"
+       },
+        "compilerInterpreter": {
+         "requiredBy": "clamav-1.5.4/CMakeLists.txt 219-231 requires find_package(Libcheck REQUIRED) and find_package(Python3 REQUIRED), or EXACT when PYTHON_FIND_VERSION is defined, whenever ENABLE_TESTS=ON; 256-277 runs the unit-test input generators with ${Python3_EXECUTABLE} at build time and requires `${Python3_EXECUTABLE} -m unittest --help` to exit 0 because the stage carries no pytest",
+         "stage": "clamav-source-build (build-only)",
+         "repositoryPath": "/tmp/meri-native-runtime-repo",
+         "repository": "the retained runtime staging set (native-repository: the same vendor-signed index and the same authenticated archives the exported runtime stage already installs python-3.13 from), mounted read-only at its own path, so the interpreter costs no new source, no new checksum and no new trust decision",
+         "exclusiveRepository": "one --repository with --repositories-file /dev/null and --no-network, as the development closure install already is, so the staged signed index stays the only possible source and an incomplete closure fails the build instead of resolving elsewhere",
+         "requested": [
+          {
+           "name": "python-3.13",
+           "version": "3.13.16_git20261016-r2",
+           "filename": "python-3.13-3.13.16_git20261016-r2.apk",
+           "sha256": "ec5c434e7baeed78102d684cca26d8bad793d8408719dbed836c26f3bac7e97f",
+           "url": "https://packages.wolfi.dev/os/aarch64/python-3.13-3.13.16_git20261016-r2.apk",
+           "role": "named in the interpreter install"
+          },
+          {
+           "name": "python-3.13-base",
+           "version": "3.13.16_git20261016-r2",
+           "filename": "python-3.13-base-3.13.16_git20261016-r2.apk",
+           "sha256": "0baaae06fe50c478491eeaa686c8f443f8dd6969a3c5af8d6f2cb6c1a237519f",
+           "url": "https://packages.wolfi.dev/os/aarch64/python-3.13-base-3.13.16_git20261016-r2.apk",
+           "role": "named in the interpreter install"
+          }
+         ],
+         "resolvedFromTheRuntimeRepository": [
+          {
+           "name": "libffi",
+           "version": "3.8.0-r2",
+           "filename": "libffi-3.8.0-r2.apk",
+           "sha256": "df5cab585fd544ce671305dc8b8187bb1ed0c8ac016e995dd129d8d6dd9c556b",
+           "url": "https://packages.wolfi.dev/os/aarch64/libffi-3.8.0-r2.apk",
+           "role": "resolved by apk from the mounted retained runtime staging set"
+          },
+          {
+           "name": "libuuid",
+           "version": "2.42.4-r1",
+           "filename": "libuuid-2.42.4-r1.apk",
+           "sha256": "63ad89463dd6cbb0c682bef6aabdc9896e2708cb42c05bcc33d6bf0dd5ed3bab",
+           "url": "https://packages.wolfi.dev/os/aarch64/libuuid-2.42.4-r1.apk",
+           "role": "resolved by apk from the mounted retained runtime staging set"
+          },
+          {
+           "name": "mpdecimal",
+           "version": "4.0.1-r6",
+           "filename": "mpdecimal-4.0.1-r6.apk",
+           "sha256": "a2b0c0508b07d4e0187d7c9bd231b71d56f195a528b55815e89735d9fa8caef7",
+           "url": "https://packages.wolfi.dev/os/aarch64/mpdecimal-4.0.1-r6.apk",
+           "role": "resolved by apk from the mounted retained runtime staging set"
+          },
+          {
+           "name": "ncurses-terminfo-base",
+           "version": "6.6.20261024-r0",
+           "filename": "ncurses-terminfo-base-6.6.20261024-r0.apk",
+           "sha256": "a01c937f77c6d6e3f62fe67ef6a86f663409fdadf8ae18733d1227ec469814c7",
+           "url": "https://packages.wolfi.dev/os/aarch64/ncurses-terminfo-base-6.6.20261024-r0.apk",
+           "role": "resolved by apk from the mounted retained runtime staging set"
+          },
+          {
+           "name": "py3-pip-wheel",
+           "version": "26.2.2-r0",
+           "filename": "py3-pip-wheel-26.2.2-r0.apk",
+           "sha256": "2edcf4ac5ff50acd5a3fa804ddef9d46d8981958ddab4667bf5e333764156b55",
+           "url": "https://packages.wolfi.dev/os/aarch64/py3-pip-wheel-26.2.2-r0.apk",
+           "role": "resolved by apk from the mounted retained runtime staging set"
+          },
+          {
+           "name": "python-3.13",
+           "version": "3.13.16_git20261016-r2",
+           "filename": "python-3.13-3.13.16_git20261016-r2.apk",
+           "sha256": "ec5c434e7baeed78102d684cca26d8bad793d8408719dbed836c26f3bac7e97f",
+           "url": "https://packages.wolfi.dev/os/aarch64/python-3.13-3.13.16_git20261016-r2.apk",
+           "role": "resolved by apk from the mounted retained runtime staging set"
+          },
+          {
+           "name": "python-3.13-base",
+           "version": "3.13.16_git20261016-r2",
+           "filename": "python-3.13-base-3.13.16_git20261016-r2.apk",
+           "sha256": "0baaae06fe50c478491eeaa686c8f443f8dd6969a3c5af8d6f2cb6c1a237519f",
+           "url": "https://packages.wolfi.dev/os/aarch64/python-3.13-base-3.13.16_git20261016-r2.apk",
+           "role": "resolved by apk from the mounted retained runtime staging set"
+          }
+         ],
+         "satisfiedByTheDevelopmentClosure": "the interpreter's remaining dependencies are already installed by the pinned 101-archive development closure: glibc-2.44 2.44-r10 with ld-linux-2.44 2.44-r10 (so:libc.so.6, so:libm.so.6, so:ld-linux-aarch64.so.1), ncurses 6.6.20261024-r0 (so:libncursesw.so.6, so:libtinfo.so.6, so:libpanelw.so.6), readline 8.3-r3, gdbm 1.26-r9 (so:libgdbm.so.6, so:libgdbm_compat.so.4), xz 5.8.4-r0 (so:liblzma.so.5), zlib-dev 1.3.2.1_rc20260921-r1 (so:libz.so.1), openssl-dev 3.6.5-r6 with the openssl-4.0 libraries (so:libcrypto.so.4, so:libssl.so.4), libexpat1 2.9.0-r0, libbz2-1 1.0.8-r28, sqlite-libs 3.54.1-r0, libgcc 16.2.0-r2 and libstdc++ 16.2.0-r2",
+         "versionAssertion": "python3.13 -c 'import sys; assert sys.version_info[:3] == (3, 13, 16), sys.version; print(\"interpreter\", sys.version)'",
+         "reportedVersion": "python3.13 --version is printed into the build log immediately before the assertion",
+         "unittestAssertion": "python3.13 -m unittest --help > /dev/null",
+         "unittestAssertionReason": "the upstream block accepts pytest, then `${Python3_EXECUTABLE} -m pytest`, and otherwise requires `${Python3_EXECUTABLE} -m unittest --help` to exit 0 or it stops configure with FATAL_ERROR; this stage carries no pytest, so the unittest entry point is the one the upstream check actually applies",
+         "moduleAssertion": "python3.13 -c 'import argparse, errno, functools, getpass, hashlib, http.server, logging, multiprocessing, os, pathlib, platform, random, re, shutil, signal, socket, socketserver, struct, subprocess, sys, tempfile, threading, time, typing, unittest, unittest.mock, zipfile, zlib'",
+         "stdlibModules": [
+          "argparse",
+          "errno",
+          "functools",
+          "getpass",
+          "hashlib",
+          "http.server",
+          "logging",
+          "multiprocessing",
+          "os",
+          "pathlib",
+          "platform",
+          "random",
+          "re",
+          "shutil",
+          "signal",
+          "socket",
+          "socketserver",
+          "struct",
+          "subprocess",
+          "sys",
+          "tempfile",
+          "threading",
+          "time",
+          "typing",
+          "unittest",
+          "unittest.mock",
+          "zipfile",
+          "zlib"
+         ],
+         "pinDrift": "the development closure's own version assertion loop still runs after the interpreter install, so an interpreter install that replaced or moved a pinned development package fails the build",
+         "compilerOnly": "installed in the build-only compiler stage through a bind mount released with that RUN; the exported runtime stage keeps its own pinned python-3.13=3.13.16_git20261016-r2 install and names neither the mount nor the compiler stage's repository path",
+         "notProven": "Unqualified: no ARM build has run, so whether apk resolves this closure in stage, whether the interpreter executes the upstream unit tests and the resulting payload's behaviour, ABI, size and scan result remain unproven"
+        },
+       "qualification": "Unqualified source preparation. No image was built, installed, probed or scanned, so the built payload's behaviour, its size against the 3 GiB measured ceiling, its ABI and its scan result remain unproven and require a separately allocated ARM build, probe and scan."
+      },
       "packageIndex": "https://packages.wolfi.dev/os/aarch64/APKINDEX.tar.gz",
       "packageIndexSha256": "991dd62e3a14e255819e7ac013a6deded970555e1f0943e6b2709c09a5edbd24",
       "retrievedOn": "2026-10-28",
@@ -1929,7 +2979,7 @@
         "note": "Retained verbatim as the repository index and committed under infra/product-preview/native-apk-index. It is the trust root for the staged archives, so no live index is consulted and no .apk file is passed to apk as a local path."
       },
       "note": "The Wolfi APKINDEX is a rolling live file, so the frozen index hash above is only a per-retrieval audit record; the pinned .apk archives are the authoritative immutable artifacts. Every recorded .apk sha256 was computed from the downloaded official archive, and every download length matched the index S: field exactly.",
-            "closure": "The whole transitive native closure of the seven upload archives (and of the python and renderer layers) is staged inside one local apk repository: 190 official aarch64 archives pinned by exact URL and sha256 in the Dockerfile ADD --checksum list and in systemPackages, beside the retained vendor-signed index recorded above. The three native layers install with `apk add --no-cache --no-network --repository /tmp/meri-native-repo --update-cache <name>=<version>`, so apk admits every archive through that index signature and its recorded package identity and never through a local file path or --allow-untrusted. This corrects the earlier claim that the previous 88-archive closure installed from local paths: the exact locked command `apk add --no-cache --no-network <pinned archives>` fails with UNTRUSTED signature exit 99, and the previous closure was also incomplete (apk resolves 175 members for these layers; 91 further official archives were added here). The engine library itself moves with the release: so:libclamav.so.12 is provided by clamav-1.5 1.5.2-r7 (the approved scanner binaries stay at the pinned 1.5.2-r0), and the Wolfi clamav-1.5 package hard-depends on clamav-1.5-daemon/-milter/-clamdscan/-db/-libunrar, so those binaries are installed but nothing configures or starts a daemon and no clamd.conf exists.",
+            "closure": "The whole transitive native closure of the seven upload archives (and of the python and renderer layers) is staged inside one local apk repository: 190 official aarch64 archives pinned by exact URL and sha256 in the Dockerfile ADD --checksum list and in systemPackages, beside the retained vendor-signed index recorded above. The three native layers install with `apk add --no-cache --no-network --repository /tmp/meri-native-repo --update-cache <name>=<version>`, so apk admits every archive through that index signature and its recorded package identity and never through a local file path or --allow-untrusted. This corrects the earlier claim that the previous 88-archive closure installed from local paths: the exact locked command `apk add --no-cache --no-network <pinned archives>` fails with UNTRUSTED signature exit 99, and the previous closure was also incomplete (apk resolves 175 members for these layers; 91 further official archives were added here). The engine library itself moves with the release: so:libclamav.so.12 is provided by clamav-1.5 1.5.2-r7 (the approved scanner binaries stay at the pinned 1.5.2-r0), and the Wolfi clamav-1.5 package hard-depends on clamav-1.5-daemon/-milter/-clamdscan/-db/-libunrar, so those binaries are installed but nothing configures or starts a daemon and no clamd.conf exists. SCRUM-197 update: the three Wolfi clamav-1.5 install requests are removed from the upload layer and the ClamAV payload is now source-built from the authenticated upstream 1.5.4 release asset in the build-only clamav-source-build stage (see clamavSourcePreparation). The eight clamav-1.5 family archives stay in this pinned staging closure byte for byte, with their URLs, checksums and order unchanged, but no install requests them any more: the vulnerable payload is removed rather than shadowed through PATH precedence, and the image asserts that no clamav-1.5 distribution package is installed.",
       "declaredFinalVersions": {
         "note": "The intended FINAL versions of the shared C++ runtime in the built image, so the two layers' package statements are one truthful declaration instead of an implicit supersession. Nothing here is an observed installed fact: no image has been built, pulled or inspected.",
         "final": {"libstdc++": "16.2.0-r2", "libgcc": "16.2.0-r2", "libatomic": "16.2.0-r1"},

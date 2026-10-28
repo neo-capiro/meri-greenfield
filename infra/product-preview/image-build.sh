@@ -120,6 +120,10 @@ run 180 runtime-probe.log "${common[@]}" --entrypoint node "$image" apps/runtime
 run 300 artifact-generation.log "${common[@]}" --entrypoint node "$image" infra/product-preview/runtime-packages/executor-generation-smoke.mjs
 run 120 product-imports.log "${common[@]}" --entrypoint node "$image" --input-type=module -e "await import('./apps/runtime/agentcore-entrypoint.mjs');await import('./apps/runtime/control.mjs');await import('./apps/runtime/temporal-worker.mjs');await import('./apps/runtime/conversation-runner.mjs');"
 run 30 installed-packages.log "${common[@]}" --entrypoint apk "$image" info -vv
+# The built image must bind its recorded coverage to what it actually carries: the check reads the version from
+# the image's own clamscan, verifies the installed bytes against the inventory the build stage recorded, and
+# requires the provenance record to agree with both. A non-zero exit fails this build like any other probe.
+run 60 clamav-component-binding.log "${common[@]}" --entrypoint python3.13 "$image" -I -B /usr/share/meri/clamav_component_coverage.py --bind
 run 30 installed-python.json "${common[@]}" --entrypoint python3.13 "$image" -I -m pip list --format=json
 run 30 public-ca.log "${common[@]}" --entrypoint node "$image" --input-type=module -e "import fs from 'node:fs';import assert from 'node:assert/strict';import {createHash} from 'node:crypto';const lock=JSON.parse(fs.readFileSync('apps/runtime/certs/rds-global-bundle.lock.json'));const path=process.env.NODE_EXTRA_CA_CERTS;assert.equal(path,lock.imagePath);const bytes=fs.readFileSync(path),s=fs.statSync(path);assert.equal(createHash('sha256').update(bytes).digest('hex'),lock.sha256);assert.equal(bytes.length,lock.bytes);assert.equal(s.mode&4095,292);assert.equal(s.uid,0);"
 run 30 repository.json "${aws[@]}" ecr describe-repositories --repository-names "$repository" --output json
