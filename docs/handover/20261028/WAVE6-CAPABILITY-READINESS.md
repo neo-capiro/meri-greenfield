@@ -33,3 +33,15 @@ Use existing feature owners and the Claude SDK harness. Reuse public contracts, 
 ## Remaining preparation
 
 A3 authenticated sites, A4 device/browser bridge, A5 federal drafting and A7 Collabora/WOPI preparation are processed individually after these rows. A6 graph/buyer/funding work is explicitly skipped. No unprocessed row is complete.
+
+## A3 — authenticated website workflows
+
+**Owner and behavior.** `browser/site-workflows/manifest.mjs` owns credential-free workflow manifests, policy narrowing and enablement preparation. `browser/{permissions,approval-binding,downloads}.mjs` owns exact interaction approvals and download custody. Session/fence/confidentiality/destruction owners from A2 retain authentication only for the authorized conversation and stop after expiry, logout or revocation. The approved registry is empty; no site/task has been approved or enabled.
+
+**Source correction.** Approval now binds the entire manifest hash as well as site/task/version. Changing task, origins, downloads, privacy selectors or retention under an old version label cannot inherit approval. Empty or malformed activation evidence is refused. No public DTO, registry entry or activation flag was added.
+
+**Dependencies and decisions.** User must name first sites/tasks, permitted actions and redirects, site terms and retention limits. The existing eight-hour ceiling is a source constraint, not current approval of a site's retention policy. Takeover sign-in, confidential input exclusion, private session custody, reviewed exact consequential target/data, consumed/expired approval refusal and unknown-action reconciliation precede exposure. Downloads must enter existing artifact handling with source/version provenance. Material site/sign-in changes require renewed qualification.
+
+**Finite next slice and acceptance.** Once named, add one complete credential-free manifest with reviewed terms and exact digest, then qualify sign-in, reuse only within the same conversation, logout/expiry/revocation, target/data-bound approval and timeout readback using that site's actual workflow. No credential collection in chat, cross-conversation session inheritance or blind replay. Until then maintain the empty registry and explicit unavailable state.
+
+**Checks.** Six manifest/policy tests passed, including changed-content approval refusal and malformed activation evidence. Synthetic sites only. Real site, browser, sign-in and terms acceptance not run. A1 dependency follow-up also passed all 11 HTTP/session-isolation cases; capability/Bash imports still require local package setup and native SDK/filesystem proof remains unrun.
