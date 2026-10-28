@@ -7,7 +7,7 @@ const selection={artifactId:id(800),versionId:id(801),objectSha256:'a'.repeat(64
 const context={tenantId:binding.tenantId,actorId:binding.actorId,conversationId:binding.conversationId,runId:binding.runId,clientId:id(5)};
 const receipt=()=>({run,request:{...request,skill:null,window:null,windowRequest:null},lastSequence:1,replayed:false});
 test('explicit family versions retain fixed routes and runtime wire identity',()=>{
- assert.equal(app.conversationApplicationMetadata.wireContractVersion,'0.3.0');assert.equal(input.conversationInputVersion,'1.2.0');assert.equal(initial.conversationInitialInputVersion,'1.2.0');assert.equal(history.conversationHistoryVersion,'1.3.0');assert.equal(run.versions.contracts,'0.1.0');
+ assert.equal(app.conversationApplicationMetadata.wireContractVersion,'0.4.0');assert.equal(input.conversationInputVersion,'1.3.0');assert.equal(initial.conversationInitialInputVersion,'1.3.0');assert.equal(history.conversationHistoryVersion,'1.4.0');assert.equal(run.versions.contracts,'0.1.0');
 });
 test('canonical revision submit/input/allocation request brands agree, refusing unknown fields and skill mixing',()=>{
  for(const receive of [b=>app.receiveConversationRequest('submit',b),input.receiveConversationInputRequest,initial.receiveConversationInitialInputRequest]){

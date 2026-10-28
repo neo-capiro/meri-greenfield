@@ -2,7 +2,7 @@
  * Parent released exact DDL source authoring in central allocation 0b0b7abd; SQL execution/integration qualification remain pending. */
 import {canonicalSha256 as hash,validateShape} from '../../../packages/contracts/validate.mjs';
 import {assertNativeApprovalProposal} from '../../../packages/contracts/commands-0.2/validate.mjs';
-import {validateShape as validateToolShape} from '../../../packages/contracts/retrieval-0.2/validate.mjs';
+import {resolveOperationContract,validateShape as validateToolShape} from '../../../packages/contracts/retrieval-0.2/validate.mjs';
 import {data,own,nativeSignal} from '../../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {assertPool,transact} from '../product-persistence/transaction.mjs';
 import {refuse,productFailure} from '../product-access/errors.mjs';
@@ -14,9 +14,14 @@ function key(raw){
  if(typeof k.conversationId!=='string'||!/^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/u.test(k.conversationId)||typeof k.deliveryId!=='string'||!/^sdk:[a-f0-9]{64}$/u.test(k.deliveryId))refuse('INTENT_JOURNAL_STATE');
  return [k.tenantId,k.actorId,k.conversationId,k.deliveryId];
 }
+/** The canonical authority for an admissible intent operation version: the catalog owner's own resolver, so an exact
+ * `id@version` is admitted only when it resolves to its registered descriptor and immutable schema. A stored 0.2
+ * reference and the current 0.3 successor each resolve to their own; neither a version regex nor a copied version
+ * list decides here, and an unregistered version or unknown id still refuses. */
+const registered=operation=>{try{resolveOperationContract(operation);return true;}catch{return false;}};
 function record(raw){
  const r=data(own(raw,['operation','argumentsSha256']));own(r.operation,['id','version']);
- if(typeof r.operation.id!=='string'||!/^[a-z][a-z_]{0,62}$/u.test(r.operation.id)||r.operation.version!=='0.2.0'||typeof r.argumentsSha256!=='string'||!digest.test(r.argumentsSha256))refuse('INTENT_JOURNAL_STATE');return r;
+ if(typeof r.operation.id!=='string'||!/^[a-z][a-z_]{0,62}$/u.test(r.operation.id)||typeof r.argumentsSha256!=='string'||!digest.test(r.argumentsSha256)||!registered(r.operation))refuse('INTENT_JOURNAL_STATE');return r;
 }
 function outcome(state,raw){
  if(!states.includes(state))refuse('INTENT_JOURNAL_STATE');

@@ -26,7 +26,7 @@ test('MP explicit choice correlates exactly with admitted/history request; omitt
 });
 
 test('input metadata preserves exact canonical statuses and byte limits',()=>{
- assert.equal(metadata.packageVersion,'0.1.7');assert.equal(metadata.inputVersion,'1.2.0');assert.equal(metadata.routes.admit.path,'/api/conversations/input/admit');assert.equal(metadata.routes.admit.method,'POST');
+ assert.equal(metadata.packageVersion,'0.1.7');assert.equal(metadata.inputVersion,'1.3.0');assert.equal(metadata.routes.admit.path,'/api/conversations/input/admit');assert.equal(metadata.routes.admit.method,'POST');
  assert.deepEqual(metadata.limits,{requestBytes:131072,responseBytes:2097152});assert.deepEqual(metadata.errorStatuses,conversationApplicationMetadata.errorStatuses);assert.equal(metadata.authentication.validationGrantsAuthority,false);assert.ok(Object.isFrozen(metadata.limits));
 });
 test('strict receipt agrees across internal server assertion and public receiver',async()=>{

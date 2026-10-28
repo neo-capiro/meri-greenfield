@@ -12,7 +12,9 @@ const filing=name=>({$ref:'urn:meri:commands:artifact-file:0.2.0#/$defs/'+name})
 const artifact=name=>({$ref:'urn:meri:artifacts:0.2.0#/$defs/'+name});
 const schedule=name=>({$ref:'urn:meri:schedules:tool-interface:0.2.0#/$defs/'+name});
 const legislativeDocument=name=>({$ref:'urn:meri:retrieval:legislative-document-action:0.2.0#/$defs/'+name});
-const clientRecord=name=>({$ref:'urn:meri:retrieval:client-record-action:0.2.0#/$defs/'+name});
+// Client-record moved to its disjoint 0.3 family: the retained proposal shape is unchanged, and only this owner
+// carries the bounded source provenance on a create input and the bounded preflight on a live answer.
+const clientRecord=name=>({$ref:'urn:meri:retrieval:client-record-action:0.3.0#/$defs/'+name});
 const legiwatch=name=>({$ref:'urn:meri:retrieval:legiwatch-action:0.2.0#/$defs/'+name});
 const bizdev=name=>({$ref:'urn:meri:retrieval:bizdev-action:0.2.0#/$defs/'+name});
 const sharing=name=>({$ref:'urn:meri:retrieval:research-portfolio-sharing:0.2.0#/$defs/'+name});
@@ -21,11 +23,14 @@ const watch=name=>({$ref:'urn:meri:retrieval:watch-action:0.2.0#/$defs/'+name});
 const note=name=>({$ref:'urn:meri:retrieval:note-action:0.2.0#/$defs/'+name});
 const ref=name=>({$ref:'#/$defs/'+name});
 const object=(properties,required=Object.keys(properties))=>({type:'object',properties,required,additionalProperties:false});
-const item=(extra,required)=>object({deliveryId:ref('IntentsDeliveryId'),createdAt:{type:'string',pattern:MILLIS},operation:ref('IntentsOperation'),...extra},['deliveryId','createdAt','operation',...required??Object.keys(extra)]);
+const item=(extra,required,operation='IntentsOperation')=>object({deliveryId:ref('IntentsDeliveryId'),createdAt:{type:'string',pattern:MILLIS},operation:ref(operation),...extra},['deliveryId','createdAt','operation',...required??Object.keys(extra)]);
 export function intentsSchema({errorStatuses,errorOutcomes,failureCodes,fieldPattern}){return {$schema:'https://json-schema.org/draft/2020-12/schema',$id:INTENTS_SCHEMA_ID,$defs:{
  IntentsConversationId:{type:'string',pattern:UUID},
  IntentsDeliveryId:{type:'string',pattern:DELIVERY},
  IntentsOperation:object({id:{type:'string',pattern:'^[a-z][a-z_]{0,62}$'},version:{const:'0.2.0'}}),
+// The client-record owner now publishes a successor beside its retained version, so its list item accepts
+// both. Every other intent keeps the single published operation ref above; this changes no other family.
+ IntentsClientRecordOperation:object({id:{type:'string',pattern:'^[a-z][a-z_]{0,62}$'},version:{enum:['0.2.0','0.3.0']}}),
  IntentsListRequest:object({conversationId:ref('IntentsConversationId'),after:{anyOf:[ref('IntentsDeliveryId'),{type:'null'}]},limit:{type:'integer',minimum:1,maximum:50}},['conversationId']),
  IntentsDecideRequest:object({conversationId:ref('IntentsConversationId'),deliveryId:ref('IntentsDeliveryId'),proposalId:{type:'string',pattern:UUID},commandSha256:{type:'string',pattern:'^[a-f0-9]{64}$'},decision:{enum:['approved','rejected']}}),
  IntentsNativeProposal:{oneOf:[pub('ApprovalProposal'),update('TaskUpdateApprovalProposal'),mail('MailSendApprovalProposal'),document('DocumentDraftApprovalProposal')]},
@@ -67,9 +72,9 @@ export function intentsSchema({errorStatuses,errorOutcomes,failureCodes,fieldPat
  IntentsLegiwatchItem:item({state:{const:'prepared'},kind:{const:'legiwatch_action'},proposal:legiwatch('LegiwatchProposal'),result:{anyOf:[legiwatch('LegiwatchCoreResult'),{const:'unavailable'}]}}),
  IntentsLegislativeDocumentItem:item({state:{const:'prepared'},kind:{const:'legislative_document_action'},proposal:legislativeDocument('LegislativeDocumentProposal'),result:{anyOf:[legislativeDocument('LegislativeDocumentCoreResult'),{const:'unavailable'}]}}),
  IntentsWithheldLegislativeDocumentItem:item({state:{const:'prepared'},kind:{const:'legislative_document_action'},withheld:{const:true}}),
- IntentsClientRecordItem:item({state:{const:'prepared'},kind:{const:'client_record_action'},proposal:clientRecord('ClientRecordProposal'),result:{anyOf:[clientRecord('ClientRecordCoreResult'),{const:'unavailable'}]}}),
+ IntentsClientRecordItem:item({state:{const:'prepared'},kind:{const:'client_record_action'},proposal:clientRecord('ClientRecordProposal'),result:{anyOf:[clientRecord('ClientRecordCoreResult'),{const:'unavailable'}]}},undefined,'IntentsClientRecordOperation'),
  IntentsWithheldLegiwatchItem:item({state:{const:'prepared'},kind:{const:'legiwatch_action'},withheld:{const:true}}),
- IntentsWithheldClientRecordItem:item({state:{const:'prepared'},kind:{const:'client_record_action'},withheld:{const:true}}),
+ IntentsWithheldClientRecordItem:item({state:{const:'prepared'},kind:{const:'client_record_action'},withheld:{const:true}},undefined,'IntentsClientRecordOperation'),
  IntentsBizdevItem:item({state:{const:'prepared'},kind:{const:'bizdev_action'},proposal:bizdev('BizdevProposal'),result:{anyOf:[bizdev('BizdevCoreResult'),{const:'unavailable'}]}}),
  IntentsWithheldBizdevItem:item({state:{const:'prepared'},kind:{const:'bizdev_action'},withheld:{const:true}}),
  IntentsWatchItem:item({state:{const:'prepared'},kind:{const:'watch_action'},proposal:watch('WatchProposal'),result:{anyOf:[watch('WatchCoreResult'),{const:'unavailable'}]}}),

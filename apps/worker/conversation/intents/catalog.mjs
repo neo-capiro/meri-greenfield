@@ -13,13 +13,20 @@
  * - `artifact`: the artifact analysis owner (no governed route yet).
  * - `memory`: the governed memory candidate producer, submitted for Core review.
  * - `note`: current Core note owner; static PASS saves once without approval. */
-import catalog from '../../../../packages/contracts/retrieval-0.2/catalog.json' with {type:'json'};
+// The current published catalog. It retains every earlier descriptor byte-for-byte beside the registered
+// successors, so a row that still names an earlier version keeps resolving to that version's descriptor,
+// schema byte pin and validator group, while the rows below advertise the current version.
+import catalog from '../../../../packages/contracts/retrieval-0.3/catalog.json' with {type:'json'};
 export const INTENT_SERVER_NAME='meri_intents';
 export const INTENT_TOOL_PREFIX=`mcp__${INTENT_SERVER_NAME}__`;
 /** @typedef {{id:string,version:string}} OperationRef */
 /** @typedef {'command'|'schedule'|'document'|'artifact'|'memory'|'research-sharing'|'research-action'|'legiwatch'|'client-record'|'bizdev'|'legislative-document'|'watch'|'note'} OwnerKind */
 /** @typedef {{operation:OperationRef,tool:string,owner:OwnerKind,unavailable:string|null}} IntentRow */
-const op=(/** @type {string} */id)=>Object.freeze({id,version:'0.2.0'});
+/** The version each advertised intent resolves at. `create_client` crossed to the 0.3 client-record input;
+ * an id not listed here keeps the original 0.2.0 owner, and a stored 0.2.0 reference still resolves to it. */
+/** @type {Readonly<Record<string,string|undefined>>} */
+const ADVERTISED_VERSION=Object.freeze({create_client:'0.3.0'});
+const op=(/** @type {string} */id)=>Object.freeze({id,version:ADVERTISED_VERSION[id]??'0.2.0'});
 const row=(/** @type {string} */id,/** @type {string} */tool,/** @type {OwnerKind} */owner,/** @type {string|null} */unavailable=null)=>Object.freeze({operation:op(id),tool,owner,unavailable});
 /** @type {readonly IntentRow[]} */
 export const INTENT_ROWS=Object.freeze([

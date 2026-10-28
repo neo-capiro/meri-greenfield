@@ -89,3 +89,25 @@ test('L1 a RESERVED next turn written before an image-only deploy is accepted af
  await x.accept(again.binding,'after the release');
  assert.ok((await x.lineage(again.binding)).nextTurn.checkpoint.checkpointId);
 }finally{x.f.close();}});
+// The work selector crosses the successor fence through the actual service: it is stored on the successor run's own
+// request, an identical replay re-releases that same run, and a changed or removed field is refused by the stored-request
+// boundary (service.mjs REQUEST_REPLAY_REFUSED) before a second run can exist.
+test('a successor turn retains the stored work selector, replays identically, and refuses any changed or removed field',async()=>{const x=await fixture();try{
+ await x.first();await x.running(binding);await x.f.store.append(binding,x.status('failed','EXECUTION_FAILED'),check);await x.settle(binding);
+ const selected=await x.select();assert.equal(selected.binding.writerFence,2);
+ // A session is pinned to its run: the successor is entered through its own issued session, never a silent rebind.
+ x.f.state.context.binding=selected.binding;const credential=(await x.f.sessions.issue({identityCredential:'synthetic-successor'})).credential;
+ const requestId=id(970),prompt='continue with work',work={entry:'start-work',jobKind:'research',deliverables:['brief'],dependencies:[]};
+ const accepted=await x.f.service.submit({credential,input:{requestId,prompt,work}});
+ assert.equal(accepted.replayed,false);assert.deepEqual(accepted.run.binding,selected.binding);assert.equal(x.f.state.runs.size,2);
+ const history=await x.f.service.history({credential});assert.deepEqual(history.run.binding,selected.binding);
+ assert.deepEqual(history.request.work,work,'the successor run stores the exact submitted work selector');
+ assert.deepEqual((await x.f.store.findRequest(selected.binding,requestId,check)).request.work,work);
+ const replay=await x.f.service.submit({credential,input:{requestId,prompt,work}});
+ assert.equal(replay.replayed,true);assert.deepEqual(replay.run.binding,selected.binding);assert.equal(x.f.state.runs.size,2,'an exact replay re-releases the same run');
+ for(const changed of [{...work,jobKind:'audit'},{...work,deliverables:['other']},{...work,dependencies:['other']}])await assert.rejects(x.f.service.submit({credential,input:{requestId,prompt,work:changed}}),/REQUEST_REPLAY_REFUSED/,'a changed work field never becomes a second run');
+ await assert.rejects(x.f.service.submit({credential,input:{requestId,prompt}}),/REQUEST_REPLAY_REFUSED/,'a removed work selector is refused by the stored request');
+ await assert.rejects(x.f.service.submit({credential,input:{requestId,prompt,work:{entry:work.entry,jobKind:work.jobKind,deliverables:work.deliverables}}}),/INVALID_REQUEST/,'a work selector missing a member is malformed at the boundary');
+ assert.equal(x.f.state.runs.size,2);
+ assert.deepEqual((await x.f.store.findRequest(selected.binding,requestId,check)).request.work,work,'no refusal alters the stored selector');
+}finally{x.f.close();}});

@@ -17,7 +17,9 @@ test('exact immutable whole-checkpoint prefix can omit resumeSessionAt without l
  const f=continuationFixture();f.continuation.resumeSessionAt=null;const out=buildContinuationOptions(f.continuation,f.target);
  assert.deepEqual(out,{resume:f.continuation.checkpoint.sessionId});
 });
+const workSelection={entry:'start-work',jobKind:'research',deliverables:['brief'],dependencies:[]};
 const mutations={checkpointHash:f=>f.continuation.checkpointSha256='d'.repeat(64),requestHash:f=>f.continuation.sourceRequestSha256='d'.repeat(64),
+ work:f=>{f.target.request.work=structuredClone(workSelection);},
  prompt:f=>f.target.request.prompt='Substituted original intent',requestId:f=>f.target.request.requestId=f.target.sourceRequest.requestId,
  window:f=>f.target.request.window={basis:'unbounded'},skill:f=>f.target.request.skill.proseSha256='d'.repeat(64),scope:f=>f.target.scopes=[{...f.target.scopes[0],resourceId:id(30)}],
  sdk:f=>f.target.versions={...f.target.versions,sdk:'0.0.0'},cli:f=>f.target.versions={...f.target.versions,cli:'0.0.0'},format:f=>f.target.versions={...f.target.versions,checkpointFormat:'0.2.0'},
@@ -27,6 +29,12 @@ const mutations={checkpointHash:f=>f.continuation.checkpointSha256='d'.repeat(64
  workspaceBinding:f=>{f.continuation.checkpoint.workspace.binding={...f.binding,writerFence:11};f.continuation.checkpoint.workspaceSha256=canonicalSha256(f.continuation.checkpoint.workspace);f.continuation.checkpointSha256=canonicalSha256(f.continuation.checkpoint);},
  opaqueScope:f=>{f.continuation.checkpoint.opaqueSession.scopes=[{...f.target.scopes[0],resourceId:id(30)}];f.continuation.checkpointSha256=canonicalSha256(f.continuation.checkpoint);}};
 for(const[name,mutate]of Object.entries(mutations))test(`continuation ${name} substitution refuses`,()=>{const f=continuationFixture();mutate(f);assert.throws(()=>buildContinuationOptions(f.continuation,f.target));});
+test('a work selection that differs from the source request refuses the continuation pin',()=>{
+ const differing=[f=>{f.target.request.work=structuredClone(workSelection);},
+  f=>{f.target.sourceRequest.work=structuredClone(workSelection);},
+  f=>{f.target.request.work=structuredClone(workSelection);f.target.sourceRequest.work={...structuredClone(workSelection),jobKind:'audit'};}];
+ for(const mutate of differing){const f=continuationFixture();mutate(f);assert.throws(()=>buildContinuationOptions(f.continuation,f.target),/CONTINUATION_PIN_REFUSED/);}
+});
 test('fork cannot reuse original conversation/session and does not retire original task',()=>{
  for(const key of ['conversation','session']){const f=continuationFixture('fork');if(key==='conversation')f.target.binding.conversationId=f.binding.conversationId;
  else f.continuation.targetSessionId=f.continuation.checkpoint.sessionId;assert.throws(()=>buildContinuationOptions(f.continuation,f.target));}

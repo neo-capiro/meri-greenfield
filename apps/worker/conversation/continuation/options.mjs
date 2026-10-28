@@ -40,7 +40,7 @@ export function buildContinuationOptions(value,target) {
       !same(cp.scopes,cp.opaqueSession.scopes)||cp.workspace.entries.some((/** @type {{object:{scopes:import('../../../../packages/contracts/dist/contracts.js').Scope[]}}} */ entry)=>entry.object.scopes.some(scope=>!cp.scopes.some((/** @type {import('../../../../packages/contracts/dist/contracts.js').Scope} */ parent)=>same(scope,parent))))||
       !same(cp.scopes,t.scopes)||!continuesSession(cp.versions,t.versions)||t.versions.sdk!=='0.3.295'||t.versions.cli!=='2.1.295'||
       continuationContextSha256(t.sourceRequest,cp.scopes)!==c.contextSha256||continuationContextSha256(t.request,t.scopes)!==c.contextSha256||
-      !same(t.sourceRequest.windowRequest,t.request.windowRequest)||!same(t.sourceRequest.documentRevision??null,t.request.documentRevision??null)||!same(t.sourceRequest.uploads??null,t.request.uploads??null)||!same(t.sourceRequest.procedure??null,t.request.procedure??null)||t.request.prompt!==t.sourceRequest.prompt||
+      !same(t.sourceRequest.windowRequest,t.request.windowRequest)||!same(t.sourceRequest.documentRevision??null,t.request.documentRevision??null)||!same(t.sourceRequest.uploads??null,t.request.uploads??null)||!same(t.sourceRequest.procedure??null,t.request.procedure??null)||!same(t.sourceRequest.work??null,t.request.work??null)||t.request.prompt!==t.sourceRequest.prompt||
       t.request.requestId===t.sourceRequest.requestId)fail('CONTINUATION_PIN_REFUSED');
   assertContinuationTarget(c,t.binding);
   if(t.request.skill!==null) {

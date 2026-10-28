@@ -4,9 +4,13 @@ import {own,data} from '../../../packages/contracts/commands-0.2/execution-bound
 import {retainedOrigin} from '../../../packages/contracts/runtime-0.2/retained-reads.mjs';
 import {createOperationLifetime} from '../../../packages/runtime/operation-lifetime.mjs';
 import {readJsonResponse,responseBody,cancelBody} from '../../gateway/sources/json-response.mjs';
-import {clientRecordValidators as validators} from '../../../packages/contracts/retrieval-0.2/validate.mjs';
+import {clientRecordValidators as validators} from '../../../packages/contracts/retrieval-0.3/client-record-action-validation.mjs';
 import {intentFault} from '../../control/intents/faults.mjs';
 const prefix='/api/clio/tools',token=/^[\x21-\x7e]{1,8192}$/u;
+// Explicit envelope negotiation with the Core peer: version 1 is the retained closed answer, version 2 adds the
+// bounded duplicate/capacity preflight and the sourced create input. Sending 2 is what keeps the old closed
+// receiver working, because Core only answers with the fields the caller actually asked for.
+const CORE_ENVELOPE_VERSION=2;
 const refuse=(code='UNAVAILABLE',effect='none')=>{throw intentFault(code,effect);};
 const sha=value=>createHash('sha256').update(value).digest('hex');
 export function createClientRecordCoreClient({origin,getCredentials,getServiceSecret,reservedCredentials,now,fetchImpl=globalThis.fetch,maxRequestMs=10000}){
@@ -41,18 +45,18 @@ export function createClientRecordCoreClient({origin,getCredentials,getServiceSe
   async prepare({binding,selectedClientId,request,signal,deadlineMs}){
    validators.request(request);
    const context={conversationId:binding.conversationId,selectedClientId};
-   const result=validators.coreResult(await call({binding,selectedClientId,signal,deadlineMs},'POST',prefix+'/prepare_client_record_action',{version:1,context,request},true),{request});
+   const result=validators.coreResult(await call({binding,selectedClientId,signal,deadlineMs},'POST',prefix+'/prepare_client_record_action',{version:CORE_ENVELOPE_VERSION,context,request},true),{request});
    if(result.status!=='proposed'||result.context.conversationId!==context.conversationId||result.context.selectedClientId!==selectedClientId)refuse('REFUSED','unknown');
    return result;
   },
   async read({proposal,signal,deadlineMs}){
    const p=validators.assertProposal(proposal);
-   return validators.coreResult(await call({proposal,signal,deadlineMs},'POST',prefix+'/read_client_record_action',{version:1,proposalId:p.proposalId,context:p.context}),p);
+   return validators.coreResult(await call({proposal,signal,deadlineMs},'POST',prefix+'/read_client_record_action',{version:CORE_ENVELOPE_VERSION,proposalId:p.proposalId,context:p.context}),p);
   },
   async decide({proposal,decision,signal,deadlineMs}){
    const p=validators.assertProposal(proposal);if(!['approved','rejected'].includes(decision))refuse('INVALID_ARGUMENTS');
    // An uncertain response is observed through read(), never replayed here automatically.
-   return validators.coreResult(await call({proposal,signal,deadlineMs},'POST',prefix+'/decide_client_record_action',{version:1,proposalId:p.proposalId,context:p.context,decision},true),p);
+   return validators.coreResult(await call({proposal,signal,deadlineMs},'POST',prefix+'/decide_client_record_action',{version:CORE_ENVELOPE_VERSION,proposalId:p.proposalId,context:p.context,decision},true),p);
   },
  });
 }

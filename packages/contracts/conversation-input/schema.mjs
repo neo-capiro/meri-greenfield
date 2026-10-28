@@ -1,5 +1,5 @@
 import {conversationInputMetadata} from './protocol.mjs';
-const canonical=name=>({$ref:'urn:meri:conversation-application:0.3.0#/$defs/'+name});
+const canonical=name=>({$ref:'urn:meri:conversation-application:0.4.0#/$defs/'+name});
 const pub=name=>({$ref:'urn:meri:contracts:0.1.0#/$defs/'+name});
 const object=properties=>({type:'object',properties,required:Object.keys(properties),additionalProperties:false});
 const uuid={type:'string',pattern:'^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$'};

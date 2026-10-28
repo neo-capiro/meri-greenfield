@@ -32,6 +32,6 @@ test('detail/error status correlation cannot be borrowed for another run or trea
 });
 test('new named wire metadata keeps run wire separate from the explicitly extended ordinary history family',()=>{
  const metadata=JSON.parse(readFileSync(new URL('../dist/conversation-history.metadata.json',import.meta.url)));
- assert.equal(metadata.historyVersion,'1.3.0');assert.equal(metadata.runIndex.version,'1.0.0');
- assert.equal(metadata.schemaId,'urn:meri:conversation-history:1.3.0');assert.equal(metadata.runIndex.schemaId,'urn:meri:run-index:1.0.0');
+ assert.equal(metadata.historyVersion,'1.4.0');assert.equal(metadata.runIndex.version,'1.0.0');
+ assert.equal(metadata.schemaId,'urn:meri:conversation-history:1.4.0');assert.equal(metadata.runIndex.schemaId,'urn:meri:run-index:1.0.0');
 });

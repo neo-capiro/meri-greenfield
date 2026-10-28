@@ -36,7 +36,9 @@ test('preserves the ten typed additions plus memory read within all139/96/43 bou
 
 test('every binding resolves the correct existing definition and exact raw schema hash', () => {
   for (const binding of CATALOG_OPERATION_BINDINGS) {
-    const contract=operation(binding.id), raw=readFileSync(new URL(schemaRelativePath(binding.group),import.meta.url));
+    // Each binding resolves at its own registered version, so a retained row and its successor each
+    // keep their own definition and raw byte hash instead of one id-only lookup shadowing the other.
+    const contract=resolveOperationContract({id:binding.id,version:binding.version}), raw=readFileSync(new URL(schemaRelativePath(binding.group),import.meta.url));
     const schema=JSON.parse(raw), sha256=createHash('sha256').update(raw).digest('hex');
     assert.ok(Object.hasOwn(schema.$defs,binding.input)); assert.ok(Object.hasOwn(schema.$defs,binding.output));
     assert.deepEqual(contract.descriptor.inputSchema,{id:`${schema.$id}#/$defs/${binding.input}`,sha256});

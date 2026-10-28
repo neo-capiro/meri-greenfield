@@ -11,8 +11,13 @@ import {own,data} from '../../../../packages/contracts/commands-0.2/execution-bo
 import {assertProposalIntegrity,canonicalSha256,validateShape} from '../../../../packages/contracts/validate.mjs';
 import {artifactValidators,scheduleToolValidators,researchShareValidators,researchActionValidators,legiwatchValidators,savedNoteValidators,watchValidators,bizdevValidators,legislativeDocumentValidators,clientRecordValidators,validateShape as toolShape} from '../../../../packages/contracts/retrieval-0.2/validate.mjs';
 import {assertMailSendProposal,assertTaskUpdateProposal} from '../../../../packages/contracts/commands-0.2/validate.mjs';
+// Only the client-record admission reads the disjoint 0.3 family, so a sourced create proposal is admitted here too.
+import {clientRecordValidators as clientRecord3Validators} from '../../../../packages/contracts/retrieval-0.3/client-record-action-validation.mjs';
 import {assertMemoryReviewResult} from '../../../../packages/contracts/commands-0.2/memory-review-result.mjs';
 const ACTIONS=Object.freeze({mail_send:'mail.send',create_task:'task.create',update_task:'task.update',save_chat_attachments:'artifact.file'});
+// The versions the client-record owner prepares. `create_client` moved to 0.3.0 and `update_client_profile`
+// stays on 0.2.0; the port only ever advertises the version its own composed preparer declares.
+const CLIENT_RECORD_VERSIONS=Object.freeze(new Set(['0.2.0','0.3.0']));
 const refuse=()=>{throw Object.assign(Error('INVALID_RESULT'),{code:'INVALID_RESULT'});};
 /** @param {any} b @param {any} binding */
 const sameRun=(b,binding)=>b?.tenantId===binding.tenantId&&b?.actorId===binding.actorId&&b?.conversationId===binding.conversationId;
@@ -41,8 +46,8 @@ export function assertPreparedResult(owner,operation,value,binding,current){
    return {status:'approval_required',reference:p.proposalId,value:v};
   }
   if(owner==='client-record'){
-   clientRecordValidators.assertOutput(v);const p=v.proposal;
-   if(p.operation!==operation.id||operation.version!=='0.2.0'||!sameRun(p.binding,binding)||!currentScopes(p.scopes,binding,current.scopes)||Date.parse(p.createdAt)>current.nowMs||Date.parse(p.expiresAt)<=current.nowMs)refuse();
+   clientRecord3Validators.assertOutput(v);const p=v.proposal;
+   if(p.operation!==operation.id||!CLIENT_RECORD_VERSIONS.has(operation.version)||!sameRun(p.binding,binding)||!currentScopes(p.scopes,binding,current.scopes)||Date.parse(p.createdAt)>current.nowMs||Date.parse(p.expiresAt)<=current.nowMs)refuse();
    return {status:'approval_required',reference:p.proposalId,value:v};
   }
   if(owner==='bizdev'){

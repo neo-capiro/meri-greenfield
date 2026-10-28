@@ -13,6 +13,8 @@ import {createResearchWorkflowValidators} from './research-portfolio-workflow-va
 import {createResearchActionValidators} from './research-portfolio-action-validation.mjs';
 import { executionSchemaSources, executionSchemaDependencies } from './execution-schema-sources.mjs';
 import { createExecutionToolValidators } from './execution-tool-validators.mjs';
+import { clientRecordValidators as clientRecord3Validators } from '../retrieval-0.3/client-record-action-validation.mjs';
+import { createScheduleToolValidators as createSchedule3ToolValidators } from '../schedules-0.3/tool-interface-validation.mjs';
 import { createResearchPortfolioEvidenceValidators } from './research-portfolio-evidence-validation.mjs';
 import { createClientKnowledgeSearchValidators } from './client-knowledge-search-validation.mjs';
 import { createClientKnowledgeMondayValidators } from './client-knowledge-monday-validation.mjs';
@@ -108,6 +110,10 @@ function executionShape(group,name,value) {
 }
 const executionToolValidators = createExecutionToolValidators({schemaShape:executionShape, schemaFor:group=>schemas[groups.indexOf(group)], validatePublicShape, canonicalSha256});
 export const {artifactValidators,commandToolValidators,scheduleToolValidators} = executionToolValidators;
+// The separately versioned schedule tool interface (M7's 0.3 prerequisite). Its definitions are
+// addressed by group, so the shared name space above keeps resolving every 0.2 name unchanged.
+export const schedule3ToolValidators = createSchedule3ToolValidators({schema: schemas[groups.indexOf('schedule-tools-v3')],
+  validateShape: (name, value) => executionShape('schedule-tools-v3', name, value)});
 const fail = message => { throw new Error(message); };
 const key = operation => `${operation.id}@${operation.version}`;
 function unique(values, label) {
@@ -373,7 +379,10 @@ export const researchShareValidators=createResearchShareValidators({validateShap
 export const researchWorkflowValidators=createResearchWorkflowValidators({validateShape});
 export const researchActionValidators=createResearchActionValidators({validateShape,canonicalSha256});
 export const legislativeDocumentValidators=createLegislativeDocumentValidators({validateShape:validatePublicShape,canonicalSha256});
-const sourceCatalog = JSON.parse(readFileSync(new URL('./catalog.json', import.meta.url)));
+// The current published catalog. It retains every earlier descriptor byte-for-byte beside the
+// registered successors, so a stored {id,version} still resolves to the descriptor and validator
+// group it was stored with, while the current advertisement resolves to the successor.
+const sourceCatalog = JSON.parse(readFileSync(new URL('../retrieval-0.3/catalog.json', import.meta.url)));
 export const {resolveOperationContract} = createOperationContracts({catalog: sourceCatalog,
   bindings: CATALOG_OPERATION_BINDINGS, assertCatalog, canonicalSha256,
   validators: Object.freeze({researchWorkflowValidators,researchActionValidators,savedNoteValidators,watchStateValidators,watchValidators,legislativeDocumentValidators,bizdevValidators,clientRecordValidators,relevanceValidators,legislativeComparisonValidators,legiwatchReviewValidators,legiwatchValidators,researchShareValidators,...mailValidators, ...meetingValidators, ...operationalReadValidators,
@@ -385,4 +394,5 @@ export const {resolveOperationContract} = createOperationContracts({catalog: sou
     ...stateStatusVotesValidators, ...regulatoryDocketsValidators, ...tenantContactsValidators, ...entityCandidatesValidators, ...trackedBillsValidators, ...intelligenceSummaryValidators,
     ...publicWebValidators, ...samOpportunitiesValidators, floridaBudgetValidators, connectedAppValidators, teamsChannelValidators, savedRecordValidators, strategySavedValidators, capiroDataValidators,
     ...outreachQueryValidators, ...programElementValidators,
-    clientKnowledgeSearchValidators, clientKnowledgeMondayValidators, clientKnowledgeAttachmentValidators, clientKnowledgeMemoryValidators, clientKnowledgeProfileValidators, ...researchLegalCandidatesValidators, ...publicDomainQueryValidators, ...researchLegalLegislationValidators, ...actionItemsCompleteValidators, ...researchLegalNewsValidators, ...publicDomainHearingsValidators})});
+    clientKnowledgeSearchValidators, clientKnowledgeMondayValidators, clientKnowledgeAttachmentValidators, clientKnowledgeMemoryValidators, clientKnowledgeProfileValidators, ...researchLegalCandidatesValidators, ...publicDomainQueryValidators, ...researchLegalLegislationValidators, ...actionItemsCompleteValidators, ...researchLegalNewsValidators, ...publicDomainHearingsValidators,
+    clientRecord3Validators, schedule3ToolValidators})});

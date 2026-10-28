@@ -36,7 +36,9 @@ test('original139 rows and63 descriptors/callbacks survive exactly four full map
  for(const id of ['save_memory','create_task','run_analysis'])if(verticalOperationIds.includes(id))assert.doesNotThrow(()=>resolve(id));else assert.throws(()=>resolve(id));
 });
 test('all84 descriptors have exact schema byte pins and no implementation admission',()=>{
- for(const b of bindings){const d=resolve(b.id).descriptor,bytes=readFileSync(new URL(schemaRelativePath(b.group),import.meta.url)),s=JSON.parse(bytes);for(const [field,def]of[['inputSchema',b.input],['outputSchema',b.output]])assert.deepEqual(d[field],{id:`${s.$id}#/$defs/${def}`,sha256:createHash('sha256').update(bytes).digest('hex')});assert.equal(d.handler,null);assert.equal(d.availability,'unimplemented');assert.equal(d.qualification,'pending');assert.equal(d.retry.maxRetries,0);}
+ // Each binding resolves at its own registered version, so the retained 0.2 descriptor and the registered
+ // 0.3 successor each pin their own schema bytes instead of one id-only lookup shadowing the other.
+ for(const b of bindings){const d=resolveOperationContract({id:b.id,version:b.version}).descriptor,bytes=readFileSync(new URL(schemaRelativePath(b.group),import.meta.url)),s=JSON.parse(bytes);for(const [field,def]of[['inputSchema',b.input],['outputSchema',b.output]])assert.deepEqual(d[field],{id:`${s.$id}#/$defs/${def}`,sha256:createHash('sha256').update(bytes).digest('hex')});assert.equal(d.handler,null);assert.equal(d.availability,'unimplemented');assert.equal(d.qualification,'pending');assert.equal(d.retry.maxRetries,0);}
 });
 for(const id of ids){
  test(`${id}: actual canonical normalizer/output callbacks preserve detached request and digest`,()=>{

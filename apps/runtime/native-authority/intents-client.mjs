@@ -12,6 +12,8 @@ import {types} from 'node:util';
 import {own,data,nativeSignal} from '../../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {canonicalSha256 as hash,validateShape} from '../../../packages/contracts/validate.mjs';
 import {createOperationLifetime} from '../../../packages/runtime/operation-lifetime.mjs';
+import {resolveOperationContract} from '../../../packages/contracts/retrieval-0.2/validate.mjs';
+import catalog from '../../../packages/contracts/retrieval-0.3/catalog.json' with {type:'json'};
 /* Shared wire protocol (this module imports only packages/*, so the runner image gains one file; intents-http.mjs reuses it). */
 /** Closed transport failures and their statuses: the intent mount's codes plus RESOURCE_LIMIT for an over-limit body. */
 export const RUNNER_INTENT_FAILURES=Object.freeze({UNAVAILABLE:503,ACCESS_DENIED:403,REFUSED:409,INVALID_ARGUMENTS:400,DEADLINE:408,CANCELLED:408,CONFLICT:409,UNKNOWN:502,RESOURCE_LIMIT:413});
@@ -22,12 +24,23 @@ export const runnerIntentFault=code=>Object.assign(new Error(code),{code:Object.
 /** The closed code an error carries as an own data property, or null. Never runs accessors or proxy traps. */
 export const runnerIntentCode=error=>{const code=error!==null&&typeof error==='object'&&!types.isProxy(error)?Object.getOwnPropertyDescriptor(error,'code')?.value:undefined;return typeof code==='string'&&Object.hasOwn(RUNNER_INTENT_FAILURES,code)?code:null;};
 const OPERATION=/^[a-z][a-z_]{0,62}$/u,DELIVERY=/^sdk:[a-f0-9]{64}$/u,MAX_OPERATIONS=32;
+/** The canonical authority for an admissible intent operation version: the catalog owner's own resolver, so an exact
+ * `id@version` is admitted only when it resolves to its registered descriptor and immutable schema. The retained 0.2
+ * reference and the current 0.3 successor both pass; an unregistered version or unknown id still refuses. Neither a
+ * version regex nor a copied version list decides here. */
+const registered=operation=>{try{resolveOperationContract(operation);return true;}catch{return false;}};
+/** Names the catalog itself publishes as deferred originals: declared capabilities with no operation contract at any
+ * version. A port may honestly report one in its availability facts (it is not an operation, so it never becomes a
+ * visible tool), and refusing the whole snapshot over it would withhold every intent the port does back. Derived from
+ * the catalog's own `originals`/`disposition` data, so this is the same authority, not a copied list. */
+const declaredOriginals=new Set(catalog.originals.filter(o=>o.disposition==='deferred').map(o=>o.id));
+const admissible=operation=>registered(operation)||declaredOriginals.has(operation.id);
 /** Shared closed request admission (also used by the runner client before dispatch). */
 export function runnerIntentRequest(route,value){
  let v;try{v=data(own(value,route==='availability'?['binding']:['binding','operation','arguments','deliveryId']));validateShape('RunBinding',v.binding);}catch{throw runnerIntentFault('INVALID_ARGUMENTS');}
  if(route==='prepare'){
   try{own(v.operation,['id','version']);}catch{throw runnerIntentFault('INVALID_ARGUMENTS');}
-  if(typeof v.operation.id!=='string'||!OPERATION.test(v.operation.id)||v.operation.version!=='0.2.0'||typeof v.deliveryId!=='string'||!DELIVERY.test(v.deliveryId)||
+  if(typeof v.operation.id!=='string'||!OPERATION.test(v.operation.id)||!registered(v.operation)||typeof v.deliveryId!=='string'||!DELIVERY.test(v.deliveryId)||
    v.arguments===null||typeof v.arguments!=='object'||Array.isArray(v.arguments))throw runnerIntentFault('INVALID_ARGUMENTS');
  }
  return v;
@@ -37,7 +50,7 @@ export function runnerIntentAvailability(raw,binding,at){
  try{
   const s=data(own(raw,['binding','operations','checkedAtMs','expiresAtMs']));
   if(hash(s.binding)!==hash(binding)||!Array.isArray(s.operations)||s.operations.length>MAX_OPERATIONS||!Number.isSafeInteger(s.checkedAtMs)||!Number.isSafeInteger(s.expiresAtMs)||s.checkedAtMs>at||s.expiresAtMs<=at)throw 0;
-  for(const o of s.operations){own(o,['id','version']);if(typeof o.id!=='string'||!OPERATION.test(o.id)||o.version!=='0.2.0')throw 0;}
+  for(const o of s.operations){own(o,['id','version']);if(typeof o.id!=='string'||!OPERATION.test(o.id)||!admissible(o))throw 0;}
   return s;
  }catch{throw runnerIntentFault('UNAVAILABLE');}
 }

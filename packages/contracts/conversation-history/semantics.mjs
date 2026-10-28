@@ -1,6 +1,7 @@
 import {assertHearingSourceEventSemantics} from '../conversation-sources/hearing-semantics.mjs';
 import {assertProcedureSelection} from '../procedure-selection.mjs';
 import {assertUploadSelections} from '../upload-selection.mjs';
+import {assertWorkSelection} from '../work-selection.mjs';
 import {assertNativeSourceEventSemantics} from '../conversation-sources/semantics.mjs';
 import {assertUploadSourceEventSemantics} from '../conversation-sources/upload-semantics.mjs';
 /** Shared post-schema correlation and request normalization; receives parsed/snapshotted JSON only. */
@@ -65,6 +66,7 @@ export function assertHistoryResponseSemantics(route,request,result){
  for(const t of result.turns){run(t.run,c);const b=t.run.binding,l=t.promptLineage,end=t.sequenceBase+t.lastSequence;
   if(t.request.procedure!==undefined){try{assertProcedureSelection(t.request.procedure);}catch{fail('TURN_MISMATCH');}}
   if(t.request.uploads!==undefined){try{assertUploadSelections(t.request.uploads);}catch{fail('TURN_MISMATCH');}}
+  if(t.request.work!==undefined){try{assertWorkSelection(t.request.work);}catch{fail('TURN_MISMATCH');}}
   if(!integer(end,1)||t.sequenceEnd!==null&&t.sequenceEnd!==end||b.writerFence>result.latestRun.binding.writerFence||t.sequenceBase<0||end>result.lastSequence||turns.has(b.runId)||requests.has(t.request.requestId)||prior&&(prior.run.binding.writerFence>=b.writerFence||prior.sequenceBase+prior.lastSequence!==t.sequenceBase))fail('TURN_MISMATCH');
   if(b.runId===result.latestRun.binding.runId){if(!same(t.run,result.latestRun)||t.sequenceBase!==result.latestSequenceBase||end!==result.lastSequence)fail('TURN_MISMATCH');}
   else if(t.sequenceEnd===null||b.writerFence>=result.latestRun.binding.writerFence||end>result.latestSequenceBase)fail('TURN_MISMATCH');

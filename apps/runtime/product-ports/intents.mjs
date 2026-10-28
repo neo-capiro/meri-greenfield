@@ -40,7 +40,9 @@ import {createCoreFilingClient} from '../artifacts/core-filing-client.mjs';
 import {currentNativeApprovalSession,currentAttendedSession} from '../native-authority/approval-session.mjs';
 import {createResearchSharingCoreClient} from '../native-authority/research-sharing-client.mjs';
 import {createResearchActionCoreClient} from '../native-authority/research-action-client.mjs';
-import {researchShareValidators,researchActionValidators,legiwatchValidators,watchValidators,bizdevValidators,legislativeDocumentValidators,clientRecordValidators} from '../../../packages/contracts/retrieval-0.2/validate.mjs';
+import {researchShareValidators,researchActionValidators,legiwatchValidators,watchValidators,bizdevValidators,legislativeDocumentValidators} from '../../../packages/contracts/retrieval-0.2/validate.mjs';
+// The attended client-record port reads the disjoint 0.3 family so a sourced create proposal is admitted.
+import {clientRecordValidators} from '../../../packages/contracts/retrieval-0.3/client-record-action-validation.mjs';
 const fault=code=>Object.assign(new Error(code),{code});
 /** The runtime secret reader, loaded on first use: `../config.mjs` imports this module for its configuration validator. */
 const runtimeReadSecret=async path=>(await import('../config.mjs')).readSecret(path);

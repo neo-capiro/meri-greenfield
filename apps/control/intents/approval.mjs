@@ -18,7 +18,11 @@
  * Construction is inert. `enabled` defaults to false. */
 import {canonicalSha256 as hash,validateShape} from '../../../packages/contracts/validate.mjs';
 import {assertNativeApprovalProposal} from '../../../packages/contracts/commands-0.2/validate.mjs';
-import {artifactValidators as artifacts,scheduleToolValidators,researchShareValidators,researchActionValidators,legiwatchValidators,savedNoteValidators,watchValidators,bizdevValidators,legislativeDocumentValidators,clientRecordValidators,validateShape as artifactShape} from '../../../packages/contracts/retrieval-0.2/validate.mjs';
+import {artifactValidators as artifacts,scheduleToolValidators,researchShareValidators,researchActionValidators,legiwatchValidators,savedNoteValidators,watchValidators,bizdevValidators,legislativeDocumentValidators,validateShape as artifactShape} from '../../../packages/contracts/retrieval-0.2/validate.mjs';
+// Client-record reads the disjoint 0.3 family: the retained proposal shape is identical, while the create input may
+// carry the bounded source provenance and the live answer may carry the bounded preflight. Every other owner above
+// keeps its frozen 0.2 reading.
+import {clientRecordValidators} from '../../../packages/contracts/retrieval-0.3/client-record-action-validation.mjs';
 import {data,own,nativeSignal} from '../../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {createOperationLifetime} from '../../../packages/runtime/operation-lifetime.mjs';
 import {ProductError,productFailure} from '../product-access/errors.mjs';
@@ -27,6 +31,9 @@ import {nativeMailOutcome} from './mail-outcome.mjs';
 import {nativeArtifactFileOutcome} from './filing-outcome.mjs';
 import {assertMemoryReviewResult} from '../../../packages/contracts/commands-0.2/memory-review-result.mjs';
 const UUID=/^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/u,DELIVERY=/^sdk:[a-f0-9]{64}$/u,DIGEST=/^[a-f0-9]{64}$/u;
+/** The versions the client-record owner prepares. `create_client` moved to 0.3.0 and `update_client_profile`
+ * stays on 0.2.0, so a stored row of either version still decides against the owner that produced it. */
+const CLIENT_RECORD_VERSIONS=Object.freeze(new Set(['0.2.0','0.3.0']));
 /** Commands an approved intent may execute: those with a proposal (approval-metadata) owner today. */
 export const APPROVABLE_ACTIONS=Object.freeze(['task.create','task.update','document.draft','artifact.file','mail.send']);
 /** Domain failures and their HTTP statuses (transport/membership codes belong to `product-access/http.mjs`). */
@@ -206,7 +213,7 @@ async function decideLegiwatch(life,principal,entry,r){
  function clientRecordProposal(entry,principal,conversationId){
   let p;try{clientRecordValidators.assertOutput(entry.outcome.result);p=entry.outcome.result.proposal;
    const input=clientRecordValidators.normalizeInput(p.operation,p.request.input);
-   if(entry.record.operation.id!==p.operation||entry.record.operation.version!=='0.2.0'||hash(input)!==entry.record.argumentsSha256||!same(p.binding,entry.outcome.release.binding)||p.scopes.some(s=>!entry.outcome.release.scopes.some(original=>same(s,original)))||!same(conversationOf(p.binding),{tenantId:principal.tenantId,actorId:principal.actorId,conversationId}))throw Error();
+   if(entry.record.operation.id!==p.operation||!CLIENT_RECORD_VERSIONS.has(entry.record.operation.version)||hash(input)!==entry.record.argumentsSha256||!same(p.binding,entry.outcome.release.binding)||p.scopes.some(s=>!entry.outcome.release.scopes.some(original=>same(s,original)))||!same(conversationOf(p.binding),{tenantId:principal.tenantId,actorId:principal.actorId,conversationId}))throw Error();
   }catch{fail('INTENT_JOURNAL_UNAVAILABLE');}return p;
  }
  const clientRecordVisible=(p,principal)=>visible(p.scopes,principal)&&(p.operation==='create_client'||principal.clientIds.includes(p.request.input.clientId));

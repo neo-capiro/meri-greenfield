@@ -5,9 +5,6 @@ import addFormats from 'ajv-formats';
 import { canonicalSha256 } from '../validate.mjs';
 import { snapshotOperationData } from '../retrieval-0.2/operation-contracts.mjs';
 
-const schema=JSON.parse(readFileSync(new URL('./lifecycle.schema.json',import.meta.url)));
-const ajv=new Ajv({strict:true,allErrors:true}); addFormats(ajv);
-ajv.addSchema(JSON.parse(readFileSync(new URL('../meri.schema.json',import.meta.url)))); ajv.addSchema(schema);
 export const denySchedule=code=>{throw Object.assign(new Error(code),{code});};
 export function scheduleErrorCode(error) {
   if(!error||types.isProxy(error)||(typeof error!=='object'&&typeof error!=='function'))return null;
@@ -18,7 +15,13 @@ export function frozenScheduleData(value) {
   const freeze=value=>{if(value&&typeof value==='object'){Object.values(value).forEach(freeze);Object.freeze(value);}return value;};
   return freeze(copied);
 }
-export function scheduleShape(name,value) {
+/** One semantic owner for the separately versioned lifecycle shapes. Legacy callers retain0.2. */
+export function createScheduleLifecycleValidators(schema) {
+ const sourceEvents=schema?.$id==='urn:meri:schedules:lifecycle:0.3.0';
+ if(!sourceEvents&&schema?.$id!=='urn:meri:schedules:lifecycle:0.2.0')denySchedule('SCHEDULE_SCHEMA');
+ const ajv=new Ajv({strict:true,allErrors:true});addFormats(ajv);
+ ajv.addSchema(JSON.parse(readFileSync(new URL('../meri.schema.json',import.meta.url))));ajv.addSchema(schema);
+function scheduleShape(name,value) {
   const copy=frozenScheduleData(value);
   if(!ajv.getSchema(`${schema.$id}#/$defs/${name}`)?.(copy)) denySchedule('SCHEDULE_DATA');
   return copy;
@@ -32,7 +35,7 @@ function projection(p,tenant) {
   if(p.owner.tenantId!==tenant||p.scopes.some(s=>s.tenantId!==tenant))denySchedule('SCHEDULE_TENANT');
   date(p.createdAt);
 }
-export function assertScheduleIntent(intent,tenant) {
+function assertScheduleIntent(intent,tenant) {
   const i=scheduleShape('Intent',intent),p=i.projection;
   projection(p,tenant);
   if(!Number.isSafeInteger(p.maxRuntimeSeconds*1000)||!Number.isSafeInteger(p.retryLimit+1))denySchedule('SCHEDULE_BUDGET');
@@ -45,7 +48,11 @@ export function assertScheduleIntent(intent,tenant) {
     const c=i.configuration;
     if(!c||i.cancel!==null||p.state!==(c.paused?'paused':'active')||p.timezone!==c.spec.timezone||(i.operation==='update_scheduled_task'&&c.runNow))denySchedule('SCHEDULE_CONFIGURATION');
     const s=c.spec;
-    if(!s.calendars.length&&!s.intervals.length&&!s.cronExpressions.length)denySchedule('SCHEDULE_SPEC');
+    const timed=Boolean(s.calendars.length||s.intervals.length||s.cronExpressions.length);
+    if(sourceEvents&&c.sourceTrigger!=null) {
+      // A source event is the only trigger. Never invent a cron or an immediate firing.
+      if(timed||s.skip.length||s.jitterMs!==0||c.runNow)denySchedule('SCHEDULE_SOURCE_TRIGGER');
+    } else if(!timed)denySchedule('SCHEDULE_SPEC');
     if(s.startAt!==null)date(s.startAt);if(s.endAt!==null)date(s.endAt);
     if(s.startAt!==null&&s.endAt!==null&&date(s.startAt)>date(s.endAt))denySchedule('SCHEDULE_SPEC');
     for(const v of s.intervals)if(v.offset>=v.every||v.every%1000||v.offset%1000)denySchedule('SCHEDULE_INTERVAL');
@@ -53,7 +60,7 @@ export function assertScheduleIntent(intent,tenant) {
   }
   return i;
 }
-export function snapshotScheduleCall(kind,value,now) {
+function snapshotScheduleCall(kind,value,now) {
   const call=scheduleShape(kind,value);
   if(!Number.isSafeInteger(now)||call.deadlineMs<=now||call.deadlineMs-now>60000)denySchedule('SCHEDULE_DEADLINE');
   const tenant=call.callerIdentity.tenantId;
@@ -65,9 +72,14 @@ export function snapshotScheduleCall(kind,value,now) {
   }
   return frozenScheduleData({...call,bindingSha256:canonicalSha256(call)});
 }
-export function assertScheduleAuthority(value,binding) {
+function assertScheduleAuthority(value,binding) {
   const a=scheduleShape('Authorization',value);
   if(a.bindingSha256!==binding.bindingSha256||canonicalSha256(a.callerIdentity)!==canonicalSha256(binding.callerIdentity))denySchedule('SCHEDULE_AUTHORIZATION');
   return a;
 }
+
+ return Object.freeze({scheduleShape,assertScheduleIntent,snapshotScheduleCall,assertScheduleAuthority});
+}
+export const {scheduleShape,assertScheduleIntent,snapshotScheduleCall,assertScheduleAuthority}=createScheduleLifecycleValidators(
+ JSON.parse(readFileSync(new URL('./lifecycle.schema.json',import.meta.url))));
 export {canonicalSha256};

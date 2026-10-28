@@ -58,7 +58,9 @@ test('exact PR28 descriptors and callback source survive in single registry with
 });
 
 test('all catalog schema fingerprints resolve exact private bytes and keep unavailable admission',()=>{
- for(const b of bindings){const d=resolve(b.id).descriptor,raw=readFileSync(new URL(schemaRelativePath(b.group),import.meta.url)),s=JSON.parse(raw),hash=createHash('sha256').update(raw).digest('hex');
+ // Each binding resolves at its own registered version: a retained 0.2 row still pins the 0.2 bytes and a
+ // registered successor pins its own, so the preservation proof covers both without widening either one.
+ for(const b of bindings){const d=resolveOperationContract({id:b.id,version:b.version}).descriptor,raw=readFileSync(new URL(schemaRelativePath(b.group),import.meta.url)),s=JSON.parse(raw),hash=createHash('sha256').update(raw).digest('hex');
   for(const [field,def]of [['inputSchema',b.input],['outputSchema',b.output]])assert.deepEqual(d[field],{id:`${s.$id}#/$defs/${def}`,sha256:hash});
   assert.equal(d.handler,null);assert.equal(d.availability,'unimplemented');assert.equal(d.qualification,'pending');assert.equal(d.retry.maxRetries,0);assert.ok(Object.isFrozen(d));
  }

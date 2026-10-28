@@ -14,7 +14,7 @@ const NOW=Date.now(),now=()=>NOW;
 const allocated=(admitted,overrides={})=>({allocation:{binding:structuredClone(binding),scopes:structuredClone(scopes),versions:structuredClone(versions),selectedClientId:id(5),requestId:admitted.requestId,inputSha256:sha(canonicalize(admitted)),requestSha256:'c'.repeat(64),allocatedAtMs:NOW-1000,expiresAtMs:NOW+60000,...overrides},state:'RESERVED',created:true});
 
 test('initial-input metadata preserves the allocate route, bounded limits and closed error outcomes',()=>{
- assert.equal(metadata.packageVersion,'0.1.10');assert.equal(metadata.initialInputVersion,'1.2.0');assert.equal(metadata.schemaId,'urn:meri:conversation-initial-input:1.2.0');
+ assert.equal(metadata.packageVersion,'0.1.10');assert.equal(metadata.initialInputVersion,'1.3.0');assert.equal(metadata.schemaId,'urn:meri:conversation-initial-input:1.3.0');
  assert.equal(metadata.routes.allocate.path,'/api/conversations/input/allocate');assert.equal(metadata.routes.allocate.method,'POST');assert.equal(conversationInitialInputPath,metadata.routes.allocate.path);
  assert.deepEqual(metadata.limits,{requestBytes:131072,responseBytes:131072,maxRequestMs:25000});assert.equal(metadata.bridge.responseBytes,conversationInputMetadata.limits.responseBytes);
  assert.deepEqual(metadata.authentication,conversationInputMetadata.authentication);assert.equal(metadata.authentication.validationGrantsAuthority,false);

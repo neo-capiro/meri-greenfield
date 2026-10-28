@@ -84,7 +84,11 @@ function freezeData(value) {
 export function createOperationContracts({catalog, bindings, validators, assertCatalog, canonicalSha256}) {
   const snapshot = copyData(catalog); assertCatalog(snapshot); freezeData(snapshot);
   const descriptors = new Map(snapshot.operations.map(row => [`${row.operation.id}@${row.operation.version}`, row]));
-  const registry = new Map(bindings.map(binding => [binding.id, binding]));
+  // Bindings are indexed by the exact `id@version` they own, like the descriptors they resolve
+  // against. One operation id may therefore retain an earlier version beside its successor, and
+  // each resolves to its own descriptor and its own validator group. Nothing is version-fuzzy:
+  // a reference resolves only when its exact version is registered.
+  const registry = new Map(bindings.map(binding => [`${binding.id}@${binding.version}`, binding]));
   function contextData(value, binding, output = false) {
     const context = copyData(value);
     const names = binding.contextKeys ?? ['nowMs', 'actorId', 'previousPage'];
@@ -97,7 +101,7 @@ export function createOperationContracts({catalog, bindings, validators, assertC
     const ref = copyData(reference);
     if (!ref || typeof ref !== 'object' || Array.isArray(ref) || Object.keys(ref).sort().join(',') !== 'id,version')
       fail('Invalid operation contract reference');
-    const binding = registry.get(ref.id), descriptor = descriptors.get(`${ref.id}@${ref.version}`);
+    const binding = registry.get(`${ref.id}@${ref.version}`), descriptor = descriptors.get(`${ref.id}@${ref.version}`);
     if (!binding || ref.version !== binding.version || !descriptor) fail('Unknown operation contract version');
     return Object.freeze({descriptor, binding,
       normalizeInput(argumentsData, context = {}) {
