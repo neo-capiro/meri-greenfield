@@ -18,6 +18,7 @@ import {versions} from '../../conversations/test/store-fixture.mjs';
 import {makePayload} from '../../commands/approval-metadata/binding.mjs';
 import {commandKind} from '../../commands/approval-metadata/command-kind.mjs';
 import {assertMemoryRetentionSchema} from '../../memory/retention-readiness.mjs';
+import {uploadRecord} from '../../uploads/custody.mjs';
 import {record as artifactRecord} from '../../../artifacts/storage/test/sql-fixture.mjs';
 import {createSuppressionOwner} from '../suppression.mjs';
 import {buildCandidate} from '../../memory/candidate.mjs';
@@ -241,6 +242,18 @@ test(pageDiagnostic?'ordinary-role single SDK page diagnostic with rollback':'or
   assert.equal(JSON.stringify(row).includes('Private'),false);assert.equal(row.state,'OUTCOME');
   await assert.rejects(pool.query('UPDATE meri_commands.command_journal SET payload=$2 WHERE tenant_id=$1',[f.b.tenantId,payload]),/TOMBSTONE|IMMUTABLE/);
   assert.equal((await startup.purge.sweepSubject(f.subject)).coreFinalized,true);
+ });
+ await t.test('canonical upload custody and its exact object version purge together without a fabricated run',async()=>{
+  const f=await seed({empty:true,general:true}),uploadId=id(),objectId=id();
+  const declaration={filename:'private.txt',mimeType:'text/plain',bytes:7,sha256:'f'.repeat(64)};
+  const object={objectId,versionId:'upload-fixture-version',sha256:declaration.sha256,bytes:declaration.bytes,scopes:f.scopes};
+  const record=uploadRecord({uploadId,requestId:id(),objectId,owner:{tenantId:f.b.tenantId,actorId:f.b.actorId,conversationId:f.b.conversationId,clientId:null},scopes:f.scopes,declaration,state:'stored',object,inspection:null,createdAtMs:old,updatedAtMs:old,revision:2});
+  await insert('meri_uploads.originals',{tenant_id:f.b.tenantId,owner_actor_id:f.b.actorId,conversation_id:f.b.conversationId,upload_id:uploadId,request_id:record.requestId,revision:record.revision,record,record_sha256:hash(record)});
+  objects.set(objectId+'@'+object.versionId,true);
+  const p=await plan(f);assert.ok(p.rowSteps.some(step=>step.className==='uploads'&&step.target.key.upload_id===uploadId));
+  assert.ok(p.steps.some(step=>step.objectId===objectId&&step.versionId===object.versionId));
+  assert.equal((await startup.purge.sweepSubject(f.subject)).coreFinalized,true);
+  assert.equal(await count('meri_uploads.originals',f),0);assert.equal(objects.has(objectId+'@'+object.versionId),false);
  });
  await t.test('lost committed row acknowledgement recovers by actual erased-body readback without repeating effects',async()=>{
   const f=await seed();await content(f,{entryCount:4097});const p=await plan(f);assert.equal(p.rowSteps.filter(s=>s.className==='sdkSession').length,1);loseRowAck=true;const before=rowEffects;
