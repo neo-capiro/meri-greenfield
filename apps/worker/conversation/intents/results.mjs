@@ -26,13 +26,15 @@ export function intentFailureCode(error){
 }
 /** @param {string} code @param {string} tool */
 export function intentFailureResult(code,tool){
- if(tool.endsWith('propose_memory'))return {isError:true,content:[{type:/** @type {const} */('text'),text:`${Object.hasOwn(TEXTS,code)?code:'INTERNAL_ERROR'}: the memory review result was not released. A candidate may already exist; do not repeat the request. Check pending memory reviews. This is not confirmation that memory was saved or published.`}]};
+ if(tool.endsWith('propose_memory'))return {isError:true,content:[{type:/** @type {const} */('text'),text:`${Object.hasOwn(TEXTS,code)?code:'INTERNAL_ERROR'}: the memory proposal result was not released; do not repeat the request. Check the original conversation request. This is not confirmation of submission or active memory.`}]};
  return {isError:true,content:[{type:/** @type {const} */('text'),text:(Object.hasOwn(TEXTS,code)?TEXTS[code]:TEXTS.INTERNAL_ERROR)(tool)}]};
 }
 /** The prepared result exactly as the owner returned it, then one fixed instruction block.
- * @param {string} json @param {'approval_required'|'draft'|'analysis_pending'|'review_pending'|'read'} status */
-export function preparedResult(json,status){
- const notice=status==='read'
+ * @param {string} json @param {'approval_required'|'draft'|'analysis_pending'|'review_pending'|'read'} status @param {string} [operation] */
+export function preparedResult(json,status,operation){
+ const notice=operation==='save_memory'&&status==='approval_required'
+  ?'PREPARED MEMORY PROPOSAL: review this exact text and destination scope. No memory candidate has been submitted and no memory has been published. Submission is unavailable until the approved execution path is connected.'
+  :status==='read'
   ?'READ RESULT: this is current owner data. No proposal or change was created; no approval is needed.'
   :status==='review_pending'
   ?'SUBMITTED FOR REVIEW: a memory candidate is pending governed Core review. It has not been saved or published as memory. Do not ask for a task approval or say the memory was saved.'

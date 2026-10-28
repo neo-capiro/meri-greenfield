@@ -9,6 +9,7 @@ import {productReadiness} from '../../product-readiness.mjs';
 import {MEMORY_PATHS,memoryUnavailable} from '../../../control/memory/protocol.mjs';
 import {createGoldenCore} from '../../../control/memory/test/core-golden.mjs';
 import {createMemoryPoolFixture} from '../../../control/memory/test/pool-fixture.mjs';
+import {preparationPool} from '../../../control/memory/test/preparation-pool-fixture.mjs';
 import {createPostgresMemoryJournal} from '../../../control/memory/postgres-journal.mjs';
 import {buildCandidate} from '../../../control/memory/candidate.mjs';
 import {ids,id,NOW} from '../../../control/memory/test/fixtures.mjs';
@@ -25,13 +26,13 @@ function context({configuration=base,pool,gate:g,now=()=>NOW}={}){
 }
 function harness({relay,readSecret,bind=true,retentionGate={async assertServable(){}},membershipGate=gate,fetchImpl,now=()=>NOW}={}){
  const core=createGoldenCore({now,serviceSecret:SECRET});core.member({token:BEARER,tenantId:TENANT,userId:ACTOR});
- const pg=createMemoryPoolFixture(),reads=[];
+ const pg=createMemoryPoolFixture(),prepared=preparationPool(pg.pool),reads=[];
  const owners={readSecret:readSecret??(async path=>{reads.push(path);if(path!==memory.serviceSecretFile)throw Error('no such file');return Buffer.from(SECRET+'\n');}),fetchImpl:fetchImpl?((u,i)=>fetchImpl(u,i,core)):((u,i)=>core.fetch(u,i)),newId:ids(300),...(relay?{nativeCredentials:relay}:{})};
- const family=createMemoryFamilyWith(owners),ctx=context({configuration:{...base,memory,retention},pool:pg.pool,gate:membershipGate,now});
+ const family=createMemoryFamilyWith(owners),ctx=context({configuration:{...base,memory,retention},pool:prepared.pool,gate:membershipGate,now});
  const ports=createProductPortsFactory({families:[['memory',family]]})(ctx);
  if(bind)assert.equal(bindMemoryRetention(ctx,retentionGate),true);
  const post=async(path,body)=>{const r=await ports.memoryApplication.handle(new Request('https://control.example'+path,{method:'POST',headers:{'content-type':'application/json',authorization:'Bearer '+BEARER},body:JSON.stringify(body)}));return {status:r.status,body:await r.json()};};
- return {core,pg,reads,owners,family,ctx,ports,post};
+ return {core,pg,prepared,reads,owners,family,ctx,ports,post};
 }
 
 test('absent or disabled memory configuration composes no port and touches nothing; readiness names memory.producer unavailable',()=>{
@@ -144,93 +145,34 @@ test('native preparation is absent without canonical retention; exact General an
   assert.throws(()=>memoryIntentPreparersFor(t.ctx,{...t.input,...change}));
  }
 });
-for(const general of [false,true])test(`native ${general?'General':'client'} personal submission stays pending until existing signed-in Core review publishes it`,async()=>{
+for(const general of [false,true])test(`native ${general?'General':'client'} preparation retains exact text with no Core submit`,async()=>{
  const t=nativeHarness({general}),result=await t.prepare();
- assert.equal(result.status,'review_pending');assert.deepEqual(result.binding,binding);assert.deepEqual(result.scopes,t.input.scopes);
- assert.deepEqual(Object.keys(result.result).sort(),['candidateId','commandSha256','status']);
- assert.equal(result.result.status,'pending');assert.equal(t.pg.rows.length,1);assert.equal(t.core.memories.length,0);
- assert.equal(t.pg.rows[0].candidate.scope,'personal');assert.equal(t.pg.rows[0].candidate.origin.commandSha256,result.result.commandSha256);
- assert.equal(JSON.stringify(result).includes('Prefers concise updates'),false);
- assert.ok(t.pg.statements.some(s=>s.startsWith('SELECT state FROM meri_conversations.retention_subjects')));
- assert.ok(t.pg.statements.every(s=>!s.includes('approval_metadata')&&!s.includes('allocation')));
- assert.ok(t.core.calls.every(c=>c.bearer===BEARER&&c.path==='/api/clio/memory/review/submit'&&c.service));
- const review=await t.post(MEMORY_PATHS.reviewApprove,{candidateId:result.result.candidateId});
- assert.equal(review.status,200);assert.equal(review.body.proposal.review.status,'approved');
- assert.match(review.body.proposal.review.publishedMemoryId,/^clio:/u);assert.equal(t.core.memories.length,1);
- assert.equal(t.core.calls.find(c=>c.path.endsWith('/owner-decision')).service,false);
+ assert.equal(result.status,'approval_required');assert.deepEqual(result.proposal.command.binding,binding);assert.deepEqual(result.proposal.command.scopes,t.input.scopes);
+ assert.equal(result.proposal.command.arguments.content,'Prefers concise updates');
+ assert.equal(t.prepared.metadata.rows.size,1);assert.equal(t.pg.rows.length,0);assert.equal(t.core.calls.length,0);assert.equal(t.core.memories.length,0);
 });
-test('client proposals use only the selected client; firm requires actual Core membership permission',async()=>{
+test('client uses selected client and firm requires canonical Core permission before metadata',async()=>{
  const t=nativeHarness(),r=await t.prepare({content:'Client fact',scope:'client'});
- assert.equal(r.status,'review_pending');assert.equal(t.pg.rows[0].candidate.clientId,CLIENT);
+ assert.equal(r.proposal.command.arguments.clientId,CLIENT);assert.equal(t.pg.rows.length,0);
  const general=nativeHarness({general:true});
  await assert.rejects(general.prepare({content:'No chosen client',scope:'client'}),code('INVALID_ARGUMENTS'));
- await assert.rejects(general.prepare({content:'Firm fact',scope:'firm'}),code('REFUSED'));
- assert.equal(general.pg.rows.length,0);
+ await assert.rejects(general.prepare({content:'Firm fact',scope:'firm'}));
+ assert.equal(general.prepared.metadata.rows.size,0);
  general.state.membership={...principal(),permissions:['memory.propose.firm']};
- assert.equal((await general.prepare({content:'Firm fact',scope:'firm'})).status,'review_pending');
- assert.equal(general.core.memories.length,0);
+ assert.equal((await general.prepare({content:'Firm fact',scope:'firm'})).status,'approval_required');
+ assert.equal(general.core.calls.length,0);
 });
-for(const loss of ['live','current','membership'])test(`native ${loss} loss before prepare dispatches no candidate`,async()=>{
+for(const loss of ['live','current','membership'])test(`native ${loss} loss before prepare writes no metadata or candidate`,async()=>{
  const t=nativeHarness();t.state[loss]=loss==='membership'?null:false;
- await assert.rejects(t.prepare());assert.equal(t.pg.rows.length,0);assert.equal(t.core.calls.length,0);
+ await assert.rejects(t.prepare());assert.equal(t.prepared.metadata.rows.size,0);assert.equal(t.pg.rows.length,0);assert.equal(t.core.calls.length,0);
 });
-for(const stage of ['membership','current','retention'])for(const loss of ['revocation','replacement'])test(`session ${loss} during pre-submit ${stage} check withholds Core dispatch`,async()=>{
- let t,changed=false;
- const change=()=>{if(t.state.admissions!==2||changed)return;changed=true;
-  if(loss==='revocation')t.state.live=false;else t.state.credential='replacement-native-token';
- };
- t=nativeHarness(stage==='retention'?{retentionGate:{async assertServable(){change();}}}:{});
- if(stage==='membership')t.state.onAdmit=change;
- if(stage==='current')t.state.onCurrent=change;
- await assert.rejects(t.prepare(),code('UNKNOWN'));assert.equal(changed,true);
- assert.equal(t.pg.rows.length,1,'candidate custody preceded the session change');
- assert.equal(t.pg.rows[0].submission_state,'SUBMISSION_UNKNOWN');
- assert.equal(t.core.calls.length,0,'a live bearer borrowed before the await cannot survive session loss');
- assert.equal(t.core.submissions.size,0);assert.equal(t.core.memories.length,0);
-});
-for(const authority of ['member','session'])test(`initial ${authority} expiry bounds candidate custody while retention is awaiting`,async()=>{
- let t,checks=0,finishRetention;
- const retentionFinished=new Promise(resolve=>{finishRetention=resolve;});
- t=nativeHarness({retentionGate:{async assertServable(){
-  if(++checks===2){await new Promise(resolve=>setTimeout(resolve,120));t.state.now=NOW+101;finishRetention();}
- }}});
- t.state[authority==='member'?'memberExpiresAtMs':'sessionExpiresAtMs']=NOW+100;
+for(const loss of ['current','membership','live'])test(`native ${loss} loss after metadata withholds proposal with no candidate effect`,async()=>{
+ const t=nativeHarness();t.prepared.state.afterMetadata=()=>{t.state[loss]=loss==='membership'?null:false;};
  await assert.rejects(t.prepare(),code('UNKNOWN'));
- await retentionFinished;await new Promise(resolve=>setImmediate(resolve));
- assert.equal(t.pg.rows.length,0,'expired initial authority cannot create candidate custody after the blocked owner resumes');
- assert.equal(t.pg.statements.some(sql=>sql.includes('INSERT INTO meri_memory.candidates')),false);
- assert.equal(t.core.calls.length,0);assert.equal(t.core.submissions.size,0);
+ assert.equal(t.prepared.metadata.rows.size,1);assert.equal(t.pg.rows.length,0);assert.equal(t.core.calls.length,0);
 });
-test('member change during journal custody withholds Core submission and retains an uncertain candidate',async()=>{
- const t=nativeHarness();const connect=t.pg.pool.connect;
- t.pg.pool.connect=async()=>{const client=await connect();return {...client,query:async(sql,args)=>{
-  const r=await client.query(sql,args);if(sql.includes('INSERT INTO meri_memory.candidates'))t.state.membership={...principal(),membershipRevision:'m2'};return r;
- }};};
- await assert.rejects(t.prepare(),code('UNKNOWN'));assert.equal(t.pg.rows.length,1);assert.equal(t.core.calls.length,0);
- assert.equal(t.pg.rows[0].submission_state,'SUBMISSION_UNKNOWN');
-});
-for(const loss of ['current','membership'])test(`native ${loss} loss after Core acceptance withholds pending receipt without erasing custody`,async()=>{
- let t;t=nativeHarness({fetchImpl:async(u,i,core)=>{const response=await core.fetch(u,i);if(u.endsWith('/submit'))t.state[loss]=loss==='membership'?null:false;return response;}});
- await assert.rejects(t.prepare(),code('UNKNOWN'));assert.equal(t.pg.rows.length,1);assert.equal(t.core.submissions.size,1);assert.equal(t.core.memories.length,0);
-});
-test('lost submit acknowledgement reconciles only by status through existing review surface',async()=>{
- const t=nativeHarness({fetchImpl:async(u,i,core)=>{const response=await core.fetch(u,i);if(u.endsWith('/submit'))throw Error('lost ack');return response;}});
- await assert.rejects(t.prepare(),code('UNKNOWN'));assert.equal(t.pg.rows.length,1);assert.equal(t.pg.rows[0].submission_state,'SUBMISSION_UNKNOWN');
- const candidateId=t.pg.rows[0].candidate_id;
- const status=await t.post(MEMORY_PATHS.status,{candidateId});assert.equal(status.status,200);assert.equal(status.body.review.status,'pending');
- assert.equal(t.pg.rows[0].submission_state,'SUBMITTED');
- assert.equal(t.core.calls.filter(c=>c.path.endsWith('/submit')).length,1);assert.equal(t.core.memories.length,0);
-});
-test('suppression after candidate custody prevents submission and hides the candidate',async()=>{
+test('suppression after metadata prevents release without creating a candidate',async()=>{
  let suppressed=false;const t=nativeHarness({retentionGate:{async assertServable(){if(suppressed)throw Object.assign(Error('suppressed'),{code:'RETENTION_SUPPRESSED'});}}});
- const connect=t.pg.pool.connect;t.pg.pool.connect=async()=>{const client=await connect();return {...client,query:async(sql,args)=>{
-  const r=await client.query(sql,args);if(sql.includes('INSERT INTO meri_memory.candidates'))suppressed=true;return r;
- }};};
- await assert.rejects(t.prepare(),code('UNKNOWN'));assert.equal(t.core.calls.length,0);assert.equal(t.pg.rows.length,1);
- const status=await t.post(MEMORY_PATHS.status,{candidateId:t.pg.rows[0].candidate_id});assert.equal(status.status,404);
-});
-test('Core wall refusal never becomes a pending receipt or a published memory',async()=>{
- const t=nativeHarness();t.core.state.walledClients.add(CLIENT);
- await assert.rejects(t.prepare({content:'Client fact',scope:'client'}),code('UNKNOWN'));
- assert.equal(t.pg.rows.length,1);assert.equal(t.core.submissions.size,0);assert.equal(t.core.memories.length,0);
+ t.prepared.state.afterMetadata=()=>{suppressed=true;};
+ await assert.rejects(t.prepare(),code('UNKNOWN'));assert.equal(t.prepared.metadata.rows.size,1);assert.equal(t.pg.rows.length,0);assert.equal(t.core.calls.length,0);
 });

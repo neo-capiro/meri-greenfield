@@ -11,7 +11,7 @@
  * - `schedule`: `apps/control/schedules/tool-interface.mjs` with a trusted context whose `approval` is null.
  * - `document`: the artifact write owner behind `apps/control/document-application` (immutable draft version).
  * - `artifact`: the artifact analysis owner (no governed route yet).
- * - `memory`: the governed memory candidate producer, submitted for Core review.
+ * - `memory`: immutable text/scope preparation; historical candidate-review receipts remain readable.
  * - `note`: current Core note owner; static PASS saves once without approval. */
 // The current published catalog. It retains every earlier descriptor byte-for-byte beside the registered
 // successors, so a row that still names an earlier version keeps resolving to that version's descriptor,

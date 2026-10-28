@@ -18,8 +18,8 @@
  *  - the Meri review path (`/api/memory/review/*`): the proposer's own PENDING candidates (personal candidates never reach Core's
  *    shared inbox, D22) and the proposer's own approve/reject, forwarded to Core's owner-decision (additions) or version-candidate
  *    (corrections) routes. Reviewers of firm/client candidates use Core's inbox, not Meri.
- *  - Native conversation preparation submits a pending candidate using current execution/Core authority and the exact live session.
- *    It writes no task approval metadata. The ordinary intent delivery journal owns replay; Core owns review and publication.
+ *  - Native conversation preparation retains exact text/scope in the existing approval-metadata owner under current authority.
+ *    It submits no candidate. The intent journal owns replay; approved execution remains unavailable pending its connected owner.
  *
  * Credentials (`native-authority/memory-credentials.mjs`): the member's own native bearer, bounded by its admission or live
  * session, plus the verified service identity (the declared secret file, re-read per call). No bearer is ever a file. */
@@ -30,6 +30,7 @@ import {own,data} from '../../../packages/contracts/commands-0.2/execution-bound
 import {createMemoryApplication} from '../../control/memory/application.mjs';
 import {createMemoryCommandSource} from '../../control/memory/command-source.mjs';
 import {createMemoryIntentPreparer} from '../../control/memory/command-options.mjs';
+import {createTransactionalApprovalMetadataStore} from '../../control/commands/approval-metadata/postgres-store.mjs';
 import {canonicalSha256} from '../../../packages/contracts/validate.mjs';
 import {assertNativeConversationScope} from '../../../packages/contracts/runtime-0.2/session.mjs';
 import {createCoreDecisions} from '../../control/memory/core-decisions.mjs';
@@ -141,7 +142,8 @@ function compose(context,owners){
    return Object.freeze({principal,expiresAtMs:initial.expiresAtMs,producer:producerWith(acquire),recheck});
   };
   const source=createMemoryCommandSource({...selected,policyRevision:v.policyRevision,readCurrent:v.readCurrent,producerFor,now,maxRequestMs:limits.maxRequestMs,deadlineMs:v.deadlineMs});
-  return Object.freeze([createMemoryIntentPreparer({...selected,source,newId})]);
+  return Object.freeze([createMemoryIntentPreparer({...selected,source,newId,now,maxRequestMs:limits.maxRequestMs,deadlineMs:v.deadlineMs,
+   metadataStore:createTransactionalApprovalMetadataStore({pool:c.pool})})]);
  }:null;
  retentionBinders.set(context,bindRetention);
  return Object.freeze({state:'composed',reason:null,application:Object.freeze({handle:request=>boundRetention===null?memoryUnavailable():application.handle(request)}),

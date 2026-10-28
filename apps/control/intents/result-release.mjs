@@ -22,11 +22,11 @@ function resultScopes(owner,result,original){
   return envelope.scopes;
  }
  if((owner==='research-sharing'||owner==='research-action'||owner==='legiwatch'||owner==='watch'||owner==='client-record'||owner==='bizdev'||owner==='legislative-document')){if(result.status!=='approval_required'||hash(result.proposal?.binding)!==hash(original.binding))deny();return result.proposal.scopes;}
- if(owner==='memory'){
+ if(owner==='memory'&&result.status!=='approval_required'){
   const review=assertMemoryReviewResult(result);
   if(hash(review.binding)!==hash(original.binding))deny();return review.scopes;
  }
- if(owner==='command'){
+ if(owner==='command'||owner==='memory'){
   if(result.status!=='approval_required'||hash(result.proposal?.command?.binding)!==hash(original.binding))deny();
   return result.proposal.command.scopes;
  }
@@ -70,7 +70,7 @@ export function createIntentResultRelease({authority,binding,now}){
    const ss=scopes(resultScopes(owner,result,prior),binding),originalScopes=new Set(prior.scopes.map(hash)),currentScopes=new Set(receipt.scopes.map(hash));
    if(ss.some(s=>!originalScopes.has(hash(s))||!currentScopes.has(hash(s))))deny();
    if(owner==='research-action'&&result.status==='read'){const expiry=Date.parse(result.expiresAt);if(expiry<=now())deny();call.life.limitDeadline(expiry);}
-   else if(owner==='command'||(owner==='research-sharing'||owner==='research-action'||owner==='legiwatch'||owner==='watch'||owner==='client-record'||owner==='bizdev'||owner==='legislative-document')){
+   else if(owner==='command'||owner==='memory'&&result.status==='approval_required'||(owner==='research-sharing'||owner==='research-action'||owner==='legiwatch'||owner==='watch'||owner==='client-record'||owner==='bizdev'||owner==='legislative-document')){
     const expiry=Date.parse(result.proposal.expiresAt);if(!Number.isSafeInteger(expiry)||expiry<=now())deny();call.life.limitDeadline(expiry);
    }
    call.life.check();return result;

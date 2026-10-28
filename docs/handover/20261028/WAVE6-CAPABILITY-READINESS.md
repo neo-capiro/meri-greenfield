@@ -16,7 +16,7 @@ Use existing feature owners and the Claude SDK harness. Reuse public contracts, 
 
 **Decisions.** No new execution architecture or unrestricted browser/Bash fallback is approved. Exact selected-file delegation behavior needs a bounded implementation contract; no public contract change is made by this preparation row.
 
-**Checks (28 October, Node 24.22.1, Windows).** `agentcore-execution.test.mjs`: 6 passed. `execution-sessions.test.mjs`: 1 passed. Initial attempts at capability/Bash and HTTP composition checks stopped at missing local dependency imports; these are setup failures, not passing behavioral tests. Native checks remain not run.
+**Checks (28 October, Node 24.22.1, Windows).** `agentcore-execution.test.mjs`: 6 passed. `execution-sessions.test.mjs`: 1 passed. HTTP/session-isolation: 11 passed after local dependency setup. Capability/Bash: 8 passed and 4 failed: two stale fixtures (invalid command options and absent PreToolUse hook), plus two WORKSPACE_ROOT_REFUSED path failures on Windows. These failures are not native sandbox evidence. Native checks remain not run.
 
 ## A2 — browser takeover
 
@@ -54,9 +54,9 @@ Graph, buyer and funding expansion has no implementation allocation in this batc
 
 **Required behavior.** Pair a specifically supported device/browser to the current account with explicit consent. Show connected, active, paused, disconnected, expired and revoked states. Each operation binds user, tenant, device, conversation, selected tab/file/destination and exact input digest. Pairing grants no filesystem/profile/credential access. Explicit selected-data upload consent and consequential-action approval are separate. Pause/revoke and account switch stop admission immediately. An interrupted effect is resolved from its original receipt; reconnection never replays a spent or uncertain request. Selection changes invalidate old operation authority.
 
-**Dependencies and pending decisions.** Supported platforms, first operations, adopted transport/extension, distribution/update/licensing, managed-device policy and retention remain user decisions. Public device/session/request/receipt contracts and any persistence migration require coordinated ownership before editing. A3 is a dependency only for named website actions, not for a selected-file transfer. No pairing request or device connection is made by preparation.
+**Dependencies and pending decisions.** The user selected a browser extension sharing one selected tab. Transport, distribution/update/licensing, managed-device policy and retention remain pending decisions. Public device/session/request/receipt contracts and any persistence migration require coordinated ownership before editing. A3 is a dependency only for named website actions, not for a selected-file transfer. No pairing request or device connection is made by preparation.
 
-**Finite next slice.** After the platform/transport decision, deliver pairing plus one explicitly selected read-only tab or file operation, pause/revoke, account-switch invalidation and durable outcome readback. Keep action execution on the selected device and reuse shared connection-state UI primitives. Add no broad filesystem, clipboard, cookie or credential capability.
+**Finite next slice.** For the selected browser extension, resolve the transport and deliver pairing plus one explicitly selected read-only tab sharing operation, pause/revoke, account-switch invalidation and durable outcome readback. Keep action execution on the selected device and reuse shared connection-state UI primitives. Add no broad filesystem, clipboard, cookie or credential capability.
 
 **Acceptance.** Positive selected-resource transfer; other user/tenant/device/tab and stolen/expired pairing denial; selected hash/path and symlink denial; disconnect-before/after effect and lost acknowledgement recovery; pause/revoke/account-switch denial; no hidden credential/profile content; accurate unresolved state. Source inspection only for this row; no bridge exists to test and no live/device acceptance is claimed.
 
@@ -70,7 +70,7 @@ Graph, buyer and funding expansion has no implementation allocation in this batc
 
 **Finite next slice and acceptance.** Once named, add one complete credential-free manifest with reviewed terms and exact digest, then qualify sign-in, reuse only within the same conversation, logout/expiry/revocation, target/data-bound approval and timeout readback using that site's actual workflow. No credential collection in chat, cross-conversation session inheritance or blind replay. Until then maintain the empty registry and explicit unavailable state.
 
-**Checks.** Six manifest/policy tests passed, including changed-content approval refusal and malformed activation evidence. Synthetic sites only. Real site, browser, sign-in and terms acceptance not run. A1 dependency follow-up also passed all 11 HTTP/session-isolation cases; capability/Bash imports still require local package setup and native SDK/filesystem proof remains unrun.
+**Checks.** Six manifest/policy tests passed, including changed-content approval refusal and malformed activation evidence. Synthetic sites only. Real site, browser, sign-in and terms acceptance not run. A1 dependency follow-up also passed all 11 HTTP/session-isolation cases; capability/Bash results are recorded under A1; native SDK/filesystem proof remains unrun.
 
 ## A7 — existing Collabora/WOPI preparation; live editing unavailable
 

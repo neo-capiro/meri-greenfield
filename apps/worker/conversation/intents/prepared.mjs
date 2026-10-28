@@ -10,7 +10,7 @@
 import {own,data} from '../../../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {assertProposalIntegrity,canonicalSha256,validateShape} from '../../../../packages/contracts/validate.mjs';
 import {artifactValidators,researchShareValidators,researchActionValidators,legiwatchValidators,savedNoteValidators,watchValidators,bizdevValidators,legislativeDocumentValidators,clientRecordValidators,validateShape as toolShape} from '../../../../packages/contracts/retrieval-0.2/validate.mjs';
-import {assertMailSendProposal,assertTaskUpdateProposal} from '../../../../packages/contracts/commands-0.2/validate.mjs';
+import {assertMailSendProposal,assertTaskUpdateProposal,assertMemoryProposeCommand} from '../../../../packages/contracts/commands-0.2/validate.mjs';
 // Only the client-record admission reads the disjoint 0.3 family, so a sourced create proposal is admitted here too.
 import {clientRecordValidators as clientRecord3Validators} from '../../../../packages/contracts/retrieval-0.3/client-record-action-validation.mjs';
 import {assertMemoryReviewResult} from '../../../../packages/contracts/commands-0.2/memory-review-result.mjs';
@@ -77,6 +77,14 @@ export function assertPreparedResult(owner,operation,value,binding,current){
    return {status:'approval_required',reference:p.proposalId,value:v};
   }
   if(owner==='memory'){
+   if(v.status==='approval_required'){
+    own(v,['status','proposal']);const p=v.proposal;assertProposalIntegrity(p);
+    const selected=p.command.scopes.find(s=>s.kind==='client')?.resourceId??null;
+    assertMemoryProposeCommand(p.command,{binding:p.command.binding,conversationClientId:selected});
+    if(operation.id!=='save_memory'||operation.version!=='0.2.0'||!sameRun(p.command.binding,binding)||!currentScopes(p.command.scopes,binding,current.scopes)||
+     p.requiredApprover.tenantId!==binding.tenantId||p.requiredApprover.actorId!==binding.actorId||Date.parse(p.createdAt)>current.nowMs||Date.parse(p.expiresAt)<=current.nowMs)refuse();
+    return {status:'approval_required',reference:p.proposalId,value:v};
+   }
    assertMemoryReviewResult(v);
    if(operation.id!=='save_memory'||operation.version!=='0.2.0'||!sameRun(v.binding,binding)||!currentScopes(v.scopes,binding,current.scopes))refuse();
    return {status:'review_pending',reference:v.result.candidateId,value:v};
