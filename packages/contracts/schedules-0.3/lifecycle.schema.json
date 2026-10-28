@@ -476,6 +476,16 @@
               "type": "integer",
               "minimum": 1,
               "maximum": 9007199254740991
+            },
+            "work": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/Work"
+                },
+                {
+                  "type": "null"
+                }
+              ]
             }
           },
           "required": [
@@ -781,6 +791,9 @@
         "expiresAtMs"
       ],
       "additionalProperties": false
+    },
+    "Work": {
+      "$ref": "urn:meri:work:selection:0.1.0"
     },
     "SourceTrigger": {
       "type": "object",

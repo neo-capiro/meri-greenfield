@@ -9,6 +9,7 @@ import {canonicalSha256} from '../validate.mjs';
 import {assertCatalog,resolveOperationContract} from '../retrieval-0.2/validate.mjs';
 import {CATALOG_OPERATION_BINDINGS,CURRENT_CATALOG_VERSION} from '../retrieval-0.2/catalog-validation.mjs';
 import {executionSchemaDependencies} from '../retrieval-0.2/execution-schema-sources.mjs';
+import {workSelectionSchema} from '../schedules-0.2/lifecycle-validation.mjs';
 import {INTENT_ROWS,intentDescriptor,assertIntentCatalog} from '../../../apps/worker/conversation/intents/catalog.mjs';
 import assets from '../../skills/assets.json' with {type:'json'};
 
@@ -19,7 +20,7 @@ const rowOf=(catalog,ref)=>catalog.operations.find(row=>key(row.operation)===key
 const SUCCESSORS=['create_client@0.3.0','schedule_task@0.3.0','list_scheduled_tasks@0.3.0','cancel_scheduled_task@0.3.0','update_scheduled_task@0.3.0'];
 const CR03='urn:meri:retrieval:client-record-action:0.3.0',SC03='urn:meri:schedules:tool-interface:0.3.0';
 const CR03_SHA='14b5923738b0f0d530a9c841f127bb8114e9757c4ca284b7b6f2beaf325b336f';
-const SC03_SHA='73ec9bbc0eba071a05964c148c5c14f7c15ae837870268fbb1500dfb67d5c449';
+const SC03_SHA='0733eef1094dbcea0d2d30186417d888627d0a02260f6abb2ece3e773189bb74';
 const SOURCED={name:'New client',skipLdaCheck:true,provenance:{name:{sourceUrl:'https://sam.gov/entity/acme',confidence:'high'}}};
 
 test('the preserved catalog still asserts at its own exact counts and keeps its published digest',()=>{
@@ -97,6 +98,7 @@ test('the schedule successor admits the version-only source-event field the reta
  const ajv=new Ajv({strict:true,allErrors:true});addFormats(ajv);
  ajv.addSchema(read('../meri.schema.json'));
  for(const path of executionSchemaDependencies)ajv.addSchema(read(`../retrieval-0.2/${path}`));
+ ajv.addSchema(workSelectionSchema());
  ajv.addSchema(doc3);ajv.addSchema(doc2);
  const trigger=ajv.getSchema(`${SC03}#/$defs/TriggerObservation`);
  assert.ok(trigger({kind:'timed'}));

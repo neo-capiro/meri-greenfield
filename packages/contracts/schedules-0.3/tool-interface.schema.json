@@ -79,6 +79,16 @@
     "ScheduleTaskRequest": {
       "type": "object",
       "properties": {
+        "work": {
+          "anyOf": [
+            {
+              "$ref": "urn:meri:schedules:lifecycle:0.3.0#/$defs/Work"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
         "taskInstruction": {
           "type": "string",
           "minLength": 1,
@@ -107,6 +117,16 @@
     "UpdateScheduledTaskRequest": {
       "type": "object",
       "properties": {
+        "work": {
+          "anyOf": [
+            {
+              "$ref": "urn:meri:schedules:lifecycle:0.3.0#/$defs/Work"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
         "scheduleId": {
           "type": "string",
           "format": "uuid"

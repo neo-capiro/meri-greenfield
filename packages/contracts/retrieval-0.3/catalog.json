@@ -11236,11 +11236,11 @@
       ],
       "inputSchema": {
         "id": "urn:meri:schedules:tool-interface:0.3.0#/$defs/ScheduleTaskRequest",
-        "sha256": "73ec9bbc0eba071a05964c148c5c14f7c15ae837870268fbb1500dfb67d5c449"
+        "sha256": "0733eef1094dbcea0d2d30186417d888627d0a02260f6abb2ece3e773189bb74"
       },
       "outputSchema": {
         "id": "urn:meri:schedules:tool-interface:0.3.0#/$defs/ScheduleMutationOutput",
-        "sha256": "73ec9bbc0eba071a05964c148c5c14f7c15ae837870268fbb1500dfb67d5c449"
+        "sha256": "0733eef1094dbcea0d2d30186417d888627d0a02260f6abb2ece3e773189bb74"
       },
       "aliases": [],
       "sideEffect": "schedule",
@@ -11305,11 +11305,11 @@
       ],
       "inputSchema": {
         "id": "urn:meri:schedules:tool-interface:0.3.0#/$defs/ListScheduledTasksRequest",
-        "sha256": "73ec9bbc0eba071a05964c148c5c14f7c15ae837870268fbb1500dfb67d5c449"
+        "sha256": "0733eef1094dbcea0d2d30186417d888627d0a02260f6abb2ece3e773189bb74"
       },
       "outputSchema": {
         "id": "urn:meri:schedules:tool-interface:0.3.0#/$defs/ListScheduledTasksOutput",
-        "sha256": "73ec9bbc0eba071a05964c148c5c14f7c15ae837870268fbb1500dfb67d5c449"
+        "sha256": "0733eef1094dbcea0d2d30186417d888627d0a02260f6abb2ece3e773189bb74"
       },
       "aliases": [],
       "sideEffect": "none",
@@ -11375,11 +11375,11 @@
       ],
       "inputSchema": {
         "id": "urn:meri:schedules:tool-interface:0.3.0#/$defs/CancelScheduledTaskRequest",
-        "sha256": "73ec9bbc0eba071a05964c148c5c14f7c15ae837870268fbb1500dfb67d5c449"
+        "sha256": "0733eef1094dbcea0d2d30186417d888627d0a02260f6abb2ece3e773189bb74"
       },
       "outputSchema": {
         "id": "urn:meri:schedules:tool-interface:0.3.0#/$defs/ScheduleMutationOutput",
-        "sha256": "73ec9bbc0eba071a05964c148c5c14f7c15ae837870268fbb1500dfb67d5c449"
+        "sha256": "0733eef1094dbcea0d2d30186417d888627d0a02260f6abb2ece3e773189bb74"
       },
       "aliases": [],
       "sideEffect": "schedule",
@@ -11445,11 +11445,11 @@
       ],
       "inputSchema": {
         "id": "urn:meri:schedules:tool-interface:0.3.0#/$defs/UpdateScheduledTaskRequest",
-        "sha256": "73ec9bbc0eba071a05964c148c5c14f7c15ae837870268fbb1500dfb67d5c449"
+        "sha256": "0733eef1094dbcea0d2d30186417d888627d0a02260f6abb2ece3e773189bb74"
       },
       "outputSchema": {
         "id": "urn:meri:schedules:tool-interface:0.3.0#/$defs/ScheduleMutationOutput",
-        "sha256": "73ec9bbc0eba071a05964c148c5c14f7c15ae837870268fbb1500dfb67d5c449"
+        "sha256": "0733eef1094dbcea0d2d30186417d888627d0a02260f6abb2ece3e773189bb74"
       },
       "aliases": [],
       "sideEffect": "schedule",

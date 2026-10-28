@@ -15,6 +15,7 @@ import { executionSchemaSources, executionSchemaDependencies } from './execution
 import { createExecutionToolValidators } from './execution-tool-validators.mjs';
 import { clientRecordValidators as clientRecord3Validators } from '../retrieval-0.3/client-record-action-validation.mjs';
 import { createScheduleToolValidators as createSchedule3ToolValidators } from '../schedules-0.3/tool-interface-validation.mjs';
+import { workSelectionSchema } from '../schedules-0.2/lifecycle-validation.mjs';
 import { createResearchPortfolioEvidenceValidators } from './research-portfolio-evidence-validation.mjs';
 import { createClientKnowledgeSearchValidators } from './client-knowledge-search-validation.mjs';
 import { createClientKnowledgeMondayValidators } from './client-knowledge-monday-validation.mjs';
@@ -89,6 +90,8 @@ addFormats(ajv);
 ajv.addSchema(JSON.parse(readFileSync(new URL('../meri.schema.json', import.meta.url))));
 for (const path of executionSchemaDependencies) ajv.addSchema(JSON.parse(readFileSync(new URL(path, import.meta.url))));
 for (const schema of schemas) ajv.addSchema(schema);
+// The 0.3 schedule family resolves its task.work by reference to the one canonical Work selection owner.
+ajv.addSchema(workSelectionSchema());
 // Register the complete contract catalog eagerly, but compile only shapes used
 // by this process. Control startup must not compile every unrelated source/tool.
 const validatorRefs = new Map(schemas.flatMap((schema,index) => (executionSchemaSources.find(source => source.group === groups[index])?.exposed ?? Object.keys(schema.$defs)).map(name =>

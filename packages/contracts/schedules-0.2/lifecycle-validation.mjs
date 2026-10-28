@@ -4,7 +4,12 @@ import Ajv from 'ajv/dist/2020.js';
 import addFormats from 'ajv-formats';
 import { canonicalSha256 } from '../validate.mjs';
 import { snapshotOperationData } from '../retrieval-0.2/operation-contracts.mjs';
+import { WORK_SELECTION_SCHEMA } from '../work-selection.mjs';
 
+/** The canonical Work selection shape, registered BY REFERENCE so the 0.3 family reuses that one owner and never
+ *  re-states (or drifts from) it. Legacy 0.2 intents never resolve it: their `configuration.task` stays closed. */
+export const WORK_SELECTION_SCHEMA_ID='urn:meri:work:selection:0.1.0';
+export const workSelectionSchema=()=>({...WORK_SELECTION_SCHEMA,$id:WORK_SELECTION_SCHEMA_ID});
 export const denySchedule=code=>{throw Object.assign(new Error(code),{code});};
 export function scheduleErrorCode(error) {
   if(!error||types.isProxy(error)||(typeof error!=='object'&&typeof error!=='function'))return null;
@@ -20,7 +25,10 @@ export function createScheduleLifecycleValidators(schema) {
  const sourceEvents=schema?.$id==='urn:meri:schedules:lifecycle:0.3.0';
  if(!sourceEvents&&schema?.$id!=='urn:meri:schedules:lifecycle:0.2.0')denySchedule('SCHEDULE_SCHEMA');
  const ajv=new Ajv({strict:true,allErrors:true});addFormats(ajv);
- ajv.addSchema(JSON.parse(readFileSync(new URL('../meri.schema.json',import.meta.url))));ajv.addSchema(schema);
+ ajv.addSchema(JSON.parse(readFileSync(new URL('../meri.schema.json',import.meta.url))));
+ // Only the 0.3 family admits the canonical Work selection, and it does so by reference to that one owner.
+ if(sourceEvents)ajv.addSchema(workSelectionSchema());
+ ajv.addSchema(schema);
 function scheduleShape(name,value) {
   const copy=frozenScheduleData(value);
   if(!ajv.getSchema(`${schema.$id}#/$defs/${name}`)?.(copy)) denySchedule('SCHEDULE_DATA');
