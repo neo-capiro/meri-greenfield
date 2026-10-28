@@ -621,6 +621,19 @@ class SourceBuiltClamavPayload(unittest.TestCase):
                          "the patch must replace exactly the four direct ASN1_TIME struct reads and nothing else")
         for accessor in ("ASN1_STRING_length(timeobj)", "ASN1_STRING_get0_data(timeobj)", "ASN1_STRING_type(timeobj)"):
             self.assertIn(accessor, text, "the patch does not use the public accessor %s" % accessor)
+        # The parser must keep the recorded value's full length: OpenSSL 4.0.3 accepts GeneralizedTime with any number
+        # of fractional digits, and the old parser read the 14-digit prefix of such a value. A buffer-size cap here
+        # would reject inputs the old code accepted.
+        self.assertNotIn("strbuf", text, "the patch reintroduced a fixed-size buffer (an input-domain restriction)")
+        self.assertNotIn("(size_t)strlength >=", text, "the patch refuses values longer than some buffer again")
+        self.assertIn("malloc((size_t)strlength + 1)", text, "the patch does not copy the whole recorded value")
+        self.assertEqual(text.count("free(str);"), 5,
+                         "the private copy is not released on every exit path (five exits expected)")
+        # The opacity claim is part of the provenance and was wrong in the first revision: ASN1_STRING/ASN1_TIME were
+        # public structs through 3.x and became opaque in 4.0.
+        self.assertIn("became opaque in OpenSSL 4.0", text)
+        self.assertNotIn("since OpenSSL 1.1.0", text, "the patch still claims OpenSSL 1.1.0 made ASN1_TIME opaque")
+        self.assertNotIn("since OpenSSL 1.1.0", DOCKERFILE, "the build comment still makes that claim")
         stage = DOCKERFILE.index("AS clamav-source-build")
         next_stage = DOCKERFILE.index("\nFROM ", stage)
         outside_code = "\n".join(line for line in (DOCKERFILE[:stage] + DOCKERFILE[next_stage:]).splitlines()
