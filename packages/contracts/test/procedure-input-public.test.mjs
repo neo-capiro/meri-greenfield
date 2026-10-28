@@ -11,7 +11,7 @@ const builtin=id=>({source:'builtin',id,version:1,manifestDigest:'b'.repeat(64)}
 const ordinary={requestId:id(6),prompt:'Use the reviewed procedure'};
 const request={...ordinary,procedure:firm};
 const context={tenantId:binding.tenantId,actorId:binding.actorId,conversationId:binding.conversationId,runId:binding.runId,clientId:id(5)};
-const receipt=()=>({run:structuredClone(run),request:{...request,skill:null,window:null,windowRequest:null},lastSequence:1,replayed:false});
+const receipt=()=>({run:structuredClone(run),request:{...structuredClone(request),skill:null,window:null,windowRequest:null},lastSequence:1,replayed:false});
 
 test('procedure identity parser admits exact firm and six builtin pins without authority-bearing data',()=>{
  for(const value of [firm,...BUILTIN_PROCEDURE_IDS.map(builtin)]){const accepted=assertProcedureSelection(value);assert.deepEqual(accepted,value);assert.ok(Object.isFrozen(accepted));}
