@@ -40,7 +40,7 @@ export const TERMINAL_ATTEMPT_MS=3000;
 export const DELTA_FOLD_MAX_BYTES=16384;
 // A streamed text delta outside any subagent; only these fold, and only with deltas of the same content block.
 const textDelta=m=>m?.type==='stream_event'&&!m.parent_tool_use_id&&m.event?.type==='content_block_delta'&&m.event.delta?.type==='text_delta';
-export function createConversationActivity({runOwner,prepareRuntime,query=sdkQuery,heartbeat=()=>{},now=Date.now,newId=randomUUID,lifecycle,selectedSkills,generalReads,governedIntents,browser,objectiveGeneration,terminalAttemptMs=TERMINAL_ATTEMPT_MS,cleanupAttemptMs=CLEANUP_ATTEMPT_MS,loadMaxMs=3000,loadExpiresAtMs,runtimeMaxMs=3000,runtimeExpiresAtMs,setupBudget,modelDeadlineMs,executionDeadlineMs,diagnostics}){
+export function createConversationActivity({runOwner,prepareRuntime,query=sdkQuery,heartbeat=()=>{},now=Date.now,newId=randomUUID,lifecycle,selectedSkills,procedures,generalReads,governedIntents,browser,objectiveGeneration,terminalAttemptMs=TERMINAL_ATTEMPT_MS,cleanupAttemptMs=CLEANUP_ATTEMPT_MS,loadMaxMs=3000,loadExpiresAtMs,runtimeMaxMs=3000,runtimeExpiresAtMs,setupBudget,modelDeadlineMs,executionDeadlineMs,diagnostics}){
  // Optional trusted observers cannot affect execution, publication or bounded cleanup.
  const diagnostic=(method,value)=>{try{Promise.resolve(diagnostics?.[method]?.(value)).catch(()=>{});}catch{}};
  if(['load','append'].some(k=>typeof runOwner?.[k]!=='function')||typeof prepareRuntime!=='function'||typeof query!=='function'||typeof heartbeat!=='function'||!Number.isSafeInteger(terminalAttemptMs)||terminalAttemptMs<1||terminalAttemptMs>30000)throw fault('ACTIVITY_CONFIGURATION');
@@ -51,6 +51,7 @@ export function createConversationActivity({runOwner,prepareRuntime,query=sdkQue
  if(modelDeadlineMs!==undefined&&(!Number.isSafeInteger(modelDeadlineMs)||modelDeadlineMs<1||executionDeadlineMs!==undefined&&modelDeadlineMs>=executionDeadlineMs))throw fault('ACTIVITY_CONFIGURATION');
  if(lifecycle!==undefined)assertLifecycleConfiguration(lifecycle,runOwner);
  if(selectedSkills!==undefined&&typeof selectedSkills.prepare!=='function')throw fault('SKILL_ACTIVITY_CONFIGURATION');
+ if(procedures!==undefined&&typeof procedures.prepare!=='function')throw fault('PROCEDURE_ACTIVITY_CONFIGURATION');
  // Trusted gateway general-read port (`apps/gateway/general-reads/mount.mjs`); absent means no general read.
  if(generalReads!==undefined&&['readAvailability','execute'].some(k=>typeof generalReads[k]!=='function'))throw fault('READ_ACTIVITY_CONFIGURATION');
  // Trusted control intent port (`apps/control/intents/mount.mjs`); absent means no governed write request.
@@ -61,8 +62,8 @@ export function createConversationActivity({runOwner,prepareRuntime,query=sdkQue
  return async function executeConversation({binding,signal}){
   const nativeAudit=createNativeHookBatch();
   const drained=Promise.withResolvers();drained.promise.catch(()=>{});
-  diagnostic('stage','activity-input');validateShape('RunBinding',binding);let preparation,life,setupLife,modelLife,stream,controls,input,skillRuntime,readRuntime,intentRuntime,uploadRuntime,browserRun,browserOutcome='ended',browserPreparationCleanupUnknown=false,skillOutput,terminalResult,usageBasis,usageAttempted=false,claimed=false,closed=false,resultSeen=false,bytes=0,heartbeatTimer;const controller=new AbortController();let failure;let closing,iterator;const closeQuery=()=>{if(!closing&&stream&&!closed){closed=true;closing=Promise.resolve().then(async()=>{await stream.close?.();
-   // The pinned SDK's close() starts cleanup but returns void. Query.return()
+  diagnostic('stage','activity-input');validateShape('RunBinding',binding);let preparation,life,setupLife,modelLife,stream,controls,input,skillRuntime,procedureRuntime,readRuntime,intentRuntime,uploadRuntime,browserRun,browserOutcome='ended',browserPreparationCleanupUnknown=false,skillOutput,terminalResult,usageBasis,usageAttempted=false,claimed=false,closed=false,resultSeen=false,bytes=0,heartbeatTimer;const controller=new AbortController();let failure;let closing,iterator;const closeQuery=()=>{if(!closing&&stream&&!closed){closed=true;closing=Promise.resolve().then(async()=>{await stream.close?.();
+    // The pinned SDK's close() starts cleanup but returns void. Query.return()
    // awaits that same cleanup (including its transcript batch flush), then ends
    // the iterator. The fallback is for ordinary AsyncIterable test adapters.
    const owner=typeof stream.return==='function'?stream:iterator;
@@ -99,6 +100,9 @@ export function createConversationActivity({runOwner,prepareRuntime,query=sdkQue
     if(!same(runtime.binding,binding)||!same(runtime.versions,saved.run.versions))throw fault('RUNTIME_PIN_REFUSED');usageBasis=runtime.usageBasis;
    setupLife=setupBudget?createOperationLifetime({deadlineMs:Math.min(now()+setupBudget.maxMs,setupBudget.expiresAtMs),now,signal:life.signal,errorFactory:fault}):null;const setupRun=fn=>setupLife?setupLife.run(fn):life.run(fn);
    if(saved.request.skill&&selectedSkills!==undefined)skillRuntime=await setupRun(signal=>selectedSkills.prepare({binding,versions:saved.run.versions,request:saved.request,scopes:saved.run.scopes,...(lineage?{...lineage,sourceRequest}:{}),signal}));
+   // Wave5 MO01/ST16: the persisted procedure selection is re-resolved for this exact run. Independent of any skill:
+   // a procedure narrows guidance and the read surface and never replaces or widens the skill path above.
+   if(saved.request.procedure&&procedures!==undefined)procedureRuntime=await setupRun(signal=>procedures.prepare({binding,versions:saved.run.versions,request:saved.request,scopes:saved.run.scopes,signal}));
    // G3: general reads and prepare-only write requests are mounted from the profile alone (capabilities/mounts.mjs): the full tool list
    // whenever the policy enables them, with or without a trusted port; per-run availability is answered per call (UNAVAILABLE).
    // A selected skill narrows general reads to its own operations; those the skill server already exposes are excluded. On resume/fork
@@ -139,6 +143,9 @@ export function createConversationActivity({runOwner,prepareRuntime,query=sdkQue
    options.systemPrompt.append+=requestContextSuffix({window:saved.request.window,scopes:saved.run.scopes,skill:saved.request.skill,automaticClientContext});
    options.systemPrompt.append+=documentRevisionContextSuffix(saved.request,saved.documentRevisionContext);
    if(uploadRuntime)options.systemPrompt.append+=uploadRuntime.prompt;
+   // Wave5 MO01/ST16: the resolved procedure is appended as data that grants no additional authority, and the
+   // narrowing can only remove a mounted Capiro read tool the procedure did not grant — never add or widen one.
+   if(procedureRuntime){options.systemPrompt.append+=procedureRuntime.systemPromptAppend;options.allowedTools=procedureRuntime.narrow(options.allowedTools);}
     options.hooks=mergeHookSets([options.hooks??{},uploadRuntime?.hooks??{},nativeAudit.hooks]);
     setupLife?.check();setupLife?.close();setupLife=undefined;
     diagnostic('stage','activity-running');await publish('run.status',{state:'running',reasonCode:null});

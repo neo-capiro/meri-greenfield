@@ -1,0 +1,83 @@
+CLAIM (successor) — Wave5 MO01/ST16 native procedure PRODUCTION CALLER
+Branches: codex/wave5-m7-native-procedure-caller-20261028 in BOTH owned checkouts.
+  Core work/m7-native-procedures-core-20261028  base 2ea1681f37fac848073fb436c766cb23e0f07e21, prior 109c3b44 (resolver-only, NOT completion)
+  Meri work/m7-native-procedures-20261028       base 96dcd18703fd3f51999c0385d4948740727f3173, untouched at 96dcd18
+
+CORRECTION OF THE PRIOR CLAIM (recorded, not silently dropped)
+  The earlier sentence "no legacy clioConversation" was wrong and is withdrawn. The canonical mapping is:
+  Meri apps/runtime/native-authority/identity-context.mjs createNativeIdentityContext() builds
+  createCapiroApplicationAuthorityClient (apps/control/action-host/application-adapters/authority-http.mjs) whose
+  routes are /api/clio/application-authority/{identity,context,current}; Core's owner of that route is
+  ApplicationCurrentService, and its conversation read is loadOwnedActiveClioConversation over the clio_conversations
+  table. The table's historical name is a storage fact, NOT a defect, and that mapping is the trusted native
+  conversation/run identity path. Nothing here removes or bypasses it. "Legacy" refered only to the meriv3 /
+  MeriGovernedTurnContext execution path, which must not be reused as an execution route.
+  Decision on the extra direct read: MeriProcedureRuntimeValidationService.admitSelectedProcedure() keeps its own
+  currentOwnedConversation() + wall re-read. It is NOT redundant with the ApplicationCurrentService receipt: the
+  receipt proves identity/membership/context revisions for the exact conversation+client, while the wall check is the
+  memory-wall/ethical-wall owner. Both are required before tool release, and both are re-read after the async
+  canonical resolution. No run-free authority is invented, and the conversation fence is preserved.
+
+TRANSPORT TRACED (real, existing — reused, not replaced)
+  Worker/runner -> control: apps/runtime/native-client.mjs createNativeCapabilityClient(credential).call('<operation>', body)
+                            POST {origin}/v1/<operation>, Bearer <task credential>.
+  Control -> Core:          apps/runtime/native-authority/routines-core-client.mjs is the reference pattern for an
+                            ATTENDED fixed-route Core call: header x-internal-service-secret (ToolServiceSecretGuard) +
+                            authorization: Bearer <native credential from nativeCredentialFor({binding,selectedClientId})>,
+                            redirect:'error', credentials:'omit', status/JSON validation, and the SAME session must
+                            still be live after Core answers. The procedure Core client copies exactly that discipline.
+  Core route:               POST /api/clio/procedure-runtime/validate — already ToolServiceSecretGuard-protected;
+                            body {conversationId, clientId, scope, toolName, selector}; legacy full-identity body is
+                            byte-identical and keeps its own role/guard behaviour (dispatched by selector presence).
+  Selection seam:           saved.request.procedure — the persisted, input-correlated selector union owned by A5.
+                            NOT an HTTP-body authority: the caller reads the STORED selection and re-resolves it.
+                            A procedure grants no instructions/tools/authority beyond the resolved manifest policy.
+
+EXACT NEW/EDITED FILES AND HOOK POSITIONS (Meri unless stated)
+1. NEW apps/worker/conversation/procedures/guidance.mjs
+     PROCEDURE_CONTEXT_MARKER, procedureContextSuffix(admission), assertProcedureAdmission(admission,{binding,selection,scopes,now}),
+     narrowProcedureTools(existingAllowed, grantedTools) — subset-only narrowing, never adds a tool, no-op when nothing matches.
+2. NEW apps/worker/conversation/procedures/runtime.mjs
+     createProcedureRuntime({resolve,now}) -> {prepare({binding,versions,request,scopes,signal})} -> frozen
+     {identity,manifestDigest,policy,systemPromptAppend,allowedTools,deadlineMs,close}. Reads request.procedure;
+     returns null when absent so a run without a selection is unchanged. Never calls a model.
+3. NEW apps/worker/conversation/procedures/task-port.mjs
+     createTaskProcedurePort({native,now}) -> {prepare} that calls the existing task transport operation
+     'procedure/resolve' (same shape as apps/runtime/selected/task.mjs createTaskSelectedSkills).
+4. NEW apps/control/conversations/procedures/core-client.mjs
+     createProcedureCoreClient({origin,getServiceSecret,nativeCredentialFor,now,fetchImpl,maxRequestMs}) -> {resolve}
+     POST {origin}/api/clio/procedure-runtime/validate with x-internal-service-secret + Bearer; refuses on non-200,
+     malformed body, digest/identity/scope mismatch; re-reads the native credential after the await.
+5. NEW apps/control/conversations/procedures/resolver.mjs
+     createProcedureResolver({core,now}) -> {resolve({binding,selection,scopes,signal,deadlineMs})} : validates the
+     closed selector shape (firm|builtin, sha256 digest, positive version, six canonical builtin ids), derives
+     conversationId/selectedClientId from the binding (never from the selector), verifies the Core admission against
+     the selector and the current scopes, and returns the immutable guidance.
+6. EDIT apps/worker/conversation/activity.mjs (procedure-only spans)
+     a) signature: add 'procedures' to the destructured ports after 'selectedSkills'.
+     b) line ~63 let-list: add procedureRuntime.
+     c) AFTER line 98 (the selectedSkills.prepare call), BEFORE the generalReads mount block: prepare the procedure
+        runtime when saved.request.procedure is present, and life.limitDeadline(procedureRuntime.deadlineMs).
+     d) AFTER line 132 (skill prose append): options.systemPrompt.append+=procedureRuntime.systemPromptAppend and
+        options.allowedTools=narrowProcedureTools(options.allowedTools,procedureRuntime.allowedTools).
+     e) cleanup/conversation close: close procedureRuntime with the other runtimes.
+     No change to skill behaviour, M5 files, or the request-context suffix.
+7. EDIT apps/runtime/conversation-runner.mjs (composition only)
+     construct procedures=createTaskProcedurePort({native,now}) and pass 'procedures' into createConversationActivity;
+     close it beside selectedSkills.
+8. NEW tests
+     apps/worker/conversation/procedures/test/runtime.test.mjs   — real SDK-preparation test: a synthetic activity
+       fixture proves the frozen guidance lands in options.systemPrompt.append, that allowedTools never gains a tool,
+       and that no model/provider call happens in the fixture; stale/replayed selector, disabled/revoked refusal,
+       altered scope/tool rejection, all six builtin digests.
+     apps/control/conversations/procedures/test/core-client.test.mjs — service-secret + bearer headers, refusal paths,
+       session-death-after-answer refusal, digest mismatch refusal.
+9. NEW Core (small, evidence only) tools/tsconfig.procedure-witness.json — external tsconfig with extends
+   apps/api/tsconfig.json, files = exact changed source+spec, include/exclude empty, noEmit, incremental false.
+   Used to compare real diagnostics against untouched 109c3b44 / 2ea1681f via a read-only witness checkout.
+
+NOT TOUCHED
+  M5 files (selected-runtime.mjs, execution.mjs, retention.mjs, output-format.mjs), A5 public input schemas/generators
+  and generated output (freeze 08ae23e1), auth implementation/guard/classifier/middleware, application-authority.ts,
+  application-current.service.ts, prisma schema/migrations, packages/skills static install, quick_skill aliases,
+  package.json/lockfiles, any new store/authority/credential mint.
