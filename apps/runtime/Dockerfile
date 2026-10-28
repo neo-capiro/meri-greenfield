@@ -265,7 +265,7 @@ ADD --checksum=sha256:fc36e4dd53d901cf868cbe55a000a496e84cf220317a0db8cbdfc35a97
 # Every instruction below is build-only: the compiler, the Rust toolchain, the development headers and the build tree
 # stay in stages that are not the exported stage, and the runtime stage receives only the installed payload. The
 # compiler/development closure is resolved from the same retained vendor-signed index the three native layers already
-# install from (101 official aarch64 archives, pinned by exact URL and sha256 in the ADD --checksum list and in the lock's
+# install from (137 official aarch64 archives, pinned by exact URL and sha256 in the ADD --checksum list and in the lock's
 # uploadNativeProvenance.clamavSourcePreparation.buildClosure). The ClamAV release asset, its detached signature, the
 # Cisco Talos public key and the official Rust toolchain with its release key are fetched at those exact bytes.
 #
@@ -416,6 +416,7 @@ ADD --checksum=sha256:57bd0a46f5698266ca1b11243369068da735587e5b023aa3dfa9076ef4
 ADD --checksum=sha256:46a3aba6c36df74a2e9d8dffec047ff423a3699e0d0160f05a8fd43c64829748 https://packages.wolfi.dev/os/aarch64/sqlite-dev-3.54.1-r0.apk /tmp/meri-native-dev-repo/aarch64/sqlite-dev-3.54.1-r0.apk
 ADD --checksum=sha256:c3e162065d493add318143b5b8c24e650a5c80da72abdf7d60784e743ea1713f https://packages.wolfi.dev/os/aarch64/util-linux-2.42.4-r1.apk /tmp/meri-native-dev-repo/aarch64/util-linux-2.42.4-r1.apk
 ADD --checksum=sha256:6bd1942866fefc242ddc84cc2626564afebdfb1e4ae1d29e7ee05764ad8ea0b3 https://packages.wolfi.dev/os/aarch64/util-linux-dev-2.42.4-r1.apk /tmp/meri-native-dev-repo/aarch64/util-linux-dev-2.42.4-r1.apk
+ADD --checksum=sha256:f9877cd621c1941636c7e99972fdb3d1bd66fa1fc0a736a9a4d3c7a521a7a14b https://packages.wolfi.dev/os/aarch64/glib-2.90.1-r0.apk /tmp/meri-native-dev-repo/aarch64/glib-2.90.1-r0.apk
 FROM ${RUNTIME_IMAGE} AS native-source-inputs
 ADD --checksum=sha256:1af1117a228f1b5bc7fa91a0dabc37848a99e7d25188e9be8043332ce721dfd3 https://github.com/Cisco-Talos/clamav/releases/download/clamav-1.5.4/clamav-1.5.4.tar.gz /tmp/meri-native-source/clamav-1.5.4.tar.gz
 ADD --checksum=sha256:8acf5816c3c9dc8b02a2e11f93d90d37b25845a0481e16873454df4a30a375c0 https://github.com/Cisco-Talos/clamav/releases/download/clamav-1.5.4/clamav-1.5.4.tar.gz.sig /tmp/meri-native-source/clamav-1.5.4.tar.gz.sig
@@ -461,7 +462,7 @@ COPY --from=native-repo-4 /tmp/meri-native-repo /tmp/meri-native-repo
 # The upstream source requires an interpreter here: clamav-1.5.4/CMakeLists.txt 219-231 asks for
 # find_package(Libcheck REQUIRED) and find_package(Python3 REQUIRED) with ENABLE_TESTS=ON, and 256-277 runs the
 # unit-test input generators with ${Python3_EXECUTABLE} at build time and requires `${Python3_EXECUTABLE} -m
-# unittest --help` to exit 0, because this stage carries no pytest. The pinned 101-archive development closure was
+# unittest --help` to exit 0, because this stage carries no pytest. The pinned 137-archive development closure was
 # resolved for the toolchain and carries no interpreter, and the interpreter the exported runtime stage installs
 # lives in a later stage, so it cannot supply this one. The stage therefore reads the retained runtime staging set
 # - the same vendor-signed index and the same authenticated archives the runtime stage already installs python-3.13

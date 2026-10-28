@@ -2017,10 +2017,10 @@
         "verification": "detached signature over the toolchain archive verified with the release key: exit 0; the published .sha256 and the signed stable channel manifest name the same sha256 the downloaded bytes hash to"
        },
        "buildClosure": {
-        "source": "resolved from the retained vendor-signed index 5c84e4b835a811c1624d9692f011df3de446c8011be4dedaabf6f3dbf41ec536 and pinned by the sha256 of each downloaded official archive; includes the 35 transitive packages selected by apk in the compiler-stage installation",
+        "source": "resolved from the retained vendor-signed index 5c84e4b835a811c1624d9692f011df3de446c8011be4dedaabf6f3dbf41ec536 and pinned by the sha256 of each downloaded official archive; includes the 36 transitive packages selected by apk in the compiler-stage installation",
         "architecture": "aarch64",
-        "packages": 136,
-        "totalBytes": 310262615,
+        "packages": 137,
+        "totalBytes": 312482328,
         "sizeChecks": "every downloaded archive length equals the index S: field exactly (0 mismatches)",
         "unresolvedVirtualProviders": [
          "merged-lib",
@@ -2154,6 +2154,13 @@
           "url": "https://packages.wolfi.dev/os/aarch64/gdbm-1.26-r9.apk",
           "sha256": "7c809eeb4a0a2a7ecbbbe92a70abecfccfc5c17ea40144798e8b389dc25ac7e8",
           "bytes": 290199
+         },
+         {
+          "name": "glib",
+          "version": "2.90.1-r0",
+          "url": "https://packages.wolfi.dev/os/aarch64/glib-2.90.1-r0.apk",
+          "sha256": "f9877cd621c1941636c7e99972fdb3d1bd66fa1fc0a736a9a4d3c7a521a7a14b",
+          "bytes": 2219713
          },
          {
           "name": "glibc",
@@ -2984,7 +2991,7 @@
         ],
         "compilerClosureCorrection": {
          "reason": "The original development repository omitted packages selected by the signed index during offline installation, including dependencies already staged only for the runtime. Stage those exact selected versions in the development repository as well.",
-         "addedPackages": 35,
+         "addedPackages": 36,
          "buildValidation": "Source checks only; a rebuilt image is not claimed."
         }
        },
