@@ -1,7 +1,9 @@
 /** Actual upstream workflow isolate; synthetic activations, no Temporal server or running task. */
 import test from 'node:test';import assert from 'node:assert/strict';import {AsyncLocalStorage} from 'node:async_hooks';import {createRequire} from 'node:module';
 globalThis.AsyncLocalStorage=AsyncLocalStorage;
-const require=createRequire(import.meta.url),{Activator}=require('@temporalio/workflow/lib/internals'),{setActivator}=require('@temporalio/workflow/lib/global-attributes'),{defaultPayloadConverter,TypedSearchAttributes}=require('@temporalio/common');
+// Activate the same Temporal installation the conversation workflow imports.
+// A sibling runtime installation has separate cancellation-scope state.
+const require=createRequire(new URL('../../conversations/package.json',import.meta.url)),{Activator}=require('@temporalio/workflow/lib/internals'),{setActivator}=require('@temporalio/workflow/lib/global-attributes'),{defaultPayloadConverter,TypedSearchAttributes}=require('@temporalio/common');
 const {meriScheduledDispatchWorkflow}=await import('../../conversations/scheduled-dispatch-workflow.ts');
 const turn=async()=>{for(let n=0;n<16;n++)await Promise.resolve();};
 function fixture(){const at=new Date('2026-10-15T12:00:00.000Z'),typedSearchAttributes=new TypedSearchAttributes([{key:{name:'TemporalScheduledById',type:'KEYWORD'},value:'application/schedule-a'},{key:{name:'TemporalScheduledStartTime',type:'DATETIME'},value:at}]);
