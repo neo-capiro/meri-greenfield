@@ -1,0 +1,76 @@
+ClamAV 1.5.4 compatibility patch for OpenSSL 4.0 opaque ASN1_TIME
+===================================================================
+upstream        ClamAV 1.5.4 libclamav/crypto.c, from the signed release asset
+                clamav-1.5.4.tar.gz sha256 1af1117a228f1b5bc7fa91a0dabc37848a99e7d25188e9be8043332ce721dfd3
+                (Cisco Talos detached signature over the same bytes, checked in the same build step)
+target          libclamav/crypto.c
+target-sha256-before  6cfefd0ca043a922ddfda11c364f4995daf8a12317ce22f6c839b8c95a069dcc
+target-sha256-after   ca71242d214a659473bd0cb1e6083eb58f1a997006e2553ec4fb6f79aee234f0
+defect          cl_ASN1_GetTimeT reads timeobj->data and timeobj->type directly. ASN1_TIME has been opaque since
+                OpenSSL 1.1.0; with the 4.0.3 headers the development closure installs, gcc refuses the four reads
+                that build e6e7efb6 hit at crypto.c:1769/1772/1780/1789 ("invalid use of incomplete typedef
+                'ASN1_TIME'"), so libclamav cannot compile at all.
+change          the same parse, fed from the public accessors: ASN1_STRING_length / ASN1_STRING_get0_data /
+                ASN1_STRING_type, copied into a 32-byte local buffer. The year adjustment still rewrites the string
+                it parses, now the copy, so parsing, refusals (NULL object, missing data, short value, unknown type,
+                strptime failure) and the returned tm are unchanged; only the mutation of the caller's object and
+                the direct struct reads disappear. No API change, no version string change, no dependency change.
+application     infra/product-preview/native-clamav-patches/apply-pinned-patch.py, run by the stage's pinned
+                python3.13 after the archive's sha256 and signature checks, with these two hashes as arguments.
+===================================================================
+--- a/libclamav/crypto.c
++++ b/libclamav/crypto.c
+@@ -1760,16 +1760,31 @@
+     char *str;
+     const char *fmt = NULL;
+     time_t localt;
++    char strbuf[32];
++    const unsigned char *strdata;
++    int strlength;
+ #ifdef _WIN32
+     struct tm localtm, *ltm;
+ #else
+     struct tm localtm;
+ #endif
+ 
+-    if (!(timeobj) || !(timeobj->data))
+-        return NULL;
+-
+-    str = (char *)(timeobj->data);
++    if (!(timeobj))
++        return NULL;
++
++    /* ASN1_TIME has been opaque since OpenSSL 1.1.0 and the 4.0 headers reject the old
++     * direct struct reads, so read the recorded value through the public accessors and
++     * parse it from a bounded local copy. The copy is what the year adjustment below
++     * rewrites, so the caller's object is no longer modified and the parse is unchanged. */
++    strlength = ASN1_STRING_length(timeobj);
++    strdata   = ASN1_STRING_get0_data(timeobj);
++    if (!(strdata) || strlength < 12 || (size_t)strlength >= sizeof(strbuf))
++        return NULL;
++
++    memcpy(strbuf, strdata, (size_t)strlength);
++    strbuf[strlength] = '\0';
++    str = strbuf;
++
+     if (strlen(str) < 12)
+         return NULL;
+ 
+@@ -1777,7 +1792,7 @@
+     if (!(t))
+         return NULL;
+ 
+-    if (timeobj->type == V_ASN1_UTCTIME) {
++    if (ASN1_STRING_type(timeobj) == V_ASN1_UTCTIME) {
+         /* two digit year */
+         fmt = "%y%m%d%H%M%S";
+         if (str[3] == '0') {
+@@ -1786,7 +1801,7 @@
+         } else {
+             str[3]--;
+         }
+-    } else if (timeobj->type == V_ASN1_GENERALIZEDTIME) {
++    } else if (ASN1_STRING_type(timeobj) == V_ASN1_GENERALIZEDTIME) {
+         /* four digit year */
+         fmt = "%Y%m%d%H%M%S";
+         if (str[5] == '0') {

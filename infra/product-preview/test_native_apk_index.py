@@ -589,6 +589,54 @@ class SourceBuiltClamavPayload(unittest.TestCase):
         self.assertEqual(auth["verificationExit"], 0)
         self.assertIn("GOODSIG", " ".join(auth["verificationStatus"]))
 
+    def test_the_openssl4_compatibility_patch_is_pinned_and_applied_after_the_verified_source(self):
+        # ClamAV 1.5.4's cl_ASN1_GetTimeT reads ASN1_TIME's struct directly, and the 4.0.3 headers this closure installs
+        # make ASN1_TIME opaque, so that object file cannot compile without this bounded compatibility patch.
+        patches = ROOT / "infra" / "product-preview" / "native-clamav-patches"
+        patch_path = patches / "clamav-1.5.4-openssl4-asn1-time.patch"
+        applier_path = patches / "apply-pinned-patch.py"
+        self.assertTrue(patch_path.is_file(), "the compatibility patch is not in the source tree")
+        self.assertTrue(applier_path.is_file(), "the pinned-patch applier is not in the source tree")
+        self.assertIn('echo "%s  /tmp/meri-clamav-patches/clamav-1.5.4-openssl4-asn1-time.patch"'
+                      % hashlib.sha256(patch_path.read_bytes()).hexdigest(), DOCKERFILE,
+                      "the build does not pin the compatibility patch by its current bytes")
+        self.assertIn('echo "%s  /tmp/meri-clamav-patches/apply-pinned-patch.py"'
+                      % hashlib.sha256(applier_path.read_bytes()).hexdigest(), DOCKERFILE,
+                      "the build does not pin the applier by its current bytes")
+        self.assertIn("sha256sum -c /tmp/clamav-compat.sha256", DOCKERFILE)
+        text = patch_path.read_text(encoding="utf-8")
+        before_all = re.findall(r"^target-sha256-before  ([0-9a-f]{64})$", text, re.M)
+        after_all = re.findall(r"^target-sha256-after   ([0-9a-f]{64})$", text, re.M)
+        self.assertEqual(len(before_all), 1, "the patch must record exactly one upstream file hash")
+        self.assertEqual(len(after_all), 1, "the patch must record exactly one resulting file hash")
+        self.assertIn("apply-pinned-patch.py /tmp/meri-clamav-patches/clamav-1.5.4-openssl4-asn1-time.patch "
+                      "/usr/src/clamav-1.5.4/libclamav/crypto.c %s %s" % (before_all[0], after_all[0]), DOCKERFILE,
+                      "the build does not apply that patch to that file between those exact recorded hashes")
+        body = text[text.index("--- a/"):]
+        self.assertEqual(re.findall(r"^(?:---|\+\+\+) (\S+)$", body, re.M),
+                         ["a/libclamav/crypto.c", "b/libclamav/crypto.c"],
+                         "the patch must touch exactly one upstream source file")
+        removed = [line[1:] for line in body.splitlines() if line.startswith("-") and not line.startswith("---")]
+        self.assertEqual(sum("timeobj->" in line for line in removed), 4,
+                         "the patch must replace exactly the four direct ASN1_TIME struct reads and nothing else")
+        for accessor in ("ASN1_STRING_length(timeobj)", "ASN1_STRING_get0_data(timeobj)", "ASN1_STRING_type(timeobj)"):
+            self.assertIn(accessor, text, "the patch does not use the public accessor %s" % accessor)
+        stage = DOCKERFILE.index("AS clamav-source-build")
+        next_stage = DOCKERFILE.index("\nFROM ", stage)
+        outside_code = "\n".join(line for line in (DOCKERFILE[:stage] + DOCKERFILE[next_stage:]).splitlines()
+                                 if not line.lstrip().startswith("#"))
+        self.assertNotIn("native-clamav-patches", outside_code,
+                         "the patch inputs must stay inside the build-only source stage")
+        order = [DOCKERFILE.index("COPY infra/product-preview/native-clamav-patches", stage),
+                 DOCKERFILE.index("RUN --network=none", stage),
+                 DOCKERFILE.index("sha256sum -c /tmp/clamav.sha256", stage),
+                 DOCKERFILE.index("gpgv --keyring /tmp/meri-native-source/cisco-talos-keyring.gpg", stage),
+                 DOCKERFILE.index("tar -xzf /tmp/meri-native-source/clamav-1.5.4.tar.gz", stage),
+                 DOCKERFILE.index("apply-pinned-patch.py /tmp/meri-clamav-patches", stage),
+                 DOCKERFILE.index("cmake -S /usr/src/clamav-1.5.4", stage)]
+        self.assertEqual(order, sorted(order),
+                         "the patch must be applied only after the archive checksum, the signature and the extraction")
+
     def test_the_coverage_check_recognises_the_installed_version_and_flags_the_old_ones(self):
         sys.path.insert(0, str(ROOT / "infra" / "product-preview"))
         try:

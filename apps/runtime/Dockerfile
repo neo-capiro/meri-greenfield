@@ -473,7 +473,16 @@ COPY --from=native-repo-4 /tmp/meri-native-repo /tmp/meri-native-repo
 # repository with no configured repository and no network, and asserts the version and the imports the upstream
 # suite and input generators use. The development closure's own version assertion loop still runs after that
 # install, so the interpreter cannot silently move a pinned build dependency.
+# ClamAV 1.5.4 predates OpenSSL 4: libclamav/crypto.c cl_ASN1_GetTimeT reads timeobj->data and timeobj->type
+# directly, and ASN1_TIME has been opaque since OpenSSL 1.1.0, so the 4.0.3 headers this closure installs reject
+# those four reads and that object file does not compile. The compatibility patch in native-clamav-patches/ rewrites
+# only those reads to the public accessors (ASN1_STRING_length, ASN1_STRING_get0_data, ASN1_STRING_type) over a
+# bounded local copy, so the parse, its refusals and the returned tm are unchanged. The archive stays the signed
+# upstream 1.5.4 asset: the patch is applied only after the staged sha256 and the detached Cisco Talos signature have
+# verified, both the patch and its applier are hash-pinned in the same step, and the applier refuses any target whose
+# bytes are not the expected upstream file. This stage has no patch binary and this correction adds no package.
 FROM ${RUNTIME_IMAGE} AS clamav-source-build
+COPY infra/product-preview/native-clamav-patches /tmp/meri-clamav-patches
 RUN --network=none \
     --mount=type=bind,from=native-dev-repository,source=tmp/meri-native-dev-repo,target=/tmp/meri-native-dev-repo,readonly \
     --mount=type=bind,from=native-dev-repository,source=tmp/meri-native-source,target=/tmp/meri-native-source,readonly \
@@ -517,6 +526,10 @@ RUN --network=none \
       --without=rust-docs,rust-docs-json,rust-analysis >/dev/null && \
     export PATH=/opt/rust/bin:$PATH && rustc --version && cargo --version && \
     mkdir -p /usr/src && tar -xzf /tmp/meri-native-source/clamav-1.5.4.tar.gz -C /usr/src && \
+    echo "c8dd0ff05d8b80768d5d8562bcb0fb2f95b88775da07ff06bb900ffaa947b8b5  /tmp/meri-clamav-patches/clamav-1.5.4-openssl4-asn1-time.patch" > /tmp/clamav-compat.sha256 && \
+    echo "6dea945d4a6a6abca9ef76428525f183ca22658910746bcfabe84b91dab23bf1  /tmp/meri-clamav-patches/apply-pinned-patch.py" >> /tmp/clamav-compat.sha256 && \
+    sha256sum -c /tmp/clamav-compat.sha256 && \
+    python3.13 /tmp/meri-clamav-patches/apply-pinned-patch.py /tmp/meri-clamav-patches/clamav-1.5.4-openssl4-asn1-time.patch /usr/src/clamav-1.5.4/libclamav/crypto.c 6cfefd0ca043a922ddfda11c364f4995daf8a12317ce22f6c839b8c95a069dcc ca71242d214a659473bd0cb1e6083eb58f1a997006e2553ec4fb6f79aee234f0 && \
     cmake -S /usr/src/clamav-1.5.4 -B /tmp/clamav-build \
       -D CMAKE_BUILD_TYPE=RelWithDebInfo -D CMAKE_INSTALL_PREFIX=/usr -D CMAKE_INSTALL_SYSCONFDIR=/etc \
       -D ENABLE_APP=ON -D ENABLE_MILTER=ON -D ENABLE_CLAMONACC=ON -D ENABLE_UNRAR=ON -D ENABLE_TESTS=ON \
