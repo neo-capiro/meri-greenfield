@@ -5,7 +5,7 @@ import {assertSubject,assertWindow,assertWindowResolution} from '../../../../pac
 import {selectSkill} from '../../../../packages/skills/index.mjs';
 import {createOperationLifetime} from '../../../../packages/runtime/operation-lifetime.mjs';
 import {buildContinuationOptions} from '../continuation/options.mjs';
-import {createOriginalSkillServer} from './mcp.mjs';
+import {admitOriginalSkill,createOriginalSkillServer} from './mcp.mjs';
 import {assertSkillInstallation,assertSkillRun} from './receipts.mjs';
 import {createSelectedSkillOutput} from './output.mjs';
 const fault=code=>Object.assign(Error(code),{code}),same=(a,b)=>canonicalSha256(a)===canonicalSha256(b);
@@ -14,7 +14,7 @@ export async function createSelectedSkillExecutionRuntime(configuration) {
  const binding=data(c.binding),request=data(c.request),scopes=data(c.scopes),selection=data(own(c.selection,['subject','window','mondayBoardIds']));
  validateShape('RunBinding',binding);validateShape('RuntimeVersions',c.versions);scopes.forEach(s=>validateShape('Scope',s));assertSubject(selection.subject,binding);assertWindow(selection.window);
  const selected=selectSkill(request.skill.skillId,request.skill.skillVersion);
- if(!['quick_skill.relationship_brief','quick_skill.commitments_audit'].includes(selected.pin.skillId)||!same(request.skill,selected.pin)||!same(selection.subject.scopes,scopes)||
+ if(!admitOriginalSkill(selected.pin)||!same(request.skill,selected.pin)||!same(selection.subject.scopes,scopes)||
  !same(request.window,selection.window)||!selected.manifest.subjectKinds.includes(selection.subject.kind)||!selected.manifest.windowBases.includes(selection.window.basis)||
  c.versions.sdk!=='0.3.295'||c.versions.cli!=='2.1.295'||['readForSkill','currentSkillRun','compileArtifact','now'].some(k=>typeof c[k]!=='function')||typeof c.gateway?.execute!=='function')throw fault('SKILL_RUNTIME_CONFIGURATION');
  if(request.windowRequest!==null)assertWindowResolution(request.windowRequest,request.window);

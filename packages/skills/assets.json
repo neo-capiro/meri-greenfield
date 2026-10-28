@@ -146,8 +146,8 @@
       "skillVersion": "2.0.0",
       "manifestPath": "../../apps/control/document-application/report-brief/manifest.json",
       "prosePath": "../../apps/control/document-application/report-brief/SKILL.md",
-      "manifestSha256": "0eaccef8aea2e9ee4c3107fba4e1305faa0e441860d267a6b5675cb0d1197ae5",
-      "proseSha256": "89fa64fbe8282ee3792a72bfb0c586ec67053b85a413f218d7b870d6a7c7746f",
+      "manifestSha256": "7e00e11aa4606a5f5277dfd58913c11fe87ef6f069d5d1ad22911de69c83593b",
+      "proseSha256": "8767442316ed7c1a318ba091026eff84ad0ad0a575beab22c1800bac5fa24d3a",
       "catalogSha256": "1f901f26ec134e1585ff12541c3344fda77da1fb07f599f8d59e9338ecaa6eb6"
     }
   ],

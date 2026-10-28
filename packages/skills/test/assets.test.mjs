@@ -32,8 +32,8 @@ const evidence={
 
 test('all 14 original identities retain explicit immutable versions including the Bill Watch successor',()=>{
  assert.deepEqual([...new Set(listSkills().map(s=>s.skillId))].sort(),inventory.records.map(row=>row.fields.ID).sort());
- assert.deepEqual(listSkills().filter(s=>s.skillId==='quick_skill.bill_watch').map(s=>s.skillVersion).sort(),['1.0.0','1.0.1','1.1.0']);
- assert.equal(listSkills().length,17);
+ assert.deepEqual(listSkills().filter(s=>s.skillId==='quick_skill.bill_watch').map(s=>s.skillVersion).sort(),['1.0.0','1.0.1','1.1.0','2.0.0']);
+ assert.equal(listSkills().length,18);
  assert.equal(Object.keys(evidence).length,13);
  for(const entry of listSkills()){
   const asset=selectSkill(entry.skillId,entry.skillVersion);validateShape('SkillManifest',asset.manifest);

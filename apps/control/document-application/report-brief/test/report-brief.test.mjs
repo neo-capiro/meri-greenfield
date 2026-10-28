@@ -10,6 +10,9 @@ import {bindPreparedReportArtifactOptions} from '../binding.mjs';
 import {reportManifest,reportSkillPin,reportSourceIds,reportReadOperation} from '../skill.mjs';
 import {REPORT_SECTIONS} from '../input.mjs';
 import {artifactValidators as v,assertEvidence} from '../../../../../packages/contracts/retrieval-0.2/validate.mjs';
+import {canonicalSha256} from '../../../../../packages/contracts/validate.mjs';
+import {assertSelectedOutput} from '../../../../../packages/contracts/selected-skills/validate.mjs';
+import {createOriginalSelectedSkillExecution} from '../../../conversations/skills/execution.mjs';
 import {selectSkill} from '../../../../../packages/skills/index.mjs';
 import {createArtifactService} from '../../../../artifacts/service.mjs';
 import {nativeDocumentFixture,sha} from '../../../../artifacts/test/native-document-fixture.mjs';
@@ -20,6 +23,9 @@ const client=uid(9),policy='report-policy-1';
 const texts={bill_text:'Original independent source: Δ research 🛰 requires an authorization review. No appropriation amount is stated.',
  federal_legislation:'Independent status source: the enacted stage has not been established.'};
 const subject={congress:119,session:2,billId:'119-s-88',billVersion:'is',fiscalYear:2028,budgetStage:'authorized'};
+// The canonical selected subject/window of the run, exactly as the real caller supplies it.
+const selection=()=>({subject:{kind:'client',entityType:'client',entityIds:[client],tenantId:'independent-report',actorId:'source-reviewer',policyRevision:policy,scopes:context().scopes,rosterVersionId:null},
+ window:{basis:'explicit',startInclusive:'2026-10-13T11:00:00.000Z',endExclusive:'2026-10-13T13:00:00.000Z',timezone:'UTC',weekStartsOn:null},mondayBoardIds:['101']});
 function context(){return {binding:{tenantId:'independent-report',actorId:'source-reviewer',conversationId:uid(1),runId:uid(2),attemptId:uid(3),workerId:uid(4),writerFence:1},
  scopes:[{tenantId:'independent-report',kind:'client',resourceId:client,policyRevision:policy}],evidence:[],assets:[],deadlineMs:NOW+5000,maxBytes:1048576};}
 const citation=(sourceId,text=texts[sourceId])=>({sourceId,recordId:'independent-'+sourceId,sourceVersionId:'independent-version-1',start:0,end:text.length,url:'https://example.invalid/never-fetched'});
@@ -49,7 +55,9 @@ function read(call){
   continuation:{cursor:null,requiredReads:[],remainingSources:available?[]:[sourceId]},negativeAssertion:{kind:'none'}};
  assertEvidence(envelope);return {envelope,evidence};
 }
-const compiler=readSource=>createCongressionalReportCompiler({readSource:readSource??read,now:()=>NOW});
+// The real caller always supplies the canonical selection; default it here and keep the option overridable.
+const withSelection=inner=>({prepare:(i,c,options={})=>inner.prepare(i,c,{selection:selection(),...options})});
+const compiler=readSource=>withSelection(createCongressionalReportCompiler({readSource:readSource??read,now:()=>NOW}));
 const bodyText=p=>p.request.content.blocks.flatMap(b=>b.runs?.map(r=>r.text)??[]).join('\n');
 const headings=p=>p.request.content.blocks.filter(b=>b.style==='Heading 1').map(b=>b.runs[0].text);
 let renders=0;
@@ -152,22 +160,22 @@ test('an evidence-bearing revision keeps the retained evidence and immutable par
  assert.deepEqual(retained.version,created.version);assert.equal(retained.specSha256,v.hash(first.request));
  const readBase=async({versionId,signal})=>{const record=await f.options.versions.read(versionId,signal);assert.equal(record.version.versionId,versionId);return record;};
  const next=structuredClone(input());next.recommendations=['Revised independent recommendation: preserve the original and request a budget-stage source review.'];
- const selection={versionId:created.version.versionId,specSha256:retained.specSha256};
+ const parent={versionId:created.version.versionId,specSha256:retained.specSha256};
  // A revision is a different attempt of the same conversation: the parent's evidence is earlier-run
  // evidence, so the canonical owner admits it only through the bound retained-evidence admission.
  const revisionContext={...f.context,binding:{...f.context.binding,runId:uid(5),attemptId:uid(6)}};
  let dispatched=0;const countingRead=call=>{dispatched++;return read(call);};
  const before=dispatched;
- for(const bad of [{...selection,specSha256:'a'.repeat(64)}])await assert.rejects(createCongressionalReportCompiler({readSource:countingRead,readBase,now:()=>NOW}).prepare(next,f.context,{base:bad}));
+ for(const bad of [{...parent,specSha256:'a'.repeat(64)}])await assert.rejects(createCongressionalReportCompiler({readSource:countingRead,readBase,now:()=>NOW}).prepare(next,f.context,{selection:selection(),base:bad}));
  const rollback=structuredClone(next);rollback.asOf='2026-10-12T00:00:00.000Z';
- await assert.rejects(createCongressionalReportCompiler({readSource:countingRead,readBase,now:()=>NOW}).prepare(rollback,f.context,{base:selection}));
+ await assert.rejects(createCongressionalReportCompiler({readSource:countingRead,readBase,now:()=>NOW}).prepare(rollback,f.context,{selection:selection(),base:parent}));
  const changedSubject=structuredClone(next);changedSubject.subject.budgetStage='appropriated';
- await assert.rejects(createCongressionalReportCompiler({readSource:countingRead,readBase,now:()=>NOW}).prepare(changedSubject,f.context,{base:selection}));
+ await assert.rejects(createCongressionalReportCompiler({readSource:countingRead,readBase,now:()=>NOW}).prepare(changedSubject,f.context,{selection:selection(),base:parent}));
  assert.equal(dispatched,before);
  // A revision may not re-present the parent's evidence under the same citation identity.
  const clash=call=>{const value=read(call);if(value.evidence[0]){const id=created.version.evidence[0].citationId;value.evidence[0].citationId=id;value.envelope.data.records[0].citationId=id;}return value;};
- await assert.rejects(createCongressionalReportCompiler({readSource:clash,readBase,now:()=>NOW}).prepare(next,revisionContext,{base:selection}),/REPORT_RETAINED_EVIDENCE/);
- const second=await createCongressionalReportCompiler({readSource:read,readBase,now:()=>NOW}).prepare(next,revisionContext,{base:selection});
+ await assert.rejects(createCongressionalReportCompiler({readSource:clash,readBase,now:()=>NOW}).prepare(next,revisionContext,{selection:selection(),base:parent}),/REPORT_RETAINED_EVIDENCE/);
+ const second=await createCongressionalReportCompiler({readSource:read,readBase,now:()=>NOW}).prepare(next,revisionContext,{selection:selection(),base:parent});
  assert.equal(second.context.binding.runId,revisionContext.binding.runId);
  assert.equal(second.context.evidence[0].binding.runId,f.context.binding.runId);
  assert.equal(second.context.evidence[second.retainedEvidence.length].binding.runId,revisionContext.binding.runId);
@@ -193,4 +201,70 @@ test('an evidence-bearing revision keeps the retained evidence and immutable par
  f.state.executorHook=null;f.state.denied=false;
  const survivors=await f.options.versions.read(revised.version.versionId);
  assert.deepEqual(survivors.version,revised.version);
+});
+
+// The real control caller (apps/control/conversations/skills/execution.mjs) composed with synthetic Core
+// and source boundaries: current selection -> the recipe's own compiler -> priced provenance.selection ->
+// the canonical pending-output identity -> approval/retention. Publication of the accepted bytes through
+// the canonical artifact owner is covered by the ledger test above and is not duplicated here.
+test('the real report caller composes the selected run, its reads and the canonical pending output',async()=>{
+ const binding=context().binding,scopes=context().scopes,chosen=selection();
+ const versions={imageDigest:'sha256:'+'a'.repeat(64),sdk:'0.3.295',cli:'2.1.295',contracts:'0.1.0',skillsDigest:'b'.repeat(64),checkpointFormat:'0.1.0'};
+ const request={skill:reportSkillPin(),window:chosen.window,reason:'Draft the cited report for the selected bill identity.'};
+ const retained=[],delivered=[],order=[];
+ const pendingFor=call=>({state:'awaiting-output-approval',sourceBinding:binding,skill:request.skill,requestSha256:canonicalSha256(request),
+  selectionSha256:canonicalSha256(chosen),inputSha256:call.inputSha256,preparationSha256:call.preparationSha256,
+  artifactRequestSha256:canonicalSha256(call.prepared.request),baseVersionId:call.prepared.baseVersionId,prepared:call.prepared});
+ const setup=(runtimeFactory,runRequest=request)=>createOriginalSelectedSkillExecution({now:()=>NOW,defaultCongress:119,readSelection:async()=>{order.push('selection');return structuredClone(chosen);},
+  readContext:async()=>{order.push('context');return {context:structuredClone(context()),checkedAtMs:NOW,expiresAtMs:NOW+5000};},
+  admissionForBinding:()=>({currentSkillRun:async()=>{order.push('current-skill-run');return {};}}),
+  gatewayForBinding:()=>({execute:async()=>'{}',readForSkill:async()=>'{}'}),
+  retention:{retain:async value=>{order.push('retain');retained.push(value);}},
+  proposals:{prepare:async value=>{order.push('proposal');assert.equal(value.prepared,delivered[0].prepared);return {proposalId:uid(31),commandSha256:'c'.repeat(64),expiresAt:new Date(NOW+1000).toISOString()};}},
+  publishForBinding:async()=>({published:true}),
+  outputBridge:{deliver:async call=>{order.push('deliver');delivered.push(call);return pendingFor(call);},read:async()=>{throw Error('SYNTHETIC_READ_NOT_USED');}},
+  runtimeFactory});
+ const runtimeFactoryFor=selectionOverride=>async({compileArtifact,artifactOutput,selection:runtimeSelection,request:runtimeRequest,binding:runtimeBinding,scopes:runtimeScopes})=>{
+  assert.equal(runtimeRequest.skill.skillId,reportSkillPin().skillId);
+  const prepared=await compileArtifact({skill:runtimeRequest.skill,input:input(),readSource:read,selection:selectionOverride??runtimeSelection,
+   binding:runtimeBinding,scopes:runtimeScopes,deadlineMs:NOW+4000});
+  const pending=await artifactOutput.deliver({prepared,binding:runtimeBinding,reads:[],preparationSha256:canonicalSha256(prepared),
+   inputSha256:canonicalSha256(input()),requestSha256:canonicalSha256(request),selectionSha256:canonicalSha256(chosen)});
+  return {prepared,pending,async close(){}};
+ };
+ const execution=setup(runtimeFactoryFor());
+ try{
+  const runtime=await execution.selectedSkills.prepare({binding,versions,request,scopes});
+  assert.deepEqual(runtime.prepared.provenance.selection,chosen);
+  assert.equal(runtime.prepared.provenance.inputSha256,canonicalSha256(input()));
+  assert.equal(runtime.prepared.provenance.skill.skillVersion,'2.0.0');
+  assert.equal(delivered.length,1);
+  // the canonical contract accepts the identity the real caller hands to approval/retention
+  const accepted=assertSelectedOutput(runtime.pending,{binding,request,selection:chosen,inputSha256:canonicalSha256(input()),prepared:runtime.prepared});
+  assert.equal(accepted.state,'awaiting-output-approval');
+  const publication=await execution.publication.prepareEvent({binding,request,scopes,selectedClientId:chosen.subject.entityIds[0],output:runtime.pending});
+  assert.equal(publication.event.type,'approval.required');
+  assert.equal(retained.length,1);assert.equal(retained[0].pending.preparationSha256,canonicalSha256(runtime.prepared));
+  assert.equal(retained[0].reads.length,0);
+  assert.deepEqual(order,['selection','context','deliver','retain','proposal']);
+  assert.deepEqual(await execution.selectedSkills.publish({binding,request,scopes,selectedClientId:chosen.subject.entityIds[0],output:runtime.pending}),{published:true});
+  await runtime.close();
+ }finally{await execution.close();}
+ // a foreign selection never reaches the compiler, and an ordinary version is not connected
+ const foreign=setup(async({compileArtifact,binding:rb,scopes:rs,selection:sel})=>{
+  await compileArtifact({skill:request.skill,input:input(),readSource:read,selection:{...sel,mondayBoardIds:['999']},binding:rb,scopes:rs,deadlineMs:NOW+4000});
+  throw Error('UNREACHABLE');
+ });
+ try{await assert.rejects(foreign.selectedSkills.prepare({binding,versions,request,scopes}),{code:'SKILL_COMPILER_CONTEXT_REFUSED'});}
+ finally{await foreign.close();}
+ const legacySkill=selectSkill('quick_skill.bill_watch','1.1.0').pin,legacyRequest={...request,skill:legacySkill};
+ const unconnected=setup(async({compileArtifact,binding:rb,scopes:rs,selection:sel})=>{
+  await compileArtifact({skill:legacySkill,input:input(),readSource:read,selection:sel,binding:rb,scopes:rs,deadlineMs:NOW+4000});
+  throw Error('UNREACHABLE');
+ },legacyRequest);
+ try{await assert.rejects(unconnected.selectedSkills.prepare({binding,versions,request:legacyRequest,scopes}),{code:'SKILL_NOT_CONNECTED'});}
+ finally{await unconnected.close();}
+ // the recipe's own selection guard refuses selected identities it cannot account for
+ await assert.rejects(compiler().prepare(input(),context(),{selection:{...chosen,mondayBoardIds:Array.from({length:101},(_,i)=>`board-${i}`)}}),/REPORT_SELECTION/);
+ await assert.rejects(compiler().prepare(input(),context(),{selection:{...chosen,mondayBoardIds:['101','101']}}),/REPORT_SELECTION/);
 });

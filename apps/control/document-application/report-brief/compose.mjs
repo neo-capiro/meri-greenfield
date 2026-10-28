@@ -1,16 +1,25 @@
 /** Typed report recipe compilation. Source and base ports belong to existing trusted owners.
  * Adds no route, no authority and no second model loop: the compiler turns gateway-owned decisive
  * reads into the accepted seven-section cited DOCX report and pins immutable revision provenance. */
-import {artifactValidators as v} from '../../../../packages/contracts/retrieval-0.2/validate.mjs';
+import {artifactValidators as v,assertSubject,assertWindow} from '../../../../packages/contracts/retrieval-0.2/validate.mjs';
 import {own} from '../../../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {createOperationLifetime} from '../../../../packages/runtime/operation-lifetime.mjs';
 import {fail,hash,REPORT_SECTIONS,reportInput} from './input.mjs';
-import {reportSkillPin,reportSourceIds} from './skill.mjs';
+import {reportManifest,reportSkillPin,reportSourceIds} from './skill.mjs';
 import {bindRead,assessFacts} from '../research-brief/evidence.mjs';
 const prepared=new WeakMap();
 const marker='Meri report provenance: ';
 const p=(text,style='Normal')=>({kind:'paragraph',style,runs:[{text}]});
 const same=(a,b)=>v.hash(a)===v.hash(b);
+/** The canonical selected subject/window of this run, exactly as the other original recipes take it. */
+function reportSelection(raw,context){
+  const s=own(v.snapshot(raw),['subject','window','mondayBoardIds']);
+  assertSubject(s.subject,context.binding);assertWindow(s.window);
+  if(s.subject.kind!=='client'||!same(s.subject.scopes,context.scopes)||!reportManifest().windowBases.includes(s.window.basis)||
+    !Array.isArray(s.mondayBoardIds)||s.mondayBoardIds.length>100||new Set(s.mondayBoardIds).size!==s.mondayBoardIds.length||
+    s.mondayBoardIds.some(id=>typeof id!=='string'||!id||id.length>256))fail('REPORT_SELECTION');
+  return s;
+}
 const assetIds=value=>{
   const found=[];
   const walk=node=>{
@@ -86,9 +95,9 @@ function blocksFor(input,findings,conflicts,reads,retained,provenance){
 }
 export function createCongressionalReportCompiler({readSource,readBase,now}){
   if(typeof readSource!=='function'||typeof now!=='function'||readBase!==undefined&&typeof readBase!=='function')fail('REPORT_CONFIGURATION');
-  return Object.freeze({async prepare(inputValue,contextValue,{base=null,signal}={}){
+  return Object.freeze({async prepare(inputValue,contextValue,{base=null,selection,signal}={}){
     if(signal?.aborted)fail('REPORT_CANCELLED');
-    const input=reportInput(inputValue,reportSkillPin()),context=v.context(contextValue);
+    const input=reportInput(inputValue,reportSkillPin()),context=v.context(contextValue),selected=reportSelection(selection,context);
     if(Date.parse(input.asOf)>now()||context.assets.length||context.analysisAdmission)fail('REPORT_CONTEXT');
     if(base!==null){own(base,['versionId','specSha256']);if(!hash(base.specSha256)||typeof base.versionId!=='string'||!readBase)fail('REPORT_BASE');}
     const life=createOperationLifetime({deadlineMs:context.deadlineMs,now,signal,errorFactory:code=>Object.assign(new Error('REPORT_'+code),{code:'REPORT_'+code})});
@@ -103,7 +112,7 @@ export function createCongressionalReportCompiler({readSource,readBase,now}){
       }
       const findings=assessFacts(input.findings,reads),conflicts=conflictsFor(input,findings),evidence=[...retained,...reads.flatMap(x=>x.evidence)];
       if(new Set(evidence.map(x=>x.citationId)).size!==evidence.length)fail('REPORT_RETAINED_EVIDENCE');
-      const provenance={recipe:'sourced-cited-report',skill:input.skill,subject:input.subject,asOf:input.asOf,inputSha256:v.hash(input),
+      const provenance={recipe:'sourced-cited-report',skill:input.skill,selection:selected,subject:input.subject,asOf:input.asOf,inputSha256:v.hash(input),
         readsSha256:v.hash(reads),retainedEvidenceSha256:v.hash(retained),parent};
       const nextContext=v.context({...context,evidence}),request=v.request({operation:'create_word',format:'docx',title:input.title,content:{blocks:blocksFor(input,findings,conflicts,reads,retained,provenance)}});
       life.check();

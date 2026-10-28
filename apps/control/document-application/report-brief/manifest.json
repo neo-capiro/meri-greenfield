@@ -4,7 +4,7 @@
   "skillVersion": "2.0.0",
   "prose": {
     "id": "urn:meri:original:sourced-cited-report:1.0.0",
-    "sha256": "89fa64fbe8282ee3792a72bfb0c586ec67053b85a413f218d7b870d6a7c7746f"
+    "sha256": "8767442316ed7c1a318ba091026eff84ad0ad0a575beab22c1800bac5fa24d3a"
   },
   "requiredSources": [
     {
