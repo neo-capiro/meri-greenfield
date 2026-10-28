@@ -13,6 +13,7 @@ export const CONTEXT_KEY_SOURCES=Object.freeze({
   legiwatchReviewScope:`explicit client selector, current visible clients and identity/membership revisions from Core, bound to the immutable conversation subject — ${NATIVE}`,
   strategySavedScope:`explicit client selector plus current Core identity/membership revisions and selected conversation client — ${NATIVE}`,
   savedRecordScope:`current conversation client/tenant and Core identity/membership revisions; unsupported selected-client owner kinds refuse — ${NATIVE}`,
+  watchStateScope:`current selected client checked against Core visible clients, with current identity/membership revisions — ${NATIVE}`,
   capiroDataScope:`private client-record source only: immutable conversation scope and current Core identity/membership revisions; public queries have no private scope — ${NATIVE}`,
   selectedClientId:`immutable conversation client checked against current Core visible clients — ${NATIVE}`,
   visibleClientIds:`current Core application-authority visible client IDs — ${NATIVE}`,

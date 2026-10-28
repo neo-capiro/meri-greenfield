@@ -23,7 +23,7 @@ test('registered prior-chat attachment read obtains both context keys from the a
 
 test('every registered read with context keys has a trusted producer for each key and never uses the generic path',()=>{
  const covered=keyed.filter(binding=>registered.has(binding.id));
- assert.equal(covered.length,51);
+ assert.equal(covered.length,59);
  for(const binding of covered){
   const supply=readContextSupply(binding);
   assert.notEqual(supply.path,'generic',binding.id);
