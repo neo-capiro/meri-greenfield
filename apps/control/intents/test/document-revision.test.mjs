@@ -64,3 +64,58 @@ test('source-backed and asset-bearing replacements cannot silently lose retained
   assert.throws(()=>admitDocumentRevisionSource(raw,{selection:h.selection,binding:h.f.context.binding,request:v.request(replacement)}),{code:'UNAVAILABLE',effect:'none'});
  }
 });
+/** Retained native source evidence bound exactly like the canonical version validator binds it. */
+const retainedEvidence=source=>({sourceId:'program_elements',recordId:'record-synthetic',sourceVersionId:'version-synthetic',
+ observedAt:source.version.createdAt,sourceUpdatedAt:null,citationId:randomUUID(),scopes:structuredClone(source.version.scopes),
+ contentSha256:'a'.repeat(64),binding:structuredClone(source.version.binding)});
+/** The exact catalog projection the document application admits, plus a custom trusted write/revision port. */
+const documentDescriptor=()=>{const entry=catalog.operations.find(x=>x.operation.id==='create_word');return {operation:entry.operation,requiredGrants:entry.requiredGrants,sourceRequirements:entry.sourceRequirements};};
+const configure=(h,{read,execute,preservation})=>createDocumentIntentPreparer({descriptor:documentDescriptor(),binding:h.f.context.binding,
+ revision:{selection:h.selection,read},writes:{execute,preservation}});
+test('a trusted owner keeps the retained evidence across a full replacement through the existing artifact owner',async()=>{
+ const h=await fixture(),base=await h.source();
+ const parent={...base,version:{...base.version,evidence:[retainedEvidence(base)]}};v.version(parent.version);
+ let executions=0;const calls=[];
+ // The trusted owner re-presents the retained evidence; the canonical artifact owner, with the
+ // retained-evidence admission hook, writes the revision and keeps the evidence on the new version.
+ const preservedOwner=call=>h.f.owner({context:{...h.f.context,evidence:call.evidence},admitRetainedEvidence:context=>v.hash(context.evidence)===v.hash(call.evidence)?undefined:1});
+ const writes={preservation:({retained})=>({evidence:retained.evidence,assets:[]}),
+  async execute(call,signal){executions++;calls.push(call);const {preserve,...write}=call;return preservedOwner(preserve).execute(write,signal);}};
+ const preparer=configure(h,{read:async()=>parent,...writes});
+ const result=await preparer.prepare(h.call);
+ assert.equal(executions,1);assert.equal(calls[0].preserve.evidenceSha256,v.hash(parent.version.evidence.map(v.nativeSourceEvidence)));
+ assert.deepEqual(calls[0].preserve.parent,{versionId:h.selection.versionId,objectSha256:base.version.object.sha256,specSha256:base.specSha256});
+ assert.equal(result.version.parentVersionId,h.selection.versionId);assert.equal(result.version.artifactId,h.selection.artifactId);
+ assert.deepEqual(result.version.evidence,parent.version.evidence);
+ const after=await h.source();assert.deepEqual(after.version,base.version);assert.deepEqual(after.request,base.request);
+});
+test('a replacement that drops, invents or re-binds retained provenance is refused with no draft',async()=>{
+ const h=await fixture(),base=await h.source();
+ const evidence=[retainedEvidence(base)];
+ const parent={...base,version:{...base.version,evidence}};v.version(parent.version);
+ const preparation=({retained})=>({evidence:retained.evidence,assets:[]});
+ for(const value of [{evidence:[{...evidence[0],contentSha256:'f'.repeat(64)}]},{evidence:[]},{evidence,assets:[{id:'x',object:{}}]}]){
+  let executions=0;
+  const preparer=configure(h,{read:async()=>parent,execute:async(call,signal)=>{executions++;return h.f.run(call);},preservation:()=>value});
+  await assert.rejects(preparer.prepare(h.call),{code:'ACCESS_DENIED',effect:'none'});assert.equal(executions,0);
+ }
+ // A port that reports preservation but re-presents nothing leaves a draft: the effect is unknown.
+ let executed=0;
+ const lying={preservation:preparation,async execute(call,signal){executed++;const {preserve,...write}=call;return h.f.run(write,signal);}};
+ await assert.rejects(configure(h,{read:async()=>parent,...lying}).prepare(h.call),{code:'INVALID_RESULT',effect:'unknown'});assert.equal(executed,1);
+});
+test('preserved asset objects are the parent objects; foreign, missing or invented assets are refused',async()=>{
+ const h=await fixture(),plain={operation:'create_word',format:'docx',title:'Synthetic',content:{blocks:[{kind:'paragraph',runs:[{text:'Retained text'}]}]}};
+ const withAsset={...plain,content:{blocks:[{kind:'image',assetId:'retained-image',widthInches:1,heightInches:1}]}};
+ const raw=await h.source();raw.request=v.request(withAsset);raw.specSha256=v.hash(raw.request);raw.inspection.format='docx';raw.inspection.details={paragraphs:1,tables:0,pictures:0};
+ const object={objectId:randomUUID(),versionId:'immutable-asset',sha256:'c'.repeat(64),bytes:7,scopes:structuredClone(raw.version.scopes)};
+ const admit=preservation=>admitDocumentRevisionSource(raw,{selection:h.selection,binding:h.f.context.binding,request:v.request(plain),preservation});
+ const pin=admit(()=>({evidence:[],assets:[{id:'retained-image',object}]}));
+ assert.deepEqual(pin.preserved.assetIds,['retained-image']);assert.equal(pin.preserved.assets[0].object.objectId,object.objectId);
+ assert.equal(pin.preserved.parent.objectSha256,raw.version.object.sha256);assert.equal(pin.preserved.parent.specSha256,raw.specSha256);
+ const foreign={...object,scopes:[{...raw.version.scopes[0],resourceId:'other'}]};
+ for(const value of [()=>({evidence:[],assets:[]}),()=>({evidence:[],assets:[{id:'other',object}]}),()=>({evidence:[],assets:[{id:'retained-image',object:foreign}]})])
+  assert.throws(()=>admit(value),{code:'ACCESS_DENIED',effect:'none'});
+ const invented={...plain,content:{blocks:[{kind:'image',assetId:'invented-image',widthInches:1,heightInches:1}]}};
+ assert.throws(()=>admitDocumentRevisionSource(raw,{selection:h.selection,binding:h.f.context.binding,request:v.request(invented)}),{code:'UNAVAILABLE',effect:'none'});
+});
