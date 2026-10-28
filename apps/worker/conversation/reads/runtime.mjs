@@ -12,6 +12,7 @@ import catalog from '../../../../packages/contracts/retrieval-0.2/catalog.json' 
 import {own,data,nativeSignal} from '../../../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {canonicalSha256,validateShape} from '../../../../packages/contracts/validate.mjs';
 import {createOperationLifetime} from '../../../../packages/runtime/operation-lifetime.mjs';
+import {procedureGrantsRead} from './vocabulary.mjs';
 import {assertAvailabilitySnapshot} from './snapshot.mjs';
 import {resolveAvailableReads,profileReads} from './availability.mjs';
 import {nextTurnSessionId} from '../continuation/next-turn-options.mjs';
@@ -50,12 +51,12 @@ export async function createGeneralReadRuntime(configuration){
  /** @type {ReturnType<typeof assertAvailabilitySnapshot>|undefined} */let initial;try{initial=await read(c.signal);}catch{if(!profile)return null;}
  const {available:gatedAvailable,unavailable}=initial?gates(initial):{available:[],unavailable:[]};
  // Wave5 MO01/ST16: a selected procedure intersects the mounted read surface with the capability tools it grants. The
- // grant is matched under both spellings this catalog uses for one operation (its dotted id and its SDK tool name), and
- // because this only filters an already-mounted set it can never widen — an unmatched grant removes a read, never adds
- // one. An absent procedure leaves every byte as it was.
+ // grant is resolved through the catalog's own spellings for one operation (reads/vocabulary.mjs), and because this
+ // only filters an already-mounted set it can never widen — an unmatched grant removes a read, never adds one. An
+ // absent procedure leaves every byte as it was.
  const procedureGranted=c.procedure===undefined?null:(c.procedure.allowedTools??[]);
- const grantedRead=operation=>procedureGranted===null||procedureGranted.includes(operation.id)||procedureGranted.includes(operation.id.replaceAll('.','_'));
- const available=procedureGranted===null?gatedAvailable:gatedAvailable.filter(row=>grantedRead(row.operation));
+ const grantedRead=row=>procedureGranted===null||procedureGrantsRead(procedureGranted,row.operation.id);
+ const available=procedureGranted===null?gatedAvailable:gatedAvailable.filter(grantedRead);
  if(!profile&&!available.length)return null;
  const exposed=new Set(available.map(row=>canonicalSha256(row.operation)));
  // Mid-run revocation, expiry or a narrowed grant makes a listed read unavailable; it is never widened mid-run.

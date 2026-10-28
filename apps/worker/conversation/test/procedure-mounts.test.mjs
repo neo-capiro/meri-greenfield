@@ -8,6 +8,9 @@ import {createProfileMounts} from '../capabilities/mounts.mjs';
 import {assertCapabilityPolicy} from '../capabilities/policy.mjs';
 import {resolveCapabilityPolicy} from '../capabilities/policy-resolution.mjs';
 import {familyReads,profileReads} from '../reads/availability.mjs';
+import {readToolName} from '../reads/tools.mjs';
+import {readOperationSpellings} from '../reads/vocabulary.mjs';
+import {narrowProcedureTools} from '../procedures/guidance.mjs';
 import {binding,scopes,id} from '../../../control/conversations/test/store-fixture.mjs';
 import {canonicalSha256} from '../../../../packages/contracts/validate.mjs';
 import catalog from '../../../../packages/contracts/retrieval-0.2/catalog.json' with {type:'json'};
@@ -45,6 +48,26 @@ test('a procedure narrows the mounted read surface and never widens it',async()=
    // A grant outside the mounted surface cannot add a mount: the narrower set is empty, never wider.
    const unknown=await createProfileMounts({policy:POLICY,binding,scopes,now:Date.now,deadlineMs:Date.now()+60000,generalReads:readPort(ACTIVE),procedure:{allowedTools:['shell_exec']}});
    try{assert.deepEqual(unknown.reads.available,[]);}finally{await unknown.reads.close();}
+   // The canonical seam: Core projects a capability to the read's DECLARED catalog alias (`mail.read` -> `list_emails`),
+   // never to the dotted id or the SDK spelling. The same grant must still resolve to exactly that one read, both for
+   // the run's available surface and for the SDK list the activity narrows.
+   const mailRow=ACTIVE_ROWS.find(row=>row.operation.id==='mail.list_messages');
+   assert.ok(mailRow,'the mounted surface includes the canonical mail list read');
+   const alias=catalog.operations.find(descriptor=>descriptor.operation.id===mailRow.operation.id).aliases[0];
+   assert.equal(alias,'list_emails','the catalog alias is the name Core projects for the mail.read capability');
+   const spellings=readOperationSpellings(mailRow.operation.id);
+   assert.ok(spellings.has(alias)&&spellings.has(mailRow.operation.id)&&spellings.has(mailRow.operation.id.replaceAll('.','_')),'one operation, its SDK spelling and its declared alias resolve together');
+   for(const granted of [alias,mailRow.operation.id,mailRow.operation.id.replaceAll('.','_')]){
+    const narrowed=await createProfileMounts({policy:POLICY,binding,scopes,now:Date.now,deadlineMs:Date.now()+60000,generalReads:readPort(ACTIVE),procedure:{allowedTools:[granted]}});
+    try{assert.deepEqual(narrowed.reads.available,[mailRow.operation],granted);}finally{await narrowed.reads.close();}
+   }
+   // And the activity's own SDK-list narrowing keeps the granted entry under the alias spelling while removing the
+   // ungranted mounted reads; every surviving name is one the mount already advertised.
+   const kept=narrowProcedureTools(baseline,[alias]);
+   assert.deepEqual(kept,[readToolName(mailRow)],'the granted read survives under its SDK name and the others do not');
+   assert.ok(kept.every(name=>baseline.includes(name)),'the SDK list is never widened');
+   assert.deepEqual(narrowProcedureTools(baseline,['shell_exec']),baseline,'a grant that names no mounted read refuses to strip the list (the empty-result guard)');
+   assert.deepEqual(narrowProcedureTools(baseline,[ACTIVE[0].id,ACTIVE[1].id,ACTIVE[2].id]),baseline,'granting every mounted read leaves the list unchanged');
   }finally{await base.reads.close();}
  });
 });

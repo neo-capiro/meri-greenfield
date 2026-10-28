@@ -1,6 +1,7 @@
 // @ts-check
 /** Procedure guidance and Capiro read-surface narrowing. Guidance is data: it grants no tool, effect, memory or authority. */
 import {canonicalSha256} from '../../../../packages/contracts/validate.mjs';
+import {isCapiroReadTool, procedureGrantsRead} from '../reads/vocabulary.mjs';
 const HEX64=/^[a-f0-9]{64}$/u,UUID=/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/u;
 const fault=code=>Object.assign(Error('PROCEDURE_'+code),{code:'PROCEDURE_'+code});
 const same=(a,b)=>canonicalSha256(a)===canonicalSha256(b);
@@ -56,17 +57,14 @@ export const procedureContextSuffix=admission=>PROCEDURE_CONTEXT_MARKER+JSON.str
 /**
  * Subset-only narrowing of the already-allowed SDK tool list. A mounted Capiro read tool the procedure did not
  * grant is removed; every other entry (SDK builtins, other mounts) is left exactly as it was, so the result is
- * never broader than its input. An empty result refuses the narrowing rather than stripping every tool.
+ * never broader than its input. Whether an entry is a Capiro read, and which read it is, is resolved through the
+ * catalog's own spellings (reads/vocabulary.mjs) — a name this repository cannot resolve is left untouched rather
+ * than guessed at. An empty result refuses the narrowing rather than stripping every tool.
  */
 export function narrowProcedureTools(existingAllowed,grantedTools){
  if(!Array.isArray(existingAllowed)||existingAllowed.length===0)return existingAllowed;
- const granted=new Set(grantedTools??[]);
- const next=existingAllowed.filter(name=>{
-  if(typeof name!=='string')return true;
-  const match=/^mcp__[a-z0-9_]+__(.+)$/u.exec(name);
-  if(match===null||!CAPABILITY_READ_TOOLS.includes(match[1]))return true;
-  return granted.has(match[1]);
- });
+ const granted=Array.isArray(grantedTools)?grantedTools:[];
+ const next=existingAllowed.filter(name=>typeof name!=='string'||!isCapiroReadTool(name)||procedureGrantsRead(granted,name));
  return next.length===0||next.length===existingAllowed.length?existingAllowed:next;
 }
 
