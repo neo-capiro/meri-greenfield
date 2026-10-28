@@ -31,7 +31,7 @@ export function drainBoundMs(inflight,limits=TAKEOVER_LIMITS){
 /** @param {{now:()=>number}} options */
 export function createControlFence({now}={}){
  if(typeof now!=='function')throw fault('FENCE_CONFIGURATION');
- const inflight=new Map(),unknown=new Map(),late=new Set();
+ const inflight=new Map(),unknown=new Map(),late=new Set(),completed=new Set();
  let state='agent',reason=null,controlEpoch=1,leaseEpoch=0,deadlineMs=null,lastInputMs=null,dropped=0,pausedBy=null;
  const unsettled=id=>{const c=inflight.get(id);inflight.delete(id);return c;};
  const markUnknown=(id,call)=>unknown.set(id,Object.freeze({requestId:id,tool:call.tool,approvalId:call.approvalId??null,epoch:call.epoch}));
@@ -53,7 +53,7 @@ export function createControlFence({now}={}){
    evaluate();
    if(typeof requestId!=='string'||!REQUEST.test(requestId)||typeof tool!=='string'||!tool||!int(timeoutMs,1,TAKEOVER_LIMITS.hardBoundMs)||approvalId!==null&&typeof approvalId!=='string')throw fault('FENCE_INVALID_CALL');
    if(unknown.has(requestId))throw fault('BROWSER_ACTION_OUTCOME_UNKNOWN');
-   if(inflight.has(requestId))throw fault('FENCE_DUPLICATE_CALL');
+   if(inflight.has(requestId)||completed.has(requestId))throw fault('FENCE_DUPLICATE_CALL');
    if(state!=='agent')throw fault(state==='drain-unknown'?'TAKEOVER_DRAIN_UNKNOWN':REFUSAL[reason]??'BROWSER_USER_IN_CONTROL');
    inflight.set(requestId,Object.freeze({tool,timeoutMs,approvalId,epoch:controlEpoch,startedAtMs:now()}));
    return Object.freeze({epoch:controlEpoch});
@@ -61,9 +61,11 @@ export function createControlFence({now}={}){
   /** Settles an admitted call. A definite result is delivered (through the S2 filter); a timeout or transport error after
    * dispatch is UNKNOWN; a call the fence no longer tracks (drained as UNKNOWN, or from before a resume) is rejected. */
   settle(requestId,{outcome}={}){
+   // Expiry is enforced at settlement too, even when no state poll ran at the deadline.
+   evaluate();
    const call=unsettled(requestId);
-   if(!call){if(late.has(requestId)||unknown.has(requestId))return Object.freeze({deliver:'reject',code:'BROWSER_STALE_RESULT'});throw fault('FENCE_UNKNOWN_CALL');}
-   if(outcome==='result'){evaluate();return Object.freeze({deliver:'result',epoch:call.epoch});}
+   if(!call){if(late.has(requestId)||unknown.has(requestId)||completed.has(requestId))return Object.freeze({deliver:'reject',code:'BROWSER_STALE_RESULT'});throw fault('FENCE_UNKNOWN_CALL');}
+   if(outcome==='result'){completed.add(requestId);evaluate();return Object.freeze({deliver:'result',epoch:call.epoch});}
    if(outcome!=='timeout'&&outcome!=='transport-error'){inflight.set(requestId,call);throw fault('FENCE_INVALID_OUTCOME');}
    markUnknown(requestId,call);evaluate();
    return Object.freeze({deliver:'unknown',code:'BROWSER_ACTION_OUTCOME_UNKNOWN',epoch:call.epoch});
