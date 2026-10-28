@@ -303,6 +303,131 @@
       ],
       "additionalProperties": false
     },
+    "IntentsMemoryProposeArguments": {
+      "$ref": "#/$defs/Canonical_MemoryProposeArguments_398ed10c"
+    },
+    "IntentsNativeMemoryOutcome": {
+      "type": "object",
+      "properties": {
+        "execution": {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "native-memory"
+            },
+            "proposalId": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$"
+            },
+            "commandSha256": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            "idempotencyKey": {
+              "type": "string",
+              "minLength": 1
+            },
+            "binding": {
+              "$ref": "#/$defs/Canonical_RunBinding_84f2304c"
+            },
+            "completedAt": {
+              "type": "string",
+              "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$"
+            },
+            "approvalDecisionSha256": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            }
+          },
+          "required": [
+            "kind",
+            "proposalId",
+            "commandSha256",
+            "idempotencyKey",
+            "binding",
+            "completedAt",
+            "approvalDecisionSha256"
+          ],
+          "additionalProperties": false
+        },
+        "result": {
+          "type": "object",
+          "properties": {
+            "candidateId": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$"
+            },
+            "candidateSha256": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            "reviewId": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$"
+            },
+            "review": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "enum": [
+                    "pending",
+                    "approved",
+                    "rejected",
+                    "withdrawn",
+                    "not_found"
+                  ]
+                },
+                "decidedAt": {
+                  "anyOf": [
+                    {
+                      "type": "string",
+                      "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "publishedMemoryId": {
+                  "anyOf": [
+                    {
+                      "type": "string",
+                      "pattern": "^(clio|item):[a-f0-9-]{36}$"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "checkedAt": {
+                  "type": "string",
+                  "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$"
+                }
+              },
+              "required": [
+                "status",
+                "decidedAt",
+                "publishedMemoryId",
+                "checkedAt"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "candidateId",
+            "candidateSha256",
+            "reviewId",
+            "review"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "execution",
+        "result"
+      ],
+      "additionalProperties": false
+    },
     "IntentsNativeArtifactFileOutcome": {
       "type": "object",
       "properties": {
@@ -377,6 +502,9 @@
         },
         {
           "$ref": "#/$defs/IntentsNativeTaskOutcome"
+        },
+        {
+          "$ref": "#/$defs/IntentsNativeMemoryOutcome"
         },
         {
           "$ref": "#/$defs/IntentsNativeMailOutcome"
@@ -6748,6 +6876,66 @@
         "dueDate",
         "clientId",
         "updatedAt"
+      ],
+      "additionalProperties": false
+    },
+    "Canonical_MemoryProposeArguments_398ed10c": {
+      "type": "object",
+      "properties": {
+        "content": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4000
+        },
+        "key": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 120
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "scope": {
+          "enum": [
+            "personal",
+            "client",
+            "firm"
+          ]
+        },
+        "clientId": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "uuid"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "ttlDays": {
+          "anyOf": [
+            {
+              "type": "number",
+              "exclusiveMinimum": 0,
+              "maximum": 365
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "content",
+        "key",
+        "scope",
+        "clientId",
+        "ttlDays"
       ],
       "additionalProperties": false
     },

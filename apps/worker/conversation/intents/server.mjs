@@ -90,7 +90,7 @@ export function createIntentServer(c){
   }finally{life?.close();}
  };
  const tools=[...byTool].map(([name,rows])=>defineIntentTool(rows[0].tool,rows,handler(name)));
- const instructions=['Governed write requests for this conversation. Tools return an immutable proposal awaiting approval or an immutable draft. Memory preparation creates no candidate and publishes nothing. Memory submission remains unavailable until its approval flow is connected; historical review_pending receipts describe a candidate submitted for Core review, not active memory.',
+ const instructions=['Governed write requests for this conversation. Tools return an immutable proposal awaiting approval or an immutable draft. Memory preparation creates no candidate and publishes nothing. Approved memory submission creates a pending candidate; historical review_pending receipts describe a candidate submitted for Core review, not active memory.',
   ...(profile?[c.available.length?`Available now: ${c.available.map(r=>r.operation.id).join(', ')}.`:'No write request can be prepared in this conversation right now.','Every other operation of these tools answers UNAVAILABLE in this conversation.']:[`Available: ${c.available.map(r=>r.operation.id).join(', ')}.`]),'Any other write, external action or memory change is not available in this conversation.'].join('\n');
  const server=createSdkMcpServer({name:INTENT_SERVER_NAME,version:'1.0.0',instructions,tools:tools.map(t=>t.definition),alwaysLoad:true,timeout:c.timeoutMs});
  const allowedTools=Object.freeze(tools.map(t=>t.name)),allowed=new Set(allowedTools);

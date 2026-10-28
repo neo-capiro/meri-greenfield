@@ -33,7 +33,7 @@ export function intentFailureResult(code,tool){
  * @param {string} json @param {'approval_required'|'draft'|'analysis_pending'|'review_pending'|'read'} status @param {string} [operation] */
 export function preparedResult(json,status,operation){
  const notice=operation==='save_memory'&&status==='approval_required'
-  ?'PREPARED MEMORY PROPOSAL: review this exact text and destination scope. No memory candidate has been submitted and no memory has been published. Submission is unavailable until the approved execution path is connected.'
+  ?'PREPARED MEMORY PROPOSAL: review this exact text and destination scope. No memory candidate has been submitted and no memory has been published. Approve this exact proposal in Meri to submit a pending candidate; publication requires a later Core review result.'
   :status==='read'
   ?'READ RESULT: this is current owner data. No proposal or change was created; no approval is needed.'
   :status==='review_pending'

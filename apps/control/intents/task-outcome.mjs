@@ -6,10 +6,11 @@ import {ProductError} from '../product-access/errors.mjs';
 const same=(a,b)=>hash(a)===hash(b);
 const instant=value=>{const at=Date.parse(value);if(!Number.isSafeInteger(at)||new Date(at).toISOString()!==value)throw Error();return at;};
 /** Core proves expiry and absence under the same proposal lock used by execution. A local timeout is never this proof. */
-export function nativeTaskNotExecuted(raw,proposal){
+export const nativeTaskNotExecuted=(raw,proposal)=>nativeDatabaseNotExecuted(raw,proposal,['task.create','task.update']);
+export function nativeDatabaseNotExecuted(raw,proposal,actions){
  try{
   const value=data(own(raw,['state','proposalId','commandSha256','idempotencyKey','binding','reason','checkedAt'])),c=proposal.command;
-  if(value.state!=='NOT_EXECUTED'||value.reason!=='expired'||!['task.create','task.update'].includes(c.action)||
+  if(value.state!=='NOT_EXECUTED'||value.reason!=='expired'||!actions.includes(c.action)||
    value.proposalId!==proposal.proposalId||value.commandSha256!==proposal.commandSha256||value.idempotencyKey!==c.idempotencyKey||
    !same(value.binding,c.binding)||instant(value.checkedAt)<instant(proposal.expiresAt))throw Error();
   return value;

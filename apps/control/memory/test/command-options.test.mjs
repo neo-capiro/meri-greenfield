@@ -2,11 +2,16 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {nativeMemoryFixture} from '../../intents/test/native-memory-fixture.mjs';
 for(const general of [false,true])test(`invalid memory request in ${general?'General':'client'} writes neither metadata nor candidate`,async()=>{
- for(const args of [{content:' '},{content:'x'.repeat(4001)},{content:'Preference',scope:'global'},{content:'Preference',unexpected:true},{content:'Preference',clientId:null}]){
+ for(const args of [{content:' '},{content:'x'.repeat(4001)},{content:'Preference',scope:'global'},{content:'Preference',unexpected:true},{content:'Preference',clientId:null},{content:'Preference',ttlDays:1.5}]){
   const f=nativeMemoryFixture({general});
   await assert.rejects(f.port.prepare({...f.call,arguments:args}));
   assert.equal(f.metadata.rows.size,0);assert.equal(f.journal.rows.size,0);assert.equal(f.core.calls.length,0);
  }
+});
+test('review lifetime is independent of the short preparation request deadline',async()=>{
+ const f=nativeMemoryFixture({general:true}),r=await f.port.prepare(f.call);
+ assert.equal(Date.parse(r.proposal.expiresAt),f.deadlineMs);
+ assert(Date.parse(r.proposal.expiresAt)>f.now()+9000);
 });
 test('General rejects missing client destination and firm proposals without Core permission',async()=>{
  for(const scope of ['client','firm']){

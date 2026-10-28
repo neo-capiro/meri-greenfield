@@ -22,7 +22,7 @@ for(const general of [false,true])test(`${general?'General':'client'} prepares e
  const listed=await owner.list({principal,request}),received=await receiveIntentsResponse('list',200,JSON.stringify(listed),{request});
  assert.equal(received.intents[0].kind,'proposal');assert.deepEqual(received.intents[0].proposal,first.proposal);
  // The missing approved execution port must not be bypassed by enabling an allowlist alone.
- await assert.rejects(owner.decide({principal,request:{...request,deliveryId:f.call.deliveryId,proposalId:first.proposal.proposalId,commandSha256:first.proposal.commandSha256,decision:'approved'}}),code('INTENT_NOT_APPROVABLE'));
+ await assert.rejects(owner.decide({principal,request:{...request,deliveryId:f.call.deliveryId,proposalId:first.proposal.proposalId,commandSha256:first.proposal.commandSha256,decision:'approved'}}),code('APPROVAL_OWNER_UNAVAILABLE'));
  assert.equal(f.journal.rows.size,0);
  if(!general){const hidden=await owner.list({principal:{...principal,clientIds:[]},request});assert.equal(hidden.intents[0].withheld,true);assert.equal(Object.hasOwn(hidden.intents[0],'proposal'),false);}
 });

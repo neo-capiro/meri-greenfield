@@ -22,15 +22,15 @@ export function createApprovalMetadataReadback(configuration){
   try{
    await life.run(()=>servable(subject));life.check();
    const metadata=immutablePayload(await life.run(()=>readMetadata(key,life.check))),record=metadata.record;
-   if(!['document.draft','task.create','task.update','artifact.file'].includes(record.action)||record.proposalId!==v.proposalId||!same(record.binding,binding))throw fault();
+   if(!['document.draft','task.create','task.update','artifact.file','memory.propose'].includes(record.action)||record.proposalId!==v.proposalId||!same(record.binding,binding))throw fault();
    const saved=await life.run(()=>readRun(binding,{after:0,limit:1},life.check));let custody;
    if(saved!==null){
     const run=data(saved.run);validateShape('Run',run);
-    const states=['queued','starting','running','paused','waiting-for-approval','completed',...(['task.create','task.update','artifact.file'].includes(record.action)?['failed']:[])];
+    const states=['queued','starting','running','paused','waiting-for-approval','completed',...(['task.create','task.update','artifact.file','memory.propose'].includes(record.action)?['failed']:[])];
     if(!same(run.binding,binding)||!same(run.scopes,record.scopes)||!states.includes(run.state))throw fault();
     custody={run};
    }else{
-    if(!['task.create','task.update'].includes(record.action))throw fault();
+    if(!['task.create','task.update','memory.propose'].includes(record.action))throw fault();
     const readRetained=storageMethod(c.store.initialBindings,'readRetained');
     const initial=data(own(await life.run(()=>readRetained({binding},life.check)),['record','recordSha256','generation','latestGeneration','started'])),r=initial.record;
     const scopes=[{tenantId:binding.tenantId,kind:r.selectedClientId===null?'private-user':'client',resourceId:r.selectedClientId===null?binding.actorId:r.selectedClientId,policyRevision:r.policyRevision}];

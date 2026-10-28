@@ -19,7 +19,8 @@ if(!('error'in listed))for(const entry of listed.intents){if(entry.state==='prep
 if(!('error'in decided)&&decided.status==='executed'){
  if('receipt'in decided.outcome){const commandSha256:string=decided.outcome.receipt.commandSha256;void commandSha256;}
  else if('version'in decided.outcome){const versionId:string=decided.outcome.version.versionId;void versionId;}
- else {const kind:'native-task'|'native-artifact-file'|'native-mail'=decided.outcome.execution.kind;void kind;
+ else {const kind:'native-task'|'native-artifact-file'|'native-mail'|'native-memory'=decided.outcome.execution.kind;void kind;
+  if('candidateId'in decided.outcome.result){const candidateId:string=decided.outcome.result.candidateId;const status:'pending'|'approved'|'rejected'|'withdrawn'|'not_found'=decided.outcome.result.review.status;void candidateId;void status;}
   if('id'in decided.outcome.result){const taskId:string=decided.outcome.result.id;void taskId;}
   else if('files'in decided.outcome.result){const files=decided.outcome.result.files;const commandSha256:string=decided.outcome.result.commandSha256;void files;void commandSha256;}}
 }
