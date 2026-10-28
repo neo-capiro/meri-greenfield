@@ -11,6 +11,8 @@ import {uploadErrorStatuses,uploadNotDispatchedErrors,uploadDisposition} from '.
 const reply=(body,status=200)=>Response.json(body,{status,headers:{'cache-control':'no-store','x-content-type-options':'nosniff'}});
 const getters=Object.fromEntries(['url','method','headers','signal','body'].map(key=>[key,Object.getOwnPropertyDescriptor(Request.prototype,key).get]));
 const states={prepared:'awaiting_upload',writing:'unknown',stored:'stored',removing:'removing',removed:'removed'};
+/** Shared with the outer CONTROL listener; the upload owner alone defines its admitted paths. */
+export function matchUploadApplicationPath(path){return /^\/api\/uploads\/(initiate|status|inspect|read|remove|original\/([a-f0-9-]{36}))$/u.exec(path);}
 export function uploadReceipt(r){
  return {uploadId:r.uploadId,requestId:r.requestId,original:{...r.declaration,versionId:r.object?.versionId??null},storageStatus:states[r.state],
   scanStatus:r.state==='removed'?'unavailable':r.inspection?.scan.status??'pending',scanReason:r.state==='removed'?'UPLOAD_REMOVED':r.inspection?.scan.reason??null,
@@ -40,7 +42,7 @@ export function createUploadApplication(configuration){
   try{
    if(types.isProxy(request)||!(request instanceof Request))fail('UPLOAD_ID');
    request=Object.fromEntries(Object.entries(getters).map(([key,get])=>[key,get.call(request)]));
-   const url=new URL(request.url),match=/^\/api\/uploads\/(initiate|status|inspect|read|remove|original\/([a-f0-9-]{36}))$/u.exec(url.pathname);
+   const url=new URL(request.url),match=matchUploadApplicationPath(url.pathname);
    if(!match||url.search||url.hash)return reply({error:{code:'NOT_FOUND',outcome:'NOT_DISPATCHED'}},404);
    const original=match[1].startsWith('original/'),intent=original?'put':match[1];
    if(request.method!==(original?'PUT':'POST'))return reply({error:{code:'METHOD_NOT_ALLOWED',outcome:'NOT_DISPATCHED'}},405);

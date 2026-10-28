@@ -120,7 +120,10 @@ export const PLAN=Object.freeze([
  ['migration',conversation('0029_native_correction_feedback.sql'),'06116bdca41aab13d2adca2263b25f23f29c61255f95e2e87f997dffd88d3ec6','integration'],
  // Run-free routine proposal custody; preserve the applied 61-entry prefix.
  ['migration','apps/control/schedules/migrations/0005_management_preparations.sql','4a093756f0c374ed035e7d2778992913152553c5f3b3ad60864d831f7c2cdac4','integration'],
- ['migration','apps/control/schedules/migrations/0006_management_preparation_grants.sql','8d3a2718306778e21c0ddd426c0522a1520a58dd5d6894fe162b00cc364c3b68','integration']
+ ['migration','apps/control/schedules/migrations/0006_management_preparation_grants.sql','8d3a2718306778e21c0ddd426c0522a1520a58dd5d6894fe162b00cc364c3b68','integration'],
+ // Upload custody and least-privilege CONTROL grants: append after the exact 63-entry prefix.
+ ['migration','apps/control/uploads/migrations/0001_upload_custody.sql','44c042aeb1e544c78e6ab274537ea89ccb70dd8662cec98665227c91f279a330','integration'],
+ ['migration','apps/control/uploads/migrations/0002_control_grants.sql','7a18084e0fe64abd0dc241f1c163d7751691a83798f18588b82ce1f13a2d9527','integration']
 ].map(([kind,path,pinned,declaredStage],index)=>Object.freeze({ordinal:index+1,kind,path,pinned,
  name:kind==='migration'?path:`${path}#${kind.slice(6)}`,
  stage:declaredStage??(kind==='phase:temporal_grants'?'temporal':'meri')})));
