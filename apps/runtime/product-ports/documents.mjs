@@ -95,7 +95,7 @@ export function documentsFamily(owners={}){
   const previewStoreForContext=retention?createRuntimePreviewCustody({journal:artifactRecovery.journal,retention:artifactRecovery.retention,
    versionsPool:pool,evidenceS3:s3,versions:storage.versions,now,maxRequestMs:configuration.limits.requestMs}):undefined;
   const late=lateBoundOptionsOwner({authority:o.authority,compose:(sessions,store)=>createRuntimeDocumentOptionsComposer({storage,executor:o.executor,pool,sessions,store,now,
-   ...(o.renderer?{renderer:o.renderer}:{}),pdfAdmission:declared.pdfAdmission===true,...(previewStoreForContext?{previewStoreForContext}:{})})});
+   ...(o.renderer?{renderer:o.renderer}:{}),pdfAdmission:declared.pdfAdmission===true,retainedAssetMapWrites:declared.retainedAssetMapWrites===true,...(previewStoreForContext?{previewStoreForContext}:{})})});
   registerDocumentsSessionBinder(context,late.bind);
   const limits={maxRequestMs:configuration.limits.requestMs,maxRequestBytes:configuration.limits.requestBytes,maxResponseBytes:configuration.native.maxResponseBytes};
   const filingEnabled=retention&&configuration.intents?.enabled===true&&configuration.intents.core!==undefined;

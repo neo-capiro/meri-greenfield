@@ -10,9 +10,13 @@ import {ARTIFACT_MIME_TYPES as mime,artifactFilename as filenameFor} from '../..
 const sha=bytes=>createHash('sha256').update(bytes).digest('hex');
 const fail=code=>{throw Object.assign(new Error(code),{code});};
 const closed=(value,keys)=>{if(!value||Array.isArray(value)||Object.keys(value).sort().join()!==keys.sort().join())fail('ARTIFACT_PORT_SHAPE');};
-export function createArtifactService({validators:v,authorize,versions,objects,executor,now,ids,retention,admitRetainedEvidence,authorizeOrigin}){
+export function createArtifactService({validators:v,authorize,versions,objects,executor,now,ids,retention,admitRetainedEvidence,authorizeOrigin,retainedAssetMapWrites}){
   if(authorizeOrigin!==undefined&&typeof authorizeOrigin!=='function')fail('ARTIFACT_CONFIGURATION');
   if(admitRetainedEvidence!==undefined&&typeof admitRetainedEvidence!=='function')fail('ARTIFACT_CONFIGURATION');
+  // The private producer activation for the retained asset map. Absent or false (the default) this service
+  // emits no map-bearing record at all, preserving the exact pre-activation record bytes and keeping an
+  // older binary able to read every record this one writes; the readers below accept both formats either way.
+  if(retainedAssetMapWrites!==undefined&&typeof retainedAssetMapWrites!=='boolean')fail('ARTIFACT_CONFIGURATION');
   if(![authorize,now,ids,versions?.read,versions?.commit,objects?.put,objects?.get,executor?.execute].every(x=>typeof x==='function')||retention!==undefined&&typeof retention?.assertServable!=='function'||versions?.recoverTenant!==undefined&&typeof versions.recoverTenant!=='function')fail('ARTIFACT_CONFIGURATION');
   const same=(a,b)=>v.hash(a)===v.hash(b);
   // The canonical retention read gate: the conversation the caller is bound to, and, once a trusted scoped record resolved the version,
@@ -56,7 +60,10 @@ export function createArtifactService({validators:v,authorize,versions,objects,e
     return pins.length?pins:undefined;
   }
   async function generate(baseVersionId,requestValue,contextValue,{signal,invocation}={}){
-    const request=v.request(requestValue),context=v.context(contextValue),pins=assetPins(request,context);
+    // The retained map is emitted only under the deployment's explicit write activation: with it off (the
+    // default) no new map-bearing record is produced, while the declared assets still reach the executor
+    // with their actual verified bytes exactly as before.
+    const request=v.request(requestValue),context=v.context(contextValue),pins=retainedAssetMapWrites===true?assetPins(request,context):undefined;
     if(request.format==='sandbox')fail('ANALYSIS_SANDBOX_DISPATCH_REQUIRED');
     if(context.analysisAdmission)fail('IRRELEVANT_ANALYSIS_ADMISSION');
     // Stored historical evidence remains readable; new native writes require current run-bound evidence.

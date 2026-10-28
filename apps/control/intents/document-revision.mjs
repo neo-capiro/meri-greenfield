@@ -31,6 +31,29 @@ export function referencedAssetIds(value){
   };
   walk(value);return found;
 }
+/** The ONE canonical rule for a durable retained asset map: it is the exact original mapping of the
+ * immutable spec's declared references — the same identifiers in the same document order, each entry
+ * only {id,object}, each object admitted by the canonical ObjectReference validator and inside the
+ * version's own admitted object scopes. `undefined` means "no map was retained" and is never inferred
+ * into one; anything else that is missing, extra, duplicate, misordered, foreign-scoped or rehashed is
+ * corruption of the retained mapping and is refused rather than stripped. Identification only, never a
+ * grant, and this helper reads no bytes: the canonical owner that actually reads asset bytes verifies
+ * them itself. */
+export function retainedAssetMap(spec,assets,scopes){
+  const assetIds=referencedAssetIds(spec);
+  if(new Set(assetIds).size!==assetIds.length)throw 0;
+  if(assets===undefined)return {assetIds:Object.freeze(assetIds),assets:null};
+  if(!Array.isArray(assets)||assets.length!==assetIds.length)throw 0;
+  const seen=new Set();
+  const mapped=assets.map((entry,index)=>{
+    const asset=own(v.snapshot(entry),['id','object']);
+    if(asset.id!==assetIds[index]||seen.has(asset.id))throw 0;
+    const object=v.object(asset.object);
+    if(!same(object.scopes,scopes))throw 0;
+    seen.add(asset.id);return Object.freeze({id:asset.id,object});
+  });
+  return {assetIds:Object.freeze(assetIds),assets:Object.freeze(mapped)};
+}
 /** Exactly what the immutable parent retains and a full replacement must keep.
  * `trustedAssets` is the parent record's own retained asset map, when the durable record carries one. */
 export function retainedProvenance(version,spec,trustedAssets=undefined){
@@ -42,24 +65,10 @@ export function retainedProvenance(version,spec,trustedAssets=undefined){
     if(evidenceBindingKeys.some(key=>item.binding[key]!==version.binding[key]))throw 0;
     if(item.scopes.some(scope=>!scopes.has(v.hash(scope))))throw 0;
   }
-  const assetIds=referencedAssetIds(spec);
-  if(new Set(assetIds).size!==assetIds.length)throw 0;
-  // The durable map is the exact original mapping: the same identifiers in the same document order,
-  // each object admitted and inside the parent's own admitted scopes. A missing, extra, duplicate,
-  // foreign-scoped or rehashed entry is corruption of the retained provenance, not a new mapping.
-  let assets=null;
-  if(trustedAssets!==undefined){
-    if(!Array.isArray(trustedAssets)||trustedAssets.length!==assetIds.length)throw 0;
-    const seen=new Set();
-    assets=trustedAssets.map((entry,index)=>{
-      const asset=own(v.snapshot(entry),['id','object']);
-      if(asset.id!==assetIds[index]||seen.has(asset.id))throw 0;
-      const object=v.object(asset.object);
-      if(!same(object.scopes,version.object.scopes))throw 0;
-      seen.add(asset.id);return Object.freeze({id:asset.id,object});
-    });
-  }
-  return Object.freeze({evidence,assetIds:Object.freeze(assetIds),assets:assets===null?null:Object.freeze(assets)});
+  // The durable map is the exact original mapping of the immutable spec's declared references, refused
+  // rather than stripped when it is not (see retainedAssetMap, the one owner of that rule).
+  const map=retainedAssetMap(spec,trustedAssets,version.object.scopes);
+  return Object.freeze({evidence,assetIds:map.assetIds,assets:map.assets});
 }
 /** Verify the trusted owner's re-presented retained resources against the immutable parent. */
 function preservedProvenance(retained,value,version,specSha256){

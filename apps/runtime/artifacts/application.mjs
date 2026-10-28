@@ -58,8 +58,11 @@ export function createRuntimeArtifactApplication(configuration){const c=own(conf
   const options=own(resolved.documentOptions,['sessions','selectedClientId','artifactOptions','now','limits'],['enabled','admitPdf','previewOptions','nativeFiles']);if(options.sessions!==c.sessions||options.now!==c.now)fail('ACCESS_DENIED');
   const innerLimits=documentLimits(options.limits),effectiveLimits=Object.fromEntries(Object.keys(limits).map(key=>[key,Math.min(limits[key],innerLimits[key])]));
   const effectiveDeadlineMs=Math.min(deadlineMs,requestStarted+effectiveLimits.maxRequestMs);life.limitDeadline(effectiveDeadlineMs);
-  const o=own(options.artifactOptions,['pool','context','validators','authorize','versions','objects','executor','now','ids'],['retention','authorizeOrigin','admitRetainedEvidence']);
+  const o=own(options.artifactOptions,['pool','context','validators','authorize','versions','objects','executor','now','ids'],['retention','authorizeOrigin','admitRetainedEvidence','retainedAssetMapWrites']);
   if(o.admitRetainedEvidence!==undefined&&(typeof o.admitRetainedEvidence!=='function'||types.isProxy(o.admitRetainedEvidence)))fail('ARTIFACT_RUNTIME_CONFIGURATION');
+  // The composed write activation is the declared `artifacts.retainedAssetMapWrites` forwarded by the product
+  // port; a request can never carry it, and with it absent/false the artifact service emits no new asset map.
+  if(o.retainedAssetMapWrites!==undefined&&typeof o.retainedAssetMapWrites!=='boolean')fail('ARTIFACT_RUNTIME_CONFIGURATION');
   if(c.retention!==undefined)o.retention=c.retention;
   // The canonical composer and artifact owner already carry `admitRetainedEvidence` for a write context that
   // keeps an earlier run's evidence. Trusted in-process composition supplies the retained parent facts; the

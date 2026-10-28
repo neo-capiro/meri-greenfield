@@ -5,13 +5,17 @@ import {createOperationLifetime} from '../../../../packages/runtime/operation-li
 import {briefInput,fail,hash} from './input.mjs';
 import {briefSkillPin,briefSourceIds} from './skill.mjs';
 import {bindRead,assessFacts} from './evidence.mjs';
+import {retainedAssetMap} from '../../intents/document-revision.mjs';
 const prepared=new WeakMap();
 const marker='Meri brief provenance: ';
 const p=(text,style='Normal')=>({kind:'paragraph',style,runs:[{text}]});
 const same=(a,b)=>v.hash(a)===v.hash(b);
 function baseProvenance(base,selection,context,input){
-  own(base,['version','spec','specSha256','requestSha256','inspection']);
+  own(base,['version','spec','specSha256','requestSha256','inspection'],['assets']);
   v.version(base.version);v.request(base.spec);v.inspection(base.inspection);
+  // The canonical OPTIONAL retained asset map is admitted only as the exact mapping of the immutable
+  // spec's declared references; a foreign, partial or rehashed map is refused, never stripped.
+  try{retainedAssetMap(base.spec,base.assets,base.version.object.scopes);}catch{fail('BRIEF_BASE');}
   if(base.version.versionId!==selection.versionId||base.specSha256!==selection.specSha256||!same(base.specSha256,v.hash(base.spec))||
     base.version.binding.tenantId!==context.binding.tenantId||base.version.binding.conversationId!==context.binding.conversationId||
     !same(base.version.scopes,context.scopes)||base.version.mimeType!=='application/vnd.openxmlformats-officedocument.wordprocessingml.document')fail('BRIEF_BASE');

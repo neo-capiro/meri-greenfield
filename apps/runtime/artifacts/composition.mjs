@@ -36,9 +36,11 @@ export function createFixedRuntimeArtifactExecutor(configuration){const {rendere
  return createLocalArtifactExecutor({...c,officeTransformer:admittedConverter(renderer)});}
 /** Usable by approvedOutput.read independently of the browser HTTP mount. `renderer` is the same qualified-renderer port bound into `executor`. PDF is admitted only when the explicit `pdfAdmission`
  * switch is true AND that port is available; the switch alone never admits PDF. `previews` (a preview record store) composes
- * preview publication and serving with the same renderer; without it the preview routes stay unavailable. */
-export function createRuntimeDocumentOptionsComposer(options){const c=own(options,['storage','executor','pool','sessions','store','now'],['renderer','pdfAdmission','previews','previewStoreForContext','maxPreviewBytes']);
- const storage=own(c.storage,['objects','versions'],['verifyPrivate','previews']);if(typeof c.now!=='function'||typeof c.store?.lifecycle?.readArtifactFile!=='function'||c.renderer!==undefined&&!isRendererPort(c.renderer)||typeof(c.pdfAdmission??false)!=='boolean'||c.previews!==undefined&&storage.previews!==undefined&&c.previews!==storage.previews)throw Error('ARTIFACT_RUNTIME_CONFIGURATION');
+ * preview publication and serving with the same renderer; without it the preview routes stay unavailable. `retainedAssetMapWrites` is the private write activation forwarded from the declared `artifacts`
+ * block (never from the Core authority wire): the composed artifact options carry it so the artifact service
+ * retains the immutable asset map on new records only when a deployment explicitly turns it on. */
+export function createRuntimeDocumentOptionsComposer(options){const c=own(options,['storage','executor','pool','sessions','store','now'],['renderer','pdfAdmission','previews','previewStoreForContext','maxPreviewBytes','retainedAssetMapWrites']);
+ const storage=own(c.storage,['objects','versions'],['verifyPrivate','previews']);if(typeof c.now!=='function'||typeof c.store?.lifecycle?.readArtifactFile!=='function'||c.renderer!==undefined&&!isRendererPort(c.renderer)||typeof(c.pdfAdmission??false)!=='boolean'||typeof(c.retainedAssetMapWrites??false)!=='boolean'||c.previews!==undefined&&storage.previews!==undefined&&c.previews!==storage.previews)throw Error('ARTIFACT_RUNTIME_CONFIGURATION');
  const admitPdf=c.pdfAdmission===true&&admittedConverter(c.renderer)!==null,previews=c.previews??storage.previews;
  if(c.previewStoreForContext!==undefined&&(typeof c.previewStoreForContext!=='function'||previews!==undefined))throw Error('ARTIFACT_RUNTIME_CONFIGURATION');
  return trusted=>{const o=own(trusted,['artifactOptions','selectedClientId','limits'],['enabled']),a=own(o.artifactOptions,['pool','context','validators','authorize','versions','objects','executor','now','ids'],['retention','admitRetainedEvidence','authorizeOrigin']);
@@ -47,5 +49,5 @@ export function createRuntimeDocumentOptionsComposer(options){const c=own(option
   const previewOptions=selectedPreviews===undefined?undefined:{previews:selectedPreviews,renderer:c.renderer??null,...(c.maxPreviewBytes===undefined?{}:{maxPreviewBytes:c.maxPreviewBytes})};
   const nativeFiles={async read(versionId,signal){const check=()=>{if(signal?.aborted)throw Error('ARTIFACT_CANCELLED');if(c.now()>=a.context.deadlineMs)throw Error('ARTIFACT_DEADLINE');};check();
    return c.store.lifecycle.readArtifactFile({binding:a.context.binding,scopes:a.context.scopes,selectedClientId:o.selectedClientId,versionId},check);}};
-  return {...o,sessions:c.sessions,now:c.now,admitPdf,nativeFiles,...(previewOptions?{previewOptions}:{}),artifactOptions:{...a,pool:c.pool,versions:storage.versions,objects:storage.objects,executor:c.executor}};
+  return {...o,sessions:c.sessions,now:c.now,admitPdf,nativeFiles,...(previewOptions?{previewOptions}:{}),artifactOptions:{...a,...(c.retainedAssetMapWrites===true?{retainedAssetMapWrites:true}:{}),pool:c.pool,versions:storage.versions,objects:storage.objects,executor:c.executor}};
  };}

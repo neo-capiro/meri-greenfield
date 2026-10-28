@@ -191,3 +191,28 @@ test('suppression and a late denial withhold the retained map exactly like ordin
  denied.f.state.denied=true;
  await assert.rejects(denied.service().revisionSource(made.version.versionId,denied.context),/CURRENT_ACCESS_DENIED/);
 });
+
+test('the retained map is an explicit deployment-activated write: off by default, exact when on, malformed refused',async()=>{
+ // Default (absent/false): the same asset-bearing delivery still renders with the declared assets and their
+ // actual verified bytes, but no new map-bearing record is emitted, so the durable bytes stay exactly the
+ // legacy envelope an older binary reads. This is the dual-reader / old-write rollback floor.
+ const off=fixture(),offOut=await off.deliver().execute(off.call),offStored=row(off.f,offOut.version.versionId);
+ assert.equal(Object.hasOwn(offStored.record,'assets'),false);
+ assert.deepEqual(Object.keys(offStored.record).sort(),LEGACY_KEYS);
+ assert.equal(offStored.record_sha256,v.hash(offStored.record));
+ assert.deepEqual(Object.keys(await off.service().revisionSource(offOut.version.versionId,off.context)).sort(),PRIVATE_KEYS);
+ assert.equal(off.f.state.executions.length,1);
+ assert.equal(off.f.state.executions[0].assets.length,1,'the declared asset still reached the executor');
+ assert.equal(off.f.state.objects.get(v.hash(off.object)).toString(),ASSET.toString());
+
+ // Explicitly activated: the identical write now retains the exact original id -> ObjectReference map.
+ const on=fixture(),onOut=await on.deliver({retainedAssetMapWrites:true}).execute(on.call);
+ assert.deepEqual(row(on.f,onOut.version.versionId).record.assets,[{id:'retained-image',object:on.object}]);
+ assert.deepEqual(Object.keys(await on.service().revisionSource(onOut.version.versionId,on.context)).sort(),['assets',...PRIVATE_KEYS].sort());
+ assert.equal(Object.hasOwn(onOut.version,'assets'),false,'the public DTO is unchanged by activation');
+
+ // A malformed activation is refused by the canonical option owners rather than coerced to a default.
+ for(const bad of ['yes',1,{}]){assert.throws(()=>on.service({retainedAssetMapWrites:bad}),{code:'ARTIFACT_CONFIGURATION'});}
+ await assert.rejects(on.deliver({retainedAssetMapWrites:'yes'}).execute({...on.call,deliveryId:'activated-bad'}),{code:'ARTIFACT_CONFIGURATION'});
+ assert.equal(on.f.sql.state.versions.size,1);
+});

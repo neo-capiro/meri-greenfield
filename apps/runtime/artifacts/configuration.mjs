@@ -21,6 +21,8 @@
  *     },
  *     renderer?: {enabled, imageDigest}, // trusted deployment selection; admission still requires an observed native sandbox
  *     pdfAdmission?: boolean             // generation switch, effective only with the available renderer port
+ *     retainedAssetMapWrites?: boolean   // private write activation: retain the immutable id -> ObjectReference
+ *                                        // asset map on NEW version records. Absent/false emits no new map.
  *   }
  *
  * The five storage keys are required when `enabled` is true and validated whenever present. Publication custody uses each
@@ -30,7 +32,7 @@
  * Meri-local owners that startup composes (`./authority-composition.mjs`). */
 const fault=()=>Object.assign(new Error('ARTIFACT_CONFIGURATION'),{code:'ARTIFACT_CONFIGURATION'});
 const REQUIRED=Object.freeze(['region','bucket','prefix','expectedBucketOwner','kmsKeyId']);
-const KEYS=Object.freeze(['enabled',...REQUIRED,'authority','executor','pdfAdmission','renderer','publicationPagedWrites']);
+const KEYS=Object.freeze(['enabled',...REQUIRED,'authority','executor','pdfAdmission','renderer','publicationPagedWrites','retainedAssetMapWrites']);
 const EXECUTOR_KEYS=Object.freeze(['pythonExecutable','nodeExecutable','pptxModulePath','tempRoot','timeoutMs']),EXECUTOR_PATHS=Object.freeze(['pythonExecutable','nodeExecutable','pptxModulePath','tempRoot']);
 const REGION=/^[a-z]{2}(?:-gov)?-[a-z]+-[0-9]$/u,BUCKET=/^[a-z0-9][a-z0-9.-]{1,61}[a-z0-9]$/u,OWNER=/^[0-9]{12}$/u;
 const AUTHORITY_KEYS=Object.freeze(['origin','serviceSecretFile']),SECRET_FILE=/^\/[A-Za-z0-9._\/-]{1,4095}$/u;
@@ -50,6 +52,10 @@ export function compileRuntimeArtifactsConfiguration(configuration){
  if(a.pdfAdmission!==undefined&&typeof a.pdfAdmission!=='boolean')throw fault();
  // This enables writes to an already explicitly upgraded root, never an automatic upgrade.
  if(a.publicationPagedWrites!==undefined&&typeof a.publicationPagedWrites!=='boolean')throw fault();
+ // The private write activation for the retained asset map on NEW version records. Absent or false (the
+ // default) this binary emits no map-bearing record at all, so deploying it everywhere is a dual-reader /
+ // old-write rollback floor: an older binary still reads every record this one writes.
+ if(a.retainedAssetMapWrites!==undefined&&typeof a.retainedAssetMapWrites!=='boolean')throw fault();
  if(a.renderer!==undefined){const renderer=plain(a.renderer,['enabled','imageDigest']);
   if(typeof renderer.enabled!=='boolean'||typeof renderer.imageDigest!=='string'||!/^sha256:[a-f0-9]{64}$/u.test(renderer.imageDigest))throw fault();
   a.renderer=Object.freeze(renderer);

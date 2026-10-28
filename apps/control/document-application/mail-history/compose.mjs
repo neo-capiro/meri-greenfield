@@ -4,11 +4,15 @@ import {own,data} from '../../../../packages/contracts/commands-0.2/execution-bo
 import {createOperationLifetime} from '../../../../packages/runtime/operation-lifetime.mjs';
 import {asset,input,selection,createCollection,same,fail} from './source.mjs';
 import {readBody,sha} from './bodies.mjs';
+import {retainedAssetMap} from '../../intents/document-revision.mjs';
 const prepared=new WeakMap(),marker='Meri Mail History provenance: ';
 const paragraph=(text,style='Normal')=>({kind:'paragraph',style,runs:[{text}]});
 const defaults={maxCalls:24,maxCandidatePages:3,candidatePageSize:5,maxMessages:10,bodySectionCodeUnits:2000,maxBodyCodeUnits:120000,maxSourceBytes:2097152};
 function baseRecord(value,base,context,i,selected){
- const r=own(v.snapshot(value),['version','spec','specSha256','requestSha256','inspection']);v.version(r.version);v.request(r.spec);v.inspection(r.inspection);
+ const r=own(v.snapshot(value),['version','spec','specSha256','requestSha256','inspection'],['assets']);v.version(r.version);v.request(r.spec);v.inspection(r.inspection);
+ // Same join as the other closed readers: the canonical OPTIONAL retained asset map is admitted only as
+ // the exact mapping of the immutable spec's declared references, never stripped and never permissive.
+ try{retainedAssetMap(r.spec,r.assets,r.version.object.scopes);}catch{fail('MAIL_HISTORY_BASE');}
  if(r.version.versionId!==base.versionId||r.specSha256!==base.specSha256||r.specSha256!==v.hash(r.spec)||r.version.binding.tenantId!==context.binding.tenantId||r.version.binding.actorId!==context.binding.actorId||r.version.binding.conversationId!==context.binding.conversationId||!same(r.version.scopes,context.scopes)||r.spec.operation!=='create_word'||r.spec.format!=='docx'||r.version.mimeType!=='application/vnd.openxmlformats-officedocument.wordprocessingml.document'||r.inspection.format!=='docx'||r.inspection.sha256!==r.version.object.sha256||r.inspection.bytes!==r.version.object.bytes)fail('MAIL_HISTORY_BASE');
  const matches=r.spec.content.blocks.filter(b=>b.kind==='paragraph'&&b.runs.length===1&&b.runs[0].text.startsWith(marker));if(matches.length!==1)fail('MAIL_HISTORY_BASE');
  let prior;try{prior=JSON.parse(matches[0].runs[0].text.slice(marker.length));}catch{fail('MAIL_HISTORY_BASE');}

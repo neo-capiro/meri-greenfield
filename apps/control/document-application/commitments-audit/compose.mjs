@@ -5,6 +5,7 @@ import {createOperationLifetime} from '../../../../packages/runtime/operation-li
 import {compileCommitmentsAudit} from '../../../../packages/skills/commitments/index.mjs';
 import {bindWorkflowReads} from '../../../../packages/skills/evidence/typed-reads.mjs';
 import {asset,input,selection,createCollection,same,fail} from './source.mjs';
+import {retainedAssetMap} from '../../intents/document-revision.mjs';
 import {blocks,marker} from './rendering.mjs';
 const prepared=new WeakMap(),defaults={maxCalls:24,maxPages:3,maxRecords:3,sectionCodeUnits:2000,maxBodyCodeUnits:120000,maxSourceBytes:2097152};
 const stableSelection=s=>{const {authorizationDecisionId,...subject}=s.subject;return {...s,subject};};
@@ -47,7 +48,11 @@ function nativeTracking(reads,selected,ledger){
  return v.snapshot(rows);
 }
 function baseRecord(value,base,context,i,selected){
- const r=own(v.snapshot(value),['version','spec','specSha256','requestSha256','inspection']);v.version(r.version);v.request(r.spec);v.inspection(r.inspection);
+ const r=own(v.snapshot(value),['version','spec','specSha256','requestSha256','inspection'],['assets']);v.version(r.version);v.request(r.spec);v.inspection(r.inspection);
+ // The durable record may carry the canonical OPTIONAL retained asset map. It is admitted only as the
+ // exact mapping of the immutable spec's declared references; a partial, reordered, foreign-scoped or
+ // rehashed map is refused here rather than stripped off the base (the canonical rule, one walk).
+ try{retainedAssetMap(r.spec,r.assets,r.version.object.scopes);}catch{fail('COMMITMENTS_BASE');}
  if(r.version.versionId!==base.versionId||r.specSha256!==base.specSha256||r.specSha256!==v.hash(r.spec)||r.version.binding.tenantId!==context.binding.tenantId||r.version.binding.actorId!==context.binding.actorId||r.version.binding.conversationId!==context.binding.conversationId||!same(r.version.scopes,context.scopes)||r.spec.operation!=='create_word'||r.spec.format!=='docx'||r.inspection.format!=='docx'||r.inspection.sha256!==r.version.object.sha256||r.inspection.bytes!==r.version.object.bytes)fail('COMMITMENTS_BASE');
  const matches=r.spec.content.blocks.filter(b=>b.kind==='paragraph'&&b.runs.length===1&&b.runs[0].text.startsWith(marker));if(matches.length!==1)fail('COMMITMENTS_BASE');
  let prior;try{prior=JSON.parse(matches[0].runs[0].text.slice(marker.length));}catch{fail('COMMITMENTS_BASE');}
