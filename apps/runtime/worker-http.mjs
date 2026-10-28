@@ -9,14 +9,18 @@ import {fault} from './config.mjs';
 import {assertExecutionIdentity} from '../control/conversations/execution-boundary.mjs';
 import {storageMethod} from '../artifacts/storage/boundary.mjs';
 import {taskControlPage} from '../control/conversations/lifecycle/service.mjs';
+import {CHILD_DISPATCH_OPERATION,CHILD_SETTLE_OPERATION,assertChildOperationRequest} from '../control/conversations/lifecycle/child-assignments.mjs';
+/** The two private child operations of the run owner: same route family, same authority fence, same service owner. */
+const childOperations=Object.freeze({[CHILD_DISPATCH_OPERATION]:'dispatchChild',[CHILD_SETTLE_OPERATION]:'settleChild'});
 export function createWorkerRunApplication({execution,createService,configuration,retention,now=Date.now,turnTelemetry}){
  let withRelease;try{withRelease=retention===undefined?null:storageMethod(retention,'withRelease');if(configuration.retention!==undefined&&!withRelease)throw Error();}catch{throw fault('WORKER_RETENTION_CONFIGURATION');}
  if(typeof execution?.authenticate!=='function'||typeof createService!=='function')throw fault('WORKER_EXECUTION_CONFIGURATION');
  return Object.freeze({async handle(request){const operation=async()=>{let life,route;try{
-  const url=new URL(request.url);route=/^\/internal\/conversations\/([a-z-]+)$/u.exec(url.pathname);if(!route||!Object.hasOwn(runOwnerOperations,route[1])||url.search)return Response.json({error:{code:'NOT_FOUND'}},{status:404});if(request.method!=='POST')return Response.json({error:{code:'METHOD_NOT_ALLOWED'}},{status:405});
+  const url=new URL(request.url);route=/^\/internal\/conversations\/([a-z-]+)$/u.exec(url.pathname);if(!route||url.search||!Object.hasOwn(runOwnerOperations,route[1])&&!Object.hasOwn(childOperations,route[1]))return Response.json({error:{code:'NOT_FOUND'}},{status:404});if(request.method!=='POST')return Response.json({error:{code:'METHOD_NOT_ALLOWED'}},{status:405});
   const capability=request.headers.get('authorization');if(!/^Bearer [A-Za-z0-9._~+\/-]{1,8192}={0,2}$/u.test(capability??''))throw fault('WORKER_AUTHORITY_REFUSED');if(!/^application\/json(?:\s*;\s*charset=utf-8)?$/iu.test(request.headers.get('content-type')??'')||request.headers.get('content-encoding'))throw fault('WORKER_REQUEST_REFUSED');
   let deadlineMs=now()+configuration.limits.requestMs;life=createOperationLifetime({deadlineMs,now,signal:request.signal,errorFactory:fault});const length=request.headers.get('content-length');if(length!==null&&!/^(0|[1-9][0-9]*)$/u.test(length))throw fault('WORKER_REQUEST_REFUSED');
-  const input=assertRunOwnerRequest(route[1],await jsonBody({body:request.body,length:length===null?null:Number(length)},configuration.limits.requestBytes,life,life.check)),credential=capability.slice(7);try{turnTelemetry?.bind(input.binding);}catch{}let pinned;
+  const body=await jsonBody({body:request.body,length:length===null?null:Number(length)},configuration.limits.requestBytes,life,life.check),
+   input=Object.hasOwn(childOperations,route[1])?assertChildOperationRequest(route[1],body):assertRunOwnerRequest(route[1],body),credential=capability.slice(7);try{turnTelemetry?.bind(input.binding);}catch{}let pinned;
   async function fresh(){let value;try{value=await life.run(signal=>execution.authenticate({credential,binding:input.binding,signal}));}
    catch(error){const code=productFailure(error)?.code??error?.code;if(['STORE_UNAVAILABLE','STORE_COMMIT_UNKNOWN','STORE_RELEASE_UNKNOWN','EXECUTION_STORE_UNAVAILABLE','EXECUTION_STORE_COMMIT_UNKNOWN'].includes(code))markAuthorityUnavailable(error);throw error;}
    const identity=assertExecutionIdentity(value.execution);if(!same(identity.binding,input.binding)||!Array.isArray(value.scopes)||!value.scopes.length||value.scopes.length>100)throw fault('WORKER_AUTHORITY_REFUSED');
@@ -25,7 +29,7 @@ export function createWorkerRunApplication({execution,createService,configuratio
    if(pinned&&!same(pinned,current))throw fault('WORKER_AUTHORITY_CHANGED');pinned??=current;deadlineMs=Math.min(deadlineMs,identity.expiresAtMs);life.limitDeadline(deadlineMs);return current;
   }
   await fresh();const service=await life.run(()=>createService({credential,binding:input.binding}));
-  const method=route[1]==='next-controls'?taskControlPage:runOwnerOperations[route[1]];
+  const method=Object.hasOwn(childOperations,route[1])?childOperations[route[1]]:route[1]==='next-controls'?taskControlPage:runOwnerOperations[route[1]];
   if(typeof service?.[method]!=='function')throw fault('WORKER_REQUEST_REFUSED');
   // Control polling uses the canonical journal's task reader under these two current execution checks.
   // Other operations retain their service observations; no user session or remote Core admission is minted here.

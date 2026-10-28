@@ -111,7 +111,12 @@ export function createConversationActivity({runOwner,prepareRuntime,query=sdkQue
     const mounts=await setupRun(signal=>createProfileMounts({policy,binding,scopes:saved.run.scopes,now,deadlineMs:runtime.deadlineMs,...(generalReads===undefined?{}:{generalReads}),...(governedIntents===undefined?{}:{governedIntents}),
      ...(lineage?{expectedSessionId:continuationSessionId(lineage)}:{}),...(skill?{skill}:{}),...(procedureRuntime===undefined?{}:{procedure:procedureRuntime.policy}),exclude:skillRuntime?skillRuntime.selected.manifest.allowedOperations:[],...(runBudgets===undefined?{}:{runBudgets}),signal}));
     readRuntime=mounts.reads??undefined;intentRuntime=mounts.intents??undefined;}
-   const capabilities=policy===undefined?undefined:createSdkCapabilities(policy,{runOwner,binding,cwd:runtime.cwd,...Object.fromEntries(CAPABILITY_RUNTIME_FACTS.flatMap(k=>runtime[k]===undefined?[]:[[k,runtime[k]]])),now,newId});
+   // The run owner's child port is the only durable child crossing: the SDK's Agent admission persists the assignment
+   // identity and the current goal revision before the child is dispatched, and the child result receipt before the
+   // parent is acknowledged. Without that port no Agent call is admitted (capabilities/index.mjs).
+   const childAssignments=typeof runOwner.dispatchChild==='function'&&typeof runOwner.settleChild==='function'?Object.freeze({
+    dispatch:input=>runOwner.dispatchChild({binding,input}),settle:input=>runOwner.settleChild({binding,input})}):undefined;
+   const capabilities=policy===undefined?undefined:createSdkCapabilities(policy,{runOwner,binding,cwd:runtime.cwd,...(childAssignments===undefined?{}:{childAssignments}),...Object.fromEntries(CAPABILITY_RUNTIME_FACTS.flatMap(k=>runtime[k]===undefined?[]:[[k,runtime[k]]])),now,newId});
    if(browser!==undefined){
     // The lifetime may reject before the preparation promise settles. Keep ownership of a late run handle so it can
     // still be cleaned up; until then the outcome is unknown and the disposable host must be quarantined.

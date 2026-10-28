@@ -2,6 +2,7 @@
 import test from 'node:test';import assert from 'node:assert/strict';
 import {createConversationActivity} from '../activity.mjs';
 import {BASH_EGRESS_SCHEMA,bashEgressDomainsSha256} from '../egress/bash-egress.mjs';
+import {childAssignmentPort} from './child-assignment-port-fixture.mjs';
 import {applicationFixture,binding,versions,id} from '../../../control/conversations/test/application-fixture.mjs';
 const cwd=`/workspace/conversations/${binding.conversationId}`,SECRET='PRIVATE-TOKEN-9f8e',CONTENT='PRIVATE FILE CONTENT';
 const runtime=()=>({binding,versions,cwd,model:'us.anthropic.claude-sonnet-4-6',region:'us-east-1',maxOutputTokens:4096,providerEnvironment:{},sessionStore:{async load(){return null;},async append(){}},deadlineMs:Date.now()+1000,maxTurns:2,maxCostMicroUSD:1000,maxOutputBytes:1024});
@@ -12,10 +13,14 @@ const toolInput={command:`curl -H 'Authorization: ${SECRET}' https://x.invalid`}
 /** @param {{capabilities?:unknown,append?:(event:any,forward:()=>Promise<unknown>)=>Promise<unknown>,during?:(options:any)=>Promise<void>,duringAt?:number,runtimeFacts?:Record<string,unknown>}} c */
 async function setup(c={}){
  const f=await applicationFixture({initialInput:true});await f.service.allocateInput({credential:f.credential,input:f.input});await f.service.submit({credential:f.credential,input:f.input});let n=200,calls=0;const seen={};
- const runOwner={load:async a=>{const saved=await f.runOwner.load(a);return 'capabilities' in c?{...saved,capabilities:c.capabilities}:saved;},append:a=>c.append?c.append(a.event,()=>f.runOwner.append(a)):f.runOwner.append(a)};
+ // The run owner's child port is the durable crossing the activity must compose into the SDK capability fragment.
+ const children={dispatch:[],settle:[],port:childAssignmentPort()};
+ const runOwner={load:async a=>{const saved=await f.runOwner.load(a);return 'capabilities' in c?{...saved,capabilities:c.capabilities}:saved;},append:a=>c.append?c.append(a.event,()=>f.runOwner.append(a)):f.runOwner.append(a),
+  dispatchChild:async({binding:b,input})=>{assert.deepEqual(b,binding);children.dispatch.push(input);return children.port.dispatch(input);},
+  settleChild:async({binding:b,input})=>{assert.deepEqual(b,binding);children.settle.push(input);return children.port.settle(input);}};
  const query=args=>{calls++;seen.options=args.options;return {async *[Symbol.asyncIterator](){for(const [index,frame] of frames.entries()){if(index===(c.duringAt??frames.length-1))await c.during?.(args.options);yield frame;}},close(){}};};
  const execute=createConversationActivity({runOwner,prepareRuntime:async()=>({...runtime(),...c.runtimeFacts}),query,newId:()=>id(n++)});
- return {...f,execute,seen,calls:()=>calls,history:()=>f.service.history({credential:f.credential})};
+ return {...f,execute,seen,children,calls:()=>calls,history:()=>f.service.history({credential:f.credential})};
 }
 const texts=h=>h.events.filter(e=>e.type==='message.delta').map(e=>e.data.text);
 
@@ -86,4 +91,24 @@ test('Bash reaches the SDK only with explicit policy eligibility and the trusted
    else assert.equal(o.env.CLAUDE_CODE_SUBPROCESS_ENV_SCRUB,undefined);}finally{f.close();}
  }
  const f=await setup({capabilities:{bash:true},runtimeFacts:{bashSandbox:{...attested,weakerNestedSandbox:true,outerIsolationBoundary:false}}});try{await assert.rejects(f.execute({binding}),/EXECUTION_FAILED|BASH_SANDBOX_ATTESTATION_REFUSED/);assert.equal(f.calls(),0);}finally{f.close();}
+});
+
+test('the activity crosses the run owner for the child assignment before the SDK admits it and for the result receipt before the answer',async()=>{
+ let decision,released;
+ const f=await setup({capabilities:{subagents:true,subagentTypes:['research']},duringAt:0,during:async options=>{
+  decision=await options.hooks.PreToolUse[0].hooks[0]({...hookInput,hook_event_name:'PreToolUse',tool_name:'Agent',tool_input:{description:'d',prompt:'p',subagent_type:'research'},tool_use_id:'toolu_child'},'toolu_child',signal());
+  released=await options.hooks.PostToolUse[0].hooks[0]({...hookInput,hook_event_name:'PostToolUse',tool_name:'Agent',tool_use_id:'toolu_child',tool_response:{content:[{type:'text',text:CONTENT}]}},'toolu_child',signal());}});
+ try{
+  assert.deepEqual(await f.execute({binding}),{state:'completed'});
+  assert.equal(decision.hookSpecificOutput.permissionDecision,'allow');
+  assert.equal(f.children.dispatch.length,1,'the assignment crossed the run owner exactly once, before the Agent call was admitted');
+  const assignment=f.children.dispatch[0],definition=f.seen.options.agents.research;
+  assert.equal(assignment.toolUseId,'toolu_child');assert.equal(assignment.role,'research');assert.match(assignment.inputSha256,/^[a-f0-9]{64}$/u);
+  assert.deepEqual(assignment.narrowing,{tools:definition.tools,maxTurns:definition.maxTurns,disallowedTools:definition.disallowedTools},'the persisted narrowing is the admitted one');
+  assert.deepEqual(released,{},'the parent is acknowledged only after the result receipt is persisted');
+  assert.equal(f.children.settle.length,1);const receipt=f.children.settle[0];
+  assert.equal(receipt.toolUseId,'toolu_child');assert.equal(receipt.outcome,'completed');assert.match(receipt.resultSha256,/^[a-f0-9]{64}$/u);assert.ok(receipt.resultBytes>0);
+  assert.equal(JSON.stringify(f.children).includes(CONTENT),false,'only the child result digest crosses the durable owner, never its content');
+  assert.equal(JSON.stringify(await f.history()).includes('PRIVATE'),false);
+ }finally{f.close();}
 });

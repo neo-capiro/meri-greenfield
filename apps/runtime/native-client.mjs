@@ -21,6 +21,7 @@ const startupOperations=new Set([
  'runner/session/register','runner/session/load','runner/session/append',
  'runner/next-controls','runner/claim-control','runner/ack-control','runner/record-checkpoint',
  'runner/procedure-resolve',
+ 'runner/child-dispatch','runner/child-settle',
 ]);
 const STARTUP_REQUEST_MAX_MS=23000;
 // Answers that report a dependency that did not answer, never a decision: control's Core/Clerk authority reads

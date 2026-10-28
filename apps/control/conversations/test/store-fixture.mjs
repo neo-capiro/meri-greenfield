@@ -48,6 +48,7 @@ export function storeFixture(){const state={conversations:new Map(),runs:new Map
   else if(sql.startsWith('UPDATE meri_conversations.next_runs')){for(const r of state.nextRuns.values())if(r.tenant_id===p[0]&&r.conversation_id===p[1]&&r.target_run_id===p[2])r.state='ACCEPTED';}
   else if(sql.startsWith('INSERT INTO meri_conversations.events')){const rows=state.events.get(key(p))??[];rows.push({sequence:p[3],event_id:p[4],event:structuredClone(p[5]),event_sha256:p[6]});state.events.set(key(p),rows);}
   else if(sql.startsWith('SELECT * FROM meri_conversations.events'))rows=(state.events.get(key(p))??[]).filter(e=>sql.includes('event_id=$4')?e.event_id===p[3]:e.sequence>p[3]).slice(0,sql.includes('event_id=$4')?1:p[4]);
+  else if(sql.startsWith('UPDATE meri_conversations.runs SET child_assignments')){const row=state.runs.get(key(p));row.child_assignments=structuredClone(p[3]);row.child_assignments_sha256=p[4];}
   else if(sql.startsWith('UPDATE meri_conversations.runs')){const row=state.runs.get(key(p));row.projection=structuredClone(p[3]);row.projection_sha256=p[4];row.last_sequence=p[5];}
   else throw Error(`Unexpected SQL: ${sql}`);return {rows:structuredClone(rows),rowCount:rows.length};},release(){releaseLock();}};}};
  return {pool,state};

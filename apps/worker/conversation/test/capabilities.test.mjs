@@ -6,6 +6,7 @@ import {assertCapabilityPolicy,readCapabilityPolicy,SUBAGENT_TYPES,WORKSPACE_TOO
 import {READ_FAMILY_IDS} from '../reads/families.mjs';
 import {createWorkspaceTools,assertWorkspacePermissions,BUILTIN_TOOL_NAMES} from '../capabilities/workspace-tools.mjs';
 import {createSubagents,admitAgentInput} from '../capabilities/subagents.mjs';
+import {childAssignmentPort} from './child-assignment-port-fixture.mjs';
 import {createSkillPlugin} from '../capabilities/skill-plugin.mjs';
 import {createProgressProjector} from '../capabilities/progress.mjs';
 import {createSdkCapabilities} from '../capabilities/index.mjs';
@@ -17,7 +18,7 @@ const SECRET='PRIVATE-TOKEN-9f8e',CONTENT='PRIVATE FILE CONTENT';
 const hookOptions={signal:new AbortController().signal},base={session_id:id(40),transcript_path:'/tmp/t.jsonl',cwd};
 const scripted=()=>{const events=[];return {events,runOwner:{append:async({binding:b,event})=>{assert.deepEqual(b,binding);events.push(event);}}};};
 const all={subagents:true,auditHooks:true,compactionHooks:true,skillPlugin:true,workspaceTools:true,subagentProgress:true,bash:true};
-const facts=(owner,extra={})=>({runOwner:owner,binding,cwd,now:()=>1760000000000,newId:(()=>{let n=300;return ()=>id(n++);})(),...extra});
+const facts=(owner,extra={})=>({runOwner:owner,binding,cwd,childAssignments:childAssignmentPort(),now:()=>1760000000000,newId:(()=>{let n=300;return ()=>id(n++);})(),...extra});
 
 test('policy defaults every capability off and bounds every allowlist',()=>{
  const p=assertCapabilityPolicy({});assert.deepEqual(p,{subagents:false,auditHooks:false,compactionHooks:false,skillPlugin:false,workspaceTools:false,subagentProgress:false,bash:false,generalReads:false,governedIntents:false,subagentTypes:[...SUBAGENT_TYPES],maxParallelSubagents:2,workspaceToolNames:[...WORKSPACE_TOOLS],skillNames:null,sandboxNetworkDomains:[],readFamilies:[...READ_FAMILY_IDS],activeReadOperations:[]});assert.ok(Object.isFrozen(p)&&Object.isFrozen(p.subagentTypes));
@@ -43,12 +44,12 @@ test('workspace file tools are confined by SDK permission rules, not a textual g
 });
 
 test('subagent definitions use declared SDK fields and the Agent gate bounds type, options and parallelism',async()=>{
- const latched=[],latch=e=>latched.push(e.code);const s=createSubagents(assertCapabilityPolicy({subagents:true,workspaceTools:true,workspaceToolNames:['Read','Write'],maxParallelSubagents:1,bash:true}),{latch});
+ const latched=[],latch=e=>latched.push(e.code);const s=createSubagents(assertCapabilityPolicy({subagents:true,workspaceTools:true,workspaceToolNames:['Read','Write'],maxParallelSubagents:1,bash:true}),{latch,children:childAssignmentPort()});
  assert.deepEqual(Object.keys(s.agents),[...SUBAGENT_TYPES]);
  for(const d of Object.values(s.agents))assert.deepEqual(Object.keys(d).sort(),['description','disallowedTools','maxTurns','model','omitClaudeMd','prompt','tools']);
  assert.deepEqual(s.agents.research.tools,['Read']);assert.deepEqual(s.agents.artifact_production.tools,['Read','Write']);assert.ok(s.agents.verification.disallowedTools.includes('Agent')&&s.agents.verification.disallowedTools.includes('Bash'));assert.equal(s.agents.analysis.model,'inherit');
  for(const d of Object.values(s.agents))assert.ok(d.disallowedTools.includes('Bash')&&!d.tools.includes('Bash'),'subagents never get Bash, even when the parent may');
- const off=createSubagents(assertCapabilityPolicy({subagents:true}),{latch});assert.throws(()=>createSubagents(assertCapabilityPolicy({subagents:true}),{}),/CAPABILITY_CONFIGURATION/);assert.deepEqual(off.agents.artifact_production.tools,[]);
+ const off=createSubagents(assertCapabilityPolicy({subagents:true}),{latch,children:childAssignmentPort()});assert.throws(()=>createSubagents(assertCapabilityPolicy({subagents:true}),{}),/CAPABILITY_CONFIGURATION/);assert.deepEqual(off.agents.artifact_production.tools,[]);
  assert.deepEqual(admitAgentInput({description:'d',prompt:'p',subagent_type:'research',run_in_background:true,name:'x'},SUBAGENT_TYPES),{description:'d',prompt:'p',subagent_type:'research',run_in_background:false});
  for(const effort of ['low','medium','high','xhigh','max'])assert.equal(admitAgentInput({description:'d',prompt:'p',subagent_type:'research',effort},SUBAGENT_TYPES)?.effort,effort,'the pinned SDK\'s declared AgentInput effort values are admitted, never called malformed: '+effort);
  for(const bad of [{description:'d',prompt:'p'},{description:'d',prompt:'p',subagent_type:'general-purpose'},{description:'d',prompt:'p',subagent_type:'fork'},{description:'d',prompt:'p',subagent_type:'research',model:'opus'},{description:'d',prompt:'p',subagent_type:'research',isolation:'remote'},{description:'d',prompt:'p',subagent_type:'research',effort:'ultra'},{description:'d',prompt:'p',subagent_type:'research',extra:1},'x'])assert.equal(admitAgentInput(bad,SUBAGENT_TYPES),null,JSON.stringify(bad));

@@ -51,20 +51,15 @@ RUN mkdir -p node_modules/@capiro node_modules/@anthropic-ai node_modules/@aws-s
 # Retention workflows share the conversation workflow's pinned Temporal package.
 RUN ln -s ../conversations/node_modules apps/control/retention/node_modules
 
-FROM ${RUNTIME_IMAGE} AS runtime
-USER root
-WORKDIR /opt/meri
-# apk owns the native dependencies and admits every archive through the retained vendor-signed index staged below.
-# This layer pins the renderer's C++ runtime
-# at libstdc++/libatomic 16.2.0-r1; the upload layer below deliberately installs the pinned closure's libstdc++
-# 16.2.0-r2 and libgcc 16.2.0-r2, which SUPERSEDE the libstdc++ pin in the final image. Both sides are immutable archive
-# hashes recorded in runtime-packages.lock.json under uploadNativeProvenance.declaredFinalVersions, and the outcome is
-# asserted at the end of the upload layer rather than left implicit.
-# Stage the retained vendor-signed index verbatim and the complete pinned native closure of all three native
-# layers, as one local apk repository. Each archive is an official aarch64 archive pinned by exact URL and sha256
-# (the source lock records the same bytes). apk verifies the index signature with the vendor keys already present
-# in the pinned base and then installs only from these staged bytes: no network, no untrusted-file exception.
-COPY infra/product-preview/native-apk-index/aarch64-APKINDEX-5c84e4b835a811c1624d9692f011df3de446c8011be4dedaabf6f3dbf41ec536.tar.gz /tmp/meri-native-repo/aarch64/APKINDEX.tar.gz
+# Layer/stage organization only. Docker's layer store refuses a chain deeper than its depth limit
+# ("max depth exceeded"), and the first real ARM build of this composition died exactly there:
+# build 1609f5c6 [runtime 120/208] ADD libseccomp ... "failed to prepare ...: max depth exceeded"
+# after ~120 chained apk layers. The 190 pinned archives therefore stay the same per-archive
+# ADD --checksum instructions, byte for byte and in their original order (same URLs, same checksums),
+# but they are staged in four repository stages whose chains each stay under 64 layers; the runtime
+# stage takes the assembled local repository in one COPY --from layer per staging stage. Pinned URLs
+# and checksums, the retained vendor-signed index and the offline install are unchanged.
+FROM ${RUNTIME_IMAGE} AS native-repo-1
 ADD --checksum=sha256:d2a458ae71b3f6f65302a8dd61c35f75f3eef87aeb5583a3f97523e99698cf49 https://packages.wolfi.dev/os/aarch64/ca-certificates-bundle-20261020-r0.apk /tmp/meri-native-repo/aarch64/ca-certificates-bundle-20261020-r0.apk
 ADD --checksum=sha256:e101b8329bc777d7de8a03d755d9b31e409f500b3717d16d6d5f6b807c94a4fa https://packages.wolfi.dev/os/aarch64/cairo-1.18.6-r1.apk /tmp/meri-native-repo/aarch64/cairo-1.18.6-r1.apk
 ADD --checksum=sha256:13f74b6fb67cf686f49b122b81c62a42bebf8ab57b77c7ca6ae1e907ad36e603 https://packages.wolfi.dev/os/aarch64/clamav-1.5-1.5.2-r7.apk /tmp/meri-native-repo/aarch64/clamav-1.5-1.5.2-r7.apk
@@ -113,6 +108,7 @@ ADD --checksum=sha256:e5f31e389061015223f51503186e8f774c767175596769e91f30166a08
 ADD --checksum=sha256:6ae70433df5da1339a1d76e34a1ed1a715f81b0cafa242674972cbfef9b7d709 https://packages.wolfi.dev/os/aarch64/liblz4-1-1.10.0-r11.apk /tmp/meri-native-repo/aarch64/liblz4-1-1.10.0-r11.apk
 ADD --checksum=sha256:96419166eb4979516abcd40cd1bfce94b8f20a41c7ab7712492a0861e0aeff3a https://packages.wolfi.dev/os/aarch64/libmount-2.42.4-r1.apk /tmp/meri-native-repo/aarch64/libmount-2.42.4-r1.apk
 ADD --checksum=sha256:b83772af732a2eea366c2229209b60cd1046b461f3a28b9652c5cc0ba38fd82b https://packages.wolfi.dev/os/aarch64/libmspack-1.11-r0.apk /tmp/meri-native-repo/aarch64/libmspack-1.11-r0.apk
+FROM ${RUNTIME_IMAGE} AS native-repo-2
 ADD --checksum=sha256:e210213dea283409610f842a816cde531a8e9990d437897b11cc01292c52929b https://packages.wolfi.dev/os/aarch64/libnghttp2-14-1.70.0-r7.apk /tmp/meri-native-repo/aarch64/libnghttp2-14-1.70.0-r7.apk
 ADD --checksum=sha256:27d2e35ce2aaec77b75095e66cb1fe5044126af66fc6bdc87a03cf5f8a5ab21d https://packages.wolfi.dev/os/aarch64/libnspr-4.40-r2.apk /tmp/meri-native-repo/aarch64/libnspr-4.40-r2.apk
 ADD --checksum=sha256:c4579616a2056cd55cb50cd3d9041b6580aa44de09959efe17bcc7f6c7bf1156 https://packages.wolfi.dev/os/aarch64/libnss-3.132-r0.apk /tmp/meri-native-repo/aarch64/libnss-3.132-r0.apk
@@ -161,6 +157,7 @@ ADD --checksum=sha256:2db390ba3ff19c010e11cd75af6d36285264cd25fe24f5f5e7ecdb603e
 ADD --checksum=sha256:dacdd5b4174dd5a2621e784f1dea9ad61bfb034ad1682e7f326417baf2163cdd https://packages.wolfi.dev/os/aarch64/poppler-26.03.0-r3.apk /tmp/meri-native-repo/aarch64/poppler-26.03.0-r3.apk
 ADD --checksum=sha256:a22f29a723c0705f014bc2cb07848c94427728967d51147cc01ece5058557c81 https://packages.wolfi.dev/os/aarch64/leptonica-1.87.0-r1.apk /tmp/meri-native-repo/aarch64/leptonica-1.87.0-r1.apk
 ADD --checksum=sha256:4655365de9a2bb2c75ddea905364dfe36026b24996924c65c7dc8645222c6739 https://packages.wolfi.dev/os/aarch64/libreoffice-26.8-26.8.2.2-r0.apk /tmp/meri-native-repo/aarch64/libreoffice-26.8-26.8.2.2-r0.apk
+FROM ${RUNTIME_IMAGE} AS native-repo-3
 ADD --checksum=sha256:e2fe9d841badfe86280ac708786a21b951e1dc7874a0949705da44447dd881e1 https://packages.wolfi.dev/os/aarch64/bubblewrap-0.13.1-r0.apk /tmp/meri-native-repo/aarch64/bubblewrap-0.13.1-r0.apk
 ADD --checksum=sha256:f1c58ed46eded3d8751b43c221aa968a386e9a8e628684e4db802070538cf266 https://packages.wolfi.dev/os/aarch64/util-linux-misc-2.42.4-r1.apk /tmp/meri-native-repo/aarch64/util-linux-misc-2.42.4-r1.apk
 ADD --checksum=sha256:2f0ff74cd04a5c9c6a43404bb058e6fcf6e02b64d24d7f9f29740fee51372cd2 https://packages.wolfi.dev/os/aarch64/font-liberation-2.1.5-r6.apk /tmp/meri-native-repo/aarch64/font-liberation-2.1.5-r6.apk
@@ -208,6 +205,7 @@ ADD --checksum=sha256:7b04c65d8026079edad3a5ae5ad00dad509dbd7359f5f4c858eb77e359
 ADD --checksum=sha256:7ffed60387aafd738e1435072b8948e28bbf7718835455eaf438af143232bcfa https://packages.wolfi.dev/os/aarch64/libde265-1.1.3-r0.apk /tmp/meri-native-repo/aarch64/libde265-1.1.3-r0.apk
 ADD --checksum=sha256:83d295f369d1396bae0e9a84b6014e9857dba40a1ac4d5215662c34d229e01ce https://packages.wolfi.dev/os/aarch64/py3.13-pip-base-26.2.2-r0.apk /tmp/meri-native-repo/aarch64/py3.13-pip-base-26.2.2-r0.apk
 ADD --checksum=sha256:895d413f7fab456176e58657ced82d58ddd16863c46f848c7db8e70b3df4b064 https://packages.wolfi.dev/os/aarch64/libxkbcommon-1.13.2-r4.apk /tmp/meri-native-repo/aarch64/libxkbcommon-1.13.2-r4.apk
+FROM ${RUNTIME_IMAGE} AS native-repo-4
 ADD --checksum=sha256:8a1f12289bb129fafbda269ec2dd2347a62b755122c72ac8680b72491b882467 https://packages.wolfi.dev/os/aarch64/libvorbis-1.3.7-r14.apk /tmp/meri-native-repo/aarch64/libvorbis-1.3.7-r14.apk
 ADD --checksum=sha256:8b0d57d91b572c8e44dd6fc96e388673a5f5c5d16410c50488b968e1805b8d32 https://packages.wolfi.dev/os/aarch64/xkeyboard-config-2.49-r0.apk /tmp/meri-native-repo/aarch64/xkeyboard-config-2.49-r0.apk
 ADD --checksum=sha256:8f633d68062d4437958ebb7dfbd37647c2d5decde3dd8d0ebbeef723a33f007d https://packages.wolfi.dev/os/aarch64/nsenter-2.42.4-r1.apk /tmp/meri-native-repo/aarch64/nsenter-2.42.4-r1.apk
@@ -255,16 +253,76 @@ ADD --checksum=sha256:ee1d0c652a89932c9f1b3d1e8c348bd1a18329f32a1a63eaa1aaae9dd3
 ADD --checksum=sha256:ef0fed8829139b2b1ec2589d1be348855fdd6e27a0406bb4635d605c4c23131c https://packages.wolfi.dev/os/aarch64/wayland-libs-cursor-1.26.0-r3.apk /tmp/meri-native-repo/aarch64/wayland-libs-cursor-1.26.0-r3.apk
 ADD --checksum=sha256:fa871a64e10623a12ee58086b59e8a1ffe195805d3a254121bad704bb7628857 https://packages.wolfi.dev/os/aarch64/argon2-20190702-r9.apk /tmp/meri-native-repo/aarch64/argon2-20190702-r9.apk
 ADD --checksum=sha256:fc36e4dd53d901cf868cbe55a000a496e84cf220317a0db8cbdfc35a97193f55 https://packages.wolfi.dev/os/aarch64/libheif-1.23.7-r1.apk /tmp/meri-native-repo/aarch64/libheif-1.23.7-r1.apk
-RUN test "$(uname -m)" = aarch64 && \
-    apk add --no-cache --no-network --repository /tmp/meri-native-repo --update-cache \
+# Build-only assembly stage. It stages the retained vendor-signed index verbatim beside the four staging
+# partitions, assembling exactly the one local apk repository the three native layers read. It is deliberately
+# NOT the final stage, so none of these bytes become layers of the exported image: the runtime stage below
+# reaches this repository through a read-only bind mount held for the length of each install RUN. COPYing the
+# same repository into the runtime stage instead made it image content - 491,079,152 B of staged archives (the
+# lock's own bytes total over all 190 members) plus the 7,048,290 B index - and build c7c101e2 completed all 22
+# runtime steps and was rejected by the retained post-build gate alone, its image measuring 3,396,475,702 B
+# against the 3,221,225,472 B (3 GiB) ceiling. Staging the bytes here keeps every ADD --checksum instruction,
+# URL, checksum, order and partition unchanged while the payload stays out of the exported image.
+FROM ${RUNTIME_IMAGE} AS native-repository
+COPY infra/product-preview/native-apk-index/aarch64-APKINDEX-5c84e4b835a811c1624d9692f011df3de446c8011be4dedaabf6f3dbf41ec536.tar.gz /tmp/meri-native-repo/aarch64/APKINDEX.tar.gz
+COPY --from=native-repo-1 /tmp/meri-native-repo /tmp/meri-native-repo
+COPY --from=native-repo-2 /tmp/meri-native-repo /tmp/meri-native-repo
+COPY --from=native-repo-3 /tmp/meri-native-repo /tmp/meri-native-repo
+COPY --from=native-repo-4 /tmp/meri-native-repo /tmp/meri-native-repo
+# The exported stage. Each native install RUN below mounts that assembled repository read-only, so apk reads
+# exactly the bytes those ADD --checksum instructions verified, from one local repository, with no network, and
+# the final image keeps only what apk installed.
+FROM ${RUNTIME_IMAGE} AS runtime
+USER root
+WORKDIR /opt/meri
+# apk owns the native dependencies and admits every archive through the retained vendor-signed index staged below.
+# This layer pins the renderer's C++ runtime
+# at libstdc++/libatomic 16.2.0-r1; the upload layer below deliberately installs the pinned closure's libstdc++
+# 16.2.0-r2 and libgcc 16.2.0-r2, which SUPERSEDE the libstdc++ pin in the final image. Both sides are immutable archive
+# hashes recorded in runtime-packages.lock.json under uploadNativeProvenance.declaredFinalVersions, and the outcome is
+# asserted at the end of the upload layer rather than left implicit.
+# The retained vendor-signed index and the complete pinned native closure of all three native layers are staged as
+# one local apk repository in the build-only native-repository stage above. Each archive is an official aarch64
+# archive pinned by exact URL and sha256 (the source lock records the same bytes). apk verifies the index signature
+# with the vendor keys already present in the pinned base and then installs only from these staged bytes: no network,
+# no untrusted-file exception. The read-only mount carries that repository into each install RUN and is released with
+# it, so the archives and index apk only reads cannot become image content.
+# --repositories-file /dev/null is what makes "only from these staged bytes" literal. In apk 2.14.12 -X/--repository is
+# additive and does not replace the configured set, and --no-network only stops fetching (the cache is still used when
+# possible), so the base's configured Chainguard repository stays in apk's repository set - the failed 319cb785 build
+# opens it from cache. Overriding the system repositories file and repositories.d leaves the staged directory as apk's
+# only repository set, so the staged signed index is the single possible source rather than an observed one.
+# No repository COPY in this stage: each native install below mounts the assembled repository read-only for the
+# length of that RUN (see the native-repository stage above), so those bytes reach apk through the mount and never
+# become layers of the exported image.
+# The pinned base's own /etc/apk/world - read from the digest-bound image, not inferred - pins the libc family at r9:
+# glibc-2.44=2.44-r9, ld-linux-2.44=2.44-r9, libcrypt1-2.44=2.44-r9 and glibc-2.44-locale-posix=2.44-r9. That family is
+# version-locked: the retained index's glibc-2.44 2.44-r10 requires ld-linux-2.44=2.44-r10, ld-linux-2.44 2.44-r10
+# requires glibc-2.44=2.44-r10, libcrypt1-2.44 2.44-r10 requires glibc-2.44=2.44-r10, and the base's installed r9 records
+# require glibc-2.44=2.44-r9 exactly. Naming only glibc-2.44 at r10 therefore left the world's r9 pins standing on the
+# other members, and build f612f243 aborted here, at [runtime 8/22], with "unable to select packages": its own solver
+# output satisfies the request as world[glibc-2.44=2.44-r10] while ld-linux-2.44-2.44-r9 and libcrypt1-2.44-2.44-r9 break
+# it by requiring glibc-2.44=2.44-r9. Naming a name in the request supersedes the base's world pin for that name (the same
+# log shows world[glibc-2.44=2.44-r10] being satisfied), so the whole family is named in one transaction and every member's
+# effective world entry becomes r10. All four are the r10 records the source lock declares under systemPackages and the
+# ADD list above stages; nothing is fetched and no world file is rewritten.
+# apk --version is recorded before the first install so the build log itself carries the effective apk-tools version
+# instead of leaving it a premise; this is static recipe text and no version is claimed until a real build logs it.
+RUN --mount=type=bind,from=native-repository,source=tmp/meri-native-repo,target=/tmp/meri-native-repo,readonly \
+    test "$(uname -m)" = aarch64 && \
+    apk --version && \
+    apk add --no-cache --no-network --repository /tmp/meri-native-repo --repositories-file /dev/null --update-cache \
       bash=5.3-r14 libatomic=16.2.0-r1 libstdc++=16.2.0-r1 python-3.13=3.13.16_git20261016-r2 \
-      py3.13-pip=26.2.2-r0 py3.13-pip-base=26.2.2-r0 && \
+      py3.13-pip=26.2.2-r0 py3.13-pip-base=26.2.2-r0 \
+      glibc-2.44=2.44-r10 glibc-2.44-locale-posix=2.44-r10 ld-linux-2.44=2.44-r10 libcrypt1-2.44=2.44-r10 && \
     test "$(python3.13 --version)" = 'Python 3.13.16'
 # Fixed native renderer owner. The install resolves from the retained signed index above, so apk's own trust gate (index
 # signature plus the index-recorded package identity, verified against the staged bytes) is what admits every archive.
 # The source lock records these exact official archives. Availability is established by the child probe on the built image.
-RUN apk add --no-cache --no-network --repository /tmp/meri-native-repo --update-cache libreoffice-26.8=26.8.2.2-r0 \
-      bubblewrap=0.13.1-r0 util-linux-misc=2.42.4-r1 font-liberation=2.1.5-r6 && \
+# libxml2-16 is named because the renderer's libcmis/librsvg/liblangtag request so:libxml2.so.16 and both libxml2 2.15.0-r0
+# and libxml2-16 2.15.4-r1 provide it; leaving it implicit installed the predecessor, which the upload assertions reject.
+RUN --mount=type=bind,from=native-repository,source=tmp/meri-native-repo,target=/tmp/meri-native-repo,readonly \
+    apk add --no-cache --no-network --repository /tmp/meri-native-repo --repositories-file /dev/null --update-cache libreoffice-26.8=26.8.2.2-r0 \
+      libxml2-16=2.15.4-r1 bubblewrap=0.13.1-r0 util-linux-misc=2.42.4-r1 font-liberation=2.1.5-r6 && \
     test -x /usr/lib/libreoffice/program/soffice && test -x /usr/bin/bwrap && test -x /usr/bin/prlimit
 # Fixed native upload scanner/OCR/parser owner. The Wolfi APKINDEX is a rolling live file, so the whole transitive native
 # closure is staged (exact official archive, exact sha256, in the ADD list and in the source lock) beside the retained,
@@ -277,10 +335,16 @@ RUN apk add --no-cache --no-network --repository /tmp/meri-native-repo --update-
 # Pinned transitive native closure of the seven archives above: every archive this layer could install from the
 # rolling live Wolfi index as a transitive dependency, pinned by exact official URL and sha256 (the source lock
 # holds the same records). Without these pins the build silently takes whatever provider revision the live index
-# serves for a soname or package name.
-RUN apk add --no-cache --no-network --repository /tmp/meri-native-repo --update-cache \
-      clamav-1.5-scanner=1.5.2-r0 clamav-1.5-freshclam=1.5.2-r0 tesseract=5.5.0-r2 tesseract-eng=5.5.2-r2 \
-      poppler-utils=26.03.0-r3 poppler=26.03.0-r3 leptonica=1.87.0-r1 && \
+# serves for a soname or package name. The same name-by-name rule covers the finals already present in the base or an
+# earlier layer: they are requested explicitly so they are upgraded to the declared version instead of silently
+# satisfying the soname at the older revision. The libc family is the one set that has to be named as a whole, since
+# its members are version-locked to each other and the base's world pins them together (see the python layer above).
+RUN --mount=type=bind,from=native-repository,source=tmp/meri-native-repo,target=/tmp/meri-native-repo,readonly \
+    apk add --no-cache --no-network --repository /tmp/meri-native-repo --repositories-file /dev/null --update-cache \
+      clamav-1.5-scanner=1.5.2-r0 clamav-1.5-freshclam=1.5.2-r0 clamav-1.5=1.5.2-r7 \
+      tesseract=5.5.0-r2 tesseract-eng=5.5.2-r2 poppler-utils=26.03.0-r3 poppler=26.03.0-r3 \
+      leptonica=1.87.0-r1 icu-libs=75.1-r42 libarchive=3.8.10-r0 openssl-3.6-libcrypto=3.6.5-r6 \
+      libgcc=16.2.0-r2 libstdc++=16.2.0-r2 libatomic=16.2.0-r1 && \
     test -x /usr/bin/clamscan && test -x /usr/bin/sigtool && test -x /usr/bin/freshclam && \
     test -x /usr/bin/tesseract && test -x /usr/bin/pdftoppm && \
     test "$(clamscan --version | awk '{print $2}')" = 1.5.2 && \
@@ -289,8 +353,7 @@ RUN apk add --no-cache --no-network --repository /tmp/meri-native-repo --update-
     for p in clamav-1.5-scanner-1.5.2-r0 clamav-1.5-freshclam-1.5.2-r0 poppler-26.03.0-r3 poppler-utils-26.03.0-r3 tesseract-5.5.0-r2 tesseract-eng-5.5.2-r2 leptonica-1.87.0-r1 clamav-1.5-1.5.2-r7 libxml2-16-2.15.4-r1 libarchive-3.8.10-r0 openssl-3.6-libcrypto-3.6.5-r6 icu-libs-75.1-r42 libgcc-16.2.0-r2 libstdc++-16.2.0-r2 libatomic-16.2.0-r1 glibc-2.44-2.44-r10; do \
       apk info -v | grep -qx "$p" || { echo "unexpected native dependency $p"; exit 1; }; done && \
     if apk info -v | grep -qx libstdc++-16.2.0-r1; then \
-      echo "the renderer layer's libstdc++ 16.2.0-r1 survived the declared upgrade to 16.2.0-r2"; exit 1; fi && \
-    rm -rf /tmp/meri-native-repo
+      echo "the renderer layer's libstdc++ 16.2.0-r1 survived the declared upgrade to 16.2.0-r2"; exit 1; fi
 # Wolfi uses glibc. Copy only Node/npm from the official builder; the final
 # image retains Wolfi's Python, native dependencies and system CA trust.
 COPY --from=builder /usr/local/bin/node /usr/local/bin/node

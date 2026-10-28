@@ -43,7 +43,7 @@ export async function ensureSdkConfigurationDirectories(directories,options={}){
  await assertOwnedPrivateDirectory(sdkSecureStorageDirectory,uid);
  return directories;
 }
-const lifecycleOperations=new Set(['runner/next-controls','runner/claim-control','runner/ack-control','runner/record-checkpoint']);
+const lifecycleOperations=new Set(['runner/next-controls','runner/claim-control','runner/ack-control','runner/record-checkpoint','runner/child-dispatch','runner/child-settle']);
 function startupBudgetFor(configuration){
  if(configuration.execution===undefined)return null;
  const execution=assertExecutionIdentity(configuration.execution);
@@ -75,7 +75,9 @@ export function assembleConversationRunner({configuration,native,query,credentia
  if(credentialForBinding!==undefined){
   if(typeof credentialForBinding!=='function')throw fault('RUNNER_CREDENTIAL_CONFIGURATION');
   const forward=operation=>({binding:b,credential,signal,...input})=>{localBinding(b);return call(operation,input,signal);};
-  const service={loadForExecution:forward('runner/load'),publish:forward('runner/publish'),nextControls:forward('runner/next-controls'),claimControl:forward('runner/claim-control'),ackControl:forward('runner/ack-control'),recordCheckpoint:forward('runner/record-checkpoint')};
+  // Child assignment custody is forwarded to the same private run-owner route family: the assignment is persisted
+  // before the SDK Agent call is admitted and the child result receipt before the parent is acknowledged.
+  const service={loadForExecution:forward('runner/load'),publish:forward('runner/publish'),nextControls:forward('runner/next-controls'),claimControl:forward('runner/claim-control'),ackControl:forward('runner/ack-control'),recordCheckpoint:forward('runner/record-checkpoint'),dispatchChild:forward('runner/child-dispatch'),settleChild:forward('runner/child-settle')};
   runOwner={...runOwner,...createLifecycleRunOwner({service,credentialForBinding:args=>{localBinding(args.binding);return credentialForBinding(args);}})};
   const capture=operation=>async({binding:b,sessionId,controlId,typedResult,signal})=>{localBinding(b);
    if(!sdkSession||!nativeFiles)throw fault('RUNNER_NATIVE_FILES_UNAVAILABLE');

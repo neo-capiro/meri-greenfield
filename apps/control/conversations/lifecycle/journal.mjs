@@ -12,6 +12,7 @@ import {assertNativeSessionCapture,assertNativeConversationScope} from '../../..
 import {nativeSessionForRun,assertNativeSessionCapturable,assertNativeSessionSettled,nativeSessionTranscripts} from '../sdk-session-lineage.mjs';
 import {assertNativeFileState} from '../../../../packages/contracts/runtime-0.2/files.mjs';
 import {readNativeCompletionCapture} from '../completion-journal.mjs';
+import {assertChildReceipt,assertChildDispatchRequest,assertChildSettleRequest,childAssignmentId,childAssignmentView,childResultView,readChildAssignments} from './child-assignments.mjs';
 /** The single worker failure a control hold admits (see failUncheckpointedHold); run.status reasonCode is free-form in the frozen UIEvent contract. */
 export const HOLD_CHECKPOINT_FAILED='HOLD_CHECKPOINT_FAILED';
 const selectRun=async(c,b)=>{const r=(await c.query('SELECT * FROM meri_conversations.runs WHERE tenant_id=$1 AND conversation_id=$2 AND run_id=$3 FOR UPDATE',[b.tenantId,b.conversationId,b.runId])).rows[0];return r;};
@@ -42,6 +43,44 @@ export function createLifecycleJournal({tx,rowRun,cancelAppend,transitionAuthori
  async function controls({binding:b,scopes,selectedClientId,after=0},check){if(!Number.isSafeInteger(after)||after<0)fail('INVALID_CURSOR');return tx(b,check,async c=>{const r=await verifyRun(c,b,scopes);const rows=(await c.query('SELECT * FROM meri_conversations.controls WHERE tenant_id=$1 AND conversation_id=$2 AND run_id=$3 AND control_sequence>$4 ORDER BY control_sequence LIMIT 100',[b.tenantId,b.conversationId,b.runId,after])).rows;check();return rows.map(row=>{const p=decode(row);pins(p,r,b,scopes,selectedClientId);return p;});});}
  async function get({binding:b,scopes,selectedClientId,controlId},check){return tx(b,check,async c=>{const r=await verifyRun(c,b,scopes),p=await lookup(c,b,controlId);check();if(!p)fail('LIFECYCLE_REFUSED');pins(p,r,b,scopes,selectedClientId);return p;});}
  async function claim({binding:b,scopes,selectedClientId,controlId,commandSha256},check){return tx(b,check,async c=>{const r=await verifyRun(c,b,scopes);const p=await lookup(c,b,controlId);check();if(!p||p.commandSha256!==commandSha256||!p.command)fail('LIFECYCLE_ACK_REFUSED');pins(p,r,b,scopes,selectedClientId);if(r.sequence_end!=null||r.projection.state!=='running'||r.hold_control_id&&r.hold_control_id!==controlId)fail('LIFECYCLE_STATE_REFUSED');if(p.state!=='PENDING')return {claimed:false,projection:p};const next={...p,state:'DISPATCHING'};delete next.controlSequence;await save(c,b,next);return {claimed:true,projection:{...next,controlSequence:p.controlSequence}};});}
+ /** Child (SDK subagent) assignment custody on this same run row: the assignment is persisted before the SDK Agent call
+  * is admitted, and the child result receipt before the parent is acknowledged. The goal revision is the run's own
+  * request revision plus the last applied steer control, re-derived at settlement, so a stale revision or a revoked
+  * authority cannot publish a child result (child-assignments.mjs, 0030_child_assignments.sql). */
+ async function childRevision(c,r,check){
+  const rows=(await c.query('SELECT * FROM meri_conversations.controls WHERE tenant_id=$1 AND conversation_id=$2 AND run_id=$3 AND control_sequence>$4 ORDER BY control_sequence LIMIT 100',[r.tenant_id,r.conversation_id,r.run_id,0])).rows;check();
+  // The revision is derived from the page the run owner already pages; a full page cannot prove which steer is latest.
+  if(rows.length>=100)fail('CHILD_REVISION_UNAVAILABLE');
+  const applied=rows.map(row=>decode(row)).filter(p=>p.state==='APPLIED'&&p.input.intent==='steer'),last=applied.at(-1);
+  // The applied steer's own persisted input digest is the House-owned goal revision the child was assigned under.
+  return {requestSha256:r.request_sha256,steer:last?{controlId:last.input.controlId,inputSha256:last.inputSha256,controlSequence:last.controlSequence}:null};
+ }
+ const childAppend=async(c,b,record,receipt)=>{const next=[...record,receipt];await c.query('UPDATE meri_conversations.runs SET child_assignments=$4,child_assignments_sha256=$5 WHERE tenant_id=$1 AND conversation_id=$2 AND run_id=$3',[b.tenantId,b.conversationId,b.runId,next,hash(next)]);};
+ async function dispatchChild({binding:b,scopes,input},check){const i=assertChildDispatchRequest(input);return tx(b,check,async c=>{
+  const r=await verifyRun(c,b,scopes);check();const record=readChildAssignments(r),assignment=record.find(receipt=>receipt.kind==='assignment'&&receipt.toolUseId===i.toolUseId);
+  // A replacement worker that re-issues the same SDK call reads the persisted assignment: the child is never dispatched twice.
+  if(assignment){const result=record.find(receipt=>receipt.kind==='result'&&receipt.toolUseId===i.toolUseId);return {replayed:true,effect:result?'committed':'unknown',assignment:childAssignmentView(assignment)};}
+  if(r.sequence_end!=null||r.projection.state!=='running')fail('CHILD_STATE_REFUSED');
+  // A waiting/approval-held job keeps its hold: no child assignment is admitted while the turn is fenced.
+  if(r.hold_control_id!=null)fail('CHILD_HOLD_REFUSED');
+  const revision=await childRevision(c,r,check);
+  const receipt=assertChildReceipt({kind:'assignment',assignmentId:childAssignmentId(b,i.toolUseId),toolUseId:i.toolUseId,role:i.role,inputSha256:i.inputSha256,narrowing:i.narrowing,revision,dispatchedAtMs:now()});
+  await childAppend(c,b,record,receipt);check();return {replayed:false,effect:'none',assignment:childAssignmentView(receipt)};
+ });}
+ async function settleChild({binding:b,scopes,input},check){const i=assertChildSettleRequest(input);return tx(b,check,async c=>{
+  const r=await verifyRun(c,b,scopes);check();const record=readChildAssignments(r),assignment=record.find(receipt=>receipt.kind==='assignment'&&receipt.toolUseId===i.toolUseId);
+  if(!assignment)fail('CHILD_ASSIGNMENT_UNKNOWN');
+  const prior=record.find(receipt=>receipt.kind==='result'&&receipt.toolUseId===i.toolUseId);
+  // The receipt is written once: an identical replay reads it back instead of appending a second custody claim.
+  if(prior){if(prior.outcome!==i.outcome||prior.resultSha256!==i.resultSha256||prior.resultBytes!==i.resultBytes)fail('CHILD_RESULT_CONFLICT');return {replayed:true,receipt:childResultView(prior)};}
+  if(r.sequence_end!=null||r.projection.state!=='running')fail('CHILD_STATE_REFUSED');
+  const revision=await childRevision(c,r,check);
+  // The goal revision the child was assigned under must still be the current one: an old child publication is refused.
+  if(!same(revision,assignment.revision))fail('CHILD_REVISION_STALE');
+  // The receipt carries the assignment's own persisted revision verbatim: the exact objective revision it was admitted under.
+  const receipt=assertChildReceipt({kind:'result',assignmentId:assignment.assignmentId,toolUseId:i.toolUseId,outcome:i.outcome,resultSha256:i.resultSha256,resultBytes:i.resultBytes,custody:i.custody,revision:assignment.revision,settledAtMs:now()});
+  await childAppend(c,b,record,receipt);check();return {replayed:false,receipt:childResultView(receipt)};
+ });}
  /** Record the one file-upload attempt before any object write. An uncertain attempt never grants another upload. */
  async function beginFileCapture({binding:b,scopes,selectedClientId,controlId,sessionId,requestSha256},check){uuid(sessionId);if(!/^[a-f0-9]{64}$/u.test(requestSha256))fail('CHECKPOINT_REFUSED');return tx(b,check,async c=>{
   const r=await verifyRun(c,b,scopes),p=await lookup(c,b,controlId);check();if(!p||!['pause','approval.wait'].includes(p.input.intent)||r.hold_control_id!==controlId)fail('CHECKPOINT_REFUSED');pins(p,r,b,scopes,selectedClientId);
@@ -276,5 +315,5 @@ export function createLifecycleJournal({tx,rowRun,cancelAppend,transitionAuthori
    }
    return {state:r.projection.state,cancelCommitted:!!row};
   });try{if(committed&&onPublished)Promise.resolve(onPublished(committed)).catch(()=>{});}catch{}return result;}
- return Object.freeze({begin,change,get,controls,claim,beginFileCapture,recordFiles,captureSession,readArtifactFile,readSessionCapture,readContinuation,execution,sessionSnapshot,fileSnapshot:(v,check)=>sessionSnapshot(v,check,{files:true}),continuationOrigin,continuation,readTransition,finishTransition,readReceipt,readStopFence,requireTransitionAuthority:()=>requireTransitionAuthority(transitionAuthority),failUncheckpointedHold,cancel:cancelAppend});
+ return Object.freeze({begin,change,get,controls,claim,dispatchChild,settleChild,beginFileCapture,recordFiles,captureSession,readArtifactFile,readSessionCapture,readContinuation,execution,sessionSnapshot,fileSnapshot:(v,check)=>sessionSnapshot(v,check,{files:true}),continuationOrigin,continuation,readTransition,finishTransition,readReceipt,readStopFence,requireTransitionAuthority:()=>requireTransitionAuthority(transitionAuthority),failUncheckpointedHold,cancel:cancelAppend});
 }
