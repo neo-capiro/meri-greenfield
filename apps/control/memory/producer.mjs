@@ -182,14 +182,29 @@ export function createMemoryProducer(options){
     const current=(await statuses(principal,[r],{signal,deadlineMs}))[0];
     await requireServable(r.candidate);
     if(current.review.status==='unavailable')refuse('MEMORY_REVIEW_UNAVAILABLE');
+    const existing=existingDecision(current,decision);if(existing)return existing;
     if(current.review.status!=='pending')refuse('MEMORY_DECISION_NOT_PENDING');
-    const {outcome}=await decisions.decide({candidate:r.candidate,decision,reason:request.reason,signal,deadlineMs});
+    let outcome;
+    try{({outcome}=await decisions.decide({candidate:r.candidate,decision,reason:request.reason,signal,deadlineMs}));}
+    catch(error){
+     if(productFailure(error)?.code!=='MEMORY_DECISION_UNCERTAIN'||signal?.aborted||deadlineMs!==undefined&&now()>=deadlineMs)throw error;
+     // Read the original candidate within the same request budget; never repeat the POST.
+     const recovered=(await statuses(principal,[r],{signal,deadlineMs}))[0];
+     await requireServable(r.candidate);
+     const settled=existingDecision(recovered,decision);if(settled)return settled;
+     throw error;
+    }
     const after=(await statuses(principal,[r],{signal,deadlineMs}))[0];
     await requireServable(r.candidate);
     return Object.freeze({proposal:after,decision:Object.freeze({decision,outcome})});
    }catch(error){throw asProductError(error,'MEMORY_UNAVAILABLE');}
   },
  });
+}
+/** A matching terminal Core receipt is a repeat decision, never another mutation. */
+function existingDecision(proposal,decision){
+ if(!['approved','rejected'].includes(decision)||proposal.review.status!==decision)return null;
+ return Object.freeze({proposal,decision:Object.freeze({decision,outcome:decision==='approved'?'duplicate':'rejected'})});
 }
 /** The proposer's view of one candidate and its review state. `review` is Core's answer, null when only the journal was consulted. */
 function view(record,review){
