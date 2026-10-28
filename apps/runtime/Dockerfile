@@ -439,10 +439,10 @@ RUN --network=none \
     --mount=type=bind,from=native-repository,source=tmp/meri-native-repo,target=/tmp/meri-native-runtime-repo,readonly \
     apk --version && \
     apk add --no-cache --no-network --repository /tmp/meri-native-dev-repo --repositories-file /dev/null --update-cache \
-      gcc=16.2.0-r2 binutils=2.47-r2 make=4.4.1-r15 cmake=4.4.3-r0 pkgconf=3.0.10-r2 bash=5.3-r14 xz=5.8.4-r0 \
+      gcc=16.2.0-r2 libgcc=16.2.0-r2 binutils=2.47-r2 make=4.4.1-r15 cmake=4.4.3-r0 pkgconf=3.0.10-r2 bash=5.3-r14 xz=5.8.4-r0 \
       libstdc++-dev=16.2.0-r2 libmilter-dev=8.18.2-r5 gpgv=2.4.9-r12 \
       glibc-2.44-dev=2.44-r10 glibc-2.44=2.44-r10 glibc-2.44-locale-posix=2.44-r10 ld-linux-2.44=2.44-r10 libcrypt1-2.44=2.44-r10 \
-      zlib-dev=1.3.2.1_rc20260921-r1 bzip2-dev=1.0.8-r28 libxml2-dev=2.15.4-r1 pcre2-dev=10.49-r1 \
+      zlib=1.3.2.1_rc20260921-r1 zlib-dev=1.3.2.1_rc20260921-r1 bzip2-dev=1.0.8-r28 libxml2-dev=2.15.4-r1 pcre2-dev=10.49-r1 \
       openssl-dev=3.6.5-r6 json-c-dev=0.19-r2 curl-dev=8.23.0-r2 ncurses-dev=6.6.20261024-r0 \
       check-dev=0.15.2-r10 check=0.15.2-r10 linux-headers=7.3-r0 && \
     gcc --version | head -1 && cmake --version | head -1 && make --version | head -1 && pkg-config --version && \
