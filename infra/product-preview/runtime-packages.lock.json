@@ -101,6 +101,1794 @@
       "source": "https://packages.wolfi.dev/os/aarch64/font-liberation-2.1.5-r6.apk",
       "sha256": "2f0ff74cd04a5c9c6a43404bb058e6fcf6e02b64d24d7f9f29740fee51372cd2",
       "bytes": 2496092
+    },
+    {
+      "name": "clamav-1.5-scanner",
+      "version": "1.5.2-r0",
+      "architecture": "aarch64",
+      "source": "https://packages.wolfi.dev/os/aarch64/clamav-1.5-scanner-1.5.2-r0.apk",
+      "sha256": "5bac4b03f75d4c2548d29d135dff14e8be63493298f28dd4dae144b61f67e7ce",
+      "bytes": 10343387,
+      "provides": "clamscan, sigtool, clambc",
+      "role": "upload native scanner and publisher-signature verification"
+    },
+    {
+      "name": "clamav-1.5-freshclam",
+      "version": "1.5.2-r0",
+      "architecture": "aarch64",
+      "source": "https://packages.wolfi.dev/os/aarch64/clamav-1.5-freshclam-1.5.2-r0.apk",
+      "sha256": "c6613152d9ebb613148d4672c40f2d55abe84404ec07ae8f1195f0129312483e",
+      "bytes": 52758,
+      "provides": "freshclam",
+      "role": "upload signed CVD/CDIFF provisioner (no daemon)"
+    },
+    {
+      "name": "tesseract",
+      "version": "5.5.0-r2",
+      "architecture": "aarch64",
+      "source": "https://packages.wolfi.dev/os/aarch64/tesseract-5.5.0-r2.apk",
+      "sha256": "5360d1b790d8b2835321cb4b3231c66bf7bc36cac76cb920b84d015624b65cd2",
+      "bytes": 3648497,
+      "provides": "tesseract",
+      "role": "upload scanned-image OCR engine"
+    },
+    {
+      "name": "tesseract-eng",
+      "version": "5.5.2-r2",
+      "architecture": "aarch64",
+      "source": "https://packages.wolfi.dev/os/aarch64/tesseract-eng-5.5.2-r2.apk",
+      "sha256": "284483a771e9a8828b17bdf67eb7e7c9a6dd3d9f129f358dd7ea0e10eabe5050",
+      "bytes": 11367038,
+      "provides": "eng traineddata",
+      "role": "the single fixed OCR language model (no uploaded language data)"
+    },
+    {
+      "name": "poppler",
+      "version": "26.03.0-r3",
+      "architecture": "aarch64",
+      "source": "https://packages.wolfi.dev/os/aarch64/poppler-26.03.0-r3.apk",
+      "sha256": "dacdd5b4174dd5a2621e784f1dea9ad61bfb034ad1682e7f326417baf2163cdd",
+      "bytes": 1681899,
+      "role": "PDF rendering library for the rasterizer"
+    },
+    {
+      "name": "poppler-utils",
+      "version": "26.03.0-r3",
+      "architecture": "aarch64",
+      "source": "https://packages.wolfi.dev/os/aarch64/poppler-utils-26.03.0-r3.apk",
+      "sha256": "2db390ba3ff19c010e11cd75af6d36285264cd25fe24f5f5e7ecdb603eaae02e",
+      "bytes": 407277,
+      "provides": "pdftoppm, pdftotext, pdfinfo",
+      "role": "PDF page rasterizer feeding OCR"
+    },
+    {
+      "name": "leptonica",
+      "version": "1.87.0-r1",
+      "architecture": "aarch64",
+      "source": "https://packages.wolfi.dev/os/aarch64/leptonica-1.87.0-r1.apk",
+      "sha256": "a22f29a723c0705f014bc2cb07848c94427728967d51147cc01ece5058557c81",
+      "bytes": 7646,
+      "role": "image-processing dependency of Tesseract"
+    },
+    {
+      "name": "ca-certificates-bundle",
+      "version": "20261020-r0",
+      "architecture": "aarch64",
+      "source": "https://packages.wolfi.dev/os/aarch64/ca-certificates-bundle-20261020-r0.apk",
+      "sha256": "d2a458ae71b3f6f65302a8dd61c35f75f3eef87aeb5583a3f97523e99698cf49",
+      "bytes": 118573,
+      "origin": "ca-certificates",
+      "role": "pinned transitive native dependency of the upload scanner/OCR layer; without this pin the rolling live index would choose the provider revision at build time"
+    },
+    {
+      "name": "cairo",
+      "version": "1.18.6-r1",
+      "architecture": "aarch64",
+      "source": "https://packages.wolfi.dev/os/aarch64/cairo-1.18.6-r1.apk",
+      "sha256": "e101b8329bc777d7de8a03d755d9b31e409f500b3717d16d6d5f6b807c94a4fa",
+      "bytes": 826645,
+      "origin": "cairo",
+      "role": "pinned transitive native dependency of the upload scanner/OCR layer; without this pin the rolling live index would choose the provider revision at build time"
+    },
+    {
+      "name": "clamav-1.5",
+      "version": "1.5.2-r7",
+      "architecture": "aarch64",
+      "source": "https://packages.wolfi.dev/os/aarch64/clamav-1.5-1.5.2-r7.apk",
+      "sha256": "13f74b6fb67cf686f49b122b81c62a42bebf8ab57b77c7ca6ae1e907ad36e603",
+      "bytes": 11524497,
+      "origin": "clamav-1.5",
+      "role": "pinned transitive native dependency of the upload scanner/OCR layer; without this pin the rolling live index would choose the provider revision at build time"
+    },
+    {
+      "name": "clamav-1.5-clamdscan",
+      "version": "1.5.2-r7",
+      "architecture": "aarch64",
+      "source": "https://packages.wolfi.dev/os/aarch64/clamav-1.5-clamdscan-1.5.2-r7.apk",
+      "sha256": "5bf4b9680aad20835becb9198c7a5fa05f4716380a83ca1f6f5664c53cb09672",
+      "bytes": 81077,
+      "origin": "clamav-1.5",
+      "role": "pinned transitive native dependency of the upload scanner/OCR layer; without this pin the rolling live index would choose the provider revision at build time"
+    },
+    {
+      "name": "clamav-1.5-daemon",
+      "version": "1.5.2-r7",
+      "architecture": "aarch64",
+      "source": "https://packages.wolfi.dev/os/aarch64/clamav-1.5-daemon-1.5.2-r7.apk",
+      "sha256": "91d2320bbb83ecf1fe6e25ca9ce3847fb04c5782e6bcce60641ead6b2e03017e",
+      "bytes": 235995,
+      "origin": "clamav-1.5",
+      "role": "pinned transitive native dependency of the upload scanner/OCR layer; without this pin the rolling live index would choose the provider revision at build time"
+    },
+    {
+      "name": "clamav-1.5-db",
+      "version": "1.5.2-r7",
+      "architecture": "aarch64",
+      "source": "https://packages.wolfi.dev/os/aarch64/clamav-1.5-db-1.5.2-r7.apk",
+      "sha256": "691a7d174f0a79d26a650804b367cb9c0ca47c1b3a240d5f4c053ff42d7192cf",
+      "bytes": 17311,
+      "origin": "clamav-1.5",
+      "role": "pinned transitive native dependency of the upload scanner/OCR layer; without this pin the rolling live index would choose the provider revision at build time"
+    },
+    {
+      "name": "clamav-1.5-libunrar",
+      "version": "1.5.2-r7",
+      "architecture": "aarch64",
+      "source": "https://packages.wolfi.dev/os/aarch64/clamav-1.5-libunrar-1.5.2-r7.apk",
+      "sha256": "e1d758096a91873113cae77eebc88975cc98584e511f3bfe4e086a91f1de94ac",
+      "bytes": 233180,
+      "origin": "clamav-1.5",
+      "role": "pinned transitive native dependency of the upload scanner/OCR layer; without this pin the rolling live index would choose the provider revision at build time"
+    },
+    {
+      "name": "clamav-1.5-milter",
+      "version": "1.5.2-r7",
+      "architecture": "aarch64",
+      "source": "https://packages.wolfi.dev/os/aarch64/clamav-1.5-milter-1.5.2-r7.apk",
+      "sha256": "a608dda49365477ed9462b2293ece2facde211a94e5c681dfab20ef97d5b8283",
+      "bytes": 111483,
+      "origin": "clamav-1.5",
+      "role": "pinned transitive native dependency of the upload scanner/OCR layer; without this pin the rolling live index would choose the provider revision at build time"
+    },
+    {
+      "name": "cyrus-sasl-heimdal-libs",
+      "version": "2.1.28-r58",
+      "architecture": "aarch64",
+      "source": "https://packages.wolfi.dev/os/aarch64/cyrus-sasl-heimdal-libs-2.1.28-r58.apk",
+      "sha256": "4d953f1db918d026e9a84fd630609668f8617cdbcf1a316f459bea9281f911ed",
+      "bytes": 239214,
+      "origin": "cyrus-sasl-heimdal",
+      "role": "pinned transitive native dependency of the upload scanner/OCR layer; without this pin the rolling live index would choose the provider revision at build time"
+    },
+    {
+      "name": "fontconfig-config",
+      "version": "2.18.3-r4",
+      "architecture": "aarch64",
+      "source": "https://packages.wolfi.dev/os/aarch64/fontconfig-config-2.18.3-r4.apk",
+      "sha256": "be4637131721a25ae804af342ee6aa26690eb5ef6fbe62e850fdf1cb1917737a",
+      "bytes": 46476,
+      "origin": "fontconfig",
+      "role": "pinned transitive native dependency of the upload scanner/OCR layer; without this pin the rolling live index would choose the provider revision at build time"
+    },
+    {
+      "name": "freetype",
+      "version": "2.14.3-r7",
+      "architecture": "aarch64",
+      "source": "https://packages.wolfi.dev/os/aarch64/freetype-2.14.3-r7.apk",
+      "sha256": "6a1c8ee704ddabfce02d9de61162337295c96ed929c68254206878790115c492",
+      "bytes": 456274,
+      "origin": "freetype",
+      "role": "pinned transitive native dependency of the upload scanner/OCR layer; without this pin the rolling live index would choose the provider revision at build time"
+    },
+    {
+      "name": "fribidi",
+      "version": "1.0.17-r2",
+      "architecture": "aarch64",
+      "source": "https://packages.wolfi.dev/os/aarch64/fribidi-1.0.17-r2.apk",
+      "sha256": "5a65bb06ae2fc40c4fa63e0da59928bafba6386bd1af5656e44c1b0fc7e1c7fc",
+      "bytes": 58162,
+      "origin": "fribidi",
+      "role": "pinned transitive native dependency of the upload scanner/OCR layer; without this pin the rolling live index would choose the provider revision at build time"
+    },
+    {
+      "name": "gdbm",
+      "version": "1.26-r9",
+      "architecture": "aarch64",
+      "source": "https://packages.wolfi.dev/os/aarch64/gdbm-1.26-r9.apk",
+      "sha256": "7c809eeb4a0a2a7ecbbbe92a70abecfccfc5c17ea40144798e8b389dc25ac7e8",
+      "bytes": 290199,
+      "origin": "gdbm",
+      "role": "pinned transitive native dependency of the upload scanner/OCR layer; without this pin the rolling live index would choose the provider revision at build time"
+    },
+    {
+      "name": "giflib",
+      "version": "6.1.3-r4",
+      "architecture": "aarch64",
+      "source": "https://packages.wolfi.dev/os/aarch64/giflib-6.1.3-r4.apk",
+      "sha256": "ca2161775cf38fd0d951131502a6edd3ae15cc802c1a90fe6f4133fbba5d7164",
+      "bytes": 73956,
+      "origin": "giflib",
+      "role": "pinned transitive native dependency of the upload scanner/OCR layer; without this pin the rolling live index would choose the provider revision at build time"
+    },
+    {
+      "name": "glib",
+      "version": "2.90.1-r0",
+      "architecture": "aarch64",
+      "source": "https://packages.wolfi.dev/os/aarch64/glib-2.90.1-r0.apk",
+      "sha256": "f9877cd621c1941636c7e99972fdb3d1bd66fa1fc0a736a9a4d3c7a521a7a14b",
+      "bytes": 2219713,
+      "origin": "glib",
+      "role": "pinned transitive native dependency of the upload scanner/OCR layer; without this pin the rolling live index would choose the provider revision at build time"
+    },
+    {
+      "name": "glibc-2.44",
+      "version": "2.44-r10",
+      "architecture": "aarch64",
+      "source": "https://packages.wolfi.dev/os/aarch64/glibc-2.44-2.44-r10.apk",
+      "sha256": "5ec2e2a087ca0f82e8c66fee61ff47637d2d65232b2843aaa58d560ec4596907",
+      "bytes": 2321156,
+      "origin": "glibc-2.44",
+      "role": "pinned transitive native dependency of the upload scanner/OCR layer; without this pin the rolling live index would choose the provider revision at build time"
+    },
+    {
+      "name": "glibc-2.44-locale-posix",
+      "version": "2.44-r10",
+      "architecture": "aarch64",
+      "source": "https://packages.wolfi.dev/os/aarch64/glibc-2.44-locale-posix-2.44-r10.apk",
+      "sha256": "2b4056feb07b9abd06d58a7c1031967c5b2d4cefe128e986170dbc1deb338fa4",
+      "bytes": 99298,
+      "origin": "glibc-2.44",
+      "role": "pinned transitive native dependency of the upload scanner/OCR layer; without this pin the rolling live index would choose the provider revision at build time"
+    },
+    {
+      "name": "graphite2",
+      "version": "1.3.15-r6",
+      "architecture": "aarch64",
+      "source": "https://packages.wolfi.dev/os/aarch64/graphite2-1.3.15-r6.apk",
+      "sha256": "f5d946497eb9b022ae41ccf8f14a8662e27ddba20b2b4e4e0b445f2f29a1c258",
+      "bytes": 91840,
+      "origin": "graphite2",
+      "role": "pinned transitive native dependency of the upload scanner/OCR layer; without this pin the rolling live index would choose the provider revision at build time"
+    },
+    {
+      "name": "harfbuzz",
+      "version": "15.0.0-r2",
+      "architecture": "aarch64",
+      "source": "https://packages.wolfi.dev/os/aarch64/harfbuzz-15.0.0-r2.apk",
+      "sha256": "c29197aef40caac4c479df35ddaba01177661c5a7a4dd27442ba7d43f7c4252e",
+      "bytes": 2473994,
+      "origin": "harfbuzz",
+      "role": "pinned transitive native dependency of the upload scanner/OCR layer; without this pin the rolling live index would choose the provider revision at build time"
+    },
+    {
+      "name": "heimdal-libs",
+      "version": "7.8.0-r54",
+      "architecture": "aarch64",
+      "source": "https://packages.wolfi.dev/os/aarch64/heimdal-libs-7.8.0-r54.apk",
+      "sha256": "e2292206c78ed1aac2047d4be70cd3ab5992efcbba5065f1d9ceeff07c1ec437",
+      "bytes": 1411373,
+      "origin": "heimdal",
+      "role": "pinned transitive native dependency of the upload scanner/OCR layer; without this pin the rolling live index would choose the provider revision at build time"
+    },
+    {
+      "name": "icu-data-full",
+      "version": "75.1-r42",
+      "architecture": "aarch64",
+      "source": "https://packages.wolfi.dev/os/aarch64/icu-data-full-75.1-r42.apk",
+      "sha256": "d055a6b9db1a07839c7984fc4ff6332ed349384dbfc9f87aa2d839f44603c049",
+      "bytes": 13229255,
+      "origin": "icu",
+      "role": "pinned transitive native dependency of the upload scanner/OCR layer; without this pin the rolling live index would choose the provider revision at build time"
+    },
+    {
+      "name": "icu-libs",
+      "version": "75.1-r42",
+      "architecture": "aarch64",
+      "source": "https://packages.wolfi.dev/os/aarch64/icu-libs-75.1-r42.apk",
+      "sha256": "930fdb992a4b2dcdf4eded827f635902eb2eaa78f9d3af283db336fc10009db8",
+      "bytes": 2877422,
+      "origin": "icu",
+      "role": "pinned transitive native dependency of the upload scanner/OCR layer; without this pin the rolling live index would choose the provider revision at build time"
+    },
+    {
+      "name": "json-c",
+      "version": "0.19-r2",
+      "architecture": "aarch64",
+      "source": "https://packages.wolfi.dev/os/aarch64/json-c-0.19-r2.apk",
+      "sha256": "ed8464ea37ad9d4f008c17864a5b97bbe1b41969c79b4c9913921eb965db267e",
+      "bytes": 52330,
+      "origin": "json-c",
+      "role": "pinned transitive native dependency of the upload scanner/OCR layer; without this pin the rolling live index would choose the provider revision at build time"
+    },
+    {
+      "name": "keyutils-libs",
+      "version": "1.6.3-r41",
+      "architecture": "aarch64",
+      "source": "https://packages.wolfi.dev/os/aarch64/keyutils-libs-1.6.3-r41.apk",
+      "sha256": "fc8f8f28e6472244ebad031f585fcb86a0b870c4f4e5f1415943b76afbf3e4b0",
+      "bytes": 20556,
+      "origin": "keyutils",
+      "role": "pinned transitive native dependency of the upload scanner/OCR layer; without this pin the rolling live index would choose the provider revision at build time"
+    },
+    {
+      "name": "krb5-conf",
+      "version": "1.0-r10",
+      "architecture": "aarch64",
+      "source": "https://packages.wolfi.dev/os/aarch64/krb5-conf-1.0-r10.apk",
+      "sha256": "6a933ca1514f76081d839361a01313cae7c5381a5a9e8130ef38cb75d00b20f0",
+      "bytes": 2928,
+      "origin": "krb5-conf",
+      "role": "pinned transitive native dependency of the upload scanner/OCR layer; without this pin the rolling live index would choose the provider revision at build time"
+    },
+    {
+      "name": "krb5-libs",
+      "version": "1.22.2-r5",
+      "architecture": "aarch64",
+      "source": "https://packages.wolfi.dev/os/aarch64/krb5-libs-1.22.2-r5.apk",
+      "sha256": "bde3fb18cc946f07cde48c022c690650ba8476f27fa973a1cbaa7a4deea36c39",
+      "bytes": 1040273,
+      "origin": "krb5",
+      "role": "pinned transitive native dependency of the upload scanner/OCR layer; without this pin the rolling live index would choose the provider revision at build time"
+    },
+    {
+      "name": "lcms2",
+      "version": "2.19.1-r5",
+      "architecture": "aarch64",
+      "source": "https://packages.wolfi.dev/os/aarch64/lcms2-2.19.1-r5.apk",
+      "sha256": "f5ab17da389f6a79a51be7717c222239f0c6119ffd73b7b917ee0badaf153fe3",
+      "bytes": 237564,
+      "origin": "lcms2",
+      "role": "pinned transitive native dependency of the upload scanner/OCR layer; without this pin the rolling live index would choose the provider revision at build time"
+    },
+    {
+      "name": "ld-linux-2.44",
+      "version": "2.44-r10",
+      "architecture": "aarch64",
+      "source": "https://packages.wolfi.dev/os/aarch64/ld-linux-2.44-2.44-r10.apk",
+      "sha256": "f69972a7647987c61a1a29bc7c1854458bd351fb7a191c7f51e27a683769dad0",
+      "bytes": 141420,
+      "origin": "glibc-2.44",
+      "role": "pinned transitive native dependency of the upload scanner/OCR layer; without this pin the rolling live index would choose the provider revision at build time"
+    },
+    {
+      "name": "libacl1",
+      "version": "2.4.0-r4",
+      "architecture": "aarch64",
+      "source": "https://packages.wolfi.dev/os/aarch64/libacl1-2.4.0-r4.apk",
+      "sha256": "4ab67d18cbdb44c3b37c543b6e735583ef757696e4d11dedc88c20c165a4ee8f",
+      "bytes": 34630,
+      "origin": "acl",
+      "role": "pinned transitive native dependency of the upload scanner/OCR layer; without this pin the rolling live index would choose the provider revision at build time"
+    },
+    {
+      "name": "libarchive",
+      "version": "3.8.10-r0",
+      "architecture": "aarch64",
+      "source": "https://packages.wolfi.dev/os/aarch64/libarchive-3.8.10-r0.apk",
+      "sha256": "72ec9ba6472af3213a09b9674b7bba7ea2aa1ecdf0dee09e4a24a9108db5598f",
+      "bytes": 461368,
+      "origin": "libarchive",
+      "role": "pinned transitive native dependency of the upload scanner/OCR layer; without this pin the rolling live index would choose the provider revision at build time"
+    },
+    {
+      "name": "libblkid",
+      "version": "2.42.4-r1",
+      "architecture": "aarch64",
+      "source": "https://packages.wolfi.dev/os/aarch64/libblkid-2.42.4-r1.apk",
+      "sha256": "7f732012769f0eaa784c68484d7b1b0bb4bad9000b1837c28719b5cb82377077",
+      "bytes": 231471,
+      "origin": "util-linux",
+      "role": "pinned transitive native dependency of the upload scanner/OCR layer; without this pin the rolling live index would choose the provider revision at build time"
+    },
+    {
+      "name": "libbrotlicommon1",
+      "version": "1.2.1-r2",
+      "architecture": "aarch64",
+      "source": "https://packages.wolfi.dev/os/aarch64/libbrotlicommon1-1.2.1-r2.apk",
+      "sha256": "5a71e1e2255f6e85cf501b60a34584e097fe743a91bf0e60338376ddc5a24090",
+      "bytes": 86407,
+      "origin": "brotli",
+      "role": "pinned transitive native dependency of the upload scanner/OCR layer; without this pin the rolling live index would choose the provider revision at build time"
+    },
+    {
+      "name": "libbrotlidec1",
+      "version": "1.2.1-r2",
+      "architecture": "aarch64",
+      "source": "https://packages.wolfi.dev/os/aarch64/libbrotlidec1-1.2.1-r2.apk",
+      "sha256": "29b9fcc4d55fea32dbe590a2e3de0459109c8103b6dc568e650e0e6395280a82",
+      "bytes": 47477,
+      "origin": "brotli",
+      "role": "pinned transitive native dependency of the upload scanner/OCR layer; without this pin the rolling live index would choose the provider revision at build time"
+    },
+    {
+      "name": "libbrotlienc1",
+      "version": "1.2.1-r2",
+      "architecture": "aarch64",
+      "source": "https://packages.wolfi.dev/os/aarch64/libbrotlienc1-1.2.1-r2.apk",
+      "sha256": "14ba019e5e959d8f4ae06f6a6c9e1014842b730d2a10a2fbb66fb780523910f7",
+      "bytes": 456952,
+      "origin": "brotli",
+      "role": "pinned transitive native dependency of the upload scanner/OCR layer; without this pin the rolling live index would choose the provider revision at build time"
+    },
+    {
+      "name": "libbz2-1",
+      "version": "1.0.8-r28",
+      "architecture": "aarch64",
+      "source": "https://packages.wolfi.dev/os/aarch64/libbz2-1-1.0.8-r28.apk",
+      "sha256": "46ce3328e2372eadeb71ef1dc179e2427cefa2264bc0e90e8749e4fee7d644f9",
+      "bytes": 60834,
+      "origin": "bzip2",
+      "role": "pinned transitive native dependency of the upload scanner/OCR layer; without this pin the rolling live index would choose the provider revision at build time"
+    },
+    {
+      "name": "libcom_err",
+      "version": "1.47.4-r5",
+      "architecture": "aarch64",
+      "source": "https://packages.wolfi.dev/os/aarch64/libcom_err-1.47.4-r5.apk",
+      "sha256": "e7e46a09271baccf16553997096d72a9059437a527f10331a12fc6a2f18c5d45",
+      "bytes": 28092,
+      "origin": "e2fsprogs",
+      "role": "pinned transitive native dependency of the upload scanner/OCR layer; without this pin the rolling live index would choose the provider revision at build time"
+    },
+    {
+      "name": "libcrypt1-2.44",
+      "version": "2.44-r10",
+      "architecture": "aarch64",
+      "source": "https://packages.wolfi.dev/os/aarch64/libcrypt1-2.44-2.44-r10.apk",
+      "sha256": "40c7bfd615a69e8747d3a5d0ca9a37dc2a8b169bcd4c2df4b387922d9fe5b553",
+      "bytes": 24193,
+      "origin": "glibc-2.44",
+      "role": "pinned transitive native dependency of the upload scanner/OCR layer; without this pin the rolling live index would choose the provider revision at build time"
+    },
+    {
+      "name": "libcurl-openssl4",
+      "version": "8.23.0-r2",
+      "architecture": "aarch64",
+      "source": "https://packages.wolfi.dev/os/aarch64/libcurl-openssl4-8.23.0-r2.apk",
+      "sha256": "1cd0edb0d40aaeb5281566f4c4d17583447b77b74e1bc3281de642e8e9493bf1",
+      "bytes": 576681,
+      "origin": "curl",
+      "role": "pinned transitive native dependency of the upload scanner/OCR layer; without this pin the rolling live index would choose the provider revision at build time"
+    },
+    {
+      "name": "libexpat1",
+      "version": "2.9.0-r0",
+      "architecture": "aarch64",
+      "source": "https://packages.wolfi.dev/os/aarch64/libexpat1-2.9.0-r0.apk",
+      "sha256": "abeeb0ffa21b3ca6175cb997d9919920a26a2f50aaa61116f03ed40b1cfd764f",
+      "bytes": 106888,
+      "origin": "expat",
+      "role": "pinned transitive native dependency of the upload scanner/OCR layer; without this pin the rolling live index would choose the provider revision at build time"
+    },
+    {
+      "name": "libffi",
+      "version": "3.8.0-r2",
+      "architecture": "aarch64",
+      "source": "https://packages.wolfi.dev/os/aarch64/libffi-3.8.0-r2.apk",
+      "sha256": "df5cab585fd544ce671305dc8b8187bb1ed0c8ac016e995dd129d8d6dd9c556b",
+      "bytes": 40635,
+      "origin": "libffi",
+      "role": "pinned transitive native dependency of the upload scanner/OCR layer; without this pin the rolling live index would choose the provider revision at build time"
+    },
+    {
+      "name": "libfontconfig1",
+      "version": "2.18.3-r4",
+      "architecture": "aarch64",
+      "source": "https://packages.wolfi.dev/os/aarch64/libfontconfig1-2.18.3-r4.apk",
+      "sha256": "8398cda32dab892a680226feacac1165ab080df1102fc2972f3795af25bda8dc",
+      "bytes": 215680,
+      "origin": "fontconfig",
+      "role": "pinned transitive native dependency of the upload scanner/OCR layer; without this pin the rolling live index would choose the provider revision at build time"
+    },
+    {
+      "name": "libgcc",
+      "version": "16.2.0-r2",
+      "architecture": "aarch64",
+      "source": "https://packages.wolfi.dev/os/aarch64/libgcc-16.2.0-r2.apk",
+      "sha256": "c782296bb6afa9c6e183ef51bc14367e55768ba2acdbc822fccc96ac82257220",
+      "bytes": 93608,
+      "origin": "gcc",
+      "role": "pinned transitive native dependency of the upload scanner/OCR layer; without this pin the rolling live index would choose the provider revision at build time"
+    },
+    {
+      "name": "libidn2",
+      "version": "2.3.8-r12",
+      "architecture": "aarch64",
+      "source": "https://packages.wolfi.dev/os/aarch64/libidn2-2.3.8-r12.apk",
+      "sha256": "c9489c1f009a75967b198bf30415637505ad85ec7d7afca74ee3e76c84335bd7",
+      "bytes": 136210,
+      "origin": "libidn2",
+      "role": "pinned transitive native dependency of the upload scanner/OCR layer; without this pin the rolling live index would choose the provider revision at build time"
+    },
+    {
+      "name": "libjpeg-turbo",
+      "version": "3.2.1-r0",
+      "architecture": "aarch64",
+      "source": "https://packages.wolfi.dev/os/aarch64/libjpeg-turbo-3.2.1-r0.apk",
+      "sha256": "b9c466e9e914bedb20eb9c8de21046d4db71efbf9a4eb2695d612614d99a3dbe",
+      "bytes": 620318,
+      "origin": "libjpeg-turbo",
+      "role": "pinned transitive native dependency of the upload scanner/OCR layer; without this pin the rolling live index would choose the provider revision at build time"
+    },
+    {
+      "name": "libldap-2.7",
+      "version": "2.7.2-r0",
+      "architecture": "aarch64",
+      "source": "https://packages.wolfi.dev/os/aarch64/libldap-2.7-2.7.2-r0.apk",
+      "sha256": "e5f31e389061015223f51503186e8f774c767175596769e91f30166a08e9a73f",
+      "bytes": 249515,
+      "origin": "openldap-2.7",
+      "role": "pinned transitive native dependency of the upload scanner/OCR layer; without this pin the rolling live index would choose the provider revision at build time"
+    },
+    {
+      "name": "liblz4-1",
+      "version": "1.10.0-r11",
+      "architecture": "aarch64",
+      "source": "https://packages.wolfi.dev/os/aarch64/liblz4-1-1.10.0-r11.apk",
+      "sha256": "6ae70433df5da1339a1d76e34a1ed1a715f81b0cafa242674972cbfef9b7d709",
+      "bytes": 182866,
+      "origin": "lz4",
+      "role": "pinned transitive native dependency of the upload scanner/OCR layer; without this pin the rolling live index would choose the provider revision at build time"
+    },
+    {
+      "name": "libmount",
+      "version": "2.42.4-r1",
+      "architecture": "aarch64",
+      "source": "https://packages.wolfi.dev/os/aarch64/libmount-2.42.4-r1.apk",
+      "sha256": "96419166eb4979516abcd40cd1bfce94b8f20a41c7ab7712492a0861e0aeff3a",
+      "bytes": 281959,
+      "origin": "util-linux",
+      "role": "pinned transitive native dependency of the upload scanner/OCR layer; without this pin the rolling live index would choose the provider revision at build time"
+    },
+    {
+      "name": "libmspack",
+      "version": "1.11-r0",
+      "architecture": "aarch64",
+      "source": "https://packages.wolfi.dev/os/aarch64/libmspack-1.11-r0.apk",
+      "sha256": "b83772af732a2eea366c2229209b60cd1046b461f3a28b9652c5cc0ba38fd82b",
+      "bytes": 48883,
+      "origin": "libmspack",
+      "role": "pinned transitive native dependency of the upload scanner/OCR layer; without this pin the rolling live index would choose the provider revision at build time"
+    },
+    {
+      "name": "libnghttp2-14",
+      "version": "1.70.0-r7",
+      "architecture": "aarch64",
+      "source": "https://packages.wolfi.dev/os/aarch64/libnghttp2-14-1.70.0-r7.apk",
+      "sha256": "e210213dea283409610f842a816cde531a8e9990d437897b11cc01292c52929b",
+      "bytes": 116361,
+      "origin": "nghttp2",
+      "role": "pinned transitive native dependency of the upload scanner/OCR layer; without this pin the rolling live index would choose the provider revision at build time"
+    },
+    {
+      "name": "libnspr",
+      "version": "4.40-r2",
+      "architecture": "aarch64",
+      "source": "https://packages.wolfi.dev/os/aarch64/libnspr-4.40-r2.apk",
+      "sha256": "27d2e35ce2aaec77b75095e66cb1fe5044126af66fc6bdc87a03cf5f8a5ab21d",
+      "bytes": 165359,
+      "origin": "libnspr",
+      "role": "pinned transitive native dependency of the upload scanner/OCR layer; without this pin the rolling live index would choose the provider revision at build time"
+    },
+    {
+      "name": "libnss",
+      "version": "3.132-r0",
+      "architecture": "aarch64",
+      "source": "https://packages.wolfi.dev/os/aarch64/libnss-3.132-r0.apk",
+      "sha256": "c4579616a2056cd55cb50cd3d9041b6580aa44de09959efe17bcc7f6c7bf1156",
+      "bytes": 1715824,
+      "origin": "nss",
+      "role": "pinned transitive native dependency of the upload scanner/OCR layer; without this pin the rolling live index would choose the provider revision at build time"
+    },
+    {
+      "name": "libpcre2-8-0",
+      "version": "10.49-r1",
+      "architecture": "aarch64",
+      "source": "https://packages.wolfi.dev/os/aarch64/libpcre2-8-0-10.49-r1.apk",
+      "sha256": "951a1e197e06d20d19bfeaa71629cf5acc4f62174ae2802d071cb230b72b3d9b",
+      "bytes": 288158,
+      "origin": "pcre2",
+      "role": "pinned transitive native dependency of the upload scanner/OCR layer; without this pin the rolling live index would choose the provider revision at build time"
+    },
+    {
+      "name": "libpng",
+      "version": "1.6.59-r0",
+      "architecture": "aarch64",
+      "source": "https://packages.wolfi.dev/os/aarch64/libpng-1.6.59-r0.apk",
+      "sha256": "8f22ebe44d23d07a60b79462677e3b1e9fedab81e8be8cd5f1d04a5cf40c7b61",
+      "bytes": 136720,
+      "origin": "libpng",
+      "role": "pinned transitive native dependency of the upload scanner/OCR layer; without this pin the rolling live index would choose the provider revision at build time"
+    },
+    {
+      "name": "libpsl",
+      "version": "0.23.3-r4",
+      "architecture": "aarch64",
+      "source": "https://packages.wolfi.dev/os/aarch64/libpsl-0.23.3-r4.apk",
+      "sha256": "eeac8fadc4a543c649d8162107f771d4ed71842585d90835ed100fd2b79ef77e",
+      "bytes": 82816,
+      "origin": "libpsl",
+      "role": "pinned transitive native dependency of the upload scanner/OCR layer; without this pin the rolling live index would choose the provider revision at build time"
+    },
+    {
+      "name": "libselinux",
+      "version": "3.11-r2",
+      "architecture": "aarch64",
+      "source": "https://packages.wolfi.dev/os/aarch64/libselinux-3.11-r2.apk",
+      "sha256": "6c96ee48b1ed094dd58598f3df0b2ae678a78d343b3d6f6cf25e6a59a685eea9",
+      "bytes": 365088,
+      "origin": "libselinux",
+      "role": "pinned transitive native dependency of the upload scanner/OCR layer; without this pin the rolling live index would choose the provider revision at build time"
+    },
+    {
+      "name": "libsepol",
+      "version": "3.11-r3",
+      "architecture": "aarch64",
+      "source": "https://packages.wolfi.dev/os/aarch64/libsepol-3.11-r3.apk",
+      "sha256": "d44df089fbd2260bba1ecc62e6cff0fa7f22382a86718fdb3f79e0f9086a92ae",
+      "bytes": 436108,
+      "origin": "libsepol",
+      "role": "pinned transitive native dependency of the upload scanner/OCR layer; without this pin the rolling live index would choose the provider revision at build time"
+    },
+    {
+      "name": "libstdc++",
+      "version": "16.2.0-r2",
+      "architecture": "aarch64",
+      "source": "https://packages.wolfi.dev/os/aarch64/libstdc++-16.2.0-r2.apk",
+      "sha256": "a004dfb5d3a07f49e3e281947f64b434a4ee683c6c597ef191bb39f749eadacc",
+      "bytes": 1185922,
+      "origin": "gcc",
+      "role": "pinned transitive native dependency of the upload scanner/OCR layer; without this pin the rolling live index would choose the provider revision at build time"
+    },
+    {
+      "name": "libunistring",
+      "version": "1.5-r0",
+      "architecture": "aarch64",
+      "source": "https://packages.wolfi.dev/os/aarch64/libunistring-1.5-r0.apk",
+      "sha256": "540cec75eefb0f6f384701b5995f48c27f13744940a477ed23d9e119b9faa6e8",
+      "bytes": 911744,
+      "origin": "libunistring",
+      "role": "pinned transitive native dependency of the upload scanner/OCR layer; without this pin the rolling live index would choose the provider revision at build time"
+    },
+    {
+      "name": "libverto",
+      "version": "0.3.2-r11",
+      "architecture": "aarch64",
+      "source": "https://packages.wolfi.dev/os/aarch64/libverto-0.3.2-r11.apk",
+      "sha256": "864750d72131a29f2f383e53adad5a3e4d32f70ffb3aef6282c0276ccfa8693d",
+      "bytes": 30719,
+      "origin": "libverto",
+      "role": "pinned transitive native dependency of the upload scanner/OCR layer; without this pin the rolling live index would choose the provider revision at build time"
+    },
+    {
+      "name": "libwebp",
+      "version": "1.6.0-r7",
+      "architecture": "aarch64",
+      "source": "https://packages.wolfi.dev/os/aarch64/libwebp-1.6.0-r7.apk",
+      "sha256": "f431ef5b6d972ea03d16d4559e7a4b7b5bae7f7bfbd4ecc10d7c3bfa15def764",
+      "bytes": 284467,
+      "origin": "libwebp",
+      "role": "pinned transitive native dependency of the upload scanner/OCR layer; without this pin the rolling live index would choose the provider revision at build time"
+    },
+    {
+      "name": "libx11",
+      "version": "1.8.14-r3",
+      "architecture": "aarch64",
+      "source": "https://packages.wolfi.dev/os/aarch64/libx11-1.8.14-r3.apk",
+      "sha256": "890008fdbe3adec8250e9c65d395722726408bcfb547e22bdae4883495c6a39d",
+      "bytes": 1076149,
+      "origin": "libx11",
+      "role": "pinned transitive native dependency of the upload scanner/OCR layer; without this pin the rolling live index would choose the provider revision at build time"
+    },
+    {
+      "name": "libxau",
+      "version": "1.0.12-r11",
+      "architecture": "aarch64",
+      "source": "https://packages.wolfi.dev/os/aarch64/libxau-1.0.12-r11.apk",
+      "sha256": "84cb602ad9ca286eeff476d10839daf71770626f2cd88a27c422fd14b5522a5c",
+      "bytes": 26133,
+      "origin": "libxau",
+      "role": "pinned transitive native dependency of the upload scanner/OCR layer; without this pin the rolling live index would choose the provider revision at build time"
+    },
+    {
+      "name": "libxcb",
+      "version": "1.17.0-r19",
+      "architecture": "aarch64",
+      "source": "https://packages.wolfi.dev/os/aarch64/libxcb-1.17.0-r19.apk",
+      "sha256": "7348db0c22354d4da06d1c9d685c5deed50945dc03a7cb4a365a7c151fc162f0",
+      "bytes": 447279,
+      "origin": "libxcb",
+      "role": "pinned transitive native dependency of the upload scanner/OCR layer; without this pin the rolling live index would choose the provider revision at build time"
+    },
+    {
+      "name": "libxcrypt",
+      "version": "4.5.2-r6",
+      "architecture": "aarch64",
+      "source": "https://packages.wolfi.dev/os/aarch64/libxcrypt-4.5.2-r6.apk",
+      "sha256": "9dfd2b4a72d35a1f2c146a968c2368d7cab51bc7ae7854e3dc61e8a98dfeb746",
+      "bytes": 106378,
+      "origin": "libxcrypt",
+      "role": "pinned transitive native dependency of the upload scanner/OCR layer; without this pin the rolling live index would choose the provider revision at build time"
+    },
+    {
+      "name": "libxdmcp",
+      "version": "1.1.5-r14",
+      "architecture": "aarch64",
+      "source": "https://packages.wolfi.dev/os/aarch64/libxdmcp-1.1.5-r14.apk",
+      "sha256": "82fc03408c016403bc203ee75f70ff371ba332951fd4cda0575a91cfe85a0794",
+      "bytes": 30293,
+      "origin": "libxdmcp",
+      "role": "pinned transitive native dependency of the upload scanner/OCR layer; without this pin the rolling live index would choose the provider revision at build time"
+    },
+    {
+      "name": "libxext",
+      "version": "1.3.7-r4",
+      "architecture": "aarch64",
+      "source": "https://packages.wolfi.dev/os/aarch64/libxext-1.3.7-r4.apk",
+      "sha256": "d048d0157ec5046a97aef646e11d54dcc2060de890fdc3a42f25e1a0dc829c3c",
+      "bytes": 73564,
+      "origin": "libxext",
+      "role": "pinned transitive native dependency of the upload scanner/OCR layer; without this pin the rolling live index would choose the provider revision at build time"
+    },
+    {
+      "name": "libxft",
+      "version": "2.3.9-r8",
+      "architecture": "aarch64",
+      "source": "https://packages.wolfi.dev/os/aarch64/libxft-2.3.9-r8.apk",
+      "sha256": "b1103383c2263bc5722bc48cd6e722333e753030e279f2800bded732924c8a08",
+      "bytes": 64512,
+      "origin": "libxft",
+      "role": "pinned transitive native dependency of the upload scanner/OCR layer; without this pin the rolling live index would choose the provider revision at build time"
+    },
+    {
+      "name": "libxml2-16",
+      "version": "2.15.4-r1",
+      "architecture": "aarch64",
+      "source": "https://packages.wolfi.dev/os/aarch64/libxml2-16-2.15.4-r1.apk",
+      "sha256": "3c76a370da61fc26789b0ac533ed76e442c9849b57564336856c7e0d224e9c8f",
+      "bytes": 668895,
+      "origin": "libxml2",
+      "role": "pinned transitive native dependency of the upload scanner/OCR layer; without this pin the rolling live index would choose the provider revision at build time"
+    },
+    {
+      "name": "libxrender",
+      "version": "0.9.13-r0",
+      "architecture": "aarch64",
+      "source": "https://packages.wolfi.dev/os/aarch64/libxrender-0.9.13-r0.apk",
+      "sha256": "289d9377b9881056aca8dc4fc1205c0bb9267677b676917528c7390b48438a8d",
+      "bytes": 30740,
+      "origin": "libxrender",
+      "role": "pinned transitive native dependency of the upload scanner/OCR layer; without this pin the rolling live index would choose the provider revision at build time"
+    },
+    {
+      "name": "libzstd1",
+      "version": "1.5.7-r12",
+      "architecture": "aarch64",
+      "source": "https://packages.wolfi.dev/os/aarch64/libzstd1-1.5.7-r12.apk",
+      "sha256": "8ae2c2ac0859e5a59c1cf771d5491dcdce9f7b6e373c808d5d99ccc7a40789b2",
+      "bytes": 595496,
+      "origin": "zstd",
+      "role": "pinned transitive native dependency of the upload scanner/OCR layer; without this pin the rolling live index would choose the provider revision at build time"
+    },
+    {
+      "name": "ncurses",
+      "version": "6.6.20261024-r0",
+      "architecture": "aarch64",
+      "source": "https://packages.wolfi.dev/os/aarch64/ncurses-6.6.20261024-r0.apk",
+      "sha256": "ba996028cc4f3e1b4e4f42684d051257304ca065b7bd4fa20c5ee78f8b44ecb4",
+      "bytes": 616526,
+      "origin": "ncurses",
+      "role": "pinned transitive native dependency of the upload scanner/OCR layer; without this pin the rolling live index would choose the provider revision at build time"
+    },
+    {
+      "name": "ncurses-terminfo-base",
+      "version": "6.6.20261024-r0",
+      "architecture": "aarch64",
+      "source": "https://packages.wolfi.dev/os/aarch64/ncurses-terminfo-base-6.6.20261024-r0.apk",
+      "sha256": "a01c937f77c6d6e3f62fe67ef6a86f663409fdadf8ae18733d1227ec469814c7",
+      "bytes": 119421,
+      "origin": "ncurses",
+      "role": "pinned transitive native dependency of the upload scanner/OCR layer; without this pin the rolling live index would choose the provider revision at build time"
+    },
+    {
+      "name": "nghttp3",
+      "version": "1.18.0-r3",
+      "architecture": "aarch64",
+      "source": "https://packages.wolfi.dev/os/aarch64/nghttp3-1.18.0-r3.apk",
+      "sha256": "b5064f8ff42f91e2410812a7cc0e6278043132c0ef79ea6480f4c354bdd248a7",
+      "bytes": 111492,
+      "origin": "nghttp3",
+      "role": "pinned transitive native dependency of the upload scanner/OCR layer; without this pin the rolling live index would choose the provider revision at build time"
+    },
+    {
+      "name": "ngtcp2",
+      "version": "1.25.0-r7",
+      "architecture": "aarch64",
+      "source": "https://packages.wolfi.dev/os/aarch64/ngtcp2-1.25.0-r7.apk",
+      "sha256": "c5c7b02654047fceacfc5e8fc7b3b99c8a2622a807bae880aacdbfc46c76f336",
+      "bytes": 222880,
+      "origin": "ngtcp2",
+      "role": "pinned transitive native dependency of the upload scanner/OCR layer; without this pin the rolling live index would choose the provider revision at build time"
+    },
+    {
+      "name": "openjpeg",
+      "version": "2.5.4-r3",
+      "architecture": "aarch64",
+      "source": "https://packages.wolfi.dev/os/aarch64/openjpeg-2.5.4-r3.apk",
+      "sha256": "e5f7f95f02c5209309d1cf014d08470cd9d2691b977d9ed644fea9bfb85d9046",
+      "bytes": 242174,
+      "origin": "openjpeg",
+      "role": "pinned transitive native dependency of the upload scanner/OCR layer; without this pin the rolling live index would choose the provider revision at build time"
+    },
+    {
+      "name": "openssl-3.6-libcrypto",
+      "version": "3.6.5-r6",
+      "architecture": "aarch64",
+      "source": "https://packages.wolfi.dev/os/aarch64/openssl-3.6-libcrypto-3.6.5-r6.apk",
+      "sha256": "bbf9738a1960100008bcc6aba188ed7ce4a84c7873ddeb4ba5b19a2dda30dc1c",
+      "bytes": 2193882,
+      "origin": "openssl",
+      "role": "pinned transitive native dependency of the upload scanner/OCR layer; without this pin the rolling live index would choose the provider revision at build time"
+    },
+    {
+      "name": "openssl-3.6-libssl",
+      "version": "3.6.5-r6",
+      "architecture": "aarch64",
+      "source": "https://packages.wolfi.dev/os/aarch64/openssl-3.6-libssl-3.6.5-r6.apk",
+      "sha256": "694c0e06540eed0d944cfd6c5fc11b247e62f183b989fd615fddf79b72e6247d",
+      "bytes": 503280,
+      "origin": "openssl",
+      "role": "pinned transitive native dependency of the upload scanner/OCR layer; without this pin the rolling live index would choose the provider revision at build time"
+    },
+    {
+      "name": "openssl-4.0-libcrypto",
+      "version": "4.0.3-r8",
+      "architecture": "aarch64",
+      "source": "https://packages.wolfi.dev/os/aarch64/openssl-4.0-libcrypto-4.0.3-r8.apk",
+      "sha256": "8a509f24f834724ea1927d5a37cd6e8fba5d7c98d0ea8fdea7689b27852e05fc",
+      "bytes": 2155859,
+      "origin": "openssl-4.0",
+      "role": "pinned transitive native dependency of the upload scanner/OCR layer; without this pin the rolling live index would choose the provider revision at build time"
+    },
+    {
+      "name": "openssl-4.0-libssl",
+      "version": "4.0.3-r8",
+      "architecture": "aarch64",
+      "source": "https://packages.wolfi.dev/os/aarch64/openssl-4.0-libssl-4.0.3-r8.apk",
+      "sha256": "0dd48c2a58466c6787d0df2ff2254623c8f470faa6d986975a4c123ef04c6a9c",
+      "bytes": 535346,
+      "origin": "openssl-4.0",
+      "role": "pinned transitive native dependency of the upload scanner/OCR layer; without this pin the rolling live index would choose the provider revision at build time"
+    },
+    {
+      "name": "openssl-provider-legacy-allowed",
+      "version": "4.1.0-r0",
+      "architecture": "aarch64",
+      "source": "https://packages.wolfi.dev/os/aarch64/openssl-provider-legacy-allowed-4.1.0-r0.apk",
+      "sha256": "22313fca19b8143db5d239bd14c5251416a2e35ba7418b23b64ece7701bc9785",
+      "bytes": 377292,
+      "origin": "openssl-provider-legacy-allowed",
+      "role": "pinned transitive native dependency of the upload scanner/OCR layer; without this pin the rolling live index would choose the provider revision at build time"
+    },
+    {
+      "name": "pango",
+      "version": "1.58.2-r1",
+      "architecture": "aarch64",
+      "source": "https://packages.wolfi.dev/os/aarch64/pango-1.58.2-r1.apk",
+      "sha256": "cb8d36205e4d4fb099f82e8c94b172f419e964a62460f2eb435fa855095479d5",
+      "bytes": 377334,
+      "origin": "pango",
+      "role": "pinned transitive native dependency of the upload scanner/OCR layer; without this pin the rolling live index would choose the provider revision at build time"
+    },
+    {
+      "name": "pixman",
+      "version": "0.46.4-r9",
+      "architecture": "aarch64",
+      "source": "https://packages.wolfi.dev/os/aarch64/pixman-0.46.4-r9.apk",
+      "sha256": "a8cf3dcdca2012d1af78f22b31bb2abf4a656392b4f47f2bbdef1a959663ca81",
+      "bytes": 282332,
+      "origin": "pixman",
+      "role": "pinned transitive native dependency of the upload scanner/OCR layer; without this pin the rolling live index would choose the provider revision at build time"
+    },
+    {
+      "name": "readline",
+      "version": "8.3-r3",
+      "architecture": "aarch64",
+      "source": "https://packages.wolfi.dev/os/aarch64/readline-8.3-r3.apk",
+      "sha256": "8d4ae6286e3fdc2b50fdd911fe1aa474c771c5708184e721e2255283ec6d7e4e",
+      "bytes": 338069,
+      "origin": "readline",
+      "role": "pinned transitive native dependency of the upload scanner/OCR layer; without this pin the rolling live index would choose the provider revision at build time"
+    },
+    {
+      "name": "sqlite-libs",
+      "version": "3.54.1-r0",
+      "architecture": "aarch64",
+      "source": "https://packages.wolfi.dev/os/aarch64/sqlite-libs-3.54.1-r0.apk",
+      "sha256": "158a9e84fd8b3addfca5f3abfb02b754012d6e1d173d4467627d67541c5eafae",
+      "bytes": 944691,
+      "origin": "sqlite",
+      "role": "pinned transitive native dependency of the upload scanner/OCR layer; without this pin the rolling live index would choose the provider revision at build time"
+    },
+    {
+      "name": "tiff",
+      "version": "4.7.2-r5",
+      "architecture": "aarch64",
+      "source": "https://packages.wolfi.dev/os/aarch64/tiff-4.7.2-r5.apk",
+      "sha256": "0973eb5b834a0b9f809630492359f3ae7320f73435b99d2423ca1e65e7c1a58f",
+      "bytes": 554376,
+      "origin": "tiff",
+      "role": "pinned transitive native dependency of the upload scanner/OCR layer; without this pin the rolling live index would choose the provider revision at build time"
+    },
+    {
+      "name": "wolfi-baselayout",
+      "version": "20230201-r30",
+      "architecture": "aarch64",
+      "source": "https://packages.wolfi.dev/os/aarch64/wolfi-baselayout-20230201-r30.apk",
+      "sha256": "2a6815ada2973deba196e24f4406fcd2619f6a070e693013563530705254a2b8",
+      "bytes": 13964,
+      "origin": "wolfi-baselayout",
+      "role": "pinned transitive native dependency of the upload scanner/OCR layer; without this pin the rolling live index would choose the provider revision at build time"
+    },
+    {
+      "name": "xz",
+      "version": "5.8.4-r0",
+      "architecture": "aarch64",
+      "source": "https://packages.wolfi.dev/os/aarch64/xz-5.8.4-r0.apk",
+      "sha256": "d2c12615a9601d34f1500a782c38177d18417c576fe7b145e4e88b0165681874",
+      "bytes": 393429,
+      "origin": "xz",
+      "role": "pinned transitive native dependency of the upload scanner/OCR layer; without this pin the rolling live index would choose the provider revision at build time"
+    },
+    {
+      "name": "alsa-lib",
+      "version": "1.2.16.1-r5",
+      "architecture": "aarch64",
+      "source": "https://packages.wolfi.dev/os/aarch64/alsa-lib-1.2.16.1-r5.apk",
+      "sha256": "ad05c3a03fd0f7711bf614b0cdb971f045986f2e63396587bb7f7900d7f5d6b6",
+      "bytes": 669690,
+      "origin": "alsa-lib",
+      "role": "pinned transitive native dependency of the pinned native layers (python, renderer, upload); resolved from the retained vendor-signed index, so the build neither resolves nor fetches it from the rolling live index"
+    },
+    {
+      "name": "aom-libs",
+      "version": "3.15.2-r0",
+      "architecture": "aarch64",
+      "source": "https://packages.wolfi.dev/os/aarch64/aom-libs-3.15.2-r0.apk",
+      "sha256": "c1622683eee6d1294a18649f21e1b5403a165c32a10afd702f8c63af17f3eb37",
+      "bytes": 3761839,
+      "origin": "aom-libs",
+      "role": "pinned transitive native dependency of the pinned native layers (python, renderer, upload); resolved from the retained vendor-signed index, so the build neither resolves nor fetches it from the rolling live index"
+    },
+    {
+      "name": "apk-tools",
+      "version": "2.14.12-r0",
+      "architecture": "aarch64",
+      "source": "https://packages.wolfi.dev/os/aarch64/apk-tools-2.14.12-r0.apk",
+      "sha256": "d6d555e649bf680779279931189e8456632d0df1c681862a52cb1e7200ed770c",
+      "bytes": 186783,
+      "origin": "apk-tools",
+      "role": "pinned transitive native dependency of the pinned native layers (python, renderer, upload); resolved from the retained vendor-signed index, so the build neither resolves nor fetches it from the rolling live index"
+    },
+    {
+      "name": "argon2",
+      "version": "20190702-r9",
+      "architecture": "aarch64",
+      "source": "https://packages.wolfi.dev/os/aarch64/argon2-20190702-r9.apk",
+      "sha256": "fa871a64e10623a12ee58086b59e8a1ffe195805d3a254121bad704bb7628857",
+      "bytes": 53080,
+      "origin": "argon2",
+      "role": "pinned transitive native dependency of the pinned native layers (python, renderer, upload); resolved from the retained vendor-signed index, so the build neither resolves nor fetches it from the rolling live index"
+    },
+    {
+      "name": "at-spi2-core",
+      "version": "2.62.1-r0",
+      "architecture": "aarch64",
+      "source": "https://packages.wolfi.dev/os/aarch64/at-spi2-core-2.62.1-r0.apk",
+      "sha256": "258840eec648177fc224de417203101b0f77b813e8abb79749a367e9858ca3c5",
+      "bytes": 206170,
+      "origin": "at-spi2-core",
+      "role": "pinned transitive native dependency of the pinned native layers (python, renderer, upload); resolved from the retained vendor-signed index, so the build neither resolves nor fetches it from the rolling live index"
+    },
+    {
+      "name": "avahi-libs",
+      "version": "0.9_rc5-r3",
+      "architecture": "aarch64",
+      "source": "https://packages.wolfi.dev/os/aarch64/avahi-libs-0.9_rc5-r3.apk",
+      "sha256": "9cefe4bc29a914b6cd104d3130fa1efee96e029094427f15aa77e9366eff8649",
+      "bytes": 69807,
+      "origin": "avahi-libs",
+      "role": "pinned transitive native dependency of the pinned native layers (python, renderer, upload); resolved from the retained vendor-signed index, so the build neither resolves nor fetches it from the rolling live index"
+    },
+    {
+      "name": "brotli",
+      "version": "1.2.1-r2",
+      "architecture": "aarch64",
+      "source": "https://packages.wolfi.dev/os/aarch64/brotli-1.2.1-r2.apk",
+      "sha256": "ec68f956c38a01460bc0fd35f35b845e3fb15a5b43fc7838a65c5d2e9919c9a2",
+      "bytes": 32101,
+      "origin": "brotli",
+      "role": "pinned transitive native dependency of the pinned native layers (python, renderer, upload); resolved from the retained vendor-signed index, so the build neither resolves nor fetches it from the rolling live index"
+    },
+    {
+      "name": "brotli-dev",
+      "version": "1.2.1-r2",
+      "architecture": "aarch64",
+      "source": "https://packages.wolfi.dev/os/aarch64/brotli-dev-1.2.1-r2.apk",
+      "sha256": "bc5a02f284fa438c9ca8ae69ef708a7e5a0f890ca75639af8638ae5a352a34e8",
+      "bytes": 30807,
+      "origin": "brotli-dev",
+      "role": "pinned transitive native dependency of the pinned native layers (python, renderer, upload); resolved from the retained vendor-signed index, so the build neither resolves nor fetches it from the rolling live index"
+    },
+    {
+      "name": "busybox",
+      "version": "1.38.0-r3",
+      "architecture": "aarch64",
+      "source": "https://packages.wolfi.dev/os/aarch64/busybox-1.38.0-r3.apk",
+      "sha256": "c1add921f52eb8d25bc4f451c0fd6c1f38708fdd87f03015e429886b23ddbdfd",
+      "bytes": 437885,
+      "origin": "busybox",
+      "role": "pinned transitive native dependency of the pinned native layers (python, renderer, upload); resolved from the retained vendor-signed index, so the build neither resolves nor fetches it from the rolling live index"
+    },
+    {
+      "name": "cairo-gobject",
+      "version": "1.18.6-r1",
+      "architecture": "aarch64",
+      "source": "https://packages.wolfi.dev/os/aarch64/cairo-gobject-1.18.6-r1.apk",
+      "sha256": "a09d28d0ae16d66dc9dac56478ff0af7f621201c1339749c44a912f7f12e2921",
+      "bytes": 29812,
+      "origin": "cairo-gobject",
+      "role": "pinned transitive native dependency of the pinned native layers (python, renderer, upload); resolved from the retained vendor-signed index, so the build neither resolves nor fetches it from the rolling live index"
+    },
+    {
+      "name": "cups-libs",
+      "version": "2.4.20-r0",
+      "architecture": "aarch64",
+      "source": "https://packages.wolfi.dev/os/aarch64/cups-libs-2.4.20-r0.apk",
+      "sha256": "0d4deeb0c6f70a4afca1241a8250c5be5252a50bba72acff28d5f36dad9610d9",
+      "bytes": 287042,
+      "origin": "cups-libs",
+      "role": "pinned transitive native dependency of the pinned native layers (python, renderer, upload); resolved from the retained vendor-signed index, so the build neither resolves nor fetches it from the rolling live index"
+    },
+    {
+      "name": "dbus-libs",
+      "version": "1.16.2-r9",
+      "architecture": "aarch64",
+      "source": "https://packages.wolfi.dev/os/aarch64/dbus-libs-1.16.2-r9.apk",
+      "sha256": "af04e91ef0bcff716aedd8490e710fe85f6022aa98518026a9ab99166ab8e394",
+      "bytes": 193758,
+      "origin": "dbus-libs",
+      "role": "pinned transitive native dependency of the pinned native layers (python, renderer, upload); resolved from the retained vendor-signed index, so the build neither resolves nor fetches it from the rolling live index"
+    },
+    {
+      "name": "fstrim",
+      "version": "2.42.4-r1",
+      "architecture": "aarch64",
+      "source": "https://packages.wolfi.dev/os/aarch64/fstrim-2.42.4-r1.apk",
+      "sha256": "55010655a41ac8cfe80c701c398a150fbdbf231306c49581def5739032e90330",
+      "bytes": 69806,
+      "origin": "fstrim",
+      "role": "pinned transitive native dependency of the pinned native layers (python, renderer, upload); resolved from the retained vendor-signed index, so the build neither resolves nor fetches it from the rolling live index"
+    },
+    {
+      "name": "gdk-pixbuf",
+      "version": "2.44.8-r5",
+      "architecture": "aarch64",
+      "source": "https://packages.wolfi.dev/os/aarch64/gdk-pixbuf-2.44.8-r5.apk",
+      "sha256": "581f219aa171b2f815211c702dfc117c0fecd8f5c40da285c67c98ee00074f9d",
+      "bytes": 138933,
+      "origin": "gdk-pixbuf",
+      "role": "pinned transitive native dependency of the pinned native layers (python, renderer, upload); resolved from the retained vendor-signed index, so the build neither resolves nor fetches it from the rolling live index"
+    },
+    {
+      "name": "glycin-2",
+      "version": "2.2.5-r0",
+      "architecture": "aarch64",
+      "source": "https://packages.wolfi.dev/os/aarch64/glycin-2-2.2.5-r0.apk",
+      "sha256": "3e93db55e0ce02443379f9527dffe0aec1f1fb7538bb45fc3bf3e09a30dd0163",
+      "bytes": 7415897,
+      "origin": "glycin-2",
+      "role": "pinned transitive native dependency of the pinned native layers (python, renderer, upload); resolved from the retained vendor-signed index, so the build neither resolves nor fetches it from the rolling live index"
+    },
+    {
+      "name": "glycin-2-libs",
+      "version": "2.2.5-r0",
+      "architecture": "aarch64",
+      "source": "https://packages.wolfi.dev/os/aarch64/glycin-2-libs-2.2.5-r0.apk",
+      "sha256": "6bed5066575718aede41dbf653ea301f32b1e826c27868a679cd30bfa42378ee",
+      "bytes": 2416281,
+      "origin": "glycin-2-libs",
+      "role": "pinned transitive native dependency of the pinned native layers (python, renderer, upload); resolved from the retained vendor-signed index, so the build neither resolves nor fetches it from the rolling live index"
+    },
+    {
+      "name": "gpgme",
+      "version": "1.24.3-r0",
+      "architecture": "aarch64",
+      "source": "https://packages.wolfi.dev/os/aarch64/gpgme-1.24.3-r0.apk",
+      "sha256": "283170342886c6b83c620bef200b7c14cd1d8b47e18d5edb428a6be6897cdb84",
+      "bytes": 2069561,
+      "origin": "gpgme",
+      "role": "pinned transitive native dependency of the pinned native layers (python, renderer, upload); resolved from the retained vendor-signed index, so the build neither resolves nor fetches it from the rolling live index"
+    },
+    {
+      "name": "graphene",
+      "version": "1.10.8-r12",
+      "architecture": "aarch64",
+      "source": "https://packages.wolfi.dev/os/aarch64/graphene-1.10.8-r12.apk",
+      "sha256": "495c6d588e86b4d38b9ec9f5fe5f6e493688cebb382be781242383c3823a57f1",
+      "bytes": 86357,
+      "origin": "graphene",
+      "role": "pinned transitive native dependency of the pinned native layers (python, renderer, upload); resolved from the retained vendor-signed index, so the build neither resolves nor fetches it from the rolling live index"
+    },
+    {
+      "name": "gst-plugins-base",
+      "version": "1.29.2-r3",
+      "architecture": "aarch64",
+      "source": "https://packages.wolfi.dev/os/aarch64/gst-plugins-base-1.29.2-r3.apk",
+      "sha256": "d1421552e31a5db97bf4130ec1bb3ebe07e56e40ddd14dc2429e6d63088efe61",
+      "bytes": 3108357,
+      "origin": "gst-plugins-base",
+      "role": "pinned transitive native dependency of the pinned native layers (python, renderer, upload); resolved from the retained vendor-signed index, so the build neither resolves nor fetches it from the rolling live index"
+    },
+    {
+      "name": "gstreamer",
+      "version": "1.29.2-r4",
+      "architecture": "aarch64",
+      "source": "https://packages.wolfi.dev/os/aarch64/gstreamer-1.29.2-r4.apk",
+      "sha256": "950f018c30e648b05a2f2f4a5d6033802ad5589a8ea9860a73a8cf824611ca6e",
+      "bytes": 2205450,
+      "origin": "gstreamer",
+      "role": "pinned transitive native dependency of the pinned native layers (python, renderer, upload); resolved from the retained vendor-signed index, so the build neither resolves nor fetches it from the rolling live index"
+    },
+    {
+      "name": "gtk-3",
+      "version": "3.24.52-r5",
+      "architecture": "aarch64",
+      "source": "https://packages.wolfi.dev/os/aarch64/gtk-3-3.24.52-r5.apk",
+      "sha256": "1a0a67062db937c8c241a7590eaacac9d7fcb41b858b1baece06c417e40d2982",
+      "bytes": 7984165,
+      "origin": "gtk-3",
+      "role": "pinned transitive native dependency of the pinned native layers (python, renderer, upload); resolved from the retained vendor-signed index, so the build neither resolves nor fetches it from the rolling live index"
+    },
+    {
+      "name": "gtk-3-update-icon-cache",
+      "version": "3.24.52-r5",
+      "architecture": "aarch64",
+      "source": "https://packages.wolfi.dev/os/aarch64/gtk-3-update-icon-cache-3.24.52-r5.apk",
+      "sha256": "98246ee29e43b4f0c3ddb3cf66c8bdc69e1847cabcaaa8ab0aa7e8d7e8daed16",
+      "bytes": 29993,
+      "origin": "gtk-3-update-icon-cache",
+      "role": "pinned transitive native dependency of the pinned native layers (python, renderer, upload); resolved from the retained vendor-signed index, so the build neither resolves nor fetches it from the rolling live index"
+    },
+    {
+      "name": "libassuan",
+      "version": "3.0.2-r12",
+      "architecture": "aarch64",
+      "source": "https://packages.wolfi.dev/os/aarch64/libassuan-3.0.2-r12.apk",
+      "sha256": "e137af1d7edf4b8c40589087bd9990bf52889c8808d5d9d5482cbcaae294d70f",
+      "bytes": 65185,
+      "origin": "libassuan",
+      "role": "pinned transitive native dependency of the pinned native layers (python, renderer, upload); resolved from the retained vendor-signed index, so the build neither resolves nor fetches it from the rolling live index"
+    },
+    {
+      "name": "libatk-1.0",
+      "version": "2.62.1-r0",
+      "architecture": "aarch64",
+      "source": "https://packages.wolfi.dev/os/aarch64/libatk-1.0-2.62.1-r0.apk",
+      "sha256": "0ee271413c53d5e92d080bdc78e3c0889327beca7881573792ef7441e13e8b66",
+      "bytes": 101439,
+      "origin": "libatk-1.0",
+      "role": "pinned transitive native dependency of the pinned native layers (python, renderer, upload); resolved from the retained vendor-signed index, so the build neither resolves nor fetches it from the rolling live index"
+    },
+    {
+      "name": "libatk-bridge-2.0",
+      "version": "2.62.1-r0",
+      "architecture": "aarch64",
+      "source": "https://packages.wolfi.dev/os/aarch64/libatk-bridge-2.0-2.62.1-r0.apk",
+      "sha256": "b0fdf40685ec4239a38a0cbd91af1778c4759221b03c3b167c4109a9b6238c05",
+      "bytes": 104469,
+      "origin": "libatk-bridge-2.0",
+      "role": "pinned transitive native dependency of the pinned native layers (python, renderer, upload); resolved from the retained vendor-signed index, so the build neither resolves nor fetches it from the rolling live index"
+    },
+    {
+      "name": "libboost-program_options1.92.0",
+      "version": "1.92.0-r3",
+      "architecture": "aarch64",
+      "source": "https://packages.wolfi.dev/os/aarch64/libboost-program_options1.92.0-1.92.0-r3.apk",
+      "sha256": "e27930aba23159e4f85723271aeb78d57555ec0cbdce8464d84f186e90262db7",
+      "bytes": 208557,
+      "origin": "libboost-program_options1.92.0",
+      "role": "pinned transitive native dependency of the pinned native layers (python, renderer, upload); resolved from the retained vendor-signed index, so the build neither resolves nor fetches it from the rolling live index"
+    },
+    {
+      "name": "libcap",
+      "version": "2.78-r4",
+      "architecture": "aarch64",
+      "source": "https://packages.wolfi.dev/os/aarch64/libcap-2.78-r4.apk",
+      "sha256": "4939ccc2819c60faa5d75013dea87886f6eeadd37f0f9116582372cd40a5cd7b",
+      "bytes": 51109,
+      "origin": "libcap",
+      "role": "pinned transitive native dependency of the pinned native layers (python, renderer, upload); resolved from the retained vendor-signed index, so the build neither resolves nor fetches it from the rolling live index"
+    },
+    {
+      "name": "libcmis",
+      "version": "0.6.3-r4",
+      "architecture": "aarch64",
+      "source": "https://packages.wolfi.dev/os/aarch64/libcmis-0.6.3-r4.apk",
+      "sha256": "5784ba4cbc4f552cb36e3725464886ce45fc9a51249d12eefda223be75efbe77",
+      "bytes": 882920,
+      "origin": "libcmis",
+      "role": "pinned transitive native dependency of the pinned native layers (python, renderer, upload); resolved from the retained vendor-signed index, so the build neither resolves nor fetches it from the rolling live index"
+    },
+    {
+      "name": "libdav1d",
+      "version": "1.5.4-r4",
+      "architecture": "aarch64",
+      "source": "https://packages.wolfi.dev/os/aarch64/libdav1d-1.5.4-r4.apk",
+      "sha256": "932f3fe806304ebfc412156c179b8b64c41ccae96900fea335a99f1d8f308420",
+      "bytes": 504735,
+      "origin": "libdav1d",
+      "role": "pinned transitive native dependency of the pinned native layers (python, renderer, upload); resolved from the retained vendor-signed index, so the build neither resolves nor fetches it from the rolling live index"
+    },
+    {
+      "name": "libde265",
+      "version": "1.1.3-r0",
+      "architecture": "aarch64",
+      "source": "https://packages.wolfi.dev/os/aarch64/libde265-1.1.3-r0.apk",
+      "sha256": "7ffed60387aafd738e1435072b8948e28bbf7718835455eaf438af143232bcfa",
+      "bytes": 391664,
+      "origin": "libde265",
+      "role": "pinned transitive native dependency of the pinned native layers (python, renderer, upload); resolved from the retained vendor-signed index, so the build neither resolves nor fetches it from the rolling live index"
+    },
+    {
+      "name": "libdrm",
+      "version": "2.4.134-r0",
+      "architecture": "aarch64",
+      "source": "https://packages.wolfi.dev/os/aarch64/libdrm-2.4.134-r0.apk",
+      "sha256": "780864c286ee3ccb774b7d2ab215599095d1252ef40b907f843bc2a8080f3622",
+      "bytes": 350418,
+      "origin": "libdrm",
+      "role": "pinned transitive native dependency of the pinned native layers (python, renderer, upload); resolved from the retained vendor-signed index, so the build neither resolves nor fetches it from the rolling live index"
+    },
+    {
+      "name": "libepoxy",
+      "version": "1.5.10-r12",
+      "architecture": "aarch64",
+      "source": "https://packages.wolfi.dev/os/aarch64/libepoxy-1.5.10-r12.apk",
+      "sha256": "2674e32336bdd994b87eb4bc1f3251360edc1cf16cbe3824506d5377614c3846",
+      "bytes": 420161,
+      "origin": "libepoxy",
+      "role": "pinned transitive native dependency of the pinned native layers (python, renderer, upload); resolved from the retained vendor-signed index, so the build neither resolves nor fetches it from the rolling live index"
+    },
+    {
+      "name": "libfdisk",
+      "version": "2.42.4-r1",
+      "architecture": "aarch64",
+      "source": "https://packages.wolfi.dev/os/aarch64/libfdisk-2.42.4-r1.apk",
+      "sha256": "3cdc633490edf569e0c1e18124b3dd26e8b916fb1c071e6a04d99b39d8d374f7",
+      "bytes": 278230,
+      "origin": "libfdisk",
+      "role": "pinned transitive native dependency of the pinned native layers (python, renderer, upload); resolved from the retained vendor-signed index, so the build neither resolves nor fetches it from the rolling live index"
+    },
+    {
+      "name": "libglvnd",
+      "version": "1.7.0-r12",
+      "architecture": "aarch64",
+      "source": "https://packages.wolfi.dev/os/aarch64/libglvnd-1.7.0-r12.apk",
+      "sha256": "032e5b2779dfedd065f0d7241757b79a47394e03babe2feb1833c92e2a2755dc",
+      "bytes": 632498,
+      "origin": "libglvnd",
+      "role": "pinned transitive native dependency of the pinned native layers (python, renderer, upload); resolved from the retained vendor-signed index, so the build neither resolves nor fetches it from the rolling live index"
+    },
+    {
+      "name": "libgpg-error",
+      "version": "1.61-r6",
+      "architecture": "aarch64",
+      "source": "https://packages.wolfi.dev/os/aarch64/libgpg-error-1.61-r6.apk",
+      "sha256": "a139291a6f58dd83c8669ba9757f26941f96d7edbaad88bbfb8f62a5c737613b",
+      "bytes": 172091,
+      "origin": "libgpg-error",
+      "role": "pinned transitive native dependency of the pinned native layers (python, renderer, upload); resolved from the retained vendor-signed index, so the build neither resolves nor fetches it from the rolling live index"
+    },
+    {
+      "name": "libheif",
+      "version": "1.23.7-r1",
+      "architecture": "aarch64",
+      "source": "https://packages.wolfi.dev/os/aarch64/libheif-1.23.7-r1.apk",
+      "sha256": "fc36e4dd53d901cf868cbe55a000a496e84cf220317a0db8cbdfc35a97193f55",
+      "bytes": 1766387,
+      "origin": "libheif",
+      "role": "pinned transitive native dependency of the pinned native layers (python, renderer, upload); resolved from the retained vendor-signed index, so the build neither resolves nor fetches it from the rolling live index"
+    },
+    {
+      "name": "libice",
+      "version": "1.1.2-r8",
+      "architecture": "aarch64",
+      "source": "https://packages.wolfi.dev/os/aarch64/libice-1.1.2-r8.apk",
+      "sha256": "e96ab85096c17f607c99e025bb9047c590195583096ce3ea0d857ec77ea3c55d",
+      "bytes": 62872,
+      "origin": "libice",
+      "role": "pinned transitive native dependency of the pinned native layers (python, renderer, upload); resolved from the retained vendor-signed index, so the build neither resolves nor fetches it from the rolling live index"
+    },
+    {
+      "name": "libjxl",
+      "version": "0.12.0-r3",
+      "architecture": "aarch64",
+      "source": "https://packages.wolfi.dev/os/aarch64/libjxl-0.12.0-r3.apk",
+      "sha256": "c9545a724877f79b97d76ebeac8334842b47db65d9d2d2003f827a1597c70047",
+      "bytes": 2866303,
+      "origin": "libjxl",
+      "role": "pinned transitive native dependency of the pinned native layers (python, renderer, upload); resolved from the retained vendor-signed index, so the build neither resolves nor fetches it from the rolling live index"
+    },
+    {
+      "name": "liblangtag",
+      "version": "0.6.8-r5",
+      "architecture": "aarch64",
+      "source": "https://packages.wolfi.dev/os/aarch64/liblangtag-0.6.8-r5.apk",
+      "sha256": "2a35195ddb4d51e34bedb4c705e27a7066e30252430effe527e69fa72e67971d",
+      "bytes": 374379,
+      "origin": "liblangtag",
+      "role": "pinned transitive native dependency of the pinned native layers (python, renderer, upload); resolved from the retained vendor-signed index, so the build neither resolves nor fetches it from the rolling live index"
+    },
+    {
+      "name": "libldap-2.6",
+      "version": "2.6.14-r0",
+      "architecture": "aarch64",
+      "source": "https://packages.wolfi.dev/os/aarch64/libldap-2.6-2.6.14-r0.apk",
+      "sha256": "3cafd792198fb80bdf34a78c818e9f5b04f447847611a32394d1c898f8c601f8",
+      "bytes": 245768,
+      "origin": "libldap-2.6",
+      "role": "pinned transitive native dependency of the pinned native layers (python, renderer, upload); resolved from the retained vendor-signed index, so the build neither resolves nor fetches it from the rolling live index"
+    },
+    {
+      "name": "libogg",
+      "version": "1.3.6-r5",
+      "architecture": "aarch64",
+      "source": "https://packages.wolfi.dev/os/aarch64/libogg-1.3.6-r5.apk",
+      "sha256": "c7174dc91785391424a9eeeee70c11f3e7f9f9d251e6fbfd4f6427d9bb5f9ebd",
+      "bytes": 29605,
+      "origin": "libogg",
+      "role": "pinned transitive native dependency of the pinned native layers (python, renderer, upload); resolved from the retained vendor-signed index, so the build neither resolves nor fetches it from the rolling live index"
+    },
+    {
+      "name": "libopenjph0.32",
+      "version": "0.32.0-r0",
+      "architecture": "aarch64",
+      "source": "https://packages.wolfi.dev/os/aarch64/libopenjph0.32-0.32.0-r0.apk",
+      "sha256": "62beec958d0e9989f4a618a74d798f8bc88a67d441eabcce746465224d815f2d",
+      "bytes": 189476,
+      "origin": "libopenjph0.32",
+      "role": "pinned transitive native dependency of the pinned native layers (python, renderer, upload); resolved from the retained vendor-signed index, so the build neither resolves nor fetches it from the rolling live index"
+    },
+    {
+      "name": "librsvg",
+      "version": "2.63.4-r0",
+      "architecture": "aarch64",
+      "source": "https://packages.wolfi.dev/os/aarch64/librsvg-2.63.4-r0.apk",
+      "sha256": "b81d14544860ff560245b38bb51c21ca3d1179b5b3833355f1d5360d1c3f1fc9",
+      "bytes": 6341698,
+      "origin": "librsvg",
+      "role": "pinned transitive native dependency of the pinned native layers (python, renderer, upload); resolved from the retained vendor-signed index, so the build neither resolves nor fetches it from the rolling live index"
+    },
+    {
+      "name": "libsdl2",
+      "version": "2.32.10-r5",
+      "architecture": "aarch64",
+      "source": "https://packages.wolfi.dev/os/aarch64/libsdl2-2.32.10-r5.apk",
+      "sha256": "38487d854241a61626b9a1d3aa67c4c487354847b54cc362d10cab834177f2d3",
+      "bytes": 900211,
+      "origin": "libsdl2",
+      "role": "pinned transitive native dependency of the pinned native layers (python, renderer, upload); resolved from the retained vendor-signed index, so the build neither resolves nor fetches it from the rolling live index"
+    },
+    {
+      "name": "libseccomp",
+      "version": "2.6.1-r4",
+      "architecture": "aarch64",
+      "source": "https://packages.wolfi.dev/os/aarch64/libseccomp-2.6.1-r4.apk",
+      "sha256": "382ea7166f5725c079846be85f60bb8efbead87828a8fad44705fb9194a6800b",
+      "bytes": 85122,
+      "origin": "libseccomp",
+      "role": "pinned transitive native dependency of the pinned native layers (python, renderer, upload); resolved from the retained vendor-signed index, so the build neither resolves nor fetches it from the rolling live index"
+    },
+    {
+      "name": "libsm",
+      "version": "1.2.6-r6",
+      "architecture": "aarch64",
+      "source": "https://packages.wolfi.dev/os/aarch64/libsm-1.2.6-r6.apk",
+      "sha256": "de9021cd1de03f0fbfdc3596a46a579a481d8b04ebb90e3a2525aec67ec323b0",
+      "bytes": 27977,
+      "origin": "libsm",
+      "role": "pinned transitive native dependency of the pinned native layers (python, renderer, upload); resolved from the retained vendor-signed index, so the build neither resolves nor fetches it from the rolling live index"
+    },
+    {
+      "name": "libsmartcols",
+      "version": "2.42.4-r1",
+      "architecture": "aarch64",
+      "source": "https://packages.wolfi.dev/os/aarch64/libsmartcols-2.42.4-r1.apk",
+      "sha256": "5213a123c63fa2cac483c5de6ba91418722cc95f791378f2d48f1190ab0eac65",
+      "bytes": 192952,
+      "origin": "libsmartcols",
+      "role": "pinned transitive native dependency of the pinned native layers (python, renderer, upload); resolved from the retained vendor-signed index, so the build neither resolves nor fetches it from the rolling live index"
+    },
+    {
+      "name": "libsvtav1enc4",
+      "version": "4.2.0-r2",
+      "architecture": "aarch64",
+      "source": "https://packages.wolfi.dev/os/aarch64/libsvtav1enc4-4.2.0-r2.apk",
+      "sha256": "d0b831a8134d8d931461443e833d423234b5b51eb376a39a1465d055dd529b45",
+      "bytes": 2102268,
+      "origin": "libsvtav1enc4",
+      "role": "pinned transitive native dependency of the pinned native layers (python, renderer, upload); resolved from the retained vendor-signed index, so the build neither resolves nor fetches it from the rolling live index"
+    },
+    {
+      "name": "libsystemd",
+      "version": "262.1-r1",
+      "architecture": "aarch64",
+      "source": "https://packages.wolfi.dev/os/aarch64/libsystemd-262.1-r1.apk",
+      "sha256": "6a3b8fa56ff3b4d466866669d796aa23ea1064b51d8dcb0d73b399dfb770f55d",
+      "bytes": 827843,
+      "origin": "libsystemd",
+      "role": "pinned transitive native dependency of the pinned native layers (python, renderer, upload); resolved from the retained vendor-signed index, so the build neither resolves nor fetches it from the rolling live index"
+    },
+    {
+      "name": "libsystemd-compression-libs",
+      "version": "262.1-r1",
+      "architecture": "aarch64",
+      "source": "https://packages.wolfi.dev/os/aarch64/libsystemd-compression-libs-262.1-r1.apk",
+      "sha256": "6183eb1605076ed5b2ae7d5be92eeb98b1d6353c44d2d203e4f167e6be983818",
+      "bytes": 17544,
+      "origin": "libsystemd-compression-libs",
+      "role": "pinned transitive native dependency of the pinned native layers (python, renderer, upload); resolved from the retained vendor-signed index, so the build neither resolves nor fetches it from the rolling live index"
+    },
+    {
+      "name": "libtheora",
+      "version": "1.2.0-r10",
+      "architecture": "aarch64",
+      "source": "https://packages.wolfi.dev/os/aarch64/libtheora-1.2.0-r10.apk",
+      "sha256": "ebbd4c32ddea2408a8d7f938a1fb31a994da01d7b15351f12ef1ea64ccd1ce0e",
+      "bytes": 400581,
+      "origin": "libtheora",
+      "role": "pinned transitive native dependency of the pinned native layers (python, renderer, upload); resolved from the retained vendor-signed index, so the build neither resolves nor fetches it from the rolling live index"
+    },
+    {
+      "name": "libuuid",
+      "version": "2.42.4-r1",
+      "architecture": "aarch64",
+      "source": "https://packages.wolfi.dev/os/aarch64/libuuid-2.42.4-r1.apk",
+      "sha256": "63ad89463dd6cbb0c682bef6aabdc9896e2708cb42c05bcc33d6bf0dd5ed3bab",
+      "bytes": 33981,
+      "origin": "libuuid",
+      "role": "pinned transitive native dependency of the pinned native layers (python, renderer, upload); resolved from the retained vendor-signed index, so the build neither resolves nor fetches it from the rolling live index"
+    },
+    {
+      "name": "libvorbis",
+      "version": "1.3.7-r14",
+      "architecture": "aarch64",
+      "source": "https://packages.wolfi.dev/os/aarch64/libvorbis-1.3.7-r14.apk",
+      "sha256": "8a1f12289bb129fafbda269ec2dd2347a62b755122c72ac8680b72491b882467",
+      "bytes": 324275,
+      "origin": "libvorbis",
+      "role": "pinned transitive native dependency of the pinned native layers (python, renderer, upload); resolved from the retained vendor-signed index, so the build neither resolves nor fetches it from the rolling live index"
+    },
+    {
+      "name": "libx265-216",
+      "version": "4.2-r2",
+      "architecture": "aarch64",
+      "source": "https://packages.wolfi.dev/os/aarch64/libx265-216-4.2-r2.apk",
+      "sha256": "76ae4a7c37e3c2f00e40ad9affea2b7fcd5bab7a476cfd33dcfe5d70c8913e4f",
+      "bytes": 5427815,
+      "origin": "libx265-216",
+      "role": "pinned transitive native dependency of the pinned native layers (python, renderer, upload); resolved from the retained vendor-signed index, so the build neither resolves nor fetches it from the rolling live index"
+    },
+    {
+      "name": "libxcomposite",
+      "version": "0.4.7-r5",
+      "architecture": "aarch64",
+      "source": "https://packages.wolfi.dev/os/aarch64/libxcomposite-0.4.7-r5.apk",
+      "sha256": "c604bda0a2e9b9f983bf1a4ffd19c1cad21e7fa66075f3f2b483b11d6d823241",
+      "bytes": 16495,
+      "origin": "libxcomposite",
+      "role": "pinned transitive native dependency of the pinned native layers (python, renderer, upload); resolved from the retained vendor-signed index, so the build neither resolves nor fetches it from the rolling live index"
+    },
+    {
+      "name": "libxcursor",
+      "version": "1.2.3-r7",
+      "architecture": "aarch64",
+      "source": "https://packages.wolfi.dev/os/aarch64/libxcursor-1.2.3-r7.apk",
+      "sha256": "0ea1994225a6c4c7967dbfec85ace0f6ef9aa81d26d8c730508c9bce8c4144c5",
+      "bytes": 35673,
+      "origin": "libxcursor",
+      "role": "pinned transitive native dependency of the pinned native layers (python, renderer, upload); resolved from the retained vendor-signed index, so the build neither resolves nor fetches it from the rolling live index"
+    },
+    {
+      "name": "libxdamage",
+      "version": "1.1.7-r5",
+      "architecture": "aarch64",
+      "source": "https://packages.wolfi.dev/os/aarch64/libxdamage-1.1.7-r5.apk",
+      "sha256": "ca6696f9c6342d1d0f04e945dbc249fd0447794bbf24c580a047832dd94ec6ba",
+      "bytes": 14626,
+      "origin": "libxdamage",
+      "role": "pinned transitive native dependency of the pinned native layers (python, renderer, upload); resolved from the retained vendor-signed index, so the build neither resolves nor fetches it from the rolling live index"
+    },
+    {
+      "name": "libxfixes",
+      "version": "6.0.2-r4",
+      "architecture": "aarch64",
+      "source": "https://packages.wolfi.dev/os/aarch64/libxfixes-6.0.2-r4.apk",
+      "sha256": "168a1625abdf2d6b6544498a5a740d5cd0424b1057b208c067320c44083c29de",
+      "bytes": 21572,
+      "origin": "libxfixes",
+      "role": "pinned transitive native dependency of the pinned native layers (python, renderer, upload); resolved from the retained vendor-signed index, so the build neither resolves nor fetches it from the rolling live index"
+    },
+    {
+      "name": "libxi",
+      "version": "1.8.4-r0",
+      "architecture": "aarch64",
+      "source": "https://packages.wolfi.dev/os/aarch64/libxi-1.8.4-r0.apk",
+      "sha256": "22dd8d1fc95b5a882833f034b39e9632a7500a8b35e82f030cba5956fead0e69",
+      "bytes": 48185,
+      "origin": "libxi",
+      "role": "pinned transitive native dependency of the pinned native layers (python, renderer, upload); resolved from the retained vendor-signed index, so the build neither resolves nor fetches it from the rolling live index"
+    },
+    {
+      "name": "libxinerama",
+      "version": "1.1.6-r2",
+      "architecture": "aarch64",
+      "source": "https://packages.wolfi.dev/os/aarch64/libxinerama-1.1.6-r2.apk",
+      "sha256": "a2005cd179bbf3ec32b61b15b5d0ebf4509c6ceaa2cb7514a01524bab8e4a923",
+      "bytes": 13995,
+      "origin": "libxinerama",
+      "role": "pinned transitive native dependency of the pinned native layers (python, renderer, upload); resolved from the retained vendor-signed index, so the build neither resolves nor fetches it from the rolling live index"
+    },
+    {
+      "name": "libxkbcommon",
+      "version": "1.13.2-r4",
+      "architecture": "aarch64",
+      "source": "https://packages.wolfi.dev/os/aarch64/libxkbcommon-1.13.2-r4.apk",
+      "sha256": "895d413f7fab456176e58657ced82d58ddd16863c46f848c7db8e70b3df4b064",
+      "bytes": 448132,
+      "origin": "libxkbcommon",
+      "role": "pinned transitive native dependency of the pinned native layers (python, renderer, upload); resolved from the retained vendor-signed index, so the build neither resolves nor fetches it from the rolling live index"
+    },
+    {
+      "name": "libxml2",
+      "version": "2.15.0-r0",
+      "architecture": "aarch64",
+      "source": "https://packages.wolfi.dev/os/aarch64/libxml2-2.15.0-r0.apk",
+      "sha256": "36deab0844a3f40227198193639b679eda4fc8bda3789c78eb34aaf95bf75c57",
+      "bytes": 665239,
+      "origin": "libxml2",
+      "role": "pinned transitive native dependency of the pinned native layers (python, renderer, upload); resolved from the retained vendor-signed index, so the build neither resolves nor fetches it from the rolling live index"
+    },
+    {
+      "name": "libxrandr",
+      "version": "1.5.5-r7",
+      "architecture": "aarch64",
+      "source": "https://packages.wolfi.dev/os/aarch64/libxrandr-1.5.5-r7.apk",
+      "sha256": "2e142c6cfb00809a0aafe9d5c43db73087fd44ff038d546b430351ca053c5673",
+      "bytes": 30861,
+      "origin": "libxrandr",
+      "role": "pinned transitive native dependency of the pinned native layers (python, renderer, upload); resolved from the retained vendor-signed index, so the build neither resolves nor fetches it from the rolling live index"
+    },
+    {
+      "name": "libxtst",
+      "version": "1.2.6-r0",
+      "architecture": "aarch64",
+      "source": "https://packages.wolfi.dev/os/aarch64/libxtst-1.2.6-r0.apk",
+      "sha256": "572240b65088e46ce6dd65f2ffbf8d2f746a87664adb9054ef7daf478b2988d8",
+      "bytes": 22387,
+      "origin": "libxtst",
+      "role": "pinned transitive native dependency of the pinned native layers (python, renderer, upload); resolved from the retained vendor-signed index, so the build neither resolves nor fetches it from the rolling live index"
+    },
+    {
+      "name": "libxv",
+      "version": "1.0.13-r7",
+      "architecture": "aarch64",
+      "source": "https://packages.wolfi.dev/os/aarch64/libxv-1.0.13-r7.apk",
+      "sha256": "999e5a89cfa1e684a3cef946f05662fe5fab38ef3aede13ebac0875e65388ac9",
+      "bytes": 21752,
+      "origin": "libxv",
+      "role": "pinned transitive native dependency of the pinned native layers (python, renderer, upload); resolved from the retained vendor-signed index, so the build neither resolves nor fetches it from the rolling live index"
+    },
+    {
+      "name": "linux-pam",
+      "version": "1.7.3-r1",
+      "architecture": "aarch64",
+      "source": "https://packages.wolfi.dev/os/aarch64/linux-pam-1.7.3-r1.apk",
+      "sha256": "96fad2b9fcde9c423a80ce94979b19b501ea3ca464682248b226c2f9e7aaeb92",
+      "bytes": 972719,
+      "origin": "linux-pam",
+      "role": "pinned transitive native dependency of the pinned native layers (python, renderer, upload); resolved from the retained vendor-signed index, so the build neither resolves nor fetches it from the rolling live index"
+    },
+    {
+      "name": "lz4",
+      "version": "1.10.0-r11",
+      "architecture": "aarch64",
+      "source": "https://packages.wolfi.dev/os/aarch64/lz4-1.10.0-r11.apk",
+      "sha256": "e641179fe3e0357928c3edd8d8d1ae0cc55a4db19600358aa7c4029c8476f853",
+      "bytes": 236263,
+      "origin": "lz4",
+      "role": "pinned transitive native dependency of the pinned native layers (python, renderer, upload); resolved from the retained vendor-signed index, so the build neither resolves nor fetches it from the rolling live index"
+    },
+    {
+      "name": "mpdecimal",
+      "version": "4.0.1-r6",
+      "architecture": "aarch64",
+      "source": "https://packages.wolfi.dev/os/aarch64/mpdecimal-4.0.1-r6.apk",
+      "sha256": "a2b0c0508b07d4e0187d7c9bd231b71d56f195a528b55815e89735d9fa8caef7",
+      "bytes": 130221,
+      "origin": "mpdecimal",
+      "role": "pinned transitive native dependency of the pinned native layers (python, renderer, upload); resolved from the retained vendor-signed index, so the build neither resolves nor fetches it from the rolling live index"
+    },
+    {
+      "name": "nsenter",
+      "version": "2.42.4-r1",
+      "architecture": "aarch64",
+      "source": "https://packages.wolfi.dev/os/aarch64/nsenter-2.42.4-r1.apk",
+      "sha256": "8f633d68062d4437958ebb7dfbd37647c2d5decde3dd8d0ebbeef723a33f007d",
+      "bytes": 69799,
+      "origin": "nsenter",
+      "role": "pinned transitive native dependency of the pinned native layers (python, renderer, upload); resolved from the retained vendor-signed index, so the build neither resolves nor fetches it from the rolling live index"
+    },
+    {
+      "name": "openh264",
+      "version": "2.7.0-r0",
+      "architecture": "aarch64",
+      "source": "https://packages.wolfi.dev/os/aarch64/openh264-2.7.0-r0.apk",
+      "sha256": "749913adccebf88bc0c8596810fb1231dd5e08b9715e3416e1e8f58de37a3317",
+      "bytes": 704281,
+      "origin": "openh264",
+      "role": "pinned transitive native dependency of the pinned native layers (python, renderer, upload); resolved from the retained vendor-signed index, so the build neither resolves nor fetches it from the rolling live index"
+    },
+    {
+      "name": "opus",
+      "version": "1.6.1-r5",
+      "architecture": "aarch64",
+      "source": "https://packages.wolfi.dev/os/aarch64/opus-1.6.1-r5.apk",
+      "sha256": "33f870386c306551f87680565a685a6ac44d7313ed540d9293554417e04829d1",
+      "bytes": 282355,
+      "origin": "opus",
+      "role": "pinned transitive native dependency of the pinned native layers (python, renderer, upload); resolved from the retained vendor-signed index, so the build neither resolves nor fetches it from the rolling live index"
+    },
+    {
+      "name": "orc",
+      "version": "0.4.44-r0",
+      "architecture": "aarch64",
+      "source": "https://packages.wolfi.dev/os/aarch64/orc-0.4.44-r0.apk",
+      "sha256": "d6e33f10c615d9bfd8e51ea6917baa9555526d39e1e07891085de550ebc6a7e7",
+      "bytes": 422493,
+      "origin": "orc",
+      "role": "pinned transitive native dependency of the pinned native layers (python, renderer, upload); resolved from the retained vendor-signed index, so the build neither resolves nor fetches it from the rolling live index"
+    },
+    {
+      "name": "py3-pip-wheel",
+      "version": "26.2.2-r0",
+      "architecture": "aarch64",
+      "source": "https://packages.wolfi.dev/os/aarch64/py3-pip-wheel-26.2.2-r0.apk",
+      "sha256": "2edcf4ac5ff50acd5a3fa804ddef9d46d8981958ddab4667bf5e333764156b55",
+      "bytes": 1815671,
+      "origin": "py3-pip-wheel",
+      "role": "pinned transitive native dependency of the pinned native layers (python, renderer, upload); resolved from the retained vendor-signed index, so the build neither resolves nor fetches it from the rolling live index"
+    },
+    {
+      "name": "py3.13-setuptools",
+      "version": "84.2.1-r0",
+      "architecture": "aarch64",
+      "source": "https://packages.wolfi.dev/os/aarch64/py3.13-setuptools-84.2.1-r0.apk",
+      "sha256": "7b04c65d8026079edad3a5ae5ad00dad509dbd7359f5f4c858eb77e3593ac76c",
+      "bytes": 2030778,
+      "origin": "py3.13-setuptools",
+      "role": "pinned transitive native dependency of the pinned native layers (python, renderer, upload); resolved from the retained vendor-signed index, so the build neither resolves nor fetches it from the rolling live index"
+    },
+    {
+      "name": "python-3.12-base",
+      "version": "3.12.16-r1",
+      "architecture": "aarch64",
+      "source": "https://packages.wolfi.dev/os/aarch64/python-3.12-base-3.12.16-r1.apk",
+      "sha256": "ceeacb3d8826a1872c5cf2f05b4627593efe3adce76c5156de32857f252f7cd3",
+      "bytes": 12152588,
+      "origin": "python-3.12-base",
+      "role": "pinned transitive native dependency of the pinned native layers (python, renderer, upload); resolved from the retained vendor-signed index, so the build neither resolves nor fetches it from the rolling live index"
+    },
+    {
+      "name": "rav1e",
+      "version": "0.8.1-r13",
+      "architecture": "aarch64",
+      "source": "https://packages.wolfi.dev/os/aarch64/rav1e-0.8.1-r13.apk",
+      "sha256": "ee1d0c652a89932c9f1b3d1e8c348bd1a18329f32a1a63eaa1aaae9dd3eb6994",
+      "bytes": 2836504,
+      "origin": "rav1e",
+      "role": "pinned transitive native dependency of the pinned native layers (python, renderer, upload); resolved from the retained vendor-signed index, so the build neither resolves nor fetches it from the rolling live index"
+    },
+    {
+      "name": "setarch",
+      "version": "2.42.4-r1",
+      "architecture": "aarch64",
+      "source": "https://packages.wolfi.dev/os/aarch64/setarch-2.42.4-r1.apk",
+      "sha256": "c48e3434cbf1dd36284b63314f91436ac3f4f0ab78a8b10ec176f8dd94d9e616",
+      "bytes": 72639,
+      "origin": "setarch",
+      "role": "pinned transitive native dependency of the pinned native layers (python, renderer, upload); resolved from the retained vendor-signed index, so the build neither resolves nor fetches it from the rolling live index"
+    },
+    {
+      "name": "shared-mime-info",
+      "version": "2.5.1-r3",
+      "architecture": "aarch64",
+      "source": "https://packages.wolfi.dev/os/aarch64/shared-mime-info-2.5.1-r3.apk",
+      "sha256": "b162352e070a74f7dab831375f8430e1c108a5c5d1dde079b1c5a84b4ac0b725",
+      "bytes": 1260741,
+      "origin": "shared-mime-info",
+      "role": "pinned transitive native dependency of the pinned native layers (python, renderer, upload); resolved from the retained vendor-signed index, so the build neither resolves nor fetches it from the rolling live index"
+    },
+    {
+      "name": "util-linux",
+      "version": "2.42.4-r1",
+      "architecture": "aarch64",
+      "source": "https://packages.wolfi.dev/os/aarch64/util-linux-2.42.4-r1.apk",
+      "sha256": "c3e162065d493add318143b5b8c24e650a5c80da72abdf7d60784e743ea1713f",
+      "bytes": 66873,
+      "origin": "util-linux",
+      "role": "pinned transitive native dependency of the pinned native layers (python, renderer, upload); resolved from the retained vendor-signed index, so the build neither resolves nor fetches it from the rolling live index"
+    },
+    {
+      "name": "wayland-libs-client",
+      "version": "1.26.0-r3",
+      "architecture": "aarch64",
+      "source": "https://packages.wolfi.dev/os/aarch64/wayland-libs-client-1.26.0-r3.apk",
+      "sha256": "9f4aa9d7dc9f3857bf4eb35bec9e41931edaabd5a63fbab5d0557c78aa9268d2",
+      "bytes": 49222,
+      "origin": "wayland-libs-client",
+      "role": "pinned transitive native dependency of the pinned native layers (python, renderer, upload); resolved from the retained vendor-signed index, so the build neither resolves nor fetches it from the rolling live index"
+    },
+    {
+      "name": "wayland-libs-cursor",
+      "version": "1.26.0-r3",
+      "architecture": "aarch64",
+      "source": "https://packages.wolfi.dev/os/aarch64/wayland-libs-cursor-1.26.0-r3.apk",
+      "sha256": "ef0fed8829139b2b1ec2589d1be348855fdd6e27a0406bb4635d605c4c23131c",
+      "bytes": 28314,
+      "origin": "wayland-libs-cursor",
+      "role": "pinned transitive native dependency of the pinned native layers (python, renderer, upload); resolved from the retained vendor-signed index, so the build neither resolves nor fetches it from the rolling live index"
+    },
+    {
+      "name": "wayland-libs-egl",
+      "version": "1.26.0-r3",
+      "architecture": "aarch64",
+      "source": "https://packages.wolfi.dev/os/aarch64/wayland-libs-egl-1.26.0-r3.apk",
+      "sha256": "4d4eee066ca56dda290dd672092f51063c0e4c6f9934ff3f42d9907ff12e2613",
+      "bytes": 20150,
+      "origin": "wayland-libs-egl",
+      "role": "pinned transitive native dependency of the pinned native layers (python, renderer, upload); resolved from the retained vendor-signed index, so the build neither resolves nor fetches it from the rolling live index"
+    },
+    {
+      "name": "xkeyboard-config",
+      "version": "2.49-r0",
+      "architecture": "aarch64",
+      "source": "https://packages.wolfi.dev/os/aarch64/xkeyboard-config-2.49-r0.apk",
+      "sha256": "8b0d57d91b572c8e44dd6fc96e388673a5f5c5d16410c50488b968e1805b8d32",
+      "bytes": 3127070,
+      "origin": "xkeyboard-config",
+      "role": "pinned transitive native dependency of the pinned native layers (python, renderer, upload); resolved from the retained vendor-signed index, so the build neither resolves nor fetches it from the rolling live index"
+    },
+    {
+      "name": "zstd",
+      "version": "1.5.7-r12",
+      "architecture": "aarch64",
+      "source": "https://packages.wolfi.dev/os/aarch64/zstd-1.5.7-r12.apk",
+      "sha256": "462e5cb90686ba1be28046a3fd0fd1389839665abcc4c7ed40a71a183e2f0595",
+      "bytes": 620309,
+      "origin": "zstd",
+      "role": "pinned transitive native dependency of the pinned native layers (python, renderer, upload); resolved from the retained vendor-signed index, so the build neither resolves nor fetches it from the rolling live index"
+    },
+    {
+      "name": "zlib",
+      "version": "1.3.2.1_rc20260921-r1",
+      "architecture": "aarch64",
+      "source": "https://packages.wolfi.dev/os/aarch64/zlib-1.3.2.1_rc20260921-r1.apk",
+      "sha256": "94eeec2403d0a8515362ba8ce6ce53d16f905d0b4f69ecf710d34db40cc1381a",
+      "bytes": 62249,
+      "origin": "zlib",
+      "role": "pinned transitive native dependency of the upload scanner/OCR layer; without this pin the rolling live index would choose the provider revision at build time"
     }
   ],
   "pythonRequirements": "infra/product-preview/runtime-packages/requirements.lock.txt",
@@ -124,5 +1912,39 @@
     "packageIndexSha256": "97c23edf5277170536df92875ea88f68be6a8048d4c55f3dd0e3c3c91762c1e4",
     "retrievedOn": "2026-10-27",
     "qualification": "Unqualified source installation pins. Exact ARM image must pass observed no-network/non-root/read-only/no-credentials/limited child sandbox and Office/PDF corpus acceptance before renderer availability."
+    },
+    "uploadNativeProvenance": {
+      "packageIndex": "https://packages.wolfi.dev/os/aarch64/APKINDEX.tar.gz",
+      "packageIndexSha256": "991dd62e3a14e255819e7ac013a6deded970555e1f0943e6b2709c09a5edbd24",
+      "retrievedOn": "2026-10-28",
+      "retainedSignedIndex": {
+        "source": "https://apk.cgr.dev/chainguard/aarch64/APKINDEX.tar.gz",
+        "path": "infra/product-preview/native-apk-index/aarch64-APKINDEX-5c84e4b835a811c1624d9692f011df3de446c8011be4dedaabf6f3dbf41ec536.tar.gz",
+        "sha256": "5c84e4b835a811c1624d9692f011df3de446c8011be4dedaabf6f3dbf41ec536",
+        "bytes": 7048290,
+        "architecture": "aarch64",
+        "members": ["3 vendor RSA signature members", "APKINDEX", "DESCRIPTION"],
+        "trustRoot": "the vendor RSA public keys already installed in the pinned base keyring; apk verifies this index signature with them before it will select any package from the repository",
+        "verified": "measured with the base apk-tools against this index staged as a local repository: the untampered index resolves offline (104542 distinct packages available) and a one-record, format-valid tamper of the index payload is refused with \"BAD signature\"; a byte-flipped package file is refused on the index-recorded package identity, and a package whose archive is not staged fails closed with \"package mentioned in index not found\"",
+        "note": "Retained verbatim as the repository index and committed under infra/product-preview/native-apk-index. It is the trust root for the staged archives, so no live index is consulted and no .apk file is passed to apk as a local path."
+      },
+      "note": "The Wolfi APKINDEX is a rolling live file, so the frozen index hash above is only a per-retrieval audit record; the pinned .apk archives are the authoritative immutable artifacts. Every recorded .apk sha256 was computed from the downloaded official archive, and every download length matched the index S: field exactly.",
+            "closure": "The whole transitive native closure of the seven upload archives (and of the python and renderer layers) is staged inside one local apk repository: 190 official aarch64 archives pinned by exact URL and sha256 in the Dockerfile ADD --checksum list and in systemPackages, beside the retained vendor-signed index recorded above. The three native layers install with `apk add --no-cache --no-network --repository /tmp/meri-native-repo --update-cache <name>=<version>`, so apk admits every archive through that index signature and its recorded package identity and never through a local file path or --allow-untrusted. This corrects the earlier claim that the previous 88-archive closure installed from local paths: the exact locked command `apk add --no-cache --no-network <pinned archives>` fails with UNTRUSTED signature exit 99, and the previous closure was also incomplete (apk resolves 175 members for these layers; 91 further official archives were added here). The engine library itself moves with the release: so:libclamav.so.12 is provided by clamav-1.5 1.5.2-r7 (the approved scanner binaries stay at the pinned 1.5.2-r0), and the Wolfi clamav-1.5 package hard-depends on clamav-1.5-daemon/-milter/-clamdscan/-db/-libunrar, so those binaries are installed but nothing configures or starts a daemon and no clamd.conf exists.",
+      "declaredFinalVersions": {
+        "note": "The intended FINAL versions of the shared C++ runtime in the built image, so the two layers' package statements are one truthful declaration instead of an implicit supersession. Nothing here is an observed installed fact: no image has been built, pulled or inspected.",
+        "final": {"libstdc++": "16.2.0-r2", "libgcc": "16.2.0-r2", "libatomic": "16.2.0-r1"},
+        "superseded": [
+          {"name": "libstdc++", "version": "16.2.0-r1", "sha256": "02f7d7bec8e641734b52855a33ff5474d6b0c0be24e9244b76c20c3f48c20768", "declaredBy": "Dockerfile renderer layer (apk add ... libstdc++=16.2.0-r1), left byte-identical as an immutable prior pin", "supersededBy": {"name": "libstdc++", "version": "16.2.0-r2", "sha256": "a004dfb5d3a07f49e3e281947f64b434a4ee683c6c597ef191bb39f749eadacc", "installedBy": "Dockerfile upload layer, closure archive libstdc++-16.2.0-r2.apk"}}
+        ],
+        "assertedBy": "the upload layer's apk info -v loop names libstdc++-16.2.0-r2, libgcc-16.2.0-r2 and libatomic-16.2.0-r1, and rejects a surviving libstdc++-16.2.0-r1",
+        "unverified": "Whether the resulting triple is ABI-correct for the renderer and for the upload tools is native qualification (an actual ARM build plus observed execution), not established here."
+      },
+      "baseInstalledSet": {
+        "observed": false,
+        "statement": "The base image's own installed package set is UNOBSERVED: no pull, manifest inspection or in-image apk info was performed, and no base-installed version is claimed here. The intended effect of this delta is an UPGRADE of the shared C++ runtime to the index-newest revisions the closure pins (libstdc++ 16.2.0-r2, libgcc 16.2.0-r2) while libatomic stays at its approved 16.2.0-r1 pin.",
+        "failClosed": "Because every upload-layer install names exact archive files, a base digest that already carried a newer revision of any named package makes apk add refuse the older explicit file: the build fails closed instead of silently drifting to a different version."
+      },
+      "pythonWheels": "The upload parser imports pypdf, openpyxl, lxml and Pillow; all four are already pinned in infra/product-preview/runtime-wheels.lock.json and installed by the existing pip layer (pypdf 6.21.2, openpyxl 3.1.5, lxml 6.1.3, pillow 13.0.0). No new wheel record is required.",
+      "qualification": "Unqualified source installation pins. The exact ARM image must pass the observed no-network/non-root/read-only/no-credentials/limited child sandbox, real ClamAV/Tesseract/Poppler versions and a representative scanned/Office/PDF corpus before any upload native availability claim."
+    }
   }
-}

@@ -39,7 +39,11 @@ export function uploadsFamily(owners={}){
  const createClient=supplied.createS3Client??(({region})=>new S3Client({region,maxAttempts:1}));
  if(typeof createClient!=='function'||supplied.ids!==undefined&&typeof supplied.ids!=='function')fail('UPLOAD_CONFIGURATION');
  return function createUploadsFamily(context){
-  const {configuration,pool,now}=context,declared=compileRuntimeArtifactsConfiguration(configuration);
+  const {configuration,pool,now,uploadsInspection}=context,declared=compileRuntimeArtifactsConfiguration(configuration);
+  // The mounted native inspection is trusted CONTROL assembly state (uploads/control-lifecycle.mjs) reaching this family
+  // alone; it is never a request field. Absent or unattested it is undefined here and this family keeps its own honest
+  // UNAVAILABLE. An unusable mount is refused rather than silently ignored.
+  if(uploadsInspection!==undefined)storageMethod(uploadsInspection,'inspect');
   if(configuration.sourceEnabled!==true||declared?.enabled!==true||configuration.retention===undefined)return {ports:{}};
   const client=createClient({region:declared.region}),s3={client,bucket:declared.bucket,prefix:declared.prefix,
    expectedBucketOwner:declared.expectedBucketOwner,kmsKeyId:declared.kmsKeyId};
@@ -49,7 +53,7 @@ export function uploadsFamily(owners={}){
    await privacy.verifyPrivate({signal});return rawObjects[name](value,signal);
   }])));
   const store=createPostgresUploadStore({pool}),storage=createRuntimeRetentionStorage({...s3,now,maxRequestMs});
-  const inspection=supplied.inspection??createUploadInspection({now}),removeOriginal=createUploadOriginalRemoval(storage,now);
+  const inspection=supplied.inspection??uploadsInspection??createUploadInspection({now}),removeOriginal=createUploadOriginalRemoval(storage,now);
   return {ports:{uploadApplicationFactory:Object.freeze({state:()=> 'composed',create({sessions,retention}){
    if(!retention)fail('UPLOAD_CONFIGURATION');
    return createUploadApplication({sessions,store,objects,inspection,retention,removeOriginal,now,ids:supplied.ids??randomUUID});

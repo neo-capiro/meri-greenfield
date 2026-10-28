@@ -26,6 +26,19 @@ test('source/retention/storage absence keeps upload route unavailable without to
   assert.equal(result.status,503);assert.deepEqual(await result.json(),{error:{code:'UPLOAD_UNAVAILABLE',outcome:'NOT_DISPATCHED'}});
  }
 });
+test('a mounted native inspection is borrowed from trusted assembly only and never from a request',()=>{
+ // The mounted owner arrives as the assembly context key `uploadsInspection` (uploads/control-lifecycle.mjs). Without
+ // it this family keeps its own honest UNAVAILABLE; with an unusable mount it refuses rather than silently ignoring it.
+ // `send` is never reached: only client construction happens during composition.
+ const family=uploadsFamily({createS3Client:({region})=>{assert.equal(region,'us-east-1');return {send:unused};}});
+ const context={configuration,pool:{connect:unused},now};
+ assert.equal(captureRuntimePorts(family(context).ports).uploadApplicationFactory.state(),'composed','no mount is the honest unavailable state');
+ assert.throws(()=>family({...context,uploadsInspection:{}}),'a mount without inspect is refused');
+ const mounted={inspect:async()=>({status:'unavailable'})};
+ assert.equal(captureRuntimePorts(family({...context,uploadsInspection:mounted}).ports).uploadApplicationFactory.state(),'composed');
+ // A request-shaped body is not the named key, so it contributes no inspection.
+ assert.equal(captureRuntimePorts(family({...context,body:{uploadsInspection:{inspect:async()=>({status:'clean'})}}}).ports).uploadApplicationFactory.state(),'composed');
+});
 test('exact original removal honors current holds and requires native absence after the delete attempt',async()=>{
  const object={objectId:id(3),versionId:'original-version',sha256:'a'.repeat(64),scopes:[]};
  const run=async({held=false,current=false,after='ABSENT',before='PRESENT'}={})=>{

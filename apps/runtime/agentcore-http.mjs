@@ -1,25 +1,33 @@
-/** AgentCore HTTP V1: one conversation environment, one active SDK invocation. */
+/** AgentCore HTTP V1: one conversation environment, one active SDK invocation.
+ *
+ * The environment serves exactly one purpose at a time and derives that purpose from the SERVER-selected session
+ * header only: the SDK conversation purpose, the fixed renderer purpose, or the custody-mediated fixed native
+ * inspection purpose. A request body never selects or switches a purpose, and a second differing purpose is refused. */
 import {own,nativeSignal} from '../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {canonicalSha256 as hash} from '../../packages/contracts/validate.mjs';
 import {createOperationLifetime} from '../../packages/runtime/operation-lifetime.mjs';
 import {jsonBody} from '../control/action-application/http.mjs';
 import {invocationInput,settlementResult,agentcoreFault,AGENTCORE_SESSION_HEADER,AGENTCORE_INVOCATION_BYTES} from './agentcore-contract.mjs';
 import {RENDERER_SESSION_PREFIX} from './artifacts/renderer-contract.mjs';
+import {UPLOAD_INSPECTION_SESSION_PREFIX} from './uploads/agentcore-contract.mjs';
 
 export function createAgentCoreApplication(configuration){
- const {execute,now=Date.now,signal,renderer}=own(configuration,['execute'],['now','signal','renderer']);nativeSignal(signal);if(typeof execute!=='function'||typeof now!=='function'||renderer!==undefined&&(typeof renderer.handle!=='function'||typeof renderer.close!=='function'))throw agentcoreFault('AGENTCORE_CONFIGURATION');
+ const {execute,now=Date.now,signal,renderer,inspection}=own(configuration,['execute'],['now','signal','renderer','inspection']);nativeSignal(signal);if(typeof execute!=='function'||typeof now!=='function'||renderer!==undefined&&(typeof renderer.handle!=='function'||typeof renderer.close!=='function')||inspection!==undefined&&(typeof inspection.handle!=='function'||typeof inspection.close!=='function'))throw agentcoreFault('AGENTCORE_CONFIGURATION');
  let active=false,poisoned=false,session=null,lastFence=0,pending=null,purpose=null;const shutdown=new AbortController();
  const json=(value,status)=>Response.json(value,{status,headers:{'cache-control':'no-store'}});
- return Object.freeze({async close({deadlineMs}){shutdown.abort(agentcoreFault('RUNTIME_STOPPING'));const life=createOperationLifetime({now,deadlineMs,errorFactory:agentcoreFault});try{if(pending)await life.run(()=>pending);if(renderer)await life.run(()=>renderer.close({deadlineMs}));life.check();return {settled:true};}finally{life.close();}},async handle(request){
+ return Object.freeze({async close({deadlineMs}){shutdown.abort(agentcoreFault('RUNTIME_STOPPING'));const life=createOperationLifetime({now,deadlineMs,errorFactory:agentcoreFault});try{if(pending)await life.run(()=>pending);if(renderer)await life.run(()=>renderer.close({deadlineMs}));if(inspection)await life.run(()=>inspection.close({deadlineMs}));life.check();return {settled:true};}finally{life.close();}},async handle(request){
   const url=new URL(request.url);if(url.search)return json({error:{code:'REQUEST_REFUSED'}},400);
   if(url.pathname==='/ping'&&purpose==='renderer')return renderer.handle(request);
+  if(url.pathname==='/ping'&&purpose==='inspection')return inspection.handle(request);
   if(url.pathname==='/ping')return request.method!=='GET'?json({error:{code:'METHOD_NOT_ALLOWED'}},405):shutdown.signal.aborted||signal?.aborted||poisoned?json({status:'Unhealthy'},503):json({status:active?'HealthyBusy':'Healthy'},200);
   if(url.pathname!=='/invocations')return json({error:{code:'NOT_FOUND'}},404);
   if(request.method!=='POST')return json({error:{code:'METHOD_NOT_ALLOWED'}},405);
   if(shutdown.signal.aborted||signal?.aborted||poisoned)return json({error:{code:'RUNTIME_UNAVAILABLE'}},503);
-  const requestedPurpose=(request.headers.get(AGENTCORE_SESSION_HEADER)??'').startsWith(RENDERER_SESSION_PREFIX)?'renderer':'sdk';
+  const sessionHeader=request.headers.get(AGENTCORE_SESSION_HEADER)??'';
+  const requestedPurpose=sessionHeader.startsWith(RENDERER_SESSION_PREFIX)?'renderer':sessionHeader.startsWith(UPLOAD_INSPECTION_SESSION_PREFIX)?'inspection':'sdk';
   if(purpose!==null&&purpose!==requestedPurpose)return json({error:{code:'SESSION_REFUSED'}},403);
   if(requestedPurpose==='renderer'){if(!renderer)return json({error:{code:'ARTIFACT_RENDERER_UNAVAILABLE'}},503);purpose='renderer';return renderer.handle(request);}
+  if(requestedPurpose==='inspection'){if(!inspection)return json({error:{code:'UPLOAD_INSPECTION_UNAVAILABLE'}},503);purpose='inspection';return inspection.handle(request);}
   let input;const readLife=createOperationLifetime({now,deadlineMs:now()+10000,signal:request.signal,errorFactory:agentcoreFault});
   try{if(! /^application\/json(?:\s*;\s*charset=utf-8)?$/iu.test(request.headers.get('content-type')??'')||request.headers.get('content-encoding'))throw agentcoreFault('REQUEST_REFUSED');
    const length=request.headers.get('content-length');if(length!==null&&! /^(0|[1-9][0-9]*)$/u.test(length))throw agentcoreFault('REQUEST_REFUSED');

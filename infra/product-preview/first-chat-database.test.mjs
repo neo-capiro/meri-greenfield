@@ -381,7 +381,7 @@ test('plan pins the change-set order, real paths and current bytes; 0012 and 001
   '0001_settings.sql','0001_commands.sql','0001_approval_metadata.sql','0001_intent_preparations.sql','0001_schedule_owner.sql','0002_occurrences.sql','0003_run_cancel_proofs.sql','0004_read_consent.sql',
   '0001_task_lookup.sql','0001_objective_custody.sql','0002_objective_run_starts.sql','0003_objective_reader_replays.sql','0001_versions.sql','0002_retention.sql','0003_previews.sql','0001_memory_candidates.sql','0001_read_delegation_facts.sql','0002_prepared_approval_facts.sql','first-chat-database-integration.sql#integration_grants','0020_initial_generations.sql','0021_sdk_run_usage.sql','0022_sdk_run_usage_grants.sql',
   '0018_memory_candidate_targets.sql','0019_memory_proposal_contexts.sql','0002_candidate_retention_delete.sql','first-chat-native-retention-grants.sql',
-  '0024_general_initial_binding_scope.sql','0002_memory_preparation_tombstone.sql','0023_expired_conversation_purge.sql','first-chat-expired-conversation-purge-grants.sql','0003_native_routine_facts.sql','0004_objective_run_start_retention.sql','0025_retention_target_lookup.sql','first-chat-schedule-worker-grants.sql#schedule_worker_grants','0026_retention_target_dispatch.sql','0002_tenant_settings_control_grants.sql','0027_retention_target_projection.sql','0028_retention_sdk_identity.sql','0029_native_correction_feedback.sql','0005_management_preparations.sql','0006_management_preparation_grants.sql','0001_upload_custody.sql','0002_control_grants.sql','0030_child_assignments.sql','0007_source_events.sql','0008_source_event_grants.sql']);
+  '0024_general_initial_binding_scope.sql','0002_memory_preparation_tombstone.sql','0023_expired_conversation_purge.sql','first-chat-expired-conversation-purge-grants.sql','0003_native_routine_facts.sql','0004_objective_run_start_retention.sql','0025_retention_target_lookup.sql','first-chat-schedule-worker-grants.sql#schedule_worker_grants','0026_retention_target_dispatch.sql','0002_tenant_settings_control_grants.sql','0027_retention_target_projection.sql','0028_retention_sdk_identity.sql','0029_native_correction_feedback.sql','0005_management_preparations.sql','0006_management_preparation_grants.sql','0001_upload_custody.sql','0002_control_grants.sql','0030_child_assignments.sql','0007_source_events.sql','0008_source_event_grants.sql','0009_management_consent_renewals.sql']);
  assert.deepEqual(plan.slice(63,65).map(({ordinal,path})=>({ordinal,path})),[
   {ordinal:64,path:'apps/control/uploads/migrations/0001_upload_custody.sql'},
   {ordinal:65,path:'apps/control/uploads/migrations/0002_control_grants.sql'}]);
@@ -1013,10 +1013,10 @@ test('source events register only ordinals 67 and 68, preserving the exact 66-en
  assert.deepEqual(tail.map(e=>e.sha256),['395f7c8f8ea22c5cbe92e9581f28d1992585f677cc6e09088cc897417739a5e7',
   '74a0cd4c58b56044b6d96163e1cc6c54951311de175f8f0acd4232489aa53df6']);
  for(const entry of tail)assert.equal(createHash('sha256').update(read(entry.path)).digest('hex'),entry.sha256);
- // Integration-only, contiguous and complete: the 66-entry prefix is untouched, the two reviewed event files are
- // the whole tail, and the reservation after 68 (MR-04, not approved) registers no placeholder ordinal.
+ // Integration-only, contiguous and complete: the 66-entry prefix is untouched and the two reviewed event files are
+ // the whole tail of this 68-entry slice; the MR-04 reservation after 68 is registered separately as ordinal 69.
  assert.ok(plan.slice(66).every(entry=>entry.stage==='integration'));
- assert.deepEqual(PLAN.map(e=>e.ordinal),[...Array(68)].map((_,i)=>i+1));
+ assert.deepEqual(plan.map(e=>e.ordinal),[...Array(68)].map((_,i)=>i+1));
  assert.deepEqual(plan.slice(0,66).map(({ordinal,name,stage,path,pinned})=>({ordinal,name,stage,path,pinned})),
   PLAN.slice(0,66).map(({ordinal,name,stage,path,pinned})=>({ordinal,name,stage,path,pinned})));
  const db=databaseWithLedger(plan,66),prefix=structuredClone(db.state.ledger);
@@ -1031,6 +1031,41 @@ test('source events register only ordinals 67 and 68, preserving the exact 66-en
  for(const entry of tail)assert.throws(()=>loadPlan({read:path=>Buffer.from(read(path)+(path===entry.path?'\n':''))}),/MERI_D2_SOURCE_CHANGED/u);
  assert.throws(()=>verifyLedger(db.state.ledger.map(row=>row.ordinal===67?{...row,sha256:'f'.repeat(64)}:row),plan),/MERI_D2_APPLIED_FILE_CHANGED/u);
  assert.throws(()=>verifyLedger(db.state.ledger.map(row=>row.ordinal===68?{...row,name:row.name.replace('0008_','0009_')}:row),plan),/MERI_D2_LEDGER_ORDER/u);
+});
+
+test('management consent renewals register only ordinal 69, preserving the exact 68-entry prefix and idempotent upgrade',async()=>{
+ const plan=loadPlan().slice(0,69),tail=plan.slice(68);
+ assert.equal(createHash('sha256').update(JSON.stringify(PLAN.slice(0,68))).digest('hex'),'e710c7d87eb417177ebb19912004fc3f9aa3849f01de142020446768d50487d4');
+ assert.deepEqual([plan.length,tail.length],[69,1]);
+ assert.deepEqual(tail.map(({ordinal,name,kind,stage,path})=>({ordinal,name,kind,stage,path})),[
+  {ordinal:69,name:'apps/control/schedules/migrations/0009_management_consent_renewals.sql',kind:'migration',stage:'integration',
+   path:'apps/control/schedules/migrations/0009_management_consent_renewals.sql'}]);
+ // The pin is the file's own bytes: the plan accepts exactly the reviewed MR-04 0009 blob and nothing else.
+ assert.deepEqual(tail.map(e=>e.sha256),['187a1ff83075c38cfa6c9011fb5743756c555d9b1d006fce628deacf2afeb3fc']);
+ for(const entry of tail)assert.equal(createHash('sha256').update(read(entry.path)).digest('hex'),entry.sha256);
+ // The reviewed 0009 carries no transaction control, so the runner hands the WHOLE file to one query: the DO block's
+ // own semicolons never split it and both ALTERs commit in the same transaction that records the ledger row.
+ assert.equal(migrationBody(tail[0].text),tail[0].text);
+ assert.deepEqual(splitStatements(tail[0].text).map(statement=>statement.text.split('\n',1)[0]),
+  ['DO $$','ALTER TABLE meri_schedules.management_preparations','ALTER TABLE meri_schedules.management_preparations']);
+ // Integration-only, contiguous and complete: the 68-entry prefix is untouched, the reviewed MR-04 file is the whole
+ // tail, and nothing after ordinal 69 is reserved or registered.
+ assert.ok(plan.slice(68).every(entry=>entry.stage==='integration'));
+ assert.deepEqual(plan.map(e=>e.ordinal),[...Array(69)].map((_,i)=>i+1));
+ assert.deepEqual(plan.slice(0,68).map(({ordinal,name,stage,path,pinned})=>({ordinal,name,stage,path,pinned})),
+  PLAN.slice(0,68).map(({ordinal,name,stage,path,pinned})=>({ordinal,name,stage,path,pinned})));
+ const db=databaseWithLedger(plan,68),prefix=structuredClone(db.state.ledger);
+ for(const stage of ['meri','temporal'])await runStage({stage,plan,variables,connect:db.connect});
+ assert.deepEqual(db.state.ledger,prefix);assert.equal(db.state.executed.length,0);
+ await runStage({stage:'integration',plan,variables,connect:db.connect});
+ assert.deepEqual(db.state.ledger.slice(0,68),prefix);assert.equal(db.state.ledger.length,69);
+ assert.deepEqual(db.state.executed,tail.map(e=>migrationBody(e.text).replace(/\s+/gu,' ').trim()));
+ await runStage({stage:'integration',plan,variables,connect:db.connect});
+ assert.equal(db.state.executed.length,1,'the registered append replays without reapplying SQL');
+ assert.equal(db.state.ledger.length,69);
+ for(const entry of tail)assert.throws(()=>loadPlan({read:path=>Buffer.from(read(path)+(path===entry.path?'\n':''))}),/MERI_D2_SOURCE_CHANGED/u);
+ assert.throws(()=>verifyLedger(db.state.ledger.map(row=>row.ordinal===69?{...row,sha256:'f'.repeat(64)}:row),plan),/MERI_D2_APPLIED_FILE_CHANGED/u);
+ assert.throws(()=>verifyLedger(db.state.ledger.map(row=>row.ordinal===69?{...row,name:row.name.replace('0009_','0008_')}:row),plan),/MERI_D2_LEDGER_ORDER/u);
 });
 
 test('SDK identity construction preserves every guard predicate, lock and legacy mutation rule',()=>{

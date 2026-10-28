@@ -129,10 +129,13 @@ export const PLAN=Object.freeze([
  ['migration',conversation('0030_child_assignments.sql'),'d0e5444503416bca34f8d8ae468761ee1ca0b8ce0b7c1b7364398b3c9721a9fa','integration'],
  // Producer source-event custody: the reviewed event-table SQL then its least-privilege CONTROL grants. Append
  // ordinals 67 and 68 after the exact 1..66 prefix, so one `integration` run applies both and the reserved
- // upload/child entries keep their ordinals. The MR-04 reservation that follows is NOT approved and registers no
- // placeholder ordinal here.
+ // upload/child entries keep their ordinals. The MR-04 reservation after 68 is reviewed and registered as ordinal 69.
  ['migration','apps/control/schedules/migrations/0007_source_events.sql','395f7c8f8ea22c5cbe92e9581f28d1992585f677cc6e09088cc897417739a5e7','integration'],
- ['migration','apps/control/schedules/migrations/0008_source_event_grants.sql','74a0cd4c58b56044b6d96163e1cc6c54951311de175f8f0acd4232489aa53df6','integration']
+ ['migration','apps/control/schedules/migrations/0008_source_event_grants.sql','74a0cd4c58b56044b6d96163e1cc6c54951311de175f8f0acd4232489aa53df6','integration'],
+ // MR-04 management consent renewals: the reviewed 0009 locates the two cancel-only predicates of 0005 by their own
+ // definitions and adds the renewal branches. Append ordinal 69 after the exact 1..68 plan, so one `integration` run
+ // applies it; nothing after ordinal 69 is reserved or registered here.
+ ['migration','apps/control/schedules/migrations/0009_management_consent_renewals.sql','187a1ff83075c38cfa6c9011fb5743756c555d9b1d006fce628deacf2afeb3fc','integration']
 ].map(([kind,path,pinned,declaredStage],index)=>Object.freeze({ordinal:index+1,kind,path,pinned,
  name:kind==='migration'?path:`${path}#${kind.slice(6)}`,
  stage:declaredStage??(kind==='phase:temporal_grants'?'temporal':'meri')})));

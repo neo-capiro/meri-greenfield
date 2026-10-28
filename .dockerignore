@@ -50,6 +50,11 @@ infra/product-preview/runtime-packages/*
 !infra/product-preview/runtime-packages/wheels/
 !infra/product-preview/runtime-packages/requirements.lock.txt
 !infra/product-preview/runtime-packages/executor-generation-smoke.mjs
+# The retained vendor-signed apk index apps/runtime/Dockerfile:67 stages as the local repository
+# index. Only this one archive, so the directory stays closed to anything else added beside it.
+!infra/product-preview/native-apk-index/
+infra/product-preview/native-apk-index/*
+!infra/product-preview/native-apk-index/aarch64-APKINDEX-5c84e4b835a811c1624d9692f011df3de446c8011be4dedaabf6f3dbf41ec536.tar.gz
 scripts
 *.env
 **/*.env

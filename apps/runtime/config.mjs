@@ -12,6 +12,7 @@ import {compileCapabilityPlatform} from './product-ports/capability-policy.mjs';
 import {compileRuntimeArtifactsConfiguration} from './artifacts/configuration.mjs';
 import {compileIntentsConfiguration} from './product-ports/intents.mjs';
 import {compileMemoryConfiguration} from './product-ports/memory.mjs';
+import {compileUploadNativeConfiguration} from './uploads/control-lifecycle.mjs';
 import {compileRoutinesCoreConfiguration} from './native-authority/routines-configuration.mjs';
 import {compileObjectiveGenerationConfiguration} from './objective-generation/configuration.mjs';
 export {compileControlUserPreferencesConfiguration};
@@ -29,7 +30,7 @@ export function validateConfiguration(raw,role){
  // owners are trusted in-process ports, never configuration, so JSON alone cannot start it; it may declare `native` (its client to
  // control's private occurrence operations, lane B3; schedule-service-configuration.mjs) and `routines` (Core's firing pin, lane B2).
  const common=['version','profile','sourceEnabled','limits',...(role==='schedule-worker'?[]:['native'])];
- own(c,[...common,...(role==='control'?['http','database','temporal','sessions','versions','agentcore','models']:role==='temporal-worker'?['http','temporal']:['http','temporal','versions','scheduledDispatch'])],role==='control'?['retention','telemetry','downloadLinks','privateHttp','userPreferences','tenantSettings','capabilityPlatform','routines','artifacts','intents','reads','objectiveGeneration','memory']:role==='schedule-worker'?['database','native','routines']:['objectiveGeneration']);
+ own(c,[...common,...(role==='control'?['http','database','temporal','sessions','versions','agentcore','models']:role==='temporal-worker'?['http','temporal']:['http','temporal','versions','scheduledDispatch'])],role==='control'?['retention','telemetry','downloadLinks','privateHttp','userPreferences','tenantSettings','capabilityPlatform','routines','artifacts','intents','reads','objectiveGeneration','memory','uploads']:role==='schedule-worker'?['database','native','routines']:['objectiveGeneration']);
  if(role==='control')assertModelCatalog(c.models);
  if(c.userPreferences!==undefined){requireValue(role==='control','USER_PREFERENCES_CONFIGURATION');compileControlUserPreferencesConfiguration(c);}
  // Lane B control opt-ins (product-ports/settings.mjs, routines.mjs) and the trusted platform capability record (capability-policy.mjs, N3).
@@ -74,6 +75,10 @@ export function validateConfiguration(raw,role){
  if(c.intents!==undefined){requireValue(role==='control','INTENTS_CONFIGURATION');compileIntentsConfiguration(c);}
  // Memory (lane M): review-only proposals over Core M2; the service secret is a server-side file.
  if(c.memory!==undefined){requireValue(role==='control','MEMORY_CONFIGURATION');compileMemoryConfiguration(c);if(c.memory.enabled)file(c.memory.serviceSecretFile);}
+ // Native upload inspection (uploads/control-lifecycle.mjs) is an explicit control declaration: the sandbox image digest and
+ // the two bounded budgets. Absent or `enabled:false` mounts nothing. JSON is never host qualification and no request can
+ // enable it, and an unobserved or failed host leaves the uploads family honestly unavailable without touching any other product.
+ if(c.uploads!==undefined){requireValue(role==='control','UPLOAD_NATIVE_CONFIGURATION');compileUploadNativeConfiguration(c);}
  // Typed reads use the current Core service identity plus the live user relay. No installation proof, grant or bearer file.
  if(c.reads!==undefined){
   requireValue(role==='control','READS_CONFIGURATION');
