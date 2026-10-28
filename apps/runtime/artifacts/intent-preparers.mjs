@@ -11,6 +11,7 @@ import {createOperationLifetime} from '../../../packages/runtime/operation-lifet
 import {assertNativeConversationScope} from '../../../packages/contracts/runtime-0.2/session.mjs';
 import {assertActionSessionReceipt,borrowedRunSession} from '../../control/action-host/session/owner.mjs';
 import {createDocumentIntentPreparer,DOCUMENT_INTENT_OPERATIONS} from '../../control/intents/document-preparer.mjs';
+import {referencedAssetIds} from '../../control/intents/document-revision.mjs';
 import {createAnalysisIntentPreparer,ANALYSIS_INTENT_OPERATIONS} from '../../control/intents/analysis-preparer.mjs';
 import {intentFault} from '../../control/intents/faults.mjs';
 import {documentLimits} from '../../control/document-application/current.mjs';
@@ -79,18 +80,36 @@ export function createRuntimeDocumentIntentPreparers(configuration){
       clip(state.expiresAtMs);if(native()!==credential)throw intentFault('ACCESS_DENIED','none');life.check();
      }
      await current();
+     // The retained revision capability is created here, in-process, from the private current-authorized source
+     // read this prepare performs. It is never carried in the request body or any HTTP field, and the public
+     // mount supplies none, so an HTTP request can never reach a retained write.
+     let readSource=null;
+     const readRevision=revision?async({selection,signal})=>{const source=await revisionSource.read({credential:session.credential,selection,signal,deadlineMs});readSource={selection,source};return source;}:null;
+     const preservation=({retained,binding:revisionBinding,signal})=>{
+       if(readSource===null||hash(revisionBinding)!==hash(binding))throw intentFault('ACCESS_DENIED','none');
+       if(signal?.aborted)throw intentFault('CANCELLED','none');
+       const source=readSource.source;
+       // Only exactly what the trusted read proved is re-presented: the immutable parent's stored evidence and
+       // the asset identifiers its immutable spec carries. Neither is taken from the caller or the model.
+       if(hash(retained.evidence)!==hash(source.version.evidence)||hash(retained.assetIds)!==hash(referencedAssetIds(source.request)))throw intentFault('ACCESS_DENIED','none');
+       // A retained asset object has no durable source on this path, so an asset-bearing parent is refused
+       // rather than re-rendered without its retained object.
+       if(retained.assetIds.length>0)throw intentFault('UNAVAILABLE','none');
+       return {evidence:source.version.evidence,assets:[]};
+     };
      const writes={async execute(write,signal){
-      const route=write.baseVersionId===null?'create':'revise';
-      const body=JSON.stringify({deliveryId:write.deliveryId,request:write.request,...(route==='revise'?{baseVersionId:write.baseVersionId}:{})});
-      // Both routing and credentials are fixed by this trusted adapter. No URL, context or bearer is model supplied.
-      const request=new Request('https://meri-control.internal/api/documents/'+route,{method:'POST',headers:{authorization:'Bearer '+session.credential,'content-type':'application/json','content-length':String(Buffer.byteLength(body))},body,signal});
-      started=true;const response=await life.run(()=>app.handle(request,{deadlineMs}));
-      if(response.status!==200)throw intentFault('UNKNOWN','unknown');
-      const text=await life.run(()=>response.text());if(Buffer.byteLength(text)>limits.maxResponseBytes)throw intentFault('UNKNOWN','unknown');
-      return JSON.parse(text);
+       const route=write.baseVersionId===null?'create':'revise';
+       const body=JSON.stringify({deliveryId:write.deliveryId,request:write.request,...(route==='revise'?{baseVersionId:write.baseVersionId}:{})});
+       // Both routing and credentials are fixed by this trusted adapter. No URL, context or bearer is model supplied.
+       const request=new Request('https://meri-control.internal/api/documents/'+route,{method:'POST',headers:{authorization:'Bearer '+session.credential,'content-type':'application/json','content-length':String(Buffer.byteLength(body))},body,signal});
+       // The preserved parent facts ride this in-process call only, and only for the exact base they were pinned to.
+       const retained=route==='revise'&&write.preserve!==undefined?{retained:{baseVersionId:write.preserve.parent.versionId,evidence:write.preserve.evidence,assets:write.preserve.assets,evidenceSha256:write.preserve.evidenceSha256}}:{};
+       started=true;const response=await life.run(()=>app.handle(request,{deadlineMs,...retained}));
+       if(response.status!==200)throw intentFault('UNKNOWN','unknown');
+       const text=await life.run(()=>response.text());if(Buffer.byteLength(text)>limits.maxResponseBytes)throw intentFault('UNKNOWN','unknown');
+       return JSON.parse(text);
      }};
-     const canonical=analysis?createAnalysisIntentPreparer({descriptor,binding,artifact:{writes}}):createDocumentIntentPreparer({descriptor,binding,writes,...(revision?{revision:{selection:revision,
-      read:({selection,signal})=>revisionSource.read({credential:session.credential,selection,signal,deadlineMs})}}:{})});
+     const canonical=analysis?createAnalysisIntentPreparer({descriptor,binding,artifact:{writes}}):createDocumentIntentPreparer({descriptor,binding,writes:{...writes,...(revision?{preservation}:{})},...(revision?{revision:{selection:revision,read:readRevision}}:{})});
      const result=await canonical.prepare({...input,signal:life.signal});
      await current();life.check();return result;
     }catch(error){
