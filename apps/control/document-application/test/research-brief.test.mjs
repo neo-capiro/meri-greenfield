@@ -36,7 +36,7 @@ for(const [label,mutate]of[
 ])test('refuse '+label,async()=>{await assert.rejects(compiler(call=>{const r=syntheticRead(call);if(call.sourceId==='bill_text')mutate(r);return r;}).prepare(syntheticInput(stamp),context()));});
 test('stale source remains a stale bound excerpt',async()=>{const r=await compiler(call=>{const r=syntheticRead(call);if(call.sourceId==='bill_text'){r.envelope.sources[0].freshness='stale';r.envelope.status='partial';r.envelope.reasonCode='STALE_SOURCE';}return r;}).prepare(syntheticInput(stamp),context());assert.equal(r.facts[0].status,'bound-excerpt-stale');});
 test('wrong immutable recipe/version and changed budget/legislative basis are refused',async()=>{
-  for(const change of[i=>i.skill.skillVersion='2.0.0',i=>i.skill.manifestSha256='a'.repeat(64),i=>i.subject.billId='118-hr-4242',i=>i.subject.session=3,i=>i.subject.budgetStage='enacted']){const i=syntheticInput(stamp);change(i);await assert.rejects(compiler().prepare(i,context()));}
+  for(const change of[i=>i.skill.skillVersion='2.0.0',i=>i.skill.manifestSha256='a'.repeat(64),i=>i.subject.billId='118-hr-4242',i=>i.subject.session=3,i=>i.subject.budgetStage='enacted']){const i=structuredClone(syntheticInput(stamp));change(i);await assert.rejects(compiler().prepare(i,context()));}
 });
 test('parked source read is bounded; cancelled preparation returns no prepared request',async()=>{
   let at=NOW;const c=createCongressionalBriefCompiler({readSource:()=>new Promise(()=>{}),now:()=>at});const ctx=context();ctx.deadlineMs=NOW+30;
