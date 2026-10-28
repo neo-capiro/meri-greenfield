@@ -9,7 +9,9 @@ import {ScheduleNotFoundError} from '@temporalio/client';
 import {own} from '../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {createPostgresIntentJournalStore,createPostgresScheduleProposalReader} from '../control/intents/postgres-journal.mjs';
 import {createPostgresScheduleOwner} from '../control/schedules/postgres-schedule-owner.mjs';
-import {createScheduleRuntimeContext} from '../control/schedules/runtime-context.mjs';
+import {createScheduleRuntimeContext,createRoutineManagementContextOwner} from '../control/schedules/runtime-context.mjs';
+import {createRoutineManagementSessionApplication} from '../control/schedules/management-session-http.mjs';
+import {createRoutineManagementPreparations} from '../control/schedules/management-preparations.mjs';
 import {createRoutinesService} from '../control/schedules/application.mjs';
 import {createRoutinesApplication} from '../control/schedules/application-http.mjs';
 import {createScheduledConversationCurrentness} from '../control/schedules/scheduled-conversation-currentness.mjs';
@@ -19,7 +21,7 @@ import {createRoutineReadConsents} from './native-authority/read-delegation/rout
 import {createRoutineIntentPreparers} from './routines-intents.mjs';
 
 export function createRuntimeRoutinesFeature(configuration){
- const c=own(configuration,['enabled'],['pool','client','context','now','newId','limits','runControl','retirement','cancellationProofs','sessionRelay','readConsents','log','contextOwnerFactory']);
+ const c=own(configuration,['enabled'],['pool','client','context','now','newId','limits','runControl','retirement','cancellationProofs','sessionRelay','readConsents','log','contextOwnerFactory','management']);
  if(typeof c.enabled!=='boolean')throw Error('ROUTINES_CONFIGURATION');
  // The kill switch does not inspect authority ports or allocate resources.
  if(c.enabled===false)return Object.freeze({state:()=> 'disabled',inboxState:()=> 'disabled',create:()=>createRoutinesApplication({enabled:false})});
@@ -40,7 +42,7 @@ export function createRuntimeRoutinesFeature(configuration){
  const runCancellation=c.runControl===undefined?undefined:createScheduledRunCancellation({scheduleOwner,store:createPostgresConversationStore({pool:c.pool,now}),runControl:c.runControl,retirement:c.retirement,client:c.client,now,maxRequestMs:limits.maxRequestMs,...(c.cancellationProofs===undefined?{}:{proofs:c.cancellationProofs})});
  let state='pending',inboxState='pending',intentService=null,intentSessions=null;
  const intentPreparersFor=value=>state==='composed'?createRoutineIntentPreparers({sessions:intentSessions,service:intentService,binding:value.binding,selectedClientId:value.selectedClientId,now,maxRequestMs:limits.maxRequestMs}):[];
- return Object.freeze({state:()=>state,inboxState:()=>inboxState,intentPreparersFor,historyCurrentness(value){
+ return Object.freeze({state:()=>state,inboxState:()=>inboxState,intentPreparersFor,managementSessionConfiguration:()=>c.management?.session??null,historyCurrentness(value){
   const {gate,core}=own(value,['gate','core']);try{const owner=createScheduledConversationCurrentness({scheduleOwner,gate,core,now,maxRequestMs:limits.maxRequestMs});inboxState='composed';return owner;}catch(error){inboxState='unavailable';throw error;}
  },create(value){
   const {sessions,retention}=own(value,['sessions'],['retention']);
@@ -48,14 +50,19 @@ export function createRuntimeRoutinesFeature(configuration){
   try{
    // The Core wires resolve the owner's native bearer from exactly these sessions (never another owner or credential).
    if(c.sessionRelay!==undefined)c.sessionRelay.bind(sessions);
-   const contextOwner=c.contextOwnerFactory===undefined?
+   const executionContext=c.contextOwnerFactory===undefined?
     createScheduleRuntimeContext({...context,sessions,scheduleOwner,now,newId,...(runCancellation===undefined?{}:{runCancellation})}):
     c.contextOwnerFactory({...context,sessions,scheduleOwner,now,newId,...(runCancellation===undefined?{}:{runCancellation})});
+   if(c.management)c.management.bind(sessions);
+   const managementContext=c.management?createRoutineManagementContextOwner({sessions,scheduleOwner,now,newId,template:context.template,workflow:context.workflow,limits:context.limits,policy:c.management.policy}):null;
+   const select=value=>typeof value.credential==='string'&&value.credential.startsWith('routine_session_')?managementContext:executionContext;
+   const contextOwner=managementContext===null?executionContext:Object.freeze({resolve:value=>select(value).resolve(value),authorizeRequest:value=>select(value).authorizeRequest(value)});
    // The read-consent port resolves the owner's native bearer from exactly these sessions, for the template's read operations.
    const readConsents=c.readConsents===undefined?undefined:createRoutineReadConsents({consents:c.readConsents,nativeCredentials:sessions,allocationJson:context.allocationJson,now});
-   const service=createRoutinesService({contextOwner,retention,journalStore,proposalReader,scheduleOwner,scheduleClient,workflowClient,scheduleNotFoundError:ScheduleNotFoundError,now,maxRequestMs:limits.maxRequestMs,...(runCancellation===undefined?{}:{runCancellation}),
+   const service=createRoutinesService({contextOwner,retention,journalStore,proposalReader,scheduleOwner,scheduleClient,workflowClient,scheduleNotFoundError:ScheduleNotFoundError,now,maxRequestMs:limits.maxRequestMs,...(managementContext===null?{}:{managementPreparations:createRoutineManagementPreparations({pool:c.pool})}),...(runCancellation===undefined?{}:{runCancellation}),
     ...(readConsents===undefined?{}:{readConsents}),...(c.log===undefined?{}:{log:c.log})});
-   const application=createRoutinesApplication({service,now,limits,enabled:true});intentService=service;intentSessions=sessions;state='composed';return application;
+   const application=createRoutinesApplication({service,now,limits,enabled:true}),issuance=createRoutineManagementSessionApplication({sessions,now,maxRequestMs:limits.maxRequestMs});intentService=service;intentSessions=sessions;state='composed';
+   return Object.freeze({async handle(request){return await issuance.handle(request)??application.handle(request);}});
   }catch(error){state='unavailable';throw error;}
  }});
 }

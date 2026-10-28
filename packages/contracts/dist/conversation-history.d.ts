@@ -12,10 +12,10 @@ export type ConversationHistoryEnvelope =
   | ConversationHistoryManageRequest
   | ConversationHistorySummariesResponse
   | ConversationHistoryManageResponse;
-export type CanonicalRequestId_32De93Cd = string;
-export type CanonicalPrompt_7Bf1Da21 = string;
-export type CanonicalSkillBa3B01C2 = Canonical_ConversationSkillAssetPin_338818F9 | null;
-export type Canonical_CanonicalSkillId_31E12E8ECae56271 =
+export type CanonicalRequestId_3765852A = string;
+export type CanonicalPromptA43Ae781 = string;
+export type CanonicalSkill_8E4A257C = Canonical_ConversationSkillAssetPin_3299812A | null;
+export type Canonical_CanonicalSkillId_31E12E8E_22Efe610 =
   | 'quick_skill.research_company'
   | 'quick_skill.relationship_brief'
   | 'quick_skill.client_changes'
@@ -30,9 +30,9 @@ export type Canonical_CanonicalSkillId_31E12E8ECae56271 =
   | 'quick_skill.hearing_watch'
   | 'quick_skill.representation_lookup'
   | 'quick_skill.regulatory_docket_brief';
-export type Canonical_CanonicalSkillVersion_7E2Af095_7F0F4343 = string;
-export type CanonicalWindow_97Bd6970 = Canonical_Canonical_NormalizedWindowE50Ec0Ed_8A69A7E3 | null;
-export type Canonical_Canonical_NormalizedWindowE50Ec0Ed_8A69A7E3 =
+export type Canonical_CanonicalSkillVersion_7E2Af095_1261Fee6 = string;
+export type CanonicalWindow_8Fda570A = Canonical_Canonical_NormalizedWindowE50Ec0Ed_02Bd54F8 | null;
+export type Canonical_Canonical_NormalizedWindowE50Ec0Ed_02Bd54F8 =
   | {
       basis: 'calendar-week' | 'calendar-month' | 'calendar-year' | 'relative-duration' | 'explicit';
       startInclusive: string;
@@ -53,8 +53,8 @@ export type Canonical_Canonical_NormalizedWindowE50Ec0Ed_8A69A7E3 =
   | {
       basis: 'unbounded';
     };
-export type CanonicalWindowRequest_19242Ce9 = Canonical_Canonical_WindowRequestF314F340_6Bb8C023 | null;
-export type Canonical_Canonical_WindowRequestF314F340_6Bb8C023 =
+export type CanonicalWindowRequestFf00Da14 = Canonical_Canonical_WindowRequestF314F340_1539Ab45 | null;
+export type Canonical_Canonical_WindowRequestF314F340_1539Ab45 =
   | {
       basis: 'calendar-week';
       offset: -1 | 0;
@@ -383,24 +383,30 @@ export interface ConversationHistoryTurn {
   lastSequence: number;
 }
 export interface ConversationHistoryStoredRequest {
-  requestId: CanonicalRequestId_32De93Cd;
-  prompt: CanonicalPrompt_7Bf1Da21;
-  skill: CanonicalSkillBa3B01C2;
-  window: CanonicalWindow_97Bd6970;
-  windowRequest?: CanonicalWindowRequest_19242Ce9;
-  modelSelection?: CanonicalModelSelectionC59B527F;
+  requestId: CanonicalRequestId_3765852A;
+  prompt: CanonicalPromptA43Ae781;
+  skill: CanonicalSkill_8E4A257C;
+  window: CanonicalWindow_8Fda570A;
+  windowRequest?: CanonicalWindowRequestFf00Da14;
+  modelSelection?: CanonicalModelSelection_66Cdc638;
+  documentRevision?: CanonicalDocumentRevision_70B23E7E;
 }
-export interface Canonical_ConversationSkillAssetPin_338818F9 {
-  skillId: Canonical_CanonicalSkillId_31E12E8ECae56271;
-  skillVersion: Canonical_CanonicalSkillVersion_7E2Af095_7F0F4343;
+export interface Canonical_ConversationSkillAssetPin_3299812A {
+  skillId: Canonical_CanonicalSkillId_31E12E8E_22Efe610;
+  skillVersion: Canonical_CanonicalSkillVersion_7E2Af095_1261Fee6;
   manifestSha256: string;
   proseSha256: string;
   catalogSha256: string;
 }
-export interface CanonicalModelSelectionC59B527F {
+export interface CanonicalModelSelection_66Cdc638 {
   provider: 'bedrock' | 'claude-api';
   modelId: string;
   effort: null | ('low' | 'medium' | 'high' | 'xhigh' | 'max');
+}
+export interface CanonicalDocumentRevision_70B23E7E {
+  artifactId: string;
+  versionId: string;
+  objectSha256: string;
 }
 export interface ConversationHistoryEvent {
   sequence: number;
@@ -906,8 +912,8 @@ export type ConversationHistoryResponse<R extends ConversationHistoryRoute>=Conv
 export declare class ConversationHistoryResponseError extends Error {readonly code:string;}
 export declare const conversationHistoryMetadata: {
   "packageVersion": "0.1.15",
-  "historyVersion": "1.1.0",
-  "schemaId": "urn:meri:conversation-history:1.1.0",
+  "historyVersion": "1.2.0",
+  "schemaId": "urn:meri:conversation-history:1.2.0",
   "routes": {
     "list": {
       "method": "POST",
@@ -1039,3 +1045,347 @@ export declare function receiveConversationHistoryRequest<R extends Conversation
 export declare function receiveConversationHistoryResponse<R extends ConversationHistoryRoute>(route:R,httpStatus:number,utf8Bytes:Uint8Array,request:AdmittedConversationHistoryRequest<R>):Promise<ConversationHistoryResponse<R>>;
 export declare function validateConversationHistoryRequest(route:ConversationHistoryRoute,utf8Bytes:Uint8Array):boolean;
 export declare function validateConversationHistoryResponse<R extends ConversationHistoryRoute>(route:R,httpStatus:number,utf8Bytes:Uint8Array,request:AdmittedConversationHistoryRequest<R>):Promise<boolean>;
+// Independent run-index wire1; no execution authority.
+
+export type RunIndexEnvelope =
+  RunIndexListRequest | RunIndexDetailRequest | RunIndexListResponse | RunIndexDetailResponse | RunIndexErrorResponse;
+
+export interface RunIndexListRequest {
+  schemaVersion: 'meri.run-index/1';
+  scope:
+    | {
+        kind: 'all' | 'general';
+      }
+    | {
+        kind: 'client';
+        clientId: string;
+      };
+  status: 'all' | 'active' | 'terminal';
+  cursor: string | null;
+  limit: number;
+}
+export interface RunIndexDetailRequest {
+  schemaVersion: 'meri.run-detail/1';
+  conversationId: string;
+  runId: string;
+}
+export interface RunIndexListResponse {
+  schemaVersion: 'meri.run-index/1';
+  observedAt: string;
+  scope:
+    | {
+        kind: 'all' | 'general';
+      }
+    | {
+        kind: 'client';
+        clientId: string;
+      };
+  status: 'all' | 'active' | 'terminal';
+  /**
+   * @maxItems 20
+   */
+  runs:
+    | []
+    | [RunIndexSummary]
+    | [RunIndexSummary, RunIndexSummary]
+    | [RunIndexSummary, RunIndexSummary, RunIndexSummary]
+    | [RunIndexSummary, RunIndexSummary, RunIndexSummary, RunIndexSummary]
+    | [RunIndexSummary, RunIndexSummary, RunIndexSummary, RunIndexSummary, RunIndexSummary]
+    | [RunIndexSummary, RunIndexSummary, RunIndexSummary, RunIndexSummary, RunIndexSummary, RunIndexSummary]
+    | [
+        RunIndexSummary,
+        RunIndexSummary,
+        RunIndexSummary,
+        RunIndexSummary,
+        RunIndexSummary,
+        RunIndexSummary,
+        RunIndexSummary
+      ]
+    | [
+        RunIndexSummary,
+        RunIndexSummary,
+        RunIndexSummary,
+        RunIndexSummary,
+        RunIndexSummary,
+        RunIndexSummary,
+        RunIndexSummary,
+        RunIndexSummary
+      ]
+    | [
+        RunIndexSummary,
+        RunIndexSummary,
+        RunIndexSummary,
+        RunIndexSummary,
+        RunIndexSummary,
+        RunIndexSummary,
+        RunIndexSummary,
+        RunIndexSummary,
+        RunIndexSummary
+      ]
+    | [
+        RunIndexSummary,
+        RunIndexSummary,
+        RunIndexSummary,
+        RunIndexSummary,
+        RunIndexSummary,
+        RunIndexSummary,
+        RunIndexSummary,
+        RunIndexSummary,
+        RunIndexSummary,
+        RunIndexSummary
+      ]
+    | [
+        RunIndexSummary,
+        RunIndexSummary,
+        RunIndexSummary,
+        RunIndexSummary,
+        RunIndexSummary,
+        RunIndexSummary,
+        RunIndexSummary,
+        RunIndexSummary,
+        RunIndexSummary,
+        RunIndexSummary,
+        RunIndexSummary
+      ]
+    | [
+        RunIndexSummary,
+        RunIndexSummary,
+        RunIndexSummary,
+        RunIndexSummary,
+        RunIndexSummary,
+        RunIndexSummary,
+        RunIndexSummary,
+        RunIndexSummary,
+        RunIndexSummary,
+        RunIndexSummary,
+        RunIndexSummary,
+        RunIndexSummary
+      ]
+    | [
+        RunIndexSummary,
+        RunIndexSummary,
+        RunIndexSummary,
+        RunIndexSummary,
+        RunIndexSummary,
+        RunIndexSummary,
+        RunIndexSummary,
+        RunIndexSummary,
+        RunIndexSummary,
+        RunIndexSummary,
+        RunIndexSummary,
+        RunIndexSummary,
+        RunIndexSummary
+      ]
+    | [
+        RunIndexSummary,
+        RunIndexSummary,
+        RunIndexSummary,
+        RunIndexSummary,
+        RunIndexSummary,
+        RunIndexSummary,
+        RunIndexSummary,
+        RunIndexSummary,
+        RunIndexSummary,
+        RunIndexSummary,
+        RunIndexSummary,
+        RunIndexSummary,
+        RunIndexSummary,
+        RunIndexSummary
+      ]
+    | [
+        RunIndexSummary,
+        RunIndexSummary,
+        RunIndexSummary,
+        RunIndexSummary,
+        RunIndexSummary,
+        RunIndexSummary,
+        RunIndexSummary,
+        RunIndexSummary,
+        RunIndexSummary,
+        RunIndexSummary,
+        RunIndexSummary,
+        RunIndexSummary,
+        RunIndexSummary,
+        RunIndexSummary,
+        RunIndexSummary
+      ]
+    | [
+        RunIndexSummary,
+        RunIndexSummary,
+        RunIndexSummary,
+        RunIndexSummary,
+        RunIndexSummary,
+        RunIndexSummary,
+        RunIndexSummary,
+        RunIndexSummary,
+        RunIndexSummary,
+        RunIndexSummary,
+        RunIndexSummary,
+        RunIndexSummary,
+        RunIndexSummary,
+        RunIndexSummary,
+        RunIndexSummary,
+        RunIndexSummary
+      ]
+    | [
+        RunIndexSummary,
+        RunIndexSummary,
+        RunIndexSummary,
+        RunIndexSummary,
+        RunIndexSummary,
+        RunIndexSummary,
+        RunIndexSummary,
+        RunIndexSummary,
+        RunIndexSummary,
+        RunIndexSummary,
+        RunIndexSummary,
+        RunIndexSummary,
+        RunIndexSummary,
+        RunIndexSummary,
+        RunIndexSummary,
+        RunIndexSummary,
+        RunIndexSummary
+      ]
+    | [
+        RunIndexSummary,
+        RunIndexSummary,
+        RunIndexSummary,
+        RunIndexSummary,
+        RunIndexSummary,
+        RunIndexSummary,
+        RunIndexSummary,
+        RunIndexSummary,
+        RunIndexSummary,
+        RunIndexSummary,
+        RunIndexSummary,
+        RunIndexSummary,
+        RunIndexSummary,
+        RunIndexSummary,
+        RunIndexSummary,
+        RunIndexSummary,
+        RunIndexSummary,
+        RunIndexSummary
+      ]
+    | [
+        RunIndexSummary,
+        RunIndexSummary,
+        RunIndexSummary,
+        RunIndexSummary,
+        RunIndexSummary,
+        RunIndexSummary,
+        RunIndexSummary,
+        RunIndexSummary,
+        RunIndexSummary,
+        RunIndexSummary,
+        RunIndexSummary,
+        RunIndexSummary,
+        RunIndexSummary,
+        RunIndexSummary,
+        RunIndexSummary,
+        RunIndexSummary,
+        RunIndexSummary,
+        RunIndexSummary,
+        RunIndexSummary
+      ]
+    | [
+        RunIndexSummary,
+        RunIndexSummary,
+        RunIndexSummary,
+        RunIndexSummary,
+        RunIndexSummary,
+        RunIndexSummary,
+        RunIndexSummary,
+        RunIndexSummary,
+        RunIndexSummary,
+        RunIndexSummary,
+        RunIndexSummary,
+        RunIndexSummary,
+        RunIndexSummary,
+        RunIndexSummary,
+        RunIndexSummary,
+        RunIndexSummary,
+        RunIndexSummary,
+        RunIndexSummary,
+        RunIndexSummary,
+        RunIndexSummary
+      ];
+  nextCursor: string | null;
+  coverage: {
+    kind: 'current-authorized-durable-runs';
+    complete: boolean;
+    snapshot: false;
+  };
+}
+export interface RunIndexSummary {
+  conversationId: string;
+  runId: string;
+  createdAt: string;
+  state: 'queued' | 'starting' | 'running' | 'waiting-for-approval' | 'paused' | 'completed' | 'failed' | 'cancelled';
+  statusAt: string;
+  lastSequence: number;
+  /**
+   * @maxItems 4096
+   */
+  clientIds: string[];
+  usage: {
+    recording: 'not-recorded' | 'recorded' | 'unavailable';
+    sdkEstimateUsd: number | null;
+    providerBilledUsd: null;
+  };
+  references: {
+    conversationId: string;
+    runId: string;
+  };
+}
+export interface RunIndexDetailResponse {
+  schemaVersion: 'meri.run-detail/1';
+  observedAt: string;
+  run: RunIndexSummary;
+  continuation: {
+    kind: 'conversation-owner';
+    physicalStopVerified: false;
+  };
+}
+export interface RunIndexErrorResponse {
+  error: {
+    code:
+      | 'INVALID_REQUEST'
+      | 'UNAUTHENTICATED'
+      | 'ACCESS_DENIED'
+      | 'MEMBERSHIP_REVOKED'
+      | 'NOT_FOUND'
+      | 'METHOD_NOT_ALLOWED'
+      | 'DEADLINE'
+      | 'MEMBERSHIP_CHANGED'
+      | 'REQUEST_TOO_LARGE'
+      | 'UNSUPPORTED_MEDIA_TYPE'
+      | 'CANCELLED'
+      | 'PRODUCT_UNAVAILABLE'
+      | 'CONVERSATION_REQUEST_INVALID'
+      | 'CONVERSATION_CURSOR_INVALID'
+      | 'CONVERSATION_NOT_FOUND'
+      | 'CONVERSATION_TURN_CONFLICT'
+      | 'CONVERSATION_MANAGEMENT_CONFLICT'
+      | 'CONVERSATION_RESTORE_EXPIRED'
+      | 'CONVERSATION_STORE_CORRUPT'
+      | 'CONVERSATION_TURN_UNAVAILABLE'
+      | 'CONVERSATION_UNAVAILABLE'
+      | 'RUN_INDEX_REQUEST_INVALID'
+      | 'RUN_INDEX_CURSOR_INVALID'
+      | 'RUN_INDEX_NOT_FOUND'
+      | 'RUN_INDEX_CORRUPT'
+      | 'RUN_INDEX_UNAVAILABLE';
+  };
+}
+
+export type RunIndexRoute='list'|'detail';
+declare const admittedRunIndexRequest:unique symbol;
+export interface RunIndexRequestMap {list:RunIndexListRequest;detail:RunIndexDetailRequest;}
+export interface RunIndexResponseMap {list:RunIndexListResponse;detail:RunIndexDetailResponse;}
+export type AdmittedRunIndexRequest<R extends RunIndexRoute>=Readonly<RunIndexRequestMap[R]>&{readonly [admittedRunIndexRequest]:R};
+export declare class RunIndexResponseError extends Error {readonly code:string;}
+export declare const RUN_INDEX_SCHEMA:'meri.run-index/1',RUN_DETAIL_SCHEMA:'meri.run-detail/1';
+export declare const RUN_INDEX_PATHS:{"list":"/api/conversations/runs/list","detail":"/api/conversations/runs/detail"};
+export declare const runIndexMetadata:{"version":"1.0.0","schemaId":"urn:meri:run-index:1.0.0","requestBytes":4096,"responseBytes":131072,"pageItems":20,"order":"createdAt-desc/runId-desc/conversationId-desc","inventory":"current actor owned durable runs; current client access and retention","freshness":"current durable observation, not worker liveness or a cross-page snapshot","cursor":"opaque selection bound to current principal, membership revision and normalized query; never authority","usage":"exact existing accounting reference; missing is not zero; provider billing is unavailable"};
+export declare function receiveRunIndexRequest<R extends RunIndexRoute>(route:R,bytes:Uint8Array):AdmittedRunIndexRequest<R>;
+export declare function receiveRunIndexResponse<R extends RunIndexRoute>(route:R,status:number,bytes:Uint8Array,request:AdmittedRunIndexRequest<NoInfer<R>>):RunIndexResponseMap[R]|RunIndexErrorResponse;

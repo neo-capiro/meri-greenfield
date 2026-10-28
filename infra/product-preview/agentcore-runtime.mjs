@@ -74,7 +74,7 @@ export function synthesizeAgentCoreRuntime(binding){
   // Omission selects the standard IAM SigV4 authorizer, not anonymous invocation.
   networkConfiguration:{networkMode:'VPC',networkModeConfig:{subnets:b.privateSubnetIds,securityGroups:[network.attrGroupId]}},
   lifecycleConfiguration:{idleRuntimeSessionTimeout:900,maxLifetime:28800},
-  environmentVariables:{MERI_PRODUCT_PREVIEW_REQUIRED:'1',MERI_SOURCE_COMMIT:b.sourceCommit,
+  environmentVariables:{MERI_PRODUCT_PREVIEW_REQUIRED:'1',MERI_SOURCE_COMMIT:b.sourceCommit,MERI_RENDERER_IMAGE_DIGEST:b.imageUri.split('@')[1],
    MERI_CONTROL_ORIGIN:b.controlOrigin,MERI_CONTROL_CA_BASE64:b.controlCaBase64,MERI_CONTROL_CA_SHA256:b.controlCaSha256,
    ...(b.claudeApiSecretArn===null?{}:{MERI_CLAUDE_API_SECRET_ARN:b.claudeApiSecretArn})},
   tags:{Application:'meri',Environment:'preview',SourceCommit:b.sourceCommit}});

@@ -7,13 +7,16 @@ import {ARTIFACT_MIME_TYPES,artifactFilename,nativeArtifactDisposition} from '..
 import {createArtifactService} from '../../artifacts/service.mjs';
 import {createPostgresArtifactService} from '../../artifacts/postgres-service.mjs';
 import {configuration,requestCurrent,data,own,same,v} from './current.mjs';
-import {admitsDocumentFormat,admitsDocumentMime} from './format-admission.mjs';
+import {admitDocumentFormats,admitsDocumentFormat,admitsDocumentMime} from './format-admission.mjs';
 import {errorResponse as bodyErrorResponse} from '../action-application/http.mjs';
 import {requestInfo,jsonBody,response,errorResponse,fail} from './http.mjs';
 import {previewConfiguration,previewRoute} from './preview-route.mjs';
 const uuid=value=>typeof value==='string'&&/^[a-f0-9]{8}-[a-f0-9]{4}-[1-8][a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$/iu.test(value);
 function input(value,intent,admission){
  const raw=data(value),write=['create','revise'].includes(intent);
+ if(intent==='history'||intent==='list'){
+  own(raw,[intent==='history'?'versionId':'scope','limit','cursor']);if((intent==='history'?!uuid(raw.versionId):!['conversation','client','owner'].includes(raw.scope))||!Number.isInteger(raw.limit)||raw.limit<1||raw.limit>100||raw.cursor!==null&&(typeof raw.cursor!=='string'||!/^[a-f0-9]{64}$/u.test(raw.cursor)))fail('INVALID_REQUEST');return raw;
+ }
  own(raw,write?intent==='create'?['deliveryId','request']:['deliveryId','baseVersionId','request']:['versionId']);
  if(!write){if(!uuid(raw.versionId))fail('INVALID_REQUEST');return raw;}
  if(typeof raw.deliveryId!=='string'||!/^[A-Za-z0-9_.:@/-]{1,255}$/u.test(raw.deliveryId)||intent==='revise'&&!uuid(raw.baseVersionId))fail('INVALID_REQUEST');
@@ -55,11 +58,14 @@ async function nativeFile({config,current,life,versionId,intent,state}){
  if(Buffer.byteLength(JSON.stringify(result))>config.limits.maxResponseBytes)fail('DOCUMENT_RESPONSE_LIMIT',413);return response(result);
 }
 export function createDocumentApplication(options){
- const config=configuration(options),context=config.options.context,admission=config.formatAdmission;config.preview=previewConfiguration(config.previewOptions);
+ const config=configuration(options),context=config.options.context;config.preview=previewConfiguration(config.previewOptions);
  return Object.freeze({async handle(request){
   let life;const state={};
   try{
    const info=requestInfo(request);if(!config.enabled)fail('UNAVAILABLE',503);
+   // Retained versions use the six-format read contract, independently of PDF generation admission.
+   // Preview publication reads a retained source; its own renderer gate governs conversion. PDF generation remains explicit.
+   const admission=['inspect','download','history','list','preview','preview-publish'].includes(info.intent)?admitDocumentFormats({pdf:true}):config.formatAdmission;
    const at=config.now();if(!Number.isSafeInteger(at)||at<0)fail('DOCUMENT_CLOCK',500);
    const deadlineMs=Math.min(at+config.limits.maxRequestMs,context.deadlineMs);
    life=createOperationLifetime({deadlineMs,now:config.now,signal:info.signal,errorFactory:code=>new CommandError(code)});
@@ -74,6 +80,15 @@ export function createDocumentApplication(options){
     result=created(result,call,context,admission);
    }else if(info.intent==='preview'||info.intent==='preview-publish'){
     return await previewRoute({config,admission,current,life,intent:info.intent,versionId:call.versionId,state,release:value=>version(value,context,admission,call.versionId)});
+   }else if(info.intent==='list'){
+    const reads=createArtifactService({...config.options,authorize:current.authorize});state.readStarted=true;
+    result=await life.run(signal=>reads.list(call,context,{signal}));own(result,['scope','versions','nextCursor']);
+    result={...result,versions:result.versions.map(value=>v.version(value))};state.completed=true;
+   }else if(info.intent==='history'){
+    const reads=createArtifactService({...config.options,authorize:current.authorize});state.readStarted=true;
+    result=await life.run(signal=>reads.history(call,context,{signal}));
+    own(result,['artifactId','anchorVersionId','headVersionId','versions','nextCursor']);
+    result={...result,versions:result.versions.map(value=>version(value,context,admission))};state.completed=true;
    }else{
     const native=await nativeFile({config,current,life,versionId:call.versionId,intent:info.intent,state});if(native!==null)return native;
     const reads=createArtifactService({...config.options,authorize:current.authorize});

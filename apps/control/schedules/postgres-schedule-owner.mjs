@@ -2,6 +2,7 @@ import {canonicalSha256, frozenScheduleData, denySchedule,scheduleErrorCode} fro
 import {snapshotScheduledJobSelection} from './scheduled-job-lineage.mjs';
 import {storedReadConsent,occurrenceReadConsentFacts} from './occurrence-read-consent.mjs';
 import {SCHEDULED_ORIGIN_SQL} from './scheduled-origin-query.mjs';
+import {validateShape} from '../../../packages/contracts/validate.mjs';
 
 // Borrow a pg 8.23.1-compatible pool configured by its owner with finite
 // connectionTimeoutMillis/query_timeout. Source cancellation is not wire cancellation.
@@ -195,8 +196,11 @@ export function createPostgresScheduleOwner({pool}) {
   }
   async function list(selection,check) {
     const s=frozenScheduleData(selection);
+    if(s.scopes!==undefined){if(!Array.isArray(s.scopes)||s.scopes.length!==1)denySchedule('SCHEDULE_LIST');validateShape('Scope',s.scopes[0]);if(s.scopes[0].tenantId!==s.owner.tenantId)denySchedule('SCHEDULE_LIST');}
     return transaction(async c=>{
-      const rows=(await c.query('SELECT projection,generation,active_intent FROM meri_schedules.projections WHERE tenant_id=$1 AND owner_actor_id=$2 AND ($3::uuid IS NULL OR schedule_id>$3::uuid) ORDER BY schedule_id LIMIT $4',[s.owner.tenantId,s.owner.actorId,s.afterScheduleId,s.limit+1])).rows;check();
+      const filter=s.scopes===undefined?'':s.scopes[0].kind==='private-user'?" AND projection->'scopes'=$5::jsonb":" AND projection->'scopes' @> $5::jsonb";
+      const rows=(await c.query('SELECT projection,generation,active_intent FROM meri_schedules.projections WHERE tenant_id=$1 AND owner_actor_id=$2 AND ($3::uuid IS NULL OR schedule_id>$3::uuid)'+filter+' ORDER BY schedule_id LIMIT $4',[s.owner.tenantId,s.owner.actorId,s.afterScheduleId,s.limit+1,...(s.scopes===undefined?[]:[JSON.stringify(s.scopes)])])).rows;check();
+      if(s.scopes!==undefined&&rows.some(r=>s.scopes[0].kind==='private-user'?canonicalSha256(r.projection.scopes)!==canonicalSha256(s.scopes):!r.projection.scopes.some(scope=>canonicalSha256(scope)===canonicalSha256(s.scopes[0]))))denySchedule('SCHEDULE_LIST');
       return frozenScheduleData({rows:rows.slice(0,s.limit).map(r=>({projection:r.projection,generation:Number(r.generation),unresolved:r.active_intent!==null})),hasMore:rows.length>s.limit});
     },check);
   }

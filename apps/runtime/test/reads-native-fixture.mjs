@@ -42,7 +42,8 @@ export async function fixture(family,id,options={}){
    return scene.transport.fetchImpl(url,options);
   }});
  const execution={async authenticate(){if(revoked)throw Error('EXECUTION_AUTHORITY_REFUSED');return {execution:structuredClone(identity),state:'running',scopes:structuredClone(scopes),selectedClientId,policyRevision};}};
- const app=composer.createReadsRuntime({execution,binding,approvedReads,...(options.conversationStore?{conversationStore:options.conversationStore}:{})});
+ const conversationStore=options.conversationStore??(id==='get_state_bill_status'?{async read(){return {run:{binding,scopes,state:'running'},request:{skill:null}};},async appendSource(){}}:undefined);
+ const app=composer.createReadsRuntime({execution,binding,approvedReads,...(conversationStore?{conversationStore}:{})});
  const port=createNativeReadsClient({origin:'https://control.example.invalid',credential:'SYNTHETIC_EXECUTION',binding,approvedReads,now:scene.now,fetchImpl:(url,init)=>app.handle(new Request(url,init))});
  async function execute(args=scene.arguments){const request=(kind,body)=>new Request(`https://control.example.invalid/v1/runner/reads/${kind}`,{method:'POST',headers:{authorization:'Bearer SYNTHETIC_EXECUTION','content-type':'application/json'},body:JSON.stringify(body)});
   const a=await app.handle(request('availability',{schemaVersion:approvedReads.schemaVersion,binding}));assert.equal(a.status,200,await a.clone().text());const available=await a.json();return app.handle(request('execute',{schemaVersion:approvedReads.schemaVersion,binding,operation,arguments:args,deliveryId:'synthetic',installationId:available.installation.installationId,executionCatalogSha256:available.installation.executionCatalogSha256}));}

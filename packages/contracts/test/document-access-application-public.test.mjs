@@ -120,10 +120,12 @@ test('requests are the frozen read requests; create and revise do not exist here
  for(const route of ['create','revise','preview','preview-publish','approve',undefined,1])assert.throws(()=>access.receiveDocumentRequest(route,bytes),e=>e.code==='INVALID_ROUTE');
  assert.doesNotThrow(()=>frozen.receiveDocumentRequest('create',utf8({deliveryId:'d',request:{operation:'create_word',format:'txt',title:'T',content:{text:'x'}}})));
 });
-test('every error code and status is admitted exactly as in the frozen receiver',async()=>{
+test('prior error codes retain frozen admission and the new history refusal stays outside the old receiver',async()=>{
  const r=receipt('zip'),request=access.receiveDocumentRequest('inspect',utf8({versionId:r.version.versionId})),old=frozen.receiveDocumentRequest('inspect',utf8({versionId:r.version.versionId}));
  for(const [code,status] of Object.entries(access.documentAccessMetadata.errorStatuses))for(const outcome of ['NOT_DISPATCHED','UNKNOWN','RESULT_NOT_RELEASED','READ_UNAVAILABLE']){
-  const body=utf8({error:{code,outcome}});assert.deepEqual(await access.receiveDocumentResponse('inspect',status,body,request),await frozen.receiveDocumentResponse('inspect',status,body,old));
+  const body=utf8({error:{code,outcome}}),received=await access.receiveDocumentResponse('inspect',status,body,request);
+  if(['ARTIFACT_HISTORY_CURSOR','ARTIFACT_LIBRARY_CURSOR'].includes(code))await assert.rejects(frozen.receiveDocumentResponse('inspect',status,body,old),e=>e.code==='INVALID_ERROR_RESPONSE');
+  else assert.deepEqual(received,await frozen.receiveDocumentResponse('inspect',status,body,old));
   await assert.rejects(access.receiveDocumentResponse('inspect',status===599?598:status+1,body,request),e=>e.code==='INVALID_ERROR_RESPONSE');
  }
  for(const bad of [{error:{code:'NOT_A_CODE',outcome:'UNKNOWN'}},{error:{code:'ACCESS_DENIED'}},{error:{code:'ACCESS_DENIED',outcome:'DONE'}},{error:{code:'ACCESS_DENIED',outcome:'UNKNOWN',detail:'x'}}])
@@ -137,10 +139,12 @@ test('metadata is derived from the artifact vocabulary, the real admission funct
  assert.deepEqual(m.operationFormats,{create_word:[...admitDocumentDescriptor(descriptor('create_word')).formats],create_word_with_pdf:[...admitDocumentDescriptor(descriptor('create_word'),{pdf:true}).formats],create_excel:[...admitDocumentDescriptor(descriptor('create_excel')).formats],create_powerpoint:[...admitDocumentDescriptor(descriptor('create_powerpoint')).formats],run_analysis:[...admitDocumentDescriptor(descriptor('run_analysis')).formats]});
  assert.deepEqual(new Set(Object.values(m.operationFormats).flat()),new Set(m.formats));
  assert.deepEqual(m.previewFormats.filter(format=>!m.formats.includes(format)),[]);assert.deepEqual(m.formats.filter(format=>!m.previewFormats.includes(format)).sort(),['txt','zip'],'txt and zip have no preview');
- assert.deepEqual(Object.keys(m.routes),['inspect','download']);assert.deepEqual(m.routes.download,{method:'POST',path:'/api/documents/download',response:'bytes'});assert(Object.isFrozen(m)&&Object.isFrozen(m.errorStatuses));
+ assert.deepEqual(Object.keys(m.routes),['inspect','download','history','list']);assert.deepEqual(m.routes.download,{method:'POST',path:'/api/documents/download',response:'bytes'});assert.deepEqual(m.routes.history,{method:'POST',path:'/api/documents/history',response:'json'});assert.deepEqual(m.routes.list,{method:'POST',path:'/api/documents/list',response:'json'});assert(Object.isFrozen(m)&&Object.isFrozen(m.errorStatuses));
  const frozenSchema=JSON.parse(await readFile(new URL('../dist/document-application.schema.json',import.meta.url),'utf8')),schema=JSON.parse(await readFile(new URL('../dist/document-access-application.schema.json',import.meta.url),'utf8'));
- assert.deepEqual(schema.$defs.DocumentErrorResponse,frozenSchema.$defs.DocumentErrorResponse,'the error vocabulary is the frozen one');assert.deepEqual(Object.keys(m.errorStatuses),frozenSchema.$defs.DocumentErrorResponse.properties.error.properties.code.enum);
- assert.equal(schema.$id,'urn:meri:document-access-application:0.1.0');assert(!/"\$ref":"(?!#)/u.test(JSON.stringify(schema)),'every reference is local to the distribution');
+ const oldCodes=frozenSchema.$defs.DocumentErrorResponse.properties.error.properties.code.enum;
+ assert(oldCodes.every(code=>Object.hasOwn(m.errorStatuses,code)),'all prior error codes remain admitted');
+ assert.deepEqual(schema.$defs.DocumentErrorResponse.properties.error.properties.outcome,frozenSchema.$defs.DocumentErrorResponse.properties.error.properties.outcome,'outcome vocabulary is unchanged');
+ assert.equal(schema.$id,'urn:meri:document-access-application:0.2.0');assert(!/"\$ref":"(?!#)/u.test(JSON.stringify(schema)),'every reference is local to the distribution');
 });
 test('distribution is self-contained, layout-independent and its recorded sources bind the owners',async()=>{
  const source=await readFile(new URL('../dist/document-access-application.mjs',import.meta.url),'utf8'),metadata=JSON.parse(await readFile(new URL('../dist/document-access-application.metadata.json',import.meta.url),'utf8'));

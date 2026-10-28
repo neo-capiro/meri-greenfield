@@ -14,11 +14,16 @@ import {createConversationHistoryApplication} from '../control/conversations/his
 import {createConversationSourceApplication} from '../control/conversations/sources/http.mjs';
 import {BILL_TEXT_SOURCE_PATH} from '../../packages/contracts/conversation-sources/protocol.mjs';
 import {createConversationUsageApplication} from '../control/conversations/usage-read/http.mjs';
+import {createUsageOverviewApplication} from '../control/conversations/usage-overview/http.mjs';
+import {USAGE_OVERVIEW_PATH} from '../../packages/contracts/conversation-usage/overview-protocol.mjs';
+import {createRunIndexApplication} from '../control/conversations/runs/http.mjs';
+import {RUN_INDEX_PATHS} from '../../packages/contracts/conversation-history/run-protocol.mjs';
 import {CONVERSATION_USAGE_PATH} from '../../packages/contracts/conversation-usage/protocol.mjs';
 import {HISTORY_PATHS} from '../control/conversations/history/protocol.mjs';
 import {runtimeArtifactRecovery} from './artifacts/composition.mjs';
 import {USER_PREFERENCES_PATHS,userPreferencesUnavailable} from '../control/settings/user-application/protocol.mjs';
 import {ROUTINE_PATHS,routinesUnavailable} from '../control/schedules/application-http.mjs';
+import {ROUTINE_MANAGEMENT_SESSION_PATH} from '../../packages/contracts/schedules-0.2/application-protocol.mjs';
 import {INTENT_PATHS} from '../control/intents/http.mjs';
 import {TENANT_SETTINGS_PATHS} from '../control/settings/tenant-application/protocol.mjs';
 import {MEMORY_PATHS,memoryUnavailable} from '../control/memory/protocol.mjs';
@@ -39,6 +44,7 @@ export function captureRuntimePorts(value={}){
  const artifactStore=c.artifactStore===undefined?undefined:Object.freeze({...methods(c.artifactStore,['verifyPrivate']),...(c.artifactStore.objects===undefined?{}:{objects:methods(c.artifactStore.objects,['put','get'])})});
  const routineFactory=c.routinesApplicationFactory===undefined?undefined:methods(c.routinesApplicationFactory,['create','state']);
  const routineHistory=c.routinesApplicationFactory===undefined?undefined:optionalMethod(c.routinesApplicationFactory,'historyCurrentness'),routineInboxState=c.routinesApplicationFactory===undefined?undefined:optionalMethod(c.routinesApplicationFactory,'inboxState');
+ const routineManagement=c.routinesApplicationFactory===undefined?undefined:optionalMethod(c.routinesApplicationFactory,'managementSessionConfiguration');
  if(artifactStore){const recovery=runtimeArtifactRecovery(c.artifactStore)??capturedArtifactRecovery.get(c.artifactStore);if(recovery)capturedArtifactRecovery.set(artifactStore,recovery);}
  const captured=Object.freeze({
   configuredOwners:Object.freeze(Object.keys(c).filter(k=>c[k]!==undefined)),
@@ -51,7 +57,7 @@ export function captureRuntimePorts(value={}){
   ...(c.actionApplicationFactory===undefined?{}:{actionApplicationFactory:methods(c.actionApplicationFactory,['create','state'])}),
   ...(c.taskCommandApplication===undefined?{}:{taskCommandApplication:methods(c.taskCommandApplication,['handle'])}),
   ...(c.taskCommandApplicationFactory===undefined?{}:{taskCommandApplicationFactory:methods(c.taskCommandApplicationFactory,['create','state'])}),
-  ...(routineFactory===undefined?{}:{routinesApplicationFactory:Object.freeze({...routineFactory,...(routineHistory===undefined?{}:{historyCurrentness:routineHistory}),...(routineInboxState===undefined?{}:{inboxState:routineInboxState})})}),
+  ...(routineFactory===undefined?{}:{routinesApplicationFactory:Object.freeze({...routineFactory,...(routineHistory===undefined?{}:{historyCurrentness:routineHistory}),...(routineInboxState===undefined?{}:{inboxState:routineInboxState}),...(routineManagement===undefined?{}:{managementSessionConfiguration:routineManagement})})}),
   ...(c.conversationMembership===undefined?{}:{conversationMembership:methods(c.conversationMembership,['admit','recheck'])}),
   ...(c.conversationCurrentness===undefined?{}:{conversationCurrentness:methods(c.conversationCurrentness,['assertCurrent'])}),
   ...(c.conversationManagement===undefined?{}:{conversationManagement:methods(c.conversationManagement,['forRequest','assertActiveBinding'])}),
@@ -98,6 +104,8 @@ export function createRuntimeProductApplications({configuration,sessions,ports,n
   limits:{maxRequestMs:configuration.limits.requestMs,maxRequestBytes:configuration.limits.requestBytes,maxResponseBytes:configuration.native.maxResponseBytes}}):null;
  const sources=historyService&&ports.conversationSourceReader?createConversationSourceApplication({store:conversationStore,history:historyService,gate:ports.conversationMembership,currentness:historyCurrentness,management:ports.conversationManagement,reader:ports.conversationSourceReader,retention,now,limits:{maxRequestMs:configuration.limits.requestMs,maxRequestBytes:configuration.limits.requestBytes,maxResponseBytes:configuration.native.maxResponseBytes}}):null;
  const usage=historyService&&typeof conversationStore.history?.usageContext==='function'&&typeof conversationStore.readUsage==='function'?createConversationUsageApplication({store:conversationStore,history:historyService,gate:ports.conversationMembership,currentness:historyCurrentness,management:ports.conversationManagement,retention,now,limits:{maxRequestMs:configuration.limits.requestMs,maxRequestBytes:configuration.limits.requestBytes,maxResponseBytes:configuration.native.maxResponseBytes}}):null;
+ const usageOverview=ports.conversationMembership&&typeof conversationStore?.usageOverview?.read==='function'?createUsageOverviewApplication({store:conversationStore,gate:ports.conversationMembership,now,limits:{maxRequestMs:configuration.limits.requestMs,maxRequestBytes:configuration.limits.requestBytes,maxResponseBytes:configuration.native.maxResponseBytes}}):null;
+ const runIndex=historyService&&conversationStore.runs?createRunIndexApplication({store:conversationStore,history:historyService,gate:ports.conversationMembership,currentness:historyCurrentness,management:ports.conversationManagement,retention,now,limits:{maxRequestMs:configuration.limits.requestMs,maxRequestBytes:configuration.limits.requestBytes,maxResponseBytes:configuration.native.maxResponseBytes}}):null;
  const canonicalDocuments=createRuntimeArtifactApplication({sessions,now,limits:{maxRequestMs:configuration.limits.requestMs,maxRequestBytes:configuration.limits.requestBytes,maxResponseBytes:configuration.native.maxResponseBytes},...(ports.artifactOptionsOwner?{optionsOwner:ports.artifactOptionsOwner}:{}),...(retention===undefined?{}:{retention})});
  // Signed download links mount over the canonical document routes behind a readiness gate that trusted startup opens (or leaves closed).
  const downloads=createDownloadLinkGate({documents:canonicalDocuments,sessions,now,maxRequestMs:configuration.limits.requestMs,links:configuration.downloadLinks,suppression,authorization:ports.artifactOptionsOwner,store:ports.artifactStore});
@@ -107,11 +115,13 @@ export function createRuntimeProductApplications({configuration,sessions,ports,n
  const nativeFiles=ports.executionOwner&&ports.artifactStore?.objects&&ports.sdkSessionSnapshot?.readFiles&&conversationStore?createNativeFileApplication({owner:createNativeFileOwner({store:conversationStore,execution:ports.executionOwner,objects:ports.artifactStore.objects,snapshot:ports.sdkSessionSnapshot,...(ports.objectiveSelection?{objectiveSelection:ports.objectiveSelection}:{}),now,maxRequestMs:configuration.limits.requestMs,...(retention?{retention}:{})}),now,maxRequestMs:configuration.limits.requestMs}):null;
  return Object.freeze({downloads:Object.freeze({open:input=>downloads.open(input),state:()=>downloads.state()}),handle(request){const path=new URL(request.url).pathname;
   if(Object.values(USER_PREFERENCES_PATHS).includes(path))return userPreferences?userPreferences.handle(request):userPreferencesUnavailable();
-  if(Object.values(ROUTINE_PATHS).includes(path))return routines?routines.handle(request):routinesUnavailable();
+  if(path===ROUTINE_MANAGEMENT_SESSION_PATH||Object.values(ROUTINE_PATHS).includes(path))return routines?routines.handle(request):routinesUnavailable();
   if(Object.values(INTENT_PATHS).includes(path))return ports.intentApplication?ports.intentApplication.handle(request):Response.json({error:{code:'INTENTS_UNAVAILABLE',outcome:'NOT_DISPATCHED'}},{status:503,headers:{'cache-control':'no-store','x-content-type-options':'nosniff'}});
   if(Object.values(TENANT_SETTINGS_PATHS).includes(path))return ports.settingsApplication?ports.settingsApplication.handle(request):Response.json({error:{code:'SETTINGS_UNAVAILABLE',outcome:'NOT_DISPATCHED'}},{status:503,headers:{'cache-control':'no-store','x-content-type-options':'nosniff'}});
   if(Object.values(MEMORY_PATHS).includes(path))return ports.memoryApplication?ports.memoryApplication.handle(request):memoryUnavailable();
+  if(Object.values(RUN_INDEX_PATHS).includes(path))return runIndex?runIndex.handle(request):Response.json({error:{code:'RUN_INDEX_UNAVAILABLE'}},{status:503,headers:{'cache-control':'no-store','x-content-type-options':'nosniff'}});
   if(path===CONVERSATION_USAGE_PATH)return usage?usage.handle(request):Response.json({error:{code:'USAGE_UNAVAILABLE'}},{status:503,headers:{'cache-control':'no-store','x-content-type-options':'nosniff'}});
+  if(path===USAGE_OVERVIEW_PATH)return usageOverview?usageOverview.handle(request):Response.json({error:{code:'USAGE_OVERVIEW_UNAVAILABLE'}},{status:503,headers:{'cache-control':'no-store','x-content-type-options':'nosniff'}});
   if(path===BILL_TEXT_SOURCE_PATH)return sources?sources.handle(request):Response.json({error:{code:'SOURCE_REFERENCE_UNAVAILABLE'}},{status:503,headers:{'cache-control':'no-store','x-content-type-options':'nosniff'}});
   if(Object.values(HISTORY_PATHS).includes(path))return history?history.handle(request):Response.json({error:{code:'CONVERSATION_UNAVAILABLE',outcome:'NOT_DISPATCHED'}},{status:503,headers:{'cache-control':'no-store','x-content-type-options':'nosniff'}});
   if(/^\/api\/action-followthrough\/(query|draft|prepare|execute)$/u.test(path))return handleAction?handleAction(request):Response.json({error:{code:'UNAVAILABLE'}},{status:503,headers:{'cache-control':'no-store','x-content-type-options':'nosniff'}});

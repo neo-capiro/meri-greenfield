@@ -1944,6 +1944,85 @@
       ],
       "additionalProperties": false
     },
+    "RoutinesManagementSessionRequest": {
+      "type": "object",
+      "properties": {
+        "clientId": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "clientId"
+      ],
+      "additionalProperties": false
+    },
+    "RoutinesManagementContext": {
+      "type": "object",
+      "properties": {
+        "tenantId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        },
+        "actorId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        },
+        "selectedClientId": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "tenantId",
+        "actorId",
+        "selectedClientId"
+      ],
+      "additionalProperties": false
+    },
+    "RoutinesManagementSessionReceipt": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "const": "routine-management"
+        },
+        "credential": {
+          "type": "string",
+          "pattern": "^routine_session_[A-Za-z0-9_-]{43}$"
+        },
+        "expiresAtMs": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        },
+        "context": {
+          "$ref": "#/$defs/RoutinesManagementContext"
+        }
+      },
+      "required": [
+        "kind",
+        "credential",
+        "expiresAtMs",
+        "context"
+      ],
+      "additionalProperties": false
+    },
     "RoutinesMutationRequest": {
       "oneOf": [
         {

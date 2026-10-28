@@ -26,7 +26,7 @@ function scriptedCore(state={}){const core={calls:0,bearers:new Set([BEARER]),st
   if(core.status!==200)return Response.json({message:'unavailable'},{status:core.status});
   const checkedAtMs=Date.now();
   return Response.json({contract:ARTIFACT_AUTHORITY_CONTRACT,observationId:request.observationId,principal:core.principal,identityRevision:rev('identity'),conversationId:request.conversationId,
-   selectedClientId:request.clientId,contextRevision:rev('context'),intent:request.intent,requestSha256:request.requestSha256,operations:['artifact.download','artifact.inspect'],
+   selectedClientId:request.clientId,contextRevision:rev('context'),intent:request.intent,requestSha256:request.requestSha256,operations:state.operations??['artifact.download','artifact.inspect'],
    limits:state.coreLimits??null,authorityRevision:rev('authority'),checkedAtMs,expiresAtMs:checkedAtMs+60000});};
  return core;}
 
@@ -36,7 +36,7 @@ function scriptedStore({stored,readOptional=true}){const store={calls:[],async r
  if(readOptional)store.readOptional=async()=>{store.calls.push('readOptional');return stored;};
  return store;}
 
-async function harness({stored,readOptional=true,now=Date.now}={}){
+async function harness({stored,readOptional=true,now=Date.now,operations}={}){
  const store=scriptedStore({stored,readOptional});
  const resolvedBinding=binding(ids.reservedRunId);
  const sessions=createActionSessionOwner({mode:'process-local',now,limits:{maxSessions:4,maxRequestMs:3000,maxTtlMs:60000,maxFactBytes:65536},
@@ -44,7 +44,7 @@ async function harness({stored,readOptional=true,now=Date.now}={}){
   // The conversation owner admitted this binding for a turn that has not been submitted yet: no run row exists.
   async resolveContext({identity,identitySha256}){if(identitySha256!==canonicalSha256(identity))throw Error('SYNTHETIC');return {identitySha256,binding:structuredClone(resolvedBinding),scopes:structuredClone(scopes),selectedClientId:ids.clientId,contextRevision:'synthetic-context-1',checkedAtMs:now(),expiresAtMs:now()+60000};}});
  const issued=await sessions.issue({identityCredential:BEARER});
- const core=scriptedCore();
+ const core=scriptedCore({operations});
  const credentials={async serviceSecret(){return SECRET;},admitBearer(bearer,secret){if(bearer===secret)throw Object.assign(Error('UNAVAILABLE'),{code:'UNAVAILABLE'});return bearer;}};
  const client=createCoreArtifactAuthorityClient({origin:ORIGIN,fetchImpl:core.fetch,now});
  const authority=createCoreArtifactAuthority({client,credentials,now,limits,maxOutputBytes:limits.maxResponseBytes});
@@ -67,7 +67,19 @@ test('a binding admitted for a not-yet-submitted turn resolves the conversation\
  assert.equal(h.core.calls,2);assert.ok(r.expiresAtMs>h.now());
 });
 
-test('a stored run keeps the exact binding, scope and cancellation checks',async()=>{
+for(const intent of ['history','list'])test(`${intent}: current conversation read works after a run, never admits generation, and rechecks revocation`,async()=>{
+ const h=await harness({stored:null}),call=h.call({intent,body:intent==='history'?{versionId:'00000000-0000-4000-8000-00000000b009',limit:25,cursor:null}:{scope:'conversation',limit:25,cursor:null}});
+ const resolved=await h.authority.resolve(call),context=resolved.artifactOptions.context;
+ const authorization={action:'artifact.inspect',resource:null,requestSha256:call.requestSha256,binding:context.binding,scopes:context.scopes,deadlineMs:h.now()+4000};
+ assert.equal((await resolved.artifactOptions.authorize(authorization)).decision,'allow');
+ await assert.rejects(resolved.artifactOptions.authorize({...authorization,action:'artifact.generate'}),code('ACCESS_DENIED'));
+ await assert.rejects(resolved.artifactOptions.authorize({...authorization,action:'artifact.revise'}),code('ACCESS_DENIED'));
+ h.core.status=403;
+ await assert.rejects(resolved.recheck({phase:'release',intent,requestSha256:call.requestSha256,resource:null,deadlineMs:h.now()+4000}),code('ACCESS_DENIED'));
+ assert.deepEqual(h.store.calls,['readOptional'],'no new run or write allocation');
+});
+
+test('a stored run keeps the exact binding and scope checks',async()=>{
  const run={...binding(ids.acceptedRunId),state:'completed',scopes:structuredClone(scopes)};
  const same=await harness({stored:row({...run,binding:structuredClone(binding(ids.reservedRunId))})});
  assert.equal((await same.authority.resolve(same.call())).selectedClientId,ids.clientId);
@@ -75,10 +87,40 @@ test('a stored run keeps the exact binding, scope and cancellation checks',async
   ['another actor',r=>({...r,binding:{...r.binding,actorId:'00000000-0000-4000-8000-00000000b0ff'}})],
   ['another conversation',r=>({...r,binding:{...r.binding,conversationId:'00000000-0000-4000-8000-00000000b0fe'}})],
   ['changed scopes',r=>({...r,scopes:[{...scopes[0],policyRevision:'q'.repeat(64)}]})],
-  ['cancelled run',r=>({...r,state:'cancelled'})],
  ]){const h=await harness({stored:row(mutate({...run,binding:structuredClone(binding(ids.reservedRunId))}))});
   await assert.rejects(h.authority.resolve(h.call()),code('ACCESS_DENIED'),label);
   assert.equal(h.core.calls,1,'Core is still the first observation');}
+});
+
+for(const [intent,action] of [['inspect','artifact.inspect'],['history','artifact.inspect'],['list','artifact.inspect'],['download','artifact.download'],['preview','artifact.download']])
+test(`${intent}: retained reads survive terminal origins but fresh release authority still governs`,async()=>{
+ for(const state of ['completed','failed','cancelled']){
+  const stored=row({binding:binding(ids.reservedRunId),scopes:structuredClone(scopes),state});
+  const h=await harness({stored}),call=h.call({intent}),resolved=await h.authority.resolve(call),context=resolved.artifactOptions.context;
+  const authorization={action,resource:null,requestSha256:call.requestSha256,binding:context.binding,scopes:context.scopes,deadlineMs:h.now()+4000};
+  assert.equal((await resolved.artifactOptions.authorize(authorization)).decision,'allow');
+  for(const action of ['artifact.generate','artifact.revise','artifact.preview-publish'])
+   await assert.rejects(resolved.artifactOptions.authorize({...authorization,action}),code('ACCESS_DENIED'));
+  stored.run.state='cancelled';
+  const release={phase:'release',intent,requestSha256:call.requestSha256,resource:null,deadlineMs:h.now()+4000};
+  await resolved.recheck(release);
+  assert.equal(h.core.calls,2,'release freshly observes current Core authority even after cancellation');
+  h.core.status=403;
+  await assert.rejects(resolved.recheck(release),code('ACCESS_DENIED'));
+  assert.ok(h.store.calls.every(call=>call==='readOptional'),'read admission never creates a run');
+ }
+});
+
+for(const intent of ['create','revise','preview-publish'])test(`${intent}: a cancelled or absent run never admits a write, including at release`,async()=>{
+ const operations=['artifact.download','artifact.generate','artifact.inspect','artifact.preview-publish','artifact.revise'];
+ for(const stored of [null,row({binding:binding(ids.reservedRunId),scopes:structuredClone(scopes),state:'cancelled'})]){
+  const h=await harness({stored,operations});
+  await assert.rejects(h.authority.resolve(h.call({intent})),code('ACCESS_DENIED'));
+ }
+ const stored=row({binding:binding(ids.reservedRunId),scopes:structuredClone(scopes),state:'completed'}),h=await harness({stored,operations});
+ const call=h.call({intent}),resolved=await h.authority.resolve(call);
+ stored.run.state='cancelled';
+ await assert.rejects(resolved.recheck({phase:'effect',intent,requestSha256:call.requestSha256,resource:null,deadlineMs:h.now()+4000}),code('ACCESS_DENIED'));
 });
 
 test('the gate stays closed: no optional read, Core refusal, or a different principal',async()=>{

@@ -1,4 +1,5 @@
 import {conversationErrorStatuses} from './protocol.mjs';
+import {DOCUMENT_REVISION_SELECTION_SCHEMA} from '../document-revision.mjs';
 import {MODEL_SELECTION_SCHEMA} from '../model-selection.mjs';
 import {feedbackDefinitions} from './feedback-schema.mjs';
 const pub = name => ({$ref:'urn:meri:contracts:0.1.0#/$defs/'+name});
@@ -14,14 +15,14 @@ const prompt = {type:'string',minLength:1,maxLength:100000,pattern:'\\S'};
 const sha256 = {type:'string',pattern:'^[a-f0-9]{64}$'};
 export function conversationSchema(){
  const selection=object({skillId:skill('skillId'),skillVersion:skill('skillVersion')});
- return {$schema:'https://json-schema.org/draft/2020-12/schema',$id:'urn:meri:conversation-application:0.1.0',$defs:{
+ return {$schema:'https://json-schema.org/draft/2020-12/schema',$id:'urn:meri:conversation-application:0.2.0',$defs:{
   ...feedbackDefinitions,
-  ConversationSubmitRequest:object({requestId,prompt,windowRequest:common('WindowRequest'),skill:selection,modelSelection:MODEL_SELECTION_SCHEMA},['requestId','prompt']),
+  ConversationSubmitRequest:{...object({requestId,prompt,windowRequest:common('WindowRequest'),skill:selection,modelSelection:MODEL_SELECTION_SCHEMA,documentRevision:DOCUMENT_REVISION_SELECTION_SCHEMA},['requestId','prompt']),not:{properties:{skill:{},documentRevision:{}},required:['skill','documentRevision']}},
   ConversationHistoryRequest:object({after:sequence,limit:{type:'integer',minimum:1,maximum:100}},[]),
   ConversationCancelRequest:object({}),
   ConversationEventsRequest:object({command:object({conversationId:uuid,intent:{const:'view.subscribe'}})}),
   ConversationSkillAssetPin:object({skillId:skill('skillId'),skillVersion:skill('skillVersion'),manifestSha256:sha256,proseSha256:sha256,catalogSha256:sha256}),
-  ConversationStoredRequest:object({requestId,prompt,skill:nullable(ref('ConversationSkillAssetPin')),window:nullable(common('NormalizedWindow')),windowRequest:nullable(common('WindowRequest')),modelSelection:MODEL_SELECTION_SCHEMA},['requestId','prompt','skill','window','windowRequest']),
+  ConversationStoredRequest:{...object({requestId,prompt,skill:nullable(ref('ConversationSkillAssetPin')),window:nullable(common('NormalizedWindow')),windowRequest:nullable(common('WindowRequest')),modelSelection:MODEL_SELECTION_SCHEMA,documentRevision:DOCUMENT_REVISION_SELECTION_SCHEMA},['requestId','prompt','skill','window','windowRequest']),if:{properties:{documentRevision:{}},required:['documentRevision']},then:{properties:{skill:{type:'null'}}}},
   ConversationSubmittedResponse:object({run:pub('Run'),requestId,lastSequence:{...sequence,minimum:1},replayed:{type:'boolean'}}),
   ConversationHistoryResponse:object({run:pub('Run'),request:ref('ConversationStoredRequest'),events:{type:'array',items:{oneOf:[pub('UIEvent'),{$ref:'urn:meri:native-bill-text-source:1.0.0#/$defs/NativeBillTextSourceEvent'},{$ref:'urn:meri:native-hearing-source:1.0.0#/$defs/NativeHearingSourceEvent'}]},maxItems:100},nextSequence:sequence,hasMore:{type:'boolean'},lastSequence:{...sequence,minimum:1}}),
   ConversationCancelledResponse:object({state:{enum:['completed','failed','cancelled']}}),

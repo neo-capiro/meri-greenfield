@@ -1,12 +1,12 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "urn:meri:conversation-input:1.0.0",
+  "$id": "urn:meri:conversation-input:1.1.0",
   "$defs": {
     "ConversationInputRequest": {
-      "$ref": "#/$defs/Canonical_ConversationSubmitRequest_1ec41363"
+      "$ref": "#/$defs/Canonical_ConversationSubmitRequest_368891d1"
     },
     "ConversationInputStoredRequest": {
-      "$ref": "#/$defs/Canonical_ConversationStoredRequest_79d6cc7b"
+      "$ref": "#/$defs/Canonical_ConversationStoredRequest_38dab9b9"
     },
     "ConversationInputAdmittedResponse": {
       "type": "object",
@@ -15,7 +15,7 @@
           "$ref": "#/$defs/Canonical_Run_aeee1939"
         },
         "request": {
-          "$ref": "#/$defs/Canonical_ConversationStoredRequest_79d6cc7b"
+          "$ref": "#/$defs/Canonical_ConversationStoredRequest_38dab9b9"
         },
         "lastSequence": {
           "type": "integer",
@@ -77,9 +77,9 @@
       "additionalProperties": false
     },
     "ConversationInputErrorResponse": {
-      "$ref": "#/$defs/Canonical_ConversationErrorResponse_68bab4e3"
+      "$ref": "#/$defs/Canonical_ConversationErrorResponse_228f3e62"
     },
-    "Canonical_Canonical_WindowRequest_f314f340_6bb8c023": {
+    "Canonical_Canonical_WindowRequest_f314f340_1539ab45": {
       "oneOf": [
         {
           "type": "object",
@@ -290,7 +290,7 @@
         }
       ]
     },
-    "Canonical_Canonical_skillId_31e12e8e_cae56271": {
+    "Canonical_Canonical_skillId_31e12e8e_22efe610": {
       "type": "string",
       "enum": [
         "quick_skill.research_company",
@@ -309,11 +309,11 @@
         "quick_skill.regulatory_docket_brief"
       ]
     },
-    "Canonical_Canonical_skillVersion_7e2af095_7f0f4343": {
+    "Canonical_Canonical_skillVersion_7e2af095_1261fee6": {
       "type": "string",
       "pattern": "^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)$"
     },
-    "Canonical_ConversationSubmitRequest_1ec41363": {
+    "Canonical_ConversationSubmitRequest_368891d1": {
       "type": "object",
       "properties": {
         "requestId": {
@@ -327,16 +327,16 @@
           "pattern": "\\S"
         },
         "windowRequest": {
-          "$ref": "#/$defs/Canonical_Canonical_WindowRequest_f314f340_6bb8c023"
+          "$ref": "#/$defs/Canonical_Canonical_WindowRequest_f314f340_1539ab45"
         },
         "skill": {
           "type": "object",
           "properties": {
             "skillId": {
-              "$ref": "#/$defs/Canonical_Canonical_skillId_31e12e8e_cae56271"
+              "$ref": "#/$defs/Canonical_Canonical_skillId_31e12e8e_22efe610"
             },
             "skillVersion": {
-              "$ref": "#/$defs/Canonical_Canonical_skillVersion_7e2af095_7f0f4343"
+              "$ref": "#/$defs/Canonical_Canonical_skillVersion_7e2af095_1261fee6"
             }
           },
           "required": [
@@ -382,22 +382,55 @@
             "effort"
           ],
           "additionalProperties": false
+        },
+        "documentRevision": {
+          "type": "object",
+          "properties": {
+            "artifactId": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+            },
+            "versionId": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+            },
+            "objectSha256": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            }
+          },
+          "required": [
+            "artifactId",
+            "versionId",
+            "objectSha256"
+          ],
+          "additionalProperties": false
         }
       },
       "required": [
         "requestId",
         "prompt"
       ],
-      "additionalProperties": false
+      "additionalProperties": false,
+      "not": {
+        "properties": {
+          "skill": {},
+          "documentRevision": {}
+        },
+        "required": [
+          "skill",
+          "documentRevision"
+        ]
+      }
     },
-    "Canonical_ConversationSkillAssetPin_338818f9": {
+    "Canonical_ConversationSkillAssetPin_3299812a": {
       "type": "object",
       "properties": {
         "skillId": {
-          "$ref": "#/$defs/Canonical_Canonical_skillId_31e12e8e_cae56271"
+          "$ref": "#/$defs/Canonical_Canonical_skillId_31e12e8e_22efe610"
         },
         "skillVersion": {
-          "$ref": "#/$defs/Canonical_Canonical_skillVersion_7e2af095_7f0f4343"
+          "$ref": "#/$defs/Canonical_Canonical_skillVersion_7e2af095_1261fee6"
         },
         "manifestSha256": {
           "type": "string",
@@ -421,7 +454,7 @@
       ],
       "additionalProperties": false
     },
-    "Canonical_Canonical_NormalizedWindow_e50ec0ed_8a69a7e3": {
+    "Canonical_Canonical_NormalizedWindow_e50ec0ed_02bd54f8": {
       "oneOf": [
         {
           "type": "object",
@@ -550,7 +583,7 @@
         }
       ]
     },
-    "Canonical_ConversationStoredRequest_79d6cc7b": {
+    "Canonical_ConversationStoredRequest_38dab9b9": {
       "type": "object",
       "properties": {
         "requestId": {
@@ -566,7 +599,7 @@
         "skill": {
           "anyOf": [
             {
-              "$ref": "#/$defs/Canonical_ConversationSkillAssetPin_338818f9"
+              "$ref": "#/$defs/Canonical_ConversationSkillAssetPin_3299812a"
             },
             {
               "type": "null"
@@ -576,7 +609,7 @@
         "window": {
           "anyOf": [
             {
-              "$ref": "#/$defs/Canonical_Canonical_NormalizedWindow_e50ec0ed_8a69a7e3"
+              "$ref": "#/$defs/Canonical_Canonical_NormalizedWindow_e50ec0ed_02bd54f8"
             },
             {
               "type": "null"
@@ -586,7 +619,7 @@
         "windowRequest": {
           "anyOf": [
             {
-              "$ref": "#/$defs/Canonical_Canonical_WindowRequest_f314f340_6bb8c023"
+              "$ref": "#/$defs/Canonical_Canonical_WindowRequest_f314f340_1539ab45"
             },
             {
               "type": "null"
@@ -630,6 +663,29 @@
             "effort"
           ],
           "additionalProperties": false
+        },
+        "documentRevision": {
+          "type": "object",
+          "properties": {
+            "artifactId": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+            },
+            "versionId": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+            },
+            "objectSha256": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            }
+          },
+          "required": [
+            "artifactId",
+            "versionId",
+            "objectSha256"
+          ],
+          "additionalProperties": false
         }
       },
       "required": [
@@ -639,7 +695,22 @@
         "window",
         "windowRequest"
       ],
-      "additionalProperties": false
+      "additionalProperties": false,
+      "if": {
+        "properties": {
+          "documentRevision": {}
+        },
+        "required": [
+          "documentRevision"
+        ]
+      },
+      "then": {
+        "properties": {
+          "skill": {
+            "type": "null"
+          }
+        }
+      }
     },
     "Canonical_RunBinding_84f2304c": {
       "type": "object",
@@ -813,7 +884,7 @@
       ],
       "additionalProperties": false
     },
-    "Canonical_ConversationErrorResponse_68bab4e3": {
+    "Canonical_ConversationErrorResponse_228f3e62": {
       "type": "object",
       "properties": {
         "error": {

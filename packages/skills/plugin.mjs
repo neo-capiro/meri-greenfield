@@ -12,8 +12,9 @@ const fail=code=>{throw Object.assign(Error(code),{code});};
 const freeze=value=>{if(value&&typeof value==='object'){Object.values(value).forEach(freeze);Object.freeze(value);}return value;};
 /** @typedef {{name:string,version:string,skills:{skillId:string,skillVersion:string,name:string,proseSha256:string}[],excluded:{skillId:string,skillVersion:string,reason:string}[]}} SkillPluginDescription */
 /** Derived from the immutable identity; a present frontmatter name must agree, and an asset without SDK frontmatter is listed as excluded.
- * @param {{selection?:any}} [options] @returns {Readonly<SkillPluginDescription>} */
-export function describeSkillPlugin({selection}={}){
+ * Inventory keeps every launcher identity. Execution omits the selection-bound Bill Watch successor unless its exact persisted pin was admitted.
+ * @param {{selection?:any,execution?:boolean}} [options] @returns {Readonly<SkillPluginDescription>} */
+export function describeSkillPlugin({selection,execution=false}={}){
  const skills=[],excluded=[],order=[];
  const selected=selection===undefined?undefined:selectSkill(selection.skillId,selection.skillVersion);
  if(selected&&canonicalSha256(selected.pin)!==canonicalSha256(selection))fail('SKILL_PLUGIN_SELECTION_PIN');
@@ -29,6 +30,8 @@ export function describeSkillPlugin({selection}={}){
  if(selected&&!skills.some(s=>s.skillId===selected.pin.skillId&&s.skillVersion===selected.pin.skillVersion))fail('SKILL_PLUGIN_SELECTION_REFUSED');
  for(const [skillId,skillVersion]of Object.entries(assets.sdkDefaults??{}))if(!skills.some(s=>s.skillId===skillId&&(selected?.pin.skillId===skillId||s.skillVersion===skillVersion)))fail('SKILL_PLUGIN_DEFAULT_REFUSED');
  if(new Set(skills.map(s=>s.name)).size!==skills.length)fail('SKILL_PLUGIN_NAME_COLLISION');
+ if(execution){const i=skills.findIndex(s=>s.skillId==='quick_skill.bill_watch'&&s.skillVersion==='1.1.0');
+  if(i!==-1&&selected?.pin.skillId!=='quick_skill.bill_watch'){const [s]=skills.splice(i,1);excluded.push({skillId:s.skillId,skillVersion:s.skillVersion,reason:'PERSISTED_SELECTION_REQUIRED'});}}
  skills.sort((a,b)=>order.indexOf(a.skillId)-order.indexOf(b.skillId));
  return freeze({name:PLUGIN_NAME,version:'1.0.0',skills,excluded});
 }
@@ -36,7 +39,7 @@ export function describeSkillPlugin({selection}={}){
  * @param {{directory:string,selection?:any}} options */
 export async function materializeSkillPlugin({directory,selection}){
  if(typeof directory!=='string'||!isAbsolute(directory)||directory.includes('/../')||directory.endsWith('/')||directory.includes('\0'))fail('SKILL_PLUGIN_DIRECTORY_REFUSED');
- const plugin=describeSkillPlugin({selection});
+ const plugin=describeSkillPlugin({selection,execution:true});
  try{await mkdir(directory,{mode:0o700});}catch{fail('SKILL_PLUGIN_DIRECTORY_REFUSED');}
  try{
   await mkdir(join(directory,'.claude-plugin'),{mode:0o700});

@@ -60,6 +60,9 @@ export declare const routinesPaths:Readonly<{prepare:'/api/routines/prepare';app
 export declare const routinesMetadata:Readonly<{version:'0.1.0';routes:typeof routinesPaths;limits:{requestBytes:131072;responseBytes:2097152}}>;
 export declare function receiveRoutinesRequest<R extends RoutinesRoute>(route:R,jsonText:unknown):Promise<RoutinesRequestMap[R]>;
 export declare function receiveRoutinesResponse<R extends RoutinesRoute>(route:R,httpStatus:number,jsonText:unknown,expectation:RoutinesExpectationMap[R]):Promise<RoutinesResponse<R>>;
+export declare const routineManagementSessionPath:'/api/routines/session';
+export declare function receiveRoutineManagementSessionRequest(jsonText:unknown):RoutinesManagementSessionRequest;
+export declare function receiveRoutineManagementSessionReceipt(jsonText:unknown,expected:RoutinesManagementContext,at:number):RoutinesManagementSessionReceipt;
 export type IntentsRoute='list'|'decide';
 export interface IntentsRequestMap {list:IntentsListRequest;decide:IntentsDecideRequest;}
 export interface IntentsResponseMap {list:IntentsListResponse;decide:IntentsDecideResponse;}

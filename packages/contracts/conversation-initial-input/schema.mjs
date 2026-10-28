@@ -1,6 +1,6 @@
 import {conversationInitialInputMetadata,initialInputErrorStatuses} from './protocol.mjs';
 import {MODEL_SELECTION_SCHEMA} from '../model-selection.mjs';
-const ref=name=>({$ref:'#/$defs/'+name}),input=name=>({$ref:'urn:meri:conversation-input:1.0.0#/$defs/'+name});
+const ref=name=>({$ref:'#/$defs/'+name}),input=name=>({$ref:'urn:meri:conversation-input:1.1.0#/$defs/'+name});
 const pub=name=>({$ref:'urn:meri:contracts:0.1.0#/$defs/'+name});
 const object=(properties,required=Object.keys(properties))=>({type:'object',properties,required,additionalProperties:false});
 const integer=minimum=>({type:'integer',minimum,maximum:Number.MAX_SAFE_INTEGER});

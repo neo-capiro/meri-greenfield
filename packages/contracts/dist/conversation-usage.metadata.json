@@ -19,6 +19,23 @@
   "coverage": "recorded hooks only; omitted count is explicit",
   "correlation": "none with UI tool.call requestId, source references or other rows",
   "identifiers": "bounded inert text; never links, commands or authority",
+  "overview": {
+    "schemaId": "urn:meri:usage-overview:1.0.0",
+    "version": "1.0.0",
+    "path": "/api/conversations/usage-overview",
+    "method": "POST",
+    "requestBytes": 1024,
+    "responseBytes": 16384,
+    "authentication": "current native tenant membership, rechecked before release",
+    "scope": "tenant aggregate numbers only; no conversation, client or other member identifiers",
+    "currency": "USD",
+    "money": "integer micro-USD of known recorded SDK estimates; missing or unavailable accounting is not zero cost",
+    "periods": "UTC day, ISO Monday week and calendar month; attempt cohorts use run.createdAt, admission cap uses sdk_usage_recorded_at",
+    "limits": "current canonical SDK limits and tenant admission cap; no reservations or budget editing",
+    "capacity": "recorded durable states only; no physical worker concurrency or available capacity observation",
+    "economics": "attempts are not complete jobs; provider billing and complete-job economics unavailable",
+    "schemaSha256": "4598cc036f6db179ca0c430df3a9859750d685e2e67e218a1666366e1cd1e52e"
+  },
   "errorStatuses": {
     "INVALID_REQUEST": [
       400
@@ -106,8 +123,18 @@
     },
     {
       "path": "../../apps/control/conversations/postgres-store.mjs",
-      "sha256": "e1028ad88bcd804c041d5f5154ede172fb93f9c2bea2df67ccfc4353243efca4",
-      "bytes": 23326
+      "sha256": "f5a9bb94444468b5f0158e7c9094734e57f744f0b34acfb95b8ee6e507a9a2a0",
+      "bytes": 23531
+    },
+    {
+      "path": "../../apps/control/conversations/usage-overview/http.mjs",
+      "sha256": "b2ee9b84d2c95b4bad8b378d89c2707f44f4e593b84c904ab15a8d64fccf3f7b",
+      "bytes": 1690
+    },
+    {
+      "path": "../../apps/control/conversations/usage-overview/store.mjs",
+      "sha256": "ba293532b5554d4c82f725fac8f59375cc816be8a14fc026ff6cf5ee87c86bd3",
+      "bytes": 6363
     },
     {
       "path": "../../apps/control/conversations/usage-read/http.mjs",
@@ -126,13 +153,38 @@
     },
     {
       "path": "../../apps/runtime/product-applications.mjs",
-      "sha256": "f202c4fd0ceff361fef4d263a8267e9b279f789765524825984e915f5c05a1e1",
-      "bytes": 17939
+      "sha256": "3d6cec41a4ad43e66f006a332e28353a6b46e23923669eed2a974dd04100c95e",
+      "bytes": 19958
     },
     {
       "path": "conversation-history/protocol.mjs",
-      "sha256": "eb065617f91efeda0ab540b9b218abb6d8246b4faabdfdec5adcf01c42f7f69b",
+      "sha256": "6f00dabe137c8a1919a99d90d3e4a23d3835e7dc31625cbfcc3b3bdf58b38566",
       "bytes": 2449
+    },
+    {
+      "path": "conversation-usage/overview-protocol.mjs",
+      "sha256": "56134c38b83877292af4d3e2517d286cf3a65018e78625b3282502dbc3d6fcaa",
+      "bytes": 2338
+    },
+    {
+      "path": "conversation-usage/overview-receive.mjs",
+      "sha256": "1afb75e2880165ac907766b218acf583ecaaa134aa7704b0397ad5e748d5c3e1",
+      "bytes": 1630
+    },
+    {
+      "path": "conversation-usage/overview-schema.mjs",
+      "sha256": "de5e39daf421497d53a046d1c3cb5013dc2051d5d65f95fea94f4cbcbea36354",
+      "bytes": 2134
+    },
+    {
+      "path": "conversation-usage/overview-semantics.mjs",
+      "sha256": "9e0177031a65029e2c2520a54f08470a7fcc34a6376c941f2828d7a452f60da0",
+      "bytes": 1541
+    },
+    {
+      "path": "conversation-usage/overview-validate.mjs",
+      "sha256": "cea3f144f03336105d286011c6eefd07c0e6ce344984b7c206b9cf797254c85f",
+      "bytes": 863
     },
     {
       "path": "conversation-usage/protocol.mjs",
@@ -141,8 +193,8 @@
     },
     {
       "path": "conversation-usage/receive.mjs",
-      "sha256": "87b4a3b8b381ab753ff18401f89ff9bba3f84c7f0f015541187f5736fe747689",
-      "bytes": 1445
+      "sha256": "296758b47c44a9c79f811153ccfe34ab5d035c2dae9debed822d92a9dcc09884",
+      "bytes": 1633
     },
     {
       "path": "conversation-usage/schema.mjs",
@@ -166,8 +218,8 @@
     },
     {
       "path": "generate-usage.mjs",
-      "sha256": "831cbc4c0a0cbb576fd7cf50f4ad7665f7382cb12fafd422e91749e40202558e",
-      "bytes": 5902
+      "sha256": "cd21c6fd1b629fea6cc2e5ecaff8ec88128fabcd2b32b64ff0b47516e5853178",
+      "bytes": 8440
     },
     {
       "path": "meri.schema.json",
@@ -185,11 +237,16 @@
     "artifacts-0.2/artifact-formats.mjs",
     "conversation-history/protocol.mjs",
     "conversation-usage/conversation-usage-receiver.mjs",
+    "conversation-usage/overview-protocol.mjs",
+    "conversation-usage/overview-receive.mjs",
+    "conversation-usage/overview-semantics.mjs",
     "conversation-usage/protocol.mjs",
     "conversation-usage/semantics.mjs",
     "document-application/boundary.mjs",
+    "node_modules/ajv-formats/dist/formats.js",
     "node_modules/ajv/dist/runtime/ucs2length.js",
     "node_modules/canonicalize/lib/canonicalize.js",
+    "overview-generated:./generated-overview-validator.mjs",
     "usage-generated:./generated-validator.mjs"
   ]
 }

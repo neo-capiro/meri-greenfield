@@ -87,7 +87,8 @@ const createBody={deliveryId:'synthetic-delivery-1',request:{operation:'create_w
 
 test('golden vectors: exact request bytes and digest, accepted receipts, every listed refusal, status mapping',()=>{
  assert.equal(vector.contract,ARTIFACT_AUTHORITY_CONTRACT);assert.equal(vector.route.path,ARTIFACT_AUTHORITY_ROUTE);assert.equal(vector.transport.maxReceiptTtlMs,MAX_RECEIPT_TTL_MS);
- assert.deepEqual(vector.intentOperations,JSON.parse(JSON.stringify(INTENT_OPERATIONS)));
+ assert.deepEqual(vector.intentOperations,Object.fromEntries(Object.keys(vector.intentOperations).map(intent=>[intent,INTENT_OPERATIONS[intent]])));
+ assert.deepEqual(INTENT_OPERATIONS.history,['artifact.inspect']);assert.deepEqual(INTENT_OPERATIONS.list,['artifact.inspect']);
  assert.doesNotMatch(JSON.stringify(vector),/action_session_|eyJ|sk_live|Bearer [A-Za-z0-9]/u,'placeholders only');
  for(const k of vector.cases){
   assert.equal(canonicalSha256(k.meriRequest),k.request.requestSha256,k.name);
@@ -101,6 +102,14 @@ test('golden vectors: exact request bytes and digest, accepted receipts, every l
  for(const row of vector.statusMapping)if(typeof row.status==='number'&&row.status!==200)assert.equal(artifactAuthorityStatusCode(row.status),row.meri,String(row.status));
  for(const bad of [{...first.request,observationId:'00000000-0000-1000-8000-00000000e001'},{...first.request,intent:'delete'},{...first.request,clientId:first.request.clientId.toUpperCase()},{...first.request,extra:1}])
   assert.throws(()=>assertArtifactAuthorityRequest(bad),code('ACCESS_DENIED'));
+});
+
+for(const intent of ['history','list'])test(`${intent}: explicit read intent requires correlated inspect permission`,()=>{
+ const first=vector.cases[0],request=assertArtifactAuthorityRequest({...first.request,intent}),receipt={...structuredClone(first.receipt),intent,operations:['artifact.inspect']};
+ assert.deepEqual(assertArtifactAuthorityReceipt(receipt,request),receipt);
+ for(const patch of [{intent:'inspect'},{requestSha256:'f'.repeat(64)},{operations:['artifact.generate']},{operations:['artifact.download']},{operations:['artifact.inspect','artifact.inspect']}])
+  assert.throws(()=>assertArtifactAuthorityReceipt({...receipt,...patch},request),code('ACCESS_DENIED'));
+ assert.throws(()=>assertArtifactAuthorityRequest({...request,scope:'owner'}),code('ACCESS_DENIED'),'library filters are document input, never authority fields');
 });
 
 test('client: the golden request on the wire, Meri-clock receipt timing, and closed status/body/deadline refusals',async()=>{

@@ -1,12 +1,12 @@
 // Generated additive input receipt over accepted canonical schemas. No authorization implied.
 
 export type ConversationInputEnvelope =
-  | Canonical_ConversationSubmitRequest_1Ec41363
-  | Canonical_ConversationStoredRequest_79D6Cc7B
+  | Canonical_ConversationSubmitRequest_368891D1
+  | Canonical_ConversationStoredRequest_38Dab9B9
   | ConversationInputAdmittedResponse
   | ConversationInputExpectedContext
-  | Canonical_ConversationErrorResponse_68Bab4E3;
-export type Canonical_Canonical_WindowRequestF314F340_6Bb8C023 =
+  | Canonical_ConversationErrorResponse_228F3E62;
+export type Canonical_Canonical_WindowRequestF314F340_1539Ab45 =
   | {
       basis: 'calendar-week';
       offset: -1 | 0;
@@ -46,7 +46,7 @@ export type Canonical_Canonical_WindowRequestF314F340_6Bb8C023 =
   | {
       basis: 'unbounded';
     };
-export type Canonical_CanonicalSkillId_31E12E8ECae56271 =
+export type Canonical_CanonicalSkillId_31E12E8E_22Efe610 =
   | 'quick_skill.research_company'
   | 'quick_skill.relationship_brief'
   | 'quick_skill.client_changes'
@@ -61,8 +61,8 @@ export type Canonical_CanonicalSkillId_31E12E8ECae56271 =
   | 'quick_skill.hearing_watch'
   | 'quick_skill.representation_lookup'
   | 'quick_skill.regulatory_docket_brief';
-export type Canonical_CanonicalSkillVersion_7E2Af095_7F0F4343 = string;
-export type Canonical_Canonical_NormalizedWindowE50Ec0Ed_8A69A7E3 =
+export type Canonical_CanonicalSkillVersion_7E2Af095_1261Fee6 = string;
+export type Canonical_Canonical_NormalizedWindowE50Ec0Ed_02Bd54F8 =
   | {
       basis: 'calendar-week' | 'calendar-month' | 'calendar-year' | 'relative-duration' | 'explicit';
       startInclusive: string;
@@ -84,42 +84,52 @@ export type Canonical_Canonical_NormalizedWindowE50Ec0Ed_8A69A7E3 =
       basis: 'unbounded';
     };
 
-export interface Canonical_ConversationSubmitRequest_1Ec41363 {
+export interface Canonical_ConversationSubmitRequest_368891D1 {
   requestId: string;
   prompt: string;
-  windowRequest?: Canonical_Canonical_WindowRequestF314F340_6Bb8C023;
+  windowRequest?: Canonical_Canonical_WindowRequestF314F340_1539Ab45;
   skill?: {
-    skillId: Canonical_CanonicalSkillId_31E12E8ECae56271;
-    skillVersion: Canonical_CanonicalSkillVersion_7E2Af095_7F0F4343;
+    skillId: Canonical_CanonicalSkillId_31E12E8E_22Efe610;
+    skillVersion: Canonical_CanonicalSkillVersion_7E2Af095_1261Fee6;
   };
   modelSelection?: {
     provider: 'bedrock' | 'claude-api';
     modelId: string;
     effort: null | ('low' | 'medium' | 'high' | 'xhigh' | 'max');
   };
+  documentRevision?: {
+    artifactId: string;
+    versionId: string;
+    objectSha256: string;
+  };
 }
-export interface Canonical_ConversationStoredRequest_79D6Cc7B {
+export interface Canonical_ConversationStoredRequest_38Dab9B9 {
   requestId: string;
   prompt: string;
-  skill: Canonical_ConversationSkillAssetPin_338818F9 | null;
-  window: Canonical_Canonical_NormalizedWindowE50Ec0Ed_8A69A7E3 | null;
-  windowRequest: Canonical_Canonical_WindowRequestF314F340_6Bb8C023 | null;
+  skill: Canonical_ConversationSkillAssetPin_3299812A | null;
+  window: Canonical_Canonical_NormalizedWindowE50Ec0Ed_02Bd54F8 | null;
+  windowRequest: Canonical_Canonical_WindowRequestF314F340_1539Ab45 | null;
   modelSelection?: {
     provider: 'bedrock' | 'claude-api';
     modelId: string;
     effort: null | ('low' | 'medium' | 'high' | 'xhigh' | 'max');
   };
+  documentRevision?: {
+    artifactId: string;
+    versionId: string;
+    objectSha256: string;
+  };
 }
-export interface Canonical_ConversationSkillAssetPin_338818F9 {
-  skillId: Canonical_CanonicalSkillId_31E12E8ECae56271;
-  skillVersion: Canonical_CanonicalSkillVersion_7E2Af095_7F0F4343;
+export interface Canonical_ConversationSkillAssetPin_3299812A {
+  skillId: Canonical_CanonicalSkillId_31E12E8E_22Efe610;
+  skillVersion: Canonical_CanonicalSkillVersion_7E2Af095_1261Fee6;
   manifestSha256: string;
   proseSha256: string;
   catalogSha256: string;
 }
 export interface ConversationInputAdmittedResponse {
   run: Canonical_RunAeee1939;
-  request: Canonical_ConversationStoredRequest_79D6Cc7B;
+  request: Canonical_ConversationStoredRequest_38Dab9B9;
   lastSequence: number;
   replayed: boolean;
 }
@@ -164,7 +174,7 @@ export interface ConversationInputExpectedContext {
   runId: string;
   clientId: string | null;
 }
-export interface Canonical_ConversationErrorResponse_68Bab4E3 {
+export interface Canonical_ConversationErrorResponse_228F3E62 {
   error: {
     code:
       | 'NOT_FOUND'
@@ -202,8 +212,8 @@ export type ConversationInputView=Readonly<ConversationHistoryResponse>&Admitted
 export declare class ConversationInputResponseError extends Error {readonly code:string;}
 export declare const conversationInputMetadata: {
   "packageVersion": "0.1.7",
-  "inputVersion": "1.0.0",
-  "schemaId": "urn:meri:conversation-input:1.0.0",
+  "inputVersion": "1.1.0",
+  "schemaId": "urn:meri:conversation-input:1.1.0",
   "routes": {
     "admit": {
       "method": "POST",

@@ -1,11 +1,13 @@
 import {createHash} from 'node:crypto';
 import {createOperationLifetime} from '../../packages/runtime/operation-lifetime.mjs';
 import {recoverArtifact} from './recovery.mjs';
+import {readArtifactLibrary} from './library.mjs';
 import {ARTIFACT_MIME_TYPES as mime,artifactFilename as filenameFor} from '../../packages/contracts/artifacts-0.2/artifact-formats.mjs';
 const sha=bytes=>createHash('sha256').update(bytes).digest('hex');
 const fail=code=>{throw Object.assign(new Error(code),{code});};
 const closed=(value,keys)=>{if(!value||Array.isArray(value)||Object.keys(value).sort().join()!==keys.sort().join())fail('ARTIFACT_PORT_SHAPE');};
-export function createArtifactService({validators:v,authorize,versions,objects,executor,now,ids,retention,admitRetainedEvidence}){
+export function createArtifactService({validators:v,authorize,versions,objects,executor,now,ids,retention,admitRetainedEvidence,authorizeOrigin}){
+  if(authorizeOrigin!==undefined&&typeof authorizeOrigin!=='function')fail('ARTIFACT_CONFIGURATION');
   if(admitRetainedEvidence!==undefined&&typeof admitRetainedEvidence!=='function')fail('ARTIFACT_CONFIGURATION');
   if(![authorize,now,ids,versions?.read,versions?.commit,objects?.put,objects?.get,executor?.execute].every(x=>typeof x==='function')||retention!==undefined&&typeof retention?.assertServable!=='function'||versions?.recoverTenant!==undefined&&typeof versions.recoverTenant!=='function')fail('ARTIFACT_CONFIGURATION');
   const same=(a,b)=>v.hash(a)===v.hash(b);
@@ -90,7 +92,7 @@ export function createArtifactService({validators:v,authorize,versions,objects,e
       error.lifetime=life.close();throw error;
     }finally{life.close();}
   }
-  async function read(versionId,contextValue,options={},download=false){
+  async function read(versionId,contextValue,options={},download=false,revisionSource=false){
     if(typeof versionId!=='string')fail('ARTIFACT_VERSION_ID');
     const context=v.context(contextValue),life=operation(context,options.signal),action=download?'artifact.download':'artifact.inspect';
     const requestSha256=v.hash({action,versionId,context});let resource={versionId,object:null,assetObjects:[]};
@@ -101,10 +103,36 @@ export function createArtifactService({validators:v,authorize,versions,objects,e
       const bytes=await bytesFor(life,record.version.object,context.maxBytes);
       const inspection=inspectBytes(record.inspection,bytes,record.spec.format);
       await authority(life,action,resource,requestSha256,context);await servable(life,context,record);
+      // Private revision preparation receives the retained typed source only after the
+      // same byte, current-authority and retention checks as inspect. No new write or brand.
+      if(revisionSource)return {version:record.version,request:record.spec,specSha256:record.specSha256,inspection:{...inspection,currentBytesVerified:true}};
       return download?{version:record.version,bytes}:{version:record.version,inspection:{...inspection,currentBytesVerified:true}};
+    }catch(error){error.lifetime=life.close();throw error;}finally{life.close();}
+  }
+  async function history(queryValue,contextValue,options={}){
+    closed(queryValue,['versionId','limit','cursor']);const query=v.snapshot(queryValue);
+    if(typeof query.versionId!=='string'||!Number.isInteger(query.limit)||query.limit<1||query.limit>100||query.cursor!==null&&(typeof query.cursor!=='string'||!/^[a-f0-9]{64}$/u.test(query.cursor)))fail('ARTIFACT_HISTORY_INPUT');
+    if(typeof versions.history!=='function')fail('UNAVAILABLE');
+    const context=v.context(contextValue),life=operation(context,options.signal),action='artifact.inspect',resource={versionId:query.versionId,object:null,assetObjects:[]},requestSha256=v.hash({action,intent:'history',query,context});
+    try{
+      await authority(life,action,resource,requestSha256,context);await servable(life,context);await recoverTenant(life,context);
+      const result=v.snapshot(await life.run(signal=>versions.history(query.versionId,signal)));closed(result,['artifactId','anchorVersionId','headVersionId','records']);
+      if(result.anchorVersionId!==query.versionId||!Array.isArray(result.records)||!result.records.length||result.records.length>1024)fail('ARTIFACT_HISTORY_RESULT');
+      const records=result.records.map(record=>scopeVersion(record,record.version?.versionId,context)),ids=new Set();
+      for(let i=0;i<records.length;i++){const version=records[i].version;if(ids.has(version.versionId)||version.artifactId!==result.artifactId||version.parentVersionId!==(records[i+1]?.version.versionId??null))fail('ARTIFACT_HISTORY_RESULT');ids.add(version.versionId);}
+      if(records[0].version.versionId!==result.headVersionId||!ids.has(query.versionId))fail('ARTIFACT_HISTORY_RESULT');
+      const anchor=records.find(record=>record.version.versionId===query.versionId);resource.object=anchor.version.object;
+      await authority(life,action,resource,requestSha256,context);await servable(life,context,anchor);
+      // The cursor selects a page of this freshly authorized snapshot; it is never an authority capability.
+      const snapshotSha256=v.hash({query:{versionId:query.versionId,limit:query.limit},binding:context.binding,scopes:context.scopes,records}),cursorAt=offset=>v.hash({intent:'artifact.history',snapshotSha256,offset});let offset=0;
+      if(query.cursor!==null){offset=-1;for(let i=query.limit;i<records.length;i+=query.limit)if(cursorAt(i)===query.cursor){offset=i;break;}if(offset<0)fail('ARTIFACT_HISTORY_CURSOR');}
+      const page=records.slice(offset,offset+query.limit).map(record=>record.version),nextOffset=offset+page.length;
+      await authority(life,action,resource,requestSha256,context);await servable(life,context,anchor);
+      return {artifactId:result.artifactId,anchorVersionId:query.versionId,headVersionId:result.headVersionId,versions:page,nextCursor:nextOffset<records.length?cursorAt(nextOffset):null};
     }catch(error){error.lifetime=life.close();throw error;}finally{life.close();}
   }
   return Object.freeze({create:(request,context,options)=>generate(null,request,context,options),revise:(baseVersionId,request,context,options)=>{if(typeof baseVersionId!=='string')fail('ARTIFACT_VERSION_ID');return generate(baseVersionId,request,context,options);},
     recover:(baseVersionId,request,context,options)=>recoverArtifact({v,operation,authority,scopeVersion,bytesFor,inspectBytes,versions,servable,recoverTenant},baseVersionId,request,context,options),
-    inspect:(id,context,options)=>read(id,context,options),download:(id,context,options)=>read(id,context,options,true)});
+    list:(query,context,options)=>readArtifactLibrary({v,versions,authorizeOrigin,operation,authority,servable,recoverTenant,now},query,context,options),
+    history,revisionSource:(id,context,options)=>read(id,context,options,false,true),inspect:(id,context,options)=>read(id,context,options),download:(id,context,options)=>read(id,context,options,true)});
 }

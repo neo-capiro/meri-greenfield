@@ -1,7 +1,16 @@
 // Generated from the canonical document receiving schema (all artifact formats). No authorization implied.
 
 export type DocumentAccessApplicationEnvelope =
-  DocumentInspectRequest | DocumentDownloadRequest | DocumentInspectionResponse | DocumentErrorResponse;
+  | DocumentInspectRequest
+  | DocumentDownloadRequest
+  | DocumentHistoryRequest
+  | DocumentListRequest
+  | DocumentInspectionResponse
+  | DocumentHistoryResponse
+  | DocumentListResponse
+  | DocumentErrorResponse
+  | DocumentPreviewRequest
+  | DocumentPreviewPublication;
 export type DocumentInspectionResponse =
   | {
       version: DocumentVersion;
@@ -180,6 +189,16 @@ export interface DocumentInspectRequest {
 export interface DocumentDownloadRequest {
   versionId: string;
 }
+export interface DocumentHistoryRequest {
+  versionId: string;
+  limit: number;
+  cursor: null | string;
+}
+export interface DocumentListRequest {
+  scope: 'conversation' | 'client' | 'owner';
+  limit: number;
+  cursor: null | string;
+}
 export interface Canonical_ArtifactVersionD54B8Ac9 {
   contractVersion: '0.1.0';
   artifactId: string;
@@ -279,6 +298,26 @@ export interface CanonicalIntegrity_52Ed1E31 {
   bytes: number;
   currentBytesVerified: true;
 }
+export interface DocumentHistoryResponse {
+  anchorVersionId: string;
+  artifactId: string;
+  headVersionId: string;
+  /**
+   * @minItems 1
+   * @maxItems 100
+   */
+  versions: [DocumentVersion, ...DocumentVersion[]];
+  nextCursor: null | string;
+}
+export interface DocumentListResponse {
+  scope: 'conversation' | 'client' | 'owner';
+  /**
+   * @minItems 0
+   * @maxItems 100
+   */
+  versions: DocumentVersion[];
+  nextCursor: null | string;
+}
 export interface DocumentErrorResponse {
   error: {
     code:
@@ -288,6 +327,8 @@ export interface DocumentErrorResponse {
       | 'ARTIFACT_CANCELLED'
       | 'ARTIFACT_DEADLINE'
       | 'ARTIFACT_EFFECT_UNKNOWN'
+      | 'ARTIFACT_HISTORY_CURSOR'
+      | 'ARTIFACT_LIBRARY_CURSOR'
       | 'ARTIFACT_PREVIEW_PENDING'
       | 'ARTIFACT_PREVIEW_UNSUPPORTED'
       | 'ARTIFACT_RENDERER_UNAVAILABLE'
@@ -315,24 +356,59 @@ export interface DocumentErrorResponse {
     outcome: 'NOT_DISPATCHED' | 'UNKNOWN' | 'RESULT_NOT_RELEASED' | 'READ_UNAVAILABLE';
   };
 }
+export interface DocumentPreviewRequest {
+  versionId: string;
+}
+export interface DocumentPreviewPublication {
+  status: 'existing' | 'published';
+  preview: DocumentPreviewRecord;
+}
+export interface DocumentPreviewRecord {
+  recordVersion: 'meri.artifact-preview.proposal-1';
+  previewId: string;
+  versionId: string;
+  artifactId: string;
+  tenantId: string;
+  conversationId: string;
+  source: {
+    sha256: string;
+    bytes: number;
+    mimeType: string;
+  };
+  preview: {
+    object: Canonical_ObjectReferenceA099Bd1C;
+    mimeType: 'application/pdf';
+    pages: number;
+  };
+  conversion: {
+    method: 'source-pdf' | 'office-pdf';
+    inputSha256: string;
+    outputSha256: string;
+    qualificationId: null | string;
+    imageDigest: null | string;
+  };
+  status: 'published';
+  nativeQualified: false;
+  createdAt: string;
+}
 
-export type DocumentAccessRoute = 'inspect' | 'download';
+export type DocumentAccessRoute = 'inspect' | 'download' | 'history' | 'list';
 declare const admittedRequest: unique symbol;
 declare const admittedVersion: unique symbol;
-export interface DocumentAccessRequestMap { inspect:DocumentInspectRequest; download:DocumentDownloadRequest; }
+export interface DocumentAccessRequestMap { inspect:DocumentInspectRequest; download:DocumentDownloadRequest; history:DocumentHistoryRequest; list:DocumentListRequest; }
 export type AdmittedDocumentRequest<R extends DocumentAccessRoute> = Readonly<DocumentAccessRequestMap[R]> & {readonly [admittedRequest]:R};
 export type NativeArtifactFileMetadata = Extract<DocumentInspectionResponse,{kind:'native-file'}>['version'];
 export type AdmittedDocumentVersion = Readonly<DocumentVersion|NativeArtifactFileMetadata> & {readonly [admittedVersion]:true};
 export type DocumentReceipt<T> = T extends {version:infer V} ? Omit<T,'version'> & {readonly version:Readonly<V> & {readonly [admittedVersion]:true}} : never;
-export interface DocumentAccessResponseMap {inspect:DocumentReceipt<DocumentInspectionResponse>; download:never;}
+export interface DocumentAccessResponseMap {inspect:DocumentReceipt<DocumentInspectionResponse>; download:never; history:DocumentHistoryResponse; list:DocumentListResponse;}
 export type DocumentResponse<R extends DocumentAccessRoute> = DocumentAccessResponseMap[R] | DocumentErrorResponse;
 export interface DocumentDownload<V extends AdmittedDocumentVersion = AdmittedDocumentVersion> {readonly version:V; readonly bytes:Uint8Array<ArrayBuffer>;}
 export interface DocumentDownloadOptions {maxBytes?:number; timeoutMs?:number; signal?:AbortSignal;}
 export declare class DocumentResponseError extends Error {readonly code:string;}
-export declare const documentAccessVersion:'0.1.0';
+export declare const documentAccessVersion:'0.2.0';
 export declare const documentAccessMetadata:{
-  "contractVersion": "0.1.0",
-  "schemaId": "urn:meri:document-access-application:0.1.0",
+  "contractVersion": "0.2.0",
+  "schemaId": "urn:meri:document-access-application:0.2.0",
   "routes": {
     "inspect": {
       "method": "POST",
@@ -343,6 +419,16 @@ export declare const documentAccessMetadata:{
       "method": "POST",
       "path": "/api/documents/download",
       "response": "bytes"
+    },
+    "history": {
+      "method": "POST",
+      "path": "/api/documents/history",
+      "response": "json"
+    },
+    "list": {
+      "method": "POST",
+      "path": "/api/documents/list",
+      "response": "json"
     }
   },
   "formats": [
@@ -394,6 +480,8 @@ export declare const documentAccessMetadata:{
     "ARTIFACT_CANCELLED": 499,
     "ARTIFACT_DEADLINE": 408,
     "ARTIFACT_EFFECT_UNKNOWN": 502,
+    "ARTIFACT_HISTORY_CURSOR": 409,
+    "ARTIFACT_LIBRARY_CURSOR": 409,
     "ARTIFACT_PREVIEW_PENDING": 409,
     "ARTIFACT_PREVIEW_UNSUPPORTED": 422,
     "ARTIFACT_RENDERER_UNAVAILABLE": 503,
@@ -423,6 +511,8 @@ export declare const documentAccessMetadata:{
     "nativeFiles": "native-file identifies a committed workspace path and immutable object with currently verified bytes; it makes no format, rendering, generation-status or preview-status claim",
     "inspection": "structural facts about one exact stored version; nativeOpened, rendered and recalculated are always false, pptx visualInspection and pdf renderInspection are always pending, so no inspection describes a rendered or visually checked file",
     "download": "a download is admitted only for a version this receiver admitted from an inspect answer in the same session of use; inspect first, never a link or bytes alone",
+    "history": "currently authorized metadata for one immutable artifact chain, newest first, with an anchor-correlated response and a context/query/head-bound opaque continuation; it verifies no object bytes and admits no version for download; history is not cross-conversation library discovery",
+    "list": "currently authorized original head metadata for the same owner in conversation, selected client, or owner scope; each origin requires fresh Core access and retention before release; a bounded candidate window may yield an empty page with nextCursor, without totals or hidden counts; cursors select a context/query/snapshot-bound page and convey no authority; versions are not admitted for download",
     "preview": "previewFormats are the only formats the artifact preview owner will render (any other format answers ARTIFACT_PREVIEW_UNSUPPORTED); every previewFormat except pdf also needs a qualified converter or answers ARTIFACT_RENDERER_UNAVAILABLE; this contract carries no preview route and no renderer qualification",
     "statuses": "the document application releases only generationStatus draft and previewStatus pending, so previewStatus never reports unsupported or validated here",
     "composition": "a document application instance is composed with one operation descriptor (operationFormats) and answers DOCUMENT_RESULT_REFUSED for versions of formats outside it; which descriptor serves a conversation is a composition fact this contract cannot assert",
@@ -432,3 +522,13 @@ export declare const documentAccessMetadata:{
 export declare function receiveDocumentRequest<R extends DocumentAccessRoute>(route:R,utf8Bytes:Uint8Array):AdmittedDocumentRequest<R>;
 export declare function receiveDocumentResponse<R extends DocumentAccessRoute>(route:R,httpStatus:number,utf8Bytes:Uint8Array,request:AdmittedDocumentRequest<R>):Promise<DocumentResponse<R>>;
 export declare function receiveDocumentDownload<V extends AdmittedDocumentVersion>(response:Response,version:V,options?:DocumentDownloadOptions):Promise<DocumentDownload<V>>;
+export declare const documentPreviewVersion:'0.1.0';
+export declare const documentPreviewMetadata:Readonly<{contractVersion:'0.1.0';publish:Readonly<{method:'POST';path:'/api/documents/preview-publish';response:'json';effect:'write'}>;read:Readonly<{method:'POST';path:'/api/documents/preview';response:'bytes';effect:'read'}>;maxBytes:8388608;maxPages:500;nativeQualified:false}>;
+declare const admittedPreviewRequest:unique symbol;
+export type DocumentPreviewAction='publish'|'read';
+export type AdmittedDocumentPreviewRequest<A extends DocumentPreviewAction>=Readonly<DocumentPreviewRequest>&{readonly[admittedPreviewRequest]:A};
+export type AdmittedGeneratedDocumentVersion=Readonly<DocumentVersion>&{readonly[admittedVersion]:true};
+export interface DocumentPreview<V extends AdmittedGeneratedDocumentVersion=AdmittedGeneratedDocumentVersion>{readonly version:V;readonly bytes:Uint8Array<ArrayBuffer>;readonly preview:Readonly<{previewId:string;sourceVersionId:string;sourceSha256:string;sha256:string;pages:number;recordSha256:string;nativeQualified:false}>;}
+export declare function receiveDocumentPreviewRequest<A extends DocumentPreviewAction>(action:A,utf8Bytes:Uint8Array):AdmittedDocumentPreviewRequest<A>;
+export declare function receiveDocumentPreviewPublication(httpStatus:number,utf8Bytes:Uint8Array,request:AdmittedDocumentPreviewRequest<'publish'>,version:AdmittedGeneratedDocumentVersion):DocumentPreviewPublication|DocumentErrorResponse;
+export declare function receiveDocumentPreview<V extends AdmittedGeneratedDocumentVersion>(response:Response,version:V,options?:DocumentDownloadOptions):Promise<DocumentPreview<V>>;

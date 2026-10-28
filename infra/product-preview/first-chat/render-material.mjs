@@ -142,16 +142,20 @@ export function parseFeatures(raw,{secrets={}}={}){
   out.retention={enabled:true,...(purge===undefined?{}:{purge})};
  }
  if(f.artifacts!==undefined){
-  const storage=['region','bucket','prefix','expectedBucketOwner','kmsKeyId'],a=record(f.artifacts,'features.artifacts',['enabled'],[...storage,'authority','executor']);
-  if(!bool(a.enabled,'features.artifacts.enabled')){if([...storage,'authority','executor'].some(k=>a[k]!==undefined))fail('RENDER_INPUT_REFUSED','features.artifacts: a disabled store names no storage');out.artifacts={enabled:false};}
+  const storage=['region','bucket','prefix','expectedBucketOwner','kmsKeyId'],a=record(f.artifacts,'features.artifacts',['enabled'],[...storage,'authority','executor','renderer','pdfAdmission']);
+  if(!bool(a.enabled,'features.artifacts.enabled')){if([...storage,'authority','executor','renderer','pdfAdmission'].some(k=>a[k]!==undefined))fail('RENDER_INPUT_REFUSED','features.artifacts: a disabled store names no storage');out.artifacts={enabled:false};}
   else{
-   record(a,'features.artifacts',['enabled',...storage],['authority','executor']);
+   record(a,'features.artifacts',['enabled',...storage],['authority','executor','renderer','pdfAdmission']);
    // Core artifact current authority (docs/integration/ARTIFACT-CURRENT-AUTHORITY-CONTRACT.md); reuses the reads Core service secret.
    const authority=a.authority===undefined?false:bool(record(a.authority,'features.artifacts.authority',['enabled']).enabled,'features.artifacts.authority.enabled');
    if(a.region!==REGION||a.expectedBucketOwner!==ACCOUNT)fail('RENDER_INPUT_REFUSED',`features.artifacts region/expectedBucketOwner must be ${REGION}/${ACCOUNT}`);
    if(typeof a.kmsKeyId!=='string'||!KMS_KEY_ARN.test(a.kmsKeyId))fail('RENDER_INPUT_REFUSED','features.artifacts.kmsKeyId must be a full KMS key ARN in this account and region');
-   try{const {authority:_authority,...store}=a;compileRuntimeArtifactsConfiguration({artifacts:store});}catch{fail('RENDER_INPUT_REFUSED','features.artifacts bucket/prefix (artifacts/configuration.mjs)');}
-   out.artifacts={enabled:true,region:a.region,bucket:a.bucket,prefix:a.prefix,expectedBucketOwner:a.expectedBucketOwner,kmsKeyId:a.kmsKeyId,...(authority?{authority:true}:{}),...(a.executor===undefined?{}:{executor:structuredClone(a.executor)})};
+   const renderer=a.renderer===undefined?undefined:{enabled:bool(record(a.renderer,'features.artifacts.renderer',['enabled']).enabled,'features.artifacts.renderer.enabled')};
+   const pdfAdmission=a.pdfAdmission===undefined?undefined:bool(a.pdfAdmission,'features.artifacts.pdfAdmission');
+   if(renderer?.enabled===true&&(!authority||!a.executor||!out.retention)||pdfAdmission===true&&renderer?.enabled!==true)fail('RENDER_INPUT_REFUSED','features.artifacts renderer needs authority, executor and retention; PDF admission needs the renderer');
+   try{const {authority:_authority,renderer:_renderer,...store}=a;compileRuntimeArtifactsConfiguration({artifacts:store});}catch{fail('RENDER_INPUT_REFUSED','features.artifacts bucket/prefix (artifacts/configuration.mjs)');}
+   out.artifacts={enabled:true,region:a.region,bucket:a.bucket,prefix:a.prefix,expectedBucketOwner:a.expectedBucketOwner,kmsKeyId:a.kmsKeyId,...(authority?{authority:true}:{}),...(a.executor===undefined?{}:{executor:structuredClone(a.executor)}),
+    ...(renderer===undefined?{}:{renderer}),...(pdfAdmission===undefined?{}:{pdfAdmission})};
   }
  }
  if(f.downloadLinks!==undefined){
@@ -352,7 +356,8 @@ export function renderMaterial({deployment,core,runtime,stage3,private:pki,nowMs
   ...(features.routines.core===undefined?{}:{core:{origin:k.coreOrigin,serviceSecretFile:PATHS.readsServiceSecret,...structuredClone(features.routines.core)}}),
   ...(features.routines.task===undefined?{}:{task:structuredClone(features.routines.task)}),
   ...(features.routines.workflow===undefined?{}:{workflow:structuredClone(features.routines.workflow)})};
- if(features.artifacts!==undefined){const {authority,...store}=features.artifacts;featureKeys.artifacts=store.enabled?{...store,
+ if(features.artifacts!==undefined){const {authority,renderer,...store}=features.artifacts;featureKeys.artifacts=store.enabled?{...store,
+  ...(renderer?{renderer:{...renderer,imageDigest:'sha256:'+nodeDigest}}:{}),
   ...(authority?{authority:{origin:k.coreOrigin,serviceSecretFile:PATHS.readsServiceSecret}}:{})}:{enabled:false};}
  if(features.downloadLinks!==undefined)featureKeys.downloadLinks=features.downloadLinks.enabled?{enabled:true,keyFile:PATHS.downloadLinkKey,...(features.downloadLinks.ttlMs===undefined?{}:{ttlMs:features.downloadLinks.ttlMs})}:{enabled:false};
  if(features.capabilityPlatform!==undefined)featureKeys.capabilityPlatform=structuredClone(features.capabilityPlatform);

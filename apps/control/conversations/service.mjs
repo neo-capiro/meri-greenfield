@@ -1,3 +1,4 @@
+import {assertDocumentRevisionSelection} from '../../../packages/contracts/document-revision.mjs';
 import {assertNativeConversationScope} from '../../../packages/contracts/runtime-0.2/session.mjs';
 /** Authenticated request/history control; policy remains in existing session owners. */
 import {randomUUID} from 'node:crypto';
@@ -24,7 +25,7 @@ const OBSERVE_PAGE_EVENTS=100;
 const OBSERVE_IDLE_POLL_MAX_MS=250;
 /** An idle observation window closes this long before its cap: more than one timer tick of lateness (Windows ~15.6 ms) plus loop lag. */
 const WINDOW_END_SLACK_MS=50;
-export function createConversationService({sessions,store,dispatcher,versions,fiscalCalendars=[],now=Date.now,newId=randomUUID,maxRequestMs=3000,selectedSkillAdmission,selectedOutputPublication,retention,capabilityPolicy,readCapabilityRole,runBudgets,modelCatalog}){
+export function createConversationService({sessions,store,dispatcher,versions,fiscalCalendars=[],now=Date.now,newId=randomUUID,maxRequestMs=3000,selectedSkillAdmission,selectedOutputPublication,retention,capabilityPolicy,readCapabilityRole,runBudgets,modelCatalog,documentRevisionSource}){
  const readCurrent=authenticatedCurrentState(sessions);
  const admissionPort=selectedSkillAdmission===undefined?undefined:own(selectedSkillAdmission,['admitSelection'],['currentSkillRun']),publicationPort=selectedOutputPublication===undefined?undefined:own(selectedOutputPublication,['prepareEvent']);
  if(admissionPort!==undefined&&typeof admissionPort.admitSelection!=='function'||publicationPort!==undefined&&typeof publicationPort.prepareEvent!=='function')fail('CONTROL_CONFIGURATION');
@@ -59,11 +60,11 @@ export function createConversationService({sessions,store,dispatcher,versions,fi
   try{const context=await fresh();let result=await body(context,life,fresh,()=>authorityExpiresAtMs);if(untilMs===undefined)await fresh();if(release)result=await release(result,life);life.check();return result;}finally{life.close();}
  }
  const event=(binding,scopes,type,data)=>({contractVersion:'0.1.0',eventId:newId(),binding,sequence:1,createdAt:new Date(now()).toISOString(),scopes,type,data});
- function inputIntent(raw){const i=bounded(raw);own(i,['requestId','prompt'],['skill','windowRequest','modelSelection']);uuid(i.requestId);if(typeof i.prompt!=='string'||!i.prompt.trim()||i.prompt.length>100000)fail('INVALID_REQUEST');if(i.windowRequest)retrievalShape('WindowRequest',i.windowRequest);if(Object.hasOwn(i,'modelSelection')){try{assertModelSelection(i.modelSelection);}catch{fail('INVALID_REQUEST');}}return i;}
+ function inputIntent(raw){const i=bounded(raw);own(i,['requestId','prompt'],['skill','windowRequest','modelSelection','documentRevision']);if(Object.hasOwn(i,'documentRevision')){try{assertDocumentRevisionSelection(i.documentRevision);if(i.skill)throw 0;}catch{fail('INVALID_REQUEST');}}uuid(i.requestId);if(typeof i.prompt!=='string'||!i.prompt.trim()||i.prompt.length>100000)fail('INVALID_REQUEST');if(i.windowRequest)retrievalShape('WindowRequest',i.windowRequest);if(Object.hasOwn(i,'modelSelection')){try{assertModelSelection(i.modelSelection);}catch{fail('INVALID_REQUEST');}}return i;}
  const available=selection=>{try{return availableModelSelection(modelCatalog,selection);}catch(error){fail(error.code==='MODEL_SELECTION_UNAVAILABLE'?'MODEL_SELECTION_UNAVAILABLE':'MODEL_SETTINGS_UNAVAILABLE');}};
  function prepareInput(i,createdAt,modelSelection){let skill=null,window=i.windowRequest?resolveWindow(i.windowRequest,{referenceAt:createdAt,fiscalCalendars}):null;
   if(i.skill){own(i.skill,['skillId','skillVersion']);const selected=selectSkill(i.skill.skillId,i.skill.skillVersion);if(!selectedSkillAdmission)assertSkillManifest(selected.manifest,catalog);if(!window)fail('SKILL_WINDOW_REQUIRED');if((!selectedSkillAdmission&&!selected.manifest.subjectKinds.includes('client'))||!selected.manifest.windowBases.includes(window.basis))fail('SKILL_SCOPE_REFUSED');skill=selected.pin;}
-  if(window)retrievalShape('NormalizedWindow',window);return {requestId:i.requestId,prompt:i.prompt,skill,window,windowRequest:i.windowRequest??null,...(modelSelection===undefined?{}:{modelSelection})};
+  if(window)retrievalShape('NormalizedWindow',window);return {requestId:i.requestId,prompt:i.prompt,skill,window,windowRequest:i.windowRequest??null,...(i.documentRevision===undefined?{}:{documentRevision:i.documentRevision}),...(modelSelection===undefined?{}:{modelSelection})};
  }
  async function admitPrepared(request,context,life,fresh){if(!request.skill)return;const selected=selectSkill(request.skill.skillId,request.skill.skillVersion);if(!selectedSkillAdmission){assertSkillManifest(selected.manifest,catalog);return;}await fresh();const started=now();const receipt=assertSelectionAdmission(await life.run(signal=>admissionPort.admitSelection.call(selectedSkillAdmission,{binding:context.binding,request,scopes:context.scopes,selectedClientId:context.selectedClientId,deadlineMs:life.deadline(),signal})),{binding:context.binding,request,scopes:context.scopes,selectedClientId:context.selectedClientId,selected,started,now});life.limitDeadline(receipt.expiresAtMs);await fresh();}
  function initialPorts(){const ports=own(store.initialInputs,['claim','read','accept']);if(Object.values(ports).some(p=>typeof p!=='function'))fail('CONTROL_CONFIGURATION');return ports;}
@@ -97,7 +98,7 @@ export function createConversationService({sessions,store,dispatcher,versions,fi
    async function release(saved){if(!same(saved.run.binding,b))fail('STALE_WRITER');if(!same(saved.run.scopes,context.scopes))fail('SCOPE_REFUSED');await fresh();await admit(saved.request);if(dispatch&&saved.run.state==='queued')await life.run(signal=>dispatcher.start({binding:b,signal}));await fresh();await admit(saved.request);return dispatch?{run:saved.run,requestId:i.requestId,lastSequence:saved.lastSequence,replayed:saved.replayed}:assertConversationInputReceipt({run:saved.run,request:saved.request,lastSequence:saved.lastSequence,replayed:saved.replayed},i);}
    if(typeof store.findRequest!=='function')fail('CONTROL_CONFIGURATION');const retained=await life.run(()=>store.findRequest(b,i.requestId,life.check));
    const originalPorts=b.writerFence===1?initialPorts():null,allocation=originalPorts?await life.run(()=>originalPorts.read(b,life.check)):null,original=allocation?pinOriginal(allocation,context,i,life,retained):null;
-   if(retained){const selected=i.skill?selectSkill(i.skill.skillId,i.skill.skillVersion):null;if(i.skill)own(i.skill,['skillId','skillVersion']);if(!same(retained.run.scopes,context.scopes))fail('SCOPE_REFUSED');if(!same(retained.run.versions,versions)||retained.request.prompt!==i.prompt||!same(retained.request.windowRequest??null,i.windowRequest??null)||!same(retained.request.skill,selected?.pin??null)||i.modelSelection!==undefined&&!same(i.modelSelection,storedModelSelection(retained.request)))fail('REQUEST_REPLAY_REFUSED');return release(retained);}
+   if(retained){const selected=i.skill?selectSkill(i.skill.skillId,i.skill.skillVersion):null;if(i.skill)own(i.skill,['skillId','skillVersion']);if(!same(retained.run.scopes,context.scopes))fail('SCOPE_REFUSED');if(!same(retained.run.versions,versions)||retained.request.prompt!==i.prompt||!same(retained.request.documentRevision??null,i.documentRevision??null)||!same(retained.request.windowRequest??null,i.windowRequest??null)||!same(retained.request.skill,selected?.pin??null)||i.modelSelection!==undefined&&!same(i.modelSelection,storedModelSelection(retained.request)))fail('REQUEST_REPLAY_REFUSED');return release(retained);}
    let inherited;
    if(!originalPorts){
     if(typeof store.nextRuns?.readTarget!=='function'||typeof store.nextRuns.accept!=='function')fail('CONTROL_CONFIGURATION');
@@ -181,7 +182,12 @@ export function createConversationService({sessions,store,dispatcher,versions,fi
    if(!same(latest.run.binding,result.run.binding)||!same(latest.run.scopes,result.run.scopes)||!same(latest.run.versions,result.run.versions)||!same(latest.request,result.request))fail('SESSION_CHANGED');
   }
   if(extra&&lineage?.nextTurn)fail('EXECUTION_LINEAGE_AMBIGUOUS');
-  return {run:result.run,request:result.request,model,...(lineage??{}),...(budgets===null?{}:{runBudgets:budgets}),...(extra??{})};
+  let documentRevisionContext;
+  if(result.request.documentRevision!==undefined){
+   if(typeof documentRevisionSource!=='function')fail('DOCUMENT_REVISION_UNAVAILABLE');
+   await fresh();documentRevisionContext=await life.run(signal=>documentRevisionSource({binding,selection:result.request.documentRevision,deadlineMs:life.deadline(),signal}));await fresh();
+  }
+  return {run:result.run,request:result.request,model,...(documentRevisionContext===undefined?{}:{documentRevisionContext}),...(lineage??{}),...(budgets===null?{}:{runBudgets:budgets}),...(extra??{})};
  },{release:async(result,life)=>{
   if(capabilityPort===undefined)return result;
   // Resolve only after all model/lineage/journal and final local-authority awaits. No earlier capability set is released.
