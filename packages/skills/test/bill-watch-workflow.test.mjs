@@ -5,6 +5,7 @@ import {readFile,mkdtemp,readdir,chmod,rm} from 'node:fs/promises';
 import {join} from 'node:path';
 import {tmpdir} from 'node:os';
 import {createHash} from 'node:crypto';
+import {createRequire} from 'node:module';
 import {canonicalSha256} from '../../contracts/validate.mjs';
 import {resolveOperationContract,validateShape} from '../../contracts/retrieval-0.2/validate.mjs';
 import {inspectStateBillSelector} from '../../contracts/retrieval-0.2/state-bill-identity.mjs';
@@ -15,8 +16,10 @@ import {createProfileMounts} from '../../../apps/worker/conversation/capabilitie
 import {sdkSkillPluginDirectory,prepareRunSkillPlugin,verifySkillPluginTree} from '../../../apps/worker/conversation/capabilities/skill-plugin.mjs';
 import {assertCapabilityPolicy} from '../../../apps/worker/conversation/capabilities/policy.mjs';
 import {binding,scopes} from '../../../apps/control/conversations/test/store-fixture.mjs';
-import {Client} from '@modelcontextprotocol/sdk/client/index.js';
-import {InMemoryTransport} from '@modelcontextprotocol/sdk/inMemory.js';
+// This test exercises the worker's MCP transport; use its declared SDK dependency.
+const require=createRequire(new URL('../../../apps/worker/conversation/package.json',import.meta.url));
+const {Client}=require('@modelcontextprotocol/sdk/client/index.js');
+const {InMemoryTransport}=require('@modelcontextprotocol/sdk/inMemory.js');
 
 const folder=new URL('../originals/bill_watch/1.1.0/',import.meta.url);
 const manifest=JSON.parse(await readFile(new URL('manifest.json',folder),'utf8'));
