@@ -10,6 +10,7 @@ import {bindPreparedReportArtifactOptions} from '../binding.mjs';
 import {reportManifest,reportSkillPin,reportSourceIds,reportReadOperation} from '../skill.mjs';
 import {REPORT_SECTIONS} from '../input.mjs';
 import {artifactValidators as v,assertEvidence} from '../../../../../packages/contracts/retrieval-0.2/validate.mjs';
+import {selectSkill} from '../../../../../packages/skills/index.mjs';
 import {createArtifactService} from '../../../../artifacts/service.mjs';
 import {nativeDocumentFixture,sha} from '../../../../artifacts/test/native-document-fixture.mjs';
 const NOW=Date.parse('2026-10-13T12:00:00.000Z'),stamp=new Date(NOW).toISOString();
@@ -102,11 +103,17 @@ test('recipe/prose/catalog pins and future as-of refuse before source dispatch',
  const prose=await readFile(new URL('../SKILL.md',import.meta.url));
  assert.equal(digest(prose),reportManifest().prose.sha256);
  assert.equal(reportManifest().prose.id,'urn:meri:original:sourced-cited-report:1.0.0');
- // No new installed public skill package is introduced here: the recipe selects the same installed
- // pin the congressional sourced brief already uses, whose installed prose and manifest are that recipe's.
+ // The recipe is installed as its own version (quick_skill.bill_watch 2.0.0) whose manifest and prose are this
+ // recipe's own bytes; it never presents itself as the sourced brief prose of the installed 1.0.0 pin.
  assert.deepEqual({skillId:reportManifest().skillId,skillVersion:reportManifest().skillVersion},{skillId:reportSkillPin().skillId,skillVersion:reportSkillPin().skillVersion});
- assert.equal(digest(await readFile(new URL('../../research-brief/SKILL.md',import.meta.url))),reportSkillPin().proseSha256);
- assert.equal(v.hash(JSON.parse(await readFile(new URL('../../research-brief/manifest.json',import.meta.url),'utf8'))),reportSkillPin().manifestSha256);
+ assert.equal(selectSkill(reportManifest().skillId,reportManifest().skillVersion).pin.proseSha256,reportSkillPin().proseSha256);
+ assert.equal(v.hash(reportManifest()),reportSkillPin().manifestSha256);
+ const briefPin=selectSkill('quick_skill.bill_watch','1.0.0').pin;
+ assert.equal(reportSkillPin().catalogSha256,selectSkill(reportManifest().skillId,reportManifest().skillVersion).installationCatalogSha256);
+ assert.notEqual(reportSkillPin().proseSha256,briefPin.proseSha256);
+ assert.notEqual(reportSkillPin().manifestSha256,briefPin.manifestSha256);
+ assert.equal(digest(await readFile(new URL('../../research-brief/SKILL.md',import.meta.url))),briefPin.proseSha256);
+ assert.equal(briefPin.manifestSha256,v.hash(JSON.parse(await readFile(new URL('../../research-brief/manifest.json',import.meta.url),'utf8'))));
 });
 const writeCall=p=>({action:'artifact.generate',resource:{versionId:null},binding:p.context.binding,scopes:p.context.scopes,requestSha256:v.nativeRequestSha256(p.request,p.context,null)});
 test('prepared guard and binder pin the exact request, context, base and retained-evidence admission',async()=>{

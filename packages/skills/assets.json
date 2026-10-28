@@ -140,6 +140,15 @@
       "manifestSha256": "d8c3f776a56f7a67ff2d0fb2fae4a2704e5bd45173ee2c2200232a41085b875e",
       "proseSha256": "e24b8793dc674f76eff3eb55b61cd76198a4ddde146ff723af4a0787da0f7e1a",
       "catalogSha256": "1f901f26ec134e1585ff12541c3344fda77da1fb07f599f8d59e9338ecaa6eb6"
+    },
+    {
+      "skillId": "quick_skill.bill_watch",
+      "skillVersion": "2.0.0",
+      "manifestPath": "../../apps/control/document-application/report-brief/manifest.json",
+      "prosePath": "../../apps/control/document-application/report-brief/SKILL.md",
+      "manifestSha256": "0eaccef8aea2e9ee4c3107fba4e1305faa0e441860d267a6b5675cb0d1197ae5",
+      "proseSha256": "89fa64fbe8282ee3792a72bfb0c586ec67053b85a413f218d7b870d6a7c7746f",
+      "catalogSha256": "1f901f26ec134e1585ff12541c3344fda77da1fb07f599f8d59e9338ecaa6eb6"
     }
   ],
   "sdkDefaults": {

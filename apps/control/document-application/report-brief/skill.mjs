@@ -1,6 +1,7 @@
 /** Original immutable recipe/prose identity of the sourced cited report; no runtime activation, no SDK loop.
- * The recipe is a distinct bounded selection over the installed skill pin the congressional sourced
- * brief already uses; no new installed public skill pin is introduced here. */
+ * The recipe is installed as its own version quick_skill.bill_watch 2.0.0 in packages/skills/assets.json, so its
+ * newly authored prose is bound as itself (urn:meri:original:sourced-cited-report) and is never presented as the
+ * sourced brief prose of the installed quick_skill.bill_watch 1.0.0 pin. */
 import {selectSkill} from '../../../../packages/skills/index.mjs';
 import {readFileSync} from 'node:fs';
 import {createHash} from 'node:crypto';
