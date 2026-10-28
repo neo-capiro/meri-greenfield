@@ -96,7 +96,14 @@ async function fixture({selection,answered,status=200,revokeAfterAnswer=false,po
  const procedures=createTaskProcedurePort({native});
  const execute=createConversationActivity({procedures,generalReads:readPort,...(governedIntents?{governedIntents}:{}),diagnostics:{stage:name=>stages.push(name),failure:error=>failures.push(error)},
   runOwner:{...f.runOwner,readUploadSource:({binding:runBinding,input,signal})=>f.service.readUploadSource({credential:f.credential,binding:runBinding,input,signal}),
-   async nextControls(){return [];},async claimControl(){throw Error('unused');}},
+   async nextControls(){return [];},async claimControl(){throw Error('unused');},
+   // The run owner's durable child port (dispatchChild/settleChild) is part of the contract every composed activity is
+   // given, because a subagent dispatch is durable before it happens: no Agent call is admitted without it. These six
+   // procedure scenarios are all no-child runs (the scripted SDK stream yields no Agent tool call), so the fixture
+   // supplies the contract truthfully and each method fails loudly if it is ever reached, rather than fabricating a
+   // child assignment or receipt. A reached method fails the run, which every completing assertion above would catch.
+   async dispatchChild(){throw Error('unexpected child dispatch: a procedure scenario never dispatches a child');},
+   async settleChild(){throw Error('unexpected child settle: a procedure scenario never settles a child');}},
   prepareRuntime:async()=>({binding,versions,cwd,model:'us.anthropic.claude-sonnet-4-6',region:'us-east-1',maxOutputTokens:4096,providerEnvironment:{},
    sessionStore:{async load(){return null;},async append(){}},deadlineMs:Date.now()+15000,maxTurns:2,maxCostMicroUSD:1000,maxOutputBytes:4096}),
   query(args){queries.push(args);const attempt=attemptTool?callIntentTool(args):null;return {async *[Symbol.asyncIterator](){
