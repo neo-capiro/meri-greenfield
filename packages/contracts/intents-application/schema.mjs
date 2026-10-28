@@ -10,7 +10,10 @@ const document=name=>({$ref:'urn:meri:commands:document-draft:0.2.0#/$defs/'+nam
 const memory=name=>({$ref:'urn:meri:commands:memory-propose:0.2.0#/$defs/'+name});
 const filing=name=>({$ref:'urn:meri:commands:artifact-file:0.2.0#/$defs/'+name});
 const artifact=name=>({$ref:'urn:meri:artifacts:0.2.0#/$defs/'+name});
-const schedule=name=>({$ref:'urn:meri:schedules:tool-interface:0.2.0#/$defs/'+name});
+const schedule=name=>({$ref:'urn:meri:schedules:tool-interface:0.3.0#/$defs/'+name});
+const legacySchedule=name=>({$ref:'urn:meri:schedules:tool-interface:0.2.0#/$defs/'+name});
+const scheduleInspection=name=>({$ref:'urn:meri:schedules:inspection:0.3.0#/$defs/'+name});
+const scheduleLifecycle=name=>({$ref:'urn:meri:schedules:lifecycle:0.3.0#/$defs/'+name});
 const legislativeDocument=name=>({$ref:'urn:meri:retrieval:legislative-document-action:0.2.0#/$defs/'+name});
 // Client-record moved to its disjoint 0.3 family: the retained proposal shape is unchanged, and only this owner
 // carries the bounded source provenance on a create input and the bounded preflight on a live answer.
@@ -66,7 +69,7 @@ export function intentsSchema({errorStatuses,errorOutcomes,failureCodes,fieldPat
  IntentsMemoryReviewItem:item({state:{const:'prepared'},kind:{const:'memory_review'},review:ref('IntentsMemoryReview')}),
  IntentsWithheldMemoryReviewItem:item({state:{const:'prepared'},kind:{const:'memory_review'},withheld:{const:true}}),
  IntentsScheduleProposalItem:item({state:{const:'prepared'},kind:{const:'schedule_proposal'},proposalId:{anyOf:[{type:'string',minLength:1,maxLength:128},{type:'null'}]}}),
- IntentsScheduleReviewItem:item({state:{const:'prepared'},kind:{const:'schedule_proposal'},binding:pub('RunBinding'),request:ref('RoutinesMutationRequest'),proposal:schedule('PendingProposal')}),
+ IntentsScheduleReviewItem:item({state:{const:'prepared'},kind:{const:'schedule_proposal'},binding:pub('RunBinding'),request:{oneOf:['ScheduleTaskRequest','UpdateScheduledTaskRequest','CancelScheduledTaskRequest'].map(legacySchedule)},proposal:legacySchedule('PendingProposal')}),
  IntentsWithheldScheduleItem:item({state:{const:'prepared'},kind:{const:'schedule_proposal'},withheld:{const:true}}),
  IntentsWithheldProposalItem:item({state:{const:'prepared'},kind:{const:'proposal'},withheld:{const:true}}),
  IntentsLegiwatchItem:item({state:{const:'prepared'},kind:{const:'legiwatch_action'},proposal:legiwatch('LegiwatchProposal'),result:{anyOf:[legiwatch('LegiwatchCoreResult'),{const:'unavailable'}]}}),
@@ -113,6 +116,43 @@ IntentsWithheldSavedNoteItem:item({state:{const:'prepared'},kind:{const:'saved_n
  RoutinesApproveResponse:schedule('Acknowledged'),
  RoutinesReconcileRequest:{oneOf:['ScheduleTask','UpdateScheduledTask','CancelScheduledTask'].map((name,index)=>object({operation:{const:['schedule_task','update_scheduled_task','cancel_scheduled_task'][index]},request:schedule(name+'Request'),proposalId:{type:'string',pattern:UUID},intentSha256:{type:'string',pattern:'^[a-f0-9]{64}$'}}))},
  RoutinesReconcileResponse:object({intentId:{type:'string',pattern:UUID},operation:{enum:['schedule_task','update_scheduled_task','cancel_scheduled_task']},generation:{type:'integer',minimum:1},outcome:{enum:['ACKNOWLEDGED','UNRESOLVED']},code:{anyOf:[{type:'null'},{enum:['SCHEDULE_INTENT_NEVER_DISPATCHED','SCHEDULE_INTENT_EFFECT_NOT_COMPARABLE','SCHEDULE_INTENT_EFFECT_NOT_OBSERVED']}]},reconciled:{type:'boolean'}}),
- RoutinesListRequest:schedule('ListScheduledTasksRequest'),RoutinesListResponse:schedule('ListScheduledTasksOutput'),
+ // MR-04 receiving boundary: the list request, its page and its rows are declared HERE rather than borrowed from the
+ // schedules tool interface. The tool interface is the MODEL's own closed input, so the observation opt-in and the
+ // observation facet belong to the receiving boundary alone; the canonical rows are mirrored member for member, and the
+ // mirrored members are asserted against the canonical tool interface by the public receiving test.
+ RoutinesListRequest:object({afterScheduleId:{anyOf:[{type:'string',format:'uuid'},{type:'null'}]},limit:{type:'integer',minimum:1,maximum:20},
+  historyLimit:{type:'integer',minimum:0,maximum:10},observation:{const:'consent'}},[]),
+ RoutinesListRow:object({projection:pub('ScheduleProjection'),generation:{type:'integer',minimum:0,maximum:Number.MAX_SAFE_INTEGER},unresolved:{type:'boolean'},
+  inspection:{anyOf:[scheduleInspection('ScheduleInspectionOutput'),{type:'null'}]},inspectionState:{enum:['unavailable','observed']},trigger:schedule('TriggerObservation'),
+  consent:ref('RoutinesConsentObservation')},['projection','generation','unresolved','inspection','inspectionState']),
+ RoutinesListPage:object({operation:{const:'list_scheduled_tasks'},rows:{type:'array',items:ref('RoutinesListRow'),maxItems:20},hasMore:{type:'boolean'},
+  nextAfterScheduleId:{anyOf:[{type:'string',format:'uuid'},{type:'null'}]},originalRuns:schedule('OriginalRuns'),
+  coverage:object({complete:{const:false},currentRetryVerified:{const:false}})}),
+ RoutinesListResponse:object({operation:{const:'list_scheduled_tasks'},status:{const:'listed'},page:ref('RoutinesListPage')}),
+ // The closed observation facet of one row. Every member is always present: `unknown` is the answer for anything the
+ // observation cannot read as itself, and `absent` is only ever Core's own statement about a row it could look for.
+ RoutinesConsentObservation:object({state:{enum:['active','expired','revoked','absent','unknown']},pinsMatched:{type:'boolean'},stale:{type:'boolean'},
+  observedAtMs:{anyOf:[{type:'integer',minimum:0,maximum:Number.MAX_SAFE_INTEGER},{type:'null'}]},generation:{type:'integer',minimum:1,maximum:Number.MAX_SAFE_INTEGER},
+  consentGeneration:{anyOf:[{type:'integer',minimum:1,maximum:Number.MAX_SAFE_INTEGER},{type:'null'}]},
+  issuedAtMs:{anyOf:[{type:'integer',minimum:-Number.MAX_SAFE_INTEGER,maximum:Number.MAX_SAFE_INTEGER},{type:'null'}]},
+  expiresAtMs:{anyOf:[{type:'integer',minimum:-Number.MAX_SAFE_INTEGER,maximum:Number.MAX_SAFE_INTEGER},{type:'null'}]},
+  scopeCount:{anyOf:[{type:'integer',minimum:0,maximum:Number.MAX_SAFE_INTEGER},{type:'null'}]},
+  cause:{anyOf:[{enum:['revocation','membership','client-scope']},{type:'null'}]},rightsSha256:{anyOf:[{type:'string',pattern:'^[a-f0-9]{64}$'},{type:'null'}]}}),
+ RoutinesRenewalLimits:object({maxCostMicrousd:{type:'integer',minimum:1,maximum:Number.MAX_SAFE_INTEGER},maxRuntimeSeconds:{type:'integer',minimum:1,maximum:Number.MAX_SAFE_INTEGER},
+  retryLimit:{type:'integer',minimum:0,maximum:Number.MAX_SAFE_INTEGER}}),
+ // The review is read-only and carries the exact original intent, its scopes' digest and its EFFECTIVE limits. It grants
+ // no approval: the decision is a separate explicit operation over the review digest the caller was shown.
+ RoutinesConsentReviewRequest:object({scheduleId:{type:'string',pattern:UUID}}),
+ RoutinesConsentReviewResponse:object({status:{const:'review_required'},scheduleId:{type:'string',pattern:UUID},generation:{type:'integer',minimum:1,maximum:Number.MAX_SAFE_INTEGER},
+  intentSha256:{type:'string',pattern:'^[a-f0-9]{64}$'},projectionSha256:{type:'string',pattern:'^[a-f0-9]{64}$'},scopesSha256:{type:'string',pattern:'^[a-f0-9]{64}$'},
+  limits:ref('RoutinesRenewalLimits'),intent:scheduleLifecycle('Intent'),consent:{anyOf:[ref('RoutinesConsentObservation'),{type:'null'}]},
+  reviewSha256:{type:'string',pattern:'^[a-f0-9]{64}$'}}),
+ RoutinesConsentApproveRequest:object({scheduleId:{type:'string',pattern:UUID},reviewSha256:{type:'string',pattern:'^[a-f0-9]{64}$'},
+  requestId:{type:'string',pattern:'^[A-Za-z0-9._-]{1,128}$'},decision:{const:'approved'}}),
+ RoutinesConsentApproveResponse:object({status:{const:'renewed'},state:{enum:['active','expired']},generation:{type:'integer',minimum:1,maximum:Number.MAX_SAFE_INTEGER},
+  policyRevision:{type:'string',minLength:1,maxLength:256},
+  issuedAtMs:{type:'integer',minimum:-Number.MAX_SAFE_INTEGER,maximum:Number.MAX_SAFE_INTEGER},
+  expiresAtMs:{type:'integer',minimum:-Number.MAX_SAFE_INTEGER,maximum:Number.MAX_SAFE_INTEGER},
+  observedAtMs:{type:'integer',minimum:-Number.MAX_SAFE_INTEGER,maximum:Number.MAX_SAFE_INTEGER},idempotent:{type:'boolean'}}),
  RoutinesErrorResponse:object({error:object({code:{type:'string',pattern:'^[A-Z][A-Z0-9_]{0,63}$'},outcome:{enum:['NOT_DISPATCHED','UNKNOWN','ACKNOWLEDGED_NOT_RELEASED','UNRESOLVED']}},['code'])}),
  }};}

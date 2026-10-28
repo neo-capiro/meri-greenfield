@@ -506,6 +506,16 @@
               "type": "null"
             }
           ]
+        },
+        "work": {
+          "anyOf": [
+            {
+              "$ref": "urn:meri:schedules:lifecycle:0.3.0#/$defs/Work"
+            },
+            {
+              "type": "null"
+            }
+          ]
         }
       },
       "required": [

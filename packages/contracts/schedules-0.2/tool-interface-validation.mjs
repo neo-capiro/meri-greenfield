@@ -15,6 +15,11 @@ function wireInstant(value) {
 export function createScheduleToolValidators({validateShape,schema,schemaId=SCHEDULE_TOOL_SCHEMA_ID,lifecycle={assertScheduleIntent,snapshotScheduleCall}}) {
   const {assertScheduleIntent:assertIntent,snapshotScheduleCall:snapshotCall}=lifecycle;
   if(typeof validateShape!=='function'||schema?.$id!==schemaId||typeof assertIntent!=='function'||typeof snapshotCall!=='function')denySchedule('SCHEDULE_TOOL_CONFIGURATION');
+  // The approved Work definition is admitted only by the family whose OWN PendingProposal declares the member, so this
+  // one shared builder states it for the current family and never adds a member the retained family's closed shape
+  // refuses. The definition itself is the canonical work-selection owner's shape, resolved by reference from the
+  // family's schema; the builder never re-states or re-derives it.
+  const workAdmitted=Object.hasOwn(schema?.$defs?.PendingProposal?.properties??{},'work');
   function shape(def,value) {
     const data=frozenScheduleData(value);
     if(!validateShape(def,data))denySchedule('SCHEDULE_TOOL_DATA');return data;
@@ -56,7 +61,12 @@ export function createScheduleToolValidators({validateShape,schema,schemaId=SCHE
     const intent=assertIntent({intentId:c.intentId,operation:id,expectedGeneration:create?0:c.current.generation,generation:create?1:c.current.generation+1,previousProjectionSha256:create?null:c.current.projectionSha256,projection:p,configuration,cancel,...(configuration===null?{}:{taskInstructionSha256:canonicalSha256(input.taskInstruction)})},c.callerIdentity.tenantId);
     const intentSha256=canonicalSha256(intent);
     if(c.approval!==null)snapshotCall('Execute',{intent,approval:c.approval,callerIdentity:c.callerIdentity,deadlineMs:c.deadlineMs},c.nowMs);
-    const proposal={operation:id,status:'approval_required',proposalId:intent.intentId,intentSha256,taskInstruction:id==='cancel_scheduled_task'?null:input.taskInstruction,projection:p,policy:configuration===null?null:input.policy,cancel};
+    // The definition the approval shows is the exact one the request carried and the intent digest covers: the same
+    // canonical object, never a defaulted or derived substitute, and stated only when the request carried one — so an
+    // ordinary request's proposal stays byte-identical to the retained family's and a Work request always shows it.
+    const work=configuration===null?null:configuration.task.work??null;
+    const proposal={operation:id,status:'approval_required',proposalId:intent.intentId,intentSha256,taskInstruction:id==='cancel_scheduled_task'?null:input.taskInstruction,projection:p,policy:configuration===null?null:input.policy,cancel,
+      ...(workAdmitted&&work!==null?{work}:null)};
     return frozenScheduleData({operation:id,input,requestSha256,context:c,intent,intentSha256,proposal});
   }
   function normalizeInput(id,raw,context) {

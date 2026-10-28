@@ -1,6 +1,6 @@
 /** Opt-in SQL proof only in the marked disposable M7 PG16 cluster; never an inherited DB URL. */
 import test from 'node:test';import assert from 'node:assert/strict';import {readFile} from 'node:fs/promises';import {createRequire} from 'node:module';import {randomBytes} from 'node:crypto';import {execFileSync} from 'node:child_process';
-import {createUsageOverviewStore} from '../store.mjs';import {assertUsageOverviewResponse} from '../../../../../packages/contracts/conversation-usage/overview-validate.mjs';
+import {createUsageOverviewStore} from '../store.mjs';import {assertUsageOverviewResponseV2} from '../../../../../packages/contracts/conversation-usage/overview-validate.mjs';
 import {row,principal} from '../../runs/test/fixture.mjs';import {hash} from '../../boundary.mjs';
 const config=process.env.MERI_USAGE_OVERVIEW_PG_CONFIG,require=createRequire(new URL('../../../../runtime/package.json',import.meta.url));
 test('owned PG16: actual usage SQL cohorts, tenant isolation and consistent read-only snapshot',{skip:!config},async t=>{
@@ -35,7 +35,7 @@ test('owned PG16: actual usage SQL cohorts, tenant isolation and consistent read
   await db.query('INSERT INTO meri_settings.tenant_settings(tenant_id,revision,document,document_sha256,updated_at,updated_by,monthly_cap_micro_usd,sdk_max_turns,sdk_max_budget_micro_usd) VALUES($1,1,$2,$3,$4,\'synthetic-admin\',$5,20,2000000)',[principal.tenantId,{defaultTimezone:'UTC',capabilityPolicy:{}},hash({defaultTimezone:'UTC',capabilityPolicy:{}}),observedAt,cost*3]);
   reader=new Client({...connection,database});await reader.connect();await reader.query('SET ROLE meri_control_runtime');
   let afterQuery;const pool={async connect(){return {async query(sql,args){const result=await reader.query(sql,args);if(afterQuery)await afterQuery(sql,result);return result;},release(){}};}};
-  const read=async(p=principal)=>assertUsageOverviewResponse(await createUsageOverviewStore({pool,now:()=>Date.parse(observedAt)}).read({principal:p},()=>{}));
+  const read=async(p=principal)=>assertUsageOverviewResponseV2(await createUsageOverviewStore({pool,now:()=>Date.parse(observedAt)}).read({principal:p},()=>{}));
   await t.test('day/week/month attempts and missing/failed/cancelled denominators are actual SQL observations',async()=>{
    const value=await read();assert.deepEqual(value.periods.map(p=>p.attempts),[2,3,5]);assert.deepEqual(value.periods[2].recording,{recorded:2,unavailable:1,notRecorded:2});
    assert.equal(value.periods[2].states.cancelled,1);assert.equal(value.periods[2].states.failed,1);assert.equal(value.periods[2].knownChargeMicroUsd,cost);

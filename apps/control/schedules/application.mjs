@@ -2,8 +2,7 @@
  * Explicit human approval is derived here; stored proposals and replay keys never confer authority. Resources are borrowed. */
 import {own,data,nativeSignal} from '../../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {canonicalSha256 as hash} from '../../../packages/contracts/validate.mjs';
-import {scheduleToolValidators as validators,validateShape} from '../../../packages/contracts/retrieval-0.2/validate.mjs';
-import {assertScheduleIntent} from '../../../packages/contracts/schedules-0.2/lifecycle-validation.mjs';
+import {scheduleToolValidators as validators,validateToolShape,assertScheduleIntent,ROUTINES_OPERATION_VERSION,scheduleOperationDeclared} from './schedule-validators.mjs';
 import {createOperationLifetime} from '../../../packages/runtime/operation-lifetime.mjs';
 import {storageMethod} from '../../artifacts/storage/boundary.mjs';
 import {createIntentMount} from '../intents/mount.mjs';
@@ -105,7 +104,7 @@ export function createRoutinesService(configuration){
   if(row===null)return null;const i=assertScheduleIntent(row.intent,tenantId);
   if(i.intentId!==body.proposalId||hash(i)!==body.intentSha256||row.intentSha256!==body.intentSha256||i.operation!==body.operation)deny('STALE');return i;
  }
- function acknowledged(i){return validateShape('ScheduleMutationOutput',{operation:i.operation,status:'acknowledged',receipt:{operation:i.operation,intentId:i.intentId,generation:i.generation,projection:i.projection,outcome:'ACKNOWLEDGED',physicalStopProven:false}});}
+ function acknowledged(i){return validateToolShape('ScheduleMutationOutput',{operation:i.operation,status:'acknowledged',receipt:{operation:i.operation,intentId:i.intentId,generation:i.generation,projection:i.projection,outcome:'ACKNOWLEDGED',physicalStopProven:false}});}
  function managementRetained(row,body,auth){
   if(!row||row.state==='PENDING')deny('UNKNOWN','UNKNOWN');if(row.state==='FAILED')managementRefusal(row.outcome.code);
   const request=validators.normalizeRequest(body.operation,body.request),p=row.outcome.proposal,record=row.record;
@@ -166,7 +165,15 @@ export function createRoutinesService(configuration){
     // Retained text is not an expired credential. Exact recovery is authorized by this request's fresh current context.
     const prior=await l.run(signal=>readPreparation({key:{tenantId:auth.binding.tenantId,actorId:auth.binding.actorId,conversationId:auth.binding.conversationId,deliveryId},signal}));
     if(prior!==null){
-     if(!same(prior.record.operation,{id:b.operation,version:'0.2.0'})||prior.record.argumentsSha256!==hash(b.request))deny('STALE');
+     // Exact replay is decided by the RECORDED delivery pin, never by this composition's current pin: a preparation the
+     // previous producer retained under the retained 0.2.0 family is the same delivery, and the current-only gate that
+     // replaced it refused a genuinely retained ordinary preparation before the family-pinned readers could admit it.
+     // The recorded pin must be one the canonical family owner DECLARES — an exact pin, never a version shape and never
+     // a range — the operation id and the request hash must match byte for byte, and the retained proposal is admitted
+     // only by the family that recorded pin names (the journal and proposal readers select it; the retained family still
+     // refuses a Work definition). An undeclared pin is stale here, before any proposal text is re-admitted.
+     const recorded=prior.record.operation?.version;
+     if(prior.record.operation?.id!==b.operation||!scheduleOperationDeclared(recorded)||prior.record.argumentsSha256!==hash(b.request))deny('STALE');
      if(prior.state==='PENDING'||prior.state==='UNKNOWN')deny('UNKNOWN','UNKNOWN');
      if(prior.state==='FAILED')throw intentFault(prior.outcome.code,'none');
      const p=prior.outcome.result.proposal;
@@ -175,13 +182,15 @@ export function createRoutinesService(configuration){
      await current(v,b,l);l.check();return data(saved.row.outcome.result);
     }
     // Resolve only after the durable claim. Exact replay allocates no replacement identity.
-    const preparer={operation:{id:b.operation,version:'0.2.0'},owner:'schedule',binding:auth.binding,async prepare(input){
+    // The delivery is recorded under the exact family pin this composition prepares under (the routines family's own
+    // 0.3.0), so the journal, the intent port and the custody read select that one family from the recorded pin.
+    const preparer={operation:{id:b.operation,version:ROUTINES_OPERATION_VERSION},owner:'schedule',binding:auth.binding,async prepare(input){
      let resolved;try{resolved=await l.run(()=>resolve(contextCall(v,b,l)));if(!same(resolved.current.binding,auth.binding))deny();}
      catch(error){throw intentFault(['DEADLINE','CANCELLED'].includes(error?.code)?error.code:'REFUSED','none');}
-     return createScheduleIntentPreparer({operation:b.operation,binding:auth.binding,tool:tools(resolved),resolveContext:async()=>resolved.context}).prepare({...input,arguments:resolved.prepared.input});
+     return createScheduleIntentPreparer({operation:b.operation,binding:auth.binding,version:ROUTINES_OPERATION_VERSION,tool:tools(resolved),resolveContext:async()=>resolved.context}).prepare({...input,arguments:resolved.prepared.input});
     }};
     const resultRelease={async check({selection,selectionSha256,signal,limitDeadline}){
-     if(selectionSha256!==hash(selection)||!same(selection.binding,auth.binding)||selection.operation.id!==b.operation||selection.operation.version!=='0.2.0'||selection.deliveryId!==deliveryId||selection.argumentsSha256!==hash(b.request))deny();
+     if(selectionSha256!==hash(selection)||!same(selection.binding,auth.binding)||selection.operation.id!==b.operation||selection.operation.version!==ROUTINES_OPERATION_VERSION||selection.deliveryId!==deliveryId||selection.argumentsSha256!==hash(b.request))deny();
      const fresh=await authorizeRequest({...contextCall(v,b,l),signal});if(!same(fresh.binding,auth.binding))deny();limitDeadline(fresh.expiresAtMs);
      return {authorized:true,selectionSha256,binding:fresh.binding,scopes:fresh.scopes,checkedAtMs:fresh.checkedAtMs,expiresAtMs:fresh.expiresAtMs};
     }};

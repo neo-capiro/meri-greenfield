@@ -2,7 +2,8 @@
  * Parent released exact DDL source authoring in central allocation 0b0b7abd; SQL execution/integration qualification remain pending. */
 import {canonicalSha256 as hash,validateShape} from '../../../packages/contracts/validate.mjs';
 import {assertNativeApprovalProposal} from '../../../packages/contracts/commands-0.2/validate.mjs';
-import {resolveOperationContract,validateShape as validateToolShape} from '../../../packages/contracts/retrieval-0.2/validate.mjs';
+import {resolveOperationContract} from '../../../packages/contracts/retrieval-0.2/validate.mjs';
+import {scheduleOperationFamily} from '../../../packages/contracts/schedule-operation-family.mjs';
 import {data,own,nativeSignal} from '../../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {assertPool,transact} from '../product-persistence/transaction.mjs';
 import {refuse,productFailure} from '../product-access/errors.mjs';
@@ -106,7 +107,14 @@ export function preparedSchedule(raw,s,instructionsOnly){
   const retained=entry(row);
   if(storedKey.tenantId!==s.tenantId||retained.state!=='PREPARED')refuse('INTENT_JOURNAL_STATE');
   const custody=own(retained.outcome,['result','release']),result=own(custody.result,['status','proposal'],['request']);
-  const proposal=validateToolShape('ScheduleMutationOutput',result.proposal);
+  // The proposal is validated by the family the RECORDED delivery pin names: a trusted carried fact, never re-derived
+  // from the content, never downgraded to the legacy family because the legacy family could also express the content,
+  // and never widened to "the current family". Ordinary timed content is expressible by both families, so the pin
+  // decides; a Work definition is admitted only by the current family, so a Work proposal retained under the 0.2 pin
+  // is refused here by that family's own owner.
+  const family=scheduleOperationFamily(retained.record.operation.version);
+  if(family===null)refuse('INTENT_JOURNAL_STATE');
+  const proposal=family.toolShape('ScheduleMutationOutput',result.proposal);
   const operations=instructionsOnly?['schedule_task','update_scheduled_task']:['schedule_task','update_scheduled_task','cancel_scheduled_task'];
   if(result.status!=='approval_required'||proposal.status!=='approval_required'||!operations.includes(proposal.operation)||retained.record.operation.id!==proposal.operation||proposal.proposalId!==s.proposalId||proposal.intentSha256!==s.intentSha256||proposal.projection.owner.tenantId!==s.tenantId)refuse('INTENT_JOURNAL_STATE');
   if(result.request!==undefined&&hash(result.request)!==retained.record.argumentsSha256)refuse('INTENT_JOURNAL_STATE');
