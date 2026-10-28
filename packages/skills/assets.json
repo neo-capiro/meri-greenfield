@@ -155,8 +155,8 @@
       "skillVersion": "1.0.0",
       "manifestPath": "../../apps/control/document-application/cited-report/manifest.json",
       "prosePath": "../../apps/control/document-application/cited-report/SKILL.md",
-      "manifestSha256": "16d3c43738665df58480038bee24d8b02d84c55d81cf6ed47b2d4b032104c007",
-      "proseSha256": "5179338cfc50bb133c2cff484183a8bcd0b312a1be6e31a4ebbb31bfaf83e024",
+      "manifestSha256": "ed25117407946264ef62a916377ffeec0ceca30ca54a97ab0983c797fb6a685a",
+      "proseSha256": "6637bc1bd277ad758a2f3c301480b5756a931e09ec2fab7408092ebf475771cd",
       "catalogSha256": "1f901f26ec134e1585ff12541c3344fda77da1fb07f599f8d59e9338ecaa6eb6"
     }
   ],

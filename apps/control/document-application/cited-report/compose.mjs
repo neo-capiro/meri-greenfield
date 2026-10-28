@@ -1,13 +1,13 @@
 /** Typed general cited-report compilation. Source and base ports belong to existing trusted owners.
- * Adds no route, no authority and no second model loop: the compiler turns gateway-owned decisive reads
- * into the accepted seven-section cited DOCX report and pins immutable revision provenance. The subject is
- * the trusted selected subject, never model input. */
-import {artifactValidators as v,assertSubject,assertWindow} from '../../../../packages/contracts/retrieval-0.2/validate.mjs';
+ * Adds no route, no authority and no second model loop: the compiler turns the selected runtime's own typed
+ * reads into the accepted seven-section cited DOCX report and pins immutable revision provenance. The subject
+ * is the trusted selected subject, never model input. */
+import {artifactValidators as v} from '../../../../packages/contracts/retrieval-0.2/validate.mjs';
 import {own} from '../../../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {createOperationLifetime} from '../../../../packages/runtime/operation-lifetime.mjs';
-import {fail,hash,CITED_REPORT_SECTIONS,citedReportInput,reportSelection,selectorSubject} from './input.mjs';
-import {citedReportManifest,citedReportSkillPin,citedReportSourceIds} from './skill.mjs';
-import {bindRead,assessFacts} from './evidence.mjs';
+import {fail,hash,CITED_REPORT_SECTIONS,citedReportInput,reportSelection} from './input.mjs';
+import {citedReportManifest,citedReportSkillPin} from './skill.mjs';
+import {admitRead,assessFindings,citedReportReadGroups} from './sources.mjs';
 const prepared=new WeakMap();
 const marker='Meri cited report provenance: ';
 const p=(text,style='Normal')=>({kind:'paragraph',style,runs:[{text}]});
@@ -41,7 +41,7 @@ function baseProvenance(record,base,context,input,selected){
   retainedEvidence};
 }
 function conflictsFor(input,findings){
- const byId=new Map(findings.map(f=>[f.id,f])),passages=f=>f.links.map(x=>x.passage).filter(x=>x!==null);
+ const byId=new Map(findings.map(f=>[f.id,f])),passages=f=>f.citations.filter(x=>x.passage).map(x=>x.passage);
  const named=input.conflicts.map(entry=>{
   const finding=byId.get(entry.findingId);
   if(!finding||finding.conflict!==true)fail('CITED_REPORT_CONFLICT');
@@ -50,16 +50,29 @@ function conflictsFor(input,findings){
  const derived=findings.filter(f=>f.conflict===true&&!named.some(x=>x.findingId===f.id)).map(f=>({findingId:f.id,note:null,passages:passages(f)}));
  return [...named,...derived];
 }
+function coverageLine(read){
+ const c=read.coverage,e=read.continuation;
+ return `${read.sourceId}: coverage ${c.enumeration}; truncated ${c.truncated}; returned ${c.returnedCount}; total ${c.enumerableTotal??'unknown'}; `+
+  `requested ${c.sourcesRequested.join(', ')||'none'}; checked ${c.sourcesChecked.join(', ')||'none'}; unavailable ${c.sourcesUnavailable.join(', ')||'none'}; history ${c.historySupport}; `+
+  `snapshot ${read.snapshotVersionId??'unknown'}; continuation ${e.cursor??'none'}; required reads ${e.requiredReads.join(', ')||'none'}; remaining sources ${e.remainingSources.join(', ')||'none'}`;
+}
+/** A portfolio evidence projection carries its own coverage type: it proves no bytes, so its line says so. */
+function projectionLine(read){
+ const c=read.coverage;
+ return `${read.sourceId}: projection ${c.scope}/${c.sourceView}; corpus complete ${c.corpusComplete}; source bytes verified ${c.sourceBytesVerified}`;
+}
 function blocksFor(input,selection,findings,conflicts,reads,retained,provenance){
  const subject=selection.subject,blocks=[p(input.title,'Title'),p('Cited report | Draft for review'),
   p(`Subject ${describe(subject)}`),p('As of '+input.asOf)];
- blocks.push(p('Summary','Heading 1'),p(input.summary),p('Draft narrative: unverified until the cited passage of every Findings entry is read and byte-bound.'));
+ blocks.push(p('Summary','Heading 1'),p(input.summary),p('Draft narrative: the cited status of every Findings entry is recorded with that citation.'));
  blocks.push(p('Scope and as-of','Heading 1'),
-  p(`${CITED_REPORT_SECTIONS[1]}: the report covers exactly this subject, its authorized scopes and the selected window, as of the stated instant. A revision may not roll the as-of backwards.`),
-  p(`Sources requested: ${reads.map(r=>r.envelope.sources[0].sourceId).join(', ')}`));
+  p(`${CITED_REPORT_SECTIONS[1]}: the report covers exactly this subject, its authorized scopes and the selected window (${selection.window.basis}), as of the stated instant. A revision may not roll the as-of backwards.`),
+  p(`Sources read: ${reads.length?reads.map(read=>read.sourceId).join(', '):'none'}`));
  blocks.push(p('Findings','Heading 1'));
  for(const f of findings){blocks.push(p(`${f.id} [${f.status}${f.conflict?'; potentially conflicting cited passages':''}]: ${f.text}`));
-  for(const l of f.links)blocks.push(p(`Citation: ${l.citation.sourceId} / ${l.citation.recordId} / ${l.citation.sourceVersionId}; characters ${l.citation.start}-${l.citation.end}; ${l.status}${l.citation.url?'; locator URL (not verification): '+l.citation.url:''}`));}
+  for(const l of f.citations)blocks.push(p(l.status==='verified'
+   ?`Citation: ${l.citation.sourceId} / message ${l.citation.recordId} / version ${l.citation.sourceVersionId}; characters ${l.citation.start}-${l.citation.end}; verified`
+   :`Citation: ${l.citation.sourceId} / ${l.citation.origin} / ${l.citation.recordId??'current view'}; preserved claim (source bytes verified by the projection: ${l.coverage.sourceBytesVerified===true?'yes':'no'})`));}
  blocks.push(p('Conflicting evidence','Heading 1'),p('Unequal cited passages are disclosed as possible conflicts; unequal text is not proof of a semantic contradiction, and an unread passage is not evidence of agreement.'));
  if(!conflicts.length)blocks.push(p('No conflicting cited passages were read for these findings; missing or partial evidence does not establish absence.'));
  for(const c of conflicts){blocks.push(p(`${c.findingId}: ${c.note??'disclosed possible conflict; no explanation supplied'}`));
@@ -68,19 +81,21 @@ function blocksFor(input,selection,findings,conflicts,reads,retained,provenance)
  input.recommendations.forEach((x,index)=>blocks.push(p(`${index+1}. ${x}`)));
  blocks.push(p('Limitations','Heading 1'),p('Missing, stale, partial, unavailable, truncated or continuation-required evidence is disclosed here and never establishes absence.'));
  input.limitations.forEach(x=>blocks.push(p('Stated limitation: '+x)));
- for(const r of reads){const e=r.envelope;
-  blocks.push(p(`${e.sources[0].sourceId}: status ${e.status}; enumeration ${e.coverage.enumeration}; truncated ${e.coverage.truncated}; returned ${e.coverage.returnedCount}; total ${e.coverage.enumerableTotal??'unknown'}; remaining sources ${e.continuation.remainingSources.join(', ')||'none'}`));
-  e.coverage.limitations.forEach(x=>blocks.push(p('Read limitation: '+x)));}
- blocks.push(p('References','Heading 1'),p('Verification means an exact excerpt was read and byte-bound. Free-form claims remain unverified.'));
- for(const r of reads){const e=r.envelope,source=e.sources[0];
-  blocks.push(p(`${source.sourceId}: ${e.status} (${e.reasonCode}); method ${e.method}; freshness ${source.freshness}; snapshot ${source.snapshotVersionId??'unknown'}; adapter ${source.adapterVersion}`));
-  blocks.push(p(`Requested ${e.coverage.sourcesRequested.join(', ')}; checked ${e.coverage.sourcesChecked.join(', ')||'none'}; unavailable ${e.coverage.sourcesUnavailable.join(', ')||'none'}; returned ${e.coverage.returnedCount}; total ${e.coverage.enumerableTotal??'unknown'}; history ${e.coverage.historySupport}`));
-  blocks.push(p(`Source as-of ${source.asOf??'unknown'}; synchronized ${source.synchronizedAt??'unknown'}; retrieved ${source.retrievedAt}. Continuation ${e.continuation.cursor??'none'}; required reads ${e.continuation.requiredReads.join(', ')||'none'}.`));}
- for(const f of findings){blocks.push(p(`${f.id}: ${f.status}${f.conflict?'; unresolved potentially conflicting cited passages':''}`));
-  for(const l of f.links)if(l.evidence){const e=l.evidence;
-   blocks.push(p(`Source ${e.sourceId}; record ${e.recordId}; version ${e.sourceVersionId}; citation ${e.citationId}; run ${e.binding.runId}.`));
-   blocks.push(p(`Cited passage (UTF-16 characters ${l.citation.start}-${l.citation.end}): ${l.passage}`));
-   blocks.push(p(`Full text SHA256: ${e.contentSha256}\nPassage SHA256: ${l.passageSha256}\nScope: ${JSON.stringify(e.scopes)}\nObserved ${e.observedAt}; updated ${e.sourceUpdatedAt??'unknown'}.`));}}
+ for(const read of reads){
+  blocks.push(p(read.kind==='mail'?coverageLine(read):projectionLine(read)));
+  read.coverage.limitations.forEach(x=>blocks.push(p('Read limitation: '+x)));
+  if(read.kind==='mail')read.sources.forEach(source=>blocks.push(p(`Source ${source.sourceId}: ${source.status} (${source.authority}, ${source.freshness}); as-of ${source.asOf??'unknown'}; synchronized ${source.synchronizedAt??'unknown'}; retrieved ${source.retrievedAt}; adapter ${source.adapterVersion}`)));
+ }
+ for(const f of findings)for(const l of f.citations)if(l.limitations)l.limitations.forEach(x=>blocks.push(p('Claim limitation: '+x)));
+ blocks.push(p('References','Heading 1'),p('Verification means an exact excerpt of a stored record version was read and byte-bound. A preserved claim is not verification.'));
+ for(const read of reads){
+  blocks.push(p(`${read.sourceId}: operation ${read.operation.id}@${read.operation.version}; request ${JSON.stringify(read.request)}; result SHA256 ${read.resultSha256}`));
+  blocks.push(p(read.kind==='mail'?coverageLine(read):projectionLine(read)));
+ }
+ for(const f of findings)for(const l of f.citations)if(l.evidence){const e=l.evidence;
+  blocks.push(p(`Source ${e.sourceId}; record ${e.recordId}; version ${e.sourceVersionId}; citation ${e.citationId}; run ${e.binding.runId}.`));
+  blocks.push(p(`Cited passage (UTF-16 characters ${l.citation.start}-${l.citation.end}): ${l.passage}`));
+  blocks.push(p(`Preserved content SHA256: ${e.contentSha256}\nPassage SHA256: ${l.passageSha256}\nScope: ${JSON.stringify(e.scopes)}\nObserved ${e.observedAt}; body completeness ${l.bodyCompleteness}; section ${l.section.start}-${l.section.endExclusive} of ${l.section.totalCodeUnits}${l.section.hasMore?'; more body outside the read section':''}.`));}
  if(retained.length){blocks.push(p('Retained source evidence (immutable parent)','Heading 2'));
   for(const e of retained)blocks.push(p(`Retained ${e.sourceId}; record ${e.recordId}; version ${e.sourceVersionId}; citation ${e.citationId}; run ${e.binding.runId}; content SHA256 ${e.contentSha256}; observed ${e.observedAt}.`));}
  blocks.push(p('Original skill and immutable revision provenance','Heading 2'),p(marker+JSON.stringify(provenance)));
@@ -98,16 +113,27 @@ export function createCitedReportCompiler({readSource,readBase,now}){
    let parent=null,retained=[];
    if(base){const admitted=baseProvenance(v.snapshot(await life.run(signal=>readBase({versionId:base.versionId,context:v.snapshot(context),signal}))),base,context,input,selected);
     parent=admitted.parent;retained=admitted.retainedEvidence;}
-   const subject=selectorSubject(selected.subject),reads=[];
-   for(const sourceId of citedReportSourceIds){
-    const selector={subject,asOf:input.asOf},call={sourceId,selector,binding:context.binding,scopes:context.scopes,deadlineMs:context.deadlineMs};
-    reads.push(bindRead(await life.run(signal=>readSource({...v.snapshot(call),signal})),call,input.asOf,selected));
+   // One real typed read per distinct cited locator, through the selected runtime's own read seam.
+   const reads=[];
+   for(const group of citedReportReadGroups(input,selected)){
+    let value;
+    try{value=await life.run(signal=>readSource({binding:context.binding,window:selected.window,subject:selected.subject,operation:group.operation,request:group.request,signal}));}
+    catch(error){
+     if(signal?.aborted||error?.code==='CITED_REPORT_CANCELLED')throw error;
+     // A source the runtime will not read is disclosed as exactly that: nothing was read, so no citation of
+     // it can be presented and no absence can be claimed from it.
+     fail(`CITED_REPORT_READ_${typeof error?.code==='string'?error.code:'UNAVAILABLE'}`);
+    }
+    reads.push(admitRead(group,value,{context,selected}));
    }
-   const findings=assessFacts(input.findings,reads),conflicts=conflictsFor(input,findings),evidence=[...retained,...reads.flatMap(x=>x.evidence)];
+   const findings=assessFindings(input.findings,reads,{context,asOf:input.asOf}),conflicts=conflictsFor(input,findings),
+    evidence=[...retained,...findings.flatMap(f=>f.citations.map(l=>l.evidence).filter(Boolean))]
+     .filter((item,index,all)=>all.findIndex(candidate=>candidate.citationId===item.citationId)===index);
    if(new Set(evidence.map(x=>x.citationId)).size!==evidence.length)fail('CITED_REPORT_RETAINED_EVIDENCE');
-   const provenance={recipe:'general-cited-report',skill:input.skill,selection:{subject:selected.subject,window:selected.window},subject:selected.subject,asOf:input.asOf,inputSha256:v.hash(input),
+   const provenance={recipe:'general-cited-report',skill:input.skill,selection:v.snapshot(selected),subject:selected.subject,asOf:input.asOf,inputSha256:v.hash(input),
     readsSha256:v.hash(reads),retainedEvidenceSha256:v.hash(retained),parent};
-   const nextContext=v.context({...context,evidence}),request=v.request({operation:'create_word',format:'docx',title:input.title,content:{blocks:blocksFor(input,selected,findings,conflicts,reads,retained,provenance)}});
+   const blocks=blocksFor(input,selected,findings,conflicts,reads,retained,provenance);
+   const nextContext=v.context({...context,evidence}),request=v.request({operation:'create_word',format:'docx',title:input.title,content:{blocks}});
    life.check();
    const result=Object.freeze({request:v.snapshot(request),context:v.snapshot(nextContext),baseVersionId:base?.versionId??null,evidenceSha256:v.hash(nextContext.evidence),
     retainedEvidence:v.snapshot(retained),provenance:v.snapshot(provenance),findings:v.snapshot(findings),conflicts:v.snapshot(conflicts),reads:v.snapshot(reads)});

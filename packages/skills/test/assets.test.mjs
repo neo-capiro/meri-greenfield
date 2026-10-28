@@ -9,7 +9,7 @@ import {createHash} from 'node:crypto';
 import {selectSkill,listSkills} from '../index.mjs';
 import assets from '../assets.json' with {type:'json'};
 import {validateShape,assertSkillManifest} from '../../contracts/retrieval-0.2/validate.mjs';
-import {addedSkillIdentity,assertAddedSkillManifest} from '../../contracts/retrieval-0.3/validate.mjs';
+import {assertInstalledSkillManifest,installedSkillContractVersion,ADDED_SKILL_CONTRACT_VERSION} from '../../contracts/retrieval-0.3/installed-skill.mjs';
 import {canonicalSha256} from '../../contracts/validate.mjs';
 import catalog from '../../contracts/retrieval-0.2/catalog.json' with {type:'json'};
 import inventory from '../../../docs/coordination/r2/skills.json' with {type:'json'};
@@ -29,7 +29,7 @@ const evidence={
  hearing_watch:['client_knowledge_profile','public_domain_hearings','legislative_directory','tracked_bills'],
  representation_lookup:['facility_representation','state_legislation','legislative_directory','district_nexus','tenant_contacts'],
  regulatory_docket_brief:['regulatory_dockets','rule_status','research_legal_legislation','public_web'],
- cited_report:['client_knowledge_search','mail','research_portfolios','artifact_versions']
+ cited_report:['mail','research_portfolios','artifact_versions']
 };
 
 test('the original fourteen identities plus the one additive identity retain explicit immutable versions',()=>{
@@ -41,14 +41,14 @@ test('the original fourteen identities plus the one additive identity retain exp
  assert.equal(Object.keys(evidence).length,14);
  for(const entry of listSkills()){
   const asset=selectSkill(entry.skillId,entry.skillVersion);
-  // The closed 0.2.0 foundation still refuses every identity it does not enumerate; only the added identity
-  // is validated through the additive 0.3.0 receiver.
-  if(addedSkillIdentity(asset.manifest.skillId))assertAddedSkillManifest(asset.manifest);else validateShape('SkillManifest',asset.manifest);
+  // Admission is dispatched on each manifest's own contract version: the closed 0.2.0 foundation refuses every
+  // identity it does not enumerate, and the additive identity is admitted through the versioned 0.3.0 receiver.
+  assertInstalledSkillManifest(asset.manifest,catalog);
   assert.equal(asset.pin.manifestSha256,canonicalSha256(asset.manifest));
   const row=assets.assets.find(row=>row.skillId===entry.skillId&&row.skillVersion===entry.skillVersion);
   assert.equal(asset.pin.proseSha256,sha(Buffer.from(asset.prose)));assert.equal(asset.pin.catalogSha256,row.catalogSha256??assets.catalogSha256);assert.equal(asset.installationCatalogSha256,canonicalSha256(catalog));
   assert.equal(asset.manifest.approval.autoCreateTasks,false);assert.equal(asset.manifest.completion.negativeClaims,'complete-covered-only');
-  assert.throws(()=>assertSkillManifest(asset.manifest,catalog),addedSkillIdentity(asset.manifest.skillId)?/must be equal to one of the allowed values/u:/unavailable operation/u);
+  assert.throws(()=>assertSkillManifest(asset.manifest,catalog),installedSkillContractVersion(asset.manifest)===ADDED_SKILL_CONTRACT_VERSION?/must be equal to one of the allowed values/u:/unavailable operation/u);
  }
 });
 for(const [id,required]of Object.entries(evidence))test(`${id}: workflow-specific evidence and original explicit-selection prose`,()=>{

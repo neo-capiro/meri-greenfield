@@ -1,17 +1,12 @@
 {
-  "contractVersion": "0.2.0",
+  "contractVersion": "0.3.0",
   "skillId": "quick_skill.cited_report",
   "skillVersion": "1.0.0",
   "prose": {
     "id": "urn:meri:original:general-cited-report:1.0.0",
-    "sha256": "5179338cfc50bb133c2cff484183a8bcd0b312a1be6e31a4ebbb31bfaf83e024"
+    "sha256": "6637bc1bd277ad758a2f3c301480b5756a931e09ec2fab7408092ebf475771cd"
   },
   "requiredSources": [
-    {
-      "sourceId": "client_knowledge_search",
-      "authority": "derived",
-      "purpose": "evidence"
-    },
     {
       "sourceId": "mail",
       "authority": "authoritative",
@@ -30,10 +25,6 @@
   ],
   "allowedOperations": [
     {
-      "id": "search_client_knowledge",
-      "version": "0.2.0"
-    },
-    {
       "id": "mail.read_thread",
       "version": "0.2.0"
     },
@@ -47,9 +38,7 @@
     }
   ],
   "subjectKinds": [
-    "client",
-    "portfolio",
-    "personal"
+    "client"
   ],
   "windowBases": [
     "explicit",
@@ -66,13 +55,18 @@
         "evidenceRequired": true
       },
       {
+        "id": "verified-excerpts-only",
+        "requirement": "Present an excerpt only when the cited stored record version was read and the excerpt's exact characters are bound; carry every other citation as a preserved claim that is never described as verified.",
+        "evidenceRequired": true
+      },
+      {
         "id": "conflicting-evidence",
         "requirement": "Disclose unequal cited passages as possible conflicts and keep every named conflict attached to a finding that is genuinely in conflict.",
         "evidenceRequired": true
       },
       {
         "id": "selected-subject-only",
-        "requirement": "Cover exactly the trusted selected client, portfolio or personal subject and its window; never take the subject from model output and never require or invent a bill identity.",
+        "requirement": "Cover exactly the trusted selected client subject, its authorized scopes and the selected window; never take the subject from model output and never require or invent a bill identity.",
         "evidenceRequired": true
       },
       {

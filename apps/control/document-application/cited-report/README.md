@@ -1,62 +1,37 @@
-# General long-form cited report (quick_skill.cited_report 1.0.0)
+# Cited Report
 
-The accepted MM-16 general report recipe, distinct from the congressional Bill Watch 2.0.0 recipe. It
-compiles the seven confirmed sections (summary, scope/as-of, findings, conflicting evidence,
-recommendations, limitations, references) into an editable cited Word document for a client, portfolio or
-personal subject from current authorized source evidence, and preserves the immutable parent's version,
-object, specification and retained source evidence on revision.
+The installed general long-form cited report: `quick_skill.cited_report` 1.0.0, selected explicitly, producing
+one editable seven-section Word report (Summary, Scope and as-of, Findings, Conflicting evidence,
+Recommendations, Limitations, References) from the trusted selected subject's own authorized source reads.
 
-- `manifest.json` — the installed identity, its four declared sources and their existing closed-catalog
-  operations, its subject kinds, window bases, completion rubric, approval and budgets.
-- `SKILL.md` — the installed prose with the real SDK frontmatter; it names its own identity and states the
-  Bill Watch boundary.
-- `skill.mjs` — loads the manifest through the additive 0.3.0 identity receiver, checks the prose pin and the
-  manifest↔catalog operation/source pins.
-- `input.mjs` — the private typed input. The subject and window are **not** model input: they arrive from the
-  trusted selection, so no model output can widen or substitute the scope.
-- `evidence.mjs` — binds each read to the trusted selected subject, the caller's scopes, the manifest's own
-  operation for that source and the observation instant; the passage/observation kernel is the shared one.
-- `compose.mjs` — the compiler, the seven-section renderer, conflict disclosure, revision provenance and the
-  prepared-report admission guard.
-- `binding.mjs` — recipe correspondence for the canonical artifact owner, including the retained-evidence
-  admission so earlier-run evidence is admissible only for this exact prepared context.
-- `test/cited-report.test.mjs` — 21 focused tests over trusted synthetic ports.
+It is not Bill Watch and not a copy of it: no bill, session, chamber or fiscal-year subject is required,
+invented or aliased, and the congressional report recipe and its pins are untouched.
 
-## Held insertion (prepared, not applied)
+## Files
 
-The four shared files this recipe must be dispatched from are held for the coordinator's sequence; the exact
-spans and code are recorded in `S/work/hermes-implementation/report-native-bridge/GENERAL-REPORT-CLAIM.txt`
-(section 2): `apps/control/conversations/skills/execution.mjs` (`createCitedReportCompiler` branch and
-import), `apps/control/conversations/skills/retention.mjs` (`admitPreparedCitedReport` import, `admitted` and
-`originalGuard` entries), `apps/worker/conversation/skills/mcp.mjs` (`admitOriginalSkill` entry) and
-`apps/runtime/selected/output-format.mjs` (compiler key and the SDK schema branch below). No shared edit was
-made in this turn.
+- `manifest.json` — this recipe's installed identity at manifest contract version 0.3.0, its declared sources
+  and its real allowed operations.
+- `SKILL.md` — the installed prose; its bytes are pinned by the manifest and by `packages/skills/assets.json`.
+- `input.mjs` — the private typed input: model-supplied narrative plus real read locators, never the subject.
+- `sources.mjs` — the general source adapters: the real operation request of each declared source, admission of
+  the returned typed result through that source family's own canonical receiver, and the evidence the result
+  actually carries.
+- `compose.mjs` — the compiler: one decisive typed read per distinct cited locator, seven-section blocks,
+  conflict/disclosure semantics, immutable revision provenance.
+- `binding.mjs` — recipe correspondence for the artifact options and the retained-evidence admission.
+- `skill.mjs` — the immutable identity/prose pins and the operation references of this manifest.
+- `test/cited-report.test.mjs` — the recipe's own proofs, driven through the recipe's real read seam.
 
-The output-format branch mirrors this recipe's private input exactly, and deliberately has no `subject`
-property (`selectedOutputCompiler` returns `pin.skillId` for this pin):
+## Read seam
 
-```js
- else if(selectedOutputCompiler(selected)==='quick_skill.cited_report'){
-  const citation=P({sourceId:{enum:[...citedReportSourceIds]},recordId:{type:'string',minLength:1,maxLength:256},
-   sourceVersionId:{type:'string',minLength:1,maxLength:256},start:{type:'integer',minimum:0},end:{type:'integer',minimum:1},url:{type:'string'}},
-   ['sourceId','recordId','sourceVersionId','start','end']);
-  return object({skill:object({skillId:{const:selected.pin.skillId},skillVersion:{const:selected.pin.skillVersion},manifestSha256:{const:selected.pin.manifestSha256},
-   proseSha256:{const:selected.pin.proseSha256},catalogSha256:{const:selected.pin.catalogSha256}},['skillId','skillVersion','manifestSha256','proseSha256','catalogSha256']),
-   title:{type:'string',minLength:1,maxLength:200},asOf:{type:'string'},summary:{type:'string',minLength:1,maxLength:2000},
-   findings:{type:'array',minItems:1,maxItems:40,items:object({id:{type:'string'},kind:{enum:['excerpt','claim']},text:{type:'string',minLength:1,maxLength:2000},
-    citations:{type:'array',minItems:1,maxItems:10,items:citation}},['id','kind','text','citations'])},
-   conflicts:{type:'array',maxItems:20,items:object({findingId:{type:'string'},note:{type:'string',minLength:1,maxLength:1000}},['findingId','note'])},
-   recommendations:{type:'array',minItems:1,maxItems:20,items:{type:'string',minLength:1,maxLength:1000}},
-   limitations:{type:'array',maxItems:20,items:{type:'string',minLength:1,maxLength:1000}}},
-   ['skill','title','asOf','summary','findings','conflicts','recommendations','limitations']);
- }
-```
+The trusted selected runtime hands a compiler `readSource({binding,window,subject,operation,request,signal})`,
+which returns the operation's canonical typed result. This recipe uses exactly that seam — no envelope, no
+second retrieval loop and no authority of its own — and admits each returned result with the receiver the
+source family already owns (`assertMailThreadSourcePage`, `assertResearchPortfolioEvidenceOutput`).
 
-## Known limitations
+## Caller join (owed, not landed)
 
-- General branding, cover treatment and the whitepaper template/entry decision are still an open held
-  decision; this version is the seven confirmed sections with the general subject scopes.
-- Native DOCX rendering/qualification and the Meri Promptfoo/DeepEval regression are separate qualifications
-  and are not claimed here.
-- The public generated conversation-application contract is regenerated centrally (M5); until it is, the
-  committed descriptor still lists the original fourteen identities.
+The installed identity is selectable today, but this recipe is not yet connected to the shared selected
+execution path. The exact two-span delta is recorded in `work/hermes-implementation/report-native-bridge/`:
+the control-service compiler branch and the worker-side SDK output dispatch/format. Those spans are owned by
+the selected-runtime owner and are applied on its release, not here.
