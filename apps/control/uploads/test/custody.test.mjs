@@ -109,12 +109,26 @@ test('changed bytes and reused request identity with different declaration are r
 });
 function applicationFixture(){
  const f=fixture(),authentication=()=>({principal:{sessionId:'synthetic-session',tenantId:f.binding.tenantId,actorId:f.binding.actorId,conversationId:f.binding.conversationId,runId:f.binding.runId},sessionRevision:'1',checkedAtMs:f.state.at,expiresAtMs:f.state.at+300000});
- const sessions={async authenticateSession(){if(f.state.denied)throw Object.assign(Error('ACCESS_DENIED'),{code:'ACCESS_DENIED'});return authentication();},
+ f.state.authCredentials=[];
+ const sessions={async authenticateSession({credential}){f.state.authCredentials.push(credential);if(f.state.denied)throw Object.assign(Error('ACCESS_DENIED'),{code:'ACCESS_DENIED'});return authentication();},
   async readCurrentState({authentication:auth}){return {...await f.config.current(),authenticationSha256:hash(auth)};}};
  const app=createUploadApplication({...f.config,sessions});
  const request=(intent,body,headers={})=>new Request('https://control.synthetic.invalid/api/uploads/'+intent,{method:'POST',headers:{authorization:'Bearer synthetic.session','content-type':'application/json',...headers},body:JSON.stringify(body)});
  return {...f,app,request};
 }
+test('upload HTTP accepts canonical bearer characters unchanged and still delegates actual access to sessions',async()=>{
+ for(const credential of ['plain-opaque','base64url.token-_','opaque~token','opaque+token/x','opaque==','x'.repeat(8192)+'==']){
+  const f=applicationFixture(),response=await f.app.handle(f.request('initiate',{requestId:id(10),...f.declaration},{authorization:'Bearer '+credential}));
+  assert.equal(response.status,200);assert.ok(f.state.authCredentials.length>0);assert.ok(f.state.authCredentials.every(value=>value===credential));
+ }
+ for(const authorization of ['Bearer opaque token','Bearer opaque,token','Bearer opaque:token','Bearer opaque=middle','Bearer opaque===','Bearer '+ 'x'.repeat(8193),'Basic opaque']){
+  const f=applicationFixture(),response=await f.app.handle(f.request('initiate',{requestId:id(10),...f.declaration},{authorization}));
+  assert.equal(response.status,403);assert.deepEqual(f.state.authCredentials,[]);assert.equal(f.state.rows.size,0);
+ }
+ const f=applicationFixture();f.state.denied=true;
+ assert.equal((await f.app.handle(f.request('initiate',{requestId:id(10),...f.declaration},{authorization:'Bearer valid+/=='}))).status,403);
+ assert.deepEqual(f.state.authCredentials,['valid+/==']);assert.equal(f.state.rows.size,0);
+});
 test('real CONTROL HTTP mount admits only canonical current sessions and bounded inert bodies',async()=>{
  const f=applicationFixture(),denied=await f.app.handle(f.request('initiate',{requestId:id(10),...f.declaration},{authorization:''}));assert.equal(denied.status,403);assert.equal(f.state.rows.size,0);
  const begun=await f.app.handle(f.request('initiate',{requestId:id(10),...f.declaration}));assert.equal(begun.status,200);const receipt=await begun.json();assert.equal(receipt.storageStatus,'awaiting_upload');assert.equal(receipt.originalBytesAvailable,false);assert.equal(Object.hasOwn(receipt,'scopes'),false);

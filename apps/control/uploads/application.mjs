@@ -44,7 +44,7 @@ export function createUploadApplication(configuration){
    if(!match||url.search||url.hash)return reply({error:{code:'NOT_FOUND',outcome:'NOT_DISPATCHED'}},404);
    const original=match[1].startsWith('original/'),intent=original?'put':match[1];
    if(request.method!==(original?'PUT':'POST'))return reply({error:{code:'METHOD_NOT_ALLOWED',outcome:'NOT_DISPATCHED'}},405);
-   const credential=/^Bearer ([A-Za-z0-9_.-]{1,8192})$/u.exec(request.headers.get('authorization')??'')?.[1];
+   const credential=/^Bearer ([A-Za-z0-9._~+\/-]{1,8192}={0,2})$/u.exec(request.headers.get('authorization')??'')?.[1];
    if(!credential)fail('UPLOAD_ACCESS_DENIED');
    if(request.headers.get('content-encoding')||request.headers.get('content-type')!==(original?'application/octet-stream':'application/json'))fail('UPLOAD_FORMAT');
    const rawLength=request.headers.get('content-length'),length=rawLength===null?null:/^(0|[1-9][0-9]*)$/u.test(rawLength)?Number(rawLength):-1;

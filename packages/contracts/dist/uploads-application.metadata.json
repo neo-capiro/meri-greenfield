@@ -44,8 +44,8 @@
   "sources": [
     {
       "path": "../../apps/control/uploads/application.mjs",
-      "sha256": "8e0ba7168c47f9640f4d85a6dcc5a81ea7105b010a844aaf888e85b4e60f7afc",
-      "bytes": 7000
+      "sha256": "e56015b95c9f7bd8c3ae5e3c84a920754daff5e90d0c9d612920991c18bd362e",
+      "bytes": 7010
     },
     {
       "path": "../../apps/control/uploads/custody.mjs",
