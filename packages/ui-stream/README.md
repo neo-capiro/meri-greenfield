@@ -21,3 +21,5 @@ Package 0.1.9 adds contracts 0.1.22 to the supported peer versions after the coo
 Package 0.1.10 adds contracts 0.1.23 after the coordinated compatibility decision. Contracts 0.1.23 adds the current-authorized generated-artifact library/history and purpose-bound routine-management receiving contract. UI stream runtime and declaration bytes remain identical to 0.1.9; the earlier archives remain immutable. New receiving surfaces do not change the frozen root event wire protocol.
 
 Package 0.1.11 adds contracts 0.1.24 after the coordinated compatibility decision. This cohort adds explicit generated-preview and durable-run receivers plus the versioned immutable document-revision input family. UI stream runtime and declaration bytes remain identical to 0.1.10 and the root event wire remains 0.1.0. Earlier archives remain immutable.
+
+Package 0.1.12 extends the compatible contracts peer union to 0.1.25 for the reviewed Bill Watch descriptor and independent tenant usage-overview receiver. UI runtime/types and the root event wire remain unchanged; prior archives remain immutable.
