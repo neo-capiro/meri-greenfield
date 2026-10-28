@@ -64,6 +64,10 @@ export function createRetainedHttpTransport(configuration){
       ...(serviceSecret?{'x-internal-service-secret':credentials.serviceSecret}:{}),...(body===undefined?{}:{'content-type':'application/json'})},
      ...(bytes===undefined?{}:{body:bytes})});
     acquired=result;
+    if(c.operation.id==='query_knowledge_graph'){
+     responseBody(result);
+     if(!result.redirected&&(result.status===408||result.status===429||result.status>=500))deny('UNAVAILABLE');
+    }
     try{lifetime.check();return result;}catch(error){try{cancelBody(responseBody(result));}catch{}throw error;}
    });
    const value=frozenData(await readJsonResponse(response,{lifetime,maxResponseBytes:Math.min(maxResponseBytes,c.authority.maxOutputBytes)}));
