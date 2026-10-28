@@ -59,9 +59,13 @@ test('the review path lists only pending own candidates and forwards the propose
  assert.deepEqual((await t.post(MEMORY_PATHS.reviewList,{},'bearer-other')).body.proposals,[]);
  assert.deepEqual(await t.post(MEMORY_PATHS.reviewReject,{candidateId:second.candidateId}),{status:400,body:{error:{code:'MEMORY_REQUEST_INVALID'}}});
  assert.deepEqual(await t.post(MEMORY_PATHS.reviewApprove,{candidateId:second.candidateId},'bearer-other'),{status:404,body:{error:{code:'MEMORY_PROPOSAL_NOT_FOUND'}}});
- assert.deepEqual(await t.post(MEMORY_PATHS.reviewApprove,{candidateId:first.candidateId}),{status:409,body:{error:{code:'MEMORY_DECISION_NOT_PENDING'}}});
+ const repeated=await t.post(MEMORY_PATHS.reviewApprove,{candidateId:first.candidateId});
+ assert.equal(repeated.status,200);assert.equal(repeated.body.proposal.review.publishedMemoryId,approved.body.proposal.review.publishedMemoryId);
+ assert.deepEqual(repeated.body.decision,{decision:'approved',outcome:'duplicate'});
  const rejected=await t.post(MEMORY_PATHS.reviewReject,{candidateId:second.candidateId,reason:'Not useful'});
  assert.equal(rejected.body.proposal.review.status,'rejected');assert.deepEqual(rejected.body.decision,{decision:'rejected',outcome:'rejected'});
+ const rejectedAgain=await t.post(MEMORY_PATHS.reviewReject,{candidateId:second.candidateId,reason:'Not useful'});
+ assert.deepEqual(rejectedAgain.body.decision,rejected.body.decision);
  // A correction decided while Core's lifecycle gate is closed: the effect may or may not have applied.
  const memory=t.core.addMemory({tenantId:TENANT,scope:'personal',ownerUserId:ACTOR,key:'k',value:'v'});
  const correction=(await t.post(MEMORY_PATHS.correct,{idempotencyKey:id(3),targetMemoryId:`clio:${memory.id}`,content:'c',reason:'r',sources:[{kind:'document',reference:'d'}]})).body.proposal;
