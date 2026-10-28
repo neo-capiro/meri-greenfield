@@ -140,10 +140,12 @@ test('the advertised intent rows resolve through the current catalog and every r
  const advertised=new Map(INTENT_ROWS.map(r=>[r.operation.id,r.operation.version]));
  assert.equal(advertised.get('create_client'),'0.3.0');
  assert.equal(advertised.get('update_client_profile'),'0.2.0');
- // the schedule conversational family deliberately stays on its existing 0.2 runtime caller
- assert.equal(advertised.get('schedule_task'),'0.2.0');
- assert.equal(advertised.get('cancel_scheduled_task'),'0.2.0');
- assert.equal(advertised.get('update_scheduled_task'),'0.2.0');
+ // MO-02 crossed the schedule conversational family to the registered 0.3 successor: the advertised row is now the
+ // exact id@version the current catalog registers, and every stored 0.2.0 reference still resolves to the retained
+ // 0.2.0 descriptor asserted below. This expectation moved with that deliberate crossing, not with the catalog bytes.
+ assert.equal(advertised.get('schedule_task'),'0.3.0');
+ assert.equal(advertised.get('cancel_scheduled_task'),'0.3.0');
+ assert.equal(advertised.get('update_scheduled_task'),'0.3.0');
  // a stored row that still names an earlier version resolves to that version's descriptor
  assert.equal(intentDescriptor({id:'create_client',version:'0.2.0'}).inputSchema.id,`urn:meri:retrieval:client-record-action:0.2.0#/$defs/CreateClientInput`);
  assert.equal(intentDescriptor({id:'schedule_task',version:'0.2.0'}).inputSchema.id,'urn:meri:schedules:tool-interface:0.2.0#/$defs/ScheduleTaskRequest');

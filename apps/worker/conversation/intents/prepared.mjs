@@ -9,11 +9,12 @@
  * - document: `{status:'draft', version}` with an immutable artifact version in `generationStatus:'draft'`. */
 import {own,data} from '../../../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {assertProposalIntegrity,canonicalSha256,validateShape} from '../../../../packages/contracts/validate.mjs';
-import {artifactValidators,scheduleToolValidators,researchShareValidators,researchActionValidators,legiwatchValidators,savedNoteValidators,watchValidators,bizdevValidators,legislativeDocumentValidators,clientRecordValidators,validateShape as toolShape} from '../../../../packages/contracts/retrieval-0.2/validate.mjs';
+import {artifactValidators,researchShareValidators,researchActionValidators,legiwatchValidators,savedNoteValidators,watchValidators,bizdevValidators,legislativeDocumentValidators,clientRecordValidators,validateShape as toolShape} from '../../../../packages/contracts/retrieval-0.2/validate.mjs';
 import {assertMailSendProposal,assertTaskUpdateProposal} from '../../../../packages/contracts/commands-0.2/validate.mjs';
 // Only the client-record admission reads the disjoint 0.3 family, so a sourced create proposal is admitted here too.
 import {clientRecordValidators as clientRecord3Validators} from '../../../../packages/contracts/retrieval-0.3/client-record-action-validation.mjs';
 import {assertMemoryReviewResult} from '../../../../packages/contracts/commands-0.2/memory-review-result.mjs';
+import {scheduleOperationFamily} from '../../../../packages/contracts/schedule-operation-family.mjs';
 const ACTIONS=Object.freeze({mail_send:'mail.send',create_task:'task.create',update_task:'task.update',save_chat_attachments:'artifact.file'});
 // The versions the client-record owner prepares. `create_client` moved to 0.3.0 and `update_client_profile`
 // stays on 0.2.0; the port only ever advertises the version its own composed preparer declares.
@@ -87,9 +88,15 @@ export function assertPreparedResult(owner,operation,value,binding,current){
    return {status:'approval_required',reference:p.proposalId,value:v};
   }
   if(owner==='schedule'){
+   // The family is the one this operation's OWN exact pin selects, never "the current family": an operation
+   // reference is `id@version` and the version is a canonical family pin (see schedule-operation-family.mjs). An
+   // unsupported pin is refused, and the legacy pin keeps the frozen 0.2 family, which still refuses a Work
+   // definition or a source-only trigger in the carried request and in the proposal it produced.
+   const family=scheduleOperationFamily(operation.version);
+   if(!family)refuse();
    own(v,['status','proposal'],['request']);const p=v.proposal;
-   toolShape('ScheduleMutationOutput',p);
-   if(v.request!==undefined)scheduleToolValidators.normalizeRequest(operation.id,v.request);
+   family.toolShape('ScheduleMutationOutput',p);
+   if(v.request!==undefined)family.validators.normalizeRequest(operation.id,v.request);
    if(v.status!=='approval_required'||p?.status!=='approval_required'||p.operation!==operation.id||typeof p.proposalId!=='string'||typeof p.intentSha256!=='string'||
     p.projection?.owner?.tenantId!==binding.tenantId||p.projection.owner.actorId!==binding.actorId||!currentScopes(p.projection.scopes,binding,current.scopes))refuse();
    return {status:'approval_required',reference:p.proposalId,value:v};

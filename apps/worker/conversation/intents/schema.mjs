@@ -32,6 +32,8 @@ import {readFileSync} from 'node:fs';
 import {createHash} from 'node:crypto';
 import {z} from 'zod';
 import {executionSchemaDependencies,executionSchemaSources} from '../../../../packages/contracts/retrieval-0.2/execution-schema-sources.mjs';
+import {canonicalSha256} from '../../../../packages/contracts/validate.mjs';
+import {WORK_SELECTION_SCHEMA_ID,workSelectionSchema} from '../../../../packages/contracts/schedules-0.2/lifecycle-validation.mjs';
 import {admitDocumentDescriptor} from '../../../control/document-application/format-admission.mjs';
 import {isNarrowerOrEqual} from '../reads/schema.mjs';
 import {intentDescriptor} from './catalog.mjs';
@@ -48,6 +50,11 @@ function documentFor(id){
    if(typeof doc.$id!=='string'||documents.has(doc.$id))fail();
    documents.set(doc.$id,{doc,sha256:createHash('sha256').update(bytes).digest('hex')});
   }
+  // The canonical Work selection owner is provided by its own module (`packages/contracts/work-selection.mjs`), not by
+  // a schema file, and the 0.3 schedule request resolves its `work` definition through it. It is registered here by
+  // reference to that owner — the same owner the canonical validator mounts — never as a second copy of the shape.
+  const work=workSelectionSchema();
+  documents.set(WORK_SELECTION_SCHEMA_ID,{doc:work,sha256:canonicalSha256(work)});
  }
  const found=documents.get(id);if(!found)fail();return found;
 }

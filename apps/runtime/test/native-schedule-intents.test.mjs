@@ -11,6 +11,8 @@ import {createIntentApprovalOwner} from '../../control/intents/approval.mjs';
 import {createPostgresIntentJournalStore} from '../../control/intents/postgres-journal.mjs';
 import {receiveIntentsResponse} from '../../../packages/contracts/dist/intents-application.mjs';
 import {ROUTINE_PATHS} from '../../control/schedules/application-http.mjs';
+import {createRoutineIntentPreparers} from '../routines-intents.mjs';
+import {CURRENT_SCHEDULE_OPERATION_VERSION,LEGACY_SCHEDULE_OPERATION_VERSION} from '../../../packages/contracts/schedule-operation-family.mjs';
 const versions={imageDigest:'sha256:'+'a'.repeat(64),sdk:'0.3.295',cli:'2.1.295',contracts:'0.1.0',skillsDigest:'b'.repeat(64),checkpointFormat:'0.1.0'};
 async function fixture(t){
  const f=await applicationFixture();t.after(()=>f.close());
@@ -51,6 +53,19 @@ test('SDK offers all three schedules through the real family and one journal; ex
  const scheduleId=prepared.proposal.projection.scheduleId;
  const update=await f.prepare('update_scheduled_task',{...routineRequest(),scheduleId},2);assert.equal(update.proposal.operation,'update_scheduled_task');
  const cancel=await f.prepare('cancel_scheduled_task',{scheduleId,mode:'pause',running:'leave',runs:[],note:'Reviewed pause'},3);assert.equal(cancel.proposal.operation,'cancel_scheduled_task');assert.equal(f.preparations.state.rows.size,3);
+});
+test('the runtime schedule preparers declare one exact family pin, and an unsupported pin fails before any session is borrowed',async t=>{
+ const f=await fixture(t),service={async prepareIntent(){throw Error('unexpected prepare');}};
+ const composed={sessions:f.sessions,service,binding,selectedClientId:clientId,now:f.now,maxRequestMs:5000};
+ const preparers=createRoutineIntentPreparers(composed);
+ assert.deepEqual(preparers.map(p=>p.operation.id),['schedule_task','update_scheduled_task','cancel_scheduled_task']);
+ for(const p of preparers)assert.equal(p.operation.version,LEGACY_SCHEDULE_OPERATION_VERSION,'the composed runtime declares the one pin it can record today');
+ assert.equal(createRoutineIntentPreparers({...composed,operationVersion:CURRENT_SCHEDULE_OPERATION_VERSION})[0].operation.version,CURRENT_SCHEDULE_OPERATION_VERSION);
+ // The pin is validated before the session owner is consulted: no borrow and no service call for an unsupported pin.
+ for(const version of ['0.9.9','0.3','0.2.0.0','','v0.3.0',null,3])
+  assert.throws(()=>createRoutineIntentPreparers({sessions:{},service,binding,selectedClientId:clientId,now:f.now,maxRequestMs:5000,operationVersion:version}),
+   error=>error.code==='INTENT_CONFIGURATION',`pin ${String(version)}`);
+ assert.deepEqual(f.temporal.calls,{describe:0,create:0,update:0,patch:0,delete:0},'no provider effect of any kind');
 });
 test('SDK schedule preparation remains prepare-only on revoked policy and session',async t=>{
  const f=await fixture(t);f.state.allowed=false;await assert.rejects(f.prepare());assert.equal(f.temporal.calls.create,0);

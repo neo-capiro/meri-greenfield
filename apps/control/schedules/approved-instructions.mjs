@@ -9,8 +9,12 @@
 import {types} from 'node:util';
 import {createOperationLifetime} from '../../../packages/runtime/operation-lifetime.mjs';
 import {validateShape} from '../../../packages/contracts/validate.mjs';
-import {validateShape as validateToolShape} from '../../../packages/contracts/retrieval-0.2/validate.mjs';
-import {assertScheduleIntent,canonicalSha256,frozenScheduleData} from '../../../packages/contracts/schedules-0.2/lifecycle-validation.mjs';
+// The approved intent is admitted by the family the RECORDED delivery pin names — the pin is a trusted carried fact,
+// never re-derived from the intent and never downgraded to the legacy family because the legacy family could also
+// express the content. Ordinary timed content approved under either exact pin keeps that pin; only a Work definition
+// or a source-only trigger needs the current family, which refuses the legacy pin for it.
+import {scheduleOperationFamily} from '../../../packages/contracts/schedule-operation-family.mjs';
+import {assertScheduleIntent,canonicalSha256,frozenScheduleData,validateToolShape} from './schedule-validators.mjs';
 import {sdkMethod} from './temporal-schedule-mutations.mjs';
 
 const ownedErrors=new WeakSet(),uuid=/^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/iu,sha=/^[a-f0-9]{64}$/u;
@@ -69,7 +73,14 @@ export function createApprovedScheduleInstructions(options){
   if(key.tenantId!==s.tenantId||typeof key.conversationId!=='string'||!uuid.test(key.conversationId)||typeof key.deliveryId!=='string'||!/^sdk:[a-f0-9]{64}$/u.test(key.deliveryId)||entry.state!=='PREPARED')fail('CUSTODY');
   const record=closed(entry.record,['operation','argumentsSha256'],'CUSTODY'),operation=closed(record.operation,['id','version'],'CUSTODY');
   const {intent,intentSha256}=acknowledged;
-  if(operation.id!==intent.operation||operation.version!=='0.2.0'||typeof record.argumentsSha256!=='string'||!sha.test(record.argumentsSha256))fail('CUSTODY');
+  // The recorded delivery pin is the authority: it must be an exact supported family pin, and the family it names
+  // must admit the acknowledged intent. An ordinary intent recorded under the current pin therefore stays current
+  // (it is never downgraded to the legacy family because the legacy family could also express it), a Work definition
+  // or source-only trigger recorded under the legacy pin is refused by that legacy family, and an unsupported pin has
+  // no family at all. Every refusal happens here, before any release.
+  const family=scheduleOperationFamily(operation.version);
+  if(!family||operation.id!==intent.operation||typeof record.argumentsSha256!=='string'||!sha.test(record.argumentsSha256))fail('CUSTODY');
+  try{family.assertIntent(intent,s.tenantId);}catch{fail('CUSTODY');}
   const outcome=closed(entry.outcome,['result','release'],'CUSTODY'),result=closed(outcome.result,['status','proposal'],'CUSTODY');
   if(result.status!=='approval_required')fail('CUSTODY');
   const proposal=validateToolShape('ScheduleMutationOutput',result.proposal);
