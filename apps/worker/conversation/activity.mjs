@@ -5,7 +5,7 @@ import {randomUUID,createHash} from 'node:crypto';
 import {createOperationLifetime} from '../../../packages/runtime/operation-lifetime.mjs';
 import {RUNNER_LOAD_STAGE_MAX_MS} from '../../../packages/runtime/runner-load-budget.mjs';
 import {validateShape,canonicalSha256} from '../../../packages/contracts/validate.mjs';
-import {assertSkillManifest} from '../../../packages/contracts/retrieval-0.2/validate.mjs';
+import {assertInstalledSkillManifest} from '../../../packages/contracts/retrieval-0.3/installed-skill.mjs';
 import catalog from '../../../packages/contracts/retrieval-0.2/catalog.json' with {type:'json'};
 import {selectSkill} from '../../../packages/skills/index.mjs';
 import {describeSkillPlugin} from '../../../packages/skills/plugin.mjs';
@@ -132,7 +132,7 @@ export function createConversationActivity({runOwner,prepareRuntime,query=sdkQue
     else if(selectedSkills!==undefined){
      const nativeSkill=describeSkillPlugin({selection:selected.pin}).skills.find(s=>s.skillId===selected.pin.skillId&&s.skillVersion===selected.pin.skillVersion);
      if(!nativeSkill||!policy?.skillPlugin||!policy.generalReads||generalReads===undefined||!runtime.skillPluginDirectory||policy.skillNames!==null&&!policy.skillNames.includes(nativeSkill.name))throw fault('SKILL_RUNTIME_REFUSED');
-    }else assertSkillManifest(selected.manifest,catalog);
+    }else assertInstalledSkillManifest(selected.manifest,catalog);
     options.maxTurns=Math.min(options.maxTurns,selected.manifest.budgets.maxTurns);options.maxBudgetUsd=Math.min(options.maxBudgetUsd,selected.manifest.budgets.maxCostMicroUSD/1000000);life.limitDeadline(now()+selected.manifest.budgets.maxRuntimeSeconds*1000);options.systemPrompt.append+='\n'+selected.prose;
    }
    // Add application context to the full native preset, never replace the SDK system prompt.
