@@ -28,18 +28,23 @@ export function documentLimits(value){
  return limits;
 }
 export function configuration(value){
- const c=own(value,['sessions','selectedClientId','artifactOptions','now','limits'],['enabled','admitPdf','previewOptions','nativeFiles']);
- const o=own(c.artifactOptions,['pool','context','validators','authorize','versions','objects','executor','now','ids'],['retention','admitRetainedEvidence','selectedInvocationId']);
+ const c=own(value,['sessions','selectedClientId','artifactOptions','now','limits'],['enabled','admitPdf','previewOptions','nativeFiles','nativeResults']);
+ const o=own(c.artifactOptions,['pool','context','validators','authorize','versions','objects','executor','now','ids'],['retention','admitRetainedEvidence','selectedInvocationId','authorizeOrigin','retainedAssetMapWrites']);
+ if(o.authorizeOrigin!==undefined&&(typeof o.authorizeOrigin!=='function'||types.isProxy(o.authorizeOrigin)))fail('DOCUMENT_CONFIGURATION',500);
  if(o.retention!==undefined&&typeof o.retention?.assertServable!=='function')fail('DOCUMENT_CONFIGURATION',500);
  if(o.admitRetainedEvidence!==undefined&&(typeof o.admitRetainedEvidence!=='function'||types.isProxy(o.admitRetainedEvidence)))fail('DOCUMENT_CONFIGURATION',500);
+ // The deployment's private write activation for the retained asset map: a boolean when present, and it is
+ // never a callable or a request-supplied value. Absent/false keeps the writer from emitting a new map.
+ if(typeof(o.retainedAssetMapWrites??false)!=='boolean')fail('DOCUMENT_CONFIGURATION',500);
  const limits=documentLimits(c.limits),context=v.context(o.context);assertNativeConversationScope({...context,selectedClientId:c.selectedClientId});
  if(c.now!==o.now||typeof c.now!=='function'||o.validators!==v||typeof o.authorize!=='function'||typeof o.ids!=='function'||typeof(c.enabled??false)!=='boolean'||typeof(c.admitPdf??false)!=='boolean')fail('DOCUMENT_CONFIGURATION',500);
- const options={...o,context,...(o.admitRetainedEvidence?{admitRetainedEvidence:syncPort(o.admitRetainedEvidence)}:{}),authorize:asyncPort(o.authorize),ids:syncPort(o.ids),
-  versions:{read:method(o.versions,'read'),commit:method(o.versions,'commit'),...(o.versions.recoverTenant?{recoverTenant:method(o.versions,'recoverTenant')}:{})},
+ const options={...o,context,...(o.authorizeOrigin?{authorizeOrigin:asyncPort(o.authorizeOrigin)}:{}),...(o.admitRetainedEvidence?{admitRetainedEvidence:syncPort(o.admitRetainedEvidence)}:{}),authorize:asyncPort(o.authorize),ids:syncPort(o.ids),
+  versions:{read:method(o.versions,'read'),commit:method(o.versions,'commit'),...(o.versions.history?{history:method(o.versions,'history')}:{}),...(o.versions.list?{list:method(o.versions,'list')}:{}),...(o.versions.recoverTenant?{recoverTenant:method(o.versions,'recoverTenant')}:{})},
   objects:{get:method(o.objects,'get'),put:method(o.objects,'put')},executor:{execute:method(o.executor,'execute')}};
  return {sessions:{authenticateSession:method(c.sessions,'authenticateSession'),readCurrentState:method(c.sessions,'readCurrentState')},
   options,formatAdmission:admitDocumentFormats({pdf:c.admitPdf??false}),limits,now:c.now,selectedClientId:c.selectedClientId,enabled:c.enabled??false,previewOptions:c.previewOptions,
-  nativeFiles:c.nativeFiles===undefined?null:{read:method(c.nativeFiles,'read')}};
+  nativeFiles:c.nativeFiles===undefined?null:{read:method(c.nativeFiles,'read')},
+  nativeResults:c.nativeResults===undefined?null:{list:method(c.nativeResults,'list')}};
 }
 export function requestCurrent(config,info,life,deadlineMs){
  const context=config.options.context;let cutoff=deadlineMs,identity=null;

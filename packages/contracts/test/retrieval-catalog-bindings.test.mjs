@@ -15,14 +15,52 @@ const added = ['list_upcoming_meetings','read_client_meetings','query_debriefs',
 const nowMs = Date.parse('2026-01-01T00:00:00.000Z');
 const context = {nowMs, actorId: 'reader'};
 
-test('preserves the ten typed additions plus memory read within all139/96/43 boundaries', () => {
+/** The R2 inventory ledger is immutable historical evidence: 139 original ids, 96 selected and 43 deferred at that
+ * revision, pinned by its own schema/plan/workbook/source commit. The accepted preserved catalog
+ * (retrieval-0.2/catalog.json, catalogVersion 0.2.23) carries every one of those historical ids; its own exact
+ * counts, installation pin and the five registered successors of the current catalog are asserted by the
+ * version-aware retrieval-catalog-current-versions suite, not repeated here. It diverges from the historical
+ * ledger in exactly two already-accepted ways, both named here: the 31 rows it promoted from deferred to
+ * selected with their recorded boundary, and the 14 successor originals it added. */
+const promotedToSelected = Object.freeze(['manage_research_portfolio','get_research_portfolio_analytics','create_research_portfolio_snapshot','request_research_portfolio_output','save_research_portfolio_output_to_client','watch_research_portfolio','update_research_portfolio_change_state','get_research_portfolio_bookmarks','create_research_portfolio_bookmark','get_research_portfolio_fit','get_research_portfolio_reviews','add_research_portfolio_review_note','get_research_portfolio_rules','get_research_portfolio_imports','get_research_portfolio_operations','prepare_research_portfolio_brief','prepare_research_portfolio_meeting','get_legiwatch_review','compare_florida_budget_amounts','prepare_legiwatch_briefing','compare_legislative_versions','save_legislative_research','preview_legiwatch_relevance','save_legiwatch_relevance','apply_legiwatch_suggestion','save_note','create_client','update_client_profile','get_business_development_brief','resolve_business_development_source','save_business_development_brief']);
+const successorOriginals = Object.freeze(['list_connected_app_reads','read_connected_app','list_teams_channels','get_teams_channel_messages','describe_capiro_data','query_capiro_data','get_research_portfolio_share_links','publish_research_portfolio_share_link','revoke_research_portfolio_share_link','read_saved_record','read_saved_strategy_records','mail_send','watch_action','inspect_watch_state']);
+
+test('preserves the ten typed additions plus memory read within the historical139/96/43 ledger and the accepted preserved catalog expansion', () => {
   const c = catalog(); assertCatalog(c);
   const ledger = JSON.parse(readFileSync(new URL('../../../docs/coordination/r2/capabilities.json', import.meta.url)));
-  assert.deepEqual(c.originals.map(({id,disposition,boundary}) => ({id,disposition,boundary})),
-    ledger.records.map(row => ({id:row.fields.ID,disposition:row.acceptedScope.disposition,boundary:expectedVerticalBoundary(row.fields.ID,row.acceptedScope.boundary)})));
-  assert.equal(c.operations.length,97); assert.equal(c.originals.filter(row => row.state==='mapped').length,96);
+  // The historical snapshot asserts itself first: its identity pins and its own 139 = 96 selected + 43 deferred split.
+  assert.equal(ledger.schema,'meri-r2-inventory-ledger/1');
+  assert.equal(ledger.planSha256,'43f9be7c385a1e321dbc9721bd7ff97752031a62e661f7691b78e0a20fd7c388');
+  assert.equal(ledger.workbookSha256,'3d281d7a1a9a1eaf4fe520dde8e46e2abedac82f6b771041a613c1cfb0df25ec');
+  assert.equal(ledger.sourceCommit,'fd8765ec01d292013758606204f2c9d886cd31c1');
+  assert.equal(ledger.records.length,139);
+  assert.equal(ledger.records.filter(row => row.acceptedScope.disposition==='selected').length,96);
+  assert.equal(ledger.records.filter(row => row.acceptedScope.disposition==='deferred').length,43);
+  // The accepted catalog is those historical originals plus exactly the named successor additions, each id once.
+  const byId = new Map(c.originals.map(row => [row.id,row]));
+  assert.equal(byId.size,c.originals.length);
+  assert.deepEqual(c.originals.map(row => row.id).filter(id => !ledger.records.some(row => row.fields.ID===id)).sort(),
+    [...successorOriginals].sort());
+  // Every historical original the accepted expansion did not promote keeps its historical triple exactly, in ledger
+  // order, under the one recorded boundary revision (get_research_evidence, mapped by the expectations owner).
+  const historicalIds = new Set(ledger.records.map(row => row.fields.ID));
+  assert.deepEqual(c.originals.filter(row => historicalIds.has(row.id) && !promotedToSelected.includes(row.id)).map(({id,disposition,boundary}) => ({id,disposition,boundary})),
+    ledger.records.filter(row => !promotedToSelected.includes(row.fields.ID)).map(row => ({id:row.fields.ID,disposition:row.acceptedScope.disposition,boundary:expectedVerticalBoundary(row.fields.ID,row.acceptedScope.boundary)})));
+  // The promotions are exactly the named rows, each now selected+mapped with a current boundary and a replacement,
+  // and each still carries its untouched historical deferred record in the ledger.
+  assert.deepEqual(c.originals.filter(row => promotedToSelected.includes(row.id)).map(row => `${row.id}:${row.disposition}/${row.state}`),
+    promotedToSelected.map(id => `${id}:selected/mapped`));
+  for (const id of promotedToSelected) {
+    assert.equal(ledger.records.find(row => row.fields.ID===id).acceptedScope.disposition,'deferred');
+    assert.ok(byId.get(id).replacement); assert.ok(byId.get(id).boundary.length>0);
+  }
+  // The counts follow that real lineage instead of being restated: 139 + 14 successors = 153 originals,
+  // 96 historical selected + 31 promotions + 14 successors = 141 mapped, 43 - 31 = 12 still deferred.
+  assert.equal(c.operations.length,142);
+  assert.equal(c.originals.length,ledger.records.length + successorOriginals.length);
+  assert.equal(c.originals.filter(row => row.state==='mapped').length,96 + promotedToSelected.length + successorOriginals.length);
+  assert.equal(c.originals.filter(row => row.disposition==='deferred').length,43 - promotedToSelected.length);
   assert.equal(c.originals.filter(row => row.disposition==='selected' && row.state==='pending').length,0);
-  assert.equal(c.originals.filter(row => row.disposition==='deferred').length,43);
   for (const native of added) {
     const mapping = c.originals.find(row => row.id===native);
     const id = native==='list_upcoming_meetings' ? 'meeting.list_upcoming_meetings'
@@ -36,7 +74,9 @@ test('preserves the ten typed additions plus memory read within all139/96/43 bou
 
 test('every binding resolves the correct existing definition and exact raw schema hash', () => {
   for (const binding of CATALOG_OPERATION_BINDINGS) {
-    const contract=operation(binding.id), raw=readFileSync(new URL(schemaRelativePath(binding.group),import.meta.url));
+    // Each binding resolves at its own registered version, so a retained row and its successor each
+    // keep their own definition and raw byte hash instead of one id-only lookup shadowing the other.
+    const contract=resolveOperationContract({id:binding.id,version:binding.version}), raw=readFileSync(new URL(schemaRelativePath(binding.group),import.meta.url));
     const schema=JSON.parse(raw), sha256=createHash('sha256').update(raw).digest('hex');
     assert.ok(Object.hasOwn(schema.$defs,binding.input)); assert.ok(Object.hasOwn(schema.$defs,binding.output));
     assert.deepEqual(contract.descriptor.inputSchema,{id:`${schema.$id}#/$defs/${binding.input}`,sha256});

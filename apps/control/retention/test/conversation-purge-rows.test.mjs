@@ -27,8 +27,12 @@ test('run erasure preserves accounting, binding and consumed request identity; o
  assert.doesNotMatch(r.sql,/sdk_usage|sdk_charge|projection=|request_sha256=|request_id=/);
  assert.equal(r.erased({...row,request:tombstone(k.subjectId),continuation:null,continuation_sha256:null}),true);
  assert.match(r.sql,/feedback=NULL,feedback_sha256=NULL/);
+ // The same run erasure clears the child custody columns: migration 0030 requires them NULL on the tombstone.
+ assert.match(r.sql,/child_assignments=NULL,child_assignments_sha256=NULL/,'the run erasure clears the child custody columns too');
  assert.equal(r.erased({...row,request:tombstone(k.subjectId),continuation:null,continuation_sha256:null,feedback:[{note:'private correction'}],feedback_sha256:'d'.repeat(64)}),false);
  assert.equal(r.erased({...row,request:tombstone(k.subjectId),continuation:null,continuation_sha256:null,feedback:null,feedback_sha256:null}),true);
+ assert.equal(r.erased({...row,request:tombstone(k.subjectId),continuation:null,continuation_sha256:null,feedback:null,feedback_sha256:null,child_assignments:[{kind:'assignment'}],child_assignments_sha256:'e'.repeat(64)}),false,'a run row still holding child custody is not erased');
+ assert.equal(r.erased({...row,request:tombstone(k.subjectId),continuation:null,continuation_sha256:null,feedback:null,feedback_sha256:null,child_assignments:null,child_assignments_sha256:null}),true,'the run row is erased once the child custody columns are cleared');
  assert.equal(r.erased({...row,request:tombstone(id(9)),continuation:null,continuation_sha256:null}),false);
  assert.throws(()=>r.verify({...row,request:{prompt:'changed without digest'}}),/RETENTION_ROW_CHANGED/);
 });

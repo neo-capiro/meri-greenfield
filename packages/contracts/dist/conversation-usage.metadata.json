@@ -19,6 +19,40 @@
   "coverage": "recorded hooks only; omitted count is explicit",
   "correlation": "none with UI tool.call requestId, source references or other rows",
   "identifiers": "bounded inert text; never links, commands or authority",
+  "overview": {
+    "schemaId": "urn:meri:usage-overview:1.0.0",
+    "version": "1.0.0",
+    "path": "/api/conversations/usage-overview",
+    "method": "POST",
+    "requestBytes": 1024,
+    "responseBytes": 16384,
+    "authentication": "current native tenant membership, rechecked before release",
+    "scope": "tenant aggregate numbers only; no conversation, client or other member identifiers",
+    "currency": "USD",
+    "money": "integer micro-USD of known recorded SDK estimates; missing or unavailable accounting is not zero cost",
+    "periods": "UTC day, ISO Monday week and calendar month; attempt cohorts use run.createdAt, admission cap uses sdk_usage_recorded_at",
+    "limits": "current canonical SDK limits and tenant admission cap; no reservations or budget editing",
+    "capacity": "recorded durable states only; no physical worker concurrency or available capacity observation",
+    "economics": "attempts are not complete jobs; provider billing and complete-job economics unavailable",
+    "schemaSha256": "4598cc036f6db179ca0c430df3a9859750d685e2e67e218a1666366e1cd1e52e"
+  },
+  "overviewV2": {
+    "schemaId": "urn:meri:usage-overview:2.0.0",
+    "version": "2.0.0",
+    "path": "/api/conversations/usage-overview",
+    "method": "POST",
+    "requestBytes": 1024,
+    "responseBytes": 32768,
+    "authentication": "current native tenant membership, rechecked before release",
+    "scope": "tenant aggregate numbers only; no conversation, client or other member identifiers",
+    "currency": "USD",
+    "money": "integer micro-USD of known recorded SDK estimates; missing or unavailable accounting is not zero cost",
+    "periods": "UTC day, ISO Monday week and calendar month; attempt cohorts and conversation threads use run.createdAt, whole jobs use the root revision createdAt, admission cap uses sdk_usage_recorded_at",
+    "limits": "current canonical SDK limits and tenant admission cap; no reservations or budget editing",
+    "capacity": "recorded durable states only; no physical worker concurrency or available capacity observation",
+    "economics": "attempts, conversation threads and canonical root Work/Delegate objectives with successful/partial/failed/cancelled/unclosed separated; the charge is an SDK list-price estimate; provider billing and physical capacity are unavailable",
+    "schemaSha256": "a7f78da61d6d55e10162713a72c9179b75c7df59a8cd16c2d3bd67767e77156c"
+  },
   "errorStatuses": {
     "INVALID_REQUEST": [
       400
@@ -106,8 +140,23 @@
     },
     {
       "path": "../../apps/control/conversations/postgres-store.mjs",
-      "sha256": "e1028ad88bcd804c041d5f5154ede172fb93f9c2bea2df67ccfc4353243efca4",
-      "bytes": 23326
+      "sha256": "c8caeaa89ed5984e73afe6daf05a177f14529407d0dcf744e567a1943ff5481d",
+      "bytes": 23578
+    },
+    {
+      "path": "../../apps/control/conversations/usage-overview/http.mjs",
+      "sha256": "801bc0085c58a6e7153d58d8bfedca266385784aec1ef175047390d53c287276",
+      "bytes": 3266
+    },
+    {
+      "path": "../../apps/control/conversations/usage-overview/job-economics.mjs",
+      "sha256": "bb592da70da7d5e4eb5e775d8006890f3ae2a3b16032eda491c707c3a612afd9",
+      "bytes": 15190
+    },
+    {
+      "path": "../../apps/control/conversations/usage-overview/store.mjs",
+      "sha256": "cc0ca24e2e384b79cad71ee77e48136aee0092a625ebe3ea1ace3f0e3905f8f1",
+      "bytes": 19720
     },
     {
       "path": "../../apps/control/conversations/usage-read/http.mjs",
@@ -126,13 +175,38 @@
     },
     {
       "path": "../../apps/runtime/product-applications.mjs",
-      "sha256": "f202c4fd0ceff361fef4d263a8267e9b279f789765524825984e915f5c05a1e1",
-      "bytes": 17939
+      "sha256": "dc2b3653a3b5f76aea221933a470e48bce689ab9a9cf1a0052484985790d986f",
+      "bytes": 20890
     },
     {
       "path": "conversation-history/protocol.mjs",
-      "sha256": "eb065617f91efeda0ab540b9b218abb6d8246b4faabdfdec5adcf01c42f7f69b",
+      "sha256": "f5ce9e441808b604cb19a5da687972f348c5b0c777d0a31009a9497448d841e1",
       "bytes": 2449
+    },
+    {
+      "path": "conversation-usage/overview-protocol.mjs",
+      "sha256": "d374da43a1aa6e87e313e04215f8708ea7889b444ffc4c2e26c70948a5d5ed9d",
+      "bytes": 9493
+    },
+    {
+      "path": "conversation-usage/overview-receive.mjs",
+      "sha256": "5fb76c49e71e768a18c6c494fefc2c1cbbcf09cb6f9d7936ba39895cb98f38e7",
+      "bytes": 3027
+    },
+    {
+      "path": "conversation-usage/overview-schema.mjs",
+      "sha256": "fcfb0785e36839415fba561f01be0822a5477529de0cad009bd961aa8f59b8c3",
+      "bytes": 8314
+    },
+    {
+      "path": "conversation-usage/overview-semantics.mjs",
+      "sha256": "d1bba98632634615d6b206822d3fac020fd140bfa08d8a9293c4deb83bb8370c",
+      "bytes": 7808
+    },
+    {
+      "path": "conversation-usage/overview-validate.mjs",
+      "sha256": "e83f82fe2b42a159926029c46a32419a3ec9bd9e170f7c9578a1016629672116",
+      "bytes": 2046
     },
     {
       "path": "conversation-usage/protocol.mjs",
@@ -141,8 +215,8 @@
     },
     {
       "path": "conversation-usage/receive.mjs",
-      "sha256": "87b4a3b8b381ab753ff18401f89ff9bba3f84c7f0f015541187f5736fe747689",
-      "bytes": 1445
+      "sha256": "7a38f9e787b987a6c689ae96ec196a0202c3559f185955f5d92a392576924b30",
+      "bytes": 1743
     },
     {
       "path": "conversation-usage/schema.mjs",
@@ -166,8 +240,8 @@
     },
     {
       "path": "generate-usage.mjs",
-      "sha256": "831cbc4c0a0cbb576fd7cf50f4ad7665f7382cb12fafd422e91749e40202558e",
-      "bytes": 5902
+      "sha256": "8eaab8acb1d3e9a30feb25997ccfc35dc2a3a6304ac8316c33d618c734e14652",
+      "bytes": 10852
     },
     {
       "path": "meri.schema.json",
@@ -185,11 +259,16 @@
     "artifacts-0.2/artifact-formats.mjs",
     "conversation-history/protocol.mjs",
     "conversation-usage/conversation-usage-receiver.mjs",
+    "conversation-usage/overview-protocol.mjs",
+    "conversation-usage/overview-receive.mjs",
+    "conversation-usage/overview-semantics.mjs",
     "conversation-usage/protocol.mjs",
     "conversation-usage/semantics.mjs",
     "document-application/boundary.mjs",
+    "node_modules/ajv-formats/dist/formats.js",
     "node_modules/ajv/dist/runtime/ucs2length.js",
     "node_modules/canonicalize/lib/canonicalize.js",
+    "overview-generated:./generated-overview-validator.mjs",
     "usage-generated:./generated-validator.mjs"
   ]
 }

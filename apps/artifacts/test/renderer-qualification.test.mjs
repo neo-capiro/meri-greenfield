@@ -5,7 +5,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {tmpdir} from 'node:os';
 import {join} from 'node:path';
-import {realpath,stat} from 'node:fs/promises';
+import {realpath,stat,writeFile} from 'node:fs/promises';
 import {runArtifactProcess} from '../process.mjs';
 import {RENDERER_SANDBOX_REQUIREMENTS,admittedConverter} from '../renderer.mjs';
 import {evaluateRendererSandbox,parseLibreOfficeVersion,qualifyLibreOfficeRenderer,RENDERER_PROBE_PATH,RENDERER_PROBE_SCHEMA,RENDERER_CHILD_ENV} from '../renderer-qualification.mjs';
@@ -90,6 +90,17 @@ test('an observed sandbox issues an admission the port accepts; probes run in ow
  assert.deepEqual(calls.map(c=>[c.executable,c.args]),[[base.executable,['--version']],[base.nodeExecutable,[RENDERER_PROBE_PATH]]]);
  assert.deepEqual(JSON.parse(calls[1].input),{credentialPaths:base.credentialPaths});
  for(const call of calls){assert.equal(call.mode,true);assert.equal(join(call.cwd,'..'),root);await assert.rejects(stat(call.cwd),{code:'ENOENT'});}
+});
+
+test('the qualified port preserves the exact child runner for its later conversion and cleans its workspace',async()=>{
+ const {base}=await scripted(atCwd()),probeRun=base.run,calls=[],bytes=Buffer.from('%PDF-1.7\nsynthetic runner proof\n%%EOF');
+ base.run=async(executable,args,options)=>{calls.push({executable,args,cwd:options.cwd});
+  if(args.includes('--convert-to')){await writeFile(join(options.cwd,'out','input.pdf'),bytes);return {receipt:{exitCode:0,sandboxQualified:false}};}
+  return probeRun(executable,args,options);
+ };
+ const qualified=await qualifyLibreOfficeRenderer(base),result=await qualified.port.transform({bytes:Buffer.from('synthetic DOCX'),format:'docx',target:'pdf',deadlineMs:Date.now()+1000,maxBytes:1024});
+ assert.deepEqual(result.bytes,bytes);assert.equal(result.receipt.imageDigest,DIGEST);assert.equal(calls.length,3);assert.ok(calls[2].args.includes('--convert-to'));
+ for(const call of calls)await assert.rejects(stat(call.cwd),{code:'ENOENT'});
 });
 
 test('a converter child of the control task (network, writable root, credentials reachable) stays unavailable and names why',async()=>{

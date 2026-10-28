@@ -7,7 +7,7 @@ export function createPostgresArtifactSourceRecovery(options){
  if(typeof tenantId!=='string'||!tenantId)fail('ARTIFACT_STORAGE_CONFIGURATION');const recover=storageMethod(versions,'recoverExclusive');
  async function recoverAll(values,signal){const batch=data(values);if(!Array.isArray(batch)||batch.length>128||Buffer.byteLength(JSON.stringify(batch))>8388608)fail('ARTIFACT_SOURCE_RECOVERY_LIMIT');
   const records=batch.map(verifyArtifactVersionStorageRecord),seen=new Set();for(const record of records){const version=record.version;if(version.binding.tenantId!==tenantId||version.artifactId!==artifactId||seen.has(version.versionId))fail('ARTIFACT_SOURCE_RECOVERY_BINDING');seen.add(version.versionId);}
-  const life=storageLifetime({now,maxRequestMs},signal);try{const result=await life.run(signal=>recover(signal)),receipts=[];
+  const life=storageLifetime({now,maxRequestMs},signal);try{const result=await life.run(signal=>typeof versions.recoverVersionsExclusive==='function'?versions.recoverVersionsExclusive(tenantId,records.map(r=>r.version.versionId),signal):recover(signal)),receipts=[];
    for(const record of records){const known=result.versions.find(r=>r.versionId===record.version.versionId);if(!known||known.recordSha256!==v.hash(record)||known.versionSha256!==v.hash(record.version))fail('ARTIFACT_SOURCE_HEAD_UNAVAILABLE');receipts.push({versionId:known.versionId,versionSha256:known.versionSha256,published:true});}life.check();return data(receipts);
   }finally{life.close();}
  }

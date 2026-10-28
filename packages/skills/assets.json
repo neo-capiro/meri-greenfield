@@ -131,9 +131,37 @@
       "manifestSha256": "27391e1eb9db904dc48587a5aa6013daafce423329f53c7360964ce0f079372d",
       "proseSha256": "a4a9461db01d8737da84f5ee01783ee1d736cf7a9a2090f63b2705da1cb65065",
       "catalogSha256": "56bd5d1eef3de6a36cdd2d73fa39d993f4e17eaad95d4a46024f17035d9d15cf"
+    },
+    {
+      "skillId": "quick_skill.bill_watch",
+      "skillVersion": "1.1.0",
+      "manifestPath": "./originals/bill_watch/1.1.0/manifest.json",
+      "prosePath": "./originals/bill_watch/1.1.0/SKILL.md",
+      "manifestSha256": "d8c3f776a56f7a67ff2d0fb2fae4a2704e5bd45173ee2c2200232a41085b875e",
+      "proseSha256": "e24b8793dc674f76eff3eb55b61cd76198a4ddde146ff723af4a0787da0f7e1a",
+      "catalogSha256": "1f901f26ec134e1585ff12541c3344fda77da1fb07f599f8d59e9338ecaa6eb6"
+    },
+    {
+      "skillId": "quick_skill.bill_watch",
+      "skillVersion": "2.0.0",
+      "manifestPath": "../../apps/control/document-application/report-brief/manifest.json",
+      "prosePath": "../../apps/control/document-application/report-brief/SKILL.md",
+      "manifestSha256": "7e00e11aa4606a5f5277dfd58913c11fe87ef6f069d5d1ad22911de69c83593b",
+      "proseSha256": "8767442316ed7c1a318ba091026eff84ad0ad0a575beab22c1800bac5fa24d3a",
+      "catalogSha256": "1f901f26ec134e1585ff12541c3344fda77da1fb07f599f8d59e9338ecaa6eb6"
+    },
+    {
+      "skillId": "quick_skill.cited_report",
+      "skillVersion": "1.0.0",
+      "manifestPath": "../../apps/control/document-application/cited-report/manifest.json",
+      "prosePath": "../../apps/control/document-application/cited-report/SKILL.md",
+      "manifestSha256": "ed25117407946264ef62a916377ffeec0ceca30ca54a97ab0983c797fb6a685a",
+      "proseSha256": "6637bc1bd277ad758a2f3c301480b5756a931e09ec2fab7408092ebf475771cd",
+      "catalogSha256": "1f901f26ec134e1585ff12541c3344fda77da1fb07f599f8d59e9338ecaa6eb6"
     }
   ],
   "sdkDefaults": {
-    "quick_skill.pe_deep_dive": "1.1.0"
+    "quick_skill.pe_deep_dive": "1.1.0",
+    "quick_skill.bill_watch": "1.1.0"
   }
 }

@@ -1,0 +1,264 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:meri:uploads-application:1.0.0",
+  "$defs": {
+    "UploadInitiateRequest": {
+      "type": "object",
+      "properties": {
+        "requestId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "filename": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 255
+        },
+        "mimeType": {
+          "enum": [
+            "text/plain",
+            "text/markdown",
+            "application/pdf",
+            "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+            "image/png",
+            "image/jpeg"
+          ]
+        },
+        "bytes": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 10485760
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        }
+      },
+      "required": [
+        "requestId",
+        "filename",
+        "mimeType",
+        "bytes",
+        "sha256"
+      ],
+      "additionalProperties": false
+    },
+    "UploadIdRequest": {
+      "type": "object",
+      "properties": {
+        "uploadId": {
+          "type": "string",
+          "format": "uuid"
+        }
+      },
+      "required": [
+        "uploadId"
+      ],
+      "additionalProperties": false
+    },
+    "UploadOriginal": {
+      "type": "object",
+      "properties": {
+        "filename": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 255
+        },
+        "mimeType": {
+          "enum": [
+            "text/plain",
+            "text/markdown",
+            "application/pdf",
+            "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+            "image/png",
+            "image/jpeg"
+          ]
+        },
+        "bytes": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 10485760
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "versionId": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 1024,
+              "pattern": "^[^\\u0000-\\u001f\\u007f]+$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "filename",
+        "mimeType",
+        "bytes",
+        "sha256",
+        "versionId"
+      ],
+      "additionalProperties": false
+    },
+    "UploadReceipt": {
+      "type": "object",
+      "properties": {
+        "uploadId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "requestId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "original": {
+          "$ref": "#/$defs/UploadOriginal"
+        },
+        "storageStatus": {
+          "enum": [
+            "awaiting_upload",
+            "unknown",
+            "stored",
+            "removing",
+            "removed"
+          ]
+        },
+        "scanStatus": {
+          "enum": [
+            "pending",
+            "clean",
+            "infected",
+            "unavailable"
+          ]
+        },
+        "scanReason": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^[A-Z][A-Z0-9_]{0,79}$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "extraction": {
+          "type": "object",
+          "properties": {
+            "status": {
+              "enum": [
+                "pending",
+                "available",
+                "partial",
+                "unavailable",
+                "blocked"
+              ]
+            },
+            "limitations": {
+              "type": "array",
+              "maxItems": 17,
+              "uniqueItems": true,
+              "items": {
+                "type": "string",
+                "pattern": "^[A-Z][A-Z0-9_]{0,79}$"
+              }
+            }
+          },
+          "required": [
+            "status",
+            "limitations"
+          ],
+          "additionalProperties": false
+        },
+        "originalBytesAvailable": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "uploadId",
+        "requestId",
+        "original",
+        "storageStatus",
+        "scanStatus",
+        "scanReason",
+        "extraction",
+        "originalBytesAvailable"
+      ],
+      "additionalProperties": false
+    },
+    "UploadError": {
+      "type": "object",
+      "properties": {
+        "error": {
+          "type": "object",
+          "properties": {
+            "code": {
+              "enum": [
+                "UPLOAD_ID",
+                "UPLOAD_FILENAME",
+                "UPLOAD_FORMAT",
+                "UPLOAD_HASH",
+                "UPLOAD_ENCODING",
+                "UPLOAD_MAGIC",
+                "UPLOAD_IMAGE_LIMIT",
+                "UPLOAD_ACTIVE_CONTENT",
+                "UPLOAD_RELATIONSHIP",
+                "UPLOAD_ORIGINAL_MISMATCH",
+                "INVALID_COMMAND",
+                "INVALID_JSON",
+                "INVALID_BODY",
+                "INVALID_CONTENT_LENGTH",
+                "INVALID_UTF8",
+                "UPLOAD_ACCESS_DENIED",
+                "ACCESS_DENIED",
+                "UPLOAD_NOT_FOUND",
+                "NOT_FOUND",
+                "METHOD_NOT_ALLOWED",
+                "DEADLINE",
+                "UPLOAD_EXPIRED",
+                "UPLOAD_REQUEST_CONFLICT",
+                "UPLOAD_CHANGED",
+                "UPLOAD_NOT_CLEAN",
+                "UPLOAD_NOT_STORED",
+                "UPLOAD_REMOVAL_UNCERTAIN",
+                "UPLOAD_REMOVAL_HELD",
+                "UPLOAD_SIZE",
+                "REQUEST_TOO_LARGE",
+                "CANCELLED",
+                "UPLOAD_UNAVAILABLE",
+                "UPLOAD_PUT_UNKNOWN",
+                "UPLOAD_COMMIT_UNKNOWN"
+              ]
+            },
+            "outcome": {
+              "enum": [
+                "NOT_DISPATCHED",
+                "UNKNOWN",
+                "READ_UNAVAILABLE"
+              ]
+            }
+          },
+          "required": [
+            "code",
+            "outcome"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "error"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

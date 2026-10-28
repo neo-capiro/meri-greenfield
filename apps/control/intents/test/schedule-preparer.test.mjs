@@ -4,6 +4,7 @@ import test from 'node:test';import assert from 'node:assert/strict';
 import {createScheduleToolInterface} from '../../schedules/tool-interface.mjs';
 import {fixture,approve,validators,authority,NOW} from '../../../../packages/contracts/test/schedule-tool-interface-fixtures.mjs';
 import {createScheduleIntentPreparer,SCHEDULE_INTENT_OPERATIONS} from '../schedule-preparer.mjs';
+import {CURRENT_SCHEDULE_OPERATION_VERSION,LEGACY_SCHEDULE_OPERATION_VERSION} from '../../../../packages/contracts/schedule-operation-family.mjs';
 import {mount,delivery,id} from './fixture.mjs';
 const binding={tenantId:'tenant',actorId:'delegate',conversationId:id(1),runId:id(2),attemptId:id(3),workerId:id(4),writerFence:1};
 const code=c=>e=>e.code===c;
@@ -33,6 +34,18 @@ test('current authority revoked before release refuses with no effect and replay
  await assert.rejects(s.mount.prepare(request),code('REFUSED'));revoked=false;await assert.rejects(s.mount.prepare(request),code('REFUSED'));
  assert.equal(s.resolved.length,1);assert.deepEqual(s.lifecycle.calls,[]);
 });
+test('the declared operation pin is received exactly: the legacy pin by default, and an unsupported pin fails before any effect',async()=>{
+ const f=fixture('schedule_task'),tool={async execute(){throw Error('unexpected tool call');}};let resolved=0;
+ const make=version=>createScheduleIntentPreparer({operation:'schedule_task',tool,binding,resolveContext:async()=>{resolved++;return f.context;},...(version===undefined?{}:{version})});
+ assert.equal(make().operation.version,LEGACY_SCHEDULE_OPERATION_VERSION,'a composition that declares no pin keeps the legacy family');
+ assert.deepEqual(make(CURRENT_SCHEDULE_OPERATION_VERSION).operation,{id:'schedule_task',version:CURRENT_SCHEDULE_OPERATION_VERSION});
+ for(const version of ['0.9.9','0.3','0.2.0.0','0.2.0 ','','v0.3.0',null,3])
+  assert.throws(()=>make(version),code('INTENT_CONFIGURATION'),`pin ${String(version)}`);
+ // Construction is the refusal point: an unsupported pin resolves no context and reaches no tool.
+ assert.throws(()=>createScheduleIntentPreparer({operation:'schedule_task',version:'0.9.9',tool,binding,resolveContext:async()=>{resolved++;return f.context;}}),code('INTENT_CONFIGURATION'));
+ assert.equal(resolved,0);
+});
+
 test('a resolver failure prepares nothing; a tool disposition other than NOT_DISPATCHED is UNKNOWN',async()=>{
  const a=setup({resolve:()=>{throw Error('private resolver detail');}});
  await assert.rejects(a.mount.prepare({operation:{id:'schedule_task',version:'0.2.0'},arguments:fixture().request,deliveryId:delivery(1)}),code('REFUSED'));

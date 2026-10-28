@@ -1,7 +1,7 @@
 {
   "packageVersion": "0.1.10",
-  "initialInputVersion": "1.0.0",
-  "schemaId": "urn:meri:conversation-initial-input:1.0.0",
+  "initialInputVersion": "1.3.0",
+  "schemaId": "urn:meri:conversation-initial-input:1.3.0",
   "sources": [
     {
       "path": "../../apps/control/conversations/initial-input-facts.mjs",
@@ -25,17 +25,17 @@
     },
     {
       "path": "../../apps/control/conversations/postgres-store.mjs",
-      "sha256": "e1028ad88bcd804c041d5f5154ede172fb93f9c2bea2df67ccfc4353243efca4",
-      "bytes": 23326
+      "sha256": "c8caeaa89ed5984e73afe6daf05a177f14529407d0dcf744e567a1943ff5481d",
+      "bytes": 23578
     },
     {
       "path": "../../apps/control/conversations/service.mjs",
-      "sha256": "e3007b619b10d2028ed9d8d6ab4d465cac3c6e6c2fa01c7502f3883e824fe3d7",
-      "bytes": 29484
+      "sha256": "f64e3a3cea0f736a4f3c7578147858bd32b4384f368aecee008751c31cb62681",
+      "bytes": 35621
     },
     {
       "path": "conversation-initial-input/protocol.mjs",
-      "sha256": "27d6236684c2ed8882172f70dd927379805e1c035e2f5a4ceca30b6e5c593656",
+      "sha256": "994998216af8d4fe325bfc44301d3ef6d99e739e3ca30c29f23a2317c2f0bc3a",
       "bytes": 2378
     },
     {
@@ -45,7 +45,7 @@
     },
     {
       "path": "conversation-initial-input/schema.mjs",
-      "sha256": "3ff7cc36c876226c75c340a7f53fc4262b0ea83a68419e25f59dee6e2b393aef",
+      "sha256": "6408a6febc14b6f58097102a806490d6a435a9a0b297dadecd255622d82eedfb",
       "bytes": 1829
     },
     {
@@ -65,38 +65,38 @@
     },
     {
       "path": "dist/conversation-application.d.ts",
-      "sha256": "0869e2e82ce164f84ead5c436b10607a4eda57ee1ae420c39d71414559660072",
-      "bytes": 23245
+      "sha256": "a0084a9a5045cc91e66c0c7220926c83ec38f5ecf257175d1255a4bfa0cba48d",
+      "bytes": 46833
     },
     {
       "path": "dist/conversation-application.metadata.json",
-      "sha256": "8f86270d018597398c9775473dee58cc2aab133b27082d534d900c367d1fc72b",
-      "bytes": 10134
+      "sha256": "aec94b971bd85536c79aff6a5cbf36604b49032aad7b0838b18eb34df5a501f9",
+      "bytes": 11840
     },
     {
       "path": "dist/conversation-application.mjs",
-      "sha256": "8d4b3b719c68871f3cb8da4d59981264f18baf68523205d7e1cd2f67e1926492",
-      "bytes": 1512347
+      "sha256": "cef63f6cbe80103068b200e7b92b61e1629654ab48eeae4a6e6a22fa6ef4fd50",
+      "bytes": 1793482
     },
     {
       "path": "dist/conversation-input.d.ts",
-      "sha256": "8add3365f49130ecef954a823a805ded68b04fe2eab7308222d77787b95ffe4a",
-      "bytes": 9150
+      "sha256": "643587cc484f75353d889e1ee5382addfcfe7e3aff26d2d2a7613c8831038b6a",
+      "bytes": 28249
     },
     {
       "path": "dist/conversation-input.metadata.json",
-      "sha256": "c201c858a9d5bde287675c697c03f7d65187964e9afffca2ea65c74218bd3045",
+      "sha256": "277f804c5b3489bf431efc81b10ec373be97ad1ac0b74f881971563ff923e0d6",
       "bytes": 3498
     },
     {
       "path": "dist/conversation-input.mjs",
-      "sha256": "6736ace9952a784253ca044cec846f4b62e7a4524c6ac32e406c87b32e9b4e13",
-      "bytes": 503651
+      "sha256": "e2022ad378e477103a548121142e31f9047f1083b089e09958a579ba29a250b7",
+      "bytes": 723474
     },
     {
       "path": "dist/conversation-input.schema.json",
-      "sha256": "c3e1403e9edfd2c349d93a189d2fe510edf26c826ffb29ea92aadd3744429f58",
-      "bytes": 21636
+      "sha256": "740edb319c964ed3bfb48e3cb00558c8e48470ed7d001b51b44ee14267af3e3c",
+      "bytes": 34856
     },
     {
       "path": "document-application/boundary.mjs",
@@ -119,7 +119,7 @@
       "bytes": 4086
     }
   ],
-  "schemaSha256": "e701a8ddab6426dafda04a746b439712ed13314db388675925280d8b32b43a32",
+  "schemaSha256": "72808d21d88e91880bc1b4e0f7f76c3c8538c4c2238cac7f7b7968b1e24f9168",
   "browserInputs": [
     "artifacts-0.2/artifact-formats.mjs",
     "conversation-initial-input/conversation-initial-input-receiver.mjs",
@@ -136,7 +136,7 @@
     {
       "path": "./conversation-input.mjs",
       "artifact": "dist/conversation-input.mjs",
-      "sha256": "6736ace9952a784253ca044cec846f4b62e7a4524c6ac32e406c87b32e9b4e13"
+      "sha256": "e2022ad378e477103a548121142e31f9047f1083b089e09958a579ba29a250b7"
     }
   ]
 }

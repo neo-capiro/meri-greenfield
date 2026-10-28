@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {createApprovedScheduleInstructions} from '../approved-instructions.mjs';
+import {scheduleToolValidators as currentValidators} from '../schedule-validators.mjs';
 import {fixture,validators,NOW,canonicalSha256} from '../../../../packages/contracts/test/schedule-tool-interface-fixtures.mjs';
 import {harness,occurrence,NOW as DISPATCH_NOW} from './scheduled-dispatch-harness.mjs';
 import {createScheduledDispatch} from '../scheduled-dispatch.mjs';
@@ -10,12 +11,17 @@ import {versions} from '../../conversations/test/store-fixture.mjs';
 import {createPostgresIntentJournalStore,createPostgresPreparedScheduleReader} from '../../intents/postgres-journal.mjs';
 import {createIntentJournal} from '../../intents/journal.mjs';
 import {createPreparedSchedulePoolFixture} from '../../intents/test/prepared-schedule-fixture.mjs';
+import {CURRENT_SCHEDULE_OPERATION_VERSION,LEGACY_SCHEDULE_OPERATION_VERSION} from '../../../../packages/contracts/schedule-operation-family.mjs';
 
 const id=n=>`${String(n).padStart(8,'0')}-1111-4111-8111-111111111111`,clone=structuredClone;
-function custody(prepared){
+// The recorded delivery pin is the schedule contract family pin of the family that prepared the intent, carried
+// exactly as recorded: an ordinary intent keeps whichever exact pin it was approved under (the retained legacy pin or
+// the current one — the canonical current catalog publishes both, and the current family is allowed to carry ordinary
+// timed content), and a Work definition or source-only trigger is only expressible under the current pin.
+function custody(prepared,version=LEGACY_SCHEDULE_OPERATION_VERSION){
  const actorId='delegate',tenantId=prepared.intent.projection.owner.tenantId,conversationId=id(10);
  return {key:{tenantId,actorId,conversationId,deliveryId:`sdk:${'b'.repeat(64)}`},
-  record:{operation:{id:prepared.intent.operation,version:'0.2.0'},argumentsSha256:prepared.requestSha256},state:'PREPARED',
+  record:{operation:{id:prepared.intent.operation,version},argumentsSha256:prepared.requestSha256},state:'PREPARED',
   outcome:{result:{status:'approval_required',proposal:clone(prepared.proposal)},release:{
    binding:{tenantId,actorId,conversationId,runId:id(11),attemptId:id(12),workerId:id(13),writerFence:1},
    scopes:clone(prepared.intent.projection.scopes),expiresAtMs:NOW-10000}}};
@@ -30,6 +36,58 @@ function setup(operation='schedule_task',options={}){
  return {state,ports,reader,request,prepared,intent};
 }
 const rejected=call=>assert.rejects(call,error=>/^SCHEDULE_INSTRUCTION_[A-Z_]+$/u.test(error.code)&&error.message===error.code);
+const WORK={entry:'start-work',jobKind:'scheduled',deliverables:['Committee activity brief'],dependencies:[]};
+// The same custody read, but over an intent the CURRENT family prepared from a request that carries the definition,
+// recorded under the current pin (the only pin that can express it).
+
+function workSetup(work){
+ const f=fixture('schedule_task'),req={...f.request,work};
+ const base=f.context.scheduleContext;
+ // The request digest is recomputed over the definition and the approved task carries it, exactly as the schedule
+ // runtime context resolves both.
+ const context={scheduleContext:{...base,requestSha256:canonicalSha256(req),
+  taskResolution:{...base.taskResolution,task:{...base.taskResolution.task,work}}}};
+ const prepared=currentValidators.prepare('schedule_task',req,context),intent=prepared.intent;
+ const state={row:{projection:clone(intent.projection),generation:intent.generation,activeIntent:null,intent:clone(intent)},entry:custody(prepared,CURRENT_SCHEDULE_OPERATION_VERSION),calls:[],reads:0};
+ const ports={scheduleOwner:{async readFiring(selection,check){state.calls.push(['firing',selection]);check();state.reads++;return state.row;}},
+  preparations:{async readPreparedSchedule(selection){state.calls.push(['preparation',selection]);return state.entry;}}};
+ const reader=createApprovedScheduleInstructions({...ports,now:()=>NOW});
+ const request={tenantId:intent.projection.owner.tenantId,scheduleId:intent.projection.scheduleId,generation:intent.generation,
+  task:clone(intent.configuration.task),instructionSha256:intent.taskInstructionSha256};
+ return {state,reader,request,prepared,intent};
+}
+test('the approved Work definition is bound by custody, and omitting or changing it is refused',async()=>{
+ const s=workSetup(WORK);
+ assert.deepEqual(Object.keys(s.request.task),['taskId','manifestSha256','version','work'],'the definition is part of the acknowledged task');
+ assert.deepEqual(await s.reader.read(s.request),{instruction:s.prepared.input.taskInstruction});
+ // A request whose task omits the acknowledged definition cannot release the instruction.
+ const t=workSetup(WORK);delete t.request.task.work;
+ await rejected(()=>t.reader.read(t.request));
+ // A different definition is a different approved task.
+ const u=workSetup(WORK);u.request.task.work={...WORK,jobKind:'audit'};
+ await rejected(()=>u.reader.read(u.request));
+});
+test('the recorded delivery pin is carried exactly and is never re-derived from the acknowledged content',async()=>{
+ // An unsupported pin resolves to no family.
+ const unsupported=setup();unsupported.state.entry.record.operation.version='0.9.9';
+ await rejected(()=>unsupported.reader.read(unsupported.request));
+ // Neither does a malformed or missing one.
+ const malformed=setup();malformed.state.entry.record.operation.version=null;
+ await rejected(()=>malformed.reader.read(malformed.request));
+ // An ordinary intent recorded under the retained legacy pin reads under the legacy family, exactly as before.
+ const legacyOrdinary=setup();
+ assert.deepEqual(await legacyOrdinary.reader.read(legacyOrdinary.request),{instruction:legacyOrdinary.prepared.input.taskInstruction});
+ // An ordinary intent APPROVED UNDER THE CURRENT PIN stays current: the pin decides, not the content, and it is never
+ // downgraded to the legacy family merely because the legacy family could also express the same ordinary content.
+ const currentOrdinary=setup();currentOrdinary.state.entry.record.operation.version=CURRENT_SCHEDULE_OPERATION_VERSION;
+ assert.deepEqual(await currentOrdinary.reader.read(currentOrdinary.request),{instruction:currentOrdinary.prepared.input.taskInstruction});
+ // A Work-bearing intent cannot be recorded under the legacy pin, which cannot express it.
+ const legacy=workSetup(WORK);legacy.state.entry.record.operation.version=LEGACY_SCHEDULE_OPERATION_VERSION;
+ await rejected(()=>legacy.reader.read(legacy.request));
+ // And the same Work-bearing intent reads under the current pin, which is the one it was approved under.
+ const work=workSetup(WORK);
+ assert.deepEqual(await work.reader.read(work.request),{instruction:work.prepared.input.taskInstruction});
+});
 
 for(const operation of ['schedule_task','update_scheduled_task'])test(`reads exact canonical ${operation} instruction with historical delegated custody`,async()=>{
  const s=setup(operation);
@@ -69,7 +127,8 @@ for(const [name,change] of [
  ['mismatched original conversation',s=>{s.state.entry.key.conversationId=id(29);}],
  ['malformed delivery id',s=>{s.state.entry.key.deliveryId='sdk:not-a-digest';}],
  ['different operation',s=>{s.state.entry.record.operation.id='update_scheduled_task';}],
- ['different operation version',s=>{s.state.entry.record.operation.version='0.3.0';}],
+ ['non-canonical operation version',s=>{s.state.entry.record.operation.version='v0.3.0';}],
+ ['unsupported operation version',s=>{s.state.entry.record.operation.version='0.9.9';}],
  ['invalid arguments digest',s=>{s.state.entry.record.argumentsSha256='invalid';}],
  ['different proposal id',s=>{s.state.entry.outcome.result.proposal.proposalId=id(30);}],
  ['different intent digest',s=>{s.state.entry.outcome.result.proposal.intentSha256='c'.repeat(64);}],

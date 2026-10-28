@@ -117,7 +117,25 @@ export const PLAN=Object.freeze([
  // Build only the SDK entry identity; retain the complete current row guard.
  ['migration',conversation('0028_retention_sdk_identity.sql'),'3e2a8fc7b6a79e49887eb7a08f6d29bbd6ad013d5ae99c1967c01272eb42acad','integration'],
  // Native correction feedback uses the existing run owner; preserve the applied 60-entry prefix.
- ['migration',conversation('0029_native_correction_feedback.sql'),'06116bdca41aab13d2adca2263b25f23f29c61255f95e2e87f997dffd88d3ec6','integration']
+ ['migration',conversation('0029_native_correction_feedback.sql'),'06116bdca41aab13d2adca2263b25f23f29c61255f95e2e87f997dffd88d3ec6','integration'],
+ // Run-free routine proposal custody; preserve the applied 61-entry prefix.
+ ['migration','apps/control/schedules/migrations/0005_management_preparations.sql','4a093756f0c374ed035e7d2778992913152553c5f3b3ad60864d831f7c2cdac4','integration'],
+ ['migration','apps/control/schedules/migrations/0006_management_preparation_grants.sql','8d3a2718306778e21c0ddd426c0522a1520a58dd5d6894fe162b00cc364c3b68','integration'],
+ // Upload custody and least-privilege CONTROL grants: append after the exact 63-entry prefix.
+ ['migration','apps/control/uploads/migrations/0001_upload_custody.sql','44c042aeb1e544c78e6ab274537ea89ccb70dd8662cec98665227c91f279a330','integration'],
+ ['migration','apps/control/uploads/migrations/0002_control_grants.sql','7a18084e0fe64abd0dc241f1c163d7751691a83798f18588b82ce1f13a2d9527','integration'],
+ // Child (SDK subagent) assignment custody stays on the existing run owner; append only ordinal 66 after the
+ // applied 65-entry prefix, so the reserved upload entries keep their ordinals and one `integration` run applies it.
+ ['migration',conversation('0030_child_assignments.sql'),'d0e5444503416bca34f8d8ae468761ee1ca0b8ce0b7c1b7364398b3c9721a9fa','integration'],
+ // Producer source-event custody: the reviewed event-table SQL then its least-privilege CONTROL grants. Append
+ // ordinals 67 and 68 after the exact 1..66 prefix, so one `integration` run applies both and the reserved
+ // upload/child entries keep their ordinals. The MR-04 reservation after 68 is reviewed and registered as ordinal 69.
+ ['migration','apps/control/schedules/migrations/0007_source_events.sql','395f7c8f8ea22c5cbe92e9581f28d1992585f677cc6e09088cc897417739a5e7','integration'],
+ ['migration','apps/control/schedules/migrations/0008_source_event_grants.sql','74a0cd4c58b56044b6d96163e1cc6c54951311de175f8f0acd4232489aa53df6','integration'],
+ // MR-04 management consent renewals: the reviewed 0009 locates the two cancel-only predicates of 0005 by their own
+ // definitions and adds the renewal branches. Append ordinal 69 after the exact 1..68 plan, so one `integration` run
+ // applies it; nothing after ordinal 69 is reserved or registered here.
+ ['migration','apps/control/schedules/migrations/0009_management_consent_renewals.sql','187a1ff83075c38cfa6c9011fb5743756c555d9b1d006fce628deacf2afeb3fc','integration']
 ].map(([kind,path,pinned,declaredStage],index)=>Object.freeze({ordinal:index+1,kind,path,pinned,
  name:kind==='migration'?path:`${path}#${kind.slice(6)}`,
  stage:declaredStage??(kind==='phase:temporal_grants'?'temporal':'meri')})));

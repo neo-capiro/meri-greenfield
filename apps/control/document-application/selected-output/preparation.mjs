@@ -5,14 +5,18 @@ import {own,data,nativeSignal} from '../../../../packages/contracts/commands-0.2
 import {selectSkill} from '../../../../packages/skills/index.mjs';
 import {admitPreparedRelationshipBrief} from '../relationship-brief/compose.mjs';
 import {admitPreparedCommitmentsAudit} from '../commitments-audit/compose.mjs';
+import {admitPreparedReport} from '../report-brief/compose.mjs';
+import {admitPreparedCitedReport} from '../cited-report/compose.mjs';
+import {reportSkillPin} from '../report-brief/skill.mjs';
 export const same=(a,b)=>canonicalSha256(a)===canonicalSha256(b),hash=canonicalSha256;
 export const fail=code=>{throw Object.assign(Error(code),{code});};
 const digest=x=>typeof x==='string'&&/^[a-f0-9]{64}$/u.test(x);
 export function sourcePreparation(value,retainedSource){
  const {prepared:p,signal,...raw}=own(value,['prepared','binding','requestSha256','selectionSha256','inputSha256','reads'],['preparationSha256','signal']);nativeSignal(signal);const call={...data(raw),prepared:p,...(signal?{signal}:{})};
- const fields=own(p,['request','context','baseVersionId','provenance'],['ledger','tracking','unresolved','reads','quotes','coverage','issues','receipts']),provenance=data(fields.provenance);
+ const fields=own(p,['request','context','baseVersionId','provenance'],['ledger','tracking','unresolved','reads','quotes','coverage','issues','receipts','retainedEvidence','findings','conflicts']),provenance=data(fields.provenance);
  const context=v.context(fields.context),request=v.request(fields.request),skill=selectSkill(provenance.skill.skillId,provenance.skill.skillVersion);
- const admit=skill.pin.skillId==='quick_skill.commitments_audit'?admitPreparedCommitmentsAudit:skill.pin.skillId==='quick_skill.relationship_brief'?admitPreparedRelationshipBrief:null;
+ const admit=same(skill.pin,reportSkillPin())?admitPreparedReport:skill.pin.skillId==='quick_skill.commitments_audit'?admitPreparedCommitmentsAudit:skill.pin.skillId==='quick_skill.relationship_brief'?admitPreparedRelationshipBrief:
+  skill.pin.skillId==='quick_skill.cited_report'&&skill.pin.skillVersion==='1.0.0'?admitPreparedCitedReport:null;
  if(!admit)fail('SELECTED_OUTPUT_SOURCE');let guard;try{guard=admit(p,context);}catch(error){if(typeof retainedSource?.admit!=='function')throw error;guard=retainedSource.admit(p,context);}
  if(typeof guard!=='function')fail('SELECTED_OUTPUT_SOURCE');guard({request,context,baseVersionId:p.baseVersionId});
  validateShape('RunBinding',call.binding);

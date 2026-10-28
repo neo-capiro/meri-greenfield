@@ -22,8 +22,8 @@ export function officeTransformArguments({workspace,format,target}){
   // PDF -> PDF opens the file in Draw (native openability checks only; no generation or preview path converts a PDF).
   return ['-env:UserInstallation='+pathToFileURL(join(workspace,'profile')).href,'--headless','--nologo','--nodefault','--norestore',...(format==='pdf'?['--infilter=draw_pdf_import']:[]),'--convert-to',target,'--outdir',join(workspace,'out'),join(workspace,'input.'+format)];
 }
-export function createLibreOfficeTransformer({executable,tempRoot}){
-  if(typeof executable!=='string'||!isAbsolute(executable)||!isAbsolute(tempRoot))fail('ARTIFACT_RENDERER_UNAVAILABLE');
+export function createLibreOfficeTransformer({executable,tempRoot,run=runArtifactProcess}){
+  if(typeof executable!=='string'||!isAbsolute(executable)||!isAbsolute(tempRoot)||typeof run!=='function')fail('ARTIFACT_RENDERER_UNAVAILABLE');
   return Object.freeze({async transform({bytes,format,target,deadlineMs,maxBytes,signal}){
     if(!Buffer.isBuffer(bytes)||bytes.length>8388608)fail('ARTIFACT_INPUT_LIMIT');
     const workspace=await mkdtemp(join(tempRoot,'meri-office-'));
@@ -33,11 +33,11 @@ export function createLibreOfficeTransformer({executable,tempRoot}){
         const userProfile=join(workspace,'profile','user');await mkdir(userProfile,{recursive:true,mode:0o700});
         await writeFile(join(userProfile,'registrymodifications.xcu'),xlsxRecalculationProfile,{flag:'wx',mode:0o600});
       }
-      const run=await runArtifactProcess(executable,args,{cwd:workspace,input:Buffer.alloc(0),signal,deadlineMs});
+      const process=await run(executable,args,{cwd:workspace,input:Buffer.alloc(0),signal,deadlineMs});
       const output=join(workspace,'out','input.'+target),stat=await lstat(output);if(!stat.isFile()||stat.isSymbolicLink()||stat.size>maxBytes)fail('ARTIFACT_OUTPUT_LIMIT');
       const result=await readFile(output);if(target==='pdf'&&!result.subarray(0,5).equals(Buffer.from('%PDF-')))fail('ARTIFACT_FORMAT');
       if(target==='xlsx'&&!result.subarray(0,2).equals(Buffer.from('PK')))fail('ARTIFACT_FORMAT');
-      return {bytes:result,receipt:{inputSha256:createHash('sha256').update(bytes).digest('hex'),outputSha256:createHash('sha256').update(result).digest('hex'),format,target,process:run.receipt,nativeQualification:false,renderInspection:'pending',formulaEquivalence:'unqualified'}};
+      return {bytes:result,receipt:{inputSha256:createHash('sha256').update(bytes).digest('hex'),outputSha256:createHash('sha256').update(result).digest('hex'),format,target,process:process.receipt,nativeQualification:false,renderInspection:'pending',formulaEquivalence:'unqualified'}};
     }finally{await rm(workspace,{recursive:true,force:true});}
   }});
 }

@@ -1,6 +1,7 @@
 /** Completion capture identity and publication share the canonical conversation transaction.
  * A persisted CAPTURING/UNKNOWN row never authorizes another physical capture. */
 import {bounded,hash,same,fail,validateShape,own,uuid,nextState} from './boundary.mjs';
+import {WORK_ENTRIES,WORK_JOB_KINDS} from '../../../packages/contracts/work-selection.mjs';
 import {assertWorkspacePaths} from '../../../packages/contracts/validate.mjs';
 import {assertTypedResult,assertTypedSelection,typedCheckpointObject,MAX_OBJECTIVE_SELECTION_BYTES} from '../../../packages/runtime/objective-generation-custody.mjs';
 import {assertNativeConversationScope,assertNativeSessionCapture} from '../../../packages/contracts/runtime-0.2/session.mjs';
@@ -85,4 +86,58 @@ export async function readNativeCompletionCapture(c,lineage,check){const {run,re
  if(p.kind!== 'native-session')return null;
  if(row.state!=='PUBLISHED'||row.proof_sha256!==hash(row.proof)||p.checkpointId!==b.runId||p.completionId!==b.runId||row.checkpoint_id!==p.checkpointId||row.completion_id!==p.completionId||run.projection.state!=='completed')fail('STORE_CORRUPT');
  const proof=validateCompletionProof(row.proof,p);if(!same(proof.sdkSession,reference))fail('STORE_CORRUPT');return proof;
+}
+
+/** Whole-job closure. This producer settles ONE run revision; the canonical ROOT Work/Delegate objective
+ * is closed only when every current revision of that objective is settled by the same rule, with no
+ * unresolved successor and no unsettled child receipt. The caller supplies the revision facts it read in
+ * its own transaction — the same join shape as readNativeCompletionCapture — so no second store, ledger,
+ * scheduler or table is introduced, and attempts, conversation threads and jobs stay three separate
+ * denominators. `closure` is the producer's own evidence for that revision: 'published' when a PUBLISHED
+ * native-session completion capture pins that revision, 'capture-pending' while its checkpoint is
+ * CAPTURING or UNKNOWN, 'none' when the producer recorded nothing for it. */
+export const JOB_REVISION_LIMIT=64;
+const REVISION_STATES=Object.freeze(['queued','starting','running','waiting-for-approval','paused','completed','failed','cancelled']);
+const revisionTerminal=state=>['completed','failed','cancelled'].includes(state);
+export function wholeJobClosure(value){
+ const job=own(value,['entry','jobKind','revisions']);
+ if(!WORK_ENTRIES.includes(job.entry)||!WORK_JOB_KINDS.includes(job.jobKind)||!Array.isArray(job.revisions)||!job.revisions.length||
+  job.revisions.length>JOB_REVISION_LIMIT)fail('USAGE_OVERVIEW_CORRUPT');
+ const seen=new Set(),revisions=[];
+ for(const raw of job.revisions){
+  const r=own(raw,['requestSha256','state','lineage','tail','steer','closure','accounting','children','unresolvedSuccessors']),children=own(r.children,['assignments','settled']);
+  if(typeof r.requestSha256!=='string'||!/^[a-f0-9]{64}$/u.test(r.requestSha256)||seen.has(r.requestSha256)||!REVISION_STATES.includes(r.state)||
+   !['root','continuation'].includes(r.lineage)||typeof r.tail!=='boolean'||!['published','capture-pending','none'].includes(r.closure)||
+   !['recorded','unavailable','not-recorded'].includes(r.accounting)||
+   !Number.isSafeInteger(r.unresolvedSuccessors)||r.unresolvedSuccessors<0||!Number.isSafeInteger(children.assignments)||children.assignments<0||
+   !Number.isSafeInteger(children.settled)||children.settled<0||children.settled>children.assignments)fail('USAGE_OVERVIEW_CORRUPT');
+  // The current goal revision is the run's own request digest plus the last APPLIED steer control, reported
+  // exactly as the canonical child-assignment revision does (assertRevision in ./lifecycle/child-assignments.mjs:
+  // requestSha256 with controlId, inputSha256, controlSequence). A
+  // control that is not APPLIED is not the current revision at all, so the caller reports no steer for it.
+  if(r.steer!==null){const steer=own(r.steer,['controlId','controlSequence','inputSha256']);
+   if(!Number.isSafeInteger(steer.controlSequence)||steer.controlSequence<1||typeof steer.inputSha256!=='string'||!/^[a-f0-9]{64}$/u.test(steer.inputSha256))fail('USAGE_OVERVIEW_CORRUPT');
+   try{uuid(steer.controlId);}catch{fail('USAGE_OVERVIEW_CORRUPT');}}
+  seen.add(r.requestSha256);
+  revisions.push({requestSha256:r.requestSha256,state:r.state,lineage:r.lineage,tail:r.tail,closure:r.closure,steered:r.steer!==null,accounting:r.accounting,
+   unresolvedSuccessors:r.unresolvedSuccessors,assignments:children.assignments,settled:children.settled});
+ }
+ // A job always carries its own root revision: the caller never hands over a fragment whose root is another window.
+ if(revisions.filter(revision=>revision.lineage==='root').length!==1||!revisions.some(revision=>revision.tail))fail('USAGE_OVERVIEW_CORRUPT');
+ const tails=revisions.filter(revision=>revision.tail),kinds=new Set(tails.map(revision=>revision.state));
+ const unresolvedSuccessors=revisions.reduce((sum,revision)=>sum+revision.unresolvedSuccessors,0);
+ const unsettledChildren=revisions.reduce((sum,revision)=>sum+(revision.assignments-revision.settled),0);
+ // A revision is settled by the producer's own evidence for its terminal state: a completed revision
+ // needs its PUBLISHED native-session capture, while failed/cancelled are settled by the run's own
+ // fenced terminal state — but a capture that began and never published leaves the objective unclosed.
+ const settledRevision=revision=>revision.state==='completed'?revision.closure==='published'
+  :revision.state==='failed'||revision.state==='cancelled'?revision.closure!=='capture-pending':false;
+ // An unresolved successor, an unsettled child receipt or an unsettled terminal revision is never a
+ // closed job; a revision still in flight makes the objective partial.
+ const state=unresolvedSuccessors>0||unsettledChildren>0||tails.some(revision=>revisionTerminal(revision.state)&&!settledRevision(revision))?'unclosed'
+  :tails.some(revision=>!revisionTerminal(revision.state))?'partial'
+  :kinds.size>1?'partial':kinds.has('completed')?'successful':kinds.has('failed')?'failed':'cancelled';
+ return Object.freeze({state,revisions:revisions.length,tails:tails.length,steerRevisions:revisions.filter(revision=>revision.steered).length,
+  settledRevisions:revisions.filter(revision=>settledRevision(revision)&&revisionTerminal(revision.state)).length,closurePending:tails.filter(revision=>!settledRevision(revision)).length,
+  unresolvedSuccessors,unsettledChildren,recorded:revisions.every(revision=>revision.accounting==='recorded')});
 }

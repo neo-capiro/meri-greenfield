@@ -1,0 +1,183 @@
+WAVE5 UPLOAD — AGENTCORE PRODUCTION JOIN — HANDOFF
+=================================================
+
+WORKTREE
+  path   work/wave5-upload-agentcore-production-20261028
+  base   2fa283ed2823d5f7b0e31528606f71e0e6877813  (tree cf24469fc558ef0b454412221fd1b3304d7d6d31)
+  branch codex/wave5-upload-agentcore-production-20261028 (from 2fa283ed2)
+
+RESULTING SLICE COMMIT (the code and test change this handoff documents)
+  head   0415ac00fd52b9b0d99cb3831b461eb9c96474f9
+  tree   154c8b98d06b1e5a7b1411b5f50231426f66a08e
+  parent 2fa283ed2823d5f7b0e31528606f71e0e6877813
+  This handoff file itself is committed immediately after the slice commit as its own "record" commit,
+  matching the established pattern (2fa283ed2 "Record the custody-mediated native inspection purpose
+  handoff" followed 5348a0f0d). The head/tree above is the slice's own, not the handoff commit's.
+
+This slice is a successor of the frozen inspection join. It makes the three concrete corrections
+requested against the real production default adapter and the real mounted CONTROL caller. Prior
+commits (95a55bbd2, 814d96a8b, 5348a0f0d, 2fa283ed2) are unchanged.
+
+CHANGED FILES
+  M apps/runtime/agentcore-entrypoint.mjs            (+18/-7)
+  M apps/runtime/uploads/agentcore-client.mjs        (+31/-13)
+  M apps/runtime/uploads/agentcore-http.mjs          (+47/-0)
+  M apps/runtime/uploads/control-lifecycle.mjs       (+37/-3)
+  M apps/runtime/uploads/test/agentcore-client.test.mjs (+7/-12)
+  A apps/runtime/uploads/test/agentcore-adapter.test.mjs
+  A apps/runtime/uploads/test/agentcore-host.test.mjs
+  A apps/runtime/uploads/test/agentcore-production.test.mjs
+
+CORRECTION 1 — SDK PATH / CLEANUP ADDRESSED THE WRONG OBJECT
+  Problem  the production `finally` called `(resolved ?? narrow(transport)).stop`. `resolved` is a
+           PENDING IMPORT (a Promise), so the production adapter called `.stop` on a Promise. The
+           owned one-use session could be left running because cleanup addressed a different object
+           than the one that dispatched, and a rejected import produced a TypeError instead of the
+           honest closed fault.
+  Fix      apps/runtime/uploads/agentcore-client.mjs
+           * `resolved` stays the pending import; a new `owned` holds the RESOLVED port.
+           * `opened()` awaits `resolved` once and caches `owned`, so every later call gets the same
+             object.
+           * `inspect` keeps the resolved port in `dispatchedPort` and the cleanup calls
+             `dispatchedPort.stop(...)` — the exact port that invoked, never a Promise and never a
+             second client.
+           * `close()` destroys only a client this module created, and only from the resolved value.
+           * `requireUploadInspectionSdk(module)` makes an ABSENT or INCOMPLETE SDK the same closed
+             UPLOAD_INSPECTION_TRANSPORT_UNAVAILABLE fault, never a TypeError from an undefined class.
+  Proof    apps/runtime/uploads/test/agentcore-adapter.test.mjs — the REAL default adapter over a
+           REPLACED SDK module, run with --experimental-test-module-mocks. Covers:
+             - invoke + stop success on the SAME owned session, with the client the module created,
+               `maxAttempts:1`, region and ARN/qualifier from the declaration;
+             - unknown dispatch: exactly one invoke (no replay) and the session still stopped;
+             - cancellation: CANCELLED is not an unknown outcome, session still stopped;
+             - cleanup failure: both a 500 stop and a throwing stop surface
+               UPLOAD_INSPECTION_CLEANUP_UNKNOWN;
+             - absent/incomplete SDK: requireUploadInspectionSdk refuses without dispatching.
+  Removed  the host-dependent skip in agentcore-client.test.mjs. It skipped whenever the SDK was
+           resolvable, which meant the production path was never exercised and the assertion was
+           weakened. The replacement asserts the closed configuration refusals directly and leaves
+           the default-adapter path to the module-mocked file above.
+
+CORRECTION 2 — CONTROL PRODUCTION CALLER WAS MISSING
+  Problem  control-lifecycle/config had no path that selected the AgentCore remote port and no
+           production call site created `createUploadInspectionClient`.
+  Fix      apps/runtime/uploads/control-lifecycle.mjs
+           * `compileUploadNativeConfiguration` now accepts a closed `native.agentcore = {imageDigest}`
+             block. It is mutually exclusive with every local key (digest/root/extractor/budget), and a
+             malformed nested block is the same UPLOAD_NATIVE_CONFIGURATION fault as a malformed key.
+           * `mountUploadNativeControl` selects REMOTE first and unconditionally when `agentcore` is
+             declared: it reads the existing `configuration.agentcore` {runtimeArn, qualifier}, takes
+             the region from the ARN's own segment 4, and returns
+             `createUploadInspectionClient({region, agentRuntimeArn, qualifier, imageDigest, now})`.
+             No local sandbox composition is even attempted, so CONTROL can never fall back to
+             executing the uploaded bytes itself. A missing/malformed runtime is an honest
+             `inspection:null` with `missing:['uploads.native.agentcore']`.
+           * Absent/disabled declarations and the entire local path are byte-for-byte unchanged.
+  Custody  the port shape is identical to the in-process owner, so `apps/control/uploads/custody.mjs`
+           drives it unchanged: `fresh()` rechecks authority BEFORE the dispatch, `guard()` rechecks
+           AFTER, and the existing `validateUploadInspection` receipt gate accepts the result. No
+           authority, owner, tenant, scope or object reference is accepted from the caller.
+  Proof    apps/runtime/uploads/test/agentcore-production.test.mjs — the MOUNTED caller over the REAL
+           custody owner (memory retention journal, read gate, current-access port, store/objects
+           fixtures). Covers:
+             - closed declaration selection and refusal of every local leftover beside `agentcore`;
+             - mount selects the remote port for a genuine runtime and composes nothing locally;
+             - a mounted remote port inspects the EXACT original this custody owns; the wire carries
+               the declared image (never an observed one) and the configured endpoint qualifier;
+             - freshness denies BEFORE the dispatch (nothing sent, original not read) and AFTER the
+               dispatch (no NEW inspection published, session still stopped);
+             - an uncertain dispatch is surfaced and never retried, session still stopped.
+
+CORRECTION 3 — ENTRYPOINT PASSED NO INSPECTION PORT
+  Problem  agentcore-entrypoint constructed `createUploadInspectionApplication` with no `inspection`
+           port, so the purpose could only answer 503. The "host owner does not exist" claim was
+           false: composeUploadNativeHost, the native-definitions owner and the bounded provisioning
+           lifecycle already exist.
+  Fix      apps/runtime/uploads/agentcore-http.mjs
+           * `UPLOAD_INSPECTION_IMAGE_ENVIRONMENT` names the one environment entry read.
+           * `uploadInspectionHostConfiguration(environment, options)` builds the closed container
+             declaration from that digest only. No root, program, tool, session, runtime or budget is
+             selectable. An absent/malformed digest declares no native inspection.
+           * `composeUploadInspectionHost({...})` reuses `mountUploadNativeControl` (and therefore
+             `composeUploadNativeHost`) on this purpose's own startup path, then refuses an admission
+             whose `imageDigest` is not the digest this purpose was built for (UNAVAILABLE), the same
+             before/after correlation the renderer owner applies. It claims no observed digest.
+           apps/runtime/agentcore-entrypoint.mjs
+           * composes the host BEFORE serving and passes `inspection: inspectionHost.inspection` plus
+             the declared digest to `createUploadInspectionApplication`;
+           * emits the closed UPLOAD_NATIVE_UNAVAILABLE_EVENT with the exact `missing` list when the
+             host could not be attested (purpose stays honestly 503);
+           * starts ONE bounded provisioning attempt after listen, through the same serialized refresh
+             owner the scans use — not awaited, not a timer/daemon/job, aborted by shutdown, no retry
+             and no loop. Nothing to provision when the host was not composed.
+  Proof    apps/runtime/uploads/test/agentcore-host.test.mjs — the REAL default startup path on an
+           unattested host yields no port and 503; an attested host (narrow run/readFileImpl ports only)
+           composes the real fixed owner, observes both tool identities, publishes exactly one signed
+           snapshot, runs the fixed scan/extract pair, and the resulting application returns a receipt
+           the EXISTING `validateUploadInspection` gate accepts. Image digest stays a DECLARED
+           expectation (`describe().imageObserved === false`).
+
+IMAGE / TOOL SEMANTICS
+  Expected vs observed is preserved. The declared digest is carried into the wire, the receipts and
+  the admission; `describe().imageObserved` is always false and the admission must match the
+  declaration or the purpose is refused. Tool identities are OBSERVED from the fixed programs. No new
+  control-plane credential, IAM owner or API permission was invented. ARM/runtime-image qualification
+  and externally verified endpoint/image binding remain Release-only and OPEN — source tests establish
+  binding and probe observations only, not image qualification.
+
+BOUNDS AND SCOPE RETAINED
+  * 10 MiB bound and the base64 envelope/output bounds are unchanged (agentcore-contract.mjs untouched).
+  * No request-selected executable, configuration or runtime.
+  * No retry after an uncertain dispatch; one owned session cleanup in `finally`.
+  * S3 VersionId/hash original custody and the publication/release fences are unchanged.
+  * Renderer wire unchanged. Wave3 reads/schema paths and M5 analysis/lifecycle/nativeFiles/input/
+    package/generator/lock/infra are untouched. Existing uploads native/config/entrypoint spans are
+    the only ones modified; no new approval was needed.
+
+COMMANDS AND RESULTS
+  node --experimental-test-module-mocks --test \
+    apps/runtime/uploads/test/agentcore-adapter.test.mjs \
+    apps/runtime/uploads/test/agentcore-host.test.mjs \
+    apps/runtime/uploads/test/agentcore-production.test.mjs \
+    apps/runtime/uploads/test/agentcore-client.test.mjs \
+    apps/runtime/uploads/test/agentcore-contract.test.mjs \
+    apps/runtime/uploads/test/agentcore-http.test.mjs
+    -> tests 34, pass 34, fail 0, skipped 0, duration 2460.83 ms
+
+  node --test \
+    apps/control/uploads/test/custody.test.mjs \
+    apps/control/uploads/test/extraction.test.mjs \
+    apps/runtime/uploads/test/control-lifecycle.test.mjs \
+    apps/runtime/uploads/test/composition.test.mjs \
+    apps/runtime/uploads/test/native-inspection.test.mjs
+    -> tests 47, pass 47, fail 0, skipped 0, duration 3922.81 ms
+
+  No broad 321-suite retry was run. Known baseline failures elsewhere are unchanged. The earlier
+  20 pass / 1 skip history is preserved: this slice ADDS tests and REMOVES the host-dependent skip,
+  so the prior skip count is gone and the replacement assertions run unconditionally.
+
+OUTBOUND-CALL DISCLOSURE (ORIGINAL, PRESERVED)
+  In the previous slice one outbound cloud call DID occur during testing: the host-dependent check
+  resolved the real @aws-sdk/client-bedrock-agentcore and dispatched to a synthetic ARN
+  (…:111122223333:runtime/meri_synthetic) with a 41-byte payload. It was reported then, and the skip
+  that permitted it was the reason this slice removed that skip. This is preserved here rather than
+  replaced by a clean result.
+
+OUTBOUND-CALL DISCLOSURE (THIS SLICE)
+  No test in this slice issues a network request or reads the host credential chain. The adapter and
+  production files replace the SDK module via Node's supported module mock and assert the replacement
+  took effect BEFORE any dispatch. The `sdkTransport` import is never reached in those checks. The
+  host and client files inject narrow ports only. Qualification/Release verification remains outside
+  this slice.
+
+QUALIFICATION LIMITS / OPEN ITEMS
+  1. ARM/runtime-image qualification and externally verified endpoint/image binding: Release-only, open.
+  2. Declared-vs-observed image: the digest is a declaration; no running image is observed here.
+  3. The control-side remote selection depends on an existing `configuration.agentcore`
+     {runtimeArn, qualifier}; a host without that declaration stays honestly UNAVAILABLE.
+  4. Container-side host composition depends on the host being able to attest the sandbox and observe
+     both tools; otherwise the purpose stays honestly 503 with the exact missing list.
+  5. `@aws-sdk/client-bedrock-agentcore` remains absent from the named read-only dependency source; it
+     exists only in the per-app runtime tree. That is unchanged by this slice.
+
+NO PUSH / PR / BUILD / CLOUD / TARGET ACTION WAS TAKEN.

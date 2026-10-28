@@ -12,11 +12,13 @@ import {continuationFixture} from '../../../apps/worker/conversation/continuatio
 import {buildContinuationOptions} from '../../../apps/worker/conversation/continuation/options.mjs';
 const oldCatalog='41aed2fc63dc40cafe987ee3059a13b605b7d3796c31f60ed6ca26939954bfcc';
 
-test('all fourteen immutable skills keep their existing explicit pins under the additive catalog',()=>{
-  const rows=listSkills().filter(row=>!(row.skillId==='quick_skill.pe_deep_dive'&&row.skillVersion==='1.1.0'));assert.equal(rows.length,15);assert.equal(new Set(rows.map(row=>row.skillId)).size,14);
+test('every immutable identity keeps its explicit pin under the additive catalog',()=>{
+  const rows=listSkills().filter(row=>!(['quick_skill.pe_deep_dive','quick_skill.bill_watch'].includes(row.skillId)&&['1.1.0','2.0.0'].includes(row.skillVersion)));assert.equal(rows.length,16);assert.equal(new Set(rows.map(row=>row.skillId)).size,15);
   for(const row of rows){
     const selected=selectSkill(row.skillId,row.skillVersion),asset=assets.assets.find(item=>item.skillId===row.skillId&&item.skillVersion===row.skillVersion);
-    assert.deepEqual(selected.pin,{...row,catalogSha256:oldCatalog});
+    // The original identities keep their additive-era catalog pin; the one added identity was installed under
+    // the current closed 0.2.0 catalog and carries that receipt instead.
+    assert.deepEqual(selected.pin,{...row,catalogSha256:row.skillId==='quick_skill.cited_report'?hash(catalog):oldCatalog});
     assert.equal(selected.installationCatalogSha256,hash(catalog));
     assert.equal(hash(JSON.parse(readFileSync(new URL('../'+asset.manifestPath,import.meta.url)))),selected.pin.manifestSha256);
   }

@@ -5,7 +5,8 @@ import {verifyArtifactVersionStorageRecord as recordValue} from './version-recor
 export const ARTIFACT_PUBLICATION_NAMESPACE='meri.artifact-publication.proposal-1';
 const publicationVersion='meri.artifact-publication-index.proposal-1',namespace=ARTIFACT_PUBLICATION_NAMESPACE;
 const corrupt=()=>fail('ARTIFACT_PUBLICATION_CORRUPT');
-const parentMatches=(parent,r)=>parent&&['tenantId','actorId','conversationId'].every(k=>parent.version.binding[k]===r.version.binding[k])&&parent.version.artifactId===r.version.artifactId&&same(parent.version.scopes,r.version.scopes)&&parent.spec.operation===r.spec.operation&&parent.spec.format===r.spec.format;
+export const artifactPublicationParentMatches=(parent,r)=>parent&&['tenantId','actorId','conversationId'].every(k=>parent.version.binding[k]===r.version.binding[k])&&parent.version.artifactId===r.version.artifactId&&same(parent.version.scopes,r.version.scopes)&&parent.spec.operation===r.spec.operation&&parent.spec.format===r.spec.format;
+const parentMatches=artifactPublicationParentMatches;
 export const emptyArtifactPublications=tenantId=>({publicationVersion,namespace,tenantId,decisions:[],heads:[],tombstones:[]});
 export function verifyArtifactPublicationInput(value,{historical=false}={}){
  const p=data(own(value,['record','expectedParentVersionId','authorization','invocation'])),r=recordValue(p.record),b=r.version.binding,a=own(p.authorization,['receiptId','decision','action','binding','scopesSha256','resourceSha256','requestSha256','expiresAtMs']);

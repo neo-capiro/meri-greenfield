@@ -26,7 +26,7 @@
   "sources": [
     {
       "path": "conversation-history/protocol.mjs",
-      "sha256": "eb065617f91efeda0ab540b9b218abb6d8246b4faabdfdec5adcf01c42f7f69b",
+      "sha256": "f5ce9e441808b604cb19a5da687972f348c5b0c777d0a31009a9497448d841e1",
       "bytes": 2449
     },
     {
@@ -41,8 +41,8 @@
     },
     {
       "path": "conversation-sources/protocol.mjs",
-      "sha256": "160eaa367751d8c331105abdd0faf25bf109c8eb673da784550822a3415ca3c4",
-      "bytes": 1815
+      "sha256": "4ab2b8449beded18e77111ac0c345955bb862ffbe1f63b4644a00cf0e64675ff",
+      "bytes": 1940
     },
     {
       "path": "conversation-sources/receive.mjs",
@@ -55,9 +55,14 @@
       "bytes": 2103
     },
     {
+      "path": "conversation-sources/upload-semantics.mjs",
+      "sha256": "f31cabf6c0eea8e98711d20b8e8d051a2f783304117bc0d9125b2ece112a84ce",
+      "bytes": 4030
+    },
+    {
       "path": "conversation-sources/validate.mjs",
-      "sha256": "c0bc8d2f4d5ad6ba960fea0d21b26bf9bb08784e4da6412c2b819edef7ef05ce",
-      "bytes": 3086
+      "sha256": "a7ca262f23abad2ead6652bd8cea86ab719a1b5d820d5506240a09b0a454b330",
+      "bytes": 3440
     },
     {
       "path": "document-application/boundary.mjs",
@@ -66,8 +71,8 @@
     },
     {
       "path": "generate-sources.mjs",
-      "sha256": "8bb33e05b8071458cae01ee8fbc8979d50099a854295a032d1bd65c4def00761",
-      "bytes": 8433
+      "sha256": "fb2c63a0ceeadc6d66d8dc33f21b49a06ee772a6d595cae10d7676224ee22a67",
+      "bytes": 8603
     },
     {
       "path": "meri.schema.json",
@@ -88,6 +93,11 @@
       "path": "native-hearing-source.schema.json",
       "sha256": "0fed29b409bd3ec1eb6a2bfd5c5f77bf3bfdaeaef55765263b78ba8665644b1a",
       "bytes": 8290
+    },
+    {
+      "path": "native-upload-source.schema.json",
+      "sha256": "8c6e70fa53c0d510d1ecb5ec89d2431b25054dcd1dc2225a0974fcf5d08ddf48",
+      "bytes": 6121
     },
     {
       "path": "retrieval-0.2/hearing-fragments.mjs",
@@ -119,6 +129,7 @@
     "conversation-sources/hearing-semantics.mjs",
     "conversation-sources/protocol.mjs",
     "conversation-sources/semantics.mjs",
+    "conversation-sources/upload-semantics.mjs",
     "document-application/boundary.mjs",
     "node_modules/ajv-formats/dist/formats.js",
     "node_modules/ajv/dist/runtime/equal.js",

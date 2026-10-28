@@ -4,7 +4,7 @@ import {own,data} from '../../packages/contracts/commands-0.2/execution-boundary
 import {canonicalSha256 as hash} from '../../packages/contracts/validate.mjs';
 import {compileNativeTaskPlan} from './native-authority/task-allocator.mjs';
 import {createNativeTaskAllocator} from './native-authority/task-allocator.mjs';
-import {runOwnerOperations} from '../../packages/contracts/runtime-0.2/validate.mjs';
+import {requiredRunOwnerOperations} from '../../packages/contracts/runtime-0.2/validate.mjs';
 import {compileNativeTaskAccess} from './native-authority/task-verifier.mjs';
 import {allocation} from '../gateway/budget/tool-budget-binding.mjs';
 import {createNativeAllocationAdmission} from '../gateway/budget/native-allocation-admission.mjs';
@@ -25,7 +25,7 @@ export function compilePreparedCandidateConfiguration(value,versions){
  // Adopted allocation/task-access parsers reject unknown contracts before startup.
  const a=allocation(c.allocationJson);if(c.runtime.maxOutputBytes>a.budgets.maxOutputBytes||c.runtime.deadlineMs>Date.parse(a.schedule.expiresAt))refuse();compileNativeTaskAccess({identityCredential:'configuration-validation-only',taskCapabilitySha256:'0'.repeat(64),operations:c.operations});
  for(const name of ['taskCapabilityFile','controlCapabilityFile'])file(c[name]);
- origin(c.taskOrigin);own(c.taskHttp,['hostname','port','frontendOrigin']);if(!['127.0.0.1','0.0.0.0','::1','::'].includes(c.taskHttp.hostname)||!Number.isSafeInteger(c.taskHttp.port)||c.taskHttp.port<1||c.taskHttp.port>65535)refuse();origin(c.taskHttp.frontendOrigin);if(c.taskHttp.frontendOrigin!==c.taskOrigin||Object.keys(runOwnerOperations).some(op=>!c.operations.includes(op)))refuse();
+ origin(c.taskOrigin);own(c.taskHttp,['hostname','port','frontendOrigin']);if(!['127.0.0.1','0.0.0.0','::1','::'].includes(c.taskHttp.hostname)||!Number.isSafeInteger(c.taskHttp.port)||c.taskHttp.port<1||c.taskHttp.port>65535)refuse();origin(c.taskHttp.frontendOrigin);if(c.taskHttp.frontendOrigin!==c.taskOrigin||requiredRunOwnerOperations.some(op=>!c.operations.includes(op)))refuse();
  const o=own(c.objects,['bucket','prefix','expectedBucketOwner','kmsKeyId']);if(!/^[a-z0-9][a-z0-9.-]{1,61}[a-z0-9]$/u.test(o.bucket)||!/^[A-Za-z0-9][A-Za-z0-9/_-]{0,127}$/u.test(o.prefix)||o.prefix.endsWith('/')||o.prefix.includes('//')||o.expectedBucketOwner!=='967807252336'||!/^arn:aws:kms:us-east-1:967807252336:key\/[a-f0-9-]{36}$/u.test(o.kmsKeyId))refuse();
  own(c.taskRequest,['cluster','taskDefinition','networkConfiguration','overrides']);
  if(!Array.isArray(c.grantIntents)||!c.grantIntents.length)refuse();

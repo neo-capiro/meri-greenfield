@@ -89,8 +89,8 @@
     },
     {
       "path": "../../apps/control/task-command-application/index.mjs",
-      "sha256": "8be25939e290f1e621c4b0da10c21751e98b32782887509cd4d918b75560a5b8",
-      "bytes": 3199
+      "sha256": "949533aab936c45d84f0aacdae2d0e4c6d18bab33f4619290ef799161d07f2cd",
+      "bytes": 3356
     },
     {
       "path": "../../apps/control/task-command-application/session.mjs",
@@ -99,8 +99,8 @@
     },
     {
       "path": "../../apps/runtime/product-applications.mjs",
-      "sha256": "f202c4fd0ceff361fef4d263a8267e9b279f789765524825984e915f5c05a1e1",
-      "bytes": 17939
+      "sha256": "dc2b3653a3b5f76aea221933a470e48bce689ab9a9cf1a0052484985790d986f",
+      "bytes": 20890
     },
     {
       "path": "commands-0.2/native-task-outcome-schema.mjs",

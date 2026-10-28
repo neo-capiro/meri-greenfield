@@ -24,7 +24,7 @@ export function createStoredNativeReadHandlers(configuration,operations,specific
  if(knowledgeObservation&&(Object.keys(fixed).length!==1||!Object.hasOwn(fixed,'search_client_knowledge'))||
   family==='client-knowledge-search'&&Object.hasOwn(fixed,'search_client_knowledge')&&!knowledgeObservation)deny('GATEWAY_CONFIGURATION');
  for(const [id,path] of Object.entries(fixed)){
-  if(path!==`/api/clio/tools/${id}`)deny('GATEWAY_CONFIGURATION');
+  if(path!==(family==='client-knowledge-attachments'&&id==='read_chat_attachments'?'/api/clio/attachments/read':`/api/clio/tools/${id}`))deny('GATEWAY_CONFIGURATION');
   if((modeObservation||producerObservation&&id==='search_sam_opportunities')!==MODE_READ_OPERATIONS.includes(id))deny('GATEWAY_CONFIGURATION');
   let contract;try{contract=resolveOperationContract({id,version:'0.2.0'});}catch{deny('GATEWAY_CONFIGURATION');}
   if(contract.binding.group!==family||!nativeReadOperationAllowed(family,id)||contract.descriptor.sideEffect!=='none'||contract.descriptor.approvalBoundary!=='none')deny('GATEWAY_CONFIGURATION');

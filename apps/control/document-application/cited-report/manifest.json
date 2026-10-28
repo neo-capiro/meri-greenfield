@@ -1,0 +1,96 @@
+{
+  "contractVersion": "0.3.0",
+  "skillId": "quick_skill.cited_report",
+  "skillVersion": "1.0.0",
+  "prose": {
+    "id": "urn:meri:original:general-cited-report:1.0.0",
+    "sha256": "6637bc1bd277ad758a2f3c301480b5756a931e09ec2fab7408092ebf475771cd"
+  },
+  "requiredSources": [
+    {
+      "sourceId": "mail",
+      "authority": "authoritative",
+      "purpose": "evidence"
+    },
+    {
+      "sourceId": "research_portfolios",
+      "authority": "authoritative",
+      "purpose": "evidence"
+    },
+    {
+      "sourceId": "artifact_versions",
+      "authority": "authoritative",
+      "purpose": "evidence"
+    }
+  ],
+  "allowedOperations": [
+    {
+      "id": "mail.read_thread",
+      "version": "0.2.0"
+    },
+    {
+      "id": "get_research_evidence",
+      "version": "0.2.0"
+    },
+    {
+      "id": "create_word",
+      "version": "0.2.0"
+    }
+  ],
+  "subjectKinds": [
+    "client"
+  ],
+  "windowBases": [
+    "explicit",
+    "unbounded"
+  ],
+  "completion": {
+    "requireAllSources": true,
+    "allowDisclosedPartial": true,
+    "negativeClaims": "complete-covered-only",
+    "rubric": [
+      {
+        "id": "seven-sections",
+        "requirement": "Produce the accepted seven-section cited report: summary, scope and as-of, findings, conflicting evidence, recommendations, limitations, references.",
+        "evidenceRequired": true
+      },
+      {
+        "id": "verified-excerpts-only",
+        "requirement": "Present an excerpt only when the cited stored record version was read and the excerpt's exact characters are bound; carry every other citation as a preserved claim that is never described as verified.",
+        "evidenceRequired": true
+      },
+      {
+        "id": "conflicting-evidence",
+        "requirement": "Disclose unequal cited passages as possible conflicts and keep every named conflict attached to a finding that is genuinely in conflict.",
+        "evidenceRequired": true
+      },
+      {
+        "id": "selected-subject-only",
+        "requirement": "Cover exactly the trusted selected client subject, its authorized scopes and the selected window; never take the subject from model output and never require or invent a bill identity.",
+        "evidenceRequired": true
+      },
+      {
+        "id": "retained-provenance",
+        "requirement": "Keep citations, coverage/limitations disclosure and, on revision, the immutable parent's version, object and spec pins and retained evidence.",
+        "evidenceRequired": true
+      }
+    ]
+  },
+  "approval": {
+    "mutations": "separate-immutable-proposal",
+    "autoCreateTasks": false
+  },
+  "budgets": {
+    "maxTurns": 12,
+    "maxToolCalls": 24,
+    "maxRecoveryAttempts": 0,
+    "maxRuntimeSeconds": 60,
+    "maxCostMicroUSD": 1000,
+    "maxOutputBytes": 1048576
+  },
+  "versionPolicy": {
+    "existingRuns": "pin-immutable",
+    "resume": "exact-or-explicit-migration",
+    "fork": "preserve-unless-explicit-reselection"
+  }
+}

@@ -15,20 +15,27 @@ import {createRoutinesFamily} from './routines.mjs';
 import {createMemoryFamily} from './memory.mjs';
 import {createDocumentsFamily} from './documents.mjs';
 import {createObjectiveFamily} from './objective.mjs';
+import {createUploadsFamily} from './uploads.mjs';
 
 /** Ordered production family factories. Each entry is `[name, factory]`; the name is used only in refusals. */
-export const PRODUCT_FAMILIES=Object.freeze([['settings',createSettingsFamily],['intents',createIntentsFamily],['tasks',createTasksFamily],['lifecycle',createLifecycleFamily],['routines',createRoutinesFamily],['memory',createMemoryFamily],['documents',createDocumentsFamily],['objective',createObjectiveFamily]]);
+export const PRODUCT_FAMILIES=Object.freeze([['settings',createSettingsFamily],['intents',createIntentsFamily],['tasks',createTasksFamily],['lifecycle',createLifecycleFamily],['routines',createRoutinesFamily],['memory',createMemoryFamily],['documents',createDocumentsFamily],['objective',createObjectiveFamily],['uploads',createUploadsFamily]]);
 
 const ordinary=fn=>typeof fn==='function'&&!types.isProxy(fn)&&!types.isAsyncFunction(fn)&&!types.isGeneratorFunction(fn);
 
-/** The `productPortsFactory` startControl receives: an ordinary function returning one frozen port record. */
+/** The `productPortsFactory` startControl receives: an ordinary function returning one frozen port record.
+ *
+ * Its optional second argument is a per-family context extension supplied by trusted CONTROL assembly, never by a
+ * request: `{familyName: {extraKey: value}}`. A family without an entry receives the shared context object itself, so
+ * the identity-keyed retention/session binders and the families that close the shared context are unaffected; a family
+ * with an entry receives a frozen extension of it. Only the declared family sees the extra key. */
 export function createProductPortsFactory({families=PRODUCT_FAMILIES}={}){
  if(!Array.isArray(families)||families.some(entry=>!Array.isArray(entry)||entry.length!==2||typeof entry[0]!=='string'||!ordinary(entry[1])))throw fault('PRODUCT_PORTS_CONFIGURATION');
  const list=Object.freeze(families.map(([name,factory])=>Object.freeze([name,factory])));
- return function productPortsFactory(context){
+ return function productPortsFactory(context,extras){
   const joined={};
-  for(const [,factory] of list){
-   const result=Reflect.apply(factory,undefined,[context]);
+  for(const [name,factory] of list){
+   const extra=extras===undefined||extras===null?undefined:extras[name];
+   const result=Reflect.apply(factory,undefined,[extra===undefined?context:Object.freeze({...context,...extra})]);
    if(types.isPromise(result)){Promise.prototype.then.call(result,undefined,()=>{});throw fault('PRODUCT_PORTS_CONFIGURATION');}
    if(result===null||typeof result!=='object'||types.isProxy(result))throw fault('PRODUCT_PORTS_CONFIGURATION');
    const ports=result.ports??{};

@@ -1,6 +1,6 @@
 import {types} from 'node:util';
 import {createOperationLifetime} from '../../../packages/runtime/operation-lifetime.mjs';
-import {snapshotScheduleCall,assertScheduleAuthority,frozenScheduleData,canonicalSha256,denySchedule,scheduleErrorCode} from '../../../packages/contracts/schedules-0.2/lifecycle-validation.mjs';
+import {snapshotScheduleCall,assertScheduleAuthority,frozenScheduleData,canonicalSha256,denySchedule,scheduleErrorCode} from './schedule-validators.mjs';
 import {createTemporalScheduleInspector} from './temporal-inspection.mjs';
 import {mutateTemporalSchedule,sdkMethod} from './temporal-schedule-mutations.mjs';
 import {inspectOriginalRuns} from './temporal-run-history.mjs';
@@ -13,6 +13,17 @@ function optionsData(options,allowed) {
     const d=Object.getOwnPropertyDescriptor(options,name);
     if(!allowed.includes(name)||!d?.enumerable||!Object.hasOwn(d,'value'))denySchedule('SCHEDULE_OPTIONS');out[name]=d.value;
   }return out;
+}
+/** The approved-trigger observation of one list row: exactly the three closed shapes and nothing else. The owner never
+ *  omits it — historical absence is reported as `unavailable` — so a row without it is refused rather than assumed timed. */
+function triggerObservation(value) {
+  if(!value||typeof value!=='object'||types.isProxy(value)||Array.isArray(value))return false;
+  const keys=Object.keys(value);
+  if(value.kind==='timed'||value.kind==='unavailable')return keys.length===1;
+  if(value.kind!=='source-event'||keys.length!==2)return false;
+  const trigger=value.sourceTrigger;
+  return Boolean(trigger)&&typeof trigger==='object'&&!types.isProxy(trigger)&&!Array.isArray(trigger)&&
+    Object.keys(trigger).length===3&&['producer','sourceFamily','resourceKey'].every(name=>typeof trigger[name]==='string'&&trigger[name].length>0);
 }
 export function createScheduleLifecycle(options) {
   const {scheduleClient,workflowClient,scheduleOwner,authorize,runCancellation,clock=Date.now}=optionsData(options,['scheduleClient','workflowClient','scheduleOwner','authorize','clock','runCancellation']);
@@ -65,8 +76,11 @@ export function createScheduleLifecycle(options) {
       // If the lifetime already expired, CLAIMED/DISPATCHING itself remains a
       // durable unresolved barrier. Never launch unbounded cleanup after expiry.
       if(claimed&&!acknowledged)try{lifetime.check();await lifetime.run(()=>owner.markUnknown(binding,lifetime.check));}catch{}
-      const code=['DEADLINE','CANCELLED'].includes(scheduleErrorCode(error))?scheduleErrorCode(error):'SCHEDULE_FAILED';
-      throw Object.assign(new Error(code),{code,outcome:acknowledged?'ACKNOWLEDGED_NOT_RELEASED':admissionStarted?'UNKNOWN':'NOT_DISPATCHED',intentId:binding.intent.intentId});
+      // Only this atomically observed pre-claim conflict proves no dispatch. Other claim
+      // failures (including a lost COMMIT) retain UNKNOWN and must not be replayed blindly.
+      const sourceConflict=!claimed&&scheduleErrorCode(error)==='SCHEDULE_SOURCE_CONFLICT';
+      const code=sourceConflict?'SCHEDULE_APPROVAL_REFUSED':['DEADLINE','CANCELLED'].includes(scheduleErrorCode(error))?scheduleErrorCode(error):'SCHEDULE_FAILED';
+      throw Object.assign(new Error(code),{code,outcome:sourceConflict?'NOT_DISPATCHED':acknowledged?'ACKNOWLEDGED_NOT_RELEASED':admissionStarted?'UNKNOWN':'NOT_DISPATCHED',intentId:binding.intent.intentId});
     } finally {lifetime.close();}
   }
   async function list(request) {
@@ -79,7 +93,7 @@ export function createScheduleLifecycle(options) {
         const p=row.projection;
         snapshotScheduleInspectionBinding({projection:p,callerIdentity:binding.callerIdentity,deadlineMs:c.deadline()},clock());
         const key=p.scheduleId.toLowerCase();
-        if(Object.keys(row).length!==3||!Number.isSafeInteger(row.generation)||row.generation<0||typeof row.unresolved!=='boolean'||canonicalSha256(p.owner)!==canonicalSha256(s.owner)||(previous!==null&&key<=previous)||seen.has(key))denySchedule('SCHEDULE_LIST');
+        if(Object.keys(row).length!==4||!Number.isSafeInteger(row.generation)||row.generation<0||typeof row.unresolved!=='boolean'||!triggerObservation(row.trigger)||canonicalSha256(p.owner)!==canonicalSha256(s.owner)||(previous!==null&&key<=previous)||seen.has(key))denySchedule('SCHEDULE_LIST');
         previous=key;seen.add(key);
         let authorizationFailed=false;
         const inspector=createTemporalScheduleInspector({scheduleClient,clock,authorize:async args=>{

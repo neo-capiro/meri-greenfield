@@ -15,9 +15,23 @@
 import {own,data,nativeSignal} from '../../../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {canonicalSha256,validateShape} from '../../../../packages/contracts/validate.mjs';
 import {createOperationLifetime} from '../../../../packages/runtime/operation-lifetime.mjs';
+import {resolveOperationContract} from '../../../../packages/contracts/retrieval-0.2/validate.mjs';
+import catalog from '../../../../packages/contracts/retrieval-0.3/catalog.json' with {type:'json'};
 import {INTENT_ROWS,INTENT_SERVER_NAME,assertIntentCatalog} from './catalog.mjs';
 import {createIntentServer,INTENT_TIMEOUT_MS} from './server.mjs';
 const fault=(/** @type {string} */code)=>Object.assign(Error(code),{code});
+/** The canonical authority for an admissible intent operation version: the catalog owner's own resolver, so an exact
+ * `id@version` is admitted only when it resolves to its registered descriptor and immutable schema. A retained 0.2
+ * reference and the current 0.3 successor both survive the snapshot whole, while a version-mismatched or unregistered
+ * operation still refuses it. Which admitted operation becomes a visible tool is decided separately by the exact
+ * `id@version` intersection with INTENT_ROWS below. */
+const registered=(/** @type {{id:string,version:string}} */operation)=>{try{resolveOperationContract(operation);return true;}catch{return false;}};
+/** Names the catalog itself publishes as deferred originals: declared capabilities with no operation contract at any
+ * version. A port may honestly report one (it is not an operation, so it can never become a visible tool), and
+ * refusing the whole snapshot over it would disable every intent the port does back. Derived from the catalog's own
+ * `originals`/`disposition` data, so this is the same authority, not a copied list. */
+const declaredOriginals=new Set(catalog.originals.filter(o=>o.disposition==='deferred').map(o=>o.id));
+const admissible=(/** @type {{id:string,version:string}} */operation)=>registered(operation)||declaredOriginals.has(operation.id);
 const SNAPSHOT_MS=3000,OPERATION=/^[a-z][a-z_]{0,62}$/u;
 const key=(/** @type {{id:string,version:string}} */o)=>canonicalSha256({id:o.id,version:o.version});
 /** Validate the port's availability facts for this run; anything malformed, foreign or stale refuses.
@@ -28,7 +42,7 @@ export function assertIntentAvailability(raw,binding,at){
   if(canonicalSha256(s.binding)!==canonicalSha256(binding)||!Array.isArray(s.operations)||s.operations.length>INTENT_ROWS.length||
    !Number.isSafeInteger(s.checkedAtMs)||!Number.isSafeInteger(s.expiresAtMs)||s.checkedAtMs>at||s.expiresAtMs<=at)throw 0;
   const keys=new Set();
-  for(const o of s.operations){own(o,['id','version']);if(typeof o.id!=='string'||!OPERATION.test(o.id)||o.version!=='0.2.0'||keys.has(key(o)))throw 0;keys.add(key(o));}
+  for(const o of s.operations){own(o,['id','version']);if(typeof o.id!=='string'||!OPERATION.test(o.id)||!admissible(o)||keys.has(key(o)))throw 0;keys.add(key(o));}
   return keys;
  }catch{throw fault('INTENT_AVAILABILITY_REFUSED');}
 }

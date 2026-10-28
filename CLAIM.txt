@@ -1,0 +1,68 @@
+CLAIM — Wave5 MO01/ST16 native procedure production mount (work/m7-procedure-native-mount-20261028)
+Checkout: parent aa293df11f9bd01477b66852d1036b39e4b30b5c (reviewed input859a + F1 continuation pin correction),
+branch codex/wave5-m7-procedure-native-mount-20261028. Replay of my 55a92a87027aaa13af7f17d186fe4800395dee73
+(caller source commit) is committed as 691aca220848c521320dacd1294b19d61fb267d8; the only conflict was
+apps/worker/conversation/activity.mjs and it was resolved by keeping BOTH A5's uploadRuntime lines and my
+procedureRuntime lines. All A5 uploads preserved; no A5 input schema/generator/stored-input edited here.
+Old worktrees/branches (m7-native-procedures-20261028, m7-native-procedures-core-20261028, witness-base-2ea-20261028)
+untouched. Core 7af36ebf is READ-ONLY for this session: no Core file changed, so no Core correction is claimed.
+
+DEFECT FIXED (parent-reviewed, reproduced by reading the real sources)
+  My replayed task-port called native.call('procedure/resolve'). The real worker->control allow-list is
+  apps/runtime/native-client.mjs startupOperations (no 'procedure/resolve' entry) and the real control forward is
+  apps/runtime/agentcore-candidate.mjs `/^\/v1\/runner\/[a-z-]+$/` -> rewrite to `/internal/conversations/<name>` ->
+  the worker run-owner app, whose closed admission set is packages/contracts/runtime-0.2/validate.mjs
+  runOwnerOperations + assertRunOwnerRequest, enforced in apps/runtime/worker-http.mjs line 16. The nine scripted
+  tests bypassed all three. The established shape is the one A5 landed for 'upload-source'
+  (runner/upload-source -> /internal/conversations/upload-source -> service.readUploadSource).
+
+TRANSPORT NOW WIRED (each edit is the exact analogue of the existing 'upload-source' entry)
+  1 packages/contracts/runtime-0.2/validate.mjs: runOwnerOperations gains 'procedure-resolve':'procedureResolve';
+    requiredRunOwnerOperations keeps excluding the optional new reads ('upload-source','procedure-resolve');
+    assertRunOwnerRequest gains `else if(operation==='procedure-resolve')own(v,['binding'])` — the request is the
+    closed {binding} only, so no selector/scope/budget/version can arrive as request authority.
+  2 apps/runtime/worker-http.mjs line 43: route[1]==='procedure-resolve' joins the withRelease serving-lock list, so a
+    suppressed/terminal conversation cannot release procedure guidance. Dispatch, current-execution authentication
+    (execution.authenticate -> assertExecutionIdentity, binding/scopes/policyRevision pinned and re-checked after the
+    call) and response serialization remain the existing generic spans.
+  3 apps/runtime/native-client.mjs startupOperations gains 'runner/procedure-resolve' (a bounded original-run
+    operation; the caller still passes its own absolute deadline).
+  4 apps/worker/conversation/procedures/task-port.mjs: operation becomes 'runner/procedure-resolve' and the body
+    becomes {binding} only. The worker keeps its persisted request.procedure locally and still validates the returned
+    admission against that exact selection and the run's own client scope.
+  5 apps/control/conversations/service.mjs: new `procedureResolve({credential,binding,signal})` (exported like
+    readUploadSource). It runs inside the existing `operation(credential,signal,...)` wrapper, so the canonical
+    fresh() current-authority read pins binding/scopes/selectedClientId and is re-run after the async resolution. It
+    LOADS the persisted conversation at the server (store.read), refuses a terminal run or a scope change, requires
+    saved.request.procedure, re-validates it with the existing contract (packages/contracts/procedure-selection.mjs),
+    resolves through the injected procedure admission port, and re-reads the persisted row afterwards (SESSION_CHANGED
+    on any drift). The request body supplies nothing but the binding.
+  6 apps/runtime/control.mjs lines 131 and 139: `...(ports.procedureAdmission?{procedureAdmission:ports.procedureAdmission}:{})`
+    is passed into the control service AND into the worker-bound service created by createWorkerService, which is what
+    the /internal/conversations/procedure-resolve route dispatches to.
+  7 apps/runtime/product-applications.mjs: 'procedureAdmission' joins the closed product-port key list and
+    `methods(c.procedureAdmission,['resolve'])` joins the pass-through block.
+  8 apps/runtime/agentcore-candidate.mjs: `procedureAdmission=getCoreServiceSecret?createCoreProcedureAdmission({...}):undefined`
+    beside the other Core clients (origin/getServiceSecret/coreFetch/nativeCredentials/now/maxRequestMs), and the same
+    value joins productPorts. The Core service secret stays control-only.
+  9 NEW apps/runtime/native-authority/procedure-admission.mjs: the control-side port composing my replayed
+    apps/control/conversations/procedures/core-client.mjs (attended Core transport: fixed route
+    /api/clio/procedure-runtime/validate, x-internal-service-secret + per-call native bearer for the exact
+    binding/selectedClientId, redirect:'error', credentials:'omit', strict status/JSON, live-session re-read after Core
+    answers) with apps/control/conversations/procedures/resolver.mjs (derives conversation+client from the run's own
+    binding/client scope, then requires the answer to belong to exactly this selection/run/tenant). The port also
+    forwards the composed Core fetch, so production uses the counted Core client rather than global fetch.
+  10 MOUNT JOIN: apps/worker/conversation/capabilities/mounts.mjs forwards an optional closed `procedure` policy to
+    createGeneralReadRuntime; apps/worker/conversation/reads/runtime.mjs intersects the mounted read rows with the
+    capability tools the procedure grants (matched under both spellings this catalog uses for one operation, its
+    dotted id and its SDK tool name) before `exposed`/`stillAvailable` are computed, so the narrower set is what the
+    run may execute and an ungranted listed read answers UNAVAILABLE. It only filters an already-mounted set, so it
+    can never widen. apps/worker/conversation/activity.mjs passes the resolved admission policy into
+    createProfileMounts and keeps the subset-only narrowing of options.allowedTools after the full list is built.
+  11 apps/runtime/test/worker-execution.test.mjs: the generic per-route conformance loop sends the closed {binding}
+    body for procedure-resolve (the same way it already special-cases upload-source).
+
+NOT DONE HERE (unchanged owners)
+  Public input schema/generators and stored input (A5 freeze 08ae23e1, A5 owns the next selected-report join); M5
+  selected-runtime/execution/retention/output-format; Core; auth/guards/classifier/middleware/application-authority;
+  packages/locks/archives; builds, deploys, pushes, target/model/DB/browser operations.

@@ -1,0 +1,13 @@
+# Publication paging ordering and private validation follow-up
+
+Base: dc8358690f9577666e0532d8d9b3b5e85cd98678, tree82d974a65cb789bfd3047ff921f4c045300b9827. Original independent Hermes source PASS and its immutable report remain valid for that frozen candidate. This successor addresses its two bounded observations only.
+
+Library order is descending creation instant, then descending immutable version UUID. Compare parsed timestamps so admitted ISO strings with omitted milliseconds retain their original bytes yet order consistently with existing numeric publication page keys, across legacy discovery and every paged continuation. No root/page key, storage record, cursor/public schema or immutable archive changes. Mixed-precision records demonstrate a real ordering mismatch on the original code; no prior omitted/duplicated publication or authority widening was found.
+
+Private listPage now applies exactly the existing list's actor and optional conversation/client selector validation before entering SQL. The public list already constructs these selectors from validated current context; this preserves internal caller error compatibility without changing public behavior.
+
+Qualified author checks: Windows Node24.22.1, read-only retained dependencies, no install/cache mutation. `node --experimental-vm-modules --test --test-concurrency=1 apps/artifacts/storage/test/postgres-paged-publication.test.mjs apps/artifacts/test/library.test.mjs`:18/18 PASS, exit0. Two new checks cover mixed precision and same-instant UUID tie across limits1/2/100 on legacy and paged owners; malformed private selectors refuse before SQL/root read with matching legacy errors. Retained log: workspace work/wave5-publication-pages-order-focused.log.
+
+Failure witness runs only the two new checks with original dc835 production file bytes in this owned successor: both fail, exit1. Restored both exact candidate buffers/hashes in finally; log work/wave5-publication-pages-order-witness.log and receipt -witness-receipt.log. Syntax checks on all three changed mjs files and git diff --check PASS. No repeated whole suite/native DB/image/source review. Prior native PG and owner/source proofs remain unchanged. No live activation, target operation, build, deployment, publication or acceptance.
+
+Original dual-format reader rollback floor must be deployed and qualified before separately authorized v2 upgrade. Default-off write switch and explicit upgrade remain unchanged. All original immutable snapshots/publications and source/check evidence remain retained. Independent correction-only review is required before joining this successor.

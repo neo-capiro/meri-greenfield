@@ -1,0 +1,26 @@
+{
+  "schema": "meri-upload-canonical-limits/1",
+  "recordedAt": "2026-10-28",
+  "source": "work/wave5-upload-input-20261028/packages/contracts/uploads-application/protocol.mjs",
+  "sourceSha256": "bf457c9049ec6b026e83fd438a2600d026d6d4ce212c43ca93250227e288e37b",
+  "sourceExport": "export const UPLOAD_LIMITS=Object.freeze({...})",
+  "note": "Frozen copy of the numeric UPLOAD_LIMITS bounds owned by A5's upload application contract, read read-only from the revision named above. This is the always-run authority for the extractor bound agreement test: the live contract file lives in a sibling checkout this tree does not contain, and its absence must never turn the agreement check into a silent pass. When that owner file is reachable (sibling checkout, or MERI_UPLOAD_CONTRACT_SOURCE) the test additionally compares the live values and the live revision hash against this record.",
+  "limits": {
+    "originalBytes": 10485760,
+    "zipEntries": 4096,
+    "expandedBytes": 67108864,
+    "compressionRatio": 100,
+    "pdfPages": 200,
+    "slides": 200,
+    "sheets": 50,
+    "rows": 100000,
+    "columns": 1024,
+    "textCharacters": 2000000,
+    "imagePixels": 40000000,
+    "scanMs": 30000,
+    "parseMs": 30000,
+    "ocrMs": 90000,
+    "ocrPages": 40,
+    "lowConfidence": 0.8
+  }
+}

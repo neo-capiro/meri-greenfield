@@ -1,0 +1,30 @@
+# MB04 stored input and one-SDK revision source — 27 October 2026
+
+## 1. Scope and state
+Finite source checkpoint, not full MB04 or M5 acceptance. The private selected-version owner from9057 now receives an immutable stored input selector and supplies the verified original typed source to the same SDK query. Frontend selection, source-backed/asset recipe preservation, next immutable public package, native and deployed qualification remain active.
+
+## 2. Ownership and base
+M5 owns codex/wave5-m5-revision-input-20261027, base9057c5d00c63b90a686089feb56a24c954609ad6/tree987fd05a9a49ce37618f080f3d5ac17d8d11cb8b. That base composes preview4f52 with reviewed bd9 and frozen edaded prerequisites; prior archives and branches are unchanged. A5 paging and M7 run-wire successors remain separate and need an explicit later union.
+
+## 3. Interface and architecture
+The closed documentRevision selector contains artifactId/versionId/objectSha256 only. It is immutable request data, never an authority grant. The existing input journal retains it, exact replay and history correlation compare it, and selected research skill input is mutually exclusive. Ordinary old requests retain their original absent-field bytes. Worker load asks the trusted document owner for current source before the one existing SDK query; the original user prompt stays exact. Source context is private to that worker load and absent from public history. The model uses the same document intent, while trusted preparation fixes the parent/format and preserves UNKNOWN effect barriers. The run owner borrows the original action session, checks the persisted selection and canonical scope, and releases source only after current artifact/session checks; it mints no new session. The existing document product and native intent composition forward this owner. No extra model loop, storage platform or selector preflight was introduced.
+
+## 4. Public compatibility and changed files
+Explicit source family extension: conversation-application0.2.0, input1.1.0, initial-input1.1.0, history1.2.0, same route/API names. RuntimeVersions.contracts remains0.1.0. Canonical source/schema/correlation owners and their four generated distributions changed; precise version assertions changed with them. Runtime service/product/worker composition plus three new behavioral test modules, public selector/type proofs and this handoff complete the source scope. No npm/package lock/vendor/catalog/registry/version allocation or archive edit. Historical metadata.packageVersion values are retained source-family provenance, not a claim these new APIs exist in an old physical package.
+
+## 5. Author checks
+Node24.22.1; read-only retained dependencies. Affected public five-suite run124/125, with sole stale expected schema version in isolated consumer test; corrected explicit version expectation and final affected application+new selector rerun59/59. Together the exact current125 cases pass (66 unaffected from first run plus59 final). Includes physical immutable0.1.23 ordinary request/receipt/transcript acceptance and new revision-shape refusal, same-selector correlation, wrong hash/parent refusal and legitimate selected-skill exclusion. Logs work/wave5-mb04-public-{regressions,corrected}.log.
+Control input and one-SDK regressions105/105: work/wave5-mb04-input-worker-regressions.log. Production run/document composition, current-reader and existing product composition15/15: work/wave5-mb04-production-regressions.log. Exact prior9057 service/activity modules loaded by a task-only Node loader against six new tests:5fail/1pass, work/wave5-mb04-input-sdk-baseline.log; no tracked files substituted. This demonstrates absent selection retention/source forwarding, not an alleged old ordinary-input regression.
+Public TypeScript across five finite input/history/application files PASS exit0, work/wave5-mb04-public-types-exit.json. Canonical generate-conversations, generate-input, generate-initial-input and generate-history --check PASS; work/wave5-mb04-canonical-checks.log. git diff --check PASS.
+
+## 6. Failures and limits
+Retain early local logs: unsupported obsolete Node flag, two mistyped generator filenames, a missing fixture ids port, first mixed-scope test exposing a now-corrected exact-scope guard, two guessed exported type names, and stale public schema expectation. No dependency install or shared cache mutation. Prior9057 native fixture limitations remain as documented there (37pass/7fail and bounded1pass/2fail identically on base); not rerun or disguised as new regressions. No full runtime typecheck, aggregate distribution campaign, native Office/renderer/model/browser/DB/build/target qualification. Source-backed/asset-bearing revisions still refuse rather than discard evidence; their canonical compiler/asset continuation remains required.
+
+## 7. Independent review and package boundary
+Independent review of the private9057 plus this input/SDK source is owed. The next coherent producer should compose reviewed preview, run-wire/runtime and this versioned family, regenerate affected metadata canonically and preserve immutable0.1.23/UI0.1.10 archives. No new package reservation/pack or FE private-source import is claimed here.
+
+## 8. Resources and cleanup
+Only finite local Node checks and task-owned per-package read-only junctions were used. No target/browser/provider/model request, database process, deployment or external message. All author test processes completed. Source and original evidence remain available; no cleanup of shared caches.
+
+## 9. Next action
+Independent exact-source review while composing the smallest public preview/run/revision cohort. Then canonical FE selection/input/preview/Runs consumers. Carry A5 paging's targeted recoverTenant(...,versionId) argument and publicationPagedWrites false-by-default field at the later join, not an implicit live upgrade. Preserve the confirmed seven-section cited report/default legacy-read decision and continue source-backed recipes, reports, general outputs and workflows; A5 owns upload/extraction/prior-chat next.

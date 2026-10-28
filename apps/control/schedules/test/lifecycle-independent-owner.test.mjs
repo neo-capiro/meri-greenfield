@@ -34,7 +34,7 @@ function database(options = {}) {
       if (sql.startsWith('SELECT intent_id')) return { rows: options.replay ? [{ intent_id: b.intent.intentId }] : [] };
       if (sql.startsWith('SELECT * FROM meri_schedules.projections')) return { rows: b.intent.operation === 'schedule_task' ? options.exists ? [old] : [] : options.missing ? [] : [old] };
       if (sql.startsWith('SELECT * FROM meri_schedules.intents')) return { rows: options.missing ? [] : [row] };
-      if (sql.startsWith('SELECT projection,generation')) return { rows: options.rows ?? [] };
+      if (sql.startsWith('SELECT p.projection,p.generation')||sql.startsWith('SELECT projection,generation')) return { rows: options.rows ?? [] };
       return { rows: [], rowCount: options.zeroUpdated && sql.startsWith('UPDATE meri_schedules.projections') ? 0 : 1 };
     },
     release(error) { releases.push(error); if (options.releaseThrows) throw Error('release refused'); },
@@ -145,7 +145,7 @@ test('independent owner: tenant and owner list filtering are SQL-bound and outpu
   const p = projection(); const h = database({ rows: [{ projection: p, generation: '4', active_intent: 'unresolved' }] });
   const s = { operation: 'list_scheduled_tasks', owner: p.owner, afterScheduleId: null, limit: 2, historyLimit: 0 };
   const out = await h.owner.list(s, h.check); assert.equal(out.rows[0].generation, 4); assert.equal(out.rows[0].unresolved, true);
-  const q = h.queries.find(v => v.sql.startsWith('SELECT projection,generation'));
-  assert.deepEqual(q.args, ['tenant-a', 'owner-a', null, 3]); assert.match(q.sql, /tenant_id=\$1 AND owner_actor_id=\$2/);
+  const q = h.queries.find(v => v.sql.startsWith('SELECT p.projection,p.generation'));
+  assert.deepEqual(q.args, ['tenant-a', 'owner-a', null, 3]); assert.match(q.sql, /p\.tenant_id=\$1 AND p\.owner_actor_id=\$2/);
   p.owner.actorId = 'changed'; assert.equal(out.rows[0].projection.owner.actorId, 'owner-a');
 });

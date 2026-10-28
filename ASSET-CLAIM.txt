@@ -1,0 +1,67 @@
+ASSET-CLAIM.txt  (written before any substantive edit)
+======================================================================
+
+Worker: configured-default Hermes IMPLEMENTATION worker (no model override, no subagents).
+Parallelism: explicit human request; several workers run concurrently in separate checkouts.
+
+Checkout / branch
+-----------------
+S            = C:/Users/Administrator/Documents/Codex/2026-10-27/wave5-orchestrator-20261027
+worktree     = S/work/wave5-mb04-retained-assets-20261028
+base commit  = e7f087421e77f2308c0bc335db396248bcc4eb15
+base tree    = d998d8289da0773b34735074f5ca2be3d66c7382
+branch       = codex/wave5-mb04-retained-assets-20261028
+runtime      = Windows Node 24.22.1 ("C:/Program Files/nodejs/node.exe"), retained read-only
+               node_modules link only. No WSL/DB/native/image/build/browser/model/provider/
+               cloud/target operation is performed or invoked by this worker.
+
+Gap being closed (verbatim scope)
+---------------------------------
+MB04 asset-bearing revision. apps/artifacts/service.mjs already validates context.assets in
+generate() and hands actual bytes to the executor, but the committed version record keeps only
+version/spec/specSha256/requestSha256/inspection, so the original assetId -> ObjectReference
+map is lost. The existing private revisionSource and control/intents/document-revision.mjs
+therefore (correctly) refuse asset-bearing parents instead of silently stripping assets.
+
+Claimed files (initial claim; the ONLY files this worker may touch)
+-------------------------------------------------------------------
+1. apps/artifacts/service.mjs                 - generate() commit record + private revisionSource()
+                                                spans only.
+2. apps/artifacts/storage/version-record.mjs  - canonical record validator: bounded OPTIONAL
+                                                immutable asset-reference map.
+3. apps/artifacts/storage/artifact-publication.mjs - minimal record validator / commit-capture
+                                                span needed for that optional map.
+4. apps/control/intents/document-revision.mjs - retained / preserved asset provenance.
+5. apps/runtime/artifacts/revision-source.mjs - private asset read/return only.
+6. apps/runtime/artifacts/revision-composition.mjs - private asset read/return only.
+7. focused associated tests for (1)-(6).
+
+Explicitly NOT claimed / not edited
+-----------------------------------
+- service.history / service.list / service.recovery
+- selected report compiler / execution / retention / output-format paths
+- public DocumentVersion schema, packages dist, package-lock, manifests, registry
+- the four WIP selected-factory files owned by the parent in another checkout
+- A5's final Meri runtime/private/migration union
+
+Preserved behaviour
+-------------------
+- e7 readForSelected semantics and original citation (evidence) equality are preserved.
+- Ordinary inspect/download public DTOs are unchanged; the private extension stays explicit
+  and appears only when a retained asset map actually exists on the record.
+- The known later merge read() recovery call adds versionId; left untouched (recorded exactly
+  in ASSET-HANDOFF.txt).
+
+Hard compatibility rules
+------------------------
+- Records without the optional asset map stay byte-identical and readable (hash unchanged).
+- Asset-bearing records with no trusted original mapping stay explicitly unavailable for
+  revision; no mapping is inferred and no whole-historical closure is claimed.
+- One canonical record validator carries asset metadata across the v1 and the v2 (paged)
+  publication formats without rewriting any existing record or page hash. Verified as
+  identical md5 for apps/artifacts/storage/version-record.mjs
+  (c058565da4ac5b01bfb4b8a0753e5e5d) in this base and in the frozen paged-storage
+  continuation S/work/wave5-m5-publication-pages-order-20261027 (c898f426).
+- No migration invented: existing SQL stores the record as JSONB; no live upgrade performed.
+
+Status: claim written; recon complete enough to start editing storage/version-record.mjs.

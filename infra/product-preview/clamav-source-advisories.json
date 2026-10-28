@@ -1,0 +1,217 @@
+{
+ "schemaVersion": 2,
+ "component": "clamav",
+ "upstreamVersion": "1.5.4",
+ "upstreamReleased": "2026-08-07",
+ "purpose": "Retained advisory table for the source-built ClamAV component. It records the seven HIGH advisories the retained image scan reports against the pinned Wolfi clamav-1.5 1.5.2 packages, each advisory's documented affected release range and the fixed release each primary source names, and the explicit statement of what the retained scan feed does not say. It is evidence for a documented source-range check, not scanner detection.",
+ "outcomeSemantics": "Per advisory and release, exactly one outcome applies: fixed (at or above a fixed release of the same series), affected (inside the documented affected range), not-affected (documented as outside the affected range) or unknown (the table documents no range or fixed release for that series). Only fixed and not-affected pass; affected and unknown both fail closed, so a release this table cannot describe is never reported as covered. An absent release note is never used here as evidence of absence from an affected range.",
+ "sources": [
+  {
+   "kind": "cna",
+   "publisher": "Cisco (ClamAV CNA)",
+   "document": "cisco-sa-clamav-WuuvVd26",
+   "url": "https://sec.cloudapps.cisco.com/security/center/content/CiscoSecurityAdvisory/cisco-sa-clamav-WuuvVd26",
+   "published": "2026-08-07",
+   "revision": "1.2, 2026-08-13",
+   "names": [
+    "CVE-2026-20337",
+    "CVE-2026-20338",
+    "CVE-2026-20339",
+    "CVE-2026-20345",
+    "CVE-2026-20346",
+    "CVE-2026-20347",
+    "CVE-2026-20348"
+   ],
+   "cvss": "7.5",
+   "vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H",
+   "statedWorkarounds": "none available",
+   "affectedRangesRecorded": "the per-CVE affected release ranges below are the documented ranges as recorded in the accepted review evidence (review c2b85a26 and review eb65d30a) and restated in the affected-delta review b08a6b3f7f79e2695661fd378d272139c8c06bae59cd0c4176c3ad962b0f6ea0; this correction did not re-fetch the advisory, and no range is inferred from the absence of a mention in a release note"
+  },
+  {
+   "kind": "upstream-release-notes",
+   "url": "https://github.com/Cisco-Talos/clamav/releases/tag/clamav-1.5.4",
+   "published": "2026-08-07",
+   "states": "names all seven advisories; 1.5.4 is the fixed release"
+  },
+  {
+   "kind": "upstream-release-notes",
+   "url": "https://github.com/Cisco-Talos/clamav/releases/tag/clamav-1.4.6",
+   "published": "2026-08-07",
+   "states": "names five of the seven (CVE-2026-20339, -20345, -20346, -20347, -20348); the 1.4.x series has a fixed release for those five. It does not name CVE-2026-20337 or CVE-2026-20338, and that silence is not used here as evidence about their affected range: both are documented as affecting 1.5.0 through 1.5.3 only, so the 1.4 series is outside the affected range for those two."
+  },
+  {
+   "kind": "vendor-distribution-feed",
+   "url": "https://packages.wolfi.dev/os/security.json",
+   "declaresFixedIn": "clamav-1.5 1.5.4-r2",
+   "observed": "no clamav-1.5 1.5.4-r2 archive is published for aarch64 or x86_64 by packages.wolfi.dev, apk.cgr.dev or packages.cgr.dev"
+  }
+ ],
+ "installedInRetainedImage": {
+  "packages": [
+   "clamav-1.5-scanner 1.5.2-r0",
+   "clamav-1.5-freshclam 1.5.2-r0",
+   "clamav-1.5 1.5.2-r7"
+  ],
+  "series": "clamav-1.5",
+  "upstreamAffectedRange": "the retained 1.5 series is affected at every revision up to 1.5.3 (the 1.5.2 release predates all seven and 1.5.3 does not name them); each advisory's own documented affected range is recorded per advisory under advisories[].affectedRanges"
+ },
+ "advisories": [
+  {
+   "id": "CVE-2026-20337",
+   "affectedRanges": [
+    {
+     "from": "1.5.0",
+     "to": "1.5.3"
+    }
+   ],
+   "documentedUnaffectedSeries": [
+    "1.4"
+   ],
+   "fixedInUpstream": [
+    "1.5.4"
+   ],
+   "fixedInLts": [],
+   "ltsNote": "documented as affecting ClamAV 1.5.0 through 1.5.3; the 1.4.x series is outside the affected range, so a 1.4 build is not affected by this advisory and is not flagged for it",
+   "fixedReleases": [
+    "1.5.4"
+   ]
+  },
+  {
+   "id": "CVE-2026-20338",
+   "affectedRanges": [
+    {
+     "from": "1.5.0",
+     "to": "1.5.3"
+    }
+   ],
+   "documentedUnaffectedSeries": [
+    "1.4"
+   ],
+   "fixedInUpstream": [
+    "1.5.4"
+   ],
+   "fixedInLts": [],
+   "ltsNote": "documented as affecting ClamAV 1.5.0 through 1.5.3; the 1.4.x series is outside the affected range, so a 1.4 build is not affected by this advisory and is not flagged for it",
+   "fixedReleases": [
+    "1.5.4"
+   ]
+  },
+  {
+   "id": "CVE-2026-20339",
+   "affectedRanges": [
+    {
+     "from": "0.90",
+     "to": "1.5.3"
+    }
+   ],
+   "documentedUnaffectedSeries": [],
+   "fixedInUpstream": [
+    "1.5.4"
+   ],
+   "fixedInLts": [
+    "1.4.6"
+   ],
+   "ltsNote": "documented as affecting 0.90 through 1.5.3 and named in the 1.4.6 notes, so the 1.4 series is fixed at 1.4.6 and affected below it",
+   "fixedReleases": [
+    "1.4.6",
+    "1.5.4"
+   ]
+  },
+  {
+   "id": "CVE-2026-20345",
+   "affectedRanges": [
+    {
+     "from": "0.98.2",
+     "to": "1.5.3"
+    }
+   ],
+   "documentedUnaffectedSeries": [],
+   "fixedInUpstream": [
+    "1.5.4"
+   ],
+   "fixedInLts": [
+    "1.4.6"
+   ],
+   "ltsNote": "documented as affecting 0.98.2 through 1.5.3 and named in the 1.4.6 notes, so the 1.4 series is fixed at 1.4.6 and affected below it",
+   "fixedReleases": [
+    "1.4.6",
+    "1.5.4"
+   ]
+  },
+  {
+   "id": "CVE-2026-20346",
+   "affectedRanges": [
+    {
+     "from": "0.0.0",
+     "to": "1.4.5",
+     "documented": "1.4.5 and earlier"
+    },
+    {
+     "from": "1.5.0",
+     "to": "1.5.3"
+    }
+   ],
+   "documentedUnaffectedSeries": [],
+   "fixedInUpstream": [
+    "1.5.4"
+   ],
+   "fixedInLts": [
+    "1.4.6"
+   ],
+   "ltsNote": "documented as affecting 1.4.5 and earlier and 1.5.0 through 1.5.3, and named in the 1.4.6 notes, so the 1.4 series is fixed at 1.4.6 and affected at 1.4.5 and below",
+   "fixedReleases": [
+    "1.4.6",
+    "1.5.4"
+   ]
+  },
+  {
+   "id": "CVE-2026-20347",
+   "affectedRanges": [
+    {
+     "from": "0.0.0",
+     "to": "1.4.5",
+     "documented": "1.4.5 and earlier"
+    },
+    {
+     "from": "1.5.0",
+     "to": "1.5.3"
+    }
+   ],
+   "documentedUnaffectedSeries": [],
+   "fixedInUpstream": [
+    "1.5.4"
+   ],
+   "fixedInLts": [
+    "1.4.6"
+   ],
+   "ltsNote": "documented as affecting 1.4.5 and earlier and 1.5.0 through 1.5.3, and named in the 1.4.6 notes, so the 1.4 series is fixed at 1.4.6 and affected at 1.4.5 and below",
+   "fixedReleases": [
+    "1.4.6",
+    "1.5.4"
+   ]
+  },
+  {
+   "id": "CVE-2026-20348",
+   "affectedRanges": [
+    {
+     "from": "0.98.1",
+     "to": "1.5.3"
+    }
+   ],
+   "documentedUnaffectedSeries": [],
+   "fixedInUpstream": [
+    "1.5.4"
+   ],
+   "fixedInLts": [
+    "1.4.6"
+   ],
+   "ltsNote": "documented as affecting 0.98.1 through 1.5.3 and named in the 1.4.6 notes, so the 1.4 series is fixed at 1.4.6 and affected below it",
+   "fixedReleases": [
+    "1.4.6",
+    "1.5.4"
+   ]
+  }
+ ],
+ "scannerFeedGap": "The retained image scan (registry sha256:93bc564d18d912a0af53ec2b9c97994324b752e9f9b34000218d2898e6babe7c, COMPLETE 14:59:42) reports HIGH 21 = 7 advisories x 3 package tuples and records only CVSS score/vector/package name/version: it carries no fixed-version metadata, and the vendor feed's declared fixed revision is unpublished. A missing fixed-version attribute is therefore not proof that no fix exists, and a scanner cannot recognise the fixed state of a source-built component that no distribution package record describes. This table, the in-image component inventory and the coverage check recorded here are the explicit evidence path for that gap. They do not replace or weaken the retained HIGH==0 CRITICAL==0 scan gate, and they are not scanner detection.",
+ "qualification": "Unqualified. This table records advisory facts and the recognition method only. No image has been built, installed, probed or scanned in this preparation, so the built payload's behaviour, size and scan result remain unproven."
+}

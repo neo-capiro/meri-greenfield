@@ -37,8 +37,8 @@ async function prepare(t,request){
 for(const [name,request]of [['stored null',{skill:null}],['omitted',{}]])test(`${name} selection prepares the default plugin without changing the request`,async t=>{
  const before=structuredClone(request),{result,parent}=await prepare(t,request);
  assert.equal(result.skillPluginDirectory,join(parent,'meri-skill-plugin'));
- const expected=describeSkillPlugin().skills.map(s=>s.name).sort();
- assert.deepEqual((await fs.readdir(join(result.skillPluginDirectory,'skills'))).sort(),expected);assert.equal(expected.length,14);
+ const expected=describeSkillPlugin({execution:true}).skills.map(s=>s.name).sort();
+ assert.deepEqual((await fs.readdir(join(result.skillPluginDirectory,'skills'))).sort(),expected);assert.equal(expected.length,13);
  assert.deepEqual(request,before);
 });
 

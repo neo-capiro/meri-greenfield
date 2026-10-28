@@ -359,6 +359,9 @@ export function decodeConversationInventoryRows({subject,conversation,runs,event
    ...completionRows.map(r=>r.row.proof?.kind==='native-session'?r.row.proof.sdkSession:null),
    ...nextRunRows.map(r=>r.reservation.facts.sdkSession)].filter(Boolean);
   const retainedRows=decodeConversationContentRows(contentRows,owner,byRun,nativeReferences,sdkInventory);
+  // Already decoded against the canonical owner and immutable row/hash above.
+  const uploads=contentRows['meri_uploads.originals'].filter(row=>row.record.object!==null)
+   .map(row=>({uploadId:row.record.uploadId,object:row.record.object}));
   const candidateIds=new Set();
   for(const row of rows(memoryCandidates)){
    const {candidate:c,candidateSha256}=assertCandidate(row.candidate);
@@ -380,6 +383,7 @@ export function decodeConversationInventoryRows({subject,conversation,runs,event
   }};
   const collect=cp=>{if(cp)collectObjects([cp.opaqueSession,...cp.workspace.entries.map(e=>e.object)]);};
   const collectFiles=f=>{if(f)collectObjects([...f.workspace.entries,...f.tasks].map(e=>e.object));};
+  for(const upload of uploads)collectObjects([upload.object]);
   for(const run of runRows){collect(run.continuation?.checkpoint);collectFiles(run.continuation?.files);}
   for(const row of controlRows)collectFiles(row.public.nativeFiles);
   for(const row of checkpointRows)collect(row.checkpoint);
@@ -389,7 +393,7 @@ export function decodeConversationInventoryRows({subject,conversation,runs,event
    eventRows,artifactVersionRefs,controls:controlRows.map(r=>r.public),checkpoints:checkpointRows,
    completionCheckpoints:completionRows.map(r=>r.public),nextRuns:nextRunRows.map(r=>r.public),
    memoryContinuations:continuationRows,objectVersions,contentRows:retainedRows,
-   memoryCandidates:[...candidateIds].sort().map(candidateId=>({candidateId}))};
+   memoryCandidates:[...candidateIds].sort().map(candidateId=>({candidateId})),uploads};
   return data({...snapshot,inventorySha256:hash(snapshot)});
  }catch(error){if(error?.code==='STORE_CORRUPT')throw error;corrupt();}
 }

@@ -10,6 +10,7 @@ import {INTENT_OPERATIONS,ArtifactAuthorityError,isArtifactAuthorityError,refuse
 
 const SHA=/^[0-9a-f]{64}$/u,UUID=/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/u,TOKEN=/^[\x21-\x7e]{1,8192}$/u;
 const PHASES=Object.freeze(['admission','effect','release']);
+const RETAINED_READ_INTENTS=Object.freeze(['inspect','history','list','results','download','preview']);
 const sha=value=>createHash('sha256').update(value).digest('hex');
 const lifeError=code=>new ArtifactAuthorityError(['DEADLINE','CANCELLED'].includes(code)?code:'ACCESS_DENIED');
 /** Session-owner refusals stay SESSION_REFUSED; every other foreign error becomes the given closed code. */
@@ -38,7 +39,7 @@ export function createCoreArtifactAuthority(configuration){
  if(!Number.isSafeInteger(c.maxOutputBytes)||c.maxOutputBytes<1||c.maxOutputBytes>16777216||typeof origin!=='string'||typeof now!=='function'||types.isProxy(now)||typeof newId!=='function')refuse('ARTIFACT_AUTHORITY_CONFIGURATION');
 
  /** One full current-authority observation inside `life`. */
- async function observe(ports,{credential,intent,requestSha256},life){
+ async function observe(ports,{credential,intent,requestSha256},life,source=null){
   let state;
   try{
    const authentication=await life.run(signal=>ports.authenticateSession({credential,signal,deadlineMs:life.deadline()}));
@@ -59,11 +60,12 @@ export function createCoreArtifactAuthority(configuration){
   const bearer=admitBearer(issued.credential,secret);
   // The service-secret read awaited: the same live session must still hold the same bearer (not expired, revoked or replaced).
   const again=lookup(life.signal);if(again.credential!==bearer)refuse('UNAVAILABLE');life.limitDeadline(again.expiresAtMs);
+  const selected=source??{conversationId:state.binding.conversationId,clientId:state.selectedClientId};
   let observation;
-  try{observation=await life.run(signal=>read({bearer,serviceSecret:secret,request:{conversationId:state.binding.conversationId,clientId:state.selectedClientId,...(state.selectedClientId===null?{scopeKind:'general'}:{}),intent,requestSha256},deadlineMs:life.deadline(),signal}));}
+  try{observation=await life.run(signal=>read({bearer,serviceSecret:secret,request:{conversationId:selected.conversationId,clientId:selected.clientId,...(selected.clientId===null?{scopeKind:'general'}:{}),intent,requestSha256},deadlineMs:life.deadline(),signal}));}
   catch(error){throw closedError(error,'UNAVAILABLE');}
   const r=observation.receipt;
-  if(r.principal.tenantId!==state.binding.tenantId||r.principal.actorId!==state.binding.actorId||r.conversationId!==state.binding.conversationId||r.selectedClientId!==state.selectedClientId)refuse('ACCESS_DENIED');
+  if(r.principal.tenantId!==state.binding.tenantId||r.principal.actorId!==state.binding.actorId||r.conversationId!==selected.conversationId||r.selectedClientId!==selected.clientId)refuse('ACCESS_DENIED');
   const expiresAtMs=Math.min(observation.localExpiresAtMs,issued.expiresAtMs,again.expiresAtMs,state.expiresAtMs);
   life.check();if(expiresAtMs<=now())refuse('ACCESS_DENIED');
   const pin=canonicalSha256({binding:state.binding,scopes:state.scopes,selectedClientId:state.selectedClientId,principal:r.principal,identityRevision:r.identityRevision,
@@ -91,15 +93,16 @@ export function createCoreArtifactAuthority(configuration){
    const first=await observe(ports,request,life);
    const readRunOptional=capture(call.store,'readOptional');
    /** The canonical accepted conversation run. A binding the conversation owner admitted for a turn that has not been
-    * submitted yet has no run row of its own; document *reads* (inspect, download, preview) are then pinned to the
+    * submitted yet has no run row of its own; explicit retained reads are then pinned to the
     * conversation by the fresh Core observation above and by the artifact owner's own version context (identical
-    * tenant/actor/conversation/scopes), exactly as a prior-run version read is. Generation and revision still require
-    * the session's own accepted run, and a stored run always keeps the exact binding/scope/cancellation check. */
-   const conversationRead=INTENT_OPERATIONS[call.intent].every(operation=>operation!=='artifact.generate'&&operation!=='artifact.revise');
+    * tenant/actor/conversation/scopes), exactly as a prior-run version read is. Cancellation does not suppress an
+    * already published artifact; publication, retention and release checks remain the artifact owner's responsibility.
+    * Generation, revision and derived-preview publication still require the session's own non-cancelled accepted run. */
+   const conversationRead=RETAINED_READ_INTENTS.includes(call.intent);
    async function canonicalRun(observation,t){
     const saved=await t.run(()=>readRunOptional(observation.binding,{limit:1},t.check));
     if(saved===null){if(!conversationRead)refuse('ACCESS_DENIED');return null;}
-    if(canonicalSha256(saved.run?.binding)!==canonicalSha256(observation.binding)||canonicalSha256(saved.run.scopes)!==canonicalSha256(observation.scopes)||saved.run.state==='cancelled')refuse('ACCESS_DENIED');
+    if(canonicalSha256(saved.run?.binding)!==canonicalSha256(observation.binding)||canonicalSha256(saved.run.scopes)!==canonicalSha256(observation.scopes)||saved.run.state==='cancelled'&&!conversationRead)refuse('ACCESS_DENIED');
     return saved.run;
    }
    await canonicalRun(first,life);
@@ -130,7 +133,41 @@ export function createCoreArtifactAuthority(configuration){
      return Object.freeze({phase:k.phase,checkedAtMs:next.checkedAtMs,expiresAtMs:next.expiresAtMs});
     }catch(error){throw closedError(error,'ACCESS_DENIED');}finally{t.close();}
    }
-   const artifactOptions={pool:null,context,validators:v,authorize,versions:null,objects:null,executor:null,now,
+   // Request-local, phase-separated observations: two documents from one origin
+   // share its actual Core read, but release never reuses admission authority.
+   const originObservations=new Map();
+   async function authorizeOrigin(raw){
+    let q,version,selectedClientId;
+    try{
+     q=own(raw,['phase','version','deadlineMs'],['signal']);nativeSignal(q.signal);version=v.version(q.version);
+     if(call.intent!=='list'||!['admission','release'].includes(q.phase)||!Number.isSafeInteger(q.deadlineMs)||
+      version.binding.tenantId!==first.binding.tenantId||version.binding.actorId!==first.binding.actorId||version.scopes.length!==1||
+      version.scopes[0].policyRevision!==first.scopes[0].policyRevision||v.hash(version.object.scopes)!==v.hash(version.scopes))throw Error();
+     const scope=version.scopes[0];selectedClientId=scope.kind==='private-user'?null:scope.kind==='client'?scope.resourceId:undefined;
+     assertNativeConversationScope({binding:version.binding,scopes:version.scopes,selectedClientId});
+    }catch{refuse('ACCESS_DENIED');}
+    if(q.signal?.aborted)refuse('CANCELLED');
+    const t=lifetime(Math.min(q.deadlineMs,context.deadlineMs),q.signal),source={conversationId:version.binding.conversationId,clientId:selectedClientId};
+    try{
+     t.check();const key=v.hash({phase:q.phase,source,scopes:version.scopes});
+     if(!originObservations.has(key)){
+      const pending=(async()=>{
+       const observed=await observe(ports,{...request,requestSha256:v.hash({requestSha256:call.requestSha256,phase:q.phase,source,scopes:version.scopes})},t,source);
+       await canonicalRun(observed,t);
+       if(v.hash(observed.binding)!==v.hash(first.binding)||v.hash(observed.scopes)!==v.hash(first.scopes)||
+        observed.receipt.identityRevision!==first.receipt.identityRevision)refuse('ACCESS_DENIED');
+       return data({principal:observed.receipt.principal,conversationId:source.conversationId,selectedClientId,
+        identityRevision:observed.receipt.identityRevision,contextRevision:observed.receipt.contextRevision,
+        checkedAtMs:observed.checkedAtMs,expiresAtMs:observed.expiresAtMs});
+      })();
+      originObservations.set(key,pending);
+     }
+     const observed=await t.run(()=>originObservations.get(key)),expiresAtMs=Math.min(observed.expiresAtMs,t.deadline());
+     t.check();if(expiresAtMs<=now())refuse('ACCESS_DENIED');
+     return data({...observed,versionSha256:v.hash(version),scopesSha256:v.hash(version.scopes),expiresAtMs});
+    }catch(error){throw closedError(error,'UNAVAILABLE');}finally{t.close();}
+   }
+   const artifactOptions={pool:null,context,validators:v,authorize,...(call.intent==='list'?{authorizeOrigin}:{}),versions:null,objects:null,executor:null,now,
     ids:()=>({artifactId:randomUUID(),versionId:randomUUID(),objectId:randomUUID()})};
    return {artifactOptions,selectedClientId:first.selectedClientId,limits:{...limits},enabled:true,recheck};
   }catch(error){throw closedError(error,'ACCESS_DENIED');}finally{life.close();}

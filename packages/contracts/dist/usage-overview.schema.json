@@ -1,0 +1,413 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:meri:usage-overview:1.0.0",
+  "$defs": {
+    "UsageOverviewRequest": {
+      "type": "object",
+      "properties": {
+        "schemaVersion": {
+          "const": "meri.usage-overview/1"
+        }
+      },
+      "required": [
+        "schemaVersion"
+      ],
+      "additionalProperties": false
+    },
+    "UsageOverviewResponse": {
+      "type": "object",
+      "properties": {
+        "schemaVersion": {
+          "const": "meri.usage-overview/1"
+        },
+        "observedAt": {
+          "type": "string",
+          "format": "date-time",
+          "pattern": "Z$"
+        },
+        "timezone": {
+          "const": "UTC"
+        },
+        "policy": {
+          "oneOf": [
+            {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "const": "configured"
+                },
+                "revision": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 9007199254740991
+                },
+                "monthlyCapMicroUsd": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 9007199254740991
+                },
+                "maxTurns": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 100
+                },
+                "maxBudgetMicroUsd": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 9007199254740991
+                }
+              },
+              "required": [
+                "status",
+                "revision",
+                "monthlyCapMicroUsd",
+                "maxTurns",
+                "maxBudgetMicroUsd"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "const": "unavailable"
+                },
+                "revision": {
+                  "type": "null"
+                },
+                "monthlyCapMicroUsd": {
+                  "type": "null"
+                },
+                "maxTurns": {
+                  "type": "null"
+                },
+                "maxBudgetMicroUsd": {
+                  "type": "null"
+                }
+              },
+              "required": [
+                "status",
+                "revision",
+                "monthlyCapMicroUsd",
+                "maxTurns",
+                "maxBudgetMicroUsd"
+              ],
+              "additionalProperties": false
+            }
+          ]
+        },
+        "periods": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "kind": {
+                "enum": [
+                  "day",
+                  "week",
+                  "month"
+                ]
+              },
+              "startInclusive": {
+                "type": "string",
+                "format": "date-time",
+                "pattern": "Z$"
+              },
+              "endExclusive": {
+                "type": "string",
+                "format": "date-time",
+                "pattern": "Z$"
+              },
+              "attempts": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 9007199254740991
+              },
+              "states": {
+                "type": "object",
+                "properties": {
+                  "queued": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 9007199254740991
+                  },
+                  "starting": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 9007199254740991
+                  },
+                  "running": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 9007199254740991
+                  },
+                  "waiting-for-approval": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 9007199254740991
+                  },
+                  "paused": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 9007199254740991
+                  },
+                  "completed": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 9007199254740991
+                  },
+                  "failed": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 9007199254740991
+                  },
+                  "cancelled": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 9007199254740991
+                  }
+                },
+                "required": [
+                  "queued",
+                  "starting",
+                  "running",
+                  "waiting-for-approval",
+                  "paused",
+                  "completed",
+                  "failed",
+                  "cancelled"
+                ],
+                "additionalProperties": false
+              },
+              "recording": {
+                "type": "object",
+                "properties": {
+                  "recorded": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 9007199254740991
+                  },
+                  "unavailable": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 9007199254740991
+                  },
+                  "notRecorded": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 9007199254740991
+                  }
+                },
+                "required": [
+                  "recorded",
+                  "unavailable",
+                  "notRecorded"
+                ],
+                "additionalProperties": false
+              },
+              "knownChargeMicroUsd": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 9007199254740991
+              },
+              "completedAttemptsWithRecordedUsage": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 9007199254740991
+              },
+              "completedAttemptKnownChargeMicroUsd": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 9007199254740991
+              }
+            },
+            "required": [
+              "kind",
+              "startInclusive",
+              "endExclusive",
+              "attempts",
+              "states",
+              "recording",
+              "knownChargeMicroUsd",
+              "completedAttemptsWithRecordedUsage",
+              "completedAttemptKnownChargeMicroUsd"
+            ],
+            "additionalProperties": false
+          },
+          "minItems": 3,
+          "maxItems": 3
+        },
+        "monthlyAdmission": {
+          "type": "object",
+          "properties": {
+            "startInclusive": {
+              "type": "string",
+              "format": "date-time",
+              "pattern": "Z$"
+            },
+            "knownChargeMicroUsd": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "unavailableRecordedAttempts": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "remainingKnownMicroUsd": {
+              "anyOf": [
+                {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9007199254740991
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "reached": {
+              "anyOf": [
+                {
+                  "type": "boolean"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          },
+          "required": [
+            "startInclusive",
+            "knownChargeMicroUsd",
+            "unavailableRecordedAttempts",
+            "remainingKnownMicroUsd",
+            "reached"
+          ],
+          "additionalProperties": false
+        },
+        "queue": {
+          "type": "object",
+          "properties": {
+            "basis": {
+              "const": "recorded-run-state"
+            },
+            "states": {
+              "type": "object",
+              "properties": {
+                "queued": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9007199254740991
+                },
+                "starting": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9007199254740991
+                },
+                "running": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9007199254740991
+                },
+                "waiting-for-approval": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9007199254740991
+                },
+                "paused": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9007199254740991
+                },
+                "completed": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9007199254740991
+                },
+                "failed": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9007199254740991
+                },
+                "cancelled": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9007199254740991
+                }
+              },
+              "required": [
+                "queued",
+                "starting",
+                "running",
+                "waiting-for-approval",
+                "paused",
+                "completed",
+                "failed",
+                "cancelled"
+              ],
+              "additionalProperties": false
+            },
+            "physicalConcurrency": {
+              "type": "null"
+            },
+            "availableCapacity": {
+              "type": "null"
+            },
+            "capacityStatus": {
+              "const": "unavailable"
+            }
+          },
+          "required": [
+            "basis",
+            "states",
+            "physicalConcurrency",
+            "availableCapacity",
+            "capacityStatus"
+          ],
+          "additionalProperties": false
+        },
+        "coverage": {
+          "type": "object",
+          "properties": {
+            "attemptPeriodBasis": {
+              "const": "run-created-at"
+            },
+            "admissionPeriodBasis": {
+              "const": "sdk-usage-recorded-at"
+            },
+            "chargeBasis": {
+              "const": "recorded-sdk-estimate"
+            },
+            "providerBilledMicroUsd": {
+              "type": "null"
+            },
+            "completeJobCost": {
+              "const": "unavailable"
+            }
+          },
+          "required": [
+            "attemptPeriodBasis",
+            "admissionPeriodBasis",
+            "chargeBasis",
+            "providerBilledMicroUsd",
+            "completeJobCost"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "schemaVersion",
+        "observedAt",
+        "timezone",
+        "policy",
+        "periods",
+        "monthlyAdmission",
+        "queue",
+        "coverage"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

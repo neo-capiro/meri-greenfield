@@ -3,7 +3,11 @@
 import test from 'node:test';import assert from 'node:assert/strict';import {randomUUID,createHash} from 'node:crypto';
 import {compositionFixture} from '../../selected/test/composition-fixture.mjs';
 import {createSelectedDocumentExecution,currentDocumentSession} from '../selected-documents.mjs';
-import {nativeDocumentFixture} from '../../../artifacts/test/native-document-fixture.mjs';
+import {nativeDocumentFixture,sha} from '../../../artifacts/test/native-document-fixture.mjs';
+import {createArtifactService} from '../../../artifacts/service.mjs';
+import {createDocumentRevisionRunOwner} from '../revision-composition.mjs';
+import {artifactValidators as v} from '../../../../packages/contracts/retrieval-0.2/validate.mjs';
+import {reportBriefInput,generalReportInput,reportRunBinding,reportRuntimeFixture,REPORT_NOW,RETAINED_BYTES,RETAINED_IMAGE,docxExecutor} from '../../selected/test/report-production-fixture.mjs';
 import {publicationFixture} from '../../../artifacts/storage/test/publication-fixture.mjs';
 import {createLocalDocumentPorts} from '../../../control/document-application/local/ports.mjs';
 import {createActionSessionApplication} from '../../../control/action-host/session/http.mjs';
@@ -137,5 +141,163 @@ for(const changed of ['principal','decision','source hash','current session','Co
   if(changed==='current session')f.state.revoked=true;if(changed==='Core denial')f.state.coreDenied=true;
   if(changed==='source row')f.x.base.state.selectedOutputs.values().next().value.projection_sha256='f'.repeat(64);
   await assert.rejects(f.owner.execute(call));assert.equal(f.state.rendered,0);assert.equal(f.artifact.state.rows.size,0);
+ }finally{await f.close();}
+});
+
+/** The report revision lane at the approval/apply boundary. The parent is written by the real artifact owner
+ * under the deployment's declared write activation; the factory's own revision publication compiles the child
+ * from that parent (its private parent read is the real revision owner over the same action-session owner the
+ * delivery borrows); the child is then committed by the ordinary approval delivery — the real intent HTTP
+ * decide route, the real Core decision forwarder, the real selected-document execution owner and the real
+ * document application. Only the Core transport, the membership gate and the renderer are synthetic. */
+async function reportFixture(skillId){
+ const input=skillId==='quick_skill.cited_report'?generalReportInput():reportBriefInput();
+ const parentRun=await compositionFixture('',{report:{skillId}}),
+  parentRuntime=await parentRun.prepare(),
+  parentOutput=await parentRuntime.finish({type:'result',subtype:'success',is_error:false,structured_output:input});
+ await parentRun.task.publish({binding:parentRun.f.configuration.binding,output:parentOutput});
+ const prepared=[...parentRun.base.state.selectedOutputs.values()][0].projection.prepared;
+ await parentRun.close();
+ const clock=REPORT_NOW,run={runId:randomUUID(),attemptId:randomUUID()},binding=reportRunBinding(run),scopes=prepared.context.scopes,
+  clientId=scopes.find(scope=>scope.kind==='client').resourceId,limits={maxRequestMs:5000,maxRequestBytes:2097152,maxResponseBytes:16777216};
+ // The parent version: this report's own compiled request and context, plus the one declared asset reference.
+ const artifact=nativeDocumentFixture({binding,scopes});artifact.state.clock=clock;
+ // One clock owner for the whole lane: the document application requires the resolved options' `now` to be
+ // that exact function, not an equal one.
+ const now=artifact.options.now;
+ const asset=v.object({objectId:randomUUID(),versionId:'SYNTHETIC_RETAINED_ASSET',sha256:sha(RETAINED_BYTES),bytes:RETAINED_BYTES.length,scopes});
+ artifact.state.objects.set(v.hash(asset),Buffer.from(RETAINED_BYTES));
+ const request=v.request({...prepared.request,content:{blocks:[...prepared.request.content.blocks,RETAINED_IMAGE]}}),
+  context=v.context({...prepared.context,assets:[{id:RETAINED_IMAGE.assetId,object:asset}]}),
+  alloc=()=>({artifactId:randomUUID(),versionId:randomUUID(),objectId:randomUUID()});
+ const parent=await createArtifactService({...artifact.options,executor:docxExecutor,ids:alloc,retainedAssetMapWrites:true,
+  admitRetainedEvidence:value=>v.hash(value)===v.hash(context)?undefined:1}).create(request,context,
+  {invocation:{invocationId:'sdk:'+hash({deliveryId:randomUUID()}),versionId:undefined,requestSha256:v.nativeRequestSha256(request,context,null)}});
+ const parentRecord=await artifact.options.versions.read(parent.version.versionId),
+  selection={artifactId:parent.version.artifactId,versionId:parent.version.versionId,objectSha256:parent.version.object.sha256};
+ assert.deepEqual(parentRecord.assets,[{id:RETAINED_IMAGE.assetId,object:asset}],'the parent the factory revises must itself retain the map');
+ // The single real action-session owner both the private parent read and the delivery borrow, and the real
+ // private revision owner the production composition consumes.
+ const state={closed:false,revoked:false,artifactChecks:0,approvalRevoked:false,decisions:0,core:0,rendered:0,coreDenied:false,sourceReads:0,phases:[]};
+ let ports=createLocalDocumentPorts({binding,scopes,clientId,deadlineMs:clock+60000,now,state}),latest=binding;
+ await ports.sessions.issue({identityCredential:ports.nativeCredential});
+ state.saved={run:{binding,scopes},request:reportRuntimeFixture({documentRevision:selection,run,skillId}).request};
+ const revisionOwner=createDocumentRevisionRunOwner({now,limits,bound:()=>({sessions:ports.sessions,
+   store:{async read(){state.sourceReads++;return structuredClone(state.saved);}}}),
+  optionsOwner:{async resolve(call){assert.equal(call.intent,'inspect');
+   return {documentOptions:{sessions:ports.sessions,selectedClientId:clientId,artifactOptions:{...artifact.options,ids:alloc},now,limits,enabled:true},
+    async recheck({phase}){state.phases.push(phase);}};}}});
+ const x=await compositionFixture('',{report:{skillId,documentRevision:selection,run},revisionOwner}),
+  runtime=await x.prepare(),output=await runtime.finish({type:'result',subtype:'success',is_error:false,structured_output:input});
+ await x.task.publish({binding:x.f.configuration.binding,output});
+ // The source run is closed before the approval turn, exactly as the accepted cases in this file settle it:
+ // the real selected-output retention owner loads a completed source row.
+ await x.assembly.store.append(binding,{eventId:randomUUID(),createdAt:new Date(clock).toISOString(),type:'run.status',data:{state:'completed',reasonCode:null}},()=>{});
+ const row=[...x.base.state.selectedOutputs.values()][0].projection,proposal=[...x.intents.state.rows.values()][0].outcome.result.proposal;
+ assert.equal(row.pending.baseVersionId,selection.versionId);
+ assert.deepEqual(row.prepared.context.assets,[{id:RETAINED_IMAGE.assetId,object:asset}],'the compiled child must carry the parent map into the delivery');
+ // The delivery half: the current session/Core artifact authority, the composed document options under the
+ // deployment's declared write activation, and the real selected-document execution owner.
+ artifact.options.executor={async execute({request}){state.rendered++;artifact.state.executions.push(request);
+  const bytes=Buffer.from(JSON.stringify(request));return {bytes,inspection:{sha256:createHash('sha256').update(bytes).digest('hex'),bytes:bytes.length,format:'docx',
+   nativeOpened:false,rendered:false,recalculated:false,members:[],details:{paragraphs:request.content.blocks.filter(block=>block.kind==='paragraph').length,tables:0,pictures:0}}};}};
+ const decision={proposalId:proposal.proposalId,commandSha256:proposal.commandSha256,decision:'approved',approver:{tenantId:binding.tenantId,actorId:binding.actorId},
+   decidedAt:new Date(clock).toISOString(),expiresAt:proposal.expiresAt,policyRevision:scopes[0].policyRevision};
+ const readDecision=async value=>{state.decisions++;if(state.decisionReader)return state.decisionReader(value);if(state.approvalRevoked)return null;return structuredClone(decision);};
+ const authority=createCoreArtifactAuthority({now,maxOutputBytes:1048576,limits:{maxRequestMs:3000,maxRequestBytes:131072,maxResponseBytes:2097152},
+  credentials:{serviceSecret:async()=>'synthetic-service-secret',admitBearer:(bearer,secret)=>{assert.notEqual(bearer,secret);return bearer;}},
+  client:{origin:'https://synthetic.invalid',async read(){state.core++;if(state.coreDenied)throw Error('CORE_REFUSED');
+   return {receipt:{principal:{tenantId:binding.tenantId,actorId:binding.actorId},conversationId:binding.conversationId,selectedClientId:clientId,
+    identityRevision:'identity',contextRevision:'context',authorityRevision:'authority',
+    operations:['artifact.generate','artifact.revise','artifact.inspect','artifact.download'],limits:{maxArtifactBytes:state.currentMaxBytes??1048576}},observedAtMs:now(),localExpiresAtMs:now()+3000};}}});
+ const optionsOwner={async resolve(call){const r=await authority.resolve({...call,sessions:ports.sessions,store:x.assembly.store}),
+   compose=createRuntimeDocumentOptionsComposer({storage:{objects:artifact.options.objects,versions:artifact.options.versions},executor:artifact.options.executor,
+    pool:artifact.options.pool,sessions:ports.sessions,store:x.assembly.store,now,retainedAssetMapWrites:true});
+  return {documentOptions:compose({artifactOptions:r.artifactOptions,selectedClientId:r.selectedClientId,limits:r.limits,enabled:r.enabled}),recheck:r.recheck};}};
+ const bound=()=>({sessions:ports.sessions,store:x.assembly.store,retention:artifact.options.retention}),
+  owner=createSelectedDocumentExecution({bound,pool:artifact.options.pool,optionsOwner,readDecision,now,maxRequestMs:3000,maxOutputBytes:1048576}),
+  call={proposal,decision,principal:{tenantId:binding.tenantId,actorId:binding.actorId,clientIds:[clientId]},
+   deliveryId:[...x.intents.state.rows.values()][0].delivery_id,deadlineMs:clock+3000};
+ // The real intents composition and its Core native-approval forwarder over a synthetic Core transport that
+ // already holds this proposal's recorded approval: the owner reads the decision through that forwarder and
+ // validates it with its own `selectedApprovalDecision`. Wired after the run advances, exactly as the
+ // accepted cases in this file wire theirs, so the forwarder relays the live session of the run in force.
+ function mountApprovals(){
+  const gatePrincipal={tenantId:binding.tenantId,actorId:binding.actorId,clientIds:[clientId],role:'member',permissions:[],membershipRevision:'synthetic-membership'};
+  const gate={async admit(){return {principal:gatePrincipal,expiresAtMs:clock+60000};},async recheck(){return gatePrincipal;}};
+  const intentsContext={configuration:{intents:{enabled:true,core:{origin:'https://synthetic.invalid',serviceSecretFile:'C:/synthetic/core'}},limits:{requestMs:3000,requestBytes:131072},native:{maxResponseBytes:1048576}},
+   pool:x.pool,client:{},native:{async call(){throw Error('No legacy native provider');}},now,canonicalProductPorts:{conversationMembership:gate}};
+  registerDocumentIntentOwner(intentsContext,()=>[],owner);
+  const approvals=intentsComposition(intentsContext,{transport:{async readSecret(){return Buffer.from('synthetic-service-secret');},async fetchImpl(url,options){
+   const body=JSON.parse(options.body);
+   if(url.endsWith('/record'))return Response.json({decision:{...decision,decision:body.decision}});
+   if(url.endsWith('/revoke'))return Response.json({revoked:true});
+   return Response.json({decision:state.approvalRevoked?null:decision,checkedAtMs:clock,revoked:state.approvalRevoked});}}});
+  assert.equal(approvals.state,'composed');
+  assert.equal(bindApprovalSessions(intentsContext,ports.sessions,artifact.options.retention,x.assembly.store),true);
+  state.decisionReader=approvals.readDecision;return approvals;
+ }
+ // The approval happens in a later run of the same conversation; the delivered output binds to that run.
+ async function advanceRun(){const key=b=>[b.tenantId,b.conversationId,b.runId].join(':'),old=x.base.state.runs.get(key(latest));old.sequence_end=old.sequence_base+old.last_sequence;
+  latest={...latest,runId:randomUUID(),attemptId:randomUUID(),workerId:randomUUID(),writerFence:latest.writerFence+1};
+  const projection={...old.projection,binding:latest,state:'queued'},next={...old.request,requestId:randomUUID()},createdAt=new Date(clock).toISOString();
+  const event={contractVersion:'0.1.0',eventId:randomUUID(),binding:latest,sequence:1,createdAt,scopes,type:'run.status',data:{state:'queued',reasonCode:null}};
+  x.base.state.runs.set(key(latest),{...structuredClone(old),run_id:latest.runId,projection,projection_sha256:hash(projection),request_id:next.requestId,request:next,request_sha256:hash(next),sequence_base:old.sequence_end,sequence_end:null,last_sequence:1});
+  x.base.state.events.set(key(latest),[{sequence:1,event_id:event.eventId,event,event_sha256:hash(event)}]);
+  for(const next of ['starting','running','completed'])await x.assembly.store.append(latest,{eventId:randomUUID(),createdAt,type:'run.status',data:{state:next,reasonCode:null}},()=>{});
+  ports.sessions.close();ports=createLocalDocumentPorts({binding:latest,scopes,clientId,deadlineMs:clock+60000,now,state});await ports.sessions.issue({identityCredential:ports.nativeCredential});return latest;
+ }
+ return {x,state,artifact,portsOf:()=>ports,proposal,decision,owner,call,bound,now,advanceRun,mountApprovals,parent,parentRecord,selection,asset,row,input,async close(){ports.sessions.close();await x.close();}};
+}
+
+for(const skillId of ['quick_skill.bill_watch','quick_skill.cited_report'])test(`${skillId}: the factory's own revision proposal commits its child through the real approval/apply owners`,async()=>{
+ const f=await reportFixture(skillId);
+ try{
+  // Every decision below is read from Core through the real native-approval forwarder and validated by the
+  // owner's own `selectedApprovalDecision`. The lane drives the owner directly, as the accepted cases in
+  // this file do: the published HTTP list/decide route refuses its caller in this harness (a pre-existing
+  // fixture mismatch reproduced from the frozen tree, see the technical receipt), and that route admission
+  // is not part of this crossing.
+  const advanced=await f.advanceRun();f.mountApprovals();
+  // Before the decision nothing is published, nothing is rendered, and the delivery has written no
+  // invocation row; the parent is the only version in the store.
+  assert.equal(await f.owner.read(f.call),null);assert.equal(f.state.rendered,0);
+  assert.equal(f.artifact.state.executions.length,0);assert.equal(f.artifact.state.rows.size,0);assert.equal(f.state.sourceReads>0,true);
+  const out=await f.owner.execute(f.call);
+  assert.equal(out.status,'observed');assert.equal(f.state.rendered,1);assert.equal(f.state.decisions>0,true);assert.equal(f.artifact.state.rows.size,1);
+  const version=out.outcome.version;
+  // The committed child is the parent's own revision, bound to the run the approval applied in.
+  assert.equal(version.parentVersionId,f.selection.versionId);assert.notDeepEqual(version.binding,f.proposal.command.binding);assert.deepEqual(version.binding,advanced);
+  const child=await f.artifact.options.versions.read(version.versionId);
+  assert.deepEqual(child.assets,[{id:RETAINED_IMAGE.assetId,object:f.asset}],'the approved child must retain the parent map');
+  assert.deepEqual(child.version.parentVersionId,f.selection.versionId);
+  assert.deepEqual(child.version.evidence,f.row.prepared.context.evidence);
+  assert.deepEqual(child.version.evidence.slice(0,f.parentRecord.version.evidence.length),f.parentRecord.version.evidence);
+  // The delivered specification is the compiled document, unchanged, plus the approval's own lineage section.
+  const compiled=f.row.prepared.request.content.blocks;
+  assert.deepEqual(child.spec.content.blocks.slice(0,compiled.length),compiled,'the delivered specification keeps the compiled document unchanged');
+  assert.equal(child.spec.title,f.row.prepared.request.title);assert.equal(child.spec.format,f.row.prepared.request.format);assert.equal(child.spec.operation,f.row.prepared.request.operation);
+  assert.equal(child.specSha256,hash(child.spec));
+  const lineageBlock=child.spec.content.blocks.find(block=>block.runs?.[0]?.text?.startsWith('Meri separately approved output lineage: ')),
+   lineage=JSON.parse(lineageBlock.runs[0].text.slice('Meri separately approved output lineage: '.length));
+  assert.equal(lineage.baseVersionId,f.selection.versionId);assert.deepEqual(lineage.outputBinding,advanced);
+  assert.equal(lineage.proposalId,f.proposal.proposalId);assert.equal(lineage.sourceEvidenceSha256,hash(f.row.prepared.context.evidence));
+  assert.deepEqual(child.version.scopes,f.parentRecord.version.scopes);
+  // The parent it revised is bit-for-bit unchanged.
+  assert.deepEqual(await f.artifact.options.versions.read(f.selection.versionId),f.parentRecord);
+  // The same decision replayed returns the same immutable version and renders nothing further.
+  assert.deepEqual((await f.owner.execute(f.call)).outcome.version,version);
+  assert.deepEqual((await f.owner.read(f.call)).outcome.version,version);assert.equal(f.state.rendered,1);
+ }finally{await f.close();}
+});
+
+test('a revoked report revision decision writes no child, renders nothing and leaves the parent current',async()=>{
+ const f=await reportFixture('quick_skill.bill_watch');
+ try{
+  await f.advanceRun();f.mountApprovals();
+  f.state.approvalRevoked=true;
+  await assert.rejects(f.owner.execute(f.call));
+  assert.equal(f.state.rendered,0);assert.equal(f.artifact.state.executions.length,0);assert.equal(f.artifact.state.rows.size,0);
+  assert.deepEqual(await f.artifact.options.versions.read(f.selection.versionId),f.parentRecord);
  }finally{await f.close();}
 });

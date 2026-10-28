@@ -41,6 +41,7 @@ import {routineCancellationTrust} from '../native-authority/routines-cancellatio
 import {createRoutinesRunControl} from '../native-authority/routines-run-control.mjs';
 import {readSecret as readRuntimeSecret} from '../config.mjs';
 import {registerRoutineIntentOwner} from '../routines-intents.mjs';
+import {routineManagementSessions} from '../../control/action-host/session/owner.mjs';
 const fault=code=>Object.assign(new Error(code),{code});
 /** Who must produce each owner before routines can be enabled in production. */
 export const PRODUCTION_ROUTINE_OWNERS=Object.freeze({
@@ -80,13 +81,19 @@ function captureTransport(transport){
 const unavailable=Object.freeze({state:()=>'unavailable',inboxState:()=>'unavailable',create:()=>createRoutinesApplication({enabled:false})});
 /** Core-produced owners over the trusted control context. Construction is inert: no secret read, request, query or RPC. */
 function coreOwners({core,configuration,pool,client,now,newId,transport}){
- const maxRequestMs=configuration.limits.requestMs,relay=createReadCredentialRelay();
+ const maxRequestMs=configuration.limits.requestMs,relay=createReadCredentialRelay(),managementRelay=createReadCredentialRelay();
  const getServiceSecret=createRoutinesServiceSecret({file:core.serviceSecretFile,reservedFiles:routinesReservedSecretFiles(configuration),readSecret:transport.readSecret??readRuntimeSecret});
- const wires=createRoutinesCoreClient({origin:core.origin,nativeCredentials:relay.port,getServiceSecret,now,maxRequestMs,...(transport.fetchImpl===undefined?{}:{fetchImpl:transport.fetchImpl})});
+ const wires=createRoutinesCoreClient({origin:core.origin,nativeCredentials:relay.port,managementCredentials:managementRelay.port,getServiceSecret,now,maxRequestMs,...(transport.fetchImpl===undefined?{}:{fetchImpl:transport.fetchImpl})});
  const taskQueue=configuration.temporal?.taskQueue;if(typeof taskQueue!=='string')throw fault('ROUTINES_CONFIGURATION');
  const runControl=createRoutinesRunControl({trust:routineCancellationTrust(core.cancellationProof),ledger:createPostgresRunCancelProofLedger({pool}),
   store:createPostgresConversationStore({pool,now}),dispatcher:createTemporalConversationDispatcher({client,taskQueue,now,maxRequestMs}),now,maxRequestMs,...(newId===undefined?{}:{newId})});
- return Object.freeze({sessionRelay:relay,policy:Object.freeze({check:wires.policyCheck}),runControl,cancellationProofs:Object.freeze({issue:wires.cancellationProof})});
+ const policyRevision=configuration.agentcore?.policyRevision??configuration.nativeCandidate?.qualification?.policyRevision;
+ const management=typeof policyRevision==='string'?Object.freeze({session:Object.freeze({readCurrent:wires.managementCurrent,versions:configuration.versions,policyRevision}),policy:Object.freeze({check:wires.managementPolicyCheck}),bind:sessions=>managementRelay.bind(routineManagementSessions(sessions))}):undefined;
+ // MR-04: the consent observation is a service-identity read of Core's own stored consent (no session at all); the
+ // attended renewal carries the owner's own live bearer, which the runtime resolves at `create` from the exact session
+ // the browser credential names. Both are the fixed reviewed Core wires, borrowed like every other wire here.
+ return Object.freeze({sessionRelay:relay,policy:Object.freeze({check:wires.policyCheck}),runControl,cancellationProofs:Object.freeze({issue:wires.cancellationProof}),
+  consentObservation:wires.consentObservation,consentRenewal:wires.consentRenewal,...(management===undefined?{}:{management})});
 }
 /** Family builder over optional trusted owners; `createRoutinesFamily` retains the closed unavailable fallback.
  * `transport` ({fetchImpl, readSecret}) is a trusted test seam only; production uses global fetch and the runtime secret reader. */
@@ -102,7 +109,8 @@ export function routinesFamily(owners,transport){
   const feature=createRuntimeRoutinesFeature({enabled:true,pool,client,now,...(captured.newId?{newId:captured.newId}:{}),
    context:{...captured.context,policy:produced?.policy??captured.context.policy},
    runControl:produced?.runControl??captured.runControl,retirement:captured.retirement,
-   ...(produced===null?{}:{cancellationProofs:produced.cancellationProofs,sessionRelay:produced.sessionRelay}),
+   ...(produced===null?{}:{cancellationProofs:produced.cancellationProofs,sessionRelay:produced.sessionRelay,consentObservation:produced.consentObservation,consentRenewal:produced.consentRenewal}),
+   ...(produced?.management===undefined?{}:{management:produced.management}),
    ...(captured.readConsents===undefined?{}:{readConsents:captured.readConsents}),...(captured.log===undefined?{}:{log:captured.log}),
    ...(captured.contextOwnerFactory===undefined?{}:{contextOwnerFactory:captured.contextOwnerFactory}),
    limits:{maxRequestMs:configuration.limits.requestMs,maxRequestBytes:configuration.limits.requestBytes,maxResponseBytes:configuration.native.maxResponseBytes}});

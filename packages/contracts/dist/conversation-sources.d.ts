@@ -1001,6 +1001,7 @@ export declare const billTextSourceMetadata:{
   "scope": "successful sequential read_bill_text@0.2.0 pages only"
 };
 export declare const BILL_TEXT_SOURCE_SCHEMA:'meri.native-bill-text-source/1',BILL_TEXT_SOURCE_READ_SCHEMA:'meri.bill-text-source-read/1',BILL_TEXT_SOURCE_EVENT:'source.native-bill-text',BILL_TEXT_SOURCE_PATH:'/api/conversations/source-read';
+export declare const UPLOAD_SOURCE_SCHEMA:'meri.native-upload-source/1',UPLOAD_SOURCE_EVENT:'source.native-upload';
 export declare const billTextSourceErrors:Readonly<Record<string,readonly number[]>>;
 export declare function receiveBillTextSourceRequest(bytes:Uint8Array):AdmittedBillTextSourceRequest;
 export declare function receiveNativeBillTextSourceEvent(bytes:Uint8Array):NativeBillTextSourceEvent;

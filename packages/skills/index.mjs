@@ -3,7 +3,8 @@ import {readFileSync} from 'node:fs';
 import {createHash} from 'node:crypto';
 import assets from './assets.json' with {type:'json'};
 import catalog from '../contracts/retrieval-0.2/catalog.json' with {type:'json'};
-import {validateShape,assertCatalog} from '../contracts/retrieval-0.2/validate.mjs';
+import {assertCatalog} from '../contracts/retrieval-0.2/validate.mjs';
+import {assertInstalledSkillManifest} from '../contracts/retrieval-0.3/installed-skill.mjs';
 import {canonicalSha256} from '../contracts/validate.mjs';
 import {snapshotPreservationData} from '../contracts/retrieval-0.2/operation-contracts.mjs';
 
@@ -25,16 +26,13 @@ function readAsset(path){
 function load(asset){
   verifyCatalog();
   const manifest=JSON.parse(readAsset(asset.manifestPath)),prose=readAsset(asset.prosePath);
-  validateShape('SkillManifest',manifest); // Not assertSkillManifest: unavailable operations must stay unavailable.
+  // Admission is dispatched on the manifest's own contractVersion by the canonical installed-skill owner, not
+  // by skillId: the closed 0.2.0 foundation keeps refusing every id it does not enumerate, an additive 0.3.0
+  // identity is admitted only through the versioned receiver, and an unavailable operation stays unavailable.
+  assertInstalledSkillManifest(manifest,catalog);
   if(manifest.skillId!==asset.skillId||manifest.skillVersion!==asset.skillVersion||
     manifest.prose.sha256!==asset.proseSha256||digest(Buffer.from(prose))!==asset.proseSha256||
     canonicalSha256(manifest)!==asset.manifestSha256)fail('SKILL_ASSET_PIN');
-  const operations=manifest.allowedOperations.map(ref=>catalog.operations.find(row=>canonicalSha256(row.operation)===canonicalSha256(ref)));
-  if(operations.some(row=>!row)||new Set(manifest.allowedOperations.map(ref=>key(ref.id,ref.version))).size!==operations.length)fail('SKILL_OPERATION_PIN');
-  const required=manifest.requiredSources.map(canonicalSha256),declared=manifest.requiredSources.map(row=>`${row.sourceId}:${row.purpose}`);
-  const legal=operations.flatMap(row=>row.sourceRequirements),derived=[...new Set(legal.map(row=>`${row.sourceId}:${row.purpose}`))];
-  if(new Set(declared).size!==required.length||declared.length!==derived.length||declared.some(id=>!derived.includes(id))||
-    required.some(hash=>!legal.some(row=>canonicalSha256(row)===hash)))fail('SKILL_SOURCE_PIN');
   return snapshotPreservationData({manifest,prose,installationCatalogSha256:assets.installationCatalogSha256,pin:{skillId:asset.skillId,skillVersion:asset.skillVersion,
     manifestSha256:asset.manifestSha256,proseSha256:asset.proseSha256,catalogSha256:asset.catalogSha256??assets.catalogSha256}});
 }

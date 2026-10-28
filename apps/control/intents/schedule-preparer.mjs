@@ -6,16 +6,26 @@
  * `resolveContext({operation,request,deliveryId,signal})` is the trusted schedule-context owner: it resolves the
  * caller identity, current projection, task/destination/limit resolutions and allocates the intent ID from trusted
  * state, never from the model. No such owner exists in this repository yet (proposal P-INT-6), so no composition
- * can make schedule intents available until it does. */
+ * can make schedule intents available until it does.
+ *
+ * The declared operation version is RECEIVED, never inferred: it is the exact schedule contract family pin the
+ * composition prepares under (`version`, canonical pins only), the legacy pin when the composition declares none,
+ * and an unsupported pin fails before any context is resolved or any tool is reached. The composition must hand
+ * this preparer the tool of that same family; this leaf never resolves "the current family" by itself. */
 import {data,own} from '../../../packages/contracts/commands-0.2/execution-boundary.mjs';
+import {LEGACY_SCHEDULE_OPERATION_VERSION,scheduleOperationFamily} from '../../../packages/contracts/schedule-operation-family.mjs';
 import {intentFault} from './faults.mjs';
 export const SCHEDULE_INTENT_OPERATIONS=Object.freeze(['schedule_task','update_scheduled_task','cancel_scheduled_task']);
-/** @param {{operation:string,tool:{execute:Function},resolveContext:Function,binding:object}} configuration */
+/** The schedule owner kind's own declaration rule, re-exported so the intent port admits a schedule declaration by the
+ * exact family pin it names and never by a version shape. @param {unknown} version */
+export {scheduleOperationDeclared} from '../../../packages/contracts/schedule-operation-family.mjs';
+/** @param {{operation:string,tool:{execute:Function},resolveContext:Function,binding:object,version?:string}} configuration */
 export function createScheduleIntentPreparer(configuration){
- const c=own(configuration,['operation','tool','resolveContext','binding']);
- if(!SCHEDULE_INTENT_OPERATIONS.includes(c.operation)||typeof c.tool?.execute!=='function'||typeof c.resolveContext!=='function')throw intentFault('INTENT_CONFIGURATION');
+ const c=own(configuration,['operation','tool','resolveContext','binding'],['version']);
+ const version=c.version===undefined?LEGACY_SCHEDULE_OPERATION_VERSION:c.version;
+ if(!SCHEDULE_INTENT_OPERATIONS.includes(c.operation)||typeof c.tool?.execute!=='function'||typeof c.resolveContext!=='function'||!scheduleOperationFamily(version))throw intentFault('INTENT_CONFIGURATION');
  const binding=data(c.binding);
- return Object.freeze({operation:Object.freeze({id:c.operation,version:'0.2.0'}),owner:'schedule',binding,
+ return Object.freeze({operation:Object.freeze({id:c.operation,version}),owner:'schedule',binding,
   async prepare({arguments:request,deliveryId,signal}){
    let context;
    try{context=data(await c.resolveContext({operation:c.operation,request:data(request),deliveryId,signal}));own(context,['scheduleContext']);}

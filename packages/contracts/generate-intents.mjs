@@ -3,6 +3,7 @@
 import {readFile,writeFile,mkdir} from 'node:fs/promises';import {createHash} from 'node:crypto';import {createRequire} from 'node:module';
 import {fileURLToPath,pathToFileURL} from 'node:url';import {resolve,relative,isAbsolute} from 'node:path';
 import {intentsSchema,INTENT_PHASES} from './intents-application/schema.mjs';
+import {workSelectionSchema} from './schedules-0.2/lifecycle-validation.mjs';
 import {createIntentsMetadata} from './intents-application/protocol.mjs';
 import * as application from '../../apps/control/intents/application-protocol.mjs';
 const HERE=new URL('./',import.meta.url),dir=fileURLToPath(HERE),hash=bytes=>createHash('sha256').update(bytes).digest('hex');
@@ -12,7 +13,10 @@ export async function generateIntentsContracts({check=false,toolchainRoot}={}){
  try{
   const sources=new Map(),record=async path=>{const raw=await readFile(new URL(path,HERE));sources.set(path,{path,sha256:hash(raw),bytes:raw.length});return raw;};
   const originals=new Map();
-  for(const path of ['retrieval-0.2/note-action.schema.json','retrieval-0.2/watch-action.schema.json','retrieval-0.2/legislative-document-action.schema.json','retrieval-0.2/bizdev-action.schema.json','retrieval-0.2/client-record-action.schema.json','retrieval-0.2/legiwatch-relevance.schema.json','retrieval-0.2/legiwatch-action.schema.json','retrieval-0.2/research-portfolio-sharing.schema.json','retrieval-0.2/research-portfolio-action.schema.json','meri.schema.json','commands-0.2/task-create.schema.json','commands-0.2/task-update.schema.json','commands-0.2/mail-send.schema.json','commands-0.2/document-draft.schema.json','commands-0.2/memory-propose.schema.json','commands-0.2/artifact-file.schema.json','artifacts-0.2/artifact.schema.json','schedules-0.2/tool-interface.schema.json','schedules-0.2/lifecycle.schema.json','schedules-0.2/inspection.schema.json']){const raw=await record(path),schema=JSON.parse(raw);originals.set(schema.$id,{schema,path});}
+  for(const path of ['retrieval-0.2/note-action.schema.json','retrieval-0.2/watch-action.schema.json','retrieval-0.2/legislative-document-action.schema.json','retrieval-0.2/bizdev-action.schema.json','retrieval-0.2/client-record-action.schema.json','retrieval-0.3/client-record-action.schema.json','retrieval-0.2/legiwatch-relevance.schema.json','retrieval-0.2/legiwatch-action.schema.json','retrieval-0.2/research-portfolio-sharing.schema.json','retrieval-0.2/research-portfolio-action.schema.json','meri.schema.json','commands-0.2/task-create.schema.json','commands-0.2/task-update.schema.json','commands-0.2/mail-send.schema.json','commands-0.2/document-draft.schema.json','commands-0.2/memory-propose.schema.json','commands-0.2/artifact-file.schema.json','artifacts-0.2/artifact.schema.json','schedules-0.2/tool-interface.schema.json','schedules-0.2/lifecycle.schema.json','schedules-0.2/inspection.schema.json','schedules-0.3/tool-interface.schema.json','schedules-0.3/lifecycle.schema.json','schedules-0.3/inspection.schema.json']){const raw=await record(path),schema=JSON.parse(raw);originals.set(schema.$id,{schema,path});}
+  // The canonical Work selection owner the 0.3 lifecycle resolves by reference: registered from that ONE owner, never
+  // copied into a parallel shape, so the distribution inlines the same definition the runtime family validators mount.
+  const work=workSelectionSchema();originals.set(work.$id,{schema:work,path:'work-selection.mjs'});await record('work-selection.mjs');
   const errors=(await record('../../apps/control/product-access/errors.mjs')).toString(),fieldPattern=/const FIELD=\/(.+)\/u;/u.exec(errors)?.[1];if(!fieldPattern)throw Error('Missing canonical product error field pattern');
   for(const name of ['INTENTS_PATHS','INTENTS_LIMITS','INTENTS_ERROR_OUTCOMES','INTENTS_ERROR_STATUSES','INTENTS_APPROVABLE_ACTIONS','INTENTS_FAILURE_CODES'])if(application[name]===undefined)throw Error('Missing canonical intents declaration '+name);
   const config={paths:application.INTENTS_PATHS,limits:application.INTENTS_LIMITS,errorStatuses:application.INTENTS_ERROR_STATUSES,errorOutcomes:application.INTENTS_ERROR_OUTCOMES,failureCodes:application.INTENTS_FAILURE_CODES,approvableActions:application.INTENTS_APPROVABLE_ACTIONS,fieldPattern};
@@ -23,8 +27,11 @@ export async function generateIntentsContracts({check=false,toolchainRoot}={}){
   // Canonical shapes are copied into this schema as local definitions so the distribution has no external schema reference.
   const root=intentsSchema(config),defs={},seen=new Map();
   function transform(value,owner){if(Array.isArray(value))return value.map(v=>transform(v,owner));if(!value||typeof value!=='object')return value;const out={};
-   for(const[key,v]of Object.entries(value)){if(key!=='$ref'){out[key]=transform(v,owner);continue;}const[urn,fragment]=v.split('#'),id=urn||owner,full=id+'#'+fragment;if(id===root.$id){out[key]='#'+fragment;continue;}
-    if(!seen.has(full)){const original=originals.get(id);if(!original)throw Error('Missing canonical schema '+id);const name='Canonical_'+fragment.split('/').at(-1)+'_'+hash(full).slice(0,8);seen.set(full,name);let target=original.schema;for(const token of fragment.split('/').slice(1))target=target[token.replaceAll('~1','/').replaceAll('~0','~')];if(!target)throw Error('Missing canonical pointer '+full);defs[name]=transform(target,id);}out[key]='#/$defs/'+seen.get(full);
+   for(const[key,v]of Object.entries(value)){if(key!=='$ref'){out[key]=transform(v,owner);continue;}
+    // A whole-schema reference carries no fragment; the canonical owners register whole schemas that way, so an empty
+    // fragment means the registered schema itself and its definition name comes from the urn's own trailing label.
+    const[urn,fragment='']=v.split('#'),id=urn||owner,full=id+'#'+fragment;if(id===root.$id){out[key]='#'+fragment;continue;}
+    if(!seen.has(full)){const original=originals.get(id);if(!original)throw Error('Missing canonical schema '+id);const name='Canonical_'+(fragment?fragment.split('/').at(-1):id.split(':').filter(token=>!/^[0-9]/u.test(token)).at(-1))+'_'+hash(full).slice(0,8);seen.set(full,name);let target=original.schema;for(const token of fragment.split('/').slice(1))target=target[token.replaceAll('~1','/').replaceAll('~0','~')];if(!target)throw Error('Missing canonical pointer '+full);defs[name]=transform(target,id);}out[key]='#/$defs/'+seen.get(full);
    }return out;}
   root.$defs={...transform(root.$defs,root.$id),...defs};
   const names=Object.keys(root.$defs).filter(name=>!name.startsWith('Canonical_'));
@@ -51,15 +58,18 @@ export async function generateIntentsContracts({check=false,toolchainRoot}={}){
   }).join('\n');
   const api=`
 ${aliases}
-export type RoutinesRoute='prepare'|'approve'|'list'|'reconcile';
-export interface RoutinesRequestMap {prepare:RoutinesPrepareRequest;approve:RoutinesApproveRequest;list:RoutinesListRequest;reconcile:RoutinesReconcileRequest;}
-export interface RoutinesResponseMap {prepare:RoutinesPrepareResponse;approve:RoutinesApproveResponse;list:RoutinesListResponse;reconcile:RoutinesReconcileResponse;}
-export interface RoutinesExpectationMap {prepare:{request:RoutinesPrepareRequest};approve:{request:RoutinesApproveRequest;proposal:RoutinesProposal};list:{request:RoutinesListRequest};reconcile:{request:RoutinesReconcileRequest;proposal:RoutinesProposal};}
+export type RoutinesRoute='prepare'|'approve'|'list'|'reconcile'|'consentReview'|'consentApprove';
+export interface RoutinesRequestMap {prepare:RoutinesPrepareRequest;approve:RoutinesApproveRequest;list:RoutinesListRequest;reconcile:RoutinesReconcileRequest;consentReview:RoutinesConsentReviewRequest;consentApprove:RoutinesConsentApproveRequest;}
+export interface RoutinesResponseMap {prepare:RoutinesPrepareResponse;approve:RoutinesApproveResponse;list:RoutinesListResponse;reconcile:RoutinesReconcileResponse;consentReview:RoutinesConsentReviewResponse;consentApprove:RoutinesConsentApproveResponse;}
+export interface RoutinesExpectationMap {prepare:{request:RoutinesPrepareRequest};approve:{request:RoutinesApproveRequest;proposal:RoutinesProposal};list:{request:RoutinesListRequest};reconcile:{request:RoutinesReconcileRequest;proposal:RoutinesProposal};consentReview:{request:RoutinesConsentReviewRequest};consentApprove:{request:RoutinesConsentApproveRequest;review:RoutinesConsentReviewResponse};}
 export type RoutinesResponse<R extends RoutinesRoute>=RoutinesResponseMap[R]|RoutinesErrorResponse;
-export declare const routinesPaths:Readonly<{prepare:'/api/routines/prepare';approve:'/api/routines/approve';list:'/api/routines/list';reconcile:'/api/routines/reconcile'}>;
-export declare const routinesMetadata:Readonly<{version:'0.1.0';routes:typeof routinesPaths;limits:{requestBytes:131072;responseBytes:2097152}}>;
+export declare const routinesPaths:Readonly<{prepare:'/api/routines/prepare';approve:'/api/routines/approve';list:'/api/routines/list';reconcile:'/api/routines/reconcile';consentReview:'/api/routines/consent/review';consentApprove:'/api/routines/consent/approve'}>;
+export declare const routinesMetadata:Readonly<{version:'0.2.0';routes:typeof routinesPaths;limits:{requestBytes:131072;responseBytes:2097152}}>;
 export declare function receiveRoutinesRequest<R extends RoutinesRoute>(route:R,jsonText:unknown):Promise<RoutinesRequestMap[R]>;
 export declare function receiveRoutinesResponse<R extends RoutinesRoute>(route:R,httpStatus:number,jsonText:unknown,expectation:RoutinesExpectationMap[R]):Promise<RoutinesResponse<R>>;
+export declare const routineManagementSessionPath:'/api/routines/session';
+export declare function receiveRoutineManagementSessionRequest(jsonText:unknown):RoutinesManagementSessionRequest;
+export declare function receiveRoutineManagementSessionReceipt(jsonText:unknown,expected:RoutinesManagementContext,at:number):RoutinesManagementSessionReceipt;
 export type IntentsRoute='list'|'decide';
 export interface IntentsRequestMap {list:IntentsListRequest;decide:IntentsDecideRequest;}
 export interface IntentsResponseMap {list:IntentsListResponse;decide:IntentsDecideResponse;}

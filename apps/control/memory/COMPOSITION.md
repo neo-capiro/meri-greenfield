@@ -229,23 +229,46 @@ default. Choosing actor/client subject and policy for surface candidates remains
 
 ### Command payload chain and activation
 
-`approval-metadata-store.mjs` retains the raw memory request and content in `meri_commands.approval_metadata.payload` under an
-immutable `memory_conversation_id`; the metadata row owner inventories it by proposal ID and tombstones `payload` while preserving
-unique proposal/command/idempotency identities and hash. Its forward schema needs nullable `payload`, `payload_purged_at`, immutable
-conversation locator, a partial live-payload index, guarded UPDATE trigger and restricted column grants. A metadata read returns
-no prepared command after tombstone. Existing Core approval reception is task.create-only, so Core's shared owner must qualify
-`memory.propose` before approval is executable.
+**Superseded 2026-10-28 (root decision D2(i)).** The memory-module four-class bundle and its held payload schema are retired: the
+four retained conversational payloads are served by the existing mounted central path below, not by a second per-class
+nullable-payload schema. The class vocabulary `meriMemoryApprovalMetadata`/`meriMemoryCommandJournal`/`meriMemoryIntentPreparations`
+and the columns `payload_purged_at`/`memory_conversation_id` were never authored in any migration; the former
+`apps/control/memory/approval-metadata-retention-owner.mjs` that targeted them is deleted as dead source. In the same change its
+now-orphaned read-only codec `apps/control/memory/approval-metadata.mjs` (exports `MEMORY_COMMAND_OPERATION` and
+`memoryMetadataPayload`) is deleted too. The active codec is `apps/control/commands/approval-metadata/memory-kind.mjs` (via
+`command-kind.mjs`), and `MEMORY_COMMAND_OPERATION` is served by `apps/control/memory/command-options.mjs`. Do not re-add the
+alternative mechanism. The historical coverage manifest `docs/integration/source-coverage-20261021/ledger.json` still lists both
+files; it is immutable history, not current wiring.
 
-The same conversation can retain memory content in `meri_memory.candidates`, `meri_commands.command_journal`, and
-`meri_intents.preparations.outcome.result.proposal`. Central retention must register all four exact classes
-`meriMemoryCandidates` (`candidate_id`), `meriMemoryApprovalMetadata` (`proposal_id`), `meriMemoryCommandJournal` (`command_id`),
-and `meriMemoryIntentPreparations` (`delivery_id`). The latter two need immutable conversation locators and guarded content
-tombstones preserving idempotency/delivery replay fences; command history, readOutcome and preparation replay must withhold
-tombstoned content. `bindMemoryCommandRetention` requires a central bundle asserting registry, target schema, grants, recovery,
-policy and all four classes. No shared composition currently supplies that bundle, so `commandOptionsFor` and `commandSourceFor`
-remain unbound. Personal memory within a selected-client run uses that run's selected-client UUID for live credential lookup while
-the personal command arguments carry `clientId:null`; a truly unscoped chat has no compatible action-session credential and stays
-unavailable before prepare.
+The same conversation retains memory content in two existing mechanisms:
+
+- `meri_memory.candidates` is the distinct `meriMemoryCandidates` class with its own row owner
+  (`apps/control/memory/retention-payload-owner.mjs`), target in `conversations/0018` and the `meri_memory/0002` candidate tombstone
+  (`candidate=NULL`, `candidate_purged_at`).
+- `meri_commands.approval_metadata`, `meri_commands.command_journal` and `meri_intents.preparations` are the `receipts` class
+  conversation content rows (`apps/control/conversations/retention-content-rows.mjs:34-37`) dispatched to modes `approval`,
+  `command` and `intent` (`apps/control/retention/conversation-purge-rows.mjs:15-21`). Approval metadata tombstones `payload` to the
+  exact marker; the command journal tombstones `payload` and any settled `outcome` to the marker; the intent preparation becomes
+  `state='REDACTED', outcome=NULL, outcome_purged_at=clock_timestamp()`. The surviving
+  `meri_conversations.guard_conversation_tombstone()` body is `conversations/0030_child_assignments.sql:55` (`CREATE OR REPLACE`
+  after 0023/0029) and still refuses any payload change that is not the exact marker, so replay/reply identity (`proposal_id`,
+  `command_id`, `idempotency_key`, `*_sha256`, `delivery_id`) survives while a tombstoned row fails the live-payload decode. The
+  restricted column grants are the existing `infra/product-preview/first-chat-expired-conversation-purge-grants.sql`. Command
+  history, readOutcome and preparation replay withhold tombstoned content. The central `receipts`-class registry owner still owns
+  the outstanding accuracy questions there (the `meri_conversations.run_issuances`/`model_run_issuances` rows are not enumerated or
+  purged by any mounted owner); that is a shared-owner dependency, not a reason to re-add a per-class schema.
+
+No `bindMemoryCommandRetention` bundle or four-class command-retention bundle is mounted, and no approval prerequisite gates
+memory writes. The current native receiver is the candidate/intents path, not historical command approval:
+`apps/runtime/product-ports/memory.mjs:115-147` composes `intentPreparersFor` only with a live run credential relay, gated by
+`bindMemoryRetention` (it returns `[]` until the retention gate is bound). For each preparation it re-borrows the run's live
+session, checks `gate.admit` membership and the selected client, then `retention.assertServable` and `checkCurrent`, and submits one
+pending candidate through the governed producer via `createMemoryCommandSource` → `createMemoryIntentPreparer`
+(`apps/control/memory/command-options.mjs`), which returns `{status:'review_pending'}` and never creates task approval metadata.
+Historical approval/command payload rows still exist and are retained/tombstoned by the `receipts`-class path above; that retention
+is independent of the current receiver and must not be re-created as an approval prerequisite. Personal memory within a
+selected-client run uses that run's selected-client UUID for live credential lookup while the personal command arguments carry
+`clientId:null`; a truly unscoped chat has no compatible action-session credential and stays unavailable before prepare.
 
 ### Integration checkpoint, 18 October 2026
 
@@ -258,6 +281,7 @@ The assigned intent `0002` source resolves and verifies its historical state/out
 expressions, without relying on PostgreSQL-generated constraint names. The candidate tombstone trigger requires an active
 PLANNED/UNKNOWN purge projection and locks its exact target and suppression rows. These are source repairs only; native PostgreSQL
 trigger, role, concurrency and restore qualification remains outstanding. Candidate journal reads now depend on `memory/0002`
-columns, so a table-only startup readiness check is insufficient for activation. Central integration must verify the new columns
-and trigger shape, complete the held approval-metadata/command-journal schemas, and teach intent replay/readers to withhold
-`REDACTED` payloads before enabling memory. See `docs/coordination/handoffs/MEMORY-COMPOSITION-20261018.md` for exact gates and tests.
+columns, so a table-only startup readiness check is insufficient for activation. Central integration must verify the new
+`meri_memory` candidate columns and the pinned `guard_conversation_tombstone` shape (`conversations/0030`), rely on the surviving
+`receipts`-class approval/command/intent tombstones rather than authoring held per-class schemas, and teach intent replay/readers to
+withhold `REDACTED` payloads before enabling memory. See `docs/coordination/handoffs/MEMORY-COMPOSITION-20261018.md` for exact gates and tests.

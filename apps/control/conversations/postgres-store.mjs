@@ -8,6 +8,8 @@ import {createNativePreparationJournals} from './native-preparation-journal.mjs'
 import {createCompletionJournal} from './completion-journal.mjs';
 import {createNextRunJournal} from './next-run-journal.mjs';
 import {createConversationHistoryStore} from './history/store.mjs';
+import {createRunIndexStore} from './runs/store.mjs';
+import {createUsageOverviewStore} from './usage-overview/store.mjs';
 import {createConversationManagementStore} from './history/management-store.mjs';
 import {productFailure,ProductError} from '../product-access/errors.mjs';
 import {transact} from '../product-persistence/transaction.mjs';
@@ -160,5 +162,5 @@ export function createPostgresConversationStore({pool,transitionAuthority,retent
  const initialInputs=createOriginalInputJournal({tx,rowRun,now,assertConversationActive}),originalInputPorts=Object.freeze({claim:initialInputs.claim,read:initialInputs.read,accept(raw,check){const i=own(raw,['conversation','run','request','event','selectedClientId']);if(i.selectedClientId!==null)uuid(i.selectedClientId);return accept(i,check,i.selectedClientId);}});
  const nextRuns=createNextRunJournal({tx,rowRun,modelAdmission,assertConversationActive});
  const feedback=createFeedbackJournal({tx,rowRun,retentionGate,now});
- return Object.freeze({feedback,accept:(input,check)=>accept(input,check),initialBindings:createInitialRunBindingJournal({pool,now}),initialInputs:originalInputPorts,append,appendSource,read,readOptional,findRequest,recordUsage,readUsage,readModelPolicy,readCurrentModelPolicy,readDefaultModelSelection,readModelSelection,history:createConversationHistoryStore({tx,rowRun,continuationCustody:lifecycle.readContinuation}),management:createConversationManagementStore({tx,rowRun,settlement:nextRuns.settlementInTransaction,now}),nextRuns,completions:createCompletionJournal({tx,rowRun,onPublished}),...preparation,executions:createExecutionJournal({tx,rowRun,now}),selectedOutputs:createSelectedOutputJournal({tx,rowRun}),memoryProposalContexts:createMemoryProposalContextJournal({tx,rowRun,pool,retentionGate,retentionHead,now}),lifecycle});
+ return Object.freeze({feedback,accept:(input,check)=>accept(input,check),initialBindings:createInitialRunBindingJournal({pool,now}),initialInputs:originalInputPorts,append,appendSource,read,readOptional,findRequest,recordUsage,readUsage,readModelPolicy,readCurrentModelPolicy,readDefaultModelSelection,readModelSelection,history:createConversationHistoryStore({tx,rowRun,continuationCustody:lifecycle.readContinuation}),runs:createRunIndexStore({tx}),usageOverview:createUsageOverviewStore({pool,now,continuationCustody:lifecycle.readContinuation}),management:createConversationManagementStore({tx,rowRun,settlement:nextRuns.settlementInTransaction,now}),nextRuns,completions:createCompletionJournal({tx,rowRun,onPublished}),...preparation,executions:createExecutionJournal({tx,rowRun,now}),selectedOutputs:createSelectedOutputJournal({tx,rowRun}),memoryProposalContexts:createMemoryProposalContextJournal({tx,rowRun,pool,retentionGate,retentionHead,now}),lifecycle});
 }

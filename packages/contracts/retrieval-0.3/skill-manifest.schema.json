@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:meri:retrieval:skill-manifest:0.3.0",
+  "title": "Meri R2 installed skill manifest receiver 0.3.0",
+  "x-contractVersion": "0.3.0",
+  "x-composes": "urn:meri:retrieval:skill:0.2.0#/$defs/SkillManifest",
+  "$comment": "Versioned receiver for an installed skill manifest whose own contractVersion is 0.3.0. installed-skill.mjs composes the manifest shape from the frozen 0.2.0 foundation read from disk and changes exactly two things: contractVersion is the constant 0.3.0, and skillId enumerates only the identities this version adds. The frozen file is read, never written, and no consumer of it is re-pointed here, so the closed 0.2.0 family keeps owning the original fourteen ids and keeps refusing any identity it does not enumerate. This file grants no operation, no source and no runtime availability.",
+  "$defs": {
+    "AddedSkillId": {
+      "$comment": "Identities added at this version. Adding another one requires a new reviewed version of this file, never an edit to the closed 0.2.0 enum.",
+      "type": "string",
+      "enum": [
+        "quick_skill.cited_report"
+      ]
+    }
+  }
+}

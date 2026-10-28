@@ -27,6 +27,26 @@
       ],
       "additionalProperties": false
     },
+    "IntentsClientRecordOperation": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z][a-z_]{0,62}$"
+        },
+        "version": {
+          "enum": [
+            "0.2.0",
+            "0.3.0"
+          ]
+        }
+      },
+      "required": [
+        "id",
+        "version"
+      ],
+      "additionalProperties": false
+    },
     "IntentsListRequest": {
       "type": "object",
       "properties": {
@@ -121,7 +141,7 @@
           "$ref": "#/$defs/Canonical_WatchProposal_14eddeec"
         },
         {
-          "$ref": "#/$defs/Canonical_ClientRecordProposal_b620b25b"
+          "$ref": "#/$defs/Canonical_ClientRecordProposal_d98d004e"
         },
         {
           "$ref": "#/$defs/Canonical_BizdevProposal_a770314c"
@@ -132,7 +152,7 @@
       ]
     },
     "IntentsClientRecordProposal": {
-      "$ref": "#/$defs/Canonical_ClientRecordProposal_b620b25b"
+      "$ref": "#/$defs/Canonical_ClientRecordProposal_d98d004e"
     },
     "IntentsLegiwatchProposal": {
       "$ref": "#/$defs/Canonical_LegiwatchProposal_1f841734"
@@ -728,7 +748,17 @@
           "$ref": "#/$defs/Canonical_RunBinding_84f2304c"
         },
         "request": {
-          "$ref": "#/$defs/RoutinesMutationRequest"
+          "oneOf": [
+            {
+              "$ref": "#/$defs/Canonical_ScheduleTaskRequest_84a62196"
+            },
+            {
+              "$ref": "#/$defs/Canonical_UpdateScheduledTaskRequest_e7c2f9fc"
+            },
+            {
+              "$ref": "#/$defs/Canonical_CancelScheduledTaskRequest_fe53799c"
+            }
+          ]
         },
         "proposal": {
           "$ref": "#/$defs/Canonical_PendingProposal_8e88d951"
@@ -944,7 +974,7 @@
           "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$"
         },
         "operation": {
-          "$ref": "#/$defs/IntentsOperation"
+          "$ref": "#/$defs/IntentsClientRecordOperation"
         },
         "state": {
           "const": "prepared"
@@ -953,12 +983,12 @@
           "const": "client_record_action"
         },
         "proposal": {
-          "$ref": "#/$defs/Canonical_ClientRecordProposal_b620b25b"
+          "$ref": "#/$defs/Canonical_ClientRecordProposal_d98d004e"
         },
         "result": {
           "anyOf": [
             {
-              "$ref": "#/$defs/Canonical_ClientRecordCoreResult_cb1df09e"
+              "$ref": "#/$defs/Canonical_ClientRecordCoreResult_be5c35e8"
             },
             {
               "const": "unavailable"
@@ -1021,7 +1051,7 @@
           "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$"
         },
         "operation": {
-          "$ref": "#/$defs/IntentsOperation"
+          "$ref": "#/$defs/IntentsClientRecordOperation"
         },
         "state": {
           "const": "prepared"
@@ -1676,7 +1706,7 @@
               "pattern": "^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$"
             },
             "result": {
-              "$ref": "#/$defs/Canonical_ClientRecordCoreResult_cb1df09e"
+              "$ref": "#/$defs/Canonical_ClientRecordCoreResult_be5c35e8"
             }
           },
           "required": [
@@ -1944,21 +1974,100 @@
       ],
       "additionalProperties": false
     },
+    "RoutinesManagementSessionRequest": {
+      "type": "object",
+      "properties": {
+        "clientId": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "clientId"
+      ],
+      "additionalProperties": false
+    },
+    "RoutinesManagementContext": {
+      "type": "object",
+      "properties": {
+        "tenantId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        },
+        "actorId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        },
+        "selectedClientId": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "tenantId",
+        "actorId",
+        "selectedClientId"
+      ],
+      "additionalProperties": false
+    },
+    "RoutinesManagementSessionReceipt": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "const": "routine-management"
+        },
+        "credential": {
+          "type": "string",
+          "pattern": "^routine_session_[A-Za-z0-9_-]{43}$"
+        },
+        "expiresAtMs": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        },
+        "context": {
+          "$ref": "#/$defs/RoutinesManagementContext"
+        }
+      },
+      "required": [
+        "kind",
+        "credential",
+        "expiresAtMs",
+        "context"
+      ],
+      "additionalProperties": false
+    },
     "RoutinesMutationRequest": {
       "oneOf": [
         {
-          "$ref": "#/$defs/Canonical_ScheduleTaskRequest_84a62196"
+          "$ref": "#/$defs/Canonical_ScheduleTaskRequest_df098195"
         },
         {
-          "$ref": "#/$defs/Canonical_UpdateScheduledTaskRequest_e7c2f9fc"
+          "$ref": "#/$defs/Canonical_UpdateScheduledTaskRequest_2bcea062"
         },
         {
-          "$ref": "#/$defs/Canonical_CancelScheduledTaskRequest_fe53799c"
+          "$ref": "#/$defs/Canonical_CancelScheduledTaskRequest_fdcd923c"
         }
       ]
     },
     "RoutinesProposal": {
-      "$ref": "#/$defs/Canonical_PendingProposal_8e88d951"
+      "$ref": "#/$defs/Canonical_PendingProposal_667d1207"
     },
     "RoutinesPrepareRequest": {
       "oneOf": [
@@ -1973,7 +2082,7 @@
               "const": "schedule_task"
             },
             "request": {
-              "$ref": "#/$defs/Canonical_ScheduleTaskRequest_84a62196"
+              "$ref": "#/$defs/Canonical_ScheduleTaskRequest_df098195"
             }
           },
           "required": [
@@ -1994,7 +2103,7 @@
               "const": "update_scheduled_task"
             },
             "request": {
-              "$ref": "#/$defs/Canonical_UpdateScheduledTaskRequest_e7c2f9fc"
+              "$ref": "#/$defs/Canonical_UpdateScheduledTaskRequest_2bcea062"
             }
           },
           "required": [
@@ -2015,7 +2124,7 @@
               "const": "cancel_scheduled_task"
             },
             "request": {
-              "$ref": "#/$defs/Canonical_CancelScheduledTaskRequest_fe53799c"
+              "$ref": "#/$defs/Canonical_CancelScheduledTaskRequest_fdcd923c"
             }
           },
           "required": [
@@ -2034,7 +2143,7 @@
           "const": "approval_required"
         },
         "proposal": {
-          "$ref": "#/$defs/Canonical_PendingProposal_8e88d951"
+          "$ref": "#/$defs/Canonical_PendingProposal_667d1207"
         }
       },
       "required": [
@@ -2052,7 +2161,7 @@
               "const": "schedule_task"
             },
             "request": {
-              "$ref": "#/$defs/Canonical_ScheduleTaskRequest_84a62196"
+              "$ref": "#/$defs/Canonical_ScheduleTaskRequest_df098195"
             },
             "proposalId": {
               "type": "string",
@@ -2082,7 +2191,7 @@
               "const": "update_scheduled_task"
             },
             "request": {
-              "$ref": "#/$defs/Canonical_UpdateScheduledTaskRequest_e7c2f9fc"
+              "$ref": "#/$defs/Canonical_UpdateScheduledTaskRequest_2bcea062"
             },
             "proposalId": {
               "type": "string",
@@ -2112,7 +2221,7 @@
               "const": "cancel_scheduled_task"
             },
             "request": {
-              "$ref": "#/$defs/Canonical_CancelScheduledTaskRequest_fe53799c"
+              "$ref": "#/$defs/Canonical_CancelScheduledTaskRequest_fdcd923c"
             },
             "proposalId": {
               "type": "string",
@@ -2138,7 +2247,7 @@
       ]
     },
     "RoutinesApproveResponse": {
-      "$ref": "#/$defs/Canonical_Acknowledged_1fa14cd2"
+      "$ref": "#/$defs/Canonical_Acknowledged_14a93840"
     },
     "RoutinesReconcileRequest": {
       "oneOf": [
@@ -2149,7 +2258,7 @@
               "const": "schedule_task"
             },
             "request": {
-              "$ref": "#/$defs/Canonical_ScheduleTaskRequest_84a62196"
+              "$ref": "#/$defs/Canonical_ScheduleTaskRequest_df098195"
             },
             "proposalId": {
               "type": "string",
@@ -2175,7 +2284,7 @@
               "const": "update_scheduled_task"
             },
             "request": {
-              "$ref": "#/$defs/Canonical_UpdateScheduledTaskRequest_e7c2f9fc"
+              "$ref": "#/$defs/Canonical_UpdateScheduledTaskRequest_2bcea062"
             },
             "proposalId": {
               "type": "string",
@@ -2201,7 +2310,7 @@
               "const": "cancel_scheduled_task"
             },
             "request": {
-              "$ref": "#/$defs/Canonical_CancelScheduledTaskRequest_fe53799c"
+              "$ref": "#/$defs/Canonical_CancelScheduledTaskRequest_fdcd923c"
             },
             "proposalId": {
               "type": "string",
@@ -2275,10 +2384,463 @@
       "additionalProperties": false
     },
     "RoutinesListRequest": {
-      "$ref": "#/$defs/Canonical_ListScheduledTasksRequest_294adc6c"
+      "type": "object",
+      "properties": {
+        "afterScheduleId": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "uuid"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "limit": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 20
+        },
+        "historyLimit": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 10
+        },
+        "observation": {
+          "const": "consent"
+        }
+      },
+      "required": [],
+      "additionalProperties": false
+    },
+    "RoutinesListRow": {
+      "type": "object",
+      "properties": {
+        "projection": {
+          "$ref": "#/$defs/Canonical_ScheduleProjection_607c4a02"
+        },
+        "generation": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "unresolved": {
+          "type": "boolean"
+        },
+        "inspection": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Canonical_ScheduleInspectionOutput_7edf0fd5"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "inspectionState": {
+          "enum": [
+            "unavailable",
+            "observed"
+          ]
+        },
+        "trigger": {
+          "$ref": "#/$defs/Canonical_TriggerObservation_3d888ab2"
+        },
+        "consent": {
+          "$ref": "#/$defs/RoutinesConsentObservation"
+        }
+      },
+      "required": [
+        "projection",
+        "generation",
+        "unresolved",
+        "inspection",
+        "inspectionState"
+      ],
+      "additionalProperties": false
+    },
+    "RoutinesListPage": {
+      "type": "object",
+      "properties": {
+        "operation": {
+          "const": "list_scheduled_tasks"
+        },
+        "rows": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/RoutinesListRow"
+          },
+          "maxItems": 20
+        },
+        "hasMore": {
+          "type": "boolean"
+        },
+        "nextAfterScheduleId": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "uuid"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "originalRuns": {
+          "$ref": "#/$defs/Canonical_OriginalRuns_9e3cc8aa"
+        },
+        "coverage": {
+          "type": "object",
+          "properties": {
+            "complete": {
+              "const": false
+            },
+            "currentRetryVerified": {
+              "const": false
+            }
+          },
+          "required": [
+            "complete",
+            "currentRetryVerified"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "operation",
+        "rows",
+        "hasMore",
+        "nextAfterScheduleId",
+        "originalRuns",
+        "coverage"
+      ],
+      "additionalProperties": false
     },
     "RoutinesListResponse": {
-      "$ref": "#/$defs/Canonical_ListScheduledTasksOutput_d1de26c2"
+      "type": "object",
+      "properties": {
+        "operation": {
+          "const": "list_scheduled_tasks"
+        },
+        "status": {
+          "const": "listed"
+        },
+        "page": {
+          "$ref": "#/$defs/RoutinesListPage"
+        }
+      },
+      "required": [
+        "operation",
+        "status",
+        "page"
+      ],
+      "additionalProperties": false
+    },
+    "RoutinesConsentObservation": {
+      "type": "object",
+      "properties": {
+        "state": {
+          "enum": [
+            "active",
+            "expired",
+            "revoked",
+            "absent",
+            "unknown"
+          ]
+        },
+        "pinsMatched": {
+          "type": "boolean"
+        },
+        "stale": {
+          "type": "boolean"
+        },
+        "observedAtMs": {
+          "anyOf": [
+            {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "generation": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        },
+        "consentGeneration": {
+          "anyOf": [
+            {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 9007199254740991
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "issuedAtMs": {
+          "anyOf": [
+            {
+              "type": "integer",
+              "minimum": -9007199254740991,
+              "maximum": 9007199254740991
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "expiresAtMs": {
+          "anyOf": [
+            {
+              "type": "integer",
+              "minimum": -9007199254740991,
+              "maximum": 9007199254740991
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "scopeCount": {
+          "anyOf": [
+            {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "cause": {
+          "anyOf": [
+            {
+              "enum": [
+                "revocation",
+                "membership",
+                "client-scope"
+              ]
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "rightsSha256": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "state",
+        "pinsMatched",
+        "stale",
+        "observedAtMs",
+        "generation",
+        "consentGeneration",
+        "issuedAtMs",
+        "expiresAtMs",
+        "scopeCount",
+        "cause",
+        "rightsSha256"
+      ],
+      "additionalProperties": false
+    },
+    "RoutinesRenewalLimits": {
+      "type": "object",
+      "properties": {
+        "maxCostMicrousd": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        },
+        "maxRuntimeSeconds": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        },
+        "retryLimit": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        }
+      },
+      "required": [
+        "maxCostMicrousd",
+        "maxRuntimeSeconds",
+        "retryLimit"
+      ],
+      "additionalProperties": false
+    },
+    "RoutinesConsentReviewRequest": {
+      "type": "object",
+      "properties": {
+        "scheduleId": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$"
+        }
+      },
+      "required": [
+        "scheduleId"
+      ],
+      "additionalProperties": false
+    },
+    "RoutinesConsentReviewResponse": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "const": "review_required"
+        },
+        "scheduleId": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$"
+        },
+        "generation": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        },
+        "intentSha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "projectionSha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "scopesSha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "limits": {
+          "$ref": "#/$defs/RoutinesRenewalLimits"
+        },
+        "intent": {
+          "$ref": "#/$defs/Canonical_Intent_60b6f0ec"
+        },
+        "consent": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/RoutinesConsentObservation"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "reviewSha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        }
+      },
+      "required": [
+        "status",
+        "scheduleId",
+        "generation",
+        "intentSha256",
+        "projectionSha256",
+        "scopesSha256",
+        "limits",
+        "intent",
+        "consent",
+        "reviewSha256"
+      ],
+      "additionalProperties": false
+    },
+    "RoutinesConsentApproveRequest": {
+      "type": "object",
+      "properties": {
+        "scheduleId": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$"
+        },
+        "reviewSha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "requestId": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9._-]{1,128}$"
+        },
+        "decision": {
+          "const": "approved"
+        }
+      },
+      "required": [
+        "scheduleId",
+        "reviewSha256",
+        "requestId",
+        "decision"
+      ],
+      "additionalProperties": false
+    },
+    "RoutinesConsentApproveResponse": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "const": "renewed"
+        },
+        "state": {
+          "enum": [
+            "active",
+            "expired"
+          ]
+        },
+        "generation": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        },
+        "policyRevision": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        },
+        "issuedAtMs": {
+          "type": "integer",
+          "minimum": -9007199254740991,
+          "maximum": 9007199254740991
+        },
+        "expiresAtMs": {
+          "type": "integer",
+          "minimum": -9007199254740991,
+          "maximum": 9007199254740991
+        },
+        "observedAtMs": {
+          "type": "integer",
+          "minimum": -9007199254740991,
+          "maximum": 9007199254740991
+        },
+        "idempotent": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "status",
+        "state",
+        "generation",
+        "policyRevision",
+        "issuedAtMs",
+        "expiresAtMs",
+        "observedAtMs",
+        "idempotent"
+      ],
+      "additionalProperties": false
     },
     "RoutinesErrorResponse": {
       "type": "object",
@@ -4306,7 +4868,7 @@
       ],
       "additionalProperties": false
     },
-    "Canonical_CreateClientInput_c55f4423": {
+    "Canonical_CreateClientInput_79aaeebd": {
       "type": "object",
       "properties": {
         "name": {
@@ -4351,6 +4913,167 @@
         },
         "skipLdaCheck": {
           "type": "boolean"
+        },
+        "provenance": {
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "object",
+              "properties": {
+                "sourceUrl": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 2048
+                },
+                "confidence": {
+                  "enum": [
+                    "high",
+                    "medium",
+                    "low"
+                  ]
+                }
+              },
+              "required": [
+                "sourceUrl",
+                "confidence"
+              ],
+              "additionalProperties": false
+            },
+            "website": {
+              "type": "object",
+              "properties": {
+                "sourceUrl": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 2048
+                },
+                "confidence": {
+                  "enum": [
+                    "high",
+                    "medium",
+                    "low"
+                  ]
+                }
+              },
+              "required": [
+                "sourceUrl",
+                "confidence"
+              ],
+              "additionalProperties": false
+            },
+            "description": {
+              "type": "object",
+              "properties": {
+                "sourceUrl": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 2048
+                },
+                "confidence": {
+                  "enum": [
+                    "high",
+                    "medium",
+                    "low"
+                  ]
+                }
+              },
+              "required": [
+                "sourceUrl",
+                "confidence"
+              ],
+              "additionalProperties": false
+            },
+            "sectorTag": {
+              "type": "object",
+              "properties": {
+                "sourceUrl": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 2048
+                },
+                "confidence": {
+                  "enum": [
+                    "high",
+                    "medium",
+                    "low"
+                  ]
+                }
+              },
+              "required": [
+                "sourceUrl",
+                "confidence"
+              ],
+              "additionalProperties": false
+            },
+            "primaryContactName": {
+              "type": "object",
+              "properties": {
+                "sourceUrl": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 2048
+                },
+                "confidence": {
+                  "enum": [
+                    "high",
+                    "medium",
+                    "low"
+                  ]
+                }
+              },
+              "required": [
+                "sourceUrl",
+                "confidence"
+              ],
+              "additionalProperties": false
+            },
+            "primaryContactEmail": {
+              "type": "object",
+              "properties": {
+                "sourceUrl": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 2048
+                },
+                "confidence": {
+                  "enum": [
+                    "high",
+                    "medium",
+                    "low"
+                  ]
+                }
+              },
+              "required": [
+                "sourceUrl",
+                "confidence"
+              ],
+              "additionalProperties": false
+            },
+            "primaryContactPhone": {
+              "type": "object",
+              "properties": {
+                "sourceUrl": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 2048
+                },
+                "confidence": {
+                  "enum": [
+                    "high",
+                    "medium",
+                    "low"
+                  ]
+                }
+              },
+              "required": [
+                "sourceUrl",
+                "confidence"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [],
+          "additionalProperties": false
         }
       },
       "required": [
@@ -4358,7 +5081,7 @@
       ],
       "additionalProperties": false
     },
-    "Canonical_UpdateClientProfileInput_8caec89e": {
+    "Canonical_UpdateClientProfileInput_aea70647": {
       "type": "object",
       "properties": {
         "name": {
@@ -4881,7 +5604,7 @@
       ],
       "additionalProperties": false
     },
-    "Canonical_ClientRecordRequest_e2a54772": {
+    "Canonical_ClientRecordRequest_878f71b2": {
       "oneOf": [
         {
           "type": "object",
@@ -4890,7 +5613,7 @@
               "const": "create_client"
             },
             "input": {
-              "$ref": "#/$defs/Canonical_CreateClientInput_c55f4423"
+              "$ref": "#/$defs/Canonical_CreateClientInput_79aaeebd"
             }
           },
           "required": [
@@ -4906,7 +5629,7 @@
               "const": "update_client_profile"
             },
             "input": {
-              "$ref": "#/$defs/Canonical_UpdateClientProfileInput_8caec89e"
+              "$ref": "#/$defs/Canonical_UpdateClientProfileInput_aea70647"
             }
           },
           "required": [
@@ -4917,7 +5640,7 @@
         }
       ]
     },
-    "Canonical_ClientRecordContext_6cea2055": {
+    "Canonical_ClientRecordContext_d84246c7": {
       "type": "object",
       "properties": {
         "conversationId": {
@@ -4959,7 +5682,7 @@
       ],
       "additionalProperties": false
     },
-    "Canonical_ClientRecordProposal_b620b25b": {
+    "Canonical_ClientRecordProposal_d98d004e": {
       "type": "object",
       "properties": {
         "kind": {
@@ -4988,10 +5711,10 @@
           "pattern": "^[a-f0-9-]+$"
         },
         "request": {
-          "$ref": "#/$defs/Canonical_ClientRecordRequest_e2a54772"
+          "$ref": "#/$defs/Canonical_ClientRecordRequest_878f71b2"
         },
         "context": {
-          "$ref": "#/$defs/Canonical_ClientRecordContext_6cea2055"
+          "$ref": "#/$defs/Canonical_ClientRecordContext_d84246c7"
         },
         "createdAt": {
           "type": "string",
@@ -7107,80 +7830,6 @@
       ],
       "additionalProperties": false
     },
-    "Canonical_ScheduleProjection_607c4a02": {
-      "type": "object",
-      "properties": {
-        "scheduleId": {
-          "type": "string",
-          "format": "uuid"
-        },
-        "owner": {
-          "$ref": "#/$defs/Canonical_Identity_aba0a4e9"
-        },
-        "temporalScheduleId": {
-          "type": "string",
-          "minLength": 1
-        },
-        "timezone": {
-          "type": "string",
-          "minLength": 1
-        },
-        "scopes": {
-          "type": "array",
-          "items": {
-            "$ref": "#/$defs/Canonical_Scope_f882edb5"
-          },
-          "minItems": 1,
-          "uniqueItems": true
-        },
-        "state": {
-          "type": "string",
-          "enum": [
-            "active",
-            "paused",
-            "cancelled"
-          ]
-        },
-        "maxCostMicrousd": {
-          "type": "integer",
-          "minimum": 1,
-          "maximum": 9007199254740991
-        },
-        "maxRuntimeSeconds": {
-          "type": "integer",
-          "minimum": 1,
-          "maximum": 9007199254740991
-        },
-        "retryLimit": {
-          "type": "integer",
-          "minimum": 0,
-          "maximum": 9007199254740991
-        },
-        "destinationId": {
-          "type": "string",
-          "minLength": 1
-        },
-        "createdAt": {
-          "type": "string",
-          "format": "date-time",
-          "pattern": "Z$"
-        }
-      },
-      "required": [
-        "scheduleId",
-        "owner",
-        "temporalScheduleId",
-        "timezone",
-        "scopes",
-        "state",
-        "maxCostMicrousd",
-        "maxRuntimeSeconds",
-        "retryLimit",
-        "destinationId",
-        "createdAt"
-      ],
-      "additionalProperties": false
-    },
     "Canonical_Calendar_9a4acbe7": {
       "type": "object",
       "properties": {
@@ -7681,6 +8330,119 @@
       ],
       "additionalProperties": false
     },
+    "Canonical_maxCostMicrousd_c937e3cc": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 9007199254740991
+    },
+    "Canonical_maxRuntimeSeconds_bdcb8952": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 9007199254740991
+    },
+    "Canonical_retryLimit_d4c050b5": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 9007199254740991
+    },
+    "Canonical_Limits_b978e650": {
+      "type": "object",
+      "properties": {
+        "maxCostMicrousd": {
+          "$ref": "#/$defs/Canonical_maxCostMicrousd_c937e3cc"
+        },
+        "maxRuntimeSeconds": {
+          "$ref": "#/$defs/Canonical_maxRuntimeSeconds_bdcb8952"
+        },
+        "retryLimit": {
+          "$ref": "#/$defs/Canonical_retryLimit_d4c050b5"
+        }
+      },
+      "required": [
+        "maxCostMicrousd",
+        "maxRuntimeSeconds",
+        "retryLimit"
+      ],
+      "additionalProperties": false
+    },
+    "Canonical_ScheduleTaskRequest_84a62196": {
+      "type": "object",
+      "properties": {
+        "taskInstruction": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 20000
+        },
+        "policy": {
+          "$ref": "#/$defs/Canonical_Policy_be301b7b"
+        },
+        "destinationReference": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        },
+        "requestedLimits": {
+          "$ref": "#/$defs/Canonical_Limits_b978e650"
+        }
+      },
+      "required": [
+        "taskInstruction",
+        "policy",
+        "destinationReference",
+        "requestedLimits"
+      ],
+      "additionalProperties": false
+    },
+    "Canonical_UpdateScheduledTaskRequest_e7c2f9fc": {
+      "type": "object",
+      "properties": {
+        "scheduleId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "taskInstruction": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 20000
+        },
+        "policy": {
+          "$ref": "#/$defs/Canonical_Policy_be301b7b"
+        },
+        "destinationReference": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        },
+        "requestedLimits": {
+          "$ref": "#/$defs/Canonical_Limits_b978e650"
+        }
+      },
+      "required": [
+        "scheduleId",
+        "taskInstruction",
+        "policy",
+        "destinationReference",
+        "requestedLimits"
+      ],
+      "additionalProperties": false
+    },
+    "Canonical_mode_b1919e3a": {
+      "enum": [
+        "pause",
+        "delete"
+      ]
+    },
+    "Canonical_note_ea218e7c": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 512
+    },
+    "Canonical_running_59ac543b": {
+      "enum": [
+        "leave",
+        "request_cancel"
+      ]
+    },
     "Canonical_Run_8d674b59": {
       "type": "object",
       "properties": {
@@ -7697,6 +8459,116 @@
       "required": [
         "workflowId",
         "runId"
+      ],
+      "additionalProperties": false
+    },
+    "Canonical_runs_0ce2594a": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/Canonical_Run_8d674b59"
+      },
+      "maxItems": 10
+    },
+    "Canonical_CancelScheduledTaskRequest_fe53799c": {
+      "type": "object",
+      "properties": {
+        "scheduleId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "mode": {
+          "$ref": "#/$defs/Canonical_mode_b1919e3a"
+        },
+        "note": {
+          "$ref": "#/$defs/Canonical_note_ea218e7c"
+        },
+        "running": {
+          "$ref": "#/$defs/Canonical_running_59ac543b"
+        },
+        "runs": {
+          "$ref": "#/$defs/Canonical_runs_0ce2594a"
+        }
+      },
+      "required": [
+        "scheduleId",
+        "mode",
+        "note",
+        "running",
+        "runs"
+      ],
+      "additionalProperties": false
+    },
+    "Canonical_ScheduleProjection_607c4a02": {
+      "type": "object",
+      "properties": {
+        "scheduleId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "owner": {
+          "$ref": "#/$defs/Canonical_Identity_aba0a4e9"
+        },
+        "temporalScheduleId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "timezone": {
+          "type": "string",
+          "minLength": 1
+        },
+        "scopes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Canonical_Scope_f882edb5"
+          },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "state": {
+          "type": "string",
+          "enum": [
+            "active",
+            "paused",
+            "cancelled"
+          ]
+        },
+        "maxCostMicrousd": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        },
+        "maxRuntimeSeconds": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        },
+        "retryLimit": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "destinationId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "pattern": "Z$"
+        }
+      },
+      "required": [
+        "scheduleId",
+        "owner",
+        "temporalScheduleId",
+        "timezone",
+        "scopes",
+        "state",
+        "maxCostMicrousd",
+        "maxRuntimeSeconds",
+        "retryLimit",
+        "destinationId",
+        "createdAt"
       ],
       "additionalProperties": false
     },
@@ -8169,7 +9041,7 @@
       ],
       "additionalProperties": false
     },
-    "Canonical_ClientRecordStatus_58565696": {
+    "Canonical_ClientRecordStatus_3705aed4": {
       "enum": [
         "proposed",
         "approved",
@@ -8183,13 +9055,13 @@
         "expired"
       ]
     },
-    "Canonical_ClientRecordReceipt_8a925d68": {
+    "Canonical_ClientRecordReceipt_396c0292": {
       "oneOf": [
         {
           "type": "object",
           "properties": {
             "request": {
-              "$ref": "#/$defs/Canonical_ClientRecordRequest_e2a54772"
+              "$ref": "#/$defs/Canonical_ClientRecordRequest_878f71b2"
             },
             "outcome": {
               "const": "created"
@@ -8288,7 +9160,7 @@
           "type": "object",
           "properties": {
             "request": {
-              "$ref": "#/$defs/Canonical_ClientRecordRequest_e2a54772"
+              "$ref": "#/$defs/Canonical_ClientRecordRequest_878f71b2"
             },
             "outcome": {
               "enum": [
@@ -8409,7 +9281,31 @@
         }
       ]
     },
-    "Canonical_ClientRecordCoreResult_cb1df09e": {
+    "Canonical_ClientRecordPreflight_35855536": {
+      "type": "object",
+      "properties": {
+        "duplicate": {
+          "enum": [
+            "clear",
+            "possible",
+            "unknown"
+          ]
+        },
+        "capacity": {
+          "enum": [
+            "allowed",
+            "denied",
+            "unknown"
+          ]
+        }
+      },
+      "required": [
+        "duplicate",
+        "capacity"
+      ],
+      "additionalProperties": false
+    },
+    "Canonical_ClientRecordCoreResult_be5c35e8": {
       "type": "object",
       "properties": {
         "version": {
@@ -8421,10 +9317,10 @@
           "pattern": "^[a-f0-9-]+$"
         },
         "request": {
-          "$ref": "#/$defs/Canonical_ClientRecordRequest_e2a54772"
+          "$ref": "#/$defs/Canonical_ClientRecordRequest_878f71b2"
         },
         "context": {
-          "$ref": "#/$defs/Canonical_ClientRecordContext_6cea2055"
+          "$ref": "#/$defs/Canonical_ClientRecordContext_d84246c7"
         },
         "createdAt": {
           "type": "string",
@@ -8435,12 +9331,22 @@
           "format": "date-time"
         },
         "status": {
-          "$ref": "#/$defs/Canonical_ClientRecordStatus_58565696"
+          "$ref": "#/$defs/Canonical_ClientRecordStatus_3705aed4"
         },
         "receipt": {
           "anyOf": [
             {
-              "$ref": "#/$defs/Canonical_ClientRecordReceipt_8a925d68"
+              "$ref": "#/$defs/Canonical_ClientRecordReceipt_396c0292"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "preflight": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Canonical_ClientRecordPreflight_35855536"
             },
             {
               "type": "null"
@@ -8456,7 +9362,8 @@
         "createdAt",
         "expiresAt",
         "status",
-        "receipt"
+        "receipt",
+        "preflight"
       ],
       "additionalProperties": false
     },
@@ -9108,22 +10015,597 @@
       ],
       "additionalProperties": false
     },
-    "Canonical_maxCostMicrousd_c937e3cc": {
+    "Canonical_selection_41291dd7": {
+      "type": "object",
+      "properties": {
+        "entry": {
+          "enum": [
+            "start-work",
+            "delegate"
+          ]
+        },
+        "jobKind": {
+          "enum": [
+            "research",
+            "deliverable",
+            "audit",
+            "scheduled"
+          ]
+        },
+        "deliverables": {
+          "type": "array",
+          "maxItems": 20,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200,
+            "pattern": "\\S"
+          }
+        },
+        "dependencies": {
+          "type": "array",
+          "maxItems": 20,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200,
+            "pattern": "\\S"
+          }
+        }
+      },
+      "required": [
+        "entry",
+        "jobKind",
+        "deliverables",
+        "dependencies"
+      ],
+      "additionalProperties": false,
+      "$id": "urn:meri:work:selection:0.1.0"
+    },
+    "Canonical_Work_df539be9": {
+      "$ref": "#/$defs/Canonical_selection_41291dd7"
+    },
+    "Canonical_Calendar_2c161c76": {
+      "type": "object",
+      "properties": {
+        "second": {
+          "anyOf": [
+            {
+              "const": "*"
+            },
+            {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "start": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 59
+                  },
+                  "end": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 59
+                  },
+                  "step": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 9999
+                  }
+                },
+                "required": [
+                  "start",
+                  "end",
+                  "step"
+                ],
+                "additionalProperties": false
+              },
+              "maxItems": 100
+            }
+          ]
+        },
+        "minute": {
+          "anyOf": [
+            {
+              "const": "*"
+            },
+            {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "start": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 59
+                  },
+                  "end": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 59
+                  },
+                  "step": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 9999
+                  }
+                },
+                "required": [
+                  "start",
+                  "end",
+                  "step"
+                ],
+                "additionalProperties": false
+              },
+              "maxItems": 100
+            }
+          ]
+        },
+        "hour": {
+          "anyOf": [
+            {
+              "const": "*"
+            },
+            {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "start": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 23
+                  },
+                  "end": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 23
+                  },
+                  "step": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 9999
+                  }
+                },
+                "required": [
+                  "start",
+                  "end",
+                  "step"
+                ],
+                "additionalProperties": false
+              },
+              "maxItems": 100
+            }
+          ]
+        },
+        "dayOfMonth": {
+          "anyOf": [
+            {
+              "const": "*"
+            },
+            {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "start": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 31
+                  },
+                  "end": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 31
+                  },
+                  "step": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 9999
+                  }
+                },
+                "required": [
+                  "start",
+                  "end",
+                  "step"
+                ],
+                "additionalProperties": false
+              },
+              "maxItems": 100
+            }
+          ]
+        },
+        "month": {
+          "anyOf": [
+            {
+              "const": "*"
+            },
+            {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "start": {
+                    "enum": [
+                      "JANUARY",
+                      "FEBRUARY",
+                      "MARCH",
+                      "APRIL",
+                      "MAY",
+                      "JUNE",
+                      "JULY",
+                      "AUGUST",
+                      "SEPTEMBER",
+                      "OCTOBER",
+                      "NOVEMBER",
+                      "DECEMBER"
+                    ]
+                  },
+                  "end": {
+                    "enum": [
+                      "JANUARY",
+                      "FEBRUARY",
+                      "MARCH",
+                      "APRIL",
+                      "MAY",
+                      "JUNE",
+                      "JULY",
+                      "AUGUST",
+                      "SEPTEMBER",
+                      "OCTOBER",
+                      "NOVEMBER",
+                      "DECEMBER"
+                    ]
+                  },
+                  "step": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 9999
+                  }
+                },
+                "required": [
+                  "start",
+                  "end",
+                  "step"
+                ],
+                "additionalProperties": false
+              },
+              "maxItems": 100
+            }
+          ]
+        },
+        "year": {
+          "anyOf": [
+            {
+              "const": "*"
+            },
+            {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "start": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 9999
+                  },
+                  "end": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 9999
+                  },
+                  "step": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 9999
+                  }
+                },
+                "required": [
+                  "start",
+                  "end",
+                  "step"
+                ],
+                "additionalProperties": false
+              },
+              "maxItems": 100
+            }
+          ]
+        },
+        "dayOfWeek": {
+          "anyOf": [
+            {
+              "const": "*"
+            },
+            {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "start": {
+                    "enum": [
+                      "SUNDAY",
+                      "MONDAY",
+                      "TUESDAY",
+                      "WEDNESDAY",
+                      "THURSDAY",
+                      "FRIDAY",
+                      "SATURDAY"
+                    ]
+                  },
+                  "end": {
+                    "enum": [
+                      "SUNDAY",
+                      "MONDAY",
+                      "TUESDAY",
+                      "WEDNESDAY",
+                      "THURSDAY",
+                      "FRIDAY",
+                      "SATURDAY"
+                    ]
+                  },
+                  "step": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 9999
+                  }
+                },
+                "required": [
+                  "start",
+                  "end",
+                  "step"
+                ],
+                "additionalProperties": false
+              },
+              "maxItems": 100
+            }
+          ]
+        },
+        "comment": {
+          "type": "string",
+          "maxLength": 512
+        }
+      },
+      "required": [
+        "second",
+        "minute",
+        "hour",
+        "dayOfMonth",
+        "month",
+        "year",
+        "dayOfWeek",
+        "comment"
+      ],
+      "additionalProperties": false
+    },
+    "Canonical_Spec_78b3ec52": {
+      "type": "object",
+      "properties": {
+        "calendars": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Canonical_Calendar_2c161c76"
+          },
+          "maxItems": 100
+        },
+        "intervals": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "every": {
+                "type": "integer",
+                "minimum": 1000,
+                "maximum": 9007199254740991
+              },
+              "offset": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 9007199254740991
+              }
+            },
+            "required": [
+              "every",
+              "offset"
+            ],
+            "additionalProperties": false
+          },
+          "maxItems": 100
+        },
+        "cronExpressions": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 512
+          },
+          "maxItems": 100
+        },
+        "skip": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Canonical_Calendar_2c161c76"
+          },
+          "maxItems": 100
+        },
+        "startAt": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "date-time",
+              "pattern": "Z$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "endAt": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "date-time",
+              "pattern": "Z$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "jitterMs": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "timezone": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        }
+      },
+      "required": [
+        "calendars",
+        "intervals",
+        "cronExpressions",
+        "skip",
+        "startAt",
+        "endAt",
+        "jitterMs",
+        "timezone"
+      ],
+      "additionalProperties": false
+    },
+    "Canonical_spec_061d770e": {
+      "$ref": "#/$defs/Canonical_Spec_78b3ec52"
+    },
+    "Canonical_overlap_de9b7a1c": {
+      "enum": [
+        "SKIP",
+        "BUFFER_ONE",
+        "BUFFER_ALL",
+        "CANCEL_OTHER",
+        "TERMINATE_OTHER",
+        "ALLOW_ALL"
+      ]
+    },
+    "Canonical_catchupWindowMs_67f5ffbf": {
       "type": "integer",
-      "minimum": 1,
+      "minimum": 1000,
       "maximum": 9007199254740991
     },
-    "Canonical_maxRuntimeSeconds_bdcb8952": {
-      "type": "integer",
-      "minimum": 1,
-      "maximum": 9007199254740991
+    "Canonical_pauseOnFailure_319e36bf": {
+      "type": "boolean"
     },
-    "Canonical_retryLimit_d4c050b5": {
-      "type": "integer",
-      "minimum": 0,
-      "maximum": 9007199254740991
+    "Canonical_remainingActions_f333bcc2": {
+      "anyOf": [
+        {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        {
+          "type": "null"
+        }
+      ]
     },
-    "Canonical_Limits_b978e650": {
+    "Canonical_paused_151ea49e": {
+      "type": "boolean"
+    },
+    "Canonical_note_299b10ff": {
+      "type": "string",
+      "maxLength": 512
+    },
+    "Canonical_runNow_53bfd55d": {
+      "type": "boolean"
+    },
+    "Canonical_runNowOverlap_40c0e869": {
+      "const": "ALLOW_ALL"
+    },
+    "Canonical_SourceTrigger_bca20fe1": {
+      "type": "object",
+      "properties": {
+        "producer": {
+          "const": "bizdev.watch.alert.v1"
+        },
+        "sourceFamily": {
+          "enum": [
+            "federal_award",
+            "federal_assistance_award",
+            "sam_opportunity",
+            "tango_resource",
+            "lda_filing",
+            "acquisition_revision"
+          ]
+        },
+        "resourceKey": {
+          "type": "string",
+          "format": "uuid"
+        }
+      },
+      "required": [
+        "producer",
+        "sourceFamily",
+        "resourceKey"
+      ],
+      "additionalProperties": false
+    },
+    "Canonical_Policy_4b15c698": {
+      "type": "object",
+      "properties": {
+        "spec": {
+          "$ref": "#/$defs/Canonical_spec_061d770e"
+        },
+        "overlap": {
+          "$ref": "#/$defs/Canonical_overlap_de9b7a1c"
+        },
+        "catchupWindowMs": {
+          "$ref": "#/$defs/Canonical_catchupWindowMs_67f5ffbf"
+        },
+        "pauseOnFailure": {
+          "$ref": "#/$defs/Canonical_pauseOnFailure_319e36bf"
+        },
+        "remainingActions": {
+          "$ref": "#/$defs/Canonical_remainingActions_f333bcc2"
+        },
+        "paused": {
+          "$ref": "#/$defs/Canonical_paused_151ea49e"
+        },
+        "note": {
+          "$ref": "#/$defs/Canonical_note_299b10ff"
+        },
+        "runNow": {
+          "$ref": "#/$defs/Canonical_runNow_53bfd55d"
+        },
+        "runNowOverlap": {
+          "$ref": "#/$defs/Canonical_runNowOverlap_40c0e869"
+        },
+        "sourceTrigger": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Canonical_SourceTrigger_bca20fe1"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "spec",
+        "overlap",
+        "catchupWindowMs",
+        "pauseOnFailure",
+        "remainingActions",
+        "paused",
+        "note",
+        "runNow",
+        "runNowOverlap"
+      ],
+      "additionalProperties": false
+    },
+    "Canonical_Limits_1325d13e": {
       "type": "object",
       "properties": {
         "maxCostMicrousd": {
@@ -9143,16 +10625,26 @@
       ],
       "additionalProperties": false
     },
-    "Canonical_ScheduleTaskRequest_84a62196": {
+    "Canonical_ScheduleTaskRequest_df098195": {
       "type": "object",
       "properties": {
+        "work": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Canonical_Work_df539be9"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
         "taskInstruction": {
           "type": "string",
           "minLength": 1,
           "maxLength": 20000
         },
         "policy": {
-          "$ref": "#/$defs/Canonical_Policy_be301b7b"
+          "$ref": "#/$defs/Canonical_Policy_4b15c698"
         },
         "destinationReference": {
           "type": "string",
@@ -9160,7 +10652,7 @@
           "maxLength": 256
         },
         "requestedLimits": {
-          "$ref": "#/$defs/Canonical_Limits_b978e650"
+          "$ref": "#/$defs/Canonical_Limits_1325d13e"
         }
       },
       "required": [
@@ -9171,9 +10663,19 @@
       ],
       "additionalProperties": false
     },
-    "Canonical_UpdateScheduledTaskRequest_e7c2f9fc": {
+    "Canonical_UpdateScheduledTaskRequest_2bcea062": {
       "type": "object",
       "properties": {
+        "work": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Canonical_Work_df539be9"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
         "scheduleId": {
           "type": "string",
           "format": "uuid"
@@ -9184,7 +10686,7 @@
           "maxLength": 20000
         },
         "policy": {
-          "$ref": "#/$defs/Canonical_Policy_be301b7b"
+          "$ref": "#/$defs/Canonical_Policy_4b15c698"
         },
         "destinationReference": {
           "type": "string",
@@ -9192,7 +10694,7 @@
           "maxLength": 256
         },
         "requestedLimits": {
-          "$ref": "#/$defs/Canonical_Limits_b978e650"
+          "$ref": "#/$defs/Canonical_Limits_1325d13e"
         }
       },
       "required": [
@@ -9204,31 +10706,50 @@
       ],
       "additionalProperties": false
     },
-    "Canonical_mode_b1919e3a": {
+    "Canonical_mode_3f0790a9": {
       "enum": [
         "pause",
         "delete"
       ]
     },
-    "Canonical_note_ea218e7c": {
+    "Canonical_note_73bc87f3": {
       "type": "string",
       "minLength": 1,
       "maxLength": 512
     },
-    "Canonical_running_59ac543b": {
+    "Canonical_running_42c15d3c": {
       "enum": [
         "leave",
         "request_cancel"
       ]
     },
-    "Canonical_runs_0ce2594a": {
+    "Canonical_Run_9e00c9f4": {
+      "type": "object",
+      "properties": {
+        "workflowId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        },
+        "runId": {
+          "type": "string",
+          "format": "uuid"
+        }
+      },
+      "required": [
+        "workflowId",
+        "runId"
+      ],
+      "additionalProperties": false
+    },
+    "Canonical_runs_f594ad9a": {
       "type": "array",
       "items": {
-        "$ref": "#/$defs/Canonical_Run_8d674b59"
+        "$ref": "#/$defs/Canonical_Run_9e00c9f4"
       },
       "maxItems": 10
     },
-    "Canonical_CancelScheduledTaskRequest_fe53799c": {
+    "Canonical_CancelScheduledTaskRequest_fdcd923c": {
       "type": "object",
       "properties": {
         "scheduleId": {
@@ -9236,16 +10757,16 @@
           "format": "uuid"
         },
         "mode": {
-          "$ref": "#/$defs/Canonical_mode_b1919e3a"
+          "$ref": "#/$defs/Canonical_mode_3f0790a9"
         },
         "note": {
-          "$ref": "#/$defs/Canonical_note_ea218e7c"
+          "$ref": "#/$defs/Canonical_note_73bc87f3"
         },
         "running": {
-          "$ref": "#/$defs/Canonical_running_59ac543b"
+          "$ref": "#/$defs/Canonical_running_42c15d3c"
         },
         "runs": {
-          "$ref": "#/$defs/Canonical_runs_0ce2594a"
+          "$ref": "#/$defs/Canonical_runs_f594ad9a"
         }
       },
       "required": [
@@ -9257,7 +10778,122 @@
       ],
       "additionalProperties": false
     },
-    "Canonical_Acknowledged_1fa14cd2": {
+    "Canonical_Cancel_6a8a7ae6": {
+      "type": "object",
+      "properties": {
+        "mode": {
+          "enum": [
+            "pause",
+            "delete"
+          ]
+        },
+        "note": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 512
+        },
+        "running": {
+          "enum": [
+            "leave",
+            "request_cancel"
+          ]
+        },
+        "runs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Canonical_Run_9e00c9f4"
+          },
+          "maxItems": 10
+        }
+      },
+      "required": [
+        "mode",
+        "note",
+        "running",
+        "runs"
+      ],
+      "additionalProperties": false
+    },
+    "Canonical_PendingProposal_667d1207": {
+      "type": "object",
+      "properties": {
+        "operation": {
+          "enum": [
+            "schedule_task",
+            "update_scheduled_task",
+            "cancel_scheduled_task"
+          ]
+        },
+        "status": {
+          "const": "approval_required"
+        },
+        "proposalId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "intentSha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "taskInstruction": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 20000
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "projection": {
+          "$ref": "#/$defs/Canonical_ScheduleProjection_607c4a02"
+        },
+        "policy": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Canonical_Policy_4b15c698"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "cancel": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Canonical_Cancel_6a8a7ae6"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "work": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Canonical_Work_df539be9"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "operation",
+        "status",
+        "proposalId",
+        "intentSha256",
+        "taskInstruction",
+        "projection",
+        "policy",
+        "cancel"
+      ],
+      "additionalProperties": false
+    },
+    "Canonical_Acknowledged_14a93840": {
       "type": "object",
       "properties": {
         "operation": {
@@ -9317,35 +10953,7 @@
       ],
       "additionalProperties": false
     },
-    "Canonical_ListScheduledTasksRequest_294adc6c": {
-      "type": "object",
-      "properties": {
-        "afterScheduleId": {
-          "anyOf": [
-            {
-              "type": "string",
-              "format": "uuid"
-            },
-            {
-              "type": "null"
-            }
-          ]
-        },
-        "limit": {
-          "type": "integer",
-          "minimum": 1,
-          "maximum": 20
-        },
-        "historyLimit": {
-          "type": "integer",
-          "minimum": 0,
-          "maximum": 10
-        }
-      },
-      "required": [],
-      "additionalProperties": false
-    },
-    "Canonical_ScheduleOriginalRun_83689f88": {
+    "Canonical_ScheduleOriginalRun_3864e77f": {
       "type": "object",
       "properties": {
         "workflowId": {
@@ -9363,7 +10971,7 @@
       ],
       "additionalProperties": false
     },
-    "Canonical_ScheduleRecentAction_e3bcac7f": {
+    "Canonical_ScheduleRecentAction_c6c8c32b": {
       "type": "object",
       "properties": {
         "scheduledAt": {
@@ -9375,7 +10983,7 @@
           "format": "date-time"
         },
         "workflow": {
-          "$ref": "#/$defs/Canonical_ScheduleOriginalRun_83689f88"
+          "$ref": "#/$defs/Canonical_ScheduleOriginalRun_3864e77f"
         }
       },
       "required": [
@@ -9385,7 +10993,7 @@
       ],
       "additionalProperties": false
     },
-    "Canonical_ScheduleInspectionWindow_d6c325bc": {
+    "Canonical_ScheduleInspectionWindow_e5981dc9": {
       "type": "object",
       "properties": {
         "observed": {
@@ -9411,7 +11019,7 @@
       ],
       "additionalProperties": false
     },
-    "Canonical_ScheduleInspectionOutput_10f44301": {
+    "Canonical_ScheduleInspectionOutput_7edf0fd5": {
       "type": "object",
       "properties": {
         "projection": {
@@ -9488,14 +11096,14 @@
             "recentActions": {
               "type": "array",
               "items": {
-                "$ref": "#/$defs/Canonical_ScheduleRecentAction_e3bcac7f"
+                "$ref": "#/$defs/Canonical_ScheduleRecentAction_c6c8c32b"
               },
               "maxItems": 100
             },
             "runningActions": {
               "type": "array",
               "items": {
-                "$ref": "#/$defs/Canonical_ScheduleOriginalRun_83689f88"
+                "$ref": "#/$defs/Canonical_ScheduleOriginalRun_3864e77f"
               },
               "maxItems": 100
             }
@@ -9525,13 +11133,13 @@
               "const": false
             },
             "nextActions": {
-              "$ref": "#/$defs/Canonical_ScheduleInspectionWindow_d6c325bc"
+              "$ref": "#/$defs/Canonical_ScheduleInspectionWindow_e5981dc9"
             },
             "recentActions": {
-              "$ref": "#/$defs/Canonical_ScheduleInspectionWindow_d6c325bc"
+              "$ref": "#/$defs/Canonical_ScheduleInspectionWindow_e5981dc9"
             },
             "runningActions": {
-              "$ref": "#/$defs/Canonical_ScheduleInspectionWindow_d6c325bc"
+              "$ref": "#/$defs/Canonical_ScheduleInspectionWindow_e5981dc9"
             }
           },
           "required": [
@@ -9553,47 +11161,51 @@
       ],
       "additionalProperties": false
     },
-    "Canonical_ListRow_3d1b7bed": {
-      "type": "object",
-      "properties": {
-        "projection": {
-          "$ref": "#/$defs/Canonical_ScheduleProjection_607c4a02"
-        },
-        "generation": {
-          "type": "integer",
-          "minimum": 0,
-          "maximum": 9007199254740991
-        },
-        "unresolved": {
-          "type": "boolean"
-        },
-        "inspection": {
-          "anyOf": [
-            {
-              "$ref": "#/$defs/Canonical_ScheduleInspectionOutput_10f44301"
-            },
-            {
-              "type": "null"
+    "Canonical_TriggerObservation_3d888ab2": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "timed"
             }
-          ]
+          },
+          "required": [
+            "kind"
+          ],
+          "additionalProperties": false
         },
-        "inspectionState": {
-          "enum": [
-            "unavailable",
-            "observed"
-          ]
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "source-event"
+            },
+            "sourceTrigger": {
+              "$ref": "#/$defs/Canonical_SourceTrigger_bca20fe1"
+            }
+          },
+          "required": [
+            "kind",
+            "sourceTrigger"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "unavailable"
+            }
+          },
+          "required": [
+            "kind"
+          ],
+          "additionalProperties": false
         }
-      },
-      "required": [
-        "projection",
-        "generation",
-        "unresolved",
-        "inspection",
-        "inspectionState"
-      ],
-      "additionalProperties": false
+      ]
     },
-    "Canonical_Execution_2b847724": {
+    "Canonical_Execution_72180299": {
       "type": "object",
       "properties": {
         "workflowId": {
@@ -9859,13 +11471,13 @@
       ],
       "additionalProperties": false
     },
-    "Canonical_OriginalRuns_073c32e6": {
+    "Canonical_OriginalRuns_9e3cc8aa": {
       "type": "object",
       "properties": {
         "executions": {
           "type": "array",
           "items": {
-            "$ref": "#/$defs/Canonical_Execution_2b847724"
+            "$ref": "#/$defs/Canonical_Execution_72180299"
           },
           "maxItems": 10
         },
@@ -9910,80 +11522,213 @@
       ],
       "additionalProperties": false
     },
-    "Canonical_ListPage_bb45ad34": {
+    "Canonical_Configuration_a5ae0b83": {
       "type": "object",
       "properties": {
-        "operation": {
-          "const": "list_scheduled_tasks"
+        "spec": {
+          "$ref": "#/$defs/Canonical_Spec_78b3ec52"
         },
-        "rows": {
-          "type": "array",
-          "items": {
-            "$ref": "#/$defs/Canonical_ListRow_3d1b7bed"
-          },
-          "maxItems": 20
+        "overlap": {
+          "enum": [
+            "SKIP",
+            "BUFFER_ONE",
+            "BUFFER_ALL",
+            "CANCEL_OTHER",
+            "TERMINATE_OTHER",
+            "ALLOW_ALL"
+          ]
         },
-        "hasMore": {
+        "catchupWindowMs": {
+          "type": "integer",
+          "minimum": 1000,
+          "maximum": 9007199254740991
+        },
+        "pauseOnFailure": {
           "type": "boolean"
         },
-        "nextAfterScheduleId": {
+        "remainingActions": {
           "anyOf": [
             {
-              "type": "string",
-              "format": "uuid"
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
             },
             {
               "type": "null"
             }
           ]
         },
-        "originalRuns": {
-          "$ref": "#/$defs/Canonical_OriginalRuns_073c32e6"
+        "paused": {
+          "type": "boolean"
         },
-        "coverage": {
+        "note": {
+          "type": "string",
+          "maxLength": 512
+        },
+        "runNow": {
+          "type": "boolean"
+        },
+        "runNowOverlap": {
+          "const": "ALLOW_ALL"
+        },
+        "task": {
           "type": "object",
           "properties": {
-            "complete": {
-              "const": false
+            "taskId": {
+              "type": "string",
+              "format": "uuid"
             },
-            "currentRetryVerified": {
-              "const": false
+            "manifestSha256": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            "version": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 9007199254740991
+            },
+            "work": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/Canonical_Work_df539be9"
+                },
+                {
+                  "type": "null"
+                }
+              ]
             }
           },
           "required": [
-            "complete",
-            "currentRetryVerified"
+            "taskId",
+            "manifestSha256",
+            "version"
           ],
           "additionalProperties": false
+        },
+        "workflow": {
+          "type": "object",
+          "properties": {
+            "workflowType": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 256
+            },
+            "workflowId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 256
+            },
+            "taskQueue": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 256
+            }
+          },
+          "required": [
+            "workflowType",
+            "workflowId",
+            "taskQueue"
+          ],
+          "additionalProperties": false
+        },
+        "sourceTrigger": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Canonical_SourceTrigger_bca20fe1"
+            },
+            {
+              "type": "null"
+            }
+          ]
         }
       },
       "required": [
-        "operation",
-        "rows",
-        "hasMore",
-        "nextAfterScheduleId",
-        "originalRuns",
-        "coverage"
+        "spec",
+        "overlap",
+        "catchupWindowMs",
+        "pauseOnFailure",
+        "remainingActions",
+        "paused",
+        "note",
+        "runNow",
+        "runNowOverlap",
+        "task",
+        "workflow"
       ],
       "additionalProperties": false
     },
-    "Canonical_ListScheduledTasksOutput_d1de26c2": {
+    "Canonical_Intent_60b6f0ec": {
       "type": "object",
       "properties": {
+        "intentId": {
+          "type": "string",
+          "format": "uuid"
+        },
         "operation": {
-          "const": "list_scheduled_tasks"
+          "enum": [
+            "schedule_task",
+            "update_scheduled_task",
+            "cancel_scheduled_task"
+          ]
         },
-        "status": {
-          "const": "listed"
+        "expectedGeneration": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
         },
-        "page": {
-          "$ref": "#/$defs/Canonical_ListPage_bb45ad34"
+        "generation": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        },
+        "previousProjectionSha256": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "projection": {
+          "$ref": "#/$defs/Canonical_ScheduleProjection_607c4a02"
+        },
+        "configuration": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Canonical_Configuration_a5ae0b83"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "cancel": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Canonical_Cancel_6a8a7ae6"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "taskInstructionSha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
         }
       },
       "required": [
+        "intentId",
         "operation",
-        "status",
-        "page"
+        "expectedGeneration",
+        "generation",
+        "previousProjectionSha256",
+        "projection",
+        "configuration",
+        "cancel"
       ],
       "additionalProperties": false
     }

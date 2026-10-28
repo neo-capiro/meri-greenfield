@@ -98,7 +98,7 @@ function harness(options = {}) {
   for (const [method, state] of [['claim', 'CLAIMED'], ['markDispatching', 'DISPATCHING'], ['commitKnown', 'ACKNOWLEDGED'], ['markUnknown', 'UNKNOWN']]) {
     scheduleOwner[method] = (binding, check) => invoke(method, b => { check?.(); return ownerReceipt(b, state); }, binding, check);
   }
-  scheduleOwner.list = (selection, check) => invoke('ownerList', () => { check?.(); return { rows: [{ projection: projection(), generation: 1, unresolved: false }], hasMore: false }; }, selection, check);
+  scheduleOwner.list = (selection, check) => invoke('ownerList', () => { check?.(); return { rows: [{ projection: projection(), generation: 1, unresolved: false,trigger:{kind:'timed'} }], hasMore: false }; }, selection, check);
   const authorize = (value) => invoke('authorize', v => ({ authorized: true, bindingSha256: v.binding.bindingSha256, callerIdentity: v.binding.callerIdentity, expiresAtMs: clock() + 35000 }), value);
   const service = createScheduleLifecycle({ scheduleClient, workflowClient, scheduleOwner, authorize, clock });
   return { service, calls, scheduleClient, workflowClient, scheduleOwner, connection, clock,
@@ -237,7 +237,7 @@ test('independent lifecycle: native UUID page order accepts equivalent mixed-cas
   const left = projection(), right = projection();
   left.scheduleId = 'aaaaaaaa-1111-4111-8111-111111111111';
   right.scheduleId = 'BBBBBBBB-1111-4111-8111-111111111111';
-  const h = harness({ ownerList: () => ({ rows: [left, right].map(p => ({ projection: p, generation: 1, unresolved: false })), hasMore: false }) });
+  const h = harness({ ownerList: () => ({ rows: [left, right].map(p => ({ projection: p, generation: 1, unresolved: false,trigger:{kind:'timed'} })), hasMore: false }) });
   const out = await h.list({ historyLimit: 0 }); assert.equal(out.rows.length, 2);
   assert.deepEqual(out.rows.map(v => v.projection.scheduleId), [left.scheduleId, right.scheduleId]);
 });
@@ -270,7 +270,7 @@ test('independent lifecycle: released authority after committed mutation cannot 
 
 test('independent lifecycle: deleted or missing Temporal schedule remains an explicitly unavailable authorized row', async () => {
   const p = projection(); p.state = 'cancelled';
-  const h = harness({ ownerList: () => ({ rows: [{ projection: p, generation: 2, unresolved: false }], hasMore: false }),
+  const h = harness({ ownerList: () => ({ rows: [{ projection: p, generation: 2, unresolved: false,trigger:{kind:'timed'} }], hasMore: false }),
     describe() { throw Error('schedule does not exist'); } });
   const out = await h.list(); assert.equal(out.rows.length, 1);
   assert.equal(out.rows[0].projection.state, 'cancelled'); assert.equal(out.rows[0].inspection, null);

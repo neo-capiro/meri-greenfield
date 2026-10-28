@@ -41,7 +41,9 @@ test('all139 originals and67 prior descriptors/callbacks survive exactly four ne
  for(const id of ['create_task','save_memory','get_pe_buyer_workspace'])if(verticalOperationIds.includes(id))assert.doesNotThrow(()=>resolve(id));else assert.throws(()=>resolve(id));
 });
 test('all84 exact schema byte pins preserve pending closed handlers',()=>{
- for(const b of bindings){const d=resolve(b.id).descriptor,raw=readFileSync(new URL(schemaRelativePath(b.group),import.meta.url)),s=JSON.parse(raw);
+ // Each binding resolves at its own registered version, so a retained row and a registered successor each
+ // pin their own bytes rather than one id-only lookup shadowing the other.
+ for(const b of bindings){const d=resolveOperationContract({id:b.id,version:b.version}).descriptor,raw=readFileSync(new URL(schemaRelativePath(b.group),import.meta.url)),s=JSON.parse(raw);
   for(const [name,def]of[['inputSchema',b.input],['outputSchema',b.output]])assert.deepEqual(d[name],{id:`${s.$id}#/$defs/${def}`,sha256:createHash('sha256').update(raw).digest('hex')});
   assert.equal(d.handler,null);assert.equal(d.availability,'unimplemented');assert.equal(d.qualification,'pending');assert.equal(d.retry.maxRetries,0);
  }

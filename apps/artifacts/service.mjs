@@ -1,12 +1,22 @@
 import {createHash} from 'node:crypto';
 import {createOperationLifetime} from '../../packages/runtime/operation-lifetime.mjs';
 import {recoverArtifact} from './recovery.mjs';
+import {readArtifactLibrary} from './library.mjs';
+import {readPagedArtifactHistory} from './history-page.mjs';
+// The canonical immutable-spec asset identification the intent layer already owns, so a retained
+// revision and this write identify exactly the same references instead of two walks that can drift.
+import {referencedAssetIds} from '../control/intents/document-revision.mjs';
 import {ARTIFACT_MIME_TYPES as mime,artifactFilename as filenameFor} from '../../packages/contracts/artifacts-0.2/artifact-formats.mjs';
 const sha=bytes=>createHash('sha256').update(bytes).digest('hex');
 const fail=code=>{throw Object.assign(new Error(code),{code});};
 const closed=(value,keys)=>{if(!value||Array.isArray(value)||Object.keys(value).sort().join()!==keys.sort().join())fail('ARTIFACT_PORT_SHAPE');};
-export function createArtifactService({validators:v,authorize,versions,objects,executor,now,ids,retention,admitRetainedEvidence}){
+export function createArtifactService({validators:v,authorize,versions,objects,executor,now,ids,retention,admitRetainedEvidence,authorizeOrigin,retainedAssetMapWrites}){
+  if(authorizeOrigin!==undefined&&typeof authorizeOrigin!=='function')fail('ARTIFACT_CONFIGURATION');
   if(admitRetainedEvidence!==undefined&&typeof admitRetainedEvidence!=='function')fail('ARTIFACT_CONFIGURATION');
+  // The private producer activation for the retained asset map. Absent or false (the default) this service
+  // emits no map-bearing record at all, preserving the exact pre-activation record bytes and keeping an
+  // older binary able to read every record this one writes; the readers below accept both formats either way.
+  if(retainedAssetMapWrites!==undefined&&typeof retainedAssetMapWrites!=='boolean')fail('ARTIFACT_CONFIGURATION');
   if(![authorize,now,ids,versions?.read,versions?.commit,objects?.put,objects?.get,executor?.execute].every(x=>typeof x==='function')||retention!==undefined&&typeof retention?.assertServable!=='function'||versions?.recoverTenant!==undefined&&typeof versions.recoverTenant!=='function')fail('ARTIFACT_CONFIGURATION');
   const same=(a,b)=>v.hash(a)===v.hash(b);
   // The canonical retention read gate: the conversation the caller is bound to, and, once a trusted scoped record resolved the version,
@@ -16,9 +26,9 @@ export function createArtifactService({validators:v,authorize,versions,objects,e
     const subjects=[{tenantId:context.binding.tenantId,kind:'conversation',subjectId:context.binding.conversationId}];
     if(record){const b=record.version.binding;if(b.conversationId!==context.binding.conversationId)subjects.push({tenantId:b.tenantId,kind:'conversation',subjectId:b.conversationId});subjects.push({tenantId:b.tenantId,kind:'artifact',subjectId:record.version.artifactId});}
     for(const subject of subjects)await life.run(()=>retention.assertServable(subject));life.check();}
-  async function recoverTenant(life,context){if(versions.recoverTenant)await life.run(signal=>versions.recoverTenant(context.binding.tenantId,signal));life.check();}
+  async function recoverTenant(life,context,versionId=null){if(versionId!==null&&versions.recoverVersion)await life.run(signal=>versions.recoverVersion(context.binding.tenantId,versionId,signal));else if(versions.recoverTenant)await life.run(signal=>versions.recoverTenant(context.binding.tenantId,signal));life.check();}
   function scopeVersion(record,id,context){
-    closed(record,['version','spec','specSha256','requestSha256','inspection']);record=v.snapshot(record);record.version=v.version(record.version);record.spec=v.request(record.spec);
+    closed(record,['version','spec','specSha256','requestSha256','inspection',...(record?.assets===undefined?[]:['assets'])]);record=v.snapshot(record);record.version=v.version(record.version);record.spec=v.request(record.spec);
     if(record.version.versionId!==id||record.version.binding.tenantId!==context.binding.tenantId||record.version.binding.actorId!==context.binding.actorId||record.version.binding.conversationId!==context.binding.conversationId||!same(record.version.scopes,context.scopes)||!same(record.version.object.scopes,record.version.scopes)||record.specSha256!==v.hash(record.spec))fail('ARTIFACT_VERSION_CONTEXT');
     if(record.version.mimeType!==mime[record.spec.format]||record.version.filename!==filenameFor(record.spec)||record.version.generationStatus!=='draft'||record.version.previewStatus!=='pending')fail('ARTIFACT_VERSION_METADATA');
     return record;
@@ -38,8 +48,22 @@ export function createArtifactService({validators:v,authorize,versions,objects,e
     const bytes=await life.run(signal=>objects.get(v.snapshot(object),signal));
     if(!Buffer.isBuffer(bytes)||bytes.length!==object.bytes||bytes.length>maxBytes||sha(bytes)!==object.sha256)fail('ARTIFACT_OBJECT_MISMATCH');return Buffer.from(bytes);
   }
+  /** The bounded immutable asset map the generated version retains BESIDE its spec: the original spec's
+   * own id -> ObjectReference pairs, in spec order, taken only from the already-admitted trusted context.
+   * A declared reference the trusted context did not supply is simply not retained, so that parent stays
+   * explicitly unavailable for revision rather than being re-rendered without its object, and an
+   * unreferenced context asset is not part of this document's immutable identity. */
+  function assetPins(request,context){
+    const declared=[...new Set(referencedAssetIds(request))];if(!declared.length)return undefined;
+    const available=new Map(context.assets.map(asset=>[asset.id,asset.object])),pins=[];
+    for(const id of declared){const object=available.get(id);if(object!==undefined)pins.push({id,object:v.object(object)});}
+    return pins.length?pins:undefined;
+  }
   async function generate(baseVersionId,requestValue,contextValue,{signal,invocation}={}){
-    const request=v.request(requestValue),context=v.context(contextValue);
+    // The retained map is emitted only under the deployment's explicit write activation: with it off (the
+    // default) no new map-bearing record is produced, while the declared assets still reach the executor
+    // with their actual verified bytes exactly as before.
+    const request=v.request(requestValue),context=v.context(contextValue),pins=retainedAssetMapWrites===true?assetPins(request,context):undefined;
     if(request.format==='sandbox')fail('ANALYSIS_SANDBOX_DISPATCH_REQUIRED');
     if(context.analysisAdmission)fail('IRRELEVANT_ANALYSIS_ADMISSION');
     // Stored historical evidence remains readable; new native writes require current run-bound evidence.
@@ -57,7 +81,7 @@ export function createArtifactService({validators:v,authorize,versions,objects,e
     const action=baseVersionId===null?'artifact.generate':'artifact.revise';
     let resource={versionId:baseVersionId,object:null,assetObjects:context.assets.map(a=>a.object)};
     try{
-      receipt=await authority(life,action,resource,requestSha256,context);await servable(life,context);await recoverTenant(life,context);
+      receipt=await authority(life,action,resource,requestSha256,context);await servable(life,context);await recoverTenant(life,context,baseVersionId);
       if(baseVersionId!==null){
         readBase=scopeVersion(await life.run(signal=>versions.read(baseVersionId,signal)),baseVersionId,context);
         if(readBase.spec.operation!==request.operation||readBase.spec.format!==request.format)fail('ARTIFACT_REVISION_FORMAT');
@@ -80,7 +104,7 @@ export function createArtifactService({validators:v,authorize,versions,objects,e
       const version=v.version({contractVersion:'0.2.0',artifactId:readBase?.version.artifactId??allocation.artifactId,versionId:allocation.versionId,parentVersionId:baseVersionId,binding:context.binding,object,filename:filenameFor(request),mimeType:mime[request.format],scopes:context.scopes,evidence:context.evidence,generationStatus:'draft',previewStatus:'pending',createdAt:new Date(now()).toISOString()});
       await servable(life,context,{version});
       const publication={authorization:receipt,invocation:{kind:'native-document',versionId:version.versionId,invocationId:invocation.invocationId,binding:v.snapshot(context.binding),requestSha256}};
-      const commit=v.snapshot(await life.run(signal=>versions.commit({version:v.snapshot(version),spec:v.snapshot(request),specSha256:v.hash(request),requestSha256,inspection:v.snapshot(inspection),expectedParentVersionId:baseVersionId},signal,publication)));
+      const commit=v.snapshot(await life.run(signal=>versions.commit({version:v.snapshot(version),spec:v.snapshot(request),specSha256:v.hash(request),requestSha256,inspection:v.snapshot(inspection),expectedParentVersionId:baseVersionId,...(pins===undefined?{}:{assets:v.snapshot(pins)})},signal,publication)));
       closed(commit,['status','versionId','requestSha256','versionSha256']);
       if(!['committed','duplicate'].includes(commit.status)||commit.versionId!==version.versionId||commit.requestSha256!==requestSha256||commit.versionSha256!==v.hash(version))fail('ARTIFACT_COMMIT_RECEIPT');versionCommitted=true;
       receipt=await authority(life,action,{...resource,object},requestSha256,context);await servable(life,context,{version});
@@ -90,21 +114,50 @@ export function createArtifactService({validators:v,authorize,versions,objects,e
       error.lifetime=life.close();throw error;
     }finally{life.close();}
   }
-  async function read(versionId,contextValue,options={},download=false){
+  async function read(versionId,contextValue,options={},download=false,revisionSource=false){
     if(typeof versionId!=='string')fail('ARTIFACT_VERSION_ID');
     const context=v.context(contextValue),life=operation(context,options.signal),action=download?'artifact.download':'artifact.inspect';
     const requestSha256=v.hash({action,versionId,context});let resource={versionId,object:null,assetObjects:[]};
     try{
-      await authority(life,action,resource,requestSha256,context);await servable(life,context);await recoverTenant(life,context);
+      await authority(life,action,resource,requestSha256,context);await servable(life,context);await recoverTenant(life,context,versionId);
       const record=scopeVersion(await life.run(signal=>versions.read(versionId,signal)),versionId,context);
       resource={...resource,object:record.version.object};await authority(life,action,resource,requestSha256,context);await servable(life,context,record);
       const bytes=await bytesFor(life,record.version.object,context.maxBytes);
       const inspection=inspectBytes(record.inspection,bytes,record.spec.format);
       await authority(life,action,resource,requestSha256,context);await servable(life,context,record);
+      // Private revision preparation receives the retained typed source only after the
+      // same byte, current-authority and retention checks as inspect. No new write or brand.
+      // The record's own retained asset map rides this private return only; ordinary inspect and
+      // download DTOs keep their exact public shape.
+      if(revisionSource)return {version:record.version,request:record.spec,specSha256:record.specSha256,inspection:{...inspection,currentBytesVerified:true},...(record.assets===undefined?{}:{assets:record.assets})};
       return download?{version:record.version,bytes}:{version:record.version,inspection:{...inspection,currentBytesVerified:true}};
+    }catch(error){error.lifetime=life.close();throw error;}finally{life.close();}
+  }
+  async function history(queryValue,contextValue,options={}){
+    closed(queryValue,['versionId','limit','cursor']);const query=v.snapshot(queryValue);
+    if(typeof query.versionId!=='string'||!Number.isInteger(query.limit)||query.limit<1||query.limit>100||query.cursor!==null&&(typeof query.cursor!=='string'||!/^[a-f0-9]{64}$/u.test(query.cursor)))fail('ARTIFACT_HISTORY_INPUT');
+    if(typeof versions.history!=='function')fail('UNAVAILABLE');
+    const context=v.context(contextValue),life=operation(context,options.signal),action='artifact.inspect',resource={versionId:query.versionId,object:null,assetObjects:[]},requestSha256=v.hash({action,intent:'history',query,context});
+    try{
+      await authority(life,action,resource,requestSha256,context);await servable(life,context);await recoverTenant(life,context,query.versionId);
+      if(typeof versions.publicationSnapshot==='function'){const publication=await life.run(signal=>versions.publicationSnapshot(context.binding.tenantId,signal));if(publication.paged)return await readPagedArtifactHistory({v,versions,scopeVersion,authority,servable},query,context,life,resource,requestSha256,publication);}
+      const result=v.snapshot(await life.run(signal=>versions.history(query.versionId,signal)));closed(result,['artifactId','anchorVersionId','headVersionId','records']);
+      if(result.anchorVersionId!==query.versionId||!Array.isArray(result.records)||!result.records.length||result.records.length>1024)fail('ARTIFACT_HISTORY_RESULT');
+      const records=result.records.map(record=>scopeVersion(record,record.version?.versionId,context)),ids=new Set();
+      for(let i=0;i<records.length;i++){const version=records[i].version;if(ids.has(version.versionId)||version.artifactId!==result.artifactId||version.parentVersionId!==(records[i+1]?.version.versionId??null))fail('ARTIFACT_HISTORY_RESULT');ids.add(version.versionId);}
+      if(records[0].version.versionId!==result.headVersionId||!ids.has(query.versionId))fail('ARTIFACT_HISTORY_RESULT');
+      const anchor=records.find(record=>record.version.versionId===query.versionId);resource.object=anchor.version.object;
+      await authority(life,action,resource,requestSha256,context);await servable(life,context,anchor);
+      // The cursor selects a page of this freshly authorized snapshot; it is never an authority capability.
+      const snapshotSha256=v.hash({query:{versionId:query.versionId,limit:query.limit},binding:context.binding,scopes:context.scopes,records}),cursorAt=offset=>v.hash({intent:'artifact.history',snapshotSha256,offset});let offset=0;
+      if(query.cursor!==null){offset=-1;for(let i=query.limit;i<records.length;i+=query.limit)if(cursorAt(i)===query.cursor){offset=i;break;}if(offset<0)fail('ARTIFACT_HISTORY_CURSOR');}
+      const page=records.slice(offset,offset+query.limit).map(record=>record.version),nextOffset=offset+page.length;
+      await authority(life,action,resource,requestSha256,context);await servable(life,context,anchor);
+      return {artifactId:result.artifactId,anchorVersionId:query.versionId,headVersionId:result.headVersionId,versions:page,nextCursor:nextOffset<records.length?cursorAt(nextOffset):null};
     }catch(error){error.lifetime=life.close();throw error;}finally{life.close();}
   }
   return Object.freeze({create:(request,context,options)=>generate(null,request,context,options),revise:(baseVersionId,request,context,options)=>{if(typeof baseVersionId!=='string')fail('ARTIFACT_VERSION_ID');return generate(baseVersionId,request,context,options);},
     recover:(baseVersionId,request,context,options)=>recoverArtifact({v,operation,authority,scopeVersion,bytesFor,inspectBytes,versions,servable,recoverTenant},baseVersionId,request,context,options),
-    inspect:(id,context,options)=>read(id,context,options),download:(id,context,options)=>read(id,context,options,true)});
+    list:(query,context,options)=>readArtifactLibrary({v,versions,authorizeOrigin,operation,authority,servable,recoverTenant,now},query,context,options),
+    history,revisionSource:(id,context,options)=>read(id,context,options,false,true),inspect:(id,context,options)=>read(id,context,options),download:(id,context,options)=>read(id,context,options,true)});
 }

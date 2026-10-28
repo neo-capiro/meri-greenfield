@@ -5,9 +5,9 @@ import {createControlRouteApplications,listenControlApplications} from '../contr
 test('public listener admits only the exact preview API paths and never protected native paths',async()=>{
  const calls=[],assembly={handle(request){calls.push(['public',new URL(request.url).pathname]);return new Response('public');}},candidate={handle(request){calls.push(['private',new URL(request.url).pathname]);return new Response('private');}};
  const routes=createControlRouteApplications({assembly,candidate});
- for(const path of ['/api/conversations','/api/conversations/123/turns','/api/action-followthrough/session','/api/action-followthrough/query'])assert.equal((await routes.public.handle(new Request('https://preview.invalid'+path))).status,200);
+ for(const path of ['/api/conversations','/api/conversations/123/turns','/api/action-followthrough/session','/api/action-followthrough/query','/api/routines/session'])assert.equal((await routes.public.handle(new Request('https://preview.invalid'+path))).status,200);
  for(const path of ['/v1/runner/native/bootstrap','/v1/native-task/prepare','/internal/conversations/123','/api/other','/api/action-followthrough/session/extra','/api/conversations-other'])assert.equal((await routes.public.handle(new Request('https://preview.invalid'+path))).status,404);
- assert.deepEqual(calls.map(row=>row[0]),['public','public','public','public']);
+ assert.deepEqual(calls.map(row=>row[0]),['public','public','public','public','public']);
 });
 test('private listener excludes public paths and passes its unforgeable marker only to task router',async()=>{
  const marker=Object.freeze({}),seen=[],privateIngress={issue(){return marker;}},router={privateApplication:{handle(request,context){seen.push(context.ingress);return new Response('routed');}}},

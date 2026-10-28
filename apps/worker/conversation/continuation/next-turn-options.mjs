@@ -14,7 +14,7 @@ import skillSchema from '../../../../packages/contracts/retrieval-0.2/skill.sche
 import {assertWindowResolution} from '../../../../packages/contracts/retrieval-0.2/validate.mjs';
 const ajv=new AjvModule.default({strict:true,allErrors:true});formatsModule.default(ajv);
 for(const schema of [publicSchema,commonSchema,skillSchema,conversationSchema()])ajv.addSchema(schema);
-const validRequest=ajv.compile({$ref:'urn:meri:conversation-application:0.1.0#/$defs/ConversationStoredRequest'});
+const validRequest=ajv.compile({$ref:conversationSchema().$id+'#/$defs/ConversationStoredRequest'});
 const same=(a,b)=>hash(a)===hash(b),uuid=/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/u;
 const fail=()=>{throw Error('NEXT_TURN_REFUSED');};
 export const nextTurnSessionId=value=>value.sdkSession?value.sdkSession.key.sessionId:value.checkpoint.sessionId;

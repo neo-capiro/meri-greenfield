@@ -9,12 +9,14 @@ import {storeFixture} from '../../../control/conversations/test/store-fixture.mj
 import {createPreparedSchedulePoolFixture} from '../../../control/intents/test/prepared-schedule-fixture.mjs';
 import {createMetadataPoolFixture} from '../../../control/commands/approval-metadata/test/fixture.mjs';
 import {runtimeFixture} from '../../../worker/conversation/skills/test/runtime-fixture.mjs';
+import {reportRuntimeFixture} from './report-production-fixture.mjs';
+import {registerDocumentIntentOwner} from '../../artifacts/intent-binding.mjs';
 import {createTaskSelectedSkills} from '../task.mjs';
 import {canonicalSha256 as hash} from '../../../../packages/contracts/validate.mjs';
 import catalog from '../../../../packages/contracts/retrieval-0.2/catalog.json' with {type:'json'};
 
-export async function compositionFixture(skillId='quick_skill.commitments_audit'){
- const f=runtimeFixture(skillId),c=f.configuration,base=storeFixture(),intents=createPreparedSchedulePoolFixture(),metadata=createMetadataPoolFixture();
+export async function compositionFixture(skillId='quick_skill.commitments_audit',options={}){
+ const f=options.report===undefined?runtimeFixture(skillId):reportRuntimeFixture(options.report),c=f.configuration,base=storeFixture(),intents=createPreparedSchedulePoolFixture(),metadata=createMetadataPoolFixture();
  // Existing SQL protocol fixtures are joined at their actual schema boundaries.
  // This does not claim PostgreSQL transaction or contention qualification.
  const pool={options:{connectionTimeoutMillis:25000,query_timeout:25000},async connect(){
@@ -35,10 +37,10 @@ export async function compositionFixture(skillId='quick_skill.commitments_audit'
  const operations=f.install.operations,approvedReads={schemaVersion:'meri-native-general-reads/1',enabled:true,operations,maxExecuteMs:3000,maxRequestBytes:131072,maxResponseBytes:2097152};
  configuration.agentcore.approvedReads=approvedReads;
  const {versions:unused,...identity}=createExecutionBinding({binding:c.binding,versions:c.versions,plan:{synthetic:'selected-composition'},expiresAtMs:c.now()+60000,runtimeSessionId:'synthetic-'+hash(c.binding)});
- const state={revoked:false,readCalls:0,blockedRead:null,readStarted:null,abortedReads:0,authCalls:0,availabilityError:false};
+ const state={revoked:false,readCalls:0,blockedRead:null,readStarted:null,abortedReads:0,authCalls:0,availabilityError:false,scopesOverride:null};
  const execution={async authenticate({binding,credential,signal}){
   state.authCalls++;signal?.throwIfAborted();if(state.revoked||credential!=='synthetic-execution'||hash(binding)!==hash(c.binding))throw Error('EXECUTION_AUTHORITY_REFUSED');
-  return {execution:identity,state:'running',scopes:c.scopes,selectedClientId:f.selection.subject.entityIds[0],policyRevision:c.scopes[0].policyRevision};
+  return {execution:identity,state:'running',scopes:state.scopesOverride??c.scopes,selectedClientId:f.selection.subject.entityIds[0],policyRevision:c.scopes[0].policyRevision};
  }};
  const snapshot=()=>({installation:{installationId:f.install.installationId,baseCatalogSha256:hash(catalog),executionCatalogSha256:f.install.executionCatalogSha256,operations,checkedAtMs:c.now(),expiresAtMs:identity.expiresAtMs},discovery:{binding:c.binding,policyRevision:c.scopes[0].policyRevision,operations,checkedAtMs:c.now(),expiresAtMs:identity.expiresAtMs}});
  const createReadsRuntime=({binding,execution,approvedReads})=>createReadsApplication({approvedReads,now:c.now,owner:createReadsOwner({binding,execution,approvedReads,now:c.now,createGateway:()=>({
@@ -48,7 +50,8 @@ export async function compositionFixture(skillId='quick_skill.commitments_audit'
   },
  })})});
  const client={workflow:{async start(){throw Error('No workflow in selected private request');},getHandle(){throw Error('No workflow handle');}}};
- const assembly=assembleControl({configuration,pool,client,native:{async call(){throw Error('No legacy native call');}},execution,now:c.now,createReadsRuntime});
+ const assembly=assembleControl({configuration,pool,client,native:{async call(){throw Error('No legacy native call');}},execution,now:c.now,createReadsRuntime,
+  ...(options.revisionOwner===undefined?{}:{productPortsFactory:context=>{registerDocumentIntentOwner(context,()=>[],undefined,undefined,options.revisionOwner);return {};}})});
  const binding=c.binding,scopes=c.scopes,createdAt=new Date(c.now()).toISOString();
  const run={binding,state:'queued',scopes,createdAt,policyRevision:scopes[0].policyRevision,versions:c.versions},conversation={conversationId:binding.conversationId,owner:{tenantId:binding.tenantId,actorId:binding.actorId},scopes,createdAt,policyRevision:run.policyRevision};
  await assembly.store.accept({conversation,run,request:c.request,event:{contractVersion:'0.1.0',eventId:randomUUID(),binding,sequence:1,createdAt,scopes,type:'run.status',data:{state:'queued',reasonCode:null}}},()=>{});

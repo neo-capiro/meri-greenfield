@@ -11,9 +11,19 @@ const registered=new Set(familyReads().map(row=>row.operation.id));
 const reads=CATALOG_OPERATION_BINDINGS.filter(binding=>catalog.operations.find(op=>op.operation.id===binding.id)?.sideEffect==='none');
 const keyed=reads.filter(binding=>(binding.contextKeys??[]).length);
 
+test('registered prior-chat attachment read obtains both context keys from the actual native owner',()=>{
+ const binding=keyed.find(row=>row.id==='read_chat_attachments');assert.ok(binding);
+ assert.equal(registered.has(binding.id),true);
+ for(const nativePortsComposed of [true,false]){
+  const supply=readContextSupply(binding,{nativePortsComposed});assert.equal(supply.path,'native');
+  assert.deepEqual(supply.keys.map(row=>row.key).sort(),['asOf','scope']);
+  for(const {source} of supply.keys)assert.ok(source?.includes('attachment'));
+ }
+});
+
 test('every registered read with context keys has a trusted producer for each key and never uses the generic path',()=>{
  const covered=keyed.filter(binding=>registered.has(binding.id));
- assert.equal(covered.length,50);
+ assert.equal(covered.length,59);
  for(const binding of covered){
   const supply=readContextSupply(binding);
   assert.notEqual(supply.path,'generic',binding.id);
@@ -23,7 +33,7 @@ test('every registered read with context keys has a trusted producer for each ke
 
 test('keys without a trusted producer exist only on unregistered reads, exactly these',()=>{
  const unsupplied=keyed.filter(binding=>readContextSupply(binding).keys.some(k=>k.source===null)).map(binding=>binding.id).sort();
- assert.deepEqual(unsupplied,['read_chat_attachments']);
+ assert.deepEqual(unsupplied,[]);
  for(const id of unsupplied)assert.equal(registered.has(id),false,id);
 });
 

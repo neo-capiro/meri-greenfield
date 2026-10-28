@@ -60,6 +60,17 @@ test('artifact authority rejects a mistyped enabled flag instead of silently dis
  assert.throws(()=>parseFeatures({artifacts:{...ARTIFACTS,authority:{enabled:'true'}}}),/must be a boolean/u);
 });
 
+test('artifact renderer material binds the selected image and explicit PDF intent without claiming native qualification',async()=>{
+ await baseline();const executor={pythonExecutable:'/usr/bin/python3.13',nodeExecutable:'/usr/local/bin/node',pptxModulePath:'/opt/meri/apps/artifacts/generation/node_modules/pptxgenjs',tempRoot:'/tmp',timeoutMs:30000};
+ const artifacts={...ARTIFACTS,authority:{enabled:true},executor,renderer:{enabled:true},pdfAdmission:true};
+ const rendered=await render(withFeatures({sourceEnabled:true,retention:{enabled:true},reads:READS,artifacts}),{featureSecrets:featureSecrets()});
+ const control=config(rendered,'control');assert.equal(control.artifacts.renderer.enabled,true);assert.equal(control.artifacts.renderer.imageDigest,control.versions.imageDigest);assert.equal(control.artifacts.pdfAdmission,true);
+ assert.equal(Object.hasOwn(control.artifacts.renderer,'sandbox'),false);assert.equal(Object.hasOwn(control.artifacts.renderer,'admission'),false);
+ for(const change of [{renderer:{enabled:'true'}},{renderer:{enabled:true,imageDigest:'sha256:'+'a'.repeat(64)}},{renderer:{enabled:false}},{pdfAdmission:'true'}])
+  assert.throws(()=>parseFeatures({sourceEnabled:true,retention:{enabled:true},reads:READS,artifacts:{...artifacts,...change}}));
+ assert.throws(()=>parseFeatures({sourceEnabled:true,reads:READS,artifacts}),/needs authority, executor and retention/u);
+});
+
 test('retention rendering carries the existing explicit Trash purge switch to control only',async()=>{
  await baseline();
  const rendered=await render(withFeatures({sourceEnabled:true,retention:{enabled:true,purge:{enabled:true}}}));

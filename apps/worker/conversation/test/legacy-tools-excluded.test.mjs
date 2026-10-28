@@ -10,6 +10,7 @@ import {listSkills,selectSkill} from '../../../../packages/skills/index.mjs';
 import {BUILTIN_TOOL_NAMES} from '../capabilities/workspace-tools.mjs';
 import {WORKSPACE_TOOLS,SUBAGENT_TYPES,assertCapabilityPolicy} from '../capabilities/policy.mjs';
 import {createSubagents} from '../capabilities/subagents.mjs';
+import {childAssignmentPort} from './child-assignment-port-fixture.mjs';
 import {createSdkCapabilities} from '../capabilities/index.mjs';
 import {sdkToolName} from '../skills/mcp.mjs';
 import {familyReads,DEFERRED_ORIGINALS} from '../reads/availability.mjs';
@@ -44,8 +45,8 @@ test('no original skill manifest allows an excluded name, and the operation reso
 
 test('no excluded name can enter the SDK tool surface the worker builds',()=>{
  const attested={available:true,sdk:'0.3.295',cli:'2.1.295',weakerNestedSandbox:false,outerIsolationBoundary:true};
- const full=createSdkCapabilities({subagents:true,auditHooks:true,compactionHooks:true,skillPlugin:true,workspaceTools:true,subagentProgress:true,bash:true},{runOwner:{append:async()=>{}},binding,cwd,now:Date.now,newId:()=>id(1),skillPluginDirectory:plugin,bashSandbox:attested}).options;
- const subagents=createSubagents(assertCapabilityPolicy({subagents:true,workspaceTools:true}),{latch:()=>{}});
+ const full=createSdkCapabilities({subagents:true,auditHooks:true,compactionHooks:true,skillPlugin:true,workspaceTools:true,subagentProgress:true,bash:true},{runOwner:{append:async()=>{}},binding,cwd,childAssignments:childAssignmentPort(),now:Date.now,newId:()=>id(1),skillPluginDirectory:plugin,bashSandbox:attested}).options;
+ const subagents=createSubagents(assertCapabilityPolicy({subagents:true,workspaceTools:true}),{latch:()=>{},children:childAssignmentPort()});
  const originalReads=listSkills().flatMap(s=>selectSkill(s.skillId,s.skillVersion).manifest.allowedOperations.map(op=>`mcp__meri_original_reads__${sdkToolName(op)}`));
  const generalReads=familyReads().map(readToolName);assert.ok(generalReads.length>0,'the general read surface is scanned');
  const intents=[...INTENT_ROWS.flatMap(r=>[intentToolName(r.tool),r.tool,r.operation.id]),...Object.keys(NOT_INTENTS)];assert.equal(INTENT_ROWS.length,33,'the governed intent surface is scanned');

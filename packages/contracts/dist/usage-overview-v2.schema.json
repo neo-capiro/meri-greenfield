@@ -1,0 +1,1372 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:meri:usage-overview:2.0.0",
+  "$defs": {
+    "UsageOverviewRequest2": {
+      "type": "object",
+      "properties": {
+        "schemaVersion": {
+          "const": "meri.usage-overview/2"
+        }
+      },
+      "required": [
+        "schemaVersion"
+      ],
+      "additionalProperties": false
+    },
+    "UsageOverviewResponse2": {
+      "type": "object",
+      "properties": {
+        "schemaVersion": {
+          "const": "meri.usage-overview/2"
+        },
+        "observedAt": {
+          "type": "string",
+          "format": "date-time",
+          "pattern": "Z$"
+        },
+        "timezone": {
+          "const": "UTC"
+        },
+        "currency": {
+          "const": "USD"
+        },
+        "countersCoverage": {
+          "const": "recorded-runs-only"
+        },
+        "policy": {
+          "oneOf": [
+            {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "const": "configured"
+                },
+                "revision": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 9007199254740991
+                },
+                "monthlyCapMicroUsd": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 9007199254740991
+                },
+                "maxTurns": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 100
+                },
+                "maxBudgetMicroUsd": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 9007199254740991
+                }
+              },
+              "required": [
+                "status",
+                "revision",
+                "monthlyCapMicroUsd",
+                "maxTurns",
+                "maxBudgetMicroUsd"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "const": "unavailable"
+                },
+                "revision": {
+                  "type": "null"
+                },
+                "monthlyCapMicroUsd": {
+                  "type": "null"
+                },
+                "maxTurns": {
+                  "type": "null"
+                },
+                "maxBudgetMicroUsd": {
+                  "type": "null"
+                }
+              },
+              "required": [
+                "status",
+                "revision",
+                "monthlyCapMicroUsd",
+                "maxTurns",
+                "maxBudgetMicroUsd"
+              ],
+              "additionalProperties": false
+            }
+          ]
+        },
+        "periods": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "kind": {
+                "enum": [
+                  "day",
+                  "week",
+                  "month"
+                ]
+              },
+              "startInclusive": {
+                "type": "string",
+                "format": "date-time",
+                "pattern": "Z$"
+              },
+              "endExclusive": {
+                "type": "string",
+                "format": "date-time",
+                "pattern": "Z$"
+              },
+              "attempts": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 9007199254740991
+              },
+              "states": {
+                "type": "object",
+                "properties": {
+                  "queued": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 9007199254740991
+                  },
+                  "starting": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 9007199254740991
+                  },
+                  "running": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 9007199254740991
+                  },
+                  "waiting-for-approval": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 9007199254740991
+                  },
+                  "paused": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 9007199254740991
+                  },
+                  "completed": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 9007199254740991
+                  },
+                  "failed": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 9007199254740991
+                  },
+                  "cancelled": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 9007199254740991
+                  }
+                },
+                "required": [
+                  "queued",
+                  "starting",
+                  "running",
+                  "waiting-for-approval",
+                  "paused",
+                  "completed",
+                  "failed",
+                  "cancelled"
+                ],
+                "additionalProperties": false
+              },
+              "recording": {
+                "type": "object",
+                "properties": {
+                  "recorded": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 9007199254740991
+                  },
+                  "unavailable": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 9007199254740991
+                  },
+                  "notRecorded": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 9007199254740991
+                  }
+                },
+                "required": [
+                  "recorded",
+                  "unavailable",
+                  "notRecorded"
+                ],
+                "additionalProperties": false
+              },
+              "knownChargeMicroUsd": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 9007199254740991
+              },
+              "recorded": {
+                "type": "object",
+                "properties": {
+                  "queued": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 9007199254740991
+                  },
+                  "starting": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 9007199254740991
+                  },
+                  "running": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 9007199254740991
+                  },
+                  "waiting-for-approval": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 9007199254740991
+                  },
+                  "paused": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 9007199254740991
+                  },
+                  "completed": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 9007199254740991
+                  },
+                  "failed": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 9007199254740991
+                  },
+                  "cancelled": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 9007199254740991
+                  }
+                },
+                "required": [
+                  "queued",
+                  "starting",
+                  "running",
+                  "waiting-for-approval",
+                  "paused",
+                  "completed",
+                  "failed",
+                  "cancelled"
+                ],
+                "additionalProperties": false
+              },
+              "conversationThreads": {
+                "type": "object",
+                "properties": {
+                  "status": {
+                    "enum": [
+                      "measured",
+                      "unavailable"
+                    ]
+                  },
+                  "basis": {
+                    "const": "distinct-conversation-id-by-run-created-at"
+                  },
+                  "threads": {
+                    "anyOf": [
+                      {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 9007199254740991
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "attempts": {
+                    "anyOf": [
+                      {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 9007199254740991
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  }
+                },
+                "required": [
+                  "status",
+                  "basis",
+                  "threads",
+                  "attempts"
+                ],
+                "additionalProperties": false
+              },
+              "completedAttempts": {
+                "type": "object",
+                "properties": {
+                  "status": {
+                    "enum": [
+                      "estimated",
+                      "unavailable"
+                    ]
+                  },
+                  "chargeBasis": {
+                    "const": "sdk-list-estimate"
+                  },
+                  "jobIdentity": {
+                    "const": "not-a-job-denominator"
+                  },
+                  "attempts": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 9007199254740991
+                  },
+                  "knownChargeMicroUsd": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 9007199254740991
+                  },
+                  "microUsdPerCompletedAttempt": {
+                    "anyOf": [
+                      {
+                        "type": "number",
+                        "minimum": 0,
+                        "maximum": 9007199254.740992
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "attemptsWithoutRecordedUsage": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 9007199254740991
+                  }
+                },
+                "required": [
+                  "status",
+                  "chargeBasis",
+                  "jobIdentity",
+                  "attempts",
+                  "knownChargeMicroUsd",
+                  "microUsdPerCompletedAttempt",
+                  "attemptsWithoutRecordedUsage"
+                ],
+                "additionalProperties": false
+              },
+              "partialOrFailed": {
+                "type": "object",
+                "properties": {
+                  "status": {
+                    "enum": [
+                      "estimated",
+                      "unavailable"
+                    ]
+                  },
+                  "chargeBasis": {
+                    "const": "sdk-list-estimate"
+                  },
+                  "failedAttempts": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 9007199254740991
+                  },
+                  "cancelledAttempts": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 9007199254740991
+                  },
+                  "recordedAttempts": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 9007199254740991
+                  },
+                  "knownChargeMicroUsd": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 9007199254740991
+                  },
+                  "microUsdPerRecordedAttempt": {
+                    "anyOf": [
+                      {
+                        "type": "number",
+                        "minimum": 0,
+                        "maximum": 9007199254.740992
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  }
+                },
+                "required": [
+                  "status",
+                  "chargeBasis",
+                  "failedAttempts",
+                  "cancelledAttempts",
+                  "recordedAttempts",
+                  "knownChargeMicroUsd",
+                  "microUsdPerRecordedAttempt"
+                ],
+                "additionalProperties": false
+              },
+              "liability": {
+                "type": "object",
+                "properties": {
+                  "chargeBasis": {
+                    "const": "sdk-list-estimate"
+                  },
+                  "recordedAttempts": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 9007199254740991
+                  },
+                  "knownChargeMicroUsd": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 9007199254740991
+                  },
+                  "microUsdPerRecordedAttempt": {
+                    "anyOf": [
+                      {
+                        "type": "number",
+                        "minimum": 0,
+                        "maximum": 9007199254.740992
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "unavailableAttempts": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 9007199254740991
+                  },
+                  "notRecordedAttempts": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 9007199254740991
+                  }
+                },
+                "required": [
+                  "chargeBasis",
+                  "recordedAttempts",
+                  "knownChargeMicroUsd",
+                  "microUsdPerRecordedAttempt",
+                  "unavailableAttempts",
+                  "notRecordedAttempts"
+                ],
+                "additionalProperties": false
+              },
+              "lineage": {
+                "type": "object",
+                "properties": {
+                  "basis": {
+                    "const": "sdk_usage.parentRunId plus the run binding writerFence: absent parent = root thread start; writerFence 1 = fork into a separate logical thread; writerFence 2 or more = resume continuation of the same thread"
+                  },
+                  "root": {
+                    "type": "object",
+                    "properties": {
+                      "attempts": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 9007199254740991
+                      },
+                      "chargeMicroUsd": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 9007199254740991
+                      }
+                    },
+                    "required": [
+                      "attempts",
+                      "chargeMicroUsd"
+                    ],
+                    "additionalProperties": false
+                  },
+                  "fork": {
+                    "type": "object",
+                    "properties": {
+                      "attempts": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 9007199254740991
+                      },
+                      "chargeMicroUsd": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 9007199254740991
+                      }
+                    },
+                    "required": [
+                      "attempts",
+                      "chargeMicroUsd"
+                    ],
+                    "additionalProperties": false
+                  },
+                  "resume": {
+                    "type": "object",
+                    "properties": {
+                      "attempts": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 9007199254740991
+                      },
+                      "chargeMicroUsd": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 9007199254740991
+                      }
+                    },
+                    "required": [
+                      "attempts",
+                      "chargeMicroUsd"
+                    ],
+                    "additionalProperties": false
+                  },
+                  "unknown-lineage": {
+                    "type": "object",
+                    "properties": {
+                      "attempts": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 9007199254740991
+                      },
+                      "chargeMicroUsd": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 9007199254740991
+                      }
+                    },
+                    "required": [
+                      "attempts",
+                      "chargeMicroUsd"
+                    ],
+                    "additionalProperties": false
+                  }
+                },
+                "required": [
+                  "basis",
+                  "root",
+                  "fork",
+                  "resume",
+                  "unknown-lineage"
+                ],
+                "additionalProperties": false
+              },
+              "counters": {
+                "type": "object",
+                "properties": {
+                  "inputTokens": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 9007199254740991
+                  },
+                  "outputTokens": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 9007199254740991
+                  },
+                  "cacheReadInputTokens": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 9007199254740991
+                  },
+                  "cacheCreationInputTokens": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 9007199254740991
+                  },
+                  "webSearchRequests": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 9007199254740991
+                  },
+                  "toolInvocations": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 9007199254740991
+                  },
+                  "toolFailures": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 9007199254740991
+                  }
+                },
+                "required": [
+                  "inputTokens",
+                  "outputTokens",
+                  "cacheReadInputTokens",
+                  "cacheCreationInputTokens",
+                  "webSearchRequests",
+                  "toolInvocations",
+                  "toolFailures"
+                ],
+                "additionalProperties": false
+              }
+            },
+            "required": [
+              "kind",
+              "startInclusive",
+              "endExclusive",
+              "attempts",
+              "states",
+              "recording",
+              "knownChargeMicroUsd",
+              "recorded",
+              "conversationThreads",
+              "completedAttempts",
+              "partialOrFailed",
+              "liability",
+              "lineage",
+              "counters"
+            ],
+            "additionalProperties": false
+          },
+          "minItems": 3,
+          "maxItems": 3
+        },
+        "monthlyAdmission": {
+          "type": "object",
+          "properties": {
+            "startInclusive": {
+              "type": "string",
+              "format": "date-time",
+              "pattern": "Z$"
+            },
+            "knownChargeMicroUsd": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "unavailableRecordedAttempts": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "remainingKnownMicroUsd": {
+              "anyOf": [
+                {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9007199254740991
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "reached": {
+              "anyOf": [
+                {
+                  "type": "boolean"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          },
+          "required": [
+            "startInclusive",
+            "knownChargeMicroUsd",
+            "unavailableRecordedAttempts",
+            "remainingKnownMicroUsd",
+            "reached"
+          ],
+          "additionalProperties": false
+        },
+        "queue": {
+          "type": "object",
+          "properties": {
+            "basis": {
+              "const": "recorded-run-state"
+            },
+            "states": {
+              "type": "object",
+              "properties": {
+                "queued": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9007199254740991
+                },
+                "starting": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9007199254740991
+                },
+                "running": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9007199254740991
+                },
+                "waiting-for-approval": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9007199254740991
+                },
+                "paused": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9007199254740991
+                },
+                "completed": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9007199254740991
+                },
+                "failed": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9007199254740991
+                },
+                "cancelled": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9007199254740991
+                }
+              },
+              "required": [
+                "queued",
+                "starting",
+                "running",
+                "waiting-for-approval",
+                "paused",
+                "completed",
+                "failed",
+                "cancelled"
+              ],
+              "additionalProperties": false
+            },
+            "physicalConcurrency": {
+              "type": "null"
+            },
+            "availableCapacity": {
+              "type": "null"
+            },
+            "capacityStatus": {
+              "const": "unavailable"
+            }
+          },
+          "required": [
+            "basis",
+            "states",
+            "physicalConcurrency",
+            "availableCapacity",
+            "capacityStatus"
+          ],
+          "additionalProperties": false
+        },
+        "coverage": {
+          "type": "object",
+          "properties": {
+            "attemptPeriodBasis": {
+              "const": "run-created-at"
+            },
+            "admissionPeriodBasis": {
+              "const": "sdk-usage-recorded-at"
+            },
+            "chargeBasis": {
+              "const": "sdk-list-estimate"
+            },
+            "providerBilledMicroUsd": {
+              "type": "null"
+            },
+            "completeJobCost": {
+              "const": "estimated"
+            }
+          },
+          "required": [
+            "attemptPeriodBasis",
+            "admissionPeriodBasis",
+            "chargeBasis",
+            "providerBilledMicroUsd",
+            "completeJobCost"
+          ],
+          "additionalProperties": false
+        },
+        "denominators": {
+          "type": "object",
+          "properties": {
+            "attempts": {
+              "const": "run rows in the ledger; one run is one attempt or turn, never a job"
+            },
+            "conversationThreads": {
+              "const": "distinct conversation_id with at least one run created in the period; a thread may host several attempts"
+            },
+            "sustainedJobs": {
+              "const": "canonical ROOT Work/Delegate objectives: the run whose stored request carries request.work with entry start-work|delegate, together with every run that continues it through the persisted continuation custody. A child assignment, conversation thread, SDK attempt or one completed run is never a job"
+            }
+          },
+          "required": [
+            "attempts",
+            "conversationThreads",
+            "sustainedJobs"
+          ],
+          "additionalProperties": false
+        },
+        "jobIdentity": {
+          "type": "object",
+          "properties": {
+            "status": {
+              "const": "measured"
+            },
+            "definition": {
+              "const": "one whole job is the canonical ROOT Work/Delegate objective across its continuations and current goal revision; it is never a child assignment, conversation thread, SDK attempt or one completed run"
+            },
+            "lineage": {
+              "const": "a run continues another objective only when the canonical continuation owner verifies that run stored continuation envelope in the same transaction and that envelope is a resume naming that source run stored request, so its source request digest equals the source run request_sha256; a fork and a run without that verified custody each start a new objective, because the canonical prompt identity owner makes a fork and a next prompt new logical prompts"
+            },
+            "closure": {
+              "const": "the existing completion producer decides. successful = every current revision is completed and carries a PUBLISHED native-session completion capture whose identity pins that revision, with no unresolved successor and no unsettled child receipt; failed = every current revision reached failed; cancelled = every current revision reached cancelled; partial = a current revision is still in flight, or terminal revisions carry mixed outcomes; unclosed = a current revision is terminal without that closure proof, or a continuation control is unresolved (not APPLIED, or its successor revision is outside this read window), or a child receipt is unresolved"
+            },
+            "owner": {
+              "const": "the existing lifecycle completion producer (meri_conversations.completion_checkpoints) read over the existing run and control lineage; no second store, ledger, scheduler or table is created"
+            },
+            "states": {
+              "type": "array",
+              "items": {
+                "enum": [
+                  "successful",
+                  "partial",
+                  "failed",
+                  "cancelled",
+                  "unclosed"
+                ]
+              },
+              "minItems": 5,
+              "maxItems": 5
+            }
+          },
+          "required": [
+            "status",
+            "definition",
+            "lineage",
+            "closure",
+            "owner",
+            "states"
+          ],
+          "additionalProperties": false
+        },
+        "wholeJobs": {
+          "type": "object",
+          "properties": {
+            "basis": {
+              "const": "canonical ROOT Work/Delegate objectives: the run whose stored request carries request.work with entry start-work|delegate, together with every run that continues it through the persisted continuation custody. A child assignment, conversation thread, SDK attempt or one completed run is never a job"
+            },
+            "window": {
+              "const": "root revision created within the admitted month window"
+            },
+            "states": {
+              "type": "object",
+              "properties": {
+                "successful": {
+                  "type": "object",
+                  "properties": {
+                    "jobs": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 9007199254740991
+                    },
+                    "attempts": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 9007199254740991
+                    },
+                    "knownChargeMicroUsd": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 9007199254740991
+                    }
+                  },
+                  "required": [
+                    "jobs",
+                    "attempts",
+                    "knownChargeMicroUsd"
+                  ],
+                  "additionalProperties": false
+                },
+                "partial": {
+                  "type": "object",
+                  "properties": {
+                    "jobs": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 9007199254740991
+                    },
+                    "attempts": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 9007199254740991
+                    },
+                    "knownChargeMicroUsd": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 9007199254740991
+                    }
+                  },
+                  "required": [
+                    "jobs",
+                    "attempts",
+                    "knownChargeMicroUsd"
+                  ],
+                  "additionalProperties": false
+                },
+                "failed": {
+                  "type": "object",
+                  "properties": {
+                    "jobs": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 9007199254740991
+                    },
+                    "attempts": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 9007199254740991
+                    },
+                    "knownChargeMicroUsd": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 9007199254740991
+                    }
+                  },
+                  "required": [
+                    "jobs",
+                    "attempts",
+                    "knownChargeMicroUsd"
+                  ],
+                  "additionalProperties": false
+                },
+                "cancelled": {
+                  "type": "object",
+                  "properties": {
+                    "jobs": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 9007199254740991
+                    },
+                    "attempts": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 9007199254740991
+                    },
+                    "knownChargeMicroUsd": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 9007199254740991
+                    }
+                  },
+                  "required": [
+                    "jobs",
+                    "attempts",
+                    "knownChargeMicroUsd"
+                  ],
+                  "additionalProperties": false
+                },
+                "unclosed": {
+                  "type": "object",
+                  "properties": {
+                    "jobs": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 9007199254740991
+                    },
+                    "attempts": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 9007199254740991
+                    },
+                    "knownChargeMicroUsd": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 9007199254740991
+                    }
+                  },
+                  "required": [
+                    "jobs",
+                    "attempts",
+                    "knownChargeMicroUsd"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "required": [
+                "successful",
+                "partial",
+                "failed",
+                "cancelled",
+                "unclosed"
+              ],
+              "additionalProperties": false
+            },
+            "jobs": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "attempts": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "revisions": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "steerRevisions": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "tails": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "settledRevisions": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "closurePending": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "unresolvedSuccessors": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "unsettledChildren": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "knownChargeMicroUsd": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "microUsdPerSuccessfulJob": {
+              "anyOf": [
+                {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 9007199254.740992
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "coverage": {
+              "type": "object",
+              "properties": {
+                "jobsWithRecordedUsage": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9007199254740991
+                },
+                "jobsWithUnavailableUsage": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9007199254740991
+                },
+                "revisionsWithRootOutsideWindow": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9007199254740991
+                },
+                "chargeAttribution": {
+                  "const": "whole-job-lineage-at-root-revision-window"
+                },
+                "windowEdge": {
+                  "const": "a revision created after the window is not read, so a job whose continuation falls outside the window is reported from the revisions inside it only, and a continuation whose root revision is outside the window is excluded and counted"
+                },
+                "providerBilledMicroUsd": {
+                  "type": "null"
+                },
+                "completeJobCost": {
+                  "const": "estimated"
+                }
+              },
+              "required": [
+                "jobsWithRecordedUsage",
+                "jobsWithUnavailableUsage",
+                "revisionsWithRootOutsideWindow",
+                "chargeAttribution",
+                "windowEdge",
+                "providerBilledMicroUsd",
+                "completeJobCost"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "basis",
+            "window",
+            "states",
+            "jobs",
+            "attempts",
+            "revisions",
+            "steerRevisions",
+            "tails",
+            "settledRevisions",
+            "closurePending",
+            "unresolvedSuccessors",
+            "unsettledChildren",
+            "knownChargeMicroUsd",
+            "microUsdPerSuccessfulJob",
+            "coverage"
+          ],
+          "additionalProperties": false
+        },
+        "categories": {
+          "type": "object",
+          "properties": {
+            "inputTokens": {
+              "enum": [
+                "measured",
+                "estimated",
+                "inside-another-counter",
+                "unresolved",
+                "unavailable"
+              ]
+            },
+            "outputTokens": {
+              "enum": [
+                "measured",
+                "estimated",
+                "inside-another-counter",
+                "unresolved",
+                "unavailable"
+              ]
+            },
+            "reasoningTokens": {
+              "enum": [
+                "measured",
+                "estimated",
+                "inside-another-counter",
+                "unresolved",
+                "unavailable"
+              ]
+            },
+            "cacheReadInputTokens": {
+              "enum": [
+                "measured",
+                "estimated",
+                "inside-another-counter",
+                "unresolved",
+                "unavailable"
+              ]
+            },
+            "cacheCreationInputTokens": {
+              "enum": [
+                "measured",
+                "estimated",
+                "inside-another-counter",
+                "unresolved",
+                "unavailable"
+              ]
+            },
+            "webSearchRequests": {
+              "enum": [
+                "measured",
+                "estimated",
+                "inside-another-counter",
+                "unresolved",
+                "unavailable"
+              ]
+            },
+            "toolInvocations": {
+              "enum": [
+                "measured",
+                "estimated",
+                "inside-another-counter",
+                "unresolved",
+                "unavailable"
+              ]
+            },
+            "toolOutcomes": {
+              "enum": [
+                "measured",
+                "estimated",
+                "inside-another-counter",
+                "unresolved",
+                "unavailable"
+              ]
+            },
+            "cost": {
+              "enum": [
+                "measured",
+                "estimated",
+                "inside-another-counter",
+                "unresolved",
+                "unavailable"
+              ]
+            },
+            "providerBilledMicroUsd": {
+              "enum": [
+                "measured",
+                "estimated",
+                "inside-another-counter",
+                "unresolved",
+                "unavailable"
+              ]
+            },
+            "subagentCost": {
+              "enum": [
+                "measured",
+                "estimated",
+                "inside-another-counter",
+                "unresolved",
+                "unavailable"
+              ]
+            },
+            "compactionCost": {
+              "enum": [
+                "measured",
+                "estimated",
+                "inside-another-counter",
+                "unresolved",
+                "unavailable"
+              ]
+            },
+            "verificationCost": {
+              "enum": [
+                "measured",
+                "estimated",
+                "inside-another-counter",
+                "unresolved",
+                "unavailable"
+              ]
+            },
+            "infrastructureCost": {
+              "enum": [
+                "measured",
+                "estimated",
+                "inside-another-counter",
+                "unresolved",
+                "unavailable"
+              ]
+            },
+            "retryCost": {
+              "enum": [
+                "measured",
+                "estimated",
+                "inside-another-counter",
+                "unresolved",
+                "unavailable"
+              ]
+            },
+            "fallbackCost": {
+              "enum": [
+                "measured",
+                "estimated",
+                "inside-another-counter",
+                "unresolved",
+                "unavailable"
+              ]
+            },
+            "extractionCost": {
+              "enum": [
+                "measured",
+                "estimated",
+                "inside-another-counter",
+                "unresolved",
+                "unavailable"
+              ]
+            },
+            "activityCapacity": {
+              "enum": [
+                "measured",
+                "estimated",
+                "inside-another-counter",
+                "unresolved",
+                "unavailable"
+              ]
+            }
+          },
+          "required": [
+            "inputTokens",
+            "outputTokens",
+            "reasoningTokens",
+            "cacheReadInputTokens",
+            "cacheCreationInputTokens",
+            "webSearchRequests",
+            "toolInvocations",
+            "toolOutcomes",
+            "cost",
+            "providerBilledMicroUsd",
+            "subagentCost",
+            "compactionCost",
+            "verificationCost",
+            "infrastructureCost",
+            "retryCost",
+            "fallbackCost",
+            "extractionCost",
+            "activityCapacity"
+          ],
+          "additionalProperties": false
+        },
+        "occupiedCapacity": {
+          "type": "object",
+          "properties": {
+            "status": {
+              "const": "unavailable"
+            },
+            "reason": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 1024
+            }
+          },
+          "required": [
+            "status",
+            "reason"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "schemaVersion",
+        "observedAt",
+        "timezone",
+        "currency",
+        "countersCoverage",
+        "policy",
+        "periods",
+        "monthlyAdmission",
+        "queue",
+        "coverage",
+        "denominators",
+        "jobIdentity",
+        "wholeJobs",
+        "categories",
+        "occupiedCapacity"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

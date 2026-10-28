@@ -11,6 +11,7 @@ import {assertStoredStateRequest} from '../../gateway/sources/state-status-votes
 import {captureBusinessDevelopmentResource} from '../../gateway/sources/business-development/request-context.mjs';
 import {captureFundingClientSelection,assertFundingClientSubject} from '../../gateway/sources/funding-opportunities/request-context.mjs';
 import {captureClientKnowledgeSearchSelection,assertClientKnowledgeSearchSubject} from '../../gateway/sources/client-knowledge-search/request-context.mjs';
+import {attachmentSelection} from '../../gateway/sources/client-knowledge-attachments/request-context.mjs';
 
 import {savedRecordClientSelector} from '../../../packages/contracts/retrieval-0.2/saved-records-validation.mjs';
 
@@ -103,8 +104,14 @@ export function assertSourceReadRequest(contract,request,subject){
  if(contract.binding.group==='client-knowledge-search'&&contract.descriptor.operation.id==='search_client_knowledge')assertClientKnowledgeSearchSubject(subject,captureClientKnowledgeSearchSelection(contract.descriptor.operation,request));
 }
 
-export function createSourceReadContext({contract,proof,native,defaultCongress,now,priorContext,clientReferenceObservation,modeObservation}){
+export function createSourceReadContext({contract,proof,native,defaultCongress,now,priorContext,clientReferenceObservation,modeObservation,attachmentObservation}){
  const group=contract.binding.group;
+ if(group==='client-knowledge-attachments'){
+  const selection=attachmentSelection(proof.request,proof.subject,proof.binding),observation=attachmentObservation;
+  assertNativeVisibleClients(native,selection.selectedClientId===null?[]:[selection.selectedClientId]);
+  if(!observation||observation.scope.tenantId!==native.principal.tenantId||observation.scope.userId!==native.principal.actorId||observation.scope.conversationId!==selection.sourceConversationId||observation.scope.clientId!==selection.selectedClientId)refuse('ACCESS_DENIED');
+  return {asOf:priorContext?.asOf??observation.asOf,scope:observation.scope};
+ }
  if(group==='watch-state'){
   const target=watchValidators.target(proof.request),selectedClientId=proof.subject.kind==='client'||proof.subject.entityType==='client'?clientSubject(proof,native):null;
   if(selectedClientId===null&&(proof.subject.kind!=='personal'||proof.subject.entityType!=='user'||proof.subject.entityIds.length!==1||proof.subject.entityIds[0]!==proof.binding.actorId))refuse('ACCESS_DENIED');

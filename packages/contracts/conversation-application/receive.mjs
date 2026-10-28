@@ -1,5 +1,9 @@
 import {assertHearingSourceEventSemantics} from '../conversation-sources/hearing-semantics.mjs';
+import {assertProcedureSelection} from '../procedure-selection.mjs';
+import {assertUploadSelections} from '../upload-selection.mjs';
+import {assertWorkSelection} from '../work-selection.mjs';
 import {assertNativeSourceEventSemantics} from '../conversation-sources/semantics.mjs';
+import {assertUploadSourceEventSemantics} from '../conversation-sources/upload-semantics.mjs';
 import canonicalize from 'canonicalize';
 import {parseBytes} from '../document-application/boundary.mjs';
 import {validateSubmitRequest,validateHistoryRequest,validateCancelRequest,validateEventsRequest,validateSubmitted,validateHistory,validateCancelled,validateEvent,validateError,validateFeedbackRequest,validateFeedbackReadRequest,validateFeedback,validateFeedbackRead} from './generated-validator.mjs';
@@ -20,6 +24,7 @@ function assertEvent(event,run){
  if(!same(event.binding,run.binding)||!same(event.scopes,run.scopes))fail('EVENT_VIEW_MISMATCH');
  if(event.type==='source.native-hearing-record'){try{assertHearingSourceEventSemantics(event);}catch{fail('INVALID_SOURCE_EVENT');}}
  if(event.type==='source.native-bill-text'){try{assertNativeSourceEventSemantics(event);}catch{fail('INVALID_SOURCE_EVENT');}}
+ if(event.type==='source.native-upload'){try{assertUploadSourceEventSemantics(event);}catch{fail('INVALID_SOURCE_EVENT');}}
  if(event.type==='source.available'&&event.data.scopes.some(scope=>scope.tenantId!==run.binding.tenantId||!run.scopes.some(parent=>same(scope,parent))))fail('SOURCE_SCOPE_MISMATCH');
 }
 function assertWindowPair(request,window){
@@ -34,7 +39,7 @@ function assertWindowPair(request,window){
 }
 export function receiveConversationRequest(route,utf8Bytes){
  const validate=routeValidator(route),request=parse(utf8Bytes,conversationApplicationMetadata.limits.requestBytes);
- if(!validate(request))fail('INVALID_REQUEST');requests.set(request,route);return request;
+ if(!validate(request))fail('INVALID_REQUEST');if(request.procedure!==undefined){try{assertProcedureSelection(request.procedure);}catch{fail('INVALID_REQUEST');}}if(request.uploads!==undefined){try{assertUploadSelections(request.uploads);}catch{fail('INVALID_REQUEST');}}if(request.work!==undefined){try{assertWorkSelection(request.work);}catch{fail('INVALID_REQUEST');}}requests.set(request,route);return request;
 }
 export async function receiveConversationResponse(route,httpStatus,utf8Bytes,request,currentView){
  routeValidator(route);if(requests.get(request)!==route)fail('UNADMITTED_REQUEST');
@@ -53,6 +58,9 @@ export async function receiveConversationResponse(route,httpStatus,utf8Bytes,req
  if(route==='submit'&&result.requestId!==request.requestId)fail('REQUEST_MISMATCH');
  if(route==='submit'&&selected&&(result.requestId!==selected.requestId||selected.input&&!same(selected.input,request)))fail('REQUEST_MISMATCH');
  if(route==='history'){
+  if(result.request.procedure!==undefined){try{assertProcedureSelection(result.request.procedure);}catch{fail('INVALID_RESPONSE');}}
+  if(result.request.uploads!==undefined){try{assertUploadSelections(result.request.uploads);}catch{fail('INVALID_RESPONSE');}}
+  if(result.request.work!==undefined){try{assertWorkSelection(result.request.work);}catch{fail('INVALID_RESPONSE');}}
   const after=request.after??0,limit=request.limit??100;let sequence=after;const ids=new Set();
   if(after>result.lastSequence||result.events.length>limit)fail('CURSOR_MISMATCH');
   for(const event of result.events){assertEvent(event,run);if(event.sequence!==++sequence||event.sequence>result.lastSequence||ids.has(event.eventId))fail('EVENT_SEQUENCE_MISMATCH');ids.add(event.eventId);}
@@ -60,7 +68,7 @@ export async function receiveConversationResponse(route,httpStatus,utf8Bytes,req
   if(selected&&selected.requestId!==result.request.requestId)fail('REQUEST_MISMATCH');
   if(selected?.retained&&!same(result.request,selected.retained))fail('REQUEST_MISMATCH');
   if(selected?.input){const input=selected.input,saved=result.request;
-   if(saved.prompt!==input.prompt||!same(saved.windowRequest,input.windowRequest??null)||!same(saved.skill&&{skillId:saved.skill.skillId,skillVersion:saved.skill.skillVersion},input.skill??null)||input.modelSelection!==undefined&&!same(saved.modelSelection,input.modelSelection))fail('REQUEST_MISMATCH');
+   if(!same(saved.procedure??null,input.procedure??null)||!same(saved.uploads??null,input.uploads??null)||!same(saved.work??null,input.work??null)||!same(saved.documentRevision??null,input.documentRevision??null)||saved.prompt!==input.prompt||!same(saved.windowRequest,input.windowRequest??null)||!same(saved.skill&&{skillId:saved.skill.skillId,skillVersion:saved.skill.skillVersion},input.skill??null)||input.modelSelection!==undefined&&!same(saved.modelSelection,input.modelSelection))fail('REQUEST_MISMATCH');
   }
   assertWindowPair(result.request.windowRequest,result.request.window);
  }

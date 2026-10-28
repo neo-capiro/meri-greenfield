@@ -47,7 +47,9 @@ test('all original139 rows,56 descriptors and callback implementations survive s
 });
 
 test('every schema pin resolves exact bytes while every descriptor remains unavailable',()=>{
- for(const binding of bindings){const d=resolve(binding.id).descriptor,raw=readFileSync(new URL(schemaRelativePath(binding.group),import.meta.url)),s=JSON.parse(raw),sha256=createHash('sha256').update(raw).digest('hex');
+ // Each binding resolves at its own registered version: retained rows keep their 0.2 bytes and registered
+ // successors pin their own, so the unavailable admission holds for every version without widening any.
+ for(const binding of bindings){const d=resolveOperationContract({id:binding.id,version:binding.version}).descriptor,raw=readFileSync(new URL(schemaRelativePath(binding.group),import.meta.url)),s=JSON.parse(raw),sha256=createHash('sha256').update(raw).digest('hex');
   for(const [field,def]of [['inputSchema',binding.input],['outputSchema',binding.output]])assert.deepEqual(d[field],{id:`${s.$id}#/$defs/${def}`,sha256});
   assert.match(s.$id,/^urn:meri:/);assert.equal(d.handler,null);assert.equal(d.availability,'unimplemented');assert.equal(d.qualification,'pending');assert.equal(d.retry.maxRetries,0);assert.ok(Object.isFrozen(d));
  }

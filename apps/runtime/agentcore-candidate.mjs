@@ -18,6 +18,7 @@ import {createConversationIdentity} from './conversation-identity.mjs';
 import {createCoreConversationCurrentness} from './native-authority/conversation-currentness.mjs';
 import {createCoreConversationManagement} from './native-authority/conversation-management.mjs';
 import {createCoreConversationSourceReader} from './native-authority/conversation-source.mjs';
+import {createCoreProcedureAdmission} from './native-authority/procedure-admission.mjs';
 import {createDurableSdkSessionOwner} from './sdk-session-owner.mjs';
 import {createNativeSessionContinuation} from './sdk-continuation-owner.mjs';
 import {createObjectiveSelectionOwner} from './objective-generation/selection-owner.mjs';
@@ -60,6 +61,9 @@ export function assembleAgentCoreCandidate({configuration,pool,provider,controlC
  const core=createCapiroApplicationAuthorityClient({origin:config.identity.origin,fetchImpl:coreFetch,now,enabled:true,limits:{maxRequestMs:requestMs,maxResponseBytes:131072}});
  const conversationManagement=getCoreServiceSecret?createCoreConversationManagement({origin:config.identity.origin,getServiceSecret:getCoreServiceSecret,policyRevision:config.policyRevision,nativeCredentials,fetchImpl:coreFetch,now,maxRequestMs:requestMs}):undefined;
  const conversationSourceReader=getCoreServiceSecret?createCoreConversationSourceReader({origin:config.identity.origin,getServiceSecret:getCoreServiceSecret,fetchImpl:coreFetch,now,maxRequestMs:requestMs}):undefined;
+ // Wave5 MO01/ST16: the procedure admission port holds the Core service secret control-side, exactly as the source
+ // reader above does. It reaches the worker's run-owner route only through the control conversations service.
+ const procedureAdmission=getCoreServiceSecret?createCoreProcedureAdmission({origin:config.identity.origin,getServiceSecret:getCoreServiceSecret,nativeCredentials,fetchImpl:coreFetch,now,maxRequestMs:requestMs}):undefined;
  store??=createPostgresConversationStore({pool,modelCatalog:configuration.models,assertConversationActive:conversationManagement?.assertActiveBinding,
   onPublished:event=>{turnTelemetry?.bind(event.binding);turnTelemetry?.summary(event);}});
  const routinesTask=configuration.routines?.enabled===true&&configuration.routines.task?compileNativeRoutinesTask(configuration):null;
@@ -293,7 +297,7 @@ export function assembleAgentCoreCandidate({configuration,pool,provider,controlC
  const routinesOccurrenceOwners=routinesTask===null?null:createNativeRoutinesOccurrenceOwners({configuration,native,store,now});
  return Object.freeze({execution,native,application,admitFork,readCapabilityRole,...(routineCore?{workerModelPolicy:routineCore.modelPolicy}:{}),...(routinesOccurrenceOwners===null?{}:{routinesTask,routinesOccurrenceOwners}),
   objective:Object.freeze({runStarts,core:objectiveCore,template:{versions,policyRevision:config.policyRevision,configurationSha256:hash(config),runWindowMs:config.runWindowMs}}),
-  productPorts:Object.freeze({executionOwner:execution,objectiveSelection,identityContext,conversationMembership,conversationCurrentness,...(conversationManagement?{conversationManagement}:{}),...(conversationSourceReader?{conversationSourceReader}:{}),conversationTurns:nextRunOwner,sdkSessionOwner,sdkSessionSnapshot,continuationAdmission,transitionAuthority}),
+  productPorts:Object.freeze({executionOwner:execution,objectiveSelection,identityContext,conversationMembership,conversationCurrentness,...(conversationManagement?{conversationManagement}:{}),...(conversationSourceReader?{conversationSourceReader}:{}),conversationTurns:nextRunOwner,sdkSessionOwner,sdkSessionSnapshot,continuationAdmission,transitionAuthority,...(procedureAdmission?{procedureAdmission}:{})}),
   bindApplication(value){if(outerApplication||typeof value?.handle!=='function')throw fault('AGENTCORE_CONFIGURATION');outerApplication=value;},
   async close(){closed=true;await execution.close();}});
 }

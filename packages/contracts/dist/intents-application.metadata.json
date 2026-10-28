@@ -117,8 +117,8 @@
     },
     {
       "path": "../../apps/control/intents/approval.mjs",
-      "sha256": "3858079233bdf6c954786bee044388ae5b2db2d69a99963132c2142cf510e94c",
-      "bytes": 41778
+      "sha256": "bef3ee4cf744a4cb105c92840d4e156bf5269001d20eb07eb6006e52ad7f53e3",
+      "bytes": 42446
     },
     {
       "path": "../../apps/control/intents/faults.mjs",
@@ -147,8 +147,8 @@
     },
     {
       "path": "../../apps/control/schedules/application.mjs",
-      "sha256": "054ebb700a632de91247b0d7b204908e941e5388b2b4411876d82d52e9be1bd7",
-      "bytes": 16577
+      "sha256": "82b89709a3913e3bbc3abf19105d8133200349606a38899335aa26b1fc3be328",
+      "bytes": 35605
     },
     {
       "path": "artifacts-0.2/artifact-formats.mjs",
@@ -212,8 +212,8 @@
     },
     {
       "path": "generate-intents.mjs",
-      "sha256": "837edf73e75de8d54bffa322101dec58a18710bc338efb01282c208c3224b1f6",
-      "bytes": 13392
+      "sha256": "3ad8b0c80682a538372e7bd2c9773267d60da3c2a032ca621b467e85a46698cb",
+      "bytes": 15124
     },
     {
       "path": "intents-application/boundary.mjs",
@@ -227,23 +227,23 @@
     },
     {
       "path": "intents-application/README.md",
-      "sha256": "1d60385e20ee688295be4a847f762ba937b66e90c06ecdbee60e147c751beca0",
-      "bytes": 7799
+      "sha256": "8bd7e5645d20f4ed93202cd435db6ee06fd94f40ee033bcee5459e9420b439f3",
+      "bytes": 8756
     },
     {
       "path": "intents-application/receive.mjs",
-      "sha256": "3753603d990b43680ae382731f5d715d2f944734407306125a12e9d7d181d715",
-      "bytes": 2796
+      "sha256": "4be8109851b822fccc4ba28a865f3f450c16e2f6e5b43c0cac918ae8db3d0d54",
+      "bytes": 2903
     },
     {
       "path": "intents-application/routines.mjs",
-      "sha256": "741e94c8e9a02008420172b932db6ce95aa5dbce4a4b4fb843f4a71f29ce0c3a",
-      "bytes": 4570
+      "sha256": "1cd1cd59789ffe4f66d53462a87474ae613727c93456c35ee82dcd1342863043",
+      "bytes": 8570
     },
     {
       "path": "intents-application/schema.mjs",
-      "sha256": "f9f0ea2c6792ebcb30d73e8a5f96638600628fad08143ff34b66d2034ea28b7b",
-      "bytes": 15292
+      "sha256": "842e4f19a3ca396a43f6d07303b19eb9a53299d4caf786019ef5154ecd54b8fd",
+      "bytes": 21448
     },
     {
       "path": "intents-application/semantics.mjs",
@@ -301,9 +301,14 @@
       "bytes": 16441
     },
     {
+      "path": "retrieval-0.3/client-record-action.schema.json",
+      "sha256": "14b5923738b0f0d530a9c841f127bb8114e9757c4ca284b7b6f2beaf325b336f",
+      "bytes": 31606
+    },
+    {
       "path": "schedules-0.2/application-protocol.mjs",
-      "sha256": "aca5ec8b8fa966991a6faf4f55b61e82694a76badebc5f6746f0fa3835478e9f",
-      "bytes": 864
+      "sha256": "2364bab1c6dea9fe5492f705e2da1cf2735530639cdbd02e27814e06cb91d202",
+      "bytes": 1026
     },
     {
       "path": "schedules-0.2/inspection.schema.json",
@@ -319,9 +324,29 @@
       "path": "schedules-0.2/tool-interface.schema.json",
       "sha256": "2de8450111ea263876553f86b895d7fe93bca65ec55bcd649421e21a6f6d3fcf",
       "bytes": 24305
+    },
+    {
+      "path": "schedules-0.3/inspection.schema.json",
+      "sha256": "211faad77a736cc1313b86fe709053462814df24bcf6f9fe6e581040c7b5b62d",
+      "bytes": 6806
+    },
+    {
+      "path": "schedules-0.3/lifecycle.schema.json",
+      "sha256": "14d9831e13b1667d50d42cc344a32769eba79c76bdd46197a615930f375847aa",
+      "bytes": 19747
+    },
+    {
+      "path": "schedules-0.3/tool-interface.schema.json",
+      "sha256": "56c169022a2759b861863e324996571a8acd3bf203cc486d3612db7828e77e64",
+      "bytes": 26258
+    },
+    {
+      "path": "work-selection.mjs",
+      "sha256": "76594c64a9a1eef3e9b7d5db1c7c75fd7611519510578276c4c0ee28682cf749",
+      "bytes": 3041
     }
   ],
-  "schemaSha256": "9fc2fec9e073e43fdb390af7423910dc178bfb96f1f79a116380c0cfaf151979",
+  "schemaSha256": "1576c5e1d6e3f28935495008b3a2fc79455f3655060f942d9d054568e7a837c8",
   "browserInputs": [
     "artifacts-0.2/artifact-formats.mjs",
     "commands-0.2/mail-send-validation.mjs",

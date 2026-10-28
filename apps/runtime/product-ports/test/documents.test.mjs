@@ -13,6 +13,9 @@ import {createPostgresRetentionJournal} from '../../../control/retention/postgre
 import {versions as contractVersions} from '../../../control/conversations/test/store-fixture.mjs';
 import {createPostgresConversationStore} from '../../../control/conversations/postgres-store.mjs';
 import {artifactValidators} from '../../../../packages/contracts/retrieval-0.2/validate.mjs';
+import {createRendererPort} from '../../../artifacts/renderer.mjs';
+import {syntheticAdmission} from '../../../artifacts/test/pdf-fixtures.mjs';
+import {record} from '../../../artifacts/storage/test/sql-fixture.mjs';
 
 const unused=()=>assert.fail('no SQL, SDK or native call during composition');
 const now=()=>1800000000000,pool=Object.freeze({connect:unused});
@@ -128,4 +131,20 @@ test('a supplied Core authority composes a late-bound options owner that answers
  assert.throws(()=>documentsFamily({authority}),code('PRODUCT_PORTS_CONFIGURATION'),'authority without executor');
  assert.throws(()=>documentsFamily({executor}),code('PRODUCT_PORTS_CONFIGURATION'),'executor without authority');
  assert.throws(()=>documentsFamily({createS3Client:async()=>({})}),code('PRODUCT_PORTS_CONFIGURATION'));
+});
+
+test('production documents composition binds request-local preview custody and only observed renderer availability admits PDF',async()=>{
+ const version=record().version,contextValue={binding:version.binding,scopes:version.scopes,evidence:[],assets:[],maxBytes:8388608,deadlineMs:now()+1000};
+ const authority={async resolve(){return {artifactOptions:{pool:{},context:contextValue,validators:artifactValidators,authorize:unused,versions:{},objects:{},executor:{},now,ids:unused},selectedClientId:null,limits:{},recheck:unused};}};
+ const available=createRendererPort({admission:syntheticAdmission(),transformer:{transform:unused}}),unavailable=createRendererPort({admission:null});
+ for(const [renderer,pdfAdmission,expected] of [[available,true,true],[available,false,false],[unavailable,true,false]]){
+  const recovery=createArtifactRecoveryBinding({journal:createPostgresRetentionJournal({pool,now})}),f=family({authority,executor:{execute:unused},renderer});
+  const context=Object.freeze({configuration:base({retention:{enabled:true},artifacts:artifacts({authority:coreAuthority,pdfAdmission})}),pool,now,artifactRecovery:recovery.context});
+  const {ports}=f.factory(context),sessions={},store=createPostgresConversationStore({pool,now});bindDocumentsSessions(context,sessions,undefined,store);
+  const first=(await ports.artifactOptionsOwner.resolve({})).documentOptions,second=(await ports.artifactOptionsOwner.resolve({})).documentOptions;
+  assert.equal(first.admitPdf,expected);assert.equal(first.previewOptions.renderer,renderer);assert.notEqual(first.previewOptions.previews,second.previewOptions.previews);
+  for(const name of ['read','claim','assertCurrent','recordObject','commit'])assert.equal(typeof first.previewOptions.previews[name],'function');
+  assert.deepEqual(f.s3.sent,[],'composition does not read storage or invent native observation');
+ }
+ assert.throws(()=>family({authority,executor:{execute:unused},renderer:{state:'available',transform:unused}}),code('PRODUCT_PORTS_CONFIGURATION'));
 });

@@ -115,3 +115,49 @@ test('wire B sends the exact intent, digest, decision and targets over the atten
  h.core.rewrite=(status,body)=>[status,{...body,proof:'not a jws'}];await assert.rejects(h.client.cancellationProof({attended,intent,intentSha256:hash(intent),decision,targets,deadlineMs:h.f.now()+5000}),code('ROUTINES_CORE_INVALID_RESULT'));
  h.core.rewrite=()=>[503,{message:'Routine cancellation proofs are not enabled'}];await assert.rejects(h.client.cancellationProof({attended,intent,intentSha256:hash(intent),decision,targets,deadlineMs:h.f.now()+5000}),code('ROUTINES_CORE_UNAVAILABLE'));
 });
+
+/** MR-04 R1 custody for the two consent wires: a 200 answer whose JSON does not satisfy the closed contract is
+ * DISPATCHED but UNDECIDED. Core answered the exact request, so the client may not hand the caller a provably-local
+ * refusal (`dispatched:false`), and the answer decided nothing about the consent, so it may not claim a received
+ * verdict either. A durable caller must keep its slot unresolved. Non-JSON 200 bodies and non-200 statuses are the
+ * transport's own evidence and are covered above. */
+const SERVICE=async()=>SECRET,attendedPort={nativeCredentialFor:()=>({credential:'synthetic-native',expiresAtMs:NOW+60000})};
+const consent200=body=>async()=>new Response(JSON.stringify(body),{status:200,headers:{'content-type':'application/json'}});
+const consentClient=(fetchImpl,credentials)=>createRoutinesCoreClient({origin:CORE_ORIGIN,getServiceSecret:SERVICE,now:()=>NOW,fetchImpl,...(credentials===undefined?{}:{nativeCredentials:credentials}),maxRequestMs:5000});
+const observationPins={tenantId:binding.tenantId,ownerActorId:binding.actorId,scheduleId:id(10),generation:1,intentSha256:'1'.repeat(64),projectionSha256:'2'.repeat(64),deadlineMs:NOW+4000};
+/** The closed eleven-member wire D answer (state `expired`): the base every wire D mutation below starts from. */
+const observationAnswer={schemaVersion:1,state:'expired',pinsMatched:true,observedAtMs:NOW,generation:1,consentGeneration:1,issuedAtMs:NOW-1000,expiresAtMs:NOW-1,scopeCount:1,cause:'revocation',rightsSha256:null};
+const renewalOwner={tenantId:binding.tenantId,actorId:binding.actorId};
+const renewalIntent={intentId:id(11),operation:'schedule_task',generation:1,projection:{scheduleId:id(12),owner:renewalOwner}};
+const renewalApproval={proposalId:renewalIntent.intentId,commandSha256:hash(renewalIntent),decision:'approved',approver:renewalOwner,policyRevision:'p1',decidedAt:new Date(NOW-1000).toISOString(),expiresAt:new Date(NOW+60000).toISOString()};
+const renewalAnswer={schemaVersion:1,state:'active',generation:1,policyRevision:'p1',issuedAtMs:NOW-1000,expiresAtMs:NOW+60000,observedAtMs:NOW,idempotent:false};
+/** Wire E over the real client: the attended live-session port is the only trusted double. */
+const callRenewal=fetchImpl=>consentClient(fetchImpl,attendedPort).consentRenewal({tenantId:binding.tenantId,ownerActorId:binding.actorId,intent:renewalIntent,intentSha256:hash(renewalIntent),approval:renewalApproval,binding,selectedClientId:clientId,deadlineMs:NOW+4000});
+
+test('wire D and wire E: a 200 answer outside the closed consent contract is dispatched and undecided, never a refusal',async()=>{
+ // A faithful answer is answered as itself: the mutations below are the only difference.
+ const faithful=await consentClient(consent200(observationAnswer)).consentObservation(observationPins);
+ assert.equal(faithful.state,'expired');assert.equal(faithful.pinsMatched,true);
+ const cases=[
+  ['wire D: an extra member',()=>consentClient(consent200({...observationAnswer,extra:true})).consentObservation(observationPins)],
+  ['wire D: an active state with no rights digest',()=>consentClient(consent200({...observationAnswer,state:'active',rightsSha256:null})).consentObservation(observationPins)],
+  ['wire E: a missing member',()=>{const {idempotent,...rest}=renewalAnswer;return callRenewal(consent200(rest));}],
+  ['wire E: an active state inside a lapsed window',()=>callRenewal(consent200({...renewalAnswer,issuedAtMs:NOW,expiresAtMs:NOW-1,observedAtMs:NOW}))],
+ ];
+ const seen=[];
+ for(const [name,run] of cases){
+  const error=await run().then(()=>null,error=>error);
+  seen.push([name,error?.code,error?.dispatched,error?.received]);
+ }
+ assert.deepEqual(seen,[
+  ['wire D: an extra member','ROUTINES_CORE_INVALID_RESULT',true,false],
+  ['wire D: an active state with no rights digest','ROUTINES_CORE_INVALID_RESULT',true,false],
+  ['wire E: a missing member','ROUTINES_CORE_INVALID_RESULT',true,false],
+  ['wire E: an active state inside a lapsed window','ROUTINES_CORE_INVALID_RESULT',true,false],
+ ],'every site must report its own code with dispatched custody evidence and no received verdict');
+ // The two provably-decided classes are untouched by this correction.
+ const refused=await consentClient(async()=>new Response('',{status:403})).consentObservation(observationPins).then(()=>null,error=>error);
+ assert.deepEqual([refused.code,refused.dispatched,refused.received],['ROUTINES_CORE_REFUSED',true,true]);
+ const local=await consentClient(consent200(observationAnswer)).consentObservation({...observationPins,generation:0}).then(()=>null,error=>error);
+ assert.deepEqual([local.code,local.dispatched,local.received],['ROUTINES_CORE_REQUEST',false,false],'a pre-dispatch local refusal proves nothing happened');
+});

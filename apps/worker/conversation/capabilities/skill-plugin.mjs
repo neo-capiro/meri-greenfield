@@ -95,7 +95,7 @@ export async function verifySkillPluginTree(directory,{uid,selection}={}){
  try{
   const root=await lstat(directory);if(root.isSymbolicLink()||!root.isDirectory()||realpathSync(directory)!==directory)fail('SKILL_PLUGIN_TREE_REFUSED');
   if(Number.isSafeInteger(uid)&&root.uid!==uid||(POSIX?(root.mode&0o777)!==DIRECTORY_MODE:false))fail('SKILL_PLUGIN_TREE_REFUSED');
-  const plugin=describeSkillPlugin({selection}),{files,directories}=await listTree(directory);
+  const plugin=describeSkillPlugin({selection,execution:true}),{files,directories}=await listTree(directory);
   for(const d of directories){const s=await lstat(d.abs);if(Number.isSafeInteger(uid)&&s.uid!==uid||POSIX&&(s.mode&0o777)!==DIRECTORY_MODE)fail('SKILL_PLUGIN_TREE_REFUSED');}
   const expectedDirectories=['.claude-plugin','skills',...plugin.skills.map(s=>`skills/${s.name}`)].sort(),expectedFiles=['.claude-plugin/plugin.json',...plugin.skills.map(s=>`skills/${s.name}/SKILL.md`)].sort();
   if(JSON.stringify(directories.map(d=>d.path).sort())!==JSON.stringify(expectedDirectories)||JSON.stringify(files.map(f=>f.path).sort())!==JSON.stringify(expectedFiles))fail('SKILL_PLUGIN_TREE_REFUSED');

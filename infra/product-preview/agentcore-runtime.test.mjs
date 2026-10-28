@@ -21,6 +21,7 @@ test('synthesizes V1 IAM HTTP runtime and pinned endpoint without ECS runner, me
  const template=synthesizeAgentCoreRuntime(binding()),resources=Object.values(template.Resources);
  const runtime=resources.find(r=>r.Type==='AWS::BedrockAgentCore::Runtime').Properties;
  assert.equal(runtime.PlatformVersion,'V1');assert.equal(runtime.ProtocolConfiguration,'HTTP');
+ assert.equal(runtime.EnvironmentVariables.MERI_RENDERER_IMAGE_DIGEST,binding().imageUri.split('@')[1]);
  assert.equal(runtime.NetworkConfiguration.NetworkMode,'VPC');assert.equal(runtime.AuthorizerConfiguration,undefined);
  assert.deepEqual(runtime.LifecycleConfiguration,{IdleRuntimeSessionTimeout:900,MaxLifetime:28800});
  const endpoint=resources.find(r=>r.Type==='AWS::BedrockAgentCore::RuntimeEndpoint').Properties;

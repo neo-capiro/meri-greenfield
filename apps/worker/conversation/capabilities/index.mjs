@@ -19,7 +19,7 @@ const fail=code=>{throw Object.assign(Error(code),{code});};
 const withoutBash=p=>p.bash?assertCapabilityPolicy({...p,bash:false}):p;
 /** @param {unknown} policy @param {unknown} facts */
 export function createSdkCapabilities(policy,facts){
- const requested=assertCapabilityPolicy(policy),f=own(facts,['runOwner','binding','cwd','now','newId'],['skillPluginDirectory','bashSandbox','bashEgress','bashApprovals','sdkConfigDirectory','sdkSecureStorageDirectory','brokerSocketDirectory']);
+ const requested=assertCapabilityPolicy(policy),f=own(facts,['runOwner','binding','cwd','now','newId'],['skillPluginDirectory','bashSandbox','bashEgress','bashApprovals','sdkConfigDirectory','sdkSecureStorageDirectory','brokerSocketDirectory','childAssignments']);
  if(typeof f.runOwner?.append!=='function'||typeof f.now!=='function'||typeof f.newId!=='function')fail('CAPABILITY_CONFIGURATION');validateShape('RunBinding',f.binding);assertWorkspaceRoot(f.cwd);
  const protectedPaths={...(f.sdkConfigDirectory===undefined?{}:{sdkConfigDirectory:f.sdkConfigDirectory}),...(f.sdkSecureStorageDirectory===undefined?{}:{sdkSecureStorageDirectory:f.sdkSecureStorageDirectory}),
   ...(f.brokerSocketDirectory===undefined?{}:{brokerSocketDirectory:f.brokerSocketDirectory})};
@@ -33,7 +33,8 @@ export function createSdkCapabilities(policy,facts){
  /** @type {ToolPiece[]} */const pieces=[];/** @type {Record<string,HookCallbackMatcher[]>[]} */const hookSets=[];
  if(p.workspaceTools)pieces.push(createWorkspaceTools(p,{cwd:f.cwd}));
  if(bash)pieces.push(bash);
- if(p.subagents)pieces.push(createSubagents(p,{latch}));
+ // A subagent dispatch is durable before it happens: without the run owner's child port no Agent call is admitted.
+ if(p.subagents){if(f.childAssignments===undefined)fail('CHILD_ASSIGNMENT_OWNER_REQUIRED');pieces.push(createSubagents(p,{latch,children:f.childAssignments}));}
  if(p.skillPlugin){if(f.skillPluginDirectory===undefined)fail('SKILL_PLUGIN_DIRECTORY_REQUIRED');pieces.push(createSkillPlugin(p,{skillPluginDirectory:f.skillPluginDirectory,cwd:f.cwd}));}
  // Native tool audit is collected once by the activity, independently of capability permission decisions.
  /** @type {Record<string,unknown>} */const options={};

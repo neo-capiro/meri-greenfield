@@ -14,10 +14,11 @@ export async function readDocumentInvocation({pool,binding,invocationId,signal})
  return entry===null?null:{entry,versionId:id(invocationId,'version')};
 }
 export function createPostgresArtifactService(options){
- const c=own(options,['pool','context','validators','authorize','versions','objects','executor','now'],['retention','admitRetainedEvidence','selectedInvocationId']),v=c.validators,context=v.context(c.context);
+ const c=own(options,['pool','context','validators','authorize','versions','objects','executor','now'],['retention','admitRetainedEvidence','selectedInvocationId','retainedAssetMapWrites']),v=c.validators,context=v.context(c.context);
  if(![v.nativeRequestSha256,c.authorize,c.versions?.read,c.versions?.commit,c.objects?.get,c.objects?.put,c.executor?.execute,c.now].every(f=>typeof f==='function'))fail('ARTIFACT_CONFIGURATION');
  validateShape('RunBinding',context.binding);
  if(c.admitRetainedEvidence!==undefined&&typeof c.admitRetainedEvidence!=='function')fail('ARTIFACT_CONFIGURATION');
+ if(c.retainedAssetMapWrites!==undefined&&typeof c.retainedAssetMapWrites!=='boolean')fail('ARTIFACT_CONFIGURATION');
  if(c.selectedInvocationId!==undefined&&(!/^sdk:[a-f0-9]{64}$/u.test(c.selectedInvocationId)||typeof c.admitRetainedEvidence!=='function'||c.admitRetainedEvidence(v.snapshot(context))!==undefined))fail('ARTIFACT_INVOCATION');
  const retained=context.evidence.map(v.nativeSourceEvidence).some(e=>!same(e.binding,context.binding));
  if(retained&&(typeof c.admitRetainedEvidence!=='function'||c.admitRetainedEvidence(v.snapshot(context))!==undefined))fail('ARTIFACT_EVIDENCE_BINDING');

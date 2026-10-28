@@ -7,6 +7,7 @@ import {createAgentCoreControlApplication} from '../agentcore-control-http.mjs';
 import {canonicalSha256} from '../../../packages/contracts/validate.mjs';
 import {temporalCleanupUnknown} from '../temporal-runtime-fence.mjs';
 import {createMemoryContextRelay} from '../memory-context-relay.mjs';
+import {workspaceGenerationPaths} from '../../control/conversations/workspace-generation/protocol.mjs';
 
 const credential='synthetic-control-startup-only-long-credential';
 const cleanupCode='TEMPORAL_PRODUCT_CLEANUP_UNKNOWN';
@@ -43,8 +44,9 @@ function fixture({tlsError,initialLoss=false,onListen,cleanup={},memoryContext=f
  const memoryCalls=[];
  const memoryPorts=Object.freeze({loadPrevious(request){memoryCalls.push(['loadPrevious',request]);return {previous:true};},retain(request){memoryCalls.push(['retain',request]);return {retained:true};}});
  const memoryStore=Object.freeze({forTask(task){assert.deepEqual(task,{clientId:'selected'});return memoryPorts;}});
- const assembly={sessions:{nativeCredentialFor(){throw Error('No live user in startup fixture');}},userPreferences:{state:()=>'disabled',async readiness(){events.push('user-preferences-readiness');}},application:{async handle(request){request.signal.throwIfAborted();return Response.json({synthetic:true});}},
+ const assembly={sessions:{nativeCredentialFor(){throw Error('No live user in startup fixture');},issue(){assert.fail('no Workspace turn in the startup fixture');}},userPreferences:{state:()=>'disabled',async readiness(){events.push('user-preferences-readiness');}},application:{async handle(request){request.signal.throwIfAborted();return Response.json({synthetic:true});}},
   downloads:{async open({signal}){signal.throwIfAborted();events.push('downloads');return {reason:'synthetic-only'};}},
+  service:Object.freeze({allocateInput(){assert.fail('no Workspace turn in the startup fixture');},submit(){assert.fail('no Workspace turn in the startup fixture');},history(){assert.fail('no Workspace turn in the startup fixture');},cancel(){assert.fail('no Workspace turn in the startup fixture');},observe(){assert.fail('no Workspace turn in the startup fixture');}}),
   retention:memoryContext===true?{tables:[],startup:{async ensureServing(){events.push('retention-serving');}}}:null,
   ...(memoryContext===true?{store:{memoryProposalContexts:memoryStore}}:{}),
   productReadiness:()=>({ready:true}),close:close('assembly')};
@@ -83,6 +85,24 @@ test('control supplies its Core read credential to automatic context and managem
  const absent=fixture(),without=await absent.start();
  try{assert.equal(absent.state.candidateOptions.getCoreServiceSecret,undefined);}finally{await without.close();}
 });
+
+ test('startup composes the Workspace owner under the deployed request budget and under a smaller valid one',async()=>{
+ const turn=workspaceGenerationPaths.turn,post=()=>new Request('https://control.synthetic.test'+turn,{method:'POST',headers:{'content-type':'application/json'},body:'{}'});
+ for(const requestMs of [25000,1000]){
+ const f=fixture();f.configuration.reads={enabled:true,serviceSecretFile:'/run/meri/core-reads.secret'};f.configuration.limits={...f.configuration.limits,requestMs};
+ const runtime=await f.start();
+ try{
+  assert.deepEqual(f.events.filter(event=>event.startsWith('listen:')),['listen:private','listen:public'],'both listeners bind at requestMs '+requestMs);
+  const private1=await f.state.privateApplication.handle(post());
+  assert.equal(private1.status,503,'the mounted Workspace route fails closed without transport trust at requestMs '+requestMs);
+  assert.equal((await private1.json()).error.code,'WORKSPACE_GENERATION_UNAVAILABLE');
+  assert.equal((await f.state.publicApplication.handle(post())).status,404,'the Workspace route is never public');
+ }finally{await runtime.close();}
+ }
+ const absent=fixture(),without=await absent.start();
+ try{assert.equal((await absent.state.privateApplication.handle(post())).status,404,'without the Core service secret the private route stays absent');}
+ finally{await without.close();}
+ });
 
 test('control binds the selected proposal continuation relay only to its own ready store',async()=>{
  const f=fixture({memoryContext:true}),runtime=await f.start();

@@ -8,9 +8,11 @@ import {canonicalSha256,validateShape} from '../../../../packages/contracts/vali
 import {selectSkill} from '../../../../packages/skills/index.mjs';
 const fault=code=>Object.assign(Error(code),{code});
 export const sdkToolName=operation=>operation.id.replaceAll('.','_');
+/** The ordinary original recipes keep their admission; the sourced cited report is admitted only as its own installed version. */
+export const admitOriginalSkill=pin=>['quick_skill.relationship_brief','quick_skill.commitments_audit'].includes(pin.skillId)||(pin.skillId==='quick_skill.bill_watch'&&pin.skillVersion==='2.0.0')||(pin.skillId==='quick_skill.cited_report'&&pin.skillVersion==='1.0.0');
 export function createOriginalSkillServer({selected,read,timeoutMs,binding,expectedSessionId}) {
  const original=selectSkill(selected.pin.skillId,selected.pin.skillVersion);
- if(!['quick_skill.relationship_brief','quick_skill.commitments_audit'].includes(original.pin.skillId)||
+ if(!admitOriginalSkill(original.pin)||
  canonicalSha256(selected)!==canonicalSha256(original)||typeof read!=='function'||!Number.isSafeInteger(timeoutMs)||timeoutMs<1||timeoutMs>60000)throw fault('SKILL_SERVER_CONFIGURATION');
  validateShape('RunBinding',binding);const correlations=new Map();let session=expectedSessionId??null;
  const hook=async(raw,toolUseID,options)=>{try{if(options.signal?.aborted)throw fault('CANCELLED');const input=data(raw),op=original.manifest.allowedOperations.find(o=>`mcp__meri_original_reads__${sdkToolName(o)}`===input.tool_name);

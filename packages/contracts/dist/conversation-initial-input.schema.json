@@ -1,12 +1,12 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "urn:meri:conversation-initial-input:1.0.0",
+  "$id": "urn:meri:conversation-initial-input:1.3.0",
   "$defs": {
     "ConversationInitialInputRequest": {
-      "$ref": "#/$defs/Canonical_ConversationInputRequest_c9b90727"
+      "$ref": "#/$defs/Canonical_ConversationInputRequest_aaef92e7"
     },
     "ConversationInitialInputExpectedContext": {
-      "$ref": "#/$defs/Canonical_ConversationInputExpectedContext_dd73f02f"
+      "$ref": "#/$defs/Canonical_ConversationInputExpectedContext_6bad1947"
     },
     "ConversationInitialInputAllocation": {
       "type": "object",
@@ -182,7 +182,7 @@
       ],
       "additionalProperties": false
     },
-    "Canonical_Canonical_Canonical_WindowRequest_f314f340_6bb8c023_8e6cffcb": {
+    "Canonical_Canonical_Canonical_WindowRequest_f314f340_6d73f042_4a799f6d": {
       "oneOf": [
         {
           "type": "object",
@@ -393,7 +393,7 @@
         }
       ]
     },
-    "Canonical_Canonical_Canonical_skillId_31e12e8e_cae56271_2bec58ad": {
+    "Canonical_Canonical_Canonical_skillId_31e12e8e_20420fe7_9c265ab9": {
       "type": "string",
       "enum": [
         "quick_skill.research_company",
@@ -412,11 +412,11 @@
         "quick_skill.regulatory_docket_brief"
       ]
     },
-    "Canonical_Canonical_Canonical_skillVersion_7e2af095_7f0f4343_d657b779": {
+    "Canonical_Canonical_Canonical_skillVersion_7e2af095_7b29e661_034dce25": {
       "type": "string",
       "pattern": "^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)$"
     },
-    "Canonical_Canonical_ConversationSubmitRequest_1ec41363_35a4f454": {
+    "Canonical_Canonical_ConversationSubmitRequest_9c9b616b_709bb091": {
       "type": "object",
       "properties": {
         "requestId": {
@@ -430,16 +430,27 @@
           "pattern": "\\S"
         },
         "windowRequest": {
-          "$ref": "#/$defs/Canonical_Canonical_Canonical_WindowRequest_f314f340_6bb8c023_8e6cffcb"
+          "$ref": "#/$defs/Canonical_Canonical_Canonical_WindowRequest_f314f340_6d73f042_4a799f6d"
         },
         "skill": {
           "type": "object",
           "properties": {
             "skillId": {
-              "$ref": "#/$defs/Canonical_Canonical_Canonical_skillId_31e12e8e_cae56271_2bec58ad"
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/Canonical_Canonical_Canonical_skillId_31e12e8e_20420fe7_9c265ab9"
+                },
+                {
+                  "$comment": "Identities added at this version. Adding another one requires a new reviewed version of this file, never an edit to the closed 0.2.0 enum.",
+                  "type": "string",
+                  "enum": [
+                    "quick_skill.cited_report"
+                  ]
+                }
+              ]
             },
             "skillVersion": {
-              "$ref": "#/$defs/Canonical_Canonical_Canonical_skillVersion_7e2af095_7f0f4343_d657b779"
+              "$ref": "#/$defs/Canonical_Canonical_Canonical_skillVersion_7e2af095_7b29e661_034dce25"
             }
           },
           "required": [
@@ -485,18 +496,237 @@
             "effort"
           ],
           "additionalProperties": false
+        },
+        "documentRevision": {
+          "type": "object",
+          "properties": {
+            "artifactId": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+            },
+            "versionId": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+            },
+            "objectSha256": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            }
+          },
+          "required": [
+            "artifactId",
+            "versionId",
+            "objectSha256"
+          ],
+          "additionalProperties": false
+        },
+        "uploads": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 8,
+          "uniqueItems": true,
+          "items": {
+            "type": "object",
+            "properties": {
+              "uploadId": {
+                "type": "string",
+                "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+              },
+              "sha256": {
+                "type": "string",
+                "pattern": "^[0-9a-f]{64}$"
+              }
+            },
+            "required": [
+              "uploadId",
+              "sha256"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "procedure": {
+          "oneOf": [
+            {
+              "type": "object",
+              "properties": {
+                "source": {
+                  "const": "firm"
+                },
+                "recordId": {
+                  "type": "string",
+                  "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+                },
+                "version": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 9007199254740991
+                },
+                "manifestDigest": {
+                  "type": "string",
+                  "pattern": "^[a-f0-9]{64}$"
+                }
+              },
+              "required": [
+                "source",
+                "recordId",
+                "version",
+                "manifestDigest"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "properties": {
+                "source": {
+                  "const": "builtin"
+                },
+                "id": {
+                  "enum": [
+                    "briefing",
+                    "draft",
+                    "bill_analysis",
+                    "hearing_prep",
+                    "coalition_letter",
+                    "amendment_tracker"
+                  ]
+                },
+                "version": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 9007199254740991
+                },
+                "manifestDigest": {
+                  "type": "string",
+                  "pattern": "^[a-f0-9]{64}$"
+                }
+              },
+              "required": [
+                "source",
+                "id",
+                "version",
+                "manifestDigest"
+              ],
+              "additionalProperties": false
+            }
+          ]
+        },
+        "work": {
+          "type": "object",
+          "properties": {
+            "entry": {
+              "enum": [
+                "start-work",
+                "delegate"
+              ]
+            },
+            "jobKind": {
+              "enum": [
+                "research",
+                "deliverable",
+                "audit",
+                "scheduled"
+              ]
+            },
+            "deliverables": {
+              "type": "array",
+              "maxItems": 20,
+              "uniqueItems": true,
+              "items": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 200,
+                "pattern": "\\S"
+              }
+            },
+            "dependencies": {
+              "type": "array",
+              "maxItems": 20,
+              "uniqueItems": true,
+              "items": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 200,
+                "pattern": "\\S"
+              }
+            }
+          },
+          "required": [
+            "entry",
+            "jobKind",
+            "deliverables",
+            "dependencies"
+          ],
+          "additionalProperties": false
         }
       },
       "required": [
         "requestId",
         "prompt"
       ],
-      "additionalProperties": false
+      "additionalProperties": false,
+      "not": {
+        "properties": {
+          "skill": {},
+          "procedure": {}
+        },
+        "required": [
+          "skill",
+          "procedure"
+        ]
+      },
+      "if": {
+        "properties": {
+          "skill": {},
+          "documentRevision": {}
+        },
+        "required": [
+          "skill",
+          "documentRevision"
+        ]
+      },
+      "then": {
+        "properties": {
+          "skill": {
+            "anyOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "skillId": {
+                    "const": "quick_skill.bill_watch"
+                  },
+                  "skillVersion": {
+                    "const": "2.0.0"
+                  }
+                },
+                "required": [
+                  "skillId",
+                  "skillVersion"
+                ]
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "skillId": {
+                    "const": "quick_skill.cited_report"
+                  },
+                  "skillVersion": {
+                    "const": "1.0.0"
+                  }
+                },
+                "required": [
+                  "skillId",
+                  "skillVersion"
+                ]
+              }
+            ]
+          }
+        }
+      }
     },
-    "Canonical_ConversationInputRequest_c9b90727": {
-      "$ref": "#/$defs/Canonical_Canonical_ConversationSubmitRequest_1ec41363_35a4f454"
+    "Canonical_ConversationInputRequest_aaef92e7": {
+      "$ref": "#/$defs/Canonical_Canonical_ConversationSubmitRequest_9c9b616b_709bb091"
     },
-    "Canonical_ConversationInputExpectedContext_dd73f02f": {
+    "Canonical_ConversationInputExpectedContext_6bad1947": {
       "type": "object",
       "properties": {
         "tenantId": {

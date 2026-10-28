@@ -10,7 +10,7 @@ export const conversationErrorStatuses = freeze({
   FEEDBACK_REPLAY_REFUSED:[409],FEEDBACK_LIMIT:[409],FEEDBACK_WRITE_UNKNOWN:[503],
 });
 export const conversationApplicationMetadata = freeze({
-  packageVersion:'0.1.15', schemaId:'urn:meri:conversation-application:0.1.0', wireContractVersion:'0.1.0',
+  packageVersion:'0.1.15', schemaId:'urn:meri:conversation-application:0.4.0', wireContractVersion:'0.4.0',
   routes:{
     submit:{method:'POST',path:'/api/conversations/submit',response:'json'},
     history:{method:'POST',path:'/api/conversations/history',response:'json'},

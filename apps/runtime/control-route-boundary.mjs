@@ -4,19 +4,24 @@ import {assertTemporalRuntimeCleanup,temporalCleanupUnknown} from './temporal-ru
 import {USER_PREFERENCES_PATHS} from '../control/settings/user-application/protocol.mjs';
 import {taskCommandPaths} from '../../packages/contracts/task-command-application/protocol.mjs';
 import {ROUTINE_PATHS} from '../control/schedules/application-http.mjs';
+import {ROUTINE_MANAGEMENT_SESSION_PATH} from '../../packages/contracts/schedules-0.2/application-protocol.mjs';
 import {TENANT_SETTINGS_PATHS} from '../control/settings/tenant-application/protocol.mjs';
 import {MEMORY_PATHS} from '../control/memory/protocol.mjs';
+import {matchUploadApplicationPath} from '../control/uploads/application.mjs';
 import {OBJECTIVE_READER_PREFIX} from './product-ports/objective.mjs';
 import {OBJECTIVE_ACTIVITIES_PREFIX} from './native-authority/objective-runs-http.mjs';
 import {ROUTINES_OCCURRENCE_PREFIX} from './native-authority/routines-occurrence-http.mjs';
 import {OBJECTIVE_GENERATION_START_PATH} from './objective-generation/start-application.mjs';
 import {APPROVAL_METADATA_READ_PATH} from './agentcore-control-http.mjs';
+import {workspaceGenerationPaths} from '../control/conversations/workspace-generation/protocol.mjs';
+import {SOURCE_EVENT_BINDING_PATH,SOURCE_EVENT_PATH} from '../control/schedules/source-event-contract.mjs';
+const SOURCE_EVENT_PATHS=Object.freeze([SOURCE_EVENT_PATH,SOURCE_EVENT_BINDING_PATH]);
 const absent=()=>Response.json({error:{code:'ROUTE_NOT_FOUND'}},{status:404,headers:{'cache-control':'no-store','x-content-type-options':'nosniff'}});
-const publicPath=path=>path==='/api/conversations'||path.startsWith('/api/conversations/')||path==='/api/action-followthrough/session'||path==='/api/action-followthrough/query'||Object.values(USER_PREFERENCES_PATHS).includes(path)||Object.values(taskCommandPaths).includes(path)||Object.values(ROUTINE_PATHS).includes(path)||Object.values(TENANT_SETTINGS_PATHS).includes(path)||Object.values(MEMORY_PATHS).includes(path)||path.startsWith('/api/documents/');
+const publicPath=path=>path==='/api/conversations'||path.startsWith('/api/conversations/')||path==='/api/action-followthrough/session'||path==='/api/action-followthrough/query'||path===ROUTINE_MANAGEMENT_SESSION_PATH||Object.values(USER_PREFERENCES_PATHS).includes(path)||Object.values(taskCommandPaths).includes(path)||Object.values(ROUTINE_PATHS).includes(path)||Object.values(TENANT_SETTINGS_PATHS).includes(path)||Object.values(MEMORY_PATHS).includes(path)||path.startsWith('/api/documents/')||Boolean(matchUploadApplicationPath(path));
 const privatePath=path=>path.startsWith('/v1/')||path.startsWith('/internal/conversations/')||path.startsWith(OBJECTIVE_READER_PREFIX);
 
-export function createControlRouteApplications({assembly,candidate,router=null,poststart=null,privateIngress=null,objectiveReader=null,approvalMetadataReader=null,objectiveRuns=null,objectiveStart=null,routinesOccurrences=null}){
- if(typeof assembly?.handle!=='function'||typeof candidate?.handle!=='function'||[objectiveReader,approvalMetadataReader,objectiveRuns,objectiveStart,routinesOccurrences].some(app=>app!==null&&typeof app?.handle!=='function'))throw Error('PRIVATE_CONTROL_CONFIGURATION');
+export function createControlRouteApplications({assembly,candidate,router=null,poststart=null,privateIngress=null,objectiveReader=null,approvalMetadataReader=null,objectiveRuns=null,objectiveStart=null,routinesOccurrences=null,sourceEvents=null,workspaceGeneration=null}){
+ if(typeof assembly?.handle!=='function'||typeof candidate?.handle!=='function'||[objectiveReader,approvalMetadataReader,objectiveRuns,objectiveStart,routinesOccurrences,sourceEvents,workspaceGeneration].some(app=>app!==null&&typeof app?.handle!=='function'))throw Error('PRIVATE_CONTROL_CONFIGURATION');
  const marker=privateIngress?.issue();
  if(router!==null&&(!marker||typeof router.privateApplication?.handle!=='function'))throw Error('PRIVATE_CONTROL_CONFIGURATION');
  if(poststart!==null&&(!marker||typeof poststart.privateApplication?.handle!=='function'))throw Error('PRIVATE_CONTROL_CONFIGURATION');
@@ -27,12 +32,18 @@ export function createControlRouteApplications({assembly,candidate,router=null,p
    return publicPath(path)?assembly.handle(request):absent();}}),
   private:Object.freeze({async handle(request){const path=new URL(request.url).pathname;if(!privatePath(path))return absent();
    if(path===APPROVAL_METADATA_READ_PATH)return (approvalMetadataReader===null?null:await approvalMetadataReader.handle(request))??absent();
+   // The Workspace generation leaf: the current identity credential in the request authenticates the
+   // turn; the Core service secret is transport. Not composed, the route is absent.
+   if(Object.values(workspaceGenerationPaths).includes(path))return (workspaceGeneration===null?null:await workspaceGeneration.handle(request))??absent();
    // Core's saved-job readback stays on the private listener.
    if(path.startsWith(OBJECTIVE_READER_PREFIX))return (objectiveReader===null?null:await objectiveReader.handle(request))??absent();
    // The Temporal worker's Objective `runs` native operations (control capability only); disabled answers null, so 404.
    if(path.startsWith(OBJECTIVE_ACTIVITIES_PREFIX))return (objectiveRuns===null?null:await objectiveRuns.handle(request))??absent();
    // The schedule worker's routine occurrence operations (control capability only, lane B3); disabled answers null, so 404.
    if(path.startsWith(ROUTINES_OCCURRENCE_PREFIX))return (routinesOccurrences===null?null:await routinesOccurrences.handle(request))??absent();
+   // MB-05 producer events (private listener only; listener placement is the trust boundary).
+   // `/v1/...` is already the private classifier, so no public path, middleware or guard changes.
+   if(SOURCE_EVENT_PATHS.includes(path))return (sourceEvents===null?null:await sourceEvents.handle(request))??absent();
    if(poststart!==null){const delivered=await poststart.privateApplication.handle(request,{ingress:marker});if(delivered!==null)return delivered;}
    if(router!==null){const routed=await router.privateApplication.handle(request,{ingress:marker});if(routed!==null)return routed;}
    const native=await candidate.handle(request);if(native!==null)return native;

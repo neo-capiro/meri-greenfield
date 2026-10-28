@@ -71,6 +71,7 @@ function conversationEvidence(s){
  if(hasSourcePin){
   digest(s.inventorySha256);requireList(s.artifactVersionRefs);requireList(s.objectVersions);requireList(s.contentRows);
   const owner=Object.fromEntries(sourceFields.map(field=>[field,s[field]]));
+  if(s.uploads!==undefined)owner.uploads=s.uploads;
   if(hash(owner)!==s.inventorySha256)refusal();
   const eventKeys=new Set(events.map(e=>`${e.runId}:${e.sequence}:${e.eventId}`)),references=new Set();
   for(const raw of s.artifactVersionRefs){const ref=own(raw,['runId','sequence','eventId','artifactId','versionId']);
@@ -113,6 +114,7 @@ export function enumerateReferences(snapshot){
   // generation. Enumeration receives only their content-free row identities.
   if(!owner.runIds.size&&!['meri_conversations.initial_run_bindings','meri_conversations.initial_inputs'].includes(target.table)&&
    !(owner.sourceSha256&&target.table==='meri_objective_source.run_starts')&&
+   !(owner.sourceSha256&&target.table==='meri_uploads.originals')&&
    !(owner.sourceSha256&&hasInitialBinding&&['meri_commands.approval_metadata','meri_commands.command_journal','meri_intents.preparations'].includes(target.table)))refusal();
   rowTargets.push(Object.freeze(target));add(target.className,key,[]);
  }
@@ -157,7 +159,11 @@ export function enumerateReferences(snapshot){
  for(const o of list(s.selectedOutputs))keyed('selectedOutputs',o.outputId,o.object?[o.object]:[]);
  for(const v of list(s.artifactVersions)){uuid(v.versionId);rowTargets.push(Object.freeze({className:'artifactVersions',artifactVersionId:v.versionId}));add('artifactVersions',v.versionId,[v.object],{artifactVersionId:v.versionId});}
  for(const n of list(s.nativeJournalRows))keyed('nativeJournals',n.runId,[]);
- for(const u of list(s.uploads))add('uploads',u.uploadId,[u.object]);
+ for(const u of list(s.uploads)){
+  own(u,['uploadId','object']);uuid(u.uploadId);
+  if(s.contentRows!==undefined&&!list(s.contentRows).some(t=>t.table==='meri_uploads.originals'&&t.key.upload_id===u.uploadId))refusal();
+  if(conversation)ownerObjects.push(u.object);add('uploads',u.uploadId,[u.object]);
+ }
  for(const r of list(s.schedules))keyed('schedules',r.scheduleId,[]);
  for(const r of list(s.receipts))keyed('receipts',r.receiptId,[]);
  for(const m of list(s.memoryProposals))add('memoryProposals',uuid(m.candidateId),[]);

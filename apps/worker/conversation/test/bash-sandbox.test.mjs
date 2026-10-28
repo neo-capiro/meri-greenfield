@@ -4,13 +4,14 @@ import {assertCapabilityPolicy} from '../capabilities/policy.mjs';
 import {admitBash,assertBashSandboxAttestation,buildBashSandboxSettings,buildBashSandboxLocks,createBashSandbox,SANDBOX_DENIED_ENV,assertSandboxSettings,assertSandboxLocks} from '../capabilities/bash-sandbox.mjs';
 import {assertCapabilityFragment} from '../capabilities/fragment.mjs';
 import {createSdkCapabilities} from '../capabilities/index.mjs';
+import {childAssignmentPort} from './child-assignment-port-fixture.mjs';
 import {buildConversationOptions} from '../options.mjs';
 import {binding,versions,id} from '../../../control/conversations/test/application-fixture.mjs';
 import {BASH_EGRESS_SCHEMA,bashEgressDomainsSha256} from '../egress/bash-egress.mjs';
 const egressFact=domains=>({schema:BASH_EGRESS_SCHEMA,httpProxyPort:41001,socksProxyPort:41002,domainsSha256:bashEgressDomainsSha256(domains)});
 const cwd=`/workspace/conversations/${binding.conversationId}`,signal=new AbortController().signal;
 const attested=Object.freeze({available:true,sdk:'0.3.295',cli:'2.1.295',weakerNestedSandbox:false,outerIsolationBoundary:true});
-const facts=(extra={})=>({runOwner:{append:async()=>{}},binding,cwd,now:Date.now,newId:()=>id(1),...extra});
+const facts=(extra={})=>({runOwner:{append:async()=>{}},binding,cwd,childAssignments:childAssignmentPort(),now:Date.now,newId:()=>id(1),...extra});
 const runtime=(extra={})=>({binding,versions,cwd,proxyUrl:'https://trusted-proxy.invalid',proxyCredential:'synthetic-task-capability',model:'qualified-model-pin',sessionStore:{async load(){return null;},async append(){}},deadlineMs:Date.now()+1000,maxTurns:2,maxCostMicroUSD:1000,maxOutputBytes:1024,...extra});
 const clone=v=>JSON.parse(JSON.stringify(v));
 

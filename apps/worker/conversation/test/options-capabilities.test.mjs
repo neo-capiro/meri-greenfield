@@ -3,6 +3,7 @@ import test from 'node:test';import assert from 'node:assert/strict';
 import {buildConversationOptions} from '../options.mjs';
 import {createSdkCapabilities} from '../capabilities/index.mjs';
 import {assertCapabilityFragment,mergeCapabilityFragment} from '../capabilities/fragment.mjs';
+import {childAssignmentPort} from './child-assignment-port-fixture.mjs';
 import {binding,versions,id} from '../../../control/conversations/test/application-fixture.mjs';
 import {plugin,preparedWorkspace} from './capability-fixture.mjs';
 const cwd=preparedWorkspace(binding.conversationId);
@@ -11,7 +12,7 @@ const serial=o=>JSON.stringify(o,(k,v)=>typeof v==='function'?`fn:${v.length}`:v
 const DEFAULT_KEYS=['cwd','abortController','settingSources','settings','skills','allowedTools','tools','permissionMode','canUseTool','includePartialMessages','systemPrompt','model','maxTurns','maxBudgetUsd','sessionStore','sessionStoreFlush','env','thinking'];
 const hook=async()=>({});
 const skillOptions=()=>({mcpServers:{meri_original_reads:{type:'sdk',name:'meri_original_reads',instance:{close(){}}}},allowedTools:['mcp__meri_original_reads__read_a'],canUseTool:async name=>name==='mcp__meri_original_reads__read_a'?{behavior:'allow',updatedInput:{}}:{behavior:'deny',message:'Tool unavailable'},hooks:{PreToolUse:[{matcher:'mcp__meri_original_reads__.*',hooks:[hook]}]}});
-const facts=()=>({runOwner:{append:async()=>{}},binding,cwd,now:Date.now,newId:()=>id(1),skillPluginDirectory:plugin});
+const facts=()=>({runOwner:{append:async()=>{}},binding,cwd,childAssignments:childAssignmentPort(),now:Date.now,newId:()=>id(1),skillPluginDirectory:plugin});
 
 test('an absent or all-off capability fragment keeps the default options byte-identical in shape and order',()=>{
  const controller=new AbortController(),r=runtime(),reference=buildConversationOptions(r,controller);

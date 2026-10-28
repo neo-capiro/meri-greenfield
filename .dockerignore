@@ -50,6 +50,23 @@ infra/product-preview/runtime-packages/*
 !infra/product-preview/runtime-packages/wheels/
 !infra/product-preview/runtime-packages/requirements.lock.txt
 !infra/product-preview/runtime-packages/executor-generation-smoke.mjs
+# The retained vendor-signed apk index apps/runtime/Dockerfile:67 stages as the local repository
+# index. Only this one archive, so the directory stays closed to anything else added beside it.
+!infra/product-preview/native-apk-index/
+infra/product-preview/native-apk-index/*
+!infra/product-preview/native-apk-index/aarch64-APKINDEX-5c84e4b835a811c1624d9692f011df3de446c8011be4dedaabf6f3dbf41ec536.tar.gz
+# The two dearmored vendor keyrings the ClamAV preparation stage verifies signatures with, copied by
+# apps/runtime/Dockerfile and pinned by sha256 inside the build. The armored originals are staged from their
+# published URLs by ADD --checksum, so both forms of each key are present and neither directory is opened wider.
+!infra/product-preview/native-clamav-keys/
+infra/product-preview/native-clamav-keys/*
+!infra/product-preview/native-clamav-keys/cisco-talos-keyring.gpg
+!infra/product-preview/native-clamav-keys/rust-release-keyring.gpg
+# The coverage checker and its advisory table are COPYed into the runtime image so the retained build probe can
+# bind the recorded coverage to the built image's own version, inventory and provenance. They are source files
+# read at build time, and nothing else under infra/product-preview is opened wider by this.
+!infra/product-preview/clamav_component_coverage.py
+!infra/product-preview/clamav-source-advisories.json
 scripts
 *.env
 **/*.env

@@ -6,6 +6,7 @@
 import {types} from 'node:util';
 import {own,data,nativeSignal} from '../../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {canonicalSha256 as hash,validateShape} from '../../../packages/contracts/validate.mjs';
+import {scheduleToolValidators} from '../../../packages/contracts/retrieval-0.2/validate.mjs';
 import {createOperationLifetime} from '../../../packages/runtime/operation-lifetime.mjs';
 import {allocation} from '../../gateway/budget/tool-budget-binding.mjs';
 import {storageMethod} from '../../artifacts/storage/boundary.mjs';
@@ -108,10 +109,14 @@ export function createNativeRoutinesContextOwner({base,sessions,scheduleOwner,st
   try{
    request=own(value,['credential','operation','request','deadlineMs'],['signal','proposal']);nativeSignal(request.signal);
    if(typeof request.credential!=='string'||!request.credential||!Number.isSafeInteger(request.deadlineMs))throw Error();
+   // Listing and stopping future firings do not start model work. Keep execution eligibility
+   // unchanged for new/updated schedules and cancellation that selects running work.
+   const cancel=request.operation==='cancel_scheduled_task'?scheduleToolValidators.normalizeRequest(request.operation,request.request):null;
+   const managementOnly=request.operation==='list_scheduled_tasks'||cancel?.running==='leave'&&cancel.runs.length===0;
    const deadlineMs=Math.min(request.deadlineMs,now()+c.limits.maxRequestMs);
    life=createOperationLifetime({now,signal:request.signal,deadlineMs,errorFactory:contextRefuse});
    const auth=data(own(await life.run(signal=>authenticate({credential:request.credential,signal,deadlineMs})),['principal','sessionRevision','checkedAtMs','expiresAtMs']));
-   let selected=null,budget=null;
+   let selected=null,budget=null,persistedManagement=null;
    async function currentFor(call){
     const check=()=>{call.signal?.throwIfAborted();if(now()>=call.deadlineMs)throw contextRefuse();};
     const current=data(own(await readState(call),['authenticationSha256','binding','scopes','selectedClientId','checkedAtMs','expiresAtMs']));check();
@@ -123,7 +128,11 @@ export function createNativeRoutinesContextOwner({base,sessions,scheduleOwner,st
     const choice={binding:b,scopes:current.scopes,selectedClientId:current.selectedClientId};
     if(selected!==null&&!same(choice,selected))throw contextRefuse();
     const saved=typeof store.readOptional==='function'?await store.readOptional(b,{after:0,limit:1},check):await readRun(b,{after:0,limit:1},check);check();let policy;
+    // Only a persisted exact-session management request may omit model admission.
+    // An initial binding keeps its positive budget even if the run persists during this request.
+    persistedManagement??=managementOnly&&saved!==null;
     if(saved===null){
+     if(persistedManagement)throw contextRefuse();
      if(typeof store.initialBindings?.readPreparation!=='function'||typeof store.readCurrentModelPolicy!=='function')throw contextRefuse();
      const initial=await store.initialBindings.readPreparation({binding:b},check);check();const record=initial?.record;
      if(!record||initial.recordSha256!==hash(record)||!same(record.binding,b)||!same(record.versions,c.versions)||record.selectedClientId!==current.selectedClientId||
@@ -131,21 +140,28 @@ export function createNativeRoutinesContextOwner({base,sessions,scheduleOwner,st
      policy=await store.readCurrentModelPolicy(b,check);check();
      const after=await store.initialBindings.readPreparation({binding:b},check);check();if(!same(initial,after))throw contextRefuse();
     }else{
-     const {run}=saved,head=await readHead(b,check);policy=await readModelPolicy(b,check);check();
-     if(!same(run.binding,b)||!same(run.scopes,current.scopes)||!same(run.versions,c.versions)||run.policyRevision!==current.scopes[0].policyRevision||
-      !['starting','running','paused','waiting-for-approval','completed'].includes(run.state)||head.reserved!==false||!same(head.binding,b)||
+     const {run}=saved,head=await readHead(b,check);if(!persistedManagement)policy=await readModelPolicy(b,check);check();
+     validateShape('RuntimeVersions',run.versions);
+     // An existing exact session may manage future firings after an image deployment.
+     // Other version compatibility and every execution operation keep the configured pins.
+     const requiredVersions=managementOnly?{...c.versions,imageDigest:run.versions.imageDigest}:c.versions;
+     if(!same(run.binding,b)||!same(run.scopes,current.scopes)||!same(run.versions,requiredVersions)||run.policyRevision!==current.scopes[0].policyRevision||
+      !(['starting','running','paused','waiting-for-approval','completed'].includes(run.state)||managementOnly&&['failed','cancelled'].includes(run.state))||head.reserved!==false||!same(head.binding,b)||
       !same(head.scopes,current.scopes)||head.policyRevision!==run.policyRevision)throw contextRefuse();
     }
-    if(!Number.isSafeInteger(policy.maxBudgetMicroUsd)||policy.maxBudgetMicroUsd<1)throw contextRefuse();
-    // A changed tenant budget never reuses the old proposal/authorization silently.
-    if(budget!==null&&budget!==policy.maxBudgetMicroUsd)throw contextRefuse();
-    selected??=data(choice);budget??=policy.maxBudgetMicroUsd;
+    if(!persistedManagement){
+     if(!Number.isSafeInteger(policy.maxBudgetMicroUsd)||policy.maxBudgetMicroUsd<1)throw contextRefuse();
+     // A changed tenant budget never reuses execution proposal/authorization silently.
+     if(budget!==null&&budget!==policy.maxBudgetMicroUsd)throw contextRefuse();
+     budget??=policy.maxBudgetMicroUsd;
+    }
+    selected??=data(choice);
     return {...current,checkedAtMs:now(),expiresAtMs:Math.min(current.expiresAtMs,call.authentication.expiresAtMs,deadlineMs)};
    }
    const first=await life.run(signal=>currentFor({authentication:auth,signal,deadlineMs}));life.check();
    return createScheduleRuntimeContext({sessions:{authenticateSession:authenticate,readCurrentState:currentFor},
     commandContext:{binding:first.binding,clientResolution:first.selectedClientId===null?null:{reference:first.selectedClientId,clientId:first.selectedClientId}},
-    executionLimits:{expiresAtMs:first.expiresAtMs,maxCostMicrousd:budget,maxRuntimeSeconds:c.maxRuntimeSeconds,retryLimit:0},
+    ...(persistedManagement?{managementExpiresAtMs:first.expiresAtMs}:{executionLimits:{expiresAtMs:first.expiresAtMs,maxCostMicrousd:budget,maxRuntimeSeconds:c.maxRuntimeSeconds,retryLimit:0}}),
     template:c.template,workflow:c.workflow,policy:c.policy,limits:c.limits,scheduleOwner,now,newId,
     ...(runCancellation===undefined?{}:{runCancellation})});
   }catch{throw contextRefuse();}finally{life?.close();}

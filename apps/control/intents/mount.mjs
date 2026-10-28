@@ -16,13 +16,21 @@ import {createIntentJournal} from './journal.mjs';
 import {intentFault,INTENT_FAILURE_CODES} from './faults.mjs';
 import {createIntentResultRelease} from './result-release.mjs';
 import {COMMAND_INTENT_OPERATIONS} from './command-preparer.mjs';
-import {SCHEDULE_INTENT_OPERATIONS} from './schedule-preparer.mjs';
+import {SCHEDULE_INTENT_OPERATIONS,scheduleOperationDeclared} from './schedule-preparer.mjs';
 import {DOCUMENT_INTENT_OPERATIONS} from './document-preparer.mjs';
 import {ANALYSIS_INTENT_OPERATIONS} from './analysis-preparer.mjs';
 import {MEMORY_COMMAND_OPERATION} from '../memory/command-options.mjs';
 import {RESEARCH_ACTION_INTENTS} from '../../../packages/contracts/retrieval-0.2/research-portfolio-action-validation.mjs';
 import {researchActionValidators} from '../../../packages/contracts/retrieval-0.2/validate.mjs';
-const DELIVERY=/^sdk:[a-f0-9]{64}$/u,AVAILABILITY_MS=30000;
+// A composed preparer advertises its own operation version and the caller must ask for exactly that
+// version. The mount does not pin one version: a canonical owner may publish a successor (the catalog
+// keeps the earlier version resolvable), and the worker's intent catalog is what decides which
+// advertised versions become visible tools.
+// The one kind whose declaration is not a version shape is the schedule kind: a schedule operation
+// belongs to exactly one of its frozen contract families, so its declaration is admitted only by the
+// exact family pin that owner declares (`scheduleOperationDeclared`), never by a semver shape and never
+// by "the current family". Every other owner kind keeps the shape rule above unchanged.
+const VERSION=/^\d+\.\d+\.\d+$/u,DELIVERY=/^sdk:[a-f0-9]{64}$/u,AVAILABILITY_MS=30000;
 const OWNERS=Object.freeze({note:['save_note'],watch:['watch_action'],'legislative-document':['prepare_legiwatch_briefing','save_legislative_research'],bizdev:['save_business_development_brief'],'client-record':['create_client','update_client_profile'],legiwatch:['apply_legiwatch_suggestion','save_legiwatch_relevance'],'research-sharing':['publish_research_portfolio_share_link','revoke_research_portfolio_share_link'],'research-action':RESEARCH_ACTION_INTENTS,command:Object.keys(COMMAND_INTENT_OPERATIONS),schedule:SCHEDULE_INTENT_OPERATIONS,document:DOCUMENT_INTENT_OPERATIONS,artifact:ANALYSIS_INTENT_OPERATIONS,memory:[MEMORY_COMMAND_OPERATION.id]});
 const CODES=new Set(INTENT_FAILURE_CODES);
 const closed=code=>CODES.has(code)?code:'UNKNOWN';
@@ -34,7 +42,7 @@ export function createIntentMount(configuration){
  const journal=createIntentJournal(c.journalStore),release=createIntentResultRelease({authority:c.resultRelease,binding,now:c.now}),byOperation=new Map();
  for(const p of c.preparers){
   // Only owner kinds with a canonical prepare-only path, for this run's exact binding, one preparer per operation.
-  if(!OWNERS[p?.owner]?.includes(p.operation?.id)||p.operation.version!=='0.2.0'||typeof p.prepare!=='function'||canonicalSha256(p.binding)!==canonicalSha256(binding)||byOperation.has(p.operation.id))throw intentFault('INTENT_CONFIGURATION');
+  if(!OWNERS[p?.owner]?.includes(p.operation?.id)||!(p.owner==='schedule'?scheduleOperationDeclared(p.operation?.version):VERSION.test(p.operation?.version))||typeof p.prepare!=='function'||canonicalSha256(p.binding)!==canonicalSha256(binding)||byOperation.has(p.operation.id))throw intentFault('INTENT_CONFIGURATION');
   byOperation.set(p.operation.id,p);
  }
  const operations=Object.freeze([...byOperation.values()].map(p=>p.operation));
@@ -50,7 +58,9 @@ export function createIntentMount(configuration){
    if(c.enabled!==true||!release.available)throw intentFault('UNAVAILABLE');
    let v;try{v=data(raw);own(v.operation,['id','version']);}catch{throw intentFault('INVALID_ARGUMENTS');}
    const preparer=byOperation.get(v.operation.id);
-   if(!preparer||v.operation.version!=='0.2.0')throw intentFault('UNAVAILABLE');
+   // The caller must name the exact version the owner prepares: a superseded request is UNAVAILABLE, never
+   // silently re-routed to the successor.
+   if(!preparer||v.operation.version!==preparer.operation.version)throw intentFault('UNAVAILABLE');
    if(typeof v.deliveryId!=='string'||!DELIVERY.test(v.deliveryId)||v.arguments===null||typeof v.arguments!=='object'||Array.isArray(v.arguments))throw intentFault('INVALID_ARGUMENTS');
    const record=data({operation:preparer.operation,argumentsSha256:canonicalSha256(v.arguments)}),life=lifetime(signal),key={binding,deliveryId:v.deliveryId,record};
    try{

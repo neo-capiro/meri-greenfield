@@ -48,15 +48,15 @@ for(const skillVersion of ['1.0.0','1.1.0'])test(`Q04 selected ${skillVersion}: 
  }finally{await f.close();}
 });
 
-for(const skill of describeSkillPlugin().skills)test(`${skill.skillId}: canonical selection persists and uses its existing execution owner`,async()=>{
- const f=await fixture(skill);
+for(const skill of [...describeSkillPlugin().skills,{skillId:'quick_skill.bill_watch',skillVersion:'1.0.1',name:'meri-bill-watch'}])test(`${skill.skillId}@${skill.skillVersion}: canonical selection persists and uses its existing execution owner`,async()=>{
+ const f=await fixture(skill,{versionedPlugin:true});
  try{
   await f.service.allocateInput({credential:f.credential,input:f.input});await f.service.submit({credential:f.credential,input:f.input});
   const accepted=await f.service.history({credential:f.credential});assert.deepEqual(accepted.request.skill,f.selected.pin);assert.deepEqual(accepted.request.windowRequest,windowRequest);
   if(selectedOutputCompiler(f.selected))return; // Actual compiler/MCP/publication is covered by composition.test.mjs.
   const result=await f.execute({binding}).catch(error=>{throw f.failures[0]??error;});assert.deepEqual(result,{state:'completed'});assert.equal(f.queryCalls(),1);
   const options=f.options();assert.ok(options.systemPrompt.append.includes(f.selected.prose));assert.ok(options.mcpServers.meri_reads);assert.equal(options.mcpServers.meri_original_reads,undefined);
-  assert.equal(options.skills,'all');assert.deepEqual(options.plugins,[{type:'local',path:plugin,skipMcpDiscovery:true}]);assert.equal(options.outputFormat,undefined);
+  assert.equal(options.skills,'all');assert.equal(await readFile(join(options.plugins[0].path,'skills',skill.name,'SKILL.md'),'utf8'),f.selected.prose);assert.equal(options.outputFormat,undefined);
   assert.equal(options.maxTurns,Math.min(50,f.selected.manifest.budgets.maxTurns));assert.equal(options.maxBudgetUsd,Math.min(1,f.selected.manifest.budgets.maxCostMicroUSD/1000000));
   const after=await f.service.history({credential:f.credential});assert.equal(after.run.state,'completed');assert.deepEqual(after.request,accepted.request);
  }finally{await f.close();}

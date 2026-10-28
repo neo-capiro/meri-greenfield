@@ -9,9 +9,11 @@ const NATIVE='apps/runtime/read-context/source-read-context.mjs (createSourceRea
 /** Trusted sources per dispatch path and key. Every entry names the owner that produces the value and where it comes from. */
 export const CONTEXT_KEY_SOURCES=Object.freeze({
  native:Object.freeze({
+  scope:'explicit legacy clio source conversation/current source version observed through Core attachments/read-context under the current signed-in actor/client, separate from run binding — runtime/read-context/chat-attachment-source.mjs',
   legiwatchReviewScope:`explicit client selector, current visible clients and identity/membership revisions from Core, bound to the immutable conversation subject — ${NATIVE}`,
   strategySavedScope:`explicit client selector plus current Core identity/membership revisions and selected conversation client — ${NATIVE}`,
   savedRecordScope:`current conversation client/tenant and Core identity/membership revisions; unsupported selected-client owner kinds refuse — ${NATIVE}`,
+  watchStateScope:`current selected client checked against Core visible clients, with current identity/membership revisions — ${NATIVE}`,
   capiroDataScope:`private client-record source only: immutable conversation scope and current Core identity/membership revisions; public queries have no private scope — ${NATIVE}`,
   selectedClientId:`immutable conversation client checked against current Core visible clients — ${NATIVE}`,
   visibleClientIds:`current Core application-authority visible client IDs — ${NATIVE}`,
@@ -20,7 +22,7 @@ export const CONTEXT_KEY_SOURCES=Object.freeze({
   stageAsOf:`pinned native observation clock for recorded rule stages — ${NATIVE}`,
   commentAsOf:`pinned native observation clock for recorded comment periods — ${NATIVE}`,
   comparisonLocale:`canonical runtime Collator locale pinned for this native read — ${NATIVE}`,
-  asOf:`control clock at the execution's first bounded native observation, pinned for the scope and sent to Core as the trusted read observation (native-read-observation-0.2) — ${NATIVE}`,
+  asOf:`control clock at the execution's first bounded native observation, or the canonical Core attachment-source observation; pinned for the scope and correlated at Core — ${NATIVE}`,
   defaultAsOf:`control clock at the first observation when the request carries no asOfDate, pinned for the scope — ${NATIVE}`,
   defaultCongress:'control configuration `defaultCongress` (render key) — source-read-context.mjs',
   actorRole:'Core current receipt (`application-authority/current`) — read-context/core-client.mjs',

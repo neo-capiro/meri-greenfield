@@ -381,7 +381,10 @@ test('plan pins the change-set order, real paths and current bytes; 0012 and 001
   '0001_settings.sql','0001_commands.sql','0001_approval_metadata.sql','0001_intent_preparations.sql','0001_schedule_owner.sql','0002_occurrences.sql','0003_run_cancel_proofs.sql','0004_read_consent.sql',
   '0001_task_lookup.sql','0001_objective_custody.sql','0002_objective_run_starts.sql','0003_objective_reader_replays.sql','0001_versions.sql','0002_retention.sql','0003_previews.sql','0001_memory_candidates.sql','0001_read_delegation_facts.sql','0002_prepared_approval_facts.sql','first-chat-database-integration.sql#integration_grants','0020_initial_generations.sql','0021_sdk_run_usage.sql','0022_sdk_run_usage_grants.sql',
   '0018_memory_candidate_targets.sql','0019_memory_proposal_contexts.sql','0002_candidate_retention_delete.sql','first-chat-native-retention-grants.sql',
-  '0024_general_initial_binding_scope.sql','0002_memory_preparation_tombstone.sql','0023_expired_conversation_purge.sql','first-chat-expired-conversation-purge-grants.sql','0003_native_routine_facts.sql','0004_objective_run_start_retention.sql','0025_retention_target_lookup.sql','first-chat-schedule-worker-grants.sql#schedule_worker_grants','0026_retention_target_dispatch.sql','0002_tenant_settings_control_grants.sql','0027_retention_target_projection.sql','0028_retention_sdk_identity.sql','0029_native_correction_feedback.sql']);
+  '0024_general_initial_binding_scope.sql','0002_memory_preparation_tombstone.sql','0023_expired_conversation_purge.sql','first-chat-expired-conversation-purge-grants.sql','0003_native_routine_facts.sql','0004_objective_run_start_retention.sql','0025_retention_target_lookup.sql','first-chat-schedule-worker-grants.sql#schedule_worker_grants','0026_retention_target_dispatch.sql','0002_tenant_settings_control_grants.sql','0027_retention_target_projection.sql','0028_retention_sdk_identity.sql','0029_native_correction_feedback.sql','0005_management_preparations.sql','0006_management_preparation_grants.sql','0001_upload_custody.sql','0002_control_grants.sql','0030_child_assignments.sql','0007_source_events.sql','0008_source_event_grants.sql','0009_management_consent_renewals.sql']);
+ assert.deepEqual(plan.slice(63,65).map(({ordinal,path})=>({ordinal,path})),[
+  {ordinal:64,path:'apps/control/uploads/migrations/0001_upload_custody.sql'},
+  {ordinal:65,path:'apps/control/uploads/migrations/0002_control_grants.sql'}]);
  assert.ok(!plan.some(e=>/00(12|14)_/u.test(e.name)));
  assert.equal(plan.find(e=>e.name.includes('temporal-issuer')).path,'apps/runtime/temporal-issuer/migrations/0001_service_task_registrations.sql');
  assert.throws(()=>loadPlan({read:path=>Buffer.from(read(path)+(path.endsWith('0009_next_runs.sql')?'\n':''))}),/MERI_D2_SOURCE_CHANGED/u);
@@ -924,7 +927,7 @@ test('SDK identity construction appends only ordinal 60 and preserves the applie
 });
 
 test('native feedback appends only ordinal 61 and preserves the applied 60-entry prefix',async()=>{
- const plan=loadPlan(),entry=plan.at(-1);
+ const plan=loadPlan().slice(0,61),entry=plan.at(-1);
  assert.equal(createHash('sha256').update(JSON.stringify(PLAN.slice(0,60))).digest('hex'),'a20d32aeee1b231456510249ec431e7d1e6494bff50c684212b8e04a916f1a95');
  assert.deepEqual([plan.length,entry.ordinal,entry.kind,entry.stage],[61,61,'migration','integration']);
  assert.equal(entry.path,'apps/control/conversations/migrations/0029_native_correction_feedback.sql');
@@ -938,6 +941,131 @@ test('native feedback appends only ordinal 61 and preserves the applied 60-entry
  assert.equal(db.state.temporalLogin,false);assert.equal(db.state.memberships.size,0);
  await runStage({stage:'integration',plan,variables,connect:db.connect});assert.equal(db.state.executed.length,1);
  assert.throws(()=>loadPlan({read:path=>Buffer.from(read(path)+(path===entry.path?'\n':''))}),/MERI_D2_SOURCE_CHANGED/u);
+});
+
+test('routine management adds only two schedule-owned preparation entries after the immutable 61-entry prefix',async()=>{
+ const plan=loadPlan().slice(0,63),tail=plan.slice(61);
+ assert.equal(createHash('sha256').update(JSON.stringify(PLAN.slice(0,61))).digest('hex'),'b3b70cea7d8355cef53392b489ad6ea5edeabc7d130f69bda774f931095d142b');
+ assert.deepEqual(tail.map(({ordinal,path,stage})=>({ordinal,path,stage})),[
+  {ordinal:62,path:'apps/control/schedules/migrations/0005_management_preparations.sql',stage:'integration'},
+  {ordinal:63,path:'apps/control/schedules/migrations/0006_management_preparation_grants.sql',stage:'integration'}]);
+ const db=databaseWithLedger(plan,61),prefix=structuredClone(db.state.ledger);
+ for(const stage of ['meri','temporal'])await runStage({stage,plan,variables,connect:db.connect});assert.equal(db.state.executed.length,0);
+ await runStage({stage:'integration',plan,variables,connect:db.connect});assert.deepEqual(db.state.ledger.slice(0,61),prefix);
+ assert.deepEqual(db.state.executed,tail.map(e=>migrationBody(e.text).replace(/\s+/gu,' ').trim()));
+ await runStage({stage:'integration',plan,variables,connect:db.connect});assert.equal(db.state.executed.length,2);
+ const allowed=grants(splitStatements(migrationBody(tail[1].text)).map(s=>s.text));
+ assert.deepEqual(allowed,new Set(['SELECT','INSERT','UPDATE(state)','UPDATE(proposal_id)','UPDATE(outcome)','UPDATE(settled_at)'].map(p=>`meri_control_runtime ${p} TABLE meri_schedules.management_preparations`)));
+ for(const entry of tail)assert.throws(()=>loadPlan({read:path=>Buffer.from(read(path)+(path===entry.path?'\n':''))}),/MERI_D2_SOURCE_CHANGED/u);
+});
+
+test('upload custody appends only reserved 64/65, preserving the exact prior ledger and idempotent upgrade',async()=>{
+ const plan=loadPlan().slice(0,65),tail=plan.slice(63);
+ assert.equal(createHash('sha256').update(JSON.stringify(PLAN.slice(0,63))).digest('hex'),'4e407fe2ccf8f10d0d0125bf6e64f83c8bdccfa7df2f15a092038cd1070631f0');
+ assert.deepEqual(tail.map(({ordinal,path,stage})=>({ordinal,path,stage})),[
+  {ordinal:64,path:'apps/control/uploads/migrations/0001_upload_custody.sql',stage:'integration'},
+  {ordinal:65,path:'apps/control/uploads/migrations/0002_control_grants.sql',stage:'integration'}]);
+ const db=databaseWithLedger(plan,63),prefix=structuredClone(db.state.ledger);
+ for(const stage of ['meri','temporal'])await runStage({stage,plan,variables,connect:db.connect});assert.equal(db.state.executed.length,0);
+ await runStage({stage:'integration',plan,variables,connect:db.connect});assert.deepEqual(db.state.ledger.slice(0,63),prefix);
+ assert.deepEqual(db.state.executed,tail.map(e=>migrationBody(e.text).replace(/\s+/gu,' ').trim()));
+ await runStage({stage:'integration',plan,variables,connect:db.connect});assert.equal(db.state.executed.length,2);
+ for(const entry of tail)assert.throws(()=>loadPlan({read:path=>Buffer.from(read(path)+(path===entry.path?'\n':''))}),/MERI_D2_SOURCE_CHANGED/u);
+});
+
+test('child assignments register only ordinal 66, preserving the exact 65-entry prefix and idempotent upgrade',async()=>{
+ const plan=loadPlan().slice(0,66),tail=plan.slice(65);
+ assert.equal(createHash('sha256').update(JSON.stringify(PLAN.slice(0,65))).digest('hex'),'e7c47c91c548fd5b59424456daf4990dc6fde3b6d11d4b39eeb1a6216ed4c3c4');
+ assert.deepEqual([plan.length,tail.length],[66,1]);
+ assert.deepEqual(tail.map(({ordinal,name,kind,stage,path})=>({ordinal,name,kind,stage,path})),[
+  {ordinal:66,name:'apps/control/conversations/migrations/0030_child_assignments.sql',kind:'migration',stage:'integration',
+   path:'apps/control/conversations/migrations/0030_child_assignments.sql'}]);
+ // The pin is the file's own bytes, so the plan accepts exactly this SQL blob and nothing else.
+ assert.equal(tail[0].sha256,'d0e5444503416bca34f8d8ae468761ee1ca0b8ce0b7c1b7364398b3c9721a9fa');
+ assert.equal(createHash('sha256').update(read(tail[0].path)).digest('hex'),tail[0].sha256);
+ // Integration-only: it is last and no entry after the 65-entry prefix belongs to another stage, so the meri and
+ // temporal runs stop before it and only an explicit integration run applies it.
+ assert.ok(plan.slice(65).every(entry=>entry.stage==='integration'));
+ const db=databaseWithLedger(plan,65),prefix=structuredClone(db.state.ledger);
+ for(const stage of ['meri','temporal'])await runStage({stage,plan,variables,connect:db.connect});
+ assert.deepEqual(db.state.ledger,prefix);assert.equal(db.state.executed.length,0);
+ await runStage({stage:'integration',plan,variables,connect:db.connect});
+ assert.deepEqual(db.state.ledger.slice(0,65),prefix);assert.equal(db.state.ledger.length,66);
+ assert.deepEqual(db.state.executed,[migrationBody(tail[0].text).replace(/\s+/gu,' ').trim()]);
+ await runStage({stage:'integration',plan,variables,connect:db.connect});
+ assert.equal(db.state.executed.length,1,'the registered append replays without reapplying SQL');
+ assert.equal(db.state.ledger.length,66);
+ for(const entry of tail)assert.throws(()=>loadPlan({read:path=>Buffer.from(read(path)+(path===entry.path?'\n':''))}),/MERI_D2_SOURCE_CHANGED/u);
+ assert.throws(()=>verifyLedger(db.state.ledger.map(row=>row.ordinal===66?{...row,sha256:'f'.repeat(64)}:row),plan),/MERI_D2_APPLIED_FILE_CHANGED/u);
+ assert.throws(()=>verifyLedger(db.state.ledger.map(row=>row.ordinal===66?{...row,name:row.name.replace('0030_','0031_')}:row),plan),/MERI_D2_LEDGER_ORDER/u);
+});
+
+test('source events register only ordinals 67 and 68, preserving the exact 66-entry prefix and idempotent upgrade',async()=>{
+ const plan=loadPlan().slice(0,68),tail=plan.slice(66);
+ assert.equal(createHash('sha256').update(JSON.stringify(PLAN.slice(0,66))).digest('hex'),'2cd8998b96418cc3f7e93c8e97ea17d0d0e846b2fa14bfe57bc1de9d64cf6227');
+ assert.deepEqual([plan.length,tail.length],[68,2]);
+ assert.deepEqual(tail.map(({ordinal,name,kind,stage,path})=>({ordinal,name,kind,stage,path})),[
+  {ordinal:67,name:'apps/control/schedules/migrations/0007_source_events.sql',kind:'migration',stage:'integration',
+   path:'apps/control/schedules/migrations/0007_source_events.sql'},
+  {ordinal:68,name:'apps/control/schedules/migrations/0008_source_event_grants.sql',kind:'migration',stage:'integration',
+   path:'apps/control/schedules/migrations/0008_source_event_grants.sql'}]);
+ // Each pin is the file's own bytes: the plan accepts exactly the two reviewed SQL blobs and nothing else.
+ assert.deepEqual(tail.map(e=>e.sha256),['395f7c8f8ea22c5cbe92e9581f28d1992585f677cc6e09088cc897417739a5e7',
+  '74a0cd4c58b56044b6d96163e1cc6c54951311de175f8f0acd4232489aa53df6']);
+ for(const entry of tail)assert.equal(createHash('sha256').update(read(entry.path)).digest('hex'),entry.sha256);
+ // Integration-only, contiguous and complete: the 66-entry prefix is untouched and the two reviewed event files are
+ // the whole tail of this 68-entry slice; the MR-04 reservation after 68 is registered separately as ordinal 69.
+ assert.ok(plan.slice(66).every(entry=>entry.stage==='integration'));
+ assert.deepEqual(plan.map(e=>e.ordinal),[...Array(68)].map((_,i)=>i+1));
+ assert.deepEqual(plan.slice(0,66).map(({ordinal,name,stage,path,pinned})=>({ordinal,name,stage,path,pinned})),
+  PLAN.slice(0,66).map(({ordinal,name,stage,path,pinned})=>({ordinal,name,stage,path,pinned})));
+ const db=databaseWithLedger(plan,66),prefix=structuredClone(db.state.ledger);
+ for(const stage of ['meri','temporal'])await runStage({stage,plan,variables,connect:db.connect});
+ assert.deepEqual(db.state.ledger,prefix);assert.equal(db.state.executed.length,0);
+ await runStage({stage:'integration',plan,variables,connect:db.connect});
+ assert.deepEqual(db.state.ledger.slice(0,66),prefix);assert.equal(db.state.ledger.length,68);
+ assert.deepEqual(db.state.executed,tail.map(e=>migrationBody(e.text).replace(/\s+/gu,' ').trim()));
+ await runStage({stage:'integration',plan,variables,connect:db.connect});
+ assert.equal(db.state.executed.length,2,'the registered append replays without reapplying SQL');
+ assert.equal(db.state.ledger.length,68);
+ for(const entry of tail)assert.throws(()=>loadPlan({read:path=>Buffer.from(read(path)+(path===entry.path?'\n':''))}),/MERI_D2_SOURCE_CHANGED/u);
+ assert.throws(()=>verifyLedger(db.state.ledger.map(row=>row.ordinal===67?{...row,sha256:'f'.repeat(64)}:row),plan),/MERI_D2_APPLIED_FILE_CHANGED/u);
+ assert.throws(()=>verifyLedger(db.state.ledger.map(row=>row.ordinal===68?{...row,name:row.name.replace('0008_','0009_')}:row),plan),/MERI_D2_LEDGER_ORDER/u);
+});
+
+test('management consent renewals register only ordinal 69, preserving the exact 68-entry prefix and idempotent upgrade',async()=>{
+ const plan=loadPlan().slice(0,69),tail=plan.slice(68);
+ assert.equal(createHash('sha256').update(JSON.stringify(PLAN.slice(0,68))).digest('hex'),'e710c7d87eb417177ebb19912004fc3f9aa3849f01de142020446768d50487d4');
+ assert.deepEqual([plan.length,tail.length],[69,1]);
+ assert.deepEqual(tail.map(({ordinal,name,kind,stage,path})=>({ordinal,name,kind,stage,path})),[
+  {ordinal:69,name:'apps/control/schedules/migrations/0009_management_consent_renewals.sql',kind:'migration',stage:'integration',
+   path:'apps/control/schedules/migrations/0009_management_consent_renewals.sql'}]);
+ // The pin is the file's own bytes: the plan accepts exactly the reviewed MR-04 0009 blob and nothing else.
+ assert.deepEqual(tail.map(e=>e.sha256),['187a1ff83075c38cfa6c9011fb5743756c555d9b1d006fce628deacf2afeb3fc']);
+ for(const entry of tail)assert.equal(createHash('sha256').update(read(entry.path)).digest('hex'),entry.sha256);
+ // The reviewed 0009 carries no transaction control, so the runner hands the WHOLE file to one query: the DO block's
+ // own semicolons never split it and both ALTERs commit in the same transaction that records the ledger row.
+ assert.equal(migrationBody(tail[0].text),tail[0].text);
+ assert.deepEqual(splitStatements(tail[0].text).map(statement=>statement.text.split('\n',1)[0]),
+  ['DO $$','ALTER TABLE meri_schedules.management_preparations','ALTER TABLE meri_schedules.management_preparations']);
+ // Integration-only, contiguous and complete: the 68-entry prefix is untouched, the reviewed MR-04 file is the whole
+ // tail, and nothing after ordinal 69 is reserved or registered.
+ assert.ok(plan.slice(68).every(entry=>entry.stage==='integration'));
+ assert.deepEqual(plan.map(e=>e.ordinal),[...Array(69)].map((_,i)=>i+1));
+ assert.deepEqual(plan.slice(0,68).map(({ordinal,name,stage,path,pinned})=>({ordinal,name,stage,path,pinned})),
+  PLAN.slice(0,68).map(({ordinal,name,stage,path,pinned})=>({ordinal,name,stage,path,pinned})));
+ const db=databaseWithLedger(plan,68),prefix=structuredClone(db.state.ledger);
+ for(const stage of ['meri','temporal'])await runStage({stage,plan,variables,connect:db.connect});
+ assert.deepEqual(db.state.ledger,prefix);assert.equal(db.state.executed.length,0);
+ await runStage({stage:'integration',plan,variables,connect:db.connect});
+ assert.deepEqual(db.state.ledger.slice(0,68),prefix);assert.equal(db.state.ledger.length,69);
+ assert.deepEqual(db.state.executed,tail.map(e=>migrationBody(e.text).replace(/\s+/gu,' ').trim()));
+ await runStage({stage:'integration',plan,variables,connect:db.connect});
+ assert.equal(db.state.executed.length,1,'the registered append replays without reapplying SQL');
+ assert.equal(db.state.ledger.length,69);
+ for(const entry of tail)assert.throws(()=>loadPlan({read:path=>Buffer.from(read(path)+(path===entry.path?'\n':''))}),/MERI_D2_SOURCE_CHANGED/u);
+ assert.throws(()=>verifyLedger(db.state.ledger.map(row=>row.ordinal===69?{...row,sha256:'f'.repeat(64)}:row),plan),/MERI_D2_APPLIED_FILE_CHANGED/u);
+ assert.throws(()=>verifyLedger(db.state.ledger.map(row=>row.ordinal===69?{...row,name:row.name.replace('0009_','0008_')}:row),plan),/MERI_D2_LEDGER_ORDER/u);
 });
 
 test('SDK identity construction preserves every guard predicate, lock and legacy mutation rule',()=>{

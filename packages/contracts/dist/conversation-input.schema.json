@@ -1,12 +1,12 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "urn:meri:conversation-input:1.0.0",
+  "$id": "urn:meri:conversation-input:1.3.0",
   "$defs": {
     "ConversationInputRequest": {
-      "$ref": "#/$defs/Canonical_ConversationSubmitRequest_1ec41363"
+      "$ref": "#/$defs/Canonical_ConversationSubmitRequest_9c9b616b"
     },
     "ConversationInputStoredRequest": {
-      "$ref": "#/$defs/Canonical_ConversationStoredRequest_79d6cc7b"
+      "$ref": "#/$defs/Canonical_ConversationStoredRequest_71d2dc3e"
     },
     "ConversationInputAdmittedResponse": {
       "type": "object",
@@ -15,7 +15,7 @@
           "$ref": "#/$defs/Canonical_Run_aeee1939"
         },
         "request": {
-          "$ref": "#/$defs/Canonical_ConversationStoredRequest_79d6cc7b"
+          "$ref": "#/$defs/Canonical_ConversationStoredRequest_71d2dc3e"
         },
         "lastSequence": {
           "type": "integer",
@@ -77,9 +77,9 @@
       "additionalProperties": false
     },
     "ConversationInputErrorResponse": {
-      "$ref": "#/$defs/Canonical_ConversationErrorResponse_68bab4e3"
+      "$ref": "#/$defs/Canonical_ConversationErrorResponse_4441f55d"
     },
-    "Canonical_Canonical_WindowRequest_f314f340_6bb8c023": {
+    "Canonical_Canonical_WindowRequest_f314f340_6d73f042": {
       "oneOf": [
         {
           "type": "object",
@@ -290,7 +290,7 @@
         }
       ]
     },
-    "Canonical_Canonical_skillId_31e12e8e_cae56271": {
+    "Canonical_Canonical_skillId_31e12e8e_20420fe7": {
       "type": "string",
       "enum": [
         "quick_skill.research_company",
@@ -309,11 +309,11 @@
         "quick_skill.regulatory_docket_brief"
       ]
     },
-    "Canonical_Canonical_skillVersion_7e2af095_7f0f4343": {
+    "Canonical_Canonical_skillVersion_7e2af095_7b29e661": {
       "type": "string",
       "pattern": "^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)$"
     },
-    "Canonical_ConversationSubmitRequest_1ec41363": {
+    "Canonical_ConversationSubmitRequest_9c9b616b": {
       "type": "object",
       "properties": {
         "requestId": {
@@ -327,16 +327,27 @@
           "pattern": "\\S"
         },
         "windowRequest": {
-          "$ref": "#/$defs/Canonical_Canonical_WindowRequest_f314f340_6bb8c023"
+          "$ref": "#/$defs/Canonical_Canonical_WindowRequest_f314f340_6d73f042"
         },
         "skill": {
           "type": "object",
           "properties": {
             "skillId": {
-              "$ref": "#/$defs/Canonical_Canonical_skillId_31e12e8e_cae56271"
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/Canonical_Canonical_skillId_31e12e8e_20420fe7"
+                },
+                {
+                  "$comment": "Identities added at this version. Adding another one requires a new reviewed version of this file, never an edit to the closed 0.2.0 enum.",
+                  "type": "string",
+                  "enum": [
+                    "quick_skill.cited_report"
+                  ]
+                }
+              ]
             },
             "skillVersion": {
-              "$ref": "#/$defs/Canonical_Canonical_skillVersion_7e2af095_7f0f4343"
+              "$ref": "#/$defs/Canonical_Canonical_skillVersion_7e2af095_7b29e661"
             }
           },
           "required": [
@@ -382,22 +393,252 @@
             "effort"
           ],
           "additionalProperties": false
+        },
+        "documentRevision": {
+          "type": "object",
+          "properties": {
+            "artifactId": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+            },
+            "versionId": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+            },
+            "objectSha256": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            }
+          },
+          "required": [
+            "artifactId",
+            "versionId",
+            "objectSha256"
+          ],
+          "additionalProperties": false
+        },
+        "uploads": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 8,
+          "uniqueItems": true,
+          "items": {
+            "type": "object",
+            "properties": {
+              "uploadId": {
+                "type": "string",
+                "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+              },
+              "sha256": {
+                "type": "string",
+                "pattern": "^[0-9a-f]{64}$"
+              }
+            },
+            "required": [
+              "uploadId",
+              "sha256"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "procedure": {
+          "oneOf": [
+            {
+              "type": "object",
+              "properties": {
+                "source": {
+                  "const": "firm"
+                },
+                "recordId": {
+                  "type": "string",
+                  "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+                },
+                "version": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 9007199254740991
+                },
+                "manifestDigest": {
+                  "type": "string",
+                  "pattern": "^[a-f0-9]{64}$"
+                }
+              },
+              "required": [
+                "source",
+                "recordId",
+                "version",
+                "manifestDigest"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "properties": {
+                "source": {
+                  "const": "builtin"
+                },
+                "id": {
+                  "enum": [
+                    "briefing",
+                    "draft",
+                    "bill_analysis",
+                    "hearing_prep",
+                    "coalition_letter",
+                    "amendment_tracker"
+                  ]
+                },
+                "version": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 9007199254740991
+                },
+                "manifestDigest": {
+                  "type": "string",
+                  "pattern": "^[a-f0-9]{64}$"
+                }
+              },
+              "required": [
+                "source",
+                "id",
+                "version",
+                "manifestDigest"
+              ],
+              "additionalProperties": false
+            }
+          ]
+        },
+        "work": {
+          "type": "object",
+          "properties": {
+            "entry": {
+              "enum": [
+                "start-work",
+                "delegate"
+              ]
+            },
+            "jobKind": {
+              "enum": [
+                "research",
+                "deliverable",
+                "audit",
+                "scheduled"
+              ]
+            },
+            "deliverables": {
+              "type": "array",
+              "maxItems": 20,
+              "uniqueItems": true,
+              "items": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 200,
+                "pattern": "\\S"
+              }
+            },
+            "dependencies": {
+              "type": "array",
+              "maxItems": 20,
+              "uniqueItems": true,
+              "items": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 200,
+                "pattern": "\\S"
+              }
+            }
+          },
+          "required": [
+            "entry",
+            "jobKind",
+            "deliverables",
+            "dependencies"
+          ],
+          "additionalProperties": false
         }
       },
       "required": [
         "requestId",
         "prompt"
       ],
-      "additionalProperties": false
+      "additionalProperties": false,
+      "not": {
+        "properties": {
+          "skill": {},
+          "procedure": {}
+        },
+        "required": [
+          "skill",
+          "procedure"
+        ]
+      },
+      "if": {
+        "properties": {
+          "skill": {},
+          "documentRevision": {}
+        },
+        "required": [
+          "skill",
+          "documentRevision"
+        ]
+      },
+      "then": {
+        "properties": {
+          "skill": {
+            "anyOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "skillId": {
+                    "const": "quick_skill.bill_watch"
+                  },
+                  "skillVersion": {
+                    "const": "2.0.0"
+                  }
+                },
+                "required": [
+                  "skillId",
+                  "skillVersion"
+                ]
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "skillId": {
+                    "const": "quick_skill.cited_report"
+                  },
+                  "skillVersion": {
+                    "const": "1.0.0"
+                  }
+                },
+                "required": [
+                  "skillId",
+                  "skillVersion"
+                ]
+              }
+            ]
+          }
+        }
+      }
     },
-    "Canonical_ConversationSkillAssetPin_338818f9": {
+    "Canonical_ConversationSkillAssetPin_3ccfc6bb": {
       "type": "object",
       "properties": {
         "skillId": {
-          "$ref": "#/$defs/Canonical_Canonical_skillId_31e12e8e_cae56271"
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Canonical_Canonical_skillId_31e12e8e_20420fe7"
+            },
+            {
+              "$comment": "Identities added at this version. Adding another one requires a new reviewed version of this file, never an edit to the closed 0.2.0 enum.",
+              "type": "string",
+              "enum": [
+                "quick_skill.cited_report"
+              ]
+            }
+          ]
         },
         "skillVersion": {
-          "$ref": "#/$defs/Canonical_Canonical_skillVersion_7e2af095_7f0f4343"
+          "$ref": "#/$defs/Canonical_Canonical_skillVersion_7e2af095_7b29e661"
         },
         "manifestSha256": {
           "type": "string",
@@ -421,7 +662,7 @@
       ],
       "additionalProperties": false
     },
-    "Canonical_Canonical_NormalizedWindow_e50ec0ed_8a69a7e3": {
+    "Canonical_Canonical_NormalizedWindow_e50ec0ed_babbab24": {
       "oneOf": [
         {
           "type": "object",
@@ -550,7 +791,7 @@
         }
       ]
     },
-    "Canonical_ConversationStoredRequest_79d6cc7b": {
+    "Canonical_ConversationStoredRequest_71d2dc3e": {
       "type": "object",
       "properties": {
         "requestId": {
@@ -566,7 +807,7 @@
         "skill": {
           "anyOf": [
             {
-              "$ref": "#/$defs/Canonical_ConversationSkillAssetPin_338818f9"
+              "$ref": "#/$defs/Canonical_ConversationSkillAssetPin_3ccfc6bb"
             },
             {
               "type": "null"
@@ -576,7 +817,7 @@
         "window": {
           "anyOf": [
             {
-              "$ref": "#/$defs/Canonical_Canonical_NormalizedWindow_e50ec0ed_8a69a7e3"
+              "$ref": "#/$defs/Canonical_Canonical_NormalizedWindow_e50ec0ed_babbab24"
             },
             {
               "type": "null"
@@ -586,7 +827,7 @@
         "windowRequest": {
           "anyOf": [
             {
-              "$ref": "#/$defs/Canonical_Canonical_WindowRequest_f314f340_6bb8c023"
+              "$ref": "#/$defs/Canonical_Canonical_WindowRequest_f314f340_6d73f042"
             },
             {
               "type": "null"
@@ -630,6 +871,167 @@
             "effort"
           ],
           "additionalProperties": false
+        },
+        "documentRevision": {
+          "type": "object",
+          "properties": {
+            "artifactId": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+            },
+            "versionId": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+            },
+            "objectSha256": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            }
+          },
+          "required": [
+            "artifactId",
+            "versionId",
+            "objectSha256"
+          ],
+          "additionalProperties": false
+        },
+        "uploads": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 8,
+          "uniqueItems": true,
+          "items": {
+            "type": "object",
+            "properties": {
+              "uploadId": {
+                "type": "string",
+                "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+              },
+              "sha256": {
+                "type": "string",
+                "pattern": "^[0-9a-f]{64}$"
+              }
+            },
+            "required": [
+              "uploadId",
+              "sha256"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "procedure": {
+          "oneOf": [
+            {
+              "type": "object",
+              "properties": {
+                "source": {
+                  "const": "firm"
+                },
+                "recordId": {
+                  "type": "string",
+                  "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+                },
+                "version": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 9007199254740991
+                },
+                "manifestDigest": {
+                  "type": "string",
+                  "pattern": "^[a-f0-9]{64}$"
+                }
+              },
+              "required": [
+                "source",
+                "recordId",
+                "version",
+                "manifestDigest"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "properties": {
+                "source": {
+                  "const": "builtin"
+                },
+                "id": {
+                  "enum": [
+                    "briefing",
+                    "draft",
+                    "bill_analysis",
+                    "hearing_prep",
+                    "coalition_letter",
+                    "amendment_tracker"
+                  ]
+                },
+                "version": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 9007199254740991
+                },
+                "manifestDigest": {
+                  "type": "string",
+                  "pattern": "^[a-f0-9]{64}$"
+                }
+              },
+              "required": [
+                "source",
+                "id",
+                "version",
+                "manifestDigest"
+              ],
+              "additionalProperties": false
+            }
+          ]
+        },
+        "work": {
+          "type": "object",
+          "properties": {
+            "entry": {
+              "enum": [
+                "start-work",
+                "delegate"
+              ]
+            },
+            "jobKind": {
+              "enum": [
+                "research",
+                "deliverable",
+                "audit",
+                "scheduled"
+              ]
+            },
+            "deliverables": {
+              "type": "array",
+              "maxItems": 20,
+              "uniqueItems": true,
+              "items": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 200,
+                "pattern": "\\S"
+              }
+            },
+            "dependencies": {
+              "type": "array",
+              "maxItems": 20,
+              "uniqueItems": true,
+              "items": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 200,
+                "pattern": "\\S"
+              }
+            }
+          },
+          "required": [
+            "entry",
+            "jobKind",
+            "deliverables",
+            "dependencies"
+          ],
+          "additionalProperties": false
         }
       },
       "required": [
@@ -639,7 +1041,81 @@
         "window",
         "windowRequest"
       ],
-      "additionalProperties": false
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "documentRevision": {}
+            },
+            "required": [
+              "documentRevision"
+            ]
+          },
+          "then": {
+            "properties": {
+              "skill": {
+                "anyOf": [
+                  {
+                    "anyOf": [
+                      {
+                        "type": "object",
+                        "properties": {
+                          "skillId": {
+                            "const": "quick_skill.bill_watch"
+                          },
+                          "skillVersion": {
+                            "const": "2.0.0"
+                          }
+                        },
+                        "required": [
+                          "skillId",
+                          "skillVersion"
+                        ]
+                      },
+                      {
+                        "type": "object",
+                        "properties": {
+                          "skillId": {
+                            "const": "quick_skill.cited_report"
+                          },
+                          "skillVersion": {
+                            "const": "1.0.0"
+                          }
+                        },
+                        "required": [
+                          "skillId",
+                          "skillVersion"
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "procedure": {}
+            },
+            "required": [
+              "procedure"
+            ]
+          },
+          "then": {
+            "properties": {
+              "skill": {
+                "type": "null"
+              }
+            }
+          }
+        }
+      ]
     },
     "Canonical_RunBinding_84f2304c": {
       "type": "object",
@@ -813,7 +1289,7 @@
       ],
       "additionalProperties": false
     },
-    "Canonical_ConversationErrorResponse_68bab4e3": {
+    "Canonical_ConversationErrorResponse_4441f55d": {
       "type": "object",
       "properties": {
         "error": {

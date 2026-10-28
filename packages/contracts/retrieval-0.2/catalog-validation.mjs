@@ -5,6 +5,18 @@ const key = operation => `${operation.id}@${operation.version}`;
 function unique(values, label) {
   if (new Set(values).size !== values.length) fail(`Duplicate ${label}`);
 }
+// The one current published catalog version, and the only version comparison this owner needs. A
+// binding may declare `sinceCatalogVersion`: a catalog must carry every binding its own version
+// includes, and is never required to carry a later successor's. Neither value is caller-controlled,
+// and a preserved catalog therefore keeps asserting at its own exact counts.
+export const CURRENT_CATALOG_VERSION = '0.2.24';
+function compareCatalogVersions(left, right) {
+  const parts = value => String(value).split('.').map(Number);
+  const a = parts(left), b = parts(right);
+  if (a.length !== 3 || b.length !== 3 || [...a, ...b].some(part => !Number.isSafeInteger(part) || part < 0))
+    fail('Invalid catalog version');
+  return a[0] - b[0] || a[1] - b[1] || a[2] - b[2];
+}
 
 const clock = (context, names) => Object.fromEntries(names.filter(name => Object.hasOwn(context, name)).map(name => [name, context[name]]));
 const selected = result => ({input: result.selection, metadata: {cursor: result.cursor}});
@@ -32,6 +44,10 @@ export const CATALOG_OPERATION_BINDINGS = Object.freeze([
  Object.freeze({id:'save_legiwatch_relevance',nativeId:'save_legiwatch_relevance',group:'legiwatch-relevance',input:'RelevanceInput',output:'RelevancePrepared',version:'0.2.0',contextKeys:Object.freeze([]),normalize:(v,r)=>({input:v.relevanceValidators.saveInput(r)}),outputAssert:(v,p,r)=>v.legiwatchValidators.assertOutput(p,r)}),
  Object.freeze({id:'get_legiwatch_review',nativeId:'get_legiwatch_review',group:'legiwatch-review',input:'LegiwatchReviewRequest',output:'LegiwatchReviewOutput',version:'0.2.0',contextKeys:Object.freeze(['legiwatchReviewScope']),normalize:(v,r,c)=>v.legiwatchReviewValidators.normalizeInput(r,c),outputAssert:(v,p,r,c)=>v.legiwatchReviewValidators.assertOutput(p,r,c)}),
   ...['create_client','update_client_profile'].map((id,index)=>Object.freeze({id,nativeId:id,group:'client-record-action',input:['CreateClientInput','UpdateClientProfileInput'][index],output:'ClientRecordPrepared',version:'0.2.0',contextKeys:Object.freeze([]),normalize:(v,r)=>({input:v.clientRecordValidators.normalizeInput(id,r)}),outputAssert:(v,p,r)=>v.clientRecordValidators.assertOutput(p,r,id)})),
+  // Successor for the same native create, advertised at 0.3.0 so the sourced create input and the
+  // negotiated Core preflight cross the public contract through their own validator group. The 0.2 row
+  // above is retained unchanged: every stored reference and ordinary request still resolves to it.
+  Object.freeze({id:'create_client',nativeId:'create_client',group:'client-record-action-03',input:'CreateClientInput',output:'ClientRecordPrepared',version:'0.3.0',sinceCatalogVersion:'0.2.24',contextKeys:Object.freeze([]),normalize:(v,r)=>({input:v.clientRecord3Validators.normalizeInput('create_client',r)}),outputAssert:(v,p,r)=>v.clientRecord3Validators.assertOutput(p,r,'create_client')}),
  Object.freeze({id:'prepare_legiwatch_briefing',nativeId:'prepare_legiwatch_briefing',group:'legislative-document-action',input:'LegislativeDocumentBriefingInput',output:'LegislativeDocumentPrepared',version:'0.2.0',contextKeys:Object.freeze([]),normalize:(v,request)=>({input:v.legislativeDocumentValidators.normalizeInput('prepare_legiwatch_briefing',request)}),outputAssert:(v,page,request)=>v.legislativeDocumentValidators.assertOutput('prepare_legiwatch_briefing',page,request)}),
  Object.freeze({id:'save_legislative_research',nativeId:'save_legislative_research',group:'legislative-document-action',input:'LegislativeDocumentResearchInput',output:'LegislativeDocumentPrepared',version:'0.2.0',contextKeys:Object.freeze([]),normalize:(v,request)=>({input:v.legislativeDocumentValidators.normalizeInput('save_legislative_research',request)}),outputAssert:(v,page,request)=>v.legislativeDocumentValidators.assertOutput('save_legislative_research',page,request)}),
   Object.freeze({id:'apply_legiwatch_suggestion',nativeId:'apply_legiwatch_suggestion',group:'legiwatch-action',input:'LegiwatchInput',output:'LegiwatchPrepared',version:'0.2.0',contextKeys:Object.freeze([]),normalize:(v,request)=>({input:v.legiwatchValidators.normalizeInput(request)}),outputAssert:(v,page,request)=>v.legiwatchValidators.assertOutput(page,request)}),
@@ -74,6 +90,15 @@ export const CATALOG_OPERATION_BINDINGS = Object.freeze([
     contextKeys:Object.freeze(['scheduleContext']),dispatchProfile:'schedule-execution/1',
     normalize:(v,request,context,binding)=>v.scheduleToolValidators.normalizeInput(binding.id,request,clock(context,binding.contextKeys)),
     outputAssert:(v,page,request,context,binding)=>v.scheduleToolValidators.assertResult(binding.id,page,request,clock(context,binding.contextKeys))}),
+  // Four schedule successors on the separately versioned 0.3 tool interface. Native ids, the trusted
+  // scheduleContext and the dispatch profile are unchanged; only the schema family and the validator
+  // group differ, so a stored 0.2 reference keeps resolving to the 0.2 owner above.
+  ...['schedule_task','list_scheduled_tasks','cancel_scheduled_task','update_scheduled_task'].map(id=>Object.freeze({id,nativeId:id,group:'schedule-tools-v3',
+    input:{schedule_task:'ScheduleTaskRequest',list_scheduled_tasks:'ListScheduledTasksRequest',cancel_scheduled_task:'CancelScheduledTaskRequest',update_scheduled_task:'UpdateScheduledTaskRequest'}[id],
+    output:id==='list_scheduled_tasks'?'ListScheduledTasksOutput':'ScheduleMutationOutput',version:'0.3.0',sinceCatalogVersion:'0.2.24',
+    contextKeys:Object.freeze(['scheduleContext']),dispatchProfile:'schedule-execution/1',
+    normalize:(v,request,context,binding)=>v.schedule3ToolValidators.normalizeInput(binding.id,request,clock(context,binding.contextKeys)),
+    outputAssert:(v,page,request,context,binding)=>v.schedule3ToolValidators.assertResult(binding.id,page,request,clock(context,binding.contextKeys))})),
   Object.freeze({id:'create_task',nativeId:'create_task',action:'task.create',group:'command-tools',input:'TaskCreateToolRequest',output:'TaskCreateToolResult',version:'0.2.0',
     contextKeys:Object.freeze(['commandContext','command','proposal']),dispatchProfile:'command-execution/1',
     normalize:(v,request,context,binding)=>v.commandToolValidators.normalizeCommandToolInput(binding.action,request,clock(context,binding.contextKeys)),
@@ -445,7 +470,19 @@ export const CATALOG_OPERATION_BINDINGS = Object.freeze([
 
 export function createCatalogValidators({validateShape, schemaRecords}) {
   const records = new Map(schemaRecords.map(record => [record.group, record]));
-  const bindings = new Map(CATALOG_OPERATION_BINDINGS.map(binding => [binding.id, binding]));
+  // Bindings are indexed by the exact `id@version` they own, so one operation id can retain an earlier
+  // version beside its successor. `versionsById` keeps the id-level view the refusal messages need, and
+  // an id that is registered at more than one version is ambiguous there and resolves to nothing.
+  const bindings = new Map(CATALOG_OPERATION_BINDINGS.map(binding => [key(binding), binding]));
+  const versionsById = new Map();
+  for (const binding of CATALOG_OPERATION_BINDINGS) {
+    if (!versionsById.has(binding.id)) versionsById.set(binding.id, new Set());
+    versionsById.get(binding.id).add(binding.version);
+  }
+  const bindingById = id => {
+    const versions = versionsById.get(id);
+    return versions?.size === 1 ? bindings.get(`${id}@${[...versions][0]}`) : undefined;
+  };
   for (const binding of CATALOG_OPERATION_BINDINGS) {
     const record = records.get(binding.group);
     if (!record || !Object.hasOwn(record.schema.$defs, binding.input) ||
@@ -467,14 +504,13 @@ function assertCatalog(catalog) {
     if (operations.has(id)) fail('Duplicate operation version');
     if (['query_data', 'query_sql', 'execute_sql', 'raw_sql'].includes(operation.operation.id)) fail('Unrestricted query operation forbidden');
     if (operation.availability === 'enabled' && (operation.qualification !== 'qualified' || operation.handler === null)) fail('Unavailable handler cannot be exposed');
-    const binding = bindings.get(operation.operation.id);
+    const binding = bindings.get(key(operation.operation));
     if (binding) {
-      if (operation.operation.version !== binding.version) fail('Operation version binding mismatch');
       const record = records.get(binding.group);
       if (['inputSchema', 'outputSchema'].some((field, index) =>
         operation[field].id !== `${record.schema.$id}#/$defs/${[binding.input, binding.output][index]}` ||
         operation[field].sha256 !== record.sha256)) fail('Catalog schema byte pin mismatch');
-    }
+    } else if (versionsById.has(operation.operation.id)) fail('Operation version binding mismatch');
     if (operation.sideEffect === 'none' ? operation.approvalBoundary !== 'none' : operation.approvalBoundary === 'none') fail('Side-effect approval mismatch');
     if (operation.handler && (operation.handler.module.split('/').some(part => !part || part === '.' || part === '..') || !/^[a-zA-Z0-9_./-]+$/.test(operation.handler.module))) fail('Invalid handler metadata path');
     unique(operation.sourceRequirements.map(row => `${row.sourceId}:${row.purpose}`), 'operation source purpose');
@@ -502,16 +538,23 @@ function assertCatalog(catalog) {
     if (aliases.has(original.id) && (original.replacement === null || aliases.get(original.id) !== key(original.replacement))) fail('Alias contradicts preservation mapping');
   }
   if (catalog.catalogId === 'meri.retrieval') {
-    if (operations.size !== bindings.size || catalog.operations.some(row => !bindings.has(row.operation.id)))
+    // A preserved catalog is complete for the versions it was published with, at its own exact counts;
+    // the current catalog must carry every registered binding. Either way, an operation with no binding
+    // at its exact version refuses, so a version cannot be advertised without an owner.
+    const required = CATALOG_OPERATION_BINDINGS.filter(binding => !binding.sinceCatalogVersion ||
+      compareCatalogVersions(binding.sinceCatalogVersion, catalog.catalogVersion) <= 0);
+    if (catalog.operations.some(row => !bindings.has(key(row.operation))))
+      fail('Concrete catalog requires a registered operation binding');
+    if (operations.size !== required.length || required.some(binding => !operations.has(key(binding))))
       fail('Concrete catalog requires the complete registered operation set');
-    for (const binding of CATALOG_OPERATION_BINDINGS) {
-      const operation = operations.get(key({id: binding.id, version: binding.version}));
+    for (const binding of required) {
+      const operation = operations.get(key(binding));
       const original = catalog.originals.find(row => row.id === binding.nativeId);
       if (!operation || !original) fail('Registered preservation mapping mismatch');
       if (binding.nativeCoverage === 'partial') {
         if (operation.aliases.length !== 0) fail('Partial native coverage cannot claim a compatibility alias');
         if (binding.supersededBy) {
-          const successor = bindings.get(binding.supersededBy);
+          const successor = bindingById(binding.supersededBy);
           const expected = successor && {id: successor.id, version: successor.version};
           if (!successor || successor.nativeCoverage === 'partial' || successor.nativeId !== binding.nativeId ||
               original.state !== 'mapped' || key(original.replacement ?? {}) !== key(expected) ||
@@ -519,8 +562,13 @@ function assertCatalog(catalog) {
         } else if (original.state !== 'pending' || original.replacement !== null || operation.replacement !== null) {
           fail('Partial native coverage cannot claim a replacement');
         }
-      } else if (original.state !== 'mapped' ||
-          key(original.replacement ?? {}) !== key(operation.operation)) fail('Registered preservation mapping mismatch');
+      } else {
+        // A native capability may be served by any REGISTERED version of its own operation id: the
+        // successor is advertised while the retained version stays resolvable for stored references.
+        const target = original.replacement ?? {};
+        if (original.state !== 'mapped' || (key(target) !== key(operation.operation) &&
+            !(target.id === binding.id && bindings.has(key(target))))) fail('Registered preservation mapping mismatch');
+      }
       if (operation.handler !== null || operation.availability !== 'unimplemented' ||
           operation.qualification !== 'pending' || operation.retry.maxRetries !== 0 ||
           operation.retry.retryableCodes.length !== 0) fail('Pending catalog cannot expose an executable handler');

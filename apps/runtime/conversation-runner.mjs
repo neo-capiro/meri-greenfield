@@ -11,6 +11,7 @@ import {prepareRunSkillPlugin,sdkSkillPluginDirectory} from '../worker/conversat
 import {assertProviderEnvironment} from '../worker/conversation/provider.mjs';
 import {createLifecycleRunOwner} from '../control/conversations/lifecycle/worker-owner.mjs';
 import {createTaskSelectedSkills} from './selected/task.mjs';
+import {createTaskProcedurePort} from '../worker/conversation/procedures/task-port.mjs';
 import {createOwnedRuntimeSdkSession} from './sdk-session-runtime.mjs';
 import {assertExecutionIdentity} from '../control/conversations/execution-boundary.mjs';
 import {storageMethod} from '../artifacts/storage/boundary.mjs';
@@ -42,7 +43,7 @@ export async function ensureSdkConfigurationDirectories(directories,options={}){
  await assertOwnedPrivateDirectory(sdkSecureStorageDirectory,uid);
  return directories;
 }
-const lifecycleOperations=new Set(['runner/next-controls','runner/claim-control','runner/ack-control','runner/record-checkpoint']);
+const lifecycleOperations=new Set(['runner/next-controls','runner/claim-control','runner/ack-control','runner/record-checkpoint','runner/child-dispatch','runner/child-settle']);
 function startupBudgetFor(configuration){
  if(configuration.execution===undefined)return null;
  const execution=assertExecutionIdentity(configuration.execution);
@@ -65,13 +66,18 @@ export function assembleConversationRunner({configuration,native,query,credentia
   const loaded=value=>{markRunnerTelemetryStage('runner.load.done');return value;};return typeof result?.then==='function'?result.then(loaded):loaded(result);};
  if(sessionFactory!==undefined&&typeof sessionFactory!=='function')throw fault('RUNNER_SESSION_CONFIGURATION');
  const selectedSkills=createTaskSelectedSkills({native,now,sourceEnabled:configuration.sourceEnabled??false}),sdkSession=sessionFactory===undefined?null:createOwnedRuntimeSdkSession({factory:sessionFactory,now,cleanupMs:configuration.limits?.shutdownMs??1000});
+ // Wave5 MO01/ST16: the same task transport resolves the persisted procedure selection for a run. The control-side
+ // 'procedure/resolve' handler is the remaining join; without it a selected procedure refuses rather than runs.
+ const procedures=createTaskProcedurePort({native,now});
  const localBinding=b=>{if(canonicalSha256(b)!==canonicalSha256(binding))throw fault('RUNNER_BINDING_REFUSED');};
  let objectiveSelection=null,objectiveRead=false;const objectiveGeneration=createObjectiveGenerationRuntime({now,selection:{async read({binding:b,signal}){localBinding(b);if(!objectiveRead){objectiveRead=true;return objectiveSelection;}const r=await call('runner/runtime',{versions:configuration.versions},signal);if(canonicalSha256(r.binding)!==canonicalSha256(binding)||canonicalSha256(r.versions)!==configuredVersionsSha256)throw fault('RUNNER_RUNTIME_REFUSED');return r.objective??null;}}});
- let nativeFiles,localCleanupFailed=false,workspaceRecorded=false;let runOwner={recordUsage:({binding:b,input,signal})=>{localBinding(b);return call('runner/record-usage',{input},signal);},load:({binding:b,signal})=>{localBinding(b);return call('runner/load',{},signal);},append:({binding:b,event,signal})=>{localBinding(b);return call('runner/publish',{event},signal);}},lifecycle;
+ let nativeFiles,localCleanupFailed=false,workspaceRecorded=false;let runOwner={readUploadSource:({binding:b,input,signal})=>{localBinding(b);return call('runner/upload-source',{input},signal);},recordUsage:({binding:b,input,signal})=>{localBinding(b);return call('runner/record-usage',{input},signal);},load:({binding:b,signal})=>{localBinding(b);return call('runner/load',{},signal);},append:({binding:b,event,signal})=>{localBinding(b);return call('runner/publish',{event},signal);}},lifecycle;
  if(credentialForBinding!==undefined){
   if(typeof credentialForBinding!=='function')throw fault('RUNNER_CREDENTIAL_CONFIGURATION');
   const forward=operation=>({binding:b,credential,signal,...input})=>{localBinding(b);return call(operation,input,signal);};
-  const service={loadForExecution:forward('runner/load'),publish:forward('runner/publish'),nextControls:forward('runner/next-controls'),claimControl:forward('runner/claim-control'),ackControl:forward('runner/ack-control'),recordCheckpoint:forward('runner/record-checkpoint')};
+  // Child assignment custody is forwarded to the same private run-owner route family: the assignment is persisted
+  // before the SDK Agent call is admitted and the child result receipt before the parent is acknowledged.
+  const service={loadForExecution:forward('runner/load'),publish:forward('runner/publish'),nextControls:forward('runner/next-controls'),claimControl:forward('runner/claim-control'),ackControl:forward('runner/ack-control'),recordCheckpoint:forward('runner/record-checkpoint'),dispatchChild:forward('runner/child-dispatch'),settleChild:forward('runner/child-settle')};
   runOwner={...runOwner,...createLifecycleRunOwner({service,credentialForBinding:args=>{localBinding(args.binding);return credentialForBinding(args);}})};
   const capture=operation=>async({binding:b,sessionId,controlId,typedResult,signal})=>{localBinding(b);
    if(!sdkSession||!nativeFiles)throw fault('RUNNER_NATIVE_FILES_UNAVAILABLE');
@@ -108,7 +114,7 @@ export function assembleConversationRunner({configuration,native,query,credentia
    markRunnerStage('skill-plugin');const plugin=skillPlugin===true&&directories.sdkConfigDirectory!==undefined?await prepareRunSkillPlugin(sdkSkillPluginDirectory(dirname(directories.sdkConfigDirectory),selection),{selection}):undefined;
    markRunnerStage('activity');return {...runtime,cwd:configuration.workspace,sessionStore,...directories,...(plugin?{skillPluginDirectory:plugin.directory}:{})};});}finally{localLife?.close();}});
  // The activity bounds runtime preparation (the runner/runtime call, then the local stage); see ACTIVITY_PREPARATION_MAX_MS.
- const activity=createConversationActivity({runOwner,prepareRuntime,selectedSkills,objectiveGeneration,now,...(stages?{loadMaxMs:stages.load.maxMs,loadExpiresAtMs:stages.load.expiresAtMs,runtimeMaxMs:Math.min(stages.runtime.maxMs+stages.local.maxMs,ACTIVITY_PREPARATION_MAX_MS),runtimeExpiresAtMs:stages.local.expiresAtMs,setupBudget:stages.setup,modelDeadlineMs:stages.session.expiresAtMs,executionDeadlineMs:startup.originalExpiresAtMs,terminalAttemptMs:stages.session.maxMs}:{}),...(readPort?{generalReads:readPort}:{}),...(governedIntents?{governedIntents}:{}),...(query?{query}:{}),...(lifecycle?{lifecycle}:{}),heartbeat:()=>{},diagnostics:{stage:markRunnerStage,failure:captureRunnerFailure}});
+ const activity=createConversationActivity({runOwner,prepareRuntime,selectedSkills,procedures,objectiveGeneration,now,...(stages?{loadMaxMs:stages.load.maxMs,loadExpiresAtMs:stages.load.expiresAtMs,runtimeMaxMs:Math.min(stages.runtime.maxMs+stages.local.maxMs,ACTIVITY_PREPARATION_MAX_MS),runtimeExpiresAtMs:stages.local.expiresAtMs,setupBudget:stages.setup,modelDeadlineMs:stages.session.expiresAtMs,executionDeadlineMs:startup.originalExpiresAtMs,terminalAttemptMs:stages.session.maxMs}:{}),...(readPort?{generalReads:readPort}:{}),...(governedIntents?{governedIntents}:{}),...(query?{query}:{}),...(lifecycle?{lifecycle}:{}),heartbeat:()=>{},diagnostics:{stage:markRunnerStage,failure:captureRunnerFailure}});
   const execute=async input=>withRunnerDiagnostics(()=>atRunnerStage('activity',async()=>{try{return await activity(input);}catch(error){captureRunnerFailure(error);throw error;}finally{markRunnerStage('runner-cleanup');
    try{try{await selectedSkills.close();}catch(error){localCleanupFailed=true;throw error;}finally{await sdkSession?.close();}}
    finally{

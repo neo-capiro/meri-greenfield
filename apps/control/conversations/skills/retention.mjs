@@ -8,20 +8,33 @@ import {assertSelectedOutput} from '../../../../packages/contracts/selected-skil
 import {createOperationLifetime} from '../../../../packages/runtime/operation-lifetime.mjs';
 import {admitPreparedCommitmentsAudit} from '../../document-application/commitments-audit/compose.mjs';
 import {admitPreparedRelationshipBrief} from '../../document-application/relationship-brief/compose.mjs';
+import {admitPreparedReport} from '../../document-application/report-brief/compose.mjs';
+import {admitPreparedCitedReport} from '../../document-application/cited-report/compose.mjs';
+import {retainedAssetMap} from '../../intents/document-revision.mjs';
 const candidates=new WeakSet(),journals=new WeakSet(),digest=x=>{if(typeof x!=='string'||!/^[a-f0-9]{64}$/u.test(x))fail('SELECTED_OUTPUT_PINS_REFUSED');return x;};
+/** The ordinary original recipes keep their admission; the sourced cited report only as its own installed version. */
+const admitted=pin=>['quick_skill.commitments_audit','quick_skill.relationship_brief'].includes(pin.skillId)||(pin.skillId==='quick_skill.bill_watch'&&pin.skillVersion==='2.0.0')||(pin.skillId==='quick_skill.cited_report'&&pin.skillVersion==='1.0.0');
 const stableSubject=s=>{const {authorizationDecisionId,...rest}=s;return rest;};
 const originalGuard=(skill,p,c)=>skill.skillId==='quick_skill.commitments_audit'?admitPreparedCommitmentsAudit(p,c):
- skill.skillId==='quick_skill.relationship_brief'?admitPreparedRelationshipBrief(p,c):fail('SELECTED_OUTPUT_SKILL_REFUSED');
+ skill.skillId==='quick_skill.relationship_brief'?admitPreparedRelationshipBrief(p,c):
+ skill.skillId==='quick_skill.bill_watch'&&skill.skillVersion==='2.0.0'?admitPreparedReport(p,c):
+ skill.skillId==='quick_skill.cited_report'&&skill.skillVersion==='1.0.0'?admitPreparedCitedReport(p,c):fail('SELECTED_OUTPUT_SKILL_REFUSED');
 function pins(record){const {pending:p,prepared}=record;return {sourceBinding:p.sourceBinding,requestSha256:p.requestSha256,selectionSha256:p.selectionSha256,
  inputSha256:p.inputSha256,preparationSha256:p.preparationSha256,artifactRequestSha256:p.artifactRequestSha256,sourceContextSha256:hash(prepared.context),
  compilerReadsSha256:prepared.provenance.readsSha256,readsSha256:hash(record.reads),sourceEvidenceSha256:hash(prepared.context.evidence),sourceScopes:prepared.context.scopes};}
+/** Assets are admissible only as the exact canonical mapping of the spec's own declared references under the
+ * run's own scopes - the one asset rule from the document-revision intent, reused rather than restated. The
+ * trusted selected read never supplies assets, so an asset-bearing preparation can only have derived them
+ * from the immutable parent's durable map; a missing, extra, misordered, foreign or rehashed mapping is
+ * refused exactly as the asset-free case always was. */
+const retainedAssetsAdmitted=(spec,context)=>{try{return retainedAssetMap(spec,context.assets,context.scopes).assets!==null;}catch{return false;}};
 function validateRecord(raw){
  const r=bounded(raw,2097152);own(r,['recipe','pending','request','prepared','reads']);
  if(r.recipe!=='original-selected-output-retention/1')fail('SELECTED_OUTPUT_PINS_REFUSED');
  const p=r.prepared,c=v.context(p.context),spec=v.request(p.request),selection=p.provenance.selection,selected=selectSkill(p.provenance.skill.skillId,p.provenance.skill.skillVersion);
- if(!['quick_skill.commitments_audit','quick_skill.relationship_brief'].includes(selected.pin.skillId)||!same(p.provenance.skill,selected.pin)||!same(r.request.skill,selected.pin)||
+ if(!admitted(selected.pin)||!same(p.provenance.skill,selected.pin)||!same(r.request.skill,selected.pin)||
   !same(selection.window,r.request.window)||!same(selection.subject.scopes,c.scopes)||!same(selection.subject.tenantId,c.binding.tenantId)||!same(selection.subject.actorId,c.binding.actorId)||
-  spec.operation!=='create_word'||spec.format!=='docx'||c.assets.length||c.analysisAdmission)fail('SELECTED_OUTPUT_PINS_REFUSED');
+  spec.operation!=='create_word'||spec.format!=='docx'||c.analysisAdmission||c.assets.length&&!retainedAssetsAdmitted(spec,c))fail('SELECTED_OUTPUT_PINS_REFUSED');
  assertSubject(selection.subject,c.binding);
  const pending={...r.pending,prepared:p};assertSelectedOutput(pending,{binding:c.binding,request:r.request,selection,inputSha256:p.provenance.inputSha256,prepared:p});
  if(r.pending.state!=='awaiting-output-approval'||Object.hasOwn(r.pending,'prepared')||!same(r.pending.sourceBinding,c.binding))fail('SELECTED_OUTPUT_PINS_REFUSED');
