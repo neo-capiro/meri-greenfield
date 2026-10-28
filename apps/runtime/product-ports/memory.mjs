@@ -1,3 +1,4 @@
+import {CURRENT_AUTHORITY_LIMITS} from '../native-authority/current-authority-limits.mjs';
 /** Memory family (lane M, D016 #6: review-only, in scope) for the production product-port composer.
  *
  * `createMemoryFamily(context)` is an ordinary synchronous factory over the trusted control context
@@ -19,7 +20,7 @@
  *    shared inbox, D22) and the proposer's own approve/reject, forwarded to Core's owner-decision (additions) or version-candidate
  *    (corrections) routes. Reviewers of firm/client candidates use Core's inbox, not Meri.
  *  - Native conversation preparation retains exact text/scope in the existing approval-metadata owner under current authority.
- *    It submits no candidate. The intent journal owns replay; approved execution remains unavailable pending its connected owner.
+ *    It submits no candidate. Approved execution uses Core’s existing atomic native receiver and pending-candidate owner.
  *
  * Credentials (`native-authority/memory-credentials.mjs`): the member's own native bearer, bounded by its admission or live
  * session, plus the verified service identity (the declared secret file, re-read per call). No bearer is ever a file. */
@@ -142,7 +143,7 @@ function compose(context,owners){
    return Object.freeze({principal,expiresAtMs:initial.expiresAtMs,producer:producerWith(acquire),recheck});
   };
   const source=createMemoryCommandSource({...selected,policyRevision:v.policyRevision,readCurrent:v.readCurrent,producerFor,now,maxRequestMs:limits.maxRequestMs,deadlineMs:v.deadlineMs});
-  return Object.freeze([createMemoryIntentPreparer({...selected,source,newId,now,maxRequestMs:limits.maxRequestMs,deadlineMs:v.deadlineMs,
+  return Object.freeze([createMemoryIntentPreparer({...selected,source,newId,now,maxRequestMs:limits.maxRequestMs,deadlineMs:v.deadlineMs,proposalTtlMs:CURRENT_AUTHORITY_LIMITS.proposalTtlMs,
    metadataStore:createTransactionalApprovalMetadataStore({pool:c.pool})})]);
  }:null;
  retentionBinders.set(context,bindRetention);

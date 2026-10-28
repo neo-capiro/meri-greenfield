@@ -7,11 +7,18 @@ import {allocatedApplicationFixture,binding,id} from '../../../control/conversat
 import {initialInputFixture} from '../../../control/conversations/test/initial-input-fixture.mjs';
 import {nativeTaskFixture} from '../../../control/intents/test/native-task-fixture.mjs';
 import {canonicalSha256 as hash} from '../../../../packages/contracts/validate.mjs';
-async function fixture(t,general){
+import {nativeMemoryCandidateFromProposal} from '../../../../packages/contracts/commands-0.2/native-memory-result.mjs';
+async function fixture(t,general,memory=false){
  const task=nativeTaskFixture({action:'task.update',general}),p=structuredClone(task.proposal),now=Date.now;
  p.createdAt=new Date(now()-1000).toISOString();p.expiresAt=new Date(now()+60000).toISOString();
  const decision={...task.decision,decidedAt:new Date(now()).toISOString(),expiresAt:p.expiresAt};
  const outcome=structuredClone(task.outcome);outcome.execution.completedAt=new Date(now()).toISOString();outcome.execution.approvalDecisionSha256=hash(decision);outcome.result.updatedAt=outcome.execution.completedAt;
+ if(memory){
+  p.command.contractVersion='0.1.0';p.command.action='memory.propose';p.command.arguments={content:'Exact reviewed memory',scope:general?'personal':'client',clientId:general?null:p.command.scopes[0].resourceId,key:null,ttlDays:null};
+  p.commandSha256=hash(p.command);decision.commandSha256=p.commandSha256;
+  outcome.execution.kind='native-memory';outcome.execution.commandSha256=p.commandSha256;outcome.execution.approvalDecisionSha256=hash(decision);
+  outcome.result={candidateId:p.proposalId,candidateSha256:hash(nativeMemoryCandidateFromProposal(p)),reviewId:id(900),review:{status:'pending',decidedAt:null,publishedMemoryId:null,checkedAt:outcome.execution.completedAt}};
+ }
  const base=initialInputFixture(),pool={async connect(){const connection=await base.pool.connect();return {async query(sql,params=[]){
   const text=typeof sql==='string'?sql:sql.text,values=typeof sql==='string'?params:sql.values??[];
   if(text.startsWith('SELECT e.* FROM meri_conversations.events e JOIN')){
@@ -40,6 +47,16 @@ async function fixture(t,general){
  const call={proposal:p,principal:task.principal,deliveryId:task.decideRequest.deliveryId,decision,deadlineMs:now()+10000};
  return {app,forwarder,call,state,outcome};
 }
+for(const general of [false,true])test(`native memory ${general?'General':'client'} uses the attended session and exact original execution/read routes`,async t=>{
+ const f=await fixture(t,general,true);
+ assert.equal(await f.forwarder.readMemoryExecution(f.call),null);assert.equal(f.state.stored,null);
+ f.state.loseAck=true;await assert.rejects(f.forwarder.executeMemory(f.call),e=>e.effect==='unknown');
+ assert.deepEqual(await f.forwarder.readMemoryExecution(f.call),{state:'OUTCOME',outcome:f.outcome});
+ assert.equal(f.state.requests.filter(r=>r.url.endsWith(CORE_APPROVAL_ROUTES.execute)).length,1);
+ assert.deepEqual(f.state.requests.at(-1).body,{proposal:f.call.proposal,binding});
+ assert.equal(f.state.requests.at(-1).headers.authorization,'Bearer synthetic-native');
+ f.state.stored.result.candidateId=id(999);await assert.rejects(f.forwarder.readMemoryExecution(f.call));
+});
 for(const general of [false,true])test(`native task ${general?'General':'client'} uses attended Core identity and original body; empty read never writes`,async t=>{
  const f=await fixture(t,general);
  assert.equal(await f.forwarder.readTaskExecution(f.call),null);assert.equal(f.state.stored,null);

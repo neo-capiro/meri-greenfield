@@ -11,7 +11,7 @@ import {createJournalProposalReader} from '../../../runtime/product-ports/lifecy
 async function setup({state='PREPARED',mutate,action='task.create'}={}){
  const f=commandFixture(action),sql=createPreparedSchedulePoolFixture(),journal=createIntentJournal(createPostgresIntentJournalStore({pool:sql.pool}));
  const proposal=structuredClone(f.proposal),binding=proposal.command.binding,deliveryId='sdk:'+'c'.repeat(64);
- const record={operation:{id:action==='artifact.file'?'save_chat_attachments':'create_task',version:'0.2.0'},argumentsSha256:'d'.repeat(64)};
+ const record={operation:{id:action==='memory.propose'?'save_memory':action==='artifact.file'?'save_chat_attachments':'create_task',version:'0.2.0'},argumentsSha256:'d'.repeat(64)};
  const outcome={result:{status:'approval_required',proposal},release:{binding,scopes:proposal.command.scopes,expiresAtMs:NOW+60000}};
  await journal.begin({binding,deliveryId,record});
  if(state!=='PENDING')await journal.settle({binding,deliveryId,record,state:'PREPARED',outcome});
@@ -20,6 +20,11 @@ async function setup({state='PREPARED',mutate,action='task.create'}={}){
  return {f,sql,proposal,binding,selection,reader:createPostgresCommandProposalReader({pool:sql.pool})};
 }
 const unknown=p=>assert.rejects(p,e=>e?.code==='UNKNOWN');
+test('native memory custody reads only the exact retained memory operation',async()=>{
+ const s=await setup({action:'memory.propose'});
+ assert.deepEqual(await s.reader.readProposal(s.selection),s.proposal);
+ [...s.sql.state.rows.values()][0].record.operation.id='create_task';await unknown(s.reader.readPreparedCommand(s.selection));
+});
 
 test('native filing reads only the exact retained original command and filing operation',async()=>{
  const s=await setup({action:'artifact.file'}),retained=await s.reader.readPreparedCommand(s.selection);

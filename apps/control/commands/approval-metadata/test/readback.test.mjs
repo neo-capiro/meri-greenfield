@@ -4,7 +4,7 @@ import {createApprovalMetadataReadback} from '../readback.mjs';
 import {createPostgresApprovalMetadataReader} from '../postgres-store.mjs';
 import {makePayload,canonicalSha256 as hash} from '../binding.mjs';
 import {allocatedApplicationFixture,binding,scopes,id} from '../../../conversations/test/application-fixture.mjs';
-import {normalizeTaskCreateInput,normalizeTaskUpdateInput,normalizeArtifactFileInput} from '../../../../../packages/contracts/commands-0.2/validate.mjs';
+import {normalizeTaskCreateInput,normalizeTaskUpdateInput,normalizeArtifactFileInput,normalizeMemoryProposeInput} from '../../../../../packages/contracts/commands-0.2/validate.mjs';
 
 async function fixture(t,{general=false}={}){
  const admittedScopes=general?[{...scopes[0],kind:'private-user',resourceId:binding.actorId}]:scopes;
@@ -40,6 +40,14 @@ for(const general of [false,true])for(const terminal of ['completed','failed'])t
  assert.equal(f.state.queries[0],'BEGIN ISOLATION LEVEL REPEATABLE READ READ ONLY');assert.ok(f.state.queries.includes("SET LOCAL statement_timeout = '5s'"));
  const select=f.state.queries.find(q=>typeof q==='object');assert.equal(select.query_timeout,5000);assert.deepEqual(select.values,[binding.tenantId,binding.actorId,f.input.proposalId]);
  assert.equal(f.state.queries.at(-1),'COMMIT');assert.deepEqual(f.state.releases,[undefined]);assert.equal(f.state.ends,0);
+});
+for(const general of [false,true])for(const terminal of ['completed','failed'])test(`native memory ${general?'General':'client'} metadata readback retains exact ${terminal} provenance`,async t=>{
+ const f=await fixture(t,{general}),raw={content:' Exact memory ',scope:general?'personal':'client'},context={binding,conversationClientId:general?null:id(5)};
+ const args=normalizeMemoryProposeInput(raw,context);
+ f.state.payload=makePayload({...f.state.payload.record,action:'memory.propose',operation:{id:'save_memory',version:'0.2.0'},request:raw,inputSha256:hash({arguments:args,attachments:[]})},context);
+ for(const state of ['starting','running',terminal])await f.stateTo(state);
+ const result=await f.reader.read(f.input);assert.deepEqual(result.metadata,f.state.payload);assert.equal(result.run.state,terminal);
+ f.state.suppressed=true;await assert.rejects(f.reader.read(f.input));
 });
 for(const action of ['task.create','task.update'])for(const general of [false,true])test(`native ${action} metadata readback preserves raw normalization and ${general?'General':'client'} scope`,async t=>{
  const f=await fixture(t,{general}),raw=action==='task.create'?{title:'  Native task  '}:{taskId:id(812).toUpperCase(),title:'  Changed task  ',status:'open'};

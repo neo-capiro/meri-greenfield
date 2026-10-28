@@ -4,13 +4,13 @@ import {nativeMemoryFixture} from '../../../../control/intents/test/native-memor
 import {mountIntents} from './fixture.mjs';
 import {intentPromptSentence} from '../options.mjs';
 test('mounted prompt distinguishes pending memory review and absent mount stays unchanged',()=>{
- assert.equal(intentPromptSentence(false),'');assert.match(intentPromptSentence(true),/Memory preparation creates no candidate/u);assert.match(intentPromptSentence(true),/submission remains unavailable/u);
+ assert.equal(intentPromptSentence(false),'');assert.match(intentPromptSentence(true),/Memory preparation creates no candidate/u);assert.match(intentPromptSentence(true),/approved submission creates a pending candidate/u);
 });
 for(const general of [false,true])test(`${general?'General':'client'} memory tool renders an unsubmitted proposal and holds exact delivery through worker remount`,async()=>{
  const f=nativeMemoryFixture({general}),m=await mountIntents(f);assert(m);
  try{const out=await m.call('propose_memory',{operation:'save_memory',arguments:f.raw},{toolUseId:'toolu_memory'});
   assert.equal(out.isError,undefined);const result=JSON.parse(out.content[0].text);
-  assert.equal(result.status,'approval_required');assert.match(out.content[1].text,/PREPARED MEMORY PROPOSAL/u);assert.match(out.content[1].text,/Submission is unavailable/u);assert.equal(f.journal.rows.size,0);
+  assert.equal(result.status,'approval_required');assert.match(out.content[1].text,/PREPARED MEMORY PROPOSAL/u);assert.match(out.content[1].text,/Approve this exact proposal in Meri/u);assert.equal(f.journal.rows.size,0);
   assert.equal(m.runtime.receipts()[0].status,'approval_required');assert.equal(m.runtime.receipts()[0].reference,result.proposal.proposalId);
   const second=await mountIntents(f);try{const replay=await second.call('propose_memory',{operation:'save_memory',arguments:f.raw},{toolUseId:'toolu_memory'});assert.deepEqual(JSON.parse(replay.content[0].text),result);assert.equal(f.state.prepares,1);}finally{await second.close();}
  }finally{await m.close();}

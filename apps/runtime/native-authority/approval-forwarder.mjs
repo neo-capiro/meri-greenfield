@@ -1,3 +1,4 @@
+import {nativeMemoryOutcome,nativeMemoryNotExecuted} from '../../control/intents/memory-outcome.mjs';
 /** Core P-INT-10 approval forwarder, Meri side (dot PR #121 6247464370 item 6; Core b7c6e9cf `apps/api/src/meri/native-approvals/*`).
  *
  * Serves the three native approval operations the intents owners call through the fixed provider RPC seam
@@ -245,7 +246,7 @@ export function createCoreApprovalForwarder(options){
   const v=own(value,['proposal','principal','deliveryId'],['decision','signal','deadlineMs']);nativeSignal(v.signal);
   let p;try{p=data(v.proposal);assertNativeApprovalProposal(p);}catch{refuse('INVALID_ARGUMENTS');}
   const b=p.command.binding;
-  if(!(kind==='mail'?p.command.action==='mail.send':['task.create','task.update'].includes(p.command.action))||v.principal.tenantId!==b.tenantId||v.principal.actorId!==b.actorId)refuse('ACCESS_DENIED');
+  if(!(kind==='mail'?p.command.action==='mail.send':kind==='memory'?p.command.action==='memory.propose':['task.create','task.update'].includes(p.command.action))||v.principal.tenantId!==b.tenantId||v.principal.actorId!==b.actorId)refuse('ACCESS_DENIED');
   const life=lifetime(v.signal,v.deadlineMs);
   try{
    if(!observe)life.limitDeadline(Date.parse(p.expiresAt));
@@ -254,13 +255,13 @@ export function createCoreApprovalForwarder(options){
    const r=answer.value;if(observe&&r===null)return null;
    if(observe){
     if(r?.state==='UNKNOWN'){own(r,['state']);return r;}
-    if(kind==='task'&&r?.state==='NOT_EXECUTED')return nativeTaskNotExecuted(r,p);
+    if((kind==='task'||kind==='memory')&&r?.state==='NOT_EXECUTED')return (kind==='memory'?nativeMemoryNotExecuted:nativeTaskNotExecuted)(r,p);
     own(r,['state','outcome']);if(r.state!=='OUTCOME')refuse('UNAVAILABLE','unknown');
    }else{
     if(r?.status==='indeterminate'){own(r,['status']);return r;}
     own(r,['status','outcome']);if(r.status!=='observed')refuse('UNAVAILABLE','unknown');
    }
-   return data({...r,outcome:(kind==='mail'?nativeMailOutcome:nativeTaskOutcome)(r.outcome,p,v.decision)});
+   return data({...r,outcome:(kind==='memory'?nativeMemoryOutcome:kind==='mail'?nativeMailOutcome:nativeTaskOutcome)(r.outcome,p,v.decision)});
   }finally{life.close();}
  }
  /** The multipart filing client borrows credentials only for a retained artifact.file proposal and the exact current selector. */
@@ -293,6 +294,8 @@ export function createCoreApprovalForwarder(options){
  return Object.freeze({origin,operations:APPROVAL_FORWARDER_OPERATIONS,call,record,decision,read,revoke,filingCredentials,
   async executeTask(value){return nativeEffect(value,false,'task');},
   async readTaskExecution(value){return nativeEffect(value,true,'task');},
+  async executeMemory(value){return nativeEffect(value,false,'memory');},
+  async readMemoryExecution(value){return nativeEffect(value,true,'memory');},
   async executeMail(value){return nativeEffect(value,false,'mail');},
   async readMailExecution(value){return nativeEffect(value,true,'mail');},
   /** The intents decision ports over Core (the shapes `approval.mjs` and the lifecycle read). */

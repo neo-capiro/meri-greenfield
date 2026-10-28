@@ -26,5 +26,5 @@ export function mergeIntentOptions(mounted,intents){
 /** PROPOSAL P-INT-3 (exact text pending owner review): the prompt sentence added only while `meri_intents` is mounted.
  * Unmounted, the default prompt is unchanged. @param {boolean} mounted */
 export function intentPromptSentence(mounted){
- return mounted?' Write requests may only be prepared with the listed write-request tools, as proposals the user approves in Meri, drafts, or exact memory proposals. Memory preparation creates no candidate and publishes nothing; memory submission remains unavailable until its approval flow is connected. Never claim a completed effect without its owner result.':'';
+ return mounted?' Write requests may only be prepared with the listed write-request tools, as proposals the user approves in Meri, drafts, or exact memory proposals. Memory preparation creates no candidate and publishes nothing; approved submission creates a pending candidate, and publication requires a later Core review result. Never claim a completed effect without its owner result.':'';
 }

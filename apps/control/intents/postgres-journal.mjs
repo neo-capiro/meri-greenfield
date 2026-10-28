@@ -173,7 +173,7 @@ export function createPostgresCommandProposalReader({pool}){
     assertNativeApprovalProposal(proposal);
     const b=proposal.command.binding,r=custody.release.binding;
     if(proposal.proposalId!==s.proposalId||b.tenantId!==storedKey.tenantId||b.actorId!==storedKey.actorId||b.conversationId!==storedKey.conversationId||
-     hash(r)!==hash(b)||retained.record.operation.id!==({'mail.send':'mail_send','task.create':'create_task','task.update':'update_task','document.draft':'create_word','artifact.file':'save_chat_attachments'}[proposal.command.action])||
+     hash(r)!==hash(b)||retained.record.operation.id!==({'mail.send':'mail_send','task.create':'create_task','task.update':'update_task','memory.propose':'save_memory','document.draft':'create_word','artifact.file':'save_chat_attachments'}[proposal.command.action])||
      hash(custody.release.scopes)!==hash(proposal.command.scopes))refuse('INTENT_JOURNAL_STATE');
     return data({key:storedKey,...retained});
    }catch{refuse('INTENT_JOURNAL_STATE');}

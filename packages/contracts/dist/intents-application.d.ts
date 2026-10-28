@@ -25,6 +25,8 @@ export type IntentsApplicationEnvelope =
   | IntentsNativeMailOutcome
   | Canonical_ArtifactFileArguments_6F2B3978
   | IntentsNativeTaskOutcome
+  | Canonical_MemoryProposeArguments_398Ed10C
+  | IntentsNativeMemoryOutcome
   | IntentsNativeArtifactFileOutcome
   | IntentsExecutionOutcome
   | IntentsExecution
@@ -156,6 +158,7 @@ export type IntentsExecutionOutcome =
       result: Canonical_TaskCreateResult_0501C509;
     }
   | IntentsNativeTaskOutcome
+  | IntentsNativeMemoryOutcome
   | IntentsNativeMailOutcome
   | IntentsNativeArtifactFileOutcome
   | Canonical_ArtifactCreatedResult_183A755E;
@@ -3538,6 +3541,35 @@ export interface Canonical_TaskUpdateResult_029549A8 {
   clientId: string | null;
   updatedAt: string;
 }
+export interface Canonical_MemoryProposeArguments_398Ed10C {
+  content: string;
+  key: string | null;
+  scope: 'personal' | 'client' | 'firm';
+  clientId: string | null;
+  ttlDays: number | null;
+}
+export interface IntentsNativeMemoryOutcome {
+  execution: {
+    kind: 'native-memory';
+    proposalId: string;
+    commandSha256: string;
+    idempotencyKey: string;
+    binding: Canonical_RunBinding_84F2304C;
+    completedAt: string;
+    approvalDecisionSha256: string;
+  };
+  result: {
+    candidateId: string;
+    candidateSha256: string;
+    reviewId: string;
+    review: {
+      status: 'pending' | 'approved' | 'rejected' | 'withdrawn' | 'not_found';
+      decidedAt: string | null;
+      publishedMemoryId: string | null;
+      checkedAt: string;
+    };
+  };
+}
 export interface IntentsNativeArtifactFileOutcome {
   execution: {
     kind: 'native-artifact-file';
@@ -5621,7 +5653,8 @@ export declare const intentsMetadata:{
     "task.update",
     "document.draft",
     "artifact.file",
-    "mail.send"
+    "mail.send",
+    "memory.propose"
   ],
   "semantics": {
     "list": "read-only durable history of this conversation's prepared intents; next is the last returned deliveryId when more remain, otherwise null",

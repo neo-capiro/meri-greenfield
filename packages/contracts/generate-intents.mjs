@@ -22,7 +22,7 @@ export async function generateIntentsContracts({check=false,toolchainRoot}={}){
   const config={paths:application.INTENTS_PATHS,limits:application.INTENTS_LIMITS,errorStatuses:application.INTENTS_ERROR_STATUSES,errorOutcomes:application.INTENTS_ERROR_OUTCOMES,failureCodes:application.INTENTS_FAILURE_CODES,approvableActions:application.INTENTS_APPROVABLE_ACTIONS,fieldPattern};
   const metadata=createIntentsMetadata(config);
   for(const path of ['generate-intents.mjs',...['README.md','schema.mjs','protocol.mjs','boundary.mjs','semantics.mjs','routines.mjs','receive.mjs'].map(name=>'intents-application/'+name),'document-application/boundary.mjs',
-   'schedules-0.2/application-protocol.mjs','../../apps/control/schedules/application.mjs','../../apps/control/schedules/application-http.mjs','artifacts-0.2/artifact-formats.mjs','commands-0.2/document-draft-validation.mjs','commands-0.2/mail-send-validation.mjs','commands-0.2/memory-review-result.mjs',
+   'schedules-0.2/application-protocol.mjs','../../apps/control/schedules/application.mjs','../../apps/control/schedules/application-http.mjs','artifacts-0.2/artifact-formats.mjs','commands-0.2/document-draft-validation.mjs','commands-0.2/mail-send-validation.mjs','commands-0.2/memory-review-result.mjs','commands-0.2/native-memory-result.mjs',
    '../../apps/control/intents/application-protocol.mjs','../../apps/control/intents/http.mjs','../../apps/control/intents/approval.mjs','../../apps/control/intents/faults.mjs','../../apps/control/product-access/http.mjs'])await record(path);
   // Canonical shapes are copied into this schema as local definitions so the distribution has no external schema reference.
   const root=intentsSchema(config),defs={},seen=new Map();

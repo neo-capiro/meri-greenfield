@@ -83,7 +83,8 @@
     "task.update",
     "document.draft",
     "artifact.file",
-    "mail.send"
+    "mail.send",
+    "memory.propose"
   ],
   "semantics": {
     "list": "read-only durable history of this conversation's prepared intents; next is the last returned deliveryId when more remain, otherwise null",
@@ -117,8 +118,8 @@
     },
     {
       "path": "../../apps/control/intents/approval.mjs",
-      "sha256": "bef3ee4cf744a4cb105c92840d4e156bf5269001d20eb07eb6006e52ad7f53e3",
-      "bytes": 42446
+      "sha256": "f1817fecd7c8c23639d349d6c0bb25a8bdf191f4c11c31d365d13adfafd7da17",
+      "bytes": 42986
     },
     {
       "path": "../../apps/control/intents/faults.mjs",
@@ -196,6 +197,11 @@
       "bytes": 941
     },
     {
+      "path": "commands-0.2/native-memory-result.mjs",
+      "sha256": "f35b9ddbb5c83c3f531e5c8040b192b61a19b1be22a56c18cc683b4f6d37566b",
+      "bytes": 2688
+    },
+    {
       "path": "commands-0.2/task-create.schema.json",
       "sha256": "94e9893173bcf450d8aaabeebe69dc0c3c2b60e8f1d2f2ad22fd60487ed87869",
       "bytes": 3827
@@ -212,8 +218,8 @@
     },
     {
       "path": "generate-intents.mjs",
-      "sha256": "3ad8b0c80682a538372e7bd2c9773267d60da3c2a032ca621b467e85a46698cb",
-      "bytes": 15124
+      "sha256": "11398e0def4474f8356fba984ad17a65b4954e332ec1762904b7eb337cd08e71",
+      "bytes": 15164
     },
     {
       "path": "intents-application/boundary.mjs",
@@ -242,13 +248,13 @@
     },
     {
       "path": "intents-application/schema.mjs",
-      "sha256": "842e4f19a3ca396a43f6d07303b19eb9a53299d4caf786019ef5154ecd54b8fd",
-      "bytes": 21448
+      "sha256": "5c8be336652ac505686cc603cf99d6b5f4f3a78fd722a3bdea199008b4f93647",
+      "bytes": 22365
     },
     {
       "path": "intents-application/semantics.mjs",
-      "sha256": "3cb4338845cad706c25f8bdcae9373480703f44c72f20d21de798b27a9bcea05",
-      "bytes": 28155
+      "sha256": "5450146cb86f174a69c8c27b3df4d34aa9344ba6876ca087dce72a9f63da8f7d",
+      "bytes": 29270
     },
     {
       "path": "meri.schema.json",
@@ -346,10 +352,11 @@
       "bytes": 3041
     }
   ],
-  "schemaSha256": "1576c5e1d6e3f28935495008b3a2fc79455f3655060f942d9d054568e7a837c8",
+  "schemaSha256": "43759e17c7a6774c312d1f401c60fd210145fd0380735c32389ff0092189818d",
   "browserInputs": [
     "artifacts-0.2/artifact-formats.mjs",
     "commands-0.2/mail-send-validation.mjs",
+    "commands-0.2/native-memory-result.mjs",
     "document-application/boundary.mjs",
     "intents-application/boundary.mjs",
     "intents-application/intents-application-receiver.mjs",

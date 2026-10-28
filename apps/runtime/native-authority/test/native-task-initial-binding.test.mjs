@@ -15,9 +15,12 @@ async function fixture(t,{general=false,action='task.create'}={}){
  const input={principal,conversationId:seed.conversationId,selectedClientId,policyRevision:'policy1',versions,configurationSha256:'c'.repeat(64),proposedExpiresAtMs:now()+60000};
  const original=(await store.initialBindings.claim(input,check)).record,binding=original.binding;
  const scopes=[{...principal,kind:general?'private-user':'client',resourceId:general?principal.actorId:selectedClientId,policyRevision:'policy1'}].map(({actorId,...scope})=>scope);
- const native=nativeTaskFixture({action,general}),command={...native.proposal.command,binding,scopes};
+ const native=nativeTaskFixture({action:action==='memory.propose'?'task.create':action,general}),command={...native.proposal.command,binding,scopes};
+ if(action==='memory.propose'){command.action=action;command.arguments={content:'Exact initial memory',scope:general?'personal':'client',clientId:general?null:selectedClientId,key:null,ttlDays:null};}
  const proposal={...native.proposal,command,commandSha256:hash(command),createdAt:new Date(now()).toISOString(),expiresAt:new Date(now()+60000).toISOString()};
- const metadata=makePayload({...native.metadata.record,binding,scopes,createdAt:proposal.createdAt,expiresAt:proposal.expiresAt},{...native.metadata.commandContext,binding});
+ const metadata=makePayload({...native.metadata.record,binding,scopes,createdAt:proposal.createdAt,expiresAt:proposal.expiresAt,
+  ...(action==='memory.propose'?{action,operation:{id:'save_memory',version:'0.2.0'},request:{content:command.arguments.content,scope:command.arguments.scope},inputSha256:hash({arguments:command.arguments,attachments:[]})}:{})},
+  action==='memory.propose'?{binding,conversationClientId:selectedClientId}:{...native.metadata.commandContext,binding});
  assert.equal(metadata.commandSha256,proposal.commandSha256);
  const state={current:original,suppressed:false,retentionChecks:0,retentionHook:null};
  const retention={async assertServable(){state.retentionChecks++;await state.retentionHook?.();if(state.suppressed)throw Error('suppressed');}};
@@ -32,7 +35,7 @@ async function fixture(t,{general=false,action='task.create'}={}){
  return {db,store,now,original,binding,scopes,proposal,metadata,state,sessions,session,read,current,rebind};
 }
 
-for(const general of [false,true])for(const action of ['task.create','task.update'])test(`${action} first-use ${general?'General':'client'} reads immutable preparation and attended session without a chat run`,async t=>{
+for(const general of [false,true])for(const action of ['task.create','task.update','memory.propose'])test(`${action} first-use ${general?'General':'client'} reads immutable preparation and attended session without a chat run`,async t=>{
  const f=await fixture(t,{general,action}),before=f.db.bindings.length;
  const result=await f.read();assert.equal(Object.hasOwn(result,'run'),false);
  assert.deepEqual(result.preparation,{kind:'initial-binding',record:f.original,recordSha256:hash(f.original),generation:1,latestGeneration:1,started:false});
@@ -40,8 +43,8 @@ for(const general of [false,true])for(const action of ['task.create','task.updat
  assert.equal(f.db.bindings.length,before);assert.equal(f.db.state.runs.size,0);assert.equal(f.db.allocations.size,0);
 });
 
-for(const general of [false,true])test(`expired and superseded ${general?'General':'client'} task provenance remains recoverable under a fresh session`,async t=>{
- const f=await fixture(t,{general});f.db.advance(60000);
+for(const general of [false,true])for(const action of ['task.create','memory.propose'])test(`expired and superseded ${general?'General':'client'} ${action} provenance remains recoverable under a fresh session`,async t=>{
+ const f=await fixture(t,{general,action});f.db.advance(60000);
  assert.equal((await f.read()).preparation.generation,1);
  await assert.rejects(f.current());
  await f.rebind();const result=await f.read();

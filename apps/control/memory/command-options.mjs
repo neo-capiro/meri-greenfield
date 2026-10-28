@@ -11,8 +11,9 @@ import {createCommandIntentPreparer} from '../intents/command-preparer.mjs';
 import {intentFault} from '../intents/faults.mjs';
 export const MEMORY_COMMAND_OPERATION=Object.freeze({id:'save_memory',version:'0.2.0'});
 const same=(a,b)=>hash(a)===hash(b);
-export function createMemoryIntentPreparer({source,metadataStore,binding,scopes,selectedClientId,now,maxRequestMs,deadlineMs,newId=randomUUID}){
+export function createMemoryIntentPreparer({source,metadataStore,binding,scopes,selectedClientId,now,maxRequestMs,deadlineMs,proposalTtlMs=900000,newId=randomUUID}){
  const selected=data({binding,scopes,selectedClientId});assertNativeConversationScope(selected);
+ if(!Number.isSafeInteger(proposalTtlMs)||proposalTtlMs<1000||proposalTtlMs>86400000)throw intentFault('INTENT_CONFIGURATION');
  if(typeof source?.checkScope!=='function'||typeof newId!=='function'||typeof now!=='function'||
   !Number.isSafeInteger(maxRequestMs)||maxRequestMs<1||maxRequestMs>30000||!Number.isSafeInteger(deadlineMs))throw intentFault('INTENT_CONFIGURATION');
  const commandContext=data({binding:selected.binding,conversationClientId:selectedClientId});
@@ -24,6 +25,7 @@ export function createMemoryIntentPreparer({source,metadataStore,binding,scopes,
     if(typeof deliveryId!=='string'||!/^sdk:[a-f0-9]{64}$/u.test(deliveryId))throw Error();
     request=data(raw);if(Object.hasOwn(request,'clientId'))throw Error();
     input=normalizeMemoryProposeInput(request,commandContext);
+    if(input.ttlDays!==null&&!Number.isSafeInteger(input.ttlDays))throw Error();
    }catch{throw intentFault('INVALID_ARGUMENTS','none');}
    let proposalExpiresAt;
    const preparePolicy=async({phase,selection,selectionSha256,signal,limitDeadline})=>{
@@ -32,7 +34,7 @@ export function createMemoryIntentPreparer({source,metadataStore,binding,scopes,
     const began=now(),current=data(own(await source.checkScope({arguments:input,signal}),['binding','scopes','checkedAtMs','expiresAtMs']));
     if(!same(current.binding,selected.binding)||!same(current.scopes,selected.scopes)||!Number.isSafeInteger(current.checkedAtMs)||current.checkedAtMs<began||current.checkedAtMs>now()||
      !Number.isSafeInteger(current.expiresAtMs)||current.expiresAtMs<=now())throw intentFault('ACCESS_DENIED','none');
-    proposalExpiresAt??=new Date(Math.min(deadlineMs,current.expiresAtMs)).toISOString();
+    proposalExpiresAt??=new Date(Math.min(deadlineMs,now()+proposalTtlMs)).toISOString();
     const cutoff=Math.min(deadlineMs,current.expiresAtMs,Date.parse(proposalExpiresAt));limitDeadline(cutoff);
     return {authorized:true,selectionSha256,binding:selected.binding,scopes:selected.scopes,
      requiredApprover:{tenantId:selected.binding.tenantId,actorId:selected.binding.actorId},proposalExpiresAt,checkedAtMs:current.checkedAtMs,expiresAtMs:cutoff};

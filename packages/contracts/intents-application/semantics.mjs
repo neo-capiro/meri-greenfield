@@ -1,3 +1,4 @@
+import {nativeMemoryCandidateFromProposal,assertNativeMemoryOutcome} from '../commands-0.2/native-memory-result.mjs';
 /** Correlation of an intent response with the request (and, for decide, the proposal) the caller captured, and internal consistency of what the
  * server retained. Nothing here approves, executes or authorizes anything; every check only refuses a response that does not describe what was asked.
  * Rules mirror the canonical owners: approval.mjs (decision/lifetime reads), validate.mjs assertProposalIntegrity, and commands-0.2
@@ -67,6 +68,13 @@ async function proposal(value,conversationId){
   if(patch.title!==undefined&&patch.title.trim()!==patch.title)conflict();
   if(patch.dueDate!==undefined&&exact(patch.dueDate)%86400000!==0)conflict();
  }
+ if(command.action==='memory.propose'){
+  const a=command.arguments,scopes=command.scopes,selected=scopes.length===1&&scopes[0].kind==='client'?scopes[0].resourceId:null;
+  if(scopes.length!==1||value.requiredApprover.actorId!==command.binding.actorId||selected===null&&(scopes[0].kind!=='private-user'||scopes[0].resourceId!==command.binding.actorId)||
+   !validators.IntentsMemoryProposeArguments(a)||a.content.trim()!==a.content||a.content.length>4000||
+   a.key!==null&&(a.key.trim()!==a.key||a.key.length>120)||a.ttlDays!==null&&!Number.isSafeInteger(a.ttlDays)||
+   a.clientId!==(a.scope==='client'?selected:null)||a.scope==='client'&&selected===null||command.attachments.length!==0)conflict();
+ }
  if(command.action==='mail.send'){try{mail.assertMailSendCommand(command,{binding:command.binding});exact(value.createdAt);exact(value.expiresAt);if(value.requiredApprover.actorId!==command.binding.actorId)conflict();}catch{conflict();}}
  if(command.action==='document.draft') {
   exact(value.createdAt);exact(value.expiresAt);
@@ -101,6 +109,10 @@ function documentOutcome(value,command) {
 async function outcome(value,retained,decisionValue){
  const command=retained.command,receipt=value.receipt,result=value.result;
  if(command.action==='document.draft')return documentOutcome(value,command);
+ if(value.execution?.kind==='native-memory'){
+  try{return assertNativeMemoryOutcome(value,retained,{candidateSha256:await sha(nativeMemoryCandidateFromProposal(retained)),
+   decisionSha256:decisionValue?await sha(decisionValue):undefined,decision:decisionValue,same});}catch{conflict();}
+ }
  if(value.execution?.kind==='native-mail'){
   const e=value.execution;if(command.action!=='mail.send'||e.proposalId!==retained.proposalId||e.commandSha256!==retained.commandSha256||e.idempotencyKey!==command.idempotencyKey||!same(e.binding,command.binding)||decisionValue&&e.approvalDecisionSha256!==await sha(decisionValue))conflict();
   try{mail.assertMailSendResult(result,command,retained.proposalId);}catch{conflict();}return;
