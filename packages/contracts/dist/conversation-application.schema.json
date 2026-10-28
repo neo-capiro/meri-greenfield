@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "urn:meri:conversation-application:0.3.0",
+  "$id": "urn:meri:conversation-application:0.4.0",
   "$defs": {
     "ConversationFeedbackTarget": {
       "oneOf": [
@@ -522,7 +522,18 @@
           "type": "object",
           "properties": {
             "skillId": {
-              "$ref": "#/$defs/Canonical_skillId_31e12e8e"
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/Canonical_skillId_31e12e8e"
+                },
+                {
+                  "$comment": "Identities added at this version. Adding another one requires a new reviewed version of this file, never an edit to the closed 0.2.0 enum.",
+                  "type": "string",
+                  "enum": [
+                    "quick_skill.cited_report"
+                  ]
+                }
+              ]
             },
             "skillVersion": {
               "$ref": "#/$defs/Canonical_skillVersion_7e2af095"
@@ -618,6 +629,120 @@
             ],
             "additionalProperties": false
           }
+        },
+        "procedure": {
+          "oneOf": [
+            {
+              "type": "object",
+              "properties": {
+                "source": {
+                  "const": "firm"
+                },
+                "recordId": {
+                  "type": "string",
+                  "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+                },
+                "version": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 9007199254740991
+                },
+                "manifestDigest": {
+                  "type": "string",
+                  "pattern": "^[a-f0-9]{64}$"
+                }
+              },
+              "required": [
+                "source",
+                "recordId",
+                "version",
+                "manifestDigest"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "properties": {
+                "source": {
+                  "const": "builtin"
+                },
+                "id": {
+                  "enum": [
+                    "briefing",
+                    "draft",
+                    "bill_analysis",
+                    "hearing_prep",
+                    "coalition_letter",
+                    "amendment_tracker"
+                  ]
+                },
+                "version": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 9007199254740991
+                },
+                "manifestDigest": {
+                  "type": "string",
+                  "pattern": "^[a-f0-9]{64}$"
+                }
+              },
+              "required": [
+                "source",
+                "id",
+                "version",
+                "manifestDigest"
+              ],
+              "additionalProperties": false
+            }
+          ]
+        },
+        "work": {
+          "type": "object",
+          "properties": {
+            "entry": {
+              "enum": [
+                "start-work",
+                "delegate"
+              ]
+            },
+            "jobKind": {
+              "enum": [
+                "research",
+                "deliverable",
+                "audit",
+                "scheduled"
+              ]
+            },
+            "deliverables": {
+              "type": "array",
+              "maxItems": 20,
+              "uniqueItems": true,
+              "items": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 200,
+                "pattern": "\\S"
+              }
+            },
+            "dependencies": {
+              "type": "array",
+              "maxItems": 20,
+              "uniqueItems": true,
+              "items": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 200,
+                "pattern": "\\S"
+              }
+            }
+          },
+          "required": [
+            "entry",
+            "jobKind",
+            "deliverables",
+            "dependencies"
+          ],
+          "additionalProperties": false
         }
       },
       "required": [
@@ -628,12 +753,60 @@
       "not": {
         "properties": {
           "skill": {},
+          "procedure": {}
+        },
+        "required": [
+          "skill",
+          "procedure"
+        ]
+      },
+      "if": {
+        "properties": {
+          "skill": {},
           "documentRevision": {}
         },
         "required": [
           "skill",
           "documentRevision"
         ]
+      },
+      "then": {
+        "properties": {
+          "skill": {
+            "anyOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "skillId": {
+                    "const": "quick_skill.bill_watch"
+                  },
+                  "skillVersion": {
+                    "const": "2.0.0"
+                  }
+                },
+                "required": [
+                  "skillId",
+                  "skillVersion"
+                ]
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "skillId": {
+                    "const": "quick_skill.cited_report"
+                  },
+                  "skillVersion": {
+                    "const": "1.0.0"
+                  }
+                },
+                "required": [
+                  "skillId",
+                  "skillVersion"
+                ]
+              }
+            ]
+          }
+        }
       }
     },
     "ConversationHistoryRequest": {
@@ -689,7 +862,18 @@
       "type": "object",
       "properties": {
         "skillId": {
-          "$ref": "#/$defs/Canonical_skillId_31e12e8e"
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Canonical_skillId_31e12e8e"
+            },
+            {
+              "$comment": "Identities added at this version. Adding another one requires a new reviewed version of this file, never an edit to the closed 0.2.0 enum.",
+              "type": "string",
+              "enum": [
+                "quick_skill.cited_report"
+              ]
+            }
+          ]
         },
         "skillVersion": {
           "$ref": "#/$defs/Canonical_skillVersion_7e2af095"
@@ -843,6 +1027,120 @@
             ],
             "additionalProperties": false
           }
+        },
+        "procedure": {
+          "oneOf": [
+            {
+              "type": "object",
+              "properties": {
+                "source": {
+                  "const": "firm"
+                },
+                "recordId": {
+                  "type": "string",
+                  "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+                },
+                "version": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 9007199254740991
+                },
+                "manifestDigest": {
+                  "type": "string",
+                  "pattern": "^[a-f0-9]{64}$"
+                }
+              },
+              "required": [
+                "source",
+                "recordId",
+                "version",
+                "manifestDigest"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "properties": {
+                "source": {
+                  "const": "builtin"
+                },
+                "id": {
+                  "enum": [
+                    "briefing",
+                    "draft",
+                    "bill_analysis",
+                    "hearing_prep",
+                    "coalition_letter",
+                    "amendment_tracker"
+                  ]
+                },
+                "version": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 9007199254740991
+                },
+                "manifestDigest": {
+                  "type": "string",
+                  "pattern": "^[a-f0-9]{64}$"
+                }
+              },
+              "required": [
+                "source",
+                "id",
+                "version",
+                "manifestDigest"
+              ],
+              "additionalProperties": false
+            }
+          ]
+        },
+        "work": {
+          "type": "object",
+          "properties": {
+            "entry": {
+              "enum": [
+                "start-work",
+                "delegate"
+              ]
+            },
+            "jobKind": {
+              "enum": [
+                "research",
+                "deliverable",
+                "audit",
+                "scheduled"
+              ]
+            },
+            "deliverables": {
+              "type": "array",
+              "maxItems": 20,
+              "uniqueItems": true,
+              "items": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 200,
+                "pattern": "\\S"
+              }
+            },
+            "dependencies": {
+              "type": "array",
+              "maxItems": 20,
+              "uniqueItems": true,
+              "items": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 200,
+                "pattern": "\\S"
+              }
+            }
+          },
+          "required": [
+            "entry",
+            "jobKind",
+            "deliverables",
+            "dependencies"
+          ],
+          "additionalProperties": false
         }
       },
       "required": [
@@ -853,21 +1151,80 @@
         "windowRequest"
       ],
       "additionalProperties": false,
-      "if": {
-        "properties": {
-          "documentRevision": {}
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "documentRevision": {}
+            },
+            "required": [
+              "documentRevision"
+            ]
+          },
+          "then": {
+            "properties": {
+              "skill": {
+                "anyOf": [
+                  {
+                    "anyOf": [
+                      {
+                        "type": "object",
+                        "properties": {
+                          "skillId": {
+                            "const": "quick_skill.bill_watch"
+                          },
+                          "skillVersion": {
+                            "const": "2.0.0"
+                          }
+                        },
+                        "required": [
+                          "skillId",
+                          "skillVersion"
+                        ]
+                      },
+                      {
+                        "type": "object",
+                        "properties": {
+                          "skillId": {
+                            "const": "quick_skill.cited_report"
+                          },
+                          "skillVersion": {
+                            "const": "1.0.0"
+                          }
+                        },
+                        "required": [
+                          "skillId",
+                          "skillVersion"
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              }
+            }
+          }
         },
-        "required": [
-          "documentRevision"
-        ]
-      },
-      "then": {
-        "properties": {
-          "skill": {
-            "type": "null"
+        {
+          "if": {
+            "properties": {
+              "procedure": {}
+            },
+            "required": [
+              "procedure"
+            ]
+          },
+          "then": {
+            "properties": {
+              "skill": {
+                "type": "null"
+              }
+            }
           }
         }
-      }
+      ]
     },
     "ConversationSubmittedResponse": {
       "type": "object",

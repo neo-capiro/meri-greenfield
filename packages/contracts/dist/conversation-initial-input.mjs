@@ -1326,7 +1326,7 @@ var freeze = (value) => {
   }
   return value;
 };
-var conversationInitialInputVersion = "1.2.0";
+var conversationInitialInputVersion = "1.3.0";
 var conversationInitialInputPath = "/api/conversations/input/allocate";
 var initialInputErrorStatuses = freeze({
   NOT_FOUND: [404],
@@ -1354,7 +1354,7 @@ var initialInputErrorOutcomes = freeze(Object.fromEntries(Object.keys(initialInp
 var conversationInitialInputMetadata = freeze({
   packageVersion: "0.1.10",
   initialInputVersion: conversationInitialInputVersion,
-  schemaId: "urn:meri:conversation-initial-input:1.2.0",
+  schemaId: "urn:meri:conversation-initial-input:1.3.0",
   routes: { allocate: { method: "POST", path: conversationInitialInputPath, response: "json" } },
   authentication: { ...conversationInputMetadata.authentication },
   limits: { requestBytes: 131072, responseBytes: 131072, maxRequestMs: 25e3 },

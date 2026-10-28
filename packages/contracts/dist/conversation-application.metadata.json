@@ -1,6 +1,6 @@
 {
   "packageVersion": "0.1.15",
-  "schemaId": "urn:meri:conversation-application:0.3.0",
+  "schemaId": "urn:meri:conversation-application:0.4.0",
   "sources": [
     {
       "path": "../../apps/control/conversations/events.mjs",
@@ -14,8 +14,18 @@
     },
     {
       "path": "../../apps/control/conversations/service.mjs",
-      "sha256": "d9dc7351959e5fcad1b29975271555159fae0f8b8e28ef8c6ce4da6cfd792763",
-      "bytes": 33035
+      "sha256": "f64e3a3cea0f736a4f3c7578147858bd32b4384f368aecee008751c31cb62681",
+      "bytes": 35621
+    },
+    {
+      "path": "../skills/../../apps/control/document-application/cited-report/manifest.json",
+      "sha256": "8af9a09e4c85a2af0c5fe6b577bbda9284035393e09f9bf14737f7cbf7541816",
+      "bytes": 2930
+    },
+    {
+      "path": "../skills/../../apps/control/document-application/cited-report/SKILL.md",
+      "sha256": "6637bc1bd277ad758a2f3c301480b5756a931e09ec2fab7408092ebf475771cd",
+      "bytes": 4735
     },
     {
       "path": "../skills/./originals/bill_watch/1.1.0/manifest.json",
@@ -159,13 +169,13 @@
     },
     {
       "path": "../skills/assets.json",
-      "sha256": "7faf1394a57166a8c80411606a4a81d107072a3cd65378ed1df2e170abef81a4",
-      "bytes": 7570
+      "sha256": "21467192047d7f6a7511fe972955e1f4d6f7126868e1fc4a82a2855fc675b9be",
+      "bytes": 8640
     },
     {
       "path": "../skills/index.mjs",
-      "sha256": "ff79c6b0be3a937ca2ebfa614f5f9e15c22724323a92c2cfd2575ac29e7961fb",
-      "bytes": 3548
+      "sha256": "a7ccc19bcf45f4b772d7ffd0c70a1563b5f7d5398f050a5724105747d8a9a64b",
+      "bytes": 3098
     },
     {
       "path": "../skills/plugin.mjs",
@@ -184,18 +194,18 @@
     },
     {
       "path": "conversation-application/protocol.mjs",
-      "sha256": "565636dfb93ecbf4318d9c7ed415626dd31eb032347c90d5f8cbb57c100926ad",
+      "sha256": "8bc4cafb62dabba118790efb8791b506f36c79d31109b8738eca7af1a6d1e7a2",
       "bytes": 2515
     },
     {
       "path": "conversation-application/receive.mjs",
-      "sha256": "56edc031f517566627541ba43f108f648dd173bcf0c69fe08023733f285c3b07",
-      "bytes": 9170
+      "sha256": "b63e79c46829a9da2842f6a397048d8e594e6b217bc2b666f3e2df32d22dc1f7",
+      "bytes": 9858
     },
     {
       "path": "conversation-application/schema.mjs",
-      "sha256": "ce2b95aade63f53aa69bb69036611b6380338ff8b0c95667faf7743d68efbfc1",
-      "bytes": 3802
+      "sha256": "bcce6cb69262c66f55eaf572087bd3255a013b2dea262f3a5463e1997ffc9030",
+      "bytes": 4565
     },
     {
       "path": "conversation-sources/hearing-semantics.mjs",
@@ -224,8 +234,8 @@
     },
     {
       "path": "document-revision.mjs",
-      "sha256": "71af22e0ac86f3addb31fadbaa6e3b0662454d6a1b21fcf97f52dca774273034",
-      "bytes": 1050
+      "sha256": "e8c3d38f041ef00e5699d51ef5992c762e69136c0a302faa6f07dbd7e1b61e65",
+      "bytes": 1852
     },
     {
       "path": "meri.schema.json",
@@ -253,6 +263,11 @@
       "bytes": 6121
     },
     {
+      "path": "procedure-selection.mjs",
+      "sha256": "f4fac749baaad1ea8f5158b2a457b86750a831d85460e56a4c92d143c4e26d92",
+      "bytes": 2092
+    },
+    {
       "path": "retrieval-0.2/common.schema.json",
       "sha256": "943f59f53f33e09405d8f3350798d33d624c97d37e00c029ea4c14c8ba6e185b",
       "bytes": 14996
@@ -273,12 +288,22 @@
       "bytes": 9072
     },
     {
+      "path": "retrieval-0.3/installed-skill.mjs",
+      "sha256": "dfbc08cbe31a41362e6c809e2862a2feed6a7f41ba7004257eb60b6d90304c0a",
+      "bytes": 5086
+    },
+    {
+      "path": "retrieval-0.3/skill-manifest.schema.json",
+      "sha256": "4abd5ceacb728b7739208a28d6efe4c0bff947bcd3fbf7063d6db5ba83db3dd7",
+      "bytes": 1176
+    },
+    {
       "path": "upload-selection.mjs",
       "sha256": "b35b73b7a75ed50bff2fb04530cef165595932a57a2a3fd786be2baa4e2066dd",
       "bytes": 1986
     }
   ],
-  "schemaSha256": "5607f32b00a79b4f53bb3a6992b45de2d612d495d0674bd9cd0c9b21c4427067",
+  "schemaSha256": "7633cebfc790b3b905e1b9e086013380ee021f7eb4c2e20ab1d0260cbf1c3415",
   "browserInputs": [
     "artifacts-0.2/artifact-formats.mjs",
     "conversation-application/conversation-application-receiver.mjs",
@@ -294,7 +319,9 @@
     "node_modules/ajv/dist/runtime/ucs2length.js",
     "node_modules/canonicalize/lib/canonicalize.js",
     "node_modules/fast-deep-equal/index.js",
+    "procedure-selection.mjs",
     "retrieval-0.2/hearing-fragments.mjs",
-    "upload-selection.mjs"
+    "upload-selection.mjs",
+    "work-selection.mjs"
   ]
 }

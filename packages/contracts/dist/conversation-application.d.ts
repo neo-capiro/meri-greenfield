@@ -70,6 +70,477 @@ export type CanonicalSkillId_31E12E8E =
   | 'quick_skill.representation_lookup'
   | 'quick_skill.regulatory_docket_brief';
 export type CanonicalSkillVersion_7E2Af095 = string;
+export type ConversationStoredRequest = {
+  requestId: string;
+  prompt: string;
+  skill: ConversationSkillAssetPin | null;
+  window: Canonical_NormalizedWindowE50Ec0Ed | null;
+  windowRequest: Canonical_WindowRequestF314F340 | null;
+  modelSelection?: {
+    provider: 'bedrock' | 'claude-api';
+    modelId: string;
+    effort: null | ('low' | 'medium' | 'high' | 'xhigh' | 'max');
+  };
+  documentRevision?: {
+    artifactId: string;
+    versionId: string;
+    objectSha256: string;
+  };
+  /**
+   * @minItems 1
+   * @maxItems 8
+   */
+  uploads?:
+    | [
+        {
+          uploadId: string;
+          sha256: string;
+        }
+      ]
+    | [
+        {
+          uploadId: string;
+          sha256: string;
+        },
+        {
+          uploadId: string;
+          sha256: string;
+        }
+      ]
+    | [
+        {
+          uploadId: string;
+          sha256: string;
+        },
+        {
+          uploadId: string;
+          sha256: string;
+        },
+        {
+          uploadId: string;
+          sha256: string;
+        }
+      ]
+    | [
+        {
+          uploadId: string;
+          sha256: string;
+        },
+        {
+          uploadId: string;
+          sha256: string;
+        },
+        {
+          uploadId: string;
+          sha256: string;
+        },
+        {
+          uploadId: string;
+          sha256: string;
+        }
+      ]
+    | [
+        {
+          uploadId: string;
+          sha256: string;
+        },
+        {
+          uploadId: string;
+          sha256: string;
+        },
+        {
+          uploadId: string;
+          sha256: string;
+        },
+        {
+          uploadId: string;
+          sha256: string;
+        },
+        {
+          uploadId: string;
+          sha256: string;
+        }
+      ]
+    | [
+        {
+          uploadId: string;
+          sha256: string;
+        },
+        {
+          uploadId: string;
+          sha256: string;
+        },
+        {
+          uploadId: string;
+          sha256: string;
+        },
+        {
+          uploadId: string;
+          sha256: string;
+        },
+        {
+          uploadId: string;
+          sha256: string;
+        },
+        {
+          uploadId: string;
+          sha256: string;
+        }
+      ]
+    | [
+        {
+          uploadId: string;
+          sha256: string;
+        },
+        {
+          uploadId: string;
+          sha256: string;
+        },
+        {
+          uploadId: string;
+          sha256: string;
+        },
+        {
+          uploadId: string;
+          sha256: string;
+        },
+        {
+          uploadId: string;
+          sha256: string;
+        },
+        {
+          uploadId: string;
+          sha256: string;
+        },
+        {
+          uploadId: string;
+          sha256: string;
+        }
+      ]
+    | [
+        {
+          uploadId: string;
+          sha256: string;
+        },
+        {
+          uploadId: string;
+          sha256: string;
+        },
+        {
+          uploadId: string;
+          sha256: string;
+        },
+        {
+          uploadId: string;
+          sha256: string;
+        },
+        {
+          uploadId: string;
+          sha256: string;
+        },
+        {
+          uploadId: string;
+          sha256: string;
+        },
+        {
+          uploadId: string;
+          sha256: string;
+        },
+        {
+          uploadId: string;
+          sha256: string;
+        }
+      ];
+  procedure?:
+    | {
+        source: 'firm';
+        recordId: string;
+        version: number;
+        manifestDigest: string;
+      }
+    | {
+        source: 'builtin';
+        id: 'briefing' | 'draft' | 'bill_analysis' | 'hearing_prep' | 'coalition_letter' | 'amendment_tracker';
+        version: number;
+        manifestDigest: string;
+      };
+  work?: {
+    entry: 'start-work' | 'delegate';
+    jobKind: 'research' | 'deliverable' | 'audit' | 'scheduled';
+    /**
+     * @maxItems 20
+     */
+    deliverables:
+      | []
+      | [string]
+      | [string, string]
+      | [string, string, string]
+      | [string, string, string, string]
+      | [string, string, string, string, string]
+      | [string, string, string, string, string, string]
+      | [string, string, string, string, string, string, string]
+      | [string, string, string, string, string, string, string, string]
+      | [string, string, string, string, string, string, string, string, string]
+      | [string, string, string, string, string, string, string, string, string, string]
+      | [string, string, string, string, string, string, string, string, string, string, string]
+      | [string, string, string, string, string, string, string, string, string, string, string, string]
+      | [string, string, string, string, string, string, string, string, string, string, string, string, string]
+      | [string, string, string, string, string, string, string, string, string, string, string, string, string, string]
+      | [
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string
+        ]
+      | [
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string
+        ]
+      | [
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string
+        ]
+      | [
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string
+        ]
+      | [
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string
+        ]
+      | [
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string
+        ];
+    /**
+     * @maxItems 20
+     */
+    dependencies:
+      | []
+      | [string]
+      | [string, string]
+      | [string, string, string]
+      | [string, string, string, string]
+      | [string, string, string, string, string]
+      | [string, string, string, string, string, string]
+      | [string, string, string, string, string, string, string]
+      | [string, string, string, string, string, string, string, string]
+      | [string, string, string, string, string, string, string, string, string]
+      | [string, string, string, string, string, string, string, string, string, string]
+      | [string, string, string, string, string, string, string, string, string, string, string]
+      | [string, string, string, string, string, string, string, string, string, string, string, string]
+      | [string, string, string, string, string, string, string, string, string, string, string, string, string]
+      | [string, string, string, string, string, string, string, string, string, string, string, string, string, string]
+      | [
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string
+        ]
+      | [
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string
+        ]
+      | [
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string
+        ]
+      | [
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string
+        ]
+      | [
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string
+        ]
+      | [
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string
+        ];
+  };
+};
 export type Canonical_NormalizedWindowE50Ec0Ed =
   | {
       basis: 'calendar-week' | 'calendar-month' | 'calendar-year' | 'relative-duration' | 'explicit';
@@ -289,7 +760,7 @@ export interface ConversationSubmitRequest {
   prompt: string;
   windowRequest?: Canonical_WindowRequestF314F340;
   skill?: {
-    skillId: CanonicalSkillId_31E12E8E;
+    skillId: CanonicalSkillId_31E12E8E | 'quick_skill.cited_report';
     skillVersion: CanonicalSkillVersion_7E2Af095;
   };
   modelSelection?: {
@@ -467,6 +938,295 @@ export interface ConversationSubmitRequest {
           sha256: string;
         }
       ];
+  procedure?:
+    | {
+        source: 'firm';
+        recordId: string;
+        version: number;
+        manifestDigest: string;
+      }
+    | {
+        source: 'builtin';
+        id: 'briefing' | 'draft' | 'bill_analysis' | 'hearing_prep' | 'coalition_letter' | 'amendment_tracker';
+        version: number;
+        manifestDigest: string;
+      };
+  work?: {
+    entry: 'start-work' | 'delegate';
+    jobKind: 'research' | 'deliverable' | 'audit' | 'scheduled';
+    /**
+     * @maxItems 20
+     */
+    deliverables:
+      | []
+      | [string]
+      | [string, string]
+      | [string, string, string]
+      | [string, string, string, string]
+      | [string, string, string, string, string]
+      | [string, string, string, string, string, string]
+      | [string, string, string, string, string, string, string]
+      | [string, string, string, string, string, string, string, string]
+      | [string, string, string, string, string, string, string, string, string]
+      | [string, string, string, string, string, string, string, string, string, string]
+      | [string, string, string, string, string, string, string, string, string, string, string]
+      | [string, string, string, string, string, string, string, string, string, string, string, string]
+      | [string, string, string, string, string, string, string, string, string, string, string, string, string]
+      | [string, string, string, string, string, string, string, string, string, string, string, string, string, string]
+      | [
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string
+        ]
+      | [
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string
+        ]
+      | [
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string
+        ]
+      | [
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string
+        ]
+      | [
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string
+        ]
+      | [
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string
+        ];
+    /**
+     * @maxItems 20
+     */
+    dependencies:
+      | []
+      | [string]
+      | [string, string]
+      | [string, string, string]
+      | [string, string, string, string]
+      | [string, string, string, string, string]
+      | [string, string, string, string, string, string]
+      | [string, string, string, string, string, string, string]
+      | [string, string, string, string, string, string, string, string]
+      | [string, string, string, string, string, string, string, string, string]
+      | [string, string, string, string, string, string, string, string, string, string]
+      | [string, string, string, string, string, string, string, string, string, string, string]
+      | [string, string, string, string, string, string, string, string, string, string, string, string]
+      | [string, string, string, string, string, string, string, string, string, string, string, string, string]
+      | [string, string, string, string, string, string, string, string, string, string, string, string, string, string]
+      | [
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string
+        ]
+      | [
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string
+        ]
+      | [
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string
+        ]
+      | [
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string
+        ]
+      | [
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string
+        ]
+      | [
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string
+        ];
+  };
 }
 export interface ConversationHistoryRequest {
   after?: number;
@@ -535,190 +1295,8 @@ export interface ConversationHistoryResponse {
   hasMore: boolean;
   lastSequence: number;
 }
-export interface ConversationStoredRequest {
-  requestId: string;
-  prompt: string;
-  skill: ConversationSkillAssetPin | null;
-  window: Canonical_NormalizedWindowE50Ec0Ed | null;
-  windowRequest: Canonical_WindowRequestF314F340 | null;
-  modelSelection?: {
-    provider: 'bedrock' | 'claude-api';
-    modelId: string;
-    effort: null | ('low' | 'medium' | 'high' | 'xhigh' | 'max');
-  };
-  documentRevision?: {
-    artifactId: string;
-    versionId: string;
-    objectSha256: string;
-  };
-  /**
-   * @minItems 1
-   * @maxItems 8
-   */
-  uploads?:
-    | [
-        {
-          uploadId: string;
-          sha256: string;
-        }
-      ]
-    | [
-        {
-          uploadId: string;
-          sha256: string;
-        },
-        {
-          uploadId: string;
-          sha256: string;
-        }
-      ]
-    | [
-        {
-          uploadId: string;
-          sha256: string;
-        },
-        {
-          uploadId: string;
-          sha256: string;
-        },
-        {
-          uploadId: string;
-          sha256: string;
-        }
-      ]
-    | [
-        {
-          uploadId: string;
-          sha256: string;
-        },
-        {
-          uploadId: string;
-          sha256: string;
-        },
-        {
-          uploadId: string;
-          sha256: string;
-        },
-        {
-          uploadId: string;
-          sha256: string;
-        }
-      ]
-    | [
-        {
-          uploadId: string;
-          sha256: string;
-        },
-        {
-          uploadId: string;
-          sha256: string;
-        },
-        {
-          uploadId: string;
-          sha256: string;
-        },
-        {
-          uploadId: string;
-          sha256: string;
-        },
-        {
-          uploadId: string;
-          sha256: string;
-        }
-      ]
-    | [
-        {
-          uploadId: string;
-          sha256: string;
-        },
-        {
-          uploadId: string;
-          sha256: string;
-        },
-        {
-          uploadId: string;
-          sha256: string;
-        },
-        {
-          uploadId: string;
-          sha256: string;
-        },
-        {
-          uploadId: string;
-          sha256: string;
-        },
-        {
-          uploadId: string;
-          sha256: string;
-        }
-      ]
-    | [
-        {
-          uploadId: string;
-          sha256: string;
-        },
-        {
-          uploadId: string;
-          sha256: string;
-        },
-        {
-          uploadId: string;
-          sha256: string;
-        },
-        {
-          uploadId: string;
-          sha256: string;
-        },
-        {
-          uploadId: string;
-          sha256: string;
-        },
-        {
-          uploadId: string;
-          sha256: string;
-        },
-        {
-          uploadId: string;
-          sha256: string;
-        }
-      ]
-    | [
-        {
-          uploadId: string;
-          sha256: string;
-        },
-        {
-          uploadId: string;
-          sha256: string;
-        },
-        {
-          uploadId: string;
-          sha256: string;
-        },
-        {
-          uploadId: string;
-          sha256: string;
-        },
-        {
-          uploadId: string;
-          sha256: string;
-        },
-        {
-          uploadId: string;
-          sha256: string;
-        },
-        {
-          uploadId: string;
-          sha256: string;
-        },
-        {
-          uploadId: string;
-          sha256: string;
-        }
-      ];
-}
 export interface ConversationSkillAssetPin {
-  skillId: CanonicalSkillId_31E12E8E;
+  skillId: CanonicalSkillId_31E12E8E | 'quick_skill.cited_report';
   skillVersion: CanonicalSkillVersion_7E2Af095;
   manifestSha256: string;
   proseSha256: string;
@@ -1178,8 +1756,8 @@ export interface ConversationCursor {readonly conversationId:string; readonly af
 export declare class ConversationResponseError extends Error {readonly code:string;}
 export declare const conversationApplicationMetadata: {
   "packageVersion": "0.1.15",
-  "schemaId": "urn:meri:conversation-application:0.3.0",
-  "wireContractVersion": "0.3.0",
+  "schemaId": "urn:meri:conversation-application:0.4.0",
+  "wireContractVersion": "0.4.0",
   "routes": {
     "submit": {
       "method": "POST",

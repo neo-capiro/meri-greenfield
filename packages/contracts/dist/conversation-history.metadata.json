@@ -1,7 +1,7 @@
 {
   "packageVersion": "0.1.15",
-  "historyVersion": "1.3.0",
-  "schemaId": "urn:meri:conversation-history:1.3.0",
+  "historyVersion": "1.4.0",
+  "schemaId": "urn:meri:conversation-history:1.4.0",
   "runIndex": {
     "version": "1.0.0",
     "schemaId": "urn:meri:run-index:1.0.0",
@@ -67,7 +67,7 @@
     },
     {
       "path": "conversation-history/protocol.mjs",
-      "sha256": "d508728eb5f6a32d781c65700ce1ef742e7fafd27b509cd54026d5cd3961515c",
+      "sha256": "f5ce9e441808b604cb19a5da687972f348c5b0c777d0a31009a9497448d841e1",
       "bytes": 2449
     },
     {
@@ -102,13 +102,13 @@
     },
     {
       "path": "conversation-history/schema.mjs",
-      "sha256": "1ec45549052aad3d7e4266a06b4553007ba9096e455c7f24baa0a6bec94ec178",
-      "bytes": 5295
+      "sha256": "bda50ade587f4dd67f8607562f81a00b65546cc9f8fbf084f8490c68cc9b63f2",
+      "bytes": 5569
     },
     {
       "path": "conversation-history/semantics.mjs",
-      "sha256": "4b73598c7299e26a4c3b71ef1530e569f28662e5607fae30ecd5284fea194876",
-      "bytes": 10895
+      "sha256": "5c7bfdd8c1415248967fe383a14bbf388bfd26eb1da515e5ea73057f66cccd8d",
+      "bytes": 11248
     },
     {
       "path": "conversation-history/shape.mjs",
@@ -142,8 +142,8 @@
     },
     {
       "path": "dist/conversation-application.schema.json",
-      "sha256": "5607f32b00a79b4f53bb3a6992b45de2d612d495d0674bd9cd0c9b21c4427067",
-      "bytes": 81238
+      "sha256": "7633cebfc790b3b905e1b9e086013380ee021f7eb4c2e20ab1d0260cbf1c3415",
+      "bytes": 91234
     },
     {
       "path": "document-application/boundary.mjs",
@@ -152,8 +152,8 @@
     },
     {
       "path": "generate-history.mjs",
-      "sha256": "0f3d82051b35208dbaa0ef7a4e31d7dc520fad878c80b14362cd74ff11a32839",
-      "bytes": 12103
+      "sha256": "7077384302fe43b7ed6b46af4c207836d06d9db9d68ca539efe2e737eaf902b5",
+      "bytes": 12129
     },
     {
       "path": "meri.schema.json",
@@ -176,6 +176,11 @@
       "bytes": 6121
     },
     {
+      "path": "procedure-selection.mjs",
+      "sha256": "f4fac749baaad1ea8f5158b2a457b86750a831d85460e56a4c92d143c4e26d92",
+      "bytes": 2092
+    },
+    {
       "path": "retrieval-0.2/hearing-fragments.mjs",
       "sha256": "24e106caa79140d31feb65bc79c816197b38220b0c30a42ec86ba8c6deed6174",
       "bytes": 787
@@ -191,7 +196,7 @@
       "bytes": 1986
     }
   ],
-  "schemaSha256": "d7e9ba18025530b0f5afcb6d5cdaba91d801649e41e8fae326abab22554151ba",
+  "schemaSha256": "ee6864c6b3ad9c520ab62f367ba2c9f12e09f78075930d71bbcec2b0afd54788",
   "browserInputs": [
     "artifacts-0.2/artifact-formats.mjs",
     "conversation-history/conversation-history-receiver.mjs",
@@ -210,8 +215,10 @@
     "node_modules/ajv/dist/runtime/ucs2length.js",
     "node_modules/canonicalize/lib/canonicalize.js",
     "node_modules/fast-deep-equal/index.js",
+    "procedure-selection.mjs",
     "retrieval-0.2/hearing-fragments.mjs",
     "run-generated:./generated-run-validator.mjs",
-    "upload-selection.mjs"
+    "upload-selection.mjs",
+    "work-selection.mjs"
   ]
 }

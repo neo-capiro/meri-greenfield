@@ -135,8 +135,8 @@
     },
     {
       "path": "../../apps/control/document-application/current.mjs",
-      "sha256": "e25ecd8c0a2e06cb4ef49be56aa04c505df6b620ccaf1c797039f6ce2c604e66",
-      "bytes": 6732
+      "sha256": "b1da9f681f49ac5f6709624049851e007bd5f9265152922098e9652a45a52ef9",
+      "bytes": 7166
     },
     {
       "path": "../../apps/control/document-application/format-admission.mjs",
@@ -145,13 +145,13 @@
     },
     {
       "path": "../../apps/control/document-application/http.mjs",
-      "sha256": "59bbb14bdcac68633f8a4f399fefa80eae192c26a13178597bac9d1e297340e7",
-      "bytes": 2718
+      "sha256": "15d7d87c56661c673750ec593a51805fb84550940a57e577ed9c71d165480cb6",
+      "bytes": 2726
     },
     {
       "path": "../../apps/control/document-application/index.mjs",
-      "sha256": "b1c85aa79b56f66aa508cac105efbbb7df602e0aafe739c269d78d41a522027f",
-      "bytes": 11891
+      "sha256": "2d685c89e0ae840579f9fcbf5bcdc9cd1257c70425834e097ac7000c13f47531",
+      "bytes": 12421
     },
     {
       "path": "../../apps/control/document-application/preview-route.mjs",
@@ -167,6 +167,11 @@
       "path": "artifacts-0.2/artifact.schema.json",
       "sha256": "2f0db5c164b3231f93d5ad10dbf3fd09b1cca8a8291d181e200170645c3c2276",
       "bytes": 48251
+    },
+    {
+      "path": "document-access-application/native-results.mjs",
+      "sha256": "0190ae12ad6bef08e272bce12d7f8523f5db3e09377a7a3265756797e8829aec",
+      "bytes": 6271
     },
     {
       "path": "document-access-application/preview-schema.mjs",
@@ -190,8 +195,8 @@
     },
     {
       "path": "document-access-application/receive.mjs",
-      "sha256": "b731fdf79df2abd408c5543ffbfe2734619b2a61a0a47139bce899dd466d126b",
-      "bytes": 6544
+      "sha256": "66e3b703c73d0f4caae28fd28e41a4706c918bf2009f00dd060b0c66f11d5c0e",
+      "bytes": 7036
     },
     {
       "path": "document-access-application/schema.mjs",
@@ -210,8 +215,8 @@
     },
     {
       "path": "generate-document-access.mjs",
-      "sha256": "0b681663f444a2ef3a16224b2b44295f3efabb8334816a10bc4eb381623b8cf1",
-      "bytes": 15810
+      "sha256": "6d54aec1609e04fe32449a7346429f4541cbcab631e78c8b16b68ff389e2f62a",
+      "bytes": 16995
     },
     {
       "path": "meri.schema.json",
@@ -228,6 +233,7 @@
   "browserInputs": [
     "artifacts-0.2/artifact-formats.mjs",
     "document-access-application/document-access-application-receiver.mjs",
+    "document-access-application/native-results.mjs",
     "document-access-application/preview-schema.mjs",
     "document-access-application/preview.mjs",
     "document-access-application/protocol.mjs",

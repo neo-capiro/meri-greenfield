@@ -12,10 +12,22 @@ export type ConversationHistoryEnvelope =
   | ConversationHistoryManageRequest
   | ConversationHistorySummariesResponse
   | ConversationHistoryManageResponse;
-export type CanonicalRequestId_8Ebff969 = string;
-export type CanonicalPrompt_9Ddc2391 = string;
-export type CanonicalSkillA322F057 = Canonical_ConversationSkillAssetPin_47Dce4Ab | null;
-export type Canonical_CanonicalSkillId_31E12E8E_0405382A =
+export type ConversationHistoryStoredRequest = {
+  requestId: CanonicalRequestIdF00D75C2;
+  prompt: CanonicalPrompt_4E4Fccab;
+  skill: CanonicalSkillD201841F;
+  window: CanonicalWindow_3B75900D;
+  windowRequest?: CanonicalWindowRequest_73910A80;
+  modelSelection?: CanonicalModelSelection_5559383C;
+  documentRevision?: CanonicalDocumentRevision_8F3517C7;
+  uploads?: CanonicalUploadsB71278F4;
+  procedure?: CanonicalProcedureE155666F;
+  work?: CanonicalWorkFa33081C;
+};
+export type CanonicalRequestIdF00D75C2 = string;
+export type CanonicalPrompt_4E4Fccab = string;
+export type CanonicalSkillD201841F = Canonical_ConversationSkillAssetPin_3Ccfc6Bb | null;
+export type Canonical_CanonicalSkillId_31E12E8E_20420Fe7 =
   | 'quick_skill.research_company'
   | 'quick_skill.relationship_brief'
   | 'quick_skill.client_changes'
@@ -30,9 +42,9 @@ export type Canonical_CanonicalSkillId_31E12E8E_0405382A =
   | 'quick_skill.hearing_watch'
   | 'quick_skill.representation_lookup'
   | 'quick_skill.regulatory_docket_brief';
-export type Canonical_CanonicalSkillVersion_7E2Af095Adee0755 = string;
-export type CanonicalWindow_902647E1 = Canonical_Canonical_NormalizedWindowE50Ec0Ed_79513031 | null;
-export type Canonical_Canonical_NormalizedWindowE50Ec0Ed_79513031 =
+export type Canonical_CanonicalSkillVersion_7E2Af095_7B29E661 = string;
+export type CanonicalWindow_3B75900D = Canonical_Canonical_NormalizedWindowE50Ec0EdBabbab24 | null;
+export type Canonical_Canonical_NormalizedWindowE50Ec0EdBabbab24 =
   | {
       basis: 'calendar-week' | 'calendar-month' | 'calendar-year' | 'relative-duration' | 'explicit';
       startInclusive: string;
@@ -53,8 +65,8 @@ export type Canonical_Canonical_NormalizedWindowE50Ec0Ed_79513031 =
   | {
       basis: 'unbounded';
     };
-export type CanonicalWindowRequest_6Ab4552E = Canonical_Canonical_WindowRequestF314F340A60B884D | null;
-export type Canonical_Canonical_WindowRequestF314F340A60B884D =
+export type CanonicalWindowRequest_73910A80 = Canonical_Canonical_WindowRequestF314F340_6D73F042 | null;
+export type Canonical_Canonical_WindowRequestF314F340_6D73F042 =
   | {
       basis: 'calendar-week';
       offset: -1 | 0;
@@ -98,7 +110,7 @@ export type Canonical_Canonical_WindowRequestF314F340A60B884D =
  * @minItems 1
  * @maxItems 8
  */
-export type CanonicalUploads_495Ca7A1 =
+export type CanonicalUploadsB71278F4 =
   | [
       {
         uploadId: string;
@@ -259,6 +271,19 @@ export type CanonicalUploads_495Ca7A1 =
         sha256: string;
       }
     ];
+export type CanonicalProcedureE155666F =
+  | {
+      source: 'firm';
+      recordId: string;
+      version: number;
+      manifestDigest: string;
+    }
+  | {
+      source: 'builtin';
+      id: 'briefing' | 'draft' | 'bill_analysis' | 'hearing_prep' | 'coalition_letter' | 'amendment_tracker';
+      version: number;
+      manifestDigest: string;
+    };
 export type ConversationPromptLineage =
   | {
       kind: 'submission';
@@ -547,32 +572,298 @@ export interface ConversationHistoryTurn {
   sequenceEnd: number | null;
   lastSequence: number;
 }
-export interface ConversationHistoryStoredRequest {
-  requestId: CanonicalRequestId_8Ebff969;
-  prompt: CanonicalPrompt_9Ddc2391;
-  skill: CanonicalSkillA322F057;
-  window: CanonicalWindow_902647E1;
-  windowRequest?: CanonicalWindowRequest_6Ab4552E;
-  modelSelection?: CanonicalModelSelection_3Ce6002E;
-  documentRevision?: CanonicalDocumentRevision_23476D5B;
-  uploads?: CanonicalUploads_495Ca7A1;
-}
-export interface Canonical_ConversationSkillAssetPin_47Dce4Ab {
-  skillId: Canonical_CanonicalSkillId_31E12E8E_0405382A;
-  skillVersion: Canonical_CanonicalSkillVersion_7E2Af095Adee0755;
+export interface Canonical_ConversationSkillAssetPin_3Ccfc6Bb {
+  skillId: Canonical_CanonicalSkillId_31E12E8E_20420Fe7 | 'quick_skill.cited_report';
+  skillVersion: Canonical_CanonicalSkillVersion_7E2Af095_7B29E661;
   manifestSha256: string;
   proseSha256: string;
   catalogSha256: string;
 }
-export interface CanonicalModelSelection_3Ce6002E {
+export interface CanonicalModelSelection_5559383C {
   provider: 'bedrock' | 'claude-api';
   modelId: string;
   effort: null | ('low' | 'medium' | 'high' | 'xhigh' | 'max');
 }
-export interface CanonicalDocumentRevision_23476D5B {
+export interface CanonicalDocumentRevision_8F3517C7 {
   artifactId: string;
   versionId: string;
   objectSha256: string;
+}
+export interface CanonicalWorkFa33081C {
+  entry: 'start-work' | 'delegate';
+  jobKind: 'research' | 'deliverable' | 'audit' | 'scheduled';
+  /**
+   * @maxItems 20
+   */
+  deliverables:
+    | []
+    | [string]
+    | [string, string]
+    | [string, string, string]
+    | [string, string, string, string]
+    | [string, string, string, string, string]
+    | [string, string, string, string, string, string]
+    | [string, string, string, string, string, string, string]
+    | [string, string, string, string, string, string, string, string]
+    | [string, string, string, string, string, string, string, string, string]
+    | [string, string, string, string, string, string, string, string, string, string]
+    | [string, string, string, string, string, string, string, string, string, string, string]
+    | [string, string, string, string, string, string, string, string, string, string, string, string]
+    | [string, string, string, string, string, string, string, string, string, string, string, string, string]
+    | [string, string, string, string, string, string, string, string, string, string, string, string, string, string]
+    | [
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string
+      ]
+    | [
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string
+      ]
+    | [
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string
+      ]
+    | [
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string
+      ]
+    | [
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string
+      ]
+    | [
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string
+      ];
+  /**
+   * @maxItems 20
+   */
+  dependencies:
+    | []
+    | [string]
+    | [string, string]
+    | [string, string, string]
+    | [string, string, string, string]
+    | [string, string, string, string, string]
+    | [string, string, string, string, string, string]
+    | [string, string, string, string, string, string, string]
+    | [string, string, string, string, string, string, string, string]
+    | [string, string, string, string, string, string, string, string, string]
+    | [string, string, string, string, string, string, string, string, string, string]
+    | [string, string, string, string, string, string, string, string, string, string, string]
+    | [string, string, string, string, string, string, string, string, string, string, string, string]
+    | [string, string, string, string, string, string, string, string, string, string, string, string, string]
+    | [string, string, string, string, string, string, string, string, string, string, string, string, string, string]
+    | [
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string
+      ]
+    | [
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string
+      ]
+    | [
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string
+      ]
+    | [
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string
+      ]
+    | [
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string
+      ]
+    | [
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string
+      ];
 }
 export interface ConversationHistoryEvent {
   sequence: number;
@@ -1232,8 +1523,8 @@ export type ConversationHistoryResponse<R extends ConversationHistoryRoute>=Conv
 export declare class ConversationHistoryResponseError extends Error {readonly code:string;}
 export declare const conversationHistoryMetadata: {
   "packageVersion": "0.1.15",
-  "historyVersion": "1.3.0",
-  "schemaId": "urn:meri:conversation-history:1.3.0",
+  "historyVersion": "1.4.0",
+  "schemaId": "urn:meri:conversation-history:1.4.0",
   "routes": {
     "list": {
       "method": "POST",

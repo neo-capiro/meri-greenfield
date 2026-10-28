@@ -404,6 +404,15 @@ export interface DocumentAccessResponseMap {inspect:DocumentReceipt<DocumentInsp
 export type DocumentResponse<R extends DocumentAccessRoute> = DocumentAccessResponseMap[R] | DocumentErrorResponse;
 export interface DocumentDownload<V extends AdmittedDocumentVersion = AdmittedDocumentVersion> {readonly version:V; readonly bytes:Uint8Array<ArrayBuffer>;}
 export interface DocumentDownloadOptions {maxBytes?:number; timeoutMs?:number; signal?:AbortSignal;}
+// Additive v1 native-result discovery receiver. Separately named and outside DocumentAccessRoute0.2: it admits no
+// version for inspect or download, carries no recorded bytes and describes only workspace-entry metadata.
+export declare const nativeResultsVersion: '1.0.0';
+export declare const NATIVE_RESULTS_MAX: 32;
+export declare const nativeResultsMetadata: Readonly<{contractVersion:'1.0.0'; route:Readonly<{method:'POST'; path:'/api/documents/results'; response:'json'}>; maxResults:32; semantics:Readonly<Record<string,string>>}>;
+export interface NativeResultSelector {readonly versionId:string; readonly path:string; readonly bytes:number; readonly sha256:string; readonly executable:boolean;}
+export interface NativeResultsSnapshot {readonly manifestId:string; readonly capturedAt:string; readonly results:readonly NativeResultSelector[]; readonly truncated:boolean;}
+export declare function receiveNativeResultsRequest(utf8Bytes:Uint8Array):Readonly<{route:'results'}>;
+export declare function receiveNativeResultsResponse(httpStatus:number,utf8Bytes:Uint8Array,request:Readonly<{route:'results'}>):Readonly<NativeResultsSnapshot & {route:'results'}>;
 export declare class DocumentResponseError extends Error {readonly code:string;}
 export declare const documentAccessVersion:'0.2.0';
 export declare const documentAccessMetadata:{

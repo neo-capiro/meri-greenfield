@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "urn:meri:conversation-history:1.3.0",
+  "$id": "urn:meri:conversation-history:1.4.0",
   "$defs": {
     "ConversationMetadata": {
       "type": "object",
@@ -461,28 +461,34 @@
       "type": "object",
       "properties": {
         "requestId": {
-          "$ref": "#/$defs/Canonical_requestId_8ebff969"
+          "$ref": "#/$defs/Canonical_requestId_f00d75c2"
         },
         "prompt": {
-          "$ref": "#/$defs/Canonical_prompt_9ddc2391"
+          "$ref": "#/$defs/Canonical_prompt_4e4fccab"
         },
         "skill": {
-          "$ref": "#/$defs/Canonical_skill_a322f057"
+          "$ref": "#/$defs/Canonical_skill_d201841f"
         },
         "window": {
-          "$ref": "#/$defs/Canonical_window_902647e1"
+          "$ref": "#/$defs/Canonical_window_3b75900d"
         },
         "windowRequest": {
-          "$ref": "#/$defs/Canonical_windowRequest_6ab4552e"
+          "$ref": "#/$defs/Canonical_windowRequest_73910a80"
         },
         "modelSelection": {
-          "$ref": "#/$defs/Canonical_modelSelection_3ce6002e"
+          "$ref": "#/$defs/Canonical_modelSelection_5559383c"
         },
         "documentRevision": {
-          "$ref": "#/$defs/Canonical_documentRevision_23476d5b"
+          "$ref": "#/$defs/Canonical_documentRevision_8f3517c7"
         },
         "uploads": {
-          "$ref": "#/$defs/Canonical_uploads_495ca7a1"
+          "$ref": "#/$defs/Canonical_uploads_b71278f4"
+        },
+        "procedure": {
+          "$ref": "#/$defs/Canonical_procedure_e155666f"
+        },
+        "work": {
+          "$ref": "#/$defs/Canonical_work_fa33081c"
         }
       },
       "required": [
@@ -492,21 +498,80 @@
         "window"
       ],
       "additionalProperties": false,
-      "if": {
-        "properties": {
-          "documentRevision": {}
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "documentRevision": {}
+            },
+            "required": [
+              "documentRevision"
+            ]
+          },
+          "then": {
+            "properties": {
+              "skill": {
+                "anyOf": [
+                  {
+                    "anyOf": [
+                      {
+                        "type": "object",
+                        "properties": {
+                          "skillId": {
+                            "const": "quick_skill.bill_watch"
+                          },
+                          "skillVersion": {
+                            "const": "2.0.0"
+                          }
+                        },
+                        "required": [
+                          "skillId",
+                          "skillVersion"
+                        ]
+                      },
+                      {
+                        "type": "object",
+                        "properties": {
+                          "skillId": {
+                            "const": "quick_skill.cited_report"
+                          },
+                          "skillVersion": {
+                            "const": "1.0.0"
+                          }
+                        },
+                        "required": [
+                          "skillId",
+                          "skillVersion"
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              }
+            }
+          }
         },
-        "required": [
-          "documentRevision"
-        ]
-      },
-      "then": {
-        "properties": {
-          "skill": {
-            "type": "null"
+        {
+          "if": {
+            "properties": {
+              "procedure": {}
+            },
+            "required": [
+              "procedure"
+            ]
+          },
+          "then": {
+            "properties": {
+              "skill": {
+                "type": "null"
+              }
+            }
           }
         }
-      }
+      ]
     },
     "ConversationPromptLineage": {
       "oneOf": [
@@ -847,17 +912,17 @@
       ],
       "additionalProperties": false
     },
-    "Canonical_requestId_8ebff969": {
+    "Canonical_requestId_f00d75c2": {
       "type": "string",
       "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
     },
-    "Canonical_prompt_9ddc2391": {
+    "Canonical_prompt_4e4fccab": {
       "type": "string",
       "minLength": 1,
       "maxLength": 100000,
       "pattern": "\\S"
     },
-    "Canonical_Canonical_skillId_31e12e8e_0405382a": {
+    "Canonical_Canonical_skillId_31e12e8e_20420fe7": {
       "type": "string",
       "enum": [
         "quick_skill.research_company",
@@ -876,18 +941,29 @@
         "quick_skill.regulatory_docket_brief"
       ]
     },
-    "Canonical_Canonical_skillVersion_7e2af095_adee0755": {
+    "Canonical_Canonical_skillVersion_7e2af095_7b29e661": {
       "type": "string",
       "pattern": "^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)$"
     },
-    "Canonical_ConversationSkillAssetPin_47dce4ab": {
+    "Canonical_ConversationSkillAssetPin_3ccfc6bb": {
       "type": "object",
       "properties": {
         "skillId": {
-          "$ref": "#/$defs/Canonical_Canonical_skillId_31e12e8e_0405382a"
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Canonical_Canonical_skillId_31e12e8e_20420fe7"
+            },
+            {
+              "$comment": "Identities added at this version. Adding another one requires a new reviewed version of this file, never an edit to the closed 0.2.0 enum.",
+              "type": "string",
+              "enum": [
+                "quick_skill.cited_report"
+              ]
+            }
+          ]
         },
         "skillVersion": {
-          "$ref": "#/$defs/Canonical_Canonical_skillVersion_7e2af095_adee0755"
+          "$ref": "#/$defs/Canonical_Canonical_skillVersion_7e2af095_7b29e661"
         },
         "manifestSha256": {
           "type": "string",
@@ -911,17 +987,17 @@
       ],
       "additionalProperties": false
     },
-    "Canonical_skill_a322f057": {
+    "Canonical_skill_d201841f": {
       "anyOf": [
         {
-          "$ref": "#/$defs/Canonical_ConversationSkillAssetPin_47dce4ab"
+          "$ref": "#/$defs/Canonical_ConversationSkillAssetPin_3ccfc6bb"
         },
         {
           "type": "null"
         }
       ]
     },
-    "Canonical_Canonical_NormalizedWindow_e50ec0ed_79513031": {
+    "Canonical_Canonical_NormalizedWindow_e50ec0ed_babbab24": {
       "oneOf": [
         {
           "type": "object",
@@ -1050,17 +1126,17 @@
         }
       ]
     },
-    "Canonical_window_902647e1": {
+    "Canonical_window_3b75900d": {
       "anyOf": [
         {
-          "$ref": "#/$defs/Canonical_Canonical_NormalizedWindow_e50ec0ed_79513031"
+          "$ref": "#/$defs/Canonical_Canonical_NormalizedWindow_e50ec0ed_babbab24"
         },
         {
           "type": "null"
         }
       ]
     },
-    "Canonical_Canonical_WindowRequest_f314f340_a60b884d": {
+    "Canonical_Canonical_WindowRequest_f314f340_6d73f042": {
       "oneOf": [
         {
           "type": "object",
@@ -1271,17 +1347,17 @@
         }
       ]
     },
-    "Canonical_windowRequest_6ab4552e": {
+    "Canonical_windowRequest_73910a80": {
       "anyOf": [
         {
-          "$ref": "#/$defs/Canonical_Canonical_WindowRequest_f314f340_a60b884d"
+          "$ref": "#/$defs/Canonical_Canonical_WindowRequest_f314f340_6d73f042"
         },
         {
           "type": "null"
         }
       ]
     },
-    "Canonical_modelSelection_3ce6002e": {
+    "Canonical_modelSelection_5559383c": {
       "type": "object",
       "properties": {
         "provider": {
@@ -1319,7 +1395,7 @@
       ],
       "additionalProperties": false
     },
-    "Canonical_documentRevision_23476d5b": {
+    "Canonical_documentRevision_8f3517c7": {
       "type": "object",
       "properties": {
         "artifactId": {
@@ -1342,7 +1418,7 @@
       ],
       "additionalProperties": false
     },
-    "Canonical_uploads_495ca7a1": {
+    "Canonical_uploads_b71278f4": {
       "type": "array",
       "minItems": 1,
       "maxItems": 8,
@@ -1365,6 +1441,120 @@
         ],
         "additionalProperties": false
       }
+    },
+    "Canonical_procedure_e155666f": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "source": {
+              "const": "firm"
+            },
+            "recordId": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+            },
+            "version": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 9007199254740991
+            },
+            "manifestDigest": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            }
+          },
+          "required": [
+            "source",
+            "recordId",
+            "version",
+            "manifestDigest"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "source": {
+              "const": "builtin"
+            },
+            "id": {
+              "enum": [
+                "briefing",
+                "draft",
+                "bill_analysis",
+                "hearing_prep",
+                "coalition_letter",
+                "amendment_tracker"
+              ]
+            },
+            "version": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 9007199254740991
+            },
+            "manifestDigest": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            }
+          },
+          "required": [
+            "source",
+            "id",
+            "version",
+            "manifestDigest"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "Canonical_work_fa33081c": {
+      "type": "object",
+      "properties": {
+        "entry": {
+          "enum": [
+            "start-work",
+            "delegate"
+          ]
+        },
+        "jobKind": {
+          "enum": [
+            "research",
+            "deliverable",
+            "audit",
+            "scheduled"
+          ]
+        },
+        "deliverables": {
+          "type": "array",
+          "maxItems": 20,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200,
+            "pattern": "\\S"
+          }
+        },
+        "dependencies": {
+          "type": "array",
+          "maxItems": 20,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200,
+            "pattern": "\\S"
+          }
+        }
+      },
+      "required": [
+        "entry",
+        "jobKind",
+        "deliverables",
+        "dependencies"
+      ],
+      "additionalProperties": false
     },
     "Canonical_RunBinding_84f2304c": {
       "type": "object",
