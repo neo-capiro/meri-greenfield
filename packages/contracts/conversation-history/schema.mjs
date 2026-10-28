@@ -1,6 +1,6 @@
 import {conversationHistoryMetadata,DISCOVERY_SCHEMA,HISTORY_SCHEMA,TURN_SCHEMA,MANAGEMENT_VERSION,historyErrorStatuses} from './protocol.mjs';
 const ref=name=>({$ref:'#/$defs/'+name}),pub=name=>({$ref:'urn:meri:contracts:0.1.0#/$defs/'+name});
-const stored=name=>({$ref:'urn:meri:conversation-application:0.2.0#/$defs/ConversationStoredRequest/properties/'+name});
+const stored=name=>({$ref:'urn:meri:conversation-application:0.3.0#/$defs/ConversationStoredRequest/properties/'+name});
 const object=(properties,required=Object.keys(properties))=>({type:'object',properties,required,additionalProperties:false});
 const nullable=schema=>({anyOf:[schema,{type:'null'}]});
 const integer=(minimum=0)=>({type:'integer',minimum,maximum:Number.MAX_SAFE_INTEGER});
@@ -21,10 +21,10 @@ export function historySchema(){return {$schema:'https://json-schema.org/draft/2
  ConversationHistoryListRequest:object({before:nullable(ref('ConversationHistoryBefore')),limit},[]),
  ConversationHistoryTranscriptRequest:object({conversationId:uuid,after:integer(),limit},['conversationId']),
  ConversationHistoryNextTurnRequest:object({conversationId:uuid,sourceRunId:uuid}),
- ConversationHistoryStoredRequest:{...object({requestId:stored('requestId'),prompt:stored('prompt'),skill:stored('skill'),window:stored('window'),windowRequest:stored('windowRequest'),modelSelection:stored('modelSelection'),documentRevision:stored('documentRevision')},['requestId','prompt','skill','window']),if:{properties:{documentRevision:{}},required:['documentRevision']},then:{properties:{skill:{type:'null'}}}},
+ ConversationHistoryStoredRequest:{...object({requestId:stored('requestId'),prompt:stored('prompt'),skill:stored('skill'),window:stored('window'),windowRequest:stored('windowRequest'),modelSelection:stored('modelSelection'),documentRevision:stored('documentRevision'),uploads:stored('uploads')},['requestId','prompt','skill','window']),if:{properties:{documentRevision:{}},required:['documentRevision']},then:{properties:{skill:{type:'null'}}}},
  ConversationPromptLineage:{oneOf:[object({kind:{const:'submission'},logicalRequestId:uuid,sourceBinding:{type:'null'},sourceRequestId:{type:'null'}}),object({kind:{enum:['resume','fork']},logicalRequestId:uuid,sourceBinding:pub('RunBinding'),sourceRequestId:uuid})]},
  ConversationHistoryTurn:object({run:pub('Run'),request:ref('ConversationHistoryStoredRequest'),promptLineage:ref('ConversationPromptLineage'),sequenceBase:integer(),sequenceEnd:nullable(integer()),lastSequence:integer(1)}),
- ConversationHistoryEvent:object({sequence:integer(1),event:{oneOf:[pub('UIEvent'),{$ref:'urn:meri:native-bill-text-source:1.0.0#/$defs/NativeBillTextSourceEvent'},{$ref:'urn:meri:native-hearing-source:1.0.0#/$defs/NativeHearingSourceEvent'}]}}),
+ ConversationHistoryEvent:object({sequence:integer(1),event:{oneOf:[pub('UIEvent'),{$ref:'urn:meri:native-bill-text-source:1.0.0#/$defs/NativeBillTextSourceEvent'},{$ref:'urn:meri:native-hearing-source:1.0.0#/$defs/NativeHearingSourceEvent'},{$ref:'urn:meri:native-upload-source:1.0.0#/$defs/NativeUploadSourceEvent'}]}}),
  ConversationHistoryPendingTurn:object({sourceBinding:pub('RunBinding'),targetBinding:pub('RunBinding'),state:{const:'RESERVED'}}),
  ConversationHistoryListResponse:object({schema:{const:DISCOVERY_SCHEMA},conversations:{type:'array',items:pub('Conversation'),maxItems:100},nextBefore:nullable(ref('ConversationHistoryBefore'))}),
  ConversationHistoryTranscriptResponse:object({schema:{const:HISTORY_SCHEMA},conversation:pub('Conversation'),latestRun:pub('Run'),latestSequenceBase:integer(),turns:items('ConversationHistoryTurn'),events:items('ConversationHistoryEvent'),nextSequence:integer(),lastSequence:integer(1),hasMore:{type:'boolean'},pendingTurn:nullable(ref('ConversationHistoryPendingTurn'))}),

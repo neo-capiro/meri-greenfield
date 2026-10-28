@@ -1,7 +1,7 @@
 {
   "packageVersion": "0.1.15",
-  "historyVersion": "1.2.0",
-  "schemaId": "urn:meri:conversation-history:1.2.0",
+  "historyVersion": "1.3.0",
+  "schemaId": "urn:meri:conversation-history:1.3.0",
   "runIndex": {
     "version": "1.0.0",
     "schemaId": "urn:meri:run-index:1.0.0",
@@ -67,7 +67,7 @@
     },
     {
       "path": "conversation-history/protocol.mjs",
-      "sha256": "6f00dabe137c8a1919a99d90d3e4a23d3835e7dc31625cbfcc3b3bdf58b38566",
+      "sha256": "d508728eb5f6a32d781c65700ce1ef742e7fafd27b509cd54026d5cd3961515c",
       "bytes": 2449
     },
     {
@@ -102,18 +102,18 @@
     },
     {
       "path": "conversation-history/schema.mjs",
-      "sha256": "978e9645cf2e8b451c10559b05798c68712566d41d9157cef7c68c0dade40631",
-      "bytes": 5193
+      "sha256": "1ec45549052aad3d7e4266a06b4553007ba9096e455c7f24baa0a6bec94ec178",
+      "bytes": 5295
     },
     {
       "path": "conversation-history/semantics.mjs",
-      "sha256": "90147e2351d306f9a3c1e738bb85e895cc2060f7f4248f271cc39e0ed2f5c5ce",
-      "bytes": 10506
+      "sha256": "4b73598c7299e26a4c3b71ef1530e569f28662e5607fae30ecd5284fea194876",
+      "bytes": 10895
     },
     {
       "path": "conversation-history/shape.mjs",
-      "sha256": "6b933284cdfe6b6021d4b9b6531ac6a56156682983ea7f6bc85109a7026061a5",
-      "bytes": 1116
+      "sha256": "9cf42e7c26c7a79523b41ea95da6777e210da7922dcf8e77f98bca142093ac02",
+      "bytes": 1154
     },
     {
       "path": "conversation-history/validate.mjs",
@@ -127,8 +127,8 @@
     },
     {
       "path": "conversation-sources/protocol.mjs",
-      "sha256": "160eaa367751d8c331105abdd0faf25bf109c8eb673da784550822a3415ca3c4",
-      "bytes": 1815
+      "sha256": "4ab2b8449beded18e77111ac0c345955bb862ffbe1f63b4644a00cf0e64675ff",
+      "bytes": 1940
     },
     {
       "path": "conversation-sources/semantics.mjs",
@@ -136,9 +136,14 @@
       "bytes": 2103
     },
     {
+      "path": "conversation-sources/upload-semantics.mjs",
+      "sha256": "f31cabf6c0eea8e98711d20b8e8d051a2f783304117bc0d9125b2ece112a84ce",
+      "bytes": 4030
+    },
+    {
       "path": "dist/conversation-application.schema.json",
-      "sha256": "866e50719cc9ab4f1a8152e39b9b4963beddfcb8234dab1c691e0352dd61ac75",
-      "bytes": 73659
+      "sha256": "5607f32b00a79b4f53bb3a6992b45de2d612d495d0674bd9cd0c9b21c4427067",
+      "bytes": 81238
     },
     {
       "path": "document-application/boundary.mjs",
@@ -147,8 +152,8 @@
     },
     {
       "path": "generate-history.mjs",
-      "sha256": "1e008364318c5feb21114aabbf1806216de082b105f8470aeae498579eafebeb",
-      "bytes": 12001
+      "sha256": "0f3d82051b35208dbaa0ef7a4e31d7dc520fad878c80b14362cd74ff11a32839",
+      "bytes": 12103
     },
     {
       "path": "meri.schema.json",
@@ -166,6 +171,11 @@
       "bytes": 8290
     },
     {
+      "path": "native-upload-source.schema.json",
+      "sha256": "8c6e70fa53c0d510d1ecb5ec89d2431b25054dcd1dc2225a0974fcf5d08ddf48",
+      "bytes": 6121
+    },
+    {
       "path": "retrieval-0.2/hearing-fragments.mjs",
       "sha256": "24e106caa79140d31feb65bc79c816197b38220b0c30a42ec86ba8c6deed6174",
       "bytes": 787
@@ -174,9 +184,14 @@
       "path": "retrieval-0.2/public-domain-hearings.schema.json",
       "sha256": "a66098535b31a672767f224e155695266299a176f7de715e38bcbebf8d81f4ca",
       "bytes": 36999
+    },
+    {
+      "path": "upload-selection.mjs",
+      "sha256": "b35b73b7a75ed50bff2fb04530cef165595932a57a2a3fd786be2baa4e2066dd",
+      "bytes": 1986
     }
   ],
-  "schemaSha256": "d02ba15782264e3982b45ad2ef1fd59b7da8fa9d4747bfbfa6a6515ffb726faf",
+  "schemaSha256": "d7e9ba18025530b0f5afcb6d5cdaba91d801649e41e8fae326abab22554151ba",
   "browserInputs": [
     "artifacts-0.2/artifact-formats.mjs",
     "conversation-history/conversation-history-receiver.mjs",
@@ -187,6 +202,7 @@
     "conversation-history/semantics.mjs",
     "conversation-sources/hearing-semantics.mjs",
     "conversation-sources/semantics.mjs",
+    "conversation-sources/upload-semantics.mjs",
     "document-application/boundary.mjs",
     "history-generated:./generated-validator.mjs",
     "node_modules/ajv-formats/dist/formats.js",
@@ -195,6 +211,7 @@
     "node_modules/canonicalize/lib/canonicalize.js",
     "node_modules/fast-deep-equal/index.js",
     "retrieval-0.2/hearing-fragments.mjs",
-    "run-generated:./generated-run-validator.mjs"
+    "run-generated:./generated-run-validator.mjs",
+    "upload-selection.mjs"
   ]
 }

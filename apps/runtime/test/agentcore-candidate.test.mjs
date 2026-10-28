@@ -115,7 +115,7 @@ test('candidate routes admitted/settle and existing worker body without task/boo
  const f=fixture();let forwarded;
  f.candidate.bindApplication({async handle(request){forwarded={path:new URL(request.url).pathname,body:await request.json(),auth:request.headers.get('authorization')};return Response.json({ok:true});}});
  const routes=createControlRouteApplications({assembly:{handle(){assert.fail('No private fallback');}},candidate:f.candidate.application});
- for(const operation of ['load','publish','record-usage','next-controls','claim-control','ack-control','record-checkpoint','selected/prepare','selected/read','selected/finish','selected/publish','session/register','session/load','session/append','session/list-subkeys','session/snapshot']){
+ for(const operation of ['load','publish','record-usage','upload-source','next-controls','claim-control','ack-control','record-checkpoint','selected/prepare','selected/read','selected/finish','selected/publish','session/register','session/load','session/append','session/list-subkeys','session/snapshot']){
   const path='/v1/runner/'+operation,request=new Request('https://control.synthetic.invalid'+path,{method:'POST',headers:{authorization:'Bearer execution-only','content-type':'application/json'},body:JSON.stringify({binding})});
   assert.equal((await routes.private.handle(request)).status,200);
   assert.deepEqual(forwarded,{path:operation.startsWith('session/')?path:'/internal/conversations/'+operation,body:{binding},auth:'Bearer execution-only'});

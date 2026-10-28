@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "urn:meri:conversation-application:0.2.0",
+  "$id": "urn:meri:conversation-application:0.3.0",
   "$defs": {
     "ConversationFeedbackTarget": {
       "oneOf": [
@@ -594,6 +594,30 @@
             "objectSha256"
           ],
           "additionalProperties": false
+        },
+        "uploads": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 8,
+          "uniqueItems": true,
+          "items": {
+            "type": "object",
+            "properties": {
+              "uploadId": {
+                "type": "string",
+                "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+              },
+              "sha256": {
+                "type": "string",
+                "pattern": "^[0-9a-f]{64}$"
+              }
+            },
+            "required": [
+              "uploadId",
+              "sha256"
+            ],
+            "additionalProperties": false
+          }
         }
       },
       "required": [
@@ -795,6 +819,30 @@
             "objectSha256"
           ],
           "additionalProperties": false
+        },
+        "uploads": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 8,
+          "uniqueItems": true,
+          "items": {
+            "type": "object",
+            "properties": {
+              "uploadId": {
+                "type": "string",
+                "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+              },
+              "sha256": {
+                "type": "string",
+                "pattern": "^[0-9a-f]{64}$"
+              }
+            },
+            "required": [
+              "uploadId",
+              "sha256"
+            ],
+            "additionalProperties": false
+          }
         }
       },
       "required": [
@@ -869,6 +917,9 @@
               },
               {
                 "$ref": "#/$defs/Canonical_NativeHearingSourceEvent_685f6175"
+              },
+              {
+                "$ref": "#/$defs/Canonical_NativeUploadSourceEvent_c1e88004"
               }
             ]
           },
@@ -924,6 +975,9 @@
         },
         {
           "$ref": "#/$defs/Canonical_NativeHearingSourceEvent_685f6175"
+        },
+        {
+          "$ref": "#/$defs/Canonical_NativeUploadSourceEvent_c1e88004"
         }
       ]
     },
@@ -2879,6 +2933,244 @@
         },
         "data": {
           "$ref": "#/$defs/Canonical_NativeHearingSource_f31b5a94"
+        }
+      },
+      "required": [
+        "contractVersion",
+        "eventId",
+        "binding",
+        "sequence",
+        "createdAt",
+        "scopes",
+        "type",
+        "data"
+      ],
+      "additionalProperties": false
+    },
+    "Canonical_NativeUploadSource_e432dc7b": {
+      "type": "object",
+      "properties": {
+        "schemaVersion": {
+          "const": "meri.native-upload-source/1"
+        },
+        "deliveryId": {
+          "type": "string",
+          "pattern": "^[-A-Za-z0-9_.:@/]{1,255}$"
+        },
+        "operation": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "const": "read_upload_source"
+            },
+            "version": {
+              "const": "0.2.0"
+            }
+          },
+          "required": [
+            "id",
+            "version"
+          ],
+          "additionalProperties": false
+        },
+        "requestSha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "argumentsSha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "resultSha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "executionSha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "policyRevision": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 255
+        },
+        "source": {
+          "type": "object",
+          "properties": {
+            "authoritativeOwner": {
+              "const": "upload_custody"
+            },
+            "uploadId": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+            },
+            "sha256": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            "versionId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 1024
+            },
+            "filename": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 255
+            },
+            "mimeType": {
+              "type": "string",
+              "maxLength": 128
+            },
+            "bytes": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 10485760
+            },
+            "extractedSourceSha256": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            "extractionStatus": {
+              "enum": [
+                "available",
+                "partial"
+              ]
+            },
+            "limitations": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "pattern": "^[A-Z][A-Z0-9_]{0,79}$"
+              },
+              "maxItems": 16
+            }
+          },
+          "required": [
+            "authoritativeOwner",
+            "uploadId",
+            "sha256",
+            "versionId",
+            "filename",
+            "mimeType",
+            "bytes",
+            "extractedSourceSha256",
+            "extractionStatus",
+            "limitations"
+          ],
+          "additionalProperties": false
+        },
+        "page": {
+          "type": "object",
+          "properties": {
+            "number": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 255
+            },
+            "count": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 256
+            },
+            "sha256": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            "nextPage": {
+              "anyOf": [
+                {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 255
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "fragmentCount": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 64
+            },
+            "extractionStatus": {
+              "enum": [
+                "available",
+                "partial"
+              ]
+            },
+            "limitations": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "pattern": "^[A-Z][A-Z0-9_]{0,79}$"
+              },
+              "maxItems": 16
+            }
+          },
+          "required": [
+            "number",
+            "count",
+            "sha256",
+            "nextPage",
+            "fragmentCount",
+            "extractionStatus",
+            "limitations"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "schemaVersion",
+        "deliveryId",
+        "operation",
+        "requestSha256",
+        "argumentsSha256",
+        "resultSha256",
+        "executionSha256",
+        "policyRevision",
+        "source",
+        "page"
+      ],
+      "additionalProperties": false
+    },
+    "Canonical_NativeUploadSourceEvent_c1e88004": {
+      "type": "object",
+      "properties": {
+        "contractVersion": {
+          "const": "0.1.0"
+        },
+        "eventId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "binding": {
+          "$ref": "#/$defs/Canonical_RunBinding_84f2304c"
+        },
+        "sequence": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "pattern": "Z$"
+        },
+        "scopes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Canonical_Scope_f882edb5"
+          },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "type": {
+          "const": "source.native-upload"
+        },
+        "data": {
+          "$ref": "#/$defs/Canonical_NativeUploadSource_e432dc7b"
         }
       },
       "required": [

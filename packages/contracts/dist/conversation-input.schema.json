@@ -1,12 +1,12 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "urn:meri:conversation-input:1.1.0",
+  "$id": "urn:meri:conversation-input:1.2.0",
   "$defs": {
     "ConversationInputRequest": {
-      "$ref": "#/$defs/Canonical_ConversationSubmitRequest_368891d1"
+      "$ref": "#/$defs/Canonical_ConversationSubmitRequest_c092ada9"
     },
     "ConversationInputStoredRequest": {
-      "$ref": "#/$defs/Canonical_ConversationStoredRequest_38dab9b9"
+      "$ref": "#/$defs/Canonical_ConversationStoredRequest_5e55d9bc"
     },
     "ConversationInputAdmittedResponse": {
       "type": "object",
@@ -15,7 +15,7 @@
           "$ref": "#/$defs/Canonical_Run_aeee1939"
         },
         "request": {
-          "$ref": "#/$defs/Canonical_ConversationStoredRequest_38dab9b9"
+          "$ref": "#/$defs/Canonical_ConversationStoredRequest_5e55d9bc"
         },
         "lastSequence": {
           "type": "integer",
@@ -77,9 +77,9 @@
       "additionalProperties": false
     },
     "ConversationInputErrorResponse": {
-      "$ref": "#/$defs/Canonical_ConversationErrorResponse_228f3e62"
+      "$ref": "#/$defs/Canonical_ConversationErrorResponse_fd3ec9cc"
     },
-    "Canonical_Canonical_WindowRequest_f314f340_1539ab45": {
+    "Canonical_Canonical_WindowRequest_f314f340_a60b884d": {
       "oneOf": [
         {
           "type": "object",
@@ -290,7 +290,7 @@
         }
       ]
     },
-    "Canonical_Canonical_skillId_31e12e8e_22efe610": {
+    "Canonical_Canonical_skillId_31e12e8e_0405382a": {
       "type": "string",
       "enum": [
         "quick_skill.research_company",
@@ -309,11 +309,11 @@
         "quick_skill.regulatory_docket_brief"
       ]
     },
-    "Canonical_Canonical_skillVersion_7e2af095_1261fee6": {
+    "Canonical_Canonical_skillVersion_7e2af095_adee0755": {
       "type": "string",
       "pattern": "^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)$"
     },
-    "Canonical_ConversationSubmitRequest_368891d1": {
+    "Canonical_ConversationSubmitRequest_c092ada9": {
       "type": "object",
       "properties": {
         "requestId": {
@@ -327,16 +327,16 @@
           "pattern": "\\S"
         },
         "windowRequest": {
-          "$ref": "#/$defs/Canonical_Canonical_WindowRequest_f314f340_1539ab45"
+          "$ref": "#/$defs/Canonical_Canonical_WindowRequest_f314f340_a60b884d"
         },
         "skill": {
           "type": "object",
           "properties": {
             "skillId": {
-              "$ref": "#/$defs/Canonical_Canonical_skillId_31e12e8e_22efe610"
+              "$ref": "#/$defs/Canonical_Canonical_skillId_31e12e8e_0405382a"
             },
             "skillVersion": {
-              "$ref": "#/$defs/Canonical_Canonical_skillVersion_7e2af095_1261fee6"
+              "$ref": "#/$defs/Canonical_Canonical_skillVersion_7e2af095_adee0755"
             }
           },
           "required": [
@@ -405,6 +405,30 @@
             "objectSha256"
           ],
           "additionalProperties": false
+        },
+        "uploads": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 8,
+          "uniqueItems": true,
+          "items": {
+            "type": "object",
+            "properties": {
+              "uploadId": {
+                "type": "string",
+                "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+              },
+              "sha256": {
+                "type": "string",
+                "pattern": "^[0-9a-f]{64}$"
+              }
+            },
+            "required": [
+              "uploadId",
+              "sha256"
+            ],
+            "additionalProperties": false
+          }
         }
       },
       "required": [
@@ -423,14 +447,14 @@
         ]
       }
     },
-    "Canonical_ConversationSkillAssetPin_3299812a": {
+    "Canonical_ConversationSkillAssetPin_47dce4ab": {
       "type": "object",
       "properties": {
         "skillId": {
-          "$ref": "#/$defs/Canonical_Canonical_skillId_31e12e8e_22efe610"
+          "$ref": "#/$defs/Canonical_Canonical_skillId_31e12e8e_0405382a"
         },
         "skillVersion": {
-          "$ref": "#/$defs/Canonical_Canonical_skillVersion_7e2af095_1261fee6"
+          "$ref": "#/$defs/Canonical_Canonical_skillVersion_7e2af095_adee0755"
         },
         "manifestSha256": {
           "type": "string",
@@ -454,7 +478,7 @@
       ],
       "additionalProperties": false
     },
-    "Canonical_Canonical_NormalizedWindow_e50ec0ed_02bd54f8": {
+    "Canonical_Canonical_NormalizedWindow_e50ec0ed_79513031": {
       "oneOf": [
         {
           "type": "object",
@@ -583,7 +607,7 @@
         }
       ]
     },
-    "Canonical_ConversationStoredRequest_38dab9b9": {
+    "Canonical_ConversationStoredRequest_5e55d9bc": {
       "type": "object",
       "properties": {
         "requestId": {
@@ -599,7 +623,7 @@
         "skill": {
           "anyOf": [
             {
-              "$ref": "#/$defs/Canonical_ConversationSkillAssetPin_3299812a"
+              "$ref": "#/$defs/Canonical_ConversationSkillAssetPin_47dce4ab"
             },
             {
               "type": "null"
@@ -609,7 +633,7 @@
         "window": {
           "anyOf": [
             {
-              "$ref": "#/$defs/Canonical_Canonical_NormalizedWindow_e50ec0ed_02bd54f8"
+              "$ref": "#/$defs/Canonical_Canonical_NormalizedWindow_e50ec0ed_79513031"
             },
             {
               "type": "null"
@@ -619,7 +643,7 @@
         "windowRequest": {
           "anyOf": [
             {
-              "$ref": "#/$defs/Canonical_Canonical_WindowRequest_f314f340_1539ab45"
+              "$ref": "#/$defs/Canonical_Canonical_WindowRequest_f314f340_a60b884d"
             },
             {
               "type": "null"
@@ -686,6 +710,30 @@
             "objectSha256"
           ],
           "additionalProperties": false
+        },
+        "uploads": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 8,
+          "uniqueItems": true,
+          "items": {
+            "type": "object",
+            "properties": {
+              "uploadId": {
+                "type": "string",
+                "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+              },
+              "sha256": {
+                "type": "string",
+                "pattern": "^[0-9a-f]{64}$"
+              }
+            },
+            "required": [
+              "uploadId",
+              "sha256"
+            ],
+            "additionalProperties": false
+          }
         }
       },
       "required": [
@@ -884,7 +932,7 @@
       ],
       "additionalProperties": false
     },
-    "Canonical_ConversationErrorResponse_228f3e62": {
+    "Canonical_ConversationErrorResponse_fd3ec9cc": {
       "type": "object",
       "properties": {
         "error": {

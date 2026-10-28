@@ -1,5 +1,7 @@
 import {assertHearingSourceEventSemantics} from '../conversation-sources/hearing-semantics.mjs';
+import {assertUploadSelections} from '../upload-selection.mjs';
 import {assertNativeSourceEventSemantics} from '../conversation-sources/semantics.mjs';
+import {assertUploadSourceEventSemantics} from '../conversation-sources/upload-semantics.mjs';
 /** Shared post-schema correlation and request normalization; receives parsed/snapshotted JSON only. */
 import canonicalize from 'canonicalize';
 import {MANAGEMENT_VERSION} from './protocol.mjs';
@@ -60,6 +62,7 @@ export function assertHistoryResponseSemantics(route,request,result){
  if(result.latestSequenceBase>=result.lastSequence||request.after>result.lastSequence||result.events.length>request.limit)fail('CURSOR_MISMATCH');
  const turns=new Map(),requests=new Set();let prior;
  for(const t of result.turns){run(t.run,c);const b=t.run.binding,l=t.promptLineage,end=t.sequenceBase+t.lastSequence;
+  if(t.request.uploads!==undefined){try{assertUploadSelections(t.request.uploads);}catch{fail('TURN_MISMATCH');}}
   if(!integer(end,1)||t.sequenceEnd!==null&&t.sequenceEnd!==end||b.writerFence>result.latestRun.binding.writerFence||t.sequenceBase<0||end>result.lastSequence||turns.has(b.runId)||requests.has(t.request.requestId)||prior&&(prior.run.binding.writerFence>=b.writerFence||prior.sequenceBase+prior.lastSequence!==t.sequenceBase))fail('TURN_MISMATCH');
   if(b.runId===result.latestRun.binding.runId){if(!same(t.run,result.latestRun)||t.sequenceBase!==result.latestSequenceBase||end!==result.lastSequence)fail('TURN_MISMATCH');}
   else if(t.sequenceEnd===null||b.writerFence>=result.latestRun.binding.writerFence||end>result.latestSequenceBase)fail('TURN_MISMATCH');
@@ -74,6 +77,7 @@ export function assertHistoryResponseSemantics(route,request,result){
  for(const wrapped of result.events){const e=wrapped.event,t=turns.get(e.binding.runId);if(!t||!same(e.binding,t.run.binding)||!same(e.scopes,t.run.scopes)||wrapped.sequence!==++sequence||wrapped.sequence!==t.sequenceBase+e.sequence||e.sequence<1||e.sequence>t.lastSequence||eventIds.has(e.eventId))fail('EVENT_MISMATCH');
   if(e.type==='source.native-hearing-record'){try{assertHearingSourceEventSemantics(e);}catch{fail('INVALID_SOURCE_EVENT');}}
  if(e.type==='source.native-bill-text'){try{assertNativeSourceEventSemantics(e);}catch{fail('INVALID_SOURCE_EVENT');}}
+ if(e.type==='source.native-upload'){try{assertUploadSourceEventSemantics(e);}catch{fail('INVALID_SOURCE_EVENT');}}
  if(e.type==='source.available'&&e.data.scopes.some(s=>!t.run.scopes.some(parent=>same(s,parent))))fail('SCOPE_MISMATCH');touched.add(t.run.binding.runId);eventIds.add(e.eventId);
  }
  if(touched.size!==turns.size||result.nextSequence!==sequence||result.nextSequence>result.lastSequence||result.hasMore!==(sequence<result.lastSequence)||result.hasMore&&result.events.length!==request.limit)fail('CURSOR_MISMATCH');

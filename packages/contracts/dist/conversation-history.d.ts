@@ -12,10 +12,10 @@ export type ConversationHistoryEnvelope =
   | ConversationHistoryManageRequest
   | ConversationHistorySummariesResponse
   | ConversationHistoryManageResponse;
-export type CanonicalRequestId_3765852A = string;
-export type CanonicalPromptA43Ae781 = string;
-export type CanonicalSkill_8E4A257C = Canonical_ConversationSkillAssetPin_3299812A | null;
-export type Canonical_CanonicalSkillId_31E12E8E_22Efe610 =
+export type CanonicalRequestId_8Ebff969 = string;
+export type CanonicalPrompt_9Ddc2391 = string;
+export type CanonicalSkillA322F057 = Canonical_ConversationSkillAssetPin_47Dce4Ab | null;
+export type Canonical_CanonicalSkillId_31E12E8E_0405382A =
   | 'quick_skill.research_company'
   | 'quick_skill.relationship_brief'
   | 'quick_skill.client_changes'
@@ -30,9 +30,9 @@ export type Canonical_CanonicalSkillId_31E12E8E_22Efe610 =
   | 'quick_skill.hearing_watch'
   | 'quick_skill.representation_lookup'
   | 'quick_skill.regulatory_docket_brief';
-export type Canonical_CanonicalSkillVersion_7E2Af095_1261Fee6 = string;
-export type CanonicalWindow_8Fda570A = Canonical_Canonical_NormalizedWindowE50Ec0Ed_02Bd54F8 | null;
-export type Canonical_Canonical_NormalizedWindowE50Ec0Ed_02Bd54F8 =
+export type Canonical_CanonicalSkillVersion_7E2Af095Adee0755 = string;
+export type CanonicalWindow_902647E1 = Canonical_Canonical_NormalizedWindowE50Ec0Ed_79513031 | null;
+export type Canonical_Canonical_NormalizedWindowE50Ec0Ed_79513031 =
   | {
       basis: 'calendar-week' | 'calendar-month' | 'calendar-year' | 'relative-duration' | 'explicit';
       startInclusive: string;
@@ -53,8 +53,8 @@ export type Canonical_Canonical_NormalizedWindowE50Ec0Ed_02Bd54F8 =
   | {
       basis: 'unbounded';
     };
-export type CanonicalWindowRequestFf00Da14 = Canonical_Canonical_WindowRequestF314F340_1539Ab45 | null;
-export type Canonical_Canonical_WindowRequestF314F340_1539Ab45 =
+export type CanonicalWindowRequest_6Ab4552E = Canonical_Canonical_WindowRequestF314F340A60B884D | null;
+export type Canonical_Canonical_WindowRequestF314F340A60B884D =
   | {
       basis: 'calendar-week';
       offset: -1 | 0;
@@ -94,6 +94,171 @@ export type Canonical_Canonical_WindowRequestF314F340_1539Ab45 =
   | {
       basis: 'unbounded';
     };
+/**
+ * @minItems 1
+ * @maxItems 8
+ */
+export type CanonicalUploads_495Ca7A1 =
+  | [
+      {
+        uploadId: string;
+        sha256: string;
+      }
+    ]
+  | [
+      {
+        uploadId: string;
+        sha256: string;
+      },
+      {
+        uploadId: string;
+        sha256: string;
+      }
+    ]
+  | [
+      {
+        uploadId: string;
+        sha256: string;
+      },
+      {
+        uploadId: string;
+        sha256: string;
+      },
+      {
+        uploadId: string;
+        sha256: string;
+      }
+    ]
+  | [
+      {
+        uploadId: string;
+        sha256: string;
+      },
+      {
+        uploadId: string;
+        sha256: string;
+      },
+      {
+        uploadId: string;
+        sha256: string;
+      },
+      {
+        uploadId: string;
+        sha256: string;
+      }
+    ]
+  | [
+      {
+        uploadId: string;
+        sha256: string;
+      },
+      {
+        uploadId: string;
+        sha256: string;
+      },
+      {
+        uploadId: string;
+        sha256: string;
+      },
+      {
+        uploadId: string;
+        sha256: string;
+      },
+      {
+        uploadId: string;
+        sha256: string;
+      }
+    ]
+  | [
+      {
+        uploadId: string;
+        sha256: string;
+      },
+      {
+        uploadId: string;
+        sha256: string;
+      },
+      {
+        uploadId: string;
+        sha256: string;
+      },
+      {
+        uploadId: string;
+        sha256: string;
+      },
+      {
+        uploadId: string;
+        sha256: string;
+      },
+      {
+        uploadId: string;
+        sha256: string;
+      }
+    ]
+  | [
+      {
+        uploadId: string;
+        sha256: string;
+      },
+      {
+        uploadId: string;
+        sha256: string;
+      },
+      {
+        uploadId: string;
+        sha256: string;
+      },
+      {
+        uploadId: string;
+        sha256: string;
+      },
+      {
+        uploadId: string;
+        sha256: string;
+      },
+      {
+        uploadId: string;
+        sha256: string;
+      },
+      {
+        uploadId: string;
+        sha256: string;
+      }
+    ]
+  | [
+      {
+        uploadId: string;
+        sha256: string;
+      },
+      {
+        uploadId: string;
+        sha256: string;
+      },
+      {
+        uploadId: string;
+        sha256: string;
+      },
+      {
+        uploadId: string;
+        sha256: string;
+      },
+      {
+        uploadId: string;
+        sha256: string;
+      },
+      {
+        uploadId: string;
+        sha256: string;
+      },
+      {
+        uploadId: string;
+        sha256: string;
+      },
+      {
+        uploadId: string;
+        sha256: string;
+      }
+    ];
 export type ConversationPromptLineage =
   | {
       kind: 'submission';
@@ -383,27 +548,28 @@ export interface ConversationHistoryTurn {
   lastSequence: number;
 }
 export interface ConversationHistoryStoredRequest {
-  requestId: CanonicalRequestId_3765852A;
-  prompt: CanonicalPromptA43Ae781;
-  skill: CanonicalSkill_8E4A257C;
-  window: CanonicalWindow_8Fda570A;
-  windowRequest?: CanonicalWindowRequestFf00Da14;
-  modelSelection?: CanonicalModelSelection_66Cdc638;
-  documentRevision?: CanonicalDocumentRevision_70B23E7E;
+  requestId: CanonicalRequestId_8Ebff969;
+  prompt: CanonicalPrompt_9Ddc2391;
+  skill: CanonicalSkillA322F057;
+  window: CanonicalWindow_902647E1;
+  windowRequest?: CanonicalWindowRequest_6Ab4552E;
+  modelSelection?: CanonicalModelSelection_3Ce6002E;
+  documentRevision?: CanonicalDocumentRevision_23476D5B;
+  uploads?: CanonicalUploads_495Ca7A1;
 }
-export interface Canonical_ConversationSkillAssetPin_3299812A {
-  skillId: Canonical_CanonicalSkillId_31E12E8E_22Efe610;
-  skillVersion: Canonical_CanonicalSkillVersion_7E2Af095_1261Fee6;
+export interface Canonical_ConversationSkillAssetPin_47Dce4Ab {
+  skillId: Canonical_CanonicalSkillId_31E12E8E_0405382A;
+  skillVersion: Canonical_CanonicalSkillVersion_7E2Af095Adee0755;
   manifestSha256: string;
   proseSha256: string;
   catalogSha256: string;
 }
-export interface CanonicalModelSelection_66Cdc638 {
+export interface CanonicalModelSelection_3Ce6002E {
   provider: 'bedrock' | 'claude-api';
   modelId: string;
   effort: null | ('low' | 'medium' | 'high' | 'xhigh' | 'max');
 }
-export interface CanonicalDocumentRevision_70B23E7E {
+export interface CanonicalDocumentRevision_23476D5B {
   artifactId: string;
   versionId: string;
   objectSha256: string;
@@ -413,7 +579,8 @@ export interface ConversationHistoryEvent {
   event:
     | Canonical_UIEvent_1691B714
     | Canonical_NativeBillTextSourceEvent_8E4E610B
-    | Canonical_NativeHearingSourceEvent_685F6175;
+    | Canonical_NativeHearingSourceEvent_685F6175
+    | Canonical_NativeUploadSourceEventC1E88004;
 }
 export interface Canonical_SourceEvidenceD9008775 {
   sourceId: string;
@@ -581,6 +748,159 @@ export interface Canonical_HearingSourceCoverage_0301Fc6C {
   coverageComplete: false;
   lastSyncAt?: string;
   stopReason: string;
+}
+export interface Canonical_NativeUploadSourceEventC1E88004 {
+  contractVersion: '0.1.0';
+  eventId: string;
+  binding: Canonical_RunBinding_84F2304C;
+  sequence: number;
+  createdAt: string;
+  /**
+   * @minItems 1
+   */
+  scopes: [Canonical_ScopeF882Edb5, ...Canonical_ScopeF882Edb5[]];
+  type: 'source.native-upload';
+  data: Canonical_NativeUploadSourceE432Dc7B;
+}
+export interface Canonical_NativeUploadSourceE432Dc7B {
+  schemaVersion: 'meri.native-upload-source/1';
+  deliveryId: string;
+  operation: {
+    id: 'read_upload_source';
+    version: '0.2.0';
+  };
+  requestSha256: string;
+  argumentsSha256: string;
+  resultSha256: string;
+  executionSha256: string;
+  policyRevision: string;
+  source: {
+    authoritativeOwner: 'upload_custody';
+    uploadId: string;
+    sha256: string;
+    versionId: string;
+    filename: string;
+    mimeType: string;
+    bytes: number;
+    extractedSourceSha256: string;
+    extractionStatus: 'available' | 'partial';
+    /**
+     * @maxItems 16
+     */
+    limitations:
+      | []
+      | [string]
+      | [string, string]
+      | [string, string, string]
+      | [string, string, string, string]
+      | [string, string, string, string, string]
+      | [string, string, string, string, string, string]
+      | [string, string, string, string, string, string, string]
+      | [string, string, string, string, string, string, string, string]
+      | [string, string, string, string, string, string, string, string, string]
+      | [string, string, string, string, string, string, string, string, string, string]
+      | [string, string, string, string, string, string, string, string, string, string, string]
+      | [string, string, string, string, string, string, string, string, string, string, string, string]
+      | [string, string, string, string, string, string, string, string, string, string, string, string, string]
+      | [string, string, string, string, string, string, string, string, string, string, string, string, string, string]
+      | [
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string
+        ]
+      | [
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string
+        ];
+  };
+  page: {
+    number: number;
+    count: number;
+    sha256: string;
+    nextPage: number | null;
+    fragmentCount: number;
+    extractionStatus: 'available' | 'partial';
+    /**
+     * @maxItems 16
+     */
+    limitations:
+      | []
+      | [string]
+      | [string, string]
+      | [string, string, string]
+      | [string, string, string, string]
+      | [string, string, string, string, string]
+      | [string, string, string, string, string, string]
+      | [string, string, string, string, string, string, string]
+      | [string, string, string, string, string, string, string, string]
+      | [string, string, string, string, string, string, string, string, string]
+      | [string, string, string, string, string, string, string, string, string, string]
+      | [string, string, string, string, string, string, string, string, string, string, string]
+      | [string, string, string, string, string, string, string, string, string, string, string, string]
+      | [string, string, string, string, string, string, string, string, string, string, string, string, string]
+      | [string, string, string, string, string, string, string, string, string, string, string, string, string, string]
+      | [
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string
+        ]
+      | [
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string
+        ];
+  };
 }
 export interface ConversationHistoryPendingTurn {
   sourceBinding: Canonical_RunBinding_84F2304C;
@@ -912,8 +1232,8 @@ export type ConversationHistoryResponse<R extends ConversationHistoryRoute>=Conv
 export declare class ConversationHistoryResponseError extends Error {readonly code:string;}
 export declare const conversationHistoryMetadata: {
   "packageVersion": "0.1.15",
-  "historyVersion": "1.2.0",
-  "schemaId": "urn:meri:conversation-history:1.2.0",
+  "historyVersion": "1.3.0",
+  "schemaId": "urn:meri:conversation-history:1.3.0",
   "routes": {
     "list": {
       "method": "POST",

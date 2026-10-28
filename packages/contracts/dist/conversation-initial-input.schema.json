@@ -1,12 +1,12 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "urn:meri:conversation-initial-input:1.1.0",
+  "$id": "urn:meri:conversation-initial-input:1.2.0",
   "$defs": {
     "ConversationInitialInputRequest": {
-      "$ref": "#/$defs/Canonical_ConversationInputRequest_e4b64829"
+      "$ref": "#/$defs/Canonical_ConversationInputRequest_70390de0"
     },
     "ConversationInitialInputExpectedContext": {
-      "$ref": "#/$defs/Canonical_ConversationInputExpectedContext_1060a8f8"
+      "$ref": "#/$defs/Canonical_ConversationInputExpectedContext_cecd7420"
     },
     "ConversationInitialInputAllocation": {
       "type": "object",
@@ -182,7 +182,7 @@
       ],
       "additionalProperties": false
     },
-    "Canonical_Canonical_Canonical_WindowRequest_f314f340_1539ab45_3f1d9432": {
+    "Canonical_Canonical_Canonical_WindowRequest_f314f340_a60b884d_f6fb7c68": {
       "oneOf": [
         {
           "type": "object",
@@ -393,7 +393,7 @@
         }
       ]
     },
-    "Canonical_Canonical_Canonical_skillId_31e12e8e_22efe610_e9408e1d": {
+    "Canonical_Canonical_Canonical_skillId_31e12e8e_0405382a_ef23c2ec": {
       "type": "string",
       "enum": [
         "quick_skill.research_company",
@@ -412,11 +412,11 @@
         "quick_skill.regulatory_docket_brief"
       ]
     },
-    "Canonical_Canonical_Canonical_skillVersion_7e2af095_1261fee6_2fa8d99b": {
+    "Canonical_Canonical_Canonical_skillVersion_7e2af095_adee0755_8122dbd3": {
       "type": "string",
       "pattern": "^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)$"
     },
-    "Canonical_Canonical_ConversationSubmitRequest_368891d1_2cab42c3": {
+    "Canonical_Canonical_ConversationSubmitRequest_c092ada9_23a55cc5": {
       "type": "object",
       "properties": {
         "requestId": {
@@ -430,16 +430,16 @@
           "pattern": "\\S"
         },
         "windowRequest": {
-          "$ref": "#/$defs/Canonical_Canonical_Canonical_WindowRequest_f314f340_1539ab45_3f1d9432"
+          "$ref": "#/$defs/Canonical_Canonical_Canonical_WindowRequest_f314f340_a60b884d_f6fb7c68"
         },
         "skill": {
           "type": "object",
           "properties": {
             "skillId": {
-              "$ref": "#/$defs/Canonical_Canonical_Canonical_skillId_31e12e8e_22efe610_e9408e1d"
+              "$ref": "#/$defs/Canonical_Canonical_Canonical_skillId_31e12e8e_0405382a_ef23c2ec"
             },
             "skillVersion": {
-              "$ref": "#/$defs/Canonical_Canonical_Canonical_skillVersion_7e2af095_1261fee6_2fa8d99b"
+              "$ref": "#/$defs/Canonical_Canonical_Canonical_skillVersion_7e2af095_adee0755_8122dbd3"
             }
           },
           "required": [
@@ -508,6 +508,30 @@
             "objectSha256"
           ],
           "additionalProperties": false
+        },
+        "uploads": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 8,
+          "uniqueItems": true,
+          "items": {
+            "type": "object",
+            "properties": {
+              "uploadId": {
+                "type": "string",
+                "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+              },
+              "sha256": {
+                "type": "string",
+                "pattern": "^[0-9a-f]{64}$"
+              }
+            },
+            "required": [
+              "uploadId",
+              "sha256"
+            ],
+            "additionalProperties": false
+          }
         }
       },
       "required": [
@@ -526,10 +550,10 @@
         ]
       }
     },
-    "Canonical_ConversationInputRequest_e4b64829": {
-      "$ref": "#/$defs/Canonical_Canonical_ConversationSubmitRequest_368891d1_2cab42c3"
+    "Canonical_ConversationInputRequest_70390de0": {
+      "$ref": "#/$defs/Canonical_Canonical_ConversationSubmitRequest_c092ada9_23a55cc5"
     },
-    "Canonical_ConversationInputExpectedContext_1060a8f8": {
+    "Canonical_ConversationInputExpectedContext_cecd7420": {
       "type": "object",
       "properties": {
         "tenantId": {

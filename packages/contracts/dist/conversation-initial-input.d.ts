@@ -90,8 +90,8 @@ export type AdmittedConversationInitialInputReceipt=Readonly<ConversationInitial
 export declare class ConversationInitialInputResponseError extends Error {readonly code:string;}
 export declare const conversationInitialInputMetadata: {
   "packageVersion": "0.1.10",
-  "initialInputVersion": "1.1.0",
-  "schemaId": "urn:meri:conversation-initial-input:1.1.0",
+  "initialInputVersion": "1.2.0",
+  "schemaId": "urn:meri:conversation-initial-input:1.2.0",
   "routes": {
     "allocate": {
       "method": "POST",

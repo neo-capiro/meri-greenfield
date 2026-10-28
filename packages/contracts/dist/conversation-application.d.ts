@@ -253,7 +253,8 @@ export type Canonical_UIEvent_1691B714 =
 export type ConversationEvent =
   | Canonical_UIEvent_1691B714
   | Canonical_NativeBillTextSourceEvent_8E4E610B
-  | Canonical_NativeHearingSourceEvent_685F6175;
+  | Canonical_NativeHearingSourceEvent_685F6175
+  | Canonical_NativeUploadSourceEventC1E88004;
 export type ConversationFeedbackTarget =
   | {
       kind: 'message';
@@ -301,6 +302,171 @@ export interface ConversationSubmitRequest {
     versionId: string;
     objectSha256: string;
   };
+  /**
+   * @minItems 1
+   * @maxItems 8
+   */
+  uploads?:
+    | [
+        {
+          uploadId: string;
+          sha256: string;
+        }
+      ]
+    | [
+        {
+          uploadId: string;
+          sha256: string;
+        },
+        {
+          uploadId: string;
+          sha256: string;
+        }
+      ]
+    | [
+        {
+          uploadId: string;
+          sha256: string;
+        },
+        {
+          uploadId: string;
+          sha256: string;
+        },
+        {
+          uploadId: string;
+          sha256: string;
+        }
+      ]
+    | [
+        {
+          uploadId: string;
+          sha256: string;
+        },
+        {
+          uploadId: string;
+          sha256: string;
+        },
+        {
+          uploadId: string;
+          sha256: string;
+        },
+        {
+          uploadId: string;
+          sha256: string;
+        }
+      ]
+    | [
+        {
+          uploadId: string;
+          sha256: string;
+        },
+        {
+          uploadId: string;
+          sha256: string;
+        },
+        {
+          uploadId: string;
+          sha256: string;
+        },
+        {
+          uploadId: string;
+          sha256: string;
+        },
+        {
+          uploadId: string;
+          sha256: string;
+        }
+      ]
+    | [
+        {
+          uploadId: string;
+          sha256: string;
+        },
+        {
+          uploadId: string;
+          sha256: string;
+        },
+        {
+          uploadId: string;
+          sha256: string;
+        },
+        {
+          uploadId: string;
+          sha256: string;
+        },
+        {
+          uploadId: string;
+          sha256: string;
+        },
+        {
+          uploadId: string;
+          sha256: string;
+        }
+      ]
+    | [
+        {
+          uploadId: string;
+          sha256: string;
+        },
+        {
+          uploadId: string;
+          sha256: string;
+        },
+        {
+          uploadId: string;
+          sha256: string;
+        },
+        {
+          uploadId: string;
+          sha256: string;
+        },
+        {
+          uploadId: string;
+          sha256: string;
+        },
+        {
+          uploadId: string;
+          sha256: string;
+        },
+        {
+          uploadId: string;
+          sha256: string;
+        }
+      ]
+    | [
+        {
+          uploadId: string;
+          sha256: string;
+        },
+        {
+          uploadId: string;
+          sha256: string;
+        },
+        {
+          uploadId: string;
+          sha256: string;
+        },
+        {
+          uploadId: string;
+          sha256: string;
+        },
+        {
+          uploadId: string;
+          sha256: string;
+        },
+        {
+          uploadId: string;
+          sha256: string;
+        },
+        {
+          uploadId: string;
+          sha256: string;
+        },
+        {
+          uploadId: string;
+          sha256: string;
+        }
+      ];
 }
 export interface ConversationHistoryRequest {
   after?: number;
@@ -363,6 +529,7 @@ export interface ConversationHistoryResponse {
     | Canonical_UIEvent_1691B714
     | Canonical_NativeBillTextSourceEvent_8E4E610B
     | Canonical_NativeHearingSourceEvent_685F6175
+    | Canonical_NativeUploadSourceEventC1E88004
   )[];
   nextSequence: number;
   hasMore: boolean;
@@ -384,6 +551,171 @@ export interface ConversationStoredRequest {
     versionId: string;
     objectSha256: string;
   };
+  /**
+   * @minItems 1
+   * @maxItems 8
+   */
+  uploads?:
+    | [
+        {
+          uploadId: string;
+          sha256: string;
+        }
+      ]
+    | [
+        {
+          uploadId: string;
+          sha256: string;
+        },
+        {
+          uploadId: string;
+          sha256: string;
+        }
+      ]
+    | [
+        {
+          uploadId: string;
+          sha256: string;
+        },
+        {
+          uploadId: string;
+          sha256: string;
+        },
+        {
+          uploadId: string;
+          sha256: string;
+        }
+      ]
+    | [
+        {
+          uploadId: string;
+          sha256: string;
+        },
+        {
+          uploadId: string;
+          sha256: string;
+        },
+        {
+          uploadId: string;
+          sha256: string;
+        },
+        {
+          uploadId: string;
+          sha256: string;
+        }
+      ]
+    | [
+        {
+          uploadId: string;
+          sha256: string;
+        },
+        {
+          uploadId: string;
+          sha256: string;
+        },
+        {
+          uploadId: string;
+          sha256: string;
+        },
+        {
+          uploadId: string;
+          sha256: string;
+        },
+        {
+          uploadId: string;
+          sha256: string;
+        }
+      ]
+    | [
+        {
+          uploadId: string;
+          sha256: string;
+        },
+        {
+          uploadId: string;
+          sha256: string;
+        },
+        {
+          uploadId: string;
+          sha256: string;
+        },
+        {
+          uploadId: string;
+          sha256: string;
+        },
+        {
+          uploadId: string;
+          sha256: string;
+        },
+        {
+          uploadId: string;
+          sha256: string;
+        }
+      ]
+    | [
+        {
+          uploadId: string;
+          sha256: string;
+        },
+        {
+          uploadId: string;
+          sha256: string;
+        },
+        {
+          uploadId: string;
+          sha256: string;
+        },
+        {
+          uploadId: string;
+          sha256: string;
+        },
+        {
+          uploadId: string;
+          sha256: string;
+        },
+        {
+          uploadId: string;
+          sha256: string;
+        },
+        {
+          uploadId: string;
+          sha256: string;
+        }
+      ]
+    | [
+        {
+          uploadId: string;
+          sha256: string;
+        },
+        {
+          uploadId: string;
+          sha256: string;
+        },
+        {
+          uploadId: string;
+          sha256: string;
+        },
+        {
+          uploadId: string;
+          sha256: string;
+        },
+        {
+          uploadId: string;
+          sha256: string;
+        },
+        {
+          uploadId: string;
+          sha256: string;
+        },
+        {
+          uploadId: string;
+          sha256: string;
+        },
+        {
+          uploadId: string;
+          sha256: string;
+        }
+      ];
 }
 export interface ConversationSkillAssetPin {
   skillId: CanonicalSkillId_31E12E8E;
@@ -559,6 +891,159 @@ export interface Canonical_HearingSourceCoverage_0301Fc6C {
   lastSyncAt?: string;
   stopReason: string;
 }
+export interface Canonical_NativeUploadSourceEventC1E88004 {
+  contractVersion: '0.1.0';
+  eventId: string;
+  binding: Canonical_RunBinding_84F2304C;
+  sequence: number;
+  createdAt: string;
+  /**
+   * @minItems 1
+   */
+  scopes: [Canonical_ScopeF882Edb5, ...Canonical_ScopeF882Edb5[]];
+  type: 'source.native-upload';
+  data: Canonical_NativeUploadSourceE432Dc7B;
+}
+export interface Canonical_NativeUploadSourceE432Dc7B {
+  schemaVersion: 'meri.native-upload-source/1';
+  deliveryId: string;
+  operation: {
+    id: 'read_upload_source';
+    version: '0.2.0';
+  };
+  requestSha256: string;
+  argumentsSha256: string;
+  resultSha256: string;
+  executionSha256: string;
+  policyRevision: string;
+  source: {
+    authoritativeOwner: 'upload_custody';
+    uploadId: string;
+    sha256: string;
+    versionId: string;
+    filename: string;
+    mimeType: string;
+    bytes: number;
+    extractedSourceSha256: string;
+    extractionStatus: 'available' | 'partial';
+    /**
+     * @maxItems 16
+     */
+    limitations:
+      | []
+      | [string]
+      | [string, string]
+      | [string, string, string]
+      | [string, string, string, string]
+      | [string, string, string, string, string]
+      | [string, string, string, string, string, string]
+      | [string, string, string, string, string, string, string]
+      | [string, string, string, string, string, string, string, string]
+      | [string, string, string, string, string, string, string, string, string]
+      | [string, string, string, string, string, string, string, string, string, string]
+      | [string, string, string, string, string, string, string, string, string, string, string]
+      | [string, string, string, string, string, string, string, string, string, string, string, string]
+      | [string, string, string, string, string, string, string, string, string, string, string, string, string]
+      | [string, string, string, string, string, string, string, string, string, string, string, string, string, string]
+      | [
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string
+        ]
+      | [
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string
+        ];
+  };
+  page: {
+    number: number;
+    count: number;
+    sha256: string;
+    nextPage: number | null;
+    fragmentCount: number;
+    extractionStatus: 'available' | 'partial';
+    /**
+     * @maxItems 16
+     */
+    limitations:
+      | []
+      | [string]
+      | [string, string]
+      | [string, string, string]
+      | [string, string, string, string]
+      | [string, string, string, string, string]
+      | [string, string, string, string, string, string]
+      | [string, string, string, string, string, string, string]
+      | [string, string, string, string, string, string, string, string]
+      | [string, string, string, string, string, string, string, string, string]
+      | [string, string, string, string, string, string, string, string, string, string]
+      | [string, string, string, string, string, string, string, string, string, string, string]
+      | [string, string, string, string, string, string, string, string, string, string, string, string]
+      | [string, string, string, string, string, string, string, string, string, string, string, string, string]
+      | [string, string, string, string, string, string, string, string, string, string, string, string, string, string]
+      | [
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string
+        ]
+      | [
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string,
+          string
+        ];
+  };
+}
 export interface ConversationCancelledResponse {
   state: 'completed' | 'failed' | 'cancelled';
 }
@@ -693,8 +1178,8 @@ export interface ConversationCursor {readonly conversationId:string; readonly af
 export declare class ConversationResponseError extends Error {readonly code:string;}
 export declare const conversationApplicationMetadata: {
   "packageVersion": "0.1.15",
-  "schemaId": "urn:meri:conversation-application:0.2.0",
-  "wireContractVersion": "0.2.0",
+  "schemaId": "urn:meri:conversation-application:0.3.0",
+  "wireContractVersion": "0.3.0",
   "routes": {
     "submit": {
       "method": "POST",

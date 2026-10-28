@@ -4,6 +4,7 @@ import {randomUUID} from 'node:crypto';
 import {own} from '../../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {UPLOAD_LIMITS} from '../../../packages/contracts/uploads-application/protocol.mjs';
 import {createUploadApplication} from '../../control/uploads/application.mjs';
+import {createUploadInputReader} from '../../control/uploads/input-source.mjs';
 import {createUploadInspection} from '../../control/uploads/extraction.mjs';
 import {createPostgresUploadStore} from '../../control/uploads/postgres-store.mjs';
 import {hash,fail} from '../../control/uploads/custody.mjs';
@@ -52,6 +53,9 @@ export function uploadsFamily(owners={}){
   return {ports:{uploadApplicationFactory:Object.freeze({state:()=> 'composed',create({sessions,retention}){
    if(!retention)fail('UPLOAD_CONFIGURATION');
    return createUploadApplication({sessions,store,objects,inspection,retention,removeOriginal,now,ids:supplied.ids??randomUUID});
+  },createSource({sessions,retention,conversationStore}){
+   if(!retention||typeof conversationStore?.read!=='function')fail('UPLOAD_CONFIGURATION');
+   return createUploadInputReader({sessions,retention,conversationStore,store,objects,inspection,removeOriginal,now});
   }})}};
  };
 }

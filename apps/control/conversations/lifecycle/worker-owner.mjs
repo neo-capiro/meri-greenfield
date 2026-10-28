@@ -12,6 +12,7 @@ export function createLifecycleRunOwner(configuration){
  return Object.freeze({
   load:args=>invoke('loadForExecution',args,['binding']),
   append:args=>invoke('publish',args,['binding','event']),
+  ...(typeof service.readUploadSource==='function'?{readUploadSource:args=>invoke('readUploadSource',args,['binding','input'])}:{}),
   async nextControls(args){const page=bounded(await invoke('nextControls',args,['binding'],['after']));own(page,['controls','nextControlSequence']);
    if(!Array.isArray(page.controls)||page.controls.length>100||!Number.isSafeInteger(page.nextControlSequence)||page.nextControlSequence<0)fail('LIFECYCLE_REFUSED');
    // The activity advances only through consumed sequences. Remaining rows

@@ -1,12 +1,12 @@
 // Generated additive input receipt over accepted canonical schemas. No authorization implied.
 
 export type ConversationInputEnvelope =
-  | Canonical_ConversationSubmitRequest_368891D1
-  | Canonical_ConversationStoredRequest_38Dab9B9
+  | Canonical_ConversationSubmitRequestC092Ada9
+  | Canonical_ConversationStoredRequest_5E55D9Bc
   | ConversationInputAdmittedResponse
   | ConversationInputExpectedContext
-  | Canonical_ConversationErrorResponse_228F3E62;
-export type Canonical_Canonical_WindowRequestF314F340_1539Ab45 =
+  | Canonical_ConversationErrorResponseFd3Ec9Cc;
+export type Canonical_Canonical_WindowRequestF314F340A60B884D =
   | {
       basis: 'calendar-week';
       offset: -1 | 0;
@@ -46,7 +46,7 @@ export type Canonical_Canonical_WindowRequestF314F340_1539Ab45 =
   | {
       basis: 'unbounded';
     };
-export type Canonical_CanonicalSkillId_31E12E8E_22Efe610 =
+export type Canonical_CanonicalSkillId_31E12E8E_0405382A =
   | 'quick_skill.research_company'
   | 'quick_skill.relationship_brief'
   | 'quick_skill.client_changes'
@@ -61,8 +61,8 @@ export type Canonical_CanonicalSkillId_31E12E8E_22Efe610 =
   | 'quick_skill.hearing_watch'
   | 'quick_skill.representation_lookup'
   | 'quick_skill.regulatory_docket_brief';
-export type Canonical_CanonicalSkillVersion_7E2Af095_1261Fee6 = string;
-export type Canonical_Canonical_NormalizedWindowE50Ec0Ed_02Bd54F8 =
+export type Canonical_CanonicalSkillVersion_7E2Af095Adee0755 = string;
+export type Canonical_Canonical_NormalizedWindowE50Ec0Ed_79513031 =
   | {
       basis: 'calendar-week' | 'calendar-month' | 'calendar-year' | 'relative-duration' | 'explicit';
       startInclusive: string;
@@ -84,13 +84,13 @@ export type Canonical_Canonical_NormalizedWindowE50Ec0Ed_02Bd54F8 =
       basis: 'unbounded';
     };
 
-export interface Canonical_ConversationSubmitRequest_368891D1 {
+export interface Canonical_ConversationSubmitRequestC092Ada9 {
   requestId: string;
   prompt: string;
-  windowRequest?: Canonical_Canonical_WindowRequestF314F340_1539Ab45;
+  windowRequest?: Canonical_Canonical_WindowRequestF314F340A60B884D;
   skill?: {
-    skillId: Canonical_CanonicalSkillId_31E12E8E_22Efe610;
-    skillVersion: Canonical_CanonicalSkillVersion_7E2Af095_1261Fee6;
+    skillId: Canonical_CanonicalSkillId_31E12E8E_0405382A;
+    skillVersion: Canonical_CanonicalSkillVersion_7E2Af095Adee0755;
   };
   modelSelection?: {
     provider: 'bedrock' | 'claude-api';
@@ -102,13 +102,178 @@ export interface Canonical_ConversationSubmitRequest_368891D1 {
     versionId: string;
     objectSha256: string;
   };
+  /**
+   * @minItems 1
+   * @maxItems 8
+   */
+  uploads?:
+    | [
+        {
+          uploadId: string;
+          sha256: string;
+        }
+      ]
+    | [
+        {
+          uploadId: string;
+          sha256: string;
+        },
+        {
+          uploadId: string;
+          sha256: string;
+        }
+      ]
+    | [
+        {
+          uploadId: string;
+          sha256: string;
+        },
+        {
+          uploadId: string;
+          sha256: string;
+        },
+        {
+          uploadId: string;
+          sha256: string;
+        }
+      ]
+    | [
+        {
+          uploadId: string;
+          sha256: string;
+        },
+        {
+          uploadId: string;
+          sha256: string;
+        },
+        {
+          uploadId: string;
+          sha256: string;
+        },
+        {
+          uploadId: string;
+          sha256: string;
+        }
+      ]
+    | [
+        {
+          uploadId: string;
+          sha256: string;
+        },
+        {
+          uploadId: string;
+          sha256: string;
+        },
+        {
+          uploadId: string;
+          sha256: string;
+        },
+        {
+          uploadId: string;
+          sha256: string;
+        },
+        {
+          uploadId: string;
+          sha256: string;
+        }
+      ]
+    | [
+        {
+          uploadId: string;
+          sha256: string;
+        },
+        {
+          uploadId: string;
+          sha256: string;
+        },
+        {
+          uploadId: string;
+          sha256: string;
+        },
+        {
+          uploadId: string;
+          sha256: string;
+        },
+        {
+          uploadId: string;
+          sha256: string;
+        },
+        {
+          uploadId: string;
+          sha256: string;
+        }
+      ]
+    | [
+        {
+          uploadId: string;
+          sha256: string;
+        },
+        {
+          uploadId: string;
+          sha256: string;
+        },
+        {
+          uploadId: string;
+          sha256: string;
+        },
+        {
+          uploadId: string;
+          sha256: string;
+        },
+        {
+          uploadId: string;
+          sha256: string;
+        },
+        {
+          uploadId: string;
+          sha256: string;
+        },
+        {
+          uploadId: string;
+          sha256: string;
+        }
+      ]
+    | [
+        {
+          uploadId: string;
+          sha256: string;
+        },
+        {
+          uploadId: string;
+          sha256: string;
+        },
+        {
+          uploadId: string;
+          sha256: string;
+        },
+        {
+          uploadId: string;
+          sha256: string;
+        },
+        {
+          uploadId: string;
+          sha256: string;
+        },
+        {
+          uploadId: string;
+          sha256: string;
+        },
+        {
+          uploadId: string;
+          sha256: string;
+        },
+        {
+          uploadId: string;
+          sha256: string;
+        }
+      ];
 }
-export interface Canonical_ConversationStoredRequest_38Dab9B9 {
+export interface Canonical_ConversationStoredRequest_5E55D9Bc {
   requestId: string;
   prompt: string;
-  skill: Canonical_ConversationSkillAssetPin_3299812A | null;
-  window: Canonical_Canonical_NormalizedWindowE50Ec0Ed_02Bd54F8 | null;
-  windowRequest: Canonical_Canonical_WindowRequestF314F340_1539Ab45 | null;
+  skill: Canonical_ConversationSkillAssetPin_47Dce4Ab | null;
+  window: Canonical_Canonical_NormalizedWindowE50Ec0Ed_79513031 | null;
+  windowRequest: Canonical_Canonical_WindowRequestF314F340A60B884D | null;
   modelSelection?: {
     provider: 'bedrock' | 'claude-api';
     modelId: string;
@@ -119,17 +284,182 @@ export interface Canonical_ConversationStoredRequest_38Dab9B9 {
     versionId: string;
     objectSha256: string;
   };
+  /**
+   * @minItems 1
+   * @maxItems 8
+   */
+  uploads?:
+    | [
+        {
+          uploadId: string;
+          sha256: string;
+        }
+      ]
+    | [
+        {
+          uploadId: string;
+          sha256: string;
+        },
+        {
+          uploadId: string;
+          sha256: string;
+        }
+      ]
+    | [
+        {
+          uploadId: string;
+          sha256: string;
+        },
+        {
+          uploadId: string;
+          sha256: string;
+        },
+        {
+          uploadId: string;
+          sha256: string;
+        }
+      ]
+    | [
+        {
+          uploadId: string;
+          sha256: string;
+        },
+        {
+          uploadId: string;
+          sha256: string;
+        },
+        {
+          uploadId: string;
+          sha256: string;
+        },
+        {
+          uploadId: string;
+          sha256: string;
+        }
+      ]
+    | [
+        {
+          uploadId: string;
+          sha256: string;
+        },
+        {
+          uploadId: string;
+          sha256: string;
+        },
+        {
+          uploadId: string;
+          sha256: string;
+        },
+        {
+          uploadId: string;
+          sha256: string;
+        },
+        {
+          uploadId: string;
+          sha256: string;
+        }
+      ]
+    | [
+        {
+          uploadId: string;
+          sha256: string;
+        },
+        {
+          uploadId: string;
+          sha256: string;
+        },
+        {
+          uploadId: string;
+          sha256: string;
+        },
+        {
+          uploadId: string;
+          sha256: string;
+        },
+        {
+          uploadId: string;
+          sha256: string;
+        },
+        {
+          uploadId: string;
+          sha256: string;
+        }
+      ]
+    | [
+        {
+          uploadId: string;
+          sha256: string;
+        },
+        {
+          uploadId: string;
+          sha256: string;
+        },
+        {
+          uploadId: string;
+          sha256: string;
+        },
+        {
+          uploadId: string;
+          sha256: string;
+        },
+        {
+          uploadId: string;
+          sha256: string;
+        },
+        {
+          uploadId: string;
+          sha256: string;
+        },
+        {
+          uploadId: string;
+          sha256: string;
+        }
+      ]
+    | [
+        {
+          uploadId: string;
+          sha256: string;
+        },
+        {
+          uploadId: string;
+          sha256: string;
+        },
+        {
+          uploadId: string;
+          sha256: string;
+        },
+        {
+          uploadId: string;
+          sha256: string;
+        },
+        {
+          uploadId: string;
+          sha256: string;
+        },
+        {
+          uploadId: string;
+          sha256: string;
+        },
+        {
+          uploadId: string;
+          sha256: string;
+        },
+        {
+          uploadId: string;
+          sha256: string;
+        }
+      ];
 }
-export interface Canonical_ConversationSkillAssetPin_3299812A {
-  skillId: Canonical_CanonicalSkillId_31E12E8E_22Efe610;
-  skillVersion: Canonical_CanonicalSkillVersion_7E2Af095_1261Fee6;
+export interface Canonical_ConversationSkillAssetPin_47Dce4Ab {
+  skillId: Canonical_CanonicalSkillId_31E12E8E_0405382A;
+  skillVersion: Canonical_CanonicalSkillVersion_7E2Af095Adee0755;
   manifestSha256: string;
   proseSha256: string;
   catalogSha256: string;
 }
 export interface ConversationInputAdmittedResponse {
   run: Canonical_RunAeee1939;
-  request: Canonical_ConversationStoredRequest_38Dab9B9;
+  request: Canonical_ConversationStoredRequest_5E55D9Bc;
   lastSequence: number;
   replayed: boolean;
 }
@@ -174,7 +504,7 @@ export interface ConversationInputExpectedContext {
   runId: string;
   clientId: string | null;
 }
-export interface Canonical_ConversationErrorResponse_228F3E62 {
+export interface Canonical_ConversationErrorResponseFd3Ec9Cc {
   error: {
     code:
       | 'NOT_FOUND'
@@ -212,8 +542,8 @@ export type ConversationInputView=Readonly<ConversationHistoryResponse>&Admitted
 export declare class ConversationInputResponseError extends Error {readonly code:string;}
 export declare const conversationInputMetadata: {
   "packageVersion": "0.1.7",
-  "inputVersion": "1.1.0",
-  "schemaId": "urn:meri:conversation-input:1.1.0",
+  "inputVersion": "1.2.0",
+  "schemaId": "urn:meri:conversation-input:1.2.0",
   "routes": {
     "admit": {
       "method": "POST",
