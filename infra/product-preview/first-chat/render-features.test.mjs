@@ -71,6 +71,28 @@ test('artifact renderer material binds the selected image and explicit PDF inten
  assert.throws(()=>parseFeatures({sourceEnabled:true,reads:READS,artifacts}),/needs authority, executor and retention/u);
 });
 
+test('remote uploads inspection renders this deployment image digest under the existing agentcore owner and nothing else',async()=>{
+ await baseline();
+ const rendered=await render(withFeatures({sourceEnabled:true,uploads:{enabled:true}}));
+ const control=assertOnly(rendered,['sourceEnabled','uploads'],{worker:{sourceEnabled:true}});
+ // Exactly the closed remote shape the runtime already compiles: no paths, roots or budgets may ride along.
+ assert.deepEqual(control.uploads,{native:{enabled:true,agentcore:{imageDigest:control.versions.imageDigest}}});
+ assert.match(control.uploads.native.agentcore.imageDigest,/^sha256:[a-f0-9]{64}$/u);
+ assert.equal(Object.hasOwn(control.uploads.native,'imageDigest'),false);
+ // The runtime's own configuration compiler accepts the rendered control configuration for the control role.
+ withPosixPaths(()=>validateConfiguration(config(rendered,'control'),'control'));
+ // Absent declares nothing at all; disabled declares the inert form and still names nothing else.
+ const plain=await render(withFeatures({sourceEnabled:true}));
+ assert.equal(Object.hasOwn(config(plain,'control'),'uploads'),false);
+ const off=await render(withFeatures({sourceEnabled:true,uploads:{enabled:false}}));
+ assert.deepEqual(config(off,'control').uploads,{native:{enabled:false}});
+ withPosixPaths(()=>validateConfiguration(config(off,'control'),'control'));
+ // Invalid input refuses: a non-boolean, a declared digest, a declared agentcore block, an unknown key, or no key.
+ for(const bad of [{enabled:'true'},{enabled:true,imageDigest:'sha256:'+'a'.repeat(64)},
+  {enabled:true,agentcore:{imageDigest:'sha256:'+'a'.repeat(64)}},{enabled:true,extra:1},{}])
+  assert.throws(()=>parseFeatures({uploads:bad}),(error)=>error.code==='RENDER_INPUT_REFUSED'||/must be a boolean/u.test(error.message));
+});
+
 test('retention rendering carries the existing explicit Trash purge switch to control only',async()=>{
  await baseline();
  const rendered=await render(withFeatures({sourceEnabled:true,retention:{enabled:true,purge:{enabled:true}}}));
@@ -125,7 +147,7 @@ test('absent and empty features render the same two application service roles',a
  assert.deepEqual(candidate.identity,{origin:'https://core.synthetic.invalid'});
  for(const key of ['grantIntents','grantId','taskRequest','commandContext'])assert.equal(Object.hasOwn(candidate,key),false);
  assert.equal(Object.hasOwn(candidate,'modelCapabilityFile'),false);
- for(const key of ['userPreferences','tenantSettings','intents','routines','retention','artifacts','downloadLinks','capabilityPlatform','reads'])assert.equal(Object.hasOwn(config(current,'control'),key),false);
+ for(const key of ['userPreferences','tenantSettings','intents','routines','retention','artifacts','downloadLinks','capabilityPlatform','reads','uploads'])assert.equal(Object.hasOwn(config(current,'control'),key),false);
 });
 
 /** Control differs from the default by exactly `keys`; unrelated service material stays identical. */
