@@ -22,6 +22,9 @@ test('artifact and conversation retention refuse history, including suppression 
 });
 test('publication changes during collection refuse the snapshot',async()=>{
  const {f,a,c}=await fixture();let reads=0;
- f.durable.state.readHook=()=>{if(++reads===2)f.durable.state.index.tombstones.push({artifactId:a.version.artifactId,versionId:c.version.versionId,retentionDecisionSha256:'f'.repeat(64)});};
+ // history reads the publication index three times: the paged.mode gate, the verified/current
+ // projection, then the release-time current re-read. Mutation on read 3 lands during collection,
+ // so the release comparison -- not the terminal gate -- must refuse the snapshot.
+ f.durable.state.readHook=()=>{if(++reads===3)f.durable.state.index.tombstones.push({artifactId:a.version.artifactId,versionId:c.version.versionId,retentionDecisionSha256:'f'.repeat(64)});};
  await assert.rejects(f.create().history(a.version.versionId),{code:'ARTIFACT_PUBLICATION_STALE'});
 });
