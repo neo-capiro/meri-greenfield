@@ -22,8 +22,8 @@ export function selectedOutputFormat(selected){
   properties={skill,title:text(200),target:text(200),asOf:{type:'string'},quotes:list(quote,20),interpretations:list(text(4000),20),risks:list(text(4000),20),nextSteps:list(text(4000),20)};
  }else if(selectedOutputCompiler(selected)==='quick_skill.bill_watch'){
   // Mirror of the recipe's own private input: the seven sections, cited findings and disclosed conflicts.
-  const citation=object({...object({sourceId:{type:'string',enum:sources},recordId:text(256),recordVersionId:text(256),start:{type:'integer',minimum:0},end:{type:'integer',minimum:1}}).properties,url:text(1000)},
-    ['sourceId','recordId','recordVersionId','start','end']),
+  const citation=object({...object({sourceId:{type:'string',enum:sources},recordId:text(256),sourceVersionId:text(256),start:{type:'integer',minimum:0},end:{type:'integer',minimum:1}}).properties,url:text(1000)},
+    ['sourceId','recordId','sourceVersionId','start','end']),
    finding=object({id:text(64),kind:{type:'string',enum:['excerpt','claim']},text:text(2000),citations:list(citation,10)}),
    disclosed=object({findingId:text(64),note:text(1000)}),
    bill=object({congress:{type:'integer',minimum:1,maximum:999},session:{type:'integer',enum:[1,2]},billId:text(60),

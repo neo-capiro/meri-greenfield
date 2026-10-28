@@ -30,7 +30,7 @@ test('stored selection reads the original spec through the existing session and 
 test('ordinary stored input is selector-free; changed binding/selection/skill and mixed source scopes refuse before artifact resolution',async t=>{
  const h=await fixture(t);delete h.state.saved.request.documentRevision;assert.equal(await h.owner.selectionFor(h.call),null);await assert.rejects(h.owner.read(h.call),{code:'ACCESS_DENIED'});
  h.state.saved.request.documentRevision=h.selection;
- for(const mutate of [()=>h.state.saved.run.binding={...h.call.binding,writerFence:2},()=>h.state.saved.request.documentRevision={...h.selection,objectSha256:'f'.repeat(64)},()=>h.state.saved.request.skill={skillId:'quick_skill.commitments_audit'},()=>h.state.saved.run.scopes.push({...h.state.saved.run.scopes[0],kind:'private-user',resourceId:h.call.binding.actorId})]){
+ for(const mutate of [()=>h.state.saved.run.binding={...h.call.binding,writerFence:2},()=>h.state.saved.request.documentRevision={...h.selection,objectSha256:'f'.repeat(64)},()=>h.state.saved.request.skill={skillId:'quick_skill.commitments_audit'},()=>h.state.saved.run.scopes.push({...h.state.saved.run.scopes[0],kind:'private-user',resourceId:h.call.binding.actorId}),()=>h.state.saved.run.scopes.push({...h.state.saved.run.scopes[0],resourceId:randomUUID()}),()=>h.state.saved.run.scopes.push({...h.state.saved.run.scopes[0],kind:'mailbox',resourceId:'mailbox',tenantId:'other-tenant'}),()=>h.state.saved.run.scopes.push({...h.state.saved.run.scopes[0],kind:'mailbox',resourceId:'mailbox',policyRevision:'changed'})]){
   const saved=structuredClone(h.state.saved);mutate();await assert.rejects(h.owner.read(h.call),{code:'ACCESS_DENIED'});h.state.saved=saved;
  }assert.deepEqual(h.state.phases,[]);
 });

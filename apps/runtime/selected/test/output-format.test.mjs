@@ -94,7 +94,7 @@ test('quick_skill.bill_watch@2.0.0 is announced as a selected version and reache
   assert.equal(schemaArgs.length,1);assert.deepEqual(JSON.parse(schemaArgs[0].slice('--json-schema='.length)),format.schema);
   const valid={skill:pin,title:'Sourced cited report',subject:{congress:119,session:2,billId:'119-s-88',billVersion:'is',fiscalYear:2028,budgetStage:'authorized'},
    asOf:'2026-10-13T12:00:00.000Z',summary:'Draft summary.',
-   findings:[{id:'f1',kind:'excerpt',text:'A read passage.',citations:[{sourceId:'bill_text',recordId:'r1',recordVersionId:'v1',start:0,end:16,url:'https://example.invalid/never-fetched'}]}],
+   findings:[{id:'f1',kind:'excerpt',text:'A read passage.',citations:[{sourceId:'bill_text',recordId:'r1',sourceVersionId:'v1',start:0,end:16,url:'https://example.invalid/never-fetched'}]}],
    conflicts:[],recommendations:['Confirm the appropriations basis.'],limitations:['Coverage is not exhaustive.']};
   const validate=new Ajv({strict:false}).compile(format.schema);
   assert.equal(validate(valid),true,JSON.stringify(validate.errors));

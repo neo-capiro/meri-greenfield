@@ -72,17 +72,19 @@ export function reportRunBinding({runId=uid(42),attemptId=uid(43)}={}){
  return {tenantId:'synthetic-report-tenant',actorId:'synthetic-report-actor',conversationId:uid(41),runId,attemptId,workerId:uid(44),writerFence:1};
 }
 /** The lane `compositionFixture` consumes: canonical selection, run request and gateway. */
-export function reportRuntimeFixture({documentRevision=null,text=REPORT_TEXTS.bill_text,run={}}={}){
+export function reportRuntimeFixture({documentRevision=null,text=REPORT_TEXTS.bill_text,run={},skillId='quick_skill.bill_watch',acceptedRequest}={}){
  const binding=reportRunBinding(run);
- const scopes=[{tenantId:binding.tenantId,kind:'client',resourceId:uid(31),policyRevision:REPORT_POLICY}];
+ const scopes=[{tenantId:binding.tenantId,kind:'client',resourceId:uid(31),policyRevision:REPORT_POLICY},
+  ...(skillId==='quick_skill.cited_report'?[{tenantId:binding.tenantId,kind:'mailbox',resourceId:uid(70),policyRevision:REPORT_POLICY}]:[])];
  const selection={subject:{kind:'client',entityType:'client',entityIds:[uid(31)],tenantId:binding.tenantId,actorId:binding.actorId,
    policyRevision:REPORT_POLICY,scopes,rosterVersionId:null},
   window:{basis:'explicit',startInclusive:'2026-10-13T17:00:00.000Z',endExclusive:'2026-10-13T19:00:00.000Z',timezone:'UTC',weekStartsOn:null},
   mondayBoardIds:[]};
- const selected=selectSkill('quick_skill.bill_watch','2.0.0'),gateway=reportGateway({binding,selection,bill:REPORT_SUBJECT,text});
- const request={requestId:uid(61),prompt:'Independent sourced cited report',skill:reportSkillPin(),window:selection.window,windowRequest:null,
+ const general=skillId==='quick_skill.cited_report',selected=selectSkill(skillId,general?'1.0.0':'2.0.0'),
+  gateway=general?generalReportGateway({binding,selection}):reportGateway({binding,selection,bill:REPORT_SUBJECT,text});
+ const request=acceptedRequest??{requestId:uid(61),prompt:'Independent sourced cited report',skill:selected.pin,window:selection.window,windowRequest:null,
   ...(documentRevision===null?{}:{documentRevision})};
- const installed=selected.manifest.allowedOperations.filter(ref=>['read_bill_text','get_bill_status'].includes(ref.id));
+ const installed=selected.manifest.allowedOperations.filter(ref=>(general?['mail.read_thread']:['read_bill_text','get_bill_status']).includes(ref.id));
  const configuration={binding,versions,request,scopes,selection,now:()=>REPORT_NOW,gateway,
   async readForSkill(){return {installationId:uid(51),baseCatalogSha256:selected.installationCatalogSha256,
    executionCatalogSha256:'a'.repeat(64),operations:installed,checkedAtMs:REPORT_NOW,expiresAtMs:REPORT_NOW+60000};},
@@ -92,4 +94,28 @@ export function reportRuntimeFixture({documentRevision=null,text=REPORT_TEXTS.bi
    deadlineMs:REPORT_NOW+60000,maxBytes:1<<20},selection,request,binding,scopes,bill:REPORT_SUBJECT,text,
   install:{installationId:uid(51),executionCatalogSha256:'a'.repeat(64),
    baseCatalogSha256:selected.installationCatalogSha256,operations:installed},uid};
+}
+
+/** General report's stored-mail DTO at the Core transport boundary. The control/read/selected owners remain real;
+ * this synthetic page is not evidence of a live mailbox or native rendering. */
+export function generalReportInput(){return {skill:selectSkill('quick_skill.cited_report','1.0.0').pin,
+ title:'Retained general cited report',asOf:REPORT_STAMP,summary:'Draft review of the stored excerpt.',
+ findings:[{id:'stored',kind:'excerpt',text:REPORT_TEXTS.bill_text,citations:[{kind:'mail',threadId:uid(71),messageId:uid(72),start:0,end:REPORT_TEXTS.bill_text.length}]}],
+ conflicts:[],recommendations:['Verify the source before acting.'],limitations:['Synthetic stored-mail page; coverage is incomplete.']};}
+function generalReportGateway({binding,selection}){
+ const state={reads:0,wire:[],released:0};
+ return {state,async execute({operation,arguments:args}){
+  if(operation.id!=='mail.read_thread'||args.subject.entityId!==selection.subject.entityIds[0])throw Error('SOURCE_REFUSED');
+  state.reads++;
+  const text=REPORT_TEXTS.bill_text,scopes=selection.subject.scopes,readHandle='report-general-source',
+   message={sourceId:'mail',mailboxId:uid(70),threadId:uid(71),messageId:uid(72),recordVersionId:'stored-mail-version-1',citationId:uid(73),
+    contentSha256:hash(text),scopes:structuredClone(scopes),removed:false,connectionStatus:'connected',bodyCompleteness:'full',readHandle,
+    section:{start:0,endExclusive:text.length,totalCodeUnits:text.length,unit:'utf16-code-unit',text,hasMore:false}};
+  return JSON.stringify({kind:'mail-thread-source-page',contractVersion:'0.2.0',operation,requestId:uid(74),traceId:uid(75),
+   binding:structuredClone(binding),subject:structuredClone(selection.subject),window:structuredClone(selection.window),argumentsSha256:hash(args),appliedFilters:[],
+   sources:[{sourceId:'mail',authority:'authoritative',snapshotVersionId:'stored-mail-snapshot',adapterVersion:'1.0.0',status:'checked',synchronizedAt:REPORT_STAMP,asOf:REPORT_STAMP,retrievedAt:REPORT_STAMP,freshness:'fresh'}],
+   coverage:{sourcesRequested:['mail'],sourcesChecked:['mail'],sourcesUnavailable:[],enumeration:'unknown',enumerableTotal:null,returnedCount:1,truncated:false,historySupport:'supported',limitations:['Only this stored excerpt was read.']},
+   selection:{...args},order:'sentAt-asc_receivedAt-asc_createdAt-asc_nulls-and-ties-unspecified',snapshotVersionId:'stored-mail-snapshot',messages:[message],
+   totalMessages:null,hasMoreMessages:null,nextMessageOffset:null,nextBodyOffsets:[],continuation:{cursor:null,requiredReads:[readHandle],remainingSources:[]},evidenceReady:false,negativeAssertion:{kind:'none'}});
+ }};
 }

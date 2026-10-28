@@ -17,8 +17,9 @@ import {createArtifactService} from '../../../artifacts/service.mjs';
 import {nativeDocumentFixture,sha} from '../../../artifacts/test/native-document-fixture.mjs';
 import {createActionSessionOwner} from '../../../control/action-host/session/owner.mjs';
 import {createDocumentRevisionRunOwner} from '../../artifacts/revision-composition.mjs';
+import {applicationFixture} from '../../../control/conversations/test/application-fixture.mjs';
 import {compositionFixture} from './composition-fixture.mjs';
-import {REPORT_NOW,REPORT_REVISION,REPORT_STAMP,REPORT_SUBJECT,REPORT_TEXTS,reportRunBinding,reportRuntimeFixture} from './report-production-fixture.mjs';
+import {REPORT_NOW,REPORT_REVISION,REPORT_STAMP,REPORT_SUBJECT,REPORT_TEXTS,reportRunBinding,reportRuntimeFixture,generalReportInput} from './report-production-fixture.mjs';
 
 const uid=n=>`10000000-0000-4000-8000-${String(n).padStart(12,'0')}`;
 const bill=REPORT_SUBJECT,texts=REPORT_TEXTS;
@@ -41,9 +42,11 @@ const retainedRows=x=>[...x.base.state.selectedOutputs.values()].map(row=>row.pr
 /** Run one production report turn and return the retained journal row. */
 async function productionRun(options={}){
  const x=await compositionFixture('',{report:options.report??{}});
- const runtime=await x.prepare(),output=await runtime.finish({type:'result',subtype:'success',is_error:false,structured_output:reportInput()});
+ try{
+ const runtime=await x.prepare(),output=await runtime.finish({type:'result',subtype:'success',is_error:false,structured_output:options.input??reportInput()});
  await x.task.publish({binding:x.f.configuration.binding,output});
  return {x,runtime,outputFormat:runtime.sdkOptions.outputFormat,output,row:retainedRows(x)[0]};
+ }catch(error){await x.close();throw error;}
 }
 /** The parent report version, written through the canonical artifact owner from the production report. */
 async function writeParent(prepared,revisionBinding){
@@ -111,6 +114,45 @@ test('the production selected factory receives the congressional sources through
  // The compiler's read mirror is what retention hashed and matched against the runtime receipts.
  assert.equal(hash(row.prepared.reads),row.prepared.provenance.readsSha256);
  assert.equal(row.prepared.reads.length,2);
+});
+
+/** Admit the browser-shaped request through the actual HTTP application and canonical stored-request owner.
+ * Its transport/session authority is a fixture, and no dispatcher starts a workflow. The returned immutable request
+ * is consumed unchanged by the production selected factory below, rather than inventing a selected run DTO. */
+async function publiclyAccepted(t,report){
+ const f=reportRuntimeFixture(report),app=await applicationFixture({initialInput:true,binding:f.binding,scopes:f.scopes,selectedClientId:f.scopes[0].resourceId});
+ t.after(()=>app.close());
+ const wire={requestId:uid(61),prompt:f.request.prompt,skill:{skillId:f.request.skill.skillId,skillVersion:f.request.skill.skillVersion},
+  windowRequest:{basis:'explicit',startInclusive:f.selection.window.startInclusive,endExclusive:f.selection.window.endExclusive,timezone:'UTC'},
+  ...(report.documentRevision?{documentRevision:report.documentRevision}:{})};
+ await app.service.allocateInput({credential:app.credential,input:wire});
+ const response=await app.post('submit',wire),body=await response.json();
+ assert.equal(response.status,200,JSON.stringify(body));
+ const saved=await app.service.history({credential:app.credential});
+ assert.deepEqual(saved.request.skill,selectSkill(wire.skill.skillId,wire.skill.skillVersion).pin);
+ assert.deepEqual(saved.request.documentRevision,wire.documentRevision);
+ return saved.request;
+}
+
+for(const skillId of ['quick_skill.bill_watch','quick_skill.cited_report'])test(`${skillId}: public request reaches the actual factory and revises its current retained original`,async t=>{
+ const input=skillId==='quick_skill.cited_report'?generalReportInput():reportInput(),firstReport={skillId};
+ firstReport.acceptedRequest=await publiclyAccepted(t,firstReport);
+ const first=await productionRun({report:firstReport,input});t.after(()=>first.x.close());
+ const parent=first.row.prepared,run={runId:uid(85),attemptId:uid(86)},binding=reportRunBinding(run),written=await writeParent(parent,binding);
+ assert.ok(written.created.version.evidence.length>0,'the parent must retain actual source evidence');
+ const report={skillId,documentRevision:written.selection,run};report.acceptedRequest=await publiclyAccepted(t,report);
+ const state={revoked:false,sourceReads:0,phases:[]},source=revisionOwner({doc:written.doc,binding,scopes:parent.context.scopes,
+  selection:written.selection,request:report.acceptedRequest,state});t.after(()=>source.sessions.close());await source.open();
+ const x=await compositionFixture('',{report,revisionOwner:source.owner});t.after(()=>x.close());
+ const before=written.doc.state.executions.length,runtime=await x.prepare();
+ const validate=new Ajv({strict:false}).compile(runtime.sdkOptions.outputFormat.schema);assert.equal(validate(input),true,JSON.stringify(validate.errors));
+ const output=await runtime.finish({type:'result',subtype:'success',is_error:false,structured_output:input});await x.task.publish({binding:x.f.configuration.binding,output});
+ const row=retainedRows(x)[0];assert.equal(row.pending.baseVersionId,written.selection.versionId);
+ assert.equal(row.prepared.provenance.parent.objectSha256,written.selection.objectSha256);
+ assert.deepEqual(row.prepared.retainedEvidence,written.created.version.evidence);
+ assert.deepEqual(row.prepared.context.evidence.slice(0,written.created.version.evidence.length),written.created.version.evidence);
+ assert.equal(state.phases.includes('release'),true);assert.equal(written.doc.state.executions.length,before,'revision preparation does not render or replace the parent');
+ assert.equal(output.state,'awaiting-output-approval');assert.equal(first.row.prepared.provenance.skill.skillId,skillId);
 });
 
 test('a saved original revision is served by the real private source owner and the corrected caller keeps its evidence, pins and pending output',async t=>{

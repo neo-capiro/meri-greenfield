@@ -15,6 +15,8 @@ import {canonicalSha256} from '../../../../../packages/contracts/validate.mjs';
 import {assertSelectedOutput} from '../../../../../packages/contracts/selected-skills/validate.mjs';
 import {createOriginalSelectedSkillExecution} from '../../../conversations/skills/execution.mjs';
 import {selectSkill} from '../../../../../packages/skills/index.mjs';
+import Ajv from 'ajv';
+import {selectedOutputFormat} from '../../../../runtime/selected/output-format.mjs';
 import {createArtifactService} from '../../../../artifacts/service.mjs';
 import {nativeDocumentFixture,sha} from '../../../../artifacts/test/native-document-fixture.mjs';
 const NOW=Date.parse('2026-10-13T12:00:00.000Z'),stamp=new Date(NOW).toISOString();
@@ -78,6 +80,16 @@ test('the accepted seven-section cited report is produced in order with citation
   'program_elements: status not-read (NO_CANONICAL_SELECTOR)','Stored bill status: Introduced','Cited passage (UTF-16 characters','locator URL (not verification)','Original skill and immutable revision provenance'])assert(document.includes(label),label);
  assert(document.includes(texts.bill_text));
  assert(document.includes('bill_text pinned identity: bill 119-s-88; revision '+REVISION+'; version is;'));
+});
+test('advertised selected report schema accepts the exact cited input consumed by its real compiler',async()=>{
+ const selected=selectSkill('quick_skill.bill_watch','2.0.0'),validate=new Ajv({strict:false}).compile(selectedOutputFormat(selected).schema),value=input();
+ assert.equal(validate(value),true,JSON.stringify(validate.errors));
+ const result=await compiler().prepare(value,context());
+ assert.equal(result.findings[0].status,'bound-excerpt');
+ assert.equal(result.findings[0].links[0].citation.sourceVersionId,value.findings[0].citations[0].sourceVersionId);
+ const wrong=structuredClone(value),citation=wrong.findings[0].citations[0];citation.recordVersionId=citation.sourceVersionId;delete citation.sourceVersionId;
+ assert.equal(validate(wrong),false);await assert.rejects(compiler().prepare(wrong,context()));
+ assert.equal(selected.manifest.allowedOperations.some(operation=>operation.id==='get_state_bill_status'),false);
 });
 test('a named conflict must attach to a finding that is genuinely in conflict',async()=>{
  const i=input();i.conflicts=[{findingId:'excerpt',note:'Not actually in conflict.'}];

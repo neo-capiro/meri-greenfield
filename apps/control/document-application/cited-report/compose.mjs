@@ -24,7 +24,7 @@ const assetIds=value=>{
 };
 /** Immutable parent pins plus the evidence and assets the parent retained. */
 function baseProvenance(record,base,context,input,selected){
- own(record,['version','spec','specSha256','requestSha256','inspection']);
+ own(record,['version','spec','specSha256','inspection'],['requestSha256']);
  v.version(record.version);v.request(record.spec);v.inspection(record.inspection);
  if(record.version.versionId!==base.versionId||record.specSha256!==base.specSha256||!same(record.specSha256,v.hash(record.spec))||
   record.version.binding.tenantId!==context.binding.tenantId||record.version.binding.actorId!==context.binding.actorId||
