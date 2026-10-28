@@ -9,7 +9,7 @@ export function createS3ArtifactObjects(options){
  const {client,bucket,prefix,expectedBucketOwner,kmsKeyId,now,maxRequestMs=15000,maxBytes=8388608}=own(options,['client','bucket','prefix','expectedBucketOwner','kmsKeyId','now'],['maxRequestMs','maxBytes']);
  configuration(now,maxRequestMs);const send=storageMethod(client,'send');bucketIdentity(bucket,expectedBucketOwner);if(
   typeof prefix!=='string'||! /^[A-Za-z0-9][A-Za-z0-9/_-]{0,127}$/u.test(prefix)||prefix.endsWith('/')||prefix.includes('//')||
-  typeof kmsKeyId!=='string'||! /^arn:aws(?:-us-gov|-cn)?:kms:[a-z0-9-]+:[0-9]{12}:key\/[a-f0-9-]{36}$/u.test(kmsKeyId)||!Number.isSafeInteger(maxBytes)||maxBytes<1||maxBytes>8388608)fail('ARTIFACT_STORAGE_CONFIGURATION');
+  typeof kmsKeyId!=='string'||! /^arn:aws(?:-us-gov|-cn)?:kms:[a-z0-9-]+:[0-9]{12}:key\/[a-f0-9-]{36}$/u.test(kmsKeyId)||!Number.isSafeInteger(maxBytes)||maxBytes<1||maxBytes>10485760)fail('ARTIFACT_STORAGE_CONFIGURATION');
  const prefixFor=o=>`${prefix}/${v.hash(o.scopes)}/${o.objectId}/`,key=o=>`${prefixFor(o)}${o.sha256}`,args=o=>({Bucket:bucket,Key:key(o),ExpectedBucketOwner:expectedBucketOwner});
  const checksum=o=>Buffer.from(o.sha256,'hex').toString('base64');
  async function versioned(life){const result=await life.run(signal=>send(new GetBucketVersioningCommand({Bucket:bucket,ExpectedBucketOwner:expectedBucketOwner}),{abortSignal:signal}));
@@ -42,8 +42,19 @@ export function createS3ArtifactObjects(options){
     if(count>object.bytes||count>maxBytes)fail('ARTIFACT_S3_BODY_LIMIT');chunks.push(Buffer.from(part.value));}}finally{try{Promise.resolve(iterator.return?.()).catch(()=>{});}catch{}retire(response.Body);}
    const bytes=Buffer.concat(chunks);if(bytes.length!==object.bytes||sha(bytes)!==object.sha256)fail('ARTIFACT_S3_MISMATCH');life.check();return bytes;
   }finally{retire(acquired);life.close();}}
+ /** Read-only reconciliation of one retained PUT. A missing latest object means unknown, never final absence or retry authority. */
+ async function observePut(value,signal){
+  const fields=own(value,['objectId','scopes','sha256','bytes','requestSha256']),facts={objectId:uuid(fields.objectId),scopes:scopeFacts(fields.scopes),sha256:digest(fields.sha256),bytes:fields.bytes},requestSha256=digest(fields.requestSha256);
+  if(!Number.isSafeInteger(facts.bytes)||facts.bytes<0||facts.bytes>maxBytes)fail('ARTIFACT_STORAGE_INPUT');
+  const life=storageLifetime({now,maxRequestMs},signal);
+  try{await versioned(life);let response;
+   try{response=await life.run(signal=>send(new HeadObjectCommand({...args(facts),ChecksumMode:'ENABLED'}),{abortSignal:signal}));}
+   catch(error){if(error?.$metadata?.httpStatusCode===404){life.check();return null;}throw error;}
+   const object=v.object({...facts,versionId:nativeVersion(response.VersionId)});metadata(response,object,requestSha256);await head(object,life,requestSha256);life.check();return object;
+  }finally{life.close();}
+ }
  const observeAllocation=createAllocationLookup({send,bucket,expectedBucketOwner,prefixFor,verifyVersion:head,versioned,now,maxRequestMs});
- return Object.freeze({put,get,observeAllocation});
+ return Object.freeze({put,get,observeAllocation,observePut});
 }
 /** Explicit owned client, with required injected credentials and no ambient chain. */
 export function createConfiguredS3ArtifactObjects(options){const {region,credentials,endpoint,...storage}=own(options,['region','credentials','bucket','prefix','expectedBucketOwner','kmsKeyId','now'],['endpoint','maxRequestMs','maxBytes']);

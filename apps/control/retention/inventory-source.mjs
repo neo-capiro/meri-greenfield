@@ -19,6 +19,7 @@ const references=[
  ['meri_conversations.completion_checkpoints','conversation_id','proof','proof_sha256','conversation'],
  ['meri_conversations.selected_outputs','conversation_id','projection','projection_sha256','conversation'],
  ['meri_artifacts.versions','artifact_id','record','record_sha256','artifact'],
+ ['meri_uploads.originals','conversation_id','record','record_sha256','conversation'],
 ];
 const matching="jsonb_path_exists(%s, '$.** ? (@.objectId == $id && @.versionId == $version)', $3::jsonb)";
 const unavailable=()=>fail('RETENTION_AUTHORITY_UNAVAILABLE');

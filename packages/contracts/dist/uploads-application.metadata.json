@@ -1,0 +1,133 @@
+{
+  "version": "1.0.0",
+  "schemaId": "urn:meri:uploads-application:1.0.0",
+  "requestBytes": 8192,
+  "responseBytes": 32768,
+  "originalBytes": 10485760,
+  "policyVersion": "upload-1",
+  "errorStatuses": {
+    "UPLOAD_ID": 400,
+    "UPLOAD_FILENAME": 400,
+    "UPLOAD_FORMAT": 400,
+    "UPLOAD_HASH": 400,
+    "UPLOAD_ENCODING": 400,
+    "UPLOAD_MAGIC": 400,
+    "UPLOAD_IMAGE_LIMIT": 400,
+    "UPLOAD_ACTIVE_CONTENT": 400,
+    "UPLOAD_RELATIONSHIP": 400,
+    "UPLOAD_ORIGINAL_MISMATCH": 400,
+    "INVALID_COMMAND": 400,
+    "INVALID_JSON": 400,
+    "INVALID_BODY": 400,
+    "INVALID_CONTENT_LENGTH": 400,
+    "INVALID_UTF8": 400,
+    "UPLOAD_ACCESS_DENIED": 403,
+    "ACCESS_DENIED": 403,
+    "UPLOAD_NOT_FOUND": 404,
+    "NOT_FOUND": 404,
+    "METHOD_NOT_ALLOWED": 405,
+    "DEADLINE": 408,
+    "UPLOAD_EXPIRED": 408,
+    "UPLOAD_REQUEST_CONFLICT": 409,
+    "UPLOAD_CHANGED": 409,
+    "UPLOAD_NOT_CLEAN": 409,
+    "UPLOAD_NOT_STORED": 409,
+    "UPLOAD_REMOVAL_UNCERTAIN": 409,
+    "UPLOAD_REMOVAL_HELD": 409,
+    "UPLOAD_SIZE": 413,
+    "REQUEST_TOO_LARGE": 413,
+    "CANCELLED": 499,
+    "UPLOAD_UNAVAILABLE": 503,
+    "UPLOAD_PUT_UNKNOWN": 503,
+    "UPLOAD_COMMIT_UNKNOWN": 503
+  },
+  "sources": [
+    {
+      "path": "../../apps/control/uploads/application.mjs",
+      "sha256": "8e0ba7168c47f9640f4d85a6dcc5a81ea7105b010a844aaf888e85b4e60f7afc",
+      "bytes": 7000
+    },
+    {
+      "path": "../../apps/control/uploads/custody.mjs",
+      "sha256": "f13817f531da7a87f77ab66bb16db2fc4e21cd9669097dc7693527682e5911a2",
+      "bytes": 10782
+    },
+    {
+      "path": "../../apps/control/uploads/extraction.mjs",
+      "sha256": "06c1b2cf2137b3fe966b881e1a3fe5f7a9edd5627f90fcabb22e0a575e3706ac",
+      "bytes": 6937
+    },
+    {
+      "path": "../../apps/control/uploads/policy.mjs",
+      "sha256": "8a0d7708609a80c3a7bc29676b21445614a0afd1b2747f14c735b65274ad2082",
+      "bytes": 4570
+    },
+    {
+      "path": "../../apps/control/uploads/postgres-store.mjs",
+      "sha256": "cebe36943284e177df7ed799443a41ac1c9e78060587ef551f11455f23aa6d97",
+      "bytes": 4251
+    },
+    {
+      "path": "../../apps/runtime/product-applications.mjs",
+      "sha256": "b16288c1aec32103cf50e6f6e2fac894047c0aa7bcca75bc2a7c83355e7c0ea7",
+      "bytes": 18661
+    },
+    {
+      "path": "../../apps/runtime/product-ports/uploads.mjs",
+      "sha256": "982eff2694ce8bb99181534dd10aaead83dc9e8c495afb6244e2656e7e13ca2c",
+      "bytes": 4435
+    },
+    {
+      "path": "document-application/boundary.mjs",
+      "sha256": "3ea0f93063702f161970b8cf1aef5d4a7226400d541a2ae6cf7ae891a3fe0481",
+      "bytes": 2674
+    },
+    {
+      "path": "generate-uploads.mjs",
+      "sha256": "08a42c91b0f5e4637076b7076014aa778ba7360a2c4c8295ed27a106e6ea08b7",
+      "bytes": 6716
+    },
+    {
+      "path": "meri.schema.json",
+      "sha256": "e3de878198bbd557843ac440e48664ad5175eecd99f7ec932021ffc465bf8c5b",
+      "bytes": 50043
+    },
+    {
+      "path": "uploads-application/boundary.mjs",
+      "sha256": "afa5d03af171d4487fb11eb0dfe0da842b01b89661413c954464ccc7e0d00002",
+      "bytes": 1113
+    },
+    {
+      "path": "uploads-application/download.mjs",
+      "sha256": "e6df1522cce7e4b07dcd10fd90f5575f1e738adedddf211a3dc8c551b2d63ffb",
+      "bytes": 3389
+    },
+    {
+      "path": "uploads-application/protocol.mjs",
+      "sha256": "bf457c9049ec6b026e83fd438a2600d026d6d4ce212c43ca93250227e288e37b",
+      "bytes": 2559
+    },
+    {
+      "path": "uploads-application/receive.mjs",
+      "sha256": "d9dddd40bbf194606dc64f2efdbdf46fbc4565a40e140fe4856291d9329e4b6e",
+      "bytes": 3568
+    },
+    {
+      "path": "uploads-application/schema.mjs",
+      "sha256": "d4a3fdfccb61fc318393da83e925012e21eef5e82e00fe0f8b2436243ca59b31",
+      "bytes": 1819
+    }
+  ],
+  "schemaSha256": "ebed25f4275ae310318c42763069ad5dba7ce74eb7af99f5613ad85df8437613",
+  "browserInputs": [
+    "artifacts-0.2/artifact-formats.mjs",
+    "document-application/boundary.mjs",
+    "node_modules/ajv/dist/runtime/ucs2length.js",
+    "node_modules/canonicalize/lib/canonicalize.js",
+    "uploads-application/boundary.mjs",
+    "uploads-application/download.mjs",
+    "uploads-application/protocol.mjs",
+    "uploads-application/uploads-receiver.mjs",
+    "uploads-generated:./generated-validator.mjs"
+  ]
+}

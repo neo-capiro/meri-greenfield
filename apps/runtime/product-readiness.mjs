@@ -6,6 +6,7 @@ export function productReadiness({ports,retention,sourceEnabled,userPreferences,
   ['tasks.selected','selectedController'],['sessions.sdk','sdkSessionOwner'],['sessions.snapshot','sdkSessionSnapshot'],['history.membership','conversationMembership'],['history.nextTurn','conversationTurns'],['intents.application','intentApplication'],['settings.tenant','settingsApplication']])
   owners.push({name,state:available.has(port)?'composed':'unavailable'});
  owners.push({name:'memory.producer',state:available.has('memoryApplication')&&memoryRetentionBound===true?'composed':'unavailable'});
+ owners.push({name:'uploads.custody',state:sourceEnabled!==true?'disabled':available.has('uploadApplicationFactory')?ports.uploadApplicationFactory.state():'unavailable'});
  owners.push({name:'retention.startup',state:retention?'composed':'unavailable'},
   {name:'retention.ledgerSink',state:available.has('retentionLedgerSink')?'composed':'unavailable'},
   {name:'tasks.commands',state:sourceEnabled!==true?'disabled':available.has('taskCommandApplication')?'composed':available.has('taskCommandApplicationFactory')?ports.taskCommandApplicationFactory.state():'unavailable'},

@@ -21,22 +21,22 @@ const strict=new TextDecoder('utf-8',{fatal:true});
 // eslint-disable-next-line no-control-regex
 const UNPORTABLE=/[\u0000-\u001f\u007f\\:]/u;
 /** Locates and checks the end-of-central-directory record. */
-function centralDirectory(bytes){
+function centralDirectory(bytes,limits){
  if(bytes.length<22)refuse('ZIP_END_OF_CENTRAL_DIRECTORY');
  let eocd=-1;
  for(let i=bytes.length-22;i>=Math.max(0,bytes.length-22-65535);i--)if(bytes.readUInt32LE(i)===EOCD&&i+22+bytes.readUInt16LE(i+20)===bytes.length){eocd=i;break;}
  if(eocd<0)refuse('ZIP_END_OF_CENTRAL_DIRECTORY');
  const disk=bytes.readUInt16LE(eocd+4),cdDisk=bytes.readUInt16LE(eocd+6),here=bytes.readUInt16LE(eocd+8),total=bytes.readUInt16LE(eocd+10),cdSize=bytes.readUInt32LE(eocd+12),cdOffset=bytes.readUInt32LE(eocd+16);
  if(total===0xffff||cdSize===0xffffffff||cdOffset===0xffffffff||eocd>=20&&bytes.readUInt32LE(eocd-20)===ZIP64_LOCATOR||disk||cdDisk)refuse('ZIP_UNSUPPORTED');
- if(here!==total||!total||total>ZIP_LIMITS.maxEntries||cdOffset+cdSize!==eocd)refuse('ZIP_END_OF_CENTRAL_DIRECTORY');
+ if(here!==total||!total||total>limits.maxEntries||cdOffset+cdSize!==eocd)refuse('ZIP_END_OF_CENTRAL_DIRECTORY');
  return {eocd,total,cdOffset};
 }
 /** Portable, unique entry name. `seen` holds lower-cased names already in the archive. */
-function entryName(nameBytes,flags,seen){
+function entryName(nameBytes,flags,seen,limits){
  if(!(flags&FLAG_UTF8)&&nameBytes.some(b=>b>0x7e))refuse('ZIP_ENTRY_NAME');
  let name;try{name=strict.decode(nameBytes);}catch{refuse('ZIP_ENTRY_NAME');}
  const directory=name.endsWith('/'),segments=(directory?name.slice(0,-1):name).split('/');
- if(!name||name.length>ZIP_LIMITS.maxNameLength||UNPORTABLE.test(name)||segments.some(s=>!s||s==='.'||s==='..'))refuse('ZIP_ENTRY_NAME');
+ if(!name||name.length>limits.maxNameLength||UNPORTABLE.test(name)||segments.some(s=>!s||s==='.'||s==='..'))refuse('ZIP_ENTRY_NAME');
  const key=name.toLowerCase();if(seen.has(key))refuse('ZIP_ENTRY_NAME');seen.add(key);
  return name;
 }
@@ -69,8 +69,12 @@ function memberData(raw,c){
  return data;
 }
 /** Parses and fully verifies a ZIP archive; returns Map(name → inflated bytes) in central-directory order. */
-export function readZip(bytes){
- const {eocd,total,cdOffset}=centralDirectory(bytes);
+export function readZip(bytes,limits=ZIP_LIMITS){
+ // Owners may tighten these bounds before any member is inflated, never enlarge the canonical maximum.
+ if(!limits||Object.keys(limits).some(k=>!Object.hasOwn(ZIP_LIMITS,k)))refuse('ZIP_SIZE_LIMIT');
+ limits={...ZIP_LIMITS,...limits};
+ for(const [key,value] of Object.entries(limits))if(!Number.isSafeInteger(value)||value<1||value>ZIP_LIMITS[key])refuse('ZIP_SIZE_LIMIT');
+ const {eocd,total,cdOffset}=centralDirectory(bytes,limits);
  const entries=new Map(),seen=new Set(),spans=[];let p=cdOffset,declared=0;
  for(let n=0;n<total;n++){
   if(p+46>eocd||bytes.readUInt32LE(p)!==CEN)refuse('ZIP_CENTRAL_DIRECTORY');
@@ -78,9 +82,9 @@ export function readZip(bytes){
   const nlen=bytes.readUInt16LE(p+28),xlen=bytes.readUInt16LE(p+30),clen=bytes.readUInt16LE(p+32);
   if(p+46+nlen+xlen+clen>eocd)refuse('ZIP_CENTRAL_DIRECTORY');
   if(c.flags&(FLAG_ENCRYPTED|FLAG_STRONG_ENCRYPTION|FLAG_MASKED_HEADERS)||c.method!==0&&c.method!==8||c.csize===0xffffffff||c.usize===0xffffffff||c.local===0xffffffff||c.disk!==0)refuse('ZIP_UNSUPPORTED');
-  const nameBytes=bytes.subarray(p+46,p+46+nlen),name=entryName(nameBytes,c.flags,seen);
+  const nameBytes=bytes.subarray(p+46,p+46+nlen),name=entryName(nameBytes,c.flags,seen,limits);
   declared+=c.usize;
-  if(declared>ZIP_LIMITS.maxTotalUncompressed||c.usize>Math.max(c.csize,1)*ZIP_LIMITS.maxRatio)refuse('ZIP_SIZE_LIMIT');
+  if(declared>limits.maxTotalUncompressed||c.usize>Math.max(c.csize,1)*limits.maxRatio)refuse('ZIP_SIZE_LIMIT');
   const span=localEntry(bytes,c,nameBytes,cdOffset);spans.push(span);
   const data=memberData(bytes.subarray(span.dataStart,span.dataStart+c.csize),c);
   if(name.endsWith('/')&&data.length)refuse('ZIP_ENTRY_NAME');

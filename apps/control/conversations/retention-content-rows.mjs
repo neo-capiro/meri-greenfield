@@ -11,12 +11,14 @@ import {assertNativeConversationScope} from '../../../packages/contracts/runtime
 import {assertSdkRetentionTarget,sdkRetentionTables,summarizeSdkRetentionRows,validateSdkRetentionInventory} from './retention-sdk-rows.mjs';
 import {preparedSchedule} from '../intents/postgres-journal.mjs';
 import {decodeObjectiveRunStartRow} from '../../runtime/objective-source/run-starts.mjs';
+import {decodeUploadRow} from '../uploads/postgres-store.mjs';
 
 const scope='r.tenant_id=$1 AND r.conversation_id=$2';
 const table=(name,className,keys,where=scope)=>Object.freeze({name,className,keys:Object.freeze(keys),where});
 // Primary-key columns after the subject's tenant/conversation. No caller supplies
 // a table, column or predicate. Historical rows remain data, never runtime owners.
 export const conversationContentTables=Object.freeze([
+ table('meri_uploads.originals','uploads',[['upload_id','uuid']]),
  table('meri_conversations.initial_run_bindings','conversation',[['generation','integer']]),
  table('meri_conversations.initial_inputs','conversation',[['run_id','uuid']]),
  table('meri_objective_source.run_starts','conversation',[['generation_job_id','uuid']]),
@@ -98,6 +100,11 @@ export function decodeConversationContentRows(raw,{subject,projection},byRun,nat
    // Date-valued pg columns are canonicalized once; no raw body escapes.
    targets.push({className:t.className,table:t.name,key,rowSha256:hash(JSON.parse(JSON.stringify(row)))});
    switch(t.name){
+    case 'meri_uploads.originals':{const r=decodeUploadRow(row);
+     fact(r.owner.tenantId===subject.tenantId&&r.owner.actorId===subject.ownerActorId&&r.owner.conversationId===subject.subjectId);
+     // A durable attempt may still create its original after a lost ACK. Its
+     // absence is not evidence of settlement; never plan a partial purge.
+     if(['writing','removing'].includes(r.state))fail('STORE_CORRUPT');break;}
     case 'meri_conversations.initial_run_bindings':{pin(row,'record');const r=own(row.record,['schemaVersion','state','binding','selectedClientId','policyRevision','versions','configurationSha256','expiresAtMs','createdAtMs']);binding(r.binding,{requireRun:false});
      fact(r.binding.runId===row.run_id&&r.binding.writerFence===1&&r.schemaVersion===1&&r.state==='ADMITTED');
      validateShape('RuntimeVersions',r.versions);fact(typeof r.policyRevision==='string'&&r.policyRevision.length>0&&r.policyRevision.length<=256&&digest(r.configurationSha256)&&Number.isSafeInteger(r.createdAtMs)&&r.createdAtMs>=0&&Number.isSafeInteger(r.expiresAtMs)&&r.expiresAtMs>r.createdAtMs);

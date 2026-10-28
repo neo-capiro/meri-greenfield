@@ -5,7 +5,7 @@ import {captureRuntimePorts} from '../../product-applications.mjs';
 const code=c=>e=>e?.code===c;
 test('the production factory is an ordinary function; with a production-shaped context and no opt-ins only inert features are composed',()=>{
  assert.ok(Array.isArray(PRODUCT_FAMILIES)&&Object.isFrozen(PRODUCT_FAMILIES));
- assert.deepEqual(PRODUCT_FAMILIES.map(([name])=>name),['settings','intents','tasks','lifecycle','routines','memory','documents','objective']);
+ assert.deepEqual(PRODUCT_FAMILIES.map(([name])=>name),['settings','intents','tasks','lifecycle','routines','memory','documents','objective','uploads']);
  const touched=[],borrowed=name=>new Proxy({},{get(){touched.push(name);throw Error('touched '+name);}});
  const configuration={version:1,profile:'isolated-preview',sourceEnabled:false,limits:{startupMs:1000,shutdownMs:1000,requestMs:5000,requestBytes:65536},
   native:{origin:'https://native.invalid',capabilityFile:'/run/native',loopback:false,maxResponseBytes:262144}};

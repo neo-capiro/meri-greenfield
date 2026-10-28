@@ -33,7 +33,7 @@ const capturedArtifactRecovery=new WeakMap();
 export function readRuntimeArtifactRecovery(ports){if(!capturedPorts.has(ports))throw fault('PRODUCT_PORTS_CONFIGURATION');return capturedArtifactRecovery.get(ports.artifactStore)??null;}
 export function captureRuntimePorts(value={}){
  if(capturedPorts.has(value))return value;
- const c=own(value,[],['executionOwner','objectiveSelection','identityContext','transitionAuthority','continuationAdmission','approvals','actionApplication','actionApplicationFactory','taskCommandApplication','taskCommandApplicationFactory','routinesApplicationFactory','conversationMembership','conversationCurrentness','conversationManagement','conversationSourceReader','conversationTurns','artifactOptionsOwner','selectedController','sdkSessionOwner','sdkSessionSnapshot','selectedSkillAdmission','selectedOutputPublication','artifactStore','retentionLedgerSink','retentionStorage','intentApplication','settingsApplication','memoryApplication']);
+ const c=own(value,[],['executionOwner','objectiveSelection','identityContext','transitionAuthority','continuationAdmission','approvals','actionApplication','actionApplicationFactory','taskCommandApplication','taskCommandApplicationFactory','routinesApplicationFactory','uploadApplicationFactory','conversationMembership','conversationCurrentness','conversationManagement','conversationSourceReader','conversationTurns','artifactOptionsOwner','selectedController','sdkSessionOwner','sdkSessionSnapshot','selectedSkillAdmission','selectedOutputPublication','artifactStore','retentionLedgerSink','retentionStorage','intentApplication','settingsApplication','memoryApplication']);
  if(c.taskCommandApplication!==undefined&&c.taskCommandApplicationFactory!==undefined)throw fault('PRODUCT_PORTS_CONFIGURATION');
  if(c.actionApplication!==undefined&&c.actionApplicationFactory!==undefined)throw fault('PRODUCT_PORTS_CONFIGURATION');
  const methods=(port,names)=>Object.freeze(Object.fromEntries(names.map(name=>[name,storageMethod(port,name)])));
@@ -57,6 +57,7 @@ export function captureRuntimePorts(value={}){
   ...(c.actionApplicationFactory===undefined?{}:{actionApplicationFactory:methods(c.actionApplicationFactory,['create','state'])}),
   ...(c.taskCommandApplication===undefined?{}:{taskCommandApplication:methods(c.taskCommandApplication,['handle'])}),
   ...(c.taskCommandApplicationFactory===undefined?{}:{taskCommandApplicationFactory:methods(c.taskCommandApplicationFactory,['create','state'])}),
+  ...(c.uploadApplicationFactory===undefined?{}:{uploadApplicationFactory:methods(c.uploadApplicationFactory,['create','state'])}),
   ...(routineFactory===undefined?{}:{routinesApplicationFactory:Object.freeze({...routineFactory,...(routineHistory===undefined?{}:{historyCurrentness:routineHistory}),...(routineInboxState===undefined?{}:{inboxState:routineInboxState}),...(routineManagement===undefined?{}:{managementSessionConfiguration:routineManagement})})}),
   ...(c.conversationMembership===undefined?{}:{conversationMembership:methods(c.conversationMembership,['admit','recheck'])}),
   ...(c.conversationCurrentness===undefined?{}:{conversationCurrentness:methods(c.conversationCurrentness,['assertCurrent'])}),
@@ -90,6 +91,9 @@ export function composeRuntimePorts(canonical,supplemental){
 }
 /** `suppression` is the retention serving `{journal,serving}` pair when declared; the download-link gate needs it to revoke links. */
 export function createRuntimeProductApplications({configuration,sessions,ports,now,retention,suppression,managementSuppression,conversationStore,userPreferences}){
+ const uploads=configuration.sourceEnabled===true?ports.uploadApplicationFactory?.create({sessions,retention}):null;
+ if(types.isPromise(uploads)){Promise.prototype.then.call(uploads,undefined,()=>{});throw fault('PRODUCT_PORTS_CONFIGURATION');}
+ const handleUploads=uploads==null?null:storageMethod(uploads,'handle');
  const taskApplication=configuration.sourceEnabled===true?(ports.taskCommandApplication??ports.taskCommandApplicationFactory?.create({sessions,conversationStore,retention})):null;
  if(types.isPromise(taskApplication)){Promise.prototype.then.call(taskApplication,undefined,()=>{});throw fault('PRODUCT_PORTS_CONFIGURATION');}
  const handleTask=taskApplication==null?null:storageMethod(taskApplication,'handle');
@@ -114,6 +118,7 @@ export function createRuntimeProductApplications({configuration,sessions,ports,n
  const sdkSessions=createNativeSdkSessionApplication({owner:ports.sdkSessionOwner??unavailableSession,...(ports.sdkSessionSnapshot===undefined?{}:{snapshot:ports.sdkSessionSnapshot}),now,maxRequestMs:configuration.limits.requestMs});
  const nativeFiles=ports.executionOwner&&ports.artifactStore?.objects&&ports.sdkSessionSnapshot?.readFiles&&conversationStore?createNativeFileApplication({owner:createNativeFileOwner({store:conversationStore,execution:ports.executionOwner,objects:ports.artifactStore.objects,snapshot:ports.sdkSessionSnapshot,...(ports.objectiveSelection?{objectiveSelection:ports.objectiveSelection}:{}),now,maxRequestMs:configuration.limits.requestMs,...(retention?{retention}:{})}),now,maxRequestMs:configuration.limits.requestMs}):null;
  return Object.freeze({downloads:Object.freeze({open:input=>downloads.open(input),state:()=>downloads.state()}),handle(request){const path=new URL(request.url).pathname;
+  if(path.startsWith('/api/uploads/'))return handleUploads?handleUploads(request):Response.json({error:{code:'UPLOAD_UNAVAILABLE',outcome:'NOT_DISPATCHED'}},{status:503,headers:{'cache-control':'no-store','x-content-type-options':'nosniff'}});
   if(Object.values(USER_PREFERENCES_PATHS).includes(path))return userPreferences?userPreferences.handle(request):userPreferencesUnavailable();
   if(path===ROUTINE_MANAGEMENT_SESSION_PATH||Object.values(ROUTINE_PATHS).includes(path))return routines?routines.handle(request):routinesUnavailable();
   if(Object.values(INTENT_PATHS).includes(path))return ports.intentApplication?ports.intentApplication.handle(request):Response.json({error:{code:'INTENTS_UNAVAILABLE',outcome:'NOT_DISPATCHED'}},{status:503,headers:{'cache-control':'no-store','x-content-type-options':'nosniff'}});
