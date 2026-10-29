@@ -33,7 +33,7 @@ export const DOWNLOAD_IDEMPOTENCY_SCHEMA='meri-browser-download/1';
 /** Same key for every attempt of one run that ingests the same bytes under the same name. */
 export const downloadIdempotencyKey=(binding,filename,sha256)=>canonicalSha256({schema:DOWNLOAD_IDEMPOTENCY_SCHEMA,tenantId:binding.tenantId,conversationId:binding.conversationId,runId:binding.runId,filename,sha256});
 export const disabledDownloads=Object.freeze({async accept(){fail('BROWSER_DOWNLOADS_DISABLED');}});
-export function createDownloadPort({binding,policy,policySha256,sourceScopes,paths,artifacts,receipts,now}){
+export function createDownloadPort({binding,policy,policySha256,sourceScopes,paths,artifacts,receipts,now,assertCurrent}){
  const limits=policy.downloads;
  if(!limits.enabled)return disabledDownloads;
  /** `reserved` counts slots held by in-flight or completed downloads; `claimed` holds every filename in flight or done. */
@@ -59,6 +59,8 @@ export function createDownloadPort({binding,policy,policySha256,sourceScopes,pat
    const bytes=await readBounded(path,limits.maxBytes),structure=structureCheck(bytes,format);if(!bytes.length||!structure.valid)fail('BROWSER_DOWNLOAD_TYPE',structure.reason);
    if(signal?.aborted)fail('BROWSER_DOWNLOAD_CANCELLED');
    const sha256=createHash('sha256').update(bytes).digest('hex'),mimeType=ARTIFACT_MIME_TYPES[format],idempotencyKey=downloadIdempotencyKey(binding,filename,sha256);
+   await assertCurrent?.({signal});
+   if(signal?.aborted)fail('BROWSER_DOWNLOAD_CANCELLED');
    ingestAttempted=true;
    const stored=await artifacts.ingest({binding:structuredClone(binding),scopes:structuredClone(sourceScopes),filename,format,mimeType,bytes:Buffer.from(bytes),sha256,idempotencyKey,
     source:{kind:'browser-download',origin:source.origin,urlHost,acquiredAtMs:now(),policySha256}},{signal});

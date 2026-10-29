@@ -33,7 +33,7 @@ const capturedArtifactRecovery=new WeakMap();
 export function readRuntimeArtifactRecovery(ports){if(!capturedPorts.has(ports))throw fault('PRODUCT_PORTS_CONFIGURATION');return capturedArtifactRecovery.get(ports.artifactStore)??null;}
 export function captureRuntimePorts(value={}){
  if(capturedPorts.has(value))return value;
- const c=own(value,[],['executionOwner','objectiveSelection','identityContext','transitionAuthority','continuationAdmission','approvals','actionApplication','actionApplicationFactory','taskCommandApplication','taskCommandApplicationFactory','routinesApplicationFactory','uploadApplicationFactory','conversationMembership','conversationCurrentness','conversationManagement','conversationSourceReader','conversationTurns','artifactOptionsOwner','selectedController','sdkSessionOwner','sdkSessionSnapshot','selectedSkillAdmission','selectedOutputPublication','procedureAdmission','artifactStore','retentionLedgerSink','retentionStorage','intentApplication','settingsApplication','memoryApplication']);
+ const c=own(value,[],['executionOwner','objectiveSelection','identityContext','transitionAuthority','continuationAdmission','approvals','actionApplication','actionApplicationFactory','taskCommandApplication','taskCommandApplicationFactory','routinesApplicationFactory','uploadApplicationFactory','conversationMembership','conversationCurrentness','conversationManagement','conversationSourceReader','conversationTurns','artifactOptionsOwner','selectedController','sdkSessionOwner','sdkSessionSnapshot','selectedSkillAdmission','selectedOutputPublication','procedureAdmission','siteWorkflowAdmission','artifactStore','retentionLedgerSink','retentionStorage','intentApplication','settingsApplication','memoryApplication']);
  if(c.taskCommandApplication!==undefined&&c.taskCommandApplicationFactory!==undefined)throw fault('PRODUCT_PORTS_CONFIGURATION');
  if(c.actionApplication!==undefined&&c.actionApplicationFactory!==undefined)throw fault('PRODUCT_PORTS_CONFIGURATION');
  const methods=(port,names)=>Object.freeze(Object.fromEntries(names.map(name=>[name,storageMethod(port,name)])));
@@ -72,6 +72,7 @@ export function captureRuntimePorts(value={}){
   ...(c.selectedSkillAdmission===undefined?{}:{selectedSkillAdmission:methods(c.selectedSkillAdmission,['admitSelection'])}),
   ...(c.selectedOutputPublication===undefined?{}:{selectedOutputPublication:methods(c.selectedOutputPublication,['prepareEvent'])}),
   ...(c.procedureAdmission===undefined?{}:{procedureAdmission:methods(c.procedureAdmission,['resolve'])}),
+  ...(c.siteWorkflowAdmission===undefined?{}:{siteWorkflowAdmission:methods(c.siteWorkflowAdmission,['resolve'])}),
   // The private artifact store's read-only privacy proof (createRuntimeArtifactStorage().verifyPrivate); required to open download links.
   ...(artifactStore===undefined?{}:{artifactStore}),
   // The authoritative retention ledger sink (the shipping owner's write-once store); without it declared retention serving stays fenced.

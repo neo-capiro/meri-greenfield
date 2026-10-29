@@ -4,11 +4,10 @@
  * on a signed-in site needs approval, Q-A6 manifests are platform configuration owned by Capiro's platform owner, Q-A8
  * sign-in kept across runs in a conversation until 8 hours of inactivity).
  *
- * PREPARATION ONLY. No site is approved: the first sites and tasks are awaiting Neo (Q-A1), so the approved registry is
- * empty and the activation gate is held. A manifest is credential-free by construction: any credential, cookie, token
- * or storage-state field anywhere in it is refused. There is no session vault (Q-A3: a later phase after the first live
- * shipment) and nothing here stores, reads or forwards website credentials. The manifest shape is a contract proposal
- * for dot (`packages/contracts` is not edited by this lane). */
+ * PREPARATION ONLY. Initial sites/tasks are awaiting Neo (Q-A1), and activation remains held. Core is the canonical
+ * configuration owner. A manifest is credential-free by construction: any credential, cookie, token
+ * or storage-state field anywhere in it is refused. There is no session vault and nothing here stores, reads or
+ * forwards website credentials. Current Core configuration may narrow policy but cannot open the host gate. */
 import {own} from '../../../../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {canonicalSha256} from '../../../../../packages/contracts/validate.mjs';
 import {BROWSER_TOOLS,INTERACTION_TOOLS,DOWNLOAD_FORMATS,BROWSER_LIMITS,validateBrowserPolicy,checkBrowserUrl} from '../policy.mjs';
@@ -17,14 +16,11 @@ import {takeoverActivationOpen} from '../session/activation.mjs';
 export const SITE_WORKFLOW_MANIFEST_SCHEMA='meri-site-workflow-manifest/0';
 /** Q-A8: a sign-in survives runs in the same conversation until this much inactivity; a manifest may only shorten it. */
 export const SITE_SESSION_MAX_IDLE_MS=8*60*60*1000;
-/** Q-A1 awaiting Neo: no site or task is approved. Entries are added only by a reviewed change citing the owner's list,
- * the legal review (Q-A4) and the per-site qualification evidence. */
-export const APPROVED_SITE_WORKFLOWS=Object.freeze([]);
 export const SITE_WORKFLOW_REQUIREMENTS=Object.freeze([
  'takeover: live browser takeover activation is open (sign-in happens only through takeover, Q-A2)',
  'sites: the owner named the first site and exact task combinations (Q-A1, awaiting Neo)',
  'terms: Capiro legal reviewed each named site\'s terms before enabling (Q-A4)',
- 'contract: dot accepted the site workflow manifest contract and the platform configuration owner that stores it (Q-A6)',
+ 'configuration: Core supplies the current enabled manifest and exact persisted selection (Q-A6)',
  'confidentiality: the version-pinned S2 parser exists and the canary tests pass with a real IdP test tenant',
  'destruction: S3 server-side invalidation tests pass on the D005 host with a synthetic local-storage-token site',
  'withdrawal: S4 generation source serves the site-workflow scope with measured 30 s propagation (Q-X7)',
@@ -83,14 +79,12 @@ export function validateSiteWorkflowManifest(raw,{platformMaximumOrigins}){
  return Object.freeze(Object.fromEntries(KEYS.map(k=>[k,k==='signedInProbe'?Object.freeze({...probe}):k==='downloads'?Object.freeze({...d,formats:Object.freeze([...d.formats])}):freeze(m[k])])));
 }
 
-/** Whether a validated manifest may be enabled for a tenant now. Never throws; lists every unmet condition. The shipped
- * state refuses every manifest (held activation, empty registry). */
-export function siteWorkflowEnablement(manifest,{registry=APPROVED_SITE_WORKFLOWS,activation=SITE_WORKFLOW_ACTIVATION,takeoverOpen=takeoverActivationOpen()}={}){
+/** Current Core configuration and qualified-host requirements must both hold. */
+export function siteWorkflowEnablement(manifest,{current,activation=SITE_WORKFLOW_ACTIVATION,takeoverOpen=takeoverActivationOpen()}={}){
  const reasons=[];
  if(activation?.state!=='open'||activation.requirements!==SITE_WORKFLOW_REQUIREMENTS||typeof activation.evidence!=='string'||!REF.test(activation.evidence))reasons.push('SITE_WORKFLOWS_HELD');
  if(takeoverOpen!==true)reasons.push('SITE_WORKFLOW_TAKEOVER_UNAVAILABLE');
- // Approval covers the exact credential-free manifest, not mutable content carrying an old version label.
- if(!registry.some(e=>e.siteId===manifest.siteId&&e.workflowId===manifest.workflowId&&e.version===manifest.version&&e.manifestSha256===canonicalSha256(manifest)))reasons.push('SITE_WORKFLOW_NOT_APPROVED');
+ if(current?.enabled!==true||current.manifestSha256!==canonicalSha256(manifest))reasons.push('SITE_WORKFLOW_NOT_CURRENT');
  if(manifest.tosReviewRef===null)reasons.push('SITE_WORKFLOW_TERMS_REVIEW_MISSING');
  if(manifest.qualificationEvidenceRef===null)reasons.push('SITE_WORKFLOW_UNQUALIFIED');
  return Object.freeze({enabled:reasons.length===0,reasons:Object.freeze(reasons)});

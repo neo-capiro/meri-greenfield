@@ -40,6 +40,8 @@ test('an unconfirmed process exit keeps the profile and reports UNKNOWN; a faile
  assert.equal(await gone(join(cwd,'.browser')),true);
 }));
 test('a held or disabled fragment started nothing: cleanup only verifies that no browser state remains',()=>within(async cwd=>{
+ // The runtime's canonical conversation workspace uses forward separators.
+ cwd=cwd.replaceAll('\\','/');
  const port={async policy(){return enabledPolicy();},installation,sourceScopes,artifacts:recorders().artifactPort,receipts:recorders().receiptPort};
  const run=await prepareBrowserRun({port,binding,cwd,deadlineMs:clock()+60000,now:clock});
  assert.equal(run.fragment.activation,'held');assert.equal(run.status.activation,'held');assert.equal(run.status.capability,'enabled');

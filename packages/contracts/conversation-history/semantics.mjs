@@ -1,4 +1,5 @@
 import {assertHearingSourceEventSemantics} from '../conversation-sources/hearing-semantics.mjs';
+import {assertSiteWorkflowSelection} from '../site-workflow-selection.mjs';
 import {assertProcedureSelection} from '../procedure-selection.mjs';
 import {assertUploadSelections} from '../upload-selection.mjs';
 import {assertWorkSelection} from '../work-selection.mjs';
@@ -77,6 +78,7 @@ export function assertHistoryResponseSemantics(route,request,result){
  if(result.latestSequenceBase>=result.lastSequence||request.after>result.lastSequence||result.events.length>request.limit)fail('CURSOR_MISMATCH');
  const turns=new Map(),requests=new Set();let prior;
  for(const t of result.turns){run(t.run,c);const b=t.run.binding,l=t.promptLineage,end=t.sequenceBase+t.lastSequence;
+  if(t.request.siteWorkflow!==undefined){try{assertSiteWorkflowSelection(t.request.siteWorkflow);}catch{fail('TURN_MISMATCH');}}
   if(t.request.procedure!==undefined){try{assertProcedureSelection(t.request.procedure);}catch{fail('TURN_MISMATCH');}}
   if(t.request.uploads!==undefined){try{assertUploadSelections(t.request.uploads);}catch{fail('TURN_MISMATCH');}}
   if(t.request.work!==undefined){try{assertWorkSelection(t.request.work);}catch{fail('TURN_MISMATCH');}}

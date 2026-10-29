@@ -11,6 +11,8 @@
 import {createBrowserCapability} from './index.mjs';
 import {createEgressGrant} from './egress-control.mjs';
 import {createBrowserRunLifecycle} from './lifecycle.mjs';
+import {prepareCurrentSiteWorkflow} from './site-workflows/current.mjs';
+import {siteWorkflowEnablement} from './site-workflows/manifest.mjs';
 const fault=code=>Object.assign(new Error(code),{code});
 /** Installs the run's egress grant for an open fragment at the host control; on any failure settles the run's cleanup
  * (the grant may be partly installed) and rethrows. */
@@ -34,11 +36,23 @@ export async function grantBrowserEgress({fragment,egress,binding,deadlineMs,lif
   throw error;
  }
 }
-export async function prepareBrowserRun({port,binding,cwd,deadlineMs,now,signal}){
+export async function prepareBrowserRun({port,binding,cwd,deadlineMs,now,signal,siteWorkflow,siteWorkflows}){
  if(typeof port?.policy!=='function'||typeof now!=='function')throw fault('BROWSER_CONFIGURATION');
- const policy=await port.policy({binding:structuredClone(binding),signal});
- const fragment=createBrowserCapability({binding,cwd,policy,installation:port.installation,sourceScopes:port.sourceScopes,approvals:port.approvals,artifacts:port.artifacts,receipts:port.receipts,approvalDeadlineMs:port.approvalDeadlineMs,now});
- const lifecycle=createBrowserRunLifecycle({fragment,binding,cwd,egress:port.egress,processes:port.processes,now});
+ let policy=await port.policy({binding:structuredClone(binding),signal}),workflow;
+ const createFragment=()=>createBrowserCapability({binding,cwd,policy,installation:port.installation,sourceScopes:port.sourceScopes,approvals:port.approvals,artifacts:port.artifacts,receipts:port.receipts,approvalDeadlineMs:port.approvalDeadlineMs,now,assertCurrent:workflow?.assertCurrent});
+ let fragment=createFragment(),lifecycle=createBrowserRunLifecycle({fragment,binding,cwd,egress:port.egress,processes:port.processes,now});
+ if(siteWorkflow!==undefined){
+  try{
+   workflow=await prepareCurrentSiteWorkflow({binding,selection:siteWorkflow,resolve:siteWorkflows?.resolve,policy,signal});
+   const activation=siteWorkflowEnablement(workflow.configured.manifest,{current:workflow.configured});
+   if(!activation.enabled)throw fault(activation.reasons[0]);
+   policy=workflow.policy;fragment=createFragment();
+   lifecycle=createBrowserRunLifecycle({fragment,binding,cwd,egress:port.egress,processes:port.processes,now});
+  }catch(error){
+   try{await lifecycle.settle({outcome:'failed'});}catch(cleanupError){if(cleanupError.cause===undefined)cleanupError.cause=error;throw cleanupError;}
+   throw error;
+  }
+ }
  if(fragment.activation==='open')await grantBrowserEgress({fragment,egress:port.egress,binding,deadlineMs,lifecycle,signal});
  return Object.freeze({fragment,status:fragment.status,settle:lifecycle.settle});
 }

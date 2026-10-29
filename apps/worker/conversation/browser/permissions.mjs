@@ -53,7 +53,8 @@ function browserAdmission({policy,tools},action,input){
  return null;
 }
 /** `pages` is the run's page tracker (`createPageContext`); `policySha256` the digest of the effective policy. */
-export function createPermissionGate({binding,policy,policySha256,server,approvals,pages,now,approvalDeadlineMs=APPROVAL_DEADLINE_MS.default}){
+export function createPermissionGate({binding,policy,policySha256,server,approvals,pages,now,approvalDeadlineMs=APPROVAL_DEADLINE_MS.default,assertCurrent}){
+ if(assertCurrent!==undefined&&typeof assertCurrent!=='function')throw Object.assign(Error('BROWSER_CONFIGURATION'),{code:'BROWSER_CONFIGURATION'});
  if(!Number.isSafeInteger(approvalDeadlineMs)||approvalDeadlineMs<APPROVAL_DEADLINE_MS.min||approvalDeadlineMs>APPROVAL_DEADLINE_MS.max||typeof now!=='function'||['begin','capture','isCurrent','cancel'].some(m=>typeof pages?.[m]!=='function')||typeof policySha256!=='string')throw Object.assign(new Error('BROWSER_CONFIGURATION'),{code:'BROWSER_CONFIGURATION'});
  const prefix=`mcp__${server}__`,tools=policy.tools,interactions=tools.filter(t=>INTERACTION_TOOLS.includes(t)),ledger=createReplayLedger();
  const actionOf=name=>typeof name==='string'&&name.startsWith(prefix)?name.slice(prefix.length):null;
@@ -63,6 +64,8 @@ export function createPermissionGate({binding,policy,policySha256,server,approva
    if(options?.signal?.aborted||input?.hook_event_name!=='PreToolUse'||!action||typeof input.tool_use_id!=='string'||toolUseID!==undefined&&toolUseID!==input.tool_use_id)return deny('BROWSER_PERMISSION_INPUT');
    const refused=browserAdmission({policy,tools},action,input.tool_input);
    if(refused)return deny(refused);
+   await assertCurrent?.({signal:options?.signal});
+   if(options?.signal?.aborted)return deny('BROWSER_PERMISSION_INPUT');
    if(!pages.begin(input.tool_use_id))return deny('BROWSER_PAGE_CONTEXT_INVALID');
    return interactions.includes(action)?ask('BROWSER_APPROVAL_REQUIRED'):{};
   }catch{return deny('BROWSER_PERMISSION_INPUT');}
@@ -84,6 +87,9 @@ export function createPermissionGate({binding,policy,policySha256,server,approva
   if(answer===EXPIRED||now()>request.expiresAtMs)return refusal('BROWSER_APPROVAL_EXPIRED');
   if(answer===ABORTED||options.signal?.aborted)return refusal('BROWSER_APPROVAL_UNAVAILABLE');
   const refused=receiptRefusal(answer,request,now());if(refused)return refusal(refused);
+  await assertCurrent?.({signal});
+  if(!pages.isCurrent(options.toolUseID,captured))return refusal('BROWSER_APPROVAL_PAGE_CHANGED');
+  if(signal?.aborted||now()>request.expiresAtMs)return refusal('BROWSER_APPROVAL_EXPIRED');
   if(!ledger.claim(answer))return refusal('BROWSER_APPROVAL_REPLAY');
   if(!pages.isCurrent(options.toolUseID,captured))return refusal('BROWSER_APPROVAL_PAGE_CHANGED');
   return {behavior:'allow',updatedInput:approvedInput,toolUseID:options.toolUseID};
@@ -96,6 +102,8 @@ export function createPermissionGate({binding,policy,policySha256,server,approva
   const refusal=message=>({behavior:'deny',message,...(typeof options.toolUseID==='string'?{toolUseID:options.toolUseID}:{})});
   let decision;
   try{
+   await assertCurrent?.({signal:options.signal});
+   if(options.signal?.aborted)throw Error('cancelled');
    if(options.mcpServer!==undefined&&options.mcpServer?.name!==server)decision=refusal('BROWSER_SERVER_MISMATCH');
    else{const refused=browserAdmission({policy,tools},action,input);
     decision=refused?refusal(refused):interactions.includes(action)?await approve(action,input,options,refusal):{behavior:'allow',updatedInput:input};}

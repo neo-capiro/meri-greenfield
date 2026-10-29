@@ -24,6 +24,7 @@ export type ConversationHistoryStoredRequest = {
   documentRevision?: CanonicalDocumentRevision_8F3517C7;
   uploads?: CanonicalUploadsB71278F4;
   procedure?: CanonicalProcedureE155666F;
+  siteWorkflow?: CanonicalSiteWorkflow_095F758C;
   work?: CanonicalWorkFa33081C;
 };
 export type CanonicalRequestIdF00D75C2 = string;
@@ -628,6 +629,12 @@ export interface CanonicalDocumentRevision_8F3517C7 {
   artifactId: string;
   versionId: string;
   objectSha256: string;
+}
+export interface CanonicalSiteWorkflow_095F758C {
+  siteId: string;
+  workflowId: string;
+  version: number;
+  manifestSha256: string;
 }
 export interface CanonicalWorkFa33081C {
   entry: 'start-work' | 'delegate';

@@ -335,6 +335,26 @@ function assertHearingSourceEventSemantics(event) {
   return event;
 }
 
+// site-workflow-selection.mjs
+var slug = { type: "string", pattern: "^[a-z][a-z0-9-]{1,63}$" };
+var SITE_WORKFLOW_SELECTION_SCHEMA = Object.freeze({ type: "object", properties: {
+  siteId: slug,
+  workflowId: slug,
+  version: { type: "integer", minimum: 1, maximum: Number.MAX_SAFE_INTEGER },
+  manifestSha256: { type: "string", pattern: "^[a-f0-9]{64}$" }
+}, required: ["siteId", "workflowId", "version", "manifestSha256"], additionalProperties: false });
+function assertSiteWorkflowSelection(value) {
+  const fail4 = () => {
+    throw Object.assign(Error("SITE_WORKFLOW_SELECTION"), { code: "SITE_WORKFLOW_SELECTION" });
+  };
+  if (!value || typeof value !== "object" || ![Object.prototype, null].includes(Object.getPrototypeOf(value))) fail4();
+  const descriptors = Object.getOwnPropertyDescriptors(value), keys = Reflect.ownKeys(descriptors);
+  if (keys.length !== 4 || keys.some((k) => typeof k !== "string" || !Object.hasOwn(SITE_WORKFLOW_SELECTION_SCHEMA.properties, k) || !descriptors[k].enumerable || !Object.hasOwn(descriptors[k], "value"))) fail4();
+  const { siteId, workflowId, version: version2, manifestSha256 } = Object.fromEntries(keys.map((k) => [k, descriptors[k].value]));
+  if (typeof siteId !== "string" || !new RegExp(slug.pattern, "u").test(siteId) || typeof workflowId !== "string" || !new RegExp(slug.pattern, "u").test(workflowId) || !Number.isSafeInteger(version2) || version2 < 1 || typeof manifestSha256 !== "string" || !/^[a-f0-9]{64}$/u.test(manifestSha256)) fail4();
+  return Object.freeze({ siteId, workflowId, version: version2, manifestSha256 });
+}
+
 // procedure-selection.mjs
 var BUILTIN_PROCEDURE_IDS = Object.freeze(["briefing", "draft", "bill_analysis", "hearing_prep", "coalition_letter", "amendment_tracker"]);
 var uuid = { type: "string", pattern: "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$" };
@@ -683,7 +703,7 @@ function parseBytes(value, cap) {
 
 // conversation-generated:./generated-validator.mjs
 var validateSubmitRequest = validate76;
-var schema33 = { "type": "object", "properties": { "requestId": { "type": "string", "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$" }, "prompt": { "type": "string", "minLength": 1, "maxLength": 1e5, "pattern": "\\S" }, "windowRequest": { "$ref": "#/$defs/Canonical_WindowRequest_f314f340" }, "skill": { "type": "object", "properties": { "skillId": { "anyOf": [{ "$ref": "#/$defs/Canonical_skillId_31e12e8e" }, { "$comment": "Identities added at this version. Adding another one requires a new reviewed version of this file, never an edit to the closed 0.2.0 enum.", "type": "string", "enum": ["quick_skill.cited_report"] }] }, "skillVersion": { "$ref": "#/$defs/Canonical_skillVersion_7e2af095" } }, "required": ["skillId", "skillVersion"], "additionalProperties": false }, "modelSelection": { "type": "object", "properties": { "provider": { "enum": ["bedrock", "claude-api"] }, "modelId": { "type": "string", "pattern": "^[a-zA-Z0-9][a-zA-Z0-9._:/-]{0,199}$" }, "effort": { "anyOf": [{ "type": "null" }, { "type": "string", "enum": ["low", "medium", "high", "xhigh", "max"] }] } }, "required": ["provider", "modelId", "effort"], "additionalProperties": false }, "documentRevision": { "type": "object", "properties": { "artifactId": { "type": "string", "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$" }, "versionId": { "type": "string", "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$" }, "objectSha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" } }, "required": ["artifactId", "versionId", "objectSha256"], "additionalProperties": false }, "uploads": { "type": "array", "minItems": 1, "maxItems": 8, "uniqueItems": true, "items": { "type": "object", "properties": { "uploadId": { "type": "string", "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$" }, "sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" } }, "required": ["uploadId", "sha256"], "additionalProperties": false } }, "procedure": { "oneOf": [{ "type": "object", "properties": { "source": { "const": "firm" }, "recordId": { "type": "string", "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$" }, "version": { "type": "integer", "minimum": 1, "maximum": 9007199254740991 }, "manifestDigest": { "type": "string", "pattern": "^[a-f0-9]{64}$" } }, "required": ["source", "recordId", "version", "manifestDigest"], "additionalProperties": false }, { "type": "object", "properties": { "source": { "const": "builtin" }, "id": { "enum": ["briefing", "draft", "bill_analysis", "hearing_prep", "coalition_letter", "amendment_tracker"] }, "version": { "type": "integer", "minimum": 1, "maximum": 9007199254740991 }, "manifestDigest": { "type": "string", "pattern": "^[a-f0-9]{64}$" } }, "required": ["source", "id", "version", "manifestDigest"], "additionalProperties": false }] }, "work": { "type": "object", "properties": { "entry": { "enum": ["start-work", "delegate"] }, "jobKind": { "enum": ["research", "deliverable", "audit", "scheduled"] }, "deliverables": { "type": "array", "maxItems": 20, "uniqueItems": true, "items": { "type": "string", "minLength": 1, "maxLength": 200, "pattern": "\\S" } }, "dependencies": { "type": "array", "maxItems": 20, "uniqueItems": true, "items": { "type": "string", "minLength": 1, "maxLength": 200, "pattern": "\\S" } } }, "required": ["entry", "jobKind", "deliverables", "dependencies"], "additionalProperties": false } }, "required": ["requestId", "prompt"], "additionalProperties": false, "not": { "properties": { "skill": {}, "procedure": {} }, "required": ["skill", "procedure"] }, "if": { "properties": { "skill": {}, "documentRevision": {} }, "required": ["skill", "documentRevision"] }, "then": { "properties": { "skill": { "anyOf": [{ "type": "object", "properties": { "skillId": { "const": "quick_skill.bill_watch" }, "skillVersion": { "const": "2.0.0" } }, "required": ["skillId", "skillVersion"] }, { "type": "object", "properties": { "skillId": { "const": "quick_skill.cited_report" }, "skillVersion": { "const": "1.0.0" } }, "required": ["skillId", "skillVersion"] }] } } } };
+var schema33 = { "type": "object", "properties": { "requestId": { "type": "string", "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$" }, "prompt": { "type": "string", "minLength": 1, "maxLength": 1e5, "pattern": "\\S" }, "windowRequest": { "$ref": "#/$defs/Canonical_WindowRequest_f314f340" }, "skill": { "type": "object", "properties": { "skillId": { "anyOf": [{ "$ref": "#/$defs/Canonical_skillId_31e12e8e" }, { "$comment": "Identities added at this version. Adding another one requires a new reviewed version of this file, never an edit to the closed 0.2.0 enum.", "type": "string", "enum": ["quick_skill.cited_report"] }] }, "skillVersion": { "$ref": "#/$defs/Canonical_skillVersion_7e2af095" } }, "required": ["skillId", "skillVersion"], "additionalProperties": false }, "modelSelection": { "type": "object", "properties": { "provider": { "enum": ["bedrock", "claude-api"] }, "modelId": { "type": "string", "pattern": "^[a-zA-Z0-9][a-zA-Z0-9._:/-]{0,199}$" }, "effort": { "anyOf": [{ "type": "null" }, { "type": "string", "enum": ["low", "medium", "high", "xhigh", "max"] }] } }, "required": ["provider", "modelId", "effort"], "additionalProperties": false }, "documentRevision": { "type": "object", "properties": { "artifactId": { "type": "string", "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$" }, "versionId": { "type": "string", "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$" }, "objectSha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" } }, "required": ["artifactId", "versionId", "objectSha256"], "additionalProperties": false }, "uploads": { "type": "array", "minItems": 1, "maxItems": 8, "uniqueItems": true, "items": { "type": "object", "properties": { "uploadId": { "type": "string", "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$" }, "sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" } }, "required": ["uploadId", "sha256"], "additionalProperties": false } }, "procedure": { "oneOf": [{ "type": "object", "properties": { "source": { "const": "firm" }, "recordId": { "type": "string", "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$" }, "version": { "type": "integer", "minimum": 1, "maximum": 9007199254740991 }, "manifestDigest": { "type": "string", "pattern": "^[a-f0-9]{64}$" } }, "required": ["source", "recordId", "version", "manifestDigest"], "additionalProperties": false }, { "type": "object", "properties": { "source": { "const": "builtin" }, "id": { "enum": ["briefing", "draft", "bill_analysis", "hearing_prep", "coalition_letter", "amendment_tracker"] }, "version": { "type": "integer", "minimum": 1, "maximum": 9007199254740991 }, "manifestDigest": { "type": "string", "pattern": "^[a-f0-9]{64}$" } }, "required": ["source", "id", "version", "manifestDigest"], "additionalProperties": false }] }, "siteWorkflow": { "type": "object", "properties": { "siteId": { "type": "string", "pattern": "^[a-z][a-z0-9-]{1,63}$" }, "workflowId": { "type": "string", "pattern": "^[a-z][a-z0-9-]{1,63}$" }, "version": { "type": "integer", "minimum": 1, "maximum": 9007199254740991 }, "manifestSha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" } }, "required": ["siteId", "workflowId", "version", "manifestSha256"], "additionalProperties": false }, "work": { "type": "object", "properties": { "entry": { "enum": ["start-work", "delegate"] }, "jobKind": { "enum": ["research", "deliverable", "audit", "scheduled"] }, "deliverables": { "type": "array", "maxItems": 20, "uniqueItems": true, "items": { "type": "string", "minLength": 1, "maxLength": 200, "pattern": "\\S" } }, "dependencies": { "type": "array", "maxItems": 20, "uniqueItems": true, "items": { "type": "string", "minLength": 1, "maxLength": 200, "pattern": "\\S" } } }, "required": ["entry", "jobKind", "deliverables", "dependencies"], "additionalProperties": false } }, "required": ["requestId", "prompt"], "additionalProperties": false, "not": { "properties": { "skill": {}, "procedure": {} }, "required": ["skill", "procedure"] }, "if": { "properties": { "skill": {}, "documentRevision": {} }, "required": ["skill", "documentRevision"] }, "then": { "properties": { "skill": { "anyOf": [{ "type": "object", "properties": { "skillId": { "const": "quick_skill.bill_watch" }, "skillVersion": { "const": "2.0.0" } }, "required": ["skillId", "skillVersion"] }, { "type": "object", "properties": { "skillId": { "const": "quick_skill.cited_report" }, "skillVersion": { "const": "1.0.0" } }, "required": ["skillId", "skillVersion"] }] } } } };
 var schema34 = { "oneOf": [{ "type": "object", "properties": { "basis": { "const": "calendar-week" }, "offset": { "type": "integer", "enum": [-1, 0] }, "timezone": { "type": "string", "minLength": 1, "maxLength": 100 }, "weekStartsOn": { "type": "string", "enum": ["monday", "sunday"] } }, "required": ["basis", "offset", "timezone", "weekStartsOn"], "additionalProperties": false }, { "type": "object", "properties": { "basis": { "const": "calendar-month" }, "offset": { "type": "integer", "enum": [-1, 0] }, "timezone": { "type": "string", "minLength": 1, "maxLength": 100 } }, "required": ["basis", "offset", "timezone"], "additionalProperties": false }, { "type": "object", "properties": { "basis": { "const": "calendar-year" }, "offset": { "type": "integer", "enum": [-1, 0] }, "timezone": { "type": "string", "minLength": 1, "maxLength": 100 } }, "required": ["basis", "offset", "timezone"], "additionalProperties": false }, { "type": "object", "properties": { "basis": { "const": "relative-duration" }, "days": { "type": "integer", "minimum": 1, "maximum": 3660 }, "anchorAt": { "type": "string", "format": "date-time", "pattern": "Z$" }, "timezone": { "type": "string", "minLength": 1, "maxLength": 100 } }, "required": ["basis", "days", "anchorAt", "timezone"], "additionalProperties": false }, { "type": "object", "properties": { "basis": { "const": "explicit" }, "startInclusive": { "type": "string", "format": "date-time", "pattern": "Z$" }, "endExclusive": { "type": "string", "format": "date-time", "pattern": "Z$" }, "timezone": { "type": "string", "minLength": 1, "maxLength": 100 } }, "required": ["basis", "startInclusive", "endExclusive", "timezone"], "additionalProperties": false }, { "type": "object", "properties": { "basis": { "const": "fiscal-year" }, "year": { "type": "integer", "minimum": 1900, "maximum": 3e3 }, "calendarId": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-z][a-z0-9_.-]*$" }, "stage": { "type": "string", "enum": ["requested", "authorized", "appropriated", "obligated", "actual", "outlay"] }, "revisionId": { "type": "string", "minLength": 1, "maxLength": 256 }, "timezone": { "type": "string", "minLength": 1, "maxLength": 100 } }, "required": ["basis", "year", "calendarId", "stage", "revisionId", "timezone"], "additionalProperties": false }, { "type": "object", "properties": { "basis": { "const": "unbounded" } }, "required": ["basis"], "additionalProperties": false }] };
 var schema35 = { "type": "string", "enum": ["quick_skill.research_company", "quick_skill.relationship_brief", "quick_skill.client_changes", "quick_skill.portfolio_changes", "quick_skill.portfolio_overlap", "quick_skill.mail_history", "quick_skill.meeting_prep", "quick_skill.commitments_audit", "quick_skill.funding_opportunity_match", "quick_skill.pe_deep_dive", "quick_skill.bill_watch", "quick_skill.hearing_watch", "quick_skill.representation_lookup", "quick_skill.regulatory_docket_brief"] };
 var func1 = Object.prototype.hasOwnProperty;
@@ -697,6 +717,7 @@ var pattern10 = new RegExp("^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)
 var pattern11 = new RegExp("^[a-zA-Z0-9][a-zA-Z0-9._:/-]{0,199}$", "u");
 var pattern14 = new RegExp("^[0-9a-f]{64}$", "u");
 var pattern18 = new RegExp("^[a-f0-9]{64}$", "u");
+var pattern20 = new RegExp("^[a-z][a-z0-9-]{1,63}$", "u");
 var formats0 = require_formats().fullFormats["date-time"];
 function validate76(data, { instancePath = "", parentData, parentDataProperty, rootData = data, dynamicAnchors = {} } = {}) {
   let vErrors = null;
@@ -2959,183 +2980,99 @@ function validate76(data, { instancePath = "", parentData, parentDataProperty, r
                           var valid6 = true;
                         }
                         if (valid6) {
-                          if (data.work !== void 0) {
-                            let data57 = data.work;
+                          if (data.siteWorkflow !== void 0) {
+                            let data57 = data.siteWorkflow;
                             const _errs153 = errors2;
                             if (errors2 === _errs153) {
                               if (data57 && typeof data57 == "object" && !Array.isArray(data57)) {
                                 let missing18;
-                                if (data57.entry === void 0 && (missing18 = "entry") || data57.jobKind === void 0 && (missing18 = "jobKind") || data57.deliverables === void 0 && (missing18 = "deliverables") || data57.dependencies === void 0 && (missing18 = "dependencies")) {
-                                  validate76.errors = [{ instancePath: instancePath + "/work", schemaPath: "#/properties/work/required", keyword: "required", params: { missingProperty: missing18 }, message: "must have required property '" + missing18 + "'" }];
+                                if (data57.siteId === void 0 && (missing18 = "siteId") || data57.workflowId === void 0 && (missing18 = "workflowId") || data57.version === void 0 && (missing18 = "version") || data57.manifestSha256 === void 0 && (missing18 = "manifestSha256")) {
+                                  validate76.errors = [{ instancePath: instancePath + "/siteWorkflow", schemaPath: "#/properties/siteWorkflow/required", keyword: "required", params: { missingProperty: missing18 }, message: "must have required property '" + missing18 + "'" }];
                                   return false;
                                 } else {
                                   const _errs155 = errors2;
                                   for (const key14 in data57) {
-                                    if (!(key14 === "entry" || key14 === "jobKind" || key14 === "deliverables" || key14 === "dependencies")) {
-                                      validate76.errors = [{ instancePath: instancePath + "/work", schemaPath: "#/properties/work/additionalProperties", keyword: "additionalProperties", params: { additionalProperty: key14 }, message: "must NOT have additional properties" }];
+                                    if (!(key14 === "siteId" || key14 === "workflowId" || key14 === "version" || key14 === "manifestSha256")) {
+                                      validate76.errors = [{ instancePath: instancePath + "/siteWorkflow", schemaPath: "#/properties/siteWorkflow/additionalProperties", keyword: "additionalProperties", params: { additionalProperty: key14 }, message: "must NOT have additional properties" }];
                                       return false;
                                       break;
                                     }
                                   }
                                   if (_errs155 === errors2) {
-                                    if (data57.entry !== void 0) {
-                                      let data58 = data57.entry;
+                                    if (data57.siteId !== void 0) {
+                                      let data58 = data57.siteId;
                                       const _errs156 = errors2;
-                                      if (!(data58 === "start-work" || data58 === "delegate")) {
-                                        validate76.errors = [{ instancePath: instancePath + "/work/entry", schemaPath: "#/properties/work/properties/entry/enum", keyword: "enum", params: { allowedValues: schema33.properties.work.properties.entry.enum }, message: "must be equal to one of the allowed values" }];
-                                        return false;
+                                      if (errors2 === _errs156) {
+                                        if (typeof data58 === "string") {
+                                          if (!pattern20.test(data58)) {
+                                            validate76.errors = [{ instancePath: instancePath + "/siteWorkflow/siteId", schemaPath: "#/properties/siteWorkflow/properties/siteId/pattern", keyword: "pattern", params: { pattern: "^[a-z][a-z0-9-]{1,63}$" }, message: 'must match pattern "^[a-z][a-z0-9-]{1,63}$"' }];
+                                            return false;
+                                          }
+                                        } else {
+                                          validate76.errors = [{ instancePath: instancePath + "/siteWorkflow/siteId", schemaPath: "#/properties/siteWorkflow/properties/siteId/type", keyword: "type", params: { type: "string" }, message: "must be string" }];
+                                          return false;
+                                        }
                                       }
                                       var valid29 = _errs156 === errors2;
                                     } else {
                                       var valid29 = true;
                                     }
                                     if (valid29) {
-                                      if (data57.jobKind !== void 0) {
-                                        let data59 = data57.jobKind;
-                                        const _errs157 = errors2;
-                                        if (!(data59 === "research" || data59 === "deliverable" || data59 === "audit" || data59 === "scheduled")) {
-                                          validate76.errors = [{ instancePath: instancePath + "/work/jobKind", schemaPath: "#/properties/work/properties/jobKind/enum", keyword: "enum", params: { allowedValues: schema33.properties.work.properties.jobKind.enum }, message: "must be equal to one of the allowed values" }];
-                                          return false;
+                                      if (data57.workflowId !== void 0) {
+                                        let data59 = data57.workflowId;
+                                        const _errs158 = errors2;
+                                        if (errors2 === _errs158) {
+                                          if (typeof data59 === "string") {
+                                            if (!pattern20.test(data59)) {
+                                              validate76.errors = [{ instancePath: instancePath + "/siteWorkflow/workflowId", schemaPath: "#/properties/siteWorkflow/properties/workflowId/pattern", keyword: "pattern", params: { pattern: "^[a-z][a-z0-9-]{1,63}$" }, message: 'must match pattern "^[a-z][a-z0-9-]{1,63}$"' }];
+                                              return false;
+                                            }
+                                          } else {
+                                            validate76.errors = [{ instancePath: instancePath + "/siteWorkflow/workflowId", schemaPath: "#/properties/siteWorkflow/properties/workflowId/type", keyword: "type", params: { type: "string" }, message: "must be string" }];
+                                            return false;
+                                          }
                                         }
-                                        var valid29 = _errs157 === errors2;
+                                        var valid29 = _errs158 === errors2;
                                       } else {
                                         var valid29 = true;
                                       }
                                       if (valid29) {
-                                        if (data57.deliverables !== void 0) {
-                                          let data60 = data57.deliverables;
-                                          const _errs158 = errors2;
-                                          if (errors2 === _errs158) {
-                                            if (Array.isArray(data60)) {
-                                              if (data60.length > 20) {
-                                                validate76.errors = [{ instancePath: instancePath + "/work/deliverables", schemaPath: "#/properties/work/properties/deliverables/maxItems", keyword: "maxItems", params: { limit: 20 }, message: "must NOT have more than 20 items" }];
+                                        if (data57.version !== void 0) {
+                                          let data60 = data57.version;
+                                          const _errs160 = errors2;
+                                          if (!(typeof data60 == "number" && (!(data60 % 1) && !isNaN(data60)) && isFinite(data60))) {
+                                            validate76.errors = [{ instancePath: instancePath + "/siteWorkflow/version", schemaPath: "#/properties/siteWorkflow/properties/version/type", keyword: "type", params: { type: "integer" }, message: "must be integer" }];
+                                            return false;
+                                          }
+                                          if (errors2 === _errs160) {
+                                            if (typeof data60 == "number" && isFinite(data60)) {
+                                              if (data60 > 9007199254740991 || isNaN(data60)) {
+                                                validate76.errors = [{ instancePath: instancePath + "/siteWorkflow/version", schemaPath: "#/properties/siteWorkflow/properties/version/maximum", keyword: "maximum", params: { comparison: "<=", limit: 9007199254740991 }, message: "must be <= 9007199254740991" }];
                                                 return false;
                                               } else {
-                                                var valid30 = true;
-                                                const len1 = data60.length;
-                                                for (let i2 = 0; i2 < len1; i2++) {
-                                                  let data61 = data60[i2];
-                                                  const _errs160 = errors2;
-                                                  if (errors2 === _errs160) {
-                                                    if (typeof data61 === "string") {
-                                                      if (func2(data61) > 200) {
-                                                        validate76.errors = [{ instancePath: instancePath + "/work/deliverables/" + i2, schemaPath: "#/properties/work/properties/deliverables/items/maxLength", keyword: "maxLength", params: { limit: 200 }, message: "must NOT have more than 200 characters" }];
-                                                        return false;
-                                                      } else {
-                                                        if (func2(data61) < 1) {
-                                                          validate76.errors = [{ instancePath: instancePath + "/work/deliverables/" + i2, schemaPath: "#/properties/work/properties/deliverables/items/minLength", keyword: "minLength", params: { limit: 1 }, message: "must NOT have fewer than 1 characters" }];
-                                                          return false;
-                                                        } else {
-                                                          if (!pattern5.test(data61)) {
-                                                            validate76.errors = [{ instancePath: instancePath + "/work/deliverables/" + i2, schemaPath: "#/properties/work/properties/deliverables/items/pattern", keyword: "pattern", params: { pattern: "\\S" }, message: 'must match pattern "\\S"' }];
-                                                            return false;
-                                                          }
-                                                        }
-                                                      }
-                                                    } else {
-                                                      validate76.errors = [{ instancePath: instancePath + "/work/deliverables/" + i2, schemaPath: "#/properties/work/properties/deliverables/items/type", keyword: "type", params: { type: "string" }, message: "must be string" }];
-                                                      return false;
-                                                    }
-                                                  }
-                                                  var valid30 = _errs160 === errors2;
-                                                  if (!valid30) {
-                                                    break;
-                                                  }
-                                                }
-                                                if (valid30) {
-                                                  let i3 = data60.length;
-                                                  let j1;
-                                                  if (i3 > 1) {
-                                                    const indices0 = {};
-                                                    for (; i3--; ) {
-                                                      let item0 = data60[i3];
-                                                      if (typeof item0 !== "string") {
-                                                        continue;
-                                                      }
-                                                      if (typeof indices0[item0] == "number") {
-                                                        j1 = indices0[item0];
-                                                        validate76.errors = [{ instancePath: instancePath + "/work/deliverables", schemaPath: "#/properties/work/properties/deliverables/uniqueItems", keyword: "uniqueItems", params: { i: i3, j: j1 }, message: "must NOT have duplicate items (items ## " + j1 + " and " + i3 + " are identical)" }];
-                                                        return false;
-                                                        break;
-                                                      }
-                                                      indices0[item0] = i3;
-                                                    }
-                                                  }
+                                                if (data60 < 1 || isNaN(data60)) {
+                                                  validate76.errors = [{ instancePath: instancePath + "/siteWorkflow/version", schemaPath: "#/properties/siteWorkflow/properties/version/minimum", keyword: "minimum", params: { comparison: ">=", limit: 1 }, message: "must be >= 1" }];
+                                                  return false;
                                                 }
                                               }
-                                            } else {
-                                              validate76.errors = [{ instancePath: instancePath + "/work/deliverables", schemaPath: "#/properties/work/properties/deliverables/type", keyword: "type", params: { type: "array" }, message: "must be array" }];
-                                              return false;
                                             }
                                           }
-                                          var valid29 = _errs158 === errors2;
+                                          var valid29 = _errs160 === errors2;
                                         } else {
                                           var valid29 = true;
                                         }
                                         if (valid29) {
-                                          if (data57.dependencies !== void 0) {
-                                            let data62 = data57.dependencies;
+                                          if (data57.manifestSha256 !== void 0) {
+                                            let data61 = data57.manifestSha256;
                                             const _errs162 = errors2;
                                             if (errors2 === _errs162) {
-                                              if (Array.isArray(data62)) {
-                                                if (data62.length > 20) {
-                                                  validate76.errors = [{ instancePath: instancePath + "/work/dependencies", schemaPath: "#/properties/work/properties/dependencies/maxItems", keyword: "maxItems", params: { limit: 20 }, message: "must NOT have more than 20 items" }];
+                                              if (typeof data61 === "string") {
+                                                if (!pattern18.test(data61)) {
+                                                  validate76.errors = [{ instancePath: instancePath + "/siteWorkflow/manifestSha256", schemaPath: "#/properties/siteWorkflow/properties/manifestSha256/pattern", keyword: "pattern", params: { pattern: "^[a-f0-9]{64}$" }, message: 'must match pattern "^[a-f0-9]{64}$"' }];
                                                   return false;
-                                                } else {
-                                                  var valid32 = true;
-                                                  const len2 = data62.length;
-                                                  for (let i4 = 0; i4 < len2; i4++) {
-                                                    let data63 = data62[i4];
-                                                    const _errs164 = errors2;
-                                                    if (errors2 === _errs164) {
-                                                      if (typeof data63 === "string") {
-                                                        if (func2(data63) > 200) {
-                                                          validate76.errors = [{ instancePath: instancePath + "/work/dependencies/" + i4, schemaPath: "#/properties/work/properties/dependencies/items/maxLength", keyword: "maxLength", params: { limit: 200 }, message: "must NOT have more than 200 characters" }];
-                                                          return false;
-                                                        } else {
-                                                          if (func2(data63) < 1) {
-                                                            validate76.errors = [{ instancePath: instancePath + "/work/dependencies/" + i4, schemaPath: "#/properties/work/properties/dependencies/items/minLength", keyword: "minLength", params: { limit: 1 }, message: "must NOT have fewer than 1 characters" }];
-                                                            return false;
-                                                          } else {
-                                                            if (!pattern5.test(data63)) {
-                                                              validate76.errors = [{ instancePath: instancePath + "/work/dependencies/" + i4, schemaPath: "#/properties/work/properties/dependencies/items/pattern", keyword: "pattern", params: { pattern: "\\S" }, message: 'must match pattern "\\S"' }];
-                                                              return false;
-                                                            }
-                                                          }
-                                                        }
-                                                      } else {
-                                                        validate76.errors = [{ instancePath: instancePath + "/work/dependencies/" + i4, schemaPath: "#/properties/work/properties/dependencies/items/type", keyword: "type", params: { type: "string" }, message: "must be string" }];
-                                                        return false;
-                                                      }
-                                                    }
-                                                    var valid32 = _errs164 === errors2;
-                                                    if (!valid32) {
-                                                      break;
-                                                    }
-                                                  }
-                                                  if (valid32) {
-                                                    let i5 = data62.length;
-                                                    let j2;
-                                                    if (i5 > 1) {
-                                                      const indices1 = {};
-                                                      for (; i5--; ) {
-                                                        let item1 = data62[i5];
-                                                        if (typeof item1 !== "string") {
-                                                          continue;
-                                                        }
-                                                        if (typeof indices1[item1] == "number") {
-                                                          j2 = indices1[item1];
-                                                          validate76.errors = [{ instancePath: instancePath + "/work/dependencies", schemaPath: "#/properties/work/properties/dependencies/uniqueItems", keyword: "uniqueItems", params: { i: i5, j: j2 }, message: "must NOT have duplicate items (items ## " + j2 + " and " + i5 + " are identical)" }];
-                                                          return false;
-                                                          break;
-                                                        }
-                                                        indices1[item1] = i5;
-                                                      }
-                                                    }
-                                                  }
                                                 }
                                               } else {
-                                                validate76.errors = [{ instancePath: instancePath + "/work/dependencies", schemaPath: "#/properties/work/properties/dependencies/type", keyword: "type", params: { type: "array" }, message: "must be array" }];
+                                                validate76.errors = [{ instancePath: instancePath + "/siteWorkflow/manifestSha256", schemaPath: "#/properties/siteWorkflow/properties/manifestSha256/type", keyword: "type", params: { type: "string" }, message: "must be string" }];
                                                 return false;
                                               }
                                             }
@@ -3149,13 +3086,213 @@ function validate76(data, { instancePath = "", parentData, parentDataProperty, r
                                   }
                                 }
                               } else {
-                                validate76.errors = [{ instancePath: instancePath + "/work", schemaPath: "#/properties/work/type", keyword: "type", params: { type: "object" }, message: "must be object" }];
+                                validate76.errors = [{ instancePath: instancePath + "/siteWorkflow", schemaPath: "#/properties/siteWorkflow/type", keyword: "type", params: { type: "object" }, message: "must be object" }];
                                 return false;
                               }
                             }
                             var valid6 = _errs153 === errors2;
                           } else {
                             var valid6 = true;
+                          }
+                          if (valid6) {
+                            if (data.work !== void 0) {
+                              let data62 = data.work;
+                              const _errs164 = errors2;
+                              if (errors2 === _errs164) {
+                                if (data62 && typeof data62 == "object" && !Array.isArray(data62)) {
+                                  let missing19;
+                                  if (data62.entry === void 0 && (missing19 = "entry") || data62.jobKind === void 0 && (missing19 = "jobKind") || data62.deliverables === void 0 && (missing19 = "deliverables") || data62.dependencies === void 0 && (missing19 = "dependencies")) {
+                                    validate76.errors = [{ instancePath: instancePath + "/work", schemaPath: "#/properties/work/required", keyword: "required", params: { missingProperty: missing19 }, message: "must have required property '" + missing19 + "'" }];
+                                    return false;
+                                  } else {
+                                    const _errs166 = errors2;
+                                    for (const key15 in data62) {
+                                      if (!(key15 === "entry" || key15 === "jobKind" || key15 === "deliverables" || key15 === "dependencies")) {
+                                        validate76.errors = [{ instancePath: instancePath + "/work", schemaPath: "#/properties/work/additionalProperties", keyword: "additionalProperties", params: { additionalProperty: key15 }, message: "must NOT have additional properties" }];
+                                        return false;
+                                        break;
+                                      }
+                                    }
+                                    if (_errs166 === errors2) {
+                                      if (data62.entry !== void 0) {
+                                        let data63 = data62.entry;
+                                        const _errs167 = errors2;
+                                        if (!(data63 === "start-work" || data63 === "delegate")) {
+                                          validate76.errors = [{ instancePath: instancePath + "/work/entry", schemaPath: "#/properties/work/properties/entry/enum", keyword: "enum", params: { allowedValues: schema33.properties.work.properties.entry.enum }, message: "must be equal to one of the allowed values" }];
+                                          return false;
+                                        }
+                                        var valid30 = _errs167 === errors2;
+                                      } else {
+                                        var valid30 = true;
+                                      }
+                                      if (valid30) {
+                                        if (data62.jobKind !== void 0) {
+                                          let data64 = data62.jobKind;
+                                          const _errs168 = errors2;
+                                          if (!(data64 === "research" || data64 === "deliverable" || data64 === "audit" || data64 === "scheduled")) {
+                                            validate76.errors = [{ instancePath: instancePath + "/work/jobKind", schemaPath: "#/properties/work/properties/jobKind/enum", keyword: "enum", params: { allowedValues: schema33.properties.work.properties.jobKind.enum }, message: "must be equal to one of the allowed values" }];
+                                            return false;
+                                          }
+                                          var valid30 = _errs168 === errors2;
+                                        } else {
+                                          var valid30 = true;
+                                        }
+                                        if (valid30) {
+                                          if (data62.deliverables !== void 0) {
+                                            let data65 = data62.deliverables;
+                                            const _errs169 = errors2;
+                                            if (errors2 === _errs169) {
+                                              if (Array.isArray(data65)) {
+                                                if (data65.length > 20) {
+                                                  validate76.errors = [{ instancePath: instancePath + "/work/deliverables", schemaPath: "#/properties/work/properties/deliverables/maxItems", keyword: "maxItems", params: { limit: 20 }, message: "must NOT have more than 20 items" }];
+                                                  return false;
+                                                } else {
+                                                  var valid31 = true;
+                                                  const len1 = data65.length;
+                                                  for (let i2 = 0; i2 < len1; i2++) {
+                                                    let data66 = data65[i2];
+                                                    const _errs171 = errors2;
+                                                    if (errors2 === _errs171) {
+                                                      if (typeof data66 === "string") {
+                                                        if (func2(data66) > 200) {
+                                                          validate76.errors = [{ instancePath: instancePath + "/work/deliverables/" + i2, schemaPath: "#/properties/work/properties/deliverables/items/maxLength", keyword: "maxLength", params: { limit: 200 }, message: "must NOT have more than 200 characters" }];
+                                                          return false;
+                                                        } else {
+                                                          if (func2(data66) < 1) {
+                                                            validate76.errors = [{ instancePath: instancePath + "/work/deliverables/" + i2, schemaPath: "#/properties/work/properties/deliverables/items/minLength", keyword: "minLength", params: { limit: 1 }, message: "must NOT have fewer than 1 characters" }];
+                                                            return false;
+                                                          } else {
+                                                            if (!pattern5.test(data66)) {
+                                                              validate76.errors = [{ instancePath: instancePath + "/work/deliverables/" + i2, schemaPath: "#/properties/work/properties/deliverables/items/pattern", keyword: "pattern", params: { pattern: "\\S" }, message: 'must match pattern "\\S"' }];
+                                                              return false;
+                                                            }
+                                                          }
+                                                        }
+                                                      } else {
+                                                        validate76.errors = [{ instancePath: instancePath + "/work/deliverables/" + i2, schemaPath: "#/properties/work/properties/deliverables/items/type", keyword: "type", params: { type: "string" }, message: "must be string" }];
+                                                        return false;
+                                                      }
+                                                    }
+                                                    var valid31 = _errs171 === errors2;
+                                                    if (!valid31) {
+                                                      break;
+                                                    }
+                                                  }
+                                                  if (valid31) {
+                                                    let i3 = data65.length;
+                                                    let j1;
+                                                    if (i3 > 1) {
+                                                      const indices0 = {};
+                                                      for (; i3--; ) {
+                                                        let item0 = data65[i3];
+                                                        if (typeof item0 !== "string") {
+                                                          continue;
+                                                        }
+                                                        if (typeof indices0[item0] == "number") {
+                                                          j1 = indices0[item0];
+                                                          validate76.errors = [{ instancePath: instancePath + "/work/deliverables", schemaPath: "#/properties/work/properties/deliverables/uniqueItems", keyword: "uniqueItems", params: { i: i3, j: j1 }, message: "must NOT have duplicate items (items ## " + j1 + " and " + i3 + " are identical)" }];
+                                                          return false;
+                                                          break;
+                                                        }
+                                                        indices0[item0] = i3;
+                                                      }
+                                                    }
+                                                  }
+                                                }
+                                              } else {
+                                                validate76.errors = [{ instancePath: instancePath + "/work/deliverables", schemaPath: "#/properties/work/properties/deliverables/type", keyword: "type", params: { type: "array" }, message: "must be array" }];
+                                                return false;
+                                              }
+                                            }
+                                            var valid30 = _errs169 === errors2;
+                                          } else {
+                                            var valid30 = true;
+                                          }
+                                          if (valid30) {
+                                            if (data62.dependencies !== void 0) {
+                                              let data67 = data62.dependencies;
+                                              const _errs173 = errors2;
+                                              if (errors2 === _errs173) {
+                                                if (Array.isArray(data67)) {
+                                                  if (data67.length > 20) {
+                                                    validate76.errors = [{ instancePath: instancePath + "/work/dependencies", schemaPath: "#/properties/work/properties/dependencies/maxItems", keyword: "maxItems", params: { limit: 20 }, message: "must NOT have more than 20 items" }];
+                                                    return false;
+                                                  } else {
+                                                    var valid33 = true;
+                                                    const len2 = data67.length;
+                                                    for (let i4 = 0; i4 < len2; i4++) {
+                                                      let data68 = data67[i4];
+                                                      const _errs175 = errors2;
+                                                      if (errors2 === _errs175) {
+                                                        if (typeof data68 === "string") {
+                                                          if (func2(data68) > 200) {
+                                                            validate76.errors = [{ instancePath: instancePath + "/work/dependencies/" + i4, schemaPath: "#/properties/work/properties/dependencies/items/maxLength", keyword: "maxLength", params: { limit: 200 }, message: "must NOT have more than 200 characters" }];
+                                                            return false;
+                                                          } else {
+                                                            if (func2(data68) < 1) {
+                                                              validate76.errors = [{ instancePath: instancePath + "/work/dependencies/" + i4, schemaPath: "#/properties/work/properties/dependencies/items/minLength", keyword: "minLength", params: { limit: 1 }, message: "must NOT have fewer than 1 characters" }];
+                                                              return false;
+                                                            } else {
+                                                              if (!pattern5.test(data68)) {
+                                                                validate76.errors = [{ instancePath: instancePath + "/work/dependencies/" + i4, schemaPath: "#/properties/work/properties/dependencies/items/pattern", keyword: "pattern", params: { pattern: "\\S" }, message: 'must match pattern "\\S"' }];
+                                                                return false;
+                                                              }
+                                                            }
+                                                          }
+                                                        } else {
+                                                          validate76.errors = [{ instancePath: instancePath + "/work/dependencies/" + i4, schemaPath: "#/properties/work/properties/dependencies/items/type", keyword: "type", params: { type: "string" }, message: "must be string" }];
+                                                          return false;
+                                                        }
+                                                      }
+                                                      var valid33 = _errs175 === errors2;
+                                                      if (!valid33) {
+                                                        break;
+                                                      }
+                                                    }
+                                                    if (valid33) {
+                                                      let i5 = data67.length;
+                                                      let j2;
+                                                      if (i5 > 1) {
+                                                        const indices1 = {};
+                                                        for (; i5--; ) {
+                                                          let item1 = data67[i5];
+                                                          if (typeof item1 !== "string") {
+                                                            continue;
+                                                          }
+                                                          if (typeof indices1[item1] == "number") {
+                                                            j2 = indices1[item1];
+                                                            validate76.errors = [{ instancePath: instancePath + "/work/dependencies", schemaPath: "#/properties/work/properties/dependencies/uniqueItems", keyword: "uniqueItems", params: { i: i5, j: j2 }, message: "must NOT have duplicate items (items ## " + j2 + " and " + i5 + " are identical)" }];
+                                                            return false;
+                                                            break;
+                                                          }
+                                                          indices1[item1] = i5;
+                                                        }
+                                                      }
+                                                    }
+                                                  }
+                                                } else {
+                                                  validate76.errors = [{ instancePath: instancePath + "/work/dependencies", schemaPath: "#/properties/work/properties/dependencies/type", keyword: "type", params: { type: "array" }, message: "must be array" }];
+                                                  return false;
+                                                }
+                                              }
+                                              var valid30 = _errs173 === errors2;
+                                            } else {
+                                              var valid30 = true;
+                                            }
+                                          }
+                                        }
+                                      }
+                                    }
+                                  }
+                                } else {
+                                  validate76.errors = [{ instancePath: instancePath + "/work", schemaPath: "#/properties/work/type", keyword: "type", params: { type: "object" }, message: "must be object" }];
+                                  return false;
+                                }
+                              }
+                              var valid6 = _errs164 === errors2;
+                            } else {
+                              var valid6 = true;
+                            }
                           }
                         }
                       }
@@ -3386,8 +3523,8 @@ validate79.evaluated = { "props": true, "dynamicProps": false, "dynamicItems": f
 var validateSubmitted = validate80;
 var schema45 = { "type": "object", "properties": { "binding": { "$ref": "#/$defs/Canonical_RunBinding_84f2304c" }, "state": { "type": "string", "enum": ["queued", "starting", "running", "waiting-for-approval", "paused", "completed", "failed", "cancelled"] }, "scopes": { "type": "array", "items": { "$ref": "#/$defs/Canonical_Scope_f882edb5" }, "minItems": 1, "uniqueItems": true }, "createdAt": { "type": "string", "format": "date-time", "pattern": "Z$" }, "policyRevision": { "type": "string", "minLength": 1 }, "versions": { "$ref": "#/$defs/Canonical_RuntimeVersions_7edb8efc" } }, "required": ["binding", "state", "scopes", "createdAt", "policyRevision", "versions"], "additionalProperties": false };
 var schema47 = { "type": "object", "properties": { "tenantId": { "type": "string", "minLength": 1, "maxLength": 128 }, "kind": { "type": "string", "enum": ["tenant", "client", "mailbox", "memory", "document", "private-user", "public"] }, "resourceId": { "type": "string", "minLength": 1, "maxLength": 256 }, "policyRevision": { "type": "string", "minLength": 1, "maxLength": 128 } }, "required": ["tenantId", "kind", "resourceId", "policyRevision"], "additionalProperties": false };
-var pattern23 = new RegExp("^sha256:[a-f0-9]{64}$", "u");
-var pattern24 = new RegExp("^[0-9]+\\.[0-9]+\\.[0-9]+$", "u");
+var pattern26 = new RegExp("^sha256:[a-f0-9]{64}$", "u");
+var pattern27 = new RegExp("^[0-9]+\\.[0-9]+\\.[0-9]+$", "u");
 function validate29(data, { instancePath = "", parentData, parentDataProperty, rootData = data, dynamicAnchors = {} } = {}) {
   let vErrors = null;
   let errors2 = 0;
@@ -3857,7 +3994,7 @@ function validate29(data, { instancePath = "", parentData, parentDataProperty, r
                                       validate29.errors = [{ instancePath: instancePath + "/versions/imageDigest", schemaPath: "#/$defs/Canonical_RuntimeVersions_7edb8efc/properties/imageDigest/minLength", keyword: "minLength", params: { limit: 1 }, message: "must NOT have fewer than 1 characters" }];
                                       return false;
                                     } else {
-                                      if (!pattern23.test(data18)) {
+                                      if (!pattern26.test(data18)) {
                                         validate29.errors = [{ instancePath: instancePath + "/versions/imageDigest", schemaPath: "#/$defs/Canonical_RuntimeVersions_7edb8efc/properties/imageDigest/pattern", keyword: "pattern", params: { pattern: "^sha256:[a-f0-9]{64}$" }, message: 'must match pattern "^sha256:[a-f0-9]{64}$"' }];
                                         return false;
                                       }
@@ -3877,7 +4014,7 @@ function validate29(data, { instancePath = "", parentData, parentDataProperty, r
                                   const _errs46 = errors2;
                                   if (errors2 === _errs46) {
                                     if (typeof data19 === "string") {
-                                      if (!pattern24.test(data19)) {
+                                      if (!pattern27.test(data19)) {
                                         validate29.errors = [{ instancePath: instancePath + "/versions/sdk", schemaPath: "#/$defs/Canonical_RuntimeVersions_7edb8efc/properties/sdk/pattern", keyword: "pattern", params: { pattern: "^[0-9]+\\.[0-9]+\\.[0-9]+$" }, message: 'must match pattern "^[0-9]+\\.[0-9]+\\.[0-9]+$"' }];
                                         return false;
                                       }
@@ -3896,7 +4033,7 @@ function validate29(data, { instancePath = "", parentData, parentDataProperty, r
                                     const _errs48 = errors2;
                                     if (errors2 === _errs48) {
                                       if (typeof data20 === "string") {
-                                        if (!pattern24.test(data20)) {
+                                        if (!pattern27.test(data20)) {
                                           validate29.errors = [{ instancePath: instancePath + "/versions/cli", schemaPath: "#/$defs/Canonical_RuntimeVersions_7edb8efc/properties/cli/pattern", keyword: "pattern", params: { pattern: "^[0-9]+\\.[0-9]+\\.[0-9]+$" }, message: 'must match pattern "^[0-9]+\\.[0-9]+\\.[0-9]+$"' }];
                                           return false;
                                         }
@@ -4088,7 +4225,7 @@ function validate80(data, { instancePath = "", parentData, parentDataProperty, r
 }
 validate80.evaluated = { "props": true, "dynamicProps": false, "dynamicItems": false };
 var validateHistory = validate82;
-var schema51 = { "type": "object", "properties": { "requestId": { "type": "string", "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$" }, "prompt": { "type": "string", "minLength": 1, "maxLength": 1e5, "pattern": "\\S" }, "skill": { "anyOf": [{ "$ref": "#/$defs/ConversationSkillAssetPin" }, { "type": "null" }] }, "window": { "anyOf": [{ "$ref": "#/$defs/Canonical_NormalizedWindow_e50ec0ed" }, { "type": "null" }] }, "windowRequest": { "anyOf": [{ "$ref": "#/$defs/Canonical_WindowRequest_f314f340" }, { "type": "null" }] }, "modelSelection": { "type": "object", "properties": { "provider": { "enum": ["bedrock", "claude-api"] }, "modelId": { "type": "string", "pattern": "^[a-zA-Z0-9][a-zA-Z0-9._:/-]{0,199}$" }, "effort": { "anyOf": [{ "type": "null" }, { "type": "string", "enum": ["low", "medium", "high", "xhigh", "max"] }] } }, "required": ["provider", "modelId", "effort"], "additionalProperties": false }, "documentRevision": { "type": "object", "properties": { "artifactId": { "type": "string", "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$" }, "versionId": { "type": "string", "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$" }, "objectSha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" } }, "required": ["artifactId", "versionId", "objectSha256"], "additionalProperties": false }, "uploads": { "type": "array", "minItems": 1, "maxItems": 8, "uniqueItems": true, "items": { "type": "object", "properties": { "uploadId": { "type": "string", "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$" }, "sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" } }, "required": ["uploadId", "sha256"], "additionalProperties": false } }, "procedure": { "oneOf": [{ "type": "object", "properties": { "source": { "const": "firm" }, "recordId": { "type": "string", "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$" }, "version": { "type": "integer", "minimum": 1, "maximum": 9007199254740991 }, "manifestDigest": { "type": "string", "pattern": "^[a-f0-9]{64}$" } }, "required": ["source", "recordId", "version", "manifestDigest"], "additionalProperties": false }, { "type": "object", "properties": { "source": { "const": "builtin" }, "id": { "enum": ["briefing", "draft", "bill_analysis", "hearing_prep", "coalition_letter", "amendment_tracker"] }, "version": { "type": "integer", "minimum": 1, "maximum": 9007199254740991 }, "manifestDigest": { "type": "string", "pattern": "^[a-f0-9]{64}$" } }, "required": ["source", "id", "version", "manifestDigest"], "additionalProperties": false }] }, "work": { "type": "object", "properties": { "entry": { "enum": ["start-work", "delegate"] }, "jobKind": { "enum": ["research", "deliverable", "audit", "scheduled"] }, "deliverables": { "type": "array", "maxItems": 20, "uniqueItems": true, "items": { "type": "string", "minLength": 1, "maxLength": 200, "pattern": "\\S" } }, "dependencies": { "type": "array", "maxItems": 20, "uniqueItems": true, "items": { "type": "string", "minLength": 1, "maxLength": 200, "pattern": "\\S" } } }, "required": ["entry", "jobKind", "deliverables", "dependencies"], "additionalProperties": false } }, "required": ["requestId", "prompt", "skill", "window", "windowRequest"], "additionalProperties": false, "allOf": [{ "if": { "properties": { "documentRevision": {} }, "required": ["documentRevision"] }, "then": { "properties": { "skill": { "anyOf": [{ "anyOf": [{ "type": "object", "properties": { "skillId": { "const": "quick_skill.bill_watch" }, "skillVersion": { "const": "2.0.0" } }, "required": ["skillId", "skillVersion"] }, { "type": "object", "properties": { "skillId": { "const": "quick_skill.cited_report" }, "skillVersion": { "const": "1.0.0" } }, "required": ["skillId", "skillVersion"] }] }, { "type": "null" }] } } } }, { "if": { "properties": { "procedure": {} }, "required": ["procedure"] }, "then": { "properties": { "skill": { "type": "null" } } } }] };
+var schema51 = { "type": "object", "properties": { "requestId": { "type": "string", "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$" }, "prompt": { "type": "string", "minLength": 1, "maxLength": 1e5, "pattern": "\\S" }, "skill": { "anyOf": [{ "$ref": "#/$defs/ConversationSkillAssetPin" }, { "type": "null" }] }, "window": { "anyOf": [{ "$ref": "#/$defs/Canonical_NormalizedWindow_e50ec0ed" }, { "type": "null" }] }, "windowRequest": { "anyOf": [{ "$ref": "#/$defs/Canonical_WindowRequest_f314f340" }, { "type": "null" }] }, "modelSelection": { "type": "object", "properties": { "provider": { "enum": ["bedrock", "claude-api"] }, "modelId": { "type": "string", "pattern": "^[a-zA-Z0-9][a-zA-Z0-9._:/-]{0,199}$" }, "effort": { "anyOf": [{ "type": "null" }, { "type": "string", "enum": ["low", "medium", "high", "xhigh", "max"] }] } }, "required": ["provider", "modelId", "effort"], "additionalProperties": false }, "documentRevision": { "type": "object", "properties": { "artifactId": { "type": "string", "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$" }, "versionId": { "type": "string", "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$" }, "objectSha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" } }, "required": ["artifactId", "versionId", "objectSha256"], "additionalProperties": false }, "uploads": { "type": "array", "minItems": 1, "maxItems": 8, "uniqueItems": true, "items": { "type": "object", "properties": { "uploadId": { "type": "string", "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$" }, "sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" } }, "required": ["uploadId", "sha256"], "additionalProperties": false } }, "procedure": { "oneOf": [{ "type": "object", "properties": { "source": { "const": "firm" }, "recordId": { "type": "string", "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$" }, "version": { "type": "integer", "minimum": 1, "maximum": 9007199254740991 }, "manifestDigest": { "type": "string", "pattern": "^[a-f0-9]{64}$" } }, "required": ["source", "recordId", "version", "manifestDigest"], "additionalProperties": false }, { "type": "object", "properties": { "source": { "const": "builtin" }, "id": { "enum": ["briefing", "draft", "bill_analysis", "hearing_prep", "coalition_letter", "amendment_tracker"] }, "version": { "type": "integer", "minimum": 1, "maximum": 9007199254740991 }, "manifestDigest": { "type": "string", "pattern": "^[a-f0-9]{64}$" } }, "required": ["source", "id", "version", "manifestDigest"], "additionalProperties": false }] }, "siteWorkflow": { "type": "object", "properties": { "siteId": { "type": "string", "pattern": "^[a-z][a-z0-9-]{1,63}$" }, "workflowId": { "type": "string", "pattern": "^[a-z][a-z0-9-]{1,63}$" }, "version": { "type": "integer", "minimum": 1, "maximum": 9007199254740991 }, "manifestSha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" } }, "required": ["siteId", "workflowId", "version", "manifestSha256"], "additionalProperties": false }, "work": { "type": "object", "properties": { "entry": { "enum": ["start-work", "delegate"] }, "jobKind": { "enum": ["research", "deliverable", "audit", "scheduled"] }, "deliverables": { "type": "array", "maxItems": 20, "uniqueItems": true, "items": { "type": "string", "minLength": 1, "maxLength": 200, "pattern": "\\S" } }, "dependencies": { "type": "array", "maxItems": 20, "uniqueItems": true, "items": { "type": "string", "minLength": 1, "maxLength": 200, "pattern": "\\S" } } }, "required": ["entry", "jobKind", "deliverables", "dependencies"], "additionalProperties": false } }, "required": ["requestId", "prompt", "skill", "window", "windowRequest"], "additionalProperties": false, "allOf": [{ "if": { "properties": { "documentRevision": {} }, "required": ["documentRevision"] }, "then": { "properties": { "skill": { "anyOf": [{ "anyOf": [{ "type": "object", "properties": { "skillId": { "const": "quick_skill.bill_watch" }, "skillVersion": { "const": "2.0.0" } }, "required": ["skillId", "skillVersion"] }, { "type": "object", "properties": { "skillId": { "const": "quick_skill.cited_report" }, "skillVersion": { "const": "1.0.0" } }, "required": ["skillId", "skillVersion"] }] }, { "type": "null" }] } } } }, { "if": { "properties": { "procedure": {} }, "required": ["procedure"] }, "then": { "properties": { "skill": { "type": "null" } } } }] };
 var schema55 = { "oneOf": [{ "type": "object", "properties": { "basis": { "type": "string", "enum": ["calendar-week", "calendar-month", "calendar-year", "relative-duration", "explicit"] }, "startInclusive": { "type": "string", "format": "date-time", "pattern": "Z$" }, "endExclusive": { "type": "string", "format": "date-time", "pattern": "Z$" }, "timezone": { "type": "string", "minLength": 1, "maxLength": 100 }, "weekStartsOn": { "anyOf": [{ "type": "string", "enum": ["monday", "sunday"] }, { "type": "null" }] } }, "required": ["basis", "startInclusive", "endExclusive", "timezone", "weekStartsOn"], "additionalProperties": false }, { "type": "object", "properties": { "basis": { "const": "fiscal-year" }, "year": { "type": "integer", "minimum": 1900, "maximum": 3e3 }, "calendarId": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-z][a-z0-9_.-]*$" }, "stage": { "type": "string", "enum": ["requested", "authorized", "appropriated", "obligated", "actual", "outlay"] }, "revisionId": { "type": "string", "minLength": 1, "maxLength": 256 }, "startInclusive": { "type": "string", "format": "date-time", "pattern": "Z$" }, "endExclusive": { "type": "string", "format": "date-time", "pattern": "Z$" }, "timezone": { "type": "string", "minLength": 1, "maxLength": 100 } }, "required": ["basis", "year", "calendarId", "stage", "revisionId", "startInclusive", "endExclusive", "timezone"], "additionalProperties": false }, { "type": "object", "properties": { "basis": { "const": "unbounded" } }, "required": ["basis"], "additionalProperties": false }] };
 var schema52 = { "type": "object", "properties": { "skillId": { "anyOf": [{ "$ref": "#/$defs/Canonical_skillId_31e12e8e" }, { "$comment": "Identities added at this version. Adding another one requires a new reviewed version of this file, never an edit to the closed 0.2.0 enum.", "type": "string", "enum": ["quick_skill.cited_report"] }] }, "skillVersion": { "$ref": "#/$defs/Canonical_skillVersion_7e2af095" }, "manifestSha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" }, "proseSha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" }, "catalogSha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" } }, "required": ["skillId", "skillVersion", "manifestSha256", "proseSha256", "catalogSha256"], "additionalProperties": false };
 function validate36(data, { instancePath = "", parentData, parentDataProperty, rootData = data, dynamicAnchors = {} } = {}) {
@@ -7312,183 +7449,99 @@ function validate35(data, { instancePath = "", parentData, parentDataProperty, r
                             var valid9 = true;
                           }
                           if (valid9) {
-                            if (data.work !== void 0) {
-                              let data71 = data.work;
+                            if (data.siteWorkflow !== void 0) {
+                              let data71 = data.siteWorkflow;
                               const _errs203 = errors2;
                               if (errors2 === _errs203) {
                                 if (data71 && typeof data71 == "object" && !Array.isArray(data71)) {
                                   let missing20;
-                                  if (data71.entry === void 0 && (missing20 = "entry") || data71.jobKind === void 0 && (missing20 = "jobKind") || data71.deliverables === void 0 && (missing20 = "deliverables") || data71.dependencies === void 0 && (missing20 = "dependencies")) {
-                                    validate35.errors = [{ instancePath: instancePath + "/work", schemaPath: "#/properties/work/required", keyword: "required", params: { missingProperty: missing20 }, message: "must have required property '" + missing20 + "'" }];
+                                  if (data71.siteId === void 0 && (missing20 = "siteId") || data71.workflowId === void 0 && (missing20 = "workflowId") || data71.version === void 0 && (missing20 = "version") || data71.manifestSha256 === void 0 && (missing20 = "manifestSha256")) {
+                                    validate35.errors = [{ instancePath: instancePath + "/siteWorkflow", schemaPath: "#/properties/siteWorkflow/required", keyword: "required", params: { missingProperty: missing20 }, message: "must have required property '" + missing20 + "'" }];
                                     return false;
                                   } else {
                                     const _errs205 = errors2;
                                     for (const key16 in data71) {
-                                      if (!(key16 === "entry" || key16 === "jobKind" || key16 === "deliverables" || key16 === "dependencies")) {
-                                        validate35.errors = [{ instancePath: instancePath + "/work", schemaPath: "#/properties/work/additionalProperties", keyword: "additionalProperties", params: { additionalProperty: key16 }, message: "must NOT have additional properties" }];
+                                      if (!(key16 === "siteId" || key16 === "workflowId" || key16 === "version" || key16 === "manifestSha256")) {
+                                        validate35.errors = [{ instancePath: instancePath + "/siteWorkflow", schemaPath: "#/properties/siteWorkflow/additionalProperties", keyword: "additionalProperties", params: { additionalProperty: key16 }, message: "must NOT have additional properties" }];
                                         return false;
                                         break;
                                       }
                                     }
                                     if (_errs205 === errors2) {
-                                      if (data71.entry !== void 0) {
-                                        let data72 = data71.entry;
+                                      if (data71.siteId !== void 0) {
+                                        let data72 = data71.siteId;
                                         const _errs206 = errors2;
-                                        if (!(data72 === "start-work" || data72 === "delegate")) {
-                                          validate35.errors = [{ instancePath: instancePath + "/work/entry", schemaPath: "#/properties/work/properties/entry/enum", keyword: "enum", params: { allowedValues: schema51.properties.work.properties.entry.enum }, message: "must be equal to one of the allowed values" }];
-                                          return false;
+                                        if (errors2 === _errs206) {
+                                          if (typeof data72 === "string") {
+                                            if (!pattern20.test(data72)) {
+                                              validate35.errors = [{ instancePath: instancePath + "/siteWorkflow/siteId", schemaPath: "#/properties/siteWorkflow/properties/siteId/pattern", keyword: "pattern", params: { pattern: "^[a-z][a-z0-9-]{1,63}$" }, message: 'must match pattern "^[a-z][a-z0-9-]{1,63}$"' }];
+                                              return false;
+                                            }
+                                          } else {
+                                            validate35.errors = [{ instancePath: instancePath + "/siteWorkflow/siteId", schemaPath: "#/properties/siteWorkflow/properties/siteId/type", keyword: "type", params: { type: "string" }, message: "must be string" }];
+                                            return false;
+                                          }
                                         }
                                         var valid37 = _errs206 === errors2;
                                       } else {
                                         var valid37 = true;
                                       }
                                       if (valid37) {
-                                        if (data71.jobKind !== void 0) {
-                                          let data73 = data71.jobKind;
-                                          const _errs207 = errors2;
-                                          if (!(data73 === "research" || data73 === "deliverable" || data73 === "audit" || data73 === "scheduled")) {
-                                            validate35.errors = [{ instancePath: instancePath + "/work/jobKind", schemaPath: "#/properties/work/properties/jobKind/enum", keyword: "enum", params: { allowedValues: schema51.properties.work.properties.jobKind.enum }, message: "must be equal to one of the allowed values" }];
-                                            return false;
+                                        if (data71.workflowId !== void 0) {
+                                          let data73 = data71.workflowId;
+                                          const _errs208 = errors2;
+                                          if (errors2 === _errs208) {
+                                            if (typeof data73 === "string") {
+                                              if (!pattern20.test(data73)) {
+                                                validate35.errors = [{ instancePath: instancePath + "/siteWorkflow/workflowId", schemaPath: "#/properties/siteWorkflow/properties/workflowId/pattern", keyword: "pattern", params: { pattern: "^[a-z][a-z0-9-]{1,63}$" }, message: 'must match pattern "^[a-z][a-z0-9-]{1,63}$"' }];
+                                                return false;
+                                              }
+                                            } else {
+                                              validate35.errors = [{ instancePath: instancePath + "/siteWorkflow/workflowId", schemaPath: "#/properties/siteWorkflow/properties/workflowId/type", keyword: "type", params: { type: "string" }, message: "must be string" }];
+                                              return false;
+                                            }
                                           }
-                                          var valid37 = _errs207 === errors2;
+                                          var valid37 = _errs208 === errors2;
                                         } else {
                                           var valid37 = true;
                                         }
                                         if (valid37) {
-                                          if (data71.deliverables !== void 0) {
-                                            let data74 = data71.deliverables;
-                                            const _errs208 = errors2;
-                                            if (errors2 === _errs208) {
-                                              if (Array.isArray(data74)) {
-                                                if (data74.length > 20) {
-                                                  validate35.errors = [{ instancePath: instancePath + "/work/deliverables", schemaPath: "#/properties/work/properties/deliverables/maxItems", keyword: "maxItems", params: { limit: 20 }, message: "must NOT have more than 20 items" }];
+                                          if (data71.version !== void 0) {
+                                            let data74 = data71.version;
+                                            const _errs210 = errors2;
+                                            if (!(typeof data74 == "number" && (!(data74 % 1) && !isNaN(data74)) && isFinite(data74))) {
+                                              validate35.errors = [{ instancePath: instancePath + "/siteWorkflow/version", schemaPath: "#/properties/siteWorkflow/properties/version/type", keyword: "type", params: { type: "integer" }, message: "must be integer" }];
+                                              return false;
+                                            }
+                                            if (errors2 === _errs210) {
+                                              if (typeof data74 == "number" && isFinite(data74)) {
+                                                if (data74 > 9007199254740991 || isNaN(data74)) {
+                                                  validate35.errors = [{ instancePath: instancePath + "/siteWorkflow/version", schemaPath: "#/properties/siteWorkflow/properties/version/maximum", keyword: "maximum", params: { comparison: "<=", limit: 9007199254740991 }, message: "must be <= 9007199254740991" }];
                                                   return false;
                                                 } else {
-                                                  var valid38 = true;
-                                                  const len1 = data74.length;
-                                                  for (let i2 = 0; i2 < len1; i2++) {
-                                                    let data75 = data74[i2];
-                                                    const _errs210 = errors2;
-                                                    if (errors2 === _errs210) {
-                                                      if (typeof data75 === "string") {
-                                                        if (func2(data75) > 200) {
-                                                          validate35.errors = [{ instancePath: instancePath + "/work/deliverables/" + i2, schemaPath: "#/properties/work/properties/deliverables/items/maxLength", keyword: "maxLength", params: { limit: 200 }, message: "must NOT have more than 200 characters" }];
-                                                          return false;
-                                                        } else {
-                                                          if (func2(data75) < 1) {
-                                                            validate35.errors = [{ instancePath: instancePath + "/work/deliverables/" + i2, schemaPath: "#/properties/work/properties/deliverables/items/minLength", keyword: "minLength", params: { limit: 1 }, message: "must NOT have fewer than 1 characters" }];
-                                                            return false;
-                                                          } else {
-                                                            if (!pattern5.test(data75)) {
-                                                              validate35.errors = [{ instancePath: instancePath + "/work/deliverables/" + i2, schemaPath: "#/properties/work/properties/deliverables/items/pattern", keyword: "pattern", params: { pattern: "\\S" }, message: 'must match pattern "\\S"' }];
-                                                              return false;
-                                                            }
-                                                          }
-                                                        }
-                                                      } else {
-                                                        validate35.errors = [{ instancePath: instancePath + "/work/deliverables/" + i2, schemaPath: "#/properties/work/properties/deliverables/items/type", keyword: "type", params: { type: "string" }, message: "must be string" }];
-                                                        return false;
-                                                      }
-                                                    }
-                                                    var valid38 = _errs210 === errors2;
-                                                    if (!valid38) {
-                                                      break;
-                                                    }
-                                                  }
-                                                  if (valid38) {
-                                                    let i3 = data74.length;
-                                                    let j1;
-                                                    if (i3 > 1) {
-                                                      const indices0 = {};
-                                                      for (; i3--; ) {
-                                                        let item0 = data74[i3];
-                                                        if (typeof item0 !== "string") {
-                                                          continue;
-                                                        }
-                                                        if (typeof indices0[item0] == "number") {
-                                                          j1 = indices0[item0];
-                                                          validate35.errors = [{ instancePath: instancePath + "/work/deliverables", schemaPath: "#/properties/work/properties/deliverables/uniqueItems", keyword: "uniqueItems", params: { i: i3, j: j1 }, message: "must NOT have duplicate items (items ## " + j1 + " and " + i3 + " are identical)" }];
-                                                          return false;
-                                                          break;
-                                                        }
-                                                        indices0[item0] = i3;
-                                                      }
-                                                    }
+                                                  if (data74 < 1 || isNaN(data74)) {
+                                                    validate35.errors = [{ instancePath: instancePath + "/siteWorkflow/version", schemaPath: "#/properties/siteWorkflow/properties/version/minimum", keyword: "minimum", params: { comparison: ">=", limit: 1 }, message: "must be >= 1" }];
+                                                    return false;
                                                   }
                                                 }
-                                              } else {
-                                                validate35.errors = [{ instancePath: instancePath + "/work/deliverables", schemaPath: "#/properties/work/properties/deliverables/type", keyword: "type", params: { type: "array" }, message: "must be array" }];
-                                                return false;
                                               }
                                             }
-                                            var valid37 = _errs208 === errors2;
+                                            var valid37 = _errs210 === errors2;
                                           } else {
                                             var valid37 = true;
                                           }
                                           if (valid37) {
-                                            if (data71.dependencies !== void 0) {
-                                              let data76 = data71.dependencies;
+                                            if (data71.manifestSha256 !== void 0) {
+                                              let data75 = data71.manifestSha256;
                                               const _errs212 = errors2;
                                               if (errors2 === _errs212) {
-                                                if (Array.isArray(data76)) {
-                                                  if (data76.length > 20) {
-                                                    validate35.errors = [{ instancePath: instancePath + "/work/dependencies", schemaPath: "#/properties/work/properties/dependencies/maxItems", keyword: "maxItems", params: { limit: 20 }, message: "must NOT have more than 20 items" }];
+                                                if (typeof data75 === "string") {
+                                                  if (!pattern18.test(data75)) {
+                                                    validate35.errors = [{ instancePath: instancePath + "/siteWorkflow/manifestSha256", schemaPath: "#/properties/siteWorkflow/properties/manifestSha256/pattern", keyword: "pattern", params: { pattern: "^[a-f0-9]{64}$" }, message: 'must match pattern "^[a-f0-9]{64}$"' }];
                                                     return false;
-                                                  } else {
-                                                    var valid40 = true;
-                                                    const len2 = data76.length;
-                                                    for (let i4 = 0; i4 < len2; i4++) {
-                                                      let data77 = data76[i4];
-                                                      const _errs214 = errors2;
-                                                      if (errors2 === _errs214) {
-                                                        if (typeof data77 === "string") {
-                                                          if (func2(data77) > 200) {
-                                                            validate35.errors = [{ instancePath: instancePath + "/work/dependencies/" + i4, schemaPath: "#/properties/work/properties/dependencies/items/maxLength", keyword: "maxLength", params: { limit: 200 }, message: "must NOT have more than 200 characters" }];
-                                                            return false;
-                                                          } else {
-                                                            if (func2(data77) < 1) {
-                                                              validate35.errors = [{ instancePath: instancePath + "/work/dependencies/" + i4, schemaPath: "#/properties/work/properties/dependencies/items/minLength", keyword: "minLength", params: { limit: 1 }, message: "must NOT have fewer than 1 characters" }];
-                                                              return false;
-                                                            } else {
-                                                              if (!pattern5.test(data77)) {
-                                                                validate35.errors = [{ instancePath: instancePath + "/work/dependencies/" + i4, schemaPath: "#/properties/work/properties/dependencies/items/pattern", keyword: "pattern", params: { pattern: "\\S" }, message: 'must match pattern "\\S"' }];
-                                                                return false;
-                                                              }
-                                                            }
-                                                          }
-                                                        } else {
-                                                          validate35.errors = [{ instancePath: instancePath + "/work/dependencies/" + i4, schemaPath: "#/properties/work/properties/dependencies/items/type", keyword: "type", params: { type: "string" }, message: "must be string" }];
-                                                          return false;
-                                                        }
-                                                      }
-                                                      var valid40 = _errs214 === errors2;
-                                                      if (!valid40) {
-                                                        break;
-                                                      }
-                                                    }
-                                                    if (valid40) {
-                                                      let i5 = data76.length;
-                                                      let j2;
-                                                      if (i5 > 1) {
-                                                        const indices1 = {};
-                                                        for (; i5--; ) {
-                                                          let item1 = data76[i5];
-                                                          if (typeof item1 !== "string") {
-                                                            continue;
-                                                          }
-                                                          if (typeof indices1[item1] == "number") {
-                                                            j2 = indices1[item1];
-                                                            validate35.errors = [{ instancePath: instancePath + "/work/dependencies", schemaPath: "#/properties/work/properties/dependencies/uniqueItems", keyword: "uniqueItems", params: { i: i5, j: j2 }, message: "must NOT have duplicate items (items ## " + j2 + " and " + i5 + " are identical)" }];
-                                                            return false;
-                                                            break;
-                                                          }
-                                                          indices1[item1] = i5;
-                                                        }
-                                                      }
-                                                    }
                                                   }
                                                 } else {
-                                                  validate35.errors = [{ instancePath: instancePath + "/work/dependencies", schemaPath: "#/properties/work/properties/dependencies/type", keyword: "type", params: { type: "array" }, message: "must be array" }];
+                                                  validate35.errors = [{ instancePath: instancePath + "/siteWorkflow/manifestSha256", schemaPath: "#/properties/siteWorkflow/properties/manifestSha256/type", keyword: "type", params: { type: "string" }, message: "must be string" }];
                                                   return false;
                                                 }
                                               }
@@ -7502,13 +7555,213 @@ function validate35(data, { instancePath = "", parentData, parentDataProperty, r
                                     }
                                   }
                                 } else {
-                                  validate35.errors = [{ instancePath: instancePath + "/work", schemaPath: "#/properties/work/type", keyword: "type", params: { type: "object" }, message: "must be object" }];
+                                  validate35.errors = [{ instancePath: instancePath + "/siteWorkflow", schemaPath: "#/properties/siteWorkflow/type", keyword: "type", params: { type: "object" }, message: "must be object" }];
                                   return false;
                                 }
                               }
                               var valid9 = _errs203 === errors2;
                             } else {
                               var valid9 = true;
+                            }
+                            if (valid9) {
+                              if (data.work !== void 0) {
+                                let data76 = data.work;
+                                const _errs214 = errors2;
+                                if (errors2 === _errs214) {
+                                  if (data76 && typeof data76 == "object" && !Array.isArray(data76)) {
+                                    let missing21;
+                                    if (data76.entry === void 0 && (missing21 = "entry") || data76.jobKind === void 0 && (missing21 = "jobKind") || data76.deliverables === void 0 && (missing21 = "deliverables") || data76.dependencies === void 0 && (missing21 = "dependencies")) {
+                                      validate35.errors = [{ instancePath: instancePath + "/work", schemaPath: "#/properties/work/required", keyword: "required", params: { missingProperty: missing21 }, message: "must have required property '" + missing21 + "'" }];
+                                      return false;
+                                    } else {
+                                      const _errs216 = errors2;
+                                      for (const key17 in data76) {
+                                        if (!(key17 === "entry" || key17 === "jobKind" || key17 === "deliverables" || key17 === "dependencies")) {
+                                          validate35.errors = [{ instancePath: instancePath + "/work", schemaPath: "#/properties/work/additionalProperties", keyword: "additionalProperties", params: { additionalProperty: key17 }, message: "must NOT have additional properties" }];
+                                          return false;
+                                          break;
+                                        }
+                                      }
+                                      if (_errs216 === errors2) {
+                                        if (data76.entry !== void 0) {
+                                          let data77 = data76.entry;
+                                          const _errs217 = errors2;
+                                          if (!(data77 === "start-work" || data77 === "delegate")) {
+                                            validate35.errors = [{ instancePath: instancePath + "/work/entry", schemaPath: "#/properties/work/properties/entry/enum", keyword: "enum", params: { allowedValues: schema51.properties.work.properties.entry.enum }, message: "must be equal to one of the allowed values" }];
+                                            return false;
+                                          }
+                                          var valid38 = _errs217 === errors2;
+                                        } else {
+                                          var valid38 = true;
+                                        }
+                                        if (valid38) {
+                                          if (data76.jobKind !== void 0) {
+                                            let data78 = data76.jobKind;
+                                            const _errs218 = errors2;
+                                            if (!(data78 === "research" || data78 === "deliverable" || data78 === "audit" || data78 === "scheduled")) {
+                                              validate35.errors = [{ instancePath: instancePath + "/work/jobKind", schemaPath: "#/properties/work/properties/jobKind/enum", keyword: "enum", params: { allowedValues: schema51.properties.work.properties.jobKind.enum }, message: "must be equal to one of the allowed values" }];
+                                              return false;
+                                            }
+                                            var valid38 = _errs218 === errors2;
+                                          } else {
+                                            var valid38 = true;
+                                          }
+                                          if (valid38) {
+                                            if (data76.deliverables !== void 0) {
+                                              let data79 = data76.deliverables;
+                                              const _errs219 = errors2;
+                                              if (errors2 === _errs219) {
+                                                if (Array.isArray(data79)) {
+                                                  if (data79.length > 20) {
+                                                    validate35.errors = [{ instancePath: instancePath + "/work/deliverables", schemaPath: "#/properties/work/properties/deliverables/maxItems", keyword: "maxItems", params: { limit: 20 }, message: "must NOT have more than 20 items" }];
+                                                    return false;
+                                                  } else {
+                                                    var valid39 = true;
+                                                    const len1 = data79.length;
+                                                    for (let i2 = 0; i2 < len1; i2++) {
+                                                      let data80 = data79[i2];
+                                                      const _errs221 = errors2;
+                                                      if (errors2 === _errs221) {
+                                                        if (typeof data80 === "string") {
+                                                          if (func2(data80) > 200) {
+                                                            validate35.errors = [{ instancePath: instancePath + "/work/deliverables/" + i2, schemaPath: "#/properties/work/properties/deliverables/items/maxLength", keyword: "maxLength", params: { limit: 200 }, message: "must NOT have more than 200 characters" }];
+                                                            return false;
+                                                          } else {
+                                                            if (func2(data80) < 1) {
+                                                              validate35.errors = [{ instancePath: instancePath + "/work/deliverables/" + i2, schemaPath: "#/properties/work/properties/deliverables/items/minLength", keyword: "minLength", params: { limit: 1 }, message: "must NOT have fewer than 1 characters" }];
+                                                              return false;
+                                                            } else {
+                                                              if (!pattern5.test(data80)) {
+                                                                validate35.errors = [{ instancePath: instancePath + "/work/deliverables/" + i2, schemaPath: "#/properties/work/properties/deliverables/items/pattern", keyword: "pattern", params: { pattern: "\\S" }, message: 'must match pattern "\\S"' }];
+                                                                return false;
+                                                              }
+                                                            }
+                                                          }
+                                                        } else {
+                                                          validate35.errors = [{ instancePath: instancePath + "/work/deliverables/" + i2, schemaPath: "#/properties/work/properties/deliverables/items/type", keyword: "type", params: { type: "string" }, message: "must be string" }];
+                                                          return false;
+                                                        }
+                                                      }
+                                                      var valid39 = _errs221 === errors2;
+                                                      if (!valid39) {
+                                                        break;
+                                                      }
+                                                    }
+                                                    if (valid39) {
+                                                      let i3 = data79.length;
+                                                      let j1;
+                                                      if (i3 > 1) {
+                                                        const indices0 = {};
+                                                        for (; i3--; ) {
+                                                          let item0 = data79[i3];
+                                                          if (typeof item0 !== "string") {
+                                                            continue;
+                                                          }
+                                                          if (typeof indices0[item0] == "number") {
+                                                            j1 = indices0[item0];
+                                                            validate35.errors = [{ instancePath: instancePath + "/work/deliverables", schemaPath: "#/properties/work/properties/deliverables/uniqueItems", keyword: "uniqueItems", params: { i: i3, j: j1 }, message: "must NOT have duplicate items (items ## " + j1 + " and " + i3 + " are identical)" }];
+                                                            return false;
+                                                            break;
+                                                          }
+                                                          indices0[item0] = i3;
+                                                        }
+                                                      }
+                                                    }
+                                                  }
+                                                } else {
+                                                  validate35.errors = [{ instancePath: instancePath + "/work/deliverables", schemaPath: "#/properties/work/properties/deliverables/type", keyword: "type", params: { type: "array" }, message: "must be array" }];
+                                                  return false;
+                                                }
+                                              }
+                                              var valid38 = _errs219 === errors2;
+                                            } else {
+                                              var valid38 = true;
+                                            }
+                                            if (valid38) {
+                                              if (data76.dependencies !== void 0) {
+                                                let data81 = data76.dependencies;
+                                                const _errs223 = errors2;
+                                                if (errors2 === _errs223) {
+                                                  if (Array.isArray(data81)) {
+                                                    if (data81.length > 20) {
+                                                      validate35.errors = [{ instancePath: instancePath + "/work/dependencies", schemaPath: "#/properties/work/properties/dependencies/maxItems", keyword: "maxItems", params: { limit: 20 }, message: "must NOT have more than 20 items" }];
+                                                      return false;
+                                                    } else {
+                                                      var valid41 = true;
+                                                      const len2 = data81.length;
+                                                      for (let i4 = 0; i4 < len2; i4++) {
+                                                        let data82 = data81[i4];
+                                                        const _errs225 = errors2;
+                                                        if (errors2 === _errs225) {
+                                                          if (typeof data82 === "string") {
+                                                            if (func2(data82) > 200) {
+                                                              validate35.errors = [{ instancePath: instancePath + "/work/dependencies/" + i4, schemaPath: "#/properties/work/properties/dependencies/items/maxLength", keyword: "maxLength", params: { limit: 200 }, message: "must NOT have more than 200 characters" }];
+                                                              return false;
+                                                            } else {
+                                                              if (func2(data82) < 1) {
+                                                                validate35.errors = [{ instancePath: instancePath + "/work/dependencies/" + i4, schemaPath: "#/properties/work/properties/dependencies/items/minLength", keyword: "minLength", params: { limit: 1 }, message: "must NOT have fewer than 1 characters" }];
+                                                                return false;
+                                                              } else {
+                                                                if (!pattern5.test(data82)) {
+                                                                  validate35.errors = [{ instancePath: instancePath + "/work/dependencies/" + i4, schemaPath: "#/properties/work/properties/dependencies/items/pattern", keyword: "pattern", params: { pattern: "\\S" }, message: 'must match pattern "\\S"' }];
+                                                                  return false;
+                                                                }
+                                                              }
+                                                            }
+                                                          } else {
+                                                            validate35.errors = [{ instancePath: instancePath + "/work/dependencies/" + i4, schemaPath: "#/properties/work/properties/dependencies/items/type", keyword: "type", params: { type: "string" }, message: "must be string" }];
+                                                            return false;
+                                                          }
+                                                        }
+                                                        var valid41 = _errs225 === errors2;
+                                                        if (!valid41) {
+                                                          break;
+                                                        }
+                                                      }
+                                                      if (valid41) {
+                                                        let i5 = data81.length;
+                                                        let j2;
+                                                        if (i5 > 1) {
+                                                          const indices1 = {};
+                                                          for (; i5--; ) {
+                                                            let item1 = data81[i5];
+                                                            if (typeof item1 !== "string") {
+                                                              continue;
+                                                            }
+                                                            if (typeof indices1[item1] == "number") {
+                                                              j2 = indices1[item1];
+                                                              validate35.errors = [{ instancePath: instancePath + "/work/dependencies", schemaPath: "#/properties/work/properties/dependencies/uniqueItems", keyword: "uniqueItems", params: { i: i5, j: j2 }, message: "must NOT have duplicate items (items ## " + j2 + " and " + i5 + " are identical)" }];
+                                                              return false;
+                                                              break;
+                                                            }
+                                                            indices1[item1] = i5;
+                                                          }
+                                                        }
+                                                      }
+                                                    }
+                                                  } else {
+                                                    validate35.errors = [{ instancePath: instancePath + "/work/dependencies", schemaPath: "#/properties/work/properties/dependencies/type", keyword: "type", params: { type: "array" }, message: "must be array" }];
+                                                    return false;
+                                                  }
+                                                }
+                                                var valid38 = _errs223 === errors2;
+                                              } else {
+                                                var valid38 = true;
+                                              }
+                                            }
+                                          }
+                                        }
+                                      }
+                                    }
+                                  } else {
+                                    validate35.errors = [{ instancePath: instancePath + "/work", schemaPath: "#/properties/work/type", keyword: "type", params: { type: "object" }, message: "must be object" }];
+                                    return false;
+                                  }
+                                }
+                                var valid9 = _errs214 === errors2;
+                              } else {
+                                var valid9 = true;
+                              }
                             }
                           }
                         }
@@ -16379,8 +16632,8 @@ function validate39(data, { instancePath = "", parentData, parentDataProperty, r
 }
 validate39.evaluated = { "dynamicProps": true, "dynamicItems": false };
 var schema83 = { "type": "object", "properties": { "schemaVersion": { "const": "meri.native-bill-text-source/1" }, "deliveryId": { "type": "string", "pattern": "^[-A-Za-z0-9_.:@/]{1,255}$" }, "operation": { "type": "object", "properties": { "id": { "const": "read_bill_text" }, "version": { "const": "0.2.0" } }, "required": ["id", "version"], "additionalProperties": false }, "requestSha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" }, "argumentsSha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" }, "resultSha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" }, "executionSha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" }, "policyRevision": { "type": "string", "minLength": 1, "maxLength": 255 }, "source": { "type": "object", "properties": { "authoritativeOwner": { "const": "federal_evidence_current" }, "billId": { "type": "string", "minLength": 1, "maxLength": 255 }, "versionCode": { "type": "string", "minLength": 1, "maxLength": 255 }, "revisionId": { "type": "string", "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$" }, "packageId": { "type": "string", "minLength": 1, "maxLength": 255 }, "provider": { "type": "string", "minLength": 1, "maxLength": 255 }, "lineageKey": { "type": "string", "minLength": 1, "maxLength": 4096 }, "versionHash": { "type": "string", "pattern": "^[a-f0-9]{64}$" }, "textHash": { "type": "string", "pattern": "^[a-f0-9]{64}$" } }, "required": ["authoritativeOwner", "billId", "versionCode", "revisionId", "packageId", "provider", "lineageKey", "versionHash", "textHash"], "additionalProperties": false }, "page": { "type": "object", "properties": { "offset": { "type": "integer", "minimum": 0, "maximum": 3e7 }, "endOffset": { "type": "integer", "minimum": 0, "maximum": 3e7 }, "totalCharacters": { "type": "integer", "minimum": 0, "maximum": 3e7 }, "textSha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" }, "pageComplete": { "const": true }, "contentComplete": { "type": "boolean" }, "paginationComplete": { "type": "boolean" }, "truncated": { "type": "boolean" } }, "required": ["offset", "endOffset", "totalCharacters", "textSha256", "pageComplete", "contentComplete", "paginationComplete", "truncated"], "additionalProperties": false } }, "required": ["schemaVersion", "deliveryId", "operation", "requestSha256", "argumentsSha256", "resultSha256", "executionSha256", "policyRevision", "source", "page"], "additionalProperties": false };
-var pattern70 = new RegExp("^[-A-Za-z0-9_.:@/]{1,255}$", "u");
-var pattern75 = new RegExp("^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$", "u");
+var pattern76 = new RegExp("^[-A-Za-z0-9_.:@/]{1,255}$", "u");
+var pattern81 = new RegExp("^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$", "u");
 function validate43(data, { instancePath = "", parentData, parentDataProperty, rootData = data, dynamicAnchors = {} } = {}) {
   let vErrors = null;
   let errors2 = 0;
@@ -16890,7 +17143,7 @@ function validate43(data, { instancePath = "", parentData, parentDataProperty, r
                                       const _errs47 = errors2;
                                       if (errors2 === _errs47) {
                                         if (typeof data21 === "string") {
-                                          if (!pattern70.test(data21)) {
+                                          if (!pattern76.test(data21)) {
                                             validate43.errors = [{ instancePath: instancePath + "/data/deliveryId", schemaPath: "#/$defs/Canonical_NativeBillTextSource_4d549cac/properties/deliveryId/pattern", keyword: "pattern", params: { pattern: "^[-A-Za-z0-9_.:@/]{1,255}$" }, message: 'must match pattern "^[-A-Za-z0-9_.:@/]{1,255}$"' }];
                                             return false;
                                           }
@@ -17140,7 +17393,7 @@ function validate43(data, { instancePath = "", parentData, parentDataProperty, r
                                                                     const _errs72 = errors2;
                                                                     if (errors2 === _errs72) {
                                                                       if (typeof data34 === "string") {
-                                                                        if (!pattern75.test(data34)) {
+                                                                        if (!pattern81.test(data34)) {
                                                                           validate43.errors = [{ instancePath: instancePath + "/data/source/revisionId", schemaPath: "#/$defs/Canonical_NativeBillTextSource_4d549cac/properties/source/properties/revisionId/pattern", keyword: "pattern", params: { pattern: "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$" }, message: 'must match pattern "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"' }];
                                                                           return false;
                                                                         }
@@ -18079,7 +18332,7 @@ function validate46(data, { instancePath = "", parentData, parentDataProperty, r
               const _errs3 = errors2;
               if (errors2 === _errs3) {
                 if (typeof data1 === "string") {
-                  if (!pattern70.test(data1)) {
+                  if (!pattern76.test(data1)) {
                     validate46.errors = [{ instancePath: instancePath + "/deliveryId", schemaPath: "#/properties/deliveryId/pattern", keyword: "pattern", params: { pattern: "^[-A-Za-z0-9_.:@/]{1,255}$" }, message: 'must match pattern "^[-A-Za-z0-9_.:@/]{1,255}$"' }];
                     return false;
                   }
@@ -19466,7 +19719,7 @@ function validate45(data, { instancePath = "", parentData, parentDataProperty, r
 }
 validate45.evaluated = { "props": true, "dynamicProps": false, "dynamicItems": false };
 var schema94 = { "type": "object", "properties": { "schemaVersion": { "const": "meri.native-upload-source/1" }, "deliveryId": { "type": "string", "pattern": "^[-A-Za-z0-9_.:@/]{1,255}$" }, "operation": { "type": "object", "properties": { "id": { "const": "read_upload_source" }, "version": { "const": "0.2.0" } }, "required": ["id", "version"], "additionalProperties": false }, "requestSha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" }, "argumentsSha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" }, "resultSha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" }, "executionSha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" }, "policyRevision": { "type": "string", "minLength": 1, "maxLength": 255 }, "source": { "type": "object", "properties": { "authoritativeOwner": { "const": "upload_custody" }, "uploadId": { "type": "string", "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$" }, "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" }, "versionId": { "type": "string", "minLength": 1, "maxLength": 1024 }, "filename": { "type": "string", "minLength": 1, "maxLength": 255 }, "mimeType": { "type": "string", "maxLength": 128 }, "bytes": { "type": "integer", "minimum": 1, "maximum": 10485760 }, "extractedSourceSha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" }, "extractionStatus": { "enum": ["available", "partial"] }, "limitations": { "type": "array", "items": { "type": "string", "pattern": "^[A-Z][A-Z0-9_]{0,79}$" }, "maxItems": 16 } }, "required": ["authoritativeOwner", "uploadId", "sha256", "versionId", "filename", "mimeType", "bytes", "extractedSourceSha256", "extractionStatus", "limitations"], "additionalProperties": false }, "page": { "type": "object", "properties": { "number": { "type": "integer", "minimum": 0, "maximum": 255 }, "count": { "type": "integer", "minimum": 1, "maximum": 256 }, "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" }, "nextPage": { "anyOf": [{ "type": "integer", "minimum": 1, "maximum": 255 }, { "type": "null" }] }, "fragmentCount": { "type": "integer", "minimum": 0, "maximum": 64 }, "extractionStatus": { "enum": ["available", "partial"] }, "limitations": { "type": "array", "items": { "type": "string", "pattern": "^[A-Z][A-Z0-9_]{0,79}$" }, "maxItems": 16 } }, "required": ["number", "count", "sha256", "nextPage", "fragmentCount", "extractionStatus", "limitations"], "additionalProperties": false } }, "required": ["schemaVersion", "deliveryId", "operation", "requestSha256", "argumentsSha256", "resultSha256", "executionSha256", "policyRevision", "source", "page"], "additionalProperties": false };
-var pattern96 = new RegExp("^[A-Z][A-Z0-9_]{0,79}$", "u");
+var pattern102 = new RegExp("^[A-Z][A-Z0-9_]{0,79}$", "u");
 function validate51(data, { instancePath = "", parentData, parentDataProperty, rootData = data, dynamicAnchors = {} } = {}) {
   let vErrors = null;
   let errors2 = 0;
@@ -19976,7 +20229,7 @@ function validate51(data, { instancePath = "", parentData, parentDataProperty, r
                                       const _errs47 = errors2;
                                       if (errors2 === _errs47) {
                                         if (typeof data21 === "string") {
-                                          if (!pattern70.test(data21)) {
+                                          if (!pattern76.test(data21)) {
                                             validate51.errors = [{ instancePath: instancePath + "/data/deliveryId", schemaPath: "#/$defs/Canonical_NativeUploadSource_e432dc7b/properties/deliveryId/pattern", keyword: "pattern", params: { pattern: "^[-A-Za-z0-9_.:@/]{1,255}$" }, message: 'must match pattern "^[-A-Za-z0-9_.:@/]{1,255}$"' }];
                                             return false;
                                           }
@@ -20350,7 +20603,7 @@ function validate51(data, { instancePath = "", parentData, parentDataProperty, r
                                                                                         const _errs85 = errors2;
                                                                                         if (errors2 === _errs85) {
                                                                                           if (typeof data41 === "string") {
-                                                                                            if (!pattern96.test(data41)) {
+                                                                                            if (!pattern102.test(data41)) {
                                                                                               validate51.errors = [{ instancePath: instancePath + "/data/source/limitations/" + i2, schemaPath: "#/$defs/Canonical_NativeUploadSource_e432dc7b/properties/source/properties/limitations/items/pattern", keyword: "pattern", params: { pattern: "^[A-Z][A-Z0-9_]{0,79}$" }, message: 'must match pattern "^[A-Z][A-Z0-9_]{0,79}$"' }];
                                                                                               return false;
                                                                                             }
@@ -20613,7 +20866,7 @@ function validate51(data, { instancePath = "", parentData, parentDataProperty, r
                                                                                     const _errs107 = errors2;
                                                                                     if (errors2 === _errs107) {
                                                                                       if (typeof data50 === "string") {
-                                                                                        if (!pattern96.test(data50)) {
+                                                                                        if (!pattern102.test(data50)) {
                                                                                           validate51.errors = [{ instancePath: instancePath + "/data/page/limitations/" + i3, schemaPath: "#/$defs/Canonical_NativeUploadSource_e432dc7b/properties/page/properties/limitations/items/pattern", keyword: "pattern", params: { pattern: "^[A-Z][A-Z0-9_]{0,79}$" }, message: 'must match pattern "^[A-Z][A-Z0-9_]{0,79}$"' }];
                                                                                           return false;
                                                                                         }
@@ -24550,6 +24803,13 @@ function assertWindowPair(request, window) {
 function receiveConversationRequest(route, utf8Bytes) {
   const validate = routeValidator(route), request = parse(utf8Bytes, conversationApplicationMetadata.limits.requestBytes);
   if (!validate(request)) fail3("INVALID_REQUEST");
+  if (request.siteWorkflow !== void 0) {
+    try {
+      assertSiteWorkflowSelection(request.siteWorkflow);
+    } catch {
+      fail3("INVALID_REQUEST");
+    }
+  }
   if (request.procedure !== void 0) {
     try {
       assertProcedureSelection(request.procedure);
@@ -24632,7 +24892,7 @@ async function receiveConversationResponse(route, httpStatus, utf8Bytes, request
     if (selected?.retained && !same2(result.request, selected.retained)) fail3("REQUEST_MISMATCH");
     if (selected?.input) {
       const input = selected.input, saved = result.request;
-      if (!same2(saved.procedure ?? null, input.procedure ?? null) || !same2(saved.uploads ?? null, input.uploads ?? null) || !same2(saved.work ?? null, input.work ?? null) || !same2(saved.documentRevision ?? null, input.documentRevision ?? null) || saved.prompt !== input.prompt || !same2(saved.windowRequest, input.windowRequest ?? null) || !same2(saved.skill && { skillId: saved.skill.skillId, skillVersion: saved.skill.skillVersion }, input.skill ?? null) || input.modelSelection !== void 0 && !same2(saved.modelSelection, input.modelSelection)) fail3("REQUEST_MISMATCH");
+      if (!same2(saved.siteWorkflow ?? null, input.siteWorkflow ?? null) || !same2(saved.procedure ?? null, input.procedure ?? null) || !same2(saved.uploads ?? null, input.uploads ?? null) || !same2(saved.work ?? null, input.work ?? null) || !same2(saved.documentRevision ?? null, input.documentRevision ?? null) || saved.prompt !== input.prompt || !same2(saved.windowRequest, input.windowRequest ?? null) || !same2(saved.skill && { skillId: saved.skill.skillId, skillVersion: saved.skill.skillVersion }, input.skill ?? null) || input.modelSelection !== void 0 && !same2(saved.modelSelection, input.modelSelection)) fail3("REQUEST_MISMATCH");
     }
     assertWindowPair(result.request.windowRequest, result.request.window);
   }
