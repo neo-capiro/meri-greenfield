@@ -159,6 +159,10 @@ ADD --checksum=sha256:a22f29a723c0705f014bc2cb07848c94427728967d51147cc01ece5058
 ADD --checksum=sha256:4655365de9a2bb2c75ddea905364dfe36026b24996924c65c7dc8645222c6739 https://packages.wolfi.dev/os/aarch64/libreoffice-26.8-26.8.2.2-r0.apk /tmp/meri-native-repo/aarch64/libreoffice-26.8-26.8.2.2-r0.apk
 FROM ${RUNTIME_IMAGE} AS native-repo-3
 ADD --checksum=sha256:e2fe9d841badfe86280ac708786a21b951e1dc7874a0949705da44447dd881e1 https://packages.wolfi.dev/os/aarch64/bubblewrap-0.13.1-r0.apk /tmp/meri-native-repo/aarch64/bubblewrap-0.13.1-r0.apk
+# SCRUM-235: the SDK's Linux sandbox startup needs socat beside bubblewrap. Without it `checkSandboxReadiness`
+# reports the host unready and Bash is never admitted, so the runtime stage installs the vendor-indexed archive
+# (same staging repository, index size 298748 B, exact sha256 below) next to bubblewrap.
+ADD --checksum=sha256:ded5814ab718d4ff677db5dc8ccbfb1e217bfc7db9ba66310f0965b163ffe9c1 https://packages.wolfi.dev/os/aarch64/socat-1.8.1.1-r2.apk /tmp/meri-native-repo/aarch64/socat-1.8.1.1-r2.apk
 ADD --checksum=sha256:f1c58ed46eded3d8751b43c221aa968a386e9a8e628684e4db802070538cf266 https://packages.wolfi.dev/os/aarch64/util-linux-misc-2.42.4-r1.apk /tmp/meri-native-repo/aarch64/util-linux-misc-2.42.4-r1.apk
 ADD --checksum=sha256:2f0ff74cd04a5c9c6a43404bb058e6fcf6e02b64d24d7f9f29740fee51372cd2 https://packages.wolfi.dev/os/aarch64/font-liberation-2.1.5-r6.apk /tmp/meri-native-repo/aarch64/font-liberation-2.1.5-r6.apk
 ADD --checksum=sha256:02f7d7bec8e641734b52855a33ff5474d6b0c0be24e9244b76c20c3f48c20768 https://packages.wolfi.dev/os/aarch64/libstdc++-16.2.0-r1.apk /tmp/meri-native-repo/aarch64/libstdc++-16.2.0-r1.apk
@@ -685,8 +689,8 @@ RUN --mount=type=bind,from=native-repository,source=tmp/meri-native-repo,target=
 # and libxml2-16 2.15.4-r1 provide it; leaving it implicit installed the predecessor, which the upload assertions reject.
 RUN --mount=type=bind,from=native-repository,source=tmp/meri-native-repo,target=/tmp/meri-native-repo,readonly \
     apk add --no-cache --no-network --repository /tmp/meri-native-repo --repositories-file /dev/null --update-cache libreoffice-26.8=26.8.2.2-r0 \
-      libxml2-16=2.15.4-r1 bubblewrap=0.13.1-r0 util-linux-misc=2.42.4-r1 font-liberation=2.1.5-r6 && \
-    test -x /usr/lib/libreoffice/program/soffice && test -x /usr/bin/bwrap && test -x /usr/bin/prlimit
+      libxml2-16=2.15.4-r1 bubblewrap=0.13.1-r0 socat=1.8.1.1-r2 util-linux-misc=2.42.4-r1 font-liberation=2.1.5-r6 && \
+    test -x /usr/lib/libreoffice/program/soffice && test -x /usr/bin/bwrap && test -x /usr/bin/prlimit && test -x /usr/bin/socat
 # Fixed native upload scanner/OCR/parser owner. The Wolfi APKINDEX is a rolling live file, so the whole transitive native
 # closure is staged (exact official archive, exact sha256, in the ADD list and in the source lock) beside the retained,
 # vendor-signed index that is committed under infra/product-preview/native-apk-index. apk admits these archives through
