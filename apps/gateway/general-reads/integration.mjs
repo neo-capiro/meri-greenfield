@@ -71,7 +71,7 @@ const modules=[federalDraftSource,graphPaths,buyerWorkspace,fundingAnalysis,watc
 modules.push(chatAttachments);
 const byFamily=new Map(modules.map(f=>[f.id,f]));
 export const GENERAL_READ_ADAPTER_FAMILIES=Object.freeze(modules.map(f=>f.id));
-const TRANSPORT_FIELDS=['origin','endpoints','getCredentials','getEligibilityCredentials','credentialsForCall','authorizeResultForCall','delegatedTransport','readSource','fetchImpl','maxRequestMs','maxResponseBytes','readMemoryEligibility','registry'];
+const TRANSPORT_FIELDS=['origin','endpoints','getCredentials','getEligibilityCredentials','credentialsForCall','authorizeResultForCall','delegatedTransport','readSource','fetchImpl','maxRequestMs','maxResponseBytes','readMemoryEligibility','registry','primaryCredentials','primaryUsage'];
 function constructFamilyHandlers(configuration,allowed=GENERAL_READ_ADAPTER_FAMILIES){
  const {families,now,newId}=ownFields(configuration,['families','now','newId']);
  if(typeof now!=='function'||typeof newId!=='function')deny('GATEWAY_CONFIGURATION');

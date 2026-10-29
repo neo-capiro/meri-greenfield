@@ -14,8 +14,9 @@ const token=value=>typeof value==='string'&&/^[\x21-\x7e]{1,8192}$/u.test(value)
 const deny=code=>{throw nativeReadFault(code);};
 export async function createControlReadsComposer(configuration){
  const c=own(configuration,['coreOrigin','nativeCredentials','readSecret','serviceSecretFile'],
-  ['capabilityPolicy','readModeServiceSecretFile','familyIds','defaultCongress','fetchImpl','now','newId','memoryContexts']);
+  ['capabilityPolicy','readModeServiceSecretFile','familyIds','defaultCongress','fetchImpl','now','newId','memoryContexts','primaryCredentials']);
  const coreOrigin=retainedOrigin(c.coreOrigin),now=c.now??Date.now,newId=c.newId??randomUUID,fetchImpl=c.fetchImpl??globalThis.fetch;
+ if(c.primaryCredentials!==undefined&&typeof c.primaryCredentials!=='function')deny('CONFIGURATION');
  if(typeof c.nativeCredentials?.nativeCredentialFor!=='function'||typeof c.readSecret!=='function'||c.capabilityPolicy!==undefined&&typeof c.capabilityPolicy?.forRun!=='function'||
   typeof now!=='function'||typeof newId!=='function'||typeof fetchImpl!=='function'||typeof c.serviceSecretFile!=='string'||c.memoryContexts!==undefined&&typeof c.memoryContexts.forTask!=='function')deny('CONFIGURATION');
  const familyIds=data(c.familyIds??GENERAL_READ_ADAPTER_FAMILIES);
@@ -32,6 +33,7 @@ export async function createControlReadsComposer(configuration){
   return {credential:first.credential,expiresAtMs:Math.min(first.expiresAtMs,after.expiresAtMs)};
  }
  const families=prepareReadFamilies({familyIds,coreOrigin,fetchImpl,now,newId,capabilityPolicy:c.capabilityPolicy,getNativeCredential,getServiceSecret,
+  ...(c.primaryCredentials===undefined?{}:{primaryCredentials:c.primaryCredentials}),
   ...(getReadModeServiceSecret?{getReadModeServiceSecret}:{}),...(c.defaultCongress===undefined?{}:{defaultCongress:c.defaultCongress}),...(c.memoryContexts?{memoryContexts:c.memoryContexts}:{})});
  function createReadsRuntime({execution,binding,approvedReads,conversationStore,objectiveCore,routineCore,capabilityPolicy=c.capabilityPolicy,readCapabilityRole}){
   if(typeof capabilityPolicy?.forRun!=='function')deny('CONFIGURATION');

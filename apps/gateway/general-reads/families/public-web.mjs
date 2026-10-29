@@ -4,9 +4,20 @@ import {createPublicWebHandlers} from '../../sources/public-web/handler.mjs';
 import {createPrimaryWebSearch,primarySearchTarget} from '../../sources/public-web/primary-search.mjs';
 import {familyOperations} from '../registration.mjs';
 export const id='public-web',sourceDirectory='public-web';
-/** The endpoint is a deployment fact of the provisioned gateway target, never ambient settings discovery. */
+/** The endpoint is a deployment fact of the provisioned gateway target, never ambient settings discovery.
+ * The transport/credential boundary is bound once here, so the selected provider is the only paid call on
+ * this path and tests can inject a recording fetch instead of resolving ambient AWS credentials. */
 const primary=configuration=>{
  const target=primarySearchTarget();
- return target===undefined?undefined:createPrimaryWebSearch({...target,...(configuration.now===undefined?{}:{now:configuration.now})});
+ if(target===undefined)return undefined;
+ return createPrimaryWebSearch({...target,...(configuration.now===undefined?{}:{now:configuration.now}),
+  ...(configuration.fetchImpl===undefined?{}:{fetchImpl:configuration.fetchImpl}),
+  ...(configuration.primaryCredentials===undefined?{}:{credentials:configuration.primaryCredentials}),
+  ...(configuration.primaryUsage===undefined?{}:{onUsage:configuration.primaryUsage})});
 };
-export const createHandlers=configuration=>createPublicWebHandlers(configuration,familyOperations(id),primary(configuration));
+export const createHandlers=configuration=>{
+ // Provider-only ports configure the managed search producer; the shared native/Core handler has a closed
+ // allowlist and must never see them (nor may Core secrets be forwarded to managed search).
+ const {primaryCredentials,primaryUsage,...shared}=configuration??{};
+ return createPublicWebHandlers(shared,familyOperations(id),primary({...shared,...(primaryCredentials===undefined?{}:{primaryCredentials}),...(primaryUsage===undefined?{}:{primaryUsage})}));
+};

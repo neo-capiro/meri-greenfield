@@ -20,5 +20,7 @@ export function createReadsApplication(configuration){
   const deadlineMs=now()+(route[1]==='execute'?config.maxExecuteMs:3000);life=createOperationLifetime({now,deadlineMs,signal:info.signal,errorFactory:nativeReadFault});
   let input;try{input=await jsonBody({...info,length:length===null?null:Number(length)},config.maxRequestBytes,life,life.check);}catch(error){if(nativeReadFailureCode(error))throw error;const tooLarge=error&&!types.isProxy(error)&&error instanceof ApplicationError&&error.message==='REQUEST_TOO_LARGE';throw nativeReadFault(tooLarge?'RESOURCE_LIMIT':'INVALID_ARGUMENTS');}
   const result=await life.run(signal=>handle(route[1],input,credential.slice(7),signal,deadlineMs,()=>{publicationStarted=true;}));life.check();if(Buffer.byteLength(JSON.stringify(result),'utf8')>config.maxResponseBytes)throw nativeReadFault('RESOURCE_LIMIT');return response(result);
- }catch(error){const code=publicationStarted&&life?.signal.aborted?'SOURCE_PUBLICATION_UNKNOWN':nativeReadFailureCode(error)??'UNAVAILABLE';return response({error:{code}},status[code]??503);}finally{life?.close();try{if(info?.body&&!info.body.locked)void info.body.cancel().catch(()=>{});}catch{}}}});
+ }catch(error){const code=publicationStarted&&life?.signal.aborted?'SOURCE_PUBLICATION_UNKNOWN':nativeReadFailureCode(error)??'UNAVAILABLE';
+  const facts=error!==null&&typeof error==='object'&&!types.isProxy(error)?error.externalUsage:undefined;
+  return response({error:{code},...(facts===undefined?{}:{externalUsage:facts})},status[code]??503);}finally{life?.close();try{if(info?.body&&!info.body.locked)void info.body.cancel().catch(()=>{});}catch{}}}});
 }

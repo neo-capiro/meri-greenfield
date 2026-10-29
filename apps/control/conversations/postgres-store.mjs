@@ -101,7 +101,9 @@ export function createPostgresConversationStore({pool,transitionAuthority,retent
      // The saved latest result cannot price a rewind to an earlier transcript position.
      if(native||l.resumeSessionAt===null)baseline=parent.sdk_usage.cumulative??null;}
    }
-   const usage={...accountSdkSnapshot(i.usage,{mode,parentSessionId,baseline}),parentRunId,inputSha256,toolsUsed:i.toolsUsed};
+   // External provider facts stay a distinct nested JSON field: they never enter the SDK charge or its total.
+   const usage={...accountSdkSnapshot(i.usage,{mode,parentSessionId,baseline}),parentRunId,inputSha256,toolsUsed:i.toolsUsed,
+    ...(i.externalSearch===undefined?{}:{externalSearch:i.externalSearch})};
    const written=(await c.query('UPDATE meri_conversations.runs SET sdk_usage=$4,sdk_usage_sha256=$5,sdk_charge_micro_usd=$6,sdk_usage_recorded_at=clock_timestamp() WHERE tenant_id=$1 AND conversation_id=$2 AND run_id=$3 AND sdk_usage IS NULL RETURNING sdk_usage_sha256',[b.tenantId,b.conversationId,b.runId,usage,hash(usage),usage.chargeMicroUsd])).rows;check();
    if(written.length!==1||written[0].sdk_usage_sha256!==hash(usage))usageRefuse('SDK_USAGE_STORE_CORRUPT');return {status:usage.status,reason:usage.reason,replayed:false};
   },{check,unavailable:'SDK_USAGE_STORE_UNAVAILABLE',uncertain:'SDK_USAGE_COMMIT_UNKNOWN'});

@@ -42,7 +42,8 @@ export function createPublicWebValidators({validateShape, schema}) {
       instant(data.generatedAt);
       if (data.total !== data.results.length) fail('Public-web returned count mismatch');
       for (const row of data.results) {
-        boundedText(row.title, 180);
+        // The AWS-managed provider omits a title when the index has none; absence stays null.
+        if (row.title !== null) boundedText(row.title, 180);
         if (row.snippet !== null) boundedText(row.snippet, 320);
         if (data.provider !== 'duckduckgo') {
           boundedText(row.url, 2000);
