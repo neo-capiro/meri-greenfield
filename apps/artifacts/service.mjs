@@ -3,6 +3,7 @@ import {createOperationLifetime} from '../../packages/runtime/operation-lifetime
 import {recoverArtifact} from './recovery.mjs';
 import {readArtifactLibrary} from './library.mjs';
 import {readPagedArtifactHistory} from './history-page.mjs';
+import {prepareFederalDraft} from './federal-drafting/preparation.mjs';
 // The canonical immutable-spec asset identification the intent layer already owns, so a retained
 // revision and this write identify exactly the same references instead of two walks that can drift.
 import {referencedAssetIds} from '../control/intents/document-revision.mjs';
@@ -159,5 +160,6 @@ export function createArtifactService({validators:v,authorize,versions,objects,e
   return Object.freeze({create:(request,context,options)=>generate(null,request,context,options),revise:(baseVersionId,request,context,options)=>{if(typeof baseVersionId!=='string')fail('ARTIFACT_VERSION_ID');return generate(baseVersionId,request,context,options);},
     recover:(baseVersionId,request,context,options)=>recoverArtifact({v,operation,authority,scopeVersion,bytesFor,inspectBytes,versions,servable,recoverTenant},baseVersionId,request,context,options),
     list:(query,context,options)=>readArtifactLibrary({v,versions,authorizeOrigin,operation,authority,servable,recoverTenant,now},query,context,options),
-    history,revisionSource:(id,context,options)=>read(id,context,options,false,true),inspect:(id,context,options)=>read(id,context,options),download:(id,context,options)=>read(id,context,options,true)});
+    history,revisionSource:(id,context,options)=>read(id,context,options,false,true),inspect:(id,context,options)=>read(id,context,options),download:(id,context,options)=>read(id,context,options,true),
+    prepareFederalDraft:(input,context,options)=>prepareFederalDraft({read:(id,c,o)=>read(id,c,o,false,true)},input,context,options)});
 }

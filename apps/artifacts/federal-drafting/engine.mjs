@@ -1,0 +1,113 @@
+/** Deterministic amendments for an exact UTF-8 plain-text federal source snapshot. This private compiler neither
+ * fetches legislation nor decides legal correctness. Canonical source custody and publication stay with artifacts.
+ * Coverage is deliberately flat, non-overlapping source scopes; a different parser must not claim this coverage. */
+import {createHash} from 'node:crypto';
+import {own,data} from '../../../packages/contracts/commands-0.2/execution-boundary.mjs';
+import {canonicalSha256} from '../../../packages/contracts/validate.mjs';
+
+export const FEDERAL_TEXT_PARSER='federal-plain-text/1';
+export const DRAFT_LIMITS=Object.freeze({sourceBytes:131072,scopes:128,operations:64,operationBytes:16384});
+const SHA=/^[a-f0-9]{64}$/u,ID=/^[A-Za-z0-9][A-Za-z0-9_.:-]{0,127}$/u;
+export const textSha256=text=>createHash('sha256').update(text,'utf8').digest('hex');
+const fault=(code,operationId=null)=>{throw Object.assign(Error(code),{code,operationId});};
+const text=(value,max)=>typeof value==='string'&&value.length>0&&!value.includes('\0')&&Buffer.from(value).toString('utf8')===value&&Buffer.byteLength(value)<=max;
+const freeze=value=>{if(value&&typeof value==='object'){Object.values(value).forEach(freeze);Object.freeze(value);}return value;};
+
+/** Identity is supplied by the source custodian, not inferred from text or an amendment instruction. */
+export function federalDraftSource(raw){
+ let source;try{source=data(own(raw,['documentId','publisher','sourceVersion','sourceUrl','publishedAt','parserVersion','sha256','text','coverage','scopes']));}catch{fault('DRAFT_SOURCE_INVALID');}
+ for(const field of ['documentId','publisher','sourceVersion'])if(!text(source[field],512))fault('DRAFT_SOURCE_INVALID');
+ let url;try{url=new URL(source.sourceUrl);}catch{fault('DRAFT_SOURCE_INVALID');}
+ if(url.protocol!=='https:'||url.username||url.password||url.hash||url.search||!text(source.sourceUrl,2048))fault('DRAFT_SOURCE_INVALID');
+ const date=typeof source.publishedAt==='string'?Date.parse(source.publishedAt+'T00:00:00Z'):NaN;
+ if(!/^\d{4}-\d{2}-\d{2}$/u.test(source.publishedAt)||!Number.isFinite(date)||new Date(date).toISOString().slice(0,10)!==source.publishedAt)fault('DRAFT_SOURCE_INVALID');
+ if(source.parserVersion!==FEDERAL_TEXT_PARSER||!SHA.test(source.sha256)||!text(source.text,DRAFT_LIMITS.sourceBytes)||textSha256(source.text)!==source.sha256)fault('DRAFT_SOURCE_MISMATCH');
+ let coverage;try{coverage=own(source.coverage,['complete','limitations']);}catch{fault('DRAFT_SOURCE_INVALID');}
+ if(typeof coverage.complete!=='boolean'||!Array.isArray(coverage.limitations)||coverage.limitations.length>32||coverage.limitations.some(v=>!text(v,1000))||!coverage.complete&&!coverage.limitations.length)fault('DRAFT_SOURCE_INVALID');
+ if(!Array.isArray(source.scopes)||!source.scopes.length||source.scopes.length>DRAFT_LIMITS.scopes)fault('DRAFT_SOURCE_INVALID');
+ let end=0;const seen=new Set();
+ for(const rawScope of source.scopes){
+  let scope;try{scope=own(rawScope,['id','label','start','end','sha256']);}catch{fault('DRAFT_SCOPE_INVALID');}
+  if(!ID.test(scope.id)||seen.has(scope.id)||!text(scope.label,512)||!Number.isSafeInteger(scope.start)||!Number.isSafeInteger(scope.end)
+   ||scope.start<end||scope.end<=scope.start||scope.end>source.text.length||!SHA.test(scope.sha256))fault('DRAFT_SCOPE_INVALID');
+  const slice=source.text.slice(scope.start,scope.end);
+  if(Buffer.from(slice).toString('utf8')!==slice||textSha256(slice)!==scope.sha256)fault('DRAFT_SCOPE_MISMATCH');
+  seen.add(scope.id);end=scope.end;
+ }
+ return freeze(source);
+}
+
+function operation(raw,seen){
+ let op;try{op=data(own(raw,['id','kind','scopeId','expectedScopeSha256','expectedText','expectedTextSha256','dependsOn'],['text','position']));}catch{fault('DRAFT_OPERATION_INVALID');}
+ const refuse=code=>fault(code,op.id);
+ if(!ID.test(op.id)||seen.has(op.id)||!ID.test(op.scopeId)||!['replace','insert','delete'].includes(op.kind)
+  ||!SHA.test(op.expectedScopeSha256)||!text(op.expectedText,DRAFT_LIMITS.operationBytes)||!SHA.test(op.expectedTextSha256)
+  ||textSha256(op.expectedText)!==op.expectedTextSha256)refuse('DRAFT_OPERATION_INVALID');
+ if(!Array.isArray(op.dependsOn)||new Set(op.dependsOn).size!==op.dependsOn.length||op.dependsOn.some(id=>!seen.has(id)))refuse('DRAFT_DEPENDENCY_INVALID');
+ if(op.kind==='delete'?(op.text!==undefined||op.position!==undefined):!text(op.text,DRAFT_LIMITS.operationBytes))refuse('DRAFT_OPERATION_INVALID');
+ if(op.kind==='insert'?!['before','after'].includes(op.position):op.position!==undefined)refuse('DRAFT_OPERATION_INVALID');
+ if(op.kind==='replace'&&op.text===op.expectedText)refuse('DRAFT_NO_CHANGE');
+ return op;
+}
+
+function apply(scope,op){
+ if(textSha256(scope)!==op.expectedScopeSha256)fault('DRAFT_ANCESTOR_CHANGED',op.id);
+ const at=scope.indexOf(op.expectedText);
+ if(at<0)fault('DRAFT_TARGET_MISSING',op.id);
+ if(scope.indexOf(op.expectedText,at+1)>=0)fault('DRAFT_TARGET_AMBIGUOUS',op.id);
+ const start=op.kind==='insert'&&op.position==='after'?at+op.expectedText.length:at;
+ const end=op.kind==='insert'?start:at+op.expectedText.length,replacement=op.kind==='delete'?'':op.text;
+ return scope.slice(0,start)+replacement+scope.slice(end);
+}
+
+/** A redline is a typed sequence of unchanged/deleted/inserted exact text, not markup that can be confused with
+ * literal source characters. One replacement span per changed scope makes the original/final relation explicit. */
+function redline(before,after){
+ const original=Array.from(before),revised=Array.from(after);
+ let left=0;while(left<original.length&&left<revised.length&&original[left]===revised[left])left++;
+ let right=0;while(right<original.length-left&&right<revised.length-left&&original[original.length-1-right]===revised[revised.length-1-right])right++;
+ return [{kind:'unchanged',text:original.slice(0,left).join('')},{kind:'delete',text:original.slice(left,original.length-right).join('')},
+  {kind:'insert',text:revised.slice(left,revised.length-right).join('')},{kind:'unchanged',text:original.slice(original.length-right).join('')}].filter(part=>part.text);
+}
+
+function outputs(source,ops,working){
+ const amendment=[],segments=[];let cursor=0;
+ for(const scope of source.scopes){
+  const before=source.text.slice(scope.start,scope.end),after=working.get(scope.id);
+  if(scope.start>cursor)segments.push({kind:'unchanged',text:source.text.slice(cursor,scope.start)});
+  segments.push(...(before===after?[{kind:'unchanged',text:before}]:redline(before,after)));cursor=scope.end;
+ }
+ if(cursor<source.text.length)segments.push({kind:'unchanged',text:source.text.slice(cursor)});
+ for(const op of ops){const label=source.scopes.find(scope=>scope.id===op.scopeId).label;
+  const action=op.kind==='replace'?`strike ${JSON.stringify(op.expectedText)} and insert ${JSON.stringify(op.text)}`
+   :op.kind==='delete'?`strike ${JSON.stringify(op.expectedText)}`:`insert ${JSON.stringify(op.text)} ${op.position} ${JSON.stringify(op.expectedText)}`;
+  amendment.push(`${op.id}. In ${label}, ${action}.`);
+ }
+ const citation=`${source.documentId}; ${source.publisher}; version ${source.sourceVersion}; published ${source.publishedAt}; ${source.sourceUrl}; SHA-256 ${source.sha256}`;
+ return {operative:`Source: ${citation}\nOperations apply in the stated order.\n\n${amendment.join('\n\n')}\n`,
+  consolidated:segments.filter(part=>part.kind!=='delete').map(part=>part.text).join(''),
+  redline:`Source: ${citation}\nExact legal text comparison; each line is a JSON text segment.\n${segments.map(part=>JSON.stringify(part)).join('\n')}\n`,segments};
+}
+
+/** Validates every intermediate scope on private copies. Any invalid operation throws before an output exists. */
+export function compileFederalDraft(rawSource,rawOperations){
+ const source=federalDraftSource(rawSource);
+ if(!Array.isArray(rawOperations)||!rawOperations.length||rawOperations.length>DRAFT_LIMITS.operations)fault('DRAFT_OPERATION_INVALID');
+ const working=new Map(source.scopes.map(scope=>[scope.id,source.text.slice(scope.start,scope.end)])),last=new Map(),seen=new Set(),operations=[];
+ for(const raw of rawOperations){
+  const op=operation(raw,seen),before=working.get(op.scopeId);if(before===undefined)fault('DRAFT_SCOPE_UNKNOWN',op.id);
+  if(last.has(op.scopeId)&&!op.dependsOn.includes(last.get(op.scopeId)))fault('DRAFT_DEPENDENCY_REQUIRED',op.id);
+  const after=apply(before,op);if(Buffer.byteLength(after)>DRAFT_LIMITS.sourceBytes)fault('DRAFT_OUTPUT_LIMIT',op.id);
+  working.set(op.scopeId,after);seen.add(op.id);last.set(op.scopeId,op.id);operations.push(op);
+ }
+ const result=outputs(source,operations,working);
+ if(Buffer.byteLength(result.consolidated)>DRAFT_LIMITS.sourceBytes)fault('DRAFT_OUTPUT_LIMIT');
+ if(!result.consolidated.length)fault('DRAFT_EMPTY_RESULT');
+ if(result.consolidated===source.text)fault('DRAFT_NO_CHANGE');
+ const findings=[{category:'source-integrity',status:'passed',location:source.documentId,severity:'info'},
+  ...operations.map(op=>({category:'exact-target',status:'passed',location:op.scopeId,operationId:op.id,severity:'info'})),
+  ...['numbering','cross-references','arithmetic','substantive-law'].map(category=>({category,status:'unresolved',location:source.documentId,severity:'review-required'}))];
+ const revision={parserVersion:FEDERAL_TEXT_PARSER,source,operations,outputs:result,findings,
+  outputHashes:Object.fromEntries(['operative','consolidated','redline'].map(kind=>[kind,textSha256(result[kind])]))};
+ return freeze({...revision,revisionSha256:canonicalSha256(revision),approval:'unapproved'});
+}
