@@ -36,7 +36,7 @@ export async function fixture(family,id,options={}){
    if(path.endsWith('/application-authority/context'))return Response.json({identitySha256:body.identitySha256,principal,identityRevision:'a'.repeat(64),conversationId:body.conversationId,selectedClientId:contextClientId??body.clientId,contextRevision:'c'.repeat(64),checkedAtMs:scene.now(),expiresAtMs:identity.expiresAtMs});
    if(path.endsWith('/read-mode-observation'))return Response.json({operation:body.operation,requestSha256:body.requestSha256,principal,surface:'chat',evidenceAccuracyMode});
    if(path.endsWith('/clients/check-ref'))return Response.json({ok:true,clientId:selectedClientId??clientIds[0]},{status:referenceStatus});
-   assert.equal(path,`/api/clio/tools/${id}`);if(denySource)return Response.json({message:'refused'},{status:403});
+   assert.equal(path,scene.sourcePath??`/api/clio/tools/${id}`);if(denySource)return Response.json({message:'refused'},{status:403});
    if(family==='funding-opportunities'){const context=decodeNativeReadObservation(options.headers[NATIVE_READ_OBSERVATION_HEADER],{operation,request:body}).context;scene.state.page=fundingPage(id,scene.contract.normalizeInput(body,context).input,context.asOf,new Date(scene.now()-60000).toISOString());}
    if(id==='search_client_knowledge'){const context=decodeNativeReadObservation(options.headers[NATIVE_READ_OBSERVATION_HEADER],{operation,request:body}).context;scene.state.page=storedSearchPage(scene.contract.normalizeInput(body,context).input,context.asOf,knowledgePageOptions);}
    return scene.transport.fetchImpl(url,options);

@@ -20,7 +20,7 @@ export function federalDraftSource(raw){
  let url;try{url=new URL(source.sourceUrl);}catch{fault('DRAFT_SOURCE_INVALID');}
  if(url.protocol!=='https:'||url.username||url.password||url.hash||url.search||!text(source.sourceUrl,2048))fault('DRAFT_SOURCE_INVALID');
  const date=typeof source.publishedAt==='string'?Date.parse(source.publishedAt+'T00:00:00Z'):NaN;
- if(!/^\d{4}-\d{2}-\d{2}$/u.test(source.publishedAt)||!Number.isFinite(date)||new Date(date).toISOString().slice(0,10)!==source.publishedAt)fault('DRAFT_SOURCE_INVALID');
+ if(source.publishedAt!==null&&(!/^\d{4}-\d{2}-\d{2}$/u.test(source.publishedAt)||!Number.isFinite(date)||new Date(date).toISOString().slice(0,10)!==source.publishedAt))fault('DRAFT_SOURCE_INVALID');
  if(source.parserVersion!==FEDERAL_TEXT_PARSER||!SHA.test(source.sha256)||!text(source.text,DRAFT_LIMITS.sourceBytes)||textSha256(source.text)!==source.sha256)fault('DRAFT_SOURCE_MISMATCH');
  let coverage;try{coverage=own(source.coverage,['complete','limitations']);}catch{fault('DRAFT_SOURCE_INVALID');}
  if(typeof coverage.complete!=='boolean'||!Array.isArray(coverage.limitations)||coverage.limitations.length>32||coverage.limitations.some(v=>!text(v,1000))||!coverage.complete&&!coverage.limitations.length)fault('DRAFT_SOURCE_INVALID');
@@ -83,7 +83,7 @@ function outputs(source,ops,working){
    :op.kind==='delete'?`strike ${JSON.stringify(op.expectedText)}`:`insert ${JSON.stringify(op.text)} ${op.position} ${JSON.stringify(op.expectedText)}`;
   amendment.push(`${op.id}. In ${label}, ${action}.`);
  }
- const citation=`${source.documentId}; ${source.publisher}; version ${source.sourceVersion}; published ${source.publishedAt}; ${source.sourceUrl}; SHA-256 ${source.sha256}`;
+ const citation=`${source.documentId}; ${source.publisher}; version ${source.sourceVersion}; published ${source.publishedAt??'unreported'}; ${source.sourceUrl}; SHA-256 ${source.sha256}`;
  return {operative:`Source: ${citation}\nOperations apply in the stated order.\n\n${amendment.join('\n\n')}\n`,
   consolidated:segments.filter(part=>part.kind!=='delete').map(part=>part.text).join(''),
   redline:`Source: ${citation}\nExact legal text comparison; each line is a JSON text segment.\n${segments.map(part=>JSON.stringify(part)).join('\n')}\n`,segments};

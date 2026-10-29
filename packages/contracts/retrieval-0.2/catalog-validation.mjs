@@ -9,7 +9,7 @@ function unique(values, label) {
 // binding may declare `sinceCatalogVersion`: a catalog must carry every binding its own version
 // includes, and is never required to carry a later successor's. Neither value is caller-controlled,
 // and a preserved catalog therefore keeps asserting at its own exact counts.
-export const CURRENT_CATALOG_VERSION = '0.2.27';
+export const CURRENT_CATALOG_VERSION = '0.2.28';
 function compareCatalogVersions(left, right) {
   const parts = value => String(value).split('.').map(Number);
   const a = parts(left), b = parts(right);
@@ -24,6 +24,8 @@ const searched = result => ({input: result.input, metadata: {clientScope: result
 const federal = result => ({input: result.query, metadata: {queryScope: result.queryScope, clientScope: result.clientScope}});
 
 export const CATALOG_OPERATION_BINDINGS = Object.freeze([
+ Object.freeze({id:'prepare_federal_draft',nativeId:'prepare_federal_draft',group:'federal-draft-source',input:'FederalDraftPreparationInput',output:'FederalDraftPrepared',version:'0.2.0',sinceCatalogVersion:'0.2.28',contextKeys:Object.freeze([]),normalize:(v,r,c)=>v.federalDraftSourceValidators.normalizePreparation(r,c),outputAssert:(v,p,r)=>v.federalDraftSourceValidators.assertPreparation(p,r)}),
+ Object.freeze({id:'read_federal_draft_source',nativeId:'read_federal_draft_source',group:'federal-draft-source',input:'FederalDraftSourceInput',output:'FederalDraftSourceOutput',version:'0.2.0',sinceCatalogVersion:'0.2.28',contextKeys:Object.freeze([]),normalize:(v,r,c)=>v.federalDraftSourceValidators.normalizeInput(r,c),outputAssert:(v,p,r)=>v.federalDraftSourceValidators.assertOutput(p,r)}),
   Object.freeze({id:'find_path_to',nativeId:'find_path_to',group:'graph-paths',input:'GraphPathsInput',output:'GraphPathsOutput',version:'0.2.0',sinceCatalogVersion:'0.2.27',contextKeys:Object.freeze([]),
     normalize:(v,r,c)=>v.graphPathsValidators.normalizeInput(r,c),outputAssert:(v,p,r)=>v.graphPathsValidators.assertOutput(p,r)}),
   Object.freeze({id:'get_pe_buyer_workspace',nativeId:'get_pe_buyer_workspace',group:'buyer-workspace',input:'BuyerWorkspaceInput',output:'BuyerWorkspaceOutput',version:'0.2.0',sinceCatalogVersion:'0.2.26',contextKeys:Object.freeze([]),
@@ -499,7 +501,7 @@ function assertCatalog(catalog) {
   validateShape('Catalog', catalog);
   unique(catalog.originals.map(row => row.id), 'native capability');
   const selected = catalog.originals.filter(row => row.disposition === 'selected');
-  const additive = ['get_research_portfolio_analytics','get_research_portfolio_bookmarks','get_research_portfolio_fit','get_research_portfolio_reviews','get_research_portfolio_rules','get_research_portfolio_imports','get_research_portfolio_operations',
+  const additive = ['prepare_federal_draft','read_federal_draft_source','get_research_portfolio_analytics','get_research_portfolio_bookmarks','get_research_portfolio_fit','get_research_portfolio_reviews','get_research_portfolio_rules','get_research_portfolio_imports','get_research_portfolio_operations',
     'manage_research_portfolio','create_research_portfolio_snapshot','request_research_portfolio_output','save_research_portfolio_output_to_client','watch_research_portfolio','update_research_portfolio_change_state','create_research_portfolio_bookmark','add_research_portfolio_review_note','prepare_research_portfolio_brief','prepare_research_portfolio_meeting',
     'inspect_watch_state','watch_action','mail_send','get_research_portfolio_share_links','publish_research_portfolio_share_link','revoke_research_portfolio_share_link','read_saved_strategy_records','read_saved_record','describe_capiro_data','query_capiro_data','list_connected_app_reads','read_connected_app','list_teams_channels','get_teams_channel_messages'];
   const advancedFunding = compareCatalogVersions(catalog.catalogVersion,'0.2.25') >= 0 ? 3 : 0;

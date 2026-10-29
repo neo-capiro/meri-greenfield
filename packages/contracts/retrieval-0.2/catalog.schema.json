@@ -156,7 +156,9 @@
                 "prepare_research_portfolio_brief",
                 "prepare_research_portfolio_meeting",
                 "get_pe_buyer_workspace",
-                "find_path_to"
+                "find_path_to",
+                "read_federal_draft_source",
+                "prepare_federal_draft"
               ]
             },
             "disposition": {
@@ -584,7 +586,7 @@
             "$ref": "urn:meri:retrieval:catalog:0.2.0#/$defs/NativeMapping"
           },
           "minItems": 153,
-          "maxItems": 153,
+          "maxItems": 155,
           "uniqueItems": true
         },
         "operations": {

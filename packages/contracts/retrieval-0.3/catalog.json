@@ -1,7 +1,7 @@
 {
   "contractVersion": "0.2.0",
   "catalogId": "meri.retrieval",
-  "catalogVersion": "0.2.27",
+  "catalogVersion": "0.2.28",
   "sourceRegistryCommit": "87ea34a812c56524644e4983b215ded5ce8a8f7d",
   "originals": [
     {
@@ -1509,6 +1509,26 @@
       "boundary": "Additive read of one exact current watch target through the canonical Core inspect owner. No proposal, mutation, inferred version or inventory expansion.",
       "replacement": {
         "id": "inspect_watch_state",
+        "version": "0.2.0"
+      },
+      "state": "mapped"
+    },
+    {
+      "id": "read_federal_draft_source",
+      "disposition": "selected",
+      "boundary": "Exact bounded source read through the canonical federal evidence owner; no fetch or publication.",
+      "replacement": {
+        "id": "read_federal_draft_source",
+        "version": "0.2.0"
+      },
+      "state": "mapped"
+    },
+    {
+      "id": "prepare_federal_draft",
+      "disposition": "selected",
+      "boundary": "Runtime deterministic preparation from the fixed authenticated Core federal source; no approval or publication.",
+      "replacement": {
+        "id": "prepare_federal_draft",
         "version": "0.2.0"
       },
       "state": "mapped"
@@ -11845,6 +11865,138 @@
       ],
       "fixtureIds": [
         "catalog.binding.find_path_to"
+      ]
+    },
+    {
+      "operation": {
+        "id": "read_federal_draft_source",
+        "version": "0.2.0"
+      },
+      "displayName": "Read exact federal draft source",
+      "whenToUse": "Import a complete bounded bill version selected by exact revision, retained-content and text hashes from read_bill_text.",
+      "limitations": [
+        "Source preparation only; native host qualification and activation remain pending.",
+        "Retained UTF-8 strings and extracted text are hash verified. Original HTTP bytes, text normalization and legal structure are not established.",
+        "Current at read is not enacted law or verified legal currency. Publication, modified and fetched dates are distinct."
+      ],
+      "positiveExamples": [
+        "Prepare a draft from one exact current federal bill revision."
+      ],
+      "negativeExamples": [
+        "Infer enactment from an enrolled version or substitute another revision when exact pins are unavailable."
+      ],
+      "sourceRequirements": [
+        {
+          "sourceId": "bill_text",
+          "authority": "derived",
+          "purpose": "evidence"
+        }
+      ],
+      "inputSchema": {
+        "id": "urn:meri:retrieval:federal-draft-source:0.2.0#/$defs/FederalDraftSourceInput",
+        "sha256": "0f3fe4b938874fd2d5229954d5741d47e431bd0e26ae44dd90fde363f889648d"
+      },
+      "outputSchema": {
+        "id": "urn:meri:retrieval:federal-draft-source:0.2.0#/$defs/FederalDraftSourceOutput",
+        "sha256": "0f3fe4b938874fd2d5229954d5741d47e431bd0e26ae44dd90fde363f889648d"
+      },
+      "aliases": [],
+      "sideEffect": "none",
+      "requiredGrants": [
+        "tool.read"
+      ],
+      "approvalBoundary": "none",
+      "handler": null,
+      "availability": "unimplemented",
+      "qualification": "pending",
+      "retry": {
+        "maxRetries": 0,
+        "retryableCodes": [],
+        "unknownOutcome": "reconcile-before-retry"
+      },
+      "replacement": null,
+      "requirementIds": [
+        "R-01",
+        "R-04",
+        "R-05"
+      ],
+      "ticketIds": [
+        "REL-02"
+      ],
+      "gateIds": [
+        "RG-02",
+        "RG-05",
+        "RG-07"
+      ],
+      "fixtureIds": [
+        "catalog.binding.read_federal_draft_source"
+      ]
+    },
+    {
+      "operation": {
+        "id": "prepare_federal_draft",
+        "version": "0.2.0"
+      },
+      "displayName": "Prepare exact federal draft",
+      "whenToUse": "Prepare deterministic replace, insert or delete operations against the document scope of one exact current federal bill revision; return separate operative, consolidated and redline drafts for review.",
+      "limitations": [
+        "Source preparation only; native host qualification and activation remain pending.",
+        "Retained UTF-8 strings and extracted text are hash verified. Original HTTP bytes, text normalization and legal structure are not established.",
+        "Current at read is not enacted law or verified legal currency. Publication, modified and fetched dates are distinct.",
+        "Preparation performs no artifact write or approval. Returned create_word requests still require the existing artifact publication and approval flow.",
+        "Use scopeId document and the exact full-text hash for the initial expectedScopeSha256; dependent changes must name the prior operation and updated scope hash."
+      ],
+      "positiveExamples": [
+        "Prepare a draft from one exact current federal bill revision."
+      ],
+      "negativeExamples": [
+        "Infer enactment from an enrolled version or substitute another revision when exact pins are unavailable."
+      ],
+      "sourceRequirements": [
+        {
+          "sourceId": "bill_text",
+          "authority": "derived",
+          "purpose": "evidence"
+        }
+      ],
+      "inputSchema": {
+        "id": "urn:meri:retrieval:federal-draft-source:0.2.0#/$defs/FederalDraftPreparationInput",
+        "sha256": "0f3fe4b938874fd2d5229954d5741d47e431bd0e26ae44dd90fde363f889648d"
+      },
+      "outputSchema": {
+        "id": "urn:meri:retrieval:federal-draft-source:0.2.0#/$defs/FederalDraftPrepared",
+        "sha256": "0f3fe4b938874fd2d5229954d5741d47e431bd0e26ae44dd90fde363f889648d"
+      },
+      "aliases": [],
+      "sideEffect": "none",
+      "requiredGrants": [
+        "tool.read"
+      ],
+      "approvalBoundary": "none",
+      "handler": null,
+      "availability": "unimplemented",
+      "qualification": "pending",
+      "retry": {
+        "maxRetries": 0,
+        "retryableCodes": [],
+        "unknownOutcome": "reconcile-before-retry"
+      },
+      "replacement": null,
+      "requirementIds": [
+        "R-01",
+        "R-04",
+        "R-05"
+      ],
+      "ticketIds": [
+        "REL-02"
+      ],
+      "gateIds": [
+        "RG-02",
+        "RG-05",
+        "RG-07"
+      ],
+      "fixtureIds": [
+        "catalog.binding.prepare_federal_draft"
       ]
     }
   ]
