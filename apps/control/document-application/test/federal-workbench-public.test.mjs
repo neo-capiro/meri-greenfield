@@ -18,6 +18,19 @@ import {join} from 'node:path';
 import {pathToFileURL} from 'node:url';
 import official from '../../../../packages/contracts/test/fixtures/federal-draft-source.wire.json' with {type:'json'};
 import {projectNativeFederalSource} from '../../../artifacts/federal-drafting/native-source.mjs';
+import * as distributedFederal from '@capiro/meri-contracts/federal-workbench';
+
+test('public package admits the mounted official import and downloaded envelope', async t => {
+ const x=await fixture(t,{native:true}),bytes=value=>new TextEncoder().encode(JSON.stringify(value));
+ const input=distributedFederal.receiveFederalRequest('federal-import',bytes(importRequest()));
+ const response=await x.post('federal-import',input),raw=await response.json();
+ const received=await distributedFederal.receiveFederalResponse('federal-import',response.status,bytes(raw),input);
+ assert.deepEqual(received,raw);
+ const downloaded=await x.reads.download(received.publication.version.versionId,x.f.context);
+ assert.deepEqual(await distributedFederal.receiveFederalSource(downloaded.bytes),received.source);
+ const changed=structuredClone(raw);changed.selection.revisionId=randomUUID();
+ await assert.rejects(distributedFederal.receiveFederalResponse('federal-import',200,bytes(changed),input));
+});
 
 async function fixture(t,{native=false}={}){
  const binding={tenantId:id(100),actorId:id(101),conversationId:id(102),runId:id(103),attemptId:id(104),workerId:id(105),writerFence:1};
