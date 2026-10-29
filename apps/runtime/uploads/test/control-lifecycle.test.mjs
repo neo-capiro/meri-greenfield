@@ -10,7 +10,8 @@ import assert from 'node:assert/strict';
 import {tmpdir} from 'node:os';
 import {join} from 'node:path';
 import {realpath,mkdtemp} from 'node:fs/promises';
-import {RENDERER_PROBE_SCHEMA,RENDERER_CHILD_ENV} from '../../../artifacts/renderer-qualification.mjs';
+import {RENDERER_PROBE_SCHEMA} from '../../../artifacts/renderer-qualification.mjs';
+import {UPLOAD_CHILD_ENV} from '../native-sandbox.mjs';
 import {validateConfiguration} from '../../config.mjs';
 import {compileUploadNativeConfiguration,mountUploadNativeControl,beginUploadNativeProvisioning,
  UPLOAD_NATIVE_PROVISIONABLE,UPLOAD_NATIVE_DEFAULT_PROVISION_MS} from '../control-lifecycle.mjs';
@@ -18,7 +19,7 @@ import {compileUploadNativeConfiguration,mountUploadNativeControl,beginUploadNat
 const ZERO='0'.repeat(16),DIGEST='sha256:'+'f'.repeat(64);
 const sandboxed=cwd=>({schema:RENDERER_PROBE_SCHEMA,platform:'linux',uid:[1000,1000,1000,1000],gid:[1000,1000,1000,1000],noNewPrivs:1,
  capabilities:{CapInh:ZERO,CapPrm:ZERO,CapEff:ZERO,CapBnd:ZERO,CapAmb:ZERO},rootMountOptions:'ro,relatime',interfaces:['lo'],
- cgroup:{memoryMax:'1073741824',pidsMax:'64',cpuMax:'50000 100000'},envNames:[...RENDERER_CHILD_ENV],cwd,home:cwd,tmpdir:cwd,
+ cgroup:{memoryMax:'1073741824',pidsMax:'64',cpuMax:'50000 100000'},envNames:[...UPLOAD_CHILD_ENV],cwd,home:cwd,tmpdir:cwd,
  workspace:{mode:0o700,uid:1000},credentialPathsReadable:[{path:'/run/meri/core-secret',readable:false}]});
 
 test('the uploads.native declaration is closed, control-only, and asserts nothing about a host',async()=>{
@@ -59,6 +60,19 @@ test('the mount is opt-in: absent, disabled or unattested yields an honest unava
  assert.equal(unattested.inspection,null);
  assert.ok(unattested.missing.length>0);assert.equal(typeof unattested.missing[0],'string');
  assert.equal(typeof unattested.reason,'string');assert.ok(unattested.reason.length>0,'the composition reason is lifted to the mount handle');
+});
+
+test('the unqualified mount handle carries the numeric resource and credential predicate diagnostic',async()=>{
+ const tempRoot=await realpath(tmpdir());
+ const observation={...sandboxed(tempRoot+'/meri-upload-probe-abc123'),noNewPrivs:0,
+  cgroup:{memoryMax:'max',pidsMax:'64',cpuMax:'max 100000'}};
+ const handle=await mountUploadNativeControl({configuration:{uploads:{native:{enabled:true,imageDigest:DIGEST,scratchRoot:tempRoot}}},
+  run:async(role,options)=>({stdout:Buffer.from(JSON.stringify({...observation,cwd:options.cwd,home:options.cwd,tmpdir:options.cwd,
+   workspace:{mode:0o700,uid:1000}})),receipt:{exitCode:0}})});
+ assert.equal(handle.inspection,null);assert.equal(handle.reason,'UPLOAD_SANDBOX_UNQUALIFIED');
+ assert.deepEqual(handle.diagnostic.resources,{memoryMax:0,pidsMax:64,cpuMax:0});
+ assert.equal(handle.diagnostic.credentials.envAllowed,true);
+ assert.equal(handle.diagnostic.credentials.envCount,UPLOAD_CHILD_ENV.length);
 });
 
 test('an attested host mounts the real inspection and the ONE lifecycle attempt is bounded and never a repair',async()=>{
