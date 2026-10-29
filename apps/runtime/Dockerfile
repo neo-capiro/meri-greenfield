@@ -470,6 +470,29 @@ ADD --checksum=sha256:3481499c46ac5ae2b7e10ee50ff80f5c4c0e55501e0d096c8c06437f51
 ADD --checksum=sha256:34a962e6d79bf3bfd9eca4f73ea8c2688a5535316d27e9f41d01d49f31dfd800 https://packages.wolfi.dev/os/aarch64/py3.13-pip-26.2.2-r1.apk /tmp/meri-native-pip-repo/aarch64/py3.13-pip-26.2.2-r1.apk
 ADD --checksum=sha256:66b1b058b55b931e1a925961099d251f0d35ab2958269dc07de76721e7f8983a https://packages.wolfi.dev/os/aarch64/py3.13-pip-base-26.2.2-r1.apk /tmp/meri-native-pip-repo/aarch64/py3.13-pip-base-26.2.2-r1.apk
 
+# apk merges every named repository's index. When two repositories advertise the same package and
+# version, apk takes the entry from the later index and then looks for that archive inside THAT
+# repository, so an archive staged only in the first one is reported as 'mentioned in index not
+# found' (build ee0b0368: 22 such packages). The two signed indexes agree byte-for-byte on every
+# staged archive except the three fixed pip packages, which the second index carries itself, and the
+# two gstreamer packages the second index does not advertise at all. Mirroring the already
+# authenticated, locked archives into the second repository path makes each advertised name
+# available where apk looks for it, without adding a package, changing an index, or fetching
+# anything: the copies are the same pinned bytes, and the two exclusions are exactly the packages
+# the second index does not advertise, so no archive is ever mapped under a conflicting entry.
+RUN --network=none \
+    set -e; \
+    for apk in /tmp/meri-native-repo/aarch64/*.apk; do \
+      name="$(basename "$apk")"; \
+      case "$name" in \
+        gst-plugins-base-1.29.2-r3.apk|gstreamer-1.29.2-r4.apk) continue ;; \
+      esac; \
+      cp -p "$apk" "/tmp/meri-native-pip-repo/aarch64/$name" \
+        || { echo "failed to mirror $name into the fixed-pip repository"; exit 1; }; \
+      test -f "/tmp/meri-native-pip-repo/aarch64/$name" \
+        || { echo "mirrored archive missing: $name"; exit 1; }; \
+    done
+
 # The compiler stage itself. It installs the pinned development closure offline from the assembled staging repository
 # (same signed index, no network, no untrusted-file exception), authenticates the staged source bytes against the
 # pinned Cisco Talos key and the staged Rust toolchain against the Rust release key, builds ClamAV 1.5.4 with its
