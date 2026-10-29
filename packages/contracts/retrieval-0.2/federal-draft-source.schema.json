@@ -1,0 +1,972 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:meri:retrieval:federal-draft-source:0.2.0",
+  "title": "Exact retained federal source for drafting",
+  "$defs": {
+    "FederalDraftSourceInput": {
+      "type": "object",
+      "properties": {
+        "billId": {
+          "type": "string",
+          "pattern": "^\\d{3}-(hr|s|hjres|sjres|hconres|sconres|hres|sres)-[1-9]\\d{0,5}$"
+        },
+        "versionCode": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9]{0,15}$"
+        },
+        "revisionId": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{8}-[a-f0-9]{4}-[1-8][a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$"
+        },
+        "versionHash": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "textHash": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        }
+      },
+      "required": [
+        "billId",
+        "versionCode",
+        "revisionId",
+        "versionHash",
+        "textHash"
+      ],
+      "additionalProperties": false
+    },
+    "FederalDraftSourceOutput": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "tool": {
+              "const": "read_federal_draft_source"
+            },
+            "authoritativeOwner": {
+              "const": "federal_evidence_current"
+            },
+            "currentStatus": {
+              "const": "available"
+            },
+            "source": {
+              "type": "object",
+              "properties": {
+                "billId": {
+                  "type": "string",
+                  "pattern": "^\\d{3}-(hr|s|hjres|sjres|hconres|sconres|hres|sres)-[1-9]\\d{0,5}$"
+                },
+                "versionCode": {
+                  "type": "string",
+                  "pattern": "^[a-z][a-z0-9]{0,15}$"
+                },
+                "revisionId": {
+                  "type": "string",
+                  "pattern": "^[a-f0-9]{8}-[a-f0-9]{4}-[1-8][a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$"
+                },
+                "versionHash": {
+                  "type": "string",
+                  "pattern": "^[a-f0-9]{64}$"
+                },
+                "textHash": {
+                  "type": "string",
+                  "pattern": "^[a-f0-9]{64}$"
+                },
+                "sourceKey": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 2048
+                },
+                "provider": {
+                  "enum": [
+                    "govinfo",
+                    "congress.gov"
+                  ]
+                },
+                "collection": {
+                  "const": "BILLS"
+                },
+                "packageId": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 2048
+                },
+                "lineageKey": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 2048
+                },
+                "evidenceParserVersion": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 64
+                },
+                "sourceLocator": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 2048
+                },
+                "sourceModifiedAt": {
+                  "anyOf": [
+                    {
+                      "type": "string",
+                      "format": "date-time"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "publishedAt": {
+                  "anyOf": [
+                    {
+                      "type": "string",
+                      "format": "date-time"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "fetchedAt": {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                "text": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 131072
+                }
+              },
+              "required": [
+                "billId",
+                "versionCode",
+                "revisionId",
+                "versionHash",
+                "textHash",
+                "sourceKey",
+                "provider",
+                "collection",
+                "packageId",
+                "lineageKey",
+                "evidenceParserVersion",
+                "sourceLocator",
+                "sourceModifiedAt",
+                "publishedAt",
+                "fetchedAt",
+                "text"
+              ],
+              "additionalProperties": false
+            },
+            "integrity": {
+              "type": "object",
+              "properties": {
+                "retainedContent": {
+                  "const": "sha256_verified"
+                },
+                "extractedText": {
+                  "const": "sha256_verified"
+                },
+                "originalHttpBytes": {
+                  "const": "unreported"
+                }
+              },
+              "required": [
+                "retainedContent",
+                "extractedText",
+                "originalHttpBytes"
+              ],
+              "additionalProperties": false
+            },
+            "coverage": {
+              "type": "object",
+              "properties": {
+                "complete": {
+                  "const": true
+                },
+                "truncated": {
+                  "const": false
+                },
+                "textEncoding": {
+                  "const": "utf-8"
+                },
+                "textNormalization": {
+                  "const": "unreported"
+                },
+                "legalStructure": {
+                  "const": "unqualified"
+                }
+              },
+              "required": [
+                "complete",
+                "truncated",
+                "textEncoding",
+                "textNormalization",
+                "legalStructure"
+              ],
+              "additionalProperties": false
+            },
+            "currency": {
+              "type": "object",
+              "properties": {
+                "currentAtRead": {
+                  "const": true
+                },
+                "enactment": {
+                  "const": "unresolved"
+                },
+                "legalCurrency": {
+                  "const": "unresolved"
+                }
+              },
+              "required": [
+                "currentAtRead",
+                "enactment",
+                "legalCurrency"
+              ],
+              "additionalProperties": false
+            },
+            "trust": {
+              "const": "external_untrusted"
+            }
+          },
+          "required": [
+            "tool",
+            "authoritativeOwner",
+            "currentStatus",
+            "source",
+            "integrity",
+            "coverage",
+            "currency",
+            "trust"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "tool": {
+              "const": "read_federal_draft_source"
+            },
+            "authoritativeOwner": {
+              "const": "federal_evidence_current"
+            },
+            "currentStatus": {
+              "const": "unavailable"
+            },
+            "selection": {
+              "type": "object",
+              "properties": {
+                "billId": {
+                  "type": "string",
+                  "pattern": "^\\d{3}-(hr|s|hjres|sjres|hconres|sconres|hres|sres)-[1-9]\\d{0,5}$"
+                },
+                "versionCode": {
+                  "type": "string",
+                  "pattern": "^[a-z][a-z0-9]{0,15}$"
+                },
+                "revisionId": {
+                  "type": "string",
+                  "pattern": "^[a-f0-9]{8}-[a-f0-9]{4}-[1-8][a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$"
+                },
+                "versionHash": {
+                  "type": "string",
+                  "pattern": "^[a-f0-9]{64}$"
+                },
+                "textHash": {
+                  "type": "string",
+                  "pattern": "^[a-f0-9]{64}$"
+                }
+              },
+              "required": [
+                "billId",
+                "versionCode",
+                "revisionId",
+                "versionHash",
+                "textHash"
+              ],
+              "additionalProperties": false
+            },
+            "reason": {
+              "enum": [
+                "exact_current_source_unavailable",
+                "source_size_unsupported",
+                "source_integrity_unverified",
+                "publisher_locator_unsupported"
+              ]
+            }
+          },
+          "required": [
+            "tool",
+            "authoritativeOwner",
+            "currentStatus",
+            "selection",
+            "reason"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "FederalDraftOperation": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]{0,127}$"
+        },
+        "kind": {
+          "enum": [
+            "replace",
+            "insert",
+            "delete"
+          ]
+        },
+        "scopeId": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]{0,127}$"
+        },
+        "expectedScopeSha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "expectedText": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 16384
+        },
+        "expectedTextSha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "dependsOn": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]{0,127}$"
+          },
+          "minItems": 0,
+          "maxItems": 64
+        },
+        "text": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 16384
+        },
+        "position": {
+          "enum": [
+            "before",
+            "after"
+          ]
+        }
+      },
+      "required": [
+        "id",
+        "kind",
+        "scopeId",
+        "expectedScopeSha256",
+        "expectedText",
+        "expectedTextSha256",
+        "dependsOn"
+      ],
+      "additionalProperties": false
+    },
+    "FederalDraftPreparationInput": {
+      "type": "object",
+      "properties": {
+        "selection": {
+          "$ref": "#/$defs/FederalDraftSourceInput"
+        },
+        "operations": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/FederalDraftOperation"
+          },
+          "minItems": 1,
+          "maxItems": 64
+        }
+      },
+      "required": [
+        "selection",
+        "operations"
+      ],
+      "additionalProperties": false
+    },
+    "FederalDraftCompilerSource": {
+      "type": "object",
+      "properties": {
+        "documentId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 512
+        },
+        "publisher": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 512
+        },
+        "sourceVersion": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 512
+        },
+        "sourceUrl": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 2048
+        },
+        "publishedAt": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "date"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "parserVersion": {
+          "const": "federal-plain-text/1"
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "text": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 131072
+        },
+        "coverage": {
+          "type": "object",
+          "properties": {
+            "complete": {
+              "const": true
+            },
+            "limitations": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 1000
+              },
+              "minItems": 1,
+              "maxItems": 32
+            }
+          },
+          "required": [
+            "complete",
+            "limitations"
+          ],
+          "additionalProperties": false
+        },
+        "scopes": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]{0,127}$"
+              },
+              "label": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 512
+              },
+              "start": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "end": {
+                "type": "integer",
+                "minimum": 1
+              },
+              "sha256": {
+                "type": "string",
+                "pattern": "^[a-f0-9]{64}$"
+              }
+            },
+            "required": [
+              "id",
+              "label",
+              "start",
+              "end",
+              "sha256"
+            ],
+            "additionalProperties": false
+          },
+          "minItems": 1,
+          "maxItems": 128
+        }
+      },
+      "required": [
+        "documentId",
+        "publisher",
+        "sourceVersion",
+        "sourceUrl",
+        "publishedAt",
+        "parserVersion",
+        "sha256",
+        "text",
+        "coverage",
+        "scopes"
+      ],
+      "additionalProperties": false
+    },
+    "FederalDraftSegment": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "enum": [
+            "unchanged",
+            "delete",
+            "insert"
+          ]
+        },
+        "text": {
+          "type": "string",
+          "minLength": 0,
+          "maxLength": 131072
+        }
+      },
+      "required": [
+        "kind",
+        "text"
+      ],
+      "additionalProperties": false
+    },
+    "FederalDraftCompilation": {
+      "type": "object",
+      "properties": {
+        "parserVersion": {
+          "const": "federal-plain-text/1"
+        },
+        "source": {
+          "$ref": "#/$defs/FederalDraftCompilerSource"
+        },
+        "operations": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/FederalDraftOperation"
+          },
+          "minItems": 1,
+          "maxItems": 64
+        },
+        "outputs": {
+          "type": "object",
+          "properties": {
+            "operative": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 1048576
+            },
+            "consolidated": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 131072
+            },
+            "redline": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 1048576
+            },
+            "segments": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/FederalDraftSegment"
+              },
+              "minItems": 1,
+              "maxItems": 512
+            }
+          },
+          "required": [
+            "operative",
+            "consolidated",
+            "redline",
+            "segments"
+          ],
+          "additionalProperties": false
+        },
+        "findings": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "category": {
+                "enum": [
+                  "source-integrity",
+                  "exact-target",
+                  "numbering",
+                  "cross-references",
+                  "arithmetic",
+                  "substantive-law"
+                ]
+              },
+              "status": {
+                "enum": [
+                  "passed",
+                  "unresolved"
+                ]
+              },
+              "location": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 512
+              },
+              "severity": {
+                "enum": [
+                  "info",
+                  "review-required"
+                ]
+              },
+              "operationId": {
+                "type": "string",
+                "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]{0,127}$"
+              }
+            },
+            "required": [
+              "category",
+              "status",
+              "location",
+              "severity"
+            ],
+            "additionalProperties": false
+          },
+          "minItems": 1,
+          "maxItems": 70
+        },
+        "outputHashes": {
+          "type": "object",
+          "properties": {
+            "operative": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            "consolidated": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            "redline": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            }
+          },
+          "required": [
+            "operative",
+            "consolidated",
+            "redline"
+          ],
+          "additionalProperties": false
+        },
+        "revisionSha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "approval": {
+          "const": "unapproved"
+        }
+      },
+      "required": [
+        "parserVersion",
+        "source",
+        "operations",
+        "outputs",
+        "findings",
+        "outputHashes",
+        "revisionSha256",
+        "approval"
+      ],
+      "additionalProperties": false
+    },
+    "FederalDraftExport": {
+      "type": "object",
+      "properties": {
+        "operation": {
+          "const": "create_word"
+        },
+        "format": {
+          "const": "txt"
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 160
+        },
+        "content": {
+          "type": "object",
+          "properties": {
+            "text": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 1048576
+            }
+          },
+          "required": [
+            "text"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "operation",
+        "format",
+        "title",
+        "content"
+      ],
+      "additionalProperties": false
+    },
+    "FederalDraftPrepared": {
+      "type": "object",
+      "properties": {
+        "tool": {
+          "const": "prepare_federal_draft"
+        },
+        "sourceSelection": {
+          "$ref": "#/$defs/FederalDraftSourceInput"
+        },
+        "nativeSource": {
+          "type": "object",
+          "properties": {
+            "tool": {
+              "const": "read_federal_draft_source"
+            },
+            "authoritativeOwner": {
+              "const": "federal_evidence_current"
+            },
+            "currentStatus": {
+              "const": "available"
+            },
+            "source": {
+              "type": "object",
+              "properties": {
+                "billId": {
+                  "type": "string",
+                  "pattern": "^\\d{3}-(hr|s|hjres|sjres|hconres|sconres|hres|sres)-[1-9]\\d{0,5}$"
+                },
+                "versionCode": {
+                  "type": "string",
+                  "pattern": "^[a-z][a-z0-9]{0,15}$"
+                },
+                "revisionId": {
+                  "type": "string",
+                  "pattern": "^[a-f0-9]{8}-[a-f0-9]{4}-[1-8][a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$"
+                },
+                "versionHash": {
+                  "type": "string",
+                  "pattern": "^[a-f0-9]{64}$"
+                },
+                "textHash": {
+                  "type": "string",
+                  "pattern": "^[a-f0-9]{64}$"
+                },
+                "sourceKey": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 2048
+                },
+                "provider": {
+                  "enum": [
+                    "govinfo",
+                    "congress.gov"
+                  ]
+                },
+                "collection": {
+                  "const": "BILLS"
+                },
+                "packageId": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 2048
+                },
+                "lineageKey": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 2048
+                },
+                "evidenceParserVersion": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 64
+                },
+                "sourceLocator": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 2048
+                },
+                "sourceModifiedAt": {
+                  "anyOf": [
+                    {
+                      "type": "string",
+                      "format": "date-time"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "publishedAt": {
+                  "anyOf": [
+                    {
+                      "type": "string",
+                      "format": "date-time"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "fetchedAt": {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                "text": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 131072
+                }
+              },
+              "required": [
+                "billId",
+                "versionCode",
+                "revisionId",
+                "versionHash",
+                "textHash",
+                "sourceKey",
+                "provider",
+                "collection",
+                "packageId",
+                "lineageKey",
+                "evidenceParserVersion",
+                "sourceLocator",
+                "sourceModifiedAt",
+                "publishedAt",
+                "fetchedAt",
+                "text"
+              ],
+              "additionalProperties": false
+            },
+            "integrity": {
+              "type": "object",
+              "properties": {
+                "retainedContent": {
+                  "const": "sha256_verified"
+                },
+                "extractedText": {
+                  "const": "sha256_verified"
+                },
+                "originalHttpBytes": {
+                  "const": "unreported"
+                }
+              },
+              "required": [
+                "retainedContent",
+                "extractedText",
+                "originalHttpBytes"
+              ],
+              "additionalProperties": false
+            },
+            "coverage": {
+              "type": "object",
+              "properties": {
+                "complete": {
+                  "const": true
+                },
+                "truncated": {
+                  "const": false
+                },
+                "textEncoding": {
+                  "const": "utf-8"
+                },
+                "textNormalization": {
+                  "const": "unreported"
+                },
+                "legalStructure": {
+                  "const": "unqualified"
+                }
+              },
+              "required": [
+                "complete",
+                "truncated",
+                "textEncoding",
+                "textNormalization",
+                "legalStructure"
+              ],
+              "additionalProperties": false
+            },
+            "currency": {
+              "type": "object",
+              "properties": {
+                "currentAtRead": {
+                  "const": true
+                },
+                "enactment": {
+                  "const": "unresolved"
+                },
+                "legalCurrency": {
+                  "const": "unresolved"
+                }
+              },
+              "required": [
+                "currentAtRead",
+                "enactment",
+                "legalCurrency"
+              ],
+              "additionalProperties": false
+            },
+            "trust": {
+              "const": "external_untrusted"
+            }
+          },
+          "required": [
+            "tool",
+            "authoritativeOwner",
+            "currentStatus",
+            "source",
+            "integrity",
+            "coverage",
+            "currency",
+            "trust"
+          ],
+          "additionalProperties": false
+        },
+        "draft": {
+          "$ref": "#/$defs/FederalDraftCompilation"
+        },
+        "exports": {
+          "type": "object",
+          "properties": {
+            "operative": {
+              "$ref": "#/$defs/FederalDraftExport"
+            },
+            "consolidated": {
+              "$ref": "#/$defs/FederalDraftExport"
+            },
+            "redline": {
+              "$ref": "#/$defs/FederalDraftExport"
+            }
+          },
+          "required": [
+            "operative",
+            "consolidated",
+            "redline"
+          ],
+          "additionalProperties": false
+        },
+        "approval": {
+          "const": "unapproved"
+        }
+      },
+      "required": [
+        "tool",
+        "sourceSelection",
+        "nativeSource",
+        "draft",
+        "exports",
+        "approval"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

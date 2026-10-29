@@ -34,6 +34,8 @@ export const GENERAL_READ_TARIFF_ASSUMPTION_KEYS=Object.freeze({
  webSearchProviderDuckDuckGo:Object.freeze({configKey:'CLIO_WEB_SEARCH_PROVIDER',configValue:'duckduckgo'}),
 });
 export const GENERAL_READ_TARIFFS=Object.freeze({
+ 'prepare_federal_draft@0.2.0':Object.freeze({chargeMicrousd:1,class:'db',evidence:'Exact Core federal source and bounded local deterministic compiler; no provider or model call'}),
+ 'read_federal_draft_source@0.2.0':Object.freeze({chargeMicrousd:1,class:'db',evidence:'Core exact bounded retained federal source read; no provider or model call'}),
  'find_path_to@0.2.0':Object.freeze({chargeMicrousd:1,class:'db',evidence:'Core current memory/FK and bounded graph cache reads only; no provider or model call'}),
  'get_pe_buyer_workspace@0.2.0':Object.freeze({chargeMicrousd:1,class:'db',evidence:'Core BuyerWorkspaceService reads canonical acquisition, funding and federal-evidence database owners only; no provider or model call'}),
  'read_saved_strategy_records@0.2.0':Object.freeze({chargeMicrousd:1,class:'db',evidence:'Fixed canonical saved-record owner HTTP reads only; no paid provider operation.'}),
