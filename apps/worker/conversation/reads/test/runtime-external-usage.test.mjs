@@ -7,6 +7,7 @@ import {binding,scopes,id} from '../../../../../apps/control/conversations/test/
 import catalog from '../../../../../packages/contracts/retrieval-0.2/catalog.json' with {type:'json'};
 import {canonicalSha256} from '../../../../../packages/contracts/validate.mjs';
 import {familyReads} from '../availability.mjs';
+import {READ_FAMILIES} from '../families.mjs';
 
 const base = extra => ({binding, scopes, policy: {generalReads: true, readFamilies: [], activeReadOperations: []},
   now: () => Date.now(), deadlineMs: Date.now() + 60000, mount: 'profile', ...extra});
@@ -38,7 +39,7 @@ test('an enabled mount with one active read builds the real runtime from the rea
  // Take a canonical read from the current family registry rather than a hand-picked id, so the case
  // exercises the same availability resolution production uses.
  let mounted=null,chosen=null;
- for(const row of familyReads().slice(0,12)){
+ for(const row of familyReads().filter(row=>READ_FAMILIES[row.family]?.clientScope!=='required').slice(0,12)){
   const at=Date.now(),operation=row.operation;
   const port=Object.freeze({
    async readAvailability(){return {installation:{installationId:id(80),baseCatalogSha256:canonicalSha256(catalog),
