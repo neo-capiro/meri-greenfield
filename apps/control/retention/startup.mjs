@@ -27,7 +27,7 @@ export function createRetentionStartup({journal,watermark=null,ledgerSink=null,o
  const tracked=watermark&&ledger?watermarkedJournal({journal,watermark,fence,ledger}):journal;
  // Every ordinary tracked read requires one backing-store snapshot of the projection and its recovered watermark.
  const gate=createRetentionReadGate({journal:tracked,serving:fence});
- const reconciler=ledger&&watermark?createRecoveryReconciler({ledger,journal:tracked,serving:fence,watermark,storage:owners.storage,keyFor:owners.keyFor,facts:owners.facts,rows:owners.rows,now,recoverPrerequisitesExclusive}):null;
+ const reconciler=ledger&&watermark?createRecoveryReconciler({ledger,journal:tracked,serving:fence,watermark,storage:owners.storage,keyFor:owners.keyFor,facts:owners.facts,rows:owners.rows,verifyCore:owners.verify??null,now,recoverPrerequisitesExclusive}):null;
  const suppression=ledger&&ownership?createSuppressionOwner({ledger,journal:tracked,ownership,authorization,cancellation,serving:fence,now}):null;
  const executor=purge.enabled&&ledger?createPurgeExecutor({storage:owners.storage,ledger,journal:tracked,keyFor:owners.keyFor,facts:owners.facts,serving:fence,rows:owners.rows,finalize:owners.finalize??null,enabled:true,now}):disabledPurge;
  let recovering=null;

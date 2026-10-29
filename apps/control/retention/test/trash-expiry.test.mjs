@@ -166,7 +166,8 @@ test('scheduled retry reconstructs the exact ledger plan after Core committed bu
  assert.equal((await f.current()).purge.state,'EXECUTED');
  assert.equal((await executor.sweepSubject(f.subject)).coreFinalized,true);assert.equal(finalized,2);
  assert.equal((await executor.sweepSubject(f.subject)).coreFinalized,true);assert.equal(finalized,2);
- await f.reconciler().reconcile();assert.equal((await f.current()).purge.coreFinalized,true);
+ await f.reconciler().reconcile();assert.equal((await f.current()).purge.coreFinalized,undefined,
+  'a recovery composition without the Core verifier cannot preserve its old completion claim');
 });
 
 test('bounded sweep records an uncertain effect and starts no later delete after its deadline',async()=>{
