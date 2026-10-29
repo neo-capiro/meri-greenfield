@@ -1,0 +1,75 @@
+SCRUM-238 FINAL SEARCH-MERGE / DISTRIBUTION COMPOSITION HANDBACK — 2026-10-29 (additive; earlier handbacks unchanged)
+Author session 20261029_154054_c5be2d, OpenRouter/DeepSeek. Source only: nothing here is merged, deployed or accepted; Root reviews and merges.
+
+1. HEADS, ANCESTRY, PRS
+   Meri  C:/dev/meri-cap-scrum238-isolated-20261029/meri
+         branch hermes/scrum238-askuserquestion-isolated-20261029
+         Question base c26157591db6d057663365de7ba170edd98cf2ca; integrated main 9f58da8bef091d2a8ba33024427142750aea8229
+         accepted 237 source 56613e7b4e821e8de52d0b6506644af2c3c5dd06 (tree 449d9a7585f6787a2f298c52d0f3c259b9df74ba)
+         canonical 237 merge 4b974665cbf0a8b7e5f6026cb669ec53dba184ea (parents 2ba06889a15cedf111658ea18600becb35f03626 + 56613e7b4)
+         merged normally here as 7320804a7 (no conflicts)
+         distribution regenerated from that source at 9f4be0287cf795f246d46087ae535bd0a9f76766, tree c6bc5d36d2ea2cf51b356a744bc0f2584bd3e688
+         PR https://github.com/neo-capiro/meri-greenfield/pull/387 — updated by ordinary non-force push
+   FE    C:/dev/meri-cap-scrum238-20261029/frontend, branch hermes/scrum238-askuserquestion-20261029
+         base f7fac5917180f7341f27d78481385d53ef23a2e7, integrated main c98e0dad4336a70eb1e315dcaf1ec42a135ccd94
+         head begins this turn at 95f705a72 (residuals A+B) and ends at the pin/manifest commit below
+         PR https://github.com/neo-capiro/capiro-frontend/pull/343 — updated by ordinary non-force push
+   Core  untouched, clean at 0b326f4e990b02bcd84130954241777e96461894.
+
+2. THE TWO CONNECTED RESIDUALS FROM 81375 (FE)
+   A. dispatchAnswer now takes `fresh`. Only a known FRESH NOT_DISPATCHED retires the retained identity; a replayed
+      refusal cannot erase an earlier unknown delivery. Evidence: UNKNOWN C1 -> explicit reconcile C1 returning
+      NOT_DISPATCHED -> phase stays unknown, C1 is still retained, a fresh C2 is refused as `retained`, and the recorded
+      requests are exactly [C1, C1] — no third request. The known-fresh case still clears and stays editable.
+   B. The journal is now bound to the port it was created for (`binding{port, journal}`), a stale port's record is never
+      read, and the retained attempt is projected from the journal/question pair by projectRetainedAnswer() instead of
+      only on a questionId change. safeRetainedAnswer()/clear are wrapped so a tab record that is no longer readable
+      refuses safely instead of throwing from a render or subscription. Evidence: no journal -> no projection; the same
+      pending question with a recovered journal -> "unknown"; a different questionId -> none; the matching durable
+      answered projection settles and clears it, after which the projection is gone; a journal bound to another run reads
+      nothing.
+
+3. 237 COMPOSITION (exact canonical merge, not cherry-picks)
+   4b974665 was fetched and merged as a normal merge commit; its 29 changed paths are the accepted ledger, and it did
+   NOT touch runtime-0.2/validate.mjs, the root package/index/version/lock or the distribution — verified by
+   `git diff --name-only 4b974665^1 4b974665 | grep -E 'validate.mjs|package.json|package-lock|dist/'` returning nothing.
+   Question source, the federal import receiver and the accepted 235/236/main behaviour survive the merge; the only
+   distribution delta from regeneration is five metadata JSON hashes that record 237's private reads/usage schema inputs.
+
+4. ARTIFACTS, PRODUCER BINDING, PINS
+   Versions stay 0.1.36 / 0.1.23: both were source-only and never merged or published, so the repository convention is
+   to bind the same version to its final composed producer rather than invent a release.
+   @capiro/meri-contracts 0.1.36  vendor/capiro-meri-contracts-0.1.36-9f4be028-c3564efeb727.tgz
+        producer 9f4be028 (tree c6bc5d36), 1748821 bytes, sha256 c3564efeb72727150ac720b11a0e99de26a8ea332ef8a9278272d87b2fb3b32f
+        members verified equal to the committed tree: 85/85 files matched, 0 mismatched
+   @capiro/meri-ui-stream 0.1.23  vendor/capiro-meri-ui-stream-0.1.23-f3fd895d-177c6433a66d.tgz (unchanged bytes)
+        sha256 177c6433a66d5506ee3caa414d10c84672510f443a5a65b27338335ace381b73, 6/6 members matched against
+        9f4be028 as well as f3fd895d, which is why no new file was manufactured for it.
+   vendor/meri-public-packages.json: 63 entries. The final contracts artifact is recorded with its real producer commit
+   and tree; the earlier 0.1.36 entry (f3fd895d producer) is retained but relabelled `superseded-source-only` rather than
+   deleted. The three consumer package.json pins and the root package-lock point at the final artifact.
+
+5. FOCUSED CHECKS (this turn, exact exits)
+   FE apps/web `npm run typecheck`                                          EXIT 0, 0 errors
+   FE `npx vitest run tests/answer-command.test.ts tests/question-card.test.ts`  EXIT 0, 33/33
+        (21 real command/journal incl. the A and B sequences, 12 rendered card states)
+   FE `node --test apps/web/test/question-receiver.test.mjs apps/web/test/question-card.test.mjs`  EXIT 0, 7/7
+        (against the NEW installed package bytes: answer-control accept/refuse, pending/answered admission through the
+        real cursor+receiver, malformed refusal, 4 projection cases)
+   Meri Question runtime `node --test questions… dispatch… answer-route… conversation-lifecycle-answer…`  EXIT 0, 19/19
+   Meri `packages/contracts npm run build` EXIT 0 and `npm run check:generated` EXIT 0 (all 19 generators).
+   Reused, not rerun: 237's accepted 40 checks and its enabled/revoked MCP proof; this composition changes no 237 logic.
+   The broad contracts suite is NOT rerun and NOT claimed: its limit remains 658 total / 645 pass / 12 fail / 1 skip.
+
+6. LIMITS
+   Source-only. No product/image build, no cloud, provider, DB, live browser, AWS or global-config action. No deployed or
+   native acceptance, no claim of search feature activation (237's deployment, gateway/managed target, tools/list exposure
+   and task-role grants remain pending per its own handback). SDK host restart of a suspended question remains explicitly
+   unresumable; display recovery is not native callback recovery. The hook's mounted effects are still not executed by
+   these tests — the functions it calls are — and deployed browser acceptance must cover the mount.
+
+7. CUSTODY
+   237's private reads/usage DTOs, retrieval 0.2/0.3 catalogs and skills installation pin are taken only through its
+   canonical merge. runtime-0.2/validate.mjs and the distribution remain this branch's final-writer scope. 235 Bash/runner/
+   telemetry, 236 Notebook and 155 settings source are untouched by this turn. The contaminated donor and the blocked
+   junction were not read, retried or retargeted.
