@@ -122,8 +122,8 @@
     },
     {
       "path": "conversation-history/shape.mjs",
-      "sha256": "9cf42e7c26c7a79523b41ea95da6777e210da7922dcf8e77f98bca142093ac02",
-      "bytes": 1154
+      "sha256": "0ab8d33b5094c762332474ff9bae491138e1856ce5340e1254db1f471a47dc2f",
+      "bytes": 1198
     },
     {
       "path": "conversation-history/validate.mjs",
