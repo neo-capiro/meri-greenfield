@@ -710,6 +710,12 @@ class SourceBuiltClamavPayload(unittest.TestCase):
                       "a non-ELF staged file does not fail with its path")
         self.assertIn("strip --strip-debug", build,
                       "the staged ELF files are not stripped of debug-only sections")
+        self.assertIn('before=$(stat -c %s "$f") || { echo "staged stat failed: $f"; exit 1; }', build,
+                      "a failed before-stat is not fatal to the compiler RUN")
+        self.assertIn('strip --strip-debug "$f" || { echo "staged strip failed: $f"; exit 1; }', build,
+                      "a failed strip is not fatal to the compiler RUN")
+        self.assertIn('after=$(stat -c %s "$f") || { echo "staged stat failed: $f"; exit 1; }', build,
+                      "a failed after-stat is not fatal to the compiler RUN")
         self.assertNotIn("strip --strip-all", build, "strip-all is not allowed")
         self.assertNotIn("strip --strip-unneeded", build, "strip-unneeded is not allowed")
         self.assertNotIn("rm -rf", build, "the staging step uses a broad recursive removal")

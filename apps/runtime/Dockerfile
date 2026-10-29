@@ -601,9 +601,9 @@ RUN --network=none \
       /tmp/meri-clamav-out/usr/lib/libfreshclam.so.4.0.0; do \
       [ -f "$f" ] || { echo "missing staged ClamAV ELF: $f"; exit 1; }; \
       readelf -h "$f" >/dev/null 2>&1 || { echo "unexpected staged file type: $f"; exit 1; }; \
-      before=$(stat -c %s "$f"); \
-      strip --strip-debug "$f"; \
-      after=$(stat -c %s "$f"); \
+      before=$(stat -c %s "$f") || { echo "staged stat failed: $f"; exit 1; }; \
+      strip --strip-debug "$f" || { echo "staged strip failed: $f"; exit 1; }; \
+      after=$(stat -c %s "$f") || { echo "staged stat failed: $f"; exit 1; }; \
       printf 'MERI-NATIVE-STRIP file=%s before=%s after=%s\n' "$f" "$before" "$after"; \
     done && \
     printf 'MERI-NATIVE-SIZE after=%s\n' "$(find /tmp/meri-clamav-out -type f -exec stat -c %s {} + | awk '{s+=$1} END {printf "%d", s}')" && \
