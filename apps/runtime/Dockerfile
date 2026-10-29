@@ -179,7 +179,6 @@ ADD --checksum=sha256:2674e32336bdd994b87eb4bc1f3251360edc1cf16cbe3824506d537761
 ADD --checksum=sha256:283170342886c6b83c620bef200b7c14cd1d8b47e18d5edb428a6be6897cdb84 https://packages.wolfi.dev/os/aarch64/gpgme-1.24.3-r0.apk /tmp/meri-native-repo/aarch64/gpgme-1.24.3-r0.apk
 ADD --checksum=sha256:2a35195ddb4d51e34bedb4c705e27a7066e30252430effe527e69fa72e67971d https://packages.wolfi.dev/os/aarch64/liblangtag-0.6.8-r5.apk /tmp/meri-native-repo/aarch64/liblangtag-0.6.8-r5.apk
 ADD --checksum=sha256:2e142c6cfb00809a0aafe9d5c43db73087fd44ff038d546b430351ca053c5673 https://packages.wolfi.dev/os/aarch64/libxrandr-1.5.5-r7.apk /tmp/meri-native-repo/aarch64/libxrandr-1.5.5-r7.apk
-ADD --checksum=sha256:2edcf4ac5ff50acd5a3fa804ddef9d46d8981958ddab4667bf5e333764156b55 https://packages.wolfi.dev/os/aarch64/py3-pip-wheel-26.2.2-r0.apk /tmp/meri-native-repo/aarch64/py3-pip-wheel-26.2.2-r0.apk
 ADD --checksum=sha256:33f870386c306551f87680565a685a6ac44d7313ed540d9293554417e04829d1 https://packages.wolfi.dev/os/aarch64/opus-1.6.1-r5.apk /tmp/meri-native-repo/aarch64/opus-1.6.1-r5.apk
 ADD --checksum=sha256:36deab0844a3f40227198193639b679eda4fc8bda3789c78eb34aaf95bf75c57 https://packages.wolfi.dev/os/aarch64/libxml2-2.15.0-r0.apk /tmp/meri-native-repo/aarch64/libxml2-2.15.0-r0.apk
 ADD --checksum=sha256:382ea7166f5725c079846be85f60bb8efbead87828a8fad44705fb9194a6800b https://packages.wolfi.dev/os/aarch64/libseccomp-2.6.1-r4.apk /tmp/meri-native-repo/aarch64/libseccomp-2.6.1-r4.apk
@@ -201,13 +200,11 @@ ADD --checksum=sha256:62beec958d0e9989f4a618a74d798f8bc88a67d441eabcce746465224d
 ADD --checksum=sha256:63ad89463dd6cbb0c682bef6aabdc9896e2708cb42c05bcc33d6bf0dd5ed3bab https://packages.wolfi.dev/os/aarch64/libuuid-2.42.4-r1.apk /tmp/meri-native-repo/aarch64/libuuid-2.42.4-r1.apk
 ADD --checksum=sha256:6a3b8fa56ff3b4d466866669d796aa23ea1064b51d8dcb0d73b399dfb770f55d https://packages.wolfi.dev/os/aarch64/libsystemd-262.1-r1.apk /tmp/meri-native-repo/aarch64/libsystemd-262.1-r1.apk
 ADD --checksum=sha256:6bed5066575718aede41dbf653ea301f32b1e826c27868a679cd30bfa42378ee https://packages.wolfi.dev/os/aarch64/glycin-2-libs-2.2.5-r0.apk /tmp/meri-native-repo/aarch64/glycin-2-libs-2.2.5-r0.apk
-ADD --checksum=sha256:713630cff32fc4116b0aa491565bb1f0fdad210ea48bade2b502d3475d094dab https://packages.wolfi.dev/os/aarch64/py3.13-pip-26.2.2-r0.apk /tmp/meri-native-repo/aarch64/py3.13-pip-26.2.2-r0.apk
 ADD --checksum=sha256:749913adccebf88bc0c8596810fb1231dd5e08b9715e3416e1e8f58de37a3317 https://packages.wolfi.dev/os/aarch64/openh264-2.7.0-r0.apk /tmp/meri-native-repo/aarch64/openh264-2.7.0-r0.apk
 ADD --checksum=sha256:76ae4a7c37e3c2f00e40ad9affea2b7fcd5bab7a476cfd33dcfe5d70c8913e4f https://packages.wolfi.dev/os/aarch64/libx265-216-4.2-r2.apk /tmp/meri-native-repo/aarch64/libx265-216-4.2-r2.apk
 ADD --checksum=sha256:780864c286ee3ccb774b7d2ab215599095d1252ef40b907f843bc2a8080f3622 https://packages.wolfi.dev/os/aarch64/libdrm-2.4.134-r0.apk /tmp/meri-native-repo/aarch64/libdrm-2.4.134-r0.apk
 ADD --checksum=sha256:7b04c65d8026079edad3a5ae5ad00dad509dbd7359f5f4c858eb77e3593ac76c https://packages.wolfi.dev/os/aarch64/py3.13-setuptools-84.2.1-r0.apk /tmp/meri-native-repo/aarch64/py3.13-setuptools-84.2.1-r0.apk
 ADD --checksum=sha256:7ffed60387aafd738e1435072b8948e28bbf7718835455eaf438af143232bcfa https://packages.wolfi.dev/os/aarch64/libde265-1.1.3-r0.apk /tmp/meri-native-repo/aarch64/libde265-1.1.3-r0.apk
-ADD --checksum=sha256:83d295f369d1396bae0e9a84b6014e9857dba40a1ac4d5215662c34d229e01ce https://packages.wolfi.dev/os/aarch64/py3.13-pip-base-26.2.2-r0.apk /tmp/meri-native-repo/aarch64/py3.13-pip-base-26.2.2-r0.apk
 ADD --checksum=sha256:895d413f7fab456176e58657ced82d58ddd16863c46f848c7db8e70b3df4b064 https://packages.wolfi.dev/os/aarch64/libxkbcommon-1.13.2-r4.apk /tmp/meri-native-repo/aarch64/libxkbcommon-1.13.2-r4.apk
 FROM ${RUNTIME_IMAGE} AS native-repo-4
 ADD --checksum=sha256:8a1f12289bb129fafbda269ec2dd2347a62b755122c72ac8680b72491b882467 https://packages.wolfi.dev/os/aarch64/libvorbis-1.3.7-r14.apk /tmp/meri-native-repo/aarch64/libvorbis-1.3.7-r14.apk
@@ -464,6 +461,14 @@ COPY --from=native-repo-1 /tmp/meri-native-repo /tmp/meri-native-repo
 COPY --from=native-repo-2 /tmp/meri-native-repo /tmp/meri-native-repo
 COPY --from=native-repo-3 /tmp/meri-native-repo /tmp/meri-native-repo
 COPY --from=native-repo-4 /tmp/meri-native-repo /tmp/meri-native-repo
+# Second, separate offline repository: the officially signed Wolfi index that carries the fixed pip
+# trio. The frozen 5c84 index above stays authoritative for the rest of the locked closure (the new
+# index omits gst-plugins-base 1.29.2-r3 and gstreamer 1.29.2-r4), and no index is edited, merged or
+# synthesized: both are the vendor's own signed bytes, staged by their exact content hash.
+COPY infra/product-preview/native-apk-index/aarch64-APKINDEX-e37b60006139bac29cffecabf9b1decce4c9636249936e2149ef9c90f6ca7c0c.tar.gz /tmp/meri-native-pip-repo/aarch64/APKINDEX.tar.gz
+ADD --checksum=sha256:3481499c46ac5ae2b7e10ee50ff80f5c4c0e55501e0d096c8c06437f51283c93 https://packages.wolfi.dev/os/aarch64/py3-pip-wheel-26.2.2-r1.apk /tmp/meri-native-pip-repo/aarch64/py3-pip-wheel-26.2.2-r1.apk
+ADD --checksum=sha256:34a962e6d79bf3bfd9eca4f73ea8c2688a5535316d27e9f41d01d49f31dfd800 https://packages.wolfi.dev/os/aarch64/py3.13-pip-26.2.2-r1.apk /tmp/meri-native-pip-repo/aarch64/py3.13-pip-26.2.2-r1.apk
+ADD --checksum=sha256:66b1b058b55b931e1a925961099d251f0d35ab2958269dc07de76721e7f8983a https://packages.wolfi.dev/os/aarch64/py3.13-pip-base-26.2.2-r1.apk /tmp/meri-native-pip-repo/aarch64/py3.13-pip-base-26.2.2-r1.apk
 
 # The compiler stage itself. It installs the pinned development closure offline from the assembled staging repository
 # (same signed index, no network, no untrusted-file exception), authenticates the staged source bytes against the
@@ -524,6 +529,7 @@ RUN --network=none \
     --mount=type=bind,from=native-dev-repository,source=tmp/meri-native-dev-repo,target=/tmp/meri-native-dev-repo,readonly \
     --mount=type=bind,from=native-dev-repository,source=tmp/meri-native-source,target=/tmp/meri-native-source,readonly \
     --mount=type=bind,from=native-repository,source=tmp/meri-native-repo,target=/tmp/meri-native-runtime-repo,readonly \
+    --mount=type=bind,from=native-repository,source=tmp/meri-native-pip-repo,target=/tmp/meri-native-pip-repo,readonly \
     apk --version && \
     apk add --no-cache --no-network --repository /tmp/meri-native-dev-repo --repositories-file /dev/null --update-cache \
       gcc=16.2.0-r2 libgcc=16.2.0-r2 binutils=2.47-r2 make=4.4.1-r15 cmake=4.4.3-r0 pkgconf=3.0.10-r2 bash=5.3-r14 xz=5.8.4-r0 \
@@ -533,9 +539,11 @@ RUN --network=none \
       openssl-4.0-dev=4.0.3-r8 json-c-dev=0.19-r2 curl-dev=8.23.0-r2 ncurses-dev=6.6.20261024-r0 \
       check-dev=0.15.2-r10 check=0.15.2-r10 linux-headers=7.3-r0 && \
     gcc --version | head -1 && cmake --version | head -1 && make --version | head -1 && pkg-config --version && \
-    apk add --no-cache --no-network --repository /tmp/meri-native-runtime-repo --repositories-file /dev/null --update-cache \
-      python-3.13=3.13.16_git20261016-r2 python-3.13-base=3.13.16_git20261016-r2 && \
-    for pkg in python-3.13-3.13.16_git20261016-r2 python-3.13-base-3.13.16_git20261016-r2; do \
+    apk add --no-cache --no-network --repository /tmp/meri-native-runtime-repo --repository /tmp/meri-native-pip-repo --repositories-file /dev/null --update-cache \
+      python-3.13=3.13.16_git20261016-r2 python-3.13-base=3.13.16_git20261016-r2 \
+      py3-pip-wheel=26.2.2-r1 && \
+    for pkg in python-3.13-3.13.16_git20261016-r2 python-3.13-base-3.13.16_git20261016-r2 \
+               py3-pip-wheel-26.2.2-r1; do \
       apk info -v | grep -qx "$pkg" || { echo "unexpected native interpreter package $pkg"; exit 1; }; done && \
     python3.13 --version && \
     python3.13 -c 'import sys; assert sys.version_info[:3] == (3, 13, 16), sys.version; print("interpreter", sys.version)' && \
@@ -670,14 +678,16 @@ WORKDIR /opt/meri
 # apk --version is recorded before the first install so the build log itself carries the effective apk-tools version
 # instead of leaving it a premise; this is static recipe text and no version is claimed until a real build logs it.
 RUN --mount=type=bind,from=native-repository,source=tmp/meri-native-repo,target=/tmp/meri-native-repo,readonly \
+    --mount=type=bind,from=native-repository,source=tmp/meri-native-pip-repo,target=/tmp/meri-native-pip-repo,readonly \
     test "$(uname -m)" = aarch64 && \
     apk --version && \
-    apk add --no-cache --no-network --repository /tmp/meri-native-repo --repositories-file /dev/null --update-cache \
+    apk add --no-cache --no-network --repository /tmp/meri-native-repo --repository /tmp/meri-native-pip-repo --repositories-file /dev/null --update-cache \
       bash=5.3-r14 libatomic=16.2.0-r1 libstdc++=16.2.0-r1 python-3.13=3.13.16_git20261016-r2 \
-      py3.13-pip=26.2.2-r0 py3.13-pip-base=26.2.2-r0 \
+      py3.13-pip=26.2.2-r1 py3.13-pip-base=26.2.2-r1 py3-pip-wheel=26.2.2-r1 \
       glibc-2.44=2.44-r10 glibc-2.44-iconv=2.44-r10 glibc-2.44-locale-posix=2.44-r10 ld-linux-2.44=2.44-r10 libcrypt1-2.44=2.44-r10 && \
     test "$(python3.13 --version)" = 'Python 3.13.16' && \
     apk info -v | grep -qx glibc-2.44-iconv-2.44-r10 && \
+    apk info -v | grep -qx py3-pip-wheel-26.2.2-r1 && \
     test -x /usr/bin/iconv && \
     test -r /usr/lib/gconv/gconv-modules && \
     for module in SJIS UTF-16 UTF-32; do \
