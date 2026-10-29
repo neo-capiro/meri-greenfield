@@ -24,6 +24,11 @@ export const STAGE3_EXISTING=Object.freeze({endpointSecurityGroupId:'sg-01def4e5
 /** Deployment-inputs secret key of each material role (Secrets Manager ARN under deployment.secrets). */
 export const MATERIAL_SECRET_KEYS=Object.freeze({control:'control/material','temporal-worker':'worker/material','schedule-worker':'schedule/material'});
 const PRIVATE_EDGE_KEYS=Object.freeze({ControlPrivateOrigin:'controlPrivateOrigin',ControlPrivateTargetGroupArn:'controlPrivateTargetGroupArn',PrivateAlbSecurityGroupId:'privateAlbSecurityGroupId'});
+/** Stage 6 public search (SCRUM-237): the two string outputs that bind control to the provisioned gateway.
+ * `GatewayUrl` is the documented MCP invocation endpoint (…/mcp) and `TargetToolName` is the tool name the
+ * gateway actually exposes (from `tools/list`), which may be prefixed. Absent inputs keep today's behaviour. */
+export const WEB_SEARCH_OUTPUT_KEYS=Object.freeze(['GatewayUrl','TargetToolName']);
+const GATEWAY_HOST=/^[a-z0-9-]{1,63}\.gateway\.bedrock-agentcore\.us-east-1\.amazonaws\.com$/u,TOOL_NAME=/^[A-Za-z0-9_-]{1,64}$/u;
 
 export const fail=(detail)=>{throw Object.assign(Error(`STAGE3_BINDING_REFUSED: ${detail}`),{code:'STAGE3_BINDING_REFUSED'});};
 const hex64=/^[a-f0-9]{64}$/u,versionId=/^[A-Za-z0-9-]{32,64}$/u;
@@ -84,8 +89,23 @@ function checkFoundation(deployment,foundationOutputs){
 
 }
 
+/** Optional control-only public search binding from the deployed gateway's string outputs.
+ * The real outputs object also carries GatewayArn/GatewayId/versions; only these two are consumed. */
+export function webSearchBinding(outputs){
+ if(outputs===undefined||outputs===null)return undefined;
+ if(typeof outputs!=='object'||Array.isArray(outputs))fail('webSearchOutputs must be an object of stack outputs');
+ const gatewayUrl=outputs.GatewayUrl,toolName=outputs.TargetToolName;
+ if(typeof gatewayUrl!=='string'||typeof toolName!=='string')fail('webSearchOutputs must contain string GatewayUrl and TargetToolName outputs');
+ if(!TOOL_NAME.test(toolName))fail('webSearchOutputs.TargetToolName must be a 1..64 tool identifier');
+ let url;try{url=new URL(gatewayUrl);}catch{fail('webSearchOutputs.GatewayUrl must be a URL');}
+ if(url.protocol!=='https:'||url.username||url.password||url.search||url.hash||
+    url.pathname!=='/mcp'||gatewayUrl!==url.origin+'/mcp')fail('webSearchOutputs.GatewayUrl must be the documented https …/mcp invocation endpoint');
+ if(!GATEWAY_HOST.test(url.hostname))fail('webSearchOutputs.GatewayUrl is not an AgentCore gateway endpoint in this region');
+ return Object.freeze({gatewayUrl,toolName,region:REGION});
+}
+
 /** Builds the application binding, then passes it through its renderer (see synthesizeStage3). */
-export function buildStage3Bindings({deployment,foundationOutputs,privateEdgeOutputs,renderSummary,renderedExpected,secretVersions,imageScans,liveAppTemplate}){
+export function buildStage3Bindings({deployment,foundationOutputs,privateEdgeOutputs,renderSummary,renderedExpected,secretVersions,imageScans,liveAppTemplate,webSearchOutputs}){
  const d=deployment,f=foundationOutputs,roles=deploymentRoles(d),schedule=roles.includes('schedule-worker');
  checkFoundation(d,f);
  record(privateEdgeOutputs,'privateEdgeOutputs',Object.keys(PRIVATE_EDGE_KEYS));
@@ -111,6 +131,7 @@ export function buildStage3Bindings({deployment,foundationOutputs,privateEdgeOut
  const material=role=>({valueFrom:`${d.secrets[MATERIAL_SECRET_KEYS[role]]}:::${secretVersions[role]}`,expected:structuredClone(renderedExpected[role])});
  for(const role of roles)if(typeof d.secrets[MATERIAL_SECRET_KEYS[role]]!=='string')fail(`deployment.secrets.${MATERIAL_SECRET_KEYS[role]}`);
  const net=stage3Network(d,f);
+ const controlWebSearch=webSearchBinding(webSearchOutputs);
 
  // (a) the existing control and Temporal worker services; SDK compute is the separately qualified AgentCore runtime.
  for(const key of ['runtimeArn','runtimeVersion','qualifier'])if(s.agentcore[key]!==d.agentcore?.[key])fail('rendered AgentCore '+key+' differs from deployment');
@@ -128,7 +149,9 @@ export function buildStage3Bindings({deployment,foundationOutputs,privateEdgeOut
    workerSecurityGroupIds:[...net['temporal-worker'].securityGroups],...(schedule?{scheduleSecurityGroupIds:[...net['schedule-worker'].securityGroups]}:{})},
   sizing:{...structuredClone(STAGE3_SIZING),...(schedule?{scheduleWorker:{...STAGE3_SIZING.temporalWorker}}:{})},
   // The stacks are live: control keeps the public 8080 target group its live service is attached to, plus the private 8082 one.
-  controlTargetGroupArn:liveControlTargetGroup(liveAppTemplate),controlPrivateTargetGroupArn:privateEdgeOutputs.ControlPrivateTargetGroupArn};
+  controlTargetGroupArn:liveControlTargetGroup(liveAppTemplate),controlPrivateTargetGroupArn:privateEdgeOutputs.ControlPrivateTargetGroupArn,
+  // Control-only public search; absent keeps the app binding byte-identical to today's.
+  ...(controlWebSearch===undefined?{}:{controlWebSearch})};
 
  const expectedTaskDefinitions=Object.fromEntries(roles.map(role=>[role,s.roles[role].taskDefinitionArn]));
  return {stacks:{...STAGE3_STACKS},app,expectedTaskDefinitions,

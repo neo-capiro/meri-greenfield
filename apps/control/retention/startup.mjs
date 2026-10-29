@@ -38,6 +38,11 @@ export function createRetentionStartup({journal,watermark=null,ledgerSink=null,o
  /** Every readiness proof compares against the current external ledger, including decisions this process never observed. */
  async function ensureServing(){if(fence.isEnabled()){try{return await fence.verify(()=>watermark.read(),()=>ledger.head());}catch{}}
   await recover();return fence.verify(()=>watermark.read(),()=>ledger.head());}
+ /** A fresh external position after the database observation. No cached proof,
+  * recovery, projection mutation or content is returned to the Core caller. */
+ async function readServingWitness(){let head;
+  await fence.verify(()=>watermark.read(),async()=>{head=await ledger.head();return head;});
+  return head;}
  const deletionStatus=createDeletionStatusReader({journal:tracked,ensureServing,owners,enabled:purge.enabled,now});
- return Object.freeze({serving:fence,journal:tracked,ledger,gate,suppression,deletionStatus,purge:executor,reconciler,recover,ensureServing,start:ensureServing,state:()=>Object.freeze({...fence.state(),purgeEnabled:purge.enabled,unavailable})});
+ return Object.freeze({serving:fence,journal:tracked,ledger,gate,suppression,deletionStatus,purge:executor,reconciler,recover,ensureServing,readServingWitness,start:ensureServing,state:()=>Object.freeze({...fence.state(),purgeEnabled:purge.enabled,unavailable})});
 }
