@@ -732,7 +732,7 @@ RUN cd / && sha256sum -c /usr/share/meri/clamav-component-inventory.txt && \
     printf 'sigtool stdout:\n'; cat /tmp/meri-sigtool-out; \
     printf 'sigtool stderr:\n'; cat /tmp/meri-sigtool-err; \
     if [ "$sigtool_status" -ne 0 ]; then echo "sigtool failed to execute"; exit 1; fi; \
-    test "$(awk '{print $1}' /tmp/meri-sigtool-out)" = "$(md5sum /tmp/meri-sigtool-probe | awk '{print $1}')" || { echo "sigtool md5 mismatch"; exit 1; }; \
+    test "$(awk -F: '{print $1}' /tmp/meri-sigtool-out)" = "$(md5sum /tmp/meri-sigtool-probe | awk '{print $1}')" || { echo "sigtool md5 mismatch"; exit 1; }; \
     grep -q '"upstreamVersion":"1.5.4"' /usr/share/meri/clamav-component-provenance.json && \
     if apk info -v | grep -q '^clamav-1.5'; then echo "unexpected clamav-1.5 distribution package installed"; apk info -v | grep '^clamav-1.5'; exit 1; fi && \
     rm -f /tmp/meri-sigtool-probe /tmp/meri-sigtool-out /tmp/meri-sigtool-err /tmp/meri-probe-freshclam.conf /tmp/meri-probe-clamd.conf && \
