@@ -1,0 +1,84 @@
+SCRUM-238 FINAL COMMAND / EXPIRY / PACKAGE HANDBACK — 2026-10-29 (additive; earlier handbacks unchanged)
+Author session 20261029_154054_c5be2d, OpenRouter/DeepSeek. Source only: nothing here is deployed, merged or accepted.
+
+1. HEADS, BASES, PUBLISHED REFS
+   Meri      C:/dev/meri-cap-scrum238-isolated-20261029/meri
+             base c26157591db6d057663365de7ba170edd98cf2ca, integrated main 9f58da8bef091d2a8ba33024427142750aea8229
+             implementation f3fd895dcdd6b99e0a71618312fad4b8d57e2caa, branch head b742bfa37aca8624d3de250cbd8ff524dd33c584
+             (this round made NO meri source change; the tree already matched the reviewed bytes)
+             remote gh = https://github.com/neo-capiro/meri-greenfield.git, branch hermes/scrum238-askuserquestion-isolated-20261029
+             PR https://github.com/neo-capiro/meri-greenfield/pull/387  (base main)
+   Frontend  C:/dev/meri-cap-scrum238-20261029/frontend
+             base f7fac5917180f7341f27d78481385d53ef23a2e7, integrated main c98e0dad4336a70eb1e315dcaf1ec42a135ccd94
+             head 07a0bf6d9d05aca322df8d83c4826d1942d3da42, branch hermes/scrum238-askuserquestion-20261029
+             remote gh = https://github.com/neo-capiro/capiro-frontend.git
+             PR https://github.com/neo-capiro/capiro-frontend/pull/343  (base main)
+   Core      C:/dev/meri-cap-scrum238-20261029/backend at 0b326f4e990b02bcd84130954241777e96461894 — untouched, clean.
+   Pushes were ordinary fast-forwards on new branches (no force, no global Git config).
+
+2. CORRECTION 1 — NESTED UNKNOWN AND TRANSPORT UNKNOWN (useRunQuestion.ts)
+   The control route answers either a receipt with `state` or, for 502, {error:{code:'LIFECYCLE_EFFECT_UNKNOWN',outcome:'UNKNOWN'}}.
+   controlOutcome(receipt) now reads both shapes and returns PENDING / UNKNOWN / NOT_DISPATCHED; anything unreadable is UNKNOWN.
+   answerCommand maps: APPLIED/PENDING/DISPATCHING -> waiting; NOT_DISPATCHED -> rejected (the only correctable refusal);
+   UNKNOWN -> unknown (latched; the card cannot resend, and no new random controlId is minted); a thrown ConversationUnavailable
+   (superseded / no longer current) -> error, which the card now locks; any other throw after dispatch (fetch TypeError, lost
+   response) -> unknown, never a refusal. QuestionCard's `disabled` now includes "error", so a superseded conversation is no
+   longer an editable send state. No new ledger, queue or receiver change.
+
+3. CORRECTION 2 — SUBMIT-TIME CURRENTNESS AND DEADLINE (useRunQuestion.ts)
+   The submit path is now the exported answerCommand, used by the hook: it re-reads port.getSnapshot() and re-derives the
+   pending question immediately before sending, and sends nothing unless the question is still the same one, the run is not
+   settled (isSettled, so paused / waiting-for-approval / terminal all refuse), and the deadline has not passed. A question that
+   quietly crosses expiresAt is bounded by a scheduled timer in the effect, so it becomes unavailable without another event, and
+   the timer is cleared on effect cleanup. A late completion from a previous question or port is discarded by comparing the
+   capturing port/question against the card's current pair (`showing` ref); the same-live-run durable reload, the paused/terminal
+   refusal and the question-change selection reset are unchanged.
+
+4. CORRECTION 3 — REAL EVENT RECEIVER PROOF (apps/web/test/question-receiver.test.mjs)
+   The vacuous root-schema/AJV case is replaced. The third case now builds a real submit receipt through the installed
+   receiveConversationResponse (the only thing createConversationCursor's private brand accepts), takes createConversationCursor(view),
+   and drives question.pending (sequence 1) and question.answered (sequence 2) through the installed receiveConversationEvent —
+   asserting the decoded event data and the advanced cursor — then feeds a malformed question.pending (missing toolUseId/questionsSha256/
+   expiresAt/questions) at sequence 3 and asserts the receiver refuses it and the cursor does not advance. The two request/version
+   cases are retained. No cursor construction is bypassed and no local shape is declared.
+   New apps/web/tests/answer-command.test.ts drives the actual command the hook calls (not reducer actions): expired between render
+   and submit -> zero control calls; view no longer shows the question -> zero; settled run -> zero; nested 502 UNKNOWN -> one control,
+   unknown phase; thrown TypeError after dispatch -> one control, unknown phase; NOT_DISPATCHED -> one control, rejected; APPLIED ->
+   waiting; local single-select array -> rejected locally, zero calls; a previous question id in the view -> zero.
+
+5. CORRECTION 4 — PACKAGE PROVENANCE (frontend vendor/)
+   Both vendored tarballs were verified member-by-member against meri commit f3fd895d: ui-stream 6/6 files and contracts 85/85 files
+   byte-identical (`sha256sum` of each extracted member vs `git show f3fd895d:packages/<pkg>/<path>`). The ui-stream artifact's label was
+   wrong, not its bytes: commit 91e5bc73 has ui-stream 0.1.22 while the 0.1.23 package.json + 0.1.36 peer range is committed at
+   16e545991 and f3fd895d. The file is therefore renamed (git mv, same bytes) and re-pinned:
+     vendor/capiro-meri-contracts-0.1.36-f3fd895d-d9f5962686db.tgz  sha256 d9f5962686db3f75a0d36166264854881b5cae2c0c2592814b383b3478f89bad  1748805 bytes
+     vendor/capiro-meri-ui-stream-0.1.23-f3fd895d-177c6433a66d.tgz  sha256 177c6433a66d5506ee3caa414d10c84672510f443a5a65b27338335ace381b73    3708 bytes
+   vendor/meri-public-packages.json gained two additive entries (60 -> 62, history untouched) with name/version/repository/sourceCommit
+   f3fd895d/sourceTree/bytes/sha256/integrity/regularEntryCount/status/purpose; the root, meri-client and apps/web pins and package-lock
+   were re-pinned after an --ignore-scripts install. No rebuild was needed because the bytes already matched the committed members.
+
+6. CHECKS (exact commands and exits, final bytes)
+   FE apps/web `npm run typecheck`                                    EXIT 0, 0 errors
+   FE `npx vitest run tests/question-card.test.ts tests/answer-command.test.ts`   EXIT 0, 24/24
+   FE `node --test apps/web/test/question-receiver.test.mjs apps/web/test/question-card.test.mjs` EXIT 0, 7/7 (3 receiver + 4 projection)
+   Meri runtime 19/19 (questions, dispatch, mounted answer route, lifecycle answer) — unchanged bytes since the reviewed run
+   Meri `packages/contracts npm run check` — unchanged at 658 total / 645 pass / 12 fail / 1 skip; every failure is in an untouched
+   subsystem or is the pre-existing packageVersion drift assertion ('0.1.15' expected vs generated 0.1.34 on main). Not whole-suite PASS,
+   and no unrelated subsystem was rerun or "fixed" to change it.
+   File hashes at this head: useRunQuestion.ts 2ab55e7110327f3b7c4d085d46da76242756b744dc3f45826b248c9f16e1da30;
+   QuestionCard.tsx 938caf2ce886721a0c09bc3d1f69ee59377ea9c1691beb3ad814dadb4e57ae80;
+   tests/question-card.test.ts be60581f2d6fadc82a1a0102fd7397324605d0c5bd8970f5d658a258342615a9;
+   tests/answer-command.test.ts b6e79070723b0fa2819cdb0f2849235f549b514db7df03854af96c08caf9ab2c;
+   test/question-receiver.test.mjs 2f697ae4741082a39e2fae9d024564e0f797a827decc4b00b7f8f47d479f4359.
+
+7. LIMITS (source-only)
+   No deployed, provider, browser, DB, AWS or product-image execution. The hook's own useEffect/subscribe/timer mount is not executed by
+   these tests; the command and availability functions it calls are, and deployed browser acceptance must cover the mount. An SDK host
+   restart does not resume a suspended question (USER_QUESTION_RECOVERY_UNAVAILABLE, resumable:false) — display recovery is not native
+   callback recovery. Root owns merge, deployment and acceptance.
+
+8. OVERLAP / CUSTODY
+   Meri contracts distribution and runtime-0.2 validate.mjs remain this branch's final-writer scope; current main's federal import,
+   235 Bash/runner/telemetry, 236 Notebook and 237 search catalog/skills pin are preserved as merged. 237's intermediate usage commit was
+   not imported. FE 155 settings/connector files and the federal importer came through the main merge untouched by this change. The blocked
+   shared junction was not retried, retargeted or resolved.

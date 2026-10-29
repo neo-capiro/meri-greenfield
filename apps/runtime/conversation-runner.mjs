@@ -22,6 +22,8 @@ import {assertNativeFileRestore} from '../../packages/contracts/runtime-0.2/file
 import {atRunnerStage,markRunnerStage,captureRunnerFailure,markRunnerTelemetryStage,withRunnerDiagnostics} from './runner-runtime-diagnostics.mjs';
 import {createObjectiveGenerationRuntime} from '../worker/conversation/objective-generation/runtime.mjs';
 import {attemptCleanup,CLEANUP_ATTEMPT_MS} from '../worker/conversation/cleanup.mjs';
+// Bash facts for this runtime session: the SDK sandbox measured on this host, plus the run's egress/approval facts.
+import {prepareAgentCoreBashRuntimeFacts,createHostSandboxReadiness} from '../worker/conversation/sandbox-readiness/agentcore-bash-runtime-facts.mjs';
 export function assertRunnerEnvironment(environment=process.env){assertProviderEnvironment(environment);if(environment.MERI_NATIVE_ADMIN_TOKEN)throw fault('RUNNER_AMBIENT_CREDENTIAL_REFUSED');}
 /** Private task-local SDK directories; provider TLS uses the ordinary Bedrock trust store. */
 export function sdkConfigurationDirectories(configuration){
@@ -72,7 +74,10 @@ export function assembleConversationRunner({configuration,native,query,credentia
  const procedures=createTaskProcedurePort({native,now}),siteWorkflows=createTaskSiteWorkflowPort({native});
  const localBinding=b=>{if(canonicalSha256(b)!==canonicalSha256(binding))throw fault('RUNNER_BINDING_REFUSED');};
  let objectiveSelection=null,objectiveRead=false;const objectiveGeneration=createObjectiveGenerationRuntime({now,selection:{async read({binding:b,signal}){localBinding(b);if(!objectiveRead){objectiveRead=true;return objectiveSelection;}const r=await call('runner/runtime',{versions:configuration.versions},signal);if(canonicalSha256(r.binding)!==canonicalSha256(binding)||canonicalSha256(r.versions)!==configuredVersionsSha256)throw fault('RUNNER_RUNTIME_REFUSED');return r.objective??null;}}});
- let nativeFiles,localCleanupFailed=false,workspaceRecorded=false;let runOwner={readUploadSource:({binding:b,input,signal})=>{localBinding(b);return call('runner/upload-source',{input},signal);},recordUsage:({binding:b,input,signal})=>{localBinding(b);return call('runner/record-usage',{input},signal);},load:({binding:b,signal})=>{localBinding(b);return call('runner/load',{},signal);},append:({binding:b,event,signal})=>{localBinding(b);return call('runner/publish',{event},signal);}},lifecycle;
+ let nativeFiles,bashRuntime,localCleanupFailed=false,workspaceRecorded=false;
+ // Host-level sandbox measurement is taken at most once per runtime session and reused by later runs.
+ const bashReadiness=createHostSandboxReadiness();
+ let runOwner={readUploadSource:({binding:b,input,signal})=>{localBinding(b);return call('runner/upload-source',{input},signal);},recordUsage:({binding:b,input,signal})=>{localBinding(b);return call('runner/record-usage',{input},signal);},load:({binding:b,signal})=>{localBinding(b);return call('runner/load',{},signal);},append:({binding:b,event,signal})=>{localBinding(b);return call('runner/publish',{event},signal);}},lifecycle;
  if(credentialForBinding!==undefined){
   if(typeof credentialForBinding!=='function')throw fault('RUNNER_CREDENTIAL_CONFIGURATION');
   const forward=operation=>({binding:b,credential,signal,...input})=>{localBinding(b);return call(operation,input,signal);};
@@ -91,7 +96,7 @@ export function assembleConversationRunner({configuration,native,query,credentia
   lifecycle={captureOwnsClose:true,captureCheckpoint:capture('runner/checkpoint/capture'),...(configuration.sdk===undefined?{}:{captureCompletion:capture('runner/checkpoint/complete')})};
  }
  const append=storageMethod(runOwner,'append');runOwner={...runOwner,async append(input){if(input.event.type==='run.status'&&input.event.data.state==='completed')await sdkSession?.settle(input.signal);return append(input);}};
-  const prepareRuntime=async({binding:b,versions,model,signal,runtimeSignal,continuation,nextTurn,sourceRequest,request,scopes,skillPlugin})=>atRunnerStage('runtime-prepare',async()=>{if(canonicalSha256(versions)!==configuredVersionsSha256)throw fault('RUNNER_VERSION_REFUSED');if(continuation!==undefined&&nextTurn!==undefined)throw fault('RUNNER_RUNTIME_REFUSED');const lineage=nextTurn!==undefined?{nextTurn}:continuation!==undefined?{continuation}:null,resumed=lineage?{...lineage,sourceRequest,request,scopes}:{};markRunnerStage('runtime-admission');const r=await call('runner/runtime',{versions,...resumed},signal);own(r,['binding','versions','deadlineMs','maxOutputBytes'],['objective','automaticClientContext',...(lineage===null?[]:['restoreReceipt']),...(sessionFactory===undefined?[]:['sdkSessionKey'])]);if(canonicalSha256(r.binding)!==canonicalSha256(b)||canonicalSha256(r.versions)!==configuredVersionsSha256)throw fault('RUNNER_RUNTIME_REFUSED');
+  const prepareRuntime=async({binding:b,versions,model,signal,runtimeSignal,continuation,nextTurn,sourceRequest,request,scopes,skillPlugin,capabilityPolicy})=>atRunnerStage('runtime-prepare',async()=>{if(canonicalSha256(versions)!==configuredVersionsSha256)throw fault('RUNNER_VERSION_REFUSED');if(continuation!==undefined&&nextTurn!==undefined)throw fault('RUNNER_RUNTIME_REFUSED');const lineage=nextTurn!==undefined?{nextTurn}:continuation!==undefined?{continuation}:null,resumed=lineage?{...lineage,sourceRequest,request,scopes}:{};markRunnerStage('runtime-admission');const r=await call('runner/runtime',{versions,...resumed},signal);own(r,['binding','versions','deadlineMs','maxOutputBytes'],['objective','automaticClientContext',...(lineage===null?[]:['restoreReceipt']),...(sessionFactory===undefined?[]:['sdkSessionKey'])]);if(canonicalSha256(r.binding)!==canonicalSha256(b)||canonicalSha256(r.versions)!==configuredVersionsSha256)throw fault('RUNNER_RUNTIME_REFUSED');
   const local=stages?.local,localLife=local?createOperationLifetime({now,signal,deadlineMs:Math.min(now()+local.maxMs,local.expiresAtMs),errorFactory:fault}):null;
   try{return await (localLife?localLife.run:async fn=>fn(signal))(async localSignal=>{
   const {sdkSessionKey,objective,...prepared}=r;objectiveSelection=objective??null;own(model,['model','region','maxOutputTokens','usageBasis','maxTurns','maxCostMicroUSD'],['provider','effort']);const runtime={...prepared,...model};let sessionStore;
@@ -113,7 +118,28 @@ export function assembleConversationRunner({configuration,native,query,credentia
   // G3: the read-only skill plugin copy under the admitted private config parent, one run-invariant path (sdkSkillPluginDirectory).
    const selection=request?.skill??undefined; // Stored requests use null for no selected skill; the plugin API uses omission.
    markRunnerStage('skill-plugin');const plugin=skillPlugin===true&&directories.sdkConfigDirectory!==undefined?await prepareRunSkillPlugin(sdkSkillPluginDirectory(dirname(directories.sdkConfigDirectory),selection),{selection}):undefined;
-   markRunnerStage('activity');return {...runtime,cwd:configuration.workspace,sessionStore,...directories,...(plugin?{skillPluginDirectory:plugin.directory}:{})};});}finally{localLife?.close();}});
+   markRunnerStage('activity');
+   // Bash is admitted only from a measured host sandbox: with the effective policy's `bash` flag the run owner prepares
+   // the trusted facts here and the activity forwards them to the capability composer. Any refusal (no bwrap/socat, no
+   // fresh /proc, SDK version mismatch) leaves Bash out of `tools` for this run — it never weakens the sandbox.
+   if(capabilityPolicy?.bash===true&&directories.sdkConfigDirectory!==undefined){
+    markRunnerStage('bash-facts');
+    try{bashRuntime=await prepareAgentCoreBashRuntimeFacts({binding:b,policy:capabilityPolicy,expiresAtMs:r.deadlineMs,now,
+     pathEnv:process.env.PATH??'',signal:localSignal,readiness:bashReadiness.read,
+     protectedPaths:{sdkConfigDirectory:directories.sdkConfigDirectory,...(directories.sdkSecureStorageDirectory===undefined?{}:{sdkSecureStorageDirectory:directories.sdkSecureStorageDirectory})}});
+     // The run may have been cancelled while this preparation was returning: the facts are owned here, so close them
+     // now rather than leaving the egress proxy to a cleanup path that has already run.
+     if(localSignal.aborted){try{await bashRuntime.close();}catch{localCleanupFailed=true;}bashRuntime=undefined;}}
+    catch(error){
+     // This host cannot provide the measured sandbox: the capability's own admission rule then leaves Bash out of
+     // `tools` (it is never run unsandboxed). Wiring refusals — a networked policy without an approval owner, a failed
+     // egress start, an invalid policy — still fail the run instead of quietly narrowing it. A refused host is not a
+     // run failure: `bash-facts` remains the last stage and the run's admitted tools show Bash absent.
+     if(!['BASH_SANDBOX_UNAVAILABLE','BASH_READINESS_INCOMPLETE'].includes(error?.code))throw error;
+     bashRuntime=undefined;
+    }
+   }
+   return {...runtime,cwd:configuration.workspace,sessionStore,...directories,...(bashRuntime?.runtimeFacts??{}),...(plugin?{skillPluginDirectory:plugin.directory}:{})};});}finally{localLife?.close();}});
  // The activity bounds runtime preparation (the runner/runtime call, then the local stage); see ACTIVITY_PREPARATION_MAX_MS.
  const activity=createConversationActivity({runOwner,prepareRuntime,selectedSkills,procedures,siteWorkflows,objectiveGeneration,now,...(stages?{loadMaxMs:stages.load.maxMs,loadExpiresAtMs:stages.load.expiresAtMs,runtimeMaxMs:Math.min(stages.runtime.maxMs+stages.local.maxMs,ACTIVITY_PREPARATION_MAX_MS),runtimeExpiresAtMs:stages.local.expiresAtMs,setupBudget:stages.setup,modelDeadlineMs:stages.session.expiresAtMs,executionDeadlineMs:startup.originalExpiresAtMs,terminalAttemptMs:stages.session.maxMs}:{}),...(readPort?{generalReads:readPort}:{}),...(governedIntents?{governedIntents}:{}),...(query?{query}:{}),...(lifecycle?{lifecycle}:{}),heartbeat:()=>{},diagnostics:{stage:markRunnerStage,failure:captureRunnerFailure}});
   const execute=async input=>withRunnerDiagnostics(()=>atRunnerStage('activity',async()=>{try{return await activity(input);}catch(error){captureRunnerFailure(error);throw error;}finally{markRunnerStage('runner-cleanup');
@@ -123,6 +149,10 @@ export function assembleConversationRunner({configuration,native,query,credentia
    // retain those bytes beside the workspace and leave the workspace empty, so the next run restores the durable state
    // instead of refusing a stale tree. Nothing is erased; a failed retention is unknown local cleanup.
    if(!workspaceRecorded&&nativeFiles&&!await attemptCleanup(signal=>nativeFiles.retain({signal,deadlineMs:now()+CLEANUP_ATTEMPT_MS}),{now,timeoutMs:CLEANUP_ATTEMPT_MS}))localCleanupFailed=true;
+   // The run's egress proxy (networked Bash) is revoked and closed here on success, failure and cancellation, and any
+   // readiness measurement still in flight is awaited so no owned SDK startup outlives the run that started it.
+   try{await bashRuntime?.close();}catch{localCleanupFailed=true;}
+   try{await bashReadiness.settle();}catch{localCleanupFailed=true;}
    }
   }}),{binding,environment:configuration.telemetry?.environment});
  Object.defineProperty(execute,'cleanupStatus',{value:()=>{const status=sdkSession?.cleanupStatus()??{pendingInitializations:0,closed:true,failures:[],physicalStopProven:false};return {...status,failures:[...status.failures,...(localCleanupFailed?['RUNNER_CLEANUP_UNKNOWN']:[])]};}});return execute;

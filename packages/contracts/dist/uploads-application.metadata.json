@@ -69,8 +69,8 @@
     },
     {
       "path": "../../apps/runtime/product-applications.mjs",
-      "sha256": "dc2b3653a3b5f76aea221933a470e48bce689ab9a9cf1a0052484985790d986f",
-      "bytes": 20890
+      "sha256": "c43d142830a1d1100df5a9f496a1b4ab4dce36409a5c9447eb1796aa37c8f663",
+      "bytes": 21060
     },
     {
       "path": "../../apps/runtime/product-ports/uploads.mjs",

@@ -47,6 +47,7 @@ function fixture(overrides={}){
   validateSdkDescriptor:x=>x,onSdkPrepared:async value=>{calls.push({prepared:'sdk',...value});},
   onBrowserPrepared:async value=>{calls.push({prepared:'browser',...value});},spawnNative,
   sdkLaunchGate:createSdkLaunchGate(),
+  createSdkHold:()=>({arm:async()=>{},freeze:async()=>({frozen:true}),thaw:async()=>({frozen:false}),close:async()=>{}}),
   readSocketDirectory:async()=>({uid:0,gid:2001,mode:0o40710}),...overrides});
  return {launcher,children,calls};
 }
@@ -72,6 +73,19 @@ test('SDK descriptor cannot add host credentials and failed preexec observer nev
  other.spawnClaudeCodeProcess(sdkDescriptor);
  await assert.rejects(other.startPreparedProcess(),/arm failed/);
  assert.notEqual(g.children[0].go,'G');assert.equal(g.children[0].signalCode,'SIGKILL');
+});
+test('physical SDK hold is armed before GO and brackets freeze/thaw with existing authority',async()=>{
+ const order=[];let current=true;
+ const f=fixture({authorities:[{...authority,readCurrent:async()=>{order.push('current');if(!current)throw Error('revoked');return readCurrent();}}],
+  createSdkHold:()=>({arm:async()=>{assert.notEqual(f.children[0].go,'G');order.push('arm');},
+   freeze:async()=>{order.push('freeze');return {frozen:true};},thaw:async()=>{order.push('thaw');return {frozen:false};},close:async()=>order.push('close')})});
+ await assert.rejects(f.launcher.freezeSdk(),/HOST_SDK_HOLD_UNKNOWN/);
+ const client=f.launcher.createSdkProcessClient();client.spawnClaudeCodeProcess(sdkDescriptor);await client.startPreparedProcess();
+ assert.ok(order.includes('arm'));order.length=0;
+ assert.deepEqual(await f.launcher.freezeSdk(),{frozen:true});assert.deepEqual(order,['current','freeze','current']);
+ order.length=0;assert.deepEqual(await f.launcher.thawSdk(),{frozen:false});assert.deepEqual(order,['current','thaw','current']);
+ current=false;order.length=0;await assert.rejects(f.launcher.thawSdk());
+ assert.equal(order.includes('thaw'),false);assert.equal(f.children[0].signalCode,'SIGKILL');assert.equal(order.at(-1),'close');
 });
 test('conversation SDK requires exact TLS loopback model relay and pinned CA before any native spawn',async()=>{
  for(const changes of [{ANTHROPIC_BASE_URL:'https://proxy.example/'},

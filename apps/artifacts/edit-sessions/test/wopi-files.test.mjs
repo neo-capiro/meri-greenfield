@@ -8,6 +8,34 @@ import {createWopiFileApplication} from '../wopi-files.mjs';
 import {createArtifactService} from '../../service.mjs';
 const edited=()=>ooxml('docx',{mainXml:'<w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"><w:body><w:p><w:r><w:t>Private edit</w:t></w:r></w:p></w:body></w:document>'});
 const bytes=async response=>Buffer.from(await response.arrayBuffer());
+test('native CODE forwarded expiry must match the signed token and cannot extend its lifetime',async t=>{
+ const f=await wopiFixture(t),source=f.request().url;
+ const request=extra=>new Request(source+extra);
+ assert.equal((await f.host.handle(request('&access_token_ttl='+f.claims.expiresAtMs))).status,200);
+ assert.equal((await f.host.handle(request('&access_token_ttl=0'))).status,200);
+ for(const extra of ['&access_token_ttl=-1','&access_token_ttl=NaN','&access_token_ttl=9007199254740992',
+  '&access_token_ttl='+String(f.claims.expiresAtMs+1),'&access_token_ttl='+f.claims.expiresAtMs+'&access_token_ttl='+f.claims.expiresAtMs,
+  '&unrecognized=1']){
+  assert.equal((await f.host.handle(request(extra))).status,401);
+ }
+ f.state.clock=f.claims.expiresAtMs;
+ assert.equal((await f.host.handle(request('&access_token_ttl='+f.claims.expiresAtMs))).status,401);
+ assert.equal((await f.host.handle(request('&access_token_ttl=0'))).status,401);
+});
+test('CODE reconnect permission is a closed hint and never upgrades a read-only token',async t=>{
+ const f=await wopiFixture(t,{write:false});f.state.readonly=true;
+ for(const permission of ['edit','readonly']){
+  const response=await f.host.handle(new Request(f.request().url+'&permission='+permission));
+  assert.equal(response.status,200);assert.equal((await response.json()).UserCanWrite,false);
+  const lock=f.request('lock',{lock:'one'});
+  assert.equal((await f.host.handle(new Request(lock.url+'&permission='+permission,lock))).status,401);
+ }
+ for(const value of ['','write','admin','edit&permission=readonly','edit&authority=allow'])
+  assert.equal((await f.host.handle(new Request(f.request().url+'&permission='+value))).status,401);
+ f.sessions.revoke(f.session.credential);
+ assert.notEqual((await f.host.handle(new Request(f.request().url+'&permission=edit'))).status,200);
+ assert.equal(f.state.lock,'');assert.equal(f.draft.sequence,0);
+});
 for(const format of ['docx','xlsx','pptx'])test(`${format}: CheckFileInfo and GetFile use exact immutable source and current native session`,async t=>{
  const f=await wopiFixture(t,{format}),response=await f.send(),info=await response.json();assert.equal(response.status,200);
  assert.equal(info.BaseFileName,f.first.version.filename);assert.equal(info.Size,f.baseBytes.length);assert.equal(info.UserCanWrite,true);assert.equal(info.UserCanNotWriteRelative,true);

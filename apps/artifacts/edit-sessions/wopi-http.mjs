@@ -13,7 +13,18 @@ export function wopiRequest(request){
  let r;try{r=Object.fromEntries(Object.entries(getters).map(([k,get])=>[k,get.call(request)]));}catch{refuse(400);}
  const url=new URL(r.url),route=WOPI_FILE_ROUTE.exec(url.pathname),header=name=>Headers.prototype.get.call(r.headers,name);
  if(!route||url.hash)refuse(404);
- if([...url.searchParams.keys()].some(k=>k!=='access_token')||url.searchParams.getAll('access_token').length!==1)refuse(401);
+ if([...url.searchParams.keys()].some(k=>!['access_token','access_token_ttl','permission'].includes(k))||url.searchParams.getAll('access_token').length!==1)refuse(401);
+ // CODE includes its UI permission on reconnect. It is not authority: only the
+ // verified token and current Core/artifact checks determine access below.
+ const permission=url.searchParams.getAll('permission');
+ if(permission.length>1||permission.length===1&&!['edit','readonly'].includes(permission[0]))refuse(401);
+ // CODE forwards the POST-form expiry with its WOPI requests. This is only a
+ // bounded hint; the signed claim below remains the lifetime authority.
+ const expiry=url.searchParams.getAll('access_token_ttl');
+ if(expiry.length>1||expiry.length===1&&(!/^(?:0|[1-9][0-9]{0,15})$/u.test(expiry[0])||!Number.isSafeInteger(Number(expiry[0]))))refuse(401);
+ // WOPI defines zero as an unknown client expiry. It never changes our signed
+ // expiry, which is verified even when CODE sends this sentinel.
+ const tokenExpiresAtMs=expiry.length===1&&expiry[0]!=='0'?Number(expiry[0]):null;
  const token=url.searchParams.get('access_token');if(!token||token.length>4200)refuse(401);
  const override=header('x-wopi-override'),oldLock=header('x-wopi-oldlock'),newLock=header('x-wopi-lock');
  let operation;
@@ -34,7 +45,7 @@ export function wopiRequest(request){
  let maxExpectedSize=2147483647;
  const max=header('x-wopi-maxexpectedsize');
  if(max!==null){if(operation!=='getFile'||!/^(0|[1-9][0-9]*)$/u.test(max)||!Number.isSafeInteger(Number(max))||Number(max)>2147483647)refuse(400);maxExpectedSize=Number(max);}
- return {...r,fileId:route[1],token,operation,lock:newLock,oldLock,length,maxExpectedSize};
+ return {...r,fileId:route[1],token,tokenExpiresAtMs,operation,lock:newLock,oldLock,length,maxExpectedSize};
 }
 export async function wopiBody(info,life,limit=OFFICE_DRAFT_MAX_BYTES){
  if(info.length!==null&&info.length>limit)refuse(413);

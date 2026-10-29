@@ -5,12 +5,13 @@ import type {RunBinding,Scope,UIEvent} from '@capiro/meri-contracts';
 type Run=ConversationSubmittedResponse['run'];
 type Conversation=ConversationHistoryListResponse['conversations'][number];
 type NativeUploadSourceEvent=Extract<ConversationHistoryTranscriptResponse['events'][number]['event'],{type:'source.native-upload'}>;
+type QuestionEvent=Extract<ConversationHistoryTranscriptResponse['events'][number]['event'],{type:'question.pending'|'question.answered'}>;
 function preservedRun(value:Run):ConversationHistoryTranscriptResponse['latestRun']{return value;}
 void preservedRun;
 const bytes=new TextEncoder().encode('{}'),list=receiveConversationHistoryRequest('list',bytes),listed=await receiveConversationHistoryResponse('list',200,bytes,list);
 if(!('error'in listed)){const c:Conversation|undefined=listed.conversations[0];void c;}
 const request=receiveConversationHistoryRequest('transcript',bytes),response=await receiveConversationHistoryResponse('transcript',200,bytes,request);
-if(!('error'in response)){const run:Run=response.latestRun,conversation:Conversation=response.conversation,binding:RunBinding=response.latestRun.binding,scopes:Scope[]=response.latestRun.scopes,event:UIEvent|NativeBillTextSourceEvent|NativeHearingSourceEvent|NativeUploadSourceEvent|undefined=response.events[0]?.event,lineage:ConversationPromptLineage|undefined=response.turns[0]?.promptLineage;void [run,conversation,binding,scopes,event,lineage];}
+if(!('error'in response)){const run:Run=response.latestRun,conversation:Conversation=response.conversation,binding:RunBinding=response.latestRun.binding,scopes:Scope[]=response.latestRun.scopes,event:UIEvent|NativeBillTextSourceEvent|NativeHearingSourceEvent|NativeUploadSourceEvent|QuestionEvent|undefined=response.events[0]?.event,lineage:ConversationPromptLineage|undefined=response.turns[0]?.promptLineage;void [run,conversation,binding,scopes,event,lineage];}
 const cap:number=conversationHistoryMetadata.limits.responseBytes;void cap;
 const deletionRequest=receiveConversationHistoryRequest('deletionStatus',bytes),deletion=await receiveConversationHistoryResponse('deletionStatus',200,bytes,deletionRequest);
 if(!('error'in deletion)){const state:'pending'|'blocked'|'unknown'|'completed'|'superseded'=deletion.state,retained:boolean=deletion.retainedSharedCopies;void [state,retained];}
@@ -27,4 +28,4 @@ receiveConversationHistoryRequest('search',bytes);
 // @ts-expect-error a plain request has no local byte-admission provenance
 await receiveConversationHistoryResponse('transcript',200,bytes,{conversationId:'id'});
 
-if(!('error'in response)){const e=response.events[0]?.event;if(e?.type==='source.native-bill-text'){const native:NativeBillTextSourceEvent=e;void native;}else if(e?.type==='source.native-hearing-record'){const native:NativeHearingSourceEvent=e;void native;}else if(e?.type==='source.native-upload'){const upload:NativeUploadSourceEvent=e;void upload;}else{const legacy:UIEvent|undefined=e;void legacy;}}
+if(!('error'in response)){const e=response.events[0]?.event;if(e?.type==='source.native-bill-text'){const native:NativeBillTextSourceEvent=e;void native;}else if(e?.type==='source.native-hearing-record'){const native:NativeHearingSourceEvent=e;void native;}else if(e?.type==='source.native-upload'){const upload:NativeUploadSourceEvent=e;void upload;}else if(e?.type==='question.pending'||e?.type==='question.answered'){const question:QuestionEvent=e;void question;}else{const legacy:UIEvent|undefined=e;void legacy;}}

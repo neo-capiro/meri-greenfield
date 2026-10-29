@@ -27,6 +27,8 @@ LOCK = json.loads((ROOT / "infra" / "product-preview" / "runtime-packages.lock.j
 DOCKERFILE = (ROOT / "apps" / "runtime" / "Dockerfile").read_text(encoding="utf-8")
 DOCKERIGNORE = ROOT / ".dockerignore"
 REPO_DIR = "/tmp/meri-native-repo"
+# Second offline repository: the vendor-signed index that carries the fixed pip trio (CVE-2026-114613).
+PIP_REPO_DIR = "/tmp/meri-native-pip-repo"
 STAGED = {name: sha for sha, name in
           re.findall(r"ADD --checksum=sha256:([0-9a-f]{64}) \S+/aarch64/([A-Za-z0-9_.+-]+\.apk) ", DOCKERFILE)}
 STAGED_NAMES = [(src, dest) for src, dest in
@@ -195,11 +197,44 @@ def _retained_index():
     """
     if _INDEX_CACHE:
         return _INDEX_CACHE["entries"], _INDEX_CACHE["provides"]
-    path = ROOT / LOCK["uploadNativeProvenance"]["retainedSignedIndex"]["path"]
+    retained = LOCK["uploadNativeProvenance"]["retainedSignedIndex"]
+    path = ROOT / retained["path"]
+    raw = path.read_bytes()
+    assert hashlib.sha256(raw).hexdigest() == retained["sha256"], "retained index bytes differ from the lock"
+    assert len(raw) == retained["bytes"], "retained index size differs from the lock"
     with tarfile.open(path) as tar:
         member = [item for item in tar.getmembers() if item.name.endswith("APKINDEX")][0]
         text = tar.extractfile(member).read().decode("utf-8", "replace")
     entries, provides = {}, {}
+    # The fixed pip trio lives only in the second vendor-signed index. Its real dependency and provider
+    # records are parsed from that index's own signed bytes - validated against the lock first - so the
+    # closure walk sees the same graph apk sees and cannot be satisfied by a fabricated entry.
+    fixed = LOCK["uploadNativeProvenance"].get("fixedPipIndex")
+    if fixed:
+        fixed_path = ROOT / fixed["path"]
+        fixed_raw = fixed_path.read_bytes()
+        assert hashlib.sha256(fixed_raw).hexdigest() == fixed["sha256"], "fixed index bytes differ from the lock"
+        assert len(fixed_raw) == fixed["bytes"], "fixed index size differs from the lock"
+        with tarfile.open(fixed_path) as tar:
+            member = [item for item in tar.getmembers() if item.name.endswith("APKINDEX")][0]
+            fixed_text = tar.extractfile(member).read().decode("utf-8", "replace")
+        for chunk in fixed_text.split('\n\n'):
+            fields = {}
+            for line in chunk.splitlines():
+                if len(line) > 2 and line[1] == ":":
+                    fields.setdefault(line[0], []).append(line[2:])
+            if "P" not in fields or "V" not in fields:
+                continue
+            name, version = fields["P"][0], fields["V"][0]
+            entry = {"name": name, "version": version, "id": "%s-%s" % (name, version),
+                     "depends": [dep for dep in fields.get("D", [""])[0].split(" ") if dep],
+                     "provides": [token for raw_provide in fields.get("p", []) for token in raw_provide.split()
+                                  if token]}
+            entries[entry["id"]] = entry
+            for token in entry["provides"]:
+                key = token.split("=")[0]
+                for spelling in {key, key.replace("so-ver:", "so:")}:
+                    provides.setdefault(spelling, []).append(entry)
     for chunk in text.split("\n\n"):
         fields = {}
         for line in chunk.splitlines():
@@ -268,7 +303,8 @@ class RetainedNativeApkIndex(unittest.TestCase):
                              "staged archive is not written under the filename the signed index requests, "
                              "so apk cannot open it in the repository: %s staged as %s" % (source, dest))
             self.assertTrue(dest.startswith("%s/aarch64/" % REPO_DIR)
-                            or dest.startswith("/tmp/meri-native-dev-repo/aarch64/"),
+                            or dest.startswith("/tmp/meri-native-dev-repo/aarch64/")
+                            or dest.startswith("%s/aarch64/" % PIP_REPO_DIR),
                             "staged archive is outside the local repositories: %s" % dest)
 
     def test_native_layers_install_from_the_local_signed_repository(self):
@@ -317,8 +353,13 @@ class RetainedNativeApkIndex(unittest.TestCase):
         self.assertEqual(len(INSTALL_STATEMENTS), 3,
                          "expected the python, renderer and upload native installs, found %r" % INSTALL_STATEMENTS)
         for statement in INSTALL_STATEMENTS:
-            self.assertEqual(statement.count("--repository "), 1,
-                             "a native install does not name exactly one repository: %s" % statement)
+            named = re.findall(r"--repository (\S+)", statement)
+            self.assertTrue(named, "a native install names no repository: %s" % statement)
+            self.assertEqual(sorted(set(named)), sorted(named),
+                             "a native install names the same repository twice: %s" % statement)
+            self.assertTrue(all(name in (REPO_DIR, PIP_REPO_DIR) for name in named),
+                            "a native install names a repository that is not one of the staged local "
+                            "ones: %s" % statement)
             self.assertIn("--repository %s " % REPO_DIR, statement)
             self.assertIn("--repositories-file /dev/null", statement,
                           "a native install does not override the base's repositories, so the configured repository "
@@ -339,6 +380,7 @@ class RetainedNativeApkIndex(unittest.TestCase):
         """
         prov = LOCK["uploadNativeProvenance"]["retainedSignedIndex"]
         index = prov["path"]
+        fixed_index = LOCK["uploadNativeProvenance"]["fixedPipIndex"]["path"]
         rules = _ignore_rules(DOCKERIGNORE.read_text(encoding="utf-8"))
 
         # 1. The whole local COPY closure must be in the Docker build context. Docker fails the
@@ -362,7 +404,8 @@ class RetainedNativeApkIndex(unittest.TestCase):
         native = [(pattern, negated) for pattern, negated in rules if "native-apk-index" in pattern]
         self.assertEqual(native, [("infra/product-preview/native-apk-index", True),
                                   ("infra/product-preview/native-apk-index/*", False),
-                                  (index, True)],
+                                  (index, True),
+                                  (fixed_index, True)],
                          "native-apk-index .dockerignore rules are not the narrow expected set: %r" % native)
         self.assertEqual(_deciding_rule(rules, index), (index, True),
                          "the deciding .dockerignore rule for the retained index is not its own negation")
@@ -427,6 +470,9 @@ class RetainedNativeApkIndex(unittest.TestCase):
         self.assertTrue(staging, "no native-repo staging stages found: %r" % names)
         staging_instructions = [instruction for stage in stages if stage["name"] in staging
                                 for instruction in stage["instructions"]]
+        staging_instructions += [instruction for stage in stages if stage["name"] == "native-repository"
+                                 for instruction in stage["instructions"]
+                                 if instruction.startswith("ADD --checksum=")]
         for instruction in staging_instructions:
             self.assertTrue(instruction.startswith("ADD --checksum="),
                             "a staging stage does more than stage pinned archives: %s" % instruction)
@@ -467,9 +513,19 @@ class RetainedNativeApkIndex(unittest.TestCase):
                          "the retained index and the staged archives are assembled in the runtime stage, "
                          "so the build-only repository payload becomes image content")
         distribution = assemblies["native-repository"]
+        fixed_pip = LOCK["uploadNativeProvenance"]["fixedPipIndex"]
+        pip_copy = "COPY %s %s/aarch64/APKINDEX.tar.gz" % (fixed_pip["path"], PIP_REPO_DIR)
+        pip_archives = ["ADD --checksum=sha256:%s https://packages.wolfi.dev/os/aarch64/%s-%s.apk "
+                        "%s/aarch64/%s-%s.apk" % (package["sha256"], package["name"], package["version"],
+                                                   PIP_REPO_DIR, package["name"], package["version"])
+                        for package in sorted(LOCK["uploadNativeProvenance"]["fixedPipPackages"],
+                                               key=lambda item: item["name"])]
         self.assertEqual(distribution["instructions"],
                          [index_copy] + ["COPY --from=%s %s %s" % (name, REPO_DIR, REPO_DIR)
-                                         for name in staging if name.startswith("native-repo-")],
+                                         for name in staging if name.startswith("native-repo-")]
+                         + [pip_copy] + pip_archives
+                         + [instruction for instruction in distribution["instructions"]
+                            if instruction.startswith("RUN --network=none set -e; for apk in /tmp/meri-native-repo")],
                          "the runtime repository stage does not assemble the retained index and each distribution "
                          "staging partition exactly once in order: %r" % distribution["instructions"])
         development = assemblies["native-dev-repository"]
@@ -1017,13 +1073,19 @@ class SourceBuiltClamavPayload(unittest.TestCase):
                       "the compiler stage does not read the retained runtime staging set through a read-only mount, so "
                       "the interpreter could only come from an unauthenticated or unreviewed source")
         installs = re.findall(r"apk add --no-cache --no-network --repository %s "
+                              r"(?:--repository /tmp/meri-native-pip-repo )?"
                               r"--repositories-file /dev/null --update-cache [^&]+"
                               % re.escape(interpreter["repositoryPath"]), build)
         self.assertEqual(len(installs), 1,
                          "expected exactly one interpreter install in the compiler stage, found %r" % installs)
         install = installs[0]
-        self.assertEqual(install.count("--repository "), 1,
-                         "the interpreter install names more than one repository: %s" % install)
+        named_repositories = re.findall(r"--repository (\S+)", install)
+        self.assertTrue(named_repositories, "the interpreter install names no repository: %s" % install)
+        self.assertEqual(len(named_repositories), len(set(named_repositories)),
+                         "the interpreter install names a repository twice: %s" % install)
+        self.assertTrue(all(name in (interpreter["repositoryPath"], PIP_REPO_DIR)
+                            for name in named_repositories),
+                        "the interpreter install names a repository outside the two staged ones: %s" % install)
         self.assertIn("--repository %s " % interpreter["repositoryPath"], install)
         self.assertIn("--repositories-file /dev/null", install,
                       "the interpreter install does not override the base's repositories, so a configured "
@@ -1036,13 +1098,14 @@ class SourceBuiltClamavPayload(unittest.TestCase):
             self.assertIn("%s=%s" % (package["name"], package["version"]), install,
                           "the interpreter install leaves %s to apk's resolution instead of naming its signed "
                           "revision" % package["name"])
-        staged = _staged_archives_by_stage("native-repo-")
+        staged = _staged_archives_by_stage()
         for package in interpreter["requested"] + interpreter["resolvedFromTheRuntimeRepository"]:
             filename = "%s-%s.apk" % (package["name"], package["version"])
             self.assertIn(filename, staged, "the interpreter package %s is not staged at all" % filename)
             self.assertEqual(staged[filename][0], package["sha256"],
                              "%s is staged at a different checksum than the lock records" % filename)
-            self.assertTrue(staged[filename][1].startswith("native-repo-"),
+            self.assertTrue(staged[filename][1].startswith("native-repo-")
+                            or staged[filename][1] == "native-repository",
                             "%s is not part of the retained runtime staging set the compiler stage mounts: %s"
                             % (filename, staged[filename][1]))
         for field in ("versionAssertion", "unittestAssertion", "moduleAssertion"):
@@ -1083,11 +1146,22 @@ class SourceBuiltClamavPayload(unittest.TestCase):
         """
         interpreter = self.PREP["compilerInterpreter"]
         entries, provides = _retained_index()
-        staged = _staged_archives_by_stage("native-repo-")
+        staged = _staged_archives_by_stage()
         installed = {"%s-%s" % (member["name"], member["version"])
                      for member in self.PREP["buildClosure"]["members"]}
-        runtime_staged = {filename[:-4] for filename, (_, stage) in staged.items()
-                          if stage.startswith("native-repo-")}
+        compiler = " ".join(self.STAGES["clamav-source-build"]["instructions"])
+        mounts = re.findall(r"source=(tmp/meri-native-[a-z-]+),target=(/tmp/meri-native-[a-z-]+),readonly",
+                            compiler)
+        named = set(re.findall(r"--repository (/tmp/meri-native-[a-z-]+)", compiler))
+        readable = {"/" + source for source, target in mounts if target in named}
+        self.assertTrue(readable, "the compiler stage names no staged repository it also mounts")
+        self.assertIn("/tmp/meri-native-repo", readable,
+                      "the compiler stage cannot read the retained runtime staging set that carries "
+                      "python-3.13: %r" % sorted(readable))
+        self.assertIn(PIP_REPO_DIR, readable,
+                      "the compiler stage cannot read the fixed pip repository: %r" % sorted(readable))
+        repo_of = {dest.rsplit("/", 1)[-1]: dest.rsplit("/aarch64/", 1)[0] for _, dest in STAGED_NAMES}
+        runtime_staged = {filename[:-4] for filename in staged if repo_of.get(filename) in readable}
         virtual = set(self.PREP["buildClosure"]["unresolvedVirtualProviders"])
         self.assertTrue(installed and runtime_staged, "the staging records are absent: %d installed, %d staged"
                         % (len(installed), len(runtime_staged)))
@@ -1150,6 +1224,231 @@ class SourceBuiltClamavPayload(unittest.TestCase):
             self.assertEqual(locked, {staged[filename][0]},
                              "%s is reused without matching the authenticated checksum the lock records for it"
                              % filename)
+
+    def test_each_python_install_pins_the_staged_wheel_revision(self):
+        """python-3.13-base depends on an UNVERSIONED py3-pip-wheel.
+
+        The staged fixed-pip index advertises r0, r1 and r2 while only r1 is staged, so an install that
+        names just the interpreter is free to select an unavailable revision. Both python installs must
+        name the staged revision, and the assertion below is written so that dropping that pin is
+        detected rather than silently accepted.
+        """
+        pin = "py3-pip-wheel=26.2.2-r1"
+
+        def pinned(statement):
+            return pin in statement
+
+        checked = 0
+        for stage_name in ("clamav-source-build", "runtime"):
+            for instruction in self.STAGES[stage_name]["instructions"]:
+                if "python-3.13=" in instruction or "py3.13-pip=" in instruction:
+                    self.assertTrue(pinned(instruction),
+                                    "%s installs python without pinning the staged wheel revision: %s"
+                                    % (stage_name, instruction[:200]))
+                    checked += 1
+                    self.assertFalse(pinned(instruction.replace(" " + pin, "")),
+                                     "the pin check does not detect a removed %s in %s" % (pin, stage_name))
+        self.assertGreaterEqual(checked, 2, "expected both python installs, found %d" % checked)
+
+        duplicated = "--repository /tmp/meri-native-repo --repository /tmp/meri-native-repo"
+        names = re.findall(r"--repository (\S+)", duplicated)
+        self.assertEqual(len(names), 2)
+        self.assertNotEqual(len(names), len(set(names)),
+                            "the no-duplicate repository guard cannot detect a repeated repository")
+
+    def test_both_two_repository_installs_can_read_every_common_archive(self):
+        """apk looks for an advertised archive inside the repository whose index advertised it.
+
+        Build ee0b0368 failed at the runtime install with 22 x "package mentioned in index not found":
+        both signed indexes advertise those packages, apk took the entry from the second index and then
+        looked for the archive in the second repository, where only the fixed pip trio was staged.
+
+        The mirroring loop copies ONLY the runtime repository's archives (the development repository is
+        never mounted beside the second index), so this evaluates the real per-repository file sets,
+        binds every common name to the two authentic index entries and the locked APK hashes, and
+        requires each of the two installs that names the second repository to be able to read every
+        package it requests. It fails when a common archive is missing there, when the loop copies
+        nothing, when an exclusion is widened, or when the two indexes disagree about an entry.
+        """
+        def index_entries(path):
+            with tarfile.open(ROOT / path) as tar:
+                member = [item for item in tar.getmembers() if item.name.endswith("APKINDEX")][0]
+                body = tar.extractfile(member).read().decode("utf-8", "replace")
+            entries = {}
+            for chunk in body.split("\n\n"):
+                fields = {}
+                for line in chunk.splitlines():
+                    if len(line) > 2 and line[1] == ":":
+                        fields.setdefault(line[0], []).append(line[2:])
+                if "P" in fields and "V" in fields:
+                    entries["%s-%s.apk" % (fields["P"][0], fields["V"][0])] = (
+                        fields.get("C", [""])[0], fields.get("S", [""])[0])
+            return entries
+
+        prov = LOCK["uploadNativeProvenance"]
+        retained = index_entries(prov["retainedSignedIndex"]["path"])
+        fixed = index_entries(prov["fixedPipIndex"]["path"])
+
+        runtime_repo = sorted({dest.rsplit("/", 1)[-1] for _src, dest in STAGED_NAMES
+                               if dest.startswith(REPO_DIR + "/aarch64/")})
+        dev_repo = sorted({dest.rsplit("/", 1)[-1] for _src, dest in STAGED_NAMES
+                           if dest.startswith("/tmp/meri-native-dev-repo/aarch64/")})
+        pip_repo = sorted({dest.rsplit("/", 1)[-1] for _src, dest in STAGED_NAMES
+                           if dest.startswith(PIP_REPO_DIR + "/aarch64/")})
+        self.assertGreater(len(runtime_repo), 180, "the runtime repository set is implausibly small")
+        self.assertGreater(len(dev_repo), 20, "the development repository set is implausibly small")
+
+        closure = LOCK["uploadNativeProvenance"]["clamavSourcePreparation"]["buildClosure"]["members"]
+        locked = {member["filename"]: member["sha256"]
+                  for member in list(LOCK["systemPackages"]) + list(closure) if member.get("filename")}
+        for name, checksum in STAGED.items():
+            if name in runtime_repo and name in locked:
+                self.assertEqual(locked[name], checksum,
+                                 "%s is staged with a checksum the lock does not record" % name)
+
+        old_only = [name for name in runtime_repo if name not in fixed]
+        self.assertEqual(old_only, ["gst-plugins-base-1.29.2-r3.apk", "gstreamer-1.29.2-r4.apk"],
+                         "the archives the second index does not advertise changed: %r" % old_only)
+        common = [name for name in runtime_repo if name in fixed]
+        self.assertEqual(len(common), len(runtime_repo) - 2)
+        self.assertEqual([name for name in common if retained.get(name) != fixed[name]], [],
+                         "a common archive is advertised differently by the two signed indexes")
+
+        # the loop's source directory and exclusion list, read from the recipe itself
+        loop = re.search(r"for apk in /tmp/(meri-native-[a-z-]+)/aarch64/\*\.apk;(.*?)done",
+                         DOCKERFILE, re.S)
+        self.assertIsNotNone(loop, "the mirroring loop is gone")
+        self.assertEqual(loop.group(1), "meri-native-repo",
+                         "the loop mirrors from %r instead of the runtime repository" % loop.group(1))
+        body = loop.group(2)
+        self.assertIn("cp -p \"$apk\" \"/tmp/meri-native-pip-repo/aarch64/$name\"", body,
+                      "the loop no longer copies the archive into the second repository")
+        self.assertIn("exit 1", body, "the loop does not fail fast when a copy fails")
+        case_block = re.search(r"case \"\$name\" in(.*?)esac", body, re.S)
+        self.assertIsNotNone(case_block, "the loop has no exclusion list")
+        excluded = sorted(token for token in case_block.group(1).replace(")", " ").replace("|", " ").split()
+                          if token.endswith(".apk"))
+        self.assertEqual(excluded, sorted(old_only),
+                         "the exclusions %r are not exactly the archives the second index omits" % excluded)
+        mirrored = sorted(set(runtime_repo) - set(excluded))
+        self.assertEqual(mirrored, sorted(common))
+
+        relevant = set(runtime_repo) | set(pip_repo)
+
+        def unreadable(text_body, available, fixed_entries, runtime_names, excluded_names):
+            """Names an install requests that the second repository would not be able to serve."""
+            missing = []
+            for statement in self.TWO_REPOSITORY_INSTALLS(text_body):
+                for package in re.findall(r"([A-Za-z0-9_.+-]+)=([A-Za-z0-9_.+-]+)", statement):
+                    filename = "%s-%s.apk" % package
+                    if (filename in fixed_entries and filename in relevant
+                            and filename not in available):
+                        missing.append(filename)
+            for name in runtime_names:
+                if name in fixed_entries and name in excluded_names:
+                    missing.append(name)
+            return sorted(set(missing))
+
+        sources = sorted(set(runtime_repo) - set(excluded))
+        self.assertEqual(unreadable(DOCKERFILE, sources + pip_repo, fixed, runtime_repo, excluded), [],
+                         "a two-repository install cannot read a package the second index advertises")
+        # both installs that name the second repository are real and cover the compiler python + wheel
+        two_repo = self.TWO_REPOSITORY_INSTALLS(DOCKERFILE)
+        self.assertEqual(len(two_repo), 2, "expected the compiler and runtime installs, found %r" % two_repo)
+        self.assertIn("py3-pip-wheel=26.2.2-r1", " ".join(two_repo),
+                      "no two-repository install requests the fixed wheel")
+        self.assertIn("python-3.13=", " ".join(two_repo),
+                      "the compiler interpreter install no longer names the second repository")
+
+        # negatives, each expressed on the real derived facts
+        dropped = [name for name in sources if name == "python-3.13-base-3.13.16_git20261016-r2.apk"]
+        self.assertEqual(len(dropped), 1)
+        self.assertTrue(unreadable(DOCKERFILE, [name for name in sources + pip_repo if name not in dropped],
+                                   fixed, runtime_repo, excluded),
+                        "removing python-3.13-base from the mirrored set was not detected")
+        self.assertTrue(unreadable(DOCKERFILE, list(pip_repo), fixed, runtime_repo, excluded),
+                        "a mirroring loop that copies nothing was not detected")
+        widened = sorted(excluded + ["python-3.13-3.13.16_git20261016-r2.apk"])
+        self.assertTrue(unreadable(DOCKERFILE, [n for n in sources + pip_repo if n not in widened], fixed,
+                                   runtime_repo, widened),
+                        "widening the exclusions to drop a used archive was not detected")
+        mutated = dict(fixed)
+        mutated["python-3.13-3.13.16_git20261016-r2.apk"] = ("Q1DIFFERENT", mutated[
+            "python-3.13-3.13.16_git20261016-r2.apk"][1])
+        self.assertNotEqual(retained.get("python-3.13-3.13.16_git20261016-r2.apk"),
+                            mutated["python-3.13-3.13.16_git20261016-r2.apk"],
+                            "the differing-checksum control is not actually different")
+        self.assertIn("python-3.13-3.13.16_git20261016-r2.apk", runtime_repo)
+
+    def TWO_REPOSITORY_INSTALLS(self, text_body):
+        """The apk add statements that name the fixed-pip repository, as complete logical instructions."""
+        joined = text_body.replace("\\\n", " ")
+        return [line.strip() for line in joined.split("\n")
+                if "apk add " in line and "--repository %s" % PIP_REPO_DIR in line]
+
+    def test_the_compiler_stage_cannot_read_the_fixed_trio_without_its_own_repository(self):
+        """The compiler install must actually be able to read the fixed pip repository.
+
+        The a08 image pairs the runtime pip install with a second vendor-signed repository, and the lock
+        declares py3-pip-wheel r1 inside the compiler interpreter's closure. This regression evaluates the
+        compiler stage's own reachability: a repository counts only when the stage both mounts it read-only
+        and names it with --repository, and the fixed archives must then be staged there under the exact
+        lock checksums. Removing the mount, removing the name, removing a staged archive or changing its
+        checksum must each be detected here, so the earlier "29 tests pass while the compiler cannot read
+        the wheel" gap cannot recur.
+        """
+        lock = LOCK["uploadNativeProvenance"]
+        packages = lock["fixedPipPackages"]
+        staged = _staged_archives_by_stage()
+        repo_of = {dest.rsplit("/", 1)[-1]: dest.rsplit("/aarch64/", 1)[0] for _, dest in STAGED_NAMES}
+
+        def problems(text, staged_map=None, repo_map=None):
+            staged_map = staged if staged_map is None else staged_map
+            repo_map = repo_of if repo_map is None else repo_map
+            mounts = re.findall(r"source=(tmp/meri-native-[a-z-]+),target=(/tmp/meri-native-[a-z-]+),readonly",
+                                text)
+            named = set(re.findall(r"--repository (/tmp/meri-native-[a-z-]+)", text))
+            readable = {"/" + source for source, target in mounts if target in named}
+            found = []
+            if not readable:
+                found.append("the compiler stage mounts no staged repository it also names")
+            staged_here = {filename: checksum for filename, (checksum, _stage) in staged_map.items()
+                           if repo_map.get(filename) in readable}
+            for package in packages:
+                filename = "%s-%s.apk" % (package["name"], package["version"])
+                if filename not in staged_here:
+                    found.append("%s is not staged in a repository this stage can read" % filename)
+                elif staged_here[filename] != package["sha256"]:
+                    found.append("%s is staged at a different checksum than the lock records" % filename)
+            return found
+
+        compiler = " ".join(self.STAGES["clamav-source-build"]["instructions"])
+        self.assertEqual(problems(compiler), [],
+                         "the compiler stage cannot reach the fixed pip trio it depends on: %r"
+                         % problems(compiler))
+        pip_mount = [line for line in compiler.split(" --mount=") if "meri-native-pip-repo" in line]
+        self.assertEqual(len(pip_mount), 1, "the compiler stage does not mount the fixed pip repository once")
+        wheel = [package for package in packages if package["name"] == "py3-pip-wheel"][0]
+        wheel_apk = "%s-%s.apk" % (wheel["name"], wheel["version"])
+
+        dropped_mount = compiler.replace(
+            "--mount=type=bind,from=native-repository,source=tmp/meri-native-pip-repo,"
+            "target=%s,readonly" % PIP_REPO_DIR, "")
+        self.assertNotEqual(dropped_mount, compiler)
+        self.assertTrue(problems(dropped_mount),
+                        "dropping the compiler's fixed-pip mount was not detected")
+        dropped_name = compiler.replace("--repository %s " % PIP_REPO_DIR, "")
+        self.assertNotEqual(dropped_name, compiler)
+        self.assertTrue(problems(dropped_name),
+                        "dropping the compiler's fixed-pip --repository name was not detected")
+        without_wheel = {name: value for name, value in staged.items() if name != wheel_apk}
+        self.assertLess(len(without_wheel), len(staged))
+        self.assertTrue(problems(compiler, staged_map=without_wheel),
+                        "an unstaged fixed wheel was not detected")
+        mismatched = dict(staged)
+        mismatched[wheel_apk] = ("0" * 64, mismatched[wheel_apk][1])
+        self.assertTrue(problems(compiler, staged_map=mismatched),
+                        "a fixed wheel staged at the wrong checksum was not detected")
 
     def test_the_component_inventory_covers_both_library_families(self):
         self.assertIn("-name 'libclam*' -o -name 'libfreshclam*'", DOCKERFILE,

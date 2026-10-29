@@ -34,8 +34,8 @@ export function continuationSessionId(lineage){
  */
 export async function createGeneralReadRuntime(configuration){
  const c=own(configuration,['binding','scopes','policy','port','now','deadlineMs'],['timeoutMs','expectedSessionId','skill','procedure','exclude','runBudgets','signal','mount']);
- const binding=data(c.binding),scopes=data(c.scopes),port=own(c.port,['readAvailability','execute']);nativeSignal(c.signal);validateShape('RunBinding',binding);
- if(!Array.isArray(scopes)||!scopes.length||typeof port.readAvailability!=='function'||typeof port.execute!=='function'||typeof c.now!=='function'||!Number.isSafeInteger(c.deadlineMs)||![undefined,'available','profile'].includes(c.mount))throw fault('READ_CONFIGURATION');
+ const binding=data(c.binding),scopes=data(c.scopes),port=own(c.port,['readAvailability','execute'],['externalUsage']);nativeSignal(c.signal);validateShape('RunBinding',binding);
+ if(!Array.isArray(scopes)||!scopes.length||typeof port.readAvailability!=='function'||typeof port.execute!=='function'||port.externalUsage!==undefined&&typeof port.externalUsage!=='function'||typeof c.now!=='function'||!Number.isSafeInteger(c.deadlineMs)||![undefined,'available','profile'].includes(c.mount))throw fault('READ_CONFIGURATION');
  const profile=c.mount==='profile';
  scopes.forEach(s=>validateShape('Scope',s));const policyRevision=scopes[0].policyRevision;
  if(c.policy?.generalReads!==true)return null;

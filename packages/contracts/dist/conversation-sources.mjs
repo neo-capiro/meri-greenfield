@@ -16508,16 +16508,17 @@ var freeze = (value) => {
   }
   return value;
 };
-var conversationHistoryVersion = "1.4.0";
-var HISTORY_PATHS = freeze({ list: "/api/conversations/list", transcript: "/api/conversations/transcript", nextTurn: "/api/conversations/next-turn", summaries: "/api/conversations/summaries", manage: "/api/conversations/manage" });
-var historyDomainErrorStatuses = freeze({ CONVERSATION_REQUEST_INVALID: 400, CONVERSATION_CURSOR_INVALID: 400, CONVERSATION_NOT_FOUND: 404, CONVERSATION_TURN_CONFLICT: 409, CONVERSATION_MANAGEMENT_CONFLICT: 409, CONVERSATION_RESTORE_EXPIRED: 410, CONVERSATION_STORE_CORRUPT: 500, CONVERSATION_TURN_UNAVAILABLE: 503, CONVERSATION_UNAVAILABLE: 503 });
+var conversationHistoryVersion = "1.6.0";
+var HISTORY_PATHS = freeze({ export: "/api/conversations/export", list: "/api/conversations/list", transcript: "/api/conversations/transcript", nextTurn: "/api/conversations/next-turn", summaries: "/api/conversations/summaries", manage: "/api/conversations/manage", deletions: "/api/conversations/deletions/list", deletionStatus: "/api/conversations/deletions/status" });
+var historyDomainErrorStatuses = freeze({ CONVERSATION_EXPORT_TOO_LARGE: 413, CONVERSATION_REQUEST_INVALID: 400, CONVERSATION_CURSOR_INVALID: 400, CONVERSATION_NOT_FOUND: 404, CONVERSATION_TURN_CONFLICT: 409, CONVERSATION_MANAGEMENT_CONFLICT: 409, CONVERSATION_RESTORE_EXPIRED: 410, CONVERSATION_STORE_CORRUPT: 500, CONVERSATION_TURN_UNAVAILABLE: 503, CONVERSATION_UNAVAILABLE: 503 });
 var historyErrorStatuses = freeze({ INVALID_REQUEST: [400], UNAUTHENTICATED: [401], ACCESS_DENIED: [403], MEMBERSHIP_REVOKED: [403], NOT_FOUND: [404], METHOD_NOT_ALLOWED: [405], DEADLINE: [408], MEMBERSHIP_CHANGED: [409], REQUEST_TOO_LARGE: [413], UNSUPPORTED_MEDIA_TYPE: [415], CANCELLED: [499], PRODUCT_UNAVAILABLE: [502], ...Object.fromEntries(Object.entries(historyDomainErrorStatuses).map(([code, status]) => [code, [status]])) });
 var conversationHistoryMetadata = freeze({
-  packageVersion: "0.1.15",
+  packageVersion: "0.1.34",
   historyVersion: conversationHistoryVersion,
-  schemaId: "urn:meri:conversation-history:1.4.0",
+  schemaId: "urn:meri:conversation-history:1.6.0",
   routes: Object.fromEntries(Object.entries(HISTORY_PATHS).map(([route, path]) => [route, { method: "POST", path }])),
   authentication: { owner: "native identity and current Core membership", header: "authorization", scheme: "Bearer", serverSideCredentialOnly: true, validationGrantsAuthority: false },
+  export: { events: 1e4, turns: 1e3, messages: 2e3, textBytes: 1048576, lifetimeMs: 6e4 },
   limits: { requestBytes: 131072, responseBytes: 2097152, pageItems: 100 },
   defaults: { limit: 50, after: 0, before: null },
   cursor: { transcript: "conversation sequence", runLocal: "UIEvent.sequence", translation: "conversation sequence = sequenceBase + UIEvent.sequence" },
@@ -16626,6 +16627,9 @@ var HEARING_SOURCE_SCHEMA = "meri.native-hearing-source/1";
 var HEARING_SOURCE_READ_SCHEMA = "meri.hearing-source-read/1";
 var HEARING_MEDIA_READ_SCHEMA = "meri.hearing-media-read/1";
 var UPLOAD_SOURCE_SCHEMA = "meri.native-upload-source/1";
+var USER_QUESTION_PENDING_EVENT = "question.pending";
+var USER_QUESTION_ANSWERED_EVENT = "question.answered";
+var USER_QUESTION_EVENT_SCHEMA_VERSION = "1.0.0";
 var BILL_TEXT_SOURCE_PATH = "/api/conversations/source-read";
 var billTextSourceErrors = Object.freeze({ ...historyErrorStatuses, SOURCE_REFERENCE_NOT_FOUND: Object.freeze([404]), SOURCE_REFERENCE_STALE: Object.freeze([409]), SOURCE_REFERENCE_UNAVAILABLE: Object.freeze([503]), SOURCE_REQUEST_INVALID: Object.freeze([400]) });
 var billTextSourceMetadata = Object.freeze({
@@ -16758,6 +16762,9 @@ export {
   HEARING_SOURCE_SCHEMA,
   UPLOAD_SOURCE_EVENT,
   UPLOAD_SOURCE_SCHEMA,
+  USER_QUESTION_ANSWERED_EVENT,
+  USER_QUESTION_EVENT_SCHEMA_VERSION,
+  USER_QUESTION_PENDING_EVENT,
   billTextSourceErrors,
   billTextSourceMetadata,
   hearingSourceMetadata,

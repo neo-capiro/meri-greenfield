@@ -107,3 +107,4 @@ test('G2 carries an exact, immutable active operation set and rejects unqualifie
  const widened={...platform,defaults:{generalReads:true,activeReadOperations:[...all,beyond]}};
  assert.throws(()=>compileCapabilityPlatform({capabilityPlatform:widened}),/CAPABILITY_PLATFORM_CONFIGURATION/u);
 });
+

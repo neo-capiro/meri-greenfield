@@ -255,6 +255,63 @@
         "source"
       ]
     },
+    "PublicWebAgentCoreRow": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "title": {
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 180,
+              "minLength": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "url": {
+          "type": "string",
+          "maxLength": 2000,
+          "minLength": 1
+        },
+        "snippet": {
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 320,
+              "minLength": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "source": {
+          "const": "agentcore-web-search"
+        },
+        "publishedAt": {
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 40,
+              "minLength": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "title",
+        "url",
+        "snippet",
+        "source",
+        "publishedAt"
+      ]
+    },
     "PublicWebSearchOutput": {
       "anyOf": [
         {
@@ -359,6 +416,44 @@
               "maxItems": 12,
               "items": {
                 "$ref": "#/$defs/PublicWebDuckDuckGoRow"
+              }
+            }
+          },
+          "required": [
+            "tool",
+            "contentStatus",
+            "generatedAt",
+            "provider",
+            "total",
+            "results"
+          ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "tool": {
+              "const": "search_public_web"
+            },
+            "contentStatus": {
+              "const": "discovered"
+            },
+            "generatedAt": {
+              "$ref": "#/$defs/PublicWebInstant"
+            },
+            "provider": {
+              "const": "agentcore-web-search"
+            },
+            "total": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 12
+            },
+            "results": {
+              "type": "array",
+              "maxItems": 12,
+              "items": {
+                "$ref": "#/$defs/PublicWebAgentCoreRow"
               }
             }
           },

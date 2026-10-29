@@ -13,6 +13,12 @@ test('closed pair and immutable scope; no credential or wildcard fields',async()
  assert.equal(sameSelectedTabBinding(p.binding,{...p.binding}),true);
  assert.equal(sameSelectedTabBinding(p.binding,{...p.binding,actorId:randomUUID()}),false);
 });
+test('native 128-bit Chrome document tokens are retained exactly without relaxing application identity',async()=>{
+ const documentId='AB'.repeat(16),v=await createSelectedTabShare({...share(),documentId});
+ assert.equal(v.documentId,documentId);
+ for(const bad of ['', 'A'.repeat(31),'G'.repeat(32),'A'.repeat(33)])await assert.rejects(createSelectedTabShare({...share(),documentId:bad}));
+ await assert.rejects(createSelectedTabShare({...share(),deviceId:documentId}));
+});
 test('exact UTF8 original includes sanitized source and title, with verified hash and byte count',async()=>{
  const v=await createSelectedTabShare({...share(),text:'Café — 日本語'}),bytes=selectedTabOriginal(v);
  assert.equal(createHash('sha256').update(bytes).digest('hex'),v.sha256);assert.equal(bytes.byteLength,v.bytes);

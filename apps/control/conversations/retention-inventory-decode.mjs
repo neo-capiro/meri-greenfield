@@ -3,7 +3,7 @@ import {assertConversationEvent} from '../../../packages/contracts/conversation-
  * supplies complete pages from one read-only repeatable-read transaction. This
  * decoder grants no retention or purge authority. */
 import {assertRun,bounded,data,fail,hash,own,same,uuid,validateShape} from './boundary.mjs';
-import {assertContinuationEnvelope,assertLifecycleCommand,assertLifecycleReceipt,assertWorkerControl} from '../../../packages/contracts/conversation-lifecycle/validate.mjs';
+import {assertContinuationEnvelope,assertLifecycleCommand,assertLifecycleReceipt,assertWorkerControl,workerActionForIntent} from '../../../packages/contracts/conversation-lifecycle/validate.mjs';
 import {assertProposalIntegrity,assertWorkspacePaths} from '../../../packages/contracts/validate.mjs';
 import {assertTypedResult,assertTypedSelection,MAX_OBJECTIVE_SELECTION_BYTES} from '../../../packages/runtime/objective-generation-custody.mjs';
 import {validateCompletionProof} from './completion-journal.mjs';
@@ -112,7 +112,7 @@ function decodeControl(row,owner,byRun){
  if(p.command){assertWorkerControl(p.command);requireFact(hash(p.command)===p.commandSha256&&
   p.command.controlId===p.input.controlId&&same(p.command.binding,b)&&
   p.command.contextSha256===p.contextSha256&&
-  p.command.action===(p.input.intent==='approval.wait'?'waitForApproval':p.input.intent)&&
+  p.command.action===workerActionForIntent(p.input.intent)&&
   (p.input.intent!=='steer'||p.command.prompt===p.input.text));}
  else requireFact(p.commandSha256===null);
  if(p.proof){const cp=checkpoint(p.proof,{binding:b,scopes:p.scopes,versions:p.versions,

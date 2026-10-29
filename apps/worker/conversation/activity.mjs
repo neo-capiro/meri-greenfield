@@ -19,6 +19,9 @@ import {assertAutomaticClientContext} from './automatic-client-context.mjs';
 import {createConversationInput} from './continuation/input.mjs';
 import {createActivityLifecycle,assertLifecycleConfiguration,HOLD_CHECKPOINT_FAILED} from './continuation/activity-lifecycle.mjs';
 import {readCapabilityPolicy} from './capabilities/policy.mjs';
+import {createQuestionRegistry} from './questions/registry.mjs';
+import {createQuestionEventJournal} from './questions/events.mjs';
+import {createQuestionControlDispatch} from './questions/dispatch.mjs';
 import {createSdkCapabilities} from './capabilities/index.mjs';
 import {createNativeHookBatch} from './capabilities/hooks.mjs';
 import {mergeHookSets} from './capabilities/fragment.mjs';
@@ -78,7 +81,11 @@ export function createConversationActivity({runOwner,prepareRuntime,query=sdkQue
    try{attempt=createOperationLifetime({deadlineMs:now()+terminalAttemptMs,now,errorFactory:fault});
     if(typeof runOwner.recordUsage!=='function')throw fault('SDK_USAGE_UNAVAILABLE');let usage=null;
     try{usage=projectSdkUsage(result,usageBasis);}catch{}
-    const receipt=await attempt.run(signal=>runOwner.recordUsage({binding,input:{usage,toolsUsed:nativeAudit.snapshot()},signal}));
+    // Distinct external provider facts ride the same single terminal payload; absence stays absent, never zero.
+    let externalSearch;
+    try{externalSearch=typeof generalReads?.externalUsage==='function'?generalReads.externalUsage():undefined;}catch{externalSearch=undefined;}
+    const receipt=await attempt.run(signal=>runOwner.recordUsage({binding,input:{usage,toolsUsed:nativeAudit.snapshot(),
+     ...(externalSearch===undefined?{}:{externalSearch})},signal}));
     diagnostic('usage',receipt.status);
    }catch{diagnostic('usage','unavailable');}finally{attempt?.close();}
   }
@@ -94,7 +101,7 @@ export function createConversationActivity({runOwner,prepareRuntime,query=sdkQue
     diagnostic('stage','activity-starting');preparation=createOperationLifetime({deadlineMs:Math.min(now()+runtimeMaxMs,runtimeExpiresAtMs??loadExpiresAtMs??Infinity),now,signal,errorFactory:fault});
     await preparation.run(signal=>runOwner.append({binding,event:{eventId:newId(),createdAt:new Date(now()).toISOString(),type:'run.status',data:{state:'starting',reasonCode:null}},signal}));preparation.check();preparation.close();claimed=true;
    // A run whose policy enables the skill plugin asks runtime preparation for its read-only plugin copy (the trusted skillPluginDirectory fact).
-    diagnostic('stage','runtime-prepare');preparation=createOperationLifetime({deadlineMs:Math.min(now()+runtimeMaxMs,runtimeExpiresAtMs??loadExpiresAtMs??Infinity),now,signal,errorFactory:fault});const runtime=await preparation.run(signal=>prepareRuntime({binding,versions:saved.run.versions,model:saved.model,...(policy?.skillPlugin===true?{skillPlugin:true}:{}),
+    diagnostic('stage','runtime-prepare');preparation=createOperationLifetime({deadlineMs:Math.min(now()+runtimeMaxMs,runtimeExpiresAtMs??loadExpiresAtMs??Infinity),now,signal,errorFactory:fault});const runtime=await preparation.run(signal=>prepareRuntime({binding,versions:saved.run.versions,model:saved.model,...(policy?.skillPlugin===true?{skillPlugin:true}:{}),...(policy===undefined?{}:{capabilityPolicy:policy}),
     request:saved.request,...(lineage?{...lineage,sourceRequest,scopes:saved.run.scopes}:{}),runtimeSignal:controller.signal,signal}));
     diagnostic('stage','activity-setup');life=createOperationLifetime({deadlineMs:Math.min(runtime.deadlineMs,executionDeadlineMs??Infinity),now,signal,errorFactory:fault});preparation.close();const abort=()=>controller.abort(life.signal.reason);life.signal.addEventListener('abort',abort,{once:true});
    const publish=async(type,data,eventId=newId())=>{life.check();await life.run(signal=>runOwner.append({binding,event:{eventId,createdAt:new Date(now()).toISOString(),type,data},signal}));life.check();};
@@ -117,7 +124,10 @@ export function createConversationActivity({runOwner,prepareRuntime,query=sdkQue
    // parent is acknowledged. Without that port no Agent call is admitted (capabilities/index.mjs).
    const childAssignments=typeof runOwner.dispatchChild==='function'&&typeof runOwner.settleChild==='function'?Object.freeze({
     dispatch:input=>runOwner.dispatchChild({binding,input}),settle:input=>runOwner.settleChild({binding,input})}):undefined;
-   const capabilities=policy===undefined?undefined:createSdkCapabilities(policy,{runOwner,binding,cwd:runtime.cwd,...(childAssignments===undefined?{}:{childAssignments}),...Object.fromEntries(CAPABILITY_RUNTIME_FACTS.flatMap(k=>runtime[k]===undefined?[]:[[k,runtime[k]]])),now,newId});
+   // One durable question registry per run: its records are run events, so a pending question survives reconnect and
+   // restart. Without a question port the capability layer refuses the call rather than offering an unanswerable question.
+   const questionRegistry=policy?.userQuestions===true?createQuestionRegistry({journal:createQuestionEventJournal({runOwner,binding,now,newId}),now}):undefined;
+   const capabilities=policy===undefined?undefined:createSdkCapabilities(policy,{runOwner,binding,cwd:runtime.cwd,...(childAssignments===undefined?{}:{childAssignments}),...(questionRegistry===undefined?{}:{userQuestions:{ask:questionRegistry.ask}}),...Object.fromEntries(CAPABILITY_RUNTIME_FACTS.flatMap(k=>runtime[k]===undefined?[]:[[k,runtime[k]]])),now,newId});
    if(browser!==undefined){
     // The lifetime may reject before the preparation promise settles. Keep ownership of a late run handle so it can
     // still be cleaned up; until then the outcome is unknown and the disposable host must be quarantined.
@@ -170,7 +180,10 @@ export function createConversationActivity({runOwner,prepareRuntime,query=sdkQue
     }
     return text;
    }
-   if(lifecycle!==undefined)controls=createActivityLifecycle({config:lifecycle,runOwner,binding,saved,runtime,input,
+   // A claimed answer control resolves the suspended question call instead of steering or holding the run; every other
+   // claim is passed to the lifecycle owner unchanged.
+   const controlOwner=questionRegistry===undefined?runOwner:{...runOwner,claimControl:createQuestionControlDispatch({runOwner,registry:questionRegistry,binding}).claimControl};
+   if(lifecycle!==undefined)controls=createActivityLifecycle({config:lifecycle,runOwner:controlOwner,binding,saved,runtime,input,
     query:{interrupt:()=>stream.interrupt(),close:closeQuery,drain:()=>drained.promise},life,now});
     while(true){diagnostic('stage','activity-stream');let next;try{next=await (controls?Promise.race([ahead.next(),controls.failure.then(error=>{throw error;})]):ahead.next());}
     catch(error){drained.reject(error);if(controls?.isHeld()){capabilities?.check();uploadRuntime?.check();return await controls.heldResult();}throw error;}if(next.done){drained.reject(fault('SDK_RESULT_MISSING'));break;}const m=next.value;

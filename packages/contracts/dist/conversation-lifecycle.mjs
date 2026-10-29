@@ -258,7 +258,7 @@ var validateControlRequest = validate30;
 var pattern4 = new RegExp("^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$", "u");
 var pattern5 = new RegExp("\\S", "u");
 var pattern6 = new RegExp("^[^\\u0000-\\u0008\\u000b\\u000c\\u000e-\\u001f]*$", "u");
-var pattern12 = new RegExp("^[a-f0-9]{64}$", "u");
+var pattern14 = new RegExp("^[a-f0-9]{64}$", "u");
 var func1 = require_ucs2length().default;
 function validate30(data, { instancePath = "", parentData, parentDataProperty, rootData = data, dynamicAnchors = {} } = {}) {
   let vErrors = null;
@@ -657,7 +657,7 @@ function validate30(data, { instancePath = "", parentData, parentDataProperty, r
       if (errors2 === _errs25) {
         if (data && typeof data == "object" && !Array.isArray(data)) {
           let missing3;
-          if (data.controlId === void 0 && (missing3 = "controlId") || data.intent === void 0 && (missing3 = "intent") || data.checkpointId === void 0 && (missing3 = "checkpointId") || data.checkpointSha256 === void 0 && (missing3 = "checkpointSha256")) {
+          if (data.controlId === void 0 && (missing3 = "controlId") || data.intent === void 0 && (missing3 = "intent") || data.questionId === void 0 && (missing3 = "questionId") || data.answers === void 0 && (missing3 = "answers")) {
             const err25 = { instancePath, schemaPath: "#/oneOf/3/required", keyword: "required", params: { missingProperty: missing3 }, message: "must have required property '" + missing3 + "'" };
             if (vErrors === null) {
               vErrors = [err25];
@@ -668,7 +668,7 @@ function validate30(data, { instancePath = "", parentData, parentDataProperty, r
           } else {
             const _errs27 = errors2;
             for (const key3 in data) {
-              if (!(key3 === "controlId" || key3 === "intent" || key3 === "checkpointId" || key3 === "checkpointSha256")) {
+              if (!(key3 === "controlId" || key3 === "intent" || key3 === "questionId" || key3 === "answers")) {
                 const err26 = { instancePath, schemaPath: "#/oneOf/3/additionalProperties", keyword: "additionalProperties", params: { additionalProperty: key3 }, message: "must NOT have additional properties" };
                 if (vErrors === null) {
                   vErrors = [err26];
@@ -711,8 +711,8 @@ function validate30(data, { instancePath = "", parentData, parentDataProperty, r
               if (valid5) {
                 if (data.intent !== void 0) {
                   const _errs30 = errors2;
-                  if ("resume" !== data.intent) {
-                    const err29 = { instancePath: instancePath + "/intent", schemaPath: "#/oneOf/3/properties/intent/const", keyword: "const", params: { allowedValue: "resume" }, message: "must be equal to constant" };
+                  if ("answer" !== data.intent) {
+                    const err29 = { instancePath: instancePath + "/intent", schemaPath: "#/oneOf/3/properties/intent/const", keyword: "const", params: { allowedValue: "answer" }, message: "must be equal to constant" };
                     if (vErrors === null) {
                       vErrors = [err29];
                     } else {
@@ -725,13 +725,13 @@ function validate30(data, { instancePath = "", parentData, parentDataProperty, r
                   var valid5 = true;
                 }
                 if (valid5) {
-                  if (data.checkpointId !== void 0) {
-                    let data10 = data.checkpointId;
+                  if (data.questionId !== void 0) {
+                    let data10 = data.questionId;
                     const _errs31 = errors2;
                     if (errors2 === _errs31) {
                       if (typeof data10 === "string") {
                         if (!pattern4.test(data10)) {
-                          const err30 = { instancePath: instancePath + "/checkpointId", schemaPath: "#/oneOf/3/properties/checkpointId/pattern", keyword: "pattern", params: { pattern: "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$" }, message: 'must match pattern "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"' };
+                          const err30 = { instancePath: instancePath + "/questionId", schemaPath: "#/oneOf/3/properties/questionId/pattern", keyword: "pattern", params: { pattern: "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$" }, message: 'must match pattern "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"' };
                           if (vErrors === null) {
                             vErrors = [err30];
                           } else {
@@ -740,7 +740,7 @@ function validate30(data, { instancePath = "", parentData, parentDataProperty, r
                           errors2++;
                         }
                       } else {
-                        const err31 = { instancePath: instancePath + "/checkpointId", schemaPath: "#/oneOf/3/properties/checkpointId/type", keyword: "type", params: { type: "string" }, message: "must be string" };
+                        const err31 = { instancePath: instancePath + "/questionId", schemaPath: "#/oneOf/3/properties/questionId/type", keyword: "type", params: { type: "string" }, message: "must be string" };
                         if (vErrors === null) {
                           vErrors = [err31];
                         } else {
@@ -754,26 +754,247 @@ function validate30(data, { instancePath = "", parentData, parentDataProperty, r
                     var valid5 = true;
                   }
                   if (valid5) {
-                    if (data.checkpointSha256 !== void 0) {
-                      let data11 = data.checkpointSha256;
+                    if (data.answers !== void 0) {
+                      let data11 = data.answers;
                       const _errs33 = errors2;
                       if (errors2 === _errs33) {
-                        if (typeof data11 === "string") {
-                          if (!pattern12.test(data11)) {
-                            const err32 = { instancePath: instancePath + "/checkpointSha256", schemaPath: "#/oneOf/3/properties/checkpointSha256/pattern", keyword: "pattern", params: { pattern: "^[a-f0-9]{64}$" }, message: 'must match pattern "^[a-f0-9]{64}$"' };
+                        if (data11 && typeof data11 == "object" && !Array.isArray(data11)) {
+                          if (Object.keys(data11).length > 4) {
+                            const err32 = { instancePath: instancePath + "/answers", schemaPath: "#/oneOf/3/properties/answers/maxProperties", keyword: "maxProperties", params: { limit: 4 }, message: "must NOT have more than 4 properties" };
                             if (vErrors === null) {
                               vErrors = [err32];
                             } else {
                               vErrors.push(err32);
                             }
                             errors2++;
+                          } else {
+                            if (Object.keys(data11).length < 1) {
+                              const err33 = { instancePath: instancePath + "/answers", schemaPath: "#/oneOf/3/properties/answers/minProperties", keyword: "minProperties", params: { limit: 1 }, message: "must NOT have fewer than 1 properties" };
+                              if (vErrors === null) {
+                                vErrors = [err33];
+                              } else {
+                                vErrors.push(err33);
+                              }
+                              errors2++;
+                            } else {
+                              for (const key4 in data11) {
+                                const _errs35 = errors2;
+                                if (errors2 === _errs35) {
+                                  if (typeof key4 === "string") {
+                                    if (func1(key4) > 1e3) {
+                                      const err34 = { instancePath: instancePath + "/answers", schemaPath: "#/oneOf/3/properties/answers/propertyNames/maxLength", keyword: "maxLength", params: { limit: 1e3 }, message: "must NOT have more than 1000 characters", propertyName: key4 };
+                                      if (vErrors === null) {
+                                        vErrors = [err34];
+                                      } else {
+                                        vErrors.push(err34);
+                                      }
+                                      errors2++;
+                                    } else {
+                                      if (func1(key4) < 1) {
+                                        const err35 = { instancePath: instancePath + "/answers", schemaPath: "#/oneOf/3/properties/answers/propertyNames/minLength", keyword: "minLength", params: { limit: 1 }, message: "must NOT have fewer than 1 characters", propertyName: key4 };
+                                        if (vErrors === null) {
+                                          vErrors = [err35];
+                                        } else {
+                                          vErrors.push(err35);
+                                        }
+                                        errors2++;
+                                      }
+                                    }
+                                  } else {
+                                    const err36 = { instancePath: instancePath + "/answers", schemaPath: "#/oneOf/3/properties/answers/propertyNames/type", keyword: "type", params: { type: "string" }, message: "must be string", propertyName: key4 };
+                                    if (vErrors === null) {
+                                      vErrors = [err36];
+                                    } else {
+                                      vErrors.push(err36);
+                                    }
+                                    errors2++;
+                                  }
+                                }
+                                var valid6 = _errs35 === errors2;
+                                if (!valid6) {
+                                  const err37 = { instancePath: instancePath + "/answers", schemaPath: "#/oneOf/3/properties/answers/propertyNames", keyword: "propertyNames", params: { propertyName: key4 }, message: "property name must be valid" };
+                                  if (vErrors === null) {
+                                    vErrors = [err37];
+                                  } else {
+                                    vErrors.push(err37);
+                                  }
+                                  errors2++;
+                                  break;
+                                }
+                              }
+                              if (valid6) {
+                                for (const key5 in data11) {
+                                  let data12 = data11[key5];
+                                  const _errs38 = errors2;
+                                  const _errs39 = errors2;
+                                  let valid8 = false;
+                                  const _errs40 = errors2;
+                                  if (errors2 === _errs40) {
+                                    if (typeof data12 === "string") {
+                                      if (func1(data12) > 1e4) {
+                                        const err38 = { instancePath: instancePath + "/answers/" + key5.replace(/~/g, "~0").replace(/\//g, "~1"), schemaPath: "#/oneOf/3/properties/answers/additionalProperties/anyOf/0/maxLength", keyword: "maxLength", params: { limit: 1e4 }, message: "must NOT have more than 10000 characters" };
+                                        if (vErrors === null) {
+                                          vErrors = [err38];
+                                        } else {
+                                          vErrors.push(err38);
+                                        }
+                                        errors2++;
+                                      } else {
+                                        if (func1(data12) < 1) {
+                                          const err39 = { instancePath: instancePath + "/answers/" + key5.replace(/~/g, "~0").replace(/\//g, "~1"), schemaPath: "#/oneOf/3/properties/answers/additionalProperties/anyOf/0/minLength", keyword: "minLength", params: { limit: 1 }, message: "must NOT have fewer than 1 characters" };
+                                          if (vErrors === null) {
+                                            vErrors = [err39];
+                                          } else {
+                                            vErrors.push(err39);
+                                          }
+                                          errors2++;
+                                        }
+                                      }
+                                    } else {
+                                      const err40 = { instancePath: instancePath + "/answers/" + key5.replace(/~/g, "~0").replace(/\//g, "~1"), schemaPath: "#/oneOf/3/properties/answers/additionalProperties/anyOf/0/type", keyword: "type", params: { type: "string" }, message: "must be string" };
+                                      if (vErrors === null) {
+                                        vErrors = [err40];
+                                      } else {
+                                        vErrors.push(err40);
+                                      }
+                                      errors2++;
+                                    }
+                                  }
+                                  var _valid1 = _errs40 === errors2;
+                                  valid8 = valid8 || _valid1;
+                                  const _errs42 = errors2;
+                                  if (errors2 === _errs42) {
+                                    if (Array.isArray(data12)) {
+                                      if (data12.length > 4) {
+                                        const err41 = { instancePath: instancePath + "/answers/" + key5.replace(/~/g, "~0").replace(/\//g, "~1"), schemaPath: "#/oneOf/3/properties/answers/additionalProperties/anyOf/1/maxItems", keyword: "maxItems", params: { limit: 4 }, message: "must NOT have more than 4 items" };
+                                        if (vErrors === null) {
+                                          vErrors = [err41];
+                                        } else {
+                                          vErrors.push(err41);
+                                        }
+                                        errors2++;
+                                      } else {
+                                        if (data12.length < 1) {
+                                          const err42 = { instancePath: instancePath + "/answers/" + key5.replace(/~/g, "~0").replace(/\//g, "~1"), schemaPath: "#/oneOf/3/properties/answers/additionalProperties/anyOf/1/minItems", keyword: "minItems", params: { limit: 1 }, message: "must NOT have fewer than 1 items" };
+                                          if (vErrors === null) {
+                                            vErrors = [err42];
+                                          } else {
+                                            vErrors.push(err42);
+                                          }
+                                          errors2++;
+                                        } else {
+                                          var valid9 = true;
+                                          const len0 = data12.length;
+                                          for (let i0 = 0; i0 < len0; i0++) {
+                                            let data13 = data12[i0];
+                                            const _errs44 = errors2;
+                                            if (errors2 === _errs44) {
+                                              if (typeof data13 === "string") {
+                                                if (func1(data13) > 1e4) {
+                                                  const err43 = { instancePath: instancePath + "/answers/" + key5.replace(/~/g, "~0").replace(/\//g, "~1") + "/" + i0, schemaPath: "#/oneOf/3/properties/answers/additionalProperties/anyOf/1/items/maxLength", keyword: "maxLength", params: { limit: 1e4 }, message: "must NOT have more than 10000 characters" };
+                                                  if (vErrors === null) {
+                                                    vErrors = [err43];
+                                                  } else {
+                                                    vErrors.push(err43);
+                                                  }
+                                                  errors2++;
+                                                } else {
+                                                  if (func1(data13) < 1) {
+                                                    const err44 = { instancePath: instancePath + "/answers/" + key5.replace(/~/g, "~0").replace(/\//g, "~1") + "/" + i0, schemaPath: "#/oneOf/3/properties/answers/additionalProperties/anyOf/1/items/minLength", keyword: "minLength", params: { limit: 1 }, message: "must NOT have fewer than 1 characters" };
+                                                    if (vErrors === null) {
+                                                      vErrors = [err44];
+                                                    } else {
+                                                      vErrors.push(err44);
+                                                    }
+                                                    errors2++;
+                                                  }
+                                                }
+                                              } else {
+                                                const err45 = { instancePath: instancePath + "/answers/" + key5.replace(/~/g, "~0").replace(/\//g, "~1") + "/" + i0, schemaPath: "#/oneOf/3/properties/answers/additionalProperties/anyOf/1/items/type", keyword: "type", params: { type: "string" }, message: "must be string" };
+                                                if (vErrors === null) {
+                                                  vErrors = [err45];
+                                                } else {
+                                                  vErrors.push(err45);
+                                                }
+                                                errors2++;
+                                              }
+                                            }
+                                            var valid9 = _errs44 === errors2;
+                                            if (!valid9) {
+                                              break;
+                                            }
+                                          }
+                                          if (valid9) {
+                                            let i1 = data12.length;
+                                            let j0;
+                                            if (i1 > 1) {
+                                              const indices0 = {};
+                                              for (; i1--; ) {
+                                                let item0 = data12[i1];
+                                                if (typeof item0 !== "string") {
+                                                  continue;
+                                                }
+                                                if (typeof indices0[item0] == "number") {
+                                                  j0 = indices0[item0];
+                                                  const err46 = { instancePath: instancePath + "/answers/" + key5.replace(/~/g, "~0").replace(/\//g, "~1"), schemaPath: "#/oneOf/3/properties/answers/additionalProperties/anyOf/1/uniqueItems", keyword: "uniqueItems", params: { i: i1, j: j0 }, message: "must NOT have duplicate items (items ## " + j0 + " and " + i1 + " are identical)" };
+                                                  if (vErrors === null) {
+                                                    vErrors = [err46];
+                                                  } else {
+                                                    vErrors.push(err46);
+                                                  }
+                                                  errors2++;
+                                                  break;
+                                                }
+                                                indices0[item0] = i1;
+                                              }
+                                            }
+                                          }
+                                        }
+                                      }
+                                    } else {
+                                      const err47 = { instancePath: instancePath + "/answers/" + key5.replace(/~/g, "~0").replace(/\//g, "~1"), schemaPath: "#/oneOf/3/properties/answers/additionalProperties/anyOf/1/type", keyword: "type", params: { type: "array" }, message: "must be array" };
+                                      if (vErrors === null) {
+                                        vErrors = [err47];
+                                      } else {
+                                        vErrors.push(err47);
+                                      }
+                                      errors2++;
+                                    }
+                                  }
+                                  var _valid1 = _errs42 === errors2;
+                                  valid8 = valid8 || _valid1;
+                                  if (!valid8) {
+                                    const err48 = { instancePath: instancePath + "/answers/" + key5.replace(/~/g, "~0").replace(/\//g, "~1"), schemaPath: "#/oneOf/3/properties/answers/additionalProperties/anyOf", keyword: "anyOf", params: {}, message: "must match a schema in anyOf" };
+                                    if (vErrors === null) {
+                                      vErrors = [err48];
+                                    } else {
+                                      vErrors.push(err48);
+                                    }
+                                    errors2++;
+                                  } else {
+                                    errors2 = _errs39;
+                                    if (vErrors !== null) {
+                                      if (_errs39) {
+                                        vErrors.length = _errs39;
+                                      } else {
+                                        vErrors = null;
+                                      }
+                                    }
+                                  }
+                                  var valid7 = _errs38 === errors2;
+                                  if (!valid7) {
+                                    break;
+                                  }
+                                }
+                              }
+                            }
                           }
                         } else {
-                          const err33 = { instancePath: instancePath + "/checkpointSha256", schemaPath: "#/oneOf/3/properties/checkpointSha256/type", keyword: "type", params: { type: "string" }, message: "must be string" };
+                          const err49 = { instancePath: instancePath + "/answers", schemaPath: "#/oneOf/3/properties/answers/type", keyword: "type", params: { type: "object" }, message: "must be object" };
                           if (vErrors === null) {
-                            vErrors = [err33];
+                            vErrors = [err49];
                           } else {
-                            vErrors.push(err33);
+                            vErrors.push(err49);
                           }
                           errors2++;
                         }
@@ -788,11 +1009,11 @@ function validate30(data, { instancePath = "", parentData, parentDataProperty, r
             }
           }
         } else {
-          const err34 = { instancePath, schemaPath: "#/oneOf/3/type", keyword: "type", params: { type: "object" }, message: "must be object" };
+          const err50 = { instancePath, schemaPath: "#/oneOf/3/type", keyword: "type", params: { type: "object" }, message: "must be object" };
           if (vErrors === null) {
-            vErrors = [err34];
+            vErrors = [err50];
           } else {
-            vErrors.push(err34);
+            vErrors.push(err50);
           }
           errors2++;
         }
@@ -809,134 +1030,134 @@ function validate30(data, { instancePath = "", parentData, parentDataProperty, r
             props0 = true;
           }
         }
-        const _errs35 = errors2;
-        if (errors2 === _errs35) {
+        const _errs46 = errors2;
+        if (errors2 === _errs46) {
           if (data && typeof data == "object" && !Array.isArray(data)) {
             let missing4;
             if (data.controlId === void 0 && (missing4 = "controlId") || data.intent === void 0 && (missing4 = "intent") || data.checkpointId === void 0 && (missing4 = "checkpointId") || data.checkpointSha256 === void 0 && (missing4 = "checkpointSha256")) {
-              const err35 = { instancePath, schemaPath: "#/oneOf/4/required", keyword: "required", params: { missingProperty: missing4 }, message: "must have required property '" + missing4 + "'" };
+              const err51 = { instancePath, schemaPath: "#/oneOf/4/required", keyword: "required", params: { missingProperty: missing4 }, message: "must have required property '" + missing4 + "'" };
               if (vErrors === null) {
-                vErrors = [err35];
+                vErrors = [err51];
               } else {
-                vErrors.push(err35);
+                vErrors.push(err51);
               }
               errors2++;
             } else {
-              const _errs37 = errors2;
-              for (const key4 in data) {
-                if (!(key4 === "controlId" || key4 === "intent" || key4 === "checkpointId" || key4 === "checkpointSha256")) {
-                  const err36 = { instancePath, schemaPath: "#/oneOf/4/additionalProperties", keyword: "additionalProperties", params: { additionalProperty: key4 }, message: "must NOT have additional properties" };
+              const _errs48 = errors2;
+              for (const key6 in data) {
+                if (!(key6 === "controlId" || key6 === "intent" || key6 === "checkpointId" || key6 === "checkpointSha256")) {
+                  const err52 = { instancePath, schemaPath: "#/oneOf/4/additionalProperties", keyword: "additionalProperties", params: { additionalProperty: key6 }, message: "must NOT have additional properties" };
                   if (vErrors === null) {
-                    vErrors = [err36];
+                    vErrors = [err52];
                   } else {
-                    vErrors.push(err36);
+                    vErrors.push(err52);
                   }
                   errors2++;
                   break;
                 }
               }
-              if (_errs37 === errors2) {
+              if (_errs48 === errors2) {
                 if (data.controlId !== void 0) {
-                  let data12 = data.controlId;
-                  const _errs38 = errors2;
-                  if (errors2 === _errs38) {
-                    if (typeof data12 === "string") {
-                      if (!pattern4.test(data12)) {
-                        const err37 = { instancePath: instancePath + "/controlId", schemaPath: "#/oneOf/4/properties/controlId/pattern", keyword: "pattern", params: { pattern: "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$" }, message: 'must match pattern "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"' };
+                  let data14 = data.controlId;
+                  const _errs49 = errors2;
+                  if (errors2 === _errs49) {
+                    if (typeof data14 === "string") {
+                      if (!pattern4.test(data14)) {
+                        const err53 = { instancePath: instancePath + "/controlId", schemaPath: "#/oneOf/4/properties/controlId/pattern", keyword: "pattern", params: { pattern: "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$" }, message: 'must match pattern "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"' };
                         if (vErrors === null) {
-                          vErrors = [err37];
+                          vErrors = [err53];
                         } else {
-                          vErrors.push(err37);
+                          vErrors.push(err53);
                         }
                         errors2++;
                       }
                     } else {
-                      const err38 = { instancePath: instancePath + "/controlId", schemaPath: "#/oneOf/4/properties/controlId/type", keyword: "type", params: { type: "string" }, message: "must be string" };
+                      const err54 = { instancePath: instancePath + "/controlId", schemaPath: "#/oneOf/4/properties/controlId/type", keyword: "type", params: { type: "string" }, message: "must be string" };
                       if (vErrors === null) {
-                        vErrors = [err38];
+                        vErrors = [err54];
                       } else {
-                        vErrors.push(err38);
+                        vErrors.push(err54);
                       }
                       errors2++;
                     }
                   }
-                  var valid6 = _errs38 === errors2;
+                  var valid11 = _errs49 === errors2;
                 } else {
-                  var valid6 = true;
+                  var valid11 = true;
                 }
-                if (valid6) {
+                if (valid11) {
                   if (data.intent !== void 0) {
-                    const _errs40 = errors2;
-                    if ("fork" !== data.intent) {
-                      const err39 = { instancePath: instancePath + "/intent", schemaPath: "#/oneOf/4/properties/intent/const", keyword: "const", params: { allowedValue: "fork" }, message: "must be equal to constant" };
+                    const _errs51 = errors2;
+                    if ("resume" !== data.intent) {
+                      const err55 = { instancePath: instancePath + "/intent", schemaPath: "#/oneOf/4/properties/intent/const", keyword: "const", params: { allowedValue: "resume" }, message: "must be equal to constant" };
                       if (vErrors === null) {
-                        vErrors = [err39];
+                        vErrors = [err55];
                       } else {
-                        vErrors.push(err39);
+                        vErrors.push(err55);
                       }
                       errors2++;
                     }
-                    var valid6 = _errs40 === errors2;
+                    var valid11 = _errs51 === errors2;
                   } else {
-                    var valid6 = true;
+                    var valid11 = true;
                   }
-                  if (valid6) {
+                  if (valid11) {
                     if (data.checkpointId !== void 0) {
-                      let data14 = data.checkpointId;
-                      const _errs41 = errors2;
-                      if (errors2 === _errs41) {
-                        if (typeof data14 === "string") {
-                          if (!pattern4.test(data14)) {
-                            const err40 = { instancePath: instancePath + "/checkpointId", schemaPath: "#/oneOf/4/properties/checkpointId/pattern", keyword: "pattern", params: { pattern: "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$" }, message: 'must match pattern "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"' };
+                      let data16 = data.checkpointId;
+                      const _errs52 = errors2;
+                      if (errors2 === _errs52) {
+                        if (typeof data16 === "string") {
+                          if (!pattern4.test(data16)) {
+                            const err56 = { instancePath: instancePath + "/checkpointId", schemaPath: "#/oneOf/4/properties/checkpointId/pattern", keyword: "pattern", params: { pattern: "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$" }, message: 'must match pattern "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"' };
                             if (vErrors === null) {
-                              vErrors = [err40];
+                              vErrors = [err56];
                             } else {
-                              vErrors.push(err40);
+                              vErrors.push(err56);
                             }
                             errors2++;
                           }
                         } else {
-                          const err41 = { instancePath: instancePath + "/checkpointId", schemaPath: "#/oneOf/4/properties/checkpointId/type", keyword: "type", params: { type: "string" }, message: "must be string" };
+                          const err57 = { instancePath: instancePath + "/checkpointId", schemaPath: "#/oneOf/4/properties/checkpointId/type", keyword: "type", params: { type: "string" }, message: "must be string" };
                           if (vErrors === null) {
-                            vErrors = [err41];
+                            vErrors = [err57];
                           } else {
-                            vErrors.push(err41);
+                            vErrors.push(err57);
                           }
                           errors2++;
                         }
                       }
-                      var valid6 = _errs41 === errors2;
+                      var valid11 = _errs52 === errors2;
                     } else {
-                      var valid6 = true;
+                      var valid11 = true;
                     }
-                    if (valid6) {
+                    if (valid11) {
                       if (data.checkpointSha256 !== void 0) {
-                        let data15 = data.checkpointSha256;
-                        const _errs43 = errors2;
-                        if (errors2 === _errs43) {
-                          if (typeof data15 === "string") {
-                            if (!pattern12.test(data15)) {
-                              const err42 = { instancePath: instancePath + "/checkpointSha256", schemaPath: "#/oneOf/4/properties/checkpointSha256/pattern", keyword: "pattern", params: { pattern: "^[a-f0-9]{64}$" }, message: 'must match pattern "^[a-f0-9]{64}$"' };
+                        let data17 = data.checkpointSha256;
+                        const _errs54 = errors2;
+                        if (errors2 === _errs54) {
+                          if (typeof data17 === "string") {
+                            if (!pattern14.test(data17)) {
+                              const err58 = { instancePath: instancePath + "/checkpointSha256", schemaPath: "#/oneOf/4/properties/checkpointSha256/pattern", keyword: "pattern", params: { pattern: "^[a-f0-9]{64}$" }, message: 'must match pattern "^[a-f0-9]{64}$"' };
                               if (vErrors === null) {
-                                vErrors = [err42];
+                                vErrors = [err58];
                               } else {
-                                vErrors.push(err42);
+                                vErrors.push(err58);
                               }
                               errors2++;
                             }
                           } else {
-                            const err43 = { instancePath: instancePath + "/checkpointSha256", schemaPath: "#/oneOf/4/properties/checkpointSha256/type", keyword: "type", params: { type: "string" }, message: "must be string" };
+                            const err59 = { instancePath: instancePath + "/checkpointSha256", schemaPath: "#/oneOf/4/properties/checkpointSha256/type", keyword: "type", params: { type: "string" }, message: "must be string" };
                             if (vErrors === null) {
-                              vErrors = [err43];
+                              vErrors = [err59];
                             } else {
-                              vErrors.push(err43);
+                              vErrors.push(err59);
                             }
                             errors2++;
                           }
                         }
-                        var valid6 = _errs43 === errors2;
+                        var valid11 = _errs54 === errors2;
                       } else {
-                        var valid6 = true;
+                        var valid11 = true;
                       }
                     }
                   }
@@ -944,16 +1165,16 @@ function validate30(data, { instancePath = "", parentData, parentDataProperty, r
               }
             }
           } else {
-            const err44 = { instancePath, schemaPath: "#/oneOf/4/type", keyword: "type", params: { type: "object" }, message: "must be object" };
+            const err60 = { instancePath, schemaPath: "#/oneOf/4/type", keyword: "type", params: { type: "object" }, message: "must be object" };
             if (vErrors === null) {
-              vErrors = [err44];
+              vErrors = [err60];
             } else {
-              vErrors.push(err44);
+              vErrors.push(err60);
             }
             errors2++;
           }
         }
-        var _valid0 = _errs35 === errors2;
+        var _valid0 = _errs46 === errors2;
         if (_valid0 && valid0) {
           valid0 = false;
           passing0 = [passing0, 4];
@@ -965,16 +1186,173 @@ function validate30(data, { instancePath = "", parentData, parentDataProperty, r
               props0 = true;
             }
           }
+          const _errs56 = errors2;
+          if (errors2 === _errs56) {
+            if (data && typeof data == "object" && !Array.isArray(data)) {
+              let missing5;
+              if (data.controlId === void 0 && (missing5 = "controlId") || data.intent === void 0 && (missing5 = "intent") || data.checkpointId === void 0 && (missing5 = "checkpointId") || data.checkpointSha256 === void 0 && (missing5 = "checkpointSha256")) {
+                const err61 = { instancePath, schemaPath: "#/oneOf/5/required", keyword: "required", params: { missingProperty: missing5 }, message: "must have required property '" + missing5 + "'" };
+                if (vErrors === null) {
+                  vErrors = [err61];
+                } else {
+                  vErrors.push(err61);
+                }
+                errors2++;
+              } else {
+                const _errs58 = errors2;
+                for (const key7 in data) {
+                  if (!(key7 === "controlId" || key7 === "intent" || key7 === "checkpointId" || key7 === "checkpointSha256")) {
+                    const err62 = { instancePath, schemaPath: "#/oneOf/5/additionalProperties", keyword: "additionalProperties", params: { additionalProperty: key7 }, message: "must NOT have additional properties" };
+                    if (vErrors === null) {
+                      vErrors = [err62];
+                    } else {
+                      vErrors.push(err62);
+                    }
+                    errors2++;
+                    break;
+                  }
+                }
+                if (_errs58 === errors2) {
+                  if (data.controlId !== void 0) {
+                    let data18 = data.controlId;
+                    const _errs59 = errors2;
+                    if (errors2 === _errs59) {
+                      if (typeof data18 === "string") {
+                        if (!pattern4.test(data18)) {
+                          const err63 = { instancePath: instancePath + "/controlId", schemaPath: "#/oneOf/5/properties/controlId/pattern", keyword: "pattern", params: { pattern: "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$" }, message: 'must match pattern "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"' };
+                          if (vErrors === null) {
+                            vErrors = [err63];
+                          } else {
+                            vErrors.push(err63);
+                          }
+                          errors2++;
+                        }
+                      } else {
+                        const err64 = { instancePath: instancePath + "/controlId", schemaPath: "#/oneOf/5/properties/controlId/type", keyword: "type", params: { type: "string" }, message: "must be string" };
+                        if (vErrors === null) {
+                          vErrors = [err64];
+                        } else {
+                          vErrors.push(err64);
+                        }
+                        errors2++;
+                      }
+                    }
+                    var valid12 = _errs59 === errors2;
+                  } else {
+                    var valid12 = true;
+                  }
+                  if (valid12) {
+                    if (data.intent !== void 0) {
+                      const _errs61 = errors2;
+                      if ("fork" !== data.intent) {
+                        const err65 = { instancePath: instancePath + "/intent", schemaPath: "#/oneOf/5/properties/intent/const", keyword: "const", params: { allowedValue: "fork" }, message: "must be equal to constant" };
+                        if (vErrors === null) {
+                          vErrors = [err65];
+                        } else {
+                          vErrors.push(err65);
+                        }
+                        errors2++;
+                      }
+                      var valid12 = _errs61 === errors2;
+                    } else {
+                      var valid12 = true;
+                    }
+                    if (valid12) {
+                      if (data.checkpointId !== void 0) {
+                        let data20 = data.checkpointId;
+                        const _errs62 = errors2;
+                        if (errors2 === _errs62) {
+                          if (typeof data20 === "string") {
+                            if (!pattern4.test(data20)) {
+                              const err66 = { instancePath: instancePath + "/checkpointId", schemaPath: "#/oneOf/5/properties/checkpointId/pattern", keyword: "pattern", params: { pattern: "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$" }, message: 'must match pattern "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"' };
+                              if (vErrors === null) {
+                                vErrors = [err66];
+                              } else {
+                                vErrors.push(err66);
+                              }
+                              errors2++;
+                            }
+                          } else {
+                            const err67 = { instancePath: instancePath + "/checkpointId", schemaPath: "#/oneOf/5/properties/checkpointId/type", keyword: "type", params: { type: "string" }, message: "must be string" };
+                            if (vErrors === null) {
+                              vErrors = [err67];
+                            } else {
+                              vErrors.push(err67);
+                            }
+                            errors2++;
+                          }
+                        }
+                        var valid12 = _errs62 === errors2;
+                      } else {
+                        var valid12 = true;
+                      }
+                      if (valid12) {
+                        if (data.checkpointSha256 !== void 0) {
+                          let data21 = data.checkpointSha256;
+                          const _errs64 = errors2;
+                          if (errors2 === _errs64) {
+                            if (typeof data21 === "string") {
+                              if (!pattern14.test(data21)) {
+                                const err68 = { instancePath: instancePath + "/checkpointSha256", schemaPath: "#/oneOf/5/properties/checkpointSha256/pattern", keyword: "pattern", params: { pattern: "^[a-f0-9]{64}$" }, message: 'must match pattern "^[a-f0-9]{64}$"' };
+                                if (vErrors === null) {
+                                  vErrors = [err68];
+                                } else {
+                                  vErrors.push(err68);
+                                }
+                                errors2++;
+                              }
+                            } else {
+                              const err69 = { instancePath: instancePath + "/checkpointSha256", schemaPath: "#/oneOf/5/properties/checkpointSha256/type", keyword: "type", params: { type: "string" }, message: "must be string" };
+                              if (vErrors === null) {
+                                vErrors = [err69];
+                              } else {
+                                vErrors.push(err69);
+                              }
+                              errors2++;
+                            }
+                          }
+                          var valid12 = _errs64 === errors2;
+                        } else {
+                          var valid12 = true;
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            } else {
+              const err70 = { instancePath, schemaPath: "#/oneOf/5/type", keyword: "type", params: { type: "object" }, message: "must be object" };
+              if (vErrors === null) {
+                vErrors = [err70];
+              } else {
+                vErrors.push(err70);
+              }
+              errors2++;
+            }
+          }
+          var _valid0 = _errs56 === errors2;
+          if (_valid0 && valid0) {
+            valid0 = false;
+            passing0 = [passing0, 5];
+          } else {
+            if (_valid0) {
+              valid0 = true;
+              passing0 = 5;
+              if (props0 !== true) {
+                props0 = true;
+              }
+            }
+          }
         }
       }
     }
   }
   if (!valid0) {
-    const err45 = { instancePath, schemaPath: "#/oneOf", keyword: "oneOf", params: { passingSchemas: passing0 }, message: "must match exactly one schema in oneOf" };
+    const err71 = { instancePath, schemaPath: "#/oneOf", keyword: "oneOf", params: { passingSchemas: passing0 }, message: "must match exactly one schema in oneOf" };
     if (vErrors === null) {
-      vErrors = [err45];
+      vErrors = [err71];
     } else {
-      vErrors.push(err45);
+      vErrors.push(err71);
     }
     errors2++;
     validate30.errors = vErrors;
@@ -995,8 +1373,8 @@ function validate30(data, { instancePath = "", parentData, parentDataProperty, r
 }
 validate30.evaluated = { "dynamicProps": true, "dynamicItems": false };
 var validateControlReceipt = validate31;
-var schema35 = { "type": "object", "properties": { "controlId": { "type": "string", "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$" }, "intent": { "enum": ["steer", "pause", "approval.wait", "resume", "fork"] }, "sourceBinding": { "$ref": "#/$defs/Canonical_RunBinding_84f2304c" }, "inputSha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" }, "state": { "enum": ["PENDING", "DISPATCHING", "APPLIED", "UNKNOWN"] }, "checkpointId": { "anyOf": [{ "type": "string", "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$" }, { "type": "null" }] }, "targetBinding": { "anyOf": [{ "$ref": "#/$defs/Canonical_RunBinding_84f2304c" }, { "type": "null" }] }, "admissionReceiptId": { "anyOf": [{ "type": "string", "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$" }, { "type": "null" }] }, "retirementReceiptId": { "anyOf": [{ "type": "string", "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$" }, { "type": "null" }] }, "replayed": { "type": "boolean" } }, "required": ["controlId", "intent", "sourceBinding", "inputSha256", "state", "checkpointId", "targetBinding", "admissionReceiptId", "retirementReceiptId", "replayed"], "additionalProperties": false };
-var func3 = Object.prototype.hasOwnProperty;
+var schema35 = { "type": "object", "properties": { "controlId": { "type": "string", "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$" }, "intent": { "enum": ["steer", "pause", "approval.wait", "answer", "resume", "fork"] }, "sourceBinding": { "$ref": "#/$defs/Canonical_RunBinding_84f2304c" }, "inputSha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" }, "state": { "enum": ["PENDING", "DISPATCHING", "APPLIED", "UNKNOWN"] }, "checkpointId": { "anyOf": [{ "type": "string", "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$" }, { "type": "null" }] }, "targetBinding": { "anyOf": [{ "$ref": "#/$defs/Canonical_RunBinding_84f2304c" }, { "type": "null" }] }, "admissionReceiptId": { "anyOf": [{ "type": "string", "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$" }, { "type": "null" }] }, "retirementReceiptId": { "anyOf": [{ "type": "string", "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$" }, { "type": "null" }] }, "replayed": { "type": "boolean" } }, "required": ["controlId", "intent", "sourceBinding", "inputSha256", "state", "checkpointId", "targetBinding", "admissionReceiptId", "retirementReceiptId", "replayed"], "additionalProperties": false };
+var func9 = Object.prototype.hasOwnProperty;
 var formats0 = /^(?:urn:uuid:)?[0-9a-f]{8}-(?:[0-9a-f]{4}-){3}[0-9a-f]{12}$/i;
 function validate31(data, { instancePath = "", parentData, parentDataProperty, rootData = data, dynamicAnchors = {} } = {}) {
   let vErrors = null;
@@ -1017,7 +1395,7 @@ function validate31(data, { instancePath = "", parentData, parentDataProperty, r
       } else {
         const _errs1 = errors2;
         for (const key0 in data) {
-          if (!func3.call(schema35.properties, key0)) {
+          if (!func9.call(schema35.properties, key0)) {
             validate31.errors = [{ instancePath, schemaPath: "#/additionalProperties", keyword: "additionalProperties", params: { additionalProperty: key0 }, message: "must NOT have additional properties" }];
             return false;
             break;
@@ -1046,7 +1424,7 @@ function validate31(data, { instancePath = "", parentData, parentDataProperty, r
             if (data.intent !== void 0) {
               let data1 = data.intent;
               const _errs4 = errors2;
-              if (!(data1 === "steer" || data1 === "pause" || data1 === "approval.wait" || data1 === "resume" || data1 === "fork")) {
+              if (!(data1 === "steer" || data1 === "pause" || data1 === "approval.wait" || data1 === "answer" || data1 === "resume" || data1 === "fork")) {
                 validate31.errors = [{ instancePath: instancePath + "/intent", schemaPath: "#/properties/intent/enum", keyword: "enum", params: { allowedValues: schema35.properties.intent.enum }, message: "must be equal to one of the allowed values" }];
                 return false;
               }
@@ -1254,7 +1632,7 @@ function validate31(data, { instancePath = "", parentData, parentDataProperty, r
                   const _errs23 = errors2;
                   if (errors2 === _errs23) {
                     if (typeof data10 === "string") {
-                      if (!pattern12.test(data10)) {
+                      if (!pattern14.test(data10)) {
                         validate31.errors = [{ instancePath: instancePath + "/inputSha256", schemaPath: "#/properties/inputSha256/pattern", keyword: "pattern", params: { pattern: "^[a-f0-9]{64}$" }, message: 'must match pattern "^[a-f0-9]{64}$"' }];
                         return false;
                       }
@@ -1943,7 +2321,7 @@ function validate33(data, { instancePath = "", parentData, parentDataProperty, r
               const _errs4 = errors2;
               if (errors2 === _errs4) {
                 if (typeof data1 === "string") {
-                  if (!pattern12.test(data1)) {
+                  if (!pattern14.test(data1)) {
                     validate33.errors = [{ instancePath: instancePath + "/checkpointSha256", schemaPath: "#/properties/checkpointSha256/pattern", keyword: "pattern", params: { pattern: "^[a-f0-9]{64}$" }, message: 'must match pattern "^[a-f0-9]{64}$"' }];
                     return false;
                   }

@@ -112,8 +112,8 @@
     },
     {
       "path": "conversation-history/schema.mjs",
-      "sha256": "731b9f026ef5ef5bebd117e6097b378f353385bf0f1b9468a4f7bfcb30736f7e",
-      "bytes": 7428
+      "sha256": "ee67d8bcc58e2cab70745e385557f95694598fcd846e10d4d0d34d5ea33aa368",
+      "bytes": 7588
     },
     {
       "path": "conversation-history/semantics.mjs",
@@ -122,8 +122,8 @@
     },
     {
       "path": "conversation-history/shape.mjs",
-      "sha256": "9cf42e7c26c7a79523b41ea95da6777e210da7922dcf8e77f98bca142093ac02",
-      "bytes": 1154
+      "sha256": "0ab8d33b5094c762332474ff9bae491138e1856ce5340e1254db1f471a47dc2f",
+      "bytes": 1198
     },
     {
       "path": "conversation-history/validate.mjs",
@@ -137,8 +137,8 @@
     },
     {
       "path": "conversation-sources/protocol.mjs",
-      "sha256": "4ab2b8449beded18e77111ac0c345955bb862ffbe1f63b4644a00cf0e64675ff",
-      "bytes": 1940
+      "sha256": "9b77ed07b46326d96ae357b704c13203b185886a2376eb9e82e0eba6f3b0cee6",
+      "bytes": 2243
     },
     {
       "path": "conversation-sources/semantics.mjs",
@@ -152,8 +152,8 @@
     },
     {
       "path": "dist/conversation-application.schema.json",
-      "sha256": "c4755d95c33abba8433a71287a3211e49ee4ebd5187cb0250b55479f01f630d8",
-      "bytes": 92814
+      "sha256": "c4913740f1c6c12a54ae2fb73431122c516590223f33e3aee2f0dfcee569a9ea",
+      "bytes": 98613
     },
     {
       "path": "document-application/boundary.mjs",
@@ -162,8 +162,8 @@
     },
     {
       "path": "generate-history.mjs",
-      "sha256": "ff085c4105d2ef7385c3169f02e8a0058f8db1a2b87449678a097e2b145861e0",
-      "bytes": 13004
+      "sha256": "34e832202850cbaca5b54025d951c93c0c012bd312b14e8563896b690794e29d",
+      "bytes": 13045
     },
     {
       "path": "meri.schema.json",
@@ -184,6 +184,11 @@
       "path": "native-upload-source.schema.json",
       "sha256": "8c6e70fa53c0d510d1ecb5ec89d2431b25054dcd1dc2225a0974fcf5d08ddf48",
       "bytes": 6121
+    },
+    {
+      "path": "native-user-question-event.schema.json",
+      "sha256": "3da7a1c5e26a30ddde76c7044476608564430a632e911d21f3ee1e07129f312a",
+      "bytes": 3980
     },
     {
       "path": "procedure-selection.mjs",
@@ -211,7 +216,7 @@
       "bytes": 1986
     }
   ],
-  "schemaSha256": "33ca62ea5e9efe3c228c35f789da5955b3663a22d7ce04461471339aae93092e",
+  "schemaSha256": "05a3ad29d0433eddb44a76ba2585841098e1582d90cecfa30f4c9e835726b2cb",
   "browserInputs": [
     "artifacts-0.2/artifact-formats.mjs",
     "conversation-history/conversation-history-receiver.mjs",

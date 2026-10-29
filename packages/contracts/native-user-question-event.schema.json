@@ -1,0 +1,96 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:meri:native-user-question:1.0.0",
+  "$defs": {
+    "NativeUserQuestion": {
+      "type": "object",
+      "properties": {
+        "questionId": { "type": "string", "format": "uuid" },
+        "toolUseId": { "type": "string", "minLength": 1, "maxLength": 256 },
+        "questionsSha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+        "expiresAt": { "type": "string", "format": "date-time", "pattern": "Z$" },
+        "questions": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 4,
+          "items": {
+            "type": "object",
+            "properties": {
+              "question": { "type": "string", "minLength": 1, "maxLength": 1000 },
+              "header": { "type": "string", "minLength": 1, "maxLength": 12 },
+              "options": {
+                "type": "array",
+                "minItems": 2,
+                "maxItems": 4,
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "label": { "type": "string", "minLength": 1, "maxLength": 200 },
+                    "description": { "type": "string", "minLength": 1, "maxLength": 1000 }
+                  },
+                  "required": ["label", "description"],
+                  "additionalProperties": false
+                }
+              },
+              "multiSelect": { "type": "boolean" }
+            },
+            "required": ["question", "header", "options", "multiSelect"],
+            "additionalProperties": false
+          }
+        }
+      },
+      "required": ["questionId", "toolUseId", "questionsSha256", "expiresAt", "questions"],
+      "additionalProperties": false
+    },
+    "NativeUserQuestionEvent": {
+      "type": "object",
+      "properties": {
+        "contractVersion": { "const": "0.1.0" },
+        "eventId": { "type": "string", "format": "uuid" },
+        "binding": { "$ref": "urn:meri:contracts:0.1.0#/$defs/RunBinding" },
+        "sequence": { "type": "integer", "minimum": 1, "maximum": 9007199254740991 },
+        "createdAt": { "type": "string", "format": "date-time", "pattern": "Z$" },
+        "scopes": {
+          "type": "array",
+          "items": { "$ref": "urn:meri:contracts:0.1.0#/$defs/Scope" },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "type": { "const": "question.pending" },
+        "data": { "$ref": "#/$defs/NativeUserQuestion" }
+      },
+      "required": ["contractVersion", "eventId", "binding", "sequence", "createdAt", "scopes", "type", "data"],
+      "additionalProperties": false
+    },
+    "NativeUserQuestionOutcome": {
+      "type": "object",
+      "properties": {
+        "questionId": { "type": "string", "format": "uuid" },
+        "outcome": { "type": "string", "enum": ["answered", "cancelled"] },
+        "reasonCode": { "oneOf": [{ "type": "string", "minLength": 1, "maxLength": 64 }, { "type": "null" }] }
+      },
+      "required": ["questionId", "outcome", "reasonCode"],
+      "additionalProperties": false
+    },
+    "NativeUserQuestionAnsweredEvent": {
+      "type": "object",
+      "properties": {
+        "contractVersion": { "const": "0.1.0" },
+        "eventId": { "type": "string", "format": "uuid" },
+        "binding": { "$ref": "urn:meri:contracts:0.1.0#/$defs/RunBinding" },
+        "sequence": { "type": "integer", "minimum": 1, "maximum": 9007199254740991 },
+        "createdAt": { "type": "string", "format": "date-time", "pattern": "Z$" },
+        "scopes": {
+          "type": "array",
+          "items": { "$ref": "urn:meri:contracts:0.1.0#/$defs/Scope" },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "type": { "const": "question.answered" },
+        "data": { "$ref": "#/$defs/NativeUserQuestionOutcome" }
+      },
+      "required": ["contractVersion", "eventId", "binding", "sequence", "createdAt", "scopes", "type", "data"],
+      "additionalProperties": false
+    }
+  }
+}

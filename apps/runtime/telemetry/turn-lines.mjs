@@ -23,7 +23,7 @@ export const RUN_OWNER_OPERATIONS = Object.freeze(['runner/load','runner/publish
 const SERVICES=['control','runner','owner','proxy'],OUTCOMES=['completed','refused','failed','cancelled','success','error','timeout','unanswered','other'];
 const COMPONENTS=['bootstrap','pending-work','owner-gate','pair','service-gate','facts','credential-delivery','currentness','owner','proxy','other'];
 export const DIAGNOSTIC_STAGES=Object.freeze(['module-import','runner-preflight','capability-load','binding-bootstrap','remote-module-import','admission-wait','activity',
- 'runtime-prepare','runtime-admission','sdk-session','sdk-directories','skill-plugin','runner-cleanup','activity-input','activity-load',
+ 'runtime-prepare','runtime-admission','sdk-session','sdk-directories','skill-plugin','bash-facts','runner-cleanup','activity-input','activity-load',
  'activity-policy','activity-setup','activity-starting','activity-running','activity-query','activity-stream','activity-output','activity-result',
  'activity-finalize','activity-complete','activity-terminal','activity-cleanup','remote-config','remote-tls','remote-clients','remote-worker',
  'remote-listen','kickoff-wait','remote-cleanup',

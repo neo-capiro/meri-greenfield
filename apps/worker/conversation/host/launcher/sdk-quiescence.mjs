@@ -33,7 +33,9 @@ export function sdkChildCgroup({allocation,binding,hostIdentity}){
  const relative=`/meri/hosts/${a.hostId}-${a.generation}/${canonicalSha256(b)}/sdk`;
  return Object.freeze({path:`/sys/fs/cgroup${relative}`,relative,allocation:a,binding:b,hostIdentity:i});
 }
-export function createLinuxSdkChildPorts(){
+/** Readiness is read-only. Only the retained-process hold owner requests writes. */
+export function createLinuxSdkChildPorts({writable=false}={}){
+ if(typeof writable!=='boolean')fail();
  return Object.freeze({
   async openGroup(path){
    if(process.platform!=='linux'||typeof path!=='string'||!/^\/sys\/fs\/cgroup\/meri\/hosts\/[0-9a-f-]{36}-[1-9][0-9]*\/[0-9a-f]{64}\/sdk$/u.test(path))fail();
@@ -46,6 +48,11 @@ export function createLinuxSdkChildPorts(){
     await check();
     return Object.freeze({identity:pinned,async readEvents(){await check();
      const events=await readFile(`/proc/self/fd/${fd.fd}/cgroup.events`,'utf8');await check();return events;},
+     ...(writable?{async setFrozen(value){
+      if(typeof value!=='boolean')fail();await check();
+      const control=await open(`/proc/self/fd/${fd.fd}/cgroup.freeze`,constants.O_WRONLY|constants.O_NOFOLLOW);
+      try{await check();await control.writeFile(value?'1':'0');await check();}finally{await control.close();}
+     }}:{}),
      async close(){await fd.close();}});
    }catch{try{await fd?.close();}catch{}fail();}
   },

@@ -2,9 +2,10 @@
 
 29 October 2026 source slice for the user's selected A4 scope. Chromium Manifest
 V3, Chrome 120 or newer. This is the extension producer and receiving contract;
-the Capiro current-conversation/upload consumer and public package registration
-must be integrated before the flow can be enabled. No browser installation,
-application/image build, store submission, deployment or live acceptance occurred.
+the Capiro current-conversation/upload consumer is integrated in source. Isolated
+unpacked Chromium qualification now passes. The public receiving package still
+needs the native document-token fix packaged and pinned by its release owner
+before authenticated application acceptance. No store submission or deployment occurred.
 
 ## User flow and authority
 
@@ -80,9 +81,31 @@ node --test apps/browser-extension/selected-tab/test/capture.browser.test.mjs
 The DOM test uses the installed Playwright runtime; `SELECTED_TAB_PLAYWRIGHT_MODULE`
 can name its existing module URL and `PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH` can select
 an installed Chrome. It serves synthetic content on loopback and closes the test
-browser/server. Seventeen contract/port cases and one actual Chrome DOM case pass.
-Native extension installation, browser permission behavior, popup visual review,
-authenticated upload and durable outcome recovery remain end-to-end acceptance.
+browser/server.
+
+The native test loads the actual unpacked extension in a fresh persistent
+Chromium profile and invokes its toolbar action through the native Extensions
+debug protocol. Run it with the same Playwright module setting:
+
+```sh
+node --test apps/browser-extension/selected-tab/test/native.browser.test.mjs
+```
+
+Chromium149.0.7827.55 and Playwright1.61.1 passed native external-port pairing,
+unlisted-origin refusal, denied read before the toolbar grant, explicit consent,
+filtered preview, one consumed share, uncertain-outcome capture blocking,
+navigation erasure and actual service-worker stop/restart with new consent.
+The popup preview was visually checked. Eighteen contract/bridge checks also pass.
+The recipient and outcome responses are synthetic; authenticated upload and
+durable application recovery still require end-to-end acceptance.
+
+Native qualification exposed two corrected assumptions: browser document tokens
+can be32hex characters and must be preserved exactly, and popup focus must not
+replace the last ordinary browser window when selecting its active tab. Neither
+change broadens the manifest permissions. A fresh profile and result/screenshot
+are retained under `SELECTED_TAB_NATIVE_WORKDIR` (the system temp folder by
+default); test browsers are closed on success or failure. Public generated
+distribution parity must be checked after the package owner regenerates it.
 
 References: [activeTab](https://developer.chrome.com/docs/extensions/develop/concepts/activeTab),
 [external connections](https://developer.chrome.com/docs/extensions/reference/manifest/externally-connectable),

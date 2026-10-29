@@ -11,7 +11,8 @@ function fixture(){
  const calls=[],timers=new Map(),port={sender:{origin,url:origin+'/meri',frameId:0,documentId:randomUUID(),tab:{id:1}},
   onMessage:event(),onDisconnect:event(),sent:[],closed:false,
   postMessage(raw){this.sent.push(JSON.parse(raw));},disconnect(){if(!this.closed){this.closed=true;this.onDisconnect.emit();}}};
- const chrome={tabs:{query:async args=>{calls.push(['query',args]);return [active];}},scripting:{executeScript:async args=>{
+ let window={id:4,type:'normal'};
+ const chrome={windows:{getLastFocused:async args=>{calls.push(['window',args]);return window;}},tabs:{query:async args=>{calls.push(['query',args]);return [active];}},scripting:{executeScript:async args=>{
   calls.push(['script',args]);if(readHook)await readHook(args);
   return [{frameId:0,documentId,result:args.target.documentIds?active.url:{url:'https://example.invalid/page',title:'Synthetic page',text:'Visible synthetic text'}}];
  }}};
@@ -21,13 +22,28 @@ function fixture(){
  const send=async value=>{port.onMessage.emit(JSON.stringify(value));await tick();};
  const connect=async()=>{assert.equal(bridge.connect(port),true);await send(pair);};
  const ready=async()=>{await connect();bridge.approve();};
- return {bridge,port,pair,calls,timers,send,connect,ready,clock:value=>{now=value;},active:value=>{active=value;},document:value=>{documentId=value;},hook:fn=>{readHook=fn;}};
+ return {bridge,port,pair,calls,timers,send,connect,ready,clock:value=>{now=value;},active:value=>{active=value;},document:value=>{documentId=value;},window:value=>{window=value;},hook:fn=>{readHook=fn;}};
 }
 test('pairing requires explicit popup approval and binds native origin/frame/document',async()=>{
  const f=fixture();await f.connect();assert.equal(f.bridge.view().state,'connected');await assert.rejects(f.bridge.capture(),/NOT_ACTIVE/u);
  f.bridge.approve();await f.bridge.capture();assert.equal(f.bridge.view().selection.text,'Visible synthetic text');
  const calls=f.calls.filter(([name])=>name==='script');assert.deepEqual(calls[0][1].target,{tabId:2,frameIds:[0]});assert.equal(calls[0][1].world,'ISOLATED');
  assert.deepEqual(calls[1][1].target,{tabId:2,documentIds:[calls[1][1].target.documentIds[0]]});f.bridge.dispose();
+});
+test('native Chrome token form remains exact at final document check',async()=>{
+ const f=fixture(),token='CD'.repeat(16);f.port.sender.documentId='AB'.repeat(16);f.document(token);
+ await f.ready();await f.bridge.capture();await f.bridge.share();
+ assert.equal(f.port.sent.find(m=>m.type==='share').documentId,token);
+ assert.equal(f.calls.filter(([name,args])=>name==='script'&&args.target.documentIds).every(([,args])=>args.target.documentIds[0]===token),true);f.bridge.dispose();
+});
+test('selection ignores popup focus and refuses an unavailable ordinary window before reading',async()=>{
+ const f=fixture();await f.ready();await f.bridge.capture();
+ assert.deepEqual(f.calls.filter(([name])=>name==='window').map(([,args])=>args),[{windowTypes:['normal']},{windowTypes:['normal']}]);
+ assert.equal(f.calls.filter(([name])=>name==='query').every(([,args])=>args.active===true&&args.windowId===4&&!('lastFocusedWindow' in args)),true);f.bridge.dispose();
+ for(const window of [null,{id:-1,type:'normal'},{id:4,type:'popup'}]){
+  const g=fixture();g.window(window);await g.ready();await assert.rejects(g.bridge.capture(),/TAB_UNAVAILABLE/);
+  assert.equal(g.calls.some(([name])=>name==='script'),false);g.bridge.dispose();
+ }
 });
 test('wrong origin, subframe, missing document and external extension are refused before reading',()=>{
  for(const mutation of [{origin:'https://evil.invalid'}, {frameId:2}, {documentId:undefined}, {id:'other-extension'}, {url:'https://evil.invalid/'}]){

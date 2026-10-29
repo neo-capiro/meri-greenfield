@@ -1,5 +1,9 @@
 /** Source composition only. Scripted page/host ports are not native sandbox or IdP qualification. */
 import test from 'node:test';import assert from 'node:assert/strict';
+import {PassThrough} from 'node:stream';
+import {EventEmitter} from 'node:events';
+import {Client} from '@modelcontextprotocol/sdk/client/index.js';
+import {StdioServerTransport} from '@modelcontextprotocol/sdk/server/stdio.js';
 import {createPinnedBrowserSession} from '../session/connection.mjs';
 import {createBrowserSessionHost} from '../../host/browser-session-host.mjs';
 import {enabledPolicy,binding,installation} from './fixtures.mjs';
@@ -11,8 +15,12 @@ import {siteWorkflowPolicy} from '../site-workflows/manifest.mjs';
 import {workflowCurrent,workflowManifest} from '../../../../../packages/contracts/test/site-workflow.fixture.mjs';
 function fixture(t,options={}){
  const state={fields:[],text:'- heading "Public page"',url:'https://records.example/page?token=hidden#secret',calls:0,events:[],refused:false,hold:'APPLIED'};
- const frame={locator(){return {async evaluateAll(){return structuredClone(state.fields);}};}};
- const page={url:()=>state.url,frames:()=>[frame],async ariaSnapshot(){await options.capture?.(state);return state.text;}};
+ const lifecycle=new EventEmitter(),frame={locator(){return {async evaluateAll(){return structuredClone(state.fields);}};}};
+ const page={url:()=>state.url,frames:()=>[frame],mainFrame:()=>frame,isClosed:()=>false,viewportSize:()=>({width:800,height:600}),
+  on:(...args)=>lifecycle.on(...args),off:(...args)=>lifecycle.off(...args),
+  keyboard:{async insertText(text){await state.onInput?.(text);},async press(key){await state.onInput?.(key);}},
+  async screenshot(){const png=Buffer.alloc(33);Buffer.from([137,80,78,71,13,10,26,10]).copy(png);png.write('IHDR',12);png.writeUInt32BE(800,16);png.writeUInt32BE(600,20);return png;},
+  async ariaSnapshot(){await options.capture?.(state);return state.text;}};
  const context={pages:()=>[page],async close(){state.events.push('context');}};
  const upstream={version:'0.0.83',async createConnection(config,getContext){
   assert.equal(await getContext(),context);assert.equal(config.webmcp,false);assert.equal(config.imageResponses,'omit');
@@ -23,13 +31,45 @@ function fixture(t,options={}){
    if(message.method==='tools/call'){state.calls++;await options.invoke?.(state);result={content:[{type:'text',text:'RAW SECRET ERROR/CONSOLE'},{type:'image',data:'secret'}]};}
    await transport.send({jsonrpc:'2.0',id:message.id,result});
   };},async close(){await transport.close();}};}};
- const args={context,upstream,policy:validateBrowserPolicy(enabledPolicy()),manifest:null,now:Date.now,deadlineMs:Date.now()+60000,
+ const now=options.now??Date.now;
+ const args={context,upstream,policy:validateBrowserPolicy(enabledPolicy()),manifest:null,now,deadlineMs:now()+60000,
   current:async()=>{if(state.refused)throw Error('revoked');},hold:async()=>({outcome:state.hold}),
   ports:{async waitForExit(){state.events.push('exit');return {exited:options.exited!==false};},async dispose(){state.events.push('dispose');return {disposed:true};}}};
- return {state,args,context,upstream};
+ return {state,args,context,upstream,page};
 }
 const secret=value=>({kind:'field',label:'Password',type:'password',autocomplete:'current-password',selectorMatch:false,value});
 const call=(session,id='one')=>session.call({requestId:id,tool:'browser_snapshot',args:{}});
+const displayed=async(session,page)=>{const lease=await session.takeover();return {...lease,frameId:(await session.view({...lease,page})).frameId};};
+
+test('host native stdio is actually routed through current snapshot masking and closes on transport loss',async t=>{
+ const x=fixture(t),incoming=new PassThrough(),outgoing=new PassThrough();let raw='';outgoing.on('data',chunk=>{raw+=chunk;});
+ const host=createBrowserSessionHost({binding,cwd,installation,upstream:x.upstream,now:Date.now,
+  contexts:{create:async()=>x.context},current:x.args.current,hold:x.args.hold,
+  processes:{waitForExit:x.args.ports.waitForExit},dispose:x.args.ports.dispose,
+  modelTransport:{readable:incoming,writable:outgoing},controls:{bind:async()=>({close:async()=>{}})}});
+ const session=await host.open({binding,policy:x.args.policy,deadlineMs:Date.now()+60000,manifest:null});
+ const client=new Client({name:'synthetic-model',version:'1'});
+ t.after(async()=>{await session.destroy({trigger:'conversation-end'});await client.close();incoming.destroy();outgoing.destroy();});
+ await client.connect(new StdioServerTransport(outgoing,incoming));
+ const result=await client.callTool({name:'browser_snapshot',arguments:{}});assert.match(JSON.stringify(result),/Public page/);
+ assert.doesNotMatch(raw,/RAW SECRET|hidden|token=/);assert.equal(x.state.calls,1);
+ incoming.end();for(let n=0;n<50&&!x.state.events.includes('dispose');n++)await new Promise(resolve=>setTimeout(resolve,5));
+ assert.deepEqual(x.state.events,['context','exit','dispose']);
+});
+
+test('disconnect while the viewer relay is attaching cannot return a closed session or leak its late relay',async t=>{
+ const x=fixture(t),incoming=new PassThrough(),outgoing=new PassThrough();let closed=0;
+ t.after(()=>{incoming.destroy();outgoing.destroy();});
+ const host=createBrowserSessionHost({binding,cwd,installation,upstream:x.upstream,now:Date.now,
+  contexts:{create:async()=>x.context},current:x.args.current,hold:x.args.hold,
+  processes:{waitForExit:x.args.ports.waitForExit},dispose:x.args.ports.dispose,
+  modelTransport:{readable:incoming,writable:outgoing},controls:{async bind(){
+   incoming.end();for(let n=0;n<50&&!x.state.events.includes('dispose');n++)await new Promise(resolve=>setTimeout(resolve,5));
+   return {async close(){closed++;}};
+  }}});
+ await assert.rejects(host.open({binding,policy:x.args.policy,deadlineMs:Date.now()+60000,manifest:null}),/BROWSER_SESSION_CLOSED/);
+ assert.equal(closed,1);assert.deepEqual(x.state.events,['context','exit','dispose']);
+});
 
 test('scripted upstream connection has one execution boundary; only current filtered snapshots leave it',async t=>{
  const x=fixture(t),session=await createPinnedBrowserSession(x.args);t.after(()=>session.destroy({trigger:'conversation-end'}));
@@ -54,13 +94,55 @@ test('takeover requires applied canonical hold and explicit filtered hand-back; 
 });
 test('user relay values are masked on resume and a released lease cannot send input',async t=>{
  const x=fixture(t),session=await createPinnedBrowserSession(x.args);t.after(()=>session.destroy({trigger:'conversation-end'}));
- const lease=await session.takeover();let inputs=0;
- await session.userInput({...lease,perform:async()=>{inputs++;x.state.fields=[{...secret('POST-LEASE-VALUE'),type:'text',autocomplete:''}];x.state.text='POST-LEASE-VALUE';}});
- session.handBack();await assert.rejects(session.userInput({...lease,perform:async()=>{inputs++;}}),/STALE_LEASE/);
+ const lease=await displayed(session,x.page);let inputs=0;
+ x.state.onInput=async text=>{inputs++;x.state.fields=[{...secret(text),type:'text',autocomplete:''}];x.state.text=text;};
+ await session.userInput({...lease,page:x.page,input:{kind:'text',text:'POST-LEASE-VALUE'}});
+ session.handBack();await assert.rejects(session.userInput({...lease,page:x.page,input:{kind:'key',key:'Enter'}}),/STALE_LEASE/);
  await assert.rejects(session.resume({explicit:false}),/RESUME_REFUSED/);
  const response=await session.resume({explicit:true});assert.doesNotMatch(JSON.stringify(response),/POST-LEASE-VALUE/);
  assert.equal(inputs,1);assert.equal(session.state().state,'agent');
 });
+
+test('cancelled or invalid takeover admission leaves the next valid takeover available',async t=>{
+ const x=fixture(t);let holds=0;x.args.hold=async()=>{holds++;return {outcome:'APPLIED'};};
+ const session=await createPinnedBrowserSession(x.args);t.after(()=>session.destroy({trigger:'conversation-end'}));
+ const cancelled=new AbortController();cancelled.abort();
+ for(const signal of [cancelled.signal,{}]){
+  await assert.rejects(session.takeover({signal}));assert.equal(session.state().state,'agent');
+ }
+ assert.equal(holds,0);await call(session);assert.equal(x.state.calls,1);
+ const lease=await session.takeover();assert.equal(lease.leaseEpoch,1);
+ assert.equal(session.state().state,'user');assert.equal(holds,1);
+});
+test('native input uses one per-lease event bucket and refuses a whole over-budget press before injection',async t=>{
+ let clock=0,inputs=0;const x=fixture(t,{now:()=>clock}),session=await createPinnedBrowserSession(x.args);
+ t.after(()=>session.destroy({trigger:'conversation-end'}));x.state.onInput=async()=>{inputs++;};
+ const lease=await displayed(session,x.page),press=()=>session.userInput({...lease,page:x.page,input:{kind:'key',key:'Enter'}});
+ for(let n=0;n<60;n++)await press();assert.equal(inputs,60);
+ await assert.rejects(press(),/RATE_LIMITED/);assert.equal(inputs,60);assert.equal(session.state().state,'user');
+ clock+=1000;for(let n=0;n<30;n++)await press();await assert.rejects(press(),/RATE_LIMITED/);assert.equal(inputs,90);
+ session.handBack();await assert.rejects(press(),/STALE_LEASE/);await session.resume({explicit:true});
+ const next=await displayed(session,x.page);await session.userInput({...next,page:x.page,input:{kind:'key',key:'Enter'}});assert.equal(inputs,91);
+});
+
+test('hand-back during input authority checks prevents the delayed native event',async t=>{
+ let handingBack=false,inputs=0,session;const x=fixture(t,{capture:()=>{if(handingBack){handingBack=false;session.handBack();}}});
+ session=await createPinnedBrowserSession(x.args);t.after(()=>session.destroy({trigger:'conversation-end'}));
+ const lease=await displayed(session,x.page);x.state.onInput=async()=>{inputs++;};handingBack=true;
+ await assert.rejects(session.userInput({...lease,page:x.page,input:{kind:'text',text:'Synthetic private value'}}),/USER_INPUT_UNKNOWN/);
+ assert.equal(inputs,0);
+});
+
+test('invalid input cannot refresh idle control or leave admission busy after an invalid signal',async t=>{
+ let clock=0,inputs=0;const x=fixture(t,{now:()=>clock});x.args.deadlineMs=700000;
+ const session=await createPinnedBrowserSession(x.args);t.after(()=>session.destroy({trigger:'conversation-end'}));
+ const lease=await displayed(session,x.page);x.state.onInput=async()=>{inputs++;};
+ await assert.rejects(session.userInput({...lease,page:x.page,input:{kind:'key',key:'Enter'},signal:{}}));
+ await session.userInput({...lease,page:x.page,input:{kind:'key',key:'Enter'}});assert.equal(inputs,1);
+ clock=599999;await assert.rejects(session.userInput({...lease,page:x.page,input:{kind:'text',text:''}}));
+ clock=600001;assert.equal(session.state().state,'returning');
+});
+
 test('unknown in-flight outcome closes admission and destroys context before verified disposal',async t=>{
  const controller=new AbortController(),x=fixture(t,{invoke:()=>new Promise(()=>{})}),session=await createPinnedBrowserSession(x.args);
  const pending=session.call({requestId:'unknown',tool:'browser_snapshot',args:{},signal:controller.signal});
@@ -72,6 +154,13 @@ test('a missing process absence proof preserves the profile and prevents reuse',
  const x=fixture(t,{exited:false}),session=await createPinnedBrowserSession(x.args);
  await assert.rejects(session.destroy({trigger:'disconnect'}),/DISPOSE_INCOMPLETE/);
  assert.deepEqual(x.state.events,['context','exit']);await assert.rejects(call(session),/SESSION_ENDING/);
+});
+test('revocation during native input preflight prevents keyboard dispatch',async t=>{
+ let preflight=false,performed=false;const x=fixture(t,{capture:state=>{if(preflight)state.refused=true;}});
+ const session=await createPinnedBrowserSession(x.args);t.after(()=>session.destroy({trigger:'conversation-end'}));
+ const lease=await displayed(session,x.page);x.state.onInput=async()=>{performed=true;};preflight=true;
+ await assert.rejects(session.userInput({...lease,page:x.page,input:{kind:'text',text:'Synthetic private value'}}),/USER_INPUT_UNKNOWN/);
+ assert.equal(performed,false);
 });
 test('source revocation blocks page dispatch',async t=>{
  const x=fixture(t),session=await createPinnedBrowserSession(x.args);t.after(()=>session.destroy({trigger:'conversation-end'}));
@@ -125,9 +214,9 @@ test('host rechecks the exact configured task at model execution and refuses a s
 test('host workflow disablement denies takeover and leased user input without invoking it',async t=>{
  for(const leased of [false,true]){
   const x=hostedWorkflow(t),session=await x.open();t.after(()=>session.destroy({trigger:'conversation-end'}));
-  const lease=leased?await x.state.user.takeover():null;
-  x.state.answer.enabled=false;let performed=false;
-  await assert.rejects(leased?x.state.user.userInput({...lease,perform:async()=>{performed=true;}}):x.state.user.takeover(),/BROWSER_(AUTHORITY_REFUSED|USER_INPUT_UNKNOWN)/);
+  const lease=leased?await displayed(x.state.user,x.page):null;
+  x.state.answer.enabled=false;let performed=false;x.native.onInput=async()=>{performed=true;};
+  await assert.rejects(leased?x.state.user.userInput({...lease,page:x.page,input:{kind:'key',key:'Enter'}}):x.state.user.takeover(),/BROWSER_(AUTHORITY_REFUSED|USER_INPUT_UNKNOWN)/);
   assert.equal(performed,false);await session.destroy({trigger:'revocation'});
  }
 });

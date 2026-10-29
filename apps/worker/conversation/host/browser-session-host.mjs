@@ -9,9 +9,10 @@ import {browserPaths} from '../browser/workspace.mjs';
 import {validateSiteWorkflowManifest} from '../browser/site-workflows/manifest.mjs';
 import {prepareCurrentSiteWorkflow} from '../browser/site-workflows/current.mjs';
 const fail=code=>{throw Object.assign(Error(code),{code});};
-export function createBrowserSessionHost({binding,cwd,installation,upstream,contexts,relay,controls,current,siteWorkflows,hold,processes,dispose,now}){
+export function createBrowserSessionHost({binding,cwd,installation,upstream,contexts,relay,modelTransport,controls,current,siteWorkflows,hold,processes,dispose,now}){
  const installed=validateBrowserInstallation(installation,binding),bound=canonicalSha256(binding),paths=browserPaths(cwd);
- for(const [port,name]of [[contexts,'create'],[relay,'bind'],[controls,'bind'],[processes,'waitForExit']])
+ if(relay&&modelTransport||!relay&&!modelTransport)fail('BROWSER_CONFIGURATION');
+ for(const [port,name]of [[contexts,'create'],...(relay?[[relay,'bind']]:[]),[controls,'bind'],[processes,'waitForExit']])
   if(typeof port?.[name]!=='function')fail('BROWSER_CONFIGURATION');
  if(typeof current!=='function'||typeof hold!=='function'||typeof dispose!=='function'||typeof now!=='function')fail('BROWSER_CONFIGURATION');
  let opened=false;
@@ -47,14 +48,19 @@ export function createBrowserSessionHost({binding,cwd,installation,upstream,cont
     current:assertCurrent,hold:signal=>hold({binding:q.binding,signal}),
     ports:{async waitForExit({signal}){return processes.waitForExit({binding:q.binding,profile:paths.profile},{signal});},
      dispose:({signal})=>dispose({paths,signal}),...(manifest?.logoutUrl?{logout:(input,{signal})=>contexts.logout({context,...input,signal})}:{})}});
-   modelRelay=await relay.bind({binding:q.binding,installation:installed,call:session.call,tools:session.tools});
+   const model=relay??(await import('./browser-model-relay.mjs')).createNativeBrowserModelRelay({binding:q.binding,policy,installation:installed,paths,
+    ...own(modelTransport,['readable','writable']),onDisconnect:()=>close({trigger:'disconnect'})});
+   modelRelay=await model.bind({binding:q.binding,installation:installed,call:session.call,tools:session.tools});
+   if(closing){await modelRelay.close();fail('BROWSER_SESSION_CLOSED');}
    const expected={meri_browser:playwrightServerConfig(policy,installed,paths)};
    if(canonicalSha256(modelRelay.mcpServers)!==canonicalSha256(expected)||typeof modelRelay.close!=='function')fail('BROWSER_RELAY_REFUSED');
    // Controls are bound only by a native host viewer relay. They are never MCP tools.
-   userRelay=await controls.bind({binding:q.binding,controls:{takeover:session.takeover,userInput:session.userInput,
+   userRelay=await controls.bind({binding:q.binding,pages:()=>context.pages(),controls:{takeover:session.takeover,view:session.view,userInput:session.userInput,
     handBack:session.handBack,endLease:session.endLease,resume:session.resume,destroy:close}});
+   if(closing){await userRelay.close();fail('BROWSER_SESSION_CLOSED');}
    if(typeof userRelay?.close!=='function')fail('BROWSER_RELAY_REFUSED');
    await assertCurrent();
+   if(closing)fail('BROWSER_SESSION_CLOSED');
    return Object.freeze({mcpServers:expected,destroy:close});
   }catch(error){
    if(session)try{await close({trigger:'disconnect'});}catch{fail('BROWSER_DISPOSE_INCOMPLETE');}

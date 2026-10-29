@@ -1,0 +1,105 @@
+SCRUM-238 CONNECTED RECEIVER / UI HANDBACK — 2026-10-29
+Author session: 20261029_154054_c5be2d (original, DeepSeek/OpenRouter). Root merges and deploys; nothing here is deployed.
+
+1. HEADS AND BASES (exact)
+   Meri      C:/dev/meri-cap-scrum238-isolated-20261029/meri
+             base  c26157591db6d057663365de7ba170edd98cf2ca
+             main  9f58da8bef091d2a8ba33024427142750aea8229 (fetched once from github.com/neo-capiro/meri-greenfield, contains fce17beb federal-import receiver + 374/373/377/378)
+             head  f3fd895dcdd6b99e0a71618312fad4b8d57e2caa
+             branch hermes/scrum238-askuserquestion-isolated-20261029
+   Frontend  C:/dev/meri-cap-scrum238-20261029/frontend
+             base  f7fac5917180f7341f27d78481385d53ef23a2e7
+             main  c98e0dad4336a70eb1e315dcaf1ec42a135ccd94 (merged; 155 settings/connector library kept)
+             head  e8fb9a7e6
+   Core      C:/dev/meri-cap-scrum238-20261029/backend at 0b326f4e990b02bcd84130954241777e96461894 — NOT touched.
+   Not pushed: no confirmed GitHub remote for the frontend (its only remote is a local reader) and the meri author branch is Root's to publish.
+
+2. CURRENT-MAIN INTEGRATION (why the earlier version bump was not enough)
+   The earlier 0.1.35 -> 0.1.36 bump was built from the c261 tree and would have dropped main's official federal-import product contract.
+   Current meri main was merged normally (merge 231bd1711, then f3fd895dc), my Question hunks and 235 b28 were preserved, and the package was
+   regenerated from the composed committed source. The merge itself was clean; the only real conflicts were the three frontend package.json
+   files (resolved to the new pins, keeping main's federal importer, connector library and 155 settings files).
+
+3. PACKAGE PROVENANCE (real producer source, version, bytes)
+   @capiro/meri-contracts 0.1.36  vendor/capiro-meri-contracts-0.1.36-f3fd895d-d9f5962686db.tgz
+                                  meri f3fd895dc, sha256 prefix d9f5962686db
+   @capiro/meri-ui-stream  0.1.23  vendor/capiro-meri-ui-stream-0.1.23-91e5bc73-177c6433a66d.tgz
+                                  meri 91e5bc73 (ui-stream source unchanged since; peer range widened to 0.1.36)
+   Regenerated, not copied: packages/contracts `npm run build` (all generators) from the merged source; ui-stream `tsc` build; `npm pack`.
+   Both packages are upstream of the browser: the frontend resolves them through vendor/ tarballs pinned in the root, meri-client and
+   apps/web package.json plus the root package-lock. Nothing in the frontend re-declares the contract types.
+
+4. WHAT CHANGED (behaviour, not scaffolding)
+   Admitted receiver: contracts 0.1.36 carries `answer` (with questionId/answers), `question.pending` and `question.answered`, validated by
+   the same generated validators the client already calls.
+   Answer disposition (review item 3): capabilities/questions.mjs now exports `answerSelectionRefusal`, the single semantic check of an answer
+   against the questions actually asked; `registry.deliver` calls it BEFORE recording anything, so a malformed answer (array on a single-select,
+   missing/extra key, unoffered label) returns its code, leaves the question pending and resolves no callback. Dispatch therefore cannot
+   acknowledge APPLIED or write a success event for it.
+   Admission (review item 4): apps/runtime/product-ports/capability-policy.mjs PREVIEW_PROFILE now admits `userQuestions` (platform maximum);
+   tenant/role narrowing and every other flag are untouched. This is source configuration only — no deployed enablement is claimed.
+   Card (review item 2): the card's phase is a reducer with `open | waiting | unknown | rejected | local | error`. A local selection problem and
+   an explicitly refused answer stay editable and resendable; a delivery the server reports UNKNOWN latches and is never resent under a fresh
+   control id; availability is derived from the durable observation (`isSettled(runState)`) and the question's own `expiresAt`, so a settled,
+   expired or absent question renders as no longer answerable with an inert fieldset. Selections reset when the question identity changes, and
+   the pending question is re-derived from `question.pending`/`question.answered` events, so a reload or reconnect of the same live run
+   rehydrates the same card.
+   Types: `answerControl` returns the contract's own answer variant and `questionAnswers` returns the contract's option-tuple shape, so the
+   client no longer needs a cast at the wire boundary.
+
+5. FOCUSED EVIDENCE (real commands, real exits)
+   meri  node --test apps/worker/conversation/test/questions.test.mjs questions-dispatch.test.mjs
+                   apps/control/conversations/lifecycle/test/answer-route.test.mjs
+                   packages/contracts/test/conversation-lifecycle-answer.test.mjs      -> 19 tests, 19 pass, 0 fail, EXIT 0
+         includes the new connected malformed-answer case: dispatch claims a single-select answer sent as an array, the owner refuses it,
+         the ack is UNKNOWN (not APPLIED), no question.answered event is written, the question remains outstanding, and the same suspended
+         call still accepts a valid answer afterwards.
+   meri  packages/contracts `npm run check`           -> EXIT 1: 658 tests, 645 pass, 12 fail (inherited, see 6), typecheck and
+         check:generated (all 19 generators incl. federal-workbench) clean.
+   FE    node --test apps/web/test/question-receiver.test.mjs
+                   -> 3 tests, 3 pass, EXIT 0. Runs against the INSTALLED tarball: installed version is 0.1.36; the real
+                      receiveConversationLifecycleRequest('control', ...) accepts an answer control (single and multi-select) and refuses a
+                      missing questionId, empty answers, a prompt smuggled in, and an unknown intent; the installed
+                      conversation-application schema carries both question events.
+   FE    npx vitest run tests/question-card.test.ts   -> 12 tests, 12 pass, EXIT 0. Renders the real QuestionCard through react-dom/server:
+                      open editable, waiting locked, local/rejected editable with the correct explanation, unknown locked, unavailable inert
+                      fieldset; plus the reducer transitions (refusal returns to an answerable phase, unknown latches, pending/applied wait,
+                      a new question resets) and the terminal/expired/absent -> unavailable derivation.
+   FE    node --test test/question-card.test.mjs      -> 4 pass, EXIT 0 (client projection/answer mapping).
+   FE    apps/web `npm run typecheck`                 -> EXIT 0, 0 errors (this is the check that previously failed on the stale meri-client
+                      dist and on the answer tuple type; both causes were fixed in source, not silenced).
+
+6. RETAINED FAILURES AND ATTRIBUTION
+   12 contracts-suite failures remain and are accounted for, not hidden:
+     - 3 are version-drift assertions that already fail on main: the tests hardcode packageVersion '0.1.15' while the generated metadata is
+       '0.1.34' on main (unchanged by me) and '0.1.36' now; `git show greenfield/main:.../dist/conversation-history.metadata.json` proves the
+       base is already red in the same way.
+     - the rest are unrelated subsystems (routines, task-command, conversation-usage, upload download stream, browser distribution self-containment)
+       that this change does not touch.
+   A pristine-base comparison worktree was not created (worktree creation is outside this session's authority), so these are reported as inherited
+   with the evidence above rather than claimed clean.
+   Earlier in-turn failures were fixed at source and are preserved in C:/ProgramData/Hermes/cache/scratch/scrum238/: a hang from the old
+   single-select array expectation (test corrected to the new semantics), UNADMITTED_VIEW/INVALID_RESPONSE from the private view registry in the
+   receiver probe (replaced with the installed schema compile rather than a private path), and a deployable real defect found by the package
+   check: `conversation-history/shape.mjs` did not register native-user-question-event.schema.json, so history validation could not resolve the
+   question `$ref` at all. That is fixed and the history distribution regenerated.
+
+7. UNRUN / LIMITS (do not read as done)
+   - No deployed, provider, browser or database execution. No product image build, no AWS action.
+   - SDK host restart of a suspended question remains refused by design: the worker journal reports USER_QUESTION_RECOVERY_UNAVAILABLE and the
+     registry returns resumable:false, so a callback that died with the host is refused rather than faked. Browser reload of the same live
+     pending run is the supported recovery and is covered by the durable-event derivation, not by a live browser journey.
+   - The card has not been exercised in a real browser (no Playwright run, no dev server); its evidence is server-rendered markup plus the
+     reducer and the real web typecheck.
+   - 0.1.36 supersedes 0.1.35 for this consumer. Main's 0.1.35 tarball remains in vendor/ for its other consumers; two different 0.1.35 artifacts
+     were briefly possible and that is why the version moved rather than the file being replaced in place.
+
+8. OVERLAP / CUSTODY
+   - 237 search leaves (public-web schema/validator, retrieval 0.2/0.3 catalogs, paid admission, infra/product-preview manifest and first-chat
+     stage3 entries) untouched; main's search receiving/catalog and packages/skills/assets.json installationCatalogSha256 pin are preserved as
+     merged. No root package/index/version/lock edit was made for search.
+   - 155 frontend files (registry.ts, preferences-unavailable.ts, MeriPreferencesPanel.tsx, fixtures/screens/settings.tsx) came through the merge
+     untouched by this change.
+   - 235 Bash/runner/telemetry source preserved; only the allocated Ask activity/capabilities/options joins are mine.
+   - Shared distribution: this branch is the final writer for the runtime-0.2/validate.mjs question hunk and the regenerated contracts
+     distribution. If 237's native usage commit needs a shared contract entry, it should be composed on top of f3fd895dc, not regenerated in parallel.
