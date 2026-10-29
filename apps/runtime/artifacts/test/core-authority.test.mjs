@@ -18,6 +18,7 @@ import {composeDocumentsFamily} from '../authority-composition.mjs';
 import {createRuntimeArtifactApplication} from '../application.mjs';
 import {bindDocumentsSessions} from '../session-binding.mjs';
 import {captureRuntimePorts} from '../../product-applications.mjs';
+import official from '../../../../packages/contracts/test/fixtures/federal-draft-source.wire.json' with {type:'json'};
 
 const vector=JSON.parse(readFileSync(new URL('../../../../docs/integration/artifact-current-authority.vector.json',import.meta.url),'utf8'));
 const code=c=>e=>{assert.equal(e?.code,c,`expected ${c}, got ${e?.code} (${e?.message})`);return true;};
@@ -40,6 +41,11 @@ function scriptedCore(){
   contextRevision:rev('context'),authorityRevision:rev('authority'),principal:{tenantId:ids.tenantId,actorId:ids.actorId},skewMs:-5000,ttlMs:60000,park:false,mutate:null,onCall:null,bearers:new Set([BEARER])};
  core.fetch=async(url,init)=>{
   const headers=init.headers,request=JSON.parse(init.body);
+  if(url===ORIGIN+'/api/clio/tools/read_federal_draft_source'){
+   assert.deepEqual(request,official.request);assert.equal(headers.authorization,'Bearer '+BEARER);assert.equal(headers['x-internal-service-secret'],SECRET);
+   assert.equal(init.redirect,'error');assert.equal(init.credentials,'omit');assert.equal(init.cache,'no-store');
+   await core.onSource?.();return Response.json(official.response);
+  }
   core.calls.push({url,method:init.method,authorization:headers.authorization,service:headers['x-internal-service-secret'],request,init});core.onCall?.(core.calls.length);
   assert.equal(url,ORIGIN+ARTIFACT_AUTHORITY_ROUTE);assert.equal(init.method,'POST');assert.equal(init.redirect,'error');assert.equal(init.credentials,'omit');assert.equal(init.cache,'no-store');
   assert.deepEqual(Object.keys(headers).sort(),['accept','accept-encoding','authorization','content-type','x-internal-service-secret']);
@@ -85,6 +91,32 @@ async function authorityHarness({now=Date.now,nativeCredential}={}){
  return {core,s,store,live,authority,call,now};
 }
 const createBody={deliveryId:'synthetic-delivery-1',request:{operation:'create_word',format:'txt',title:'Synthetic',content:{text:'Synthetic document body'}}};
+
+test('official source uses the live native bearer and refuses session loss across either awaited boundary',async t=>{
+ const h=await authorityHarness();t.after(()=>h.live.sessions.close());
+ const body={selection:official.request,deliveryId:'synthetic-import'};
+ const resolved=await h.authority.resolve(h.call('federal-import',body));
+ const read=()=>resolved.federalSource.read({selection:official.request,deadlineMs:Date.now()+2000});
+ assert.deepEqual(await read(),official.response);assert.equal(h.core.calls.length,1,'source uses native Core reader, not duplicate artifact authority');
+ h.core.onSource=()=>h.live.sessions.close();await assert.rejects(read());
+ const other=await authorityHarness();t.after(()=>other.live.sessions.close());
+ const r=await other.authority.resolve(other.call('federal-import',body));
+ other.s.hooks.onRead=()=>other.live.sessions.close();
+ let dispatched=false;other.core.onSource=()=>{dispatched=true;};
+ await assert.rejects(r.federalSource.read({selection:official.request,deadlineMs:Date.now()+2000}));assert.equal(dispatched,false);
+});
+
+test('native source transport refuses malformed pins, oversized or mismatched replies, redirects, and cancelled reads',async()=>{
+ let calls=0,reply=()=>Response.json(official.response);
+ const client=createCoreArtifactAuthorityClient({origin:ORIGIN,now:Date.now,fetchImpl:async()=>{calls++;return reply();}});
+ const read=(request=official.request,extra={})=>client.readFederalSource({bearer:BEARER,serviceSecret:SECRET,request,deadlineMs:Date.now()+2000,...extra});
+ await assert.rejects(read({...official.request,versionHash:'x'}));assert.equal(calls,0);
+ assert.deepEqual(await read(),official.response);
+ reply=()=>Response.json({...official.response,source:{...official.response.source,revisionId:ids.runId}});await assert.rejects(read());
+ reply=()=>Response.json({pad:'x'.repeat(2097152)});await assert.rejects(read());
+ reply=()=>Response.redirect('https://foreign.synthetic.invalid');await assert.rejects(read());
+ const count=calls;await assert.rejects(read(official.request,{signal:AbortSignal.abort()}),code('CANCELLED'));assert.equal(calls,count);
+});
 
 test('golden vectors: exact request bytes and digest, accepted receipts, every listed refusal, status mapping',()=>{
  assert.equal(vector.contract,ARTIFACT_AUTHORITY_CONTRACT);assert.equal(vector.route.path,ARTIFACT_AUTHORITY_ROUTE);assert.equal(vector.transport.maxReceiptTtlMs,MAX_RECEIPT_TTL_MS);

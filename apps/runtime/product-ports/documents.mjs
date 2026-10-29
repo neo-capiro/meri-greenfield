@@ -57,8 +57,8 @@ function lateBoundOptionsOwner({authority,compose}){
  const owner=Object.freeze({async resolve(call){
   const current=bound;if(current===null)return null;
   const raw=await resolveAuthority({...call,sessions:current.sessions,store:current.store});if(raw===null||raw===undefined)return null;
-  const r=own(raw,['artifactOptions','selectedClientId','limits','recheck'],['enabled']),recheck=storageMethod(raw,'recheck');
-  const documentOptions=current.compose({artifactOptions:r.artifactOptions,selectedClientId:r.selectedClientId,limits:r.limits,...(r.enabled===undefined?{}:{enabled:r.enabled})});
+  const r=own(raw,['artifactOptions','selectedClientId','limits','recheck'],['enabled','federalSource']),recheck=storageMethod(raw,'recheck');
+  const documentOptions=current.compose({artifactOptions:r.artifactOptions,selectedClientId:r.selectedClientId,limits:r.limits,...(r.enabled===undefined?{}:{enabled:r.enabled}),...(r.federalSource===undefined?{}:{federalSource:r.federalSource})});
   return {documentOptions,recheck:check=>recheck(check)};
  }});
  return {owner,bind,current:()=>bound};
