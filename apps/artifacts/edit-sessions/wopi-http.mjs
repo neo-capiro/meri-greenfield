@@ -13,7 +13,11 @@ export function wopiRequest(request){
  let r;try{r=Object.fromEntries(Object.entries(getters).map(([k,get])=>[k,get.call(request)]));}catch{refuse(400);}
  const url=new URL(r.url),route=WOPI_FILE_ROUTE.exec(url.pathname),header=name=>Headers.prototype.get.call(r.headers,name);
  if(!route||url.hash)refuse(404);
- if([...url.searchParams.keys()].some(k=>!['access_token','access_token_ttl'].includes(k))||url.searchParams.getAll('access_token').length!==1)refuse(401);
+ if([...url.searchParams.keys()].some(k=>!['access_token','access_token_ttl','permission'].includes(k))||url.searchParams.getAll('access_token').length!==1)refuse(401);
+ // CODE includes its UI permission on reconnect. It is not authority: only the
+ // verified token and current Core/artifact checks determine access below.
+ const permission=url.searchParams.getAll('permission');
+ if(permission.length>1||permission.length===1&&!['edit','readonly'].includes(permission[0]))refuse(401);
  // CODE forwards the POST-form expiry with its WOPI requests. This is only a
  // bounded hint; the signed claim below remains the lifetime authority.
  const expiry=url.searchParams.getAll('access_token_ttl');
