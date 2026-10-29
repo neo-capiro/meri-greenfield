@@ -1,5 +1,8 @@
 /** Source composition only. Scripted page/host ports are not native sandbox or IdP qualification. */
 import test from 'node:test';import assert from 'node:assert/strict';
+import {PassThrough} from 'node:stream';
+import {Client} from '@modelcontextprotocol/sdk/client/index.js';
+import {StdioServerTransport} from '@modelcontextprotocol/sdk/server/stdio.js';
 import {createPinnedBrowserSession} from '../session/connection.mjs';
 import {createBrowserSessionHost} from '../../host/browser-session-host.mjs';
 import {enabledPolicy,binding,installation} from './fixtures.mjs';
@@ -30,6 +33,36 @@ function fixture(t,options={}){
 }
 const secret=value=>({kind:'field',label:'Password',type:'password',autocomplete:'current-password',selectorMatch:false,value});
 const call=(session,id='one')=>session.call({requestId:id,tool:'browser_snapshot',args:{}});
+
+test('host native stdio is actually routed through current snapshot masking and closes on transport loss',async t=>{
+ const x=fixture(t),incoming=new PassThrough(),outgoing=new PassThrough();let raw='';outgoing.on('data',chunk=>{raw+=chunk;});
+ const host=createBrowserSessionHost({binding,cwd,installation,upstream:x.upstream,now:Date.now,
+  contexts:{create:async()=>x.context},current:x.args.current,hold:x.args.hold,
+  processes:{waitForExit:x.args.ports.waitForExit},dispose:x.args.ports.dispose,
+  modelTransport:{readable:incoming,writable:outgoing},controls:{bind:async()=>({close:async()=>{}})}});
+ const session=await host.open({binding,policy:x.args.policy,deadlineMs:Date.now()+60000,manifest:null});
+ const client=new Client({name:'synthetic-model',version:'1'});
+ t.after(async()=>{await session.destroy({trigger:'conversation-end'});await client.close();incoming.destroy();outgoing.destroy();});
+ await client.connect(new StdioServerTransport(outgoing,incoming));
+ const result=await client.callTool({name:'browser_snapshot',arguments:{}});assert.match(JSON.stringify(result),/Public page/);
+ assert.doesNotMatch(raw,/RAW SECRET|hidden|token=/);assert.equal(x.state.calls,1);
+ incoming.end();for(let n=0;n<50&&!x.state.events.includes('dispose');n++)await new Promise(resolve=>setTimeout(resolve,5));
+ assert.deepEqual(x.state.events,['context','exit','dispose']);
+});
+
+test('disconnect while the viewer relay is attaching cannot return a closed session or leak its late relay',async t=>{
+ const x=fixture(t),incoming=new PassThrough(),outgoing=new PassThrough();let closed=0;
+ t.after(()=>{incoming.destroy();outgoing.destroy();});
+ const host=createBrowserSessionHost({binding,cwd,installation,upstream:x.upstream,now:Date.now,
+  contexts:{create:async()=>x.context},current:x.args.current,hold:x.args.hold,
+  processes:{waitForExit:x.args.ports.waitForExit},dispose:x.args.ports.dispose,
+  modelTransport:{readable:incoming,writable:outgoing},controls:{async bind(){
+   incoming.end();for(let n=0;n<50&&!x.state.events.includes('dispose');n++)await new Promise(resolve=>setTimeout(resolve,5));
+   return {async close(){closed++;}};
+  }}});
+ await assert.rejects(host.open({binding,policy:x.args.policy,deadlineMs:Date.now()+60000,manifest:null}),/BROWSER_SESSION_CLOSED/);
+ assert.equal(closed,1);assert.deepEqual(x.state.events,['context','exit','dispose']);
+});
 
 test('scripted upstream connection has one execution boundary; only current filtered snapshots leave it',async t=>{
  const x=fixture(t),session=await createPinnedBrowserSession(x.args);t.after(()=>session.destroy({trigger:'conversation-end'}));
