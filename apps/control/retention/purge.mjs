@@ -92,9 +92,10 @@ export async function recomputePlan(facts,subjectValue,journalState,nowMs,option
  * remains the row owner's full current-byte check. `purge(subjectKey, plan)` deletes targets inside one transaction with exact permits
  * under the subject lock, returning one record per row step, and `present(subjectKey, rowStepFacts)` answers whether a target row
  * exists. It is required before any effect when the plan carries row targets. */
-export function createPurgeExecutor({storage,ledger,journal,keyFor,facts,serving,rows=null,finalize=null,enabled=false,now}){
+export function createPurgeExecutor({storage,ledger,journal,keyFor,facts,serving,rows=null,finalize=null,office=null,enabled=false,now}){
  if(typeof storage?.deleteVersion!=='function'||typeof storage?.headVersion!=='function'||typeof ledger?.append!=='function'||typeof journal?.get!=='function'||typeof journal?.set!=='function'||typeof journal?.withTransition!=='function'||typeof keyFor!=='function'||typeof serving?.isEnabled!=='function'||typeof enabled!=='boolean'||typeof facts!=='object'||facts===null||rows!==null&&(typeof rows?.purge!=='function'||typeof rows?.validatePlanTargets!=='function'))fail('RETENTION_CONFIGURATION');const tick=clock(now);
  if(finalize!==null&&typeof finalize!=='function')fail('RETENTION_CONFIGURATION');
+ if(office!==null&&(typeof office.retire!=='function'||typeof office.verify!=='function'))fail('RETENTION_CONFIGURATION');
  const barrier=()=>{if(!serving.isEnabled())fail('RETENTION_RECOVERY_BARRIER');};
  const cas=async(key,row,expected)=>{try{await journal.set(key,row,{expected});}catch(error){if(error?.code==='RETENTION_STALE_WRITE')fail('RETENTION_STALE_WRITE');serving.disable?.();throw Object.assign(new Error('RETENTION_PROJECTION_FAILED'),{code:'RETENTION_PROJECTION_FAILED',cause:error});}};
  /** Current authority gate before any effect: barrier open, row SUPPRESSED under the plan's suppression generation, and the authoritative
@@ -134,11 +135,11 @@ export function createPurgeExecutor({storage,ledger,journal,keyFor,facts,serving
   // exact plan, and prove every object/row absent before settling that retry;
   // this path performs no deletion and grants no fresh effect authority.
   if(existing&&['UNKNOWN','EXECUTED'].includes(existing.state)&&await effectsAbsent(p,options)){
-   if(existing.state==='EXECUTED')return Object.freeze({...existing,replayed:true});
+   if(existing.state==='EXECUTED'&&(!office||existing.officeRetired===true))return Object.freeze({...existing,replayed:true});
    const steps=p.steps.map(st=>({...stepFacts(st),state:'EXECUTED',readback:'ABSENT'}));
    const rowSteps=p.rowSteps.map(st=>({...rowStepFacts(st),state:'EXECUTED'}));
-   const e=await ledger.append({subject:p.subject,state:'PURGE_EXECUTED',reason:'VERIFIED_AFTER_UNKNOWN',facts:{...planMetadata(p),planSha256:p.planSha256,suppression:p.suppression,policySha256:p.policySha256,inventorySha256:p.inventorySha256,...(p.trash?{trash:p.trash}:{}),...(p.retainedObjects?{retainedObjects:p.retainedObjects}:{}),steps,rowSteps}});
-   const purge={...existing,state:'EXECUTED',ledgerSequence:e.sequence,steps,rowSteps};
+   const e=await ledger.append({subject:p.subject,state:'PURGE_EXECUTED',reason:'VERIFIED_AFTER_UNKNOWN',facts:{...planMetadata(p),...(office?{officeRetired:true}:{}),planSha256:p.planSha256,suppression:p.suppression,policySha256:p.policySha256,inventorySha256:p.inventorySha256,...(p.trash?{trash:p.trash}:{}),...(p.retainedObjects?{retainedObjects:p.retainedObjects}:{}),steps,rowSteps}});
+   const purge={...existing,state:'EXECUTED',...(office?{officeRetired:true}:{}),ledgerSequence:e.sequence,steps,rowSteps};
    await cas(p.subjectKey,{...current,purge},projectionToken(current));return Object.freeze({...purge,replayed:true});
   }
   if(existing?.state==='EXECUTED'){serving.disable?.();fail('RETENTION_RECOVERY_BARRIER');}
@@ -161,10 +162,10 @@ export function createPurgeExecutor({storage,ledger,journal,keyFor,facts,serving
   if(existing&&existing.planSha256!==p.planSha256)fail('RETENTION_PURGE_PLAN_MISMATCH');
   const keys=await validateTargets(p,options);
   const stepState=new Map((existing?.steps??[]).map(st=>[st.workflowId,st])),rowState=new Map((existing?.rowSteps??[]).map(st=>[st.workflowId,st]));
-  let sequence=existing?.ledgerSequence??null,started=existing?.state==='UNKNOWN';
+  let sequence=existing?.ledgerSequence??null,started=existing?.state==='UNKNOWN',officeRetired=false;
   if(!existing){const e=await ledger.append({subject:p.subject,state:'PURGE_PLANNED',facts:{...planMetadata(p),planSha256:p.planSha256,suppression:p.suppression,policySha256:p.policySha256,inventorySha256:p.inventorySha256,...(p.trash?{trash:p.trash}:{}),...(p.retainedObjects?{retainedObjects:p.retainedObjects}:{}),steps:p.steps.map(stepFacts),rowSteps:p.rowSteps.map(rowStepFacts)}});const row={...current,purge:{state:'PLANNED',planSha256:p.planSha256,ledgerSequence:e.sequence,...(p.trash?{trash:p.trash}:{}),...(p.retainedObjects?{retainedObjects:p.retainedObjects}:{}),steps:[],rowSteps:[]}};await cas(p.subjectKey,row,projectionToken(current));sequence=e.sequence;}
-  const outcomeFacts=()=>({...planMetadata(p),planSha256:p.planSha256,suppression:p.suppression,policySha256:p.policySha256,inventorySha256:p.inventorySha256,...(p.trash?{trash:p.trash}:{}),...(p.retainedObjects?{retainedObjects:p.retainedObjects}:{}),steps:p.steps.map(st=>{const r=stepState.get(st.workflowId);return {...stepFacts(st),state:r?.state??'PENDING',readback:r?.readback?.outcome??null,reason:r?.readback?.reason??null};}),rowSteps:p.rowSteps.map(st=>({...rowStepFacts(st),state:rowState.get(st.workflowId)?.state??'PENDING'}))});
-  const purgeRow=state=>({state,planSha256:p.planSha256,ledgerSequence:sequence,...(p.trash?{trash:p.trash}:{}),...(p.retainedObjects?{retainedObjects:p.retainedObjects}:{}),steps:[...stepState.values()],rowSteps:[...rowState.values()]});
+  const outcomeFacts=()=>({...planMetadata(p),...(office?{officeRetired}:{}),planSha256:p.planSha256,suppression:p.suppression,policySha256:p.policySha256,inventorySha256:p.inventorySha256,...(p.trash?{trash:p.trash}:{}),...(p.retainedObjects?{retainedObjects:p.retainedObjects}:{}),steps:p.steps.map(st=>{const r=stepState.get(st.workflowId);return {...stepFacts(st),state:r?.state??'PENDING',readback:r?.readback?.outcome??null,reason:r?.readback?.reason??null};}),rowSteps:p.rowSteps.map(st=>({...rowStepFacts(st),state:rowState.get(st.workflowId)?.state??'PENDING'}))});
+  const purgeRow=state=>({state,...(office?{officeRetired}:{}),planSha256:p.planSha256,ledgerSequence:sequence,...(p.trash?{trash:p.trash}:{}),...(p.retainedObjects?{retainedObjects:p.retainedObjects}:{}),steps:[...stepState.values()],rowSteps:[...rowState.values()]});
   /** Immediately before an irreversible effect: re-authorize, record that effects have begun (once, ledger first), then project the
    * steps about to run as UNKNOWN on the row the authorization read. */
   async function begin(mark){const cur=await authorize(p,options);
@@ -172,7 +173,13 @@ export function createPurgeExecutor({storage,ledger,journal,keyFor,facts,serving
    mark();await cas(p.subjectKey,{...cur,purge:purgeRow('UNKNOWN')},projectionToken(cur));options.check?.();}
   try{
    let unknown=null;
-   for(const st of p.steps){const done=stepState.get(st.workflowId);if(done?.state==='EXECUTED')continue;
+   // The ordinary purge ledger records UNKNOWN before Core erases custody. Its
+   // durable disposal marker serializes with Open/Save, including timed-out HTTP
+   // requests still executing remotely. Local cancellation is never that proof.
+   if(office){await begin(()=>{});const receipt=await office.retire(p.subject,options);options.check?.();
+    officeRetired=receipt.fenced===true&&receipt.remaining===false&&await office.verify(p.subject,options)===true;
+    if(!officeRetired)unknown={state:'UNKNOWN'};}
+   for(const st of p.steps){if(unknown)break;const done=stepState.get(st.workflowId);if(done?.state==='EXECUTED')continue;
     const key=keys.get(st.workflowId);await begin(()=>stepState.set(st.workflowId,{...st,requested:null,readback:null,state:'UNKNOWN',startedAtMs:tick()}));
     const requested=await storage.deleteVersion({key,versionId:st.versionId},options);options.check?.();const readback=await storage.headVersion({key,versionId:st.versionId},options);
     const record={...st,requested,readback,state:readback.outcome==='ABSENT'?'EXECUTED':'UNKNOWN',atMs:tick()};stepState.set(st.workflowId,record);
@@ -185,6 +192,7 @@ export function createPurgeExecutor({storage,ledger,journal,keyFor,facts,serving
     for(const r of records){const st=p.rowSteps.find(x=>x.workflowId===r.workflowId);if(!st||!['EXECUTED','UNKNOWN'].includes(r.state))fail('RETENTION_ROW_PURGE_UNAVAILABLE');returned.add(st.workflowId);rowState.set(st.workflowId,{...rowStepFacts(st),state:r.state,deleted:r.deleted??null,atMs:tick()});}
     for(const st of pendingRows)if(!returned.has(st.workflowId))fail('RETENTION_ROW_PURGE_UNAVAILABLE');
     unknown=[...rowState.values()].find(r=>r.state!=='EXECUTED')??null;}
+   if(!unknown&&office&&await office.verify(p.subject,options)!==true){officeRetired=false;unknown={state:'UNKNOWN'};}
    const state=unknown?'UNKNOWN':'EXECUTED';
    // Read the CAS target before appending our next decision: serving reads require the DB to cover the current durable head.
    const latest=await journal.get(p.subjectKey);if(!latest||latest.state!=='SUPPRESSED'||latest.purge?.planSha256!==p.planSha256||latest.ledgerSequence!==p.suppression.ledgerSequence)fail('RETENTION_STALE_WRITE');
@@ -200,6 +208,7 @@ export function createPurgeExecutor({storage,ledger,journal,keyFor,facts,serving
   }catch{}}
  }
  async function effectsAbsent(p,options={}){
+  if(office){try{if(await office.verify(p.subject,options)!==true)return false;}catch{return false;}}
   for(const st of p.steps){options.check?.();const readback=await storage.headVersion({key:keyFor(st),versionId:st.versionId},options);if(readback.outcome!=='ABSENT')return false;}
   if(p.rowSteps.length&&typeof rows?.present!=='function')return false;
   for(const st of p.rowSteps){options.check?.();if(await rows.present(p.subjectKey,rowStepFacts(st),options)!==false)return false;options.check?.();}
@@ -247,7 +256,7 @@ export function createPurgeExecutor({storage,ledger,journal,keyFor,facts,serving
    if(row?.purge?.state!=='EXECUTED'||row.purge.planSha256!==plan.planSha256)fail('RETENTION_STALE_WRITE');
    const finalFacts={...planMetadata(plan),planSha256:plan.planSha256,suppression:plan.suppression,policySha256:plan.policySha256,inventorySha256:plan.inventorySha256,
     trash:plan.trash,...(plan.retainedObjects?{retainedObjects:plan.retainedObjects}:{}),steps:row.purge.steps.map(st=>({...stepFacts(st),state:'EXECUTED'})),
-    rowSteps:row.purge.rowSteps.map(st=>({...rowStepFacts(st),state:'EXECUTED'})),coreFinalized:true};
+    rowSteps:row.purge.rowSteps.map(st=>({...rowStepFacts(st),state:'EXECUTED'})),...(office?{officeRetired:row.purge.officeRetired===true}:{}),coreFinalized:true};
    const entry=await ledger.append({subject:s,state:'PURGE_EXECUTED',reason:'CORE_METADATA_ERASED',facts:finalFacts});
    const purge={...row.purge,coreFinalized:true,ledgerSequence:entry.sequence};
    await cas(key,{...row,purge},projectionToken(row));return Object.freeze(purge);

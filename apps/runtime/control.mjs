@@ -83,7 +83,7 @@ export function retentionGate(configuration,pool,ports={},binding=null,now=Date.
   if(!captured.retentionStorage||typeof configuration.reads?.serviceSecretFile!=='string')throw fault('RETENTION_CONFIGURATION');
   const core=createCoreRetentionClient({origin:configuration.agentcore.identity.origin,getServiceSecret:async()=>Buffer.from(await readSecret(configuration.reads.serviceSecretFile)).toString('utf8').trim(),now});
   const storage=captured.retentionStorage,keyFor=storage.keyFor;
-  purge={enabled:true,storage,rows:journal.rows,keyFor,finalize:core.finalize,verify:core.verify,
+  purge={enabled:true,storage,rows:journal.rows,keyFor,finalize:core.finalize,verify:core.verify,office:core.office,
    facts:createConversationPurgeFacts({pool,journal,core,storage,keyFor,now})};
  }
  const startup=createRetentionStartup({journal,watermark:createPostgresWatermarkStore({journal}),ledgerSink:captured.retentionLedgerSink??null,ownership:{ownerOf:input=>journal.ownerOf(input)},purge,now,recoverPrerequisitesExclusive});

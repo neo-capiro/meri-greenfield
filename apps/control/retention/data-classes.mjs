@@ -10,13 +10,19 @@
  *   carrying it is BLOCKED (`EXTERNAL_DELETION_UNAVAILABLE`), so a purge never reports EXECUTED while leaving it behind;
  * - `retain`: identifier-only evidence kept under its own rule (financial liability, operational logs); never deleted by a subject
  *   purge and never blocking it; the policy must mark it not purgeable.
+ * - `owner-custody`: private bytes with an existing owner-specific lifetime. The
+ *   subject purge additionally retires that owner's custody and verifies its
+ *   durable exclusion before completion. It has no Meri object/row targets.
  * Serving: `retention-read-gate` names the serving owner that consults the canonical read gate before every read; `admission-gate`
  * means the data is only ever served to a run that the gated conversation owner admitted (suppression cancels in-flight runs);
  * `not-served` means no product read path returns it; `external` means its owner serves it outside Meri; `subject-unsupported` means
  * the class belongs to a subject kind the retention journal cannot suppress yet (schedules: only the owner's own cancel removes them),
  * so a conversation or artifact plan that carries it is BLOCKED as a subject mismatch and nothing claims it is suppressed.
  * A `planned` class has no data yet: it is listed so its owner, rule and deletion path are fixed before it exists, it is absent from
- * the policy, and an inventory that carries it is refused. Pure data; importing this module has no effect. */
+ * the policy, and an inventory that carries it is refused. An `owner-managed`
+ * class uses its canonical owner's lifetime instead of a second configurable
+ * Meri policy; the purge/recovery composition still requires its custody proof.
+ * Pure data; importing this module has no effect. */
 const entry=value=>Object.freeze({...value,subjectKinds:Object.freeze(value.subjectKinds),tables:Object.freeze(value.tables??[]),serving:Object.freeze(value.serving)});
 export const dataClasses=Object.freeze([
  entry({id:'conversation',label:'conversations and runs',status:'active',subjectKinds:['conversation'],storage:'rows+objects',tables:['meri_conversations.conversations','meri_conversations.runs','meri_conversations.controls','meri_conversations.memory_proposal_contexts','meri_conversations.initial_run_bindings','meri_conversations.initial_inputs','meri_objective_source.run_starts'],owner:'apps/control/conversations/postgres-store.mjs',deletion:'row-target',rule:'policy',serving:{gate:'retention-read-gate',owner:'apps/control/conversations/service.mjs'}}),
@@ -36,7 +42,7 @@ export const dataClasses=Object.freeze([
  entry({id:'budgets',label:'budget reservations and settlements',status:'active',subjectKinds:['conversation'],storage:'rows',tables:['meri_product_budget.runs','meri_product_budget.requests','meri_product_budget.tenant_run_reservations'],owner:'apps/gateway/budget/postgres-budget-store.mjs',deletion:'retain',rule:'policy-retained',serving:{gate:'not-served',owner:'apps/gateway/budget/postgres-budget-store.mjs'}}),
  entry({id:'logs',label:'operational logs',status:'active',subjectKinds:['conversation','artifact'],storage:'external',owner:'apps/runtime/cli.mjs',deletion:'retain',rule:'policy-retained',serving:{gate:'not-served',owner:'apps/runtime/cli.mjs'}}),
  entry({id:'telemetry',label:'redacted telemetry exports',status:'active',subjectKinds:['conversation','artifact'],storage:'external',owner:'apps/runtime/telemetry/redaction.mjs',deletion:'retain',rule:'policy-retained',serving:{gate:'not-served',owner:'apps/runtime/telemetry/redaction.mjs'}}),
- entry({id:'editorDrafts',label:'Office editor drafts (owner decision Q-O9: private, 7 days after last activity, destroyed on suppression or loss of access)',status:'planned',subjectKinds:['artifact'],storage:'rows+objects',owner:null,pendingOwner:'Office editor session owner (after the initial live version)',deletion:'row-target',rule:'policy',serving:{gate:'retention-read-gate',owner:null}}),
+ entry({id:'editorDrafts',label:'Private Core Office drafts: seven-day owner lifetime and subject disposal',status:'owner-managed',subjectKinds:['conversation','artifact'],storage:'external',owner:'apps/control/retention/office-core-client.mjs',deletion:'owner-custody',rule:'office-private',serving:{gate:'external',owner:'apps/runtime/artifacts/office-access.mjs'}}),
 ]);
 const active=dataClasses.filter(c=>c.status==='active');
 /** Every active class, in registry order: the exact class set a retention policy configures. */
