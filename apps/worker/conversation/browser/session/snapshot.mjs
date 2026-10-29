@@ -23,7 +23,9 @@ export function createPinnedSnapshot({context,manifest=null,maxBytes=262144}){
    const before=page.url(),frames=page.frames();if(frames.length>32)fail();pageUrl=before;
    for(const frame of frames){
     let found;
-    try{found=await frame.locator('input,textarea,select,[contenteditable],[autocomplete]').evaluateAll(inspectFields,manifest?.sensitiveSelectors??[]);}catch{fail();}
+    // Pinned Playwright's utility world has pristine DOM prototypes. A hostile
+    // page must not replace getAttribute/value/matches to hide credential fields.
+    try{found=await frame.locator('input,textarea,select,[contenteditable],[autocomplete]').evaluateAll(inspectFields,manifest?.sensitiveSelectors??[],{world:'utility'});}catch{fail();}
     if(!Array.isArray(found)||found.length>2048)fail();fields.push(...found);observations.push({frame,found});
    }
    if(typeof page.ariaSnapshot!=='function')fail();
@@ -36,7 +38,7 @@ export function createPinnedSnapshot({context,manifest=null,maxBytes=262144}){
   // A field value changing between inspection and ARIA capture invalidates the
   // entire result. Do not release a snapshot based on an earlier field sample.
   for(const {frame,found}of observations){
-   const again=await frame.locator('input,textarea,select,[contenteditable],[autocomplete]').evaluateAll(inspectFields,manifest?.sensitiveSelectors??[]);
+   const again=await frame.locator('input,textarea,select,[contenteditable],[autocomplete]').evaluateAll(inspectFields,manifest?.sensitiveSelectors??[],{world:'utility'});
    if(JSON.stringify(again)!==JSON.stringify(found))fail();
   }
   // Keep observed values only in this session's memory. They cannot reappear in
