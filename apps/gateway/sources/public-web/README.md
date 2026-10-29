@@ -43,3 +43,41 @@ bytes, full source coverage, freshness, DNS or redirect admission.
 
 Tests cross real JSON bytes with synthetic native credentials and DTOs. They
 make no product source/provider requests and confer no live qualification.
+
+## Primary discovery through the AWS managed Web Search MCP target (SCRUM-237)
+
+`primary-search.mjs` (with `aws-signing.mjs`) makes the approved AWS managed
+`web-search` connector the preferred discovery path. That connector is an
+AgentCore Gateway **MCP target**, so it supplies any model — including the
+existing Claude-on-Bedrock loop — and is not the Claude SDK builtin `WebSearch`
+(unsupported on current Bedrock) nor the model-specific Bedrock Responses server
+tool. Discovery is `tools/call` for the target's `WebSearch` tool on
+`<gateway>/mcp` with IAM (SigV4, service `bedrock-agentcore`) inbound
+authorization, so no third-party search key exists and queries are served inside
+AWS.
+
+Documented limits honoured here: `query` <= 200 characters, `maxResults` 1-25
+(default 10), and the receiving-contract caps (12 rows, 180-character title,
+320-character snippet). Row text is untrusted source material; a row without a
+citable HTTPS URL is dropped, and an absent title/date stays `null` rather than
+being inferred. Empty results are an honest empty discovery. 401/403 fail as
+`ACCESS_DENIED` without retry, 400 as `INVALID_ARGUMENTS`, and 429/5xx/network
+are retried once within the call deadline (max three attempts, no sleep beyond
+the deadline). Page consultation still uses the native Core owner; Playwright
+still owns page interaction.
+
+Activation is a deployment fact: `MERI_WEB_SEARCH_GATEWAY_ENDPOINT` plus
+`MERI_WEB_SEARCH_REGION` (or `AWS_REGION`). Without them the family behaves
+exactly as before and discovery keeps the configured native route. The gateway
+target, its service role (`bedrock-agentcore:InvokeGateway` on the gateway ARN
+and `bedrock-agentcore:InvokeWebSearch` on
+`arn:aws:bedrock-agentcore:<region>:aws:tool/web-search.v1`) and the caller's
+`bedrock-agentcore:InvokeGateway` grant are provisioned by the release owner;
+they are not in this repository.
+
+The frozen receiving contract (`retrieval-0.2`) currently admits only `tavily`,
+`serper` and `duckduckgo` providers, so an activated primary target fails closed
+with `INVALID_RESULT` until `packages/contracts` admits the AWS-managed provider
+label and row shape. That contract change is the required shared join, and this
+module's output already carries the exact fields it needs.
+
