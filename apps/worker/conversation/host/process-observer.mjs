@@ -1,8 +1,8 @@
 // @ts-check
 /** D005 browser process-exit evidence from one pinned Linux cgroup v2 subtree.
  *
- * The trusted launcher must create this exact run cgroup, spawn the Playwright MCP leader INSIDE it before exec, and
- * keep cgroupfs unwritable/unmounted for the MCP, Chromium and renderers. Their forked descendants then remain in the
+ * The trusted launcher must create this exact run cgroup, spawn the browser context leader INSIDE it before exec, and
+ * keep cgroupfs unwritable/unmounted for that child, Chromium and renderers. Their forked descendants then remain in the
  * subtree. This observer verifies the leader's actual /proc membership and an initial populated=1 before it can
  * report populated=0. Without that launcher and mount confinement, cgroup emptiness is not complete process proof;
  * no caller assertion, PID-only wait or missing cgroup is accepted as exited. Native host qualification remains open.
@@ -134,7 +134,7 @@ export function createBrowserProcessObserver({allocation,binding,profile,ports=c
  };
  return Object.freeze({
   scope,
-  /** Called by the trusted launcher while its actual MCP leader is live in this exact group. A leader that already
+  /** Called by the trusted launcher while its actual context leader is live in this exact group. A leader that already
    * exited before observation is UNKNOWN, not proof that every descendant exited. */
   async arm({leaderPid:pid}={}){
    if(state!=='new'||!validPid(pid))fail('BROWSER_PROCESS_CONFIGURATION');

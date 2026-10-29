@@ -12,7 +12,7 @@
 #include <unistd.h>
 
 /* Unprivileged stdio shim used as the SDK's MCP command. The request carries only its stdio FDs and a single-use
- * nonce. The root broker checks SO_PEERCRED and already owns the complete Playwright command and isolation pins. */
+ * nonce. The root broker checks SO_PEERCRED and binds them only to the trusted host's filtered model stream. */
 static void die(void) { _exit(111); }
 static int valid_hex(const char *s,size_t n) {
   if(!s||strlen(s)!=n) return 0;
@@ -42,7 +42,7 @@ int main(int argc,char **argv) {
   c->cmsg_level=SOL_SOCKET;c->cmsg_type=SCM_RIGHTS;c->cmsg_len=CMSG_LEN(sizeof(int)*3);
   int stdio[3]={0,1,2};memcpy(CMSG_DATA(c),stdio,sizeof(stdio));
   if(sendmsg(fd,&msg,MSG_NOSIGNAL)!=64) die();
-  /* The broker owns the stdio FDs now. A result byte arrives only after the prebound MCP child exits. */
+  /* The broker owns the stdio FDs now. A result byte arrives when its private model-stream bridge closes. */
   char result;ssize_t n;do{n=read(fd,&result,1);}while(n<0&&errno==EINTR);
   close(fd);return n==1&&result=='0'?0:111;
 }

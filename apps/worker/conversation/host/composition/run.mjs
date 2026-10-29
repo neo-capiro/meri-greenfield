@@ -8,7 +8,7 @@ import {data,nativeSignal} from '../../../../../packages/contracts/commands-0.2/
 import {assertCapabilityPolicy} from '../../capabilities/policy.mjs';
 import {validateBrowserPolicy} from '../../browser/policy.mjs';
 import {activationOpen} from '../../browser/activation.mjs';
-import {browserPaths} from '../../browser/workspace.mjs';
+import {browserPaths,disposeBrowserState} from '../../browser/workspace.mjs';
 import {createHostCurrentnessClient} from '../control/client.mjs';
 import {startHostRunCurrentnessMonitor} from '../run-currentness-monitor.mjs';
 import {startBrowserHostEgressService} from '../browser-egress-service.mjs';
@@ -25,6 +25,8 @@ import {createNativeLocalRelayPort} from '../network/launcher-adapter.mjs';
 import {createNativeHostRelayPort} from '../network/host-launcher-adapter.mjs';
 import {createSdkLaunchGate,createSdkChildQuiescenceObserver,createSdkQuiescenceReader} from '../launcher/sdk-quiescence.mjs';
 import {createBrowserHostRuntimePort} from '../browser-runtime-port.mjs';
+import {createBrowserSessionHost} from '../browser-session-host.mjs';
+import {createConfinedContextPort,pinnedBrowserUpstream} from '../launcher/context-port.mjs';
 import {createConversationHostTeardown} from '../teardown.mjs';
 import {assertHostAllocation,assertHostRunBinding,assertD005HostIdentity,assertBrowserHostCurrent} from '../binding.mjs';
 
@@ -39,6 +41,7 @@ const DEFAULT_COMPONENTS=Object.freeze({createClient:createHostCurrentnessClient
  createSdkLaunchGate,createSdkQuiescenceObserver:createSdkChildQuiescenceObserver,
  createSdkQuiescenceReader,
  startLocalRelay:startConfinedLocalRelay,createBrowserPort:createBrowserHostRuntimePort,
+ createBrowserSessionHost,createConfinedContextPort,pinnedBrowserUpstream,
  prepareBrowserWorkspace,
  createTeardown:createConversationHostTeardown});
 const stopped=signal=>{if(signal?.aborted)fail('HOST_BOOTSTRAP_REVOKED');};
@@ -148,7 +151,7 @@ export async function prepareGuestHostRun({allocation,binding,hostIdentity,cwd,d
  const parentAbort=()=>owner.abort(fault('HOST_BOOTSTRAP_REVOKED'));
  signal?.addEventListener('abort',parentAbort,{once:true});if(signal?.aborted)parentAbort();
  let sdkClient,bashClient,browserClient,sdkMonitor,bashMonitor,browserEgress,browserObserver,hostObserver,
-  sdkNetwork,browserNetwork,launcher,readinessLauncher,broker,bashFacts,teardown,browserPort,settlement,stopping,
+  sdkNetwork,browserNetwork,launcher,readinessLauncher,broker,contexts,bashFacts,teardown,browserPort,settlement,stopping,
   sdkLaunchGate,readinessObserver;
  let browserGrantAttempted=false,bootstrapped=false,processClientTaken=false,settling=false;
  let browserActive=false,preparedWorkspace;
@@ -213,6 +216,7 @@ export async function prepareGuestHostRun({allocation,binding,hostIdentity,cwd,d
    if(typeof browser.resolve!=='function')fail('HOST_BOOTSTRAP_CONFIGURATION');
    required(browser.approvals,['decide']);required(browser.artifacts,['ingest']);
    required(browser.receipts,['record']);
+   required(browser.controls,['bind']);if(typeof browser.hold!=='function')fail('HOST_BOOTSTRAP_CONFIGURATION');
    required(components,['prepareBrowserWorkspace']);
   }
   const pinnedBrowserPolicy=async request=>{
@@ -298,7 +302,10 @@ export async function prepareGuestHostRun({allocation,binding,hostIdentity,cwd,d
   launcher=components.createLauncher({...launcherBase,sdkMode:'conversation',
    validateSdkDescriptor:validatePinnedSdkDescriptor,
    onSdkPrepared:({sdkLeaderPid})=>hostObserver.arm({sdkLeaderPid})});
-  if(browserActive){broker=await launcher.prepareBrowserBroker({policy:first,installation,paths});
+  if(browserActive){const nativeContext=await launcher.prepareBrowserContext({policy:first,installation,paths});
+   contexts=components.createConfinedContextPort({native:nativeContext,binding:b,policy:first,
+    installation:nativeContext.installation,paths,signal:allSignals(),now});
+   broker=await launcher.prepareBrowserBroker({policy:first,installation,paths});
    broker.failure?.catch(()=>{owner.abort(fault('HOST_BROWSER_BROKER_UNKNOWN'));
     if(bootstrapped)void settle({reason:'failed'}).catch(()=>{});});}
   stopped(allSignals());
@@ -343,8 +350,21 @@ export async function prepareGuestHostRun({allocation,binding,hostIdentity,cwd,d
   if(browserActive){const egressPort=Object.freeze({endpoint:browserEgress.endpoint,
     async grant(grant,options){browserGrantAttempted=true;return browserEgress.grant(grant,options);},
     revoke:request=>browserEgress.revoke(request)});
-   browserPort=components.createBrowserPort({binding:b,cwd,installation:broker.installation,policy:pinnedBrowserPolicy,
-    egress:egressPort,processes:browserObserver,approvals:browser.approvals,artifacts:browser.artifacts,
+   let browserExit;
+   const processes=Object.freeze({waitForExit(request,options){
+    if(canonicalSha256(request.binding)!==canonicalSha256(b)||request.profile!==paths.profile||options?.signal?.aborted)fail('HOST_PROCESS_OBSERVATION_UNKNOWN');
+    return browserExit??=browserObserver.waitForExit(request,options);
+   }});
+   const current=async({signal})=>{
+    stopped(allSignals());const current=await browserClient.readCurrent({allocation:a,binding:b,policySha256:browserDigest,signal});
+    assertBrowserHostCurrent({allocation:a,binding:b,policySha256:browserDigest,current,nowMs:now(),maxFreshMs:control.maxFreshMs});
+   };
+   const sessions=components.createBrowserSessionHost({binding:b,cwd,installation:broker.installation,
+    upstream:components.pinnedBrowserUpstream(broker.installation),contexts,modelTransport:broker.modelTransport,
+    controls:browser.controls,current,siteWorkflows:browser.siteWorkflows,hold:browser.hold,processes,
+    dispose:({paths,signal})=>disposeBrowserState(paths,{signal}),now});
+   browserPort=components.createBrowserPort({binding:b,cwd,installation:broker.installation,policy:pinnedBrowserPolicy,sessions,
+    egress:egressPort,processes,approvals:browser.approvals,artifacts:browser.artifacts,
     receipts:browser.receipts,sourceScopes:browser.sourceScopes});}
   const processClientFactory=()=>{if(processClientTaken)fail('HOST_SDK_QUERY_REUSED');
    stopped(allSignals());processClientTaken=true;return launcher.createSdkProcessClient();};
