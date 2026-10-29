@@ -37,6 +37,8 @@ import {
   workspaceGenerationPhases,
 } from './protocol.mjs';
 import {assistantText, conversationRequestIdFor, documentSectionIds, parsePhaseOutput, workspaceConversationIdFor, workspaceGenerationPrompt} from './phases.mjs';
+import {readGenerationSource} from './sources.mjs';
+import {jsonBody} from '../../action-application/http.mjs';
 
 const headers = {'cache-control': 'no-store', 'x-content-type-options': 'nosniff'};
 const noStore = extra => ({...headers, ...extra});
@@ -85,11 +87,7 @@ export function createWorkspaceGenerationApplication(options = {}) {
     if (!workspaceGenerationPhases.includes(request.phase) ||
         !Number.isSafeInteger(request.expectedRevision) || request.expectedRevision < 0 ||
         request.paidGeneration !== true || !Array.isArray(request.sources) || !request.sources.length || request.sources.length > 256) fail('WORKSPACE_GENERATION_REFUSED');
-    const sources = request.sources.map(source => {
-      const item = closedShape(source, ['id', 'kind']);
-      if (!boundedText(item.id, 256) || !boundedText(item.kind, 64)) fail('WORKSPACE_GENERATION_REFUSED');
-      return {id: item.id, kind: item.kind};
-    });
+    const sources = request.sources.map(readGenerationSource);
     return {...request, sources};
   }
 
@@ -269,8 +267,10 @@ export function createWorkspaceGenerationApplication(options = {}) {
       const length = request.headers.get('content-length');
       if (length !== null && (!/^[1-9][0-9]*$/u.test(length) || Number(length) > requestBytes)) return error(400, 'WORKSPACE_GENERATION_REQUEST_REFUSED');
       let body;
-      try { body = own(await request.json(), ['schemaVersion', 'request']); }
-      catch { return error(400, 'WORKSPACE_GENERATION_REQUEST_REFUSED'); }
+      try {
+        body = own(await jsonBody({body: request.body, length: length === null ? null : Number(length)}, requestBytes, life, () => life.check()), ['schemaVersion', 'request']);
+      }
+      catch { life.check(); return error(400, 'WORKSPACE_GENERATION_REQUEST_REFUSED'); }
       life.check();
       if (body.schemaVersion !== WORKSPACE_GENERATION_SCHEMA_VERSION) return error(400, 'WORKSPACE_GENERATION_REQUEST_REFUSED');
       const closed = route[0] === 'turn' ? readRequest(body.request) : route[0] === 'read' ? readSubjectShape(body.request) : cancelSubjectShape(body.request);
