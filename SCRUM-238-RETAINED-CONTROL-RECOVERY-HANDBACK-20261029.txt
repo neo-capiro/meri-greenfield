@@ -1,0 +1,83 @@
+SCRUM-238 RETAINED CONTROL / SAME-RUN RECOVERY HANDBACK — 2026-10-29 (additive; earlier handbacks unchanged)
+Author session 20261029_154054_c5be2d, OpenRouter/DeepSeek. Source only: nothing here is deployed, merged or accepted.
+
+1. HEADS, BASES, PRS
+   Frontend  C:/dev/meri-cap-scrum238-20261029/frontend
+             base f7fac5917180f7341f27d78481385d53ef23a2e7, integrated main c98e0dad4336a70eb1e315dcaf1ec42a135ccd94
+             head 9c8cd5925 (previous 07a0bf6d9), branch hermes/scrum238-askuserquestion-20261029
+             PR https://github.com/neo-capiro/capiro-frontend/pull/343  — updated, pushed normally, no force
+   Meri      C:/dev/meri-cap-scrum238-isolated-20261029/meri
+             source unchanged this round: implementation f3fd895dcdd6b99e0a71618312fad4b8d57e2caa, PR #387 head now carries
+             only this handback document commit on top of d5bf32de2. Package bytes 0.1.36 / 0.1.23 and their vendor
+             provenance are untouched and remain exactly the reviewed artifacts.
+   Core      untouched, clean at 0b326f4e990b02bcd84130954241777e96461894.
+
+2. THE DEFECT AND THE FIX
+   useRunQuestion minted crypto.randomUUID() per submit and kept no record of the attempt, so a second invocation or a
+   reload of the same run produced a new control identity for a delivery the client could not account for.
+   The fix reuses the existing owner rather than adding one: apps/web/src/shared/meri-conversation-lifecycle/journal.ts
+   already retains exactly one unresolved control per run in the signed-in tab record, and useRunLifecycle already
+   establishes retain-before-dispatch, current identity and known-NOT_DISPATCHED versus unknown handling.
+
+   - journal.ts: `same()` now compares answers exactly (questionId plus the submitted labels, key order normalised) so
+     two different answers to the same question can never be treated as the same retained control. The steer,
+     approval.wait and checkpoint comparisons are unchanged.
+   - useRunQuestion.ts: sendAnswer() retains the exact answer control *before* dispatch, refuses any fresh attempt while
+     this run still holds an unresolved answer (returning `refused: retained`, never a second id), replays the retained
+     control only on an explicit `reconcile` (the card's "Check the same answer again"), retires it only on a proven
+     NOT_DISPATCHED refusal, and keeps it across APPLIED, UNKNOWN, transport loss and a superseded conversation.
+     Retention is mandatory: with no usable tab journal the card refuses to send (`refused: unretained`, new `retention`
+     state) instead of minting an unretained identity.
+     settleRetainedAnswer() clears the retained control only when the run's own durable projection reports
+     answered/cancelled for that exact questionId via the existing questionOutcome; a pending event, a missing event in a
+     partial page, an unavailable view, or the refusal of an earlier attempt never release it.
+     On mount or reconnect the read path reopens a question this run already attempted as `unknown` (reconcilable) rather
+     than as a fresh decision, so a same-run reload shows the retained attempt.
+     The concurrency guard (`active` ref) makes a second in-flight invocation a no-op, and the old port/question
+     completion guard still discards a late result.
+   - QuestionCard.tsx: adds the `retention` state (locked, honest message) and an optional `onCheckAgain` action rendered
+     only in the unknown state; unavailable / waiting / unknown / retention / error all stay non-editable, while local
+     validation problems and proven refusals stay editable. ConversationView passes
+     `onCheckAgain={question.retryable ? question.reconcile : undefined}`.
+
+3. WHAT IS PRESERVED (unchanged behaviour, re-proven)
+   Local validation stays editable and sends nothing; the submit-time current-question / live-run / deadline re-read and
+   the quiet-expiry timer are unchanged; the nested 502 `{error:{outcome}}` classification and the thrown-transport
+   classification are unchanged; the old port/question late-completion guard is unchanged.
+
+4. EVIDENCE — REAL FUNCTION SEQUENCE, TWICE, THEN A RELOAD
+   `cd apps/web && npx vitest run tests/answer-command.test.ts tests/question-card.test.ts`  EXIT 0, 29/29
+     (17 command + 12 card). The command cases use the REAL lifecycleJournal over an in-memory tab storage and an inert
+     scripted port, i.e. the same functions the hook calls, not reducer actions:
+     - two invocations on one journal: first returns `phase: unknown`, second returns `refused: retained`; exactly one
+       control was sent, with the first identity.
+     - reload: a NEW journal instance over the SAME tab record for the same run finds the retained control; a normal
+       submit returns `refused: retained` and sends nothing; an explicit reconcile sends the SAME control id again
+       (sent ids: [C1, C1]), never a new one.
+     - durable settlement: a pending event alone leaves the retained identity in place; `question.answered` for that
+       exact questionId returns "answered" and clears it; another question's outcome does not clear it.
+     - NOT_DISPATCHED retires the identity and a corrected answer is allowed with a new id ([C1, C2]); APPLIED keeps
+       the answer waiting and retained; UNKNOWN and a thrown TypeError both keep the identity after exactly one send.
+     - guards: expired between render and submit → `skipped: expired` with zero control calls and nothing retained;
+       question gone from the view → `skipped: not-current`; settled run → `skipped: settled`; local single-select array
+       → `phase: local` with nothing retained or sent; no journal → `refused: unretained` with zero sends.
+     - journal equality: identical answer bytes are idempotent; different labels under the same id throw; a different
+       questionId throws.
+   `cd apps/web && npm run typecheck`  EXIT 0, 0 errors
+   `node --test apps/web/test/question-receiver.test.mjs apps/web/test/question-card.test.mjs`  EXIT 0, 7/7
+     (real installed receiver: answer-control acceptance/refusal, and pending/answered admission through
+     createConversationCursor + receiveConversationEvent with a malformed event refused; 4 projection cases)
+   Meri runtime 19/19 and the contracts 658/645 pass/12 fail/1 skip are unchanged; no meri source touched, no broad
+   contracts campaign rerun.
+
+5. LIMITS
+   Source-only. No deployed, provider, browser, DB, AWS or image execution. The hook's own useEffect/subscribe/timer mount
+   is still not executed by these tests — the functions it calls are, including the journal and the command sequence, and
+   deployed browser acceptance must cover the mount itself. Native host restart remains explicitly unresumable
+   (USER_QUESTION_RECOVERY_UNAVAILABLE); display recovery is not native callback recovery. Reconciliation here reaches
+   the existing control route and the run's admitted durable events; it does not add a server ledger or an approval system.
+
+6. OVERLAP / CUSTODY
+   No meri source or package change; current main's federal import, 235 Bash/runner/telemetry, 236 Notebook and 237
+   search catalog/skills pins are untouched, and 237's unaccepted usage commit was not imported. 155 settings files
+   untouched. The blocked shared junction was not retried or retargeted.
