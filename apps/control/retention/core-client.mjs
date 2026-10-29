@@ -39,15 +39,17 @@ export function createCoreRetentionClient({origin,getServiceSecret,fetchImpl=fet
   if(!Number.isSafeInteger(at)||!Number.isSafeInteger(until)||until-at!==30*86400000||r.revision==='0')throw unavailable();
   return r;
  }
- async function finalize(raw,trash,options){
+ async function completion(operation,raw,trash,options){
   const s=subject(raw);if(s.kind!=='conversation'||!s.ownerActorId)throw unavailable();
   uuid(trash?.requestId);
   if(typeof trash?.revision!=='string'||!/^([1-9][0-9]{0,17})$/u.test(trash.revision)||
      !Number.isSafeInteger(trash.restoreUntilMs)||trash.restoreUntilMs>now())throw unavailable();
   const input={tenantId:s.tenantId,conversationId:s.subjectId,ownerActorId:s.ownerActorId,requestId:trash.requestId,revision:trash.revision,restoreUntilMs:trash.restoreUntilMs};
-  const r=own(await call('finalize',input,options),['version','tenantId','conversationId','requestId','revision','erased','replayed']);
+  const r=own(await call(operation,input,options),['version','tenantId','conversationId','requestId','revision','erased',...(operation==='finalize'?['replayed']:[])]);
   if(r.version!==version||r.tenantId!==input.tenantId||r.conversationId!==input.conversationId||r.requestId!==input.requestId||
-     r.revision!==input.revision||r.erased!==true||typeof r.replayed!=='boolean')throw unavailable();return r;
+     r.revision!==input.revision||typeof r.erased!=='boolean'||
+     operation==='finalize'&&(r.erased!==true||typeof r.replayed!=='boolean'))throw unavailable();return r;
  }
- return Object.freeze({read,finalize});
+ return Object.freeze({read,finalize:(raw,trash,options)=>completion('finalize',raw,trash,options),
+  verify:async(raw,trash,options)=>(await completion('verify',raw,trash,options)).erased});
 }

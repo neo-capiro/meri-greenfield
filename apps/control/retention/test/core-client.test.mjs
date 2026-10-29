@@ -34,3 +34,14 @@ test('denied, missing, redirected, oversized and unanswered Core replies stay un
  }
  const f=fixture(null,{maxRequestMs:20,fetchImpl:()=>new Promise(()=>{})});await assert.rejects(f.client.read(subject),/RETENTION_AUTHORITY_UNAVAILABLE/);
 });
+
+test('completion verification is a separate read-only route with exact identity and a strict boolean',async()=>{
+ const trash={requestId:id(4),revision:'4',restoreUntilMs:now-day};
+ const base={version:receipt().version,tenantId:subject.tenantId,conversationId:subject.subjectId,requestId:id(4),revision:'4',erased:true};
+ for(const erased of [true,false]){
+  const f=fixture({...base,erased});assert.equal(await f.client.verify(subject,trash),erased);
+  assert.equal(f.calls[0].url,'https://core.invalid/api/internal/conversation-retention/verify');
+ }
+ for(const patch of [{erased:'true'},{revision:'5'},{conversationId:id(9)},{replayed:true},{extra:'content'}])
+  await assert.rejects(fixture({...base,...patch}).client.verify(subject,trash));
+});
