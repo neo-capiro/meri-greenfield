@@ -14,8 +14,8 @@
     },
     {
       "path": "../../apps/control/conversations/service.mjs",
-      "sha256": "5dee03dd443330fc5d3b2b47d5c5bd3c567c3969e4a576e7a2e4a9e69ec67c32",
-      "bytes": 37427
+      "sha256": "0f9bc22e6ed620cdbd26c962d3c74ed5f18423167d4db3ba5466652a8b1cd558",
+      "bytes": 37466
     },
     {
       "path": "../skills/../../apps/control/document-application/cited-report/manifest.json",
@@ -169,7 +169,7 @@
     },
     {
       "path": "../skills/assets.json",
-      "sha256": "21467192047d7f6a7511fe972955e1f4d6f7126868e1fc4a82a2855fc675b9be",
+      "sha256": "f3be2619e1df98cbe02c6f0b036645f74b32396aa230b22ee972273d15a27745",
       "bytes": 8640
     },
     {
@@ -204,8 +204,8 @@
     },
     {
       "path": "conversation-application/schema.mjs",
-      "sha256": "ba10add33045a42ed0a28ab2cfc1ff9f223bd86e54eee7c636a5748ac5b81f52",
-      "bytes": 4732
+      "sha256": "6ab6c755977952a0792aaf4c94a959020f5cc030db01601f5bcabe3a6f393c57",
+      "bytes": 5052
     },
     {
       "path": "conversation-sources/hearing-semantics.mjs",
@@ -214,8 +214,8 @@
     },
     {
       "path": "conversation-sources/protocol.mjs",
-      "sha256": "4ab2b8449beded18e77111ac0c345955bb862ffbe1f63b4644a00cf0e64675ff",
-      "bytes": 1940
+      "sha256": "9b77ed07b46326d96ae357b704c13203b185886a2376eb9e82e0eba6f3b0cee6",
+      "bytes": 2243
     },
     {
       "path": "conversation-sources/semantics.mjs",
@@ -263,6 +263,11 @@
       "bytes": 6121
     },
     {
+      "path": "native-user-question-event.schema.json",
+      "sha256": "3da7a1c5e26a30ddde76c7044476608564430a632e911d21f3ee1e07129f312a",
+      "bytes": 3980
+    },
+    {
       "path": "procedure-selection.mjs",
       "sha256": "f4fac749baaad1ea8f5158b2a457b86750a831d85460e56a4c92d143c4e26d92",
       "bytes": 2092
@@ -308,7 +313,7 @@
       "bytes": 1986
     }
   ],
-  "schemaSha256": "c4755d95c33abba8433a71287a3211e49ee4ebd5187cb0250b55479f01f630d8",
+  "schemaSha256": "c4913740f1c6c12a54ae2fb73431122c516590223f33e3aee2f0dfcee569a9ea",
   "browserInputs": [
     "artifacts-0.2/artifact-formats.mjs",
     "conversation-application/conversation-application-receiver.mjs",

@@ -1051,6 +1051,12 @@
             },
             {
               "$ref": "#/$defs/Canonical_NativeUploadSourceEvent_c1e88004"
+            },
+            {
+              "$ref": "#/$defs/Canonical_NativeUserQuestionEvent_2718130f"
+            },
+            {
+              "$ref": "#/$defs/Canonical_NativeUserQuestionAnsweredEvent_a7d02b8b"
             }
           ]
         }
@@ -3779,6 +3785,226 @@
         },
         "data": {
           "$ref": "#/$defs/Canonical_NativeUploadSource_e432dc7b"
+        }
+      },
+      "required": [
+        "contractVersion",
+        "eventId",
+        "binding",
+        "sequence",
+        "createdAt",
+        "scopes",
+        "type",
+        "data"
+      ],
+      "additionalProperties": false
+    },
+    "Canonical_NativeUserQuestion_8ac258ce": {
+      "type": "object",
+      "properties": {
+        "questionId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "toolUseId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        },
+        "questionsSha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "expiresAt": {
+          "type": "string",
+          "format": "date-time",
+          "pattern": "Z$"
+        },
+        "questions": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 4,
+          "items": {
+            "type": "object",
+            "properties": {
+              "question": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 1000
+              },
+              "header": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 12
+              },
+              "options": {
+                "type": "array",
+                "minItems": 2,
+                "maxItems": 4,
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "label": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 200
+                    },
+                    "description": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 1000
+                    }
+                  },
+                  "required": [
+                    "label",
+                    "description"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "multiSelect": {
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "question",
+              "header",
+              "options",
+              "multiSelect"
+            ],
+            "additionalProperties": false
+          }
+        }
+      },
+      "required": [
+        "questionId",
+        "toolUseId",
+        "questionsSha256",
+        "expiresAt",
+        "questions"
+      ],
+      "additionalProperties": false
+    },
+    "Canonical_NativeUserQuestionEvent_2718130f": {
+      "type": "object",
+      "properties": {
+        "contractVersion": {
+          "const": "0.1.0"
+        },
+        "eventId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "binding": {
+          "$ref": "#/$defs/Canonical_RunBinding_84f2304c"
+        },
+        "sequence": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "pattern": "Z$"
+        },
+        "scopes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Canonical_Scope_f882edb5"
+          },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "type": {
+          "const": "question.pending"
+        },
+        "data": {
+          "$ref": "#/$defs/Canonical_NativeUserQuestion_8ac258ce"
+        }
+      },
+      "required": [
+        "contractVersion",
+        "eventId",
+        "binding",
+        "sequence",
+        "createdAt",
+        "scopes",
+        "type",
+        "data"
+      ],
+      "additionalProperties": false
+    },
+    "Canonical_NativeUserQuestionOutcome_255f6e68": {
+      "type": "object",
+      "properties": {
+        "questionId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "outcome": {
+          "type": "string",
+          "enum": [
+            "answered",
+            "cancelled"
+          ]
+        },
+        "reasonCode": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 64
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "questionId",
+        "outcome",
+        "reasonCode"
+      ],
+      "additionalProperties": false
+    },
+    "Canonical_NativeUserQuestionAnsweredEvent_a7d02b8b": {
+      "type": "object",
+      "properties": {
+        "contractVersion": {
+          "const": "0.1.0"
+        },
+        "eventId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "binding": {
+          "$ref": "#/$defs/Canonical_RunBinding_84f2304c"
+        },
+        "sequence": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "pattern": "Z$"
+        },
+        "scopes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Canonical_Scope_f882edb5"
+          },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "type": {
+          "const": "question.answered"
+        },
+        "data": {
+          "$ref": "#/$defs/Canonical_NativeUserQuestionOutcome_255f6e68"
         }
       },
       "required": [

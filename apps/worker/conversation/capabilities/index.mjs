@@ -8,6 +8,7 @@ import {validateShape} from '../../../../packages/contracts/validate.mjs';
 import {assertCapabilityPolicy} from './policy.mjs';
 import {createWorkspaceTools,assertWorkspaceRoot,BUILTIN_TOOL_NAMES} from './workspace-tools.mjs';
 import {createBashSandbox} from './bash-sandbox.mjs';
+import {createUserQuestionGate,isQuestionPort,USER_QUESTION_TOOL} from './questions.mjs';
 import {createSubagents} from './subagents.mjs';
 import {createSkillPlugin} from './skill-plugin.mjs';
 import {assertCapabilityFragment,mergeHookSets,mergeSettings,chainPermissions} from './fragment.mjs';
@@ -19,7 +20,7 @@ const fail=code=>{throw Object.assign(Error(code),{code});};
 const withoutBash=p=>p.bash?assertCapabilityPolicy({...p,bash:false}):p;
 /** @param {unknown} policy @param {unknown} facts */
 export function createSdkCapabilities(policy,facts){
- const requested=assertCapabilityPolicy(policy),f=own(facts,['runOwner','binding','cwd','now','newId'],['skillPluginDirectory','bashSandbox','bashEgress','bashApprovals','sdkConfigDirectory','sdkSecureStorageDirectory','brokerSocketDirectory','childAssignments']);
+ const requested=assertCapabilityPolicy(policy),f=own(facts,['runOwner','binding','cwd','now','newId'],['skillPluginDirectory','bashSandbox','bashEgress','bashApprovals','sdkConfigDirectory','sdkSecureStorageDirectory','brokerSocketDirectory','childAssignments','userQuestions']);
  if(typeof f.runOwner?.append!=='function'||typeof f.now!=='function'||typeof f.newId!=='function')fail('CAPABILITY_CONFIGURATION');validateShape('RunBinding',f.binding);assertWorkspaceRoot(f.cwd);
  const protectedPaths={...(f.sdkConfigDirectory===undefined?{}:{sdkConfigDirectory:f.sdkConfigDirectory}),...(f.sdkSecureStorageDirectory===undefined?{}:{sdkSecureStorageDirectory:f.sdkSecureStorageDirectory}),
   ...(f.brokerSocketDirectory===undefined?{}:{brokerSocketDirectory:f.brokerSocketDirectory})};
@@ -32,6 +33,12 @@ export function createSdkCapabilities(policy,facts){
  const latch=error=>{failure??=Object.assign(Error('CAPABILITY_HOOK_FAILED'),{code:'CAPABILITY_HOOK_FAILED',cause:error});};
  /** @type {ToolPiece[]} */const pieces=[];/** @type {Record<string,HookCallbackMatcher[]>[]} */const hookSets=[];
  if(p.workspaceTools)pieces.push(createWorkspaceTools(p,{cwd:f.cwd}));
+ // Native clarifying questions (`AskUserQuestion`) are admitted only with the owner's question port: without it no
+ // answer can arrive, so the run would offer a question it could never resume. The piece declares the tool so it is not
+ // disallowed, and its permission callback is the sole authority for the call.
+ if(p.userQuestions){if(!isQuestionPort(f.userQuestions))fail('USER_QUESTION_PORT_REQUIRED');
+  const gate=createUserQuestionGate({binding:f.binding,questions:Object.freeze({ask:f.userQuestions.ask.bind(f.userQuestions)}),now:f.now,newId:f.newId});
+  pieces.push({tools:[USER_QUESTION_TOOL],allowedTools:[],canUseTool:gate});}
  if(bash)pieces.push(bash);
  // A subagent dispatch is durable before it happens: without the run owner's child port no Agent call is admitted.
  if(p.subagents){if(f.childAssignments===undefined)fail('CHILD_ASSIGNMENT_OWNER_REQUIRED');pieces.push(createSubagents(p,{latch,children:f.childAssignments}));}

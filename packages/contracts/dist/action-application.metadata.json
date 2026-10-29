@@ -4,8 +4,8 @@
   "sources": [
     {
       "path": "../../apps/control/action-application/http.mjs",
-      "sha256": "ee1e56894c97ca2148adf4a990e8a9ca5d5b71699e69441633e36b563b85c4a6",
-      "bytes": 5006
+      "sha256": "41b788b71d429bef7aba10dd5976872719f789105de753508cb80ff39a2ed5a7",
+      "bytes": 5554
     },
     {
       "path": "../../apps/control/action-application/index.mjs",

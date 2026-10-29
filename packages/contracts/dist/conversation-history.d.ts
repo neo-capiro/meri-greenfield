@@ -922,7 +922,9 @@ export interface ConversationHistoryEvent {
     | Canonical_UIEvent_1691B714
     | Canonical_NativeBillTextSourceEvent_8E4E610B
     | Canonical_NativeHearingSourceEvent_685F6175
-    | Canonical_NativeUploadSourceEventC1E88004;
+    | Canonical_NativeUploadSourceEventC1E88004
+    | Canonical_NativeUserQuestionEvent_2718130F
+    | Canonical_NativeUserQuestionAnsweredEventA7D02B8B;
 }
 export interface Canonical_SourceEvidenceD9008775 {
   sourceId: string;
@@ -1243,6 +1245,576 @@ export interface Canonical_NativeUploadSourceE432Dc7B {
           string
         ];
   };
+}
+export interface Canonical_NativeUserQuestionEvent_2718130F {
+  contractVersion: '0.1.0';
+  eventId: string;
+  binding: Canonical_RunBinding_84F2304C;
+  sequence: number;
+  createdAt: string;
+  /**
+   * @minItems 1
+   */
+  scopes: [Canonical_ScopeF882Edb5, ...Canonical_ScopeF882Edb5[]];
+  type: 'question.pending';
+  data: Canonical_NativeUserQuestion_8Ac258Ce;
+}
+export interface Canonical_NativeUserQuestion_8Ac258Ce {
+  questionId: string;
+  toolUseId: string;
+  questionsSha256: string;
+  expiresAt: string;
+  /**
+   * @minItems 1
+   * @maxItems 4
+   */
+  questions:
+    | [
+        {
+          question: string;
+          header: string;
+          /**
+           * @minItems 2
+           * @maxItems 4
+           */
+          options:
+            | [
+                {
+                  label: string;
+                  description: string;
+                },
+                {
+                  label: string;
+                  description: string;
+                }
+              ]
+            | [
+                {
+                  label: string;
+                  description: string;
+                },
+                {
+                  label: string;
+                  description: string;
+                },
+                {
+                  label: string;
+                  description: string;
+                }
+              ]
+            | [
+                {
+                  label: string;
+                  description: string;
+                },
+                {
+                  label: string;
+                  description: string;
+                },
+                {
+                  label: string;
+                  description: string;
+                },
+                {
+                  label: string;
+                  description: string;
+                }
+              ];
+          multiSelect: boolean;
+        }
+      ]
+    | [
+        {
+          question: string;
+          header: string;
+          /**
+           * @minItems 2
+           * @maxItems 4
+           */
+          options:
+            | [
+                {
+                  label: string;
+                  description: string;
+                },
+                {
+                  label: string;
+                  description: string;
+                }
+              ]
+            | [
+                {
+                  label: string;
+                  description: string;
+                },
+                {
+                  label: string;
+                  description: string;
+                },
+                {
+                  label: string;
+                  description: string;
+                }
+              ]
+            | [
+                {
+                  label: string;
+                  description: string;
+                },
+                {
+                  label: string;
+                  description: string;
+                },
+                {
+                  label: string;
+                  description: string;
+                },
+                {
+                  label: string;
+                  description: string;
+                }
+              ];
+          multiSelect: boolean;
+        },
+        {
+          question: string;
+          header: string;
+          /**
+           * @minItems 2
+           * @maxItems 4
+           */
+          options:
+            | [
+                {
+                  label: string;
+                  description: string;
+                },
+                {
+                  label: string;
+                  description: string;
+                }
+              ]
+            | [
+                {
+                  label: string;
+                  description: string;
+                },
+                {
+                  label: string;
+                  description: string;
+                },
+                {
+                  label: string;
+                  description: string;
+                }
+              ]
+            | [
+                {
+                  label: string;
+                  description: string;
+                },
+                {
+                  label: string;
+                  description: string;
+                },
+                {
+                  label: string;
+                  description: string;
+                },
+                {
+                  label: string;
+                  description: string;
+                }
+              ];
+          multiSelect: boolean;
+        }
+      ]
+    | [
+        {
+          question: string;
+          header: string;
+          /**
+           * @minItems 2
+           * @maxItems 4
+           */
+          options:
+            | [
+                {
+                  label: string;
+                  description: string;
+                },
+                {
+                  label: string;
+                  description: string;
+                }
+              ]
+            | [
+                {
+                  label: string;
+                  description: string;
+                },
+                {
+                  label: string;
+                  description: string;
+                },
+                {
+                  label: string;
+                  description: string;
+                }
+              ]
+            | [
+                {
+                  label: string;
+                  description: string;
+                },
+                {
+                  label: string;
+                  description: string;
+                },
+                {
+                  label: string;
+                  description: string;
+                },
+                {
+                  label: string;
+                  description: string;
+                }
+              ];
+          multiSelect: boolean;
+        },
+        {
+          question: string;
+          header: string;
+          /**
+           * @minItems 2
+           * @maxItems 4
+           */
+          options:
+            | [
+                {
+                  label: string;
+                  description: string;
+                },
+                {
+                  label: string;
+                  description: string;
+                }
+              ]
+            | [
+                {
+                  label: string;
+                  description: string;
+                },
+                {
+                  label: string;
+                  description: string;
+                },
+                {
+                  label: string;
+                  description: string;
+                }
+              ]
+            | [
+                {
+                  label: string;
+                  description: string;
+                },
+                {
+                  label: string;
+                  description: string;
+                },
+                {
+                  label: string;
+                  description: string;
+                },
+                {
+                  label: string;
+                  description: string;
+                }
+              ];
+          multiSelect: boolean;
+        },
+        {
+          question: string;
+          header: string;
+          /**
+           * @minItems 2
+           * @maxItems 4
+           */
+          options:
+            | [
+                {
+                  label: string;
+                  description: string;
+                },
+                {
+                  label: string;
+                  description: string;
+                }
+              ]
+            | [
+                {
+                  label: string;
+                  description: string;
+                },
+                {
+                  label: string;
+                  description: string;
+                },
+                {
+                  label: string;
+                  description: string;
+                }
+              ]
+            | [
+                {
+                  label: string;
+                  description: string;
+                },
+                {
+                  label: string;
+                  description: string;
+                },
+                {
+                  label: string;
+                  description: string;
+                },
+                {
+                  label: string;
+                  description: string;
+                }
+              ];
+          multiSelect: boolean;
+        }
+      ]
+    | [
+        {
+          question: string;
+          header: string;
+          /**
+           * @minItems 2
+           * @maxItems 4
+           */
+          options:
+            | [
+                {
+                  label: string;
+                  description: string;
+                },
+                {
+                  label: string;
+                  description: string;
+                }
+              ]
+            | [
+                {
+                  label: string;
+                  description: string;
+                },
+                {
+                  label: string;
+                  description: string;
+                },
+                {
+                  label: string;
+                  description: string;
+                }
+              ]
+            | [
+                {
+                  label: string;
+                  description: string;
+                },
+                {
+                  label: string;
+                  description: string;
+                },
+                {
+                  label: string;
+                  description: string;
+                },
+                {
+                  label: string;
+                  description: string;
+                }
+              ];
+          multiSelect: boolean;
+        },
+        {
+          question: string;
+          header: string;
+          /**
+           * @minItems 2
+           * @maxItems 4
+           */
+          options:
+            | [
+                {
+                  label: string;
+                  description: string;
+                },
+                {
+                  label: string;
+                  description: string;
+                }
+              ]
+            | [
+                {
+                  label: string;
+                  description: string;
+                },
+                {
+                  label: string;
+                  description: string;
+                },
+                {
+                  label: string;
+                  description: string;
+                }
+              ]
+            | [
+                {
+                  label: string;
+                  description: string;
+                },
+                {
+                  label: string;
+                  description: string;
+                },
+                {
+                  label: string;
+                  description: string;
+                },
+                {
+                  label: string;
+                  description: string;
+                }
+              ];
+          multiSelect: boolean;
+        },
+        {
+          question: string;
+          header: string;
+          /**
+           * @minItems 2
+           * @maxItems 4
+           */
+          options:
+            | [
+                {
+                  label: string;
+                  description: string;
+                },
+                {
+                  label: string;
+                  description: string;
+                }
+              ]
+            | [
+                {
+                  label: string;
+                  description: string;
+                },
+                {
+                  label: string;
+                  description: string;
+                },
+                {
+                  label: string;
+                  description: string;
+                }
+              ]
+            | [
+                {
+                  label: string;
+                  description: string;
+                },
+                {
+                  label: string;
+                  description: string;
+                },
+                {
+                  label: string;
+                  description: string;
+                },
+                {
+                  label: string;
+                  description: string;
+                }
+              ];
+          multiSelect: boolean;
+        },
+        {
+          question: string;
+          header: string;
+          /**
+           * @minItems 2
+           * @maxItems 4
+           */
+          options:
+            | [
+                {
+                  label: string;
+                  description: string;
+                },
+                {
+                  label: string;
+                  description: string;
+                }
+              ]
+            | [
+                {
+                  label: string;
+                  description: string;
+                },
+                {
+                  label: string;
+                  description: string;
+                },
+                {
+                  label: string;
+                  description: string;
+                }
+              ]
+            | [
+                {
+                  label: string;
+                  description: string;
+                },
+                {
+                  label: string;
+                  description: string;
+                },
+                {
+                  label: string;
+                  description: string;
+                },
+                {
+                  label: string;
+                  description: string;
+                }
+              ];
+          multiSelect: boolean;
+        }
+      ];
+}
+export interface Canonical_NativeUserQuestionAnsweredEventA7D02B8B {
+  contractVersion: '0.1.0';
+  eventId: string;
+  binding: Canonical_RunBinding_84F2304C;
+  sequence: number;
+  createdAt: string;
+  /**
+   * @minItems 1
+   */
+  scopes: [Canonical_ScopeF882Edb5, ...Canonical_ScopeF882Edb5[]];
+  type: 'question.answered';
+  data: Canonical_NativeUserQuestionOutcome_255F6E68;
+}
+export interface Canonical_NativeUserQuestionOutcome_255F6E68 {
+  questionId: string;
+  outcome: 'answered' | 'cancelled';
+  reasonCode: string | null;
 }
 export interface ConversationHistoryPendingTurn {
   sourceBinding: Canonical_RunBinding_84F2304C;

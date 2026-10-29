@@ -23,6 +23,14 @@ export type ConversationLifecycleControlRequest =
     }
   | {
       controlId: string;
+      intent: 'answer';
+      questionId: string;
+      answers: {
+        [k: string]: string | [string] | [string, string] | [string, string, string] | [string, string, string, string];
+      };
+    }
+  | {
+      controlId: string;
       intent: 'resume';
       checkpointId: string;
       checkpointSha256: string;
@@ -36,7 +44,7 @@ export type ConversationLifecycleControlRequest =
 
 export interface ConversationLifecycleControlReceipt {
   controlId: string;
-  intent: 'steer' | 'pause' | 'approval.wait' | 'resume' | 'fork';
+  intent: 'steer' | 'pause' | 'approval.wait' | 'answer' | 'resume' | 'fork';
   sourceBinding: Canonical_RunBinding_84F2304C;
   inputSha256: string;
   state: 'PENDING' | 'DISPATCHING' | 'APPLIED' | 'UNKNOWN';

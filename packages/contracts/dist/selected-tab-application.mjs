@@ -75,6 +75,7 @@ var SELECTED_TAB_LIMITS = Object.freeze({ textBytes: 262144, messageBytes: 52428
 var admitted = /* @__PURE__ */ new WeakSet();
 var encoder = new TextEncoder();
 var uuid = (v) => typeof v === "string" && /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/u.test(v);
+var documentId = (v) => uuid(v) || typeof v === "string" && /^[0-9A-Fa-f]{32}$/u.test(v);
 var integer = (v) => Number.isSafeInteger(v) && v >= 0;
 var fail2 = () => {
   throw Error("INVALID_SELECTED_TAB_MESSAGE");
@@ -137,7 +138,7 @@ async function receiveSelectedTabMessage(direction, text) {
       closed(v, ["schema", "type", "pairingId", "deviceId", "selectionId", "binding", "tabId", "documentId", "url", "title", "capturedAtMs", "text", "bytes", "sha256"]);
       binding(v.binding);
       source(v);
-      if (!uuid(v.deviceId) || !uuid(v.selectionId) || !uuid(v.documentId) || !integer(v.tabId) || !integer(v.capturedAtMs) || !integer(v.bytes) || v.bytes > SELECTED_TAB_LIMITS.textBytes + 8192 || typeof v.sha256 !== "string" || !/^[a-f0-9]{64}$/u.test(v.sha256)) fail2();
+      if (!uuid(v.deviceId) || !uuid(v.selectionId) || !documentId(v.documentId) || !integer(v.tabId) || !integer(v.capturedAtMs) || !integer(v.bytes) || v.bytes > SELECTED_TAB_LIMITS.textBytes + 8192 || typeof v.sha256 !== "string" || !/^[a-f0-9]{64}$/u.test(v.sha256)) fail2();
       const bytes = original(v);
       if (bytes.byteLength !== v.bytes || await digest(bytes) !== v.sha256) fail2();
     } else fail2();

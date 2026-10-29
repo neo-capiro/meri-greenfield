@@ -19,6 +19,9 @@ import {assertAutomaticClientContext} from './automatic-client-context.mjs';
 import {createConversationInput} from './continuation/input.mjs';
 import {createActivityLifecycle,assertLifecycleConfiguration,HOLD_CHECKPOINT_FAILED} from './continuation/activity-lifecycle.mjs';
 import {readCapabilityPolicy} from './capabilities/policy.mjs';
+import {createQuestionRegistry} from './questions/registry.mjs';
+import {createQuestionEventJournal} from './questions/events.mjs';
+import {createQuestionControlDispatch} from './questions/dispatch.mjs';
 import {createSdkCapabilities} from './capabilities/index.mjs';
 import {createNativeHookBatch} from './capabilities/hooks.mjs';
 import {mergeHookSets} from './capabilities/fragment.mjs';
@@ -121,7 +124,10 @@ export function createConversationActivity({runOwner,prepareRuntime,query=sdkQue
    // parent is acknowledged. Without that port no Agent call is admitted (capabilities/index.mjs).
    const childAssignments=typeof runOwner.dispatchChild==='function'&&typeof runOwner.settleChild==='function'?Object.freeze({
     dispatch:input=>runOwner.dispatchChild({binding,input}),settle:input=>runOwner.settleChild({binding,input})}):undefined;
-   const capabilities=policy===undefined?undefined:createSdkCapabilities(policy,{runOwner,binding,cwd:runtime.cwd,...(childAssignments===undefined?{}:{childAssignments}),...Object.fromEntries(CAPABILITY_RUNTIME_FACTS.flatMap(k=>runtime[k]===undefined?[]:[[k,runtime[k]]])),now,newId});
+   // One durable question registry per run: its records are run events, so a pending question survives reconnect and
+   // restart. Without a question port the capability layer refuses the call rather than offering an unanswerable question.
+   const questionRegistry=policy?.userQuestions===true?createQuestionRegistry({journal:createQuestionEventJournal({runOwner,binding,now,newId}),now}):undefined;
+   const capabilities=policy===undefined?undefined:createSdkCapabilities(policy,{runOwner,binding,cwd:runtime.cwd,...(childAssignments===undefined?{}:{childAssignments}),...(questionRegistry===undefined?{}:{userQuestions:{ask:questionRegistry.ask}}),...Object.fromEntries(CAPABILITY_RUNTIME_FACTS.flatMap(k=>runtime[k]===undefined?[]:[[k,runtime[k]]])),now,newId});
    if(browser!==undefined){
     // The lifetime may reject before the preparation promise settles. Keep ownership of a late run handle so it can
     // still be cleaned up; until then the outcome is unknown and the disposable host must be quarantined.
@@ -174,7 +180,10 @@ export function createConversationActivity({runOwner,prepareRuntime,query=sdkQue
     }
     return text;
    }
-   if(lifecycle!==undefined)controls=createActivityLifecycle({config:lifecycle,runOwner,binding,saved,runtime,input,
+   // A claimed answer control resolves the suspended question call instead of steering or holding the run; every other
+   // claim is passed to the lifecycle owner unchanged.
+   const controlOwner=questionRegistry===undefined?runOwner:{...runOwner,claimControl:createQuestionControlDispatch({runOwner,registry:questionRegistry,binding}).claimControl};
+   if(lifecycle!==undefined)controls=createActivityLifecycle({config:lifecycle,runOwner:controlOwner,binding,saved,runtime,input,
     query:{interrupt:()=>stream.interrupt(),close:closeQuery,drain:()=>drained.promise},life,now});
     while(true){diagnostic('stage','activity-stream');let next;try{next=await (controls?Promise.race([ahead.next(),controls.failure.then(error=>{throw error;})]):ahead.next());}
     catch(error){drained.reject(error);if(controls?.isHeld()){capabilities?.check();uploadRuntime?.check();return await controls.heldResult();}throw error;}if(next.done){drained.reject(fault('SDK_RESULT_MISSING'));break;}const m=next.value;
