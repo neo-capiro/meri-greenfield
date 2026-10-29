@@ -653,15 +653,27 @@ class SourceBuiltClamavPayload(unittest.TestCase):
         from CMAKE_INSTALL_FULL_LIBDIR, and every library install names ${CMAKE_INSTALL_LIBDIR} (libclamav 521,
         libfreshclam 108, libclamunrar 112, libclamunrar_iface 86, libclammspack 86, libclamav_rust 60). The configure
         step therefore pins both halves of that pair, and the collectors keep reading usr/lib rather than following the
-        installed directory wherever it goes.
+        installed directory wherever it goes. The same configure step also pins APP_CONFIG_DIRECTORY=/etc (the variable
+        ClamAV actually uses for CONFDIR) and CVD_CERTS_DIRECTORY=/usr/etc/certs. The latter is not cosmetic: the
+        default CVD_CERTS_DIRECTORY is "${APP_CONFIG_DIRECTORY}/certs" (CMakeOptions.cmake:20-21), so
+        APP_CONFIG_DIRECTORY=/etc alone would move clamav.crt to /etc/certs, outside the scanner sandbox's read-only
+        /usr mount (native-sandbox.mjs creates an isolated /etc with only ld.so.cache); libclamav would then fail
+        cl_load with CL_ECVD when codesign_verifier_new cannot canonicalize the absent directory.
         """
         build = " ".join(self.STAGES["clamav-source-build"]["instructions"])
         self.assertIn("-D CMAKE_INSTALL_PREFIX=/usr", build,
                       "the ClamAV install prefix is no longer pinned to /usr")
         self.assertIn("-D CMAKE_INSTALL_LIBDIR=lib", build,
                       "the ClamAV library directory is left to the GNUInstallDirs default instead of /usr/lib")
-        self.assertIn("-D CMAKE_INSTALL_SYSCONFDIR=/etc", build,
-                      "the ClamAV sysconf directory pin was dropped")
+        self.assertIn("-D APP_CONFIG_DIRECTORY=/etc", build,
+                      "the ClamAV config directory is left to the 'etc' default instead of /etc")
+        self.assertNotIn("-D CMAKE_INSTALL_SYSCONFDIR=/etc", build,
+                         "the recipe still passes a CMake variable ClamAV does not read for CONFDIR")
+        self.assertIn("-D CVD_CERTS_DIRECTORY=/usr/etc/certs", build,
+                      "the trust-certificate directory follows APP_CONFIG_DIRECTORY to /etc/certs, outside the "
+                      "sandbox's read-only /usr mount")
+        self.assertNotIn("-D CVD_CERTS_DIRECTORY=/etc/certs", build,
+                         "the trust-certificate directory is pinned outside the mounted /usr")
         self.assertNotIn("lib64", build, "the compiler stage now tolerates or expects a lib64 layout")
         self.assertIn("find usr/lib -maxdepth 1 -type f", DOCKERFILE,
                       "the installed-payload inventory no longer collects the libraries from usr/lib")
@@ -711,26 +723,43 @@ class SourceBuiltClamavPayload(unittest.TestCase):
                           "through the preserved merged link" % name)
 
     def test_the_runtime_version_probe_preserves_tool_output_and_the_loader_dependency(self):
-        """Build 2066e603 installed the payload but clamscan reported an unexpected version.
+        """Build b3a313d1 installed json-c, passed ctest and reached the six real version probes.
 
-        The old loop piped `--version` into `grep -q`, so it saw only whether the banner was present and discarded
-        the tool's stdout/stderr and exit status. A missing linked library (libclamav links JSONC::jsonc; json-c is
-        staged and in the runtime closure but was never installed) therefore surfaced as "unexpected ClamAV
-        version" with no cause. The probe now prints each tool's actual output and status, fails closed on a
-        nonzero status before checking the banner, and still requires the exact ClamAV 1.5.4 version. json-c is
-        named in the upload layer install so the linked soname is actually present.
+        clamscan and sigtool printed the exact banner with exit 0; freshclam exited 2 because its compiled default
+        config path is /usr/etc/freshclam.conf, not /etc/freshclam.conf: ClamAV's CMake derives CONFDIR from
+        ${CMAKE_INSTALL_PREFIX}/${APP_CONFIG_DIRECTORY}, not GNUInstallDirs' CMAKE_INSTALL_SYSCONFDIR. clamd and
+        clamdscan parse their config before their version branch, so they need the same treatment, and clamdtop's
+        version banner is "Clam AntiVirus Monitoring Tool 1.5.4", not "ClamAV 1.5.4". The recipe now pins the
+        supported APP_CONFIG_DIRECTORY to /etc and the probe supplies minimal valid configs with --config-file (the
+        same explicit-config pattern the production freshclam caller uses), keeping the exact per-tool banner and
+        status gates. json-c is still installed because libclamav links it.
         """
         runtime = " ".join(self.STAGES["runtime"]["instructions"])
+        build = " ".join(self.STAGES["clamav-source-build"]["instructions"])
         self.assertNotIn("\"$tool\" --version 2>&1 | grep -q 'ClamAV 1.5.4'", runtime,
                          "the version probe still discards the tool's status behind a pipeline")
-        self.assertIn('tool_out=$("$tool" --version 2>&1); tool_status=$?', runtime,
+        self.assertIn('tool_out=$("$tool" $tool_args --version 2>&1); tool_status=$?', runtime,
                       "the version probe does not capture the tool's output and exit status")
-        self.assertIn("printf '%s --version exit=%s output=%s", runtime,
+        self.assertIn("printf '%s %s --version exit=%s output=%s", runtime,
                       "the version probe does not print the actual banner and status")
         self.assertIn('if [ "$tool_status" -ne 0 ]; then echo "tool failed to execute: $tool"; exit 1; fi', runtime,
                       "the version probe does not fail closed on a nonzero tool status")
-        self.assertIn('case "$tool_out" in *"ClamAV 1.5.4"*)', runtime,
-                      "the version probe no longer requires the exact ClamAV 1.5.4 banner")
+        self.assertIn('case "$tool_out" in *"$expected_banner"*)', runtime,
+                      "the version probe no longer requires the per-tool exact banner")
+        self.assertIn("DatabaseDirectory /usr/share/clamav", runtime,
+                      "the probe does not create the minimal config freshclam/clamd/clamdscan parse")
+        self.assertIn("--config-file=/tmp/meri-probe-freshclam.conf", runtime,
+                      "freshclam is not given the probe config it parses before --version")
+        self.assertIn("--config-file=/tmp/meri-probe-clamd.conf", runtime,
+                      "clamd/clamdscan are not given the probe config they parse before --version")
+        self.assertIn('expected_banner="Clam AntiVirus Monitoring Tool 1.5.4"', runtime,
+                      "clamdtop's actual version banner is not the one required")
+        self.assertIn('expected_banner="ClamAV 1.5.4"', runtime,
+                      "the other tools' exact ClamAV 1.5.4 banner is not required")
+        self.assertIn("-D APP_CONFIG_DIRECTORY=/etc", build,
+                      "the recipe does not pin the CMake variable that actually sets CONFDIR")
+        self.assertNotIn("-D CMAKE_INSTALL_SYSCONFDIR=/etc", build,
+                         "the recipe still passes a CMake variable ClamAV does not read for CONFDIR")
         self.assertIn("sigtool --md5 /tmp/meri-sigtool-probe > /tmp/meri-sigtool-out 2> /tmp/meri-sigtool-err",
                       runtime, "the signature probe does not preserve sigtool's stdout and stderr")
         self.assertIn('if [ "$sigtool_status" -ne 0 ]; then echo "sigtool failed to execute"; exit 1; fi', runtime,
