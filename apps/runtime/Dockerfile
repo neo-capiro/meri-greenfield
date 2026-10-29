@@ -578,6 +578,35 @@ RUN --network=none \
     cmake --build /tmp/clamav-build --parallel "$(nproc)" && \
     ctest --test-dir /tmp/clamav-build --output-on-failure && \
     DESTDIR=/tmp/meri-clamav-out cmake --install /tmp/clamav-build && \
+    printf 'MERI-NATIVE-SIZE before=%s\n' "$(find /tmp/meri-clamav-out -type f -exec stat -c %s {} + | awk '{s+=$1} END {printf "%d", s}')" && \
+    rust_archive=/tmp/meri-clamav-out/usr/lib/libclamav_rust.a && \
+    [ -f "$rust_archive" ] || { echo "expected staged archive missing: $rust_archive"; exit 1; } && \
+    printf 'MERI-NATIVE-ARCHIVE omitted=%s bytes=%s sha256=%s\n' "$rust_archive" "$(stat -c %s "$rust_archive")" "$(sha256sum "$rust_archive" | cut -d' ' -f1)" && \
+    rm -f "$rust_archive" && \
+    for f in \
+      /tmp/meri-clamav-out/usr/bin/clamconf \
+      /tmp/meri-clamav-out/usr/bin/clamd \
+      /tmp/meri-clamav-out/usr/bin/clamdscan \
+      /tmp/meri-clamav-out/usr/bin/clamonacc \
+      /tmp/meri-clamav-out/usr/bin/clamav-milter \
+      /tmp/meri-clamav-out/usr/bin/clamscan \
+      /tmp/meri-clamav-out/usr/bin/sigtool \
+      /tmp/meri-clamav-out/usr/bin/clambc \
+      /tmp/meri-clamav-out/usr/bin/freshclam \
+      /tmp/meri-clamav-out/usr/bin/clamdtop \
+      /tmp/meri-clamav-out/usr/lib/libclamunrar.so.12.1.0 \
+      /tmp/meri-clamav-out/usr/lib/libclamunrar_iface.so.12.1.0 \
+      /tmp/meri-clamav-out/usr/lib/libclammspack.so.0.8.0 \
+      /tmp/meri-clamav-out/usr/lib/libclamav.so.12.1.0 \
+      /tmp/meri-clamav-out/usr/lib/libfreshclam.so.4.0.0; do \
+      [ -f "$f" ] || { echo "missing staged ClamAV ELF: $f"; exit 1; }; \
+      readelf -h "$f" >/dev/null 2>&1 || { echo "unexpected staged file type: $f"; exit 1; }; \
+      before=$(stat -c %s "$f") || { echo "staged stat failed: $f"; exit 1; }; \
+      strip --strip-debug "$f" || { echo "staged strip failed: $f"; exit 1; }; \
+      after=$(stat -c %s "$f") || { echo "staged stat failed: $f"; exit 1; }; \
+      printf 'MERI-NATIVE-STRIP file=%s before=%s after=%s\n' "$f" "$before" "$after"; \
+    done && \
+    printf 'MERI-NATIVE-SIZE after=%s\n' "$(find /tmp/meri-clamav-out -type f -exec stat -c %s {} + | awk '{s+=$1} END {printf "%d", s}')" && \
     mkdir -p /tmp/meri-clamav-out/usr/share/meri && \
     printf '%s\n' '{"builtFrom":"the authenticated upstream release asset, not a distribution package","component":"clamav","coverage":"infra/product-preview/clamav-source-advisories.json with the check in infra/product-preview/clamav_component_coverage.py","detachedSignatureSha256":"8acf5816c3c9dc8b02a2e11f93d90d37b25845a0481e16873454df4a30a375c0","detachedSignatureUrl":"https://github.com/Cisco-Talos/clamav/releases/download/clamav-1.5.4/clamav-1.5.4.tar.gz.sig","distributionPackagesRemoved":["clamav-1.5-scanner=1.5.2-r0","clamav-1.5-freshclam=1.5.2-r0","clamav-1.5=1.5.2-r7"],"installedBy":"apps/runtime/Dockerfile, stage clamav-source-build, copied into the runtime stage from /tmp/meri-clamav-out","installedInventory":"/usr/share/meri/clamav-component-inventory.txt (sha256 of the installed executables in usr/bin and of the ClamAV and freshclam shared libraries in usr/lib: the payload'\''s executable and shared-library surface, not every file the image carries; re-checked against the installed bytes in the runtime stage and verified again by the image build probe)","installedInventorySha256":"INSTALLED-INVENTORY-SHA256-PLACEHOLDER","installedInventoryCovers":"usr/bin/*, usr/lib/libclam*.so*, usr/lib/libfreshclam*.so*","libraryRelationships":"built with ENABLE_SHARED_LIB=ON and ENABLE_STATIC_LIB=OFF, so the payload ships shared libraries only: the installed tools load libclamav and libfreshclam from /usr/lib at runtime, and libclamav links the pinned closure'\''s zlib, openssl, libxml2, pcre2, bzip2 and json-c as the image provides them. Presence and version are asserted in the runtime stage; linkage and ABI remain unverified until a real ARM build.","coverageBinding":"the image build probe in infra/product-preview/image-build.sh executes python3.13 /usr/share/meri/clamav_component_coverage.py --bind against this image'\''s own clamscan, this inventory and this provenance, and fails the build when any of them disagree","qualification":"built, installed, probed and scanned image state is unproven until a separately allocated ARM build, probe and scan","signingKeyFingerprint":"5BADCA2665EF59DCF8A23D8B707F0DB480836771","signingKeyUrl":"https://raw.githubusercontent.com/Cisco-Talos/clamav-documentation/main/src/manual/cisco-talos.gpg","upstreamReleased":"2026-08-07","upstreamSha256":"1af1117a228f1b5bc7fa91a0dabc37848a99e7d25188e9be8043332ce721dfd3","upstreamUrl":"https://github.com/Cisco-Talos/clamav/releases/download/clamav-1.5.4/clamav-1.5.4.tar.gz","upstreamVersion":"1.5.4"}' > /tmp/meri-clamav-out/usr/share/meri/clamav-component-provenance.json && \
     ( cd /tmp/meri-clamav-out && { find usr/bin -type f -exec sha256sum {} + ; \
