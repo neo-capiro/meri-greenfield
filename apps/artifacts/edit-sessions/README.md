@@ -28,8 +28,19 @@ lock/sequence atomicity, connection recovery, owner isolation, revocation,
 publication barriers, discard and expiry. Save remains private; the Core row
 records publication state but cannot create or certify an immutable version.
 
-The runtime must still connect the Core receiver through existing trusted
-credentials, current artifact authority and retention on every call.
+`core-drafts.mjs` is the fixed-route Core client for open/read/lock/save/discard
+and publication state. It borrows the existing action-session owner's live
+native credential for the exact run and client before and after each call,
+with the control service secret. It creates no credential or session store,
+never gives the runner a secret, and never retries. `core-draft-wire.mjs`
+correlates the private Core wire response, including exact bytes/hash, source,
+sequence and publication intent. Core remains the state/lock authority.
+
+Save and read use the dedicated 28,000,000-byte JSON boundary for at most 20 MiB
+of file bytes; other responses stay at 32 KiB. Uncertain effects remain unknown,
+and failed reads release nothing. Late responses are retired after cancellation.
+The WOPI host must still compose this client with current artifact authority and
+retention on every call; a Core draft receipt alone cannot authorize an artifact.
 Suppression/access-loss cleanup and the canonical retention inventory must be
 composed before activating the `editorDrafts` class.
 
@@ -82,6 +93,14 @@ against the untouched service at the base because it still supplied a removed
 budget API; it now tests the existing native invocation and original authority.
 Focused noEmit import/type checks pass. These source fixtures use the actual
 owners over scripted SQL/CAS/object ports, not a native database or CODE host.
+
+The draft client adds 42 passing checks using the actual native-session owner
+and synthetic HTTP responses, including full-size save/read, revocation,
+credential replacement, closed response correlation, noncanonical bytes,
+ambiguous effects and cancelled/late fetch. Focused noEmit import/type checks
+also pass. The WOPI HTTP route, cross-instance exclusive editor admission,
+versioned browser receiver and final integration with the Core receiver remain
+open; no live editor connection is claimed by these client tests.
 
 Primary references: [CODE edition](https://www.collaboraonline.com/code/),
 [Collabora integration](https://sdk.collaboraonline.com/docs/How_to_integrate.html),
