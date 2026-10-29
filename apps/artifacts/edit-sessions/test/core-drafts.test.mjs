@@ -6,7 +6,8 @@ import {createCoreOfficeDraftClient} from '../core-drafts.mjs';
 import {officeDraftRequest,officeDraftResponse,OFFICE_DRAFT_MAX_BYTES} from '../core-draft-wire.mjs';
 const id=n=>`00000000-0000-4000-8000-${String(n).padStart(12,'0')}`,sha=bytes=>createHash('sha256').update(bytes).digest('hex');
 const key={conversationId:id(1),draftId:id(8)},source={artifactId:id(9),baseVersionId:id(10),baseSha256:'a'.repeat(64),format:'docx',filename:'Draft.docx'};
-const bytes=Buffer.from('private edited bytes'),saved={...key,lock:'wopi-lock',expectedSequence:0,kind:'autosave',sha256:sha(bytes),bytesBase64:bytes.toString('base64')};
+const editor={editorId:id(12),editorEpoch:1};
+const bytes=Buffer.from('private edited bytes'),saved={...key,...editor,lock:'wopi-lock',expectedSequence:0,kind:'autosave',sha256:sha(bytes),bytesBase64:bytes.toString('base64')};
 const initial=()=>({...key,...source,sequence:0,sha256:null,byteLength:0,state:'draft',publishIntent:null,publishedVersionId:null,savedAt:'2026-10-29T00:00:00.000Z',expiresAt:'2026-11-05T00:00:00.000Z'});
 const kept=()=>({...initial(),sequence:1,sha256:sha(bytes),byteLength:bytes.length});
 const pending=()=>({...kept(),state:'publish-pending',publishIntent:`office:${key.draftId}:1`});
@@ -26,9 +27,15 @@ async function fixture(){
  return {sessions,session,selection,state,options,client,advance:ms=>{clock+=ms;},call:(route='open',body={...key,...source},chosen=selection)=>client.call(route,body,chosen)};
 }
 const exchanges=[['open',{...key,...source},initial()],['read',key,{...kept(),bytesBase64:saved.bytesBase64}],['read',key,{...initial(),bytesBase64:null}],
- ['lock',{...key,operation:'get'},{status:200,lock:''}],['lock',{...key,operation:'lock',lock:'new'},{status:200}],['lock',{...key,operation:'refresh',lock:'new'},{status:409,lock:'other'}],
+ ['lock',{...key,...editor,operation:'get'},{status:200,lock:''}],['lock',{...key,...editor,operation:'lock',lock:'new'},{status:200}],['lock',{...key,...editor,operation:'refresh',lock:'new'},{status:409,lock:'other'}],
  ['save',saved,{status:200,receipt:kept()}],['save',saved,{status:409,lock:''}],['discard',key,{discarded:true}],['beginPublish',begin,{receipt:pending(),dispatch:true}],
- ['beginPublish',begin,{receipt:{...pending(),state:'published',publishedVersionId:id(11)},dispatch:false}],['settlePublish',settle,{...pending(),state:'published',publishedVersionId:id(11)}]];
+ ['beginPublish',begin,{receipt:{...pending(),state:'published',publishedVersionId:id(11)},dispatch:false}],['settlePublish',settle,{...pending(),state:'published',publishedVersionId:id(11)}],
+ ['editor',{...key,operation:'inspect'},{editorId:null,epoch:0,expiresAt:null}],
+ ['editor',{...key,operation:'acquire',editorId:editor.editorId,expectedEpoch:0},{editorId:editor.editorId,epoch:1,expiresAt:'2026-10-29T00:10:00.000Z'}],
+ ['editor',{...key,operation:'refresh',editorId:editor.editorId,expectedEpoch:1},{editorId:editor.editorId,epoch:1,expiresAt:'2026-10-29T00:10:00.000Z'}],
+ ['editor',{...key,operation:'release',editorId:editor.editorId,expectedEpoch:1},{editorId:null,epoch:1,expiresAt:null}],
+ ['editor',{...key,operation:'takeover',editorId:id(13),expectedEpoch:1},{editorId:id(13),epoch:2,expiresAt:'2026-10-29T00:10:00.000Z'}],
+ ['editorRead',{...key,...editor},{...kept(),bytesBase64:saved.bytesBase64}]];
 for(const [n,[route,body,result]]of exchanges.entries())test(`Core exchange ${n+1}: ${route} through current native credential and exact route`,async t=>{
  const f=await fixture();t.after(()=>f.sessions.close());f.state.reply=()=>reply(result);assert.deepEqual(await f.call(route,body),result);
  const call=f.state.calls[0];assert.ok(call.url.startsWith('https://core.example.test/api/clio/office-drafts/'));assert.deepEqual(JSON.parse(call.options.body),body);
@@ -99,4 +106,16 @@ test('cancelled Save stays unknown; a late response is retired without retry or 
  await assert.rejects(client.call('save',saved,{...f.selection,signal:controller.signal}),e=>e.outcome==='UNKNOWN');
  finish(new Response(new ReadableStream({cancel(){retired++;}}),{headers:{'content-type':'application/json'}}));
  await new Promise(resolve=>setImmediate(resolve));assert.equal(retired,1);
+});
+test('missing or stale-shaped editor proofs cannot reach locks, Save or editor Read',()=>{
+ for(const [route,request]of [['lock',{...key,...editor,operation:'get'}],['save',saved],['editorRead',{...key,...editor}]]){
+  for(const field of ['editorId','editorEpoch']){const bad={...request};delete bad[field];assert.throws(()=>officeDraftRequest(route,bad));}
+  assert.throws(()=>officeDraftRequest(route,{...request,editorEpoch:0}));
+ }
+});
+test('editor admission answers must correlate exact ID, epoch and expiry shape',()=>{
+ const request={...key,operation:'acquire',editorId:editor.editorId,expectedEpoch:4},valid={editorId:editor.editorId,epoch:5,expiresAt:'2026-10-29T00:10:00.000Z'};
+ for(const patch of [{epoch:4},{editorId:id(13)},{expiresAt:null},{editorId:null,expiresAt:null},{extra:true}])
+  assert.throws(()=>officeDraftResponse('editor',{...valid,...patch},request));
+ assert.throws(()=>officeDraftResponse('editor',{...valid,editorId:null},{...key,operation:'inspect'}));
 });
