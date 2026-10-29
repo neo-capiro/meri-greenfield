@@ -202,6 +202,12 @@ export function createSourceReadContext({contract,proof,native,defaultCongress,n
   if(input.seed?.startsWith('client:')&&UUID.test(input.seed.slice(7).toLowerCase()))visibleSelector(native,s,input.seed.slice(7).toLowerCase());
   return {};
  }
+ if(group==='graph-paths'){
+  const input=contract.normalizeInput(proof.request,{}).input,selected=input.clientId??null,s=proof.subject;
+  if(selected===null){if(s.kind==='client'||s.entityType==='client')refuse('ACCESS_DENIED');}
+  else visibleSelector(native,s,selected);
+  return {};
+ }
  if(group==='tracked-bills'){
   const clientReference=proof.request.clientId.trim().slice(0,80),s=proof.subject;
   const personal=s.kind==='personal'&&s.entityType==='user'&&s.entityIds.length===1&&s.entityIds[0]===proof.binding.actorId;

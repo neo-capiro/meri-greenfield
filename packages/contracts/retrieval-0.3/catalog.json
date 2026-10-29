@@ -1,7 +1,7 @@
 {
   "contractVersion": "0.2.0",
   "catalogId": "meri.retrieval",
-  "catalogVersion": "0.2.26",
+  "catalogVersion": "0.2.27",
   "sourceRegistryCommit": "87ea34a812c56524644e4983b215ded5ce8a8f7d",
   "originals": [
     {
@@ -296,10 +296,13 @@
     },
     {
       "id": "find_path_to",
-      "disposition": "deferred",
-      "boundary": "Relationship-path recommendation behavior and policy fixture are not sufficiently defined; graph record reads remain proposed.",
-      "replacement": null,
-      "state": "deferred"
+      "disposition": "selected",
+      "boundary": "Bounded source-linked shortest paths in the current permission-filtered Core graph, with direct, thematic and derived relationships kept distinct. No historical-window or exhaustive graph claim.",
+      "replacement": {
+        "id": "find_path_to",
+        "version": "0.2.0"
+      },
+      "state": "mapped"
     },
     {
       "id": "search_memory",
@@ -11774,6 +11777,74 @@
       ],
       "fixtureIds": [
         "catalog.binding.get_pe_buyer_workspace"
+      ]
+    },
+    {
+      "operation": {
+        "id": "find_path_to",
+        "version": "0.2.0"
+      },
+      "displayName": "Find source-linked graph paths",
+      "whenToUse": "Find one bounded shortest route from each visible client to an exact target in the current authorized graph.",
+      "limitations": [
+        "Native installation and deployed source qualification remain required.",
+        "Depth is bounded from one to five and at most twenty paths are returned. Every row, path or traversal limit is partial coverage.",
+        "Direct structural relationships, thematic note mentions and derived cache projections have different meanings. A path does not establish influence, access or willingness to make an introduction.",
+        "Source references identify canonical rows or cache projection keys; derived keys do not assert primary-document provenance.",
+        "This operation reads current state only. It cannot answer historical-window questions or prove a target absent when no route is returned.",
+        "A selected-client run must supply its exact client ID. Core current authority, memory visibility and client walls still govern access."
+      ],
+      "positiveExamples": [
+        "Inspect the declared stored projection within the current authorized source scope."
+      ],
+      "negativeExamples": [
+        "Treat a model selector, empty page, cursor, timestamp or reported coverage as proof of authorization, freshness or exhaustive absence."
+      ],
+      "sourceRequirements": [
+        {
+          "sourceId": "client_knowledge_search",
+          "authority": "derived",
+          "purpose": "evidence"
+        }
+      ],
+      "inputSchema": {
+        "id": "urn:meri:retrieval:graph-paths:0.2.0#/$defs/GraphPathsInput",
+        "sha256": "e19dd68f44153dae11ecf6fc125572dff6a390527da6b58358f92f9ebbd842d0"
+      },
+      "outputSchema": {
+        "id": "urn:meri:retrieval:graph-paths:0.2.0#/$defs/GraphPathsOutput",
+        "sha256": "e19dd68f44153dae11ecf6fc125572dff6a390527da6b58358f92f9ebbd842d0"
+      },
+      "aliases": [],
+      "sideEffect": "none",
+      "requiredGrants": [
+        "tool.read"
+      ],
+      "approvalBoundary": "none",
+      "handler": null,
+      "availability": "unimplemented",
+      "qualification": "pending",
+      "retry": {
+        "maxRetries": 0,
+        "retryableCodes": [],
+        "unknownOutcome": "reconcile-before-retry"
+      },
+      "replacement": null,
+      "requirementIds": [
+        "R-01",
+        "R-04",
+        "R-05"
+      ],
+      "ticketIds": [
+        "REL-02"
+      ],
+      "gateIds": [
+        "RG-02",
+        "RG-05",
+        "RG-07"
+      ],
+      "fixtureIds": [
+        "catalog.binding.find_path_to"
       ]
     }
   ]

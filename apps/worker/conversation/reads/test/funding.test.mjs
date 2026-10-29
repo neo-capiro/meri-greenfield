@@ -13,8 +13,8 @@ import {decodeNativeReadObservation,NATIVE_READ_OBSERVATION_HEADER as HEADER} fr
 const family='funding-opportunities',operations=ids.map(id=>({id,version:'0.2.0'}));
 
 test('funding SDK: the complete five-operation family requires a task client scope despite forged inventories', () => {
-    assert.equal(familyReads().length, 113);
-    assert.equal(READ_FAMILY_IDS.length, 62);
+    assert.equal(familyReads().length, 114);
+    assert.equal(READ_FAMILY_IDS.length, 63);
     assert.equal(READ_FAMILIES[family].clientScope, 'required');
     assert.deepEqual(familyReads().filter(row => row.family === family).map(row => row.operation), operations);
     const overclaimed = [...operations, { id: 'get_business_development_evidence', version: '0.2.0' }, { id: 'search_federal_grants', version: '0.2.0' }];
