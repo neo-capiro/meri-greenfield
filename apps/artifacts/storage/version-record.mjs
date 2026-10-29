@@ -1,5 +1,6 @@
 /** Canonical immutable artifact storage envelope and relational proof; inert and shared by publication/recovery. */
 import {ARTIFACT_MIME_TYPES,artifactFilename} from '../../../packages/contracts/artifacts-0.2/artifact-formats.mjs';
+import {storedArtifactSource,storedArtifactInspection,assertOfficeEditRecord,isOfficeEdit} from '../../../packages/contracts/office-edit.mjs';
 import {v,own,data,fail,same,uuid,digest,scopeFacts} from './boundary.mjs';
 /** Bounded immutable asset references retained BESIDE the version: the original spec's own
  * `id -> ObjectReference` pairs, so a private current-authorized revision can re-present exactly the
@@ -22,7 +23,8 @@ function assetRefs(raw,version){
  });
 }
 function recordValue(raw){const r=data(own(raw,['version','spec','specSha256','requestSha256','inspection'],['assets']));
- const version=v.version(r.version),spec=v.request(r.spec),inspection=v.inspection(r.inspection);digest(r.requestSha256);uuid(version.versionId);uuid(version.artifactId);
+ const version=v.version(r.version),spec=storedArtifactSource(v,r.spec),inspection=storedArtifactInspection(v,spec,r.inspection);digest(r.requestSha256);uuid(version.versionId);uuid(version.artifactId);assertOfficeEditRecord(spec,version);
+ if(isOfficeEdit(spec)&&r.assets!==undefined)fail('ARTIFACT_VERSION_CORRUPT');
  if(r.specSha256!==v.hash(spec)||!same(version.object.scopes,version.scopes)||version.scopes.some(s=>s.tenantId!==version.binding.tenantId)||
   version.evidence.some(e=>e.scopes.some(s=>!version.scopes.some(parent=>same(parent,s))))||version.object.sha256!==inspection.sha256||version.object.bytes!==inspection.bytes||inspection.format!==spec.format||
   version.mimeType!==ARTIFACT_MIME_TYPES[spec.format]||version.filename!==artifactFilename(spec)||version.generationStatus!=='draft'||version.previewStatus!=='pending')fail('ARTIFACT_VERSION_CORRUPT');

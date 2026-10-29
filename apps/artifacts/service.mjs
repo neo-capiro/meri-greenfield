@@ -1,9 +1,11 @@
 import {createHash} from 'node:crypto';
 import {createOperationLifetime} from '../../packages/runtime/operation-lifetime.mjs';
-import {recoverArtifact} from './recovery.mjs';
+import {recoverArtifact,recoverOfficeEdit} from './recovery.mjs';
 import {readArtifactLibrary} from './library.mjs';
 import {readPagedArtifactHistory} from './history-page.mjs';
 import {prepareFederalDraft} from './federal-drafting/preparation.mjs';
+import {officeEditSource,isOfficeEdit,storedArtifactSource,storedArtifactInspection,assertOfficeEditRecord,officeEditRequestSha256,officeEditParentMatches} from '../../packages/contracts/office-edit.mjs';
+import {inspectOfficeEdit} from './edit-sessions/inspect-office.mjs';
 // The canonical immutable-spec asset identification the intent layer already owns, so a retained
 // revision and this write identify exactly the same references instead of two walks that can drift.
 import {referencedAssetIds} from '../control/intents/document-revision.mjs';
@@ -11,7 +13,8 @@ import {ARTIFACT_MIME_TYPES as mime,artifactFilename as filenameFor} from '../..
 const sha=bytes=>createHash('sha256').update(bytes).digest('hex');
 const fail=code=>{throw Object.assign(new Error(code),{code});};
 const closed=(value,keys)=>{if(!value||Array.isArray(value)||Object.keys(value).sort().join()!==keys.sort().join())fail('ARTIFACT_PORT_SHAPE');};
-export function createArtifactService({validators:v,authorize,versions,objects,executor,now,ids,retention,admitRetainedEvidence,authorizeOrigin,retainedAssetMapWrites}){
+export function createArtifactService({validators:v,authorize,versions,objects,executor,now,ids,retention,admitRetainedEvidence,authorizeOrigin,retainedAssetMapWrites,officeEditWrites=false}){
+  if(typeof officeEditWrites!=='boolean')fail('ARTIFACT_CONFIGURATION');
   if(authorizeOrigin!==undefined&&typeof authorizeOrigin!=='function')fail('ARTIFACT_CONFIGURATION');
   if(admitRetainedEvidence!==undefined&&typeof admitRetainedEvidence!=='function')fail('ARTIFACT_CONFIGURATION');
   // The private producer activation for the retained asset map. Absent or false (the default) this service
@@ -29,13 +32,13 @@ export function createArtifactService({validators:v,authorize,versions,objects,e
     for(const subject of subjects)await life.run(()=>retention.assertServable(subject));life.check();}
   async function recoverTenant(life,context,versionId=null){if(versionId!==null&&versions.recoverVersion)await life.run(signal=>versions.recoverVersion(context.binding.tenantId,versionId,signal));else if(versions.recoverTenant)await life.run(signal=>versions.recoverTenant(context.binding.tenantId,signal));life.check();}
   function scopeVersion(record,id,context){
-    closed(record,['version','spec','specSha256','requestSha256','inspection',...(record?.assets===undefined?[]:['assets'])]);record=v.snapshot(record);record.version=v.version(record.version);record.spec=v.request(record.spec);
+    closed(record,['version','spec','specSha256','requestSha256','inspection',...(record?.assets===undefined?[]:['assets'])]);record=v.snapshot(record);record.version=v.version(record.version);record.spec=storedArtifactSource(v,record.spec);assertOfficeEditRecord(record.spec,record.version);
     if(record.version.versionId!==id||record.version.binding.tenantId!==context.binding.tenantId||record.version.binding.actorId!==context.binding.actorId||record.version.binding.conversationId!==context.binding.conversationId||!same(record.version.scopes,context.scopes)||!same(record.version.object.scopes,record.version.scopes)||record.specSha256!==v.hash(record.spec))fail('ARTIFACT_VERSION_CONTEXT');
     if(record.version.mimeType!==mime[record.spec.format]||record.version.filename!==filenameFor(record.spec)||record.version.generationStatus!=='draft'||record.version.previewStatus!=='pending')fail('ARTIFACT_VERSION_METADATA');
     return record;
   }
-  function inspectBytes(value,bytes,format){
-    let inspection;try{inspection=v.inspection(value);}catch(cause){throw Object.assign(new Error('ARTIFACT_INSPECTION_MISMATCH'),{code:'ARTIFACT_INSPECTION_MISMATCH',cause});}closed(inspection,['sha256','bytes','format','nativeOpened','rendered','recalculated','members','details']);
+  function inspectBytes(value,bytes,format,spec){
+    let inspection;try{inspection=storedArtifactInspection(v,spec,value);}catch(cause){throw Object.assign(new Error('ARTIFACT_INSPECTION_MISMATCH'),{code:'ARTIFACT_INSPECTION_MISMATCH',cause});}closed(inspection,['sha256','bytes','format','nativeOpened','rendered','recalculated','members','details']);
     if(inspection.sha256!==sha(bytes)||inspection.bytes!==bytes.length||inspection.format!==format||inspection.nativeOpened!==false||inspection.rendered!==false||inspection.recalculated!==false||!Array.isArray(inspection.members)||!inspection.members.every(x=>typeof x==='string')||!inspection.details||typeof inspection.details!=='object'||Array.isArray(inspection.details))fail('ARTIFACT_INSPECTION_MISMATCH');return inspection;
   }
   function operation(context,signal){return createOperationLifetime({deadlineMs:context.deadlineMs,now,signal,errorFactory:code=>Object.assign(new Error(code),{code:'ARTIFACT_'+code})});}
@@ -60,17 +63,21 @@ export function createArtifactService({validators:v,authorize,versions,objects,e
     for(const id of declared){const object=available.get(id);if(object!==undefined)pins.push({id,object:v.object(object)});}
     return pins.length?pins:undefined;
   }
-  async function generate(baseVersionId,requestValue,contextValue,{signal,invocation}={}){
+  async function generate(baseVersionId,requestValue,contextValue,{signal,invocation}={},editedBytes=null){
+    const office=editedBytes!==null;
+    if(office&&(!officeEditWrites||baseVersionId===null))fail('EDITOR_PUBLISH_UNAVAILABLE');
     // The retained map is emitted only under the deployment's explicit write activation: with it off (the
     // default) no new map-bearing record is produced, while the declared assets still reach the executor
     // with their actual verified bytes exactly as before.
-    const request=v.request(requestValue),context=v.context(contextValue),pins=retainedAssetMapWrites===true?assetPins(request,context):undefined;
+    const request=office?officeEditSource(requestValue):v.request(requestValue),context=v.context(contextValue),pins=!office&&retainedAssetMapWrites===true?assetPins(request,context):undefined;
+    if(office&&(!Buffer.isBuffer(editedBytes)||sha(editedBytes)!==request.edit.draftSha256||editedBytes.length>context.maxBytes))fail('EDITOR_SAVE_INVALID');
+    if(office)editedBytes=Buffer.from(editedBytes);
     if(request.format==='sandbox')fail('ANALYSIS_SANDBOX_DISPATCH_REQUIRED');
     if(context.analysisAdmission)fail('IRRELEVANT_ANALYSIS_ADMISSION');
     // Stored historical evidence remains readable; new native writes require current run-bound evidence.
     const retained=context.evidence.map(v.nativeSourceEvidence).some(e=>!same(e.binding,context.binding));
     if(retained&&(typeof admitRetainedEvidence!=='function'||admitRetainedEvidence(v.snapshot(context))!==undefined))fail('ARTIFACT_EVIDENCE_BINDING');
-    const requestSha256=v.nativeRequestSha256(request,context,baseVersionId),allocation=v.snapshot(ids());
+    const requestSha256=office?officeEditRequestSha256(v,request,context,baseVersionId):v.nativeRequestSha256(request,context,baseVersionId),allocation=v.snapshot(ids());
     closed(invocation,['invocationId','versionId','requestSha256']);
     if(!/^sdk:[a-f0-9]{64}$/u.test(invocation.invocationId)||invocation.requestSha256!==requestSha256)fail('ARTIFACT_INVOCATION');
     const versionId=invocation.versionId;
@@ -86,16 +93,19 @@ export function createArtifactService({validators:v,authorize,versions,objects,e
       if(baseVersionId!==null){
         readBase=scopeVersion(await life.run(signal=>versions.read(baseVersionId,signal)),baseVersionId,context);
         if(readBase.spec.operation!==request.operation||readBase.spec.format!==request.format)fail('ARTIFACT_REVISION_FORMAT');
+        if(!office&&isOfficeEdit(readBase.spec))fail('EDITOR_TYPED_REVISION_UNAVAILABLE');
+        if(office&&(!officeEditParentMatches(readBase,{spec:request})||!same(readBase.version.evidence,context.evidence)))fail('EDITOR_SOURCE_MISMATCH');
         // Revision consumes the exact original bytes as well as retained spec; a suppressed base is never read.
         await servable(life,context,readBase);baseBytes=await bytesFor(life,readBase.version.object,context.maxBytes);
         resource={...resource,object:readBase.version.object};receipt=await authority(life,action,resource,requestSha256,context);
       }
       const assets=[];for(const asset of context.assets){const bytes=await bytesFor(life,asset.object,2097152);assets.push({id:asset.id,bytes});}
       receipt=await authority(life,action,resource,requestSha256,context);await servable(life,context,readBase);
-      executionStarted=true;
-      const result=await life.run(signal=>executor.execute({request:v.snapshot(request),assets,base:readBase?{request:v.snapshot(readBase.spec),bytes:Buffer.from(baseBytes)}:null,deadlineMs:Math.min(context.deadlineMs,receipt.expiresAtMs),maxBytes:context.maxBytes,signal}));
+      let result;
+      if(office){life.check();result={bytes:editedBytes,inspection:inspectOfficeEdit(editedBytes,request.format)};life.check();}
+      else{executionStarted=true;result=await life.run(signal=>executor.execute({request:v.snapshot(request),assets,base:readBase?{request:v.snapshot(readBase.spec),bytes:Buffer.from(baseBytes)}:null,deadlineMs:Math.min(context.deadlineMs,receipt.expiresAtMs),maxBytes:context.maxBytes,signal}));}
       if(!Buffer.isBuffer(result.bytes)||result.bytes.length>context.maxBytes)fail('ARTIFACT_OUTPUT_LIMIT');
-      const bytes=Buffer.from(result.bytes),inspection=inspectBytes(result.inspection,bytes,request.format);
+      const bytes=Buffer.from(result.bytes),inspection=inspectBytes(result.inspection,bytes,request.format,request);
       receipt=await authority(life,action,resource,requestSha256,context);
       writeStarted=true;
       const object=v.object(await life.run(signal=>objects.put({objectId:allocation.objectId,bytes:Buffer.from(bytes),scopes:v.snapshot(context.scopes),requestSha256},signal)));
@@ -111,6 +121,9 @@ export function createArtifactService({validators:v,authorize,versions,objects,e
       receipt=await authority(life,action,{...resource,object},requestSha256,context);await servable(life,context,{version});
       return {version,inspection,execution:{kind:'native-document',invocationId:invocation.invocationId,requestSha256,authorizationReceiptId:receipt.receiptId,objectCommitted:true,versionCommitted:true,nativeQualified:false}};
     }catch(cause){
+      // The canonical publisher's stale-parent refusal is definite: the uploaded
+      // immutable object may need cleanup, but no new artifact head was committed.
+      if(office&&!versionCommitted&&cause?.code==='ARTIFACT_STALE_PARENT'){cause.lifetime=life.close();throw cause;}
       const error=executionStarted||writeStarted?Object.assign(new Error('ARTIFACT_EFFECT_UNKNOWN'),{code:'ARTIFACT_EFFECT_UNKNOWN',cause,versionId:allocation.versionId,versionCommitted}):cause;
       error.lifetime=life.close();throw error;
     }finally{life.close();}
@@ -124,7 +137,7 @@ export function createArtifactService({validators:v,authorize,versions,objects,e
       const record=scopeVersion(await life.run(signal=>versions.read(versionId,signal)),versionId,context);
       resource={...resource,object:record.version.object};await authority(life,action,resource,requestSha256,context);await servable(life,context,record);
       const bytes=await bytesFor(life,record.version.object,context.maxBytes);
-      const inspection=inspectBytes(record.inspection,bytes,record.spec.format);
+      const inspection=inspectBytes(record.inspection,bytes,record.spec.format,record.spec);
       await authority(life,action,resource,requestSha256,context);await servable(life,context,record);
       // Private revision preparation receives the retained typed source only after the
       // same byte, current-authority and retention checks as inspect. No new write or brand.
@@ -158,7 +171,9 @@ export function createArtifactService({validators:v,authorize,versions,objects,e
     }catch(error){error.lifetime=life.close();throw error;}finally{life.close();}
   }
   return Object.freeze({create:(request,context,options)=>generate(null,request,context,options),revise:(baseVersionId,request,context,options)=>{if(typeof baseVersionId!=='string')fail('ARTIFACT_VERSION_ID');return generate(baseVersionId,request,context,options);},
+    publishOfficeEdit:(baseVersionId,request,bytes,context,options)=>generate(baseVersionId,request,context,options,bytes),
     recover:(baseVersionId,request,context,options)=>recoverArtifact({v,operation,authority,scopeVersion,bytesFor,inspectBytes,versions,servable,recoverTenant},baseVersionId,request,context,options),
+    recoverOfficeEdit:(baseVersionId,request,context,options)=>recoverOfficeEdit({v,operation,authority,scopeVersion,bytesFor,inspectBytes,versions,servable,recoverTenant},baseVersionId,request,context,options),
     list:(query,context,options)=>readArtifactLibrary({v,versions,authorizeOrigin,operation,authority,servable,recoverTenant,now},query,context,options),
     history,revisionSource:(id,context,options)=>read(id,context,options,false,true),inspect:(id,context,options)=>read(id,context,options),download:(id,context,options)=>read(id,context,options,true),
     prepareFederalDraft:(input,context,options)=>prepareFederalDraft({read:(id,c,o)=>read(id,c,o,false,true)},input,context,options)});

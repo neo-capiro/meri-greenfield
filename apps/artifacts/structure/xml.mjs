@@ -15,14 +15,17 @@ const element=tag=>{
 };
 /** Parses `bytes` completely and returns the root element and its direct child elements.
  * Non-whitespace text directly under the root is refused when `elementOnlyRoot` (OPC relationship and content-type
- * parts have element-only content). @returns {{root:XmlElement,children:XmlElement[]}} */
-export function readXmlPart(bytes,{elementOnlyRoot=false}={}){
+ * parts have element-only content).
+ * @param {Uint8Array} bytes
+ * @param {{elementOnlyRoot?:boolean,visitElement?:null|((element:XmlElement)=>void)}} options
+ * @returns {{root:XmlElement,children:XmlElement[]}} */
+export function readXmlPart(bytes,{elementOnlyRoot=false,visitElement=null}={}){
  let text;try{text=strict.decode(bytes);}catch{refuse('XML_ENCODING');}
  const parser=new SaxesParser({xmlns:true,position:false});
  let root=null,depth=0;const children=[];
  parser.on('xmldecl',decl=>{if(decl.encoding!==undefined&&!/^utf-8$/iu.test(decl.encoding))refuse('XML_ENCODING');});
  parser.on('doctype',()=>refuse('XML_DOCTYPE'));
- parser.on('opentag',tag=>{depth++;if(depth===1)root=element(tag);else if(depth===2)children.push(element(tag));});
+ parser.on('opentag',tag=>{depth++;const e=element(tag);if(depth===1)root=e;else if(depth===2)children.push(e);if(visitElement)visitElement(e);});
  parser.on('closetag',()=>{depth--;});
  parser.on('text',t=>{if(elementOnlyRoot&&depth===1&&/\S/u.test(t))refuse('XML_MALFORMED');});
  parser.on('cdata',()=>{if(elementOnlyRoot&&depth===1)refuse('XML_MALFORMED');});

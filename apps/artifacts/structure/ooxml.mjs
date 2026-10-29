@@ -52,6 +52,7 @@ function targetPart(source,target,reason){
  if(!part||part.endsWith('/'))refuse(reason);
  return part;
 }
+export {relationships as readOoxmlRelationships,targetPart as resolveOoxmlTarget};
 const relationshipPartOf=part=>{const slash=part.lastIndexOf('/');return `${part.slice(0,slash+1)}_rels/${part.slice(slash+1)}.rels`;};
 /** Throws a StructureInvalid unless `entries` (from `readZip`) is an OPC package of the claimed OOXML `format`. */
 export function verifyOoxml(entries,format){
@@ -70,4 +71,5 @@ export function verifyOoxml(entries,format){
  if(root.local!==spec.root||!spec.ns.includes(root.uri))refuse('OPC_MAIN_PART');
  const partRels=relationshipPartOf(main);
  if(entries.has(partRels))for(const r of relationships(entries.get(partRels),'OPC_PART_RELATIONSHIPS'))if(!r.external&&!entries.has(targetPart(main,r.target,'OPC_PART_RELATIONSHIPS')))refuse('OPC_PART_RELATIONSHIPS');
+ return main;
 }

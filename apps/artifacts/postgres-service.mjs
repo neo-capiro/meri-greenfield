@@ -3,6 +3,8 @@ import {canonicalSha256 as hash,validateShape} from '../../packages/contracts/va
 import {createIntentJournal} from '../control/intents/journal.mjs';
 import {createPostgresIntentJournalStore} from '../control/intents/postgres-journal.mjs';
 import {createArtifactService} from './service.mjs';
+import {officeEditSource,officeEditRequestSha256} from '../../packages/contracts/office-edit.mjs';
+import {inspectOfficeEdit} from './edit-sessions/inspect-office.mjs';
 const fail=code=>{throw Object.assign(new Error(code),{code});};
 const same=(a,b)=>hash(a)===hash(b);
 const own=(v,required,optional=[])=>{if(!v||Array.isArray(v)||required.some(k=>!Object.hasOwn(v,k))||Object.keys(v).some(k=>![...required,...optional].includes(k)))fail('ARTIFACT_CONFIGURATION');return v;};
@@ -14,11 +16,12 @@ export async function readDocumentInvocation({pool,binding,invocationId,signal})
  return entry===null?null:{entry,versionId:id(invocationId,'version')};
 }
 export function createPostgresArtifactService(options){
- const c=own(options,['pool','context','validators','authorize','versions','objects','executor','now'],['retention','admitRetainedEvidence','selectedInvocationId','retainedAssetMapWrites']),v=c.validators,context=v.context(c.context);
+ const c=own(options,['pool','context','validators','authorize','versions','objects','executor','now'],['retention','admitRetainedEvidence','selectedInvocationId','retainedAssetMapWrites','officeEditWrites']),v=c.validators,context=v.context(c.context);
  if(![v.nativeRequestSha256,c.authorize,c.versions?.read,c.versions?.commit,c.objects?.get,c.objects?.put,c.executor?.execute,c.now].every(f=>typeof f==='function'))fail('ARTIFACT_CONFIGURATION');
  validateShape('RunBinding',context.binding);
  if(c.admitRetainedEvidence!==undefined&&typeof c.admitRetainedEvidence!=='function')fail('ARTIFACT_CONFIGURATION');
  if(c.retainedAssetMapWrites!==undefined&&typeof c.retainedAssetMapWrites!=='boolean')fail('ARTIFACT_CONFIGURATION');
+ if(c.officeEditWrites!==undefined&&typeof c.officeEditWrites!=='boolean')fail('ARTIFACT_CONFIGURATION');
  if(c.selectedInvocationId!==undefined&&(!/^sdk:[a-f0-9]{64}$/u.test(c.selectedInvocationId)||typeof c.admitRetainedEvidence!=='function'||c.admitRetainedEvidence(v.snapshot(context))!==undefined))fail('ARTIFACT_INVOCATION');
  const retained=context.evidence.map(v.nativeSourceEvidence).some(e=>!same(e.binding,context.binding));
  if(retained&&(typeof c.admitRetainedEvidence!=='function'||c.admitRetainedEvidence(v.snapshot(context))!==undefined))fail('ARTIFACT_EVIDENCE_BINDING');
@@ -53,5 +56,48 @@ export function createPostgresArtifactService(options){
   catch(cause){throw Object.assign(Error('ARTIFACT_EFFECT_UNKNOWN'),{code:'ARTIFACT_EFFECT_UNKNOWN',cause,versionId:invocation.versionId,versionCommitted:true});}
   return result;
  }
- return Object.freeze({execute});
+ /** Private explicit Publish only. The browser/model never supplies this port or
+  * its source record. A draft sequence has one durable attempt across reconnects. */
+ async function executeOfficeEdit(value,byteValue,signal){
+  if(c.officeEditWrites!==true||c.selectedInvocationId!==undefined||context.analysisAdmission)fail('EDITOR_PUBLISH_UNAVAILABLE');
+  const call=v.snapshot(own(value,['deliveryId','baseVersionId','request']));call.request=officeEditSource(call.request);
+  const edit=call.request.edit,binding=context.binding;
+  if(call.deliveryId!==`office:${edit.sessionId}:${edit.draftSequence}`||call.baseVersionId!==edit.baseVersionId||!Buffer.isBuffer(byteValue))fail('EDITOR_SAVE_INVALID');
+  const bytes=Buffer.from(byteValue),requestSha256=officeEditRequestSha256(v,call.request,context,call.baseVersionId);
+  if(bytes.length>context.maxBytes||inspectOfficeEdit(bytes,call.request.format).sha256!==edit.draftSha256)fail('EDITOR_SAVE_INVALID');
+  const invocationId='sdk:'+hash({kind:'office-edit',tenantId:binding.tenantId,actorId:binding.actorId,conversationId:binding.conversationId,deliveryId:call.deliveryId});
+  const invocation={invocationId,versionId:id(invocationId,'version'),requestSha256};
+  const record={operation:{id:call.request.operation,version:'0.2.0'},argumentsSha256:requestSha256},key={binding,deliveryId:invocationId,record,signal};
+  const service=createArtifactService({...c,ids:()=>({artifactId:id(invocationId,'artifact'),versionId:invocation.versionId,objectId:id(invocationId,'object')})});
+  const check=()=>{if(signal?.aborted)fail('ARTIFACT_CANCELLED');if(!Number.isSafeInteger(c.now())||c.now()>=context.deadlineMs)fail('ARTIFACT_DEADLINE');};
+  const read=()=>storage.read({key:{tenantId:binding.tenantId,actorId:binding.actorId,conversationId:binding.conversationId,deliveryId:invocationId},signal});
+  async function replay(prior){
+   if(!prior||!same(prior.record.operation,record.operation))fail('ARTIFACT_REPLAY_EVIDENCE');
+   if(prior.state==='FAILED')fail(prior.outcome?.code==='CONFLICT'?'ARTIFACT_STALE_PARENT':'EDITOR_PUBLISH_REFUSED');
+   if(!['PENDING','UNKNOWN','PREPARED'].includes(prior.state))fail('ARTIFACT_REPLAY_EVIDENCE');
+   const evidence={...invocation,requestSha256:prior.record.argumentsSha256};
+   const recovered=await service.recoverOfficeEdit(call.baseVersionId,call.request,context,{signal,evidence});
+   const result=prior.outcome?.result;
+   if(result&&(!same(result.version,recovered.version)||!same(result.inspection,recovered.inspection)||result.execution?.invocationId!==invocationId||result.execution?.requestSha256!==evidence.requestSha256))fail('ARTIFACT_REPLAY_EVIDENCE');
+   check();return recovered;
+  }
+  check();const prior=await read();check();if(prior)return replay(prior);
+  let claim;
+  try{claim=await journal.begin(key);}
+  catch(error){if(!['UNKNOWN','CONFLICT','UNAVAILABLE'].includes(error.code))throw error;const retained=await read();if(retained)return replay(retained);throw error;}
+  check();if(claim.replayed)return replay(await read());
+  let result;
+  try{result=await service.publishOfficeEdit(call.baseVersionId,call.request,bytes,context,{signal,invocation});check();}
+  catch(cause){
+   // Only the canonical stale-head refusal proves publication did not happen.
+   // All other post-claim failures retain the existing uncertainty barrier.
+   const conflict=cause?.code==='ARTIFACT_STALE_PARENT';
+   try{await journal.settle({...key,state:conflict?'FAILED':'UNKNOWN',outcome:conflict?{code:'CONFLICT'}:null});}catch{}
+   throw cause;
+  }
+  try{await journal.settle({...key,state:'PREPARED',outcome:{result,release:{binding,scopes:context.scopes,expiresAtMs:context.deadlineMs}}});check();}
+  catch(cause){throw Object.assign(Error('ARTIFACT_EFFECT_UNKNOWN'),{code:'ARTIFACT_EFFECT_UNKNOWN',cause,versionId:invocation.versionId,versionCommitted:true});}
+  return result;
+ }
+ return Object.freeze({execute,executeOfficeEdit});
 }
