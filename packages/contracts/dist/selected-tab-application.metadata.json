@@ -1,0 +1,36 @@
+{
+  "contractVersion": "1.0.0",
+  "schemaId": "meri.selected-tab/1",
+  "sources": [
+    {
+      "path": "artifacts-0.2/artifact-formats.mjs",
+      "sha256": "4a2e725eb5bb628a66ae06f471741ec1fbb6ce1eb6e3ed842050393d3ab39334",
+      "bytes": 2579
+    },
+    {
+      "path": "document-application/boundary.mjs",
+      "sha256": "3ea0f93063702f161970b8cf1aef5d4a7226400d541a2ae6cf7ae891a3fe0481",
+      "bytes": 2674
+    },
+    {
+      "path": "generate-selected-tab.mjs",
+      "sha256": "049f8f8e030f3d3132b0853e79a2a92cf93c7a7353d9496dd0996295840f4b0e",
+      "bytes": 2319
+    },
+    {
+      "path": "node_modules/canonicalize/lib/canonicalize.js",
+      "sha256": "c1d0195af2a0748454b06af8f218e5c90415c19d39154d0058fee8229c12d859",
+      "bytes": 7145
+    },
+    {
+      "path": "selected-tab-application/api.d.ts",
+      "sha256": "a2340225d4ef729847407474f436cb629edfbc39d85ca7a503839576bd355353",
+      "bytes": 2256
+    },
+    {
+      "path": "selected-tab-application/receive.mjs",
+      "sha256": "d44ad9b69b9fe8726572a52fd952b2e6a5fa12d96925cc208af236ee07f8df46",
+      "bytes": 4077
+    }
+  ]
+}
