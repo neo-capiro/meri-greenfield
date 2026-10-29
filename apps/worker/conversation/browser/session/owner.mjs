@@ -7,17 +7,18 @@ import {createPinnedSnapshot} from './snapshot.mjs';
 import {createOperationLifetime} from '../../../../../packages/runtime/operation-lifetime.mjs';
 import {prepareNativeBrowserInput} from './native-input.mjs';
 import {createInputLimiter} from './input.mjs';
+import {createViewerFrameOwner} from './viewer-frame.mjs';
 import {own} from '../../../../../packages/contracts/commands-0.2/execution-boundary.mjs';
 const fail=code=>{throw Object.assign(Error(code),{code});};
 export function createBrowserSessionOwner({context,invoke,policy,manifest=null,current,hold,ports,now=Date.now,deadlineMs}){
  if(typeof invoke!=='function'||typeof current!=='function'||typeof hold!=='function'||!context||
   !Number.isSafeInteger(deadlineMs)||deadlineMs<=now())fail('BROWSER_CONFIGURATION');
- const fence=createControlFence({now}),snapshot=createPinnedSnapshot({context,manifest});
+ const fence=createControlFence({now}),snapshot=createPinnedSnapshot({context,manifest}),viewer=createViewerFrameOwner(context);
  const pending=new Set();let closed=false,timer,busy=false,taking=false,inputLimiter;
  const drain=async({signal})=>{while(pending.size){signal.throwIfAborted();await Promise.race(pending);}return fence.state();};
  const destruction=createStateDestruction({fence,now,manifest,ports:{...ports,waitForDrain:drain,
   async closeContext(){try{await context.close();return {closed:true};}finally{snapshot.clear();}}}});
- const destroy=async trigger=>{closed=true;clearTimeout(timer);return destruction.destroy({trigger});};
+ const destroy=async trigger=>{closed=true;viewer.clear();clearTimeout(timer);return destruction.destroy({trigger});};
  async function assertCurrent(signal){
   if(closed)fail('BROWSER_SESSION_ENDING');
   try{await current(signal);signal?.throwIfAborted();}
@@ -63,13 +64,29 @@ export function createBrowserSessionOwner({context,invoke,policy,manifest=null,c
     // must not allocate a new lifecycle command when the first answer was lost.
     const held=await life.run(hold);await life.run(assertCurrent);
     const lease=fence.grant({holdApplied:held?.outcome==='APPLIED'});
-    inputLimiter=createInputLimiter({now});return lease;}finally{life.close();taking=false;}
+    viewer.clear();inputLimiter=createInputLimiter({now});return lease;}finally{life.close();taking=false;}
+  },
+  async view(raw){
+   const {leaseEpoch,page,signal}=own(raw,['leaseEpoch','page'],['signal']);
+   if(closed)fail('BROWSER_SESSION_ENDING');if(busy)fail('BROWSER_SESSION_BUSY');
+   const assertLease=()=>{const state=fence.state();if(state.state!=='user'||state.leaseEpoch!==leaseEpoch)fail('BROWSER_STALE_LEASE');};
+   assertLease();
+   const until=Math.min(deadlineMs,now()+10000),life=createOperationLifetime({deadlineMs:until,now,signal,errorFactory:code=>Object.assign(Error(code),{code})});busy=true;
+   const operation=(async()=>{
+    await life.run(assertCurrent);assertLease();
+    const result=await life.run(signal=>viewer.capture({page,leaseEpoch,signal,timeoutMs:Math.max(1,until-now()),assertLease}));
+    await life.run(assertCurrent);assertLease();viewer.assert({page,leaseEpoch,frameId:result.frameId});return result;
+   })();
+   const tracked=operation.then(()=>undefined,()=>undefined);pending.add(tracked);
+   try{return await operation;}catch{viewer.clear();fail('BROWSER_VIEWER_FRAME_REFUSED');}
+   finally{pending.delete(tracked);life.close();busy=false;}
   },
   async userInput(raw){
-   const {leaseEpoch,page,input,signal}=own(raw,['leaseEpoch','page','input'],['signal']);
+   const {leaseEpoch,page,frameId,input,signal}=own(raw,['leaseEpoch','page','frameId','input'],['signal']);
    if(closed)fail('BROWSER_SESSION_ENDING');if(busy)fail('BROWSER_SESSION_BUSY');
    const lease=fence.state();
    if(lease.state!=='user'||lease.leaseEpoch!==leaseEpoch){fence.input({leaseEpoch});fail('BROWSER_STALE_LEASE');}
+   const assertDisplayed=()=>viewer.assert({page,leaseEpoch,frameId});assertDisplayed();
    const life=createOperationLifetime({deadlineMs:Math.min(deadlineMs,now()+130000),now,signal,errorFactory:code=>Object.assign(Error(code),{code})});
    let prepared;try{prepared=prepareNativeBrowserInput(context,page,input,{leaseEpoch,limiter:inputLimiter});}
    catch(error){life.close();throw error;}busy=true;
@@ -79,15 +96,15 @@ export function createBrowserSessionOwner({context,invoke,policy,manifest=null,c
     await life.run(()=>snapshot.capture({fenceState:'agent',postLease:true}));
     await life.run(assertCurrent);
     snapshot.rememberInput(prepared.text);await life.run(()=>prepared.perform({assertLease:()=>{
-     life.check();if(!fence.input({leaseEpoch}).accepted)fail('BROWSER_STALE_LEASE');
+     life.check();assertDisplayed();if(!fence.input({leaseEpoch}).accepted)fail('BROWSER_STALE_LEASE');
     }}));
     await life.run(()=>snapshot.capture({fenceState:'agent',postLease:true}));await life.run(assertCurrent);})();
    const tracked=operation.then(()=>undefined,()=>undefined);pending.add(tracked);
    try{await operation;}catch{void destroy('disconnect').catch(()=>{});fail('BROWSER_USER_INPUT_UNKNOWN');}
    finally{prepared.dispose();pending.delete(tracked);life.close();busy=false;}
   },
-  handBack:()=>fence.handBack(),
-  endLease:reason=>fence.endLease({reason}),
+  handBack:()=>{viewer.clear();return fence.handBack();},
+  endLease:reason=>{viewer.clear();return fence.endLease({reason});},
   async resume({explicit,signal}){
    if(closed||busy||explicit!==true||fence.state().state!=='returning')fail('TAKEOVER_RESUME_REFUSED');
    const life=createOperationLifetime({deadlineMs:Math.min(deadlineMs,now()+130000),now,signal,errorFactory:code=>Object.assign(Error(code),{code})});busy=true;

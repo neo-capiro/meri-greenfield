@@ -19,6 +19,7 @@ function fixture(t,options={}){
  const page={url:()=>state.url,frames:()=>[frame],mainFrame:()=>frame,isClosed:()=>false,viewportSize:()=>({width:800,height:600}),
   on:(...args)=>lifecycle.on(...args),off:(...args)=>lifecycle.off(...args),
   keyboard:{async insertText(text){await state.onInput?.(text);},async press(key){await state.onInput?.(key);}},
+  async screenshot(){const png=Buffer.alloc(33);Buffer.from([137,80,78,71,13,10,26,10]).copy(png);png.write('IHDR',12);png.writeUInt32BE(800,16);png.writeUInt32BE(600,20);return png;},
   async ariaSnapshot(){await options.capture?.(state);return state.text;}};
  const context={pages:()=>[page],async close(){state.events.push('context');}};
  const upstream={version:'0.0.83',async createConnection(config,getContext){
@@ -38,6 +39,7 @@ function fixture(t,options={}){
 }
 const secret=value=>({kind:'field',label:'Password',type:'password',autocomplete:'current-password',selectorMatch:false,value});
 const call=(session,id='one')=>session.call({requestId:id,tool:'browser_snapshot',args:{}});
+const displayed=async(session,page)=>{const lease=await session.takeover();return {...lease,frameId:(await session.view({...lease,page})).frameId};};
 
 test('host native stdio is actually routed through current snapshot masking and closes on transport loss',async t=>{
  const x=fixture(t),incoming=new PassThrough(),outgoing=new PassThrough();let raw='';outgoing.on('data',chunk=>{raw+=chunk;});
@@ -92,7 +94,7 @@ test('takeover requires applied canonical hold and explicit filtered hand-back; 
 });
 test('user relay values are masked on resume and a released lease cannot send input',async t=>{
  const x=fixture(t),session=await createPinnedBrowserSession(x.args);t.after(()=>session.destroy({trigger:'conversation-end'}));
- const lease=await session.takeover();let inputs=0;
+ const lease=await displayed(session,x.page);let inputs=0;
  x.state.onInput=async text=>{inputs++;x.state.fields=[{...secret(text),type:'text',autocomplete:''}];x.state.text=text;};
  await session.userInput({...lease,page:x.page,input:{kind:'text',text:'POST-LEASE-VALUE'}});
  session.handBack();await assert.rejects(session.userInput({...lease,page:x.page,input:{kind:'key',key:'Enter'}}),/STALE_LEASE/);
@@ -115,18 +117,18 @@ test('cancelled or invalid takeover admission leaves the next valid takeover ava
 test('native input uses one per-lease event bucket and refuses a whole over-budget press before injection',async t=>{
  let clock=0,inputs=0;const x=fixture(t,{now:()=>clock}),session=await createPinnedBrowserSession(x.args);
  t.after(()=>session.destroy({trigger:'conversation-end'}));x.state.onInput=async()=>{inputs++;};
- const lease=await session.takeover(),press=()=>session.userInput({...lease,page:x.page,input:{kind:'key',key:'Enter'}});
+ const lease=await displayed(session,x.page),press=()=>session.userInput({...lease,page:x.page,input:{kind:'key',key:'Enter'}});
  for(let n=0;n<60;n++)await press();assert.equal(inputs,60);
  await assert.rejects(press(),/RATE_LIMITED/);assert.equal(inputs,60);assert.equal(session.state().state,'user');
  clock+=1000;for(let n=0;n<30;n++)await press();await assert.rejects(press(),/RATE_LIMITED/);assert.equal(inputs,90);
  session.handBack();await assert.rejects(press(),/STALE_LEASE/);await session.resume({explicit:true});
- const next=await session.takeover();await session.userInput({...next,page:x.page,input:{kind:'key',key:'Enter'}});assert.equal(inputs,91);
+ const next=await displayed(session,x.page);await session.userInput({...next,page:x.page,input:{kind:'key',key:'Enter'}});assert.equal(inputs,91);
 });
 
 test('hand-back during input authority checks prevents the delayed native event',async t=>{
  let handingBack=false,inputs=0,session;const x=fixture(t,{capture:()=>{if(handingBack){handingBack=false;session.handBack();}}});
  session=await createPinnedBrowserSession(x.args);t.after(()=>session.destroy({trigger:'conversation-end'}));
- const lease=await session.takeover();x.state.onInput=async()=>{inputs++;};handingBack=true;
+ const lease=await displayed(session,x.page);x.state.onInput=async()=>{inputs++;};handingBack=true;
  await assert.rejects(session.userInput({...lease,page:x.page,input:{kind:'text',text:'Synthetic private value'}}),/USER_INPUT_UNKNOWN/);
  assert.equal(inputs,0);
 });
@@ -134,7 +136,7 @@ test('hand-back during input authority checks prevents the delayed native event'
 test('invalid input cannot refresh idle control or leave admission busy after an invalid signal',async t=>{
  let clock=0,inputs=0;const x=fixture(t,{now:()=>clock});x.args.deadlineMs=700000;
  const session=await createPinnedBrowserSession(x.args);t.after(()=>session.destroy({trigger:'conversation-end'}));
- const lease=await session.takeover();x.state.onInput=async()=>{inputs++;};
+ const lease=await displayed(session,x.page);x.state.onInput=async()=>{inputs++;};
  await assert.rejects(session.userInput({...lease,page:x.page,input:{kind:'key',key:'Enter'},signal:{}}));
  await session.userInput({...lease,page:x.page,input:{kind:'key',key:'Enter'}});assert.equal(inputs,1);
  clock=599999;await assert.rejects(session.userInput({...lease,page:x.page,input:{kind:'text',text:''}}));
@@ -156,7 +158,7 @@ test('a missing process absence proof preserves the profile and prevents reuse',
 test('revocation during native input preflight prevents keyboard dispatch',async t=>{
  let preflight=false,performed=false;const x=fixture(t,{capture:state=>{if(preflight)state.refused=true;}});
  const session=await createPinnedBrowserSession(x.args);t.after(()=>session.destroy({trigger:'conversation-end'}));
- const lease=await session.takeover();x.state.onInput=async()=>{performed=true;};preflight=true;
+ const lease=await displayed(session,x.page);x.state.onInput=async()=>{performed=true;};preflight=true;
  await assert.rejects(session.userInput({...lease,page:x.page,input:{kind:'text',text:'Synthetic private value'}}),/USER_INPUT_UNKNOWN/);
  assert.equal(performed,false);
 });
@@ -212,7 +214,7 @@ test('host rechecks the exact configured task at model execution and refuses a s
 test('host workflow disablement denies takeover and leased user input without invoking it',async t=>{
  for(const leased of [false,true]){
   const x=hostedWorkflow(t),session=await x.open();t.after(()=>session.destroy({trigger:'conversation-end'}));
-  const lease=leased?await x.state.user.takeover():null;
+  const lease=leased?await displayed(x.state.user,x.page):null;
   x.state.answer.enabled=false;let performed=false;x.native.onInput=async()=>{performed=true;};
   await assert.rejects(leased?x.state.user.userInput({...lease,page:x.page,input:{kind:'key',key:'Enter'}}):x.state.user.takeover(),/BROWSER_(AUTHORITY_REFUSED|USER_INPUT_UNKNOWN)/);
   assert.equal(performed,false);await session.destroy({trigger:'revocation'});
