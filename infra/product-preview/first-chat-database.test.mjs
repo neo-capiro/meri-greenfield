@@ -382,7 +382,7 @@ test('plan pins the change-set order, real paths and current bytes; 0012 and 001
   '0001_settings.sql','0001_commands.sql','0001_approval_metadata.sql','0001_intent_preparations.sql','0001_schedule_owner.sql','0002_occurrences.sql','0003_run_cancel_proofs.sql','0004_read_consent.sql',
   '0001_task_lookup.sql','0001_objective_custody.sql','0002_objective_run_starts.sql','0003_objective_reader_replays.sql','0001_versions.sql','0002_retention.sql','0003_previews.sql','0001_memory_candidates.sql','0001_read_delegation_facts.sql','0002_prepared_approval_facts.sql','first-chat-database-integration.sql#integration_grants','0020_initial_generations.sql','0021_sdk_run_usage.sql','0022_sdk_run_usage_grants.sql',
   '0018_memory_candidate_targets.sql','0019_memory_proposal_contexts.sql','0002_candidate_retention_delete.sql','first-chat-native-retention-grants.sql',
-  '0024_general_initial_binding_scope.sql','0002_memory_preparation_tombstone.sql','0023_expired_conversation_purge.sql','first-chat-expired-conversation-purge-grants.sql','0003_native_routine_facts.sql','0004_objective_run_start_retention.sql','0025_retention_target_lookup.sql','first-chat-schedule-worker-grants.sql#schedule_worker_grants','0026_retention_target_dispatch.sql','0002_tenant_settings_control_grants.sql','0027_retention_target_projection.sql','0028_retention_sdk_identity.sql','0029_native_correction_feedback.sql','0005_management_preparations.sql','0006_management_preparation_grants.sql','0001_upload_custody.sql','0002_control_grants.sql','0030_child_assignments.sql','0007_source_events.sql','0008_source_event_grants.sql','0009_management_consent_renewals.sql','0031_upload_retention_targets.sql']);
+  '0024_general_initial_binding_scope.sql','0002_memory_preparation_tombstone.sql','0023_expired_conversation_purge.sql','first-chat-expired-conversation-purge-grants.sql','0003_native_routine_facts.sql','0004_objective_run_start_retention.sql','0025_retention_target_lookup.sql','first-chat-schedule-worker-grants.sql#schedule_worker_grants','0026_retention_target_dispatch.sql','0002_tenant_settings_control_grants.sql','0027_retention_target_projection.sql','0028_retention_sdk_identity.sql','0029_native_correction_feedback.sql','0005_management_preparations.sql','0006_management_preparation_grants.sql','0001_upload_custody.sql','0002_control_grants.sql','0030_child_assignments.sql','0007_source_events.sql','0008_source_event_grants.sql','0009_management_consent_renewals.sql','0031_upload_retention_targets.sql','first-chat-core-retention-serving.sql#core_retention_serving']);
  assert.deepEqual(plan.slice(63,65).map(({ordinal,path})=>({ordinal,path})),[
   {ordinal:64,path:'apps/control/uploads/migrations/0001_upload_custody.sql'},
   {ordinal:65,path:'apps/control/uploads/migrations/0002_control_grants.sql'}]);
@@ -393,7 +393,7 @@ test('plan pins the change-set order, real paths and current bytes; 0012 and 001
  assert.match(seed,/INSERT INTO meri_product_budget\.budget \(id, cap_micro_usd, consumed_micro_usd, quarantined\)\nVALUES \(1, 25000000, 0, false\)/u);
  const budget=read('apps/gateway/budget/migrations/0001_product_budget.sql');
  for(const column of ['id integer PRIMARY KEY CHECK (id=1)','cap_micro_usd bigint','consumed_micro_usd bigint','quarantined boolean'])assert.ok(budget.includes(column));
- assert.match(read('apps/runtime/Dockerfile'),/^COPY infra\/product-preview\/first-chat-migrate\.mjs infra\/product-preview\/first-chat-database\.sql infra\/product-preview\/first-chat-database-temporal\.sql infra\/product-preview\/first-chat-database-integration\.sql infra\/product-preview\/first-chat-database-owner-reads\.sql infra\/product-preview\/first-chat-seed-budget\.sql infra\/product-preview\/first-chat-native-retention-grants\.sql infra\/product-preview\/first-chat-expired-conversation-purge-grants\.sql infra\/product-preview\/first-chat-schedule-worker-grants\.sql \.\/infra\/product-preview\/$/mu);
+ assert.match(read('apps/runtime/Dockerfile'),/^COPY infra\/product-preview\/first-chat-migrate\.mjs infra\/product-preview\/first-chat-database\.sql infra\/product-preview\/first-chat-database-temporal\.sql infra\/product-preview\/first-chat-database-integration\.sql infra\/product-preview\/first-chat-database-owner-reads\.sql infra\/product-preview\/first-chat-seed-budget\.sql infra\/product-preview\/first-chat-native-retention-grants\.sql infra\/product-preview\/first-chat-expired-conversation-purge-grants\.sql infra\/product-preview\/first-chat-schedule-worker-grants\.sql infra\/product-preview\/first-chat-core-retention-serving\.sql \.\/infra\/product-preview\/$/mu);
  assert.match(read('apps/runtime/package-lock.json'),/"node_modules\/pg": \{\n\s+"version": "8\.23\.1"/u);
 });
 
@@ -812,7 +812,9 @@ test('native retention grants only context locks and serving/recovery projection
 
 test('every infra file the runtime Dockerfile copies is re-included by .dockerignore',()=>{
  const root=new URL('../../',import.meta.url),read=p=>readFileSync(new URL(p,root),'utf8');
- const ignore=read('.dockerignore').split('\n'),docker=read('apps/runtime/Dockerfile');
+ // Docker normalizes a trailing slash on a directory pattern. Keep this check
+ // strict about the explicit inclusion, including COPY of a directory.
+ const ignore=read('.dockerignore').split('\n').map(line=>line.trim().replace(/\/$/u,'')),docker=read('apps/runtime/Dockerfile');
  const copied=[...docker.matchAll(/^COPY (?!--from)(?:--\S+ )*(.+) \S+$/gmu)].flatMap(m=>m[1].split(' ')).filter(p=>p.startsWith('infra/product-preview/')&&!p.startsWith('infra/product-preview/runtime-packages'));
  assert.ok(copied.length>=3);
  for(const path of copied)assert.ok(ignore.includes(`!${path}`),`${path} is excluded from the build context`);
@@ -829,6 +831,21 @@ test('the superseding Temporal grants file pins the live 1.32.1 catalog, includi
  assert.ok(!/phase_(bootstrap|meri_grants|release)/u.test(code),'only the Temporal grants phase lives here');
 });
 
+
+test('Core retention appends one guarded installer phase and preserves the exact prior 70 entries',async()=>{
+ const plan=loadPlan(),entry=plan.at(-1);
+ assert.equal(createHash('sha256').update(JSON.stringify(PLAN.slice(0,70))).digest('hex'),'7cad583cbad36ec39d607476070ab0eb6d73ba4a9b287fdbf340e0a8058b15a0');
+ assert.deepEqual([entry.ordinal,entry.kind,entry.stage],[71,'phase:core_retention_serving','integration']);
+ const db=databaseWithLedger(plan,70),prefix=structuredClone(db.state.ledger);
+ await runStage({stage:'integration',plan,variables,connect:db.connect});
+ assert.deepEqual(db.state.ledger.slice(0,70),prefix);assert.equal(db.state.ledger.length,71);
+ const creation=db.state.queries.filter(q=>q.includes('CREATE OR REPLACE FUNCTION meri_core_authority.retention_serving_v1'));
+ assert.equal(creation.length,1);
+ assert.ok(db.state.queries.some(q=>q.includes('REVOKE meri_core_admission_reader FROM SESSION_USER')));
+ await runStage({stage:'integration',plan,variables,connect:db.connect});
+ assert.equal(db.state.queries.filter(q=>q.includes('CREATE OR REPLACE FUNCTION meri_core_authority.retention_serving_v1')).length,1);
+ assert.throws(()=>loadPlan({read:path=>Buffer.from(read(path)+(path===entry.path?'\n':''))}),/MERI_D2_SOURCE_CHANGED/u);
+});
 
 test('schedule grants append ordinal 56 through the existing installer phase and preserve all 55 entries',async()=>{
  const plan=loadPlan().slice(0,56),entry=plan.at(-1);

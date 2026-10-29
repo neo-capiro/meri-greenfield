@@ -34,6 +34,27 @@ results; it does not claim that a backing-store read physically stopped.
 canonical startup/fence and synthetic independent restore boundary. It covers
 unseen suppression after database rollback, unavailable dependencies, corrupt
 watermarks, secret rotation, deadlines, disconnects and suppression/release.
-These tests do not establish Core transaction integration or deployed recovery.
-The Core consumer and its database qualification remain required before the
-Core memory restoration gap can be considered closed.
+These tests do not establish deployed recovery.
+
+Canonical integration ordinal 71 adds
+`meri_core_authority.retention_serving_v1(tenant, actor, conversation, sequence, hash)`.
+It reuses the existing non-login `meri_core_admission_reader`, with column-only
+reads of native conversation identity, suppression and recovery watermark. Core
+gets EXECUTE only. The installer removes temporary schema CREATE and role
+membership before commit, preserves the prior 70-entry plan, and can replay after
+an uncertain phase commit. No raw native table grants are given to Core.
+
+The predicate checks Core's current tenant, tries shared canonical transition then
+recovery exclusion, verifies the watermark and native owner, and rejects a
+suppressed subject. A null subject performs final watermark verification while
+locks acquired by earlier subject calls remain held. Try-lock refusal prevents a
+Core candidate-row holder from waiting behind a native purge calling Core cleanup.
+
+The paired Core migration `20281029200000_memory_restore_serving` and shared
+`memory/conversation-serving` transaction helper consume this predicate and the
+fresh witness. Their ordinary-role PostgreSQL tests qualify suppression,
+notification copies, rollback, grants and lock behavior; the Core wire integration
+test consumes this actual private route/startup. Install this native phase and
+endpoint before admitting the paired Core application. Coordinate Core migration
+and application rollout because old Core readers cannot supply the new proof.
+Source tests do not qualify deployed roles, transport or database recovery.
