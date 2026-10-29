@@ -48,7 +48,7 @@ for(const change of ['token','file','expired','actor','conversation','base','epo
  if(change==='token')request=new Request(request.url.replace(/access_token=.*/u,'access_token=invalid'));
  if(change==='file')request=new Request(request.url.replace('synthetic-file','another-file'));
  if(change==='expired')f.state.clock=f.claims.expiresAtMs;
- if(['actor','conversation'].includes(change)){const claims={...f.claims,[change==='actor'?'actorId':'conversationId']:change==='actor'?'other':'00000000-0000-4000-8000-000000000999'};request=f.request('getFile',{token:f.codec.issue(claims)});}
+ if(['actor','conversation'].includes(change)){const field=change==='actor'?'actorId':'conversationId',value=change==='actor'?'other':'00000000-0000-4000-8000-000000000999';const claims={...f.claims,[field]:value,runBinding:{...f.claims.runBinding,[field]:value}};request=f.request('getFile',{token:f.codec.issue(claims)});}
  if(change==='base')f.draft.baseSha256='b'.repeat(64);
  if(change==='epoch')f.state.epoch++;
  if(change==='generation')f.state.generation++;

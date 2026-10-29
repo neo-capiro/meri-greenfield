@@ -8,17 +8,21 @@
  * token (current authority, suppression generation, lock) is rechecked against current state by the WOPI host. */
 import {createHmac,timingSafeEqual} from 'node:crypto';
 import {own} from '../../../packages/contracts/commands-0.2/execution-boundary.mjs';
-const DOMAIN='meri.wopi-access.v1.';
-export const WOPI_TOKEN_CLAIMS=Object.freeze(['editSessionId','fileId','versionId','conversationId','editorId','editorEpoch','actorId','tenantId','userCanWrite','expiresAtMs','suppressionGeneration']);
+const DOMAIN='meri.wopi-access.v2.';
+export const WOPI_TOKEN_CLAIMS=Object.freeze(['editSessionId','fileId','versionId','conversationId','editorId','editorEpoch','actorId','tenantId','userCanWrite','expiresAtMs','suppressionGeneration','runBinding','selectedClientId','scopesSha256','sessionSha256']);
 export const MIN_KEY_BYTES=32,MAX_TTL_MS=10*60*1000;
-const TOKEN=/^[A-Za-z0-9_-]{1,2048}\.[A-Za-z0-9_-]{43}$/u,UUID=/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/u,FILE=/^[A-Za-z0-9_-]{1,128}$/u,ID=/^[A-Za-z0-9_.:@-]{1,128}$/u;
+const TOKEN=/^[A-Za-z0-9_-]{1,4096}\.[A-Za-z0-9_-]{43}$/u,UUID=/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/u,FILE=/^[A-Za-z0-9_-]{1,128}$/u,ID=/^[A-Za-z0-9_.:@-]{1,128}$/u;
 const fault=code=>{throw Object.assign(new Error(code),{code});};
 function claims(value,code){
- let c;try{c=own(value,WOPI_TOKEN_CLAIMS);}catch{fault(code);}
+ let c,b;try{c=own(value,WOPI_TOKEN_CLAIMS);b=own(c.runBinding,['tenantId','actorId','conversationId','runId','attemptId','workerId','writerFence']);}catch{fault(code);}
  if(['editSessionId','versionId','conversationId','editorId'].some(k=>typeof c[k]!=='string'||!UUID.test(c[k]))||typeof c.fileId!=='string'||!FILE.test(c.fileId)||
   !Number.isInteger(c.editorEpoch)||c.editorEpoch<1||c.editorEpoch>2147483647||typeof c.actorId!=='string'||!ID.test(c.actorId)||typeof c.tenantId!=='string'||!ID.test(c.tenantId)
   ||typeof c.userCanWrite!=='boolean'||!Number.isSafeInteger(c.expiresAtMs)||c.expiresAtMs<1||!Number.isSafeInteger(c.suppressionGeneration)||c.suppressionGeneration<0)fault(code);
- return Object.freeze(Object.fromEntries(WOPI_TOKEN_CLAIMS.map(k=>[k,c[k]])));
+ if(b.tenantId!==c.tenantId||b.actorId!==c.actorId||b.conversationId!==c.conversationId||
+  ['runId','attemptId','workerId'].some(k=>typeof b[k]!=='string'||!UUID.test(b[k]))||!Number.isSafeInteger(b.writerFence)||b.writerFence<1||
+  c.selectedClientId!==null&&(typeof c.selectedClientId!=='string'||!UUID.test(c.selectedClientId))||
+  ['scopesSha256','sessionSha256'].some(k=>typeof c[k]!=='string'||!/^[a-f0-9]{64}$/u.test(c[k])))fault(code);
+ return Object.freeze(Object.fromEntries(WOPI_TOKEN_CLAIMS.map(k=>[k,k==='runBinding'?Object.freeze({...b}):c[k]])));
 }
 export function createWopiAccessTokenCodec({key,now}){
  if(!Buffer.isBuffer(key)||key.length<MIN_KEY_BYTES||typeof now!=='function')fault('WOPI_TOKEN_CONFIGURATION');

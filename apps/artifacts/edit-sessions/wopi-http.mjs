@@ -14,7 +14,7 @@ export function wopiRequest(request){
  const url=new URL(r.url),route=WOPI_FILE_ROUTE.exec(url.pathname),header=name=>Headers.prototype.get.call(r.headers,name);
  if(!route||url.hash)refuse(404);
  if([...url.searchParams.keys()].some(k=>k!=='access_token')||url.searchParams.getAll('access_token').length!==1)refuse(401);
- const token=url.searchParams.get('access_token');if(!token||token.length>2200)refuse(401);
+ const token=url.searchParams.get('access_token');if(!token||token.length>4200)refuse(401);
  const override=header('x-wopi-override'),oldLock=header('x-wopi-oldlock'),newLock=header('x-wopi-lock');
  let operation;
  if(r.method==='GET'){if(override!==null||oldLock!==null||newLock!==null)refuse(400);operation=route[2]?'getFile':'checkFileInfo';}

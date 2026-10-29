@@ -239,3 +239,47 @@ Primary references: [CODE edition](https://www.collaboraonline.com/code/),
 [Collabora integration](https://sdk.collaboraonline.com/docs/How_to_integrate.html),
 [WOPI discovery placeholders](https://learn.microsoft.com/en-us/microsoft-365/cloud-storage-partner-program/online/discovery),
 [upstream license](https://github.com/CollaboraOnline/online/blob/main/COPYING).
+
+## Attended runtime composition checkpoint
+
+`apps/runtime/artifacts/office-application.mjs` now composes authenticated open,
+known-ID recovery, launch, renewal, explicit takeover, release, discard and
+Publish with the actual existing document options and native-session owners.
+`office-access.mjs` resolves the canonical Core artifact intent for each required
+action; revise, inspect and download permissions are not interchangeable. Each
+source/publication authorization refreshes Core, including the final check after
+awaited bytes. Request lifetimes close on every outcome. This factory starts no
+listener and creates no credential store, ledger or provider process.
+
+The selected browser input names only the immutable version, private draft and
+explicit operation proof. Core supplies draft metadata and bytes. Recovery
+returns metadata without private bytes or a token. Missing CODE discovery
+actions refuse before editor acquisition. Release clears the editor and lock
+through Core while preserving Save; discard still respects Core's unresolved
+Publish barrier. A lost acquire acknowledgement can recover the same editor
+identity and epoch without an automatic takeover or compensating release.
+
+WOPI token domain v2 binds the complete native run/attempt/worker/fence, selected
+client, scope hash and native session principal/revision hash in addition to
+the draft, source version and editor epoch. Old token domains refuse. The
+existing native-session owner lends an existing receipt on each WOPI request;
+the canonical current checks must still match every signed pin. A new session
+cannot revive a token issued to a revoked session. Explicit renewal can issue a
+token for the replacement session while retaining the admitted editor epoch.
+Expiry is capped by both the native session and Core editor lease. Generation
+is the last awaited read before token/result release. No launch/token is logged.
+
+196 affected source checks pass, including 13 new attended cases and the prior
+native publication, WOPI, transport and retention tests. Scripted options/Core
+HTTP/SQL ports are explicit; these tests use the actual native-session, artifact,
+publication and transport owners. The Core ordinary-role evidence is unchanged.
+No application/image build, deployment or live CODE call ran. The old budget-era
+suite incompatibility recorded above remains; no failing assertions were removed.
+
+Public HTTP registration and configuration activation, the versioned Office
+browser receiver and Save/Publish interface, CODE PostMessage renewal, retention
+inventory/purge and representative native fidelity remain open. In particular,
+returning a renewal form is not evidence that a running CODE frame accepted a
+new token. Its documented `Reset_Access_Token` message must carry both token and
+TTL; the browser must check exact editor origin and frame source. See the
+[upstream PostMessage handler](https://github.com/CollaboraOnline/online.mirror/blob/main/browser/src/map/handler/Map.WOPI.js).
