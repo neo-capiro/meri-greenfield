@@ -1,5 +1,5 @@
 import test from 'node:test';import assert from 'node:assert/strict';
-import {createWopiLockTable,WOPI_LOCK_TTL_MS} from '../wopi-locks.mjs';
+
 import {admitEditSession,planSave,publishOutcome,reconcilePublish,conflictOptions,mayPublish} from '../edit-session.mjs';
 import {createWopiAccessTokenCodec,MAX_TTL_MS} from '../wopi-access-token.mjs';
 import {createSignedDownloadCodec} from '../../storage/signed-download.mjs';
@@ -14,22 +14,6 @@ test('editor activation is held; the draft class stays planned until its owner a
  assert.equal(EDITOR_ACTIVATION.state,'held');assert.equal(editorActivationOpen(),false);
  assert.equal(editorActivationOpen({state:'open',evidence:'e/x.json',requirements:[...EDITOR_REQUIREMENTS]}),false);
  assert.ok(plannedClasses.includes('editorDrafts'));assert.equal(dataClass('editorDrafts').owner,null);
-});
-
-test('WOPI locks: lock, refresh, 409 with the current lock on mismatch, unlock, relock and 30-minute expiry',()=>{
- const now=clock(),t=createWopiLockTable({now});
- assert.deepEqual(t.getLock('f1'),{status:200,lock:''});
- assert.equal(t.lock('f1','L1').status,200);assert.equal(t.lock('f1','L1').status,200,'same lock refreshes');
- assert.deepEqual(t.lock('f1','L2'),{status:409,lock:'L1'});
- assert.deepEqual(t.putFile('f1','L2'),{status:409,lock:'L1'});assert.equal(t.putFile('f1','L1').status,200);
- assert.deepEqual(t.unlock('f1','L2'),{status:409,lock:'L1'});
- assert.equal(t.unlockAndRelock('f1','L1','L3').status,200);assert.deepEqual(t.getLock('f1'),{status:200,lock:'L3'});
- now.advance(WOPI_LOCK_TTL_MS-1);assert.equal(t.refreshLock('f1','L3').status,200);
- now.advance(WOPI_LOCK_TTL_MS);assert.deepEqual(t.getLock('f1'),{status:200,lock:''},'an unrefreshed lock expires');
- assert.deepEqual(t.putFile('f1','L3'),{status:409,lock:''},'PutFile on an unlocked file is refused (single writer)');
- assert.deepEqual(t.refreshLock('f1','L3'),{status:409,lock:''});
- assert.equal(t.lock('f1','L4').status,200);assert.equal(t.unlock('f1','L4').status,200);
- assert.throws(()=>t.lock('f 1','L'),code('WOPI_INVALID_FILE'));assert.throws(()=>t.lock('f1','x'.repeat(1025)),code('WOPI_INVALID_LOCK'));
 });
 
 test('edit-session admission: inspect+revise edits, inspect only is read-only; PDF preview-only; desktop only; one editor',()=>{

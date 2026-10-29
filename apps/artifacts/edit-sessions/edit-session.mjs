@@ -7,8 +7,9 @@
  * artifact write happens here. Nothing is composed: the editor activation is held (`activation.mjs`). Branch publishing
  * needs artifact lineage with a non-head parent, a contract change proposed to dot (Q-O10); until dot accepts it the
  * branch option is not offered. The 28 October A7 requirement supersedes the old save-to-publish coupling:
- * Save writes a private draft; publishing is a separate explicit action. Licensing, hosting, collaboration and
- * draft-retention choices remain undecided, and these pure decisions do not activate an editor. */
+ * Save writes a private draft; publishing is a separate explicit action. The 29 October decision selects free
+ * self-hosted Collabora CODE with exclusive initial editing and seven-day private draft retention.
+ * These pure decisions do not activate an editor. */
 export const EDITOR_FORMATS=Object.freeze(['docx','xlsx','pptx']);
 export const PREVIEW_ONLY_FORMATS=Object.freeze(['pdf']);
 export const SAVE_KINDS=Object.freeze(['autosave','exit','explicit']);
