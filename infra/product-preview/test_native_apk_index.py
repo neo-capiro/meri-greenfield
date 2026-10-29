@@ -640,6 +640,35 @@ class SourceBuiltClamavPayload(unittest.TestCase):
         self.assertIn("runtimeIconvClosure", LOCK["uploadNativeProvenance"],
                       "the lock does not record why the converters are part of the runtime closure")
 
+    def test_the_clamav_install_layout_is_pinned_to_usr_lib(self):
+        """The install directory is part of the contract, not a toolchain default.
+
+        Build 62f70432 compiled and passed all six ctest suites, then installed the libraries into usr/lib64 while the
+        recipe's inventory step, its provenance record and the runtime loader assertions all name usr/lib, so the stage
+        aborted on its own presence check. Upstream CMakeLists.txt 182 includes GNUInstallDirs, 185-186 derive the RPATH
+        from CMAKE_INSTALL_FULL_LIBDIR, and every library install names ${CMAKE_INSTALL_LIBDIR} (libclamav 521,
+        libfreshclam 108, libclamunrar 112, libclamunrar_iface 86, libclammspack 86, libclamav_rust 60). The configure
+        step therefore pins both halves of that pair, and the collectors keep reading usr/lib rather than following the
+        installed directory wherever it goes.
+        """
+        build = " ".join(self.STAGES["clamav-source-build"]["instructions"])
+        self.assertIn("-D CMAKE_INSTALL_PREFIX=/usr", build,
+                      "the ClamAV install prefix is no longer pinned to /usr")
+        self.assertIn("-D CMAKE_INSTALL_LIBDIR=lib", build,
+                      "the ClamAV library directory is left to the GNUInstallDirs default instead of /usr/lib")
+        self.assertIn("-D CMAKE_INSTALL_SYSCONFDIR=/etc", build,
+                      "the ClamAV sysconf directory pin was dropped")
+        self.assertNotIn("lib64", build, "the compiler stage now tolerates or expects a lib64 layout")
+        self.assertIn("find usr/lib -maxdepth 1 -type f", DOCKERFILE,
+                      "the installed-payload inventory no longer collects the libraries from usr/lib")
+        self.assertIn("grep -q ' usr/lib/libclamav\\.so'", DOCKERFILE,
+                      "the inventory presence check no longer requires usr/lib/libclamav.so")
+        runtime = " ".join(self.STAGES["runtime"]["instructions"])
+        for library in ("/usr/lib/libclamav.so.*", "/usr/lib/libfreshclam.so.*", "/usr/lib/libclamunrar.so.*"):
+            self.assertIn(library, runtime,
+                          "the runtime loader assertion no longer expects %s" % library)
+        self.assertNotIn("lib64", runtime, "a runtime loader assertion now accepts a lib64 layout")
+
     def test_the_authenticated_source_and_toolchain_inputs_are_pinned(self):
         auth = self.PREP["authentication"]
         for url, digest, label in ((auth["tarballUrl"], auth["tarballSha256"], "release asset"),
