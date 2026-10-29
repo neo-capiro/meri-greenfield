@@ -137,7 +137,9 @@ export const PLAN=Object.freeze([
  // applies it while retaining the exact historical prefix.
  ['migration','apps/control/schedules/migrations/0009_management_consent_renewals.sql','187a1ff83075c38cfa6c9011fb5743756c555d9b1d006fce628deacf2afeb3fc','integration'],
  // Upload custody is already a canonical row owner; preserve ordinals 1..69.
- ['migration',conversation('0031_upload_retention_targets.sql'),'4858a07a6b1751a3dbfb7bde46b0d5c14f7f98a5ebe3efed5595852b1986a103','integration']
+ ['migration',conversation('0031_upload_retention_targets.sql'),'4858a07a6b1751a3dbfb7bde46b0d5c14f7f98a5ebe3efed5595852b1986a103','integration'],
+ // Content-free Core retention predicate through its existing native SQL authority.
+ ['phase:core_retention_serving','infra/product-preview/first-chat-core-retention-serving.sql','0f4869866cb542ebb07ee3ec70afbcd5b1dabd271135512cff2346b221c8ed5e','integration']
 ].map(([kind,path,pinned,declaredStage],index)=>Object.freeze({ordinal:index+1,kind,path,pinned,
  name:kind==='migration'?path:`${path}#${kind.slice(6)}`,
  stage:declaredStage??(kind==='phase:temporal_grants'?'temporal':'meri')})));

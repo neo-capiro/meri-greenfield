@@ -11,8 +11,8 @@ import {createCoreOfficeDraftClient} from '../core-drafts.mjs';
 import {createWopiAccessTokenCodec} from '../wopi-access-token.mjs';
 import {createWopiFileApplication} from '../wopi-files.mjs';
 const json=value=>new Response(JSON.stringify(value),{headers:{'content-type':'application/json'}});
-export async function wopiFixture(t,{format='docx',write=true,withEvidence=false}={}){
- const f=nativeDocumentFixture({scopes:[{tenantId:'synthetic-tenant',kind:'client',resourceId:id(5),policyRevision:'synthetic-policy'}]}),baseBytes=ooxml(format),selectedClientId=f.context.scopes[0].resourceId;
+export async function wopiFixture(t,{format='docx',write=true,withEvidence=false,baseBytes=ooxml(format)}={}){
+ const f=nativeDocumentFixture({scopes:[{tenantId:'synthetic-tenant',kind:'client',resourceId:id(5),policyRevision:'synthetic-policy'}]}),selectedClientId=f.context.scopes[0].resourceId;
  if(withEvidence)f.context.evidence.push({sourceId:'synthetic-source',recordId:'synthetic-record',sourceVersionId:'synthetic-version',
   observedAt:new Date(f.state.clock).toISOString(),sourceUpdatedAt:null,citationId:id(980),scopes:structuredClone(f.context.scopes),contentSha256:'a'.repeat(64),binding:structuredClone(f.context.binding)});
  const requests={docx:{blocks:[{kind:'paragraph',runs:[{text:'Original'}]}]},xlsx:{sheets:[{name:'Data',rows:[[{value:2}]]}]},pptx:{slides:[{title:'Original',bullets:['Fixture']}]}};

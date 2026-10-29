@@ -44,7 +44,7 @@ export function createRuntimeDocumentOptionsComposer(options){const c=own(option
  const storage=own(c.storage,['objects','versions'],['verifyPrivate','previews']);if(typeof c.now!=='function'||typeof c.store?.lifecycle?.readArtifactFile!=='function'||c.renderer!==undefined&&!isRendererPort(c.renderer)||typeof(c.pdfAdmission??false)!=='boolean'||typeof(c.retainedAssetMapWrites??false)!=='boolean'||c.previews!==undefined&&storage.previews!==undefined&&c.previews!==storage.previews)throw Error('ARTIFACT_RUNTIME_CONFIGURATION');
  const admitPdf=c.pdfAdmission===true&&admittedConverter(c.renderer)!==null,previews=c.previews??storage.previews;
  if(c.previewStoreForContext!==undefined&&(typeof c.previewStoreForContext!=='function'||previews!==undefined))throw Error('ARTIFACT_RUNTIME_CONFIGURATION');
- return trusted=>{const o=own(trusted,['artifactOptions','selectedClientId','limits'],['enabled']),a=own(o.artifactOptions,['pool','context','validators','authorize','versions','objects','executor','now','ids'],['retention','admitRetainedEvidence','authorizeOrigin']);
+ return trusted=>{const o=own(trusted,['artifactOptions','selectedClientId','limits'],['enabled','federalSource']),a=own(o.artifactOptions,['pool','context','validators','authorize','versions','objects','executor','now','ids'],['retention','admitRetainedEvidence','authorizeOrigin']);
   if(a.validators!==v||a.now!==c.now)throw Error('ARTIFACT_RUNTIME_CONFIGURATION');
   const selectedPreviews=c.previewStoreForContext?c.previewStoreForContext(a.context):previews;
   const previewOptions=selectedPreviews===undefined?undefined:{previews:selectedPreviews,renderer:c.renderer??null,...(c.maxPreviewBytes===undefined?{}:{maxPreviewBytes:c.maxPreviewBytes})};

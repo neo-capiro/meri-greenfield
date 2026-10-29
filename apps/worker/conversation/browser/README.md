@@ -1,5 +1,42 @@
 # Conversation browser capability
 
+## 29 October native snapshot qualification
+
+An isolated local run used the exact MCP 0.0.83 implementation in
+playwright-core 1.64.0-alpha-1790635538000 and its Chromium 155.0.8059.12 build.
+The first hostile-page canary demonstrated that page-defined DOM getters could
+hide credential metadata from main-world evaluation. Both field observations
+now use the pinned public `evaluateAll(..., {world:'utility'})` option, whose
+pristine DOM prototypes are isolated from page scripts.
+
+The native regression covers top-level and iframe getter overrides, ordinary
+password fields, reflected values after removal/navigation, URL stripping,
+takeover fencing, explicit masked resume, stale input, image refusal and current
+authority loss. The native case plus22 affected composition/relay checks pass,
+with zero skips. It uses real upstream MCP and browser operations with synthetic
+authority/hold/disposal ports; it does not establish D005 confinement, authenticated
+viewer admission, native hold semantics or complete credential confidentiality.
+Browser processes are closed after the test; the pinned browser cache is retained.
+
+Run `node --test apps/worker/conversation/browser/test/session-native.browser.test.mjs`
+with `MERI_PINNED_PLAYWRIGHT_ROOT` pointing to the exact playwright-core package
+and `PLAYWRIGHT_BROWSERS_PATH` to its installed browser cache.
+
+The next native composition must terminate authenticated shim stdio at the owner,
+initialize the isolated context before SDK attachment, and retain a canonical
+browser takeover hold without keeping model/Bash admission open. The current
+upstream-only broker and active-run currentness reader do not yet provide those
+semantics.
+
+The trusted viewer input port now accepts closed text/key/click actions on an
+exact owned page object. It records text in the session-local mask before native
+keyboard dispatch, and samples existing fields before and after the action.
+Page scripts cannot remove a field in an input handler to evade that mask.
+Arbitrary callbacks, clipboard shortcuts, foreign pages and changed URLs refuse;
+the mask has bounded memory and is cleared at destruction. The viewer still
+needs native authentication, selected-document pinning and transport integration.
+Activation remains held.
+
 `createBrowserCapability({binding,cwd,policy,installation,sourceScopes,artifacts,receipts,approvals,now})` returns one composable fragment for the conversation's single Claude Agent SDK query. It never starts a second agent loop. Nothing is created or launched when the fragment is built.
 
 The activity reaches it through `prepareBrowserRun` (`runtime.mjs`) when a trusted browser runtime port is configured, and `options.mjs` composes it last through `composeBrowserOptions` (`options.mjs` in this directory). While activation is held the fragment contributes nothing, but the run's browser cleanup still runs on every outcome. [ACTIVATION-CHECKLIST.md](ACTIVATION-CHECKLIST.md) lists every measurement that must be recorded on the approved host before the hold can open.

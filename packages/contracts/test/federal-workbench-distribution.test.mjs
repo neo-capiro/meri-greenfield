@@ -5,8 +5,30 @@ import {webcrypto, randomUUID} from 'node:crypto';
 import {createContext, SourceTextModule} from 'node:vm';
 import {receiveFederalSource, receiveFederalRequest, receiveFederalResponse} from '@capiro/meri-contracts/federal-workbench';
 import {sourceFor, opFor} from '../../../apps/artifacts/federal-drafting/test/fixtures.mjs';
+import official from './fixtures/federal-draft-source.wire.json' with {type:'json'};
+import {projectNativeFederalSource} from '../../../apps/artifacts/federal-drafting/native-source.mjs';
 
 const bytes = value => new TextEncoder().encode(JSON.stringify(value));
+
+test('distributed official import binds the selection and retained source envelope', async () => {
+  const selection = structuredClone(official.request);
+  const source = projectNativeFederalSource(selection, official.response);
+  const envelope = {schema: 'meri.federal-source.v1', selection, source};
+  assert.deepEqual(await receiveFederalSource(bytes(envelope)), source);
+  const request = receiveFederalRequest('federal-import', bytes({selection, deliveryId: randomUUID()}));
+  assert.deepEqual(request.selection, selection);
+  assert.throws(() => receiveFederalRequest('federal-import', bytes({...request, source})));
+  for (const mutate of [
+    value => {value.selection.textHash = '0'.repeat(64);},
+    value => {value.source.sourceVersion += '-changed';},
+    value => {value.source.coverage.complete = false;},
+    value => {value.source.text += 'changed';},
+  ]) {
+    const changed = structuredClone(envelope); mutate(changed);
+    await assert.rejects(receiveFederalSource(bytes(changed)));
+  }
+  await assert.rejects(receiveFederalResponse('federal-import', 200, bytes({}), structuredClone(request)), /UNADMITTED_REQUEST/);
+});
 
 test('public subpath admits retained source bytes and rejects changed text and scope hashes', async () => {
   const source = sourceFor();
@@ -36,6 +58,6 @@ test('distributed receiver runs with browser globals and no external imports', a
   const source = sourceFor();
   const received = await module.namespace.receiveFederalSource(bytes(source));
   assert.equal(received.sha256, source.sha256);
-  assert.equal(module.namespace.federalWorkbenchVersion, '1.0.0');
+  assert.equal(module.namespace.federalWorkbenchVersion, '1.1.0');
   await assert.rejects(module.namespace.receiveFederalSource(bytes({...source, sha256: '0'.repeat(64)})));
 });

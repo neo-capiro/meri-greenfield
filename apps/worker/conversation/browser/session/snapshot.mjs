@@ -10,7 +10,13 @@ function inspectFields(nodes,selectors){return nodes.map(node=>({
 /** Browser context is host-owned; every page/frame is inspected, including redirects and popups.
  * Failure, uninspectable frames, DOM churn or unsupported API prevents release. */
 export function createPinnedSnapshot({context,manifest=null,maxBytes=262144}){
- const secrets=new Set();
+ const secrets=new Set();let secretBytes=0;
+ const remember=text=>{
+  if(typeof text!=='string'||!text||secrets.has(text))return;
+  const bytes=Buffer.byteLength(text);
+  if(bytes>262144||secretBytes+bytes>1048576||secrets.size>=4096)fail();
+  secrets.add(text);secretBytes+=bytes;
+ };
  const parser={version:PLAYWRIGHT_MCP_VERSION,parse:document=>document,render:document=>({
   content:[{type:'text',text:['### Page','- Page URL: '+(document.pageUrl??'about:blank'),
    ...document.blocks.map(b=>b.kind==='text'?b.text:b.label+': '+(b.value??''))].join('\n')}],
@@ -23,7 +29,9 @@ export function createPinnedSnapshot({context,manifest=null,maxBytes=262144}){
    const before=page.url(),frames=page.frames();if(frames.length>32)fail();pageUrl=before;
    for(const frame of frames){
     let found;
-    try{found=await frame.locator('input,textarea,select,[contenteditable],[autocomplete]').evaluateAll(inspectFields,manifest?.sensitiveSelectors??[]);}catch{fail();}
+    // Pinned Playwright's utility world has pristine DOM prototypes. A hostile
+    // page must not replace getAttribute/value/matches to hide credential fields.
+    try{found=await frame.locator('input,textarea,select,[contenteditable],[autocomplete]').evaluateAll(inspectFields,manifest?.sensitiveSelectors??[],{world:'utility'});}catch{fail();}
     if(!Array.isArray(found)||found.length>2048)fail();fields.push(...found);observations.push({frame,found});
    }
    if(typeof page.ariaSnapshot!=='function')fail();
@@ -36,14 +44,13 @@ export function createPinnedSnapshot({context,manifest=null,maxBytes=262144}){
   // A field value changing between inspection and ARIA capture invalidates the
   // entire result. Do not release a snapshot based on an earlier field sample.
   for(const {frame,found}of observations){
-   const again=await frame.locator('input,textarea,select,[contenteditable],[autocomplete]').evaluateAll(inspectFields,manifest?.sensitiveSelectors??[]);
+   const again=await frame.locator('input,textarea,select,[contenteditable],[autocomplete]').evaluateAll(inspectFields,manifest?.sensitiveSelectors??[],{world:'utility'});
    if(JSON.stringify(again)!==JSON.stringify(found))fail();
   }
   // Keep observed values only in this session's memory. They cannot reappear in
   // reflected page text after the corresponding input disappears.
   for(const f of fields)if(f.value&&(postLease||f.type?.toLowerCase()==='password'||f.selectorMatch||
-    /password|one-time-code|cc-/iu.test(f.autocomplete)))secrets.add(f.value);
-  if(secrets.size>4096)fail();
+    /password|one-time-code|cc-/iu.test(f.autocomplete)))remember(f.value);
   const clean=text=>{for(const secret of [...secrets].sort((a,b)=>b.length-a.length))text=text.split(secret).join(REDACTED);return text;};
   const document={pageUrl,dialogText:null,image:false,blocks:[...snapshots.map(text=>({kind:'text',text:clean(text)})),
    ...fields.map(f=>({...f,label:clean(f.label),value:f.value===null?null:clean(f.value)}))]};
@@ -54,5 +61,5 @@ export function createPinnedSnapshot({context,manifest=null,maxBytes=262144}){
   let result;try{result=filter.filter({fenceState,postLease,tool,response:document});}catch{fail();}
   if(Buffer.byteLength(JSON.stringify(result))>maxBytes)fail();return result;
  }
- return Object.freeze({capture,clear(){secrets.clear();}});
+ return Object.freeze({capture,rememberInput:remember,clear(){secrets.clear();secretBytes=0;}});
 }

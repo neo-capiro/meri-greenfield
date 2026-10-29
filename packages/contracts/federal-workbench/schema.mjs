@@ -14,6 +14,10 @@ export const federalWorkbenchSchema={
  $schema:'https://json-schema.org/draft/2020-12/schema',$id:'urn:meri:federal-workbench:1',title:'Federal workbench',
  $defs:{
   FederalCompilerSource:federal('FederalDraftCompilerSource'),
+  FederalNativeSelection:{$ref:nativeFederalSchema.$id+'#/$defs/FederalDraftSourceInput'},
+  FederalSourceEnvelope:object({schema:{const:'meri.federal-source.v1'},selection:ref('FederalNativeSelection'),source:ref('FederalCompilerSource')}),
+  FederalImportRequest:object({selection:ref('FederalNativeSelection'),deliveryId:{type:'string',pattern:'^[A-Za-z0-9_.:@/-]{1,255}$'}}),
+  FederalImportResult:object({schema:{const:'meri.federal-source.v1'},selection:ref('FederalNativeSelection'),source:ref('FederalCompilerSource'),publication:artifact('ArtifactCreatedResult')}),
   FederalSelection:object({versionId:uuid,expectedArtifactSha256:sha,operations:{type:'array',minItems:1,maxItems:64,items:federal('FederalDraftOperation')}}),
   FederalSourceArtifact:object({versionId:uuid,sha256:sha,specSha256:sha}),
   FederalPrepareRequest:object({selection:ref('FederalSelection')}),

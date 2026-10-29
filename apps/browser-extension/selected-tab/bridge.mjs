@@ -1,6 +1,8 @@
 import {SELECTED_TAB_SCHEMA as schema,SELECTED_TAB_LIMITS as limits,receiveSelectedTabMessage,createSelectedTabShare} from './contract.mjs';
 import {captureRenderedText} from './capture.mjs';
-const uuid=v=>typeof v==='string'&&/^[0-9a-f-]{36}$/u.test(v);
+// Native Chrome document tokens are compared exactly, never normalized into a
+// different ID before the final document-targeted permission check.
+const documentId=v=>typeof v==='string'&&/^(?:[0-9A-Fa-f]{32}|[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12})$/u.test(v);
 const webUrl=value=>{const u=new URL(value);if(!['https:','http:'].includes(u.protocol)||u.username||u.password)throw Error('TAB_UNAVAILABLE');return u;};
 
 /** Native Chrome ports establish origin/document identity. The receiving app's
@@ -24,7 +26,7 @@ export function createSelectedTabBridge(chrome,{origins,now=Date.now,newId=()=>c
  function connect(port){
   let origin;try{
    const s=port.sender,u=new URL(s?.url);
-   if(s.id||s.frameId!==0||!uuid(s.documentId)||!Number.isSafeInteger(s.tab?.id)||s.origin!==u.origin||!origins.includes(u.origin)||u.protocol!=='https:'||u.username||u.password)throw Error();
+   if(s.id||s.frameId!==0||!documentId(s.documentId)||!Number.isSafeInteger(s.tab?.id)||s.origin!==u.origin||!origins.includes(u.origin)||u.protocol!=='https:'||u.username||u.password)throw Error();
    if(peer)throw Error();origin=u.origin;
   }catch{port.disconnect();return false;}
   const candidate={port,origin,tabId:port.sender.tab.id,documentId:port.sender.documentId};peer=candidate;
@@ -50,7 +52,12 @@ export function createSelectedTabBridge(chrome,{origins,now=Date.now,newId=()=>c
  }
  function approve(){if(!current()){end('expired');throw Error('PAIRING_EXPIRED');}if(!['connected','paused'].includes(state))throw Error('PAIRING_NOT_WAITING');clearSelection();state='active';status();changed();}
  function pause(){if(!peer)return;clearSelection();state='paused';status();changed();}
- async function selectedTab(){const tabs=await chrome.tabs.query({active:true,lastFocusedWindow:true});
+ async function selectedTab(){
+  // The action popup can become the last focused window. Scope selection to
+  // the last ordinary browser window, then retain all activeTab/document checks.
+  const window=await chrome.windows.getLastFocused({windowTypes:['normal']});
+  if(!Number.isSafeInteger(window?.id)||window.id<0||window.type!=='normal')throw Error('TAB_UNAVAILABLE');
+  const tabs=await chrome.tabs.query({active:true,windowId:window.id});
   if(tabs.length!==1||!Number.isSafeInteger(tabs[0].id)||!tabs[0].active||tabs[0].discarded||tabs[0].pendingUrl)throw Error('TAB_UNAVAILABLE');
   webUrl(tabs[0].url);if(tabs[0].id===peer?.tabId)throw Error('SELECT_SOURCE_TAB');return tabs[0];}
  async function stillSelected(tabId,documentId,rawUrl,token){
@@ -64,7 +71,7 @@ export function createSelectedTabBridge(chrome,{origins,now=Date.now,newId=()=>c
   try{
    const tab=await selectedTab();assertAttempt(token);targetTab=tab.id;
    const rows=await chrome.scripting.executeScript({target:{tabId:tab.id,frameIds:[0]},world:'ISOLATED',func:captureRenderedText});
-   assertAttempt(token);if(rows.length!==1||rows[0].frameId!==0||!uuid(rows[0].documentId))throw Error('CAPTURE_UNAVAILABLE');
+   assertAttempt(token);if(rows.length!==1||rows[0].frameId!==0||!documentId(rows[0].documentId))throw Error('CAPTURE_UNAVAILABLE');
    const captured=rows[0],snapshot=captured.result;
    const address=webUrl(tab.url);address.search='';address.hash='';if(snapshot?.url!==address.href)throw Error('SELECTION_CHANGED');
    const packet=await createSelectedTabShare({schema,type:'share',pairingId:bound.pairingId,deviceId,selectionId:newId(),binding:bound.binding,

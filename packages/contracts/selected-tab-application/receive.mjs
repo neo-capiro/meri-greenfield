@@ -3,6 +3,9 @@ export const SELECTED_TAB_SCHEMA='meri.selected-tab/1';
 export const SELECTED_TAB_LIMITS=Object.freeze({textBytes:262144,messageBytes:524288,pairingMs:600000,captureMs:60000});
 const admitted=new WeakSet(),encoder=new TextEncoder();
 const uuid=v=>typeof v==='string'&&/^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/u.test(v);
+// Chrome's document token is opaque: current native APIs serialize 128-bit
+// tokens as 32 hex characters; older hosts use UUIDs. Preserve exact bytes.
+const documentId=v=>uuid(v)||typeof v==='string'&&/^[0-9A-Fa-f]{32}$/u.test(v);
 const integer=v=>Number.isSafeInteger(v)&&v>=0;
 const fail=()=>{throw Error('INVALID_SELECTED_TAB_MESSAGE');};
 function closed(v,keys){if(!v||typeof v!=='object'||Array.isArray(v)||Object.keys(v).length!==keys.length||keys.some(k=>!Object.hasOwn(v,k)))fail();}
@@ -39,7 +42,7 @@ export async function receiveSelectedTabMessage(direction,text){
   }else if(v.type==='share'){
    closed(v,['schema','type','pairingId','deviceId','selectionId','binding','tabId','documentId','url','title','capturedAtMs','text','bytes','sha256']);
    binding(v.binding);source(v);
-   if(!uuid(v.deviceId)||!uuid(v.selectionId)||!uuid(v.documentId)||!integer(v.tabId)||!integer(v.capturedAtMs)||
+   if(!uuid(v.deviceId)||!uuid(v.selectionId)||!documentId(v.documentId)||!integer(v.tabId)||!integer(v.capturedAtMs)||
     !integer(v.bytes)||v.bytes>SELECTED_TAB_LIMITS.textBytes+8192||typeof v.sha256!=='string'||!/^[a-f0-9]{64}$/u.test(v.sha256))fail();
    const bytes=original(v);if(bytes.byteLength!==v.bytes||await digest(bytes)!==v.sha256)fail();
   }else fail();

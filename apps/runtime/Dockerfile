@@ -43,7 +43,7 @@ COPY apps ./apps
 COPY packages ./packages
 COPY infra/product-preview/runtime-packages.lock.json ./infra/product-preview/runtime-packages.lock.json
 # Stage 1 one-shot database runner (D2). Its migrations already arrive through `COPY apps`.
-COPY infra/product-preview/first-chat-migrate.mjs infra/product-preview/first-chat-database.sql infra/product-preview/first-chat-database-temporal.sql infra/product-preview/first-chat-database-integration.sql infra/product-preview/first-chat-database-owner-reads.sql infra/product-preview/first-chat-seed-budget.sql infra/product-preview/first-chat-native-retention-grants.sql infra/product-preview/first-chat-expired-conversation-purge-grants.sql infra/product-preview/first-chat-schedule-worker-grants.sql ./infra/product-preview/
+COPY infra/product-preview/first-chat-migrate.mjs infra/product-preview/first-chat-database.sql infra/product-preview/first-chat-database-temporal.sql infra/product-preview/first-chat-database-integration.sql infra/product-preview/first-chat-database-owner-reads.sql infra/product-preview/first-chat-seed-budget.sql infra/product-preview/first-chat-native-retention-grants.sql infra/product-preview/first-chat-expired-conversation-purge-grants.sql infra/product-preview/first-chat-schedule-worker-grants.sql infra/product-preview/first-chat-core-retention-serving.sql ./infra/product-preview/
 # SWC's upstream carrier extracts a native payload. Bake it while writable so
 # the final UID1000 process needs no executable cache on its read-only root.
 RUN --network=none node apps/runtime/build/materialize-swc.mjs

@@ -1,18 +1,26 @@
 // @ts-check
 /** Bounded built-in file tools confined to the conversation workspace by the SDK's own permission system:
  * `permissions.blockReadsOutsideWorkingDirectories` refuses Read/Grep/Glob outside the working directory in every
- * permission mode, and `Read(//<cwd>/**)` / `Edit(//<cwd>/**)` allow rules pre-approve file access inside it (Edit
- * rules also govern Write). Any other call falls through to the permission callback, which denies it. The SDK
- * evaluates resolved paths, so this replaces the former textual path gate and its PreToolUse duplicate.
- * Bash is not a file tool: it is admitted only through `bash-sandbox.mjs` with its own policy flag. */
+ * permission mode, and `Read(//<cwd>/**)` / `Edit(//<cwd>/**)` allow rules pre-approve file access inside it (the
+ * pinned SDK checks Write *and* NotebookEdit against the `Edit(...)` rules, so those rules govern notebook cell edits;
+ * a `NotebookEdit(...)` rule is accepted but never matched). Any other call falls through to the permission callback,
+ * which denies it. The SDK evaluates resolved paths, so this replaces the former textual path gate and its PreToolUse
+ * duplicate. Bash is not a file tool: it is admitted only through `bash-sandbox.mjs` with its own policy flag. */
 import {posix} from 'node:path';
 const {isAbsolute,resolve}=posix;
 import {own} from '../../../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {WORKSPACE_TOOLS} from './policy.mjs';
 /** Built-in tool names declared by the pinned SDK tool schemas; every name outside the run's `tools` is also disallowed. */
 export const BUILTIN_TOOL_NAMES=Object.freeze(['Agent','Bash','ExitPlanMode','Edit','Read','Write','Glob','Grep','TaskStop','ListMcpResources','RefreshMcpTools','NotebookEdit','ReadMcpResourceDir','ReadMcpResource','ReportFindings','TodoWrite','WebFetch','WebSearch','AskUserQuestion','SendFeedback','ClaudeDesign','Projects','EnterPlanMode','TaskCreate','TaskGet','TaskUpdate','TaskList','Workflow','CronCreate','CronDelete','CronList','ScheduleWakeup','RemoteTrigger','ShowOnboardingRolePicker','OfferChromeSetup','ReadNotifications','Monitor','ProposeSkills','ProposeGoal','Artifact','PushNotification','EnterWorktree','ExitWorktree','Skill']);
-export const FILE_TOOLS=WORKSPACE_TOOLS;
-const WRITE_TOOLS=Object.freeze(['Write','Edit']);
+/** The SDK's native Jupyter cell editor. A notebook is created with `Write` (valid `.ipynb` JSON); NotebookEdit then
+ * targets one existing cell by id and leaves every other cell, its outputs and the notebook metadata intact. */
+export const NOTEBOOK_TOOL='NotebookEdit';
+/** Every native file tool this module can admit: the shared policy allowlist plus the notebook editor, which
+ * `policy.mjs`'s own allowlist universe must also name before a resolved policy can request it. */
+export const FILE_TOOLS=Object.freeze([...new Set([...WORKSPACE_TOOLS,NOTEBOOK_TOOL])]);
+/** Tools that change workspace bytes. NotebookEdit is one of them: it writes a notebook file, so an admitted notebook
+ * tool must emit the `Edit(//cwd/**)` rule even when Write/Edit themselves are not admitted. */
+const WRITE_TOOLS=Object.freeze(['Write','Edit',NOTEBOOK_TOOL]);
 /** @param {string} cwd */
 export function assertWorkspaceRoot(cwd){if(typeof cwd!=='string'||!isAbsolute(cwd)||cwd.includes('/../')||cwd.endsWith('/')||cwd.includes('\0')||/[()*?[\]{}!\\]/u.test(cwd)||resolve(cwd)!==cwd)throw Object.assign(Error('WORKSPACE_ROOT_REFUSED'),{code:'WORKSPACE_ROOT_REFUSED'});return cwd;}
 /** Absolute-path permission rules use a leading `//`; the cwd itself starts with `/`. @param {'Read'|'Edit'} tool @param {string} cwd */

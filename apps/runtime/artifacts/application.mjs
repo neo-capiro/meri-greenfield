@@ -57,7 +57,7 @@ export function createRuntimeArtifactApplication(configuration){const c=own(conf
   const resolved=own(rawResolved,['documentOptions','recheck']),recheck=method(rawResolved,'recheck');
   // Additive optional facet: the composed document options may carry the native-result discovery port beside the
   // existing nativeFiles port. It is metadata-only and remains optional, so a mount without it is unchanged.
-  const options=own(resolved.documentOptions,['sessions','selectedClientId','artifactOptions','now','limits'],['enabled','admitPdf','previewOptions','nativeFiles','nativeResults']);if(options.sessions!==c.sessions||options.now!==c.now)fail('ACCESS_DENIED');
+  const options=own(resolved.documentOptions,['sessions','selectedClientId','artifactOptions','now','limits'],['enabled','admitPdf','previewOptions','nativeFiles','nativeResults','federalSource']);if(options.sessions!==c.sessions||options.now!==c.now)fail('ACCESS_DENIED');
   const innerLimits=documentLimits(options.limits),effectiveLimits=Object.fromEntries(Object.keys(limits).map(key=>[key,Math.min(limits[key],innerLimits[key])]));
   const effectiveDeadlineMs=Math.min(deadlineMs,requestStarted+effectiveLimits.maxRequestMs);life.limitDeadline(effectiveDeadlineMs);
   const o=own(options.artifactOptions,['pool','context','validators','authorize','versions','objects','executor','now','ids'],['retention','authorizeOrigin','admitRetainedEvidence','retainedAssetMapWrites']);
@@ -84,7 +84,7 @@ export function createRuntimeArtifactApplication(configuration){const c=own(conf
   // never multiplied around every local immutable storage operation.
   const app=createDocumentApplication({...options,limits:effectiveLimits,artifactOptions:o});
   await fresh('admission');const serialized=JSON.stringify(body),headers=new Headers(info.headers);headers.set('content-length',String(Buffer.byteLength(serialized)));
-  state.writeStarted=['create','revise','preview-publish','federal-publish'].includes(info.intent);state.readStarted=!state.writeStarted;
+  state.writeStarted=['create','revise','preview-publish','federal-publish','federal-import'].includes(info.intent);state.readStarted=!state.writeStarted;
   const response=await life.run(signal=>app.handle(new Request(info.url,{method:info.method,headers,body:serialized,signal})));if(response.status!==200)return response;state.completed=true;
   await fresh('release');life.check();return response;
  }catch(error){return errorResponse(error,state);}finally{life?.close();}}});
