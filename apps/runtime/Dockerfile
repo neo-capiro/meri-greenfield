@@ -497,7 +497,10 @@ COPY --from=native-repo-4 /tmp/meri-native-repo /tmp/meri-native-repo
 # archive stays the signed upstream 1.5.4 asset: the patch is applied only after the staged sha256 and the detached
 # Cisco Talos signature have verified, both the patch and its applier are hash-pinned in the same step, and the applier
 # refuses any target whose bytes are not the expected upstream file. This stage has no patch binary and this correction
-# adds no package.
+# adds no package. The CMake invocation pins CMAKE_INSTALL_PREFIX=/usr and, beside it, CMAKE_INSTALL_LIBDIR=lib: upstream
+# GNUInstallDirs derives libclamav/libfreshclam/libclamunrar's destination and their RPATH from that pair, so the
+# install lands in /usr/lib as the inventory, provenance and final loader checks expect, and cannot follow a
+# distribution default to lib64.
 FROM ${RUNTIME_IMAGE} AS clamav-source-build
 COPY infra/product-preview/native-clamav-patches /tmp/meri-clamav-patches
 RUN --network=none \
@@ -554,7 +557,7 @@ RUN --network=none \
     sha256sum -c /tmp/clamav-compat.sha256 && \
     python3.13 /tmp/meri-clamav-patches/apply-pinned-patch.py /tmp/meri-clamav-patches/clamav-1.5.4-openssl4-asn1-time.patch /usr/src/clamav-1.5.4/libclamav/crypto.c 6cfefd0ca043a922ddfda11c364f4995daf8a12317ce22f6c839b8c95a069dcc 26bdec0a22b4feb6927a4ef292e6f2d1896d11d2d92ffabc9a466bbb6884f036 && \
     cmake -S /usr/src/clamav-1.5.4 -B /tmp/clamav-build \
-      -D CMAKE_BUILD_TYPE=RelWithDebInfo -D CMAKE_INSTALL_PREFIX=/usr -D CMAKE_INSTALL_SYSCONFDIR=/etc \
+      -D CMAKE_BUILD_TYPE=RelWithDebInfo -D CMAKE_INSTALL_PREFIX=/usr -D CMAKE_INSTALL_SYSCONFDIR=/etc -D CMAKE_INSTALL_LIBDIR=lib \
       -D ENABLE_APP=ON -D ENABLE_MILTER=ON -D ENABLE_CLAMONACC=ON -D ENABLE_UNRAR=ON -D ENABLE_TESTS=ON \
       -D ENABLE_JSON_SHARED=ON -D ENABLE_EXTERNAL_MSPACK=OFF -D ENABLE_SYSTEMD=OFF -D ENABLE_MAN_PAGES=OFF \
       -D ENABLE_EXAMPLES=OFF -D ENABLE_DOXYGEN=OFF -D ENABLE_LIBCLAMAV_ONLY=OFF -D ENABLE_STATIC_LIB=OFF \
