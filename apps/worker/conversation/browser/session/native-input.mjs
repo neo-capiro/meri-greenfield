@@ -24,12 +24,15 @@ export function prepareNativeBrowserInput(context,page,raw,{leaseEpoch,limiter})
  // bounds and rate admission. Press/click are atomic native conveniences, so
  // charge both their down and up events before any effect is dispatched.
  admitInputBatch({leaseEpoch,events},{viewport:page.viewportSize(),limiter});
- const frame=page.mainFrame(),url=page.url();
+ const frame=page.mainFrame(),url=page.url();let navigated=false,disposed=false,consumed=false;
+ const changed=selected=>{if(selected===frame)navigated=true;};
+ page.on('framenavigated',changed);
  return Object.freeze({text:action.kind==='text'?action.text:null,async perform({assertLease=()=>{}}={}){
-  const check=()=>{assertLease();if(!context.pages().includes(page)||page.isClosed()||page.mainFrame()!==frame||page.url()!==url)fail();};check();
+  if(consumed)fail();consumed=true;
+  const check=()=>{assertLease();if(disposed||navigated||!context.pages().includes(page)||page.isClosed()||page.mainFrame()!==frame||page.url()!==url)fail();};check();
   if(action.kind==='text')await page.keyboard.insertText(action.text);
   else if(action.kind==='key')await page.keyboard.press(action.key);
   else if(action.kind==='click')await page.mouse.click(action.x,action.y);
   else{await page.mouse.move(action.x,action.y);check();await page.mouse.wheel(action.deltaX,action.deltaY);}
- }});
+ },dispose(){disposed=true;page.off('framenavigated',changed);}});
 }

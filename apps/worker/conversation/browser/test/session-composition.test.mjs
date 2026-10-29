@@ -1,6 +1,7 @@
 /** Source composition only. Scripted page/host ports are not native sandbox or IdP qualification. */
 import test from 'node:test';import assert from 'node:assert/strict';
 import {PassThrough} from 'node:stream';
+import {EventEmitter} from 'node:events';
 import {Client} from '@modelcontextprotocol/sdk/client/index.js';
 import {StdioServerTransport} from '@modelcontextprotocol/sdk/server/stdio.js';
 import {createPinnedBrowserSession} from '../session/connection.mjs';
@@ -14,8 +15,9 @@ import {siteWorkflowPolicy} from '../site-workflows/manifest.mjs';
 import {workflowCurrent,workflowManifest} from '../../../../../packages/contracts/test/site-workflow.fixture.mjs';
 function fixture(t,options={}){
  const state={fields:[],text:'- heading "Public page"',url:'https://records.example/page?token=hidden#secret',calls:0,events:[],refused:false,hold:'APPLIED'};
- const frame={locator(){return {async evaluateAll(){return structuredClone(state.fields);}};}};
+ const lifecycle=new EventEmitter(),frame={locator(){return {async evaluateAll(){return structuredClone(state.fields);}};}};
  const page={url:()=>state.url,frames:()=>[frame],mainFrame:()=>frame,isClosed:()=>false,viewportSize:()=>({width:800,height:600}),
+  on:(...args)=>lifecycle.on(...args),off:(...args)=>lifecycle.off(...args),
   keyboard:{async insertText(text){await state.onInput?.(text);},async press(key){await state.onInput?.(key);}},
   async ariaSnapshot(){await options.capture?.(state);return state.text;}};
  const context={pages:()=>[page],async close(){state.events.push('context');}};
@@ -115,6 +117,16 @@ test('hand-back during input authority checks prevents the delayed native event'
  const lease=await session.takeover();x.state.onInput=async()=>{inputs++;};handingBack=true;
  await assert.rejects(session.userInput({...lease,page:x.page,input:{kind:'text',text:'Synthetic private value'}}),/USER_INPUT_UNKNOWN/);
  assert.equal(inputs,0);
+});
+
+test('invalid input cannot refresh idle control or leave admission busy after an invalid signal',async t=>{
+ let clock=0,inputs=0;const x=fixture(t,{now:()=>clock});x.args.deadlineMs=700000;
+ const session=await createPinnedBrowserSession(x.args);t.after(()=>session.destroy({trigger:'conversation-end'}));
+ const lease=await session.takeover();x.state.onInput=async()=>{inputs++;};
+ await assert.rejects(session.userInput({...lease,page:x.page,input:{kind:'key',key:'Enter'},signal:{}}));
+ await session.userInput({...lease,page:x.page,input:{kind:'key',key:'Enter'}});assert.equal(inputs,1);
+ clock=599999;await assert.rejects(session.userInput({...lease,page:x.page,input:{kind:'text',text:''}}));
+ clock=600001;assert.equal(session.state().state,'returning');
 });
 
 test('unknown in-flight outcome closes admission and destroys context before verified disposal',async t=>{
