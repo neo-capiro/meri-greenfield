@@ -124,6 +124,24 @@ run 30 installed-packages.log "${common[@]}" --entrypoint apk "$image" info -vv
 # the image's own clamscan, verifies the installed bytes against the inventory the build stage recorded, and
 # requires the provenance record to agree with both. A non-zero exit fails this build like any other probe.
 run 60 clamav-component-binding.log "${common[@]}" --entrypoint python3.13 "$image" -I -B /usr/share/meri/clamav_component_coverage.py --bind
+# glibc ships the iconv converters separately from libc, and the delivered scanner converts through them when it
+# decodes VBA/XLM macro and string content (libclamav/entconv.c 1046/1050 iconv_open, 1057 iconv). A version listing,
+# ldd or an ASCII signature smoke cannot see a missing dynamically loaded gconv module, so this converts the three
+# inputs ClamAV's own unit tests use and compares the UTF-8 bytes. It runs as the image user with no network; a missing
+# module, a missing binary or a wrong conversion fails this build like any other probe.
+run 60 native-iconv-conversion.log "${common[@]}" --entrypoint /bin/bash "$image" -c '
+set -euo pipefail
+hex() { od -An -v -tx1 | tr -d " \n"; }
+test -r /usr/lib/gconv/gconv-modules || { echo "no /usr/lib/gconv/gconv-modules in the image"; exit 1; }
+for module in SJIS libJIS UTF-16 UTF-32; do test -r "/usr/lib/gconv/$module.so" || { echo "missing /usr/lib/gconv/$module.so"; exit 1; }; done
+jis=$(printf "\202\261\202\361\202\311\202\277\202\315" | /usr/bin/iconv -f SHIFT_JIS -t UTF-8 | hex)
+test "$jis" = "e38193e38293e381abe381a1e381af" || { echo "SHIFT_JIS to UTF-8 gave $jis"; exit 1; }
+be=$(printf "\000H\000e\000l\000l\000o\000 \000w\000o\000r\000l\000d\000!" | /usr/bin/iconv -f UTF-16BE -t UTF-8 | hex)
+test "$be" = "48656c6c6f20776f726c6421" || { echo "UTF-16BE to UTF-8 gave $be"; exit 1; }
+le=$(printf "H\000e\000l\000l\000o\000 \000w\000o\000r\000l\000d\000!\000" | /usr/bin/iconv -f UTF-16LE -t UTF-8 | hex)
+test "$le" = "48656c6c6f20776f726c6421" || { echo "UTF-16LE to UTF-8 gave $le"; exit 1; }
+echo "system iconv converted SHIFT_JIS, UTF-16BE and UTF-16LE to UTF-8 from the gconv modules this image carries"
+'
 run 30 installed-python.json "${common[@]}" --entrypoint python3.13 "$image" -I -m pip list --format=json
 run 30 public-ca.log "${common[@]}" --entrypoint node "$image" --input-type=module -e "import fs from 'node:fs';import assert from 'node:assert/strict';import {createHash} from 'node:crypto';const lock=JSON.parse(fs.readFileSync('apps/runtime/certs/rds-global-bundle.lock.json'));const path=process.env.NODE_EXTRA_CA_CERTS;assert.equal(path,lock.imagePath);const bytes=fs.readFileSync(path),s=fs.statSync(path);assert.equal(createHash('sha256').update(bytes).digest('hex'),lock.sha256);assert.equal(bytes.length,lock.bytes);assert.equal(s.mode&4095,292);assert.equal(s.uid,0);"
 run 30 repository.json "${aws[@]}" ecr describe-repositories --repository-names "$repository" --output json

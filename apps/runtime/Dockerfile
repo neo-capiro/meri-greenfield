@@ -54,7 +54,7 @@ RUN ln -s ../conversations/node_modules apps/control/retention/node_modules
 # Layer/stage organization only. Docker's layer store refuses a chain deeper than its depth limit
 # ("max depth exceeded"), and the first real ARM build of this composition died exactly there:
 # build 1609f5c6 [runtime 120/208] ADD libseccomp ... "failed to prepare ...: max depth exceeded"
-# after ~120 chained apk layers. The 190 pinned archives therefore stay the same per-archive
+# after ~120 chained apk layers. The 191 pinned archives therefore stay the same per-archive
 # ADD --checksum instructions, byte for byte and in their original order (same URLs, same checksums),
 # but they are staged in four repository stages whose chains each stay under 64 layers; the runtime
 # stage takes the assembled local repository in one COPY --from layer per staging stage. Pinned URLs
@@ -253,6 +253,7 @@ ADD --checksum=sha256:ee1d0c652a89932c9f1b3d1e8c348bd1a18329f32a1a63eaa1aaae9dd3
 ADD --checksum=sha256:ef0fed8829139b2b1ec2589d1be348855fdd6e27a0406bb4635d605c4c23131c https://packages.wolfi.dev/os/aarch64/wayland-libs-cursor-1.26.0-r3.apk /tmp/meri-native-repo/aarch64/wayland-libs-cursor-1.26.0-r3.apk
 ADD --checksum=sha256:fa871a64e10623a12ee58086b59e8a1ffe195805d3a254121bad704bb7628857 https://packages.wolfi.dev/os/aarch64/argon2-20190702-r9.apk /tmp/meri-native-repo/aarch64/argon2-20190702-r9.apk
 ADD --checksum=sha256:fc36e4dd53d901cf868cbe55a000a496e84cf220317a0db8cbdfc35a97193f55 https://packages.wolfi.dev/os/aarch64/libheif-1.23.7-r1.apk /tmp/meri-native-repo/aarch64/libheif-1.23.7-r1.apk
+ADD --checksum=sha256:706b29d19e1b45086515d6ecfa7b9adb2c0add5a08d29e83cdd047d2e52cab9d https://packages.wolfi.dev/os/aarch64/glibc-2.44-iconv-2.44-r10.apk /tmp/meri-native-repo/aarch64/glibc-2.44-iconv-2.44-r10.apk
 # ---------------------------------------------------------------------------------------------------------
 # SCRUM-197: build-only stages for the source-built ClamAV payload.
 #
@@ -608,8 +609,15 @@ WORKDIR /opt/meri
 # output satisfies the request as world[glibc-2.44=2.44-r10] while ld-linux-2.44-2.44-r9 and libcrypt1-2.44-2.44-r9 break
 # it by requiring glibc-2.44=2.44-r9. Naming a name in the request supersedes the base's world pin for that name (the same
 # log shows world[glibc-2.44=2.44-r10] being satisfied), so the whole family is named in one transaction and every member's
-# effective world entry becomes r10. All four are the r10 records the source lock declares under systemPackages and the
+# effective world entry becomes r10. All five are the r10 records the source lock declares under systemPackages and the
 # ADD list above stages; nothing is fetched and no world file is rewritten.
+# glibc-2.44-iconv belongs to this family and to this image, not only to the compiler: the source-built libclamav is
+# the same shared library copied into the runtime stage, and its charset path is the system converter
+# (libclamav/entconv.c 1046/1050 iconv_open, 1057 iconv). Wolfi splits the gconv modules out of libc, so without this
+# package the delivered scanner converts no SHIFT_JIS or UTF-16 macro/string content and vba_extract.c/xlm_extract.c
+# fall back to their "<Error decoding module data>" and placeholder paths. It carries /usr/lib/gconv, which the
+# sandbox already exposes through its read-only /usr bind (apps/runtime/uploads/native-sandbox.mjs), so no sandbox,
+# authority or path change is needed.
 # apk --version is recorded before the first install so the build log itself carries the effective apk-tools version
 # instead of leaving it a premise; this is static recipe text and no version is claimed until a real build logs it.
 RUN --mount=type=bind,from=native-repository,source=tmp/meri-native-repo,target=/tmp/meri-native-repo,readonly \
@@ -618,8 +626,13 @@ RUN --mount=type=bind,from=native-repository,source=tmp/meri-native-repo,target=
     apk add --no-cache --no-network --repository /tmp/meri-native-repo --repositories-file /dev/null --update-cache \
       bash=5.3-r14 libatomic=16.2.0-r1 libstdc++=16.2.0-r1 python-3.13=3.13.16_git20261016-r2 \
       py3.13-pip=26.2.2-r0 py3.13-pip-base=26.2.2-r0 \
-      glibc-2.44=2.44-r10 glibc-2.44-locale-posix=2.44-r10 ld-linux-2.44=2.44-r10 libcrypt1-2.44=2.44-r10 && \
-    test "$(python3.13 --version)" = 'Python 3.13.16'
+      glibc-2.44=2.44-r10 glibc-2.44-iconv=2.44-r10 glibc-2.44-locale-posix=2.44-r10 ld-linux-2.44=2.44-r10 libcrypt1-2.44=2.44-r10 && \
+    test "$(python3.13 --version)" = 'Python 3.13.16' && \
+    apk info -v | grep -qx glibc-2.44-iconv-2.44-r10 && \
+    test -x /usr/bin/iconv && \
+    test -r /usr/lib/gconv/gconv-modules && \
+    for module in SJIS UTF-16 UTF-32; do \
+      test -r "/usr/lib/gconv/$module.so" || { echo "the runtime image lacks the iconv module $module.so"; exit 1; }; done
 # Fixed native renderer owner. The install resolves from the retained signed index above, so apk's own trust gate (index
 # signature plus the index-recorded package identity, verified against the staged bytes) is what admits every archive.
 # The source lock records these exact official archives. Availability is established by the child probe on the built image.

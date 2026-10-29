@@ -600,6 +600,46 @@ class SourceBuiltClamavPayload(unittest.TestCase):
         self.assertLess(build.index("python-3.13=3.13.16"), build.index("py3.13-pytest="),
                         "pytest is requested before the interpreter it must run on")
 
+    def test_the_runtime_image_carries_the_converters_the_delivered_scanner_uses(self):
+        """The compiler-stage converters alone do not reach the scanner: the runtime copies that same libclamav.
+
+        libclamav converts through the system iconv when HAVE_ICONV is set (libclamav/entconv.c 1046/1050 iconv_open,
+        1057 iconv), and Wolfi splits the gconv modules out of libc, so the archive has to be staged in the runtime
+        repository and installed in the runtime image as well. This guards that runtime closure entry, its offline
+        request and assertion, the absence of compiler/test packages from the runtime layer, and the real conversion
+        probe the next build runs against the built image.
+        """
+        iconv = [package for package in LOCK["systemPackages"] if package["name"] == "glibc-2.44-iconv"]
+        self.assertEqual(len(iconv), 1, "the runtime system closure does not carry glibc-2.44-iconv exactly once")
+        iconv = iconv[0]
+        self.assertEqual(iconv["version"], "2.44-r10")
+        self.assertEqual(iconv["sha256"], "706b29d19e1b45086515d6ecfa7b9adb2c0add5a08d29e83cdd047d2e52cab9d")
+        self.assertEqual(iconv["bytes"], 3856747)
+        self.assertEqual(STAGED.get("glibc-2.44-iconv-2.44-r10.apk"), iconv["sha256"],
+                         "the runtime converter archive is not staged in the pinned repository at its locked checksum")
+        self.assertIn("ADD --checksum=sha256:%s %s /tmp/meri-native-repo/aarch64/glibc-2.44-iconv-2.44-r10.apk"
+                      % (iconv["sha256"], iconv["source"]), DOCKERFILE,
+                      "the runtime converter archive is not staged into the runtime repository")
+        runtime = " ".join(self.STAGES["runtime"]["instructions"])
+        self.assertIn("glibc-2.44-iconv=2.44-r10", runtime,
+                      "the runtime install does not request the converters the delivered scanner converts through")
+        self.assertIn("glibc-2.44-iconv-2.44-r10", runtime,
+                      "the runtime install does not verify the converter archive after installation")
+        for module in ("gconv-modules", "/usr/lib/gconv/$module.so", "for module in SJIS UTF-16 UTF-32"):
+            self.assertIn(module, runtime, "the runtime install no longer asserts the %s converter" % module)
+        self.assertNotIn("py3.13-pytest", runtime,
+                         "a compiler/test-runner package leaked into the runtime image")
+        compiler = {member["name"] for member in self.PREP["buildClosure"]["members"]}
+        self.assertIn("glibc-2.44-iconv", compiler,
+                      "the compiler-stage converter installation was dropped while adding the runtime one")
+        hook = (ROOT / "infra" / "product-preview" / "image-build.sh").read_text(encoding="utf-8")
+        for expected in ("e38193e38293e381abe381a1e381af", "48656c6c6f20776f726c6421", "SHIFT_JIS", "UTF-16BE",
+                         "UTF-16LE", "/usr/bin/iconv"):
+            self.assertIn(expected, hook,
+                          "the final-image probe no longer converts the real codepages through system iconv")
+        self.assertIn("runtimeIconvClosure", LOCK["uploadNativeProvenance"],
+                      "the lock does not record why the converters are part of the runtime closure")
+
     def test_the_authenticated_source_and_toolchain_inputs_are_pinned(self):
         auth = self.PREP["authentication"]
         for url, digest, label in ((auth["tarballUrl"], auth["tarballSha256"], "release asset"),
