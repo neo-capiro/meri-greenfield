@@ -1,0 +1,11 @@
+# Selected evidence for research children
+
+The native SDK remains the only agent loop and filesystem permission owner. SDK 0.3.295 `AgentDefinition` exposes a tool allowlist but no per-child working directory or filesystem permission policy. The research role therefore receives selected parent Read snapshots and has an empty tool list. Analysis, verification and artifact-production retain their existing role policies; they are not covered by this selected-evidence guarantee.
+
+The parent first uses native `Read` on an authorized workspace file. To delegate it, the research Agent prompt is JSON such as `{"task":"Check the quoted figures","files":["/workspace/conversation/report.txt"]}`. File strings select exact prior successful Read inputs in this query. No new file access, path resolution or filesystem gateway runs during delegation. Ordinary prose delegates inline evidence only.
+
+`subagent-sources.mjs` captures at most 32 successful parent Read snapshots totaling 48 KiB. Failed rereads remove the previous snapshot. A selection contains at most eight files and its expanded prompt cannot exceed 64 KiB. It preserves the Read arguments, ranges, truncation, output, tool identity and digest; it does not describe a partial or old Read as a complete current file. Unavailable, evicted, oversized or malformed selections are denied before child dispatch. The bounded cache is query-local; a restored query must read its sources again.
+
+`subagents.mjs` expands the selection before the existing durable dispatch crossing. The assignment input digest covers the entire expanded prompt, while the existing result receipt and current-authority checks remain unchanged. Research has no filesystem, Bash, skill or MCP tools; a research-child tool hook also denies attempted tool execution. Nested Agent calls are denied for every role. Cancellation and an already retained assignment never dispatch another child.
+
+Author checks cover the actual capability composer, capture/admission hooks and existing durable child lifecycle, including revocation, stale goal revision, lost acknowledgements and replay. These checks use no model/provider. They do not establish native Linux process isolation, SDK runtime behavior, egress or orphan cleanup. Those A1 acceptance requirements remain open.

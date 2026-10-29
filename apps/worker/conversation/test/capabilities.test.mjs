@@ -47,7 +47,7 @@ test('subagent definitions use declared SDK fields and the Agent gate bounds typ
  const latched=[],latch=e=>latched.push(e.code);const s=createSubagents(assertCapabilityPolicy({subagents:true,workspaceTools:true,workspaceToolNames:['Read','Write'],maxParallelSubagents:1,bash:true}),{latch,children:childAssignmentPort()});
  assert.deepEqual(Object.keys(s.agents),[...SUBAGENT_TYPES]);
  for(const d of Object.values(s.agents))assert.deepEqual(Object.keys(d).sort(),['description','disallowedTools','maxTurns','model','omitClaudeMd','prompt','tools']);
- assert.deepEqual(s.agents.research.tools,['Read']);assert.deepEqual(s.agents.artifact_production.tools,['Read','Write']);assert.ok(s.agents.verification.disallowedTools.includes('Agent')&&s.agents.verification.disallowedTools.includes('Bash'));assert.equal(s.agents.analysis.model,'inherit');
+ assert.deepEqual(s.agents.research.tools,[]);assert.deepEqual(s.agents.artifact_production.tools,['Read','Write']);assert.ok(s.agents.verification.disallowedTools.includes('Agent')&&s.agents.verification.disallowedTools.includes('Bash'));assert.equal(s.agents.analysis.model,'inherit');
  for(const d of Object.values(s.agents))assert.ok(d.disallowedTools.includes('Bash')&&!d.tools.includes('Bash'),'subagents never get Bash, even when the parent may');
  const off=createSubagents(assertCapabilityPolicy({subagents:true}),{latch,children:childAssignmentPort()});assert.throws(()=>createSubagents(assertCapabilityPolicy({subagents:true}),{}),/CAPABILITY_CONFIGURATION/);assert.deepEqual(off.agents.artifact_production.tools,[]);
  assert.deepEqual(admitAgentInput({description:'d',prompt:'p',subagent_type:'research',run_in_background:true,name:'x'},SUBAGENT_TYPES),{description:'d',prompt:'p',subagent_type:'research',run_in_background:false});
@@ -96,11 +96,12 @@ test('composition yields an all-off empty fragment and per-capability additive f
  assert.equal(createSdkCapabilities({subagents:true},facts(runOwner)).options.agentProgressSummaries,undefined);
  const skill=createSdkCapabilities({skillPlugin:true},facts(runOwner,{skillPluginDirectory:plugin})).options;assert.deepEqual(Object.keys(skill).sort(),['allowedTools','canUseTool','disallowedTools','plugins','skills','tools']);
  assert.throws(()=>createSdkCapabilities({skillPlugin:true},facts(runOwner)),/SKILL_PLUGIN_DIRECTORY_REQUIRED/);
- const full=createSdkCapabilities(all,facts(runOwner,{skillPluginDirectory:plugin}));assert.deepEqual(full.options.tools,['Read','Write','Edit','Glob','Grep','Agent','Skill'],'Bash needs the sandbox attestation');assert.ok(full.options.disallowedTools.includes('Bash'));assert.equal(full.bashAdmitted,false);assert.ok(!full.policy.workspaceToolNames.includes('Bash'));assert.equal(full.options.sandbox,undefined);assert.equal(full.options.hooks.PreToolUse.length,1);assert.equal(full.options.forwardSubagentText,undefined);
+ const full=createSdkCapabilities(all,facts(runOwner,{skillPluginDirectory:plugin}));assert.deepEqual(full.options.tools,['Read','Write','Edit','Glob','Grep','Agent','Skill'],'Bash needs the sandbox attestation');assert.ok(full.options.disallowedTools.includes('Bash'));assert.equal(full.bashAdmitted,false);assert.ok(!full.policy.workspaceToolNames.includes('Bash'));assert.equal(full.options.sandbox,undefined);assert.equal(full.options.hooks.PreToolUse.length,2);assert.equal(full.options.forwardSubagentText,undefined);
  assert.equal((await full.options.canUseTool('Read',{file_path:`${cwd}/a`},hookOptions)).behavior,'deny','inside-workspace reads are pre-approved by SDK rules, never by the callback');assert.equal((await full.options.canUseTool('Agent',{description:'d',prompt:'p',subagent_type:'research'},hookOptions)).behavior,'allow');assert.equal((await full.options.canUseTool('WebFetch',{url:'https://x'},hookOptions)).behavior,'deny');assert.equal((await full.options.canUseTool('Read',{file_path:'/etc/hosts'},hookOptions)).behavior,'deny');
- const matching=tool=>full.options.hooks.PreToolUse.filter(group=>new RegExp(group.matcher).test(tool));
- assert.deepEqual(matching('Read'),[],'the SDK does not dispatch file reads to Agent-only admission hooks');
- const agentHooks=matching('Agent');assert.equal(agentHooks.length,1);
+  const matching=tool=>full.options.hooks.PreToolUse.filter(group=>!group.matcher||new RegExp(group.matcher).test(tool));
+  assert.equal(matching('Read').length,1,'the research-child boundary sees Read, while the SDK still owns parent file permissions');
+  assert.deepEqual(await matching('Read')[0].hooks[0]({...base,hook_event_name:'PreToolUse',tool_name:'Read'},undefined,hookOptions),{});
+ const agentHooks=matching('Agent');assert.equal(agentHooks.length,2);
  const agentEvent={...base,hook_event_name:'PreToolUse',tool_name:'Agent',tool_input:{description:'d',prompt:'p',subagent_type:'research'},tool_use_id:'t1'};
  assert.equal((await agentHooks[0].hooks[0](agentEvent,'t1',hookOptions)).hookSpecificOutput.permissionDecision,'allow');
  await full.options.hooks.PostToolUse[0].hooks[0]({...agentEvent,hook_event_name:'PostToolUse'},'t1',hookOptions);
