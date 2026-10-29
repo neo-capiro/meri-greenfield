@@ -1,6 +1,6 @@
 /** Worker-side two-method task transport. No user/provider credential or SQL dependency. */
 import {types} from 'node:util';
-import catalog from '../../packages/contracts/retrieval-0.2/catalog.json' with {type:'json'};
+import catalog from '../../packages/contracts/retrieval-0.3/catalog.json' with {type:'json'};
 import {own,data,nativeSignal} from '../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {canonicalSha256 as hash,validateShape} from '../../packages/contracts/validate.mjs';
 import {NATIVE_READS_SCHEMA_VERSION as schemaVersion,assertNativeReadConfiguration,assertNativeReadRequest,assertNativeReadResponse,nativeReadFault,nativeReadFailureCode} from '../../packages/contracts/runtime-0.2/reads.mjs';

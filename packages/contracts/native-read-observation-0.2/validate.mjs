@@ -5,12 +5,13 @@ import schema from './schema.json' with {type:'json'};
 import {own,data} from '../commands-0.2/execution-boundary.mjs';
 import {canonicalSha256} from '../validate.mjs';
 import {fundingInstant} from '../retrieval-0.2/funding-envelope-validation.mjs';
-import {FUNDING_OPPORTUNITY_OPERATION_IDS as FUNDING_READ_OPERATIONS} from '../retrieval-0.2/funding-opportunities-validation.mjs';
+import {FUNDING_OPPORTUNITY_OPERATION_IDS} from '../retrieval-0.2/funding-opportunities-validation.mjs';
 
+import {FUNDING_ANALYSIS_OPERATION_IDS} from '../retrieval-0.2/funding-analysis-validation.mjs';
 export const NATIVE_READ_OBSERVATION_SCHEMA_VERSION='meri-native-read-observation/1';
 export const NATIVE_READ_OBSERVATION_HEADER='x-meri-read-observation';
 export const NATIVE_READ_OBSERVATION_MAX_BYTES=2048;
-export {FUNDING_READ_OPERATIONS};
+export const FUNDING_READ_OPERATIONS=Object.freeze([...FUNDING_OPPORTUNITY_OPERATION_IDS,...FUNDING_ANALYSIS_OPERATION_IDS]);
 export const MODE_READ_OPERATIONS=Object.freeze(['search_federal_grants','search_federal_awards','search_program_elements','get_program_element','get_pe_budget_timeline','search_sam_opportunities']);
 export const NATIVE_READ_OBSERVATION_OPERATIONS=Object.freeze([...FUNDING_READ_OPERATIONS,'search_client_knowledge',...MODE_READ_OPERATIONS,'get_certification_status','get_state_rule_status']);
 const ajv=new Ajv({strict:true,allErrors:false}),valid=ajv.compile(schema);

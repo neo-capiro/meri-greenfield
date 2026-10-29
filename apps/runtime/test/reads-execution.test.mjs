@@ -4,7 +4,7 @@ import assert from 'node:assert/strict';
 import {binding,scopes,versions,id} from '../../control/conversations/test/store-fixture.mjs';
 import {createExecutionBinding} from '../../control/conversations/execution-boundary.mjs';
 import {canonicalSha256 as hash} from '../../../packages/contracts/validate.mjs';
-import catalog from '../../../packages/contracts/retrieval-0.2/catalog.json' with {type:'json'};
+import catalog from '../../../packages/contracts/retrieval-0.3/catalog.json' with {type:'json'};
 import {createReadsOwner} from '../reads-owner.mjs';
 import {createReadsApplication} from '../reads-http.mjs';
 import {createControlReadsComposer} from '../reads-composer.mjs';
@@ -66,8 +66,8 @@ test('request, result and malformed JSON limits retain explicit refusals',async(
  const invalid=fixture();invalid.onExecute(async()=>'{');assert.equal((await invalid.app.handle(invalid.request())).status,503);
 });
 
-test('all 48 existing family constructors compose without an allocation or grant owner',async()=>{
- assert.equal(GENERAL_READ_ADAPTER_FAMILIES.length,48);assert.equal(new Set(GENERAL_READ_ADAPTER_FAMILIES).size,48);
+test('all 61 current family constructors compose without an allocation or grant owner',async()=>{
+ assert.equal(GENERAL_READ_ADAPTER_FAMILIES.length,61);assert.equal(new Set(GENERAL_READ_ADAPTER_FAMILIES).size,61);
  const c=await createControlReadsComposer({coreOrigin:'https://core.example.invalid',nativeCredentials:{async nativeCredentialFor(){throw Error('not invoked');}},readSecret:async()=>{throw Error('not invoked');},serviceSecretFile:'synthetic',capabilityPolicy:{async forRun(){throw Error('not invoked');}}});
  assert.deepEqual(c.familyIds,GENERAL_READ_ADAPTER_FAMILIES);assert.deepEqual(c.missing,[]);
 });

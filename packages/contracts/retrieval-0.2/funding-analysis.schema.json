@@ -1,0 +1,805 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:meri:retrieval:funding-analysis:0.2.0",
+  "title": "Bounded read-only funding analysis and proposals",
+  "$defs": {
+    "FundingAnalysisReference": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "source": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 80
+        },
+        "sourceRecordId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        }
+      },
+      "required": [
+        "source",
+        "sourceRecordId"
+      ]
+    },
+    "FundingMatchInput": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "clientId": {
+          "type": "string",
+          "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+        },
+        "source": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 80
+        },
+        "sourceRecordId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        }
+      },
+      "required": [
+        "clientId",
+        "source",
+        "sourceRecordId"
+      ]
+    },
+    "FundingCompareInput": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "clientId": {
+          "type": "string",
+          "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+        },
+        "opportunities": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/FundingAnalysisReference"
+          },
+          "maxItems": 20,
+          "minItems": 2
+        }
+      },
+      "required": [
+        "clientId",
+        "opportunities"
+      ]
+    },
+    "FundingPlanInput": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "clientId": {
+          "type": "string",
+          "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+        },
+        "source": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 80
+        },
+        "sourceRecordId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        }
+      },
+      "required": [
+        "clientId",
+        "source",
+        "sourceRecordId"
+      ]
+    },
+    "FundingMatchSignal": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "signal": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 2000
+        },
+        "label": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 2000
+        },
+        "detail": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 2000
+        },
+        "strength": {
+          "enum": [
+            "strong",
+            "moderate",
+            "weak"
+          ]
+        },
+        "matchedOn": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 2000
+        }
+      },
+      "required": [
+        "signal",
+        "label",
+        "detail",
+        "strength",
+        "matchedOn"
+      ]
+    },
+    "FundingMatchData": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "facts": {
+          "$ref": "urn:meri:retrieval:funding-opportunities:0.2.0#/$defs/FundingFacts"
+        },
+        "ref": {
+          "$ref": "urn:meri:retrieval:funding-opportunities:0.2.0#/$defs/FundingReference"
+        },
+        "title": {
+          "type": "string"
+        },
+        "relevanceScore": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "fitBand": {
+          "enum": [
+            "strong",
+            "moderate",
+            "weak"
+          ]
+        },
+        "fitLabel": {
+          "type": "string"
+        },
+        "weakEvidenceOnly": {
+          "type": "boolean"
+        },
+        "eligibility": {
+          "$ref": "urn:meri:retrieval:funding-opportunities:0.2.0#/$defs/FundingEligibility"
+        },
+        "recommendation": {
+          "anyOf": [
+            {
+              "$ref": "urn:meri:retrieval:funding-opportunities:0.2.0#/$defs/FundingRecommendation"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "humanDecision": {
+          "anyOf": [
+            {
+              "$ref": "urn:meri:retrieval:funding-opportunities:0.2.0#/$defs/FundingDecision"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "acquisitionPosition": {
+          "anyOf": [
+            {
+              "$ref": "urn:meri:retrieval:funding-opportunities:0.2.0#/$defs/FundingAcquisitionPosition"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "signals": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/FundingMatchSignal"
+          },
+          "maxItems": 12
+        },
+        "missingProfileFields": {
+          "anyOf": [
+            {
+              "type": "array",
+              "items": {
+                "$ref": "urn:meri:retrieval:funding-opportunities:0.2.0#/$defs/FundingMissingField"
+              }
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "facts",
+        "ref",
+        "title",
+        "relevanceScore",
+        "fitBand",
+        "fitLabel",
+        "weakEvidenceOnly",
+        "eligibility",
+        "recommendation",
+        "humanDecision",
+        "acquisitionPosition",
+        "signals",
+        "missingProfileFields"
+      ]
+    },
+    "FundingComparisonRow": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "requested": {
+          "$ref": "#/$defs/FundingAnalysisReference"
+        },
+        "state": {
+          "enum": [
+            "available",
+            "not_found",
+            "unsupported_source"
+          ]
+        },
+        "explanation": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 2000
+        },
+        "facts": {
+          "anyOf": [
+            {
+              "$ref": "urn:meri:retrieval:funding-opportunities:0.2.0#/$defs/FundingFacts"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "requested",
+        "state",
+        "explanation",
+        "facts"
+      ]
+    },
+    "FundingCompareData": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "clientId": {
+          "type": "string",
+          "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+        },
+        "rows": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/FundingComparisonRow"
+          },
+          "maxItems": 5,
+          "minItems": 2
+        }
+      },
+      "required": [
+        "clientId",
+        "rows"
+      ]
+    },
+    "FundingPlanAction": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 2000
+        },
+        "category": {
+          "enum": [
+            "qualify",
+            "shape",
+            "respond",
+            "research",
+            "monitor",
+            "reference"
+          ]
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 2000
+        },
+        "rationale": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 2000
+        },
+        "intent": {
+          "enum": [
+            "review",
+            "pursuit",
+            "none"
+          ]
+        },
+        "evidence": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "source": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 2000
+              },
+              "sourceId": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 2000
+              },
+              "matchedOn": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 2000
+              }
+            },
+            "required": [
+              "source",
+              "sourceId",
+              "matchedOn"
+            ]
+          },
+          "maxItems": 40
+        },
+        "suggestedTarget": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "dueDateBasis": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "dueDate": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "date-time"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "unresolvedPrerequisites": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 2000
+          },
+          "maxItems": 30
+        }
+      },
+      "required": [
+        "id",
+        "category",
+        "title",
+        "rationale",
+        "intent",
+        "evidence",
+        "suggestedTarget",
+        "dueDateBasis",
+        "dueDate",
+        "unresolvedPrerequisites"
+      ]
+    },
+    "FundingPlanData": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "clientId": {
+          "type": "string",
+          "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+        },
+        "ref": {
+          "$ref": "urn:meri:retrieval:funding-opportunities:0.2.0#/$defs/FundingReference"
+        },
+        "generatedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "stage": {
+          "enum": [
+            "forecast",
+            "sources_sought",
+            "presolicitation",
+            "solicitation",
+            "amendment",
+            "grant",
+            "closed_or_informational"
+          ]
+        },
+        "stageExplanation": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 2000
+        },
+        "fingerprint": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "acceptance": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "wired": {
+              "type": "boolean"
+            },
+            "explanation": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "wired",
+            "explanation"
+          ]
+        },
+        "actions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/FundingPlanAction"
+          },
+          "maxItems": 12
+        },
+        "feasibility": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "feasible": {
+              "type": "boolean"
+            },
+            "reason": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          "required": [
+            "feasible",
+            "reason"
+          ]
+        },
+        "proposedSchedule": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "id": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 2000
+              },
+              "label": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 2000
+              },
+              "date": {
+                "type": "string",
+                "format": "date"
+              },
+              "daysBefore": {
+                "type": "integer",
+                "minimum": 0
+              }
+            },
+            "required": [
+              "id",
+              "label",
+              "date",
+              "daysBefore"
+            ]
+          },
+          "maxItems": 12
+        }
+      },
+      "required": [
+        "clientId",
+        "ref",
+        "generatedAt",
+        "stage",
+        "stageExplanation",
+        "fingerprint",
+        "acceptance",
+        "actions"
+      ]
+    },
+    "FundingMatchOutput": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "tool": {
+          "const": "explain_opportunity_match"
+        },
+        "state": {
+          "enum": [
+            "available",
+            "disabled",
+            "denied",
+            "not_found",
+            "unsupported_source",
+            "invalid_request"
+          ]
+        },
+        "explanation": {
+          "type": "string",
+          "minLength": 1
+        },
+        "asOf": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "data": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/FundingMatchData"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "truncated": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/FundingAnalysisTruncation"
+          },
+          "minItems": 1,
+          "maxItems": 1
+        }
+      },
+      "required": [
+        "tool",
+        "state",
+        "explanation",
+        "asOf",
+        "data"
+      ],
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "state": {
+                "const": "available"
+              }
+            },
+            "required": [
+              "state"
+            ]
+          },
+          "then": {
+            "properties": {
+              "data": {
+                "$ref": "#/$defs/FundingMatchData"
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "data": {
+                "type": "null"
+              },
+              "truncated": false
+            }
+          }
+        }
+      ]
+    },
+    "FundingCompareOutput": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "tool": {
+          "const": "compare_funding_opportunities"
+        },
+        "state": {
+          "enum": [
+            "available",
+            "disabled",
+            "denied",
+            "not_found",
+            "unsupported_source",
+            "invalid_request"
+          ]
+        },
+        "explanation": {
+          "type": "string",
+          "minLength": 1
+        },
+        "asOf": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "data": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/FundingCompareData"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "truncated": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/FundingAnalysisTruncation"
+          },
+          "minItems": 1,
+          "maxItems": 1
+        }
+      },
+      "required": [
+        "tool",
+        "state",
+        "explanation",
+        "asOf",
+        "data"
+      ],
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "state": {
+                "const": "available"
+              }
+            },
+            "required": [
+              "state"
+            ]
+          },
+          "then": {
+            "properties": {
+              "data": {
+                "$ref": "#/$defs/FundingCompareData"
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "data": {
+                "type": "null"
+              },
+              "truncated": false
+            }
+          }
+        }
+      ]
+    },
+    "FundingPlanOutput": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "tool": {
+          "const": "build_opportunity_action_plan"
+        },
+        "state": {
+          "enum": [
+            "available",
+            "disabled",
+            "denied",
+            "not_found",
+            "unsupported_source",
+            "invalid_request"
+          ]
+        },
+        "explanation": {
+          "type": "string",
+          "minLength": 1
+        },
+        "asOf": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "data": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/FundingPlanData"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "truncated": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/FundingAnalysisTruncation"
+          },
+          "minItems": 1,
+          "maxItems": 1
+        }
+      },
+      "required": [
+        "tool",
+        "state",
+        "explanation",
+        "asOf",
+        "data"
+      ],
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "state": {
+                "const": "available"
+              }
+            },
+            "required": [
+              "state"
+            ]
+          },
+          "then": {
+            "properties": {
+              "data": {
+                "$ref": "#/$defs/FundingPlanData"
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "data": {
+                "type": "null"
+              },
+              "truncated": false
+            }
+          }
+        }
+      ]
+    },
+    "FundingAnalysisTruncation": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "collection": {
+          "enum": [
+            "signals",
+            "rows",
+            "actions"
+          ]
+        },
+        "kept": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 12
+        },
+        "total": {
+          "type": "integer",
+          "minimum": 1
+        }
+      },
+      "required": [
+        "collection",
+        "kept",
+        "total"
+      ]
+    }
+  }
+}

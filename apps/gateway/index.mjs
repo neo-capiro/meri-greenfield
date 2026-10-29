@@ -1,5 +1,5 @@
 /** Source-disabled production composition. No listeners, live adapters or activation toggle. */
-import catalog from '../../packages/contracts/retrieval-0.2/catalog.json' with { type: 'json' };
+import catalog from '../../packages/contracts/retrieval-0.3/catalog.json' with { type: 'json' };
 import * as contracts from '../../packages/contracts/retrieval-0.2/validate.mjs';
 import { createRuntimeCatalog } from './catalog/runtime-catalog.mjs';
 import { createCurrentToolAuthority } from './authorization/current-tool-authority.mjs';

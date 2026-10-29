@@ -10,7 +10,7 @@
  *
  * The aliases are read from the frozen catalog; nothing is hand-written here.
  */
-import catalog from '../../../../packages/contracts/retrieval-0.2/catalog.json' with {type:'json'};
+import catalog from '../../../../packages/contracts/retrieval-0.3/catalog.json' with {type:'json'};
 const SPELLINGS=new Map();
 for(const descriptor of catalog.operations){
  const id=descriptor.operation.id,spellings=new Set([id,id.replaceAll('.','_'),...(Array.isArray(descriptor.aliases)?descriptor.aliases:[])]);

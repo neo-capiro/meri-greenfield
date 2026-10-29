@@ -1,5 +1,5 @@
 /** Control's typed read boundary. Execution identity is local; Core owns data access. */
-import catalog from '../../packages/contracts/retrieval-0.2/catalog.json' with {type:'json'};
+import catalog from '../../packages/contracts/retrieval-0.3/catalog.json' with {type:'json'};
 import {resolveOperationContract} from '../../packages/contracts/retrieval-0.2/validate.mjs';
 import {own,data,nativeSignal} from '../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {canonicalSha256 as hash,validateShape} from '../../packages/contracts/validate.mjs';

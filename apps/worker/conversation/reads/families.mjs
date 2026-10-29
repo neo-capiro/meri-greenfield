@@ -51,6 +51,7 @@ export const READ_FAMILIES=Object.freeze({'watch-state':Object.freeze({clientSco
  'district-nexus':Object.freeze({clientScope:'required'}),
  'client-registry':Object.freeze({clientScope:'optional'}),
  'federal-market':Object.freeze({clientScope:'optional'}),
+ 'funding-analysis':Object.freeze({clientScope:'required'}),
  'funding-opportunities':Object.freeze({clientScope:'required'}),
  'public-data':Object.freeze({clientScope:'optional'}),
  'program-elements':Object.freeze({clientScope:'optional'}),

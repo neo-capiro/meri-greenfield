@@ -5,8 +5,10 @@ import {createHash} from 'node:crypto';
 import canonicalize from 'canonicalize';
 import schema from '../schema.json' with {type:'json'};
 import golden from './golden.json' with {type:'json'};
+import advanced from './advanced-funding-golden.json' with {type:'json'};
 import {canonicalSha256 as hash} from '../../validate.mjs';
 import {FUNDING_OPPORTUNITY_OPERATION_IDS} from '../../retrieval-0.2/funding-opportunities-validation.mjs';
+import {FUNDING_ANALYSIS_OPERATION_IDS} from '../../retrieval-0.2/funding-analysis-validation.mjs';
 import {fundingInstant} from '../../retrieval-0.2/funding-envelope-validation.mjs';
 import {NATIVE_READ_OBSERVATION_SCHEMA_VERSION,NATIVE_READ_OBSERVATION_HEADER,NATIVE_READ_OBSERVATION_MAX_BYTES,FUNDING_READ_OPERATIONS,NATIVE_READ_OBSERVATION_OPERATIONS,MODE_READ_OPERATIONS,
  createNativeReadObservation,assertNativeReadObservation,encodeNativeReadObservation,decodeNativeReadObservation} from '../validate.mjs';
@@ -15,14 +17,23 @@ const first=golden.vectors[0],correlation=({operation,request})=>({operation,req
 const carrier=json=>Buffer.from(json,'utf8').toString('base64url');
 const refused=run=>assert.throws(run,{message:'NATIVE_READ_OBSERVATION_REFUSED'});
 
+test('advanced funding shares the exact native carrier bytes consumed by Core HTTP admission',()=>{
+ assert.deepEqual(advanced.vectors.map(v=>v.operation.id),FUNDING_ANALYSIS_OPERATION_IDS);
+ for(const vector of advanced.vectors){
+  const bound=correlation(vector),value=createNativeReadObservation({...bound,context:vector.context});
+  assert.equal(encodeNativeReadObservation(value,bound),vector.carrier);
+  assert.deepEqual(decodeNativeReadObservation(vector.carrier,bound),value);
+ }
+});
+
 test('the private schema is finite, closed and preserves the existing five funding reads plus semantic KB',()=>{
  assert.equal(schema.$id,'urn:meri:native-read-observation:0.2.0');assert.equal(NATIVE_READ_OBSERVATION_SCHEMA_VERSION,'meri-native-read-observation/1');
  assert.equal(NATIVE_READ_OBSERVATION_HEADER,'x-meri-read-observation');assert.equal(NATIVE_READ_OBSERVATION_MAX_BYTES,2048);
- assert.deepEqual(FUNDING_READ_OPERATIONS,FUNDING_OPPORTUNITY_OPERATION_IDS);assert.ok(Object.isFrozen(FUNDING_READ_OPERATIONS));
+ assert.deepEqual(FUNDING_READ_OPERATIONS,[...FUNDING_OPPORTUNITY_OPERATION_IDS,...FUNDING_ANALYSIS_OPERATION_IDS]);assert.ok(Object.isFrozen(FUNDING_READ_OPERATIONS));
  assert.deepEqual(NATIVE_READ_OBSERVATION_OPERATIONS,[...FUNDING_READ_OPERATIONS,'search_client_knowledge',...MODE_READ_OPERATIONS,'get_certification_status','get_state_rule_status']);assert.ok(Object.isFrozen(NATIVE_READ_OBSERVATION_OPERATIONS));
- assert.deepEqual(schema.$defs.NativeReadOperationRef.properties.id.enum,NATIVE_READ_OBSERVATION_OPERATIONS);
+ assert.deepEqual([...schema.$defs.NativeReadOperationRef.properties.id.enum].sort(),[...NATIVE_READ_OBSERVATION_OPERATIONS].sort());
  assert.equal(schema.$defs.NativeReadObservation.additionalProperties,false);assert.equal(schema.$defs.NativeReadContext.additionalProperties,false);
- assert.equal(golden.vectors.length,5);assert.deepEqual(golden.vectors.map(v=>v.operation.id),FUNDING_READ_OPERATIONS);
+ assert.equal(golden.vectors.length,5);assert.deepEqual(golden.vectors.map(v=>v.operation.id),FUNDING_OPPORTUNITY_OPERATION_IDS);
 });
 
 for(const vector of golden.vectors)test(`${vector.operation.id}: literal canonical bytes/hash/header agree in both directions`,()=>{

@@ -12,7 +12,10 @@ const routes=Object.freeze({
 });
 
 export function createFundingOpportunitiesHandlers(configuration,operations){
- const handlers=createStoredNativeReadHandlers(configuration,operations,{family:'funding-opportunities',routes,observation:'funding-asof'});
+ return createFundingReadHandlers(configuration,operations,'funding-opportunities',routes);
+}
+export function createFundingReadHandlers(configuration,operations,family,routes){
+ const handlers=createStoredNativeReadHandlers(configuration,operations,{family,routes,observation:'funding-asof'});
  return handlers.map(handler=>({operation:handler.operation,async execute(call){try{
   const {signal:ignored,...fields}=ownFields(call,['input','request','authority','argumentsSha256','normalizationContext'],['signal']);
   const selection=captureFundingClientSelection(handler.operation,fields.request),data=frozenData(fields);

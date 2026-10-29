@@ -10,7 +10,7 @@
 import {readFileSync} from 'node:fs';
 import {createHash} from 'node:crypto';
 import {z} from 'zod';
-import catalog from '../../../../packages/contracts/retrieval-0.2/catalog.json' with {type:'json'};
+import catalog from '../../../../packages/contracts/retrieval-0.3/catalog.json' with {type:'json'};
 import {resolveOperationContract} from '../../../../packages/contracts/retrieval-0.2/validate.mjs';
 const fail=()=>{throw Object.assign(Error('READ_SCHEMA_CONFIGURATION'),{code:'READ_SCHEMA_CONFIGURATION'});};
 const RETRIEVAL=/^urn:meri:retrieval:([a-z0-9-]+):(0\.2\.0|0\.3\.0)$/u;
