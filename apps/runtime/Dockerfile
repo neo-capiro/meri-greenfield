@@ -54,7 +54,7 @@ RUN ln -s ../conversations/node_modules apps/control/retention/node_modules
 # Layer/stage organization only. Docker's layer store refuses a chain deeper than its depth limit
 # ("max depth exceeded"), and the first real ARM build of this composition died exactly there:
 # build 1609f5c6 [runtime 120/208] ADD libseccomp ... "failed to prepare ...: max depth exceeded"
-# after ~120 chained apk layers. The 190 pinned archives therefore stay the same per-archive
+# after ~120 chained apk layers. The 191 pinned archives therefore stay the same per-archive
 # ADD --checksum instructions, byte for byte and in their original order (same URLs, same checksums),
 # but they are staged in four repository stages whose chains each stay under 64 layers; the runtime
 # stage takes the assembled local repository in one COPY --from layer per staging stage. Pinned URLs
@@ -253,6 +253,7 @@ ADD --checksum=sha256:ee1d0c652a89932c9f1b3d1e8c348bd1a18329f32a1a63eaa1aaae9dd3
 ADD --checksum=sha256:ef0fed8829139b2b1ec2589d1be348855fdd6e27a0406bb4635d605c4c23131c https://packages.wolfi.dev/os/aarch64/wayland-libs-cursor-1.26.0-r3.apk /tmp/meri-native-repo/aarch64/wayland-libs-cursor-1.26.0-r3.apk
 ADD --checksum=sha256:fa871a64e10623a12ee58086b59e8a1ffe195805d3a254121bad704bb7628857 https://packages.wolfi.dev/os/aarch64/argon2-20190702-r9.apk /tmp/meri-native-repo/aarch64/argon2-20190702-r9.apk
 ADD --checksum=sha256:fc36e4dd53d901cf868cbe55a000a496e84cf220317a0db8cbdfc35a97193f55 https://packages.wolfi.dev/os/aarch64/libheif-1.23.7-r1.apk /tmp/meri-native-repo/aarch64/libheif-1.23.7-r1.apk
+ADD --checksum=sha256:706b29d19e1b45086515d6ecfa7b9adb2c0add5a08d29e83cdd047d2e52cab9d https://packages.wolfi.dev/os/aarch64/glibc-2.44-iconv-2.44-r10.apk /tmp/meri-native-repo/aarch64/glibc-2.44-iconv-2.44-r10.apk
 # ---------------------------------------------------------------------------------------------------------
 # SCRUM-197: build-only stages for the source-built ClamAV payload.
 #
@@ -415,6 +416,19 @@ ADD --checksum=sha256:46a3aba6c36df74a2e9d8dffec047ff423a3699e0d0160f05a8fd43c64
 ADD --checksum=sha256:c3e162065d493add318143b5b8c24e650a5c80da72abdf7d60784e743ea1713f https://packages.wolfi.dev/os/aarch64/util-linux-2.42.4-r1.apk /tmp/meri-native-dev-repo/aarch64/util-linux-2.42.4-r1.apk
 ADD --checksum=sha256:6bd1942866fefc242ddc84cc2626564afebdfb1e4ae1d29e7ee05764ad8ea0b3 https://packages.wolfi.dev/os/aarch64/util-linux-dev-2.42.4-r1.apk /tmp/meri-native-dev-repo/aarch64/util-linux-dev-2.42.4-r1.apk
 ADD --checksum=sha256:f9877cd621c1941636c7e99972fdb3d1bd66fa1fc0a736a9a4d3c7a521a7a14b https://packages.wolfi.dev/os/aarch64/glib-2.90.1-r0.apk /tmp/meri-native-dev-repo/aarch64/glib-2.90.1-r0.apk
+ADD --checksum=sha256:706b29d19e1b45086515d6ecfa7b9adb2c0add5a08d29e83cdd047d2e52cab9d https://packages.wolfi.dev/os/aarch64/glibc-2.44-iconv-2.44-r10.apk /tmp/meri-native-dev-repo/aarch64/glibc-2.44-iconv-2.44-r10.apk
+ADD --checksum=sha256:d6f144aab512a62ab6950ac7e251b257d96c984403089ced99c677fbb1ae09da https://packages.wolfi.dev/os/aarch64/py3.13-colorama-0.4.6-r12.apk /tmp/meri-native-dev-repo/aarch64/py3.13-colorama-0.4.6-r12.apk
+ADD --checksum=sha256:e3f071998d250b8a100ef768898b5da9b8e95895be05693824f434a2f4280eb5 https://packages.wolfi.dev/os/aarch64/py3.13-exceptiongroup-1.3.1-r3.apk /tmp/meri-native-dev-repo/aarch64/py3.13-exceptiongroup-1.3.1-r3.apk
+ADD --checksum=sha256:f15fbaed9d704021f34508a89e7af89818dfc200a47a27087e359bd5aa2afd5e https://packages.wolfi.dev/os/aarch64/py3.13-importlib-metadata-10.1.0-r0.apk /tmp/meri-native-dev-repo/aarch64/py3.13-importlib-metadata-10.1.0-r0.apk
+ADD --checksum=sha256:ed28aae1b89e97fc2e241903eb6a01c201685c336ad41f0217138374e946e515 https://packages.wolfi.dev/os/aarch64/py3.13-iniconfig-2.3.1-r0.apk /tmp/meri-native-dev-repo/aarch64/py3.13-iniconfig-2.3.1-r0.apk
+ADD --checksum=sha256:56554c2145224486cf7cdf6c477f8c0cfdaca0550f295e8f2f7c575bfc5f1f74 https://packages.wolfi.dev/os/aarch64/py3.13-packaging-26.3-r0.apk /tmp/meri-native-dev-repo/aarch64/py3.13-packaging-26.3-r0.apk
+ADD --checksum=sha256:c54cf66595019400ea7ef4a1b8185ed4c82c80a158c390c3555b8e86b8c0bf03 https://packages.wolfi.dev/os/aarch64/py3.13-pluggy-1.7.0-r0.apk /tmp/meri-native-dev-repo/aarch64/py3.13-pluggy-1.7.0-r0.apk
+ADD --checksum=sha256:b347ded09c59e5e45f4153f905f2bf1410aef7d17ac1e2e2b69b2083f58b0b3c https://packages.wolfi.dev/os/aarch64/py3.13-pygments-2.21.0-r0.apk /tmp/meri-native-dev-repo/aarch64/py3.13-pygments-2.21.0-r0.apk
+ADD --checksum=sha256:0592ed37d5fc98925e9620c5bc2350a2c74f3769a6b1504dcbd23aad4acc0f61 https://packages.wolfi.dev/os/aarch64/py3.13-pyparsing-3.3.3-r0.apk /tmp/meri-native-dev-repo/aarch64/py3.13-pyparsing-3.3.3-r0.apk
+ADD --checksum=sha256:aa730d3e690900e83bb5f76e157e2a600001c38c81b72942fc5304e2658cd9ce https://packages.wolfi.dev/os/aarch64/py3.13-pytest-9.1.1-r0.apk /tmp/meri-native-dev-repo/aarch64/py3.13-pytest-9.1.1-r0.apk
+ADD --checksum=sha256:69ee03f6cf6fcf627125816e494a71b10c6ba63e5a478304772571b9bf6c4c5a https://packages.wolfi.dev/os/aarch64/py3.13-tomli-2.5.0-r0.apk /tmp/meri-native-dev-repo/aarch64/py3.13-tomli-2.5.0-r0.apk
+ADD --checksum=sha256:7d6d02dc402c7948e089d75a1282a4de2decf6e492f8aa14196429184ec9cfad https://packages.wolfi.dev/os/aarch64/py3.13-typing-extensions-4.16.0-r0.apk /tmp/meri-native-dev-repo/aarch64/py3.13-typing-extensions-4.16.0-r0.apk
+ADD --checksum=sha256:0b34e37a9332d1d45c8ae827a072b4514552c69f1faa62797783692ea075c8ff https://packages.wolfi.dev/os/aarch64/py3.13-zipp-4.1.2-r0.apk /tmp/meri-native-dev-repo/aarch64/py3.13-zipp-4.1.2-r0.apk
 FROM ${RUNTIME_IMAGE} AS native-source-inputs
 ADD --checksum=sha256:1af1117a228f1b5bc7fa91a0dabc37848a99e7d25188e9be8043332ce721dfd3 https://github.com/Cisco-Talos/clamav/releases/download/clamav-1.5.4/clamav-1.5.4.tar.gz /tmp/meri-native-source/clamav-1.5.4.tar.gz
 ADD --checksum=sha256:8acf5816c3c9dc8b02a2e11f93d90d37b25845a0481e16873454df4a30a375c0 https://github.com/Cisco-Talos/clamav/releases/download/clamav-1.5.4/clamav-1.5.4.tar.gz.sig /tmp/meri-native-source/clamav-1.5.4.tar.gz.sig
@@ -465,7 +479,7 @@ COPY --from=native-repo-4 /tmp/meri-native-repo /tmp/meri-native-repo
 # The upstream source requires an interpreter here: clamav-1.5.4/CMakeLists.txt 219-231 asks for
 # find_package(Libcheck REQUIRED) and find_package(Python3 REQUIRED) with ENABLE_TESTS=ON, and 256-277 runs the
 # unit-test input generators with ${Python3_EXECUTABLE} at build time and requires `${Python3_EXECUTABLE} -m
-# unittest --help` to exit 0, because this stage carries no pytest. The pinned 136-archive development closure was
+# unittest --help` to exit 0. The pinned development closure was
 # resolved for the toolchain and carries no interpreter, and the interpreter the exported runtime stage installs
 # lives in a later stage, so it cannot supply this one. The stage therefore reads the retained runtime staging set
 # - the same vendor-signed index and the same authenticated archives the runtime stage already installs python-3.13
@@ -494,7 +508,7 @@ RUN --network=none \
     apk add --no-cache --no-network --repository /tmp/meri-native-dev-repo --repositories-file /dev/null --update-cache \
       gcc=16.2.0-r2 libgcc=16.2.0-r2 binutils=2.47-r2 make=4.4.1-r15 cmake=4.4.3-r0 pkgconf=3.0.10-r2 bash=5.3-r14 xz=5.8.4-r0 \
       libstdc++-dev=16.2.0-r2 libmilter-dev=8.18.2-r5 gpgv=2.4.9-r12 \
-      glibc-2.44-dev=2.44-r10 glibc-2.44=2.44-r10 glibc-2.44-locale-posix=2.44-r10 ld-linux-2.44=2.44-r10 libcrypt1-2.44=2.44-r10 \
+      glibc-2.44-dev=2.44-r10 glibc-2.44=2.44-r10 glibc-2.44-locale-posix=2.44-r10 ld-linux-2.44=2.44-r10 libcrypt1-2.44=2.44-r10 glibc-2.44-iconv=2.44-r10 \
       zlib=1.3.2.1_rc20260921-r1 zlib-dev=1.3.2.1_rc20260921-r1 bzip2-dev=1.0.8-r28 libxml2-dev=2.15.4-r1 pcre2-dev=10.49-r1 \
       openssl-4.0-dev=4.0.3-r8 json-c-dev=0.19-r2 curl-dev=8.23.0-r2 ncurses-dev=6.6.20261024-r0 \
       check-dev=0.15.2-r10 check=0.15.2-r10 linux-headers=7.3-r0 && \
@@ -507,7 +521,13 @@ RUN --network=none \
     python3.13 -c 'import sys; assert sys.version_info[:3] == (3, 13, 16), sys.version; print("interpreter", sys.version)' && \
     python3.13 -m unittest --help > /dev/null && \
     python3.13 -c 'import argparse, errno, functools, getpass, hashlib, http.server, logging, multiprocessing, os, pathlib, platform, random, re, shutil, signal, socket, socketserver, struct, subprocess, sys, tempfile, threading, time, typing, unittest, unittest.mock, zipfile, zlib' && \
-    for p in gcc-16.2.0-r2 binutils-2.47-r2 make-4.4.1-r15 cmake-4.4.3-r0 pkgconf-3.0.10-r2 bash-5.3-r14 xz-5.8.4-r0 libstdc++-dev-16.2.0-r2 libmilter-dev-8.18.2-r5 gpgv-2.4.9-r12 glibc-2.44-dev-2.44-r10 glibc-2.44-2.44-r10 zlib-dev-1.3.2.1_rc20260921-r1 bzip2-dev-1.0.8-r28 libxml2-dev-2.15.4-r1 pcre2-dev-10.49-r1 openssl-4.0-dev-4.0.3-r8 json-c-dev-0.19-r2 curl-dev-8.23.0-r2 ncurses-dev-6.6.20261024-r0 check-dev-0.15.2-r10 check-0.15.2-r10 linux-headers-7.3-r0; do \
+    apk add --no-cache --no-network --repository /tmp/meri-native-dev-repo --repositories-file /dev/null --update-cache \
+      py3.13-colorama=0.4.6-r12 py3.13-exceptiongroup=1.3.1-r3 py3.13-importlib-metadata=10.1.0-r0 py3.13-iniconfig=2.3.1-r0 py3.13-packaging=26.3-r0 py3.13-pluggy=1.7.0-r0 py3.13-pygments=2.21.0-r0 py3.13-pyparsing=3.3.3-r0 py3.13-pytest=9.1.1-r0 py3.13-tomli=2.5.0-r0 py3.13-typing-extensions=4.16.0-r0 py3.13-zipp=4.1.2-r0 && \
+    for pkg in py3.13-colorama-0.4.6-r12 py3.13-exceptiongroup-1.3.1-r3 py3.13-importlib-metadata-10.1.0-r0 py3.13-iniconfig-2.3.1-r0 py3.13-packaging-26.3-r0 py3.13-pluggy-1.7.0-r0 py3.13-pygments-2.21.0-r0 py3.13-pyparsing-3.3.3-r0 py3.13-pytest-9.1.1-r0 py3.13-tomli-2.5.0-r0 py3.13-typing-extensions-4.16.0-r0 py3.13-zipp-4.1.2-r0; do \
+      apk info -v | grep -qx "$pkg" || { echo "unexpected native test-runner package $pkg"; exit 1; }; done && \
+    python3.13 -m pytest --version && \
+    python3.13 -c 'import pytest; print("test runner", pytest.__version__)' && \
+    for p in gcc-16.2.0-r2 binutils-2.47-r2 make-4.4.1-r15 cmake-4.4.3-r0 pkgconf-3.0.10-r2 bash-5.3-r14 xz-5.8.4-r0 libstdc++-dev-16.2.0-r2 libmilter-dev-8.18.2-r5 gpgv-2.4.9-r12 glibc-2.44-dev-2.44-r10 glibc-2.44-2.44-r10 glibc-2.44-iconv-2.44-r10 zlib-dev-1.3.2.1_rc20260921-r1 bzip2-dev-1.0.8-r28 libxml2-dev-2.15.4-r1 pcre2-dev-10.49-r1 openssl-4.0-dev-4.0.3-r8 json-c-dev-0.19-r2 curl-dev-8.23.0-r2 ncurses-dev-6.6.20261024-r0 check-dev-0.15.2-r10 check-0.15.2-r10 linux-headers-7.3-r0; do \
       apk info -v | grep -qx "$p" || { echo "unexpected native development dependency $p"; exit 1; }; done && \
     if apk info -v | grep -qx glibc-dev-2.43-r13; then \
       echo "the legacy glibc-dev 2.43 family was installed beside the pinned 2.44 family"; exit 1; fi && \
@@ -589,8 +609,15 @@ WORKDIR /opt/meri
 # output satisfies the request as world[glibc-2.44=2.44-r10] while ld-linux-2.44-2.44-r9 and libcrypt1-2.44-2.44-r9 break
 # it by requiring glibc-2.44=2.44-r9. Naming a name in the request supersedes the base's world pin for that name (the same
 # log shows world[glibc-2.44=2.44-r10] being satisfied), so the whole family is named in one transaction and every member's
-# effective world entry becomes r10. All four are the r10 records the source lock declares under systemPackages and the
+# effective world entry becomes r10. All five are the r10 records the source lock declares under systemPackages and the
 # ADD list above stages; nothing is fetched and no world file is rewritten.
+# glibc-2.44-iconv belongs to this family and to this image, not only to the compiler: the source-built libclamav is
+# the same shared library copied into the runtime stage, and its charset path is the system converter
+# (libclamav/entconv.c 1046/1050 iconv_open, 1057 iconv). Wolfi splits the gconv modules out of libc, so without this
+# package the delivered scanner converts no SHIFT_JIS or UTF-16 macro/string content and vba_extract.c/xlm_extract.c
+# fall back to their "<Error decoding module data>" and placeholder paths. It carries /usr/lib/gconv, which the
+# sandbox already exposes through its read-only /usr bind (apps/runtime/uploads/native-sandbox.mjs), so no sandbox,
+# authority or path change is needed.
 # apk --version is recorded before the first install so the build log itself carries the effective apk-tools version
 # instead of leaving it a premise; this is static recipe text and no version is claimed until a real build logs it.
 RUN --mount=type=bind,from=native-repository,source=tmp/meri-native-repo,target=/tmp/meri-native-repo,readonly \
@@ -599,8 +626,13 @@ RUN --mount=type=bind,from=native-repository,source=tmp/meri-native-repo,target=
     apk add --no-cache --no-network --repository /tmp/meri-native-repo --repositories-file /dev/null --update-cache \
       bash=5.3-r14 libatomic=16.2.0-r1 libstdc++=16.2.0-r1 python-3.13=3.13.16_git20261016-r2 \
       py3.13-pip=26.2.2-r0 py3.13-pip-base=26.2.2-r0 \
-      glibc-2.44=2.44-r10 glibc-2.44-locale-posix=2.44-r10 ld-linux-2.44=2.44-r10 libcrypt1-2.44=2.44-r10 && \
-    test "$(python3.13 --version)" = 'Python 3.13.16'
+      glibc-2.44=2.44-r10 glibc-2.44-iconv=2.44-r10 glibc-2.44-locale-posix=2.44-r10 ld-linux-2.44=2.44-r10 libcrypt1-2.44=2.44-r10 && \
+    test "$(python3.13 --version)" = 'Python 3.13.16' && \
+    apk info -v | grep -qx glibc-2.44-iconv-2.44-r10 && \
+    test -x /usr/bin/iconv && \
+    test -r /usr/lib/gconv/gconv-modules && \
+    for module in SJIS UTF-16 UTF-32; do \
+      test -r "/usr/lib/gconv/$module.so" || { echo "the runtime image lacks the iconv module $module.so"; exit 1; }; done
 # Fixed native renderer owner. The install resolves from the retained signed index above, so apk's own trust gate (index
 # signature plus the index-recorded package identity, verified against the staged bytes) is what admits every archive.
 # The source lock records these exact official archives. Availability is established by the child probe on the built image.

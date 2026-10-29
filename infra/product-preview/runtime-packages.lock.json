@@ -341,6 +341,17 @@
       "role": "pinned transitive native dependency of the upload scanner/OCR layer; without this pin the rolling live index would choose the provider revision at build time"
     },
     {
+      "name": "glibc-2.44-iconv",
+      "version": "2.44-r10",
+      "architecture": "aarch64",
+      "source": "https://packages.wolfi.dev/os/aarch64/glibc-2.44-iconv-2.44-r10.apk",
+      "sha256": "706b29d19e1b45086515d6ecfa7b9adb2c0add5a08d29e83cdd047d2e52cab9d",
+      "bytes": 3856747,
+      "origin": "glibc-2.44",
+      "installedBytes": 20049352,
+      "role": "the gconv converters the delivered scanner converts through: Wolfi splits usr/lib/gconv out of libc, and the source-built libclamav in this image calls the system iconv (libclamav/entconv.c 1046/1050 iconv_open, 1057 iconv) for SHIFT_JIS and UTF-16 macro and string content, so without this archive the runtime keeps only the failure paths in vba_extract.c and xlm_extract.c"
+    },
+    {
       "name": "graphite2",
       "version": "1.3.15-r6",
       "architecture": "aarch64",
@@ -2019,8 +2030,8 @@
        "buildClosure": {
         "source": "resolved from the retained vendor-signed index 5c84e4b835a811c1624d9692f011df3de446c8011be4dedaabf6f3dbf41ec536 and pinned by the sha256 of each downloaded official archive; includes the 35 transitive packages selected by apk in the compiler-stage installation",
         "architecture": "aarch64",
-        "packages": 135,
-        "totalBytes": 279616921,
+        "packages": 148,
+        "totalBytes": 288706464,
         "sizeChecks": "every downloaded archive length equals the index S: field exactly (0 mismatches)",
         "unresolvedVirtualProviders": [
          "merged-lib",
@@ -2182,6 +2193,13 @@
           "url": "https://packages.wolfi.dev/os/aarch64/glibc-2.44-dev-2.44-r10.apk",
           "sha256": "8cb458ec8470eeffbf1938401e082b437e55b384eb3a2035cccfa4e8ba75acdd",
           "bytes": 13697335
+         },
+         {
+          "name": "glibc-2.44-iconv",
+          "version": "2.44-r10",
+          "url": "https://packages.wolfi.dev/os/aarch64/glibc-2.44-iconv-2.44-r10.apk",
+          "sha256": "706b29d19e1b45086515d6ecfa7b9adb2c0add5a08d29e83cdd047d2e52cab9d",
+          "bytes": 3856747
          },
          {
           "name": "glibc-2.44-locale-posix",
@@ -2898,6 +2916,90 @@
           "bytes": 3400
          },
          {
+          "name": "py3.13-colorama",
+          "version": "0.4.6-r12",
+          "url": "https://packages.wolfi.dev/os/aarch64/py3.13-colorama-0.4.6-r12.apk",
+          "sha256": "d6f144aab512a62ab6950ac7e251b257d96c984403089ced99c677fbb1ae09da",
+          "bytes": 67487
+         },
+         {
+          "name": "py3.13-exceptiongroup",
+          "version": "1.3.1-r3",
+          "url": "https://packages.wolfi.dev/os/aarch64/py3.13-exceptiongroup-1.3.1-r3.apk",
+          "sha256": "e3f071998d250b8a100ef768898b5da9b8e95895be05693824f434a2f4280eb5",
+          "bytes": 47937
+         },
+         {
+          "name": "py3.13-importlib-metadata",
+          "version": "10.1.0-r0",
+          "url": "https://packages.wolfi.dev/os/aarch64/py3.13-importlib-metadata-10.1.0-r0.apk",
+          "sha256": "f15fbaed9d704021f34508a89e7af89818dfc200a47a27087e359bd5aa2afd5e",
+          "bytes": 89668
+         },
+         {
+          "name": "py3.13-iniconfig",
+          "version": "2.3.1-r0",
+          "url": "https://packages.wolfi.dev/os/aarch64/py3.13-iniconfig-2.3.1-r0.apk",
+          "sha256": "ed28aae1b89e97fc2e241903eb6a01c201685c336ad41f0217138374e946e515",
+          "bytes": 27067
+         },
+         {
+          "name": "py3.13-packaging",
+          "version": "26.3-r0",
+          "url": "https://packages.wolfi.dev/os/aarch64/py3.13-packaging-26.3-r0.apk",
+          "sha256": "56554c2145224486cf7cdf6c477f8c0cfdaca0550f295e8f2f7c575bfc5f1f74",
+          "bytes": 344022
+         },
+         {
+          "name": "py3.13-pluggy",
+          "version": "1.7.0-r0",
+          "url": "https://packages.wolfi.dev/os/aarch64/py3.13-pluggy-1.7.0-r0.apk",
+          "sha256": "c54cf66595019400ea7ef4a1b8185ed4c82c80a158c390c3555b8e86b8c0bf03",
+          "bytes": 75452
+         },
+         {
+          "name": "py3.13-pygments",
+          "version": "2.21.0-r0",
+          "url": "https://packages.wolfi.dev/os/aarch64/py3.13-pygments-2.21.0-r0.apk",
+          "sha256": "b347ded09c59e5e45f4153f905f2bf1410aef7d17ac1e2e2b69b2083f58b0b3c",
+          "bytes": 2899247
+         },
+         {
+          "name": "py3.13-pyparsing",
+          "version": "3.3.3-r0",
+          "url": "https://packages.wolfi.dev/os/aarch64/py3.13-pyparsing-3.3.3-r0.apk",
+          "sha256": "0592ed37d5fc98925e9620c5bc2350a2c74f3769a6b1504dcbd23aad4acc0f61",
+          "bytes": 362419
+         },
+         {
+          "name": "py3.13-pytest",
+          "version": "9.1.1-r0",
+          "url": "https://packages.wolfi.dev/os/aarch64/py3.13-pytest-9.1.1-r0.apk",
+          "sha256": "aa730d3e690900e83bb5f76e157e2a600001c38c81b72942fc5304e2658cd9ce",
+          "bytes": 1117017
+         },
+         {
+          "name": "py3.13-tomli",
+          "version": "2.5.0-r0",
+          "url": "https://packages.wolfi.dev/os/aarch64/py3.13-tomli-2.5.0-r0.apk",
+          "sha256": "69ee03f6cf6fcf627125816e494a71b10c6ba63e5a478304772571b9bf6c4c5a",
+          "bytes": 38497
+         },
+         {
+          "name": "py3.13-typing-extensions",
+          "version": "4.16.0-r0",
+          "url": "https://packages.wolfi.dev/os/aarch64/py3.13-typing-extensions-4.16.0-r0.apk",
+          "sha256": "7d6d02dc402c7948e089d75a1282a4de2decf6e492f8aa14196429184ec9cfad",
+          "bytes": 130053
+         },
+         {
+          "name": "py3.13-zipp",
+          "version": "4.1.2-r0",
+          "url": "https://packages.wolfi.dev/os/aarch64/py3.13-zipp-4.1.2-r0.apk",
+          "sha256": "0b34e37a9332d1d45c8ae827a072b4514552c69f1faa62797783692ea075c8ff",
+          "bytes": 33930
+         },
+         {
           "name": "readline",
           "version": "8.3-r3",
           "url": "https://packages.wolfi.dev/os/aarch64/readline-8.3-r3.apk",
@@ -2982,6 +3084,16 @@
          "selectionBasis": "curl-dev and ngtcp2-dev depend on openssl-4.0-dev by name and on pc:openssl. In the retained signed index only the 4.0 development records from 4.0.3-r1 onward provide openssl-dev/pc:openssl/pc:libssl/pc:libcrypto, and the base-installed 4.0.3-r0 provides none of them, so 4.0.3-r8 is the only provider of those capabilities in the series the staged libs (openssl-4.0-libssl/-libcrypto 4.0.3-r8) and the pinned base belong to. It has the same package name as the base-owned 4.0.3-r0, so apk applies a version upgrade instead of a path-ownership takeover.",
          "retained": "openssl-3.6-libcrypto/-libssl 3.6.5-r6 stay staged because libldap-2.6 requires so:libcrypto.so.3 and so:libssl.so.3. The base-owned openssl-4.0-dev-4.0.3-r0 pin was removed too: the pinned base already installs that revision, the requested 4.0.3-r8 upgrades the same package name, and keeping both revisions in the declared closure would declare a set apk cannot install.",
          "buildValidation": "Source checks only; a rebuilt image is not claimed."
+        },
+        "ctestGateCorrection": {
+         "observed": "AWS build 75b91bdb (b3fb9ca7): ClamAV ctest reported 67 percent passed, 2 of 6 tests failed after the patch applied and the whole tree compiled - libclamav ran 1239 checks with 4 failures (check_clamav.c 1963/1981/1999/2017, SHIFT_JIS and UTF-16BE/LE to UTF8) and clamscan reported Ran 0 tests / NO TESTS RAN",
+         "cause": "Two pinned-environment gaps, not ClamAV defects. cli_codepage_to_utf8 (libclamav/entconv.c 817-1058) converts through the system iconv when HAVE_ICONV is set, and the pinned glibc-2.44 archive carries 22 payload files and no /usr/lib/gconv at all, so iconv_open for SHIFT_JIS and UTF-16 fails. Separately, unit_tests/CMakeLists.txt 355-405 registers the clamscan test as the directory clamscan (21 modules in 1.5.4), and with pytest absent CMake falls back to PythonTest_COMMAND = python -m unittest, which imports that directory as an empty namespace package and collects nothing; the single-file clamd, freshclam, libclamav_rust and sigtool suites passed, which is why only the directory-shaped suite reported zero tests",
+         "correction": "Stage and install the retained index's glibc-2.44-iconv (usr/lib/gconv with SJIS, libJIS, libJISX0213, UTF-16, UTF-32 and gconv-modules) in the existing development install, and install pytest with its 11 pinned dependencies after the pinned interpreter so CMake selects -m pytest -v. No test is skipped, filtered, excluded or disabled: ENABLE_TESTS=ON and ctest --output-on-failure are unchanged",
+         "packages": 13,
+         "bytes": 9089543,
+         "members": ["glibc-2.44-iconv", "py3.13-colorama", "py3.13-exceptiongroup", "py3.13-importlib-metadata", "py3.13-iniconfig", "py3.13-packaging", "py3.13-pluggy", "py3.13-pygments", "py3.13-pyparsing", "py3.13-pytest", "py3.13-tomli", "py3.13-typing-extensions", "py3.13-zipp"],
+         "provenance": "each archive fetched from its pinned packages.wolfi.dev/os/aarch64 URL, sha256 computed from the fetched bytes, and its length, package name and version verified against the retained vendor-signed index and against the archive's own .PKGINFO; the retained index is an apk v2 index whose C: field is not an sha256, so the pin is the downloaded digest rather than an index-transcribed one",
+         "buildValidation": "Source checks only: staging lines, install requests, assertion loop, lock members and closure totals are verified textually and against the index. apk installation, iconv conversion, pytest collection and the 1239-case run remain the next ARM build's obligation."
         },
         "compilerClosureCorrection": {
          "reason": "The original development repository omitted packages selected by the signed index during offline installation, including dependencies already staged only for the runtime. Stage those exact selected versions in the development repository as well.",
@@ -3092,7 +3204,7 @@
         "scannerFeedGap": "the retained scan records only CVSS score/vector/package name/version and no fixed-version metadata, and the vendor feed's declared fixed revision (clamav-1.5 1.5.4-r2) is not published in any Wolfi or Chainguard apk repository for aarch64 or x86_64"
        },
         "compilerInterpreter": {
-        "requiredBy": "clamav-1.5.4/CMakeLists.txt 219-231 requires find_package(Libcheck REQUIRED) and find_package(Python3 REQUIRED), or EXACT when PYTHON_FIND_VERSION is defined, whenever ENABLE_TESTS=ON; 256-277 runs the unit-test input generators with ${Python3_EXECUTABLE} at build time and requires `${Python3_EXECUTABLE} -m unittest --help` to exit 0 because the stage carries no pytest",
+        "requiredBy": "clamav-1.5.4/CMakeLists.txt 219-231 requires find_package(Libcheck REQUIRED) and find_package(Python3 REQUIRED), or EXACT when PYTHON_FIND_VERSION is defined, whenever ENABLE_TESTS=ON; 256-277 runs the unit-test input generators with ${Python3_EXECUTABLE} at build time and requires `${Python3_EXECUTABLE} -m unittest --help` to exit 0; the ctestGateCorrection record below installs pytest in the same stage, so CMake selects `-m pytest -v` for the ctest suites",
         "stage": "clamav-source-build (build-only)",
         "repositoryPath": "/tmp/meri-native-runtime-repo",
         "repository": "the retained runtime staging set (native-repository: the same vendor-signed index and the same authenticated archives the exported runtime stage already installs python-3.13 from), mounted read-only at its own path, so the interpreter costs no new source, no new checksum and no new trust decision",
@@ -3153,7 +3265,7 @@
         "versionAssertion": "python3.13 -c 'import sys; assert sys.version_info[:3] == (3, 13, 16), sys.version; print(\"interpreter\", sys.version)'",
         "reportedVersion": "python3.13 --version is printed into the build log immediately before the assertion",
         "unittestAssertion": "python3.13 -m unittest --help > /dev/null",
-        "unittestAssertionReason": "the upstream block accepts pytest, then `${Python3_EXECUTABLE} -m pytest`, and otherwise requires `${Python3_EXECUTABLE} -m unittest --help` to exit 0 or it stops configure with FATAL_ERROR; this stage carries no pytest, so the unittest entry point is the one the upstream check actually applies",
+        "unittestAssertionReason": "the upstream block accepts pytest, then `${Python3_EXECUTABLE} -m pytest`, and otherwise requires `${Python3_EXECUTABLE} -m unittest --help` to exit 0 or it stops configure with FATAL_ERROR; the ctestGateCorrection installs pytest in this stage, so configure takes the pytest branch and the ctest suites run under `-m pytest -v`, while the unittest entry point stays present and asserted",
         "moduleAssertion": "python3.13 -c 'import argparse, errno, functools, getpass, hashlib, http.server, logging, multiprocessing, os, pathlib, platform, random, re, shutil, signal, socket, socketserver, struct, subprocess, sys, tempfile, threading, time, typing, unittest, unittest.mock, zipfile, zlib'",
         "stdlibModules": [
          "argparse",
@@ -3205,7 +3317,17 @@
         "verified": "measured with the base apk-tools against this index staged as a local repository: the untampered index resolves offline (104542 distinct packages available) and a one-record, format-valid tamper of the index payload is refused with \"BAD signature\"; a byte-flipped package file is refused on the index-recorded package identity, and a package whose archive is not staged fails closed with \"package mentioned in index not found\"",
         "note": "Retained verbatim as the repository index and committed under infra/product-preview/native-apk-index. It is the trust root for the staged archives, so no live index is consulted and no .apk file is passed to apk as a local path."
       },
-      "note": "The Wolfi APKINDEX is a rolling live file, so the frozen index hash above is only a per-retrieval audit record; the pinned .apk archives are the authoritative immutable artifacts. Every recorded .apk sha256 was computed from the downloaded official archive, and every download length matched the index S: field exactly.",
+    "runtimeIconvClosure": {
+      "observed": "Independent review P1 (MERI-DB80-RUNTIME-ICONV-INDEPENDENT-REVIEW-20261029) found the compiler-stage iconv addition was absent from the delivered image: the same compiled libclamav is copied into the runtime stage, so a compiler-only install leaves the scanner without the conversion capability the tests exercise",
+      "correction": "The identical pinned archive is staged in the runtime signed repository and requested by exact version in the existing offline runtime apk install, beside the glibc family it belongs to; the compiler-stage installation is preserved. No loose module copy, no HAVE_ICONV change, no sandbox or authority widening",
+      "archive": {"name": "glibc-2.44-iconv", "version": "2.44-r10", "sha256": "706b29d19e1b45086515d6ecfa7b9adb2c0add5a08d29e83cdd047d2e52cab9d", "bytes": 3856747, "installedBytes": 20049352},
+      "contents": "usr/lib/gconv with SJIS, libJIS, libJISX0213, UTF-16, UTF-32 and gconv-modules, plus usr/bin/iconv and usr/bin/iconvconfig (251 modules, 267 entries total) and no file shared with glibc-2.44 itself",
+      "packageMetadataDependencies": "merged-lib, merged-sbin, merged-usrsbin, so:ld-linux-aarch64.so.1, so:libc.so.6, wolfi-baselayout - the base/libc closure this image already carries, not a toolchain",
+      "sandbox": "unchanged: apps/runtime/uploads/native-sandbox.mjs pins /usr/bin/clamscan and read-only binds /usr, so the installed /usr/lib/gconv is reachable without a new mount, capability or path",
+      "probe": "infra/product-preview/image-build.sh converts the three upstream fixture inputs (SHIFT_JIS, UTF-16BE, UTF-16LE) through the image's own /usr/bin/iconv and compares the UTF-8 bytes, because version listings, ldd and ASCII signature smokes cannot see a missing dynamically loaded converter",
+      "buildValidation": "Source checks only: no local apk install, conversion or image build. Offline installation, the final-image conversions and ABI, full ctest and the scan remain the next ARM build's obligation."
+    },
+    "note": "The Wolfi APKINDEX is a rolling live file, so the frozen index hash above is only a per-retrieval audit record; the pinned .apk archives are the authoritative immutable artifacts. Every recorded .apk sha256 was computed from the downloaded official archive, and every download length matched the index S: field exactly.",
             "closure": "The whole transitive native closure of the seven upload archives (and of the python and renderer layers) is staged inside one local apk repository: 190 official aarch64 archives pinned by exact URL and sha256 in the Dockerfile ADD --checksum list and in systemPackages, beside the retained vendor-signed index recorded above. The three native layers install with `apk add --no-cache --no-network --repository /tmp/meri-native-repo --update-cache <name>=<version>`, so apk admits every archive through that index signature and its recorded package identity and never through a local file path or --allow-untrusted. This corrects the earlier claim that the previous 88-archive closure installed from local paths: the exact locked command `apk add --no-cache --no-network <pinned archives>` fails with UNTRUSTED signature exit 99, and the previous closure was also incomplete (apk resolves 175 members for these layers; 91 further official archives were added here). The engine library itself moves with the release: so:libclamav.so.12 is provided by clamav-1.5 1.5.2-r7 (the approved scanner binaries stay at the pinned 1.5.2-r0), and the Wolfi clamav-1.5 package hard-depends on clamav-1.5-daemon/-milter/-clamdscan/-db/-libunrar, so those binaries are installed but nothing configures or starts a daemon and no clamd.conf exists. SCRUM-197 update: the three Wolfi clamav-1.5 install requests are removed from the upload layer and the ClamAV payload is now source-built from the authenticated upstream 1.5.4 release asset in the build-only clamav-source-build stage (see clamavSourcePreparation). The eight clamav-1.5 family archives stay in this pinned staging closure byte for byte, with their URLs, checksums and order unchanged, but no install requests them any more: the vulnerable payload is removed rather than shadowed through PATH precedence, and the image asserts that no clamav-1.5 distribution package is installed.",
       "declaredFinalVersions": {
         "note": "The intended FINAL versions of the shared C++ runtime in the built image, so the two layers' package statements are one truthful declaration instead of an implicit supersession. Nothing here is an observed installed fact: no image has been built, pulled or inspected.",
