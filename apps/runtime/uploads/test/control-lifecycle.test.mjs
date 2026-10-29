@@ -58,6 +58,7 @@ test('the mount is opt-in: absent, disabled or unattested yields an honest unava
  const unattested=await mountUploadNativeControl({configuration:{uploads:{native:{enabled:true,imageDigest:DIGEST}}}});
  assert.equal(unattested.inspection,null);
  assert.ok(unattested.missing.length>0);assert.equal(typeof unattested.missing[0],'string');
+ assert.equal(typeof unattested.reason,'string');assert.ok(unattested.reason.length>0,'the composition reason is lifted to the mount handle');
 });
 
 test('an attested host mounts the real inspection and the ONE lifecycle attempt is bounded and never a repair',async()=>{

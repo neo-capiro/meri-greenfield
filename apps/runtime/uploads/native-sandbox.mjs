@@ -138,6 +138,6 @@ export async function qualifyNativeUploadSandbox({imageDigest,deadlineMs,signal,
   // Tool/definition roots are read-only bind entries of the fixed plan above, so they share this admission.
   return {admitted:true,reason:'UPLOAD_SANDBOX_QUALIFIED',admission:Object.freeze({role:'upload-native',imageDigest,qualificationId:'upload-native-'+imageDigest.slice(7),
    sandbox:Object.freeze({...evaluation.sandbox}),toolRootsReadOnly:true}),evaluation,missing:[]};
- }catch(error){return {admitted:false,reason:error?.code==='UPLOAD_PROBE_CLEANUP_FAILED'?error.code:'UPLOAD_PROBE_FAILED',evaluation:null,missing:[...UPLOAD_SANDBOX_REQUIREMENTS]};}
+ }catch(error){return {admitted:false,reason:typeof error?.code==='string'?error.code:'UPLOAD_PROBE_FAILED',evaluation:null,missing:[...UPLOAD_SANDBOX_REQUIREMENTS]};}
  finally{await rm(workspace,{recursive:true,force:true});}
 }

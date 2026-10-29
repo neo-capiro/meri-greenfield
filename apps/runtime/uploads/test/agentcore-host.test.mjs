@@ -55,6 +55,7 @@ test('the REAL default startup path on an unattested host yields no port, and th
  assert.equal(handle.inspection,null);
  assert.equal(handle.host?.scanner??null,null);
  assert.equal(handle.missing.includes('uploads.native.sandbox'),true);
+ assert.equal(typeof handle.reason,'string');assert.ok(handle.reason.length>0,'the qualification reason reaches the startup event');
  assert.equal(handle.provisionDefinitions,null,'an uncomposed host has no provisioning handle');
  const app=createUploadInspectionApplication({inspection:handle.inspection,imageDigest:IMAGE});
  const call=inspectionRequest({requestId:'a'.repeat(64),deadlineMs:Date.now()+30000});
