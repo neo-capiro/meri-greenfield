@@ -5,6 +5,33 @@ development/testing. A paid quote is not a prerequisite. Live editor activation
 remains held until the actual host, draft/retention bridge, immutable publisher,
 frontend and Office fidelity checks are complete.
 
+## 29 October isolated native qualification
+
+The user authorized isolated local qualification. CODE 26.04.5.2 ran in the
+existing Ubuntu WSL Linux Docker environment, using image digest
+`sha256:c7415b963e32eb0986a562583f154d36d3d7a461e1ddfb660a95e87094328acb`.
+The editor and WOPI host were separate HTTPS loopback origins with temporary
+development TLS. Chromium 149.0.7827.55 opened actual files made by the existing
+python-docx 1.2.0, XlsxWriter 3.2.9 and PptxGenJS 4.0.1 builders.
+
+All three seed files completed real CheckFileInfo/GetFile/lock/edit/Save/unlock
+flows through `createWopiFileApplication`. Word retained the edit, original
+table and multilingual text. Excel retained the formula, changed quantity 4
+and recalculated result 30. PowerPoint retained the edited title, chart, table
+and speaker notes. Screenshots and saved OOXML parts were inspected. Saved
+sizes were 21,017, 11,228 and 20,710 bytes respectively. The existing publisher then
+preserved each exact saved file and parent and recovered its same immutable
+version on replay, with no re-render or second publication.
+
+This exercise used scripted Core HTTP/SQL/object ports beneath the actual
+artifact/native-session/WOPI owners. It is not ordinary-role PostgreSQL, the
+deployed frontend, ARM64 image qualification or the planned 30-file fidelity
+corpus. Native renewal/revocation/crash recovery and that larger corpus remain
+open. Local services are stopped after the run; source, input/output files,
+screenshots, failure logs and dependency caches remain in the task work folder.
+The focused source suite has 102 passing checks (including ten chart-workbook
+cases and the native query-shape case), zero skips; runtime types and diff pass.
+
 `collabora-code.mjs` parses a bounded discovery XML response with the existing
 `saxes` dependency. Trusted composition supplies separate exact HTTPS editor and
 WOPI origins and obtains `/hosting/discovery` from the configured editor. Only
@@ -74,11 +101,23 @@ private draft can be saved. The A7 implementation owner continues this work in
 the 29 October source sequence.
 
 `inspect-office.mjs` reuses the bounded ZIP/OPC/XML parsers, checks every
-relationship and XML part, and refuses macros, embedded/active objects and
+relationship and XML part, and refuses macros, arbitrary embedded/active objects and
 non-hyperlink external relationships. Passive HTTP(S) hyperlinks are retained.
+Native PowerPoint chart workbooks are admitted only as validated XLSX packages
+under `ppt/embeddings`, referenced by a chart's package relationship. Nested
+embeddings and other object types refuse. The outer presentation and workbooks
+share the existing total inflated-byte and entry budgets; exact bytes are retained.
 It neither executes Office nor rewrites the package. This structural pass is
 not native rendering, fidelity, recalculation or a complete active-content
 qualification.
+
+The locally authorized CODE 26.04.5.2 exercise found that CODE forwards
+`access_token_ttl` alongside `access_token` on WOPI requests. The optional expiry
+must be a single bounded integer equal to the signed claim, or the WOPI zero
+sentinel for unknown client expiry. CODE used the zero sentinel in native
+requests; server-side signed expiry is always enforced. The hint cannot extend
+token life or replace current session, editor epoch or retention checks.
+See [WOPI token concepts](https://learn.microsoft.com/en-us/microsoft-365/cloud-storage-partner-program/rest/concepts).
 
 The initial launch checkpoint had nine source tests. The later canonical Core,
 WOPI and publication checks below replace its unused pure Save/publish decisions.

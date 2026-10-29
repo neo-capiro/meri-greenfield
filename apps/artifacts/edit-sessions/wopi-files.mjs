@@ -23,6 +23,7 @@ export function createWopiFileApplication({codec,drafts,artifacts,resolveContext
   try{
    const info=wopiRequest(request);let claims;
    try{claims=codec.verify(info.token,{fileId:info.fileId});}catch{refuse(401);}
+   if(info.tokenExpiresAtMs!==null&&info.tokenExpiresAtMs!==claims.expiresAtMs)refuse(401);
    life=createOperationLifetime({now,signal:info.signal,deadlineMs:Math.min(now()+maxRequestMs,claims.expiresAtMs),errorFactory:()=>Error('WOPI_LIFETIME')});
    const key={conversationId:claims.conversationId,draftId:claims.editSessionId,editorId:claims.editorId,editorEpoch:claims.editorEpoch};
    async function current(){
