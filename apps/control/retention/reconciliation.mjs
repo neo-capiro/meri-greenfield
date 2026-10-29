@@ -7,6 +7,7 @@
 import {fail,subjectKey,clock} from './boundary.mjs';
 import {recomputePlan,stepFacts,rowStepFacts,planMetadata} from './purge.mjs';
 import {projectionToken} from './memory-journal.mjs';
+import {verifyPurgeTargets} from './verify-targets.mjs';
 export function createServingGate(){let enabled=true;return Object.freeze({disable(){enabled=false;},enable(){enabled=true;},isEnabled:()=>enabled});}
 const sameHead=(left,right)=>(left?.sequence??0)===(right?.sequence??0)&&(left?.entrySha256??null)===(right?.entrySha256??null);
 /** `storage`, `keyFor` and `facts` may be null where no purge owner is bound (the runtime keeps purge inactive): a recorded purge step then
@@ -18,7 +19,6 @@ export function createRecoveryReconciler({ledger,journal,storage=null,serving,ke
  if(recoverPrerequisitesExclusive!==null&&typeof recoverPrerequisitesExclusive!=='function')fail('RETENTION_CONFIGURATION');
  if(verifyCore!==null&&typeof verifyCore!=='function')fail('RETENTION_CONFIGURATION');
  if(office!==null&&typeof office.verify!=='function')fail('RETENTION_CONFIGURATION');
- const stepRow=f=>({workflowId:f.workflowId,classes:f.classes,objectId:f.objectId,versionId:f.versionId,sha256:f.sha256,...(f.scopesSha256?{scopesSha256:f.scopesSha256}:{}),artifactVersionIds:f.artifactVersionIds??[]});
  /** Current-facts re-planning; any unavailable authority returns a BLOCKED result naming it (never a cleared block). */
  async function replan(subjectValue,journalState,nowMs){try{return await recomputePlan(facts,subjectValue,journalState,nowMs);}catch(error){return {state:'BLOCKED',blocks:[{reason:String(error?.code??'RETENTION_AUTHORITY_UNAVAILABLE'),detail:{}}],steps:[],rowSteps:[],planSha256:null};}}
  async function pass(report,nowMs){
@@ -30,19 +30,13 @@ export function createRecoveryReconciler({ledger,journal,storage=null,serving,ke
    const base={state:'SUPPRESSED',ownerActorId:latest.subject.ownerActorId,suppressedAtMs:suppression.atMs,ledgerSequence:suppression.sequence,entrySha256:suppression.entrySha256,...(suppression.reason===undefined?{}:{reason:suppression.reason}),authorization:suppression.facts.authorization,outstandingAccess:suppression.facts.outstandingAccess,cancelled:suppression.facts.cancelled??[],purge:null};
    if(!current||current.state!=='SUPPRESSED'||current.ledgerSequence!==suppression.sequence)report.reapplied.push(key);
    const purgeEntries=history.filter(e=>e.sequence>suppression.sequence&&e.state.startsWith('PURGE_'));let last=purgeEntries.at(-1),row=base;
-   if(last){const planSha256=last.facts.planSha256,factsSteps=last.facts.steps??[];
+   if(last){const planSha256=last.facts.planSha256;
     if(last.state==='PURGE_BLOCKED'||last.state==='PURGE_PLANNED'){
      // Historical targets are never restored as-is: eligibility is recomputed from current facts under the current suppression generation.
      const plan=await replan(latest.subject,base,nowMs);
      if(plan.state==='PLANNED'){if(plan.planSha256!==planSha256){const e=await ledger.append({subject:latest.subject,state:'PURGE_PLANNED',reason:last.state==='PURGE_BLOCKED'?'RECONCILED_BLOCK_CLEARED':'RECONCILED_REPLANNED',facts:{...planMetadata(plan),planSha256:plan.planSha256,suppression:plan.suppression,policySha256:plan.policySha256,inventorySha256:plan.inventorySha256,...(plan.trash?{trash:plan.trash}:{}),...(plan.retainedObjects?{retainedObjects:plan.retainedObjects}:{}),steps:plan.steps.map(stepFacts),rowSteps:plan.rowSteps.map(rowStepFacts)}},{exclusive:true});row={...base,purge:{state:'PLANNED',planSha256:plan.planSha256,ledgerSequence:e.sequence,...(plan.trash?{trash:plan.trash}:{}),...(plan.retainedObjects?{retainedObjects:plan.retainedObjects}:{}),steps:[],rowSteps:[]}};report.replanned.push(key);}else row={...base,purge:{state:'PLANNED',planSha256,ledgerSequence:last.sequence,...(last.facts.trash?{trash:last.facts.trash}:{}),...(last.facts.retainedObjects?{retainedObjects:last.facts.retainedObjects}:{}),steps:[],rowSteps:[]}};}
      else{row={...base,purge:{state:'BLOCKED',planSha256:plan.planSha256??planSha256,ledgerSequence:last.sequence,...(last.facts.trash?{trash:last.facts.trash}:{}),...(last.facts.retainedObjects?{retainedObjects:last.facts.retainedObjects}:{}),steps:[],rowSteps:[],blocked:plan.blocks}};report.stillBlocked.push(key);}}
-    else{const verified=[];let revived=false,pending=false;
-     for(const f of factsSteps){const target=stepRow(f);if(!['EXECUTED','UNKNOWN','PENDING'].includes(f.state))fail('RETENTION_LEDGER_CORRUPT');
-      const readback=storage?await storage.headVersion({key:keyFor(target),versionId:target.versionId}):{outcome:'UNKNOWN',reason:'STORAGE_UNAVAILABLE'};const state=readback.outcome==='ABSENT'?'EXECUTED':readback.outcome==='PRESENT'?'REVIVED':'UNKNOWN';if(state==='REVIVED')revived=true;if(state==='UNKNOWN')pending=true;verified.push({...target,readback,state});}
-     // Database row targets recorded as deleted are re-verified too: a restored row is a revival; an unverifiable one stays UNKNOWN.
-     const verifiedRows=[];for(const f of last.facts.rowSteps??[]){if(!['EXECUTED','UNKNOWN','PENDING'].includes(f.state))fail('RETENTION_LEDGER_CORRUPT');const target={workflowId:f.workflowId,className:f.className,target:f.target};
-      if(!rows){pending=true;verifiedRows.push({...target,state:'UNKNOWN'});continue;}let present;try{present=await rows.present(key,target);}catch{present=null;}
-      const state=present===false?'EXECUTED':present===true?'REVIVED':'UNKNOWN';if(state==='REVIVED')revived=true;if(state==='UNKNOWN')pending=true;verifiedRows.push({...target,state});}
+    else{const {verified,verifiedRows,revived,pending:unverified}=await verifyPurgeTargets({facts:last.facts,key,storage,keyFor,rows});let pending=unverified;
      let officeRetired=false;
      if(office){try{officeRetired=await office.verify(latest.subject)===true;}catch{}
       if(!officeRetired){pending=true;

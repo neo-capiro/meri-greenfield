@@ -12,6 +12,7 @@ import {createRecoveryReconciler} from './reconciliation.mjs';
 import {createPurgeExecutor} from './purge.mjs';
 import {createServingFence} from './serving-fence.mjs';
 import {watermarkedJournal,acknowledgedLedger} from './recovery-watermark.mjs';
+import {createDeletionStatusReader} from './deletion-status.mjs';
 const disabledPurge=Object.freeze({enabled:false,async execute(){fail('RETENTION_PURGE_DISABLED');},async recordBlocked(){fail('RETENTION_PURGE_DISABLED');}});
 /** `purge` is required: `{enabled:false}`, or `{enabled:true,storage,rows,facts,keyFor}` with every deletion owner bound. `ownership`
  * composes the suppression owner (trusted application ownership reader); without it only the read gate and recovery exist. The optional
@@ -37,5 +38,6 @@ export function createRetentionStartup({journal,watermark=null,ledgerSink=null,o
  /** Every readiness proof compares against the current external ledger, including decisions this process never observed. */
  async function ensureServing(){if(fence.isEnabled()){try{return await fence.verify(()=>watermark.read(),()=>ledger.head());}catch{}}
   await recover();return fence.verify(()=>watermark.read(),()=>ledger.head());}
- return Object.freeze({serving:fence,journal:tracked,ledger,gate,suppression,purge:executor,reconciler,recover,ensureServing,start:ensureServing,state:()=>Object.freeze({...fence.state(),purgeEnabled:purge.enabled,unavailable})});
+ const deletionStatus=createDeletionStatusReader({journal:tracked,ensureServing,owners,enabled:purge.enabled,now});
+ return Object.freeze({serving:fence,journal:tracked,ledger,gate,suppression,deletionStatus,purge:executor,reconciler,recover,ensureServing,start:ensureServing,state:()=>Object.freeze({...fence.state(),purgeEnabled:purge.enabled,unavailable})});
 }

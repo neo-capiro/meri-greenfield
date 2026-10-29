@@ -1,7 +1,7 @@
 /** Fixed Core metadata transport. The real user bearer and existing backend
  * service secret stay in this request closure; neither is supplied by a model. */
 import {own,data} from '../../../packages/contracts/commands-0.2/execution-boundary.mjs';
-import {assertConversationMetadata,assertConversationHistoryRequest,assertConversationHistoryResponse} from '../../../packages/contracts/conversation-history/validate.mjs';
+import {assertConversationDeletionReadback,assertConversationMetadata,assertConversationHistoryRequest,assertConversationHistoryResponse} from '../../../packages/contracts/conversation-history/validate.mjs';
 import {MANAGEMENT_VERSION} from '../../../packages/contracts/conversation-history/protocol.mjs';
 import {createOperationLifetime} from '../../../packages/runtime/operation-lifetime.mjs';
 import {jsonBody} from '../../control/action-application/http.mjs';
@@ -33,7 +33,11 @@ export function createCoreConversationManagement({origin,getServiceSecret,policy
   async function active(metadata){if(metadata.status!=='active')refuse('CONVERSATION_MANAGEMENT_CONFLICT');const at=now(),receipt=await current.readCurrent({credential,conversationId:metadata.conversationId,clientId:metadata.clientId,signal,deadlineMs});
    if(receipt.principal.tenantId!==principal.tenantId||receipt.principal.actorId!==principal.actorId||receipt.conversationId!==metadata.conversationId||receipt.selectedClientId!==metadata.clientId||receipt.checkedAtMs<at-receiptSkewMs||receipt.checkedAtMs>now()+receiptSkewMs||receipt.expiresAtMs<=now())refuse();
   }
-  return Object.freeze({metadata,read:q=>readback('read',q),apply:q=>readback('apply',q),async summaries(request){const q=assertConversationHistoryRequest('summaries',request),r=data(own(await call('summaries',q),['version','conversations','nextBefore']));
+  return Object.freeze({metadata,
+   async deletions(request){const q=assertConversationHistoryRequest('deletions',request);return assertConversationHistoryResponse('deletions',await call('deletions/list',q),q);},
+   async deletion(request){const q=assertConversationHistoryRequest('deletionStatus',request),started=now(),result=assertConversationDeletionReadback(await call('deletions/read',q),q);
+    if(result.checkedAtMs<started-receiptSkewMs||result.checkedAtMs>now()+receiptSkewMs)refuse();return result;},
+   read:q=>readback('read',q),apply:q=>readback('apply',q),async summaries(request){const q=assertConversationHistoryRequest('summaries',request),r=data(own(await call('summaries',q),['version','conversations','nextBefore']));
     if(!Array.isArray(r.conversations))refuse();const publicValue={...r,conversations:r.conversations.map(m=>({...scope(m),hasTranscript:false,canManage:false}))};assertConversationHistoryResponse('summaries',publicValue,q);return r;
    },async registration(m){m=scope(m);await active(m);return {conversation:{conversationId:m.conversationId,owner:{tenantId:principal.tenantId,actorId:principal.actorId},scopes:[{kind:m.clientId===null?'private-user':'client',tenantId:principal.tenantId,resourceId:m.clientId===null?principal.actorId:m.clientId,policyRevision}],policyRevision,createdAt:new Date(now()).toISOString()},recheckActive:()=>active(m)};}});
  }

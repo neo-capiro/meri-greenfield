@@ -12,6 +12,10 @@ if(!('error'in listed)){const c:Conversation|undefined=listed.conversations[0];v
 const request=receiveConversationHistoryRequest('transcript',bytes),response=await receiveConversationHistoryResponse('transcript',200,bytes,request);
 if(!('error'in response)){const run:Run=response.latestRun,conversation:Conversation=response.conversation,binding:RunBinding=response.latestRun.binding,scopes:Scope[]=response.latestRun.scopes,event:UIEvent|NativeBillTextSourceEvent|NativeHearingSourceEvent|NativeUploadSourceEvent|undefined=response.events[0]?.event,lineage:ConversationPromptLineage|undefined=response.turns[0]?.promptLineage;void [run,conversation,binding,scopes,event,lineage];}
 const cap:number=conversationHistoryMetadata.limits.responseBytes;void cap;
+const deletionRequest=receiveConversationHistoryRequest('deletionStatus',bytes),deletion=await receiveConversationHistoryResponse('deletionStatus',200,bytes,deletionRequest);
+if(!('error'in deletion)){const state:'pending'|'blocked'|'unknown'|'completed'|'superseded'=deletion.state,retained:boolean=deletion.retainedSharedCopies;void [state,retained];}
+const deletionList=receiveConversationHistoryRequest('deletions',bytes),deletions=await receiveConversationHistoryResponse('deletions',200,bytes,deletionList);
+if(!('error'in deletions)){const id:string|undefined=deletions.requests[0]?.requestId,unknown:boolean=deletions.olderRequestsUnavailable;void [id,unknown];}
 const exportRequest=receiveConversationHistoryRequest('export',bytes),exported=await receiveConversationHistoryResponse('export',200,bytes,exportRequest);
 if(!('error'in exported)){const text:string|undefined=exported.turns[0]?.messages[0]?.text,expires:string=exported.expiresAt,through:number=exported.throughSequence;void [text,expires,through];}
 const summaries=receiveConversationHistoryRequest('summaries',bytes),summary=await receiveConversationHistoryResponse('summaries',200,bytes,summaries);

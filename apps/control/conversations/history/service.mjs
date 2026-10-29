@@ -1,15 +1,17 @@
 /** Membership-authorized read/admission facade. The caller supplies the canonical product gate's principal, never a UI identity. */
 import {ProductError,asProductError,productFailure,refuse} from '../../product-access/errors.mjs';
 import {exportConversationMessages} from './export.mjs';
+import {createConversationDeletionService} from './deletions.mjs';
 import {TURN_SCHEMA} from './protocol.mjs';
 import {terminal} from '../boundary.mjs';
 import {createConversationManagementService,assertManagedScope} from './management.mjs';
 // Core currentness rows are independent reads; this many run at once on a released page.
 const CURRENTNESS_CONCURRENCY=4;
-export function createConversationHistoryService({store,nextRunOwner,gate,retention,suppression}){
+export function createConversationHistoryService({store,nextRunOwner,gate,retention,suppression,deletionStatus}){
  if(['list','transcript'].some(k=>typeof store?.history?.[k]!=='function')||typeof gate?.recheck!=='function'||retention!==undefined&&['assertServable','withRelease'].some(k=>typeof retention[k]!=='function'))refuse('PRODUCT_CONFIGURATION');
  const guard=fn=>async value=>{try{return await fn(value);}catch(error){throw asProductError(error,'CONVERSATION_UNAVAILABLE');}};
  const check=signal=>()=>signal?.throwIfAborted();
+ const deletions=createConversationDeletionService({status:deletionStatus});
  const management=store.management?createConversationManagementService({store,suppression}):null;
  async function servable(principal,conversationId){if(retention)await retention.assertServable({tenantId:principal.tenantId,kind:'conversation',subjectId:conversationId});}
  async function current(recheckConversation,conversation,readScheduleOriginRows){if(typeof recheckConversation!=='function')refuse('CONVERSATION_UNAVAILABLE');await recheckConversation({conversationId:conversation.conversationId,scopes:conversation.scopes},readScheduleOriginRows);}
@@ -26,6 +28,7 @@ export function createConversationHistoryService({store,nextRunOwner,gate,retent
   await servable(principal,request.conversationId);return result;
  }
  return Object.freeze({
+  deletions:guard(deletions.list),deletionStatus:guard(deletions.read),
   summaries:guard(call=>{if(!management)refuse('CONVERSATION_UNAVAILABLE');return management.summaries(call);}),
   manage:guard(call=>{if(!management)refuse('CONVERSATION_UNAVAILABLE','NOT_DISPATCHED');return management.manage(call);}),
   // A page is released only through recheckRelease, which checks Core currentness for every row inside the serving fence after
@@ -41,6 +44,8 @@ export function createConversationHistoryService({store,nextRunOwner,gate,retent
   // One fence spans ALL subjects, final native membership/Core checks and response serialization.
   recheckRelease:guard(async({principal,request,result,operation,signal,deadlineMs,recheckMembership,recheckConversation,recheckMetadata,management:core,publish})=>{
    if(typeof recheckMembership!=='function'||typeof publish!=='function')refuse('PRODUCT_CONFIGURATION');
+   if(operation==='deletions'){await recheckMembership();check(signal)();return publish(result);}
+   if(operation==='deletionStatus')return deletions.release({principal,request,result,signal,deadlineMs,recheckMembership,management:core,publish});
    // Management returns metadata only, including intentionally suppressed Trash.
    // Its transition already settled under the exclusive fence; no content is released.
    if(operation==='manage'||operation==='summaries'){await recheckMembership();
