@@ -33,7 +33,7 @@ export const workspaceGenerationErrorStatuses = freeze({
 });
 
 export const workspaceGenerationLimits = freeze({
-  requestBytes: 16384,
+  requestBytes: 65536,
   responseBytes: 1048576,
   /** One turn's whole observation window: the conversation routes' own request bound. */
   maxRequestMs: 30000,
