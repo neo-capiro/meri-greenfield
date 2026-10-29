@@ -102,6 +102,27 @@ also pass. The WOPI HTTP route, cross-instance exclusive editor admission,
 versioned browser receiver and final integration with the Core receiver remain
 open; no live editor connection is claimed by these client tests.
 
+The editor-admission successor uses Core migration
+`20281029070000_office_editor_admission`: the same private draft row now holds one
+editor ID, monotonic epoch and ten-minute expiry. The runtime client supports
+inspect/acquire/refresh/release/explicit takeover and `editor/read`. Every file
+lock and Save now requires that exact editor proof; the control-only `read`
+remains the recovery path after editor loss. Core serializes these checks with
+the actual draft mutation. Takeover clears the prior file lock without clearing
+saved bytes, and a queued stale Save is refused after takeover commits.
+
+WOPI token domain v1 binds chat and editor ID/epoch in addition to the exact
+draft/file/version and actor. Old domain tokens refuse. The eventual WOPI host
+must use `editor/read` and current Core proof on every crossing, bound token
+expiry by both the current editor admission and native session, and re-open
+through authenticated UI after process-local credential loss. There is no
+persisted bearer or new runtime session store. The matched Core/runtime source
+must ship together; no unfenced lock/save compatibility fallback exists.
+61 runtime editor/client/token tests and focused noEmit checks pass; Core has
+57 focused checks including 17 ordinary-role PostgreSQL cases, source types,
+schema validation and 27 closure/pin checks. These do not establish a running
+WOPI server, browser frontend or native Office qualification.
+
 Primary references: [CODE edition](https://www.collaboraonline.com/code/),
 [Collabora integration](https://sdk.collaboraonline.com/docs/How_to_integrate.html),
 [WOPI discovery placeholders](https://learn.microsoft.com/en-us/microsoft-365/cloud-storage-partner-program/online/discovery),

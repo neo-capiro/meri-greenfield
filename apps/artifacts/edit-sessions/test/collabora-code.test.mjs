@@ -6,6 +6,7 @@ const action=(format='docx',mode='edit',url='https://office.example.test/browser
 const discovery=body=>Buffer.from(`<wopi-discovery><net-zone name="external-https"><app name="writer">${body}</app></net-zone></wopi-discovery>`);
 const bytes=discovery(['docx','xlsx','pptx'].flatMap(f=>['edit','view'].map(m=>action(f,m))).join(''));
 const claims={editSessionId:'00000002-0000-4000-8000-000000000002',fileId:'es-2',versionId:'00000001-0000-4000-8000-000000000001',
+ conversationId:'00000003-0000-4000-8000-000000000003',editorId:'00000004-0000-4000-8000-000000000004',editorEpoch:1,
  actorId:'actor-fixture',tenantId:'tenant-fixture',userCanWrite:true,expiresAtMs:t+600000,suppressionGeneration:4};
 const code=c=>e=>e.code===c;
 test('CODE launch uses discovered same-origin action with token and absolute expiry only in POST fields',()=>{

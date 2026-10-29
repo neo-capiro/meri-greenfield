@@ -20,7 +20,7 @@ export function createCoreOfficeDraftClient(options){
   const selected=data(fields);assertNativeConversationScope(selected);
   if(request.conversationId!==selected.binding.conversationId||!Number.isSafeInteger(selected.deadlineMs))throw failure('OFFICE_DRAFT_SCOPE','NOT_DISPATCHED');
   const life=createOperationLifetime({now:c.now,signal,deadlineMs:Math.min(selected.deadlineMs,c.now()+maxRequestMs),errorFactory:code=>failure('OFFICE_DRAFT_'+code,'NOT_DISPATCHED')});
-  const effect=route!=='read'&&!(route==='lock'&&request.operation==='get');let sent=false,acquired;
+  const effect=!['read','editorRead'].includes(route)&&!(route==='lock'&&request.operation==='get')&&!(route==='editor'&&request.operation==='inspect');let sent=false,acquired;
   try{
    const forbidden=await life.run(()=>c.reservedCredentials());
    if(!(forbidden instanceof Set)||[...forbidden].some(value=>typeof value!=='string'||!/^[a-f0-9]{64}$/u.test(value)))throw Error();
@@ -44,7 +44,7 @@ export function createCoreOfficeDraftClient(options){
     // Core rolls these refusals back before answering. Never reflect its body.
     throw failure(codes[acquired.status],'NOT_DISPATCHED');
    }
-   const result=officeDraftResponse(route,await readJsonResponse(acquired,{lifetime:life,maxResponseBytes:route==='read'?OFFICE_DRAFT_JSON_BYTES:32768}),request);
+   const result=officeDraftResponse(route,await readJsonResponse(acquired,{lifetime:life,maxResponseBytes:['read','editorRead'].includes(route)?OFFICE_DRAFT_JSON_BYTES:32768}),request);
    if(borrow().credential!==first.credential)throw failure('OFFICE_DRAFT_ACCESS_DENIED',effect?'UNKNOWN':'READ_UNAVAILABLE');
    life.check();return result;
   }catch(error){

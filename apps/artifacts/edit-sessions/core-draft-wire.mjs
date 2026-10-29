@@ -5,7 +5,7 @@ import {createHash} from 'node:crypto';
 import {own} from '../../../packages/contracts/commands-0.2/execution-boundary.mjs';
 export const OFFICE_DRAFT_MAX_BYTES=20*1024*1024;
 export const OFFICE_DRAFT_JSON_BYTES=28000000;
-export const OFFICE_DRAFT_ROUTES=Object.freeze({open:'open',read:'read',lock:'lock',save:'save',discard:'discard',beginPublish:'publish/begin',settlePublish:'publish/settle'});
+export const OFFICE_DRAFT_ROUTES=Object.freeze({open:'open',read:'read',editor:'editor',editorRead:'editor/read',lock:'lock',save:'save',discard:'discard',beginPublish:'publish/begin',settlePublish:'publish/settle'});
 const UUID=/^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/u,SHA=/^[a-f0-9]{64}$/u;
 const uuid=value=>typeof value==='string'&&UUID.test(value),sha=value=>typeof value==='string'&&SHA.test(value);
 const fail=()=>{throw Object.assign(Error('OFFICE_DRAFT_WIRE'),{code:'OFFICE_DRAFT_WIRE'});};
@@ -29,16 +29,24 @@ export function officeDraftRequest(route,value){
   if(typeof route!=='string'||!Object.hasOwn(OFFICE_DRAFT_ROUTES,route))fail();
   const key=['conversationId','draftId'];let extra=[];
   if(route==='open')extra=sourceKeys;
-  if(route==='save')extra=['lock','expectedSequence','sha256','bytesBase64','kind'];
+  if(route==='editorRead')extra=['editorId','editorEpoch'];
+  if(route==='save')extra=['editorId','editorEpoch','lock','expectedSequence','sha256','bytesBase64','kind'];
   if(route==='beginPublish')extra=['sequence','sha256'];
   if(route==='settlePublish')extra=['sequence','sha256','intent','outcome','versionId'];
   if(route==='lock'){
-   const b=own(value,[...key,'operation'],['lock','oldLock']);
+   const b=own(value,[...key,'editorId','editorEpoch','operation'],['lock','oldLock']);
    if(!['get','lock','refresh','unlock','relock'].includes(b.operation))fail();
-   extra=['operation',...(b.operation==='get'?[]:['lock']),...(b.operation==='relock'?['oldLock']:[])];
+   extra=['editorId','editorEpoch','operation',...(b.operation==='get'?[]:['lock']),...(b.operation==='relock'?['oldLock']:[])];
+  }
+  if(route==='editor'){
+   const b=own(value,[...key,'operation'],['editorId','expectedEpoch']);
+   if(!['inspect','acquire','refresh','release','takeover'].includes(b.operation))fail();
+   extra=['operation',...(b.operation==='inspect'?[]:['editorId','expectedEpoch'])];
   }
   const b=own(value,[...key,...extra]);if(!uuid(b.conversationId)||!uuid(b.draftId))fail();
   if(route==='open')source(b);
+  if(['lock','save','editorRead'].includes(route)&&(!uuid(b.editorId)||!sequence(b.editorEpoch)||b.editorEpoch<1))fail();
+  if(route==='editor'&&b.operation!=='inspect'&&(!uuid(b.editorId)||!sequence(b.expectedEpoch)))fail();
   if(route==='lock'&&(b.lock!==undefined&&!token(b.lock)||b.oldLock!==undefined&&!token(b.oldLock)))fail();
   if(route==='save'){
    if(!token(b.lock)||!sequence(b.expectedSequence)||!['autosave','explicit','exit'].includes(b.kind))fail();savedBytes(b.bytesBase64,b.sha256);
@@ -61,6 +69,13 @@ function receipt(value,request){
 export function officeDraftResponse(route,value,request){
  try{
   if(typeof route!=='string'||!Object.hasOwn(OFFICE_DRAFT_ROUTES,route))fail();
+  if(route==='editor'){
+   const r=own(value,['editorId','epoch','expiresAt']);
+   if(!sequence(r.epoch)||(r.editorId===null?r.expiresAt!==null:!uuid(r.editorId)||r.epoch<1||!instant(r.expiresAt)))fail();
+   if(request.operation==='release'){if(r.editorId!==null||r.epoch!==request.expectedEpoch)fail();}
+   else if(request.operation!=='inspect'&&(r.editorId!==request.editorId||r.epoch!==request.expectedEpoch+(request.operation==='refresh'?0:1)))fail();
+   return Object.freeze(r);
+  }
   if(route==='discard'){const r=own(value,['discarded']);if(r.discarded!==true)fail();return Object.freeze(r);}
   if(route==='lock'){
    const r=own(value,['status'],['lock']);
@@ -82,7 +97,7 @@ export function officeDraftResponse(route,value,request){
    if(typeof r.dispatch!=='boolean'||!['publish-pending','publish-unknown','published'].includes(kept.state)||r.dispatch&&kept.state!=='publish-pending'||kept.sequence!==request.sequence||kept.sha256!==request.sha256)fail();
    return Object.freeze({receipt:kept,dispatch:r.dispatch});
   }
-  if(route==='read'){
+  if(route==='read'||route==='editorRead'){
    const r=own(value,[...receiptKeys,'bytesBase64']),{bytesBase64,...metadata}=r,kept=receipt(metadata,request);
    if(kept.byteLength===0?bytesBase64!==null:savedBytes(bytesBase64,kept.sha256)!==kept.byteLength)fail();return Object.freeze({...kept,bytesBase64});
   }
