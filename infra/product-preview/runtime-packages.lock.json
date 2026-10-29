@@ -87,6 +87,14 @@
       "bytes": 90446
     },
     {
+      "name": "socat",
+      "version": "1.8.1.1-r2",
+      "architecture": "aarch64",
+      "source": "https://packages.wolfi.dev/os/aarch64/socat-1.8.1.1-r2.apk",
+      "sha256": "ded5814ab718d4ff677db5dc8ccbfb1e217bfc7db9ba66310f0965b163ffe9c1",
+      "bytes": 298748
+    },
+    {
       "name": "util-linux-misc",
       "version": "2.42.4-r1",
       "architecture": "aarch64",
