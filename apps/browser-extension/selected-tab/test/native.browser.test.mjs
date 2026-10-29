@@ -44,8 +44,8 @@ test('native selected tab: explicit permission, exact document identity, consume
   const sw=context.serviceWorkers()[0]??await context.waitForEvent('serviceworker',{timeout:15000}),extensionId=new URL(sw.url()).hostname;
   const browser=context.browser(),cdp=await browser.newBrowserCDPSession();
   const manifest=await sw.evaluate(()=>chrome.runtime.getManifest());assert.deepEqual(manifest.permissions,['activeTab','scripting']);
-  await context.route('https://portfolio-preview.app.capiro.ai/**',route=>route.fulfill({contentType:'text/html',body:'<!doctype html><title>Synthetic recipient</title><h1>Isolated recipient</h1>'}));
-  await context.route('https://source.synthetic.invalid/**',route=>route.fulfill({contentType:'text/html',body:'<!doctype html><title>Synthetic source</title><h1>Visible heading</h1><p>Visible public passage Café 日本語</p><form>PRIVATE FORM<input value="PRIVATE FIELD"></form><p hidden>PRIVATE HIDDEN</p><iframe srcdoc="PRIVATE FRAME"></iframe>'}));
+  await context.route('https://portfolio-preview.app.capiro.ai/**',route=>route.fulfill({contentType:'text/html; charset=utf-8',body:'<!doctype html><title>Synthetic recipient</title><h1>Isolated recipient</h1>'}));
+  await context.route('https://source.synthetic.invalid/**',route=>route.fulfill({contentType:'text/html; charset=utf-8',body:'<!doctype html><title>Synthetic source</title><h1>Visible heading</h1><p>Visible public passage Café 日本語</p><form>PRIVATE FORM<input value="PRIVATE FIELD"></form><p hidden>PRIVATE HIDDEN</p><iframe srcdoc="PRIVATE FRAME"></iframe>'}));
   const app=await context.newPage();await app.goto('https://portfolio-preview.app.capiro.ai/isolated-qualification');
   const pair={schema:'meri.selected-tab/1',type:'pair',pairingId:randomUUID(),binding:{tenantId:randomUUID(),actorId:randomUUID(),conversationId:randomUUID(),clientId:null},
    labels:{account:'Synthetic local account',conversation:'Synthetic local chat'},expiresAtMs:Date.now()+600000};
@@ -67,7 +67,7 @@ test('native selected tab: explicit permission, exact document identity, consume
   await evaluate("document.getElementById('approve').click()");await waitFor("!document.getElementById('capture').hidden");
   await evaluate("document.getElementById('capture').click()");await waitFor("!document.getElementById('preview').hidden || document.getElementById('error').textContent.length > 0");
   assert.equal(await evaluate("document.getElementById('error').textContent"),'');
-  const text=await evaluate("document.getElementById('text').textContent");assert.match(text,/Visible public passage/);assert.doesNotMatch(text,/PRIVATE/);
+  const text=await evaluate("document.getElementById('text').textContent");assert.match(text,/Visible public passage Café 日本語/);assert.doesNotMatch(text,/PRIVATE/);
   await writeFile(join(root,'popup-preview.png'),Buffer.from((await popup.send('Page.captureScreenshot')).data,'base64'));
   await evaluate("document.getElementById('share').click()");await app.waitForFunction(()=>window.received.some(x=>x.type==='share'));
   const shares=await app.evaluate(()=>window.received.filter(x=>x.type==='share'));assert.equal(shares.length,1);
