@@ -128,9 +128,12 @@ export function createArtifactService({validators:v,authorize,versions,objects,e
       error.lifetime=life.close();throw error;
     }finally{life.close();}
   }
-  async function read(versionId,contextValue,options={},download=false,revisionSource=false){
+  async function read(versionId,contextValue,options={},download=false,revisionSource=false,editorWrite=null){
     if(typeof versionId!=='string')fail('ARTIFACT_VERSION_ID');
-    const context=v.context(contextValue),life=operation(context,options.signal),action=download?'artifact.download':'artifact.inspect';
+    // A private WOPI read must include retention and current revise authority for
+    // an editing token. It does not execute a renderer or publish a revision.
+    if(editorWrite!==null&&(!retention||typeof editorWrite!=='boolean'))fail('ARTIFACT_CONFIGURATION');
+    const context=v.context(contextValue),life=operation(context,options.signal),action=editorWrite===true?'artifact.revise':download?'artifact.download':'artifact.inspect';
     const requestSha256=v.hash({action,versionId,context});let resource={versionId,object:null,assetObjects:[]};
     try{
       await authority(life,action,resource,requestSha256,context);await servable(life,context);await recoverTenant(life,context,versionId);
@@ -176,5 +179,6 @@ export function createArtifactService({validators:v,authorize,versions,objects,e
     recoverOfficeEdit:(baseVersionId,request,context,options)=>recoverOfficeEdit({v,operation,authority,scopeVersion,bytesFor,inspectBytes,versions,servable,recoverTenant},baseVersionId,request,context,options),
     list:(query,context,options)=>readArtifactLibrary({v,versions,authorizeOrigin,operation,authority,servable,recoverTenant,now},query,context,options),
     history,revisionSource:(id,context,options)=>read(id,context,options,false,true),inspect:(id,context,options)=>read(id,context,options),download:(id,context,options)=>read(id,context,options,true),
+    editorSource:(id,context,{write,signal}={})=>{if(typeof write!=='boolean')fail('ARTIFACT_CONFIGURATION');return read(id,context,{signal},true,false,write);},
     prepareFederalDraft:(input,context,options)=>prepareFederalDraft({read:(id,c,o)=>read(id,c,o,false,true)},input,context,options)});
 }

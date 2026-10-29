@@ -17,8 +17,9 @@ action URL contains only the credential-free WOPISrc in addition to approved
 discovery parameters. The existing short-lived WOPI token and its absolute expiry
 are form fields; the application must not persist/log them and must return the
 descriptor with no-store caching. View mode cannot fall back to edit. The fixed
-`/api/meri/office/wopi/files/:fileId` path is the allocated host route; its HTTP
-adapter is still pending. This module performs no fetch or editor process launch.
+`/api/meri/office/wopi/files/:fileId` path is the allocated host route. Its Fetch
+adapter is described below; deployment registration remains pending. The launch
+module performs no fetch or editor process launch.
 
 Core `apps/api/src/meri/office-drafts` now owns durable private draft bytes and
 exclusive locks, with the reserved `20281029020000_office_draft_owner` migration.
@@ -39,7 +40,7 @@ sequence and publication intent. Core remains the state/lock authority.
 Save and read use the dedicated 28,000,000-byte JSON boundary for at most 20 MiB
 of file bytes; other responses stay at 32 KiB. Uncertain effects remain unknown,
 and failed reads release nothing. Late responses are retired after cancellation.
-The WOPI host must still compose this client with current artifact authority and
+The WOPI adapter composes this client with current artifact authority and
 retention on every call; a Core draft receipt alone cannot authorize an artifact.
 Suppression/access-loss cleanup and the canonical retention inventory must be
 composed before activating the `editorDrafts` class.
@@ -122,6 +123,65 @@ must ship together; no unfenced lock/save compatibility fallback exists.
 57 focused checks including 17 ordinary-role PostgreSQL cases, source types,
 schema validation and 27 closure/pin checks. These do not establish a running
 WOPI server, browser frontend or native Office qualification.
+
+## WOPI file adapter source checkpoint
+
+`wopi-files.mjs` exposes a private Fetch `handle(Request) -> Response` adapter for
+CheckFileInfo, GetFile, Lock, RefreshLock, Unlock, atomic UnlockAndRelock, GetLock
+and PutFile. `wopi-http.mjs` owns native request admission, bounded binary input
+and empty, no-store refusals. The adapter starts no listener and is not yet
+registered in the deployment. Rename/delete are unsupported; relative-file
+creation is denied and advertised as unavailable to the user. Save calls only
+Core's private draft owner. No WOPI operation invokes immutable publication.
+
+Trusted composition supplies the existing Core draft client, ArtifactService,
+token codec, canonical retention generation reader and an attended context
+resolver. The resolver must use the existing live session owner and return
+`{context, selectedClientId, expiresAtMs}` for the signed chat/actor. This adapter
+has no credential cache or session map. A restart that loses the attended native
+session refuses access until the authenticated UI reopens the durable draft.
+The future launch issuer must cap the token at the native session and Core
+editor expiry. The host refuses a token exceeding the resolved native expiry.
+
+ArtifactService's private `editorSource` reuses its current authority, immutable
+byte verification and mandatory retention gate. Write tokens require current
+`artifact.revise`; view tokens require `artifact.download`. Core `editor/read`
+checks the current editor epoch. The adapter matches immutable source metadata,
+checks the signed suppression generation, reads bounded input, and repeats
+authority immediately before effects. Afterward it repeats artifact authority,
+Core editor proof and, as the final awaited read, the canonical retention
+generation. Responses release no bytes, lock or receipt after a failed check.
+Private Save/lock effects may already have committed when a response is withheld;
+an unknown acknowledgement is never changed into success or retried by the host.
+
+PutFile preserves exact structural-valid Office bytes up to the private 20 MiB
+ceiling. It does not recalculate or render them. GetFile serves the immutable
+base until a private Save exists, then the retained draft. The opaque version
+includes draft ID, sequence and hash; lock conflicts include Core's exact current
+lock. Printable ASCII spaces and extended 1024-character locks are supported in
+the matched Core/runtime boundaries. GetFile enforces MaxExpectedSize. WOPI query
+tokens must be redacted from access logs before deployment registration; the
+adapter itself logs neither requests nor errors and returns no direct file URL.
+
+135 affected runtime checks pass (29 new adapter cases, including an actual
+loopback HTTP GET/LOCK/PUT/GET). They use the actual artifact, native-session,
+token and Core-client owners with scripted Core HTTP responses and SQL/object
+ports. Core separately passes 34 boundary/persistence checks, including 18
+ordinary-role PostgreSQL cases and the extended opaque lock roundtrip. Focused
+source type/import checks pass. No schema, migration, package pin or frozen
+public contract changed. No build, deployment, provider or live CODE call ran.
+
+Remaining integration is explicit: deployment/session routing, bounded launch
+renewal, private recovery and Save/Publish UI, versioned Office browser receiver,
+retention inventory/purge/access-loss composition and representative native
+Office fidelity/conformance. The private Save ceiling does not increase the
+existing artifact publication limit. These are source checks, not live editor
+acceptance.
+
+Protocol references: [CheckFileInfo properties](https://learn.microsoft.com/en-us/microsoft-365/cloud-storage-partner-program/rest/files/checkfileinfo/checkfileinfo-response),
+[GetFile](https://learn.microsoft.com/en-us/microsoft-365/cloud-storage-partner-program/rest/files/getfile),
+[PutFile](https://learn.microsoft.com/en-us/microsoft-365/cloud-storage-partner-program/rest/files/putfile),
+[atomic relock](https://learn.microsoft.com/en-us/microsoft-365/cloud-storage-partner-program/rest/files/unlockandrelock).
 
 Primary references: [CODE edition](https://www.collaboraonline.com/code/),
 [Collabora integration](https://sdk.collaboraonline.com/docs/How_to_integrate.html),

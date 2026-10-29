@@ -9,7 +9,7 @@ export const OFFICE_DRAFT_ROUTES=Object.freeze({open:'open',read:'read',editor:'
 const UUID=/^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/u,SHA=/^[a-f0-9]{64}$/u;
 const uuid=value=>typeof value==='string'&&UUID.test(value),sha=value=>typeof value==='string'&&SHA.test(value);
 const fail=()=>{throw Object.assign(Error('OFFICE_DRAFT_WIRE'),{code:'OFFICE_DRAFT_WIRE'});};
-const token=value=>typeof value==='string'&&/^[\x21-\x7e]{1,1024}$/u.test(value);
+const token=value=>typeof value==='string'&&/^[\x20-\x7e]{1,1024}$/u.test(value);
 const sequence=value=>Number.isInteger(value)&&value>=0&&value<=2147483647;
 const digest=bytes=>createHash('sha256').update(bytes).digest('hex');
 const sourceKeys=['artifactId','baseVersionId','baseSha256','format','filename'];
