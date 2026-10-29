@@ -15,6 +15,16 @@ const integer=(v,min,max=Number.MAX_SAFE_INTEGER)=>Number.isSafeInteger(v)&&v>=m
 function closed(value,required,optional,code){if(!value||typeof value!=='object'||Array.isArray(value)||required.some(k=>!Object.hasOwn(value,k))||Object.keys(value).some(k=>![...required,...optional].includes(k)))fail(code);return value;}
 const page=value=>{const n=value===undefined?50:value;if(!integer(n,1,100))fail('CONVERSATION_CURSOR_INVALID');return n;};
 export function normalizeHistoryRequest(route,value){
+ if(route==='deletions'){
+  const v=closed(value,['version','before'],[],'CONVERSATION_REQUEST_INVALID');
+  if(v.version!==MANAGEMENT_VERSION)fail('CONVERSATION_REQUEST_INVALID');
+  if(v.before!==null){const b=closed(v.before,['createdAt','requestId'],[],'CONVERSATION_CURSOR_INVALID');if(!uuid(b.requestId)||!iso(b.createdAt))fail('CONVERSATION_CURSOR_INVALID');}
+  return v;
+ }
+ if(route==='deletionStatus'){
+  const v=closed(value,['version','requestId'],[],'CONVERSATION_REQUEST_INVALID');
+  if(v.version!==MANAGEMENT_VERSION||!uuid(v.requestId))fail('CONVERSATION_REQUEST_INVALID');return v;
+ }
  if(route==='export'){const v=closed(value,['conversationId'],[],'CONVERSATION_REQUEST_INVALID');if(!uuid(v.conversationId))fail('CONVERSATION_REQUEST_INVALID');return v;}
  if(route==='summaries'){
   const v=closed(value,['version','status','title','before'],[],'CONVERSATION_REQUEST_INVALID');
@@ -48,6 +58,19 @@ function conversation(c){if(c.scopes.some(s=>s.tenantId!==c.owner.tenantId||s.po
 function run(r,c){if(r.binding.tenantId!==c.owner.tenantId||r.binding.actorId!==c.owner.actorId||r.binding.conversationId!==c.conversationId||r.policyRevision!==c.policyRevision||!same(r.scopes,c.scopes))fail('RUN_MISMATCH');}
 function target(source,target){if(target.tenantId!==source.tenantId||target.actorId!==source.actorId||target.conversationId!==source.conversationId||['runId','attemptId','workerId'].some(k=>target[k]===source[k])||target.writerFence!==source.writerFence+1)fail('TARGET_MISMATCH');}
 export function assertHistoryResponseSemantics(route,request,result){
+ if(route==='deletions'){
+  const order=(a,b)=>a.createdAt.localeCompare(b.createdAt)||a.requestId.localeCompare(b.requestId);
+  const ids=new Set();let previous=request.before;
+  for(const item of result.requests){if(!iso(item.createdAt)||!iso(item.restoreUntil)||BigInt(item.revision)<1n||ids.has(item.requestId)||previous&&order(item,previous)>=0)fail('DISCOVERY_MISMATCH');ids.add(item.requestId);previous=item;}
+  if(result.nextBefore&&(!result.requests.length||!same(result.nextBefore,{createdAt:previous.createdAt,requestId:previous.requestId})))fail('CURSOR_MISMATCH');
+  return result;
+ }
+ if(route==='deletionStatus'){
+  if(result.requestId!==request.requestId||!iso(result.createdAt)||!iso(result.restoreUntil)||BigInt(result.revision)<1n)fail('REQUEST_MISMATCH');
+  if(['completed','superseded'].includes(result.state)?result.reasons.length!==0:result.reasons.length===0)fail('INVALID_RESPONSE');
+  if(result.state==='completed'&&result.checkedAtMs<Date.parse(result.restoreUntil))fail('INVALID_RESPONSE');
+  return result;
+ }
  if(route==='export'){
   conversation(result.conversation);if(result.conversation.conversationId!==request.conversationId)fail('REQUEST_MISMATCH');
   const limits=conversationHistoryMetadata.export;

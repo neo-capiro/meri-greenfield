@@ -8,6 +8,7 @@ import {createPostgresRetentionJournal} from '../postgres-journal.mjs';
 import {createPostgresWatermarkStore} from '../postgres-watermark.mjs';
 import {createConversationManagementStore} from '../../conversations/history/management-store.mjs';
 import {spawnSync} from 'node:child_process';
+import {createDeletionStatusReader} from '../deletion-status.mjs';
 const key=()=>`tenant-a:conversation:${randomUUID()}`,never=()=>new Promise(()=>{}),refused=sql=>Object.assign(new Error('synthetic '+sql),{code:'08006'});
 /** `faults` maps a statement prefix to 'throw', 'hang' or a value to return; `connectDelayMs` delays every acquisition. */
 function syntheticPool({faults={},connectDelayMs=0,max=Infinity}={}){
@@ -19,6 +20,16 @@ function syntheticPool({faults={},connectDelayMs=0,max=Infinity}={}){
 }
 const retired=c=>c.releases.length===1&&c.releases[0] instanceof Error;
 const reused=c=>c.releases.length>=1&&c.releases.every(e=>e===undefined);
+
+test('deletion status target verification reuses one held PostgreSQL lease',async()=>{
+ const pool=syntheticPool({max:1}),journal=createPostgresRetentionJournal({pool,maxRequestMs:200}),conversationId=randomUUID(),requestId=randomUUID();
+ const subjectKey='tenant-a:conversation:'+conversationId,at=Date.now(),trash={requestId,revision:'1',restoreUntilMs:at-1000};
+ const row={state:'SUPPRESSED',ownerActorId:'actor-a',reason:'conversation-trash:'+requestId,purge:{state:'EXECUTED',coreFinalized:true,officeRetired:true,trash,steps:[],rowSteps:[{state:'EXECUTED',workflowId:randomUUID(),className:'conversation',target:{className:'conversation',table:'runs',runId:randomUUID(),projectionSha256:'a'.repeat(64),requestSha256:'b'.repeat(64)}}]}};
+ const status=createDeletionStatusReader({journal:{...journal,async get(k){assert.equal(k,subjectKey);return row;}},ensureServing:async()=>{},enabled:true,now:Date.now,
+  owners:{rows:journal.rows,storage:{},keyFor:()=>'',office:{verify:async()=>true},verify:async()=>true}});
+ const result=await status.withStatus({principal:{tenantId:'tenant-a',actorId:'actor-a'},reference:{conversationId,requestId,revision:'1',restoreUntil:new Date(trash.restoreUntilMs).toISOString(),metadataState:'absent'},deadlineMs:Date.now()+1000},async(value,verify)=>{await verify();return value;});
+ assert.equal(result.state,'completed');assert.equal(pool.connects(),1);assert.ok(reused(pool.made[0]));assert.ok(pool.made[0].statements.some(s=>s.sql.startsWith('SELECT r.*')));
+});
 
 test('transaction drains unawaited work and refuses a caught query failure before COMMIT',async()=>{
  let finish;const pending=new Promise(resolve=>{finish=resolve;}),pool=syntheticPool({faults:{'SELECT pending':pending}}),journal=createPostgresRetentionJournal({pool});
