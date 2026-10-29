@@ -1,6 +1,8 @@
 // Generated from accepted history schema; frozen canonical shapes unchanged. No authorization implied.
 
 export type ConversationHistoryEnvelope =
+  | ConversationHistoryExportRequest
+  | ConversationHistoryExportResponse
   | ConversationHistoryListRequest
   | ConversationHistoryTranscriptRequest
   | ConversationHistoryNextTurnRequest
@@ -473,6 +475,64 @@ export type ConversationHistoryManageRequest =
       operation: 'archive' | 'restore' | 'trash';
     };
 
+export interface ConversationHistoryExportRequest {
+  conversationId: string;
+}
+export interface ConversationHistoryExportResponse {
+  schema: 'meri.conversation-export/1';
+  conversation: Canonical_Conversation_8B5174A8;
+  throughSequence: number;
+  exportedAt: string;
+  expiresAt: string;
+  /**
+   * @minItems 1
+   * @maxItems 1000
+   */
+  turns: [
+    {
+      runId: string;
+      prompt: string | null;
+      /**
+       * @maxItems 2000
+       */
+      messages: {
+        messageId: string;
+        text: string;
+      }[];
+    },
+    ...{
+      runId: string;
+      prompt: string | null;
+      /**
+       * @maxItems 2000
+       */
+      messages: {
+        messageId: string;
+        text: string;
+      }[];
+    }[]
+  ];
+}
+export interface Canonical_Conversation_8B5174A8 {
+  conversationId: string;
+  owner: Canonical_IdentityAba0A4E9;
+  /**
+   * @minItems 1
+   */
+  scopes: [Canonical_ScopeF882Edb5, ...Canonical_ScopeF882Edb5[]];
+  createdAt: string;
+  policyRevision: string;
+}
+export interface Canonical_IdentityAba0A4E9 {
+  tenantId: string;
+  actorId: string;
+}
+export interface Canonical_ScopeF882Edb5 {
+  tenantId: string;
+  kind: 'tenant' | 'client' | 'mailbox' | 'memory' | 'document' | 'private-user' | 'public';
+  resourceId: string;
+  policyRevision: string;
+}
 export interface ConversationHistoryListRequest {
   before?: ConversationHistoryBefore | null;
   limit?: number;
@@ -497,26 +557,6 @@ export interface ConversationHistoryListResponse {
    */
   conversations: Canonical_Conversation_8B5174A8[];
   nextBefore: ConversationHistoryBefore | null;
-}
-export interface Canonical_Conversation_8B5174A8 {
-  conversationId: string;
-  owner: Canonical_IdentityAba0A4E9;
-  /**
-   * @minItems 1
-   */
-  scopes: [Canonical_ScopeF882Edb5, ...Canonical_ScopeF882Edb5[]];
-  createdAt: string;
-  policyRevision: string;
-}
-export interface Canonical_IdentityAba0A4E9 {
-  tenantId: string;
-  actorId: string;
-}
-export interface Canonical_ScopeF882Edb5 {
-  tenantId: string;
-  kind: 'tenant' | 'client' | 'mailbox' | 'memory' | 'document' | 'private-user' | 'public';
-  resourceId: string;
-  policyRevision: string;
 }
 export interface ConversationHistoryTranscriptResponse {
   schema: 'meri.conversation-transcript/1';
@@ -1220,6 +1260,7 @@ export interface ConversationHistoryErrorResponse {
       | 'UNSUPPORTED_MEDIA_TYPE'
       | 'CANCELLED'
       | 'PRODUCT_UNAVAILABLE'
+      | 'CONVERSATION_EXPORT_TOO_LARGE'
       | 'CONVERSATION_REQUEST_INVALID'
       | 'CONVERSATION_CURSOR_INVALID'
       | 'CONVERSATION_NOT_FOUND'
@@ -1514,18 +1555,22 @@ export interface ConversationMetadata {
   restoreUntil: string | null;
 }
 
-export type ConversationHistoryRoute='list'|'transcript'|'nextTurn'|'summaries'|'manage';
+export type ConversationHistoryRoute='export'|'list'|'transcript'|'nextTurn'|'summaries'|'manage';
 declare const admittedHistoryRequest:unique symbol;
-export interface ConversationHistoryRequestMap {list:ConversationHistoryListRequest;transcript:ConversationHistoryTranscriptRequest;nextTurn:ConversationHistoryNextTurnRequest;summaries:ConversationHistorySummariesRequest;manage:ConversationHistoryManageRequest;}
+export interface ConversationHistoryRequestMap {export:ConversationHistoryExportRequest;list:ConversationHistoryListRequest;transcript:ConversationHistoryTranscriptRequest;nextTurn:ConversationHistoryNextTurnRequest;summaries:ConversationHistorySummariesRequest;manage:ConversationHistoryManageRequest;}
 export type AdmittedConversationHistoryRequest<R extends ConversationHistoryRoute>=Readonly<ConversationHistoryRequestMap[R]>&{readonly [admittedHistoryRequest]:R};
-export interface ConversationHistoryResponseMap {list:Readonly<ConversationHistoryListResponse>;transcript:Readonly<ConversationHistoryTranscriptResponse>;nextTurn:Readonly<ConversationHistoryNextTurnResponse>;summaries:Readonly<ConversationHistorySummariesResponse>;manage:Readonly<ConversationHistoryManageResponse>;}
+export interface ConversationHistoryResponseMap {export:Readonly<ConversationHistoryExportResponse>;list:Readonly<ConversationHistoryListResponse>;transcript:Readonly<ConversationHistoryTranscriptResponse>;nextTurn:Readonly<ConversationHistoryNextTurnResponse>;summaries:Readonly<ConversationHistorySummariesResponse>;manage:Readonly<ConversationHistoryManageResponse>;}
 export type ConversationHistoryResponse<R extends ConversationHistoryRoute>=ConversationHistoryResponseMap[R]|ConversationHistoryErrorResponse;
 export declare class ConversationHistoryResponseError extends Error {readonly code:string;}
 export declare const conversationHistoryMetadata: {
   "packageVersion": "0.1.15",
-  "historyVersion": "1.4.0",
-  "schemaId": "urn:meri:conversation-history:1.4.0",
+  "historyVersion": "1.5.0",
+  "schemaId": "urn:meri:conversation-history:1.5.0",
   "routes": {
+    "export": {
+      "method": "POST",
+      "path": "/api/conversations/export"
+    },
     "list": {
       "method": "POST",
       "path": "/api/conversations/list"
@@ -1553,6 +1598,13 @@ export declare const conversationHistoryMetadata: {
     "scheme": "Bearer",
     "serverSideCredentialOnly": true,
     "validationGrantsAuthority": false
+  },
+  "export": {
+    "events": 10000,
+    "turns": 1000,
+    "messages": 2000,
+    "textBytes": 1048576,
+    "lifetimeMs": 60000
   },
   "limits": {
     "requestBytes": 131072,
@@ -1613,6 +1665,9 @@ export declare const conversationHistoryMetadata: {
     "PRODUCT_UNAVAILABLE": [
       502
     ],
+    "CONVERSATION_EXPORT_TOO_LARGE": [
+      413
+    ],
     "CONVERSATION_REQUEST_INVALID": [
       400
     ],
@@ -1642,9 +1697,11 @@ export declare const conversationHistoryMetadata: {
     ]
   }
 };
-export declare const conversationHistoryVersion:'1.1.0';
+export declare const conversationHistoryVersion:'1.5.0';
+export declare const EXPORT_SCHEMA:'meri.conversation-export/1';
 export declare const MANAGEMENT_VERSION:'meri.conversation-management.v1';
 export declare const HISTORY_PATHS: {
+  "export": "/api/conversations/export",
   "list": "/api/conversations/list",
   "transcript": "/api/conversations/transcript",
   "nextTurn": "/api/conversations/next-turn",
@@ -1972,6 +2029,7 @@ export interface RunIndexErrorResponse {
       | 'UNSUPPORTED_MEDIA_TYPE'
       | 'CANCELLED'
       | 'PRODUCT_UNAVAILABLE'
+      | 'CONVERSATION_EXPORT_TOO_LARGE'
       | 'CONVERSATION_REQUEST_INVALID'
       | 'CONVERSATION_CURSOR_INVALID'
       | 'CONVERSATION_NOT_FOUND'

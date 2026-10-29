@@ -1,5 +1,6 @@
 /** Membership-authorized read/admission facade. The caller supplies the canonical product gate's principal, never a UI identity. */
 import {ProductError,asProductError,productFailure,refuse} from '../../product-access/errors.mjs';
+import {exportConversationMessages} from './export.mjs';
 import {TURN_SCHEMA} from './protocol.mjs';
 import {terminal} from '../boundary.mjs';
 import {createConversationManagementService,assertManagedScope} from './management.mjs';
@@ -36,6 +37,7 @@ export function createConversationHistoryService({store,nextRunOwner,gate,retent
   }),
   // Read-only transcript releases only through the final serving fence, like list; nextTurn keeps every early/fresh check.
   transcript:guard(call=>transcript(call,true)),
+  export:guard(call=>exportConversationMessages({call,read:value=>transcript(value,true)})),
   // One fence spans ALL subjects, final native membership/Core checks and response serialization.
   recheckRelease:guard(async({principal,request,result,operation,signal,deadlineMs,recheckMembership,recheckConversation,recheckMetadata,management:core,publish})=>{
    if(typeof recheckMembership!=='function'||typeof publish!=='function')refuse('PRODUCT_CONFIGURATION');

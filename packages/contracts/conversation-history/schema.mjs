@@ -1,4 +1,4 @@
-import {conversationHistoryMetadata,DISCOVERY_SCHEMA,HISTORY_SCHEMA,TURN_SCHEMA,MANAGEMENT_VERSION,historyErrorStatuses} from './protocol.mjs';
+import {conversationHistoryMetadata,DISCOVERY_SCHEMA,HISTORY_SCHEMA,TURN_SCHEMA,EXPORT_SCHEMA,MANAGEMENT_VERSION,historyErrorStatuses} from './protocol.mjs';
 import {SELECTED_DOCUMENT_REVISION_SKILL_SCHEMA} from '../document-revision.mjs';
 const ref=name=>({$ref:'#/$defs/'+name}),pub=name=>({$ref:'urn:meri:contracts:0.1.0#/$defs/'+name});
 const stored=name=>({$ref:'urn:meri:conversation-application:0.4.0#/$defs/ConversationStoredRequest/properties/'+name});
@@ -11,6 +11,9 @@ const date={type:'string',format:'date-time'},revision={type:'string',pattern:'^
 const managementFields={version:{const:MANAGEMENT_VERSION},requestId:uuid,conversationId:uuid,expectedRevision:revision};
 const metadata={conversationId:uuid,title,status:{enum:['active','archived','trashed']},revision,scopeKind:{enum:['client','general']},clientId:nullable(uuid),updatedAt:date,archivedAt:nullable(date),trashedAt:nullable(date),restoreUntil:nullable(date)};
 export function historySchema(){return {$schema:'https://json-schema.org/draft/2020-12/schema',$id:conversationHistoryMetadata.schemaId,$defs:{
+ ConversationHistoryExportRequest:object({conversationId:uuid}),
+ ConversationHistoryExportResponse:object({schema:{const:EXPORT_SCHEMA},conversation:pub('Conversation'),throughSequence:integer(1),exportedAt:date,expiresAt:date,
+ turns:{type:'array',minItems:1,maxItems:1000,items:object({runId:uuid,prompt:nullable({type:'string',maxLength:1048576}),messages:{type:'array',maxItems:2000,items:object({messageId:uuid,text:{type:'string',maxLength:1048576}})}})}}),
  ConversationMetadata:object(metadata),
  ConversationSummary:object({...metadata,hasTranscript:{type:'boolean'},canManage:{type:'boolean'}}),
  ConversationSummaryBefore:object({updatedAt:date,conversationId:uuid}),
