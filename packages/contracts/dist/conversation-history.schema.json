@@ -586,6 +586,9 @@
         "procedure": {
           "$ref": "#/$defs/Canonical_procedure_e155666f"
         },
+        "siteWorkflow": {
+          "$ref": "#/$defs/Canonical_siteWorkflow_095f758c"
+        },
         "work": {
           "$ref": "#/$defs/Canonical_work_fa33081c"
         }
@@ -1703,6 +1706,35 @@
           "additionalProperties": false
         }
       ]
+    },
+    "Canonical_siteWorkflow_095f758c": {
+      "type": "object",
+      "properties": {
+        "siteId": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9-]{1,63}$"
+        },
+        "workflowId": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9-]{1,63}$"
+        },
+        "version": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        },
+        "manifestSha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        }
+      },
+      "required": [
+        "siteId",
+        "workflowId",
+        "version",
+        "manifestSha256"
+      ],
+      "additionalProperties": false
     },
     "Canonical_work_fa33081c": {
       "type": "object",

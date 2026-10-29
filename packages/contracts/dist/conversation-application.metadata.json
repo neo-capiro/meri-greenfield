@@ -14,8 +14,8 @@
     },
     {
       "path": "../../apps/control/conversations/service.mjs",
-      "sha256": "f64e3a3cea0f736a4f3c7578147858bd32b4384f368aecee008751c31cb62681",
-      "bytes": 35621
+      "sha256": "5dee03dd443330fc5d3b2b47d5c5bd3c567c3969e4a576e7a2e4a9e69ec67c32",
+      "bytes": 37427
     },
     {
       "path": "../skills/../../apps/control/document-application/cited-report/manifest.json",
@@ -199,13 +199,13 @@
     },
     {
       "path": "conversation-application/receive.mjs",
-      "sha256": "b63e79c46829a9da2842f6a397048d8e594e6b217bc2b666f3e2df32d22dc1f7",
-      "bytes": 9858
+      "sha256": "610f836473193ed5b7f5d2ab7022054b2d3d7d201d6310d6b49987a427e3af5f",
+      "bytes": 10116
     },
     {
       "path": "conversation-application/schema.mjs",
-      "sha256": "bcce6cb69262c66f55eaf572087bd3255a013b2dea262f3a5463e1997ffc9030",
-      "bytes": 4565
+      "sha256": "ba10add33045a42ed0a28ab2cfc1ff9f223bd86e54eee7c636a5748ac5b81f52",
+      "bytes": 4732
     },
     {
       "path": "conversation-sources/hearing-semantics.mjs",
@@ -298,12 +298,17 @@
       "bytes": 1176
     },
     {
+      "path": "site-workflow-selection.mjs",
+      "sha256": "93fef501be8ed268420acafd031dbcc326de83e425d323dc8eca1a223fad24bf",
+      "bytes": 1498
+    },
+    {
       "path": "upload-selection.mjs",
       "sha256": "b35b73b7a75ed50bff2fb04530cef165595932a57a2a3fd786be2baa4e2066dd",
       "bytes": 1986
     }
   ],
-  "schemaSha256": "7633cebfc790b3b905e1b9e086013380ee021f7eb4c2e20ab1d0260cbf1c3415",
+  "schemaSha256": "c4755d95c33abba8433a71287a3211e49ee4ebd5187cb0250b55479f01f630d8",
   "browserInputs": [
     "artifacts-0.2/artifact-formats.mjs",
     "conversation-application/conversation-application-receiver.mjs",
@@ -321,6 +326,7 @@
     "node_modules/fast-deep-equal/index.js",
     "procedure-selection.mjs",
     "retrieval-0.2/hearing-fragments.mjs",
+    "site-workflow-selection.mjs",
     "upload-selection.mjs",
     "work-selection.mjs"
   ]

@@ -256,6 +256,12 @@ export type Canonical_ConversationStoredRequest_71D2Dc3E = {
         version: number;
         manifestDigest: string;
       };
+  siteWorkflow?: {
+    siteId: string;
+    workflowId: string;
+    version: number;
+    manifestSha256: string;
+  };
   work?: {
     entry: 'start-work' | 'delegate';
     jobKind: 'research' | 'deliverable' | 'audit' | 'scheduled';
@@ -751,6 +757,12 @@ export interface Canonical_ConversationSubmitRequest_9C9B616B {
         version: number;
         manifestDigest: string;
       };
+  siteWorkflow?: {
+    siteId: string;
+    workflowId: string;
+    version: number;
+    manifestSha256: string;
+  };
   work?: {
     entry: 'start-work' | 'delegate';
     jobKind: 'research' | 'deliverable' | 'audit' | 'scheduled';

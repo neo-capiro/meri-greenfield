@@ -18,12 +18,12 @@ const fail=()=>{throw Object.assign(new Error('BROWSER_CONFIGURATION'),{code:'BR
  * and source scopes are trusted runtime facts; receipts are always required, artifacts only when downloads are on,
  * approvals only for interaction tools (without it every interaction is denied). `approvalDeadlineMs` is an optional
  * trusted runtime setting inside APPROVAL_DEADLINE_MS (default 120 s). */
-export function buildOpenBrowserFragment({binding,cwd,policy,installation:rawInstallation,sourceScopes:rawScopes,artifacts,receipts,approvals,approvalDeadlineMs,now}){
+export function buildOpenBrowserFragment({binding,cwd,policy,installation:rawInstallation,sourceScopes:rawScopes,artifacts,receipts,approvals,approvalDeadlineMs,now,assertCurrent}){
  const installation=validateBrowserInstallation(rawInstallation,binding);
  if(policy?.enabled!==true||typeof receipts?.record!=='function'||policy.downloads.enabled&&typeof artifacts?.ingest!=='function')fail();
  const sourceScopes=policy.downloads.enabled?validateSourceScopes(rawScopes,binding):Object.freeze([]),paths=browserPaths(cwd);
  const name=t=>`mcp__${BROWSER_SERVER_NAME}__${t}`,policySha256=canonicalSha256(policy),pages=createPageContext();
- const gate=createPermissionGate({binding,policy,policySha256,server:BROWSER_SERVER_NAME,approvals,pages,now,approvalDeadlineMs});
+ const gate=createPermissionGate({binding,policy,policySha256,server:BROWSER_SERVER_NAME,approvals,pages,now,approvalDeadlineMs,assertCurrent});
  const tracking=createPageContextHooks(pages,`mcp__${BROWSER_SERVER_NAME}__`);
  const unadmitted=[...EXPOSED_UNADMITTED_TOOLS,...BROWSER_TOOLS.filter(t=>!policy.tools.includes(t))];
  const matcher=`mcp__${BROWSER_SERVER_NAME}__.*`;
@@ -36,6 +36,6 @@ export function buildOpenBrowserFragment({binding,cwd,policy,installation:rawIns
    PreToolUse:Object.freeze([Object.freeze({matcher,hooks:Object.freeze([gate.preToolUse])})]),
    PostToolUse:Object.freeze([Object.freeze({matcher,hooks:Object.freeze([createReceiptHook({binding,paths,cwd,server:BROWSER_SERVER_NAME,tools:policy.tools,receipts,now}),tracking.post])})]),
    PostToolUseFailure:Object.freeze([Object.freeze({matcher,hooks:Object.freeze([tracking.failure])})])}),
-  downloads:createDownloadPort({binding,policy,policySha256,sourceScopes,paths,artifacts,receipts,now}),
+  downloads:createDownloadPort({binding,policy,policySha256,sourceScopes,paths,artifacts,receipts,now,assertCurrent}),
   dispose:options=>disposeBrowserState(paths,options)});
 }

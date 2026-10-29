@@ -610,6 +610,35 @@
             }
           ]
         },
+        "siteWorkflow": {
+          "type": "object",
+          "properties": {
+            "siteId": {
+              "type": "string",
+              "pattern": "^[a-z][a-z0-9-]{1,63}$"
+            },
+            "workflowId": {
+              "type": "string",
+              "pattern": "^[a-z][a-z0-9-]{1,63}$"
+            },
+            "version": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 9007199254740991
+            },
+            "manifestSha256": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            }
+          },
+          "required": [
+            "siteId",
+            "workflowId",
+            "version",
+            "manifestSha256"
+          ],
+          "additionalProperties": false
+        },
         "work": {
           "type": "object",
           "properties": {

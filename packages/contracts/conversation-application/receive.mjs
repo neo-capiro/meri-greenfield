@@ -1,4 +1,5 @@
 import {assertHearingSourceEventSemantics} from '../conversation-sources/hearing-semantics.mjs';
+import {assertSiteWorkflowSelection} from '../site-workflow-selection.mjs';
 import {assertProcedureSelection} from '../procedure-selection.mjs';
 import {assertUploadSelections} from '../upload-selection.mjs';
 import {assertWorkSelection} from '../work-selection.mjs';
@@ -39,7 +40,7 @@ function assertWindowPair(request,window){
 }
 export function receiveConversationRequest(route,utf8Bytes){
  const validate=routeValidator(route),request=parse(utf8Bytes,conversationApplicationMetadata.limits.requestBytes);
- if(!validate(request))fail('INVALID_REQUEST');if(request.procedure!==undefined){try{assertProcedureSelection(request.procedure);}catch{fail('INVALID_REQUEST');}}if(request.uploads!==undefined){try{assertUploadSelections(request.uploads);}catch{fail('INVALID_REQUEST');}}if(request.work!==undefined){try{assertWorkSelection(request.work);}catch{fail('INVALID_REQUEST');}}requests.set(request,route);return request;
+ if(!validate(request))fail('INVALID_REQUEST');if(request.siteWorkflow!==undefined){try{assertSiteWorkflowSelection(request.siteWorkflow);}catch{fail('INVALID_REQUEST');}}if(request.procedure!==undefined){try{assertProcedureSelection(request.procedure);}catch{fail('INVALID_REQUEST');}}if(request.uploads!==undefined){try{assertUploadSelections(request.uploads);}catch{fail('INVALID_REQUEST');}}if(request.work!==undefined){try{assertWorkSelection(request.work);}catch{fail('INVALID_REQUEST');}}requests.set(request,route);return request;
 }
 export async function receiveConversationResponse(route,httpStatus,utf8Bytes,request,currentView){
  routeValidator(route);if(requests.get(request)!==route)fail('UNADMITTED_REQUEST');
@@ -68,7 +69,7 @@ export async function receiveConversationResponse(route,httpStatus,utf8Bytes,req
   if(selected&&selected.requestId!==result.request.requestId)fail('REQUEST_MISMATCH');
   if(selected?.retained&&!same(result.request,selected.retained))fail('REQUEST_MISMATCH');
   if(selected?.input){const input=selected.input,saved=result.request;
-   if(!same(saved.procedure??null,input.procedure??null)||!same(saved.uploads??null,input.uploads??null)||!same(saved.work??null,input.work??null)||!same(saved.documentRevision??null,input.documentRevision??null)||saved.prompt!==input.prompt||!same(saved.windowRequest,input.windowRequest??null)||!same(saved.skill&&{skillId:saved.skill.skillId,skillVersion:saved.skill.skillVersion},input.skill??null)||input.modelSelection!==undefined&&!same(saved.modelSelection,input.modelSelection))fail('REQUEST_MISMATCH');
+   if(!same(saved.siteWorkflow??null,input.siteWorkflow??null)||!same(saved.procedure??null,input.procedure??null)||!same(saved.uploads??null,input.uploads??null)||!same(saved.work??null,input.work??null)||!same(saved.documentRevision??null,input.documentRevision??null)||saved.prompt!==input.prompt||!same(saved.windowRequest,input.windowRequest??null)||!same(saved.skill&&{skillId:saved.skill.skillId,skillVersion:saved.skill.skillVersion},input.skill??null)||input.modelSelection!==undefined&&!same(saved.modelSelection,input.modelSelection))fail('REQUEST_MISMATCH');
   }
   assertWindowPair(result.request.windowRequest,result.request.window);
  }

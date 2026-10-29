@@ -40,7 +40,7 @@ export const TERMINAL_ATTEMPT_MS=3000;
 export const DELTA_FOLD_MAX_BYTES=16384;
 // A streamed text delta outside any subagent; only these fold, and only with deltas of the same content block.
 const textDelta=m=>m?.type==='stream_event'&&!m.parent_tool_use_id&&m.event?.type==='content_block_delta'&&m.event.delta?.type==='text_delta';
-export function createConversationActivity({runOwner,prepareRuntime,query=sdkQuery,heartbeat=()=>{},now=Date.now,newId=randomUUID,lifecycle,selectedSkills,procedures,generalReads,governedIntents,browser,objectiveGeneration,terminalAttemptMs=TERMINAL_ATTEMPT_MS,cleanupAttemptMs=CLEANUP_ATTEMPT_MS,loadMaxMs=3000,loadExpiresAtMs,runtimeMaxMs=3000,runtimeExpiresAtMs,setupBudget,modelDeadlineMs,executionDeadlineMs,diagnostics}){
+export function createConversationActivity({runOwner,prepareRuntime,query=sdkQuery,heartbeat=()=>{},now=Date.now,newId=randomUUID,lifecycle,selectedSkills,procedures,siteWorkflows,generalReads,governedIntents,browser,objectiveGeneration,terminalAttemptMs=TERMINAL_ATTEMPT_MS,cleanupAttemptMs=CLEANUP_ATTEMPT_MS,loadMaxMs=3000,loadExpiresAtMs,runtimeMaxMs=3000,runtimeExpiresAtMs,setupBudget,modelDeadlineMs,executionDeadlineMs,diagnostics}){
  // Optional trusted observers cannot affect execution, publication or bounded cleanup.
  const diagnostic=(method,value)=>{try{Promise.resolve(diagnostics?.[method]?.(value)).catch(()=>{});}catch{}};
  if(['load','append'].some(k=>typeof runOwner?.[k]!=='function')||typeof prepareRuntime!=='function'||typeof query!=='function'||typeof heartbeat!=='function'||!Number.isSafeInteger(terminalAttemptMs)||terminalAttemptMs<1||terminalAttemptMs>30000)throw fault('ACTIVITY_CONFIGURATION');
@@ -85,6 +85,7 @@ export function createConversationActivity({runOwner,prepareRuntime,query=sdkQue
   // Each operation keeps its own cap inside the original expiry. The model
   // leaves one completion allowance; local cleanup has independent bounds.
   try{diagnostic('stage','activity-load');preparation=createOperationLifetime({deadlineMs:Math.min(now()+loadMaxMs,loadExpiresAtMs??Infinity),now,signal,errorFactory:fault});const saved=await preparation.run(signal=>runOwner.load({binding,signal}));preparation.close();preparation=undefined;validateShape('Run',saved.run);if(!same(saved.run.binding,binding)||saved.run.state!=='queued')throw fault('RUN_NOT_QUEUED');
+   if(saved.request.siteWorkflow&&(browser===undefined||typeof siteWorkflows?.resolve!=='function'))throw fault('SITE_WORKFLOW_BROWSER_UNAVAILABLE');
    diagnostic('stage','activity-policy');const policy=readCapabilityPolicy(saved); // Default-off SDK capabilities, validated before any claim; absent policy keeps first-chat behaviour.
    const runBudgets=readRunBudgets(saved); // The run's admitted allocation budgets bound the early read ledger; absent keeps its defaults.
    const prepareStarted=now();if(saved.continuation&&saved.nextTurn)throw fault('CONTINUATION_REFUSED');const lineage=saved.nextTurn?{nextTurn:saved.nextTurn}:saved.continuation?{continuation:saved.continuation}:null,sourceRequest=saved.nextTurn?.sourceRequest??saved.sourceRequest;if(lineage&&lifecycle===undefined)throw fault('CONTINUATION_UNAVAILABLE');
@@ -121,7 +122,7 @@ export function createConversationActivity({runOwner,prepareRuntime,query=sdkQue
     // The lifetime may reject before the preparation promise settles. Keep ownership of a late run handle so it can
     // still be cleaned up; until then the outcome is unknown and the disposable host must be quarantined.
     let settled=false,abandoned=false,prepared;
-    const prepare=async signal=>{try{prepared=await prepareBrowserRun({port:browser,binding,cwd:runtime.cwd,deadlineMs:runtime.deadlineMs,now,signal});
+    const prepare=async signal=>{try{prepared=await prepareBrowserRun({port:browser,binding,cwd:runtime.cwd,deadlineMs:runtime.deadlineMs,now,signal,siteWorkflow:saved.request.siteWorkflow,siteWorkflows});
      if(abandoned)await prepared.settle({outcome:'cancelled'});return prepared;}
      catch(error){browserPreparationCleanupUnknown ||= error?.code==='BROWSER_CLEANUP_UNKNOWN';throw error;}
      finally{settled=true;}};

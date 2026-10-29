@@ -10,8 +10,8 @@
     },
     {
       "path": "../../apps/control/conversations/service.mjs",
-      "sha256": "f64e3a3cea0f736a4f3c7578147858bd32b4384f368aecee008751c31cb62681",
-      "bytes": 35621
+      "sha256": "5dee03dd443330fc5d3b2b47d5c5bd3c567c3969e4a576e7a2e4a9e69ec67c32",
+      "bytes": 37427
     },
     {
       "path": "conversation-input/protocol.mjs",
@@ -45,23 +45,23 @@
     },
     {
       "path": "dist/conversation-application.d.ts",
-      "sha256": "a0084a9a5045cc91e66c0c7220926c83ec38f5ecf257175d1255a4bfa0cba48d",
-      "bytes": 46833
+      "sha256": "e1639c8c217bea9cb98e8a06d96ca53ff4914a518457e14ad40eee1b87d702cc",
+      "bytes": 47067
     },
     {
       "path": "dist/conversation-application.metadata.json",
-      "sha256": "aec94b971bd85536c79aff6a5cbf36604b49032aad7b0838b18eb34df5a501f9",
-      "bytes": 11840
+      "sha256": "369d21285aed4267faee77b3106845c8c6593cb00bd5d9b2a7565f22847c4a28",
+      "bytes": 12038
     },
     {
       "path": "dist/conversation-application.mjs",
-      "sha256": "cef63f6cbe80103068b200e7b92b61e1629654ab48eeae4a6e6a22fa6ef4fd50",
-      "bytes": 1793482
+      "sha256": "3aed371b67b4350a180e012b9e9d0d8bebfc311a77995952ac9a88d8f6aeccf8",
+      "bytes": 1816632
     },
     {
       "path": "dist/conversation-application.schema.json",
-      "sha256": "7633cebfc790b3b905e1b9e086013380ee021f7eb4c2e20ab1d0260cbf1c3415",
-      "bytes": 91234
+      "sha256": "c4755d95c33abba8433a71287a3211e49ee4ebd5187cb0250b55479f01f630d8",
+      "bytes": 92814
     },
     {
       "path": "document-application/boundary.mjs",
@@ -79,7 +79,7 @@
       "bytes": 50043
     }
   ],
-  "schemaSha256": "740edb319c964ed3bfb48e3cb00558c8e48470ed7d001b51b44ee14267af3e3c",
+  "schemaSha256": "cc97fecb5e322fc45f529fa96d72732aa2e746c7b1025e1bd06c17b11bb913da",
   "browserInputs": [
     "artifacts-0.2/artifact-formats.mjs",
     "conversation-input/conversation-input-receiver.mjs",
@@ -97,7 +97,7 @@
     {
       "path": "./conversation-application.mjs",
       "artifact": "dist/conversation-application.mjs",
-      "sha256": "cef63f6cbe80103068b200e7b92b61e1629654ab48eeae4a6e6a22fa6ef4fd50"
+      "sha256": "3aed371b67b4350a180e012b9e9d0d8bebfc311a77995952ac9a88d8f6aeccf8"
     }
   ]
 }

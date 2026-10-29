@@ -264,6 +264,12 @@ export type ConversationStoredRequest = {
         version: number;
         manifestDigest: string;
       };
+  siteWorkflow?: {
+    siteId: string;
+    workflowId: string;
+    version: number;
+    manifestSha256: string;
+  };
   work?: {
     entry: 'start-work' | 'delegate';
     jobKind: 'research' | 'deliverable' | 'audit' | 'scheduled';
@@ -951,6 +957,12 @@ export interface ConversationSubmitRequest {
         version: number;
         manifestDigest: string;
       };
+  siteWorkflow?: {
+    siteId: string;
+    workflowId: string;
+    version: number;
+    manifestSha256: string;
+  };
   work?: {
     entry: 'start-work' | 'delegate';
     jobKind: 'research' | 'deliverable' | 'audit' | 'scheduled';
