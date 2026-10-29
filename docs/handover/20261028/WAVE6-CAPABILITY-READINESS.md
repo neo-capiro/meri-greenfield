@@ -2,6 +2,8 @@
 
 Source-only work, 28 October 2026. This map follows the user's A1–A5 and A7 requirements and item 15 preparation boundary. A6 is skipped pending user requirements. No deployment, image/application build, paid provider call, independent review or live acceptance is included. A completed preparation row does not mean the entire capability is delivered.
 
+**29 October steering supersedes the earlier intake holds:** A3 sites/tasks/actions/retention are configured by Capiro admins, A4 is a browser extension sharing one selected tab, A6 original MO-07 graph/buyer/funding scope is approved, and A7 uses self-hosted Collabora CODE for development/testing without a paid-license prerequisite. These decisions do not establish implemented receivers, production hosting or native acceptance. Current source slices are recorded in the dated updates below.
+
 Use existing feature owners and the Claude SDK harness. Reuse public contracts, canonical services and adopted shared UI components; keep route handlers thin. Extract shared components for repeated behavior only. Do not add parallel authority, persistence or orchestration frameworks.
 
 ## A1 — execution isolation
@@ -37,6 +39,8 @@ Use existing feature owners and the Claude SDK harness. Reuse public contracts, 
 Graph, buyer and funding expansion has no implementation allocation in this batch. Await the user's requirements; the item 15 inventory preserves the row without inventing scope or acceptance.
 
 ## A5 — federal drafting workbench
+
+**29 October implementation update.** The artifact service now has a private `prepareFederalDraft` path over its existing current-authority, suppression and immutable-source byte checks. The exact-text compiler implements ordered scoped replace/insert/delete with ancestor/anchor hashes, explicit dependencies and all-or-nothing preparation. Three separate outputs compile to existing native TXT artifact requests, with revision/hash refusal after edits. [Implementation and limits](../../../apps/artifacts/federal-drafting/README.md) define flat plain-text scope coverage and retain unresolved legal/numbering/reference/arithmetic findings. Thirty-nine focused compiler, source, immutable publication/download and recovery tests pass using isolated scripted storage. Public workbench/source-import/review/approval/current-source contracts and UI remain open; this is not full A5 completion or live/legal acceptance.
 
 **Disposition and canonical owners.** Requirements/implementation preparation complete; exact federal drafting remains undelivered. The existing legal/legislation read adapters, selected document compiler and artifact revision history are reusable dependencies, not a deterministic amendment engine. No active DraftSource/DraftOperation/DraftPackageRevision/DraftFinding workbench contract or receiver was found in the inspected Meri source. Do not relabel a congressional brief, generic DOCX or text diff as legal amendment acceptance.
 
