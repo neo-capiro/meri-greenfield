@@ -1982,9 +1982,9 @@
           "clamav-1.5=1.5.2-r7"
          ],
          "installedBy": "apps/runtime/Dockerfile, stage clamav-source-build, copied into the runtime stage from /tmp/meri-clamav-out",
-         "installedInventory": "/usr/share/meri/clamav-component-inventory.txt (sha256 of the installed executables in usr/bin and usr/sbin and of the ClamAV and freshclam shared libraries in usr/lib: the payload's executable and shared-library surface, not every file the image carries; re-checked against the installed bytes in the runtime stage and verified again by the image build probe)",
+         "installedInventory": "/usr/share/meri/clamav-component-inventory.txt (sha256 of the installed executables in usr/bin and of the ClamAV and freshclam shared libraries in usr/lib: the payload's executable and shared-library surface, not every file the image carries; re-checked against the installed bytes in the runtime stage and verified again by the image build probe)",
          "installedInventorySha256": "written into the image's provenance at build time from the inventory file itself and checked by the image build probe, so the provenance cannot cover a different inventory",
-         "installedInventoryCovers": "usr/bin/*, usr/sbin/*, usr/lib/libclam*.so*, usr/lib/libfreshclam*.so*",
+         "installedInventoryCovers": "usr/bin/*, usr/lib/libclam*.so*, usr/lib/libfreshclam*.so*",
          "libraryRelationships": "built with ENABLE_SHARED_LIB=ON and ENABLE_STATIC_LIB=OFF, so the payload ships shared libraries only: the installed tools load libclamav and libfreshclam from /usr/lib at runtime, and libclamav links the pinned closure's zlib, openssl, libxml2, pcre2, bzip2 and json-c as the image provides them. Presence and version are asserted in the runtime stage; linkage and ABI remain unverified until a real ARM build.",
          "coverageBinding": "the image build probe in infra/product-preview/image-build.sh executes python3.13 /usr/share/meri/clamav_component_coverage.py --bind against this image's own clamscan, this inventory and this provenance, and fails the build when any of them disagree",
          "coverage": "infra/product-preview/clamav-source-advisories.json with the check in infra/product-preview/clamav_component_coverage.py",
