@@ -506,7 +506,14 @@ COPY --from=native-repo-4 /tmp/meri-native-repo /tmp/meri-native-repo
 # paths from it. The previous CMAKE_INSTALL_SYSCONFDIR=/etc therefore left CONFDIR=/usr/etc, which is the path build
 # b3a313d1 observed. The supported cache variable is APP_CONFIG_DIRECTORY, pinned to /etc here; the upstream
 # etc/CMakeLists.txt installs only clamd.conf.sample and freshclam.conf.sample, so no active config is installed and
-# the version probes supply their own minimal config as the production freshclam caller already does.
+# the version probes supply their own minimal config as the production freshclam caller already does. The same
+# APP_CONFIG_DIRECTORY seeds CVD_CERTS_DIRECTORY's default ("${APP_CONFIG_DIRECTORY}/certs", CMakeOptions.cmake:20-21),
+# and certs/CMakeLists.txt:7-12 installs clamav.crt there. With APP_CONFIG_DIRECTORY=/etc that default would move the
+# trust certificates to /etc/certs, outside the scanner sandbox's read-only /usr mount (native-sandbox.mjs exposes
+# /usr and creates an isolated /etc containing only ld.so.cache). libclamav sets the engine cert path to CERTSDIR
+# (others.c:597-626), readdb.c:5322-5328 returns CL_ECVD when codesign_verifier_new fails, and codesign.rs:333-343
+# fails when it cannot canonicalize the absent directory. CVD_CERTS_DIRECTORY is therefore pinned to /usr/etc/certs,
+# the exact path the previous relative "etc/certs" default produced, so clamav.crt stays inside the mounted /usr.
 FROM ${RUNTIME_IMAGE} AS clamav-source-build
 COPY infra/product-preview/native-clamav-patches /tmp/meri-clamav-patches
 RUN --network=none \
@@ -563,7 +570,7 @@ RUN --network=none \
     sha256sum -c /tmp/clamav-compat.sha256 && \
     python3.13 /tmp/meri-clamav-patches/apply-pinned-patch.py /tmp/meri-clamav-patches/clamav-1.5.4-openssl4-asn1-time.patch /usr/src/clamav-1.5.4/libclamav/crypto.c 6cfefd0ca043a922ddfda11c364f4995daf8a12317ce22f6c839b8c95a069dcc 26bdec0a22b4feb6927a4ef292e6f2d1896d11d2d92ffabc9a466bbb6884f036 && \
     cmake -S /usr/src/clamav-1.5.4 -B /tmp/clamav-build \
-      -D CMAKE_BUILD_TYPE=RelWithDebInfo -D CMAKE_INSTALL_PREFIX=/usr -D APP_CONFIG_DIRECTORY=/etc -D CMAKE_INSTALL_LIBDIR=lib -D CMAKE_INSTALL_SBINDIR=bin \
+      -D CMAKE_BUILD_TYPE=RelWithDebInfo -D CMAKE_INSTALL_PREFIX=/usr -D APP_CONFIG_DIRECTORY=/etc -D CVD_CERTS_DIRECTORY=/usr/etc/certs -D CMAKE_INSTALL_LIBDIR=lib -D CMAKE_INSTALL_SBINDIR=bin \
       -D ENABLE_APP=ON -D ENABLE_MILTER=ON -D ENABLE_CLAMONACC=ON -D ENABLE_UNRAR=ON -D ENABLE_TESTS=ON \
       -D ENABLE_JSON_SHARED=ON -D ENABLE_EXTERNAL_MSPACK=OFF -D ENABLE_SYSTEMD=OFF -D ENABLE_MAN_PAGES=OFF \
       -D ENABLE_EXAMPLES=OFF -D ENABLE_DOXYGEN=OFF -D ENABLE_LIBCLAMAV_ONLY=OFF -D ENABLE_STATIC_LIB=OFF \

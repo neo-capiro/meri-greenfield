@@ -653,7 +653,12 @@ class SourceBuiltClamavPayload(unittest.TestCase):
         from CMAKE_INSTALL_FULL_LIBDIR, and every library install names ${CMAKE_INSTALL_LIBDIR} (libclamav 521,
         libfreshclam 108, libclamunrar 112, libclamunrar_iface 86, libclammspack 86, libclamav_rust 60). The configure
         step therefore pins both halves of that pair, and the collectors keep reading usr/lib rather than following the
-        installed directory wherever it goes.
+        installed directory wherever it goes. The same configure step also pins APP_CONFIG_DIRECTORY=/etc (the variable
+        ClamAV actually uses for CONFDIR) and CVD_CERTS_DIRECTORY=/usr/etc/certs. The latter is not cosmetic: the
+        default CVD_CERTS_DIRECTORY is "${APP_CONFIG_DIRECTORY}/certs" (CMakeOptions.cmake:20-21), so
+        APP_CONFIG_DIRECTORY=/etc alone would move clamav.crt to /etc/certs, outside the scanner sandbox's read-only
+        /usr mount (native-sandbox.mjs creates an isolated /etc with only ld.so.cache); libclamav would then fail
+        cl_load with CL_ECVD when codesign_verifier_new cannot canonicalize the absent directory.
         """
         build = " ".join(self.STAGES["clamav-source-build"]["instructions"])
         self.assertIn("-D CMAKE_INSTALL_PREFIX=/usr", build,
@@ -664,6 +669,11 @@ class SourceBuiltClamavPayload(unittest.TestCase):
                       "the ClamAV config directory is left to the 'etc' default instead of /etc")
         self.assertNotIn("-D CMAKE_INSTALL_SYSCONFDIR=/etc", build,
                          "the recipe still passes a CMake variable ClamAV does not read for CONFDIR")
+        self.assertIn("-D CVD_CERTS_DIRECTORY=/usr/etc/certs", build,
+                      "the trust-certificate directory follows APP_CONFIG_DIRECTORY to /etc/certs, outside the "
+                      "sandbox's read-only /usr mount")
+        self.assertNotIn("-D CVD_CERTS_DIRECTORY=/etc/certs", build,
+                         "the trust-certificate directory is pinned outside the mounted /usr")
         self.assertNotIn("lib64", build, "the compiler stage now tolerates or expects a lib64 layout")
         self.assertIn("find usr/lib -maxdepth 1 -type f", DOCKERFILE,
                       "the installed-payload inventory no longer collects the libraries from usr/lib")
