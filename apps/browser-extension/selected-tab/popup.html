@@ -1,0 +1,11 @@
+<!doctype html>
+<html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width">
+<title>Share selected tab</title><link rel="stylesheet" href="popup.css">
+<main><h1>Share selected tab</h1><p id="status" role="status">Connecting…</p>
+<p id="destination"></p><p id="help">Connect from a Capiro chat first. Then open the tab you want to share and click this extension.</p>
+<div class="actions"><button id="approve" hidden>Allow this chat</button><button id="capture" hidden>Capture this tab</button>
+<button id="pause" hidden>Pause</button><button id="revoke" hidden>Disconnect</button></div>
+<section id="preview" hidden><h2 id="title"></h2><p id="url"></p><pre id="text"></pre>
+<p>Share this captured text as an attachment to the chat above. Form fields and embedded frames are excluded.</p>
+<button id="share">Share and attach</button></section><p id="error" role="alert"></p></main>
+<script type="module" src="popup.mjs"></script></html>

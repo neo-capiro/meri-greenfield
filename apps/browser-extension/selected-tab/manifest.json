@@ -1,0 +1,12 @@
+{
+  "manifest_version": 3,
+  "name": "Capiro Selected Tab",
+  "version": "0.1.0",
+  "description": "Share rendered text from one explicitly selected tab with your current Capiro chat.",
+  "minimum_chrome_version": "120",
+  "permissions": ["activeTab", "scripting"],
+  "background": {"service_worker": "background.mjs", "type": "module"},
+  "action": {"default_title": "Share this tab with Capiro", "default_popup": "popup.html"},
+  "externally_connectable": {"matches": ["https://portfolio-preview.app.capiro.ai/*"]},
+  "content_security_policy": {"extension_pages": "script-src 'self'; object-src 'none'; connect-src 'none'"}
+}
