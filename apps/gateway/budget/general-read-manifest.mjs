@@ -6,11 +6,9 @@
 import {canonicalSha256} from '../../../packages/contracts/validate.mjs';
 import {validateShape as privateShape,resolveOperationContract} from '../../../packages/contracts/retrieval-0.2/validate.mjs';
 import {refuse} from './postgres-budget-store.mjs';
-import {GENERAL_READ_TARIFFS,GENERAL_READ_TARIFF_ASSUMPTION_KEYS,GENERAL_READ_DOCUMENT_BOUNDS,WEB_SEARCH_ADMISSION} from './general-read-tariffs.mjs';
+import {GENERAL_READ_TARIFFS,GENERAL_READ_TARIFF_ASSUMPTION_KEYS,GENERAL_READ_DOCUMENT_BOUNDS} from './general-read-tariffs.mjs';
 
-export const GENERAL_READ_PROFILE='meri.general_reads',GENERAL_READ_PROFILE_VERSION='1.0.0',GENERAL_READ_TEXT_ONLY_PROFILE_VERSION='1.1.0',GENERAL_READ_PAID_SEARCH_PROFILE_VERSION='1.2.0';
-/** The public-web discovery operation priced by the configured primary target. */
-export const WEB_SEARCH_READ='search_public_web@0.2.0';
+export const GENERAL_READ_PROFILE='meri.general_reads',GENERAL_READ_PROFILE_VERSION='1.0.0',GENERAL_READ_TEXT_ONLY_PROFILE_VERSION='1.1.0';
 const MiB=1048576;
 /** Structural bounds of any base general-read allocation: the gateway's own response cap per result (16 MiB, the dispatch
  * `maxResponseBytes` limit) and a run aggregate of at most 16 results' worth. Tool calls and spend are not among them: the
@@ -22,7 +20,7 @@ export const GENERAL_READ_DEFAULT_READ_BYTES=Object.freeze({maxOutputBytes:MiB,m
 /** D016 3 / D016-A 3: the default integration run profile (20 turns, 20 tool calls, 900 s, $2). Per-tenant and per-run values come
  * from the existing budget owners; this is the default, not a ceiling. */
 export const GENERAL_READ_DEFAULT_RUN_BUDGETS=Object.freeze({maxTurns:20,maxToolCalls:20,maxRuntimeSeconds:900,maxCostMicroUSD:2000000});
-const KEYS=['contractVersion','profile','profileVersion','allowedOperations','budgets','maxAggregateOutputBytes'],OPTIONAL=['tariffAssumptions','documentPricing','webSearchAdmission'];
+const KEYS=['contractVersion','profile','profileVersion','allowedOperations','budgets','maxAggregateOutputBytes'],OPTIONAL=['tariffAssumptions','documentPricing'];
 export const DOCUMENT_READ='read_client_documents@0.2.0';
 export const DOCUMENT_TEXT_ONLY_MODE='source_text_only';
 export const DOCUMENT_TEXT_ONLY_ROUTE='/api/clio/tools/read_client_documents';
@@ -72,22 +70,10 @@ export function documentReadCharge(raw){
 
 export const isGeneralReadManifest=manifest=>Boolean(manifest&&typeof manifest==='object'&&!Array.isArray(manifest)&&Object.hasOwn(manifest,'profile'));
 
-/** Paid primary search admission (SCRUM-237): the configured provider's measured unit price × its configured
- * attempt ceiling. The exact closed shape only — no estimator, no caller-supplied price, no free claim. */
-export function webSearchCharge(raw){
- if(!closed(raw,['provider','unitMicroUsd','maxAttempts'])||raw.provider!==WEB_SEARCH_ADMISSION.provider||
-    raw.unitMicroUsd!==WEB_SEARCH_ADMISSION.unitMicroUsd||![1,WEB_SEARCH_ADMISSION.maxAttempts].includes(raw.maxAttempts))refuse('INVALID_WEB_SEARCH_ADMISSION');
- const charge=raw.unitMicroUsd*raw.maxAttempts;
- if(!Number.isSafeInteger(charge))refuse('INVALID_WEB_SEARCH_ADMISSION');
- return charge;
-}
-
 export function assertGeneralReadManifest(manifest){
  if(!isGeneralReadManifest(manifest)||KEYS.some(key=>!Object.hasOwn(manifest,key))||Object.keys(manifest).some(key=>!KEYS.includes(key)&&!OPTIONAL.includes(key))||manifest.contractVersion!=='0.2.0'||
-  manifest.profile!==GENERAL_READ_PROFILE||![GENERAL_READ_PROFILE_VERSION,GENERAL_READ_TEXT_ONLY_PROFILE_VERSION,GENERAL_READ_PAID_SEARCH_PROFILE_VERSION].includes(manifest.profileVersion))refuse('INVALID_GENERAL_READ_MANIFEST');
+  manifest.profile!==GENERAL_READ_PROFILE||![GENERAL_READ_PROFILE_VERSION,GENERAL_READ_TEXT_ONLY_PROFILE_VERSION].includes(manifest.profileVersion))refuse('INVALID_GENERAL_READ_MANIFEST');
  const ops=manifest.allowedOperations,b=manifest.budgets;
- // Paid primary search admission travels with the allocation (and its sha256) exactly like document pricing.
- const paidSearch=manifest.webSearchAdmission;
  if(!Array.isArray(ops)||!ops.length||ops.length>GENERAL_READ_CEILINGS.maxOperations)refuse('INVALID_GENERAL_READ_MANIFEST');
  // The assumptions an allocated tariff relies on travel with the allocation (and its sha256); none may be dropped or invented.
  const evidence=manifest.tariffAssumptions??[];
@@ -95,25 +81,17 @@ export function assertGeneralReadManifest(manifest){
  const held=new Set();for(const item of evidence){assertTariffAssumptionEvidence(item);if(held.has(item.id))refuse('INVALID_GENERAL_READ_MANIFEST');held.add(item.id);}
  if(evidence.some((item,i)=>i>0&&evidence[i-1].id.localeCompare(item.id)>=0))refuse('INVALID_GENERAL_READ_MANIFEST');
  const needed=new Set(),seen=new Set();
- for(const op of ops){privateShape('OperationRef',op);const d=resolveOperationContract(op).descriptor,key=canonicalSha256(op),ref=`${op.id}@${op.version}`;
+ for(const op of ops){privateShape('OperationRef',op);const d=resolveOperationContract(op).descriptor,key=canonicalSha256(op);
   if(seen.has(key)||d.sideEffect!=='none'||d.approvalBoundary!=='none')refuse('INVALID_GENERAL_READ_MANIFEST');seen.add(key);
-  // The configured primary target replaces Core's own provider selection, so its assumption replaces the
-  // DuckDuckGo one for that single operation instead of being added to it.
-  if(paidSearch!==undefined&&ref===WEB_SEARCH_READ)needed.add('webSearchProviderAgentCore');
-  else for(const id of GENERAL_READ_TARIFFS[ref]?.assumptions??[])needed.add(id);}
+  for(const id of GENERAL_READ_TARIFFS[`${op.id}@${op.version}`]?.assumptions??[])needed.add(id);}
  if([...needed].some(id=>!held.has(id))||[...held].some(id=>!needed.has(id)))refuse('INVALID_GENERAL_READ_MANIFEST');
  // The document read is allocated only with its pricing evidence, and that evidence only with the document read.
  const documents=ops.some(op=>`${op.id}@${op.version}`===DOCUMENT_READ);
  if(documents!==Object.hasOwn(manifest,'documentPricing'))refuse('INVALID_GENERAL_READ_MANIFEST');
- // The text-only revision identifies exactly the source-only route; a paid-search revision may also carry it.
- if(manifest.profileVersion===GENERAL_READ_TEXT_ONLY_PROFILE_VERSION&&!(documents&&isDocumentTextOnlyPricing(manifest.documentPricing)))refuse('INVALID_GENERAL_READ_MANIFEST');
- if(documents&&isDocumentTextOnlyPricing(manifest.documentPricing)&&
-    ![GENERAL_READ_TEXT_ONLY_PROFILE_VERSION,GENERAL_READ_PAID_SEARCH_PROFILE_VERSION].includes(manifest.profileVersion))refuse('INVALID_GENERAL_READ_MANIFEST');
+ // The new manifest revision identifies exactly the source-only route, not a paid or document-free allocation.
+ if((manifest.profileVersion===GENERAL_READ_TEXT_ONLY_PROFILE_VERSION)!==
+    (documents&&isDocumentTextOnlyPricing(manifest.documentPricing)))refuse('INVALID_GENERAL_READ_MANIFEST');
  if(documents)documentReadCharge(manifest.documentPricing);
- // Paid primary search: allocated only with its admission, and that admission only with the search read.
- const search=ops.some(op=>`${op.id}@${op.version}`===WEB_SEARCH_READ);
- if((paidSearch!==undefined)!==(manifest.profileVersion===GENERAL_READ_PAID_SEARCH_PROFILE_VERSION))refuse('INVALID_GENERAL_READ_MANIFEST');
- if(paidSearch!==undefined){webSearchCharge(paidSearch);if(!search)refuse('INVALID_GENERAL_READ_MANIFEST');}
  privateShape('Budgets',b);
  if(b.maxRecoveryAttempts!==GENERAL_READ_CEILINGS.maxRecoveryAttempts||!integer(b.maxToolCalls,1,Number.MAX_SAFE_INTEGER)||
   !integer(b.maxOutputBytes,1,GENERAL_READ_CEILINGS.maxOutputBytes)||
