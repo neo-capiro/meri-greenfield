@@ -154,7 +154,8 @@
                 "get_research_portfolio_imports",
                 "get_research_portfolio_operations",
                 "prepare_research_portfolio_brief",
-                "prepare_research_portfolio_meeting"
+                "prepare_research_portfolio_meeting",
+                "get_pe_buyer_workspace"
               ]
             },
             "disposition": {

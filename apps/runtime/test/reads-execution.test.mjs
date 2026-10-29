@@ -66,8 +66,8 @@ test('request, result and malformed JSON limits retain explicit refusals',async(
  const invalid=fixture();invalid.onExecute(async()=>'{');assert.equal((await invalid.app.handle(invalid.request())).status,503);
 });
 
-test('all 61 current family constructors compose without an allocation or grant owner',async()=>{
- assert.equal(GENERAL_READ_ADAPTER_FAMILIES.length,61);assert.equal(new Set(GENERAL_READ_ADAPTER_FAMILIES).size,61);
+test('all 62 current family constructors compose without an allocation or grant owner',async()=>{
+ assert.equal(GENERAL_READ_ADAPTER_FAMILIES.length,62);assert.equal(new Set(GENERAL_READ_ADAPTER_FAMILIES).size,62);
  const c=await createControlReadsComposer({coreOrigin:'https://core.example.invalid',nativeCredentials:{async nativeCredentialFor(){throw Error('not invoked');}},readSecret:async()=>{throw Error('not invoked');},serviceSecretFile:'synthetic',capabilityPolicy:{async forRun(){throw Error('not invoked');}}});
  assert.deepEqual(c.familyIds,GENERAL_READ_ADAPTER_FAMILIES);assert.deepEqual(c.missing,[]);
 });
