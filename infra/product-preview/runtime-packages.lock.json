@@ -3233,6 +3233,14 @@
           "sha256": "0baaae06fe50c478491eeaa686c8f443f8dd6969a3c5af8d6f2cb6c1a237519f",
           "url": "https://packages.wolfi.dev/os/aarch64/python-3.13-base-3.13.16_git20261016-r2.apk",
           "role": "named in the interpreter install"
+         },
+         {
+          "name": "py3-pip-wheel",
+          "version": "26.2.2-r1",
+          "filename": "py3-pip-wheel-26.2.2-r1.apk",
+          "sha256": "3481499c46ac5ae2b7e10ee50ff80f5c4c0e55501e0d096c8c06437f51283c93",
+          "url": "https://packages.wolfi.dev/os/aarch64/py3-pip-wheel-26.2.2-r1.apk",
+          "role": "named in the interpreter install: python-3.13-base depends on an unversioned py3-pip-wheel while the staged index also advertises r0 and r2, so the installed revision is pinned here instead of left to apk's resolution"
          }
         ],
         "resolvedFromTheRuntimeRepository": [
@@ -3250,7 +3258,7 @@
           "filename": "py3-pip-wheel-26.2.2-r1.apk",
           "sha256": "3481499c46ac5ae2b7e10ee50ff80f5c4c0e55501e0d096c8c06437f51283c93",
           "url": "https://packages.wolfi.dev/os/aarch64/py3-pip-wheel-26.2.2-r1.apk",
-          "role": "resolved by apk from the mounted retained runtime staging set"
+          "role": "directly pinned in the interpreter install; the archive comes from the mounted fixed-pip staging set"
          },
          {
           "name": "python-3.13",

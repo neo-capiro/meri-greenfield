@@ -1079,10 +1079,7 @@ class SourceBuiltClamavPayload(unittest.TestCase):
         install = installs[0]
         named_repositories = re.findall(r"--repository (\S+)", install)
         self.assertTrue(named_repositories, "the interpreter install names no repository: %s" % install)
-        self.assertEqual(sorted(set(named_repositories)),
-                         sorted(set(named_repositories) - {PIP_REPO_DIR}) + sorted(
-                             [name for name in set(named_repositories) if name == PIP_REPO_DIR]) and
-                         sorted(set(named_repositories)),
+        self.assertEqual(len(named_repositories), len(set(named_repositories)),
                          "the interpreter install names a repository twice: %s" % install)
         self.assertTrue(all(name in (interpreter["repositoryPath"], PIP_REPO_DIR)
                             for name in named_repositories),
@@ -1156,7 +1153,11 @@ class SourceBuiltClamavPayload(unittest.TestCase):
         named = set(re.findall(r"--repository (/tmp/meri-native-[a-z-]+)", compiler))
         readable = {"/" + source for source, target in mounts if target in named}
         self.assertTrue(readable, "the compiler stage names no staged repository it also mounts")
-        self.assertEqual(sorted(readable & {"/tmp/meri-native-dev-repo"} | readable), sorted(readable))
+        self.assertIn("/tmp/meri-native-repo", readable,
+                      "the compiler stage cannot read the retained runtime staging set that carries "
+                      "python-3.13: %r" % sorted(readable))
+        self.assertIn(PIP_REPO_DIR, readable,
+                      "the compiler stage cannot read the fixed pip repository: %r" % sorted(readable))
         repo_of = {dest.rsplit("/", 1)[-1]: dest.rsplit("/aarch64/", 1)[0] for _, dest in STAGED_NAMES}
         runtime_staged = {filename[:-4] for filename in staged if repo_of.get(filename) in readable}
         virtual = set(self.PREP["buildClosure"]["unresolvedVirtualProviders"])
@@ -1221,6 +1222,37 @@ class SourceBuiltClamavPayload(unittest.TestCase):
             self.assertEqual(locked, {staged[filename][0]},
                              "%s is reused without matching the authenticated checksum the lock records for it"
                              % filename)
+
+    def test_each_python_install_pins_the_staged_wheel_revision(self):
+        """python-3.13-base depends on an UNVERSIONED py3-pip-wheel.
+
+        The staged fixed-pip index advertises r0, r1 and r2 while only r1 is staged, so an install that
+        names just the interpreter is free to select an unavailable revision. Both python installs must
+        name the staged revision, and the assertion below is written so that dropping that pin is
+        detected rather than silently accepted.
+        """
+        pin = "py3-pip-wheel=26.2.2-r1"
+
+        def pinned(statement):
+            return pin in statement
+
+        checked = 0
+        for stage_name in ("clamav-source-build", "runtime"):
+            for instruction in self.STAGES[stage_name]["instructions"]:
+                if "python-3.13=" in instruction or "py3.13-pip=" in instruction:
+                    self.assertTrue(pinned(instruction),
+                                    "%s installs python without pinning the staged wheel revision: %s"
+                                    % (stage_name, instruction[:200]))
+                    checked += 1
+                    self.assertFalse(pinned(instruction.replace(" " + pin, "")),
+                                     "the pin check does not detect a removed %s in %s" % (pin, stage_name))
+        self.assertGreaterEqual(checked, 2, "expected both python installs, found %d" % checked)
+
+        duplicated = "--repository /tmp/meri-native-repo --repository /tmp/meri-native-repo"
+        names = re.findall(r"--repository (\S+)", duplicated)
+        self.assertEqual(len(names), 2)
+        self.assertNotEqual(len(names), len(set(names)),
+                            "the no-duplicate repository guard cannot detect a repeated repository")
 
     def test_the_compiler_stage_cannot_read_the_fixed_trio_without_its_own_repository(self):
         """The compiler install must actually be able to read the fixed pip repository.

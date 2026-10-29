@@ -540,8 +540,10 @@ RUN --network=none \
       check-dev=0.15.2-r10 check=0.15.2-r10 linux-headers=7.3-r0 && \
     gcc --version | head -1 && cmake --version | head -1 && make --version | head -1 && pkg-config --version && \
     apk add --no-cache --no-network --repository /tmp/meri-native-runtime-repo --repository /tmp/meri-native-pip-repo --repositories-file /dev/null --update-cache \
-      python-3.13=3.13.16_git20261016-r2 python-3.13-base=3.13.16_git20261016-r2 && \
-    for pkg in python-3.13-3.13.16_git20261016-r2 python-3.13-base-3.13.16_git20261016-r2; do \
+      python-3.13=3.13.16_git20261016-r2 python-3.13-base=3.13.16_git20261016-r2 \
+      py3-pip-wheel=26.2.2-r1 && \
+    for pkg in python-3.13-3.13.16_git20261016-r2 python-3.13-base-3.13.16_git20261016-r2 \
+               py3-pip-wheel-26.2.2-r1; do \
       apk info -v | grep -qx "$pkg" || { echo "unexpected native interpreter package $pkg"; exit 1; }; done && \
     python3.13 --version && \
     python3.13 -c 'import sys; assert sys.version_info[:3] == (3, 13, 16), sys.version; print("interpreter", sys.version)' && \
@@ -681,10 +683,11 @@ RUN --mount=type=bind,from=native-repository,source=tmp/meri-native-repo,target=
     apk --version && \
     apk add --no-cache --no-network --repository /tmp/meri-native-repo --repository /tmp/meri-native-pip-repo --repositories-file /dev/null --update-cache \
       bash=5.3-r14 libatomic=16.2.0-r1 libstdc++=16.2.0-r1 python-3.13=3.13.16_git20261016-r2 \
-      py3.13-pip=26.2.2-r1 py3.13-pip-base=26.2.2-r1 \
+      py3.13-pip=26.2.2-r1 py3.13-pip-base=26.2.2-r1 py3-pip-wheel=26.2.2-r1 \
       glibc-2.44=2.44-r10 glibc-2.44-iconv=2.44-r10 glibc-2.44-locale-posix=2.44-r10 ld-linux-2.44=2.44-r10 libcrypt1-2.44=2.44-r10 && \
     test "$(python3.13 --version)" = 'Python 3.13.16' && \
     apk info -v | grep -qx glibc-2.44-iconv-2.44-r10 && \
+    apk info -v | grep -qx py3-pip-wheel-26.2.2-r1 && \
     test -x /usr/bin/iconv && \
     test -r /usr/lib/gconv/gconv-modules && \
     for module in SJIS UTF-16 UTF-32; do \
