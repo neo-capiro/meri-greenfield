@@ -685,6 +685,46 @@ class SourceBuiltClamavPayload(unittest.TestCase):
                           "the runtime loader assertion no longer expects %s" % library)
         self.assertNotIn("lib64", runtime, "a runtime loader assertion now accepts a lib64 layout")
 
+    def test_the_staged_clamav_payload_omits_the_rust_archive_and_strips_only_debug_sections(self):
+        """b915 built the complete image but exceeded the 3 GiB ceiling at 3,832,331,197 B.
+
+        The install carries libclamav_rust.a, a link-time archive whose static Rust code is already in libclamav.so,
+        and RelWithDebInfo leaves debug sections in the staged ELF files. The bounded staging step omits only that
+        archive and runs strip --strip-debug over the known ClamAV ELF executables and shared libraries, after
+        ctest/install and before the inventory and runtime COPY. It does not use strip-all/strip-unneeded, prune
+        packages, or strip a non-ELF file blindly.
+        """
+        build = " ".join(self.STAGES["clamav-source-build"]["instructions"])
+        install_at = build.index("DESTDIR=/tmp/meri-clamav-out cmake --install")
+        omit_at = build.index("rust_archive=/tmp/meri-clamav-out/usr/lib/libclamav_rust.a")
+        inventory_at = build.index("find usr/bin -type f -exec sha256sum")
+        self.assertLess(install_at, omit_at, "the archive omission is not after ctest/install")
+        self.assertLess(omit_at, inventory_at, "the archive omission is not before the inventory")
+        self.assertIn('rm -f "$rust_archive"', build,
+                      "the installed libclamav_rust.a is not omitted before the inventory/COPY")
+        self.assertIn("expected staged archive missing: $rust_archive", build,
+                      "a missing installed archive does not fail visibly")
+        self.assertIn('readelf -h "$f"', build,
+                      "the staged ELF files are not type-checked before stripping")
+        self.assertIn("unexpected staged file type: $f", build,
+                      "a non-ELF staged file does not fail with its path")
+        self.assertIn("strip --strip-debug", build,
+                      "the staged ELF files are not stripped of debug-only sections")
+        self.assertNotIn("strip --strip-all", build, "strip-all is not allowed")
+        self.assertNotIn("strip --strip-unneeded", build, "strip-unneeded is not allowed")
+        self.assertNotIn("rm -rf", build, "the staging step uses a broad recursive removal")
+        self.assertNotIn("-delete", build, "the staging step uses find -delete")
+        for path in ("/tmp/meri-clamav-out/usr/lib/libclamav.so.12.1.0",
+                     "/tmp/meri-clamav-out/usr/lib/libfreshclam.so.4.0.0",
+                     "/tmp/meri-clamav-out/usr/lib/libclamunrar.so.12.1.0",
+                     "/tmp/meri-clamav-out/usr/lib/libclammspack.so.0.8.0",
+                     "/tmp/meri-clamav-out/usr/bin/clamscan",
+                     "/tmp/meri-clamav-out/usr/bin/clamd"):
+            self.assertIn(path, build, "the staged strip set does not name %s" % path)
+        self.assertIn("MERI-NATIVE-SIZE", build, "the staged totals are not logged")
+        self.assertIn("MERI-NATIVE-ARCHIVE", build, "the archive omission is not logged")
+        self.assertIn("MERI-NATIVE-STRIP", build, "the per-file strip sizes are not logged")
+
     def test_the_clamav_sbin_binaries_install_into_bin_for_the_merged_layout(self):
         """The base image exposes /usr/sbin as a merged link, so sbin binaries must install into bin.
 
