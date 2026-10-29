@@ -2,6 +2,7 @@
 import {own,data,fail,uuid,subject,instant} from './boundary.mjs';
 import {createOperationLifetime} from '../../../packages/runtime/operation-lifetime.mjs';
 import {jsonBody} from '../action-application/http.mjs';
+import {officeCoreClient} from './office-core-client.mjs';
 
 const version='meri.conversation-retention.v1',unavailable=()=>Object.assign(Error('RETENTION_AUTHORITY_UNAVAILABLE'),{code:'RETENTION_AUTHORITY_UNAVAILABLE'});
 export function createCoreRetentionClient({origin,getServiceSecret,fetchImpl=fetch,now=Date.now,maxRequestMs=3000}){
@@ -14,7 +15,7 @@ export function createCoreRetentionClient({origin,getServiceSecret,fetchImpl=fet
   try{
    const secret=await life.run(signal=>getServiceSecret({signal}));
    if(typeof secret!=='string'||secret.length<16||secret.length>8192||/[\s\x00-\x1f\x7f]/u.test(secret))throw unavailable();
-   response=await life.run(signal=>fetchImpl(origin+'/api/internal/conversation-retention/'+operation,{
+   response=await life.run(signal=>fetchImpl(origin+'/api/internal/'+operation,{
     method:'POST',redirect:'error',credentials:'omit',cache:'no-store',signal,
     headers:{'content-type':'application/json',accept:'application/json','accept-encoding':'identity','x-internal-service-secret':secret},body:JSON.stringify(input)}));
    if(!(response instanceof Response)||response.status!==200||response.redirected||
@@ -26,7 +27,7 @@ export function createCoreRetentionClient({origin,getServiceSecret,fetchImpl=fet
  }
  async function read(raw,options){
   const s=subject(raw);if(s.kind!=='conversation'||!s.ownerActorId)throw unavailable();const started=now();
-  const r=own(await call('read',{tenantId:s.tenantId,conversationId:s.subjectId},options),
+  const r=own(await call('conversation-retention/read',{tenantId:s.tenantId,conversationId:s.subjectId},options),
    ['version','identity','status','revision','trashedAt','restoreUntil','trashRequestId','checkedAtMs']);
   const i=own(r.identity,['tenantId','conversationId','ownerActorId','bootstrapRequestId','scope']),scope=own(i.scope,['kind','clientId']);
   uuid(i.bootstrapRequestId);
@@ -45,11 +46,11 @@ export function createCoreRetentionClient({origin,getServiceSecret,fetchImpl=fet
   if(typeof trash?.revision!=='string'||!/^([1-9][0-9]{0,17})$/u.test(trash.revision)||
      !Number.isSafeInteger(trash.restoreUntilMs)||trash.restoreUntilMs>now())throw unavailable();
   const input={tenantId:s.tenantId,conversationId:s.subjectId,ownerActorId:s.ownerActorId,requestId:trash.requestId,revision:trash.revision,restoreUntilMs:trash.restoreUntilMs};
-  const r=own(await call(operation,input,options),['version','tenantId','conversationId','requestId','revision','erased',...(operation==='finalize'?['replayed']:[])]);
+  const r=own(await call('conversation-retention/'+operation,input,options),['version','tenantId','conversationId','requestId','revision','erased',...(operation==='finalize'?['replayed']:[])]);
   if(r.version!==version||r.tenantId!==input.tenantId||r.conversationId!==input.conversationId||r.requestId!==input.requestId||
      r.revision!==input.revision||typeof r.erased!=='boolean'||
      operation==='finalize'&&(r.erased!==true||typeof r.replayed!=='boolean'))throw unavailable();return r;
  }
- return Object.freeze({read,finalize:(raw,trash,options)=>completion('finalize',raw,trash,options),
+ return Object.freeze({read,office:officeCoreClient(call),finalize:(raw,trash,options)=>completion('finalize',raw,trash,options),
   verify:async(raw,trash,options)=>(await completion('verify',raw,trash,options)).erased});
 }
