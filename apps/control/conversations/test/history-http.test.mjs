@@ -504,3 +504,29 @@ for(const [scope,general] of [['client',false],['General',true]]){
   }finally{f.close();}
  });
 }
+
+test('export uses the canonical saved history and releases only prompts and folded assistant messages',async()=>{
+ const f=await fixture({lifecycle:true});try{
+  await f.running();
+  for(const [index,text]of ['Hello ','world'].entries())await f.store.append(binding,{eventId:id(9000+index),createdAt:new Date().toISOString(),type:'message.delta',data:{messageId:id(9010),text}},()=>{});
+  const response=await f.post('export',{conversationId:binding.conversationId});assert.equal(response.status,200);
+  const body=await response.json();assert.equal(body.turns[0].prompt,'Hello');assert.deepEqual(body.turns[0].messages,[{messageId:id(9010),text:'Hello world'}]);
+  assert.equal(body.throughSequence,5);assert.equal(f.state.coreReads.length,1);assert.deepEqual(f.state.memberCredentialReads,['native','native']);
+  assert.equal(response.headers.get('cache-control').includes('no-store'),true);
+ }finally{f.close();}
+});
+for(const [name,change]of [
+ ['membership revocation',f=>{f.state.onMembershipRead=n=>{if(n===2)f.state.member.status='inactive';};}],
+ ['Core scope revocation',f=>{f.state.onHistoryRead=()=>{f.state.coreError=new ProductError('ACCESS_DENIED');};}],
+ ['retention suppression after Core read',f=>{f.state.onCoreRead=()=>{f.state.suppressed=true;};}],
+])test('export withholds all content after '+name,async()=>{
+ const f=await fixture();try{await f.service.submit({credential:f.credential,input:f.input});change(f);
+  const response=await f.post('export',{conversationId:binding.conversationId});assert.notEqual(response.status,200);const body=await response.json();assert.ok(body.error);assert.equal('turns' in body,false);
+ }finally{f.close();}
+});
+test('export preserves canonical resume custody and one logical prompt',async()=>{
+ const f=await fixture({lifecycle:true});try{const {receipt}=await admitted(f,'resume',{imageDigest:'sha256:'+'f'.repeat(64)});
+  const response=await f.post('export',{conversationId:receipt.targetBinding.conversationId});assert.equal(response.status,200);
+  const body=await response.json();assert.equal(body.turns.filter(t=>t.prompt!==null).length,1);assert.ok(body.turns.length>=2);
+ }finally{f.close();}
+});

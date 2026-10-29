@@ -7,8 +7,8 @@ import {PRODUCT_ERROR_STATUSES} from '../../../apps/control/product-access/http.
 import {id,bytes,binding,conversation,transcript,resumed} from './conversation-history-fixture.mjs';
 const input={conversationId:binding.conversationId};
 test('metadata supplies exact fixed transport limits, native auth, versions and statuses',()=>{
- assert.equal(metadata.packageVersion,'0.1.15');assert.equal(metadata.historyVersion,'1.4.0');assert.equal(metadata.limits.responseBytes,2097152);assert.equal(metadata.limits.requestBytes,131072);
- assert.deepEqual(Object.values(metadata.routes).map(v=>v.path),['/api/conversations/list','/api/conversations/transcript','/api/conversations/next-turn','/api/conversations/summaries','/api/conversations/manage']);assert.equal(metadata.authentication.serverSideCredentialOnly,true);assert.equal(metadata.authentication.validationGrantsAuthority,false);
+ assert.equal(metadata.packageVersion,'0.1.15');assert.equal(metadata.historyVersion,'1.5.0');assert.equal(metadata.limits.responseBytes,2097152);assert.equal(metadata.limits.requestBytes,131072);
+ assert.deepEqual(Object.values(metadata.routes).map(v=>v.path),['/api/conversations/export','/api/conversations/list','/api/conversations/transcript','/api/conversations/next-turn','/api/conversations/summaries','/api/conversations/manage']);assert.equal(metadata.authentication.serverSideCredentialOnly,true);assert.equal(metadata.authentication.validationGrantsAuthority,false);
  for(const[code,status]of Object.entries(PRODUCT_ERROR_STATUSES))assert.deepEqual(metadata.errorStatuses[code],[status]);assert.ok(Object.isFrozen(metadata.limits));
 });
 for(const [route,raw]of [['list',{}],['list',{before:null,limit:1}],['transcript',input],['nextTurn',{...input,sourceRunId:binding.runId}]])test(`shared Node/public ${route} request shape and normalization agree`,()=>{

@@ -6,7 +6,7 @@ import {assertNativeSourceEventSemantics} from '../conversation-sources/semantic
 import {assertUploadSourceEventSemantics} from '../conversation-sources/upload-semantics.mjs';
 /** Shared post-schema correlation and request normalization; receives parsed/snapshotted JSON only. */
 import canonicalize from 'canonicalize';
-import {MANAGEMENT_VERSION} from './protocol.mjs';
+import {MANAGEMENT_VERSION,conversationHistoryMetadata} from './protocol.mjs';
 export class ConversationHistoryResponseError extends Error{constructor(code){super(code);this.name='ConversationHistoryResponseError';this.code=code;}}
 export const fail=code=>{throw new ConversationHistoryResponseError(code);};
 const same=(a,b)=>canonicalize(a)===canonicalize(b),uuid=v=>typeof v==='string'&&/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/u.test(v);
@@ -14,6 +14,7 @@ const integer=(v,min,max=Number.MAX_SAFE_INTEGER)=>Number.isSafeInteger(v)&&v>=m
 function closed(value,required,optional,code){if(!value||typeof value!=='object'||Array.isArray(value)||required.some(k=>!Object.hasOwn(value,k))||Object.keys(value).some(k=>![...required,...optional].includes(k)))fail(code);return value;}
 const page=value=>{const n=value===undefined?50:value;if(!integer(n,1,100))fail('CONVERSATION_CURSOR_INVALID');return n;};
 export function normalizeHistoryRequest(route,value){
+ if(route==='export'){const v=closed(value,['conversationId'],[],'CONVERSATION_REQUEST_INVALID');if(!uuid(v.conversationId))fail('CONVERSATION_REQUEST_INVALID');return v;}
  if(route==='summaries'){
   const v=closed(value,['version','status','title','before'],[],'CONVERSATION_REQUEST_INVALID');
   if(v.version!==MANAGEMENT_VERSION||!['active','archived','trashed'].includes(v.status)||typeof v.title!=='string'||v.title!==v.title.trim()||v.title.length>200)fail('CONVERSATION_REQUEST_INVALID');
@@ -46,6 +47,18 @@ function conversation(c){if(c.scopes.some(s=>s.tenantId!==c.owner.tenantId||s.po
 function run(r,c){if(r.binding.tenantId!==c.owner.tenantId||r.binding.actorId!==c.owner.actorId||r.binding.conversationId!==c.conversationId||r.policyRevision!==c.policyRevision||!same(r.scopes,c.scopes))fail('RUN_MISMATCH');}
 function target(source,target){if(target.tenantId!==source.tenantId||target.actorId!==source.actorId||target.conversationId!==source.conversationId||['runId','attemptId','workerId'].some(k=>target[k]===source[k])||target.writerFence!==source.writerFence+1)fail('TARGET_MISMATCH');}
 export function assertHistoryResponseSemantics(route,request,result){
+ if(route==='export'){
+  conversation(result.conversation);if(result.conversation.conversationId!==request.conversationId)fail('REQUEST_MISMATCH');
+  const limits=conversationHistoryMetadata.export;
+  if(!iso(result.exportedAt)||!iso(result.expiresAt)||Date.parse(result.expiresAt)-Date.parse(result.exportedAt)!==limits.lifetimeMs||result.throughSequence>limits.events)fail('EXPORT_MISMATCH');
+  const runs=new Set();let messages=0,bytes=0;const encoder=new TextEncoder();
+  for(const turn of result.turns){
+   if(runs.has(turn.runId))fail('EXPORT_MISMATCH');runs.add(turn.runId);
+   bytes+=turn.prompt===null?0:encoder.encode(turn.prompt).byteLength;
+   const ids=new Set();for(const message of turn.messages){if(ids.has(message.messageId))fail('EXPORT_MISMATCH');ids.add(message.messageId);messages++;bytes+=encoder.encode(message.text).byteLength;}
+  }
+  if(messages>limits.messages||bytes>limits.textBytes)fail('EXPORT_MISMATCH');return result;
+ }
  if(route==='summaries'){
   let previous;const ids=new Set();for(const c of result.conversations){managed(c);if(c.status!==request.status||ids.has(c.conversationId)||previous&&summaryOrder(c,previous)>=0||request.before&&summaryOrder(c,request.before)>=0)fail('DISCOVERY_MISMATCH');ids.add(c.conversationId);previous=c;}
   if(result.nextBefore&&(!previous||!same(result.nextBefore,{updatedAt:previous.updatedAt,conversationId:previous.conversationId})))fail('CURSOR_MISMATCH');return result;
