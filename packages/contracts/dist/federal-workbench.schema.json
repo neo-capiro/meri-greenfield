@@ -1,0 +1,1656 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:meri:federal-workbench:1",
+  "title": "Federal workbench",
+  "$defs": {
+    "FederalCompilerSource": {
+      "$ref": "#/$defs/FederalDraftCompilerSource_449cfb6a"
+    },
+    "FederalSelection": {
+      "type": "object",
+      "properties": {
+        "versionId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "expectedArtifactSha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "operations": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 64,
+          "items": {
+            "$ref": "#/$defs/FederalDraftOperation_ecfa206f"
+          }
+        }
+      },
+      "required": [
+        "versionId",
+        "expectedArtifactSha256",
+        "operations"
+      ],
+      "additionalProperties": false
+    },
+    "FederalSourceArtifact": {
+      "type": "object",
+      "properties": {
+        "versionId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "specSha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        }
+      },
+      "required": [
+        "versionId",
+        "sha256",
+        "specSha256"
+      ],
+      "additionalProperties": false
+    },
+    "FederalPrepareRequest": {
+      "type": "object",
+      "properties": {
+        "selection": {
+          "$ref": "#/$defs/FederalSelection"
+        }
+      },
+      "required": [
+        "selection"
+      ],
+      "additionalProperties": false
+    },
+    "FederalLoadRequest": {
+      "type": "object",
+      "properties": {
+        "versionId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "expectedArtifactSha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        }
+      },
+      "required": [
+        "versionId",
+        "expectedArtifactSha256"
+      ],
+      "additionalProperties": false
+    },
+    "FederalPublishRequest": {
+      "type": "object",
+      "properties": {
+        "selection": {
+          "$ref": "#/$defs/FederalSelection"
+        },
+        "revisionSha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "output": {
+          "enum": [
+            "draft",
+            "operative",
+            "consolidated",
+            "redline"
+          ]
+        },
+        "deliveryId": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_.:@/-]{1,255}$"
+        },
+        "baseVersionId": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "uuid"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "baseRevisionSha256": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "selection",
+        "revisionSha256",
+        "output",
+        "deliveryId",
+        "baseVersionId",
+        "baseRevisionSha256"
+      ],
+      "additionalProperties": false
+    },
+    "FederalRetainedPreparation": {
+      "type": "object",
+      "properties": {
+        "sourceArtifact": {
+          "$ref": "#/$defs/FederalSourceArtifact"
+        },
+        "draft": {
+          "$ref": "#/$defs/FederalDraftCompilation_66ff9248"
+        },
+        "revisionSha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "approval": {
+          "const": "unapproved"
+        }
+      },
+      "required": [
+        "sourceArtifact",
+        "draft",
+        "revisionSha256",
+        "approval"
+      ],
+      "additionalProperties": false
+    },
+    "FederalReview": {
+      "type": "object",
+      "properties": {
+        "schema": {
+          "const": "meri.federal-review.v1"
+        },
+        "selection": {
+          "$ref": "#/$defs/FederalSelection"
+        },
+        "prepared": {
+          "$ref": "#/$defs/FederalRetainedPreparation"
+        },
+        "savedDraft": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ArtifactVersion_7f9c56fa"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "schema",
+        "selection",
+        "prepared",
+        "savedDraft"
+      ],
+      "additionalProperties": false
+    },
+    "FederalPublication": {
+      "type": "object",
+      "properties": {
+        "schema": {
+          "const": "meri.federal-review.v1"
+        },
+        "sourceArtifact": {
+          "$ref": "#/$defs/FederalSourceArtifact"
+        },
+        "revisionSha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "output": {
+          "enum": [
+            "draft",
+            "operative",
+            "consolidated",
+            "redline"
+          ]
+        },
+        "review": {
+          "enum": [
+            "unapproved",
+            "confirmed-for-export"
+          ]
+        },
+        "publication": {
+          "$ref": "#/$defs/ArtifactCreatedResult_183a755e"
+        }
+      },
+      "required": [
+        "schema",
+        "sourceArtifact",
+        "revisionSha256",
+        "output",
+        "review",
+        "publication"
+      ],
+      "additionalProperties": false
+    },
+    "FederalError": {
+      "type": "object",
+      "properties": {
+        "error": {
+          "type": "object",
+          "properties": {
+            "code": {
+              "type": "string",
+              "pattern": "^[A-Z_]{1,80}$"
+            },
+            "outcome": {
+              "enum": [
+                "NOT_DISPATCHED",
+                "READ_UNAVAILABLE",
+                "UNKNOWN",
+                "RESULT_NOT_RELEASED"
+              ]
+            }
+          },
+          "required": [
+            "code",
+            "outcome"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "error"
+      ],
+      "additionalProperties": false
+    },
+    "FederalDraftCompilerSource_449cfb6a": {
+      "type": "object",
+      "properties": {
+        "documentId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 512
+        },
+        "publisher": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 512
+        },
+        "sourceVersion": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 512
+        },
+        "sourceUrl": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 2048
+        },
+        "publishedAt": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "date"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "parserVersion": {
+          "const": "federal-plain-text/1"
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "text": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 131072
+        },
+        "coverage": {
+          "type": "object",
+          "properties": {
+            "complete": {
+              "type": "boolean"
+            },
+            "limitations": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 1000
+              },
+              "minItems": 1,
+              "maxItems": 32
+            }
+          },
+          "required": [
+            "complete",
+            "limitations"
+          ],
+          "additionalProperties": false
+        },
+        "scopes": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]{0,127}$"
+              },
+              "label": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 512
+              },
+              "start": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "end": {
+                "type": "integer",
+                "minimum": 1
+              },
+              "sha256": {
+                "type": "string",
+                "pattern": "^[a-f0-9]{64}$"
+              }
+            },
+            "required": [
+              "id",
+              "label",
+              "start",
+              "end",
+              "sha256"
+            ],
+            "additionalProperties": false
+          },
+          "minItems": 1,
+          "maxItems": 128
+        }
+      },
+      "required": [
+        "documentId",
+        "publisher",
+        "sourceVersion",
+        "sourceUrl",
+        "publishedAt",
+        "parserVersion",
+        "sha256",
+        "text",
+        "coverage",
+        "scopes"
+      ],
+      "additionalProperties": false
+    },
+    "FederalDraftOperation_ecfa206f": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]{0,127}$"
+        },
+        "kind": {
+          "enum": [
+            "replace",
+            "insert",
+            "delete"
+          ]
+        },
+        "scopeId": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]{0,127}$"
+        },
+        "expectedScopeSha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "expectedText": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 16384
+        },
+        "expectedTextSha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "dependsOn": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]{0,127}$"
+          },
+          "minItems": 0,
+          "maxItems": 64
+        },
+        "text": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 16384
+        },
+        "position": {
+          "enum": [
+            "before",
+            "after"
+          ]
+        }
+      },
+      "required": [
+        "id",
+        "kind",
+        "scopeId",
+        "expectedScopeSha256",
+        "expectedText",
+        "expectedTextSha256",
+        "dependsOn"
+      ],
+      "additionalProperties": false
+    },
+    "FederalDraftSegment_e752af1d": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "enum": [
+            "unchanged",
+            "delete",
+            "insert"
+          ]
+        },
+        "text": {
+          "type": "string",
+          "minLength": 0,
+          "maxLength": 131072
+        }
+      },
+      "required": [
+        "kind",
+        "text"
+      ],
+      "additionalProperties": false
+    },
+    "FederalDraftCompilation_66ff9248": {
+      "type": "object",
+      "properties": {
+        "parserVersion": {
+          "const": "federal-plain-text/1"
+        },
+        "source": {
+          "$ref": "#/$defs/FederalDraftCompilerSource_449cfb6a"
+        },
+        "operations": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/FederalDraftOperation_ecfa206f"
+          },
+          "minItems": 1,
+          "maxItems": 64
+        },
+        "outputs": {
+          "type": "object",
+          "properties": {
+            "operative": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 1048576
+            },
+            "consolidated": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 131072
+            },
+            "redline": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 1048576
+            },
+            "segments": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/FederalDraftSegment_e752af1d"
+              },
+              "minItems": 1,
+              "maxItems": 512
+            }
+          },
+          "required": [
+            "operative",
+            "consolidated",
+            "redline",
+            "segments"
+          ],
+          "additionalProperties": false
+        },
+        "findings": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "category": {
+                "enum": [
+                  "source-integrity",
+                  "exact-target",
+                  "numbering",
+                  "cross-references",
+                  "arithmetic",
+                  "substantive-law"
+                ]
+              },
+              "status": {
+                "enum": [
+                  "passed",
+                  "unresolved"
+                ]
+              },
+              "location": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 512
+              },
+              "severity": {
+                "enum": [
+                  "info",
+                  "review-required"
+                ]
+              },
+              "operationId": {
+                "type": "string",
+                "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]{0,127}$"
+              }
+            },
+            "required": [
+              "category",
+              "status",
+              "location",
+              "severity"
+            ],
+            "additionalProperties": false
+          },
+          "minItems": 1,
+          "maxItems": 70
+        },
+        "outputHashes": {
+          "type": "object",
+          "properties": {
+            "operative": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            "consolidated": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            "redline": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            }
+          },
+          "required": [
+            "operative",
+            "consolidated",
+            "redline"
+          ],
+          "additionalProperties": false
+        },
+        "revisionSha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "approval": {
+          "const": "unapproved"
+        }
+      },
+      "required": [
+        "parserVersion",
+        "source",
+        "operations",
+        "outputs",
+        "findings",
+        "outputHashes",
+        "revisionSha256",
+        "approval"
+      ],
+      "additionalProperties": false
+    },
+    "RunBinding_84f2304c": {
+      "type": "object",
+      "properties": {
+        "tenantId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "actorId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "conversationId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "runId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "attemptId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "workerId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "writerFence": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        }
+      },
+      "required": [
+        "tenantId",
+        "actorId",
+        "conversationId",
+        "runId",
+        "attemptId",
+        "workerId",
+        "writerFence"
+      ],
+      "additionalProperties": false
+    },
+    "Scope_f882edb5": {
+      "type": "object",
+      "properties": {
+        "tenantId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "kind": {
+          "type": "string",
+          "enum": [
+            "tenant",
+            "client",
+            "mailbox",
+            "memory",
+            "document",
+            "private-user",
+            "public"
+          ]
+        },
+        "resourceId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        },
+        "policyRevision": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        }
+      },
+      "required": [
+        "tenantId",
+        "kind",
+        "resourceId",
+        "policyRevision"
+      ],
+      "additionalProperties": false
+    },
+    "ObjectReference_a099bd1c": {
+      "type": "object",
+      "properties": {
+        "objectId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "versionId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "bytes": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "scopes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Scope_f882edb5"
+          },
+          "minItems": 1,
+          "uniqueItems": true
+        }
+      },
+      "required": [
+        "objectId",
+        "versionId",
+        "sha256",
+        "bytes",
+        "scopes"
+      ],
+      "additionalProperties": false
+    },
+    "SourceEvidence_d9008775": {
+      "type": "object",
+      "properties": {
+        "sourceId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "recordId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "sourceVersionId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "observedAt": {
+          "type": "string",
+          "format": "date-time",
+          "pattern": "Z$"
+        },
+        "sourceUpdatedAt": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "date-time",
+              "pattern": "Z$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "citationId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "scopes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Scope_f882edb5"
+          },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "contentSha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "authorizationDecisionId": {
+          "type": "string",
+          "format": "uuid"
+        }
+      },
+      "required": [
+        "sourceId",
+        "recordId",
+        "sourceVersionId",
+        "observedAt",
+        "sourceUpdatedAt",
+        "citationId",
+        "scopes",
+        "contentSha256",
+        "authorizationDecisionId"
+      ],
+      "additionalProperties": false
+    },
+    "ArtifactVersion_d54b8ac9": {
+      "type": "object",
+      "properties": {
+        "contractVersion": {
+          "const": "0.1.0"
+        },
+        "artifactId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "versionId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "parentVersionId": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "uuid"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "binding": {
+          "$ref": "#/$defs/RunBinding_84f2304c"
+        },
+        "object": {
+          "$ref": "#/$defs/ObjectReference_a099bd1c"
+        },
+        "filename": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 255
+        },
+        "mimeType": {
+          "type": "string",
+          "minLength": 1
+        },
+        "scopes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Scope_f882edb5"
+          },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "evidence": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/SourceEvidence_d9008775"
+          }
+        },
+        "generationStatus": {
+          "type": "string",
+          "enum": [
+            "draft",
+            "validated",
+            "published",
+            "failed"
+          ]
+        },
+        "previewStatus": {
+          "type": "string",
+          "enum": [
+            "pending",
+            "validated",
+            "unsupported",
+            "failed"
+          ]
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "pattern": "Z$"
+        }
+      },
+      "required": [
+        "contractVersion",
+        "artifactId",
+        "versionId",
+        "parentVersionId",
+        "binding",
+        "object",
+        "filename",
+        "mimeType",
+        "scopes",
+        "evidence",
+        "generationStatus",
+        "previewStatus",
+        "createdAt"
+      ],
+      "additionalProperties": false
+    },
+    "artifactId_cc9f299e": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "versionId_e4470a54": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "parentVersionId_116435a5": {
+      "anyOf": [
+        {
+          "type": "string",
+          "format": "uuid"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "binding_ad882dea": {
+      "$ref": "#/$defs/RunBinding_84f2304c"
+    },
+    "object_a3973f47": {
+      "$ref": "#/$defs/ObjectReference_a099bd1c"
+    },
+    "filename_f09421cc": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 255
+    },
+    "mimeType_0837eb6f": {
+      "type": "string",
+      "minLength": 1
+    },
+    "scopes_3d363e5b": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/Scope_f882edb5"
+      },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "sourceId_fa5f0f45": {
+      "type": "string",
+      "minLength": 1
+    },
+    "recordId_1173860d": {
+      "type": "string",
+      "minLength": 1
+    },
+    "sourceVersionId_a5aa4b63": {
+      "type": "string",
+      "minLength": 1
+    },
+    "observedAt_fc731620": {
+      "type": "string",
+      "format": "date-time",
+      "pattern": "Z$"
+    },
+    "sourceUpdatedAt_4a76a197": {
+      "anyOf": [
+        {
+          "type": "string",
+          "format": "date-time",
+          "pattern": "Z$"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "citationId_ae4e145b": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "scopes_78e0eb49": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/Scope_f882edb5"
+      },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "contentSha256_6b70d9f7": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "NativeSourceEvidence_cb9e6ba4": {
+      "type": "object",
+      "properties": {
+        "sourceId": {
+          "$ref": "#/$defs/sourceId_fa5f0f45"
+        },
+        "recordId": {
+          "$ref": "#/$defs/recordId_1173860d"
+        },
+        "sourceVersionId": {
+          "$ref": "#/$defs/sourceVersionId_a5aa4b63"
+        },
+        "observedAt": {
+          "$ref": "#/$defs/observedAt_fc731620"
+        },
+        "sourceUpdatedAt": {
+          "$ref": "#/$defs/sourceUpdatedAt_4a76a197"
+        },
+        "citationId": {
+          "$ref": "#/$defs/citationId_ae4e145b"
+        },
+        "scopes": {
+          "$ref": "#/$defs/scopes_78e0eb49"
+        },
+        "contentSha256": {
+          "$ref": "#/$defs/contentSha256_6b70d9f7"
+        },
+        "binding": {
+          "$ref": "#/$defs/RunBinding_84f2304c"
+        }
+      },
+      "required": [
+        "sourceId",
+        "recordId",
+        "sourceVersionId",
+        "observedAt",
+        "sourceUpdatedAt",
+        "citationId",
+        "scopes",
+        "contentSha256",
+        "binding"
+      ],
+      "additionalProperties": false
+    },
+    "generationStatus_0b8d37a9": {
+      "type": "string",
+      "enum": [
+        "draft",
+        "validated",
+        "published",
+        "failed"
+      ]
+    },
+    "previewStatus_fe162158": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "validated",
+        "unsupported",
+        "failed"
+      ]
+    },
+    "createdAt_38444d79": {
+      "type": "string",
+      "format": "date-time",
+      "pattern": "Z$"
+    },
+    "NativeArtifactVersion_ff97d150": {
+      "type": "object",
+      "properties": {
+        "contractVersion": {
+          "const": "0.2.0"
+        },
+        "artifactId": {
+          "$ref": "#/$defs/artifactId_cc9f299e"
+        },
+        "versionId": {
+          "$ref": "#/$defs/versionId_e4470a54"
+        },
+        "parentVersionId": {
+          "$ref": "#/$defs/parentVersionId_116435a5"
+        },
+        "binding": {
+          "$ref": "#/$defs/binding_ad882dea"
+        },
+        "object": {
+          "$ref": "#/$defs/object_a3973f47"
+        },
+        "filename": {
+          "$ref": "#/$defs/filename_f09421cc"
+        },
+        "mimeType": {
+          "$ref": "#/$defs/mimeType_0837eb6f"
+        },
+        "scopes": {
+          "$ref": "#/$defs/scopes_3d363e5b"
+        },
+        "evidence": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/NativeSourceEvidence_cb9e6ba4"
+          }
+        },
+        "generationStatus": {
+          "$ref": "#/$defs/generationStatus_0b8d37a9"
+        },
+        "previewStatus": {
+          "$ref": "#/$defs/previewStatus_fe162158"
+        },
+        "createdAt": {
+          "$ref": "#/$defs/createdAt_38444d79"
+        }
+      },
+      "required": [
+        "contractVersion",
+        "artifactId",
+        "versionId",
+        "parentVersionId",
+        "binding",
+        "object",
+        "filename",
+        "mimeType",
+        "scopes",
+        "evidence",
+        "generationStatus",
+        "previewStatus",
+        "createdAt"
+      ],
+      "additionalProperties": false
+    },
+    "ArtifactVersion_7f9c56fa": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/ArtifactVersion_d54b8ac9"
+        },
+        {
+          "$ref": "#/$defs/NativeArtifactVersion_ff97d150"
+        }
+      ]
+    },
+    "ArtifactInspection_3ae45145": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "sha256": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            "bytes": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "format": {
+              "const": "txt"
+            },
+            "nativeOpened": {
+              "const": false
+            },
+            "rendered": {
+              "const": false
+            },
+            "recalculated": {
+              "const": false
+            },
+            "members": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "maxLength": 500
+              },
+              "maxItems": 5000
+            },
+            "details": {
+              "type": "object",
+              "properties": {
+                "encoding": {
+                  "const": "UTF-8"
+                },
+                "whitespace": {
+                  "const": "unchanged"
+                }
+              },
+              "required": [
+                "encoding",
+                "whitespace"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "sha256",
+            "bytes",
+            "format",
+            "nativeOpened",
+            "rendered",
+            "recalculated",
+            "members",
+            "details"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "sha256": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            "bytes": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "format": {
+              "const": "docx"
+            },
+            "nativeOpened": {
+              "const": false
+            },
+            "rendered": {
+              "const": false
+            },
+            "recalculated": {
+              "const": false
+            },
+            "members": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "maxLength": 500
+              },
+              "maxItems": 5000
+            },
+            "details": {
+              "type": "object",
+              "properties": {
+                "paragraphs": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9007199254740991
+                },
+                "tables": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9007199254740991
+                },
+                "pictures": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9007199254740991
+                }
+              },
+              "required": [
+                "paragraphs",
+                "tables",
+                "pictures"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "sha256",
+            "bytes",
+            "format",
+            "nativeOpened",
+            "rendered",
+            "recalculated",
+            "members",
+            "details"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "sha256": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            "bytes": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "format": {
+              "const": "xlsx"
+            },
+            "nativeOpened": {
+              "const": false
+            },
+            "rendered": {
+              "const": false
+            },
+            "recalculated": {
+              "const": false
+            },
+            "members": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "maxLength": 500
+              },
+              "maxItems": 5000
+            },
+            "details": {
+              "type": "object",
+              "properties": {
+                "sheets": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "maxItems": 30
+                },
+                "formulas": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9007199254740991
+                },
+                "formulaCache": {
+                  "enum": [
+                    "unverified-zero-placeholder; recalculation required",
+                    "removed/unverified; recalculation required"
+                  ]
+                },
+                "revisionMethod": {
+                  "const": "openpyxl typed-cell replacement"
+                }
+              },
+              "required": [
+                "sheets",
+                "formulas",
+                "formulaCache"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "sha256",
+            "bytes",
+            "format",
+            "nativeOpened",
+            "rendered",
+            "recalculated",
+            "members",
+            "details"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "sha256": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            "bytes": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "format": {
+              "const": "pptx"
+            },
+            "nativeOpened": {
+              "const": false
+            },
+            "rendered": {
+              "const": false
+            },
+            "recalculated": {
+              "const": false
+            },
+            "members": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "maxLength": 500
+              },
+              "maxItems": 5000
+            },
+            "details": {
+              "type": "object",
+              "properties": {
+                "slides": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9007199254740991
+                },
+                "editable": {
+                  "const": true
+                },
+                "visualInspection": {
+                  "const": "pending"
+                }
+              },
+              "required": [
+                "slides",
+                "editable",
+                "visualInspection"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "sha256",
+            "bytes",
+            "format",
+            "nativeOpened",
+            "rendered",
+            "recalculated",
+            "members",
+            "details"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "sha256": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            "bytes": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "format": {
+              "const": "zip"
+            },
+            "nativeOpened": {
+              "const": false
+            },
+            "rendered": {
+              "const": false
+            },
+            "recalculated": {
+              "const": false
+            },
+            "members": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "maxLength": 500
+              },
+              "maxItems": 5000
+            },
+            "details": {
+              "type": "object",
+              "properties": {
+                "rows": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9007199254740991
+                },
+                "columns": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "maxItems": 200
+                },
+                "chart": {
+                  "type": "boolean"
+                }
+              },
+              "required": [
+                "rows",
+                "columns",
+                "chart"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "sha256",
+            "bytes",
+            "format",
+            "nativeOpened",
+            "rendered",
+            "recalculated",
+            "members",
+            "details"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "sha256": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            "bytes": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "format": {
+              "const": "pdf"
+            },
+            "nativeOpened": {
+              "const": false
+            },
+            "rendered": {
+              "const": false
+            },
+            "recalculated": {
+              "const": false
+            },
+            "members": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "maxLength": 500
+              },
+              "maxItems": 5000
+            },
+            "details": {
+              "type": "object",
+              "properties": {
+                "conversionCompleted": {
+                  "const": true
+                },
+                "renderInspection": {
+                  "const": "pending"
+                },
+                "sourceDocxSha256": {
+                  "type": "string",
+                  "pattern": "^[a-f0-9]{64}$"
+                }
+              },
+              "required": [
+                "conversionCompleted",
+                "renderInspection",
+                "sourceDocxSha256"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "sha256",
+            "bytes",
+            "format",
+            "nativeOpened",
+            "rendered",
+            "recalculated",
+            "members",
+            "details"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "LegacyArtifactExecution_4afe1663": {
+      "type": "object",
+      "properties": {
+        "requestSha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "authorizationReceiptId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "budgetTicketId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "objectCommitted": {
+          "const": true
+        },
+        "versionCommitted": {
+          "const": true
+        },
+        "nativeQualified": {
+          "const": false
+        }
+      },
+      "required": [
+        "requestSha256",
+        "authorizationReceiptId",
+        "budgetTicketId",
+        "objectCommitted",
+        "versionCommitted",
+        "nativeQualified"
+      ],
+      "additionalProperties": false
+    },
+    "NativeArtifactExecution_26204926": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "const": "native-document"
+        },
+        "invocationId": {
+          "type": "string",
+          "pattern": "^sdk:[a-f0-9]{64}$"
+        },
+        "requestSha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "authorizationReceiptId": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$"
+        },
+        "objectCommitted": {
+          "const": true
+        },
+        "versionCommitted": {
+          "const": true
+        },
+        "nativeQualified": {
+          "const": false
+        }
+      },
+      "required": [
+        "kind",
+        "invocationId",
+        "requestSha256",
+        "authorizationReceiptId",
+        "objectCommitted",
+        "versionCommitted",
+        "nativeQualified"
+      ],
+      "additionalProperties": false
+    },
+    "ArtifactExecution_28c65a3e": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/LegacyArtifactExecution_4afe1663"
+        },
+        {
+          "$ref": "#/$defs/NativeArtifactExecution_26204926"
+        }
+      ]
+    },
+    "ArtifactCreatedResult_183a755e": {
+      "type": "object",
+      "properties": {
+        "version": {
+          "$ref": "#/$defs/ArtifactVersion_7f9c56fa"
+        },
+        "inspection": {
+          "$ref": "#/$defs/ArtifactInspection_3ae45145"
+        },
+        "execution": {
+          "$ref": "#/$defs/ArtifactExecution_28c65a3e"
+        }
+      },
+      "required": [
+        "version",
+        "inspection",
+        "execution"
+      ],
+      "additionalProperties": false
+    }
+  }
+}
