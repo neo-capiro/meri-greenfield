@@ -55,6 +55,9 @@ export function createAttendedOffice({drafts,launch,generation,now}){
   else if(route==='publish'){
    const publisher=createOfficeDraftPublisher({drafts,artifacts,publisherFor:access.publisherFor,validators:access.validators,generation,now});
    result=await publisher.publish({draftId:q.draftId,sequence:q.sequence,sha256:q.sha256},{context,selectedClientId,signal:life.signal});
+   const publication=await life.run(signal=>artifacts.inspect(result.publication.version.versionId,context,{signal}));
+   if(hash(publication.version)!==hash(result.publication.version))fail('EDITOR_PUBLICATION_MISMATCH');
+   result={draft:result.draft,publication};
   }
   // Each effect is followed by current Core artifact authority and native session
   // checks. Final generation is the last await, before any token/result release.

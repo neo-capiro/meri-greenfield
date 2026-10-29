@@ -1,0 +1,48 @@
+{
+  "contractVersion": "1.0.0",
+  "schemaId": "meri.office-application/1",
+  "sources": [
+    {
+      "path": "artifacts-0.2/artifact-formats.mjs",
+      "sha256": "4a2e725eb5bb628a66ae06f471741ec1fbb6ce1eb6e3ed842050393d3ab39334",
+      "bytes": 2579
+    },
+    {
+      "path": "dist/document-access-application.mjs",
+      "sha256": "17c1502b5fbc39dd1200ae338bf82a1f7709fe74e70330acd323463816c5d5d8",
+      "bytes": 593770
+    },
+    {
+      "path": "document-application/boundary.mjs",
+      "sha256": "3ea0f93063702f161970b8cf1aef5d4a7226400d541a2ae6cf7ae891a3fe0481",
+      "bytes": 2674
+    },
+    {
+      "path": "generate-office.mjs",
+      "sha256": "ddfd88481a8ad038930f083fad61d40a4a54bd5b7f267c5962969238516fb477",
+      "bytes": 2935
+    },
+    {
+      "path": "node_modules/canonicalize/lib/canonicalize.js",
+      "sha256": "c1d0195af2a0748454b06af8f218e5c90415c19d39154d0058fee8229c12d859",
+      "bytes": 7145
+    },
+    {
+      "path": "office-application/api.d.ts",
+      "sha256": "92beccb71a4812159dd23481b7f699e194bc3b768c1cb51398fb28a441e6d515",
+      "bytes": 4423
+    },
+    {
+      "path": "office-application/receive.mjs",
+      "sha256": "37b2eeac5dfd34947e8f64ce0705c666dc0e31c6668918b492ac3fbce33d094d",
+      "bytes": 8744
+    }
+  ],
+  "semantics": {
+    "save": "WOPI private draft only; never publication",
+    "publish": "explicit exact draft sequence and hash",
+    "authority": "current Core/native session; browser validation grants none",
+    "formulaCache": "edited XLSX preserves editor-provided/unverified label",
+    "tokens": "launch and renew only; POST form; never persist"
+  }
+}
