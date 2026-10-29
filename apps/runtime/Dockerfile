@@ -500,7 +500,20 @@ COPY --from=native-repo-4 /tmp/meri-native-repo /tmp/meri-native-repo
 # adds no package. The CMake invocation pins CMAKE_INSTALL_PREFIX=/usr and, beside it, CMAKE_INSTALL_LIBDIR=lib: upstream
 # GNUInstallDirs derives libclamav/libfreshclam/libclamunrar's destination and their RPATH from that pair, so the
 # install lands in /usr/lib as the inventory, provenance and final loader checks expect, and cannot follow a
-# distribution default to lib64.
+# distribution default to lib64. ClamAV's CMake does not read GNUInstallDirs' CMAKE_INSTALL_SYSCONFDIR: CONFDIR is
+# ${CMAKE_INSTALL_PREFIX}/${APP_CONFIG_DIRECTORY} (top-level CMakeLists.txt:937-941, with CMakeOptions.cmake
+# defaulting APP_CONFIG_DIRECTORY to "etc"), and common/optparser.h:66-67 derives the default clamd/freshclam config
+# paths from it. The previous CMAKE_INSTALL_SYSCONFDIR=/etc therefore left CONFDIR=/usr/etc, which is the path build
+# b3a313d1 observed. The supported cache variable is APP_CONFIG_DIRECTORY, pinned to /etc here; the upstream
+# etc/CMakeLists.txt installs only clamd.conf.sample and freshclam.conf.sample, so no active config is installed and
+# the version probes supply their own minimal config as the production freshclam caller already does. The same
+# APP_CONFIG_DIRECTORY seeds CVD_CERTS_DIRECTORY's default ("${APP_CONFIG_DIRECTORY}/certs", CMakeOptions.cmake:20-21),
+# and certs/CMakeLists.txt:7-12 installs clamav.crt there. With APP_CONFIG_DIRECTORY=/etc that default would move the
+# trust certificates to /etc/certs, outside the scanner sandbox's read-only /usr mount (native-sandbox.mjs exposes
+# /usr and creates an isolated /etc containing only ld.so.cache). libclamav sets the engine cert path to CERTSDIR
+# (others.c:597-626), readdb.c:5322-5328 returns CL_ECVD when codesign_verifier_new fails, and codesign.rs:333-343
+# fails when it cannot canonicalize the absent directory. CVD_CERTS_DIRECTORY is therefore pinned to /usr/etc/certs,
+# the exact path the previous relative "etc/certs" default produced, so clamav.crt stays inside the mounted /usr.
 FROM ${RUNTIME_IMAGE} AS clamav-source-build
 COPY infra/product-preview/native-clamav-patches /tmp/meri-clamav-patches
 RUN --network=none \
@@ -557,7 +570,7 @@ RUN --network=none \
     sha256sum -c /tmp/clamav-compat.sha256 && \
     python3.13 /tmp/meri-clamav-patches/apply-pinned-patch.py /tmp/meri-clamav-patches/clamav-1.5.4-openssl4-asn1-time.patch /usr/src/clamav-1.5.4/libclamav/crypto.c 6cfefd0ca043a922ddfda11c364f4995daf8a12317ce22f6c839b8c95a069dcc 26bdec0a22b4feb6927a4ef292e6f2d1896d11d2d92ffabc9a466bbb6884f036 && \
     cmake -S /usr/src/clamav-1.5.4 -B /tmp/clamav-build \
-      -D CMAKE_BUILD_TYPE=RelWithDebInfo -D CMAKE_INSTALL_PREFIX=/usr -D CMAKE_INSTALL_SYSCONFDIR=/etc -D CMAKE_INSTALL_LIBDIR=lib -D CMAKE_INSTALL_SBINDIR=bin \
+      -D CMAKE_BUILD_TYPE=RelWithDebInfo -D CMAKE_INSTALL_PREFIX=/usr -D APP_CONFIG_DIRECTORY=/etc -D CVD_CERTS_DIRECTORY=/usr/etc/certs -D CMAKE_INSTALL_LIBDIR=lib -D CMAKE_INSTALL_SBINDIR=bin \
       -D ENABLE_APP=ON -D ENABLE_MILTER=ON -D ENABLE_CLAMONACC=ON -D ENABLE_UNRAR=ON -D ENABLE_TESTS=ON \
       -D ENABLE_JSON_SHARED=ON -D ENABLE_EXTERNAL_MSPACK=OFF -D ENABLE_SYSTEMD=OFF -D ENABLE_MAN_PAGES=OFF \
       -D ENABLE_EXAMPLES=OFF -D ENABLE_DOXYGEN=OFF -D ENABLE_LIBCLAMAV_ONLY=OFF -D ENABLE_STATIC_LIB=OFF \
@@ -697,11 +710,22 @@ RUN cd / && sha256sum -c /usr/share/meri/clamav-component-inventory.txt && \
     test -x /usr/bin/clambc && test -x /usr/bin/clamsubmit && test -x /usr/bin/clamav-config && \
     test -n "$(ls /usr/lib/libclamav.so.* 2>/dev/null)" && test -n "$(ls /usr/lib/libfreshclam.so.* 2>/dev/null)" && \
     test -n "$(ls /usr/lib/libclamunrar.so.* 2>/dev/null)" && \
+    printf 'DatabaseDirectory /usr/share/clamav\n' > /tmp/meri-probe-freshclam.conf && \
+    printf 'DatabaseDirectory /usr/share/clamav\n' > /tmp/meri-probe-clamd.conf && \
     for tool in /usr/bin/clamscan /usr/bin/sigtool /usr/bin/freshclam /usr/bin/clamdscan /usr/bin/clamdtop /usr/bin/clamd; do \
-      tool_out=$("$tool" --version 2>&1); tool_status=$?; \
-      printf '%s --version exit=%s output=%s\n' "$tool" "$tool_status" "$tool_out"; \
+      case "$tool" in \
+        /usr/bin/freshclam) tool_args="--config-file=/tmp/meri-probe-freshclam.conf" ;; \
+        /usr/bin/clamd|/usr/bin/clamdscan) tool_args="--config-file=/tmp/meri-probe-clamd.conf" ;; \
+        *) tool_args="" ;; \
+      esac; \
+      tool_out=$("$tool" $tool_args --version 2>&1); tool_status=$?; \
+      printf '%s %s --version exit=%s output=%s\n' "$tool" "$tool_args" "$tool_status" "$tool_out"; \
       if [ "$tool_status" -ne 0 ]; then echo "tool failed to execute: $tool"; exit 1; fi; \
-      case "$tool_out" in *"ClamAV 1.5.4"*) ;; *) echo "unexpected ClamAV version from $tool"; exit 1 ;; esac; done && \
+      case "$tool" in \
+        /usr/bin/clamdtop) expected_banner="Clam AntiVirus Monitoring Tool 1.5.4" ;; \
+        *) expected_banner="ClamAV 1.5.4" ;; \
+      esac; \
+      case "$tool_out" in *"$expected_banner"*) ;; *) echo "unexpected version banner from $tool"; exit 1 ;; esac; done && \
     printf 'meri-native-signature-probe\n' > /tmp/meri-sigtool-probe && \
     sigtool --md5 /tmp/meri-sigtool-probe > /tmp/meri-sigtool-out 2> /tmp/meri-sigtool-err; sigtool_status=$?; \
     printf 'sigtool --md5 exit=%s\n' "$sigtool_status"; \
@@ -711,7 +735,7 @@ RUN cd / && sha256sum -c /usr/share/meri/clamav-component-inventory.txt && \
     test "$(awk '{print $1}' /tmp/meri-sigtool-out)" = "$(md5sum /tmp/meri-sigtool-probe | awk '{print $1}')" || { echo "sigtool md5 mismatch"; exit 1; }; \
     grep -q '"upstreamVersion":"1.5.4"' /usr/share/meri/clamav-component-provenance.json && \
     if apk info -v | grep -q '^clamav-1.5'; then echo "unexpected clamav-1.5 distribution package installed"; apk info -v | grep '^clamav-1.5'; exit 1; fi && \
-    rm -f /tmp/meri-sigtool-probe /tmp/meri-sigtool-out /tmp/meri-sigtool-err && \
+    rm -f /tmp/meri-sigtool-probe /tmp/meri-sigtool-out /tmp/meri-sigtool-err /tmp/meri-probe-freshclam.conf /tmp/meri-probe-clamd.conf && \
     echo "source-built ClamAV payload installed; no clamav-1.5 distribution package is present"
 # The coverage check and its advisory table travel with the image so the retained build probe binds the recorded
 # coverage to this image's own bytes: the probe runs the check inside the built image with no network, and the
