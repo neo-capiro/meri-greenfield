@@ -15,7 +15,7 @@ export const PREVIEW_ONLY_FORMATS=Object.freeze(['pdf']);
 export const SAVE_KINDS=Object.freeze(['autosave','exit','explicit']);
 export const DRAFT_STATES=Object.freeze(['draft','publish-pending','published','publish-refused','conflict','publish-unknown']);
 /** Refusals the revise owner raises before any effect: the draft stays, marked publish-refused. */
-export const DEFINITE_PUBLISH_REFUSALS=Object.freeze(['EDITOR_STRUCTURE_REFUSED','EDITOR_NATIVE_CHECK_REFUSED','ARTIFACT_FORMAT','ARTIFACT_REVISION_FORMAT','ARTIFACT_INSPECTION_MISMATCH','ARTIFACT_INPUT_LIMIT','ARTIFACT_OUTPUT_LIMIT','ARTIFACT_AUTHORITY']);
+export const DEFINITE_PUBLISH_REFUSALS=Object.freeze(['EDITOR_STRUCTURE_REFUSED','EDITOR_NATIVE_CHECK_REFUSED','EDITOR_SOURCE_MISMATCH','EDITOR_SAVE_INVALID','EDITOR_PUBLISH_UNAVAILABLE','OFFICE_EDIT_SOURCE','ARTIFACT_FORMAT','ARTIFACT_REVISION_FORMAT','ARTIFACT_INSPECTION_MISMATCH','ARTIFACT_INPUT_LIMIT','ARTIFACT_OUTPUT_LIMIT','ARTIFACT_AUTHORITY']);
 export const CONFLICT_CODE='ARTIFACT_STALE_PARENT';
 const SHA=/^[a-f0-9]{64}$/u,UUID=/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/u;
 const fault=code=>Object.assign(new Error(code),{code});

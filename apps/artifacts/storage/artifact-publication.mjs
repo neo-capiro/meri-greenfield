@@ -1,11 +1,12 @@
 /** Canonical complete artifact publication history. SQL is a projection; this tenant-purpose CAS is the decision.
  * Retained authority is historical evidence, never permission to generate, put, purge or release bytes. */
 import {v,own,data,same,uuid,digest,storageMethod,fail} from './boundary.mjs';
+import {officeEditParentMatches,isOfficeEdit} from '../../../packages/contracts/office-edit.mjs';
 import {verifyArtifactVersionStorageRecord as recordValue} from './version-record.mjs';
 export const ARTIFACT_PUBLICATION_NAMESPACE='meri.artifact-publication.proposal-1';
 const publicationVersion='meri.artifact-publication-index.proposal-1',namespace=ARTIFACT_PUBLICATION_NAMESPACE;
 const corrupt=()=>fail('ARTIFACT_PUBLICATION_CORRUPT');
-export const artifactPublicationParentMatches=(parent,r)=>parent&&['tenantId','actorId','conversationId'].every(k=>parent.version.binding[k]===r.version.binding[k])&&parent.version.artifactId===r.version.artifactId&&same(parent.version.scopes,r.version.scopes)&&parent.spec.operation===r.spec.operation&&parent.spec.format===r.spec.format;
+export const artifactPublicationParentMatches=(parent,r)=>parent&&['tenantId','actorId','conversationId'].every(k=>parent.version.binding[k]===r.version.binding[k])&&parent.version.artifactId===r.version.artifactId&&same(parent.version.scopes,r.version.scopes)&&parent.spec.operation===r.spec.operation&&parent.spec.format===r.spec.format&&officeEditParentMatches(parent,r)&&(!isOfficeEdit(r.spec)||same(parent.version.evidence,r.version.evidence));
 const parentMatches=artifactPublicationParentMatches;
 export const emptyArtifactPublications=tenantId=>({publicationVersion,namespace,tenantId,decisions:[],heads:[],tombstones:[]});
 export function verifyArtifactPublicationInput(value,{historical=false}={}){
