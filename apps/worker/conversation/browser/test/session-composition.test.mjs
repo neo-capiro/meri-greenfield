@@ -100,6 +100,18 @@ test('user relay values are masked on resume and a released lease cannot send in
  const response=await session.resume({explicit:true});assert.doesNotMatch(JSON.stringify(response),/POST-LEASE-VALUE/);
  assert.equal(inputs,1);assert.equal(session.state().state,'agent');
 });
+
+test('cancelled or invalid takeover admission leaves the next valid takeover available',async t=>{
+ const x=fixture(t);let holds=0;x.args.hold=async()=>{holds++;return {outcome:'APPLIED'};};
+ const session=await createPinnedBrowserSession(x.args);t.after(()=>session.destroy({trigger:'conversation-end'}));
+ const cancelled=new AbortController();cancelled.abort();
+ for(const signal of [cancelled.signal,{}]){
+  await assert.rejects(session.takeover({signal}));assert.equal(session.state().state,'agent');
+ }
+ assert.equal(holds,0);await call(session);assert.equal(x.state.calls,1);
+ const lease=await session.takeover();assert.equal(lease.leaseEpoch,1);
+ assert.equal(session.state().state,'user');assert.equal(holds,1);
+});
 test('native input uses one per-lease event bucket and refuses a whole over-budget press before injection',async t=>{
  let clock=0,inputs=0;const x=fixture(t,{now:()=>clock}),session=await createPinnedBrowserSession(x.args);
  t.after(()=>session.destroy({trigger:'conversation-end'}));x.state.onInput=async()=>{inputs++;};
