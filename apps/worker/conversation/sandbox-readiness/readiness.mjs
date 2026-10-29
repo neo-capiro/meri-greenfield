@@ -99,10 +99,11 @@ export async function probeSdkSandboxStartup(ports,{weakerNestedSandbox,protecte
 /** @param {ReadinessPorts} ports @param {{protectedPaths?:import('../capabilities/bash-sandbox.mjs').ProtectedPaths,deadlineMs?:number,observeMs?:number,cleanupMs?:number,signal?:AbortSignal}} [options] */
 export async function checkSandboxReadiness(ports,{protectedPaths,deadlineMs=30000,observeMs=OBSERVE_MS,cleanupMs=CLEANUP_MS,signal}={}){
  const bwrap=ports.findExecutable('bwrap'),socat=ports.findExecutable('socat');
- // After cancellation nothing new is spawned: the probes below start child processes.
- const cancelled=signal?.aborted===true;
- const freshProc=!cancelled&&bwrap?await ports.runProbe(bwrap,namespaceProbeArgs(true,ports.nodePath)):false;
- const withoutProc=!cancelled&&bwrap&&!freshProc?await ports.runProbe(bwrap,namespaceProbeArgs(false,ports.nodePath)):freshProc;
+ // After cancellation nothing new is spawned: each child probe rechecks the current signal, because the run can be
+ // cancelled while an earlier probe is still pending.
+ const live=()=>signal?.aborted!==true;
+ const freshProc=live()&&bwrap?await ports.runProbe(bwrap,namespaceProbeArgs(true,ports.nodePath)):false;
+ const withoutProc=live()&&bwrap&&!freshProc?await ports.runProbe(bwrap,namespaceProbeArgs(false,ports.nodePath)):freshProc;
  const weakerNestedSandboxRequired=!freshProc&&withoutProc,managedSettingsTier=ports.exists(MANAGED_SETTINGS_PATH)?'present':'absent';
  const sdkVersionMatches=ports.sdkVersion===SDK_VERSION;
  const sdkStartup=sdkVersionMatches?await probeSdkSandboxStartup(ports,{weakerNestedSandbox:weakerNestedSandboxRequired,...(protectedPaths===undefined?{}:{protectedPaths}),deadlineMs,observeMs,cleanupMs,...(signal===undefined?{}:{signal})})

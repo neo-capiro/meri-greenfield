@@ -49,6 +49,10 @@ async function closeProxy(proxy){let known=true;
  * @param {{createReadinessPorts?:typeof createHostPorts}} [options] */
 export function createHostSandboxReadiness({createReadinessPorts=createHostPorts}={}){
  /** @type {{promise:Promise<any>,controller:AbortController,reusable:boolean}|null} */let pending=null;
+ // A measurement whose owned SDK child could not be stopped or whose readiness ports could not be closed leaves
+ // cleanup unknown. That outcome outlives the pending entry and the run that caused it, so the existing runner
+ // cleanup catch can mark the run's cleanup status instead of the failure disappearing with the cancelled run.
+ let unknownCleanup=false;
  /** @param {{pathEnv:string,protectedPaths?:object,deadlineMs?:number,signal?:AbortSignal}} input */
  function read({pathEnv,protectedPaths,deadlineMs=30000,signal}){
   if(!pending){
@@ -59,11 +63,14 @@ export function createHostSandboxReadiness({createReadinessPorts=createHostPorts
     /** @type {any} */let ports,report;
     try{ports=await createReadinessPorts({pathEnv});if(typeof ports?.close!=='function')fail('BASH_READINESS_INCOMPLETE');
      report=await checkSandboxReadiness(ports,{protectedPaths,deadlineMs,signal:controller.signal});
-     if(report?.aborted===true)entry.reusable=false;}
+     // A stopped measurement is not a host verdict; a failed SDK shutdown is not one either, and it is retained.
+     if(report?.aborted===true||report?.sdkStartup?.shutdown==='failed')entry.reusable=false;
+     if(report?.sdkStartup?.shutdown==='failed')unknownCleanup=true;}
     catch(error){entry.reusable=false;
+     if(error?.code==='BASH_READINESS_CLEANUP_UNKNOWN')unknownCleanup=true;
      if(error?.code==='BASH_READINESS_CLEANUP_UNKNOWN'||error?.code==='BASH_READINESS_INCOMPLETE')throw error;
      throw fault('BASH_READINESS_INCOMPLETE');}
-    finally{try{await ports?.close?.();}catch{entry.reusable=false;throw fault('BASH_READINESS_CLEANUP_UNKNOWN');}}
+    finally{try{await ports?.close?.();}catch{entry.reusable=false;unknownCleanup=true;throw fault('BASH_READINESS_CLEANUP_UNKNOWN');}}
     return report;
    })();
    pending=entry;
@@ -81,8 +88,13 @@ export function createHostSandboxReadiness({createReadinessPorts=createHostPorts
   }
   return entry.promise;
  }
- /** Resolves once any in-flight measurement has settled; never rejects. */
- async function settle(){const entry=pending;if(entry)try{await entry.promise}catch{}}
+ /** Awaits whatever measurement is still in flight and then reports, once, an owned cleanup that failed or is
+  * unknown — including one that settled while its run was already cancelling. Ordinary cancellation and a clean
+  * unsupported host resolve normally. @returns {Promise<void>} */
+ async function settle(){
+  const entry=pending;if(entry)try{await entry.promise}catch{}
+  if(unknownCleanup){unknownCleanup=false;throw fault('BASH_READINESS_CLEANUP_UNKNOWN');}
+ }
  return Object.freeze({read,settle});
 }
 /** The default host measurement for this task: one per process, shared by every run it serves. */
@@ -117,12 +129,13 @@ export async function prepareAgentCoreBashRuntimeFacts({binding,policy,approvals
  // startup, which settles its own child before this call returns.
  const report=await (async()=>{try{return await read({pathEnv,...(protectedPaths===undefined?{}:{protectedPaths}),deadlineMs:30000,...(signal===undefined?{}:{signal})});}
   catch(error){if(error?.code==='BASH_READINESS_CLEANUP_UNKNOWN'||error?.code==='BASH_READINESS_INCOMPLETE')throw error;fail('BASH_READINESS_INCOMPLETE');}})();
- // A measurement its caller stopped proves nothing about this host, and the run is stopping anyway.
- if(report?.aborted===true)fail('BASH_HOST_REVOKED');
- // Owned startup cleanup that failed or is unknown is never ordinary "no Bash on this host": it is retained and the
- // run refuses, so a failed SDK shutdown cannot be spent as a normal chat that silently lacks Bash.
+ // Owned startup cleanup that failed or is unknown is never ordinary "no Bash on this host" and never a plain
+ // cancellation: it is retained and the run refuses, so a failed SDK shutdown cannot be spent as a normal chat (or
+ // hidden behind `BASH_HOST_REVOKED` when the stop failed while the run was already cancelling).
  const startup=report?.sdkStartup??{};
  if(startup.shutdown==='failed'||READINESS_CLEANUP_FAILURES.includes(startup.reasonCode))fail('BASH_READINESS_CLEANUP_UNKNOWN');
+ // A measurement its caller stopped proves nothing about this host, and the run is stopping anyway.
+ if(report?.aborted===true)fail('BASH_HOST_REVOKED');
  // No outer per-conversation boundary is claimed here; a host needing the weaker nested sandbox is unavailable.
  const attestation=toBashSandboxAttestation(report,{outerIsolationBoundary:false});
  if(!attestation.available)fail('BASH_SANDBOX_UNAVAILABLE');

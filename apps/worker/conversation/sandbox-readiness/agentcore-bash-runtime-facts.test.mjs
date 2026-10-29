@@ -5,6 +5,7 @@ import {binding,clock} from '../browser/test/fixtures.mjs';
 import {BASH_EGRESS_SCHEMA,bashEgressDomainsSha256} from '../egress/bash-egress.mjs';
 import {createSdkCapabilities} from '../capabilities/index.mjs';
 import {createHostSandboxReadiness,prepareAgentCoreBashRuntimeFacts} from './agentcore-bash-runtime-facts.mjs';
+import {checkSandboxReadiness} from './readiness.mjs';
 
 const deadline=clock()+60000;
 const cwd=`/workspace/${binding.conversationId}`;
@@ -150,7 +151,8 @@ test('cancelling the run while readiness startup is pending stops it, settles it
  // The probe this run started has settled every resource it owned, before the rejection was observed above.
  assert.equal(probes.seen.queries,1);assert.equal(probes.seen.closed,1);assert.equal(probes.seen.removed,2);
  await readiness.settle();
- // A cancelled measurement is not a verdict about the host: the next run measures again instead of inheriting it.
+ // Ordinary cancellation is ordinary: nothing owned is unknown, so settle resolves and the next run measures again.
+ await assert.doesNotReject(readiness.settle());
  const next=new AbortController();
  const prepared=await prepareAgentCoreBashRuntimeFacts({binding,policy:{bash:true},expiresAtMs:deadline,now:clock,
   pathEnv:'/usr/bin',protectedPaths,readiness:readiness.read,signal:next.signal});
@@ -175,4 +177,45 @@ test('a returned abort-marked report refuses the run even when its verdict looks
  const f=input({readiness:async()=>({ready:false,aborted:true,sdkStartup:{status:'refused',reasonCode:'SDK_STARTUP_ABORTED',initialized:false,shutdown:'clean'}})});
  await assert.rejects(prepareAgentCoreBashRuntimeFacts(f.configuration),refuses('BASH_HOST_REVOKED'));
 });
+
+test('a stop that fails while the run is cancelling is cleanup-unknown, and settle still carries it to the runner',async()=>{
+ const started=Promise.withResolvers();let closes=0;
+ /** A pending SDK startup whose close throws: the consumer ends, but the child's stop itself is unverified. */
+ const ports={findExecutable:name=>`/usr/bin/${name}`,runProbe:async()=>true,exists:()=>false,
+  makeTempDir:label=>`/tmp/meri-stuck-${label}`,removeDir(){},
+  query:()=>{let done;const held=new Promise(resolve=>{done=resolve;});
+   return {initializationResult:()=>new Promise(()=>{}),close(){closes++;done();throw Error('close failed');},
+    async *[Symbol.asyncIterator](){started.resolve();await held;}};},
+  sdkVersion:'0.3.295',nodePath:'/usr/local/bin/node',pathEnv:'/usr/bin',close(){}};
+ const readiness=createHostSandboxReadiness({createReadinessPorts:async()=>ports});
+ const run=new AbortController(),startedAt=clock();
+ const pending=prepareAgentCoreBashRuntimeFacts({binding,policy:{bash:true},expiresAtMs:deadline,now:()=>startedAt,
+  pathEnv:'/usr/bin',protectedPaths,readiness:readiness.read,signal:run.signal});
+ await started.promise;
+ run.abort(new Error('run cancelled')); // cancelled while the SDK startup is pending, and the stop then fails
+ const error=await pending.then(()=>assert.fail('a failed stop must refuse the run'),e=>e);
+ assert.equal(error.code,'BASH_READINESS_CLEANUP_UNKNOWN','failed cleanup outranks the cancellation code');
+ assert.notEqual(error.code,'BASH_SANDBOX_UNAVAILABLE','a failed stop is never ordinary host absence');
+ assert.ok(closes>=1);
+ // The existing runner cleanup catch (`try{await bashReadiness.settle()}catch{localCleanupFailed=true}`) receives it.
+ await assert.rejects(readiness.settle(),refuses('BASH_READINESS_CLEANUP_UNKNOWN'));
+ await assert.doesNotReject(readiness.settle()); // reported once, not repeated for the next run
+});
+
+test('cancellation while the first bubblewrap probe is pending prevents the second child probe',async()=>{
+ const first=Promise.withResolvers(),seen={probes:0,queries:0};
+ const ports={findExecutable:name=>`/usr/bin/${name}`,exists:()=>false,makeTempDir:label=>`/tmp/meri-probe-${label}`,removeDir(){},
+  runProbe:async(_command,args)=>{seen.probes++;assert.equal(args.includes('--proc'),true,'the first probe is the fresh-/proc one');return first.promise;},
+  query:()=>{seen.queries++;throw Error('no SDK child after cancellation');},
+  sdkVersion:'0.3.295',nodePath:'/usr/local/bin/node',pathEnv:'/usr/bin'};
+ const controller=new AbortController();
+ const pending=checkSandboxReadiness(ports,{signal:controller.signal,deadlineMs:5000});
+ controller.abort(new Error('run cancelled'));
+ first.resolve(false); // the first probe comes back false only after the cancellation
+ const report=await pending;
+ assert.equal(seen.probes,1,'no second bubblewrap child is spawned after cancellation');
+ assert.equal(seen.queries,0,'no SDK startup is started after cancellation');
+ assert.equal(report.aborted,true);assert.equal(report.ready,false);
+});
+
 
