@@ -529,6 +529,7 @@ RUN --network=none \
     --mount=type=bind,from=native-dev-repository,source=tmp/meri-native-dev-repo,target=/tmp/meri-native-dev-repo,readonly \
     --mount=type=bind,from=native-dev-repository,source=tmp/meri-native-source,target=/tmp/meri-native-source,readonly \
     --mount=type=bind,from=native-repository,source=tmp/meri-native-repo,target=/tmp/meri-native-runtime-repo,readonly \
+    --mount=type=bind,from=native-repository,source=tmp/meri-native-pip-repo,target=/tmp/meri-native-pip-repo,readonly \
     apk --version && \
     apk add --no-cache --no-network --repository /tmp/meri-native-dev-repo --repositories-file /dev/null --update-cache \
       gcc=16.2.0-r2 libgcc=16.2.0-r2 binutils=2.47-r2 make=4.4.1-r15 cmake=4.4.3-r0 pkgconf=3.0.10-r2 bash=5.3-r14 xz=5.8.4-r0 \
@@ -538,7 +539,7 @@ RUN --network=none \
       openssl-4.0-dev=4.0.3-r8 json-c-dev=0.19-r2 curl-dev=8.23.0-r2 ncurses-dev=6.6.20261024-r0 \
       check-dev=0.15.2-r10 check=0.15.2-r10 linux-headers=7.3-r0 && \
     gcc --version | head -1 && cmake --version | head -1 && make --version | head -1 && pkg-config --version && \
-    apk add --no-cache --no-network --repository /tmp/meri-native-runtime-repo --repositories-file /dev/null --update-cache \
+    apk add --no-cache --no-network --repository /tmp/meri-native-runtime-repo --repository /tmp/meri-native-pip-repo --repositories-file /dev/null --update-cache \
       python-3.13=3.13.16_git20261016-r2 python-3.13-base=3.13.16_git20261016-r2 && \
     for pkg in python-3.13-3.13.16_git20261016-r2 python-3.13-base-3.13.16_git20261016-r2; do \
       apk info -v | grep -qx "$pkg" || { echo "unexpected native interpreter package $pkg"; exit 1; }; done && \
