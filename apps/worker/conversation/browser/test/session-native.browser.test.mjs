@@ -60,3 +60,19 @@ test('pinned native MCP snapshots resist hostile page prototypes and retain mask
   current=false;await assert.rejects(capture('revoked'),/BROWSER_CALL_REFUSED/);
  }finally{if(session)await session.destroy({trigger:'conversation-end'});else await context.close();await browser.close();}
 });
+
+test('native same-URL reload during current-authority checks cannot receive queued private input',{timeout:30000},async()=>{
+ const browser=await chromium.launch({headless:true}),context=await browser.newContext();let session,inputs=0,reload=false,reloaded=false;
+ try{
+  await context.route('https://records.example/**',route=>route.fulfill({contentType:'text/html',body:'<!doctype html><label>Password<input autofocus type="password" oninput="window.nativeInputSeen()"></label>'}));
+  const page=await context.newPage();await page.exposeFunction('nativeInputSeen',()=>{inputs++;});await page.goto('https://records.example/page');
+  const frame=page.mainFrame(),url=page.url();
+  session=await createPinnedBrowserSession({upstream:{version:'0.0.83',createConnection:tools.createConnection},context,
+   policy:{tools:['browser_snapshot'],timeouts:{actionMs:5000,navigationMs:5000}},now:Date.now,deadlineMs:Date.now()+30000,
+   current:async()=>{if(reload){reload=false;await page.reload();assert.equal(page.mainFrame(),frame);assert.equal(page.url(),url);reloaded=true;}},
+   hold:async()=>({outcome:'APPLIED'}),ports:{waitForExit:async()=>{await browser.close();return {exited:true};},dispose:async()=>({disposed:true})}});
+  const lease=await session.takeover();reload=true;
+  await assert.rejects(session.userInput({...lease,page,input:{kind:'text',text:'SYNTHETIC_PRIVATE_INPUT'}}),/USER_INPUT_UNKNOWN/);
+  assert.equal(reloaded,true);assert.equal(inputs,0);
+ }finally{if(session)await session.destroy({trigger:'conversation-end'});else await context.close();await browser.close();}
+});

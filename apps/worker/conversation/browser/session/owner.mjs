@@ -67,9 +67,11 @@ export function createBrowserSessionOwner({context,invoke,policy,manifest=null,c
   async userInput(raw){
    const {leaseEpoch,page,input,signal}=own(raw,['leaseEpoch','page','input'],['signal']);
    if(closed)fail('BROWSER_SESSION_ENDING');if(busy)fail('BROWSER_SESSION_BUSY');
-   if(!fence.input({leaseEpoch}).accepted)fail('BROWSER_STALE_LEASE');
-   const prepared=prepareNativeBrowserInput(context,page,input,{leaseEpoch,limiter:inputLimiter});busy=true;
+   const lease=fence.state();
+   if(lease.state!=='user'||lease.leaseEpoch!==leaseEpoch){fence.input({leaseEpoch});fail('BROWSER_STALE_LEASE');}
    const life=createOperationLifetime({deadlineMs:Math.min(deadlineMs,now()+130000),now,signal,errorFactory:code=>Object.assign(Error(code),{code})});
+   let prepared;try{prepared=prepareNativeBrowserInput(context,page,input,{leaseEpoch,limiter:inputLimiter});}
+   catch(error){life.close();throw error;}busy=true;
    // Remember confidential text before page handlers can erase its field and
    // reflect the value. Keep it only in the existing session-local filter.
    const operation=(async()=>{await life.run(assertCurrent);
@@ -81,7 +83,7 @@ export function createBrowserSessionOwner({context,invoke,policy,manifest=null,c
     await life.run(()=>snapshot.capture({fenceState:'agent',postLease:true}));await life.run(assertCurrent);})();
    const tracked=operation.then(()=>undefined,()=>undefined);pending.add(tracked);
    try{await operation;}catch{void destroy('disconnect').catch(()=>{});fail('BROWSER_USER_INPUT_UNKNOWN');}
-   finally{pending.delete(tracked);life.close();busy=false;}
+   finally{prepared.dispose();pending.delete(tracked);life.close();busy=false;}
   },
   handBack:()=>fence.handBack(),
   endLease:reason=>fence.endLease({reason}),
