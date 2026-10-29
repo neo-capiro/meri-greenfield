@@ -7,13 +7,13 @@ import {tmpdir} from 'node:os';
 import {join} from 'node:path';
 import {mkdtemp,rm,realpath} from 'node:fs/promises';
 import {RENDERER_PROBE_SCHEMA,RENDERER_CHILD_ENV} from '../../../artifacts/renderer-qualification.mjs';
-import {UPLOAD_SANDBOX_REQUIREMENTS,UPLOAD_ROLE_PREFIX,UPLOAD_IMAGE_PATHS,evaluateUploadSandbox,qualifyNativeUploadSandbox,
+import {UPLOAD_SANDBOX_REQUIREMENTS,UPLOAD_ROLE_PREFIX,UPLOAD_IMAGE_PATHS,UPLOAD_CHILD_ENV,evaluateUploadSandbox,qualifyNativeUploadSandbox,
  uploadSandboxArguments,uploadScanArguments,uploadExtractArguments,runUploadSandbox} from '../native-sandbox.mjs';
 
 const ZERO='0'.repeat(16),DIGEST='sha256:'+'a'.repeat(64),ROOT=UPLOAD_IMAGE_PATHS.tempRoot;
 const sandboxed=(cwd,changes={})=>({schema:RENDERER_PROBE_SCHEMA,platform:'linux',uid:[1000,1000,1000,1000],gid:[1000,1000,1000,1000],noNewPrivs:1,
  capabilities:{CapInh:ZERO,CapPrm:ZERO,CapEff:ZERO,CapBnd:ZERO,CapAmb:ZERO},rootMountOptions:'ro,relatime',interfaces:['lo'],
- cgroup:{memoryMax:'1073741824',pidsMax:'64',cpuMax:'50000 100000'},envNames:[...RENDERER_CHILD_ENV],cwd,home:cwd,tmpdir:cwd,
+ cgroup:{memoryMax:'1073741824',pidsMax:'64',cpuMax:'50000 100000'},envNames:[...UPLOAD_CHILD_ENV],cwd,home:cwd,tmpdir:cwd,
  workspace:{mode:0o700,uid:1000},credentialPathsReadable:[{path:'/run/meri/core-secret',readable:false}],...changes});
 
 test('the fixed plans admit only host-owned programs and arguments',()=>{
@@ -64,10 +64,43 @@ test('a fully observed upload child attests every shared requirement; each viola
   [{workspace:{mode:0o755,uid:1000}},['privateWorkspace']],
   [{cwd:ROOT+'/meri-upload-scan-a1b2c3',home:ROOT+'/meri-upload-scan-a1b2c3',tmpdir:ROOT+'/meri-upload-scan-a1b2c3'},['privateWorkspace']],
   [{cgroup:{memoryMax:'max',pidsMax:'64',cpuMax:'50000 100000'}},['boundedResources']],
-  [{envNames:[...RENDERER_CHILD_ENV,'AWS_CONTAINER_CREDENTIALS_RELATIVE_URI']},['noCredentials']],
+  [{envNames:[...UPLOAD_CHILD_ENV,'AWS_CONTAINER_CREDENTIALS_RELATIVE_URI']},['noCredentials']],
   [{credentialPathsReadable:[{path:'/run/meri/core-secret',readable:true}]},['noCredentials']],
  ];
  for(const [changes,expected] of cases)assert.deepEqual(evaluateUploadSandbox(sandboxed(cwd,changes),{tempRoot:ROOT}).findings.map(f=>f.requirement),expected);
+});
+
+test('the unqualified diagnostic carries numeric cgroup bounds and fixed credential predicates only',()=>{
+ const cwd=ROOT+'/'+UPLOAD_ROLE_PREFIX.probe+'a1b2c3';
+ const observation=sandboxed(cwd,{cgroup:{memoryMax:'max',pidsMax:'64',cpuMax:'50000 100000'},
+  envNames:[...UPLOAD_CHILD_ENV,'AWS_REGION'],
+  credentialPathsReadable:[{path:'/run/meri/core-secret',readable:true},{path:'/run/meri/other',readable:false}]});
+ const {diagnostic}=evaluateUploadSandbox(observation,{tempRoot:ROOT});
+ assert.deepEqual(diagnostic.resources,{memoryMax:0,pidsMax:64,cpuMax:50000});
+ assert.deepEqual(diagnostic.credentials,{networkIsolated:true,envCount:UPLOAD_CHILD_ENV.length+1,allowedCount:UPLOAD_CHILD_ENV.length,envAllowed:false,checked:2,readable:1});
+ // A present-but-unlimited cgroup entry (0) is distinguishable from an absent one (null), which is what the event needs.
+ const absent=evaluateUploadSandbox(sandboxed(cwd,{cgroup:{}}),{tempRoot:ROOT}).diagnostic;
+ assert.deepEqual(absent.resources,{memoryMax:null,pidsMax:null,cpuMax:null});
+ const unlimited=evaluateUploadSandbox(sandboxed(cwd,{cgroup:{memoryMax:'max',pidsMax:'max',cpuMax:'max 100000'}}),{tempRoot:ROOT}).diagnostic;
+ assert.deepEqual(unlimited.resources,{memoryMax:0,pidsMax:0,cpuMax:0});
+ const text=JSON.stringify(diagnostic);
+ assert.equal(text.includes('/run/meri'),false,'no credential path is emitted');
+ assert.equal(text.includes('AWS_REGION'),false,'no environment name is emitted');
+});
+
+test('the upload allowlist admits the PWD that bwrap always sets, and nothing else',()=>{
+ const cwd=ROOT+'/'+UPLOAD_ROLE_PREFIX.probe+'a1b2c3';
+ // bubblewrap sets PWD before exec (bubblewrap.c xsetenv("PWD", new_cwd, 1)), so the real child reports one name the
+ // renderer's direct-spawn allowlist does not contain. That is the concrete noCredentials failure this corrects.
+ const bwrapChild={...sandboxed(cwd),envNames:[...RENDERER_CHILD_ENV,'PWD']};
+ const attests=evaluateUploadSandbox(bwrapChild,{tempRoot:ROOT});
+ assert.equal(attests.sandbox.noCredentials,true,'PWD is the attested workspace path, not a credential');
+ assert.deepEqual(attests.findings,[]);
+ assert.deepEqual([...UPLOAD_CHILD_ENV],[...RENDERER_CHILD_ENV,'PWD']);
+ // Any name outside the reviewed allowlist still fails, so this is not a general environment widening.
+ const extra=evaluateUploadSandbox({...bwrapChild,envNames:[...RENDERER_CHILD_ENV,'PWD','AWS_SESSION_TOKEN']},{tempRoot:ROOT});
+ assert.equal(extra.sandbox.noCredentials,false);
+ assert.deepEqual(extra.findings.map(f=>f.requirement),['noCredentials']);
 });
 
 test('non-Linux and malformed observations attest nothing and never throw',()=>{

@@ -27,6 +27,12 @@ export const UPLOAD_IMAGE_PATHS=Object.freeze({bwrap:'/usr/bin/bwrap',prlimit:'/
  pythonExecutable:'/usr/bin/python3.13',scanner:'/usr/bin/clamscan',tesseract:'/usr/bin/tesseract',pdftoppm:'/usr/bin/pdftoppm',
  definitionsRoot:UPLOAD_DEFINITIONS_ROOT,extractorPath:UPLOAD_EXTRACTOR_PATH,tempRoot:UPLOAD_NATIVE_SCRATCH});
 export const UPLOAD_SANDBOX_REQUIREMENTS=RENDERER_SANDBOX_REQUIREMENTS;
+/** The upload child's environment: the renderer's reviewed allowlist plus `PWD`. The upload role is the one that runs its
+ * child under `bwrap` (the renderer port spawns its converter directly), and `bwrap` unconditionally sets `PWD` to the
+ * child's working directory before exec (`xsetenv("PWD", new_cwd, 1)`, bubblewrap.c). Without this the probe would always
+ * report one environment name the allowlist did not anticipate and `noCredentials` could never be attested. `PWD` is the
+ * already-attested private workspace path, not a credential, so no additional reach is admitted. */
+export const UPLOAD_CHILD_ENV=Object.freeze([...RENDERER_CHILD_ENV,'PWD']);
 export const UPLOAD_ROLE_PREFIX=Object.freeze({probe:'meri-upload-probe-',scan:'meri-upload-scan-',extract:'meri-upload-extract-'});
 export const UPLOAD_EXTRACT_FORMATS=Object.freeze(['txt','md','pdf','docx','xlsx','pptx','png','jpg','jpeg']);
 /** The single scan target name a scanner child may read; the scanner port writes exactly this file into the workspace. */
@@ -94,6 +100,17 @@ function finiteLimit(value,{quota=false}={}){
  if(!/^[0-9]{1,20}$/u.test(first))return false;
  const n=BigInt(first);return n>0n&&n<UNLIMITED;
 }
+/** The numeric boundary the host actually reported. Three distinct states survive here so the event can tell an
+ * ABSENT source from a source that is present but UNLIMITED: a finite value, `0` for a cgroup entry the host reports as
+ * `max` (present, no limit), or `null` when the source was absent or non-numeric. Content-free: numbers only, never the
+ * raw text. A valid limit is always > 0 (`finiteLimit`), so `0` cannot be mistaken for one. */
+function numericLimit(value,{quota=false}={}){
+ if(typeof value!=='string')return null;
+ const first=quota?value.split(/\s+/u)[0]:value;
+ if(/^max$/u.test(first))return 0;
+ if(!/^[0-9]{1,20}$/u.test(first))return null;
+ const n=Number(first);return Number.isSafeInteger(n)?n:null;
+}
 /** Pure: one probe observation -> the eight shared requirement flags. Mirrors the renderer evaluator but accepts the
  * upload probe workspace prefix; malformed input is all false and never throws. */
 export function evaluateUploadSandbox(observation,{tempRoot}={}){
@@ -116,10 +133,17 @@ export function evaluateUploadSandbox(observation,{tempRoot}={}){
   boundedResources:linux&&finiteLimit(cg.memoryMax)&&finiteLimit(cg.pidsMax)&&finiteLimit(cg.cpuMax,{quota:true}),
   noCredentials:false,
  };
- sandbox.noCredentials=linux&&sandbox.noNetwork&&env!==null&&env.every(name=>RENDERER_CHILD_ENV.includes(name))&&
+ const envAllowed=env!==null&&env.every(name=>UPLOAD_CHILD_ENV.includes(name));
+ sandbox.noCredentials=linux&&sandbox.noNetwork&&envAllowed&&
   creds!==null&&creds.every(c=>c&&c.readable===false);
+ const diagnostic=Object.freeze({
+  resources:Object.freeze({memoryMax:numericLimit(cg.memoryMax),pidsMax:numericLimit(cg.pidsMax),cpuMax:numericLimit(cg.cpuMax,{quota:true})}),
+  credentials:Object.freeze({networkIsolated:sandbox.noNetwork,envCount:env===null?0:env.length,
+   allowedCount:UPLOAD_CHILD_ENV.length,envAllowed,
+   checked:creds===null?0:creds.length,readable:creds===null?0:creds.filter(c=>c&&c.readable===true).length})
+ });
  const findings=UPLOAD_SANDBOX_REQUIREMENTS.filter(k=>sandbox[k]!==true).map(requirement=>({requirement,reason:linux?'NOT_OBSERVED':'NOT_LINUX'}));
- return {sandbox:Object.freeze(sandbox),findings:Object.freeze(findings)};
+ return {sandbox:Object.freeze(sandbox),findings:Object.freeze(findings),diagnostic};
 }
 /** Observe the upload child boundary and issue an admission only when every shared requirement is attested. The probe
  * runs through the identical `runUploadSandbox('probe',...)` path scan/extract use, in the same owned workspace kind. */
@@ -134,7 +158,7 @@ export async function qualifyNativeUploadSandbox({imageDigest,deadlineMs,signal,
   if(out.length<2||out.length>UPLOAD_MAX_OBSERVATION_BYTES)return {admitted:false,reason:'UPLOAD_PROBE_INVALID',evaluation:null,missing:[...UPLOAD_SANDBOX_REQUIREMENTS]};
   const evaluation=evaluateUploadSandbox(JSON.parse(out.toString('utf8')),{tempRoot:await realpath(tempRoot).catch(()=>null)});
   const missing=evaluation.findings.map(f=>f.requirement);
-  if(missing.length)return {admitted:false,reason:'UPLOAD_SANDBOX_UNQUALIFIED',evaluation,missing};
+  if(missing.length)return {admitted:false,reason:'UPLOAD_SANDBOX_UNQUALIFIED',evaluation,missing,diagnostic:evaluation.diagnostic};
   // Tool/definition roots are read-only bind entries of the fixed plan above, so they share this admission.
   return {admitted:true,reason:'UPLOAD_SANDBOX_QUALIFIED',admission:Object.freeze({role:'upload-native',imageDigest,qualificationId:'upload-native-'+imageDigest.slice(7),
    sandbox:Object.freeze({...evaluation.sandbox}),toolRootsReadOnly:true}),evaluation,missing:[]};

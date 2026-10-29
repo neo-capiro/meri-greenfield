@@ -32,8 +32,9 @@ import {createUploadNativeInspection,observeUploadTools} from './native-inspecti
 
 const fail=()=>{throw uploadFault('UPLOAD_HOST_CONFIGURATION');};
 const isHash=value=>typeof value==='string'&&/^sha256:[a-f0-9]{64}$/u.test(value);
-const disabled=(missing,reason=null,requirements=[])=>Object.freeze({scanner:null,extractor:null,definitions:null,admission:null,describe:null,missing:Object.freeze([...missing]),
- ...(typeof reason==='string'&&reason?{reason}:{}),...(Array.isArray(requirements)&&requirements.length?{requirements:Object.freeze([...requirements])}:{})});
+const disabled=(missing,reason=null,requirements=[],diagnostic=null)=>Object.freeze({scanner:null,extractor:null,definitions:null,admission:null,describe:null,missing:Object.freeze([...missing]),
+ ...(typeof reason==='string'&&reason?{reason}:{}),...(Array.isArray(requirements)&&requirements.length?{requirements:Object.freeze([...requirements])}:{}),
+ ...(diagnostic&&typeof diagnostic==='object'?{diagnostic}:{})});
 /** The only conditions a bounded refresh may answer. An unknown or invalid condition (unverified signature,
  * corruption, cancellation, expiry, configuration) is never repaired by fetching a fresh snapshot. */
 const REFRESHABLE=new Set(['UPLOAD_DEFINITIONS_UNAVAILABLE','UPLOAD_DEFINITIONS_STALE']);
@@ -55,7 +56,7 @@ export async function composeUploadNativeHost(options={}){
  let qualification;try{qualification=await qualifyNativeUploadSandbox({imageDigest:declared.imageDigest,deadlineMs,signal:options.signal,
   credentialPaths:Array.isArray(options.credentialPaths)?options.credentialPaths:[],tempRoot,run});}
  catch(error){return disabled(['uploads.native.sandbox'],typeof error?.code==='string'?error.code:null,[]);}
- if(qualification.admitted!==true)return disabled(['uploads.native.sandbox'],qualification.reason,qualification.missing);
+ if(qualification.admitted!==true)return disabled(['uploads.native.sandbox'],qualification.reason,qualification.missing,qualification.diagnostic??null);
  let tools;try{tools=await observeUploadTools({run,tempRoot,definitionsRoot,extractorPath,deadlineMs,signal:options.signal,
   ...(options.paths===undefined?{}:{paths:options.paths}),...(options.readFileImpl===undefined?{}:{readFileImpl:options.readFileImpl})});}
  catch{return disabled(['uploads.native.tools']);}
