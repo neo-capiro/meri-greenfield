@@ -32,9 +32,18 @@ test('a host that cannot attest the sandbox or observe its tools yields null por
  const unadmitted=await composeUploadNativeHost({configuration:configuration(declarations),tempRoot,
   run:async(role,options)=>({stdout:Buffer.from(JSON.stringify({...sandboxed(options.cwd),noNewPrivs:0})),receipt:{exitCode:0}})});
  assert.deepEqual(unadmitted.missing,['uploads.native.sandbox']);assert.equal(unadmitted.scanner,null);
+ assert.equal(unadmitted.reason,'UPLOAD_SANDBOX_UNQUALIFIED');assert.deepEqual(unadmitted.requirements,['noNewPrivileges']);
  const noTools=await composeUploadNativeHost({configuration:configuration(declarations),tempRoot,
   run:async(role,options)=>role==='probe'?{stdout:Buffer.from(JSON.stringify(sandboxed(options.cwd))),receipt:{exitCode:0}}:Promise.reject(Object.assign(Error('x'),{code:'UPLOAD_SANDBOX_REFUSED'}))});
  assert.deepEqual(noTools.missing,['uploads.native.tools']);assert.equal(noTools.scanner,null);
+});
+
+test('a missing scratch root is reported as the workspace failure, not a generic sandbox gap',async()=>{
+ const tempRoot=join(tmpdir(),'meri-missing-'+Date.now());
+ const host=await composeUploadNativeHost({configuration:configuration(declarations),tempRoot,
+  run:async()=>assert.fail('no probe runs after the workspace cannot be created')});
+ assert.deepEqual(host.missing,['uploads.native.sandbox']);assert.equal(host.reason,'ENOENT');
+ assert.equal(host.scanner,null);assert.equal(host.requirements,undefined);
 });
 
 test('an observed host yields the scanner/extractor join A5 binds into createUploadInspection',async()=>{

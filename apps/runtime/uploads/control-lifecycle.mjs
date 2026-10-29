@@ -103,6 +103,8 @@ export function compileUploadNativeConfiguration(configuration){
 }
 
 const unavailable=(missing,host)=>Object.freeze({inspection:null,host,missing:Object.freeze([...missing]),
+ ...(typeof host?.reason==='string'?{reason:host.reason}:{}),
+ ...(Array.isArray(host?.requirements)&&host.requirements.length?{requirements:Object.freeze([...host.requirements])}:{}),
  provisionDefinitions:typeof host?.provisionDefinitions==='function'?host.provisionDefinitions:null});
 
 /** Compose the mounted inspection for CONTROL, or an honest unavailable handle.
