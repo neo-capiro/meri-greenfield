@@ -9,6 +9,10 @@ export const UPLOAD_SOURCE_SCHEMA='meri.native-upload-source/1';
 export {HEARING_SOURCE_EVENT} from './hearing-semantics.mjs';
 export {BILL_TEXT_SOURCE_EVENT} from './semantics.mjs';
 export {UPLOAD_SOURCE_EVENT} from './upload-semantics.mjs';
+/** A native clarifying question is a run event, not a source: it carries the exact question set the user must answer. */
+export const USER_QUESTION_PENDING_EVENT='question.pending';
+export const USER_QUESTION_ANSWERED_EVENT='question.answered';
+export const USER_QUESTION_EVENT_SCHEMA_VERSION='1.0.0';
 export const BILL_TEXT_SOURCE_PATH='/api/conversations/source-read';
 export const billTextSourceErrors=Object.freeze({...historyErrorStatuses,SOURCE_REFERENCE_NOT_FOUND:Object.freeze([404]),SOURCE_REFERENCE_STALE:Object.freeze([409]),SOURCE_REFERENCE_UNAVAILABLE:Object.freeze([503]),SOURCE_REQUEST_INVALID:Object.freeze([400])});
 export const billTextSourceMetadata=Object.freeze({version:'1.0.0',packageVersion:'0.1.15',path:BILL_TEXT_SOURCE_PATH,method:'POST',requestBytes:4096,responseBytes:131072,

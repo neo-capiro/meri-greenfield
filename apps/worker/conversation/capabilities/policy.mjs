@@ -11,14 +11,16 @@ const fail=code=>{throw Object.assign(Error(code),{code});};
 export const SUBAGENT_TYPES=Object.freeze(['research','analysis','artifact_production','verification']);
 /** Built-in file tools. Bash is not among them: it needs its own explicit `bash` flag (and, at run time, the SDK
  * sandbox attestation), so enabling `workspaceTools` never makes Bash eligible. */
-export const WORKSPACE_TOOLS=Object.freeze(['Read','Write','Edit','Glob','Grep']);
+export const WORKSPACE_TOOLS=Object.freeze(['Read','Write','Edit','Glob','Grep','NotebookEdit']);
 export const MAX_PARALLEL_SUBAGENTS=4;
 export const MAX_SANDBOX_NETWORK_DOMAINS=32;
 // PROPOSAL P8 (local fields pending dot): `generalReads` (default false) admits the general `meri_reads` server and
 // `readFamilies` is its allowlist over the read families it can construct (`reads/families.mjs`).
 // PROPOSAL P-INT-3 (local field pending dot): `governedIntents` (default false) admits the prepare-only `meri_intents`
 // server (`intents/runtime.mjs`). It grants nothing: every preparation and later execution keeps its owner's checks.
-export const POLICY_FLAGS=Object.freeze(['subagents','auditHooks','compactionHooks','skillPlugin','workspaceTools','subagentProgress','bash','generalReads','governedIntents']);
+// `userQuestions` (default false) admits the native `AskUserQuestion` tool through `capabilities/questions.mjs`. It adds
+// no authority: an answer resolves one suspended question call and grants no tool, approval or external effect.
+export const POLICY_FLAGS=Object.freeze(['subagents','auditHooks','compactionHooks','skillPlugin','workspaceTools','subagentProgress','bash','generalReads','governedIntents','userQuestions']);
 export const POLICY_LISTS=Object.freeze(['subagentTypes','workspaceToolNames','skillNames','sandboxNetworkDomains','readFamilies','activeReadOperations']);
 export const POLICY_KEYS=Object.freeze([...POLICY_FLAGS,...POLICY_LISTS,'maxParallelSubagents']);
 const SKILL_NAME=/^[a-z0-9][a-z0-9-]{0,63}$/u;
@@ -35,7 +37,7 @@ function allowlist(value,member,max){
 /** @param {readonly string[]} universe */
 const among=universe=>(/** @type {unknown} */v)=>typeof v==='string'&&universe.includes(v);
 /** @typedef {{id:string,version:string}} OperationRef */
-/** @typedef {{subagents:boolean,auditHooks:boolean,compactionHooks:boolean,skillPlugin:boolean,workspaceTools:boolean,subagentProgress:boolean,bash:boolean,generalReads:boolean,governedIntents:boolean,subagentTypes:readonly string[],maxParallelSubagents:number,workspaceToolNames:readonly string[],skillNames:readonly string[]|null,sandboxNetworkDomains:readonly string[],readFamilies:readonly string[],activeReadOperations:readonly OperationRef[]}} CapabilityPolicy */
+/** @typedef {{subagents:boolean,auditHooks:boolean,compactionHooks:boolean,skillPlugin:boolean,workspaceTools:boolean,subagentProgress:boolean,bash:boolean,generalReads:boolean,governedIntents:boolean,userQuestions:boolean,subagentTypes:readonly string[],maxParallelSubagents:number,workspaceToolNames:readonly string[],skillNames:readonly string[]|null,sandboxNetworkDomains:readonly string[],readFamilies:readonly string[],activeReadOperations:readonly OperationRef[]}} CapabilityPolicy */
 /** @param {OperationRef} op */
 const readOperationKey=op=>`${op.id}\u0000${op.version}`;
 const DEFERRED_NAMES=new Set(catalog.originals.filter(row=>row.disposition==='deferred').map(row=>row.id));
@@ -68,7 +70,7 @@ export function assertCapabilityPolicy(value){
  for(const flag of POLICY_FLAGS)if(p[flag]!==undefined&&typeof p[flag]!=='boolean')fail('CAPABILITY_POLICY_REFUSED');
  const parallel=p.maxParallelSubagents??2;if(!Number.isSafeInteger(parallel)||parallel<1||parallel>MAX_PARALLEL_SUBAGENTS)fail('CAPABILITY_POLICY_REFUSED');
  /** @type {CapabilityPolicy} */
- const policy={subagents:p.subagents===true,auditHooks:p.auditHooks===true,compactionHooks:p.compactionHooks===true,skillPlugin:p.skillPlugin===true,workspaceTools:p.workspaceTools===true,subagentProgress:p.subagentProgress===true,bash:p.bash===true,generalReads:p.generalReads===true,governedIntents:p.governedIntents===true,
+ const policy={subagents:p.subagents===true,auditHooks:p.auditHooks===true,compactionHooks:p.compactionHooks===true,skillPlugin:p.skillPlugin===true,workspaceTools:p.workspaceTools===true,subagentProgress:p.subagentProgress===true,bash:p.bash===true,generalReads:p.generalReads===true,governedIntents:p.governedIntents===true,userQuestions:p.userQuestions===true,
   subagentTypes:p.subagentTypes===undefined?SUBAGENT_TYPES:allowlist(p.subagentTypes,among(SUBAGENT_TYPES),SUBAGENT_TYPES.length),maxParallelSubagents:parallel,
   workspaceToolNames:p.workspaceToolNames===undefined?WORKSPACE_TOOLS:allowlist(p.workspaceToolNames,among(WORKSPACE_TOOLS),WORKSPACE_TOOLS.length),
   skillNames:p.skillNames===undefined||p.skillNames===null?null:allowlist(p.skillNames,v=>typeof v==='string'&&SKILL_NAME.test(v),32),

@@ -82,6 +82,59 @@
               "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
             },
             "intent": {
+              "const": "answer"
+            },
+            "questionId": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+            },
+            "answers": {
+              "type": "object",
+              "minProperties": 1,
+              "maxProperties": 4,
+              "propertyNames": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 1000
+              },
+              "additionalProperties": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 10000
+                  },
+                  {
+                    "type": "array",
+                    "minItems": 1,
+                    "maxItems": 4,
+                    "uniqueItems": true,
+                    "items": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 10000
+                    }
+                  }
+                ]
+              }
+            }
+          },
+          "required": [
+            "controlId",
+            "intent",
+            "questionId",
+            "answers"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "controlId": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+            },
+            "intent": {
               "const": "resume"
             },
             "checkpointId": {
@@ -142,6 +195,7 @@
             "steer",
             "pause",
             "approval.wait",
+            "answer",
             "resume",
             "fork"
           ]

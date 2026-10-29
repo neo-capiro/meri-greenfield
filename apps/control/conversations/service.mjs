@@ -205,7 +205,7 @@ export function createConversationService({sessions,store,dispatcher,versions,fi
   const capabilities=await life.run(signal=>capabilityPort.forRun({tenantId:binding.tenantId,actorId:binding.actorId,conversationId:binding.conversationId,actorRole:role.actorRole,signal}));
   return {...result,...(capabilities===null?{}:{capabilities})};
  }});}
- async function publish({credential,binding,event,signal}){validateShape('RunBinding',binding);const e=bounded(event);own(e,['eventId','createdAt','type','data']);if(!['run.status','message.delta'].includes(e.type))fail('EVENT_TYPE_REFUSED');return operation(credential,signal,async(c,life)=>{if(!same(c.binding,binding))fail('STALE_WRITER');const result=await life.run(()=>store.append(binding,e,life.check,c.scopes));if(!same(result.scopes,c.scopes))fail('SCOPE_REFUSED');return result;});}
+ async function publish({credential,binding,event,signal}){validateShape('RunBinding',binding);const e=bounded(event);own(e,['eventId','createdAt','type','data']);if(!['run.status','message.delta','question.pending','question.answered'].includes(e.type))fail('EVENT_TYPE_REFUSED');return operation(credential,signal,async(c,life)=>{if(!same(c.binding,binding))fail('STALE_WRITER');const result=await life.run(()=>store.append(binding,e,life.check,c.scopes));if(!same(result.scopes,c.scopes))fail('SCOPE_REFUSED');return result;});}
  async function recordUsage({credential,binding,input,signal}){
   validateShape('RunBinding',binding);const value=assertUsageInput(input);
   if(typeof store.recordUsage!=='function'||typeof store.nextRuns?.execution!=='function'||typeof store.lifecycle?.execution!=='function')fail('SDK_USAGE_UNAVAILABLE');
