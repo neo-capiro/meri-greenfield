@@ -21,10 +21,20 @@ const key=op=>`${op.id}@${op.version}`,deny=code=>{throw nativeReadFault(code);}
 const ORDINARY_FAMILIES=new Set(['action-items-complete','memory-proposals','client-knowledge-memory','client-knowledge-monday','client-documents','client-knowledge-profile','tenant-contacts','entity-candidates','meeting-source','operational-reads','mail','research-portfolio','research-portfolio-evidence']);
 const uuid=digest=>`${digest.slice(0,8)}-${digest.slice(8,12)}-5${digest.slice(13,16)}-a${digest.slice(17,20)}-${digest.slice(20,32)}`;
 
+const MAX_EXTERNAL_RECORDS=8;
+/** One bounded, per-run collection of external provider facts. No global counter and no content. */
+function createExternalUsage(){const records=[];let truncated=false;
+ return {record(facts){if(records.length>=MAX_EXTERNAL_RECORDS){truncated=true;return;}records.push(Object.freeze({...facts}));},
+  snapshot(){if(!records.length&&!truncated)return undefined;
+   const calls=records.slice().sort((a,b)=>a.attempts-b.attempts||String(a.outcome).localeCompare(String(b.outcome)));
+   const attempts=calls.reduce((n,c)=>n+c.attempts,0),estimateMicroUsd=calls.reduce((n,c)=>n+c.estimateMicroUsd,0);
+   const unknown=calls.some(c=>c.outcome==='unknown'),failed=calls.some(c=>c.outcome==='failed');
+   return Object.freeze({provider:calls[0].provider,attempts,estimateMicroUsd,billedMicroUsd:null,
+    outcome:unknown?'unknown':failed?'failed':'completed',calls:Object.freeze(calls),truncated});}};}
 export function prepareReadFamilies({familyIds,coreOrigin,fetchImpl,now,newId,capabilityPolicy,defaultCongress,getNativeCredential,getServiceSecret,getReadModeServiceSecret,memoryContexts,primaryCredentials}){
  const prepared=prepareGeneralReadFamilyHandlers({familyIds});
  async function createGateway({binding,current,approvedReads,signal,deadlineMs,objectiveCore,routineCore,capabilityPolicy:runCapabilityPolicy=capabilityPolicy,readCapabilityRole}){
-  const started=now();
+  const started=now(),externalUsage=createExternalUsage();
   const initial=await current(),objective=objectiveCore?await objectiveCore.forBinding({binding,signal}):null,routine=routineCore?await routineCore.forBinding({binding,signal,deadlineMs}):null,job=objective??routine;
   if(objective&&routine||job&&((objective?job.current.clientId:job.record.selectedClientId)!==initial.selectedClientId||hash(job.record.binding)!==hash(binding)))deny('ACCESS_DENIED');
   // forBinding already obtained this request's first job observation. Consume it once; the post-source snapshot reobserves.
@@ -60,7 +70,8 @@ export function prepareReadFamilies({familyIds,coreOrigin,fetchImpl,now,newId,ca
    if(NATIVE_READ_FAMILIES.includes(family))families[family]={origin:coreOrigin,fetchImpl,maxRequestMs:approvedReads.maxExecuteMs,maxResponseBytes:approvedReads.maxResponseBytes,
     ...(readSource?{readSource}:{credentialsForCall:credentials.credentialsForCall}),...(family==='client-registry'?{authorizeResultForCall:credentials.authorizeResultForCall}:{}),
     // The managed search producer's own credential boundary; provider-only, never a Core secret.
-    ...(family==='public-web'&&primaryCredentials!==undefined?{primaryCredentials}:{})};
+    ...(family==='public-web'&&primaryCredentials!==undefined?{primaryCredentials}:{}),
+    ...(family==='public-web'?{primaryUsage:facts=>externalUsage.record(facts)}:{})};
    else if(ORDINARY_FAMILIES.has(family)){
     const transport={fetchImpl,maxRequestMs:approvedReads.maxExecuteMs,maxResponseBytes:approvedReads.maxResponseBytes,...(readSource?{readSource}:{getCredentials:ordinaryCredentials})};
     if(!readSource&&['research-portfolio','research-portfolio-evidence'].includes(family))transport.getCredentials=async request=>{
@@ -122,7 +133,7 @@ export function prepareReadFamilies({familyIds,coreOrigin,fetchImpl,now,newId,ca
   const dispatch=createToolDispatch({catalog:{entry:op=>entries.get(key(op))??null},current:dispatchCurrent,contextFor,
    limits:{maxRequestMs:Math.min(approvedReads.maxExecuteMs,Math.max(1,deadlineMs-now())),maxRequestBytes:approvedReads.maxRequestBytes,maxResponseBytes:approvedReads.maxResponseBytes},
    now,newId,sourceEnabled:true,nativeReadContextPorts:credentials.nativeReadContextPorts,...(memoryContextPorts?{memoryContextPorts}:{}),...(mailContextPorts?{mailContextPorts}:{}),...(defaultCongress===undefined?{}:{defaultCongress})});
-  return Object.freeze({readAvailability,execute:({operation,arguments:args,signal:requestSignal})=>{
+  return Object.freeze({externalUsage:()=>externalUsage.snapshot(),readAvailability,execute:({operation,arguments:args,signal:requestSignal})=>{
    if(!approved.has(key(operation)))deny('UNAVAILABLE');
    return dispatch.execute(JSON.stringify({operation,arguments:args}),requestSignal);
   }});

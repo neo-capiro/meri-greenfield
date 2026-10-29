@@ -23,7 +23,7 @@ export function createReadsOwner(configuration){
  validateShape('RunBinding',binding);
  if(typeof now!=='function'||typeof c.createGateway!=='function'||c.captureSource!==undefined&&typeof c.captureSource!=='function'||c.assertReadArguments!==undefined&&typeof c.assertReadArguments!=='function')deny('CONFIGURATION');
  const authenticate=storageMethod(c.execution,'authenticate');
- async function handle(operation,raw,credential,signal,operationDeadlineMs,onPublicationStart){let life,publicationStarted=false,publicationSettled=false;try{
+ async function handle(operation,raw,credential,signal,operationDeadlineMs,onPublicationStart){let life,gateway,publicationStarted=false,publicationSettled=false;try{
   if(!config?.enabled)deny('UNAVAILABLE');nativeSignal(signal);
   const op='runner/reads/'+operation,request=assertNativeReadRequest(op,raw),inputSha256=hash(request),started=now();
   if(!same(request.binding,binding))deny('ACCESS_DENIED');
@@ -50,8 +50,10 @@ export function createReadsOwner(configuration){
    pinned??=value;life.limitDeadline(value.execution.expiresAtMs);life.check();return value;
   }
   await current();
-  const gateway=await life.run(signal=>c.createGateway({binding,credential,current,approvedReads:config,signal,deadlineMs:Math.min(deadlineMs,pinned.execution.expiresAtMs)}));
+  gateway=await life.run(signal=>c.createGateway({binding,credential,current,approvedReads:config,signal,deadlineMs:Math.min(deadlineMs,pinned.execution.expiresAtMs)}));
   const availability=storageMethod(gateway,'readAvailability'),execute=storageMethod(gateway,'execute');
+  // Optional trusted external accounting port; absent means the run reports no external facts.
+  const observedFacts=()=>gateway!==undefined&&typeof gateway.externalUsage==='function'?gateway.externalUsage():undefined;
   async function snapshot(){
    const s=assertNativeReadSnapshot(await life.run(signal=>availability({signal})),{binding,policyRevision:pinned.policyRevision,now});
    if(s.installation.baseCatalogSha256!==hash(catalog))deny('UNAVAILABLE');
@@ -76,15 +78,21 @@ export function createReadsOwner(configuration){
   await current();life.check();
   const common={schemaVersion,binding,inputSha256,policyRevision:pinned.policyRevision,executionSha256:pinned.executionSha256,checkedAtMs:now(),
    expiresAtMs:Math.min(pinned.execution.expiresAtMs,after.installation.expiresAtMs,after.discovery.expiresAtMs)};
+  const observed=operation==='execute'&&typeof gateway.externalUsage==='function'?gateway.externalUsage():undefined;
   const response=operation==='execute'?{...common,operation:request.operation,deliveryId:request.deliveryId,installationId:request.installationId,
-   executionCatalogSha256:request.executionCatalogSha256,resultJson:result,resultSha256:hash(data(JSON.parse(result))),outputBytes:Buffer.byteLength(result,'utf8')}:
+   executionCatalogSha256:request.executionCatalogSha256,resultJson:result,resultSha256:hash(data(JSON.parse(result))),outputBytes:Buffer.byteLength(result,'utf8'),
+   ...(observed===undefined?{}:{externalUsage:observed})}:
    {...common,installation:{...after.installation,operations:eligible(after)},discovery:{...after.discovery,operations:eligible(after)}};
   const validated=assertNativeReadResponse(op,response,{request,started,now,policyRevision:pinned.policyRevision,executionSha256:pinned.executionSha256,maxResponseBytes:config.maxResponseBytes});
   if(operation==='execute'&&c.captureSource){await life.run(signal=>c.captureSource({request,response:validated,scopes:pinned.scopes,signal,check:life.check,onPublicationStart:()=>{publicationStarted=true;onPublicationStart?.();}}));publicationSettled=true;if(publicationStarted)await current();life.check();}
   return validated;
  }catch(error){const code=nativeReadFailureCode(error);
+  // A submitted call whose outcome is unobserved must still reach the caller as facts, never as silence.
+  let facts;try{facts=typeof gateway?.externalUsage==='function'?gateway.externalUsage():undefined;}catch{facts=undefined;}
   // A deadline cannot turn a potentially committed reference into a definite failure.
   if(code==='SOURCE_PUBLICATION_UNKNOWN'||publicationStarted&&!publicationSettled&&life?.signal.aborted)throw nativeReadFault('SOURCE_PUBLICATION_UNKNOWN');
-  life?.check();const gateway=safeFailure(error).message;throw nativeReadFault(code??(gateway!=='INTERNAL_ERROR'?gateway:'UNAVAILABLE'));}finally{life?.close();}}
+  life?.check();const failureCode=safeFailure(error).message,thrown=nativeReadFault(code??(failureCode!=='INTERNAL_ERROR'?failureCode:'UNAVAILABLE'));
+  // The caller still learns what the provider was asked, even when the outcome is unknown.
+  if(facts!==undefined)thrown.externalUsage=facts;throw thrown;}finally{life?.close();}}
  return Object.freeze({handle});
 }

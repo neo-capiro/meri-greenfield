@@ -32,9 +32,19 @@ export function assertNativeReadTaskAssertion(raw,{binding,operation,inputSha256
 export function assertNativeReadSnapshot(raw,{binding,policyRevision,now}){try{const v=data(raw);own(v,['installation','discovery']);const i=own(v.installation,['installationId','baseCatalogSha256','executionCatalogSha256','operations','checkedAtMs','expiresAtMs']),d=own(v.discovery,['binding','policyRevision','operations','checkedAtMs','expiresAtMs']);
  validateShape('RunBinding',d.binding);if(!uuid(i.installationId)||!digest(i.baseCatalogSha256)||!digest(i.executionCatalogSha256)||!same(d.binding,binding)||d.policyRevision!==policyRevision)fail('UNAVAILABLE');operations(i.operations);operations(d.operations);clocks(i,{now});clocks(d,{now});return v;
  }catch{throw nativeReadFault('UNAVAILABLE');}}
+const EXTERNAL_OUTCOMES=['completed','failed','unknown'];
+export function assertNativeReadExternalFacts(value){
+ const u=own(value,['provider','attempts','estimateMicroUsd','billedMicroUsd','outcome','calls','truncated']);
+ if(typeof u.provider!=='string'||!/^[a-z0-9][a-z0-9-]{0,63}$/u.test(u.provider)||!integer(u.attempts,0,64)||
+  !integer(u.estimateMicroUsd,0,1000000)||u.billedMicroUsd!==null||!EXTERNAL_OUTCOMES.includes(u.outcome)||
+  typeof u.truncated!=='boolean'||!Array.isArray(u.calls)||u.calls.length>8)fail('INVALID_RESULT');
+ for(const call of u.calls){const c=own(call,['provider','attempts','outcome','estimateMicroUsd','billedMicroUsd']);
+  if(c.provider!==u.provider||!integer(c.attempts,1,64)||!EXTERNAL_OUTCOMES.includes(c.outcome)||
+   !integer(c.estimateMicroUsd,0,1000000)||c.billedMicroUsd!==null)fail('INVALID_RESULT');}
+ return value;}
 export function assertNativeReadResponse(operation,raw,{request,started,now,policyRevision,executionSha256,maxResponseBytes=16777216}){try{const v=data(raw),execute=operation==='runner/reads/execute';if(!nativeReadOperations.includes(operation))fail('INVALID_RESULT');
- own(v,['schemaVersion','binding','inputSha256','policyRevision','executionSha256','checkedAtMs','expiresAtMs',...(execute?['operation','deliveryId','installationId','executionCatalogSha256','resultJson','resultSha256','outputBytes']:['installation','discovery'])]);version(v);validateShape('RunBinding',v.binding);
+ own(v,['schemaVersion','binding','inputSha256','policyRevision','executionSha256','checkedAtMs','expiresAtMs',...(execute?['operation','deliveryId','installationId','executionCatalogSha256','resultJson','resultSha256','outputBytes']:['installation','discovery'])],execute?['externalUsage']:[]);version(v);validateShape('RunBinding',v.binding);
  if(!same(v.binding,request.binding)||v.inputSha256!==hash(request)||!digest(v.executionSha256)||typeof v.policyRevision!=='string'||!v.policyRevision||v.policyRevision.length>255||policyRevision!==undefined&&v.policyRevision!==policyRevision||executionSha256!==undefined&&v.executionSha256!==executionSha256||Buffer.byteLength(JSON.stringify(v),'utf8')>maxResponseBytes)fail('INVALID_RESULT');clocks(v,{started,now});
- if(execute){if(!same(v.operation,request.operation)||v.deliveryId!==request.deliveryId||v.installationId!==request.installationId||v.executionCatalogSha256!==request.executionCatalogSha256||typeof v.resultJson!=='string'||!integer(v.outputBytes,0,maxResponseBytes)||Buffer.byteLength(v.resultJson,'utf8')!==v.outputBytes||!digest(v.resultSha256)||hash(data(JSON.parse(v.resultJson)))!==v.resultSha256)fail('INVALID_RESULT');}
+ if(execute){if(v.externalUsage!==undefined)assertNativeReadExternalFacts(v.externalUsage);if(!same(v.operation,request.operation)||v.deliveryId!==request.deliveryId||v.installationId!==request.installationId||v.executionCatalogSha256!==request.executionCatalogSha256||typeof v.resultJson!=='string'||!integer(v.outputBytes,0,maxResponseBytes)||Buffer.byteLength(v.resultJson,'utf8')!==v.outputBytes||!digest(v.resultSha256)||hash(data(JSON.parse(v.resultJson)))!==v.resultSha256)fail('INVALID_RESULT');}
  else{const s=assertNativeReadSnapshot({installation:v.installation,discovery:v.discovery},{binding:request.binding,policyRevision:v.policyRevision,now});if(v.expiresAtMs>Math.min(s.installation.expiresAtMs,s.discovery.expiresAtMs))fail('INVALID_RESULT');}return v;
  }catch(error){throw nativeReadFault(nativeReadFailureCode(error)==='RESOURCE_LIMIT'?'RESOURCE_LIMIT':'INVALID_RESULT');}}

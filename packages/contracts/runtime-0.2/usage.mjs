@@ -17,8 +17,19 @@ export function assertSdkUsageSnapshot(value){
  }
  return s;
 }
+const EXTERNAL_OUTCOMES=['completed','failed','unknown'];
+/** One narrow validated external-provider accounting field. Estimates only: billed cost stays unknown. */
+function assertExternalSearch(value){
+ const e=own(value,['provider','attempts','estimateMicroUsd','billedMicroUsd','outcome','calls','truncated']);
+ if(!identifier(e.provider)||!count(e.attempts)||e.attempts>64||!count(e.estimateMicroUsd)||e.estimateMicroUsd>1000000||
+  e.billedMicroUsd!==null||!EXTERNAL_OUTCOMES.includes(e.outcome)||typeof e.truncated!=='boolean'||
+  !Array.isArray(e.calls)||e.calls.length>8)fail();
+ for(const call of e.calls){const c=own(call,['provider','attempts','outcome','estimateMicroUsd','billedMicroUsd']);
+  if(c.provider!==e.provider||!count(c.attempts)||c.attempts<1||c.attempts>64||!EXTERNAL_OUTCOMES.includes(c.outcome)||
+   !count(c.estimateMicroUsd)||c.estimateMicroUsd>1000000||c.billedMicroUsd!==null)fail();}
+ return e;}
 export function assertUsageInput(value){
- const v=data(own(value,['usage','toolsUsed']));if(v.usage!==null)assertSdkUsageSnapshot(v.usage);
+ const v=data(own(value,['usage','toolsUsed'],['externalSearch']));if(v.externalSearch!==undefined)assertExternalSearch(v.externalSearch);if(v.usage!==null)assertSdkUsageSnapshot(v.usage);
  const a=own(v.toolsUsed,['tools','omitted']);if(!Array.isArray(a.tools)||a.tools.length>MAX_TOOL_AUDIT_RECORDS||!count(a.omitted))fail();
  for(const value of a.tools){const t=own(value,['tool','toolUseId','outcome','durationMs']);if(!identifier(t.tool)||!identifier(t.toolUseId)||!['completed','failed'].includes(t.outcome)||t.durationMs!==null&&!count(t.durationMs))fail();}
  if(Buffer.byteLength(JSON.stringify(v))>131072)fail();return v;

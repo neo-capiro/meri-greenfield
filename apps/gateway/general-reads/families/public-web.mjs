@@ -12,11 +12,12 @@ const primary=configuration=>{
  if(target===undefined)return undefined;
  return createPrimaryWebSearch({...target,...(configuration.now===undefined?{}:{now:configuration.now}),
   ...(configuration.fetchImpl===undefined?{}:{fetchImpl:configuration.fetchImpl}),
-  ...(configuration.primaryCredentials===undefined?{}:{credentials:configuration.primaryCredentials})});
+  ...(configuration.primaryCredentials===undefined?{}:{credentials:configuration.primaryCredentials}),
+  ...(configuration.primaryUsage===undefined?{}:{onUsage:configuration.primaryUsage})});
 };
 export const createHandlers=configuration=>{
  // Provider-only ports configure the managed search producer; the shared native/Core handler has a closed
  // allowlist and must never see them (nor may Core secrets be forwarded to managed search).
- const {primaryCredentials,...shared}=configuration??{};
- return createPublicWebHandlers(shared,familyOperations(id),primary({...shared,...(primaryCredentials===undefined?{}:{primaryCredentials})}));
+ const {primaryCredentials,primaryUsage,...shared}=configuration??{};
+ return createPublicWebHandlers(shared,familyOperations(id),primary({...shared,...(primaryCredentials===undefined?{}:{primaryCredentials}),...(primaryUsage===undefined?{}:{primaryUsage})}));
 };

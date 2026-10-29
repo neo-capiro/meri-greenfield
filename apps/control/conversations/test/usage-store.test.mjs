@@ -55,3 +55,44 @@ test('resume/fork use only the exact persisted parent cumulative snapshot; rewin
   const receipt=await f.store.recordUsage({binding:target,scopes,input:usage,lineage},check);assert.equal(receipt.status,mode==='rewind'?'unavailable':'recorded');assert.equal(r.sdk_charge_micro_usd,mode==='rewind'?null:50000);assert.equal(r.sdk_usage.parentRunId,binding.runId);
  }
 });
+
+// ---- distinct external provider facts ride the same one-run usage row ----
+const external=(outcome='completed',attempts=1)=>({provider:'agentcore-web-search',attempts,estimateMicroUsd:7005*attempts,
+ billedMicroUsd:null,outcome,calls:[{provider:'agentcore-web-search',attempts,outcome,estimateMicroUsd:7005*attempts,billedMicroUsd:null}],truncated:false});
+const withExternal=(facts=external())=>({...payload(),externalSearch:facts});
+
+test('external provider facts persist as distinct JSON beside the SDK snapshot and replay exactly',async()=>{
+ const f=fixture();await f.start();
+ assert.deepEqual(await f.record(withExternal()),{status:'recorded',reason:null,replayed:false});
+ const saved=structuredClone(f.saved().sdk_usage);
+ assert.equal(saved.externalSearch.provider,'agentcore-web-search');
+ assert.equal(saved.externalSearch.attempts,1);
+ assert.equal(saved.externalSearch.estimateMicroUsd,7005);
+ assert.equal(saved.externalSearch.billedMicroUsd,null,'no billed cost is invented');
+ assert.equal(saved.chargeMicroUsd,100000,'the SDK charge is unchanged by external facts');
+ assert.equal(saved.cumulative.chargeMicroUsd,100000);
+ assert.equal(saved.toolsUsed.tools[0].tool,'Read');
+ // Exact replay from a reconstructed owner returns the same receipt and writes nothing.
+ const fresh=createPostgresConversationStore({pool:f.pool});
+ assert.equal((await fresh.recordUsage({binding,scopes,input:withExternal()},check)).replayed,true);
+ // Changed external facts are a changed payload for the same run row.
+ await assert.rejects(f.record(withExternal(external('unknown'))),/SDK_USAGE_REPLAY_REFUSED/);
+ await assert.rejects(f.record(withExternal(external('completed',2))),/SDK_USAGE_REPLAY_REFUSED/);
+ assert.deepEqual(f.saved().sdk_usage,saved);
+ assert.equal(f.state.calls.filter(s=>s.startsWith('UPDATE meri_conversations.runs SET sdk_usage=')).length,1);
+});
+
+test('an unobserved submission is recorded as unknown with no billed zero, and absence stays absent',async()=>{
+ const f=fixture();await f.start();await f.record(withExternal(external('unknown')));
+ const saved=f.saved().sdk_usage;
+ assert.equal(saved.externalSearch.outcome,'unknown');
+ assert.equal(saved.externalSearch.billedMicroUsd,null);
+ assert.equal(saved.chargeMicroUsd,100000,'unknown external spend never enters the SDK charge');
+ const g=fixture();await g.start();await g.record();
+ assert.equal(Object.hasOwn(g.saved().sdk_usage,'externalSearch'),false,'historical rows keep their exact shape');
+ // Malformed facts are refused before any write.
+ const h=fixture();await h.start();
+ await assert.rejects(h.record(withExternal({...external(),billedMicroUsd:0})),/RUNTIME_USAGE_REFUSED/);
+ await assert.rejects(h.record(withExternal({...external(),attempts:-1})),/RUNTIME_USAGE_REFUSED/);
+ assert.equal(h.saved().sdk_usage,undefined);
+});

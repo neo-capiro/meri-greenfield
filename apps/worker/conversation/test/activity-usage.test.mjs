@@ -13,7 +13,7 @@ const runtime=()=>({binding,versions,cwd:`/workspace/conversations/${binding.con
  deadlineMs:Date.now()+5000,maxTurns:2,maxCostMicroUSD:1000000,maxOutputBytes:1024});
 const audit={tools:[{tool:'Read',toolUseId:'toolu_synthetic',outcome:'completed',durationMs:null}],omitted:0};
 
-async function fixture(t,{ending='result',accounting,claimUnknown=false,prepareFails=false,abort}={}){
+async function fixture(t,{ending='result',accounting,claimUnknown=false,prepareFails=false,abort,externalSearch}={}){
  const f=await applicationFixture({initialInput:true});t.after(()=>f.close());
  await f.service.allocateInput({credential:f.credential,input:f.input});
  await f.service.submit({credential:f.credential,input:f.input});
@@ -22,6 +22,8 @@ async function fixture(t,{ending='result',accounting,claimUnknown=false,prepareF
    if(claimUnknown&&args.event.data.state==='starting')throw Error('claim acknowledgement unknown');return receipt;},
   async recordUsage(args){deliveries.push(args);return accounting?accounting(args):f.service.recordUsage({credential:f.credential,...args});}};
  const execute=createConversationActivity({runOwner,newId:()=>id(n++),terminalAttemptMs:50,
+  // The trusted reads port carries the run's external provider facts; nothing else is added here.
+  ...(externalSearch===undefined?{}:{generalReads:{readAvailability(){},execute(){},externalUsage:()=>externalSearch}}),
   prepareRuntime:async()=>{if(prepareFails)throw Error('runtime unavailable');return runtime();},
   query({options}){queries++;return {async *[Symbol.asyncIterator](){
    await options.hooks.PostToolUse.at(-1).hooks[0]({tool_name:'Read',tool_use_id:'toolu_synthetic',
@@ -94,4 +96,25 @@ test('cancelled iterator preserves native audit with unavailable usage under its
  assert.equal((await f.service.history({credential:f.credential})).run.state,'cancelled');
  assert.equal(f.deliveries.length,1);assert.equal(f.saved().sdk_usage.status,'unavailable');
  assert.deepEqual(f.saved().sdk_usage.toolsUsed,audit);assert.deepEqual(f.counts(),{queries:1,closes:1});
+});
+
+test('the single terminal usage payload also carries the run external provider facts',async t=>{
+ const facts={provider:'agentcore-web-search',attempts:1,estimateMicroUsd:7005,billedMicroUsd:null,outcome:'completed',
+  calls:[{provider:'agentcore-web-search',attempts:1,outcome:'completed',estimateMicroUsd:7005,billedMicroUsd:null}],truncated:false};
+ const f=await fixture(t,{ending:'result',externalSearch:facts});
+ assert.deepEqual(await f.execute({binding}),{state:'completed'});
+ assert.equal(f.deliveries.length,1,'one delivery, not a second external writer');
+ const [delivery]=f.deliveries;
+ assert.deepEqual(delivery.input.externalSearch,facts);
+ assert.equal(delivery.input.usage.sdkEstimateUsd,0.001,'the SDK facts are preserved');
+ assert.equal(delivery.input.toolsUsed.tools[0].tool,'Read');
+ const history=await f.service.history({credential:f.credential});
+ assert.equal(history.run.state,'completed','external facts never fail a completed answer');
+});
+
+test('a run without external facts delivers the unchanged payload',async t=>{
+ const f=await fixture(t,{ending:'result'});
+ assert.deepEqual(await f.execute({binding}),{state:'completed'});
+ assert.equal(f.deliveries.length,1);
+ assert.equal(Object.hasOwn(f.deliveries[0].input,'externalSearch'),false,'absence stays absent, never zero');
 });
