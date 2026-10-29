@@ -7,13 +7,14 @@ import {tmpdir} from 'node:os';
 import {createHash} from 'node:crypto';
 import {join} from 'node:path';
 import {realpath,mkdtemp,readFile,writeFile,mkdir} from 'node:fs/promises';
-import {RENDERER_PROBE_SCHEMA,RENDERER_CHILD_ENV} from '../../../artifacts/renderer-qualification.mjs';
+import {RENDERER_PROBE_SCHEMA} from '../../../artifacts/renderer-qualification.mjs';
+import {UPLOAD_CHILD_ENV} from '../native-sandbox.mjs';
 import {composeUploadNativeHost} from '../composition.mjs';
 
 const ZERO='0'.repeat(16),DIGEST='sha256:'+'f'.repeat(64);
 const sandboxed=cwd=>({schema:RENDERER_PROBE_SCHEMA,platform:'linux',uid:[1000,1000,1000,1000],gid:[1000,1000,1000,1000],noNewPrivs:1,
  capabilities:{CapInh:ZERO,CapPrm:ZERO,CapEff:ZERO,CapBnd:ZERO,CapAmb:ZERO},rootMountOptions:'ro,relatime',interfaces:['lo'],
- cgroup:{memoryMax:'1073741824',pidsMax:'64',cpuMax:'50000 100000'},envNames:[...RENDERER_CHILD_ENV],cwd,home:cwd,tmpdir:cwd,
+ cgroup:{memoryMax:'1073741824',pidsMax:'64',cpuMax:'50000 100000'},envNames:[...UPLOAD_CHILD_ENV],cwd,home:cwd,tmpdir:cwd,
  workspace:{mode:0o700,uid:1000},credentialPathsReadable:[{path:'/run/meri/core-secret',readable:false}]});
 const configuration=(native)=>({uploads:{native}});
 const declarations={enabled:true,imageDigest:DIGEST,definitionsRoot:'/srv/meri-definitions',extractorPath:'/opt/meri/extract.py'};
@@ -33,6 +34,8 @@ test('a host that cannot attest the sandbox or observe its tools yields null por
   run:async(role,options)=>({stdout:Buffer.from(JSON.stringify({...sandboxed(options.cwd),noNewPrivs:0})),receipt:{exitCode:0}})});
  assert.deepEqual(unadmitted.missing,['uploads.native.sandbox']);assert.equal(unadmitted.scanner,null);
  assert.equal(unadmitted.reason,'UPLOAD_SANDBOX_UNQUALIFIED');assert.deepEqual(unadmitted.requirements,['noNewPrivileges']);
+ assert.deepEqual(unadmitted.diagnostic.resources,{memoryMax:1073741824,pidsMax:64,cpuMax:50000});
+ assert.deepEqual(unadmitted.diagnostic.credentials,{networkIsolated:true,envCount:UPLOAD_CHILD_ENV.length,allowedCount:UPLOAD_CHILD_ENV.length,envAllowed:true,checked:1,readable:0});
  const noTools=await composeUploadNativeHost({configuration:configuration(declarations),tempRoot,
   run:async(role,options)=>role==='probe'?{stdout:Buffer.from(JSON.stringify(sandboxed(options.cwd))),receipt:{exitCode:0}}:Promise.reject(Object.assign(Error('x'),{code:'UPLOAD_SANDBOX_REFUSED'}))});
  assert.deepEqual(noTools.missing,['uploads.native.tools']);assert.equal(noTools.scanner,null);

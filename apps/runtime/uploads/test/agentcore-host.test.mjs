@@ -12,7 +12,8 @@ import assert from 'node:assert/strict';
 import {tmpdir} from 'node:os';
 import {join} from 'node:path';
 import {realpath,mkdtemp,writeFile} from 'node:fs/promises';
-import {RENDERER_PROBE_SCHEMA,RENDERER_CHILD_ENV} from '../../../artifacts/renderer-qualification.mjs';
+import {RENDERER_PROBE_SCHEMA} from '../../../artifacts/renderer-qualification.mjs';
+import {UPLOAD_CHILD_ENV} from '../native-sandbox.mjs';
 import {validateUploadInspection} from '../../../control/uploads/extraction.mjs';
 import {uploadHash,UPLOAD_MIME} from '../../../control/uploads/policy.mjs';
 import {AGENTCORE_SESSION_HEADER} from '../../agentcore-contract.mjs';
@@ -29,7 +30,7 @@ const SEGMENT=Object.freeze({ordinal:0,text:'fixture text',method:'native',confi
  location:Object.freeze({page:null,slide:null,sheet:null,rowStart:null,rowEnd:null})});
 const sandboxed=cwd=>({schema:RENDERER_PROBE_SCHEMA,platform:'linux',uid:[1000,1000,1000,1000],gid:[1000,1000,1000,1000],noNewPrivs:1,
  capabilities:{CapInh:ZERO,CapPrm:ZERO,CapEff:ZERO,CapBnd:ZERO,CapAmb:ZERO},rootMountOptions:'ro,relatime',interfaces:['lo'],
- cgroup:{memoryMax:'1073741824',pidsMax:'64',cpuMax:'50000 100000'},envNames:[...RENDERER_CHILD_ENV],cwd,home:cwd,tmpdir:cwd,
+ cgroup:{memoryMax:'1073741824',pidsMax:'64',cpuMax:'50000 100000'},envNames:[...UPLOAD_CHILD_ENV],cwd,home:cwd,tmpdir:cwd,
  workspace:{mode:0o700,uid:1000},credentialPathsReadable:[{path:'/run/meri/core-secret',readable:false}]});
 /** The real purpose's one request, built exactly as the transport builds it. */
 const inspectionRequest=({requestId,imageDigest=IMAGE,declaration=DECLARATION,bytes=BYTES,deadlineMs})=>{
@@ -63,6 +64,19 @@ test('the REAL default startup path on an unattested host yields no port, and th
  assert.equal(response.status,503);
  assert.equal((await response.json()).error.code,'UPLOAD_INSPECTION_UNAVAILABLE');
  await app.close({deadlineMs:Date.now()+5000});
+});
+
+test('the unqualified startup handle carries the bounded numeric and credential diagnostic',async()=>{
+ const tempRoot=await realpath(tmpdir());
+ const observation={...sandboxed(tempRoot+'/meri-upload-probe-abc123'),noNewPrivs:0,
+  cgroup:{memoryMax:'max',pidsMax:'64',cpuMax:'max 100000'}};
+ const handle=await composeUploadInspectionHost({environment:{[UPLOAD_INSPECTION_IMAGE_ENVIRONMENT]:IMAGE},scratchRoot:tempRoot,
+  run:async(role,options)=>({stdout:Buffer.from(JSON.stringify({...observation,cwd:options.cwd,home:options.cwd,tmpdir:options.cwd,
+   workspace:{mode:0o700,uid:1000}})),receipt:{exitCode:0}})});
+ assert.equal(handle.inspection,null);assert.equal(handle.reason,'UPLOAD_SANDBOX_UNQUALIFIED');
+ assert.deepEqual(handle.diagnostic.resources,{memoryMax:0,pidsMax:64,cpuMax:0});
+ assert.equal(handle.diagnostic.credentials.envAllowed,true);
+ assert.equal(handle.diagnostic.credentials.allowedCount,UPLOAD_CHILD_ENV.length);
 });
 
 test('an attested host is REALLY composed, and the real application serves its own fixed owner',async()=>{
