@@ -56,19 +56,19 @@
     },
     {
       "name": "py3.13-pip",
-      "version": "26.2.2-r0",
+      "version": "26.2.2-r1",
       "architecture": "aarch64",
-      "source": "https://packages.wolfi.dev/os/aarch64/py3.13-pip-26.2.2-r0.apk",
-      "sha256": "713630cff32fc4116b0aa491565bb1f0fdad210ea48bade2b502d3475d094dab",
-      "bytes": 16573
+      "source": "https://packages.wolfi.dev/os/aarch64/py3.13-pip-26.2.2-r1.apk",
+      "sha256": "34a962e6d79bf3bfd9eca4f73ea8c2688a5535316d27e9f41d01d49f31dfd800",
+      "bytes": 37767
     },
     {
       "name": "py3.13-pip-base",
-      "version": "26.2.2-r0",
+      "version": "26.2.2-r1",
       "architecture": "aarch64",
-      "source": "https://packages.wolfi.dev/os/aarch64/py3.13-pip-base-26.2.2-r0.apk",
-      "sha256": "83d295f369d1396bae0e9a84b6014e9857dba40a1ac4d5215662c34d229e01ce",
-      "bytes": 3999807
+      "source": "https://packages.wolfi.dev/os/aarch64/py3.13-pip-base-26.2.2-r1.apk",
+      "sha256": "66b1b058b55b931e1a925961099d251f0d35ab2958269dc07de76721e7f8983a",
+      "bytes": 4021890
     },
     {
       "name": "libreoffice-26.8",
@@ -1781,11 +1781,11 @@
     },
     {
       "name": "py3-pip-wheel",
-      "version": "26.2.2-r0",
+      "version": "26.2.2-r1",
       "architecture": "aarch64",
-      "source": "https://packages.wolfi.dev/os/aarch64/py3-pip-wheel-26.2.2-r0.apk",
-      "sha256": "2edcf4ac5ff50acd5a3fa804ddef9d46d8981958ddab4667bf5e333764156b55",
-      "bytes": 1815671,
+      "source": "https://packages.wolfi.dev/os/aarch64/py3-pip-wheel-26.2.2-r1.apk",
+      "sha256": "3481499c46ac5ae2b7e10ee50ff80f5c4c0e55501e0d096c8c06437f51283c93",
+      "bytes": 1838069,
       "origin": "py3-pip-wheel",
       "role": "pinned transitive native dependency of the pinned native layers (python, renderer, upload); resolved from the retained vendor-signed index, so the build neither resolves nor fetches it from the rolling live index"
     },
@@ -3246,10 +3246,10 @@
          },
          {
           "name": "py3-pip-wheel",
-          "version": "26.2.2-r0",
-          "filename": "py3-pip-wheel-26.2.2-r0.apk",
-          "sha256": "2edcf4ac5ff50acd5a3fa804ddef9d46d8981958ddab4667bf5e333764156b55",
-          "url": "https://packages.wolfi.dev/os/aarch64/py3-pip-wheel-26.2.2-r0.apk",
+          "version": "26.2.2-r1",
+          "filename": "py3-pip-wheel-26.2.2-r1.apk",
+          "sha256": "3481499c46ac5ae2b7e10ee50ff80f5c4c0e55501e0d096c8c06437f51283c93",
+          "url": "https://packages.wolfi.dev/os/aarch64/py3-pip-wheel-26.2.2-r1.apk",
           "role": "resolved by apk from the mounted retained runtime staging set"
          },
          {
@@ -3314,7 +3314,21 @@
       "packageIndex": "https://packages.wolfi.dev/os/aarch64/APKINDEX.tar.gz",
       "packageIndexSha256": "991dd62e3a14e255819e7ac013a6deded970555e1f0943e6b2709c09a5edbd24",
       "retrievedOn": "2026-10-28",
-      "retainedSignedIndex": {
+      "fixedPipIndex": {
+    "source": "https://packages.wolfi.dev/os/aarch64/APKINDEX.tar.gz",
+    "path": "infra/product-preview/native-apk-index/aarch64-APKINDEX-e37b60006139bac29cffecabf9b1decce4c9636249936e2149ef9c90f6ca7c0c.tar.gz",
+    "sha256": "e37b60006139bac29cffecabf9b1decce4c9636249936e2149ef9c90f6ca7c0c",
+    "bytes": 9152935,
+    "architecture": "aarch64",
+    "role": "second, separate offline repository used by the runtime python install only: the vendor's own signed index carrying the fixed pip trio (CVE-2026-114613, HIGH). The retained 5c84 index above stays authoritative for the rest of the locked closure because this one omits gst-plugins-base 1.29.2-r3 and gstreamer 1.29.2-r4; neither index is edited, merged or synthesized",
+    "trustRoot": "the vendor RSA keys already installed in the pinned base keyring; apk verifies this index signature before selecting any package from it"
+  },
+  "fixedPipPackages": [
+    {"name": "py3.13-pip", "version": "26.2.2-r1", "sha256": "34a962e6d79bf3bfd9eca4f73ea8c2688a5535316d27e9f41d01d49f31dfd800", "bytes": 37767, "from": "fixedPipIndex"},
+    {"name": "py3.13-pip-base", "version": "26.2.2-r1", "sha256": "66b1b058b55b931e1a925961099d251f0d35ab2958269dc07de76721e7f8983a", "bytes": 4021890, "from": "fixedPipIndex"},
+    {"name": "py3-pip-wheel", "version": "26.2.2-r1", "sha256": "3481499c46ac5ae2b7e10ee50ff80f5c4c0e55501e0d096c8c06437f51283c93", "bytes": 1838069, "from": "fixedPipIndex"}
+  ],
+  "retainedSignedIndex": {
         "source": "https://apk.cgr.dev/chainguard/aarch64/APKINDEX.tar.gz",
         "path": "infra/product-preview/native-apk-index/aarch64-APKINDEX-5c84e4b835a811c1624d9692f011df3de446c8011be4dedaabf6f3dbf41ec536.tar.gz",
         "sha256": "5c84e4b835a811c1624d9692f011df3de446c8011be4dedaabf6f3dbf41ec536",
