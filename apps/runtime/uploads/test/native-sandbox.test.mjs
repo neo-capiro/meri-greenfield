@@ -8,6 +8,7 @@ import {join} from 'node:path';
 import {mkdtemp,rm,realpath} from 'node:fs/promises';
 import {RENDERER_PROBE_SCHEMA,RENDERER_CHILD_ENV} from '../../../artifacts/renderer-qualification.mjs';
 import {UPLOAD_SANDBOX_REQUIREMENTS,UPLOAD_ROLE_PREFIX,UPLOAD_IMAGE_PATHS,UPLOAD_CHILD_ENV,evaluateUploadSandbox,qualifyNativeUploadSandbox,
+ resolveEffectiveCgroup,combineCgroupBounds,parseCgroupPath,parseCgroupMountRoot,readHostCgroup,
  uploadSandboxArguments,uploadScanArguments,uploadExtractArguments,runUploadSandbox} from '../native-sandbox.mjs';
 
 const ZERO='0'.repeat(16),DIGEST='sha256:'+'a'.repeat(64),ROOT=UPLOAD_IMAGE_PATHS.tempRoot;
@@ -101,6 +102,190 @@ test('the upload allowlist admits the PWD that bwrap always sets, and nothing el
  const extra=evaluateUploadSandbox({...bwrapChild,envNames:[...RENDERER_CHILD_ENV,'PWD','AWS_SESSION_TOKEN']},{tempRoot:ROOT});
  assert.equal(extra.sandbox.noCredentials,false);
  assert.deepEqual(extra.findings.map(f=>f.requirement),['noCredentials']);
+});
+
+test('the effective cgroup resolver walks the visible hierarchy and never promotes a missing, zero or malformed node',()=>{
+ const root='/sys/fs/cgroup';
+ const read=map=>path=>map[path]??null;
+ const base={
+  [root+'/cgroup.controllers']:'',
+  [root+'/memory.max']:'max',[root+'/pids.max']:'max',[root+'/cpu.max']:'max 100000',
+  [root+'/a/cgroup.controllers']:'',
+  [root+'/a/memory.max']:'1073741824',[root+'/a/pids.max']:'64',[root+'/a/cpu.max']:'50000 100000'
+ };
+ const child=resolveEffectiveCgroup({cgroupPath:'/a',mountRoot:'/',read:read(base)});
+ assert.equal(child.levels,2);assert.equal(child.mountRootIsRoot,true);
+ assert.deepEqual({memoryMax:child.memoryMax,pidsMax:child.pidsMax,cpuMax:child.cpuMax},
+  {memoryMax:'1073741824',pidsMax:'64',cpuMax:'50000 100000'},'root max with a finite child resolves to the child');
+ // A finite ancestor bounds a `max` leaf: the inherited parent bound is the effective limit.
+ const inherited={...base,[root+'/a/memory.max']:'max',[root+'/a/pids.max']:'max',[root+'/a/cpu.max']:'max 100000',
+  [root+'/memory.max']:'536870912',[root+'/pids.max']:'32',[root+'/cpu.max']:'25000 100000'};
+ const parent=resolveEffectiveCgroup({cgroupPath:'/a',mountRoot:'/',read:read(inherited)});
+ assert.deepEqual({memoryMax:parent.memoryMax,pidsMax:parent.pidsMax,cpuMax:parent.cpuMax},
+  {memoryMax:'536870912',pidsMax:'32',cpuMax:'25000 100000'});
+ // The tighter of the parent and child wins when both are finite.
+ assert.equal(resolveEffectiveCgroup({cgroupPath:'/a',mountRoot:'/',read:read({...base,[root+'/memory.max']:'536870912'})}).memoryMax,'536870912');
+ // All-max stays present-but-unlimited; a literal zero stays the strictest failing value; malformed text is not a bound.
+ assert.equal(resolveEffectiveCgroup({cgroupPath:'/a',mountRoot:'/',read:read({...base,[root+'/a/memory.max']:'max'})}).memoryMax,'max');
+ assert.equal(resolveEffectiveCgroup({cgroupPath:'/a',mountRoot:'/',read:read({...base,[root+'/a/pids.max']:'0'})}).pidsMax,'0');
+ assert.equal(resolveEffectiveCgroup({cgroupPath:'/a',mountRoot:'/',read:read({...base,[root+'/a/memory.max']:'garbage'})}).memoryMax,'max');
+ // A stale/unrelated path must not inherit an ancestor; traversal is refused.
+ assert.equal(resolveEffectiveCgroup({cgroupPath:'/missing',mountRoot:'/',read:read(base)}),null);
+ assert.equal(resolveEffectiveCgroup({cgroupPath:'/a/../b',mountRoot:'/',read:read(base)}),null);
+ // Only the unified 0:: line is a v2 path; mountinfo field 4 is the mountpoint and field 3 the cgroup root.
+ assert.equal(parseCgroupPath('0::/a/b\n'),'/a/b');
+ assert.equal(parseCgroupPath('4:memory:/x\n0::/\n'),'/');
+ assert.equal(parseCgroupPath('0::/a/../b\n'),null);
+ assert.equal(parseCgroupPath('1:name=systemd:/x\n'),null);
+ assert.equal(parseCgroupMountRoot('36 35 98:0 / /sys/fs/cgroup rw - cgroup2 cgroup2 rw\n'),'/');
+ assert.equal(parseCgroupMountRoot('36 35 98:0 /system.slice/x /sys/fs/cgroup ro - cgroup2 cgroup2 ro\n'),'/system.slice/x');
+ assert.equal(parseCgroupMountRoot('36 35 98:0 / /sys rw - sysfs sysfs rw\n'),null);
+});
+
+test('a whitespace-bearing cgroup path is preserved and cannot read the non-whitespace sibling',()=>{
+ const mount='/sys/fs/cgroup';
+ const parsed=parseCgroupPath('0::/a/b \n');
+ assert.equal(parsed,'/a/b ','the record terminator is removed; the path space is preserved');
+ const map={
+  [mount+'/cgroup.controllers']:'',[mount+'/memory.max']:'max',[mount+'/pids.max']:'max',[mount+'/cpu.max']:'max 100000',
+  [mount+'/b/cgroup.controllers']:'',[mount+'/b/memory.max']:'1073741824',[mount+'/b/pids.max']:'64',[mount+'/b/cpu.max']:'50000 100000',
+  [mount+'/b /cgroup.controllers']:'',[mount+'/b /memory.max']:'max',[mount+'/b /pids.max']:'max',[mount+'/b /cpu.max']:'max 100000'
+ };
+ const resolved=resolveEffectiveCgroup({cgroupPath:parsed,mountRoot:'/a',read:path=>map[path]??null});
+ assert.equal(resolved.memoryMax,'max','the space-suffixed member must not select the finite /b sibling');
+ assert.equal(resolved.pidsMax,'max');assert.equal(resolved.cpuMax,'max 100000');
+});
+
+test('a raw CR-bearing cgroup path is rejected and cannot alias the non-CR sibling',()=>{
+ const parsed=parseCgroupPath('0::/a/b\r\n');
+ assert.equal(parsed,null,'a raw CR is a path byte under LF records and must fail closed');
+ const mount='/sys/fs/cgroup';
+ const map={
+  [mount+'/cgroup.controllers']:'',[mount+'/memory.max']:'max',[mount+'/pids.max']:'max',[mount+'/cpu.max']:'max 100000',
+  [mount+'/b/cgroup.controllers']:'',[mount+'/b/memory.max']:'1073741824',[mount+'/b/pids.max']:'64',[mount+'/b/cpu.max']:'50000 100000',
+  [mount+'/b\r/cgroup.controllers']:'',[mount+'/b\r/memory.max']:'max',[mount+'/b\r/pids.max']:'max',[mount+'/b\r/cpu.max']:'max 100000'
+ };
+ const resolved=resolveEffectiveCgroup({cgroupPath:'/a/b\r',mountRoot:'/a',read:path=>map[path]??null});
+ assert.equal(resolved.memoryMax,'max','a CR-bearing member must not read the finite /b sibling');
+ assert.equal(resolved.pidsMax,'max');assert.equal(resolved.cpuMax,'max 100000');
+});
+
+test('host inherited bounds fill only a present-but-unlimited child observation',()=>{
+ const host={memoryMax:'1073741824',pidsMax:'64',cpuMax:'50000 100000'};
+ assert.deepEqual(combineCgroupBounds({memoryMax:'max',pidsMax:'max',cpuMax:'max 100000'},host),host,'a max child view is bounded by the finite host ancestor');
+ assert.deepEqual(combineCgroupBounds({memoryMax:'2147483648',pidsMax:'128',cpuMax:'100000 100000'},host),
+  {memoryMax:'1073741824',pidsMax:'64',cpuMax:'50000 100000'},'the tighter finite value wins');
+ assert.deepEqual(combineCgroupBounds({memoryMax:'max',pidsMax:'max',cpuMax:'max 100000'},
+  {memoryMax:'max',pidsMax:'max',cpuMax:'max 100000'}),{memoryMax:'max',pidsMax:'max',cpuMax:'max 100000'});
+ assert.deepEqual(combineCgroupBounds({memoryMax:null,pidsMax:null,cpuMax:null},host),
+  {memoryMax:null,pidsMax:null,cpuMax:null},'a missing child observation is never rescued by a host value');
+ assert.deepEqual(combineCgroupBounds({memoryMax:'0',pidsMax:'64',cpuMax:'50000 100000'},host),
+  {memoryMax:'0',pidsMax:'64',cpuMax:'50000 100000'},'a literal zero remains the strictest failing value');
+});
+
+test('a host-observed inherited bound qualifies a max child view; no host or a max host does not',async()=>{
+ const root=await realpath(tmpdir());
+ const run=async(role,options)=>({stdout:Buffer.from(JSON.stringify(sandboxed(options.cwd,
+  {cgroup:{memoryMax:'max',pidsMax:'max',cpuMax:'max 100000'}}))),receipt:{exitCode:0}});
+ const admitted=await qualifyNativeUploadSandbox({imageDigest:DIGEST,deadlineMs:Date.now()+30000,tempRoot:root,run,
+  hostCgroup:{memoryMax:'1073741824',pidsMax:'64',cpuMax:'50000 100000',levels:2,mountRootIsRoot:true}});
+ assert.equal(admitted.admitted,true);assert.equal(admitted.admission.sandbox.boundedResources,true);
+ assert.equal(admitted.diagnostic,undefined);
+ const noHost=await qualifyNativeUploadSandbox({imageDigest:DIGEST,deadlineMs:Date.now()+30000,tempRoot:root,run,hostCgroup:null});
+ assert.equal(noHost.admitted,false);assert.deepEqual(noHost.missing,['boundedResources']);
+ assert.deepEqual(noHost.diagnostic.cgroupHost,{resolved:false,levels:0,mountRootIsRoot:false});
+ assert.deepEqual(noHost.diagnostic.resources,{memoryMax:0,pidsMax:0,cpuMax:0});
+ const hostMax=await qualifyNativeUploadSandbox({imageDigest:DIGEST,deadlineMs:Date.now()+30000,tempRoot:root,run,
+  hostCgroup:{memoryMax:'max',pidsMax:'max',cpuMax:'max 100000',levels:1,mountRootIsRoot:true}});
+ assert.equal(hostMax.admitted,false);assert.deepEqual(hostMax.missing,['boundedResources']);
+ assert.deepEqual(hostMax.diagnostic.cgroupHost,{resolved:true,levels:1,mountRootIsRoot:true});
+});
+
+test('a subtree-rooted cgroup2 mount maps membership relative to its root and rejects unrelated branches',()=>{
+ const mount='/sys/fs/cgroup';
+ const read=map=>path=>map[path]??null;
+ const subtree={
+  [mount+'/cgroup.controllers']:'',[mount+'/memory.max']:'max',[mount+'/pids.max']:'max',[mount+'/cpu.max']:'max 100000',
+  [mount+'/b/cgroup.controllers']:'',[mount+'/b/memory.max']:'1073741824',[mount+'/b/pids.max']:'64',[mount+'/b/cpu.max']:'50000 100000',
+  [mount+'/a/b/cgroup.controllers']:'',[mount+'/a/b/memory.max']:'2147483648',[mount+'/a/b/pids.max']:'128',[mount+'/a/b/cpu.max']:'100000 100000'
+ };
+ const mapped=resolveEffectiveCgroup({cgroupPath:'/a/b',mountRoot:'/a',read:read(subtree)});
+ assert.equal(mapped.levels,2);assert.equal(mapped.mountRootIsRoot,false);
+ assert.deepEqual({memoryMax:mapped.memoryMax,pidsMax:mapped.pidsMax,cpuMax:mapped.cpuMax},
+  {memoryMax:'1073741824',pidsMax:'64',cpuMax:'50000 100000'},'membership /a/b under root /a reads mount/b, not mount/a/b');
+ const unrelated={...subtree,[mount+'/b/memory.max']:'max',[mount+'/b/pids.max']:'max',[mount+'/b/cpu.max']:'max 100000'};
+ const refused=resolveEffectiveCgroup({cgroupPath:'/a/b',mountRoot:'/a',read:read(unrelated)});
+ assert.equal(refused.memoryMax,'max','the finite /a/b branch is not an ancestor of the process');
+ assert.equal(refused.pidsMax,'max');assert.equal(refused.cpuMax,'max 100000');
+ assert.equal(resolveEffectiveCgroup({cgroupPath:'/x',mountRoot:'/a',read:read(subtree)}),null,'membership outside the visible root is unresolved');
+ assert.equal(parseCgroupMountRoot('36 35 0:30 /a /sys/fs/cgroup rw - cgroup2 cgroup2 rw\n'),'/a');
+ assert.equal(parseCgroupMountRoot('36 35 0:30 / /sys/fs/cgroup rw - tmpfs tmpfs rw\n'),null);
+ assert.equal(parseCgroupMountRoot('36 35 0:30 /\\041 /sys/fs/cgroup rw - cgroup2 cgroup2 rw\n'),null);
+ assert.equal(parseCgroupMountRoot('36 35 0:30 /a /sys/fs/cgroup rw - cgroup2 cgroup2 rw\n36 35 0:31 / /sys/fs/cgroup rw - tmpfs tmpfs rw\n'),null,'the topmost selected mount must be cgroup2');
+});
+
+test('malformed or v1 controller records are never rescued by a finite host tuple',()=>{
+ const cwd=ROOT+'/'+UPLOAD_ROLE_PREFIX.probe+'a1b2c3';
+ const host={memoryMax:'1073741824',pidsMax:'64',cpuMax:'50000 100000'};
+ const malformed=[
+  {memoryMax:'-1',pidsMax:'-1',cpuMax:'max nonsense'},
+  {memoryMax:'max',pidsMax:'max',cpuMax:'max'},
+  {memoryMax:'max',pidsMax:'max',cpuMax:'max 0'},
+  {memoryMax:'max',pidsMax:'max',cpuMax:'10000 0'},
+  {memoryMax:'max',pidsMax:'max',cpuMax:'10000 500'},
+  {memoryMax:null,pidsMax:null,cpuMax:null},
+  {memoryMax:'0',pidsMax:'0',cpuMax:'0 100000'}
+ ];
+ for(const probe of malformed){
+  const combined=combineCgroupBounds(probe,host);
+  const evaluation=evaluateUploadSandbox(sandboxed(cwd,{cgroup:combined}),{tempRoot:ROOT});
+  assert.deepEqual(evaluation.findings.map(f=>f.requirement),['boundedResources'],JSON.stringify(probe));
+ }
+ const valid=combineCgroupBounds({memoryMax:'max',pidsMax:'max',cpuMax:'max 100000'},host);
+ assert.deepEqual(valid,host);
+ assert.deepEqual(evaluateUploadSandbox(sandboxed(cwd,{cgroup:valid}),{tempRoot:ROOT}).findings,[]);
+ const root='/sys/fs/cgroup';
+ const invalid={[root+'/cgroup.controllers']:'',[root+'/memory.max']:'-1',[root+'/pids.max']:'-1',[root+'/cpu.max']:'-1 100000'};
+ const resolved=resolveEffectiveCgroup({cgroupPath:'/',mountRoot:'/',read:path=>invalid[path]??null});
+ assert.deepEqual({memoryMax:resolved.memoryMax,pidsMax:resolved.pidsMax,cpuMax:resolved.cpuMax},
+  {memoryMax:null,pidsMax:null,cpuMax:null});
+});
+
+test('CPU bounds compare quota/period ratios and keep the original two-field record',()=>{
+ const root='/sys/fs/cgroup';
+ const read=map=>path=>map[path]??null;
+ const base={
+  [root+'/cgroup.controllers']:'',[root+'/memory.max']:'max',[root+'/pids.max']:'max',[root+'/cpu.max']:'20000 100000',
+  [root+'/a/cgroup.controllers']:'',[root+'/a/memory.max']:'max',[root+'/a/pids.max']:'max',[root+'/a/cpu.max']:'10000 10000'
+ };
+ const resolved=resolveEffectiveCgroup({cgroupPath:'/a',mountRoot:'/',read:read(base)});
+ assert.equal(resolved.cpuMax,'20000 100000','0.2 CPU at the parent is tighter than 1.0 CPU at the child');
+ assert.equal(combineCgroupBounds({memoryMax:'max',pidsMax:'max',cpuMax:'10000 10000'},
+  {memoryMax:'1073741824',pidsMax:'64',cpuMax:'20000 100000'}).cpuMax,'20000 100000');
+ assert.equal(combineCgroupBounds({memoryMax:'max',pidsMax:'max',cpuMax:'20000 100000'},
+  {memoryMax:'1073741824',pidsMax:'64',cpuMax:'10000 10000'}).cpuMax,'20000 100000');
+});
+
+test('the host witness refuses a changed membership or cgroup2 mount identity across the read interval',async()=>{
+ const mountA='36 35 0:30 /a /sys/fs/cgroup rw - cgroup2 cgroup2 rw\n';
+ const mountB='36 35 0:31 /a /sys/fs/cgroup rw - cgroup2 cgroup2 rw\n';
+ const files={
+  '/sys/fs/cgroup/cgroup.controllers':'',
+  '/sys/fs/cgroup/memory.max':'max','/sys/fs/cgroup/pids.max':'max','/sys/fs/cgroup/cpu.max':'max 100000',
+  '/sys/fs/cgroup/b/cgroup.controllers':'',
+  '/sys/fs/cgroup/b/memory.max':'1073741824','/sys/fs/cgroup/b/pids.max':'64','/sys/fs/cgroup/b/cpu.max':'50000 100000'
+ };
+ const sequence=values=>{const counts=new Map();return async path=>{const n=counts.get(path)??0;counts.set(path,n+1);
+  const value=values[path];if(Array.isArray(value))return value[Math.min(n,value.length-1)]??null;return typeof value==='string'?value:null;};};
+ const stable=await readHostCgroup({platform:'linux',readText:sequence({...files,
+  '/proc/self/cgroup':['0::/a/b\n','0::/a/b\n'],'/proc/self/mountinfo':[mountA,mountA]})});
+ assert.equal(stable.levels,2);assert.equal(stable.memoryMax,'1073741824');assert.equal(stable.mountRootIsRoot,false);
+ const moved=await readHostCgroup({platform:'linux',readText:sequence({...files,
+  '/proc/self/cgroup':['0::/a/b\n','0::/a/c\n'],'/proc/self/mountinfo':[mountA,mountA]})});
+ assert.equal(moved,null,'a membership change between the probe and the witness is refused');
+ const remounted=await readHostCgroup({platform:'linux',readText:sequence({...files,
+  '/proc/self/cgroup':['0::/a/b\n','0::/a/b\n'],'/proc/self/mountinfo':[mountA,mountB]})});
+ assert.equal(remounted,null,'a mount identity change is refused');
 });
 
 test('non-Linux and malformed observations attest nothing and never throw',()=>{

@@ -36,6 +36,7 @@ test('a host that cannot attest the sandbox or observe its tools yields null por
  assert.equal(unadmitted.reason,'UPLOAD_SANDBOX_UNQUALIFIED');assert.deepEqual(unadmitted.requirements,['noNewPrivileges']);
  assert.deepEqual(unadmitted.diagnostic.resources,{memoryMax:1073741824,pidsMax:64,cpuMax:50000});
  assert.deepEqual(unadmitted.diagnostic.credentials,{networkIsolated:true,envCount:UPLOAD_CHILD_ENV.length,allowedCount:UPLOAD_CHILD_ENV.length,envAllowed:true,checked:1,readable:0});
+ assert.deepEqual(unadmitted.diagnostic.cgroupHost,{resolved:false,levels:0,mountRootIsRoot:false},'a synthetic runner carries no host hierarchy observation');
  const noTools=await composeUploadNativeHost({configuration:configuration(declarations),tempRoot,
   run:async(role,options)=>role==='probe'?{stdout:Buffer.from(JSON.stringify(sandboxed(options.cwd))),receipt:{exitCode:0}}:Promise.reject(Object.assign(Error('x'),{code:'UPLOAD_SANDBOX_REFUSED'}))});
  assert.deepEqual(noTools.missing,['uploads.native.tools']);assert.equal(noTools.scanner,null);
