@@ -46,7 +46,14 @@ export function composeBrowserOptions(options,fragment){
  }
  assertOpenFragment(fragment);
  if(options.permissionMode!=='default'||typeof options.canUseTool!=='function')fail();
- const foreign=[...Object.keys(options.mcpServers??{}),...(options.allowedTools??[]),...(options.tools??[]),...(options.settings?.permissions?.allow??[])];
+ // Native Claude Code tools are an SDK preset object. Preserve that owner;
+ // only an explicit tool-name list participates in namespace collision checks.
+ let tools=options.tools??[];
+ if(!Array.isArray(tools)){
+  if(tools?.type!=='preset'||tools?.preset!=='claude_code'||Object.keys(tools).sort().join(',')!=='preset,type')fail();
+  tools=[];
+ }
+ const foreign=[...Object.keys(options.mcpServers??{}),...(options.allowedTools??[]),...tools,...(options.settings?.permissions?.allow??[])];
  if(foreign.some(browserName))fail();
  return {...options,
   mcpServers:{...(options.mcpServers??{}),...fragment.mcpServers},
