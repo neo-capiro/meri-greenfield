@@ -214,7 +214,7 @@ export function createPrimaryWebSearch(configuration) {
     toolName,
     /** Finite admission facts for the shared budget/tariff owner (SCRUM-238): the worst case is
      * `maxAttempts` submitted calls at `unitMicroUsd` each; an unclassified outcome stays unknown. */
-    admission: Object.freeze({unitMicroUsd: AGENTCORE_SEARCH_UNIT_MICROUSD, maxAttempts,
+    admission: Object.freeze({provider: AGENTCORE_SEARCH_PROVIDER, unitMicroUsd: AGENTCORE_SEARCH_UNIT_MICROUSD, maxAttempts,
       maxMicroUsd: AGENTCORE_SEARCH_UNIT_MICROUSD * maxAttempts, maxCallsPerInvocation: maxAttempts,
       billing: 'aws-agentcore-web-search-and-gateway-invocation'}),
     /** @returns {Promise<{tool:string,contentStatus:string,generatedAt:string,provider:string,total:number,results:object[]}>} */
@@ -256,4 +256,13 @@ export function primarySearchTarget(env = process.env) {
         address.username || address.password || endpoint !== address.origin + '/mcp') return undefined;
   } catch { return undefined; }
   return Object.freeze({endpoint, region, toolName});
+}
+
+/** The paid admission implied by the ACTUAL selected deployment target: nothing when the primary is off,
+ * otherwise the exact numbers the producer bills and the budget owner must reserve. One derivation, used by
+ * the allocation render and the tests; a target that exists without paid admission is a wiring defect. */
+export function primarySearchAdmission(env = process.env) {
+  if (primarySearchTarget(env) === undefined) return undefined;
+  return Object.freeze({provider: AGENTCORE_SEARCH_PROVIDER, unitMicroUsd: AGENTCORE_SEARCH_UNIT_MICROUSD,
+    maxAttempts: AGENTCORE_SEARCH_DEFAULT_ATTEMPTS});
 }

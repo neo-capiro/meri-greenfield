@@ -105,9 +105,10 @@ export function assertGeneralReadManifest(manifest){
  // The document read is allocated only with its pricing evidence, and that evidence only with the document read.
  const documents=ops.some(op=>`${op.id}@${op.version}`===DOCUMENT_READ);
  if(documents!==Object.hasOwn(manifest,'documentPricing'))refuse('INVALID_GENERAL_READ_MANIFEST');
- // The new manifest revision identifies exactly the source-only route, not a paid or document-free allocation.
- if((manifest.profileVersion===GENERAL_READ_TEXT_ONLY_PROFILE_VERSION)!==
-    (documents&&isDocumentTextOnlyPricing(manifest.documentPricing)))refuse('INVALID_GENERAL_READ_MANIFEST');
+ // The text-only revision identifies exactly the source-only route; a paid-search revision may also carry it.
+ if(manifest.profileVersion===GENERAL_READ_TEXT_ONLY_PROFILE_VERSION&&!(documents&&isDocumentTextOnlyPricing(manifest.documentPricing)))refuse('INVALID_GENERAL_READ_MANIFEST');
+ if(documents&&isDocumentTextOnlyPricing(manifest.documentPricing)&&
+    ![GENERAL_READ_TEXT_ONLY_PROFILE_VERSION,GENERAL_READ_PAID_SEARCH_PROFILE_VERSION].includes(manifest.profileVersion))refuse('INVALID_GENERAL_READ_MANIFEST');
  if(documents)documentReadCharge(manifest.documentPricing);
  // Paid primary search: allocated only with its admission, and that admission only with the search read.
  const search=ops.some(op=>`${op.id}@${op.version}`===WEB_SEARCH_READ);

@@ -3,7 +3,7 @@ import { canonicalSha256, validateShape as publicShape } from '../../../packages
 import { validateShape as privateShape } from '../../../packages/contracts/retrieval-0.2/validate.mjs';
 import { refuse } from './postgres-budget-store.mjs';
 import {assertOccurrenceCostScope} from './occurrence-cost-scope.mjs';
-import {isGeneralReadManifest,assertGeneralReadManifest,assertOneHoldFits,documentReadCharge,DOCUMENT_READ} from './general-read-manifest.mjs';
+import {isGeneralReadManifest,assertGeneralReadManifest,assertOneHoldFits,documentReadCharge,DOCUMENT_READ,webSearchCharge,WEB_SEARCH_READ} from './general-read-manifest.mjs';
 
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/;
 export const digest = value => { if (typeof value !== 'string' || !/^[0-9a-f]{64}$/.test(value)) refuse('INVALID_DIGEST'); return value; };
@@ -41,6 +41,12 @@ export function allocation(raw) {
     // A priced document read is charged exactly what its carried evidence prices.
     const documents = a.schedule.operations.find(item => `${item.operation.id}@${item.operation.version}` === DOCUMENT_READ);
     if (documents && documents.chargeMicrousd !== documentReadCharge(a.manifest.documentPricing)) refuse('INVALID_CHARGE_SCHEDULE');
+    // A carried paid-search admission prices the search read exactly: no underpriced or mismatched schedule installs,
+    // so the reservation can only ever hold the configured provider's attempt ceiling before a paid dispatch.
+    if (a.manifest.webSearchAdmission !== undefined) {
+      const search = a.schedule.operations.find(item => `${item.operation.id}@${item.operation.version}` === WEB_SEARCH_READ);
+      if (!search || search.chargeMicrousd !== webSearchCharge(a.manifest.webSearchAdmission)) refuse('INVALID_CHARGE_SCHEDULE');
+    }
   }
   return a;
 }

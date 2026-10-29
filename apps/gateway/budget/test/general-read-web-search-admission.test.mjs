@@ -6,9 +6,10 @@ import assert from 'node:assert/strict';
 import {resolveOperationContract} from '../../../../packages/contracts/retrieval-0.2/validate.mjs';
 import {createPrimaryWebSearch} from '../../sources/public-web/primary-search.mjs';
 import {composeGeneralReadAllocation,generalReadTariff} from '../general-read-allocation.mjs';
-import {GENERAL_READ_PAID_SEARCH_PROFILE_VERSION,GENERAL_READ_PROFILE_VERSION,webSearchCharge} from '../general-read-manifest.mjs';
+import {GENERAL_READ_PAID_SEARCH_PROFILE_VERSION,GENERAL_READ_PROFILE_VERSION,GENERAL_READ_TEXT_ONLY_PROFILE_VERSION,webSearchCharge} from '../general-read-manifest.mjs';
 import {GENERAL_READ_TARIFF_ASSUMPTION_KEYS,GENERAL_READ_TARIFFS,WEB_SEARCH_ADMISSION} from '../general-read-tariffs.mjs';
-import {GENERAL_READ_DEFAULT_RUN_BUDGETS} from '../general-read-manifest.mjs';
+import {GENERAL_READ_DEFAULT_RUN_BUDGETS,DOCUMENT_TEXT_ONLY_MODE,DOCUMENT_TEXT_ONLY_ROUTE} from '../general-read-manifest.mjs';
+import {allocation} from '../tool-budget-binding.mjs';
 
 const run={tenantId:'tenant',actorId:'actor',conversationId:'11111111-1111-4111-8111-111111111111',runId:'22222222-2222-4222-8222-222222222222'};
 const reads=[{id:'search_public_web',version:'0.2.0'},{id:'describe_capiro_data',version:'0.2.0'},{id:'find_path_to',version:'0.2.0'}];
@@ -108,4 +109,91 @@ test('the reserved hold fits the run cap and an oversized admission is reported 
   webSearchAdmission:{provider:'agentcore-web-search',unitMicroUsd:7005,maxAttempts:2},
   assumptions:[evidence('webSearchProviderAgentCore')]}).allocation;
  assert.equal(chargeOf(fits,'search_public_web'),14010);
+});
+
+// ---- production selection entry: env -> mounted provider -> authoritative allocation parse -> custody ----
+const ENV={MERI_WEB_SEARCH_GATEWAY_ENDPOINT:ENDPOINT,MERI_WEB_SEARCH_TOOL:'WebSearch-tool-abc123',MERI_WEB_SEARCH_REGION:'us-east-1'};
+const mount=async(env,recording)=>{
+ for(const key of ['MERI_WEB_SEARCH_GATEWAY_ENDPOINT','MERI_WEB_SEARCH_TOOL','MERI_WEB_SEARCH_REGION'])delete process.env[key];
+ Object.assign(process.env,env);
+ try{
+  const {createHandlers}=await import('../../general-reads/families/public-web.mjs');
+  return createHandlers({origin:'https://core.example.invalid',now:()=>1761700000000,
+   ...(recording?{fetchImpl:recording}:{})});
+ } finally {for(const key of ['MERI_WEB_SEARCH_GATEWAY_ENDPOINT','MERI_WEB_SEARCH_TOOL','MERI_WEB_SEARCH_REGION'])delete process.env[key];}
+};
+
+test('the configured environment selects the paid provider and its exact admission',async()=>{
+ const {primarySearchAdmission,primarySearchTarget}=await import('../../sources/public-web/primary-search.mjs');
+ const calls=[];const handlers=await mount(ENV,async url=>{calls.push(url);return Response.json({});});
+ assert.deepEqual(handlers.map(row=>row.operation.id),['search_public_web','scrape_web_page']);
+ const target=primarySearchTarget(ENV),admission=primarySearchAdmission(ENV);
+ assert.equal(admission.provider,'agentcore-web-search');
+ assert.equal(admission.unitMicroUsd,7005);
+ assert.equal(admission.maxAttempts,1,'the default submits one billable attempt');
+ // The budget owner must reserve exactly that; the authoritative parser accepts the composed schedule.
+ const {allocation:a}=compose({webSearchAdmission:{...admission},assumptions:[evidence('webSearchProviderAgentCore')]});
+ assert.equal(chargeOf(a,'search_public_web'),admission.unitMicroUsd*admission.maxAttempts);
+ assert.doesNotThrow(()=>allocation(JSON.stringify(a)));
+ assert.deepEqual(calls,[],'mounting never calls the provider');
+ assert.equal(target.toolName,'WebSearch-tool-abc123');
+});
+
+test('an underpriced or wrong-ceiling paid schedule is refused by the authoritative parser before dispatch',async()=>{
+ const calls=[];await mount(ENV,async url=>{calls.push(url);return Response.json({});});
+ const paid={provider:'agentcore-web-search',unitMicroUsd:7005,maxAttempts:2};
+ const good=compose({webSearchAdmission:paid,assumptions:[evidence('webSearchProviderAgentCore')]}).allocation;
+ assert.doesNotThrow(()=>allocation(JSON.stringify(good)));
+ // Underpriced to the retained Core charge: the parser refuses, so no grant can be installed and no provider runs.
+ const cheap=structuredClone(good);
+ cheap.schedule.operations.find(row=>row.operation.id==='search_public_web').chargeMicrousd=1;
+ assert.throws(()=>allocation(JSON.stringify(cheap)),error=>error.code==='INVALID_CHARGE_SCHEDULE'||error.message==='INVALID_CHARGE_SCHEDULE');
+ // A ceiling that no longer matches the carried admission is equally refused.
+ const wrongCeiling=structuredClone(good);
+ wrongCeiling.schedule.operations.find(row=>row.operation.id==='search_public_web').chargeMicrousd=7005;
+ assert.throws(()=>allocation(JSON.stringify(wrongCeiling)),error=>error.code==='INVALID_CHARGE_SCHEDULE'||error.message==='INVALID_CHARGE_SCHEDULE');
+ assert.deepEqual(calls,[],'no provider call happens without an admissible allocation');
+});
+
+test('a run cap below the paid hold is refused before any provider call',async()=>{
+ const calls=[];await mount(ENV,async url=>{calls.push(url);return Response.json({});});
+ refused(()=>compose({runBudgets:{...GENERAL_READ_DEFAULT_RUN_BUDGETS,maxCostMicroUSD:7004},
+  webSearchAdmission:{provider:'agentcore-web-search',unitMicroUsd:7005,maxAttempts:1},
+  assumptions:[evidence('webSearchProviderAgentCore')]}),'BUDGET_EXHAUSTED');
+ assert.deepEqual(calls,[]);
+});
+
+test('an unknown submitted search keeps its existing reservation custody',async()=>{
+ const paid={provider:'agentcore-web-search',unitMicroUsd:7005,maxAttempts:1};
+ const {allocation:a}=compose({webSearchAdmission:paid,assumptions:[evidence('webSearchProviderAgentCore')]});
+ const {outcomeSnapshot}=await import('../tool-budget-outcome.mjs');
+ const expected={operation:{id:'search_public_web',version:'0.2.0'},argumentsSha256:'f'.repeat(64)};
+ const invocation={invocationId:'inv-1',grantId:'11111111-1111-4111-8111-111111111111',binding:{runId:a.run.runId}};
+ const row={invocation_id:'inv-1',grant_id:invocation.grantId,run_id:a.run.runId,facts:invocation,operation:expected.operation,
+  arguments_sha256:expected.argumentsSha256,reservation_id:'22222222-2222-4222-8222-222222222222',hold_micro_usd:7005,
+  max_output_bytes:1048576,created_at:new Date(1761700000000),state:'UNKNOWN',charged_micro_usd:null,output_bytes:null,settled_at:null};
+ const snapshot=outcomeSnapshot({allocation:a,invocation,expected,row,now:new Date(1761700000001)});
+ assert.equal(snapshot.state,'UNKNOWN','an unknown paid result stays an UNKNOWN liability, not a success');
+ assert.equal(snapshot.holdMicrousd,'7005','the full search hold is retained');
+ assert.equal(snapshot.chargedMicrousd,null);
+ assert.equal(snapshot.outputBytes,null);
+});
+
+test('source-text-only document pricing coexists with the paid search profile',()=>{
+ const documents=compose({documentPricing:{mode:DOCUMENT_TEXT_ONLY_MODE,route:DOCUMENT_TEXT_ONLY_ROUTE,
+   coreSourceCommit:'a'.repeat(40),coreImageDigest:`sha256:${'b'.repeat(64)}`,configurationSha256:'e'.repeat(64)},
+  webSearchAdmission:{provider:'agentcore-web-search',unitMicroUsd:7005,maxAttempts:1},
+  operations:[...reads,{id:'read_client_documents',version:'0.2.0'}],assumptions:[evidence('webSearchProviderAgentCore')]}).allocation;
+ assert.equal(documents.manifest.profileVersion,GENERAL_READ_PAID_SEARCH_PROFILE_VERSION);
+ assert.equal(documents.manifest.documentPricing.mode,DOCUMENT_TEXT_ONLY_MODE);
+ assert.equal(chargeOf(documents,'search_public_web'),7005);
+ assert.equal(chargeOf(documents,'read_client_documents'),1);
+ assert.doesNotThrow(()=>allocation(JSON.stringify(documents)));
+ // Without a paid target the same source-only document read keeps its own text-only revision.
+ const textOnly=compose({documentPricing:{mode:DOCUMENT_TEXT_ONLY_MODE,route:DOCUMENT_TEXT_ONLY_ROUTE,
+   coreSourceCommit:'a'.repeat(40),coreImageDigest:`sha256:${'b'.repeat(64)}`,configurationSha256:'e'.repeat(64)},
+  operations:[...reads,{id:'read_client_documents',version:'0.2.0'}],assumptions:[evidence('webSearchProviderDuckDuckGo')]}).allocation;
+ assert.equal(textOnly.manifest.profileVersion,GENERAL_READ_TEXT_ONLY_PROFILE_VERSION);
+ assert.equal(Object.hasOwn(textOnly.manifest,'webSearchAdmission'),false);
+ assert.doesNotThrow(()=>allocation(JSON.stringify(textOnly)));
 });
