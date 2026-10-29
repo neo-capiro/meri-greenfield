@@ -47,16 +47,26 @@ const pause=ms=>{
 /** SDK sandbox startup with the product settings and no user message. Owns and closes everything it creates, and
  * returns only after the consumer has finished (or the bounded cleanup wait expired), so the verdict covers every
  * frame and failure observed, including those during the deliberate shutdown (`startup-observation.mjs`).
- * @param {ReadinessPorts} ports @param {{weakerNestedSandbox:boolean,protectedPaths?:import('../capabilities/bash-sandbox.mjs').ProtectedPaths,deadlineMs:number,observeMs?:number,cleanupMs?:number}} input
+ * An aborted `signal` (the owning run was cancelled or its preparation deadline expired) stops the pending startup
+ * immediately and still runs the same bounded shutdown/cleanup before returning, so the caller never holds an
+ * unaccounted SDK child: the verdict then reports `SDK_STARTUP_ABORTED`, and a failed stop is a failed shutdown.
+ * @param {ReadinessPorts} ports @param {{weakerNestedSandbox:boolean,protectedPaths?:import('../capabilities/bash-sandbox.mjs').ProtectedPaths,deadlineMs:number,observeMs?:number,cleanupMs?:number,signal?:AbortSignal}} input
  * @returns {Promise<import('./startup-observation.mjs').StartupVerdict>} */
-export async function probeSdkSandboxStartup(ports,{weakerNestedSandbox,protectedPaths,deadlineMs,observeMs=OBSERVE_MS,cleanupMs=CLEANUP_MS}){
+export async function probeSdkSandboxStartup(ports,{weakerNestedSandbox,protectedPaths,deadlineMs,observeMs=OBSERVE_MS,cleanupMs=CLEANUP_MS,signal}){
  const workspace=ports.makeTempDir('workspace'),config=ports.makeTempDir('config');
  const controller=new AbortController(),seen=createStartupObservation();
  /** @type {()=>void} */let release=()=>{};const hold=new Promise(resolve=>{release=()=>resolve(undefined);});
  /** @type {()=>void} */let stop=()=>{};const stopped=new Promise(resolve=>{stop=()=>resolve('stopped');});
- /** @type {any} */let q;/** @type {Promise<void>|undefined} */let consumer;
+ /** @type {any} */let q;/** @type {Promise<void>|undefined} */let consumer;let stopping=false;
+ // Cancellation stops the pending startup at once; the `finally` below still closes, aborts and waits it out.
+ const stopNow=()=>{if(stopping)return;stopping=true;seen.aborted();seen.beginShutdown();release();
+  try{q?.close?.();}catch{seen.cleanupFailed('SDK_CLOSE_FAILED');}
+  controller.abort();};
+ const onAbort=()=>stopNow();
+ signal?.addEventListener('abort',onAbort,{once:true});
  try{
-  try{
+  if(signal?.aborted)seen.aborted(); // Nothing is started after the run already ended.
+  else try{
    q=ports.query({prompt:(async function*(){await hold;})(),options:{cwd:workspace,abortController:controller,settingSources:[],settings:{autoMemoryEnabled:false},tools:[BASH_TOOL],allowedTools:[],permissionMode:'default',
     canUseTool:async()=>({behavior:'deny',message:'Readiness check runs no tool'}),maxTurns:1,
     sandbox:buildBashSandboxSettings({cwd:workspace,domains:[],weakerNestedSandbox,...(protectedPaths===undefined?{}:{protectedPaths})}),managedSettings:{sandbox:buildBashSandboxLocks(weakerNestedSandbox)},
@@ -74,6 +84,9 @@ export async function probeSdkSandboxStartup(ports,{weakerNestedSandbox,protecte
    }catch{seen.timedOut();}finally{limit.cancel();}
   }
  }finally{
+  signal?.removeEventListener('abort',onAbort);
+  // A run that cancelled during the pending startup is stopped here as well, so the same bounded cleanup covers it.
+  if(signal?.aborted)stopNow();
   // Deliberate shutdown: still observed, and a failure here is a failed shutdown, never `ready`.
   seen.beginShutdown();release();
   try{q?.close?.();}catch{seen.cleanupFailed('SDK_CLOSE_FAILED');}
@@ -83,18 +96,23 @@ export async function probeSdkSandboxStartup(ports,{weakerNestedSandbox,protecte
  }
  return seen.verdict();
 }
-/** @param {ReadinessPorts} ports @param {{protectedPaths?:import('../capabilities/bash-sandbox.mjs').ProtectedPaths,deadlineMs?:number,observeMs?:number,cleanupMs?:number}} [options] */
-export async function checkSandboxReadiness(ports,{protectedPaths,deadlineMs=30000,observeMs=OBSERVE_MS,cleanupMs=CLEANUP_MS}={}){
+/** @param {ReadinessPorts} ports @param {{protectedPaths?:import('../capabilities/bash-sandbox.mjs').ProtectedPaths,deadlineMs?:number,observeMs?:number,cleanupMs?:number,signal?:AbortSignal}} [options] */
+export async function checkSandboxReadiness(ports,{protectedPaths,deadlineMs=30000,observeMs=OBSERVE_MS,cleanupMs=CLEANUP_MS,signal}={}){
  const bwrap=ports.findExecutable('bwrap'),socat=ports.findExecutable('socat');
- const freshProc=bwrap?await ports.runProbe(bwrap,namespaceProbeArgs(true,ports.nodePath)):false;
- const withoutProc=bwrap&&!freshProc?await ports.runProbe(bwrap,namespaceProbeArgs(false,ports.nodePath)):freshProc;
+ // After cancellation nothing new is spawned: each child probe rechecks the current signal, because the run can be
+ // cancelled while an earlier probe is still pending.
+ const live=()=>signal?.aborted!==true;
+ const freshProc=live()&&bwrap?await ports.runProbe(bwrap,namespaceProbeArgs(true,ports.nodePath)):false;
+ const withoutProc=live()&&bwrap&&!freshProc?await ports.runProbe(bwrap,namespaceProbeArgs(false,ports.nodePath)):freshProc;
  const weakerNestedSandboxRequired=!freshProc&&withoutProc,managedSettingsTier=ports.exists(MANAGED_SETTINGS_PATH)?'present':'absent';
  const sdkVersionMatches=ports.sdkVersion===SDK_VERSION;
- const sdkStartup=sdkVersionMatches?await probeSdkSandboxStartup(ports,{weakerNestedSandbox:weakerNestedSandboxRequired,...(protectedPaths===undefined?{}:{protectedPaths}),deadlineMs,observeMs,cleanupMs})
+ const sdkStartup=sdkVersionMatches?await probeSdkSandboxStartup(ports,{weakerNestedSandbox:weakerNestedSandboxRequired,...(protectedPaths===undefined?{}:{protectedPaths}),deadlineMs,observeMs,cleanupMs,...(signal===undefined?{}:{signal})})
   :/** @type {import('./startup-observation.mjs').StartupVerdict} */({status:'refused',reasonCode:'SDK_VERSION_MISMATCH',userMessagesSent:0,modelTurns:0,costUsd:0,messagesObserved:0,resultsObserved:0,initialized:false,shutdown:'clean'});
  const ready=!!bwrap&&!!socat&&(freshProc||withoutProc)&&managedSettingsTier==='absent'&&sdkVersionMatches&&sdkStartup.status==='ready';
  return Object.freeze({schema:READINESS_SCHEMA,sdk:ports.sdkVersion,cli:CLI_VERSION,dependencies:{bwrap:!!bwrap,socat:!!socat},namespaces:{freshProc,withoutProc},
   managedSettingsTier,sdkStartup,weakerNestedSandboxRequired,ready,
+  // This measurement was stopped by its caller: it says nothing about the host, so it is not cached as one.
+  aborted:signal?.aborted===true||sdkStartup.reasonCode==='SDK_STARTUP_ABORTED',
   scope:'LOCAL_READINESS_ONLY: not sandbox, network, credential, Fargate or release qualification'});
 }
 /** Trusted runtime fact for the worker, derived by the runtime preparation owner. `outerIsolationBoundary` is that

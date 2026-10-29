@@ -26,7 +26,7 @@ const usage=(/** @type {unknown} */v)=>typeof v==='number'&&Number.isFinite(v)&&
 const isAbort=(/** @type {unknown} */e)=>/** @type {{name?:unknown}} */(e)?.name==='AbortError';
 /** @typedef {{status:'ready'|'refused'|'timeout',reasonCode:string|null,userMessagesSent:0,modelTurns:number,costUsd:number,messagesObserved:number,resultsObserved:number,initialized:boolean,shutdown:'clean'|'failed'}} StartupVerdict */
 export function createStartupObservation(){
- let messages=0,results=0,modelTurns=0,costUsd=0,initialized=false,shuttingDown=false,timedOut=false;
+ let messages=0,results=0,modelTurns=0,costUsd=0,initialized=false,shuttingDown=false,timedOut=false,aborted=false;
  let modelActivity=false,malformed=false,startupFailed=false,unexpectedFrame=false,unexpectedResult=false,streamEnded=false;
  /** @type {string|undefined} */let cleanupFailure;
  /** SDK text only feeds the bounded reason code; it never leaves this module. @type {string[]} */const texts=[];
@@ -56,6 +56,9 @@ export function createStartupObservation(){
   streamFailed(error){if(shuttingDown&&isAbort(error))return;if(shuttingDown)failCleanup('SDK_SHUTDOWN_FAILED');else{startupFailed=true;note(/** @type {Error} */(error)?.message);}},
   streamEnded(){if(!shuttingDown)streamEnded=true;},
   timedOut(){timedOut=true;},
+  /** The owning run cancelled the probe while its startup was still pending: the probe is being stopped, and the
+   * measurement it would have produced is not evidence about this host. */
+  aborted(){aborted=true;},
   beginShutdown(){shuttingDown=true;},
   /** @param {'SDK_CLOSE_FAILED'|'SDK_CLEANUP_TIMEOUT'|'READINESS_CLEANUP_FAILED'} code */
   cleanupFailed(code){failCleanup(code);},
@@ -67,7 +70,7 @@ export function createStartupObservation(){
   verdict(){
    const reasonCode=modelActivity?'READINESS_MODEL_TURN_OBSERVED':malformed?'SDK_FRAME_MALFORMED':startupFailed?reasonOf(texts.join(' ')):
     unexpectedFrame?'SDK_UNEXPECTED_FRAME':unexpectedResult?'SDK_UNEXPECTED_RESULT':streamEnded?'SDK_STREAM_ENDED':timedOut?'SDK_STARTUP_TIMEOUT':
-    !initialized?'SDK_STARTUP_FAILED':cleanupFailure??null;
+    aborted?'SDK_STARTUP_ABORTED':!initialized?'SDK_STARTUP_FAILED':cleanupFailure??null;
    const status=reasonCode===null?'ready':reasonCode==='SDK_STARTUP_TIMEOUT'?'timeout':'refused';
    return {status,reasonCode,userMessagesSent:0,modelTurns,costUsd,messagesObserved:messages,resultsObserved:results,initialized,shutdown:cleanupFailure===undefined?'clean':'failed'};
   }};
