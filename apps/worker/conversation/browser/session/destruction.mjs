@@ -2,7 +2,7 @@
  * signs in through takeover, no vault or service accounts, and the session is destroyed on disconnect, conversation end,
  * TTL expiry and revocation). The whole browser context, profile and process tree go, never only cookies.
  *
- * PREPARATION ONLY: an ordered teardown over trusted session-owner ports, not composed anywhere. Order:
+ * Ordered teardown composed by the session owner over trusted native host ports. Native qualification remains held. Order:
  * 1. fence (S1) with the trigger's reason and wait for the bounded drain; unsettled calls are UNKNOWN, never completed;
  * 2. optional server-side logout when the site manifest defines `logoutUrl` (best effort; never blocks destruction);
  * 3. close the context and confirm the process tree has exited;
