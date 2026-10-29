@@ -10,7 +10,13 @@ function inspectFields(nodes,selectors){return nodes.map(node=>({
 /** Browser context is host-owned; every page/frame is inspected, including redirects and popups.
  * Failure, uninspectable frames, DOM churn or unsupported API prevents release. */
 export function createPinnedSnapshot({context,manifest=null,maxBytes=262144}){
- const secrets=new Set();
+ const secrets=new Set();let secretBytes=0;
+ const remember=text=>{
+  if(typeof text!=='string'||!text||secrets.has(text))return;
+  const bytes=Buffer.byteLength(text);
+  if(bytes>262144||secretBytes+bytes>1048576||secrets.size>=4096)fail();
+  secrets.add(text);secretBytes+=bytes;
+ };
  const parser={version:PLAYWRIGHT_MCP_VERSION,parse:document=>document,render:document=>({
   content:[{type:'text',text:['### Page','- Page URL: '+(document.pageUrl??'about:blank'),
    ...document.blocks.map(b=>b.kind==='text'?b.text:b.label+': '+(b.value??''))].join('\n')}],
@@ -44,8 +50,7 @@ export function createPinnedSnapshot({context,manifest=null,maxBytes=262144}){
   // Keep observed values only in this session's memory. They cannot reappear in
   // reflected page text after the corresponding input disappears.
   for(const f of fields)if(f.value&&(postLease||f.type?.toLowerCase()==='password'||f.selectorMatch||
-    /password|one-time-code|cc-/iu.test(f.autocomplete)))secrets.add(f.value);
-  if(secrets.size>4096)fail();
+    /password|one-time-code|cc-/iu.test(f.autocomplete)))remember(f.value);
   const clean=text=>{for(const secret of [...secrets].sort((a,b)=>b.length-a.length))text=text.split(secret).join(REDACTED);return text;};
   const document={pageUrl,dialogText:null,image:false,blocks:[...snapshots.map(text=>({kind:'text',text:clean(text)})),
    ...fields.map(f=>({...f,label:clean(f.label),value:f.value===null?null:clean(f.value)}))]};
@@ -56,5 +61,5 @@ export function createPinnedSnapshot({context,manifest=null,maxBytes=262144}){
   let result;try{result=filter.filter({fenceState,postLease,tool,response:document});}catch{fail();}
   if(Buffer.byteLength(JSON.stringify(result))>maxBytes)fail();return result;
  }
- return Object.freeze({capture,clear(){secrets.clear();}});
+ return Object.freeze({capture,rememberInput:remember,clear(){secrets.clear();secretBytes=0;}});
 }

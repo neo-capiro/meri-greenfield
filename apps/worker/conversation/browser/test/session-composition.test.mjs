@@ -15,7 +15,9 @@ import {workflowCurrent,workflowManifest} from '../../../../../packages/contract
 function fixture(t,options={}){
  const state={fields:[],text:'- heading "Public page"',url:'https://records.example/page?token=hidden#secret',calls:0,events:[],refused:false,hold:'APPLIED'};
  const frame={locator(){return {async evaluateAll(){return structuredClone(state.fields);}};}};
- const page={url:()=>state.url,frames:()=>[frame],async ariaSnapshot(){await options.capture?.(state);return state.text;}};
+ const page={url:()=>state.url,frames:()=>[frame],mainFrame:()=>frame,isClosed:()=>false,viewportSize:()=>({width:800,height:600}),
+  keyboard:{async insertText(text){await state.onInput?.(text);},async press(key){await state.onInput?.(key);}},
+  async ariaSnapshot(){await options.capture?.(state);return state.text;}};
  const context={pages:()=>[page],async close(){state.events.push('context');}};
  const upstream={version:'0.0.83',async createConnection(config,getContext){
   assert.equal(await getContext(),context);assert.equal(config.webmcp,false);assert.equal(config.imageResponses,'omit');
@@ -29,7 +31,7 @@ function fixture(t,options={}){
  const args={context,upstream,policy:validateBrowserPolicy(enabledPolicy()),manifest:null,now:Date.now,deadlineMs:Date.now()+60000,
   current:async()=>{if(state.refused)throw Error('revoked');},hold:async()=>({outcome:state.hold}),
   ports:{async waitForExit(){state.events.push('exit');return {exited:options.exited!==false};},async dispose(){state.events.push('dispose');return {disposed:true};}}};
- return {state,args,context,upstream};
+ return {state,args,context,upstream,page};
 }
 const secret=value=>({kind:'field',label:'Password',type:'password',autocomplete:'current-password',selectorMatch:false,value});
 const call=(session,id='one')=>session.call({requestId:id,tool:'browser_snapshot',args:{}});
@@ -88,8 +90,9 @@ test('takeover requires applied canonical hold and explicit filtered hand-back; 
 test('user relay values are masked on resume and a released lease cannot send input',async t=>{
  const x=fixture(t),session=await createPinnedBrowserSession(x.args);t.after(()=>session.destroy({trigger:'conversation-end'}));
  const lease=await session.takeover();let inputs=0;
- await session.userInput({...lease,perform:async()=>{inputs++;x.state.fields=[{...secret('POST-LEASE-VALUE'),type:'text',autocomplete:''}];x.state.text='POST-LEASE-VALUE';}});
- session.handBack();await assert.rejects(session.userInput({...lease,perform:async()=>{inputs++;}}),/STALE_LEASE/);
+ x.state.onInput=async text=>{inputs++;x.state.fields=[{...secret(text),type:'text',autocomplete:''}];x.state.text=text;};
+ await session.userInput({...lease,page:x.page,input:{kind:'text',text:'POST-LEASE-VALUE'}});
+ session.handBack();await assert.rejects(session.userInput({...lease,page:x.page,input:{kind:'key',key:'Enter'}}),/STALE_LEASE/);
  await assert.rejects(session.resume({explicit:false}),/RESUME_REFUSED/);
  const response=await session.resume({explicit:true});assert.doesNotMatch(JSON.stringify(response),/POST-LEASE-VALUE/);
  assert.equal(inputs,1);assert.equal(session.state().state,'agent');
@@ -105,6 +108,13 @@ test('a missing process absence proof preserves the profile and prevents reuse',
  const x=fixture(t,{exited:false}),session=await createPinnedBrowserSession(x.args);
  await assert.rejects(session.destroy({trigger:'disconnect'}),/DISPOSE_INCOMPLETE/);
  assert.deepEqual(x.state.events,['context','exit']);await assert.rejects(call(session),/SESSION_ENDING/);
+});
+test('revocation during native input preflight prevents keyboard dispatch',async t=>{
+ let preflight=false,performed=false;const x=fixture(t,{capture:state=>{if(preflight)state.refused=true;}});
+ const session=await createPinnedBrowserSession(x.args);t.after(()=>session.destroy({trigger:'conversation-end'}));
+ const lease=await session.takeover();x.state.onInput=async()=>{performed=true;};preflight=true;
+ await assert.rejects(session.userInput({...lease,page:x.page,input:{kind:'text',text:'Synthetic private value'}}),/USER_INPUT_UNKNOWN/);
+ assert.equal(performed,false);
 });
 test('source revocation blocks page dispatch',async t=>{
  const x=fixture(t),session=await createPinnedBrowserSession(x.args);t.after(()=>session.destroy({trigger:'conversation-end'}));
@@ -159,8 +169,8 @@ test('host workflow disablement denies takeover and leased user input without in
  for(const leased of [false,true]){
   const x=hostedWorkflow(t),session=await x.open();t.after(()=>session.destroy({trigger:'conversation-end'}));
   const lease=leased?await x.state.user.takeover():null;
-  x.state.answer.enabled=false;let performed=false;
-  await assert.rejects(leased?x.state.user.userInput({...lease,perform:async()=>{performed=true;}}):x.state.user.takeover(),/BROWSER_(AUTHORITY_REFUSED|USER_INPUT_UNKNOWN)/);
+  x.state.answer.enabled=false;let performed=false;x.native.onInput=async()=>{performed=true;};
+  await assert.rejects(leased?x.state.user.userInput({...lease,page:x.page,input:{kind:'key',key:'Enter'}}):x.state.user.takeover(),/BROWSER_(AUTHORITY_REFUSED|USER_INPUT_UNKNOWN)/);
   assert.equal(performed,false);await session.destroy({trigger:'revocation'});
  }
 });
