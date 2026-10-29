@@ -15,7 +15,7 @@ export function createNativeReadsClient(configuration){
  // so the client owns the run's aggregate. Bounded, content-free, and honest about what was not observed.
  const MAX_CALLS=8,MAX_UNOBSERVED=4;
  const usage={provider:undefined,calls:[],truncated:false,unobserved:[],seen:new Set()};
- const deliveries=new Map();
+ const deliveries=new Set();
  function recordFacts(facts,deliveryId){
   if(usage.seen.has(deliveryId))return;usage.seen.add(deliveryId);
   usage.provider??=facts.provider;
@@ -56,28 +56,22 @@ export function createNativeReadsClient(configuration){
   const approved=new Set(config.operations.map(hash));if([...result.installation.operations,...result.discovery.operations].some(op=>!approved.has(hash(op))))fail('INVALID_RESULT');
   if(identity.baseCatalogSha256!==hash(catalog)||pin&&hash(pin)!==hash(identity))fail('UNAVAILABLE');pin??=data(identity);return data({installation:result.installation,discovery:result.discovery});}
  async function execute(raw){const v=own(raw,['operation','arguments','deliveryId'],['signal']);nativeSignal(v.signal);if(!pin)await readAvailability({signal:v.signal});if(!config.operations.some(op=>hash(op)===hash(v.operation)))fail('UNAVAILABLE');
-  // One delivery identity is one transport submission for this run: a repeat reuses the immutable outcome
-  // and never re-sends, least of all a submitted call whose outcome is unknown.
-  const prior=deliveries.get(v.deliveryId);
-  if(prior!==undefined){if(prior.error!==undefined)throw prior.error;if(prior.value!==undefined)return prior.value;return prior.promise;}
-  const entry={};
-  entry.promise=(async()=>{
-   try{
-    const result=await call('execute',{operation:v.operation,arguments:v.arguments,deliveryId:v.deliveryId,installationId:pin.installationId,executionCatalogSha256:pin.executionCatalogSha256},v.signal);
-    // Each response is this request's delta; the run aggregate is built here.
-    if(result.externalUsage!==undefined)recordFacts(assertNativeReadExternalFacts(result.externalUsage),v.deliveryId);
-    entry.value=result.resultJson;
-    return entry.value;
-   }catch(error){
-    // Only a lost, expired or cancelled response is an observation gap, and only discovery could have been
-    // served by a managed provider — a generic retained read is never attributed to it.
-    if(['BUDGET_UNCERTAIN','DEADLINE','CANCELLED'].includes(nativeReadFailureCode(error))&&v.operation.id==='search_public_web')recordUnobserved(v.deliveryId);
-    entry.error=error;
-    throw error;
-   }
-  })();
-  deliveries.set(v.deliveryId,entry);
-  return entry.promise;}
+  // One delivery identity is one transport submission for this run. The guard is set before the awaited
+  // dispatch, so a concurrent or repeated delivery is refused before another provider request — never
+  // re-sent, least of all a submitted call whose outcome is unknown.
+  if(deliveries.has(v.deliveryId))fail('INVALID_ARGUMENTS');
+  deliveries.add(v.deliveryId);
+  try{
+   const result=await call('execute',{operation:v.operation,arguments:v.arguments,deliveryId:v.deliveryId,installationId:pin.installationId,executionCatalogSha256:pin.executionCatalogSha256},v.signal);
+   // Each response is this request's delta; the run aggregate is built here.
+   if(result.externalUsage!==undefined)recordFacts(assertNativeReadExternalFacts(result.externalUsage),v.deliveryId);
+   return result.resultJson;
+  }catch(error){
+   // Only a lost, expired or cancelled response is an observation gap, and only discovery could have been
+   // served by a managed provider — a generic retained read is never attributed to it.
+   if(['BUDGET_UNCERTAIN','DEADLINE','CANCELLED'].includes(nativeReadFailureCode(error))&&v.operation.id==='search_public_web')recordUnobserved(v.deliveryId);
+   throw error;
+  }}
  return Object.freeze({readAvailability,execute,
   /** Content-free external provider accounting observed by this invocation; absent means nothing was observed. */
   externalUsage:usageSnapshot});

@@ -41,7 +41,8 @@ export function assertNativeReadExternalFacts(value){
  // A provider is either a known identifier or explicitly unattributed — the latter only when no call and
  // no attempt was ever observed, so a lost generic read is never blamed on a guessed vendor.
  if(u.provider!==null&&(typeof u.provider!=='string'||!/^[a-z0-9][a-z0-9-]{0,63}$/u.test(u.provider)))fail('INVALID_RESULT');
- if(u.provider===null&&(u.attempts!==0||u.calls.length!==0||u.incomplete!==true))fail('INVALID_RESULT');
+ if(u.provider===null&&(u.attempts!==0||u.estimateMicroUsd!==0||u.calls.length!==0||u.incomplete!==true))fail('INVALID_RESULT');
+ if(u.provider!==null&&u.attempts===0)fail('INVALID_RESULT');
  if(u.incomplete!==undefined&&typeof u.incomplete!=='boolean')fail('INVALID_RESULT');
  if(u.unobserved!==undefined&&(!Array.isArray(u.unobserved)||u.unobserved.length>4||
   u.unobserved.some(id=>typeof id!=='string'||!/^[-A-Za-z0-9_.:@/]{1,255}$/u.test(id))))fail('INVALID_RESULT');

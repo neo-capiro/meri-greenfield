@@ -102,22 +102,6 @@ test('two distinct searches aggregate into one run total instead of replacing ea
  });
 });
 
-test('concurrent completions cannot double count one delivery',async()=>{
- await withEnv(ENV,async()=>{
-  const gatewayCalls=[];
-  const f=await fixture('public-web','search_public_web',{primaryCredentials:CREDS,gatewayCalls});
-  const call=deliveryId=>f.port.execute({operation:f.operation,arguments:{query:'parallel look',limit:2},deliveryId});
-  await Promise.all([call('synthetic-p'),call('synthetic-q')]);
-  const facts=f.port.externalUsage();
-  assert.equal(gatewayCalls.length,2);
-  assert.equal(facts.calls.length,2);
-  assert.equal(facts.attempts,2);
-  // A replayed delivery for an already-counted call adds nothing.
-  await call('synthetic-p');
-  assert.equal(f.port.externalUsage().calls.length,2,'one delivery is counted once');
- });
-});
-
 test('a lost response marks the run incomplete without inventing attempts',async()=>{
  await withEnv(ENV,async()=>{
   const gatewayCalls=[];
@@ -148,31 +132,31 @@ test('a canonical ACCESS_DENIED refusal is failed, not unknown',async()=>{
  });
 });
 
-test('a repeated delivery identity reuses its outcome and never re-sends the provider call',async()=>{
+test('a repeated delivery identity is refused before another provider call',async()=>{
  await withEnv(ENV,async()=>{
   const gatewayCalls=[];
   const f=await fixture('public-web','search_public_web',{primaryCredentials:CREDS,gatewayCalls});
   const call=(deliveryId,query)=>f.port.execute({operation:f.operation,arguments:{query,limit:3},deliveryId});
-  const first=await call('synthetic-a','first look');
+  await call('synthetic-a','first look');
   await call('synthetic-b','second look');
-  const replay=await call('synthetic-a','first look');
-  assert.equal(replay,first,'the replay returns the immutable result of that delivery');
+  await assert.rejects(()=>call('synthetic-a','first look'),/INVALID_ARGUMENTS/u,'the duplicate is refused');
   assert.equal(gatewayCalls.length,2,'a,b,a is two provider calls, not three');
   const facts=f.port.externalUsage();
   assert.equal(facts.calls.length,2);
-  assert.equal(facts.attempts,2,'recorded attempts match real provider calls');
+  assert.equal(facts.attempts,2,'recorded attempts match the real provider calls');
   assert.equal(facts.estimateMicroUsd,14010);
  });
 });
 
-test('a concurrent duplicate delivery shares one provider call',async()=>{
+test('a concurrent duplicate delivery cannot submit a second provider call',async()=>{
  await withEnv(ENV,async()=>{
   const gatewayCalls=[];
   const f=await fixture('public-web','search_public_web',{primaryCredentials:CREDS,gatewayCalls});
   const call=()=>f.port.execute({operation:f.operation,arguments:{query:'same delivery',limit:3},deliveryId:'synthetic-shared'});
-  const [one,two]=await Promise.all([call(),call()]);
-  assert.equal(one,two);
-  assert.equal(gatewayCalls.length,1,'the duplicate is not submitted twice');
+  const settled=await Promise.allSettled([call(),call()]);
+  assert.equal(settled.filter(row=>row.status==='fulfilled').length,1,'one delivery is executed');
+  assert.equal(settled.filter(row=>row.status==='rejected').length,1);
+  assert.equal(gatewayCalls.length,1,'the duplicate never reaches the provider');
   assert.equal(f.port.externalUsage().attempts,1);
  });
 });
@@ -183,8 +167,10 @@ test('an unknown submitted delivery is never retried or re-sent',async()=>{
   const f=await fixture('public-web','search_public_web',{primaryCredentials:CREDS,gatewayCalls,
    managedSearchResponse:()=>new Response('upstream unavailable',{status:503})});
   const call=()=>f.port.execute({operation:f.operation,arguments:{query:'unknown look',limit:3},deliveryId:'synthetic-unknown'});
-  await assert.rejects(call);
-  await assert.rejects(call,'the replay keeps the recorded unknown outcome');
+  const first=await Promise.allSettled([call()]);
+  assert.equal(first[0].status,'rejected');
+  const retry=await Promise.allSettled([call()]);
+  assert.equal(retry[0].status,'rejected','the retry is refused');
   assert.equal(gatewayCalls.length,1,'an unknown submitted call is never re-sent');
   const facts=f.port.externalUsage();
   assert.equal(facts.attempts,1);

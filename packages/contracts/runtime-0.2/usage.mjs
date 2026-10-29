@@ -25,7 +25,8 @@ function assertExternalSearch(value){
   e.billedMicroUsd!==null||!EXTERNAL_OUTCOMES.includes(e.outcome)||typeof e.truncated!=='boolean'||
   !Array.isArray(e.calls)||e.calls.length>8)fail();
  if(e.provider!==null&&!identifier(e.provider))fail();
- if(e.provider===null&&(e.attempts!==0||e.calls.length!==0||e.incomplete!==true))fail();
+ if(e.provider===null&&(e.attempts!==0||e.estimateMicroUsd!==0||e.calls.length!==0||e.incomplete!==true))fail();
+ if(e.provider!==null&&e.attempts===0)fail();
  if(e.incomplete!==undefined&&typeof e.incomplete!=='boolean')fail();
  if(e.unobserved!==undefined&&(!Array.isArray(e.unobserved)||e.unobserved.length>4||
   e.unobserved.some(id=>!identifier(id))))fail();
