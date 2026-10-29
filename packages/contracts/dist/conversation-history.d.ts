@@ -13,7 +13,11 @@ export type ConversationHistoryEnvelope =
   | ConversationHistorySummariesRequest
   | ConversationHistoryManageRequest
   | ConversationHistorySummariesResponse
-  | ConversationHistoryManageResponse;
+  | ConversationHistoryManageResponse
+  | ConversationHistoryDeletionsRequest
+  | ConversationHistoryDeletionsResponse
+  | ConversationHistoryDeletionStatusRequest
+  | ConversationHistoryDeletionStatusResponse;
 export type ConversationHistoryStoredRequest = {
   requestId: CanonicalRequestIdF00D75C2;
   prompt: CanonicalPrompt_4E4Fccab;
@@ -1561,18 +1565,770 @@ export interface ConversationMetadata {
   trashedAt: string | null;
   restoreUntil: string | null;
 }
+export interface ConversationHistoryDeletionsRequest {
+  version: 'meri.conversation-management.v1';
+  before: ConversationDeletionBefore | null;
+}
+export interface ConversationDeletionBefore {
+  createdAt: string;
+  requestId: string;
+}
+export interface ConversationHistoryDeletionsResponse {
+  version: 'meri.conversation-management.v1';
+  /**
+   * @maxItems 20
+   */
+  requests:
+    | []
+    | [ConversationDeletionReference]
+    | [ConversationDeletionReference, ConversationDeletionReference]
+    | [ConversationDeletionReference, ConversationDeletionReference, ConversationDeletionReference]
+    | [
+        ConversationDeletionReference,
+        ConversationDeletionReference,
+        ConversationDeletionReference,
+        ConversationDeletionReference
+      ]
+    | [
+        ConversationDeletionReference,
+        ConversationDeletionReference,
+        ConversationDeletionReference,
+        ConversationDeletionReference,
+        ConversationDeletionReference
+      ]
+    | [
+        ConversationDeletionReference,
+        ConversationDeletionReference,
+        ConversationDeletionReference,
+        ConversationDeletionReference,
+        ConversationDeletionReference,
+        ConversationDeletionReference
+      ]
+    | [
+        ConversationDeletionReference,
+        ConversationDeletionReference,
+        ConversationDeletionReference,
+        ConversationDeletionReference,
+        ConversationDeletionReference,
+        ConversationDeletionReference,
+        ConversationDeletionReference
+      ]
+    | [
+        ConversationDeletionReference,
+        ConversationDeletionReference,
+        ConversationDeletionReference,
+        ConversationDeletionReference,
+        ConversationDeletionReference,
+        ConversationDeletionReference,
+        ConversationDeletionReference,
+        ConversationDeletionReference
+      ]
+    | [
+        ConversationDeletionReference,
+        ConversationDeletionReference,
+        ConversationDeletionReference,
+        ConversationDeletionReference,
+        ConversationDeletionReference,
+        ConversationDeletionReference,
+        ConversationDeletionReference,
+        ConversationDeletionReference,
+        ConversationDeletionReference
+      ]
+    | [
+        ConversationDeletionReference,
+        ConversationDeletionReference,
+        ConversationDeletionReference,
+        ConversationDeletionReference,
+        ConversationDeletionReference,
+        ConversationDeletionReference,
+        ConversationDeletionReference,
+        ConversationDeletionReference,
+        ConversationDeletionReference,
+        ConversationDeletionReference
+      ]
+    | [
+        ConversationDeletionReference,
+        ConversationDeletionReference,
+        ConversationDeletionReference,
+        ConversationDeletionReference,
+        ConversationDeletionReference,
+        ConversationDeletionReference,
+        ConversationDeletionReference,
+        ConversationDeletionReference,
+        ConversationDeletionReference,
+        ConversationDeletionReference,
+        ConversationDeletionReference
+      ]
+    | [
+        ConversationDeletionReference,
+        ConversationDeletionReference,
+        ConversationDeletionReference,
+        ConversationDeletionReference,
+        ConversationDeletionReference,
+        ConversationDeletionReference,
+        ConversationDeletionReference,
+        ConversationDeletionReference,
+        ConversationDeletionReference,
+        ConversationDeletionReference,
+        ConversationDeletionReference,
+        ConversationDeletionReference
+      ]
+    | [
+        ConversationDeletionReference,
+        ConversationDeletionReference,
+        ConversationDeletionReference,
+        ConversationDeletionReference,
+        ConversationDeletionReference,
+        ConversationDeletionReference,
+        ConversationDeletionReference,
+        ConversationDeletionReference,
+        ConversationDeletionReference,
+        ConversationDeletionReference,
+        ConversationDeletionReference,
+        ConversationDeletionReference,
+        ConversationDeletionReference
+      ]
+    | [
+        ConversationDeletionReference,
+        ConversationDeletionReference,
+        ConversationDeletionReference,
+        ConversationDeletionReference,
+        ConversationDeletionReference,
+        ConversationDeletionReference,
+        ConversationDeletionReference,
+        ConversationDeletionReference,
+        ConversationDeletionReference,
+        ConversationDeletionReference,
+        ConversationDeletionReference,
+        ConversationDeletionReference,
+        ConversationDeletionReference,
+        ConversationDeletionReference
+      ]
+    | [
+        ConversationDeletionReference,
+        ConversationDeletionReference,
+        ConversationDeletionReference,
+        ConversationDeletionReference,
+        ConversationDeletionReference,
+        ConversationDeletionReference,
+        ConversationDeletionReference,
+        ConversationDeletionReference,
+        ConversationDeletionReference,
+        ConversationDeletionReference,
+        ConversationDeletionReference,
+        ConversationDeletionReference,
+        ConversationDeletionReference,
+        ConversationDeletionReference,
+        ConversationDeletionReference
+      ]
+    | [
+        ConversationDeletionReference,
+        ConversationDeletionReference,
+        ConversationDeletionReference,
+        ConversationDeletionReference,
+        ConversationDeletionReference,
+        ConversationDeletionReference,
+        ConversationDeletionReference,
+        ConversationDeletionReference,
+        ConversationDeletionReference,
+        ConversationDeletionReference,
+        ConversationDeletionReference,
+        ConversationDeletionReference,
+        ConversationDeletionReference,
+        ConversationDeletionReference,
+        ConversationDeletionReference,
+        ConversationDeletionReference
+      ]
+    | [
+        ConversationDeletionReference,
+        ConversationDeletionReference,
+        ConversationDeletionReference,
+        ConversationDeletionReference,
+        ConversationDeletionReference,
+        ConversationDeletionReference,
+        ConversationDeletionReference,
+        ConversationDeletionReference,
+        ConversationDeletionReference,
+        ConversationDeletionReference,
+        ConversationDeletionReference,
+        ConversationDeletionReference,
+        ConversationDeletionReference,
+        ConversationDeletionReference,
+        ConversationDeletionReference,
+        ConversationDeletionReference,
+        ConversationDeletionReference
+      ]
+    | [
+        ConversationDeletionReference,
+        ConversationDeletionReference,
+        ConversationDeletionReference,
+        ConversationDeletionReference,
+        ConversationDeletionReference,
+        ConversationDeletionReference,
+        ConversationDeletionReference,
+        ConversationDeletionReference,
+        ConversationDeletionReference,
+        ConversationDeletionReference,
+        ConversationDeletionReference,
+        ConversationDeletionReference,
+        ConversationDeletionReference,
+        ConversationDeletionReference,
+        ConversationDeletionReference,
+        ConversationDeletionReference,
+        ConversationDeletionReference,
+        ConversationDeletionReference
+      ]
+    | [
+        ConversationDeletionReference,
+        ConversationDeletionReference,
+        ConversationDeletionReference,
+        ConversationDeletionReference,
+        ConversationDeletionReference,
+        ConversationDeletionReference,
+        ConversationDeletionReference,
+        ConversationDeletionReference,
+        ConversationDeletionReference,
+        ConversationDeletionReference,
+        ConversationDeletionReference,
+        ConversationDeletionReference,
+        ConversationDeletionReference,
+        ConversationDeletionReference,
+        ConversationDeletionReference,
+        ConversationDeletionReference,
+        ConversationDeletionReference,
+        ConversationDeletionReference,
+        ConversationDeletionReference
+      ]
+    | [
+        ConversationDeletionReference,
+        ConversationDeletionReference,
+        ConversationDeletionReference,
+        ConversationDeletionReference,
+        ConversationDeletionReference,
+        ConversationDeletionReference,
+        ConversationDeletionReference,
+        ConversationDeletionReference,
+        ConversationDeletionReference,
+        ConversationDeletionReference,
+        ConversationDeletionReference,
+        ConversationDeletionReference,
+        ConversationDeletionReference,
+        ConversationDeletionReference,
+        ConversationDeletionReference,
+        ConversationDeletionReference,
+        ConversationDeletionReference,
+        ConversationDeletionReference,
+        ConversationDeletionReference,
+        ConversationDeletionReference
+      ];
+  olderRequestsUnavailable: boolean;
+  nextBefore: ConversationDeletionBefore | null;
+}
+export interface ConversationDeletionReference {
+  requestId: string;
+  createdAt: string;
+  conversationId: string;
+  revision: string;
+  restoreUntil: string;
+}
+export interface ConversationHistoryDeletionStatusRequest {
+  version: 'meri.conversation-management.v1';
+  requestId: string;
+}
+export interface ConversationHistoryDeletionStatusResponse {
+  version: 'meri.conversation-management.v1';
+  requestId: string;
+  createdAt: string;
+  conversationId: string;
+  revision: string;
+  restoreUntil: string;
+  state: 'pending' | 'blocked' | 'unknown' | 'completed' | 'superseded';
+  /**
+   * @maxItems 9
+   */
+  reasons:
+    | []
+    | [
+        | 'restore_period'
+        | 'legal_hold'
+        | 'object_lock'
+        | 'shared_reference'
+        | 'policy'
+        | 'cleanup_pending'
+        | 'verification_unavailable'
+        | 'cleanup_disabled'
+      ]
+    | [
+        (
+          | 'restore_period'
+          | 'legal_hold'
+          | 'object_lock'
+          | 'shared_reference'
+          | 'policy'
+          | 'cleanup_pending'
+          | 'verification_unavailable'
+          | 'cleanup_disabled'
+        ),
+        (
+          | 'restore_period'
+          | 'legal_hold'
+          | 'object_lock'
+          | 'shared_reference'
+          | 'policy'
+          | 'cleanup_pending'
+          | 'verification_unavailable'
+          | 'cleanup_disabled'
+        )
+      ]
+    | [
+        (
+          | 'restore_period'
+          | 'legal_hold'
+          | 'object_lock'
+          | 'shared_reference'
+          | 'policy'
+          | 'cleanup_pending'
+          | 'verification_unavailable'
+          | 'cleanup_disabled'
+        ),
+        (
+          | 'restore_period'
+          | 'legal_hold'
+          | 'object_lock'
+          | 'shared_reference'
+          | 'policy'
+          | 'cleanup_pending'
+          | 'verification_unavailable'
+          | 'cleanup_disabled'
+        ),
+        (
+          | 'restore_period'
+          | 'legal_hold'
+          | 'object_lock'
+          | 'shared_reference'
+          | 'policy'
+          | 'cleanup_pending'
+          | 'verification_unavailable'
+          | 'cleanup_disabled'
+        )
+      ]
+    | [
+        (
+          | 'restore_period'
+          | 'legal_hold'
+          | 'object_lock'
+          | 'shared_reference'
+          | 'policy'
+          | 'cleanup_pending'
+          | 'verification_unavailable'
+          | 'cleanup_disabled'
+        ),
+        (
+          | 'restore_period'
+          | 'legal_hold'
+          | 'object_lock'
+          | 'shared_reference'
+          | 'policy'
+          | 'cleanup_pending'
+          | 'verification_unavailable'
+          | 'cleanup_disabled'
+        ),
+        (
+          | 'restore_period'
+          | 'legal_hold'
+          | 'object_lock'
+          | 'shared_reference'
+          | 'policy'
+          | 'cleanup_pending'
+          | 'verification_unavailable'
+          | 'cleanup_disabled'
+        ),
+        (
+          | 'restore_period'
+          | 'legal_hold'
+          | 'object_lock'
+          | 'shared_reference'
+          | 'policy'
+          | 'cleanup_pending'
+          | 'verification_unavailable'
+          | 'cleanup_disabled'
+        )
+      ]
+    | [
+        (
+          | 'restore_period'
+          | 'legal_hold'
+          | 'object_lock'
+          | 'shared_reference'
+          | 'policy'
+          | 'cleanup_pending'
+          | 'verification_unavailable'
+          | 'cleanup_disabled'
+        ),
+        (
+          | 'restore_period'
+          | 'legal_hold'
+          | 'object_lock'
+          | 'shared_reference'
+          | 'policy'
+          | 'cleanup_pending'
+          | 'verification_unavailable'
+          | 'cleanup_disabled'
+        ),
+        (
+          | 'restore_period'
+          | 'legal_hold'
+          | 'object_lock'
+          | 'shared_reference'
+          | 'policy'
+          | 'cleanup_pending'
+          | 'verification_unavailable'
+          | 'cleanup_disabled'
+        ),
+        (
+          | 'restore_period'
+          | 'legal_hold'
+          | 'object_lock'
+          | 'shared_reference'
+          | 'policy'
+          | 'cleanup_pending'
+          | 'verification_unavailable'
+          | 'cleanup_disabled'
+        ),
+        (
+          | 'restore_period'
+          | 'legal_hold'
+          | 'object_lock'
+          | 'shared_reference'
+          | 'policy'
+          | 'cleanup_pending'
+          | 'verification_unavailable'
+          | 'cleanup_disabled'
+        )
+      ]
+    | [
+        (
+          | 'restore_period'
+          | 'legal_hold'
+          | 'object_lock'
+          | 'shared_reference'
+          | 'policy'
+          | 'cleanup_pending'
+          | 'verification_unavailable'
+          | 'cleanup_disabled'
+        ),
+        (
+          | 'restore_period'
+          | 'legal_hold'
+          | 'object_lock'
+          | 'shared_reference'
+          | 'policy'
+          | 'cleanup_pending'
+          | 'verification_unavailable'
+          | 'cleanup_disabled'
+        ),
+        (
+          | 'restore_period'
+          | 'legal_hold'
+          | 'object_lock'
+          | 'shared_reference'
+          | 'policy'
+          | 'cleanup_pending'
+          | 'verification_unavailable'
+          | 'cleanup_disabled'
+        ),
+        (
+          | 'restore_period'
+          | 'legal_hold'
+          | 'object_lock'
+          | 'shared_reference'
+          | 'policy'
+          | 'cleanup_pending'
+          | 'verification_unavailable'
+          | 'cleanup_disabled'
+        ),
+        (
+          | 'restore_period'
+          | 'legal_hold'
+          | 'object_lock'
+          | 'shared_reference'
+          | 'policy'
+          | 'cleanup_pending'
+          | 'verification_unavailable'
+          | 'cleanup_disabled'
+        ),
+        (
+          | 'restore_period'
+          | 'legal_hold'
+          | 'object_lock'
+          | 'shared_reference'
+          | 'policy'
+          | 'cleanup_pending'
+          | 'verification_unavailable'
+          | 'cleanup_disabled'
+        )
+      ]
+    | [
+        (
+          | 'restore_period'
+          | 'legal_hold'
+          | 'object_lock'
+          | 'shared_reference'
+          | 'policy'
+          | 'cleanup_pending'
+          | 'verification_unavailable'
+          | 'cleanup_disabled'
+        ),
+        (
+          | 'restore_period'
+          | 'legal_hold'
+          | 'object_lock'
+          | 'shared_reference'
+          | 'policy'
+          | 'cleanup_pending'
+          | 'verification_unavailable'
+          | 'cleanup_disabled'
+        ),
+        (
+          | 'restore_period'
+          | 'legal_hold'
+          | 'object_lock'
+          | 'shared_reference'
+          | 'policy'
+          | 'cleanup_pending'
+          | 'verification_unavailable'
+          | 'cleanup_disabled'
+        ),
+        (
+          | 'restore_period'
+          | 'legal_hold'
+          | 'object_lock'
+          | 'shared_reference'
+          | 'policy'
+          | 'cleanup_pending'
+          | 'verification_unavailable'
+          | 'cleanup_disabled'
+        ),
+        (
+          | 'restore_period'
+          | 'legal_hold'
+          | 'object_lock'
+          | 'shared_reference'
+          | 'policy'
+          | 'cleanup_pending'
+          | 'verification_unavailable'
+          | 'cleanup_disabled'
+        ),
+        (
+          | 'restore_period'
+          | 'legal_hold'
+          | 'object_lock'
+          | 'shared_reference'
+          | 'policy'
+          | 'cleanup_pending'
+          | 'verification_unavailable'
+          | 'cleanup_disabled'
+        ),
+        (
+          | 'restore_period'
+          | 'legal_hold'
+          | 'object_lock'
+          | 'shared_reference'
+          | 'policy'
+          | 'cleanup_pending'
+          | 'verification_unavailable'
+          | 'cleanup_disabled'
+        )
+      ]
+    | [
+        (
+          | 'restore_period'
+          | 'legal_hold'
+          | 'object_lock'
+          | 'shared_reference'
+          | 'policy'
+          | 'cleanup_pending'
+          | 'verification_unavailable'
+          | 'cleanup_disabled'
+        ),
+        (
+          | 'restore_period'
+          | 'legal_hold'
+          | 'object_lock'
+          | 'shared_reference'
+          | 'policy'
+          | 'cleanup_pending'
+          | 'verification_unavailable'
+          | 'cleanup_disabled'
+        ),
+        (
+          | 'restore_period'
+          | 'legal_hold'
+          | 'object_lock'
+          | 'shared_reference'
+          | 'policy'
+          | 'cleanup_pending'
+          | 'verification_unavailable'
+          | 'cleanup_disabled'
+        ),
+        (
+          | 'restore_period'
+          | 'legal_hold'
+          | 'object_lock'
+          | 'shared_reference'
+          | 'policy'
+          | 'cleanup_pending'
+          | 'verification_unavailable'
+          | 'cleanup_disabled'
+        ),
+        (
+          | 'restore_period'
+          | 'legal_hold'
+          | 'object_lock'
+          | 'shared_reference'
+          | 'policy'
+          | 'cleanup_pending'
+          | 'verification_unavailable'
+          | 'cleanup_disabled'
+        ),
+        (
+          | 'restore_period'
+          | 'legal_hold'
+          | 'object_lock'
+          | 'shared_reference'
+          | 'policy'
+          | 'cleanup_pending'
+          | 'verification_unavailable'
+          | 'cleanup_disabled'
+        ),
+        (
+          | 'restore_period'
+          | 'legal_hold'
+          | 'object_lock'
+          | 'shared_reference'
+          | 'policy'
+          | 'cleanup_pending'
+          | 'verification_unavailable'
+          | 'cleanup_disabled'
+        ),
+        (
+          | 'restore_period'
+          | 'legal_hold'
+          | 'object_lock'
+          | 'shared_reference'
+          | 'policy'
+          | 'cleanup_pending'
+          | 'verification_unavailable'
+          | 'cleanup_disabled'
+        )
+      ]
+    | [
+        (
+          | 'restore_period'
+          | 'legal_hold'
+          | 'object_lock'
+          | 'shared_reference'
+          | 'policy'
+          | 'cleanup_pending'
+          | 'verification_unavailable'
+          | 'cleanup_disabled'
+        ),
+        (
+          | 'restore_period'
+          | 'legal_hold'
+          | 'object_lock'
+          | 'shared_reference'
+          | 'policy'
+          | 'cleanup_pending'
+          | 'verification_unavailable'
+          | 'cleanup_disabled'
+        ),
+        (
+          | 'restore_period'
+          | 'legal_hold'
+          | 'object_lock'
+          | 'shared_reference'
+          | 'policy'
+          | 'cleanup_pending'
+          | 'verification_unavailable'
+          | 'cleanup_disabled'
+        ),
+        (
+          | 'restore_period'
+          | 'legal_hold'
+          | 'object_lock'
+          | 'shared_reference'
+          | 'policy'
+          | 'cleanup_pending'
+          | 'verification_unavailable'
+          | 'cleanup_disabled'
+        ),
+        (
+          | 'restore_period'
+          | 'legal_hold'
+          | 'object_lock'
+          | 'shared_reference'
+          | 'policy'
+          | 'cleanup_pending'
+          | 'verification_unavailable'
+          | 'cleanup_disabled'
+        ),
+        (
+          | 'restore_period'
+          | 'legal_hold'
+          | 'object_lock'
+          | 'shared_reference'
+          | 'policy'
+          | 'cleanup_pending'
+          | 'verification_unavailable'
+          | 'cleanup_disabled'
+        ),
+        (
+          | 'restore_period'
+          | 'legal_hold'
+          | 'object_lock'
+          | 'shared_reference'
+          | 'policy'
+          | 'cleanup_pending'
+          | 'verification_unavailable'
+          | 'cleanup_disabled'
+        ),
+        (
+          | 'restore_period'
+          | 'legal_hold'
+          | 'object_lock'
+          | 'shared_reference'
+          | 'policy'
+          | 'cleanup_pending'
+          | 'verification_unavailable'
+          | 'cleanup_disabled'
+        ),
+        (
+          | 'restore_period'
+          | 'legal_hold'
+          | 'object_lock'
+          | 'shared_reference'
+          | 'policy'
+          | 'cleanup_pending'
+          | 'verification_unavailable'
+          | 'cleanup_disabled'
+        )
+      ];
+  checkedAtMs: number;
+  retainedSharedCopies: boolean;
+}
 
-export type ConversationHistoryRoute='export'|'list'|'transcript'|'nextTurn'|'summaries'|'manage';
+export type ConversationHistoryRoute='export'|'list'|'transcript'|'nextTurn'|'summaries'|'manage'|'deletions'|'deletionStatus';
 declare const admittedHistoryRequest:unique symbol;
-export interface ConversationHistoryRequestMap {export:ConversationHistoryExportRequest;list:ConversationHistoryListRequest;transcript:ConversationHistoryTranscriptRequest;nextTurn:ConversationHistoryNextTurnRequest;summaries:ConversationHistorySummariesRequest;manage:ConversationHistoryManageRequest;}
+export interface ConversationHistoryRequestMap {export:ConversationHistoryExportRequest;list:ConversationHistoryListRequest;transcript:ConversationHistoryTranscriptRequest;nextTurn:ConversationHistoryNextTurnRequest;summaries:ConversationHistorySummariesRequest;manage:ConversationHistoryManageRequest;deletions:ConversationHistoryDeletionsRequest;deletionStatus:ConversationHistoryDeletionStatusRequest;}
 export type AdmittedConversationHistoryRequest<R extends ConversationHistoryRoute>=Readonly<ConversationHistoryRequestMap[R]>&{readonly [admittedHistoryRequest]:R};
-export interface ConversationHistoryResponseMap {export:Readonly<ConversationHistoryExportResponse>;list:Readonly<ConversationHistoryListResponse>;transcript:Readonly<ConversationHistoryTranscriptResponse>;nextTurn:Readonly<ConversationHistoryNextTurnResponse>;summaries:Readonly<ConversationHistorySummariesResponse>;manage:Readonly<ConversationHistoryManageResponse>;}
+export interface ConversationHistoryResponseMap {export:Readonly<ConversationHistoryExportResponse>;list:Readonly<ConversationHistoryListResponse>;transcript:Readonly<ConversationHistoryTranscriptResponse>;nextTurn:Readonly<ConversationHistoryNextTurnResponse>;summaries:Readonly<ConversationHistorySummariesResponse>;manage:Readonly<ConversationHistoryManageResponse>;deletions:Readonly<ConversationHistoryDeletionsResponse>;deletionStatus:Readonly<ConversationHistoryDeletionStatusResponse>;}
 export type ConversationHistoryResponse<R extends ConversationHistoryRoute>=ConversationHistoryResponseMap[R]|ConversationHistoryErrorResponse;
 export declare class ConversationHistoryResponseError extends Error {readonly code:string;}
 export declare const conversationHistoryMetadata: {
-  "packageVersion": "0.1.15",
-  "historyVersion": "1.5.0",
-  "schemaId": "urn:meri:conversation-history:1.5.0",
+  "packageVersion": "0.1.34",
+  "historyVersion": "1.6.0",
+  "schemaId": "urn:meri:conversation-history:1.6.0",
   "routes": {
     "export": {
       "method": "POST",
@@ -1597,6 +2353,14 @@ export declare const conversationHistoryMetadata: {
     "manage": {
       "method": "POST",
       "path": "/api/conversations/manage"
+    },
+    "deletions": {
+      "method": "POST",
+      "path": "/api/conversations/deletions/list"
+    },
+    "deletionStatus": {
+      "method": "POST",
+      "path": "/api/conversations/deletions/status"
     }
   },
   "authentication": {
@@ -1704,7 +2468,7 @@ export declare const conversationHistoryMetadata: {
     ]
   }
 };
-export declare const conversationHistoryVersion:'1.5.0';
+export declare const conversationHistoryVersion:'1.6.0';
 export declare const EXPORT_SCHEMA:'meri.conversation-export/1';
 export declare const MANAGEMENT_VERSION:'meri.conversation-management.v1';
 export declare const HISTORY_PATHS: {
@@ -1713,7 +2477,9 @@ export declare const HISTORY_PATHS: {
   "transcript": "/api/conversations/transcript",
   "nextTurn": "/api/conversations/next-turn",
   "summaries": "/api/conversations/summaries",
-  "manage": "/api/conversations/manage"
+  "manage": "/api/conversations/manage",
+  "deletions": "/api/conversations/deletions/list",
+  "deletionStatus": "/api/conversations/deletions/status"
 };
 export declare const DISCOVERY_SCHEMA:'meri.conversation-list/1',HISTORY_SCHEMA:'meri.conversation-transcript/1',TURN_SCHEMA:'meri.conversation-turn/1';
 export declare function receiveConversationHistoryRequest<R extends ConversationHistoryRoute>(route:R,utf8Bytes:Uint8Array):AdmittedConversationHistoryRequest<R>;

@@ -1,7 +1,7 @@
 {
-  "packageVersion": "0.1.15",
-  "historyVersion": "1.5.0",
-  "schemaId": "urn:meri:conversation-history:1.5.0",
+  "packageVersion": "0.1.34",
+  "historyVersion": "1.6.0",
+  "schemaId": "urn:meri:conversation-history:1.6.0",
   "runIndex": {
     "version": "1.0.0",
     "schemaId": "urn:meri:run-index:1.0.0",
@@ -16,14 +16,19 @@
   },
   "sources": [
     {
+      "path": "../../apps/control/conversations/history/deletions.mjs",
+      "sha256": "a9cb5b33e102772fc650719635bc8b7d82a376e7240a7f17e0ce680f500cddd7",
+      "bytes": 1672
+    },
+    {
       "path": "../../apps/control/conversations/history/export.mjs",
       "sha256": "b97f87f77225e05e5c7dbbacd374c7f96750ca9557ed0586443c1d3afc16fc58",
       "bytes": 2885
     },
     {
       "path": "../../apps/control/conversations/history/http.mjs",
-      "sha256": "2d259215ca70366ee96e03ddc989e2b273b883d80d29d5be27d95b19a1535aaa",
-      "bytes": 2423
+      "sha256": "c7b2c0b743bb4451ef72a563550b05806c0fca22b988923f40d020ffc12aedd1",
+      "bytes": 2601
     },
     {
       "path": "../../apps/control/conversations/history/lineage.mjs",
@@ -32,13 +37,13 @@
     },
     {
       "path": "../../apps/control/conversations/history/protocol.mjs",
-      "sha256": "67d59b9b61e6c99dd0794f406dd9e3b51a8c6239638788a262d026859311c2ec",
-      "bytes": 887
+      "sha256": "0d9618c0a0612d17e80c149b6f6a46e09b278fa65472e46f925dc21de7633e7c",
+      "bytes": 985
     },
     {
       "path": "../../apps/control/conversations/history/service.mjs",
-      "sha256": "d8765aa5de7c6b88e2858f987c0cc68307601fa89c5c56a15d48ce3c87ce3753",
-      "bytes": 9189
+      "sha256": "b7637801f7da193b202c946856940224ebb8ded00118a2694a5f9fd2abe42dc8",
+      "bytes": 9667
     },
     {
       "path": "../../apps/control/conversations/history/store.mjs",
@@ -72,13 +77,13 @@
     },
     {
       "path": "conversation-history/protocol.mjs",
-      "sha256": "31058721936ba3d0479b4ff6eda452d4a01317914e967891f6ee7e0cf419ad9b",
-      "bytes": 2659
+      "sha256": "e56e26131695eab32bf3fb76f64611c209a26929baffc5c6fdf731b3ad461126",
+      "bytes": 2758
     },
     {
       "path": "conversation-history/receive.mjs",
-      "sha256": "a05c79e154c823545b69b7a5afcf8f6fd2cc8a65691e40926c60db86ecf315cd",
-      "bytes": 3618
+      "sha256": "c3863012f457b6ffb7d99d35a0a9906f7af39953e4497214cfcc575cb6d24b73",
+      "bytes": 3892
     },
     {
       "path": "conversation-history/run-protocol.mjs",
@@ -107,13 +112,13 @@
     },
     {
       "path": "conversation-history/schema.mjs",
-      "sha256": "90bc24897f398ae385cf188e2357bbf50ca30242c32b805c0c4be430fae562af",
-      "bytes": 6084
+      "sha256": "731b9f026ef5ef5bebd117e6097b378f353385bf0f1b9468a4f7bfcb30736f7e",
+      "bytes": 7428
     },
     {
       "path": "conversation-history/semantics.mjs",
-      "sha256": "e85149a3c14dbde5411dd0104402e575a7ff2cba47df8c1c87ad584929318d3c",
-      "bytes": 12606
+      "sha256": "59360a8ed4c0b453acb44e465ede87126f9c4677eed1f0e7d86ea2d27628c0ff",
+      "bytes": 14245
     },
     {
       "path": "conversation-history/shape.mjs",
@@ -122,8 +127,8 @@
     },
     {
       "path": "conversation-history/validate.mjs",
-      "sha256": "71438e83a260127d50f7b3fe75c7cd934e6119533a7f5081d02885869de06b70",
-      "bytes": 1287
+      "sha256": "4b213ec80734894a82328533bd174c5c82ee5d2e56521fb498270d32504adaab",
+      "bytes": 1704
     },
     {
       "path": "conversation-sources/hearing-semantics.mjs",
@@ -157,8 +162,8 @@
     },
     {
       "path": "generate-history.mjs",
-      "sha256": "e67e28b56be31dfdba24510dfcc03fa79e5be5f915a70d7f5afb6c707f004412",
-      "bytes": 12453
+      "sha256": "ff085c4105d2ef7385c3169f02e8a0058f8db1a2b87449678a097e2b145861e0",
+      "bytes": 13004
     },
     {
       "path": "meri.schema.json",
@@ -206,7 +211,7 @@
       "bytes": 1986
     }
   ],
-  "schemaSha256": "7d27db4a27ecb8802024bab2c5c0818448b4285678ad5a00bf144e315bdd9867",
+  "schemaSha256": "33ca62ea5e9efe3c228c35f789da5955b3663a22d7ce04461471339aae93092e",
   "browserInputs": [
     "artifacts-0.2/artifact-formats.mjs",
     "conversation-history/conversation-history-receiver.mjs",

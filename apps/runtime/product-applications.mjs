@@ -92,7 +92,7 @@ export function composeRuntimePorts(canonical,supplemental){
  return captureRuntimePorts(joined);
 }
 /** `suppression` is the retention serving `{journal,serving}` pair when declared; the download-link gate needs it to revoke links. */
-export function createRuntimeProductApplications({configuration,sessions,ports,now,retention,suppression,managementSuppression,conversationStore,userPreferences}){
+export function createRuntimeProductApplications({configuration,sessions,ports,now,retention,suppression,managementSuppression,deletionStatus,conversationStore,userPreferences}){
  const uploads=configuration.sourceEnabled===true?ports.uploadApplicationFactory?.create({sessions,retention}):null;
  if(types.isPromise(uploads)){Promise.prototype.then.call(uploads,undefined,()=>{});throw fault('PRODUCT_PORTS_CONFIGURATION');}
  const handleUploads=uploads==null?null:storageMethod(uploads,'handle');
@@ -104,7 +104,7 @@ export function createRuntimeProductApplications({configuration,sessions,ports,n
  const handleAction=actionApplication==null?null:storageMethod(actionApplication,'handle');
  const routines=ports.routinesApplicationFactory?ports.routinesApplicationFactory.create({sessions,retention}):null;
  const historyCurrentness=ports.routinesApplicationFactory?.historyCurrentness&&ports.conversationMembership&&ports.conversationCurrentness?ports.routinesApplicationFactory.historyCurrentness({gate:ports.conversationMembership,core:ports.conversationCurrentness}):ports.conversationCurrentness;
- const historyService=ports.conversationMembership&&ports.conversationCurrentness&&conversationStore?createConversationHistoryService({store:conversationStore,gate:ports.conversationMembership,nextRunOwner:ports.conversationTurns,retention,suppression:managementSuppression}):null;
+ const historyService=ports.conversationMembership&&ports.conversationCurrentness&&conversationStore?createConversationHistoryService({store:conversationStore,gate:ports.conversationMembership,nextRunOwner:ports.conversationTurns,retention,suppression:managementSuppression,deletionStatus}):null;
  const history=ports.conversationMembership&&ports.conversationCurrentness&&conversationStore?createConversationHistoryApplication({
   service:historyService,gate:ports.conversationMembership,currentness:historyCurrentness,turnCurrentness:ports.conversationCurrentness,management:ports.conversationManagement,now,
   limits:{maxRequestMs:configuration.limits.requestMs,maxRequestBytes:configuration.limits.requestBytes,maxResponseBytes:configuration.native.maxResponseBytes}}):null;

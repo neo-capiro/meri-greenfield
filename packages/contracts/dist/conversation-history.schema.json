@@ -1,7 +1,259 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "urn:meri:conversation-history:1.5.0",
+  "$id": "urn:meri:conversation-history:1.6.0",
   "$defs": {
+    "ConversationDeletionReference": {
+      "type": "object",
+      "properties": {
+        "requestId": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "conversationId": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+        },
+        "revision": {
+          "type": "string",
+          "pattern": "^(0|[1-9][0-9]{0,17})$"
+        },
+        "restoreUntil": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "requestId",
+        "createdAt",
+        "conversationId",
+        "revision",
+        "restoreUntil"
+      ],
+      "additionalProperties": false
+    },
+    "ConversationDeletionBefore": {
+      "type": "object",
+      "properties": {
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "requestId": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+        }
+      },
+      "required": [
+        "createdAt",
+        "requestId"
+      ],
+      "additionalProperties": false
+    },
+    "ConversationDeletionReadback": {
+      "type": "object",
+      "properties": {
+        "version": {
+          "const": "meri.conversation-management.v1"
+        },
+        "requestId": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "conversationId": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+        },
+        "revision": {
+          "type": "string",
+          "pattern": "^(0|[1-9][0-9]{0,17})$"
+        },
+        "restoreUntil": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "metadataState": {
+          "enum": [
+            "present",
+            "absent",
+            "superseded"
+          ]
+        },
+        "checkedAtMs": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        }
+      },
+      "required": [
+        "version",
+        "requestId",
+        "createdAt",
+        "conversationId",
+        "revision",
+        "restoreUntil",
+        "metadataState",
+        "checkedAtMs"
+      ],
+      "additionalProperties": false
+    },
+    "ConversationHistoryDeletionsRequest": {
+      "type": "object",
+      "properties": {
+        "version": {
+          "const": "meri.conversation-management.v1"
+        },
+        "before": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ConversationDeletionBefore"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "version",
+        "before"
+      ],
+      "additionalProperties": false
+    },
+    "ConversationHistoryDeletionsResponse": {
+      "type": "object",
+      "properties": {
+        "version": {
+          "const": "meri.conversation-management.v1"
+        },
+        "requests": {
+          "type": "array",
+          "maxItems": 20,
+          "items": {
+            "$ref": "#/$defs/ConversationDeletionReference"
+          }
+        },
+        "olderRequestsUnavailable": {
+          "type": "boolean"
+        },
+        "nextBefore": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ConversationDeletionBefore"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "version",
+        "requests",
+        "olderRequestsUnavailable",
+        "nextBefore"
+      ],
+      "additionalProperties": false
+    },
+    "ConversationHistoryDeletionStatusRequest": {
+      "type": "object",
+      "properties": {
+        "version": {
+          "const": "meri.conversation-management.v1"
+        },
+        "requestId": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+        }
+      },
+      "required": [
+        "version",
+        "requestId"
+      ],
+      "additionalProperties": false
+    },
+    "ConversationHistoryDeletionStatusResponse": {
+      "type": "object",
+      "properties": {
+        "version": {
+          "const": "meri.conversation-management.v1"
+        },
+        "requestId": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "conversationId": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+        },
+        "revision": {
+          "type": "string",
+          "pattern": "^(0|[1-9][0-9]{0,17})$"
+        },
+        "restoreUntil": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "state": {
+          "enum": [
+            "pending",
+            "blocked",
+            "unknown",
+            "completed",
+            "superseded"
+          ]
+        },
+        "reasons": {
+          "type": "array",
+          "uniqueItems": true,
+          "maxItems": 9,
+          "items": {
+            "enum": [
+              "restore_period",
+              "legal_hold",
+              "object_lock",
+              "shared_reference",
+              "policy",
+              "cleanup_pending",
+              "verification_unavailable",
+              "cleanup_disabled"
+            ]
+          }
+        },
+        "checkedAtMs": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "retainedSharedCopies": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "version",
+        "requestId",
+        "createdAt",
+        "conversationId",
+        "revision",
+        "restoreUntil",
+        "state",
+        "reasons",
+        "checkedAtMs",
+        "retainedSharedCopies"
+      ],
+      "additionalProperties": false
+    },
     "ConversationHistoryExportRequest": {
       "type": "object",
       "properties": {

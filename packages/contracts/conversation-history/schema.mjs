@@ -9,8 +9,16 @@ const uuid={type:'string',pattern:'^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]
 const items=name=>({type:'array',items:ref(name),maxItems:100});
 const date={type:'string',format:'date-time'},revision={type:'string',pattern:'^(0|[1-9][0-9]{0,17})$'},title={type:'string',minLength:1,maxLength:200};
 const managementFields={version:{const:MANAGEMENT_VERSION},requestId:uuid,conversationId:uuid,expectedRevision:revision};
+const deletionReference={requestId:uuid,createdAt:date,conversationId:uuid,revision,restoreUntil:date};
 const metadata={conversationId:uuid,title,status:{enum:['active','archived','trashed']},revision,scopeKind:{enum:['client','general']},clientId:nullable(uuid),updatedAt:date,archivedAt:nullable(date),trashedAt:nullable(date),restoreUntil:nullable(date)};
 export function historySchema(){return {$schema:'https://json-schema.org/draft/2020-12/schema',$id:conversationHistoryMetadata.schemaId,$defs:{
+ ConversationDeletionReference:object(deletionReference),
+ ConversationDeletionBefore:object({createdAt:date,requestId:uuid}),
+ ConversationDeletionReadback:object({version:{const:MANAGEMENT_VERSION},...deletionReference,metadataState:{enum:['present','absent','superseded']},checkedAtMs:integer()}),
+ ConversationHistoryDeletionsRequest:object({version:{const:MANAGEMENT_VERSION},before:nullable(ref('ConversationDeletionBefore'))}),
+ ConversationHistoryDeletionsResponse:object({version:{const:MANAGEMENT_VERSION},requests:{type:'array',maxItems:20,items:ref('ConversationDeletionReference')},olderRequestsUnavailable:{type:'boolean'},nextBefore:nullable(ref('ConversationDeletionBefore'))}),
+ ConversationHistoryDeletionStatusRequest:object({version:{const:MANAGEMENT_VERSION},requestId:uuid}),
+ ConversationHistoryDeletionStatusResponse:object({version:{const:MANAGEMENT_VERSION},...deletionReference,state:{enum:['pending','blocked','unknown','completed','superseded']},reasons:{type:'array',uniqueItems:true,maxItems:9,items:{enum:['restore_period','legal_hold','object_lock','shared_reference','policy','cleanup_pending','verification_unavailable','cleanup_disabled']}},checkedAtMs:integer(),retainedSharedCopies:{type:'boolean'}}),
  ConversationHistoryExportRequest:object({conversationId:uuid}),
  ConversationHistoryExportResponse:object({schema:{const:EXPORT_SCHEMA},conversation:pub('Conversation'),throughSequence:integer(1),exportedAt:date,expiresAt:date,
  turns:{type:'array',minItems:1,maxItems:1000,items:object({runId:uuid,prompt:nullable({type:'string',maxLength:1048576}),messages:{type:'array',maxItems:2000,items:object({messageId:uuid,text:{type:'string',maxLength:1048576}})}})}}),
