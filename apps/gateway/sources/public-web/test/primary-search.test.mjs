@@ -220,7 +220,7 @@ test('endpoint shape, region, tool name, protocol and attempt bounds are validat
  assert.throws(()=>createPrimaryWebSearch({endpoint:ENDPOINT,region:'us-east-1',toolName:TOOL,extra:true}),{message:'GATEWAY_CONFIGURATION'});
  assert.throws(()=>createPrimarySearchReadSource({}),{message:'GATEWAY_CONFIGURATION'});
  assert.deepEqual({...createPrimaryWebSearch(base({fetchImpl:async()=>Response.json(mcp([]))})).admission},
-  {unitMicroUsd:7005,maxAttempts:1,maxMicroUsd:7005,maxCallsPerInvocation:1,billing:'aws-agentcore-web-search-and-gateway-invocation'});
+  {provider:'agentcore-web-search',unitMicroUsd:7005,maxAttempts:1,maxMicroUsd:7005,maxCallsPerInvocation:1,billing:'aws-agentcore-web-search-and-gateway-invocation'});
  assert.equal(createPrimaryWebSearch(base({maxAttempts:2})).admission.maxMicroUsd,14010);
  assert.deepEqual(primarySearchTarget({MERI_WEB_SEARCH_GATEWAY_ENDPOINT:ENDPOINT,MERI_WEB_SEARCH_TOOL:TOOL,AWS_REGION:'us-east-1'}),
   {endpoint:ENDPOINT,region:'us-east-1',toolName:TOOL});

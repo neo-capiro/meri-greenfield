@@ -1,0 +1,1915 @@
+{
+  "date": "2026-10-29",
+  "scope": "Isolated local qualification using synthetic documents; activation and deployment held",
+  "environment": {
+    "editor": "Collabora CODE 26.04.5.2",
+    "image": "collabora/code@sha256:c7415b963e32eb0986a562583f154d36d3d7a461e1ddfb660a95e87094328acb",
+    "browser": "Chromium 149.0.7827.55",
+    "platform": "Ubuntu 26.04 WSL x64 / native Docker 29.1.3 / Node 24.22.1",
+    "persistence": "Scripted Core HTTP/SQL/object ports; production WOPI adapter and immutable publisher"
+  },
+  "totals": {
+    "files": 30,
+    "nativeOpenEditSave": 30,
+    "strictSemanticMatches": 25,
+    "recordedDifferences": 5,
+    "nativeByteInspection": 30,
+    "exactPublicationAndReplay": 30
+  },
+  "corpus": [
+    {
+      "id": "docx-01",
+      "format": "docx",
+      "feature": "styles-unicode",
+      "filename": "docx-01.docx",
+      "sha256": "c8d540605b1b1732ea39f0fe6bc1064000ae0ff0485845f372f42e02eca0e8ec",
+      "bytes": 36743,
+      "outcome": "PASS",
+      "savedBytes": 20673,
+      "savedSha256": "0a0b8de6ac68452403ee6aed242c0e66b5689546f5c7ef40f4d90035c77f6811",
+      "checks": {
+        "nativeEdit": true,
+        "title": true,
+        "unicode": true,
+        "styleHeadings": true,
+        "bold": true,
+        "italic": true
+      },
+      "notes": [],
+      "publication": {
+        "id": "docx-01",
+        "bytes": 20673,
+        "sha256": "0a0b8de6ac68452403ee6aed242c0e66b5689546f5c7ef40f4d90035c77f6811",
+        "exactPublishedBytes": true,
+        "parentPreserved": true,
+        "replaySameVersion": true,
+        "persistence": "scripted Core/SQL/object ports"
+      }
+    },
+    {
+      "id": "docx-02",
+      "format": "docx",
+      "feature": "sections-headers-footers",
+      "filename": "docx-02.docx",
+      "sha256": "1a4a7ccb8b9b5e941a77f84de5b520dae564458baeaa569903a1670b21e7f973",
+      "bytes": 37816,
+      "outcome": "PASS",
+      "savedBytes": 25723,
+      "savedSha256": "362782e67f19fa494e011f429d2eeabb258e0dd0f334a802e447c4d1dda86c38",
+      "checks": {
+        "nativeEdit": true,
+        "title": true,
+        "unicode": true,
+        "sections": true,
+        "landscape": true,
+        "header": true,
+        "footer": true
+      },
+      "notes": [],
+      "publication": {
+        "id": "docx-02",
+        "bytes": 25723,
+        "sha256": "362782e67f19fa494e011f429d2eeabb258e0dd0f334a802e447c4d1dda86c38",
+        "exactPublishedBytes": true,
+        "parentPreserved": true,
+        "replaySameVersion": true,
+        "persistence": "scripted Core/SQL/object ports"
+      }
+    },
+    {
+      "id": "docx-03",
+      "format": "docx",
+      "feature": "merged-nested-tables",
+      "filename": "docx-03.docx",
+      "sha256": "68547c8cbaf84c34b2fd38b43e2a0a2b5f52fe99fb59f04535a781df1812814a",
+      "bytes": 36906,
+      "outcome": "PASS",
+      "savedBytes": 21159,
+      "savedSha256": "5a820f0b8fa556dff0c886cb5648a58d48e644397c813fa2b7097ec6e974d2c4",
+      "checks": {
+        "nativeEdit": true,
+        "title": true,
+        "unicode": true,
+        "tables": true,
+        "merged": true,
+        "nested": true
+      },
+      "notes": [],
+      "publication": {
+        "id": "docx-03",
+        "bytes": 21159,
+        "sha256": "5a820f0b8fa556dff0c886cb5648a58d48e644397c813fa2b7097ec6e974d2c4",
+        "exactPublishedBytes": true,
+        "parentPreserved": true,
+        "replaySameVersion": true,
+        "persistence": "scripted Core/SQL/object ports"
+      }
+    },
+    {
+      "id": "docx-04",
+      "format": "docx",
+      "feature": "footnotes-endnotes",
+      "filename": "docx-04.docx",
+      "sha256": "b56a3a4a0040ccac98f82f7153091d6dc847ed0497fbb365f3d2298d0a0464e4",
+      "bytes": 37320,
+      "outcome": "PASS",
+      "savedBytes": 22262,
+      "savedSha256": "b51848c00fabe14e280b1b5eedd98e23d6a823d8271bc3a85bd5accb4b4c4578",
+      "checks": {
+        "nativeEdit": true,
+        "title": true,
+        "unicode": true,
+        "footnote": true,
+        "endnote": true
+      },
+      "notes": [],
+      "publication": {
+        "id": "docx-04",
+        "bytes": 22262,
+        "sha256": "b51848c00fabe14e280b1b5eedd98e23d6a823d8271bc3a85bd5accb4b4c4578",
+        "exactPublishedBytes": true,
+        "parentPreserved": true,
+        "replaySameVersion": true,
+        "persistence": "scripted Core/SQL/object ports"
+      }
+    },
+    {
+      "id": "docx-05",
+      "format": "docx",
+      "feature": "comments",
+      "filename": "docx-05.docx",
+      "sha256": "90401e3effffa09819689cca7cb2c06350398d948464651dca679b9e1876cc70",
+      "bytes": 37281,
+      "outcome": "PASS",
+      "savedBytes": 21341,
+      "savedSha256": "8edac3ad1a4508d0e6dab507ade70524aec476db4728e194b9bc9481de11ca79",
+      "checks": {
+        "nativeEdit": true,
+        "title": true,
+        "unicode": true,
+        "comment": true
+      },
+      "notes": [],
+      "publication": {
+        "id": "docx-05",
+        "bytes": 21341,
+        "sha256": "8edac3ad1a4508d0e6dab507ade70524aec476db4728e194b9bc9481de11ca79",
+        "exactPublishedBytes": true,
+        "parentPreserved": true,
+        "replaySameVersion": true,
+        "persistence": "scripted Core/SQL/object ports"
+      }
+    },
+    {
+      "id": "docx-06",
+      "format": "docx",
+      "feature": "tracked-changes",
+      "filename": "docx-06.docx",
+      "sha256": "8239e23d258c75290f95afe2db89167d05c9334c35efac25b0b19205863205ce",
+      "bytes": 36802,
+      "outcome": "PASS",
+      "savedBytes": 20883,
+      "savedSha256": "9030577b4fca1c7686d65d2a4c1438095c63799852ea735b121aa1c3a669d156",
+      "checks": {
+        "nativeEdit": true,
+        "title": true,
+        "unicode": true,
+        "insertion": true,
+        "deletion": true,
+        "insertedText": true,
+        "deletedText": true
+      },
+      "notes": [],
+      "publication": {
+        "id": "docx-06",
+        "bytes": 20883,
+        "sha256": "9030577b4fca1c7686d65d2a4c1438095c63799852ea735b121aa1c3a669d156",
+        "exactPublishedBytes": true,
+        "parentPreserved": true,
+        "replaySameVersion": true,
+        "persistence": "scripted Core/SQL/object ports"
+      }
+    },
+    {
+      "id": "docx-07",
+      "format": "docx",
+      "feature": "embedded-image-alt",
+      "filename": "docx-07.docx",
+      "sha256": "52bef0c9fc583964537545f606e8dc3a894fb613b38dba3b6eea5c3474f5125f",
+      "bytes": 38870,
+      "outcome": "PASS",
+      "savedBytes": 22917,
+      "savedSha256": "bb119b6eda26e742749c030ee14623676352d9be7995cef100401dc5a5e0a169",
+      "checks": {
+        "nativeEdit": true,
+        "title": true,
+        "unicode": true,
+        "imagePixels": true,
+        "alt": true
+      },
+      "notes": [],
+      "publication": {
+        "id": "docx-07",
+        "bytes": 22917,
+        "sha256": "bb119b6eda26e742749c030ee14623676352d9be7995cef100401dc5a5e0a169",
+        "exactPublishedBytes": true,
+        "parentPreserved": true,
+        "replaySameVersion": true,
+        "persistence": "scripted Core/SQL/object ports"
+      }
+    },
+    {
+      "id": "docx-08",
+      "format": "docx",
+      "feature": "numbered-bulleted-lists",
+      "filename": "docx-08.docx",
+      "sha256": "7b32089617c4e040e79890145f7bb8948300251484dc114f28bcedbc57d99aaa",
+      "bytes": 36741,
+      "outcome": "PASS",
+      "savedBytes": 20712,
+      "savedSha256": "f4cc1fe28b9bbdb01f73a4fedc55391d2d30da0f7534388b6e8569c0e2bc3d81",
+      "checks": {
+        "nativeEdit": true,
+        "title": true,
+        "unicode": true,
+        "numbering": true,
+        "allListItems": true
+      },
+      "notes": [],
+      "publication": {
+        "id": "docx-08",
+        "bytes": 20712,
+        "sha256": "f4cc1fe28b9bbdb01f73a4fedc55391d2d30da0f7534388b6e8569c0e2bc3d81",
+        "exactPublishedBytes": true,
+        "parentPreserved": true,
+        "replaySameVersion": true,
+        "persistence": "scripted Core/SQL/object ports"
+      }
+    },
+    {
+      "id": "docx-09",
+      "format": "docx",
+      "feature": "bookmarks-fields-hyperlinks",
+      "filename": "docx-09.docx",
+      "sha256": "9325ece63abf25d8484c7081649f2995e4c18181516408bc23d5d096e201b164",
+      "bytes": 36807,
+      "outcome": "PASS",
+      "savedBytes": 20831,
+      "savedSha256": "4f6d97856aa6390783b3d159e62fee8045e6dd74e0fd0c11119d660b26abd6d5",
+      "checks": {
+        "nativeEdit": true,
+        "title": true,
+        "unicode": true,
+        "bookmark": true,
+        "pageField": true,
+        "internalLink": true
+      },
+      "notes": [],
+      "publication": {
+        "id": "docx-09",
+        "bytes": 20831,
+        "sha256": "4f6d97856aa6390783b3d159e62fee8045e6dd74e0fd0c11119d660b26abd6d5",
+        "exactPublishedBytes": true,
+        "parentPreserved": true,
+        "replaySameVersion": true,
+        "persistence": "scripted Core/SQL/object ports"
+      }
+    },
+    {
+      "id": "docx-10",
+      "format": "docx",
+      "feature": "large-multipage",
+      "filename": "docx-10.docx",
+      "sha256": "22a4373b89b3b779b920d8e6097d9b77df359d4ae8e38b8c61e9d3cbe40e83f3",
+      "bytes": 38767,
+      "outcome": "PASS",
+      "savedBytes": 23151,
+      "savedSha256": "4efd2df363335c89eb5417e81a9bcc5e72bf8a9db733c01343ed1c9c8554c118",
+      "checks": {
+        "nativeEdit": true,
+        "title": true,
+        "unicode": true,
+        "all650Paragraphs": true
+      },
+      "notes": [],
+      "publication": {
+        "id": "docx-10",
+        "bytes": 23151,
+        "sha256": "4efd2df363335c89eb5417e81a9bcc5e72bf8a9db733c01343ed1c9c8554c118",
+        "exactPublishedBytes": true,
+        "parentPreserved": true,
+        "replaySameVersion": true,
+        "persistence": "scripted Core/SQL/object ports"
+      }
+    },
+    {
+      "id": "xlsx-01",
+      "format": "xlsx",
+      "feature": "formulas-recalculation",
+      "filename": "xlsx-01.xlsx",
+      "sha256": "c3bc139c2cdbd061a0f56c170f218180ca958d012aed44899ca79d3d838f1bad",
+      "bytes": 5520,
+      "outcome": "PASS",
+      "savedBytes": 7028,
+      "savedSha256": "278e9dc6503ecfe4662b08975c075d3c404ea84610a6477f297202e17e6d43ad",
+      "checks": {
+        "nativeEdit": true,
+        "title": true,
+        "unicode": true,
+        "baseFormula": true,
+        "baseFormulaCache": true,
+        "sumCache": true,
+        "ifCache": true
+      },
+      "notes": [],
+      "publication": {
+        "id": "xlsx-01",
+        "bytes": 7028,
+        "sha256": "278e9dc6503ecfe4662b08975c075d3c404ea84610a6477f297202e17e6d43ad",
+        "exactPublishedBytes": true,
+        "parentPreserved": true,
+        "replaySameVersion": true,
+        "persistence": "scripted Core/SQL/object ports"
+      }
+    },
+    {
+      "id": "xlsx-02",
+      "format": "xlsx",
+      "feature": "number-date-percent-formats",
+      "filename": "xlsx-02.xlsx",
+      "sha256": "ed88107629854bcd2ef5d6872372836bec3d44e161e8baea8693dd4f39d204c8",
+      "bytes": 5604,
+      "outcome": "DIFFERENCE",
+      "savedBytes": 7087,
+      "savedSha256": "b5e9e0ca38688e2551a38dc49043d2099686afbef164e2fa52cd9d17cbfc2fc6",
+      "checks": {
+        "nativeEdit": true,
+        "title": true,
+        "unicode": true,
+        "baseFormula": true,
+        "baseFormulaCache": true,
+        "currency": false,
+        "percent": true,
+        "date": true
+      },
+      "notes": [],
+      "publication": {
+        "id": "xlsx-02",
+        "bytes": 7087,
+        "sha256": "b5e9e0ca38688e2551a38dc49043d2099686afbef164e2fa52cd9d17cbfc2fc6",
+        "exactPublishedBytes": true,
+        "parentPreserved": true,
+        "replaySameVersion": true,
+        "persistence": "scripted Core/SQL/object ports"
+      }
+    },
+    {
+      "id": "xlsx-03",
+      "format": "xlsx",
+      "feature": "merged-wrap-cells",
+      "filename": "xlsx-03.xlsx",
+      "sha256": "269208bd5ec2ffd56e64a06316e193af6c7188916fbfd03349741af0441bb297",
+      "bytes": 5723,
+      "outcome": "PASS",
+      "savedBytes": 7386,
+      "savedSha256": "f1dd706363984e610e51c9b6ccecdc31c2d8811fdd904bf71987273a61138bb6",
+      "checks": {
+        "nativeEdit": true,
+        "title": true,
+        "unicode": true,
+        "baseFormula": true,
+        "baseFormulaCache": true,
+        "merged": true,
+        "wrap": true
+      },
+      "notes": [],
+      "publication": {
+        "id": "xlsx-03",
+        "bytes": 7386,
+        "sha256": "f1dd706363984e610e51c9b6ccecdc31c2d8811fdd904bf71987273a61138bb6",
+        "exactPublishedBytes": true,
+        "parentPreserved": true,
+        "replaySameVersion": true,
+        "persistence": "scripted Core/SQL/object ports"
+      }
+    },
+    {
+      "id": "xlsx-04",
+      "format": "xlsx",
+      "feature": "bar-chart",
+      "filename": "xlsx-04.xlsx",
+      "sha256": "e595aea98f126ee042c0858e4585c1e1cacf9de9c870b9437ac33d8d00ab41c0",
+      "bytes": 7610,
+      "outcome": "PASS",
+      "savedBytes": 11309,
+      "savedSha256": "4d79f91e7f96eb995b66bf8524578c1ecf0a7893ba03632492350814fc6aea7c",
+      "checks": {
+        "nativeEdit": true,
+        "title": true,
+        "unicode": true,
+        "baseFormula": true,
+        "baseFormulaCache": true,
+        "chartCount": true,
+        "seriesCount": true
+      },
+      "notes": [],
+      "publication": {
+        "id": "xlsx-04",
+        "bytes": 11309,
+        "sha256": "4d79f91e7f96eb995b66bf8524578c1ecf0a7893ba03632492350814fc6aea7c",
+        "exactPublishedBytes": true,
+        "parentPreserved": true,
+        "replaySameVersion": true,
+        "persistence": "scripted Core/SQL/object ports"
+      }
+    },
+    {
+      "id": "xlsx-05",
+      "format": "xlsx",
+      "feature": "line-multiseries-chart",
+      "filename": "xlsx-05.xlsx",
+      "sha256": "4fbca2bd80a885c0a04bb81b41f2596b10aca614224ee8de1597af67f17753c4",
+      "bytes": 7657,
+      "outcome": "PASS",
+      "savedBytes": 11384,
+      "savedSha256": "c266604d3af9e99e0f26844f0dd35bfe3a2e51064bdc19f6ff463b679720de9e",
+      "checks": {
+        "nativeEdit": true,
+        "title": true,
+        "unicode": true,
+        "baseFormula": true,
+        "baseFormulaCache": true,
+        "chartCount": true,
+        "seriesCount": true
+      },
+      "notes": [],
+      "publication": {
+        "id": "xlsx-05",
+        "bytes": 11384,
+        "sha256": "c266604d3af9e99e0f26844f0dd35bfe3a2e51064bdc19f6ff463b679720de9e",
+        "exactPublishedBytes": true,
+        "parentPreserved": true,
+        "replaySameVersion": true,
+        "persistence": "scripted Core/SQL/object ports"
+      }
+    },
+    {
+      "id": "xlsx-06",
+      "format": "xlsx",
+      "feature": "conditional-validation",
+      "filename": "xlsx-06.xlsx",
+      "sha256": "9a4b16a413141fd9ea00a86fdc97069d2875aeadcbf29e4162fbb59d92ae2b4e",
+      "bytes": 5720,
+      "outcome": "PASS",
+      "savedBytes": 7300,
+      "savedSha256": "f65b99c75098c5c255413d0bbadbfdcc6684589ec44d771cb9b5495ccc3ab63c",
+      "checks": {
+        "nativeEdit": true,
+        "title": true,
+        "unicode": true,
+        "baseFormula": true,
+        "baseFormulaCache": true,
+        "conditional": true,
+        "validation": true
+      },
+      "notes": [],
+      "publication": {
+        "id": "xlsx-06",
+        "bytes": 7300,
+        "sha256": "f65b99c75098c5c255413d0bbadbfdcc6684589ec44d771cb9b5495ccc3ab63c",
+        "exactPublishedBytes": true,
+        "parentPreserved": true,
+        "replaySameVersion": true,
+        "persistence": "scripted Core/SQL/object ports"
+      }
+    },
+    {
+      "id": "xlsx-07",
+      "format": "xlsx",
+      "feature": "cross-sheet-formulas",
+      "filename": "xlsx-07.xlsx",
+      "sha256": "43b0f80cd1913b24e4c8fdfcd2a1c31b79d7a222ad1f3504b8d187707db4f458",
+      "bytes": 5958,
+      "outcome": "PASS",
+      "savedBytes": 8029,
+      "savedSha256": "0d9570bb34d09b330f386518c5f334857f926ab0dad9ddf7e2a94a9f39be7833",
+      "checks": {
+        "nativeEdit": true,
+        "title": true,
+        "unicode": true,
+        "baseFormula": true,
+        "baseFormulaCache": true,
+        "secondSheet": true,
+        "crossSheet": true
+      },
+      "notes": [],
+      "publication": {
+        "id": "xlsx-07",
+        "bytes": 8029,
+        "sha256": "0d9570bb34d09b330f386518c5f334857f926ab0dad9ddf7e2a94a9f39be7833",
+        "exactPublishedBytes": true,
+        "parentPreserved": true,
+        "replaySameVersion": true,
+        "persistence": "scripted Core/SQL/object ports"
+      }
+    },
+    {
+      "id": "xlsx-08",
+      "format": "xlsx",
+      "feature": "names-print-settings",
+      "filename": "xlsx-08.xlsx",
+      "sha256": "b522ed1c1a06f363ca5ecb0c857f8c1809ae79c2cd5dba27581842e180df65fb",
+      "bytes": 5702,
+      "outcome": "PASS",
+      "savedBytes": 7143,
+      "savedSha256": "e5b72b41a9a48e782ddb81edacb81893b304bd009354aef6cc024f4a9973ecaa",
+      "checks": {
+        "nativeEdit": true,
+        "title": true,
+        "unicode": true,
+        "baseFormula": true,
+        "baseFormulaCache": true,
+        "definedName": true,
+        "namedFormulaCache": true,
+        "landscape": true,
+        "printArea": true
+      },
+      "notes": [],
+      "publication": {
+        "id": "xlsx-08",
+        "bytes": 7143,
+        "sha256": "e5b72b41a9a48e782ddb81edacb81893b304bd009354aef6cc024f4a9973ecaa",
+        "exactPublishedBytes": true,
+        "parentPreserved": true,
+        "replaySameVersion": true,
+        "persistence": "scripted Core/SQL/object ports"
+      }
+    },
+    {
+      "id": "xlsx-09",
+      "format": "xlsx",
+      "feature": "unicode-comments-fonts",
+      "filename": "xlsx-09.xlsx",
+      "sha256": "5b9972a1f2632a55200c83c3dd5904fc7600b2f8670edf03907dddd91a22a3c6",
+      "bytes": 7017,
+      "outcome": "DIFFERENCE",
+      "savedBytes": 8935,
+      "savedSha256": "95969e6e187d727262fb8634444f75b4ae16f92abd9396aeaed037f08150aa1a",
+      "checks": {
+        "nativeEdit": true,
+        "title": true,
+        "unicode": true,
+        "baseFormula": true,
+        "baseFormulaCache": true,
+        "comment": true,
+        "fonts": false,
+        "unicodeMultiple": true
+      },
+      "notes": [],
+      "publication": {
+        "id": "xlsx-09",
+        "bytes": 8935,
+        "sha256": "95969e6e187d727262fb8634444f75b4ae16f92abd9396aeaed037f08150aa1a",
+        "exactPublishedBytes": true,
+        "parentPreserved": true,
+        "replaySameVersion": true,
+        "persistence": "scripted Core/SQL/object ports"
+      }
+    },
+    {
+      "id": "xlsx-10",
+      "format": "xlsx",
+      "feature": "large-10000-rows",
+      "filename": "xlsx-10.xlsx",
+      "sha256": "a9d6489a7330f9751930e5699b53a98c5a108a44f32f4f249019e52e1f1be4ef",
+      "bytes": 338670,
+      "outcome": "PASS",
+      "savedBytes": 353249,
+      "savedSha256": "8c2528fd1ba3d4e7496f87371db089e96c492f37fb115d579b11afa47c266a5b",
+      "checks": {
+        "nativeEdit": true,
+        "title": true,
+        "unicode": true,
+        "baseFormula": true,
+        "baseFormulaCache": true,
+        "all10000Rows": true,
+        "lastFormula": true,
+        "lastCache": true
+      },
+      "notes": [],
+      "publication": {
+        "id": "xlsx-10",
+        "bytes": 353249,
+        "sha256": "8c2528fd1ba3d4e7496f87371db089e96c492f37fb115d579b11afa47c266a5b",
+        "exactPublishedBytes": true,
+        "parentPreserved": true,
+        "replaySameVersion": true,
+        "persistence": "scripted Core/SQL/object ports"
+      }
+    },
+    {
+      "id": "pptx-01",
+      "format": "pptx",
+      "feature": "bullets-speaker-notes",
+      "filename": "pptx-01.pptx",
+      "sha256": "650dcf89b66e03a16471e4b99a9c3742ac027fd0afb0b8267df90a8e9d621544",
+      "bytes": 45798,
+      "outcome": "PASS",
+      "savedBytes": 13023,
+      "savedSha256": "3dbbf2ba4432046f044c1c660ea5eceb290518a06eac25bc793c49f36afb8020",
+      "checks": {
+        "nativeEdit": true,
+        "title": true,
+        "speakerNotes": true,
+        "slideCount": true,
+        "bullets": true
+      },
+      "notes": [],
+      "publication": {
+        "id": "pptx-01",
+        "bytes": 13023,
+        "sha256": "3dbbf2ba4432046f044c1c660ea5eceb290518a06eac25bc793c49f36afb8020",
+        "exactPublishedBytes": true,
+        "parentPreserved": true,
+        "replaySameVersion": true,
+        "persistence": "scripted Core/SQL/object ports"
+      }
+    },
+    {
+      "id": "pptx-02",
+      "format": "pptx",
+      "feature": "native-table",
+      "filename": "pptx-02.pptx",
+      "sha256": "1e9ed789fe57dbfb75868a5596febe3dfa3114d526183e4115e7efb6b8b3de7e",
+      "bytes": 53590,
+      "outcome": "PASS",
+      "savedBytes": 13260,
+      "savedSha256": "6013478ba6038b5c47a9eeb8fbc20a37a4742930263f5fe4fcbee9f6234938fe",
+      "checks": {
+        "nativeEdit": true,
+        "title": true,
+        "speakerNotes": true,
+        "slideCount": true,
+        "table": true,
+        "tableText": true
+      },
+      "notes": [],
+      "publication": {
+        "id": "pptx-02",
+        "bytes": 13260,
+        "sha256": "6013478ba6038b5c47a9eeb8fbc20a37a4742930263f5fe4fcbee9f6234938fe",
+        "exactPublishedBytes": true,
+        "parentPreserved": true,
+        "replaySameVersion": true,
+        "persistence": "scripted Core/SQL/object ports"
+      }
+    },
+    {
+      "id": "pptx-03",
+      "format": "pptx",
+      "feature": "bar-chart-workbook",
+      "filename": "pptx-03.pptx",
+      "sha256": "5f767c85d6abdb320f4218a9ff3eaf2e3b48b65b122ef5bd8565a3e34124053d",
+      "bytes": 68641,
+      "outcome": "DIFFERENCE",
+      "savedBytes": 15744,
+      "savedSha256": "f0a43d2e7ef101a3bfda578646232ab9c5fdc27771bea3a0c11efb86949fcd4b",
+      "checks": {
+        "nativeEdit": true,
+        "title": true,
+        "speakerNotes": true,
+        "slideCount": true,
+        "charts": true,
+        "chartWorkbooks": false
+      },
+      "notes": [],
+      "publication": {
+        "id": "pptx-03",
+        "bytes": 15744,
+        "sha256": "f0a43d2e7ef101a3bfda578646232ab9c5fdc27771bea3a0c11efb86949fcd4b",
+        "exactPublishedBytes": true,
+        "parentPreserved": true,
+        "replaySameVersion": true,
+        "persistence": "scripted Core/SQL/object ports"
+      }
+    },
+    {
+      "id": "pptx-04",
+      "format": "pptx",
+      "feature": "pie-line-charts",
+      "filename": "pptx-04.pptx",
+      "sha256": "adfe289cdf034d8b65980bb1ad9dcdb94f4fff64d68548a937c7a143b7cf017d",
+      "bytes": 90926,
+      "outcome": "DIFFERENCE",
+      "savedBytes": 18140,
+      "savedSha256": "296212ca0338698598d243419a975e6029aec1a46aa0ea318fd4f81fb4ddf8a7",
+      "checks": {
+        "nativeEdit": true,
+        "title": true,
+        "speakerNotes": true,
+        "slideCount": true,
+        "charts": true,
+        "chartWorkbooks": false
+      },
+      "notes": [],
+      "publication": {
+        "id": "pptx-04",
+        "bytes": 18140,
+        "sha256": "296212ca0338698598d243419a975e6029aec1a46aa0ea318fd4f81fb4ddf8a7",
+        "exactPublishedBytes": true,
+        "parentPreserved": true,
+        "replaySameVersion": true,
+        "persistence": "scripted Core/SQL/object ports"
+      }
+    },
+    {
+      "id": "pptx-05",
+      "format": "pptx",
+      "feature": "master-layout",
+      "filename": "pptx-05.pptx",
+      "sha256": "59ec2e82a505f13b76be1228b83543cb0e21961e5caa60b24bd54fadbff45fd1",
+      "bytes": 50402,
+      "outcome": "PASS",
+      "savedBytes": 14744,
+      "savedSha256": "fa4c1be69b58bb75ee5efa381f9753fd35c4823067157d3218b20796ac2eb7ee",
+      "checks": {
+        "nativeEdit": true,
+        "title": true,
+        "speakerNotes": true,
+        "slideCount": true,
+        "masterFooter": true,
+        "masterRelation": true
+      },
+      "notes": [],
+      "publication": {
+        "id": "pptx-05",
+        "bytes": 14744,
+        "sha256": "fa4c1be69b58bb75ee5efa381f9753fd35c4823067157d3218b20796ac2eb7ee",
+        "exactPublishedBytes": true,
+        "parentPreserved": true,
+        "replaySameVersion": true,
+        "persistence": "scripted Core/SQL/object ports"
+      }
+    },
+    {
+      "id": "pptx-06",
+      "format": "pptx",
+      "feature": "fonts-unicode",
+      "filename": "pptx-06.pptx",
+      "sha256": "8cd99f995a537737c91bb9c6c2b7b19b207ad44ff6c43597086f2f59ed94a63b",
+      "bytes": 46191,
+      "outcome": "DIFFERENCE",
+      "savedBytes": 13077,
+      "savedSha256": "1b9101b75223a153b53e16f79461a22da92ce46ff19fa1a807e3ae372b99c575",
+      "checks": {
+        "nativeEdit": true,
+        "title": true,
+        "speakerNotes": true,
+        "slideCount": true,
+        "unicode": true,
+        "fontNames": false
+      },
+      "notes": [],
+      "publication": {
+        "id": "pptx-06",
+        "bytes": 13077,
+        "sha256": "1b9101b75223a153b53e16f79461a22da92ce46ff19fa1a807e3ae372b99c575",
+        "exactPublishedBytes": true,
+        "parentPreserved": true,
+        "replaySameVersion": true,
+        "persistence": "scripted Core/SQL/object ports"
+      }
+    },
+    {
+      "id": "pptx-07",
+      "format": "pptx",
+      "feature": "embedded-image",
+      "filename": "pptx-07.pptx",
+      "sha256": "e8f2e729c415fce5e37a0fa018e8490baab0a296bfb1d87871b1beed9509ea6f",
+      "bytes": 48194,
+      "outcome": "PASS",
+      "savedBytes": 14892,
+      "savedSha256": "aa1d7c0f7812e00f20ffb6b38c50e74d190dc278b804fed7198da6fbf0bb5278",
+      "checks": {
+        "nativeEdit": true,
+        "title": true,
+        "speakerNotes": true,
+        "slideCount": true,
+        "imagePixels": true
+      },
+      "notes": [],
+      "publication": {
+        "id": "pptx-07",
+        "bytes": 14892,
+        "sha256": "aa1d7c0f7812e00f20ffb6b38c50e74d190dc278b804fed7198da6fbf0bb5278",
+        "exactPublishedBytes": true,
+        "parentPreserved": true,
+        "replaySameVersion": true,
+        "persistence": "scripted Core/SQL/object ports"
+      }
+    },
+    {
+      "id": "pptx-08",
+      "format": "pptx",
+      "feature": "shapes-connectors",
+      "filename": "pptx-08.pptx",
+      "sha256": "75a7129f6523bfcff28ece588f8a087c123779e64773ea3eba3788294f883ea5",
+      "bytes": 46083,
+      "outcome": "PASS",
+      "savedBytes": 13074,
+      "savedSha256": "30060468d58c7283bffec1951c41710c51a2ed0ed2e7db90cc8a3eda2678cbaf",
+      "checks": {
+        "nativeEdit": true,
+        "title": true,
+        "speakerNotes": true,
+        "slideCount": true,
+        "shapes": true,
+        "connector": true
+      },
+      "notes": [],
+      "publication": {
+        "id": "pptx-08",
+        "bytes": 13074,
+        "sha256": "30060468d58c7283bffec1951c41710c51a2ed0ed2e7db90cc8a3eda2678cbaf",
+        "exactPublishedBytes": true,
+        "parentPreserved": true,
+        "replaySameVersion": true,
+        "persistence": "scripted Core/SQL/object ports"
+      }
+    },
+    {
+      "id": "pptx-09",
+      "format": "pptx",
+      "feature": "slide-sections-notes",
+      "filename": "pptx-09.pptx",
+      "sha256": "e421f3ad8984aa81114e9d5564d6f913e63d0cfacef5800db093ae1dcadb9cf6",
+      "bytes": 50966,
+      "outcome": "PASS",
+      "savedBytes": 17657,
+      "savedSha256": "73788599c5a93dbed4b794e915775e132000ad0c7343649ac5f0fc0c6950c567",
+      "checks": {
+        "nativeEdit": true,
+        "title": true,
+        "speakerNotes": true,
+        "slideCount": true,
+        "secondSlide": true,
+        "secondNotes": true,
+        "sectionName": true
+      },
+      "notes": [],
+      "publication": {
+        "id": "pptx-09",
+        "bytes": 17657,
+        "sha256": "73788599c5a93dbed4b794e915775e132000ad0c7343649ac5f0fc0c6950c567",
+        "exactPublishedBytes": true,
+        "parentPreserved": true,
+        "replaySameVersion": true,
+        "persistence": "scripted Core/SQL/object ports"
+      }
+    },
+    {
+      "id": "pptx-10",
+      "format": "pptx",
+      "feature": "large-30-slides",
+      "filename": "pptx-10.pptx",
+      "sha256": "02885258b352caf0bf6ecb42b16778104f0abbb68228405bee6c8927dbada403",
+      "bytes": 290176,
+      "outcome": "PASS",
+      "savedBytes": 108418,
+      "savedSha256": "946fd66ba66fb476c2471ef39d8cbc1af6040df9603487df2e2a5a3f80a5ada3",
+      "checks": {
+        "nativeEdit": true,
+        "title": true,
+        "speakerNotes": true,
+        "slideCount": true,
+        "all30Slides": true,
+        "allNotes": true
+      },
+      "notes": [],
+      "publication": {
+        "id": "pptx-10",
+        "bytes": 108418,
+        "sha256": "946fd66ba66fb476c2471ef39d8cbc1af6040df9603487df2e2a5a3f80a5ada3",
+        "exactPublishedBytes": true,
+        "parentPreserved": true,
+        "replaySameVersion": true,
+        "persistence": "scripted Core/SQL/object ports"
+      }
+    }
+  ],
+  "differences": {
+    "xlsx-02": {
+      "inputs": {
+        "value": 1234.567,
+        "format": "$#,##0.00",
+        "font": "Calibri"
+      },
+      "saved": {
+        "value": 1234.567,
+        "format": "\\$#,##0.00",
+        "font": "Calibri"
+      }
+    },
+    "xlsx-09": {
+      "inputs": {
+        "value": "Ελληνικά 日本語 العربية",
+        "format": "General",
+        "font": "Liberation Sans"
+      },
+      "saved": {
+        "value": "Ελληνικά 日本語 العربية",
+        "format": "General",
+        "font": "Arial"
+      }
+    },
+    "pptx-03": {
+      "inputs": {
+        "charts": {
+          "ppt/charts/chart1.xml": {
+            "series": 1,
+            "cacheText": [
+              "Synthetic Series",
+              "Alpha",
+              "Beta",
+              "Gamma",
+              "3",
+              "5",
+              "7"
+            ],
+            "externalData": 1,
+            "formulas": [
+              "Sheet1!$B$1",
+              "Sheet1!$A$2:$A$4",
+              "Sheet1!$B$2:$B$4"
+            ]
+          }
+        },
+        "embeddings": [
+          "ppt/embeddings/",
+          "ppt/embeddings/Microsoft_Excel_Worksheet1.xlsx"
+        ],
+        "fonts": [],
+        "sectionName": false
+      },
+      "saved": {
+        "charts": {
+          "ppt/charts/chart1.xml": {
+            "series": 1,
+            "cacheText": [
+              "Synthetic Series",
+              "Alpha",
+              "Beta",
+              "Gamma",
+              "3",
+              "5",
+              "7"
+            ],
+            "externalData": 0,
+            "formulas": [
+              "label 0",
+              "categories",
+              "0"
+            ]
+          },
+          "ppt/charts/style1.xml": {
+            "series": 0,
+            "cacheText": [],
+            "externalData": 0,
+            "formulas": []
+          },
+          "ppt/charts/colors1.xml": {
+            "series": 0,
+            "cacheText": [],
+            "externalData": 0,
+            "formulas": []
+          }
+        },
+        "embeddings": [],
+        "fonts": [
+          "Calibri"
+        ],
+        "sectionName": false
+      }
+    },
+    "pptx-04": {
+      "inputs": {
+        "charts": {
+          "ppt/charts/chart2.xml": {
+            "series": 1,
+            "cacheText": [
+              "Synthetic Series",
+              "Alpha",
+              "Beta",
+              "Gamma",
+              "3",
+              "5",
+              "7"
+            ],
+            "externalData": 1,
+            "formulas": [
+              "Sheet1!$B$1",
+              "Sheet1!$A$2:$A$4",
+              "Sheet1!$B$2:$B$4"
+            ]
+          },
+          "ppt/charts/chart3.xml": {
+            "series": 1,
+            "cacheText": [
+              "Synthetic Series",
+              "Alpha",
+              "Beta",
+              "Gamma",
+              "3",
+              "5",
+              "7"
+            ],
+            "externalData": 1,
+            "formulas": [
+              "Sheet1!$B$1",
+              "Sheet1!$A$2:$A$4",
+              "Sheet1!$B$2:$B$4"
+            ]
+          }
+        },
+        "embeddings": [
+          "ppt/embeddings/",
+          "ppt/embeddings/Microsoft_Excel_Worksheet2.xlsx",
+          "ppt/embeddings/Microsoft_Excel_Worksheet3.xlsx"
+        ],
+        "fonts": [],
+        "sectionName": false
+      },
+      "saved": {
+        "charts": {
+          "ppt/charts/chart1.xml": {
+            "series": 1,
+            "cacheText": [
+              "Synthetic Series",
+              "Alpha",
+              "Beta",
+              "Gamma",
+              "3",
+              "5",
+              "7"
+            ],
+            "externalData": 0,
+            "formulas": [
+              "label 0",
+              "categories",
+              "0"
+            ]
+          },
+          "ppt/charts/style1.xml": {
+            "series": 0,
+            "cacheText": [],
+            "externalData": 0,
+            "formulas": []
+          },
+          "ppt/charts/colors1.xml": {
+            "series": 0,
+            "cacheText": [],
+            "externalData": 0,
+            "formulas": []
+          },
+          "ppt/charts/style2.xml": {
+            "series": 0,
+            "cacheText": [],
+            "externalData": 0,
+            "formulas": []
+          },
+          "ppt/charts/chart2.xml": {
+            "series": 1,
+            "cacheText": [
+              "Synthetic Series",
+              "Alpha",
+              "Beta",
+              "Gamma",
+              "3",
+              "5",
+              "7"
+            ],
+            "externalData": 0,
+            "formulas": [
+              "label 0",
+              "categories",
+              "0"
+            ]
+          },
+          "ppt/charts/colors2.xml": {
+            "series": 0,
+            "cacheText": [],
+            "externalData": 0,
+            "formulas": []
+          }
+        },
+        "embeddings": [],
+        "fonts": [
+          "Calibri"
+        ],
+        "sectionName": false
+      }
+    },
+    "pptx-06": {
+      "inputs": {
+        "charts": {},
+        "embeddings": [
+          "ppt/embeddings/"
+        ],
+        "fonts": [
+          "Liberation Sans",
+          "Liberation Serif"
+        ],
+        "sectionName": false
+      },
+      "saved": {
+        "charts": {},
+        "embeddings": [],
+        "fonts": [
+          "Arial",
+          "Calibri",
+          "Times New Roman"
+        ],
+        "sectionName": false
+      }
+    },
+    "pptx-09": {
+      "inputs": {
+        "charts": {},
+        "embeddings": [
+          "ppt/embeddings/"
+        ],
+        "fonts": [],
+        "sectionName": true
+      },
+      "saved": {
+        "charts": {},
+        "embeddings": [],
+        "fonts": [
+          "Calibri"
+        ],
+        "sectionName": true
+      }
+    }
+  },
+  "lifecycle": {
+    "controller": [
+      {
+        "scenario": "first-save",
+        "uncertain": false,
+        "frame": true,
+        "notice": "Private Save confirmed by the service. Publish remains a separate action.",
+        "observedSequence": 1,
+        "storedSequence": 1
+      },
+      {
+        "scenario": "lost-ack",
+        "uncertain": false,
+        "frame": true,
+        "notice": "Private Save confirmed by the service. Publish remains a separate action.",
+        "observedSequence": 2,
+        "storedSequence": 2
+      },
+      {
+        "scenario": "refused-second-save",
+        "uncertain": true,
+        "frame": false,
+        "notice": "The operation was not confirmed. Recover the saved draft before continuing.",
+        "observedSequence": 2,
+        "storedSequence": 2
+      }
+    ],
+    "channel": [
+      {
+        "scenario": "renew",
+        "events": {
+          "ready": 1,
+          "renewed": 1,
+          "unavailable": [],
+          "localSaveAcknowledgement": "confirmed"
+        },
+        "storedDraft": {
+          "sequence": 1,
+          "bytes": 20659,
+          "state": "draft",
+          "lock": true
+        }
+      },
+      {
+        "scenario": "revoke",
+        "events": {
+          "ready": 1,
+          "renewed": 0,
+          "unavailable": [],
+          "localSaveAcknowledgement": "confirmed"
+        },
+        "storedDraft": {
+          "sequence": 0,
+          "bytes": 0,
+          "state": "draft",
+          "lock": true
+        }
+      },
+      {
+        "scenario": "expire",
+        "events": {
+          "ready": 1,
+          "renewed": 0,
+          "unavailable": [
+            "expired"
+          ],
+          "localSaveAcknowledgement": null
+        }
+      }
+    ],
+    "crash": {
+      "outcome": "PASS",
+      "mode": "explicit release and reopen of the same private draft",
+      "automaticReconnect": "not established; prior expectation failed",
+      "editorEpoch": 2,
+      "oldEditorTokenRefused": true,
+      "savedSequence": 1,
+      "unchangedSavedBytes": true,
+      "sha256": "660591b776303260a9d43a408f7a696a5fe167e00560c7ee36b32cf2b384389b",
+      "bytes": 20674,
+      "reconnect": [
+        {
+          "format": "docx-01-restart",
+          "operation": "CHECK",
+          "status": 200,
+          "bytes": 0,
+          "queryKeys": [
+            "access_token",
+            "access_token_ttl"
+          ],
+          "permissionHint": null
+        },
+        {
+          "format": "docx-01-restart",
+          "operation": "GET_FILE",
+          "status": 200,
+          "bytes": 0,
+          "queryKeys": [
+            "access_token",
+            "access_token_ttl"
+          ],
+          "permissionHint": null
+        },
+        {
+          "format": "docx-01-restart",
+          "operation": "LOCK",
+          "status": 200,
+          "bytes": 0,
+          "queryKeys": [
+            "access_token",
+            "access_token_ttl"
+          ],
+          "permissionHint": null
+        }
+      ],
+      "persistence": "scripted Core retained in separately running WOPI host; canonical Core client release/acquire"
+    }
+  },
+  "nativeCore": {
+    "method": "Already edited CODE bytes replayed through production WOPI and canonical Core methods with ordinary-role PostgreSQL16. Separate from the live CODE corpus.",
+    "coreSource": "e23bc955fa84e0cb718c8fd66d01ac79178e3077",
+    "runtimeSource": "5896d204a0b6d0445b29d935b06e7e169fbed411",
+    "files": [
+      {
+        "id": "docx-01",
+        "sha256": "0a0b8de6ac68452403ee6aed242c0e66b5689546f5c7ef40f4d90035c77f6811",
+        "bytes": 20673,
+        "sequence": 1,
+        "nativeCoreSaveAndRead": true,
+        "saveReplaySameSequence": true,
+        "exactPublishedBytes": true,
+        "parentPreserved": true,
+        "replaySameVersion": true,
+        "persistence": "Native PostgreSQL16 / canonical Core draft methods under capiro_app; artifact SQL/object ports remain scripted; already edited CODE bytes replayed through WOPI"
+      },
+      {
+        "id": "docx-02",
+        "sha256": "362782e67f19fa494e011f429d2eeabb258e0dd0f334a802e447c4d1dda86c38",
+        "bytes": 25723,
+        "sequence": 1,
+        "nativeCoreSaveAndRead": true,
+        "saveReplaySameSequence": true,
+        "exactPublishedBytes": true,
+        "parentPreserved": true,
+        "replaySameVersion": true,
+        "persistence": "Native PostgreSQL16 / canonical Core draft methods under capiro_app; artifact SQL/object ports remain scripted; already edited CODE bytes replayed through WOPI"
+      },
+      {
+        "id": "docx-03",
+        "sha256": "5a820f0b8fa556dff0c886cb5648a58d48e644397c813fa2b7097ec6e974d2c4",
+        "bytes": 21159,
+        "sequence": 1,
+        "nativeCoreSaveAndRead": true,
+        "saveReplaySameSequence": true,
+        "exactPublishedBytes": true,
+        "parentPreserved": true,
+        "replaySameVersion": true,
+        "persistence": "Native PostgreSQL16 / canonical Core draft methods under capiro_app; artifact SQL/object ports remain scripted; already edited CODE bytes replayed through WOPI"
+      },
+      {
+        "id": "docx-04",
+        "sha256": "b51848c00fabe14e280b1b5eedd98e23d6a823d8271bc3a85bd5accb4b4c4578",
+        "bytes": 22262,
+        "sequence": 1,
+        "nativeCoreSaveAndRead": true,
+        "saveReplaySameSequence": true,
+        "exactPublishedBytes": true,
+        "parentPreserved": true,
+        "replaySameVersion": true,
+        "persistence": "Native PostgreSQL16 / canonical Core draft methods under capiro_app; artifact SQL/object ports remain scripted; already edited CODE bytes replayed through WOPI"
+      },
+      {
+        "id": "docx-05",
+        "sha256": "8edac3ad1a4508d0e6dab507ade70524aec476db4728e194b9bc9481de11ca79",
+        "bytes": 21341,
+        "sequence": 1,
+        "nativeCoreSaveAndRead": true,
+        "saveReplaySameSequence": true,
+        "exactPublishedBytes": true,
+        "parentPreserved": true,
+        "replaySameVersion": true,
+        "persistence": "Native PostgreSQL16 / canonical Core draft methods under capiro_app; artifact SQL/object ports remain scripted; already edited CODE bytes replayed through WOPI"
+      },
+      {
+        "id": "docx-06",
+        "sha256": "9030577b4fca1c7686d65d2a4c1438095c63799852ea735b121aa1c3a669d156",
+        "bytes": 20883,
+        "sequence": 1,
+        "nativeCoreSaveAndRead": true,
+        "saveReplaySameSequence": true,
+        "exactPublishedBytes": true,
+        "parentPreserved": true,
+        "replaySameVersion": true,
+        "persistence": "Native PostgreSQL16 / canonical Core draft methods under capiro_app; artifact SQL/object ports remain scripted; already edited CODE bytes replayed through WOPI"
+      },
+      {
+        "id": "docx-07",
+        "sha256": "bb119b6eda26e742749c030ee14623676352d9be7995cef100401dc5a5e0a169",
+        "bytes": 22917,
+        "sequence": 1,
+        "nativeCoreSaveAndRead": true,
+        "saveReplaySameSequence": true,
+        "exactPublishedBytes": true,
+        "parentPreserved": true,
+        "replaySameVersion": true,
+        "persistence": "Native PostgreSQL16 / canonical Core draft methods under capiro_app; artifact SQL/object ports remain scripted; already edited CODE bytes replayed through WOPI"
+      },
+      {
+        "id": "docx-08",
+        "sha256": "f4cc1fe28b9bbdb01f73a4fedc55391d2d30da0f7534388b6e8569c0e2bc3d81",
+        "bytes": 20712,
+        "sequence": 1,
+        "nativeCoreSaveAndRead": true,
+        "saveReplaySameSequence": true,
+        "exactPublishedBytes": true,
+        "parentPreserved": true,
+        "replaySameVersion": true,
+        "persistence": "Native PostgreSQL16 / canonical Core draft methods under capiro_app; artifact SQL/object ports remain scripted; already edited CODE bytes replayed through WOPI"
+      },
+      {
+        "id": "docx-09",
+        "sha256": "4f6d97856aa6390783b3d159e62fee8045e6dd74e0fd0c11119d660b26abd6d5",
+        "bytes": 20831,
+        "sequence": 1,
+        "nativeCoreSaveAndRead": true,
+        "saveReplaySameSequence": true,
+        "exactPublishedBytes": true,
+        "parentPreserved": true,
+        "replaySameVersion": true,
+        "persistence": "Native PostgreSQL16 / canonical Core draft methods under capiro_app; artifact SQL/object ports remain scripted; already edited CODE bytes replayed through WOPI"
+      },
+      {
+        "id": "docx-10",
+        "sha256": "4efd2df363335c89eb5417e81a9bcc5e72bf8a9db733c01343ed1c9c8554c118",
+        "bytes": 23151,
+        "sequence": 1,
+        "nativeCoreSaveAndRead": true,
+        "saveReplaySameSequence": true,
+        "exactPublishedBytes": true,
+        "parentPreserved": true,
+        "replaySameVersion": true,
+        "persistence": "Native PostgreSQL16 / canonical Core draft methods under capiro_app; artifact SQL/object ports remain scripted; already edited CODE bytes replayed through WOPI"
+      },
+      {
+        "id": "xlsx-01",
+        "sha256": "278e9dc6503ecfe4662b08975c075d3c404ea84610a6477f297202e17e6d43ad",
+        "bytes": 7028,
+        "sequence": 1,
+        "nativeCoreSaveAndRead": true,
+        "saveReplaySameSequence": true,
+        "exactPublishedBytes": true,
+        "parentPreserved": true,
+        "replaySameVersion": true,
+        "persistence": "Native PostgreSQL16 / canonical Core draft methods under capiro_app; artifact SQL/object ports remain scripted; already edited CODE bytes replayed through WOPI"
+      },
+      {
+        "id": "xlsx-02",
+        "sha256": "b5e9e0ca38688e2551a38dc49043d2099686afbef164e2fa52cd9d17cbfc2fc6",
+        "bytes": 7087,
+        "sequence": 1,
+        "nativeCoreSaveAndRead": true,
+        "saveReplaySameSequence": true,
+        "exactPublishedBytes": true,
+        "parentPreserved": true,
+        "replaySameVersion": true,
+        "persistence": "Native PostgreSQL16 / canonical Core draft methods under capiro_app; artifact SQL/object ports remain scripted; already edited CODE bytes replayed through WOPI"
+      },
+      {
+        "id": "xlsx-03",
+        "sha256": "f1dd706363984e610e51c9b6ccecdc31c2d8811fdd904bf71987273a61138bb6",
+        "bytes": 7386,
+        "sequence": 1,
+        "nativeCoreSaveAndRead": true,
+        "saveReplaySameSequence": true,
+        "exactPublishedBytes": true,
+        "parentPreserved": true,
+        "replaySameVersion": true,
+        "persistence": "Native PostgreSQL16 / canonical Core draft methods under capiro_app; artifact SQL/object ports remain scripted; already edited CODE bytes replayed through WOPI"
+      },
+      {
+        "id": "xlsx-04",
+        "sha256": "4d79f91e7f96eb995b66bf8524578c1ecf0a7893ba03632492350814fc6aea7c",
+        "bytes": 11309,
+        "sequence": 1,
+        "nativeCoreSaveAndRead": true,
+        "saveReplaySameSequence": true,
+        "exactPublishedBytes": true,
+        "parentPreserved": true,
+        "replaySameVersion": true,
+        "persistence": "Native PostgreSQL16 / canonical Core draft methods under capiro_app; artifact SQL/object ports remain scripted; already edited CODE bytes replayed through WOPI"
+      },
+      {
+        "id": "xlsx-05",
+        "sha256": "c266604d3af9e99e0f26844f0dd35bfe3a2e51064bdc19f6ff463b679720de9e",
+        "bytes": 11384,
+        "sequence": 1,
+        "nativeCoreSaveAndRead": true,
+        "saveReplaySameSequence": true,
+        "exactPublishedBytes": true,
+        "parentPreserved": true,
+        "replaySameVersion": true,
+        "persistence": "Native PostgreSQL16 / canonical Core draft methods under capiro_app; artifact SQL/object ports remain scripted; already edited CODE bytes replayed through WOPI"
+      },
+      {
+        "id": "xlsx-06",
+        "sha256": "f65b99c75098c5c255413d0bbadbfdcc6684589ec44d771cb9b5495ccc3ab63c",
+        "bytes": 7300,
+        "sequence": 1,
+        "nativeCoreSaveAndRead": true,
+        "saveReplaySameSequence": true,
+        "exactPublishedBytes": true,
+        "parentPreserved": true,
+        "replaySameVersion": true,
+        "persistence": "Native PostgreSQL16 / canonical Core draft methods under capiro_app; artifact SQL/object ports remain scripted; already edited CODE bytes replayed through WOPI"
+      },
+      {
+        "id": "xlsx-07",
+        "sha256": "0d9570bb34d09b330f386518c5f334857f926ab0dad9ddf7e2a94a9f39be7833",
+        "bytes": 8029,
+        "sequence": 1,
+        "nativeCoreSaveAndRead": true,
+        "saveReplaySameSequence": true,
+        "exactPublishedBytes": true,
+        "parentPreserved": true,
+        "replaySameVersion": true,
+        "persistence": "Native PostgreSQL16 / canonical Core draft methods under capiro_app; artifact SQL/object ports remain scripted; already edited CODE bytes replayed through WOPI"
+      },
+      {
+        "id": "xlsx-08",
+        "sha256": "e5b72b41a9a48e782ddb81edacb81893b304bd009354aef6cc024f4a9973ecaa",
+        "bytes": 7143,
+        "sequence": 1,
+        "nativeCoreSaveAndRead": true,
+        "saveReplaySameSequence": true,
+        "exactPublishedBytes": true,
+        "parentPreserved": true,
+        "replaySameVersion": true,
+        "persistence": "Native PostgreSQL16 / canonical Core draft methods under capiro_app; artifact SQL/object ports remain scripted; already edited CODE bytes replayed through WOPI"
+      },
+      {
+        "id": "xlsx-09",
+        "sha256": "95969e6e187d727262fb8634444f75b4ae16f92abd9396aeaed037f08150aa1a",
+        "bytes": 8935,
+        "sequence": 1,
+        "nativeCoreSaveAndRead": true,
+        "saveReplaySameSequence": true,
+        "exactPublishedBytes": true,
+        "parentPreserved": true,
+        "replaySameVersion": true,
+        "persistence": "Native PostgreSQL16 / canonical Core draft methods under capiro_app; artifact SQL/object ports remain scripted; already edited CODE bytes replayed through WOPI"
+      },
+      {
+        "id": "xlsx-10",
+        "sha256": "8c2528fd1ba3d4e7496f87371db089e96c492f37fb115d579b11afa47c266a5b",
+        "bytes": 353249,
+        "sequence": 1,
+        "nativeCoreSaveAndRead": true,
+        "saveReplaySameSequence": true,
+        "exactPublishedBytes": true,
+        "parentPreserved": true,
+        "replaySameVersion": true,
+        "persistence": "Native PostgreSQL16 / canonical Core draft methods under capiro_app; artifact SQL/object ports remain scripted; already edited CODE bytes replayed through WOPI"
+      },
+      {
+        "id": "pptx-01",
+        "sha256": "3dbbf2ba4432046f044c1c660ea5eceb290518a06eac25bc793c49f36afb8020",
+        "bytes": 13023,
+        "sequence": 1,
+        "nativeCoreSaveAndRead": true,
+        "saveReplaySameSequence": true,
+        "exactPublishedBytes": true,
+        "parentPreserved": true,
+        "replaySameVersion": true,
+        "persistence": "Native PostgreSQL16 / canonical Core draft methods under capiro_app; artifact SQL/object ports remain scripted; already edited CODE bytes replayed through WOPI"
+      },
+      {
+        "id": "pptx-02",
+        "sha256": "6013478ba6038b5c47a9eeb8fbc20a37a4742930263f5fe4fcbee9f6234938fe",
+        "bytes": 13260,
+        "sequence": 1,
+        "nativeCoreSaveAndRead": true,
+        "saveReplaySameSequence": true,
+        "exactPublishedBytes": true,
+        "parentPreserved": true,
+        "replaySameVersion": true,
+        "persistence": "Native PostgreSQL16 / canonical Core draft methods under capiro_app; artifact SQL/object ports remain scripted; already edited CODE bytes replayed through WOPI"
+      },
+      {
+        "id": "pptx-03",
+        "sha256": "f0a43d2e7ef101a3bfda578646232ab9c5fdc27771bea3a0c11efb86949fcd4b",
+        "bytes": 15744,
+        "sequence": 1,
+        "nativeCoreSaveAndRead": true,
+        "saveReplaySameSequence": true,
+        "exactPublishedBytes": true,
+        "parentPreserved": true,
+        "replaySameVersion": true,
+        "persistence": "Native PostgreSQL16 / canonical Core draft methods under capiro_app; artifact SQL/object ports remain scripted; already edited CODE bytes replayed through WOPI"
+      },
+      {
+        "id": "pptx-04",
+        "sha256": "296212ca0338698598d243419a975e6029aec1a46aa0ea318fd4f81fb4ddf8a7",
+        "bytes": 18140,
+        "sequence": 1,
+        "nativeCoreSaveAndRead": true,
+        "saveReplaySameSequence": true,
+        "exactPublishedBytes": true,
+        "parentPreserved": true,
+        "replaySameVersion": true,
+        "persistence": "Native PostgreSQL16 / canonical Core draft methods under capiro_app; artifact SQL/object ports remain scripted; already edited CODE bytes replayed through WOPI"
+      },
+      {
+        "id": "pptx-05",
+        "sha256": "fa4c1be69b58bb75ee5efa381f9753fd35c4823067157d3218b20796ac2eb7ee",
+        "bytes": 14744,
+        "sequence": 1,
+        "nativeCoreSaveAndRead": true,
+        "saveReplaySameSequence": true,
+        "exactPublishedBytes": true,
+        "parentPreserved": true,
+        "replaySameVersion": true,
+        "persistence": "Native PostgreSQL16 / canonical Core draft methods under capiro_app; artifact SQL/object ports remain scripted; already edited CODE bytes replayed through WOPI"
+      },
+      {
+        "id": "pptx-06",
+        "sha256": "1b9101b75223a153b53e16f79461a22da92ce46ff19fa1a807e3ae372b99c575",
+        "bytes": 13077,
+        "sequence": 1,
+        "nativeCoreSaveAndRead": true,
+        "saveReplaySameSequence": true,
+        "exactPublishedBytes": true,
+        "parentPreserved": true,
+        "replaySameVersion": true,
+        "persistence": "Native PostgreSQL16 / canonical Core draft methods under capiro_app; artifact SQL/object ports remain scripted; already edited CODE bytes replayed through WOPI"
+      },
+      {
+        "id": "pptx-07",
+        "sha256": "aa1d7c0f7812e00f20ffb6b38c50e74d190dc278b804fed7198da6fbf0bb5278",
+        "bytes": 14892,
+        "sequence": 1,
+        "nativeCoreSaveAndRead": true,
+        "saveReplaySameSequence": true,
+        "exactPublishedBytes": true,
+        "parentPreserved": true,
+        "replaySameVersion": true,
+        "persistence": "Native PostgreSQL16 / canonical Core draft methods under capiro_app; artifact SQL/object ports remain scripted; already edited CODE bytes replayed through WOPI"
+      },
+      {
+        "id": "pptx-08",
+        "sha256": "30060468d58c7283bffec1951c41710c51a2ed0ed2e7db90cc8a3eda2678cbaf",
+        "bytes": 13074,
+        "sequence": 1,
+        "nativeCoreSaveAndRead": true,
+        "saveReplaySameSequence": true,
+        "exactPublishedBytes": true,
+        "parentPreserved": true,
+        "replaySameVersion": true,
+        "persistence": "Native PostgreSQL16 / canonical Core draft methods under capiro_app; artifact SQL/object ports remain scripted; already edited CODE bytes replayed through WOPI"
+      },
+      {
+        "id": "pptx-09",
+        "sha256": "73788599c5a93dbed4b794e915775e132000ad0c7343649ac5f0fc0c6950c567",
+        "bytes": 17657,
+        "sequence": 1,
+        "nativeCoreSaveAndRead": true,
+        "saveReplaySameSequence": true,
+        "exactPublishedBytes": true,
+        "parentPreserved": true,
+        "replaySameVersion": true,
+        "persistence": "Native PostgreSQL16 / canonical Core draft methods under capiro_app; artifact SQL/object ports remain scripted; already edited CODE bytes replayed through WOPI"
+      },
+      {
+        "id": "pptx-10",
+        "sha256": "946fd66ba66fb476c2471ef39d8cbc1af6040df9603487df2e2a5a3f80a5ada3",
+        "bytes": 108418,
+        "sequence": 1,
+        "nativeCoreSaveAndRead": true,
+        "saveReplaySameSequence": true,
+        "exactPublishedBytes": true,
+        "parentPreserved": true,
+        "replaySameVersion": true,
+        "persistence": "Native PostgreSQL16 / canonical Core draft methods under capiro_app; artifact SQL/object ports remain scripted; already edited CODE bytes replayed through WOPI"
+      }
+    ],
+    "recovery": [
+      {
+        "id": "docx-01",
+        "bytes": 20673,
+        "sha256": "0a0b8de6ac68452403ee6aed242c0e66b5689546f5c7ef40f4d90035c77f6811",
+        "sequence": 1,
+        "exactBytesAfterCoreAndPostgresRestart": true,
+        "publicationReceiptPreserved": true
+      },
+      {
+        "id": "docx-02",
+        "bytes": 25723,
+        "sha256": "362782e67f19fa494e011f429d2eeabb258e0dd0f334a802e447c4d1dda86c38",
+        "sequence": 1,
+        "exactBytesAfterCoreAndPostgresRestart": true,
+        "publicationReceiptPreserved": true
+      },
+      {
+        "id": "docx-03",
+        "bytes": 21159,
+        "sha256": "5a820f0b8fa556dff0c886cb5648a58d48e644397c813fa2b7097ec6e974d2c4",
+        "sequence": 1,
+        "exactBytesAfterCoreAndPostgresRestart": true,
+        "publicationReceiptPreserved": true
+      },
+      {
+        "id": "docx-04",
+        "bytes": 22262,
+        "sha256": "b51848c00fabe14e280b1b5eedd98e23d6a823d8271bc3a85bd5accb4b4c4578",
+        "sequence": 1,
+        "exactBytesAfterCoreAndPostgresRestart": true,
+        "publicationReceiptPreserved": true
+      },
+      {
+        "id": "docx-05",
+        "bytes": 21341,
+        "sha256": "8edac3ad1a4508d0e6dab507ade70524aec476db4728e194b9bc9481de11ca79",
+        "sequence": 1,
+        "exactBytesAfterCoreAndPostgresRestart": true,
+        "publicationReceiptPreserved": true
+      },
+      {
+        "id": "docx-06",
+        "bytes": 20883,
+        "sha256": "9030577b4fca1c7686d65d2a4c1438095c63799852ea735b121aa1c3a669d156",
+        "sequence": 1,
+        "exactBytesAfterCoreAndPostgresRestart": true,
+        "publicationReceiptPreserved": true
+      },
+      {
+        "id": "docx-07",
+        "bytes": 22917,
+        "sha256": "bb119b6eda26e742749c030ee14623676352d9be7995cef100401dc5a5e0a169",
+        "sequence": 1,
+        "exactBytesAfterCoreAndPostgresRestart": true,
+        "publicationReceiptPreserved": true
+      },
+      {
+        "id": "docx-08",
+        "bytes": 20712,
+        "sha256": "f4cc1fe28b9bbdb01f73a4fedc55391d2d30da0f7534388b6e8569c0e2bc3d81",
+        "sequence": 1,
+        "exactBytesAfterCoreAndPostgresRestart": true,
+        "publicationReceiptPreserved": true
+      },
+      {
+        "id": "docx-09",
+        "bytes": 20831,
+        "sha256": "4f6d97856aa6390783b3d159e62fee8045e6dd74e0fd0c11119d660b26abd6d5",
+        "sequence": 1,
+        "exactBytesAfterCoreAndPostgresRestart": true,
+        "publicationReceiptPreserved": true
+      },
+      {
+        "id": "docx-10",
+        "bytes": 23151,
+        "sha256": "4efd2df363335c89eb5417e81a9bcc5e72bf8a9db733c01343ed1c9c8554c118",
+        "sequence": 1,
+        "exactBytesAfterCoreAndPostgresRestart": true,
+        "publicationReceiptPreserved": true
+      },
+      {
+        "id": "xlsx-01",
+        "bytes": 7028,
+        "sha256": "278e9dc6503ecfe4662b08975c075d3c404ea84610a6477f297202e17e6d43ad",
+        "sequence": 1,
+        "exactBytesAfterCoreAndPostgresRestart": true,
+        "publicationReceiptPreserved": true
+      },
+      {
+        "id": "xlsx-02",
+        "bytes": 7087,
+        "sha256": "b5e9e0ca38688e2551a38dc49043d2099686afbef164e2fa52cd9d17cbfc2fc6",
+        "sequence": 1,
+        "exactBytesAfterCoreAndPostgresRestart": true,
+        "publicationReceiptPreserved": true
+      },
+      {
+        "id": "xlsx-03",
+        "bytes": 7386,
+        "sha256": "f1dd706363984e610e51c9b6ccecdc31c2d8811fdd904bf71987273a61138bb6",
+        "sequence": 1,
+        "exactBytesAfterCoreAndPostgresRestart": true,
+        "publicationReceiptPreserved": true
+      },
+      {
+        "id": "xlsx-04",
+        "bytes": 11309,
+        "sha256": "4d79f91e7f96eb995b66bf8524578c1ecf0a7893ba03632492350814fc6aea7c",
+        "sequence": 1,
+        "exactBytesAfterCoreAndPostgresRestart": true,
+        "publicationReceiptPreserved": true
+      },
+      {
+        "id": "xlsx-05",
+        "bytes": 11384,
+        "sha256": "c266604d3af9e99e0f26844f0dd35bfe3a2e51064bdc19f6ff463b679720de9e",
+        "sequence": 1,
+        "exactBytesAfterCoreAndPostgresRestart": true,
+        "publicationReceiptPreserved": true
+      },
+      {
+        "id": "xlsx-06",
+        "bytes": 7300,
+        "sha256": "f65b99c75098c5c255413d0bbadbfdcc6684589ec44d771cb9b5495ccc3ab63c",
+        "sequence": 1,
+        "exactBytesAfterCoreAndPostgresRestart": true,
+        "publicationReceiptPreserved": true
+      },
+      {
+        "id": "xlsx-07",
+        "bytes": 8029,
+        "sha256": "0d9570bb34d09b330f386518c5f334857f926ab0dad9ddf7e2a94a9f39be7833",
+        "sequence": 1,
+        "exactBytesAfterCoreAndPostgresRestart": true,
+        "publicationReceiptPreserved": true
+      },
+      {
+        "id": "xlsx-08",
+        "bytes": 7143,
+        "sha256": "e5b72b41a9a48e782ddb81edacb81893b304bd009354aef6cc024f4a9973ecaa",
+        "sequence": 1,
+        "exactBytesAfterCoreAndPostgresRestart": true,
+        "publicationReceiptPreserved": true
+      },
+      {
+        "id": "xlsx-09",
+        "bytes": 8935,
+        "sha256": "95969e6e187d727262fb8634444f75b4ae16f92abd9396aeaed037f08150aa1a",
+        "sequence": 1,
+        "exactBytesAfterCoreAndPostgresRestart": true,
+        "publicationReceiptPreserved": true
+      },
+      {
+        "id": "xlsx-10",
+        "bytes": 353249,
+        "sha256": "8c2528fd1ba3d4e7496f87371db089e96c492f37fb115d579b11afa47c266a5b",
+        "sequence": 1,
+        "exactBytesAfterCoreAndPostgresRestart": true,
+        "publicationReceiptPreserved": true
+      },
+      {
+        "id": "pptx-01",
+        "bytes": 13023,
+        "sha256": "3dbbf2ba4432046f044c1c660ea5eceb290518a06eac25bc793c49f36afb8020",
+        "sequence": 1,
+        "exactBytesAfterCoreAndPostgresRestart": true,
+        "publicationReceiptPreserved": true
+      },
+      {
+        "id": "pptx-02",
+        "bytes": 13260,
+        "sha256": "6013478ba6038b5c47a9eeb8fbc20a37a4742930263f5fe4fcbee9f6234938fe",
+        "sequence": 1,
+        "exactBytesAfterCoreAndPostgresRestart": true,
+        "publicationReceiptPreserved": true
+      },
+      {
+        "id": "pptx-03",
+        "bytes": 15744,
+        "sha256": "f0a43d2e7ef101a3bfda578646232ab9c5fdc27771bea3a0c11efb86949fcd4b",
+        "sequence": 1,
+        "exactBytesAfterCoreAndPostgresRestart": true,
+        "publicationReceiptPreserved": true
+      },
+      {
+        "id": "pptx-04",
+        "bytes": 18140,
+        "sha256": "296212ca0338698598d243419a975e6029aec1a46aa0ea318fd4f81fb4ddf8a7",
+        "sequence": 1,
+        "exactBytesAfterCoreAndPostgresRestart": true,
+        "publicationReceiptPreserved": true
+      },
+      {
+        "id": "pptx-05",
+        "bytes": 14744,
+        "sha256": "fa4c1be69b58bb75ee5efa381f9753fd35c4823067157d3218b20796ac2eb7ee",
+        "sequence": 1,
+        "exactBytesAfterCoreAndPostgresRestart": true,
+        "publicationReceiptPreserved": true
+      },
+      {
+        "id": "pptx-06",
+        "bytes": 13077,
+        "sha256": "1b9101b75223a153b53e16f79461a22da92ce46ff19fa1a807e3ae372b99c575",
+        "sequence": 1,
+        "exactBytesAfterCoreAndPostgresRestart": true,
+        "publicationReceiptPreserved": true
+      },
+      {
+        "id": "pptx-07",
+        "bytes": 14892,
+        "sha256": "aa1d7c0f7812e00f20ffb6b38c50e74d190dc278b804fed7198da6fbf0bb5278",
+        "sequence": 1,
+        "exactBytesAfterCoreAndPostgresRestart": true,
+        "publicationReceiptPreserved": true
+      },
+      {
+        "id": "pptx-08",
+        "bytes": 13074,
+        "sha256": "30060468d58c7283bffec1951c41710c51a2ed0ed2e7db90cc8a3eda2678cbaf",
+        "sequence": 1,
+        "exactBytesAfterCoreAndPostgresRestart": true,
+        "publicationReceiptPreserved": true
+      },
+      {
+        "id": "pptx-09",
+        "bytes": 17657,
+        "sha256": "73788599c5a93dbed4b794e915775e132000ad0c7343649ac5f0fc0c6950c567",
+        "sequence": 1,
+        "exactBytesAfterCoreAndPostgresRestart": true,
+        "publicationReceiptPreserved": true
+      },
+      {
+        "id": "pptx-10",
+        "bytes": 108418,
+        "sha256": "946fd66ba66fb476c2471ef39d8cbc1af6040df9603487df2e2a5a3f80a5ada3",
+        "sequence": 1,
+        "exactBytesAfterCoreAndPostgresRestart": true,
+        "publicationReceiptPreserved": true
+      }
+    ],
+    "lifecycle": [
+      {
+        "scenario": "native-commit-lost-ack",
+        "status": "PASS",
+        "sequence": 1,
+        "readbackExact": true
+      },
+      {
+        "scenario": "native-storage-refusal",
+        "status": "PASS",
+        "sequence": 1,
+        "priorBytesUnchanged": true
+      },
+      {
+        "scenario": "current-database-membership-revocation",
+        "status": "PASS",
+        "bytesReleased": 0
+      },
+      {
+        "scenario": "native-release-reacquire",
+        "status": "PASS",
+        "epoch": 2,
+        "oldTokenRefused": true,
+        "savedBytesUnchanged": true
+      }
+    ]
+  },
+  "limitations": [
+    "Synthetic representative corpus only; no customer files or universal Office fidelity claim.",
+    "Font substitution and removal of embedded PPTX chart workbooks are unresolved compatibility differences.",
+    "The isolated proxy did not demonstrate automatic reconnect after a CODE crash. Explicit reopen recovery is reported separately.",
+    "The live CODE-to-native-Core-PostgreSQL crossing was attempted but WSL startup hung, including a read-only distro listing. Task command clients were stopped; no WSL reset was performed. Native database replay/restart tests ran separately on Windows.",
+    "The deployed full application, ARM64 and production hosting remain unqualified. Artifact SQL/object storage and identity verification ports remain scripted in the native Core test.",
+    "Independent review, production activation, deployment and paid/model calls remain held."
+  ]
+}

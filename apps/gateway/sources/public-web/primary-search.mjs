@@ -116,7 +116,7 @@ export function createPrimaryWebSearch(configuration) {
   let c;
   try {
     c = ownFields(configuration, ['endpoint', 'region', 'toolName'],
-      ['now', 'fetchImpl', 'credentials', 'protocolVersion', 'maxAttempts', 'maxRequestMs', 'maxResponseBytes']);
+      ['now', 'fetchImpl', 'credentials', 'protocolVersion', 'maxAttempts', 'maxRequestMs', 'maxResponseBytes', 'onUsage']);
     // The documented gatewayUrl IS the MCP invocation endpoint (…/mcp). It is bound as given: no
     // origin-only form, no double append and no arbitrary path.
     const address = new URL(c.endpoint);
@@ -137,6 +137,17 @@ export function createPrimaryWebSearch(configuration) {
   const toolName = c.toolName, protocolVersion = DEFAULT_PROTOCOL;
   const url = c.endpoint;
   const maxAttempts = c.maxAttempts ?? AGENTCORE_SEARCH_DEFAULT_ATTEMPTS;
+  // Content-free external accounting, scoped to ONE search invocation: an attempt is a request this
+  // producer handed to the controlled transport. That is not proof AWS received or billed it, so the
+  // estimate stays an estimate and the billed amount is always unknown.
+  const count = () => ({attempts: 0});
+  function report(scope, outcome) {
+    if (scope.attempts === 0 || typeof c.onUsage !== 'function') return;
+    try { c.onUsage(Object.freeze({provider: AGENTCORE_SEARCH_PROVIDER, attempts: scope.attempts, outcome,
+      estimateMicroUsd: scope.attempts * AGENTCORE_SEARCH_UNIT_MICROUSD, billedMicroUsd: null})); } catch {}
+  }
+  /** The canonical denial code lives in the GatewayDenied message, not in a `code` property. */
+  const denialCode = error => { try { const failure = safeFailure(error); return typeof failure?.message === 'string' ? failure.message : undefined; } catch { return undefined; } };
   const maxRequestMs = c.maxRequestMs ?? DEFAULT_REQUEST_MS, maxResponseBytes = c.maxResponseBytes ?? DEFAULT_RESPONSE_BYTES;
   if (typeof now !== 'function' || typeof fetchImpl !== 'function' || typeof credentials !== 'function' ||
       !Number.isSafeInteger(maxAttempts) || maxAttempts < 1 || maxAttempts > AGENTCORE_SEARCH_MAX_ATTEMPTS ||
@@ -144,7 +155,7 @@ export function createPrimaryWebSearch(configuration) {
       !Number.isSafeInteger(maxResponseBytes) || maxResponseBytes < 4096 || maxResponseBytes > 1048576) deny('GATEWAY_CONFIGURATION');
 
   /** One owned lifetime covers credential acquisition, dispatch and the bounded body read. */
-  async function invoke(query, maxResults, deadlineMs, signal) {
+  async function invoke(query, maxResults, deadlineMs, signal, scope) {
     if (!Number.isSafeInteger(deadlineMs) || deadlineMs <= now()) deny('DEADLINE');
     // Stateless 2026-07-28 request shape: version in the header AND in params._meta (they must match),
     // request metadata headers Mcp-Method/Mcp-Name, and no initialize handshake.
@@ -166,6 +177,7 @@ export function createPrimaryWebSearch(configuration) {
             credentials: proof, nowMs: now()});
           // No paid dispatch after the cutoff: recheck after credential acquisition and signing.
           lifetime.check();
+          scope.attempts += 1;
           const response = await lifetime.run(fetchSignal => fetchImpl(url, {
             method: 'POST', redirect: 'error', cache: 'no-store', signal: fetchSignal,
             headers: {...signed.headers, accept: 'application/json, text/event-stream',
@@ -214,21 +226,29 @@ export function createPrimaryWebSearch(configuration) {
     toolName,
     /** Finite admission facts for the shared budget/tariff owner (SCRUM-238): the worst case is
      * `maxAttempts` submitted calls at `unitMicroUsd` each; an unclassified outcome stays unknown. */
-    admission: Object.freeze({unitMicroUsd: AGENTCORE_SEARCH_UNIT_MICROUSD, maxAttempts,
+    admission: Object.freeze({provider: AGENTCORE_SEARCH_PROVIDER, unitMicroUsd: AGENTCORE_SEARCH_UNIT_MICROUSD, maxAttempts,
       maxMicroUsd: AGENTCORE_SEARCH_UNIT_MICROUSD * maxAttempts, maxCallsPerInvocation: maxAttempts,
       billing: 'aws-agentcore-web-search-and-gateway-invocation'}),
     /** @returns {Promise<{tool:string,contentStatus:string,generatedAt:string,provider:string,total:number,results:object[]}>} */
     async search({query, limit, deadlineMs, signal} = {}) {
+      const scope = count();
       try {
         const value = typeof query === 'string' ? query.replace(/\s+/gu, ' ').trim() : '';
         if (!value) deny('INVALID_ARGUMENTS');
         const bounded = value.slice(0, MAX_QUERY_CHARS);
         const wanted = clamp(limit, MIN_RESULTS, MAX_RESULTS, DEFAULT_RESULTS);
-        const rows = await invoke(bounded, wanted, deadlineMs, signal);
+        const rows = await invoke(bounded, wanted, deadlineMs, signal, scope);
         const results = rows.map(projectRow).filter(row => row !== undefined).slice(0, Math.min(wanted, MAX_ROW_RESULTS));
+        report(scope, 'completed');
         return Object.freeze({tool: 'search_public_web', contentStatus: 'discovered', generatedAt: new Date(now()).toISOString(),
           provider: AGENTCORE_SEARCH_PROVIDER, total: results.length, results: Object.freeze(results)});
-      } catch (error) { throw safeFailure(error); }
+      } catch (error) {
+        const code = denialCode(error);
+        // A definite refusal (auth/argument/result shape) is a failed call; a transport or expiry outcome after
+        // submission is unknown, never inferred as billed or free.
+        report(scope, ['ACCESS_DENIED', 'INVALID_ARGUMENTS', 'INVALID_RESULT'].includes(code) ? 'failed' : 'unknown');
+        throw safeFailure(error);
+      }
     },
   });
 }

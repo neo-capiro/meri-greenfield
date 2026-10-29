@@ -3,7 +3,8 @@ import {own} from '../../packages/contracts/commands-0.2/execution-boundary.mjs'
 import {storageMethod} from '../artifacts/storage/boundary.mjs';
 export function captureGeneralReadPort(value,sourceEnabled){
  if(value===undefined)return undefined;
- own(value,['readAvailability','execute']);
- const captured=Object.freeze({readAvailability:storageMethod(value,'readAvailability'),execute:storageMethod(value,'execute')});
+ own(value,['readAvailability','execute'],['externalUsage']);
+ const captured=Object.freeze({readAvailability:storageMethod(value,'readAvailability'),execute:storageMethod(value,'execute'),
+  ...(value.externalUsage===undefined?{}:{externalUsage:storageMethod(value,'externalUsage')})});
  return sourceEnabled===true?captured:undefined;
 }

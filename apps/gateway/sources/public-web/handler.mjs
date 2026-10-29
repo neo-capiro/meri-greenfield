@@ -4,6 +4,7 @@
  * the native Core owner. Everything else (authority, contract checks, private result carrier,
  * bounded transport) stays the shared retained-native mechanics. */
 import {createStoredNativeReadHandlers} from '../retained-reads/native-handler.mjs';
+import {deny} from '../../dispatch/operation-result.mjs';
 import {createPrimarySearchReadSource} from './primary-search.mjs';
 
 const ROUTES=Object.freeze({
@@ -17,6 +18,7 @@ const SPECIFICATION=Object.freeze({family:'public-web',routes:ROUTES});
 export function createPublicWebHandlers(configuration,operations,primarySearch){
  if(primarySearch===undefined)return createStoredNativeReadHandlers(configuration,operations,SPECIFICATION);
  const rows=Array.isArray(operations)?operations:[],search=rows.filter(row=>row?.id==='search_public_web'),pages=rows.filter(row=>row?.id!=='search_public_web');
+ if(!search.length&&!pages.length)deny('GATEWAY_CONFIGURATION');
  const handlers=[];
  // The retained transport refuses a delegated read source together with a per-call credential port:
  // discovery carries the gateway IAM identity, never a Core service secret.

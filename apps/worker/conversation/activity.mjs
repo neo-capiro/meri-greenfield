@@ -81,7 +81,11 @@ export function createConversationActivity({runOwner,prepareRuntime,query=sdkQue
    try{attempt=createOperationLifetime({deadlineMs:now()+terminalAttemptMs,now,errorFactory:fault});
     if(typeof runOwner.recordUsage!=='function')throw fault('SDK_USAGE_UNAVAILABLE');let usage=null;
     try{usage=projectSdkUsage(result,usageBasis);}catch{}
-    const receipt=await attempt.run(signal=>runOwner.recordUsage({binding,input:{usage,toolsUsed:nativeAudit.snapshot()},signal}));
+    // Distinct external provider facts ride the same single terminal payload; absence stays absent, never zero.
+    let externalSearch;
+    try{externalSearch=typeof generalReads?.externalUsage==='function'?generalReads.externalUsage():undefined;}catch{externalSearch=undefined;}
+    const receipt=await attempt.run(signal=>runOwner.recordUsage({binding,input:{usage,toolsUsed:nativeAudit.snapshot(),
+     ...(externalSearch===undefined?{}:{externalSearch})},signal}));
     diagnostic('usage',receipt.status);
    }catch{diagnostic('usage','unavailable');}finally{attempt?.close();}
   }
