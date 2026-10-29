@@ -11,7 +11,13 @@
  * The five reads PR189 registered (get_business_development_evidence, get_legal_reference, query_outreach,
  * search_legiwatch_news, search_research_sources) carry evidence from capiro-backend @ 138c0437, the Core read line they
  * are composed against. */
-export const GENERAL_READ_TARIFF_ASSUMPTIONS=Object.freeze(['rerankDisabled','webSearchProviderDuckDuckGo']);
+export const GENERAL_READ_TARIFF_ASSUMPTIONS=Object.freeze(['rerankDisabled','webSearchProviderDuckDuckGo','webSearchProviderAgentCore']);
+/** SCRUM-237: the approved AWS-managed primary search is priced from its own measured admission facts.
+ * USD 7 per 1000 searches + USD 0.005 per 1000 gateway invocations = 7005 µUSD per submitted `tools/call`
+ * (https://aws.amazon.com/bedrock/agentcore/pricing/, read 2026-10-29). One attempt is the default; two is
+ * the source ceiling, so the allocation reserves unit × configured attempts before any paid dispatch and the
+ * existing reservation settles the real outcome (an unknown outcome stays an UNKNOWN liability). */
+export const WEB_SEARCH_ADMISSION=Object.freeze({provider:'agentcore-web-search',unitMicroUsd:7005,maxAttempts:2});
 /** read_client_documents (Core #84 @ aabe0f17): one document, one section, at most one paid call per call.
  *  - text: listing, plain text, docx, xlsx, pptx and PDFs with a text layer are parsed locally: the 1 µUSD floor.
  *  - vision: only when the selected PDF page has no text layer. One page, the page ≤ 5 MiB (file ≤ 20 MiB), output ≤ 8,192
@@ -32,6 +38,8 @@ export const GENERAL_READ_DOCUMENT_BOUNDS=Object.freeze({textChargeMicrousd:1,
 export const GENERAL_READ_TARIFF_ASSUMPTION_KEYS=Object.freeze({
  rerankDisabled:Object.freeze({configKey:'RETRIEVAL_RERANK_ENABLED',configValue:'false'}),
  webSearchProviderDuckDuckGo:Object.freeze({configKey:'CLIO_WEB_SEARCH_PROVIDER',configValue:'duckduckgo'}),
+ // The provisioned primary target replaces Core's provider selection for public-web discovery.
+ webSearchProviderAgentCore:Object.freeze({configKey:'WEB_SEARCH_PROVIDER',configValue:'agentcore-web-search'}),
 });
 export const GENERAL_READ_TARIFFS=Object.freeze({
  'prepare_federal_draft@0.2.0':Object.freeze({chargeMicrousd:1,class:'db',evidence:'Exact Core federal source and bounded local deterministic compiler; no provider or model call'}),
@@ -120,7 +128,7 @@ export const GENERAL_READ_TARIFFS=Object.freeze({
  'search_memory@0.2.0':Object.freeze({chargeMicrousd:165,class:'embedding',assumptions:Object.freeze(['rerankDisabled']),evidence:"Bedrock Titan v2 embedding on every semantic search (meri-tools.service.ts:3431-3436 → institutional-knowledge-retrieval.adapter.ts:144); NVIDIA rerank only if RETRIEVAL_RERANK_ENABLED"}),
  'search_procurement_forecasts@0.2.0':Object.freeze({chargeMicrousd:1,class:'db',evidence:"Core tools/search_procurement_forecasts: Capiro database only, no outbound paid call"}),
  'search_program_elements@0.2.0':Object.freeze({chargeMicrousd:1,class:'db',evidence:"Core tools/search_program_elements: Capiro database only, no outbound paid call"}),
- 'search_public_web@0.2.0':Object.freeze({chargeMicrousd:1,class:'conditional-paid-external',assumptions:Object.freeze(['webSearchProviderDuckDuckGo']),evidence:"CLIO_WEB_SEARCH_PROVIDER defaults to duckduckgo, a free HTML fetch (config.schema.ts:704, web-search.helpers.ts); Tavily/Serper when configured are paid and have no tariff here"}),
+ 'search_public_web@0.2.0':Object.freeze({chargeMicrousd:1,class:'conditional-paid-external',assumptions:Object.freeze(['webSearchProviderDuckDuckGo']),evidence:"CLIO_WEB_SEARCH_PROVIDER defaults to duckduckgo, a free HTML fetch (config.schema.ts:704, web-search.helpers.ts); Tavily/Serper when configured are paid and have no tariff here. A configured AWS-managed primary target is priced by the measured webSearchAdmission (7005 microUSD per submitted tools/call, × configured attempts), never as 1"}),
  'search_research_sources@0.2.0':Object.freeze({chargeMicrousd:1,class:'db',evidence:"six Prisma findMany branches (clients, own meetings, mail threads and messages, Meri notes, directory notes) and no outbound call (meri-tools.service.ts:6912-7114); Core @ 138c0437"}),
  'search_sec_filings@0.2.0':Object.freeze({chargeMicrousd:1,class:'db',evidence:"Core tools/search_sec_filings: Capiro database only, no outbound paid call"}),
  'search_state_bills@0.2.0':Object.freeze({chargeMicrousd:1,class:'db',evidence:"Core tools/search_state_bills: Capiro database only, no outbound paid call"}),

@@ -5976,11 +5976,11 @@
       ],
       "inputSchema": {
         "id": "urn:meri:retrieval:public-web:0.2.0#/$defs/PublicWebSearchRequest",
-        "sha256": "6371852e951a3bf5110a309173e35da4ca7cc33b38425d43a98936c8b0aac65a"
+        "sha256": "78c2cf942f440c2240bedb52163ea891a25847377f39fa547f552d3b66a18cdb"
       },
       "outputSchema": {
         "id": "urn:meri:retrieval:public-web:0.2.0#/$defs/PublicWebSearchOutput",
-        "sha256": "6371852e951a3bf5110a309173e35da4ca7cc33b38425d43a98936c8b0aac65a"
+        "sha256": "78c2cf942f440c2240bedb52163ea891a25847377f39fa547f552d3b66a18cdb"
       },
       "aliases": [],
       "sideEffect": "none",
@@ -6044,11 +6044,11 @@
       ],
       "inputSchema": {
         "id": "urn:meri:retrieval:public-web:0.2.0#/$defs/PublicWebPageRequest",
-        "sha256": "6371852e951a3bf5110a309173e35da4ca7cc33b38425d43a98936c8b0aac65a"
+        "sha256": "78c2cf942f440c2240bedb52163ea891a25847377f39fa547f552d3b66a18cdb"
       },
       "outputSchema": {
         "id": "urn:meri:retrieval:public-web:0.2.0#/$defs/PublicWebPageOutput",
-        "sha256": "6371852e951a3bf5110a309173e35da4ca7cc33b38425d43a98936c8b0aac65a"
+        "sha256": "78c2cf942f440c2240bedb52163ea891a25847377f39fa547f552d3b66a18cdb"
       },
       "aliases": [],
       "sideEffect": "none",

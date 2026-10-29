@@ -13,7 +13,8 @@
  },
  "assumptions": [
   "rerankDisabled",
-  "webSearchProviderDuckDuckGo"
+  "webSearchProviderDuckDuckGo",
+  "webSearchProviderAgentCore"
  ],
  "documentPricingRequired": {
   "bounds": {
@@ -81,6 +82,15 @@
     "coreImageDigest",
     "configurationSha256"
    ]
+  },
+  "webSearchProviderAgentCore": {
+   "configKey": "WEB_SEARCH_PROVIDER",
+   "configValue": "agentcore-web-search",
+   "evidence": [
+    "coreSourceCommit",
+    "coreImageDigest",
+    "configurationSha256"
+   ]
   }
  },
  "operations": [
@@ -93,7 +103,42 @@
   },
   {
    "operation": {
+    "id": "build_opportunity_action_plan",
+    "version": "0.2.0"
+   },
+   "chargeMicrousd": 1
+  },
+  {
+   "operation": {
+    "id": "compare_funding_opportunities",
+    "version": "0.2.0"
+   },
+   "chargeMicrousd": 1
+  },
+  {
+   "operation": {
+    "id": "describe_capiro_data",
+    "version": "0.2.0"
+   },
+   "chargeMicrousd": 1
+  },
+  {
+   "operation": {
+    "id": "explain_opportunity_match",
+    "version": "0.2.0"
+   },
+   "chargeMicrousd": 1
+  },
+  {
+   "operation": {
     "id": "find_contacts",
+    "version": "0.2.0"
+   },
+   "chargeMicrousd": 1
+  },
+  {
+   "operation": {
+    "id": "find_path_to",
     "version": "0.2.0"
    },
    "chargeMicrousd": 1
@@ -220,6 +265,13 @@
   {
    "operation": {
     "id": "get_pe_budget_timeline",
+    "version": "0.2.0"
+   },
+   "chargeMicrousd": 1
+  },
+  {
+   "operation": {
+    "id": "get_pe_buyer_workspace",
     "version": "0.2.0"
    },
    "chargeMicrousd": 1
@@ -359,7 +411,21 @@
   },
   {
    "operation": {
+    "id": "prepare_federal_draft",
+    "version": "0.2.0"
+   },
+   "chargeMicrousd": 1
+  },
+  {
+   "operation": {
     "id": "query_action_items",
+    "version": "0.2.0"
+   },
+   "chargeMicrousd": 1
+  },
+  {
+   "operation": {
+    "id": "query_capiro_data",
     "version": "0.2.0"
    },
    "chargeMicrousd": 1
@@ -422,7 +488,28 @@
   },
   {
    "operation": {
+    "id": "read_federal_draft_source",
+    "version": "0.2.0"
+   },
+   "chargeMicrousd": 1
+  },
+  {
+   "operation": {
     "id": "read_monday_client_boards",
+    "version": "0.2.0"
+   },
+   "chargeMicrousd": 1
+  },
+  {
+   "operation": {
+    "id": "read_saved_record",
+    "version": "0.2.0"
+   },
+   "chargeMicrousd": 1
+  },
+  {
+   "operation": {
+    "id": "read_saved_strategy_records",
     "version": "0.2.0"
    },
    "chargeMicrousd": 1

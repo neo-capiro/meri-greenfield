@@ -9,7 +9,7 @@
  * allocated: it is excluded and reported, never charged a guess. */
 import {canonicalSha256} from '../../../packages/contracts/validate.mjs';
 import {validateShape as privateShape} from '../../../packages/contracts/retrieval-0.2/validate.mjs';
-import {GENERAL_READ_PROFILE,GENERAL_READ_PROFILE_VERSION,GENERAL_READ_TEXT_ONLY_PROFILE_VERSION,GENERAL_READ_CEILINGS,GENERAL_READ_DEFAULT_READ_BYTES,assertGeneralReadManifest,assertOneHoldFits,assertTariffAssumptionEvidence,GENERAL_READ_DEFAULT_RUN_BUDGETS,documentReadCharge,isDocumentTextOnlyPricing,DOCUMENT_READ,DOCUMENT_TEXT_ONLY_MODE,DOCUMENT_TEXT_ONLY_ROUTE} from './general-read-manifest.mjs';
+import {GENERAL_READ_PROFILE,GENERAL_READ_PROFILE_VERSION,GENERAL_READ_TEXT_ONLY_PROFILE_VERSION,GENERAL_READ_PAID_SEARCH_PROFILE_VERSION,GENERAL_READ_CEILINGS,GENERAL_READ_DEFAULT_READ_BYTES,assertGeneralReadManifest,assertOneHoldFits,assertTariffAssumptionEvidence,GENERAL_READ_DEFAULT_RUN_BUDGETS,documentReadCharge,isDocumentTextOnlyPricing,DOCUMENT_READ,DOCUMENT_TEXT_ONLY_MODE,DOCUMENT_TEXT_ONLY_ROUTE,webSearchCharge,WEB_SEARCH_READ} from './general-read-manifest.mjs';
 import {allocation} from './tool-budget-binding.mjs';
 import {refuse} from './postgres-budget-store.mjs';
 import {GENERAL_READ_TARIFFS,GENERAL_READ_TARIFF_ASSUMPTIONS,GENERAL_READ_TARIFF_ASSUMPTION_KEYS,GENERAL_READ_DOCUMENT_BOUNDS} from './general-read-tariffs.mjs';
@@ -36,13 +36,15 @@ export function generalReadTariff(operation,assumptions){
  *   The evidence an allocated tariff needs is carried in the manifest, so it never disappears from the emitted allocation.
  * - `documentPricing`: evidence that prices read_client_documents (documentReadCharge); without it the document read is excluded.
  * Returns {allocation, excluded}: `excluded` lists requested operations without a usable tariff. */
-export function composeGeneralReadAllocation({run,operations,runBudgets,readBytes=GENERAL_READ_DEFAULT_READ_BYTES,catalogSha256,scheduleRevision,expiresAt,assumptions=[],documentPricing}){
+export function composeGeneralReadAllocation({run,operations,runBudgets,readBytes=GENERAL_READ_DEFAULT_READ_BYTES,catalogSha256,scheduleRevision,expiresAt,assumptions=[],documentPricing,webSearchAdmission}){
  if(!Array.isArray(assumptions))refuse('INVALID_TARIFF_ASSUMPTION');
  const evidence=new Map();for(const item of assumptions){assertTariffAssumptionEvidence(item);if(evidence.has(item.id))refuse('INVALID_TARIFF_ASSUMPTION');evidence.set(item.id,{...item});}
  const held=[...evidence.keys()];
  const requested=[...new Map(operations.map(op=>{privateShape('OperationRef',op);return [key(op),{id:op.id,version:op.version}];})).values()].sort((a,b)=>key(a).localeCompare(key(b)));
  const documentCharge=documentPricing===undefined?null:documentReadCharge(documentPricing);
- const charge=op=>key(op)===DOCUMENT_READ?documentCharge:generalReadTariff(op,held);
+ // The configured primary target's own admission replaces the free Core discovery charge for that one read.
+ const searchCharge=webSearchAdmission===undefined?null:webSearchCharge(webSearchAdmission);
+ const charge=op=>key(op)===DOCUMENT_READ?documentCharge:key(op)===WEB_SEARCH_READ&&searchCharge!==null?searchCharge:generalReadTariff(op,held);
  const priced=requested.filter(op=>charge(op)!==null),excluded=requested.filter(op=>charge(op)===null);
  if(!priced.length)refuse('INVALID_GENERAL_READ_MANIFEST');
  for(const k of ['maxTurns','maxToolCalls','maxRuntimeSeconds','maxCostMicroUSD'])if(!Number.isSafeInteger(runBudgets?.[k])||runBudgets[k]<1)refuse('INVALID_BUDGET_INTEGER');
@@ -53,11 +55,13 @@ export function composeGeneralReadAllocation({run,operations,runBudgets,readByte
   maxRuntimeSeconds:runBudgets.maxRuntimeSeconds,maxCostMicroUSD:runBudgets.maxCostMicroUSD,maxOutputBytes:bytes.maxOutputBytes};
  const schedule=priced.map(op=>({operation:op,chargeMicrousd:charge(op)}));
  assertOneHoldFits(budgets,schedule.map(s=>s.chargeMicrousd));
- const needed=[...new Set(priced.flatMap(op=>GENERAL_READ_TARIFFS[key(op)].assumptions??[]))].sort();
- const profileVersion=priced.some(op=>key(op)===DOCUMENT_READ)&&isDocumentTextOnlyPricing(documentPricing)?GENERAL_READ_TEXT_ONLY_PROFILE_VERSION:GENERAL_READ_PROFILE_VERSION;
+ const needed=[...new Set(priced.flatMap(op=>webSearchAdmission!==undefined&&key(op)===WEB_SEARCH_READ?['webSearchProviderAgentCore']:GENERAL_READ_TARIFFS[key(op)].assumptions??[]))].sort();
+ const profileVersion=webSearchAdmission!==undefined?GENERAL_READ_PAID_SEARCH_PROFILE_VERSION:
+  priced.some(op=>key(op)===DOCUMENT_READ)&&isDocumentTextOnlyPricing(documentPricing)?GENERAL_READ_TEXT_ONLY_PROFILE_VERSION:GENERAL_READ_PROFILE_VERSION;
  const manifest=assertGeneralReadManifest({contractVersion:'0.2.0',profile:GENERAL_READ_PROFILE,profileVersion,allowedOperations:priced,budgets,
   maxAggregateOutputBytes:bytes.maxAggregateOutputBytes,...(needed.length?{tariffAssumptions:needed.map(id=>evidence.get(id))}:{}),
-  ...(priced.some(op=>key(op)===DOCUMENT_READ)?{documentPricing:structuredClone(documentPricing)}:{})});
+  ...(priced.some(op=>key(op)===DOCUMENT_READ)?{documentPricing:structuredClone(documentPricing)}:{}),
+  ...(webSearchAdmission===undefined?{}:{webSearchAdmission:structuredClone(webSearchAdmission)})});
  const value={run,manifest,manifestSha256:canonicalSha256(manifest),catalogSha256,budgets,schedule:{revision:scheduleRevision,expiresAt,operations:schedule}};
  allocation(JSON.stringify(value));
  return Object.freeze({allocation:value,excluded});
