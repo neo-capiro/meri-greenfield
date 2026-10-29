@@ -523,7 +523,9 @@ class RetainedNativeApkIndex(unittest.TestCase):
         self.assertEqual(distribution["instructions"],
                          [index_copy] + ["COPY --from=%s %s %s" % (name, REPO_DIR, REPO_DIR)
                                          for name in staging if name.startswith("native-repo-")]
-                         + [pip_copy] + pip_archives,
+                         + [pip_copy] + pip_archives
+                         + [instruction for instruction in distribution["instructions"]
+                            if instruction.startswith("RUN --network=none for apk in /tmp/meri-native-repo")],
                          "the runtime repository stage does not assemble the retained index and each distribution "
                          "staging partition exactly once in order: %r" % distribution["instructions"])
         development = assemblies["native-dev-repository"]
@@ -1253,6 +1255,100 @@ class SourceBuiltClamavPayload(unittest.TestCase):
         self.assertEqual(len(names), 2)
         self.assertNotEqual(len(names), len(set(names)),
                             "the no-duplicate repository guard cannot detect a repeated repository")
+
+    def test_the_second_repository_stages_every_archive_its_index_advertises(self):
+        """apk looks for an advertised archive inside the repository whose index advertised it.
+
+        Build ee0b0368 failed with 22 x "package mentioned in index not found": both signed indexes
+        advertise the same package versions, apk took the entry from the second index and then looked
+        for the archive in the second repository, where only the fixed pip trio was staged. This check
+        reads the two retained index artifacts and the staged archive list and requires:
+          * every staged archive the second index advertises to be byte-identical in both indexes
+            (same APK v2 checksum and size) - a differing checksum is a conflict, never a mapping;
+          * the mirroring step to copy exactly those archives into the second repository path;
+          * its exclusion list to be exactly the staged archives the second index does not advertise.
+        Removing the mirroring step, or widening its exclusion list, fails here.
+        """
+        def index_entries(path):
+            with tarfile.open(ROOT / path) as tar:
+                member = [item for item in tar.getmembers() if item.name.endswith("APKINDEX")][0]
+                body = tar.extractfile(member).read().decode("utf-8", "replace")
+            entries = {}
+            for chunk in body.split("\n\n"):
+                fields = {}
+                for line in chunk.splitlines():
+                    if len(line) > 2 and line[1] == ":":
+                        fields.setdefault(line[0], []).append(line[2:])
+                if "P" in fields and "V" in fields:
+                    key = "%s-%s.apk" % (fields["P"][0], fields["V"][0])
+                    entries[key] = (fields.get("C", [""])[0], fields.get("S", [""])[0])
+            return entries
+
+        prov = LOCK["uploadNativeProvenance"]
+        retained = index_entries(prov["retainedSignedIndex"]["path"])
+        fixed = index_entries(prov["fixedPipIndex"]["path"])
+        staged = sorted({dest.rsplit("/", 1)[-1] for _src, dest in STAGED_NAMES})
+
+        advertised = [name for name in staged if name in fixed]
+        absent = [name for name in staged if name not in fixed]
+        self.assertGreater(len(advertised), 200, "the second index advertises almost nothing staged")
+        conflicts = [(name, retained[name], fixed[name]) for name in advertised
+                     if name in retained and retained[name] != fixed[name]]
+        self.assertEqual(conflicts, [],
+                         "a staged archive is advertised differently by the two signed indexes, so the "
+                         "locked bytes must not be mapped under that entry: %r" % conflicts[:5])
+
+        def problems(dockerfile_text, fixed_entries=None, staged_names=None):
+            fixed_entries = dict(fixed) if fixed_entries is None else fixed_entries
+            staged_names = staged if staged_names is None else staged_names
+            advertised_here = [name for name in staged_names if name in fixed_entries]
+            absent_here = sorted(name for name in staged_names if name not in fixed_entries)
+            found = []
+            if "meri-native-pip-repo/aarch64/$name" not in dockerfile_text:
+                return ["the second repository never receives the archives its index advertises"]
+            case_block = re.search(r"case \"\$name\" in(.*?)esac", dockerfile_text, re.S)
+            if not case_block:
+                return ["the mirroring step has no exclusion list"]
+            excluded = sorted(token.strip()
+                              for token in case_block.group(1).replace(")", " ").replace("|", " ").split()
+                              if token.strip().endswith(".apk"))
+            if excluded != absent_here:
+                found.append("the mirroring exclusions %r are not exactly the staged archives the second "
+                             "index does not advertise %r" % (excluded, absent_here))
+            bad = [name for name in advertised_here
+                   if retained.get(name) is not None and retained.get(name) != fixed_entries[name]]
+            if bad:
+                found.append("archives advertised differently by the two indexes would be mirrored: %r"
+                             % bad[:5])
+            return found
+
+        self.assertEqual(problems(DOCKERFILE), [], "the second repository is not staged correctly: %r"
+                         % problems(DOCKERFILE))
+        self.assertEqual(sorted(absent), ["gst-plugins-base-1.29.2-r3.apk", "gstreamer-1.29.2-r4.apk"])
+
+        # both consumers mount and name the second repository, and the assembling stage precedes them
+        mirror_at = DOCKERFILE.index("meri-native-pip-repo/aarch64/$name")
+        for stage_name in ("clamav-source-build", "runtime"):
+            stage_text = " ".join(self.STAGES[stage_name]["instructions"])
+            self.assertIn("--repository %s" % PIP_REPO_DIR, stage_text,
+                          "%s does not name the second repository" % stage_name)
+            self.assertIn("source=tmp/meri-native-pip-repo,target=%s,readonly" % PIP_REPO_DIR, stage_text,
+                          "%s does not mount the second repository" % stage_name)
+            self.assertLess(mirror_at, DOCKERFILE.index("AS %s" % stage_name),
+                            "the mirroring step runs after %s is built" % stage_name)
+
+        # negative controls: the staging step removed, an exclusion dropped, or an index entry changed
+        self.assertTrue(problems(DOCKERFILE.replace("meri-native-pip-repo/aarch64/$name", "")),
+                        "removing the mirroring step was not detected")
+        widened = {name: value for name, value in fixed.items()
+                   if name not in ("gst-plugins-base-1.29.2-r3.apk", "gstreamer-1.29.2-r4.apk")}
+        self.assertTrue(problems(DOCKERFILE, fixed_entries=widened, staged_names=staged + [
+                            "gst-plugins-base-1.29.2-r3.apk"]),
+                        "an exclusion list that no longer matches the index was not detected")
+        mutated = dict(fixed)
+        mutated[advertised[0]] = ("Q1DIFFERENT", mutated[advertised[0]][1])
+        self.assertTrue(problems(DOCKERFILE, fixed_entries=mutated),
+                        "a differing checksum between the two indexes was not detected")
 
     def test_the_compiler_stage_cannot_read_the_fixed_trio_without_its_own_repository(self):
         """The compiler install must actually be able to read the fixed pip repository.
