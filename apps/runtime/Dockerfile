@@ -668,14 +668,16 @@ RUN --mount=type=bind,from=native-repository,source=tmp/meri-native-repo,target=
 # earlier layer: they are requested explicitly so they are upgraded to the declared version instead of silently
 # satisfying the soname at the older revision. The libc family is the one set that has to be named as a whole, since
 # its members are version-locked to each other and the base's world pins them together (see the python layer above).
+# libclamav links JSONC::jsonc directly, so json-c is named here explicitly: it is staged and in the runtime closure,
+# but no other runtime package pulls it, and without /usr/lib/libjson-c.so.5 every ClamAV tool dies in the loader.
 RUN --mount=type=bind,from=native-repository,source=tmp/meri-native-repo,target=/tmp/meri-native-repo,readonly \
     apk add --no-cache --no-network --repository /tmp/meri-native-repo --repositories-file /dev/null --update-cache \
       tesseract=5.5.0-r2 tesseract-eng=5.5.2-r2 poppler-utils=26.03.0-r3 poppler=26.03.0-r3 \
       leptonica=1.87.0-r1 icu-libs=75.1-r42 libarchive=3.8.10-r0 openssl-3.6-libcrypto=3.6.5-r6 \
-      libgcc=16.2.0-r2 libstdc++=16.2.0-r2 libatomic=16.2.0-r1 && \
+      json-c=0.19-r2 libgcc=16.2.0-r2 libstdc++=16.2.0-r2 libatomic=16.2.0-r1 && \
     test -x /usr/bin/tesseract && test -x /usr/bin/pdftoppm && \
     tesseract --list-langs 2>/dev/null | grep -qx eng && \
-    for p in poppler-26.03.0-r3 poppler-utils-26.03.0-r3 tesseract-5.5.0-r2 tesseract-eng-5.5.2-r2 leptonica-1.87.0-r1 libxml2-16-2.15.4-r1 libarchive-3.8.10-r0 openssl-3.6-libcrypto-3.6.5-r6 icu-libs-75.1-r42 libgcc-16.2.0-r2 libstdc++-16.2.0-r2 libatomic-16.2.0-r1 glibc-2.44-2.44-r10; do \
+    for p in poppler-26.03.0-r3 poppler-utils-26.03.0-r3 tesseract-5.5.0-r2 tesseract-eng-5.5.2-r2 leptonica-1.87.0-r1 libxml2-16-2.15.4-r1 libarchive-3.8.10-r0 openssl-3.6-libcrypto-3.6.5-r6 icu-libs-75.1-r42 json-c-0.19-r2 libgcc-16.2.0-r2 libstdc++-16.2.0-r2 libatomic-16.2.0-r1 glibc-2.44-2.44-r10; do \
       apk info -v | grep -qx "$p" || { echo "unexpected native dependency $p"; exit 1; }; done && \
     if apk info -v | grep -qx libstdc++-16.2.0-r1; then \
       echo "the renderer layer's libstdc++ 16.2.0-r1 survived the declared upgrade to 16.2.0-r2"; exit 1; fi
@@ -696,12 +698,20 @@ RUN cd / && sha256sum -c /usr/share/meri/clamav-component-inventory.txt && \
     test -n "$(ls /usr/lib/libclamav.so.* 2>/dev/null)" && test -n "$(ls /usr/lib/libfreshclam.so.* 2>/dev/null)" && \
     test -n "$(ls /usr/lib/libclamunrar.so.* 2>/dev/null)" && \
     for tool in /usr/bin/clamscan /usr/bin/sigtool /usr/bin/freshclam /usr/bin/clamdscan /usr/bin/clamdtop /usr/bin/clamd; do \
-      "$tool" --version 2>&1 | grep -q 'ClamAV 1.5.4' || { echo "unexpected ClamAV version from $tool"; exit 1; }; done && \
+      tool_out=$("$tool" --version 2>&1); tool_status=$?; \
+      printf '%s --version exit=%s output=%s\n' "$tool" "$tool_status" "$tool_out"; \
+      if [ "$tool_status" -ne 0 ]; then echo "tool failed to execute: $tool"; exit 1; fi; \
+      case "$tool_out" in *"ClamAV 1.5.4"*) ;; *) echo "unexpected ClamAV version from $tool"; exit 1 ;; esac; done && \
     printf 'meri-native-signature-probe\n' > /tmp/meri-sigtool-probe && \
-    test "$(sigtool --md5 /tmp/meri-sigtool-probe | awk '{print $1}')" = "$(md5sum /tmp/meri-sigtool-probe | awk '{print $1}')" && \
+    sigtool --md5 /tmp/meri-sigtool-probe > /tmp/meri-sigtool-out 2> /tmp/meri-sigtool-err; sigtool_status=$?; \
+    printf 'sigtool --md5 exit=%s\n' "$sigtool_status"; \
+    printf 'sigtool stdout:\n'; cat /tmp/meri-sigtool-out; \
+    printf 'sigtool stderr:\n'; cat /tmp/meri-sigtool-err; \
+    if [ "$sigtool_status" -ne 0 ]; then echo "sigtool failed to execute"; exit 1; fi; \
+    test "$(awk '{print $1}' /tmp/meri-sigtool-out)" = "$(md5sum /tmp/meri-sigtool-probe | awk '{print $1}')" || { echo "sigtool md5 mismatch"; exit 1; }; \
     grep -q '"upstreamVersion":"1.5.4"' /usr/share/meri/clamav-component-provenance.json && \
-    ! apk info -v | grep -q '^clamav-1.5' && \
-    rm -f /tmp/meri-sigtool-probe && \
+    if apk info -v | grep -q '^clamav-1.5'; then echo "unexpected clamav-1.5 distribution package installed"; apk info -v | grep '^clamav-1.5'; exit 1; fi && \
+    rm -f /tmp/meri-sigtool-probe /tmp/meri-sigtool-out /tmp/meri-sigtool-err && \
     echo "source-built ClamAV payload installed; no clamav-1.5 distribution package is present"
 # The coverage check and its advisory table travel with the image so the retained build probe binds the recorded
 # coverage to this image's own bytes: the probe runs the check inside the built image with no network, and the
