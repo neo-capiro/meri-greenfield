@@ -1,11 +1,11 @@
 import {parseBytes} from '../document-application/boundary.mjs';
 export {receiveRunIndexRequest,receiveRunIndexResponse,RunIndexResponseError,RUN_INDEX_SCHEMA,RUN_DETAIL_SCHEMA,RUN_INDEX_PATHS,runIndexMetadata} from './run-receive.mjs';
-import {validateListRequest,validateTranscriptRequest,validateNextTurnRequest,validateSummariesRequest,validateManageRequest,validateListResponse,validateTranscriptResponse,validateNextTurnResponse,validateSummariesResponse,validateManageResponse,validateError} from './generated-validator.mjs';
+import {validateExportRequest,validateExportResponse,validateListRequest,validateTranscriptRequest,validateNextTurnRequest,validateSummariesRequest,validateManageRequest,validateListResponse,validateTranscriptResponse,validateNextTurnResponse,validateSummariesResponse,validateManageResponse,validateError} from './generated-validator.mjs';
 import {normalizeHistoryRequest,assertHistoryResponseSemantics,fail,ConversationHistoryResponseError} from './semantics.mjs';
 import {conversationHistoryMetadata,historyErrorStatuses} from './protocol.mjs';
-export {conversationHistoryMetadata,conversationHistoryVersion,HISTORY_PATHS,DISCOVERY_SCHEMA,HISTORY_SCHEMA,TURN_SCHEMA,MANAGEMENT_VERSION} from './protocol.mjs';
+export {conversationHistoryMetadata,conversationHistoryVersion,HISTORY_PATHS,DISCOVERY_SCHEMA,HISTORY_SCHEMA,TURN_SCHEMA,EXPORT_SCHEMA,MANAGEMENT_VERSION} from './protocol.mjs';
 export {ConversationHistoryResponseError};
-const requests=new WeakMap(),requestValidators={list:validateListRequest,transcript:validateTranscriptRequest,nextTurn:validateNextTurnRequest,summaries:validateSummariesRequest,manage:validateManageRequest},responseValidators={list:validateListResponse,transcript:validateTranscriptResponse,nextTurn:validateNextTurnResponse,summaries:validateSummariesResponse,manage:validateManageResponse};
+const requests=new WeakMap(),requestValidators={export:validateExportRequest,list:validateListRequest,transcript:validateTranscriptRequest,nextTurn:validateNextTurnRequest,summaries:validateSummariesRequest,manage:validateManageRequest},responseValidators={export:validateExportResponse,list:validateListResponse,transcript:validateTranscriptResponse,nextTurn:validateNextTurnResponse,summaries:validateSummariesResponse,manage:validateManageResponse};
 const parse=(bytes,cap)=>{try{return parseBytes(bytes,cap);}catch(error){fail(error.code??'INVALID_BYTES');}};
 function routeValidator(route){if(typeof route!=='string'||!Object.hasOwn(requestValidators,route))fail('INVALID_ROUTE');return requestValidators[route];}
 export function receiveConversationHistoryRequest(route,utf8Bytes){const validate=routeValidator(route),request=parse(utf8Bytes,conversationHistoryMetadata.limits.requestBytes),normalized=normalizeHistoryRequest(route,request);if(!validate(request))fail('CONVERSATION_REQUEST_INVALID');requests.set(request,{route,normalized});return request;}
