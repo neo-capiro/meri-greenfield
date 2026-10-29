@@ -11,8 +11,10 @@ import {createCoreOfficeDraftClient} from '../core-drafts.mjs';
 import {createWopiAccessTokenCodec} from '../wopi-access-token.mjs';
 import {createWopiFileApplication} from '../wopi-files.mjs';
 const json=value=>new Response(JSON.stringify(value),{headers:{'content-type':'application/json'}});
-export async function wopiFixture(t,{format='docx',write=true}={}){
+export async function wopiFixture(t,{format='docx',write=true,withEvidence=false}={}){
  const f=nativeDocumentFixture({scopes:[{tenantId:'synthetic-tenant',kind:'client',resourceId:id(5),policyRevision:'synthetic-policy'}]}),baseBytes=ooxml(format),selectedClientId=f.context.scopes[0].resourceId;
+ if(withEvidence)f.context.evidence.push({sourceId:'synthetic-source',recordId:'synthetic-record',sourceVersionId:'synthetic-version',
+  observedAt:new Date(f.state.clock).toISOString(),sourceUpdatedAt:null,citationId:id(980),scopes:structuredClone(f.context.scopes),contentSha256:'a'.repeat(64),binding:structuredClone(f.context.binding)});
  const requests={docx:{blocks:[{kind:'paragraph',runs:[{text:'Original'}]}]},xlsx:{sheets:[{name:'Data',rows:[[{value:2}]]}]},pptx:{slides:[{title:'Original',bullets:['Fixture']}]}};
  f.options.executor={async execute(){f.state.executions.push('base');const inspection=inspectOfficeEdit(baseBytes,format);if(format==='xlsx')inspection.details.formulaCache='removed/unverified; recalculation required';return {bytes:baseBytes,inspection};}};
  const first=await f.run({...f.call,request:{operation:({docx:'create_word',xlsx:'create_excel',pptx:'create_powerpoint'})[format],format,title:'Synthetic',content:requests[format]}});
@@ -21,7 +23,7 @@ export async function wopiFixture(t,{format='docx',write=true}={}){
   verifyIdentity:async()=>({principal:{tenantId:binding.tenantId,actorId:binding.actorId},identityRevision:'identity',checkedAtMs:now(),expiresAtMs:now()+60000}),
   resolveContext:async({identity})=>({identitySha256:canonicalSha256(identity),binding,scopes,selectedClientId,contextRevision:'revision',checkedAtMs:now(),expiresAtMs:now()+60000})});
  const session=await sessions.issue({identityCredential:'synthetic-native-bearer'});t.after(()=>sessions.close());
- const state=Object.assign(f.state,{calls:[],lock:'',epoch:1,generation:0,hook:null,contextHook:null,generationHook:null,readonly:false,failSave:false});
+ const state=Object.assign(f.state,{calls:[],lock:'',epoch:1,generation:0,hook:null,contextHook:null,generationHook:null,readonly:false,failSave:false,loseBegin:false,loseSettle:false});
  const draft={draftId:id(700),conversationId:binding.conversationId,artifactId:first.version.artifactId,baseVersionId:first.version.versionId,baseSha256:sha(baseBytes),format,filename:first.version.filename,
   sequence:0,sha256:null,byteLength:0,state:'draft',publishIntent:null,publishedVersionId:null,savedAt:new Date(now()).toISOString(),expiresAt:new Date(now()+7*86400000).toISOString(),bytesBase64:null};
  const codec=createWopiAccessTokenCodec({key:Buffer.alloc(32,42),now});
@@ -31,8 +33,22 @@ export async function wopiFixture(t,{format='docx',write=true}={}){
   fetchImpl:async(url,options)=>{
    const request=JSON.parse(options.body),route=url.split('/office-drafts/')[1];state.calls.push({route,request,headers:options.headers});
    await state.hook?.(route,request);
-   if(request.editorEpoch!==state.epoch||request.editorId!==claims.editorId)return new Response(null,{status:409});
-   if(route==='editor/read')return json({...draft});
+   if(['editor/read','lock','save'].includes(route)&&(request.editorEpoch!==state.epoch||request.editorId!==claims.editorId))return new Response(null,{status:409});
+   if(route==='editor/read'||route==='read')return json({...draft});
+   const receipt=()=>{const {bytesBase64,...metadata}=draft;return {...metadata};};
+   if(route==='publish/begin'){
+    if(request.sequence!==draft.sequence||request.sha256!==draft.sha256||!draft.bytesBase64)return new Response(null,{status:409});
+    if(['publish-pending','publish-unknown','published'].includes(draft.state))return json({receipt:receipt(),dispatch:false});
+    if(!['draft','publish-refused'].includes(draft.state))return new Response(null,{status:409});
+    draft.state='publish-pending';draft.publishIntent=`office:${draft.draftId}:${draft.sequence}`;
+    if(state.loseBegin)throw Error('synthetic lost begin ACK');return json({receipt:receipt(),dispatch:true});
+   }
+   if(route==='publish/settle'){
+    const next=({published:'published',refused:'publish-refused',conflict:'conflict',unknown:'publish-unknown'})[request.outcome];
+    if(request.sequence!==draft.sequence||request.sha256!==draft.sha256||request.intent!==draft.publishIntent||
+     !['publish-pending','publish-unknown'].includes(draft.state)&&!(draft.state===next&&draft.publishedVersionId===request.versionId))return new Response(null,{status:409});
+    draft.state=next;draft.publishedVersionId=request.versionId;if(state.loseSettle)throw Error('synthetic lost settle ACK');return json(receipt());
+   }
    if(route==='lock'){
     const current=state.lock;if(request.operation==='get')return json({status:200,lock:current});
     if(request.operation==='lock'?current&&current!==request.lock:!current||current!==(request.operation==='relock'?request.oldLock:request.lock))return json({status:409,lock:current});

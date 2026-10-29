@@ -2,7 +2,8 @@
  * performed here. Trusted composition supplies the exact self-hosted origins and
  * bounded discovery response; opening the editor still requires current authority. */
 import {SaxesParser} from 'saxes';
-import {EDITOR_FORMATS} from './edit-session.mjs';
+import {OFFICE_OPERATIONS} from '../../../packages/contracts/office-edit.mjs';
+const EDITOR_FORMATS=Object.freeze(Object.keys(OFFICE_OPERATIONS));
 const fail=code=>{throw Object.assign(Error(code),{code});};
 export const CODE_DISCOVERY_MAX_BYTES=256*1024;
 const origin=value=>{

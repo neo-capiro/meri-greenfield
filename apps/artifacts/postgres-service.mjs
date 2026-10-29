@@ -58,7 +58,7 @@ export function createPostgresArtifactService(options){
  }
  /** Private explicit Publish only. The browser/model never supplies this port or
   * its source record. A draft sequence has one durable attempt across reconnects. */
- async function executeOfficeEdit(value,byteValue,signal){
+ async function executeOfficeEdit(value,byteValue,signal,recoveryOnly=false){
   if(c.officeEditWrites!==true||c.selectedInvocationId!==undefined||context.analysisAdmission)fail('EDITOR_PUBLISH_UNAVAILABLE');
   const call=v.snapshot(own(value,['deliveryId','baseVersionId','request']));call.request=officeEditSource(call.request);
   const edit=call.request.edit,binding=context.binding;
@@ -82,6 +82,10 @@ export function createPostgresArtifactService(options){
    check();return recovered;
   }
   check();const prior=await read();check();if(prior)return replay(prior);
+  // Core may have committed its private-draft Publish barrier before a caller
+  // lost the acknowledgement or reached this journal. Absence is not permission
+  // to dispatch from recovery: the original caller could still be in flight.
+  if(recoveryOnly)fail('EDITOR_PUBLISH_UNRESOLVED');
   let claim;
   try{claim=await journal.begin(key);}
   catch(error){if(!['UNKNOWN','CONFLICT','UNAVAILABLE'].includes(error.code))throw error;const retained=await read();if(retained)return replay(retained);throw error;}
@@ -99,5 +103,6 @@ export function createPostgresArtifactService(options){
   catch(cause){throw Object.assign(Error('ARTIFACT_EFFECT_UNKNOWN'),{code:'ARTIFACT_EFFECT_UNKNOWN',cause,versionId:invocation.versionId,versionCommitted:true});}
   return result;
  }
- return Object.freeze({execute,executeOfficeEdit});
+ return Object.freeze({execute,executeOfficeEdit:(value,bytes,signal)=>executeOfficeEdit(value,bytes,signal),
+  recoverOfficeEdit:(value,bytes,signal)=>executeOfficeEdit(value,bytes,signal,true)});
 }
