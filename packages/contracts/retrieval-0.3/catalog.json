@@ -1,7 +1,7 @@
 {
   "contractVersion": "0.2.0",
   "catalogId": "meri.retrieval",
-  "catalogVersion": "0.2.24",
+  "catalogVersion": "0.2.25",
   "sourceRegistryCommit": "87ea34a812c56524644e4983b215ded5ce8a8f7d",
   "originals": [
     {
@@ -1209,10 +1209,13 @@
     },
     {
       "id": "explain_opportunity_match",
-      "disposition": "deferred",
-      "boundary": "Opportunity match scoring/explanation parity has no accepted rubric or independent expected values.",
-      "replacement": null,
-      "state": "deferred"
+      "disposition": "selected",
+      "boundary": "Explain the canonical match evidence through current Core client authorization; no task writes, scoring overrides or inferred relationships.",
+      "replacement": {
+        "id": "explain_opportunity_match",
+        "version": "0.2.0"
+      },
+      "state": "mapped"
     },
     {
       "id": "get_opportunity_client_context",
@@ -1236,17 +1239,23 @@
     },
     {
       "id": "compare_funding_opportunities",
-      "disposition": "deferred",
-      "boundary": "Funding comparison workflow has unagreed scoring and explanation requirements.",
-      "replacement": null,
-      "state": "deferred"
+      "disposition": "selected",
+      "boundary": "Compare source facts without aggregating incompatible money through current Core client authorization; no task writes, scoring overrides or inferred relationships.",
+      "replacement": {
+        "id": "compare_funding_opportunities",
+        "version": "0.2.0"
+      },
+      "state": "mapped"
     },
     {
       "id": "build_opportunity_action_plan",
-      "disposition": "deferred",
-      "boundary": "Funding action-plan workflow parity is not established by opportunity source access.",
-      "replacement": null,
-      "state": "deferred"
+      "disposition": "selected",
+      "boundary": "Prepare a deterministic action proposal through current Core client authorization; no task writes, scoring overrides or inferred relationships.",
+      "replacement": {
+        "id": "build_opportunity_action_plan",
+        "version": "0.2.0"
+      },
+      "state": "mapped"
     },
     {
       "id": "search_federal_contract_awards",
@@ -11481,6 +11490,219 @@
       ],
       "fixtureIds": [
         "catalog.binding.update_scheduled_task"
+      ]
+    },
+    {
+      "operation": {
+        "id": "explain_opportunity_match",
+        "version": "0.2.0"
+      },
+      "displayName": "Explain the canonical match evidence",
+      "whenToUse": "Explain the canonical match evidence.",
+      "limitations": [
+        "Pending private contract only; null handler, no enabled source or executable skill.",
+        "Source requirements are design declarations; current grants, feature flags, availability and producer authority remain unqualified.",
+        "Local source validation does not qualify current identity, source access, result release or runtime.",
+        "Trusted asOf is a server observation clock, never model input or authorization; generic gateway composition for this context remains unqualified.",
+        "Current visible-client, actor membership, client walls, source flags and document authority must be checked by qualified source owners. Model client/source identifiers grant no access.",
+        "Six source states, nullable or stale totals, bounded requirements and partial source health cannot establish exhaustive absence, completeness or freshness.",
+        "Funding per-award bounds, program totals and contract estimates are different quantities. SAM available landscapes require the declared identity shape, not proof that a record exists.",
+        "This passive contract authorizes no provider, source refresh, recommendation, acquisition write or artifact extraction action.",
+        "Actions are proposals only; source amounts are never added across funding categories. Recommendation confidence is not eligibility or win probability."
+      ],
+      "positiveExamples": [
+        "Inspect the declared stored projection within the current authorized source scope."
+      ],
+      "negativeExamples": [
+        "Treat a model selector, empty page, cursor, timestamp or reported coverage as proof of authorization, freshness or exhaustive absence."
+      ],
+      "sourceRequirements": [
+        {
+          "sourceId": "funding_opportunities",
+          "authority": "derived",
+          "purpose": "evidence"
+        }
+      ],
+      "inputSchema": {
+        "id": "urn:meri:retrieval:funding-analysis:0.2.0#/$defs/FundingMatchInput",
+        "sha256": "d92018db84ed51cd6772c1ec1bb2a7ca6c0af4f0d410fd17df71acb7c9849088"
+      },
+      "outputSchema": {
+        "id": "urn:meri:retrieval:funding-analysis:0.2.0#/$defs/FundingMatchOutput",
+        "sha256": "d92018db84ed51cd6772c1ec1bb2a7ca6c0af4f0d410fd17df71acb7c9849088"
+      },
+      "aliases": [],
+      "sideEffect": "none",
+      "requiredGrants": [
+        "tool.read"
+      ],
+      "approvalBoundary": "none",
+      "handler": null,
+      "availability": "unimplemented",
+      "qualification": "pending",
+      "retry": {
+        "maxRetries": 0,
+        "retryableCodes": [],
+        "unknownOutcome": "reconcile-before-retry"
+      },
+      "replacement": null,
+      "requirementIds": [
+        "R-01",
+        "R-04",
+        "R-05"
+      ],
+      "ticketIds": [
+        "REL-02"
+      ],
+      "gateIds": [
+        "RG-02",
+        "RG-05",
+        "RG-07"
+      ],
+      "fixtureIds": [
+        "catalog.binding.explain_opportunity_match"
+      ]
+    },
+    {
+      "operation": {
+        "id": "compare_funding_opportunities",
+        "version": "0.2.0"
+      },
+      "displayName": "Compare source facts without aggregating incompatible money",
+      "whenToUse": "Compare source facts without aggregating incompatible money.",
+      "limitations": [
+        "Pending private contract only; null handler, no enabled source or executable skill.",
+        "Source requirements are design declarations; current grants, feature flags, availability and producer authority remain unqualified.",
+        "Local source validation does not qualify current identity, source access, result release or runtime.",
+        "Trusted asOf is a server observation clock, never model input or authorization; generic gateway composition for this context remains unqualified.",
+        "Current visible-client, actor membership, client walls, source flags and document authority must be checked by qualified source owners. Model client/source identifiers grant no access.",
+        "Six source states, nullable or stale totals, bounded requirements and partial source health cannot establish exhaustive absence, completeness or freshness.",
+        "Funding per-award bounds, program totals and contract estimates are different quantities. SAM available landscapes require the declared identity shape, not proof that a record exists.",
+        "This passive contract authorizes no provider, source refresh, recommendation, acquisition write or artifact extraction action.",
+        "Actions are proposals only; source amounts are never added across funding categories. Recommendation confidence is not eligibility or win probability."
+      ],
+      "positiveExamples": [
+        "Inspect the declared stored projection within the current authorized source scope."
+      ],
+      "negativeExamples": [
+        "Treat a model selector, empty page, cursor, timestamp or reported coverage as proof of authorization, freshness or exhaustive absence."
+      ],
+      "sourceRequirements": [
+        {
+          "sourceId": "funding_opportunities",
+          "authority": "derived",
+          "purpose": "evidence"
+        }
+      ],
+      "inputSchema": {
+        "id": "urn:meri:retrieval:funding-analysis:0.2.0#/$defs/FundingCompareInput",
+        "sha256": "d92018db84ed51cd6772c1ec1bb2a7ca6c0af4f0d410fd17df71acb7c9849088"
+      },
+      "outputSchema": {
+        "id": "urn:meri:retrieval:funding-analysis:0.2.0#/$defs/FundingCompareOutput",
+        "sha256": "d92018db84ed51cd6772c1ec1bb2a7ca6c0af4f0d410fd17df71acb7c9849088"
+      },
+      "aliases": [],
+      "sideEffect": "none",
+      "requiredGrants": [
+        "tool.read"
+      ],
+      "approvalBoundary": "none",
+      "handler": null,
+      "availability": "unimplemented",
+      "qualification": "pending",
+      "retry": {
+        "maxRetries": 0,
+        "retryableCodes": [],
+        "unknownOutcome": "reconcile-before-retry"
+      },
+      "replacement": null,
+      "requirementIds": [
+        "R-01",
+        "R-04",
+        "R-05"
+      ],
+      "ticketIds": [
+        "REL-02"
+      ],
+      "gateIds": [
+        "RG-02",
+        "RG-05",
+        "RG-07"
+      ],
+      "fixtureIds": [
+        "catalog.binding.compare_funding_opportunities"
+      ]
+    },
+    {
+      "operation": {
+        "id": "build_opportunity_action_plan",
+        "version": "0.2.0"
+      },
+      "displayName": "Prepare a deterministic action proposal",
+      "whenToUse": "Prepare a deterministic action proposal.",
+      "limitations": [
+        "Pending private contract only; null handler, no enabled source or executable skill.",
+        "Source requirements are design declarations; current grants, feature flags, availability and producer authority remain unqualified.",
+        "Local source validation does not qualify current identity, source access, result release or runtime.",
+        "Trusted asOf is a server observation clock, never model input or authorization; generic gateway composition for this context remains unqualified.",
+        "Current visible-client, actor membership, client walls, source flags and document authority must be checked by qualified source owners. Model client/source identifiers grant no access.",
+        "Six source states, nullable or stale totals, bounded requirements and partial source health cannot establish exhaustive absence, completeness or freshness.",
+        "Funding per-award bounds, program totals and contract estimates are different quantities. SAM available landscapes require the declared identity shape, not proof that a record exists.",
+        "This passive contract authorizes no provider, source refresh, recommendation, acquisition write or artifact extraction action.",
+        "Actions are proposals only; source amounts are never added across funding categories. Recommendation confidence is not eligibility or win probability."
+      ],
+      "positiveExamples": [
+        "Inspect the declared stored projection within the current authorized source scope."
+      ],
+      "negativeExamples": [
+        "Treat a model selector, empty page, cursor, timestamp or reported coverage as proof of authorization, freshness or exhaustive absence."
+      ],
+      "sourceRequirements": [
+        {
+          "sourceId": "funding_opportunities",
+          "authority": "derived",
+          "purpose": "evidence"
+        }
+      ],
+      "inputSchema": {
+        "id": "urn:meri:retrieval:funding-analysis:0.2.0#/$defs/FundingPlanInput",
+        "sha256": "d92018db84ed51cd6772c1ec1bb2a7ca6c0af4f0d410fd17df71acb7c9849088"
+      },
+      "outputSchema": {
+        "id": "urn:meri:retrieval:funding-analysis:0.2.0#/$defs/FundingPlanOutput",
+        "sha256": "d92018db84ed51cd6772c1ec1bb2a7ca6c0af4f0d410fd17df71acb7c9849088"
+      },
+      "aliases": [],
+      "sideEffect": "none",
+      "requiredGrants": [
+        "tool.read"
+      ],
+      "approvalBoundary": "none",
+      "handler": null,
+      "availability": "unimplemented",
+      "qualification": "pending",
+      "retry": {
+        "maxRetries": 0,
+        "retryableCodes": [],
+        "unknownOutcome": "reconcile-before-retry"
+      },
+      "replacement": null,
+      "requirementIds": [
+        "R-01",
+        "R-04",
+        "R-05"
+      ],
+      "ticketIds": [
+        "REL-02"
+      ],
+      "gateIds": [
+        "RG-02",
+        "RG-05",
+        "RG-07"
+      ],
+      "fixtureIds": [
+        "catalog.binding.build_opportunity_action_plan"
       ]
     }
   ]

@@ -3,7 +3,7 @@
  * it names which supported SDK features this run may use and never carries paths, credentials or authority.
  * The effective policy is computed by `policy-resolution.mjs` (platform ∧ tenant ∧ role) before it reaches a run. */
 import {own} from '../../../../packages/contracts/commands-0.2/execution-boundary.mjs';
-import catalog from '../../../../packages/contracts/retrieval-0.2/catalog.json' with {type:'json'};
+import catalog from '../../../../packages/contracts/retrieval-0.3/catalog.json' with {type:'json'};
 import {resolveOperationContract} from '../../../../packages/contracts/retrieval-0.2/validate.mjs';
 import {READ_FAMILIES,READ_FAMILY_IDS} from '../reads/families.mjs';
 /** @param {string} code @returns {never} */

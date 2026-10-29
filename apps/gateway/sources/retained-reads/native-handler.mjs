@@ -13,12 +13,12 @@ const same=(a,b)=>hash(a)===hash(b);
 export function createStoredNativeReadHandlers(configuration,operations,specification){
  const {family,routes,requestBody,resultBody,observation,requirePerCall}=ownFields(specification,['family','routes'],['requestBody','resultBody','observation','requirePerCall']);
  if(!NATIVE_READ_FAMILIES.includes(family)||[requestBody,resultBody,requirePerCall].some(value=>value!==undefined&&(typeof value!=='function'||types.isProxy(value))))deny('GATEWAY_CONFIGURATION');
- const fundingObservation=observation==='funding-asof'&&family==='funding-opportunities',knowledgeObservation=observation==='client-knowledge-asof'&&family==='client-knowledge-search',
+ const fundingObservation=observation==='funding-asof'&&['funding-opportunities','funding-analysis'].includes(family),knowledgeObservation=observation==='client-knowledge-asof'&&family==='client-knowledge-search',
   modeObservation=observation==='evidence-mode'&&['public-data','program-elements'].includes(family),
   producerObservation=observation==='producer-context'&&['certification-status','rule-status','sam-opportunities'].includes(family);
  if(observation!==undefined&&(!(fundingObservation||knowledgeObservation||modeObservation||producerObservation)||requestBody!==undefined||resultBody!==undefined))deny('GATEWAY_CONFIGURATION');
  if(['certification-status','rule-status','sam-opportunities'].includes(family)&&!producerObservation)deny('GATEWAY_CONFIGURATION');
- if(family==='funding-opportunities'&&observation!=='funding-asof')deny('GATEWAY_CONFIGURATION');
+ if(['funding-opportunities','funding-analysis'].includes(family)&&observation!=='funding-asof')deny('GATEWAY_CONFIGURATION');
  const fixed=frozenData(routes);
  if(!fixed||Array.isArray(fixed)||typeof fixed!=='object'||!Object.keys(fixed).length)deny('GATEWAY_CONFIGURATION');
  if(knowledgeObservation&&(Object.keys(fixed).length!==1||!Object.hasOwn(fixed,'search_client_knowledge'))||

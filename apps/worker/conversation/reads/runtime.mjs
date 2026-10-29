@@ -8,7 +8,7 @@
  * `activeReadOperations` that survive family/skill exclusions. The initial snapshot decides which of those may execute for this
  * run; a later current check can only remove them. A failing or absent snapshot exposes nothing for execution. The registered
  * tool list and SDK options remain a function of the measured profile alone. */
-import catalog from '../../../../packages/contracts/retrieval-0.2/catalog.json' with {type:'json'};
+import catalog from '../../../../packages/contracts/retrieval-0.3/catalog.json' with {type:'json'};
 import {own,data,nativeSignal} from '../../../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {canonicalSha256,validateShape} from '../../../../packages/contracts/validate.mjs';
 import {createOperationLifetime} from '../../../../packages/runtime/operation-lifetime.mjs';

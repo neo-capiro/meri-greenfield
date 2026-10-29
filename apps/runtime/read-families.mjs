@@ -1,5 +1,5 @@
 /** Existing typed read families and bounded dispatch; no allocation, grants or runtime source measurement. */
-import catalog from '../../packages/contracts/retrieval-0.2/catalog.json' with {type:'json'};
+import catalog from '../../packages/contracts/retrieval-0.3/catalog.json' with {type:'json'};
 import {resolveOperationContract,publicDomainDatasetRegistry,assertSubject} from '../../packages/contracts/retrieval-0.2/validate.mjs';
 import {canonicalSha256 as hash} from '../../packages/contracts/validate.mjs';
 import {nativeReadFault,nativeReadFailureCode} from '../../packages/contracts/runtime-0.2/reads.mjs';

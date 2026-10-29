@@ -8,7 +8,7 @@ import {ownFields,frozenData} from '../source-admission.mjs';
 import {readJsonResponse,cancelBody,responseBody} from '../json-response.mjs';
 import {credentialProof} from './call-context.mjs';
 import {createNativeReadObservation,encodeNativeReadObservation,NATIVE_READ_OBSERVATION_HEADER,MODE_READ_OPERATIONS} from '../../../../packages/contracts/native-read-observation-0.2/validate.mjs';
-import {FUNDING_OPPORTUNITY_OPERATION_IDS} from '../../../../packages/contracts/retrieval-0.2/funding-opportunities-validation.mjs';
+import {FUNDING_READ_OPERATIONS} from '../../../../packages/contracts/native-read-observation-0.2/validate.mjs';
 const same=(a,b)=>canonicalSha256(a)===canonicalSha256(b);
 const token=value=>typeof value==='string'&&/^[\x21-\x7e]{1,8192}$/.test(value);
 export function createRetainedHttpTransport(configuration){
@@ -21,7 +21,7 @@ export function createRetainedHttpTransport(configuration){
   !Number.isSafeInteger(maxResponseBytes)||maxResponseBytes<1||maxResponseBytes>16777216)deny('GATEWAY_CONFIGURATION');
  return Object.freeze({async read(c,specification){
   const {path,method,body,serviceSecret=false,observation}=ownFields(specification,['path','method'],['body','serviceSecret','observation']);
-  const fundingObservation=observation==='funding-asof'&&c.contract.binding.group==='funding-opportunities'&&FUNDING_OPPORTUNITY_OPERATION_IDS.includes(c.operation.id);
+  const fundingObservation=observation==='funding-asof'&&['funding-opportunities','funding-analysis'].includes(c.contract.binding.group)&&FUNDING_READ_OPERATIONS.includes(c.operation.id);
   const knowledgeObservation=observation==='client-knowledge-asof'&&c.contract.binding.group==='client-knowledge-search'&&c.operation.id==='search_client_knowledge';
   const modeObservation=observation==='evidence-mode'&&['public-data','program-elements'].includes(c.contract.binding.group)&&MODE_READ_OPERATIONS.includes(c.operation.id);
   const producerObservation=observation==='producer-context'&&['certification-status','rule-status','sam-opportunities'].includes(c.contract.binding.group);

@@ -100,7 +100,7 @@ export function assertSourceReadRequest(contract,request,subject){
  if(contract.binding.group==='research-legal-candidates')assertResearchCandidatesRequest(contract.descriptor.operation,request);
  if(contract.binding.group==='outreach-query')captureOutreachListClientReference(request);
  if(contract.binding.group==='business-development')captureBusinessDevelopmentResource(contract.descriptor.operation,request,subject);
- if(contract.binding.group==='funding-opportunities')assertFundingClientSubject(subject,captureFundingClientSelection(contract.descriptor.operation,request));
+ if(['funding-opportunities','funding-analysis'].includes(contract.binding.group))assertFundingClientSubject(subject,captureFundingClientSelection(contract.descriptor.operation,request));
  if(contract.binding.group==='client-knowledge-search'&&contract.descriptor.operation.id==='search_client_knowledge')assertClientKnowledgeSearchSubject(subject,captureClientKnowledgeSearchSelection(contract.descriptor.operation,request));
 }
 
@@ -164,7 +164,7 @@ export function createSourceReadContext({contract,proof,native,defaultCongress,n
   const at=now();if(!Number.isSafeInteger(at)||at<0||at>8640000000000000)refuse('ACCESS_DENIED');
   return {asOf:new Date(at).toISOString()};
  }
- if(group==='funding-opportunities'){
+ if(['funding-opportunities','funding-analysis'].includes(group)){
   const selected=captureFundingClientSelection(contract.descriptor.operation,proof.request);
   assertFundingClientSubject(proof.subject,selected);assertNativeVisibleClients(native,[selected.clientId]);
   if(priorContext)return {asOf:priorContext.asOf};

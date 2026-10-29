@@ -12,7 +12,7 @@
  *
  * A selected skill narrows to its allowed operations; operations another server already exposes are excluded.
  * Gates 3 to 6 are coarse pre-filters: the gateway's full current-authority chain still runs on every call. */
-import catalog from '../../../../packages/contracts/retrieval-0.2/catalog.json' with {type:'json'};
+import catalog from '../../../../packages/contracts/retrieval-0.3/catalog.json' with {type:'json'};
 import {resolveOperationContract} from '../../../../packages/contracts/retrieval-0.2/validate.mjs';
 import {canonicalSha256} from '../../../../packages/contracts/validate.mjs';
 import {sdkToolName} from '../skills/mcp.mjs';

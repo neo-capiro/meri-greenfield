@@ -1,5 +1,5 @@
 /** Canonical read references for family composition, with no registry of duplicate operation definitions. */
-import catalog from '../../../packages/contracts/retrieval-0.2/catalog.json' with {type:'json'};
+import catalog from '../../../packages/contracts/retrieval-0.3/catalog.json' with {type:'json'};
 import {resolveOperationContract} from '../../../packages/contracts/retrieval-0.2/validate.mjs';
 import {types} from 'node:util';
 import {canonicalSha256} from '../../../packages/contracts/validate.mjs';

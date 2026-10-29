@@ -7,7 +7,7 @@ import {deny} from '../../dispatch/operation-result.mjs';
 export function captureFundingClientSelection(operation,request){
  let reference,contract,raw;
  try{reference=ownFields(snapshotOperationData(operation),['id','version']);contract=resolveOperationContract(reference);}catch{deny('INVALID_ARGUMENTS');}
- if(contract.binding.group!=='funding-opportunities'||reference.version!=='0.2.0')deny('UNAVAILABLE');
+ if(!['funding-opportunities','funding-analysis'].includes(contract.binding.group)||reference.version!=='0.2.0')deny('UNAVAILABLE');
  try{raw=snapshotOperationData(request);validateShape(contract.binding.input,raw);}catch{deny('INVALID_ARGUMENTS');}
  // All five frozen inputs and actual native gates require the explicit UUID, without trimming or coercion.
  return Object.freeze({clientId:raw.clientId.toLowerCase()});

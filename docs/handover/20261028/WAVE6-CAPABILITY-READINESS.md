@@ -95,3 +95,9 @@ Graph, buyer and funding expansion has no implementation allocation in this batc
 **Finite next slice.** After the named decisions, compose one DOCX draft-only WOPI host with current authority, durable private draft acknowledgement, exact source/author provenance and recovery readback. Keep publish separate through the existing immutable revise owner. Expand only after that crossing and the representative corpus are qualified; reuse shared UI primitives and public artifact contracts rather than writing another Office editor.
 
 **Checks.** Six pure decision/token/lock tests passed, including Save/publish separation, sequence exhaustion, stale parent refusal, unknown reconciliation, held activation and token expiry/tamper/file isolation. WOPI conformance, actual Collabora, native 30-file fidelity, durable draft recovery and live acceptance are not run. Item 15 preparation is complete for allocated rows; capability delivery/activation remains limited as stated per row.
+
+### 2026-10-29 A6 funding connection
+
+The three existing Core funding analysis producers now have closed receiving contracts, current read discovery, native client authorization, trusted calculation clocks, and SDK MCP delivery. Match and comparison deadlines use the supplied observation; action plans retain source/client identity and optional feasibility/schedule. Comparison losses and refusals remain explicit. No task is created by planning. The current read catalog is 0.2.25; original skill assets keep their published catalog pin.
+
+Validation: 239 read/MCP/control/source tests pass; catalog and observation tests pass; Core producer/clock and HTTP tests pass. Core focused source types pass. Two runtime transitive type errors and one old all-family fixture coverage failure reproduce on the untouched 53094f5c3 source snapshot. No deployment, provider/model call, application build, or native release qualification. A6 graph paths and full buyer workspace connections remain open.
