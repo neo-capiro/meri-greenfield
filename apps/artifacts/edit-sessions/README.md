@@ -283,3 +283,30 @@ returning a renewal form is not evidence that a running CODE frame accepted a
 new token. Its documented `Reset_Access_Token` message must carry both token and
 TTL; the browser must check exact editor origin and frame source. See the
 [upstream PostMessage handler](https://github.com/CollaboraOnline/online.mirror/blob/main/browser/src/map/handler/Map.WOPI.js).
+
+## Versioned browser/control source checkpoint
+
+The additive `office-application` browser receiver now covers closed requests,
+draft/editor metadata, launch/renewal POST forms, explicit Publish and current
+Office inspection/download. It reuses the all-format document-access receiver
+and keeps the native XLSX cache label truthful. Its generated ESM runs in a
+browser realm without Node globals or external imports. The strict declaration
+check uses the existing public document-access type export. Frozen schemas,
+catalog, existing receivers, shared package exports/registry and frontend pins
+are unchanged. The parent integration owns registering and pinning this export.
+
+The thin Fetch adapter at `apps/control/office-application.mjs` receives bounded
+POST JSON with an existing action-session receipt, returns no-store/no-referrer
+metadata, retires refused/cancelled streams and retains uncertainty after a
+write workflow starts. Save has no control route. Publish returns only the
+published version and a fresh current-byte inspection; its internal execution
+receipt remains private. Runtime composition requires a configured HTTPS browser
+origin, which CheckFileInfo supplies as PostMessageOrigin for CODE frame messages.
+
+Producer/receiver cases exercise all three formats, explicit private Save versus
+Publish, current inspection/download, selector and epoch mismatch, token/private
+byte leakage, false formula-cache/fidelity claims, body bounds and cancellation.
+No application/image build or live CODE call ran. Public listener/configuration
+registration, the frontend frame interface and consumer pin, actual CODE token
+refresh/Save acknowledgement, retention inventory/purge and native fidelity are
+still pending.

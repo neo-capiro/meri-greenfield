@@ -7,6 +7,9 @@ import {createCollaboraCodeLaunch} from '../../../artifacts/edit-sessions/collab
 import {createRuntimeOfficeApplication} from '../office-application.mjs';
 import {id} from '../../../artifacts/storage/test/sql-fixture.mjs';
 import {ooxml} from '../../../artifacts/structure/test/fixtures.mjs';
+import {OFFICE_SCHEMA,receiveOfficeRequest,receiveOfficeResponse,receiveOfficeDownload} from '../../../../packages/contracts/dist/office-application.mjs';
+import {receiveDocumentRequest,receiveDocumentResponse} from '../../../../packages/contracts/dist/document-access-application.mjs';
+const encode=value=>new TextEncoder().encode(JSON.stringify(value));
 async function fixture(t,{format='docx',discoveryFormat=format}={}){
  const f=await wopiFixture(t,{format}),now=f.options.now;
  const state=Object.assign(f.state,{observations:[],phaseHook:null,modeDenied:null});
@@ -19,7 +22,7 @@ async function fixture(t,{format='docx',discoveryFormat=format}={}){
  }};
  const discoveryBytes=Buffer.from(`<wopi-discovery><net-zone name="external-https"><app>${['edit','view'].map(mode=>`<action ext="${discoveryFormat}" name="${mode}" urlsrc="https://office.example.test/browser/synthetic/cool.html?"/>`).join('')}</app></net-zone></wopi-discovery>`);
  const launch=createCollaboraCodeLaunch({editorOrigin:'https://office.example.test',wopiOrigin:'https://wopi.example.test',discoveryBytes,codec:f.codec,now});
- const config={optionsOwner,sessions:f.sessions,now,limits,drafts:f.options.drafts,codec:f.codec,launch,generation:f.options.generation};
+ const config={optionsOwner,sessions:f.sessions,now,limits,drafts:f.options.drafts,codec:f.codec,launch,generation:f.options.generation,browserOrigin:'https://app.example.test'};
  const app=createRuntimeOfficeApplication(config),key={draftId:f.draft.draftId,versionId:f.first.version.versionId};
  const auth=()=>({credential:f.session.credential,deadlineMs:now()+5000});
  const execute=(route,extra={},chosen=auth())=>app.execute(route,{...key,...extra},chosen);
@@ -118,4 +121,91 @@ test('discard is explicit, clears saved private bytes, and remains blocked durin
  f.draft.state='publish-unknown';f.draft.publishIntent=`office:${f.draft.draftId}:1`;
  await assert.rejects(f.execute('discard'),{code:'OFFICE_DRAFT_CONFLICT'});assert.ok(f.draft.bytesBase64);
  f.draft.state='publish-refused';assert.deepEqual(await f.execute('discard'),{discarded:true});assert.equal(f.draft.bytesBase64,null);
+});
+async function control(f,route,extra={}){
+ const value={schema:OFFICE_SCHEMA,...(route==='inspect'?{versionId:f.key.versionId}:f.key),...extra};
+ const selected=receiveOfficeRequest(route,encode(value));
+ const response=await f.app.handleControl(new Request(`https://control.example.test/api/meri/office/${route}`,{method:'POST',
+  headers:{authorization:`Bearer ${f.session.credential}`,'content-type':'application/json'},body:JSON.stringify(value)}));
+ const body=new Uint8Array(await response.arrayBuffer()),received=await receiveOfficeResponse(route,response.status,body,selected);
+ return {response,body,received,selected};
+}
+for(const format of ['docx','xlsx','pptx'])test(`${format}: versioned HTTP producer/receiver handles private Save and distinct Publish`,async t=>{
+ const f=await fixture(t,{format});assert.equal((await control(f,'open')).response.status,200);
+ const opened=await control(f,'launch',{operation:'acquire',editorId:f.claims.editorId,expectedEpoch:0,mode:'edit'});
+ assert.equal(opened.response.status,200);assert.equal(opened.response.headers.get('cache-control'),'no-store');assert.equal(opened.response.headers.get('referrer-policy'),'no-referrer');
+ assert.equal((await (await f.wopi(opened.received.launch)).json()).PostMessageOrigin,'https://app.example.test');
+ await f.wopi(opened.received.launch,'lock',{lock:'CODE'});await f.wopi(opened.received.launch,'save',{lock:'CODE',body:ooxml(format)});
+ const snapshot=(await control(f,'read')).received;assert.equal(snapshot.launch,null);assert.equal(f.state.puts,1);
+ const published=await control(f,'publish',{sequence:snapshot.draft.sequence,sha256:snapshot.draft.sha256});
+ assert.equal(published.response.status,200);assert.equal(published.received.draft.state,'published');
+ assert.deepEqual(Object.keys(published.received.publication).sort(),['inspection','version']);assert.equal(published.received.publication.inspection.currentBytesVerified,true);
+ const inspected=await control(f,'inspect',{versionId:published.received.draft.publishedVersionId});assert.equal(inspected.response.status,200);
+ assert.equal(inspected.received.document.version.object.sha256,snapshot.draft.sha256);
+ if(format==='xlsx'){
+  assert.equal(inspected.received.document.inspection.details.formulaCache,'editor-provided/unverified; recalculation required');
+  const legacy=receiveDocumentRequest('inspect',encode({versionId:inspected.received.document.version.versionId}));
+  await assert.rejects(receiveDocumentResponse('inspect',200,encode(inspected.received.document),legacy));
+ }
+ const version=inspected.received.document.version;
+ const download=new Response(Buffer.from(f.draft.bytesBase64,'base64'),{headers:{'content-type':version.mimeType,'content-length':String(version.object.bytes),
+  'content-disposition':`attachment; filename="${version.filename}"`,'cache-control':'no-store','x-content-type-options':'nosniff'}});
+ const admitted=await receiveOfficeDownload(download,version);assert.deepEqual(Buffer.from(admitted.bytes),Buffer.from(f.draft.bytesBase64,'base64'));
+});
+test('receiver rejects leaked private bytes/tokens, substituted selectors, unbranded requests and incorrect lease epochs',async t=>{
+ const f=await fixture(t),read=await control(f,'read'),launch=await control(f,'launch',{operation:'acquire',editorId:f.claims.editorId,expectedEpoch:0,mode:'edit'});
+ for(const change of [r=>{r.draft.bytesBase64='private';},r=>{r.launch=launch.received.launch;},r=>{r.draft.draftId=id(999);},r=>{r.draft.baseVersionId=id(998);}]){
+  const r=structuredClone(read.received);change(r);await assert.rejects(receiveOfficeResponse('read',200,encode(r),read.selected));
+ }
+ await assert.rejects(receiveOfficeResponse('read',200,read.body,{...read.selected}));
+ const wrong=structuredClone(launch.received);wrong.editor.epoch++;await assert.rejects(receiveOfficeResponse('launch',200,encode(wrong),launch.selected));
+ for(const change of [r=>{r.launch.actionUrl='https://attacker.example.test/browser/x/cool.html';},r=>{r.launch.fields.access_token_ttl='0';},r=>{r.launch.expiresAtMs=Date.parse(r.editor.expiresAt)+1;}]){
+  const r=structuredClone(launch.received);change(r);await assert.rejects(receiveOfficeResponse('launch',200,encode(r),launch.selected));
+ }
+});
+test('versioned inspect refuses mismatched publication hash, invented cache/fidelity claims and unrelated formats',async t=>{
+ const f=await fixture(t,{format:'xlsx'}),result=await control(f,'inspect');
+ for(const change of [r=>{r.document.inspection.sha256='a'.repeat(64);},r=>{r.document.inspection.recalculated=true;},
+  r=>{r.document.inspection.details.formulaCache='verified';},r=>{r.document.version.object.scopes[0].policyRevision='other';}]){
+  const r=structuredClone(result.received);change(r);await assert.rejects(receiveOfficeResponse('inspect',200,encode(r),result.selected));
+ }
+ const native=structuredClone(result.received);native.document.inspection.details.formulaCache='editor-provided/unverified; recalculation required';
+ native.document.inspection.details.revisionMethod='openpyxl typed-cell replacement';await assert.rejects(receiveOfficeResponse('inspect',200,encode(native),result.selected));
+});
+test('HTTP entry refuses malformed/oversized bodies and unselected methods before the workflow runs',async t=>{
+ const f=await fixture(t);let touched=false;const headers={authorization:`Bearer ${f.session.credential}`,'content-type':'application/json'};
+ const hostile={get url(){touched=true;return 'https://bad.test';}};assert.equal((await f.app.handleControl(hostile)).status,400);assert.equal(touched,false);
+ const cases=[['GET','read',undefined,headers,405],['POST','save','{}',headers,404],['POST','read','{}',headers,400],['POST','read','{',headers,400],
+  ['POST','read',JSON.stringify({schema:OFFICE_SCHEMA,...f.key,actorId:'forged'}),headers,400],['POST','read','{}',{'content-type':'application/json'},401],
+  ['POST','read','{}',{...headers,'content-encoding':'gzip'},415],['POST','read','{}',{...headers,'content-length':'9000'},413]];
+ for(const [method,route,body,h,status]of cases){const response=await f.app.handleControl(new Request(`https://control.example.test/api/meri/office/${route}`,{method,headers:h,...(body?{body}:{})}));
+  assert.equal(response.status,status);assert.equal((await response.json()).error.outcome,'NOT_DISPATCHED');}
+ assert.equal(f.state.calls.length,0);assert.equal(f.state.puts,1);
+});
+test('HTTP failure after a Core write preserves uncertainty and never retries the write',async t=>{
+ const f=await fixture(t);f.state.phaseHook=(intent,phase)=>{if(phase==='release')f.state.modeDenied=intent;};
+ const result=await control(f,'launch',{operation:'acquire',editorId:f.claims.editorId,expectedEpoch:0,mode:'edit'});
+ assert.equal(result.response.status,403);assert.deepEqual(result.received.error,{code:'ACCESS_DENIED',outcome:'UNKNOWN'});
+ assert.equal(f.state.calls.filter(c=>c.route==='editor'&&c.request.operation==='acquire').length,1);
+ assert.ok(!JSON.stringify(result.received).includes('access_token'));
+});
+test('request byte/JSON admission is closed, bounded and inert for proxies or accessor byte values',()=>{
+ let touched=false;const fake=new Proxy(new Uint8Array(),{get(){touched=true;throw Error('trap');}});
+ assert.throws(()=>receiveOfficeRequest('read',fake));assert.equal(touched,false);
+ for(const bytes of [new Uint8Array(8193),Uint8Array.of(255),new TextEncoder().encode('{"schema":"meri.office-application/1","__proto__":{}}')])assert.throws(()=>receiveOfficeRequest('read',bytes));
+ assert.throws(()=>receiveOfficeRequest('save',encode({})));
+});
+test('oversized and cancelled HTTP streams retire without a Core draft operation',async t=>{
+ const f=await fixture(t),headers={authorization:`Bearer ${f.session.credential}`,'content-type':'application/json'};let cancelled=0;
+ const body=new ReadableStream({pull(c){c.enqueue(new Uint8Array(9000));},cancel(){cancelled++;}});
+ const oversized=await f.app.handleControl(new Request('https://control.example.test/api/meri/office/read',{method:'POST',headers,body,duplex:'half'}));
+ assert.equal(oversized.status,400);assert.equal(cancelled,1);
+ const controller=new AbortController();controller.abort();
+ const aborted=await f.app.handleControl(new Request('https://control.example.test/api/meri/office/read',{method:'POST',headers,body:JSON.stringify({schema:OFFICE_SCHEMA,...f.key}),signal:controller.signal}));
+ assert.equal(aborted.status,499);assert.equal((await aborted.json()).error.outcome,'NOT_DISPATCHED');assert.equal(f.state.calls.length,0);
+});
+test('trusted CODE postmessage origin requires an exact HTTPS origin',async t=>{
+ const f=await fixture(t);
+ for(const browserOrigin of [undefined,'*','http://app.example.test','https://app.example.test/path','https://user:password@app.example.test'])
+  assert.throws(()=>createRuntimeOfficeApplication({...f.config,browserOrigin}));
 });

@@ -15,8 +15,10 @@ const sha=bytes=>createHash('sha256').update(bytes).digest('hex');
 const codeOf=e=>e&&typeof e==='object'&&!types.isProxy(e)?Object.getOwnPropertyDescriptor(e,'code')?.value:undefined;
 const uncertain=e=>e&&typeof e==='object'&&!types.isProxy(e)&&Object.getOwnPropertyDescriptor(e,'outcome')?.value==='UNKNOWN';
 const unavailable=new Set(['OFFICE_DRAFT_ACCESS_DENIED','OFFICE_DRAFT_UNAVAILABLE','OFFICE_DRAFT_EXPIRED','OFFICE_DRAFT_CONFLICT','ARTIFACT_AUTHORITY','ARTIFACT_VERSION_CONTEXT','RETENTION_SUPPRESSED']);
-export function createWopiFileApplication({codec,drafts,artifacts,resolveContext,generation,now,maxRequestMs=30000}){
+export function createWopiFileApplication({codec,drafts,artifacts,resolveContext,generation,now,maxRequestMs=30000,postMessageOrigin}){
  if(![codec?.verify,drafts?.call,artifacts?.editorSource,resolveContext,generation,now].every(f=>typeof f==='function')||!Number.isSafeInteger(maxRequestMs)||maxRequestMs<1||maxRequestMs>30000)throw Error('WOPI_CONFIGURATION');
+ if(postMessageOrigin!==undefined){let origin;try{origin=new URL(postMessageOrigin);}catch{throw Error('WOPI_CONFIGURATION');}
+  if(typeof postMessageOrigin!=='string'||origin.protocol!=='https:'||origin.origin!==postMessageOrigin)throw Error('WOPI_CONFIGURATION');}
  return Object.freeze({async handle(request){let life;
   try{
    const info=wopiRequest(request);let claims;
@@ -95,7 +97,8 @@ export function createWopiFileApplication({codec,drafts,artifacts,resolveContext
    const canWrite=claims.userCanWrite&&['draft','publish-refused'].includes(draft.state),user=sha(JSON.stringify([claims.tenantId,claims.actorId]));
    return wopiResponse(200,JSON.stringify({BaseFileName:draft.filename,OwnerId:user,UserId:user,Size:bytes.length,Version:version(draft),
     UserCanWrite:canWrite,ReadOnly:!canWrite,UserCanNotWriteRelative:true,UserCanRename:false,
-    SupportsLocks:canWrite,SupportsGetLock:canWrite,SupportsExtendedLockLength:true,SupportsUpdate:canWrite}),{'content-type':'application/json; charset=utf-8'});
+    SupportsLocks:canWrite,SupportsGetLock:canWrite,SupportsExtendedLockLength:true,SupportsUpdate:canWrite,
+    ...(postMessageOrigin===undefined?{}:{PostMessageOrigin:postMessageOrigin})}),{'content-type':'application/json; charset=utf-8'});
   }catch(error){const code=codeOf(error);return wopiResponse(refusalStatus(error)??(uncertain(error)?500:typeof code==='string'&&code.startsWith('WOPI_TOKEN_')?401:unavailable.has(code)?404:500));}
   finally{life?.close();cancelWopiBody(request);}
  }});
