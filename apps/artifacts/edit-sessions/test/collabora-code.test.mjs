@@ -7,7 +7,8 @@ const discovery=body=>Buffer.from(`<wopi-discovery><net-zone name="external-http
 const bytes=discovery(['docx','xlsx','pptx'].flatMap(f=>['edit','view'].map(m=>action(f,m))).join(''));
 const claims={editSessionId:'00000002-0000-4000-8000-000000000002',fileId:'es-2',versionId:'00000001-0000-4000-8000-000000000001',
  conversationId:'00000003-0000-4000-8000-000000000003',editorId:'00000004-0000-4000-8000-000000000004',editorEpoch:1,
- actorId:'actor-fixture',tenantId:'tenant-fixture',userCanWrite:true,expiresAtMs:t+600000,suppressionGeneration:4};
+ actorId:'actor-fixture',tenantId:'tenant-fixture',userCanWrite:true,expiresAtMs:t+600000,suppressionGeneration:4,
+ runBinding:{tenantId:'tenant-fixture',actorId:'actor-fixture',conversationId:'00000003-0000-4000-8000-000000000003',runId:'00000005-0000-4000-8000-000000000005',attemptId:'00000006-0000-4000-8000-000000000006',workerId:'00000007-0000-4000-8000-000000000007',writerFence:1},selectedClientId:null,scopesSha256:'a'.repeat(64),sessionSha256:'b'.repeat(64)};
 const code=c=>e=>e.code===c;
 test('CODE launch uses discovered same-origin action with token and absolute expiry only in POST fields',()=>{
  const codec=createWopiAccessTokenCodec({key:Buffer.alloc(32,9),now});

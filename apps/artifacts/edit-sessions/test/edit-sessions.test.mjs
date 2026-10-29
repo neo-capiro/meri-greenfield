@@ -9,6 +9,7 @@ import {plannedClasses,dataClass} from '../../../control/retention/data-classes.
 const code=c=>e=>e.code===c;
 const clock=()=>{let t=1_760_000_000_000;const now=()=>t;now.advance=ms=>{t+=ms;};return now;};
 const A='a'.repeat(64),B='b'.repeat(64),V1='00000001-0000-4000-8000-000000000001';
+const attended=(tenantId='tenant',actorId='actor')=>({runBinding:{tenantId,actorId,conversationId:V1,runId:V1,attemptId:V1,workerId:V1,writerFence:1},selectedClientId:null,scopesSha256:A,sessionSha256:B});
 
 test('editor activation is held; the draft class stays planned until its owner and migration exist (Q-O9)',()=>{
  assert.equal(EDITOR_ACTIVATION.state,'held');assert.equal(editorActivationOpen(),false);
@@ -18,7 +19,7 @@ test('editor activation is held; the draft class stays planned until its owner a
 
 test('WOPI access tokens: 10-minute bound, file binding, tamper and cross-domain refusal',()=>{
  const now=clock(),key=Buffer.alloc(32,7),codec=createWopiAccessTokenCodec({key,now});
- const claims={editSessionId:'00000002-0000-4000-8000-000000000002',fileId:'es-2',versionId:V1,conversationId:V1,editorId:V1,editorEpoch:1,actorId:'actor-synthetic',tenantId:'tenant-synthetic',userCanWrite:true,expiresAtMs:now()+MAX_TTL_MS,suppressionGeneration:4};
+ const claims={...attended('tenant-synthetic','actor-synthetic'),editSessionId:'00000002-0000-4000-8000-000000000002',fileId:'es-2',versionId:V1,conversationId:V1,editorId:V1,editorEpoch:1,actorId:'actor-synthetic',tenantId:'tenant-synthetic',userCanWrite:true,expiresAtMs:now()+MAX_TTL_MS,suppressionGeneration:4};
  const token=codec.issue(claims);
  assert.deepEqual(codec.verify(token,{fileId:'es-2'}),claims);
  assert.throws(()=>codec.verify(token,{fileId:'es-3'}),code('WOPI_TOKEN_FILE_MISMATCH'));
@@ -30,20 +31,22 @@ test('WOPI access tokens: 10-minute bound, file binding, tamper and cross-domain
  now.advance(MAX_TTL_MS);assert.throws(()=>codec.verify(token,{fileId:'es-2'}),code('WOPI_TOKEN_EXPIRED'));
  assert.throws(()=>createWopiAccessTokenCodec({key:Buffer.alloc(31),now}),code('WOPI_TOKEN_CONFIGURATION'));
 });
-test('WOPI v1 binds the editor epoch and chat; old token domain and malformed proofs refuse',()=>{
+test('WOPI v2 binds the editor epoch, native run and client; old token domains and malformed proofs refuse',()=>{
  const now=clock(),key=Buffer.alloc(32,9),codec=createWopiAccessTokenCodec({key,now});
- const claims={editSessionId:V1,fileId:'draft',versionId:V1,conversationId:V1,editorId:V1,editorEpoch:2,actorId:'actor',tenantId:'tenant',userCanWrite:true,expiresAtMs:now()+10000,suppressionGeneration:1};
+ const claims={...attended(),editSessionId:V1,fileId:'draft',versionId:V1,conversationId:V1,editorId:V1,editorEpoch:2,actorId:'actor',tenantId:'tenant',userCanWrite:true,expiresAtMs:now()+10000,suppressionGeneration:1};
  const token=codec.issue(claims),[payload,signature]=token.split('.');
  assert.equal(codec.verify(token,{fileId:'draft'}).editorEpoch,2);
- const oldMac=createHmac('sha256',key).update('meri.wopi-access.v0.'+payload).digest('base64url');
- assert.throws(()=>codec.verify(`${payload}.${oldMac}`,{fileId:'draft'}),code('WOPI_TOKEN_INVALID'));
+ for(const domain of ['meri.wopi-access.v0.','meri.wopi-access.v1.']){
+  const oldMac=createHmac('sha256',key).update(domain+payload).digest('base64url');
+  assert.throws(()=>codec.verify(`${payload}.${oldMac}`,{fileId:'draft'}),code('WOPI_TOKEN_INVALID'));
+ }
  const altered=Buffer.from(JSON.stringify({...claims,editorEpoch:3})).toString('base64url');
  assert.throws(()=>codec.verify(`${altered}.${signature}`,{fileId:'draft'}),code('WOPI_TOKEN_INVALID'));
- for(const patch of [{editorEpoch:0},{editorEpoch:2147483648},{editorId:'bad'},{conversationId:undefined}])
+ for(const patch of [{editorEpoch:0},{editorEpoch:2147483648},{editorId:'bad'},{conversationId:undefined},{runBinding:{...claims.runBinding,actorId:'another'}},{selectedClientId:'bad'},{scopesSha256:'bad'}])
   assert.throws(()=>codec.issue({...claims,...patch}),code('WOPI_TOKEN_CLAIMS'));
 });
 test('invalid clocks and accessor claims never produce a usable WOPI token',()=>{
- const now=clock(),key=Buffer.alloc(32,9),claims={editSessionId:V1,fileId:'draft',versionId:V1,conversationId:V1,editorId:V1,editorEpoch:1,actorId:'actor',tenantId:'tenant',userCanWrite:true,expiresAtMs:now()+10000,suppressionGeneration:1};
+ const now=clock(),key=Buffer.alloc(32,9),claims={...attended(),editSessionId:V1,fileId:'draft',versionId:V1,conversationId:V1,editorId:V1,editorEpoch:1,actorId:'actor',tenantId:'tenant',userCanWrite:true,expiresAtMs:now()+10000,suppressionGeneration:1};
  const codec=createWopiAccessTokenCodec({key,now}),token=codec.issue(claims);let touched=false;
  const value={...claims};Object.defineProperty(value,'editorId',{enumerable:true,get(){touched=true;return V1;}});
  assert.throws(()=>codec.issue(value),code('WOPI_TOKEN_CLAIMS'));assert.equal(touched,false);

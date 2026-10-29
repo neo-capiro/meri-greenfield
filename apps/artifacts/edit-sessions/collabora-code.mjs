@@ -49,6 +49,7 @@ export function createCollaboraCodeLaunch({editorOrigin,wopiOrigin,discoveryByte
  const editor=origin(editorOrigin),host=origin(wopiOrigin),actions=parseCodeDiscovery(discoveryBytes,{editorOrigin:editor});
  if(editor===host||typeof codec?.issue!=='function'||typeof now!=='function')fail('EDITOR_CODE_CONFIGURATION');
  return Object.freeze({
+  supports(format,mode){return EDITOR_FORMATS.includes(format)&&['edit','view'].includes(mode)&&Object.hasOwn(actions,`${format}:${mode}`);},
   launch(claims,{format}){
    if(!EDITOR_FORMATS.includes(format)||typeof claims?.userCanWrite!=='boolean')fail('EDITOR_FORMAT_UNSUPPORTED');
    const mode=claims.userCanWrite?'edit':'view',action=actions[`${format}:${mode}`];

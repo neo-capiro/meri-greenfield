@@ -5,7 +5,7 @@ import {id} from '../../storage/test/sql-fixture.mjs';
 import {ooxml} from '../../structure/test/fixtures.mjs';
 import {inspectOfficeEdit} from '../inspect-office.mjs';
 import {createArtifactService} from '../../service.mjs';
-import {createActionSessionOwner} from '../../../control/action-host/session/owner.mjs';
+import {createActionSessionOwner,authenticatedCurrentState} from '../../../control/action-host/session/owner.mjs';
 import {canonicalSha256} from '../../../../packages/contracts/validate.mjs';
 import {createCoreOfficeDraftClient} from '../core-drafts.mjs';
 import {createWopiAccessTokenCodec} from '../wopi-access-token.mjs';
@@ -23,19 +23,43 @@ export async function wopiFixture(t,{format='docx',write=true,withEvidence=false
   verifyIdentity:async()=>({principal:{tenantId:binding.tenantId,actorId:binding.actorId},identityRevision:'identity',checkedAtMs:now(),expiresAtMs:now()+60000}),
   resolveContext:async({identity})=>({identitySha256:canonicalSha256(identity),binding,scopes,selectedClientId,contextRevision:'revision',checkedAtMs:now(),expiresAtMs:now()+60000})});
  const session=await sessions.issue({identityCredential:'synthetic-native-bearer'});t.after(()=>sessions.close());
- const state=Object.assign(f.state,{calls:[],lock:'',epoch:1,generation:0,hook:null,contextHook:null,generationHook:null,readonly:false,failSave:false,loseBegin:false,loseSettle:false});
+ const readSession=async()=>{const {authentication}=await authenticatedCurrentState(sessions)({credential:session.credential});return canonicalSha256({principal:authentication.principal,sessionRevision:authentication.sessionRevision});};
+ const state=Object.assign(f.state,{calls:[],lock:'',epoch:1,editorId:id(701),editorExpires:now()+600000,discarded:false,generation:0,hook:null,contextHook:null,generationHook:null,readonly:false,failSave:false,loseBegin:false,loseSettle:false});
  const draft={draftId:id(700),conversationId:binding.conversationId,artifactId:first.version.artifactId,baseVersionId:first.version.versionId,baseSha256:sha(baseBytes),format,filename:first.version.filename,
   sequence:0,sha256:null,byteLength:0,state:'draft',publishIntent:null,publishedVersionId:null,savedAt:new Date(now()).toISOString(),expiresAt:new Date(now()+7*86400000).toISOString(),bytesBase64:null};
  const codec=createWopiAccessTokenCodec({key:Buffer.alloc(32,42),now});
  const claims={editSessionId:draft.draftId,fileId:'synthetic-file',versionId:first.version.versionId,conversationId:binding.conversationId,editorId:id(701),editorEpoch:1,
-  actorId:binding.actorId,tenantId:binding.tenantId,userCanWrite:write,expiresAtMs:now()+10000,suppressionGeneration:0};
+  actorId:binding.actorId,tenantId:binding.tenantId,userCanWrite:write,expiresAtMs:now()+10000,suppressionGeneration:0,runBinding:structuredClone(binding),selectedClientId,scopesSha256:canonicalSha256(scopes),sessionSha256:await readSession()};
  const drafts=createCoreOfficeDraftClient({origin:'https://core.example.test',now,nativeCredentials:{nativeCredentialFor:i=>sessions.nativeCredentialFor(i)},getServiceSecret:async()=>'synthetic-service-secret',reservedCredentials:async()=>new Set(),
   fetchImpl:async(url,options)=>{
    const request=JSON.parse(options.body),route=url.split('/office-drafts/')[1];state.calls.push({route,request,headers:options.headers});
    await state.hook?.(route,request);
-   if(['editor/read','lock','save'].includes(route)&&(request.editorEpoch!==state.epoch||request.editorId!==claims.editorId))return new Response(null,{status:409});
-   if(route==='editor/read'||route==='read')return json({...draft});
+   if(state.discarded)return new Response(null,{status:404});
    const receipt=()=>{const {bytesBase64,...metadata}=draft;return {...metadata};};
+   if(route==='open')return json(receipt());
+   if(route==='editor'){
+    const active=state.editorId!==null&&state.editorExpires>now(),editor=()=>({editorId:state.editorId,epoch:state.epoch,expiresAt:state.editorId===null?null:new Date(state.editorExpires).toISOString()});
+    if(request.operation==='inspect')return json(active?editor():{editorId:null,epoch:state.epoch,expiresAt:null});
+    if(request.operation==='release'){
+     if(request.expectedEpoch!==state.epoch||active&&request.editorId!==state.editorId)return new Response(null,{status:409});
+     state.editorId=null;state.lock='';return json(editor());
+    }
+    if(!['draft','publish-refused'].includes(draft.state))return new Response(null,{status:409});
+    if(request.operation==='refresh'){
+     if(!active||request.expectedEpoch!==state.epoch||request.editorId!==state.editorId)return new Response(null,{status:409});
+    }else{
+     if(active&&request.editorId===state.editorId&&state.epoch===request.expectedEpoch+1)return json(editor());
+     if(request.expectedEpoch!==state.epoch||request.operation==='acquire'&&active)return new Response(null,{status:409});
+     state.epoch++;state.editorId=request.editorId;state.lock='';
+    }
+    state.editorExpires=now()+600000;return json(editor());
+   }
+   if(route==='discard'){
+    if(['publish-pending','publish-unknown'].includes(draft.state))return new Response(null,{status:409});
+    state.discarded=true;draft.bytesBase64=null;state.lock='';state.editorId=null;return json({discarded:true});
+   }
+   if(['editor/read','lock','save'].includes(route)&&(request.editorEpoch!==state.epoch||request.editorId!==state.editorId||state.editorExpires<=now()))return new Response(null,{status:409});
+   if(route==='editor/read'||route==='read')return json({...draft});
    if(route==='publish/begin'){
     if(request.sequence!==draft.sequence||request.sha256!==draft.sha256||!draft.bytesBase64)return new Response(null,{status:409});
     if(['publish-pending','publish-unknown','published'].includes(draft.state))return json({receipt:receipt(),dispatch:false});
@@ -65,7 +89,7 @@ export async function wopiFixture(t,{format='docx',write=true,withEvidence=false
   }});
  const originalAuthorize=f.options.authorize;
  const artifacts=createArtifactService({...f.options,ids:()=>({artifactId:id(900),versionId:id(901),objectId:id(902)}),authorize:async x=>{if(state.readonly&&x.action==='artifact.revise')throw Object.assign(Error('ARTIFACT_AUTHORITY'),{code:'ARTIFACT_AUTHORITY'});return originalAuthorize(x);}});
- const options={codec,drafts,artifacts,now,resolveContext:async()=>{await state.contextHook?.();const native=sessions.nativeCredentialFor({binding,selectedClientId});return {context,selectedClientId,expiresAtMs:native.expiresAtMs};},
+ const options={codec,drafts,artifacts,now,resolveContext:async()=>{await state.contextHook?.();const native=sessions.nativeCredentialFor({binding,selectedClientId});return {context,selectedClientId,expiresAtMs:native.expiresAtMs,sessionSha256:await readSession()};},
   generation:async subjects=>{await state.generationHook?.();for(const s of subjects)await f.options.retention.assertServable(s);return state.generation;}};
  const host=createWopiFileApplication(options),token=codec.issue(claims);
  const request=(operation='checkFileInfo',{body,lock,oldLock,headers={},token:access=token,signal}={})=>{

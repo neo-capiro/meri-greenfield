@@ -5,6 +5,7 @@
  * no document. Deployment must redact the WOPI query token from access logs. */
 import {createHash} from 'node:crypto';
 import {types} from 'node:util';
+import {canonicalSha256} from '../../../packages/contracts/validate.mjs';
 import {own,data} from '../../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {assertNativeConversationScope} from '../../../packages/contracts/runtime-0.2/session.mjs';
 import {createOperationLifetime} from '../../../packages/runtime/operation-lifetime.mjs';
@@ -23,11 +24,12 @@ export function createWopiFileApplication({codec,drafts,artifacts,resolveContext
    life=createOperationLifetime({now,signal:info.signal,deadlineMs:Math.min(now()+maxRequestMs,claims.expiresAtMs),errorFactory:()=>Error('WOPI_LIFETIME')});
    const key={conversationId:claims.conversationId,draftId:claims.editSessionId,editorId:claims.editorId,editorEpoch:claims.editorEpoch};
    async function current(){
-    const selected=data(own(await life.run(signal=>resolveContext(claims,signal)),['context','selectedClientId','expiresAtMs']));
+    const selected=data(own(await life.run(signal=>resolveContext(claims,signal)),['context','selectedClientId','expiresAtMs','sessionSha256']));
     const {context,selectedClientId,expiresAtMs}=selected;
     assertNativeConversationScope({binding:context.binding,scopes:context.scopes,selectedClientId});
     if(context.binding.tenantId!==claims.tenantId||context.binding.actorId!==claims.actorId||context.binding.conversationId!==claims.conversationId||
-      !Number.isSafeInteger(expiresAtMs)||claims.expiresAtMs>expiresAtMs)refuse(404);
+      canonicalSha256(context.binding)!==canonicalSha256(claims.runBinding)||canonicalSha256(context.scopes)!==claims.scopesSha256||selectedClientId!==claims.selectedClientId||
+      selected.sessionSha256!==claims.sessionSha256||!Number.isSafeInteger(expiresAtMs)||claims.expiresAtMs>expiresAtMs)refuse(404);
     life.limitDeadline(Math.min(context.deadlineMs,expiresAtMs));
     return {context:{...context,deadlineMs:life.deadline()},selection:{binding:context.binding,scopes:context.scopes,selectedClientId,deadlineMs:life.deadline(),signal:life.signal}};
    }
