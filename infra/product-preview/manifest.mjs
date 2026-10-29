@@ -57,9 +57,20 @@ function perRole(b,single,map,pattern,forbidden){
  if(values.some(v=>typeof v!=='string'||!pattern.test(v)||v===forbidden)||new Set(values).size!==values.length)fail();
 }
 const roleValue=(b,single,map,role)=>b[single]??b[map][role];
+// Public search target for control only: the documented MCP invocation endpoint and the exposed tool name.
+const GATEWAY_HOST=/^[a-z0-9-]{1,63}\.gateway\.bedrock-agentcore\.us-east-1\.amazonaws\.com$/u;
+function controlWebSearch(value){
+ if(value===undefined)return undefined;
+ const v=record(value,['gatewayUrl','toolName','region']);
+ let url;try{url=new URL(v.gatewayUrl);}catch{fail();}
+ if(url.protocol!=='https:'||url.username||url.password||url.search||url.hash||
+    url.pathname!=='/mcp'||v.gatewayUrl!==url.origin+'/mcp'||!GATEWAY_HOST.test(url.hostname))fail();
+ if(!/^[A-Za-z0-9_-]{1,64}$/u.test(v.toolName)||v.region!==REGION)fail();
+ return v;
+}
 function validate(value){
  const b=record(value,['account','region','enabled','materialDelivery','clusterArn','imageUri','controlTaskRoleArn','runtimeUser','network','sizing'],
-  ['executionRoleArn','executionRoleArns','logGroupName','logGroupNames','controlTargetGroupArn','controlPrivateTargetGroupArn','sourceCommit']);
+  ['executionRoleArn','executionRoleArns','logGroupName','logGroupNames','controlTargetGroupArn','controlPrivateTargetGroupArn','sourceCommit','controlWebSearch']);
  if(b.account!==ACCOUNT||b.region!==REGION||b.enabled!==false||
     !/^arn:aws:ecs:us-east-1:967807252336:cluster\/[A-Za-z0-9_-]{1,255}$/u.test(b.clusterArn)||
     !new RegExp(`^${ACCOUNT}\\.dkr\\.ecr\\.${REGION}\\.amazonaws\\.com\\/[a-z0-9._/-]+@sha256:[a-f0-9]{64}$`).test(b.imageUri)||
@@ -82,7 +93,9 @@ function validate(value){
  for(const value of Object.values(s))sized(value);
  material(b.materialDelivery,b);
  privateControlTrust(b);
- return b;
+ // Optional control-only public search binding; validated here and nowhere rendered elsewhere.
+ const search=controlWebSearch(b.controlWebSearch);
+ return search===undefined?b:{...b,controlWebSearch:search};
 }
 
 const command=Object.freeze({control:['control','--config','/run/meri/control.json'],temporalWorker:['temporal-worker','--config','/run/meri/worker.json'],scheduleWorker:['schedule-worker','--config','/run/meri/schedule-worker.json']});
@@ -94,7 +107,11 @@ function task(stack,b,role,port){
  const c={name,image:b.imageUri,essential:true,user:b.runtimeUser,privileged:false,readonlyRootFilesystem:true,stopTimeout:60,
   entryPoint:['node','apps/runtime/cli.mjs'],command:command[role],
   environment:[{name:'MERI_PRODUCT_PREVIEW_REQUIRED',value:'1'},
-   {name:'NODE_EXTRA_CA_CERTS',value:databaseTrust?CONTROL_NODE_CA_FILE:PRIVATE_CONTROL_CA_FILE}],
+   {name:'NODE_EXTRA_CA_CERTS',value:databaseTrust?CONTROL_NODE_CA_FILE:PRIVATE_CONTROL_CA_FILE},
+   // Public search settings reach control only, and only when the deployment supplies the binding.
+   ...(role==='control'&&b.controlWebSearch?[{name:'MERI_WEB_SEARCH_GATEWAY_ENDPOINT',value:b.controlWebSearch.gatewayUrl},
+    {name:'MERI_WEB_SEARCH_TOOL',value:b.controlWebSearch.toolName},
+    {name:'MERI_WEB_SEARCH_REGION',value:b.controlWebSearch.region}]:[])],
   portMappings,linuxParameters:{capabilities:{drop:['ALL']}},
   mountPoints:[{sourceVolume:'workspace',containerPath:'/workspace',readOnly:false},{sourceVolume:'tmp',containerPath:'/tmp',readOnly:false},
    {sourceVolume:'material',containerPath:'/run/meri',readOnly:true}],

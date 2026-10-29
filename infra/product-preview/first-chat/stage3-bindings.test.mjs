@@ -275,3 +275,76 @@ test('upload readbacks refuse incomplete pages and malformed version records bef
  const plan=uploadPlan({deployment:d,renderedDirectory:'/w',label:'NEW',secretLabels:{...labelReadback(d),[ARN]:Versions}});
  assert.deepEqual(plan[0].labelsBefore,['AWSCURRENT','AWSPREVIOUS','FIRST_CHAT_20261020E']);
 });
+
+// SCRUM-237: the optional control-only public search binding, exercised through the real
+// buildStage3Bindings -> synthesizeStage3 -> manifest task rendering path.
+const GATEWAY_URL='https://meri-preview-web-search-abc123.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp';
+const TARGET_TOOL='WebSearch-tool-abc123';
+const webSearchEnv=(container)=>Object.fromEntries((container.Environment??[])
+ .filter(e=>e.Name.startsWith('MERI_WEB_SEARCH_')).map(e=>[e.Name,e.Value]));
+
+test('absent public search inputs leave the app binding and every rendered task byte-identical',async()=>{
+ const {args,bindings,synth}=await setup();
+ assert.equal(Object.hasOwn(bindings.app,'controlWebSearch'),false);
+ assert.deepEqual(webSearchEnv(synth.templates.app.Resources.controlTask.Properties.ContainerDefinitions.find(c=>c.Name==='control')),{});
+ const explicit=buildStage3Bindings({...structuredClone(args),webSearchOutputs:undefined});
+ assert.deepEqual(explicit,bindings,'re-building without the input changes nothing');
+ assert.equal(JSON.stringify(synthesizeStage3(explicit).templates.app),JSON.stringify(synth.templates.app));
+});
+
+test('enabled public search adds exactly three control variables and nothing else',async()=>{
+ const {args,bindings,synth}=await setup();
+ const enabled=buildStage3Bindings({...structuredClone(args),webSearchOutputs:{GatewayUrl:GATEWAY_URL,TargetToolName:TARGET_TOOL}});
+ assert.deepEqual(enabled.app.controlWebSearch,{gatewayUrl:GATEWAY_URL,toolName:TARGET_TOOL,region:'us-east-1'});
+ const next=synthesizeStage3(enabled),task=next.templates.app.Resources.controlTask.Properties.ContainerDefinitions;
+ const before=synth.templates.app.Resources.controlTask.Properties.ContainerDefinitions;
+ const control=task.find(c=>c.Name==='control'),prior=before.find(c=>c.Name==='control');
+ assert.deepEqual(webSearchEnv(control),{MERI_WEB_SEARCH_GATEWAY_ENDPOINT:GATEWAY_URL,MERI_WEB_SEARCH_TOOL:TARGET_TOOL,
+  MERI_WEB_SEARCH_REGION:'us-east-1'});
+ // Same variables otherwise, same worker containers, same images/roles/refs and same service shape.
+ assert.deepEqual(control.Environment.filter(e=>!e.Name.startsWith('MERI_WEB_SEARCH_')),prior.Environment);
+ assert.deepEqual(task.filter(c=>c.Name!=='control'),before.filter(c=>c.Name!=='control'));
+ assert.deepEqual(next.templates.app.Resources.controlTask.Properties.TaskRoleArn,synth.templates.app.Resources.controlTask.Properties.TaskRoleArn);
+ assert.deepEqual(next.templates.app.Resources.controlTask.Properties.ExecutionRoleArn,synth.templates.app.Resources.controlTask.Properties.ExecutionRoleArn);
+ for(const id of ['controlTask','temporalWorkerTask'])assert.equal(JSON.stringify(next.templates.app.Resources[id].Properties.ContainerDefinitions.find(c=>c.Name!=='control')),
+  JSON.stringify(synth.templates.app.Resources[id].Properties.ContainerDefinitions.find(c=>c.Name!=='control')));
+ assert.equal(next.templates.app.Resources.controlService.Properties.DesiredCount,synth.templates.app.Resources.controlService.Properties.DesiredCount);
+ assert.deepEqual(bindings.services,enabled.services);
+ // Only the control container environment differs in the whole template.
+ const normalize=t=>{const copy=structuredClone(t);delete copy.Description;for(const c of copy.Resources.controlTask.Properties.ContainerDefinitions)
+  if(c.Name==='control')c.Environment=c.Environment.filter(e=>!e.Name.startsWith('MERI_WEB_SEARCH_'));return copy;};
+ assert.deepEqual(normalize(next.templates.app),normalize(synth.templates.app));
+});
+
+test('invalid public search bindings are refused before any template is produced',async()=>{
+ const {args}=await setup();
+ for(const webSearchOutputs of [
+  {GatewayUrl:'https://meri-preview-web-search-abc123.gateway.bedrock-agentcore.us-east-1.amazonaws.com',TargetToolName:TARGET_TOOL},
+  {GatewayUrl:`${GATEWAY_URL}/extra`,TargetToolName:TARGET_TOOL},
+  {GatewayUrl:'http://meri-preview-web-search-abc123.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp',TargetToolName:TARGET_TOOL},
+  {GatewayUrl:GATEWAY_URL,TargetToolName:'bad tool'},
+  {GatewayUrl:GATEWAY_URL,TargetToolName:''},
+  {GatewayUrl:GATEWAY_URL},
+  {GatewayUrl:GATEWAY_URL,TargetToolName:123},
+  'not-an-object']){
+  assert.throws(()=>buildStage3Bindings({...structuredClone(args),webSearchOutputs}),/STAGE3_BINDING_REFUSED/u);
+ }
+ // The real gateway stack emits more outputs; only GatewayUrl/TargetToolName are consumed.
+ const superset=buildStage3Bindings({...structuredClone(args),webSearchOutputs:{GatewayArn:'arn:aws:bedrock-agentcore:us-east-1:967807252336:gateway/x',
+  GatewayUrl:GATEWAY_URL,GatewayId:'x',TargetToolName:TARGET_TOOL,ConnectorOperation:'WebSearch',ConnectorVersion:'1.2.0',ProtocolVersion:'2026-07-28'}});
+ assert.deepEqual(superset.app.controlWebSearch,{gatewayUrl:GATEWAY_URL,toolName:TARGET_TOOL,region:'us-east-1'});
+});
+
+test('the rendered control variables are exactly what the producer constructor accepts',async()=>{
+ const {args}=await setup();
+ const enabled=buildStage3Bindings({...structuredClone(args),webSearchOutputs:{GatewayUrl:GATEWAY_URL,TargetToolName:TARGET_TOOL}});
+ const {primarySearchTarget,createPrimaryWebSearch}=await import('../../../apps/gateway/sources/public-web/primary-search.mjs');
+ const env={MERI_WEB_SEARCH_GATEWAY_ENDPOINT:enabled.app.controlWebSearch.gatewayUrl,
+  MERI_WEB_SEARCH_TOOL:enabled.app.controlWebSearch.toolName,MERI_WEB_SEARCH_REGION:enabled.app.controlWebSearch.region};
+ assert.deepEqual(primarySearchTarget(env),{endpoint:GATEWAY_URL,toolName:TARGET_TOOL,region:'us-east-1'});
+ const primary=createPrimaryWebSearch({...primarySearchTarget(env),credentials:async()=>({accessKeyId:'A',secretAccessKey:'B'})});
+ assert.equal(primary.toolName,TARGET_TOOL);
+ assert.equal(primary.admission.unitMicroUsd,7005);
+ assert.equal(primarySearchTarget({...env,MERI_WEB_SEARCH_GATEWAY_ENDPOINT:GATEWAY_URL.replace('/mcp','')}),undefined,
+  'an origin-only value keeps the family on the old Core route');
+});
