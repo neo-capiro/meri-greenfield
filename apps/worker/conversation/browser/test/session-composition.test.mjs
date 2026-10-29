@@ -7,10 +7,12 @@ const cwd='/workspace/'+binding.conversationId;
 import {validateBrowserPolicy} from '../policy.mjs';
 import {playwrightServerConfig} from '../server.mjs';
 import {browserPaths} from '../workspace.mjs';
+import {siteWorkflowPolicy} from '../site-workflows/manifest.mjs';
+import {workflowCurrent,workflowManifest} from '../../../../../packages/contracts/test/site-workflow.fixture.mjs';
 function fixture(t,options={}){
  const state={fields:[],text:'- heading "Public page"',url:'https://records.example/page?token=hidden#secret',calls:0,events:[],refused:false,hold:'APPLIED'};
  const frame={locator(){return {async evaluateAll(){return structuredClone(state.fields);}};}};
- const page={url:()=>state.url,frames:()=>[frame],async ariaSnapshot(){return state.text;}};
+ const page={url:()=>state.url,frames:()=>[frame],async ariaSnapshot(){await options.capture?.(state);return state.text;}};
  const context={pages:()=>[page],async close(){state.events.push('context');}};
  const upstream={version:'0.0.83',async createConnection(config,getContext){
   assert.equal(await getContext(),context);assert.equal(config.webmcp,false);assert.equal(config.imageResponses,'omit');
@@ -74,6 +76,67 @@ test('a missing process absence proof preserves the profile and prevents reuse',
 test('source revocation blocks page dispatch',async t=>{
  const x=fixture(t),session=await createPinnedBrowserSession(x.args);t.after(()=>session.destroy({trigger:'conversation-end'}));
  x.state.refused=true;await assert.rejects(call(session),/BROWSER_CALL_REFUSED/);assert.equal(x.state.calls,0);
+ await session.destroy({trigger:'revocation'});assert.deepEqual(x.state.events,['context','exit','dispose']);
+});
+
+test('revocation during preflight snapshot is rechecked before dispatch and destroys state',async t=>{
+ const x=fixture(t,{capture:state=>{state.refused=true;}}),session=await createPinnedBrowserSession(x.args);
+ await assert.rejects(call(session),/BROWSER_CALL_REFUSED/);assert.equal(x.state.calls,0);
+ await session.destroy({trigger:'revocation'});assert.deepEqual(x.state.events,['context','exit','dispose']);
+});
+
+test('resume is cancelled while capture is pending and cannot release a late snapshot',async t=>{
+ let capture,started=false,release;
+ const waiting=new Promise(resolve=>{release=resolve;}),x=fixture(t,{capture:()=>capture?.()}),session=await createPinnedBrowserSession(x.args);
+ t.after(()=>session.destroy({trigger:'conversation-end'}));
+ await session.takeover();session.handBack();capture=()=>{started=true;return waiting;};
+ const controller=new AbortController(),resume=session.resume({explicit:true,signal:controller.signal});
+ while(!started)await new Promise(resolve=>setImmediate(resolve));controller.abort();
+ await assert.rejects(resume,/CANCELLED/);release();assert.equal(session.state().state,'returning');
+});
+
+function hostedWorkflow(t,{resolver=true,widen=false}={}){
+ const x=fixture(t),policy=widen?x.args.policy:siteWorkflowPolicy(x.args.policy,workflowManifest);
+ const state={answer:workflowCurrent(),reads:0,created:0,model:null,user:null};
+ const host=createBrowserSessionHost({binding,cwd,installation,upstream:x.upstream,now:Date.now,
+  contexts:{async create(){state.created++;return x.context;}},current:x.args.current,hold:x.args.hold,
+  ...(resolver?{siteWorkflows:{async resolve(request){assert.deepEqual(request.binding,binding);state.reads++;return state.answer;}}}:{}),
+  processes:{waitForExit:x.args.ports.waitForExit},dispose:x.args.ports.dispose,
+  relay:{async bind(port){state.model=port;return {mcpServers:{meri_browser:playwrightServerConfig(policy,installation,browserPaths(cwd))},async close(){}};}},
+  controls:{async bind(port){state.user=port.controls;return {async close(){}};}}});
+ return {...x,native:x.state,state,host,open:()=>host.open({binding,policy,deadlineMs:Date.now()+60000,manifest:workflowManifest})};
+}
+
+test('host refuses workflow creation without its canonical current resolver or with wider policy',async t=>{
+ for(const options of [{resolver:false},{widen:true}]){
+  const x=hostedWorkflow(t,options);await assert.rejects(x.open(),/BROWSER_WORKFLOW_(CURRENT_REQUIRED|POLICY_REFUSED)/);assert.equal(x.state.created,0);
+ }
+});
+
+test('host rechecks the exact configured task at model execution and refuses a same-version manifest change',async t=>{
+ const x=hostedWorkflow(t),session=await x.open();t.after(()=>session.destroy({trigger:'conversation-end'}));
+ await call(x.state.model);const before=x.state.reads;
+ x.state.answer.manifest.taskSummary='Changed synthetic task';
+ await assert.rejects(call(x.state.model,'changed'),/BROWSER_CALL_REFUSED/);assert.ok(x.state.reads>before);
+ assert.equal(x.native.calls,1);assert.equal(x.state.created,1);
+ await session.destroy({trigger:'revocation'});assert.deepEqual(x.native.events,['context','exit','dispose']);
+});
+
+test('host workflow disablement denies takeover and leased user input without invoking it',async t=>{
+ for(const leased of [false,true]){
+  const x=hostedWorkflow(t),session=await x.open();t.after(()=>session.destroy({trigger:'conversation-end'}));
+  const lease=leased?await x.state.user.takeover():null;
+  x.state.answer.enabled=false;let performed=false;
+  await assert.rejects(leased?x.state.user.userInput({...lease,perform:async()=>{performed=true;}}):x.state.user.takeover(),/BROWSER_(AUTHORITY_REFUSED|USER_INPUT_UNKNOWN)/);
+  assert.equal(performed,false);await session.destroy({trigger:'revocation'});
+ }
+});
+
+test('host workflow disablement at hand-back prevents resume',async t=>{
+ const x=hostedWorkflow(t),session=await x.open();t.after(()=>session.destroy({trigger:'conversation-end'}));
+ await x.state.user.takeover();x.state.user.handBack();x.state.answer.enabled=false;
+ await assert.rejects(x.state.user.resume({explicit:true}),/BROWSER_AUTHORITY_REFUSED/);
+ await session.destroy({trigger:'revocation'});
 });
 test('takeover drains an already-dispatched definite result without releasing it to the model',async t=>{
  let release;const wait=new Promise(resolve=>{release=resolve;}),x=fixture(t,{invoke:()=>wait}),session=await createPinnedBrowserSession(x.args);
