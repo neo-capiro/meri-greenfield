@@ -13,10 +13,11 @@ const sameHead=(left,right)=>(left?.sequence??0)===(right?.sequence??0)&&(left?.
  * stays UNKNOWN and a recorded plan stays BLOCKED with RETENTION_AUTHORITY_UNAVAILABLE, never cleared. With a `watermark` port, the
  * settled pass records the exact ledger head in the database, reads it back, and reopens serving only with that recovered watermark.
  * A trusted continuation may recover prerequisite projections under this SAME exclusion; no serving-gated or nested-lock calls. */
-export function createRecoveryReconciler({ledger,journal,storage=null,serving,keyFor=null,facts=null,rows=null,verifyCore=null,watermark=null,now,maxPasses=8,recoverPrerequisitesExclusive=null}){
+export function createRecoveryReconciler({ledger,journal,storage=null,serving,keyFor=null,facts=null,rows=null,verifyCore=null,office=null,watermark=null,now,maxPasses=8,recoverPrerequisitesExclusive=null}){
  if(typeof ledger?.replay!=='function'||typeof journal?.get!=='function'||typeof journal?.set!=='function'||typeof journal?.exclusive!=='function'||storage!==null&&typeof storage?.headVersion!=='function'||typeof serving?.disable!=='function'||storage!==null&&typeof keyFor!=='function'||facts!==null&&typeof facts!=='object'||rows!==null&&typeof rows?.present!=='function'||watermark!==null&&(typeof watermark?.record!=='function'||typeof watermark?.read!=='function')||!Number.isSafeInteger(maxPasses)||maxPasses<1)fail('RETENTION_CONFIGURATION');const tick=clock(now);
  if(recoverPrerequisitesExclusive!==null&&typeof recoverPrerequisitesExclusive!=='function')fail('RETENTION_CONFIGURATION');
  if(verifyCore!==null&&typeof verifyCore!=='function')fail('RETENTION_CONFIGURATION');
+ if(office!==null&&typeof office.verify!=='function')fail('RETENTION_CONFIGURATION');
  const stepRow=f=>({workflowId:f.workflowId,classes:f.classes,objectId:f.objectId,versionId:f.versionId,sha256:f.sha256,...(f.scopesSha256?{scopesSha256:f.scopesSha256}:{}),artifactVersionIds:f.artifactVersionIds??[]});
  /** Current-facts re-planning; any unavailable authority returns a BLOCKED result naming it (never a cleared block). */
  async function replan(subjectValue,journalState,nowMs){try{return await recomputePlan(facts,subjectValue,journalState,nowMs);}catch(error){return {state:'BLOCKED',blocks:[{reason:String(error?.code??'RETENTION_AUTHORITY_UNAVAILABLE'),detail:{}}],steps:[],rowSteps:[],planSha256:null};}}
@@ -42,6 +43,13 @@ export function createRecoveryReconciler({ledger,journal,storage=null,serving,ke
      const verifiedRows=[];for(const f of last.facts.rowSteps??[]){if(!['EXECUTED','UNKNOWN','PENDING'].includes(f.state))fail('RETENTION_LEDGER_CORRUPT');const target={workflowId:f.workflowId,className:f.className,target:f.target};
       if(!rows){pending=true;verifiedRows.push({...target,state:'UNKNOWN'});continue;}let present;try{present=await rows.present(key,target);}catch{present=null;}
       const state=present===false?'EXECUTED':present===true?'REVIVED':'UNKNOWN';if(state==='REVIVED')revived=true;if(state==='UNKNOWN')pending=true;verifiedRows.push({...target,state});}
+     let officeRetired=false;
+     if(office){try{officeRetired=await office.verify(latest.subject)===true;}catch{}
+      if(!officeRetired){pending=true;
+       if(last.state==='PURGE_EXECUTED'||last.facts.officeRetired===true)
+        last=await ledger.append({subject:latest.subject,state:'PURGE_UNKNOWN',reason:'OFFICE_CUSTODY_UNVERIFIED',
+         facts:{...last.facts,officeRetired:false}},{exclusive:true});
+      }}
      // Core may have restored independently of Meri. Its old acknowledgement
      // proves a past effect only. Recheck through the read-only existing service
      // boundary; unavailable or revived copies must re-enter the ordinary sweep.
@@ -59,7 +67,7 @@ export function createRecoveryReconciler({ledger,journal,storage=null,serving,ke
      if(revived){const plan=await replan(latest.subject,base,nowMs);
       if(plan.state==='PLANNED'){const e=await ledger.append({subject:latest.subject,state:'PURGE_PLANNED',reason:'RESTORE_REVIVED_VERSION',facts:{...planMetadata(plan),planSha256:plan.planSha256,suppression:plan.suppression,policySha256:plan.policySha256,inventorySha256:plan.inventorySha256,...(plan.trash?{trash:plan.trash}:{}),...(plan.retainedObjects?{retainedObjects:plan.retainedObjects}:{}),steps:plan.steps.map(stepFacts),rowSteps:plan.rowSteps.map(rowStepFacts)}},{exclusive:true});row={...base,purge:{state:'PLANNED',planSha256:plan.planSha256,ledgerSequence:e.sequence,...(plan.trash?{trash:plan.trash}:{}),...(plan.retainedObjects?{retainedObjects:plan.retainedObjects}:{}),steps:[],rowSteps:[]}};report.replanned.push(key);}
       else{row={...base,purge:{state:'BLOCKED',planSha256:plan.planSha256??planSha256,ledgerSequence:last.sequence,...(last.facts.trash?{trash:last.facts.trash}:{}),...(last.facts.retainedObjects?{retainedObjects:last.facts.retainedObjects}:{}),steps:[],rowSteps:[],blocked:plan.blocks}};report.stillBlocked.push(key);}}
-     else{row={...base,purge:{state:pending?'UNKNOWN':'EXECUTED',...(last.facts.coreFinalized===true&&!pending?{coreFinalized:true}:{}),planSha256,ledgerSequence:last.sequence,...(last.facts.trash?{trash:last.facts.trash}:{}),...(last.facts.retainedObjects?{retainedObjects:last.facts.retainedObjects}:{}),steps:verified,rowSteps:verifiedRows}};(pending?report.unknown:report.verified).push(key);}}}
+     else{row={...base,purge:{state:pending?'UNKNOWN':'EXECUTED',...(office?{officeRetired}:{}),...(last.facts.coreFinalized===true&&!pending?{coreFinalized:true}:{}),planSha256,ledgerSequence:last.sequence,...(last.facts.trash?{trash:last.facts.trash}:{}),...(last.facts.retainedObjects?{retainedObjects:last.facts.retainedObjects}:{}),steps:verified,rowSteps:verifiedRows}};(pending?report.unknown:report.verified).push(key);}}}
    await write(row);}
   return entries.length;
  }

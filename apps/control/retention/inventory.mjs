@@ -89,7 +89,9 @@ export function enumerateReferences(snapshot){
  const s=own(data(snapshot),['subject','runs','checkpoints','completionCheckpoints','nextRuns','memoryContinuations'],['sdkSessionEntries','selectedOutputs','artifactVersions','nativeJournalRows','uploads','schedules','receipts','memoryProposals','budgetRuns','editorDrafts','conversation','eventRows','controls','artifactVersionRefs','objectVersions','inventorySha256','contentRows','memoryCandidates']);
  subject(s.subject);
  const list=v=>{if(v===undefined)return [];if(!Array.isArray(v)||v.length>65536)fail('RETENTION_INVALID_REQUEST');return v;};
- if(list(s.editorDrafts).length)fail('RETENTION_CLASS_PLANNED');
+ // Core owns private drafts; caller-supplied rows cannot stand in for the fixed
+ // counts-only custody/disposal proof used by purge and recovery.
+ if(list(s.editorDrafts).length)fail('RETENTION_EXTERNAL_CUSTODY');
  const rows=[],objects=new Map(),rowTargets=[],conversation=s.subject?.kind==='conversation',
   owner=conversation?conversationEvidence(s):null,ownerObjects=[],unpublishedCompletionCheckpoints=[];
  if(s.contentRows===undefined){for(const name of ['sdkSessionEntries','selectedOutputs','artifactVersions','nativeJournalRows','uploads'])requireList(s[name]);}

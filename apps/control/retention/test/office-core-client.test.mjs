@@ -4,8 +4,8 @@ import {createCoreRetentionClient} from '../core-client.mjs';
 const id=n=>`00000000-0000-4000-8000-${String(n).padStart(12,'0')}`;
 const subject={tenantId:id(1),kind:'artifact',subjectId:id(2),ownerActorId:id(3)};
 const scope={tenantId:id(1),subject:{kind:'artifact',id:id(2)}};
-const read=()=>({version:'meri.office-draft-retention.v1',...scope,drafts:3,active:2,bytes:12});
-const retired=()=>({version:'meri.office-draft-retention.v1',...scope,retired:2,remaining:false});
+const read=()=>({version:'meri.office-draft-retention.v2',...scope,drafts:3,active:2,bytes:12,fenced:false});
+const retired=()=>({version:'meri.office-draft-retention.v2',...scope,retired:2,remaining:false,fenced:true});
 function fixture(reply=read(),options={}){
  const calls=[],office=createCoreRetentionClient({origin:'https://core.invalid',getServiceSecret:async()=> 'synthetic-private-service-secret',
   fetchImpl:async(url,request)=>{calls.push({url,request});return Response.json(reply);},...options}).office;
@@ -43,6 +43,14 @@ test('partial batches remain incomplete and readback always observes current Cor
  assert.equal((await f.office.retire(subject)).remaining,false);
  assert.equal((await f.office.read(subject)).active,0);
  assert.equal((await f.office.read(subject)).active,2);assert.equal(calls,5);
+});
+test('zero counts prove disposal only with the current durable Core fence',async()=>{
+ for(const fenced of [false,true]){
+  const f=fixture({...read(),drafts:0,active:0,bytes:0,fenced});
+  assert.equal(await f.office.verify(subject),fenced);
+ }
+ await assert.rejects(fixture({...retired(),fenced:false}).office.retire(subject));
+ await assert.rejects(fixture({...read(),fenced:'true'}).office.read(subject));
 });
 test('unknown retirement is never replayed and missing, denied or oversized replies cannot claim erasure',async()=>{
  for(const make of [()=>Response.json({}, {status:403}),()=>Response.json({}, {status:404}),

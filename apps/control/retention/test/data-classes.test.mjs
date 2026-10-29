@@ -1,6 +1,6 @@
 /** The complete data-class inventory: every retained class has one owner, one deletion path and one retention rule; the policy, the
  * reference enumeration and the row owners derive their vocabularies from it; serving claims are checked against the owners' source;
- * the planned editor-draft class cannot carry data. Synthetic: no database, bucket or credential. */
+ * Core editor custody cannot be supplied as local row targets. Synthetic: no database, bucket or credential. */
 import test from 'node:test';import assert from 'node:assert/strict';import {existsSync,readFileSync} from 'node:fs';import {fileURLToPath} from 'node:url';import {randomUUID} from 'node:crypto';
 import {dataClasses,policyClasses,retainedClasses,externalRequestClasses,rowTargetClasses,rowTargetSubjectKind,plannedClasses,dataClass} from '../data-classes.mjs';
 import {classes,externalClasses,rowClasses,rowClassSubjectKind,enumerateReferences} from '../inventory.mjs';
@@ -12,12 +12,12 @@ const source=path=>readFileSync(root+path,'utf8');
 
 test('the inventory names every retained data class the product holds, each with an owner, a deletion path, a retention rule and a serving rule',()=>{
  // The required inventory (lane brief and audit matrix row "Retention, deletion and restore"), mapped to registry classes.
- const required={conversations:['conversation'],'runs and events':['conversation','events','nextRuns','nativeJournals'],'artifacts and versions':['artifactVersions'],'stored objects':['uploads','lifecycle','completionCheckpoints','selectedOutputs'],'memory proposals':['memoryProposals','meriMemoryCandidates'],receipts:['receipts'],schedules:['schedules'],budgets:['budgets'],'logs and telemetry':['logs','telemetry'],'editor drafts (planned)':['editorDrafts']};
+ const required={conversations:['conversation'],'runs and events':['conversation','events','nextRuns','nativeJournals'],'artifacts and versions':['artifactVersions'],'stored objects':['uploads','lifecycle','completionCheckpoints','selectedOutputs'],'memory proposals':['memoryProposals','meriMemoryCandidates'],receipts:['receipts'],schedules:['schedules'],budgets:['budgets'],'logs and telemetry':['logs','telemetry'],'private Core editor drafts':['editorDrafts']};
  for(const [name,ids] of Object.entries(required))for(const id of ids)assert.ok(dataClass(id),`${name}: ${id} is registered`);
- assert.deepEqual(plannedClasses,['editorDrafts'],'only the editor drafts are planned');
+ assert.deepEqual(plannedClasses,[]);assert.equal(dataClass('editorDrafts').status,'owner-managed');
  const ids=dataClasses.map(c=>c.id);assert.equal(new Set(ids).size,ids.length,'one entry per class');
  for(const c of dataClasses){
-  assert.ok(['row-target','object-version','external-request','retain'].includes(c.deletion),c.id);assert.ok(['policy','policy-retained'].includes(c.rule),c.id);
+  assert.ok(['row-target','object-version','external-request','retain','owner-custody'].includes(c.deletion),c.id);assert.ok(['policy','policy-retained','office-private'].includes(c.rule),c.id);
   assert.equal(c.rule==='policy-retained',c.deletion==='retain',`${c.id}: a retained class has the retained rule and only it`);
   assert.ok(c.subjectKinds.length>=1&&c.subjectKinds.every(k=>['conversation','artifact','schedule'].includes(k)),c.id);
   assert.ok(['retention-read-gate','admission-gate','not-served','external','subject-unsupported'].includes(c.serving.gate),c.id);
@@ -41,18 +41,18 @@ test('serving claims hold in the owners\' source: every gated class is served by
 test('policy, enumeration and row owners derive their vocabularies from the registry; retained classes are never purgeable',()=>{
  assert.deepEqual(classes,policyClasses);assert.deepEqual(externalClasses,retainedClasses);assert.deepEqual(rowClasses,rowTargetClasses);assert.deepEqual(rowClassSubjectKind,rowTargetSubjectKind);
  assert.deepEqual([...retainedClasses].sort(),['budgets','logs','telemetry']);assert.deepEqual(externalRequestClasses,['memoryProposals']);
- assert.ok(!policyClasses.includes('editorDrafts'),'a planned class is not configured');
+ assert.ok(!policyClasses.includes('editorDrafts'),'Core owns the Office lifetime; no second policy');
  for(const id of retainedClasses)assert.ok(!rowTargetClasses.includes(id),id);
  assert.equal(rowTargetSubjectKind.artifactVersions,'artifact');assert.equal(rowTargetSubjectKind.schedules,'schedule');for(const id of rowTargetClasses.filter(x=>!['artifactVersions','schedules'].includes(x)))assert.equal(rowTargetSubjectKind[id],'conversation',id);
  const p=policy();assert.equal(parseRetentionPolicy(p).policyId,'policy-synthetic');
  for(const id of ['schedules','receipts','memoryProposals','budgets','telemetry']){const missing=structuredClone(p);delete missing.classes[id];assert.throws(()=>parseRetentionPolicy(missing),/INVALID_COMMAND|RETENTION_POLICY_INVALID/,`${id} must be configured`);}
  for(const id of retainedClasses){const purgeable=structuredClone(p);purgeable.classes[id].purgeable=true;assert.throws(()=>parseRetentionPolicy(purgeable),/RETENTION_POLICY_INVALID/,`${id} cannot be made purgeable`);}
- const planned=structuredClone(p);planned.classes.editorDrafts={retentionMs:7*86400000,purgeable:true};assert.throws(()=>parseRetentionPolicy(planned),/INVALID_COMMAND/,'a planned class cannot be configured before it exists');
+ const planned=structuredClone(p);planned.classes.editorDrafts={retentionMs:7*86400000,purgeable:true};assert.throws(()=>parseRetentionPolicy(planned),/INVALID_COMMAND/,'Core custody cannot acquire a second policy');
 });
 
-test('enumeration: the planned class is refused, every row of a row-target class becomes an exact target, and conversation rows are enumerated only for a conversation',()=>{
- const s=subjectOf();assert.throws(()=>enumerateReferences({...snapshot(s),editorDrafts:[{draftId:randomUUID()}]}),/RETENTION_CLASS_PLANNED/);
- assert.doesNotThrow(()=>enumerateReferences({...snapshot(s),editorDrafts:[]}),'an empty planned list carries no data');
+test('enumeration: externally owned custody rows are refused, every row of a row-target class becomes an exact target, and conversation rows are enumerated only for a conversation',()=>{
+ const s=subjectOf();assert.throws(()=>enumerateReferences({...snapshot(s),editorDrafts:[{draftId:randomUUID()}]}),/RETENTION_EXTERNAL_CUSTODY/);
+ assert.doesNotThrow(()=>enumerateReferences({...snapshot(s),editorDrafts:[]}),'an empty external list carries no data');
  const full={...snapshot(s),nextRuns:[{targetRunId:randomUUID()}],schedules:[{scheduleId:randomUUID()}],receipts:[{receiptId:randomUUID()}],budgetRuns:[{runId:randomUUID()}],memoryProposals:[{candidateId:randomUUID()}],memoryCandidates:[{candidateId:randomUUID()}]};
  const inv=enumerateReferences(full),targeted=new Set(inv.rowTargets.map(t=>t.className)),rowed=new Set(inv.rows.map(r=>r.className));
  // Upload row identities come only from their pinned SQL custody snapshot;
