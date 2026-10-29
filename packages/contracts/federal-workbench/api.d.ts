@@ -1,0 +1,10 @@
+export type FederalRoute='federal-prepare'|'federal-load'|'federal-publish';
+export type FederalRequest<R extends FederalRoute>=R extends 'federal-prepare'?FederalPrepareRequest:R extends 'federal-load'?FederalLoadRequest:FederalPublishRequest;
+declare const federalRequest:unique symbol;
+declare const federalReview:unique symbol;
+export type AdmittedFederalRequest<R extends FederalRoute>=Readonly<FederalRequest<R>>&{readonly[federalRequest]:R};
+export type AdmittedFederalReview=Readonly<FederalReview>&{readonly[federalReview]:true};
+export type FederalResponse<R extends FederalRoute>=(R extends 'federal-publish'?Readonly<FederalPublication>:AdmittedFederalReview)|Readonly<FederalError>;
+export declare const federalWorkbenchVersion:'1.0.0';
+export declare function receiveFederalRequest<R extends FederalRoute>(route:R,bytes:Uint8Array):AdmittedFederalRequest<R>;
+export declare function receiveFederalResponse<R extends FederalRoute>(route:R,status:number,bytes:Uint8Array,request:AdmittedFederalRequest<R>,review?:AdmittedFederalReview):Promise<FederalResponse<R>>;

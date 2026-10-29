@@ -1,0 +1,13 @@
+# Retained federal drafting review
+
+The existing document application now accepts federal-prepare, federal-load and federal-publish. Core's existing artifact authority owner admits the corresponding read or publication operations. The public request carries no identity, scopes, authorization or legal approval.
+
+Preparation reads an exact immutable TXT source version/hash through current artifact authority and retention, then runs the existing deterministic compiler. Save writes a review bundle through the ordinary artifact delivery journal. Load reads both bundle and original source again and recompiles, comparing the complete envelope. Editing a saved draft requires its exact previous revision and uses ordinary artifact version ancestry. A source-backed parent that cannot re-present its retained evidence remains refused by the existing owner.
+
+Export requires the reviewed revision hash and one selected output. Source access is checked at write authorization and after publication. The immutable request title contains the complete revision hash, so same-byte output from another revision cannot alias an existing delivery. An uncertain effect uses its original delivery ID; no new delivery is generated for recovery. The UI must retain that original request and prevent editing/resubmission until the outcome is recovered or explicitly abandoned through the existing write owner.
+
+The additive public receiver validates canonical shapes, source/output/revision digests, exact request correlation, version scopes/evidence, and published bytes. It grants no authority. Generated contract source is under packages/contracts/federal-workbench; generate-federal-workbench.mjs supports an outDir for isolated contract checks. Parent owns public package exports, generated distribution, versions, archives and frontend pins; none are updated here.
+
+This is the retained-source workbench, not an official-source importer. Publisher/URL text inside a retained envelope is a claim. Native official source reads/preparation remain read_federal_draft_source and prepare_federal_draft. Partial coverage, source limitations, unresolved numbering/cross-references/arithmetic/substantive law and absent legal currency verification must stay visible. Confirming export records an exact user selection; it is not approval that text is legally correct or enacted. Only plain TXT outputs are qualified by these source tests.
+
+Source checks use isolated SQL/object/native-identity ports and actual mounted public HTTP routes. They do not qualify native Linux, production database admission, browser-host credential confidentiality, Office fidelity or deployment. No app/image build, deployment, provider/model call, activation or independent review occurred.
