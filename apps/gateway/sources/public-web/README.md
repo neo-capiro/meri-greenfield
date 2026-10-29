@@ -51,10 +51,21 @@ make no product source/provider requests and confer no live qualification.
 AgentCore Gateway **MCP target**, so it supplies any model — including the
 existing Claude-on-Bedrock loop — and is not the Claude SDK builtin `WebSearch`
 (unsupported on current Bedrock) nor the model-specific Bedrock Responses server
-tool. Discovery is `tools/call` for the target's `WebSearch` tool on
-`<gateway>/mcp` with IAM (SigV4, service `bedrock-agentcore`) inbound
-authorization, so no third-party search key exists and queries are served inside
-AWS.
+tool. Discovery is one `tools/call` on the gateway's documented MCP invocation
+endpoint (`…/mcp`, bound as given and never re-suffixed) using the stateless
+MCP revision `2026-07-28`: `MCP-Protocol-Version` plus `Mcp-Method`/`Mcp-Name`
+request-metadata headers and the matching `_meta` version/client fields in the
+body, with no `initialize` handshake and therefore no extra gateway invocation.
+Inbound authorization is IAM (SigV4, service `bedrock-agentcore`), so no
+third-party search key exists and queries are served inside AWS. The caller is
+the **control task role**, because the paid search is composed by control's read
+family — not the AgentCore runtime role.
+
+Two names are kept apart: the connector operation configured inside the target is
+`WebSearch` (connector documentation), while the exposed gateway tool name is
+whatever the target actually publishes — it may be prefixed and is only
+established by a `tools/list` discovery receipt. A different exposed name is
+bound through `MERI_WEB_SEARCH_TOOL`; nothing here asserts the two are equal.
 
 Documented limits honoured here: `query` <= 200 characters, `maxResults` 1-25
 (default 10), and the receiving-contract caps (12 rows, 180-character title,
@@ -80,20 +91,22 @@ USD 0.005 per 1000 gateway invocations, i.e. 7005 microUSD per submitted
 and the resulting `maxMicroUsd` for the shared budget owner. Managed search is
 not free, and an unknown outcome is not a charged-success claim.
 
-Activation is a deployment fact: `MERI_WEB_SEARCH_GATEWAY_ENDPOINT`,
-`MERI_WEB_SEARCH_TOOL` (the provisioned target's tool name) and
-`MERI_WEB_SEARCH_REGION` (or `AWS_REGION`) must all be present; a partial set
-leaves the family exactly as before and discovery keeps the configured native
-route. `infra/product-preview/web-search-gateway.mjs` owns the gateway, its
-service role (`bedrock-agentcore:InvokeGateway` on the gateway ARN and
-`bedrock-agentcore:InvokeWebSearch` on the service-owned
-`arn:aws:bedrock-agentcore:<region>:aws:tool/web-search.v1`), the caller's
-`InvokeGateway` grant on the exact gateway ARN, and the pinned-version target
-request (`connectorId: "web-search"`, `version: "1.2.0"`, tool `WebSearch`).
-CloudFormation's `ConnectorSource` has no version field, so the target itself is
-created with the documented Control API request that module emits. The runtime
-environment join and the first `tools/list` discovery receipt remain deployment
-prerequisites.
+Activation is a deployment fact on the **control** task: `MERI_WEB_SEARCH_GATEWAY_ENDPOINT`
+(the documented `…/mcp` invocation endpoint), `MERI_WEB_SEARCH_TOOL` (the exposed
+target's tool name, which may be prefixed) and `MERI_WEB_SEARCH_REGION` (or
+`AWS_REGION`) must all be present and well shaped; anything partial or
+origin-only leaves the family exactly as before and discovery keeps the
+configured native Core route. `infra/product-preview/web-search-gateway.mjs` owns
+the gateway, its service role (`bedrock-agentcore:InvokeGateway` on the gateway
+ARN and `bedrock-agentcore:InvokeWebSearch` on the service-owned
+`arn:aws:bedrock-agentcore:<region>:aws:tool/web-search.v1`), the control task
+role's `InvokeGateway` grant on the exact gateway ARN, and the pinned-version
+target request (`connectorId: "web-search"`, `version: "1.2.0"`, connector
+operation `WebSearch`). CloudFormation's `ConnectorSource` has no version field,
+so the target itself is created with the documented Control API request that
+module emits. Wiring the three settings into the control task environment and
+recording the first `tools/list` discovery receipt remain deployment
+prerequisites; they are not part of this family's code.
 
 The frozen receiving contract (`retrieval-0.2`) currently admits only `tavily`,
 `serper` and `duckduckgo` providers, so an activated primary target fails closed

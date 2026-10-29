@@ -32,7 +32,10 @@ export const AGENTCORE_SEARCH_DEFAULT_ATTEMPTS = 1, AGENTCORE_SEARCH_MAX_ATTEMPT
 const MAX_QUERY_CHARS = 200, MIN_RESULTS = 1, MAX_RESULTS = 25, DEFAULT_RESULTS = 10;
 /** Frozen receiving-contract caps (`packages/contracts/retrieval-0.2/public-web.schema.json`). */
 const MAX_ROW_RESULTS = 12, MAX_TITLE = 180, MAX_SNIPPET = 320, MAX_URL = 2000, MAX_DATE = 40;
-const DEFAULT_PROTOCOL = '2025-11-25', DEFAULT_RESPONSE_BYTES = 262144, DEFAULT_REQUEST_MS = 8000;
+const DEFAULT_PROTOCOL = '2026-07-28', DEFAULT_RESPONSE_BYTES = 262144, DEFAULT_REQUEST_MS = 8000;
+/** Stateless MCP revision 2026-07-28: no `initialize` handshake and no session, so one tools/call is
+ * one gateway invocation. Client identity travels in the documented `_meta` fields. */
+const CLIENT_INFO = Object.freeze({name: 'meri-control', version: '1.0.0'});
 
 const boundedText = (value, cap) => {
   if (typeof value !== 'string') return null;
@@ -114,33 +117,48 @@ export function createPrimaryWebSearch(configuration) {
   try {
     c = ownFields(configuration, ['endpoint', 'region', 'toolName'],
       ['now', 'fetchImpl', 'credentials', 'protocolVersion', 'maxAttempts', 'maxRequestMs', 'maxResponseBytes']);
+    // The documented gatewayUrl IS the MCP invocation endpoint (…/mcp). It is bound as given: no
+    // origin-only form, no double append and no arbitrary path.
     const address = new URL(c.endpoint);
-    if (address.protocol !== 'https:' || address.origin !== c.endpoint.replace(/\/$/u, '') || address.search || address.hash) deny('GATEWAY_CONFIGURATION');
+    if (address.protocol !== 'https:' || address.search || address.hash || address.username || address.password ||
+        address.pathname !== '/mcp' || c.endpoint !== address.origin + '/mcp') deny('GATEWAY_CONFIGURATION');
     if (typeof c.region !== 'string' || !/^[a-z]{2}(-gov)?-[a-z]+-\d$/u.test(c.region)) deny('GATEWAY_CONFIGURATION');
     // The tool name is bound from the provisioned target, never defaulted here.
     if (typeof c.toolName !== 'string' || !/^[A-Za-z0-9_-]{1,64}$/u.test(c.toolName)) deny('GATEWAY_CONFIGURATION');
+    // One complete documented protocol path: the stateless 2026-07-28 revision.
+    if (c.protocolVersion !== undefined && c.protocolVersion !== DEFAULT_PROTOCOL) deny('GATEWAY_CONFIGURATION');
   } catch { deny('GATEWAY_CONFIGURATION'); }
   const now = c.now ?? Date.now, fetchImpl = c.fetchImpl ?? globalThis.fetch;
-  const credentials = c.credentials ?? (() => resolveAwsCredentials({fetchImpl}));
-  const toolName = c.toolName, protocolVersion = c.protocolVersion ?? DEFAULT_PROTOCOL;
+  // The default chain keeps the caller's deadline signal and byte bound, so the real container
+  // credential fetch is cancellable instead of racing only inside the lifetime.
+  const credentials = c.credentials ?? (options => resolveAwsCredentials({fetchImpl,
+    ...(options?.signal === undefined ? {} : {signal: options.signal}),
+    ...(options?.maxResponseBytes === undefined ? {} : {maxResponseBytes: options.maxResponseBytes})}));
+  const toolName = c.toolName, protocolVersion = DEFAULT_PROTOCOL;
+  const url = c.endpoint;
   const maxAttempts = c.maxAttempts ?? AGENTCORE_SEARCH_DEFAULT_ATTEMPTS;
   const maxRequestMs = c.maxRequestMs ?? DEFAULT_REQUEST_MS, maxResponseBytes = c.maxResponseBytes ?? DEFAULT_RESPONSE_BYTES;
   if (typeof now !== 'function' || typeof fetchImpl !== 'function' || typeof credentials !== 'function' ||
       !Number.isSafeInteger(maxAttempts) || maxAttempts < 1 || maxAttempts > AGENTCORE_SEARCH_MAX_ATTEMPTS ||
       !Number.isSafeInteger(maxRequestMs) || maxRequestMs < 1000 || maxRequestMs > 30000 ||
       !Number.isSafeInteger(maxResponseBytes) || maxResponseBytes < 4096 || maxResponseBytes > 1048576) deny('GATEWAY_CONFIGURATION');
-  const url = `${c.endpoint.replace(/\/$/u, '')}/mcp`;
 
   /** One owned lifetime covers credential acquisition, dispatch and the bounded body read. */
   async function invoke(query, maxResults, deadlineMs, signal) {
     if (!Number.isSafeInteger(deadlineMs) || deadlineMs <= now()) deny('DEADLINE');
+    // Stateless 2026-07-28 request shape: version in the header AND in params._meta (they must match),
+    // request metadata headers Mcp-Method/Mcp-Name, and no initialize handshake.
     const body = JSON.stringify({jsonrpc: '2.0', id: `web-search-${now()}`, method: 'tools/call',
-      params: {name: toolName, arguments: {query, maxResults}}});
+      params: {name: toolName, arguments: {query, maxResults},
+        _meta: {'io.modelcontextprotocol/protocolVersion': protocolVersion,
+          'io.modelcontextprotocol/clientInfo': {...CLIENT_INFO},
+          'io.modelcontextprotocol/clientCapabilities': {}}}});
     const lifetime = createDispatchLifetime({deadlineMs: Math.min(deadlineMs, now() + maxRequestMs), now, signal});
-    let acquired, lastError = 'UNAVAILABLE';
+    let lastError = 'UNAVAILABLE';
     try {
       for (let attempt = 1; attempt <= maxAttempts; attempt++) {
         lifetime.check();
+        let acquired;
         try {
           const proof = await lifetime.run(proofSignal => credentials({signal: proofSignal, maxResponseBytes: 16384}));
           if (proof === undefined) deny('UNAVAILABLE');
@@ -151,7 +169,7 @@ export function createPrimaryWebSearch(configuration) {
           const response = await lifetime.run(fetchSignal => fetchImpl(url, {
             method: 'POST', redirect: 'error', cache: 'no-store', signal: fetchSignal,
             headers: {...signed.headers, accept: 'application/json, text/event-stream',
-              'mcp-protocol-version': protocolVersion},
+              'mcp-protocol-version': protocolVersion, 'mcp-method': 'tools/call', 'mcp-name': toolName},
             body,
           }));
           acquired = response;
@@ -181,14 +199,14 @@ export function createPrimaryWebSearch(configuration) {
           lastError = 'UNAVAILABLE';
           // An exhausted cutoff during a retry stays visible as DEADLINE, not as a fresh attempt.
           lifetime.check();
+        } finally {
+          // Every acquired response is released on every path, including refusals and retries.
+          if (acquired) { try { cancelBody(responseBody(acquired)); } catch {} }
         }
       }
       deny(lastError);
     } catch (error) { throw safeFailure(error); }
-    finally {
-      try { if (acquired) cancelBody(responseBody(acquired)); } catch {}
-      lifetime.close();
-    }
+    finally { lifetime.close(); }
   }
 
   return Object.freeze({
@@ -224,11 +242,18 @@ export function createPrimarySearchReadSource(primary) {
   };
 }
 
-/** Deployment fact: endpoint, region and the provisioned target's tool name exist only together. */
+/** Deployment fact: the documented MCP invocation endpoint, region and selected target tool name exist
+ * only together. A partial or wrongly shaped value leaves the family off (old Core route), never a crash. */
 export function primarySearchTarget(env = process.env) {
   const endpoint = env.MERI_WEB_SEARCH_GATEWAY_ENDPOINT, toolName = env.MERI_WEB_SEARCH_TOOL;
   if (typeof endpoint !== 'string' || !endpoint || typeof toolName !== 'string' || !toolName) return undefined;
   const region = env.MERI_WEB_SEARCH_REGION ?? env.AWS_REGION ?? env.AWS_DEFAULT_REGION;
   if (typeof region !== 'string' || !region) return undefined;
+  if (!/^[A-Za-z0-9_-]{1,64}$/u.test(toolName)) return undefined;
+  try {
+    const address = new URL(endpoint);
+    if (address.protocol !== 'https:' || address.pathname !== '/mcp' || address.search || address.hash ||
+        address.username || address.password || endpoint !== address.origin + '/mcp') return undefined;
+  } catch { return undefined; }
   return Object.freeze({endpoint, region, toolName});
 }

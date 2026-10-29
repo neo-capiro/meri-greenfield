@@ -68,11 +68,13 @@ export async function resolveAwsCredentials({env = process.env, fetchImpl = glob
     method: 'GET', redirect: 'error', cache: 'no-store', ...(signal === undefined ? {} : {signal}),
     headers: {accept: 'application/json', ...(authorization ? {authorization} : {})},
   });
-  if (response.status === 401 || response.status === 403) fail('CREDENTIALS_UNAVAILABLE');
-  if (!response.ok) fail('CREDENTIALS_UNAVAILABLE');
+  // Every refusal after acquisition releases the body instead of leaving it open.
+  const discard = () => { try { Promise.resolve(response.body?.cancel()).catch(() => {}); } catch {} };
+  if (response.status === 401 || response.status === 403) { discard(); fail('CREDENTIALS_UNAVAILABLE'); }
+  if (!response.ok) { discard(); fail('CREDENTIALS_UNAVAILABLE'); }
   // A credential document is small, fixed and short-lived: read it under the same lifetime and size bound.
   const length = response.headers.get('content-length');
-  if (length !== null && (!/^\d+$/u.test(length) || Number(length) > maxResponseBytes)) fail('CREDENTIALS_UNAVAILABLE');
+  if (length !== null && (!/^\d+$/u.test(length) || Number(length) > maxResponseBytes)) { discard(); fail('CREDENTIALS_UNAVAILABLE'); }
   if (!response.body) fail('CREDENTIALS_UNAVAILABLE');
   const reader = response.body.getReader(), decoder = new TextDecoder('utf-8', {fatal: true});
   let bytes = 0, raw = '';
