@@ -76,7 +76,7 @@ export function createRuntimeArtifactApplication(configuration){const c=own(conf
   // A source-backed parent is only replaced through the trusted retained capability above: a caller that cannot
   // re-present the parent's evidence must not silently replace it with an uncited version. A parent with no
   // retained provenance, and every unreadable base, keep the existing behaviour of the canonical owner.
-  if(info.intent==='revise'&&retained===null&&typeof body.baseVersionId==='string')await refuseUnprovenancedReplacement(life,method(o.versions,'read'),body.baseVersionId);
+  if(['revise','federal-publish'].includes(info.intent)&&retained===null&&typeof body.baseVersionId==='string')await refuseUnprovenancedReplacement(life,method(o.versions,'read'),body.baseVersionId);
   const pinned=hash({intent:info.intent,body});
   async function fresh(phase){life.check();if(hash({intent:info.intent,body})!==pinned)fail('ACCESS_DENIED');
    await life.run(signal=>recheck({phase,intent:info.intent,requestSha256,resource:null,signal,deadlineMs:Math.min(o.context.deadlineMs,effectiveDeadlineMs)}));life.check();}
@@ -84,7 +84,7 @@ export function createRuntimeArtifactApplication(configuration){const c=own(conf
   // never multiplied around every local immutable storage operation.
   const app=createDocumentApplication({...options,limits:effectiveLimits,artifactOptions:o});
   await fresh('admission');const serialized=JSON.stringify(body),headers=new Headers(info.headers);headers.set('content-length',String(Buffer.byteLength(serialized)));
-  state.writeStarted=['create','revise','preview-publish'].includes(info.intent);state.readStarted=!state.writeStarted;
+  state.writeStarted=['create','revise','preview-publish','federal-publish'].includes(info.intent);state.readStarted=!state.writeStarted;
   const response=await life.run(signal=>app.handle(new Request(info.url,{method:info.method,headers,body:serialized,signal})));if(response.status!==200)return response;state.completed=true;
   await fresh('release');life.check();return response;
  }catch(error){return errorResponse(error,state);}finally{life?.close();}}});

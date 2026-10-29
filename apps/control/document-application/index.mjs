@@ -12,9 +12,11 @@ import {errorResponse as bodyErrorResponse} from '../action-application/http.mjs
 import {requestInfo,jsonBody,response,errorResponse,fail} from './http.mjs';
 import {previewConfiguration,previewRoute} from './preview-route.mjs';
 import {nativeResults} from './native-results.mjs';
+import {federalWorkbenchInput,federalWorkbenchRoute} from './federal-workbench.mjs';
 const uuid=value=>typeof value==='string'&&/^[a-f0-9]{8}-[a-f0-9]{4}-[1-8][a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$/iu.test(value);
 function input(value,intent,admission){
  const raw=data(value),write=['create','revise'].includes(intent);
+ if(intent.startsWith('federal-'))return federalWorkbenchInput(intent,raw);
  // Discovery is a closed empty request: the projected run is the session's own context binding, never a caller id.
  if(intent==='results'){own(raw,[]);return raw;}
  if(intent==='history'||intent==='list'){
@@ -76,7 +78,11 @@ export function createDocumentApplication(options){
    let body;try{body=await jsonBody(info,config.limits.maxRequestBytes,life,current.check);}catch(error){return bodyErrorResponse(error,{});}
    try{call=input(body,info.intent,admission);}catch(error){current.check();fail('INVALID_REQUEST');}
    await current.fresh();let result;
-   if(info.intent==='create'||info.intent==='revise'){
+   if(info.intent.startsWith('federal-')){
+    result=await federalWorkbenchRoute({intent:info.intent,call,config,current,life,state,
+      releasePublication:(value,write)=>created(value,write,context,admission)});
+    if(result.savedDraft)result.savedDraft=version(result.savedDraft,context,admission);
+   }else if(info.intent==='create'||info.intent==='revise'){
     const {ids,...writeOptions}=config.options;const writes=createPostgresArtifactService({...writeOptions,authorize:current.authorize});
     state.writeStarted=true;
     result=await life.run(async signal=>{const result=await writes.execute(call,signal);state.completed=true;return result;});

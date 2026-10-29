@@ -23,6 +23,9 @@ export const INTENT_OPERATIONS=Object.freeze({
  download:Object.freeze(['artifact.download']),
  preview:Object.freeze(['artifact.download','artifact.inspect']),
  'preview-publish':Object.freeze(['artifact.download','artifact.inspect','artifact.preview-publish']),
+ 'federal-prepare':Object.freeze(['artifact.download','artifact.inspect']),
+ 'federal-load':Object.freeze(['artifact.download','artifact.inspect']),
+ 'federal-publish':Object.freeze(['artifact.download','artifact.generate','artifact.inspect','artifact.revise']),
 });
 /** Core's receipt lifetime on Core's own clock (expiresAtMs - checkedAtMs). Meri counts it from its own pre-send instant. */
 export const MAX_RECEIPT_TTL_MS=60000;
