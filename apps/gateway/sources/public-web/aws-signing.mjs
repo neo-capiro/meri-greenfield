@@ -52,7 +52,7 @@ export function signAwsRequest(c) {
  * @param {{env?:Record<string,string|undefined>,fetchImpl?:Function}} [sources]
  * @returns {Promise<{accessKeyId:string,secretAccessKey:string,sessionToken?:string}|undefined>}
  */
-export async function resolveAwsCredentials({env = process.env, fetchImpl = globalThis.fetch} = {}) {
+export async function resolveAwsCredentials({env = process.env, fetchImpl = globalThis.fetch, signal, maxResponseBytes = 16384} = {}) {
   const staticKey = env.AWS_ACCESS_KEY_ID ?? env.AWS_ACCESS_KEY;
   if (typeof staticKey === 'string' && staticKey && typeof env.AWS_SECRET_ACCESS_KEY === 'string' && env.AWS_SECRET_ACCESS_KEY) {
     const sessionToken = env.AWS_SESSION_TOKEN;
@@ -61,13 +61,36 @@ export async function resolveAwsCredentials({env = process.env, fetchImpl = glob
   const relative = env.AWS_CONTAINER_CREDENTIALS_RELATIVE_URI, full = env.AWS_CONTAINER_CREDENTIALS_FULL_URI;
   const address = relative ? `http://169.254.170.2${relative}` : typeof full === 'string' && /^https?:\/\//u.test(full) ? full : undefined;
   if (address === undefined) return undefined;
+  if (!Number.isSafeInteger(maxResponseBytes) || maxResponseBytes < 256 || maxResponseBytes > 65536) fail('CREDENTIALS_UNAVAILABLE');
+  if (signal?.aborted) fail('CREDENTIALS_ABORTED');
   const authorization = env.AWS_CONTAINER_AUTHORIZATION_TOKEN;
   const response = await fetchImpl(address, {
-    method: 'GET', redirect: 'error', cache: 'no-store',
+    method: 'GET', redirect: 'error', cache: 'no-store', ...(signal === undefined ? {} : {signal}),
     headers: {accept: 'application/json', ...(authorization ? {authorization} : {})},
   });
+  if (response.status === 401 || response.status === 403) fail('CREDENTIALS_UNAVAILABLE');
   if (!response.ok) fail('CREDENTIALS_UNAVAILABLE');
-  const value = await response.json();
+  // A credential document is small, fixed and short-lived: read it under the same lifetime and size bound.
+  const length = response.headers.get('content-length');
+  if (length !== null && (!/^\d+$/u.test(length) || Number(length) > maxResponseBytes)) fail('CREDENTIALS_UNAVAILABLE');
+  if (!response.body) fail('CREDENTIALS_UNAVAILABLE');
+  const reader = response.body.getReader(), decoder = new TextDecoder('utf-8', {fatal: true});
+  let bytes = 0, raw = '';
+  try {
+    for (;;) {
+      const part = await reader.read();
+      if (part.done) break;
+      bytes += part.value.byteLength;
+      if (bytes > maxResponseBytes) fail('CREDENTIALS_UNAVAILABLE');
+      raw += decoder.decode(part.value, {stream: true});
+    }
+    raw += decoder.decode();
+  } finally {
+    try { Promise.resolve(reader.cancel()).catch(() => {}); } catch {}
+    try { reader.releaseLock(); } catch {}
+  }
+  let value;
+  try { value = JSON.parse(raw); } catch { fail('CREDENTIALS_UNAVAILABLE'); }
   if (typeof value?.AccessKeyId !== 'string' || typeof value?.SecretAccessKey !== 'string') fail('CREDENTIALS_UNAVAILABLE');
   return Object.freeze({
     accessKeyId: value.AccessKeyId,

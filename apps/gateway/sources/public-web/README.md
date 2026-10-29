@@ -58,26 +58,47 @@ AWS.
 
 Documented limits honoured here: `query` <= 200 characters, `maxResults` 1-25
 (default 10), and the receiving-contract caps (12 rows, 180-character title,
-320-character snippet). Row text is untrusted source material; a row without a
-citable HTTPS URL is dropped, and an absent title/date stays `null` rather than
-being inferred. Empty results are an honest empty discovery. 401/403 fail as
-`ACCESS_DENIED` without retry, 400 as `INVALID_ARGUMENTS`, and 429/5xx/network
-are retried once within the call deadline (max three attempts, no sleep beyond
-the deadline). Page consultation still uses the native Core owner; Playwright
-still owns page interaction.
+320-character snippet). Row text is untrusted source material. A row is kept only
+when it carries a byte-exact valid `http`/`https` locator of at most 2000
+characters — the value is published unchanged, never truncated or repaired, and a
+row without one is dropped — while an absent title, snippet or publication date
+stays `null` rather than being inferred from the URL. Empty results are an honest
+empty discovery. 401/403 fail as `ACCESS_DENIED` without retry, 400 as
+`INVALID_ARGUMENTS`, 404 and malformed bodies as `INVALID_RESULT`, and an MCP
+`result.isError: true` (tool execution error) as `UNAVAILABLE` instead of a
+successful empty discovery. One lifetime covers credential acquisition, dispatch
+and the bounded body read, so a stalled credential or an exhausted cutoff cannot
+start a paid search, and responses are size-bounded and cancelled on exit.
+Page consultation still uses the native Core owner; Playwright still owns page
+interaction.
 
-Activation is a deployment fact: `MERI_WEB_SEARCH_GATEWAY_ENDPOINT` plus
-`MERI_WEB_SEARCH_REGION` (or `AWS_REGION`). Without them the family behaves
-exactly as before and discovery keeps the configured native route. The gateway
-target, its service role (`bedrock-agentcore:InvokeGateway` on the gateway ARN
-and `bedrock-agentcore:InvokeWebSearch` on
-`arn:aws:bedrock-agentcore:<region>:aws:tool/web-search.v1`) and the caller's
-`bedrock-agentcore:InvokeGateway` grant are provisioned by the release owner;
-they are not in this repository.
+Retries are off by default (`maxAttempts: 1`): every attempt is a billable
+gateway invocation plus a billable search. `maxAttempts: 2` is allowed and is the
+ceiling. Official pricing read 29 October 2026 is USD 7 per 1000 searches plus
+USD 0.005 per 1000 gateway invocations, i.e. 7005 microUSD per submitted
+`tools/call`; `admission` on the producer reports `unitMicroUsd`, `maxAttempts`
+and the resulting `maxMicroUsd` for the shared budget owner. Managed search is
+not free, and an unknown outcome is not a charged-success claim.
+
+Activation is a deployment fact: `MERI_WEB_SEARCH_GATEWAY_ENDPOINT`,
+`MERI_WEB_SEARCH_TOOL` (the provisioned target's tool name) and
+`MERI_WEB_SEARCH_REGION` (or `AWS_REGION`) must all be present; a partial set
+leaves the family exactly as before and discovery keeps the configured native
+route. `infra/product-preview/web-search-gateway.mjs` owns the gateway, its
+service role (`bedrock-agentcore:InvokeGateway` on the gateway ARN and
+`bedrock-agentcore:InvokeWebSearch` on the service-owned
+`arn:aws:bedrock-agentcore:<region>:aws:tool/web-search.v1`), the caller's
+`InvokeGateway` grant on the exact gateway ARN, and the pinned-version target
+request (`connectorId: "web-search"`, `version: "1.2.0"`, tool `WebSearch`).
+CloudFormation's `ConnectorSource` has no version field, so the target itself is
+created with the documented Control API request that module emits. The runtime
+environment join and the first `tools/list` discovery receipt remain deployment
+prerequisites.
 
 The frozen receiving contract (`retrieval-0.2`) currently admits only `tavily`,
 `serper` and `duckduckgo` providers, so an activated primary target fails closed
-with `INVALID_RESULT` until `packages/contracts` admits the AWS-managed provider
-label and row shape. That contract change is the required shared join, and this
-module's output already carries the exact fields it needs.
+with `INVALID_RESULT` until `packages/contracts` (SCRUM-238) admits the
+AWS-managed provider label and row shape. That contract change is the required
+shared join, and this module's output already carries the exact fields it needs.
+
 
