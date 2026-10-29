@@ -70,7 +70,7 @@ test('external provider facts persist as distinct JSON beside the SDK snapshot a
  assert.equal(saved.externalSearch.estimateMicroUsd,7005);
  assert.equal(saved.externalSearch.billedMicroUsd,null,'no billed cost is invented');
  assert.equal(saved.chargeMicroUsd,100000,'the SDK charge is unchanged by external facts');
- assert.equal(saved.cumulative.chargeMicroUsd,100000);
+ assert.equal(saved.cumulative.sdkEstimateUsd,0.1,'the cumulative SDK snapshot keeps its own estimate');
  assert.equal(saved.toolsUsed.tools[0].tool,'Read');
  // Exact replay from a reconstructed owner returns the same receipt and writes nothing.
  const fresh=createPostgresConversationStore({pool:f.pool});

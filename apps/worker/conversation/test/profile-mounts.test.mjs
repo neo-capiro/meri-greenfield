@@ -107,3 +107,20 @@ test('G2 carries an exact, immutable active operation set and rejects unqualifie
  const widened={...platform,defaults:{generalReads:true,activeReadOperations:[...all,beyond]}};
  assert.throws(()=>compileCapabilityPlatform({capabilityPlatform:widened}),/CAPABILITY_PLATFORM_CONFIGURATION/u);
 });
+
+test('the actual SDK read mount accepts the trusted port carrying external usage accounting',async()=>{
+ const restore=quiet();try{
+  const policy=assertCapabilityPolicy(PORTABLE),some=profileReads({policy}).slice(0,2).map(row=>row.operation);
+  const withUsage=readPort(some);withUsage.externalUsage=()=>undefined;
+  const mounted=await createProfileMounts({policy,binding,scopes,now:Date.now,deadlineMs:Date.now()+60000,generalReads:withUsage});
+  assert.deepEqual(mounted.reads.available,some,'a port with the optional method mounts the same reads');
+  // The same mount still works when the run has no managed primary at all.
+  const withoutUsage=readPort(some);
+  const plain=await createProfileMounts({policy,binding,scopes,now:Date.now,deadlineMs:Date.now()+60000,generalReads:withoutUsage});
+  assert.deepEqual(plain.reads.available,some);
+  assert.deepEqual(mounted.reads.sdkOptions.allowedTools,plain.reads.sdkOptions.allowedTools);
+  // A malformed optional method is refused rather than ignored.
+  const broken=readPort(some);broken.externalUsage=1;
+  await assert.rejects(()=>createProfileMounts({policy,binding,scopes,now:Date.now,deadlineMs:Date.now()+60000,generalReads:broken}),/READ_CONFIGURATION/u);
+ }finally{restore();}
+});

@@ -83,3 +83,67 @@ test('without a configured target the existing Core/DDG route is unchanged',asyn
   assert.equal(f.port.externalUsage(),undefined,'the Core route reports no external provider facts');
  });
 });
+
+test('two distinct searches aggregate into one run total instead of replacing each other',async()=>{
+ await withEnv(ENV,async()=>{
+  const gatewayCalls=[];
+  const f=await fixture('public-web','search_public_web',{primaryCredentials:CREDS,gatewayCalls});
+  const first=await f.port.execute({operation:f.operation,arguments:{query:'first look',limit:3},deliveryId:'synthetic-a'});
+  const second=await f.port.execute({operation:f.operation,arguments:{query:'second look',limit:3},deliveryId:'synthetic-b'});
+  assert.equal(gatewayCalls.length,2);
+  assert.ok(JSON.parse(first)&&JSON.parse(second));
+  const facts=f.port.externalUsage();
+  assert.equal(facts.calls.length,2,'both invocations are kept');
+  assert.equal(facts.attempts,2,'the run total is the sum, not the last response');
+  assert.equal(facts.estimateMicroUsd,14010);
+  assert.equal(facts.outcome,'completed');
+  assert.equal(facts.incomplete,false);
+  assert.deepEqual(facts.unobserved,[]);
+ });
+});
+
+test('concurrent completions cannot double count one delivery',async()=>{
+ await withEnv(ENV,async()=>{
+  const gatewayCalls=[];
+  const f=await fixture('public-web','search_public_web',{primaryCredentials:CREDS,gatewayCalls});
+  const call=deliveryId=>f.port.execute({operation:f.operation,arguments:{query:'parallel look',limit:2},deliveryId});
+  await Promise.all([call('synthetic-p'),call('synthetic-q')]);
+  const facts=f.port.externalUsage();
+  assert.equal(gatewayCalls.length,2);
+  assert.equal(facts.calls.length,2);
+  assert.equal(facts.attempts,2);
+  // A replayed delivery for an already-counted call adds nothing.
+  await call('synthetic-p');
+  assert.equal(f.port.externalUsage().calls.length,2,'one delivery is counted once');
+ });
+});
+
+test('a lost response marks the run incomplete without inventing attempts',async()=>{
+ await withEnv(ENV,async()=>{
+  const gatewayCalls=[];
+  const f=await fixture('public-web','search_public_web',{primaryCredentials:CREDS,gatewayCalls,dropExecuteResponseOnce:true});
+  await assert.rejects(()=>f.port.execute({operation:f.operation,arguments:{query:'lost look',limit:3},deliveryId:'synthetic-lost'}));
+  assert.equal(gatewayCalls.length,1,'the provider call still happened');
+  const facts=f.port.externalUsage();
+  assert.equal(facts.incomplete,true,'the run knows a response was never observed');
+  assert.deepEqual(facts.unobserved,['synthetic-lost']);
+  assert.equal(facts.attempts,0,'no attempt is invented from an unobserved response');
+  assert.equal(facts.estimateMicroUsd,0,'no cost is invented either');
+  assert.equal(facts.outcome,'unknown');
+  assert.equal(facts.billedMicroUsd,null);
+ });
+});
+
+test('a canonical ACCESS_DENIED refusal is failed, not unknown',async()=>{
+ await withEnv(ENV,async()=>{
+  const gatewayCalls=[];
+  const f=await fixture('public-web','search_public_web',{primaryCredentials:CREDS,gatewayCalls,
+   managedSearchResponse:()=>new Response('forbidden',{status:403})});
+  await assert.rejects(()=>f.port.execute({operation:f.operation,arguments:{query:'denied look',limit:3},deliveryId:'synthetic-denied'}));
+  assert.equal(gatewayCalls.length,1);
+  const facts=f.port.externalUsage();
+  assert.equal(facts.outcome,'failed','the GatewayDenied code is read from its canonical message');
+  assert.equal(facts.attempts,1,'the submitted attempt is still counted');
+  assert.equal(facts.incomplete,false);
+ });
+});

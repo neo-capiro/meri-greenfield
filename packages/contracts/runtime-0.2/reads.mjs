@@ -34,10 +34,13 @@ export function assertNativeReadSnapshot(raw,{binding,policyRevision,now}){try{c
  }catch{throw nativeReadFault('UNAVAILABLE');}}
 const EXTERNAL_OUTCOMES=['completed','failed','unknown'];
 export function assertNativeReadExternalFacts(value){
- const u=own(value,['provider','attempts','estimateMicroUsd','billedMicroUsd','outcome','calls','truncated']);
+ const u=own(value,['provider','attempts','estimateMicroUsd','billedMicroUsd','outcome','calls','truncated'],['incomplete','unobserved']);
  if(typeof u.provider!=='string'||!/^[a-z0-9][a-z0-9-]{0,63}$/u.test(u.provider)||!integer(u.attempts,0,64)||
   !integer(u.estimateMicroUsd,0,1000000)||u.billedMicroUsd!==null||!EXTERNAL_OUTCOMES.includes(u.outcome)||
   typeof u.truncated!=='boolean'||!Array.isArray(u.calls)||u.calls.length>8)fail('INVALID_RESULT');
+ if(u.incomplete!==undefined&&typeof u.incomplete!=='boolean')fail('INVALID_RESULT');
+ if(u.unobserved!==undefined&&(!Array.isArray(u.unobserved)||u.unobserved.length>4||
+  u.unobserved.some(id=>typeof id!=='string'||!/^[-A-Za-z0-9_.:@/]{1,255}$/u.test(id))))fail('INVALID_RESULT');
  for(const call of u.calls){const c=own(call,['provider','attempts','outcome','estimateMicroUsd','billedMicroUsd']);
   if(c.provider!==u.provider||!integer(c.attempts,1,64)||!EXTERNAL_OUTCOMES.includes(c.outcome)||
    !integer(c.estimateMicroUsd,0,1000000)||c.billedMicroUsd!==null)fail('INVALID_RESULT');}

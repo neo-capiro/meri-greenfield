@@ -26,7 +26,7 @@ export async function fixture(family,id,options={}){
  const {versions:ignored,...identity}=createExecutionBinding({binding,versions,plan:{synthetic:true},expiresAtMs:scene.now()+10000,runtimeSessionId:'synthetic-runtime-session-00000000001'});
  const approvedReads={schemaVersion:'meri-native-general-reads/1',enabled:true,operations:[operation],maxExecuteMs:5000,maxRequestBytes:65536,maxResponseBytes:1048576};
  const clientIds=[...new Set([...(scene.visibleClientIds??[]),...(selectedClientId?[selectedClientId]:[])])],principal={tenantId:binding.tenantId,actorId:binding.actorId};
- const gatewayCalls=options.gatewayCalls??[],managedSearchResponse=options.managedSearchResponse;
+ const gatewayCalls=options.gatewayCalls??[],managedSearchResponse=options.managedSearchResponse,dropExecute=options.dropExecuteResponseOnce?{left:1}:null;
  const composer=await createControlReadsComposer({coreOrigin:'https://core.example.invalid',familyIds:[family],defaultCongress:119,
   ...(options.primaryCredentials?{primaryCredentials:options.primaryCredentials}:{}),
   nativeCredentials:{async nativeCredentialFor(){return {credential:'SYNTHETIC_NATIVE',expiresAtMs:identity.expiresAtMs};}},readSecret:async()=>Buffer.from('SYNTHETIC_SERVICE'),serviceSecretFile:'synthetic',readModeServiceSecretFile:'synthetic-mode',now:scene.now,newId:()=>binding.attemptId,
@@ -50,7 +50,11 @@ export async function fixture(family,id,options={}){
  const execution={async authenticate(){if(revoked)throw Error('EXECUTION_AUTHORITY_REFUSED');return {execution:structuredClone(identity),state:'running',scopes:structuredClone(scopes),selectedClientId,policyRevision};}};
  const conversationStore=options.conversationStore??(id==='get_state_bill_status'?{async read(){return {run:{binding,scopes,state:'running'},request:{skill:null}};},async appendSource(){}}:undefined);
  const app=composer.createReadsRuntime({execution,binding,approvedReads,...(conversationStore?{conversationStore}:{})});
- const port=createNativeReadsClient({origin:'https://control.example.invalid',credential:'SYNTHETIC_EXECUTION',binding,approvedReads,now:scene.now,fetchImpl:(url,init)=>app.handle(new Request(url,init))});
+ const port=createNativeReadsClient({origin:'https://control.example.invalid',credential:'SYNTHETIC_EXECUTION',binding,approvedReads,now:scene.now,
+  async fetchImpl(url,init){const request=new Request(url,init);
+   // The control side executes, then the response is lost: the caller sees a transport failure for work that ran.
+   if(dropExecute&&dropExecute.left>0&&/\/v1\/runner\/reads\/execute$/u.test(url)){dropExecute.left-=1;await app.handle(request);throw Object.assign(Error('response lost'),{code:'ECONNRESET'});}
+   return app.handle(request);}});
  async function execute(args=scene.arguments){const request=(kind,body)=>new Request(`https://control.example.invalid/v1/runner/reads/${kind}`,{method:'POST',headers:{authorization:'Bearer SYNTHETIC_EXECUTION','content-type':'application/json'},body:JSON.stringify(body)});
   const a=await app.handle(request('availability',{schemaVersion:approvedReads.schemaVersion,binding}));assert.equal(a.status,200,await a.clone().text());const available=await a.json();return app.handle(request('execute',{schemaVersion:approvedReads.schemaVersion,binding,operation,arguments:args,deliveryId:'synthetic',installationId:available.installation.installationId,executionCatalogSha256:available.installation.executionCatalogSha256}));}
  return {execute,calls,gatewayCalls,scene,port,binding,scopes,operation,now:scene.now,deadlineMs:identity.expiresAtMs,advanceClock:ms=>{assert(clock);clock.time+=ms;},setClients:ids=>clientIds.splice(0,clientIds.length,...ids),referenceStatus:value=>{referenceStatus=value;},deny:()=>{denySource=true;},revoke:()=>{revoked=true;}};
