@@ -4,6 +4,7 @@ import assert from 'node:assert/strict';
 import {createBrowserHostRuntimePort} from '../browser-runtime-port.mjs';
 import {createEgressGrant} from '../../browser/egress-control.mjs';
 import {validateBrowserPolicy} from '../../browser/policy.mjs';
+import {browserPaths} from '../../browser/workspace.mjs';
 import {binding,installation,sourceScopes,enabledPolicy,clock} from '../../browser/test/fixtures.mjs';
 
 const cwd='/workspace/conversations/'+binding.conversationId;
@@ -43,11 +44,11 @@ test('grant, revoke and process checks preserve signals and actual owner answers
  const f=fixture(),signal=new AbortController().signal,g=grant();
  assert.deepEqual(await f.port.egress.grant(g,{signal}),{granted:true,policySha256:g.policySha256});
  assert.deepEqual(await f.port.egress.revoke({binding,policySha256:g.policySha256},{signal}),{revoked:false});
- assert.deepEqual(await f.port.processes.waitForExit({binding,profile:cwd+'/.browser/profile'},{signal}),{exited:false});
+ assert.deepEqual(await f.port.processes.waitForExit({binding,profile:browserPaths(cwd).profile},{signal}),{exited:false});
  for(const call of f.calls)assert.equal(call[2].signal,signal);
  assert.notEqual(f.calls[0][1],g,'the delegated grant is an inert snapshot');
  const unavailable=Error('observer unavailable'),failed=fixture({processes:{async waitForExit(){throw unavailable;}}});
- await assert.rejects(failed.port.processes.waitForExit({binding,profile:cwd+'/.browser/profile'}),error=>error===unavailable);
+ await assert.rejects(failed.port.processes.waitForExit({binding,profile:browserPaths(cwd).profile}),error=>error===unavailable);
 });
 
 test('every bound operation refuses any changed RunBinding field before reaching its owner',async()=>{

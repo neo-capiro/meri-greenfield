@@ -23,7 +23,7 @@ const configuration=()=>fail('BROWSER_HOST_RUNTIME_CONFIGURATION');
 export function createBrowserHostRuntimePort(raw){
  let c,binding,installation,sourceScopes,readPolicy,grant,revoke,waitForExit,decide,ingest,record;
  try{
-  c=own(raw,['binding','cwd','installation','policy','egress','processes','approvals','artifacts','receipts','sourceScopes'],['approvalDeadlineMs']);
+  c=own(raw,['binding','cwd','installation','policy','egress','processes','approvals','artifacts','receipts','sourceScopes'],['approvalDeadlineMs','sessions']);
   binding=data(c.binding);validateShape('RunBinding',binding);
   if(typeof c.cwd!=='string'||!posix.isAbsolute(c.cwd)||posix.resolve(c.cwd)!==c.cwd||c.cwd.includes('\0')||!c.cwd.endsWith('/'+binding.conversationId)||typeof c.policy!=='function')configuration();
   readPolicy=storageMethod(c,'policy');
@@ -46,6 +46,10 @@ export function createBrowserHostRuntimePort(raw){
  };
  return Object.freeze({
   installation,sourceScopes,
+  ...(c.sessions?{sessions:Object.freeze({async open(request){
+   const q=own(request,['binding','policy','deadlineMs','manifest']);assertBinding(q.binding);
+   return storageMethod(c.sessions,'open')(q);
+  }})}:{}),
   ...(c.approvalDeadlineMs===undefined?{}:{approvalDeadlineMs:c.approvalDeadlineMs}),
   async policy(request){
    const input=own(request,['binding'],['signal']),bound=assertBinding(input.binding),signal=signalOf({signal:input.signal});

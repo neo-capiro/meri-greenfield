@@ -54,7 +54,7 @@ test('composition refuses foreign ownership of browser names, another permission
  refuse(builtOptions(),{enabled:false,mcpServers:{meri_browser:{}},allowedTools:[],hooks:{}});
 });
 test('the shipped (held) capability composes to unchanged conversation options through options.mjs',()=>{
- const runtime={binding,versions:{sdk:'0.3.295',cli:'2.1.295'},cwd,proxyUrl:'https://trusted-proxy.invalid',proxyCredential:'synthetic-task-capability',model:'qualified-model-pin',sessionStore:{async load(){return null;},async append(){}},deadlineMs:clock()+1000,maxTurns:2,maxCostMicroUSD:1000,maxOutputBytes:1024};
+ const runtime={binding,versions:{sdk:'0.3.295',cli:'2.1.295'},cwd,model:'us.anthropic.claude-synthetic-fixture',region:'us-east-1',maxOutputTokens:1024,providerEnvironment:{},sessionStore:{async load(){return null;},async append(){}},deadlineMs:clock()+1000,maxTurns:2,maxCostMicroUSD:1000,maxOutputBytes:1024};
  const held=createBrowserCapability({binding,cwd,policy:enabledPolicy(),installation,sourceScopes,artifacts:{ingest(){}},receipts:{record(){}},now:clock});
  assert.equal(held.activation,'held');
  const without=buildConversationOptions(runtime,new AbortController()),withHeld=buildConversationOptions(runtime,new AbortController(),undefined,undefined,undefined,undefined,undefined,held);
@@ -65,5 +65,8 @@ test('the shipped (held) capability composes to unchanged conversation options t
  // Through options.mjs, the open fragment is composed last and keeps the default deny for every other tool.
  const open=openFragment({cwd}).cap,o=buildConversationOptions(runtime,new AbortController(),undefined,undefined,undefined,undefined,undefined,open);
  assert.deepEqual(Object.keys(o.mcpServers),['meri_browser']);assert.equal(o.permissionMode,'default');
+ assert.deepEqual(o.tools,{type:'preset',preset:'claude_code'});
+ assert.throws(()=>composeBrowserOptions({...without,tools:{type:'preset',preset:'unknown'}},open),/COMPOSITION_REFUSED/);
+ assert.throws(()=>composeBrowserOptions({...without,tools:{type:'preset',preset:'claude_code',extra:T('browser_click')}},open),/COMPOSITION_REFUSED/);
  return o.canUseTool('Read',{file_path:'/etc/passwd'},{toolUseID:'toolu_90'}).then(d=>assert.equal(d.behavior,'deny'));
 });

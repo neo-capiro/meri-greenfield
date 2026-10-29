@@ -53,6 +53,23 @@ export async function prepareBrowserRun({port,binding,cwd,deadlineMs,now,signal,
    throw error;
   }
  }
- if(fragment.activation==='open')await grantBrowserEgress({fragment,egress:port.egress,binding,deadlineMs,lifecycle,signal});
- return Object.freeze({fragment,status:fragment.status,settle:lifecycle.settle});
+ let session;
+ if(fragment.activation==='open'){
+  try{
+   // No direct upstream-only MCP launch: an open browser requires the trusted
+   // host's composed execution/output/control owner before exposing its shim.
+   if(typeof port.sessions?.open!=='function')throw fault('BROWSER_SESSION_OWNER_REQUIRED');
+   await grantBrowserEgress({fragment,egress:port.egress,binding,deadlineMs,lifecycle,signal});
+   session=await port.sessions.open({binding:structuredClone(binding),policy:fragment.policy,deadlineMs,manifest:workflow?.configured.manifest??null});
+   if(typeof session?.destroy!=='function'||JSON.stringify(session.mcpServers)!==JSON.stringify(fragment.mcpServers))throw fault('BROWSER_SESSION_OWNER_REQUIRED');
+  }catch(error){
+   try{await session?.destroy({trigger:'disconnect'});}finally{await lifecycle.settle({outcome:'failed'});}throw error;
+  }
+ }
+ let settled;
+ const settle=input=>settled??=(async()=>{let error;
+  try{await session?.destroy({trigger:input?.outcome==='ended'?'conversation-end':'disconnect'});}catch(caught){error=caught;}
+  const receipt=await lifecycle.settle(input);if(error)throw error;return receipt;
+ })();
+ return Object.freeze({fragment,status:fragment.status,settle});
 }
