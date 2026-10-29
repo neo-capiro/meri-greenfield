@@ -1,5 +1,5 @@
 import canonicalize from 'canonicalize';
-import {validatePrepare,validateLoad,validatePublish,validateReview,validatePublication,validateError} from './generated-validator.mjs';
+import {validateSource,validatePrepare,validateLoad,validatePublish,validateReview,validatePublication,validateError} from './generated-validator.mjs';
 import {parseBytes,digest,fail} from '../document-application/boundary.mjs';
 import {ARTIFACT_MIME_TYPES,artifactFilename,assertNativeArtifactEvidenceBinding} from '../artifacts-0.2/artifact-formats.mjs';
 const requests=new WeakMap(),reviews=new WeakSet(),same=(a,b)=>canonicalize(a)===canonicalize(b);
@@ -7,6 +7,13 @@ const hash=value=>digest(new TextEncoder().encode(canonicalize(value)));
 const textHash=value=>digest(new TextEncoder().encode(value));
 const validators={'federal-prepare':validatePrepare,'federal-load':validateLoad,'federal-publish':validatePublish};
 export const federalWorkbenchVersion='1.0.0';
+/** Read an already-inspected/downloaded retained envelope. Shape/hash checks do not
+ * authenticate its publisher or source URL; the artifact read owner grants access. */
+export async function receiveFederalSource(bytes){
+ const source=parseBytes(bytes,1048576);if(!validateSource(source)||await textHash(source.text)!==source.sha256)fail('SOURCE_MISMATCH');
+ for(const scope of source.scopes)if(scope.start>=scope.end||scope.end>source.text.length||await textHash(source.text.slice(scope.start,scope.end))!==scope.sha256)fail('SOURCE_MISMATCH');
+ return source;
+}
 export function receiveFederalRequest(route,bytes){
  const request=parseBytes(bytes,2*1024*1024);
  if(!Object.hasOwn(validators,route)||!validators[route](request))fail('INVALID_REQUEST');
