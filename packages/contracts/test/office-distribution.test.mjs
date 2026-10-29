@@ -3,6 +3,16 @@ import assert from 'node:assert/strict';
 import {readFile} from 'node:fs/promises';
 import vm from 'node:vm';
 import {generateOfficeContracts} from '../generate-office.mjs';
+import * as published from '@capiro/meri-contracts/office-application';
+
+test('the public package exports the canonical Office receiver without private source imports',async()=>{
+ const packageJson=JSON.parse(await readFile(new URL('../package.json',import.meta.url),'utf8'));
+ assert.deepEqual(packageJson.exports['./office-application'],{
+  types:'./dist/office-application.d.ts',default:'./dist/office-application.mjs'});
+ assert.equal(published.OFFICE_SCHEMA,'meri.office-application/1');
+ assert.equal(typeof published.receiveOfficeDownload,'function');
+ assert.equal(typeof published.receiveOfficeResponse,'function');
+});
 test('Office receiver is deterministic and runs in a browser realm without Node or external modules',async()=>{
  await generateOfficeContracts({check:true});
  const context=vm.createContext({TextEncoder,TextDecoder,Response,Request,Headers,AbortController,AbortSignal,ReadableStream,crypto:globalThis.crypto,setTimeout,clearTimeout});

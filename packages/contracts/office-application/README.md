@@ -4,8 +4,9 @@ This additive browser distribution receives authenticated Office control
 requests and responses. It conveys no authorization. The source generator is
 `node packages/contracts/generate-office.mjs`; `--check` verifies deterministic
 output. Application/image builds are not required. The owning integration
-registers `@capiro/meri-contracts/office-application` and its consumer pins after
-this source is merged; existing package/registry files are intentionally untouched.
+exports `@capiro/meri-contracts/office-application` from package 0.1.29.
+Its declarations reuse the existing document-access public types. Consumer pins
+identify the exact packed source and bytes.
 
 All requests are POST JSON at `/api/meri/office/{route}` with schema
 `meri.office-application/1`. The public browser request has no credentials or
@@ -44,7 +45,7 @@ actual frame window. CODE's Reset_Access_Token requires token and TTL; an issued
 renewal response does not prove a live frame accepted it. Save acknowledgement
 must be followed by current draft metadata before selecting a Publish hash.
 
-Remaining integration: parent-owned package export/registry/pins, frontend
+Remaining integration: frontend consumer pins,
 transport and frame UI, runtime routing/configuration, retention inventory/purge
 and representative live CODE fidelity. No deployment or live editor acceptance
 is implied by this source distribution.

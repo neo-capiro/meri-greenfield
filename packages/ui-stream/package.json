@@ -1,6 +1,6 @@
 {
   "name": "@capiro/meri-ui-stream",
-  "version": "0.1.15",
+  "version": "0.1.16",
   "private": true,
   "license": "UNLICENSED",
   "description": "Trusted Meri event producer and browser-safe AI SDK transport protocol",
@@ -24,7 +24,7 @@
     "typecheck": "tsc -p tsconfig.json --noEmit"
   },
   "peerDependencies": {
-    "@capiro/meri-contracts": "0.1.20 || 0.1.21 || 0.1.22 || 0.1.23 || 0.1.24 || 0.1.25 || 0.1.26 || 0.1.27 || 0.1.28",
+    "@capiro/meri-contracts": "0.1.20 || 0.1.21 || 0.1.22 || 0.1.23 || 0.1.24 || 0.1.25 || 0.1.26 || 0.1.27 || 0.1.28 || 0.1.29",
     "ai": "7.0.137"
   },
   "devDependencies": {

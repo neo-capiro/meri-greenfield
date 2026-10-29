@@ -25,3 +25,7 @@ Package 0.1.11 adds contracts 0.1.24 after the coordinated compatibility decisio
 Package 0.1.12 extends the compatible contracts peer union to 0.1.25 for the reviewed Bill Watch descriptor and independent tenant usage-overview receiver. UI runtime/types and the root event wire remain unchanged; prior archives remain immutable.
 
 Package 0.1.15 adds contracts 0.1.28 to the explicit peer range. Runtime and declaration bytes are unchanged from 0.1.14; only package metadata changes. No UI-stream build is required.
+
+Package 0.1.16 adds contracts 0.1.29 to the same explicit peer range. Its runtime
+and declaration bytes remain unchanged; Office uses the contracts package's
+separate public receiving boundary.
