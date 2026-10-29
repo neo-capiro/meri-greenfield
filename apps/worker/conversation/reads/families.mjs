@@ -11,6 +11,7 @@
 /** @typedef {{clientScope:'required'|'optional',requiredClientOperations?:readonly string[],operationIds?:readonly string[]}} ReadFamily */
 /** @type {Readonly<Record<string,Readonly<ReadFamily>>>} */
 export const READ_FAMILIES=Object.freeze({'watch-state':Object.freeze({clientScope:'optional'}),'legiwatch-relevance':Object.freeze({clientScope:'optional'}),'legiwatch-review':Object.freeze({clientScope:'optional'}),'legislative-comparisons':Object.freeze({clientScope:'optional'}),mail:Object.freeze({clientScope:'optional'}),
+ 'buyer-workspace':Object.freeze({clientScope:'optional'}),
  'saved-records':Object.freeze({clientScope:'optional'}),
  'strategy-saved-records':Object.freeze({clientScope:'optional'}),
  'capiro-data':Object.freeze({clientScope:'optional'}),

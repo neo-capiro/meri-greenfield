@@ -1,0 +1,2651 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:meri:retrieval:buyer-workspace:0.2.0",
+  "title": "Pinned Core buyer workspace, with independent page coverage",
+  "$defs": {
+    "BuyerWorkspaceInput": {
+      "type": "object",
+      "properties": {
+        "peCode": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 32
+        },
+        "asOfFy": {
+          "type": "integer",
+          "minimum": 1900,
+          "maximum": 2200
+        },
+        "knownAt": {
+          "type": "string",
+          "format": "date-time",
+          "maxLength": 40
+        },
+        "acquisitionCursor": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4096
+        },
+        "fundingCursor": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4096
+        },
+        "mentionsCursor": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4096
+        },
+        "lifecycleCursor": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4096
+        }
+      },
+      "required": [
+        "peCode",
+        "asOfFy",
+        "knownAt"
+      ],
+      "additionalProperties": false
+    },
+    "BuyerJson": {
+      "anyOf": [
+        {
+          "type": "null"
+        },
+        {
+          "type": "boolean"
+        },
+        {
+          "type": "number"
+        },
+        {
+          "type": "string",
+          "minLength": 0,
+          "maxLength": 262144
+        },
+        {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/BuyerJson"
+          },
+          "maxItems": 512
+        },
+        {
+          "type": "object",
+          "maxProperties": 256,
+          "additionalProperties": {
+            "$ref": "#/$defs/BuyerJson"
+          }
+        }
+      ]
+    },
+    "BuyerAcquisitionCoverage": {
+      "type": "object",
+      "properties": {
+        "state": {
+          "enum": [
+            "complete",
+            "partial",
+            "unsupported"
+          ]
+        },
+        "supportedRelationshipKinds": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 0,
+            "maxLength": 256
+          },
+          "maxItems": 200
+        },
+        "unsupportedRelationshipKinds": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 0,
+            "maxLength": 256
+          },
+          "maxItems": 200
+        },
+        "unresolvedReasons": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "code": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 128
+              },
+              "count": {
+                "anyOf": [
+                  {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "detail": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "minLength": 0,
+                    "maxLength": 4096
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              }
+            },
+            "required": [
+              "code",
+              "count",
+              "detail"
+            ],
+            "additionalProperties": false
+          },
+          "maxItems": 200
+        },
+        "sourceFreshness": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "source": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 256
+              },
+              "sourceAsOf": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "minLength": 0,
+                    "maxLength": 40
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "lastObservedAt": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "format": "date-time",
+                    "maxLength": 40
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "state": {
+                "enum": [
+                  "current",
+                  "stale",
+                  "unknown",
+                  "unavailable"
+                ]
+              }
+            },
+            "required": [
+              "source",
+              "sourceAsOf",
+              "lastObservedAt",
+              "state"
+            ],
+            "additionalProperties": false
+          },
+          "maxItems": 200
+        }
+      },
+      "required": [
+        "state",
+        "supportedRelationshipKinds",
+        "unsupportedRelationshipKinds",
+        "unresolvedReasons",
+        "sourceFreshness"
+      ],
+      "additionalProperties": false
+    },
+    "BuyerFundingCoverage": {
+      "type": "object",
+      "properties": {
+        "state": {
+          "enum": [
+            "complete",
+            "partial",
+            "unsupported"
+          ]
+        },
+        "unresolvedReasons": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "code": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 128
+              },
+              "count": {
+                "anyOf": [
+                  {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "detail": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "minLength": 0,
+                    "maxLength": 4096
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              }
+            },
+            "required": [
+              "code",
+              "count",
+              "detail"
+            ],
+            "additionalProperties": false
+          },
+          "maxItems": 200
+        },
+        "sourceFreshness": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "source": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 256
+              },
+              "sourceAsOf": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "minLength": 0,
+                    "maxLength": 40
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "state": {
+                "enum": [
+                  "current",
+                  "unknown",
+                  "unavailable"
+                ]
+              }
+            },
+            "required": [
+              "source",
+              "sourceAsOf",
+              "state"
+            ],
+            "additionalProperties": false
+          },
+          "maxItems": 200
+        }
+      },
+      "required": [
+        "state",
+        "unresolvedReasons",
+        "sourceFreshness"
+      ],
+      "additionalProperties": false
+    },
+    "BuyerRelationship": {
+      "type": "object",
+      "properties": {
+        "stableKey": {
+          "type": "string",
+          "minLength": 0,
+          "maxLength": 4096
+        },
+        "relationshipId": {
+          "type": "string",
+          "minLength": 0,
+          "maxLength": 4096
+        },
+        "relationshipKind": {
+          "type": "string",
+          "minLength": 0,
+          "maxLength": 256
+        },
+        "status": {
+          "enum": [
+            "accepted",
+            "candidate",
+            "unresolved"
+          ]
+        },
+        "from": {
+          "type": "object",
+          "properties": {
+            "entityType": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 256
+            },
+            "id": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "minLength": 0,
+                  "maxLength": 4096
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "sourceNativeId": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "minLength": 0,
+                  "maxLength": 4096
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "label": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "minLength": 0,
+                  "maxLength": 4096
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          },
+          "required": [
+            "entityType",
+            "id",
+            "sourceNativeId",
+            "label"
+          ],
+          "additionalProperties": false
+        },
+        "to": {
+          "type": "object",
+          "properties": {
+            "entityType": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 256
+            },
+            "id": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "minLength": 0,
+                  "maxLength": 4096
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "sourceNativeId": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "minLength": 0,
+                  "maxLength": 4096
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "label": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "minLength": 0,
+                  "maxLength": 4096
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          },
+          "required": [
+            "entityType",
+            "id",
+            "sourceNativeId",
+            "label"
+          ],
+          "additionalProperties": false
+        },
+        "sourceNativeIds": {
+          "type": "object",
+          "maxProperties": 128,
+          "additionalProperties": {
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 0,
+                "maxLength": 4096
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "path": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "entityType": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 256
+              },
+              "id": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "minLength": 0,
+                    "maxLength": 4096
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "sourceNativeId": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "minLength": 0,
+                    "maxLength": 4096
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "label": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "minLength": 0,
+                    "maxLength": 4096
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              }
+            },
+            "required": [
+              "entityType",
+              "id",
+              "sourceNativeId",
+              "label"
+            ],
+            "additionalProperties": false
+          },
+          "maxItems": 200
+        },
+        "parent": {
+          "anyOf": [
+            {
+              "type": "object",
+              "properties": {
+                "entityType": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 256
+                },
+                "id": {
+                  "anyOf": [
+                    {
+                      "type": "string",
+                      "minLength": 0,
+                      "maxLength": 4096
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "sourceNativeId": {
+                  "anyOf": [
+                    {
+                      "type": "string",
+                      "minLength": 0,
+                      "maxLength": 4096
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "label": {
+                  "anyOf": [
+                    {
+                      "type": "string",
+                      "minLength": 0,
+                      "maxLength": 4096
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                }
+              },
+              "required": [
+                "entityType",
+                "id",
+                "sourceNativeId",
+                "label"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "validity": {
+          "type": "object",
+          "properties": {
+            "validFromFy": {
+              "anyOf": [
+                {
+                  "type": "integer",
+                  "minimum": 1900,
+                  "maximum": 2200
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "validToFy": {
+              "anyOf": [
+                {
+                  "type": "integer",
+                  "minimum": 1900,
+                  "maximum": 2200
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "knownFrom": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date-time",
+                  "maxLength": 40
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "knownTo": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date-time",
+                  "maxLength": 40
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          },
+          "required": [
+            "validFromFy",
+            "validToFy",
+            "knownFrom",
+            "knownTo"
+          ],
+          "additionalProperties": false
+        },
+        "evidence": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "kind": {
+                "type": "string",
+                "minLength": 0,
+                "maxLength": 256
+              },
+              "sourceUrl": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "minLength": 0,
+                    "maxLength": 4096
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "sourceNativeId": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "minLength": 0,
+                    "maxLength": 4096
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "sourceVersion": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "minLength": 0,
+                    "maxLength": 4096
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "pageNumber": {
+                "anyOf": [
+                  {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "quote": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "minLength": 0,
+                    "maxLength": 262144
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "contentHash": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "pattern": "^[a-fA-F0-9]{64}$"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              }
+            },
+            "required": [
+              "kind",
+              "sourceUrl",
+              "sourceNativeId",
+              "sourceVersion",
+              "pageNumber",
+              "quote",
+              "contentHash"
+            ],
+            "additionalProperties": false
+          },
+          "maxItems": 200
+        },
+        "unresolvedReasons": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 0,
+            "maxLength": 4096
+          },
+          "maxItems": 200
+        },
+        "financialFact": {
+          "type": "object",
+          "properties": {
+            "classification": {
+              "enum": [
+                "source_stated_financial_allocation",
+                "deterministic_financial_allocation",
+                "reviewed_association",
+                "inferred_relevance",
+                "unresolved",
+                "negative_action",
+                "corrected_action",
+                "not_an_allocation"
+              ]
+            },
+            "reviewState": {
+              "enum": [
+                "verified",
+                "candidate",
+                "unreviewed",
+                "rejected",
+                "not_applicable"
+              ]
+            },
+            "sourceAmountUsd": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "minLength": 0,
+                  "maxLength": 128
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "actionEffect": {
+              "enum": [
+                "ordinary",
+                "negative",
+                "corrected",
+                "reversal",
+                "unknown"
+              ]
+            },
+            "evidencePresent": {
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "classification",
+            "reviewState",
+            "sourceAmountUsd",
+            "actionEffect",
+            "evidencePresent"
+          ],
+          "additionalProperties": false
+        },
+        "authoritativeAmountUsd": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 0,
+              "maxLength": 128
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "stableKey",
+        "relationshipId",
+        "relationshipKind",
+        "status",
+        "from",
+        "to",
+        "sourceNativeIds",
+        "path",
+        "parent",
+        "validity",
+        "evidence",
+        "unresolvedReasons",
+        "financialFact",
+        "authoritativeAmountUsd"
+      ],
+      "additionalProperties": false
+    },
+    "BuyerFundingFact": {
+      "type": "object",
+      "properties": {
+        "stableKey": {
+          "type": "string",
+          "minLength": 0,
+          "maxLength": 4096
+        },
+        "factId": {
+          "type": "string",
+          "minLength": 0,
+          "maxLength": 4096
+        },
+        "authorityState": {
+          "enum": [
+            "enacted",
+            "proposed"
+          ]
+        },
+        "measure": {
+          "enum": [
+            "cumulative_snapshot",
+            "transaction_delta",
+            "transfer_leg",
+            "allocation",
+            "residual"
+          ]
+        },
+        "fiscalYear": {
+          "type": "integer",
+          "minimum": 1900,
+          "maximum": 2200
+        },
+        "validFromFy": {
+          "anyOf": [
+            {
+              "type": "integer",
+              "minimum": 1900,
+              "maximum": 2200
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "validToFy": {
+          "anyOf": [
+            {
+              "type": "integer",
+              "minimum": 1900,
+              "maximum": 2200
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "availabilityStart": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "date",
+              "maxLength": 10
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "availabilityEnd": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "date",
+              "maxLength": 10
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "recordedAt": {
+          "type": "string",
+          "format": "date-time",
+          "maxLength": 40
+        },
+        "accountId": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 0,
+              "maxLength": 4096
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "snapshotGroupId": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 0,
+              "maxLength": 4096
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "amountUsd": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 0,
+              "maxLength": 128
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "amountBasis": {
+          "anyOf": [
+            {
+              "enum": [
+                "snapshot",
+                "period_delta",
+                "transaction_delta",
+                "legacy_unspecified"
+              ]
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "executionMetric": {
+          "anyOf": [
+            {
+              "enum": [
+                "obligations",
+                "outlays"
+              ]
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "asOfDate": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "date",
+              "maxLength": 10
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "periodStart": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "date",
+              "maxLength": 10
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "periodEnd": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "date",
+              "maxLength": 10
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "transferGroupId": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 0,
+              "maxLength": 4096
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "transferLeg": {
+          "anyOf": [
+            {
+              "enum": [
+                "outflow",
+                "inflow"
+              ]
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "allocationCertification": {
+          "enum": [
+            "certified",
+            "candidate",
+            "unsupported",
+            "not_applicable"
+          ]
+        },
+        "reviewState": {
+          "enum": [
+            "verified",
+            "candidate",
+            "unreviewed",
+            "rejected",
+            "not_applicable"
+          ]
+        },
+        "exactAccountLevel": {
+          "type": "boolean"
+        },
+        "evidence": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "sourceFamily": {
+                "type": "string",
+                "minLength": 0,
+                "maxLength": 256
+              },
+              "sourceNativeId": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "minLength": 0,
+                    "maxLength": 4096
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "sourceUrl": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "minLength": 0,
+                    "maxLength": 4096
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "sourceVersion": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "minLength": 0,
+                    "maxLength": 4096
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "contentHash": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "pattern": "^[a-fA-F0-9]{64}$"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "quote": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "minLength": 0,
+                    "maxLength": 262144
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              }
+            },
+            "required": [
+              "sourceFamily",
+              "sourceNativeId",
+              "sourceUrl",
+              "sourceVersion",
+              "contentHash",
+              "quote"
+            ],
+            "additionalProperties": false
+          },
+          "maxItems": 200
+        },
+        "unresolvedReasons": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 0,
+            "maxLength": 4096
+          },
+          "maxItems": 200
+        },
+        "authoritativeAmountUsd": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 0,
+              "maxLength": 128
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "stableKey",
+        "factId",
+        "authorityState",
+        "measure",
+        "fiscalYear",
+        "validFromFy",
+        "validToFy",
+        "availabilityStart",
+        "availabilityEnd",
+        "recordedAt",
+        "accountId",
+        "snapshotGroupId",
+        "amountUsd",
+        "amountBasis",
+        "executionMetric",
+        "asOfDate",
+        "periodStart",
+        "periodEnd",
+        "transferGroupId",
+        "transferLeg",
+        "allocationCertification",
+        "reviewState",
+        "exactAccountLevel",
+        "evidence",
+        "unresolvedReasons",
+        "authoritativeAmountUsd"
+      ],
+      "additionalProperties": false
+    },
+    "BuyerFundingBucket": {
+      "type": "object",
+      "properties": {
+        "cumulativeSnapshots": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/BuyerFundingFact"
+          },
+          "maxItems": 51
+        },
+        "transactionDeltas": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/BuyerFundingFact"
+          },
+          "maxItems": 51
+        },
+        "transferLegs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/BuyerFundingFact"
+          },
+          "maxItems": 51
+        },
+        "totals": {
+          "type": "object",
+          "properties": {
+            "cumulativeSnapshotUsd": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "minLength": 0,
+                  "maxLength": 128
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "transactionDeltaUsd": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "minLength": 0,
+                  "maxLength": 128
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          },
+          "required": [
+            "cumulativeSnapshotUsd",
+            "transactionDeltaUsd"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "cumulativeSnapshots",
+        "transactionDeltas",
+        "transferLegs",
+        "totals"
+      ],
+      "additionalProperties": false
+    },
+    "BuyerAcquisition": {
+      "type": "object",
+      "properties": {
+        "subject": {
+          "type": "object",
+          "properties": {
+            "type": {
+              "const": "pe"
+            },
+            "id": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 32
+            }
+          },
+          "required": [
+            "type",
+            "id"
+          ],
+          "additionalProperties": false
+        },
+        "asOfFy": {
+          "type": "integer",
+          "minimum": 1900,
+          "maximum": 2200
+        },
+        "knownAt": {
+          "type": "string",
+          "format": "date-time",
+          "maxLength": 40
+        },
+        "accepted": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/BuyerRelationship"
+          },
+          "maxItems": 50
+        },
+        "candidates": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/BuyerRelationship"
+          },
+          "maxItems": 50
+        },
+        "unresolved": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/BuyerRelationship"
+          },
+          "maxItems": 50
+        },
+        "page": {
+          "type": "object",
+          "properties": {
+            "limit": {
+              "const": 50
+            },
+            "hasMore": {
+              "type": "boolean"
+            },
+            "nextCursor": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 4096
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          },
+          "required": [
+            "limit",
+            "hasMore",
+            "nextCursor"
+          ],
+          "additionalProperties": false
+        },
+        "coverage": {
+          "$ref": "#/$defs/BuyerAcquisitionCoverage"
+        }
+      },
+      "required": [
+        "subject",
+        "asOfFy",
+        "knownAt",
+        "accepted",
+        "candidates",
+        "unresolved",
+        "page",
+        "coverage"
+      ],
+      "additionalProperties": false
+    },
+    "BuyerFunding": {
+      "type": "object",
+      "properties": {
+        "subject": {
+          "type": "object",
+          "properties": {
+            "type": {
+              "const": "pe"
+            },
+            "id": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 32
+            }
+          },
+          "required": [
+            "type",
+            "id"
+          ],
+          "additionalProperties": false
+        },
+        "asOfFy": {
+          "type": "integer",
+          "minimum": 1900,
+          "maximum": 2200
+        },
+        "knownAt": {
+          "type": "string",
+          "format": "date-time",
+          "maxLength": 40
+        },
+        "enacted": {
+          "$ref": "#/$defs/BuyerFundingBucket"
+        },
+        "proposed": {
+          "$ref": "#/$defs/BuyerFundingBucket"
+        },
+        "transferPairs": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "transferGroupId": {
+                "type": "string",
+                "minLength": 0,
+                "maxLength": 4096
+              },
+              "authorityState": {
+                "enum": [
+                  "enacted",
+                  "proposed"
+                ]
+              },
+              "outflow": {
+                "anyOf": [
+                  {
+                    "$ref": "#/$defs/BuyerFundingFact"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "inflow": {
+                "anyOf": [
+                  {
+                    "$ref": "#/$defs/BuyerFundingFact"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "state": {
+                "enum": [
+                  "paired",
+                  "unresolved"
+                ]
+              },
+              "unresolvedReason": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "minLength": 0,
+                    "maxLength": 4096
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              }
+            },
+            "required": [
+              "transferGroupId",
+              "authorityState",
+              "outflow",
+              "inflow",
+              "state",
+              "unresolvedReason"
+            ],
+            "additionalProperties": false
+          },
+          "maxItems": 51
+        },
+        "allocations": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/BuyerFundingFact"
+          },
+          "maxItems": 51
+        },
+        "residuals": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/BuyerFundingFact"
+          },
+          "maxItems": 51
+        },
+        "page": {
+          "type": "object",
+          "properties": {
+            "limit": {
+              "const": 50
+            },
+            "hasMore": {
+              "type": "boolean"
+            },
+            "nextCursor": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 4096
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          },
+          "required": [
+            "limit",
+            "hasMore",
+            "nextCursor"
+          ],
+          "additionalProperties": false
+        },
+        "coverage": {
+          "$ref": "#/$defs/BuyerFundingCoverage"
+        }
+      },
+      "required": [
+        "subject",
+        "asOfFy",
+        "knownAt",
+        "enacted",
+        "proposed",
+        "transferPairs",
+        "allocations",
+        "residuals",
+        "page",
+        "coverage"
+      ],
+      "additionalProperties": false
+    },
+    "BuyerEvidenceSide": {
+      "type": "object",
+      "properties": {
+        "availability": {
+          "enum": [
+            "available",
+            "unavailable"
+          ]
+        },
+        "reason": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 0,
+              "maxLength": 4096
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "revisionId": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "uuid"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "contentHash": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^[a-fA-F0-9]{64}$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "extractionHash": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^[a-fA-F0-9]{64}$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "sourceUrl": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 0,
+              "maxLength": 4096
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "locator": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 0,
+              "maxLength": 2000
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "textSpan": {
+          "anyOf": [
+            {
+              "type": "object",
+              "properties": {
+                "start": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "end": {
+                  "type": "integer",
+                  "minimum": 0
+                }
+              },
+              "required": [
+                "start",
+                "end"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "evidence": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 0,
+              "maxLength": 20000
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "languageHash": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^[a-fA-F0-9]{64}$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "qualificationState": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 0,
+              "maxLength": 32
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "publishedAt": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "date-time",
+              "maxLength": 40
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "sourceModifiedAt": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "date-time",
+              "maxLength": 40
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "availability",
+        "reason",
+        "revisionId",
+        "contentHash",
+        "extractionHash",
+        "sourceUrl",
+        "locator",
+        "textSpan",
+        "evidence",
+        "languageHash",
+        "qualificationState",
+        "publishedAt",
+        "sourceModifiedAt"
+      ],
+      "additionalProperties": false
+    },
+    "BuyerMention": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "rawMention": {
+          "type": "string",
+          "minLength": 0,
+          "maxLength": 4096
+        },
+        "canonicalPeCode": {
+          "type": "string",
+          "minLength": 0,
+          "maxLength": 32
+        },
+        "matchType": {
+          "type": "string",
+          "minLength": 0,
+          "maxLength": 24
+        },
+        "qualificationState": {
+          "const": "qualified"
+        },
+        "confidence": {
+          "type": "number"
+        },
+        "locator": {
+          "type": "string",
+          "minLength": 0,
+          "maxLength": 2000
+        },
+        "evidence": {
+          "type": "string",
+          "minLength": 0,
+          "maxLength": 262144
+        },
+        "languageHash": {
+          "type": "string",
+          "pattern": "^[a-fA-F0-9]{64}$"
+        },
+        "matcherVersion": {
+          "type": "string",
+          "minLength": 0,
+          "maxLength": 64
+        },
+        "qualifiedBy": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 0,
+              "maxLength": 64
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "maxLength": 40
+        },
+        "revisionId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "sourceKey": {
+          "type": "string",
+          "minLength": 0,
+          "maxLength": 4096
+        },
+        "provider": {
+          "type": "string",
+          "minLength": 0,
+          "maxLength": 24
+        },
+        "collection": {
+          "type": "string",
+          "minLength": 0,
+          "maxLength": 16
+        },
+        "packageId": {
+          "type": "string",
+          "minLength": 0,
+          "maxLength": 4096
+        },
+        "billId": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 0,
+              "maxLength": 4096
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "versionCode": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 0,
+              "maxLength": 32
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "lineageKey": {
+          "type": "string",
+          "minLength": 0,
+          "maxLength": 4096
+        },
+        "contentHash": {
+          "type": "string",
+          "pattern": "^[a-fA-F0-9]{64}$"
+        },
+        "extractionHash": {
+          "type": "string",
+          "pattern": "^[a-fA-F0-9]{64}$"
+        },
+        "sourceUrl": {
+          "type": "string",
+          "minLength": 0,
+          "maxLength": 4096
+        },
+        "sourceModifiedAt": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "date-time",
+              "maxLength": 40
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "publishedAt": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "date-time",
+              "maxLength": 40
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "fetchedAt": {
+          "type": "string",
+          "format": "date-time",
+          "maxLength": 40
+        }
+      },
+      "required": [
+        "id",
+        "rawMention",
+        "canonicalPeCode",
+        "matchType",
+        "qualificationState",
+        "confidence",
+        "locator",
+        "evidence",
+        "languageHash",
+        "matcherVersion",
+        "qualifiedBy",
+        "createdAt",
+        "revisionId",
+        "sourceKey",
+        "provider",
+        "collection",
+        "packageId",
+        "billId",
+        "versionCode",
+        "lineageKey",
+        "contentHash",
+        "extractionHash",
+        "sourceUrl",
+        "sourceModifiedAt",
+        "publishedAt",
+        "fetchedAt"
+      ],
+      "additionalProperties": false
+    },
+    "BuyerLifecycle": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "eventKey": {
+          "type": "string",
+          "minLength": 0,
+          "maxLength": 4096
+        },
+        "sourceKey": {
+          "type": "string",
+          "minLength": 0,
+          "maxLength": 4096
+        },
+        "billId": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 0,
+              "maxLength": 4096
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "eventType": {
+          "type": "string",
+          "minLength": 0,
+          "maxLength": 24
+        },
+        "candidateKey": {
+          "type": "string",
+          "minLength": 0,
+          "maxLength": 4096
+        },
+        "rawMention": {
+          "type": "string",
+          "minLength": 0,
+          "maxLength": 4096
+        },
+        "canonicalPeCode": {
+          "type": "string",
+          "minLength": 0,
+          "maxLength": 32
+        },
+        "previousRevisionId": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "uuid"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "currentRevisionId": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "uuid"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "before": {
+          "$ref": "#/$defs/BuyerJson"
+        },
+        "after": {
+          "$ref": "#/$defs/BuyerJson"
+        },
+        "historical": {
+          "type": "boolean"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "maxLength": 40
+        },
+        "revisionId": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "uuid"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "provider": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 0,
+              "maxLength": 24
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "collection": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 0,
+              "maxLength": 16
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "packageId": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 0,
+              "maxLength": 4096
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "versionCode": {
+          "anyOf": [
+            {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "minLength": 0,
+                  "maxLength": 32
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "lineageKey": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 0,
+              "maxLength": 4096
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "contentHash": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^[a-fA-F0-9]{64}$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "extractionHash": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^[a-fA-F0-9]{64}$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "sourceUrl": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 0,
+              "maxLength": 4096
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "sourceModifiedAt": {
+          "anyOf": [
+            {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date-time",
+                  "maxLength": 40
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "publishedAt": {
+          "anyOf": [
+            {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date-time",
+                  "maxLength": 40
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "fetchedAt": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "date-time",
+              "maxLength": 40
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "locator": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 0,
+              "maxLength": 2000
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "evidence": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 0,
+              "maxLength": 262144
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "languageHash": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^[a-fA-F0-9]{64}$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "matchType": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 0,
+              "maxLength": 24
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "qualificationState": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 0,
+              "maxLength": 16
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "confidence": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "beforeEvidence": {
+          "$ref": "#/$defs/BuyerEvidenceSide"
+        },
+        "afterEvidence": {
+          "$ref": "#/$defs/BuyerEvidenceSide"
+        }
+      },
+      "required": [
+        "id",
+        "eventKey",
+        "sourceKey",
+        "billId",
+        "eventType",
+        "candidateKey",
+        "rawMention",
+        "canonicalPeCode",
+        "previousRevisionId",
+        "currentRevisionId",
+        "before",
+        "after",
+        "historical",
+        "createdAt",
+        "revisionId",
+        "provider",
+        "collection",
+        "packageId",
+        "versionCode",
+        "lineageKey",
+        "contentHash",
+        "extractionHash",
+        "sourceUrl",
+        "sourceModifiedAt",
+        "publishedAt",
+        "fetchedAt",
+        "locator",
+        "evidence",
+        "languageHash",
+        "matchType",
+        "qualificationState",
+        "confidence",
+        "beforeEvidence",
+        "afterEvidence"
+      ],
+      "additionalProperties": false
+    },
+    "BuyerWorkspaceOutput": {
+      "type": "object",
+      "properties": {
+        "tool": {
+          "const": "get_pe_buyer_workspace"
+        },
+        "subject": {
+          "type": "object",
+          "properties": {
+            "type": {
+              "const": "pe"
+            },
+            "id": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 32
+            }
+          },
+          "required": [
+            "type",
+            "id"
+          ],
+          "additionalProperties": false
+        },
+        "asOfFy": {
+          "type": "integer",
+          "minimum": 1900,
+          "maximum": 2200
+        },
+        "knownAt": {
+          "type": "string",
+          "format": "date-time",
+          "maxLength": 40
+        },
+        "budget": {
+          "type": "object",
+          "properties": {
+            "state": {
+              "const": "unsupported"
+            },
+            "data": {
+              "type": "null"
+            },
+            "coverage": {
+              "type": "object",
+              "properties": {
+                "unresolvedReasons": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "code": {
+                        "const": "budget_temporal_read_unavailable"
+                      },
+                      "detail": {
+                        "type": "string",
+                        "minLength": 0,
+                        "maxLength": 4096
+                      }
+                    },
+                    "required": [
+                      "code",
+                      "detail"
+                    ],
+                    "additionalProperties": false
+                  },
+                  "maxItems": 1
+                }
+              },
+              "required": [
+                "unresolvedReasons"
+              ],
+              "additionalProperties": false
+            },
+            "freshness": {
+              "type": "null"
+            }
+          },
+          "required": [
+            "state",
+            "data",
+            "coverage",
+            "freshness"
+          ],
+          "additionalProperties": false
+        },
+        "federalEvidence": {
+          "type": "object",
+          "properties": {
+            "state": {
+              "enum": [
+                "complete",
+                "partial"
+              ]
+            },
+            "data": {
+              "type": "object",
+              "properties": {
+                "mentions": {
+                  "type": "object",
+                  "properties": {
+                    "items": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/$defs/BuyerMention"
+                      },
+                      "maxItems": 100
+                    },
+                    "hasMore": {
+                      "type": "boolean"
+                    },
+                    "nextCursor": {
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 4096
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    }
+                  },
+                  "required": [
+                    "items",
+                    "hasMore",
+                    "nextCursor"
+                  ],
+                  "additionalProperties": false
+                },
+                "lifecycle": {
+                  "type": "object",
+                  "properties": {
+                    "items": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/$defs/BuyerLifecycle"
+                      },
+                      "maxItems": 100
+                    },
+                    "hasMore": {
+                      "type": "boolean"
+                    },
+                    "nextCursor": {
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 4096
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    }
+                  },
+                  "required": [
+                    "items",
+                    "hasMore",
+                    "nextCursor"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "required": [
+                "mentions",
+                "lifecycle"
+              ],
+              "additionalProperties": false
+            },
+            "coverage": {
+              "type": "object",
+              "properties": {
+                "state": {
+                  "enum": [
+                    "complete",
+                    "partial"
+                  ]
+                },
+                "unresolvedReasons": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "code": {
+                        "const": "federal_evidence_page_incomplete"
+                      },
+                      "detail": {
+                        "type": "string",
+                        "minLength": 0,
+                        "maxLength": 4096
+                      }
+                    },
+                    "required": [
+                      "code",
+                      "detail"
+                    ],
+                    "additionalProperties": false
+                  },
+                  "maxItems": 1
+                }
+              },
+              "required": [
+                "state",
+                "unresolvedReasons"
+              ],
+              "additionalProperties": false
+            },
+            "freshness": {
+              "type": "object",
+              "properties": {
+                "knownAt": {
+                  "type": "string",
+                  "format": "date-time",
+                  "maxLength": 40
+                },
+                "sourceAsOf": {
+                  "type": "null"
+                }
+              },
+              "required": [
+                "knownAt",
+                "sourceAsOf"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "state",
+            "data",
+            "coverage",
+            "freshness"
+          ],
+          "additionalProperties": false
+        },
+        "acquisition": {
+          "type": "object",
+          "properties": {
+            "state": {
+              "enum": [
+                "complete",
+                "partial",
+                "unsupported"
+              ]
+            },
+            "data": {
+              "$ref": "#/$defs/BuyerAcquisition"
+            },
+            "coverage": {
+              "$ref": "#/$defs/BuyerAcquisitionCoverage"
+            },
+            "freshness": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "source": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 256
+                  },
+                  "sourceAsOf": {
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "minLength": 0,
+                        "maxLength": 40
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "lastObservedAt": {
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "format": "date-time",
+                        "maxLength": 40
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "state": {
+                    "enum": [
+                      "current",
+                      "stale",
+                      "unknown",
+                      "unavailable"
+                    ]
+                  }
+                },
+                "required": [
+                  "source",
+                  "sourceAsOf",
+                  "lastObservedAt",
+                  "state"
+                ],
+                "additionalProperties": false
+              },
+              "maxItems": 200
+            }
+          },
+          "required": [
+            "state",
+            "data",
+            "coverage",
+            "freshness"
+          ],
+          "additionalProperties": false
+        },
+        "fundingExecution": {
+          "type": "object",
+          "properties": {
+            "state": {
+              "enum": [
+                "complete",
+                "partial",
+                "unsupported"
+              ]
+            },
+            "data": {
+              "$ref": "#/$defs/BuyerFunding"
+            },
+            "coverage": {
+              "$ref": "#/$defs/BuyerFundingCoverage"
+            },
+            "freshness": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "source": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 256
+                  },
+                  "sourceAsOf": {
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "minLength": 0,
+                        "maxLength": 40
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "state": {
+                    "enum": [
+                      "current",
+                      "unknown",
+                      "unavailable"
+                    ]
+                  }
+                },
+                "required": [
+                  "source",
+                  "sourceAsOf",
+                  "state"
+                ],
+                "additionalProperties": false
+              },
+              "maxItems": 200
+            }
+          },
+          "required": [
+            "state",
+            "data",
+            "coverage",
+            "freshness"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "tool",
+        "subject",
+        "asOfFy",
+        "knownAt",
+        "budget",
+        "federalEvidence",
+        "acquisition",
+        "fundingExecution"
+      ],
+      "additionalProperties": false
+    }
+  }
+}
