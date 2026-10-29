@@ -21,14 +21,16 @@ const EXTERNAL_OUTCOMES=['completed','failed','unknown'];
 /** One narrow validated external-provider accounting field. Estimates only: billed cost stays unknown. */
 function assertExternalSearch(value){
  const e=own(value,['provider','attempts','estimateMicroUsd','billedMicroUsd','outcome','calls','truncated'],['incomplete','unobserved']);
- if(!identifier(e.provider)||!count(e.attempts)||e.attempts>64||!count(e.estimateMicroUsd)||e.estimateMicroUsd>1000000||
+ if(!count(e.attempts)||e.attempts>64||!count(e.estimateMicroUsd)||e.estimateMicroUsd>1000000||
   e.billedMicroUsd!==null||!EXTERNAL_OUTCOMES.includes(e.outcome)||typeof e.truncated!=='boolean'||
   !Array.isArray(e.calls)||e.calls.length>8)fail();
+ if(e.provider!==null&&!identifier(e.provider))fail();
+ if(e.provider===null&&(e.attempts!==0||e.calls.length!==0||e.incomplete!==true))fail();
  if(e.incomplete!==undefined&&typeof e.incomplete!=='boolean')fail();
  if(e.unobserved!==undefined&&(!Array.isArray(e.unobserved)||e.unobserved.length>4||
   e.unobserved.some(id=>!identifier(id))))fail();
  for(const call of e.calls){const c=own(call,['provider','attempts','outcome','estimateMicroUsd','billedMicroUsd']);
-  if(c.provider!==e.provider||!count(c.attempts)||c.attempts<1||c.attempts>64||!EXTERNAL_OUTCOMES.includes(c.outcome)||
+  if(c.provider!==e.provider||e.provider===null||!count(c.attempts)||c.attempts<1||c.attempts>64||!EXTERNAL_OUTCOMES.includes(c.outcome)||
    !count(c.estimateMicroUsd)||c.estimateMicroUsd>1000000||c.billedMicroUsd!==null)fail();}
  return e;}
 export function assertUsageInput(value){

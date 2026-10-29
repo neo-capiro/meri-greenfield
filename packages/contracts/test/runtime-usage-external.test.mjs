@@ -26,3 +26,17 @@ test('invalid or invented external facts are refused',()=>{
   assert.throws(()=>assertUsageInput({usage:sdk,toolsUsed:tools,externalSearch:bad}),/RUNTIME_USAGE_REFUSED|INVALID_COMMAND/u,'refused: '+JSON.stringify(bad));
  }
 });
+
+test('an unattributed observation is valid only when nothing was observed',()=>{
+ const lost={provider:null,attempts:0,estimateMicroUsd:0,billedMicroUsd:null,outcome:'unknown',calls:[],truncated:false,incomplete:true,unobserved:['synthetic-lost']};
+ const input=assertUsageInput({usage:sdk,toolsUsed:tools,externalSearch:lost});
+ assert.equal(input.externalSearch.provider,null,'a lost generic read is not blamed on a vendor');
+ assert.equal(input.externalSearch.attempts,0);
+ assert.equal(input.externalSearch.estimateMicroUsd,0);
+ // A named provider is still required once anything was observed.
+ for(const bad of [{...lost,attempts:1},{...lost,estimateMicroUsd:7005},{...lost,incomplete:false},
+  {...lost,calls:[{provider:null,attempts:1,outcome:'unknown',estimateMicroUsd:7005,billedMicroUsd:null}]},
+  {...lost,provider:'agentcore-web-search'}]){
+  assert.throws(()=>assertUsageInput({usage:sdk,toolsUsed:tools,externalSearch:bad}),/RUNTIME_USAGE_REFUSED|INVALID_COMMAND/u,JSON.stringify(bad));
+ }
+});

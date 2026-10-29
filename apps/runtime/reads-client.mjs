@@ -15,6 +15,7 @@ export function createNativeReadsClient(configuration){
  // so the client owns the run's aggregate. Bounded, content-free, and honest about what was not observed.
  const MAX_CALLS=8,MAX_UNOBSERVED=4;
  const usage={provider:undefined,calls:[],truncated:false,unobserved:[],seen:new Set()};
+ const deliveries=new Map();
  function recordFacts(facts,deliveryId){
   if(usage.seen.has(deliveryId))return;usage.seen.add(deliveryId);
   usage.provider??=facts.provider;
@@ -31,7 +32,8 @@ export function createNativeReadsClient(configuration){
   const estimateMicroUsd=usage.calls.reduce((n,call)=>n+call.estimateMicroUsd,0);
   const unknown=usage.unobserved.length>0||usage.calls.some(call=>call.outcome==='unknown');
   const failed=usage.calls.some(call=>call.outcome==='failed');
-  return Object.freeze({provider:usage.provider,attempts,estimateMicroUsd,billedMicroUsd:null,
+  // Nothing observed means no provider can be truthfully attributed: null, never a guessed vendor.
+  return Object.freeze({provider:usage.provider??null,attempts,estimateMicroUsd,billedMicroUsd:null,
    outcome:unknown?'unknown':failed?'failed':'completed',calls:Object.freeze(usage.calls.slice()),
    truncated:usage.truncated,incomplete:usage.unobserved.length>0,unobserved:Object.freeze(usage.unobserved.slice())});
  }
@@ -54,18 +56,28 @@ export function createNativeReadsClient(configuration){
   const approved=new Set(config.operations.map(hash));if([...result.installation.operations,...result.discovery.operations].some(op=>!approved.has(hash(op))))fail('INVALID_RESULT');
   if(identity.baseCatalogSha256!==hash(catalog)||pin&&hash(pin)!==hash(identity))fail('UNAVAILABLE');pin??=data(identity);return data({installation:result.installation,discovery:result.discovery});}
  async function execute(raw){const v=own(raw,['operation','arguments','deliveryId'],['signal']);nativeSignal(v.signal);if(!pin)await readAvailability({signal:v.signal});if(!config.operations.some(op=>hash(op)===hash(v.operation)))fail('UNAVAILABLE');
-  try{
-   const result=await call('execute',{operation:v.operation,arguments:v.arguments,deliveryId:v.deliveryId,installationId:pin.installationId,executionCatalogSha256:pin.executionCatalogSha256},v.signal);
-   // Each response is this request's delta; the run aggregate is built here.
-   if(result.externalUsage!==undefined)recordFacts(assertNativeReadExternalFacts(result.externalUsage),v.deliveryId);
-   return result.resultJson;
-  }catch(error){
-   // A dispatched request whose response was lost, timed out or was cancelled is not evidence of no call:
-   // record the observation gap against its delivery identity, never an inferred attempt or zero.
-   // Only a lost, expired or cancelled response is an observation gap: a definite refusal answered us.
-   if(['BUDGET_UNCERTAIN','DEADLINE','CANCELLED'].includes(nativeReadFailureCode(error)))recordUnobserved(v.deliveryId);
-   throw error;
-  }}
+  // One delivery identity is one transport submission for this run: a repeat reuses the immutable outcome
+  // and never re-sends, least of all a submitted call whose outcome is unknown.
+  const prior=deliveries.get(v.deliveryId);
+  if(prior!==undefined){if(prior.error!==undefined)throw prior.error;if(prior.value!==undefined)return prior.value;return prior.promise;}
+  const entry={};
+  entry.promise=(async()=>{
+   try{
+    const result=await call('execute',{operation:v.operation,arguments:v.arguments,deliveryId:v.deliveryId,installationId:pin.installationId,executionCatalogSha256:pin.executionCatalogSha256},v.signal);
+    // Each response is this request's delta; the run aggregate is built here.
+    if(result.externalUsage!==undefined)recordFacts(assertNativeReadExternalFacts(result.externalUsage),v.deliveryId);
+    entry.value=result.resultJson;
+    return entry.value;
+   }catch(error){
+    // Only a lost, expired or cancelled response is an observation gap, and only discovery could have been
+    // served by a managed provider — a generic retained read is never attributed to it.
+    if(['BUDGET_UNCERTAIN','DEADLINE','CANCELLED'].includes(nativeReadFailureCode(error))&&v.operation.id==='search_public_web')recordUnobserved(v.deliveryId);
+    entry.error=error;
+    throw error;
+   }
+  })();
+  deliveries.set(v.deliveryId,entry);
+  return entry.promise;}
  return Object.freeze({readAvailability,execute,
   /** Content-free external provider accounting observed by this invocation; absent means nothing was observed. */
   externalUsage:usageSnapshot});
