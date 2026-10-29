@@ -129,8 +129,10 @@ test('generated browser receiver admits actual mounted bytes and refuses changed
  const outDir=await mkdtemp(join(tmpdir(),'meri-federal-receiver-'));
  t.after(()=>rm(outDir,{recursive:true,force:true}));
  await generateFederalWorkbench({outDir});
- const {receiveFederalRequest:request,receiveFederalResponse:receive}=await import(pathToFileURL(join(outDir,'federal-workbench.mjs')));
+ const {receiveFederalRequest:request,receiveFederalResponse:receive,receiveFederalSource}=await import(pathToFileURL(join(outDir,'federal-workbench.mjs')));
  const bytes=value=>new TextEncoder().encode(JSON.stringify(value)),x=await fixture(t);
+ assert.deepEqual(await receiveFederalSource(bytes(x.source)),x.source);
+ await assert.rejects(receiveFederalSource(bytes({...x.source,text:x.source.text+'changed'})));
  const prepare=request('federal-prepare',bytes({selection:x.selection}));
  const response=await x.post('federal-prepare',prepare),raw=await response.json();
  const review=await receive('federal-prepare',200,bytes(raw),prepare);

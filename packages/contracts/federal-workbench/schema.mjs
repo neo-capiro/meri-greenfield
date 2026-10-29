@@ -13,6 +13,7 @@ const federal=name=>({$ref:'urn:meri:federal-retained-source:1#/$defs/'+name});
 export const federalWorkbenchSchema={
  $schema:'https://json-schema.org/draft/2020-12/schema',$id:'urn:meri:federal-workbench:1',title:'Federal workbench',
  $defs:{
+  FederalCompilerSource:federal('FederalDraftCompilerSource'),
   FederalSelection:object({versionId:uuid,expectedArtifactSha256:sha,operations:{type:'array',minItems:1,maxItems:64,items:federal('FederalDraftOperation')}}),
   FederalSourceArtifact:object({versionId:uuid,sha256:sha,specSha256:sha}),
   FederalPrepareRequest:object({selection:ref('FederalSelection')}),

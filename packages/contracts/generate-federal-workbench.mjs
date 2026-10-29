@@ -26,7 +26,7 @@ export async function generateFederalWorkbench({outDir=resolve(here,'dist'),chec
   }
   root.$defs={...transform(root.$defs,root.$id),...defs};
   const ajv=new Ajv({strict:true,code:{source:true,esm:true}});formats(ajv);ajv.addSchema(root);
-  const entries={validatePrepare:'FederalPrepareRequest',validateLoad:'FederalLoadRequest',validatePublish:'FederalPublishRequest',validateReview:'FederalReview',validatePublication:'FederalPublication',validateError:'FederalError'},refs={};
+  const entries={validateSource:'FederalCompilerSource',validatePrepare:'FederalPrepareRequest',validateLoad:'FederalLoadRequest',validatePublish:'FederalPublishRequest',validateReview:'FederalReview',validatePublication:'FederalPublication',validateError:'FederalError'},refs={};
   for(const [name,def]of Object.entries(entries)){const ref=root.$id+'#/$defs/'+def;ajv.compile({$ref:ref});refs[name]=ref;}
   const generated=standalone(ajv,refs);
   const bundle=await esbuild.build({absWorkingDir:here,entryPoints:['federal-workbench/receive.mjs'],bundle:true,write:false,platform:'browser',format:'esm',target:'es2022',metafile:true,preserveSymlinks:true,
