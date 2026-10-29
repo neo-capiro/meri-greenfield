@@ -26,10 +26,16 @@ export async function fixture(family,id,options={}){
  const {versions:ignored,...identity}=createExecutionBinding({binding,versions,plan:{synthetic:true},expiresAtMs:scene.now()+10000,runtimeSessionId:'synthetic-runtime-session-00000000001'});
  const approvedReads={schemaVersion:'meri-native-general-reads/1',enabled:true,operations:[operation],maxExecuteMs:5000,maxRequestBytes:65536,maxResponseBytes:1048576};
  const clientIds=[...new Set([...(scene.visibleClientIds??[]),...(selectedClientId?[selectedClientId]:[])])],principal={tenantId:binding.tenantId,actorId:binding.actorId};
+ const gatewayCalls=options.gatewayCalls??[],managedSearchResponse=options.managedSearchResponse;
  const composer=await createControlReadsComposer({coreOrigin:'https://core.example.invalid',familyIds:[family],defaultCongress:119,
+  ...(options.primaryCredentials?{primaryCredentials:options.primaryCredentials}:{}),
   nativeCredentials:{async nativeCredentialFor(){return {credential:'SYNTHETIC_NATIVE',expiresAtMs:identity.expiresAtMs};}},readSecret:async()=>Buffer.from('SYNTHETIC_SERVICE'),serviceSecretFile:'synthetic',readModeServiceSecretFile:'synthetic-mode',now:scene.now,newId:()=>binding.attemptId,
   capabilityPolicy:{async forRun(){return {generalReads:true,readFamilies:[family],activeReadOperations:[operation]};}},
-  async fetchImpl(url,options){const path=new URL(url).pathname,body=typeof options.body==='string'?JSON.parse(options.body):null;calls.push(path);
+  async fetchImpl(url,options){const address=new URL(url),path=address.pathname,body=typeof options.body==='string'?JSON.parse(options.body):null;
+   if(/gateway\.bedrock-agentcore\./u.test(address.hostname)){gatewayCalls.push({url,method:options.method,headers:options.headers,body});
+    return managedSearchResponse?managedSearchResponse(body):Response.json({jsonrpc:'2.0',id:'gateway-fixture',result:{isError:false,
+     content:[{type:'text',text:JSON.stringify({id:'fixture',results:[{text:'Fixture managed result',url:'https://public.example.invalid/managed',title:'Fixture'}]})}]}});}
+   calls.push(path);
    assert.equal(options.headers.authorization,'Bearer SYNTHETIC_NATIVE');
    if(path.endsWith('/application-authority/current'))return Response.json({principal,role:'standard_user',permissions:[],clientIds,identityRevision:'a'.repeat(64),membershipRevision:'b'.repeat(64),contextRevision:'c'.repeat(64),conversationId:binding.conversationId,selectedClientId,checkedAtMs:scene.now(),expiresAtMs:identity.expiresAtMs});
    if(path.endsWith('/application-authority/identity'))return Response.json({principal,identityRevision:'a'.repeat(64),checkedAtMs:scene.now(),expiresAtMs:identity.expiresAtMs});
@@ -47,5 +53,5 @@ export async function fixture(family,id,options={}){
  const port=createNativeReadsClient({origin:'https://control.example.invalid',credential:'SYNTHETIC_EXECUTION',binding,approvedReads,now:scene.now,fetchImpl:(url,init)=>app.handle(new Request(url,init))});
  async function execute(args=scene.arguments){const request=(kind,body)=>new Request(`https://control.example.invalid/v1/runner/reads/${kind}`,{method:'POST',headers:{authorization:'Bearer SYNTHETIC_EXECUTION','content-type':'application/json'},body:JSON.stringify(body)});
   const a=await app.handle(request('availability',{schemaVersion:approvedReads.schemaVersion,binding}));assert.equal(a.status,200,await a.clone().text());const available=await a.json();return app.handle(request('execute',{schemaVersion:approvedReads.schemaVersion,binding,operation,arguments:args,deliveryId:'synthetic',installationId:available.installation.installationId,executionCatalogSha256:available.installation.executionCatalogSha256}));}
- return {execute,calls,scene,port,binding,scopes,operation,now:scene.now,deadlineMs:identity.expiresAtMs,advanceClock:ms=>{assert(clock);clock.time+=ms;},setClients:ids=>clientIds.splice(0,clientIds.length,...ids),referenceStatus:value=>{referenceStatus=value;},deny:()=>{denySource=true;},revoke:()=>{revoked=true;}};
+ return {execute,calls,gatewayCalls,scene,port,binding,scopes,operation,now:scene.now,deadlineMs:identity.expiresAtMs,advanceClock:ms=>{assert(clock);clock.time+=ms;},setClients:ids=>clientIds.splice(0,clientIds.length,...ids),referenceStatus:value=>{referenceStatus=value;},deny:()=>{denySource=true;},revoke:()=>{revoked=true;}};
 }

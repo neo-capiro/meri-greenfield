@@ -21,7 +21,7 @@ const key=op=>`${op.id}@${op.version}`,deny=code=>{throw nativeReadFault(code);}
 const ORDINARY_FAMILIES=new Set(['action-items-complete','memory-proposals','client-knowledge-memory','client-knowledge-monday','client-documents','client-knowledge-profile','tenant-contacts','entity-candidates','meeting-source','operational-reads','mail','research-portfolio','research-portfolio-evidence']);
 const uuid=digest=>`${digest.slice(0,8)}-${digest.slice(8,12)}-5${digest.slice(13,16)}-a${digest.slice(17,20)}-${digest.slice(20,32)}`;
 
-export function prepareReadFamilies({familyIds,coreOrigin,fetchImpl,now,newId,capabilityPolicy,defaultCongress,getNativeCredential,getServiceSecret,getReadModeServiceSecret,memoryContexts}){
+export function prepareReadFamilies({familyIds,coreOrigin,fetchImpl,now,newId,capabilityPolicy,defaultCongress,getNativeCredential,getServiceSecret,getReadModeServiceSecret,memoryContexts,primaryCredentials}){
  const prepared=prepareGeneralReadFamilyHandlers({familyIds});
  async function createGateway({binding,current,approvedReads,signal,deadlineMs,objectiveCore,routineCore,capabilityPolicy:runCapabilityPolicy=capabilityPolicy,readCapabilityRole}){
   const started=now();
@@ -58,7 +58,9 @@ export function prepareReadFamilies({familyIds,coreOrigin,fetchImpl,now,newId,ca
    // The legacy attachment owner requires a genuine interactive current-turn observation; saved jobs have no such bearer.
    if(job&&family==='client-knowledge-attachments')continue;
    if(NATIVE_READ_FAMILIES.includes(family))families[family]={origin:coreOrigin,fetchImpl,maxRequestMs:approvedReads.maxExecuteMs,maxResponseBytes:approvedReads.maxResponseBytes,
-    ...(readSource?{readSource}:{credentialsForCall:credentials.credentialsForCall}),...(family==='client-registry'?{authorizeResultForCall:credentials.authorizeResultForCall}:{})};
+    ...(readSource?{readSource}:{credentialsForCall:credentials.credentialsForCall}),...(family==='client-registry'?{authorizeResultForCall:credentials.authorizeResultForCall}:{}),
+    // The managed search producer's own credential boundary; provider-only, never a Core secret.
+    ...(family==='public-web'&&primaryCredentials!==undefined?{primaryCredentials}:{})};
    else if(ORDINARY_FAMILIES.has(family)){
     const transport={fetchImpl,maxRequestMs:approvedReads.maxExecuteMs,maxResponseBytes:approvedReads.maxResponseBytes,...(readSource?{readSource}:{getCredentials:ordinaryCredentials})};
     if(!readSource&&['research-portfolio','research-portfolio-evidence'].includes(family))transport.getCredentials=async request=>{

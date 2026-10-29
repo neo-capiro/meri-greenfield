@@ -14,4 +14,9 @@ const primary=configuration=>{
   ...(configuration.fetchImpl===undefined?{}:{fetchImpl:configuration.fetchImpl}),
   ...(configuration.primaryCredentials===undefined?{}:{credentials:configuration.primaryCredentials})});
 };
-export const createHandlers=configuration=>createPublicWebHandlers(configuration,familyOperations(id),primary(configuration));
+export const createHandlers=configuration=>{
+ // Provider-only ports configure the managed search producer; the shared native/Core handler has a closed
+ // allowlist and must never see them (nor may Core secrets be forwarded to managed search).
+ const {primaryCredentials,...shared}=configuration??{};
+ return createPublicWebHandlers(shared,familyOperations(id),primary({...shared,...(primaryCredentials===undefined?{}:{primaryCredentials})}));
+};

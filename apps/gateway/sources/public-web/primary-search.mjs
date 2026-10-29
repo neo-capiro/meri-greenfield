@@ -257,12 +257,3 @@ export function primarySearchTarget(env = process.env) {
   } catch { return undefined; }
   return Object.freeze({endpoint, region, toolName});
 }
-
-/** The paid admission implied by the ACTUAL selected deployment target: nothing when the primary is off,
- * otherwise the exact numbers the producer bills and the budget owner must reserve. One derivation, used by
- * the allocation render and the tests; a target that exists without paid admission is a wiring defect. */
-export function primarySearchAdmission(env = process.env) {
-  if (primarySearchTarget(env) === undefined) return undefined;
-  return Object.freeze({provider: AGENTCORE_SEARCH_PROVIDER, unitMicroUsd: AGENTCORE_SEARCH_UNIT_MICROUSD,
-    maxAttempts: AGENTCORE_SEARCH_DEFAULT_ATTEMPTS});
-}
