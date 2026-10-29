@@ -4,9 +4,9 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {createConversationActivity} from '../activity.mjs';
-import {applicationFixture,binding,versions,id} from '../../../../control/conversations/test/application-fixture.mjs';
-import {fixture as readsFixture} from '../../../../runtime/test/reads-native-fixture.mjs';
-import {SDK_USAGE_BASIS} from '../../../../control/conversations/usage.mjs';
+import {applicationFixture,binding,versions,id} from '../../../../apps/control/conversations/test/application-fixture.mjs';
+import {fixture as readsFixture} from '../../../../apps/runtime/test/reads-native-fixture.mjs';
+import {SDK_USAGE_BASIS} from '../../../../apps/control/conversations/usage.mjs';
 
 const ENDPOINT='https://meri-preview-web-search-abc123.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp';
 const ENV={MERI_WEB_SEARCH_GATEWAY_ENDPOINT:ENDPOINT,MERI_WEB_SEARCH_TOOL:'WebSearch-tool-abc123',MERI_WEB_SEARCH_REGION:'us-east-1'};

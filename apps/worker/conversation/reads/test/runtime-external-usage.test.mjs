@@ -3,7 +3,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {createGeneralReadRuntime} from '../runtime.mjs';
-import {binding,scopes,id} from '../../../../../control/conversations/test/store-fixture.mjs';
+import {binding,scopes,id} from '../../../../../apps/control/conversations/test/store-fixture.mjs';
 import catalog from '../../../../../packages/contracts/retrieval-0.2/catalog.json' with {type:'json'};
 import {canonicalSha256} from '../../../../../packages/contracts/validate.mjs';
 import {resolveOperationContract} from '../../../../../packages/contracts/retrieval-0.2/validate.mjs';
