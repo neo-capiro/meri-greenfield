@@ -732,7 +732,9 @@ class SourceBuiltClamavPayload(unittest.TestCase):
         version banner is "Clam AntiVirus Monitoring Tool 1.5.4", not "ClamAV 1.5.4". The recipe now pins the
         supported APP_CONFIG_DIRECTORY to /etc and the probe supplies minimal valid configs with --config-file (the
         same explicit-config pattern the production freshclam caller uses), keeping the exact per-tool banner and
-        status gates. json-c is still installed because libclamav links it.
+        status gates. json-c is still installed because libclamav links it. sigtool --md5 prints
+        hash:size:basename (sigtool.c:296-312), so the comparison extracts the first colon field; the previous
+        whitespace field was the entire record and could never equal md5sum's bare digest.
         """
         runtime = " ".join(self.STAGES["runtime"]["instructions"])
         build = " ".join(self.STAGES["clamav-source-build"]["instructions"])
@@ -764,6 +766,10 @@ class SourceBuiltClamavPayload(unittest.TestCase):
                       runtime, "the signature probe does not preserve sigtool's stdout and stderr")
         self.assertIn('if [ "$sigtool_status" -ne 0 ]; then echo "sigtool failed to execute"; exit 1; fi', runtime,
                       "the signature probe does not fail closed on a nonzero sigtool status")
+        self.assertIn("awk -F: '{print $1}' /tmp/meri-sigtool-out", runtime,
+                      "the sigtool comparison does not read the colon-delimited digest field")
+        self.assertNotIn("awk '{print $1}' /tmp/meri-sigtool-out", runtime,
+                         "the sigtool comparison still treats the whole colon record as a whitespace field")
         ocr = [statement for statement in INSTALL_STATEMENTS if "tesseract=5.5.0-r2" in statement]
         self.assertEqual(len(ocr), 1, "the upload layer install request is not identifiable")
         self.assertIn("json-c=0.19-r2", ocr[0],
