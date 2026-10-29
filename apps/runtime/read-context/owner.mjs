@@ -78,6 +78,10 @@ export function createReadContextOwner(configuration){
    * after the source value was produced withholds that value. The original expiry still bounds the call. */
   async function observeRelease(proof,prior){
    const started=now(),fresh=assertNativeToolAuthority(await life.run(signal=>currentCore({credential:prior.credential,signal,deadlineMs:cutoff})),{started,now});
+   // Graph paths can include client-attributed notes behind non-client nodes.
+   // Reuse the canonical current roster for release, including General reads.
+   if(proof.operation.id==='find_path_to'&&(!Array.isArray(prior.native.clientIds)||!Array.isArray(fresh.clientIds)||
+    prior.native.clientIds.some(id=>!fresh.clientIds.includes(id))))refuse('ACCESS_DENIED');
    const {modeObservation,clientReference}=prior.vector;
    const attachmentObservation=proof.operation.id==='read_chat_attachments'?await observeAttachmentSource(prior.credential):null;
    const context=createSourceReadContext({contract:resolveOperationContract(proof.operation),proof,native:fresh,defaultCongress:c.defaultCongress,now,priorContext:prior.context,

@@ -9,7 +9,7 @@ function unique(values, label) {
 // binding may declare `sinceCatalogVersion`: a catalog must carry every binding its own version
 // includes, and is never required to carry a later successor's. Neither value is caller-controlled,
 // and a preserved catalog therefore keeps asserting at its own exact counts.
-export const CURRENT_CATALOG_VERSION = '0.2.26';
+export const CURRENT_CATALOG_VERSION = '0.2.27';
 function compareCatalogVersions(left, right) {
   const parts = value => String(value).split('.').map(Number);
   const a = parts(left), b = parts(right);
@@ -24,6 +24,8 @@ const searched = result => ({input: result.input, metadata: {clientScope: result
 const federal = result => ({input: result.query, metadata: {queryScope: result.queryScope, clientScope: result.clientScope}});
 
 export const CATALOG_OPERATION_BINDINGS = Object.freeze([
+  Object.freeze({id:'find_path_to',nativeId:'find_path_to',group:'graph-paths',input:'GraphPathsInput',output:'GraphPathsOutput',version:'0.2.0',sinceCatalogVersion:'0.2.27',contextKeys:Object.freeze([]),
+    normalize:(v,r,c)=>v.graphPathsValidators.normalizeInput(r,c),outputAssert:(v,p,r)=>v.graphPathsValidators.assertOutput(p,r)}),
   Object.freeze({id:'get_pe_buyer_workspace',nativeId:'get_pe_buyer_workspace',group:'buyer-workspace',input:'BuyerWorkspaceInput',output:'BuyerWorkspaceOutput',version:'0.2.0',sinceCatalogVersion:'0.2.26',contextKeys:Object.freeze([]),
     normalize:(v,r,c)=>v.buyerWorkspaceValidators.normalizeInput(r,c),outputAssert:(v,p,r)=>v.buyerWorkspaceValidators.assertOutput(p,r)}),
   ...[['explain_opportunity_match','FundingMatch'],['compare_funding_opportunities','FundingCompare'],['build_opportunity_action_plan','FundingPlan']].map(([id,name])=>Object.freeze({id,nativeId:id,group:'funding-analysis',input:name+'Input',output:name+'Output',version:'0.2.0',sinceCatalogVersion:'0.2.25',contextKeys:Object.freeze(['asOf']),
@@ -502,7 +504,8 @@ function assertCatalog(catalog) {
     'inspect_watch_state','watch_action','mail_send','get_research_portfolio_share_links','publish_research_portfolio_share_link','revoke_research_portfolio_share_link','read_saved_strategy_records','read_saved_record','describe_capiro_data','query_capiro_data','list_connected_app_reads','read_connected_app','list_teams_channels','get_teams_channel_messages'];
   const advancedFunding = compareCatalogVersions(catalog.catalogVersion,'0.2.25') >= 0 ? 3 : 0;
   const buyerWorkspace = compareCatalogVersions(catalog.catalogVersion,'0.2.26') >= 0 ? 1 : 0;
-  if (selected.filter(row=>!additive.includes(row.id)).length !== 110 + advancedFunding + buyerWorkspace || catalog.originals.length - selected.length !== 12 - advancedFunding - buyerWorkspace) fail('D012 disposition mismatch');
+  const graphPaths = compareCatalogVersions(catalog.catalogVersion,'0.2.27') >= 0 ? 1 : 0;
+  if (selected.filter(row=>!additive.includes(row.id)).length !== 110 + advancedFunding + buyerWorkspace + graphPaths || catalog.originals.length - selected.length !== 12 - advancedFunding - buyerWorkspace - graphPaths) fail('D012 disposition mismatch');
   const operations = new Map();
   const aliases = new Map();
   for (const operation of catalog.operations) {

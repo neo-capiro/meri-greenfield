@@ -1,0 +1,282 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:meri:retrieval:graph-paths:0.2.0",
+  "title": "Source-linked paths within the current authorized graph",
+  "$defs": {
+    "GraphPathsInput": {
+      "type": "object",
+      "properties": {
+        "to": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 120,
+          "pattern": "^[a-z][a-z0-9_-]*:.+$"
+        },
+        "depth": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 5
+        },
+        "clientId": {
+          "type": "string",
+          "format": "uuid"
+        }
+      },
+      "required": [
+        "to"
+      ],
+      "additionalProperties": false
+    },
+    "GraphPathNode": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4096,
+          "pattern": "^[a-z][a-z0-9_-]*:.+$"
+        },
+        "type": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-z][a-z0-9_-]*$"
+        },
+        "label": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4096
+        }
+      },
+      "required": [
+        "id",
+        "type",
+        "label"
+      ],
+      "additionalProperties": false
+    },
+    "GraphPathSource": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "enum": [
+            "tracked_bill_relationship",
+            "client_person",
+            "memory_item",
+            "kg_cache_projection"
+          ]
+        },
+        "id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4096
+        }
+      },
+      "required": [
+        "kind",
+        "id"
+      ],
+      "additionalProperties": false
+    },
+    "GraphPathEdge": {
+      "type": "object",
+      "properties": {
+        "src": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4096,
+          "pattern": "^[a-z][a-z0-9_-]*:.+$"
+        },
+        "dst": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4096,
+          "pattern": "^[a-z][a-z0-9_-]*:.+$"
+        },
+        "relation": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4096
+        },
+        "origin": {
+          "enum": [
+            "fk",
+            "mention"
+          ]
+        },
+        "basis": {
+          "enum": [
+            "direct",
+            "thematic",
+            "derived"
+          ]
+        },
+        "sources": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/GraphPathSource"
+          },
+          "minItems": 1,
+          "maxItems": 4000
+        }
+      },
+      "required": [
+        "src",
+        "dst",
+        "relation",
+        "origin",
+        "basis",
+        "sources"
+      ],
+      "additionalProperties": false
+    },
+    "GraphPath": {
+      "type": "object",
+      "properties": {
+        "nodes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/GraphPathNode"
+          },
+          "minItems": 1,
+          "maxItems": 6
+        },
+        "edges": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/GraphPathEdge"
+          },
+          "minItems": 0,
+          "maxItems": 5
+        },
+        "basis": {
+          "enum": [
+            "direct",
+            "thematic",
+            "derived"
+          ]
+        }
+      },
+      "required": [
+        "nodes",
+        "edges",
+        "basis"
+      ],
+      "additionalProperties": false
+    },
+    "GraphPathsOutput": {
+      "type": "object",
+      "properties": {
+        "tool": {
+          "const": "find_path_to"
+        },
+        "target": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 120,
+          "pattern": "^[a-z][a-z0-9_-]*:.+$"
+        },
+        "clientId": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "uuid"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "observedAt": {
+          "type": "string",
+          "format": "date-time",
+          "maxLength": 40
+        },
+        "temporalCoverage": {
+          "const": "current_only"
+        },
+        "paths": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/GraphPath"
+          },
+          "minItems": 0,
+          "maxItems": 20
+        },
+        "coverage": {
+          "type": "object",
+          "properties": {
+            "state": {
+              "enum": [
+                "complete",
+                "partial"
+              ]
+            },
+            "scope": {
+              "const": "one_shortest_path_per_visible_client"
+            },
+            "maxDepth": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 5
+            },
+            "maxPaths": {
+              "const": 20
+            },
+            "clientsSearched": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 200
+            },
+            "reasons": {
+              "type": "array",
+              "items": {
+                "enum": [
+                  "clients_row_limit",
+                  "memory_items_row_limit",
+                  "memory_edges_row_limit",
+                  "tracked_bills_row_limit",
+                  "client_people_row_limit",
+                  "cache_projection_limit",
+                  "unresolved_endpoint",
+                  "source_reference_unavailable",
+                  "traversal_limit",
+                  "path_limit",
+                  "cache_projection_bounded",
+                  "memory_governance_unavailable"
+                ]
+              },
+              "minItems": 0,
+              "maxItems": 12
+            }
+          },
+          "required": [
+            "state",
+            "scope",
+            "maxDepth",
+            "maxPaths",
+            "clientsSearched",
+            "reasons"
+          ],
+          "additionalProperties": false
+        },
+        "summary": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4096
+        }
+      },
+      "required": [
+        "tool",
+        "target",
+        "clientId",
+        "observedAt",
+        "temporalCoverage",
+        "paths",
+        "coverage",
+        "summary"
+      ],
+      "additionalProperties": false
+    }
+  }
+}
