@@ -16,21 +16,29 @@ import {mkdtemp,rm} from 'node:fs/promises';
 import {tmpdir} from 'node:os';
 import {join} from 'node:path';
 import {pathToFileURL} from 'node:url';
+import official from '../../../../packages/contracts/test/fixtures/federal-draft-source.wire.json' with {type:'json'};
+import {projectNativeFederalSource} from '../../../artifacts/federal-drafting/native-source.mjs';
 
-async function fixture(t){
+async function fixture(t,{native=false}={}){
  const binding={tenantId:id(100),actorId:id(101),conversationId:id(102),runId:id(103),attemptId:id(104),workerId:id(105),writerFence:1};
  const clientId=id(106),scopes=[{tenantId:binding.tenantId,kind:'client',resourceId:clientId,policyRevision:'policy1'}];
  const f=nativeDocumentFixture({binding,scopes}),source=sourceFor();
  const retained=await f.run({...f.call,request:{...f.call.request,title:'Synthetic federal source',content:{text:JSON.stringify(source)}}});
  const {deadlineMs}=f.context,now=f.options.now;
  const state={closed:false,revoked:false,artifactChecks:0},ports=createLocalDocumentPorts({binding,scopes,clientId,deadlineMs,now,state});
+ const nativeState={calls:0,available:true,mutate:null};
+ const federalSource={async read({selection,signal}){
+  assert.equal(signal.aborted,false);assert.deepEqual(selection,official.request);nativeState.calls++;
+  const result=nativeState.available?structuredClone(official.response):{tool:'read_federal_draft_source',authoritativeOwner:'federal_evidence_current',currentStatus:'unavailable',selection,reason:'exact_current_source_unavailable'};
+  nativeState.mutate?.(result);return result;
+ }};
  t.after(()=>ports.sessions.close());
  const limits={maxRequestMs:5000,maxRequestBytes:1048576,maxResponseBytes:2097152};
  const compose=createRuntimeDocumentOptionsComposer({storage:{objects:f.options.objects,versions:f.options.versions},executor:f.options.executor,
   pool:f.options.pool,store:{lifecycle:{readArtifactFile:async()=>null}},sessions:ports.sessions,now});
  let denyRelease=false;
  const optionsOwner={async resolve(){return {documentOptions:compose({artifactOptions:{...f.options,authorize:ports.authorize,
-  ids:()=>({artifactId:randomUUID(),versionId:randomUUID(),objectId:randomUUID()})},selectedClientId:clientId,limits,enabled:true}),
+  ids:()=>({artifactId:randomUUID(),versionId:randomUUID(),objectId:randomUUID()})},selectedClientId:clientId,limits,enabled:true,...(native?{federalSource}:{})}),
   async recheck(check){if(denyRelease&&check.phase==='release')throw Object.assign(Error('ACCESS_DENIED'),{code:'ACCESS_DENIED'});}};}};
  const runtime=createRuntimeArtifactApplication({sessions:ports.sessions,optionsOwner,now,limits});
  const listeners=createControlRouteApplications({assembly:runtime,candidate:{async handle(){return null;}}});
@@ -38,12 +46,65 @@ async function fixture(t){
  const post=(intent,body)=>listeners.public.handle(new Request('https://meri.synthetic.invalid/api/documents/'+intent,{method:'POST',
   headers:{authorization:'Bearer '+session.credential,'content-type':'application/json'},body:JSON.stringify(body)}));
  const selection={versionId:retained.version.versionId,expectedArtifactSha256:retained.version.object.sha256,operations:[opFor(source)]};
- return {f,state,source,selection,post,deny:()=>{denyRelease=true;},allow:()=>{denyRelease=false;},
+ return {f,state,nativeState,source,selection,post,deny:()=>{denyRelease=true;},allow:()=>{denyRelease=false;},
   suppress:()=>f.sql.suppressed.add(binding.tenantId+':artifact:'+retained.version.artifactId),
   reads:createArtifactService({...f.options,ids:()=>({artifactId:randomUUID(),versionId:randomUUID(),objectId:randomUUID()})})};
 }
 async function ok(response){const body=await response.json();assert.equal(response.status,200,JSON.stringify(body));return body;}
 const publication=(selection,revisionSha256,output,extra={})=>({selection,revisionSha256,output,deliveryId:randomUUID(),baseVersionId:null,baseRevisionSha256:null,...extra});
+const importRequest=()=>({selection:structuredClone(official.request),deliveryId:randomUUID()});
+const importedSelection=result=>({versionId:result.publication.version.versionId,expectedArtifactSha256:result.publication.version.object.sha256,
+ operations:[opFor(result.source,{scopeId:'document',expectedText:'$20',text:'$25'})]});
+
+test('official import retains exact Core projection and replays original custody before review and export',async t=>{
+ const x=await fixture(t,{native:true}),input=importRequest(),result=await ok(await x.post('federal-import',input));
+ assert.deepEqual(result.source,projectNativeFederalSource(official.request,official.response));
+ const bytes=await x.reads.download(result.publication.version.versionId,x.f.context);
+ assert.deepEqual(JSON.parse(bytes.bytes),{schema:result.schema,selection:result.selection,source:result.source});
+ const count=x.f.state.executions.length;
+ assert.equal((await ok(await x.post('federal-import',input))).publication.version.versionId,result.publication.version.versionId);
+ assert.equal(x.f.state.executions.length,count);
+ const selection=importedSelection(result),review=await ok(await x.post('federal-prepare',{selection}));
+ const saved=await ok(await x.post('federal-publish',publication(selection,review.prepared.revisionSha256,'draft')));
+ const load={versionId:saved.publication.version.versionId,expectedArtifactSha256:saved.publication.version.object.sha256};
+ await ok(await x.post('federal-load',load));
+ await ok(await x.post('federal-publish',publication(selection,review.prepared.revisionSha256,'operative')));
+ const before=x.f.state.executions.length;x.nativeState.available=false;
+ for(const [route,body] of [['federal-import',importRequest()],['federal-prepare',{selection}],['federal-load',load],['federal-publish',publication(selection,review.prepared.revisionSha256,'redline')]]){
+  const response=await x.post(route,body);assert.equal(response.status,409);assert.equal((await response.json()).error.code,'DRAFT_SOURCE_STALE');
+ }
+ assert.equal(x.f.state.executions.length,before);
+});
+
+test('official marker never substitutes for a current Core reader; changed metadata refuses',async t=>{
+ const x=await fixture(t),source=projectNativeFederalSource(official.request,official.response);
+ const retained=await x.f.run({...x.f.call,deliveryId:randomUUID(),request:{...x.f.call.request,content:{text:JSON.stringify({schema:'meri.federal-source.v1',selection:official.request,source})}}});
+ const selection=importedSelection({source,publication:retained});
+ assert.equal((await x.post('federal-import',importRequest())).status,503);
+ assert.equal((await x.post('federal-prepare',{selection})).status,503);
+ const y=await fixture(t,{native:true}),result=await ok(await y.post('federal-import',importRequest()));
+ y.nativeState.mutate=value=>{value.source.fetchedAt='2026-01-04T00:00:00.000Z';};
+ assert.equal((await y.post('federal-prepare',{selection:importedSelection(result)})).status,409);
+});
+
+test('source change before commit preserves an unknown original delivery without repeating generation',async t=>{
+ const x=await fixture(t,{native:true}),input=importRequest();
+ x.f.state.executorHook=()=>{x.nativeState.available=false;};
+ const result=await x.post('federal-import',input);assert.notEqual(result.status,200);
+ const before=x.f.state.executions.length;
+ assert.notEqual((await x.post('federal-import',input)).status,200);assert.equal(x.f.state.executions.length,before);
+ x.f.state.executorHook=null;x.nativeState.available=true;
+ const retry=await x.post('federal-import',input);assert.notEqual(retry.status,200);
+ assert.equal((await retry.json()).error.outcome,'UNKNOWN');assert.equal(x.f.state.executions.length,before);
+});
+
+test('committed import withheld at release recovers the same version after current authority returns',async t=>{
+ const x=await fixture(t,{native:true}),input=importRequest();x.deny();
+ const response=await x.post('federal-import',input);assert.equal(response.status,403);
+ assert.equal((await response.json()).error.outcome,'RESULT_NOT_RELEASED');
+ const count=x.f.state.executions.length;x.allow();
+ await ok(await x.post('federal-import',input));assert.equal(x.f.state.executions.length,count);
+});
 
 test('public source preparation, saved review reload and all three confirmed exact exports use existing custody',async t=>{
  const x=await fixture(t),before=x.f.state.executions.length;
@@ -155,4 +216,12 @@ test('generated browser receiver admits actual mounted bytes and refuses changed
  await assert.rejects(receive('federal-prepare',200,bytes(changed),prepare));
  await assert.rejects(receive('federal-prepare',200,bytes(raw),structuredClone(prepare)));
  assert.throws(()=>request('federal-prepare',bytes({selection:x.selection,approved:true})));
+ const y=await fixture(t,{native:true}),imported=request('federal-import',bytes(importRequest()));
+ const saved=await ok(await y.post('federal-import',imported));
+ assert.deepEqual(await receive('federal-import',200,bytes(saved),imported),saved);
+ const {publication:unused,...envelope}=saved;
+ assert.deepEqual(await receiveFederalSource(bytes(envelope)),saved.source);
+ for(const mutate of [r=>{r.source.text+='changed';},r=>{r.selection.revisionId=randomUUID();},r=>{r.publication.version.parentVersionId=randomUUID();},r=>{r.publication.version.object.sha256='0'.repeat(64);}]){
+  const bad=structuredClone(saved);mutate(bad);await assert.rejects(receive('federal-import',200,bytes(bad),imported));
+ }
 });

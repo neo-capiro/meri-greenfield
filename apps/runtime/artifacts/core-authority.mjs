@@ -35,6 +35,7 @@ function documentLimits(value){
 export function createCoreArtifactAuthority(configuration){
  let c;try{c=own(configuration,['client','credentials','now','limits','maxOutputBytes'],['newId']);}catch{refuse('ARTIFACT_AUTHORITY_CONFIGURATION');}
  const read=capture(c.client,'read'),serviceSecret=capture(c.credentials,'serviceSecret'),admitBearer=capture(c.credentials,'admitBearer');
+ const readFederal='readFederalSource' in c.client?capture(c.client,'readFederalSource'):null;
  const origin=c.client.origin,now=c.now,newId=c.newId??randomUUID,limits=documentLimits(c.limits);
  if(!Number.isSafeInteger(c.maxOutputBytes)||c.maxOutputBytes<1||c.maxOutputBytes>16777216||typeof origin!=='string'||typeof now!=='function'||types.isProxy(now)||typeof newId!=='function')refuse('ARTIFACT_AUTHORITY_CONFIGURATION');
 
@@ -111,6 +112,19 @@ export function createCoreArtifactAuthority(configuration){
    const context=v.context({binding:first.binding,scopes:first.scopes,evidence:[],assets:[],deadlineMs:life.deadline(),maxBytes});
    life.check();
    let latest=first;
+   const federalSource=!call.intent.startsWith('federal-')||readFederal===null?undefined:{async read(raw){
+    let q;try{q=own(raw,['selection','deadlineMs'],['signal']);nativeSignal(q.signal);if(!Number.isSafeInteger(q.deadlineMs))throw Error();}catch{refuse('ACCESS_DENIED');}
+    const t=lifetime(Math.min(q.deadlineMs,context.deadlineMs,latest.expiresAtMs),q.signal);
+    const lookup=()=>{let issued;try{issued=data(own(ports.nativeCredentialFor({binding:first.binding,selectedClientId:first.selectedClientId,signal:t.signal}),['credential','expiresAtMs']));}catch{refuse('UNAVAILABLE');}
+     if(!TOKEN.test(issued.credential??'')||!Number.isSafeInteger(issued.expiresAtMs)||issued.expiresAtMs<=now()||sha(issued.credential)!==latest.bearerSha256)refuse('ACCESS_DENIED');
+     t.limitDeadline(issued.expiresAtMs);return issued.credential;};
+    try{
+     const bearer=lookup(),secret=await t.run(()=>serviceSecret());
+     if(admitBearer(bearer,secret)!==bearer||lookup()!==bearer)refuse('ACCESS_DENIED');
+     const result=await t.run(signal=>readFederal({bearer,serviceSecret:secret,request:q.selection,deadlineMs:t.deadline(),signal}));
+     if(lookup()!==bearer)refuse('ACCESS_DENIED');t.check();return result;
+    }catch(error){throw closedError(error,'UNAVAILABLE');}finally{t.close();}
+   }};
    async function authorize(value){
     let a;try{a=own(value,['action','resource','requestSha256','binding','scopes','deadlineMs'],['signal']);nativeSignal(a.signal);}catch{refuse('ACCESS_DENIED');}
     if(a.signal?.aborted)refuse('CANCELLED');
@@ -169,7 +183,7 @@ export function createCoreArtifactAuthority(configuration){
    }
    const artifactOptions={pool:null,context,validators:v,authorize,...(call.intent==='list'?{authorizeOrigin}:{}),versions:null,objects:null,executor:null,now,
     ids:()=>({artifactId:randomUUID(),versionId:randomUUID(),objectId:randomUUID()})};
-   return {artifactOptions,selectedClientId:first.selectedClientId,limits:{...limits},enabled:true,recheck};
+   return {artifactOptions,selectedClientId:first.selectedClientId,limits:{...limits},enabled:true,recheck,...(federalSource?{federalSource}:{})};
   }catch(error){throw closedError(error,'ACCESS_DENIED');}finally{life.close();}
  }
  return Object.freeze({origin,now,resolve});

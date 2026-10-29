@@ -5,7 +5,7 @@ import {compileFederalDraft,FEDERAL_TEXT_PARSER} from './engine.mjs';
 import canonicalize from 'canonicalize';
 const sourceContract=resolveOperationContract({id:'read_federal_draft_source',version:'0.2.0'});
 const fault=code=>{throw Object.assign(Error(code),{code});};
-export function prepareNativeFederalDraft(selection,result,operations){
+export function projectNativeFederalSource(selection,result){
  sourceContract.assertOutput(result,{request:selection});
  if(result.currentStatus!=='available')fault('DRAFT_SOURCE_UNAVAILABLE');
  const {text,...identity}=result.source;
@@ -17,6 +17,10 @@ export function prepareNativeFederalDraft(selection,result,operations){
    'Current at read only. Enactment and legal currency are unresolved; an enrolled bill is not proof of enactment.',
    'Canonical federal source metadata: '+canonicalize(identity),
   ]},scopes:[{id:'document',label:'the selected bill text',start:0,end:text.length,sha256:identity.textHash}]};
+ return source;
+}
+export function prepareNativeFederalDraft(selection,result,operations){
+ const source=projectNativeFederalSource(selection,result),identity=result.source;
  const draft=compileFederalDraft(source,operations);
  const titles={operative:'Operative amendment',consolidated:'Consolidated text',redline:'Legal redline'};
  let exports;

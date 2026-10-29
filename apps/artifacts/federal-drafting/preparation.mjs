@@ -1,10 +1,12 @@
 /** Private source preparation on the artifact service's existing current-authority, retention and byte-read path.
  * The source is a retained TXT envelope containing the exact parser snapshot, including its provenance and scopes.
- * The envelope is immutable; no live fetch, public DTO change, approval or write is performed by preparation. */
+ * The envelope is immutable. Official imports require a current exact Core read;
+ * preparation performs no approval or write. */
 import {own,data} from '../../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {canonicalSha256} from '../../../packages/contracts/validate.mjs';
 import {artifactValidators} from '../../../packages/contracts/retrieval-0.2/validate.mjs';
 import {compileFederalDraft} from './engine.mjs';
+import {currentFederalSource} from './source-custody.mjs';
 const SHA=/^[a-f0-9]{64}$/u,UUID=/^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/u;
 const fault=code=>{throw Object.assign(Error(code),{code});};
 
@@ -15,6 +17,7 @@ export async function prepareFederalDraft({read},raw,context,options={}){
  if(retained.version.object.sha256!==input.expectedArtifactSha256)fault('DRAFT_SOURCE_CHANGED');
  if(retained.request.operation!=='create_word'||retained.request.format!=='txt'||retained.inspection.currentBytesVerified!==true)fault('DRAFT_SOURCE_FORMAT');
  let source;try{source=JSON.parse(retained.request.content.text);}catch{fault('DRAFT_SOURCE_FORMAT');}
+ source=await currentFederalSource(source,options.readNative,{deadlineMs:context.deadlineMs,signal:options.signal});
  const draft=compileFederalDraft(source,input.operations);
  const sourceArtifact=Object.freeze({versionId:retained.version.versionId,sha256:retained.version.object.sha256,specSha256:retained.specSha256});
  const revisionSha256=canonicalSha256({sourceArtifact,draftSha256:draft.revisionSha256});
