@@ -669,6 +669,43 @@ class SourceBuiltClamavPayload(unittest.TestCase):
                           "the runtime loader assertion no longer expects %s" % library)
         self.assertNotIn("lib64", runtime, "a runtime loader assertion now accepts a lib64 layout")
 
+    def test_the_clamav_sbin_binaries_install_into_bin_for_the_merged_layout(self):
+        """The base image exposes /usr/sbin as a merged link, so sbin binaries must install into bin.
+
+        Build 1f46fbbe compiled, passed all six suites and installed the libraries to /usr/lib, then failed at
+        `COPY --from=clamav-source-build /tmp/meri-clamav-out/ /` with `cannot copy to non-directory:
+        .../merged/usr/sbin`. The pinned Wolfi base provides merged-sbin and merged-usrsbin virtuals, so /usr/sbin
+        is a link rather than a directory and a payload that contains a usr/sbin directory cannot be applied to it.
+        Upstream ClamAV installs its sbin binaries through CMAKE_INSTALL_SBINDIR, so the recipe pins that to bin: the
+        payload then carries no usr/sbin entry, the preserved /usr/sbin -> bin link still resolves the public path,
+        and the inventory, provenance and runtime guards describe the actual delivered usr/bin paths.
+        """
+        build = " ".join(self.STAGES["clamav-source-build"]["instructions"])
+        self.assertIn("-D CMAKE_INSTALL_SBINDIR=bin", build,
+                      "the ClamAV sbin binaries are not pinned into bin, so a usr/sbin directory re-enters the payload")
+        self.assertNotIn("-D CMAKE_INSTALL_SBINDIR=sbin", build,
+                         "the ClamAV sbin binaries are pinned back onto the merged /usr/sbin link")
+        self.assertNotIn("find usr/bin usr/sbin", DOCKERFILE,
+                         "the inventory collector still names usr/sbin, which the payload no longer contains")
+        self.assertIn("find usr/bin -type f", DOCKERFILE,
+                      "the inventory collector does not collect the executables from usr/bin")
+        self.assertIn('"installedInventoryCovers":"usr/bin/*, usr/lib', DOCKERFILE,
+                      "the Dockerfile provenance does not describe the actual usr/bin surface")
+        self.assertNotIn('"installedInventoryCovers":"usr/bin/*, usr/sbin/*', DOCKERFILE,
+                         "the Dockerfile provenance still claims a usr/sbin surface the payload does not carry")
+        covers = self.PREP["authentication"]["imageProvenance"]["installedInventoryCovers"]
+        self.assertNotIn("usr/sbin", covers,
+                         "the lock provenance still claims a usr/sbin surface the payload does not carry")
+        self.assertIn("usr/bin/*", covers,
+                      "the lock provenance does not describe the actual usr/bin surface")
+        runtime = " ".join(self.STAGES["runtime"]["instructions"])
+        for name in ("clamd", "clamav-milter", "clamonacc"):
+            self.assertIn("/usr/bin/%s" % name, runtime,
+                          "the runtime guard does not check the delivered /usr/bin/%s path" % name)
+            self.assertIn("/usr/sbin/%s" % name, runtime,
+                          "the runtime guard does not prove the public /usr/sbin/%s path still resolves "
+                          "through the preserved merged link" % name)
+
     def test_the_authenticated_source_and_toolchain_inputs_are_pinned(self):
         auth = self.PREP["authentication"]
         for url, digest, label in ((auth["tarballUrl"], auth["tarballSha256"], "release asset"),
@@ -997,7 +1034,7 @@ class SourceBuiltClamavPayload(unittest.TestCase):
                       "the recorded inventory still omits the freshclam library family")
         self.assertIn("grep -q ' usr/lib/libfreshclam\\.so'", DOCKERFILE,
                       "the build stage does not assert that the freshclam library is recorded")
-        self.assertIn("find usr/bin usr/sbin -type f -exec sha256sum {} +", DOCKERFILE,
+        self.assertIn("find usr/bin -type f -exec sha256sum {} +", DOCKERFILE,
                       "the recorded inventory no longer covers the installed executables")
         self.assertNotIn("sha256 of every installed file", DOCKERFILE)
         self.assertNotIn("sha256 of every installed file", json.dumps(self.PREP))
