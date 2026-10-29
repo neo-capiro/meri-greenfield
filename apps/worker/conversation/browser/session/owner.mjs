@@ -53,8 +53,9 @@ export function createBrowserSessionOwner({context,invoke,policy,manifest=null,c
  }
  return Object.freeze({call,state:()=>fence.state(),destroy:({trigger})=>destroy(trigger),
   async takeover({signal}={}){
-   if(closed)fail('BROWSER_SESSION_ENDING');if(taking)fail('BROWSER_SESSION_BUSY');taking=true;
+   if(closed)fail('BROWSER_SESSION_ENDING');if(taking)fail('BROWSER_SESSION_BUSY');
    const life=createOperationLifetime({deadlineMs:Math.min(deadlineMs,now()+130000),now,signal,errorFactory:code=>Object.assign(Error(code),{code})});
+   taking=true;
    try{await life.run(assertCurrent);const state=fence.state();
     if(state.state!=='drained'||state.reason!=='takeover')fence.fence({reason:'takeover'});
     await life.run(signal=>drain({signal}));
