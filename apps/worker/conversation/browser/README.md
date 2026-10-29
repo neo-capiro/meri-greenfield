@@ -26,8 +26,16 @@ The next native composition must terminate authenticated shim stdio at the owner
 initialize the isolated context before SDK attachment, and retain a canonical
 browser takeover hold without keeping model/Bash admission open. The current
 upstream-only broker and active-run currentness reader do not yet provide those
-semantics. The viewer input adapter must also capture confidential text before
-page input handlers can remove or reflect its field. Activation remains held.
+semantics.
+
+The trusted viewer input port now accepts closed text/key/click actions on an
+exact owned page object. It records text in the session-local mask before native
+keyboard dispatch, and samples existing fields before and after the action.
+Page scripts cannot remove a field in an input handler to evade that mask.
+Arbitrary callbacks, clipboard shortcuts, foreign pages and changed URLs refuse;
+the mask has bounded memory and is cleared at destruction. The viewer still
+needs native authentication, selected-document pinning and transport integration.
+Activation remains held.
 
 `createBrowserCapability({binding,cwd,policy,installation,sourceScopes,artifacts,receipts,approvals,now})` returns one composable fragment for the conversation's single Claude Agent SDK query. It never starts a second agent loop. Nothing is created or launched when the fragment is built.
 

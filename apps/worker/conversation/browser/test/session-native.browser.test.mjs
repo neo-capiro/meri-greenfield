@@ -45,12 +45,17 @@ test('pinned native MCP snapshots resist hostile page prototypes and retain mask
   await assert.rejects(session.takeover(),/HOLD_NOT_APPLIED/);assert.equal(holdCalls,1);
   held='APPLIED';const lease=await session.takeover();assert.equal(holdCalls,2);
   await assert.rejects(capture('fenced'),/BROWSER_CALL_REFUSED/);
-  await session.userInput({leaseEpoch:lease.leaseEpoch,perform:async()=>page.evaluate(()=>{
-   document.body.innerHTML='<label>Private user entry<input type="text" value="PRIVATE_LEASE"></label><p>PRIVATE_LEASE</p>';
-  })});
+  await page.evaluate(()=>{
+   document.body.innerHTML='<label>Private user entry<input type="password"></label>';
+   const input=document.querySelector('input');input.addEventListener('input',()=>{
+    const reflected=document.createElement('p');reflected.textContent=input.value;document.body.replaceChildren(reflected);
+   });input.focus();
+  });
+  await session.userInput({leaseEpoch:lease.leaseEpoch,page,input:{kind:'text',text:'PRIVATE_LEASE'}});
+  assert.equal(await page.locator('input').count(),0,'Page removed the credential field synchronously');
   session.handBack();await assert.rejects(session.resume({explicit:false}),/RESUME_REFUSED/);
   const resumed=JSON.stringify(await session.resume({explicit:true}));assert.doesNotMatch(resumed,/PRIVATE_LEASE/);
-  await assert.rejects(session.userInput({leaseEpoch:lease.leaseEpoch,perform:async()=>assert.fail('Stale input')}),/STALE_LEASE/);
+  await assert.rejects(session.userInput({leaseEpoch:lease.leaseEpoch,page,input:{kind:'key',key:'Enter'}}),/STALE_LEASE/);
   await assert.rejects(session.call({requestId:'image',tool:'browser_take_screenshot',args:{}}),/IMAGES_WITHHELD/);
   current=false;await assert.rejects(capture('revoked'),/BROWSER_CALL_REFUSED/);
  }finally{if(session)await session.destroy({trigger:'conversation-end'});else await context.close();await browser.close();}

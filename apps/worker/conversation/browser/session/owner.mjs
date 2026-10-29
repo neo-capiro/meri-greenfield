@@ -5,6 +5,8 @@ import {createControlFence} from './fence.mjs';
 import {createStateDestruction} from './destruction.mjs';
 import {createPinnedSnapshot} from './snapshot.mjs';
 import {createOperationLifetime} from '../../../../../packages/runtime/operation-lifetime.mjs';
+import {prepareNativeBrowserInput} from './native-input.mjs';
+import {own} from '../../../../../packages/contracts/commands-0.2/execution-boundary.mjs';
 const fail=code=>{throw Object.assign(Error(code),{code});};
 export function createBrowserSessionOwner({context,invoke,policy,manifest=null,current,hold,ports,now=Date.now,deadlineMs}){
  if(typeof invoke!=='function'||typeof current!=='function'||typeof hold!=='function'||!context||
@@ -60,12 +62,18 @@ export function createBrowserSessionOwner({context,invoke,policy,manifest=null,c
     const held=await life.run(hold);await life.run(assertCurrent);
     return fence.grant({holdApplied:held?.outcome==='APPLIED'});}finally{life.close();taking=false;}
   },
-  async userInput({leaseEpoch,perform,signal}){
-   if(closed||typeof perform!=='function')fail('BROWSER_SESSION_ENDING');if(busy)fail('BROWSER_SESSION_BUSY');
+  async userInput(raw){
+   const {leaseEpoch,page,input,signal}=own(raw,['leaseEpoch','page','input'],['signal']);
+   if(closed)fail('BROWSER_SESSION_ENDING');if(busy)fail('BROWSER_SESSION_BUSY');
+   const prepared=prepareNativeBrowserInput(context,page,input);
    if(!fence.input({leaseEpoch}).accepted)fail('BROWSER_STALE_LEASE');busy=true;
    const life=createOperationLifetime({deadlineMs:Math.min(deadlineMs,now()+130000),now,signal,errorFactory:code=>Object.assign(Error(code),{code})});
-   // Native relay owns actual input. Sample values while fenced; no model output.
-   const operation=(async()=>{await life.run(assertCurrent);await life.run(perform);
+   // Remember confidential text before page handlers can erase its field and
+   // reflect the value. Keep it only in the existing session-local filter.
+   const operation=(async()=>{await life.run(assertCurrent);
+    await life.run(()=>snapshot.capture({fenceState:'agent',postLease:true}));
+    await life.run(assertCurrent);
+    snapshot.rememberInput(prepared.text);await life.run(prepared.perform);
     await life.run(()=>snapshot.capture({fenceState:'agent',postLease:true}));await life.run(assertCurrent);})();
    const tracked=operation.then(()=>undefined,()=>undefined);pending.add(tracked);
    try{await operation;}catch{void destroy('disconnect').catch(()=>{});fail('BROWSER_USER_INPUT_UNKNOWN');}

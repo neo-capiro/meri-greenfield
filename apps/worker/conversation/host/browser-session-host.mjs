@@ -55,7 +55,7 @@ export function createBrowserSessionHost({binding,cwd,installation,upstream,cont
    const expected={meri_browser:playwrightServerConfig(policy,installed,paths)};
    if(canonicalSha256(modelRelay.mcpServers)!==canonicalSha256(expected)||typeof modelRelay.close!=='function')fail('BROWSER_RELAY_REFUSED');
    // Controls are bound only by a native host viewer relay. They are never MCP tools.
-   userRelay=await controls.bind({binding:q.binding,controls:{takeover:session.takeover,userInput:session.userInput,
+   userRelay=await controls.bind({binding:q.binding,pages:()=>context.pages(),controls:{takeover:session.takeover,userInput:session.userInput,
     handBack:session.handBack,endLease:session.endLease,resume:session.resume,destroy:close}});
    if(closing){await userRelay.close();fail('BROWSER_SESSION_CLOSED');}
    if(typeof userRelay?.close!=='function')fail('BROWSER_RELAY_REFUSED');
