@@ -91,3 +91,26 @@ test('an answered control is acknowledged APPLIED through the existing owner',as
  assert.deepEqual((await pending).updatedInput.answers,{'How should I format the output?':'Detailed'});
  assert.equal(runOwner.acks.at(-1).commandSha256,'b'.repeat(64),'the ack carries the envelope digest, not an undefined in-command one');
 });
+
+test('a malformed answer is never acknowledged APPLIED and never closes the pending question',async()=>{
+ const runOwner=owner(),registry=createQuestionRegistry({journal:createQuestionEventJournal({runOwner,binding,now,newId:()=>id(920)}),now});
+ const gate=createUserQuestionGate({binding,questions:registry,now,newId:()=>id(921)});
+ const pending=gate(USER_QUESTION_TOOL,{questions:[question]},{toolUseID:'toolu_malformed',signal:new AbortController().signal});
+ await until(()=>registry.outstanding().length===1);
+ const [asked]=registry.outstanding();
+ // The owner claims the answer, but an array on a single-select question is not an answer at all.
+ runOwner.claimControl=async()=>({claimed:true,control:{controlSequence:1,commandSha256:'d'.repeat(64),
+  command:{controlId:id(922),action:'answerQuestion',questionId:asked.subject.questionId,answers:{'How should I format the output?':['Summary']}}}});
+ const claim=await createQuestionControlDispatch({runOwner,registry,binding}).claimControl({controlId:id(922)});
+ assert.equal(claim.claimed,false);
+ assert.equal(runOwner.acks.at(-1).outcome,'UNKNOWN','a refused answer is not acknowledged as applied');
+ assert.equal(runOwner.events.filter(e=>e.type==='question.answered').length,0,'no success event is recorded');
+ assert.equal(registry.outstanding().length,1,'the question is still pending and answerable');
+ // The same pending question still accepts a valid answer, and only then is APPLIED acknowledged.
+ runOwner.claimControl=async()=>({claimed:true,control:{controlSequence:2,commandSha256:'e'.repeat(64),
+  command:{controlId:id(923),action:'answerQuestion',questionId:asked.subject.questionId,answers:{'How should I format the output?':'Summary'}}}});
+ await createQuestionControlDispatch({runOwner,registry,binding}).claimControl({controlId:id(923)});
+ assert.equal(runOwner.acks.at(-1).outcome,'APPLIED');
+ assert.equal(runOwner.events.filter(e=>e.type==='question.answered').length,1);
+ assert.equal((await pending).behavior,'allow');
+});

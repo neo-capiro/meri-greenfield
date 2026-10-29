@@ -10,8 +10,8 @@
     },
     {
       "path": "../../apps/control/conversations/service.mjs",
-      "sha256": "5dee03dd443330fc5d3b2b47d5c5bd3c567c3969e4a576e7a2e4a9e69ec67c32",
-      "bytes": 37427
+      "sha256": "0f9bc22e6ed620cdbd26c962d3c74ed5f18423167d4db3ba5466652a8b1cd558",
+      "bytes": 37466
     },
     {
       "path": "conversation-input/protocol.mjs",
@@ -45,23 +45,23 @@
     },
     {
       "path": "dist/conversation-application.d.ts",
-      "sha256": "e1639c8c217bea9cb98e8a06d96ca53ff4914a518457e14ad40eee1b87d702cc",
-      "bytes": 47067
+      "sha256": "8681338d8b9b07e6d4fc6ff31bd9973495965f0b36b208afe7bfede66eb586dd",
+      "bytes": 61232
     },
     {
       "path": "dist/conversation-application.metadata.json",
-      "sha256": "369d21285aed4267faee77b3106845c8c6593cb00bd5d9b2a7565f22847c4a28",
-      "bytes": 12038
+      "sha256": "849000f60256f5ba804bd1f7a720d51e75f9219469f7869638386fe3b8c2e171",
+      "bytes": 12211
     },
     {
       "path": "dist/conversation-application.mjs",
-      "sha256": "3aed371b67b4350a180e012b9e9d0d8bebfc311a77995952ac9a88d8f6aeccf8",
-      "bytes": 1816632
+      "sha256": "58d865f198d5087d4911c96602fe9d6e0529879e7766cd850999fca53baf0d85",
+      "bytes": 1939897
     },
     {
       "path": "dist/conversation-application.schema.json",
-      "sha256": "c4755d95c33abba8433a71287a3211e49ee4ebd5187cb0250b55479f01f630d8",
-      "bytes": 92814
+      "sha256": "c4913740f1c6c12a54ae2fb73431122c516590223f33e3aee2f0dfcee569a9ea",
+      "bytes": 98613
     },
     {
       "path": "document-application/boundary.mjs",
@@ -97,7 +97,7 @@
     {
       "path": "./conversation-application.mjs",
       "artifact": "dist/conversation-application.mjs",
-      "sha256": "3aed371b67b4350a180e012b9e9d0d8bebfc311a77995952ac9a88d8f6aeccf8"
+      "sha256": "58d865f198d5087d4911c96602fe9d6e0529879e7766cd850999fca53baf0d85"
     }
   ]
 }

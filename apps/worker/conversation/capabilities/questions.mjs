@@ -87,6 +87,26 @@ export function userQuestionRequest({subject,questions,requestedAtMs,expiresAtMs
  return Object.freeze({schema:USER_QUESTION_REQUEST_SCHEMA,subject:structuredClone(subject),subjectSha256:canonicalSha256(subject),
   questions:structuredClone(questions),requestedAtMs,expiresAtMs});
 }
+/** Semantic refusal of one answer selection against the exact questions that were asked, or null when it is answerable.
+ *
+ * This is the single place the pending-question owner and the native gate agree on what a valid answer is: every question
+ * answered once, no answer to a question that was not asked, an array only for a multi-select question with distinct
+ * offered labels, and a non-empty string (an offered label or the user's own text) otherwise. */
+export function answerSelectionRefusal(questions,answers){
+ if(!record(answers))return 'USER_QUESTION_ANSWER_DENIED';
+ const asked=new Set(questions.map(question=>question.question));
+ for(const key of Object.keys(answers))if(!asked.has(key))return 'USER_QUESTION_ANSWER_MISMATCH';
+ if(Object.keys(answers).length!==asked.size)return 'USER_QUESTION_ANSWER_MISMATCH';
+ for(const question of questions){
+  const value=answers[question.question],labels=question.options.map(option=>option.label);
+  if(Array.isArray(value)){
+   if(!question.multiSelect||!value.length||value.length>question.options.length||new Set(value).size!==value.length||value.some(label=>typeof label!=='string'||!labels.includes(label)))return 'USER_QUESTION_ANSWER_MISMATCH';
+   continue;
+  }
+  if(typeof value!=='string'||!text(value,MAX_ANSWER))return 'USER_QUESTION_ANSWER_DENIED';
+ }
+ return null;
+}
 /** Map one authenticated answer onto the original questions, or return the stable refusal code.
  *
  * `answers` is keyed by the asked question text. A single-select question takes one string — an option label, or the
@@ -113,19 +133,14 @@ export function userQuestionAnswer(answer,request,at,{claimed}={}){
   return {answers:{[questions[0].question]:response}};
  }
  if(!record(answer.answers))return 'USER_QUESTION_ANSWER_DENIED';
- const given=answer.answers,asked=new Set(questions.map(q=>q.question));
- if(!Object.keys(given).length||Object.keys(given).length!==asked.size||Object.keys(given).some(key=>!asked.has(key)))return 'USER_QUESTION_ANSWER_MISMATCH';
+ const refusal=answerSelectionRefusal(questions,answer.answers);
+ if(refusal!==null)return refusal;
  /** @type {Record<string,string|string[]>} */
  const answers={};
  for(const question of questions){
-  const value=given[question.question],labels=question.options.map(option=>option.label);
-  if(Array.isArray(value)){
-   if(!question.multiSelect||!value.length||value.length>question.options.length||new Set(value).size!==value.length||value.some(label=>typeof label!=='string'||!labels.includes(label)))return 'USER_QUESTION_ANSWER_MISMATCH';
-   answers[question.question]=[...value];continue;
-  }
-  if(typeof value!=='string'||!text(value,MAX_ANSWER))return 'USER_QUESTION_ANSWER_DENIED';
+  const value=answer.answers[question.question];
   // An offered label stays the label; anything else is the user's own text and is passed through as written.
-  answers[question.question]=value;
+  answers[question.question]=Array.isArray(value)?[...value]:value;
  }
  return {answers};
 }

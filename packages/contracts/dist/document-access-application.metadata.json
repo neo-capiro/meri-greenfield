@@ -130,8 +130,8 @@
     },
     {
       "path": "../../apps/control/action-application/http.mjs",
-      "sha256": "ee1e56894c97ca2148adf4a990e8a9ca5d5b71699e69441633e36b563b85c4a6",
-      "bytes": 5006
+      "sha256": "41b788b71d429bef7aba10dd5976872719f789105de753508cb80ff39a2ed5a7",
+      "bytes": 5554
     },
     {
       "path": "../../apps/control/document-application/current.mjs",
@@ -145,13 +145,13 @@
     },
     {
       "path": "../../apps/control/document-application/http.mjs",
-      "sha256": "15d7d87c56661c673750ec593a51805fb84550940a57e577ed9c71d165480cb6",
-      "bytes": 2726
+      "sha256": "a079d9f342eb513b38dfee07f775440f5660c2609e3277933281006fcd66a0da",
+      "bytes": 2771
     },
     {
       "path": "../../apps/control/document-application/index.mjs",
-      "sha256": "2d685c89e0ae840579f9fcbf5bcdc9cd1257c70425834e097ac7000c13f47531",
-      "bytes": 12421
+      "sha256": "a2ebafa10853d24e2347f53a9b5c0ed7a5f80fbc27e26331c932a7be9dae09de",
+      "bytes": 12893
     },
     {
       "path": "../../apps/control/document-application/preview-route.mjs",

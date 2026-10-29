@@ -26,8 +26,8 @@
   "sources": [
     {
       "path": "conversation-history/protocol.mjs",
-      "sha256": "f5ce9e441808b604cb19a5da687972f348c5b0c777d0a31009a9497448d841e1",
-      "bytes": 2449
+      "sha256": "e56e26131695eab32bf3fb76f64611c209a26929baffc5c6fdf731b3ad461126",
+      "bytes": 2758
     },
     {
       "path": "conversation-sources/hearing-media-semantics.mjs",
@@ -41,8 +41,8 @@
     },
     {
       "path": "conversation-sources/protocol.mjs",
-      "sha256": "4ab2b8449beded18e77111ac0c345955bb862ffbe1f63b4644a00cf0e64675ff",
-      "bytes": 1940
+      "sha256": "9b77ed07b46326d96ae357b704c13203b185886a2376eb9e82e0eba6f3b0cee6",
+      "bytes": 2243
     },
     {
       "path": "conversation-sources/receive.mjs",
@@ -61,8 +61,8 @@
     },
     {
       "path": "conversation-sources/validate.mjs",
-      "sha256": "a7ca262f23abad2ead6652bd8cea86ab719a1b5d820d5506240a09b0a454b330",
-      "bytes": 3440
+      "sha256": "ba49a99cffaf3a00415c35f4bd09aaa43a5abe6e839124e7cdd975b1b5799ac2",
+      "bytes": 4759
     },
     {
       "path": "document-application/boundary.mjs",

@@ -76,11 +76,16 @@ test('free text and multi-select answers reach the callback unchanged; a single-
  assert.equal(await registry.deliver({questionId:second.subject.questionId,answers:{'How should I format the output?':'jquery plugin'},binding}),'ANSWERED');
  assert.deepEqual((await typed).updatedInput.answers,{'How should I format the output?':'jquery plugin'},'the user\'s own text is the answer');
 
+ // An array on a single-select question is not an answer: the owner refuses it before recording anything, the question
+ // stays pending, and the same suspended call is still answerable with a valid selection.
  const single=call(gate,{questions:[question()]},{toolUseID:'toolu_single'});
  const third=await waitingFor(registry);
- await registry.deliver({questionId:third.subject.questionId,answers:{'How should I format the output?':['Summary']},binding});
- const refused=await single;
- assert.equal(refused.behavior,'deny');assert.equal(refused.message,'USER_QUESTION_ANSWER_MISMATCH');
+ assert.equal(await registry.deliver({questionId:third.subject.questionId,answers:{'How should I format the output?':['Summary']},binding}),'USER_QUESTION_ANSWER_MISMATCH');
+ assert.equal(registry.outstanding().length,1,'a malformed answer leaves the question answerable');
+ assert.equal(await registry.deliver({questionId:third.subject.questionId,answers:{'How should I format the output?':'Summary'},binding}),'ANSWERED');
+ const accepted=await single;
+ assert.equal(accepted.behavior,'allow','the valid answer still reaches the suspended call');
+ assert.deepEqual(accepted.updatedInput.answers,{'How should I format the output?':'Summary'});
 });
 
 test('an answer for another run, an unknown question, a duplicate reply and a cancelled wait never reach the callback',async()=>{

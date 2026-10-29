@@ -23,11 +23,13 @@ export const PLUGIN_SKILL_NAMES=Object.freeze(['meri-client-changes','meri-commi
  'meri-representation-lookup','meri-research-company','meri-bill-watch']);
 const PREVIEW_PROFILE={generalReads:true,readFamilies:[...READ_FAMILY_IDS],governedIntents:true,skillPlugin:true,skillNames:[...PLUGIN_SKILL_NAMES],
  workspaceTools:true,workspaceToolNames:[...WORKSPACE_TOOLS],subagents:true,subagentTypes:[...SUBAGENT_TYPES],maxParallelSubagents:MAX_PARALLEL_SUBAGENTS,
- subagentProgress:true,auditHooks:true,compactionHooks:true,bash:true,sandboxNetworkDomains:[]};
+ subagentProgress:true,auditHooks:true,compactionHooks:true,bash:true,userQuestions:true,sandboxNetworkDomains:[]};
 /** PROPOSED preview platform record, pending the owner's decision. It is NOT a default: it takes effect only when rendered verbatim as
  * `configuration.capabilityPlatform`. Defaults and every Core role ceiling equal the maximum, so the preview tenant restricts nothing
  * further until saved tenant settings narrow it. Bash is eligibility only: the runtime still requires the SDK sandbox attestation,
- * so it stays unavailable on Fargate. Workspace tools are confined by the SDK's `blockReadsOutsideWorkingDirectories`
+ * so it stays unavailable on Fargate. `userQuestions` admits the native AskUserQuestion card: the runtime still needs its
+ * durable question owner, and a tenant/role that turns it off narrows it away through the normal intersection.
+ * Workspace tools are confined by the SDK's `blockReadsOutsideWorkingDirectories`
  * (`capabilities/workspace-tools.mjs`). The browser keeps its own product policy (`browser/policy.mjs`), unaffected by this record. */
 export const PROPOSED_PREVIEW_CAPABILITY_PLATFORM=freeze({maximum:structuredClone(PREVIEW_PROFILE),defaults:structuredClone(PREVIEW_PROFILE),
  roleCeilings:Object.fromEntries(CORE_ROLES.map(role=>[role,structuredClone(PREVIEW_PROFILE)]))});

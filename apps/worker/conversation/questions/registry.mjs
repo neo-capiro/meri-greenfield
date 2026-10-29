@@ -17,6 +17,7 @@
  * the latest record for that id (or null). A control plane that stores run events satisfies both with its existing
  * append/read-by-id path. This module owns no storage, authority or model loop of its own.
  */
+import {answerSelectionRefusal} from '../capabilities/questions.mjs';
 export const QUESTION_PENDING_RECORD='question.pending';
 export const QUESTION_ANSWERED_RECORD='question.answered';
 export const QUESTION_CANCELLED_RECORD='question.cancelled';
@@ -91,6 +92,11 @@ export function createQuestionRegistry({journal,now=Date.now}){
    binding.conversationId!==request.subject.binding.conversationId||binding.runId!==request.subject.binding.runId)return 'USER_QUESTION_ANSWER_MISMATCH';
   if(!record(answers)||!Object.keys(answers).length)return 'USER_QUESTION_ANSWER_DENIED';
   if(now()>request.expiresAtMs){pending.delete(questionId);await persist(QUESTION_CANCELLED_RECORD,{questionId,reasonCode:'USER_QUESTION_EXPIRED'});return 'EXPIRED';}
+  // The exact asked questions decide whether this is an answer at all: an array on a single-select question, a missing
+  // answer, an extra key or a label that was never offered is refused here, before anything is recorded or the suspended
+  // callback is resolved. A malformed answer therefore leaves the question pending and answerable.
+  const refusal=answerSelectionRefusal(request.questions,answers);
+  if(refusal!==null)return refusal;
   // The answer record is stamped here, from the pending request and the run binding — never from the reply payload.
   const answer={schema:'meri-user-question-answer/1',questionId,subjectSha256:request.subjectSha256,
    binding:structuredClone(request.subject.binding),answers:structuredClone(answers),answeredAtMs:now()};
