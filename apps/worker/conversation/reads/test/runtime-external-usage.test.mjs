@@ -6,7 +6,7 @@ import {createGeneralReadRuntime} from '../runtime.mjs';
 import {binding,scopes,id} from '../../../../../apps/control/conversations/test/store-fixture.mjs';
 import catalog from '../../../../../packages/contracts/retrieval-0.2/catalog.json' with {type:'json'};
 import {canonicalSha256} from '../../../../../packages/contracts/validate.mjs';
-import {familyReads} from '../availability.mjs';
+import {familyReads,profileReads} from '../availability.mjs';
 import {READ_FAMILIES} from '../families.mjs';
 
 const base = extra => ({binding, scopes, policy: {generalReads: true, readFamilies: [], activeReadOperations: []},
@@ -35,23 +35,16 @@ test('a malformed optional method is refused', async () => {
   await assert.rejects(() => createGeneralReadRuntime(base({port: broken})), /READ_CONFIGURATION/u);
 });
 
-test('an enabled mount with one active read builds the real runtime from the real client port', async () => {
- // Take a canonical read from the current family registry rather than a hand-picked id, so the case
- // exercises the same availability resolution production uses.
- let mounted=null,chosen=null;
- for(const row of familyReads().filter(row=>READ_FAMILIES[row.family]?.clientScope!=='required').slice(0,12)){
-  const at=Date.now(),operation=row.operation;
-  const port=Object.freeze({
-   async readAvailability(){return {installation:{installationId:id(80),baseCatalogSha256:canonicalSha256(catalog),
-     executionCatalogSha256:'e'.repeat(64),operations:[operation],checkedAtMs:at-1000,expiresAtMs:at+600000},
-    discovery:{binding,policyRevision:scopes[0].policyRevision,operations:[operation],checkedAtMs:at-1000,expiresAtMs:at+600000}};},
-   async execute(){throw Error('not called');},
-   externalUsage(){return undefined;}});
-  const built=await createGeneralReadRuntime({binding,scopes,
-   policy:{generalReads:true,readFamilies:[row.family],activeReadOperations:[operation]},
-   port,now:()=>Date.now(),deadlineMs:at+60000,mount:'profile'});
-  if(built!==null&&built.available.length>0){mounted=built;chosen=operation;break;}
- }
- assert.ok(chosen,'a canonical active read builds an enabled runtime with the accounting method present');
- assert.deepEqual(mounted.available,[chosen]);
+test('an enabled runtime mounts the same reads with or without the accounting method', async () => {
+ // The policy grants a canonical read from the current registry, and the trusted port carrying the
+ // accounting method must be transparent to what mounts.
+ const row=familyReads().find(entry=>READ_FAMILIES[entry.family]?.clientScope!=='required');
+ const policy={generalReads:true,readFamilies:[row.family],activeReadOperations:[row.operation]};
+ assert.deepEqual(profileReads({policy}).map(entry=>entry.operation),[row.operation],'the policy grants the read');
+ const at=Date.now();
+ const portWithMethod=Object.freeze({...methodPort(),externalUsage(){return undefined;}});
+ const build=port=>createGeneralReadRuntime({binding,scopes,policy,port,now:()=>Date.now(),deadlineMs:at+60000,mount:'profile'});
+ const plain=await build(methodPort()),withMethod=await build(portWithMethod);
+ assert.equal(withMethod===null,plain===null,'the optional method changes nothing about mounting');
+ assert.deepEqual(withMethod?.available,plain?.available);
 });
