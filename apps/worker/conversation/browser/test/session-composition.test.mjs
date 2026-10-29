@@ -28,7 +28,8 @@ function fixture(t,options={}){
    if(message.method==='tools/call'){state.calls++;await options.invoke?.(state);result={content:[{type:'text',text:'RAW SECRET ERROR/CONSOLE'},{type:'image',data:'secret'}]};}
    await transport.send({jsonrpc:'2.0',id:message.id,result});
   };},async close(){await transport.close();}};}};
- const args={context,upstream,policy:validateBrowserPolicy(enabledPolicy()),manifest:null,now:Date.now,deadlineMs:Date.now()+60000,
+ const now=options.now??Date.now;
+ const args={context,upstream,policy:validateBrowserPolicy(enabledPolicy()),manifest:null,now,deadlineMs:now()+60000,
   current:async()=>{if(state.refused)throw Error('revoked');},hold:async()=>({outcome:state.hold}),
   ports:{async waitForExit(){state.events.push('exit');return {exited:options.exited!==false};},async dispose(){state.events.push('dispose');return {disposed:true};}}};
  return {state,args,context,upstream,page};
@@ -97,6 +98,25 @@ test('user relay values are masked on resume and a released lease cannot send in
  const response=await session.resume({explicit:true});assert.doesNotMatch(JSON.stringify(response),/POST-LEASE-VALUE/);
  assert.equal(inputs,1);assert.equal(session.state().state,'agent');
 });
+test('native input uses one per-lease event bucket and refuses a whole over-budget press before injection',async t=>{
+ let clock=0,inputs=0;const x=fixture(t,{now:()=>clock}),session=await createPinnedBrowserSession(x.args);
+ t.after(()=>session.destroy({trigger:'conversation-end'}));x.state.onInput=async()=>{inputs++;};
+ const lease=await session.takeover(),press=()=>session.userInput({...lease,page:x.page,input:{kind:'key',key:'Enter'}});
+ for(let n=0;n<60;n++)await press();assert.equal(inputs,60);
+ await assert.rejects(press(),/RATE_LIMITED/);assert.equal(inputs,60);assert.equal(session.state().state,'user');
+ clock+=1000;for(let n=0;n<30;n++)await press();await assert.rejects(press(),/RATE_LIMITED/);assert.equal(inputs,90);
+ session.handBack();await assert.rejects(press(),/STALE_LEASE/);await session.resume({explicit:true});
+ const next=await session.takeover();await session.userInput({...next,page:x.page,input:{kind:'key',key:'Enter'}});assert.equal(inputs,91);
+});
+
+test('hand-back during input authority checks prevents the delayed native event',async t=>{
+ let handingBack=false,inputs=0,session;const x=fixture(t,{capture:()=>{if(handingBack){handingBack=false;session.handBack();}}});
+ session=await createPinnedBrowserSession(x.args);t.after(()=>session.destroy({trigger:'conversation-end'}));
+ const lease=await session.takeover();x.state.onInput=async()=>{inputs++;};handingBack=true;
+ await assert.rejects(session.userInput({...lease,page:x.page,input:{kind:'text',text:'Synthetic private value'}}),/USER_INPUT_UNKNOWN/);
+ assert.equal(inputs,0);
+});
+
 test('unknown in-flight outcome closes admission and destroys context before verified disposal',async t=>{
  const controller=new AbortController(),x=fixture(t,{invoke:()=>new Promise(()=>{})}),session=await createPinnedBrowserSession(x.args);
  const pending=session.call({requestId:'unknown',tool:'browser_snapshot',args:{},signal:controller.signal});
