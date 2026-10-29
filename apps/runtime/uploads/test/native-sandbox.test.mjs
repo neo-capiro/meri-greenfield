@@ -88,9 +88,12 @@ test('qualification admits only a complete observation from the identical runner
  assert.equal(admitted.admitted,true);assert.equal(admitted.admission.role,'upload-native');assert.equal(admitted.admission.toolRootsReadOnly,true);
  assert.equal(admitted.missing.length,0);assert.equal(calls[0].role,'probe');assert.match(calls[0].cwd,/meri-upload-probe-[A-Za-z0-9]{6}$/u);
  const bad=await qualifyNativeUploadSandbox({imageDigest:DIGEST,deadlineMs:Date.now()+30000,tempRoot:root,run:make({noNewPrivs:0})});
- assert.equal(bad.admitted,false);assert.deepEqual(bad.missing,['noNewPrivileges']);
+ assert.equal(bad.admitted,false);assert.deepEqual(bad.missing,['noNewPrivileges']);assert.equal(bad.reason,'UPLOAD_SANDBOX_UNQUALIFIED');
  const invalid=await qualifyNativeUploadSandbox({imageDigest:DIGEST,deadlineMs:Date.now()+30000,tempRoot:root,run:async()=>({stdout:Buffer.from('not json')})});
  assert.equal(invalid.admitted,false);assert.equal(invalid.reason,'UPLOAD_PROBE_FAILED');
+ const refused=await qualifyNativeUploadSandbox({imageDigest:DIGEST,deadlineMs:Date.now()+30000,tempRoot:root,
+  run:async()=>Promise.reject(Object.assign(Error('refused'),{code:'UPLOAD_SANDBOX_REFUSED'}))});
+ assert.equal(refused.admitted,false);assert.equal(refused.reason,'UPLOAD_SANDBOX_REFUSED');assert.equal(refused.missing.length,8);
  await assert.rejects(()=>qualifyNativeUploadSandbox({imageDigest:'nope',deadlineMs:Date.now()+1,tempRoot:root,run:make({})}),{code:'UPLOAD_QUALIFICATION_CONFIGURATION'});
 });
 
