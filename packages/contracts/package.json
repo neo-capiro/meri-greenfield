@@ -1,6 +1,6 @@
 {
   "name": "@capiro/meri-contracts",
-  "version": "0.1.35",
+  "version": "0.1.36",
   "private": true,
   "license": "UNLICENSED",
   "type": "module",
@@ -12,7 +12,9 @@
     "objective-generation.d.ts",
     "dist",
     "README.md",
-    "THIRD-PARTY-NOTICES.md"
+    "THIRD-PARTY-NOTICES.md",
+    "outreach-generation.mjs",
+    "outreach-generation.d.ts"
   ],
   "exports": {
     "./objective-generation": {
@@ -124,7 +126,11 @@
       "types": "./dist/federal-workbench.d.ts",
       "default": "./dist/federal-workbench.mjs"
     },
-    "./federal-workbench/schema": "./dist/federal-workbench.schema.json"
+    "./federal-workbench/schema": "./dist/federal-workbench.schema.json",
+    "./outreach-generation": {
+      "types": "./outreach-generation.d.ts",
+      "default": "./outreach-generation.mjs"
+    }
   },
   "scripts": {
     "build": "node generate.mjs && node generate-actions.mjs && node generate-documents.mjs && node generate-conversations.mjs && node generate-lifecycle.mjs && node generate-history.mjs && node generate-input.mjs && node generate-user-preferences.mjs && node generate-task-commands.mjs && node generate-initial-input.mjs && node generate-intents.mjs && node generate-document-access.mjs && node generate-session.mjs && node generate-sources.mjs && node generate-usage.mjs && node generate-uploads.mjs && node generate-office.mjs && node generate-selected-tab.mjs && node generate-federal-workbench.mjs",
