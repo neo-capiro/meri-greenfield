@@ -135,8 +135,8 @@
     },
     {
       "path": "../../apps/control/document-application/current.mjs",
-      "sha256": "b1da9f681f49ac5f6709624049851e007bd5f9265152922098e9652a45a52ef9",
-      "bytes": 7166
+      "sha256": "88e21befa2caf6591adfcb06cca0211e07c2a417ac5094e0481a7ceabdab99df",
+      "bytes": 7270
     },
     {
       "path": "../../apps/control/document-application/format-admission.mjs",
@@ -145,8 +145,8 @@
     },
     {
       "path": "../../apps/control/document-application/http.mjs",
-      "sha256": "a079d9f342eb513b38dfee07f775440f5660c2609e3277933281006fcd66a0da",
-      "bytes": 2771
+      "sha256": "46432d9e60e2644d0895d965d5ad41e9923b3aa4502a173f704a3f3758b801ac",
+      "bytes": 2786
     },
     {
       "path": "../../apps/control/document-application/index.mjs",
