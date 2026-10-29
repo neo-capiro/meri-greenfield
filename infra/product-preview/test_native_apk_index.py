@@ -559,6 +559,47 @@ class SourceBuiltClamavPayload(unittest.TestCase):
                 member["sha256"], member["url"], member["name"], member["version"]), DOCKERFILE,
                           "the development closure member %s is not staged at its pinned checksum" % member["name"])
 
+    def test_the_ctest_gate_keeps_every_registered_suite_and_no_selection(self):
+        """The gate is the upstream suite itself: build 75b91bdb failed on missing test dependencies, not on bad tests.
+
+        It ran ctest over the pinned tree and reported two failures - four iconv codepage checks and a clamscan
+        suite that collected nothing - because this stage lacked the gconv converters and pytest. The correction
+        supplies both, so the guard here is the property it must preserve: ENABLE_TESTS stays on and the ctest
+        invocation still selects every registered suite, with no exclusion, regex or no-tests escape.
+        """
+        build = " ".join(self.STAGES["clamav-source-build"]["instructions"])
+        self.assertIn("-D ENABLE_TESTS=ON", build, "the upstream test suites are no longer configured")
+        self.assertEqual(build.count("ctest --test-dir /tmp/clamav-build"), 1,
+                         "the ClamAV ctest gate is missing or duplicated")
+        command = build[build.index("ctest --test-dir /tmp/clamav-build"):].split(" && ")[0]
+        self.assertIn("--output-on-failure", command)
+        for escape in (" -E ", "--exclude", "-R ", "--tests-regex", "--rerun-failed", "--no-tests", "--skip"):
+            self.assertNotIn(escape, command, "the ctest gate selects or skips tests now: %s" % command)
+
+    def test_the_charset_modules_and_the_test_runner_are_pinned_and_installed(self):
+        """Both observed ctest failures were dependency gaps in this stage, so both dependencies are pinned here.
+
+        glibc-2.44-iconv carries the gconv converters the four SHIFT_JIS/UTF-16 checks call through iconv, and
+        pytest is the runner CMake selects for the directory-shaped clamscan suite. Every archive is staged at its
+        locked checksum, requested by exact version and asserted after installation, and pytest is installed only
+        after the interpreter it runs on.
+        """
+        build = " ".join(self.STAGES["clamav-source-build"]["instructions"])
+        correction = self.PREP["buildClosure"]["ctestGateCorrection"]
+        members = {member["name"]: member for member in self.PREP["buildClosure"]["members"]}
+        self.assertIn("glibc-2.44-iconv", correction["members"])
+        for name in correction["members"]:
+            member = members[name]
+            self.assertIn("%s=%s" % (name, member["version"]), build,
+                          "the correction's archive %s is not requested by exact version" % name)
+            self.assertIn("%s-%s" % (name, member["version"]), build,
+                          "the installed archive %s is not verified after installation" % name)
+            self.assertEqual(STAGED.get("%s-%s.apk" % (name, member["version"])), member["sha256"],
+                             "the correction's archive %s is not staged at its locked checksum" % name)
+        self.assertIn("python3.13 -m pytest --version", build, "the test runner is not exercised after installation")
+        self.assertLess(build.index("python-3.13=3.13.16"), build.index("py3.13-pytest="),
+                        "pytest is requested before the interpreter it must run on")
+
     def test_the_authenticated_source_and_toolchain_inputs_are_pinned(self):
         auth = self.PREP["authentication"]
         for url, digest, label in ((auth["tarballUrl"], auth["tarballSha256"], "release asset"),
@@ -727,9 +768,9 @@ class SourceBuiltClamavPayload(unittest.TestCase):
 
         clamav-1.5.4/CMakeLists.txt 219-231 requires find_package(Libcheck REQUIRED) and find_package(Python3 REQUIRED),
         or EXACT when PYTHON_FIND_VERSION is defined, and 256-277 runs the unit-test input generators with
-        ${Python3_EXECUTABLE} at build time; because the stage carries no pytest, the same block requires
-        `${Python3_EXECUTABLE} -m unittest --help` to exit 0 or configure stops with FATAL_ERROR. The 101-archive
-        development closure was resolved for the toolchain and carries no interpreter at all, and the interpreter the
+        ${Python3_EXECUTABLE} at build time; the same block requires `${Python3_EXECUTABLE} -m unittest --help` to
+        exit 0 or configure stops with FATAL_ERROR. The development closure was resolved for the toolchain and
+        carries no interpreter at all, and the interpreter the
         exported runtime stage installs is in a later stage, so it cannot supply this one. The correction reuses the
         retained runtime staging set - the same vendor-signed index and the same authenticated archives the runtime
         stage already installs python-3.13 from - through a read-only bind mount at its own path, installs the
