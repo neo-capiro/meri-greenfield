@@ -112,6 +112,14 @@ Native publication acknowledgement loss is `SOURCE_PUBLICATION_UNKNOWN`; changed
 
 Contracts0.1.15 and ui-stream0.1.5 are the pending, unbuilt release cohort. Release must qualify actual final archives after this reader and the bill-source producer are accepted; earlier PR273 package-tree IDs do not identify this updated contracts source. The frozen0.1.0 event schema and bill-source event remain unchanged.
 
+## Office editor boundary — package 0.1.29
+
+`@capiro/meri-contracts/office-application` exposes the browser-safe CODE
+request/response receiver, branded selections, download validation and declarations.
+Private WOPI Save and explicit immutable Publish retain separate operations.
+The generated metadata records the exact source files; the existing document
+and conversation exports are unchanged. Validation grants no authorization.
+
 ## Native memory submission — package 0.1.28
 
 The additive intents distribution exports IntentsNativeMemoryOutcome. Its execution.completedAt records pending-candidate submission, while result.review is the current owner-observed review state. candidateId equals the immutable proposalId; candidateSha256 binds the exact content, scope and origin. reviewId is a content-free submission correlation, **not** a memory_review_request ID or navigable review URL. Only approved with a publishedMemoryId establishes publication. Pending, rejected, withdrawn and not_found do not. Missing or uncertain outcomes must be read using the original proposal; never prepare a replacement to recover a timeout. Existing task, document, mail, filing and historical memory-review shapes remain available.
