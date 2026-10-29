@@ -80,10 +80,10 @@ It neither executes Office nor rewrites the package. This structural pass is
 not native rendering, fidelity, recalculation or a complete active-content
 qualification.
 
-Nine runtime source tests cover launch parsing and form/token boundaries plus
-existing Save/publish decisions. They do not establish WOPI conformance, actual
-CODE execution, multiple-frame exclusion, image security or Office fidelity. No
-image/application build, deployment or provider call was performed.
+The initial launch checkpoint had nine source tests. The later canonical Core,
+WOPI and publication checks below replace its unused pure Save/publish decisions.
+No source test establishes actual CODE execution, image security or Office
+fidelity. No image/application build, deployment or provider call was performed.
 
 The native revision checkpoint adds 39 tests for DOCX/XLSX/PPTX byte preservation,
 source binding, concurrent/restarted delivery, lost acknowledgements, stale
@@ -177,6 +177,58 @@ retention inventory/purge/access-loss composition and representative native
 Office fidelity/conformance. The private Save ceiling does not increase the
 existing artifact publication limit. These are source checks, not live editor
 acceptance.
+
+## Explicit Publish bridge source checkpoint
+
+`publish-draft.mjs` connects the authenticated control action to both existing
+owners. Its only selected input is `{draftId, sequence, sha256}` plus trusted
+current context and client selection. Core supplies the retained private bytes;
+ArtifactService supplies and currently authorizes the exact immutable parent.
+Title, format, actor and provenance are derived from those owners. The bridge
+rejects a changed selected draft, malformed package or bytes beyond the existing
+artifact publication ceiling before Core begins Publish. Larger private drafts
+remain saved; the private 20 MiB ceiling is not an immutable publication limit.
+
+The native revision keeps the parent's immutable citations through the existing
+`admitRetainedEvidence` port, bound to the exact prepared publication context.
+The trusted `publisherFor(context, {admitRetainedEvidence})` factory supplies the
+existing PostgreSQL artifact service with `officeEditWrites` enabled and this
+retained-evidence admission, preserving any existing admission restrictions.
+Current artifact authority and retention remain the canonical gates; the pin
+does not grant current access. The source uses no new durable journal or session.
+
+Only Core's first `beginPublish` receipt with `dispatch:true` may call
+`executeOfficeEdit`. Repeated pending, unknown or published receipts call the
+new recovery-only `recoverOfficeEdit` facet on the same artifact owner. It reads
+the existing intent journal and immutable publication; an absent entry remains
+`EDITOR_PUBLISH_UNRESOLVED` and cannot claim or dispatch. A lost begin
+acknowledgement is not retried by the bridge. This prevents a recovering caller
+from racing a still-running first publisher, even across native run changes.
+
+Only a canonical stale-parent refusal settles conflict. Other post-begin
+failures retain unknown; an authority-shaped error is not proof of no write.
+Canonical publication identity must match the selected draft before Core settles
+published. Current artifact authority/bytes and the original retention generation
+are checked after settlement before returning the result. A late refusal may
+withhold an already-published result; a later current-authorized call recovers
+the same immutable revision without another write.
+
+The unused `edit-session.mjs` simulation and its three pure decision tests were
+deleted. Save/admission now have the Core PostgreSQL and WOPI integration cases;
+publication is checked through the actual Core client, native artifact journal
+and immutable publication owners. In particular, the old simulation's
+absent-means-republish behavior and code-only authority refusal classification
+are removed. CODE format discovery now uses the canonical Office operation map.
+
+179 affected runtime tests pass, including 23 Publish bridge cases, current
+native document delivery, WOPI/transport/token and retention cases. Focused
+noEmit import/type checks pass. Two historical budget-era PostgreSQL adapter
+suites remain incompatible with the current constructor: 69 of 70 cases fail
+identically against the untouched service at base `fcb62859231e2806a79f4772775d200ec0d86b6f`.
+They were not weakened or used as passing evidence. Their current replacements
+are the native-delivery cases in the passing run. Fixture SQL and Core HTTP are
+scripted here; real Core persistence has its separately recorded ordinary-role
+suite. No public route/contract/package export or live editor is activated.
 
 Protocol references: [CheckFileInfo properties](https://learn.microsoft.com/en-us/microsoft-365/cloud-storage-partner-program/rest/files/checkfileinfo/checkfileinfo-response),
 [GetFile](https://learn.microsoft.com/en-us/microsoft-365/cloud-storage-partner-program/rest/files/getfile),
