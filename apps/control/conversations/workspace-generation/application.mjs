@@ -88,12 +88,15 @@ export function createWorkspaceGenerationApplication(options = {}) {
         !Number.isSafeInteger(request.expectedRevision) || request.expectedRevision < 0 ||
         request.paidGeneration !== true || !Array.isArray(request.sources) || !request.sources.length || request.sources.length > 256) fail('WORKSPACE_GENERATION_REFUSED');
     const sources = request.sources.map(readGenerationSource);
+    if (request.writingBrief !== undefined && (request.phase !== 'document' ||
+        typeof request.writingBrief !== 'string' || !request.writingBrief.trim() ||
+        Buffer.byteLength(request.writingBrief, 'utf8') > 4000)) fail('WORKSPACE_GENERATION_REFUSED');
     return {...request, sources};
   }
 
   /** The closed Workspace request one turn submits. Nothing here selects authority. */
   function readRequest(raw) {
-    return readTurnRequest(closedShape(raw, TURN_KEYS));
+    return readTurnRequest(closedShape(raw, TURN_KEYS, ['writingBrief']));
   }
 
   /**
@@ -103,7 +106,7 @@ export function createWorkspaceGenerationApplication(options = {}) {
    * retained run is present the resolved binding must be exactly it.
    */
   function readSubjectShape(raw) {
-    const request = readTurnRequest(closedShape(raw, TURN_KEYS, ['runId']));
+    const request = readTurnRequest(closedShape(raw, TURN_KEYS, ['runId', 'writingBrief']));
     if (request.runId !== undefined && !UUID.test(request.runId)) fail('WORKSPACE_GENERATION_REFUSED');
     return request;
   }
