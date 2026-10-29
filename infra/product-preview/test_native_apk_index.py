@@ -286,11 +286,11 @@ class RetainedNativeApkIndex(unittest.TestCase):
         the dependent left apk free to choose the provider: the build's own plan chose the predecessor and the upload
         assertion then failed on the name it declares. The same hole covers a final version that the base or an
         earlier layer already satisfies at an older revision (libstdc++ 16.2.0-r1, libgcc 16.2.0-r1, glibc 2.44-r9):
-        nothing asks apk to upgrade it. All 16 names in the failing assertion block are checked at once, so the next
+        nothing asks apk to upgrade it. All 14 names in the failing assertion block are checked at once, so the next
         build cannot fail serially on the next one of them.
         """
-        self.assertEqual(len(ASSERTED), 13,
-                         "the native assertion block no longer declares the 13 distribution packages it still "
+        self.assertEqual(len(ASSERTED), 14,
+                         "the native assertion block no longer declares the 14 distribution packages it still "
                          "installs: %r" % ASSERTED)
         removed = ["clamav-1.5-scanner=1.5.2-r0", "clamav-1.5-freshclam=1.5.2-r0", "clamav-1.5=1.5.2-r7"]
         still_requested = [pin for pin in removed if pin in INSTALL_REQUESTS]
@@ -523,8 +523,12 @@ class SourceBuiltClamavPayload(unittest.TestCase):
             instruction for instruction in self.STAGES["runtime"]["instructions"]
             if instruction.startswith("apk add")),
             "a runtime install still names a ClamAV distribution package")
-        self.assertIn("! apk info -v | grep -q '^clamav-1.5'", DOCKERFILE,
+        self.assertIn("if apk info -v | grep -q '^clamav-1.5'; then", DOCKERFILE,
                       "the runtime stage no longer asserts that no clamav-1.5 distribution package is installed")
+        self.assertIn("unexpected clamav-1.5 distribution package installed", DOCKERFILE,
+                      "the clamav-1.5 absence check does not report the offending package")
+        self.assertIn("apk info -v | grep '^clamav-1.5'; exit 1; fi", DOCKERFILE,
+                      "the clamav-1.5 absence check does not fail closed")
         for archive in self.PREP["replacedPayload"]["archivesStillStagedByteForByte"]:
             filename = "%s-%s.apk" % (archive["name"], archive["version"])
             self.assertEqual(STAGED.get(filename), archive["sha256"],
@@ -705,6 +709,43 @@ class SourceBuiltClamavPayload(unittest.TestCase):
             self.assertIn("/usr/sbin/%s" % name, runtime,
                           "the runtime guard does not prove the public /usr/sbin/%s path still resolves "
                           "through the preserved merged link" % name)
+
+    def test_the_runtime_version_probe_preserves_tool_output_and_the_loader_dependency(self):
+        """Build 2066e603 installed the payload but clamscan reported an unexpected version.
+
+        The old loop piped `--version` into `grep -q`, so it saw only whether the banner was present and discarded
+        the tool's stdout/stderr and exit status. A missing linked library (libclamav links JSONC::jsonc; json-c is
+        staged and in the runtime closure but was never installed) therefore surfaced as "unexpected ClamAV
+        version" with no cause. The probe now prints each tool's actual output and status, fails closed on a
+        nonzero status before checking the banner, and still requires the exact ClamAV 1.5.4 version. json-c is
+        named in the upload layer install so the linked soname is actually present.
+        """
+        runtime = " ".join(self.STAGES["runtime"]["instructions"])
+        self.assertNotIn("\"$tool\" --version 2>&1 | grep -q 'ClamAV 1.5.4'", runtime,
+                         "the version probe still discards the tool's status behind a pipeline")
+        self.assertIn('tool_out=$("$tool" --version 2>&1); tool_status=$?', runtime,
+                      "the version probe does not capture the tool's output and exit status")
+        self.assertIn("printf '%s --version exit=%s output=%s", runtime,
+                      "the version probe does not print the actual banner and status")
+        self.assertIn('if [ "$tool_status" -ne 0 ]; then echo "tool failed to execute: $tool"; exit 1; fi', runtime,
+                      "the version probe does not fail closed on a nonzero tool status")
+        self.assertIn('case "$tool_out" in *"ClamAV 1.5.4"*)', runtime,
+                      "the version probe no longer requires the exact ClamAV 1.5.4 banner")
+        self.assertIn("sigtool --md5 /tmp/meri-sigtool-probe > /tmp/meri-sigtool-out 2> /tmp/meri-sigtool-err",
+                      runtime, "the signature probe does not preserve sigtool's stdout and stderr")
+        self.assertIn('if [ "$sigtool_status" -ne 0 ]; then echo "sigtool failed to execute"; exit 1; fi', runtime,
+                      "the signature probe does not fail closed on a nonzero sigtool status")
+        ocr = [statement for statement in INSTALL_STATEMENTS if "tesseract=5.5.0-r2" in statement]
+        self.assertEqual(len(ocr), 1, "the upload layer install request is not identifiable")
+        self.assertIn("json-c=0.19-r2", ocr[0],
+                      "the upload layer does not install the json-c library libclamav links")
+        self.assertIn("json-c-0.19-r2", ocr[0],
+                      "the upload layer no longer asserts the installed json-c version")
+        jsonc = {package["name"]: package for package in LOCK["systemPackages"]}["json-c"]
+        self.assertEqual(jsonc["sha256"], "ed8464ea37ad9d4f008c17864a5b97bbe1b41969c79b4c9913921eb965db267e")
+        self.assertIn("ADD --checksum=sha256:%s %s /tmp/meri-native-repo/aarch64/json-c-%s.apk"
+                      % (jsonc["sha256"], jsonc["source"], jsonc["version"]), DOCKERFILE,
+                      "the runtime-staged json-c archive is not pinned at the closure checksum")
 
     def test_the_authenticated_source_and_toolchain_inputs_are_pinned(self):
         auth = self.PREP["authentication"]
