@@ -1269,11 +1269,647 @@
       "persistence": "scripted Core retained in separately running WOPI host; canonical Core client release/acquire"
     }
   },
+  "nativeCore": {
+    "method": "Already edited CODE bytes replayed through production WOPI and canonical Core methods with ordinary-role PostgreSQL16. Separate from the live CODE corpus.",
+    "coreSource": "e23bc955fa84e0cb718c8fd66d01ac79178e3077",
+    "runtimeSource": "5896d204a0b6d0445b29d935b06e7e169fbed411",
+    "files": [
+      {
+        "id": "docx-01",
+        "sha256": "0a0b8de6ac68452403ee6aed242c0e66b5689546f5c7ef40f4d90035c77f6811",
+        "bytes": 20673,
+        "sequence": 1,
+        "nativeCoreSaveAndRead": true,
+        "saveReplaySameSequence": true,
+        "exactPublishedBytes": true,
+        "parentPreserved": true,
+        "replaySameVersion": true,
+        "persistence": "Native PostgreSQL16 / canonical Core draft methods under capiro_app; artifact SQL/object ports remain scripted; already edited CODE bytes replayed through WOPI"
+      },
+      {
+        "id": "docx-02",
+        "sha256": "362782e67f19fa494e011f429d2eeabb258e0dd0f334a802e447c4d1dda86c38",
+        "bytes": 25723,
+        "sequence": 1,
+        "nativeCoreSaveAndRead": true,
+        "saveReplaySameSequence": true,
+        "exactPublishedBytes": true,
+        "parentPreserved": true,
+        "replaySameVersion": true,
+        "persistence": "Native PostgreSQL16 / canonical Core draft methods under capiro_app; artifact SQL/object ports remain scripted; already edited CODE bytes replayed through WOPI"
+      },
+      {
+        "id": "docx-03",
+        "sha256": "5a820f0b8fa556dff0c886cb5648a58d48e644397c813fa2b7097ec6e974d2c4",
+        "bytes": 21159,
+        "sequence": 1,
+        "nativeCoreSaveAndRead": true,
+        "saveReplaySameSequence": true,
+        "exactPublishedBytes": true,
+        "parentPreserved": true,
+        "replaySameVersion": true,
+        "persistence": "Native PostgreSQL16 / canonical Core draft methods under capiro_app; artifact SQL/object ports remain scripted; already edited CODE bytes replayed through WOPI"
+      },
+      {
+        "id": "docx-04",
+        "sha256": "b51848c00fabe14e280b1b5eedd98e23d6a823d8271bc3a85bd5accb4b4c4578",
+        "bytes": 22262,
+        "sequence": 1,
+        "nativeCoreSaveAndRead": true,
+        "saveReplaySameSequence": true,
+        "exactPublishedBytes": true,
+        "parentPreserved": true,
+        "replaySameVersion": true,
+        "persistence": "Native PostgreSQL16 / canonical Core draft methods under capiro_app; artifact SQL/object ports remain scripted; already edited CODE bytes replayed through WOPI"
+      },
+      {
+        "id": "docx-05",
+        "sha256": "8edac3ad1a4508d0e6dab507ade70524aec476db4728e194b9bc9481de11ca79",
+        "bytes": 21341,
+        "sequence": 1,
+        "nativeCoreSaveAndRead": true,
+        "saveReplaySameSequence": true,
+        "exactPublishedBytes": true,
+        "parentPreserved": true,
+        "replaySameVersion": true,
+        "persistence": "Native PostgreSQL16 / canonical Core draft methods under capiro_app; artifact SQL/object ports remain scripted; already edited CODE bytes replayed through WOPI"
+      },
+      {
+        "id": "docx-06",
+        "sha256": "9030577b4fca1c7686d65d2a4c1438095c63799852ea735b121aa1c3a669d156",
+        "bytes": 20883,
+        "sequence": 1,
+        "nativeCoreSaveAndRead": true,
+        "saveReplaySameSequence": true,
+        "exactPublishedBytes": true,
+        "parentPreserved": true,
+        "replaySameVersion": true,
+        "persistence": "Native PostgreSQL16 / canonical Core draft methods under capiro_app; artifact SQL/object ports remain scripted; already edited CODE bytes replayed through WOPI"
+      },
+      {
+        "id": "docx-07",
+        "sha256": "bb119b6eda26e742749c030ee14623676352d9be7995cef100401dc5a5e0a169",
+        "bytes": 22917,
+        "sequence": 1,
+        "nativeCoreSaveAndRead": true,
+        "saveReplaySameSequence": true,
+        "exactPublishedBytes": true,
+        "parentPreserved": true,
+        "replaySameVersion": true,
+        "persistence": "Native PostgreSQL16 / canonical Core draft methods under capiro_app; artifact SQL/object ports remain scripted; already edited CODE bytes replayed through WOPI"
+      },
+      {
+        "id": "docx-08",
+        "sha256": "f4cc1fe28b9bbdb01f73a4fedc55391d2d30da0f7534388b6e8569c0e2bc3d81",
+        "bytes": 20712,
+        "sequence": 1,
+        "nativeCoreSaveAndRead": true,
+        "saveReplaySameSequence": true,
+        "exactPublishedBytes": true,
+        "parentPreserved": true,
+        "replaySameVersion": true,
+        "persistence": "Native PostgreSQL16 / canonical Core draft methods under capiro_app; artifact SQL/object ports remain scripted; already edited CODE bytes replayed through WOPI"
+      },
+      {
+        "id": "docx-09",
+        "sha256": "4f6d97856aa6390783b3d159e62fee8045e6dd74e0fd0c11119d660b26abd6d5",
+        "bytes": 20831,
+        "sequence": 1,
+        "nativeCoreSaveAndRead": true,
+        "saveReplaySameSequence": true,
+        "exactPublishedBytes": true,
+        "parentPreserved": true,
+        "replaySameVersion": true,
+        "persistence": "Native PostgreSQL16 / canonical Core draft methods under capiro_app; artifact SQL/object ports remain scripted; already edited CODE bytes replayed through WOPI"
+      },
+      {
+        "id": "docx-10",
+        "sha256": "4efd2df363335c89eb5417e81a9bcc5e72bf8a9db733c01343ed1c9c8554c118",
+        "bytes": 23151,
+        "sequence": 1,
+        "nativeCoreSaveAndRead": true,
+        "saveReplaySameSequence": true,
+        "exactPublishedBytes": true,
+        "parentPreserved": true,
+        "replaySameVersion": true,
+        "persistence": "Native PostgreSQL16 / canonical Core draft methods under capiro_app; artifact SQL/object ports remain scripted; already edited CODE bytes replayed through WOPI"
+      },
+      {
+        "id": "xlsx-01",
+        "sha256": "278e9dc6503ecfe4662b08975c075d3c404ea84610a6477f297202e17e6d43ad",
+        "bytes": 7028,
+        "sequence": 1,
+        "nativeCoreSaveAndRead": true,
+        "saveReplaySameSequence": true,
+        "exactPublishedBytes": true,
+        "parentPreserved": true,
+        "replaySameVersion": true,
+        "persistence": "Native PostgreSQL16 / canonical Core draft methods under capiro_app; artifact SQL/object ports remain scripted; already edited CODE bytes replayed through WOPI"
+      },
+      {
+        "id": "xlsx-02",
+        "sha256": "b5e9e0ca38688e2551a38dc49043d2099686afbef164e2fa52cd9d17cbfc2fc6",
+        "bytes": 7087,
+        "sequence": 1,
+        "nativeCoreSaveAndRead": true,
+        "saveReplaySameSequence": true,
+        "exactPublishedBytes": true,
+        "parentPreserved": true,
+        "replaySameVersion": true,
+        "persistence": "Native PostgreSQL16 / canonical Core draft methods under capiro_app; artifact SQL/object ports remain scripted; already edited CODE bytes replayed through WOPI"
+      },
+      {
+        "id": "xlsx-03",
+        "sha256": "f1dd706363984e610e51c9b6ccecdc31c2d8811fdd904bf71987273a61138bb6",
+        "bytes": 7386,
+        "sequence": 1,
+        "nativeCoreSaveAndRead": true,
+        "saveReplaySameSequence": true,
+        "exactPublishedBytes": true,
+        "parentPreserved": true,
+        "replaySameVersion": true,
+        "persistence": "Native PostgreSQL16 / canonical Core draft methods under capiro_app; artifact SQL/object ports remain scripted; already edited CODE bytes replayed through WOPI"
+      },
+      {
+        "id": "xlsx-04",
+        "sha256": "4d79f91e7f96eb995b66bf8524578c1ecf0a7893ba03632492350814fc6aea7c",
+        "bytes": 11309,
+        "sequence": 1,
+        "nativeCoreSaveAndRead": true,
+        "saveReplaySameSequence": true,
+        "exactPublishedBytes": true,
+        "parentPreserved": true,
+        "replaySameVersion": true,
+        "persistence": "Native PostgreSQL16 / canonical Core draft methods under capiro_app; artifact SQL/object ports remain scripted; already edited CODE bytes replayed through WOPI"
+      },
+      {
+        "id": "xlsx-05",
+        "sha256": "c266604d3af9e99e0f26844f0dd35bfe3a2e51064bdc19f6ff463b679720de9e",
+        "bytes": 11384,
+        "sequence": 1,
+        "nativeCoreSaveAndRead": true,
+        "saveReplaySameSequence": true,
+        "exactPublishedBytes": true,
+        "parentPreserved": true,
+        "replaySameVersion": true,
+        "persistence": "Native PostgreSQL16 / canonical Core draft methods under capiro_app; artifact SQL/object ports remain scripted; already edited CODE bytes replayed through WOPI"
+      },
+      {
+        "id": "xlsx-06",
+        "sha256": "f65b99c75098c5c255413d0bbadbfdcc6684589ec44d771cb9b5495ccc3ab63c",
+        "bytes": 7300,
+        "sequence": 1,
+        "nativeCoreSaveAndRead": true,
+        "saveReplaySameSequence": true,
+        "exactPublishedBytes": true,
+        "parentPreserved": true,
+        "replaySameVersion": true,
+        "persistence": "Native PostgreSQL16 / canonical Core draft methods under capiro_app; artifact SQL/object ports remain scripted; already edited CODE bytes replayed through WOPI"
+      },
+      {
+        "id": "xlsx-07",
+        "sha256": "0d9570bb34d09b330f386518c5f334857f926ab0dad9ddf7e2a94a9f39be7833",
+        "bytes": 8029,
+        "sequence": 1,
+        "nativeCoreSaveAndRead": true,
+        "saveReplaySameSequence": true,
+        "exactPublishedBytes": true,
+        "parentPreserved": true,
+        "replaySameVersion": true,
+        "persistence": "Native PostgreSQL16 / canonical Core draft methods under capiro_app; artifact SQL/object ports remain scripted; already edited CODE bytes replayed through WOPI"
+      },
+      {
+        "id": "xlsx-08",
+        "sha256": "e5b72b41a9a48e782ddb81edacb81893b304bd009354aef6cc024f4a9973ecaa",
+        "bytes": 7143,
+        "sequence": 1,
+        "nativeCoreSaveAndRead": true,
+        "saveReplaySameSequence": true,
+        "exactPublishedBytes": true,
+        "parentPreserved": true,
+        "replaySameVersion": true,
+        "persistence": "Native PostgreSQL16 / canonical Core draft methods under capiro_app; artifact SQL/object ports remain scripted; already edited CODE bytes replayed through WOPI"
+      },
+      {
+        "id": "xlsx-09",
+        "sha256": "95969e6e187d727262fb8634444f75b4ae16f92abd9396aeaed037f08150aa1a",
+        "bytes": 8935,
+        "sequence": 1,
+        "nativeCoreSaveAndRead": true,
+        "saveReplaySameSequence": true,
+        "exactPublishedBytes": true,
+        "parentPreserved": true,
+        "replaySameVersion": true,
+        "persistence": "Native PostgreSQL16 / canonical Core draft methods under capiro_app; artifact SQL/object ports remain scripted; already edited CODE bytes replayed through WOPI"
+      },
+      {
+        "id": "xlsx-10",
+        "sha256": "8c2528fd1ba3d4e7496f87371db089e96c492f37fb115d579b11afa47c266a5b",
+        "bytes": 353249,
+        "sequence": 1,
+        "nativeCoreSaveAndRead": true,
+        "saveReplaySameSequence": true,
+        "exactPublishedBytes": true,
+        "parentPreserved": true,
+        "replaySameVersion": true,
+        "persistence": "Native PostgreSQL16 / canonical Core draft methods under capiro_app; artifact SQL/object ports remain scripted; already edited CODE bytes replayed through WOPI"
+      },
+      {
+        "id": "pptx-01",
+        "sha256": "3dbbf2ba4432046f044c1c660ea5eceb290518a06eac25bc793c49f36afb8020",
+        "bytes": 13023,
+        "sequence": 1,
+        "nativeCoreSaveAndRead": true,
+        "saveReplaySameSequence": true,
+        "exactPublishedBytes": true,
+        "parentPreserved": true,
+        "replaySameVersion": true,
+        "persistence": "Native PostgreSQL16 / canonical Core draft methods under capiro_app; artifact SQL/object ports remain scripted; already edited CODE bytes replayed through WOPI"
+      },
+      {
+        "id": "pptx-02",
+        "sha256": "6013478ba6038b5c47a9eeb8fbc20a37a4742930263f5fe4fcbee9f6234938fe",
+        "bytes": 13260,
+        "sequence": 1,
+        "nativeCoreSaveAndRead": true,
+        "saveReplaySameSequence": true,
+        "exactPublishedBytes": true,
+        "parentPreserved": true,
+        "replaySameVersion": true,
+        "persistence": "Native PostgreSQL16 / canonical Core draft methods under capiro_app; artifact SQL/object ports remain scripted; already edited CODE bytes replayed through WOPI"
+      },
+      {
+        "id": "pptx-03",
+        "sha256": "f0a43d2e7ef101a3bfda578646232ab9c5fdc27771bea3a0c11efb86949fcd4b",
+        "bytes": 15744,
+        "sequence": 1,
+        "nativeCoreSaveAndRead": true,
+        "saveReplaySameSequence": true,
+        "exactPublishedBytes": true,
+        "parentPreserved": true,
+        "replaySameVersion": true,
+        "persistence": "Native PostgreSQL16 / canonical Core draft methods under capiro_app; artifact SQL/object ports remain scripted; already edited CODE bytes replayed through WOPI"
+      },
+      {
+        "id": "pptx-04",
+        "sha256": "296212ca0338698598d243419a975e6029aec1a46aa0ea318fd4f81fb4ddf8a7",
+        "bytes": 18140,
+        "sequence": 1,
+        "nativeCoreSaveAndRead": true,
+        "saveReplaySameSequence": true,
+        "exactPublishedBytes": true,
+        "parentPreserved": true,
+        "replaySameVersion": true,
+        "persistence": "Native PostgreSQL16 / canonical Core draft methods under capiro_app; artifact SQL/object ports remain scripted; already edited CODE bytes replayed through WOPI"
+      },
+      {
+        "id": "pptx-05",
+        "sha256": "fa4c1be69b58bb75ee5efa381f9753fd35c4823067157d3218b20796ac2eb7ee",
+        "bytes": 14744,
+        "sequence": 1,
+        "nativeCoreSaveAndRead": true,
+        "saveReplaySameSequence": true,
+        "exactPublishedBytes": true,
+        "parentPreserved": true,
+        "replaySameVersion": true,
+        "persistence": "Native PostgreSQL16 / canonical Core draft methods under capiro_app; artifact SQL/object ports remain scripted; already edited CODE bytes replayed through WOPI"
+      },
+      {
+        "id": "pptx-06",
+        "sha256": "1b9101b75223a153b53e16f79461a22da92ce46ff19fa1a807e3ae372b99c575",
+        "bytes": 13077,
+        "sequence": 1,
+        "nativeCoreSaveAndRead": true,
+        "saveReplaySameSequence": true,
+        "exactPublishedBytes": true,
+        "parentPreserved": true,
+        "replaySameVersion": true,
+        "persistence": "Native PostgreSQL16 / canonical Core draft methods under capiro_app; artifact SQL/object ports remain scripted; already edited CODE bytes replayed through WOPI"
+      },
+      {
+        "id": "pptx-07",
+        "sha256": "aa1d7c0f7812e00f20ffb6b38c50e74d190dc278b804fed7198da6fbf0bb5278",
+        "bytes": 14892,
+        "sequence": 1,
+        "nativeCoreSaveAndRead": true,
+        "saveReplaySameSequence": true,
+        "exactPublishedBytes": true,
+        "parentPreserved": true,
+        "replaySameVersion": true,
+        "persistence": "Native PostgreSQL16 / canonical Core draft methods under capiro_app; artifact SQL/object ports remain scripted; already edited CODE bytes replayed through WOPI"
+      },
+      {
+        "id": "pptx-08",
+        "sha256": "30060468d58c7283bffec1951c41710c51a2ed0ed2e7db90cc8a3eda2678cbaf",
+        "bytes": 13074,
+        "sequence": 1,
+        "nativeCoreSaveAndRead": true,
+        "saveReplaySameSequence": true,
+        "exactPublishedBytes": true,
+        "parentPreserved": true,
+        "replaySameVersion": true,
+        "persistence": "Native PostgreSQL16 / canonical Core draft methods under capiro_app; artifact SQL/object ports remain scripted; already edited CODE bytes replayed through WOPI"
+      },
+      {
+        "id": "pptx-09",
+        "sha256": "73788599c5a93dbed4b794e915775e132000ad0c7343649ac5f0fc0c6950c567",
+        "bytes": 17657,
+        "sequence": 1,
+        "nativeCoreSaveAndRead": true,
+        "saveReplaySameSequence": true,
+        "exactPublishedBytes": true,
+        "parentPreserved": true,
+        "replaySameVersion": true,
+        "persistence": "Native PostgreSQL16 / canonical Core draft methods under capiro_app; artifact SQL/object ports remain scripted; already edited CODE bytes replayed through WOPI"
+      },
+      {
+        "id": "pptx-10",
+        "sha256": "946fd66ba66fb476c2471ef39d8cbc1af6040df9603487df2e2a5a3f80a5ada3",
+        "bytes": 108418,
+        "sequence": 1,
+        "nativeCoreSaveAndRead": true,
+        "saveReplaySameSequence": true,
+        "exactPublishedBytes": true,
+        "parentPreserved": true,
+        "replaySameVersion": true,
+        "persistence": "Native PostgreSQL16 / canonical Core draft methods under capiro_app; artifact SQL/object ports remain scripted; already edited CODE bytes replayed through WOPI"
+      }
+    ],
+    "recovery": [
+      {
+        "id": "docx-01",
+        "bytes": 20673,
+        "sha256": "0a0b8de6ac68452403ee6aed242c0e66b5689546f5c7ef40f4d90035c77f6811",
+        "sequence": 1,
+        "exactBytesAfterCoreAndPostgresRestart": true,
+        "publicationReceiptPreserved": true
+      },
+      {
+        "id": "docx-02",
+        "bytes": 25723,
+        "sha256": "362782e67f19fa494e011f429d2eeabb258e0dd0f334a802e447c4d1dda86c38",
+        "sequence": 1,
+        "exactBytesAfterCoreAndPostgresRestart": true,
+        "publicationReceiptPreserved": true
+      },
+      {
+        "id": "docx-03",
+        "bytes": 21159,
+        "sha256": "5a820f0b8fa556dff0c886cb5648a58d48e644397c813fa2b7097ec6e974d2c4",
+        "sequence": 1,
+        "exactBytesAfterCoreAndPostgresRestart": true,
+        "publicationReceiptPreserved": true
+      },
+      {
+        "id": "docx-04",
+        "bytes": 22262,
+        "sha256": "b51848c00fabe14e280b1b5eedd98e23d6a823d8271bc3a85bd5accb4b4c4578",
+        "sequence": 1,
+        "exactBytesAfterCoreAndPostgresRestart": true,
+        "publicationReceiptPreserved": true
+      },
+      {
+        "id": "docx-05",
+        "bytes": 21341,
+        "sha256": "8edac3ad1a4508d0e6dab507ade70524aec476db4728e194b9bc9481de11ca79",
+        "sequence": 1,
+        "exactBytesAfterCoreAndPostgresRestart": true,
+        "publicationReceiptPreserved": true
+      },
+      {
+        "id": "docx-06",
+        "bytes": 20883,
+        "sha256": "9030577b4fca1c7686d65d2a4c1438095c63799852ea735b121aa1c3a669d156",
+        "sequence": 1,
+        "exactBytesAfterCoreAndPostgresRestart": true,
+        "publicationReceiptPreserved": true
+      },
+      {
+        "id": "docx-07",
+        "bytes": 22917,
+        "sha256": "bb119b6eda26e742749c030ee14623676352d9be7995cef100401dc5a5e0a169",
+        "sequence": 1,
+        "exactBytesAfterCoreAndPostgresRestart": true,
+        "publicationReceiptPreserved": true
+      },
+      {
+        "id": "docx-08",
+        "bytes": 20712,
+        "sha256": "f4cc1fe28b9bbdb01f73a4fedc55391d2d30da0f7534388b6e8569c0e2bc3d81",
+        "sequence": 1,
+        "exactBytesAfterCoreAndPostgresRestart": true,
+        "publicationReceiptPreserved": true
+      },
+      {
+        "id": "docx-09",
+        "bytes": 20831,
+        "sha256": "4f6d97856aa6390783b3d159e62fee8045e6dd74e0fd0c11119d660b26abd6d5",
+        "sequence": 1,
+        "exactBytesAfterCoreAndPostgresRestart": true,
+        "publicationReceiptPreserved": true
+      },
+      {
+        "id": "docx-10",
+        "bytes": 23151,
+        "sha256": "4efd2df363335c89eb5417e81a9bcc5e72bf8a9db733c01343ed1c9c8554c118",
+        "sequence": 1,
+        "exactBytesAfterCoreAndPostgresRestart": true,
+        "publicationReceiptPreserved": true
+      },
+      {
+        "id": "xlsx-01",
+        "bytes": 7028,
+        "sha256": "278e9dc6503ecfe4662b08975c075d3c404ea84610a6477f297202e17e6d43ad",
+        "sequence": 1,
+        "exactBytesAfterCoreAndPostgresRestart": true,
+        "publicationReceiptPreserved": true
+      },
+      {
+        "id": "xlsx-02",
+        "bytes": 7087,
+        "sha256": "b5e9e0ca38688e2551a38dc49043d2099686afbef164e2fa52cd9d17cbfc2fc6",
+        "sequence": 1,
+        "exactBytesAfterCoreAndPostgresRestart": true,
+        "publicationReceiptPreserved": true
+      },
+      {
+        "id": "xlsx-03",
+        "bytes": 7386,
+        "sha256": "f1dd706363984e610e51c9b6ccecdc31c2d8811fdd904bf71987273a61138bb6",
+        "sequence": 1,
+        "exactBytesAfterCoreAndPostgresRestart": true,
+        "publicationReceiptPreserved": true
+      },
+      {
+        "id": "xlsx-04",
+        "bytes": 11309,
+        "sha256": "4d79f91e7f96eb995b66bf8524578c1ecf0a7893ba03632492350814fc6aea7c",
+        "sequence": 1,
+        "exactBytesAfterCoreAndPostgresRestart": true,
+        "publicationReceiptPreserved": true
+      },
+      {
+        "id": "xlsx-05",
+        "bytes": 11384,
+        "sha256": "c266604d3af9e99e0f26844f0dd35bfe3a2e51064bdc19f6ff463b679720de9e",
+        "sequence": 1,
+        "exactBytesAfterCoreAndPostgresRestart": true,
+        "publicationReceiptPreserved": true
+      },
+      {
+        "id": "xlsx-06",
+        "bytes": 7300,
+        "sha256": "f65b99c75098c5c255413d0bbadbfdcc6684589ec44d771cb9b5495ccc3ab63c",
+        "sequence": 1,
+        "exactBytesAfterCoreAndPostgresRestart": true,
+        "publicationReceiptPreserved": true
+      },
+      {
+        "id": "xlsx-07",
+        "bytes": 8029,
+        "sha256": "0d9570bb34d09b330f386518c5f334857f926ab0dad9ddf7e2a94a9f39be7833",
+        "sequence": 1,
+        "exactBytesAfterCoreAndPostgresRestart": true,
+        "publicationReceiptPreserved": true
+      },
+      {
+        "id": "xlsx-08",
+        "bytes": 7143,
+        "sha256": "e5b72b41a9a48e782ddb81edacb81893b304bd009354aef6cc024f4a9973ecaa",
+        "sequence": 1,
+        "exactBytesAfterCoreAndPostgresRestart": true,
+        "publicationReceiptPreserved": true
+      },
+      {
+        "id": "xlsx-09",
+        "bytes": 8935,
+        "sha256": "95969e6e187d727262fb8634444f75b4ae16f92abd9396aeaed037f08150aa1a",
+        "sequence": 1,
+        "exactBytesAfterCoreAndPostgresRestart": true,
+        "publicationReceiptPreserved": true
+      },
+      {
+        "id": "xlsx-10",
+        "bytes": 353249,
+        "sha256": "8c2528fd1ba3d4e7496f87371db089e96c492f37fb115d579b11afa47c266a5b",
+        "sequence": 1,
+        "exactBytesAfterCoreAndPostgresRestart": true,
+        "publicationReceiptPreserved": true
+      },
+      {
+        "id": "pptx-01",
+        "bytes": 13023,
+        "sha256": "3dbbf2ba4432046f044c1c660ea5eceb290518a06eac25bc793c49f36afb8020",
+        "sequence": 1,
+        "exactBytesAfterCoreAndPostgresRestart": true,
+        "publicationReceiptPreserved": true
+      },
+      {
+        "id": "pptx-02",
+        "bytes": 13260,
+        "sha256": "6013478ba6038b5c47a9eeb8fbc20a37a4742930263f5fe4fcbee9f6234938fe",
+        "sequence": 1,
+        "exactBytesAfterCoreAndPostgresRestart": true,
+        "publicationReceiptPreserved": true
+      },
+      {
+        "id": "pptx-03",
+        "bytes": 15744,
+        "sha256": "f0a43d2e7ef101a3bfda578646232ab9c5fdc27771bea3a0c11efb86949fcd4b",
+        "sequence": 1,
+        "exactBytesAfterCoreAndPostgresRestart": true,
+        "publicationReceiptPreserved": true
+      },
+      {
+        "id": "pptx-04",
+        "bytes": 18140,
+        "sha256": "296212ca0338698598d243419a975e6029aec1a46aa0ea318fd4f81fb4ddf8a7",
+        "sequence": 1,
+        "exactBytesAfterCoreAndPostgresRestart": true,
+        "publicationReceiptPreserved": true
+      },
+      {
+        "id": "pptx-05",
+        "bytes": 14744,
+        "sha256": "fa4c1be69b58bb75ee5efa381f9753fd35c4823067157d3218b20796ac2eb7ee",
+        "sequence": 1,
+        "exactBytesAfterCoreAndPostgresRestart": true,
+        "publicationReceiptPreserved": true
+      },
+      {
+        "id": "pptx-06",
+        "bytes": 13077,
+        "sha256": "1b9101b75223a153b53e16f79461a22da92ce46ff19fa1a807e3ae372b99c575",
+        "sequence": 1,
+        "exactBytesAfterCoreAndPostgresRestart": true,
+        "publicationReceiptPreserved": true
+      },
+      {
+        "id": "pptx-07",
+        "bytes": 14892,
+        "sha256": "aa1d7c0f7812e00f20ffb6b38c50e74d190dc278b804fed7198da6fbf0bb5278",
+        "sequence": 1,
+        "exactBytesAfterCoreAndPostgresRestart": true,
+        "publicationReceiptPreserved": true
+      },
+      {
+        "id": "pptx-08",
+        "bytes": 13074,
+        "sha256": "30060468d58c7283bffec1951c41710c51a2ed0ed2e7db90cc8a3eda2678cbaf",
+        "sequence": 1,
+        "exactBytesAfterCoreAndPostgresRestart": true,
+        "publicationReceiptPreserved": true
+      },
+      {
+        "id": "pptx-09",
+        "bytes": 17657,
+        "sha256": "73788599c5a93dbed4b794e915775e132000ad0c7343649ac5f0fc0c6950c567",
+        "sequence": 1,
+        "exactBytesAfterCoreAndPostgresRestart": true,
+        "publicationReceiptPreserved": true
+      },
+      {
+        "id": "pptx-10",
+        "bytes": 108418,
+        "sha256": "946fd66ba66fb476c2471ef39d8cbc1af6040df9603487df2e2a5a3f80a5ada3",
+        "sequence": 1,
+        "exactBytesAfterCoreAndPostgresRestart": true,
+        "publicationReceiptPreserved": true
+      }
+    ],
+    "lifecycle": [
+      {
+        "scenario": "native-commit-lost-ack",
+        "status": "PASS",
+        "sequence": 1,
+        "readbackExact": true
+      },
+      {
+        "scenario": "native-storage-refusal",
+        "status": "PASS",
+        "sequence": 1,
+        "priorBytesUnchanged": true
+      },
+      {
+        "scenario": "current-database-membership-revocation",
+        "status": "PASS",
+        "bytesReleased": 0
+      },
+      {
+        "scenario": "native-release-reacquire",
+        "status": "PASS",
+        "epoch": 2,
+        "oldTokenRefused": true,
+        "savedBytesUnchanged": true
+      }
+    ]
+  },
   "limitations": [
     "Synthetic representative corpus only; no customer files or universal Office fidelity claim.",
     "Font substitution and removal of embedded PPTX chart workbooks are unresolved compatibility differences.",
     "The isolated proxy did not demonstrate automatic reconnect after a CODE crash. Explicit reopen recovery is reported separately.",
-    "Native Core PostgreSQL with CODE, the deployed full application, ARM64 and production hosting remain unqualified.",
+    "The live CODE-to-native-Core-PostgreSQL crossing was attempted but WSL startup hung, including a read-only distro listing. Task command clients were stopped; no WSL reset was performed. Native database replay/restart tests ran separately on Windows.",
+    "The deployed full application, ARM64 and production hosting remain unqualified. Artifact SQL/object storage and identity verification ports remain scripted in the native Core test.",
     "Independent review, production activation, deployment and paid/model calls remain held."
   ]
 }
