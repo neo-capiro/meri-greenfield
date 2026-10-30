@@ -48,3 +48,18 @@ test('a mismatched, forged or foreign internal supersession still refuses',async
  const foreign=fixture({admit:withProof({source:{...source,conversationId:id(701)},target:next})});await assert.rejects(foreign.resolve({conversationId:candidate,clientId,runId:source.runId}));assert.deepEqual(foreign.order,['identity','context','admit']);
  const selfProof=fixture({admit:withProof({source:next,target:next})});await assert.rejects(selfProof.resolve({conversationId:candidate,clientId,runId:source.runId}));assert.deepEqual(selfProof.order,['identity','context','admit']);
 });
+
+
+for(const intent of ['resume','takeover.end'])test(`fresh exact target context accepts ${intent} without selecting another run`,async()=>{
+ const target={...binding,runId:id(720),attemptId:id(721),workerId:id(722),writerFence:binding.writerFence+1};
+ const scopes=[{kind:'client',tenantId:binding.tenantId,resourceId:clientId,policyRevision}],nativeContextRevision='stable';let currentReads=0;
+ const adapters=createApplicationContextAdapters({now:()=>at,limits:{maxRequestMs:500,maxFactBytes:65536},
+  client:{readIdentity:async()=>identity,readContext:async input=>({...identity,identitySha256:input.identitySha256,conversationId:binding.conversationId,selectedClientId:clientId,contextRevision:nativeContextRevision})},
+  currentRun:async requested=>{assert.deepEqual(requested,target);currentReads++;return JSON.stringify({binding:target,policyRevision,checkedAtMs:at,deadlineMs:at+800});},
+  admitInitialConversation:async()=>assert.fail('a committed transition must never select or reserve')});
+ const sourceContext={binding,scopes,selectedClientId:clientId,contextRevision:canonicalSha256({identityRevision:identity.identityRevision,nativeContextRevision,binding,policyRevision})};
+ const input={identityCredential:'synthetic-native',identity,identitySha256:canonicalSha256(identity),sourceContext,
+  transition:{intent,sourceBinding:binding,targetBinding:target,selectedClientId:clientId,policyRevision,scopes},deadlineMs:at+500};
+ assert.deepEqual((await adapters.resolveTransitionContext(input)).binding,target);assert.equal(currentReads,2);
+ await assert.rejects(adapters.resolveTransitionContext({...input,transition:{...input.transition,targetBinding:{...target,actorId:id(723)}}}));
+});

@@ -25,7 +25,7 @@ export function assertLifecycleConfiguration(config,runOwner) {
  ['nextControls','claimControl','ackControl','recordCheckpoint'].some(k=>typeof runOwner[k]!=='function'))throw fault('LIFECYCLE_CONFIGURATION');
  return {captureCheckpoint,captureCompletion,pollMs,captureOwnsClose};
 }
-export function createActivityLifecycle({config,runOwner,binding,saved,runtime,input,query,life,now}) {
+export function createActivityLifecycle({config,runOwner,binding,saved,runtime,input,query,life,now,browserRun}) {
  const {captureCheckpoint,captureCompletion,pollMs,captureOwnsClose}=assertLifecycleConfiguration(config,runOwner);
  const contextSha256=continuationContextSha256(saved.request,saved.run.scopes),abort=new AbortController();
  const poll=createOperationLifetime({deadlineMs:runtime.deadlineMs,now,signal:AbortSignal.any([life.signal,abort.signal]),errorFactory:fault});
@@ -36,7 +36,10 @@ export function createActivityLifecycle({config,runOwner,binding,saved,runtime,i
  function envelope(raw){const e=data(own(raw,['controlSequence','commandSha256','command'])),c=assertWorkerControl(e.command);
   if(!Number.isSafeInteger(e.controlSequence)||e.controlSequence<=after||e.commandSha256!==canonicalSha256(c)||
    !same(c.binding,binding)||c.contextSha256!==contextSha256)throw fault('CONTROL_ENVELOPE_REFUSED');return e;}
- async function pause(entry){held=true;await adapter.apply(entry.command);life.check();
+ async function pause(entry){held=true;const takeover=entry.command.action==='takeover.begin';
+  if(takeover){if(typeof browserRun?.prepareTakeover!=='function')throw fault('BROWSER_CUSTODY_UNAVAILABLE');
+   await poll.run(signal=>browserRun.prepareTakeover({controlId:entry.command.controlId,signal}));}
+  await adapter.apply(entry.command);life.check();
   if(!sessionId)throw fault('SDK_SESSION_MISSING');
   // The native result owns cumulative usage. Interrupt and stop input, then drain that result before closing the query;
   // the existing run lifetime bounds a missing result and leaves an explicit failed hold rather than a zero-cost resume.
@@ -44,12 +47,14 @@ export function createActivityLifecycle({config,runOwner,binding,saved,runtime,i
   // Interrupt only requests cancellation. Capture waits for actual query cleanup
   // and mirror flush before asking the existing owner to read its own SDK rows.
   await poll.run(()=>query.close());
+  const browserCustody=takeover?await poll.run(signal=>browserRun.captureTakeover({controlId:entry.command.controlId,signal})):undefined;
   await poll.run(signal=>captureCheckpoint({binding,request:saved.request,versions:saved.run.versions,scopes:saved.run.scopes,
    controlId:entry.command.controlId,sessionId,contextSha256,signal}));
-  const recorded=assertLifecycleReceipt(await poll.run(signal=>runOwner.recordCheckpoint({binding,input:{controlId:entry.command.controlId,sessionId},signal})));
+  const recorded=assertLifecycleReceipt(await poll.run(signal=>runOwner.recordCheckpoint({binding,input:{controlId:entry.command.controlId,sessionId,...(browserCustody?{browserCustody}:{})},signal})));
   if(recorded.controlId!==entry.command.controlId||recorded.checkpointId!==binding.runId||!same(recorded.sourceBinding,binding)||
-   recorded.state!=='APPLIED'||recorded.intent!==(entry.command.action==='pause'?'pause':'approval.wait'))throw fault('CHECKPOINT_RECORD_REFUSED');
-  pending.delete(entry.command.controlId);heldResult.resolve({state:entry.command.action==='pause'?'paused':'waiting-for-approval'});
+   recorded.state!=='APPLIED'||recorded.intent!==entry.command.action)throw fault('CHECKPOINT_RECORD_REFUSED');
+  if(takeover)await poll.run(signal=>browserRun.retainTakeover({receipt:recorded,signal}));
+  pending.delete(entry.command.controlId);heldResult.resolve({state:entry.command.action==='approval.wait'?'waiting-for-approval':'paused'});
  }
  function idle(ms){return poll.run(signal=>new Promise((resolve,reject)=>{const timer=setTimeout(done,ms);wakeIdle=done;
   function done(){clearTimeout(timer);wakeIdle=undefined;signal.removeEventListener('abort',cancel);resolve();}function cancel(){clearTimeout(timer);wakeIdle=undefined;reject(fault('CANCELLED'));}

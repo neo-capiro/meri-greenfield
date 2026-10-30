@@ -44,6 +44,7 @@ export function createControlFence({now}={}){
   if(state==='user'&&t-lastInputMs>=TAKEOVER_LIMITS.leaseIdleMs){leaseEpoch++;state='returning';pausedBy='idle';}
  }
  const snapshot=()=>Object.freeze({state,reason,controlEpoch,leaseEpoch,deadlineMs,inflight:inflight.size,droppedInputs:dropped,pausedBy,
+  leaseExpiresAtMs:state==='user'?lastInputMs+TAKEOVER_LIMITS.leaseIdleMs:null,
   unknownCalls:Object.freeze([...unknown.values()]),resetRequired:state==='drain-unknown'});
  return Object.freeze({
   state(){evaluate();return snapshot();},

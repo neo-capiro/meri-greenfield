@@ -167,3 +167,21 @@ test('close during SDK preexec callback stops the owned child before acknowledgi
  assert.equal(f.children[0].signalCode,'SIGKILL');assert.notEqual(f.children[0].go,'G');
  await assert.rejects(starting,/HOST_LAUNCH_UNKNOWN|HOST_LAUNCH_CANCELLED/);
 });
+
+for(const uncertain of [false,true])test(`expected SDK retirement ${uncertain?'destroys on uncertain absence':'retains only browser after exact child absence'}`,async()=>{
+ let observed=0,f;
+ f=fixture({createSdkObserver:()=>({async arm({sdkLeaderPid}){assert.equal(sdkLeaderPid,f.children.at(-1).pid);},
+  async waitQuiescent(){observed++;assert.notEqual(f.children.at(-1).signalCode,null);assert.equal(f.children[0].signalCode,null);
+   if(uncertain)throw Error('synthetic descendants remain');return {quiescent:true};},async close(){}})});
+ const policy=enabledPolicy(),paths=browserPaths('/workspace/'+binding.conversationId);
+ try{
+  await f.launcher.prepareBrowserContext({policy,installation,paths});
+  const broker=await f.launcher.prepareBrowserBroker({policy,installation,paths});
+  const client=f.launcher.createSdkProcessClient();client.spawnClaudeCodeProcess(sdkDescriptor);await client.startPreparedProcess();
+  await f.launcher.prepareSdkRetirement();
+  if(uncertain){await assert.rejects(client.close(),/synthetic descendants remain/);assert.notEqual(f.children[0].signalCode,null);}
+  else{assert.equal((await client.close()).sdkAbsent,true);assert.equal(observed,1);assert.equal(f.children[0].signalCode,null);
+   assert.equal((await f.launcher.retireSdk()).sdkAbsent,true);assert.equal(observed,1);await broker.failure;}
+ }finally{await f.launcher.close();}
+ assert.notEqual(f.children[0].signalCode,null);
+});

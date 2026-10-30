@@ -1,5 +1,6 @@
 /** PostgreSQL-backed currentness read. The caller supplies an acknowledged write transaction and a canonical
  * run reader operating on that SAME transaction. No migration, pool, or fallback authority is created here. */
+import {assertBrowserCustody} from '../../../../../packages/runtime/browser-custody.mjs';
 import {canonicalSha256} from '../../../../../packages/contracts/validate.mjs';
 import {own,data,nativeSignal} from '../../../../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {assertHostAllocation,assertHostRunBinding,assertD005HostIdentity,MAX_HOST_CURRENTNESS_MS} from '../binding.mjs';
@@ -49,12 +50,17 @@ export function createPostgresHostCurrentnessStore({transact,readCanonicalRun,ma
     h.client_dns_name!==peerDnsName||h.state!=='active'||ms(h.lease_deadline_ms)!==a.leaseDeadlineMs)fail();
    // This port is supplied by the canonical admitted-run owner, not by the request or a local cache.
    const state=own(data(await readCanonicalRun(client,{allocation:a,binding:b,signal})),
-    ['binding','browserPolicySha256','capabilityPolicySha256','sdkAdmitted','browserAdmitted','bashAdmitted','phase','currentUntilMs']);
+    ['binding','browserPolicySha256','capabilityPolicySha256','sdkAdmitted','browserAdmitted','bashAdmitted','phase','currentUntilMs'],['browserCustody']);
    const selected=q.purpose==='browser'
     ?{digest:state.browserPolicySha256,admitted:state.browserAdmitted}
     :{digest:state.capabilityPolicySha256,admitted:q.purpose==='sdk'?state.sdkAdmitted:state.bashAdmitted};
-   if(!same(state.binding,b)||selected.digest!==q.policySha256||state.sdkAdmitted!==true||
-    selected.admitted!==true||state.phase!=='active')fail();
+   const held=q.purpose==='browser'&&state.phase==='browser-held';
+   if(held){const custody=assertBrowserCustody(state.browserCustody,{binding:b});
+    if(custody.hostId!==a.hostId||custody.generation!==a.generation||custody.policySha256!==q.policySha256||
+     ms(state.currentUntilMs)>custody.expiresAtMs||state.sdkAdmitted!==false||state.bashAdmitted!==false)fail();
+   }
+   if(!same(state.binding,b)||selected.digest!==q.policySha256||selected.admitted!==true||
+    (!held&&(state.sdkAdmitted!==true||state.phase!=='active')))fail();
    if(signal?.aborted)fail();
    const inserted=(await client.query(HOST_CONTROL_SQL.consumeNonce,[a.hostId,a.generation,canonicalSha256(q.nonce)])).rows;
    if(!Array.isArray(inserted)||inserted.length!==1||inserted[0]?.nonce_sha256!==canonicalSha256(q.nonce))fail();

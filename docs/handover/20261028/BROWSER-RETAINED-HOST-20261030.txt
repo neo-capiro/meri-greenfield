@@ -1,0 +1,70 @@
+Browser retained host source integration, 30 October 2026
+
+Purpose and outline
+Extend the canonical takeover hold through worker drain, actual SDK absence,
+retained browser ownership and an exact private filtered return snapshot. The
+browser context remains one context; the SDK remains the only model loop.
+Use existing control custody, not a second hold journal or a revived SDK query.
+
+Implemented behavior
+The worker fences browser calls before interrupting the SDK, drains terminal
+usage, closes the query, proves SDK-child absence, records the native checkpoint,
+and only then grants the user lease from the exact APPLIED takeover.begin receipt.
+The host launcher retires SDK/broker children separately from the browser child;
+uncertain absence destroys the host. Browser currentness remains bounded while
+SDK and Bash authority are closed. Ordinary pause/approval cleanup is unchanged.
+
+The native host exposes prepareResume(binding,custody). It checks fresh authority,
+ends user input, captures one filtered snapshot, retains the exact object privately,
+and returns only owner/epoch/digest. Concurrent retries share the capture. It stays
+fenced in returning. The viewer controls cannot call an independent resume method.
+Browser lease expiry is reported as an absolute time bounded by host/session expiry.
+
+Native integration finding
+Actual pinned Playwright MCP schemas carry hidden implementation properties. The
+in-process upstream bridge now applies normal bounded MCP JSON wire serialization
+before returning those values to the strict model relay. Without this correction
+actual SDK discovery connected but returned zero tools. The actual SDK now lists
+the browser_snapshot tool through the native authenticated broker.
+
+Context ownership
+Ordinary source read/reissue and renewal after expiry/control restart pass while
+paused without creating a successor. APPLIED browser custody also preserves exact
+ordinary reads. Fresh identity/context transition now accepts takeover.end with
+the same target checks as resume; it still cannot select another run. Once the
+canonical successor exists the old binding is stale, not evidence of lost tenant
+membership. Parent owns the HTTP/frontend handling of that distinction.
+
+Author validation
+73 affected worker, session, host-currentness, canonical lifecycle, context and
+renewal tests passed with zero skips; runtime TypeScript passed. Linux native
+launcher tests cover retained browser success and fail-closed unknown SDK absence.
+The opt-in scripts/qualification/browser-retained-context.mjs ran real SDK 0.3.295,
+CLI 2.1.295 and Chromium 155.0.8059.12 with separate nonroot SDK/browser UIDs,
+Chromium sandbox enabled, a private mount/network namespace with loopback only,
+and the fixed native authenticated shim/broker. It proved exact SDK subtree
+absence, a still-live browser, native viewer frame, returning fence and stale
+viewer lease refusal. Zero user prompts/model messages. Its own processes,
+cgroups, mounts and temporary directory were removed with absence readback.
+
+Qualification failures retained in local evidence
+Initial fixture runs lacked loopback for Chromium's private CDP connection; fixed
+inside the isolated namespace, without adding external routes. Later actual SDK
+discovery exposed the hidden-property transport discrepancy described above.
+These failures did not pass; the corrected joined run passed. No assertion was
+weakened. The source fixtures still supply canonical/Core authority; this is not
+full D005 mount/network isolation or active-model acceptance.
+
+Integration and limits
+Runtime402 supplies the parent-owned private mTLS/viewer transport, browser-only
+session route and contracts 0.1.39/UI stream 0.1.25. The native host facade here is
+its prepareResume owner. Actual successor adoption still requires the exact fresh
+successor's SDK broker and canonical browser egress/currentness mapping. A supplied
+handoff cannot silently create a fresh browser when that adoption port is absent.
+Host routing/provisioning remains unmounted; activation stays held. No application
+or image build, deployment, paid/model call or independent acceptance is claimed.
+
+Next action
+Complete native successor attachment and retained-resource currentness, join the
+parent's authenticated transport to canonical host allocation, then qualify the
+combined path before requesting the deferred A3 site/task decisions.

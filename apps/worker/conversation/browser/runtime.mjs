@@ -36,7 +36,7 @@ export async function grantBrowserEgress({fragment,egress,binding,deadlineMs,lif
   throw error;
  }
 }
-export async function prepareBrowserRun({port,binding,cwd,deadlineMs,now,signal,siteWorkflow,siteWorkflows}){
+export async function prepareBrowserRun({port,binding,cwd,deadlineMs,now,signal,browserHandoff,siteWorkflow,siteWorkflows}){
  if(typeof port?.policy!=='function'||typeof now!=='function')throw fault('BROWSER_CONFIGURATION');
  let policy=await port.policy({binding:structuredClone(binding),signal}),workflow;
  const createFragment=()=>createBrowserCapability({binding,cwd,policy,installation:port.installation,sourceScopes:port.sourceScopes,approvals:port.approvals,artifacts:port.artifacts,receipts:port.receipts,approvalDeadlineMs:port.approvalDeadlineMs,now,assertCurrent:workflow?.assertCurrent});
@@ -53,23 +53,33 @@ export async function prepareBrowserRun({port,binding,cwd,deadlineMs,now,signal,
    throw error;
   }
  }
+ if(browserHandoff!==undefined&&fragment.activation!=='open')throw fault('BROWSER_CUSTODY_UNAVAILABLE');
  let session;
  if(fragment.activation==='open'){
   try{
    // No direct upstream-only MCP launch: an open browser requires the trusted
    // host's composed execution/output/control owner before exposing its shim.
    if(typeof port.sessions?.open!=='function')throw fault('BROWSER_SESSION_OWNER_REQUIRED');
+   if(browserHandoff!==undefined&&typeof port.sessions.adopt!=='function')throw fault('BROWSER_CUSTODY_UNAVAILABLE');
    await grantBrowserEgress({fragment,egress:port.egress,binding,deadlineMs,lifecycle,signal});
-   session=await port.sessions.open({binding:structuredClone(binding),policy:fragment.policy,deadlineMs,manifest:workflow?.configured.manifest??null});
+   const options={binding:structuredClone(binding),policy:fragment.policy,deadlineMs,manifest:workflow?.configured.manifest??null};
+   if(browserHandoff!==undefined){if(typeof port.sessions.adopt!=='function')throw fault('BROWSER_CUSTODY_UNAVAILABLE');
+    session=await port.sessions.adopt({...options,handoff:browserHandoff,signal});}
+   else session=await port.sessions.open(options);
    if(typeof session?.destroy!=='function'||JSON.stringify(session.mcpServers)!==JSON.stringify(fragment.mcpServers))throw fault('BROWSER_SESSION_OWNER_REQUIRED');
   }catch(error){
    try{await session?.destroy({trigger:'disconnect'});}finally{await lifecycle.settle({outcome:'failed'});}throw error;
   }
  }
- let settled;
- const settle=input=>settled??=(async()=>{let error;
+ let settled,retained;
+ const settle=input=>settled??=(async()=>{if(retained&&input?.outcome!=='failed')return retained;let error;
   try{await session?.destroy({trigger:input?.outcome==='ended'?'conversation-end':'disconnect'});}catch(caught){error=caught;}
   const receipt=await lifecycle.settle(input);if(error)throw error;return receipt;
  })();
- return Object.freeze({fragment,status:fragment.status,settle});
+ return Object.freeze({fragment,status:fragment.status,settle,
+  async prepareTakeover(input){if(settled||typeof session?.prepareTakeover!=='function')throw fault('BROWSER_CUSTODY_UNAVAILABLE');return session.prepareTakeover(input);},
+  async captureTakeover(input){if(settled||typeof session?.captureTakeover!=='function')throw fault('BROWSER_CUSTODY_UNAVAILABLE');return session.captureTakeover(input);},
+  async retainTakeover(input){if(settled||typeof session?.retainTakeover!=='function')throw fault('BROWSER_CUSTODY_UNAVAILABLE');const receipt=await session.retainTakeover(input);
+   if(receipt?.retained!==true)throw fault('BROWSER_CUSTODY_REFUSED');retained=receipt;return receipt;},
+ });
 }

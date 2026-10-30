@@ -235,7 +235,7 @@ test('host workflow disablement denies takeover and leased user input without in
 test('host workflow disablement at hand-back prevents resume',async t=>{
  const x=hostedWorkflow(t),session=await x.open();t.after(()=>session.destroy({trigger:'conversation-end'}));
  await x.state.user.takeover();x.state.user.handBack();x.state.answer.enabled=false;
- await assert.rejects(x.state.user.resume({explicit:true}),/BROWSER_AUTHORITY_REFUSED/);
+ assert.equal(x.state.user.resume,undefined);await assert.rejects(x.state.user.prepareResume({explicit:true}),/BROWSER_AUTHORITY_REFUSED/);
  await session.destroy({trigger:'revocation'});
 });
 test('takeover drains an already-dispatched definite result without releasing it to the model',async t=>{
@@ -263,4 +263,41 @@ test('host composition binds separate model/control relays to the existing exact
  assert.deepEqual(session.mcpServers,expected);await session.destroy({trigger:'conversation-end'});
  assert.deepEqual(events,['create','model','user','model-close','user-close']);assert.deepEqual(x.state.events,['context','exit','dispose']);
  await assert.rejects(host.open({binding,policy,deadlineMs:Date.now()+60000,manifest:null}),/BINDING_REFUSED/);
+});
+
+test('resume stays fenced until the exact fresh snapshot is committed once under current authority',async t=>{
+ const x=fixture(t),session=await createPinnedBrowserSession(x.args);t.after(()=>session.destroy({trigger:'conversation-end'}));
+ const lease=await session.takeover();assert.equal((await session.readState()).leaseEpoch,lease.leaseEpoch);
+ assert.ok((await session.readState()).leaseExpiresAtMs<=x.args.deadlineMs);session.handBack();
+ await assert.rejects(session.completeResume(),/TAKEOVER_RESUME_REFUSED/);
+ const snapshot=await session.prepareResume({explicit:true});assert.equal(session.state().state,'returning');
+ await assert.rejects(call(session),/BROWSER_CALL_REFUSED/);
+ await assert.rejects(session.completeResume({snapshot:{...snapshot}}),/TAKEOVER_RESUME_REFUSED/);
+ await session.completeResume({snapshot});assert.equal(session.state().state,'agent');
+ await assert.rejects(session.completeResume({snapshot}),/TAKEOVER_RESUME_REFUSED/);
+});
+
+test('host grants native user lease only after SDK absence and exact canonical APPLIED receipt',async t=>{
+ const x=fixture(t),events=[],controlId='00000000-0000-4000-8000-000000000005',ownerInstanceId='00000000-0000-4000-8000-000000000006';
+ const allocation={schema:'meri-conversation-host-allocation/1',tenantId:binding.tenantId,conversationId:binding.conversationId,generation:1,
+  hostId:'00000000-0000-4000-8000-000000000007',imageDigest:'sha256:'+ 'a'.repeat(64),leaseDeadlineMs:Date.now()+60000};
+ let user,applied=false;
+ const host=createBrowserSessionHost({binding,cwd,installation,upstream:x.upstream,now:Date.now,allocation,ownerInstanceId,
+  contexts:{create:async()=>x.context},current:x.args.current,hold:async()=>({outcome:applied?'APPLIED':'PENDING'}),
+  processes:{waitForExit:x.args.ports.waitForExit},dispose:x.args.ports.dispose,
+  relay:{bind:async()=>({mcpServers:{meri_browser:playwrightServerConfig(x.args.policy,installation,browserPaths(cwd))},close:async()=>{events.push('model-closed');}})},
+  controls:{bind:async value=>{user=value.controls;return {close:async()=>{events.push('viewer-closed');}};}},
+  retirement:{prepare:async()=>{events.push('retirement-prepared');},wait:async()=>{events.push('sdk-absent');},retain:async()=>{events.push('custody-retained');}}});
+ const session=await host.open({binding,policy:x.args.policy,deadlineMs:Date.now()+50000,manifest:null});t.after(()=>session.destroy({trigger:'conversation-end'}));
+ await session.prepareTakeover({controlId});assert.equal((await user.readState()).state,'drained');
+ const custody=await session.captureTakeover({controlId});assert.deepEqual(events,['retirement-prepared','sdk-absent']);
+ assert.equal(custody.ownerInstanceId,ownerInstanceId);assert.equal((await user.readState()).state,'drained');
+ applied=true;const receipt={controlId,intent:'takeover.begin',sourceBinding:binding,inputSha256:'b'.repeat(64),state:'APPLIED',checkpointId:binding.runId,
+  targetBinding:null,admissionReceiptId:null,retirementReceiptId:null,replayed:false};
+ assert.equal((await session.retainTakeover({receipt})).retained,true);assert.equal((await user.readState()).state,'user');
+ assert.equal((await user.readState()).leaseEpoch,custody.leaseEpoch);
+ assert.equal((await session.retainTakeover({receipt})).retained,true);assert.equal(events.filter(x=>x==='custody-retained').length,1);
+ const [returned,replayed]=await Promise.all([host.prepareResume({binding,custody}),host.prepareResume({binding,custody})]);assert.equal(returned,replayed);assert.equal(returned.ownerInstanceId,ownerInstanceId);assert.equal(returned.leaseEpoch,2);assert.match(returned.snapshotSha256,/^[a-f0-9]{64}$/u);
+ assert.deepEqual(await host.prepareResume({binding,custody}),returned);assert.equal((await user.readState()).state,'returning');
+ await assert.rejects(host.prepareResume({binding:{...binding,writerFence:2},custody}),/BROWSER_CUSTODY_REFUSED/);
 });

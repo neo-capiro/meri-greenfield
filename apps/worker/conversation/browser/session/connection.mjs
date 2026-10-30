@@ -11,7 +11,12 @@ export async function createPinnedBrowserSession({upstream,context,policy,manife
  const server=await upstream.createConnection(config,async()=>context),pending=new Map();let sequence=0,closed=false;
  const transport={async start(){},async close(){closed=true;for(const p of pending.values())p.reject(Error('BROWSER_CONNECTION_CLOSED'));pending.clear();},
   async send(message){const p=pending.get(message.id);if(!p)return;pending.delete(message.id);
-   message.error?p.reject(Error('BROWSER_UPSTREAM_REFUSED')):p.resolve(message.result);}};
+   // This in-process upstream transport must preserve MCP's JSON wire semantics.
+   // Pinned Playwright schemas carry non-enumerable implementation properties;
+   // they are not protocol fields and must never reach the strict model relay.
+   try{const encoded=JSON.stringify(message);if(Buffer.byteLength(encoded)>262144)fail('BROWSER_UPSTREAM_REFUSED');
+    const wire=JSON.parse(encoded);wire.error?p.reject(Error('BROWSER_UPSTREAM_REFUSED')):p.resolve(wire.result);
+   }catch{p.reject(Error('BROWSER_UPSTREAM_REFUSED'));}}};
  await server.connect(transport);
  const request=(method,params,signal)=>new Promise((resolve,reject)=>{
   if(closed||signal?.aborted){reject(Error('BROWSER_CONNECTION_CLOSED'));return;}
@@ -28,6 +33,7 @@ export async function createPinnedBrowserSession({upstream,context,policy,manife
    invoke:async({tool,args,signal})=>{const result=await request('tools/call',{name:tool,arguments:args},signal);
     if(result?.isError!==false&&result?.isError!==undefined)fail('BROWSER_UPSTREAM_REFUSED');}});
   return Object.freeze({...owner,
+   async resume(input){const result=await owner.prepareResume(input);await owner.completeResume({snapshot:result,signal:input?.signal});return result;},
    async tools(){const result=await request('tools/list',{});if(!Array.isArray(result?.tools))fail('BROWSER_UPSTREAM_REFUSED');
     return result.tools.filter(tool=>policy.tools.includes(tool.name));},
    async destroy(input){try{return await owner.destroy(input);}finally{await server.close();}},

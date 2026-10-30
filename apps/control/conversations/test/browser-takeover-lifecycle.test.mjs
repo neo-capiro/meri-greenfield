@@ -22,6 +22,8 @@ test('canonical takeover pending/APPLIED read recovers the same custody; explici
   const held=await f.checkpoint(begin,f.custody);assert.equal(held.state,'APPLIED');
   const first=await f.read();assert.equal(first.state,'held');assert.equal(first.selectedClientId,id(5));
   assert.deepEqual(first.sourceBinding,binding);assert.deepEqual(first.custody,f.custody);
+  const ordinary=await f.sessions.issue({identityCredential:'synthetic-native',hints:{conversationId:binding.conversationId,runId:binding.runId,clientId:id(5)}});
+  assert.deepEqual((await authenticatedCurrentState(f.sessions)({credential:ordinary.credential})).current.binding,binding,'APPLIED custody retains ordinary source reads and exact renewal');
   assert.deepEqual(await f.read(),first,'a lost read answer never issues another control or lease');
   const returned={ownerInstanceId:f.custody.ownerInstanceId,leaseEpoch:2,snapshotSha256:'b'.repeat(64)};
   await f.service.returnTakeover({credential:f.credential,returned});
