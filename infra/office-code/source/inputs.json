@@ -1,0 +1,32 @@
+{
+  "schema": "meri-code-source-inputs/1",
+  "source": {
+    "repository": "https://gerrit.collaboraoffice.com/online",
+    "tag": "cp-26.04.5-2",
+    "commit": "42745e44dd8530fac7acd5f46cb7571ceea63c6a",
+    "engineDownloadsSha256": "6694de718cb3e73fd27f2aad7534d717a19fc07e90bb57ec95fe8d04e402813b",
+    "npmShrinkwrapSha256": "f86e200a4ce3107242d5adcf2a5c1398bfee75081211d8f28c86537f14d1ec85"
+  },
+  "fix": {
+    "change": 13516,
+    "commit": "88acbed5df032ec987390749b2845bd3ba626438",
+    "patchSha256": "d91a11fa0c70ce36a4546df23e89d90e0be9dc89f7f56ec4246b88e99f994e8a",
+    "fixtures": [
+      {
+        "path": "engine/chart2/qa/extras/data/pptx/embedded-chart-data-bins.pptx",
+        "sha256": "443604cd5e406414639e62d4c862e5f42862cb7e08f5af324724250d5c609d4d"
+      },
+      {
+        "path": "engine/chart2/qa/extras/data/pptx/embedded-chart-data.pptx",
+        "sha256": "b10f23718d390fb31e30c33734799735a343884e54ef31886d6d3d5fd80cbe65"
+      }
+    ]
+  },
+  "startup": {
+    "repository": "CollaboraOnline/online",
+    "commit": "d309e70f6625abb03cd8476c0ea42753b35335e7",
+    "path": "docker/from-source-gh-action/start-collabora-online.sh",
+    "sha256": "96eaf22b7008daa75c1817117c0e2f2afeefc800cec11cf137073e2cf3e9ada8"
+  },
+  "fontOverlaySha256": "7af99e95c9ab9c8817d74a736b53f21968ed877f6710db5efd2a681727e18b18"
+}
