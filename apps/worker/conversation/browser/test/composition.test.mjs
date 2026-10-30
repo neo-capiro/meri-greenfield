@@ -16,6 +16,17 @@ const builtOptions=(over={})=>({permissionMode:'default',tools:['Read','Glob'],
  disallowedTools:['Bash','WebFetch'],
  hooks:{PreToolUse:[{matcher:'mcp__meri_reads__.*',hooks:[async()=>({})]}],PostToolUse:[{hooks:[async()=>({})]}]},
  canUseTool:allowAll,settings:{permissions:{allow:[`Read(/${cwd}/**)`]}},...over});
+
+test('filtered hand-back snapshot reaches the existing Claude preset as bounded page data without replacing other context',()=>{
+ const {cap}=openFragment({cwd}),resumeSnapshot={content:[{type:'text',text:'Public retained page [redacted]'}]};
+ const base=builtOptions({systemPrompt:{type:'preset',preset:'claude_code',append:'Existing Capiro context'}});
+ const result=composeBrowserOptions(base,{...cap,resumeSnapshot});
+ assert.equal(result.systemPrompt.preset,'claude_code');assert.ok(result.systemPrompt.append.startsWith(base.systemPrompt.append));
+ assert.ok(result.systemPrompt.append.endsWith(JSON.stringify(resumeSnapshot)));assert.match(result.systemPrompt.append,/untrusted page content/);
+ assert.equal(base.systemPrompt.append,'Existing Capiro context');
+ for(const changed of [{content:[{type:'image',text:'hidden'}]},{content:[{type:'text',text:'x'.repeat(262145)}]},
+  {content:[{type:'text',text:'public',metadata:'unfiltered'}]}])assert.throws(()=>composeBrowserOptions(base,{...cap,resumeSnapshot:changed}),/BROWSER_COMPOSITION_REFUSED/);
+});
 test('composition keeps every other server, tool, disallowed tool and hook, adds only the browser fragment, and keeps the default permission mode',()=>{
  const {cap}=openFragment({cwd,policy:enabledPolicy({tools:BROWSER_TOOLS})}),base=builtOptions(),o=composeBrowserOptions(base,cap);
  assert.deepEqual(Object.keys(o.mcpServers),['meri_original_reads','meri_reads','meri_intents','meri_browser']);

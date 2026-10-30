@@ -34,7 +34,8 @@ const {READINESS_MODEL_ENV}=await import(repo+'/apps/worker/conversation/sandbox
 const root=await mkdtemp('/tmp/meri-retained-browser-');await chmod(root,0o755);
 const created=[],mounted=[];let broker,child,browserChild,sdk,server,consumer,timer,contexts,context,user,observer,retainedHost,paths,custody,stage='prepare',diagnostic='',shutdown=false,retiring=false,applied=false,sdkMessages=0;
 const released=Promise.withResolvers(),abort=new AbortController();
-const report={sdk:'0.3.295',cli:'2.1.295',userMessagesSent:0,scope:'LOCAL_ACTUAL_SDK_RETAINED_CHROMIUM: synthetic canonical authority; real native broker, SDK cgroup absence and session owner; no active model turn, D005 mount/network confinement or successor adoption acceptance'};
+let canonicalHandoff;
+const report={sdk:'0.3.295',cli:'2.1.295',userMessagesSent:0,scope:'LOCAL_ACTUAL_SDK_RETAINED_CHROMIUM_SUCCESSOR: synthetic canonical authority; real native brokers, two SDK processes, SDK cgroup absence and retained session owner; no active model turn, full D005 mount/network confinement, production composition or deployed acceptance'};
 const exitOf=child=>new Promise(resolve=>{child.once('exit',(code,signal)=>resolve({code,signal}));child.once('error',()=>resolve({spawnFailed:true}));});
 let brokerExit,childExit,browserExit,group,browserGroup;
 try{
@@ -74,7 +75,7 @@ try{
  contexts=createConfinedContextPort({native:{readable:browserChild.stdout,writable:browserChild.stdin,close:async()=>{browserChild.kill('SIGKILL');await browserExit;}},binding,policy,installation,paths});
  const allocation={schema:'meri-conversation-host-allocation/1',tenantId:binding.tenantId,conversationId:binding.conversationId,generation:1,hostId:host,imageDigest:'sha256:'+'a'.repeat(64),leaseDeadlineMs:Date.now()+55000};
  const hostIdentity={schema:'meri-d005-host-identity/1',instanceId:'i-0123456789abcdef0',bootId:(await readFile('/proc/sys/kernel/random/boot_id','utf8')).trim(),conversationId:binding.conversationId,hostId:host};
- const fixtureCurrent=async()=>{assert.ok(Date.now()<allocation.leaseDeadlineMs);};
+ const fixtureCurrent=async()=>{assert.ok(Date.now()<allocation.leaseDeadlineMs);return {browserHandoff:canonicalHandoff};};
  const awaitEmpty=async path=>{for(let n=0;;n++){if(/^populated 0$/m.test(await readFile(path+'/cgroup.events','utf8')))return;assert.ok(n<150);await new Promise(r=>setTimeout(r,20));}};
  const sessionHost=createBrowserSessionHost({binding,cwd,installation,allocation,ownerInstanceId:randomUUID(),upstream:pinnedBrowserUpstream(installation),now:Date.now,
   contexts:{async create(input){context=await contexts.create(input);return context;}},current:fixtureCurrent,hold:async()=>({outcome:applied?'APPLIED':'PENDING'}),
@@ -130,13 +131,53 @@ try{
  assert.deepEqual(await bounded(retainedHost.prepareResume({binding,custody})),returned);assert.equal((await user.readState()).state,'returning');
  assert.equal(user.resume,undefined);report.returnSnapshotRetainedAndModelFenced=true;
  await assert.rejects(user.view({leaseEpoch:custody.leaseEpoch,page}));report.oldViewerLeaseRefused=true;
+ stage='successor-broker';
+ await bounded(consumer);await observer.close();
+ const previousUser=user,previousChild=child,physicalBrowserPid=browserChild.pid;
+ const target={...binding,runId:randomUUID(),attemptId:randomUUID(),workerId:randomUUID(),writerFence:binding.writerFence+1};
+ canonicalHandoff={custody,returned,targetBinding:target,controlId:randomUUID()};
+ const nextInstallation={...installation,launch:{...installationFor(target).launch,nonce:randomBytes(32).toString('hex')}};
+ const targetRun=parent+'/'+canonicalSha256(target);group=targetRun+'/sdk';
+ for(const path of [targetRun,group]){await mkdir(path);created.push(path);}
+ broker=spawn(launcher,['broker',nextInstallation.launch.socketPath,'2001','2001',nextInstallation.launch.nonce,nextInstallation.launch.shimPath,host,'1',canonicalSha256(target)],
+  {env:{},stdio:['ignore','ignore','pipe','pipe','pipe','pipe','pipe']});brokerExit=exitOf(broker);
+ const nextListening=Promise.withResolvers(),nextAuthenticated=Promise.withResolvers();nextListening.promise.catch(()=>{});nextAuthenticated.promise.catch(()=>{});
+ createInterface({input:broker.stdio[3]}).on('line',line=>{if(line==='L')nextListening.resolve();else if(line==='A'){nextAuthenticated.resolve();broker.stdio[4].end('G');}});
+ brokerExit.then(()=>{nextListening.reject(Error('successor broker ended'));nextAuthenticated.reject(Error('successor broker ended'));});
+ await bounded(nextListening.promise);
+ stage='successor-adoption';
+ server=await retainedHost.adopt({binding:target,policy,deadlineMs:custody.expiresAtMs,manifest:null,handoff:canonicalHandoff},{
+  installation:nextInstallation,modelTransport:{readable:broker.stdio[6],writable:broker.stdio[6]},
+  controls:{async bind(input){user=input.controls;return {async close(){}};}},hold:async()=>({outcome:'APPLIED'}),
+  retirement:{async prepare(){observer=createSdkChildQuiescenceObserver({allocation,binding:target,hostIdentity,timeoutMs:5000});await observer.arm({sdkLeaderPid:child.pid});},
+   async wait(){broker.kill('SIGKILL');await brokerExit;assert.equal((await observer.waitQuiescent()).quiescent,true);},async retain(){await fixtureCurrent();}}});
+ assert.equal(canonicalSha256(server.resumeSnapshot),returned.snapshotSha256);
+ assert.doesNotMatch(JSON.stringify(server.resumeSnapshot),/SYNTHETIC_CUSTODY_SECRET/);report.exactFilteredSnapshotDelivered=true;
+ assert.equal((await user.readState()).state,'returning');assert.throws(()=>previousUser.readState(),/BROWSER_CUSTODY_REFUSED/);
+ stage='successor-sdk';retiring=false;child=undefined;
+ sdk=query({prompt:(async function*(){await released.promise;})(),options:{cwd:root+'/workspace',pathToClaudeCodeExecutable:binary,abortController:abort,settingSources:[],settings:{autoMemoryEnabled:false},tools:[],allowedTools:[],mcpServers:server.mcpServers,strictMcpConfig:true,permissionMode:'default',maxTurns:1,
+  env:{...READINESS_MODEL_ENV,HOME:root+'/config',CLAUDE_CONFIG_DIR:root+'/config',PATH:'/usr/bin:/bin',CLAUDE_AGENT_SDK_CLIENT_APP:'meri-local-no-model-probe'},
+  spawnClaudeCodeProcess(descriptor){assert.equal(descriptor.command,binary);assert.equal(child,undefined);
+   child=spawn('/usr/bin/python3',['-c',wrapper,group,descriptor.command,...descriptor.args],{cwd:descriptor.cwd,env:descriptor.env,stdio:['pipe','pipe','pipe','pipe','pipe']});childExit=exitOf(child);
+   child.stdio[3].once('data',data=>{assert.equal(data.toString(),'R');broker.stdio[5].end(String(child.pid)+'\n');child.stdio[4].end('G');});return child;}}});
+ consumer=(async()=>{try{for await(const message of sdk){sdkMessages++;assert.notEqual(message.type,'result');}}catch(error){if(!shutdown&&!retiring&&!abort.signal.aborted)throw error;}})();consumer.catch(()=>{});
+ await bounded(sdk.initializationResult());await bounded(nextAuthenticated.promise);
+ for(let n=0;n<40;n++){statuses=await bounded(sdk.mcpServerStatus());if(statuses.some(s=>s.name==='meri_browser'&&s.status==='connected'&&s.tools?.length))break;await new Promise(r=>setTimeout(r,100));}
+ assert.deepEqual(statuses.find(s=>s.name==='meri_browser')?.tools?.map(tool=>tool.name),['browser_snapshot']);
+ assert.notEqual(child.pid,previousChild.pid);assert.equal(browserChild.pid,physicalBrowserPid);
+ assert.equal(context.pages()[0],page);assert.match(await page.locator('h1').textContent(),/Retained native context/);
+ assert.equal((await user.readState()).state,'agent');report.successorNativeSdkAuthenticated=true;report.sameNativeContextRetained=true;report.returnFenceReleasedAfterTargetAttachment=true;
+ stage='successor-retirement';const nextControl=randomUUID();await server.prepareTakeover({controlId:nextControl});retiring=true;sdk.close();await bounded(childExit);
+ const nextCustody=await server.captureTakeover({controlId:nextControl});assert.deepEqual(nextCustody.binding,target);assert.equal(nextCustody.ownerInstanceId,custody.ownerInstanceId);
+ await server.retainTakeover({receipt:{controlId:nextControl,intent:'takeover.begin',sourceBinding:target,inputSha256:'b'.repeat(64),state:'APPLIED',checkpointId:target.runId,targetBinding:null,admissionReceiptId:null,retirementReceiptId:null,replayed:false}});
+ assert.equal((await user.readState()).state,'user');assert.equal(browserChild.signalCode,null);report.secondNativeTakeoverPassed=true;
  assert.equal(sdkMessages,0);report.passed=true;
 }catch(error){report.failureStage=stage;report.diagnostic=diagnostic;report.failure=error.name+': '+error.message.slice(0,200);process.exitCode=1;}
 finally{
  shutdown=true;clearTimeout(timer);released.resolve();sdk?.close();abort.abort();
  try{
   if(group)await writeFile(group+'/cgroup.kill','1');child?.kill('SIGKILL');broker?.kill('SIGKILL');
-  await Promise.all([childExit,brokerExit,consumer]);await observer?.close();await server?.destroy({trigger:'conversation-end'});await contexts?.close();
+  await Promise.all([childExit,brokerExit,consumer]);await observer?.close();await retainedHost?.destroy({trigger:'conversation-end'});await contexts?.close();
   if(browserGroup){await writeFile(browserGroup+'/cgroup.kill','1');await browserExit;for(let n=0;;n++){if(/^populated 0$/m.test(await readFile(browserGroup+'/cgroup.events','utf8')))break;assert.ok(n<100);await new Promise(r=>setTimeout(r,20));}report.browserSubtreeAbsent=true;}
   if(group){for(let n=0;;n++){if(/^populated 0$/m.test(await readFile(group+'/cgroup.events','utf8')))break;assert.ok(n<100);await new Promise(r=>setTimeout(r,20));}report.kernelProcessAbsenceObserved=true;}
   for(const path of created.reverse())await rmdir(path);report.createdCgroupsRemoved=true;

@@ -1,0 +1,55 @@
+Native retained-browser successor attachment — 30 October 2026
+
+Implementation
+The existing launcher owns a private one-use native browser transfer handle.
+prepareSuccessor requires actual SDK retirement and the canonical authenticated
+browser handoff, then constructs a fresh immutable target launcher with a new
+broker socket/nonce and SDK cgroup. It cannot launch a second browser context.
+The original native owner retains final cleanup of every successor launcher.
+Serialized run metadata cannot construct this native handle.
+
+The existing browser session owner retains its context, secret filter and hard
+deadline. adopt compares the requested handoff with authenticated currentness and
+the exact privately prepared return snapshot. Source model/viewer relays close
+before new immutable target relays bind. Stale handles cannot read, mutate or
+destroy the successor. Request identities include the full logical binding so
+fresh SDK request IDs cannot collide with completed source calls.
+
+The returning fence stays closed until the target's authenticated model transport
+requests tools/calls and currentness revalidates the exact handoff. The bounded,
+filtered snapshot is delivered to the one existing Claude preset through browser
+options as untrusted page data. It does not change tools or permission decisions.
+Repeated handoffs retain the same physical owner and original expiry ceiling.
+
+Checks
+43 affected browser/runtime/adapter checks, 13 guest-bootstrap checks, 15 Linux
+launcher checks and runtime TypeScript pass. Zero skips in those checks. Running
+native launcher path checks on Windows refused the POSIX-only context child path;
+the required Ubuntu Linux run passed all 15 without altering that boundary.
+
+Actual isolated qualification
+scripts/qualification/browser-retained-context.mjs ran with SDK0.3.295 / CLI2.1.295
+and Chromium155.0.8059.12 in private mount/network namespaces without external
+routes. Two actual nonroot SDK processes authenticated through distinct native
+brokers against the same sandboxed Chromium context. Observed source SDK subtree
+absence, retained native frame, exact filtered return digest, stale viewer refusal,
+fresh target SDK tool discovery and fence release, then a second takeover using
+the target binding and stable owner. All task process/cgroup/mount cleanup passed.
+Zero prompts/model messages. Evidence: native-sdk-retained-browser-successor.json
+in this lane's private outputs. Canonical Core/currentness decisions and native
+wrapper placement in this fixture are synthetic. It does not prove full D005
+network/mount confinement, production bootstrap mounting or deployed acceptance.
+
+Remaining integration and ownership
+The guest root teardown remains bound to the original physical allocation,
+identity and binding; target SDK resources are descendants. App/Memory owns
+canonical host allocation/routing and receipt persistence. Native composition
+must join fresh target SDK network/currentness/readiness resources, exact retained
+egress and per-target viewer factory to the launcher/session APIs. The production
+mount and trusted provisioning writer identity remain open. No activation,
+provider call, cloud mutation or public package/dependency change here.
+
+Replaced code
+The original single relay attachment block is replaced by one per-target binding
+routine in the same owner. No old alternate launcher or snapshot journal is kept.
+No test count reduction. Existing physical host/process absence owners remain.

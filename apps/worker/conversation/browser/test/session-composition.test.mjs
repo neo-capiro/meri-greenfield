@@ -6,7 +6,8 @@ import {Client} from '@modelcontextprotocol/sdk/client/index.js';
 import {StdioServerTransport} from '@modelcontextprotocol/sdk/server/stdio.js';
 import {createPinnedBrowserSession} from '../session/connection.mjs';
 import {createBrowserSessionHost} from '../../host/browser-session-host.mjs';
-import {enabledPolicy,binding,installation} from './fixtures.mjs';
+import {enabledPolicy,binding,installation,installationFor} from './fixtures.mjs';
+import {canonicalSha256} from '../../../../../packages/contracts/validate.mjs';
 const cwd='/workspace/'+binding.conversationId;
 import {validateBrowserPolicy} from '../policy.mjs';
 import {playwrightServerConfig} from '../server.mjs';
@@ -300,4 +301,45 @@ test('host grants native user lease only after SDK absence and exact canonical A
  const [returned,replayed]=await Promise.all([host.prepareResume({binding,custody}),host.prepareResume({binding,custody})]);assert.equal(returned,replayed);assert.equal(returned.ownerInstanceId,ownerInstanceId);assert.equal(returned.leaseEpoch,2);assert.match(returned.snapshotSha256,/^[a-f0-9]{64}$/u);
  assert.deepEqual(await host.prepareResume({binding,custody}),returned);assert.equal((await user.readState()).state,'returning');
  await assert.rejects(host.prepareResume({binding:{...binding,writerFence:2},custody}),/BROWSER_CUSTODY_REFUSED/);
+});
+
+test('canonical successive handoffs retain one context and filter while replacing immutable model and viewer bindings',async t=>{
+ const x=fixture(t),uuid=n=>`00000000-0000-4000-8000-${String(n).padStart(12,'0')}`,ownerInstanceId=uuid(101),models=[],viewers=[],events=[];
+ const allocation={schema:'meri-conversation-host-allocation/1',tenantId:binding.tenantId,conversationId:binding.conversationId,generation:1,
+  hostId:uuid(102),imageDigest:'sha256:'+'a'.repeat(64),leaseDeadlineMs:Date.now()+60000};
+ let canonical,creations=0;
+ const native=target=>({installation:installationFor(target),hold:async()=>({outcome:'APPLIED'}),
+  retirement:{async prepare(){events.push('prepare');},async wait(){events.push('absent');},async retain(){events.push('retain');}},
+  relay:{async bind(input){models.push(input);return {mcpServers:{meri_browser:playwrightServerConfig(x.args.policy,installationFor(target),browserPaths(cwd))},async close(){events.push('model-close');}};}},
+  controls:{ownerInstanceId,async bind(input){viewers.push(input);return {async close(){events.push('viewer-close');}};}}});
+ const first=native(binding),host=createBrowserSessionHost({binding,cwd,...first,allocation,ownerInstanceId,upstream:x.upstream,now:Date.now,
+  contexts:{async create(){creations++;return x.context;}},current:async()=>{await x.args.current();return {browserHandoff:canonical};},
+  processes:{waitForExit:x.args.ports.waitForExit},dispose:x.args.ports.dispose});
+ t.after(()=>host.destroy({trigger:'conversation-end'}));
+ let currentBinding=binding,run=await host.open({binding,policy:x.args.policy,deadlineMs:allocation.leaseDeadlineMs,manifest:null});
+ x.state.fields=[secret('RETAINED-CREDENTIAL')];x.state.text='Public page RETAINED-CREDENTIAL';
+ for(let n=0;n<2;n++){
+  const sourceModel=models.at(-1),sourceViewer=viewers.at(-1),sourceRun=run,controlId=uuid(110+n*10);
+  assert.doesNotMatch(JSON.stringify(await sourceModel.call({requestId:'sdk-reused-id',tool:'browser_snapshot',args:{}})),/RETAINED-CREDENTIAL/);
+  await run.prepareTakeover({controlId});const custody=await run.captureTakeover({controlId});
+  await run.retainTakeover({receipt:{controlId,intent:'takeover.begin',sourceBinding:currentBinding,inputSha256:'b'.repeat(64),state:'APPLIED',checkpointId:currentBinding.runId,
+   targetBinding:null,admissionReceiptId:null,retirementReceiptId:null,replayed:false}});
+  const returned=await host.prepareResume({binding:currentBinding,custody});
+  const target={...binding,runId:uuid(111+n*10),attemptId:uuid(112+n*10),workerId:uuid(113+n*10),writerFence:currentBinding.writerFence+1};
+  canonical={custody,returned,targetBinding:target,controlId:uuid(114+n*10)};
+  const request={binding:target,policy:x.args.policy,deadlineMs:custody.expiresAtMs,manifest:null,handoff:canonical};
+  await assert.rejects(host.adopt({...request,handoff:{...canonical,returned:{...returned,snapshotSha256:'f'.repeat(64)}}},native(target)),/BROWSER_CUSTODY_REFUSED/);
+  assert.equal((await sourceViewer.controls.readState()).state,'returning');
+  run=await host.adopt(request,native(target));
+  assert.deepEqual(events.slice(-2),['model-close','viewer-close']);assert.equal(creations,1);
+  assert.equal(canonicalSha256(run.resumeSnapshot),returned.snapshotSha256);assert.doesNotMatch(JSON.stringify(run.resumeSnapshot),/RETAINED-CREDENTIAL/);
+  assert.equal((await viewers.at(-1).controls.readState()).state,'returning');
+  assert.throws(()=>sourceViewer.controls.readState(),/BROWSER_CUSTODY_REFUSED/);
+  assert.throws(()=>sourceRun.destroy({trigger:'disconnect'}),/BROWSER_CUSTODY_REFUSED/);
+  await assert.rejects(sourceModel.call({requestId:'late',tool:'browser_snapshot',args:{}}),/BROWSER_CUSTODY_REFUSED/);
+  await models.at(-1).tools();assert.equal((await viewers.at(-1).controls.readState()).state,'agent');
+  await assert.rejects(host.adopt(request,native(target)),/BROWSER_CUSTODY_REFUSED/);
+  currentBinding=target;
+ }
+ assert.equal(x.state.calls,2);assert.equal(viewers.length,3);assert.deepEqual(viewers.map(x=>x.binding.writerFence),[1,2,3]);
 });

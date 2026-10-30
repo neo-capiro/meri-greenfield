@@ -13,6 +13,7 @@ import {createEgressGrant} from './egress-control.mjs';
 import {createBrowserRunLifecycle} from './lifecycle.mjs';
 import {prepareCurrentSiteWorkflow} from './site-workflows/current.mjs';
 import {siteWorkflowEnablement} from './site-workflows/manifest.mjs';
+import {canonicalSha256} from '../../../../packages/contracts/validate.mjs';
 const fault=code=>Object.assign(new Error(code),{code});
 /** Installs the run's egress grant for an open fragment at the host control; on any failure settles the run's cleanup
  * (the grant may be partly installed) and rethrows. */
@@ -67,6 +68,10 @@ export async function prepareBrowserRun({port,binding,cwd,deadlineMs,now,signal,
     session=await port.sessions.adopt({...options,handoff:browserHandoff,signal});}
    else session=await port.sessions.open(options);
    if(typeof session?.destroy!=='function'||JSON.stringify(session.mcpServers)!==JSON.stringify(fragment.mcpServers))throw fault('BROWSER_SESSION_OWNER_REQUIRED');
+   if(browserHandoff!==undefined){
+    if(!session.resumeSnapshot||canonicalSha256(session.resumeSnapshot)!==browserHandoff.returned?.snapshotSha256)throw fault('BROWSER_CUSTODY_REFUSED');
+    fragment=Object.freeze({...fragment,resumeSnapshot:structuredClone(session.resumeSnapshot)});
+   }
   }catch(error){
    try{await session?.destroy({trigger:'disconnect'});}finally{await lifecycle.settle({outcome:'failed'});}throw error;
   }

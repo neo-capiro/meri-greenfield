@@ -185,3 +185,42 @@ for(const uncertain of [false,true])test(`expected SDK retirement ${uncertain?'d
  }finally{await f.launcher.close();}
  assert.notEqual(f.children[0].signalCode,null);
 });
+
+for(const wrong of [false,true])test(`native successor ${wrong?'refuses a noncanonical target':'reuses only the retained browser with fresh immutable SDK broker pins'}`,async()=>{
+ const target={...binding,runId:uuid(10),attemptId:uuid(11),workerId:uuid(12),writerFence:2};
+ const custody={schema:'meri-browser-custody/1',binding,controlId:uuid(20),ownerInstanceId:uuid(21),hostId:allocation.hostId,
+  generation:1,leaseEpoch:1,policySha256:canonicalSha256(enabledPolicy()),expiresAtMs:allocation.leaseDeadlineMs};
+ let handoff={custody,returned:{ownerInstanceId:custody.ownerInstanceId,leaseEpoch:2,snapshotSha256:'b'.repeat(64)},targetBinding:target,controlId:uuid(22)};
+ const f=fixture({readBrowserCurrent:async()=>({browserHandoff:handoff}),createSdkObserver:()=>({async arm(){},async waitQuiescent(){return {quiescent:true};},async close(){}})});
+ const policy=enabledPolicy(),paths=browserPaths('/workspace/'+binding.conversationId),request={policy,installation,paths};
+ let successor;
+ try{
+  await f.launcher.prepareBrowserContext(request);await f.launcher.prepareBrowserBroker(request);
+  const client=f.launcher.createSdkProcessClient();client.spawnClaudeCodeProcess(sdkDescriptor);await client.startPreparedProcess();
+  const targetProof={...proof('sdk'),bindingSha256:canonicalSha256(target)};
+  const next={binding:target,sdkNetwork:{...network('sdk'),proof:targetProof,verify:async()=>targetProof},
+   authorities:[{...authority,readCurrent:async()=>({...await readCurrent(),binding:target})}],validateSdkDescriptor:x=>x,
+   onSdkPrepared:async()=>{},sdkLaunchGate:createSdkLaunchGate()};
+  await assert.rejects(f.launcher.prepareSuccessor(next),/HOST_BROWSER_ADOPTION_REFUSED/);
+  await f.launcher.prepareSdkRetirement();await client.close();
+  if(wrong){handoff={...handoff,targetBinding:{...target,workerId:uuid(23)}};
+   await assert.rejects(f.launcher.prepareSuccessor(next),/BROWSER_CUSTODY_REFUSED/);assert.equal(f.children[0].signalCode,'SIGKILL');return;}
+  successor=await f.launcher.prepareSuccessor(next);
+  assert.deepEqual(successor.scope.binding,target);assert.notEqual(successor.descriptor.nonce,f.launcher.descriptor.nonce);
+  assert.equal(successor.descriptor.socketPath,`/run/meri-launch/${canonicalSha256(target)}.sock`);
+  await assert.rejects(f.launcher.prepareSuccessor(next),/HOST_BROWSER_ADOPTION_REFUSED/);
+  await assert.rejects(successor.prepareBrowserContext(request),/HOST_LAUNCH_REFUSED/);
+  const attached=await successor.prepareBrowserBroker(request),nextClient=successor.createSdkProcessClient();
+  assert.equal(attached.installation.launch.socketPath,successor.descriptor.socketPath);
+  nextClient.spawnClaudeCodeProcess(sdkDescriptor);await nextClient.startPreparedProcess();
+  assert.equal(f.calls.filter(x=>x.args?.[0]==='run'&&x.args[4]==='browser').length,1);
+  assert.equal(f.calls.filter(x=>x.args?.[0]==='broker').length,2);
+  assert.equal(f.calls.filter(x=>x.args?.[0]==='run'&&x.args[4]==='sdk').length,2);
+  assert.equal(f.children[0].signalCode,null);assert.equal(f.children.at(-1).signalCode,null);
+  await f.launcher.close();assert.equal(f.children.at(-1).signalCode,'SIGKILL');
+ }finally{await f.launcher.close();await successor?.close();}
+});
+
+test('serialized metadata cannot manufacture a retained native browser',()=>{
+ assert.throws(()=>fixture({retainedBrowser:{binding,hostIdentity,allocation}}),/HOST_BROWSER_ADOPTION_REFUSED/);
+});
