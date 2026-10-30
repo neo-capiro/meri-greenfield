@@ -43,7 +43,7 @@ export const TERMINAL_ATTEMPT_MS=3000;
 export const DELTA_FOLD_MAX_BYTES=16384;
 // A streamed text delta outside any subagent; only these fold, and only with deltas of the same content block.
 const textDelta=m=>m?.type==='stream_event'&&!m.parent_tool_use_id&&m.event?.type==='content_block_delta'&&m.event.delta?.type==='text_delta';
-export function createConversationActivity({runOwner,prepareRuntime,query=sdkQuery,heartbeat=()=>{},now=Date.now,newId=randomUUID,lifecycle,selectedSkills,procedures,siteWorkflows,generalReads,governedIntents,browser,objectiveGeneration,terminalAttemptMs=TERMINAL_ATTEMPT_MS,cleanupAttemptMs=CLEANUP_ATTEMPT_MS,loadMaxMs=3000,loadExpiresAtMs,runtimeMaxMs=3000,runtimeExpiresAtMs,setupBudget,modelDeadlineMs,executionDeadlineMs,diagnostics}){
+export function createConversationActivity({runOwner,prepareRuntime,query=sdkQuery,heartbeat=()=>{},now=Date.now,newId=randomUUID,lifecycle,selectedSkills,procedures,siteWorkflows,generalReads,governedIntents,browser,objectiveGeneration,outreachGeneration,terminalAttemptMs=TERMINAL_ATTEMPT_MS,cleanupAttemptMs=CLEANUP_ATTEMPT_MS,loadMaxMs=3000,loadExpiresAtMs,runtimeMaxMs=3000,runtimeExpiresAtMs,setupBudget,modelDeadlineMs,executionDeadlineMs,diagnostics}){
  // Optional trusted observers cannot affect execution, publication or bounded cleanup.
  const diagnostic=(method,value)=>{try{Promise.resolve(diagnostics?.[method]?.(value)).catch(()=>{});}catch{}};
  if(['load','append'].some(k=>typeof runOwner?.[k]!=='function')||typeof prepareRuntime!=='function'||typeof query!=='function'||typeof heartbeat!=='function'||!Number.isSafeInteger(terminalAttemptMs)||terminalAttemptMs<1||terminalAttemptMs>30000)throw fault('ACTIVITY_CONFIGURATION');
@@ -61,11 +61,12 @@ export function createConversationActivity({runOwner,prepareRuntime,query=sdkQue
  if(governedIntents!==undefined&&['readAvailability','prepare'].some(k=>typeof governedIntents[k]!=='function'))throw fault('INTENT_ACTIVITY_CONFIGURATION');
  // Trusted browser runtime port (`browser/runtime.mjs`); absent means no browser. The activation gate stays authoritative.
  if(browser!==undefined&&typeof browser.policy!=='function')throw fault('BROWSER_ACTIVITY_CONFIGURATION');
+ if(outreachGeneration!==undefined&&typeof outreachGeneration.prepare!=='function')throw fault('OUTREACH_ACTIVITY_CONFIGURATION');
  if(objectiveGeneration!==undefined&&typeof objectiveGeneration.prepare!=='function')throw fault('OBJECTIVE_ACTIVITY_CONFIGURATION');
  return async function executeConversation({binding,signal}){
   const nativeAudit=createNativeHookBatch();
   const drained=Promise.withResolvers();drained.promise.catch(()=>{});
-  diagnostic('stage','activity-input');validateShape('RunBinding',binding);let preparation,life,setupLife,modelLife,stream,controls,input,skillRuntime,procedureRuntime,readRuntime,intentRuntime,uploadRuntime,browserRun,browserOutcome='ended',browserPreparationCleanupUnknown=false,skillOutput,terminalResult,usageBasis,usageAttempted=false,claimed=false,closed=false,resultSeen=false,bytes=0,heartbeatTimer;const controller=new AbortController();let failure;let closing,iterator;const closeQuery=()=>{if(!closing&&stream&&!closed){closed=true;closing=Promise.resolve().then(async()=>{await stream.close?.();
+  diagnostic('stage','activity-input');validateShape('RunBinding',binding);let preparation,life,setupLife,modelLife,stream,controls,input,outreachRuntime,skillRuntime,procedureRuntime,readRuntime,intentRuntime,uploadRuntime,browserRun,browserOutcome='ended',browserPreparationCleanupUnknown=false,skillOutput,terminalResult,usageBasis,usageAttempted=false,claimed=false,closed=false,resultSeen=false,bytes=0,heartbeatTimer;const controller=new AbortController();let failure;let closing,iterator;const closeQuery=()=>{if(!closing&&stream&&!closed){closed=true;closing=Promise.resolve().then(async()=>{await stream.close?.();
     // The pinned SDK's close() starts cleanup but returns void. Query.return()
    // awaits that same cleanup (including its transcript batch flush), then ends
    // the iterator. The fallback is for ordinary AsyncIterable test adapters.
@@ -141,11 +142,13 @@ export function createConversationActivity({runOwner,prepareRuntime,query=sdkQue
    }
    const objectiveRuntime=objectiveGeneration===undefined?null:await setupRun(signal=>objectiveGeneration.prepare({binding,request:saved.request,versions:saved.run.versions,scopes:saved.run.scopes,cwd:runtime.cwd,model:runtime.model,deadlineMs:runtime.deadlineMs,signal}));
    if(objectiveRuntime){if(lineage||saved.request.skill||typeof lifecycle?.captureCompletion!=='function'||typeof objectiveRuntime.capture!=='function')throw fault('OBJECTIVE_COMPLETION_UNAVAILABLE');life.limitDeadline(objectiveRuntime.deadlineMs);}
+   outreachRuntime=outreachGeneration===undefined?null:await setupRun(signal=>outreachGeneration.prepare({binding,request:saved.request,scopes:saved.run.scopes,model:runtime.model,signal}));
+   if(outreachRuntime&&(objectiveRuntime||lineage||saved.request.skill))throw fault('OUTREACH_COMPLETION_UNAVAILABLE');
    const {automaticClientContext,...sdkRuntime}=runtime;
    uploadRuntime=await setupRun(()=>prepareUploadReadSources({binding,request:saved.request,manifests:saved.uploadSources,runOwner,cwd:runtime.cwd,deadlineMs:runtime.deadlineMs,signal:life.signal,now,abort:error=>controller.abort(error)}));
    if(automaticClientContext!=null)assertAutomaticClientContext(automaticClientContext,{binding,scopes:saved.run.scopes});
    const options=buildConversationOptions(sdkRuntime,controller,lineage?{...lineage,request:saved.request,
-    sourceRequest,scopes:saved.run.scopes,started:prepareStarted,now}:undefined,skillRuntime?.sdkOptions,capabilities?.options,readRuntime?.sdkOptions??undefined,intentRuntime?.sdkOptions??undefined,browserRun?.fragment,objectiveRuntime?.outputFormat);if(lineage&&!saved.nextTurn?.sdkSession&&saved.continuation?.kind!=='native-session')life.limitDeadline(runtime.restoreReceipt.expiresAtMs);let selected;
+    sourceRequest,scopes:saved.run.scopes,started:prepareStarted,now}:undefined,skillRuntime?.sdkOptions,capabilities?.options,readRuntime?.sdkOptions??undefined,intentRuntime?.sdkOptions??undefined,browserRun?.fragment,objectiveRuntime?.outputFormat??outreachRuntime?.outputFormat);if(lineage&&!saved.nextTurn?.sdkSession&&saved.continuation?.kind!=='native-session')life.limitDeadline(runtime.restoreReceipt.expiresAtMs);let selected;
    if(saved.request.skill){
     selected=selectSkill(saved.request.skill.skillId,saved.request.skill.skillVersion);if(!same(selected.pin,saved.request.skill))throw fault('SKILL_PIN_REFUSED');
     if(skillRuntime){if(!same(skillRuntime.selected,selected)||typeof skillRuntime.finish!=='function'||typeof skillRuntime.close!=='function')throw fault('SKILL_RUNTIME_REFUSED');}
@@ -205,6 +208,7 @@ export function createConversationActivity({runOwner,prepareRuntime,query=sdkQue
     // Thinking, raw tool arguments, SDK errors and provider diagnostics are never forwarded.
    }
     diagnostic('stage','activity-finalize');capabilities?.check();uploadRuntime?.check();if(controls?.isHeld())return await controls.heldResult();controls?.check();if(!resultSeen)throw fault('SDK_RESULT_MISSING');if(skillRuntime){skillOutput=await life.run(()=>skillRuntime.finish(terminalResult));if(typeof selectedSkills.publish!=='function')throw fault('OUTPUT_PUBLICATION_UNAVAILABLE');await life.run(signal=>selectedSkills.publish({binding,output:skillOutput,signal}));}
+   if(outreachRuntime)await life.run(signal=>outreachRuntime.capture({sdkResult:terminalResult,signal}));
    const typedResult=objectiveRuntime?await life.run(signal=>objectiveRuntime.capture({sdkResult:terminalResult,signal})):undefined;
    diagnostic('stage','activity-complete');if(controls?.canCaptureCompletion())await controls.captureCompletion(typedResult);else await publish('run.status',{state:'completed',reasonCode:null});return {state:'completed',...(skillOutput===undefined?{}:{output:skillOutput})};
   }catch(error){diagnostic('failure',error);failure=error;browserPreparationCleanupUnknown ||= error?.code==='BROWSER_CLEANUP_UNKNOWN';diagnostic('stage','activity-cleanup');controller.abort();clearInterval(heartbeatTimer);await attemptCleanup(closeQuery,{now,timeoutMs:cleanupAttemptMs,onFailure:error=>diagnostic('failure',error)});const cancelled=signal?.aborted||life?.signal.aborted;browserOutcome=cancelled?'cancelled':'failed';modelLife?.close();setupLife?.close();life?.close();preparation?.close();
@@ -214,6 +218,7 @@ export function createConversationActivity({runOwner,prepareRuntime,query=sdkQue
    // hold view only orders the attempts; the durable owner decides which one is true. Each candidate keeps one event ID,
    // so the second round is an idempotent replay that reads back a write whose acknowledgement was lost. When nothing
    // is acknowledged the run stays nonterminal, and the run reconciler settles it after the original is retired.
+    if(claimed&&outreachRuntime)await attemptCleanup(signal=>outreachRuntime.failed({signal}),{now,timeoutMs:terminalAttemptMs,onFailure:error=>diagnostic('failure',error)});
     if(claimed){diagnostic('stage','activity-terminal');const ordinary={state:cancelled?'cancelled':'failed',reasonCode:cancelled?'EXECUTION_STOPPED':'EXECUTION_FAILED'},hold={state:'failed',reasonCode:HOLD_CHECKPOINT_FAILED},createdAt=new Date(now()).toISOString();
     const candidates=(controls?.isHeld()?[hold,ordinary]:[ordinary,hold]).map(data=>({eventId:newId(),createdAt,type:'run.status',data}));
     const terminal=async event=>{const attempt=createOperationLifetime({deadlineMs:now()+terminalAttemptMs,now,errorFactory:fault});try{await attempt.run(signal=>runOwner.append({binding,event,signal}));return true;}catch{return false;}finally{attempt.close();}};

@@ -20,6 +20,7 @@ import {captureGeneralReadPort} from './general-read-port.mjs';
 import {createNativeFiles,prepareNativeTaskDirectory} from './artifacts/native-files.mjs';
 import {assertNativeFileRestore} from '../../packages/contracts/runtime-0.2/files.mjs';
 import {atRunnerStage,markRunnerStage,captureRunnerFailure,markRunnerTelemetryStage,withRunnerDiagnostics} from './runner-runtime-diagnostics.mjs';
+import {createOutreachGenerationRuntime} from '../worker/conversation/outreach-generation.mjs';
 import {createObjectiveGenerationRuntime} from '../worker/conversation/objective-generation/runtime.mjs';
 import {attemptCleanup,CLEANUP_ATTEMPT_MS} from '../worker/conversation/cleanup.mjs';
 // Bash facts for this runtime session: the SDK sandbox measured on this host, plus the run's egress/approval facts.
@@ -63,7 +64,7 @@ export function assembleConversationRunner({configuration,native,query,credentia
   else if(operation==='runner/publish'&&startup){const state=input.event?.type==='run.status'?input.event.data?.state:null;
    stage=stages[state]??{maxMs:stages.session.maxMs,expiresAtMs:startup.originalExpiresAtMs};}
   // Lifecycle calls share the existing session allowance and immutable execution cutoff.
-  else if(operation==='runner/checkpoint/capture'||operation==='runner/checkpoint/complete'||operation==='runner/files/restore'||lifecycleOperations.has(operation))stage=startup?{maxMs:stages.session.maxMs,expiresAtMs:startup.originalExpiresAtMs}:undefined;
+  else if(operation==='runner/outreach/complete'||operation==='runner/outreach/fail'||operation==='runner/checkpoint/capture'||operation==='runner/checkpoint/complete'||operation==='runner/files/restore'||lifecycleOperations.has(operation))stage=startup?{maxMs:stages.session.maxMs,expiresAtMs:startup.originalExpiresAtMs}:undefined;
   const result=native.call(operation,{binding,...input},stage?{signal,deadlineMs:stage.expiresAtMs,...(operation==='runner/load'?{}:{maxRequestMs:stage.maxMs})}:{signal});
   if(operation!=='runner/load')return result;
   const loaded=value=>{markRunnerTelemetryStage('runner.load.done');return value;};return typeof result?.then==='function'?result.then(loaded):loaded(result);};
@@ -73,6 +74,8 @@ export function assembleConversationRunner({configuration,native,query,credentia
  // 'procedure/resolve' handler is the remaining join; without it a selected procedure refuses rather than runs.
  const procedures=createTaskProcedurePort({native,now}),siteWorkflows=createTaskSiteWorkflowPort({native});
  const localBinding=b=>{if(canonicalSha256(b)!==canonicalSha256(binding))throw fault('RUNNER_BINDING_REFUSED');};
+ let outreachSelection=null;
+ const outreachGeneration=createOutreachGenerationRuntime({selection:{async read({binding:b}){localBinding(b);return outreachSelection;}},complete:({binding:b,signal,...input})=>{localBinding(b);return call('runner/outreach/complete',input,signal);},fail:({binding:b,signal,...input})=>{localBinding(b);return call('runner/outreach/fail',input,signal);}});
  let objectiveSelection=null,objectiveRead=false;const objectiveGeneration=createObjectiveGenerationRuntime({now,selection:{async read({binding:b,signal}){localBinding(b);if(!objectiveRead){objectiveRead=true;return objectiveSelection;}const r=await call('runner/runtime',{versions:configuration.versions},signal);if(canonicalSha256(r.binding)!==canonicalSha256(binding)||canonicalSha256(r.versions)!==configuredVersionsSha256)throw fault('RUNNER_RUNTIME_REFUSED');return r.objective??null;}}});
  let nativeFiles,bashRuntime,localCleanupFailed=false,workspaceRecorded=false;
  // Host-level sandbox measurement is taken at most once per runtime session and reused by later runs.
@@ -96,10 +99,10 @@ export function assembleConversationRunner({configuration,native,query,credentia
   lifecycle={captureOwnsClose:true,captureCheckpoint:capture('runner/checkpoint/capture'),...(configuration.sdk===undefined?{}:{captureCompletion:capture('runner/checkpoint/complete')})};
  }
  const append=storageMethod(runOwner,'append');runOwner={...runOwner,async append(input){if(input.event.type==='run.status'&&input.event.data.state==='completed')await sdkSession?.settle(input.signal);return append(input);}};
-  const prepareRuntime=async({binding:b,versions,model,signal,runtimeSignal,continuation,nextTurn,sourceRequest,request,scopes,skillPlugin,capabilityPolicy})=>atRunnerStage('runtime-prepare',async()=>{if(canonicalSha256(versions)!==configuredVersionsSha256)throw fault('RUNNER_VERSION_REFUSED');if(continuation!==undefined&&nextTurn!==undefined)throw fault('RUNNER_RUNTIME_REFUSED');const lineage=nextTurn!==undefined?{nextTurn}:continuation!==undefined?{continuation}:null,resumed=lineage?{...lineage,sourceRequest,request,scopes}:{};markRunnerStage('runtime-admission');const r=await call('runner/runtime',{versions,...resumed},signal);own(r,['binding','versions','deadlineMs','maxOutputBytes'],['objective','automaticClientContext',...(lineage===null?[]:['restoreReceipt']),...(sessionFactory===undefined?[]:['sdkSessionKey'])]);if(canonicalSha256(r.binding)!==canonicalSha256(b)||canonicalSha256(r.versions)!==configuredVersionsSha256)throw fault('RUNNER_RUNTIME_REFUSED');
+  const prepareRuntime=async({binding:b,versions,model,signal,runtimeSignal,continuation,nextTurn,sourceRequest,request,scopes,skillPlugin,capabilityPolicy})=>atRunnerStage('runtime-prepare',async()=>{if(canonicalSha256(versions)!==configuredVersionsSha256)throw fault('RUNNER_VERSION_REFUSED');if(continuation!==undefined&&nextTurn!==undefined)throw fault('RUNNER_RUNTIME_REFUSED');const lineage=nextTurn!==undefined?{nextTurn}:continuation!==undefined?{continuation}:null,resumed=lineage?{...lineage,sourceRequest,request,scopes}:{};markRunnerStage('runtime-admission');const r=await call('runner/runtime',{versions,...resumed},signal);own(r,['binding','versions','deadlineMs','maxOutputBytes'],['objective','automaticClientContext','outreach',...(lineage===null?[]:['restoreReceipt']),...(sessionFactory===undefined?[]:['sdkSessionKey'])]);if(canonicalSha256(r.binding)!==canonicalSha256(b)||canonicalSha256(r.versions)!==configuredVersionsSha256)throw fault('RUNNER_RUNTIME_REFUSED');
   const local=stages?.local,localLife=local?createOperationLifetime({now,signal,deadlineMs:Math.min(now()+local.maxMs,local.expiresAtMs),errorFactory:fault}):null;
   try{return await (localLife?localLife.run:async fn=>fn(signal))(async localSignal=>{
-  const {sdkSessionKey,objective,...prepared}=r;objectiveSelection=objective??null;own(model,['model','region','maxOutputTokens','usageBasis','maxTurns','maxCostMicroUSD'],['provider','effort']);const runtime={...prepared,...model};let sessionStore;
+  const {sdkSessionKey,objective,outreach,...prepared}=r;objectiveSelection=objective??null;outreachSelection=outreach??null;own(model,['model','region','maxOutputTokens','usageBasis','maxTurns','maxCostMicroUSD'],['provider','effort']);const runtime={...prepared,...model};let sessionStore;
   if(model.provider==='claude-api'){
    if(typeof providerCredentials?.read!=='function')throw fault('CLAUDE_API_CREDENTIAL_UNAVAILABLE');
    runtime.providerApiKey=await providerCredentials.read({signal:localSignal});localSignal?.throwIfAborted();
@@ -141,7 +144,7 @@ export function assembleConversationRunner({configuration,native,query,credentia
    }
    return {...runtime,cwd:configuration.workspace,sessionStore,...directories,...(bashRuntime?.runtimeFacts??{}),...(plugin?{skillPluginDirectory:plugin.directory}:{})};});}finally{localLife?.close();}});
  // The activity bounds runtime preparation (the runner/runtime call, then the local stage); see ACTIVITY_PREPARATION_MAX_MS.
- const activity=createConversationActivity({runOwner,prepareRuntime,selectedSkills,procedures,siteWorkflows,objectiveGeneration,now,...(stages?{loadMaxMs:stages.load.maxMs,loadExpiresAtMs:stages.load.expiresAtMs,runtimeMaxMs:Math.min(stages.runtime.maxMs+stages.local.maxMs,ACTIVITY_PREPARATION_MAX_MS),runtimeExpiresAtMs:stages.local.expiresAtMs,setupBudget:stages.setup,modelDeadlineMs:stages.session.expiresAtMs,executionDeadlineMs:startup.originalExpiresAtMs,terminalAttemptMs:stages.session.maxMs}:{}),...(readPort?{generalReads:readPort}:{}),...(governedIntents?{governedIntents}:{}),...(query?{query}:{}),...(lifecycle?{lifecycle}:{}),heartbeat:()=>{},diagnostics:{stage:markRunnerStage,failure:captureRunnerFailure}});
+ const activity=createConversationActivity({runOwner,prepareRuntime,selectedSkills,procedures,siteWorkflows,objectiveGeneration,outreachGeneration,now,...(stages?{loadMaxMs:stages.load.maxMs,loadExpiresAtMs:stages.load.expiresAtMs,runtimeMaxMs:Math.min(stages.runtime.maxMs+stages.local.maxMs,ACTIVITY_PREPARATION_MAX_MS),runtimeExpiresAtMs:stages.local.expiresAtMs,setupBudget:stages.setup,modelDeadlineMs:stages.session.expiresAtMs,executionDeadlineMs:startup.originalExpiresAtMs,terminalAttemptMs:stages.session.maxMs}:{}),...(readPort?{generalReads:readPort}:{}),...(governedIntents?{governedIntents}:{}),...(query?{query}:{}),...(lifecycle?{lifecycle}:{}),heartbeat:()=>{},diagnostics:{stage:markRunnerStage,failure:captureRunnerFailure}});
   const execute=async input=>withRunnerDiagnostics(()=>atRunnerStage('activity',async()=>{try{return await activity(input);}catch(error){captureRunnerFailure(error);throw error;}finally{markRunnerStage('runner-cleanup');
    try{try{await selectedSkills.close();}catch(error){localCleanupFailed=true;throw error;}finally{await sdkSession?.close();}}
    finally{
