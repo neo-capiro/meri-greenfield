@@ -1,4 +1,5 @@
-import {assertConversationEvent,assertNativeSourceEvent,isNativeSourceEventType} from '../../../packages/contracts/conversation-sources/validate.mjs';
+import {assertConversationEvent,assertNativeSourceEvent,isNativeSourceEventType,assertBrowserReceiptEvent,
+ isBrowserReceiptEventType} from '../../../packages/contracts/conversation-sources/validate.mjs';
 /** Product transcript/event persistence. Borrowed pg-compatible pool; no connection on import. */
 import {assertRun,rowRun,bounded,hash,same,fail,nextState,terminal,validateShape,uuid,own} from './boundary.mjs';
 import {createLifecycleJournal,HOLD_CHECKPOINT_FAILED} from './lifecycle/journal.mjs';
@@ -136,7 +137,10 @@ export function createPostgresConversationStore({pool,transitionAuthority,retent
    if(r.hold_control_id&&!holdFailure&&!(allowHeldCancel&&i.type==='run.status'&&i.data?.state==='cancelled'&&i.data?.reasonCode==='USER_CANCELLED'))fail('RUN_HELD');
    const event={contractVersion:'0.1.0',eventId:i.eventId,binding:b,sequence:Number(r.last_sequence)+1,createdAt:i.createdAt,scopes:r.projection.scopes,type:i.type,data:i.data};assertConversationEvent(event);
    const old=(await c.query('SELECT * FROM meri_conversations.events WHERE tenant_id=$1 AND conversation_id=$2 AND run_id=$3 AND event_id=$4',[b.tenantId,b.conversationId,b.runId,i.eventId])).rows[0];check();
-   if(old){if(nativeSource){assertNativeSourceEvent(old.event);event.createdAt=old.event.createdAt;}if(hash(old.event)!==old.event_sha256||old.event_id!==old.event.eventId||Number(old.sequence)!==old.event.sequence||!same({...event,sequence:old.event.sequence},old.event))fail('EVENT_REPLAY_REFUSED');return old.event;}
+   if(old){if(nativeSource){assertNativeSourceEvent(old.event);event.createdAt=old.event.createdAt;}
+    // A browser receipt retry keeps the owner's stored time; its stable identity comes from the operation,
+    // so a byte-equivalent payload acknowledges the existing event and a changed one refuses below.
+    if(isBrowserReceiptEventType(old.event?.type)){assertBrowserReceiptEvent(old.event);event.createdAt=old.event.createdAt;}if(hash(old.event)!==old.event_sha256||old.event_id!==old.event.eventId||Number(old.sequence)!==old.event.sequence||!same({...event,sequence:old.event.sequence},old.event))fail('EVENT_REPLAY_REFUSED');return old.event;}
    if(r.sequence_end!=null)fail('RUN_RANGE_CLOSED');
    if(terminal(r.projection.state))nextState(r.projection.state,event);
    if(r.hold_completion_id&&!(i.type==='run.status'&&['failed','cancelled'].includes(i.data?.state)))fail('RUN_HELD');
@@ -158,11 +162,19 @@ export function createPostgresConversationStore({pool,transitionAuthority,retent
  }
  const read=(binding,cursor,check)=>readState(binding,cursor,check),readOptional=(binding,cursor,check)=>readState(binding,cursor,check,true);
  const append=(binding,input,check,expectedScopes)=>appendEvent(binding,input,check,expectedScopes);
+ /** Named durable browser-receipt port: the same run lock, scope, held/terminal and replay rules as any
+  * other conversation event; only the receipt validator and the stored-time rule are added. */
+ const appendBrowserReceipt=(binding,input,check,expectedScopes)=>{
+  if(!isBrowserReceiptEventType(input?.type))fail('BROWSER_RECEIPT_REFUSED');
+  // A browser receipt is not appendable without the caller's canonical nonempty scopes; the existing
+  // run/scope checks then enforce exact equality with the stored run.
+  if(!Array.isArray(expectedScopes)||expectedScopes.length===0)fail('BROWSER_RECEIPT_REFUSED');
+  return appendEvent(binding,input,check,expectedScopes);};
  const appendSource=(binding,input,check,expectedScopes)=>{if(!isNativeSourceEventType(input?.type)||!expectedScopes)fail('EVENT_TYPE_REFUSED');return appendEvent(binding,{...input,createdAt:new Date(now()).toISOString()},check,expectedScopes,false,true);};
  const lifecycle=createLifecycleJournal({tx,rowRun,transitionAuthority,assertConversationActive,now,onPublished,modelAdmission,cancelAppend:(binding,event,check,scopes)=>appendEvent(binding,event,check,scopes,true)});
  const preparation=createNativePreparationJournals({tx,rowRun});
  const initialInputs=createOriginalInputJournal({tx,rowRun,now,assertConversationActive}),originalInputPorts=Object.freeze({claim:initialInputs.claim,read:initialInputs.read,accept(raw,check){const i=own(raw,['conversation','run','request','event','selectedClientId']);if(i.selectedClientId!==null)uuid(i.selectedClientId);return accept(i,check,i.selectedClientId);}});
  const nextRuns=createNextRunJournal({tx,rowRun,modelAdmission,assertConversationActive});
  const feedback=createFeedbackJournal({tx,rowRun,retentionGate,now});
- return Object.freeze({feedback,accept:(input,check)=>accept(input,check),initialBindings:createInitialRunBindingJournal({pool,now}),initialInputs:originalInputPorts,append,appendSource,read,readOptional,findRequest,recordUsage,readUsage,readModelPolicy,readCurrentModelPolicy,readDefaultModelSelection,readModelSelection,history:createConversationHistoryStore({tx,rowRun,continuationCustody:lifecycle.readContinuation}),runs:createRunIndexStore({tx}),usageOverview:createUsageOverviewStore({pool,now,continuationCustody:lifecycle.readContinuation}),management:createConversationManagementStore({tx,rowRun,settlement:nextRuns.settlementInTransaction,now}),nextRuns,completions:createCompletionJournal({tx,rowRun,onPublished}),...preparation,executions:createExecutionJournal({tx,rowRun,now}),selectedOutputs:createSelectedOutputJournal({tx,rowRun}),memoryProposalContexts:createMemoryProposalContextJournal({tx,rowRun,pool,retentionGate,retentionHead,now}),lifecycle});
+ return Object.freeze({feedback,accept:(input,check)=>accept(input,check),appendBrowserReceipt,initialBindings:createInitialRunBindingJournal({pool,now}),initialInputs:originalInputPorts,append,appendSource,read,readOptional,findRequest,recordUsage,readUsage,readModelPolicy,readCurrentModelPolicy,readDefaultModelSelection,readModelSelection,history:createConversationHistoryStore({tx,rowRun,continuationCustody:lifecycle.readContinuation}),runs:createRunIndexStore({tx}),usageOverview:createUsageOverviewStore({pool,now,continuationCustody:lifecycle.readContinuation}),management:createConversationManagementStore({tx,rowRun,settlement:nextRuns.settlementInTransaction,now}),nextRuns,completions:createCompletionJournal({tx,rowRun,onPublished}),...preparation,executions:createExecutionJournal({tx,rowRun,now}),selectedOutputs:createSelectedOutputJournal({tx,rowRun}),memoryProposalContexts:createMemoryProposalContextJournal({tx,rowRun,pool,retentionGate,retentionHead,now}),lifecycle});
 }

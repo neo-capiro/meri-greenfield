@@ -12,14 +12,21 @@ const TABLE='meri_intents.preparations',COLUMNS='record,record_sha256,state,outc
 const states=['PENDING','PREPARED','FAILED','UNKNOWN'],digest=/^[a-f0-9]{64}$/u;
 function key(raw){
  const k=data(own(raw,['tenantId','actorId','conversationId','deliveryId']));validateShape('Identity',{tenantId:k.tenantId,actorId:k.actorId});
- if(typeof k.conversationId!=='string'||!/^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/u.test(k.conversationId)||typeof k.deliveryId!=='string'||!/^sdk:[a-f0-9]{64}$/u.test(k.deliveryId))refuse('INTENT_JOURNAL_STATE');
+ if(typeof k.conversationId!=='string'||!/^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/u.test(k.conversationId)||typeof k.deliveryId!=='string'||!/^(?:sdk|browser):[a-f0-9]{64}$/u.test(k.deliveryId))refuse('INTENT_JOURNAL_STATE');
  return [k.tenantId,k.actorId,k.conversationId,k.deliveryId];
 }
 /** The canonical authority for an admissible intent operation version: the catalog owner's own resolver, so an exact
  * `id@version` is admitted only when it resolves to its registered descriptor and immutable schema. A stored 0.2
  * reference and the current 0.3 successor each resolve to their own; neither a version regex nor a copied version
  * list decides here, and an unregistered version or unknown id still refuses. */
-const registered=operation=>{try{resolveOperationContract(operation);return true;}catch{return false;}};
+// Internal operation registrations. These are admitted ONLY here, so the model-facing catalog stays
+// exactly as reviewed: no browser operation is added to the tool catalog by this change.
+const INTERNAL_OPERATIONS=Object.freeze(['browser_action@0.2.0']);
+const registered=operation=>{
+ const reference=`${operation.id}@${operation.version}`;
+ if(INTERNAL_OPERATIONS.includes(reference))return true;
+ try{resolveOperationContract(operation);return true;}catch{return false;}
+};
 function record(raw){
  const r=data(own(raw,['operation','argumentsSha256']));own(r.operation,['id','version']);
  if(typeof r.operation.id!=='string'||!/^[a-z][a-z_]{0,62}$/u.test(r.operation.id)||typeof r.argumentsSha256!=='string'||!digest.test(r.argumentsSha256)||!registered(r.operation))refuse('INTENT_JOURNAL_STATE');return r;
@@ -77,7 +84,9 @@ export function createPostgresIntentJournalStore({pool}){
    const [tenantId,actorId,conversationId]=key({...data(own(rawConversation,['tenantId','actorId','conversationId'])),deliveryId:'sdk:'+'0'.repeat(64)});
    if(after!==null&&(typeof after!=='string'||!/^sdk:[a-f0-9]{64}$/u.test(after))||!Number.isSafeInteger(limit)||limit<1||limit>50)refuse('INTENT_JOURNAL_STATE');
    return tx(signal,async client=>{
-    const scope='tenant_id=$1 AND actor_id=$2 AND conversation_id=$3';
+    // The public cursor/list surface is the sdk delivery family only. Internal browser execution rows
+   // share the table but never appear here, so existing list consumers keep their exact contract.
+   const scope="tenant_id=$1 AND actor_id=$2 AND conversation_id=$3 AND delivery_id LIKE 'sdk:%'";
     if(after!==null&&(await client.query(`SELECT delivery_id FROM ${TABLE} WHERE ${scope} AND delivery_id=$4`,[tenantId,actorId,conversationId,after])).rows.length!==1)refuse('INTENT_JOURNAL_CURSOR');
     const cursor=after===null?'':` AND (created_at,delivery_id) > (SELECT created_at,delivery_id FROM ${TABLE} WHERE ${scope} AND delivery_id=$4)`;
     const rows=(await client.query(`SELECT delivery_id,created_at,${COLUMNS} FROM ${TABLE} WHERE ${scope}${cursor} ORDER BY created_at,delivery_id LIMIT ${limit+1}`,

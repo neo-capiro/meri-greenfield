@@ -10,13 +10,14 @@ import userQuestion from '../native-user-question-event.schema.json' with {type:
 import hearingResult from '../retrieval-0.2/public-domain-hearings.schema.json' with {type:'json'};
 import hearingRecords from '../retrieval-0.2/public-domain-hearing-records.schema.json' with {type:'json'};
 import outreach from '../retrieval-0.2/outreach-query.schema.json' with {type:'json'};
-import {data} from '../commands-0.2/execution-boundary.mjs';
-import {validateShape} from '../validate.mjs';
+import {data,own} from '../commands-0.2/execution-boundary.mjs';
+import {validateShape,canonicalSha256} from '../validate.mjs';
 import {BILL_TEXT_SOURCE_EVENT,HEARING_SOURCE_EVENT,HEARING_SOURCE_READ_SCHEMA,HEARING_MEDIA_READ_SCHEMA,UPLOAD_SOURCE_EVENT,USER_QUESTION_PENDING_EVENT,USER_QUESTION_ANSWERED_EVENT} from './protocol.mjs';
 import {assertHearingMediaReadSemantics} from './hearing-media-semantics.mjs';
 import {assertHearingSourceEventSemantics,assertHearingSourceReadSemantics} from './hearing-semantics.mjs';
 import {assertNativeSourceEventSemantics,assertSourceReadSemantics,fail} from './semantics.mjs';
 import {assertUploadSourceEventSemantics} from './upload-semantics.mjs';
+import {assertBrowserReceipt,BROWSER_RECEIPT_EVENT} from '../runtime-0.2/browser-receipt.mjs';
 const ajv=new Ajv({strict:true,allErrors:false});formats(ajv);ajv.addSchema(original);ajv.addSchema(schema);
 for(const s of [outreach,hearingRecords,hearingResult,hearing,media,upload,userQuestion])ajv.addSchema(s);
 const validators=new Map();
@@ -44,8 +45,20 @@ export function assertUserQuestionEvent(raw){
   if(new Set(question.options.map(option=>option.label)).size!==question.options.length)fail('INVALID_USER_QUESTION_EVENT');}
  return value;
 }
+export const isBrowserReceiptEventType=type=>type===BROWSER_RECEIPT_EVENT;
+/** Browser receipts are additive run events over the same conversation event owner. The frozen UIEvent
+ * validator and the model publish whitelist are unchanged: this only admits the durable receipt data. */
+export function assertBrowserReceiptEvent(raw){
+ const value=data(raw);own(value,['contractVersion','eventId','binding','sequence','createdAt','scopes','type','data']);
+ if(value.type!==BROWSER_RECEIPT_EVENT)fail('INVALID_BROWSER_RECEIPT_EVENT');
+ validateShape('RunBinding',data(value.binding));
+ assertBrowserReceipt(value.data);
+ if(canonicalSha256(data(value.data.binding))!==canonicalSha256(data(value.binding)))fail('INVALID_BROWSER_RECEIPT_EVENT');
+ return value;
+}
 export function assertConversationEvent(raw){
  if(isUserQuestionEventType(raw?.type))return assertUserQuestionEvent(raw);
+ if(isBrowserReceiptEventType(raw?.type))return assertBrowserReceiptEvent(raw);
  return isNativeSourceEventType(raw?.type)?assertNativeSourceEvent(raw):validateShape('UIEvent',raw);}
 export function assertSourceReadRequest(raw){return assertSourceShape(raw?.schemaVersion===HEARING_MEDIA_READ_SCHEMA?'HearingMediaReadRequest':raw?.schemaVersion===HEARING_SOURCE_READ_SCHEMA?'HearingSourceReadRequest':'BillTextSourceReadRequest',raw);}
 export function assertSourceReadResponse(raw,request){return request.schemaVersion===HEARING_MEDIA_READ_SCHEMA?assertHearingMediaReadSemantics(assertSourceShape('HearingMediaReadResponse',raw),request):request.schemaVersion===HEARING_SOURCE_READ_SCHEMA?assertHearingSourceReadSemantics(assertSourceShape('HearingSourceReadResponse',raw),request):assertSourceReadSemantics(assertSourceShape('BillTextSourceReadResponse',raw),request);}
