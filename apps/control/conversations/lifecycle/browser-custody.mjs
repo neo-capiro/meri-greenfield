@@ -31,6 +31,20 @@ export function createBrowserCustodyJournal({tx,verifyRun,lookup,pins,save,now,l
   if(control.browserCustody.expiresAtMs<=now())fail('BROWSER_CUSTODY_EXPIRED');
   return {run,control};
  }
+ /** Same-client verification of an ALREADY applied hold: APPLIED takeover.begin with exact custody and
+  * NO browserReturn. A returned original control is no longer a hold even before any successor exists,
+  * which the facts phase alone cannot express. Read-only: no dispatch, claim, checkpoint or save. */
+ async function heldApplied(client,value,check){
+  const v=own(value,['binding','scopes','selectedClientId','allocation']),
+   allocation=own(data(v.allocation),['hostId','generation']);
+  const {run,control}=await held(client,{binding:v.binding,scopes:v.scopes,selectedClientId:v.selectedClientId},check);
+  if(control.browserReturn!==undefined)fail('BROWSER_CUSTODY_REFUSED');
+  if(run.projection.state!=='paused'||control.state!=='APPLIED'||!control.proof||control.checkpointId==null)fail('BROWSER_CUSTODY_REFUSED');
+  const custody=control.browserCustody;
+  if(custody.hostId!==allocation.hostId||custody.generation!==allocation.generation)fail('BROWSER_CUSTODY_REFUSED');
+  return data({controlId:control.input.controlId,checkpointId:control.checkpointId,
+   checkpointSha256:control.proof.checkpointSha256,custody});
+ }
  async function read(value,check){return tx(value.binding,check,async client=>{
   const {binding,scopes,selectedClientId}=value,run=await verifyRun(client,binding,scopes);check();
   const result={sourceBinding:binding,selectedClientId,state:'unavailable',controlId:null,checkpointId:null,checkpointSha256:null,
@@ -93,5 +107,5 @@ export function createBrowserCustodyJournal({tx,verifyRun,lookup,pins,save,now,l
   return data({binding,browserPolicySha256:custody.policySha256,capabilityPolicySha256:null,browserAdmitted:true,sdkAdmitted:false,bashAdmitted:false,
    phase,currentUntilMs:cutoff,browserCustody:custody,...(phase==='browser-successor'?{browserSuccessor:{binding:currentBinding,handoff:targetHandoff}}:{})});
  }
- return Object.freeze({read,returning,currentHost});
+ return Object.freeze({read,returning,currentHost,heldApplied});
 }

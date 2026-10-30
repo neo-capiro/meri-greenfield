@@ -9,6 +9,8 @@ import {createBrowserHostRunFacts,createBrowserHostSiteWorkflowPort} from './bro
 import {createPostgresHostCurrentnessStore} from '../worker/conversation/host/control/postgres-store.mjs';
 import {createHostCurrentnessServer} from '../worker/conversation/host/control/server.mjs';
 import {transact} from '../control/product-persistence/transaction.mjs';
+import {rowRun} from '../control/conversations/boundary.mjs';
+import {canonicalSha256} from '../../packages/contracts/validate.mjs';
 const fail=code=>{throw Object.assign(new Error(code),{code});};
 const bytes=(value,label)=>{
  if(!(value instanceof Uint8Array)||value.length===0)fail('BROWSER_HOST_COMPOSITION');
@@ -41,7 +43,27 @@ export function createBrowserHostComposition({declaration,pool,store,sessions,co
  const privateTls=Object.freeze({clientName:declaration.tls.privateClient.clientName,
   cert:bytes(client.cert),key:bytes(client.key),ca:bytes(client.ca)});
  const browserHosts=createBrowserHostRouter({allocations,tls:privateTls,now,requestMs:declaration.requestMs});
- // The listener serves Control's canonical run facts to a mutually authenticated host peer; it is
+ // The facts producer is the protected store's callback: it consumes that store's own transaction client.
+ const facts=createBrowserHostRunFacts({currentness});
+ // The live workflow resolver is the REAL Core admission owner already supplied as a product port: it
+ // obtains its own native credential and performs the fixed Core read. Null when that port is absent, and
+ // in that case the workflow operation refuses rather than answering from a static manifest.
+ const siteWorkflows=siteWorkflowAdmission===null?null:createBrowserHostSiteWorkflowPort({store,admission:siteWorkflowAdmission});
+ const same=(a,b)=>canonicalSha256(a)===canonicalSha256(b);
+ /** Same-client lifecycle verification of an ALREADY applied and still unreturned takeover. It reads the
+  * canonical run row on the caller's client, then uses the lifecycle owner's own held helper; it never
+  * dispatches service.control, claims, checkpoints or saves. */
+ const holdCustody=async({client,binding,allocation,check})=>{
+  const rows=await client.query('SELECT * FROM meri_conversations.runs WHERE tenant_id=$1 AND conversation_id=$2 AND run_id=$3 FOR UPDATE',
+   [binding.tenantId,binding.conversationId,binding.runId]);
+  check();
+  if(!Array.isArray(rows?.rows)||rows.rows.length!==1)fail('BROWSER_HOST_COMPOSITION');
+  const run=rowRun(rows.rows[0]).projection;
+  if(!same(run.binding,binding)||!Array.isArray(run.scopes)||run.scopes.length!==1)fail('BROWSER_HOST_COMPOSITION');
+  const scope=run.scopes[0],selectedClientId=scope.kind==='client'?scope.resourceId:null;
+  return store.lifecycle.browserCustody.heldApplied(client,{binding,scopes:run.scopes,selectedClientId,allocation},check);
+ };
+ // The listener serves the four named Control reads to a mutually authenticated host peer; it is
  // mounted only when its own protected server material and bind are declared and loaded.
  let server=null,serverTls=null;
  if(declaration.tls.hostServer!==undefined){
@@ -50,16 +72,16 @@ export function createBrowserHostComposition({declaration,pool,store,sessions,co
   serverTls=Object.freeze({serverName:declaration.tls.hostServer.serverName,cert:bytes(s.cert),key:bytes(s.key),clientCa:bytes(s.clientCa)});
   const acknowledged=(body,options={})=>transact(pool,body,{check:()=>options.signal?.throwIfAborted(),unavailable:'HOST_CONTROL_UNAVAILABLE',uncertain:'HOST_CONTROL_UNKNOWN'});
   server=createHostCurrentnessServer({bind:declaration.bind,tls:serverTls,
-   store:createPostgresHostCurrentnessStore({transact:acknowledged,readCanonicalRun:currentness.readHost,maxLeaseMs:declaration.maxLeaseMs}),
+   store:createPostgresHostCurrentnessStore({transact:acknowledged,readCanonicalRun:currentness.readHost,
+    readCanonicalFacts:(client,input)=>facts.readCanonicalFacts(client,input),
+    resolveWorkflow:({binding,signal})=>{
+     // A missing real Core admission owner refuses; it never answers from a static manifest callback.
+     if(siteWorkflows===null)fail('BROWSER_HOST_SITE_WORKFLOW_UNAVAILABLE');
+     return siteWorkflows.resolve({binding,signal});
+    },
+    holdCustody,maxLeaseMs:declaration.maxLeaseMs}),
    maxFreshMs:declaration.maxCurrentnessMs,requestMs:Math.min(declaration.requestMs,5000),now});
  }
- // The facts answer is the Control-side source join for readRun: saved selection through the store's own
- // reader, then the canonical facts projection on the acknowledged transaction client.
- // The facts producer is the protected store's callback: it consumes that store's own client.
- const facts=createBrowserHostRunFacts({currentness});
- // The live workflow resolver is the REAL Core admission owner already supplied as a product port: it
- // obtains its own native credential and performs the fixed Core read. Null when that port is absent.
- const siteWorkflows=siteWorkflowAdmission===null?null:createBrowserHostSiteWorkflowPort({store,admission:siteWorkflowAdmission});
  let starting,closing,address=null,closed=false;
  const wipe=()=>{for(const t of [privateTls,serverTls])if(t)for(const k of ['cert','key',t===privateTls?'ca':'clientCa'])try{t[k]?.fill?.(0);}catch{}};
  return Object.freeze({browserHosts,currentness,allocations,facts,
