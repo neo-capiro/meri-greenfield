@@ -52,7 +52,7 @@ export function createBrowserHostHoldCustody({store}={}){
 }
 /** `material` is already-loaded protected key material for exactly the declared references:
  * {privateClient:{clientName,cert,key,ca}, hostServer?:{serverName,cert,key,clientCa}}. */
-export function createBrowserHostComposition({declaration,pool,store,sessions,core,capabilityPolicy,readBrowserPolicy,siteWorkflowAdmission=null,material,now=Date.now,limits={}}={}){
+export function createBrowserHostComposition({declaration,pool,store,sessions,core,capabilityPolicy,readBrowserPolicy,siteWorkflowAdmission=null,browserApproval=null,browserReceipts=null,material,now=Date.now,limits={}}={}){
  if(declaration===null||declaration===undefined)return null;
  if(!pool||typeof pool.connect!=='function'||!store?.executions||!store?.lifecycle?.browserCustody||
   typeof sessions?.nativeCredentialFor!=='function'||typeof core?.readCurrent!=='function'||
@@ -83,6 +83,14 @@ export function createBrowserHostComposition({declaration,pool,store,sessions,co
   const acknowledged=(body,options={})=>transact(pool,body,{check:()=>options.signal?.throwIfAborted(),unavailable:'HOST_CONTROL_UNAVAILABLE',uncertain:'HOST_CONTROL_UNKNOWN'});
   server=createHostCurrentnessServer({bind:declaration.bind,tls:serverTls,
    store:createPostgresHostCurrentnessStore({transact:acknowledged,readCanonicalRun:currentness.readHost,
+    // The named approval callback is the REAL prepared+Core wait owner; absent, the operation refuses.
+    decideBrowserApproval:browserApproval===null?undefined:({request,binding,signal,deadlineMs})=>
+     browserApproval.decide({request,binding,signal,deadlineMs}),
+    // The REAL receipt producer Control already constructs; absent, the receipt route refuses.
+    // The action recorder (event + approved-effect settlement) when Control supplies one, else the raw
+    // producer; a missing owner still refuses the route.
+    recordBrowserReceipt:browserReceipts===null?undefined:value=>
+     (typeof browserReceipts.recordAction==='function'?browserReceipts.recordAction(value):browserReceipts.appendAction(value)),
     readCanonicalFacts:(client,input)=>facts.readCanonicalFacts(client,input),
     resolveWorkflow:({binding,signal})=>{
      // A missing real Core admission owner refuses; it never answers from a static manifest callback.
@@ -96,6 +104,9 @@ export function createBrowserHostComposition({declaration,pool,store,sessions,co
  let starting,closing,address=null,closed=false;
  const wipe=()=>{for(const t of [privateTls,serverTls])if(t)for(const k of ['cert','key',t===privateTls?'ca':'clientCa'])try{t[k]?.fill?.(0);}catch{}};
  return Object.freeze({browserHosts,currentness,allocations,facts,
+  /** The retained browser approval PREPARATION owner, when Control composed one. It exposes no permission. */
+  browserApproval:()=>browserApproval,
+  browserReceipts:()=>browserReceipts,
   get address(){return address;},
   // The protected nonce store binds THIS callback and passes its own transaction client.
   readCanonicalFacts:(client,input)=>facts.readCanonicalFacts(client,input),
@@ -103,7 +114,9 @@ export function createBrowserHostComposition({declaration,pool,store,sessions,co
   // this composition is built; it is late-bound once, like the other existing session binders.
 
   siteWorkflows(){return siteWorkflows;},
-  state:()=>Object.freeze({mounted:true,closed,listener:address,siteWorkflows:siteWorkflows!==null}),
+  state:()=>Object.freeze({mounted:true,closed,listener:address,siteWorkflows:siteWorkflows!==null,
+  // Readiness is the BOUND callback plus a declared listener, not merely a constructed owner.
+  browserApproval:browserApproval!==null&&server!==null}),
   start(options={}){
    // A closed composition never opens a listener again.
    if(closed)return Promise.reject(Object.assign(new Error('BROWSER_HOST_CLOSED'),{code:'BROWSER_HOST_CLOSED'}));

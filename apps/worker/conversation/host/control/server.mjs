@@ -6,7 +6,10 @@ import {HOST_CONTROL_PATH,HOST_CONTROL_MAX_BYTES,hostControlRequest,hostControlR
  hostFactsRequest,hostFactsResponse,HOST_FACTS_PATH,HOST_FACTS_WIRE_MAX_BYTES,
  hostWorkflowRequest,hostWorkflowResponse,HOST_WORKFLOW_PATH,HOST_WORKFLOW_WIRE_MAX_BYTES,
  hostHoldRequest,hostHoldResponse,HOST_HOLD_PATH,HOST_HOLD_WIRE_MAX_BYTES,HOST_OPERATION_REQUEST_MAX_BYTES,
- hostClientDnsName,encodeHostControl,decodeHostControl} from './protocol.mjs';
+ hostClientDnsName,encodeHostControl,decodeHostControl,
+ hostDecideRequest,hostDecideResponse,HOST_DECIDE_PATH,HOST_DECIDE_MAX_BYTES,HOST_DECIDE_WIRE_MAX_BYTES,
+ HOST_DECIDE_MAX_WINDOW_MS,hostReceiptRequest,hostReceiptResponse,HOST_RECEIPT_PATH,
+ HOST_RECEIPT_WIRE_MAX_BYTES} from './protocol.mjs';
 import {MAX_HOST_CURRENTNESS_MS} from '../binding.mjs';
 
 const fail=()=>{throw Object.assign(new Error('HOST_CONTROL_UNAVAILABLE'),{code:'HOST_CONTROL_UNAVAILABLE'});};
@@ -22,6 +25,14 @@ const ROUTES=new Map([
   request:value=>hostWorkflowRequest(value),answer:(answer,q)=>hostWorkflowResponse(answer,q)}],
  [HOST_HOLD_PATH,{method:'holdBrowser',requestMax:HOST_OPERATION_REQUEST_MAX_BYTES,max:HOST_HOLD_WIRE_MAX_BYTES,
   request:value=>hostHoldRequest(value),answer:(answer,q)=>hostHoldResponse(answer,q)}],
+ // The ONE approval route. Its ingress is still bounded by requestMs; only AFTER the store acknowledges the
+ // admission transaction may this request's timer extend to the admitted absolute deadline.
+ [HOST_DECIDE_PATH,{method:'decideBrowserApproval',requestMax:HOST_DECIDE_WIRE_MAX_BYTES,max:HOST_DECIDE_WIRE_MAX_BYTES,
+  request:value=>hostDecideRequest(value),answer:(answer,q,atMs)=>hostDecideResponse(answer,q,atMs),long:true}],
+ // The ONE action-receipt route: bounded ingress, no long wait, the producer's own acknowledgement only.
+ [HOST_RECEIPT_PATH,{method:'recordBrowserReceipt',requestMax:HOST_RECEIPT_WIRE_MAX_BYTES,
+  max:HOST_RECEIPT_WIRE_MAX_BYTES,request:value=>hostReceiptRequest(value),
+  answer:(answer,q)=>hostReceiptResponse(answer,q)}],
 ]);
 function requestLength(req,routeMax){
  if(req.httpVersion!=='1.1'||req.method!=='POST'||!Number.isSafeInteger(routeMax))fail();
@@ -71,9 +82,21 @@ export function createHostCurrentnessServer({bind,tls,store,maxFreshMs,requestMs
  const server=httpsModule.createServer({cert,key,ca:clientCa,requestCert:true,rejectUnauthorized:true,
   minVersion:'TLSv1.3',maxVersion:'TLSv1.3',keepAlive:false,handshakeTimeout:requestMs},async(req,res)=>{
   if(closed||active>=maxConcurrent){res.writeHead(503,{'content-length':'0','connection':'close'});res.end();return;}
-  active++;const requestLifetime=new AbortController(),timer=setTimeout(()=>{
-   requestLifetime.abort();req.destroy();res.destroy();
-  },requestMs);
+  active++;const requestLifetime=new AbortController();
+  let timer=setTimeout(()=>{requestLifetime.abort();req.destroy();res.destroy();},requestMs);
+  // Trusted store->server seam: called once after the acknowledged admission transaction, never serialized.
+  let extended=false,originalCutoff=null;
+  const extend=deadline=>{
+   // One admitted extension only, and never beyond this request's own original cutoff, the allocation lease
+   // or the peer certificate expiry.
+   if(extended||!Number.isSafeInteger(deadline)||closed||requestLifetime.signal.aborted)return;
+   extended=true;
+   const capped=Math.min(deadline,originalCutoff??Infinity);
+   const remaining=Math.min(capped-now(),HOST_DECIDE_MAX_WINDOW_MS);
+   if(remaining<1){requestLifetime.abort();req.destroy();res.destroy();return;}
+   clearTimeout(timer);
+   timer=setTimeout(()=>{requestLifetime.abort();req.destroy();res.destroy();},remaining);
+  };
   const stop=()=>requestLifetime.abort();lifetime.signal.addEventListener('abort',stop,{once:true});
   req.on('aborted',stop);res.on('close',stop);
   try{
@@ -83,10 +106,11 @@ export function createHostCurrentnessServer({bind,tls,store,maxFreshMs,requestMs
    const q=route.request(decodeHostControl(await bounded(()=>requestBody(req,length,requestLifetime.signal),requestLifetime.signal),route.requestMax));
    const peerName=hostClientDnsName(q.allocation),peer=req.socket.getPeerCertificate(false);
    const certificate=checkedCertificate(peer?.raw,{name:peerName,nowMs:now(),notAfterMs:q.allocation.leaseDeadlineMs});
+   if(route.long)originalCutoff=Math.min(q.deadlineMs,q.allocation.leaseDeadlineMs,certificate.notAfterMs??Infinity);
    if(closed||requestLifetime.signal.aborted)fail();
    const answer=await bounded(()=>store[route.method]({request:q,fingerprintSha256:certificate.fingerprintSha256,
-    peerDnsName:peerName,signal:requestLifetime.signal}),requestLifetime.signal);
-   if(route.method==='readCurrent')hostControlResponse(answer,q,{nowMs:now(),maxFreshMs});else route.answer(answer,q);
+    peerDnsName:peerName,signal:requestLifetime.signal,...(route.long?{onAdmitted:extend}:{})}),requestLifetime.signal);
+   if(route.method==='readCurrent')hostControlResponse(answer,q,{nowMs:now(),maxFreshMs});else route.answer(answer,q,now());
    if(closed||requestLifetime.signal.aborted)fail();
    const bytes=encodeHostControl(answer,route.max);
    res.writeHead(200,{'content-type':'application/json','content-length':String(bytes.length),'connection':'close'});
@@ -96,7 +120,10 @@ export function createHostCurrentnessServer({bind,tls,store,maxFreshMs,requestMs
   finally{clearTimeout(timer);lifetime.signal.removeEventListener('abort',stop);active--;}
  });
  server.maxConnections=maxSockets;server.maxHeadersCount=8;
- server.headersTimeout=Math.min(requestMs,5000);server.requestTimeout=requestMs;
+ server.headersTimeout=Math.min(requestMs,5000);
+ // The whole incoming request/body stays under requestMs; the long approval wait is the RESPONSE phase and is
+ // governed solely by the per-request timer extended after acknowledged admission.
+server.requestTimeout=requestMs;
  server.on('tlsClientError',(_error,socket)=>socket.destroy());
  server.on('connection',socket=>{if(sockets.size>=maxSockets){socket.destroy();return;}
   sockets.add(socket);socket.on('close',()=>sockets.delete(socket));

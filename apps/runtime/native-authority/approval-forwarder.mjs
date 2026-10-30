@@ -43,6 +43,7 @@ import {readJsonResponse,responseBody,cancelBody} from '../../gateway/sources/js
 import {intentFault,INTENT_FAILURE_CODES} from '../../control/intents/faults.mjs';
 import {nativeApprovalScope} from './approval-session.mjs';
 import {nativeTaskOutcome,nativeTaskNotExecuted} from '../../control/intents/task-outcome.mjs';
+import {createBrowserApprovalOperations} from './browser-approvals.mjs';
 import {nativeMailOutcome} from '../../control/intents/mail-outcome.mjs';
 export const CORE_APPROVAL_ROUTES=Object.freeze({record:'/api/clio/approvals/native/record',decision:'/api/clio/approvals/native/decision',revoke:'/api/clio/approvals/native/revoke',execute:'/api/clio/approvals/native/execute',executionRead:'/api/clio/approvals/native/execution/read'});
 export const APPROVAL_FORWARDER_OPERATIONS=Object.freeze(['approval/record','approval/decision','approval/read','approval/revoke']);
@@ -81,7 +82,7 @@ export function bindApprovalSessions(context,sessions,retention,store){
 export function createCoreApprovalForwarder(options){
  let c,origin,nativeCredentialFor;
  try{
-  c=own(options,['origin','nativeCredentials','getServiceSecret','now'],['readProposal','selectedClientId','reservedCredentials','fetchImpl','maxRequestMs','maxResponseBytes','selectDocumentBinding','selectApprovalBinding']);origin=retainedOrigin(c.origin);
+  c=own(options,['origin','nativeCredentials','getServiceSecret','now'],['readProposal','selectedClientId','reservedCredentials','fetchImpl','maxRequestMs','maxResponseBytes','selectDocumentBinding','readBrowserPreparation','selectBrowserBinding','selectApprovalBinding']);origin=retainedOrigin(c.origin);
   if(!c.nativeCredentials||typeof c.nativeCredentials!=='object'||types.isProxy(c.nativeCredentials))throw Error();
   const method=Object.getOwnPropertyDescriptor(c.nativeCredentials,'nativeCredentialFor');if(!method||!Object.hasOwn(method,'value'))throw Error();nativeCredentialFor=method.value;
   for(const fn of [nativeCredentialFor,c.getServiceSecret,c.now,c.fetchImpl??globalThis.fetch,c.readProposal??(()=>{}),c.reservedCredentials??(()=>{})])if(!ordinary(fn))throw Error();
@@ -90,6 +91,8 @@ export function createCoreApprovalForwarder(options){
   if(c.maxResponseBytes!==undefined&&(!Number.isSafeInteger(c.maxResponseBytes)||c.maxResponseBytes<1||c.maxResponseBytes>1048576))throw Error();
   if(c.selectDocumentBinding!==undefined&&!ordinary(c.selectDocumentBinding))throw Error();
   if(c.selectApprovalBinding!==undefined&&!ordinary(c.selectApprovalBinding))throw Error();
+  if(c.readBrowserPreparation!==undefined&&!ordinary(c.readBrowserPreparation))throw Error();
+  if(c.selectBrowserBinding!==undefined&&!ordinary(c.selectBrowserBinding))throw Error();
  }catch{configuration();}
  const now=c.now,fetchImpl=c.fetchImpl??globalThis.fetch,maxRequestMs=c.maxRequestMs??10000,maxResponseBytes=c.maxResponseBytes??131072,reservedDigests=c.reservedCredentials??(async()=>new Set());
  const pending=new Map();
@@ -281,6 +284,38 @@ export function createCoreApprovalForwarder(options){
    return data({tenantId:v.tenantId,actorId:v.actorId,bearerToken:first.credential,serviceSecret,expiresAtMs:Math.min(first.expiresAtMs,last.expiresAtMs)});
   }finally{life.close();}
  }
+ // Browser approvals reuse THIS transport: the same bounded lifetime, attended post (native bearer +
+ // verified service secret + fresh session checks) and the same canonical proposal/session readers.
+ const browserApprovals=createBrowserApprovalOperations({now,transport:{
+  lifetime,post:(life,route,args)=>post(life,route,args),
+  /** Browser custody comes from the real approval-metadata readback, never the generic native reader:
+    * that reader deliberately rejects the browser envelope. */
+  proposal:async(life,{proposalId,binding})=>{
+   if(typeof c.readBrowserPreparation!=='function')refuse('UNAVAILABLE');
+   let retained;
+   try{retained=await life.run(signal=>c.readBrowserPreparation({proposalId,binding,signal}));}
+   catch(error){if(faults.has(error))throw error;refuse('UNAVAILABLE');}
+   if(!retained)refuse('ACCESS_DENIED');
+   return retained;
+  },
+  /** Attended selection for the EXACT original full binding; no generic successor allowance. */
+  selected:async(life,proposal,binding)=>{
+   if(typeof c.selectBrowserBinding!=='function')refuse('UNAVAILABLE');
+   let pinned;
+   const verify=async()=>{
+    const value=data(own(await life.run(signal=>c.selectBrowserBinding({proposal,binding,signal,deadlineMs:life.deadline()})),
+     ['binding','selectedClientId']));
+    try{validateShape('RunBinding',value.binding);}catch{refuse('ACCESS_DENIED');}
+    // The retained preparation names its binding inside the record and inside the Run; both must be
+    // exactly the requested one (never a successor run/attempt/worker/fence).
+    const retainedBinding=proposal?.metadata?.record?.binding??proposal?.run?.binding;
+    if(!same(value.binding,binding)||!retainedBinding||!same(value.binding,retainedBinding))refuse('ACCESS_DENIED');
+    if(pinned&&!same(value,pinned))refuse('ACCESS_DENIED');
+    pinned=value;
+   };
+   await verify();
+   return {...pinned,verify};
+  }}});
  /** The provider RPC seam `call(operation,input,{signal})` for `createNativeIntentApprovals`; other operations are UNAVAILABLE. */
  async function call(operation,input,options={}){
   const {signal,deadlineMs}=own(options,[],['signal','deadlineMs']);
@@ -289,9 +324,13 @@ export function createCoreApprovalForwarder(options){
   if(operation==='approval/decision')return decision({...own(input,['proposalId','commandSha256','binding']),...extra});
   if(operation==='approval/read')return read({...own(input,['proposalId','binding','scopes']),...(signal===undefined?{}:{signal})});
   if(operation==='approval/revoke')return revoke({...own(input,['proposalId','commandSha256','approver','binding']),...extra});
+  if(operation==='browser/record')return browserApprovals.record({...own(input,['proposalId','subjectSha256','decision','approver','binding']),...extra});
+  if(operation==='browser/consume')return browserApprovals.consume({...own(input,['proposalId','subjectSha256','binding']),...extra});
+  if(operation==='browser/status')return browserApprovals.status({...own(input,['proposalId','subjectSha256','binding']),...extra});
+  if(operation==='browser/result')return browserApprovals.result({...own(input,['proposalId','subjectSha256','binding','outcome','result']),...extra});
   refuse('UNAVAILABLE');
  }
- return Object.freeze({origin,operations:APPROVAL_FORWARDER_OPERATIONS,call,record,decision,read,revoke,filingCredentials,
+ return Object.freeze({origin,operations:APPROVAL_FORWARDER_OPERATIONS,call,record,decision,read,revoke,filingCredentials,browserApprovals,
   async executeTask(value){return nativeEffect(value,false,'task');},
   async readTaskExecution(value){return nativeEffect(value,true,'task');},
   async executeMemory(value){return nativeEffect(value,false,'memory');},
