@@ -13,7 +13,7 @@ export function createMetadataPoolFixture(){
   const values=typeof config==='string'?(args??[]):(config?.values??[]);
   calls.push({text:statement,values});
   // Transaction control used by the real readback/reader; the fixture has no rollback semantics to model.
-  if(/^(?:BEGIN|COMMIT|ROLLBACK)/u.test(statement)||/^SET (?:LOCAL )/u.test(statement))return {rows:[],rowCount:0};
+  if(/^(?:BEGIN|COMMIT|ROLLBACK)\b/u.test(statement)||/^SET (?:LOCAL )/u.test(statement))return {rows:[],rowCount:0};
   const text=statement.replace(/^(INSERT INTO |SELECT payload,payload_sha256 FROM )meri_commands\.approval_metadata /u,'$1approval_metadata ');
   if(text.startsWith('INSERT INTO approval_metadata ')){
    const [tenant,actor,proposal,,,,hash,raw]=values,key=JSON.stringify([tenant,actor,proposal.toLowerCase()]);

@@ -20,7 +20,7 @@ const subject={schema:'meri-browser-action/1',binding,server:'capiov2-browser',t
 const preparation=browserPreparationFromRequest({schema:'meri-browser-approval-request/3',subject,
  subjectSha256:hash(subject),input,requestedAtMs:NOW-1000,expiresAtMs:NOW+60000});
 let run={binding,state:'waiting-for-approval',scopes,createdAt:new Date(NOW).toISOString(),policyRevision:'policy-1',
- versions:{imageDigest:'a'.repeat(64),sdk:'0.1.0',cli:'0.1.0',contracts:'0.1.0',
+ versions:{imageDigest:`sha256:${'a'.repeat(64)}`,sdk:'0.1.0',cli:'0.1.0',contracts:'0.1.0',
   skillsDigest:'b'.repeat(64),checkpointFormat:'0.1.0'}};
 
 async function fixture(){
@@ -71,4 +71,29 @@ test('a successor or foreign binding is refused before any HTTP',async()=>{
  await assert.rejects(f.forwarder.browserApprovals.status({proposalId:f.record.proposalId,
   subjectSha256:'b'.repeat(64),binding}),/ACCESS_DENIED|UNAVAILABLE/u);
  assert.equal(f.requests.length,0);
+});
+
+test('a valid pre-consumption status reaches the fixed Core route with both credentials',async()=>{
+ const f=await fixture();
+ f.setNext({schema:'meri-browser-approval-status/1',proposalId:f.record.proposalId,subjectSha256:hash(subject),
+  toolUseId:'toolu_01',permissive:false,unknown:false,consumption:null});
+ const answer=await f.forwarder.browserApprovals.status({proposalId:f.record.proposalId,subjectSha256:hash(subject),binding});
+ assert.equal(answer.permitted,false);
+ assert.equal(answer.status.consumption,null);
+ assert.equal(f.requests.length,1);
+ const {url,init}=f.requests[0];
+ assert.equal(url,'https://core.example/api/clio/approvals/native/browser/status');
+ assert.equal(init.headers.authorization,'Bearer synthetic-native-bearer-0123456789');
+ assert.equal(init.headers['x-internal-service-secret'],'synthetic-core-service-secret');
+ assert.deepEqual(JSON.parse(init.body).binding,binding);
+});
+
+test('the inert metadata pool accepts pg string-form transaction statements',async()=>{
+ const f=await fixture();
+ const client=await f.sql.pool.connect();
+ for(const statement of ['BEGIN ISOLATION LEVEL REPEATABLE READ READ ONLY',
+  "SET LOCAL statement_timeout = '5s'",'COMMIT','ROLLBACK']){
+  const result=await client.query(statement);
+  assert.deepEqual(result.rows,[],`${statement} must be answered by the fixture`);
+ }
 });
