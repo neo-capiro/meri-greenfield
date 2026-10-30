@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<oor:data xmlns:oor="http://openoffice.org/2001/registry">
+  <dependency file="main"/>
+  <oor:component-data oor:name="VCL" oor:package="org.openoffice">
+    <node oor:name="FontSubstitutions">
+      <node oor:name="en">
+        <node oor:name="liberationsans">
+          <prop oor:name="SubstFontsMS"><value/></prop>
+        </node>
+        <node oor:name="liberationserif">
+          <prop oor:name="SubstFontsMS"><value/></prop>
+        </node>
+      </node>
+    </node>
+  </oor:component-data>
+</oor:data>
