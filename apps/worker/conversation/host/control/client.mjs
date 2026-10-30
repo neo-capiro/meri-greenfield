@@ -6,6 +6,7 @@ import {performance} from 'node:perf_hooks';
 import {canonicalSha256} from '../../../../../packages/contracts/validate.mjs';
 import {data,nativeSignal} from '../../../../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {validateSiteWorkflowManifest} from '../../browser/site-workflows/manifest.mjs';
+import {assertSiteWorkflowSelection} from '../../../../../packages/contracts/site-workflow-selection.mjs';
 import {validateBrowserPolicy} from '../../browser/policy.mjs';
 import {assertHostAllocation,assertHostRunBinding,assertD005HostIdentity,MAX_HOST_CURRENTNESS_MS} from '../binding.mjs';
 import {assertBrowserHostFacts} from '../../../../../packages/contracts/runtime-0.2/browser-host-facts.mjs';
@@ -86,6 +87,21 @@ export function createHostCurrentnessClient({allocation,binding,hostIdentity,pur
   return decodeHostControl(raw,maxResponse);
  }
  const nonce=()=>randomBytes(32).toString('hex');
+ /** One bounded, canonical facts exchange. readFacts and the workflow maximum policy BOTH use this, so the
+  * two paths can never observe different host identity, allocation or freshness semantics. */
+ async function factsExchange(signal){
+  localCertificate();
+  const request=hostFactsRequest({schema:'meri-host-facts-request/1',allocation:a,binding:b,hostIdentity:i,nonce:nonce()});
+  const response=await perform(HOST_FACTS_PATH,request,HOST_FACTS_WIRE_MAX_BYTES,HOST_FACTS_WIRE_MAX_BYTES,signal);
+  const answer=hostFactsResponse(response,request);
+  // A valid envelope nonce is not enough: the DOMAIN payload must validate against the canonical facts
+  // contract for THIS exact binding, and its fresh cutoff must still be in the future.
+  if(!fresh(answer,now(),maxFreshMs))fail();
+  const facts=assertBrowserHostFacts(answer.facts,{binding:b});
+  // The INNER payload must still be live too: an outer envelope cannot rescue an expired document.
+  if(facts.currentUntilMs<=now()||facts.deadlineMs<=now())fail();
+  return answer;
+ }
  return Object.freeze({
   async readCurrent({allocation:requestedAllocation,binding:requestedBinding,policySha256,signal}={}){
    try{
@@ -126,7 +142,13 @@ export function createHostCurrentnessClient({allocation,binding,hostIdentity,pur
     if(!policy)fail(); // no active browser policy: no canonical workflow can be admitted
     const manifest=validateSiteWorkflowManifest(data(workflow.manifest),
      {platformMaximumOrigins:validateBrowserPolicy(data(policy)).allowedOrigins});
-    if(canonicalSha256(manifest)!==workflow.manifestSha256)fail();
+    // The SAVED canonical selection (from the same fresh facts) is the only thing that admits this
+    // manifest: no selection, a foreign site/workflow/version or a changed digest is refused.
+    if(facts.facts.siteWorkflow===undefined)fail();
+    const pinned=assertSiteWorkflowSelection(data(facts.facts.siteWorkflow));
+    if(manifest.siteId!==pinned.siteId||manifest.workflowId!==pinned.workflowId||
+     manifest.version!==pinned.version)fail();
+    if(canonicalSha256(manifest)!==pinned.manifestSha256||workflow.manifestSha256!==pinned.manifestSha256)fail();
     if(!fresh(answer,now(),maxFreshMs))fail();
     return Object.freeze({...answer,workflow:Object.freeze({...workflow,manifest})});
    }catch{fail();}
