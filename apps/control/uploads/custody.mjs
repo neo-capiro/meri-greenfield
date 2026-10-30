@@ -89,7 +89,7 @@ export function createUploadCustody({store,objects,inspection,current,retention,
    // The inspected host receives a PRIVATE, immutable snapshot of what authority was current for this call.
    // It can only use it through `assertCurrent`, which re-runs the SAME authority+retention owner and the
    // same upload read; nothing here is serializable state and no credential is exposed.
-   const record=Object.freeze({...r}),scopes=Object.freeze(current.scopes.map(scope=>Object.freeze({...scope})));
+   const record=Object.freeze(data(r)),scopes=Object.freeze(current.scopes.map(scope=>Object.freeze({...scope})));
    const pinned=Object.freeze({binding:Object.freeze({...binding}),scopes,selectedClientId:current.selectedClientId});
    const custodyContext=Object.freeze({record,current:Object.freeze({...current,binding:pinned.binding,scopes}),
     assertCurrent:async()=>{
@@ -98,7 +98,7 @@ export function createUploadCustody({store,objects,inspection,current,retention,
      if(!latest||!equal(latest.binding,pinned.binding)||!equal(latest.scopes,pinned.scopes)||
       latest.selectedClientId!==pinned.selectedClientId)fail('UPLOAD_AUTHORITY_CHANGED');
      const again=await read(r.uploadId);
-     if(uploadHash(again)!==uploadHash(r))fail('UPLOAD_CHANGED');
+     if(hash(again)!==hash(record))fail('UPLOAD_CHANGED');
      life.check();
      return latest;
     }});
