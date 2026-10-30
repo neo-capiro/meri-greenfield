@@ -73,6 +73,23 @@ export function createPostgresHostCurrentnessStore({transact,readCanonicalRun,re
   return ms(times[0].now_ms);
  }
  const cutoff=(nowMs,a,h,stateUntilMs)=>Math.min(nowMs+maxLeaseMs,ms(stateUntilMs),ms(h.client_cert_not_after_ms),a.leaseDeadlineMs);
+/** The identities that must not change across the resolver call. Deliberately EXCLUDES the derived
+ * currentUntilMs (Core expiry legitimately advances with the clock) while keeping every immutable
+ * custody/handoff field, including their own expiry timestamps. */
+const stableProjection=state=>({binding:state.binding,browserPolicySha256:state.browserPolicySha256,
+ capabilityPolicySha256:state.capabilityPolicySha256,sdkAdmitted:state.sdkAdmitted,browserAdmitted:state.browserAdmitted,
+ bashAdmitted:state.bashAdmitted,phase:state.phase,
+ ...(state.browserCustody===undefined?{}:{browserCustody:state.browserCustody}),
+ ...(state.browserSuccessor===undefined?{}:{browserSuccessor:state.browserSuccessor})});
+/** Browser authority phases the canonical custody chain already authorizes. SDK and Bash stay false for
+ * the held and successor phases; only the ACTIVE phase admits them. */
+const permittedPhase=state=>state.phase==='active'
+ ?state.sdkAdmitted===true
+ :state.phase==='browser-held'
+  ?state.sdkAdmitted===false&&state.bashAdmitted===false&&state.browserCustody!==undefined
+  :state.phase==='browser-successor'
+   ?state.sdkAdmitted===false&&state.bashAdmitted===false&&state.browserSuccessor!==undefined
+   :false;
 
  return Object.freeze({
   async readCurrent({request,fingerprintSha256,peerDnsName,signal}={}){
@@ -146,9 +163,16 @@ export function createPostgresHostCurrentnessStore({transact,readCanonicalRun,re
      const {a,b,h}=await admit(client,{request:q,fingerprintSha256,peerDnsName,signal});
      const state=own(data(await readCanonicalRun(client,{allocation:a,binding:b,signal})),
       ['binding','browserPolicySha256','capabilityPolicySha256','sdkAdmitted','browserAdmitted','bashAdmitted','phase','currentUntilMs'],['browserCustody','browserSuccessor']);
-     if(!same(state.binding,b)||state.phase!=='active'||state.browserAdmitted!==true)fail();
+     // The canonical custody chain authorizes the held and successor phases for browser work; SDK and
+     // Bash stay denied there. Hold verification itself remains strict and separate.
+     if(!same(state.binding,b)||state.browserAdmitted!==true||!permittedPhase(state))fail();
+     if(state.phase==='browser-held'){const custody=assertBrowserCustody(state.browserCustody,{binding:b});
+      if(custody.hostId!==a.hostId||custody.generation!==a.generation)fail();}
+     // Pre-admission validity at THIS database clock: expired authority never reaches the Core resolver.
+     const beforeMs=await clock(client);
+     if(beforeMs>=cutoff(beforeMs,a,h,state.currentUntilMs)||beforeMs>=a.leaseDeadlineMs)fail();
      await consume(client,a,q.nonce);
-     return {q,a,b,h,stateSha256:canonicalSha256(data(state))};
+     return {q,a,b,h,stateSha256:canonicalSha256(stableProjection(state))};
     },{signal,readOnly:false});
     // No transaction, lock or connection is held while the Core domain read runs.
     workflow=await resolveWorkflow({binding:admitted.b,signal});
@@ -159,8 +183,10 @@ export function createPostgresHostCurrentnessStore({transact,readCanonicalRun,re
      if(!same(a,admitted.a)||!same(b,admitted.b))fail();
      const fresh=own(data(await readCanonicalRun(client,{allocation:a,binding:b,signal})),
       ['binding','browserPolicySha256','capabilityPolicySha256','sdkAdmitted','browserAdmitted','bashAdmitted','phase','currentUntilMs'],['browserCustody','browserSuccessor']);
-     // A post-read authority change (phase, scopes, custody or cutoffs) refuses the answer.
-     if(canonicalSha256(data(fresh))!==admitted.stateSha256||fresh.phase!=='active'||fresh.browserAdmitted!==true)fail();
+     // A post-read authority change refuses the answer; a clock-advanced but otherwise identical
+     // authority does not, because the derived cutoff is compared per observation, not hashed.
+     if(canonicalSha256(stableProjection(fresh))!==admitted.stateSha256||fresh.browserAdmitted!==true||
+      !permittedPhase(fresh))fail();
      const nowMs=await clock(client),untilMs=cutoff(nowMs,a,h,fresh.currentUntilMs);
      if(signal?.aborted||nowMs>=untilMs||nowMs>=a.leaseDeadlineMs)fail();
      return Object.freeze(hostWorkflowResponse({schema:HOST_WORKFLOW_RESPONSE_SCHEMA,nonce:admitted.q.nonce,workflow,
