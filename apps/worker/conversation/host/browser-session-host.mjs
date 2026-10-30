@@ -30,7 +30,7 @@ export function createBrowserSessionHost({binding,cwd,installation,upstream,cont
   opened=true;const policy=validateBrowserPolicy(q.policy),manifest=q.manifest===null?null:validateSiteWorkflowManifest(q.manifest,{platformMaximumOrigins:policy.allowedOrigins});
   if(manifest?.logoutUrl&&typeof contexts.logout!=='function')fail('BROWSER_CONFIGURATION');
   let context,session,modelRelay,userRelay,closing,workflow,custody,retained=false,captured=false,pendingResume,preparingResume;
-  let run=q,runInstallation=installed,runPorts={relay,modelTransport,controls,retirement,hold},adopting=false,resume,activation;
+  let run=q,runInstallation=installed,runPorts={relay,modelTransport,controls,retirement,hold},adopting=false,retiringRelays=false,resume,activation;
   const assertCurrent=async signal=>{
    const receipt=await current({binding:q.binding,signal});
    if(run!==q){const handoff=assertBrowserHandoff(receipt?.browserHandoff);
@@ -75,7 +75,7 @@ export function createBrowserSessionHost({binding,cwd,installation,upstream,cont
    userRelay=await runPorts.controls.bind({binding:run.binding,pages:guarded(()=>context.pages()),controls:{
     readState:guarded(session.readState),takeover:guarded(session.takeover),prepareResume:guarded(session.prepareResume),
     view:guarded(session.view),userInput:guarded(session.userInput),handBack:guarded(session.handBack),
-    endLease:guarded(session.endLease),destroy:guarded(close)}});
+    endLease:guarded(reason=>retiringRelays&&session.state().state==='returning'?session.state():session.endLease(reason)),destroy:guarded(close)}});
    if(closing){await userRelay.close();fail('BROWSER_SESSION_CLOSED');}
    if(typeof userRelay?.close!=='function')fail('BROWSER_RELAY_REFUSED');
    return expected;
@@ -165,13 +165,16 @@ export function createBrowserSessionHost({binding,cwd,installation,upstream,cont
       selection:{siteId:manifest.siteId,workflowId:manifest.workflowId,version:manifest.version,manifestSha256:canonicalSha256(manifest)},
       resolve:value=>siteWorkflows.resolve(value),signal});
      if(nextWorkflow&&canonicalSha256(nextWorkflow.policy)!==canonicalSha256(policy))fail('BROWSER_WORKFLOW_POLICY_REFUSED');
-     await modelRelay.close();await userRelay.close();signal?.throwIfAborted();
+     // The old viewer's close ends its transport lease. The canonical hand-back
+     // already did that; do not discard the exact prepared snapshot while
+     // retiring this expected old relay.
+     retiringRelays=true;await modelRelay.close();await userRelay.close();retiringRelays=false;signal?.throwIfAborted();
      const snapshot=pendingResume.snapshot;
      run=next;runInstallation=nextInstallation;runPorts=ports;workflow=nextWorkflow;
      resume={snapshot,handoff};activation=undefined;custody=undefined;retained=false;captured=false;pendingResume=undefined;preparingResume=undefined;
      const expected=await bindRelays();await assertCurrent(signal);
      if(closing)fail('BROWSER_SESSION_CLOSED');active=handle(expected,snapshot);return active;
-    }catch(error){await close({trigger:'disconnect'});throw error;}finally{adopting=false;}
+    }catch(error){await close({trigger:'disconnect'});throw error;}finally{adopting=false;retiringRelays=false;}
    };
    active=handle(expected);return active;
   }catch(error){

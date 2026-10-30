@@ -79,7 +79,7 @@ try{
  const awaitEmpty=async path=>{for(let n=0;;n++){if(/^populated 0$/m.test(await readFile(path+'/cgroup.events','utf8')))return;assert.ok(n<150);await new Promise(r=>setTimeout(r,20));}};
  const sessionHost=createBrowserSessionHost({binding,cwd,installation,allocation,ownerInstanceId:randomUUID(),upstream:pinnedBrowserUpstream(installation),now:Date.now,
   contexts:{async create(input){context=await contexts.create(input);return context;}},current:fixtureCurrent,hold:async()=>({outcome:applied?'APPLIED':'PENDING'}),
-  modelTransport:{readable:broker.stdio[6],writable:broker.stdio[6]},controls:{async bind(input){user=input.controls;return {async close(){}};}},
+  modelTransport:{readable:broker.stdio[6],writable:broker.stdio[6]},controls:{async bind(input){user=input.controls;return {async close(){try{input.controls.endLease('viewer-disconnect');}catch{}}};}},
   processes:{async waitForExit(){await contexts.close();await writeFile(browserGroup+'/cgroup.kill','1');await awaitEmpty(browserGroup);return {exited:true};}},
   dispose:input=>disposeBrowserState(input.paths,{signal:input.signal}),
   retirement:{async prepare(){observer=createSdkChildQuiescenceObserver({allocation,binding,hostIdentity,timeoutMs:5000});await observer.arm({sdkLeaderPid:child.pid});},
@@ -148,7 +148,7 @@ try{
  stage='successor-adoption';
  server=await retainedHost.adopt({binding:target,policy,deadlineMs:custody.expiresAtMs,manifest:null,handoff:canonicalHandoff},{
   installation:nextInstallation,modelTransport:{readable:broker.stdio[6],writable:broker.stdio[6]},
-  controls:{async bind(input){user=input.controls;return {async close(){}};}},hold:async()=>({outcome:'APPLIED'}),
+  controls:{async bind(input){user=input.controls;return {async close(){try{input.controls.endLease('viewer-disconnect');}catch{}}};}},hold:async()=>({outcome:'APPLIED'}),
   retirement:{async prepare(){observer=createSdkChildQuiescenceObserver({allocation,binding:target,hostIdentity,timeoutMs:5000});await observer.arm({sdkLeaderPid:child.pid});},
    async wait(){broker.kill('SIGKILL');await brokerExit;assert.equal((await observer.waitQuiescent()).quiescent,true);},async retain(){await fixtureCurrent();}}});
  assert.equal(canonicalSha256(server.resumeSnapshot),returned.snapshotSha256);

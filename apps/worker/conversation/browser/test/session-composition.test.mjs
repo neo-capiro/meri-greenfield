@@ -311,7 +311,7 @@ test('canonical successive handoffs retain one context and filter while replacin
  const native=target=>({installation:installationFor(target),hold:async()=>({outcome:'APPLIED'}),
   retirement:{async prepare(){events.push('prepare');},async wait(){events.push('absent');},async retain(){events.push('retain');}},
   relay:{async bind(input){models.push(input);return {mcpServers:{meri_browser:playwrightServerConfig(x.args.policy,installationFor(target),browserPaths(cwd))},async close(){events.push('model-close');}};}},
-  controls:{ownerInstanceId,async bind(input){viewers.push(input);return {async close(){events.push('viewer-close');}};}}});
+  controls:{ownerInstanceId,async bind(input){viewers.push(input);return {async close(){try{input.controls.endLease('viewer-disconnect');}catch{}events.push('viewer-close');}};}}});
  const first=native(binding),host=createBrowserSessionHost({binding,cwd,...first,allocation,ownerInstanceId,upstream:x.upstream,now:Date.now,
   contexts:{async create(){creations++;return x.context;}},current:async()=>{await x.args.current();return {browserHandoff:canonical};},
   processes:{waitForExit:x.args.ports.waitForExit},dispose:x.args.ports.dispose});
