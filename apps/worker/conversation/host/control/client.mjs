@@ -13,7 +13,8 @@ import {HOST_CONTROL_PATH,HOST_CONTROL_MAX_BYTES,HOST_CONTROL_PURPOSES,
  hostFactsRequest,hostFactsResponse,HOST_FACTS_PATH,HOST_FACTS_WIRE_MAX_BYTES,
  hostWorkflowRequest,hostWorkflowResponse,HOST_WORKFLOW_PATH,HOST_WORKFLOW_WIRE_MAX_BYTES,
  hostHoldRequest,hostHoldResponse,HOST_HOLD_PATH,HOST_HOLD_WIRE_MAX_BYTES,
- hostClientDnsName,makeHostControlRequest,hostControlResponse,encodeHostControl,decodeHostControl} from './protocol.mjs';
+ hostClientDnsName,makeHostControlRequest,hostControlResponse,encodeHostControl,decodeHostControl,
+ hostDecideRequest,hostDecideResponse,HOST_DECIDE_PATH,HOST_DECIDE_WIRE_MAX_BYTES} from './protocol.mjs';
 
 const fail=()=>{throw Object.assign(new Error('HOST_CONTROL_UNAVAILABLE'),{code:'HOST_CONTROL_UNAVAILABLE'});};
 const same=(a,b)=>canonicalSha256(a)===canonicalSha256(b);
@@ -61,8 +62,8 @@ export function createHostCurrentnessClient({allocation,binding,hostIdentity,pur
  try{localCertificate();}catch{fail();}
  /** One bounded, pinned exchange. The path, request and response bounds are fixed by the caller below;
    * nothing derived from a request, tool call or peer answer can select another endpoint. */
- async function perform(path,request,maxResponse,signal){
-  const bytes=encodeHostControl(request,maxResponse),cutoff=Math.min(timeoutMs,a.leaseDeadlineMs-now());
+ async function perform(path,request,maxResponse,signal,budgetMs=timeoutMs){
+  const bytes=encodeHostControl(request,maxResponse),cutoff=Math.min(budgetMs,a.leaseDeadlineMs-now());
   if(cutoff<1)fail();const started=performance.now();
   const timeout=AbortSignal.timeout(cutoff),combined=AbortSignal.any([lifetime.signal,timeout,...(signal?[signal]:[])]);
   const raw=await new Promise((resolve,reject)=>{
@@ -145,6 +146,28 @@ export function createHostCurrentnessClient({allocation,binding,hostIdentity,pur
     if(custody.hostId!==a.hostId||custody.generation!==a.generation)fail();
     if(custody.expiresAtMs<=now())fail();
     return answer;
+   }catch{fail();}
+  },
+  /** The ONE named approval exchange. The caller passes only the ORIGINAL request/3 it captured; this
+   * client pins its own allocation, host identity, nonce and an ABSOLUTE deadline derived from the original
+   * window, the lease and the local certificate. Only a canonical approved receipt maps to a permit. */
+  async decideBrowserApproval(originalRequest,{signal}={}){
+   try{
+    nativeSignal(signal);
+    if(closed||signal?.aborted)fail();
+    const local=localCertificate();
+    const request=hostDecideRequest({schema:'meri-host-decide-request/1',allocation:a,binding:b,hostIdentity:i,
+     nonce:nonce(),request:originalRequest,
+     deadlineMs:Math.min(originalRequest.expiresAtMs,a.leaseDeadlineMs,local.notAfterMs)});
+    if(closed||signal?.aborted)fail();
+    const response=await perform(HOST_DECIDE_PATH,request,HOST_DECIDE_WIRE_MAX_BYTES,signal,
+     request.deadlineMs-now());
+    // The third argument is the ACTUAL observation clock: the receipt is judged at this instant.
+    const answer=hostDecideResponse(response,request,now());
+    if(answer.outcome==='approved')return Object.freeze({permitted:true,receipt:answer.receipt,
+     checkedAtMs:answer.checkedAtMs,currentUntilMs:answer.currentUntilMs});
+    return Object.freeze({permitted:false,outcome:answer.outcome,checkedAtMs:answer.checkedAtMs,
+     currentUntilMs:answer.currentUntilMs});
    }catch{fail();}
   },
   close(){if(!closed){closed=true;lifetime.abort();}return Object.freeze({closed:true});},

@@ -202,7 +202,7 @@ const permittedPhase=state=>state.phase==='active'
    * transaction held; a SECOND short transaction re-authenticates and requires the stable canonical authority
    * to be unchanged before any canonical receipt is released. Only an approved canonical receipt is
    * permission — every other answer is a closed non-permissive outcome. */
-  async decideBrowserApproval({request,fingerprintSha256,peerDnsName,signal}={}){
+  async decideBrowserApproval({request,fingerprintSha256,peerDnsName,signal,onAdmitted}={}){
    let admitted,answer;
    try{
     if(typeof decideBrowserApproval!=='function')fail();
@@ -227,6 +227,8 @@ const permittedPhase=state=>state.phase==='active'
      return {q,a,b,h,effectiveDeadline,stateSha256:canonicalSha256(stableProjection(state))};
     },{signal,readOnly:false});
     if(signal?.aborted)fail();
+    // The admission transaction is closed; the trusted server may now extend only THIS request's lifetime.
+    if(typeof onAdmitted==='function')onAdmitted(admitted.effectiveDeadline);
     // No transaction, lock or connection is held across the approval wait.
     answer=await decideBrowserApproval({request:admitted.q.request,binding:admitted.b,signal,
      deadlineMs:admitted.effectiveDeadline});
