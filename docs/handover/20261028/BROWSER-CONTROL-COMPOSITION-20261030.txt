@@ -69,6 +69,21 @@ their owners.
 * Still missing, with exact owner paths in EARLY-CORE-GAP-07: Core browser-subject decision + one-time
   consumption, artifact publication-authority issuer, lifecycle receipt writer, custody hold adapter.
 
+## Lifecycle cleanup (08)
+
+* `assembleControl` guards every constructor after the browser/session owners with ONE owned cleanup, so a
+  late failure (e.g. `uploadApplicationFactory.createSource`) retires the browser composition and the
+  session owner instead of leaking them; the browser-constructor catch uses the same path.
+* `startControl` accumulates cleanup failures and always runs the remaining teardown, so a rejecting
+  `controlCleanup` no longer skips pool/Temporal/candidate close.
+* Proved by tests: rejecting-`controlCleanup` through the real `startControl` (both failures preserved,
+  every teardown run, no orphaned rejection), a real late constructor failure after session/browser
+  creation, and the declared host-currentness listener start/close/failure/abort paths against the real
+  `createHostCurrentnessServer` with only its `node:https` boundary replaced by a mock module.
+* Still not implemented, and deliberately not attempted here: the browser approval / artifact ingest /
+  receipt / hold callbacks. Their canonical callers are in CANONICAL-CALLER-CONTRACT-20261030.txt; the
+  rejected `recordReceipt` proposal and any manually chained hold are withdrawn.
+
 ## Verification (local, in-process)
 
 See `HANDOFF-04.txt` beside the session outputs for exact commands, logs and results.
