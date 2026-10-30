@@ -463,7 +463,9 @@ export function createProcessingCommandLauncher({allocation,binding,hostIdentity
    try{child.kill('SIGKILL');killed=true;}catch{}
    const gone=child.exitCode!==null&&child.exitCode!==undefined||child.signalCode!==null&&child.signalCode!==undefined;
    const settled=gone?true:await new Promise(resolve=>{
-    const timer=setTimeout(()=>resolve(false),Math.max(1,Math.min(remaining(),5000)));
+    // Bounded settlement independent of the caller deadline: after expiry remaining() throws and would discard the
+    // cleanup result, so use a fixed bounded wait here instead.
+    const timer=setTimeout(()=>resolve(false),5000);
     const done=()=>{clearTimeout(timer);resolve(true);};
     child.once?.('exit',done);child.once?.('close',done);
    });

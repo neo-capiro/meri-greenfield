@@ -1,58 +1,71 @@
-/** Production composition of the native processing host.
+/** Production composition and CLI main for the native processing host.
  *
- * Startup: validated owner configuration -> private pinned TLS1.3 listener with an exact short-lived Control peer SAN and
- * certificate fingerprint (existing `control/tls.mjs` validators; key material comes from the existing credential owner and
- * is never read or generated here) -> one finite processing placement (root bootstrap) -> the closed authenticated
- * inspection handler. No SDK, model proxy, provider environment or arbitrary command RPC exists on this host.
+ * Reads validated owner configuration, loads TLS key/cert/CA from the existing credential/provisioning owner's paths,
+ * starts a TLS1.3 server that requires a client certificate and checks the exact Control peer SAN, fingerprint and
+ * certificate validity against the bootstrap configuration (never from JSON), and handles the closed
+ * POST /internal/upload-inspection through the CAP bootstrap.
  *
- * Parent-owned pieces are referenced, not copied: the canonical allocation/currentness/custody envelope
- * (`authorize`, see service.mjs) and the CONTROL caller. Until Parent supplies that exact module, `startNativeProcessingHost`
- * keeps the listener closed and reports the missing import — it never falls back to an unauthenticated or unallocated path.
+ * The Parent canonical custody validator is NOT yet exported; while it is absent the host starts no listener and reports
+ * the exact missing module. No injected positive parent object is used as a stand-in for production.
  */
 import {readFileSync} from 'node:fs';
 import {createServer} from 'node:https';
 import {nativeProcessingConfig} from './config.mjs';
 import {createInspectionHandler,NATIVE_INSPECTION_PATH} from './service.mjs';
-import {fingerprint,sha256Der} from '../../worker/conversation/host/control/tls.mjs';
-import {loadParentJoin,PARENT_JOIN_MODULE} from './parent-join.mjs';
-import {runFixedInspection} from './inspection-child.mjs';
+import {openNativeProcessingHost} from './bootstrap.mjs';
+import {checkedCertificate,dnsName,fingerprint,privateAddress,sha256Der,tlsBytes} from '../../worker/conversation/host/control/tls.mjs';
 
-export function nativeProcessingReadiness({config,parent}){
+/** Parent-owned module that must exist before production can serve. */
+export const PARENT_CUSTODY_MODULE='apps/control/native-processing/custody-authority.mjs';
+export const PARENT_CUSTODY_EXPORTS=Object.freeze(['verifyNativeInspectionCustody({allocation,hostIdentity,binding,custody,request,peer,deadlineMs}) -> {authorized,allocation,binding,hostIdentity,currentness}']);
+
+export function nativeProcessingReadiness({config,verifyCustody}){
  const missing=[];
  if(config===null||typeof config!=='object')missing.push('configuration');
- if(parent?.authorize?.available!==true)missing.push(`parent.authorize:${PARENT_JOIN_MODULE}`);
- if(parent?.placement?.available!==true)missing.push(`parent.placement:${PARENT_JOIN_MODULE}`);
- return Object.freeze({ready:missing.length===0,missing:Object.freeze(missing),endpoint:NATIVE_INSPECTION_PATH});
+ if(typeof verifyCustody!=='function')missing.push(`parent.custody:${PARENT_CUSTODY_MODULE}`);
+ return Object.freeze({ready:missing.length===0,missing:Object.freeze(missing),endpoint:NATIVE_INSPECTION_PATH,
+  export:PARENT_CUSTODY_EXPORTS});
 }
 
-/** Exact Parent import needed (see HANDBACK-13): a module exporting
- *  - `authorize({requestId,imageDigest,declarationId,deadlineMs,signal}) -> {authorized:true,allocation,binding,currentness}`
- *  - `openPlacement({allocation,binding,hostIdentity,signal}) -> {placement,network,close}`
- *  Anything else is refused; nothing is synthesized from upload content. */
-export async function startNativeProcessingHost({env=globalThis.process?.env??{},readFile=readFileSync,parent=loadParentJoin()}={}){
+export async function startNativeProcessingHost({env=globalThis.process?.env??{},readFile=readFileSync,
+ verifyCustody=undefined,openHost=openNativeProcessingHost}={}){
  const config=nativeProcessingConfig({env});
- const readiness=nativeProcessingReadiness({config,parent});
+ const readiness=nativeProcessingReadiness({config,verifyCustody});
  if(!readiness.ready)return Object.freeze({started:false,readiness});
- const key=readFile(config.tls.keyPath),cert=readFile(config.tls.certPath);
- const placement=parent.placement;
+ const key=tlsBytes(readFile(config.tls.keyPath)),cert=tlsBytes(readFile(config.tls.certPath)),ca=tlsBytes(readFile(config.tls.caPath));
+ privateAddress(config.listen.address);dnsName(config.tls.peerSan);
+ checkedCertificate(ca,{name:config.tls.peerSan,nowMs:Date.now()});
  const handler=createInspectionHandler({
   authenticate:async({socket})=>{
-   const raw=socket.getPeerCertificate(true);
-   const der=raw?.raw;
-   if(!Buffer.isBuffer(der))return {verified:false};
-   const print=sha256Der(der);
+   if(socket.encrypted!==true)return {verified:false};
+   const raw=socket.getPeerCertificate?.(true);
+   if(!raw||!Buffer.isBuffer(raw.raw))return {verified:false};
+   const print=sha256Der(raw.raw);
    if(fingerprint(print)!==config.tls.peerFingerprint)return {verified:false};
-   return {verified:true,fingerprintSha256:print};
+   const checked=checkedCertificate(raw.raw,{name:config.tls.peerSan,nowMs:Date.now(),
+    maxLifetimeMs:config.tls.maxPeerLifetimeMs,notAfterMs:config.tls.peerNotAfterMs});
+   return {verified:true,fingerprintSha256:checked.fingerprintSha256};
   },
-  runInspection:({request,deadlineMs})=>runFixedInspection({placement,config,deadlineMs,bytes:request.bytes,
-   file:request.file}),
-  readBody:async(req,limit)=>new Promise((resolve,reject)=>{
+  verifyCustody,
+  openHost:({allocation,binding,hostIdentity,authority,deadlineMs})=>openHost({config,allocation,binding,hostIdentity,
+   authority,deadlineMs}),
+  readBody:(req,limit,deadline)=>new Promise((resolve,reject)=>{
    let total=0;const chunks=[];
-   req.on('data',chunk=>{total+=chunk.length;if(total>limit){reject(Object.assign(Error('NATIVE_INSPECTION_REQUEST'),{code:'NATIVE_INSPECTION_REQUEST'}));req.destroy();}else chunks.push(chunk);});
-   req.on('end',()=>resolve(Buffer.concat(chunks)));req.on('error',reject);
+   const finish=(error,value)=>{clearTimeout(timer);error?reject(error):resolve(value);};
+   const timer=setTimeout(()=>{req.destroy();finish(Object.assign(Error('UPLOAD_INSPECTION_REQUEST_REFUSED'),{code:'UPLOAD_INSPECTION_REQUEST_REFUSED'}));},
+    Math.max(1,deadline-Date.now()));
+   req.on('data',chunk=>{total+=chunk.length;
+    if(total>limit){req.destroy();finish(Object.assign(Error('UPLOAD_INSPECTION_REQUEST_REFUSED'),{code:'UPLOAD_INSPECTION_REQUEST_REFUSED'}));return;}
+    chunks.push(chunk);});
+   req.on('end',()=>finish(null,Buffer.concat(chunks)));req.on('error',finish);
   }),
   limits:{deadlineMaxMs:config.limits.deadlineMaxMs,bodyBytes:config.limits.bodyBytes}});
- const server=createServer({key,cert,minVersion:'TLSv1.3',requestCert:true,rejectUnauthorized:true},handler);
+ const server=createServer({key,cert,ca,minVersion:'TLSv1.3',maxVersion:'TLSv1.3',requestCert:true,rejectUnauthorized:true},handler);
  await new Promise((resolve,reject)=>{server.once('error',reject);server.listen(config.listen.port,config.listen.address,resolve);});
- return Object.freeze({started:true,server,readiness,close:()=>new Promise(resolve=>server.close(()=>resolve({closed:true})))});
+ const active=new Set();
+ return Object.freeze({started:true,server,readiness,
+  close:()=>new Promise(resolve=>{
+   const timer=setTimeout(()=>resolve({closed:false,code:'NATIVE_PROCESSING_CLEANUP_UNKNOWN'}),Math.max(1,config.limits.deadlineMaxMs));
+   server.close(()=>{clearTimeout(timer);resolve({closed:true,pending:active.size});});
+  })});
 }

@@ -11,17 +11,30 @@ const absolute=value=>{
 };
 const integer=(value,min,max)=>{if(!Number.isSafeInteger(value)||value<min||value>max)fail();return value;};
 const text=(value,re)=>{if(typeof value!=='string'||!re.test(value))fail();return value;};
+/** Private listen address with canonical octets: loopback or RFC1918, never a public or malformed address. */
+const privateListen=value=>{
+ const parts=typeof value==='string'?value.split('.'):[];
+ if(parts.length!==4||parts.some(part=>!/^(0|[1-9][0-9]{0,2})$/u.test(part)||Number(part)>255))fail();
+ const [a,b]=parts.map(Number);
+ const isLoopback=parts.every(part=>Number(part)<=255)&&a===127;
+ const isPrivate=a===10||(a===172&&b>=16&&b<=31)||(a===192&&b===168);
+ if(!isLoopback&&!isPrivate)fail();
+ return value;
+};
 
 /** @param {{env:Record<string,string|undefined>}} input */
 export function nativeProcessingConfig({env=globalThis.process?.env??{}}={}){
  const get=name=>env[name]===undefined||env[name]===''?undefined:env[name];
  const config=Object.freeze({
-  listen:Object.freeze({address:text(get('MERI_NATIVE_PROCESSING_ADDRESS')??'127.0.0.1',/^(?:127\.0\.0\.1|10\.\d{1,3}\.\d{1,3}\.\d{1,3}|172\.(?:1[6-9]|2\d|3[01])\.\d{1,3}\.\d{1,3}|192\.168\.\d{1,3}\.\d{1,3})$/u),
+  listen:Object.freeze({address:privateListen(get('MERI_NATIVE_PROCESSING_ADDRESS')??'127.0.0.1'),
    port:integer(Number(get('MERI_NATIVE_PROCESSING_PORT')),1024,65535)}),
   tls:Object.freeze({keyPath:absolute(get('MERI_NATIVE_PROCESSING_TLS_KEY')),
    certPath:absolute(get('MERI_NATIVE_PROCESSING_TLS_CERT')),
+   caPath:absolute(get('MERI_NATIVE_PROCESSING_TLS_CA')),
    peerSan:text(get('MERI_NATIVE_PROCESSING_PEER_SAN'),/^[a-z0-9][a-z0-9.-]{2,252}$/u),
-   peerFingerprint:text(get('MERI_NATIVE_PROCESSING_PEER_FINGERPRINT'),HEX64)}),
+   peerFingerprint:text(get('MERI_NATIVE_PROCESSING_PEER_FINGERPRINT'),HEX64),
+   maxPeerLifetimeMs:integer(Number(get('MERI_NATIVE_PROCESSING_PEER_MAX_LIFETIME_MS')),1000,900000),
+   peerNotAfterMs:integer(Number(get('MERI_NATIVE_PROCESSING_PEER_NOT_AFTER_MS')),1,Number.MAX_SAFE_INTEGER)}),
   image:Object.freeze({digest:text(get('MERI_NATIVE_PROCESSING_IMAGE_DIGEST'),DIGEST)}),
   allocation:Object.freeze({hostId:text(get('MERI_NATIVE_PROCESSING_HOST_ID'),UUID),
    generation:integer(Number(get('MERI_NATIVE_PROCESSING_GENERATION')),1,999999999),
@@ -33,7 +46,7 @@ export function nativeProcessingConfig({env=globalThis.process?.env??{}}={}){
    pidsMax:integer(Number(get('MERI_NATIVE_PROCESSING_PIDS_MAX')),1,4096),
    deadlineMaxMs:integer(Number(get('MERI_NATIVE_PROCESSING_DEADLINE_MAX_MS')),1000,60000),
    bodyBytes:integer(Number(get('MERI_NATIVE_PROCESSING_BODY_BYTES')),1024,100000000)}),
-  paths:Object.freeze({helperPath:absolute(get('MERI_NATIVE_PROCESSING_HELPER')),
+  paths:Object.freeze({helperPath:absolute(get('MERI_NATIVE_PROCESSING_HELPER')),nodePath:absolute(get('MERI_NATIVE_PROCESSING_NODE')),
    home:absolute(get('MERI_NATIVE_PROCESSING_HOME')),browsersPath:absolute(get('MERI_NATIVE_PROCESSING_HOME')),
    definitionsRoot:absolute(get('MERI_NATIVE_PROCESSING_DEFINITIONS')),
    extractorPath:absolute(get('MERI_NATIVE_PROCESSING_EXTRACTOR')),

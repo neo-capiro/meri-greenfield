@@ -1,69 +1,77 @@
-/** One private authenticated fixed upload-inspection operation on the native processing host.
+/** One private, authenticated fixed upload-inspection operation on the native processing host.
  *
- * `POST /internal/upload-inspection` over pinned TLS1.3 with an exact Control peer SAN and certificate fingerprint. The body
- * is a CLOSED request: requestId, the declared image digest and the original bytes (+ optional allowlisted format). It can
- * never carry a command, argv, cwd, environment, program, plugin or model/provider selection. Root bootstrap owns
- * privilege; the inspection child runs as the configured UID1000 under the finite placement.
- *
- * The canonical allocation/currentness envelope is Parent-owned and is NOT invented here: `authorize` is the exact
- * injected owner API `authorize({requestId,imageDigest,declarationId,deadlineMs,signal}) -> {authorized:true,...}` that
- * Parent will supply. Until it is bound, this service refuses every request.
+ * Wire body (Parent-owned canonical envelope, final validator NOT yet exported):
+ *   {schema:'meri-native-upload-inspection/1', allocation, hostIdentity, binding, custody, request}
+ * `request` is the EXISTING closed upload-inspection request, validated unchanged by `uploadInspectionRequest`; `custody`
+ * is Parent's closed projection of saved upload identity/scopes/currentness. This module never invents a RunBinding, never
+ * derives one from upload content, and never treats the TLS pin as authorization: without the canonical verifier the
+ * handler refuses with NATIVE_INSPECTION_CUSTODY_UNBOUND.
  */
-import {createHash} from 'node:crypto';
+import {uploadInspectionRequest,uploadInspectionBody,uploadInspectionResult,uploadInspectionFault} from '../uploads/agentcore-contract.mjs';
 
-export const NATIVE_INSPECTION_PATH='/internal/upload-inspection';
 export const NATIVE_INSPECTION_SCHEMA='meri-native-upload-inspection/1';
-const UUID=/^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/u;
-const DIGEST=/^sha256:[a-f0-9]{64}$/u;
-const HEX64=/^[0-9a-f]{64}$/u;
-const FORMATS=Object.freeze(['txt','md','pdf','docx','xlsx','pptx','png','jpg','jpeg']);
-const fail=code=>{throw Object.assign(new Error(code),{code});};
-const sha=bytes=>createHash('sha256').update(bytes).digest('hex');
+export const NATIVE_INSPECTION_PATH='/internal/upload-inspection';
+const BODY_KEYS=Object.freeze(['schema','allocation','hostIdentity','binding','custody','request']);
+const fault=(code)=>uploadInspectionFault(code);
 
-/** Validate the closed request. Unknown keys are refused, not ignored. */
-export function inspectionRequest(raw,{deadlineMaxMs,bodyBytes,now=Date.now}={}){
- if(raw===null||typeof raw!=='object'||Array.isArray(raw))fail('NATIVE_INSPECTION_REQUEST');
- const keys=Object.keys(raw);
- if(keys.some(key=>!['schema','requestId','imageDigest','declarationId','format','bytesB64','deadlineMs'].includes(key)))
-  fail('NATIVE_INSPECTION_REQUEST');
- if(raw.schema!==NATIVE_INSPECTION_SCHEMA||!UUID.test(raw.requestId??'')||!DIGEST.test(raw.imageDigest??'')||
-  !HEX64.test(raw.declarationId??''))fail('NATIVE_INSPECTION_REQUEST');
- if(raw.format!==undefined&&!FORMATS.includes(raw.format))fail('NATIVE_INSPECTION_REQUEST');
- if(typeof raw.bytesB64!=='string'||raw.bytesB64.length%4!==0||raw.bytesB64.length>Math.ceil(bodyBytes/3)*4)
-  fail('NATIVE_INSPECTION_REQUEST');
- const bytes=Buffer.from(raw.bytesB64,'base64');
- if(bytes.length<1||bytes.toString('base64')!==raw.bytesB64)fail('NATIVE_INSPECTION_REQUEST');
- if(!Number.isSafeInteger(raw.deadlineMs)||raw.deadlineMs<=now()||raw.deadlineMs>now()+deadlineMaxMs)
-  fail('NATIVE_INSPECTION_DEADLINE');
- const file=Object.freeze({sha256:sha(bytes),bytes:bytes.length,...(raw.format===undefined?{}:{format:raw.format})});
- return Object.freeze({requestId:raw.requestId,imageDigest:raw.imageDigest,declarationId:raw.declarationId,
-  deadlineMs:raw.deadlineMs,bytes,file});
+/** Closed wire validation. The custody projection is deliberately opaque here: only Parent's validator interprets it. */
+export function nativeInspectionBody(raw){
+ let value;try{
+  if(raw===null||typeof raw!=='object'||Array.isArray(raw))fault('UPLOAD_INSPECTION_REQUEST_REFUSED');
+  if(Object.keys(raw).some(key=>!BODY_KEYS.includes(key)))fault('UPLOAD_INSPECTION_REQUEST_REFUSED');
+  if(raw.schema!==NATIVE_INSPECTION_SCHEMA||!raw.allocation||!raw.hostIdentity||!raw.binding||!raw.custody)fault('UPLOAD_INSPECTION_REQUEST_REFUSED');
+  value=raw;
+ }catch{fault('UPLOAD_INSPECTION_REQUEST_REFUSED');}
+ const {request,bytes}=uploadInspectionRequest(value.request);
+ return Object.freeze({allocation:value.allocation,hostIdentity:value.hostIdentity,binding:value.binding,
+  custody:value.custody,request,bytes});
 }
 
-/** Build the HTTP handler. `authenticate` is the TLS peer check (SAN + exact certificate fingerprint);
- *  `runInspection` is the fixed operation above. Both are production implementations in entrypoint.mjs. */
-export function createInspectionHandler({authenticate,runInspection,readBody,limits,now=Date.now}={}){
- if(typeof authenticate!=='function'||typeof runInspection!=='function'||typeof readBody!=='function'||
+/** Build the HTTP handler. `verifyCustody` is the Parent canonical export (unbound today), `openHost` is the CAP bootstrap,
+ *  `authenticate` is the TLS1.3 peer check. All work is bounded by ONE operation lifetime. */
+export function createInspectionHandler({authenticate,verifyCustody,openHost,readBody,limits,now=Date.now}={}){
+ if(typeof authenticate!=='function'||typeof openHost!=='function'||typeof readBody!=='function'||
   !limits||!Number.isSafeInteger(limits.deadlineMaxMs)||!Number.isSafeInteger(limits.bodyBytes))
-  fail('NATIVE_INSPECTION_CONFIGURATION');
+  fault('NATIVE_INSPECTION_CONFIGURATION');
  return async function handle(req,res){
+  const started=now();
+  const deadline=started+limits.deadlineMaxMs;
+  const send=(status,payload)=>{try{res.writeHead(status,{'content-type':'application/json','cache-control':'no-store'});
+   res.end(JSON.stringify(payload));}catch{}};
   try{
-   if(req?.method!=='POST'||req?.url!==NATIVE_INSPECTION_PATH)fail('NATIVE_INSPECTION_ROUTE');
-   if(req?.socket?.encrypted!==true||req.socket.alpnProtocol!=='h2'&&req.httpVersionMajor<2){
-    if(req?.socket?.encrypted!==true)fail('NATIVE_INSPECTION_TLS');
+   if(req?.method!=='POST'||req?.url!==NATIVE_INSPECTION_PATH)fault('NATIVE_INSPECTION_ROUTE');
+   if(req?.socket?.encrypted!==true)fault('NATIVE_INSPECTION_TLS');
+   const length=Number(req.headers?.['content-length']);
+   if(Number.isFinite(length)&&length>limits.bodyBytes)fault('UPLOAD_INSPECTION_REQUEST_REFUSED');
+   const peer=await authenticate({socket:req.socket,headers:req.headers,deadlineMs:deadline});
+   if(peer?.verified!==true)fault('NATIVE_INSPECTION_PEER');
+   if(typeof verifyCustody!=='function')fault('NATIVE_INSPECTION_CUSTODY_UNBOUND');
+   const raw=await readBody(req,limits.bodyBytes,deadline);
+   let parsed;try{parsed=JSON.parse(raw.toString('utf8'));}catch{fault('UPLOAD_INSPECTION_REQUEST_REFUSED');}
+   const body=nativeInspectionBody(parsed);
+   // Parent's canonical validator decides whether this exact allocation/purpose/binding/custody is currently authorized.
+   const granted=await verifyCustody({allocation:body.allocation,hostIdentity:body.hostIdentity,binding:body.binding,
+    custody:body.custody,request:body.request,peer,deadlineMs:Math.min(body.request.deadlineMs,deadline)});
+   if(granted?.authorized!==true)fault('NATIVE_INSPECTION_CUSTODY_REFUSED');
+   const host=await openHost({allocation:granted.allocation??body.allocation,binding:granted.binding??body.binding,
+    hostIdentity:granted.hostIdentity??body.hostIdentity,authority:granted.currentness,deadlineMs:Math.min(body.request.deadlineMs,deadline)});
+   let out;
+   try{
+    out=await host.runRequest({requestDocument:body.request,deadlineMs:Math.min(body.request.deadlineMs,deadline)});
+   }catch(error){
+    // The child's group is settled by the placement runner; retain an honest unknown instead of a success or a bare kill.
+    const cleanup=error?.preDispatchCleanup?.unknown===true?'NATIVE_INSPECTION_CLEANUP_UNKNOWN':null;
+    fault(cleanup??(typeof error?.code==='string'?error.code:'NATIVE_INSPECTION_UNKNOWN'));
    }
-   const peer=await authenticate({socket:req.socket,headers:req.headers});
-   if(peer?.verified!==true)fail('NATIVE_INSPECTION_PEER');
-   const raw=await readBody(req,limits.bodyBytes);
-   let parsed;try{parsed=JSON.parse(raw.toString('utf8'));}catch{fail('NATIVE_INSPECTION_REQUEST');}
-   const request=inspectionRequest(parsed,{deadlineMaxMs:limits.deadlineMaxMs,bodyBytes:limits.bodyBytes,now});
-   const out=await runInspection({request,peer,deadlineMs:request.deadlineMs});
-   res.writeHead(200,{'content-type':'application/json','cache-control':'no-store'});
-   res.end(JSON.stringify(out));
+   let value;try{value=JSON.parse(Buffer.from(out?.stdout??out).toString('utf8'));}catch{fault('UPLOAD_INSPECTION_RESULT_REFUSED');}
+   const closed=uploadInspectionResult(value,{requestId:body.request.requestId,declaration:body.request.declaration,
+    imageDigest:body.request.imageDigest,fromMs:started,toMs:now()});
+   send(200,uploadInspectionBody({requestId:body.request.requestId,imageDigest:body.request.imageDigest,value:closed}));
   }catch(error){
    const code=typeof error?.code==='string'?error.code:'NATIVE_INSPECTION_UNKNOWN';
-   const status=code==='NATIVE_INSPECTION_ROUTE'?404:code==='NATIVE_INSPECTION_TLS'||code==='NATIVE_INSPECTION_PEER'?403:400;
-   try{res.writeHead(status,{'content-type':'application/json','cache-control':'no-store'});res.end(JSON.stringify({error:code}));}catch{}
+   const status=code==='NATIVE_INSPECTION_ROUTE'?404:code==='NATIVE_INSPECTION_TLS'||code==='NATIVE_INSPECTION_PEER'?403:
+    code==='NATIVE_INSPECTION_CUSTODY_UNBOUND'?503:400;
+   send(status,{error:code});
   }
  };
 }
