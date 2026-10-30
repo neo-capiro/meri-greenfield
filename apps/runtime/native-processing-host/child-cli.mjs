@@ -24,7 +24,9 @@ export function childSettings(raw){
  const s=raw;
  const keys=s&&typeof s==='object'&&!Array.isArray(s)?Object.keys(s):null;
  const allowed=['runtimeUid','runtimeGid','imageDigest','definitionsRoot','extractorPath','scratchRoot','credentialPaths','snapshot'];
- if(keys===null||keys.length!==allowed.length||keys.some(key=>!allowed.includes(key)))fault('UPLOAD_INSPECTION_REQUEST_REFUSED');
+ const required=['runtimeUid','runtimeGid','imageDigest','definitionsRoot','extractorPath','scratchRoot','credentialPaths'];
+ if(keys===null||required.some(key=>!keys.includes(key))||keys.some(key=>!allowed.includes(key)))
+  fault('UPLOAD_INSPECTION_REQUEST_REFUSED');
  if(s.runtimeUid!==1000||s.runtimeGid!==1000) fault('UPLOAD_INSPECTION_REQUEST_REFUSED');
  if(typeof s.imageDigest!=='string'||!/^sha256:[a-f0-9]{64}$/u.test(s.imageDigest)) fault('UPLOAD_INSPECTION_REQUEST_REFUSED');
  for(const key of ['definitionsRoot','extractorPath','scratchRoot']) {

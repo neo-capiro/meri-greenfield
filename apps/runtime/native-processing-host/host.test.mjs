@@ -345,7 +345,7 @@ test('ENTRYPOINT SUCCESS: inert server factory wiring drives the real handler th
   openPlacement:async()=>({run:runner.run,close:async()=>({closed:true})})});
  const started=await startNativeProcessingHost({env:HOST_ENV,verifyCustody:async()=>SCOPED_CUSTODY,
   openHost,serverFactory,authenticatePeer:async()=>({verified:true,notAfterMs:Date.now()+60000}),
-  readFile:()=>Buffer.from('-----BEGIN-----')});
+  definitionsOwner:null,readFile:()=>Buffer.from('-----BEGIN-----')});
  assert.equal(started.started,true);
  assert.equal(options.minVersion,'TLSv1.3');
  assert.equal(options.maxVersion,'TLSv1.3');
@@ -367,7 +367,8 @@ test('ENTRYPOINT SHUTDOWN: an unresolved setup keeps close false until its owner
  const serverFactory=(_opts,handler)=>{captured=handler;
   return {once(){},listen(_p,_a,cb){cb();},close(cb){cb?.();}};};
  const started=await startNativeProcessingHost({env:HOST_ENV,verifyCustody:async()=>SCOPED_CUSTODY,
-  serverFactory,authenticatePeer:async()=>({verified:true,notAfterMs:Date.now()+60000}),readFile:()=>Buffer.from('x'),
+  serverFactory,authenticatePeer:async()=>({verified:true,notAfterMs:Date.now()+60000}),definitionsOwner:null,
+  readFile:()=>Buffer.from('x'),
   openHost:async()=>{entered();return new Promise(resolve=>{resolveSetup=()=>resolve({runRequest:async()=>({}),
    close:async()=>{closedOwners+=1;return {closed:true};}});});}});
  const out=res();
@@ -455,13 +456,13 @@ test('DEFINITION OWNER: a pin is held through child closure and prune never runs
  assert.deepEqual(pin.release({completed:true}),{released:true,already:true});
 });
 
-test('CHILD PIN: the child uses the host-pinned snapshot and refuses a malformed pin', async () => {
+test('CHILD PIN: a malformed host pin is refused before any child work', async () => {
  const {pinnedDefinitions}=await import('./child-cli.mjs');
- const defs=pinnedDefinitions({databaseDirectory:'/run/meri/upload-definitions/snapshots/x',sha256:'b'.repeat(64)});
- const snap=await defs.snapshot();
- assert.equal(snap.sha256,'b'.repeat(64));
- assert.throws(()=>pinnedDefinitions({databaseDirectory:'relative',sha256:'b'.repeat(64)}),
-  e=>e?.code==='UPLOAD_INSPECTION_REQUEST_REFUSED');
+ for(const bad of [{databaseDirectory:'relative',sha256:'b'.repeat(64),publishedAtMs:1,files:[{name:'x',format:'cvd',sha256:'b'.repeat(64),bytes:1}]},
+  {databaseDirectory:'/x',sha256:'nothash',publishedAtMs:1,files:[{name:'x',format:'cvd',sha256:'b'.repeat(64),bytes:1}]},
+  {databaseDirectory:'/x',sha256:'b'.repeat(64),publishedAtMs:1,files:[]}]){
+  assert.throws(()=>pinnedDefinitions(bad),e=>e?.code==='UPLOAD_INSPECTION_REQUEST_REFUSED');
+ }
 });
 
 test('CANONICAL MAX: a 10MiB original is accepted; one byte above max is refused', () => {
