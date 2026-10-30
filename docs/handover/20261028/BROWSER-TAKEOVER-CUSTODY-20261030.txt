@@ -1,0 +1,35 @@
+Browser takeover canonical custody — 30 October 2026
+
+Source scope
+Runtime399 takeover.begin/end commands now use the existing pause/native-session
+checkpoint and fresh resume transaction. Browser host identity, expiry and exact
+hand-back snapshot digest extend the existing control projection. No second hold
+journal, retained model loop, new public browser metadata or migration is added.
+Ordinary resume/fork cannot bypass a takeover hold. Target execution reads join
+handoff metadata back to the original APPLIED hold and exact SDK checkpoint.
+
+The private browserSessionAccess facet shares the existing opaque session owner,
+fresh Core identity/membership/context checks and retention. Browser-only sessions
+do not authorize ordinary actions or run credential borrowing. Browser identity
+selection reads only an existing current run; it cannot claim/rebind/reserve one.
+Parent owns public receiver, ticket/relay transport, runtime mount and consumer pins.
+
+Validation
+Node24.22.1: 189 affected lifecycle/capture/usage/session/identity tests, zero skips.
+PostgreSQL16: isolated database, ordinary NOSUPERUSER/NOBYPASSRLS/NOCREATEDB/
+NOCREATEROLE role, current conversation migrations through0031 with dependencies.
+Custody recovery, concurrent exact hand-back replay, fresh successor, stale-source
+and foreign-actor refusal, and 200 microUSD additional usage from 300->500 pass.
+Qualification entrypoint: scripts/qualification/browser-custody-postgres.mjs.
+Provisioning initially missed budget and intent dependencies; applied those exact
+existing migrations, without changing their text. An initial fixture request UUID
+collision was fixed by generating a fresh request; no rows or schemas were reset.
+Fixture grants allow the ordinary role SELECT/INSERT/UPDATE on conversation tables;
+this is not production-grant qualification. Native SDK/host and Core facts remain
+scripted for this database check. No browser, model, application/image build,
+deployment, activation or independent acceptance is claimed.
+
+Next work
+Native SDK absence/retained-browser cleanup wiring remains in the same capability
+chat. Real successor adoption, egress/currentness rebinding and private host routing
+must complete before activation. The existing activation hold remains enforced.

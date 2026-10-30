@@ -1,3 +1,4 @@
+import {isResumeIntent} from './browser-custody.mjs';
 /** Internal read-only lifecycle receipt projection. The product facade must supply a freshly verified principal, scopes and client,
  * recheck current membership/conversation access and retention before release. This port accepts no session credential or dispatch
  * authority. Historical source/target rows and original effect expiry remain evidence, never authority to start work again. */
@@ -34,11 +35,11 @@ export function createLifecycleReceiptReader({tx,verifyRun,lookup,pins,readExecu
    if(target===null&&p.retirement!==null||target!==null&&p.state==='PENDING')refused();
    if(target!==null){
     own(p.target,['binding','scopes','selectedClientId','admissionReceiptId','targetSessionId','expiresAtMs'],['versions','bootstrap']);if(p.target.versions!==undefined)validateShape('RuntimeVersions',p.target.versions);
-    if(!['resume','fork'].includes(p.input.intent)||!p.proof||p.input.checkpointId!==p.checkpointId||p.input.checkpointSha256!==p.proof.checkpointSha256||!same(p.target.scopes,v.scopes)||p.target.selectedClientId!==v.selectedClientId||!Number.isSafeInteger(p.target.expiresAtMs)||p.target.expiresAtMs<1)refused();
+    if(!(isResumeIntent(p.input.intent)||p.input.intent==='fork')||!p.proof||p.input.checkpointId!==p.checkpointId||p.input.checkpointSha256!==p.proof.checkpointSha256||!same(p.target.scopes,v.scopes)||p.target.selectedClientId!==v.selectedClientId||!Number.isSafeInteger(p.target.expiresAtMs)||p.target.expiresAtMs<1)refused();
     const saved=await verifyRun(c,target,v.scopes),execution=await readExecution(c,target,v.scopes,v.selectedClientId,check);check();
     if(saved.projection.policyRevision!==run.projection.policyRevision||execution?.continuation.controlId!==v.controlId)refused();
     await conversation(c,target,v.scopes,saved.projection.policyRevision,check);
-    if(p.input.intent==='resume'){
+    if(isResumeIntent(p.input.intent)){
      const end=Number(run.sequence_base)+Number(run.last_sequence);
      if(target.conversationId!==b.conversationId||target.writerFence!==b.writerFence+1||!p.retirement||!same(p.retirement.binding,b)||!Number.isSafeInteger(p.retirement.expiresAtMs)||p.retirement.expiresAtMs<1||!['paused','waiting-for-approval'].includes(run.projection.state)||run.sequence_end==null||!Number.isSafeInteger(end)||Number(run.sequence_end)!==end||Number(saved.sequence_base)!==end)refused();
     }else {if(target.conversationId===b.conversationId||target.writerFence!==1||Number(saved.sequence_base)!==0||p.retirement!==null)refused();if(p.proof.kind==='native-session')assertForkBootstrapReceipt(p.target.bootstrap,{controlId:v.controlId,sourceBinding:b,targetBinding:target,selectedClientId:v.selectedClientId});}
