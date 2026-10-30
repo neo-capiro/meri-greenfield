@@ -4,12 +4,12 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {tmpdir} from 'node:os';
-import {join} from 'node:path';
-import {mkdtemp,rm,mkdir,readFile,readdir,writeFile,symlink,realpath} from 'node:fs/promises';
+import {join,relative,sep} from 'node:path';
+import {mkdtemp,rm,mkdir,readFile,readdir,writeFile,symlink,realpath,lstat} from 'node:fs/promises';
 import {createHash} from 'node:crypto';
 import {UPLOAD_DEFINITIONS_MAX_AGE_MS,UPLOAD_DEFINITIONS_SCHEMA,UPLOAD_DEFINITIONS_FORMATS,createSignedDefinitionUpdater,
  createSignedDefinitionStore,freshclamConfiguration,freshclamArguments,cvdVerificationArguments,
- pruneSnapshots,definitionsSnapshotId} from '../native-definitions.mjs';
+ pruneSnapshots,definitionsSnapshotId,runDefinitionProgram} from '../native-definitions.mjs';
 import * as definitionsModule from '../native-definitions.mjs';
 
 const T0=1_700_000_000_000,DEADLINE=T0+30000;
@@ -249,4 +249,67 @@ test('a published snapshot is never deleted or rewritten by a later refresh, and
   assert.equal(await pointer(root),refreshed[0].sha256);
   assert.deepEqual(await stagingDirs(root),[],'concurrent refreshes leave no staging state');
  });
+});
+
+test('ACCESS: exact owner paths only, applied in creation order, never before they exist', async () => {
+ const root=await mkdtemp(join(tmpdir(),'meri-access-'));
+ const recorded=[];
+ const chmodPort=async(path,mode)=>{await lstat(path);recorded.push({path,mode:mode.toString(8)});};
+ const chownPort=async(path,uid,gid)=>{await lstat(path);recorded.push({path,owner:`${uid}:${gid}`});};
+ const run=async(program,args)=>{
+  if(program==='sigtool')return {stdout:Buffer.alloc(0),receipt:{exitCode:0}};
+  assert.equal(program,'freshclam');
+  const conf=await readFile(args[0].slice('--config-file='.length),'utf8');
+  const database=conf.split('\n').find(line=>line.startsWith('DatabaseDirectory ')).slice('DatabaseDirectory '.length);
+  await writeFile(join(database,'main.cvd'),Buffer.from('main CVD'));
+  await writeFile(join(database,'daily.cvd'),Buffer.from('daily CVD'));
+  return {stdout:Buffer.alloc(0),receipt:{exitCode:0}};
+ };
+ try{
+  const updater=createSignedDefinitionUpdater({root,run,chmod:chmodPort,chown:chownPort});
+  await updater.provision({deadlineMs:Date.now()+5000});
+  const first=recorded.findIndex(entry=>entry.path===join(root,'staging'));
+  const writer=[...new Set(recorded.filter(entry=>entry.owner!==undefined)
+   .map(entry=>relative(root,entry.path).split(sep).join('/')))];
+  // ONLY the unique staging directory and its database are handed to UID1000; the root, the staging parent and every
+  // published path stay root-owned.
+  assert.equal(writer.length,2,JSON.stringify(writer));
+  assert.ok(writer.every(path=>/^staging\/refresh-[A-Za-z0-9]{6}(\/database)?$/u.test(path)),JSON.stringify(writer));
+  assert.equal(writer.some(path=>path==='staging'||path.startsWith('snapshots')),false);
+  assert.ok(first>=0&&recorded[first].mode==='755','the staging parent stays root-owned and non-writable');
+  assert.ok(recorded.some(entry=>entry.path===join(root,'snapshots')&&entry.mode==='555'));
+  const published=recorded.filter(entry=>entry.path.includes(`${sep}snapshots${sep}`)&&entry.mode!==undefined);
+  assert.ok(published.length>=4,'the published snapshot is narrowed after publication');
+  assert.ok(published.every(entry=>entry.mode==='444'||entry.mode==='555'),'published data is read-only to the child');
+  assert.equal(recorded.at(-1).path,join(root,'current'),'the pointer is narrowed LAST, after the atomic rename');
+  assert.equal(recorded.at(-1).mode,'444');
+  // A second refresh works on the same namespace (no mode blocks the owner's own write path).
+  await updater.provision({deadlineMs:Date.now()+5000});
+ }finally{await rm(root,{recursive:true,force:true});}
+});
+
+test('PROGRAM FORMS: only the host-generated argument forms reach a spawn port', async () => {
+ let spawns=0,reached=[];
+ const ports={spawn:(command,args)=>{spawns+=1;reached.push({command,args});throw Error('INERT_SPAWN');},
+  kill:()=>{throw Error('unexpected kill');}};
+ const cwd='/srv/staging',config=cwd+'/freshclam.conf',cvd=cwd+'/database/main.cvd';
+ const refused=[
+  ['freshclam',['--daemon']],
+  ['freshclam',['--config-file='+config]],                              // one-arg arbitrary form is not owner-generated
+  ['freshclam',['--config-file=/tmp/arbitrary','--foreground','--no-warnings']],
+  ['sigtool',['/tmp/not-a-cvd']],
+  ['sigtool',['--datadir=/tmp/not-a-cvd']],
+  ['sigtool',['/tmp/a','/tmp/b']],
+  ['sigtool',['--info','/tmp/not-a-cvd']],                              // not a .cvd in this cwd's database
+  ['sigtool',['--info',cwd+'/database/main.cld']],                       // unsupported published name form
+ ];
+ for(const [program,args] of refused)
+  await assert.rejects(runDefinitionProgram(program,args,{cwd,deadlineMs:Date.now()+1000,ports}),
+   e=>e?.code==='UPLOAD_DEFINITIONS_PROGRAM_REFUSED',`${program} ${JSON.stringify(args)}`);
+ assert.equal(spawns,0,'no unsupported form reached the spawn port');
+ // The two forms the host itself generates DO reach the (inert) spawn port.
+ for(const [program,args] of [['freshclam',freshclamArguments(config)],['sigtool',cvdVerificationArguments(cvd)]])
+  await assert.rejects(runDefinitionProgram(program,args,{cwd,deadlineMs:Date.now()+1000,ports}),
+   e=>e?.message==='INERT_SPAWN',`${program} should reach spawn`);
+ assert.equal(spawns,2,'both generated forms reached the inert spawn port');
 });

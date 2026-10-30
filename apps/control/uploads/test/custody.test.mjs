@@ -157,3 +157,76 @@ test('real CONTROL receipts and exact original bytes cross the generated upload 
  const downloaded=await receiveUploadDownload(await f.app.handle(f.request('read',read)),read,scanned);assert.deepEqual(Buffer.from(downloaded.bytes),f.bytes);
  const removed=await call('remove',{uploadId});assert.equal(removed.storageStatus,'removed');assert.equal(removed.scanStatus,'unavailable');assert.equal(removed.original.versionId,stored.original.versionId);
 });
+
+const {nativeUploadCustody}=await import('../../../runtime/uploads/native-host-contract.mjs');
+
+// The real local inspection port, wrapped so the private custody context can be observed and a mutation can be
+// injected INSIDE the operation. A refusal recorded by the closure is rethrown so the flow fails closed.
+function hookedInspection(f,hook=null){
+ const captured={},inner=f.config.inspection,bound=inner.inspect.bind(inner);
+ const inspection={...inner,inspect:async(declaration,bytes,options)=>{
+  const context=options.custodyContext;
+  assert.ok(context,'the private custody context is passed alongside signal/deadline');
+  assert.equal(Object.isFrozen(context),true);
+  assert.equal(typeof context.assertCurrent,'function');
+  captured.context=context;captured.record=context.record;captured.current=context.current;
+  captured.declaration=declaration;captured.bytes=bytes;
+  if(hook!==null)await hook(context);
+  try{captured.live=await context.assertCurrent();}catch(error){
+   captured.denied=error;
+   throw error; // Fail closed: nothing is published when the captured authority no longer holds.
+  }
+  return bound(declaration,bytes,{signal:options.signal,deadlineMs:options.deadlineMs});}};
+ return {captured,inspection};
+}
+
+test('inspection receives a real custody snapshot that rechecks live authority and the same record',async()=>{
+ const f=fixture(),{captured,inspection}=hookedInspection(f),owner=f.create({inspection});
+ const prepared=await f.initiate(owner),stored=await owner.put(prepared.uploadId,f.bytes,f.options);
+ assert.equal(stored.state,'stored');
+ const published=await owner.inspect(prepared.uploadId,f.options);
+ assert.equal(published.inspection.scan.status,'clean','the real local inspection still publishes its result');
+ assert.equal(captured.live.binding.conversationId,f.binding.conversationId);
+ assert.deepEqual(captured.bytes,f.bytes,'the port receives the original bytes unchanged');
+ const saved=f.state.rows.get(prepared.uploadId);
+ assert.equal(captured.record.uploadId,saved.uploadId);
+ assert.equal(captured.record.state,'stored');
+ // The ACTUAL saved record and current scope feed the shared native projection.
+ // `saved` is the row AFTER publication; the projection must describe the row AS INSPECTED.
+ const atInspection=captured.record;
+ const projection=nativeUploadCustody(atInspection,captured.current);
+ assert.equal(projection.uploadId,atInspection.uploadId);
+ assert.equal(projection.recordSha256,hash(atInspection));
+ assert.equal(projection.objectId,atInspection.object.objectId);
+ assert.equal(projection.bytes,atInspection.object.bytes);
+ assert.equal(projection.sha256,atInspection.object.sha256);
+ assert.equal(projection.owner.actorId,f.binding.actorId);
+ assert.equal(projection.scopes[0].tenantId,f.binding.tenantId);
+ assert.equal(projection.revision,atInspection.revision);
+ assert.equal(saved.uploadId,atInspection.uploadId);
+ // After the operation ends the retained closure is dead.
+ await assert.rejects(()=>captured.context.assertCurrent());
+});
+
+test('the custody closure refuses a changed record, run binding, revocation or retention loss',async()=>{
+ const run=async(label,{ownerHooks=null,hook})=>{
+  const f=fixture(),{captured,inspection}=hookedInspection(f,hook(f));
+  const owner=ownerHooks===null?f.create({inspection}):ownerHooks(f,inspection);
+  const prepared=await f.initiate(owner),stored=await owner.put(prepared.uploadId,f.bytes,f.options);
+  assert.equal(stored.state,'stored',label);f.state.lastUploadId=prepared.uploadId;
+  await assert.rejects(()=>owner.inspect(prepared.uploadId,f.options),undefined,label);
+  assert.ok(captured.denied,`${label}: the captured authority must refuse`);
+  assert.equal(f.state.rows.get(prepared.uploadId).inspection,null,`${label}: nothing is published on denial`);
+ };
+ await run('changed saved record revision',{hook:f=>async()=>{
+  const row=f.state.rows.get(f.state.lastUploadId);
+  f.state.rows.set(row.uploadId,{...row,revision:row.revision+1});}});
+ await run('changed run/attempt/worker binding',{
+  ownerHooks:(f,inspection)=>{let override=null;
+   f.__override=value=>{override=value;};
+   return f.create({inspection,current:async()=>({...await f.config.current(),
+    ...(override===null?{}:{binding:{...f.binding,...override}})})});},
+  hook:f=>async()=>{f.__override({runId:id(77),attemptId:id(78),workerFence:f.binding.writerFence+1});}});
+ await run('revoked current authority',{hook:f=>async()=>{f.state.denied=true;}});
+ await run('retention suppression',{hook:f=>async()=>{f.state.suppressed=true;}});
+});

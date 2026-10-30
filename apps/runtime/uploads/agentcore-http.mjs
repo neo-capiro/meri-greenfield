@@ -106,12 +106,13 @@ export function uploadInspectionHostConfiguration(environment=globalThis.process
  *
  * A host that cannot attest the sandbox, observe the tools or resolve a signed snapshot yields `inspection:null` plus
  * the exact `missing` list, so the application answers 503 and no caller ever sees a fabricated scan. */
-export async function composeUploadInspectionHost({environment=globalThis.process?.env??{},now=Date.now,signal,deadlineMs,run,paths,readFileImpl,scratchRoot,definitionsRoot}={}){
+export async function composeUploadInspectionHost({environment=globalThis.process?.env??{},now=Date.now,signal,deadlineMs,run,processing,paths,readFileImpl,scratchRoot,definitionsRoot}={}){
  const roots={...(scratchRoot===undefined?{}:{scratchRoot}),...(definitionsRoot===undefined?{}:{definitionsRoot})};
  const configuration=uploadInspectionHostConfiguration(environment,roots);
  const handle=await mountUploadNativeControl({configuration,now,signal,
   deadlineMs:Number.isSafeInteger(deadlineMs)?deadlineMs:now()+UPLOAD_NATIVE_MOUNT_MS,
-  ...(run===undefined?{}:{run}),...(paths===undefined?{}:{paths}),...(readFileImpl===undefined?{}:{readFileImpl})});
+  ...(processing===undefined?{}:{processing}),...(run===undefined?{}:{run}),...(paths===undefined?{}:{paths}),
+  ...(readFileImpl===undefined?{}:{readFileImpl})});
  const declared=configuration.uploads.native.enabled===true?configuration.uploads.native.imageDigest:null;
  if(handle.inspection!==null&&declared!==null&&handle.host?.admission?.imageDigest!==declared)
   return Object.freeze({inspection:null,host:handle.host,missing:Object.freeze(['uploads.native.imageDigest']),

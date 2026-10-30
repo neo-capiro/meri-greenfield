@@ -11,9 +11,13 @@
  * Activation stays held: building this producer creates no listener, credential, host or activation.
  */
 import {canonicalSha256} from '../../../../packages/contracts/validate.mjs';
-import {own,data} from '../../../../packages/contracts/commands-0.2/execution-boundary.mjs';
+import {own,data,nativeSignal} from '../../../../packages/contracts/commands-0.2/execution-boundary.mjs';
+import {createOperationLifetime} from '../../../../packages/runtime/operation-lifetime.mjs';
 import {BROWSER_ACTION,BROWSER_ACTION_OPERATION,assertBrowserApprovalRequest,
- browserPreparationFromRequest} from '../../../../packages/contracts/runtime-0.2/browser-approval-preparation.mjs';
+ browserPreparationFromRequest,browserPreparationProposalId,browserCommandSha256}
+ from '../../../../packages/contracts/runtime-0.2/browser-approval-preparation.mjs';
+import {immutablePayload} from './binding.mjs';
+import {assertBrowserPreparationResult} from './browser-preparation-result.mjs';
 import {createBrowserActionApprovalMetadataOwner} from './browser-owner.mjs';
 
 const fail=code=>{throw Object.assign(Error(code),{code});};
@@ -21,7 +25,7 @@ const DENIED='BROWSER_PREPARATION_REFUSED';
 const CHANGED='BROWSER_PREPARATION_AUTHORITY_CHANGED';
 
 export function createBrowserPreparationProducer(configuration){
- const c=own(configuration,['journal','browserPolicy','store','approver','actorRole'],['now','maxRequestMs']);
+ const c=own(configuration,['journal','browserPolicy','store','approver','actorRole'],['now','maxRequestMs','newId']);
  const {journal,browserPolicy,store,actorRole}=c,approver=data(own(c.approver,['tenantId','actorId']));
  const now=c.now??Date.now,maxRequestMs=c.maxRequestMs??30000;
  if(typeof journal?.withCurrentRun!=='function'||typeof browserPolicy!=='function'||
@@ -42,8 +46,11 @@ export function createBrowserPreparationProducer(configuration){
    deadlineMs:short.deadlineMs,policySha256:expectedPolicySha256,checkedAtMs:now()});
  }
  /** The existing current-authority hook contract: canonical scopes, approver and proposal expiry, or a refusal. */
+ let boundPreparation=null;
  async function preparePolicy({phase,selection,selectionSha256,signal,limitDeadline}){
-  const request=selection?.request;
+  // `before_read` carries no request in the existing owner contract; a request-bound read supplies the
+  // ORIGINAL canonical preparation for this call so authority is resolved for the same subject.
+  const request=selection?.request??(phase==='before_read'?boundPreparation:null);
   if(!request||typeof request.expiresAtMs!=='number')throw fail(DENIED);
   const binding=selection.binding;
   // `limitDeadline` is the owner's lifetime TIGHTENER (a setter), not a deadline value.
@@ -58,7 +65,8 @@ export function createBrowserPreparationProducer(configuration){
    scopes:authority.scopes,requiredApprover:Object.freeze(data(approver)),proposalExpiresAt,
    checkedAtMs:authority.checkedAtMs,expiresAtMs:authority.deadlineMs});
  }
- const owner=createBrowserActionApprovalMetadataOwner({store,preparePolicy,now,maxRequestMs});
+ const owner=createBrowserActionApprovalMetadataOwner({store,preparePolicy,now,maxRequestMs,
+  ...(typeof c.newId==='function'?{newId:c.newId}:{})});
  /** Named internal callback: the authenticated host request enters here and nothing else may call it. */
  async function prepare(value){
   let v;
@@ -74,5 +82,55 @@ export function createBrowserPreparationProducer(configuration){
   return owner.prepare({operation:BROWSER_ACTION_OPERATION,action:BROWSER_ACTION,binding,
    request:preparation,deadlineMs,signal:v.signal});
  }
- return Object.freeze({prepare,action:BROWSER_ACTION,operation:BROWSER_ACTION_OPERATION});
+ /** Read the retained preparation WITH current authority, without writing, consuming or dispatching.
+  *  The original request and binding are required; the stored row is re-validated against them. */
+ async function readPrepared(value){
+  let v;
+  try{v=own(value,['request','binding','deadlineMs'],['signal']);}catch{throw fail(DENIED);}
+  let request,preparation;
+  try{request=assertBrowserApprovalRequest(v.request);preparation=browserPreparationFromRequest(request);}
+  catch{throw fail(DENIED);}
+  const signal=nativeSignal(v.signal);
+  const binding=data(v.binding);
+  if(canonicalSha256(data(request.subject.binding))!==canonicalSha256(data(binding)))throw fail(DENIED);
+  if(request.subject.binding.tenantId!==approver.tenantId)throw fail(DENIED);
+  const proposalId=browserPreparationProposalId({binding,toolUseId:preparation.subject.toolUseId});
+  const requestSha256=canonicalSha256(request);
+  const at=now(),deadlineMs=v.deadlineMs??at+maxRequestMs;
+  if(!Number.isSafeInteger(at)||!Number.isSafeInteger(deadlineMs)||deadlineMs<=at)throw fail('DEADLINE');
+  // ONE bounded lifetime covers the WHOLE read: the first raw row read, the authority work and the real owner
+  // read. Nothing here can outlive the original deadline or an abort.
+  const life=createOperationLifetime({deadlineMs,now,signal,
+   errorFactory:code=>Object.assign(Error(code),{code})});
+  try{
+   life.check();
+   // Identity-only selector: it tells us which command digest to ask the owner for. Never authority — the
+   // owner re-resolves authority before AND after the real row read. It IS bounded by this lifetime.
+   let raw;
+   try{raw=await life.run(()=>store.read({tenantId:binding.tenantId,actorId:binding.actorId,proposalId},
+    life.check));}
+   catch(error){if(error?.code==='DEADLINE'||error?.code==='CANCELLED')throw error;
+    throw fail('BROWSER_APPROVAL_UNKNOWN');}
+   if(raw===null||raw===undefined)throw fail('BROWSER_APPROVAL_UNKNOWN');
+   let commandSha256;
+   try{commandSha256=immutablePayload(raw).commandSha256;}catch{throw fail(DENIED);}
+   life.check();
+   boundPreparation=preparation;
+   let record;
+   try{
+    record=await owner.read({proposalId,commandSha256,operation:BROWSER_ACTION_OPERATION,action:BROWSER_ACTION,
+     binding,deadlineMs:Math.min(deadlineMs,life.deadline()),...(signal===undefined?{}:{signal})});
+   }finally{boundPreparation=null;}
+   life.check();
+   // The retained identity is the STORED canonical record: the owner's fresh observation fields are not
+   // allowed to replace it (that would change the fingerprint on every recovery).
+   const stored=(({checkedAtMs:_checked,resolved:_resolved,...canonical})=>canonical)(data(record));
+   const result=assertBrowserPreparationResult({proposalId,subjectSha256:preparation.subjectSha256,requestSha256,
+    record:stored,recordSha256:canonicalSha256(stored)},{binding,toolUseId:preparation.subject.toolUseId});
+   life.check();
+   return result;
+  }catch(error){if(error?.code)throw error;throw fail(DENIED);}
+  finally{life.close();}
+ }
+ return Object.freeze({prepare,readPrepared,action:BROWSER_ACTION,operation:BROWSER_ACTION_OPERATION});
 }

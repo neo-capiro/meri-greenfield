@@ -338,3 +338,59 @@ export async function prepareNetworkCompartment({allocation,binding,kind,routes,
   return Object.freeze({get plan(){return activePlan;},get proof(){return latestProof;},verify,extendBashRoutes,close});
  }catch(error){try{await close();}catch{fail('HOST_NETWORK_CLEANUP_UNKNOWN');}throw error;}
 }
+
+/** Closed NO-EGRESS network compartment for fixed native processing: one fresh netns, loopback only, no veth, no nft
+ * table, no relay and no route. This is the only network kind a finite processing placement accepts; it cannot carry a
+ * model/control/SDK path. `verify()` re-reads the namespace identity, links and routes on every call, so a changed
+ * namespace or an added interface refuses before dispatch. */
+export async function prepareProcessingCompartment({allocation,binding,execute=runLinuxNetworkCommand,
+ readNamespace=namespaceIdentity,now=Date.now}={}){
+ const plan=createNetworkPlan({allocation,binding,kind:'processing',routes:[]});
+ if(!Array.isArray(plan.routes)||plan.routes.length!==0)fail('HOST_NETWORK_CONFIGURATION');
+ const ip=async(...args)=>(await execute({file:IP,args,timeoutMs:5000})).stdout;
+ let identity=null,closed=false,created=false;
+ try{await execute({file:IP,args:['netns','add',plan.namespaceName],timeoutMs:5000});created=true;}
+ catch{fail('HOST_NETWORK_SETUP_FAILED');}
+ try{
+  identity=readNamespace(plan.namespacePath);
+  const readLinks=async()=>array(await ip('-d','-j','-n',plan.namespaceName,'link','show'));
+  const readRoutes=async()=>({v4:array(await ip('-j','-n',plan.namespaceName,'route','show','table','main')),
+   v6:array(await ip('-j','-n',plan.namespaceName,'-6','route','show','table','main'))});
+  const inspect=async()=>{
+   const links=await readLinks();
+   if(links.length!==1||links[0]?.ifname!=='lo')fail('HOST_NETWORK_TOPOLOGY_REFUSED');
+   const routes=await readRoutes();
+   if(routes.v4.length||routes.v6.length)fail('HOST_NETWORK_TOPOLOGY_REFUSED');
+   const observed=readNamespace(plan.namespacePath);
+   if(observed.namespaceDev!==identity.namespaceDev||observed.namespaceIno!==identity.namespaceIno)
+    fail('HOST_NETWORK_NAMESPACE_UNKNOWN');
+   return {links,routes};
+  };
+  await inspect();
+  const verify=async()=>{
+   if(closed)fail('HOST_NETWORK_UNVERIFIED');
+   const {links,routes}=await inspect();
+   return Object.freeze({verified:true,kind:'processing',allocationSha256:plan.allocationSha256,
+    bindingSha256:plan.bindingSha256,namespacePath:plan.namespacePath,namespaceDev:identity.namespaceDev,
+    namespaceIno:identity.namespaceIno,localRelays:Object.freeze([]),loopbackOnly:links[0].ifname==='lo',
+    routes:Object.freeze({v4:routes.v4.length,v6:routes.v6.length}),verifiedAtMs:now()});
+  };
+  // The first close owns the deletion; later and concurrent callers replay its settled result. A failed deletion is
+  // reported as CLEANUP_UNKNOWN on every replay and never as success. Deleting is local cleanup, not an absence receipt.
+  let closing=null;
+  const close=()=>closing??=(async()=>{
+   closed=true;
+   try{await execute({file:IP,args:['netns','delete',plan.namespaceName],timeoutMs:5000});}
+   catch{return Object.freeze({closed:false,code:'HOST_NETWORK_CLEANUP_UNKNOWN'});}
+   return Object.freeze({closed:true});
+  })();
+  return Object.freeze({plan,identity,verify,close});
+ }catch(error){
+  // Only a namespace this call actually created is deleted here; a failed `netns add` created nothing.
+  let cleanup='not-created';
+  if(created){try{await execute({file:IP,args:['netns','delete',plan.namespaceName],timeoutMs:5000});cleanup='removed';}
+   catch{cleanup='unknown';}}
+  error.partialCleanup=cleanup;
+  throw error;
+ }
+}

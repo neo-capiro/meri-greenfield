@@ -56,9 +56,15 @@ const delivery=(domain,binding,requestId)=>{
  return `browser:${digest}`;
 };
 export const browserExecutionDeliveryId=({binding,requestId})=>delivery(BROWSER_EXECUTION_DOMAIN,binding,requestId);
-/** Approval proposals for a browser call are a DIFFERENT identity domain on purpose. */
-export const browserApprovalDeliveryId=({binding,requestId})=>delivery(BROWSER_APPROVAL_DOMAIN,binding,requestId);
-/** True only for a row this module owns: the prefix AND the execution domain derivation. */
+/** Approval proposals are a DIFFERENT identity domain on purpose: they key on the SDK's toolUseId and the
+ * deterministic proposal id, never on the MCP requestId that identifies browser EXECUTION custody. */
+export function browserApprovalDeliveryId({binding,toolUseId,proposalId}){
+ validateShape('RunBinding',data(binding));
+ if(typeof toolUseId!=='string'||toolUseId.length===0||toolUseId.length>512||!/^\S+$/u.test(toolUseId))deny();
+ if(typeof proposalId!=='string'||proposalId.length===0||proposalId.length>128)deny();
+ const digest=canonicalSha256({domain:BROWSER_APPROVAL_DOMAIN,binding:data(binding),toolUseId,proposalId});
+ return `browser:${digest}`;
+}
 export function isBrowserExecutionDeliveryId(deliveryId,binding,requestId){
  try{return typeof deliveryId==='string'&&deliveryId===browserExecutionDeliveryId({binding,requestId});}catch{return false;}
 }

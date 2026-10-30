@@ -1,6 +1,13 @@
 /** Fixed wire identity for one D005 currentness read. Shape checks never establish authority. */
 import {own,data,nativeSignal} from '../../../../../packages/contracts/commands-0.2/execution-boundary.mjs';
-import {assertHostAllocation,assertHostRunBinding,assertD005HostIdentity,assertHostCurrent,assertBrowserHostCurrent} from '../binding.mjs';
+import {canonicalSha256} from '../../../../../packages/contracts/validate.mjs';
+import {assertHostAllocation,assertBrowserHostAllocation,assertHostRunBinding,assertD005HostIdentity,assertHostCurrent,assertBrowserHostCurrent} from '../binding.mjs';
+import {assertBrowserApprovalRequest} from '../../../../../packages/contracts/runtime-0.2/browser-approval-preparation.mjs';
+import {assertBrowserActionReceipt,browserActionReceiptEventId} from '../../../../../packages/contracts/runtime-0.2/browser-receipt.mjs';
+import {assertConversationEvent,isBrowserReceiptEventType}
+ from '../../../../../packages/contracts/conversation-sources/validate.mjs';
+import {receiptRefusal} from '../../browser/approval-binding.mjs';
+import {browserPreparationProposalId} from '../../../../../packages/contracts/runtime-0.2/browser-approval-preparation.mjs';
 
 export const HOST_CONTROL_REQUEST_SCHEMA='meri-host-currentness-request/1';
 export const HOST_CONTROL_RESPONSE_SCHEMA='meri-host-currentness-response/1';
@@ -18,7 +25,8 @@ export function hostClientDnsName(allocation){
 export function hostControlRequest(value){
  let v,a,b,i;try{
   v=own(data(value),['schema','allocation','binding','hostIdentity','purpose','policySha256','nonce']);
-  a=assertHostAllocation(v.allocation);b=assertHostRunBinding(a,v.binding);i=assertD005HostIdentity(v.hostIdentity,b,a);
+  // Every NAMED browser/SDK/Bash authority path refuses a native-processing allocation here.
+  a=assertBrowserHostAllocation(v.allocation);b=assertHostRunBinding(a,v.binding);i=assertD005HostIdentity(v.hostIdentity,b,a);
  }catch{fail();}
  if(v.schema!==HOST_CONTROL_REQUEST_SCHEMA||!HOST_CONTROL_PURPOSES.includes(v.purpose)||
   typeof v.policySha256!=='string'||!HEX.test(v.policySha256)||
@@ -83,13 +91,62 @@ export const HOST_HOLD_ENVELOPE_BYTES=2048;
 export const HOST_HOLD_WIRE_MAX_BYTES=HOST_HOLD_MAX_BYTES+HOST_HOLD_ENVELOPE_BYTES;
 export const HOST_OPERATION_REQUEST_MAX_BYTES=HOST_CONTROL_MAX_BYTES;
 
+export const HOST_DECIDE_PATH='/meri/host/decide/v1';
+export const HOST_DECIDE_REQUEST_SCHEMA='meri-host-decide-request/1';
+export const HOST_DECIDE_RESPONSE_SCHEMA='meri-host-decide-response/1';
+/** A decide request carries the ORIGINAL request/3 plus the pinned allocation envelope, so its body bound is
+ * its own; the currentness 32 KiB / 5000 ms path is unchanged. */
+export const HOST_DECIDE_MAX_BYTES=65536;
+export const HOST_DECIDE_ENVELOPE_BYTES=8192;
+export const HOST_DECIDE_WIRE_MAX_BYTES=HOST_DECIDE_MAX_BYTES+HOST_DECIDE_ENVELOPE_BYTES;
+export const HOST_DECIDE_MIN_WINDOW_MS=1000;
+export const HOST_DECIDE_MAX_WINDOW_MS=900000;
+
+/** The named approval request: envelope + the exact original meri-browser-approval-request/3 it captured. */
+export function hostDecideRequest(value){
+ let v,a,b,i,r;try{
+  v=own(data(value),['schema','allocation','binding','hostIdentity','nonce','request','deadlineMs']);
+  a=assertHostAllocation(v.allocation);b=assertHostRunBinding(a,v.binding);i=assertD005HostIdentity(v.hostIdentity,b,a);
+  r=assertBrowserApprovalRequest(v.request);
+ }catch{fail();}
+ if(v.schema!==HOST_DECIDE_REQUEST_SCHEMA||typeof v.nonce!=='string'||!HEX.test(v.nonce))fail();
+ // The ORIGINAL request payload keeps its 64 KiB ceiling; the whole envelope has the larger wire bound.
+ if(Buffer.byteLength(JSON.stringify(v.request),'utf8')>HOST_DECIDE_MAX_BYTES)fail();
+ // `deadlineMs` is an ABSOLUTE epoch cutoff, never a duration: bound by the original request window and the
+ // allocation lease. The original window itself is validated by the request/3 validator above.
+ if(!Number.isSafeInteger(v.deadlineMs)||v.deadlineMs<=0)fail();
+ if(!same(r.subject.binding,v.binding))fail();
+ if(v.deadlineMs>Math.min(r.expiresAtMs,a.leaseDeadlineMs))fail();
+ return Object.freeze({schema:HOST_DECIDE_REQUEST_SCHEMA,allocation:a,binding:b,hostIdentity:i,nonce:v.nonce,
+  request:r,deadlineMs:v.deadlineMs});
+}
+/** The answer is either a canonical Core receipt or a CLOSED non-permissive outcome. Nothing here mints a grant. */
+export function hostDecideResponse(value,request,atMs){
+ let v;try{v=own(data(value),['schema','nonce','outcome','receipt','checkedAtMs','currentUntilMs']);
+  if(v.schema!==HOST_DECIDE_RESPONSE_SCHEMA||v.nonce!==request.nonce||
+   !['approved','rejected','revoked','expired','pending','unknown'].includes(v.outcome)||
+   !Number.isSafeInteger(v.checkedAtMs)||!Number.isSafeInteger(v.currentUntilMs)||v.currentUntilMs<=v.checkedAtMs)fail();
+  if(v.outcome==='approved'){
+   // The SAME canonical permit validator the real Core forwarder uses, at this observation clock, plus the
+   // deterministic proposal identity — never the weaker schema-only helper.
+   const request$=request.request,proposalId=browserPreparationProposalId({binding:request.binding,
+    toolUseId:request$.subject.toolUseId});
+   if(receiptRefusal(v.receipt,request$,atMs)!==null)fail();
+   if(v.receipt.proposalId!==proposalId||v.receipt.decision.proposalId!==proposalId)fail();
+  }else if(v.receipt!==null)fail();
+ }catch{fail();}
+ return Object.freeze({schema:HOST_DECIDE_RESPONSE_SCHEMA,nonce:v.nonce,outcome:v.outcome,receipt:v.receipt??null,
+  checkedAtMs:v.checkedAtMs,currentUntilMs:v.currentUntilMs});
+}
+
 /** Facts, workflow and hold share one closed request envelope: the host's pinned allocation identity,
  * the exact run binding, and a fresh single-use nonce. No policy digest is asserted by the host for
  * these reads, because the answer REPORTS current authority rather than claiming it. */
 export function hostOperationRequest(value,schema){
  let v,a,b,i;try{
   v=own(data(value),['schema','allocation','binding','hostIdentity','nonce']);
-  a=assertHostAllocation(v.allocation);b=assertHostRunBinding(a,v.binding);i=assertD005HostIdentity(v.hostIdentity,b,a);
+  // Every NAMED browser/SDK/Bash authority path refuses a native-processing allocation here.
+  a=assertBrowserHostAllocation(v.allocation);b=assertHostRunBinding(a,v.binding);i=assertD005HostIdentity(v.hostIdentity,b,a);
  }catch{fail();}
  if(v.schema!==schema||typeof v.nonce!=='string'||!HEX.test(v.nonce))fail();
  return Object.freeze({schema,allocation:a,binding:b,hostIdentity:i,nonce:v.nonce});
@@ -98,6 +155,7 @@ export const hostFactsRequest=value=>hostOperationRequest(value,HOST_FACTS_REQUE
 export const hostWorkflowRequest=value=>hostOperationRequest(value,HOST_WORKFLOW_REQUEST_SCHEMA);
 export const hostHoldRequest=value=>hostOperationRequest(value,HOST_HOLD_REQUEST_SCHEMA);
 
+const same=(a,b)=>canonicalSha256(a)===canonicalSha256(b);
 const envelope=(value,request,schema,field)=>{let v;try{
   v=own(data(value),['schema','nonce',field,'checkedAtMs','currentUntilMs']);
   if(v.schema!==schema||v.nonce!==request.nonce||!Number.isSafeInteger(v.checkedAtMs)||
@@ -114,6 +172,48 @@ export function hostHoldResponse(value,request){let v;try{
  }catch{fail();}
  return Object.freeze({schema:HOST_HOLD_RESPONSE_SCHEMA,nonce:v.nonce,outcome:'APPLIED',custody:v.custody,
   checkedAtMs:v.checkedAtMs,currentUntilMs:v.currentUntilMs});}
+
+export const HOST_RECEIPT_PATH='/meri/host/receipt/v1';
+export const HOST_RECEIPT_REQUEST_SCHEMA='meri-host-receipt-request/1';
+export const HOST_RECEIPT_RESPONSE_SCHEMA='meri-host-receipt-response/1';
+export const HOST_RECEIPT_MAX_BYTES=16384;
+export const HOST_RECEIPT_ENVELOPE_BYTES=4096;
+export const HOST_RECEIPT_WIRE_MAX_BYTES=HOST_RECEIPT_MAX_BYTES+HOST_RECEIPT_ENVELOPE_BYTES;
+
+/** The named action receipt: envelope + the PostToolUse payload. The host never supplies scopes. */
+export function hostReceiptRequest(value){
+ let v,a,b,i,r;try{
+  v=own(data(value),['schema','allocation','binding','hostIdentity','nonce','receipt']);
+  a=assertHostAllocation(v.allocation);b=assertHostRunBinding(a,v.binding);i=assertD005HostIdentity(v.hostIdentity,b,a);
+  r=assertBrowserActionReceipt(data(v.receipt));
+  // The receipt's OWN binding must be the admitted one; a foreign claim is refused, never overwritten.
+  if(!same(r.binding,v.binding))fail();
+  if(r.kind!=='browser.action')fail();
+ }catch{fail();}
+ if(v.schema!==HOST_RECEIPT_REQUEST_SCHEMA||typeof v.nonce!=='string'||!HEX.test(v.nonce))fail();
+ return Object.freeze({schema:HOST_RECEIPT_REQUEST_SCHEMA,allocation:a,binding:b,hostIdentity:i,nonce:v.nonce,receipt:r});
+}
+/** The answer carries the producer's ACTUAL durable acknowledgement, never a synthesized one. */
+export function hostReceiptResponse(value,request){
+ let v;try{
+  v=own(data(value),['schema','nonce','eventId','recorded','event','checkedAtMs','currentUntilMs']);
+  if(v.schema!==HOST_RECEIPT_RESPONSE_SCHEMA||v.nonce!==request.nonce||v.recorded!==true||
+   typeof v.eventId!=='string'||!v.event||typeof v.event!=='object')fail();
+  if(!Number.isSafeInteger(v.checkedAtMs)||!Number.isSafeInteger(v.currentUntilMs)||v.currentUntilMs<=v.checkedAtMs)fail();
+  // A REAL conversation event acknowledgement, not a schema-only object: canonical event shape, the browser
+  // receipt type, the DETERMINISTIC identity for this binding/session/tool use, the exact binding and the
+  // exact submitted canonical receipt as its data.
+  const event=assertConversationEvent(data(v.event));
+  if(!isBrowserReceiptEventType(event.type))fail();
+  const expected=browserActionReceiptEventId({binding:request.binding,sessionId:request.receipt.sessionId,
+   toolUseId:request.receipt.toolUseId});
+  if(v.eventId!==expected||event.eventId!==expected)fail();
+  if(!same(event.binding,request.binding))fail();
+  if(!same(event.data,request.receipt))fail();
+ }catch{fail();}
+ return Object.freeze({schema:HOST_RECEIPT_RESPONSE_SCHEMA,nonce:v.nonce,eventId:v.eventId,recorded:true,
+  event:v.event,checkedAtMs:v.checkedAtMs,currentUntilMs:v.currentUntilMs});
+}
 
 export function encodeHostOperation(value,max){return encodeHostControl(value,max);}
 export function decodeHostOperation(bytes,max){return decodeHostControl(bytes,max);}
