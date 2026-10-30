@@ -382,7 +382,7 @@ test('plan pins the change-set order, real paths and current bytes; 0012 and 001
   '0001_settings.sql','0001_commands.sql','0001_approval_metadata.sql','0001_intent_preparations.sql','0001_schedule_owner.sql','0002_occurrences.sql','0003_run_cancel_proofs.sql','0004_read_consent.sql',
   '0001_task_lookup.sql','0001_objective_custody.sql','0002_objective_run_starts.sql','0003_objective_reader_replays.sql','0001_versions.sql','0002_retention.sql','0003_previews.sql','0001_memory_candidates.sql','0001_read_delegation_facts.sql','0002_prepared_approval_facts.sql','first-chat-database-integration.sql#integration_grants','0020_initial_generations.sql','0021_sdk_run_usage.sql','0022_sdk_run_usage_grants.sql',
   '0018_memory_candidate_targets.sql','0019_memory_proposal_contexts.sql','0002_candidate_retention_delete.sql','first-chat-native-retention-grants.sql',
-  '0024_general_initial_binding_scope.sql','0002_memory_preparation_tombstone.sql','0023_expired_conversation_purge.sql','first-chat-expired-conversation-purge-grants.sql','0003_native_routine_facts.sql','0004_objective_run_start_retention.sql','0025_retention_target_lookup.sql','first-chat-schedule-worker-grants.sql#schedule_worker_grants','0026_retention_target_dispatch.sql','0002_tenant_settings_control_grants.sql','0027_retention_target_projection.sql','0028_retention_sdk_identity.sql','0029_native_correction_feedback.sql','0005_management_preparations.sql','0006_management_preparation_grants.sql','0001_upload_custody.sql','0002_control_grants.sql','0030_child_assignments.sql','0007_source_events.sql','0008_source_event_grants.sql','0009_management_consent_renewals.sql','0031_upload_retention_targets.sql','first-chat-core-retention-serving.sql#core_retention_serving','first-chat-browser-host-roles.sql#browser_host_roles','0001_host_allocations.sql','0002_verified_teardown.sql','first-chat-browser-host-control-grants.sql#browser_host_control_grants']);
+  '0024_general_initial_binding_scope.sql','0002_memory_preparation_tombstone.sql','0023_expired_conversation_purge.sql','first-chat-expired-conversation-purge-grants.sql','0003_native_routine_facts.sql','0004_objective_run_start_retention.sql','0025_retention_target_lookup.sql','first-chat-schedule-worker-grants.sql#schedule_worker_grants','0026_retention_target_dispatch.sql','0002_tenant_settings_control_grants.sql','0027_retention_target_projection.sql','0028_retention_sdk_identity.sql','0029_native_correction_feedback.sql','0005_management_preparations.sql','0006_management_preparation_grants.sql','0001_upload_custody.sql','0002_control_grants.sql','0030_child_assignments.sql','0007_source_events.sql','0008_source_event_grants.sql','0009_management_consent_renewals.sql','0031_upload_retention_targets.sql','first-chat-core-retention-serving.sql#core_retention_serving','first-chat-browser-host-roles.sql#browser_host_roles','0001_host_allocations.sql','0002_verified_teardown.sql','first-chat-browser-host-control-grants.sql#browser_host_control_grants','0003_browser_only_teardown.sql']);
  assert.deepEqual(plan.slice(63,65).map(({ordinal,path})=>({ordinal,path})),[
   {ordinal:64,path:'apps/control/uploads/migrations/0001_upload_custody.sql'},
   {ordinal:65,path:'apps/control/uploads/migrations/0002_control_grants.sql'}]);
@@ -847,13 +847,26 @@ test('Core retention appends one guarded installer phase and preserves the exact
  assert.throws(()=>loadPlan({read:path=>Buffer.from(read(path)+(path===entry.path?'\n':''))}),/MERI_D2_SOURCE_CHANGED/u);
 });
 
+test('browser-only teardown appends to the exact 75-entry ledger without replaying earlier migrations',async()=>{
+ const plan=loadPlan(),entry=plan[75];
+ assert.equal(createHash('sha256').update(JSON.stringify(PLAN.slice(0,75))).digest('hex'),'db0df4c6091ea0908e2b56628dbf081151e71bc2574b4c604a7a2873bec15893');
+ assert.deepEqual([entry.ordinal,entry.kind,entry.path,entry.stage],[76,'migration','apps/control/browser-hosts/migrations/0003_browser_only_teardown.sql','integration']);
+ const db=databaseWithLedger(plan,75),prefix=structuredClone(db.state.ledger);
+ await runStage({stage:'integration',plan,variables,connect:db.connect});
+ assert.deepEqual(db.state.ledger.slice(0,75),prefix);assert.equal(db.state.ledger.length,76);
+ assert.equal(db.state.queries.filter(q=>q.includes('ADD CONSTRAINT host_allocation_placement')).length,1);
+ await runStage({stage:'integration',plan,variables,connect:db.connect});
+ assert.equal(db.state.queries.filter(q=>q.includes('ADD CONSTRAINT host_allocation_placement')).length,1);
+ assert.doesNotMatch(entry.text,/CREATE ROLE|GRANT |DROP TABLE|DELETE FROM/u);
+});
+
 test('browser host delta preserves 71 entries, installs roles before owner migrations and keeps control readonly',async()=>{
- const plan=loadPlan(),delta=plan.slice(71);
+ const plan=loadPlan(),delta=plan.slice(71,75);
  assert.equal(createHash('sha256').update(JSON.stringify(PLAN.slice(0,71))).digest('hex'),'b11252db80333ce974162b1d53155a82c204a723478c34975ed87b618668ce0a');
  assert.deepEqual(delta.map(e=>[e.ordinal,e.kind,e.stage]),[[72,'phase:browser_host_roles','integration'],[73,'migration','integration'],[74,'migration','integration'],[75,'phase:browser_host_control_grants','integration']]);
  const db=databaseWithLedger(plan,71),prefix=structuredClone(db.state.ledger);
  await runStage({stage:'integration',plan,variables,connect:db.connect});
- assert.deepEqual(db.state.ledger.slice(0,71),prefix);assert.equal(db.state.ledger.length,75);
+ assert.deepEqual(db.state.ledger.slice(0,71),prefix);assert.equal(db.state.ledger.length,76);
  const roles=db.state.queries.findIndex(q=>q.includes('MERI_BROWSER_HOST_ROLE_COLLISION'));
  const table=db.state.queries.findIndex(q=>q.includes('CREATE TABLE meri_host_control.host_allocations'));
  assert.ok(roles>=0&&table>roles);
