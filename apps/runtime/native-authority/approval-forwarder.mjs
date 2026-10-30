@@ -43,6 +43,7 @@ import {readJsonResponse,responseBody,cancelBody} from '../../gateway/sources/js
 import {intentFault,INTENT_FAILURE_CODES} from '../../control/intents/faults.mjs';
 import {nativeApprovalScope} from './approval-session.mjs';
 import {nativeTaskOutcome,nativeTaskNotExecuted} from '../../control/intents/task-outcome.mjs';
+import {createBrowserApprovalOperations} from './browser-approvals.mjs';
 import {nativeMailOutcome} from '../../control/intents/mail-outcome.mjs';
 export const CORE_APPROVAL_ROUTES=Object.freeze({record:'/api/clio/approvals/native/record',decision:'/api/clio/approvals/native/decision',revoke:'/api/clio/approvals/native/revoke',execute:'/api/clio/approvals/native/execute',executionRead:'/api/clio/approvals/native/execution/read'});
 export const APPROVAL_FORWARDER_OPERATIONS=Object.freeze(['approval/record','approval/decision','approval/read','approval/revoke']);
@@ -281,6 +282,12 @@ export function createCoreApprovalForwarder(options){
    return data({tenantId:v.tenantId,actorId:v.actorId,bearerToken:first.credential,serviceSecret,expiresAtMs:Math.min(first.expiresAtMs,last.expiresAtMs)});
   }finally{life.close();}
  }
+ // Browser approvals reuse THIS transport: the same bounded lifetime, attended post (native bearer +
+ // verified service secret + fresh session checks) and the same canonical proposal/session readers.
+ const browserApprovals=createBrowserApprovalOperations({now,transport:{
+  lifetime,post:(life,route,args)=>post(life,route,args),
+  proposal:(life,{proposalId,binding})=>custody(life,binding,proposalId),
+  selected:(life,proposal)=>selection(life,proposal)}});
  /** The provider RPC seam `call(operation,input,{signal})` for `createNativeIntentApprovals`; other operations are UNAVAILABLE. */
  async function call(operation,input,options={}){
   const {signal,deadlineMs}=own(options,[],['signal','deadlineMs']);
@@ -289,9 +296,13 @@ export function createCoreApprovalForwarder(options){
   if(operation==='approval/decision')return decision({...own(input,['proposalId','commandSha256','binding']),...extra});
   if(operation==='approval/read')return read({...own(input,['proposalId','binding','scopes']),...(signal===undefined?{}:{signal})});
   if(operation==='approval/revoke')return revoke({...own(input,['proposalId','commandSha256','approver','binding']),...extra});
+  if(operation==='browser/record')return browserApprovals.record({...own(input,['proposalId','subjectSha256','decision','approver','binding']),...extra});
+  if(operation==='browser/consume')return browserApprovals.consume({...own(input,['proposalId','subjectSha256','binding']),...extra});
+  if(operation==='browser/status')return browserApprovals.status({...own(input,['proposalId','subjectSha256','binding']),...extra});
+  if(operation==='browser/result')return browserApprovals.result({...own(input,['proposalId','subjectSha256','binding','outcome','result']),...extra});
   refuse('UNAVAILABLE');
  }
- return Object.freeze({origin,operations:APPROVAL_FORWARDER_OPERATIONS,call,record,decision,read,revoke,filingCredentials,
+ return Object.freeze({origin,operations:APPROVAL_FORWARDER_OPERATIONS,call,record,decision,read,revoke,filingCredentials,browserApprovals,
   async executeTask(value){return nativeEffect(value,false,'task');},
   async readTaskExecution(value){return nativeEffect(value,true,'task');},
   async executeMemory(value){return nativeEffect(value,false,'memory');},

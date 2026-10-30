@@ -186,6 +186,11 @@ function compose(context,transport){
   /** Original proposal plus current attended session; Core owns task mutation and durable replay. */
   tasks:core?Object.freeze({execute:value=>core.forwarder.executeTask(value),read:value=>core.forwarder.readTaskExecution(value)}):null,
   memory:core?Object.freeze({execute:value=>core.forwarder.executeMemory(value),read:value=>core.forwarder.readMemoryExecution(value)}):null,
+  // Browser self-approval reuses the same Core forwarder transport; nothing here is a new stack.
+  browser:core?Object.freeze({record:value=>core.forwarder.browserApprovals.record(value),
+   consume:value=>core.forwarder.browserApprovals.consume(value),
+   status:value=>core.forwarder.browserApprovals.status(value),
+   result:value=>core.forwarder.browserApprovals.result(value)}):null,
   mail:core?Object.freeze({execute:value=>core.forwarder.executeMail(value),read:value=>core.forwarder.readMailExecution(value)}):null,
   filingSource:core?createCoreFilingClient({origin:core.forwarder.origin,credentials:{getCredentials:value=>core.forwarder.filingCredentials(value)},now,
    maxRequestMs:Math.min(c.configuration.limits.requestMs,30000),...(transport.fetchImpl?{fetchImpl:transport.fetchImpl}:{})}):null,
