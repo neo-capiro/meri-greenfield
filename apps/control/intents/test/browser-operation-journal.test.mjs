@@ -48,8 +48,11 @@ test('the descriptor digest is the only browser content in the SQL record and ne
  assert.equal(browserOperationArgumentsSha256(assertBrowserOperationDescriptor({schema:'meri-browser-operation-descriptor/1',...request()})),sha);
  // A changed tool, input, policy or binding changes the digest; the identity is domain separated.
  assert.notEqual(browserOperationArgumentsSha256(assertBrowserOperationDescriptor({schema:'meri-browser-operation-descriptor/1',...request({tool:'browser_type'})})),sha);
- assert.notEqual(browserExecutionDeliveryId({binding,requestId:request().requestId}),
-  browserApprovalDeliveryId({binding,requestId:request().requestId}));
+ // Approval identity keys on the SDK tool-use + proposal, never the MCP requestId, and stays separate.
+ const approvalId=browserApprovalDeliveryId({binding,toolUseId:'toolu_01HZX',
+  proposalId:'00000000-0000-4000-8000-00000000000a'});
+ assert.match(approvalId,/^browser:[0-9a-f]{64}$/u);
+ assert.notEqual(browserExecutionDeliveryId({binding,requestId:request().requestId}),approvalId);
 });
 
 test('a browser call is claimed before dispatch and never dispatched twice',async()=>{
@@ -99,12 +102,13 @@ test('the verify read distinguishes absent, in-flight, dispatched and refused wi
 
 test('the journal admits the internal operation, keeps sdk rows public and separates the domains',async()=>{
  const source=readFileSync(new URL('../postgres-journal.mjs',import.meta.url),'utf8');
- assert.match(source,/INTERNAL_OPERATIONS=Object\.freeze\(\['browser_action@0\.2\.0'\]\)/u);
+ assert.match(source,/INTERNAL_OPERATIONS=Object\.freeze\(\['browser_action@0\.2\.0','browser_approval_preparation@0\.2\.0'\]\)/u);
  assert.match(source,/delivery_id LIKE 'sdk:%'/u,'the public list stays sdk-only');
  assert.match(source,/\^\(\?:sdk\|browser\):\[a-f0-9\]\{64\}\$/u,'row keys accept both families');
  // An execution delivery never equals an approval delivery for the same binding and request.
  assert.notEqual(browserExecutionDeliveryId({binding,requestId:'c'.repeat(64)}),
-  browserApprovalDeliveryId({binding,requestId:'c'.repeat(64)}));
+  browserApprovalDeliveryId({binding,toolUseId:'toolu_01HZX',
+   proposalId:'00000000-0000-4000-8000-00000000000b'}));
 });
 
 test('the migration is appended exactly once at ordinal 77 and only widens the delivery identity',()=>{

@@ -61,20 +61,10 @@ export const browserExecutionDeliveryId=({binding,requestId})=>delivery(BROWSER_
 export function browserApprovalDeliveryId({binding,toolUseId,proposalId}){
  validateShape('RunBinding',data(binding));
  if(typeof toolUseId!=='string'||toolUseId.length===0||toolUseId.length>512||!/^\S+$/u.test(toolUseId))deny();
- if(typeof proposalId!=='string'||!/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/u.test(proposalId))deny();
+ if(typeof proposalId!=='string'||proposalId.length===0||proposalId.length>128)deny();
  const digest=canonicalSha256({domain:BROWSER_APPROVAL_DOMAIN,binding:data(binding),toolUseId,proposalId});
  return `browser:${digest}`;
 }
-/** The deterministic proposal identity for one browser approval: the same binding, SDK tool-use and subject
- * always name the same proposal, so a repeat recovery is not a new proposal. */
-export function browserPreparationProposalId({binding,toolUseId,subjectSha256}){
- validateShape('RunBinding',data(binding));
- if(typeof toolUseId!=='string'||toolUseId.length===0||!/^\S+$/u.test(toolUseId))deny();
- if(typeof subjectSha256!=='string'||!/^[0-9a-f]{64}$/u.test(subjectSha256))deny();
- const h=canonicalSha256({domain:'meri-browser-approval-proposal/1',binding:data(binding),toolUseId,subjectSha256});
- return `${h.slice(0,8)}-${h.slice(8,12)}-4${h.slice(13,16)}-8${h.slice(17,20)}-${h.slice(20,32)}`;
-}
-/** True only for a row this module owns: the prefix AND the execution domain derivation. */
 export function isBrowserExecutionDeliveryId(deliveryId,binding,requestId){
  try{return typeof deliveryId==='string'&&deliveryId===browserExecutionDeliveryId({binding,requestId});}catch{return false;}
 }

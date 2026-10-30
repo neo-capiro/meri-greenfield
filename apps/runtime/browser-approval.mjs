@@ -16,8 +16,7 @@
 import {own,data,nativeSignal} from '../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {createBrowserPreparationProducer} from '../control/commands/approval-metadata/browser-preparation-producer.mjs';
 import {createTransactionalApprovalMetadataStore} from '../control/commands/approval-metadata/postgres-store.mjs';
-import {createBrowserApprovalPreparationOwner} from '../control/commands/approval-metadata/browser-preparation-journal.mjs';
-import {browserPreparationProposalId} from '../../packages/contracts/runtime-0.2/browser-operation.mjs';
+import {browserPreparationProposalId,assertBrowserApprovalRequest} from '../../packages/contracts/runtime-0.2/browser-approval-preparation.mjs';
 import {canonicalSha256} from '../../packages/contracts/validate.mjs';
 import {projectCapabilityRole} from './product-ports/capability-policy.mjs';
 const fail=code=>{throw Object.assign(new Error(code),{code});};
@@ -26,8 +25,8 @@ const DENIED='BROWSER_APPROVAL_REFUSED',UNKNOWN='BROWSER_APPROVAL_UNKNOWN';
 const TERMINAL=new Set(['rejected','revoked','expired']);
 
 export function createBrowserApprovalOwner(configuration){
- const c=own(configuration,['journal','pool','readCapabilityRole','readBrowserPolicy','ports'],
-  ['now','limits','wait','store','claim']);
+ const c=own(configuration,['journal','pool','readCapabilityRole','readBrowserPolicy','ports','preparations'],
+  ['now','limits','store']);
  const {journal,pool,readCapabilityRole,readBrowserPolicy,ports}=c;
  if(typeof journal?.withCurrentRun!=='function'||!pool||typeof pool.connect!=='function'||
   typeof readCapabilityRole!=='function'||typeof readBrowserPolicy!=='function'||
@@ -56,22 +55,31 @@ export function createBrowserApprovalOwner(configuration){
   const signal=nativeSignal(v.signal),binding=data(v.binding);
   const deadlineMs=v.deadlineMs??now()+requestMs;
   const approver=Object.freeze({tenantId:binding.tenantId,actorId:binding.actorId});
-  const request=v.request;
-  if(!request||typeof request.subject?.toolUseId!=='string'||typeof request.subjectSha256!=='string')
-   fail(DENIED);
+  let request;
+  try{request=assertBrowserApprovalRequest(v.request);}catch{throw fail(DENIED);}
+  // The original request's own complete binding must be the acting one, before any claim is made.
+  if(canonicalSha256(data(request.subject.binding))!==canonicalSha256(binding))throw fail(DENIED);
+  if(request.subject.binding.tenantId!==binding.tenantId)throw fail(DENIED);
   // The proposal identity is deterministic, so a repeat from a NEW owner recovers it instead of creating
   // a second proposal. No clock, lease or checkedAt enters the identity.
-  const proposalId=browserPreparationProposalId({binding,toolUseId:request.subject.toolUseId,
-   subjectSha256:request.subjectSha256});
+  const proposalId=browserPreparationProposalId({binding,toolUseId:request.subject.toolUseId});
   const requestSha256=canonicalSha256(request);
   let durable;
   try{durable=await c.preparations.claim({binding,toolUseId:request.subject.toolUseId,proposalId,requestSha256,
    ...(signal===undefined?{}:{signal})});}
-  catch(error){if(signal?.aborted)throw error;throw fail(UNKNOWN);}
+  catch(error){
+   // A retained conflict/refusal keeps its code; only an uncertain claim is UNKNOWN.
+   if(signal?.aborted)throw error;
+   if(error?.code&&error.code!=='UNKNOWN')throw error;
+   throw fail(UNKNOWN);
+  }
   if(durable.dispatch!==true){
    if(durable.variant!=='replayed'||!durable.preparation)throw fail(UNKNOWN);
-   return Object.freeze({record:null,proposalId:durable.preparation.proposalId,
-    subjectSha256:request.subjectSha256,binding:Object.freeze(data(binding)),recovered:true,deliveryId:durable.deliveryId});
+   const saved=data(durable.preparation);
+   if(saved.requestSha256!==requestSha256)throw fail('BROWSER_PREPARATION_CONFLICT');
+   return Object.freeze({record:saved.record??null,proposalId:saved.proposalId,
+    subjectSha256:saved.subjectSha256??request.subjectSha256,binding:Object.freeze(data(binding)),
+    recovered:true,deliveryId:durable.deliveryId});
   }
   const pinned=await role({signal,deadlineMs});
   // Re-resolved on every producer authority pass: a changed canonical role refuses.
@@ -87,7 +95,8 @@ export function createBrowserApprovalOwner(configuration){
   if(!record||record.proposalId!==proposalId)fail(DENIED);
   // PREPARED is settled only after the metadata owner acknowledged; a lost settle stays unresolved.
   try{await c.preparations.settle({binding,toolUseId:request.subject.toolUseId,proposalId,requestSha256,
-   preparation:{proposalId,subjectSha256:record.request.subjectSha256,requestSha256},
+   preparation:{proposalId,subjectSha256:record.request.subjectSha256,requestSha256,
+    record,recordSha256:canonicalSha256(record)},
    ...(signal===undefined?{}:{signal})});}
   catch(error){if(signal?.aborted)throw error;throw fail(UNKNOWN);}
   return Object.freeze({record,proposalId,subjectSha256:record.request.subjectSha256,
