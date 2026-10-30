@@ -19,13 +19,13 @@
     },
     {
       "path": "conversation-lifecycle/receive.mjs",
-      "sha256": "f4c151241d75183c47dfa1e6591e2b9f5638980b373dbb9de40250c638a24ad1",
-      "bytes": 3740
+      "sha256": "bbae33303a633746c1643924f55f1f8297762581675cff6d895a0790cfa3091f",
+      "bytes": 3850
     },
     {
       "path": "conversation-lifecycle/schema.mjs",
-      "sha256": "fdcb8449a3158e6ad2235f953d60ffeed85f5f389999e74b47757f82142600b0",
-      "bytes": 2514
+      "sha256": "b7f50f1f0ff34255711d3ebbd63519d4394d9333b154adb688d0b892deebe019",
+      "bytes": 2603
     },
     {
       "path": "conversation-lifecycle/shape.mjs",
@@ -34,8 +34,8 @@
     },
     {
       "path": "conversation-lifecycle/validate.mjs",
-      "sha256": "a2d862df82b13ea2e1440653365970526015d3ab573a3a3260580b779bd079a4",
-      "bytes": 8521
+      "sha256": "ec522e0b9db56790d7f6d88e4e080b157af4b9146e55ae5cd5a45a0f62251679",
+      "bytes": 8735
     },
     {
       "path": "dist/conversation-application.mjs",
@@ -53,7 +53,7 @@
       "bytes": 50043
     }
   ],
-  "schemaSha256": "27ed7b6809159b0696691fb0098ebdd1e4ccc4ccd2bb3f76d419c343b42822b5",
+  "schemaSha256": "9aa18ca9279addfb6fd04f96af1a19b487921344f63565287b4be85a20c23a0c",
   "browserInputs": [
     "artifacts-0.2/artifact-formats.mjs",
     "conversation-generated:./generated-validator.mjs",
