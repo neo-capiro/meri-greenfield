@@ -1,0 +1,146 @@
+# Browser control composition — shared Runtime/Control (SCRUM-221)
+
+Date: 2026-10-30. Author session: Hermes 20261028_170326_d580c5.
+Branch `codex/browser-control-221-20261030`. Source only: nothing pushed, built or deployed.
+
+## What this covers
+
+The shared Control side of the private browser-host integration: composing the existing
+currentness/allocation/router owners, declaring their protected material, and producing the canonical
+run facts the host needs. The host-side consumer (`apps/worker/conversation/host/**`), the browser-host
+service (`apps/runtime/browser-host-service/**`) and any new route on the host channel remain with
+their owners.
+
+## Implemented source
+
+* `apps/runtime/browser-host-configuration.mjs` — `compileBrowserHostConfiguration(configuration)`:
+  closed `browserHosts` declaration (private client TLS, optional host-currentness server material and
+  bind, request/currentness/lease budgets). Absent or `enabled:false` composes nothing; unknown keys,
+  relative paths and a bind without server material refuse.
+* `apps/runtime/browser-host-composition.mjs` — `readBrowserHostMaterial` and
+  `createBrowserHostComposition`: the real `createBrowserHostCurrentness`,
+  `createPostgresHostAllocationReader` (bound to `currentness.readRoute`), `createBrowserHostRouter`,
+  and — when declared — `createPostgresHostCurrentnessStore` over the acknowledged Control transaction
+  plus `createHostCurrentnessServer`. Exposes `readCanonicalFacts` for the protected nonce store,
+  a late-bound live `siteWorkflows` port, and `start`/`close` with defined races.
+* `apps/runtime/browser-host-run-facts.mjs` — `createBrowserHostRunFacts` (facts on the caller's own
+  transaction client, saved selection read from that same canonical row, shared policy validators,
+  successor/held/missing-deadline refusal) and `createBrowserHostSiteWorkflowPort` (selectedClientId
+  from saved scopes, `service.siteWorkflowResolve` per call).
+* `packages/contracts/runtime-0.2/browser-host-facts.mjs` — `meri-browser-host-facts/3` wire:
+  closed shape, mandatory canonical digests, shared scope validation, named metadata bound and the
+  named base64 artifact bounds.
+* `apps/control/browser-hosts/currentness.mjs` — a third `readFacts` projection; `readHost`/`readRoute`
+  responses are unchanged so the protected currentness store keeps validating its closed state.
+* `apps/runtime/control.mjs` — compiles the declaration once at the startup caller, loads the declared
+  material, composes and joins the port before consumers, starts the listener before the public bind,
+  late-binds the site-workflow port to the assembled service, and retires everything on failure with
+  cleanup failures surfaced.
+* `apps/runtime/agentcore-candidate.mjs`, `apps/runtime/product-applications.mjs` — the candidate's own
+  Core authority client as `browserHostCore` (not `transitionAuthority`, which reacquires locks).
+
+## Limits and gaps (not "done")
+
+* Human browser approval: the canonical producer is still missing. `run.fragment.canUseTool` →
+  `approvals.decide` *consumes* a decision; Control has only `ports.approvals` (read/readDecision) and
+  `apps/control/commands/approval-metadata/postgres-store.mjs` (read). The authenticated decision plus
+  its one-time consumption receipt, on a long-lived (1000–900000 ms) host→Control operation with its own
+  deadline domain, is a required next source item.
+* `artifacts.ingest` / `receipts.record`: Control exposes the artifact store port
+  (`ports.artifactStore.objects.put/get`) and `apps/control/document-application/selected-output/receipts.mjs`,
+  but no browser ingest/receipt owner or transport exists. Exact shapes and the deterministic
+  idempotency key are recorded in EARLY-CONTRACT-03; artifact bytes need the named 34952536/35018072
+  bound.
+* Custody hold: `store.lifecycle.browserCustody` exposes `currentHost` only; there is no hold export in
+  Control and none was invented.
+* Protected facts route/store/client deltas (`/meri/host/facts/v1`, facts store, client method) remain
+  with the host channel owner.
+* No PG/native/deployed acceptance; source activation stays held.
+
+## Subsequent corrections (see HANDOFF-07 / EARLY-CONTRACT-07 / EARLY-CORE-GAP-07)
+
+* The facts projection now reads `row.request` (never `projection.request`) and supports truthful
+  `browser-held` / `browser-successor` documents (browser custody, SDK/Bash denied, current browser
+  policy, no capability policy). `readHost`/`readRoute` responses are unchanged.
+* The live workflow resolver uses the existing `createCoreSiteWorkflowAdmission` product port with the
+  saved selection/scopes/versions — no action-session issuer, no credential in Control's port.
+* Startup cleanup accumulates failures and always runs every owned teardown; the composition waits for an
+  in-flight start and refuses to start after close.
+* Still missing, with exact owner paths in EARLY-CORE-GAP-07: Core browser-subject decision + one-time
+  consumption, artifact publication-authority issuer, lifecycle receipt writer, custody hold adapter.
+
+## Lifecycle cleanup (08)
+
+* `assembleControl` guards every constructor after the browser/session owners with ONE owned cleanup, so a
+  late failure (e.g. `uploadApplicationFactory.createSource`) retires the browser composition and the
+  session owner instead of leaking them; the browser-constructor catch uses the same path.
+* `startControl` accumulates cleanup failures and always runs the remaining teardown, so a rejecting
+  `controlCleanup` no longer skips pool/Temporal/candidate close.
+* Proved by tests: rejecting-`controlCleanup` through the real `startControl` (both failures preserved,
+  every teardown run, no orphaned rejection), a real late constructor failure after session/browser
+  creation, and the declared host-currentness listener start/close/failure/abort paths against the real
+  `createHostCurrentnessServer` with only its `node:https` boundary replaced by a mock module.
+* Still not implemented, and deliberately not attempted here: the browser approval / artifact ingest /
+  receipt / hold callbacks. Their canonical callers are in CANONICAL-CALLER-CONTRACT-20261030.txt; the
+  rejected `recordReceipt` proposal and any manually chained hold are withdrawn.
+
+## Prepared browser approval metadata (09)
+
+* `packages/contracts/runtime-0.2/browser-approval-preparation.mjs` — one closed versioned preparation
+  (`meri-browser-approval-preparation/1`) with the complete RunBinding, the exact tool-use subject,
+  the displayed input, the current scopes/required approver and a bounded expiry. Refusals are exact:
+  extra keys, substituted subject/input/binding/policy, foreign actor, expired or past-deadline.
+* `apps/control/commands/approval-metadata/browser-owner.mjs` — prepares and reads that preparation in
+  the EXISTING `meri_commands.approval_metadata` table through the existing store (no new table, column,
+  index or migration). Identity `proposalId` is deterministic per attempt+tool use and is only a
+  selector: a repeat re-reads and compares the stored row and resolves it, substituted contents refuse,
+  and a lost acknowledgement stays `APPROVAL_METADATA_UNKNOWN` with a `metadataReference` that the same
+  identity can read back. Currentness stays with the existing `preparePolicy` hook; no lock spans a
+  human wait or an effect, and a historical read never becomes a permit.
+* `browser-action-kind.mjs` + `command-kind.mjs` + `binding.mjs` — the browser variant is registered as
+  its own kind; a kind may now carry `assertContext`, because a browser context is per-preparation
+  rather than a static configured shape. Every native kind keeps the registry path unchanged.
+* `readback.mjs` — the browser action joins the EXISTING Core-only `/v1/internal/approval-metadata/read`
+  allowlist and returns the immutable record with real run custody only (never initial-binding custody,
+  never a new route, never a second store). The closed response shape is unchanged: the variant stays
+  explicit in `metadata.record.action`.
+* `packages/contracts/meri.schema.json` — RESTORED to its pre-09 bytes (verified sha256 `e3de8781…`).
+  The frozen generic `Command.action` enum is NOT widened for the browser: the browser variant is
+  admitted only by `browser-approval-preparation.mjs`'s own integrity validator, and
+  `assertProposalIntegrity`/`validateShape('Command')` refuse it, which is the intended native boundary.
+
+## Correction 10 (prepared-browser completion)
+
+* One operation identity everywhere: `{id:'browser_action',version:'0.2.0'}`. Action `browser.action`,
+  the subject schema and the tools are unchanged.
+* The stored preparation is the explicit `meri-browser-approval-preparation/1` mapping of the unchanged
+  host `meri-browser-approval-request/3`: only the outer schema tag differs, and the reverse mapping
+  reproduces the original request exactly. The complete RunBinding (attempt, worker, writer fence) and
+  the exact input/origin/window are preserved.
+* Four digests verified independently and never forced equal: `metadata.commandSha256` = sha256(C, the
+  internal envelope), `record.inputSha256` = sha256({arguments:A,attachments:[]}),
+  `request.subjectSha256` = sha256(S) — which is what Core's browser decision/receipt must carry — and
+  `subject.inputSha256` = sha256(I).
+* `browser-preparation-producer.mjs` is the request-local producer: current run authority from the
+  existing execution journal (`withCurrentRun` -> `readCurrentOnClient`) in one short transaction, the
+  canonical browser-policy reader resolved outside that lock and required to equal the subject's
+  `policySha256`, and the same authority re-checked before release. `run.policyRevision` (canonical
+  run/scopes/qualification revision) and `S.policySha256` (browser policy) stay separate identities.
+* A repeated identity resolves the stored row only while current authority is unchanged. Outcomes are
+  exact: refusal/deadline before a write is `NOT_STORED`; an exact ack followed by an authority refusal
+  is `STORED_NOT_RELEASED`; anything after an attempted insert without an exact acknowledgement —
+  including a late deadline or cancellation — is `APPROVAL_METADATA_UNKNOWN` with a `metadataReference`
+  that the same identity reads back.
+* The private readback keeps its closed four-key shape (`schemaVersion`, `commandSha256`, `metadata`,
+  `run`): there is NO top-level `action` key, and the variant is explicit in `metadata.record.action`.
+  Activation remains held; no route, listener or credential is created by any of this.
+
+Remaining, deliberately not built here: the one wiring call that constructs the producer at the
+authenticated host callback (it is exported from the metadata index and takes the existing
+`executions` journal, `createConfiguredRunBrowserPolicy(...)`, the existing metadata store and the
+configured approver identity), the approval transport, artifact ingress, receipt, custody hold, and the
+Core decision/consumption/results side. Activation stays held: nothing exposes the producer over a route.
+
+## Verification (local, in-process)
+
+See `HANDOFF-04.txt` beside the session outputs for exact commands, logs and results.

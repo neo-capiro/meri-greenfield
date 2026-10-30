@@ -33,7 +33,7 @@ const capturedArtifactRecovery=new WeakMap();
 export function readRuntimeArtifactRecovery(ports){if(!capturedPorts.has(ports))throw fault('PRODUCT_PORTS_CONFIGURATION');return capturedArtifactRecovery.get(ports.artifactStore)??null;}
 export function captureRuntimePorts(value={}){
  if(capturedPorts.has(value))return value;
- const c=own(value,[],['executionOwner','objectiveSelection','identityContext','transitionAuthority','continuationAdmission','approvals','actionApplication','actionApplicationFactory','taskCommandApplication','taskCommandApplicationFactory','routinesApplicationFactory','uploadApplicationFactory','conversationMembership','conversationCurrentness','conversationManagement','conversationSourceReader','conversationTurns','artifactOptionsOwner','selectedController','sdkSessionOwner','sdkSessionSnapshot','selectedSkillAdmission','selectedOutputPublication','procedureAdmission','siteWorkflowAdmission','artifactStore','retentionLedgerSink','retentionStorage','intentApplication','settingsApplication','memoryApplication','browserHosts']);
+ const c=own(value,[],['executionOwner','objectiveSelection','identityContext','transitionAuthority','continuationAdmission','approvals','actionApplication','actionApplicationFactory','taskCommandApplication','taskCommandApplicationFactory','routinesApplicationFactory','uploadApplicationFactory','conversationMembership','conversationCurrentness','conversationManagement','conversationSourceReader','conversationTurns','artifactOptionsOwner','selectedController','sdkSessionOwner','sdkSessionSnapshot','selectedSkillAdmission','selectedOutputPublication','procedureAdmission','siteWorkflowAdmission','artifactStore','retentionLedgerSink','retentionStorage','intentApplication','settingsApplication','memoryApplication','browserHosts','browserHostCore']);
  if(c.taskCommandApplication!==undefined&&c.taskCommandApplicationFactory!==undefined)throw fault('PRODUCT_PORTS_CONFIGURATION');
  if(c.actionApplication!==undefined&&c.actionApplicationFactory!==undefined)throw fault('PRODUCT_PORTS_CONFIGURATION');
  const methods=(port,names)=>Object.freeze(Object.fromEntries(names.map(name=>[name,storageMethod(port,name)])));
@@ -83,6 +83,9 @@ export function captureRuntimePorts(value={}){
   ...(c.intentApplication===undefined?{}:{intentApplication:methods(c.intentApplication,['handle'])}),
   ...(c.settingsApplication===undefined?{}:{settingsApplication:methods(c.settingsApplication,['handle'])}),
   ...(c.memoryApplication===undefined?{}:{memoryApplication:methods(c.memoryApplication,['handle'])}),
+  // The candidate's own Core authority HTTP client (readCurrent only). The higher transitionAuthority
+  // wrapper reacquires conversation locks and must not be used as the browser-host Core reader.
+  ...(c.browserHostCore===undefined?{}:{browserHostCore:methods(c.browserHostCore,['readCurrent'])}),
   ...(c.browserHosts===undefined?{}:{browserHosts:Object.freeze({...methods(c.browserHosts,['read','prepareResume','execute']),...(optionalMethod(c.browserHosts,'executeBrowserOperation')?{executeBrowserOperation:storageMethod(c.browserHosts,'executeBrowserOperation')}:{})})}),
  });
  capturedPorts.add(captured);return captured;

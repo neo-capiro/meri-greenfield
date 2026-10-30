@@ -6,6 +6,7 @@ import {taskKind} from './task-kind.mjs';
 import {memoryKind} from './memory-kind.mjs';
 import {artifactFileKind} from './artifact-file-kind.mjs';
 import {documentDraftKind} from './document-draft-kind.mjs';
+import {browserActionKind} from './browser-action-kind.mjs';
 import {deny} from '../protocol.mjs';
 
 const kinds=Object.freeze({
@@ -15,6 +16,7 @@ const kinds=Object.freeze({
  'memory.propose':memoryKind,
  'artifact.file':artifactFileKind('artifact.file'),
  'document.draft':documentDraftKind,
+ 'browser.action':browserActionKind,
 });
 
 export function commandKind(action){

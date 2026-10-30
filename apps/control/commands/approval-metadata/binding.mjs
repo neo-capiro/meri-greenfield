@@ -6,7 +6,13 @@ import {CommandError,data,deny,instant,own} from '../protocol.mjs';
 export {canonicalSha256,CommandError,data,deny,instant,own};
 export const operation=Object.freeze({id:'create_task',version:'0.2.0'}),action='task.create';
 export const same=(a,b)=>canonicalSha256(a)===canonicalSha256(b);
-export function context(value,kindAction=action){const c=data(value);validateCommandShape(commandKind(kindAction).contextShape,c);return c;}
+export function context(value,kindAction=action){
+ const kind=commandKind(kindAction),c=data(value);
+ // A kind may carry its own closed context validator when its context is per-preparation rather than a
+ // static configured shape; every existing kind keeps the registry path unchanged.
+ if(typeof kind.assertContext==='function')return data(kind.assertContext(c));
+ validateCommandShape(kind.contextShape,c);return c;
+}
 export function selected(value,c,kindAction=action){
  const v=data(value);own(v,['operation','action','binding']);
  if(!same(v.operation,commandKind(kindAction).operation)||v.action!==kindAction||!same(v.binding,c.binding))deny('COMMAND_PREPARATION_REFUSED');return v;

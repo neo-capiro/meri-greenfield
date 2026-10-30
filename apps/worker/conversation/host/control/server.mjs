@@ -3,20 +3,35 @@
 import https from 'node:https';
 import {privateAddress,dnsName,tlsBytes,checkedCertificate} from './tls.mjs';
 import {HOST_CONTROL_PATH,HOST_CONTROL_MAX_BYTES,hostControlRequest,hostControlResponse,
+ hostFactsRequest,hostFactsResponse,HOST_FACTS_PATH,HOST_FACTS_WIRE_MAX_BYTES,
+ hostWorkflowRequest,hostWorkflowResponse,HOST_WORKFLOW_PATH,HOST_WORKFLOW_WIRE_MAX_BYTES,
+ hostHoldRequest,hostHoldResponse,HOST_HOLD_PATH,HOST_HOLD_WIRE_MAX_BYTES,HOST_OPERATION_REQUEST_MAX_BYTES,
  hostClientDnsName,encodeHostControl,decodeHostControl} from './protocol.mjs';
 import {MAX_HOST_CURRENTNESS_MS} from '../binding.mjs';
 
 const fail=()=>{throw Object.assign(new Error('HOST_CONTROL_UNAVAILABLE'),{code:'HOST_CONTROL_UNAVAILABLE'});};
 const allowed=new Set(['host','content-type','content-length','connection']);
-function requestLength(req){
- if(req.httpVersion!=='1.1'||req.method!=='POST'||req.url!==HOST_CONTROL_PATH)fail();
+/** The three named operations are the only routes this listener serves; anything else is refused
+ * before a single body byte is read. Each route owns its request/answer validator and wire bound. */
+const ROUTES=new Map([
+ [HOST_CONTROL_PATH,{method:'readCurrent',requestMax:HOST_CONTROL_MAX_BYTES,max:HOST_CONTROL_MAX_BYTES,
+  request:value=>hostControlRequest(value)}],
+ [HOST_FACTS_PATH,{method:'readFacts',requestMax:HOST_OPERATION_REQUEST_MAX_BYTES,max:HOST_FACTS_WIRE_MAX_BYTES,
+  request:value=>hostFactsRequest(value),answer:(answer,q)=>hostFactsResponse(answer,q)}],
+ [HOST_WORKFLOW_PATH,{method:'resolveBrowserWorkflow',requestMax:HOST_OPERATION_REQUEST_MAX_BYTES,max:HOST_WORKFLOW_WIRE_MAX_BYTES,
+  request:value=>hostWorkflowRequest(value),answer:(answer,q)=>hostWorkflowResponse(answer,q)}],
+ [HOST_HOLD_PATH,{method:'holdBrowser',requestMax:HOST_OPERATION_REQUEST_MAX_BYTES,max:HOST_HOLD_WIRE_MAX_BYTES,
+  request:value=>hostHoldRequest(value),answer:(answer,q)=>hostHoldResponse(answer,q)}],
+]);
+function requestLength(req,routeMax){
+ if(req.httpVersion!=='1.1'||req.method!=='POST'||!Number.isSafeInteger(routeMax))fail();
  const raw=req.rawHeaders;if(!Array.isArray(raw)||raw.length%2!==0||raw.length<2)fail();
  const headers=new Map();for(let n=0;n<raw.length;n+=2){const name=raw[n].toLowerCase();
   if(!allowed.has(name)||headers.has(name))fail();headers.set(name,raw[n+1]);}
  if(!headers.get('host')||headers.get('content-type')!=='application/json'||
   headers.has('connection')&&headers.get('connection').toLowerCase()!=='close')fail();
  const length=headers.get('content-length');
- if(typeof length!=='string'||!/^[1-9][0-9]*$/u.test(length)||Number(length)>HOST_CONTROL_MAX_BYTES)fail();
+ if(typeof length!=='string'||!/^[1-9][0-9]*$/u.test(length)||Number(length)>routeMax)fail();
  return Number(length);
 }
 async function requestBody(req,length,signal){
@@ -39,7 +54,8 @@ function bounded(operation,signal){
  * acknowledged write transaction. A syntax-valid request or a verified TLS certificate alone is insufficient. */
 export function createHostCurrentnessServer({bind,tls,store,maxFreshMs,requestMs,maxConcurrent=32,maxSockets=maxConcurrent,
  now=Date.now,httpsModule=https}={}){
- if(!bind||!tls||typeof store?.readCurrent!=='function'||typeof now!=='function'||
+ if(!bind||!tls||typeof store?.readCurrent!=='function'||typeof store?.readFacts!=='function'||
+  typeof store?.resolveBrowserWorkflow!=='function'||typeof store?.holdBrowser!=='function'||typeof now!=='function'||
   typeof httpsModule?.createServer!=='function'||!Number.isSafeInteger(maxFreshMs)||maxFreshMs<1||
   maxFreshMs>MAX_HOST_CURRENTNESS_MS||!Number.isSafeInteger(requestMs)||requestMs<1||requestMs>5000||
   !Number.isSafeInteger(maxConcurrent)||maxConcurrent<1||maxConcurrent>128||
@@ -61,17 +77,18 @@ export function createHostCurrentnessServer({bind,tls,store,maxFreshMs,requestMs
   const stop=()=>requestLifetime.abort();lifetime.signal.addEventListener('abort',stop,{once:true});
   req.on('aborted',stop);res.on('close',stop);
   try{
-   const length=requestLength(req);
+   const route=ROUTES.get(req.url);if(!route)fail();
+   const length=requestLength(req,route.requestMax);
    if(req.socket.authorized!==true||typeof req.socket.getPeerCertificate!=='function')fail();
-   const q=hostControlRequest(decodeHostControl(await bounded(()=>requestBody(req,length,requestLifetime.signal),requestLifetime.signal)));
+   const q=route.request(decodeHostControl(await bounded(()=>requestBody(req,length,requestLifetime.signal),requestLifetime.signal),route.requestMax));
    const peerName=hostClientDnsName(q.allocation),peer=req.socket.getPeerCertificate(false);
    const certificate=checkedCertificate(peer?.raw,{name:peerName,nowMs:now(),notAfterMs:q.allocation.leaseDeadlineMs});
    if(closed||requestLifetime.signal.aborted)fail();
-   const answer=await bounded(()=>store.readCurrent({request:q,fingerprintSha256:certificate.fingerprintSha256,
+   const answer=await bounded(()=>store[route.method]({request:q,fingerprintSha256:certificate.fingerprintSha256,
     peerDnsName:peerName,signal:requestLifetime.signal}),requestLifetime.signal);
-   hostControlResponse(answer,q,{nowMs:now(),maxFreshMs});
+   if(route.method==='readCurrent')hostControlResponse(answer,q,{nowMs:now(),maxFreshMs});else route.answer(answer,q);
    if(closed||requestLifetime.signal.aborted)fail();
-   const bytes=encodeHostControl(answer);
+   const bytes=encodeHostControl(answer,route.max);
    res.writeHead(200,{'content-type':'application/json','content-length':String(bytes.length),'connection':'close'});
    res.end(bytes);
   }catch{if(res.destroyed){}else if(!res.headersSent){res.writeHead(503,{'content-length':'0','connection':'close'});res.end();}

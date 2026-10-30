@@ -15,12 +15,19 @@ import {HOST_ALLOCATION_SQL} from './postgres-allocations.mjs';
 import {createCurrentBrowserCoreAccess} from './current-core.mjs';
 import {createBrowserCustodyCurrentness} from './custody-currentness.mjs';
 
+/** `rowRun` keeps the immutable request on the ROW, beside `projection`; never inside it. Exported so the
+ * mapping is testable without a database. */
+export function savedRequestOf(row){return row?.request??null;}
 export function createBrowserHostCurrentness({store,core,nativeCredentials,capabilityPolicy,readBrowserPolicy,now=Date.now,maxRequestMs=3000}){
  const readExecution=storageMethod(store.executions,'readCurrentOnClient'),currentHost=storageMethod(store.lifecycle.browserCustody,'currentHost');
  const forRun=storageMethod(capabilityPolicy,'forRun'),readCore=createCurrentBrowserCoreAccess({core,nativeCredentials,now});
  if(typeof readBrowserPolicy!=='function'||typeof now!=='function'||!Number.isSafeInteger(maxRequestMs)||maxRequestMs<1||maxRequestMs>3000)fail();
  const retained=createBrowserCustodyCurrentness({journal:store.lifecycle.browserCustody,core,nativeCredentials,readBrowserPolicy,now,maxRequestMs});
- async function read(client,input,route){
+ /** `facts` selects the deliberate facts projection: the SAME checks, the same transaction client, with
+  * the canonical scopes, execution deadline and the policy VALUES this read already validated. The
+  * default readHost/readRoute responses stay exactly as they were (their consumer validates a closed
+  * shape), so facts can never be obtained by widening that response. */
+ async function read(client,input,route,facts=false){
   const v=own(input,['allocation','binding'],['signal','originalBinding','custody']);nativeSignal(v.signal);
   const allocation=assertHostAllocation(v.allocation),binding=assertHostRunBinding(allocation,v.binding);
   const life=createOperationLifetime({now,signal:v.signal,deadlineMs:Math.min(now()+maxRequestMs,allocation.leaseDeadlineMs),errorFactory:()=>Error('BROWSER_HOST_CURRENTNESS_REFUSED')});
@@ -37,7 +44,20 @@ export function createBrowserHostCurrentness({store,core,nativeCredentials,capab
    const held=source.projection.state==='paused'&&source.hold_control_id!=null;
    if(held&&(route||same(binding,original))){
     const state=await life.run(signal=>route?retained.readRoute(client,{allocation,originalBinding:original,binding,custody:v.custody,signal}):retained.readHost(client,{allocation,binding:original,signal}));
-    life.check();return {...state,browserAdmitted:state.browserAdmitted&&activationOpen(),currentUntilMs:Math.min(state.currentUntilMs,authorityCutoff)};
+    life.check();const held={...state,browserAdmitted:state.browserAdmitted&&activationOpen(),currentUntilMs:Math.min(state.currentUntilMs,authorityCutoff)};
+    if(!facts)return held;
+    // A held/successor run keeps legitimate browser custody while SDK and Bash stay denied. Its host-local
+    // policy consumer still needs the CURRENT browser policy, read through the same Core/session owners —
+    // no capability policy is claimed and no SDK/Bash admission is fabricated.
+    const heldScopes=source.projection.scopes;
+    const heldClient=heldScopes.length===1&&heldScopes[0].kind==='client'?heldScopes[0].resourceId:null;
+    const {receipt:heldAuthority,recheck:heldRecheck}=await readCore({binding,selectedClientId:heldClient,life});
+    const heldBrowser=validateBrowserPolicy(await life.run(signal=>readBrowserPolicy({binding,scopes:heldScopes,actorRole:heldAuthority.role,signal,deadlineMs:life.deadline()})));
+    const heldCutoff=Math.min(await heldRecheck(),held.currentUntilMs,heldAuthority.expiresAtMs);
+    life.check();
+    return {...held,browserAdmitted:heldBrowser.enabled&&activationOpen(),currentUntilMs:heldCutoff,sdkAdmitted:false,bashAdmitted:false,
+     scopes:heldScopes,deadlineMs:authorityCutoff,browserPolicy:heldBrowser,
+     savedRequest:savedRequestOf(source),originalBinding:original};
    }
    if(v.custody!=null)fail();
    // A retained physical host admits SDK/Bash only for its exact canonical
@@ -57,9 +77,17 @@ export function createBrowserHostCurrentness({store,core,nativeCredentials,capab
    const {receipt:authority,recheck}=await readCore({binding,selectedClientId,life});
    const policy=assertCapabilityPolicy(await life.run(signal=>forRun({tenantId:binding.tenantId,actorId:binding.actorId,conversationId:binding.conversationId,actorRole:authority.role,signal}))??{});
    const browser=validateBrowserPolicy(await life.run(signal=>readBrowserPolicy({binding,scopes:current.scopes,actorRole:authority.role,signal,deadlineMs:life.deadline()})));
-   const credentialCutoff=await recheck();life.check();return {binding,phase:'active',sdkAdmitted:true,bashAdmitted:policy.bash,browserAdmitted:browser.enabled&&activationOpen(),
+   const credentialCutoff=await recheck();life.check();const state={binding,phase:'active',sdkAdmitted:true,bashAdmitted:policy.bash,browserAdmitted:browser.enabled&&activationOpen(),
     capabilityPolicySha256:hash(policy),browserPolicySha256:hash(browser),currentUntilMs:Math.min(current.deadlineMs,authority.expiresAtMs,authorityCutoff,credentialCutoff)};
+   // The facts projection adds what the SAME read already loaded from the canonical row: the execution
+   // window, scopes, the saved request (authoritative selection source) and the policy VALUES. readHost
+   // and readRoute keep their exact closed response.
+   return facts?{...state,scopes:current.scopes,deadlineMs:current.deadlineMs,capabilityPolicy:policy,browserPolicy:browser,
+    savedRequest:savedRequestOf(source),originalBinding:original}:state;
   }finally{life.close();}
  }
- return Object.freeze({readHost:(client,input)=>read(client,input,false),readRoute:(client,input)=>read(client,input,true)});
+ // `readFacts` is the only way to obtain the wider projection, and it runs the identical checks on the
+ // caller's own transaction client. It never starts a transaction and never returns a held/custody state.
+ return Object.freeze({readHost:(client,input)=>read(client,input,false),readRoute:(client,input)=>read(client,input,true),
+  readFacts:(client,input)=>read(client,input,false,true)});
 }
