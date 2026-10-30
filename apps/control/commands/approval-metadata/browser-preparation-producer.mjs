@@ -21,7 +21,7 @@ const DENIED='BROWSER_PREPARATION_REFUSED';
 const CHANGED='BROWSER_PREPARATION_AUTHORITY_CHANGED';
 
 export function createBrowserPreparationProducer(configuration){
- const c=own(configuration,['journal','browserPolicy','store','approver','actorRole'],['now','maxRequestMs']);
+ const c=own(configuration,['journal','browserPolicy','store','approver','actorRole'],['now','maxRequestMs','newId']);
  const {journal,browserPolicy,store,actorRole}=c,approver=data(own(c.approver,['tenantId','actorId']));
  const now=c.now??Date.now,maxRequestMs=c.maxRequestMs??30000;
  if(typeof journal?.withCurrentRun!=='function'||typeof browserPolicy!=='function'||
@@ -58,7 +58,8 @@ export function createBrowserPreparationProducer(configuration){
    scopes:authority.scopes,requiredApprover:Object.freeze(data(approver)),proposalExpiresAt,
    checkedAtMs:authority.checkedAtMs,expiresAtMs:authority.deadlineMs});
  }
- const owner=createBrowserActionApprovalMetadataOwner({store,preparePolicy,now,maxRequestMs});
+ const owner=createBrowserActionApprovalMetadataOwner({store,preparePolicy,now,maxRequestMs,
+  ...(typeof c.newId==='function'?{newId:c.newId}:{})});
  /** Named internal callback: the authenticated host request enters here and nothing else may call it. */
  async function prepare(value){
   let v;

@@ -2,6 +2,7 @@ import {createBrowserViewerApplication} from '../control/browser-viewer/applicat
 import {createBrowserViewerHttp} from '../control/browser-viewer/http.mjs';
 import {intentsComposition} from './product-ports/intents.mjs';
 import {createBrowserApprovalOwner} from './browser-approval.mjs';
+import {createBrowserApprovalPreparationOwner} from '../control/commands/approval-metadata/browser-preparation-journal.mjs';
 /** Trusted control composition. Single preview replica; source connectivity disabled. */
 import {Pool} from 'pg';
 import {createTurnTelemetry} from './telemetry/turn-context.mjs';
@@ -73,8 +74,6 @@ import {compileObjectiveGenerationConfiguration} from './objective-generation/co
 import {createObjectiveGenerationDispatcher} from '../control/conversations/objective-generation-dispatch.mjs';
 import {createBrowserHostComposition,readBrowserHostMaterial} from './browser-host-composition.mjs';
 import {compileBrowserHostConfiguration} from './browser-host-configuration.mjs';
-import {createIntentJournal} from '../control/intents/journal.mjs';
-import {createPostgresIntentJournalStore} from '../control/intents/postgres-journal.mjs';
 import {createBrowserOperationOwner} from '../control/intents/browser-operation-owner.mjs';
 import {createBrowserReceiptProducer} from '../control/browser-hosts/browser-receipts.mjs';
 function productBinding(options){
@@ -139,7 +138,10 @@ export function assembleControl(options){
  // Browser-call custody lives in the EXISTING intent journal over the borrowed pool; durable browser
  // receipts live in the real conversation event owner. Both are constructed here, where those owners
  // actually exist, and are passed to their call sites below.
- const browserCustody=createBrowserOperationOwner({journal:createIntentJournal(createPostgresIntentJournalStore({pool})),now});
+ // ONE intent journal for this Control: browser execution custody and browser approval preparation share it
+ // (execution currentness still comes from store.executions, a different owner).
+ const intentJournal=createIntentJournal(createPostgresIntentJournalStore({pool}));
+ const browserCustody=createBrowserOperationOwner({journal:intentJournal,now});
  const browserReceipts=createBrowserReceiptProducer({store,now});
  const management=ports.routinesApplicationFactory?.managementSessionConfiguration?.();
  const sessions=createActionSessionOwner({mode:'process-local',verifyIdentity:ports.identityContext.verifyIdentity,resolveContext:ports.identityContext.resolveContext,...(ports.identityContext.resolveBrowserContext?{resolveBrowserContext:ports.identityContext.resolveBrowserContext}:{}),...(ports.identityContext.withAuthority?{withAuthority:ports.identityContext.withAuthority}:{}),...(management?{management}:{}),now,...(ports.conversationMembership?{membership:ports.conversationMembership}:{}),...(ports.transitionAuthority?{
@@ -180,13 +182,23 @@ export function assembleControl(options){
     // dependency refuses here instead of mounting a browser family that cannot prepare.
     // The product composition is the SAME object Control builds for the runner; when this Control has no
     // product context (or it is not intents-enabled) there are simply no browser approval ports.
-    const productIntents=productContext===null?null:(()=>{try{return intentsComposition(productContext,{});}catch{return null;}})();
+    let productIntents=null;
+    if(productContext!==null&&productContext!==undefined){
+     try{productIntents=intentsComposition(productContext,{});}
+     catch(error){
+      // An enabled approval family that cannot compose is a real fault; only an absent or disabled one is
+      // optional and may leave the browser approval ports unmounted.
+      if(productContext.configuration?.intents?.enabled===true)throw error;
+      productIntents=null;
+     }
+    }
     // Composed only from real owners; when the Core approval ports or the exporting role are absent the
     // browser family still mounts its read routes, and the preparation owner stays absent (reported as
     // browserApproval:false) rather than pretending to be ready.
     const browserApproval=readCapabilityRole===undefined||typeof store?.executions?.withCurrentRun!=='function'||
      typeof productIntents?.browser?.record!=='function'||typeof productIntents?.browser?.status!=='function'
       ?null:createBrowserApprovalOwner({journal:store.executions,pool,readCapabilityRole,readBrowserPolicy,
+       preparations:createBrowserApprovalPreparationOwner({journal:intentJournal}),
        ports:{record:productIntents.browser.record,status:productIntents.browser.status,
         consume:productIntents.browser.consume,result:productIntents.browser.result},now,
        limits:{requestMs:configuration.limits.requestMs}});

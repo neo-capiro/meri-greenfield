@@ -16,6 +16,9 @@
 import {own,data,nativeSignal} from '../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {createBrowserPreparationProducer} from '../control/commands/approval-metadata/browser-preparation-producer.mjs';
 import {createTransactionalApprovalMetadataStore} from '../control/commands/approval-metadata/postgres-store.mjs';
+import {createBrowserApprovalPreparationOwner} from '../control/commands/approval-metadata/browser-preparation-journal.mjs';
+import {browserPreparationProposalId} from '../../packages/contracts/runtime-0.2/browser-operation.mjs';
+import {canonicalSha256} from '../../packages/contracts/validate.mjs';
 import {projectCapabilityRole} from './product-ports/capability-policy.mjs';
 const fail=code=>{throw Object.assign(new Error(code),{code});};
 const CHANGED='BROWSER_PREPARATION_AUTHORITY_CHANGED';
@@ -28,13 +31,13 @@ export function createBrowserApprovalOwner(configuration){
  const {journal,pool,readCapabilityRole,readBrowserPolicy,ports}=c;
  if(typeof journal?.withCurrentRun!=='function'||!pool||typeof pool.connect!=='function'||
   typeof readCapabilityRole!=='function'||typeof readBrowserPolicy!=='function'||
-  typeof ports?.status!=='function'||typeof ports?.consume!=='function')fail('BROWSER_APPROVAL_CONFIGURATION');
+  typeof ports?.status!=='function'||typeof ports?.consume!=='function'||
+  typeof c.preparations?.claim!=='function'||typeof c.preparations?.settle!=='function')
+  fail('BROWSER_APPROVAL_CONFIGURATION');
  const now=c.now??Date.now;
  if(typeof now!=='function')fail('BROWSER_APPROVAL_CONFIGURATION');
  const requestMs=c.limits?.requestMs??3000;
  if(!Number.isSafeInteger(requestMs)||requestMs<1||requestMs>30000)fail('BROWSER_APPROVAL_CONFIGURATION');
- const pollMs=Number.isSafeInteger(c.wait?.pollMs)&&c.wait.pollMs>=50?c.wait.pollMs:500;
- const sleep=c.wait?.sleep??(ms=>new Promise(resolve=>setTimeout(resolve,ms)));
  const store=c.store??createTransactionalApprovalMetadataStore({pool});
 
  /** One current exporting role (a bare CORE role string). */
@@ -53,6 +56,23 @@ export function createBrowserApprovalOwner(configuration){
   const signal=nativeSignal(v.signal),binding=data(v.binding);
   const deadlineMs=v.deadlineMs??now()+requestMs;
   const approver=Object.freeze({tenantId:binding.tenantId,actorId:binding.actorId});
+  const request=v.request;
+  if(!request||typeof request.subject?.toolUseId!=='string'||typeof request.subjectSha256!=='string')
+   fail(DENIED);
+  // The proposal identity is deterministic, so a repeat from a NEW owner recovers it instead of creating
+  // a second proposal. No clock, lease or checkedAt enters the identity.
+  const proposalId=browserPreparationProposalId({binding,toolUseId:request.subject.toolUseId,
+   subjectSha256:request.subjectSha256});
+  const requestSha256=canonicalSha256(request);
+  let durable;
+  try{durable=await c.preparations.claim({binding,toolUseId:request.subject.toolUseId,proposalId,requestSha256,
+   ...(signal===undefined?{}:{signal})});}
+  catch(error){if(signal?.aborted)throw error;throw fail(UNKNOWN);}
+  if(durable.dispatch!==true){
+   if(durable.variant!=='replayed'||!durable.preparation)throw fail(UNKNOWN);
+   return Object.freeze({record:null,proposalId:durable.preparation.proposalId,
+    subjectSha256:request.subjectSha256,binding:Object.freeze(data(binding)),recovered:true,deliveryId:durable.deliveryId});
+  }
   const pinned=await role({signal,deadlineMs});
   // Re-resolved on every producer authority pass: a changed canonical role refuses.
   const browserPolicy=async({scopes,signal:inner,deadlineMs:innerDeadline})=>{
@@ -61,61 +81,20 @@ export function createBrowserApprovalOwner(configuration){
    return readBrowserPolicy({binding,scopes,actorRole:current});
   };
   const producer=createBrowserPreparationProducer({journal,browserPolicy,store,approver,actorRole:pinned,
-   now,maxRequestMs:requestMs});
+   now,maxRequestMs:requestMs,newId:()=>proposalId});
   const record=await producer.prepare({request:v.request,binding,deadlineMs,
    ...(signal===undefined?{}:{signal})});
-  if(!record||typeof record.proposalId!=='string')fail(DENIED);
-  return Object.freeze({record,proposalId:record.proposalId,
-   subjectSha256:record.request?.subjectSha256,binding:Object.freeze(data(binding))});
+  if(!record||record.proposalId!==proposalId)fail(DENIED);
+  // PREPARED is settled only after the metadata owner acknowledged; a lost settle stays unresolved.
+  try{await c.preparations.settle({binding,toolUseId:request.subject.toolUseId,proposalId,requestSha256,
+   preparation:{proposalId,subjectSha256:record.request.subjectSha256,requestSha256},
+   ...(signal===undefined?{}:{signal})});}
+  catch(error){if(signal?.aborted)throw error;throw fail(UNKNOWN);}
+  return Object.freeze({record,proposalId,subjectSha256:record.request.subjectSha256,
+   binding:Object.freeze(data(binding)),deliveryId:durable.deliveryId});
  }
 
- /** A fresh grant needs an approved, unexpired decision for THIS proposal with consumption still null. */
- function fresh(status,{proposalId,subjectSha256}){
-  if(!status||status.unknown===true)return false;
-  if(status.proposalId!==proposalId||status.subjectSha256!==subjectSha256)return false;
-  if(status.consumption!==null)return false;
-  const decision=status.decision;
-  if(!decision||decision.decision!=='approved'||decision.proposalId!==proposalId||
-   decision.commandSha256!==subjectSha256)return false;
-  return Date.parse(decision.expiresAt)>now();
- }
-
- async function settle(value){
-  const v=own(value,['proposalId','subjectSha256','binding'],['signal','deadlineMs']);
-  const signal=nativeSignal(v.signal),until=v.deadlineMs??now()+requestMs;
-  const binding=data(v.binding);
-  let consumed=false,last=null;
-  while(now()<until){
-   signal?.throwIfAborted();
-   let answer;
-   try{answer=await ports.status({proposalId:v.proposalId,subjectSha256:v.subjectSha256,binding,
-    ...(signal===undefined?{}:{signal}),deadlineMs:Math.min(until,now()+requestMs)});}
-   catch(error){if(signal?.aborted)throw error;throw fail(UNKNOWN);}
-   last=answer;
-   const status=answer?.status;
-   if(!status||status.proposalId!==v.proposalId)fail(DENIED);
-   const state=status.decision?.decision;
-   if(TERMINAL.has(state))return Object.freeze({permitted:false,status,consumed,terminal:state});
-   if(fresh(status,{proposalId:v.proposalId,subjectSha256:v.subjectSha256})){
-    if(consumed)return Object.freeze({permitted:false,status,consumed,statusOnly:true});
-    consumed=true;
-    let receipt;
-    try{receipt=await ports.consume({proposalId:v.proposalId,subjectSha256:v.subjectSha256,binding,
-     ...(signal===undefined?{}:{signal}),deadlineMs:Math.min(until,now()+requestMs)});}
-    catch(error){
-     if(signal?.aborted)throw error;
-     // The consume POST may have landed: only canonical status recovery follows, never a retry.
-     return Object.freeze({permitted:false,status,consumed:true,unknown:true,statusOnly:true});}
-    if(receipt?.permitted===true)return Object.freeze({permitted:true,receipt:receipt.receipt,consumed:true});
-    last=receipt;
-   }
-   await sleep(Math.min(pollMs,Math.max(0,until-now())));
-  }
-  return Object.freeze({permitted:false,status:last?.status??null,consumed,expired:true});
- }
- // A settle port is only exposed when the caller supplies the durable claim owner; until then there is no
- // permission path here at all (a local flag is not recovery semantics).
- const durable=typeof c.claim==='function';
- if(!durable)return Object.freeze({prepare,settle:undefined});
- return Object.freeze({prepare,settle});
+ // No permission path here: an approval/consume port needs a durable consume claim that survives owner
+ // recreation, which this module does not own yet. Only the durable PREPARATION is exposed.
+ return Object.freeze({prepare});
 }

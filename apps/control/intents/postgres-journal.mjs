@@ -21,7 +21,7 @@ function key(raw){
  * list decides here, and an unregistered version or unknown id still refuses. */
 // Internal operation registrations. These are admitted ONLY here, so the model-facing catalog stays
 // exactly as reviewed: no browser operation is added to the tool catalog by this change.
-const INTERNAL_OPERATIONS=Object.freeze(['browser_action@0.2.0']);
+const INTERNAL_OPERATIONS=Object.freeze(['browser_action@0.2.0','browser_approval_preparation@0.2.0']);
 const registered=operation=>{
  const reference=`${operation.id}@${operation.version}`;
  if(INTERNAL_OPERATIONS.includes(reference))return true;
