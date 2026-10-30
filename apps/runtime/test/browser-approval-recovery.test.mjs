@@ -24,11 +24,13 @@ const input={tool:'browser_click',arguments:{selector:'#confirm'}};
 
 /** Serialized SQL double for the reserved intent table only (same protocol as the journal suite). */
 function journalStore(){
- const state={rows:new Map(),commands:[]};let tail=Promise.resolve();
+ const state={rows:new Map(),commands:[],loseSettleCommitAck:false,commits:0};let tail=Promise.resolve();
  const pool={async connect(){let local,unlock;return {async query(sql,p=[]){
   state.commands.push({sql,p});const rows=x=>({rows:structuredClone(x),rowCount:x.length});
   if(sql==='BEGIN'||sql.startsWith('SET LOCAL'))return rows([]);
-  if(sql==='COMMIT'){state.rows=local;return rows([]);}
+  if(sql==='COMMIT'){state.rows=local;state.commits++;
+   if(state.loseSettleCommitAck&&state.commits>1){state.loseSettleCommitAck=false;
+    throw Error('synthetic lost COMMIT ACK');}return rows([]);}
   if(sql==='ROLLBACK')return rows([]);
   if(!sql.includes('meri_intents.preparations'))throw Error('unexpected SQL');
   if(!local){const prior=tail;tail=new Promise(r=>unlock=r);await prior;local=structuredClone(state.rows);}
@@ -75,20 +77,34 @@ async function fixture(){
  const journal=journalStore(),metadata=await metadataStore();
  const journalOwner=createExecutionJournal({tx:runStore().tx,rowRun:value=>value,now:()=>NOW});
  const browserPolicy=createRunBrowserPolicy({platform:DEFAULT_BROWSER_PLATFORM,store:{read:async()=>null},now:()=>NOW});
- const policySha=hash(await browserPolicy({binding,scopes,actorRole:'standard_user'}));
+ const browserPolicyValue=await browserPolicy({binding,scopes,actorRole:'standard_user'});
+ const policySha=hash(browserPolicyValue);
  const subject={schema:'meri-browser-action/1',binding,server:'capiov2-browser',tool:'browser_click',
   toolUseId:'toolu_01HZX',inputSha256:hash(input),pageOrigin:'https://app.capiro.example',policySha256:policySha};
  const request={schema:BROWSER_APPROVAL_REQUEST_SCHEMA,subject,subjectSha256:hash(subject),input,
   requestedAtMs:NOW-1000,expiresAtMs:NOW+60000};
  const intentJournal=createIntentJournal(journal.store);
+ const authority={role:'standard_user',policy:null,fail:false};
  const build=()=>createBrowserApprovalOwner({journal:journalOwner,
   preparations:createBrowserApprovalPreparationOwner({journal:intentJournal}),
   consumption:createBrowserApprovalConsumptionOwner({journal:intentJournal}),pool:metadata.base.pool,
   store:metadata.store,
-  readCapabilityRole:async()=>({actorRole:'standard_user',checkedAtMs:NOW,expiresAtMs:NOW+600000}),
-  readBrowserPolicy:browserPolicy,ports:{status:async()=>{},consume:async()=>{}},now:()=>NOW,
+  readCapabilityRole:async()=>{if(authority.fail)throw Error('run is cancelled or superseded');
+   return {actorRole:authority.role,checkedAtMs:NOW,expiresAtMs:NOW+600000};},
+  readBrowserPolicy:async call=>{
+   if(authority.policy!==null){const changed=await authority.policy(call);return changed;}
+   return browserPolicy(call);},
+  ports:{status:async()=>{},consume:async()=>{}},now:()=>NOW,
   limits:{requestMs:3000}});
- return {journal,metadata,owner:build(),rebuild:build,request,subject,policySha};
+ const buildDefault=()=>createBrowserApprovalOwner({journal:journalOwner,
+  preparations:createBrowserApprovalPreparationOwner({journal:intentJournal}),
+  consumption:createBrowserApprovalConsumptionOwner({journal:intentJournal}),pool:metadata.base.pool,
+  readCapabilityRole:async()=>{if(authority.fail)throw Error('run is cancelled or superseded');
+   return {actorRole:authority.role,checkedAtMs:NOW,expiresAtMs:NOW+600000};},
+  readBrowserPolicy:async call=>authority.policy!==null?authority.policy(call):browserPolicy(call),
+  ports:{status:async()=>{},consume:async()=>{}},now:()=>NOW,limits:{requestMs:3000}});
+ return {journal,metadata,authority,browserPolicyValue,owner:build(),rebuild:build,buildDefault,request,subject,
+  policySha};
 }
 
 test('a lost metadata COMMIT acknowledgement is recovered from the ACTUAL row by a new owner',async()=>{
@@ -139,4 +155,92 @@ test('an altered request after a pending preparation conflicts without a second 
   /CONFLICT|BROWSER_PREPARATION_REFUSED|UNKNOWN/u);
  assert.equal([...f.metadata.base.rows.values()].length,1,'still exactly one metadata row');
  assert.equal(f.journal.state.rows.size,1,'still exactly one delivery');
+});
+
+test('the DEFAULT-configured store recovers the same row under current authority',async()=>{
+ const f=await fixture();
+ f.metadata.state.loseInsertAck=true;
+ await assert.rejects(f.owner.prepare({request:f.request,binding}),/UNKNOWN|APPROVAL_METADATA_UNKNOWN/u);
+ const recovered=await f.buildDefault().prepare({request:f.request,binding});
+ assert.equal(recovered.recovered,true);
+ const stored=[...f.metadata.base.rows.values()][0].payload;
+ assert.equal(hash(recovered.record),hash(stored.record),'the default store really reads the row');
+ assert.equal(f.metadata.base.rows.size,1);
+ assert.equal([...f.journal.state.rows.values()][0].state,'PREPARED');
+});
+
+test('a revoked role, a changed policy or a moved scope refuses recovery and releases nothing',async()=>{
+ for(const change of [
+  f=>{f.authority.role='user_readonly';},
+  f=>{f.authority.policy=async()=>({...structuredClone(f.browserPolicyValue),allowedOrigins:['https://x.example']});}
+ ]){
+  const f=await fixture();
+  f.metadata.state.loseInsertAck=true;
+  await assert.rejects(f.owner.prepare({request:f.request,binding}),/UNKNOWN|APPROVAL_METADATA_UNKNOWN/u);
+  change(f);
+  await assert.rejects(f.rebuild().prepare({request:f.request,binding}),
+   /UNKNOWN|BROWSER_APPROVAL_REFUSED|BROWSER_PREPARATION_AUTHORITY_CHANGED/u,'no positive late reply');
+  assert.equal(f.metadata.base.rows.size,1,'no second metadata write');
+  assert.equal([...f.journal.state.rows.values()][0].state,'PENDING','nothing released');
+ }
+});
+
+test('an abort during the recovery read never releases the preparation',async()=>{
+ const f=await fixture();
+ f.metadata.state.loseInsertAck=true;
+ await assert.rejects(f.owner.prepare({request:f.request,binding}),/UNKNOWN|APPROVAL_METADATA_UNKNOWN/u);
+ const controller=new AbortController();
+ const reader=f.metadata.store.read;
+ f.metadata.store.read=async(value,check)=>{controller.abort();return reader(value,check);};
+ await assert.rejects(f.rebuild().prepare({request:f.request,binding,signal:controller.signal}),
+  /UNKNOWN|BROWSER_APPROVAL_REFUSED|CANCELLED|ABORTED/u);
+ assert.equal([...f.journal.state.rows.values()][0].state,'PENDING');
+});
+
+test('the strict validator refuses rehashed invalid IDs and observation types',async()=>{
+ const {assertBrowserPreparationResult,browserPreparationResult}=await import(
+  '../../control/commands/approval-metadata/browser-preparation-result.mjs');
+ const f=await fixture();
+ const requestSha=hash(f.request);
+ const prepared=await f.owner.prepare({request:f.request,binding});
+ const mutations=[
+  r=>{r.commandId='not-a-uuid';},
+  r=>{r.idempotencyKey='not-a-uuid';},
+  r=>{r.checkedAtMs='1700000000000';},
+  r=>{r.resolved='true';},
+ ];
+ for(const mutate of mutations){
+  const record=structuredClone(prepared.record);
+  mutate(record);
+  const value={proposalId:record.proposalId,subjectSha256:record.request.subjectSha256,requestSha256:requestSha,
+   record,recordSha256:hash(record)};
+  assert.throws(()=>assertBrowserPreparationResult(value,{binding,
+   toolUseId:record.request.subject.toolUseId}),/BROWSER_PREPARATION/u,'mutation must refuse');
+ }
+ const ok=browserPreparationResult(structuredClone(prepared.record),{requestSha256:requestSha});
+ assert.ok(assertBrowserPreparationResult(ok,{binding,toolUseId:prepared.record.request.subject.toolUseId}));
+});
+
+test('a lost journal settle COMMIT acknowledgement is recovered by the retained PREPARED row',async()=>{
+ const f=await fixture();
+ f.journal.state.loseSettleCommitAck=true;
+ await assert.rejects(f.owner.prepare({request:f.request,binding}),/UNKNOWN|BROWSER_APPROVAL_REFUSED/u);
+ assert.equal(f.metadata.base.rows.size,1,'the metadata row exists');
+ const state=[...f.journal.state.rows.values()][0].state;
+ assert.equal(state,'PREPARED','the journal COMMIT was durable');
+ const recovered=await f.rebuild().prepare({request:f.request,binding});
+ assert.equal(recovered.recovered,true);
+ assert.equal(f.metadata.base.rows.size,1,'no second metadata write');
+ assert.equal(f.journal.state.rows.size,1,'no second delivery');
+});
+
+test('a cancelled or superseded run refuses recovery without writing or releasing',async()=>{
+ const f=await fixture();
+ f.metadata.state.loseInsertAck=true;
+ await assert.rejects(f.owner.prepare({request:f.request,binding}),/UNKNOWN|APPROVAL_METADATA_UNKNOWN/u);
+ f.authority.fail=true; // the run became cancelled/superseded after the metadata commit
+ await assert.rejects(f.rebuild().prepare({request:f.request,binding}),
+  /UNKNOWN|BROWSER_APPROVAL_REFUSED|BROWSER_PREPARATION_AUTHORITY_CHANGED/u);
+ assert.equal(f.metadata.base.rows.size,1,'no second metadata write');
+ assert.equal([...f.journal.state.rows.values()][0].state,'PENDING','nothing released');
 });

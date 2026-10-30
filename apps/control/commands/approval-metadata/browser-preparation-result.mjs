@@ -5,8 +5,9 @@
  * contracts (request/preparation mapping, deterministic proposal id, C/A/S/I digests, action context) rather
  * than copying DTOs, and it never accepts a partial, legacy or ids-only outcome as "recovered".
  *
- * A producer's acknowledgement may also carry observation fields ({checkedAtMs, resolved}). Those are ACK
- * metadata, not part of the canonical closed record, and they are never stored as identity.
+ * A producer's acknowledgement may also carry the two observation fields {checkedAtMs, resolved}. They are
+ * validated by type and ARE part of the retained fingerprint (stored identity covers the whole ACK object),
+ * but they never enter command validation — canonical content is compared separately from them.
  */
 import {canonicalSha256} from '../../../../packages/contracts/validate.mjs';
 import {data,own} from '../../../../packages/contracts/commands-0.2/execution-boundary.mjs';
@@ -18,6 +19,8 @@ const fail=code=>{throw Object.assign(Error(code),{code});};
 const REFUSED='BROWSER_PREPARATION_RESULT_REFUSED';
 const CONFLICT='BROWSER_PREPARATION_CONFLICT';
 const HEX=/^[0-9a-f]{64}$/u;
+const UUID=/^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/u;
+const ISO=/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{1,9})?Z$/u;
 const RECORD=['operation','action','binding','request','inputSha256','commandId','idempotencyKey','proposalId',
  'scopes','createdAt','expiresAt','requiredApprover'];
 const FIELDS=['proposalId','subjectSha256','requestSha256','record','recordSha256'];
@@ -79,10 +82,16 @@ export function assertBrowserPreparationResult(value,{binding,toolUseId}={}){
   if(canonicalSha256(rebuilt.subject)!==rebuilt.subjectSha256)fail(CONFLICT);
   // S/I domains are verified by the digest helper above; never compare I to the metadata A digest.
   if(typeof rebuilt.subject.inputSha256!=='string')fail(CONFLICT);
-  // IDs and times stay canonical.
-  for(const key of ['commandId','idempotencyKey'])if(typeof record[key]!=='string'||record[key].length===0)fail(REFUSED);
-  const at=value=>typeof value==='number'?value:(typeof value==='string'?Date.parse(value):NaN);
- const created=at(record.createdAt),expires=at(record.expiresAt);
+  // IDs and times stay canonical: the metadata owner mints UUIDs and ISO instants, so a rehashed string
+  // is a tampered record, not an alternative spelling.
+  for(const key of ['commandId','idempotencyKey'])
+   if(typeof record[key]!=='string'||!UUID.test(record[key]))fail(REFUSED);
+  if(typeof record.createdAt!=='string'||!ISO.test(record.createdAt)||
+   typeof record.expiresAt!=='string'||!ISO.test(record.expiresAt))fail(REFUSED);
+  // Observation fields are typed, never free text: a string clock or string verdict is a tampered ACK.
+  if(Object.hasOwn(ack,'checkedAtMs')&&!Number.isSafeInteger(ack.checkedAtMs))fail(REFUSED);
+  if(Object.hasOwn(ack,'resolved')&&typeof ack.resolved!=='boolean')fail(REFUSED);
+  const created=Date.parse(record.createdAt),expires=Date.parse(record.expiresAt);
  if(!Number.isFinite(created)||!Number.isFinite(expires)||expires<=created)fail(REFUSED);
  }catch(error){if(error?.code)throw error;fail(REFUSED);}
  return Object.freeze({proposalId:result.proposalId,subjectSha256:result.subjectSha256,

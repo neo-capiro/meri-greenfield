@@ -88,30 +88,44 @@ export function createBrowserApprovalOwner(configuration){
    if(error?.code&&error.code!=='UNKNOWN')throw error;
    throw fail(UNKNOWN);
   }
+  /** A producer bound to a FRESHLY resolved canonical role. Every authority pass re-resolves the role and
+   * refuses if it moved, so a revoked role can never be used to release a retained preparation. */
+  async function authorityBound(){
+   const current=await role({signal,deadlineMs});
+   const authorityPolicy=async({scopes,signal:inner,deadlineMs:innerDeadline})=>{
+    const nowRole=await role({signal:inner,deadlineMs:innerDeadline??deadlineMs});
+    if(nowRole!==current)throw fail(CHANGED);
+    return readBrowserPolicy({binding,scopes,actorRole:nowRole});
+   };
+   return createBrowserPreparationProducer({journal,browserPolicy:authorityPolicy,store,approver,actorRole:current,
+    now,maxRequestMs:requestMs,newId:()=>proposalId});
+  }
+  const canonicalOf=record=>{const {checkedAtMs:_seen,resolved:_resolved,...rest}=data(record);
+   return canonicalSha256(rest);};
   if(durable.dispatch!==true){
    if(durable.variant==='replayed'){
-    // A retained result is returned only when it is a FULL genuine preparation for this exact identity.
+    // A retained result is returned only when it is a FULL genuine preparation for this exact identity...
     let saved;
     try{saved=assertBrowserPreparationResult(durable.preparation,
      {binding,toolUseId:request.subject.toolUseId});}catch{throw fail(UNKNOWN);}
     if(saved.requestSha256!==requestSha256)throw fail('BROWSER_PREPARATION_CONFLICT');
+    // ...and only while TODAY'S authority can still read the same canonical row. The retained result keeps
+    // its ORIGINAL acknowledgement fingerprint; the fresh read is compared on canonical content only.
+    let released;
+    try{released=await (await authorityBound()).readPrepared({request,binding,deadlineMs,
+     ...(signal===undefined?{}:{signal})});}catch{throw fail(UNKNOWN);}
+    if(canonicalOf(released.record)!==canonicalOf(saved.record))throw fail('BROWSER_PREPARATION_CONFLICT');
     return Object.freeze({record:saved.record,proposalId:saved.proposalId,subjectSha256:saved.subjectSha256,
      binding:Object.freeze(data(binding)),recordSha256:saved.recordSha256,recovered:true,
      deliveryId:durable.deliveryId});
    }
-   // PENDING/UNKNOWN: the metadata COMMIT may have happened with a lost ACK. Recover ONLY from the actual
-   // canonical metadata at the deterministic identity, re-validated against the ORIGINAL request; the
-   // producer is never re-run and no command id, scope or digest is invented.
-   let stored;
-   try{stored=await c.store.read(readKey({tenantId:binding.tenantId,actorId:binding.actorId,proposalId}),
-    ()=>{if(signal?.aborted)throw fail(UNKNOWN);});}
-   catch{throw fail(UNKNOWN);}
-   if(stored===null||stored===undefined)throw fail(UNKNOWN);
+   // PENDING/UNKNOWN: the metadata COMMIT may have happened with a lost ACK. Recovery reads the ACTUAL
+   // canonical metadata WITH current authority (the owner re-resolves scopes/policy before and after the
+   // read), validates it against the ORIGINAL request and settles only this original delivery. The producer
+   // is never re-run and no command id, scope or digest is invented.
    let recovered;
-   try{recovered=browserPreparationResult(immutablePayload(stored).record,{requestSha256});}
-   catch{throw fail(UNKNOWN);}
-   if(canonicalSha256(browserRequestFromPreparation(recovered.record.request))!==requestSha256)
-    throw fail('BROWSER_PREPARATION_CONFLICT');
+   try{recovered=await (await authorityBound()).readPrepared({request,binding,deadlineMs,
+    ...(signal===undefined?{}:{signal})});}catch{throw fail(UNKNOWN);}
    try{await c.preparations.settle({binding,toolUseId:request.subject.toolUseId,proposalId,requestSha256,
     preparation:recovered,...(signal===undefined?{}:{signal})});}
    catch(error){if(signal?.aborted)throw error;throw fail(UNKNOWN);}
@@ -119,15 +133,7 @@ export function createBrowserApprovalOwner(configuration){
     subjectSha256:recovered.subjectSha256,binding:Object.freeze(data(binding)),
     recordSha256:recovered.recordSha256,recovered:true,deliveryId:durable.deliveryId});
   }
-  const pinned=await role({signal,deadlineMs});
-  // Re-resolved on every producer authority pass: a changed canonical role refuses.
-  const browserPolicy=async({scopes,signal:inner,deadlineMs:innerDeadline})=>{
-   const current=await role({signal:inner,deadlineMs:innerDeadline??deadlineMs});
-   if(current!==pinned)throw fail(CHANGED);
-   return readBrowserPolicy({binding,scopes,actorRole:current});
-  };
-  const producer=createBrowserPreparationProducer({journal,browserPolicy,store,approver,actorRole:pinned,
-   now,maxRequestMs:requestMs,newId:()=>proposalId});
+  const producer=await authorityBound();
   const record=await producer.prepare({request:v.request,binding,deadlineMs,
    ...(signal===undefined?{}:{signal})});
   if(!record||record.proposalId!==proposalId)fail(DENIED);

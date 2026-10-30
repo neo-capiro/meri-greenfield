@@ -122,8 +122,11 @@ test('a lost settle acknowledgement is UNKNOWN and a new owner never runs the pr
  assert.equal(f.sql.rows.size,1,'the metadata row was written');
  const rows=[...f.store.rows.values()];
  assert.equal(rows[0].state,'PENDING');
- // A second owner finds the retained PENDING row: unresolved, never a second producer run.
- await assert.rejects(f.rebuild().prepare({request:f.request,binding}),/UNKNOWN/u);
+ // A second owner RECOVERS the same retained preparation from canonical metadata under current
+ // authority; it never runs the producer again and never writes a second row.
+ const recovered=await f.rebuild().prepare({request:f.request,binding});
+ assert.equal(recovered.recovered,true);
+ assert.equal(hash(recovered.record),hash(rows.length?[...f.sql.rows.values()][0].payload.record:{}));
  assert.equal(f.sql.rows.size,1);
 });
 
