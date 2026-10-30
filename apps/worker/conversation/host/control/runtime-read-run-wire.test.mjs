@@ -278,7 +278,7 @@ test('an approved decision yields the RAW canonical receipt with the request unc
  ({createBrowserHostReadRun:createReadRun}=await import('./runtime-read-run.mjs'));
  const toolUseId='toolu_01HZX',receipt=approvedReceipt(toolUseId),original=request_(toolUseId);
  let seen=null;
- const {client}=await compose({decide:async input=>{seen=input;console.log('SEEN KEYS',Object.keys(input));return {permitted:true,receipt};}});
+ const {client}=await compose({decide:async input=>{seen=input;return {permitted:true,receipt};}});
  const run=helper(client);
  const answer=await run.approvals.decide(original,{signal:new AbortController().signal});
  assert.deepEqual(answer,receipt,'the helper returns the canonical receipt itself');
