@@ -12,9 +12,10 @@
  *
  * Usage: node test-flows.mjs [--scratch <dir>] [--public-fixture <dir>]
  */
-import {mkdir, readFile, writeFile} from 'node:fs/promises';
+import {mkdir, readFile, stat, symlink, writeFile} from 'node:fs/promises';
 import {createHash} from 'node:crypto';
 import {join} from 'node:path';
+import {fileURLToPath, pathToFileURL} from 'node:url';
 import {tmpdir} from 'node:os';
 import {
   ControlUnavailable, CORE_BRIDGE_FILE, InputRefused, IsolationRefused,
@@ -485,6 +486,162 @@ async function fixture(rootDir, {traversal = false} = {}) {
     missingImport = error instanceof IsolationRefused;
   }
   record('missing operator runtime module is refused', missingImport);
+}
+
+// ------------------------------------------------- alias and preflight completeness
+{
+  const makeAlias = async (target, link) => {
+    await symlink(target, link, process.platform === 'win32' ? 'junction' : 'dir');
+  };
+  const exists = async path => {
+    try {
+      await stat(path);
+      return true;
+    } catch {
+      return false;
+    }
+  };
+
+  // A PKI path that is a junction into the fixture is refused on the resolved
+  // path, before any readability probe or copy.
+  {
+    const fixtureRoot = join(root, 'alias-fixture');
+    const setup = await fixture(fixtureRoot);
+    const link = join(root, 'alias-pki');
+    await makeAlias(fixtureRoot, link);
+    const runRoot = join(root, 'alias-pki-run');
+    let refused = false;
+    let message = '';
+    try {
+      await materializeRunRoot({fixtureRoot, runRoot, corpusIds: ['pptx-04'],
+        runtimeRoot: setup.runtime, coreBridge: {script: setup.bridge},
+        operatorPki: {certPath: join(link, 'cert.pem'), keyPath: join(link, 'key.pem')}});
+    } catch (error) {
+      refused = error instanceof IsolationRefused;
+      message = error.message;
+    }
+    record('PKI junction into the fixture is refused on the resolved path',
+      refused && /inside the retained fixture/.test(message) && !(await exists(runRoot)),
+      message.slice(0, 60));
+  }
+
+  // A run root that is a junction onto an empty directory inside the fixture is
+  // refused, and that directory stays empty.
+  {
+    const fixtureRoot = join(root, 'alias-fixture-2');
+    const setup = await fixture(fixtureRoot);
+    const emptyTarget = join(fixtureRoot, 'empty-target');
+    await mkdir(emptyTarget, {recursive: true});
+    const link = join(root, 'alias-target');
+    await makeAlias(emptyTarget, link);
+    let refused = false;
+    try {
+      await materializeRunRoot({fixtureRoot, runRoot: link, corpusIds: ['pptx-04'],
+        runtimeRoot: setup.runtime, coreBridge: {script: setup.bridge},
+        operatorPki: {certPath: join(setup.pki, 'cert.pem'),
+          keyPath: join(setup.pki, 'key.pem')}});
+    } catch (error) {
+      refused = error instanceof IsolationRefused;
+    }
+    record('run root junction into the fixture is refused',
+      refused && !(await exists(join(emptyTarget, 'host-font-corpus.mjs'))));
+  }
+
+  // A nested target that does not exist yet under an aliased ancestor resolves
+  // through that ancestor and is refused too.
+  {
+    const fixtureRoot = join(root, 'alias-fixture-3');
+    const setup = await fixture(fixtureRoot);
+    const link = join(root, 'alias-ancestor');
+    await makeAlias(fixtureRoot, link);
+    const nested = join(link, 'nested', 'new');
+    let refused = false;
+    try {
+      await materializeRunRoot({fixtureRoot, runRoot: nested, corpusIds: ['pptx-04'],
+        runtimeRoot: setup.runtime, coreBridge: {script: setup.bridge},
+        operatorPki: {certPath: join(setup.pki, 'cert.pem'),
+          keyPath: join(setup.pki, 'key.pem')}});
+    } catch (error) {
+      refused = error instanceof IsolationRefused;
+    }
+    record('nested missing target under an aliased ancestor is refused',
+      refused && !(await exists(join(fixtureRoot, 'nested'))));
+  }
+
+  // A missing PKI file is refused during validation, before any write.
+  {
+    const fixtureRoot = join(root, 'preflight-fixture');
+    const setup = await fixture(fixtureRoot);
+    const runRoot = join(root, 'preflight-run');
+    let refused = false;
+    let message = '';
+    try {
+      await materializeRunRoot({fixtureRoot, runRoot, corpusIds: ['pptx-04'],
+        runtimeRoot: setup.runtime, coreBridge: {script: setup.bridge},
+        operatorPki: {certPath: join(root, 'missing-cert.pem'),
+          keyPath: join(root, 'missing-key.pem')}});
+    } catch (error) {
+      refused = error instanceof IsolationRefused;
+      message = error.message;
+    }
+    record('missing PKI is refused before the first write',
+      refused && /does not exist/.test(message)
+      && !(await exists(join(runRoot, 'host-font-corpus.mjs'))),
+      message.slice(0, 60));
+  }
+
+  // Non-regular or missing bridge/node inputs are refused before writes.
+  for (const [name, mutate] of [
+    ['bridge that is a directory is refused', (setup) => {
+      const directory = join(setup.bridge, '..', 'not-a-bridge');
+      return {coreBridge: {script: directory}, directory};
+    }],
+    ['missing node executable is refused', (setup) =>
+      ({coreBridge: {script: setup.bridge, nodeExecutable: join(root, 'missing-node.exe')}})],
+  ]) {
+    const fixtureRoot = join(root, `bridge-${name.replace(/\W+/g, '-')}`);
+    const setup = await fixture(fixtureRoot);
+    const runRoot = join(root, `bridge-run-${name.replace(/\W+/g, '-')}`);
+    const overrides = mutate(setup, runRoot);
+    if (overrides.directory) await mkdir(overrides.directory, {recursive: true});
+    let refused = false;
+    try {
+      await materializeRunRoot({fixtureRoot, runRoot, corpusIds: ['pptx-04'],
+        runtimeRoot: setup.runtime, coreBridge: overrides.coreBridge,
+        operatorPki: {certPath: join(setup.pki, 'cert.pem'),
+          keyPath: join(setup.pki, 'key.pem')}});
+    } catch (error) {
+      refused = error instanceof IsolationRefused;
+    }
+    record(name, refused && !(await exists(runRoot)), 'no run root written');
+  }
+
+  // Runtime paths containing spaces and '#' use standard file URLs.
+  {
+    const fixtureRoot = join(root, 'spaced-fixture');
+    const setup = await fixture(fixtureRoot);
+    const spaced = join(root, 'runtime with space#hash');
+    const source = await readFile(join(fixtureRoot, 'qualification-fixture.mjs'), 'utf8');
+    for (const match of source.matchAll(/wave6-capabilities-runtime\/([^'"]+)/g)) {
+      const path = join(spaced, ...match[1].split('/'));
+      await mkdir(join(path, '..'), {recursive: true});
+      await writeFile(path, 'export const stub = true;\n');
+    }
+    const runRoot = join(root, 'spaced-run');
+    const result = await materializeRunRoot({fixtureRoot, runRoot, corpusIds: ['pptx-04'],
+      runtimeRoot: spaced, coreBridge: {script: setup.bridge},
+      operatorPki: {certPath: join(setup.pki, 'cert.pem'),
+        keyPath: join(setup.pki, 'key.pem')}});
+    const copied = await readFile(join(runRoot, 'qualification-fixture.mjs'), 'utf8');
+    const urls = [...copied.matchAll(/file:\/\/\/[^'"]+?\.mjs/g)].map(match => match[0]);
+    const decoded = urls.map(url => fileURLToPath(url));
+    record('runtime path with spaces and # uses a standard file URL',
+      urls.length > 0
+      && urls.every(url => url.startsWith(pathToFileURL(spaced).href))
+      && decoded.every(path => path.startsWith(spaced))
+      && result.runtime.url === pathToFileURL(spaced).href + '/',
+      urls[0]?.slice(0, 70));
+  }
 }
 
 // adaptation helpers are pure and inspectable

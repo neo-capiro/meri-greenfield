@@ -31,8 +31,10 @@
  * Everything is validated before anything is written.
  */
 import {createHash} from 'node:crypto';
-import {copyFile, mkdir, readdir, readFile, realpath, stat, writeFile} from 'node:fs/promises';
+import {constants as fsConstants} from 'node:fs';
+import {access, copyFile, mkdir, readdir, readFile, realpath, stat, writeFile} from 'node:fs/promises';
 import {basename, dirname, join, relative, resolve, sep} from 'node:path';
+import {fileURLToPath, pathToFileURL} from 'node:url';
 
 /** Suffixes the retained WOPI route and manifest lookup accept. */
 export const HOST_SUFFIXES = ['', '-renew', '-revoke', '-expire', '-restart', '-lostack'];
@@ -46,7 +48,7 @@ export const PUBLIC_HOST_FILES = [
 export const CORE_BRIDGE_FILE = 'core-native-port.mjs';
 
 /** The absolute source root the public fixtures import their runtime from. */
-export const RUNTIME_IMPORT_PATTERN = /file:\/\/\/(?:[^'"\s]*\/)?wave6-capabilities-runtime\//g;
+export const RUNTIME_IMPORT_PATTERN = /file:\/\/\/[^'"]*?\/wave6-capabilities-runtime\//g;
 
 export class IsolationRefused extends Error {
   constructor(message) {
@@ -96,12 +98,53 @@ function inside(parent, child) {
   return path === '' || (!path.startsWith('..') && !path.startsWith(sep));
 }
 
-async function realOrResolved(path) {
-  try {
-    return await realpath(path);
-  } catch {
-    return resolve(path);
+/**
+ * Resolve a path that may not exist yet: canonicalise the nearest existing
+ * ancestor (realpath follows junctions and symlinks) and re-append the missing
+ * suffix under it, so a junction cannot hide a target inside another root.
+ */
+async function resolveExistingOrAncestor(path, ops) {
+  let current = resolve(path);
+  const suffix = [];
+  for (;;) {
+    try {
+      const real = await ops.realpath(current);
+      return suffix.length ? join(real, ...suffix.slice().reverse()) : real;
+    } catch (error) {
+      if (error.code !== 'ENOENT' && error.code !== 'ENOTDIR') {
+        throw new IsolationRefused(
+          `cannot resolve ${current}: ${error.code ?? error.message}`);
+      }
+      const parent = dirname(current);
+      if (parent === current) {
+        throw new IsolationRefused(`cannot resolve any existing ancestor of ${path}`);
+      }
+      suffix.push(basename(current));
+      current = parent;
+    }
   }
+}
+
+/** Require an existing regular readable file; returns its canonical path. */
+async function assertRegularReadable(path, label, ops) {
+  let info;
+  try {
+    info = await ops.stat(path);
+  } catch (error) {
+    if (error.code === 'ENOENT' || error.code === 'ENOTDIR') {
+      throw new IsolationRefused(`${label} ${path} does not exist`);
+    }
+    throw new IsolationRefused(`cannot stat ${label} ${path}: ${error.code ?? error.message}`);
+  }
+  if (!info.isFile()) {
+    throw new IsolationRefused(`${label} ${path} is not a regular file`);
+  }
+  try {
+    await ops.access(path, fsConstants.R_OK);
+  } catch (error) {
+    throw new IsolationRefused(`cannot read ${label} ${path}: ${error.code ?? error.message}`);
+  }
+  return ops.realpath(path);
 }
 
 /** Outputs the copied host will really use, given the run root it sits in. */
@@ -116,16 +159,17 @@ export function expectedOutputs(runRoot, {postgres = true} = {}) {
   };
 }
 
-function fileUrlOf(path) {
-  return 'file:///' + resolve(path).replace(/\\/g, '/').replace(/^\/+/, '');
+function directoryUrl(path) {
+  const href = pathToFileURL(resolve(path)).href;
+  return href.endsWith('/') ? href : href + '/';
 }
 
 /** Rewrite the runtime imports of a fixture module to the operator's tree. */
 export function adaptRuntimeImports(source, runtimeRoot) {
-  const replacement = fileUrlOf(runtimeRoot).replace(/\/+$/, '') + '/';
+  const replacement = directoryUrl(runtimeRoot);
   const hits = source.match(RUNTIME_IMPORT_PATTERN) ?? [];
   const adapted = source.replace(RUNTIME_IMPORT_PATTERN, replacement);
-  return {adapted, count: hits.length};
+  return {adapted, count: hits.length, url: replacement};
 }
 
 /** Rewrite the retained bridge spawn to the operator's isolated bridge. */
@@ -157,35 +201,56 @@ export async function materializeRunRoot({
   fixtureRoot, runRoot, corpusIds, postgres = true,
   runtimeRoot, coreBridge, operatorPki, fs = {},
 }) {
-  const ops = {copyFile, mkdir, readdir, readFile, realpath, stat, writeFile, ...fs};
+  const ops = {access, copyFile, mkdir, readdir, readFile, realpath, stat, writeFile, ...fs};
+
   if (!fixtureRoot || !runRoot) throw new IsolationRefused('fixtureRoot and runRoot are required');
   if (!runtimeRoot) {
     throw new IsolationRefused(
       'an explicit operator runtime source tree is required; the copied fixtures import it by absolute path');
   }
-  if (postgres && !coreBridge) {
+  if (postgres && !coreBridge?.script) {
     throw new IsolationRefused(
       'an explicit isolated Core bridge is required for the postgres host; the retained bridge is not reused');
   }
   if (!Array.isArray(corpusIds) || !corpusIds.length) {
     throw new InputRefused('a non-empty corpus selection is required');
   }
-  if (!operatorPki || !operatorPki.certPath || !operatorPki.keyPath) {
+  if (!operatorPki?.certPath || !operatorPki?.keyPath) {
     throw new IsolationRefused(
       'fresh operator PKI paths (certPath, keyPath) are required; retained TLS material is never reused');
   }
 
-  const fixtureReal = await realOrResolved(fixtureRoot);
-  const runtimeReal = await realOrResolved(runtimeRoot);
-  const parentReal = await realOrResolved(dirname(resolve(runRoot)));
-  const targetReal = join(parentReal, basename(resolve(runRoot)));
+  // Canonical roots first: realpath follows junctions, so an alias cannot hide
+  // a target inside another root.
+  const fixtureReal = await resolveExistingOrAncestor(fixtureRoot, ops);
+  const fixtureInfo = await ops.stat(fixtureReal).catch(error => {
+    throw new IsolationRefused(`fixture root ${fixtureReal} cannot be inspected: ${error.code}`);
+  });
+  if (!fixtureInfo.isDirectory()) throw new IsolationRefused(`fixture root ${fixtureReal} is not a directory`);
+  const runtimeReal = await resolveExistingOrAncestor(runtimeRoot, ops);
+  const targetReal = await resolveExistingOrAncestor(runRoot, ops);
+
+  // Every required input is checked before anything is written, so a missing or
+  // unreadable input never leaves a half-materialised root behind.
+  //
+  // Order matters for retained aliases: the canonical path is resolved (metadata
+  // only, which follows junctions) and the fixture overlap is refused BEFORE any
+  // readability probe, so a junction into retained private material is rejected
+  // without opening it.
+  const bridgeCandidate = postgres ? await resolveExistingOrAncestor(coreBridge.script, ops) : null;
+  const nodeCandidate = postgres && coreBridge.nodeExecutable
+    ? await resolveExistingOrAncestor(coreBridge.nodeExecutable, ops)
+    : null;
+  const certCandidate = await resolveExistingOrAncestor(operatorPki.certPath, ops);
+  const keyCandidate = await resolveExistingOrAncestor(operatorPki.keyPath, ops);
 
   const guarded = [
-    ['runRoot', targetReal, fixtureReal],
+    ['run root', targetReal, fixtureReal],
     ['runtime source', runtimeReal, fixtureReal],
-    ['PKI certificate', operatorPki.certPath, fixtureReal],
-    ['PKI key', operatorPki.keyPath, fixtureReal],
+    ['PKI certificate', certCandidate, fixtureReal],
+    ['PKI key', keyCandidate, fixtureReal],
   ];
+  if (postgres) guarded.push(['Core bridge', bridgeCandidate, fixtureReal]);
   for (const [name, path, root] of guarded) {
     if (inside(root, path)) {
       throw new IsolationRefused(`${name} ${path} is inside the retained fixture ${root}`);
@@ -196,31 +261,42 @@ export async function materializeRunRoot({
       throw new IsolationRefused(`runRoot ${targetReal} overlaps ${other}; choose a separate new root`);
     }
   }
-  if (coreBridge && coreBridge.script) {
-    const bridgeReal = await realOrResolved(coreBridge.script);
-    if (inside(fixtureReal, bridgeReal)) {
-      throw new IsolationRefused(`Core bridge ${bridgeReal} is inside the retained fixture`);
+  for (const [name, path] of [['PKI certificate', certCandidate], ['PKI key', keyCandidate],
+    ...(postgres ? [['Core bridge', bridgeCandidate]] : [])]) {
+    if (inside(targetReal, path)) {
+      throw new IsolationRefused(`${name} must not live inside the run root it serves`);
     }
-    if (inside(targetReal, bridgeReal)) {
-      throw new IsolationRefused('the Core bridge must not live inside the run root it serves');
-    }
-    coreBridge = {...coreBridge, script: bridgeReal};
   }
+
+  const bridgeReal = postgres
+    ? await assertRegularReadable(bridgeCandidate, 'Core bridge', ops)
+    : null;
+  const nodeExecutableReal = nodeCandidate
+    ? await assertRegularReadable(nodeCandidate, 'node executable', ops)
+    : null;
+  const pkiCertReal = await assertRegularReadable(certCandidate, 'PKI certificate', ops);
+  const pkiKeyReal = await assertRegularReadable(keyCandidate, 'PKI key', ops);
+  coreBridge = postgres
+    ? {...coreBridge, script: bridgeReal,
+      ...(nodeExecutableReal ? {nodeExecutable: nodeExecutableReal} : {})}
+    : coreBridge;
 
   let exists = true;
   try {
     await ops.stat(targetReal);
-  } catch {
+  } catch (error) {
+    if (error.code !== 'ENOENT' && error.code !== 'ENOTDIR') {
+      throw new IsolationRefused(`cannot inspect run root ${targetReal}: ${error.code}`);
+    }
     exists = false;
   }
   if (exists) {
     const entries = await ops.readdir(targetReal);
     if (entries.length) throw new IsolationRefused(`runRoot ${targetReal} already exists and is not empty`);
   }
-  try {
-    await ops.stat(runtimeReal);
-  } catch {
-    throw new IsolationRefused(`runtime source ${runtimeReal} does not exist`);
+  const runtimeInfo = await ops.stat(runtimeReal).catch(() => null);
+  if (!runtimeInfo || !runtimeInfo.isDirectory()) {
+    throw new IsolationRefused(`runtime source ${runtimeReal} is not an existing directory`);
   }
 
   // ---- validation only, no writes yet ----
@@ -260,32 +336,28 @@ export async function materializeRunRoot({
   const adaptations = [];
   const adaptedFixtures = {};
   for (const name of ['qualification-fixture.mjs', 'qualification-pg-fixture.mjs']) {
-    const {adapted, count} = adaptRuntimeImports(sources[name].toString('utf8'), runtimeReal);
+    const {adapted, count, url} = adaptRuntimeImports(sources[name].toString('utf8'), runtimeReal);
     if (!count) {
       throw new IsolationRefused(`${name} has no runtime imports to rebind; layout changed`);
     }
-    const imports = [...adapted.matchAll(/file:\/\/\/([^'"]+?\.mjs)/g)].map(match => match[1]);
-    for (const imported of imports) {
-      const path = process.platform === 'win32'
-        ? imported.replace(/^\/([A-Za-z]:)/, '$1')
-        : '/' + imported.replace(/^\/+/, '');
+    for (const match of adapted.matchAll(/file:\/\/\/[^'"]+?\.mjs/g)) {
+      let path;
       try {
-        await ops.stat(path);
+        path = fileURLToPath(match[0]);
       } catch {
+        throw new IsolationRefused(`adapted import is not a valid file URL: ${match[0]}`);
+      }
+      const info = await ops.stat(path).catch(() => null);
+      if (!info || !info.isFile()) {
         throw new IsolationRefused(`runtime source is missing ${path}`);
       }
     }
     adaptedFixtures[name] = adapted;
-    adaptations.push({file: name, rebinds: count, runtime: fileUrlOf(runtimeReal)});
+    adaptations.push({file: name, rebinds: count, runtime: url});
   }
   let bridgeAdaptation = null;
   if (postgres) {
     bridgeAdaptation = adaptCoreBridge(bridgeSource.toString('utf8'), coreBridge);
-    try {
-      await ops.stat(coreBridge.script);
-    } catch {
-      throw new IsolationRefused(`Core bridge ${coreBridge.script} does not exist`);
-    }
     adaptations.push({file: CORE_BRIDGE_FILE, bridge: coreBridge.script});
   }
 
@@ -319,8 +391,8 @@ export async function materializeRunRoot({
   for (const entry of selected) {
     await ops.writeFile(join(targetReal, 'corpus', 'inputs', entry.filename), entry.payload);
   }
-  await ops.copyFile(operatorPki.certPath, join(targetReal, 'cert.pem'));
-  await ops.copyFile(operatorPki.keyPath, join(targetReal, 'key.pem'));
+  await ops.copyFile(pkiCertReal, join(targetReal, 'cert.pem'));
+  await ops.copyFile(pkiKeyReal, join(targetReal, 'key.pem'));
 
   const outputs = expectedOutputs(targetReal, {postgres});
   const record = {
@@ -331,11 +403,11 @@ export async function materializeRunRoot({
     copied,
     inputs: selected.map(entry => ({id: entry.id, filename: entry.filename, sha256: entry.sha256})),
     outputs,
-    runtime: {root: runtimeReal, url: fileUrlOf(runtimeReal)},
+    runtime: {root: runtimeReal, url: directoryUrl(runtimeReal)},
     bridge: postgres ? {script: coreBridge.script, nodeExecutable: coreBridge.nodeExecutable ?? null} : null,
     adaptations,
     pki: {cert: join(targetReal, 'cert.pem'), key: join(targetReal, 'key.pem'),
-      source: {certPath: operatorPki.certPath, keyPath: operatorPki.keyPath}},
+      source: {certPath: pkiCertReal, keyPath: pkiKeyReal}},
     retainedTreeUntouched: true,
   };
   await ops.writeFile(join(targetReal, 'run-root.json'), JSON.stringify(record, null, 2) + '\n');

@@ -137,13 +137,18 @@ sibling modules from, and `run-root.json` records the runtime, bridge,
 adaptations and the real output paths (`<root>/font-corpus/saved` in postgres
 mode, `<root>/corpus/saved` otherwise).
 
-Everything is validated before anything is written: resolved/real paths for
-fixture, runtime, run root, bridge and PKI; overlap and alias refusal; known
-public module selection only; manifest `filename` must be a plain file name;
-every selected input must match its manifest hash; every absolute runtime import
-must resolve under the operator runtime; and fresh operator certificate/key
-paths must be outside the retained fixture. Retained TLS is never read or
-reused, and the copied modules are never executed by these tests.
+Everything is validated before anything is written. Roots and inputs are
+canonicalised with `realpath`, so a directory junction or symlink cannot hide a
+target inside another root: the run root is resolved itself when it exists, or
+via its nearest existing ancestor when it does not. PKI, bridge, node executable,
+public modules and runtime imports must be existing regular readable files;
+permission errors are reported, never treated as "missing". A PKI or bridge path
+that resolves into the retained fixture is refused on the resolved path before
+any readability probe, so retained private material is never opened. Manifest
+`filename` must be a plain file name, every selected input must match its
+manifest hash, and every absolute runtime import must resolve under the operator
+runtime. Absolute import URLs are handled with `pathToFileURL`/`fileURLToPath`,
+so runtime paths containing spaces or `#` are encoded correctly.
 
 The canonical verify body is correlated with the observed artifact: `id`,
 `sha256`, byte length and save `sequence` must match what the flow actually
