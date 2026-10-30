@@ -5,11 +5,16 @@ import {data,own} from '../../../packages/contracts/commands-0.2/execution-bound
 import {HOST_TEARDOWN_SCHEMA} from '../../worker/conversation/host/teardown.mjs';
 export function verifiedTeardownReceipt(raw,record,nowMs){
  const fail=()=>{throw Object.assign(Error('BROWSER_HOST_TEARDOWN_REFUSED'),{code:'BROWSER_HOST_TEARDOWN_REFUSED'});};
+ // Placement is immutable allocator-owned data, included in allocationSha256.
+ // A receipt cannot narrow the expected process scope by labeling itself.
+ const browserOnly=record.allocation.hostMode==='browser-only';
+ if(record.allocation.hostMode!==undefined&&!browserOnly)fail();
  const r=data(own(raw,['schema','allocationSha256','bindingSha256','hostIdentitySha256','reason','startedAtMs',
-  'browserEgress','bashEgress','processes','browserState','hostDestroy','hostAbsence','status']));
+  'browserEgress','bashEgress','processes','browserState','hostDestroy','hostAbsence','status',...(browserOnly?['processScope']:[])]));
  if(!Number.isSafeInteger(nowMs)||nowMs<0||r.schema!==HOST_TEARDOWN_SCHEMA||r.allocationSha256!==hash(record.allocation)||r.bindingSha256!==hash(record.originalBinding)||
   r.hostIdentitySha256!==hash(record.hostIdentity)||!['conversation-end','cancelled','failed','revoked','lease-expired'].includes(r.reason)||
-  !Number.isSafeInteger(r.startedAtMs)||r.startedAtMs<0||r.startedAtMs>nowMs||r.browserEgress!=='closed'||r.bashEgress!=='closed'||
+  !Number.isSafeInteger(r.startedAtMs)||r.startedAtMs<0||r.startedAtMs>nowMs||r.browserEgress!=='closed'||r.bashEgress!==(browserOnly?'not-applicable':'closed')||
+  browserOnly&&r.processScope!=='browser-host-descendants'||
   r.processes!=='exited'||r.browserState!=='disposed'||r.hostDestroy!=='requested'||r.hostAbsence!=='confirmed'||r.status!=='VERIFIED')fail();
  return r;
 }
