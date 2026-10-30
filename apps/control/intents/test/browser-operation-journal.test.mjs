@@ -102,7 +102,7 @@ test('the verify read distinguishes absent, in-flight, dispatched and refused wi
 
 test('the journal admits the internal operation, keeps sdk rows public and separates the domains',async()=>{
  const source=readFileSync(new URL('../postgres-journal.mjs',import.meta.url),'utf8');
- assert.match(source,/INTERNAL_OPERATIONS=Object\.freeze\(\['browser_action@0\.2\.0','browser_approval_preparation@0\.2\.0'\]\)/u);
+ assert.match(source,/INTERNAL_OPERATIONS=Object\.freeze\(\['browser_action@0\.2\.0','browser_approval_preparation@0\.2\.0','browser_approval_consumption@0\.2\.0'\]\)/u);
  assert.match(source,/delivery_id LIKE 'sdk:%'/u,'the public list stays sdk-only');
  assert.match(source,/\^\(\?:sdk\|browser\):\[a-f0-9\]\{64\}\$/u,'row keys accept both families');
  // An execution delivery never equals an approval delivery for the same binding and request.

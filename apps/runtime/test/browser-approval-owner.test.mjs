@@ -10,6 +10,7 @@ import {createExecutionJournal} from '../../control/conversations/execution-jour
 import {createRunBrowserPolicy,DEFAULT_BROWSER_PLATFORM} from '../product-ports/browser-policy.mjs';
 import {createIntentJournal} from '../../control/intents/journal.mjs';
 import {createBrowserApprovalPreparationOwner} from '../../control/commands/approval-metadata/browser-preparation-journal.mjs';
+import {createBrowserApprovalConsumptionOwner} from '../../control/commands/approval-metadata/browser-approval-consumption.mjs';
 import {createBrowserApprovalOwner} from '../browser-approval.mjs';
 import {createMetadataPoolFixture,id,NOW} from '../../control/commands/approval-metadata/test/fixture.mjs';
 
@@ -57,7 +58,8 @@ async function fixture(){
  const state={role:'standard_user',roleCalls:0};
  const box=inertJournalStore(),intentJournal=createIntentJournal(box.ports);
  const build=()=>createBrowserApprovalOwner({journal:journalOwner,
-  preparations:createBrowserApprovalPreparationOwner({journal:intentJournal}),pool:sql.pool,
+  preparations:createBrowserApprovalPreparationOwner({journal:intentJournal}),
+  consumption:createBrowserApprovalConsumptionOwner({journal:intentJournal}),pool:sql.pool,
   readCapabilityRole:async()=>{state.roleCalls++;
    // The first read pins the role; later authority passes see the changed one.
    const role=state.roleAfterFirst!==undefined&&state.roleCalls>1?state.roleAfterFirst:state.role;

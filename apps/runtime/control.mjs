@@ -3,6 +3,7 @@ import {createBrowserViewerHttp} from '../control/browser-viewer/http.mjs';
 import {intentsComposition} from './product-ports/intents.mjs';
 import {createBrowserApprovalOwner} from './browser-approval.mjs';
 import {createBrowserApprovalPreparationOwner} from '../control/commands/approval-metadata/browser-preparation-journal.mjs';
+import {createBrowserApprovalConsumptionOwner} from '../control/commands/approval-metadata/browser-approval-consumption.mjs';
 /** Trusted control composition. Single preview replica; source connectivity disabled. */
 import {Pool} from 'pg';
 import {createTurnTelemetry} from './telemetry/turn-context.mjs';
@@ -199,6 +200,7 @@ export function assembleControl(options){
      typeof productIntents?.browser?.record!=='function'||typeof productIntents?.browser?.status!=='function'
       ?null:createBrowserApprovalOwner({journal:store.executions,pool,readCapabilityRole,readBrowserPolicy,
        preparations:createBrowserApprovalPreparationOwner({journal:intentJournal}),
+       consumption:createBrowserApprovalConsumptionOwner({journal:intentJournal}),
        ports:{record:productIntents.browser.record,status:productIntents.browser.status,
         consume:productIntents.browser.consume,result:productIntents.browser.result},now,
        limits:{requestMs:configuration.limits.requestMs}});

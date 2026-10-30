@@ -25,13 +25,14 @@ const DENIED='BROWSER_APPROVAL_REFUSED',UNKNOWN='BROWSER_APPROVAL_UNKNOWN';
 const TERMINAL=new Set(['rejected','revoked','expired']);
 
 export function createBrowserApprovalOwner(configuration){
- const c=own(configuration,['journal','pool','readCapabilityRole','readBrowserPolicy','ports','preparations'],
-  ['now','limits','store']);
+ const c=own(configuration,['journal','pool','readCapabilityRole','readBrowserPolicy','ports','preparations','consumption'],
+  ['now','limits','store','sleep']);
  const {journal,pool,readCapabilityRole,readBrowserPolicy,ports}=c;
  if(typeof journal?.withCurrentRun!=='function'||!pool||typeof pool.connect!=='function'||
   typeof readCapabilityRole!=='function'||typeof readBrowserPolicy!=='function'||
   typeof ports?.status!=='function'||typeof ports?.consume!=='function'||
-  typeof c.preparations?.claim!=='function'||typeof c.preparations?.settle!=='function')
+  typeof c.preparations?.claim!=='function'||typeof c.preparations?.settle!=='function'||
+  typeof c.consumption?.claim!=='function'||typeof c.consumption?.settle!=='function')
   fail('BROWSER_APPROVAL_CONFIGURATION');
  const now=c.now??Date.now;
  if(typeof now!=='function')fail('BROWSER_APPROVAL_CONFIGURATION');
@@ -103,7 +104,73 @@ export function createBrowserApprovalOwner(configuration){
    binding:Object.freeze(data(binding)),deliveryId:durable.deliveryId});
  }
 
- // No permission path here: an approval/consume port needs a durable consume claim that survives owner
- // recreation, which this module does not own yet. Only the durable PREPARATION is exposed.
- return Object.freeze({prepare});
+ /** A fresh grant needs an approved, unexpired decision for THIS proposal with consumption still null. */
+ function fresh(status,proposalId,subjectSha256){
+  if(!status||status.unknown===true)return false;
+  if(status.proposalId!==proposalId||status.subjectSha256!==subjectSha256)return false;
+  if(status.consumption!==null)return false;
+  const d=status.decision;
+  if(!d||d.decision!=='approved'||d.proposalId!==proposalId||d.commandSha256!==subjectSha256)return false;
+  return Date.parse(d.expiresAt)>now();
+ }
+ /** Human wait. Each Core call keeps the short request bound; only this loop's lifetime is long. The
+  * consume POST happens at most once, only after a fresh durable claim, and a lost acknowledgement leaves
+  * the delivery unresolved instead of retrying. */
+ async function wait(value){
+  const v=own(value,['proposalId','subjectSha256','requestSha256','toolUseId','binding'],['signal','deadlineMs']);
+  const signal=nativeSignal(v.signal),binding=data(v.binding);
+  const until=v.deadlineMs??now()+requestMs;
+  if(!Number.isSafeInteger(until))fail('BROWSER_APPROVAL_REFUSED');
+  const pollMs=Number.isSafeInteger(c.limits?.pollMs)&&c.limits.pollMs>=50?c.limits.pollMs:250;
+  let posted=false,last=null;
+  while(now()<until){
+   signal?.throwIfAborted();
+   let answer;
+   try{answer=await ports.status({proposalId:v.proposalId,subjectSha256:v.subjectSha256,binding,
+    ...(signal===undefined?{}:{signal}),deadlineMs:Math.min(until,now()+requestMs)});}
+   catch(error){if(signal?.aborted)throw error;throw fail(UNKNOWN);}
+   last=answer;
+   const status=answer?.status;
+   if(!status||status.proposalId!==v.proposalId)fail(DENIED);
+   const state=status.decision?.decision;
+   if(state==='rejected'||state==='revoked'||state==='expired')
+    return Object.freeze({permitted:false,status,terminal:state,consumed:posted});
+   if(fresh(status,v.proposalId,v.subjectSha256)){
+    if(posted)return Object.freeze({permitted:false,status,statusOnly:true,consumed:true});
+    let claim;
+    try{claim=await c.consumption.claim({binding,toolUseId:v.toolUseId,proposalId:v.proposalId,
+     requestSha256:v.requestSha256,...(signal===undefined?{}:{signal})});}
+    catch(error){
+     if(signal?.aborted)throw error;
+     if(error?.code&&error.code!=='UNKNOWN')throw error;
+     return Object.freeze({permitted:false,status,unknown:true,statusOnly:true,consumed:false});
+    }
+    if(claim.dispatch!==true)
+     // A retained or unresolved claim is provenance: no consume POST, no permission.
+     return Object.freeze({permitted:false,status,statusOnly:true,evidence:claim.evidence??null,
+      consumed:false,variant:claim.variant});
+    posted=true;
+    let answerReceipt;
+    try{answerReceipt=await ports.consume({proposalId:v.proposalId,subjectSha256:v.subjectSha256,binding,
+     ...(signal===undefined?{}:{signal}),deadlineMs:Math.min(until,now()+requestMs)});}
+    catch(error){
+     if(signal?.aborted)throw error;
+     // The POST may have landed: UNKNOWN, status-only, never a retry.
+     return Object.freeze({permitted:false,status,unknown:true,statusOnly:true,consumed:true});
+    }
+    if(answerReceipt?.permitted!==true)
+     return Object.freeze({permitted:false,status,statusOnly:true,consumed:true});
+    try{await c.consumption.settle({binding,toolUseId:v.toolUseId,proposalId:v.proposalId,
+     requestSha256:v.requestSha256,receipt:answerReceipt.receipt,...(signal===undefined?{}:{signal})});}
+    catch(error){
+     if(signal?.aborted)throw error;
+     return Object.freeze({permitted:false,status,unknown:true,statusOnly:true,consumed:true});
+    }
+    return Object.freeze({permitted:true,receipt:answerReceipt.receipt,status,consumed:true});
+   }
+   await (c.sleep?c.sleep(pollMs):new Promise(resolve=>setTimeout(resolve,pollMs)));
+  }
+  return Object.freeze({permitted:false,status:last?.status??null,expired:true,consumed:posted});
+ }
+ return Object.freeze({prepare,wait});
 }
