@@ -267,13 +267,18 @@ const permittedPhase=state=>state.phase==='active'
      const {a,b,h}=await admit(client,{request:q,fingerprintSha256,peerDnsName,signal});
      const state=own(data(await readCanonicalRun(client,{allocation:a,binding:b,signal})),
       ['binding','browserPolicySha256','capabilityPolicySha256','sdkAdmitted','browserAdmitted','bashAdmitted',
-       'phase','currentUntilMs','scopes'],['browserCustody','browserSuccessor']);
+       'phase','currentUntilMs'],['browserCustody','browserSuccessor']);
      if(!same(state.binding,b)||state.browserAdmitted!==true||!permittedPhase(state))fail();
-     if(!Array.isArray(state.scopes)||state.scopes.length===0)fail();
+     // Canonical scopes come from the REAL facts producer on this same admitted client; the currentness
+     // projection deliberately does not carry them.
+     if(typeof readCanonicalFacts!=='function')fail();
+     const facts=assertBrowserHostFacts(await readCanonicalFacts(client,{allocation:a,binding:b,signal}),{binding:b});
+     if(!same(facts.binding,b)||facts.scopes.length===0)fail();
      const beforeMs=await clock(client);
+     if(facts.currentUntilMs<=beforeMs||facts.deadlineMs<=beforeMs)fail();
      if(beforeMs>=cutoff(beforeMs,a,h,state.currentUntilMs)||beforeMs>=a.leaseDeadlineMs)fail();
      await consume(client,a,q.nonce);
-     return {q,a,b,h,scopes:Object.freeze(state.scopes.map(scope=>Object.freeze(data(scope)))),
+     return {q,a,b,h,scopes:facts.scopes,scopesSha256:canonicalSha256(facts.scopes),
       stateSha256:canonicalSha256(stableProjection(state))};
     },{signal,readOnly:false});
     if(signal?.aborted)fail();
@@ -292,6 +297,9 @@ const permittedPhase=state=>state.phase==='active'
        'phase','currentUntilMs'],['browserCustody','browserSuccessor']);
      if(canonicalSha256(stableProjection(fresh))!==admitted.stateSha256||fresh.browserAdmitted!==true||
       !permittedPhase(fresh))fail();
+     // The canonical scopes must not have changed across the append either.
+     const after=assertBrowserHostFacts(await readCanonicalFacts(client,{allocation:a,binding:b,signal}),{binding:b});
+     if(!same(after.binding,b)||canonicalSha256(after.scopes)!==admitted.scopesSha256)fail();
      const nowMs=await clock(client),untilMs=cutoff(nowMs,a,h,fresh.currentUntilMs);
      if(signal?.aborted||nowMs>=untilMs||nowMs>=a.leaseDeadlineMs)fail();
      if(!ack||ack.recorded!==true||typeof ack.eventId!=='string'||!ack.event)fail();

@@ -3,7 +3,9 @@ import {own,data,nativeSignal} from '../../../../../packages/contracts/commands-
 import {canonicalSha256} from '../../../../../packages/contracts/validate.mjs';
 import {assertHostAllocation,assertHostRunBinding,assertD005HostIdentity,assertHostCurrent,assertBrowserHostCurrent} from '../binding.mjs';
 import {assertBrowserApprovalRequest} from '../../../../../packages/contracts/runtime-0.2/browser-approval-preparation.mjs';
-import {assertBrowserActionReceipt} from '../../../../../packages/contracts/runtime-0.2/browser-receipt.mjs';
+import {assertBrowserActionReceipt,browserActionReceiptEventId} from '../../../../../packages/contracts/runtime-0.2/browser-receipt.mjs';
+import {assertConversationEvent,isBrowserReceiptEventType}
+ from '../../../../../packages/contracts/conversation-sources/validate.mjs';
 import {receiptRefusal} from '../../browser/approval-binding.mjs';
 import {browserPreparationProposalId} from '../../../../../packages/contracts/runtime-0.2/browser-approval-preparation.mjs';
 
@@ -181,7 +183,10 @@ export function hostReceiptRequest(value){
  let v,a,b,i,r;try{
   v=own(data(value),['schema','allocation','binding','hostIdentity','nonce','receipt']);
   a=assertHostAllocation(v.allocation);b=assertHostRunBinding(a,v.binding);i=assertD005HostIdentity(v.hostIdentity,b,a);
-  r=assertBrowserActionReceipt({...data(v.receipt),binding:b});
+  r=assertBrowserActionReceipt(data(v.receipt));
+  // The receipt's OWN binding must be the admitted one; a foreign claim is refused, never overwritten.
+  if(!same(r.binding,v.binding))fail();
+  if(r.kind!=='browser.action')fail();
  }catch{fail();}
  if(v.schema!==HOST_RECEIPT_REQUEST_SCHEMA||typeof v.nonce!=='string'||!HEX.test(v.nonce))fail();
  return Object.freeze({schema:HOST_RECEIPT_REQUEST_SCHEMA,allocation:a,binding:b,hostIdentity:i,nonce:v.nonce,receipt:r});
@@ -193,7 +198,16 @@ export function hostReceiptResponse(value,request){
   if(v.schema!==HOST_RECEIPT_RESPONSE_SCHEMA||v.nonce!==request.nonce||v.recorded!==true||
    typeof v.eventId!=='string'||!v.event||typeof v.event!=='object')fail();
   if(!Number.isSafeInteger(v.checkedAtMs)||!Number.isSafeInteger(v.currentUntilMs)||v.currentUntilMs<=v.checkedAtMs)fail();
-  if(data(v.event).id!==undefined&&v.event.id!==v.eventId)fail();
+  // A REAL conversation event acknowledgement, not a schema-only object: canonical event shape, the browser
+  // receipt type, the DETERMINISTIC identity for this binding/session/tool use, the exact binding and the
+  // exact submitted canonical receipt as its data.
+  const event=assertConversationEvent(data(v.event));
+  if(!isBrowserReceiptEventType(event.type))fail();
+  const expected=browserActionReceiptEventId({binding:request.binding,sessionId:request.receipt.sessionId,
+   toolUseId:request.receipt.toolUseId});
+  if(v.eventId!==expected||event.eventId!==expected)fail();
+  if(!same(event.binding,request.binding))fail();
+  if(!same(event.data,request.receipt))fail();
  }catch{fail();}
  return Object.freeze({schema:HOST_RECEIPT_RESPONSE_SCHEMA,nonce:v.nonce,eventId:v.eventId,recorded:true,
   event:v.event,checkedAtMs:v.checkedAtMs,currentUntilMs:v.currentUntilMs});
