@@ -360,7 +360,7 @@ export async function prepareGuestHostRun({allocation,binding,hostIdentity,cwd,d
    }});
    const current=async({signal})=>{
     stopped(owner.signal);const current=await browserClient.readCurrent({allocation:a,binding:b,policySha256:browserDigest,signal});
-    assertBrowserHostCurrent({allocation:a,binding:b,policySha256:browserDigest,current,nowMs:now(),maxFreshMs:control.maxFreshMs});
+    return assertBrowserHostCurrent({allocation:a,binding:b,policySha256:browserDigest,current,nowMs:now(),maxFreshMs:control.maxFreshMs});
    };
    const sessions=components.createBrowserSessionHost({binding:b,cwd,installation:broker.installation,
     upstream:components.pinnedBrowserUpstream(broker.installation),contexts,modelTransport:broker.modelTransport,

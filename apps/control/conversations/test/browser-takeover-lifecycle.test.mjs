@@ -70,7 +70,7 @@ test('physical browser scope follows only its canonical takeover successor while
   const first=await f.read();await f.service.returnTakeover({credential:f.credential,returned:{ownerInstanceId:f.custody.ownerInstanceId,leaseEpoch:2,snapshotSha256:'b'.repeat(64)}});
   const resumed=await f.control({controlId:end,intent:'takeover.end',checkpointId:first.checkpointId,checkpointSha256:first.checkpointSha256});
   const result=await current();assert.equal(result.phase,'browser-successor');assert.deepEqual(result.binding,binding);
-  assert.deepEqual(result.browserSuccessor.binding,resumed.targetBinding);assert.equal(result.sdkAdmitted,false);assert.equal(result.bashAdmitted,false);
+  assert.deepEqual(result.browserSuccessor.binding,resumed.targetBinding);assert.deepEqual(result.browserSuccessor.handoff.custody,f.custody);assert.equal(result.browserSuccessor.handoff.controlId,end);assert.equal(result.sdkAdmitted,false);assert.equal(result.bashAdmitted,false);
   await assert.rejects(f.store.nextRuns.current(binding,check),/NEXT_RUN_NOT_LATEST/);
   await assert.rejects(current({allocation:{...allocation,generation:2}}),/BROWSER_CUSTODY_REFUSED/);
   await assert.rejects(current({binding:{...binding,actorId:id(945)}}));

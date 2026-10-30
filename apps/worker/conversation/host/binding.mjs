@@ -1,5 +1,6 @@
 /** Internal D005 host/run identity and currentness checks. A receipt is authoritative only when returned by an
  * authenticated, trusted control port. Shape validation here does not authenticate a caller or allocate a host. */
+import {assertBrowserHandoff} from '../../../../packages/runtime/browser-custody.mjs';
 import {validateShape,canonicalSha256} from '../../../../packages/contracts/validate.mjs';
 import {own,data} from '../../../../packages/contracts/commands-0.2/execution-boundary.mjs';
 
@@ -47,4 +48,15 @@ export function assertHostCurrent({allocation,binding,policySha256,current,nowMs
  if(!same(ca,a)||!same(cb,b)||c.policySha256!==policySha256||c.phase!=='active'||!Number.isSafeInteger(c.checkedAtMs)||!Number.isSafeInteger(c.currentUntilMs)||c.checkedAtMs>nowMs||c.checkedAtMs<nowMs-maxFreshMs||c.currentUntilMs<=nowMs||c.currentUntilMs>c.checkedAtMs+maxFreshMs||c.currentUntilMs>a.leaseDeadlineMs)fail('HOST_CURRENTNESS_REFUSED');
  return Object.freeze({currentUntilMs:c.currentUntilMs,checkedAtMs:c.checkedAtMs});
 }
-export const assertBrowserHostCurrent=assertHostCurrent;
+/** Browser physical currentness may carry the canonical logical successor. SDK
+ * and Bash continue to use the closed ordinary receipt shape above. */
+export function assertBrowserHostCurrent(input){
+ let value;try{value=own(data(input.current),['allocation','binding','policySha256','phase','checkedAtMs','currentUntilMs'],['browserHandoff']);}catch{fail('HOST_CURRENTNESS_REFUSED');}
+ const {browserHandoff,...base}=value,receipt=assertHostCurrent({...input,current:base});
+ if(browserHandoff===undefined)return receipt;
+ const handoff=assertBrowserHandoff(browserHandoff),custody=handoff.custody,source=input.binding;
+ if(custody.hostId!==input.allocation.hostId||custody.generation!==input.allocation.generation||custody.policySha256!==input.policySha256||
+  value.currentUntilMs>custody.expiresAtMs||custody.binding.writerFence<source.writerFence||
+  ['tenantId','actorId','conversationId'].some(key=>custody.binding[key]!==source[key]))fail('HOST_CURRENTNESS_REFUSED');
+ return Object.freeze({...receipt,browserHandoff:handoff});
+}

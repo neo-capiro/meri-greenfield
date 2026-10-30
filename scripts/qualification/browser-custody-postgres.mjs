@@ -47,6 +47,7 @@ try{
  assert.deepEqual(execution.browserHandoff.custody,custody);assert.deepEqual(execution.browserHandoff.returned,returned);
  assert.deepEqual(execution.browserHandoff.targetBinding,target);assert.equal(execution.continuation.mode,'resume');
  const current=await hostCurrent();assert.equal(current.phase,'browser-successor');assert.deepEqual(current.browserSuccessor.binding,target);
+ assert.deepEqual(current.browserSuccessor.handoff,execution.browserHandoff);
  assert.deepEqual(current.binding,binding);assert.equal(current.sdkAdmitted,false);assert.equal(current.bashAdmitted,false);
  await assert.rejects(hostCurrent({allocation:{...allocation,generation:2}}));
  await assert.rejects(hostCurrent({binding:{...binding,actorId:'foreign'}}));
@@ -61,6 +62,6 @@ try{
  await assert.rejects(hostCurrent(),/BROWSER_CUSTODY_REFUSED/);
  assert.equal(Number((await pool.query('SELECT count(*) AS n FROM meri_conversations.runs WHERE tenant_id=$1 AND conversation_id=$2',[tenantId,binding.conversationId])).rows[0].n),2);
  console.log(JSON.stringify({passed:true,postgresMajor:16,ordinaryRole:true,custodyRecovered:true,concurrentReplay:true,
-  exactSuccessor:true,physicalBrowserFollowsCanonicalSuccessor:true,retiredSdkRemainsDenied:true,targetCancellationCutsBrowser:true,staleSourceRefused:true,crossActorRefused:true,usageDeltaMicroUsd:200,
+  exactSuccessor:true,canonicalBrowserHandoff:true,physicalBrowserFollowsCanonicalSuccessor:true,retiredSdkRemainsDenied:true,targetCancellationCutsBrowser:true,staleSourceRefused:true,crossActorRefused:true,usageDeltaMicroUsd:200,
   limits:'Scripted Core identity, SDK and native host; no browser, model, deployment or full host integration claim.'}));
 }finally{f?.close();await pool.end();}
