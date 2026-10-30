@@ -4,7 +4,7 @@ import https from 'node:https';
 import {randomBytes} from 'node:crypto';
 import {performance} from 'node:perf_hooks';
 import {canonicalSha256} from '../../../../../packages/contracts/validate.mjs';
-import {data,nativeSignal} from '../../../../../packages/contracts/commands-0.2/execution-boundary.mjs';
+import {data,own,nativeSignal} from '../../../../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {validateSiteWorkflowManifest} from '../../browser/site-workflows/manifest.mjs';
 import {assertSiteWorkflowSelection} from '../../../../../packages/contracts/site-workflow-selection.mjs';
 import {validateBrowserPolicy} from '../../browser/policy.mjs';
@@ -133,10 +133,12 @@ export function createHostCurrentnessClient({allocation,binding,hostIdentity,pur
     // Canonical shape of the resolved workflow payload, then REAL content admission: the manifest is
     // validated against the platform maximum taken from a FRESH canonical facts read on this same pinned
     // host (never from the incoming manifest), and its recomputed digest must equal the answered one.
-    const workflow=answer.workflow;
-    if(!workflow||typeof workflow!=='object'||Array.isArray(workflow)||workflow.enabled!==true||
-     typeof workflow.manifestSha256!=='string'||!/^[0-9a-f]{64}$/u.test(workflow.manifestSha256)||
-     !workflow.manifest||typeof workflow.manifest!=='object'||Array.isArray(workflow.manifest))fail();
+    // CLOSED payload: exactly {manifest,manifestSha256,enabled}; any other member is refused.
+    let workflow;
+    try{workflow=own(data(answer.workflow),['manifest','manifestSha256','enabled']);}catch{fail();}
+    if(workflow.enabled!==true||typeof workflow.manifestSha256!=='string'||
+     !/^[0-9a-f]{64}$/u.test(workflow.manifestSha256)||!workflow.manifest||
+     typeof workflow.manifest!=='object'||Array.isArray(workflow.manifest))fail();
     const facts=await factsExchange(signal);
     const policy=facts.facts.browserPolicy;
     if(!policy)fail(); // no active browser policy: no canonical workflow can be admitted
@@ -150,7 +152,8 @@ export function createHostCurrentnessClient({allocation,binding,hostIdentity,pur
      manifest.version!==pinned.version)fail();
     if(canonicalSha256(manifest)!==pinned.manifestSha256||workflow.manifestSha256!==pinned.manifestSha256)fail();
     if(!fresh(answer,now(),maxFreshMs))fail();
-    return Object.freeze({...answer,workflow:Object.freeze({...workflow,manifest})});
+    return Object.freeze({...answer,workflow:Object.freeze({manifest,manifestSha256:workflow.manifestSha256,
+     enabled:workflow.enabled})});
    }catch{fail();}
   },
   /** Read-only verification that this host's takeover is ALREADY applied and still unreturned. */

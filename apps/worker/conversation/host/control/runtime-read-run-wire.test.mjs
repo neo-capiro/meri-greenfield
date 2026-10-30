@@ -11,7 +11,7 @@ import {assertBrowserHostFacts} from '../../../../../packages/contracts/runtime-
 import {validateSiteWorkflowManifest,SITE_WORKFLOW_MANIFEST_SCHEMA}
  from '../../browser/site-workflows/manifest.mjs';
 import {assertHostAllocation,assertHostRunBinding} from '../binding.mjs';
-import {BROWSER_APPROVAL_REQUEST_SCHEMA}
+import {BROWSER_APPROVAL_REQUEST_SCHEMA,browserPreparationProposalId}
  from '../../../../../packages/contracts/runtime-0.2/browser-approval-preparation.mjs';
 import {hostClientDnsName} from './protocol.mjs';
 import {binding as fixtureBinding,installation,sourceScopes,enabledPolicy,clock as nowFn}
@@ -75,19 +75,30 @@ function wire(captured){
  }};
 }
 /** The canonical host store over a fake SQL transaction; policies and hashes are REAL. */
-async function compose({factOverrides={},workflowOverrides={},decide=null,expired=false,rolling=null}={}){
+async function compose({factOverrides={},workflowOverrides={},decide=null,record=null,expired=false,rolling=null,
+ policyOverrides={},selectionOverrides={},held=false}={}){
  const {createHostCurrentnessClient}=await import('./client.mjs');
  const {createHostCurrentnessServer}=await import('./server.mjs');
  const {createPostgresHostCurrentnessStore}=await import('./postgres-store.mjs');
  const a=assertHostAllocation(allocation),b=assertHostRunBinding(a,binding);
- const capabilityPolicy={},browserPolicy={...enabledPolicy(),allowedOrigins:[...MAX]};
+ const capabilityPolicy={},browserPolicy={...enabledPolicy(),allowedOrigins:[...MAX],...policyOverrides};
  const siteWorkflow={siteId:'synthetic-records',workflowId:'download-filings',version:1,
   manifestSha256:hash(validateSiteWorkflowManifest(manifest(),{platformMaximumOrigins:MAX}))};
  const scopes=[{tenantId:binding.tenantId,kind:'private-user',resourceId:binding.actorId,policyRevision:'p1'}];
- const facts=()=>assertBrowserHostFacts({schema:'meri-browser-host-facts/3',binding:b,scopes,
-  deadlineMs:expired?NOW-1000:NOW+900000,currentUntilMs:expired?NOW-2000:(rolling?rolling.now:NOW+300000),phase:'active',admitted:{sdk:true,bash:false,browser:true},
-  capabilityPolicy,capabilityPolicySha256:hash(capabilityPolicy),
-  browserPolicy,browserPolicySha256:hash(browserPolicy),siteWorkflow,...factOverrides},{binding:b});
+ const browserCustody={schema:'meri-browser-custody/1',binding:b,
+  controlId:'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa',ownerInstanceId:'bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb',
+  hostId:a.hostId,generation:a.generation,leaseEpoch:1,policySha256:'f'.repeat(64),expiresAtMs:NOW+60000};
+ // A HELD facts fixture in the same canonical shape as control/operations.test.mjs: browser custody only,
+ // no policy snapshot and no SDK/Bash admission. This is a fixture boundary, not invented authority.
+ const facts=()=>held
+  ?assertBrowserHostFacts({schema:'meri-browser-host-facts/3',binding:b,scopes,deadlineMs:NOW+900000,
+    currentUntilMs:NOW+300000,phase:'browser-held',admitted:{sdk:false,bash:false,browser:true},
+    browserCustody,...factOverrides},{binding:b})
+  :assertBrowserHostFacts({schema:'meri-browser-host-facts/3',binding:b,scopes,
+    deadlineMs:expired?NOW-1000:NOW+900000,currentUntilMs:expired?NOW-2000:(rolling?rolling.now:NOW+300000),phase:'active',admitted:{sdk:true,bash:false,browser:true},
+    capabilityPolicy,capabilityPolicySha256:hash(capabilityPolicy),
+    browserPolicy,browserPolicySha256:hash(browserPolicy),siteWorkflow:{...siteWorkflow,...selectionOverrides},
+    ...factOverrides},{binding:b});
  const runState={binding:b,currentUntilMs:NOW+300000,phase:'active',sdkAdmitted:true,bashAdmitted:false,
   browserAdmitted:true,capabilityPolicySha256:hash(capabilityPolicy),browserPolicySha256:hash(browserPolicy)};
  const workflow=(()=>{const saved=siteWorkflow;
@@ -102,7 +113,8 @@ async function compose({factOverrides={},workflowOverrides={},decide=null,expire
   return {rows:[]};}};
  const store=createPostgresHostCurrentnessStore({transact:async effect=>effect(sqlClient),
   readCanonicalRun:async()=>runState,readCanonicalFacts:async()=>facts(),
-  resolveWorkflow:async()=>workflow,maxLeaseMs:5000,...(decide===null?{}:{decideBrowserApproval:decide})});
+  resolveWorkflow:async()=>workflow,maxLeaseMs:5000,...(decide===null?{}:{decideBrowserApproval:decide}),
+  ...(record===null?{}:{recordBrowserReceipt:record})});
  const captured={handler:null};const fake=new EventEmitter();
  fake.listening=false;fake.listen=()=>{fake.listening=true;fake.emit('listening');};
  fake.address=()=>({address:'127.0.0.1',port:8443});fake.close=cb=>cb?.();
@@ -234,4 +246,113 @@ test('a rolling currentUntilMs never changes the pinned deadline or binding',{ti
  assert.equal(hash(first.binding),hash(second.binding));
  assert.notEqual(second.deadlineMs,rolling.now);
  client.close();server.close();
+});
+
+/** Canonical approved receipt (same fixture shape as the accepted decide-wire suite). */
+function approvedReceipt(toolUseId){
+ const subject={schema:'meri-browser-action/1',binding,server:'capiov2-browser',tool:'browser_click',
+  toolUseId,inputSha256:hash({tool:'browser_click',arguments:{}}),pageOrigin:'https://app.capiro.example',
+  policySha256:'a'.repeat(64)};
+ const proposalId=browserPreparationProposalId({binding,toolUseId});
+ return {schema:'meri-browser-approval-receipt/1',proposalId,subjectSha256:hash(subject),toolUseId,
+  decision:{proposalId,commandSha256:hash(subject),decision:'approved',
+   decidedAt:new Date(NOW-500).toISOString(),expiresAt:new Date(NOW+300000).toISOString(),
+   approver:{tenantId:binding.tenantId,actorId:binding.actorId},policyRevision:'p1'},
+  consumption:{consumed:true,consumptionId:'99999999-9999-4999-8999-999999999999',consumedAtMs:NOW}};
+}
+function request_(toolUseId){
+ const subject={schema:'meri-browser-action/1',binding,server:'capiov2-browser',tool:'browser_click',
+  toolUseId,inputSha256:hash({tool:'browser_click',arguments:{}}),pageOrigin:'https://app.capiro.example',
+  policySha256:'a'.repeat(64)};
+ return {schema:BROWSER_APPROVAL_REQUEST_SCHEMA,subject,subjectSha256:hash(subject),
+  input:{tool:'browser_click',arguments:{}},requestedAtMs:NOW-1000,expiresAtMs:NOW+600000};
+}
+function helper(client,options={}){
+ return createReadRun({allocation,binding,cwd,client,installation:contextInstallation,
+  egress:{endpoint:installation.egressProxy,async grant(){},async revoke(){}},
+  processes:{async waitForExit(){}},artifacts:{async ingest(){}},...options});
+}
+let createReadRun=null;
+
+test('an approved decision yields the RAW canonical receipt with the request unchanged',{timeout:12000},async()=>{
+ ({createBrowserHostReadRun:createReadRun}=await import('./runtime-read-run.mjs'));
+ const toolUseId='toolu_01HZX',receipt=approvedReceipt(toolUseId),original=request_(toolUseId);
+ let seen=null;
+ const {client}=await compose({decide:async input=>{seen=input;console.log('SEEN KEYS',Object.keys(input));return {permitted:true,receipt};}});
+ const run=helper(client);
+ const answer=await run.approvals.decide(original,{signal:new AbortController().signal});
+ assert.deepEqual(answer,receipt,'the helper returns the canonical receipt itself');
+ assert.equal(Object.hasOwn(answer,'permitted'),false,'no transport wrapper leaks through');
+ const delivered=seen.request;
+ assert.equal(delivered.subject.toolUseId,original.subject.toolUseId,'the SDK tool use is unchanged');
+ assert.equal(delivered.subject.inputSha256,original.subject.inputSha256,'the input digest is unchanged');
+ assert.equal(delivered.subjectSha256,original.subjectSha256,'the subject digest is unchanged');
+ assert.deepEqual(delivered.input,original.input,'the requested action is unchanged');
+ client.close();
+});
+
+test('terminal abort during a deferred exchange denies the answer; a pre-aborted terminal denies everything',{timeout:12000},async()=>{
+ ({createBrowserHostReadRun:createReadRun}=await import('./runtime-read-run.mjs'));
+ let release;const gate=new Promise(resolve=>{release=resolve;});
+ const calls={decide:0,read:0};
+ // A trusted client that IGNORES the abort: only the helper's post-await guard can deny the result.
+ const client={async readFacts(){calls.read++;return {facts:null};},resolveBrowserWorkflow(){},
+  async decideBrowserApproval(){calls.decide++;await gate;return {permitted:true,receipt:approvedReceipt('toolu_x')};},
+  async recordBrowserReceipt(){return {recorded:true};}};
+ const terminal=new AbortController();
+ const run=helper(client,{terminalSignal:terminal.signal});
+ const pending=run.approvals.decide(request_('toolu_x'),{signal:new AbortController().signal});
+ terminal.abort();
+ release();
+ await assert.rejects(()=>pending,/BROWSER_HOST_READ_RUN_REFUSED/u,'a post-await terminal abort denies the receipt');
+ assert.equal(calls.decide,1);
+ // Own callback cancellation mid-flight behaves the same way.
+ let release2;const gate2=new Promise(r=>{release2=r;});
+ const client2={async readFacts(){return {facts:null};},resolveBrowserWorkflow(){},
+  async decideBrowserApproval(){await gate2;return {permitted:true,receipt:approvedReceipt('toolu_y')};},
+  async recordBrowserReceipt(){return {recorded:true};}};
+ const own=new AbortController();
+ const run2=helper(client2);
+ const pending2=run2.approvals.decide(request_('toolu_y'),{signal:own.signal});
+ own.abort();release2();
+ await assert.rejects(()=>pending2,/BROWSER_HOST_READ_RUN_REFUSED/u);
+ // An already-aborted terminal refuses every entry point without touching the client.
+ const deadTerminal=new AbortController();deadTerminal.abort();
+ const spy={readFacts(){calls.read++;return {facts:null};},resolveBrowserWorkflow(){calls.read++;},
+  decideBrowserApproval(){calls.decide++;},recordBrowserReceipt(){calls.decide++;}};
+ const dead=helper(spy,{terminalSignal:deadTerminal.signal});
+ const signals=new AbortController().signal;
+ await assert.rejects(()=>dead.readRun({binding,signal:signals}),/BROWSER_HOST_READ_RUN_REFUSED/u);
+ await assert.rejects(()=>dead.policy({binding,signal:signals}),/BROWSER_HOST_READ_RUN_REFUSED/u);
+ await assert.rejects(()=>dead.siteWorkflows.resolve({binding,signal:signals}),/BROWSER_HOST_READ_RUN_REFUSED/u);
+ await assert.rejects(()=>dead.approvals.decide(request_('toolu_z'),{signal:signals}),/BROWSER_HOST_READ_RUN_REFUSED/u);
+ await assert.rejects(()=>dead.receipts.record({schema:'x'},{signal:signals}),/BROWSER_HOST_READ_RUN_REFUSED/u);
+ assert.equal(calls.read,0,'a pre-aborted terminal touches no client');
+ assert.equal(calls.decide,1,'only the ignored-abort exchange reached the client');
+});
+
+test('a changed saved selection, an out-of-policy manifest and an extra workflow member refuse',{timeout:12000},async()=>{
+ ({createBrowserHostReadRun:createReadRun}=await import('./runtime-read-run.mjs'));
+ const changed=await compose({selectionOverrides:{version:2}});
+ await assert.rejects(()=>changed.client.resolveBrowserWorkflow({binding}),/HOST_CONTROL_UNAVAILABLE/u);
+ changed.client.close();
+ const outside=await compose({policyOverrides:{allowedOrigins:['https://records.example']}});
+ await assert.rejects(()=>outside.client.resolveBrowserWorkflow({binding}),/HOST_CONTROL_UNAVAILABLE/u);
+ outside.client.close();
+ const extra=await compose({workflowOverrides:{extra:'field'}});
+ await assert.rejects(()=>extra.client.resolveBrowserWorkflow({binding}),/HOST_CONTROL_UNAVAILABLE/u);
+ extra.client.close();
+});
+
+test('canonical HELD facts build a cleanup configuration but admit no policy',{timeout:12000},async()=>{
+ ({createBrowserHostReadRun:createReadRun}=await import('./runtime-read-run.mjs'));
+ const {client}=await compose({held:true});
+ const run=helper(client);
+ const prepared=await run.readRun({binding});
+ assert.equal(prepared.deadlineMs,NOW+900000);
+ assert.equal(Object.hasOwn(prepared,'siteWorkflow'),false);
+ assert.equal(prepared.port.modelTransport,'host-owned');
+ await assert.rejects(()=>run.policy({binding,signal:new AbortController().signal}),
+  /BROWSER_HOST_READ_RUN_REFUSED/u,'held facts have no active policy: no SDK admission is faked');
+ client.close();
 });

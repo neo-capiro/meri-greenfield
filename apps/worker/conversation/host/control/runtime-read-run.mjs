@@ -47,10 +47,17 @@ export function createBrowserHostReadRun(raw){
   if(canonicalSha256(candidate)!==pinnedSha)refuse();
   return candidate;
  };
- /** ONE shared lifetime check for every retained callback: its OWN signal must be live and the terminal
-  * host signal must not have fired. Nothing captures the preparation signal. */
+ /** ONE shared lifetime check for every retained callback. The CALLER signal must be live and the
+  * terminal host signal must not have fired; when both exist the exchange runs on their combination, so a
+  * host shutdown DURING a real exchange aborts it. With no terminal signal the caller's own signal is
+  * forwarded unchanged (callers and owners rely on that identity). Nothing captures the prepare signal. */
  const live=signal=>{
   try{nativeSignal(signal);}catch{refuse();}
+  if(signal?.aborted||terminalSignal?.aborted===true)refuse();
+  return terminalSignal===undefined?signal:AbortSignal.any([signal,terminalSignal].filter(Boolean));
+ };
+ /** Post-await recheck: a positive answer is never released after the combined lifetime died. */
+ const settle=signal=>{
   if(signal?.aborted||terminalSignal?.aborted===true)refuse();
   return signal;
  };
@@ -62,8 +69,8 @@ export function createBrowserHostReadRun(raw){
  }
  /** Fresh canonical browser policy for this pinned host; a held/no-policy read refuses new work. */
  async function policy({binding:requested,signal}={}){
-  assertBinding(requested);live(signal);
-  const facts=await factsAt(signal);
+  assertBinding(requested);const life=live(signal);
+  const facts=await factsAt(life);settle(life);
   if(facts.browserPolicy===undefined)refuse(); // active policy only: nothing is cached or invented
   return data(facts.browserPolicy);
  }
@@ -71,23 +78,27 @@ export function createBrowserHostReadRun(raw){
   /** The original approval request goes through UNCHANGED; only a permitted answer yields its RAW
    * canonical receipt — the exact shape the existing permission gate validates. */
   async decide(originalRequest,options){
-   const {signal}=own(options??{},[],['signal']);live(signal);
-   const answer=await client.decideBrowserApproval(originalRequest,{signal});
+   const {signal}=own(options??{},[],['signal']);const life=live(signal);
+   const answer=await client.decideBrowserApproval(originalRequest,{signal:life});
+   settle(life); // no positive release after the combined lifetime died
    if(!answer||answer.permitted!==true||!answer.receipt)refuse();
    return answer.receipt;
   }});
  const receipts=Object.freeze({
   /** The original receipt goes through unchanged and the actual acknowledged event is returned. */
   async record(originalReceipt,options){
-   const {signal}=own(options??{},[],['signal']);live(signal);
-   return await client.recordBrowserReceipt(originalReceipt,{signal});
+   const {signal}=own(options??{},[],['signal']);const life=live(signal);
+   const ack=await client.recordBrowserReceipt(originalReceipt,{signal:life});
+   settle(life); // a durable ack that arrives after cancellation is reported, never re-effected here
+   return ack;
   }});
  const siteWorkflows=Object.freeze({
   /** For the trusted prepareCurrentSiteWorkflow owner: exactly {manifest,manifestSha256,enabled}. The
    * client has already validated the manifest against a fresh policy maximum and the saved selection. */
   async resolve({binding:requested,signal}={}){
-   assertBinding(requested);live(signal);
-   const answer=await client.resolveBrowserWorkflow({binding:data(binding),signal});
+   assertBinding(requested);const life=live(signal);
+   const answer=await client.resolveBrowserWorkflow({binding:data(binding),signal:life});
+   settle(life);
    const workflow=answer?.workflow;
    if(!workflow)refuse();
    return Object.freeze({manifest:workflow.manifest,manifestSha256:workflow.manifestSha256,
@@ -97,8 +108,8 @@ export function createBrowserHostReadRun(raw){
   * deadline from the facts document, never the rolling currentness cutoff; the port is constructed per
   * call from that facts document's own canonical scopes. */
  async function readRun({binding:requested,signal}={}){
-  assertBinding(requested);live(signal);
-  const facts=await factsAt(signal);
+  assertBinding(requested);const life=live(signal);
+  const facts=await factsAt(life);settle(life);
   const port=createBrowserHostRuntimePort({
    binding:data(facts.binding),cwd,installation,policy,egress,processes,
    approvals,artifacts,receipts,sourceScopes:facts.scopes,modelTransport:'host-owned',
