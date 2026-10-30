@@ -49,13 +49,13 @@ async function boot({root,scratch,mode='success'}){
   paths:{definitionsRoot:root,helperPath:'/fixed/helper',nodePath:'/fixed/node',childPath:'/fixed/child-cli.mjs',
    home:'/fixture/home',runtimeUid:1000,runtimeGid:1000,childSettings}};
  const programs=[],roles=[],scanDirectories=[],compositions=[];
- let armed=false,releaseVerification=null,listener=null,started=null,activeAtPlacementClose=null;
+ let signatures=0,releaseVerification=null,listener=null,started=null,activeAtPlacementClose=null;
  // Inert FS effect port: records the exact owner-path modes instead of real chown/chmod (production applies them).
  const modes=[];
  const definitionsChmod=async(path,mode)=>{modes.push({path,mode});};
  const definitionsRun=async(program,args)=>{
   programs.push(program);
-  if(program==='sigtool'&&armed===true&&mode==='late-pin')await new Promise(resolve=>{releaseVerification=resolve;});
+  if(program==='sigtool'&&++signatures===3&&mode==='late-pin')await new Promise(resolve=>{releaseVerification=resolve;});
   if(program==='freshclam'){const conf=await readFile(args[0].slice('--config-file='.length),'utf8');
    const database=conf.split('\n').find(line=>line.startsWith('DatabaseDirectory ')).slice('DatabaseDirectory '.length);
    await writeFile(join(database,'main.cvd'),Buffer.from('synthetic main CVD'));
@@ -80,7 +80,7 @@ async function boot({root,scratch,mode='success'}){
    return {stdout:Buffer.from(UPLOAD_SCAN_INPUT+': OK\n'),receipt:{exitCode:0}};}
   return {stdout:Buffer.from(JSON.stringify({status:'available',segments:[],limitations:[]})),receipt:{exitCode:0}};
  };
- started=await startNativeProcessingHost({config,readFile:()=>Buffer.from('synthetic TLS bytes'),definitionsRun,definitionsChmod,
+ started=await startNativeProcessingHost({config,readFile:()=>Buffer.from('synthetic TLS bytes'),definitionsRun,
   authenticatePeer:async()=>({verified:true,notAfterMs:LEASE}),
   verifyCustody:async()=>({authorized:true,allocation:ALLOCATION,binding:BINDING,hostIdentity:IDENTITY,
    currentness:{readCurrent:async()=>({})}}),
@@ -102,7 +102,7 @@ async function boot({root,scratch,mode='success'}){
     close:async()=>{activeAtPlacementClose=started.definitionsOwner.active();return {closed:true};}})})});
  return {started,listener:()=>listener,programs,roles,scanDirectories,compositions,
   activeAtPlacementClose:()=>activeAtPlacementClose,releaseVerification:()=>releaseVerification,
-  arm:()=>{armed=true;},modes};
+  modes};
 }
 
 const requestFor=deadlineMs=>({kind:'upload-inspection',requestId:'a'.repeat(64),imageDigest:IMAGE,
@@ -168,7 +168,6 @@ test('JOINED late pin: a verification completing after handler expiry is not los
  try{
   const host=await boot({root,scratch,mode:'late-pin'});
   await host.started.provisioning.completion;
-  host.arm();
   const res=response();
   await host.listener()(requestStream(envelope(Date.now()+200)),res);
   assert.notEqual(res.status,200,'an expired request is never served');
@@ -176,6 +175,7 @@ test('JOINED late pin: a verification completing after handler expiry is not los
   host.releaseVerification();
   await new Promise(resolve=>setTimeout(resolve,80));
   assert.equal(host.started.definitionsOwner.active(),0,'a never-dispatched late pin cannot leak');
+  await host.started.close();   // service-level late finality is asserted by the reviewer witness (hostClose closed:true)
  }finally{await rm(owned,{recursive:true,force:true});}
 });
 

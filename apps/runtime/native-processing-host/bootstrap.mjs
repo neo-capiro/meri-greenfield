@@ -76,7 +76,9 @@ export async function openNativeProcessingHost({config,allocation,binding,hostId
  return Object.freeze({placement,compartment,
   async runRequest({requestDocument,deadlineMs,signal:callSignal}){
    if(closing!==null)fault('NATIVE_PROCESSING_CLOSED');
-   const entry={pin:null,dispatched:false,finished:false,settled:false,releaseFailed:false};
+   let settleEntry=null;
+   const entry={pin:null,dispatched:false,finished:false,settled:false,releaseFailed:false,
+    settledPromise:new Promise(resolve=>{settleEntry=resolve;}),settle:()=>settleEntry()};
    entries.push(entry);
    // The acquisition belongs to THIS operation: host close and the caller's cancellation both end it.
    const lifetime=closeController.signal;
@@ -92,6 +94,7 @@ export async function openNativeProcessingHost({config,allocation,binding,hostId
        if(released===false||released?.released===false)entry.releaseFailed=true;
        else {const at=entries.indexOf(entry);if(at>=0)entries.splice(at,1);}}
       catch{entry.releaseFailed=true;}
+      finally{entry.settled=true;entry.settle();}
       fault('NATIVE_PROCESSING_CLOSED');
      }
      pinnedSettings=Object.freeze({...settings,snapshot:Object.freeze({databaseDirectory:entry.pin.databaseDirectory,
@@ -110,27 +113,28 @@ export async function openNativeProcessingHost({config,allocation,binding,hostId
    }catch(error){
     if(entry.dispatched)entry.finished=true;                 // the child ran and its run settled (failed or not)
     throw error;
-   }finally{entry.settled=true;}
+   }finally{entry.settled=true;entry.settle();}
   },
   close(){
-   // Reconciliation runs per call: a pending acquisition or a refused release is NEVER reported as proven closure, and a
-   // later definitive settlement can still turn the same host into closed:true on a subsequent call.
-   const reconcile=async()=>{
-    closeController.abort();                                  // settle any acquisition still pending
+   // ONE physical teardown, and one promise that resolves only when every acquisition and release is DEFINITIVE. A caller
+   // that bounds its wait may see an intermediate unknown, but the same promise can still resolve closed:true later, which
+   // is how a late definitive pin release releases the owning activity without any caller retry. Pending acquisitions are
+   // aborted here and awaited (their settlement is what makes this promise definitive).
+   if(closing===null)closing=(async()=>{
+    closeController.abort();
     let code=null,placementClosed=false;
     try{const p=await placement.close();placementClosed=p?.closed===true;
      if(!placementClosed)code=p?.code??'NATIVE_PROCESSING_CLEANUP_UNKNOWN';}
     catch(error){code=error?.code??'NATIVE_PROCESSING_CLEANUP_UNKNOWN';}
     try{const c=await compartment.close();if(c?.closed!==true)code??=c?.code??'HOST_NETWORK_CLEANUP_UNKNOWN';}
     catch{code??='HOST_NETWORK_CLEANUP_UNKNOWN';}
+    // Wait for in-flight acquisitions BEFORE evaluating tokens: their continuation releases or retains them itself.
+    await Promise.all(entries.map(entry=>entry.settledPromise));
     const retained=[];
     for(const entry of entries.splice(0)){
-     if(entry.pin===null){
-      if(entry.settled!==true)retained.push(entry);           // acquisition still in flight: UNKNOWN, never closed
-      continue;
-     }
+     if(entry.pin===null)continue;                             // nothing was acquired
      if(entry.releaseFailed){retained.push(entry);code??='NATIVE_PROCESSING_CLEANUP_UNKNOWN';continue;}
-     if(!placementClosed){retained.push(entry);continue;}     // unknown closure retains the token
+     if(!placementClosed){retained.push(entry);continue;}       // unknown closure retains the token
      const complete=entry.finished===true||entry.dispatched===false;
      try{const released=entry.pin.release({completed:complete});
       if(released===false||released?.released===false){entry.releaseFailed=true;retained.push(entry);
@@ -139,13 +143,9 @@ export async function openNativeProcessingHost({config,allocation,binding,hostId
     }
     entries.push(...retained);
     if(code!==null)return Object.freeze({closed:false,code});
-    if(entries.length>0)return Object.freeze({closed:false,
-     code:entries.some(entry=>entry.pin===null&&entry.settled!==true)?'NATIVE_PROCESSING_DEFINITIONS_PENDING':
-      'NATIVE_PROCESSING_CLEANUP_UNKNOWN'});
+    if(entries.length>0)return Object.freeze({closed:false,code:'NATIVE_PROCESSING_CLEANUP_UNKNOWN'});
     return Object.freeze({closed:true});
-   };
-   const next=closing===null?reconcile():closing.then(()=>reconcile(),()=>reconcile());
-   closing=next;
-   return next;
+   })();
+   return closing;
   }});
 }

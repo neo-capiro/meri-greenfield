@@ -614,11 +614,13 @@ test('BOOTSTRAP: a pin settling after close is released and never dispatched', a
    close:async()=>({closed:true})})});
  const call=host.runRequest({requestDocument:REQUEST,deadlineMs:Date.now()+2000}).catch(e=>e);
  await new Promise(resolve=>setImmediate(resolve));
- const closed=await host.close();
- assert.equal(closed.closed,false,'a pending acquisition is UNKNOWN, never a proven close');
- assert.equal(closed.code,'NATIVE_PROCESSING_DEFINITIONS_PENDING');
+ const closing=host.close();
+ const early=await Promise.race([closing,new Promise(resolve=>setTimeout(()=>resolve('still-pending'),80))]);
+ assert.equal(early,'still-pending','an unsettled acquisition is never reported as a proven close');
  resolvePin({databaseDirectory:'/d',sha256:'c'.repeat(64),publishedAtMs:1,files:[],
   release(args){releaseArgs=args;return {released:true};}});
+ const closed=await closing;
+ assert.equal(closed.closed,true,'the definitive late release settles the single close owner');
  const error=await call;
  assert.equal(error?.code,'NATIVE_PROCESSING_CLOSED','no dispatch after close');
  assert.equal(ran,0,'the child never ran');
@@ -725,9 +727,8 @@ test('BOOTSTRAP: an unsettled acquisition is represented, never reported as prov
   openPlacement:async()=>({run:async()=>{dispatched+=1;},close:async()=>({closed:true})})});
  const pending=host.runRequest({requestDocument:{},deadlineMs:Date.now()+5000}).catch(error=>error.code);
  await ready;
- const first=await host.close();
- assert.equal(first.closed,false,'a pending acquisition is UNKNOWN, never closed');
- assert.equal(first.code,'NATIVE_PROCESSING_DEFINITIONS_PENDING');
+ const early=await Promise.race([host.close(),new Promise(resolve=>setTimeout(()=>resolve('still-pending'),120))]);
+ assert.equal(early,'still-pending','an unsettled acquisition is never reported as a proven close');
  acquire();
  assert.equal(await pending,'NATIVE_PROCESSING_CLOSED','no dispatch after close');
  assert.equal(dispatched,0);
@@ -749,11 +750,11 @@ test('BOOTSTRAP: a late DEFINITIVE release lets a subsequent close report closur
   openPlacement:async()=>({run:async()=>{},close:async()=>({closed:true})})});
  const pending=host.runRequest({requestDocument:{},deadlineMs:Date.now()+5000}).catch(error=>error.code);
  await ready;
- assert.equal((await host.close()).closed,false,'acquisition is still pending');
+ const closing=host.close();                       // ONE close owner: performs teardown once and awaits the settlement
  acquire();
  assert.equal(await pending,'NATIVE_PROCESSING_CLOSED');
  assert.equal(released,1);
- assert.equal((await host.close()).closed,true,'a definitive late release settles the tracked activity');
+ assert.equal((await closing).closed,true,'a definitive late release settles the tracked activity');
 });
 
 for(const [partialCleanup,expected] of [['removed',1],['not-created',1],['unknown',0]]){

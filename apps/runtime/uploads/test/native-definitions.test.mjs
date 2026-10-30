@@ -288,14 +288,28 @@ test('ACCESS: exact owner paths only, applied in creation order, never before th
  }finally{await rm(root,{recursive:true,force:true});}
 });
 
-test('PROGRAM FORMS: unsupported freshclam/sigtool forms are refused before any spawn', async () => {
- let spawns=0;
- const ports={spawn:()=>{spawns+=1;throw Error('INERT_SPAWN');},kill:()=>{throw Error('unexpected kill');}};
- await assert.rejects(runDefinitionProgram('freshclam',['--daemon'],{cwd:'/',deadlineMs:Date.now()+1000,ports}),
-  e=>e?.code==='UPLOAD_DEFINITIONS_PROGRAM_REFUSED');
- await assert.rejects(runDefinitionProgram('sigtool',['--info','relative.cvd'],{cwd:'/',deadlineMs:Date.now()+1000,ports}),
-  e=>e?.code==='UPLOAD_DEFINITIONS_PROGRAM_REFUSED');
- await assert.rejects(runDefinitionProgram('freshclam',['--config-file=relative.conf'],{cwd:'/',deadlineMs:Date.now()+1000,ports}),
-  e=>e?.code==='UPLOAD_DEFINITIONS_PROGRAM_REFUSED');
- assert.equal(spawns,0,'no spawn port was reached');
+test('PROGRAM FORMS: only the host-generated argument forms reach a spawn port', async () => {
+ let spawns=0,reached=[];
+ const ports={spawn:(command,args)=>{spawns+=1;reached.push({command,args});throw Error('INERT_SPAWN');},
+  kill:()=>{throw Error('unexpected kill');}};
+ const cwd='/srv/staging',config=cwd+'/freshclam.conf',cvd=cwd+'/database/main.cvd';
+ const refused=[
+  ['freshclam',['--daemon']],
+  ['freshclam',['--config-file='+config]],                              // one-arg arbitrary form is not owner-generated
+  ['freshclam',['--config-file=/tmp/arbitrary','--foreground','--no-warnings']],
+  ['sigtool',['/tmp/not-a-cvd']],
+  ['sigtool',['--datadir=/tmp/not-a-cvd']],
+  ['sigtool',['/tmp/a','/tmp/b']],
+  ['sigtool',['--info','/tmp/not-a-cvd']],                              // not a .cvd in this cwd's database
+  ['sigtool',['--info',cwd+'/database/main.cld']],                       // unsupported published name form
+ ];
+ for(const [program,args] of refused)
+  await assert.rejects(runDefinitionProgram(program,args,{cwd,deadlineMs:Date.now()+1000,ports}),
+   e=>e?.code==='UPLOAD_DEFINITIONS_PROGRAM_REFUSED',`${program} ${JSON.stringify(args)}`);
+ assert.equal(spawns,0,'no unsupported form reached the spawn port');
+ // The two forms the host itself generates DO reach the (inert) spawn port.
+ for(const [program,args] of [['freshclam',freshclamArguments(config)],['sigtool',cvdVerificationArguments(cvd)]])
+  await assert.rejects(runDefinitionProgram(program,args,{cwd,deadlineMs:Date.now()+1000,ports}),
+   e=>e?.message==='INERT_SPAWN',`${program} should reach spawn`);
+ assert.equal(spawns,2,'both generated forms reached the inert spawn port');
 });

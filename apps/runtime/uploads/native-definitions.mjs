@@ -50,7 +50,7 @@ import {runArtifactProcess} from '../../artifacts/process.mjs';
  */
 import {createHash} from 'node:crypto';
 import {copyFile,mkdir,readFile,readdir,writeFile,rename,rm,lstat,mkdtemp,chmod,chown} from 'node:fs/promises';
-import {join,isAbsolute} from 'node:path';
+import {join,isAbsolute,dirname,basename,normalize} from 'node:path';
 
 /** Fixed definition programs run as UID/GID 1000: prepare ONLY these exact owner-generated paths for them. Published
  * snapshots stay root-owned and READ-ONLY for the upload child (0755 dirs / 0644 files, never writable); the staging area
@@ -110,23 +110,36 @@ export function definitionSpawnPort(port=spawn){
  return (exe,args,options)=>port(exe,args,{...options,uid:DEFINITION_CHILD_UID,gid:DEFINITION_CHILD_GID,
   env:{PATH:'/usr/bin:/bin',LANG:'C.UTF-8',HOME:options?.cwd??'/tmp'}});
 }
-const FRESHCLAM_FORM=/^--config-file=\/[^\0]{1,4095}$/u;
-const SIGTOOL_PATH=/(^|--datadir=)\/[^\0]{1,4095}$/u;
-/** The ONLY argument forms the host itself generates: one freshclam configuration path, or sigtool --info naming an
- * absolute published CVD path. Anything else is refused BEFORE a spawn port is reached. */
-function assertDefinitionForm(program,args){
- if(program==='freshclam'){const ok=(args.length===1||(args.length===3&&args[1]==='--foreground'&&args[2]==='--no-warnings'))&&
-  FRESHCLAM_FORM.test(args[0]);
-  if(!ok)fail('UPLOAD_DEFINITIONS_PROGRAM_REFUSED');return;}
- if(program==='sigtool'){const ok=args.length>=1&&args.length<=2&&args.some(a=>SIGTOOL_PATH.test(a))&&
-  args.every(a=>a==='--info'||SIGTOOL_PATH.test(a));
-  if(!ok)fail('UPLOAD_DEFINITIONS_PROGRAM_REFUSED');return;}
+/** The ONLY argument forms this host generates, validated against the EXISTING builders before any spawn port:
+ * - freshclam: exactly `freshclamArguments(config)` whose config is `<cwd>/freshclam.conf`;
+ * - sigtool: exactly `cvdVerificationArguments(<cwd>/database/<name>.cvd)` with the published database name form. */
+function assertDefinitionForm(program,args,{cwd='/'}={}){
+ const absolute=path=>typeof path==='string'&&isAbsolute(path)&&!path.includes('\0');
+ if(program==='freshclam'){
+  const expected=join(cwd,'freshclam.conf');
+  if(!absolute(cwd)||args.length!==freshclamArguments(expected).length||
+   args.some((value,index)=>toPosix(value)!==toPosix(freshclamArguments(expected)[index]))||
+   toPosix(args[0])!==toPosix(`--config-file=${expected}`))
+   fail('UPLOAD_DEFINITIONS_PROGRAM_REFUSED');
+  return;
+ }
+ if(program==='sigtool'){
+  const expectedDir=join(cwd,'database');
+  const supported=args.length===2&&args[0]==='--info'&&absolute(args[1])&&DATABASE_NAME.test(basename(args[1]))&&
+   sameDirectory(dirname(args[1]),expectedDir);
+  if(!supported)fail('UPLOAD_DEFINITIONS_PROGRAM_REFUSED');
+  return;
+ }
  fail('UPLOAD_DEFINITIONS_PROGRAM_REFUSED');
 }
+const sameDirectory=(a,b)=>toPosix(normalize(a))===toPosix(normalize(b));
+const SEP_BACK=String.fromCharCode(92);
+const toPosix=value=>String(value).split(SEP_BACK).join('/');
+
 export async function runDefinitionProgram(program,args,{cwd='/',input=Buffer.alloc(0),signal,deadlineMs,maxOutput=262144,ports}={}){
  const exe=DEFINITION_PROGRAMS[program];
  if(typeof exe!=='string'||!Array.isArray(args)||args.some(a=>typeof a!=='string'||a.includes('\0')))fail('UPLOAD_DEFINITIONS_CONFIGURATION');
- assertDefinitionForm(program,args);
+ assertDefinitionForm(program,args,{cwd});
  const effective=ports===undefined?{spawn:definitionSpawnPort()}:{spawn:definitionSpawnPort(ports.spawn??spawn),kill:ports.kill};
  return runArtifactProcess(exe,args,{cwd,input,signal,deadlineMs,maxOutput},effective);
 }
