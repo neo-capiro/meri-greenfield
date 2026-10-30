@@ -283,13 +283,17 @@ export async function prepareGuestHostRun({allocation,binding,hostIdentity,cwd,d
   hostObserver=components.createHostObserver({allocation:a,binding:b,hostIdentity:i,profile:paths.profile,
    verifyConfinement:native.verifyConfinement});
   sdkLaunchGate=components.createSdkLaunchGate();
+  const browserCurrent=async({signal})=>{
+   stopped(owner.signal);const current=await browserClient.readCurrent({allocation:a,binding:b,policySha256:browserDigest,signal});
+   return assertBrowserHostCurrent({allocation:a,binding:b,policySha256:browserDigest,current,nowMs:now(),maxFreshMs:control.maxFreshMs});
+  };
   const launcherBase={allocation:a,binding:b,hostIdentity:i,helperPath:native.helperPath,
    shimPath:native.shimPath,sdkNetwork,browserNetwork,
    authorities:[{policySha256:sdkMonitor.policySha256,readCurrent:sdkClient.readCurrent,maxFreshMs:control.maxFreshMs},
     ...(bashMonitor?[{policySha256:bashMonitor.policySha256,readCurrent:bashClient.readCurrent,
      maxFreshMs:control.maxFreshMs}]:[])],
    sdkUid:native.sdk.uid,sdkGid:native.sdk.gid,browserUid:native.browser.uid,browserGid:native.browser.gid,
-   sdkLaunchGate,onBrowserPrepared:({leaderPid})=>{if(!browserObserver)fail('HOST_BROWSER_NOT_ADMITTED');
+   sdkLaunchGate,readBrowserCurrent:browserCurrent,onBrowserPrepared:({leaderPid})=>{if(!browserObserver)fail('HOST_BROWSER_NOT_ADMITTED');
     return armBrowserAfterWorkspaceReadback({allocation:a,binding:b,hostIdentity:i,cwd,paths,
      browserUid:native.browser.uid,browserGid:native.browser.gid,
      sdkUid:native.sdk.uid,sdkGid:native.sdk.gid,leaderPid,browserObserver,preparedWorkspace});},signal:owner.signal};
@@ -358,10 +362,7 @@ export async function prepareGuestHostRun({allocation,binding,hostIdentity,cwd,d
     if(canonicalSha256(request.binding)!==canonicalSha256(b)||request.profile!==paths.profile||options?.signal?.aborted)fail('HOST_PROCESS_OBSERVATION_UNKNOWN');
     return browserExit??=browserObserver.waitForExit(request,options);
    }});
-   const current=async({signal})=>{
-    stopped(owner.signal);const current=await browserClient.readCurrent({allocation:a,binding:b,policySha256:browserDigest,signal});
-    return assertBrowserHostCurrent({allocation:a,binding:b,policySha256:browserDigest,current,nowMs:now(),maxFreshMs:control.maxFreshMs});
-   };
+   const current=browserCurrent;
    const sessions=components.createBrowserSessionHost({binding:b,cwd,installation:broker.installation,
     upstream:components.pinnedBrowserUpstream(broker.installation),contexts,modelTransport:broker.modelTransport,
     allocation:a,ownerInstanceId:browser.controls.ownerInstanceId,

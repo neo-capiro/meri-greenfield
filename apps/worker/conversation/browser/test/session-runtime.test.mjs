@@ -26,3 +26,13 @@ test('a different model relay descriptor is destroyed and not released',async()=
  await assert.rejects(prepareBrowserRun(options({async open(){return {mcpServers:{},async destroy(){events.push('destroy');}};}})),/SESSION_OWNER_REQUIRED/);
  assert.deepEqual(events,['grant','destroy','lifecycle']);
 });
+
+test('successor preparation delivers only the exact retained snapshot and cannot silently open a fresh browser',async()=>{
+ events.length=0;activation='open';const snapshot={content:[{type:'text',text:'retained page'}]},browserHandoff={returned:{snapshotSha256:canonicalSha256(snapshot)}};
+ const inputs=options({async open(){assert.fail('fresh context');},async adopt(input){assert.equal(input.handoff,browserHandoff);events.push('adopt');return {mcpServers,resumeSnapshot:snapshot,async destroy(){events.push('destroy');}};}});
+ const run=await prepareBrowserRun({...inputs,browserHandoff});assert.deepEqual(run.fragment.resumeSnapshot,snapshot);assert.notEqual(run.fragment.resumeSnapshot,snapshot);
+ assert.deepEqual(events,['grant','adopt']);await run.settle({outcome:'ended'});
+ const bad=options({async open(){assert.fail('fresh context');},async adopt(){return {mcpServers,resumeSnapshot:{content:[]},async destroy(){}};}});
+ await assert.rejects(prepareBrowserRun({...bad,browserHandoff}),/BROWSER_CUSTODY_REFUSED/);
+ await assert.rejects(prepareBrowserRun({...options({async open(){assert.fail('fresh context');}}),browserHandoff}),/BROWSER_CUSTODY_UNAVAILABLE/);
+});

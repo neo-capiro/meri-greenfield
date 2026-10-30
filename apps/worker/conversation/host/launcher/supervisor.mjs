@@ -15,10 +15,15 @@ import {assertHostAllocation,assertHostRunBinding,assertD005HostIdentity,assertH
 import {namespaceProbeArgs,READINESS_MODEL_ENV} from '../../sandbox-readiness/readiness.mjs';
 import {createSdkChildQuiescenceObserver} from './sdk-quiescence.mjs';
 import {createSdkChildHold} from './sdk-hold.mjs';
+import {assertBrowserHandoff} from '../../../../../packages/runtime/browser-custody.mjs';
 
 const HEX=/^[0-9a-f]{64}$/u;
 const DECIMAL=/^(0|[1-9][0-9]*)$/u;
 const NAME=/^[a-z0-9-]{1,63}$/u;
+// Only a retired native launcher can transfer its live browser. Run metadata
+// cannot manufacture this handle or cause another browser to be started.
+const retainedBrowsers=new WeakMap();
+const browserPinsFor=({policy,installation,paths})=>{const {launch,...physical}=installation;return canonicalSha256({policy,installation:physical,paths});};
 // The runner poststart owner writes this image-pinned CA. It must sign a model-proxy server certificate with
 // IP SAN 127.0.0.1; the host/image qualification has to verify that certificate and the CA file contents.
 const SDK_MODEL_CA_FILE='/run/meri/poststart/bootstrap/control-ca.pem';
@@ -157,7 +162,7 @@ async function preparedProcess({s,helperPath,kind,network,command,args,cwd,home,
 export function createHostLauncher({allocation,binding,hostIdentity,helperPath,shimPath,
  sdkNetwork,browserNetwork,authorities:rawAuthorities,sdkUid,sdkGid,browserUid,browserGid,
  validateSdkDescriptor,onSdkPrepared,onBrowserPrepared,sdkLaunchGate,sdkMode='conversation',probeCommand,probeNodePath,
- signal,spawnNative=spawn,now=Date.now,createSdkHold=createSdkChildHold,createSdkObserver=createSdkChildQuiescenceObserver,
+ signal,readBrowserCurrent,retainedBrowser,spawnNative=spawn,now=Date.now,createSdkHold=createSdkChildHold,createSdkObserver=createSdkChildQuiescenceObserver,
  readSocketDirectory=stat,readyMs=5000,stopMs=5000}={}){
  const s=scope({allocation,binding,hostIdentity}),readers=authorities(rawAuthorities);
  if(![helperPath,shimPath].every(absolute)||shimPath!=='/opt/meri/bin/meri-mcp-shim'||
@@ -167,14 +172,21 @@ export function createHostLauncher({allocation,binding,hostIdentity,helperPath,s
   !['conversation','readiness'].includes(sdkMode)||sdkMode==='readiness'&&(!absolute(probeCommand)||!absolute(probeNodePath))||
   typeof spawnNative!=='function'||typeof createSdkHold!=='function'||typeof createSdkObserver!=='function'||typeof readSocketDirectory!=='function'||typeof now!=='function'||!maxMs(readyMs)||!maxMs(stopMs))fail('HOST_LAUNCH_CONFIGURATION');
  nativeSignal(signal);if(signal?.aborted)fail('HOST_LAUNCH_CANCELLED');const life=new AbortController();
- const check=()=>checkAuthority(s,readers,life.signal,readyMs);
+ const retained=retainedBrowser===undefined?undefined:retainedBrowsers.get(retainedBrowser);
+ if(retainedBrowser!==undefined&&(!retained||retained.consumed||!retained.live()||
+  canonicalSha256(retained.target)!==s.bindingSha256||canonicalSha256(retained.allocation)!==s.allocationSha256||
+  canonicalSha256(retained.hostIdentity)!==canonicalSha256(s.hostIdentity)||sdkMode!=='conversation'))fail('HOST_BROWSER_ADOPTION_REFUSED');
+ if(readBrowserCurrent!==undefined&&typeof readBrowserCurrent!=='function')fail('HOST_LAUNCH_CONFIGURATION');
+ const check=async()=>{await checkAuthority(s,readers,life.signal,readyMs);if(retained)await retained.current(life.signal);};
  const sdkHold=sdkMode==='conversation'&&browserNetwork?createSdkHold({allocation:s.allocation,binding:s.binding,hostIdentity:s.hostIdentity,timeoutMs:readyMs}):null;
- let broker,browser,sdk,sdkRelease,clientMade=false,brokerTaken=false,closed=false,closing,browserFailure,browserPins,sdkRetiring=false,sdkRetirement,sdkObserver;
+ let broker,browser=retained?.browser,sdk,sdkRelease,clientMade=false,brokerTaken=false,closed=false,closing,browserFailure,browserPins=retained?.pins,sdkRetiring=false,sdkRetirement,sdkObserver,retirementComplete=false,successor;
+ if(retained)retained.consumed=true;
  const pendingChildren=new Set();
  const nonce=randomBytes(32).toString('hex'),socketPath=`/run/meri-launch/${s.bindingSha256}.sock`;
  const descriptor=Object.freeze({shimPath,socketPath,nonce});
  async function close(){if(closing)return closing;closed=true;life.abort();
   closing=(async()=>{const failures=[];
+   if(successor&&typeof successor.close==='function')try{await successor.close();}catch(error){failures.push(error);}
    for(const child of new Set([broker,browser,sdk,...pendingChildren].filter(Boolean)))try{await stopChild(child,stopMs);}catch(error){failures.push(error);}
    try{await sdkObserver?.close();await sdkHold?.close();}catch(error){failures.push(error);}
    if(!failures.length&&sdkRelease){sdkRelease();sdkRelease=undefined;}
@@ -196,17 +208,44 @@ export function createHostLauncher({allocation,binding,hostIdentity,helperPath,s
    await sdkObserver.waitQuiescent({signal:life.signal});await sdkHold?.close();
    if(sdkRelease){sdkRelease();sdkRelease=undefined;}
    if(broker)try{await unlink(socketPath);}catch(error){if(error?.code!=='ENOENT')throw error;}
+   retirementComplete=true;
    return Object.freeze({closed:true,sdkAbsent:true,browserRetained:true});
   }catch(error){await close();throw error;}});
  }
  const closeSdk=()=>sdkRetiring?retireSdk():close();
+ async function prepareSuccessor(input){
+  const q=own(input,['binding','sdkNetwork','authorities','validateSdkDescriptor','onSdkPrepared','sdkLaunchGate'],['signal']);
+  const target=assertHostRunBinding(s.allocation,q.binding);
+  if(closed||successor||!retirementComplete||!browser||!browserPins||typeof readBrowserCurrent!=='function')fail('HOST_BROWSER_ADOPTION_REFUSED');
+  // Reserve before awaiting currentness. A competing request cannot create a
+  // second broker/SDK owner for the same retained context.
+  successor=true;
+  const live=()=>!closed&&retirementComplete&&browser.exitCode===null&&browser.signalCode===null;
+  const current=async signal=>{
+   if(!live())fail('HOST_BROWSER_ADOPTION_REFUSED');
+   const receipt=await within(inner=>readBrowserCurrent({signal:inner}),readyMs,signal);
+   const handoff=assertBrowserHandoff(receipt?.browserHandoff,{targetBinding:target});
+   if(canonicalSha256(handoff.custody.binding)!==s.bindingSha256||handoff.custody.hostId!==s.allocation.hostId||
+    handoff.custody.generation!==s.allocation.generation||handoff.custody.expiresAtMs<=now()||!live())fail('HOST_BROWSER_ADOPTION_REFUSED');
+   return handoff;
+  };
+  try{
+   await current(q.signal);
+   const token=Object.freeze({});retainedBrowsers.set(token,{target,allocation:s.allocation,hostIdentity:s.hostIdentity,browser,pins:browserPins,live,current,consumed:false});
+   successor=createHostLauncher({allocation:s.allocation,binding:target,hostIdentity:s.hostIdentity,helperPath,shimPath,
+    sdkNetwork:q.sdkNetwork,browserNetwork,authorities:q.authorities,sdkUid,sdkGid,browserUid,browserGid,
+    validateSdkDescriptor:q.validateSdkDescriptor,onSdkPrepared:q.onSdkPrepared,onBrowserPrepared,sdkLaunchGate:q.sdkLaunchGate,
+    signal:q.signal,readBrowserCurrent,retainedBrowser:token,spawnNative,now,createSdkHold,createSdkObserver,readSocketDirectory,readyMs,stopMs});
+   return successor;
+  }catch(error){await close();throw error;}
+ }
  async function prepareBrowserContext({policy,installation,paths}){
   if(closed||browser||browserPins||sdkMode!=='conversation')fail('HOST_LAUNCH_REFUSED');
   const installed=validateBrowserInstallation({...installation,launch:descriptor},s.binding);
   const admitted=validateBrowserPolicy(policy),command=playwrightHostCommand(admitted,installed,paths);
   if(!absolute(command.args[0])||![paths.home,paths.profile,paths.output].every(absolute)||
    installed.egressProxy!==`http://127.0.0.1:${browserNetwork?.plan?.routes?.[0]?.localPort}`)fail('HOST_LAUNCH_CONFIGURATION');
-  browserPins=canonicalSha256({policy:admitted,installation:installed,paths});
+  browserPins=browserPinsFor({policy:admitted,installation:installed,paths});
   try{
    browser=await preparedProcess({s,helperPath,kind:'browser',network:browserNetwork,command:command.command,args:command.args,
     cwd:paths.home,home:paths.home,browsersPath:installed.browsersPath,runUid:browserUid,runGid:browserGid,
@@ -219,7 +258,7 @@ export function createHostLauncher({allocation,binding,hostIdentity,helperPath,s
  async function prepareBrowserBroker({policy,installation,paths}){
   const installed=validateBrowserInstallation({...installation,launch:descriptor},s.binding);
   if(closed||brokerTaken||!browser||browser.exitCode!==null||browser.signalCode!==null||sdkMode!=='conversation'||
-   browserPins!==canonicalSha256({policy:validateBrowserPolicy(policy),installation:installed,paths}))fail('HOST_LAUNCH_REFUSED');
+   browserPins!==browserPinsFor({policy:validateBrowserPolicy(policy),installation:installed,paths}))fail('HOST_LAUNCH_REFUSED');
   brokerTaken=true;
   await check();
   const directory=await readSocketDirectory('/run/meri-launch');
@@ -312,7 +351,7 @@ export function createHostLauncher({allocation,binding,hostIdentity,helperPath,s
   }
  }
  signal?.addEventListener('abort',()=>{life.abort();void close().catch(()=>{});},{once:true});
- return Object.freeze({scope:s,descriptor,prepareSdkRetirement,retireSdk,prepareBrowserContext,prepareBrowserBroker,createSdkProcessClient,runReadinessProbe,close,
+ return Object.freeze({scope:s,descriptor,prepareSdkRetirement,retireSdk,prepareSuccessor,prepareBrowserContext,prepareBrowserBroker,createSdkProcessClient,runReadinessProbe,close,
   freezeSdk:()=>sdkPhysicalHold(true),thawSdk:()=>sdkPhysicalHold(false),
   get signal(){return life.signal;}});
 }
