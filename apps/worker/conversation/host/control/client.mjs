@@ -4,7 +4,9 @@ import https from 'node:https';
 import {randomBytes} from 'node:crypto';
 import {performance} from 'node:perf_hooks';
 import {canonicalSha256} from '../../../../../packages/contracts/validate.mjs';
-import {nativeSignal} from '../../../../../packages/contracts/commands-0.2/execution-boundary.mjs';
+import {data,nativeSignal} from '../../../../../packages/contracts/commands-0.2/execution-boundary.mjs';
+import {validateSiteWorkflowManifest} from '../../browser/site-workflows/manifest.mjs';
+import {validateBrowserPolicy} from '../../browser/policy.mjs';
 import {assertHostAllocation,assertHostRunBinding,assertD005HostIdentity,MAX_HOST_CURRENTNESS_MS} from '../binding.mjs';
 import {assertBrowserHostFacts} from '../../../../../packages/contracts/runtime-0.2/browser-host-facts.mjs';
 import {assertBrowserCustody} from '../../../../../packages/runtime/browser-custody.mjs';
@@ -100,17 +102,7 @@ export function createHostCurrentnessClient({allocation,binding,hostIdentity,pur
    try{
     nativeSignal(signal);
     if(closed||signal?.aborted||!same(requestedAllocation,a)||!same(requestedBinding,b))fail();
-    localCertificate();
-    const request=hostFactsRequest({schema:'meri-host-facts-request/1',allocation:a,binding:b,hostIdentity:i,nonce:nonce()});
-    const response=await perform(HOST_FACTS_PATH,request,HOST_FACTS_WIRE_MAX_BYTES,HOST_FACTS_WIRE_MAX_BYTES,signal);
-    const answer=hostFactsResponse(response,request);
-    // A valid envelope nonce is not enough: the DOMAIN payload must validate against the canonical
-    // facts contract for THIS exact binding, and its fresh cutoff must still be in the future.
-    if(!fresh(answer,now(),maxFreshMs))fail();
-    const facts=assertBrowserHostFacts(answer.facts,{binding:b});
-    // The INNER payload must still be live too: an outer envelope cannot rescue an expired document.
-    if(facts.currentUntilMs<=now()||facts.deadlineMs<=now())fail();
-    return answer;
+    return await factsExchange(signal);
    }catch{fail();}
   },
   /** Borrowed canonical site-workflow resolution. The host receives the resolved manifest only. */
@@ -122,13 +114,21 @@ export function createHostCurrentnessClient({allocation,binding,hostIdentity,pur
     const request=hostWorkflowRequest({schema:'meri-host-workflow-request/1',allocation:a,binding:b,hostIdentity:i,nonce:nonce()});
     const response=await perform(HOST_WORKFLOW_PATH,request,HOST_WORKFLOW_WIRE_MAX_BYTES,HOST_WORKFLOW_WIRE_MAX_BYTES,signal);
     const answer=hostWorkflowResponse(response,request);
-    // Canonical shape of the resolved workflow payload; the admission owner validates its content.
+    // Canonical shape of the resolved workflow payload, then REAL content admission: the manifest is
+    // validated against the platform maximum taken from a FRESH canonical facts read on this same pinned
+    // host (never from the incoming manifest), and its recomputed digest must equal the answered one.
     const workflow=answer.workflow;
     if(!workflow||typeof workflow!=='object'||Array.isArray(workflow)||workflow.enabled!==true||
      typeof workflow.manifestSha256!=='string'||!/^[0-9a-f]{64}$/u.test(workflow.manifestSha256)||
      !workflow.manifest||typeof workflow.manifest!=='object'||Array.isArray(workflow.manifest))fail();
+    const facts=await factsExchange(signal);
+    const policy=facts.facts.browserPolicy;
+    if(!policy)fail(); // no active browser policy: no canonical workflow can be admitted
+    const manifest=validateSiteWorkflowManifest(data(workflow.manifest),
+     {platformMaximumOrigins:validateBrowserPolicy(data(policy)).allowedOrigins});
+    if(canonicalSha256(manifest)!==workflow.manifestSha256)fail();
     if(!fresh(answer,now(),maxFreshMs))fail();
-    return answer;
+    return Object.freeze({...answer,workflow:Object.freeze({...workflow,manifest})});
    }catch{fail();}
   },
   /** Read-only verification that this host's takeover is ALREADY applied and still unreturned. */
