@@ -315,6 +315,40 @@ test('qualification admits only a complete observation from the identical runner
  await assert.rejects(()=>qualifyNativeUploadSandbox({imageDigest:'nope',deadlineMs:Date.now()+1,tempRoot:root,run:make({})}),{code:'UPLOAD_QUALIFICATION_CONFIGURATION'});
 });
 
+test('the native measurement clamps its deadline, passes the output cap and binds exact credential paths',async()=>{
+ const root=await realpath(tmpdir());
+ const calls=[];
+ const observation=changes=>Buffer.from(JSON.stringify(sandboxed(ROOT+'/'+UPLOAD_ROLE_PREFIX.probe+'a1b2c3',changes)));
+ const make=(changes,options)=>async(role,opts)=>{calls.push({role,opts,options});return {stdout:observation(changes),receipt:{exitCode:0}};};
+ const start=Date.now();
+ await qualifyNativeUploadSandbox({imageDigest:DIGEST,deadlineMs:start+600000,tempRoot:root,run:make({})});
+ assert.equal(calls[0].opts.maxOutput,65536,'the observation cap reaches the process owner before accumulation');
+ assert.ok(calls[0].opts.deadlineMs<=Date.now()+30000,'a far deadline is clamped to 30 seconds');
+ assert.ok(calls[0].opts.deadlineMs>=start+29000,'the clamp is the 30-second measurement bound, not a shorter one');
+ const tighter=Date.now()+5000;
+ await qualifyNativeUploadSandbox({imageDigest:DIGEST,deadlineMs:tighter,tempRoot:root,run:make({})});
+ assert.ok(calls[1].opts.deadlineMs<=tighter+50,'a tighter incoming deadline stays tighter');
+ // Exact binding: the observation must report the same ordered paths, and a mismatch is refused, not evaluated.
+ const bound={credentialPaths:['/run/meri/core-secret']};
+ const boundRun=async()=>({stdout:observation({}),receipt:{exitCode:0}});
+ const mismatch=await qualifyNativeUploadSandbox({imageDigest:DIGEST,deadlineMs:Date.now()+30000,tempRoot:root,run:boundRun,...bound});
+ assert.equal(mismatch.admitted,false);assert.equal(mismatch.reason,'UPLOAD_PROBE_BINDING_MISMATCH');
+ const matched=await qualifyNativeUploadSandbox({imageDigest:DIGEST,deadlineMs:Date.now()+30000,tempRoot:root,...bound,
+  run:async()=>({stdout:observation({credentialPathsReadable:[{path:'/run/meri/core-secret',readable:false}],inputValid:true}),receipt:{exitCode:0}})});
+ assert.equal(matched.reason,'UPLOAD_SANDBOX_UNQUALIFIED','binding matches; unrelated admission flags still decide');
+ const truncated=await qualifyNativeUploadSandbox({imageDigest:DIGEST,deadlineMs:Date.now()+30000,tempRoot:root,...bound,
+  run:async()=>({stdout:Buffer.from('{"schema":"meri-renderer-sandbox-observation/1"}'),receipt:{exitCode:0}})});
+ assert.equal(truncated.admitted,false);assert.equal(truncated.reason,'UPLOAD_PROBE_BINDING_MISMATCH');
+ // A process failure settles honestly with a bounded, content-free summary.
+ const failed=await qualifyNativeUploadSandbox({imageDigest:DIGEST,deadlineMs:Date.now()+30000,tempRoot:root,
+  run:async()=>{throw Object.assign(Error('cleanup'),{code:'ARTIFACT_CLEANUP_FAILED',receipt:{exitCode:null,signal:'SIGKILL',
+   spawnError:null,stdoutBytes:12,stdoutRetainedBytes:12,stdoutEnded:false,stderrEnded:true,streamErrors:[],groupKillAttempted:true,groupAbsent:false,settlement:'timeout'}});}});
+ assert.equal(failed.admitted,false);assert.equal(failed.reason,'ARTIFACT_CLEANUP_FAILED');
+ assert.deepEqual({groupKillAttempted:failed.process.groupKillAttempted,groupAbsent:failed.process.groupAbsent,settlement:failed.process.settlement},
+  {groupKillAttempted:true,groupAbsent:false,settlement:'timeout'});
+ const text=JSON.stringify(failed);assert.equal(text.includes('cleanup'),false,'no raw error text is emitted');
+});
+
 test('the real runner refuses to spawn on this non-Linux host',{skip:process.platform==='linux'},async()=>{
  const cwd=await mkdtemp(join(tmpdir(),UPLOAD_ROLE_PREFIX.scan));
  try{await assert.rejects(()=>runUploadSandbox('scan',{cwd,definitionsRoot:'/srv/defs',deadlineMs:Date.now()+1000,input:Buffer.alloc(0)}),{code:'UPLOAD_SANDBOX_REFUSED'});}
