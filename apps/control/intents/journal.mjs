@@ -37,6 +37,15 @@ export function createIntentJournal(store){
    if(ack?.claimed!==false)throw fault('UNKNOWN');
    try{return replay(ack.entry,record);}catch(error){throw error?.code?error:fault('UNKNOWN');}
   },
+  /** Read one delivery without claiming. Returns the validated entry or null; a foreign domain refuses. */
+  async read({binding,deliveryId,signal}){
+   if(typeof ports.read!=='function')throw fault('INTENT_CONFIGURATION');
+   let raw;try{raw=await ports.read.call(store,{key:key(binding,deliveryId),signal});}catch{throw fault('UNAVAILABLE');}
+   if(raw===null||raw===undefined)return null;
+   const entry=data(raw);own(entry,['record','state','outcome']);
+   if(!STATES.has(entry.state))throw fault('UNKNOWN');
+   return entry;
+  },
   /** Settle after the owner answered. Throws when the acknowledgement is lost or refused. */
   async settle({binding,deliveryId,record,state,outcome,signal}){
    const ack=data(await ports.settle.call(store,{key:key(binding,deliveryId),record,state,outcome,signal}));
