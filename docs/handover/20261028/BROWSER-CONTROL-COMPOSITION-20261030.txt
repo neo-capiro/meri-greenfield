@@ -104,14 +104,42 @@ their owners.
   allowlist and returns the immutable record with real run custody only (never initial-binding custody,
   never a new route, never a second store). The closed response shape is unchanged: the variant stays
   explicit in `metadata.record.action`.
-* `packages/contracts/meri.schema.json` — `browser.action` added to the Command action enum (the only
-  shared-schema change; the generated distribution was NOT regenerated, which is outside this slice).
+* `packages/contracts/meri.schema.json` — RESTORED to its pre-09 bytes (verified sha256 `e3de8781…`).
+  The frozen generic `Command.action` enum is NOT widened for the browser: the browser variant is
+  admitted only by `browser-approval-preparation.mjs`'s own integrity validator, and
+  `assertProposalIntegrity`/`validateShape('Command')` refuse it, which is the intended native boundary.
 
-Remaining, deliberately not built here: the producer construction at the authenticated host callback
-(the exact seam is the existing metadata-store construction used by `document-proposal.mjs` /
-`attachment-filing-services.mjs`: `createBrowserActionApprovalMetadataOwner({store: c.metadataStore,
-preparePolicy, now, maxRequestMs})`, exported from the metadata index), the approval transport,
-artifact ingress, receipt, custody hold, and the Core decision/consumption side.
+## Correction 10 (prepared-browser completion)
+
+* One operation identity everywhere: `{id:'browser_action',version:'0.2.0'}`. Action `browser.action`,
+  the subject schema and the tools are unchanged.
+* The stored preparation is the explicit `meri-browser-approval-preparation/1` mapping of the unchanged
+  host `meri-browser-approval-request/3`: only the outer schema tag differs, and the reverse mapping
+  reproduces the original request exactly. The complete RunBinding (attempt, worker, writer fence) and
+  the exact input/origin/window are preserved.
+* Four digests verified independently and never forced equal: `metadata.commandSha256` = sha256(C, the
+  internal envelope), `record.inputSha256` = sha256({arguments:A,attachments:[]}),
+  `request.subjectSha256` = sha256(S) — which is what Core's browser decision/receipt must carry — and
+  `subject.inputSha256` = sha256(I).
+* `browser-preparation-producer.mjs` is the request-local producer: current run authority from the
+  existing execution journal (`withCurrentRun` -> `readCurrentOnClient`) in one short transaction, the
+  canonical browser-policy reader resolved outside that lock and required to equal the subject's
+  `policySha256`, and the same authority re-checked before release. `run.policyRevision` (canonical
+  run/scopes/qualification revision) and `S.policySha256` (browser policy) stay separate identities.
+* A repeated identity resolves the stored row only while current authority is unchanged. Outcomes are
+  exact: refusal/deadline before a write is `NOT_STORED`; an exact ack followed by an authority refusal
+  is `STORED_NOT_RELEASED`; anything after an attempted insert without an exact acknowledgement —
+  including a late deadline or cancellation — is `APPROVAL_METADATA_UNKNOWN` with a `metadataReference`
+  that the same identity reads back.
+* The private readback keeps its closed four-key shape (`schemaVersion`, `commandSha256`, `metadata`,
+  `run`): there is NO top-level `action` key, and the variant is explicit in `metadata.record.action`.
+  Activation remains held; no route, listener or credential is created by any of this.
+
+Remaining, deliberately not built here: the one wiring call that constructs the producer at the
+authenticated host callback (it is exported from the metadata index and takes the existing
+`executions` journal, `createConfiguredRunBrowserPolicy(...)`, the existing metadata store and the
+configured approver identity), the approval transport, artifact ingress, receipt, custody hold, and the
+Core decision/consumption/results side. Activation stays held: nothing exposes the producer over a route.
 
 ## Verification (local, in-process)
 
