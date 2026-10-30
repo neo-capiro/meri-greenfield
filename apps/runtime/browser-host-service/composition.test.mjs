@@ -11,7 +11,11 @@ import {assertBrowserOnlyServiceInputs, composeBrowserOnlyHostService} from './c
 import {allocation, hostIdentity, policySha256, cwd, paths, serviceFixture, workspaceReadback, PEER, FIXTURE_NOW_MS} from './fixture.mjs';
 
 // ------------------------------------------------------------ A. real owner refusals
-test('real browser-only launcher refuses a conversation allocation', () => {
+test('real browser-only launcher refuses a conversation allocation', t => {
+  // supervisor scope() reads Date.now() for the lease check before any injected clock, so pin the wall clock to the
+  // existing fixed fixture clock for this call only. Assertions stay on the intended placement refusal.
+  t.mock.timers.enable({apis: ['Date'], now: FIXTURE_NOW_MS});
+  t.after(() => t.mock.timers.reset());
   const {hostMode, ...conversationAllocation} = allocation;
   assert.throws(() => createBrowserOnlyHostLauncher({
     allocation: conversationAllocation, binding, hostIdentity, helperPath: '/opt/meri/bin/meri-host-launcher',
@@ -20,7 +24,10 @@ test('real browser-only launcher refuses a conversation allocation', () => {
   }), error => error?.code === 'HOST_LAUNCH_CONFIGURATION');
 });
 
-test('real launcher rejects the same authority extra key this service rejects', () => {
+test('real launcher rejects the same authority extra key this service rejects', t => {
+  // Same scoped clock pin: the real launcher's lease check must not pre-empt the authority-shape refusal under test.
+  t.mock.timers.enable({apis: ['Date'], now: FIXTURE_NOW_MS});
+  t.after(() => t.mock.timers.reset());
   const authority = {policySha256, maxFreshMs: 1000, readCurrent: async () => ({}), unexpected: true};
   assert.throws(() => createBrowserOnlyHostLauncher({
     allocation, binding, hostIdentity, helperPath: '/opt/meri/bin/meri-host-launcher',
