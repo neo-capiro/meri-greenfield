@@ -199,13 +199,13 @@
     },
     {
       "path": "conversation-application/receive.mjs",
-      "sha256": "610f836473193ed5b7f5d2ab7022054b2d3d7d201d6310d6b49987a427e3af5f",
-      "bytes": 10116
+      "sha256": "41d2c05f8324e354dfc1041b8970ff352ea7b00d3566204094ec298cf3fc964e",
+      "bytes": 10593
     },
     {
       "path": "conversation-application/schema.mjs",
-      "sha256": "6ab6c755977952a0792aaf4c94a959020f5cc030db01601f5bcabe3a6f393c57",
-      "bytes": 5052
+      "sha256": "001e62da66e82230192e080aaf7e81034f4812d95370f03b581df0466b591ea0",
+      "bytes": 6369
     },
     {
       "path": "conversation-sources/hearing-semantics.mjs",
@@ -313,7 +313,7 @@
       "bytes": 1986
     }
   ],
-  "schemaSha256": "c4913740f1c6c12a54ae2fb73431122c516590223f33e3aee2f0dfcee569a9ea",
+  "schemaSha256": "2abe4829a135f26c96ad8dfddae49280971e81acae611aae39801096a433457c",
   "browserInputs": [
     "artifacts-0.2/artifact-formats.mjs",
     "conversation-application/conversation-application-receiver.mjs",
@@ -331,6 +331,7 @@
     "node_modules/fast-deep-equal/index.js",
     "procedure-selection.mjs",
     "retrieval-0.2/hearing-fragments.mjs",
+    "runtime-0.2/browser-receipt-semantics.mjs",
     "site-workflow-selection.mjs",
     "upload-selection.mjs",
     "work-selection.mjs"

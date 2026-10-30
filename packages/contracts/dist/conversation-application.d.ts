@@ -727,13 +727,15 @@ export type Canonical_UIEvent_1691B714 =
         message: string;
       };
     };
+export type BrowserReceiptData = BrowserActionReceiptData | BrowserDownloadReceiptData;
 export type ConversationEvent =
   | Canonical_UIEvent_1691B714
   | Canonical_NativeBillTextSourceEvent_8E4E610B
   | Canonical_NativeHearingSourceEvent_685F6175
   | Canonical_NativeUploadSourceEventC1E88004
   | Canonical_NativeUserQuestionEvent_2718130F
-  | Canonical_NativeUserQuestionAnsweredEventA7D02B8B;
+  | Canonical_NativeUserQuestionAnsweredEventA7D02B8B
+  | BrowserReceiptEvent;
 export type ConversationFeedbackTarget =
   | {
       kind: 'message';
@@ -1306,6 +1308,7 @@ export interface ConversationHistoryResponse {
     | Canonical_NativeUploadSourceEventC1E88004
     | Canonical_NativeUserQuestionEvent_2718130F
     | Canonical_NativeUserQuestionAnsweredEventA7D02B8B
+    | BrowserReceiptEvent
   )[];
   nextSequence: number;
   hasMore: boolean;
@@ -2207,6 +2210,42 @@ export interface Canonical_NativeUserQuestionOutcome_255F6E68 {
   questionId: string;
   outcome: 'answered' | 'cancelled';
   reasonCode: string | null;
+}
+export interface BrowserReceiptEvent {
+  contractVersion: '0.1.0';
+  eventId: string;
+  binding: Canonical_RunBinding_84F2304C;
+  sequence: number;
+  createdAt: string;
+  /**
+   * @minItems 1
+   */
+  scopes: [Canonical_ScopeF882Edb5, ...Canonical_ScopeF882Edb5[]];
+  type: 'browser.receipt';
+  data: BrowserReceiptData;
+}
+export interface BrowserActionReceiptData {
+  schema: 'meri-browser-receipt/1';
+  kind: 'browser.action';
+  binding: Canonical_RunBinding_84F2304C;
+  sessionId: string;
+  toolUseId: string | null;
+  action: string;
+  urlHost: string;
+  atMs: number;
+  reference: string | null;
+  outcome: 'ok' | 'error';
+}
+export interface BrowserDownloadReceiptData {
+  schema: 'meri-browser-receipt/1';
+  kind: 'browser.download';
+  binding: Canonical_RunBinding_84F2304C;
+  urlHost: string;
+  atMs: number;
+  reference: string | null;
+  sha256: string | null;
+  bytes: number | null;
+  mimeType: string;
 }
 export interface ConversationCancelledResponse {
   state: 'completed' | 'failed' | 'cancelled';

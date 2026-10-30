@@ -1341,6 +1341,9 @@
               },
               {
                 "$ref": "#/$defs/Canonical_NativeUserQuestionAnsweredEvent_a7d02b8b"
+              },
+              {
+                "$ref": "#/$defs/BrowserReceiptEvent"
               }
             ]
           },
@@ -1405,8 +1408,217 @@
         },
         {
           "$ref": "#/$defs/Canonical_NativeUserQuestionAnsweredEvent_a7d02b8b"
+        },
+        {
+          "$ref": "#/$defs/BrowserReceiptEvent"
         }
       ]
+    },
+    "BrowserActionReceiptData": {
+      "type": "object",
+      "properties": {
+        "schema": {
+          "const": "meri-browser-receipt/1"
+        },
+        "kind": {
+          "const": "browser.action"
+        },
+        "binding": {
+          "$ref": "#/$defs/Canonical_RunBinding_84f2304c"
+        },
+        "sessionId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "toolUseId": {
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 256
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "action": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "urlHost": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 255
+        },
+        "atMs": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "reference": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 1024
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "outcome": {
+          "enum": [
+            "ok",
+            "error"
+          ]
+        }
+      },
+      "required": [
+        "schema",
+        "kind",
+        "binding",
+        "sessionId",
+        "toolUseId",
+        "action",
+        "urlHost",
+        "atMs",
+        "reference",
+        "outcome"
+      ],
+      "additionalProperties": false
+    },
+    "BrowserDownloadReceiptData": {
+      "type": "object",
+      "properties": {
+        "schema": {
+          "const": "meri-browser-receipt/1"
+        },
+        "kind": {
+          "const": "browser.download"
+        },
+        "binding": {
+          "$ref": "#/$defs/Canonical_RunBinding_84f2304c"
+        },
+        "urlHost": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 255
+        },
+        "atMs": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "reference": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "sha256": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "bytes": {
+          "anyOf": [
+            {
+              "type": "integer",
+              "minimum": 0
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "mimeType": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 255
+        }
+      },
+      "required": [
+        "schema",
+        "kind",
+        "binding",
+        "urlHost",
+        "atMs",
+        "reference",
+        "sha256",
+        "bytes",
+        "mimeType"
+      ],
+      "additionalProperties": false
+    },
+    "BrowserReceiptData": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/BrowserActionReceiptData"
+        },
+        {
+          "$ref": "#/$defs/BrowserDownloadReceiptData"
+        }
+      ]
+    },
+    "BrowserReceiptEvent": {
+      "type": "object",
+      "properties": {
+        "contractVersion": {
+          "const": "0.1.0"
+        },
+        "eventId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "binding": {
+          "$ref": "#/$defs/Canonical_RunBinding_84f2304c"
+        },
+        "sequence": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "scopes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Canonical_Scope_f882edb5"
+          },
+          "minItems": 1
+        },
+        "type": {
+          "const": "browser.receipt"
+        },
+        "data": {
+          "$ref": "#/$defs/BrowserReceiptData"
+        }
+      },
+      "required": [
+        "contractVersion",
+        "eventId",
+        "binding",
+        "sequence",
+        "createdAt",
+        "scopes",
+        "type",
+        "data"
+      ],
+      "additionalProperties": false
     },
     "ConversationErrorResponse": {
       "type": "object",
