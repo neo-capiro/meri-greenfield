@@ -83,7 +83,7 @@ export function captureRuntimePorts(value={}){
   ...(c.intentApplication===undefined?{}:{intentApplication:methods(c.intentApplication,['handle'])}),
   ...(c.settingsApplication===undefined?{}:{settingsApplication:methods(c.settingsApplication,['handle'])}),
   ...(c.memoryApplication===undefined?{}:{memoryApplication:methods(c.memoryApplication,['handle'])}),
-  ...(c.browserHosts===undefined?{}:{browserHosts:methods(c.browserHosts,['read','prepareResume','execute'])}),
+  ...(c.browserHosts===undefined?{}:{browserHosts:Object.freeze({...methods(c.browserHosts,['read','prepareResume','execute']),...(optionalMethod(c.browserHosts,'executeBrowserOperation')?{executeBrowserOperation:storageMethod(c.browserHosts,'executeBrowserOperation')}:{})})}),
  });
  capturedPorts.add(captured);return captured;
 }

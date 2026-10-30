@@ -5,6 +5,8 @@ import {binding,versions} from '../../control/conversations/test/store-fixture.m
 import {settlementFor} from '../agentcore-contract.mjs';
 import {withRunnerDiagnostics} from '../runner-runtime-diagnostics.mjs';
 let workspaces=0;
+let browserOpen=false;
+mock.module('../../worker/conversation/browser/activation.mjs',{namedExports:{activationOpen:()=>browserOpen}});
 // Linux directory ownership is exercised by the native gate; this closed suite isolates the query/HTTP settlement ordering.
 mock.module('../conversation-runner.mjs',{namedExports:{assembleConversationRunner(){throw Error('explicit test assembly required');},assertRunnerEnvironment(){},async assertRunnerWorkspace(){workspaces++;}}});
 const {createAgentCoreQuery}=await import('../agentcore-query.mjs');
@@ -16,12 +18,17 @@ function fixture(options={}){
  if(path.endsWith('/settle'))return Response.json(options.badSettlement?{...settlementFor(input.execution,request.state),settled:false}:settlementFor(input.execution,request.state));
  admissions++;const response={execution:input.execution,versions,state:admissions===1?(options.initialState??'queued'):(options.readback??'failed'),scopes:[{tenantId:binding.tenantId,kind:'client',resourceId:'11111111-1111-4111-8111-111111111111',policyRevision:'p'}],selectedClientId:'11111111-1111-4111-8111-111111111111',policyRevision:'p'};
  return Response.json(options.badAdmission?{...response,execution:{...input.execution,expiresAtMs:input.execution.expiresAtMs-1}}:response);},
- assemble:configuration=>{if(options.assemblyError)throw options.assemblyError;assert.deepEqual(configuration.configuration.execution,input.execution);const run=async()=>withRunnerDiagnostics(async()=>{queryCalls++;calls.push('query');await options.wait?.();if(options.failure)throw options.failure instanceof Error?options.failure:Error('private query failure');return {state:'completed'};},{binding});run.cleanupStatus=()=>{calls.push('closed');return cleanup;};return run;}});
+ assemble:configuration=>{if(options.assemblyError)throw options.assemblyError;assert.deepEqual(configuration.configuration.execution,input.execution);options.inspectAssembly?.(configuration);const run=async()=>withRunnerDiagnostics(async()=>{queryCalls++;calls.push('query');await options.wait?.();if(options.failure)throw options.failure instanceof Error?options.failure:Error('private query failure');return {state:'completed'};},{binding});run.cleanupStatus=()=>{calls.push('closed');return cleanup;};return run;}});
  return {input,calls,run:signal=>execute(input,{signal}),queryCalls:()=>queryCalls};
 }
 test('query acknowledges settlement only after actual activity and mirror cleanup, with the exact immutable identity',async()=>{
  const f=fixture();assert.deepEqual(await f.run(),settlementFor(f.input.execution,'completed'));
  assert.deepEqual(f.calls,['/v1/runner/execution','workspace','query','closed','/v1/runner/execution/settle']);assert.equal(f.queryCalls(),1);
+});
+test('the existing activation gate mounts the browser native client into the same AgentCore assembly',async()=>{
+ let seen;browserOpen=true;
+ try{const f=fixture({inspectAssembly:value=>{seen=value;}});await f.run();assert.equal(seen.browser.transport,'native-control');assert.equal(typeof seen.browser.hook,'function');assert.equal(typeof seen.browser.settle,'function');assert.equal(f.queryCalls(),1);assert.equal('preparedHost' in seen,false);}
+ finally{browserOpen=false;}
 });
 test('failed activity requires canonical terminal readback; running or unknown never becomes settled',async()=>{
  for(const state of ['failed','running']){const f=fixture({failure:true,readback:state});if(state==='failed')assert.deepEqual(await f.run(),settlementFor(f.input.execution,'failed'));else await assert.rejects(f.run());assert.equal(f.queryCalls(),1);assert.equal(f.calls.filter(x=>x.endsWith('/settle')).length,state==='failed'?1:0);}

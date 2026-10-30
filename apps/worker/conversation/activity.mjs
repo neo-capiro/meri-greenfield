@@ -31,6 +31,7 @@ import {continuationSessionId} from './reads/runtime.mjs';
 import {readRunBudgets} from './reads/budget.mjs';
 import {createProfileMounts} from './capabilities/mounts.mjs';
 import {prepareBrowserRun} from './browser/runtime.mjs';
+import {BROWSER_NATIVE_LIMITS} from '../../../packages/contracts/runtime-0.2/browser-tools.mjs';
 import {attemptCleanup,cleanupConversation,CLEANUP_ATTEMPT_MS} from './cleanup.mjs';
 const same=(a,b)=>canonicalSha256(a)===canonicalSha256(b);
 const fault=code=>Object.assign(new Error(code),{code});
@@ -60,7 +61,7 @@ export function createConversationActivity({runOwner,prepareRuntime,query=sdkQue
  // Trusted control intent port (`apps/control/intents/mount.mjs`); absent means no governed write request.
  if(governedIntents!==undefined&&['readAvailability','prepare'].some(k=>typeof governedIntents[k]!=='function'))throw fault('INTENT_ACTIVITY_CONFIGURATION');
  // Trusted browser runtime port (`browser/runtime.mjs`); absent means no browser. The activation gate stays authoritative.
- if(browser!==undefined&&typeof browser.policy!=='function')throw fault('BROWSER_ACTIVITY_CONFIGURATION');
+ if(browser!==undefined&&(browser.transport==='native-control'?typeof browser.prepare!=='function':typeof browser.policy!=='function'))throw fault('BROWSER_ACTIVITY_CONFIGURATION');
  if(outreachGeneration!==undefined&&typeof outreachGeneration.prepare!=='function')throw fault('OUTREACH_ACTIVITY_CONFIGURATION');
  if(objectiveGeneration!==undefined&&typeof objectiveGeneration.prepare!=='function')throw fault('OBJECTIVE_ACTIVITY_CONFIGURATION');
  return async function executeConversation({binding,signal}){
@@ -137,8 +138,18 @@ export function createConversationActivity({runOwner,prepareRuntime,query=sdkQue
      if(abandoned)await prepared.settle({outcome:'cancelled'});return prepared;}
      catch(error){browserPreparationCleanupUnknown ||= error?.code==='BROWSER_CLEANUP_UNKNOWN';throw error;}
      finally{settled=true;}};
-    try{browserRun=await setupRun(prepare);}
-    catch(error){abandoned=true;if(prepared)browserRun=prepared;else if(!settled)browserPreparationCleanupUnknown=true;throw error;}
+    // Host context preparation has its own bounded network allowance. Preserve
+    // the unspent ordinary setup allowance; never restart it at the full 23 s.
+    const remote=browser.transport==='native-control',remaining=setupLife?setupLife.deadline()-now():null;
+    let browserLife;
+    try{
+     if(remote){setupLife?.check();setupLife?.close();setupLife=undefined;
+      browserLife=createOperationLifetime({deadlineMs:Math.min(now()+BROWSER_NATIVE_LIMITS.executionMs,setupBudget?.expiresAtMs??Infinity,life.deadline()),now,signal:life.signal,errorFactory:fault});
+      browserRun=await browserLife.run(prepare);
+      if(remaining!==null)setupLife=createOperationLifetime({deadlineMs:Math.min(now()+remaining,setupBudget.expiresAtMs),now,signal:life.signal,errorFactory:fault});
+     }else browserRun=await setupRun(prepare);
+    }catch(error){abandoned=true;if(prepared)browserRun=prepared;else if(!settled)browserPreparationCleanupUnknown=true;throw error;}
+    finally{browserLife?.close();}
    }
    const objectiveRuntime=objectiveGeneration===undefined?null:await setupRun(signal=>objectiveGeneration.prepare({binding,request:saved.request,versions:saved.run.versions,scopes:saved.run.scopes,cwd:runtime.cwd,model:runtime.model,deadlineMs:runtime.deadlineMs,signal}));
    if(objectiveRuntime){if(lineage||saved.request.skill||typeof lifecycle?.captureCompletion!=='function'||typeof objectiveRuntime.capture!=='function')throw fault('OBJECTIVE_COMPLETION_UNAVAILABLE');life.limitDeadline(objectiveRuntime.deadlineMs);}

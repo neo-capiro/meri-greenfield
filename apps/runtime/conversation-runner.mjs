@@ -54,7 +54,7 @@ function startupBudgetFor(configuration){
  if(canonicalSha256(execution.binding)!==canonicalSha256(configuration.binding))throw fault('RUNNER_BINDING_REFUSED');
  return runnerStartupBudget({requestMs:configuration.limits?.requestMs,shutdownMs:configuration.limits?.shutdownMs,originalExpiresAtMs:execution.expiresAtMs});
 }
-export function assembleConversationRunner({configuration,native,query,credentialForBinding,sessionFactory,generalReads,governedIntents,providerCredentials,now=Date.now}){
+export function assembleConversationRunner({configuration,native,query,credentialForBinding,sessionFactory,generalReads,governedIntents,providerCredentials,browser,now=Date.now}){
  const readPort=captureGeneralReadPort(generalReads,configuration.sourceEnabled);
  const startup=startupBudgetFor(configuration),stages=startup?.stages;
  validateShape('RuntimeVersions',configuration.versions);const configuredVersionsSha256=canonicalSha256(configuration.versions);
@@ -144,7 +144,7 @@ export function assembleConversationRunner({configuration,native,query,credentia
    }
    return {...runtime,cwd:configuration.workspace,sessionStore,...directories,...(bashRuntime?.runtimeFacts??{}),...(plugin?{skillPluginDirectory:plugin.directory}:{})};});}finally{localLife?.close();}});
  // The activity bounds runtime preparation (the runner/runtime call, then the local stage); see ACTIVITY_PREPARATION_MAX_MS.
- const activity=createConversationActivity({runOwner,prepareRuntime,selectedSkills,procedures,siteWorkflows,objectiveGeneration,outreachGeneration,now,...(stages?{loadMaxMs:stages.load.maxMs,loadExpiresAtMs:stages.load.expiresAtMs,runtimeMaxMs:Math.min(stages.runtime.maxMs+stages.local.maxMs,ACTIVITY_PREPARATION_MAX_MS),runtimeExpiresAtMs:stages.local.expiresAtMs,setupBudget:stages.setup,modelDeadlineMs:stages.session.expiresAtMs,executionDeadlineMs:startup.originalExpiresAtMs,terminalAttemptMs:stages.session.maxMs}:{}),...(readPort?{generalReads:readPort}:{}),...(governedIntents?{governedIntents}:{}),...(query?{query}:{}),...(lifecycle?{lifecycle}:{}),heartbeat:()=>{},diagnostics:{stage:markRunnerStage,failure:captureRunnerFailure}});
+ const activity=createConversationActivity({runOwner,prepareRuntime,selectedSkills,procedures,siteWorkflows,objectiveGeneration,outreachGeneration,now,...(stages?{loadMaxMs:stages.load.maxMs,loadExpiresAtMs:stages.load.expiresAtMs,runtimeMaxMs:Math.min(stages.runtime.maxMs+stages.local.maxMs,ACTIVITY_PREPARATION_MAX_MS),runtimeExpiresAtMs:stages.local.expiresAtMs,setupBudget:stages.setup,modelDeadlineMs:stages.session.expiresAtMs,executionDeadlineMs:startup.originalExpiresAtMs,terminalAttemptMs:stages.session.maxMs}:{}),...(readPort?{generalReads:readPort}:{}),...(governedIntents?{governedIntents}:{}),...(query?{query}:{}),...(lifecycle?{lifecycle}:{}),...(browser?{browser}:{}),heartbeat:()=>{},diagnostics:{stage:markRunnerStage,failure:captureRunnerFailure}});
   const execute=async input=>withRunnerDiagnostics(()=>atRunnerStage('activity',async()=>{try{return await activity(input);}catch(error){captureRunnerFailure(error);throw error;}finally{markRunnerStage('runner-cleanup');
    try{try{await selectedSkills.close();}catch(error){localCleanupFailed=true;throw error;}finally{await sdkSession?.close();}}
    finally{

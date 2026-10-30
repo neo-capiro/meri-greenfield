@@ -6,6 +6,7 @@ import {open} from 'node:fs/promises';
 import {constants} from 'node:fs';
 import {createHash} from 'node:crypto';
 import {PINNED_NATIVE_ERROR_BODY_MAX_BYTES,pinnedNativeRefusal as refusal,classifyPinnedStatus} from './runner-runtime-diagnostics.mjs';
+import {browserOperationCeilingMs} from '../../packages/contracts/runtime-0.2/browser-tools.mjs';
 
 /** Like fetch, every answer resolves as a Response: a 200 fully buffered, any other status with only its status, content type
  * and a body of at most PINNED_NATIVE_ERROR_BODY_MAX_BYTES (never its status text or other headers), so the caller decides
@@ -14,7 +15,8 @@ import {PINNED_NATIVE_ERROR_BODY_MAX_BYTES,pinnedNativeRefusal as refusal,classi
  * diagnostics allowlist owns the list, so RUNNER_FIRST_FAILURE can tell a refused status from a dropped or untrusted
  * connection without any message or payload reaching stderr.
  * CONFIGURATION: origin, limits or CA file refused while building the adapter. REFUSED: this call refused locally before
- * any byte was sent (address, method, headers, body). ABORTED/TIMEOUT: the caller's signal or this adapter's 30 s ceiling.
+ * any byte was sent (address, method, headers, body). ABORTED/TIMEOUT: the caller's signal or this adapter's ceiling
+ * (30 s for ordinary routes; shared domain ceilings only for the named browser operations).
  * CONNECT/TLS/SOCKET: failure before any response head. TRANSPORT: any other request error (bounded fallback).
  * STATUS_*: a non-200 head whose bounded body could not be read whole (malformed, oversize, truncated, encoded, redirected);
  * clients report a non-200 Response's class as `cause` (pinnedStatusRefusal). RESPONSE: a 200 head whose framing, size or
@@ -70,9 +72,12 @@ export async function createPinnedNativeFetch({origin,caFile,caSha256,maxRespons
    const failed=error=>finish(head===200?'PINNED_NATIVE_RESPONSE':head?classifyPinnedStatus(head):classifyPinnedRequestError(error));
    // Every caller supplies its own shorter AbortSignal; this ceiling covers
    // the longest approved read while preventing an unbounded socket.
-   timer=setTimeout(timedOut,30000);
+   // Only named browser operations use their domain ceiling. Their caller's
+   // signal still enforces the selected policy and remaining run allowance.
+   const ceilingMs=browserOperationCeilingMs(url.pathname.slice('/v1/'.length))??30000;
+   timer=setTimeout(timedOut,ceilingMs);
    try{request=httpsRequest(url,{method:'POST',agent:false,ca,minVersion:'TLSv1.3',rejectUnauthorized:true,servername:url.hostname,
-    timeout:30000,maxHeaderSize:8192,headers:{authorization,'content-type':'application/json','content-length':String(body.length),accept:'application/json','accept-encoding':'identity',connection:'close'}},response=>{
+    timeout:ceilingMs,maxHeaderSize:8192,headers:{authorization,'content-type':'application/json','content-length':String(body.length),accept:'application/json','accept-encoding':'identity',connection:'close'}},response=>{
     // Error listeners stay attached (`on`, not `once`): a second error after settlement is absorbed, never uncaught.
     response.on('error',failed);
     if(done){response.destroy();return;}

@@ -7,14 +7,14 @@ const frames=[{type:'assistant',parent_tool_use_id:null,message:{id:'msg_1',cont
 /** Activity with a trusted browser runtime port over a real temporary conversation workspace. The shipped activation
  * gate is held, so the browser contributes no server, tool or hook; its run cleanup must still run on every outcome. */
 async function setup({selected=frames,policy=async()=>undefined}={}){
- const root=await realpath(await mkdtemp(join(tmpdir(),'meri-activity-browser-'))),cwd=join(root,binding.conversationId);
+ const root=await realpath(await mkdtemp(join(tmpdir(),'meri-activity-browser-'))),cwd=join(root,binding.conversationId).replaceAll('\\','/');
  await mkdir(join(cwd,'.browser','profile'),{recursive:true});
- const f=await applicationFixture();await f.service.submit({credential:f.credential,input:f.input});
+ const f=await applicationFixture({initialInput:true});await f.service.allocateInput({credential:f.credential,input:f.input});await f.service.submit({credential:f.credential,input:f.input});
  let n=300,seen;const policyCalls=[];
  const r=recorders(),browser={async policy(request){policyCalls.push(request);return policy();},installation,sourceScopes,artifacts:r.artifactPort,receipts:r.receiptPort};
  const query=args=>{seen=args.options;return {async *[Symbol.asyncIterator](){for(const frame of selected)yield frame;},close(){}};};
  const execute=createConversationActivity({runOwner:f.runOwner,query,newId:()=>id(n++),browser,
-  prepareRuntime:async()=>({binding,versions,cwd,proxyUrl:'https://trusted-proxy.invalid',proxyCredential:'synthetic-task-capability',model:'qualified-model-pin',sessionStore:{async load(){return null;},async append(){}},deadlineMs:Date.now()+2000,maxTurns:2,maxCostMicroUSD:1000,maxOutputBytes:1024})});
+  prepareRuntime:async()=>({binding,versions,cwd,model:'us.anthropic.claude-sonnet-4-6',region:'us-east-1',maxOutputTokens:4096,providerEnvironment:{},sessionStore:{async load(){return null;},async append(){}},deadlineMs:Date.now()+2000,maxTurns:2,maxCostMicroUSD:1000,maxOutputBytes:1024})});
  return {...f,cwd,execute,policyCalls,options:()=>seen,close:async()=>{f.close();await rm(root,{recursive:true,force:true});}};
 }
 const gone=async path=>{try{await access(path);return false;}catch{return true;}};
@@ -23,7 +23,7 @@ test('a configured browser port is asked for the run policy, composes nothing wh
  try{
   assert.deepEqual(await f.execute({binding}),{state:'completed'});
   assert.deepEqual(f.policyCalls.map(c=>c.binding),[binding]);
-  const o=f.options();assert.equal(o.mcpServers,undefined);assert.deepEqual(o.allowedTools,[]);assert.equal(o.permissionMode,'default');
+  const o=f.options();assert.equal(o.mcpServers,undefined);assert.equal(o.allowedTools.some(name=>name.startsWith('mcp__meri_browser__')),false);assert.deepEqual(o.tools,{type:'preset',preset:'claude_code'});assert.equal(o.permissionMode,'default');
   assert.equal(await gone(join(f.cwd,'.browser')),true,'browser state removed at run end');
  }finally{await f.close();}
 });
@@ -44,4 +44,13 @@ test('a browser cleanup that cannot be verified surfaces as SDK_CLEANUP_UNKNOWN 
 });
 test('activity configuration refuses a browser port without a policy source',()=>{
  assert.throws(()=>createConversationActivity({runOwner:{load(){},append(){}},prepareRuntime(){},browser:{}}),/BROWSER_ACTIVITY_CONFIGURATION/);
+});
+test('remote browser preparation has a separate allowance and still closes after the ordinary setup stage',async()=>{
+ const f=await applicationFixture({initialInput:true});await f.service.allocateInput({credential:f.credential,input:f.input});await f.service.submit({credential:f.credential,input:f.input});
+ let at=Date.now(),queries=0,settlements=0,n=600;const until=at+300000;
+ const browser={transport:'native-control',async prepare(){at+=40000;return {binding,policy:{enabled:false},activation:'not-applicable',approvalDeadlineMs:120000};},async settle({outcome}){settlements++;return {schema:'meri-browser-cleanup/1',binding,outcome,activation:'not-applicable',egress:'not-applicable',process:'not-applicable',profile:'done'};}};
+ const execute=createConversationActivity({runOwner:f.runOwner,browser,now:()=>at,newId:()=>id(n++),setupBudget:{maxMs:23000,expiresAtMs:until-23000},
+  prepareRuntime:async()=>({binding,versions,cwd:'/workspace/'+binding.conversationId,model:'us.anthropic.claude-sonnet-4-6',region:'us-east-1',maxOutputTokens:4096,providerEnvironment:{},sessionStore:{async load(){return null;},async append(){}},deadlineMs:until,maxTurns:2,maxCostMicroUSD:1000,maxOutputBytes:1024}),
+  query:()=>{queries++;return {async *[Symbol.asyncIterator](){yield* frames;},close(){}};}});
+ try{assert.deepEqual(await execute({binding}),{state:'completed'});assert.equal(queries,1);assert.equal(settlements,1);}finally{f.close();}
 });

@@ -38,8 +38,8 @@ const LOCAL_STAGE_MS=RUNNER_SESSION_RPC_MS.snapshot+RUNNER_LOAD_CONTROL_MARGIN_M
 // keeps its own allowance and absolute cutoff, so the 30 s only shortens the local stage after a runtime call past 20 s; the
 // local stage's work is about 3.3 s at the tail profile (adj-e D2), so that takes a runtime call past 26.7 s, beyond its own 23 s.
 export const ACTIVITY_PREPARATION_MAX_MS=30000;
-// Optional Browser host, objective, and selected-skill preparation share this
-// stage before the first running publication.
+// Objective and selected-skill preparation share this stage. Remote browser
+// preparation keeps its own allowance inside this same absolute cutoff.
 const SETUP_STAGE_MS=23000;
 
 export function runnerStartupBudget({requestMs,shutdownMs,originalExpiresAtMs}){
