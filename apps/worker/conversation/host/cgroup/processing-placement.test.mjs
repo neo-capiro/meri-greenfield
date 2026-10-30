@@ -99,3 +99,23 @@ test('close is lazy, runs once and replays an honest unknown', async () => {
   assert.deepEqual(await placement.close(), first);
   assert.deepEqual(await placement.close(), first);
 });
+
+test('an invalid launcher configuration is refused BEFORE any leaf is created', async () => {
+  const fs = delegating();
+  await assert.rejects(createProcessingPlacement(base({fs, helperPath: 'relative/launcher'})),
+    error => error?.code === 'HOST_LAUNCH_CONFIGURATION');
+  assert.equal(fs.map.has(leafPath), false, 'no leaf was left behind by a rejected configuration');
+  assert.equal(fs.writes.length, 0);
+});
+
+test('close refuses new runs once it starts, releases once and replays its result', async () => {
+  const fs = delegating();
+  const placement = await createProcessingPlacement(base({fs, spawnNative: () => gatedChild(), kill: inertKill()}));
+  const first = await placement.close();
+  assert.deepEqual(first, {closed: true, released: true});
+  assert.equal(placement.isClosed(), true);
+  assert.deepEqual(await placement.close(), first, 'repeat close replays the settled result');
+  await assert.rejects(placement.run('/usr/bin/bwrap', [], {cwd: WORK, deadlineMs: Date.now() + 5000}),
+    error => error?.code === 'HOST_PROCESSING_CLOSED');
+  assert.equal(fs.map.has(leafPath), false);
+});

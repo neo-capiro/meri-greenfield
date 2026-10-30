@@ -422,8 +422,10 @@ export function createProcessingCommandLauncher({allocation,binding,hostIdentity
   *  the SAME remaining deadline, an already-aborted or expired call never spawns, and every pre-dispatch throw stops the
   *  child it created. */
  return async function prepare(command,args,{cwd,signal:callSignal,deadlineMs}={}){
-  const life=callSignal??signal;
-  const aborted=()=>life?.aborted===true||signal?.aborted===true;
+  // ONE lifetime: the constructor signal and this call's signal are combined, so an abort of either interrupts the
+  // stalled currentness/network reads this call is waiting on. The bounded inner signal is what owners receive.
+  const life=callSignal===undefined?signal:(signal===undefined?callSignal:AbortSignal.any([signal,callSignal]));
+  const aborted=()=>life?.aborted===true;
   const remaining=()=>{const left=deadlineMs-now();
    if(!Number.isSafeInteger(left)||left<1)fail('HOST_LAUNCH_EXPIRED');return left;};
   const preflight=async()=>{
@@ -455,6 +457,18 @@ export function createProcessingCommandLauncher({allocation,binding,hostIdentity
   const child=spawnNative(helperPath,['run',...nativeSpec(s,{kind:'processing',network:pin,command,args,cwd,home,
    browsersPath,uid:runUid,gid:runGid})],{env:{},detached:true,stdio:['pipe','pipe','pipe','pipe','pipe'],windowsHide:true});
   if(!child||!Number.isSafeInteger(child.pid)||!child.stdio?.[3]||!child.stdio?.[4])fail('HOST_LAUNCH_UNKNOWN');
+  const settle=async()=>{
+   try{if(!child.stdio[4].destroyed)child.stdio[4].destroy();}catch{}
+   let killed=false;
+   try{child.kill('SIGKILL');killed=true;}catch{}
+   const gone=child.exitCode!==null&&child.exitCode!==undefined||child.signalCode!==null&&child.signalCode!==undefined;
+   const settled=gone?true:await new Promise(resolve=>{
+    const timer=setTimeout(()=>resolve(false),Math.max(1,Math.min(remaining(),5000)));
+    const done=()=>{clearTimeout(timer);resolve(true);};
+    child.once?.('exit',done);child.once?.('close',done);
+   });
+   return {gateDestroyed:true,killed,settled,unknown:!settled};
+  };
   try{
    if(await within(()=>lineReader(child.stdio[3])(),Math.min(remaining(),readyMs),life)!=='R')fail('HOST_LAUNCH_UNKNOWN');
    await within(()=>onPrepared({leaderPid:child.pid,kind:'processing',signal:life,cwd}),remaining(),life);
@@ -463,19 +477,14 @@ export function createProcessingCommandLauncher({allocation,binding,hostIdentity
    if(now()>=deadlineMs)fail('HOST_LAUNCH_EXPIRED');
    return Object.freeze({pid:child.pid,child,gate:child.stdio[4],deadlineMs,signal:life});
   }catch(error){
-   try{if(!child.stdio[4].destroyed)child.stdio[4].destroy();}catch{}
-   try{child.kill('SIGKILL');}catch{}
+   // Fast spawn error, exit or missing READY: account for the child this call created, including settlement.
    error.dispatched=false;
+   error.preDispatchCleanup=await settle();
    throw error;
   }
  };
 }
 
-/** Run one fixed processing command through the existing bounded artifact runner.
- *  `ports` is the runner's FOURTH argument, and the runner's kill is injectable so tests stay inert. GO is released from
- *  the spawn port after the runner installed its listeners, and that queued dispatch re-checks cancellation, expiry and
- *  gate custody instead of writing G into a dead or revoked lifetime. A prepared child the runner never took custody of
- *  is stopped and settled here, never merely killed and reported absent. */
 export async function runProcessingCommand({launcher,command,args,cwd,input=Buffer.alloc(0),signal,deadlineMs,
  maxOutput,now=Date.now,kill=process.kill,settleMs=5000}={}){
  const prepared=await launcher(command,args,{cwd,signal,deadlineMs});

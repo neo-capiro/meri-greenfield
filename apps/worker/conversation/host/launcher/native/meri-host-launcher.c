@@ -159,15 +159,39 @@ static void enter_namespace(spec *s) {
      (unsigned long long)st.st_ino!=number(s->ns_ino,UINT64_MAX)||setns(ns,CLONE_NEWNET)) die();
   close(ns);
 }
-/* Fixed processing must keep the ACTUAL owned finite hierarchy observable to the accepted 549 observer (mountinfo,
- * /proc/self/cgroup, cpu.max/memory.max/pids.max) while denying any control-file write after the UID drop. A private
- * mount namespace plus a read-only recursive bind of /sys/fs/cgroup gives exactly that; only the processing kind uses
- * it. Other kinds keep the historical hidden view unchanged. Called as root, before drop_privilege. */
+/* Fixed processing must keep the ACTUAL owned hierarchy observable to the accepted 549 observer (mountinfo,
+ * /proc/self/cgroup, cpu.max/memory.max/pids.max) while denying control-file writes after the UID drop. The cgroup2 mount
+ * is remounted read-only as a SINGLE mount (no MS_REC on the remount): a recursive remount would leave every submount
+ * writable, so a nested cgroup2 mount, or any submount under /sys/fs/cgroup, refuses instead of pretending to be
+ * read-only. Only the processing kind uses this; other kinds keep the historical hidden view. Called as root before
+ * drop_privilege. Release observes the real result; nothing here is claimed compiled or mounted. */
 static void processing_cgroup_view(void) {
   if(unshare(CLONE_NEWNS)) die();
   if(mount(NULL,"/",NULL,MS_REC|MS_PRIVATE,NULL)) die();
+  int info=open("/proc/self/mountinfo",O_RDONLY|O_CLOEXEC);if(info<0) die();
+  char buf[65536];ssize_t n=read(info,buf,sizeof(buf)-1);close(info);
+  if(n<=0||(size_t)n>=sizeof(buf)-1) die();buf[n]='\0';
+  int cgroup_mounts=0,submounts=0;
+  for(char *line=buf;line&&*line;){
+    char *next=strchr(line,'\n');if(next)*next='\0';
+    char *sep=strstr(line," - ");
+    if(sep){
+      if(!strncmp(sep+3,"cgroup2 ",8)) cgroup_mounts++;
+      char *fifth=NULL;int field=1;
+      for(char *p=line;p<sep;p++){if(*p==' '&&field<5){field++;if(field==5){fifth=p+1;}}}
+      if(fifth&&sep>fifth){
+        char *mountpoint=fifth;char *end=sep;while(end>mountpoint&&end[-1]==' ')end--;
+        size_t len=(size_t)(end-mountpoint);
+        if(len>13&&!strncmp(mountpoint,"/sys/fs/cgroup",14)&&len>14) submounts++;
+      }
+    }
+    line=next?next+1:NULL;
+  }
+  /* Exactly one cgroup2 mount and no nested mount under it; anything else cannot be made reliably read-only by this
+   * single-mount remount, so the placement refuses rather than exposing writable control files. */
+  if(cgroup_mounts!=1||submounts!=0) die();
   if(mount("/sys/fs/cgroup","/sys/fs/cgroup",NULL,MS_BIND|MS_REC,NULL)) die();
-  if(mount(NULL,"/sys/fs/cgroup",NULL,MS_REMOUNT|MS_BIND|MS_RDONLY|MS_REC|MS_NOSUID|MS_NODEV|MS_NOEXEC,NULL)) die();
+  if(mount(NULL,"/sys/fs/cgroup",NULL,MS_REMOUNT|MS_BIND|MS_RDONLY|MS_NOSUID|MS_NODEV|MS_NOEXEC,NULL)) die();
 }
 static void hide_cgroupfs(void) {
   if(unshare(CLONE_NEWNS)||mount(NULL,"/",NULL,MS_PRIVATE|MS_REC,NULL)||
