@@ -50,9 +50,6 @@ async function boot({root,scratch,mode='success'}){
    home:'/fixture/home',runtimeUid:1000,runtimeGid:1000,childSettings}};
  const programs=[],roles=[],scanDirectories=[],compositions=[];
  let signatures=0,releaseVerification=null,listener=null,started=null,activeAtPlacementClose=null;
- // Inert FS effect port: records the exact owner-path modes instead of real chown/chmod (production applies them).
- const modes=[];
- const definitionsChmod=async(path,mode)=>{modes.push({path,mode});};
  const definitionsRun=async(program,args)=>{
   programs.push(program);
   if(program==='sigtool'&&++signatures===3&&mode==='late-pin')await new Promise(resolve=>{releaseVerification=resolve;});
@@ -102,7 +99,7 @@ async function boot({root,scratch,mode='success'}){
     close:async()=>{activeAtPlacementClose=started.definitionsOwner.active();return {closed:true};}})})});
  return {started,listener:()=>listener,programs,roles,scanDirectories,compositions,
   activeAtPlacementClose:()=>activeAtPlacementClose,releaseVerification:()=>releaseVerification,
-  modes};
+  };
 }
 
 const requestFor=deadlineMs=>({kind:'upload-inspection',requestId:'a'.repeat(64),imageDigest:IMAGE,
@@ -171,11 +168,14 @@ test('JOINED late pin: a verification completing after handler expiry is not los
   const res=response();
   await host.listener()(requestStream(envelope(Date.now()+200)),res);
   assert.notEqual(res.status,200,'an expired request is never served');
-  assert.equal(typeof host.releaseVerification(),'function','the held verification was actually pending');
-  host.releaseVerification();
+  const release=host.releaseVerification();
+  assert.equal(typeof release,'function','the held verification was actually pending');
+  release();                                     // INVOKE the resolver, so the held verification actually completes
   await new Promise(resolve=>setTimeout(resolve,80));
   assert.equal(host.started.definitionsOwner.active(),0,'a never-dispatched late pin cannot leak');
-  await host.started.close();   // service-level late finality is asserted by the reviewer witness (hostClose closed:true)
+  assert.equal(host.compositions.length,0,'the expired request never dispatched a child');
+  const closed=await host.started.close();
+  assert.deepEqual(closed,{closed:true,pending:0},'the definitive late release settles the host activity');
  }finally{await rm(owned,{recursive:true,force:true});}
 });
 
