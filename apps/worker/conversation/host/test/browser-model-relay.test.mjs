@@ -25,7 +25,7 @@ async function fixture(t){
  const state={calls:[],disconnected:0,raw:'',mode:'text'};outgoing.on('data',chunk=>{state.raw+=chunk;});
  const owner=createNativeBrowserModelRelay({binding,policy,installation,paths:browserPaths(cwd),readable:incoming,writable:outgoing,onDisconnect:()=>{state.disconnected++;}});
  const server=await owner.bind({binding,installation,tools:async()=>{if(state.mode==='throw')throw Error('CONFIDENTIAL_NATIVE_ERROR');return [{name:'browser_snapshot',description:'Snapshot',inputSchema:{type:'object',properties:{}}}];},
-  async call(input){state.calls.push(input);fence.admit({requestId:input.requestId,tool:input.tool,timeoutMs:1000});
+  async call(input){assert.equal(input.signal.aborted,false);state.calls.push(input);fence.admit({requestId:input.requestId,tool:input.tool,timeoutMs:1000});
    if(state.mode==='throw')throw Error('CONFIDENTIAL_NATIVE_ERROR');
    if(state.mode==='park')await new Promise(resolve=>input.signal.addEventListener('abort',resolve,{once:true}));
    fence.settle(input.requestId,{outcome:'result'});
@@ -39,7 +39,7 @@ async function fixture(t){
 test('native model stream exposes only listed browser tools and forwards filtered text through the owner',async t=>{
  const f=await fixture(t);assert.deepEqual((await f.client.listTools()).tools.map(t=>t.name),['browser_snapshot']);
  assert.deepEqual(await f.client.callTool({name:'browser_snapshot',arguments:{}}),{content:[{type:'text',text:'filtered snapshot'}]});
- assert.match(f.state.calls[0].requestId,/^[0-9a-f]{64}$/);assert.equal(f.state.calls[0].signal.aborted,false);
+ assert.match(f.state.calls[0].requestId,/^[0-9a-f]{64}$/);assert.equal(f.state.calls[0].signal.aborted,true);
  await assert.rejects(f.client.request({method:'takeover.begin',params:{}},EmptyResultSchema));
  assert.equal(f.state.calls.length,1);
  await assert.rejects(f.owner.bind({binding,installation,call:async()=>{},tools:async()=>[]}));

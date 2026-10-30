@@ -21,6 +21,16 @@ function fixture(overrides={}){
 const grant=()=>createEgressGrant({binding,policy:validateBrowserPolicy(enabledPolicy()),expiresAtMs:clock()+60000});
 const refused=code=>error=>error.code===code;
 
+test('host-owned port uses a context-only installation and never manufactures a shim',()=>{
+ const {launch,...context}=installation;
+ const f=fixture({modelTransport:'host-owned',installation:context});
+ assert.equal(f.port.modelTransport,'host-owned');assert.deepEqual(f.port.installation,context);
+ assert.equal(Object.hasOwn(f.port.installation,'launch'),false);
+ assert.throws(()=>fixture({modelTransport:'host-owned'}),refused('BROWSER_HOST_RUNTIME_CONFIGURATION'));
+ assert.throws(()=>fixture({modelTransport:'http',installation:context}),refused('BROWSER_HOST_RUNTIME_CONFIGURATION'));
+ assert.throws(()=>fixture({installation:context}),refused('BROWSER_HOST_RUNTIME_CONFIGURATION'));
+});
+
 test('adapter construction is inert and snapshots installation, binding and source scope facts',async()=>{
  const f=fixture();assert.deepEqual(f.calls,[]);
  f.config.binding.writerFence++;f.config.installation.egressProxy='http://127.0.0.1:9999';f.config.sourceScopes[0].tenantId='another-tenant';

@@ -5,8 +5,9 @@ import {Server} from '@modelcontextprotocol/sdk/server/index.js';
 import {StdioServerTransport} from '@modelcontextprotocol/sdk/server/stdio.js';
 import {CallToolRequestSchema,ListToolsRequestSchema} from '@modelcontextprotocol/sdk/types.js';
 import {canonicalSha256} from '../../../../packages/contracts/validate.mjs';
-import {own,data} from '../../../../packages/contracts/commands-0.2/execution-boundary.mjs';
+import {own} from '../../../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {playwrightServerConfig} from '../browser/server.mjs';
+import {createBoundBrowserModelPort} from './browser-model-port.mjs';
 const fail=()=>{throw Error('BROWSER_RELAY_REFUSED');};
 const refused=()=>({isError:true,content:[{type:'text',text:'BROWSER_CALL_REFUSED'}]});
 export function createNativeBrowserModelRelay({binding,policy,installation,paths,readable,writable,onDisconnect}){
@@ -17,20 +18,19 @@ export function createNativeBrowserModelRelay({binding,policy,installation,paths
   const q=own(raw,['binding','installation','call','tools']);
   if(bound||readable.destroyed||readable.readableEnded||writable.destroyed||writable.writableEnded||canonicalSha256(q.binding)!==expected||canonicalSha256(q.installation)!==canonicalSha256(installation)||typeof q.call!=='function'||typeof q.tools!=='function')fail();
   bound=true;
+  const model=createBoundBrowserModelPort({binding,policy,tools:q.tools,call:q.call});
   const server=new Server({name:'meri-browser-session',version:'1.0.0'},{capabilities:{tools:{}}});
   const transport=new StdioServerTransport(readable,writable,{maxBufferSize:262144});
   let closed=false;
   const disconnect=()=>{if(!closed){void close().catch(()=>{}).then(()=>Promise.resolve(onDisconnect()).catch(()=>{}));}};
-  async function close(){if(closed)return;closed=true;
+  async function close(){if(closed)return;closed=true;model.close();
    readable.off('end',disconnect);readable.off('close',disconnect);readable.off('error',disconnect);writable.off('error',disconnect);writable.off('close',disconnect);
    await server.close();
   }
   server.onerror=disconnect;
-  server.setRequestHandler(ListToolsRequestSchema,async()=>{
+  server.setRequestHandler(ListToolsRequestSchema,async(_request,extra)=>{
    try{
-   if(closed)fail();const tools=data(await q.tools());
-   if(!Array.isArray(tools)||tools.length>policy.tools.length||tools.some(t=>!policy.tools.includes(t.name))||new Set(tools.map(t=>t.name)).size!==tools.length)fail();
-   return {tools};
+   if(closed)fail();return await model.tools({binding,signal:extra.signal});
    }catch{throw Error('BROWSER_CALL_REFUSED');}
   });
   server.setRequestHandler(CallToolRequestSchema,async(request,extra)=>{
@@ -39,9 +39,8 @@ export function createNativeBrowserModelRelay({binding,policy,installation,paths
     // Preserve client request identity across retries. A reused ID cannot acquire
     // another effect merely by changing its arguments; the existing fence owns it.
     const requestId=canonicalSha256({type:typeof extra.requestId,id:extra.requestId});
-    const result=data(await q.call({requestId,tool:request.params.name,args:request.params.arguments??{},signal:extra.signal}));
-    own(result,['content']);
-    if(closed||extra.signal.aborted||!Array.isArray(result.content)||!result.content.length||result.content.some(x=>Object.keys(x).sort().join(',')!=='text,type'||x.type!=='text'||typeof x.text!=='string')||Buffer.byteLength(JSON.stringify(result))>262144)fail();
+    const result=await model.call({binding,requestId,tool:request.params.name,args:request.params.arguments??{},signal:extra.signal});
+    if(closed||extra.signal.aborted)fail();
     return result;
    }catch{return refused();}
   });

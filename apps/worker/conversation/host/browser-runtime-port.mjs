@@ -10,7 +10,7 @@ import {canonicalSha256,validateShape} from '../../../../packages/contracts/vali
 import {own,data,nativeSignal} from '../../../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {storageMethod} from '../../../artifacts/storage/boundary.mjs';
 import {validateBrowserPolicy} from '../browser/policy.mjs';
-import {validateBrowserInstallation} from '../browser/server.mjs';
+import {validateBrowserInstallation,validateBrowserContextInstallation} from '../browser/server.mjs';
 import {validateSourceScopes} from '../browser/downloads.mjs';
 import {APPROVAL_DEADLINE_MS} from '../browser/permissions.mjs';
 import {browserPaths} from '../browser/workspace.mjs';
@@ -23,11 +23,12 @@ const configuration=()=>fail('BROWSER_HOST_RUNTIME_CONFIGURATION');
 export function createBrowserHostRuntimePort(raw){
  let c,binding,installation,sourceScopes,readPolicy,grant,revoke,waitForExit,decide,ingest,record;
  try{
-  c=own(raw,['binding','cwd','installation','policy','egress','processes','approvals','artifacts','receipts','sourceScopes'],['approvalDeadlineMs','sessions']);
+  c=own(raw,['binding','cwd','installation','policy','egress','processes','approvals','artifacts','receipts','sourceScopes'],['approvalDeadlineMs','sessions','modelTransport']);
   binding=data(c.binding);validateShape('RunBinding',binding);
   if(typeof c.cwd!=='string'||!posix.isAbsolute(c.cwd)||posix.resolve(c.cwd)!==c.cwd||c.cwd.includes('\0')||!c.cwd.endsWith('/'+binding.conversationId)||typeof c.policy!=='function')configuration();
   readPolicy=storageMethod(c,'policy');
-  installation=validateBrowserInstallation(data(c.installation),binding);
+  if(c.modelTransport!==undefined&&c.modelTransport!=='host-owned')configuration();
+  installation=c.modelTransport==='host-owned'?validateBrowserContextInstallation(data(c.installation)):validateBrowserInstallation(data(c.installation),binding);
   grant=storageMethod(c.egress,'grant');revoke=storageMethod(c.egress,'revoke');waitForExit=storageMethod(c.processes,'waitForExit');
   const endpoint=Object.getOwnPropertyDescriptor(c.egress,'endpoint');
   if(!endpoint||!Object.hasOwn(endpoint,'value')||endpoint.value!==installation.egressProxy)configuration();
@@ -45,7 +46,7 @@ export function createBrowserHostRuntimePort(raw){
   if(signal?.aborted)fail('BROWSER_HOST_CANCELLED');return signal;
  };
  return Object.freeze({
-  installation,sourceScopes,
+  installation,sourceScopes,...(c.modelTransport===undefined?{}:{modelTransport:c.modelTransport}),
   ...(c.sessions?{sessions:Object.freeze({async open(request){
    const q=own(request,['binding','policy','deadlineMs','manifest']);assertBinding(q.binding);
    return storageMethod(c.sessions,'open')(q);

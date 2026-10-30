@@ -7,14 +7,16 @@ import {createPinnedBrowserSession} from '../browser/session/connection.mjs';
 import {canonicalSha256} from '../../../../packages/contracts/validate.mjs';
 import {own,data} from '../../../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {validateBrowserPolicy} from '../browser/policy.mjs';
-import {validateBrowserInstallation,playwrightServerConfig} from '../browser/server.mjs';
+import {validateBrowserInstallation,validateBrowserContextInstallation,playwrightServerConfig} from '../browser/server.mjs';
+import {createBoundBrowserModelPort} from './browser-model-port.mjs';
 import {browserPaths} from '../browser/workspace.mjs';
 import {validateSiteWorkflowManifest} from '../browser/site-workflows/manifest.mjs';
 import {prepareCurrentSiteWorkflow} from '../browser/site-workflows/current.mjs';
 import {assertBrowserHandoff} from '../../../../packages/runtime/browser-custody.mjs';
 const fail=code=>{throw Object.assign(Error(code),{code});};
 export function createBrowserSessionHost({binding,cwd,installation,upstream,contexts,relay,modelTransport,controls,current,siteWorkflows,hold,processes,dispose,now,allocation,ownerInstanceId=controls?.ownerInstanceId??randomUUID(),retirement}){
- const installed=validateBrowserInstallation(installation,binding),bound=canonicalSha256(binding),paths=browserPaths(cwd);
+ const hostOwned=modelTransport==='host-owned';
+ const installed=hostOwned?validateBrowserContextInstallation(installation):validateBrowserInstallation(installation,binding),bound=canonicalSha256(binding),paths=browserPaths(cwd);
  if(relay&&modelTransport||!relay&&!modelTransport)fail('BROWSER_CONFIGURATION');
  for(const [port,name]of [[contexts,'create'],...(relay?[[relay,'bind']]:[]),[controls,'bind'],[processes,'waitForExit']])
   if(typeof port?.[name]!=='function')fail('BROWSER_CONFIGURATION');
@@ -24,6 +26,8 @@ export function createBrowserSessionHost({binding,cwd,installation,upstream,cont
   async readAdmission(input){if(!active||typeof activeRelay?.readAdmission!=='function')fail('BROWSER_CUSTODY_UNAVAILABLE');return activeRelay.readAdmission(input);},
   async execute(input){if(!active||typeof activeRelay?.execute!=='function')fail('BROWSER_CUSTODY_UNAVAILABLE');return activeRelay.execute(input);},
   async prepareResume(input){if(!active)fail('BROWSER_CUSTODY_UNAVAILABLE');return active.prepareResume(input);},
+  async readModelTools(input){if(!active)fail('BROWSER_CUSTODY_UNAVAILABLE');return active.readModelTools(input);},
+  async callModelTool(input){if(!active)fail('BROWSER_CUSTODY_UNAVAILABLE');return active.callModelTool(input);},
   async adopt(input,native){if(!adopt)fail('BROWSER_CUSTODY_UNAVAILABLE');return adopt(input,native);},
   async destroy(input){if(!closeOwner)fail('BROWSER_CUSTODY_UNAVAILABLE');return closeOwner(input);},
   async open(raw){
@@ -63,13 +67,19 @@ export function createBrowserSessionHost({binding,cwd,installation,upstream,cont
   };
   const bindRelays=async()=>{
    const ownerRun=run,assertRun=()=>{if(closing||ownerRun!==run)fail('BROWSER_CUSTODY_REFUSED');};
-   const model=runPorts.relay??(await import('./browser-model-relay.mjs')).createNativeBrowserModelRelay({binding:run.binding,policy,installation:runInstallation,paths,
-    ...own(runPorts.modelTransport,['readable','writable']),onDisconnect:()=>custody?undefined:close({trigger:'disconnect'})});
-   modelRelay=await model.bind({binding:run.binding,installation:runInstallation,
+   const modelInput={binding:run.binding,installation:runInstallation,
     async call(input){assertRun();await activate(ownerRun);assertRun();return session.call({...input,requestId:canonicalSha256({binding:ownerRun.binding,requestId:input.requestId})});},
-    async tools(){assertRun();await activate(ownerRun);assertRun();await assertCurrent();return session.tools();}});
+    async tools({signal}={}){assertRun();await activate(ownerRun);assertRun();await assertCurrent(signal);return session.tools({signal});}};
+   if(hostOwned){
+    const model=createBoundBrowserModelPort({binding:run.binding,policy,deadlineMs:run.deadlineMs,now,call:modelInput.call,tools:modelInput.tools});
+    modelRelay=Object.freeze({mcpServers:{},readModelTools:model.tools,callModelTool:model.call,close:model.close});
+   }else{
+    const model=runPorts.relay??(await import('./browser-model-relay.mjs')).createNativeBrowserModelRelay({binding:run.binding,policy,installation:runInstallation,paths,
+     ...own(runPorts.modelTransport,['readable','writable']),onDisconnect:()=>custody?undefined:close({trigger:'disconnect'})});
+    modelRelay=await model.bind(modelInput);
+   }
    if(closing){await modelRelay.close();fail('BROWSER_SESSION_CLOSED');}
-   const expected={meri_browser:playwrightServerConfig(policy,runInstallation,paths)};
+   const expected=hostOwned?{}:{meri_browser:playwrightServerConfig(policy,runInstallation,paths)};
    if(canonicalSha256(modelRelay.mcpServers)!==canonicalSha256(expected)||typeof modelRelay.close!=='function')fail('BROWSER_RELAY_REFUSED');
    // Each target gets a new immutable viewer relay. Even a retained reference
    // to an old control callback cannot read, mutate or destroy its successor.
@@ -99,8 +109,10 @@ export function createBrowserSessionHost({binding,cwd,installation,upstream,cont
    const expected=await bindRelays();
    await assertCurrent();
    if(closing)fail('BROWSER_SESSION_CLOSED');
-   const handle=(expected,snapshot)=>{const ownerRun=run,runBound=canonicalSha256(run.binding),assertRun=()=>{if(ownerRun!==run||closing)fail('BROWSER_CUSTODY_REFUSED');};
+   const handle=(expected,snapshot)=>{const ownerRun=run,runModel=modelRelay,runBound=canonicalSha256(run.binding),assertRun=()=>{if(ownerRun!==run||closing)fail('BROWSER_CUSTODY_REFUSED');};
     return Object.freeze({mcpServers:expected,...(snapshot?{resumeSnapshot:structuredClone(snapshot)}:{}),
+    async readModelTools(input){assertRun();if(!hostOwned)fail('BROWSER_CUSTODY_UNAVAILABLE');return runModel.readModelTools(input);},
+    async callModelTool(input){assertRun();if(!hostOwned)fail('BROWSER_CUSTODY_UNAVAILABLE');return runModel.callModelTool(input);},
     destroy(input){if(ownerRun!==run)fail('BROWSER_CUSTODY_REFUSED');return close(input);},
     async prepareResume({binding:source,custody:expectedCustody,signal}){
      assertRun();if(!retained||!custody||canonicalSha256(source)!==runBound||canonicalSha256(expectedCustody)!==canonicalSha256(custody))fail('BROWSER_CUSTODY_REFUSED');
@@ -153,11 +165,12 @@ export function createBrowserSessionHost({binding,cwd,installation,upstream,cont
      canonicalSha256(next.policy)!==canonicalSha256(policy)||canonicalSha256(next.manifest)!==canonicalSha256(manifest)||
      !Number.isSafeInteger(next.deadlineMs)||next.deadlineMs<=now()||next.deadlineMs>custody.expiresAtMs)fail('BROWSER_CUSTODY_REFUSED');
     const ports=own(native,['installation','controls','retirement','hold'],['relay','modelTransport']);
-    const nextInstallation=validateBrowserInstallation(ports.installation,next.binding);
+    const nextInstallation=hostOwned?validateBrowserContextInstallation(ports.installation):validateBrowserInstallation(ports.installation,next.binding);
     const {launch:oldLaunch,...physical}=installed,{launch:newLaunch,...nextPhysical}=nextInstallation;
     if(canonicalSha256(physical)!==canonicalSha256(nextPhysical)||typeof ports.controls?.bind!=='function'||
      ports.controls.ownerInstanceId!==undefined&&ports.controls.ownerInstanceId!==ownerInstanceId||typeof ports.hold!=='function'||
      ['prepare','wait','retain'].some(k=>typeof ports.retirement?.[k]!=='function')||
+     (ports.modelTransport==='host-owned')!==hostOwned||
      (ports.relay?typeof ports.relay.bind!=='function'||ports.modelTransport:!ports.modelTransport))fail('BROWSER_CONFIGURATION');
     adopting=true;
     try{
