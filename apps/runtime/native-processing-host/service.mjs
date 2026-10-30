@@ -71,6 +71,10 @@ export function createInspectionHandler({authenticate,verifyCustody,openHost,rea
   const track=onActivity===undefined?null:onActivity(controller);
  let activityReleased=false;
  const releaseActivityOnce=()=>{if(activityReleased)return;activityReleased=true;try{track?.();}catch{}};
+ /** The per-operation settlement owner: every close continuation — timely, late or after a bounded timeout — releases
+  * this operation's activity exactly once when the owner is proven closed. */
+ const settleOwner=owner=>cleanupOnce(owner).then(result=>{if(result?.closed===true)releaseActivityOnce();return result;},
+  error=>({closed:false,code:error?.code??'NATIVE_INSPECTION_CLEANUP_UNKNOWN'}));
   let host=null,cleanupUnknown=false,cleanupBase=null;
   const cleanupMs=Number.isSafeInteger(limits.cleanupMs)&&limits.cleanupMs>0?limits.cleanupMs:5000;
   /** ONE cleanup deadline, started when cleanup begins; nested catches never restart it. */
@@ -114,8 +118,7 @@ export function createInspectionHandler({authenticate,verifyCustody,openHost,rea
       authority:granted.currentness,deadlineMs:deadline,signal:life.signal}))
      .then(value=>{
       pendingComplete=true;
-      if(settled){lateCleanup=cleanupOnce(value);
-       lateCleanup.then(result=>{if(result?.closed===true)releaseActivityOnce();},()=>{});}
+      if(settled){lateCleanup=settleOwner(value);}
       else host=value;
       return value;},
       error=>{pendingComplete=true;throw error;});
@@ -125,20 +128,20 @@ export function createInspectionHandler({authenticate,verifyCustody,openHost,rea
      // Wait within ONE cleanup window for setup itself plus its cleanup. A still-pending setup is an unknown owner.
      const target=host;
      if(target!==null){
-      const result=await boundedWait(cleanupOnce(target),cleanupDeadline());
+      const result=await boundedWait(settleOwner(target),cleanupDeadline());
       if(result.settled!==true||result.value?.closed!==true)cleanupUnknown=true;
-      else releaseActivityOnce();
      }else if(lateCleanup!==null){
       const result=await boundedWait(lateCleanup,cleanupDeadline());
       if(result.settled!==true||result.value?.closed!==true)cleanupUnknown=true;
-      else releaseActivityOnce();
-     }else if(setupError?.partialCleanup==='unknown'){
-      cleanupUnknown=true;
-     }else if(!pendingComplete){
-      // The owner is unresolved: report unknown, keep the activity and let the continuation settle it later.
-      cleanupUnknown=true;
-     }else if(setupError?.partialCleanup===undefined){
-      cleanupUnknown=true;
+     }else{
+      // ONE bounded wait for the retained setup to settle and be cleaned up. A proven late unwind releases the activity;
+      // an unresolved or unknown owner keeps the activity and is reported as cleanup unknown.
+      const outcome=await boundedWait(pendingSetup.then(value=>settleOwner(value),error=>({rejected:error})),cleanupDeadline());
+      const value=outcome.settled===true?outcome.value:null;
+      if(value?.closed===true){/* released by settleOwner */}
+      else if(value?.rejected?.partialCleanup==='removed'||value?.rejected?.partialCleanup==='not-created'){
+       releaseActivityOnce();
+      }else cleanupUnknown=true;
      }
      throw setupError;
     }
@@ -159,12 +162,12 @@ export function createInspectionHandler({authenticate,verifyCustody,openHost,rea
     const disposition=await boundedWait(cleanupOnce(host),cleanupDeadline());host=null;
     if(disposition.settled!==true||disposition.value?.closed!==true){cleanupUnknown=true;
      fault('NATIVE_INSPECTION_CLEANUP_UNKNOWN');}
-    releaseActivityOnce();life.check();             // re-check the lifetime after cleanup, before any 200
+    life.check();                                  // re-check the lifetime after cleanup, before any 200
     send(200,uploadInspectionBody({requestId:body.request.requestId,imageDigest:body.request.imageDigest,value:closed}));
    }finally{life.close();}
   }catch(error){
-   if(host!==null){const result=await boundedWait(cleanupOnce(host),cleanupDeadline());host=null;
-    if(result.settled!==true||result.value?.closed!==true)cleanupUnknown=true;else releaseActivityOnce();}
+   if(host!==null){const result=await boundedWait(settleOwner(host),cleanupDeadline());host=null;
+    if(result.settled!==true||result.value?.closed!==true)cleanupUnknown=true;}
    const code=cleanupUnknown?'NATIVE_INSPECTION_CLEANUP_UNKNOWN':
     (typeof error?.code==='string'?error.code:'NATIVE_INSPECTION_UNKNOWN');
    const status=code==='NATIVE_INSPECTION_ROUTE'?404:code==='NATIVE_INSPECTION_TLS'||code==='NATIVE_INSPECTION_PEER'?403:

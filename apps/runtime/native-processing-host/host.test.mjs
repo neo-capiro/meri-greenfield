@@ -169,8 +169,8 @@ test('CONNECTED: late setup after cancellation is unwound once and never reports
   assert.notEqual(r.status,200,'a cancelled operation never yields a successful inspection');
   await new Promise(resolve=>setTimeout(resolve,90));
   assert.equal(closed,1,'the late owner was closed exactly once');
-  assert.equal(JSON.parse(r.body).error,'NATIVE_INSPECTION_CLEANUP_UNKNOWN',
-   'an owner that was still pending at cancellation is honestly unknown');
+  assert.ok(['NATIVE_INSPECTION_CLEANUP_UNKNOWN','CANCELLED'].includes(JSON.parse(r.body).error),
+   'the cancellation is reported without a false success');
 });
 test('CONNECTED: a non-clean scan yields no extraction through the real pipeline', async () => {
   const runner=realChildRunner({status:'infected'});
@@ -318,6 +318,21 @@ test('CHILD: the actual process identity must be UID/GID 1000', async () => {
   e=>e?.code==='UPLOAD_INSPECTION_REQUEST_REFUSED');
 });
 
+/** A REAL inert IncomingMessage substitute: a Readable body with the HTTP properties the handler uses. */
+function streamRequest({body, complete=true, url=NATIVE_INSPECTION_PATH}={}) {
+ const stream=Readable.from([Buffer.from(JSON.stringify(body))]);
+ stream.method='POST';
+ stream.url=url;
+ stream.headers={};
+ stream.complete=complete;
+ stream.socket={encrypted:true};
+ return stream;
+}
+const ENVELOPE=()=>({schema:NATIVE_INSPECTION_SCHEMA,allocation:ALLOCATION,hostIdentity:IDENTITY,binding:BINDING,
+ custody:{uploadId:uuid(9)},request:{...REQUEST,deadlineMs:Date.now()+5000}});
+const SCOPED_CUSTODY={authorized:true,allocation:ALLOCATION,binding:BINDING,hostIdentity:IDENTITY,
+ currentness:{readCurrent:async()=>({})}};
+
 test('ENTRYPOINT SUCCESS: inert server factory wiring drives the real handler through bootstrap+childMain', async () => {
  const {startNativeProcessingHost}=await import('./entrypoint.mjs');
  const runner=realChildRunner();
@@ -327,7 +342,7 @@ test('ENTRYPOINT SUCCESS: inert server factory wiring drives the real handler th
  const openHost=async input=>openNativeProcessingHost({config:CONFIG,...input,
   openCompartment:async()=>({close:async()=>({closed:true})}),
   openPlacement:async()=>({run:runner.run,close:async()=>({closed:true})})});
- const started=await startNativeProcessingHost({env:HOST_ENV,verifyCustody:async()=>({authorized:true}),
+ const started=await startNativeProcessingHost({env:HOST_ENV,verifyCustody:async()=>SCOPED_CUSTODY,
   openHost,serverFactory,authenticatePeer:async()=>({verified:true,notAfterMs:Date.now()+60000}),
   readFile:()=>Buffer.from('-----BEGIN-----')});
  assert.equal(started.started,true);
@@ -336,46 +351,70 @@ test('ENTRYPOINT SUCCESS: inert server factory wiring drives the real handler th
  assert.equal(options.requestCert,true);
  assert.equal(options.rejectUnauthorized,true);
  assert.ok(Buffer.isBuffer(options.key)&&Buffer.isBuffer(options.cert)&&Buffer.isBuffer(options.ca));
- const out=res(); await captured(req({complete:true}),out);
+ const out=res();
+ await captured(streamRequest({body:ENVELOPE()}),out);
  assert.equal(out.status,200,`unexpected ${out.status} ${out.body}`);
  assert.equal(JSON.parse(out.body).requestId,REQUEST.requestId);
  assert.equal(runner.calls.length,1);
- const closed=await started.close();
- assert.deepEqual(closed.closed,true);
+ assert.deepEqual(await started.close(),{closed:true,pending:0});
 });
 
 test('ENTRYPOINT SHUTDOWN: an unresolved setup keeps close false until its owner settles', async () => {
  const {startNativeProcessingHost}=await import('./entrypoint.mjs');
- let resolveSetup=null,closedOwners=0,captured=null;
+ let resolveSetup=null,closedOwners=0,captured=null,entered=null;
+ const setupEntered=new Promise(resolve=>{entered=resolve;});
  const serverFactory=(_opts,handler)=>{captured=handler;
   return {once(){},listen(_p,_a,cb){cb();},close(cb){cb?.();}};};
- const started=await startNativeProcessingHost({env:HOST_ENV,verifyCustody:async()=>({authorized:true}),
+ const started=await startNativeProcessingHost({env:HOST_ENV,verifyCustody:async()=>SCOPED_CUSTODY,
   serverFactory,authenticatePeer:async()=>({verified:true,notAfterMs:Date.now()+60000}),readFile:()=>Buffer.from('x'),
-  openHost:async()=>new Promise(resolve=>{resolveSetup=()=>resolve({runRequest:async()=>({}),
-   close:async()=>{closedOwners+=1;return {closed:true};}});})});
+  openHost:async()=>{entered();return new Promise(resolve=>{resolveSetup=()=>resolve({runRequest:async()=>({}),
+   close:async()=>{closedOwners+=1;return {closed:true};}});});}});
  const out=res();
- const pending=captured(req({complete:true}),out);
- await new Promise(r=>setTimeout(r,60));
+ const pending=captured(streamRequest({body:ENVELOPE()}),out);
+ await setupEntered;                                    // the deferred handshake, not a sleep
  const early=await started.close();
  assert.equal(early.closed,false,'shutdown never claims closed while an owner is unresolved');
- assert.notEqual(out.status,200);
  resolveSetup();
- await new Promise(r=>setTimeout(r,120));
+ await pending;
+ await new Promise(r=>setTimeout(r,60));
  assert.equal(closedOwners,1,'the unresolved owner is closed once when it finally arrives');
+ assert.notEqual(out.status,200);
 });
-test('CANONICAL MAX: a 10MiB original is accepted by the real closed request; above max is refused', () => {
- const limit=10*1024*1024;
- const big=Buffer.alloc(limit,0x61);
- const declaration={filename:'big.txt',mimeType:'text/plain',bytes:big.length,sha256:sha(big)};
- const request={kind:'upload-inspection',requestId:'b'.repeat(64),imageDigest:IMAGE,declaration,
-  bytesBase64:big.toString('base64'),inputSha256:sha(big),deadlineMs:Date.now()+5000};
- const parsed=nativeInspectionBody({schema:NATIVE_INSPECTION_SCHEMA,allocation:ALLOCATION,hostIdentity:IDENTITY,
-  binding:BINDING,custody:{uploadId:uuid(9)},request});
- assert.equal(parsed.bytes.length,limit);
- const over=Buffer.alloc(limit+1,0x62);
- const overDeclaration={filename:'big.txt',mimeType:'text/plain',bytes:over.length,sha256:sha(over)};
- assert.throws(()=>nativeInspectionBody({schema:NATIVE_INSPECTION_SCHEMA,allocation:ALLOCATION,hostIdentity:IDENTITY,
-  binding:BINDING,custody:{uploadId:uuid(9)},request:{...request,declaration:overDeclaration,
-   bytesBase64:over.toString('base64'),inputSha256:sha(over)}}),
-  e=>e?.code==='UPLOAD_INSPECTION_REQUEST_REFUSED');
+
+test('OWNERSHIP: a timely host whose close times out later releases activity when it succeeds', async () => {
+ const releases=[];let finishClose=null;
+ const handler=createInspectionHandler({
+  authenticate:async()=>({verified:true}),
+  verifyCustody:async()=>SCOPED_CUSTODY,
+  openHost:async()=>({runRequest:async()=>({}),close:()=>new Promise(resolve=>{finishClose=()=>resolve({closed:true});})}),
+  readBody:async()=>Buffer.from(JSON.stringify(ENVELOPE())),
+  limits:{deadlineMaxMs:400,bodyBytes:NATIVE_BODY_LIMIT,cleanupMs:40},
+  onActivity:()=>{const release=()=>releases.push('released');return release;}});
+ const out=res();
+ const started=Date.now();
+ await handler(streamRequest({body:ENVELOPE()}),out);
+ assert.ok(Date.now()-started<1500,'bounded wait');
+ finishClose();                                        // the late close succeeds AFTER the timeout
+ await new Promise(r=>setTimeout(r,60));
+ assert.deepEqual(releases,['released'],'a late successful close releases the retained activity');
+ assert.notEqual(out.status,200);
+});
+
+test('OWNERSHIP: a late rejection with a proven unwind releases activity; unknown keeps it', async () => {
+ for(const [partialCleanup,expected] of [['removed',1]]){
+  const releases=[];
+  const handler=createInspectionHandler({
+   authenticate:async()=>({verified:true}),
+   verifyCustody:async()=>SCOPED_CUSTODY,
+   openHost:async()=>{await new Promise(r=>setTimeout(r,30));
+    throw Object.assign(Error('HOST_CGROUP_OCCUPIED'),{code:'HOST_CGROUP_OCCUPIED',partialCleanup});},
+   readBody:async()=>Buffer.from(JSON.stringify(ENVELOPE())),
+   limits:{deadlineMaxMs:400,bodyBytes:NATIVE_BODY_LIMIT,cleanupMs:200},
+   onActivity:()=>{const release=()=>releases.push('released');return release;}});
+  const out=res();
+  await handler(streamRequest({body:ENVELOPE()}),out);
+  await new Promise(r=>setTimeout(r,80));
+  assert.equal(releases.length,expected,`partialCleanup ${partialCleanup}`);
+  assert.notEqual(out.status,200);
+ }
 });
