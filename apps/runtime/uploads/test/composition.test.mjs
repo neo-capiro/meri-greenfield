@@ -2,6 +2,8 @@
  * A5's createUploadInspection consumes. The sandbox probe, tool observation and file reads are injected fixed ports; a
  * mocked admission is not evidence that any control host satisfies the namespace/image prerequisite. */
 import test from 'node:test';
+/** Definition-program port for these inspection-focused cases: no program is executed here. */
+const defs=async()=>({stdout:Buffer.alloc(0),receipt:{exitCode:0}});
 import assert from 'node:assert/strict';
 import {tmpdir} from 'node:os';
 import {createHash} from 'node:crypto';
@@ -31,21 +33,23 @@ test('composition reports every unmet prerequisite and never issues a port it ca
 test('a host that cannot attest the sandbox or observe its tools yields null ports with the exact gap',async()=>{
  const tempRoot=await realpath(tmpdir());
  const unadmitted=await composeUploadNativeHost({configuration:configuration(declarations),tempRoot,
-  run:async(role,options)=>({stdout:Buffer.from(JSON.stringify({...sandboxed(options.cwd),noNewPrivs:0})),receipt:{exitCode:0}})});
+  run:async(role,options)=>({stdout:Buffer.from(JSON.stringify({...sandboxed(options.cwd),noNewPrivs:0})),receipt:{exitCode:0}}),
+  definitionsRun:defs});
  assert.deepEqual(unadmitted.missing,['uploads.native.sandbox']);assert.equal(unadmitted.scanner,null);
  assert.equal(unadmitted.reason,'UPLOAD_SANDBOX_UNQUALIFIED');assert.deepEqual(unadmitted.requirements,['noNewPrivileges']);
  assert.deepEqual(unadmitted.diagnostic.resources,{memoryMax:1073741824,pidsMax:64,cpuMax:50000});
  assert.deepEqual(unadmitted.diagnostic.credentials,{networkIsolated:true,envCount:UPLOAD_CHILD_ENV.length,allowedCount:UPLOAD_CHILD_ENV.length,envAllowed:true,checked:1,readable:0});
  assert.deepEqual(unadmitted.diagnostic.cgroupHost,{resolved:false,levels:0,mountRootIsRoot:false},'a synthetic runner carries no host hierarchy observation');
  const noTools=await composeUploadNativeHost({configuration:configuration(declarations),tempRoot,
-  run:async(role,options)=>role==='probe'?{stdout:Buffer.from(JSON.stringify(sandboxed(options.cwd))),receipt:{exitCode:0}}:Promise.reject(Object.assign(Error('x'),{code:'UPLOAD_SANDBOX_REFUSED'}))});
+  run:async(role,options)=>role==='probe'?{stdout:Buffer.from(JSON.stringify(sandboxed(options.cwd))),receipt:{exitCode:0}}:Promise.reject(Object.assign(Error('x'),{code:'UPLOAD_SANDBOX_REFUSED'})),
+  definitionsRun:defs});
  assert.deepEqual(noTools.missing,['uploads.native.tools']);assert.equal(noTools.scanner,null);
 });
 
 test('a missing scratch root is reported as the workspace failure, not a generic sandbox gap',async()=>{
  const tempRoot=join(tmpdir(),'meri-missing-'+Date.now());
  const host=await composeUploadNativeHost({configuration:configuration(declarations),tempRoot,
-  run:async()=>assert.fail('no probe runs after the workspace cannot be created')});
+  run:async()=>assert.fail('no probe runs after the workspace cannot be created'),definitionsRun:defs});
  assert.deepEqual(host.missing,['uploads.native.sandbox']);assert.equal(host.reason,'ENOENT');
  assert.equal(host.scanner,null);assert.equal(host.requirements,undefined);
 });
@@ -58,7 +62,7 @@ test('an observed host yields the scanner/extractor join A5 binds into createUpl
   return {stdout:Buffer.from('Python 3.13.16\n'),receipt:{exitCode:0}};
  };
  const readFileImpl=async path=>Buffer.from('bin:'+path);
- const host=await composeUploadNativeHost({configuration:configuration(declarations),tempRoot,now,run,readFileImpl,deadlineMs:now()+30000});
+ const host=await composeUploadNativeHost({configuration:configuration(declarations),tempRoot,now,run,definitionsRun:defs,readFileImpl,deadlineMs:now()+30000});
  assert.deepEqual(host.missing,[]);
  assert.equal(typeof host.scanner.scan,'function');assert.equal(typeof host.extractor.extract,'function');
  assert.equal(typeof host.definitions.snapshot,'function');
@@ -92,7 +96,7 @@ test('a non-fresh definitions root is provisioned by ONE serialized owner, not o
  };
  const definitionsRoot=await mkdtemp(join(tempRoot,'meri-defs-serialized-'));
  const host=await composeUploadNativeHost({configuration:configuration({...declarations,definitionsRoot}),
-  tempRoot,now,run,readFileImpl:async path=>Buffer.from('bin:'+path),deadlineMs:now()+30000});
+  tempRoot,now,run,definitionsRun:run,readFileImpl:async path=>Buffer.from('bin:'+path),deadlineMs:now()+30000});
  assert.deepEqual(host.missing,[]);
  const bytes=Buffer.from('payload'),file={sha256:createHash('sha256').update(bytes).digest('hex'),bytes:bytes.length,format:'txt'};
  const scan=()=>host.scanner.scan({file,bytes,limits:{originalBytes:1e7},deadlineMs:now()+30000});
@@ -130,7 +134,7 @@ test('the host owner can drive the SAME bounded refresh owner on its own lifecyc
  };
  const definitionsRoot=await mkdtemp(join(tempRoot,'meri-defs-lifecycle-'));
  const host=await composeUploadNativeHost({configuration:configuration({...declarations,definitionsRoot}),
-  tempRoot,now,run,readFileImpl:async path=>Buffer.from('bin:'+path),deadlineMs:now()+30000});
+  tempRoot,now,run,definitionsRun:run,readFileImpl:async path=>Buffer.from('bin:'+path),deadlineMs:now()+30000});
  assert.deepEqual(host.missing,[]);
  assert.equal(typeof host.provisionDefinitions,'function','the host owner gets a bounded provisioning handle');
  const before=host.definitionsProvisioningState();

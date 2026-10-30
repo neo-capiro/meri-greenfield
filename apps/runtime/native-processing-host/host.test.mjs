@@ -293,7 +293,8 @@ test('LIFECYCLE: a permanently stalled setup is bounded, and a later owner is cl
  let resolveSetup=null,closed=0;
  const stalling=async()=>new Promise(resolve=>{resolveSetup=()=>resolve({runRequest:async()=>({}),
   close:async()=>{closed+=1;return {closed:true};}});});
- const {handler,calls}=handlerFor({runner:realChildRunner(),lateSetup:stalling});
+ const {handler,calls}=handlerFor({runner:realChildRunner(),lateSetup:stalling,
+  requestOverride:{...REQUEST,deadlineMs:Date.now()+400}});
  const out=res(); const began=Date.now();
  await handler(req({complete:true}),out);
  assert.ok(Date.now()-began<5000,'the operation settled instead of waiting for the stalled setup');
@@ -417,4 +418,83 @@ test('OWNERSHIP: a late rejection with a proven unwind releases activity; unknow
   assert.equal(releases.length,expected,`partialCleanup ${partialCleanup}`);
   assert.notEqual(out.status,200);
  }
+});
+
+test('DEFINITION PORTS: inspection roles and definition programs use separate fixed runners', async () => {
+ const {composeUploadNativeHost}=await import('../uploads/composition.mjs');
+ const roleCalls=[],programCalls=[];
+ const run=async(role,options)=>{roleCalls.push(role);return {stdout:Buffer.from('')};};
+ const definitionsRun=async(program,args,options)=>{programCalls.push([program,args]);return {stdout:Buffer.alloc(0)};};
+ const host=await composeUploadNativeHost({configuration:{uploads:{native:{enabled:true,imageDigest:IMAGE}}},
+  run,definitionsRun,now:Date.now,deadlineMs:Date.now()+2000});
+ assert.ok(host);
+ assert.equal(roleCalls.some(role=>role==='sigtool'||role==='freshclam'),false,
+  'definition programs never reach the inspection role port');
+ assert.ok(['sigtool','freshclam'].includes(programCalls[0]?.[0])||programCalls.length===0);
+});
+
+test('DEFINITION OWNER: a pin is held through child closure and prune never runs while pinned', async () => {
+ const {createDefinitionSnapshotOwner}=await import('./definitions-owner.mjs');
+ let released=0,prunes=0,releaseOk=true;
+ const definitions={async snapshot(){return {databaseDirectory:'/run/meri/upload-definitions/snapshots/x',
+   sha256:'a'.repeat(64),reader:{release(){released+=1;return releaseOk;}}};},
+  async prune(){prunes+=1;return {storage:{overBound:false}};}};
+ const owner=createDefinitionSnapshotOwner({definitions});
+ const pin=await owner.pin({deadlineMs:Date.now()+1000});
+ assert.equal(pin.sha256,'a'.repeat(64));
+ const skipped=await owner.pruneIfIdle({});
+ assert.equal(skipped.skipped,true);
+ assert.equal(prunes,0,'no prune while a reader is pinned');
+ releaseOk=false;
+ const unknown=pin.release({completed:false});
+ assert.deepEqual(unknown,{released:false,code:'UPLOAD_DEFINITIONS_RELEASE_UNKNOWN'});
+ assert.equal(owner.active(),1,'an unproven release keeps the pin');
+ releaseOk=true;
+ assert.deepEqual(pin.release({completed:true}),{released:true});
+ assert.equal(owner.active(),0);
+ assert.deepEqual(pin.release({completed:true}),{released:true,already:true});
+});
+
+test('CHILD PIN: the child uses the host-pinned snapshot and refuses a malformed pin', async () => {
+ const {pinnedDefinitions}=await import('./child-cli.mjs');
+ const defs=pinnedDefinitions({databaseDirectory:'/run/meri/upload-definitions/snapshots/x',sha256:'b'.repeat(64)});
+ const snap=await defs.snapshot();
+ assert.equal(snap.sha256,'b'.repeat(64));
+ assert.throws(()=>pinnedDefinitions({databaseDirectory:'relative',sha256:'b'.repeat(64)}),
+  e=>e?.code==='UPLOAD_INSPECTION_REQUEST_REFUSED');
+});
+
+test('CANONICAL MAX: a 10MiB original is accepted; one byte above max is refused', () => {
+ const limit=10*1024*1024;
+ const big=Buffer.alloc(limit,0x61);
+ const declaration={filename:'big.txt',mimeType:'text/plain',bytes:big.length,sha256:sha(big)};
+ const envelope={schema:NATIVE_INSPECTION_SCHEMA,allocation:ALLOCATION,hostIdentity:IDENTITY,binding:BINDING,
+  custody:{uploadId:uuid(9)},request:{kind:'upload-inspection',requestId:'c'.repeat(64),imageDigest:IMAGE,declaration,
+   bytesBase64:big.toString('base64'),inputSha256:sha(big),deadlineMs:Date.now()+5000}};
+ assert.equal(nativeInspectionBody(envelope).bytes.length,limit);
+ const over=Buffer.alloc(limit+1,0x62);
+ const overDeclaration={filename:'big.txt',mimeType:'text/plain',bytes:over.length,sha256:sha(over)};
+ assert.throws(()=>nativeInspectionBody({...envelope,request:{...envelope.request,declaration:overDeclaration,
+  bytesBase64:over.toString('base64'),inputSha256:sha(over)}}),
+  e=>e?.code==='UPLOAD_INSPECTION_REQUEST_REFUSED');
+});
+
+test('OWNERSHIP: a valid result whose cleanup times out then succeeds still releases activity', async () => {
+ const releases=[];let finishClose=null;
+ const runner=realChildRunner();
+ const handler=createInspectionHandler({
+  authenticate:async()=>({verified:true}),
+  verifyCustody:async()=>SCOPED_CUSTODY,
+  openHost:async()=>({runRequest:async()=>runner.run('node',[],{input:Buffer.from(JSON.stringify({settings:RAW_SETTINGS,
+    request:{...REQUEST,deadlineMs:Date.now()+5000},deadlineMs:Date.now()+5000}))}),
+   close:()=>new Promise(resolve=>{finishClose=()=>resolve({closed:true});})}),
+  readBody:async()=>Buffer.from(JSON.stringify(ENVELOPE())),
+  limits:{deadlineMaxMs:2000,bodyBytes:NATIVE_BODY_LIMIT,cleanupMs:30},
+  onActivity:()=>{const release=()=>releases.push('released');return release;}});
+ const out=res();
+ await handler(streamRequest({body:ENVELOPE()}),out);
+ assert.notEqual(out.status,200,'cleanup unknown is not a success');
+ finishClose();
+ await new Promise(r=>setTimeout(r,60));
+ assert.deepEqual(releases,['released'],'the late successful close releases activity');
 });

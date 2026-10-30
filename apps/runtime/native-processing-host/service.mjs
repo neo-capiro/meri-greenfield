@@ -121,7 +121,10 @@ export function createInspectionHandler({authenticate,verifyCustody,openHost,rea
       if(settled){lateCleanup=settleOwner(value);}
       else host=value;
       return value;},
-      error=>{pendingComplete=true;throw error;});
+      error=>{pendingComplete=true;
+       // A proven late unwind releases the retained activity even after the bounded wait has expired; unknown keeps it.
+       if(error?.partialCleanup==='removed'||error?.partialCleanup==='not-created')releaseActivityOnce();
+       throw error;});
     try{await life.run(()=>pendingSetup);}
     catch(setupError){
      settled=true;
@@ -159,7 +162,7 @@ export function createInspectionHandler({authenticate,verifyCustody,openHost,rea
      imageDigest:body.request.imageDigest,fromMs:started,toMs:now()});
     life.check();
     // A success response requires this operation's own cleanup to be proven closed within the bounded window.
-    const disposition=await boundedWait(cleanupOnce(host),cleanupDeadline());host=null;
+    const disposition=await boundedWait(settleOwner(host),cleanupDeadline());host=null;
     if(disposition.settled!==true||disposition.value?.closed!==true){cleanupUnknown=true;
      fault('NATIVE_INSPECTION_CLEANUP_UNKNOWN');}
     life.check();                                  // re-check the lifetime after cleanup, before any 200

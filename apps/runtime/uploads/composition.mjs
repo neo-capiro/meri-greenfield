@@ -27,7 +27,8 @@
  * (`definitions.prune`), which removes only snapshots that owner can PROVE unreferenced and otherwise reports a
  * bounded storage-unavailable state. */
 import {UPLOAD_IMAGE_PATHS,UPLOAD_DEFINITIONS_ROOT,UPLOAD_EXTRACTOR_PATH,uploadFault,qualifyNativeUploadSandbox,runUploadSandbox} from './native-sandbox.mjs';
-import {createSignedDefinitionStore,createSignedDefinitionUpdater,UPLOAD_DEFINITIONS_MAX_AGE_MS} from './native-definitions.mjs';
+import {createSignedDefinitionStore,createSignedDefinitionUpdater,runDefinitionProgram,
+ UPLOAD_DEFINITIONS_MAX_AGE_MS} from './native-definitions.mjs';
 import {createUploadNativeInspection,observeUploadTools} from './native-inspection.mjs';
 
 const fail=()=>{throw uploadFault('UPLOAD_HOST_CONFIGURATION');};
@@ -46,8 +47,12 @@ const REFRESHABLE=new Set(['UPLOAD_DEFINITIONS_UNAVAILABLE','UPLOAD_DEFINITIONS_
 export async function composeUploadNativeHost(options={}){
  const configuration=options.configuration??{},now=options.now??Date.now,processing=options.processing,
   run=processing??options.run??runUploadSandbox,
+  // Definitions use their OWN fixed-program port: sigtool/freshclam are not inspection roles and never reach
+  // runUploadSandbox. A caller may supply the sanitized runner, never an arbitrary program/argv.
+  definitionsRun=options.definitionsRun??runDefinitionProgram,
   tempRoot=options.tempRoot??UPLOAD_IMAGE_PATHS.tempRoot,declared=configuration?.uploads?.native;
- if(typeof now!=='function'||typeof run!=='function'||(processing!==undefined&&typeof processing!=='function'))fail();
+ if(typeof now!=='function'||typeof run!=='function'||typeof definitionsRun!=='function'||
+  (processing!==undefined&&typeof processing!=='function'))fail();
  if(declared===null||typeof declared!=='object'||declared.enabled!==true)return disabled(['uploads.native.enabled']);
  if(!isHash(declared.imageDigest))return disabled(['uploads.native.imageDigest']);
  // Fixed image paths unless the host declares an explicit override; both are read-only bind entries for every child.
@@ -61,8 +66,11 @@ export async function composeUploadNativeHost(options={}){
  let tools;try{tools=await observeUploadTools({run,tempRoot,definitionsRoot,extractorPath,deadlineMs,signal:options.signal,
   ...(options.paths===undefined?{}:{paths:options.paths}),...(options.readFileImpl===undefined?{}:{readFileImpl:options.readFileImpl})});}
  catch{return disabled(['uploads.native.tools']);}
- const definitions=createSignedDefinitionStore({root:definitionsRoot,now,run,...(declared.maxDefinitionsAgeMs===undefined?{}:{maxAgeMs:declared.maxDefinitionsAgeMs})});
- const updater=createSignedDefinitionUpdater({root:definitionsRoot,run,now});
+ // A host-pinned snapshot owner may be supplied: it is used verbatim (no second reader, no updater, no refresh).
+ const pinned=options.definitions;
+ const definitions=pinned??createSignedDefinitionStore({root:definitionsRoot,now,run:definitionsRun,
+  ...(declared.maxDefinitionsAgeMs===undefined?{}:{maxAgeMs:declared.maxDefinitionsAgeMs})});
+ const updater=pinned===undefined?createSignedDefinitionUpdater({root:definitionsRoot,run:definitionsRun,now}):null;
  /** The ONE bounded refresh owner. `inFlight` is what serializes it: a refresh already running is shared with every
   * other caller, so two scans that both observe a stale root cause exactly one provisioning attempt and nothing can
   * provision in parallel. It never loops, and it cannot outlive its caller's deadline — the absolute `deadlineMs` is
@@ -71,6 +79,7 @@ export async function composeUploadNativeHost(options={}){
  const refresh=({signal,deadlineMs:until}={})=>{
   if(inFlight!==null)return inFlight;
   attempted=true;
+  if(updater===null)return Promise.resolve(Object.freeze({skipped:true,reason:'HOST_PINNED_SNAPSHOT'}));
   const attempt=(async()=>{
    await updater.provision({signal,deadlineMs:until});
    provisioned=true;reason=null;

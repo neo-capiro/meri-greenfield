@@ -54,6 +54,15 @@ export const UPLOAD_DEFINITIONS_SCHEMA='meri-upload-definitions/3';
 /** Official ClamAV CDN mirror; the only host freshclam is configured to contact. */
 export const UPLOAD_DEFINITIONS_HOST='database.clamav.net';
 export const UPLOAD_FRESHCLAM='freshclam',UPLOAD_SIGTOOL='sigtool';
+/** The ONLY definition programs and their fixed host paths. A caller can name a program, never a path or argv. */
+export const DEFINITION_PROGRAMS=Object.freeze({[UPLOAD_SIGTOOL]:'/usr/bin/sigtool',[UPLOAD_FRESHCLAM]:'/usr/bin/freshclam'});
+/** Sanitized bounded runner for the signed-definition owner. It refuses any program outside DEFINITION_PROGRAMS and keeps
+ * the existing bounded artifact-process contract (bounded output, deadline, cancellation, owned-group cleanup). */
+export async function runDefinitionProgram(program,args,{cwd='/',input=Buffer.alloc(0),signal,deadlineMs,maxOutput=262144}={}){
+ const exe=DEFINITION_PROGRAMS[program];
+ if(typeof exe!=='string'||!Array.isArray(args)||args.some(a=>typeof a!=='string'||a.includes('\0')))fail('UPLOAD_DEFINITIONS_CONFIGURATION');
+ return runArtifactProcess(exe,args,{cwd,input,signal,deadlineMs,maxOutput});
+}
 export const UPLOAD_DEFINITIONS_MAX_AGE_MS=72*60*60*1000;
 /** Safety floor of the bounded storage disposition: it never reduces the published snapshot count below this, however
  * provably idle the removal candidates are. */

@@ -32,7 +32,16 @@ export function childSettings(raw){
   credentialPaths:Object.freeze([...s.credentialPaths])},image:{digest:s.imageDigest}});
 }
 
-export async function inspectFixed({raw,deadlineMs,signal,config,compose=composeUploadNativeHost,
+/** Verify the exact host-pinned snapshot this child was given: same directory and sha256, nothing re-derived. */
+export function pinnedDefinitions(snapshot){
+ if(snapshot===null||typeof snapshot!=='object')fault('UPLOAD_INSPECTION_REQUEST_REFUSED');
+ if(typeof snapshot.databaseDirectory!=='string'||!snapshot.databaseDirectory.startsWith('/')||
+  typeof snapshot.sha256!=='string'||!/^[a-f0-9]{64}$/u.test(snapshot.sha256))fault('UPLOAD_INSPECTION_REQUEST_REFUSED');
+ return Object.freeze({async snapshot(){return Object.freeze({databaseDirectory:snapshot.databaseDirectory,
+  sha256:snapshot.sha256,reader:{release:()=>true}});},async prune(){return Object.freeze({skipped:true});}});
+}
+
+export async function inspectFixed({raw,deadlineMs,signal,config,definitions,compose=composeUploadNativeHost,
  run=runUploadSandbox,inspectionFactory=createUploadInspection,now=Date.now}){
  if(config===undefined||config.paths===undefined||config.image===undefined)fault('UPLOAD_INSPECTION_REQUEST_REFUSED');
  const childConfig=config;
@@ -43,7 +52,7 @@ export async function inspectFixed({raw,deadlineMs,signal,config,compose=compose
  const host=await compose({configuration:{uploads:{native:{enabled:true,imageDigest:childConfig.image.digest,
    definitionsRoot:childConfig.paths.definitionsRoot,extractorPath:childConfig.paths.extractorPath}}},
   run,tempRoot:childConfig.paths.scratchRoot,deadlineMs:until,signal,now,
-  credentialPaths:childConfig.paths.credentialPaths});
+  credentialPaths:childConfig.paths.credentialPaths,...(definitions===undefined?{}:{definitions})});
  if(host.scanner===null||host.extractor===null)fault('UPLOAD_INSPECTION_RESULT_REFUSED');
  const value=await inspectionFactory({scanner:host.scanner,extractor:host.extractor,now})
   .inspect(request.declaration,bytes,{deadlineMs:until,signal});
