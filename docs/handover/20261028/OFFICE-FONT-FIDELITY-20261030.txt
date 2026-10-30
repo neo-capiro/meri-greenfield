@@ -1,0 +1,27 @@
+Office font preservation — 30 October 2026
+
+Change
+The pinned CODE registry substitutes explicit Liberation Sans/Serif with Arial/Times New Roman on Microsoft-format export. A standard supplemental .xcd registry, dependent on main, clears only those two SubstFontsMS entries. The vendor main.xcd and saved document bytes are not patched. The minimal Dockerfile copies this overlay into the existing vendor registry directory and inherits CODE startup/user/security settings.
+
+Source and artifact
+Runtime fixture base: merged413 5faa8f031d2e9aa7ae0f412a2704b88c70678d89, tree d7976994f8861b0f059477642af9ae3ec76c6069. Existing native Core/PostgreSQL qualification fixture reused without resetting records.
+CODE base: collabora/code@sha256:c7415b963e32eb0986a562583f154d36d3d7a461e1ddfb660a95e87094328acb (26.04.5.2.1 image; native engine reports26.04.5.2).
+Overlay SHA256: 7af99e95c9ab9c8817d74a736b53f21968ed877f6710db5efd2a681727e18b18.
+Local ARM64 package build: docker build --platform linux/arm64 --progress=plain --label codex.task=wave6-capabilities -t wave6-code-font:20261030 infra/office-code (exit0). Local index/image ID sha256:ec63701cf2412fdf3ecc7e4ac3ced58019358caae6620bdb50efaa71d4bd3a58; ARM64 manifest sha256:b2eea3936773fa6bc4fc01bbb6ccb4f048813c3bf3fc73496929353c538baa7a; config sha256:7c381e0a5d7479617c183a4cdad648a3d1d9a66f4bc7df77923f928a1fe08f9c. Inspected linux/arm64 and user1001; extracted overlay exactly matches source. The inspection-only stopped container was removed; reusable image/cache retained. This build is local, unpublished, not a native ARM64 execution/scan receipt.
+
+Native validation
+The exact overlay was loaded by the existing isolated amd64 CODE host and exercised through real headless Chromium, canonical WOPI, native Core draft methods and ordinary-role PostgreSQL16. Identity and artifact SQL/object ports remain scripted.
+Two focused affected files: native edit, Save, authoritative read, exact-byte Publish, parent preservation and replay pass. Original semantic assertions pass, including XLSX font/comment/multilingual text/formulas and PPTX both font names/text/notes/title/slide count.
+Fresh full30-file corpus: 30 native edits/Saves, 30 authoritative exact reads, 30 exact-byte publications and replays pass. Unchanged strict semantic checks:27 PASS,3 DIFFERENCE. The three differences are the existing equivalent escaped-dollar currency format and the two PPTX files losing embedded chart workbooks. No new collateral difference was found. The original corpus remains25 PASS/5 DIFFERENCE and is preserved as historical evidence, not overwritten.
+Four additional no-edit Save/read/Publish roundtrips: both font cases preserve names/content; both chart cases still lose embedded workbooks without any document edit. Before/after native PPTX views show the multilingual and serif text intact, with only the intended title edit in the edited case. No broad visual-equivalence claim.
+
+Evidence
+Task-local work/code-native/font-overlay/: two-case native and semantic results/screenshots.
+Task-local work/code-native/font-corpus/: native-results-all.json, continuous-native-30-results.json, semantic-results.json, noedit-results.json, noedit-semantic-results.json and saved bytes/screenshots. continuous-native-results.json includes the additional four no-edit cases; use the explicitly frozen30-results file for corpus counts.
+Original work/code-native/pg-corpus/ and corpus/inputs/ were preserved. The exact qualification host was stopped and CODE's overlay restored to an inert registry. The vendor main.xcd was never changed by the overlay experiments.
+
+Open chart correction and delivery
+Upstream https://github.com/CollaboraOnline/online/issues/16243 describes the identical embedded-XLSX loss. Its29October fix is https://gerrit.collaboraoffice.com/c/online/+/13516, revision88acbed5df032ec987390749b2845bd3ba626438. It adds native chart embedding import/export; it is not a configuration change. The current CODE image was published23October and predates the fix. The commit itself records a remaining chart-data-update/refresh issue, so retaining workbooks is not full chart fidelity. Native candidate validation must check resolved workbook relationships, untouched formulas/data, intentional chart-data edits and reopen; do not splice old parts into output.
+
+Limits and next owner
+No deployment, provider/model call, production session or ARM64 native acceptance was performed. Release owns exact-image scan, build promotion and serving integration. The browser/editor private-Save plus separate explicit-Publish and full authenticated application acceptance remain open. The font correction closes two material fidelity differences locally, not all Office acceptance.
