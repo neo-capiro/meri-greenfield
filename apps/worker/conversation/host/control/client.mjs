@@ -6,6 +6,8 @@ import {performance} from 'node:perf_hooks';
 import {canonicalSha256} from '../../../../../packages/contracts/validate.mjs';
 import {nativeSignal} from '../../../../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {assertHostAllocation,assertHostRunBinding,assertD005HostIdentity,MAX_HOST_CURRENTNESS_MS} from '../binding.mjs';
+import {assertBrowserHostFacts} from '../../../../../packages/contracts/runtime-0.2/browser-host-facts.mjs';
+import {assertBrowserCustody} from '../../../../../packages/runtime/browser-custody.mjs';
 import {privateAddress,dnsName,fingerprint,tlsBytes,checkedCertificate,MAX_CERT_LIFETIME_MS} from './tls.mjs';
 import {HOST_CONTROL_PATH,HOST_CONTROL_MAX_BYTES,HOST_CONTROL_PURPOSES,
  hostFactsRequest,hostFactsResponse,HOST_FACTS_PATH,HOST_FACTS_WIRE_MAX_BYTES,
@@ -92,7 +94,12 @@ export function createHostCurrentnessClient({allocation,binding,hostIdentity,pur
     localCertificate();
     const request=hostFactsRequest({schema:'meri-host-facts-request/1',allocation:a,binding:b,hostIdentity:i,nonce:nonce()});
     const response=await perform(HOST_FACTS_PATH,request,HOST_FACTS_WIRE_MAX_BYTES,signal);
-    return hostFactsResponse(response,request);
+    const answer=hostFactsResponse(response,request);
+    // A valid envelope nonce is not enough: the DOMAIN payload must validate against the canonical
+    // facts contract for THIS exact binding, and its fresh cutoff must still be in the future.
+    assertBrowserHostFacts(answer.facts,{binding:b});
+    if(answer.currentUntilMs<=now())fail();
+    return answer;
    }catch{fail();}
   },
   /** Borrowed canonical site-workflow resolution. The host receives the resolved manifest only. */
@@ -103,7 +110,14 @@ export function createHostCurrentnessClient({allocation,binding,hostIdentity,pur
     localCertificate();
     const request=hostWorkflowRequest({schema:'meri-host-workflow-request/1',allocation:a,binding:b,hostIdentity:i,nonce:nonce()});
     const response=await perform(HOST_WORKFLOW_PATH,request,HOST_WORKFLOW_WIRE_MAX_BYTES,signal);
-    return hostWorkflowResponse(response,request);
+    const answer=hostWorkflowResponse(response,request);
+    // Canonical shape of the resolved workflow payload; the admission owner validates its content.
+    const workflow=answer.workflow;
+    if(!workflow||typeof workflow!=='object'||Array.isArray(workflow)||typeof workflow.enabled!=='boolean'||
+     typeof workflow.manifestSha256!=='string'||!/^[0-9a-f]{64}$/u.test(workflow.manifestSha256)||
+     !workflow.manifest||typeof workflow.manifest!=='object'||Array.isArray(workflow.manifest))fail();
+    if(answer.currentUntilMs<=now())fail();
+    return answer;
    }catch{fail();}
   },
   /** Read-only verification that this host's takeover is ALREADY applied and still unreturned. */
@@ -114,7 +128,11 @@ export function createHostCurrentnessClient({allocation,binding,hostIdentity,pur
     localCertificate();
     const request=hostHoldRequest({schema:'meri-host-hold-request/1',allocation:a,binding:b,hostIdentity:i,nonce:nonce()});
     const response=await perform(HOST_HOLD_PATH,request,HOST_HOLD_WIRE_MAX_BYTES,signal);
-    return hostHoldResponse(response,request);
+    const answer=hostHoldResponse(response,request);
+    // The verified custody is bound to this exact run and must still be live on this clock.
+    const custody=assertBrowserCustody(answer.custody,{binding:b});
+    if(custody.expiresAtMs<=now()||answer.currentUntilMs<=now())fail();
+    return answer;
    }catch{fail();}
   },
   close(){if(!closed){closed=true;lifetime.abort();}return Object.freeze({closed:true});},
