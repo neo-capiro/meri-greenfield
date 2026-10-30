@@ -50,15 +50,20 @@ export function createPostgresHostCurrentnessStore({transact,readCanonicalRun,ma
     h.client_dns_name!==peerDnsName||h.state!=='active'||ms(h.lease_deadline_ms)!==a.leaseDeadlineMs)fail();
    // This port is supplied by the canonical admitted-run owner, not by the request or a local cache.
    const state=own(data(await readCanonicalRun(client,{allocation:a,binding:b,signal})),
-    ['binding','browserPolicySha256','capabilityPolicySha256','sdkAdmitted','browserAdmitted','bashAdmitted','phase','currentUntilMs'],['browserCustody']);
+    ['binding','browserPolicySha256','capabilityPolicySha256','sdkAdmitted','browserAdmitted','bashAdmitted','phase','currentUntilMs'],['browserCustody','browserSuccessor']);
    const selected=q.purpose==='browser'
     ?{digest:state.browserPolicySha256,admitted:state.browserAdmitted}
     :{digest:state.capabilityPolicySha256,admitted:q.purpose==='sdk'?state.sdkAdmitted:state.bashAdmitted};
-   const held=q.purpose==='browser'&&state.phase==='browser-held';
+   const held=q.purpose==='browser'&&['browser-held','browser-successor'].includes(state.phase);
    if(held){const custody=assertBrowserCustody(state.browserCustody,{binding:b});
     if(custody.hostId!==a.hostId||custody.generation!==a.generation||custody.policySha256!==q.policySha256||
      ms(state.currentUntilMs)>custody.expiresAtMs||state.sdkAdmitted!==false||state.bashAdmitted!==false)fail();
    }
+   if(state.phase==='browser-successor'){
+    const successor=own(state.browserSuccessor,['binding']),target=assertHostRunBinding(a,successor.binding);
+    if(q.purpose!=='browser'||target.actorId!==b.actorId||target.writerFence<=b.writerFence||target.runId===b.runId||
+     target.attemptId===b.attemptId||target.workerId===b.workerId)fail();
+   }else if(state.browserSuccessor!==undefined)fail();
    if(!same(state.binding,b)||selected.digest!==q.policySha256||selected.admitted!==true||
     (!held&&(state.sdkAdmitted!==true||state.phase!=='active')))fail();
    if(signal?.aborted)fail();

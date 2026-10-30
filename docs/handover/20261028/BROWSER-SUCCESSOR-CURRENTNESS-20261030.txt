@@ -1,0 +1,54 @@
+Browser physical-scope successor currentness, 30 October 2026
+
+The browser remains in its original native process/network scope after the old
+SDK query is gone. Its old run binding must not recover SDK or Bash authority.
+This change derives browser-only continued authority through the existing exact
+lifecycle continuation chain to the latest logical run, in the same transaction.
+It adds no table, registry, migration, public request field or new authority.
+
+Interface for canonical host routing owner
+journal.browserCustody.currentHost(client,{binding,scopes,selectedClientId,
+allocation},check). binding is the physical browser's original full RunBinding.
+The caller supplies fresh Core-derived conversation/member/client scopes, a
+validated canonical host allocation and a bounded acknowledged transaction. The
+method takes the existing conversation advisory lock, validates the source APPLIED
+hold and pinned checkpoint, reads the latest canonical run, and validates every
+intervening takeover.end through the existing readExecution owner. Each edge must
+have its exact APPLIED source hold, returned snapshot, same actor, owner instance,
+host generation, policy hash and bounded original expiry. No ordinary resume or
+next-prompt relationship substitutes for this browser custody chain.
+
+An open source hold returns phase browser-held. A current successor returns phase
+browser-successor and browserSuccessor:{binding:logicalTarget}. Both return the
+original physical binding, browserCustody and currentUntilMs, with browserAdmitted
+true, sdkAdmitted false, bashAdmitted false, capabilityPolicySha256 null. Only
+queued/starting/running successors or a valid newer browser takeover hold remain
+eligible. Terminal, ordinary-paused or closed current targets refuse. The existing
+host-currentness store permits these phases only for browser purpose, validates
+the exact resource identity and successor shape, and retains all certificate,
+nonce, policy, expiry and acknowledged-COMMIT checks. Source SDK/Bash stays denied.
+
+Validation
+16 affected browser/lifecycle/native-usage/host-currentness checks passed with no
+skips. Runtime TypeScript passed. PostgreSQL16 ordinary role passed recovery,
+concurrent return replay, exact successor mapping for the physical browser,
+retired-SDK denial flags, target cancellation cutoff, stale/foreign source refusal
+and the unchanged 300->500 cumulative-usage delta of 200 microUSD. Same isolated
+database and existing migrations; no rows or environment reset. Core/native facts
+remain scripted in this database test; no model call or full host acceptance.
+
+A broader next-run-owner probe had five legacy fixture failures (undefined old
+proof.checkpoint and obsolete checkpoint id). All five reproduce on untouched
+merged Runtime403 in the same environment. Preserved local logs:
+outputs/browser-successor-current-final-tests.log and
+outputs/browser-successor-baseline-next-run.log. No assertions or gates were
+weakened, and those five checks are not reported as passing.
+
+Ownership and remaining work
+Parent owns canonical host allocation/schema/control routing/provisioning source
+and its readCanonicalRun composition, using this journal facet and fresh Core
+policy. Capability lane owns this journal facet, host-currentness validator,
+native launcher/composition and browser-session successor attachment. Actual
+successor SDK/broker attachment and exact retained snapshot delivery are still
+open. The new source mapping alone does not claim those runtime effects. Activation,
+deployment and paid/model calls remain held; Release retains deployment ownership.

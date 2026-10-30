@@ -4,7 +4,7 @@ import {assertLifecycleCommand,assertWorkerControl,assertContinuationEnvelope,as
 import {assertWorkspacePaths,assertProposalIntegrity} from '../../../../packages/contracts/validate.mjs';
 import {nativeSignal} from '../../../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {closeSequenceRange} from '../sequence-ranges.mjs';
-import {recordContinuationReservation} from '../next-run-journal.mjs';
+import {recordContinuationReservation,orderedConversationRuns} from '../next-run-journal.mjs';
 import {readTransitionAuthority,requireTransitionAuthority} from './authority.mjs';
 import {createLifecycleReceiptReader} from './receipt-readback.mjs';
 import {isPauseIntent,isHoldIntent,isResumeIntent,continuationMode,assertBrowserCustody,assertStoredBrowserCustody,createBrowserCustodyJournal} from './browser-custody.mjs';
@@ -329,6 +329,12 @@ export function createLifecycleJournal({tx,rowRun,cancelAppend,transitionAuthori
    }
    return {state:r.projection.state,cancelCommitted:!!row};
   });try{if(committed&&onPublished)Promise.resolve(onPublished(committed)).catch(()=>{});}catch{}return result;}
- const browserCustody=createBrowserCustodyJournal({tx,verifyRun,lookup,pins,save,now});
+ async function latestBrowserRun(client,binding,scopes,check){
+  const rows=(await client.query('SELECT * FROM meri_conversations.runs WHERE tenant_id=$1 AND conversation_id=$2 FOR UPDATE',[binding.tenantId,binding.conversationId])).rows.map(rowRun);check();
+  const latest=orderedConversationRuns(rows).at(-1);
+  if(!latest||latest.binding.actorId!==binding.actorId||!same(latest.scopes,scopes))fail('BROWSER_CUSTODY_REFUSED');
+  return verifyRun(client,latest.binding,scopes);
+ }
+ const browserCustody=createBrowserCustodyJournal({tx,verifyRun,lookup,pins,save,now,latestRun:latestBrowserRun,readExecution});
  return Object.freeze({browserCustody,begin,change,get,controls,claim,dispatchChild,settleChild,beginFileCapture,recordFiles,captureSession,readArtifactFile,readSessionCapture,readContinuation,execution,sessionSnapshot,fileSnapshot:(v,check)=>sessionSnapshot(v,check,{files:true}),continuationOrigin,continuation,readTransition,finishTransition,readReceipt,readStopFence,requireTransitionAuthority:()=>requireTransitionAuthority(transitionAuthority),failUncheckpointedHold,cancel:cancelAppend});
 }

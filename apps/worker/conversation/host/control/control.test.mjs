@@ -123,3 +123,13 @@ test('held canonical browser custody cannot reauthorize SDK/Bash or another host
   const other=fixture();other.setState({...state,...change});await assert.rejects(other.read(),code('HOST_CONTROL_UNAVAILABLE'));
  }
 });
+
+
+test('canonical browser successor currentness cannot authorize the retired SDK or a foreign target',async()=>{
+ const custody={schema:'meri-browser-custody/1',binding,controlId:'00000000-0000-4000-8000-000000000010',ownerInstanceId:'00000000-0000-4000-8000-000000000011',hostId:allocation.hostId,generation:allocation.generation,leaseEpoch:1,policySha256,expiresAtMs:now+20000};
+ const target={...binding,runId:'00000000-0000-4000-8000-000000000012',attemptId:'00000000-0000-4000-8000-000000000013',workerId:'00000000-0000-4000-8000-000000000014',writerFence:binding.writerFence+1};
+ const state={binding,browserPolicySha256:policySha256,capabilityPolicySha256:null,sdkAdmitted:false,browserAdmitted:true,bashAdmitted:false,phase:'browser-successor',currentUntilMs:now+20000,browserCustody:custody,browserSuccessor:{binding:target}};
+ const f=fixture();f.setState(state);assert.deepEqual((await f.read()).receipt.binding,binding);
+ for(const purpose of ['sdk','bash'])await assert.rejects(f.read(request('d'.repeat(64),purpose)),code('HOST_CONTROL_UNAVAILABLE'));
+ for(const replacement of [undefined,{binding},{binding:{...target,actorId:'foreign'}},{binding:{...target,attemptId:binding.attemptId}}]){const other=fixture();other.setState({...state,browserSuccessor:replacement});await assert.rejects(other.read(),code('HOST_CONTROL_UNAVAILABLE'));}
+});

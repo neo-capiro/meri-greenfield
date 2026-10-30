@@ -21,10 +21,10 @@ export function assertStoredBrowserCustody(control){
   assertBrowserCustody(h.custody,{binding:control.sourceBinding});assertBrowserReturn(h.returned,h.custody);
  }else if(control.input.intent==='takeover.end'&&control.target)fail('STORE_CORRUPT');
 }
-export function createBrowserCustodyJournal({tx,verifyRun,lookup,pins,save,now}){
- async function held(client,{binding,scopes,selectedClientId},check){
+export function createBrowserCustodyJournal({tx,verifyRun,lookup,pins,save,now,latestRun,readExecution}){
+ async function held(client,{binding,scopes,selectedClientId},check,{closed=false}={}){
   const run=await verifyRun(client,binding,scopes);check();
-  if(!run.hold_control_id||run.projection.state!=='paused'||run.sequence_end!=null)fail('BROWSER_CUSTODY_REFUSED');
+  if(!run.hold_control_id||run.projection.state!=='paused'||(!closed&&run.sequence_end!=null))fail('BROWSER_CUSTODY_REFUSED');
   const control=await lookup(client,binding,run.hold_control_id);check();
   if(!control||control.input.intent!=='takeover.begin'||control.state!=='APPLIED'||!control.browserCustody||!control.proof)fail('BROWSER_CUSTODY_REFUSED');
   pins(control,run,binding,scopes,selectedClientId);assertStoredBrowserCustody(control);
@@ -56,11 +56,42 @@ export function createBrowserCustodyJournal({tx,verifyRun,lookup,pins,save,now})
    const next={...control,browserReturn:receipt};delete next.controlSequence;await save(client,selected.binding,next);check();return receipt;
   });
  }
+ /** The native browser stays in its original physical scope. A retired source
+  * can authorize only that browser, through the existing exact continuation chain
+  * to the current target. It can never reauthorize the source SDK or Bash. */
  async function currentHost(client,{binding,scopes,selectedClientId,allocation},check){
-  const {control}=await held(client,{binding,scopes,selectedClientId},check),custody=control.browserCustody;
+  await client.query('SELECT pg_advisory_xact_lock(hashtextextended($1,0))',[`${binding.tenantId}:${binding.conversationId}`]);check();
+  const {run:source,control}=await held(client,{binding,scopes,selectedClientId},check,{closed:true}),custody=control.browserCustody;
   if(custody.hostId!==allocation.hostId||custody.generation!==allocation.generation)fail('BROWSER_CUSTODY_REFUSED');
-  return data({binding,browserPolicySha256:custody.policySha256,browserAdmitted:true,sdkAdmitted:false,bashAdmitted:false,
-   phase:'browser-held',currentUntilMs:Math.min(custody.expiresAtMs,allocation.leaseDeadlineMs),browserCustody:custody});
+  const latest=await latestRun(client,binding,scopes,check);check();
+  let currentBinding=latest.projection.binding,cutoff=Math.min(custody.expiresAtMs,allocation.leaseDeadlineMs),phase='browser-held';
+  const sameResource=value=>value.ownerInstanceId===custody.ownerInstanceId&&value.hostId===custody.hostId&&
+   value.generation===custody.generation&&value.policySha256===custody.policySha256&&value.expiresAtMs<=custody.expiresAtMs;
+  if(!same(currentBinding,binding)){
+   if(source.sequence_end==null||latest.sequence_end!=null||
+    !['queued','starting','running','paused'].includes(latest.projection.state)||
+    latest.projection.policyRevision!==source.projection.policyRevision)fail('BROWSER_CUSTODY_REFUSED');
+   let cursor=currentBinding;
+   while(!same(cursor,binding)){
+    if(cursor.writerFence<=binding.writerFence)fail('BROWSER_CUSTODY_REFUSED');
+    const execution=await readExecution(client,cursor,scopes,selectedClientId,check),handoff=execution?.browserHandoff;check();
+    if(!handoff||!same(handoff.targetBinding,cursor)||!sameResource(handoff.custody))fail('BROWSER_CUSTODY_REFUSED');
+    const previous=handoff.custody.binding;
+    if(previous.tenantId!==binding.tenantId||previous.actorId!==binding.actorId||previous.conversationId!==binding.conversationId||
+     previous.writerFence+1!==cursor.writerFence)fail('BROWSER_CUSTODY_REFUSED');
+    const prior=await held(client,{binding:previous,scopes,selectedClientId},check,{closed:true});
+    if(prior.run.sequence_end==null||!same(prior.control.browserCustody,handoff.custody)||
+     !same(prior.control.browserReturn,handoff.returned))fail('BROWSER_CUSTODY_REFUSED');
+    cutoff=Math.min(cutoff,handoff.custody.expiresAtMs);cursor=previous;check();
+   }
+   if(latest.projection.state==='paused'){
+    const next=await held(client,{binding:currentBinding,scopes,selectedClientId},check);
+    if(!sameResource(next.control.browserCustody))fail('BROWSER_CUSTODY_REFUSED');cutoff=Math.min(cutoff,next.control.browserCustody.expiresAtMs);
+   }
+   phase='browser-successor';
+  }else if(source.sequence_end!=null)fail('BROWSER_CUSTODY_REFUSED');
+  return data({binding,browserPolicySha256:custody.policySha256,capabilityPolicySha256:null,browserAdmitted:true,sdkAdmitted:false,bashAdmitted:false,
+   phase,currentUntilMs:cutoff,browserCustody:custody,...(phase==='browser-successor'?{browserSuccessor:{binding:currentBinding}}:{})});
  }
  return Object.freeze({read,returning,currentHost});
 }
