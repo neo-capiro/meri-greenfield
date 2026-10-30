@@ -22,7 +22,7 @@ export function createApprovalMetadataReadback(configuration){
   try{
    await life.run(()=>servable(subject));life.check();
    const metadata=immutablePayload(await life.run(()=>readMetadata(key,life.check))),record=metadata.record;
-   if(!['document.draft','task.create','task.update','artifact.file','memory.propose'].includes(record.action)||record.proposalId!==v.proposalId||!same(record.binding,binding))throw fault();
+   if(!['document.draft','task.create','task.update','artifact.file','memory.propose','browser.action'].includes(record.action)||record.proposalId!==v.proposalId||!same(record.binding,binding))throw fault();
    const saved=await life.run(()=>readRun(binding,{after:0,limit:1},life.check));let custody;
    if(saved!==null){
     const run=data(saved.run);validateShape('Run',run);
@@ -41,6 +41,8 @@ export function createApprovalMetadataReadback(configuration){
     custody={preparation:{kind:'initial-binding',...initial}};
    }
    await life.run(()=>servable(subject));life.check();
+   // The retained variant stays explicit in metadata.record.action; the closed native response shape is
+   // unchanged, so existing Core verification of this route keeps its exact contract.
    const result=data({schemaVersion:1,commandSha256:metadata.commandSha256,metadata,...custody});
    if(Buffer.byteLength(JSON.stringify(result))>MAX_APPROVAL_METADATA_READBACK_BYTES)throw fault();return result;
   }finally{life.close();}
