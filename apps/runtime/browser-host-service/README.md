@@ -15,6 +15,7 @@ owns the sole SDK query and in-process MCP.
 | `host/browser-operation-host.mjs` | `createBrowserOperationHost` | named model operations against canonical `readRun` facts |
 | `host/browser-viewer-transport.mjs` | `createBrowserViewerHostServer` | pinned mTLS listener carrying viewer + named operations |
 | `host/teardown.mjs` | `createConversationHostTeardown` | browser-only receipt ports exactly `{browser,processes,host}` |
+| `host/composition/run.mjs` | `prepareAdmittedBrowserWorkspace`, `armBrowserAfterWorkspaceReadback` | admitted workspace + exact measured readback before GO (sdk UID/GID are filesystem identities only) |
 
 Two different observation contracts are kept apart: session/run lifecycle uses the browser-scoped observer
 (`sessionProcesses`), final physical teardown uses the host-wide `createHostWideProcessObserver` (`processes`), armed
@@ -28,7 +29,8 @@ consumed. Neither substitutes for the other.
   `…_EGRESS_UNBOUND`, `…_HOST_UNBOUND`, `…_READRUN_UNBOUND`, `…_VIEWER_UNBOUND`, `…_CONFIGURATION`). Supplying
   `processClientFactory`, `runnerQuery`, `modelTransport`, `bash`, provider credentials or `capabilityPolicy` is a
   configuration error, not a feature.
-- `start()` — launches, arms the host-wide observer from the measured leader and mounts the pinned listener. It never
+- `start()` — launches; the pre-exec callback prepares the admitted workspace, verifies the exact measured readback,
+  arms the per-profile observer and then the host-wide observer, all before GO; then mounts the pinned listener. It never
   opens the session facade: the original `createBrowserOperationHost -> prepareBrowserRun` chain alone opens/adopts,
   grants egress and applies the hard activation gate, with the canonical `readRun.port.sessions` bound to this exact
   facade object.
@@ -42,6 +44,9 @@ consumed. Neither substitutes for the other.
   observer. A local close failure never prevents the independent physical attempt; `HOST_TEARDOWN_UNKNOWN` is returned
   as the receipt (UNKNOWN preserved, private state kept) and a local failure surfaces
   `BROWSER_HOST_SERVICE_CLEANUP_UNKNOWN`. Concurrent/ repeated `destroy()` settle once.
+- Terminal triggers are real: the caller's AbortSignal and the canonical allocation/run expiry both call the same
+  final teardown (including during startup). Local settlement is bounded by `localSettleMs`: a stalled start or close
+  becomes UNKNOWN and the independent instance/volume/ENI destroy+readback backstop still runs.
 - Stop is terminal while an acquisition is in flight: every async step re-checks terminal ownership, the late result is
   disposed (or the late listener closed) without publishing, and destroy awaits the pending start before tearing down.
 
@@ -51,8 +56,9 @@ host allocation/host identity, currentness reader, browser policy, browser netwo
 controls binder, session currentness, site workflows, hold, dispose, host-wide process observer (native cgroup ports +
 `verifyConfinement`), cloud `destroy`/`observeAbsent`, canonical `readRun`, context installation + pinned upstream,
 native helper path and browser uid/gid, viewer mTLS material, the hard-held activation record, and the still-UNBOUND
-provisioning LOGIN/protected credential reference. `entrypoint.mjs` derives readiness from the ACTUAL owner objects
-(presence and the composition's own type checks); a list of binding names can never produce `ready:true`, and
+provisioning LOGIN/protected credential reference. `entrypoint.mjs` derives readiness from the ACTUAL owner objects through the canonical validators (host binding,
+browser policy, context installation, workspace ownership, TLS bytes); a list of binding names can never produce
+`ready:true`, and
 `createBrowserHostServiceEntrypoint({inputs})` returns the finite start/stop handles without starting anything.
 
 ## Tested here vs not tested here

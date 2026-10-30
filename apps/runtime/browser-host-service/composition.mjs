@@ -1,29 +1,39 @@
-/** Browser-only host service composition (correction 03).
+/** Browser-only host service composition (correction 04).
  *
  * One `hostMode:'browser-only'` allocation. No SDK query, process factory, model proxy, provider credential or Bash
  * process: the canonical AgentCore runtime owns the sole SDK query and in-process MCP.
  *
- * Real owners composed (imported): createBrowserOnlyHostLauncher, createConfinedContextPort,
- * createBrowserSessionHost(modelTransport:'host-owned'), createBrowserOperationHost, createBrowserViewerHostServer,
- * createConversationHostTeardown.
+ * Real owners imported here:
+ *   host/launcher/supervisor.mjs        createBrowserOnlyHostLauncher
+ *   host/composition/run.mjs            prepareAdmittedBrowserWorkspace, armBrowserAfterWorkspaceReadback
+ *   host/launcher/context-port.mjs      createConfinedContextPort
+ *   host/browser-session-host.mjs       createBrowserSessionHost (modelTransport:'host-owned')
+ *   host/browser-operation-host.mjs     createBrowserOperationHost (original prepareBrowserRun owns open/adopt)
+ *   host/browser-viewer-transport.mjs   createBrowserViewerHostServer (named operations on the pinned listener)
+ *   host/teardown.mjs                   createConversationHostTeardown (browser-only ports only)
+ *   host/binding.mjs, browser/policy.mjs, browser/server.mjs, host/control/tls.mjs  for pre-effect validation
  *
- * Ownership rules enforced here:
- *  - the ORIGINAL browser operation preparation (createBrowserOperationHost -> prepareBrowserRun) alone opens/adopts
- *    the session, grants egress and applies the hard activation gate; this service never opens the facade;
- *  - session/run lifecycle observation uses the browser-scoped observer (`sessionProcesses`); final physical teardown
- *    uses the host-wide `browser-host-descendants` observer (`processes`). They are different contracts;
- *  - every terminal path (startup failure, abort/expiry, explicit stop) closes the owned local resources first and then
- *    runs the canonical teardown once, so recursive-absence observation never precedes stopping our own child, and a
- *    local failure never prevents the independent instance/root-volume/ENI destruction attempt;
- *  - stop is terminal: async acquisitions re-check terminal ownership and dispose late results without publishing them.
+ * Lifetime rules:
+ *  - the pre-exec callback prepares the admitted workspace, verifies the exact measured readback, then arms the
+ *    per-profile browser observer and the host-wide observer BEFORE GO;
+ *  - the real input AbortSignal and the canonical allocation/run expiry both terminate the service through the same
+ *    canonical final teardown, including during startup;
+ *  - local settlement is bounded: a stalled start or close becomes explicit UNKNOWN after a finite owned phase, and the
+ *    independent instance/root-volume/ENI destroy+readback backstop still runs;
+ *  - stop is terminal; late results are disposed without publishing or reviving the listener.
  */
 import {createBrowserOnlyHostLauncher} from '../../worker/conversation/host/launcher/supervisor.mjs';
+import {prepareAdmittedBrowserWorkspace, armBrowserAfterWorkspaceReadback} from '../../worker/conversation/host/composition/run.mjs';
 import {createConfinedContextPort} from '../../worker/conversation/host/launcher/context-port.mjs';
 import {createBrowserSessionHost} from '../../worker/conversation/host/browser-session-host.mjs';
 import {createBrowserOperationHost} from '../../worker/conversation/host/browser-operation-host.mjs';
 import {createBrowserViewerHostServer} from '../../worker/conversation/host/browser-viewer-transport.mjs';
 import {createConversationHostTeardown} from '../../worker/conversation/host/teardown.mjs';
 import {browserPaths} from '../../worker/conversation/browser/workspace.mjs';
+import {assertHostAllocation, assertHostRunBinding, assertD005HostIdentity} from '../../worker/conversation/host/binding.mjs';
+import {validateBrowserPolicy} from '../../worker/conversation/browser/policy.mjs';
+import {validateBrowserContextInstallation} from '../../worker/conversation/browser/server.mjs';
+import {privateAddress, dnsName, fingerprint, tlsBytes, checkedCertificate} from '../../worker/conversation/host/control/tls.mjs';
 
 const fail = code => {
   throw Object.assign(new Error(code), {code});
@@ -33,11 +43,13 @@ const FORBIDDEN = ['processClientFactory', 'runnerQuery', 'createPreparedRunnerQ
   'bashRuntimeFacts', 'providerCredentials', 'modelProxy', 'agentcoreClient', 'capabilityPolicy'];
 
 const REQUIRED = ['allocation', 'binding', 'hostIdentity', 'cwd', 'deadlineMs', 'policy', 'installation', 'upstream',
-  'controls', 'current', 'siteWorkflows', 'hold', 'sessionProcesses', 'processes', 'host', 'browser', 'browserNetwork',
-  'authority', 'helperPath', 'browserUid', 'browserGid', 'readRun', 'viewer'];
+  'controls', 'current', 'siteWorkflows', 'hold', 'dispose', 'browserClient', 'maxFreshMs', 'workspaceOwnership',
+  'sessionProcesses', 'processes', 'host', 'browser', 'browserNetwork', 'authority', 'helperPath', 'browserUid',
+  'browserGid', 'readRun', 'viewer'];
 
-export const BROWSER_ONLY_REQUIRED_INPUTS=Object.freeze([...REQUIRED]);
-export const BROWSER_ONLY_FORBIDDEN_INPUTS=Object.freeze([...FORBIDDEN]);
+export const BROWSER_ONLY_REQUIRED_INPUTS = Object.freeze([...REQUIRED]);
+export const BROWSER_ONLY_FORBIDDEN_INPUTS = Object.freeze([...FORBIDDEN]);
+
 export const BROWSER_ONLY_OWNERS = Object.freeze({
   launcher: createBrowserOnlyHostLauncher,
   contextPort: createConfinedContextPort,
@@ -45,54 +57,96 @@ export const BROWSER_ONLY_OWNERS = Object.freeze({
   operationHost: createBrowserOperationHost,
   viewer: createBrowserViewerHostServer,
   teardown: createConversationHostTeardown,
+  prepareWorkspace: prepareAdmittedBrowserWorkspace,
+  armWorkspaceReadback: armBrowserAfterWorkspaceReadback,
 });
 
-/** Validate the browser-only contract before any effect. */
+const uid = value => Number.isSafeInteger(value) && value >= 1000 && value <= 65533;
+
+/** Full pre-effect validation using the canonical validators; returns normalized values. */
 export function assertBrowserOnlyServiceInputs(input) {
   const v = input && typeof input === 'object' ? input : {};
   for (const name of FORBIDDEN) if (v[name] !== undefined) fail('BROWSER_HOST_SERVICE_SDK_UNSUPPORTED');
   for (const name of REQUIRED) if (v[name] === undefined || v[name] === null) fail('BROWSER_HOST_SERVICE_CONFIGURATION');
+  // Placement first, then binding and host identity through the canonical host validators.
   if (v.allocation?.hostMode !== 'browser-only') fail('BROWSER_HOST_SERVICE_PLACEMENT_REFUSED');
+  const allocation = assertHostAllocation(v.allocation);
+  const binding = assertHostRunBinding(allocation, v.binding);
+  const hostIdentity = assertD005HostIdentity(v.hostIdentity, binding, allocation);
   if (!Number.isSafeInteger(v.deadlineMs) || v.deadlineMs < 1) fail('BROWSER_HOST_SERVICE_CONFIGURATION');
-  if (typeof v.current !== 'function' || typeof v.hold !== 'function') fail('BROWSER_HOST_SERVICE_CURRENTNESS_UNBOUND');
+  // Trusted inputs and owner interfaces.
+  if (typeof v.current !== 'function' || typeof v.hold !== 'function' || typeof v.dispose !== 'function') fail('BROWSER_HOST_SERVICE_CURRENTNESS_UNBOUND');
+  if (typeof v.siteWorkflows !== 'object' && typeof v.siteWorkflows !== 'function') fail('BROWSER_HOST_SERVICE_CONFIGURATION');
   if (typeof v.controls?.bind !== 'function') fail('BROWSER_HOST_SERVICE_CONTROLS_UNBOUND');
-  if (typeof v.sessionProcesses?.waitForExit !== 'function') fail('BROWSER_HOST_SERVICE_BROWSER_OBSERVER_UNBOUND');
+  if (typeof v.browserClient?.readCurrent !== 'function' || !Number.isSafeInteger(v.maxFreshMs) || v.maxFreshMs < 1) fail('BROWSER_HOST_SERVICE_CURRENTNESS_UNBOUND');
+  if (typeof v.sessionProcesses?.arm !== 'function' || typeof v.sessionProcesses?.waitForExit !== 'function') fail('BROWSER_HOST_SERVICE_BROWSER_OBSERVER_UNBOUND');
   if (typeof v.processes?.arm !== 'function' || typeof v.processes?.waitForExit !== 'function') fail('BROWSER_HOST_SERVICE_PROCESS_OBSERVER_UNBOUND');
   if (typeof v.browser?.revoke !== 'function' || typeof v.browser?.close !== 'function') fail('BROWSER_HOST_SERVICE_EGRESS_UNBOUND');
   if (typeof v.host?.destroy !== 'function' || typeof v.host?.observeAbsent !== 'function') fail('BROWSER_HOST_SERVICE_HOST_UNBOUND');
   if (typeof v.readRun !== 'function') fail('BROWSER_HOST_SERVICE_READRUN_UNBOUND');
   if (typeof v.authority?.readCurrent !== 'function' || typeof v.authority?.policySha256 !== 'string') fail('BROWSER_HOST_SERVICE_CURRENTNESS_UNBOUND');
-  for (const name of ['bind', 'tls', 'peer']) if (!v.viewer[name]) fail('BROWSER_HOST_SERVICE_VIEWER_UNBOUND');
-  return v;
+  // Policy and context-only installation through their canonical validators.
+  let policy, installation;
+  try { policy = validateBrowserPolicy(v.policy); } catch { fail('BROWSER_HOST_SERVICE_POLICY_REFUSED'); }
+  if (policy.enabled !== true) fail('BROWSER_HOST_SERVICE_POLICY_REFUSED');
+  try { installation = validateBrowserContextInstallation(v.installation); } catch { fail('BROWSER_HOST_SERVICE_INSTALLATION_UNBOUND'); }
+  if (typeof v.upstream?.createConnection !== 'function') fail('BROWSER_HOST_SERVICE_INSTALLATION_UNBOUND');
+  // Workspace ownership IDs are trusted filesystem/readback identities, never SDK launch permission.
+  const ws = v.workspaceOwnership;
+  if (!ws || ![ws.sdkUid, ws.sdkGid, ws.browserUid, ws.browserGid].every(uid)) fail('BROWSER_HOST_SERVICE_WORKSPACE_UNBOUND');
+  if (ws.browserUid !== v.browserUid || ws.browserGid !== v.browserGid) fail('BROWSER_HOST_SERVICE_WORKSPACE_MISMATCH');
+  if (typeof v.helperPath !== 'string' || !v.helperPath.startsWith('/')) fail('BROWSER_HOST_SERVICE_CONFIGURATION');
+  // Real viewer TLS material with the canonical helpers.
+  const viewer = v.viewer ?? {};
+  const address = privateAddress(viewer.bind?.address);
+  const port = viewer.bind?.port;
+  if (!Number.isSafeInteger(port) || port < 1 || port > 65535) fail('BROWSER_HOST_SERVICE_VIEWER_UNBOUND');
+  const serverName = dnsName(viewer.tls?.serverName);
+  const peerName = dnsName(viewer.peer?.name);
+  const peerFingerprint = fingerprint(viewer.peer?.fingerprintSha256);
+  const cert = tlsBytes(viewer.tls?.cert);
+  tlsBytes(viewer.tls?.key);
+  tlsBytes(viewer.tls?.clientCa);
+  checkedCertificate(cert, {name: serverName, nowMs: (v.now ?? Date.now)()});
+  return {v, allocation, binding, hostIdentity, policy, installation, viewer: {bind: {address, port}, tls: viewer.tls, peer: {name: peerName, fingerprintSha256: peerFingerprint}}};
 }
 
+const within = async (work, ms) => {
+  let timer;
+  const timeout = new Promise(resolve => { timer = setTimeout(() => resolve({timedOut: true}), ms); timer.unref?.(); });
+  try { return await Promise.race([Promise.resolve().then(work).then(value => ({value}), error => ({error})), timeout]); }
+  finally { clearTimeout(timer); }
+};
+
 export function composeBrowserOnlyHostService(input, dependencies = {}) {
-  const v = assertBrowserOnlyServiceInputs(input);
+  const {v, allocation, binding, hostIdentity, policy, installation, viewer: viewerConfig} = assertBrowserOnlyServiceInputs(input);
   const owners = {...BROWSER_ONLY_OWNERS, ...dependencies};
   const now = v.now ?? Date.now;
   const paths = browserPaths(v.cwd);
+  const localSettleMs = v.localSettleMs ?? 5000;
+  if (!Number.isSafeInteger(localSettleMs) || localSettleMs < 1 || localSettleMs > 120000) fail('BROWSER_HOST_SERVICE_CONFIGURATION');
   const teardown = owners.teardown({
-    allocation: v.allocation, binding: v.binding, hostIdentity: v.hostIdentity, cwd: v.cwd,
-    browserPolicySha256: v.authority.policySha256,
+    allocation, binding, hostIdentity, cwd: v.cwd, browserPolicySha256: v.authority.policySha256,
     ports: {browser: v.browser, processes: v.processes, host: v.host}, now,
   });
 
   let launch, contextPort, sessionHost, operationHost, viewer;
   let starting, started = false, tearingDown = false, destroyed, retained = false, armed = false;
-
-  /** Terminal ownership, re-checked after every async acquisition. */
+  const listeners = [];
   const live = () => !tearingDown && destroyed === undefined;
 
   const closeLocal = async () => {
     const problems = [];
     for (const resource of [viewer, contextPort, launch]) {
       if (!resource) continue;
-      try { await resource.close(); } catch (error) { problems.push(error); }
+      const result = await within(() => resource.close(), localSettleMs);
+      if (result.timedOut) problems.push(Object.assign(Error('BROWSER_HOST_SERVICE_LOCAL_CLOSE_TIMEOUT'), {code: 'BROWSER_HOST_SERVICE_LOCAL_CLOSE_TIMEOUT'}));
+      else if (result.error) problems.push(result.error);
     }
     return problems;
   };
 
-  /** Canonical owned final path: stop admission + owned children, then one teardown, then retire the observer. */
+  /** Canonical owned final path: bounded local stop, one teardown, then retire both observers if obtained. */
   const finalTeardown = async reason => {
     const problems = await closeLocal();
     let receipt;
@@ -101,8 +155,13 @@ export function composeBrowserOnlyHostService(input, dependencies = {}) {
       if (error?.code === 'HOST_TEARDOWN_UNKNOWN' && error.receipt) receipt = error.receipt;
       else problems.push(error);
     }
-    // The host-wide observer is retained until its absence proof has been produced above.
-    try { await v.processes.close?.(); } catch (error) { problems.push(error); }
+    for (const release of listeners.splice(0)) { try { release(); } catch { /* ignore */ } }
+    for (const observer of [v.processes, v.sessionProcesses]) {
+      if (typeof observer?.close !== 'function') continue;
+      const result = await within(() => observer.close(), localSettleMs);
+      if (result.timedOut) problems.push(Object.assign(Error('BROWSER_HOST_SERVICE_OBSERVER_CLOSE_TIMEOUT'), {code: 'BROWSER_HOST_SERVICE_OBSERVER_CLOSE_TIMEOUT'}));
+      else if (result.error) problems.push(result.error);
+    }
     return {receipt, problems};
   };
 
@@ -111,16 +170,13 @@ export function composeBrowserOnlyHostService(input, dependencies = {}) {
     get sessions() { return sessionHost; },
     get operations() { return operationHost; },
     get started() { return started; },
-    /** Source-run completion: retained for takeover, never a physical teardown. */
     sourceRunSettled() {
       if (!started) fail('BROWSER_HOST_SERVICE_NOT_STARTED');
       retained = true;
       return Object.freeze({sourceSettled: true, retained: true});
     },
-    /** Abort/expiry/currentness loss: same owned final path as an explicit stop. */
-    async abort(reason = 'revoked') {
-      return this.destroy({reason});
-    },
+    /** Explicit terminal trigger (used by tests and by owners that can only call a method). */
+    async abort(reason = 'revoked') { return this.destroy({reason}); },
     async start() {
       if (!live()) fail('BROWSER_HOST_SERVICE_TORN_DOWN');
       if (started) fail('BROWSER_HOST_SERVICE_STARTED');
@@ -128,11 +184,27 @@ export function composeBrowserOnlyHostService(input, dependencies = {}) {
       starting = (async () => {
         try {
           launch = owners.launcher({
-            allocation: v.allocation, binding: v.binding, hostIdentity: v.hostIdentity,
+            allocation, binding, hostIdentity,
             helperPath: v.helperPath, browserNetwork: v.browserNetwork, authority: v.authority,
             browserUid: v.browserUid, browserGid: v.browserGid,
             onBrowserPrepared: async ({leaderPid, kind}) => {
               if (kind !== 'browser' || armed) fail('BROWSER_HOST_SERVICE_PROCESS_ARM_REFUSED');
+              // 1) admitted workspace after a browser-purpose currentness read, 2) exact measured readback + per-profile
+              //    arm, 3) host-wide arm — all before GO.
+              const preparedWorkspace = await owners.prepareWorkspace({
+                allocation, binding, cwd: v.cwd, paths, browserClient: v.browserClient,
+                policySha256: v.authority.policySha256, maxFreshMs: v.maxFreshMs, now, signal: v.signal,
+                sdkUid: v.workspaceOwnership.sdkUid, sdkGid: v.workspaceOwnership.sdkGid,
+                browserUid: v.browserUid, browserGid: v.browserGid,
+                ...(v.prepareBrowserWorkspace === undefined ? {} : {prepare: v.prepareBrowserWorkspace}),
+              });
+              await owners.armWorkspaceReadback({
+                allocation, binding, hostIdentity, cwd: v.cwd, paths,
+                browserUid: v.browserUid, browserGid: v.browserGid,
+                sdkUid: v.workspaceOwnership.sdkUid, sdkGid: v.workspaceOwnership.sdkGid,
+                leaderPid, browserObserver: v.sessionProcesses, preparedWorkspace,
+                ...(v.readWorkspace === undefined ? {} : {readWorkspace: v.readWorkspace}), now,
+              });
               const receipt = await v.processes.arm({browserLeaderPid: leaderPid});
               if (receipt?.armed !== true) fail('BROWSER_HOST_SERVICE_PROCESS_ARM_REFUSED');
               armed = true;
@@ -142,18 +214,17 @@ export function composeBrowserOnlyHostService(input, dependencies = {}) {
             now,
           });
           if (!live()) fail('BROWSER_HOST_SERVICE_TORN_DOWN');
-          const native = await launch.prepareBrowserContext({policy: v.policy, installation: v.installation, paths});
-          if (!live()) { await launch.close?.(); fail('BROWSER_HOST_SERVICE_TORN_DOWN'); }
-          contextPort = owners.contextPort({native, binding: v.binding, policy: v.policy, installation: v.installation, paths, signal: v.signal, now});
-          if (!live()) { await contextPort.close?.(); fail('BROWSER_HOST_SERVICE_TORN_DOWN'); }
+          const native = await launch.prepareBrowserContext({policy, installation, paths});
+          if (!live()) { await within(() => launch.close(), localSettleMs); fail('BROWSER_HOST_SERVICE_TORN_DOWN'); }
+          contextPort = owners.contextPort({native, binding, policy, installation, paths, signal: v.signal, now});
+          if (!live()) { await within(() => contextPort.close?.(), localSettleMs); fail('BROWSER_HOST_SERVICE_TORN_DOWN'); }
           sessionHost = owners.sessionHost({
-            allocation: v.allocation, binding: v.binding, cwd: v.cwd, installation: v.installation,
+            allocation, binding, cwd: v.cwd, installation,
             upstream: v.upstream, contexts: contextPort, modelTransport: 'host-owned',
             controls: v.controls, current: v.current, siteWorkflows: v.siteWorkflows, hold: v.hold,
             processes: v.sessionProcesses, dispose: v.dispose, now,
           });
           if (!live()) fail('BROWSER_HOST_SERVICE_TORN_DOWN');
-          // The original preparation chain owns session.open/adopt; bind the canonical port to this exact facade.
           const readRun = async request => {
             if (!live()) fail('BROWSER_HOST_SERVICE_TORN_DOWN');
             const facts = await v.readRun(request);
@@ -161,23 +232,20 @@ export function composeBrowserOnlyHostService(input, dependencies = {}) {
             if (!live()) fail('BROWSER_HOST_SERVICE_TORN_DOWN');
             return Object.freeze({...facts, port: Object.freeze({...facts.port, sessions: sessionHost})});
           };
-          operationHost = owners.operationHost({binding: v.binding, readRun, sessions: sessionHost, now});
+          operationHost = owners.operationHost({binding, readRun, sessions: sessionHost, now});
           if (!live()) fail('BROWSER_HOST_SERVICE_TORN_DOWN');
           viewer = owners.viewer({
-            bind: v.viewer.bind, tls: v.viewer.tls, peer: v.viewer.peer,
+            bind: viewerConfig.bind, tls: viewerConfig.tls, peer: viewerConfig.peer,
             relay: sessionHost, custodyOwner: sessionHost, operationOwner: operationHost,
             now, ...(v.viewer.requestMs === undefined ? {} : {requestMs: v.viewer.requestMs}),
           });
-          if (!live()) { await viewer.close?.(); fail('BROWSER_HOST_SERVICE_TORN_DOWN'); }
+          if (!live()) { await within(() => viewer.close?.(), localSettleMs); fail('BROWSER_HOST_SERVICE_TORN_DOWN'); }
           const address = await viewer.start();
           if (!live()) fail('BROWSER_HOST_SERVICE_TORN_DOWN');
           started = true;
           return Object.freeze({started: true, address, ownerInstanceId: sessionHost.ownerInstanceId});
         } catch (error) {
-          if (error?.code === 'BROWSER_HOST_SERVICE_TORN_DOWN') {
-            // The terminal owner (destroy) awaits this promise and disposes exactly once; publish nothing here.
-            throw error;
-          }
+          if (error?.code === 'BROWSER_HOST_SERVICE_TORN_DOWN') throw error;
           const {problems} = await finalTeardown('failed');
           if (problems.length) fail('BROWSER_HOST_SERVICE_CLEANUP_UNKNOWN');
           throw error;
@@ -190,17 +258,36 @@ export function composeBrowserOnlyHostService(input, dependencies = {}) {
       if (tearingDown) return destroyed;
       tearingDown = true;
       const pending = starting;
+      const settledProblems = [];
       destroyed = (async () => {
-        // Settle any in-flight acquisition first: its terminal checks dispose late results and never publish.
-        if (pending) await pending.catch(() => {});
-        const {receipt, problems} = await finalTeardown(reason);
-        if (problems.length) {
-          throw Object.assign(new Error('BROWSER_HOST_SERVICE_CLEANUP_UNKNOWN', {cause: problems}), {code: 'BROWSER_HOST_SERVICE_CLEANUP_UNKNOWN'});
+        // A stalled acquisition may not block the physical backstop: bounded terminal settlement.
+        if (pending) {
+          const settled = await within(() => pending.catch(() => undefined), localSettleMs);
+          if (settled.timedOut) settledProblems.push(Object.assign(Error('BROWSER_HOST_SERVICE_START_SETTLE_TIMEOUT'), {code: 'BROWSER_HOST_SERVICE_START_SETTLE_TIMEOUT'}));
         }
+        const {receipt, problems} = await finalTeardown(reason);
+        const all = [...settledProblems, ...problems];
+        if (all.length) throw Object.assign(new Error('BROWSER_HOST_SERVICE_CLEANUP_UNKNOWN', {cause: all}), {code: 'BROWSER_HOST_SERVICE_CLEANUP_UNKNOWN'});
         return Object.freeze({...receipt, sourceSettled: retained});
       })();
       return destroyed;
     },
   };
+
+  // Real terminal triggers: the caller's AbortSignal and the canonical allocation/run expiry.
+  if (v.signal !== undefined) {
+    const onAbort = () => { if (!destroyed) void service.destroy({reason: 'revoked'}).catch(() => {}); };
+    v.signal.addEventListener('abort', onAbort, {once: true});
+    listeners.push(() => v.signal.removeEventListener('abort', onAbort));
+    if (v.signal.aborted) queueMicrotask(onAbort);
+  }
+  const expiresAtMs = Math.min(v.deadlineMs, allocation.leaseDeadlineMs);
+  const remaining = expiresAtMs - now();
+  if (Number.isSafeInteger(remaining)) {
+    const onExpiry = () => { if (!destroyed) void service.destroy({reason: 'lease-expired'}).catch(() => {}); };
+    const timer = setTimeout(onExpiry, Math.max(0, remaining));
+    timer.unref?.();
+    listeners.push(() => clearTimeout(timer));
+  }
   return Object.freeze(service);
 }
