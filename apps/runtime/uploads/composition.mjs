@@ -44,6 +44,48 @@ const REFRESHABLE=new Set(['UPLOAD_DEFINITIONS_UNAVAILABLE','UPLOAD_DEFINITIONS_
  * `{scanner,extractor,definitions,admission,describe,provisionDefinitions,missing}`; the host owner binds
  * `scanner`/`extractor` into createUploadInspection and may drive `provisionDefinitions({deadlineMs})` under its own
  * bounded lifecycle. */
+/** ONE reusable signed-definition composition: store + updater + the single serialized refresh owner + provisioning
+ * state. `composeUploadNativeHost` and the native processing host both use THIS function. It never performs inspection
+ * sandbox qualification, and only FRESHNESS conditions are refreshable (corrupt/unsigned/cancelled never fetch). An
+ * injected pinned owner is used verbatim with no updater, so a pinned child can never fetch. */
+export function createUploadDefinitionsComposition({definitionsRoot,now=Date.now,definitionsRun=runDefinitionProgram,
+ maxDefinitionsAgeMs,definitions:pinned}={}){
+ if(typeof definitionsRoot!=='string'||typeof now!=='function'||typeof definitionsRun!=='function')fail();
+ const definitions=pinned??createSignedDefinitionStore({root:definitionsRoot,now,run:definitionsRun,
+  ...(maxDefinitionsAgeMs===undefined?{}:{maxAgeMs:maxDefinitionsAgeMs})});
+ const updater=pinned===undefined?createSignedDefinitionUpdater({root:definitionsRoot,run:definitionsRun,now}):null;
+ let inFlight=null,disposition=null,provisioned=false,attempted=false,reason=null,storageUnavailable=false;
+ const refresh=({signal,deadlineMs:until}={})=>{
+  if(inFlight!==null)return inFlight;
+  attempted=true;
+  if(updater===null)return Promise.resolve(Object.freeze({skipped:true,reason:'HOST_PINNED_SNAPSHOT'}));
+  const attempt=(async()=>{
+   await updater.provision({signal,deadlineMs:until});
+   provisioned=true;reason=null;
+   try{disposition=await definitions.prune({signal});storageUnavailable=disposition.storage.overBound!==false;}
+   catch{disposition=null;}
+  })();
+  const shared=attempt.then(()=>{if(inFlight===shared)inFlight=null;},
+   error=>{if(inFlight===shared)inFlight=null;
+    reason=typeof error?.code==='string'?error.code:'UPLOAD_DEFINITIONS_REFRESH_FAILED';throw error;});
+  inFlight=shared;
+  return shared;
+ };
+ const provisioningState=()=>Object.freeze({attempted,provisioned,reason,storageUnavailable,
+  storageFault:storageUnavailable?'UPLOAD_DEFINITIONS_STORAGE_UNAVAILABLE':null,
+  disposition:disposition===null?null:disposition});
+ const startup=async({signal,deadlineMs}={})=>{
+  try{const probe=await definitions.snapshot({deadlineMs,signal});try{probe.reader.release({completed:true});}catch{}}
+  catch(initial){const code=typeof initial?.code==='string'?initial.code:'UPLOAD_DEFINITIONS_UNAVAILABLE';
+   attempted=true;reason=code;
+   if(REFRESHABLE.has(code)){try{await refresh({signal,deadlineMs});}catch{}}}
+  return provisioningState();
+ };
+ const provisionDefinitions=async({deadlineMs:until,signal}={})=>{await refresh({signal,deadlineMs:until});
+  return provisioningState();};
+ return Object.freeze({definitions,updater,refresh,startup,provisioningState,provisionDefinitions,pinned:pinned!==undefined});
+}
+
 export async function composeUploadNativeHost(options={}){
  const configuration=options.configuration??{},now=options.now??Date.now,processing=options.processing,
   run=processing??options.run??runUploadSandbox,
@@ -67,47 +109,11 @@ export async function composeUploadNativeHost(options={}){
   ...(options.paths===undefined?{}:{paths:options.paths}),...(options.readFileImpl===undefined?{}:{readFileImpl:options.readFileImpl})});}
  catch{return disabled(['uploads.native.tools']);}
  // A host-pinned snapshot owner may be supplied: it is used verbatim (no second reader, no updater, no refresh).
- const pinned=options.definitions;
- const definitions=pinned??createSignedDefinitionStore({root:definitionsRoot,now,run:definitionsRun,
-  ...(declared.maxDefinitionsAgeMs===undefined?{}:{maxAgeMs:declared.maxDefinitionsAgeMs})});
- const updater=pinned===undefined?createSignedDefinitionUpdater({root:definitionsRoot,run:definitionsRun,now}):null;
- /** The ONE bounded refresh owner. `inFlight` is what serializes it: a refresh already running is shared with every
-  * other caller, so two scans that both observe a stale root cause exactly one provisioning attempt and nothing can
-  * provision in parallel. It never loops, and it cannot outlive its caller's deadline — the absolute `deadlineMs` is
-  * passed straight through, so freshclam fails EXPIRED rather than the refresh extending a child's budget. */
- let inFlight=null,disposition=null,provisioned=false,attempted=false,reason=null,storageUnavailable=false;
- const refresh=({signal,deadlineMs:until}={})=>{
-  if(inFlight!==null)return inFlight;
-  attempted=true;
-  if(updater===null)return Promise.resolve(Object.freeze({skipped:true,reason:'HOST_PINNED_SNAPSHOT'}));
-  const attempt=(async()=>{
-   await updater.provision({signal,deadlineMs:until});
-   provisioned=true;reason=null;
-   // Bounded storage disposition on the reader-pin owner, immediately after a publish. A disposition failure never
-   // fails the caller: the definitions are published either way, and an unreclaimable root is reported, not hidden.
-   try{
-    disposition=await definitions.prune({signal});
-    storageUnavailable=disposition.storage.overBound!==false;
-   }catch{disposition=null;}
-  })();
-  const shared=attempt.then(()=>{if(inFlight===shared)inFlight=null;},
-   error=>{if(inFlight===shared)inFlight=null;reason=typeof error?.code==='string'?error.code:'UPLOAD_DEFINITIONS_REFRESH_FAILED';throw error;});
-  inFlight=shared;
-  return shared;
- };
- // Startup probe: a fresh task-local definitions root resolves UNAVAILABLE and an over-age root resolves STALE, so this
- // host makes ONE bounded attempt through the same closure and then re-resolves the next time definitions are needed.
- // A failed attempt changes nothing: the ports are still issued and every scan stays fail-closed, because the store
- // re-verifies the publisher signature at resolve. The probe releases its own reader immediately (it binds no child),
- // so the snapshot it proved is immediately provable-idle for a later disposition.
- try{
-  const probe=await definitions.snapshot({deadlineMs,signal:options.signal});
-  try{probe.reader.release({completed:true});}catch{/* an unreleased probe reader only keeps a snapshot retained */}
- }catch(initial){
-  const code=typeof initial?.code==='string'?initial.code:'UPLOAD_DEFINITIONS_UNAVAILABLE';
-  attempted=true;reason=code;
-  if(REFRESHABLE.has(code)){try{await refresh({signal:options.signal,deadlineMs});}catch{/* reported through `provisioned` */}}
- }
+ const definitionComposition=createUploadDefinitionsComposition({definitionsRoot,now,definitionsRun,
+  ...(declared.maxDefinitionsAgeMs===undefined?{}:{maxDefinitionsAgeMs:declared.maxDefinitionsAgeMs}),
+  ...(options.definitions===undefined?{}:{definitions:options.definitions})});
+ const definitions=definitionComposition.definitions,refresh=definitionComposition.refresh;
+ await definitionComposition.startup({signal:options.signal,deadlineMs});
  const host=createUploadNativeInspection({admission:qualification.admission,tools,definitions,definitionsRoot,
   extractorPath,run,tempRoot,now,refresh});
  const provisioningState=()=>Object.freeze({attempted,provisioned,reason,storageUnavailable,
@@ -120,7 +126,7 @@ export async function composeUploadNativeHost(options={}){
   * straight through, so it can never extend a caller's budget. This is a source-level join only — the production
   * lifecycle wiring stays with the host owner — and every scan remains unavailable until an ACTUAL fresh snapshot
   * resolves. */
- const provisionDefinitions=async({deadlineMs:until,signal}={})=>{await refresh({signal,deadlineMs:until});return provisioningState();};
+ const provisionDefinitions=definitionComposition.provisionDefinitions;
  return Object.freeze({scanner:host.scanner,extractor:host.extractor,definitions,admission:qualification.admission,describe:host.describe,
   provisionDefinitions,
   definitionsProvisioning:provisioningState(),definitionsProvisioningState:provisioningState,missing:Object.freeze([])});

@@ -13,7 +13,9 @@ import {createServer} from 'node:https';
 import {nativeProcessingConfig} from './config.mjs';
 import {createInspectionHandler,NATIVE_INSPECTION_PATH} from './service.mjs';
 import {openNativeProcessingHost} from './bootstrap.mjs';
-import {createSignedDefinitionStore,createSignedDefinitionUpdater,runDefinitionProgram} from '../uploads/native-definitions.mjs';
+import {runDefinitionProgram} from '../uploads/native-definitions.mjs';
+import {createUploadDefinitionsComposition} from '../uploads/composition.mjs';
+import {beginUploadNativeProvisioning} from '../uploads/control-lifecycle.mjs';
 import {createDefinitionSnapshotOwner} from './definitions-owner.mjs';
 import {checkedCertificate,dnsName,fingerprint,privateAddress,sha256Der,tlsBytes} from '../../worker/conversation/host/control/tls.mjs';
 
@@ -26,29 +28,21 @@ export function nativeProcessingReadiness({config,verifyCustody}){
 
 export async function startNativeProcessingHost({env=globalThis.process?.env??{},readFile=readFileSync,
  verifyCustody=undefined,openHost=openNativeProcessingHost,serverFactory=createServer,
- authenticatePeer=undefined,definitionsOwner:injectedOwner}={}){
- const config=nativeProcessingConfig({env});
+ authenticatePeer=undefined,definitionsOwner:injectedOwner,definitionsRun:runDefinitions=runDefinitionProgram,
+ config:configOverride}={}){
+ const config=configOverride??nativeProcessingConfig({env});
  const readiness=nativeProcessingReadiness({config,verifyCustody});
  if(!readiness.ready)return Object.freeze({started:false,readiness});
  const key=tlsBytes(readFile(config.tls.keyPath)),cert=tlsBytes(readFile(config.tls.certPath)),ca=tlsBytes(readFile(config.tls.caPath));
  void ca;
  const active=new Set();
- // ONE host-lifetime definition owner: store (only reader/signature/prune owner), updater and pin accounting are created
- // once, shared by every request. Freshclam provisioning stays outside the child's no-egress network.
- const definitionsStore=createSignedDefinitionStore({root:config.paths.definitionsRoot,now:Date.now,run:runDefinitionProgram});
- const definitionsUpdater=createSignedDefinitionUpdater({root:config.paths.definitionsRoot,run:runDefinitionProgram,now:Date.now});
- const definitionsOwner=injectedOwner===undefined?createDefinitionSnapshotOwner({definitions:definitionsStore}):injectedOwner;
- // ONE serialized provision over the SAME updater/store this host pins from; no second refresh path, no child updater.
- let provisionInFlight=null;
- const provisionDefinitions=({deadlineMs,signal}={})=>{
-  if(provisionInFlight!==null)return provisionInFlight;
-  const attempt=Promise.resolve().then(()=>definitionsUpdater.provision({deadlineMs,signal}));
-  provisionInFlight=attempt.then(value=>{if(provisionInFlight===shared)provisionInFlight=null;return value;},
-   error=>{if(provisionInFlight===shared)provisionInFlight=null;throw error;});
-  const shared=provisionInFlight;
-  return shared;
- };
- const definitionsLifecycle=Object.freeze({provision:provisionDefinitions,pin:args=>definitionsOwner.pin(args),
+ // ONE host-lifetime definition composition: the SAME factored store/updater/serialized refresh the upload host uses,
+ // plus the host pin owner. The child never gets an updater or prune authority.
+ const definitionComposition=createUploadDefinitionsComposition({definitionsRoot:config.paths.definitionsRoot,
+  now:Date.now,definitionsRun:runDefinitions});
+ const definitionsOwner=injectedOwner===undefined?createDefinitionSnapshotOwner({definitions:definitionComposition.definitions}):injectedOwner;
+ const definitionsLifecycle=Object.freeze({provision:definitionComposition.provisionDefinitions,
+  refresh:definitionComposition.refresh,pin:args=>definitionsOwner.pin(args),
   pruneIfIdle:args=>definitionsOwner.pruneIfIdle(args)});
  privateAddress(config.listen.address);dnsName(config.tls.peerSan);
  // The CA is a trust anchor, not a leaf: it is passed to the TLS server as `ca` and must NOT be subjected to the peer
@@ -87,13 +81,23 @@ export async function startNativeProcessingHost({env=globalThis.process?.env??{}
    leaseDeadlineMs:config.allocation.leaseDeadlineMs,peerNotAfterMs:config.tls.peerNotAfterMs},
   onActivity:controller=>{active.add(controller);return()=>active.delete(controller);}});
  const server=serverFactory({key,cert,ca,minVersion:'TLSv1.3',maxVersion:'TLSv1.3',requestCert:true,rejectUnauthorized:true},handler);
+ const shutdownController=new AbortController();
  await new Promise((resolve,reject)=>{server.once('error',reject);server.listen(config.listen.port,config.listen.address,resolve);});
- return Object.freeze({started:true,server,readiness,
+ // The EXISTING bounded provisioning lifecycle, composed (not re-implemented): its handle exposes this host's
+ // definition state and provisioning port. It starts one bounded attempt and never runs on corrupt/unsigned input.
+ const provisioning=beginUploadNativeProvisioning({handle:{inspection:Object.freeze({kind:'native-processing-host',
+   endpoint:NATIVE_INSPECTION_PATH}),remote:false,host:{definitionsProvisioningState:definitionComposition.provisioningState},
+   provisionDefinitions:definitionComposition.provisionDefinitions},
+  configuration:{uploads:{native:{provisionMs:config.limits.deadlineMaxMs}}},signal:shutdownController.signal});
+ return Object.freeze({started:true,server,readiness,definitionComposition,definitionsLifecycle,definitionsOwner,provisioning,
   close:()=>new Promise(resolve=>{
    // Shutdown signals active work to stop first, then closes the listener within one bounded settlement window.
    for(const controller of active){try{controller.abort();}catch{}}
+   shutdownController.abort();                       // the held provisioning attempt is cancelled by the same lifetime
    const timer=setTimeout(()=>resolve({closed:false,code:'NATIVE_PROCESSING_CLEANUP_UNKNOWN'}),Math.max(1,config.limits.deadlineMaxMs));
-   server.close(()=>{clearTimeout(timer);resolve({closed:active.size===0,pending:active.size});});
+   const settledProvisioning=Promise.resolve(provisioning?.completion??null).then(()=>true,()=>false);
+   server.close(async()=>{const provisionClean=await settledProvisioning;clearTimeout(timer);
+    resolve({closed:active.size===0&&provisionClean,pending:active.size});});
   })});
 }
 
