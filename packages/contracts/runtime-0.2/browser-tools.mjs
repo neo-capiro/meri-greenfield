@@ -35,6 +35,18 @@ export function assertBrowserOperationResponse(raw,binding){
  const value=data(own(raw,['binding','result']));validateShape('RunBinding',value.binding);
  if(canonicalSha256(value.binding)!==canonicalSha256(binding)||Buffer.byteLength(JSON.stringify(value))>BROWSER_NATIVE_LIMITS.responseBytes)fail();return value.result;
 }
+export function assertBrowserHookResult(raw,event){
+ const value=data(own(raw,[],['hookSpecificOutput','continue','stopReason']));
+ if(Object.hasOwn(value,'continue')&&value.continue!==false||value.stopReason!==undefined&&(typeof value.stopReason!=='string'||value.stopReason.length>2048))fail();
+ if(value.hookSpecificOutput!==undefined){const h=own(value.hookSpecificOutput,['hookEventName','permissionDecision','permissionDecisionReason']);
+  if(event!=='PreToolUse'||h.hookEventName!==event||!['ask','deny'].includes(h.permissionDecision)||typeof h.permissionDecisionReason!=='string'||h.permissionDecisionReason.length>2048)fail();}
+ return value;
+}
+export function assertBrowserApprovalResult(raw,{input,toolUseId}){
+ const value=data(own(raw,['behavior'],['updatedInput','toolUseID','message']));
+ if(!['allow','deny'].includes(value.behavior)||value.toolUseID!==undefined&&value.toolUseID!==toolUseId||value.message!==undefined&&(typeof value.message!=='string'||value.message.length>2048))fail();
+ if(value.behavior==='allow'&&canonicalSha256(value.updatedInput)!==canonicalSha256(input))fail();return value;
+}
 /** Only a ceiling for named routes. The current-policy owner clamps again to its
  * selected policy and remaining canonical run time before executing an effect. */
 export function browserOperationCeilingMs(operation){
