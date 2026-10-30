@@ -10,6 +10,7 @@ import {RENDERER_PROBE_SCHEMA,RENDERER_CHILD_ENV} from '../../../artifacts/rende
 import {UPLOAD_SANDBOX_REQUIREMENTS,UPLOAD_ROLE_PREFIX,UPLOAD_IMAGE_PATHS,UPLOAD_CHILD_ENV,evaluateUploadSandbox,qualifyNativeUploadSandbox,
  resolveEffectiveCgroup,combineCgroupBounds,parseCgroupPath,parseCgroupMountRoot,readHostCgroup,
  uploadSandboxArguments,uploadScanArguments,uploadExtractArguments,runUploadSandbox} from '../native-sandbox.mjs';
+import {observeProbeCgroup,CGROUP_MOUNT} from '../../../artifacts/renderer-probe-observation.mjs';
 
 const ZERO='0'.repeat(16),DIGEST='sha256:'+'a'.repeat(64),ROOT=UPLOAD_IMAGE_PATHS.tempRoot;
 const sandboxed=(cwd,changes={})=>({schema:RENDERER_PROBE_SCHEMA,platform:'linux',uid:[1000,1000,1000,1000],gid:[1000,1000,1000,1000],noNewPrivs:1,
@@ -190,7 +191,7 @@ test('a host-observed inherited bound qualifies a max child view; no host or a m
  const admitted=await qualifyNativeUploadSandbox({imageDigest:DIGEST,deadlineMs:Date.now()+30000,tempRoot:root,run,
   hostCgroup:{memoryMax:'1073741824',pidsMax:'64',cpuMax:'50000 100000',levels:2,mountRootIsRoot:true}});
  assert.equal(admitted.admitted,true);assert.equal(admitted.admission.sandbox.boundedResources,true);
- assert.equal(admitted.diagnostic,undefined);
+ assert.deepEqual(admitted.diagnostic.resources,{memoryMax:1073741824,pidsMax:64,cpuMax:50000});
  const noHost=await qualifyNativeUploadSandbox({imageDigest:DIGEST,deadlineMs:Date.now()+30000,tempRoot:root,run,hostCgroup:null});
  assert.equal(noHost.admitted,false);assert.deepEqual(noHost.missing,['boundedResources']);
  assert.deepEqual(noHost.diagnostic.cgroupHost,{resolved:false,levels:0,mountRootIsRoot:false});
@@ -313,6 +314,119 @@ test('qualification admits only a complete observation from the identical runner
   run:async()=>Promise.reject(Object.assign(Error('refused'),{code:'UPLOAD_SANDBOX_REFUSED'}))});
  assert.equal(refused.admitted,false);assert.equal(refused.reason,'UPLOAD_SANDBOX_REFUSED');assert.equal(refused.missing.length,8);
  await assert.rejects(()=>qualifyNativeUploadSandbox({imageDigest:'nope',deadlineMs:Date.now()+1,tempRoot:root,run:make({})}),{code:'UPLOAD_QUALIFICATION_CONFIGURATION'});
+});
+
+test('the native measurement clamps its deadline, passes the output cap and binds exact credential paths',async()=>{
+ const root=await realpath(tmpdir());
+ const calls=[];
+ const observation=changes=>Buffer.from(JSON.stringify(sandboxed(ROOT+'/'+UPLOAD_ROLE_PREFIX.probe+'a1b2c3',changes)));
+ const make=(changes,options)=>async(role,opts)=>{calls.push({role,opts,options});return {stdout:observation(changes),receipt:{exitCode:0}};};
+ const start=Date.now();
+ await qualifyNativeUploadSandbox({imageDigest:DIGEST,deadlineMs:start+600000,tempRoot:root,run:make({})});
+ assert.equal(calls[0].opts.maxOutput,65536,'the observation cap reaches the process owner before accumulation');
+ assert.ok(calls[0].opts.deadlineMs<=Date.now()+30000,'a far deadline is clamped to 30 seconds');
+ assert.ok(calls[0].opts.deadlineMs>=start+29000,'the clamp is the 30-second measurement bound, not a shorter one');
+ const tighter=Date.now()+5000;
+ await qualifyNativeUploadSandbox({imageDigest:DIGEST,deadlineMs:tighter,tempRoot:root,run:make({})});
+ assert.ok(calls[1].opts.deadlineMs<=tighter+50,'a tighter incoming deadline stays tighter');
+ // Exact binding: the observation must report the same ordered paths, and a mismatch is refused, not evaluated.
+ const bound={credentialPaths:['/run/meri/core-secret']};
+ const boundRun=async()=>({stdout:observation({}),receipt:{exitCode:0}});
+ const mismatch=await qualifyNativeUploadSandbox({imageDigest:DIGEST,deadlineMs:Date.now()+30000,tempRoot:root,run:boundRun,...bound});
+ assert.equal(mismatch.admitted,false);assert.equal(mismatch.reason,'UPLOAD_PROBE_BINDING_MISMATCH');
+ const matched=await qualifyNativeUploadSandbox({imageDigest:DIGEST,deadlineMs:Date.now()+30000,tempRoot:root,...bound,
+  run:async()=>({stdout:observation({credentialPathsReadable:[{path:'/run/meri/core-secret',readable:false}],inputValid:true}),receipt:{exitCode:0}})});
+ assert.equal(matched.reason,'UPLOAD_SANDBOX_UNQUALIFIED','binding matches; unrelated admission flags still decide');
+ const truncated=await qualifyNativeUploadSandbox({imageDigest:DIGEST,deadlineMs:Date.now()+30000,tempRoot:root,...bound,
+  run:async()=>({stdout:Buffer.from('{"schema":"meri-renderer-sandbox-observation/1"}'),receipt:{exitCode:0}})});
+ assert.equal(truncated.admitted,false);assert.equal(truncated.reason,'UPLOAD_PROBE_BINDING_MISMATCH');
+ // A process failure settles honestly with a bounded, content-free summary.
+ const failed=await qualifyNativeUploadSandbox({imageDigest:DIGEST,deadlineMs:Date.now()+30000,tempRoot:root,
+  run:async()=>{throw Object.assign(Error('cleanup'),{code:'ARTIFACT_CLEANUP_FAILED',receipt:{exitCode:null,signal:'SIGKILL',
+   spawnError:null,stdoutBytes:12,stdoutRetainedBytes:12,stdoutEnded:false,stderrEnded:true,streamErrors:[],groupKillAttempted:true,groupAbsent:false,settlement:'timeout'}});}});
+ assert.equal(failed.admitted,false);assert.equal(failed.reason,'ARTIFACT_CLEANUP_FAILED');
+ assert.deepEqual({groupKillAttempted:failed.process.groupKillAttempted,groupAbsent:failed.process.groupAbsent,settlement:failed.process.settlement},
+  {groupKillAttempted:true,groupAbsent:false,settlement:'timeout'});
+ const text=JSON.stringify(failed);assert.equal(text.includes('cleanup'),false,'no raw error text is emitted');
+});
+
+test('the qualifier keeps identity/mapping refusals and exposes the allowlisted child projection',async()=>{
+ const root=await realpath(tmpdir()),bound={credentialPaths:['/run/meri/core-secret']};
+ const limits={MaxFileSize:{soft:{kind:'max'},hard:{kind:'malformed'}},MaxOpenFiles:null,
+  MaxProcesses:{soft:{kind:'finite',value:64},hard:{kind:'unsupported'}}};
+ const make=cg=>async(role,{cwd,input})=>({stdout:Buffer.from(JSON.stringify(sandboxed(cwd,{cgroup:cg,inputValid:true,processLimits:limits,
+  credentialPathsReadable:JSON.parse(input.toString()).credentialPaths.map(path=>({path,readable:false}))}))),receipt:{exitCode:0}});
+ const host={memoryMax:'1073741824',pidsMax:'64',cpuMax:'50000 100000',levels:2,mountRootIsRoot:true};
+ const changed={memoryMax:null,pidsMax:null,cpuMax:null,levels:0,mountRootIsRoot:false,membershipResolved:false,identityChanged:true,source:'identity-changed'};
+ const refused=await qualifyNativeUploadSandbox({...bound,imageDigest:DIGEST,deadlineMs:Date.now()+30000,tempRoot:root,run:make(changed),hostCgroup:host});
+ assert.equal(refused.admitted,false);assert.equal(refused.reason,'UPLOAD_SANDBOX_UNQUALIFIED');
+ assert.equal(refused.evaluation.sandbox.boundedResources,false);
+ assert.deepEqual(refused.diagnostic.resources,{memoryMax:null,pidsMax:null,cpuMax:null},'a finite host cannot rescue a changed identity');
+ assert.deepEqual(refused.observation.cgroup,{source:'identity-changed',membershipResolved:false,identityChanged:true,levels:0,mountRootIsRoot:false});
+ assert.deepEqual(refused.observation.processLimits,limits);
+ assert.ok(Object.isFrozen(refused.observation));
+ const mapped={...changed,identityChanged:false,source:'mapping-failed'};
+ const failed=await qualifyNativeUploadSandbox({...bound,imageDigest:DIGEST,deadlineMs:Date.now()+30000,tempRoot:root,run:make(mapped),hostCgroup:host});
+ assert.equal(failed.admitted,false);assert.equal(failed.evaluation.sandbox.boundedResources,false);
+ assert.deepEqual(failed.diagnostic.resources,{memoryMax:null,pidsMax:null,cpuMax:null},'a finite host cannot rescue a failed mapping');
+ assert.equal(failed.observation.cgroup.source,'mapping-failed');assert.equal(failed.observation.cgroup.identityChanged,false);
+ const v1={memoryMax:'1073741824',pidsMax:'64',cpuMax:'50000',levels:0,mountRootIsRoot:false,membershipResolved:false,identityChanged:false,source:'v1-fallback'};
+ const stableV1=await qualifyNativeUploadSandbox({...bound,imageDigest:DIGEST,deadlineMs:Date.now()+30000,tempRoot:root,run:make(v1)});
+ assert.equal(stableV1.admitted,true);assert.equal(stableV1.evaluation.sandbox.boundedResources,true,'stable v1 fallback stays valid');
+ assert.equal(stableV1.observation.cgroup.source,'v1-fallback');assert.equal(stableV1.observation.cgroup.identityChanged,false);
+ assert.ok(stableV1.diagnostic,'success carries its resource diagnostic');
+ const v2={memoryMax:'1073741824',pidsMax:'64',cpuMax:'50000 100000',levels:2,mountRootIsRoot:true,membershipResolved:true,identityChanged:false,source:'cgroup2'};
+ const stableV2=await qualifyNativeUploadSandbox({...bound,imageDigest:DIGEST,deadlineMs:Date.now()+30000,tempRoot:root,run:make(v2),hostCgroup:host});
+ assert.equal(stableV2.admitted,true);assert.equal(stableV2.observation.cgroup.membershipResolved,true);
+ assert.equal(stableV2.observation.cgroup.source,'cgroup2');
+ const mount='36 35 0:30 / /sys/fs/cgroup rw - cgroup2 cgroup2 rw\n';
+ const rootFiles={[CGROUP_MOUNT+'/cgroup.controllers']:'',[CGROUP_MOUNT+'/memory.max']:'1073741824',
+  [CGROUP_MOUNT+'/pids.max']:'64',[CGROUP_MOUNT+'/cpu.max']:'50000 100000'};
+ const view=self=>observeProbeCgroup({read:path=>path==='/proc/self/cgroup'?self:
+  (path==='/proc/self/mountinfo'?mount:(rootFiles[path]??null))});
+ for(const [label,self] of [['unreadable',null],['empty',''],['raw-CR-unified','0::/b\r\n'],
+  ['malformed-v1','1:memory:relative\n'],['ambiguous-unified','0::/b\n0::/c\n'],
+  ['contradictory-v1','1:memory:/a\n1:memory:/b\n'],['cross-hierarchy-v1','1:memory:/a\n2:memory:/b\n']]){
+  const refused=await qualifyNativeUploadSandbox({...bound,imageDigest:DIGEST,deadlineMs:Date.now()+30000,tempRoot:root,
+   run:make(view(self)),hostCgroup:host});
+  assert.equal(refused.admitted,false,`${label} must not be admitted`);
+  assert.equal(refused.evaluation.sandbox.boundedResources,false,`${label} cannot use finite root/host values`);
+  assert.deepEqual(refused.diagnostic.resources,{memoryMax:null,pidsMax:null,cpuMax:null});
+  assert.ok(['unknown','mapping-failed'].includes(refused.observation.cgroup.source),`${label} keeps an honest marker`);
+ }
+ let self='1:memory:/a\n',changedDuringValues=false;
+ const during=observeProbeCgroup({read:path=>{
+  if(path==='/proc/self/cgroup')return self;
+  if(path==='/proc/self/mountinfo')return mount;
+  if(path===CGROUP_MOUNT+'/memory.max'){self='1:memory:/b\n';changedDuringValues=true;}
+  return rootFiles[path]??null;
+ }});
+ const raced=await qualifyNativeUploadSandbox({...bound,imageDigest:DIGEST,deadlineMs:Date.now()+30000,tempRoot:root,
+  run:make(during),hostCgroup:host});
+ assert.equal(changedDuringValues,true);assert.equal(raced.admitted,false,'a v1 change during fallback reads must not be admitted');
+ assert.equal(raced.evaluation.sandbox.boundedResources,false);
+ assert.deepEqual(raced.diagnostic.resources,{memoryMax:null,pidsMax:null,cpuMax:null});
+ assert.equal(raced.observation.cgroup.source,'identity-changed');
+ const oldMount='36 35 0:30 / /sys/fs/cgroup rw - tmpfs tmpfs rw\n37 36 0:31 / /sys/fs/cgroup/memory rw - cgroup cgroup rw,memory\n';
+ const newMount='46 35 0:40 / /sys/fs/cgroup rw - tmpfs tmpfs rw\n47 46 0:41 / /sys/fs/cgroup/memory rw - cgroup cgroup rw,memory\n';
+ const v1values={[CGROUP_MOUNT+'/memory/memory.limit_in_bytes']:'1073741824',[CGROUP_MOUNT+'/pids/pids.max']:'64',
+  [CGROUP_MOUNT+'/cpu/cpu.cfs_quota_us']:'50000'};
+ let mountReads=0;
+ const mountSwitch=observeProbeCgroup({read:path=>{
+  if(path==='/proc/self/cgroup')return '1:memory:/a\n2:pids:/a\n3:cpu:/a\n';
+  if(path==='/proc/self/mountinfo')return ++mountReads===1?oldMount:newMount;
+  return v1values[path]??null;
+ }});
+ const switched=await qualifyNativeUploadSandbox({...bound,imageDigest:DIGEST,deadlineMs:Date.now()+30000,tempRoot:root,
+  run:make(mountSwitch),hostCgroup:host});
+ assert.equal(mountReads,2);assert.equal(switched.admitted,false,'a v1 mount change across fallback reads must not be admitted');
+ assert.equal(switched.evaluation.sandbox.boundedResources,false);
+ assert.deepEqual(switched.diagnostic.resources,{memoryMax:null,pidsMax:null,cpuMax:null});
+ assert.equal(switched.observation.cgroup.source,'identity-changed');
+ const arbitrary=await qualifyNativeUploadSandbox({...bound,imageDigest:DIGEST,deadlineMs:Date.now()+30000,tempRoot:root,
+  run:make({...v2,source:'/fixture/not-a-source-kind'}),hostCgroup:host});
+ assert.equal(arbitrary.observation.cgroup.source,null,'an arbitrary source label is not echoed');
+ assert.equal(JSON.stringify(arbitrary).includes('/fixture/credential'),false,'no credential path is echoed');
 });
 
 test('the real runner refuses to spawn on this non-Linux host',{skip:process.platform==='linux'},async()=>{

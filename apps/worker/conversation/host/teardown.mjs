@@ -23,13 +23,13 @@ const method=(port,name)=>{if(typeof port?.[name]!=='function')fail('HOST_TEARDO
 
 /** Only an authenticated host-control process observer may produce this record. Shape checks detect stale or
  * cross-run answers; they cannot authenticate the port or establish that its OS observation is sound. */
-function processAbsent(value,{allocation,binding,identity,afterMs,nowMs}){
+function processAbsent(value,{allocation,binding,identity,afterMs,nowMs,processScope}){
  let r;try{r=own(data(value),['schema','allocationSha256','bindingSha256','hostIdentitySha256','observedAtMs','scope','exited','remainingPids']);}
  catch{return false;}
  return r.schema===HOST_PROCESS_ABSENCE_SCHEMA&&r.allocationSha256===canonicalSha256(allocation)&&
   r.bindingSha256===canonicalSha256(binding)&&r.hostIdentitySha256===canonicalSha256(identity)&&
   Number.isSafeInteger(r.observedAtMs)&&r.observedAtMs>=afterMs&&r.observedAtMs<=nowMs&&
-  r.scope==='browser-bash-sdk-descendants'&&r.exited===true&&Array.isArray(r.remainingPids)&&r.remainingPids.length===0;
+  r.scope===processScope&&r.exited===true&&Array.isArray(r.remainingPids)&&r.remainingPids.length===0;
 }
 
 /** The trusted destroy owner identifies the exact instance's root volume and ENIs. Request acceptance alone is
@@ -62,15 +62,21 @@ function physicallyAbsent(value,{allocation,binding,identity,resources,afterMs,n
  * returns HOST_PHYSICAL_ABSENCE_SCHEMA for those exact resources from fresh
  * cloud readbacks. The ports must bind every request to the control-owned allocation and host identity, not accept
  * these values as authority from the caller. Cleanup uses independent deadlines, never the cancelled run signal. */
-export function createConversationHostTeardown({allocation,binding,hostIdentity,cwd,browserPolicySha256,ports,now=Date.now,localCleanupMs=30000,hostCleanupMs=30000}={}){
- let a,b,i,raw;
- try{a=assertHostAllocation(allocation);b=assertHostRunBinding(a,binding);i=assertD005HostIdentity(hostIdentity,b,a);raw=own(ports,['browser','bash','processes','host']);}
+/** Explicit trusted hostMode:'browser-only' accepts only browser/process/host ports and requires the distinct
+ * browser-host-descendants observation. It reports Bash as not applicable, never as remotely closed. All local
+ * process, profile and exact physical resource proofs remain mandatory; legacy receipts keep their old shape. */
+export function createConversationHostTeardown({allocation,binding,hostIdentity,cwd,browserPolicySha256,ports,now=Date.now,localCleanupMs=30000,hostCleanupMs=30000,hostMode}={}){
+ let a,b,i,raw,browserOnly,processScope;
+ try{a=assertHostAllocation(allocation);b=assertHostRunBinding(a,binding);i=assertD005HostIdentity(hostIdentity,b,a);
+  const allocatedMode=a.hostMode??'conversation';if(hostMode!==undefined&&hostMode!==allocatedMode)fail('HOST_TEARDOWN_CONFIGURATION');
+  browserOnly=allocatedMode==='browser-only';processScope=browserOnly?'browser-host-descendants':'browser-bash-sdk-descendants';
+  raw=own(ports,browserOnly?['browser','processes','host']:['browser','bash','processes','host']);}
  catch{fail('HOST_TEARDOWN_CONFIGURATION');}
  if(typeof cwd!=='string'||!posix.isAbsolute(cwd)||posix.resolve(cwd)!==cwd||cwd.includes('\0')||!cwd.endsWith('/'+b.conversationId)||
   typeof browserPolicySha256!=='string'||!HEX.test(browserPolicySha256)||typeof now!=='function'||
   ![localCleanupMs,hostCleanupMs].every(n=>Number.isSafeInteger(n)&&n>=4&&n<=MAX_PHASE_MS))fail('HOST_TEARDOWN_CONFIGURATION');
  const browserRevoke=method(raw.browser,'revoke'),browserClose=method(raw.browser,'close');
- const bashRevoke=method(raw.bash,'revoke'),bashClose=method(raw.bash,'close');
+ const bashRevoke=browserOnly?undefined:method(raw.bash,'revoke'),bashClose=browserOnly?undefined:method(raw.bash,'close');
  const waitForExit=method(raw.processes,'waitForExit'),destroy=method(raw.host,'destroy'),observeAbsent=method(raw.host,'observeAbsent');
  const paths=browserPaths(cwd),context=Object.freeze({allocation:a,binding:b,hostIdentity:i});
  let settled;
@@ -84,24 +90,25 @@ export function createConversationHostTeardown({allocation,binding,hostIdentity,
  async function run(reason){
   const startedAtMs=now();
   const receipt={schema:HOST_TEARDOWN_SCHEMA,allocationSha256:canonicalSha256(a),bindingSha256:canonicalSha256(b),
-   hostIdentitySha256:canonicalSha256(i),reason,startedAtMs,browserEgress:'unknown',bashEgress:'unknown',
+   hostIdentitySha256:canonicalSha256(i),reason,startedAtMs,browserEgress:'unknown',bashEgress:browserOnly?'not-applicable':'unknown',
+   ...(browserOnly?{processScope}:{}),
    processes:'unknown',browserState:'not-attempted',hostDestroy:'unknown',hostAbsence:'unknown',status:'UNKNOWN'};
   const localDeadline=startedAtMs+localCleanupMs,quarter=Math.floor(localCleanupMs/4);
   const revokeDeadline=Math.min(localDeadline,now()+quarter);
   const [browserRevokeOk,bashRevokeOk]=await Promise.all([
    bounded(signal=>browserRevoke({binding:structuredClone(b),policySha256:browserPolicySha256},{signal}),r=>r?.revoked===true,revokeDeadline),
-   bounded(signal=>bashRevoke(request(),{signal}),r=>r?.revoked===true,revokeDeadline),
+   browserOnly?true:bounded(signal=>bashRevoke(request(),{signal}),r=>r?.revoked===true,revokeDeadline),
   ]);
   const closeDeadline=Math.min(localDeadline,now()+quarter);
   const [browserCloseOk,bashCloseOk]=await Promise.all([
    bounded(signal=>browserClose({signal}),r=>r?.closed===true,closeDeadline),
-   bounded(signal=>bashClose({signal}),r=>r?.closed===true,closeDeadline),
+   browserOnly?true:bounded(signal=>bashClose({signal}),r=>r?.closed===true,closeDeadline),
   ]);
   if(browserRevokeOk&&browserCloseOk)receipt.browserEgress='closed';
-  if(bashRevokeOk&&bashCloseOk)receipt.bashEgress='closed';
+  if(!browserOnly&&bashRevokeOk&&bashCloseOk)receipt.bashEgress='closed';
   const afterProcessMs=now();
-  if(await bounded(signal=>waitForExit({...request(),profile:paths.profile,scope:'browser-bash-sdk-descendants'},{signal}),
-   (r,checkedAt)=>processAbsent(r,{...context,identity:i,afterMs:afterProcessMs,nowMs:checkedAt}),localDeadline)){
+  if(await bounded(signal=>waitForExit({...request(),profile:paths.profile,scope:processScope},{signal}),
+   (r,checkedAt)=>processAbsent(r,{...context,identity:i,afterMs:afterProcessMs,nowMs:checkedAt,processScope}),localDeadline)){
    receipt.processes='exited';
    receipt.browserState=await bounded(signal=>disposeBrowserState(paths,{signal}),r=>r?.disposed===true,localDeadline)?'disposed':'unknown';
   }
@@ -112,7 +119,7 @@ export function createConversationHostTeardown({allocation,binding,hostIdentity,
   if(await bounded(signal=>destroy(request(),{signal}),r=>{resources=requestedResources(r,i);return resources!==null;},hostDeadline))receipt.hostDestroy='requested';
   if(await bounded(signal=>observeAbsent({...request(),...(resources?{resources:structuredClone(resources)}:{})},{signal}),
    (r,checkedAt)=>physicallyAbsent(r,{...context,identity:i,resources,afterMs:hostRequestAtMs,nowMs:checkedAt}),hostDeadline))receipt.hostAbsence='confirmed';
-  if(receipt.browserEgress==='closed'&&receipt.bashEgress==='closed'&&receipt.processes==='exited'&&
+  if(receipt.browserEgress==='closed'&&(browserOnly?receipt.bashEgress==='not-applicable':receipt.bashEgress==='closed')&&receipt.processes==='exited'&&
    receipt.browserState==='disposed'&&receipt.hostDestroy==='requested'&&receipt.hostAbsence==='confirmed')receipt.status='VERIFIED';
   const frozen=Object.freeze(receipt);
   if(frozen.status!=='VERIFIED')throw fault('HOST_TEARDOWN_UNKNOWN',frozen);

@@ -15,29 +15,32 @@ const request=()=>({allocation,binding,hostIdentity,profile,scope:'browser-bash-
 
 function fixture({events=['populated 1\nfrozen 0\n','populated 1\nfrozen 0\n','populated 0\nfrozen 0\n'],
  leader=[undefined,null],bootId=hostIdentity.bootId,confinement={},tick=100,
- hangEventReadAt=0,hangCheckAt=0,timeoutMs=500}={}){
- const scope=hostWideCgroup({allocation,binding,hostIdentity}),groupIdentity={dev:'24',ino:'42'};
+ hangEventReadAt=0,hangCheckAt=0,timeoutMs=500,leaderKind='sdk'}={}){
+ const allocated=leaderKind==='browser'?{...allocation,hostMode:'browser-only'}:allocation;
+ const scope=hostWideCgroup({allocation:allocated,binding,hostIdentity}),groupIdentity={dev:'24',ino:'42'};
+ const leaderField=leaderKind==='sdk'?'sdkLeaderPid':'browserLeaderPid',leaderRelative=leaderKind==='sdk'?scope.sdkLeaderRelative:`${scope.relative}/${canonicalSha256(binding)}/browser`;
  let elapsed=0,reads=0,leaders=0,closed=0,checks=0;
  const ports={
   async openGroup(path){assert.equal(path,scope.path);return {identity:groupIdentity,
    async readEvents(){reads++;if(reads===hangEventReadAt)return new Promise(()=>{});
     return events[Math.min(reads-1,events.length-1)];},async close(){closed++;}};},
-  async readLeaderCgroup(pid){assert.equal(pid,123);return leader[Math.min(leaders++,leader.length-1)]??(leaders===1?scope.sdkLeaderRelative:null);},
+  async readLeaderCgroup(pid){assert.equal(pid,123);return leader[Math.min(leaders++,leader.length-1)]??(leaders===1?leaderRelative:null);},
   async readBootId(){return bootId;},
  };
  const verifyConfinement=async input=>{
-  checks++;assert.equal(input.cgroupRelative,scope.relative);assert.equal(input.sdkLeaderPid,123);
+  checks++;assert.equal(input.cgroupRelative,scope.relative);assert.equal(input[leaderField],123);
+  assert.equal(Object.hasOwn(input,leaderKind==='sdk'?'browserLeaderPid':'sdkLeaderPid'),false);
   assert.deepEqual(input.groupIdentity,groupIdentity);
   if(checks===hangCheckAt)return new Promise(()=>{});
-  return {schema:HOST_CGROUP_CONFINEMENT_SCHEMA,allocationSha256:canonicalSha256(allocation),
+  return {schema:HOST_CGROUP_CONFINEMENT_SCHEMA,allocationSha256:canonicalSha256(allocated),
    bindingSha256:canonicalSha256(binding),hostIdentitySha256:canonicalSha256(hostIdentity),
-   groupIdentitySha256:canonicalSha256(groupIdentity),cgroupRelative:scope.relative,sdkLeaderPid:123,
+   groupIdentitySha256:canonicalSha256(groupIdentity),cgroupRelative:scope.relative,[leaderField]:123,
    observedAtMs:Date.now(),preExecPlacement:true,allEntrypointsConfined:true,
    untrustedCgroupfsUnavailable:true,untrustedMigrationDenied:true,...confinement};
  };
- const observer=createHostWideProcessObserver({allocation,binding,hostIdentity,profile,ports,verifyConfinement,
+ const observer=createHostWideProcessObserver({allocation:allocated,binding,hostIdentity,profile,ports,verifyConfinement,leaderKind,
   monotonic:()=>elapsed,pause:async()=>{elapsed+=tick;},timeoutMs,pollMs:Math.min(100,timeoutMs)});
- return {observer,scope,counts:()=>({reads,leaders,closed,checks})};
+ return {observer,scope,allocation:allocated,counts:()=>({reads,leaders,closed,checks})};
 }
 
 test('initial live SDK leader plus confinement proof and recursive populated=0 yield an exact teardown-compatible receipt',async()=>{
@@ -52,6 +55,33 @@ test('initial live SDK leader plus confinement proof and recursive populated=0 y
  assert.equal(receipt.hostIdentitySha256,canonicalSha256(hostIdentity));
  assert.deepEqual(f.counts(),{reads:3,leaders:2,closed:1,checks:4});
  await f.observer.close();assert.equal(f.counts().closed,1);
+});
+
+test('browser-only observer measures its browser leader and reports no remote SDK or Bash absence',async()=>{
+ const f=fixture({leaderKind:'browser'});
+ await assert.rejects(f.observer.arm({sdkLeaderPid:123}),code('HOST_PROCESS_CONFIGURATION'));
+ await f.observer.arm({browserLeaderPid:123});
+ assert.equal(Object.hasOwn(f.observer.scope,'sdkLeaderRelative'),false);
+ assert.equal(f.observer.scope.browserLeaderRelative,`${f.scope.relative}/${canonicalSha256(binding)}/browser`);
+ await assert.rejects(f.observer.waitForExit(request()),code('HOST_PROCESS_BINDING_REFUSED'));
+ const receipt=await f.observer.waitForExit({...request(),allocation:f.allocation,scope:'browser-host-descendants'});
+ assert.equal(receipt.scope,'browser-host-descendants');assert.equal(receipt.exited,true);assert.deepEqual(receipt.remainingPids,[]);
+ assert.equal(Object.hasOwn(receipt,'sdkAbsent'),false);
+});
+
+test('browser-only scope refuses SDK cgroup membership and mismatched confinement leader fields',async()=>{
+ for(const input of [
+  {leader:[hostWideCgroup({allocation,binding,hostIdentity}).sdkLeaderRelative]},
+  {confinement:{sdkLeaderPid:123}}, {confinement:{browserLeaderPid:124}},
+  {confinement:{allEntrypointsConfined:false}},
+ ]){
+  const f=fixture({leaderKind:'browser',...input});
+  await assert.rejects(f.observer.arm({browserLeaderPid:123}),code('HOST_PROCESS_OBSERVATION_UNKNOWN'));
+  assert.equal(f.counts().closed,1);
+ }
+ assert.throws(()=>fixture({leaderKind:'all'}),code('HOST_PROCESS_CONFIGURATION'));
+ assert.throws(()=>createHostWideProcessObserver({allocation,binding,hostIdentity,profile,leaderKind:'browser'}),code('HOST_PROCESS_CONFIGURATION'));
+ assert.throws(()=>createHostWideProcessObserver({allocation:{...allocation,hostMode:'browser-only'},binding,hostIdentity,profile,leaderKind:'sdk'}),code('HOST_PROCESS_CONFIGURATION'));
 });
 
 test('missing initial population, wrong live SDK membership or host boot identity refuses before arming',async()=>{
