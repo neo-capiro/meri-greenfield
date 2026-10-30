@@ -22,7 +22,7 @@ const proposal=()=>({kind:'browser_action',proposalId,subjectSha256,
  requiredApprover:{tenantId:'tenant',actorId:'actor'},requestedAtMs:1700000000000,expiresAtMs:1700003600000,
  createdAt:new Date(1700000000000).toISOString()});
 const item=()=>({deliveryId,createdAt:new Date(1700000000000).toISOString(),
- operation:{id:'browser_action',version:'0.2.0'},state:'prepared',kind:'browser_action',
+ operation:{id:'browser_approval_preparation',version:'0.2.0'},state:'prepared',kind:'browser_action',
  proposal:proposal(),decision:null,execution:null,phase:'awaiting_approval'});
 const listRequest=()=>({conversationId,after:null,limit:20});
 const listBody=()=>({conversationId,intents:[item()],next:null});
@@ -45,7 +45,8 @@ test('the public receiver admits a browser-action preparation in a list page',as
  const admitted=await list(listBody());
  assert.equal(admitted.intents.length,1);
  assert.equal(admitted.intents[0].kind,'browser_action');
- assert.equal(admitted.intents[0].operation.id,'browser_action');
+ assert.equal(admitted.intents[0].operation.id,'browser_approval_preparation');
+ assert.equal(admitted.intents[0].proposal.operation.id,'browser_action');
  assert.equal(admitted.intents[0].proposal.display.tool,'browser_click');
  assert.equal(admitted.intents[0].phase,'awaiting_approval');
  assert.equal(admitted.intents[0].decision,null);

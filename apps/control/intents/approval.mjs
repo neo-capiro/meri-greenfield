@@ -26,6 +26,8 @@ import {artifactValidators as artifacts,scheduleToolValidators,researchShareVali
 import {clientRecordValidators} from '../../../packages/contracts/retrieval-0.3/client-record-action-validation.mjs';
 import {data,own,nativeSignal} from '../../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {createOperationLifetime} from '../../../packages/runtime/operation-lifetime.mjs';
+import {assertBrowserApprovalStatus} from '../../../packages/contracts/runtime-0.2/browser-approval-channel.mjs';
+import {browserProposalFromEntry,isBrowserPreparation} from './browser-proposals.mjs';
 import {ProductError,productFailure} from '../product-access/errors.mjs';
 import {nativeTaskOutcome} from './task-outcome.mjs';
 import {nativeMailOutcome} from './mail-outcome.mjs';
@@ -49,11 +51,16 @@ const conversationOf=b=>({tenantId:b.tenantId,actorId:b.actorId,conversationId:b
 const instant=value=>{const t=typeof value==='string'?Date.parse(value):NaN;return Number.isSafeInteger(t)?t:NaN;};
 /** Request parsing: closed objects, literal ids only. Identity never comes from the body. */
 function decideRequest(value){
- let r;try{r=data(own(value,['conversationId','deliveryId','proposalId','commandSha256','decision']));}catch{fail('INTENT_REQUEST_INVALID');}
+ const raw=data(value),browser=typeof raw?.deliveryId==='string'&&raw.deliveryId.startsWith('browser:');
+ // A browser decision binds the SUBJECT digest; an SDK decision keeps its exact command digest contract.
+ let r;try{r=data(browser
+  ?own(value,['conversationId','deliveryId','proposalId','subjectSha256','decision'])
+  :own(value,['conversationId','deliveryId','proposalId','commandSha256','decision']));}catch{fail('INTENT_REQUEST_INVALID');}
  if(typeof r.conversationId!=='string'||!UUID.test(r.conversationId))fail('INTENT_REQUEST_INVALID',null,'conversationId');
- if(typeof r.deliveryId!=='string'||!DELIVERY.test(r.deliveryId))fail('INTENT_REQUEST_INVALID',null,'deliveryId');
+ if(typeof r.deliveryId!=='string'||!(browser?/^browser:[0-9a-f]{64}$/u:DELIVERY).test(r.deliveryId))fail('INTENT_REQUEST_INVALID',null,'deliveryId');
  if(typeof r.proposalId!=='string'||!UUID.test(r.proposalId))fail('INTENT_REQUEST_INVALID',null,'proposalId');
- if(typeof r.commandSha256!=='string'||!DIGEST.test(r.commandSha256))fail('INTENT_REQUEST_INVALID',null,'commandSha256');
+ if(browser){if(typeof r.subjectSha256!=='string'||!DIGEST.test(r.subjectSha256))fail('INTENT_REQUEST_INVALID',null,'subjectSha256');}
+ else if(typeof r.commandSha256!=='string'||!DIGEST.test(r.commandSha256))fail('INTENT_REQUEST_INVALID',null,'commandSha256');
  if(r.decision!=='approved'&&r.decision!=='rejected')fail('INTENT_REQUEST_INVALID',null,'decision');
  return r;
 }
@@ -73,11 +80,14 @@ function commandProposal(entry){
  return result.proposal;
 }
 export function createIntentApprovalOwner(configuration){
- const c=own(configuration,['journal','now','limits'],['decisions','documents','tasks','filing','mail','memory','sharing','researchAction','legiwatch','watch','clientRecord','bizdev','legislativeDocument','enabled']);
+ const c=own(configuration,['journal','now','limits'],['decisions','documents','tasks','filing','mail','memory','sharing','researchAction','legiwatch','watch','clientRecord','bizdev','legislativeDocument','browser','enabled']);
  const journal=own(c.journal,['read','list'],['claim','settle']),limits=data(c.limits);own(limits,['maxRequestMs']);
  if(typeof journal.read!=='function'||typeof journal.list!=='function'||typeof c.now!=='function'||typeof(c.enabled??false)!=='boolean'||
   !Number.isSafeInteger(limits.maxRequestMs)||limits.maxRequestMs<1||limits.maxRequestMs>30000)throw new ProductError('PRODUCT_CONFIGURATION');
  const decisions=c.decisions===undefined?undefined:own(c.decisions,[],['record','readDecision','getCurrent','revoke']);
+ // Browser decisions use their own Core route with the human's attended bearer; the port is required to decide.
+ const browser=c.browser===undefined?undefined:own(c.browser,['record'],['status','result']);
+ if(browser&&typeof browser.record!=='function')throw new ProductError('PRODUCT_CONFIGURATION');
  const documents=c.documents===undefined?undefined:own(c.documents,['execute','read']);
  const tasks=c.tasks===undefined?undefined:own(c.tasks,['execute','read']);
  const memory=c.memory===undefined?undefined:own(c.memory,['execute','read']);
@@ -146,6 +156,7 @@ if(c.watch!==undefined)own(c.watch,['decide','read']);
   enabled();const r=decideRequest(request),life=lifetime(deadlineMs,signal);
   try{
    const entry=await readEntry(life,principal,r.conversationId,r.deliveryId);
+   if(entry!==null&&isBrowserPreparation(entry))return await decideBrowser(life,principal,entry,r);
    if(entry?.state==='PREPARED'&&entry.outcome?.result?.proposal?.kind==='watch_action')return await decideWatch(life,principal,entry,r);
    if(entry?.state==='PREPARED'&&entry.outcome?.result?.proposal?.kind==='legiwatch_action')return await decideLegiwatch(life,principal,entry,r);
    if(entry?.state==='PREPARED'&&entry.outcome?.result?.proposal?.kind==='client_record_action')return await decideClientRecord(life,principal,entry,r);
@@ -318,8 +329,81 @@ async function decideWatch(life,principal,entry,r){
   fail('INTENT_NOT_APPROVABLE','NOT_DISPATCHED');
  }
  /** History item for one journal entry. Content is withheld when the caller no longer sees its client scopes. */
+ /** Record the human decision through Core browser/record. A recorded approval is AWAITING EXECUTION:
+  * this path never consumes the approval and never dispatches a browser effect. */
+ async function decideBrowser(life,principal,entry,r){
+  const proposal=browserProposalFromEntry(entry);
+  if(r.subjectSha256!==proposal.subjectSha256)fail('INTENT_MISMATCH','NOT_DISPATCHED');
+  const approver=data({tenantId:principal.tenantId,actorId:principal.actorId});
+  if(!same(approver,proposal.requiredApprover))fail('APPROVER_REFUSED','NOT_DISPATCHED');
+  if(!visible(proposal.scopes,principal))fail('INTENT_SCOPE_WITHHELD','NOT_DISPATCHED');
+  if(!(proposal.expiresAtMs>c.now()))fail('INTENT_EXPIRED','NOT_DISPATCHED');
+  if(typeof browser?.record!=='function')fail('APPROVAL_OWNER_UNAVAILABLE','NOT_DISPATCHED');
+  let answer;
+  try{answer=await life.run(signal=>browser.record.call(c.browser,{proposalId:proposal.proposalId,
+   subjectSha256:proposal.subjectSha256,decision:r.decision,approver,binding:proposal.binding,signal,
+   deadlineMs:life.deadline()}));}
+  catch(error){decisionFailure(error);}
+  let status;
+  try{status=assertBrowserApprovalStatus(data(answer));}
+  catch{fail('INTENT_RESULT_NOT_RELEASED','RESULT_NOT_RELEASED');}
+  // A foreign or false-permissive document is never our decision.
+  if(status.proposalId!==proposal.proposalId||status.subjectSha256!==proposal.subjectSha256)
+   fail('APPROVAL_DECISION_REFUSED','UNKNOWN');
+  const d=status.decision;
+  if(!d||d.proposalId!==proposal.proposalId||d.decision!==r.decision||!same(d.approver,approver))
+   fail('APPROVAL_DECISION_REFUSED','UNKNOWN');
+  const decision=data({proposalId:proposal.proposalId,subjectSha256:proposal.subjectSha256,
+   decision:d.decision,decidedAt:d.decidedAt,approver:data(d.approver),policyRevision:d.policyRevision});
+  return data({status:r.decision==='rejected'?'browser_rejected':'browser_decision_recorded',
+   deliveryId:r.deliveryId,proposalId:proposal.proposalId,decision});
+ }
  async function item(life,principal,entry,conversationId){
   const base={deliveryId:entry.deliveryId,createdAt:entry.createdAt,operation:entry.record.operation};
+  if(isBrowserPreparation(entry)){
+   if(entry.state==='PENDING')return {...base,state:'pending'};
+   if(entry.state==='UNKNOWN')return {...base,state:'unknown'};
+   if(entry.state==='FAILED')return {...base,state:'failed',code:entry.outcome?.code};
+   const proposal=browserProposalFromEntry(entry);
+   if(proposal.binding.conversationId!==conversationId)fail('INTENT_MISMATCH','NOT_DISPATCHED');
+   if(!visible(proposal.scopes,principal))return {...base,state:'prepared',kind:'browser_action',withheld:true};
+   // Decision and execution are read, never inferred: an unavailable reader stays explicitly unavailable.
+   let decision='unavailable';
+   if(typeof browser?.status==='function'){
+    try{
+     const status=assertBrowserApprovalStatus(data(await life.run(signal=>browser.status.call(c.browser,
+      {proposalId:proposal.proposalId,subjectSha256:proposal.subjectSha256,binding:proposal.binding,signal,
+       deadlineMs:life.deadline()}))));
+     if(status.proposalId!==proposal.proposalId||status.subjectSha256!==proposal.subjectSha256)fail('INTENT_JOURNAL_UNAVAILABLE');
+     const d=status.decision;
+     // Only the bounded public decision shape is published; the Core document's own members stay internal.
+     decision=!d?null:data({proposalId:proposal.proposalId,subjectSha256:proposal.subjectSha256,
+      decision:d.decision,decidedAt:d.decidedAt,approver:data({tenantId:d.approver.tenantId,
+      actorId:d.approver.actorId}),policyRevision:d.policyRevision});
+    }catch(error){const f=productFailure(error);if(f&&['DEADLINE','CANCELLED'].includes(f.code))throw error;
+     decision='unavailable';}
+   }
+   // The durable result is whatever the canonical status readback reports as a COMPLETED consumption; it is
+   // never inferred from the decision, and a pending/absent observation stays explicitly unavailable.
+   let execution='unavailable';
+   if(typeof browser?.status==='function'){
+    try{
+     const status=assertBrowserApprovalStatus(data(await life.run(signal=>browser.status.call(c.browser,
+      {proposalId:proposal.proposalId,subjectSha256:proposal.subjectSha256,binding:proposal.binding,signal,
+       deadlineMs:life.deadline()}))));
+     const consumed=status.consumption;
+     if(consumed&&consumed.state==='COMPLETED'&&consumed.result&&
+      ['ok','error'].includes(consumed.result.outcome))execution=data({state:'completed',
+       outcome:consumed.result.outcome,reference:typeof consumed.result.result?.reference==='string'
+        ?consumed.result.result.reference:null});
+     else execution=null;
+    }catch(error){const f=productFailure(error);if(f&&['DEADLINE','CANCELLED'].includes(f.code))throw error;}
+   }
+   const expired=!(proposal.expiresAtMs>c.now());
+   const phase=decision==='unavailable'?'unknown_decision':decision===null?(expired?'expired':'awaiting_approval')
+    :decision.decision==='rejected'?'rejected':expired?'expired':'approved';
+   return {...base,state:'prepared',kind:'browser_action',proposal,decision,execution,phase};
+  }
   if(entry.state==='PENDING')return {...base,state:'pending'};
   if(entry.state==='UNKNOWN')return {...base,state:'unknown'};
   if(entry.state==='FAILED')return {...base,state:'failed',code:entry.outcome.code};

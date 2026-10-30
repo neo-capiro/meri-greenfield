@@ -231,7 +231,9 @@ async function item(value,conversationId){
  exact(value.createdAt);
  if(value.kind==='browser_action'){
   if(!Object.hasOwn(value,'proposal'))return;
-  if(value.operation.id!==value.proposal.operation.id||value.operation.version!==value.proposal.operation.version)conflict();
+  // The item names the PREPARATION operation; the proposal names the browser action it authorizes.
+  if(value.operation.id!=='browser_approval_preparation'||value.proposal.operation.id!=='browser_action'||
+   value.operation.version!=='0.2.0'||value.proposal.operation.version!=='0.2.0')conflict();
   await proposal(value.proposal,conversationId);
   const d=value.decision;
   if(d!==null&&typeof d==='object'){
