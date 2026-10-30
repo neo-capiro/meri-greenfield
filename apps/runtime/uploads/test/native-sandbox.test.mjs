@@ -385,7 +385,8 @@ test('the qualifier keeps identity/mapping refusals and exposes the allowlisted 
  const view=self=>observeProbeCgroup({read:path=>path==='/proc/self/cgroup'?self:
   (path==='/proc/self/mountinfo'?mount:(rootFiles[path]??null))});
  for(const [label,self] of [['unreadable',null],['empty',''],['raw-CR-unified','0::/b\r\n'],
-  ['malformed-v1','1:memory:relative\n'],['ambiguous-unified','0::/b\n0::/c\n']]){
+  ['malformed-v1','1:memory:relative\n'],['ambiguous-unified','0::/b\n0::/c\n'],
+  ['contradictory-v1','1:memory:/a\n1:memory:/b\n'],['cross-hierarchy-v1','1:memory:/a\n2:memory:/b\n']]){
   const refused=await qualifyNativeUploadSandbox({...bound,imageDigest:DIGEST,deadlineMs:Date.now()+30000,tempRoot:root,
    run:make(view(self)),hostCgroup:host});
   assert.equal(refused.admitted,false,`${label} must not be admitted`);
@@ -393,6 +394,19 @@ test('the qualifier keeps identity/mapping refusals and exposes the allowlisted 
   assert.deepEqual(refused.diagnostic.resources,{memoryMax:null,pidsMax:null,cpuMax:null});
   assert.ok(['unknown','mapping-failed'].includes(refused.observation.cgroup.source),`${label} keeps an honest marker`);
  }
+ let self='1:memory:/a\n',changedDuringValues=false;
+ const during=observeProbeCgroup({read:path=>{
+  if(path==='/proc/self/cgroup')return self;
+  if(path==='/proc/self/mountinfo')return mount;
+  if(path===CGROUP_MOUNT+'/memory.max'){self='1:memory:/b\n';changedDuringValues=true;}
+  return rootFiles[path]??null;
+ }});
+ const raced=await qualifyNativeUploadSandbox({...bound,imageDigest:DIGEST,deadlineMs:Date.now()+30000,tempRoot:root,
+  run:make(during),hostCgroup:host});
+ assert.equal(changedDuringValues,true);assert.equal(raced.admitted,false,'a v1 change during fallback reads must not be admitted');
+ assert.equal(raced.evaluation.sandbox.boundedResources,false);
+ assert.deepEqual(raced.diagnostic.resources,{memoryMax:null,pidsMax:null,cpuMax:null});
+ assert.equal(raced.observation.cgroup.source,'identity-changed');
  const arbitrary=await qualifyNativeUploadSandbox({...bound,imageDigest:DIGEST,deadlineMs:Date.now()+30000,tempRoot:root,
   run:make({...v2,source:'/fixture/not-a-source-kind'}),hostCgroup:host});
  assert.equal(arbitrary.observation.cgroup.source,null,'an arbitrary source label is not echoed');

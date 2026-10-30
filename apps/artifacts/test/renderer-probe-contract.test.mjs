@@ -136,4 +136,19 @@ test('probe cgroup view refuses changed identity and failed mapping, and keeps s
   if(path==='/proc/self/cgroup')return values[Math.min(n,values.length-1)];return path==='/proc/self/mountinfo'?mount:(finiteRoot[path]??null);};})()});
  assert.equal(changedV1.source,'identity-changed');assert.equal(changedV1.identityChanged,true);
  assert.equal(changedV1.memoryMax,null);assert.equal(bounded(changedV1),false,'a changed v1 membership is not stable v1');
+ for(const records of ['1:memory:/a\n1:memory:/b\n','1:memory:/a\n2:memory:/b\n']){
+  const conflict=membership(records);
+  assert.deepEqual([conflict.memoryMax,conflict.pidsMax,conflict.cpuMax],[null,null,null],'conflicting v1 records cannot use finite root values');
+  assert.equal(conflict.source,'unknown');assert.equal(bounded(conflict),false,'a conflicting v1 collection is not stable v1');
+ }
+ let self='1:memory:/a\n',changedDuringValues=false;
+ const during=observeProbeCgroup({read:path=>{
+  if(path==='/proc/self/cgroup')return self;
+  if(path==='/proc/self/mountinfo')return mount;
+  if(path===CGROUP_MOUNT+'/memory.max'){self='1:memory:/b\n';changedDuringValues=true;}
+  return finiteRoot[path]??null;
+ }});
+ assert.equal(changedDuringValues,true);assert.equal(during.identityChanged,true);
+ assert.equal(during.source,'identity-changed');assert.equal(during.memoryMax,null);
+ assert.equal(bounded(during),false,'a v1 change during fallback value reads is refused');
 });
