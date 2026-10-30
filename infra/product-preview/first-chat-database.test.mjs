@@ -382,7 +382,7 @@ test('plan pins the change-set order, real paths and current bytes; 0012 and 001
   '0001_settings.sql','0001_commands.sql','0001_approval_metadata.sql','0001_intent_preparations.sql','0001_schedule_owner.sql','0002_occurrences.sql','0003_run_cancel_proofs.sql','0004_read_consent.sql',
   '0001_task_lookup.sql','0001_objective_custody.sql','0002_objective_run_starts.sql','0003_objective_reader_replays.sql','0001_versions.sql','0002_retention.sql','0003_previews.sql','0001_memory_candidates.sql','0001_read_delegation_facts.sql','0002_prepared_approval_facts.sql','first-chat-database-integration.sql#integration_grants','0020_initial_generations.sql','0021_sdk_run_usage.sql','0022_sdk_run_usage_grants.sql',
   '0018_memory_candidate_targets.sql','0019_memory_proposal_contexts.sql','0002_candidate_retention_delete.sql','first-chat-native-retention-grants.sql',
-  '0024_general_initial_binding_scope.sql','0002_memory_preparation_tombstone.sql','0023_expired_conversation_purge.sql','first-chat-expired-conversation-purge-grants.sql','0003_native_routine_facts.sql','0004_objective_run_start_retention.sql','0025_retention_target_lookup.sql','first-chat-schedule-worker-grants.sql#schedule_worker_grants','0026_retention_target_dispatch.sql','0002_tenant_settings_control_grants.sql','0027_retention_target_projection.sql','0028_retention_sdk_identity.sql','0029_native_correction_feedback.sql','0005_management_preparations.sql','0006_management_preparation_grants.sql','0001_upload_custody.sql','0002_control_grants.sql','0030_child_assignments.sql','0007_source_events.sql','0008_source_event_grants.sql','0009_management_consent_renewals.sql','0031_upload_retention_targets.sql','first-chat-core-retention-serving.sql#core_retention_serving']);
+  '0024_general_initial_binding_scope.sql','0002_memory_preparation_tombstone.sql','0023_expired_conversation_purge.sql','first-chat-expired-conversation-purge-grants.sql','0003_native_routine_facts.sql','0004_objective_run_start_retention.sql','0025_retention_target_lookup.sql','first-chat-schedule-worker-grants.sql#schedule_worker_grants','0026_retention_target_dispatch.sql','0002_tenant_settings_control_grants.sql','0027_retention_target_projection.sql','0028_retention_sdk_identity.sql','0029_native_correction_feedback.sql','0005_management_preparations.sql','0006_management_preparation_grants.sql','0001_upload_custody.sql','0002_control_grants.sql','0030_child_assignments.sql','0007_source_events.sql','0008_source_event_grants.sql','0009_management_consent_renewals.sql','0031_upload_retention_targets.sql','first-chat-core-retention-serving.sql#core_retention_serving','first-chat-browser-host-roles.sql#browser_host_roles','0001_host_allocations.sql','0002_verified_teardown.sql','first-chat-browser-host-control-grants.sql#browser_host_control_grants']);
  assert.deepEqual(plan.slice(63,65).map(({ordinal,path})=>({ordinal,path})),[
   {ordinal:64,path:'apps/control/uploads/migrations/0001_upload_custody.sql'},
   {ordinal:65,path:'apps/control/uploads/migrations/0002_control_grants.sql'}]);
@@ -393,7 +393,7 @@ test('plan pins the change-set order, real paths and current bytes; 0012 and 001
  assert.match(seed,/INSERT INTO meri_product_budget\.budget \(id, cap_micro_usd, consumed_micro_usd, quarantined\)\nVALUES \(1, 25000000, 0, false\)/u);
  const budget=read('apps/gateway/budget/migrations/0001_product_budget.sql');
  for(const column of ['id integer PRIMARY KEY CHECK (id=1)','cap_micro_usd bigint','consumed_micro_usd bigint','quarantined boolean'])assert.ok(budget.includes(column));
- assert.match(read('apps/runtime/Dockerfile'),/^COPY infra\/product-preview\/first-chat-migrate\.mjs infra\/product-preview\/first-chat-database\.sql infra\/product-preview\/first-chat-database-temporal\.sql infra\/product-preview\/first-chat-database-integration\.sql infra\/product-preview\/first-chat-database-owner-reads\.sql infra\/product-preview\/first-chat-seed-budget\.sql infra\/product-preview\/first-chat-native-retention-grants\.sql infra\/product-preview\/first-chat-expired-conversation-purge-grants\.sql infra\/product-preview\/first-chat-schedule-worker-grants\.sql infra\/product-preview\/first-chat-core-retention-serving\.sql \.\/infra\/product-preview\/$/mu);
+ assert.match(read('apps/runtime/Dockerfile'),/^COPY infra\/product-preview\/first-chat-migrate\.mjs infra\/product-preview\/first-chat-database\.sql infra\/product-preview\/first-chat-database-temporal\.sql infra\/product-preview\/first-chat-database-integration\.sql infra\/product-preview\/first-chat-database-owner-reads\.sql infra\/product-preview\/first-chat-seed-budget\.sql infra\/product-preview\/first-chat-native-retention-grants\.sql infra\/product-preview\/first-chat-expired-conversation-purge-grants\.sql infra\/product-preview\/first-chat-schedule-worker-grants\.sql infra\/product-preview\/first-chat-core-retention-serving\.sql infra\/product-preview\/first-chat-browser-host-roles\.sql infra\/product-preview\/first-chat-browser-host-control-grants\.sql \.\/infra\/product-preview\/$/mu);
  assert.match(read('apps/runtime/package-lock.json'),/"node_modules\/pg": \{\n\s+"version": "8\.23\.1"/u);
 });
 
@@ -833,7 +833,7 @@ test('the superseding Temporal grants file pins the live 1.32.1 catalog, includi
 
 
 test('Core retention appends one guarded installer phase and preserves the exact prior 70 entries',async()=>{
- const plan=loadPlan(),entry=plan.at(-1);
+ const plan=loadPlan().slice(0,71),entry=plan.at(-1);
  assert.equal(createHash('sha256').update(JSON.stringify(PLAN.slice(0,70))).digest('hex'),'7cad583cbad36ec39d607476070ab0eb6d73ba4a9b287fdbf340e0a8058b15a0');
  assert.deepEqual([entry.ordinal,entry.kind,entry.stage],[71,'phase:core_retention_serving','integration']);
  const db=databaseWithLedger(plan,70),prefix=structuredClone(db.state.ledger);
@@ -845,6 +845,26 @@ test('Core retention appends one guarded installer phase and preserves the exact
  await runStage({stage:'integration',plan,variables,connect:db.connect});
  assert.equal(db.state.queries.filter(q=>q.includes('CREATE OR REPLACE FUNCTION meri_core_authority.retention_serving_v1')).length,1);
  assert.throws(()=>loadPlan({read:path=>Buffer.from(read(path)+(path===entry.path?'\n':''))}),/MERI_D2_SOURCE_CHANGED/u);
+});
+
+test('browser host delta preserves 71 entries, installs roles before owner migrations and keeps control readonly',async()=>{
+ const plan=loadPlan(),delta=plan.slice(71);
+ assert.equal(createHash('sha256').update(JSON.stringify(PLAN.slice(0,71))).digest('hex'),'b11252db80333ce974162b1d53155a82c204a723478c34975ed87b618668ce0a');
+ assert.deepEqual(delta.map(e=>[e.ordinal,e.kind,e.stage]),[[72,'phase:browser_host_roles','integration'],[73,'migration','integration'],[74,'migration','integration'],[75,'phase:browser_host_control_grants','integration']]);
+ const db=databaseWithLedger(plan,71),prefix=structuredClone(db.state.ledger);
+ await runStage({stage:'integration',plan,variables,connect:db.connect});
+ assert.deepEqual(db.state.ledger.slice(0,71),prefix);assert.equal(db.state.ledger.length,75);
+ const roles=db.state.queries.findIndex(q=>q.includes('MERI_BROWSER_HOST_ROLE_COLLISION'));
+ const table=db.state.queries.findIndex(q=>q.includes('CREATE TABLE meri_host_control.host_allocations'));
+ assert.ok(roles>=0&&table>roles);
+ const writes=db.state.queries.filter(q=>q.includes('CREATE TABLE meri_host_control.host_allocations')).length;
+ await runStage({stage:'integration',plan,variables,connect:db.connect});
+ assert.equal(db.state.queries.filter(q=>q.includes('CREATE TABLE meri_host_control.host_allocations')).length,writes);
+ const grantSql=delta[3].text;
+ assert.match(grantSql,/SET LOCAL ROLE meri_product_migrator;/u);
+ assert.match(grantSql,/GRANT SELECT ON meri_host_control\.host_allocations TO meri_control_runtime/u);
+ assert.doesNotMatch(grantSql,/GRANT UPDATE|GRANT meri_host_allocator|PASSWORD|ALTER ROLE/u);
+ for(const e of delta)assert.throws(()=>loadPlan({read:path=>Buffer.from(read(path)+(path===e.path?'\n':''))}),/MERI_D2_SOURCE_CHANGED/u);
 });
 
 test('schedule grants append ordinal 56 through the existing installer phase and preserve all 55 entries',async()=>{

@@ -49,7 +49,10 @@ export function createBrowserHostRuntimePort(raw){
   ...(c.sessions?{sessions:Object.freeze({async open(request){
    const q=own(request,['binding','policy','deadlineMs','manifest']);assertBinding(q.binding);
    return storageMethod(c.sessions,'open')(q);
-  }})}:{}),
+  },...(typeof c.sessions.adopt==='function'?{async adopt(request){
+   const q=own(request,['binding','policy','deadlineMs','manifest','handoff'],['signal']);assertBinding(q.binding);signalOf({signal:q.signal});
+   return storageMethod(c.sessions,'adopt')(q);
+  }}:{})})}:{}),
   ...(c.approvalDeadlineMs===undefined?{}:{approvalDeadlineMs:c.approvalDeadlineMs}),
   async policy(request){
    const input=own(request,['binding'],['signal']),bound=assertBinding(input.binding),signal=signalOf({signal:input.signal});

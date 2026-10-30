@@ -19,3 +19,14 @@ export function assertBrowserReturn(raw,custody){
   typeof value.snapshotSha256!=='string'||!/^[a-f0-9]{64}$/u.test(value.snapshotSha256))fail('BROWSER_CUSTODY_REFUSED');
  return value;
 }
+
+/** Internal exact continuation metadata, released only by authenticated host currentness. */
+export function assertBrowserHandoff(raw,{targetBinding}={}){
+ const value=data(own(raw,['custody','returned','targetBinding','controlId'])),custody=assertBrowserCustody(value.custody);
+ assertBrowserReturn(value.returned,custody);validateShape('RunBinding',value.targetBinding);uuid(value.controlId);
+ const source=custody.binding,target=value.targetBinding;
+ if(targetBinding&&!same(target,targetBinding)||value.controlId===custody.controlId||
+  ['tenantId','actorId','conversationId'].some(key=>source[key]!==target[key])||target.writerFence!==source.writerFence+1||
+  ['runId','attemptId','workerId'].some(key=>source[key]===target[key]))fail('BROWSER_CUSTODY_REFUSED');
+ return value;
+}

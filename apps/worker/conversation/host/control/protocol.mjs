@@ -1,6 +1,6 @@
 /** Fixed wire identity for one D005 currentness read. Shape checks never establish authority. */
 import {own,data,nativeSignal} from '../../../../../packages/contracts/commands-0.2/execution-boundary.mjs';
-import {assertHostAllocation,assertHostRunBinding,assertD005HostIdentity,assertHostCurrent} from '../binding.mjs';
+import {assertHostAllocation,assertHostRunBinding,assertD005HostIdentity,assertHostCurrent,assertBrowserHostCurrent} from '../binding.mjs';
 
 export const HOST_CONTROL_REQUEST_SCHEMA='meri-host-currentness-request/1';
 export const HOST_CONTROL_RESPONSE_SCHEMA='meri-host-currentness-response/1';
@@ -31,8 +31,8 @@ export function hostControlResponse(value,request,{nowMs,maxFreshMs}={}){
  const q=hostControlRequest(request);let v,receipt;
  try{v=own(data(value),['schema','nonce','purpose','receipt']);
   if(v.schema!==HOST_CONTROL_RESPONSE_SCHEMA||v.nonce!==q.nonce||v.purpose!==q.purpose)fail();
-  receipt=own(v.receipt,['allocation','binding','policySha256','phase','checkedAtMs','currentUntilMs']);
-  assertHostCurrent({allocation:q.allocation,binding:q.binding,policySha256:q.policySha256,
+  receipt=own(v.receipt,['allocation','binding','policySha256','phase','checkedAtMs','currentUntilMs'],q.purpose==='browser'?['browserHandoff']:[]);
+  (q.purpose==='browser'?assertBrowserHostCurrent:assertHostCurrent)({allocation:q.allocation,binding:q.binding,policySha256:q.policySha256,
    current:receipt,nowMs,maxFreshMs});
  }catch{fail();}
  return Object.freeze(receipt);

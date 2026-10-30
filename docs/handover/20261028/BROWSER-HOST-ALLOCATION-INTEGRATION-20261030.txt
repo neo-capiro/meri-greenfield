@@ -1,0 +1,23 @@
+Browser host allocation source handback — 30 October 2026
+
+Source owners: App/Memory owns apps/control/browser-hosts and this finite migration/catalog join. Advanced owns native launcher, retained browser adoption and lifecycle.currentHost. Release remains the sole deployment/operator owner. No cloud, shared database, bootstrap, password, activation or image action was performed here.
+
+Merged dependencies: Runtime405 allocation/private router; Runtime406 canonical internal handoff wire; Runtime407 fresh Core join through the existing custody journal. All reuse the existing physical owner, full RunBinding, stable ownerInstanceId and exact host generation. The retired SDK/Bash cannot borrow browser successor authority.
+
+Forward source delta: new host migration0002 persists the existing trusted native teardown result with state terminated. Only a full VERIFIED receipt matching the original physical binding, allocation and native identity is accepted. Missing or UNKNOWN absence stays unreplaced. Exact receipt replay recovers an unknown COMMIT. Receipt validation does not authenticate arbitrary JSON or prove native/cloud absence; only the existing trusted teardown owner supplies this private allocator API.
+
+Canonical catalog: infra/product-preview/first-chat-migrate.mjs appends four integration entries. The exact 1..71 PLAN JSON SHA256 remains b11252db80333ce974162b1d53155a82c204a723478c34975ed87b618668ce0a.
+72 phase:browser_host_roles — first-chat-browser-host-roles.sql. Existing privileged installer creates collision-checked, marked NOLOGIN roles before the NOCREATEROLE migration owner runs DDL.
+73 migration — apps/control/browser-hosts/migrations/0001_host_allocations.sql. Its merged bytes are unchanged.
+74 migration — apps/control/browser-hosts/migrations/0002_verified_teardown.sql.
+75 phase:browser_host_control_grants — first-chat-browser-host-control-grants.sql. Existing schema owner grants only schema usage, allocation SELECT, nonce SELECT/INSERT and the two fixed lock functions to meri_control_runtime. Effective allocator mutation privileges are refused.
+
+Expected new product footprint: meri_host_control schema; host_allocations and request_nonces tables; guard_allocation trigger/function and lock_allocation/lock_conversation functions; two NOLOGIN roles; immutable allocation index/constraints; forward teardown_json/teardown_sha256 columns and constraint. Existing source 0001 CREATE ROLE branches are skipped because installer72 precreates the roles. No role-creation permission is added to meri_product_migrator.
+
+Production provisioning writer binding: NOT ESTABLISHED. meri_host_allocator is NOLOGIN and unbound. No existing login, credential reference or service was guessed; Control never receives allocator writes. The native provisioning service/login/credential owner must be named before activation. The reader binds to the existing Control database role through direct grants, avoiding assumptions about transitive role inheritance.
+
+Packaging: only the existing first-chat SQL COPY list and matching .dockerignore inclusions gain the two new installer files. No image build was run.
+
+Validation scope: actual isolated PostgreSQL16 with ordinary roles covers immutable allocation, nonce, revoke serialization, unknown commit, exact terminal receipt recovery and replacement. Canonical custody routing also uses actual PG; Core/SDK/native effects in these fixtures are scripted. Catalog/installer interpreter checks are offline. The new production installer phases and actual native teardown/provider chain require DB/Release/native-owner acceptance; prior migration71 completion does not include these entries.
+
+Operator boundary: prepare the existing bounded forward-apply packet for the four new catalog entries after obtaining operator custody and inspecting the real ledger/role footprint. Do not invoke a broad bootstrap/password replay, alter the prior71 bytes, create a second migration runner, or call source/local fixtures deployed acceptance. Initial active-host admission/policy, native provisioning, successor attachment, actual teardown-to-allocator wiring and deployed browser acceptance remain open.

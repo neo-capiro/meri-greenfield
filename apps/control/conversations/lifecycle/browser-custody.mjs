@@ -64,7 +64,7 @@ export function createBrowserCustodyJournal({tx,verifyRun,lookup,pins,save,now,l
   const {run:source,control}=await held(client,{binding,scopes,selectedClientId},check,{closed:true}),custody=control.browserCustody;
   if(custody.hostId!==allocation.hostId||custody.generation!==allocation.generation)fail('BROWSER_CUSTODY_REFUSED');
   const latest=await latestRun(client,binding,scopes,check);check();
-  let currentBinding=latest.projection.binding,cutoff=Math.min(custody.expiresAtMs,allocation.leaseDeadlineMs),phase='browser-held';
+  let currentBinding=latest.projection.binding,targetHandoff,cutoff=Math.min(custody.expiresAtMs,allocation.leaseDeadlineMs),phase='browser-held';
   const sameResource=value=>value.ownerInstanceId===custody.ownerInstanceId&&value.hostId===custody.hostId&&
    value.generation===custody.generation&&value.policySha256===custody.policySha256&&value.expiresAtMs<=custody.expiresAtMs;
   if(!same(currentBinding,binding)){
@@ -76,7 +76,7 @@ export function createBrowserCustodyJournal({tx,verifyRun,lookup,pins,save,now,l
     if(cursor.writerFence<=binding.writerFence)fail('BROWSER_CUSTODY_REFUSED');
     const execution=await readExecution(client,cursor,scopes,selectedClientId,check),handoff=execution?.browserHandoff;check();
     if(!handoff||!same(handoff.targetBinding,cursor)||!sameResource(handoff.custody))fail('BROWSER_CUSTODY_REFUSED');
-    const previous=handoff.custody.binding;
+    targetHandoff??=handoff;const previous=handoff.custody.binding;
     if(previous.tenantId!==binding.tenantId||previous.actorId!==binding.actorId||previous.conversationId!==binding.conversationId||
      previous.writerFence+1!==cursor.writerFence)fail('BROWSER_CUSTODY_REFUSED');
     const prior=await held(client,{binding:previous,scopes,selectedClientId},check,{closed:true});
@@ -91,7 +91,7 @@ export function createBrowserCustodyJournal({tx,verifyRun,lookup,pins,save,now,l
    phase='browser-successor';
   }else if(source.sequence_end!=null)fail('BROWSER_CUSTODY_REFUSED');
   return data({binding,browserPolicySha256:custody.policySha256,capabilityPolicySha256:null,browserAdmitted:true,sdkAdmitted:false,bashAdmitted:false,
-   phase,currentUntilMs:cutoff,browserCustody:custody,...(phase==='browser-successor'?{browserSuccessor:{binding:currentBinding}}:{})});
+   phase,currentUntilMs:cutoff,browserCustody:custody,...(phase==='browser-successor'?{browserSuccessor:{binding:currentBinding,handoff:targetHandoff}}:{})});
  }
  return Object.freeze({read,returning,currentHost});
 }
