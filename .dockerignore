@@ -46,6 +46,8 @@ infra/product-preview/*
 !infra/product-preview/first-chat-expired-conversation-purge-grants.sql
 !infra/product-preview/first-chat-schedule-worker-grants.sql
 !infra/product-preview/first-chat-core-retention-serving.sql
+!infra/product-preview/first-chat-browser-host-roles.sql
+!infra/product-preview/first-chat-browser-host-control-grants.sql
 !infra/product-preview/runtime-packages/
 infra/product-preview/runtime-packages/*
 !infra/product-preview/runtime-packages/wheels/
