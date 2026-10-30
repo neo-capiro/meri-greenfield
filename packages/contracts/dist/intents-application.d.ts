@@ -16,6 +16,13 @@ export type IntentsApplicationEnvelope =
   | Canonical_ResearchShareProposal_1Cdbd32E
   | Canonical_ResearchActionProposal_081Cad69
   | Canonical_ApprovalDecision_5E8Bdbcf
+  | IntentsBrowserDeliveryId
+  | IntentsBrowserDisplay
+  | IntentsBrowserDecision
+  | IntentsBrowserProposal
+  | IntentsBrowserExecution
+  | IntentsBrowserActionItem
+  | IntentsWithheldBrowserActionItem
   | Canonical_TaskCreateArguments_1202C301
   | Canonical_TaskUpdateArguments_48509A7A
   | Canonical_MailSendArguments_016B3776
@@ -87,6 +94,22 @@ export type IntentsApplicationEnvelope =
   | RoutinesErrorResponse;
 export type IntentsConversationId = string;
 export type IntentsDeliveryId = string;
+export type IntentsBrowserDeliveryId = string;
+export type IntentsDecideRequest =
+  | {
+      conversationId: IntentsConversationId;
+      deliveryId: IntentsDeliveryId;
+      proposalId: string;
+      commandSha256: string;
+      decision: 'approved' | 'rejected';
+    }
+  | {
+      conversationId: IntentsConversationId;
+      deliveryId: IntentsBrowserDeliveryId;
+      proposalId: string;
+      subjectSha256: string;
+      decision: 'approved' | 'rejected';
+    };
 export type IntentsNativeProposal =
   | Canonical_ApprovalProposalD1A3E74F
   | Canonical_TaskUpdateApprovalProposal_1F70E582
@@ -94,6 +117,7 @@ export type IntentsNativeProposal =
   | Canonical_DocumentDraftApprovalProposal_834C2460;
 export type IntentsProposal =
   | IntentsNativeProposal
+  | IntentsBrowserProposal
   | Canonical_ResearchShareProposal_1Cdbd32E
   | Canonical_ResearchActionProposal_081Cad69
   | Canonical_LegiwatchProposal_1F841734
@@ -1940,8 +1964,22 @@ export type IntentsItem =
   | IntentsBizdevItem
   | IntentsWithheldBizdevItem
   | IntentsLegislativeDocumentItem
-  | IntentsWithheldLegislativeDocumentItem;
+  | IntentsWithheldLegislativeDocumentItem
+  | IntentsBrowserActionItem
+  | IntentsWithheldBrowserActionItem;
 export type IntentsDecideResponse =
+  | {
+      status: 'browser_decision_recorded';
+      deliveryId: IntentsBrowserDeliveryId;
+      proposalId: string;
+      decision: IntentsBrowserDecision;
+    }
+  | {
+      status: 'browser_rejected';
+      deliveryId: IntentsBrowserDeliveryId;
+      proposalId: string;
+      decision: IntentsBrowserDecision;
+    }
   | {
       status: 'legislative_document_decided';
       deliveryId: IntentsDeliveryId;
@@ -2166,15 +2204,8 @@ export interface IntentsClientRecordOperation {
 }
 export interface IntentsListRequest {
   conversationId: IntentsConversationId;
-  after?: IntentsDeliveryId | null;
+  after?: IntentsDeliveryId | IntentsBrowserDeliveryId | null;
   limit?: number;
-}
-export interface IntentsDecideRequest {
-  conversationId: IntentsConversationId;
-  deliveryId: IntentsDeliveryId;
-  proposalId: string;
-  commandSha256: string;
-  decision: 'approved' | 'rejected';
 }
 export interface Canonical_ApprovalProposalD1A3E74F {
   proposalId: string;
@@ -2483,6 +2514,33 @@ export interface Canonical_DocumentDraftArgumentsDeaaba57 {
   baseVersionId: string | null;
   title: string;
   format: 'docx';
+}
+export interface IntentsBrowserProposal {
+  kind: 'browser_action';
+  proposalId: string;
+  subjectSha256: string;
+  operation: {
+    id: 'browser_action';
+    version: '0.2.0';
+  };
+  binding: Canonical_RunBinding_84F2304C;
+  display: IntentsBrowserDisplay;
+  requiredApprover: Canonical_IdentityAba0A4E9;
+  /**
+   * @minItems 1
+   * @maxItems 100
+   */
+  scopes: [Canonical_ScopeF882Edb5, ...Canonical_ScopeF882Edb5[]];
+  requestedAtMs: number;
+  expiresAtMs: number;
+  createdAt: string;
+}
+export interface IntentsBrowserDisplay {
+  tool: string;
+  pageOrigin: string;
+  server: string;
+  inputSha256: string;
+  policySha256: string;
 }
 export interface Canonical_ResearchShareProposal_1Cdbd32E {
   kind: 'research_share';
@@ -3490,6 +3548,38 @@ export interface Canonical_ApprovalDecision_5E8Bdbcf {
   approver: Canonical_IdentityAba0A4E9;
   policyRevision: string;
 }
+export interface IntentsBrowserDecision {
+  proposalId: string;
+  subjectSha256: string;
+  decision: 'approved' | 'rejected';
+  decidedAt: string;
+  approver: Canonical_IdentityAba0A4E9;
+  policyRevision: string;
+}
+export interface IntentsBrowserExecution {
+  state: 'completed';
+  outcome: 'ok' | 'error';
+  reference: string | null;
+}
+export interface IntentsBrowserActionItem {
+  deliveryId: IntentsBrowserDeliveryId;
+  createdAt: string;
+  operation: IntentsOperation;
+  state: 'prepared';
+  kind: 'browser_action';
+  proposal: IntentsBrowserProposal;
+  decision: IntentsBrowserDecision | null | 'unavailable';
+  execution: IntentsBrowserExecution | null | 'unavailable';
+  phase: 'awaiting_approval' | 'approved' | 'rejected' | 'expired' | 'unknown' | 'unknown_decision';
+}
+export interface IntentsWithheldBrowserActionItem {
+  deliveryId: IntentsBrowserDeliveryId;
+  createdAt: string;
+  operation: IntentsOperation;
+  state: 'prepared';
+  kind: 'browser_action';
+  withheld: true;
+}
 export interface Canonical_TaskCreateArguments_1202C301 {
   title: string;
   clientId: string | null;
@@ -4447,7 +4537,7 @@ export interface IntentsListResponse {
    * @maxItems 50
    */
   intents: IntentsItem[];
-  next: IntentsDeliveryId | null;
+  next: IntentsDeliveryId | IntentsBrowserDeliveryId | null;
 }
 export interface Canonical_ResearchShareOneTimeResult_9258E7D0 {
   sharePath: string;

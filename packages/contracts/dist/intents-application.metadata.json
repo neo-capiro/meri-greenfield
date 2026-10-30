@@ -248,13 +248,13 @@
     },
     {
       "path": "intents-application/schema.mjs",
-      "sha256": "5c8be336652ac505686cc603cf99d6b5f4f3a78fd722a3bdea199008b4f93647",
-      "bytes": 22365
+      "sha256": "bbaaa06a9f8a7a0c8747be9bf8a65e32d76c8d0cdcef466e2646737109791094",
+      "bytes": 25865
     },
     {
       "path": "intents-application/semantics.mjs",
-      "sha256": "5450146cb86f174a69c8c27b3df4d34aa9344ba6876ca087dce72a9f63da8f7d",
-      "bytes": 29270
+      "sha256": "6fd6d62828661c681d8df81a1951e0c1e7561dc27de0ac097207aa6b88bf30fa",
+      "bytes": 31576
     },
     {
       "path": "meri.schema.json",
@@ -352,7 +352,7 @@
       "bytes": 3041
     }
   ],
-  "schemaSha256": "43759e17c7a6774c312d1f401c60fd210145fd0380735c32389ff0092189818d",
+  "schemaSha256": "76a5122f623c133c928b893e5b90bd9493f31018af93a659ca30ccf0cdc9640e",
   "browserInputs": [
     "artifacts-0.2/artifact-formats.mjs",
     "commands-0.2/mail-send-validation.mjs",
