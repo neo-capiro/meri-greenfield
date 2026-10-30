@@ -153,7 +153,7 @@ export async function prepareGuestHostRun({allocation,binding,hostIdentity,cwd,d
  let sdkClient,bashClient,browserClient,sdkMonitor,bashMonitor,browserEgress,browserObserver,hostObserver,
   sdkNetwork,browserNetwork,launcher,readinessLauncher,broker,contexts,bashFacts,teardown,browserPort,settlement,stopping,
   sdkLaunchGate,readinessObserver;
- let browserGrantAttempted=false,bootstrapped=false,processClientTaken=false,settling=false;
+ let browserGrantAttempted=false,bootstrapped=false,processClientTaken=false,settling=false,sdkRetired=false;
  let browserActive=false,preparedWorkspace;
  const clients=[];
  const closeClients=()=>{for(const client of clients)try{client.close();}catch{}};
@@ -233,9 +233,9 @@ export async function prepareGuestHostRun({allocation,binding,hostIdentity,cwd,d
   const monitorInput={allocation:a,binding:b,capabilityPolicy:policy,now,maxFreshMs:control.maxFreshMs,
    refreshEveryMs:control.refreshEveryMs,signal:owner.signal};
   sdkMonitor=await components.startMonitor({...monitorInput,readCurrent:sdkClient.readCurrent});
-  sdkMonitor.signal.addEventListener('abort',()=>owner.abort(fault('HOST_BOOTSTRAP_REVOKED')),{once:true});
+  sdkMonitor.signal.addEventListener('abort',()=>{if(!sdkRetired)owner.abort(fault('HOST_BOOTSTRAP_REVOKED'));},{once:true});
   if(policy.bash)bashMonitor=await components.startMonitor({...monitorInput,readCurrent:bashClient.readCurrent});
-  bashMonitor?.signal.addEventListener('abort',()=>owner.abort(fault('HOST_BOOTSTRAP_REVOKED')),{once:true});
+  bashMonitor?.signal.addEventListener('abort',()=>{if(!sdkRetired)owner.abort(fault('HOST_BOOTSTRAP_REVOKED'));},{once:true});
   stopped(allSignals());
   if(browserActive){
    preparedWorkspace=await prepareAdmittedBrowserWorkspace({allocation:a,binding:b,cwd,paths,
@@ -251,20 +251,23 @@ export async function prepareGuestHostRun({allocation,binding,hostIdentity,cwd,d
   const localRelay=kind=>components.createLocalRelayPort({allocation:a,binding:b,hostIdentity:i,
    helperPath:native.helperPath,nodePath:native.nodePath,cwd,relayUid:native.relay[kind].uid,
    relayGid:native.relay[kind].gid,toolUid:native[kind].uid,
-   startConfinedLocalRelay:components.startLocalRelay,authorize:async()=>sdkMonitor.refresh(),signal:allSignals()});
+   startConfinedLocalRelay:components.startLocalRelay,authorize:async()=>{if(kind==='sdk')return sdkMonitor.refresh();
+    const receipt=await browserClient.readCurrent({allocation:a,binding:b,policySha256:browserDigest,signal:owner.signal});
+    assertBrowserHostCurrent({allocation:a,binding:b,policySha256:browserDigest,current:receipt,nowMs:now(),maxFreshMs:control.maxFreshMs});
+   },signal:kind==='browser'?owner.signal:allSignals()});
   const hostRelay=kind=>components.createHostRelayPort({allocation:a,binding:b,hostIdentity:i,
    helperPath:native.hostRelayHelperPath,nodePath:native.nodePath,
    uid:native.hostRelay[kind].uid,gid:native.hostRelay[kind].gid,
    forbiddenUids:identities.filter(person=>person!==native.hostRelay[kind]).map(person=>person.uid),
    forbiddenGids:identities.filter(person=>person!==native.hostRelay[kind]).map(person=>person.gid),
-   authorize:async()=>{await sdkMonitor.refresh();
+   authorize:async()=>{if(kind==='sdk')await sdkMonitor.refresh();
     if(kind==='browser'){
      const current=await browserClient.readCurrent({allocation:structuredClone(a),binding:structuredClone(b),
-      policySha256:browserDigest,signal:allSignals()});
+      policySha256:browserDigest,signal:owner.signal});
      assertBrowserHostCurrent({allocation:a,binding:b,policySha256:browserDigest,current,
       nowMs:now(),maxFreshMs:control.maxFreshMs});
     }
-   },signal:allSignals()});
+   },signal:kind==='browser'?owner.signal:allSignals()});
   // The SDK compartment starts with model/control only. Its Bash proxy routes are added after confined readiness.
   sdkNetwork=await components.prepareNetwork({allocation:a,binding:b,kind:'sdk',routes:network.sdkRoutes,
    hostRelayUid:native.hostRelay.sdk.uid,hostRelayGid:native.hostRelay.sdk.gid,
@@ -289,7 +292,7 @@ export async function prepareGuestHostRun({allocation,binding,hostIdentity,cwd,d
    sdkLaunchGate,onBrowserPrepared:({leaderPid})=>{if(!browserObserver)fail('HOST_BROWSER_NOT_ADMITTED');
     return armBrowserAfterWorkspaceReadback({allocation:a,binding:b,hostIdentity:i,cwd,paths,
      browserUid:native.browser.uid,browserGid:native.browser.gid,
-     sdkUid:native.sdk.uid,sdkGid:native.sdk.gid,leaderPid,browserObserver,preparedWorkspace});},signal:allSignals()};
+     sdkUid:native.sdk.uid,sdkGid:native.sdk.gid,leaderPid,browserObserver,preparedWorkspace});},signal:owner.signal};
   const validatePinnedSdkDescriptor=descriptor=>{
    const admitted=native.validateSdkDescriptor(descriptor);
    if(canonicalSha256(admitted)!==canonicalSha256(descriptor))fail('HOST_MODEL_DESCRIPTOR_REFUSED');
@@ -304,7 +307,7 @@ export async function prepareGuestHostRun({allocation,binding,hostIdentity,cwd,d
    onSdkPrepared:({sdkLeaderPid})=>hostObserver.arm({sdkLeaderPid})});
   if(browserActive){const nativeContext=await launcher.prepareBrowserContext({policy:first,installation,paths});
    contexts=components.createConfinedContextPort({native:nativeContext,binding:b,policy:first,
-    installation:nativeContext.installation,paths,signal:allSignals(),now});
+    installation:nativeContext.installation,paths,signal:owner.signal,now});
    broker=await launcher.prepareBrowserBroker({policy:first,installation,paths});
    broker.failure?.catch(()=>{owner.abort(fault('HOST_BROWSER_BROKER_UNKNOWN'));
     if(bootstrapped)void settle({reason:'failed'}).catch(()=>{});});}
@@ -356,12 +359,21 @@ export async function prepareGuestHostRun({allocation,binding,hostIdentity,cwd,d
     return browserExit??=browserObserver.waitForExit(request,options);
    }});
    const current=async({signal})=>{
-    stopped(allSignals());const current=await browserClient.readCurrent({allocation:a,binding:b,policySha256:browserDigest,signal});
+    stopped(owner.signal);const current=await browserClient.readCurrent({allocation:a,binding:b,policySha256:browserDigest,signal});
     assertBrowserHostCurrent({allocation:a,binding:b,policySha256:browserDigest,current,nowMs:now(),maxFreshMs:control.maxFreshMs});
    };
    const sessions=components.createBrowserSessionHost({binding:b,cwd,installation:broker.installation,
     upstream:components.pinnedBrowserUpstream(broker.installation),contexts,modelTransport:broker.modelTransport,
-    controls:browser.controls,current,siteWorkflows:browser.siteWorkflows,hold:browser.hold,processes,
+    allocation:a,ownerInstanceId:browser.controls.ownerInstanceId,
+    retirement:{prepare:input=>launcher.prepareSdkRetirement(input),
+     async wait({signal}){const r=await launcher.retireSdk();if(r.sdkAbsent!==true)fail('HOST_SDK_RETIREMENT_REFUSED');
+      signal?.throwIfAborted();sdkRetired=true;sdkMonitor.close();bashMonitor?.close();await sdkNetwork.close();await revokeBash();},
+     async retain({custody,signal:operationSignal}){await current({signal:operationSignal});if(!sdkRetired)fail('HOST_SDK_RETIREMENT_REFUSED');
+      operationSignal?.throwIfAborted();
+      // A completed run's request lifetime ends here; the browser keeps its own
+      // fresh currentness checks, egress revocation and hard custody expiry.
+      signal?.removeEventListener('abort',parentAbort);
+     }},controls:browser.controls,current,siteWorkflows:browser.siteWorkflows,hold:browser.hold,processes,
     dispose:({paths,signal})=>disposeBrowserState(paths,{signal}),now});
    browserPort=components.createBrowserPort({binding:b,cwd,installation:broker.installation,policy:pinnedBrowserPolicy,sessions,
     egress:egressPort,processes,approvals:browser.approvals,artifacts:browser.artifacts,

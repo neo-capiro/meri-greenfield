@@ -13,6 +13,7 @@ import {playwrightHostCommand,validateBrowserInstallation} from '../../browser/s
 import {validateBrowserPolicy} from '../../browser/policy.mjs';
 import {assertHostAllocation,assertHostRunBinding,assertD005HostIdentity,assertHostCurrent} from '../binding.mjs';
 import {namespaceProbeArgs,READINESS_MODEL_ENV} from '../../sandbox-readiness/readiness.mjs';
+import {createSdkChildQuiescenceObserver} from './sdk-quiescence.mjs';
 import {createSdkChildHold} from './sdk-hold.mjs';
 
 const HEX=/^[0-9a-f]{64}$/u;
@@ -156,7 +157,7 @@ async function preparedProcess({s,helperPath,kind,network,command,args,cwd,home,
 export function createHostLauncher({allocation,binding,hostIdentity,helperPath,shimPath,
  sdkNetwork,browserNetwork,authorities:rawAuthorities,sdkUid,sdkGid,browserUid,browserGid,
  validateSdkDescriptor,onSdkPrepared,onBrowserPrepared,sdkLaunchGate,sdkMode='conversation',probeCommand,probeNodePath,
- signal,spawnNative=spawn,now=Date.now,createSdkHold=createSdkChildHold,
+ signal,spawnNative=spawn,now=Date.now,createSdkHold=createSdkChildHold,createSdkObserver=createSdkChildQuiescenceObserver,
  readSocketDirectory=stat,readyMs=5000,stopMs=5000}={}){
  const s=scope({allocation,binding,hostIdentity}),readers=authorities(rawAuthorities);
  if(![helperPath,shimPath].every(absolute)||shimPath!=='/opt/meri/bin/meri-mcp-shim'||
@@ -164,22 +165,41 @@ export function createHostLauncher({allocation,binding,hostIdentity,helperPath,s
   typeof validateSdkDescriptor!=='function'||typeof onSdkPrepared!=='function'||typeof onBrowserPrepared!=='function'||
   typeof sdkLaunchGate?.enter!=='function'||typeof sdkLaunchGate?.freeze!=='function'||
   !['conversation','readiness'].includes(sdkMode)||sdkMode==='readiness'&&(!absolute(probeCommand)||!absolute(probeNodePath))||
-  typeof spawnNative!=='function'||typeof createSdkHold!=='function'||typeof readSocketDirectory!=='function'||typeof now!=='function'||!maxMs(readyMs)||!maxMs(stopMs))fail('HOST_LAUNCH_CONFIGURATION');
+  typeof spawnNative!=='function'||typeof createSdkHold!=='function'||typeof createSdkObserver!=='function'||typeof readSocketDirectory!=='function'||typeof now!=='function'||!maxMs(readyMs)||!maxMs(stopMs))fail('HOST_LAUNCH_CONFIGURATION');
  nativeSignal(signal);if(signal?.aborted)fail('HOST_LAUNCH_CANCELLED');const life=new AbortController();
  const check=()=>checkAuthority(s,readers,life.signal,readyMs);
  const sdkHold=sdkMode==='conversation'&&browserNetwork?createSdkHold({allocation:s.allocation,binding:s.binding,hostIdentity:s.hostIdentity,timeoutMs:readyMs}):null;
- let broker,browser,sdk,sdkRelease,clientMade=false,brokerTaken=false,closed=false,closing,browserFailure,browserPins;
+ let broker,browser,sdk,sdkRelease,clientMade=false,brokerTaken=false,closed=false,closing,browserFailure,browserPins,sdkRetiring=false,sdkRetirement,sdkObserver;
  const pendingChildren=new Set();
  const nonce=randomBytes(32).toString('hex'),socketPath=`/run/meri-launch/${s.bindingSha256}.sock`;
  const descriptor=Object.freeze({shimPath,socketPath,nonce});
  async function close(){if(closing)return closing;closed=true;life.abort();
   closing=(async()=>{const failures=[];
    for(const child of new Set([broker,browser,sdk,...pendingChildren].filter(Boolean)))try{await stopChild(child,stopMs);}catch(error){failures.push(error);}
-   try{await sdkHold?.close();}catch(error){failures.push(error);}
+   try{await sdkObserver?.close();await sdkHold?.close();}catch(error){failures.push(error);}
    if(!failures.length&&sdkRelease){sdkRelease();sdkRelease=undefined;}
    if(broker)try{await unlink(socketPath);}catch(error){if(error?.code!=='ENOENT')failures.push(error);}
    if(failures.length)fail('HOST_LAUNCH_CLEANUP_UNKNOWN');return Object.freeze({closed:true,processAbsenceProven:false});})();
   return closing;}
+ async function prepareSdkRetirement({signal}={}){
+  nativeSignal(signal);if(closed||sdkRetiring||!sdk||!browser||sdkMode!=='conversation')fail('HOST_SDK_RETIREMENT_REFUSED');
+  await check();signal?.throwIfAborted();
+  sdkObserver=createSdkObserver({allocation:s.allocation,binding:s.binding,hostIdentity:s.hostIdentity,timeoutMs:stopMs});
+  await sdkObserver.arm({sdkLeaderPid:sdk.pid});
+  if(closed||sdk.exitCode!==null||sdk.signalCode!==null||signal?.aborted){await close();fail('HOST_SDK_RETIREMENT_REFUSED');}
+  sdkRetiring=true;return Object.freeze({prepared:true});
+ }
+ async function retireSdk(){
+  if(closed||!sdkRetiring||!sdkObserver)fail('HOST_SDK_RETIREMENT_REFUSED');
+  return sdkRetirement??=Promise.resolve().then(async()=>{try{
+   for(const child of [sdk,broker].filter(Boolean))await stopChild(child,stopMs);
+   await sdkObserver.waitQuiescent({signal:life.signal});await sdkHold?.close();
+   if(sdkRelease){sdkRelease();sdkRelease=undefined;}
+   if(broker)try{await unlink(socketPath);}catch(error){if(error?.code!=='ENOENT')throw error;}
+   return Object.freeze({closed:true,sdkAbsent:true,browserRetained:true});
+  }catch(error){await close();throw error;}});
+ }
+ const closeSdk=()=>sdkRetiring?retireSdk():close();
  async function prepareBrowserContext({policy,installation,paths}){
   if(closed||browser||browserPins||sdkMode!=='conversation')fail('HOST_LAUNCH_REFUSED');
   const installed=validateBrowserInstallation({...installation,launch:descriptor},s.binding);
@@ -214,7 +234,7 @@ export function createHostLauncher({allocation,binding,hostIdentity,helperPath,s
   browserFailure=(async()=>{
    try{if(await next()!=='A')fail('HOST_LAUNCH_UNKNOWN');
     await check();if(closed)fail('HOST_LAUNCH_CANCELLED');broker.stdio[4].end('G');
-   }catch(error){life.abort();try{await stopChild(broker,stopMs);}catch{}throw error;}
+   }catch(error){if(sdkRetiring)return;life.abort();try{await stopChild(broker,stopMs);}catch{}throw error;}
   })();browserFailure.catch(()=>{});
   return Object.freeze({descriptor,installation:installed,modelTransport:Object.freeze({readable:broker.stdio[6],writable:broker.stdio[6]}),failure:browserFailure,close});
  }
@@ -224,7 +244,7 @@ export function createHostLauncher({allocation,binding,hostIdentity,helperPath,s
   events.on('error',()=>{});let requested,started=false,ended=false;
   const facade=Object.freeze({stdin:input,stdout:output,get killed(){return closed||ended;},
    get exitCode(){return sdk?.exitCode??null;},get signalCode(){return sdk?.signalCode??null;},
-   kill(){void close().catch(()=>{});return true;},on:(...args)=>events.on(...args),once:(...args)=>events.once(...args),off:(...args)=>events.off(...args)});
+   kill(){void closeSdk().catch(()=>{});return true;},on:(...args)=>events.on(...args),once:(...args)=>events.once(...args),off:(...args)=>events.off(...args)});
   return Object.freeze({
    spawnClaudeCodeProcess(value){
     if(requested||closed)fail('HOST_LAUNCH_REFUSED');
@@ -235,7 +255,7 @@ export function createHostLauncher({allocation,binding,hostIdentity,helperPath,s
     if(canonicalSha256(admitted)!==canonicalSha256(inert))fail('HOST_LAUNCH_DESCRIPTOR_REFUSED');
     if(!absolute(r.command)||!absolute(r.cwd)||!Array.isArray(r.args)||r.args.some(x=>typeof x!=='string'||x.length>8192))fail('HOST_LAUNCH_DESCRIPTOR_REFUSED');
     requested=Object.freeze({command:r.command,args:Object.freeze([...r.args]),cwd:r.cwd,env:exactEnv(r.env,sdkMode)});
-    r.signal?.addEventListener('abort',()=>{void close().catch(()=>{});},{once:true});
+    r.signal?.addEventListener('abort',()=>{void closeSdk().catch(()=>{});},{once:true});
     return facade;
    },
    async startPreparedProcess(){
@@ -256,11 +276,11 @@ export function createHostLauncher({allocation,binding,hostIdentity,helperPath,s
       broker.stdio[5].end(`${sdk.pid}\n`);}
      input.pipe(sdk.stdin);sdk.stdout.pipe(output);sdk.stderr.resume();
      sdk.on('exit',(code,sig)=>{ended=true;output.end();if(sdkRelease){sdkRelease();sdkRelease=undefined;}
-      events.emit('exit',code,sig);void close().catch(()=>{});});
+      events.emit('exit',code,sig);void closeSdk().catch(()=>{});});
      sdk.on('error',error=>events.emit('error',error));
      return Object.freeze({started:true,leaderPid:sdk.pid});
     }catch(error){await close();throw error;}
-   },close,
+   },close:closeSdk,
   });
  }
  async function sdkPhysicalHold(frozen){
@@ -292,7 +312,7 @@ export function createHostLauncher({allocation,binding,hostIdentity,helperPath,s
   }
  }
  signal?.addEventListener('abort',()=>{life.abort();void close().catch(()=>{});},{once:true});
- return Object.freeze({scope:s,descriptor,prepareBrowserContext,prepareBrowserBroker,createSdkProcessClient,runReadinessProbe,close,
+ return Object.freeze({scope:s,descriptor,prepareSdkRetirement,retireSdk,prepareBrowserContext,prepareBrowserBroker,createSdkProcessClient,runReadinessProbe,close,
   freezeSdk:()=>sdkPhysicalHold(true),thawSdk:()=>sdkPhysicalHold(false),
   get signal(){return life.signal;}});
 }

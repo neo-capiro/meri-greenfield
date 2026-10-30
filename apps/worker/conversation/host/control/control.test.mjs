@@ -110,3 +110,16 @@ test('unacknowledged COMMIT, database failure and abort release no receipt; no i
  assert.equal(f.used.size,0);
  assert.throws(()=>createPostgresHostCurrentnessStore({transact:async()=>{},readCanonicalRun:async()=>{},maxLeaseMs:30001}),code('HOST_CONTROL_UNAVAILABLE'));
 });
+
+test('held canonical browser custody cannot reauthorize SDK/Bash or another host generation',async()=>{
+ const custody={schema:'meri-browser-custody/1',binding,controlId:'00000000-0000-4000-8000-000000000010',ownerInstanceId:'00000000-0000-4000-8000-000000000011',
+  hostId:allocation.hostId,generation:allocation.generation,leaseEpoch:1,policySha256,expiresAtMs:now+20000};
+ const state={binding,browserPolicySha256:policySha256,capabilityPolicySha256:policySha256,sdkAdmitted:false,browserAdmitted:true,bashAdmitted:false,
+  phase:'browser-held',currentUntilMs:now+20000,browserCustody:custody};
+ const f=fixture();f.setState(state);assert.equal((await f.read()).receipt.currentUntilMs,now+3000);
+ for(const purpose of ['sdk','bash'])await assert.rejects(f.read(request('d'.repeat(64),purpose)),code('HOST_CONTROL_UNAVAILABLE'));
+ for(const change of [{browserCustody:undefined},{browserCustody:{...custody,generation:2}},
+  {sdkAdmitted:true},{bashAdmitted:true},{currentUntilMs:custody.expiresAtMs+1}]){
+  const other=fixture();other.setState({...state,...change});await assert.rejects(other.read(),code('HOST_CONTROL_UNAVAILABLE'));
+ }
+});

@@ -125,3 +125,13 @@ test('post-commit target settlement or advancement never enters runless successo
   }finally{assert.deepEqual(h.counts(),{rebinds:1,reservations:0},race);}
  }
 });
+
+
+test('paused source retains ordinary read authority and exact renewal without reserving a successor',async t=>{
+ const h=await fixture();t.after(h.close);const old=h.processOwner(),first=await old.issue();
+ await h.publish('run.status',{state:'paused',reasonCode:null});
+ const history=await old.service.history({credential:first.receipt.credential});assert.equal(history.run.state,'paused');assert.deepEqual(history.run.binding,binding);
+ const renewed=await old.issue();assert.deepEqual(renewed.current.binding,binding);assert.equal((await old.service.history({credential:renewed.receipt.credential})).run.state,'paused');
+ h.state.offset=renewed.receipt.expiresAtMs-Date.now()+1;h.state.bearer='synthetic-renewed-after-pause';
+ const fresh=h.processOwner(),recovered=await fresh.issue();assert.deepEqual(recovered.current.binding,binding);assert.equal((await fresh.service.history({credential:recovered.receipt.credential})).run.state,'paused');h.assertReadOnly();
+});
