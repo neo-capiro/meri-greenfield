@@ -11,6 +11,7 @@ import {createHostCurrentnessServer} from '../worker/conversation/host/control/s
 import {transact} from '../control/product-persistence/transaction.mjs';
 import {rowRun} from '../control/conversations/boundary.mjs';
 import {canonicalSha256} from '../../packages/contracts/validate.mjs';
+import {data} from '../../packages/contracts/commands-0.2/execution-boundary.mjs';
 const fail=code=>{throw Object.assign(new Error(code),{code});};
 const bytes=(value,label)=>{
  if(!(value instanceof Uint8Array)||value.length===0)fail('BROWSER_HOST_COMPOSITION');
@@ -27,6 +28,27 @@ export async function readBrowserHostMaterial(declaration,read){
  if(declaration.tls.hostServer===undefined)return Object.freeze({privateClient});
  const s=declaration.tls.hostServer;
  return Object.freeze({privateClient,hostServer:Object.freeze({cert:await load(s.certFile),key:await load(s.keyFile),clientCa:await load(s.clientCaFile)})});
+}
+/** The composed hold callback: same-client lifecycle verification of an ALREADY applied and still
+ * unreturned takeover. It reads the canonical run row on the caller's client and delegates to the
+ * lifecycle owner's heldApplied. The lifecycle owner takes a CLOSED {hostId,generation} view of the
+ * allocation, so this projection is explicit here; the host store still validates the full allocation. */
+export function createBrowserHostHoldCustody({store}={}){
+ return Object.freeze({async hold({client,binding,allocation,check}={}){
+  // A missing lifecycle hold owner refuses at call time, so a composition that does not serve the hold
+  // operation still builds; only the operation itself is unavailable.
+  if(!store?.lifecycle?.browserCustody||typeof store.lifecycle.browserCustody.heldApplied!=='function')fail('BROWSER_HOST_COMPOSITION');
+  if(typeof client?.query!=='function'||typeof check!=='function')fail('BROWSER_HOST_COMPOSITION');
+  const rows=await client.query('SELECT * FROM meri_conversations.runs WHERE tenant_id=$1 AND conversation_id=$2 AND run_id=$3 FOR UPDATE',
+   [binding.tenantId,binding.conversationId,binding.runId]);
+  check();
+  if(!Array.isArray(rows?.rows)||rows.rows.length!==1)fail('BROWSER_HOST_COMPOSITION');
+  const run=rowRun(rows.rows[0]).projection;
+  if(canonicalSha256(data(run.binding))!==canonicalSha256(data(binding))||!Array.isArray(run.scopes)||run.scopes.length!==1)fail('BROWSER_HOST_COMPOSITION');
+  const scope=run.scopes[0],selectedClientId=scope.kind==='client'?scope.resourceId:null;
+  return store.lifecycle.browserCustody.heldApplied(client,{binding,scopes:run.scopes,selectedClientId,
+   allocation:Object.freeze({hostId:allocation.hostId,generation:allocation.generation})},check);
+ }});
 }
 /** `material` is already-loaded protected key material for exactly the declared references:
  * {privateClient:{clientName,cert,key,ca}, hostServer?:{serverName,cert,key,clientCa}}. */
@@ -50,19 +72,7 @@ export function createBrowserHostComposition({declaration,pool,store,sessions,co
  // in that case the workflow operation refuses rather than answering from a static manifest.
  const siteWorkflows=siteWorkflowAdmission===null?null:createBrowserHostSiteWorkflowPort({store,admission:siteWorkflowAdmission});
  const same=(a,b)=>canonicalSha256(a)===canonicalSha256(b);
- /** Same-client lifecycle verification of an ALREADY applied and still unreturned takeover. It reads the
-  * canonical run row on the caller's client, then uses the lifecycle owner's own held helper; it never
-  * dispatches service.control, claims, checkpoints or saves. */
- const holdCustody=async({client,binding,allocation,check})=>{
-  const rows=await client.query('SELECT * FROM meri_conversations.runs WHERE tenant_id=$1 AND conversation_id=$2 AND run_id=$3 FOR UPDATE',
-   [binding.tenantId,binding.conversationId,binding.runId]);
-  check();
-  if(!Array.isArray(rows?.rows)||rows.rows.length!==1)fail('BROWSER_HOST_COMPOSITION');
-  const run=rowRun(rows.rows[0]).projection;
-  if(!same(run.binding,binding)||!Array.isArray(run.scopes)||run.scopes.length!==1)fail('BROWSER_HOST_COMPOSITION');
-  const scope=run.scopes[0],selectedClientId=scope.kind==='client'?scope.resourceId:null;
-  return store.lifecycle.browserCustody.heldApplied(client,{binding,scopes:run.scopes,selectedClientId,allocation},check);
- };
+ const holdCustody=createBrowserHostHoldCustody({store});
  // The listener serves the four named Control reads to a mutually authenticated host peer; it is
  // mounted only when its own protected server material and bind are declared and loaded.
  let server=null,serverTls=null;
@@ -79,7 +89,8 @@ export function createBrowserHostComposition({declaration,pool,store,sessions,co
      if(siteWorkflows===null)fail('BROWSER_HOST_SITE_WORKFLOW_UNAVAILABLE');
      return siteWorkflows.resolve({binding,signal});
     },
-    holdCustody,maxLeaseMs:declaration.maxLeaseMs}),
+    holdCustody:({client,binding,allocation,check})=>holdCustody.hold({client,binding,allocation,check}),
+    maxLeaseMs:declaration.maxLeaseMs}),
    maxFreshMs:declaration.maxCurrentnessMs,requestMs:Math.min(declaration.requestMs,5000),now});
  }
  let starting,closing,address=null,closed=false;
