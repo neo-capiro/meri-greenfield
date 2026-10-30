@@ -45,8 +45,9 @@ export function assertNativeUploadCustody(raw,{binding,declaration}={}){
   // The saved owner must be THIS binding's tenant/actor/conversation, and its scopes the pinned ones.
   if(owner.tenantId!==b.tenantId||owner.actorId!==b.actorId||owner.conversationId!==b.conversationId)
    fail(REFUSED);
-  // Scopes are the record's own; the envelope pins them and each must belong to this binding's tenant.
-  if(scopes.some(scope=>scope.tenantId!==b.tenantId))fail(REFUSED);
+  // The projection must describe the SAME validated declaration and real canonical scope shapes.
+  if(c.bytes!==declaration.bytes||c.sha256!==declaration.sha256)fail(REFUSED);
+  assertNativeConversationScope({binding:b,scopes,selectedClientId:owner.clientId});
   return Object.freeze({uploadId:c.uploadId,requestId:c.requestId,owner,scopes,objectId:c.objectId,
    versionId:c.versionId,sha256:c.sha256,bytes:c.bytes,revision:c.revision,recordSha256:c.recordSha256});
  }catch{throw Object.assign(Error(REFUSED),{code:REFUSED});}
