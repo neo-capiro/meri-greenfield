@@ -118,7 +118,8 @@ static spec parse_spec(int argc,char **argv,int start) {
   if(argc-start<13||argc-start>MAX_ARGS) die();
   spec s={argv[start],argv[start+1],argv[start+2],argv[start+3],argv[start+4],argv[start+5],argv[start+6],argv[start+7],argv[start+8],argv[start+9],argv[start+10],argv[start+11],argv[start+12],&argv[start+12]};
   if(!valid_uuid(s.host_id)||!valid_hex(s.binding_sha,64)||
-     (strcmp(s.kind,"sdk")&&strcmp(s.kind,"browser")&&strcmp(s.kind,"relay-sdk")&&strcmp(s.kind,"relay-browser"))||!valid_name(s.ns_name)||
+     (strcmp(s.kind,"sdk")&&strcmp(s.kind,"browser")&&strcmp(s.kind,"relay-sdk")&&strcmp(s.kind,"relay-browser")&&
+     strcmp(s.kind,"processing"))||!valid_name(s.ns_name)||
      number(s.generation,999999999)<1||number(s.uid,65533)<1000||number(s.gid,65533)<1000||
      !absolute_path(s.cwd)||!absolute_path(s.home)||!absolute_path(s.browsers)||!absolute_path(s.exe)) die();
   (void)number(s.ns_dev,UINT64_MAX);(void)number(s.ns_ino,UINT64_MAX);
@@ -157,6 +158,24 @@ static void enter_namespace(spec *s) {
      (unsigned long long)st.st_dev!=number(s->ns_dev,UINT64_MAX)||
      (unsigned long long)st.st_ino!=number(s->ns_ino,UINT64_MAX)||setns(ns,CLONE_NEWNET)) die();
   close(ns);
+}
+/* Fixed processing keeps the ACTUAL owned hierarchy observable to the accepted 549 observer while denying control-file
+ * writes after the UID drop. The canonical cgroup_fd(spec) pins the OWNED processing leaf; that pin is verified as
+ * cgroup2, the child enters a private mount namespace, and only that pinned directory is bind-mounted (non-recursive) at
+ * /sys/fs/cgroup and remounted read-only. No unrelated tenant hierarchy is exposed, no recursive remount is assumed, and
+ * other kinds keep the historical hidden view. Called as root before drop_privilege; Release verifies the real mount. */
+static void processing_cgroup_view(spec *s) {
+  int leaf=cgroup_fd(s);
+  struct statfs fs;
+  if(leaf<0||fstatfs(leaf,&fs)||fs.f_type!=CGROUP2_SUPER_MAGIC) die();
+  if(unshare(CLONE_NEWNS)) die();
+  if(mount(NULL,"/",NULL,MS_REC|MS_PRIVATE,NULL)) die();
+  char source[64];
+  int n=snprintf(source,sizeof(source),"/proc/self/fd/%d",leaf);
+  if(n<0||(size_t)n>=sizeof(source)) die();
+  if(mount(source,"/sys/fs/cgroup",NULL,MS_BIND|MS_NOSUID|MS_NODEV|MS_NOEXEC,NULL)) die();
+  if(mount(NULL,"/sys/fs/cgroup",NULL,MS_REMOUNT|MS_BIND|MS_RDONLY|MS_NOSUID|MS_NODEV|MS_NOEXEC,NULL)) die();
+  close(leaf);
 }
 static void hide_cgroupfs(void) {
   if(unshare(CLONE_NEWNS)||mount(NULL,"/",NULL,MS_PRIVATE|MS_REC,NULL)||
@@ -270,7 +289,10 @@ static void drop_privilege(spec *s) {
 }
 static void confined_exec(spec *s,int ready,int gate) {
   pid_t parent=getppid();
-  attach_cgroup(s);enter_namespace(s);hide_cgroupfs();
+  attach_cgroup(s);enter_namespace(s);
+  /* Processing keeps the real owned hierarchy readable but not writable after the drop; every other kind keeps the
+   * historical hidden cgroup view. */
+  if(!strcmp(s->kind,"processing")) processing_cgroup_view(s); else hide_cgroupfs();
   if(!strcmp(s->kind,"browser")) browser_workspace_view(s);
   drop_privilege(s);
   /* Linux clears PDEATHSIG when effective credentials change. Arm only after the final UID/GID drop. */

@@ -5,6 +5,7 @@ import {assertBrowserCustody} from '../../../packages/runtime/browser-custody.mj
 import {transact,assertPool} from '../product-persistence/transaction.mjs';
 import {prepareHostAllocation,allocationRow,hostKey,assertRequestedBinding,fail,same} from './allocation.mjs';
 import {verifiedTeardownReceipt} from './teardown-receipt.mjs';
+import {assertBrowserHostAllocation} from '../../worker/conversation/host/binding.mjs';
 export const HOST_ALLOCATION_SQL=Object.freeze({
  lock:`SELECT * FROM meri_host_control.lock_allocation($1,$2)`,
  lockWriter:`SELECT * FROM meri_host_control.host_allocations WHERE host_id=$1 AND generation=$2 FOR UPDATE`,
@@ -75,6 +76,8 @@ export function createPostgresHostAllocationReader({pool,readCanonicalRun,now=Da
    check();const found=rows(await client.query(custody?HOST_ALLOCATION_SQL.lock:HOST_ALLOCATION_SQL.conversation,
     custody?[custody.hostId,custody.generation]:[binding.tenantId,binding.conversationId]));check();if(found.length!==1)fail();
    const saved=allocationRow(found[0]),r=saved.record,a=r.allocation;
+   // Common to the custody and conversation branches: a processing allocation is not browser authority.
+   assertBrowserHostAllocation(a);
    if(saved.state!=='active'||until(r)<=now()||a.tenantId!==binding.tenantId||a.conversationId!==binding.conversationId||
      custody&&(custody.ownerInstanceId!==r.ownerInstanceId||custody.hostId!==a.hostId||custody.generation!==a.generation))fail();
    const current=await readCanonicalRun(client,{allocation:a,originalBinding:r.originalBinding,binding,custody,signal});check();

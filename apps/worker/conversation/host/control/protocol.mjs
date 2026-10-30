@@ -1,7 +1,7 @@
 /** Fixed wire identity for one D005 currentness read. Shape checks never establish authority. */
 import {own,data,nativeSignal} from '../../../../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {canonicalSha256} from '../../../../../packages/contracts/validate.mjs';
-import {assertHostAllocation,assertHostRunBinding,assertD005HostIdentity,assertHostCurrent,assertBrowserHostCurrent} from '../binding.mjs';
+import {assertHostAllocation,assertBrowserHostAllocation,assertHostRunBinding,assertD005HostIdentity,assertHostCurrent,assertBrowserHostCurrent} from '../binding.mjs';
 import {assertBrowserApprovalRequest} from '../../../../../packages/contracts/runtime-0.2/browser-approval-preparation.mjs';
 import {assertBrowserActionReceipt,browserActionReceiptEventId} from '../../../../../packages/contracts/runtime-0.2/browser-receipt.mjs';
 import {assertConversationEvent,isBrowserReceiptEventType}
@@ -25,7 +25,8 @@ export function hostClientDnsName(allocation){
 export function hostControlRequest(value){
  let v,a,b,i;try{
   v=own(data(value),['schema','allocation','binding','hostIdentity','purpose','policySha256','nonce']);
-  a=assertHostAllocation(v.allocation);b=assertHostRunBinding(a,v.binding);i=assertD005HostIdentity(v.hostIdentity,b,a);
+  // Every NAMED browser/SDK/Bash authority path refuses a native-processing allocation here.
+  a=assertBrowserHostAllocation(v.allocation);b=assertHostRunBinding(a,v.binding);i=assertD005HostIdentity(v.hostIdentity,b,a);
  }catch{fail();}
  if(v.schema!==HOST_CONTROL_REQUEST_SCHEMA||!HOST_CONTROL_PURPOSES.includes(v.purpose)||
   typeof v.policySha256!=='string'||!HEX.test(v.policySha256)||
@@ -144,7 +145,8 @@ export function hostDecideResponse(value,request,atMs){
 export function hostOperationRequest(value,schema){
  let v,a,b,i;try{
   v=own(data(value),['schema','allocation','binding','hostIdentity','nonce']);
-  a=assertHostAllocation(v.allocation);b=assertHostRunBinding(a,v.binding);i=assertD005HostIdentity(v.hostIdentity,b,a);
+  // Every NAMED browser/SDK/Bash authority path refuses a native-processing allocation here.
+  a=assertBrowserHostAllocation(v.allocation);b=assertHostRunBinding(a,v.binding);i=assertD005HostIdentity(v.hostIdentity,b,a);
  }catch{fail();}
  if(v.schema!==schema||typeof v.nonce!=='string'||!HEX.test(v.nonce))fail();
  return Object.freeze({schema,allocation:a,binding:b,hostIdentity:i,nonce:v.nonce});
