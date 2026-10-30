@@ -173,6 +173,9 @@ export function createBrowserApprovalOwner(configuration){
     }
     if(answerReceipt?.permitted!==true)
      return Object.freeze({permitted:false,status,statusOnly:true,consumed:true});
+    // The owner's own original deadline still governs: an elapsed wait never returns a grant, even when a
+    // canonical receipt was just settled (the receipt stays provenance).
+    if(now()>=until)return Object.freeze({permitted:false,status,expired:true,consumed:true});
     try{await c.consumption.settle({binding,toolUseId:v.toolUseId,proposalId:v.proposalId,
      requestSha256:v.requestSha256,receipt:answerReceipt.receipt,...(signal===undefined?{}:{signal})});}
     catch(error){
@@ -182,6 +185,7 @@ export function createBrowserApprovalOwner(configuration){
     // ...and not after it either: a caller that aborted while the canonical receipt was being settled
     // never receives a grant.
     signal?.throwIfAborted();
+    if(now()>=until)return Object.freeze({permitted:false,status,expired:true,consumed:true});
     return Object.freeze({permitted:true,receipt:answerReceipt.receipt,status,consumed:true});
    }
    await (c.sleep?c.sleep(pollMs):pause(pollMs,signal));

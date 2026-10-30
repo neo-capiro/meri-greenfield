@@ -162,7 +162,10 @@ export function createHostCurrentnessClient({allocation,binding,hostIdentity,pur
     if(closed||signal?.aborted)fail();
     // Encoded request and answer have SEPARATE bounds: the decide payload+envelope must fit the server's
     // request bound, while the answer keeps its own larger wire ceiling.
-    const response=await perform(HOST_DECIDE_PATH,request,HOST_DECIDE_MAX_BYTES,HOST_DECIDE_WIRE_MAX_BYTES,
+    // The ORIGINAL payload must fit its own ceiling; the whole envelope must fit the wire bound. Neither is
+    // truncated, and the answer keeps its separate ceiling.
+    if(Buffer.byteLength(JSON.stringify(request.request),'utf8')>HOST_DECIDE_MAX_BYTES)fail();
+    const response=await perform(HOST_DECIDE_PATH,request,HOST_DECIDE_WIRE_MAX_BYTES,HOST_DECIDE_WIRE_MAX_BYTES,
      signal,request.deadlineMs-now());
     // The third argument is the ACTUAL observation clock: the receipt is judged at this instant.
     const answer=hostDecideResponse(response,request,now());

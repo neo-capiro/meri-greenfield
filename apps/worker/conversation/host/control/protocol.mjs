@@ -106,6 +106,8 @@ export function hostDecideRequest(value){
   r=assertBrowserApprovalRequest(v.request);
  }catch{fail();}
  if(v.schema!==HOST_DECIDE_REQUEST_SCHEMA||typeof v.nonce!=='string'||!HEX.test(v.nonce))fail();
+ // The ORIGINAL request payload keeps its 64 KiB ceiling; the whole envelope has the larger wire bound.
+ if(Buffer.byteLength(JSON.stringify(v.request),'utf8')>HOST_DECIDE_MAX_BYTES)fail();
  // `deadlineMs` is an ABSOLUTE epoch cutoff, never a duration: bound by the original request window and the
  // allocation lease. The original window itself is validated by the request/3 validator above.
  if(!Number.isSafeInteger(v.deadlineMs)||v.deadlineMs<=0)fail();

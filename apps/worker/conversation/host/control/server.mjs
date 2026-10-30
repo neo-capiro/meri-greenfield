@@ -26,7 +26,7 @@ const ROUTES=new Map([
   request:value=>hostHoldRequest(value),answer:(answer,q)=>hostHoldResponse(answer,q)}],
  // The ONE approval route. Its ingress is still bounded by requestMs; only AFTER the store acknowledges the
  // admission transaction may this request's timer extend to the admitted absolute deadline.
- [HOST_DECIDE_PATH,{method:'decideBrowserApproval',requestMax:HOST_DECIDE_MAX_BYTES,max:HOST_DECIDE_WIRE_MAX_BYTES,
+ [HOST_DECIDE_PATH,{method:'decideBrowserApproval',requestMax:HOST_DECIDE_WIRE_MAX_BYTES,max:HOST_DECIDE_WIRE_MAX_BYTES,
   request:value=>hostDecideRequest(value),answer:(answer,q,atMs)=>hostDecideResponse(answer,q,atMs),long:true}],
 ]);
 function requestLength(req,routeMax){
@@ -80,9 +80,14 @@ export function createHostCurrentnessServer({bind,tls,store,maxFreshMs,requestMs
   active++;const requestLifetime=new AbortController();
   let timer=setTimeout(()=>{requestLifetime.abort();req.destroy();res.destroy();},requestMs);
   // Trusted store->server seam: called once after the acknowledged admission transaction, never serialized.
+  let extended=false,originalCutoff=null;
   const extend=deadline=>{
-   if(!Number.isSafeInteger(deadline)||closed||requestLifetime.signal.aborted)return;
-   const remaining=Math.min(deadline-now(),HOST_DECIDE_MAX_WINDOW_MS);
+   // One admitted extension only, and never beyond this request's own original cutoff, the allocation lease
+   // or the peer certificate expiry.
+   if(extended||!Number.isSafeInteger(deadline)||closed||requestLifetime.signal.aborted)return;
+   extended=true;
+   const capped=Math.min(deadline,originalCutoff??Infinity);
+   const remaining=Math.min(capped-now(),HOST_DECIDE_MAX_WINDOW_MS);
    if(remaining<1){requestLifetime.abort();req.destroy();res.destroy();return;}
    clearTimeout(timer);
    timer=setTimeout(()=>{requestLifetime.abort();req.destroy();res.destroy();},remaining);
@@ -96,6 +101,7 @@ export function createHostCurrentnessServer({bind,tls,store,maxFreshMs,requestMs
    const q=route.request(decodeHostControl(await bounded(()=>requestBody(req,length,requestLifetime.signal),requestLifetime.signal),route.requestMax));
    const peerName=hostClientDnsName(q.allocation),peer=req.socket.getPeerCertificate(false);
    const certificate=checkedCertificate(peer?.raw,{name:peerName,nowMs:now(),notAfterMs:q.allocation.leaseDeadlineMs});
+   if(route.long)originalCutoff=Math.min(q.deadlineMs,q.allocation.leaseDeadlineMs,certificate.notAfterMs??Infinity);
    if(closed||requestLifetime.signal.aborted)fail();
    const answer=await bounded(()=>store[route.method]({request:q,fingerprintSha256:certificate.fingerprintSha256,
     peerDnsName:peerName,signal:requestLifetime.signal,...(route.long?{onAdmitted:extend}:{})}),requestLifetime.signal);
