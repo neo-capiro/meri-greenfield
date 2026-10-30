@@ -16,9 +16,10 @@ owns the sole SDK query and in-process MCP.
 | `host/browser-viewer-transport.mjs` | `createBrowserViewerHostServer` | pinned mTLS listener carrying viewer + named operations |
 | `host/teardown.mjs` | `createConversationHostTeardown` | browser-only receipt ports exactly `{browser,processes,host}` |
 
-Process observation is the **host-wide** observer (`createHostWideProcessObserver`), armed from
-`onBrowserPrepared({leaderPid,kind:'browser'})` with `arm({browserLeaderPid})`. Browser-only polling is never substituted
-for that proof.
+Two different observation contracts are kept apart: session/run lifecycle uses the browser-scoped observer
+(`sessionProcesses`), final physical teardown uses the host-wide `createHostWideProcessObserver` (`processes`), armed
+from `onBrowserPrepared({leaderPid,kind:'browser'})` with `arm({browserLeaderPid})` and retained until its proof is
+consumed. Neither substitutes for the other.
 
 ## Service seam
 
@@ -27,15 +28,22 @@ for that proof.
   `…_EGRESS_UNBOUND`, `…_HOST_UNBOUND`, `…_READRUN_UNBOUND`, `…_VIEWER_UNBOUND`, `…_CONFIGURATION`). Supplying
   `processClientFactory`, `runnerQuery`, `modelTransport`, `bash`, provider credentials or `capabilityPolicy` is a
   configuration error, not a feature.
-- `start()` — launches, arms the observer from the measured leader, mounts the pinned listener and opens the session.
+- `start()` — launches, arms the host-wide observer from the measured leader and mounts the pinned listener. It never
+  opens the session facade: the original `createBrowserOperationHost -> prepareBrowserRun` chain alone opens/adopts,
+  grants egress and applies the hard activation gate, with the canonical `readRun.port.sessions` bound to this exact
+  facade object.
   A rejection closes every resource actually obtained (viewer, context port, launcher, observer) and marks the service
   failed; a retry is refused (`…_START_FAILED`). Concurrent `start()` calls share one launch.
 - `sourceRunSettled()` — records source-run completion. The physical browser host is **retained** for takeover; nothing
   is torn down. Original AgentCore keeps ownership of source SDK takeover completion.
-- `destroy({reason})` — only path to physical teardown. Closes the listener and local resources and returns the
-  canonical receipt; `HOST_TEARDOWN_UNKNOWN` is returned as that receipt (UNKNOWN preserved, private state kept), a local
-  close failure surfaces `BROWSER_HOST_SERVICE_CLEANUP_UNKNOWN`, and the host destroy/absence attempt is never blocked by
-  a local failure. Repeated or concurrent `destroy()` returns the same receipt; `start()` after destroy is refused.
+- `destroy({reason})` / `abort(reason)` — the single terminal path, also used by startup failure. It stops admission and
+  closes the owned viewer/context/launcher FIRST, then runs the canonical teardown once (egress revoke/close, host-wide
+  `browser-host-descendants` absence, private-state disposal, instance/volume/ENI destroy and readback), then retires the
+  observer. A local close failure never prevents the independent physical attempt; `HOST_TEARDOWN_UNKNOWN` is returned
+  as the receipt (UNKNOWN preserved, private state kept) and a local failure surfaces
+  `BROWSER_HOST_SERVICE_CLEANUP_UNKNOWN`. Concurrent/ repeated `destroy()` settle once.
+- Stop is terminal while an acquisition is in flight: every async step re-checks terminal ownership, the late result is
+  disposed (or the late listener closed) without publishing, and destroy awaits the pending start before tearing down.
 
 ## Trusted bindings still required (owners named in `entrypoint.mjs`)
 
@@ -43,8 +51,9 @@ host allocation/host identity, currentness reader, browser policy, browser netwo
 controls binder, session currentness, site workflows, hold, dispose, host-wide process observer (native cgroup ports +
 `verifyConfinement`), cloud `destroy`/`observeAbsent`, canonical `readRun`, context installation + pinned upstream,
 native helper path and browser uid/gid, viewer mTLS material, the hard-held activation record, and the still-UNBOUND
-provisioning LOGIN/protected credential reference. `entrypoint.mjs` reports them and exits 3; a caller-declared "bound"
-list is not proof.
+provisioning LOGIN/protected credential reference. `entrypoint.mjs` derives readiness from the ACTUAL owner objects
+(presence and the composition's own type checks); a list of binding names can never produce `ready:true`, and
+`createBrowserHostServiceEntrypoint({inputs})` returns the finite start/stop handles without starting anything.
 
 ## Tested here vs not tested here
 

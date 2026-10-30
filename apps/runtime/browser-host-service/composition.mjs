@@ -1,19 +1,21 @@
-/** Browser-only host service composition.
+/** Browser-only host service composition (correction 03).
  *
- * A browser-only allocation has no SDK query, process factory, model proxy, provider credential or Bash process: the
- * canonical AgentCore runtime already owns the sole SDK query and in-process MCP. This module composes the real merged
- * owners for one browser-only allocation and exposes a concrete start/stop seam.
+ * One `hostMode:'browser-only'` allocation. No SDK query, process factory, model proxy, provider credential or Bash
+ * process: the canonical AgentCore runtime owns the sole SDK query and in-process MCP.
  *
- * Real owners composed here (imported, never re-implemented):
- *   host/launcher/supervisor.mjs        createBrowserOnlyHostLauncher
- *   host/launcher/context-port.mjs      createConfinedContextPort (context-only installation)
- *   host/browser-session-host.mjs       createBrowserSessionHost (modelTransport:'host-owned')
- *   host/browser-operation-host.mjs     createBrowserOperationHost
- *   host/browser-viewer-transport.mjs   createBrowserViewerHostServer (named operations on the pinned listener)
- *   host/teardown.mjs                   createConversationHostTeardown (browser-only ports only)
+ * Real owners composed (imported): createBrowserOnlyHostLauncher, createConfinedContextPort,
+ * createBrowserSessionHost(modelTransport:'host-owned'), createBrowserOperationHost, createBrowserViewerHostServer,
+ * createConversationHostTeardown.
  *
- * Everything else is a trusted owner binding. A missing binding refuses by name before the effect it guards, and no
- * capability, currentness, approval, provider or physical-absence evidence is fabricated here.
+ * Ownership rules enforced here:
+ *  - the ORIGINAL browser operation preparation (createBrowserOperationHost -> prepareBrowserRun) alone opens/adopts
+ *    the session, grants egress and applies the hard activation gate; this service never opens the facade;
+ *  - session/run lifecycle observation uses the browser-scoped observer (`sessionProcesses`); final physical teardown
+ *    uses the host-wide `browser-host-descendants` observer (`processes`). They are different contracts;
+ *  - every terminal path (startup failure, abort/expiry, explicit stop) closes the owned local resources first and then
+ *    runs the canonical teardown once, so recursive-absence observation never precedes stopping our own child, and a
+ *    local failure never prevents the independent instance/root-volume/ENI destruction attempt;
+ *  - stop is terminal: async acquisitions re-check terminal ownership and dispose late results without publishing them.
  */
 import {createBrowserOnlyHostLauncher} from '../../worker/conversation/host/launcher/supervisor.mjs';
 import {createConfinedContextPort} from '../../worker/conversation/host/launcher/context-port.mjs';
@@ -27,14 +29,15 @@ const fail = code => {
   throw Object.assign(new Error(code), {code});
 };
 
-/** Conversation/SDK-only inputs. Their presence on a browser-only service is a configuration error. */
 const FORBIDDEN = ['processClientFactory', 'runnerQuery', 'createPreparedRunnerQuery', 'modelTransport', 'bash',
   'bashRuntimeFacts', 'providerCredentials', 'modelProxy', 'agentcoreClient', 'capabilityPolicy'];
 
 const REQUIRED = ['allocation', 'binding', 'hostIdentity', 'cwd', 'deadlineMs', 'policy', 'installation', 'upstream',
-  'controls', 'current', 'siteWorkflows', 'hold', 'processes', 'host', 'browser', 'browserNetwork', 'authority',
-  'helperPath', 'browserUid', 'browserGid', 'readRun', 'viewer'];
+  'controls', 'current', 'siteWorkflows', 'hold', 'sessionProcesses', 'processes', 'host', 'browser', 'browserNetwork',
+  'authority', 'helperPath', 'browserUid', 'browserGid', 'readRun', 'viewer'];
 
+export const BROWSER_ONLY_REQUIRED_INPUTS=Object.freeze([...REQUIRED]);
+export const BROWSER_ONLY_FORBIDDEN_INPUTS=Object.freeze([...FORBIDDEN]);
 export const BROWSER_ONLY_OWNERS = Object.freeze({
   launcher: createBrowserOnlyHostLauncher,
   contextPort: createConfinedContextPort,
@@ -53,6 +56,7 @@ export function assertBrowserOnlyServiceInputs(input) {
   if (!Number.isSafeInteger(v.deadlineMs) || v.deadlineMs < 1) fail('BROWSER_HOST_SERVICE_CONFIGURATION');
   if (typeof v.current !== 'function' || typeof v.hold !== 'function') fail('BROWSER_HOST_SERVICE_CURRENTNESS_UNBOUND');
   if (typeof v.controls?.bind !== 'function') fail('BROWSER_HOST_SERVICE_CONTROLS_UNBOUND');
+  if (typeof v.sessionProcesses?.waitForExit !== 'function') fail('BROWSER_HOST_SERVICE_BROWSER_OBSERVER_UNBOUND');
   if (typeof v.processes?.arm !== 'function' || typeof v.processes?.waitForExit !== 'function') fail('BROWSER_HOST_SERVICE_PROCESS_OBSERVER_UNBOUND');
   if (typeof v.browser?.revoke !== 'function' || typeof v.browser?.close !== 'function') fail('BROWSER_HOST_SERVICE_EGRESS_UNBOUND');
   if (typeof v.host?.destroy !== 'function' || typeof v.host?.observeAbsent !== 'function') fail('BROWSER_HOST_SERVICE_HOST_UNBOUND');
@@ -62,13 +66,6 @@ export function assertBrowserOnlyServiceInputs(input) {
   return v;
 }
 
-/**
- * Compose one browser-only host service. Construction is inert.
- * - start() launches the browser, arms the host-wide observer from the measured leader, mounts the pinned mTLS
- *   listener with the named operations and returns the listener address.
- * - sourceRunSettled() records source-run completion; the physical browser host is retained for takeover.
- * - destroy() is the final physical teardown and returns the canonical receipt (UNKNOWN preserved).
- */
 export function composeBrowserOnlyHostService(input, dependencies = {}) {
   const v = assertBrowserOnlyServiceInputs(input);
   const owners = {...BROWSER_ONLY_OWNERS, ...dependencies};
@@ -79,8 +76,12 @@ export function composeBrowserOnlyHostService(input, dependencies = {}) {
     browserPolicySha256: v.authority.policySha256,
     ports: {browser: v.browser, processes: v.processes, host: v.host}, now,
   });
+
   let launch, contextPort, sessionHost, operationHost, viewer;
-  let starting, started = false, failed = false, destroying, destroyed, retained = false, armed = false;
+  let starting, started = false, tearingDown = false, destroyed, retained = false, armed = false;
+
+  /** Terminal ownership, re-checked after every async acquisition. */
+  const live = () => !tearingDown && destroyed === undefined;
 
   const closeLocal = async () => {
     const problems = [];
@@ -90,11 +91,19 @@ export function composeBrowserOnlyHostService(input, dependencies = {}) {
     }
     return problems;
   };
-  const abandon = async cause => {
+
+  /** Canonical owned final path: stop admission + owned children, then one teardown, then retire the observer. */
+  const finalTeardown = async reason => {
     const problems = await closeLocal();
+    let receipt;
+    try { receipt = await teardown.settle({reason}); }
+    catch (error) {
+      if (error?.code === 'HOST_TEARDOWN_UNKNOWN' && error.receipt) receipt = error.receipt;
+      else problems.push(error);
+    }
+    // The host-wide observer is retained until its absence proof has been produced above.
     try { await v.processes.close?.(); } catch (error) { problems.push(error); }
-    if (problems.length) fail('BROWSER_HOST_SERVICE_CLEANUP_UNKNOWN');
-    throw cause;
+    return {receipt, problems};
   };
 
   const service = {
@@ -102,14 +111,18 @@ export function composeBrowserOnlyHostService(input, dependencies = {}) {
     get sessions() { return sessionHost; },
     get operations() { return operationHost; },
     get started() { return started; },
+    /** Source-run completion: retained for takeover, never a physical teardown. */
     sourceRunSettled() {
       if (!started) fail('BROWSER_HOST_SERVICE_NOT_STARTED');
       retained = true;
       return Object.freeze({sourceSettled: true, retained: true});
     },
+    /** Abort/expiry/currentness loss: same owned final path as an explicit stop. */
+    async abort(reason = 'revoked') {
+      return this.destroy({reason});
+    },
     async start() {
-      if (destroyed || destroying) fail('BROWSER_HOST_SERVICE_TORN_DOWN');
-      if (failed) fail('BROWSER_HOST_SERVICE_START_FAILED');
+      if (!live()) fail('BROWSER_HOST_SERVICE_TORN_DOWN');
       if (started) fail('BROWSER_HOST_SERVICE_STARTED');
       if (starting) return starting;
       starting = (async () => {
@@ -128,52 +141,65 @@ export function composeBrowserOnlyHostService(input, dependencies = {}) {
             ...(v.spawnNative === undefined ? {} : {spawnNative: v.spawnNative}),
             now,
           });
+          if (!live()) fail('BROWSER_HOST_SERVICE_TORN_DOWN');
           const native = await launch.prepareBrowserContext({policy: v.policy, installation: v.installation, paths});
+          if (!live()) { await launch.close?.(); fail('BROWSER_HOST_SERVICE_TORN_DOWN'); }
           contextPort = owners.contextPort({native, binding: v.binding, policy: v.policy, installation: v.installation, paths, signal: v.signal, now});
+          if (!live()) { await contextPort.close?.(); fail('BROWSER_HOST_SERVICE_TORN_DOWN'); }
           sessionHost = owners.sessionHost({
             allocation: v.allocation, binding: v.binding, cwd: v.cwd, installation: v.installation,
             upstream: v.upstream, contexts: contextPort, modelTransport: 'host-owned',
             controls: v.controls, current: v.current, siteWorkflows: v.siteWorkflows, hold: v.hold,
-            processes: v.processes, dispose: v.dispose, now,
+            processes: v.sessionProcesses, dispose: v.dispose, now,
           });
-          operationHost = owners.operationHost({binding: v.binding, readRun: v.readRun, sessions: sessionHost, now});
+          if (!live()) fail('BROWSER_HOST_SERVICE_TORN_DOWN');
+          // The original preparation chain owns session.open/adopt; bind the canonical port to this exact facade.
+          const readRun = async request => {
+            if (!live()) fail('BROWSER_HOST_SERVICE_TORN_DOWN');
+            const facts = await v.readRun(request);
+            if (facts?.port?.modelTransport !== 'host-owned' || typeof facts.port.policy !== 'function') fail('BROWSER_HOST_SERVICE_READRUN_REFUSED');
+            if (!live()) fail('BROWSER_HOST_SERVICE_TORN_DOWN');
+            return Object.freeze({...facts, port: Object.freeze({...facts.port, sessions: sessionHost})});
+          };
+          operationHost = owners.operationHost({binding: v.binding, readRun, sessions: sessionHost, now});
+          if (!live()) fail('BROWSER_HOST_SERVICE_TORN_DOWN');
           viewer = owners.viewer({
             bind: v.viewer.bind, tls: v.viewer.tls, peer: v.viewer.peer,
             relay: sessionHost, custodyOwner: sessionHost, operationOwner: operationHost,
             now, ...(v.viewer.requestMs === undefined ? {} : {requestMs: v.viewer.requestMs}),
           });
-          await sessionHost.open({binding: v.binding, policy: v.policy, deadlineMs: v.deadlineMs, manifest: v.manifest ?? null});
+          if (!live()) { await viewer.close?.(); fail('BROWSER_HOST_SERVICE_TORN_DOWN'); }
           const address = await viewer.start();
+          if (!live()) fail('BROWSER_HOST_SERVICE_TORN_DOWN');
           started = true;
           return Object.freeze({started: true, address, ownerInstanceId: sessionHost.ownerInstanceId});
         } catch (error) {
-          started = false;
-          failed = true;
-          return abandon(error);
+          if (error?.code === 'BROWSER_HOST_SERVICE_TORN_DOWN') {
+            // The terminal owner (destroy) awaits this promise and disposes exactly once; publish nothing here.
+            throw error;
+          }
+          const {problems} = await finalTeardown('failed');
+          if (problems.length) fail('BROWSER_HOST_SERVICE_CLEANUP_UNKNOWN');
+          throw error;
         }
       })();
       return starting;
     },
     destroy({reason = 'conversation-end'} = {}) {
       if (destroyed) return destroyed;
-      if (destroying) return destroying;
-      destroying = (async () => {
-        const problems = [];
-        let receipt;
-        try { receipt = await teardown.settle({reason}); }
-        catch (error) {
-          // The canonical teardown reports UNKNOWN with its receipt; that is the honest result, not a local failure.
-          if (error?.code === 'HOST_TEARDOWN_UNKNOWN' && error.receipt) receipt = error.receipt;
-          else problems.push(error);
-        }
-        problems.push(...await closeLocal());
+      if (tearingDown) return destroyed;
+      tearingDown = true;
+      const pending = starting;
+      destroyed = (async () => {
+        // Settle any in-flight acquisition first: its terminal checks dispose late results and never publish.
+        if (pending) await pending.catch(() => {});
+        const {receipt, problems} = await finalTeardown(reason);
         if (problems.length) {
           throw Object.assign(new Error('BROWSER_HOST_SERVICE_CLEANUP_UNKNOWN', {cause: problems}), {code: 'BROWSER_HOST_SERVICE_CLEANUP_UNKNOWN'});
         }
-        destroyed = Object.freeze({...receipt, sourceSettled: retained});
-        return destroyed;
+        return Object.freeze({...receipt, sourceSettled: retained});
       })();
-      return destroying;
+      return destroyed;
     },
   };
   return Object.freeze(service);
