@@ -10,19 +10,22 @@
  * admitted by the internal registration.
  */
 import {canonicalSha256,validateShape} from '../../../packages/contracts/validate.mjs';
-import {data,own} from '../../../packages/contracts/commands-0.2/execution-boundary.mjs';
+import {data,own,nativeSignal} from '../../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {assertBrowserOperationDescriptor,browserOperationArgumentsSha256,browserOperationRecord,
  browserExecutionDeliveryId,BROWSER_OPERATION_CONTRACT} from '../../../packages/contracts/runtime-0.2/browser-operation.mjs';
 
 const fail=code=>{throw Object.assign(Error(code),{code});};
 const same=(a,b)=>canonicalSha256(a)===canonicalSha256(b);
 
-export function createBrowserOperationOwner({journal}={}){
- if(typeof journal?.begin!=='function'||typeof journal?.settle!=='function'||typeof journal?.read!=='function')
-  throw fail('BROWSER_OPERATION_CONFIGURATION');
+export function createBrowserOperationOwner({journal,now=Date.now}={}){
+ if(typeof journal?.begin!=='function'||typeof journal?.settle!=='function'||typeof journal?.read!=='function'||
+  typeof now!=='function')throw fail('BROWSER_OPERATION_CONFIGURATION');
 
  function prepare(value){
-  const v=own(data(value),['binding','requestId','tool','inputSha256','policySha256','scopes'],['signal']);
+  // The AbortSignal is NOT inert JSON: keys are checked on the raw object and the signal is carried
+  // separately; only the inert fields are snapshotted.
+  const v=own(value,['binding','requestId','tool','inputSha256','policySha256','scopes'],['signal']);
+  nativeSignal(v.signal);v.signal?.throwIfAborted();
   validateShape('RunBinding',data(v.binding));
   const descriptor=assertBrowserOperationDescriptor({schema:'meri-browser-operation-descriptor/1',
    binding:v.binding,requestId:v.requestId,tool:v.tool,inputSha256:v.inputSha256,policySha256:v.policySha256,scopes:v.scopes});
@@ -49,10 +52,11 @@ export function createBrowserOperationOwner({journal}={}){
  }
  /** Settle only after the effect answered. PREPARED carries the result and its release window. */
  async function settle(value){
-  const v=own(data(value),['binding','requestId','tool','inputSha256','policySha256','scopes','state','outcome'],['signal']);
+  const v=own(value,['binding','requestId','tool','inputSha256','policySha256','scopes','state','outcome'],['signal']);
   const {descriptor,record,deliveryId}=prepare({binding:v.binding,requestId:v.requestId,tool:v.tool,
-   inputSha256:v.inputSha256,policySha256:v.policySha256,scopes:v.scopes});
-  await journal.settle({binding:descriptor.binding,deliveryId,record,state:v.state,outcome:v.outcome,signal:v.signal});
+   inputSha256:v.inputSha256,policySha256:v.policySha256,scopes:v.scopes,signal:v.signal});
+  await journal.settle({binding:descriptor.binding,deliveryId,record,state:data(v.state)??v.state,
+   outcome:data(v.outcome),signal:v.signal});
   return Object.freeze({settled:true,deliveryId,argumentsSha256:record.argumentsSha256,state:v.state});
  }
  /** Closed read for a later download ingress. A caller's digest alone is never proof: the acknowledged
@@ -72,7 +76,7 @@ export function createBrowserOperationOwner({journal}={}){
    const result=entry.outcome?.result??null,release=entry.outcome?.release??null;
    if(result===null||release===null)throw fail('BROWSER_OPERATION_UNKNOWN');
    // The retained release window must still be current for the caller's own binding.
-   if(!same(release.binding,b)||release.expiresAtMs<=Date.now())throw fail('BROWSER_OPERATION_RELEASE_EXPIRED');
+   if(!same(release.binding,b)||release.expiresAtMs<=now())throw fail('BROWSER_OPERATION_RELEASE_EXPIRED');
    return Object.freeze({...base,variant:'dispatched',state:'PREPARED',result,release});
   }
   if(entry.state==='FAILED')return Object.freeze({...base,variant:'refused',state:'FAILED',code:entry.outcome?.code??null});

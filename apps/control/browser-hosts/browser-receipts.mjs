@@ -7,7 +7,7 @@
  */
 import {BROWSER_RECEIPT_EVENT,assertBrowserActionReceipt,assertBrowserDownloadReceipt,
  browserActionReceiptEventId,browserDownloadReceiptEventId} from '../../../packages/contracts/runtime-0.2/browser-receipt.mjs';
-import {data,own} from '../../../packages/contracts/commands-0.2/execution-boundary.mjs';
+import {data,own,nativeSignal} from '../../../packages/contracts/commands-0.2/execution-boundary.mjs';
 
 const fail=code=>{throw Object.assign(Error(code),{code});};
 
@@ -23,18 +23,21 @@ export function createBrowserReceiptProducer({store,now=Date.now}={}){
  }
  /** One observed action outcome. `reference` is a relative file reference or null. */
  async function appendAction(value){
-  const v=own(data(value),['binding','scopes','sessionId','toolUseId','action','urlHost','atMs','outcome'],['reference','signal']);
+  // The AbortSignal is validated on the raw object and never serialized; only inert fields are copied.
+  const v=own(value,['binding','scopes','sessionId','toolUseId','action','urlHost','atMs','outcome'],['reference','signal']);
+  nativeSignal(v.signal);v.signal?.throwIfAborted();
   const receipt=assertBrowserActionReceipt({schema:'meri-browser-receipt/1',kind:'browser.action',
-   binding:v.binding,sessionId:v.sessionId,toolUseId:v.toolUseId??null,action:v.action,urlHost:v.urlHost,
+   binding:data(v.binding),sessionId:v.sessionId,toolUseId:v.toolUseId??null,action:v.action,urlHost:v.urlHost,
    atMs:v.atMs,reference:v.reference??null,outcome:v.outcome});
   const eventId=browserActionReceiptEventId({binding:receipt.binding,sessionId:receipt.sessionId,toolUseId:receipt.toolUseId});
   return append({binding:receipt.binding,scopes:v.scopes,receipt,eventId,signal:v.signal});
  }
  /** One acknowledged download artifact version. */
  async function appendDownload(value){
-  const v=own(data(value),['binding','scopes','urlHost','atMs','reference','sha256','bytes','mimeType'],['signal']);
+  const v=own(value,['binding','scopes','urlHost','atMs','reference','sha256','bytes','mimeType'],['signal']);
+  nativeSignal(v.signal);v.signal?.throwIfAborted();
   const receipt=assertBrowserDownloadReceipt({schema:'meri-browser-receipt/1',kind:'browser.download',
-   binding:v.binding,urlHost:v.urlHost,atMs:v.atMs,reference:v.reference,sha256:v.sha256,bytes:v.bytes,mimeType:v.mimeType});
+   binding:data(v.binding),urlHost:v.urlHost,atMs:v.atMs,reference:v.reference,sha256:v.sha256,bytes:v.bytes,mimeType:v.mimeType});
   const eventId=browserDownloadReceiptEventId({binding:receipt.binding,reference:receipt.reference});
   return append({binding:receipt.binding,scopes:v.scopes,receipt,eventId,signal:v.signal});
  }

@@ -4,6 +4,8 @@ import test from 'node:test';import assert from 'node:assert/strict';
 import {createNativeCapabilityClient} from '../native-client.mjs';
 import {createNativeBrowserPort} from '../browser-client.mjs';
 import {createBrowserOperations} from '../browser-operations.mjs';
+import {createBrowserOperationOwner} from '../../control/intents/browser-operation-owner.mjs';
+import {createIntentJournal} from '../../control/intents/journal.mjs';
 import {createWorkerRunApplication} from '../worker-http.mjs';
 import {createExecutionBinding} from '../../control/conversations/execution-boundary.mjs';
 import {binding,versions,scopes} from '../../control/conversations/test/store-fixture.mjs';
@@ -13,13 +15,21 @@ function fixture(){
  let at=1000,checks=0,roleReads=0,policyReads=0,dispatches=0,revoked=false,replyBinding=binding,authFailure=false,advance=0;
  const {versions:ignored,...identity}=createExecutionBinding({binding,versions,plan:{synthetic:true},expiresAtMs:301000,runtimeSessionId:'synthetic-'+('a'.repeat(64))});
  const calls=[],requests=[],now=()=>at;
+ // The real custody owner over an in-memory journal port: a browser call now claims before dispatch.
+ const rows=new Map(),keyOf=k=>JSON.stringify([k.tenantId,k.actorId,k.conversationId,k.deliveryId]);
+ const custody=createBrowserOperationOwner({now,journal:createIntentJournal({
+  async claim({key,record}){const id=keyOf(key);if(rows.has(id))return {claimed:false,entry:structuredClone(rows.get(id))};
+   rows.set(id,{record:structuredClone(record),state:'PENDING',outcome:null});return {claimed:true};},
+  async settle({key,record,state,outcome}){const next={record:structuredClone(record),state,outcome:structuredClone(outcome)};
+   rows.set(keyOf(key),next);return structuredClone(next);},
+  async read({key}){const row=rows.get(keyOf(key));return row?structuredClone(row):null;}})});
  const hosts={async executeBrowserOperation(operation,request,options){dispatches++;calls.push({operation,request,deadlineMs:options.deadlineMs});at+=advance;options.signal.throwIfAborted();
   if(operation==='browser-prepare')return {binding:replyBinding,policy,activation:'held',approvalDeadlineMs:120000};
   if(operation==='browser-call')return {content:[{type:'text',text:'filtered snapshot'}]};
   if(operation==='browser-tools')return {tools:[{name:'browser_snapshot',inputSchema:{type:'object'}}]};
   if(operation==='browser-settle')return {schema:'meri-browser-cleanup/1',binding,outcome:request.outcome,activation:'held',egress:'not-applicable',process:'not-applicable',profile:'done'};
  }};
- const browserOperations=createBrowserOperations({hosts,now,readCapabilityRole:async()=>{roleReads++;if(revoked)throw Error('REVOKED');return {actorRole:'standard_user',checkedAtMs:at,expiresAtMs:at+30000};},readBrowserPolicy:async input=>{policyReads++;assert.deepEqual(input.scopes,scopes);return policy;}});
+ const browserOperations=createBrowserOperations({hosts,now,custody,readCapabilityRole:async()=>{roleReads++;if(revoked)throw Error('REVOKED');return {actorRole:'standard_user',checkedAtMs:at,expiresAtMs:at+30000};},readBrowserPolicy:async input=>{policyReads++;assert.deepEqual(input.scopes,scopes);return policy;}});
  const app=createWorkerRunApplication({now,browserOperations,configuration:{limits:{requestMs:3000,requestBytes:1048576}},createService(){throw Error('browser must not invent a run-owner method');},
   execution:{async authenticate(input){checks++;assert.equal(input.credential,'synthetic-execution');assert.deepEqual(input.binding,binding);if(authFailure||at>=identity.expiresAtMs)throw Error('EXECUTION_AUTHORITY_REFUSED');return {execution:identity,scopes,selectedClientId:scopes[0].resourceId,policyRevision:scopes[0].policyRevision};}}});
  const transport=async(url,init)=>{requests.push(url);return app.handle(new Request(url.replace('/v1/runner/','/internal/conversations/'),init));};
