@@ -1,0 +1,65 @@
+# Native ARM64 candidate; use this directory as context. Release owns execution.
+FROM ubuntu@sha256:19cad59657037cffa0ac9a48107019b768900ff1071140965827513ac866bd5e AS os
+ARG TARGETARCH
+RUN test "${TARGETARCH}" = arm64 && test "$(uname -m)" = aarch64
+# Signed Ubuntu snapshot freezes both compiler and runtime package resolution.
+RUN printf 'APT::Snapshot "20261029T000000Z";\n' > /etc/apt/apt.conf.d/50snapshot
+ENV LANG=C.UTF-8 LC_ALL=C.UTF-8 TZ=UTC
+
+FROM os AS builder
+RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
+    ca-certificates git curl xz-utils build-essential binutils autoconf automake libtool \
+    pkg-config python3 python3-polib python3-lxml zip unzip ccache gperf nasm xsltproc \
+    flex bison uuid-dev ninja-build libcap-dev libpam-dev libzstd-dev libpng-dev \
+    libcppunit-dev libfontconfig-dev libcups2-dev libx11-dev libxext-dev libxrender-dev \
+    libxt-dev libsm-dev libice-dev libglib2.0-dev libnss3-dev libkrb5-dev \
+    openjdk-17-jdk-headless junit4 ant rsync wget fontconfig gettext bzip2 \
+    && rm -rf /var/lib/apt/lists/*
+RUN curl --fail --show-error --silent --location https://nodejs.org/dist/v24.22.1/node-v24.22.1-linux-arm64.tar.xz -o /tmp/node.tar.xz \
+    && echo 'dbabf7a1cbf947e6059ffad2c27b80041db97dea1e553b62afdee7f13fca336e  /tmp/node.tar.xz' | sha256sum --check - \
+    && tar -xJf /tmp/node.tar.xz -C /usr/local --strip-components=1 \
+    && rm /tmp/node.tar.xz \
+    && useradd --user-group --uid 1002 --create-home --home-dir /home/builder builder \
+    && mkdir /build && chown builder:builder /build
+COPY source /recipe/source
+COPY meri-font-preservation.xcd /recipe/meri-font-preservation.xcd
+ENV HOME=/home/builder
+USER 1002
+WORKDIR /build
+RUN python3 /recipe/source/prepare.py
+ARG BUILD_JOBS=24
+RUN BUILD_JOBS="${BUILD_JOBS}" bash /recipe/source/build.sh
+
+FROM os AS runtime
+RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
+    ca-certificates libpng16-16 fontconfig adduser cpio tzdata findutils libcap2-bin \
+    openssl openssh-client libxcb-shm0 libxcb-render0 libxrender1 libxext6 \
+    fonts-wqy-zenhei fonts-wqy-microhei fonts-droid-fallback fonts-noto-cjk libnss-wrapper \
+    && rm -rf /var/lib/apt/lists/*
+COPY --from=builder /build/instdir /
+COPY --from=builder /build/evidence /usr/share/meri-code-build
+COPY meri-font-preservation.xcd /opt/collaboraoffice/share/registry/meri-font-preservation.xcd
+# Vendor runtime setup, with explicit UID/GID instead of an intermediate allocation.
+RUN groupadd --gid 1001 cool \
+    && useradd --uid 1001 --gid 1001 --home-dir /opt/cool --shell /usr/sbin/nologin cool \
+    && setcap cap_fowner,cap_chown,cap_sys_chroot=ep /usr/bin/coolforkit-caps \
+    && setcap cap_sys_admin=ep /usr/bin/coolmount \
+    && mkdir -p /opt/cool/child-roots /opt/cool/cache \
+    && chown cool:cool /opt/cool /opt/cool/child-roots /opt/cool/cache \
+    && fc-cache /opt/collaboraoffice/share/fonts/truetype \
+    && coolwsd-systemplate-setup /opt/cool/systemplate /opt/collaboraoffice \
+    && touch /var/log/coolwsd.log && chown cool:cool /var/log/coolwsd.log \
+    && chown -R cool:cool /etc/coolwsd \
+    && chmod 640 /etc/coolwsd/coolwsd.xml \
+    && rm -f /etc/coolwsd/proof_key /etc/coolwsd/proof_key.pub \
+    && chmod 755 /start-collabora-online.sh \
+    && dpkg-query -W -f='${Package}\t${Version}\t${Architecture}\n' > /usr/share/meri-code-build/runtime-packages.tsv \
+    && test "$(dpkg --print-architecture)" = arm64
+LABEL org.opencontainers.image.source="https://gerrit.collaboraoffice.com/online" \
+      org.opencontainers.image.revision="42745e44dd8530fac7acd5f46cb7571ceea63c6a" \
+      org.opencontainers.image.licenses="MPL-2.0" \
+      com.capiro.office.upstream-fix="88acbed5df032ec987390749b2845bd3ba626438"
+EXPOSE 9980
+ENV HOME=/opt/cool
+USER 1001:1001
+ENTRYPOINT ["/start-collabora-online.sh"]
