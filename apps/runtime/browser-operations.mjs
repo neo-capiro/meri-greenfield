@@ -1,7 +1,7 @@
 /** Control's browser tools use the existing execution identity, Core role,
  * tenant settings and allocated host router. This is composition, not a second
  * browser gate: the host still owns approvals, effects, receipts and cleanup. */
-import {assertBrowserOperationRequest,assertBrowserOperationResponse,browserOperationBudgetMs} from '../../packages/contracts/runtime-0.2/browser-tools.mjs';
+import {assertBrowserOperationRequest,assertBrowserOperationResponse,browserOperationBudgetMs,browserOperationCeilingMs} from '../../packages/contracts/runtime-0.2/browser-tools.mjs';
 import {validateBrowserPolicy} from '../worker/conversation/browser/policy.mjs';
 import {projectCapabilityRole} from './product-ports/capability-policy.mjs';
 const fail=()=>{throw Object.assign(Error('BROWSER_OPERATION_UNAVAILABLE'),{code:'BROWSER_OPERATION_UNAVAILABLE'});};
@@ -19,7 +19,11 @@ export function createBrowserOperations({hosts,readCapabilityRole,readBrowserPol
    if(!policy.enabled&&operation!=='browser-prepare')fail();
   }
   signal?.throwIfAborted();
-  const until=Math.min(execution.expiresAtMs,now()+browserOperationBudgetMs(operation,{policy}));
+  // The approval owner pins its selected timeout during host preparation; the
+  // SDK client also uses that validated metadata. Control is only the outer
+  // transport ceiling here, never a replacement 120 s approval decision.
+  const budget=operation==='browser-approve'?browserOperationCeilingMs(operation):browserOperationBudgetMs(operation,{policy});
+  const until=Math.min(execution.expiresAtMs,now()+budget);
   return Object.freeze({deadlineMs:until,async execute({signal}){
    const result=await hosts.executeBrowserOperation(operation,input,{signal,deadlineMs:until});
    const response={binding:input.binding,result};assertBrowserOperationResponse(response,input.binding);return response;
