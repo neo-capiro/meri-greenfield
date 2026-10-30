@@ -18,7 +18,7 @@ const ms=value=>{
 export const HOST_CONTROL_SQL=Object.freeze({
  lockHost:`SELECT allocation_json, allocation_sha256, host_identity_json, host_identity_sha256,
   client_cert_sha256, client_dns_name, client_cert_not_after_ms, lease_deadline_ms, state
-  FROM meri_host_control.host_allocations WHERE host_id=$1 AND generation=$2 FOR SHARE`,
+  FROM meri_host_control.lock_allocation($1,$2)`,
  consumeNonce:`INSERT INTO meri_host_control.request_nonces(host_id,generation,nonce_sha256)
   VALUES($1,$2,$3) ON CONFLICT DO NOTHING RETURNING nonce_sha256`,
  clock:`SELECT floor(extract(epoch from clock_timestamp()) * 1000)::bigint AS now_ms`,
