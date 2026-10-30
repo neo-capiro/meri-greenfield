@@ -57,6 +57,18 @@ their owners.
   with the host channel owner.
 * No PG/native/deployed acceptance; source activation stays held.
 
+## Subsequent corrections (see HANDOFF-07 / EARLY-CONTRACT-07 / EARLY-CORE-GAP-07)
+
+* The facts projection now reads `row.request` (never `projection.request`) and supports truthful
+  `browser-held` / `browser-successor` documents (browser custody, SDK/Bash denied, current browser
+  policy, no capability policy). `readHost`/`readRoute` responses are unchanged.
+* The live workflow resolver uses the existing `createCoreSiteWorkflowAdmission` product port with the
+  saved selection/scopes/versions — no action-session issuer, no credential in Control's port.
+* Startup cleanup accumulates failures and always runs every owned teardown; the composition waits for an
+  in-flight start and refuses to start after close.
+* Still missing, with exact owner paths in EARLY-CORE-GAP-07: Core browser-subject decision + one-time
+  consumption, artifact publication-authority issuer, lifecycle receipt writer, custody hold adapter.
+
 ## Verification (local, in-process)
 
 See `HANDOFF-04.txt` beside the session outputs for exact commands, logs and results.
