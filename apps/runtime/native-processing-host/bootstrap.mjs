@@ -71,44 +71,59 @@ export async function openNativeProcessingHost({config,allocation,binding,hostId
   throw error;
  }
  let closing=null;
- const pins=[];              // acquired definition pins, held until ACTUAL placement/compartment closure
+ const closeController=new AbortController();
+ const entries=[];           // EVERY call entry, registered BEFORE its acquisition is awaited
  return Object.freeze({placement,compartment,
   async runRequest({requestDocument,deadlineMs,signal:callSignal}){
    if(closing!==null)fault('NATIVE_PROCESSING_CLOSED');
-   // Acquire and hold the exact host-owned signed snapshot BEFORE the child is started.
-   let pin=null,pinnedSettings=settings;
-   if(definitionsOwner!==undefined&&definitionsOwner!==null){
-    pin=await definitionsOwner.pin({deadlineMs,signal:callSignal});
-    pinnedSettings=Object.freeze({...settings,snapshot:Object.freeze({databaseDirectory:pin.databaseDirectory,
-     sha256:pin.sha256,publishedAtMs:pin.publishedAtMs,files:pin.files})});
-   }
-   const input=Buffer.from(JSON.stringify({settings:pinnedSettings,request:requestDocument,deadlineMs}));
-   if(input.length>UPLOAD_INSPECTION_WIRE_BYTES+65536)fault('UPLOAD_INSPECTION_REQUEST_REFUSED');
-   if(pin!==null)pins.push({pin,completed:false});
+   const entry={pin:null,completed:false,started:false,settled:false};
+   entries.push(entry);
+   // The acquisition belongs to THIS operation: host close and the caller's cancellation both end it.
+   const lifetime=closeController.signal;
+   const combined=callSignal===undefined?lifetime:AbortSignal.any([callSignal,lifetime]);
+   let pinnedSettings=settings;
    try{
-    const out=await placement.run(command,args,{cwd:config.paths.home,input,signal:callSignal,deadlineMs,
+    if(definitionsOwner!==undefined&&definitionsOwner!==null){
+     entry.pin=await definitionsOwner.pin({deadlineMs,signal:combined});
+     if(closing!==null){                                     // settled AFTER close: release, never dispatch, no leak
+      try{entry.pin.release({completed:false});}catch{}
+      const at=entries.indexOf(entry);if(at>=0)entries.splice(at,1);
+      fault('NATIVE_PROCESSING_CLOSED');
+     }
+     pinnedSettings=Object.freeze({...settings,snapshot:Object.freeze({databaseDirectory:entry.pin.databaseDirectory,
+      sha256:entry.pin.sha256,publishedAtMs:entry.pin.publishedAtMs,files:entry.pin.files})});
+    }
+    if(closing!==null)fault('NATIVE_PROCESSING_CLOSED');     // no dispatch after close began, even if the pin arrived late
+    const input=Buffer.from(JSON.stringify({settings:pinnedSettings,request:requestDocument,deadlineMs}));
+    if(input.length>UPLOAD_INSPECTION_WIRE_BYTES+65536)fault('UPLOAD_INSPECTION_REQUEST_REFUSED');
+    entry.started=true;
+    const out=await placement.run(command,args,{cwd:config.paths.home,input,signal:combined,deadlineMs,
      maxOutput:UPLOAD_INSPECTION_RESULT_BYTES});
-    // Record completion; the pin is released only after the OWNED host/placement close proves closure below.
-    if(pin!==null)pins[pins.length-1].completed=out?.receipt?.exitCode===0;
+    // Completion is recorded per exact entry; release still waits for ACTUAL placement closure in close().
+    entry.completed=out?.receipt?.exitCode===0;
     return out;
-   }catch(error){
-    throw error;
-   }
+   }finally{entry.settled=true;}
   },
   close(){
    if(closing===null)closing=(async()=>{
+    closeController.abort();                                  // settle any acquisition still pending
     let code=null,placementClosed=false;
     try{const p=await placement.close();placementClosed=p?.closed===true;
      if(!placementClosed)code=p?.code??'NATIVE_PROCESSING_CLEANUP_UNKNOWN';}
     catch(error){code=error?.code??'NATIVE_PROCESSING_CLEANUP_UNKNOWN';}
     try{const c=await compartment.close();if(c?.closed!==true)code??=c?.code??'HOST_NETWORK_CLEANUP_UNKNOWN';}
     catch{code??='HOST_NETWORK_CLEANUP_UNKNOWN';}
-    // Definition pins follow the ACTUAL placement closure: released only when closure is proven, retained otherwise.
-    for(const entry of pins.splice(0)){
-     if(placementClosed)entry.pin.release({completed:entry.completed===true});
-     else pins.push(entry);
+    // Each EXACT entry: release only when its possible child is proven done (actual placement closure), never by exit.
+    const retained=[];
+    for(const entry of entries.splice(0)){
+     if(entry.pin===null)continue;                            // nothing acquired: nothing to release
+     if(!placementClosed){retained.push(entry);continue;}      // unknown closure retains the token
+     try{const released=entry.pin.release({completed:entry.completed===true});
+      if(released===false||released?.released===false){retained.push(entry);code??='NATIVE_PROCESSING_CLEANUP_UNKNOWN';}}
+     catch{retained.push(entry);code??='NATIVE_PROCESSING_CLEANUP_UNKNOWN';}
     }
-    if(code!==null||pins.length>0)return Object.freeze({closed:false,code:code??'NATIVE_PROCESSING_CLEANUP_UNKNOWN'});
+    entries.push(...retained);
+    if(code!==null||entries.length>0)return Object.freeze({closed:false,code:code??'NATIVE_PROCESSING_CLEANUP_UNKNOWN'});
     return Object.freeze({closed:true});
    })();
    return closing;

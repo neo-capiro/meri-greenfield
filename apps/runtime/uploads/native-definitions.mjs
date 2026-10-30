@@ -49,7 +49,21 @@ import {runArtifactProcess} from '../../artifacts/process.mjs';
  * through an injected fixed process port and real execution is Release.
  */
 import {createHash} from 'node:crypto';
-import {copyFile,mkdir,readFile,readdir,writeFile,rename,rm,lstat,mkdtemp} from 'node:fs/promises';
+import {copyFile,mkdir,readFile,readdir,writeFile,rename,rm,lstat,mkdtemp,chmod} from 'node:fs/promises';
+
+/** Fixed definition programs run as UID/GID 1000: prepare ONLY these exact owner-generated paths for them. Published
+ * snapshots stay root-owned and READ-ONLY for the upload child (0755 dirs / 0644 files, never writable); the staging area
+ * and its generated freshclam configuration are the only writable-for-refresh inputs. */
+async function prepareDefinitionAccess({root,staging,config,snapshot,id}){
+ for(const dir of [root,join(root,'snapshots'),join(root,'staging'),staging,join(staging,'database')])
+  await chmod(dir,0o755).catch(()=>{});
+ if(config!==undefined)await chmod(config,0o644).catch(()=>{});
+ if(snapshot!==undefined){const target=join(root,'snapshots',id);
+  for(const dir of [target,join(target,'database')])await chmod(dir,0o755).catch(()=>{});
+  for(const file of snapshot.files)await chmod(join(target,'database',file.name),0o644).catch(()=>{});
+  await chmod(join(target,'snapshot.json'),0o644).catch(()=>{});}
+ await chmod(join(root,'current'),0o644).catch(()=>{});
+}
 import {join,isAbsolute} from 'node:path';
 
 export const UPLOAD_DEFINITIONS_SCHEMA='meri-upload-definitions/3';
@@ -313,6 +327,7 @@ export function createSignedDefinitionUpdater({root,run,now=Date.now}){
    await mkdir(database,{recursive:true,mode:0o700});
    const config=join(staging,'freshclam.conf');
    await writeFile(config,freshclamConfiguration(staging),{mode:0o600});
+   await prepareDefinitionAccess({root,staging,config});   // UID/GID 1000 freshclam can read/traverse exactly these
    try{await run(UPLOAD_FRESHCLAM,freshclamArguments(config),{cwd:staging,input:Buffer.alloc(0),signal,deadlineMs});}
    catch{fail('UPLOAD_DEFINITIONS_REFRESH_FAILED');}
    const entries=await readdir(database,{withFileTypes:true}).catch(()=>[]);
@@ -358,6 +373,7 @@ export function createSignedDefinitionUpdater({root,run,now=Date.now}){
    // root never share a temporary name. The move onto `current` is atomic and the last writer wins; the bounded retry
    // covers a transient destination lock under writer contention (observed as EPERM on a Windows authoring host) and
    // never publishes a partial pointer.
+   await prepareDefinitionAccess({root,staging,snapshot,id});
    const pointer=join(staging,'current.tmp');
    await writeFile(pointer,id,{mode:0o600});
    for(let attempt=0;;attempt+=1){

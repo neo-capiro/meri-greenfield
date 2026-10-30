@@ -9,6 +9,9 @@
  * the exact missing module. No injected positive parent object is used as a stand-in for production.
  */
 import {readFileSync} from 'node:fs';
+
+/** The EXISTING lifecycle's own provisioning budget; never aliased to the inspection request deadline. */
+const NATIVE_PROVISION_MS=120000;
 import {createServer} from 'node:https';
 import {nativeProcessingConfig} from './config.mjs';
 import {createInspectionHandler,NATIVE_INSPECTION_PATH} from './service.mjs';
@@ -94,7 +97,7 @@ export async function startNativeProcessingHost({env=globalThis.process?.env??{}
  const provisioning=beginUploadNativeProvisioning({handle:{inspection:Object.freeze({kind:'native-processing-host',
    endpoint:NATIVE_INSPECTION_PATH}),remote:false,host:{definitionsProvisioningState:definitionComposition.provisioningState},
    provisionDefinitions:definitionComposition.provisionDefinitions},
-  configuration:{uploads:{native:{provisionMs:config.limits.deadlineMaxMs}}},signal:shutdownController.signal});
+  configuration:{uploads:{native:{provisionMs:NATIVE_PROVISION_MS}}},signal:shutdownController.signal});
  return Object.freeze({started:true,server,readiness,definitionComposition,definitionsLifecycle,definitionsOwner,provisioning,startupState,startupError,
   close:()=>new Promise(resolve=>{
    // Shutdown signals active work to stop first, then closes the listener within one bounded settlement window.

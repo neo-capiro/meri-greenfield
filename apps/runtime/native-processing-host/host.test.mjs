@@ -591,3 +591,87 @@ test('BOOTSTRAP: a definition pin is held until the placement/compartment close 
  assert.deepEqual(await host.close(),{closed:true});
  assert.deepEqual(pinReleased,{completed:true},'released only after proven placement closure');
 });
+
+test('BOOTSTRAP: a pin settling after close is released and never dispatched', async () => {
+ let releaseArgs=null,resolvePin=null;
+ const definitionsOwner={pin:()=>new Promise(resolve=>{resolvePin=resolve;})};
+ let ran=0;
+ const host=await openNativeProcessingHost({config:CONFIG,allocation:ALLOCATION,binding:BINDING,hostIdentity:IDENTITY,
+  authority:{readCurrent:async()=>({})},definitionsOwner,
+  openCompartment:async()=>({close:async()=>({closed:true})}),
+  openPlacement:async()=>({run:async()=>{ran+=1;return {stdout:Buffer.from('{}'),receipt:{exitCode:0}};},
+   close:async()=>({closed:true})})});
+ const call=host.runRequest({requestDocument:REQUEST,deadlineMs:Date.now()+2000}).catch(e=>e);
+ await new Promise(resolve=>setImmediate(resolve));
+ const closed=await host.close();
+ assert.equal(closed.closed,true);
+ resolvePin({databaseDirectory:'/d',sha256:'c'.repeat(64),publishedAtMs:1,files:[],
+  release(args){releaseArgs=args;return {released:false};}});
+ const error=await call;
+ assert.equal(error?.code,'NATIVE_PROCESSING_CLOSED','no dispatch after close');
+ assert.equal(ran,0,'the child never ran');
+ assert.deepEqual(releaseArgs,{completed:false},'the late token was still released, not leaked');
+});
+
+test('BOOTSTRAP: a release refusal keeps the host unknown and retains the token', async () => {
+ let refusal=0;
+ const definitionsOwner={async pin(){return {databaseDirectory:'/d',sha256:'d'.repeat(64),publishedAtMs:1,files:[],
+  release(){refusal+=1;return {released:false};}};}};
+ const host=await openNativeProcessingHost({config:CONFIG,allocation:ALLOCATION,binding:BINDING,hostIdentity:IDENTITY,
+  authority:{readCurrent:async()=>({})},definitionsOwner,
+  openCompartment:async()=>({close:async()=>({closed:true})}),
+  openPlacement:async()=>({run:async()=>({stdout:Buffer.from('{}'),receipt:{exitCode:0}}),close:async()=>({closed:true})})});
+ await host.runRequest({requestDocument:REQUEST,deadlineMs:Date.now()+2000});
+ const closed=await host.close();
+ assert.equal(closed.closed,false,'a refused release is not closure');
+ assert.equal(refusal,1);
+});
+
+test('BOOTSTRAP: a successful run with unknown placement closure retains its pin', async () => {
+ let released=0;
+ const definitionsOwner={async pin(){return {databaseDirectory:'/d',sha256:'e'.repeat(64),publishedAtMs:1,files:[],
+  release(){released+=1;return {released:true};}};}};
+ const host=await openNativeProcessingHost({config:CONFIG,allocation:ALLOCATION,binding:BINDING,hostIdentity:IDENTITY,
+  authority:{readCurrent:async()=>({})},definitionsOwner,
+  openCompartment:async()=>({close:async()=>({closed:true})}),
+  openPlacement:async()=>({run:async()=>({stdout:Buffer.from('{}'),receipt:{exitCode:0}}),
+   close:async()=>({closed:false,code:'HOST_CGROUP_CLEANUP_UNKNOWN'})})});
+ await host.runRequest({requestDocument:REQUEST,deadlineMs:Date.now()+2000});
+ const closed=await host.close();
+ assert.equal(closed.closed,false);
+ assert.equal(released,0,'exit status never releases a pin without proven closure');
+});
+
+test('BOOTSTRAP: a failed run with PROVEN closure releases as incomplete', async () => {
+ const seen=[];
+ const definitionsOwner={async pin(){return {databaseDirectory:'/d',sha256:'f'.repeat(64),publishedAtMs:1,files:[],
+  release(args){seen.push(args);return {released:true};}};}};
+ const host=await openNativeProcessingHost({config:CONFIG,allocation:ALLOCATION,binding:BINDING,hostIdentity:IDENTITY,
+  authority:{readCurrent:async()=>({})},definitionsOwner,
+  openCompartment:async()=>({close:async()=>({closed:true})}),
+  openPlacement:async()=>({run:async()=>{throw Object.assign(Error('child failed'),{code:'HOST_LAUNCH_FAILED'});},
+   close:async()=>({closed:true})})});
+ await assert.rejects(host.runRequest({requestDocument:REQUEST,deadlineMs:Date.now()+2000}));
+ const closed=await host.close();
+ assert.equal(closed.closed,true);
+ assert.deepEqual(seen,[{completed:false}]);
+});
+
+test('BOOTSTRAP: concurrent calls release their OWN exact tokens', async () => {
+ const seen=[];
+ let n=0;
+ const definitionsOwner={async pin(){const id=++n;return {databaseDirectory:`/d${id}`,sha256:String(id).repeat(64).slice(0,64),
+  publishedAtMs:1,files:[],release(args){seen.push({id,...args});return {released:true};}};}};
+ const host=await openNativeProcessingHost({config:CONFIG,allocation:ALLOCATION,binding:BINDING,hostIdentity:IDENTITY,
+  authority:{readCurrent:async()=>({})},definitionsOwner,
+  openCompartment:async()=>({close:async()=>({closed:true})}),
+  openPlacement:async()=>({run:async(command,args,{input})=>{const doc=JSON.parse(Buffer.from(input).toString('utf8'));
+    const id=doc.settings.snapshot.databaseDirectory;
+    return {stdout:Buffer.from('{}'),receipt:{exitCode:id==='/d1'?0:1}};},close:async()=>({closed:true})})});
+ const first=host.runRequest({requestDocument:REQUEST,deadlineMs:Date.now()+2000});
+ const second=host.runRequest({requestDocument:REQUEST,deadlineMs:Date.now()+2000});
+ await Promise.allSettled([first,second]);
+ const closed=await host.close();
+ assert.equal(closed.closed,true);
+ assert.deepEqual(seen.sort((a,b)=>a.id-b.id),[ {id:1,completed:true},{id:2,completed:false} ]);
+});

@@ -7,9 +7,11 @@
  */
 import {uploadInspectionRequest,uploadInspectionBody,uploadInspectionResult,uploadInspectionFault} from '../uploads/agentcore-contract.mjs';
 import {createOperationLifetime} from '../../../packages/runtime/operation-lifetime.mjs';
+import {NATIVE_UPLOAD_INSPECTION_PATH,NATIVE_UPLOAD_INSPECTION_SCHEMA} from '../uploads/native-host-contract.mjs';
 
-export const NATIVE_INSPECTION_SCHEMA='meri-native-upload-inspection/1';
-export const NATIVE_INSPECTION_PATH='/internal/upload-inspection';
+// Canonical Parent values, re-exported for existing callers: one contract, no Cap copy.
+export const NATIVE_INSPECTION_SCHEMA=NATIVE_UPLOAD_INSPECTION_SCHEMA;
+export const NATIVE_INSPECTION_PATH=NATIVE_UPLOAD_INSPECTION_PATH;
 const BODY_KEYS=Object.freeze(['schema','allocation','hostIdentity','binding','custody','request']);
 const fault=code=>{throw uploadInspectionFault(code);};
 /** One idempotent cleanup promise per acquired owner, so a stale close call can never run twice. */
