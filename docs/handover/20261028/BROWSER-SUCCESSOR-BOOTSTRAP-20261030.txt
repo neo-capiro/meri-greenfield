@@ -1,0 +1,16 @@
+Browser successor guest composition — 30 October 2026
+
+Scope and interface
+The existing physical guest now exposes prepareSuccessor after canonical retained custody. Closed arguments: binding,deadlineMs,capabilityPolicy,control,browser,bash and optional signal. Deadline cannot exceed the original physical lifetime. The existing native launcher independently proves source SDK retirement and authenticated exact handoff before creating a target launcher. No new browser context, custody ledger, transport listener or SDK query is created here.
+
+Each target has new SDK/Bash currentness clients and monitors, SDK network/relays, launch gate, observer, broker and one-use processClientFactory. Offline and networked Bash reuse the existing confined readiness owner. Original browser egress, namespace, context, workspace and physical currentness remain pinned. Target egress grant refreshes the admitted original grant only under the exact canonical target/policy/lifetime. The existing session owner consumes its private filtered snapshot and switches immutable viewer relays. Stale source/target adapters cannot revoke or observe a later logical run.
+
+The target process factory is consumed only after browser adoption, at the activity's actual SDK query call. Both initial/target prepared results include sdkIdentity:{uid,gid} from the validated native configuration. Parent owns the canonical apps/runtime prepared-runner-query/assembleConversationRunner and filesystem-identity joins; the service caller owns new browser-host-service paths. Those production joins are not proven by these host tests.
+
+Lifetime and failure
+Expected broker closure is accepted only after native SDK retirement preparation. SDK/Bash monitors and networks are retired only with positive native absence. Request cancellation before APPLIED retention still revokes the host, including the interval after SDK retirement; only canonical retention detaches that request. Host currentness and physical final settlement remain authoritative. All successor resources are registered with the physical cleanup owner. Late resource handles are closed after cancellation; pending initialization and uncertain closure report UNKNOWN, never verified absence.
+
+Validation
+50 affected cases pass:14 original/active guest bootstrap,9 successor composition and27 browser session cases with the real immutable viewer relay. Runtime TypeScript and diff checks pass. New cases cover one query factory, fresh target authority/network, two handoffs, stale adapters, offline/networked Bash, cancellation before/after retention, monitor revocation, partial startup/unknown close and late network cleanup. Native/control ports in the new bootstrap cases are scripted; activation is test-locally mocked for the active original-to-target wiring case. The shipped activation record is untouched and held.
+
+Prior real two-SDK/Chromium same-context qualification from410 is retained as lower-layer evidence, not relabeled as an actual execution of this full bootstrap. Full D005 confinement/resource bounds, actual runtime assembly/SDK filesystem identity, production caller placement and authenticated deployed acceptance remain open. No deployment, model/provider call or shared database operation was performed by this change.

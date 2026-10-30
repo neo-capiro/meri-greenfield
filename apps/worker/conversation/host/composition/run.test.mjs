@@ -300,3 +300,41 @@ test('uncertain teardown after startup failure surfaces UNKNOWN',async()=>{
  assert.ok(f.events.includes('network-prepare:sdk'));
  assert.equal(f.events.includes('launcher-created'),false);
 });
+
+test('active guest exposes successor preparation after retention and owns every target cleanup',async t=>{
+ // Test-local module mock only; the shipped source activation record remains held.
+ t.mock.module('../../browser/activation.mjs',{namedExports:{activationOpen:()=>true}});
+ const {prepareGuestHostRun:prepareActive}=await import('./run.mjs?active-successor-composition');
+ const f=fixture(),c=f.input.components,make=c.createLauncher,startEgress=c.startBrowserEgress;
+ const ownerId='00000099-b0a1-4000-8000-000000000000';let sourceRetirement,targetRetirement,canonical;
+ f.input.browser.controls={ownerInstanceId:ownerId,async bind(){}};f.input.browser.hold=async()=>{};
+ c.prepareBrowserWorkspace=({cwd})=>({cwd,paths:browserPaths(cwd),cwdInode:'11',stateInode:'12'});
+ c.createConfinedContextPort=()=>({});c.pinnedBrowserUpstream=()=>({});
+ c.startBrowserEgress=async input=>({...await startEgress(input),async refresh(){f.events.push('physical-egress-refresh');}});
+ const baseClient=c.createClient;c.createClient=input=>{const client=baseClient(input);return {...client,async readCurrent(q){const receipt=await client.readCurrent(q);
+  return input.purpose==='browser'&&canonical?{...receipt,browserHandoff:canonical}:receipt;}};};
+ c.createBrowserSessionHost=({retirement})=>{sourceRetirement=retirement;return {ownerInstanceId:ownerId,
+  async open(){},async adopt(request,ports){targetRetirement=ports.retirement;return {resumeSnapshot:{filtered:true}};}};};
+ c.createLauncher=args=>{const original=make(args);return {...original,
+  async prepareBrowserContext(){return {installation:installationFor(binding)};},
+  async prepareSdkRetirement(){return {prepared:true};},async retireSdk(){return {sdkAbsent:true};},
+  async prepareSuccessor(input){f.events.push('target-launcher');return {...original,
+   async prepareSdkRetirement(){return {prepared:true};},async retireSdk(){return {sdkAbsent:true};},
+   async prepareBrowserBroker(){return {installation:installationFor(input.binding),modelTransport:{},failure:new Promise(()=>{}),async close(){return {closed:true};}};}
+  };}
+ };};
+ const run=await prepareActive(f.input),target={...binding,runId:'00000112-b0a1-4000-8000-000000000000',attemptId:'00000113-b0a1-4000-8000-000000000000',workerId:'00000114-b0a1-4000-8000-000000000000',writerFence:2};
+ const request={binding:target,deadlineMs:f.input.deadlineMs,capabilityPolicy:{},control:f.input.control,browser:f.input.browser,bash:{}};
+ await assert.rejects(run.prepareSuccessor(request),/HOST_BROWSER_ADOPTION_REFUSED/);
+ await sourceRetirement.prepare({});await sourceRetirement.wait({});await sourceRetirement.retain({});
+ const digest=canonicalSha256(enabledPolicy()),custody={schema:'meri-browser-custody/1',binding,controlId:'00000200-b0a1-4000-8000-000000000000',ownerInstanceId:ownerId,hostId:f.input.allocation.hostId,generation:1,leaseEpoch:1,policySha256:digest,expiresAtMs:f.input.deadlineMs};
+ canonical={custody,returned:{ownerInstanceId:ownerId,leaseEpoch:2,snapshotSha256:'b'.repeat(64)},targetBinding:target,controlId:'00000201-b0a1-4000-8000-000000000000'};
+ const next=await run.prepareSuccessor(request);assert.equal(next.browserHost,run.browserHost);
+ await next.browserPort.egress.grant({binding:target,policySha256:digest,expiresAtMs:f.input.deadlineMs});
+ await next.browserPort.sessions.adopt({binding:target,policy:enabledPolicy(),deadlineMs:f.input.deadlineMs,manifest:null,handoff:canonical});
+ assert.equal(typeof targetRetirement.wait,'function');assert.deepEqual(next.processClientFactory(),{kind:'one-sdk-query'});
+ await assert.rejects(run.browserPort.egress.revoke({binding,policySha256:digest}),/BROWSER_CUSTODY_REFUSED/);
+ assert.deepEqual(await next.settle({reason:'conversation-end'}),{status:'VERIFIED'});
+ assert.equal(f.events.filter(value=>value==='network-close:sdk').length>=2,true);
+ assert.equal(f.events.filter(value=>value==='teardown-start').length,1);
+});

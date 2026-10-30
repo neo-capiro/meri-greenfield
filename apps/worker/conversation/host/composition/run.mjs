@@ -29,6 +29,7 @@ import {createBrowserSessionHost} from '../browser-session-host.mjs';
 import {createConfinedContextPort,pinnedBrowserUpstream} from '../launcher/context-port.mjs';
 import {createConversationHostTeardown} from '../teardown.mjs';
 import {assertHostAllocation,assertHostRunBinding,assertD005HostIdentity,assertBrowserHostCurrent} from '../binding.mjs';
+import {successorPreparer} from './successor.mjs';
 
 const fault=(code,cause)=>Object.assign(new Error(code),{code,...(cause?{cause}:{})});
 const fail=code=>{throw fault(code);};
@@ -152,10 +153,11 @@ export async function prepareGuestHostRun({allocation,binding,hostIdentity,cwd,d
  signal?.addEventListener('abort',parentAbort,{once:true});if(signal?.aborted)parentAbort();
  let sdkClient,bashClient,browserClient,sdkMonitor,bashMonitor,browserEgress,browserObserver,hostObserver,
   sdkNetwork,browserNetwork,launcher,readinessLauncher,broker,contexts,bashFacts,teardown,browserPort,settlement,stopping,
-  sdkLaunchGate,readinessObserver,browserHost;
- let browserGrantAttempted=false,bootstrapped=false,processClientTaken=false,settling=false,sdkRetired=false;
+  sdkLaunchGate,readinessObserver,browserHost,prepareSuccessor;
+ let browserGrantAttempted=false,bootstrapped=false,processClientTaken=false,settling=false,sdkRetired=false,sdkRetiring=false,browserRetained=false;
  let browserActive=false,preparedWorkspace;
- const clients=[];
+ let logicalBinding=b;
+ const clients=[],successors=new Set();
  const closeClients=()=>{for(const client of clients)try{client.close();}catch{}};
  const allSignals=()=>AbortSignal.any([owner.signal,sdkMonitor?.signal,bashMonitor?.signal].filter(Boolean));
  const emergencyCut=()=>{
@@ -163,6 +165,7 @@ export async function prepareGuestHostRun({allocation,binding,hostIdentity,cwd,d
   // must cut reachability even while teardown waits for separate process and physical absence readbacks.
   for(const resource of [sdkNetwork,browserNetwork,browserEgress,bashFacts])
    if(resource)try{Promise.resolve(resource.close()).catch(()=>{});}catch{}
+  for(const resource of successors)resource.cut();
  };
  owner.signal.addEventListener('abort',()=>{emergencyCut();
   if(bootstrapped&&!settling)void settle({reason:'revoked'}).catch(()=>{});},{once:true});
@@ -178,7 +181,7 @@ export async function prepareGuestHostRun({allocation,binding,hostIdentity,cwd,d
  const stopLocal=()=>stopping??=(async()=>{
   // A close failure never prevents the other owned resources from being retired. Relay processes live below the
   // host-wide cgroup, so both networks must close before teardown checks recursive populated=0.
-  const resources=[launcher,readinessLauncher,broker,browserNetwork,sdkNetwork,browserEgress,bashFacts];
+  const resources=[launcher,readinessLauncher,broker,browserNetwork,sdkNetwork,browserEgress,bashFacts,...successors];
   const results=await Promise.allSettled(resources.filter(Boolean).map(resource=>resource.close()));
   const observers=await Promise.allSettled([browserObserver,readinessObserver].filter(Boolean).map(resource=>resource.close()));
   if(results.some(result=>result.status==='rejected'||result.value?.closed!==true)||
@@ -313,7 +316,7 @@ export async function prepareGuestHostRun({allocation,binding,hostIdentity,cwd,d
    contexts=components.createConfinedContextPort({native:nativeContext,binding:b,policy:first,
     installation:nativeContext.installation,paths,signal:owner.signal,now});
    broker=await launcher.prepareBrowserBroker({policy:first,installation,paths});
-   broker.failure?.catch(()=>{owner.abort(fault('HOST_BROWSER_BROKER_UNKNOWN'));
+   broker.failure?.catch(()=>{if(sdkRetiring)return;owner.abort(fault('HOST_BROWSER_BROKER_UNKNOWN'));
     if(bootstrapped)void settle({reason:'failed'}).catch(()=>{});});}
   stopped(allSignals());
   if(policy.bash){
@@ -354,9 +357,10 @@ export async function prepareGuestHostRun({allocation,binding,hostIdentity,cwd,d
     finally{frozen.release();}
    }else await readinessObserver.waitQuiescent({signal:allSignals()});
   }
-  if(browserActive){const egressPort=Object.freeze({endpoint:browserEgress.endpoint,
-    async grant(grant,options){browserGrantAttempted=true;return browserEgress.grant(grant,options);},
-    revoke:request=>browserEgress.revoke(request)});
+  if(browserActive){const sourceCurrent=()=>{if(canonicalSha256(logicalBinding)!==canonicalSha256(b))fail('BROWSER_CUSTODY_REFUSED');};
+   const egressPort=Object.freeze({endpoint:browserEgress.endpoint,
+    async grant(grant,options){sourceCurrent();browserGrantAttempted=true;return browserEgress.grant(grant,options);},
+    revoke:request=>{sourceCurrent();return browserEgress.revoke(request);}});
    let browserExit;
    const processes=Object.freeze({waitForExit(request,options){
     if(canonicalSha256(request.binding)!==canonicalSha256(b)||request.profile!==paths.profile||options?.signal?.aborted)fail('HOST_PROCESS_OBSERVATION_UNKNOWN');
@@ -366,28 +370,39 @@ export async function prepareGuestHostRun({allocation,binding,hostIdentity,cwd,d
    const sessions=components.createBrowserSessionHost({binding:b,cwd,installation:broker.installation,
     upstream:components.pinnedBrowserUpstream(broker.installation),contexts,modelTransport:broker.modelTransport,
     allocation:a,ownerInstanceId:browser.controls.ownerInstanceId,
-    retirement:{prepare:input=>launcher.prepareSdkRetirement(input),
+    retirement:{async prepare(input){const receipt=await launcher.prepareSdkRetirement(input);sdkRetiring=true;return receipt;},
      async wait({signal}){const r=await launcher.retireSdk();if(r.sdkAbsent!==true)fail('HOST_SDK_RETIREMENT_REFUSED');
-      signal?.throwIfAborted();sdkRetired=true;sdkMonitor.close();bashMonitor?.close();await sdkNetwork.close();await revokeBash();},
+      signal?.throwIfAborted();sdkRetired=true;sdkMonitor.close();bashMonitor?.close();
+      if((await sdkNetwork.close())?.closed!==true)fail('HOST_BOOTSTRAP_CLEANUP_UNKNOWN');await revokeBash();},
      async retain({custody,signal:operationSignal}){await current({signal:operationSignal});if(!sdkRetired)fail('HOST_SDK_RETIREMENT_REFUSED');
       operationSignal?.throwIfAborted();
       // A completed run's request lifetime ends here; the browser keeps its own
       // fresh currentness checks, egress revocation and hard custody expiry.
-      signal?.removeEventListener('abort',parentAbort);
+      browserRetained=true;signal?.removeEventListener('abort',parentAbort);
      }},controls:browser.controls,current,siteWorkflows:browser.siteWorkflows,hold:browser.hold,processes,
     dispose:({paths,signal})=>disposeBrowserState(paths,{signal}),now});
    browserHost=sessions;
    browserPort=components.createBrowserPort({binding:b,cwd,installation:broker.installation,policy:pinnedBrowserPolicy,sessions,
-    egress:egressPort,processes,approvals:browser.approvals,artifacts:browser.artifacts,
-    receipts:browser.receipts,sourceScopes:browser.sourceScopes});}
+    egress:egressPort,processes:{waitForExit(request,options){sourceCurrent();return processes.waitForExit(request,options);}},
+    approvals:browser.approvals,artifacts:browser.artifacts,receipts:browser.receipts,sourceScopes:browser.sourceScopes});
+   const shared=Object.freeze({allocation:a,hostIdentity:i,cwd,paths,deadlineMs,now,native,network,identities,components,
+    physicalBinding:b,browserDigest,browserPolicy:first,installation,controlEndpoint:control.endpoint,
+    browserHost:sessions,current,readBrowserPolicy:pinnedBrowserPolicy,validateSdkDescriptor:validatePinnedSdkDescriptor,
+    signal:owner.signal,settle,register:resource=>successors.add(resource),revoke:()=>owner.abort(fault('HOST_BOOTSTRAP_REVOKED')),
+    isLogical:binding=>canonicalSha256(logicalBinding)===canonicalSha256(binding),setLogical:binding=>{logicalBinding=binding;},processes,
+    egress:Object.freeze({endpoint:browserEgress.endpoint,refresh:input=>browserEgress.refresh(input),
+     revokePhysical:()=>browserEgress.revoke({binding:b,policySha256:browserDigest})})});
+   prepareSuccessor=successorPreparer(shared,launcher,()=>browserRetained);
+  }
   const processClientFactory=()=>{if(processClientTaken)fail('HOST_SDK_QUERY_REUSED');
    stopped(allSignals());processClientTaken=true;return launcher.createSdkProcessClient();};
   stopped(allSignals());
   bootstrapped=true;
   // The activity's existing createPreparedRunnerQuery must consume this factory once. Nothing here calls SDK query.
   return Object.freeze({allocation:a,binding:b,hostIdentity:i,browserPort,browserHost,
+   sdkIdentity:Object.freeze({uid:native.sdk.uid,gid:native.sdk.gid}),
    bashRuntimeFacts:bashFacts?.runtimeFacts??Object.freeze({}),processClientFactory,
-   browserInstallation:broker?.installation,settle});
+   browserInstallation:broker?.installation,...(prepareSuccessor?{prepareSuccessor}:{}),settle});
  }catch(error){
   if(!teardown){owner.abort();try{await stopLocal();}catch{}closeClients();signal?.removeEventListener('abort',parentAbort);
    throw fault('HOST_BOOTSTRAP_UNKNOWN',error);}
