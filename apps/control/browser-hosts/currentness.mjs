@@ -20,7 +20,11 @@ export function createBrowserHostCurrentness({store,core,nativeCredentials,capab
  const forRun=storageMethod(capabilityPolicy,'forRun'),readCore=createCurrentBrowserCoreAccess({core,nativeCredentials,now});
  if(typeof readBrowserPolicy!=='function'||typeof now!=='function'||!Number.isSafeInteger(maxRequestMs)||maxRequestMs<1||maxRequestMs>3000)fail();
  const retained=createBrowserCustodyCurrentness({journal:store.lifecycle.browserCustody,core,nativeCredentials,readBrowserPolicy,now,maxRequestMs});
- async function read(client,input,route){
+ /** `facts` selects the deliberate facts projection: the SAME checks, the same transaction client, with
+  * the canonical scopes, execution deadline and the policy VALUES this read already validated. The
+  * default readHost/readRoute responses stay exactly as they were (their consumer validates a closed
+  * shape), so facts can never be obtained by widening that response. */
+ async function read(client,input,route,facts=false){
   const v=own(input,['allocation','binding'],['signal','originalBinding','custody']);nativeSignal(v.signal);
   const allocation=assertHostAllocation(v.allocation),binding=assertHostRunBinding(allocation,v.binding);
   const life=createOperationLifetime({now,signal:v.signal,deadlineMs:Math.min(now()+maxRequestMs,allocation.leaseDeadlineMs),errorFactory:()=>Error('BROWSER_HOST_CURRENTNESS_REFUSED')});
@@ -36,6 +40,7 @@ export function createBrowserHostCurrentness({store,core,nativeCredentials,capab
    if(!same(source.projection.binding,original))fail();
    const held=source.projection.state==='paused'&&source.hold_control_id!=null;
    if(held&&(route||same(binding,original))){
+    if(facts)fail();
     const state=await life.run(signal=>route?retained.readRoute(client,{allocation,originalBinding:original,binding,custody:v.custody,signal}):retained.readHost(client,{allocation,binding:original,signal}));
     life.check();return {...state,browserAdmitted:state.browserAdmitted&&activationOpen(),currentUntilMs:Math.min(state.currentUntilMs,authorityCutoff)};
    }
@@ -57,12 +62,15 @@ export function createBrowserHostCurrentness({store,core,nativeCredentials,capab
    const {receipt:authority,recheck}=await readCore({binding,selectedClientId,life});
    const policy=assertCapabilityPolicy(await life.run(signal=>forRun({tenantId:binding.tenantId,actorId:binding.actorId,conversationId:binding.conversationId,actorRole:authority.role,signal}))??{});
    const browser=validateBrowserPolicy(await life.run(signal=>readBrowserPolicy({binding,scopes:current.scopes,actorRole:authority.role,signal,deadlineMs:life.deadline()})));
-   const credentialCutoff=await recheck();life.check();return {binding,phase:'active',sdkAdmitted:true,bashAdmitted:policy.bash,browserAdmitted:browser.enabled&&activationOpen(),
-     capabilityPolicySha256:hash(policy),browserPolicySha256:hash(browser),currentUntilMs:Math.min(current.deadlineMs,authority.expiresAtMs,authorityCutoff,credentialCutoff),
-     // The current VALUES this same read already validated, plus the canonical execution window, so a
-     // Control-side facts producer never re-derives authority or repeats the Core/policy reads.
-     scopes:current.scopes,deadlineMs:current.deadlineMs,capabilityPolicy:policy,browserPolicy:browser};
+   const credentialCutoff=await recheck();life.check();const state={binding,phase:'active',sdkAdmitted:true,bashAdmitted:policy.bash,browserAdmitted:browser.enabled&&activationOpen(),
+    capabilityPolicySha256:hash(policy),browserPolicySha256:hash(browser),currentUntilMs:Math.min(current.deadlineMs,authority.expiresAtMs,authorityCutoff,credentialCutoff)};
+   // The facts projection adds the canonical scopes, the execution deadline and the policy VALUES this
+   // same read already validated; readHost/readRoute keep their exact closed response.
+   return facts?{...state,scopes:current.scopes,deadlineMs:current.deadlineMs,capabilityPolicy:policy,browserPolicy:browser}:state;
   }finally{life.close();}
  }
- return Object.freeze({readHost:(client,input)=>read(client,input,false),readRoute:(client,input)=>read(client,input,true)});
+ // `readFacts` is the only way to obtain the wider projection, and it runs the identical checks on the
+ // caller's own transaction client. It never starts a transaction and never returns a held/custody state.
+ return Object.freeze({readHost:(client,input)=>read(client,input,false),readRoute:(client,input)=>read(client,input,true),
+  readFacts:(client,input)=>read(client,input,false,true)});
 }

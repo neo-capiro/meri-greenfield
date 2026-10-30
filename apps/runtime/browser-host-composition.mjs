@@ -5,7 +5,7 @@
 import {createBrowserHostCurrentness} from '../control/browser-hosts/currentness.mjs';
 import {createPostgresHostAllocationReader} from '../control/browser-hosts/postgres-allocations.mjs';
 import {createBrowserHostRouter} from '../control/browser-hosts/router.mjs';
-import {createBrowserHostRunFacts} from './browser-host-run-facts.mjs';
+import {createBrowserHostFactAnswer,createBrowserHostRunFacts,createBrowserHostSavedSelection} from './browser-host-run-facts.mjs';
 import {createPostgresHostCurrentnessStore} from '../worker/conversation/host/control/postgres-store.mjs';
 import {createHostCurrentnessServer} from '../worker/conversation/host/control/server.mjs';
 import {transact} from '../control/product-persistence/transaction.mjs';
@@ -53,9 +53,9 @@ export function createBrowserHostComposition({declaration,pool,store,sessions,co
    store:createPostgresHostCurrentnessStore({transact:acknowledged,readCanonicalRun:currentness.readHost,maxLeaseMs:declaration.maxLeaseMs}),
    maxFreshMs:declaration.maxCurrentnessMs,requestMs:Math.min(declaration.requestMs,5000),now});
  }
- // The facts producer is the Control-side source join for readRun's canonical half. It is plain data
- // and is served to the host only through the protected facts route once its owner lands.
- const facts=createBrowserHostRunFacts({pool,currentness,siteWorkflowAdmission,now});
+ // The facts answer is the Control-side source join for readRun: saved selection through the store's own
+ // reader, then the canonical facts projection on the acknowledged transaction client.
+ const facts=createBrowserHostFactAnswer({pool,savedSelection:createBrowserHostSavedSelection({store}),facts:createBrowserHostRunFacts({currentness})});
  let starting,closing,address=null;
  const wipe=()=>{for(const t of [privateTls,serverTls])if(t)for(const k of ['cert','key',t===privateTls?'ca':'clientCa'])try{t[k]?.fill?.(0);}catch{}};
  return Object.freeze({browserHosts,currentness,allocations,facts,
@@ -64,8 +64,15 @@ export function createBrowserHostComposition({declaration,pool,store,sessions,co
   start(options={}){
    if(server===null)return Promise.resolve(Object.freeze({mounted:true,listener:null}));
    return starting??=(async()=>{try{const started=await server.start();address=started?.address??null;options.signal?.throwIfAborted();return Object.freeze({mounted:true,listener:address});}
-    catch(error){await closing?.();try{await server.close();}catch{}wipe();throw error;}})();
+    catch(error){
+     // A failed start retires only what this composition created, and a cleanup failure stays visible
+     // instead of being reported as a clean close.
+     const failures=[];try{await server.close();}catch(cleanup){failures.push(cleanup);}wipe();
+     if(failures.length)throw Object.assign(new Error('BROWSER_HOST_START_AND_CLEANUP_FAILED'),{code:'BROWSER_HOST_START_AND_CLEANUP_FAILED',cause:new AggregateError([error,...failures])});
+     throw error;}})();
   },
-  close(){return closing??=(async()=>{const results=[];try{browserHosts.close();}catch(reason){results.push(reason);}if(server!==null)try{await server.close();}catch(reason){results.push(reason);}wipe();return Object.freeze({closed:true,failures:Object.freeze(results)});})();},
+  close(){return closing??=(async()=>{const results=[];try{browserHosts.close();}catch(reason){results.push(reason);}if(server!==null)try{await server.close();}catch(reason){results.push(reason);}wipe();
+   if(results.length)throw Object.assign(new Error('BROWSER_HOST_CLEANUP_FAILED'),{code:'BROWSER_HOST_CLEANUP_FAILED',failures:Object.freeze(results)});
+   return Object.freeze({closed:true});})();},
  });
 }

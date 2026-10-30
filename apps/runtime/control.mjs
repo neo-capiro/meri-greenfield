@@ -70,6 +70,7 @@ import {createObjectiveGenerationStartApplication} from './objective-generation/
 import {compileObjectiveGenerationConfiguration} from './objective-generation/configuration.mjs';
 import {createObjectiveGenerationDispatcher} from '../control/conversations/objective-generation-dispatch.mjs';
 import {createBrowserHostComposition,readBrowserHostMaterial} from './browser-host-composition.mjs';
+import {compileBrowserHostConfiguration} from './browser-host-configuration.mjs';
 function productBinding(options){
  const c=own(options,[],['productPorts','productPortsFactory']);
  if(c.productPorts!==undefined&&c.productPortsFactory!==undefined)throw fault('PRODUCT_PORTS_CONFIGURATION');
@@ -151,11 +152,17 @@ export function assembleControl(options){
  // the error escapes, so a failed assembly owns no live state.
  let browserHosts=null;
  if(configuration.browserHosts!==undefined){
+  // The declaration is compiled here (enabled:false is absent; enabled but unusable refuses).
+  const declaration=compileBrowserHostConfiguration(configuration);
   try{
-   browserHosts=createBrowserHostComposition({declaration:configuration.browserHosts,pool,store,sessions,core:ports.transitionAuthority,capabilityPolicy,readBrowserPolicy,
-    siteWorkflowAdmission:ports.siteWorkflowAdmission??null,material:browserHostMaterial,now,limits:{requestMs:configuration.limits.requestMs}});
+   if(declaration!==null){
+    if(!browserHostMaterial)throw fault('BROWSER_HOST_CONFIGURATION');
+    browserHosts=createBrowserHostComposition({declaration,pool,store,sessions,core:ports.browserHostCore,capabilityPolicy,readBrowserPolicy,
+     material:browserHostMaterial,now,limits:{requestMs:configuration.limits.requestMs}});
+    if(browserHosts===null)throw fault('BROWSER_HOST_CONFIGURATION');
+    ports=composeRuntimePorts(ports,{browserHosts:browserHosts.browserHosts});
+   }
   }catch(error){Promise.resolve(sessions.close()).catch(()=>{});throw error;}
-  if(browserHosts!==null)ports=composeRuntimePorts(ports,{browserHosts:browserHosts.browserHosts});
  }
  const browserOperations=ports.browserHosts?.executeBrowserOperation&&readCapabilityRole?createBrowserOperations({hosts:ports.browserHosts,readCapabilityRole,readBrowserPolicy,now}):undefined;
  const selected=configuration.sourceEnabled&&configuration.agentcore&&createReadsRuntime?createNativeSelectedComposition({configuration,pool,store,execution,createReadsRuntime:input=>createReadsRuntime({...input,capabilityPolicy,readCapabilityRole}),serviceFor:value=>createWorkerService(value),...(productContext?{revisionSource:value=>selectedDocumentRevisionSourceFor(productContext,value)}:{}),now}):null;
