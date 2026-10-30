@@ -69,9 +69,12 @@ export function createInspectionHandler({authenticate,verifyCustody,openHost,rea
   req?.once?.('close',onReqClose);
   res?.once?.('close',onResClose);
   const track=onActivity===undefined?null:onActivity(controller);
-  let host=null,cleanupUnknown=false;
+ let activityReleased=false;
+ const releaseActivityOnce=()=>{if(activityReleased)return;activityReleased=true;try{track?.();}catch{}};
+  let host=null,cleanupUnknown=false,cleanupBase=null;
   const cleanupMs=Number.isSafeInteger(limits.cleanupMs)&&limits.cleanupMs>0?limits.cleanupMs:5000;
-  const cleanupDeadline=()=>Math.max(1,(started+limits.deadlineMaxMs+cleanupMs)-now());
+  /** ONE cleanup deadline, started when cleanup begins; nested catches never restart it. */
+  const cleanupDeadline=()=>{const base=cleanupBase??=now();return Math.max(1,base+cleanupMs-now());};
   const send=(status,payload)=>{try{res.writeHead(status,{'content-type':'application/json','cache-control':'no-store'});
    res.end(JSON.stringify(payload));}catch{}};
   try{
@@ -102,18 +105,41 @@ export function createInspectionHandler({authenticate,verifyCustody,openHost,rea
     if(granted?.authorized!==true)fault('NATIVE_INSPECTION_CUSTODY_REFUSED');
     // Setup is raced through the SAME lifetime, and its promise is retained: if it fulfills after this operation already
     // failed, the continuation below closes that owner exactly once instead of leaking it.
-    let settled=false,lateCleanup=null;
+    life.check();                                  // no setup starts past the operation deadline
+    // Setup is raced through the SAME lifetime signal, and its promise is retained: if it fulfills after this operation
+    // already failed, the continuation closes that owner exactly once and only then releases its activity.
+    let settled=false,lateCleanup=null,pendingComplete=false;
     const pendingSetup=Promise.resolve().then(()=>openHost({allocation:granted.allocation??body.allocation,
       binding:granted.binding??body.binding,hostIdentity:granted.hostIdentity??body.hostIdentity,
-      authority:granted.currentness,deadlineMs:deadline,signal:controller.signal}))
-     .then(value=>{if(settled){lateCleanup=cleanupOnce(value);}else{host=value;}return value;});
+      authority:granted.currentness,deadlineMs:deadline,signal:life.signal}))
+     .then(value=>{
+      pendingComplete=true;
+      if(settled){lateCleanup=cleanupOnce(value);
+       lateCleanup.then(result=>{if(result?.closed===true)releaseActivityOnce();},()=>{});}
+      else host=value;
+      return value;},
+      error=>{pendingComplete=true;throw error;});
     try{await life.run(()=>pendingSetup);}
     catch(setupError){
      settled=true;
-     const target=host??null;
-     if(target!==null){const result=await boundedWait(cleanupOnce(target),cleanupDeadline());if(result.settled!==true||result.value?.closed!==true)cleanupUnknown=true;}
-     else if(lateCleanup!==null){const result=await boundedWait(lateCleanup,cleanupDeadline());if(result.settled!==true||result.value?.closed!==true)cleanupUnknown=true;}
-     else cleanupUnknown=false;   // nothing acquired yet; the retained continuation still closes anything that arrives
+     // Wait within ONE cleanup window for setup itself plus its cleanup. A still-pending setup is an unknown owner.
+     const target=host;
+     if(target!==null){
+      const result=await boundedWait(cleanupOnce(target),cleanupDeadline());
+      if(result.settled!==true||result.value?.closed!==true)cleanupUnknown=true;
+      else releaseActivityOnce();
+     }else if(lateCleanup!==null){
+      const result=await boundedWait(lateCleanup,cleanupDeadline());
+      if(result.settled!==true||result.value?.closed!==true)cleanupUnknown=true;
+      else releaseActivityOnce();
+     }else if(setupError?.partialCleanup==='unknown'){
+      cleanupUnknown=true;
+     }else if(!pendingComplete){
+      // The owner is unresolved: report unknown, keep the activity and let the continuation settle it later.
+      cleanupUnknown=true;
+     }else if(setupError?.partialCleanup===undefined){
+      cleanupUnknown=true;
+     }
      throw setupError;
     }
     settled=true;
@@ -133,11 +159,12 @@ export function createInspectionHandler({authenticate,verifyCustody,openHost,rea
     const disposition=await boundedWait(cleanupOnce(host),cleanupDeadline());host=null;
     if(disposition.settled!==true||disposition.value?.closed!==true){cleanupUnknown=true;
      fault('NATIVE_INSPECTION_CLEANUP_UNKNOWN');}
+    releaseActivityOnce();life.check();             // re-check the lifetime after cleanup, before any 200
     send(200,uploadInspectionBody({requestId:body.request.requestId,imageDigest:body.request.imageDigest,value:closed}));
    }finally{life.close();}
   }catch(error){
    if(host!==null){const result=await boundedWait(cleanupOnce(host),cleanupDeadline());host=null;
-    if(result.settled!==true||result.value?.closed!==true)cleanupUnknown=true;}
+    if(result.settled!==true||result.value?.closed!==true)cleanupUnknown=true;else releaseActivityOnce();}
    const code=cleanupUnknown?'NATIVE_INSPECTION_CLEANUP_UNKNOWN':
     (typeof error?.code==='string'?error.code:'NATIVE_INSPECTION_UNKNOWN');
    const status=code==='NATIVE_INSPECTION_ROUTE'?404:code==='NATIVE_INSPECTION_TLS'||code==='NATIVE_INSPECTION_PEER'?403:
@@ -147,7 +174,9 @@ export function createInspectionHandler({authenticate,verifyCustody,openHost,rea
    req?.removeListener?.('aborted',abort);
    req?.removeListener?.('close',onReqClose);
    res?.removeListener?.('close',onResClose);
-   if(track!==null){try{track();}catch{}}
+   // Activity is released only when physical ownership is settled; an unresolved owner keeps it until its
+   // continuation proves closure (or the shutdown path reports unknown).
+   if(host===null&&cleanupUnknown===false)releaseActivityOnce();
   }
  };
 }

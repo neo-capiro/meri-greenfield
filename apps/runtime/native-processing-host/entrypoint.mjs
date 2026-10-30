@@ -23,7 +23,8 @@ export function nativeProcessingReadiness({config,verifyCustody}){
 }
 
 export async function startNativeProcessingHost({env=globalThis.process?.env??{},readFile=readFileSync,
- verifyCustody=undefined,openHost=openNativeProcessingHost,serverFactory=createServer}={}){
+ verifyCustody=undefined,openHost=openNativeProcessingHost,serverFactory=createServer,
+ authenticatePeer=undefined}={}){
  const config=nativeProcessingConfig({env});
  const readiness=nativeProcessingReadiness({config,verifyCustody});
  if(!readiness.ready)return Object.freeze({started:false,readiness});
@@ -34,7 +35,7 @@ export async function startNativeProcessingHost({env=globalThis.process?.env??{}
  // The CA is a trust anchor, not a leaf: it is passed to the TLS server as `ca` and must NOT be subjected to the peer
  // leaf SAN/15-minute-lifetime rules. The peer leaf is checked per connection in `authenticate`.
  const handler=createInspectionHandler({
-  authenticate:async({socket})=>{
+  authenticate:authenticatePeer??(async({socket})=>{
    if(socket.encrypted!==true)return {verified:false};
    const raw=socket.getPeerCertificate?.(true);
    if(!raw||!Buffer.isBuffer(raw.raw))return {verified:false};
@@ -43,7 +44,7 @@ export async function startNativeProcessingHost({env=globalThis.process?.env??{}
    const checked=checkedCertificate(raw.raw,{name:config.tls.peerSan,nowMs:Date.now(),
     maxLifetimeMs:config.tls.maxPeerLifetimeMs,notAfterMs:config.tls.peerNotAfterMs});
    return {verified:true,fingerprintSha256:checked.fingerprintSha256,notAfterMs:checked.notAfterMs};
-  },
+  }),
   verifyCustody,
   openHost:({allocation,binding,hostIdentity,authority,deadlineMs,signal})=>openHost({config,allocation,binding,
    hostIdentity,authority,deadlineMs,signal}),
@@ -60,8 +61,8 @@ export async function startNativeProcessingHost({env=globalThis.process?.env??{}
    const onEnd=()=>finish(null,Buffer.concat(chunks));
    const onError=error=>finish(error);
    signal?.addEventListener('abort',onAbort,{once:true});
-   if(signal?.aborted)onAbort();
    req.on('data',onData);req.on('end',onEnd);req.on('error',onError);
+   if(signal?.aborted){onAbort();return;}   // attach first, then honour an already-aborted lifetime
   }),
   limits:{deadlineMaxMs:config.limits.deadlineMaxMs,bodyBytes:config.limits.bodyBytes,cleanupMs:config.limits.deadlineMaxMs,
    leaseDeadlineMs:config.allocation.leaseDeadlineMs,peerNotAfterMs:config.tls.peerNotAfterMs},

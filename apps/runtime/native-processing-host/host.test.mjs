@@ -19,8 +19,9 @@ const REQUEST=Object.freeze({kind:'upload-inspection',requestId:'a'.repeat(64),i
  declaration:DECLARATION,bytesBase64:BYTES.toString('base64'),inputSha256:sha(BYTES),deadlineMs:Date.now()+5000});
 const uuid=n=>`00000000-0000-4000-8000-${String(n).padStart(12,'0')}`;
 const HOST_ID=uuid(7),CONV=uuid(3),TENANT=uuid(1),BOOT=uuid(8),INSTANCE='i-0123456789abcdef0';
+const LEASE=Date.now()+600000;
 const ALLOCATION=Object.freeze({schema:'meri-conversation-host-allocation/1',tenantId:TENANT,conversationId:CONV,
- generation:3,hostId:HOST_ID,hostMode:'native-processing',imageDigest:IMAGE,leaseDeadlineMs:Date.now()+600000});
+ generation:3,hostId:HOST_ID,hostMode:'native-processing',imageDigest:IMAGE,leaseDeadlineMs:LEASE});
 const BINDING=Object.freeze({tenantId:TENANT,actorId:uuid(2),conversationId:CONV,runId:uuid(4),attemptId:uuid(5),workerId:uuid(6),writerFence:1});
 const IDENTITY=Object.freeze({schema:'meri-d005-host-identity/1',instanceId:INSTANCE,bootId:BOOT,conversationId:CONV,hostId:HOST_ID});
 const LIMITS=Object.freeze({cpuQuotaUs:50000,periodUs:100000,memoryBytes:268435456,pidsMax:16,deadlineMaxMs:30000,
@@ -28,8 +29,28 @@ const LIMITS=Object.freeze({cpuQuotaUs:50000,periodUs:100000,memoryBytes:2684354
 const RAW_SETTINGS=Object.freeze({runtimeUid:1000,runtimeGid:1000,imageDigest:IMAGE,
  definitionsRoot:'/run/meri/upload-definitions',extractorPath:'/opt/meri/extract.py',scratchRoot:'/run/meri/upload-scratch',
  credentialPaths:['/proc/1/environ']});
+const HOST_ENV=Object.freeze({
+ MERI_NATIVE_PROCESSING_PORT:'9443',MERI_NATIVE_PROCESSING_ADDRESS:'127.0.0.1',
+ MERI_NATIVE_PROCESSING_TLS_KEY:'/run/meri/tls.key',MERI_NATIVE_PROCESSING_TLS_CERT:'/run/meri/tls.crt',
+ MERI_NATIVE_PROCESSING_TLS_CA:'/run/meri/ca.crt',MERI_NATIVE_PROCESSING_PEER_SAN:'control.meri.internal',
+ MERI_NATIVE_PROCESSING_PEER_FINGERPRINT:'a'.repeat(64),MERI_NATIVE_PROCESSING_PEER_MAX_LIFETIME_MS:'900000',
+ MERI_NATIVE_PROCESSING_PEER_NOT_AFTER_MS:String(Date.now()+600000),
+ MERI_NATIVE_PROCESSING_IMAGE_DIGEST:IMAGE,MERI_NATIVE_PROCESSING_HOST_ID:HOST_ID,
+ MERI_NATIVE_PROCESSING_GENERATION:'3',MERI_NATIVE_PROCESSING_CONVERSATION_ID:CONV,
+ MERI_NATIVE_PROCESSING_TENANT_ID:TENANT,MERI_NATIVE_PROCESSING_INSTANCE_ID:INSTANCE,
+ MERI_NATIVE_PROCESSING_BOOT_ID:BOOT,MERI_NATIVE_PROCESSING_HOST_MODE:'native-processing',
+ MERI_NATIVE_PROCESSING_LEASE_DEADLINE_MS:String(LEASE),
+ MERI_NATIVE_PROCESSING_CPU_QUOTA_US:'50000',MERI_NATIVE_PROCESSING_CPU_PERIOD_US:'100000',
+ MERI_NATIVE_PROCESSING_MEMORY_BYTES:'268435456',MERI_NATIVE_PROCESSING_PIDS_MAX:'16',
+ MERI_NATIVE_PROCESSING_DEADLINE_MAX_MS:'30000',MERI_NATIVE_PROCESSING_BODY_BYTES:String(NATIVE_BODY_LIMIT),
+ MERI_NATIVE_PROCESSING_HELPER:'/usr/lib/meri/meri-host-launcher',MERI_NATIVE_PROCESSING_NODE:'/usr/local/bin/node',
+ MERI_NATIVE_PROCESSING_CHILD:'/opt/meri/child-cli.mjs',MERI_NATIVE_PROCESSING_HOME:'/run/meri/processing',
+ MERI_NATIVE_PROCESSING_DEFINITIONS:'/run/meri/upload-definitions',
+ MERI_NATIVE_PROCESSING_EXTRACTOR:'/opt/meri/extract.py',MERI_NATIVE_PROCESSING_SCRATCH:'/run/meri/upload-scratch',
+ MERI_NATIVE_PROCESSING_RUNTIME_UID:'1000',MERI_NATIVE_PROCESSING_RUNTIME_GID:'1000',
+ MERI_NATIVE_PROCESSING_CREDENTIAL_PATHS:'/proc/1/environ'});
 const CONFIG=Object.freeze({image:{digest:IMAGE},allocation:{hostId:HOST_ID,generation:3,conversationId:CONV,
- tenantId:TENANT,instanceId:INSTANCE,bootId:BOOT,hostMode:'native-processing',leaseDeadlineMs:Date.now()+600000},
+ tenantId:TENANT,instanceId:INSTANCE,bootId:BOOT,hostMode:'native-processing',leaseDeadlineMs:LEASE},
  limits:LIMITS,paths:{nodePath:'/usr/local/bin/node',childPath:'/opt/meri/child-cli.mjs',
   helperPath:'/usr/lib/meri/meri-host-launcher',home:'/run/meri/processing',runtimeUid:1000,runtimeGid:1000,
   childSettings:RAW_SETTINGS}});
@@ -148,8 +169,8 @@ test('CONNECTED: late setup after cancellation is unwound once and never reports
   assert.notEqual(r.status,200,'a cancelled operation never yields a successful inspection');
   await new Promise(resolve=>setTimeout(resolve,90));
   assert.equal(closed,1,'the late owner was closed exactly once');
-  assert.notEqual(JSON.parse(r.body).error,'NATIVE_INSPECTION_CLEANUP_UNKNOWN',
-   'a proven unwind is reported as the cancellation, not as cleanup unknown');
+  assert.equal(JSON.parse(r.body).error,'NATIVE_INSPECTION_CLEANUP_UNKNOWN',
+   'an owner that was still pending at cancellation is honestly unknown');
 });
 test('CONNECTED: a non-clean scan yields no extraction through the real pipeline', async () => {
   const runner=realChildRunner({status:'infected'});
@@ -294,5 +315,67 @@ test('LIFECYCLE: a request whose deadline already passed dispatches nothing', as
 test('CHILD: the actual process identity must be UID/GID 1000', async () => {
  await assert.rejects(childMain({stdin:Readable.from([Buffer.from('{}')]),
   stdout:new Writable({write(_c,_e,cb){cb();}}),identity:()=>({uid:0,gid:0})}),
+  e=>e?.code==='UPLOAD_INSPECTION_REQUEST_REFUSED');
+});
+
+test('ENTRYPOINT SUCCESS: inert server factory wiring drives the real handler through bootstrap+childMain', async () => {
+ const {startNativeProcessingHost}=await import('./entrypoint.mjs');
+ const runner=realChildRunner();
+ let captured=null,options=null;
+ const serverFactory=(opts,handler)=>{options=opts;captured=handler;
+  return {once(){},listen(_port,_addr,cb){cb();},close(cb){cb?.();}};};
+ const openHost=async input=>openNativeProcessingHost({config:CONFIG,...input,
+  openCompartment:async()=>({close:async()=>({closed:true})}),
+  openPlacement:async()=>({run:runner.run,close:async()=>({closed:true})})});
+ const started=await startNativeProcessingHost({env:HOST_ENV,verifyCustody:async()=>({authorized:true}),
+  openHost,serverFactory,authenticatePeer:async()=>({verified:true,notAfterMs:Date.now()+60000}),
+  readFile:()=>Buffer.from('-----BEGIN-----')});
+ assert.equal(started.started,true);
+ assert.equal(options.minVersion,'TLSv1.3');
+ assert.equal(options.maxVersion,'TLSv1.3');
+ assert.equal(options.requestCert,true);
+ assert.equal(options.rejectUnauthorized,true);
+ assert.ok(Buffer.isBuffer(options.key)&&Buffer.isBuffer(options.cert)&&Buffer.isBuffer(options.ca));
+ const out=res(); await captured(req({complete:true}),out);
+ assert.equal(out.status,200,`unexpected ${out.status} ${out.body}`);
+ assert.equal(JSON.parse(out.body).requestId,REQUEST.requestId);
+ assert.equal(runner.calls.length,1);
+ const closed=await started.close();
+ assert.deepEqual(closed.closed,true);
+});
+
+test('ENTRYPOINT SHUTDOWN: an unresolved setup keeps close false until its owner settles', async () => {
+ const {startNativeProcessingHost}=await import('./entrypoint.mjs');
+ let resolveSetup=null,closedOwners=0,captured=null;
+ const serverFactory=(_opts,handler)=>{captured=handler;
+  return {once(){},listen(_p,_a,cb){cb();},close(cb){cb?.();}};};
+ const started=await startNativeProcessingHost({env:HOST_ENV,verifyCustody:async()=>({authorized:true}),
+  serverFactory,authenticatePeer:async()=>({verified:true,notAfterMs:Date.now()+60000}),readFile:()=>Buffer.from('x'),
+  openHost:async()=>new Promise(resolve=>{resolveSetup=()=>resolve({runRequest:async()=>({}),
+   close:async()=>{closedOwners+=1;return {closed:true};}});})});
+ const out=res();
+ const pending=captured(req({complete:true}),out);
+ await new Promise(r=>setTimeout(r,60));
+ const early=await started.close();
+ assert.equal(early.closed,false,'shutdown never claims closed while an owner is unresolved');
+ assert.notEqual(out.status,200);
+ resolveSetup();
+ await new Promise(r=>setTimeout(r,120));
+ assert.equal(closedOwners,1,'the unresolved owner is closed once when it finally arrives');
+});
+test('CANONICAL MAX: a 10MiB original is accepted by the real closed request; above max is refused', () => {
+ const limit=10*1024*1024;
+ const big=Buffer.alloc(limit,0x61);
+ const declaration={filename:'big.txt',mimeType:'text/plain',bytes:big.length,sha256:sha(big)};
+ const request={kind:'upload-inspection',requestId:'b'.repeat(64),imageDigest:IMAGE,declaration,
+  bytesBase64:big.toString('base64'),inputSha256:sha(big),deadlineMs:Date.now()+5000};
+ const parsed=nativeInspectionBody({schema:NATIVE_INSPECTION_SCHEMA,allocation:ALLOCATION,hostIdentity:IDENTITY,
+  binding:BINDING,custody:{uploadId:uuid(9)},request});
+ assert.equal(parsed.bytes.length,limit);
+ const over=Buffer.alloc(limit+1,0x62);
+ const overDeclaration={filename:'big.txt',mimeType:'text/plain',bytes:over.length,sha256:sha(over)};
+ assert.throws(()=>nativeInspectionBody({schema:NATIVE_INSPECTION_SCHEMA,allocation:ALLOCATION,hostIdentity:IDENTITY,
+  binding:BINDING,custody:{uploadId:uuid(9)},request:{...request,declaration:overDeclaration,
+   bytesBase64:over.toString('base64'),inputSha256:sha(over)}}),
   e=>e?.code==='UPLOAD_INSPECTION_REQUEST_REFUSED');
 });
