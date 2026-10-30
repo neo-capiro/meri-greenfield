@@ -19,6 +19,9 @@ const hostIdentity = Object.freeze({schema: D005_HOST_IDENTITY_SCHEMA, instanceI
   bootId: uuid(8), conversationId: binding.conversationId, hostId: allocation.hostId});
 const digest = canonicalSha256(binding);
 const WORK = '/run/meri/processing';
+const inertKill=(onKill)=>{const calls=[];const kill=(pid,sig)=>{calls.push([pid,sig]);
+ if(sig===0){const e=Error('ESRCH');e.code='ESRCH';throw e;}
+ if(sig==='SIGKILL'&&onKill)onKill(pid);};kill.calls=calls;return kill;};
 const parent = `/sys/fs/cgroup/meri/hosts/${allocation.hostId}-5/${digest}`;
 const leafPath = `${parent}/processing`;
 
@@ -77,7 +80,7 @@ test('the default runner chain: one spawn, exact stdout/exit, no cleanup while t
     return {pid: child.pid, child, gate: child.stdio[4]};
   };
   const result = await runProcessingCommand({launcher, command: '/usr/bin/bwrap', args: ['--unshare-all'],
-    cwd: WORK, input: Buffer.from('IN'), deadlineMs: Date.now() + 5000, maxOutput: 1024});
+    cwd: WORK, input: Buffer.from('IN'), deadlineMs: Date.now() + 5000, maxOutput: 1024, kill: inertKill()});
   assert.equal(result.stdout.toString(), 'OUT');
   assert.equal(result.receipt.exitCode, 0);
   assert.equal(result.receipt.groupAbsent, true);
@@ -93,7 +96,7 @@ test('GO is written only after the runner installed its listeners, so a fast exi
   gate._write = (chunk, enc, cb) => { if (String(chunk) === 'G') goAfterListeners = child.stdout.listenerCount('data') > 0; return write(chunk, enc, cb); };
   const launcher = async () => ({pid: child.pid, child, gate});
   const result = await runProcessingCommand({launcher, command: '/usr/bin/bwrap', args: [], cwd: WORK,
-    deadlineMs: Date.now() + 5000, maxOutput: 64});
+    deadlineMs: Date.now() + 5000, maxOutput: 64, kill: inertKill()});
   assert.equal(goAfterListeners, true);
   assert.ok(result.receipt.stdoutEnded && result.receipt.stderrEnded);
 });
@@ -210,3 +213,80 @@ function memoryFs(entries = {}) {
 const root = () => ({uid: 0, euid: 0});
 const delegating = () => memoryFs({[`${parent}/cgroup.controllers`]: 'cpu memory pids\n',
   [`${parent}/cgroup.subtree_control`]: 'cpu memory pids\n'});
+
+test('a prepared child the runner never took custody of is stopped and settled, not leaked', async () => {
+  const controller = new AbortController();
+  const child = gatedChild();
+  const kill = inertKill(() => child.kill());
+  const launcher = async () => ({pid: child.pid, child, gate: child.stdio[4], deadlineMs: Date.now() + 5000, signal: controller.signal});
+  controller.abort();                                   // the runner's INITIAL guard rejects before any spawn port call
+  let error;
+  try { await runProcessingCommand({launcher, command: '/usr/bin/bwrap', args: [], cwd: WORK,
+    signal: controller.signal, deadlineMs: Date.now() + 5000, maxOutput: 64, kill, settleMs: 50}); }
+  catch (caught) { error = caught; }
+  assert.equal(error?.code, 'ARTIFACT_CANCELLED');
+  assert.equal(error?.preDispatchCleanup?.gateDestroyed, true);
+  assert.equal(error?.preDispatchCleanup?.killed, true);
+  assert.equal(error?.preDispatchCleanup?.settled, true);
+  assert.deepEqual(kill.calls.filter(([, sig]) => sig === 'SIGKILL'), [[-child.pid, 'SIGKILL']], 'one bounded group stop of the prepared child');
+});
+
+test('the queued GO re-checks cancellation: no G after an abort during the dispatch gap', async () => {
+  const controller = new AbortController();
+  const child = gatedChild();
+  const gateWrites = [];
+  const write = child.stdio[4]._write.bind(child.stdio[4]);
+  child.stdio[4]._write = (chunk, enc, cb) => { gateWrites.push(String(chunk)); return write(chunk, enc, cb); };
+  const kill = inertKill();
+  const launcher = async () => {
+    queueMicrotask(() => controller.abort());            // runs before the adapter's dispatch microtask
+    return {pid: child.pid, child, gate: child.stdio[4], deadlineMs: Date.now() + 5000, signal: controller.signal};
+  };
+  let error;
+  try { await runProcessingCommand({launcher, command: '/usr/bin/bwrap', args: [], cwd: WORK, signal: controller.signal,
+    deadlineMs: Date.now() + 5000, maxOutput: 64, kill}); }
+  catch (caught) { error = caught; }
+  assert.ok(error !== undefined, 'the race is reported, not silently dispatched');
+  assert.deepEqual(gateWrites, [], 'no G was written after cancellation');
+  assert.equal(kill.calls.length, 1, 'the owned group is stopped exactly once');
+});
+
+test('the queued GO re-checks expiry: no G once the caller deadline passed in the gap', async () => {
+  let clock = Date.now();
+  const child = gatedChild();
+  const gateWrites = [];
+  const write = child.stdio[4]._write.bind(child.stdio[4]);
+  child.stdio[4]._write = (chunk, enc, cb) => { gateWrites.push(String(chunk)); return write(chunk, enc, cb); };
+  const deadlineMs = clock + 1000;
+  const launcher = async () => {
+    queueMicrotask(() => { clock = deadlineMs + 1; });   // expiry lands in the dispatch gap
+    return {pid: child.pid, child, gate: child.stdio[4], deadlineMs, signal: undefined};
+  };
+  let error;
+  try { await runProcessingCommand({launcher, command: '/usr/bin/bwrap', args: [], cwd: WORK, deadlineMs,
+    maxOutput: 64, kill: inertKill(), now: () => clock}); }
+  catch (caught) { error = caught; }
+  assert.ok(error !== undefined);
+  assert.deepEqual(gateWrites, []);
+});
+
+test('a stalled currentness read is bounded by the caller deadline and never spawns', async () => {
+  let spawns = 0;
+  const stalled = {policySha256: 'c'.repeat(64), maxFreshMs: 5000, readCurrent: async () => new Promise(() => {})};
+  const prepare = createProcessingCommandLauncher(launcherBase({authority: stalled,
+    spawnNative: () => { spawns += 1; return gatedChild(); }, onPrepared: async () => {}}));
+  await assert.rejects(prepare('/usr/bin/bwrap', [], {cwd: WORK, deadlineMs: Date.now() + 120}),
+    error => error?.code === 'HOST_LAUNCH_CURRENTNESS_REFUSED');
+  assert.equal(spawns, 0, 'no child was created for a read that outlived the deadline');
+});
+
+test('an already-aborted per-call signal never spawns', async () => {
+  let spawns = 0;
+  const prepare = createProcessingCommandLauncher(launcherBase({spawnNative: () => { spawns += 1; return gatedChild(); },
+    onPrepared: async () => {}}));
+  const controller = new AbortController();
+  controller.abort();
+  await assert.rejects(prepare('/usr/bin/bwrap', [], {cwd: WORK, signal: controller.signal, deadlineMs: Date.now() + 5000}),
+    error => error?.code === 'HOST_LAUNCH_CANCELLED');
+  assert.equal(spawns, 0);
+});

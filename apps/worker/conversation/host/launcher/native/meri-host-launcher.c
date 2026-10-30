@@ -159,6 +159,16 @@ static void enter_namespace(spec *s) {
      (unsigned long long)st.st_ino!=number(s->ns_ino,UINT64_MAX)||setns(ns,CLONE_NEWNET)) die();
   close(ns);
 }
+/* Fixed processing must keep the ACTUAL owned finite hierarchy observable to the accepted 549 observer (mountinfo,
+ * /proc/self/cgroup, cpu.max/memory.max/pids.max) while denying any control-file write after the UID drop. A private
+ * mount namespace plus a read-only recursive bind of /sys/fs/cgroup gives exactly that; only the processing kind uses
+ * it. Other kinds keep the historical hidden view unchanged. Called as root, before drop_privilege. */
+static void processing_cgroup_view(void) {
+  if(unshare(CLONE_NEWNS)) die();
+  if(mount(NULL,"/",NULL,MS_REC|MS_PRIVATE,NULL)) die();
+  if(mount("/sys/fs/cgroup","/sys/fs/cgroup",NULL,MS_BIND|MS_REC,NULL)) die();
+  if(mount(NULL,"/sys/fs/cgroup",NULL,MS_REMOUNT|MS_BIND|MS_RDONLY|MS_REC|MS_NOSUID|MS_NODEV|MS_NOEXEC,NULL)) die();
+}
 static void hide_cgroupfs(void) {
   if(unshare(CLONE_NEWNS)||mount(NULL,"/",NULL,MS_PRIVATE|MS_REC,NULL)||
      umount2("/sys/fs/cgroup",MNT_DETACH)||
@@ -271,7 +281,10 @@ static void drop_privilege(spec *s) {
 }
 static void confined_exec(spec *s,int ready,int gate) {
   pid_t parent=getppid();
-  attach_cgroup(s);enter_namespace(s);hide_cgroupfs();
+  attach_cgroup(s);enter_namespace(s);
+  /* Processing keeps the real owned hierarchy readable but not writable after the drop; every other kind keeps the
+   * historical hidden cgroup view. */
+  if(!strcmp(s->kind,"processing")) processing_cgroup_view(); else hide_cgroupfs();
   if(!strcmp(s->kind,"browser")) browser_workspace_view(s);
   drop_privilege(s);
   /* Linux clears PDEATHSIG when effective credentials change. Arm only after the final UID/GID drop. */

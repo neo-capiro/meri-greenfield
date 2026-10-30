@@ -407,40 +407,6 @@ export function createBrowserOnlyHostLauncher(raw){
  }});
 }
 
-/** Fixed scan/extract/render processing child on the conversation host: one finite cgroup leaf, one direct confined
- * child (kind `processing`), READY observed, placement verified BEFORE GO. No SDK, no relay, no model authority. */
-export async function startConfinedProcessing({allocation,binding,hostIdentity,helperPath,networkProof,command,args,
- cwd,uid:runUid,gid:runGid,onPrepared,signal,spawnNative=spawn,readyMs=5000,stopMs=5000}={}){
- const s=scope({allocation,binding,hostIdentity});
- if(!absolute(helperPath)||!absolute(command)||!absolute(cwd)||typeof onPrepared!=='function'||
-  !uid(runUid)||!uid(runGid)||!maxMs(readyMs)||!maxMs(stopMs))fail('HOST_LAUNCH_CONFIGURATION');
- nativeSignal(signal);
- if(networkProof?.verified!==true||networkProof.kind!=='processing'||networkProof.allocationSha256!==s.allocationSha256||
-  networkProof.bindingSha256!==s.bindingSha256||!/^\/run\/netns\/[a-z0-9-]{1,63}$/u.test(networkProof.namespacePath))fail('HOST_LAUNCH_NETWORK_REFUSED');
- const network={namespace:networkProof.namespacePath.split('/').at(-1),namespaceDev:networkProof.namespaceDev,namespaceIno:networkProof.namespaceIno};
- if(signal?.aborted)fail('HOST_LAUNCH_CANCELLED');
- const child=spawnNative(helperPath,['run',...nativeSpec(s,{kind:'processing',network,command,args,cwd,home:cwd,browsersPath:cwd,uid:runUid,gid:runGid})],
-  {env:{},stdio:['ignore','ignore','ignore','pipe','pipe'],windowsHide:true});
- if(!child||!Number.isSafeInteger(child.pid)||!child.stdio?.[3]||!child.stdio?.[4])fail('HOST_LAUNCH_UNKNOWN');
- try{
-  if(await within(()=>lineReader(child.stdio[3])(),readyMs,signal)!=='R')fail('HOST_LAUNCH_UNKNOWN');
-  await onPrepared({leaderPid:child.pid,kind:'processing',signal});
-  if(signal?.aborted)fail('HOST_LAUNCH_CANCELLED');child.stdio[4].end('G');
-  return Object.freeze({pid:child.pid,kind:'processing',async close(){await stopChild(child,stopMs);return Object.freeze({closed:true});}});
- }catch(error){await stopChild(child,stopMs);throw error;}
-}
-
-/** Standalone port needed while the network owner is preparing its namespace-local loopback relay. The network
- * owner supplies the fixed entrypoint and verifies the actual listener by PID before treating the handle as ready. */
-/** Prepared fixed-processing command on the finite placement.
- *
- * Trusted currentness (canonical `assertHostCurrent` receipt, allocation lease and policy digest) and the verified
- * no-egress network are both checked BEFORE the spawn and AGAIN after READY but before GO, with the two namespace pins
- * compared. READY and `onPrepared` are bounded by the SAME caller deadline and cancellation, and the caller's cwd,
- * signal and deadline reach the launcher per call. GO is NOT sent here: `runProcessingCommand` releases it only after the
- * canonical artifact runner has installed its listeners, so a fast exit/error is never lost. The injected spawn is
- * detached so the runner's `-pid` group kill covers the exec'd program, which keeps the launcher PID (the C
- * `direct_run` execs in place). */
 export function createProcessingCommandLauncher({allocation,binding,hostIdentity,network,authority,helperPath,
  home,browsersPath,uid:runUid,gid:runGid,onPrepared,signal,spawnNative=spawn,readyMs=5000,now=Date.now}={}){
  const s=scope({allocation,binding,hostIdentity});
@@ -451,28 +417,40 @@ export function createProcessingCommandLauncher({allocation,binding,hostIdentity
   fail('HOST_LAUNCH_CONFIGURATION');
  nativeSignal(signal);
  let lastNamespace=null;
- const preflight=async()=>{
-  if(signal?.aborted)fail('HOST_LAUNCH_CANCELLED');
-  const at=now();
-  if(!Number.isSafeInteger(at)||at>=s.allocation.leaseDeadlineMs)fail('HOST_LAUNCH_EXPIRED');
-  let current;try{current=await authority.readCurrent({allocation:s.allocation,binding:s.binding,
-   policySha256:authority.policySha256,signal});}catch{fail('HOST_LAUNCH_CURRENTNESS_REFUSED');}
-  try{assertHostCurrent({allocation:s.allocation,binding:s.binding,policySha256:authority.policySha256,current,
-   nowMs:now(),maxFreshMs:authority.maxFreshMs});}catch{fail('HOST_LAUNCH_CURRENTNESS_REFUSED');}
-  const pin=await verifiedNetwork(s,network,'processing',signal,readyMs);
-  if(signal?.aborted)fail('HOST_LAUNCH_CANCELLED');
-  if(lastNamespace!==null&&(pin.namespaceDev!==lastNamespace.dev||pin.namespaceIno!==lastNamespace.ino))
-   fail('HOST_LAUNCH_NETWORK_REFUSED');
-  lastNamespace={dev:pin.namespaceDev,ino:pin.namespaceIno};
-  return pin;
- };
- /** Resolve a prepared, verified, NOT-yet-dispatched command. GO stays with the caller. */
+ /** Prepare a verified, NOT-yet-dispatched command. GO stays with the caller.
+  *  The caller's own signal and deadline are the lifetime for every step: currentness and network readers are bounded by
+  *  the SAME remaining deadline, an already-aborted or expired call never spawns, and every pre-dispatch throw stops the
+  *  child it created. */
  return async function prepare(command,args,{cwd,signal:callSignal,deadlineMs}={}){
   const life=callSignal??signal;
+  const aborted=()=>life?.aborted===true||signal?.aborted===true;
+  const remaining=()=>{const left=deadlineMs-now();
+   if(!Number.isSafeInteger(left)||left<1)fail('HOST_LAUNCH_EXPIRED');return left;};
+  const preflight=async()=>{
+   if(aborted())fail('HOST_LAUNCH_CANCELLED');
+   const at=now();
+   if(!Number.isSafeInteger(at)||at>=s.allocation.leaseDeadlineMs)fail('HOST_LAUNCH_EXPIRED');
+   if(!Number.isSafeInteger(deadlineMs)||deadlineMs<=at)fail('HOST_LAUNCH_EXPIRED');
+   let current;
+   try{current=await within(()=>authority.readCurrent({allocation:s.allocation,binding:s.binding,
+    policySha256:authority.policySha256,signal:life}),remaining(),life);}
+   catch{fail('HOST_LAUNCH_CURRENTNESS_REFUSED');}
+   if(aborted())fail('HOST_LAUNCH_CANCELLED');
+   try{assertHostCurrent({allocation:s.allocation,binding:s.binding,policySha256:authority.policySha256,current,
+    nowMs:now(),maxFreshMs:authority.maxFreshMs});}catch{fail('HOST_LAUNCH_CURRENTNESS_REFUSED');}
+   remaining();
+   const pin=await verifiedNetwork(s,network,'processing',life,remaining());
+   if(aborted())fail('HOST_LAUNCH_CANCELLED');
+   if(lastNamespace!==null&&(pin.namespaceDev!==lastNamespace.dev||pin.namespaceIno!==lastNamespace.ino))
+    fail('HOST_LAUNCH_NETWORK_REFUSED');
+   lastNamespace={dev:pin.namespaceDev,ino:pin.namespaceIno};
+   return pin;
+  };
   if(typeof command!=='string'||!absolute(command)||!Array.isArray(args)||args.length>100||
-   args.some(value=>typeof value!=='string'||value.length>8192||value.includes('\0'))||!absolute(cwd))fail('HOST_LAUNCH_CONFIGURATION');
-  if(!Number.isSafeInteger(deadlineMs)||deadlineMs<=now())fail('HOST_LAUNCH_CANCELLED');
-  const remaining=()=>Math.max(1,deadlineMs-now());
+   args.some(value=>typeof value!=='string'||value.length>8192||value.includes('\0'))||!absolute(cwd))
+   fail('HOST_LAUNCH_CONFIGURATION');
+  if(!Number.isSafeInteger(deadlineMs)||deadlineMs<=now())fail('HOST_LAUNCH_EXPIRED');
+  if(aborted())fail('HOST_LAUNCH_CANCELLED');
   const pin=await preflight();
   const child=spawnNative(helperPath,['run',...nativeSpec(s,{kind:'processing',network:pin,command,args,cwd,home,
    browsersPath,uid:runUid,gid:runGid})],{env:{},detached:true,stdio:['pipe','pipe','pipe','pipe','pipe'],windowsHide:true});
@@ -481,9 +459,9 @@ export function createProcessingCommandLauncher({allocation,binding,hostIdentity
    if(await within(()=>lineReader(child.stdio[3])(),Math.min(remaining(),readyMs),life)!=='R')fail('HOST_LAUNCH_UNKNOWN');
    await within(()=>onPrepared({leaderPid:child.pid,kind:'processing',signal:life,cwd}),remaining(),life);
    await preflight();                       // current authority + network must still hold at dispatch
-   if(life?.aborted)fail('HOST_LAUNCH_CANCELLED');
+   if(aborted())fail('HOST_LAUNCH_CANCELLED');
    if(now()>=deadlineMs)fail('HOST_LAUNCH_EXPIRED');
-   return Object.freeze({pid:child.pid,child,gate:child.stdio[4]});
+   return Object.freeze({pid:child.pid,child,gate:child.stdio[4],deadlineMs,signal:life});
   }catch(error){
    try{if(!child.stdio[4].destroyed)child.stdio[4].destroy();}catch{}
    try{child.kill('SIGKILL');}catch{}
@@ -493,18 +471,66 @@ export function createProcessingCommandLauncher({allocation,binding,hostIdentity
  };
 }
 
-/** Run one fixed processing command through the existing bounded artifact runner. `ports` is the runner's FOURTH
- * argument; GO is released only from inside the spawn port, after the runner has installed its listeners. */
-export async function runProcessingCommand({launcher,command,args,cwd,input=Buffer.alloc(0),signal,deadlineMs,maxOutput}){
+/** Run one fixed processing command through the existing bounded artifact runner.
+ *  `ports` is the runner's FOURTH argument, and the runner's kill is injectable so tests stay inert. GO is released from
+ *  the spawn port after the runner installed its listeners, and that queued dispatch re-checks cancellation, expiry and
+ *  gate custody instead of writing G into a dead or revoked lifetime. A prepared child the runner never took custody of
+ *  is stopped and settled here, never merely killed and reported absent. */
+export async function runProcessingCommand({launcher,command,args,cwd,input=Buffer.alloc(0),signal,deadlineMs,
+ maxOutput,now=Date.now,kill=process.kill,settleMs=5000}={}){
  const prepared=await launcher(command,args,{cwd,signal,deadlineMs});
- let dispatched=false;
- return runArtifactProcess(command,args,{cwd,input,signal,deadlineMs,...(maxOutput===undefined?{}:{maxOutput})},{
-  spawn:()=>{
-   if(dispatched)fail('HOST_LAUNCH_UNKNOWN');
-   dispatched=true;
-   queueMicrotask(()=>{try{if(!prepared.gate.destroyed)prepared.gate.end('G');}catch{}});
-   return prepared.child;
-  }});
+ const life=prepared.signal??signal,deadline=Number.isSafeInteger(prepared.deadlineMs)?prepared.deadlineMs:deadlineMs;
+ let dispatched=false,goFault=null,closed=false;
+ const stopPrepared=async code=>{
+  try{if(!prepared.gate.destroyed)prepared.gate.destroy();}catch{}
+  let killed=false;
+  try{kill(-prepared.pid,'SIGKILL');killed=true;}
+  catch(error){if(error?.code!=='ESRCH')return {code,gateDestroyed:true,killed,settled:false,unknown:true};}
+  const child=prepared.child;
+  const alreadyGone=child?.exitCode!==null&&child?.exitCode!==undefined||child?.signalCode!==null&&child?.signalCode!==undefined;
+  const settled=alreadyGone?true:await new Promise(resolve=>{
+   const timer=setTimeout(()=>resolve(false),Math.max(1,settleMs));
+   const done=()=>{clearTimeout(timer);resolve(true);};
+   child?.once?.('exit',done);child?.once?.('close',done);
+  });
+  return {code,gateDestroyed:true,killed,settled,unknown:!settled};
+ };
+ try{
+  const result=await runArtifactProcess(command,args,{cwd,input,signal,deadlineMs,
+   ...(maxOutput===undefined?{}:{maxOutput})},{
+   kill,
+   spawn:()=>{
+    if(dispatched||closed)throw Object.assign(Error('HOST_LAUNCH_UNKNOWN'),{code:'HOST_LAUNCH_UNKNOWN'});
+    dispatched=true;
+    const child=prepared.child;
+    // Runs after the runner attached its listeners; the lifetime must still be live and non-revoked at that point.
+    queueMicrotask(()=>{
+     if(closed)return;
+     if(life?.aborted)goFault='HOST_LAUNCH_CANCELLED';
+     else if(!Number.isSafeInteger(deadline)||now()>=deadline)goFault='HOST_LAUNCH_EXPIRED';
+     else if(prepared.gate.destroyed||prepared.gate.writableEnded)goFault='HOST_LAUNCH_UNKNOWN';
+     if(goFault!==null){
+      try{prepared.gate.destroy();}catch{}
+      try{kill(-prepared.pid,'SIGKILL');}catch{}
+      try{child?.stdout?.destroy?.();child?.stderr?.destroy?.();}catch{}
+      return;
+     }
+     try{prepared.gate.end('G');}
+     catch{goFault='HOST_LAUNCH_UNKNOWN';try{prepared.gate.destroy();}catch{}}
+    });
+    return child;
+   }});
+  closed=true;
+  if(goFault!==null)throw Object.assign(Error(goFault),{code:goFault,receipt:result.receipt,dispatched});
+  return result;
+ }catch(error){
+  closed=true;
+  if(!dispatched||goFault!==null){
+   const cleanup=await stopPrepared(error?.code??'HOST_LAUNCH_UNKNOWN');
+   error.preDispatchCleanup=cleanup;
+  }
+  throw error;
+ }
 }
 
 export async function startConfinedLocalRelay({allocation,binding,hostIdentity,helperPath,networkProof,kind,
