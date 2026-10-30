@@ -11,7 +11,7 @@ import {currentReceipt} from '../../control/action-host/application-adapters/cur
 import {currentTurnTelemetry} from '../telemetry/turn-context.mjs';
 const receiptSkewMs=5000;
 export function createNativeIdentityContext(configuration){
- const {origin,currentOwner,fetchImpl,now,limits,enabled=false,admitInitialConversation}=own(configuration,['origin','currentOwner','fetchImpl','now','limits','admitInitialConversation'],['enabled']);
+ const {origin,currentOwner,fetchImpl,now,limits,enabled=false,admitInitialConversation,selectBrowserConversation}=own(configuration,['origin','currentOwner','fetchImpl','now','limits','admitInitialConversation'],['enabled','selectBrowserConversation']);
  const l=data(own(limits,['maxRequestMs','maxFactBytes'])),currentRun=storageMethod(currentOwner,'currentRun');
  const client=createCapiroApplicationAuthorityClient({origin,fetchImpl,now,enabled,limits:{maxRequestMs:l.maxRequestMs,maxResponseBytes:l.maxFactBytes}});
  const observations=new AsyncLocalStorage(),receipts=createRunCurrentAuthority({client,now});
@@ -29,6 +29,7 @@ export function createNativeIdentityContext(configuration){
  const mapped=createApplicationContextAdapters({client:projected,currentRun,now,limits:l,admitInitialConversation:typeof admitInitialConversation==='function'?input=>{
   const scope=observations.getStore();return admitInitialConversation({...input,...(scope?{recheckActive:scope.readFresh}: {})});
  }:admitInitialConversation});
+ const browserMapped=selectBrowserConversation===undefined?null:createApplicationContextAdapters({client:projected,currentRun,now,limits:l,admitInitialConversation:selectBrowserConversation});
  // One public code for every failure; a dependency that did not answer keeps its transient mark. The context adapter's refusal
  // step and owned reason code (fixed vocabularies) ride along for the session owner's refusal line only.
  const unavailable=cause=>{const error=Object.assign(Error('NATIVE_AUTHORITY_UNAVAILABLE'),{code:'NATIVE_AUTHORITY_UNAVAILABLE',status:503},refusalDiagnostic(cause));throw carryAuthorityUnavailable(cause,error);};
@@ -60,6 +61,7 @@ export function createNativeIdentityContext(configuration){
   async readMembership(){const scope=observations.getStore();if(!scope)return undefined;const r=await scope.read();return data({tenantId:r.principal.tenantId,actorId:r.principal.actorId,status:'active',role:r.role,permissions:r.permissions,clientIds:r.clientIds,membershipRevision:r.membershipRevision,checkedAtMs:now(),expiresAtMs:r.expiresAtMs});},
   async verifyIdentity(call){if(!enabled)unavailable();try{return await mapped.verifyIdentity(call);}catch(error){unavailable(error);}},
   async resolveContext(call){if(!enabled)unavailable();try{return await mapped.resolveContext(call);}catch(error){unavailable(error);}},
+  ...(browserMapped?{async resolveBrowserContext(call){if(!enabled)unavailable();try{return await browserMapped.resolveContext(call);}catch(error){unavailable(error);}}}:{}),
   async resolveTransitionContext(call){if(!enabled)unavailable();try{return await mapped.resolveTransitionContext(call);}catch(error){unavailable(error);}},
  });
 }

@@ -45,7 +45,13 @@ export function createConversationIdentity({store,identity,qualification,now=Dat
   savedOriginal(saved,record);const selected=await nextRunOwner.currentRun(request,{signal});check(signal)();
   if(!same(selected.binding,request)||selected.policyRevision!==record.policyRevision||!same(selected.scopes,saved.run.scopes))refuse();return fact(selected);
  }};
- const native=createNativeIdentityContext({...identity,currentOwner,admitInitialConversation:async({principal,conversationId,selectedClientId,signal,runId,recheckActive})=>{
+ const native=createNativeIdentityContext({...identity,currentOwner,selectBrowserConversation:async({principal,conversationId,selectedClientId,signal,runId})=>{
+  // Read only: browser access must never reserve a turn or rebind an expired original.
+  const record=valid(await initialBindings.readConversation({principal,conversationId,selectedClientId},check(signal)),principal,conversationId,selectedClientId);check(signal)();
+  const saved=await store.readOptional(record.binding,{},check(signal));check(signal)();if(!saved)refuse();savedOriginal(saved,record);
+  const chosen=await nextRunOwner.selectExistingRun({principal,conversationId,signal,...(runId===undefined?{}:{runId})});
+  if(chosen.reserved)refuse();return currentOwner.currentRun(chosen.binding,{signal,selectedClientId});
+ },admitInitialConversation:async({principal,conversationId,selectedClientId,signal,runId,recheckActive})=>{
   // A verified rebind has already changed the binding under the journal's transaction: the target, not the named
   // source, is what this fresh issuance must pin. Every other call keeps the caller's exact selector.
   const {record,proof}=await original(principal,conversationId,selectedClientId,signal,runId);

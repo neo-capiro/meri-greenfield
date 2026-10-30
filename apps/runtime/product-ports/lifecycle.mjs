@@ -1,3 +1,4 @@
+import {isResumeIntent,continuationMode} from '../../control/conversations/lifecycle/browser-custody.mjs';
 /** Approval custody and native lifecycle admission over the existing run owners.
  * SDK settlement is not VM termination. Core currentness remains the candidate's
  * transitionAuthority; no allocation, proxy, grant or second admission store. */
@@ -37,21 +38,21 @@ export function createNativeLifecycleAdmission({store,versions,runWindowMs,admit
   const capture=await store.lifecycle.readSessionCapture({binding:b,scopes:v.scopes,selectedClientId:v.selectedClientId,checkpointId:b.runId},check);check();
   if(!same(capture.proof.sdkSession,v.sdkSession))deny();
   const control=await store.lifecycle.get({binding:b,scopes:v.scopes,selectedClientId:v.selectedClientId,controlId:v.controlId},check);check();
-  if(control.state!=='DISPATCHING'||!['resume','fork'].includes(control.input.intent)||control.input.checkpointId!==b.runId||control.input.checkpointSha256!==capture.proof.checkpointSha256)deny();
+  if(control.state!=='DISPATCHING'||!(isResumeIntent(control.input.intent)||control.input.intent==='fork')||control.input.checkpointId!==b.runId||control.input.checkpointSha256!==capture.proof.checkpointSha256)deny();
   return {saved,capture,control};
  }
  const checking=signal=>()=>{if(signal?.aborted)throw fault('CONTINUATION_CANCELLED');};
  async function retire(value){
   const v=own(value,['controlId','binding','sdkSession','scopes','selectedClientId'],['signal']),check=checking(v.signal);
   const {saved,control}=await source(v,v.binding,check);
-  if(control.input.intent!=='resume'||!['paused','waiting-for-approval'].includes(saved.run.state))deny();
+  if(!isResumeIntent(control.input.intent)||!['paused','waiting-for-approval'].includes(saved.run.state))deny();
   // This is eligibility for the journal's atomic writer-range closure, never a stop receipt.
   return {binding:v.binding,retirementReceiptId:newId(),expiresAtMs:now()+runWindowMs};
  }
  async function admit(value){
   const v=own(value,['controlId','mode','sourceBinding','sdkSession','checkpointSha256','request','scopes','selectedClientId','versions'],['signal']),check=checking(v.signal);
   const {saved,capture,control}=await source(v,v.sourceBinding,check);
-  if(control.input.intent!==v.mode||v.checkpointSha256!==capture.proof.checkpointSha256||!same(v.request,saved.request)||!same(v.versions,saved.run.versions))deny();
+  if(continuationMode(control.input.intent)!==v.mode||v.checkpointSha256!==capture.proof.checkpointSha256||!same(v.request,saved.request)||!same(v.versions,saved.run.versions))deny();
   if(control.target)return data(control.target);
   const b=v.sourceBinding;let binding,bootstrap,targetSessionId=null,expiresAtMs=now()+runWindowMs;
   if(v.mode==='resume'){

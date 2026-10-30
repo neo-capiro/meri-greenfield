@@ -1,3 +1,4 @@
+import {isResumeIntent} from '../../conversations/lifecycle/browser-custody.mjs';
 import {validSessionReceipt} from '../../../../packages/contracts/session-receipt/validate.mjs';
 /** Bounded process-local opaque sessions. Identity and current authorization belong to injected owners. */
 import {randomBytes,randomUUID,createHash} from 'node:crypto';
@@ -15,7 +16,9 @@ const transitionFactKeys=[...transitionKeys,'state','admissionExpiresAtMs','reti
 const transitionHash=v=>canonicalSha256(Object.fromEntries(transitionKeys.map(k=>[k,v[k]])));
 const errors=new WeakSet();
 // Private owner capability only: no facts are retained here and the strict public session port stays unchanged.
-const currentReaders=new WeakMap();
+const currentReaders=new WeakMap(),browserReaders=new WeakMap();
+/** Browser-only sessions never authorize ordinary action, worker, or read-relay operations. */
+export const browserSessionAccess=owner=>browserReaders.get(owner);
 /** Trusted load composition: each call to the reader performs one complete fresh observation. */
 export const authenticatedCurrentState=owner=>currentReaders.get(owner);
 const currentIssuers=new WeakMap();
@@ -53,7 +56,7 @@ export function assertActionSessionReceipt(value,at){
 }
 const publicContext=(binding,selectedClientId)=>({tenantId:binding.tenantId,actorId:binding.actorId,conversationId:binding.conversationId,runId:binding.runId,selectedClientId});
 export function createActionSessionOwner(configuration){
- const {mode,verifyIdentity,resolveContext,now=Date.now,limits,readTransition,resolveTransitionContext,membership,withAuthority,management,refusals=createSessionRefusalDiagnostics()}=own(configuration,['mode','verifyIdentity','resolveContext','limits'],['now','readTransition','resolveTransitionContext','membership','withAuthority','management','refusals']);
+ const {mode,verifyIdentity,resolveContext,resolveBrowserContext,now=Date.now,limits,readTransition,resolveTransitionContext,membership,withAuthority,management,refusals=createSessionRefusalDiagnostics()}=own(configuration,['mode','verifyIdentity','resolveContext','limits'],['resolveBrowserContext','now','readTransition','resolveTransitionContext','membership','withAuthority','management','refusals']);
  const l=data(own(limits,['maxSessions','maxRequestMs','maxTtlMs','maxFactBytes']));
  if(mode!=='process-local'||typeof verifyIdentity!=='function'||typeof resolveContext!=='function'||typeof now!=='function'||Object.values(l).some(n=>!Number.isSafeInteger(n)||n<1)||l.maxSessions>1000||l.maxRequestMs>30000||l.maxTtlMs>300000||l.maxFactBytes>131072)deny('SESSION_CONFIGURATION');
  if(typeof refusals!=='function')deny('SESSION_CONFIGURATION');
@@ -64,6 +67,7 @@ export function createActionSessionOwner(configuration){
  const managementConfig=management===undefined?null:own(management,['readCurrent','versions','policyRevision']);
  if(managementConfig!==null){validateShape('RuntimeVersions',managementConfig.versions);if(typeof managementConfig.readCurrent!=='function'||types.isProxy(managementConfig.readCurrent)||typeof managementConfig.policyRevision!=='string'||!managementConfig.policyRevision||managementConfig.policyRevision.length>256)deny('SESSION_CONFIGURATION');}
  const managementVersions=managementConfig===null?null:data(managementConfig.versions);
+ if(resolveBrowserContext!==undefined&&typeof resolveBrowserContext!=='function')deny('SESSION_CONFIGURATION');
  const sessions=new Map(),ids=new Map(),credentials=new WeakMap();let closed=false;
  function active(signal){const at=now();if(closed||signal?.aborted||!Number.isSafeInteger(at)||at<0)deny();return at;}
  function remove(r){sessions.delete(r.digest);ids.delete(r.sessionId);credentials.delete(r);r.nativeCredential='';r.receipts.clear();}
@@ -118,11 +122,11 @@ export function createActionSessionOwner(configuration){
    if(!same(current,principal))deny();return current;
   }catch(error){if(t.isRequestCancellation(error)||isAuthorityUnavailable(error))throw error;if(record&&!t.signal.aborted)remove(record);deny();}
  }
- async function resolve(nativeCredential,selected,t,record,ceiling=Infinity,progress={},fresh=false){
-  const observe=()=>resolveFacts(nativeCredential,selected,t,record,ceiling,progress);
+ async function resolve(nativeCredential,selected,t,record,ceiling=Infinity,progress={},fresh=false,browser=false){
+  const observe=()=>resolveFacts(nativeCredential,selected,t,record,ceiling,progress,browser);
   return withAuthority?t.run(signal=>withAuthority({credential:nativeCredential,hints:selected,...(record?{binding:record.context.binding,sessionFence:record.sessionId+':'+record.sessionRevision}:{}),fresh:!record||fresh,signal,deadlineMs:t.deadline()},observe)):observe();
  }
- async function resolveFacts(nativeCredential,selected,t,record,ceiling=Infinity,progress={}){
+ async function resolveFacts(nativeCredential,selected,t,record,ceiling=Infinity,progress={},browser=false){
   progress.step='identity';let started=active(t.signal);const identity=fact(await t.run(signal=>verifyIdentity({credential:nativeCredential,signal,deadlineMs:t.deadline()})),['principal','identityRevision','checkedAtMs','expiresAtMs'],started,t);
   own(identity.principal,['tenantId','actorId']);if(Object.values(identity.principal).some(v=>typeof v!=='string'||!v||v.length>256)||typeof identity.identityRevision!=='string'||!identity.identityRevision||identity.identityRevision.length>256)deny();
   if(record)valid(record,t.signal);
@@ -130,7 +134,7 @@ export function createActionSessionOwner(configuration){
   progress.step='membership-admit';const membershipAdmission=member&&!record?await admitMember(nativeCredential,identity,t):undefined;
   const membershipPrincipal=member?(record?record.membershipPrincipal:membershipAdmission.principal):undefined;
   progress.step='membership-recheck';if(member&&record)await recheckMember(membershipPrincipal,nativeCredential,identity,t,record.context.selectedClientId,record);
-  progress.step='context';started=active(t.signal);const current=fact(await t.run(signal=>resolveContext({identityCredential:nativeCredential,identity,identitySha256:canonicalSha256(identity),hints:selected,signal,deadlineMs:t.deadline()})),['identitySha256','binding','scopes','selectedClientId','contextRevision','checkedAtMs','expiresAtMs'],started,t,['rebind']);
+  progress.step='context';started=active(t.signal);const current=fact(await t.run(signal=>(browser?resolveBrowserContext:resolveContext)({identityCredential:nativeCredential,identity,identitySha256:canonicalSha256(identity),hints:selected,signal,deadlineMs:t.deadline()})),['identitySha256','binding','scopes','selectedClientId','contextRevision','checkedAtMs','expiresAtMs'],started,t,['rebind']);
   if(record)valid(record,t.signal);validateShape('RunBinding',current.binding);if(current.identitySha256!==canonicalSha256(identity)||current.binding.tenantId!==identity.principal.tenantId||current.binding.actorId!==identity.principal.actorId||current.selectedClientId!==null&&(typeof current.selectedClientId!=='string'||!uuid.test(current.selectedClientId))||typeof current.contextRevision!=='string'||!current.contextRevision||current.contextRevision.length>256||!Array.isArray(current.scopes)||!current.scopes.length||current.scopes.length>100)deny();
   // The initial owner's atomic exact-source supersession, already validated by the adapter against its own transaction.
   // It may accompany only a FRESH issuance whose named run is that proof's source; a recheck never rebinds.
@@ -144,9 +148,9 @@ export function createActionSessionOwner(configuration){
   progress.step='context';const context=data({binding:current.binding,scopes:current.scopes,selectedClientId:current.selectedClientId,contextRevision:current.contextRevision});if(record&&!same(context,record.context))deny();progress.step='release';
   const expiresAtMs=Math.min(identity.expiresAtMs,current.expiresAtMs,record?.expiresAtMs??ceiling,membershipAdmission?.expiresAtMs??Infinity);t.limitDeadline(expiresAtMs);active(t.signal);t.check();return {identity,context,expiresAtMs,...(member?{membershipPrincipal}:{}),...(proof&&selected.runId!==undefined?{initialRunRebind:{sourceRunId:proof.source.runId,targetRunId:proof.target.runId}}:{})};
  }
- async function issue(value,{relayEligible,withCurrent}){const {identityCredential,hints:rawHints={},signal,deadlineMs}=own(value,['identityCredential'],['hints','signal','deadlineMs']);if(typeof identityCredential!=='string'||!identityCredential||identityCredential.length>8192||!/^\S+$/u.test(identityCredential))deny();const selected=hints(rawHints),t=life(deadlineMs,signal),progress={step:'capacity'};let record;
-  try{const started=active(t.signal);for(const r of sessions.values())if(r.expiresAtMs<=started)remove(r);if(sessions.size>=l.maxSessions)deny('SESSION_CAPACITY');const resolved=await resolve(identityCredential,selected,t,undefined,started+l.maxTtlMs,progress);
-   progress.step='capacity';active(t.signal);t.check();if(sessions.size>=l.maxSessions)deny('SESSION_CAPACITY');progress.step='release';const credential=`action_session_${randomBytes(32).toString('base64url')}`,sessionId=randomUUID();record={...resolved,relayEligible,digest:hash(credential),sessionId,sessionRevision:randomUUID(),nativeCredential:identityCredential,hints:selected,receipts:new Set()};sessions.set(record.digest,record);ids.set(sessionId,record);
+ async function issue(value,{relayEligible,withCurrent,browser=false}){const {identityCredential,hints:rawHints={},signal,deadlineMs}=own(value,['identityCredential'],['hints','signal','deadlineMs']);if(typeof identityCredential!=='string'||!identityCredential||identityCredential.length>8192||!/^\S+$/u.test(identityCredential))deny();const selected=hints(rawHints),t=life(deadlineMs,signal),progress={step:'capacity'};let record;
+  try{const started=active(t.signal);for(const r of sessions.values())if(r.expiresAtMs<=started)remove(r);if(sessions.size>=l.maxSessions)deny('SESSION_CAPACITY');const resolved=await resolve(identityCredential,selected,t,undefined,started+l.maxTtlMs,progress,false,browser);
+   progress.step='capacity';active(t.signal);t.check();if(sessions.size>=l.maxSessions)deny('SESSION_CAPACITY');progress.step='release';const credential=`action_session_${randomBytes(32).toString('base64url')}`,sessionId=randomUUID();record={...resolved,relayEligible,browserOnly:browser,digest:hash(credential),sessionId,sessionRevision:randomUUID(),nativeCredential:identityCredential,hints:selected,receipts:new Set()};sessions.set(record.digest,record);ids.set(sessionId,record);
    credentials.set(record,credential);
    const b=record.context.binding,out=assertActionSessionReceipt({credential,expiresAtMs:record.expiresAtMs,context:publicContext(b,record.context.selectedClientId),...(record.initialRunRebind?{initialRunRebind:record.initialRunRebind}:{})},active(t.signal));release(record,t);
    return withCurrent?data({receipt:out,current:{binding:b,scopes:record.context.scopes,selectedClientId:record.context.selectedClientId,checkedAtMs:active(t.signal),expiresAtMs:record.expiresAtMs}}):out;
@@ -156,14 +160,14 @@ export function createActionSessionOwner(configuration){
    if(isAuthorityUnavailable(error))throw markAuthorityUnavailable(new ActionSessionError('SESSION_AUTHORITY_UNAVAILABLE'));deny();}finally{t.close();}
  }
  function currentReceipt(r,authentication,current,t){return data({authenticationSha256:canonicalSha256(authentication),binding:current.context.binding,scopes:current.context.scopes,selectedClientId:current.context.selectedClientId,checkedAtMs:active(t.signal),expiresAtMs:r.expiresAtMs});}
- async function authenticate(value,includeCurrent){const {credential,signal,deadlineMs}=own(value,['credential'],['signal','deadlineMs']);if(typeof credential!=='string'||!/^action_session_[A-Za-z0-9_-]{43}$/u.test(credential))deny();const r=sessions.get(hash(credential));valid(r,signal);const t=life(Math.min(deadlineMs??r.expiresAtMs,r.expiresAtMs),signal);
-  const progress={};try{const current=await resolve(r.nativeCredential,boundHints(r),t,r,Infinity,progress,true);valid(r,t.signal);r.expiresAtMs=current.expiresAtMs;const b=r.context.binding,authentication=data({principal:{sessionId:r.sessionId,tenantId:b.tenantId,actorId:b.actorId,conversationId:b.conversationId,runId:b.runId},sessionRevision:r.sessionRevision,checkedAtMs:active(t.signal),expiresAtMs:r.expiresAtMs});t.check();r.receipts.add(canonicalSha256(authentication));if(r.receipts.size>64)r.receipts.delete(r.receipts.values().next().value);
+ async function authenticate(value,includeCurrent,browser=false){const {credential,signal,deadlineMs}=own(value,['credential'],['signal','deadlineMs']);if(typeof credential!=='string'||!/^action_session_[A-Za-z0-9_-]{43}$/u.test(credential))deny();const r=sessions.get(hash(credential));valid(r,signal);if(r.browserOnly&&!browser)deny();const t=life(Math.min(deadlineMs??r.expiresAtMs,r.expiresAtMs),signal);
+  const progress={};try{const current=await resolve(r.nativeCredential,boundHints(r),t,r,Infinity,progress,true,browser);valid(r,t.signal);r.expiresAtMs=current.expiresAtMs;const b=r.context.binding,authentication=data({principal:{sessionId:r.sessionId,tenantId:b.tenantId,actorId:b.actorId,conversationId:b.conversationId,runId:b.runId},sessionRevision:r.sessionRevision,checkedAtMs:active(t.signal),expiresAtMs:r.expiresAtMs});t.check();r.receipts.add(canonicalSha256(authentication));if(r.receipts.size>64)r.receipts.delete(r.receipts.values().next().value);
    const out=includeCurrent?data({authentication,current:currentReceipt(r,authentication,current,t)}):authentication;release(r,t);return out;
   }catch(error){rejectRecheck(r,t,error,progress);}finally{t.close();}
  }
  const authenticateSession=value=>authenticate(value,false);
  async function readCurrentState(value){const {authentication,signal,deadlineMs}=own(value,['authentication'],['signal','deadlineMs']),a=data(authentication);const r=ids.get(a.principal?.sessionId);valid(r,signal);if(!r.receipts.has(canonicalSha256(a)))deny();const t=life(Math.min(deadlineMs??r.expiresAtMs,r.expiresAtMs),signal);
-  if(r.management===true){t.close();deny();}
+  if(r.management===true||r.browserOnly===true){t.close();deny();}
   const progress={};try{const current=await resolve(r.nativeCredential,boundHints(r),t,r,Infinity,progress);valid(r,t.signal);r.expiresAtMs=current.expiresAtMs;t.check();const out=currentReceipt(r,a,current,t);release(r,t);return out;}catch(error){rejectRecheck(r,t,error,progress);}finally{t.close();}
  }
  async function verifyTransition(value){
@@ -185,14 +189,14 @@ export function createActionSessionOwner(configuration){
    if(member)await recheckMember(r.membershipPrincipal,nativeCredential,identity,t,sourceContext.selectedClientId,r);
    async function transition(){
     const started=active(t.signal),p=fact(await t.run(signal=>readTransition({sourceBinding:sourceContext.binding,controlId:input.controlId,signal,deadlineMs:t.deadline()})),transitionFactKeys,started,t);check();
-    validateShape('RunBinding',p.sourceBinding);validateShape('RunBinding',p.targetBinding);
-    if(!same(p.sourceBinding,input.sourceBinding)||!same(p.targetBinding,input.targetBinding)||p.controlId!==input.controlId||p.admissionReceiptId!==input.admissionReceiptId||p.retirementReceiptId!==input.retirementReceiptId||!['resume','fork'].includes(p.intent)||p.state!==(input.purpose==='receipt-readback'?'APPLIED':'DISPATCHING')||input.purpose==='dispatch-continued'&&p.intent!=='resume')deny();
+    validateShape('RunBinding',p.sourceBinding);validateShape('RunBinding',p.targetBinding);if(r.browserOnly&&p.intent!=='takeover.end')deny();
+    if(!same(p.sourceBinding,input.sourceBinding)||!same(p.targetBinding,input.targetBinding)||p.controlId!==input.controlId||p.admissionReceiptId!==input.admissionReceiptId||p.retirementReceiptId!==input.retirementReceiptId||!(isResumeIntent(p.intent)||p.intent==='fork')||p.state!==(input.purpose==='receipt-readback'?'APPLIED':'DISPATCHING')||input.purpose==='dispatch-continued'&&!isResumeIntent(p.intent))deny();
     const b=p.targetBinding,s=p.sourceBinding;
-    if(b.tenantId!==s.tenantId||b.actorId!==s.actorId||b.runId===s.runId||b.attemptId===s.attemptId||b.workerId===s.workerId||p.intent==='resume'&&(b.conversationId!==s.conversationId||b.writerFence<=s.writerFence)||p.intent==='fork'&&b.conversationId===s.conversationId||!same(p.scopes,sourceContext.scopes)||p.selectedClientId!==sourceContext.selectedClientId||p.scopes.some(scope=>scope.policyRevision!==p.policyRevision))deny();
+    if(b.tenantId!==s.tenantId||b.actorId!==s.actorId||b.runId===s.runId||b.attemptId===s.attemptId||b.workerId===s.workerId||isResumeIntent(p.intent)&&(b.conversationId!==s.conversationId||b.writerFence<=s.writerFence)||p.intent==='fork'&&b.conversationId===s.conversationId||!same(p.scopes,sourceContext.scopes)||p.selectedClientId!==sourceContext.selectedClientId||p.scopes.some(scope=>scope.policyRevision!==p.policyRevision))deny();
     for(const id of [p.controlId,p.admissionReceiptId,p.checkpointId,...(p.resumeSessionAt===null?[]:[p.resumeSessionAt])])if(typeof id!=='string'||!uuid.test(id))deny();
     for(const digest of [p.inputSha256,p.checkpointSha256,p.sourceRequestSha256,p.contextSha256])if(typeof digest!=='string'||!/^[a-f0-9]{64}$/u.test(digest))deny();
-    if(p.intent==='resume'?(p.targetSessionId!==null||typeof p.retirementReceiptId!=='string'||!uuid.test(p.retirementReceiptId)):(p.retirementReceiptId!==null||p.retirementExpiresAtMs!==null||typeof p.targetSessionId!=='string'||!uuid.test(p.targetSessionId)))deny();
-    for(const deadline of [p.admissionExpiresAtMs,p.targetExpiresAtMs,...(p.intent==='resume'?[p.retirementExpiresAtMs]:[])]){if(!Number.isSafeInteger(deadline)||deadline<=active(t.signal))deny();t.limitDeadline(deadline);}
+    if(isResumeIntent(p.intent)?(p.targetSessionId!==null||typeof p.retirementReceiptId!=='string'||!uuid.test(p.retirementReceiptId)):(p.retirementReceiptId!==null||p.retirementExpiresAtMs!==null||typeof p.targetSessionId!=='string'||!uuid.test(p.targetSessionId)))deny();
+    for(const deadline of [p.admissionExpiresAtMs,p.targetExpiresAtMs,...(isResumeIntent(p.intent)?[p.retirementExpiresAtMs]:[])]){if(!Number.isSafeInteger(deadline)||deadline<=active(t.signal))deny();t.limitDeadline(deadline);}
     check();return p;
    }
    const before=await transition(),started=active(t.signal);
@@ -271,5 +275,6 @@ export function createActionSessionOwner(configuration){
   if(!best)deny('SESSION_UNAVAILABLE');valid(best,signal);const b=best.context.binding;
   return assertActionSessionReceipt({credential:credentials.get(best),expiresAtMs:best.expiresAtMs,context:{tenantId:b.tenantId,actorId:b.actorId,conversationId:b.conversationId,runId:b.runId,selectedClientId:best.context.selectedClientId}},at);
  });
+ if(resolveBrowserContext)browserReaders.set(owner,Object.freeze({issue:value=>issue(value,{relayEligible:false,withCurrent:true,browser:true}),readCurrent:value=>authenticate(value,true,true)}));
  currentReaders.set(owner,value=>authenticate(value,true));currentIssuers.set(owner,value=>issue(value,{relayEligible:true,withCurrent:true}));return owner;
 }
