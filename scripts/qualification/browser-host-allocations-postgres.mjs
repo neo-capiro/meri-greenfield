@@ -28,6 +28,8 @@ test('physical allocations and routing use actual PostgreSQL with separated ordi
  const admin=new pg.Pool({...connection,user:administrator,max:2});t.after(()=>admin.end());
  const installed=(await admin.query("SELECT to_regclass('meri_host_control.host_allocations') AS name")).rows[0].name;
  if(!installed){try{await admin.query(await readFile(new URL('../../apps/control/browser-hosts/migrations/0001_host_allocations.sql',import.meta.url),'utf8'));}catch(error){await admin.query('ROLLBACK');throw error;}}
+ const teardownInstalled=(await admin.query("SELECT 1 FROM information_schema.columns WHERE table_schema='meri_host_control' AND table_name='host_allocations' AND column_name='teardown_json'")).rows.length;
+ if(!teardownInstalled){try{await admin.query(await readFile(new URL('../../apps/control/browser-hosts/migrations/0002_verified_teardown.sql',import.meta.url),'utf8'));}catch(error){await admin.query('ROLLBACK');throw error;}}
  await admin.query(`DO $$ BEGIN
   IF NOT EXISTS(SELECT 1 FROM pg_roles WHERE rolname='${writerRole}') THEN CREATE ROLE ${writerRole} LOGIN NOSUPERUSER NOBYPASSRLS NOCREATEROLE NOCREATEDB; END IF;
   IF NOT EXISTS(SELECT 1 FROM pg_roles WHERE rolname='${readerRole}') THEN CREATE ROLE ${readerRole} LOGIN NOSUPERUSER NOBYPASSRLS NOCREATEROLE NOCREATEDB; END IF;
@@ -90,6 +92,24 @@ test('physical allocations and routing use actual PostgreSQL with separated ordi
    return {async read(){called++;await writer.revoke(q.allocation);return {admitted:true};},close(){closed++;}};
   }});
   try{await assert.rejects(router.read({binding:q.originalBinding}));assert.equal(called,1);assert.equal(closed,1);}finally{router.close();}
+ });
+ await t.test('only exact verified teardown becomes durable and permits another host; unknown ACK recovers once',async()=>{
+  const q=input(),saved=await writer.admit({record:q}),key={hostId:q.allocation.hostId,generation:1};await writer.revoke(key);
+  const receipt={schema:'meri-d005-host-teardown/1',allocationSha256:hash(saved.allocation),bindingSha256:hash(saved.originalBinding),hostIdentitySha256:hash(saved.hostIdentity),
+   reason:'conversation-end',startedAtMs:Date.now(),browserEgress:'closed',bashEgress:'closed',processes:'exited',browserState:'disposed',hostDestroy:'requested',hostAbsence:'confirmed',status:'VERIFIED'};
+  for(const change of [{status:'UNKNOWN'},{hostAbsence:'unknown'},{processes:'unknown'},{bindingSha256:'f'.repeat(64)},{hostIdentitySha256:'e'.repeat(64)}])
+   await assert.rejects(writer.recordTeardown({...key,receipt:{...receipt,...change}}));
+  await assert.rejects(writePool.query("UPDATE meri_host_control.host_allocations SET state='terminated' WHERE host_id=$1",[key.hostId]),{code:'23514'});
+  await assert.rejects(writer.admit({record:input(q.originalBinding)}));
+  let unknown=true;
+  const uncertain={async connect(){const client=await writePool.connect();return {async query(sql,values){const result=await client.query(sql,values);if(sql==='COMMIT'&&unknown){unknown=false;throw Error('lost commit ACK');}return result;},release:error=>client.release(error)};}};
+  await assert.rejects(createPostgresHostAllocationWriter({pool:uncertain}).recordTeardown({...key,receipt}),/BROWSER_HOST_TEARDOWN_UNKNOWN/);
+  const [first,second]=await Promise.all([writer.recordTeardown({...key,receipt}),writer.recordTeardown({...key,receipt})]);
+  assert.deepEqual(first,second);assert.equal(first.receiptSha256,hash(receipt));
+  await assert.rejects(writer.recordTeardown({...key,receipt:{...receipt,reason:'failed'}}));
+  await assert.rejects(writePool.query('UPDATE meri_host_control.host_allocations SET teardown_json=$2 WHERE host_id=$1',[key.hostId,{...receipt,reason:'failed'}]),/HOST_ALLOCATION_IMMUTABLE/);
+  await writer.admit({record:input(q.originalBinding)});
+  await assert.rejects(reader.resolve({binding:q.originalBinding,custody:{schema:'meri-browser-custody/1',binding:q.originalBinding,controlId:randomUUID(),ownerInstanceId:q.ownerInstanceId,hostId:key.hostId,generation:1,leaseEpoch:1,policySha256:'a'.repeat(64),expiresAtMs:Date.now()+30000}}));
  });
  t.diagnostic('PostgreSQL ordinary-role allocation/custody boundaries passed; external Core/host currentness decisions are synthetic. No cloud, model, or deployed acceptance.');
 });
