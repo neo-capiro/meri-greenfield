@@ -84,6 +84,35 @@ their owners.
   receipt / hold callbacks. Their canonical callers are in CANONICAL-CALLER-CONTRACT-20261030.txt; the
   rejected `recordReceipt` proposal and any manually chained hold are withdrawn.
 
+## Prepared browser approval metadata (09)
+
+* `packages/contracts/runtime-0.2/browser-approval-preparation.mjs` — one closed versioned preparation
+  (`meri-browser-approval-preparation/1`) with the complete RunBinding, the exact tool-use subject,
+  the displayed input, the current scopes/required approver and a bounded expiry. Refusals are exact:
+  extra keys, substituted subject/input/binding/policy, foreign actor, expired or past-deadline.
+* `apps/control/commands/approval-metadata/browser-owner.mjs` — prepares and reads that preparation in
+  the EXISTING `meri_commands.approval_metadata` table through the existing store (no new table, column,
+  index or migration). Identity `proposalId` is deterministic per attempt+tool use and is only a
+  selector: a repeat re-reads and compares the stored row and resolves it, substituted contents refuse,
+  and a lost acknowledgement stays `APPROVAL_METADATA_UNKNOWN` with a `metadataReference` that the same
+  identity can read back. Currentness stays with the existing `preparePolicy` hook; no lock spans a
+  human wait or an effect, and a historical read never becomes a permit.
+* `browser-action-kind.mjs` + `command-kind.mjs` + `binding.mjs` — the browser variant is registered as
+  its own kind; a kind may now carry `assertContext`, because a browser context is per-preparation
+  rather than a static configured shape. Every native kind keeps the registry path unchanged.
+* `readback.mjs` — the browser action joins the EXISTING Core-only `/v1/internal/approval-metadata/read`
+  allowlist and returns the immutable record with real run custody only (never initial-binding custody,
+  never a new route, never a second store). The closed response shape is unchanged: the variant stays
+  explicit in `metadata.record.action`.
+* `packages/contracts/meri.schema.json` — `browser.action` added to the Command action enum (the only
+  shared-schema change; the generated distribution was NOT regenerated, which is outside this slice).
+
+Remaining, deliberately not built here: the producer construction at the authenticated host callback
+(the exact seam is the existing metadata-store construction used by `document-proposal.mjs` /
+`attachment-filing-services.mjs`: `createBrowserActionApprovalMetadataOwner({store: c.metadataStore,
+preparePolicy, now, maxRequestMs})`, exported from the metadata index), the approval transport,
+artifact ingress, receipt, custody hold, and the Core decision/consumption side.
+
 ## Verification (local, in-process)
 
 See `HANDOFF-04.txt` beside the session outputs for exact commands, logs and results.
