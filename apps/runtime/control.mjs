@@ -207,7 +207,7 @@ export function assembleControl(options){
     browserHosts=createBrowserHostComposition({declaration,pool,store,sessions,core:ports.browserHostCore,capabilityPolicy,readBrowserPolicy,
      siteWorkflowAdmission:ports.siteWorkflowAdmission??null,browserApproval,
      browserReceipts:createBrowserActionRecorder({metadata:createPostgresApprovalMetadataReader({pool}),
-      record:value=>browserReceipts.appendAction(value),result:value=>productIntents.browser.result(value),
+      record:value=>browserReceipts.appendAction(value),result:typeof productIntents?.browser?.result==='function'?value=>productIntents.browser.result(value):null,
       status:value=>productIntents.browser.status(value),now}),
      material:browserHostMaterial,now,limits:{requestMs:configuration.limits.requestMs}});
     if(browserHosts===null)throw fault('BROWSER_HOST_CONFIGURATION');
