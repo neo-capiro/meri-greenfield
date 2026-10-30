@@ -15,14 +15,10 @@ import {createInspectionHandler,NATIVE_INSPECTION_PATH} from './service.mjs';
 import {openNativeProcessingHost} from './bootstrap.mjs';
 import {checkedCertificate,dnsName,fingerprint,privateAddress,sha256Der,tlsBytes} from '../../worker/conversation/host/control/tls.mjs';
 
-/** Parent-owned module that must exist before production can serve. */
-export const PARENT_CUSTODY_MODULE='apps/control/native-processing/custody-authority.mjs';
-export const PARENT_CUSTODY_EXPORTS=Object.freeze(['verifyNativeInspectionCustody({allocation,hostIdentity,binding,custody,request,peer,deadlineMs}) -> {authorized,allocation,binding,hostIdentity,currentness}']);
-
 export function nativeProcessingReadiness({config,verifyCustody}){
  const missing=[];
  if(config===null||typeof config!=='object')missing.push('configuration');
- if(typeof verifyCustody!=='function')missing.push(`parent.custody:${PARENT_CUSTODY_MODULE}`);
+ if(typeof verifyCustody!=='function')missing.push('canonical.custody:pending-parent');
  return Object.freeze({ready:missing.length===0,missing:Object.freeze(missing),endpoint:NATIVE_INSPECTION_PATH,
   export:PARENT_CUSTODY_EXPORTS});
 }
@@ -52,15 +48,20 @@ export async function startNativeProcessingHost({env=globalThis.process?.env??{}
   verifyCustody,
   openHost:({allocation,binding,hostIdentity,authority,deadlineMs})=>openHost({config,allocation,binding,hostIdentity,
    authority,deadlineMs}),
-  readBody:(req,limit,deadline)=>new Promise((resolve,reject)=>{
+  readBody:(req,limit,deadline,signal)=>new Promise((resolve,reject)=>{
    let total=0;const chunks=[];
    const finish=(error,value)=>{clearTimeout(timer);error?reject(error):resolve(value);};
    const timer=setTimeout(()=>{req.destroy();finish(Object.assign(Error('UPLOAD_INSPECTION_REQUEST_REFUSED'),{code:'UPLOAD_INSPECTION_REQUEST_REFUSED'}));},
     Math.max(1,deadline-Date.now()));
+   const onAbort=()=>{finish(Object.assign(Error('UPLOAD_INSPECTION_REQUEST_REFUSED'),{code:'UPLOAD_INSPECTION_REQUEST_REFUSED'}));};
+   signal?.addEventListener('abort',onAbort,{once:true});
+   if(signal?.aborted)onAbort();
+   const cleanup=()=>signal?.removeEventListener('abort',onAbort);
    req.on('data',chunk=>{total+=chunk.length;
-    if(total>limit){req.destroy();finish(Object.assign(Error('UPLOAD_INSPECTION_REQUEST_REFUSED'),{code:'UPLOAD_INSPECTION_REQUEST_REFUSED'}));return;}
+    if(total>limit){cleanup();req.destroy();finish(Object.assign(Error('UPLOAD_INSPECTION_REQUEST_REFUSED'),{code:'UPLOAD_INSPECTION_REQUEST_REFUSED'}));return;}
     chunks.push(chunk);});
-   req.on('end',()=>finish(null,Buffer.concat(chunks)));req.on('error',finish);
+   req.on('end',()=>{cleanup();finish(null,Buffer.concat(chunks));});
+   req.on('error',error=>{cleanup();finish(error);});
   }),
   limits:{deadlineMaxMs:config.limits.deadlineMaxMs,bodyBytes:config.limits.bodyBytes},
   onActivity:controller=>{active.add(controller);return()=>active.delete(controller);}});
@@ -77,16 +78,17 @@ export async function startNativeProcessingHost({env=globalThis.process?.env??{}
 
 /** Executable CLI main: composes the production verifier (Parent's canonical export) when it is installed and otherwise
  * stops with the exact missing join. It is a real entrypoint, not an uninvoked factory. */
-export async function main({env=globalThis.process?.env??{}}= {}){
- let verifyCustody;
- try{({verifyNativeInspectionCustody:verifyCustody}=await import('../control/native-processing/custody-authority.mjs'));}
- catch{verifyCustody=undefined;}
+export async function main({env=globalThis.process?.env??{},verifyCustody,onStarted}={}= {}){
  const started=await startNativeProcessingHost({env,verifyCustody});
  if(started.started!==true){
   globalThis.process.stderr.write(JSON.stringify({ready:false,missing:started.readiness.missing}));
   globalThis.process.exitCode=3;
   return started;
  }
+ // Bounded SIGTERM/SIGINT cleanup: active work is signalled and the listener closed before exit.
+ const stop=async()=>{try{await started.close();}finally{globalThis.process.exit(0);}};
+ globalThis.process.once('SIGTERM',stop);globalThis.process.once('SIGINT',stop);
+ onStarted?.(started);
  return started;
 }
 

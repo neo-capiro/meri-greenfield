@@ -15,8 +15,12 @@ import {uploadInspectionRequest,uploadInspectionBody,uploadInspectionFault,UPLOA
 const fault=code=>{throw uploadInspectionFault(code);};
 
 /** Strict child settings: pinned image, fixed paths, UID1000, nonempty credential inventory. No TLS or model data. */
+/** Accept ONLY the raw flat host document; a normalized object is refused, so settings are normalized exactly once. */
 export function childSettings(raw){
- const s=raw??{};
+ const s=raw;
+ const keys=s&&typeof s==='object'&&!Array.isArray(s)?Object.keys(s):null;
+ const allowed=['runtimeUid','runtimeGid','imageDigest','definitionsRoot','extractorPath','scratchRoot','credentialPaths'];
+ if(keys===null||keys.length!==allowed.length||keys.some(key=>!allowed.includes(key)))fault('UPLOAD_INSPECTION_REQUEST_REFUSED');
  if(s.runtimeUid!==1000||s.runtimeGid!==1000) fault('UPLOAD_INSPECTION_REQUEST_REFUSED');
  if(typeof s.imageDigest!=='string'||!/^sha256:[a-f0-9]{64}$/u.test(s.imageDigest)) fault('UPLOAD_INSPECTION_REQUEST_REFUSED');
  for(const key of ['definitionsRoot','extractorPath','scratchRoot']) {
@@ -28,10 +32,13 @@ export function childSettings(raw){
   credentialPaths:Object.freeze([...s.credentialPaths])},image:{digest:s.imageDigest}});
 }
 
-export async function inspectFixed({raw,deadlineMs,signal,settings,config,compose=composeUploadNativeHost,
+export async function inspectFixed({raw,deadlineMs,signal,config,compose=composeUploadNativeHost,
  run=runUploadSandbox,inspectionFactory=createUploadInspection,now=Date.now}){
- const childConfig=config??childSettings(settings);
+ if(config===undefined||config.paths===undefined||config.image===undefined)fault('UPLOAD_INSPECTION_REQUEST_REFUSED');
+ const childConfig=config;
+ const started=now();
  const {request,bytes}=uploadInspectionRequest(raw);
+ if(request.imageDigest!==childConfig.image.digest)fault('UPLOAD_INSPECTION_RESULT_REFUSED');
  const until=Math.min(request.deadlineMs>0?request.deadlineMs:deadlineMs,deadlineMs);
  const host=await compose({configuration:{uploads:{native:{enabled:true,imageDigest:childConfig.image.digest,
    definitionsRoot:childConfig.paths.definitionsRoot,extractorPath:childConfig.paths.extractorPath}}},
@@ -40,33 +47,39 @@ export async function inspectFixed({raw,deadlineMs,signal,settings,config,compos
  if(host.scanner===null||host.extractor===null)fault('UPLOAD_INSPECTION_RESULT_REFUSED');
  const value=await inspectionFactory({scanner:host.scanner,extractor:host.extractor,now})
   .inspect(request.declaration,bytes,{deadlineMs:until,signal});
+ const finished=now();
  const body=uploadInspectionBody({requestId:request.requestId,imageDigest:request.imageDigest,value});
- // The child validates its own output against the SAME closed result contract before writing anything.
+ // The child validates its own output against the SAME closed result contract, using the REAL operation window.
  uploadInspectionResult(body,{requestId:request.requestId,declaration:request.declaration,imageDigest:request.imageDigest,
-  fromMs:now()-1,toMs:now()+1});
+  fromMs:started,toMs:finished});
  return Object.freeze({request,body});
 }
 
-const readStdin=async limit=>new Promise((resolve,reject)=>{
+const readStdin=async(limit,stream)=>new Promise((resolve,reject)=>{
  let total=0;const chunks=[];
- process.stdin.on('data',chunk=>{total+=chunk.length;
-  if(total>limit){reject(uploadInspectionFault('UPLOAD_INSPECTION_REQUEST_REFUSED'));process.stdin.destroy();return;}
+ stream.on('data',chunk=>{total+=chunk.length;
+  if(total>limit){reject(uploadInspectionFault('UPLOAD_INSPECTION_REQUEST_REFUSED'));stream.destroy?.();return;}
   chunks.push(chunk);});
- process.stdin.on('end',()=>resolve(Buffer.concat(chunks)));
- process.stdin.on('error',reject);
- process.stdin.resume();
+ stream.on('end',()=>resolve(Buffer.concat(chunks)));
+ stream.on('error',reject);
+ stream.resume();
 });
 
-export async function childMain({stdinLimit=UPLOAD_INSPECTION_WIRE_BYTES+65536}={}){
- const started=Date.now();
- const raw=await readStdin(stdinLimit);
+export async function childMain({stdin,stdout,stdinLimit=UPLOAD_INSPECTION_WIRE_BYTES+65536,now=Date.now,
+ inspect=inspectFixed}={}){
+ const started=now();
+ const input=stdin??process.stdin,output=stdout??process.stdout;
+ const raw=await readStdin(stdinLimit,input);
  let parsed;try{parsed=JSON.parse(raw.toString('utf8'));}catch{fault('UPLOAD_INSPECTION_REQUEST_REFUSED');}
- const settings=childSettings(parsed.settings);
- const deadlineMs=Number.isSafeInteger(parsed.deadlineMs)?parsed.deadlineMs:started+30000;
- const out=await inspectFixed({raw:parsed.request,deadlineMs,settings,now:Date.now});
+ const top=parsed&&typeof parsed==='object'&&!Array.isArray(parsed)?Object.keys(parsed):[];
+ if(top.length!==3||top.some(key=>!['settings','request','deadlineMs'].includes(key)))
+  fault('UPLOAD_INSPECTION_REQUEST_REFUSED');
+ const config=childSettings(parsed.settings);                     // normalized ONCE
+ if(!Number.isSafeInteger(parsed.deadlineMs)||parsed.deadlineMs<=started)fault('UPLOAD_INSPECTION_REQUEST_REFUSED');
+ const out=await inspect({raw:parsed.request,deadlineMs:parsed.deadlineMs,config,now});
  const body=Buffer.from(JSON.stringify(out.body));
  if(body.length>16*1024*1024)fault('UPLOAD_INSPECTION_RESULT_REFUSED');
- process.stdout.write(body);
+ await new Promise((resolve,reject)=>output.write(body,error=>error?reject(error):resolve(true)));
  return {requestId:out.request.requestId,bytes:body.length};
 }
 

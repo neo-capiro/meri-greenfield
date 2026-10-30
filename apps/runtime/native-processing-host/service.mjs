@@ -12,6 +12,16 @@ export const NATIVE_INSPECTION_SCHEMA='meri-native-upload-inspection/1';
 export const NATIVE_INSPECTION_PATH='/internal/upload-inspection';
 const BODY_KEYS=Object.freeze(['schema','allocation','hostIdentity','binding','custody','request']);
 const fault=code=>{throw uploadInspectionFault(code);};
+/** Bounded settlement of a setup owner that resolved after the operation already failed. */
+async function settleLateOwner(pending,ms){
+ let host=null;let settled=true;
+ try{host=await Promise.race([pending,new Promise(resolve=>setTimeout(()=>resolve(undefined),ms))]);}
+ catch{return 'unsettled';}
+ if(host===undefined)return 'unsettled';
+ try{const out=await Promise.race([host.close(),new Promise(resolve=>setTimeout(()=>resolve({closed:false}),ms))]);
+  settled=out?.closed===true;}catch{settled=false;}
+ return settled?'closed':'unsettled';
+}
 
 /** Closed wire validation; the custody projection is opaque here and interpreted only by Parent's validator. */
 export function nativeInspectionBody(raw){
@@ -36,8 +46,14 @@ export function createInspectionHandler({authenticate,verifyCustody,openHost,rea
  return async function handle(req,res){
   const started=now();
   const controller=new AbortController();
-  const disconnect=()=>controller.abort();
-  req?.once?.('close',disconnect);
+  // HTTP `close` fires on NORMAL message completion too. Only a PREMATURE end (message not fully received, or the
+  // response/socket destroyed before finish) is a cancellation; an ordinary completed body continues to inspection.
+  const abort=()=>controller.abort();
+  const onReqClose=()=>{if(req.complete!==true)abort();};
+  const onResClose=()=>{if(!res.writableEnded)abort();};
+  req?.once?.('aborted',abort);
+  req?.once?.('close',onReqClose);
+  res?.once?.('close',onResClose);
   const track=onActivity===undefined?null:onActivity(controller);
   const send=(status,payload)=>{try{res.writeHead(status,{'content-type':'application/json','cache-control':'no-store'});
    res.end(JSON.stringify(payload));}catch{}};
@@ -56,13 +72,22 @@ export function createInspectionHandler({authenticate,verifyCustody,openHost,rea
     const raw=await life.run(signal=>readBody(req,limits.bodyBytes,life.deadline(),signal));
     let parsed;try{parsed=JSON.parse(raw.toString('utf8'));}catch{fault('UPLOAD_INSPECTION_REQUEST_REFUSED');}
     const body=nativeInspectionBody(parsed);
-    const deadline=Math.min(body.request.deadlineMs,life.deadline());
+    // The request deadline is folded into the same lifetime, so authority/setup cannot outlive the request.
+    const deadline=Math.min(body.request.deadlineMs,life.deadline(),limits.leaseDeadlineMs??Infinity);
     const granted=await life.run(signal=>verifyCustody({allocation:body.allocation,hostIdentity:body.hostIdentity,
      binding:body.binding,custody:body.custody,request:body.request,peer,deadlineMs:deadline,signal}));
     if(granted?.authorized!==true)fault('NATIVE_INSPECTION_CUSTODY_REFUSED');
-    host=await life.run(signal=>openHost({allocation:granted.allocation??body.allocation,
+    // Late setup: if the lifetime rejects while setup is still running, keep the pending owner and unwind whatever it
+    // eventually returns inside a separate bounded cleanup window. Nothing clean is reported while ownership is unsettled.
+    const pendingSetup=Promise.resolve().then(()=>openHost({allocation:granted.allocation??body.allocation,
      binding:granted.binding??body.binding,hostIdentity:granted.hostIdentity??body.hostIdentity,
-     authority:granted.currentness,deadlineMs:deadline,signal}));
+     authority:granted.currentness,deadlineMs:deadline,signal:controller.signal}));
+    try{host=await pendingSetup;}
+    catch(error){
+     const late=await settleLateOwner(pendingSetup,limits.cleanupMs??5000);
+     if(late!=='closed'){cleanupUnknown=true;fault('NATIVE_INSPECTION_CLEANUP_UNKNOWN');}
+     throw error;
+    }
     let out;
     try{out=await life.run(signal=>host.runRequest({requestDocument:body.request,deadlineMs:deadline,signal}));}
     catch(error){
@@ -88,7 +113,9 @@ export function createInspectionHandler({authenticate,verifyCustody,openHost,rea
     code==='NATIVE_INSPECTION_CUSTODY_UNBOUND'?503:code==='NATIVE_INSPECTION_CLEANUP_UNKNOWN'?503:400;
    send(status,{error:code});
   }finally{
-   req?.removeListener?.('close',disconnect);
+   req?.removeListener?.('aborted',abort);
+   req?.removeListener?.('close',onReqClose);
+   res?.removeListener?.('close',onResClose);
    if(track!==null){try{track();}catch{}}
   }
  };

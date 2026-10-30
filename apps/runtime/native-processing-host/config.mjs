@@ -4,7 +4,10 @@
 const DIGEST=/^sha256:[a-f0-9]{64}$/u;
 const HEX64=/^[0-9a-f]{64}$/u;
 const UUID=/^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/u;
+import {UPLOAD_INSPECTION_WIRE_BYTES} from '../uploads/agentcore-contract.mjs';
 const fail=()=>{throw Object.assign(new Error('NATIVE_PROCESSING_CONFIGURATION'),{code:'NATIVE_PROCESSING_CONFIGURATION'});};
+/** The canonical wire bound plus the fixed envelope allowance; never an invented 1 MB or 100 MB cap. */
+export const NATIVE_BODY_LIMIT=UPLOAD_INSPECTION_WIRE_BYTES+65536;
 const absolute=value=>{
  if(typeof value!=='string'||!value.startsWith('/')||value.includes('\0')||value.includes('..')||value.length>1024)fail();
  return value;
@@ -36,16 +39,21 @@ export function nativeProcessingConfig({env=globalThis.process?.env??{}}={}){
    maxPeerLifetimeMs:integer(Number(get('MERI_NATIVE_PROCESSING_PEER_MAX_LIFETIME_MS')),1000,900000),
    peerNotAfterMs:integer(Number(get('MERI_NATIVE_PROCESSING_PEER_NOT_AFTER_MS')),1,Number.MAX_SAFE_INTEGER)}),
   image:Object.freeze({digest:text(get('MERI_NATIVE_PROCESSING_IMAGE_DIGEST'),DIGEST)}),
+  /** THIS host's immutable trusted identity. Only an explicit native-processing allocation may process uploads. */
   allocation:Object.freeze({hostId:text(get('MERI_NATIVE_PROCESSING_HOST_ID'),UUID),
    generation:integer(Number(get('MERI_NATIVE_PROCESSING_GENERATION')),1,999999999),
    conversationId:text(get('MERI_NATIVE_PROCESSING_CONVERSATION_ID'),UUID),
+   tenantId:text(get('MERI_NATIVE_PROCESSING_TENANT_ID'),UUID),
+   instanceId:text(get('MERI_NATIVE_PROCESSING_INSTANCE_ID'),/^i-[0-9a-f]{8,17}$/u),
+   bootId:text(get('MERI_NATIVE_PROCESSING_BOOT_ID'),UUID),
+   hostMode:text(get('MERI_NATIVE_PROCESSING_HOST_MODE'),/^native-processing$/u),
    leaseDeadlineMs:integer(Number(get('MERI_NATIVE_PROCESSING_LEASE_DEADLINE_MS')),1,Number.MAX_SAFE_INTEGER)}),
   limits:Object.freeze({cpuQuotaUs:integer(Number(get('MERI_NATIVE_PROCESSING_CPU_QUOTA_US')),1000,4000000),
    periodUs:integer(Number(get('MERI_NATIVE_PROCESSING_CPU_PERIOD_US')),1000,1000000),
    memoryBytes:integer(Number(get('MERI_NATIVE_PROCESSING_MEMORY_BYTES')),16*1024*1024,64*1024*1024*1024),
    pidsMax:integer(Number(get('MERI_NATIVE_PROCESSING_PIDS_MAX')),1,4096),
    deadlineMaxMs:integer(Number(get('MERI_NATIVE_PROCESSING_DEADLINE_MAX_MS')),1000,60000),
-   bodyBytes:integer(Number(get('MERI_NATIVE_PROCESSING_BODY_BYTES')),1024,1100000)}),
+   bodyBytes:integer(Number(get('MERI_NATIVE_PROCESSING_BODY_BYTES')),1024,NATIVE_BODY_LIMIT)}),
   paths:Object.freeze({helperPath:absolute(get('MERI_NATIVE_PROCESSING_HELPER')),nodePath:absolute(get('MERI_NATIVE_PROCESSING_NODE')),
    home:absolute(get('MERI_NATIVE_PROCESSING_HOME')),browsersPath:absolute(get('MERI_NATIVE_PROCESSING_HOME')),
    definitionsRoot:absolute(get('MERI_NATIVE_PROCESSING_DEFINITIONS')),

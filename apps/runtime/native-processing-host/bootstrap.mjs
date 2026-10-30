@@ -24,16 +24,23 @@ export function childInvocation(config){
 
 /** A verified peer cannot choose a different processing host or image: the authorized allocation/binding/identity must be
  * THIS host's bootstrap identity, with a live lease and the pinned image digest. */
-export function assertHostMatch({config,allocation,binding,hostIdentity,now=Date.now}){
+export function assertHostMatch({config,allocation,binding,hostIdentity,request,now=Date.now}){
  const fixed=config?.allocation;
- if(!fixed||!allocation||!binding||!hostIdentity) throw Object.assign(Error('NATIVE_PROCESSING_AUTHORITY_UNBOUND'),{code:'NATIVE_PROCESSING_AUTHORITY_UNBOUND'});
+ const refuse=()=>{throw Object.assign(Error('NATIVE_PROCESSING_ALLOCATION_REFUSED'),{code:'NATIVE_PROCESSING_ALLOCATION_REFUSED'});};
+ if(!fixed||!allocation||!binding||!hostIdentity)refuse();
  const same=(a,b)=>a!==undefined&&b!==undefined&&String(a)===String(b);
+ // Exact purpose, generation, lease, tenant/conversation and this host's real instance/boot identity.
+ if(fixed.hostMode!=='native-processing'||allocation.hostMode!=='native-processing')refuse();
  if(!same(allocation.hostId,fixed.hostId)||!same(allocation.generation,fixed.generation)||
-  !same(allocation.conversationId,fixed.conversationId)||!same(allocation.tenantId,binding.tenantId)||
-  allocation.imageDigest!==config.image.digest||!same(hostIdentity.hostId,fixed.hostId)||
-  !same(hostIdentity.conversationId,fixed.conversationId))throw Object.assign(Error('NATIVE_PROCESSING_ALLOCATION_REFUSED'),{code:'NATIVE_PROCESSING_ALLOCATION_REFUSED'});
- if(!Number.isSafeInteger(allocation.leaseDeadlineMs)||allocation.leaseDeadlineMs<=now())
-  throw Object.assign(Error('NATIVE_PROCESSING_ALLOCATION_REFUSED'),{code:'NATIVE_PROCESSING_ALLOCATION_REFUSED'});
+  !same(allocation.conversationId,fixed.conversationId)||!same(allocation.tenantId,fixed.tenantId)||
+  !same(binding.tenantId,fixed.tenantId)||!same(binding.conversationId,fixed.conversationId))refuse();
+ if(!same(hostIdentity.hostId,fixed.hostId)||!same(hostIdentity.conversationId,fixed.conversationId)||
+  !same(hostIdentity.instanceId,fixed.instanceId)||!same(hostIdentity.bootId,fixed.bootId))refuse();
+ if(allocation.imageDigest!==config.image.digest)refuse();
+ if(request!==undefined&&request.imageDigest!==config.image.digest)refuse();
+ for(const lease of [allocation.leaseDeadlineMs,fixed.leaseDeadlineMs]){
+  if(!Number.isSafeInteger(lease)||lease<=now())refuse();
+ }
  return true;
 }
 
@@ -42,6 +49,7 @@ export async function openNativeProcessingHost({config,allocation,binding,hostId
  if(!allocation||!binding||!hostIdentity||typeof authority?.readCurrent!=='function')
   fault('NATIVE_PROCESSING_AUTHORITY_UNBOUND');
  assertHostMatch({config,allocation,binding,hostIdentity});
+ if(config?.allocation?.leaseDeadlineMs<Date.now())fault('NATIVE_PROCESSING_ALLOCATION_REFUSED');
  const {command,args,settings}=childInvocation(config);
  let compartment=null,placement=null;
  try{
@@ -67,13 +75,16 @@ export async function openNativeProcessingHost({config,allocation,binding,hostId
    return placement.run(command,args,{cwd:config.paths.home,input,signal:callSignal,deadlineMs,
     maxOutput:UPLOAD_INSPECTION_RESULT_BYTES});
   },
-  close:()=>closing??=(async()=>{
-   let code=null;
-   try{const p=await placement.close();if(p?.closed!==true)code=p?.code??'NATIVE_PROCESSING_CLEANUP_UNKNOWN';}
-   catch(error){code=error?.code??'NATIVE_PROCESSING_CLEANUP_UNKNOWN';}
-   try{const c=await compartment.close();if(c?.closed!==true)code??=c?.code??'HOST_NETWORK_CLEANUP_UNKNOWN';}
-   catch{code??='HOST_NETWORK_CLEANUP_UNKNOWN';}
-   if(code!==null)return Object.freeze({closed:false,code});
-   return Object.freeze({closed:true});
-  })});
+  close(){
+   if(closing===null)closing=(async()=>{
+    let code=null;
+    try{const p=await placement.close();if(p?.closed!==true)code=p?.code??'NATIVE_PROCESSING_CLEANUP_UNKNOWN';}
+    catch(error){code=error?.code??'NATIVE_PROCESSING_CLEANUP_UNKNOWN';}
+    try{const c=await compartment.close();if(c?.closed!==true)code??=c?.code??'HOST_NETWORK_CLEANUP_UNKNOWN';}
+    catch{code??='HOST_NETWORK_CLEANUP_UNKNOWN';}
+    if(code!==null)return Object.freeze({closed:false,code});
+    return Object.freeze({closed:true});
+   })();
+   return closing;
+  }});
 }
