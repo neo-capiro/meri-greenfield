@@ -6,6 +6,7 @@ import {Client} from '@modelcontextprotocol/sdk/client/index.js';
 import {StdioServerTransport} from '@modelcontextprotocol/sdk/server/stdio.js';
 import {createPinnedBrowserSession} from '../session/connection.mjs';
 import {createBrowserSessionHost} from '../../host/browser-session-host.mjs';
+import {createBrowserViewerRelay} from '../../host/browser-viewer-relay.mjs';
 import {enabledPolicy,binding,installation,installationFor} from './fixtures.mjs';
 import {canonicalSha256} from '../../../../../packages/contracts/validate.mjs';
 const cwd='/workspace/'+binding.conversationId;
@@ -308,10 +309,10 @@ test('canonical successive handoffs retain one context and filter while replacin
  const allocation={schema:'meri-conversation-host-allocation/1',tenantId:binding.tenantId,conversationId:binding.conversationId,generation:1,
   hostId:uuid(102),imageDigest:'sha256:'+'a'.repeat(64),leaseDeadlineMs:Date.now()+60000};
  let canonical,creations=0;
- const native=target=>({installation:installationFor(target),hold:async()=>({outcome:'APPLIED'}),
+ const native=target=>{const viewer=createBrowserViewerRelay({binding:target,ownerInstanceId,expiresAtMs:allocation.leaseDeadlineMs});return {installation:installationFor(target),hold:async()=>({outcome:'APPLIED'}),
   retirement:{async prepare(){events.push('prepare');},async wait(){events.push('absent');},async retain(){events.push('retain');}},
   relay:{async bind(input){models.push(input);return {mcpServers:{meri_browser:playwrightServerConfig(x.args.policy,installationFor(target),browserPaths(cwd))},async close(){events.push('model-close');}};}},
-  controls:{ownerInstanceId,async bind(input){viewers.push(input);return {async close(){try{input.controls.endLease('viewer-disconnect');}catch{}events.push('viewer-close');}};}}});
+  controls:{...viewer,async bind(input){viewers.push(input);const held=await viewer.bind(input);return {async close(){await held.close();events.push('viewer-close');}};}}};};
  const first=native(binding),host=createBrowserSessionHost({binding,cwd,...first,allocation,ownerInstanceId,upstream:x.upstream,now:Date.now,
   contexts:{async create(){creations++;return x.context;}},current:async()=>{await x.args.current();return {browserHandoff:canonical};},
   processes:{waitForExit:x.args.ports.waitForExit},dispose:x.args.ports.dispose});
@@ -331,6 +332,8 @@ test('canonical successive handoffs retain one context and filter while replacin
   await assert.rejects(host.adopt({...request,handoff:{...canonical,returned:{...returned,snapshotSha256:'f'.repeat(64)}}},native(target)),/BROWSER_CUSTODY_REFUSED/);
   assert.equal((await sourceViewer.controls.readState()).state,'returning');
   run=await host.adopt(request,native(target));
+  await assert.rejects(host.readAdmission({binding:currentBinding}),/BROWSER_VIEWER_AUTHORITY_REFUSED/);
+  assert.equal((await host.readAdmission({binding:target})).admitted,false);
   assert.deepEqual(events.slice(-2),['model-close','viewer-close']);assert.equal(creations,1);
   assert.equal(canonicalSha256(run.resumeSnapshot),returned.snapshotSha256);assert.doesNotMatch(JSON.stringify(run.resumeSnapshot),/RETAINED-CREDENTIAL/);
   assert.equal((await viewers.at(-1).controls.readState()).state,'returning');
@@ -338,6 +341,7 @@ test('canonical successive handoffs retain one context and filter while replacin
   assert.throws(()=>sourceRun.destroy({trigger:'disconnect'}),/BROWSER_CUSTODY_REFUSED/);
   await assert.rejects(sourceModel.call({requestId:'late',tool:'browser_snapshot',args:{}}),/BROWSER_CUSTODY_REFUSED/);
   await models.at(-1).tools();assert.equal((await viewers.at(-1).controls.readState()).state,'agent');
+  assert.equal((await host.readAdmission({binding:target})).admitted,true);
   await assert.rejects(host.adopt(request,native(target)),/BROWSER_CUSTODY_REFUSED/);
   currentBinding=target;
  }

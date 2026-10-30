@@ -19,8 +19,10 @@ export function createBrowserSessionHost({binding,cwd,installation,upstream,cont
  for(const [port,name]of [[contexts,'create'],...(relay?[[relay,'bind']]:[]),[controls,'bind'],[processes,'waitForExit']])
   if(typeof port?.[name]!=='function')fail('BROWSER_CONFIGURATION');
  if(typeof current!=='function'||typeof hold!=='function'||typeof dispose!=='function'||typeof now!=='function')fail('BROWSER_CONFIGURATION');
- let opened=false,active,adopt,closeOwner;
+ let opened=false,active,adopt,closeOwner,activeRelay=controls;
  return Object.freeze({ownerInstanceId,
+  async readAdmission(input){if(!active||typeof activeRelay?.readAdmission!=='function')fail('BROWSER_CUSTODY_UNAVAILABLE');return activeRelay.readAdmission(input);},
+  async execute(input){if(!active||typeof activeRelay?.execute!=='function')fail('BROWSER_CUSTODY_UNAVAILABLE');return activeRelay.execute(input);},
   async prepareResume(input){if(!active)fail('BROWSER_CUSTODY_UNAVAILABLE');return active.prepareResume(input);},
   async adopt(input,native){if(!adopt)fail('BROWSER_CUSTODY_UNAVAILABLE');return adopt(input,native);},
   async destroy(input){if(!closeOwner)fail('BROWSER_CUSTODY_UNAVAILABLE');return closeOwner(input);},
@@ -173,7 +175,7 @@ export function createBrowserSessionHost({binding,cwd,installation,upstream,cont
      run=next;runInstallation=nextInstallation;runPorts=ports;workflow=nextWorkflow;
      resume={snapshot,handoff};activation=undefined;custody=undefined;retained=false;captured=false;pendingResume=undefined;preparingResume=undefined;
      const expected=await bindRelays();await assertCurrent(signal);
-     if(closing)fail('BROWSER_SESSION_CLOSED');active=handle(expected,snapshot);return active;
+     if(closing)fail('BROWSER_SESSION_CLOSED');activeRelay=ports.controls;active=handle(expected,snapshot);return active;
     }catch(error){await close({trigger:'disconnect'});throw error;}finally{adopting=false;retiringRelays=false;}
    };
    active=handle(expected);return active;
