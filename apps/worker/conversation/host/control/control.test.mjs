@@ -133,3 +133,19 @@ test('canonical browser successor currentness cannot authorize the retired SDK o
  for(const purpose of ['sdk','bash'])await assert.rejects(f.read(request('d'.repeat(64),purpose)),code('HOST_CONTROL_UNAVAILABLE'));
  for(const replacement of [undefined,{binding},{binding:{...target,actorId:'foreign'}},{binding:{...target,attemptId:binding.attemptId}}]){const other=fixture();other.setState({...state,browserSuccessor:replacement});await assert.rejects(other.read(),code('HOST_CONTROL_UNAVAILABLE'));}
 });
+
+
+test('authenticated browser currentness carries exact private handoff; SDK/Bash responses cannot carry it',async()=>{
+ const custody={schema:'meri-browser-custody/1',binding,controlId:'00000000-0000-4000-8000-000000000020',ownerInstanceId:'00000000-0000-4000-8000-000000000021',hostId:allocation.hostId,generation:allocation.generation,leaseEpoch:1,policySha256,expiresAtMs:now+20000};
+ const target={...binding,runId:'00000000-0000-4000-8000-000000000022',attemptId:'00000000-0000-4000-8000-000000000023',workerId:'00000000-0000-4000-8000-000000000024',writerFence:binding.writerFence+1};
+ const handoff={custody,returned:{ownerInstanceId:custody.ownerInstanceId,leaseEpoch:2,snapshotSha256:'d'.repeat(64)},targetBinding:target,controlId:'00000000-0000-4000-8000-000000000025'};
+ const state={binding,browserPolicySha256:policySha256,capabilityPolicySha256:null,sdkAdmitted:false,browserAdmitted:true,bashAdmitted:false,phase:'browser-successor',currentUntilMs:now+20000,browserCustody:custody,browserSuccessor:{binding:target,handoff}};
+ const f=fixture();f.setState(state);const response=await f.read();
+ const current=hostControlResponse(decodeHostControl(encodeHostControl(response)),request(),{nowMs:now,maxFreshMs:3000});assert.deepEqual(current.browserHandoff,handoff);
+ for(const purpose of ['sdk','bash'])assert.throws(()=>hostControlResponse({...response,purpose},request('c'.repeat(64),purpose),{nowMs:now,maxFreshMs:3000}),code('HOST_CONTROL_REFUSED'));
+ for(const changed of [{...handoff,targetBinding:{...target,actorId:'foreign'}},{...handoff,returned:{...handoff.returned,leaseEpoch:3}},
+  {...handoff,custody:{...custody,hostId:'00000000-0000-4000-8000-000000000099'}},
+  {...handoff,custody:{...custody,expiresAtMs:now+1}}]){
+  assert.throws(()=>hostControlResponse({...response,receipt:{...response.receipt,browserHandoff:changed}},request(),{nowMs:now,maxFreshMs:3000}),code('HOST_CONTROL_REFUSED'));
+ }
+});

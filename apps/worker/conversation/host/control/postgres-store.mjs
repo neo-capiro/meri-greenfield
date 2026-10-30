@@ -1,6 +1,6 @@
 /** PostgreSQL-backed currentness read. The caller supplies an acknowledged write transaction and a canonical
  * run reader operating on that SAME transaction. No migration, pool, or fallback authority is created here. */
-import {assertBrowserCustody} from '../../../../../packages/runtime/browser-custody.mjs';
+import {assertBrowserCustody,assertBrowserHandoff} from '../../../../../packages/runtime/browser-custody.mjs';
 import {canonicalSha256} from '../../../../../packages/contracts/validate.mjs';
 import {own,data,nativeSignal} from '../../../../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {assertHostAllocation,assertHostRunBinding,assertD005HostIdentity,MAX_HOST_CURRENTNESS_MS} from '../binding.mjs';
@@ -60,9 +60,14 @@ export function createPostgresHostCurrentnessStore({transact,readCanonicalRun,ma
      ms(state.currentUntilMs)>custody.expiresAtMs||state.sdkAdmitted!==false||state.bashAdmitted!==false)fail();
    }
    if(state.phase==='browser-successor'){
-    const successor=own(state.browserSuccessor,['binding']),target=assertHostRunBinding(a,successor.binding);
+    const successor=own(state.browserSuccessor,['binding'],['handoff']),target=assertHostRunBinding(a,successor.binding);
     if(q.purpose!=='browser'||target.actorId!==b.actorId||target.writerFence<=b.writerFence||target.runId===b.runId||
      target.attemptId===b.attemptId||target.workerId===b.workerId)fail();
+    if(successor.handoff!==undefined){const handoff=assertBrowserHandoff(successor.handoff,{targetBinding:target}),custody=handoff.custody;
+     if(custody.ownerInstanceId!==state.browserCustody.ownerInstanceId||custody.hostId!==a.hostId||custody.generation!==a.generation||
+      custody.policySha256!==q.policySha256||custody.expiresAtMs>state.browserCustody.expiresAtMs||custody.expiresAtMs<ms(state.currentUntilMs)||
+      custody.binding.writerFence<b.writerFence)fail();
+    }
    }else if(state.browserSuccessor!==undefined)fail();
    if(!same(state.binding,b)||selected.digest!==q.policySha256||selected.admitted!==true||
     (!held&&(state.sdkAdmitted!==true||state.phase!=='active')))fail();
@@ -76,7 +81,7 @@ export function createPostgresHostCurrentnessStore({transact,readCanonicalRun,ma
    if(signal?.aborted||nowMs>=untilMs||nowMs>=a.leaseDeadlineMs)fail();
    return Object.freeze({schema:HOST_CONTROL_RESPONSE_SCHEMA,nonce:q.nonce,purpose:q.purpose,
     receipt:Object.freeze({allocation:a,binding:b,policySha256:q.policySha256,phase:'active',
-     checkedAtMs:nowMs,currentUntilMs:untilMs})});
+     checkedAtMs:nowMs,currentUntilMs:untilMs,...(q.purpose==='browser'&&state.browserSuccessor?.handoff?{browserHandoff:state.browserSuccessor.handoff}:{})})});
   },{signal,readOnly:false});}catch{fail();}
  }});
 }
