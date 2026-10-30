@@ -74,6 +74,16 @@ export function createUploadDefinitionsComposition({definitionsRoot,now=Date.now
  const provisioningState=()=>Object.freeze({attempted,provisioned,reason,storageUnavailable,
   storageFault:storageUnavailable?'UPLOAD_DEFINITIONS_STORAGE_UNAVAILABLE':null,
   disposition:disposition===null?null:disposition});
+ const probe=async({signal,deadlineMs}={})=>{
+  try{const snap=await definitions.snapshot({deadlineMs,signal});
+   attempted=true;reason=null;
+   try{snap.reader.release({completed:true});}catch{}
+  }catch(initial){
+   const code=typeof initial?.code==='string'?initial.code:'UPLOAD_DEFINITIONS_UNAVAILABLE';
+   attempted=true;reason=code;
+  }
+  return provisioningState();
+ };
  const startup=async({signal,deadlineMs}={})=>{
   try{const probe=await definitions.snapshot({deadlineMs,signal});try{probe.reader.release({completed:true});}catch{}}
   catch(initial){const code=typeof initial?.code==='string'?initial.code:'UPLOAD_DEFINITIONS_UNAVAILABLE';
@@ -83,7 +93,7 @@ export function createUploadDefinitionsComposition({definitionsRoot,now=Date.now
  };
  const provisionDefinitions=async({deadlineMs:until,signal}={})=>{await refresh({signal,deadlineMs:until});
   return provisioningState();};
- return Object.freeze({definitions,updater,refresh,startup,provisioningState,provisionDefinitions,pinned:pinned!==undefined});
+ return Object.freeze({definitions,updater,refresh,probe,startup,provisioningState,provisionDefinitions,pinned:pinned!==undefined});
 }
 
 export async function composeUploadNativeHost(options={}){
@@ -116,9 +126,7 @@ export async function composeUploadNativeHost(options={}){
  await definitionComposition.startup({signal:options.signal,deadlineMs});
  const host=createUploadNativeInspection({admission:qualification.admission,tools,definitions,definitionsRoot,
   extractorPath,run,tempRoot,now,refresh});
- const provisioningState=()=>Object.freeze({attempted,provisioned,reason,storageUnavailable,
-  storageFault:storageUnavailable?'UPLOAD_DEFINITIONS_STORAGE_UNAVAILABLE':null,
-  disposition:disposition===null?null:disposition});
+ const provisioningState=definitionComposition.provisioningState;
  /** The SAME one refresh owner, exposed as a bounded handle for the EXISTING host lifecycle owner, so a stale
   * task-local definitions root can be re-provisioned under that owner's own lifecycle budget instead of a scan's
   * deadline. It starts no timer, daemon, scheduler or second provisioning path: concurrent callers still share the one

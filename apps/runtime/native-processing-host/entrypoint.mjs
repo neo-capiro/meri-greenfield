@@ -83,13 +83,19 @@ export async function startNativeProcessingHost({env=globalThis.process?.env??{}
  const server=serverFactory({key,cert,ca,minVersion:'TLSv1.3',maxVersion:'TLSv1.3',requestCert:true,rejectUnauthorized:true},handler);
  const shutdownController=new AbortController();
  await new Promise((resolve,reject)=>{server.once('error',reject);server.listen(config.listen.port,config.listen.address,resolve);});
+ // ACTUAL startup state: read the store once (freshness may refresh through the SAME serialized owner; corrupt,
+ // unsigned or cancelled never fetches). The host may not consider an unprobed root fresh.
+ let startupError=null;
+ try{await definitionComposition.probe({signal:shutdownController.signal,deadlineMs:Date.now()+config.limits.deadlineMaxMs});}
+ catch(error){startupError=typeof error?.code==='string'?error.code:'UPLOAD_DEFINITIONS_UNAVAILABLE';}
+ const startupState=definitionComposition.provisioningState();
  // The EXISTING bounded provisioning lifecycle, composed (not re-implemented): its handle exposes this host's
  // definition state and provisioning port. It starts one bounded attempt and never runs on corrupt/unsigned input.
  const provisioning=beginUploadNativeProvisioning({handle:{inspection:Object.freeze({kind:'native-processing-host',
    endpoint:NATIVE_INSPECTION_PATH}),remote:false,host:{definitionsProvisioningState:definitionComposition.provisioningState},
    provisionDefinitions:definitionComposition.provisionDefinitions},
   configuration:{uploads:{native:{provisionMs:config.limits.deadlineMaxMs}}},signal:shutdownController.signal});
- return Object.freeze({started:true,server,readiness,definitionComposition,definitionsLifecycle,definitionsOwner,provisioning,
+ return Object.freeze({started:true,server,readiness,definitionComposition,definitionsLifecycle,definitionsOwner,provisioning,startupState,startupError,
   close:()=>new Promise(resolve=>{
    // Shutdown signals active work to stop first, then closes the listener within one bounded settlement window.
    for(const controller of active){try{controller.abort();}catch{}}
