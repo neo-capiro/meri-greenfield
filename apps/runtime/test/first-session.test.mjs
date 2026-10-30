@@ -86,17 +86,17 @@ test('closing before registration acknowledgement retires queued effects without
  assert.equal(calls.length,1);await assert.rejects(mirror.store.append(f.key,[{type:'system'}]));assert.equal(calls.length,1);
 });
 
-async function runner(mirrors,{accountingUnknown=false}={}){
- const f=await applicationFixture({initialInput:true});await f.service.allocateInput({credential:f.credential,input:f.input});await f.service.submit({credential:f.credential,input:f.input});const key={projectKey:'actual callback / opaque key',sessionId:id(5)},calls=[],events=[],usageCalls=[],usageReceipts=[];let queryCalls=0;
+async function runner(mirrors,{accountingUnknown=false,outreach=undefined,outreachComplete='done',queryOptions=[]}={}){
+ const f=await applicationFixture({initialInput:true});await f.service.allocateInput({credential:f.credential,input:f.input});await f.service.submit({credential:f.credential,input:f.input});const key={projectKey:'actual callback / opaque key',sessionId:id(5)},calls=[],events=[],usageCalls=[],usageReceipts=[],outreachCalls=[],outreachFails=[];let queryCalls=0;
  const factory=createRuntimeSdkSessionFactory({origin:'https://native.synthetic.invalid',credential:'scripted-current-task',binding,
   fetchImpl:async(url,options)=>{const body=JSON.parse(options.body),common={binding:body.binding,key:body.key,requestSha256:hash(body)};calls.push(url);
    if(url.endsWith('/register'))return Response.json({...common,registered:true});if(url.endsWith('/load'))return Response.json({...common,entries:null,offset:0});
    if(url.endsWith('/append'))return Response.json({...common,committed:true,appendId:body.appendId,entriesSha256:body.entriesSha256,offset:body.expectedOffset+body.entries.length,added:body.entries.length});throw Error('unexpected synthetic route');}});
- const runtime={binding,versions,deadlineMs:Date.now()+3000,maxOutputBytes:1024,sdkSessionKey:null};
+ const runtime={binding,versions,deadlineMs:Date.now()+3000,maxOutputBytes:1024,sdkSessionKey:null,...(outreach===undefined?{}:{outreach})};
  const execute=assembleConversationRunner({configuration:{binding,versions,workspace:'/workspace/'+binding.conversationId,sourceEnabled:false},sessionFactory:factory,credentialForBinding:async()=>f.credential,
-  native:{async call(path,input){assert.deepEqual(input.binding,binding);if(path==='runner/load')return f.service.loadForExecution({credential:f.credential,binding});if(path==='runner/runtime')return runtime;if(path==='runner/next-controls')return {controls:[],nextControlSequence:0};if(path==='runner/record-usage'){usageCalls.push(input);if(accountingUnknown)throw Error('accounting transport unknown');const receipt=await f.service.recordUsage({credential:f.credential,binding,input:input.input});usageReceipts.push(receipt);return receipt;}if(path==='runner/publish'){events.push(input.event.data.state??input.event.type);if(input.event.data.state==='completed')assert.ok(calls.at(-1).endsWith('/append'));return f.service.publish({credential:f.credential,binding,event:input.event});}throw Error(path);}},
-  query({options}){queryCalls++;assert.equal(calls.length,0,'fresh key cannot be registered before query');assert.equal(Object.hasOwn(options,'sdkSessionKey'),false);return {async *[Symbol.asyncIterator](){yield {type:'system',subtype:'init',session_id:key.sessionId};if(mirrors)await options.sessionStore.append(key,[{type:'user',uuid:id(40),message:'synthetic'}]);yield {type:'result',subtype:'success',is_error:false,session_id:key.sessionId,total_cost_usd:0.01,modelUsage:{'us.anthropic.claude-sonnet-4-6':{inputTokens:100,outputTokens:10,cacheReadInputTokens:20,cacheCreationInputTokens:30,webSearchRequests:0,costUSD:0.01,provider:'bedrock',costBasis:'list'}},result:'PRIVATE_RESULT',errors:['PRIVATE_ERROR']};},close(){}};}});
- return {f,execute,calls,events,usageCalls,usageReceipts,key,queryCalls:()=>queryCalls};
+  native:{async call(path,input){assert.deepEqual(input.binding,binding);if(path==='runner/load')return f.service.loadForExecution({credential:f.credential,binding});if(path==='runner/runtime')return runtime;if(path==='runner/next-controls')return {controls:[],nextControlSequence:0};if(path==='runner/outreach/complete'){outreachCalls.push(input);if(outreachComplete==='unknown')throw Error('outreach completion transport unknown');return {status:'done'};}if(path==='runner/outreach/fail'){outreachFails.push(input);return {status:'held'};}if(path==='runner/record-usage'){usageCalls.push(input);if(accountingUnknown)throw Error('accounting transport unknown');const receipt=await f.service.recordUsage({credential:f.credential,binding,input:input.input});usageReceipts.push(receipt);return receipt;}if(path==='runner/publish'){events.push(input.event.data.state??input.event.type);if(input.event.data.state==='completed')assert.ok(calls.at(-1).endsWith('/append'));return f.service.publish({credential:f.credential,binding,event:input.event});}throw Error(path);}},
+  query({options}){queryCalls++;assert.equal(calls.length,0,'fresh key cannot be registered before query');assert.equal(Object.hasOwn(options,'sdkSessionKey'),false);return {async *[Symbol.asyncIterator](){yield {type:'system',subtype:'init',session_id:key.sessionId};if(mirrors)await options.sessionStore.append(key,[{type:'user',uuid:id(40),message:'synthetic'}]);yield {type:'result',subtype:'success',is_error:false,session_id:key.sessionId,total_cost_usd:0.01,modelUsage:{'us.anthropic.claude-sonnet-4-6':{inputTokens:100,outputTokens:10,cacheReadInputTokens:20,cacheCreationInputTokens:30,webSearchRequests:0,costUSD:0.01,provider:'bedrock',costBasis:'list'}},...(outreach===undefined||outreach===null?{}:{structured_output:{plan:'Synthetic recipient plan',draft:'Synthetic recipient draft'}}),result:'PRIVATE_RESULT',errors:['PRIVATE_ERROR']};},close(){}};}});
+ return {f,execute,calls,events,usageCalls,usageReceipts,outreachCalls,outreachFails,queryOptions,key,queryCalls:()=>queryCalls};
 }
 
 test('one scripted SDK query obtains its first mirror key and settles before durable completion',async()=>{
@@ -132,4 +132,75 @@ test('conflicting native init poisons settlement and does not change the registe
  const f=await mirrorFixture();await f.mirror.store.append(f.key,[{type:'system'}]);const owner=structuredClone(f.state().owner),count=f.calls.length;
  assert.throws(()=>f.mirror.store.observeInit({type:'system',subtype:'init',session_id:id(99)}),/RUNNER_SDK_INIT_REFUSED/);
  await assert.rejects(f.mirror.settle());await assert.rejects(f.mirror.close());assert.deepEqual(f.state().owner,owner);assert.equal(f.calls.length,count);
+});
+
+// The assembled runner receives the production runner/runtime response through a strict
+// allowlist. Ordinary chat still carries the outreach port as null, so the key must be
+// admitted or ordinary production preparation fails INVALID_COMMAND before any SDK work.
+test('ordinary assembled run admits the production null outreach port and still completes',async()=>{
+ const x=await runner(true,{outreach:null});try{
+  assert.deepEqual(await x.execute({binding}),{state:'completed'});
+  assert.equal(x.queryCalls(),1);assert.equal(x.outreachCalls.length,0);assert.equal(x.events.at(-1),'completed');
+ }finally{x.f.close();}
+});
+
+// Selected recipient unit through the same assembled runner. The unit below is built
+// from the run's own request/scope values, so this exercises the production path:
+// strict response validation, the activity's outreach mount, structured output and
+// the single exact-unit settlement.
+async function outreachRun({completion='done'}={}){
+ const f=await applicationFixture({initialInput:true});
+ await f.service.allocateInput({credential:f.credential,input:f.input});
+ await f.service.submit({credential:f.credential,input:f.input});
+ const key={projectKey:'actual callback / opaque key',sessionId:id(5)},calls=[],events=[],completions=[],failures=[],queryOptions=[];let queryCalls=0;
+ const factory=createRuntimeSdkSessionFactory({origin:'https://native.synthetic.invalid',credential:'scripted-current-task',binding,
+  fetchImpl:async(url,options)=>{const body=JSON.parse(options.body),common={binding:body.binding,key:body.key,requestSha256:hash(body)};calls.push(url);
+   if(url.endsWith('/register'))return Response.json({...common,registered:true});
+   if(url.endsWith('/load'))return Response.json({...common,entries:null,offset:0});
+   if(url.endsWith('/append'))return Response.json({...common,committed:true,appendId:body.appendId,entriesSha256:body.entriesSha256,offset:body.expectedOffset+body.entries.length,added:body.entries.length});
+   throw Error('unexpected synthetic route');}});
+ const saved=await f.service.loadForExecution({credential:f.credential,binding});
+ const unit={generationJobId:id(60),itemId:id(61),conversationId:binding.conversationId,
+  clientId:saved.run.scopes.length===1&&saved.run.scopes[0].kind==='client'?saved.run.scopes[0].resourceId:null,
+  requestId:saved.request.requestId,prompt:saved.request.prompt,
+  outputSchema:{type:'object',properties:{plan:{type:'string'},draft:{type:'string'}},required:['plan','draft'],additionalProperties:false},
+  generationKey:'synthetic-recipient-key',revision:0};
+ const runtime={binding,versions,deadlineMs:Date.now()+3000,maxOutputBytes:1024,sdkSessionKey:null,outreach:unit};
+ const execute=assembleConversationRunner({configuration:{binding,versions,workspace:'/workspace/'+binding.conversationId,sourceEnabled:false},sessionFactory:factory,credentialForBinding:async()=>f.credential,
+  native:{async call(path,input){if(path==='runner/load')return f.service.loadForExecution({credential:f.credential,binding});if(path==='runner/runtime')return runtime;
+   if(path==='runner/next-controls')return {controls:[],nextControlSequence:0};
+   if(path==='runner/outreach/complete'){completions.push(input);if(completion==='unknown')throw Error('outreach completion transport unknown');return {status:'done'};}
+   if(path==='runner/outreach/fail'){failures.push(input);return {status:'held'};}
+   if(path==='runner/record-usage')return f.service.recordUsage({credential:f.credential,binding,input:input.input});
+   if(path==='runner/publish'){events.push(input.event.data.state??input.event.type);return f.service.publish({credential:f.credential,binding,event:input.event});}
+   throw Error(path);}},
+  query({options}){queryCalls++;queryOptions.push(options);return {async *[Symbol.asyncIterator](){
+   yield {type:'system',subtype:'init',session_id:key.sessionId};
+   await options.sessionStore.append(key,[{type:'user',uuid:id(40),message:'synthetic'}]);
+   yield {type:'result',subtype:'success',is_error:false,session_id:key.sessionId,total_cost_usd:0.01,
+    structured_output:{plan:'Synthetic recipient plan',draft:'Synthetic recipient draft'},result:'PRIVATE_RESULT',errors:['PRIVATE_ERROR']};},close(){}};}});
+ return {f,execute,calls,events,completions,failures,queryOptions,unit,queryCalls:()=>queryCalls};
+}
+
+test('a selected recipient unit configures structured output and settles exactly one completion',async()=>{
+ const x=await outreachRun();try{
+  assert.deepEqual(await x.execute({binding}),{state:'completed'});
+  assert.equal(x.queryCalls(),1);
+  const format=x.queryOptions[0]?.outputFormat;
+  assert.equal(format?.type,'json_schema');assert.deepEqual(format?.schema,x.unit.outputSchema);
+  assert.equal(x.completions.length,1);
+  const settled=x.completions[0];
+  assert.deepEqual({generationJobId:settled.generationJobId,itemId:settled.itemId,conversationId:settled.conversationId,requestId:settled.requestId},
+   {generationJobId:x.unit.generationJobId,itemId:x.unit.itemId,conversationId:x.unit.conversationId,requestId:x.unit.requestId});
+  assert.deepEqual(settled.output,{plan:'Synthetic recipient plan',draft:'Synthetic recipient draft'});
+ }finally{x.f.close();}
+});
+
+test('an ambiguous completion ACK is retained without a second model query or replay',async()=>{
+ const x=await outreachRun({completion:'unknown'});try{
+  await assert.rejects(x.execute({binding}));
+  assert.equal(x.queryCalls(),1,'generation must not be repeated after an unknown ACK');
+  assert.equal(x.completions.length,1,'the settlement attempt stays single');
+  assert.equal(x.events.includes('completed'),false);
+ }finally{x.f.close();}
 });
