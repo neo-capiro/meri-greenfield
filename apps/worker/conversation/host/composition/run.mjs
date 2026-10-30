@@ -152,7 +152,7 @@ export async function prepareGuestHostRun({allocation,binding,hostIdentity,cwd,d
  signal?.addEventListener('abort',parentAbort,{once:true});if(signal?.aborted)parentAbort();
  let sdkClient,bashClient,browserClient,sdkMonitor,bashMonitor,browserEgress,browserObserver,hostObserver,
   sdkNetwork,browserNetwork,launcher,readinessLauncher,broker,contexts,bashFacts,teardown,browserPort,settlement,stopping,
-  sdkLaunchGate,readinessObserver;
+  sdkLaunchGate,readinessObserver,browserHost;
  let browserGrantAttempted=false,bootstrapped=false,processClientTaken=false,settling=false,sdkRetired=false;
  let browserActive=false,preparedWorkspace;
  const clients=[];
@@ -376,6 +376,7 @@ export async function prepareGuestHostRun({allocation,binding,hostIdentity,cwd,d
       signal?.removeEventListener('abort',parentAbort);
      }},controls:browser.controls,current,siteWorkflows:browser.siteWorkflows,hold:browser.hold,processes,
     dispose:({paths,signal})=>disposeBrowserState(paths,{signal}),now});
+   browserHost=sessions;
    browserPort=components.createBrowserPort({binding:b,cwd,installation:broker.installation,policy:pinnedBrowserPolicy,sessions,
     egress:egressPort,processes,approvals:browser.approvals,artifacts:browser.artifacts,
     receipts:browser.receipts,sourceScopes:browser.sourceScopes});}
@@ -384,7 +385,7 @@ export async function prepareGuestHostRun({allocation,binding,hostIdentity,cwd,d
   stopped(allSignals());
   bootstrapped=true;
   // The activity's existing createPreparedRunnerQuery must consume this factory once. Nothing here calls SDK query.
-  return Object.freeze({allocation:a,binding:b,hostIdentity:i,browserPort,
+  return Object.freeze({allocation:a,binding:b,hostIdentity:i,browserPort,browserHost,
    bashRuntimeFacts:bashFacts?.runtimeFacts??Object.freeze({}),processClientFactory,
    browserInstallation:broker?.installation,settle});
  }catch(error){
