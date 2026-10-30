@@ -118,7 +118,8 @@ static spec parse_spec(int argc,char **argv,int start) {
   if(argc-start<13||argc-start>MAX_ARGS) die();
   spec s={argv[start],argv[start+1],argv[start+2],argv[start+3],argv[start+4],argv[start+5],argv[start+6],argv[start+7],argv[start+8],argv[start+9],argv[start+10],argv[start+11],argv[start+12],&argv[start+12]};
   if(!valid_uuid(s.host_id)||!valid_hex(s.binding_sha,64)||
-     (strcmp(s.kind,"sdk")&&strcmp(s.kind,"browser")&&strcmp(s.kind,"relay-sdk")&&strcmp(s.kind,"relay-browser")&&\n     strcmp(s.kind,"processing"))||!valid_name(s.ns_name)||
+     (strcmp(s.kind,"sdk")&&strcmp(s.kind,"browser")&&strcmp(s.kind,"relay-sdk")&&strcmp(s.kind,"relay-browser")&&
+     strcmp(s.kind,"processing"))||!valid_name(s.ns_name)||
      number(s.generation,999999999)<1||number(s.uid,65533)<1000||number(s.gid,65533)<1000||
      !absolute_path(s.cwd)||!absolute_path(s.home)||!absolute_path(s.browsers)||!absolute_path(s.exe)) die();
   (void)number(s.ns_dev,UINT64_MAX);(void)number(s.ns_ino,UINT64_MAX);

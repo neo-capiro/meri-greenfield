@@ -114,7 +114,7 @@ const unavailable=(missing,host)=>Object.freeze({inspection:null,host,missing:Ob
  * is a content-free list of unmet declarations for the single stderr event. The returned handle is frozen and holds no
  * request-derived value; `deadlineMs` bounds the mount only.
  */
-export async function mountUploadNativeControl({configuration,now=Date.now,signal,deadlineMs,run,paths,readFileImpl}={}){
+export async function mountUploadNativeControl({configuration,now=Date.now,signal,deadlineMs,run,processing,paths,readFileImpl}={}){
  const declared=configuration?.uploads?.native??null;
  if(declared===null||typeof declared!=='object'||declared.enabled!==true)return unavailable(['uploads.native.enabled'],null);
  // REMOTE first and unconditionally: no local composition is even attempted, so a declared remote inspection can
@@ -134,7 +134,8 @@ export async function mountUploadNativeControl({configuration,now=Date.now,signa
   // them. Production startControl supplies none of the three, so from the running system they are unreachable.
   const host=await composeUploadNativeHost({configuration,now,signal,deadlineMs:deadlineMs??now()+UPLOAD_NATIVE_MOUNT_MS,
    ...(typeof declared.scratchRoot==='string'?{tempRoot:declared.scratchRoot}:{}),
-   ...(run===undefined?{}:{run}),...(paths===undefined?{}:{paths}),...(readFileImpl===undefined?{}:{readFileImpl})});
+   ...(processing===undefined?{}:{processing}),...(run===undefined?{}:{run}),...(paths===undefined?{}:{paths}),
+   ...(readFileImpl===undefined?{}:{readFileImpl})});
   if(host===null||typeof host!=='object'||host.scanner===null||host.extractor===null)
    return unavailable(Array.isArray(host?.missing)&&host.missing.length?host.missing:['uploads.native.sandbox'],host);
   return Object.freeze({inspection:createUploadInspection({scanner:host.scanner,extractor:host.extractor,now}),

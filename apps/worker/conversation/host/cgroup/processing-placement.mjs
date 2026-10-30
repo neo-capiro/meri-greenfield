@@ -31,8 +31,10 @@ export async function createProcessingPlacement({allocation,binding,hostIdentity
   if(!released.released)throw Object.assign(Error('HOST_CGROUP_CLEANUP_UNKNOWN'),{code:'HOST_CGROUP_CLEANUP_UNKNOWN',cause:error,leaf});
   throw error;
  }
- // The settled cleanup result is authoritative: a retry replays it and can never turn UNKNOWN into success.
- const closing=(async()=>{
+ // Cleanup starts on the FIRST close and its settled result is authoritative: concurrent and repeated calls share
+ // that promise, so an UNKNOWN can never turn into success and nothing is cleaned while the group is still serving.
+ let closing=null;
+ const close=()=>closing??=(async()=>{
   let childUnknown=null;
   try{await child.close();}catch(error){childUnknown=error?.code??'HOST_LAUNCH_UNKNOWN';}
   const released=releaseFiniteCgroupLeaf({leaf,fs});
@@ -40,6 +42,5 @@ export async function createProcessingPlacement({allocation,binding,hostIdentity
    code:childUnknown??released.code});
   return Object.freeze({closed:true,released:true});
  })();
- return Object.freeze({schema:PROCESSING_PLACEMENT_SCHEMA,pid:child.pid,leaf,hierarchy,
-  close:()=>closing});
+ return Object.freeze({schema:PROCESSING_PLACEMENT_SCHEMA,pid:child.pid,leaf,hierarchy,close});
 }

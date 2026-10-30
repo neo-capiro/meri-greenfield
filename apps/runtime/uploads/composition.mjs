@@ -44,9 +44,10 @@ const REFRESHABLE=new Set(['UPLOAD_DEFINITIONS_UNAVAILABLE','UPLOAD_DEFINITIONS_
  * `scanner`/`extractor` into createUploadInspection and may drive `provisionDefinitions({deadlineMs})` under its own
  * bounded lifecycle. */
 export async function composeUploadNativeHost(options={}){
- const configuration=options.configuration??{},now=options.now??Date.now,run=options.run??runUploadSandbox,
+ const configuration=options.configuration??{},now=options.now??Date.now,processing=options.processing,
+  run=processing??options.run??runUploadSandbox,
   tempRoot=options.tempRoot??UPLOAD_IMAGE_PATHS.tempRoot,declared=configuration?.uploads?.native;
- if(typeof now!=='function'||typeof run!=='function')fail();
+ if(typeof now!=='function'||typeof run!=='function'||(processing!==undefined&&typeof processing!=='function'))fail();
  if(declared===null||typeof declared!=='object'||declared.enabled!==true)return disabled(['uploads.native.enabled']);
  if(!isHash(declared.imageDigest))return disabled(['uploads.native.imageDigest']);
  // Fixed image paths unless the host declares an explicit override; both are read-only bind entries for every child.

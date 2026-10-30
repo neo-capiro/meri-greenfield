@@ -348,9 +348,9 @@ export async function prepareProcessingCompartment({allocation,binding,execute=r
  const plan=createNetworkPlan({allocation,binding,kind:'processing',routes:[]});
  if(!Array.isArray(plan.routes)||plan.routes.length!==0)fail('HOST_NETWORK_CONFIGURATION');
  const ip=async(...args)=>(await execute({file:IP,args,timeoutMs:5000})).stdout;
- try{await execute({file:IP,args:['netns','add',plan.namespaceName],timeoutMs:5000});}
+ let identity=null,closed=false,created=false;
+ try{await execute({file:IP,args:['netns','add',plan.namespaceName],timeoutMs:5000});created=true;}
  catch{fail('HOST_NETWORK_SETUP_FAILED');}
- let identity=null,closed=false;
  try{
   identity=readNamespace(plan.namespacePath);
   const readLinks=async()=>array(await ip('-d','-j','-n',plan.namespaceName,'link','show'));
@@ -375,17 +375,22 @@ export async function prepareProcessingCompartment({allocation,binding,execute=r
     namespaceIno:identity.namespaceIno,localRelays:Object.freeze([]),loopbackOnly:links[0].ifname==='lo',
     routes:Object.freeze({v4:routes.v4.length,v6:routes.v6.length}),verifiedAtMs:now()});
   };
-  const close=async()=>{
-   if(closed)return Object.freeze({closed:true});
+  // The first close owns the deletion; later and concurrent callers replay its settled result. A failed deletion is
+  // reported as CLEANUP_UNKNOWN on every replay and never as success. Deleting is local cleanup, not an absence receipt.
+  let closing=null;
+  const close=()=>closing??=(async()=>{
    closed=true;
-   // Deleting the namespace is local cleanup, not an absence receipt for descendants; the owned child is stopped first.
    try{await execute({file:IP,args:['netns','delete',plan.namespaceName],timeoutMs:5000});}
-   catch{fail('HOST_NETWORK_CLEANUP_UNKNOWN');}
+   catch{return Object.freeze({closed:false,code:'HOST_NETWORK_CLEANUP_UNKNOWN'});}
    return Object.freeze({closed:true});
-  };
+  })();
   return Object.freeze({plan,identity,verify,close});
  }catch(error){
-  if(!closed){closed=true;try{await execute({file:IP,args:['netns','delete',plan.namespaceName],timeoutMs:5000});}catch{}}
+  // Only a namespace this call actually created is deleted here; a failed `netns add` created nothing.
+  let cleanup='not-created';
+  if(created){try{await execute({file:IP,args:['netns','delete',plan.namespaceName],timeoutMs:5000});cleanup='removed';}
+   catch{cleanup='unknown';}}
+  error.partialCleanup=cleanup;
   throw error;
  }
 }

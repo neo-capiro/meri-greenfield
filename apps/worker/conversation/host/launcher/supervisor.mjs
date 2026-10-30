@@ -432,54 +432,79 @@ export async function startConfinedProcessing({allocation,binding,hostIdentity,h
 
 /** Standalone port needed while the network owner is preparing its namespace-local loopback relay. The network
  * owner supplies the fixed entrypoint and verifies the actual listener by PID before treating the handle as ready. */
-/** Spawn port for one fixed processing command with REAL stdin/stdout/stderr. The host launcher execs the command in
- * place after attaching the exact finite leaf, so fds 0/1/2 belong to the program and fds 3/4 carry the prepared-process
- * READY/GO handshake. Trusted currentness and network verification run BEFORE the spawn and AGAIN after READY but before
- * GO, so a revocation while preparation is pending cannot dispatch. Cancellation before GO closes the gate without `G`
- * and the child dies at its own gate read. */
-export function createProcessingCommandLauncher({allocation,binding,hostIdentity,network,helperPath,cwd,home,browsersPath,
- uid:runUid,gid:runGid,onPrepared,signal,spawnNative=spawn,readyMs=5000}={}){
+/** Prepared fixed-processing command on the finite placement.
+ *
+ * Trusted currentness (canonical `assertHostCurrent` receipt, allocation lease and policy digest) and the verified
+ * no-egress network are both checked BEFORE the spawn and AGAIN after READY but before GO, with the two namespace pins
+ * compared. READY and `onPrepared` are bounded by the SAME caller deadline and cancellation, and the caller's cwd,
+ * signal and deadline reach the launcher per call. GO is NOT sent here: `runProcessingCommand` releases it only after the
+ * canonical artifact runner has installed its listeners, so a fast exit/error is never lost. The injected spawn is
+ * detached so the runner's `-pid` group kill covers the exec'd program, which keeps the launcher PID (the C
+ * `direct_run` execs in place). */
+export function createProcessingCommandLauncher({allocation,binding,hostIdentity,network,authority,helperPath,
+ home,browsersPath,uid:runUid,gid:runGid,onPrepared,signal,spawnNative=spawn,readyMs=5000,now=Date.now}={}){
  const s=scope({allocation,binding,hostIdentity});
- if(!absolute(helperPath)||![cwd,home,browsersPath].every(absolute)||!uid(runUid)||!uid(runGid)||
+ if(!absolute(helperPath)||![home,browsersPath].every(absolute)||!uid(runUid)||!uid(runGid)||
   typeof onPrepared!=='function'||!network||typeof network.verify!=='function'||network.plan?.kind!=='processing'||
-  !maxMs(readyMs))fail('HOST_LAUNCH_CONFIGURATION');
+  !maxMs(readyMs)||typeof authority?.readCurrent!=='function'||!/^[0-9a-f]{64}$/u.test(authority?.policySha256??'')||
+  !Number.isSafeInteger(authority?.maxFreshMs)||authority.maxFreshMs<1||authority.maxFreshMs>30000)
+  fail('HOST_LAUNCH_CONFIGURATION');
  nativeSignal(signal);
+ let lastNamespace=null;
  const preflight=async()=>{
   if(signal?.aborted)fail('HOST_LAUNCH_CANCELLED');
+  const at=now();
+  if(!Number.isSafeInteger(at)||at>=s.allocation.leaseDeadlineMs)fail('HOST_LAUNCH_EXPIRED');
+  let current;try{current=await authority.readCurrent({allocation:s.allocation,binding:s.binding,
+   policySha256:authority.policySha256,signal});}catch{fail('HOST_LAUNCH_CURRENTNESS_REFUSED');}
+  try{assertHostCurrent({allocation:s.allocation,binding:s.binding,policySha256:authority.policySha256,current,
+   nowMs:now(),maxFreshMs:authority.maxFreshMs});}catch{fail('HOST_LAUNCH_CURRENTNESS_REFUSED');}
   const pin=await verifiedNetwork(s,network,'processing',signal,readyMs);
   if(signal?.aborted)fail('HOST_LAUNCH_CANCELLED');
+  if(lastNamespace!==null&&(pin.namespaceDev!==lastNamespace.dev||pin.namespaceIno!==lastNamespace.ino))
+   fail('HOST_LAUNCH_NETWORK_REFUSED');
+  lastNamespace={dev:pin.namespaceDev,ino:pin.namespaceIno};
   return pin;
  };
- return async function spawnProcessingCommand(command,args){
+ /** Resolve a prepared, verified, NOT-yet-dispatched command. GO stays with the caller. */
+ return async function prepare(command,args,{cwd,signal:callSignal,deadlineMs}={}){
+  const life=callSignal??signal;
   if(typeof command!=='string'||!absolute(command)||!Array.isArray(args)||args.length>100||
-   args.some(value=>typeof value!=='string'||value.length>8192||value.includes('\0')))fail('HOST_LAUNCH_CONFIGURATION');
+   args.some(value=>typeof value!=='string'||value.length>8192||value.includes('\0'))||!absolute(cwd))fail('HOST_LAUNCH_CONFIGURATION');
+  if(!Number.isSafeInteger(deadlineMs)||deadlineMs<=now())fail('HOST_LAUNCH_CANCELLED');
+  const remaining=()=>Math.max(1,deadlineMs-now());
   const pin=await preflight();
   const child=spawnNative(helperPath,['run',...nativeSpec(s,{kind:'processing',network:pin,command,args,cwd,home,
-   browsersPath,uid:runUid,gid:runGid})],{env:{},stdio:['pipe','pipe','pipe','pipe','pipe'],windowsHide:true});
+   browsersPath,uid:runUid,gid:runGid})],{env:{},detached:true,stdio:['pipe','pipe','pipe','pipe','pipe'],windowsHide:true});
   if(!child||!Number.isSafeInteger(child.pid)||!child.stdio?.[3]||!child.stdio?.[4])fail('HOST_LAUNCH_UNKNOWN');
-  let gateOpen=false;
   try{
-   if(await within(()=>lineReader(child.stdio[3])(),readyMs,signal)!=='R')fail('HOST_LAUNCH_UNKNOWN');
-   await onPrepared({leaderPid:child.pid,kind:'processing',signal});
-   await preflight();                       // exact current authority/network must still hold at dispatch
-   if(signal?.aborted)fail('HOST_LAUNCH_CANCELLED');
-   child.stdio[4].end('G');gateOpen=true;
-   return child;
+   if(await within(()=>lineReader(child.stdio[3])(),Math.min(remaining(),readyMs),life)!=='R')fail('HOST_LAUNCH_UNKNOWN');
+   await within(()=>onPrepared({leaderPid:child.pid,kind:'processing',signal:life,cwd}),remaining(),life);
+   await preflight();                       // current authority + network must still hold at dispatch
+   if(life?.aborted)fail('HOST_LAUNCH_CANCELLED');
+   if(now()>=deadlineMs)fail('HOST_LAUNCH_EXPIRED');
+   return Object.freeze({pid:child.pid,child,gate:child.stdio[4]});
   }catch(error){
    try{if(!child.stdio[4].destroyed)child.stdio[4].destroy();}catch{}
    try{child.kill('SIGKILL');}catch{}
-   if(!gateOpen)error.dispatched=false;
+   error.dispatched=false;
    throw error;
   }
  };
 }
 
-/** Run one fixed processing command through the existing bounded artifact runner: exact stdin bytes, bounded stdout,
- * finite deadline, caller cancellation and owned-group cleanup are the runner's contract, not re-implemented here. */
+/** Run one fixed processing command through the existing bounded artifact runner. `ports` is the runner's FOURTH
+ * argument; GO is released only from inside the spawn port, after the runner has installed its listeners. */
 export async function runProcessingCommand({launcher,command,args,cwd,input=Buffer.alloc(0),signal,deadlineMs,maxOutput}){
- const spawnChild=await launcher(command,args);
- return runArtifactProcess(command,args,{cwd,input,signal,deadlineMs,...(maxOutput===undefined?{}:{maxOutput}),
-  ports:{spawn:()=>spawnChild}});
+ const prepared=await launcher(command,args,{cwd,signal,deadlineMs});
+ let dispatched=false;
+ return runArtifactProcess(command,args,{cwd,input,signal,deadlineMs,...(maxOutput===undefined?{}:{maxOutput})},{
+  spawn:()=>{
+   if(dispatched)fail('HOST_LAUNCH_UNKNOWN');
+   dispatched=true;
+   queueMicrotask(()=>{try{if(!prepared.gate.destroyed)prepared.gate.end('G');}catch{}});
+   return prepared.child;
+  }});
 }
 
 export async function startConfinedLocalRelay({allocation,binding,hostIdentity,helperPath,networkProof,kind,
