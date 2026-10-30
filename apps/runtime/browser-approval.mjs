@@ -6,17 +6,24 @@
  * instead of freezing the value read when the owner was built. The self-approver is the canonical admitted
  * binding's actor, never a boot-time global.
  *
- * settle() is NOT exposed yet. A permission path needs a durable claim that survives owner recreation, and
- * an in-process flag cannot provide that: a recreated owner would start with consumed=false and could
- * consume a second time after a lost acknowledgement. The seam refuses to build a settle port until that
- * durable claim exists, so no permission can be issued from this module today.
+ * `wait`/`decide` are backed by the durable preparation and consumption owners: the consumption claim is
+ * taken in the existing intent journal, so a recreated owner cannot consume twice after a lost
+ * acknowledgement. `prepare` returns the SAME full immutable result on a fresh producer ACK and on replay,
+ * and it validates both with one strict shared validator before anything is retained.
+ *
+ * A preparation whose metadata COMMIT happened but whose journal settle was lost is recovered from the
+ * ACTUAL canonical metadata at the deterministic proposal identity; the producer is never re-run.
  *
  * Activation stays held: constructing this owner creates no listener, credential or schedule.
  */
 import {own,data,nativeSignal} from '../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {createBrowserPreparationProducer} from '../control/commands/approval-metadata/browser-preparation-producer.mjs';
 import {createTransactionalApprovalMetadataStore} from '../control/commands/approval-metadata/postgres-store.mjs';
-import {browserPreparationProposalId,assertBrowserApprovalRequest} from '../../packages/contracts/runtime-0.2/browser-approval-preparation.mjs';
+import {browserPreparationProposalId,assertBrowserApprovalRequest,browserRequestFromPreparation}
+ from '../../packages/contracts/runtime-0.2/browser-approval-preparation.mjs';
+import {immutablePayload,readKey} from '../control/commands/approval-metadata/binding.mjs';
+import {browserPreparationResult,assertBrowserPreparationResult}
+ from '../control/commands/approval-metadata/browser-preparation-result.mjs';
 import {canonicalSha256} from '../../packages/contracts/validate.mjs';
 import {projectCapabilityRole} from './product-ports/capability-policy.mjs';
 const fail=code=>{throw Object.assign(new Error(code),{code});};
@@ -82,12 +89,35 @@ export function createBrowserApprovalOwner(configuration){
    throw fail(UNKNOWN);
   }
   if(durable.dispatch!==true){
-   if(durable.variant!=='replayed'||!durable.preparation)throw fail(UNKNOWN);
-   const saved=data(durable.preparation);
-   if(saved.requestSha256!==requestSha256)throw fail('BROWSER_PREPARATION_CONFLICT');
-   return Object.freeze({record:saved.record??null,proposalId:saved.proposalId,
-    subjectSha256:saved.subjectSha256??request.subjectSha256,binding:Object.freeze(data(binding)),
-    recovered:true,deliveryId:durable.deliveryId});
+   if(durable.variant==='replayed'){
+    // A retained result is returned only when it is a FULL genuine preparation for this exact identity.
+    let saved;
+    try{saved=assertBrowserPreparationResult(durable.preparation,
+     {binding,toolUseId:request.subject.toolUseId});}catch{throw fail(UNKNOWN);}
+    if(saved.requestSha256!==requestSha256)throw fail('BROWSER_PREPARATION_CONFLICT');
+    return Object.freeze({record:saved.record,proposalId:saved.proposalId,subjectSha256:saved.subjectSha256,
+     binding:Object.freeze(data(binding)),recordSha256:saved.recordSha256,recovered:true,
+     deliveryId:durable.deliveryId});
+   }
+   // PENDING/UNKNOWN: the metadata COMMIT may have happened with a lost ACK. Recover ONLY from the actual
+   // canonical metadata at the deterministic identity, re-validated against the ORIGINAL request; the
+   // producer is never re-run and no command id, scope or digest is invented.
+   let stored;
+   try{stored=await c.store.read(readKey({tenantId:binding.tenantId,actorId:binding.actorId,proposalId}),
+    ()=>{if(signal?.aborted)throw fail(UNKNOWN);});}
+   catch{throw fail(UNKNOWN);}
+   if(stored===null||stored===undefined)throw fail(UNKNOWN);
+   let recovered;
+   try{recovered=browserPreparationResult(immutablePayload(stored).record,{requestSha256});}
+   catch{throw fail(UNKNOWN);}
+   if(canonicalSha256(browserRequestFromPreparation(recovered.record.request))!==requestSha256)
+    throw fail('BROWSER_PREPARATION_CONFLICT');
+   try{await c.preparations.settle({binding,toolUseId:request.subject.toolUseId,proposalId,requestSha256,
+    preparation:recovered,...(signal===undefined?{}:{signal})});}
+   catch(error){if(signal?.aborted)throw error;throw fail(UNKNOWN);}
+   return Object.freeze({record:recovered.record,proposalId:recovered.proposalId,
+    subjectSha256:recovered.subjectSha256,binding:Object.freeze(data(binding)),
+    recordSha256:recovered.recordSha256,recovered:true,deliveryId:durable.deliveryId});
   }
   const pinned=await role({signal,deadlineMs});
   // Re-resolved on every producer authority pass: a changed canonical role refuses.
@@ -101,14 +131,17 @@ export function createBrowserApprovalOwner(configuration){
   const record=await producer.prepare({request:v.request,binding,deadlineMs,
    ...(signal===undefined?{}:{signal})});
   if(!record||record.proposalId!==proposalId)fail(DENIED);
+  // The fresh ACK is validated with the SAME strict validator before it is retained.
+  let result;
+  try{result=browserPreparationResult(record,{requestSha256});
+   assertBrowserPreparationResult(result,{binding,toolUseId:request.subject.toolUseId});}
+  catch{throw fail(DENIED);}
   // PREPARED is settled only after the metadata owner acknowledged; a lost settle stays unresolved.
   try{await c.preparations.settle({binding,toolUseId:request.subject.toolUseId,proposalId,requestSha256,
-   preparation:{proposalId,subjectSha256:record.request.subjectSha256,requestSha256,
-    record,recordSha256:canonicalSha256(record)},
-   ...(signal===undefined?{}:{signal})});}
+   preparation:result,...(signal===undefined?{}:{signal})});}
   catch(error){if(signal?.aborted)throw error;throw fail(UNKNOWN);}
-  return Object.freeze({record,proposalId,subjectSha256:record.request.subjectSha256,
-   binding:Object.freeze(data(binding)),deliveryId:durable.deliveryId});
+  return Object.freeze({record:result.record,proposalId,subjectSha256:result.subjectSha256,
+   binding:Object.freeze(data(binding)),recordSha256:result.recordSha256,deliveryId:durable.deliveryId});
  }
 
  /** A fresh grant needs an approved, unexpired decision for THIS proposal with consumption still null. */

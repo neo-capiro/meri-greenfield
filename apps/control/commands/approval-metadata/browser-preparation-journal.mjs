@@ -12,6 +12,7 @@
 import {canonicalSha256,validateShape} from '../../../../packages/contracts/validate.mjs';
 import {data,own,nativeSignal} from '../../../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {browserApprovalDeliveryId} from '../../../../packages/contracts/runtime-0.2/browser-operation.mjs';
+import {assertBrowserPreparationResult} from './browser-preparation-result.mjs';
 
 const fail=code=>{throw Object.assign(Error(code),{code});};
 const OPERATION=Object.freeze({id:'browser_approval_preparation',version:'0.2.0'});
@@ -53,22 +54,31 @@ export function createBrowserApprovalPreparationOwner({journal}={}){
   if(saved.proposalId!==value.proposalId)fail('BROWSER_PREPARATION_CONFLICT');
   if(typeof saved.requestSha256!=='string'||saved.requestSha256!==value.requestSha256)
    fail('BROWSER_PREPARATION_CONFLICT');
-  if(saved.recordSha256!==undefined&&canonicalSha256(saved.record)!==saved.recordSha256)
-   fail('BROWSER_PREPARATION_CONFLICT');
+  // A retained outcome is only a replay when it is a GENUINE full result for this exact identity: a
+  // partial/legacy ids-only row is a conflict, never a recovered preparation.
+  const preparation=assertBrowserPreparationResult(saved,{binding:value.binding,toolUseId:value.toolUseId});
+  if(preparation.requestSha256!==value.requestSha256)fail('BROWSER_PREPARATION_CONFLICT');
   return Object.freeze({dispatch:false,variant:'replayed',deliveryId,argumentsSha256:record.argumentsSha256,
-   preparation:Object.freeze(data(saved))});
+   preparation});
  }
  /** Settle PREPARED only after the metadata owner acknowledged the immutable preparation. */
  async function settle(value){
   const v=own(value,[...KEY,'preparation'],['signal']);
   const {binding,record,signal,deliveryId}=key({binding:v.binding,toolUseId:v.toolUseId,
    proposalId:v.proposalId,requestSha256:v.requestSha256,...(v.signal===undefined?{}:{signal:v.signal})});
-  const preparation=data(v.preparation);
-  if(preparation.proposalId!==v.proposalId)fail('BROWSER_PREPARATION_REFUSED');
+  const preparation=assertBrowserPreparationResult(v.preparation,
+   {binding:v.binding,toolUseId:v.toolUseId});
+  if(preparation.proposalId!==v.proposalId||preparation.requestSha256!==v.requestSha256)
+   fail('BROWSER_PREPARATION_REFUSED');
   // The journal's outcome carries the FULL immutable preparation under `result`, so a later replay returns
   // the same record rather than a pair of ids.
+  // PREPARED carries the canonical release window the existing journal adapter requires: the record's own
+  // binding/scopes and the ORIGINAL request expiry. No new clock is minted here.
   await journal.settle({binding,deliveryId,record,state:'PREPARED',
-   outcome:Object.freeze({result:preparation}),...(signal===undefined?{}:{signal})});
+   outcome:Object.freeze({result:preparation,release:Object.freeze({
+    binding:data(preparation.record.binding),scopes:preparation.record.scopes,
+    expiresAtMs:preparation.record.request.expiresAtMs})}),
+   ...(signal===undefined?{}:{signal})});
   return Object.freeze({settled:true,deliveryId,argumentsSha256:record.argumentsSha256});
  }
  /** Closed read: the acknowledged row must carry THIS exact record. */
@@ -79,8 +89,10 @@ export function createBrowserApprovalPreparationOwner({journal}={}){
   const saved=data(entry.record);
   if(saved.operation?.id!==OPERATION.id||saved.argumentsSha256!==record.argumentsSha256)
    fail('BROWSER_PREPARATION_CONFLICT');
+  const preparation=entry.outcome?.result===undefined?null
+   :assertBrowserPreparationResult(entry.outcome.result,{binding:value.binding,toolUseId:value.toolUseId});
   return Object.freeze({variant:'retained',deliveryId,state:entry.state,argumentsSha256:saved.argumentsSha256,
-   preparation:entry.outcome?.result===undefined?null:data(entry.outcome.result)});
+   preparation});
  }
  return Object.freeze({claim,settle,read,operation:OPERATION});
 }
