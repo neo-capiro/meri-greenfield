@@ -73,9 +73,19 @@ export function assertBrowserOnlyServiceInputs(input) {
   const allocation = assertHostAllocation(v.allocation);
   const binding = assertHostRunBinding(allocation, v.binding);
   const hostIdentity = assertD005HostIdentity(v.hostIdentity, binding, allocation);
-  if (!Number.isSafeInteger(v.deadlineMs) || v.deadlineMs < 1) fail('BROWSER_HOST_SERVICE_CONFIGURATION');
+  if (!Number.isSafeInteger(v.deadlineMs) || v.deadlineMs <= (v.now ?? Date.now)()) fail('BROWSER_HOST_SERVICE_DEADLINE_EXPIRED');
+  if (!Number.isSafeInteger(allocation.leaseDeadlineMs) || allocation.leaseDeadlineMs <= (v.now ?? Date.now)()) fail('BROWSER_HOST_SERVICE_DEADLINE_EXPIRED');
   // Trusted inputs and owner interfaces.
   if (typeof v.current !== 'function' || typeof v.hold !== 'function' || typeof v.dispose !== 'function') fail('BROWSER_HOST_SERVICE_CURRENTNESS_UNBOUND');
+  // Closed authority shape exactly as the real launcher authorities() requires; v.maxFreshMs is not a substitute.
+  const authority = v.authority ?? {};
+  if (!/^[0-9a-f]{64}$/u.test(authority.policySha256 ?? '') || typeof authority.readCurrent !== 'function' ||
+      !Number.isSafeInteger(authority.maxFreshMs) || authority.maxFreshMs < 1 || authority.maxFreshMs > 30000) fail('BROWSER_HOST_SERVICE_CURRENTNESS_UNBOUND');
+  // Browser network plan/verify plus the matching egress configuration the real launcher requires.
+  const plan = v.browserNetwork?.plan;
+  if (typeof v.browserNetwork?.verify !== 'function' || plan?.kind !== 'browser' || !Array.isArray(plan.routes) ||
+      !plan.routes.length || !Number.isSafeInteger(plan.routes[0]?.localPort) || plan.routes[0].localPort < 1 ||
+      plan.routes[0].localPort > 65535) fail('BROWSER_HOST_SERVICE_NETWORK_UNBOUND');
   if (typeof v.siteWorkflows !== 'object' && typeof v.siteWorkflows !== 'function') fail('BROWSER_HOST_SERVICE_CONFIGURATION');
   if (typeof v.controls?.bind !== 'function') fail('BROWSER_HOST_SERVICE_CONTROLS_UNBOUND');
   if (typeof v.browserClient?.readCurrent !== 'function' || !Number.isSafeInteger(v.maxFreshMs) || v.maxFreshMs < 1) fail('BROWSER_HOST_SERVICE_CURRENTNESS_UNBOUND');
@@ -90,11 +100,13 @@ export function assertBrowserOnlyServiceInputs(input) {
   try { policy = validateBrowserPolicy(v.policy); } catch { fail('BROWSER_HOST_SERVICE_POLICY_REFUSED'); }
   if (policy.enabled !== true) fail('BROWSER_HOST_SERVICE_POLICY_REFUSED');
   try { installation = validateBrowserContextInstallation(v.installation); } catch { fail('BROWSER_HOST_SERVICE_INSTALLATION_UNBOUND'); }
+  if (installation.egressProxy !== `http://127.0.0.1:${v.browserNetwork.plan.routes[0].localPort}`) fail('BROWSER_HOST_SERVICE_NETWORK_MISMATCH');
   if (typeof v.upstream?.createConnection !== 'function') fail('BROWSER_HOST_SERVICE_INSTALLATION_UNBOUND');
   // Workspace ownership IDs are trusted filesystem/readback identities, never SDK launch permission.
   const ws = v.workspaceOwnership;
   if (!ws || ![ws.sdkUid, ws.sdkGid, ws.browserUid, ws.browserGid].every(uid)) fail('BROWSER_HOST_SERVICE_WORKSPACE_UNBOUND');
   if (ws.browserUid !== v.browserUid || ws.browserGid !== v.browserGid) fail('BROWSER_HOST_SERVICE_WORKSPACE_MISMATCH');
+  if (ws.sdkUid === ws.browserUid || ws.sdkGid === ws.browserGid) fail('BROWSER_HOST_SERVICE_WORKSPACE_MISMATCH');
   if (typeof v.helperPath !== 'string' || !v.helperPath.startsWith('/')) fail('BROWSER_HOST_SERVICE_CONFIGURATION');
   // Real viewer TLS material with the canonical helpers.
   const viewer = v.viewer ?? {};
@@ -130,8 +142,10 @@ export function composeBrowserOnlyHostService(input, dependencies = {}) {
     ports: {browser: v.browser, processes: v.processes, host: v.host}, now,
   });
 
-  let launch, contextPort, sessionHost, operationHost, viewer;
+  let launch, contextPort, sessionHost, operationHost, viewer, preparedWorkspace;
   let starting, started = false, tearingDown = false, destroyed, retained = false, armed = false;
+  const terminal = new AbortController();
+  const fence = () => { if (!terminal.signal.aborted) terminal.abort(Object.assign(Error('BROWSER_HOST_SERVICE_TORN_DOWN'), {code: 'BROWSER_HOST_SERVICE_TORN_DOWN'})); };
   const listeners = [];
   const live = () => !tearingDown && destroyed === undefined;
 
@@ -183,21 +197,25 @@ export function composeBrowserOnlyHostService(input, dependencies = {}) {
       if (starting) return starting;
       starting = (async () => {
         try {
+          // Admitted workspace FIRST, before any native launcher/child exists (prepare.mjs contract), after the
+          // authenticated browser-purpose currentness read. The exact receipt is retained for the pre-exec readback.
+          preparedWorkspace = await owners.prepareWorkspace({
+            allocation, binding, cwd: v.cwd, paths, browserClient: v.browserClient,
+            policySha256: v.authority.policySha256, maxFreshMs: v.authority.maxFreshMs, now, signal: terminal.signal,
+            sdkUid: v.workspaceOwnership.sdkUid, sdkGid: v.workspaceOwnership.sdkGid,
+            browserUid: v.browserUid, browserGid: v.browserGid,
+            ...(v.prepareBrowserWorkspace === undefined ? {} : {prepare: v.prepareBrowserWorkspace}),
+          });
+          if (!live()) fail('BROWSER_HOST_SERVICE_TORN_DOWN');
           launch = owners.launcher({
             allocation, binding, hostIdentity,
             helperPath: v.helperPath, browserNetwork: v.browserNetwork, authority: v.authority,
             browserUid: v.browserUid, browserGid: v.browserGid,
             onBrowserPrepared: async ({leaderPid, kind}) => {
               if (kind !== 'browser' || armed) fail('BROWSER_HOST_SERVICE_PROCESS_ARM_REFUSED');
-              // 1) admitted workspace after a browser-purpose currentness read, 2) exact measured readback + per-profile
-              //    arm, 3) host-wide arm — all before GO.
-              const preparedWorkspace = await owners.prepareWorkspace({
-                allocation, binding, cwd: v.cwd, paths, browserClient: v.browserClient,
-                policySha256: v.authority.policySha256, maxFreshMs: v.maxFreshMs, now, signal: v.signal,
-                sdkUid: v.workspaceOwnership.sdkUid, sdkGid: v.workspaceOwnership.sdkGid,
-                browserUid: v.browserUid, browserGid: v.browserGid,
-                ...(v.prepareBrowserWorkspace === undefined ? {} : {prepare: v.prepareBrowserWorkspace}),
-              });
+              if (!live() || terminal.signal.aborted || !preparedWorkspace) fail('BROWSER_HOST_SERVICE_TORN_DOWN');
+              // The workspace receipt exists before this launcher; do the measured readback + per-profile arm and the
+              // separate host-wide arm, both before GO.
               await owners.armWorkspaceReadback({
                 allocation, binding, hostIdentity, cwd: v.cwd, paths,
                 browserUid: v.browserUid, browserGid: v.browserGid,
@@ -209,14 +227,14 @@ export function composeBrowserOnlyHostService(input, dependencies = {}) {
               if (receipt?.armed !== true) fail('BROWSER_HOST_SERVICE_PROCESS_ARM_REFUSED');
               armed = true;
             },
-            ...(v.signal === undefined ? {} : {signal: v.signal}),
+            signal: terminal.signal,
             ...(v.spawnNative === undefined ? {} : {spawnNative: v.spawnNative}),
             now,
           });
           if (!live()) fail('BROWSER_HOST_SERVICE_TORN_DOWN');
           const native = await launch.prepareBrowserContext({policy, installation, paths});
           if (!live()) { await within(() => launch.close(), localSettleMs); fail('BROWSER_HOST_SERVICE_TORN_DOWN'); }
-          contextPort = owners.contextPort({native, binding, policy, installation, paths, signal: v.signal, now});
+          contextPort = owners.contextPort({native, binding, policy, installation, paths, signal: terminal.signal, now});
           if (!live()) { await within(() => contextPort.close?.(), localSettleMs); fail('BROWSER_HOST_SERVICE_TORN_DOWN'); }
           sessionHost = owners.sessionHost({
             allocation, binding, cwd: v.cwd, installation,
@@ -257,6 +275,7 @@ export function composeBrowserOnlyHostService(input, dependencies = {}) {
       if (destroyed) return destroyed;
       if (tearingDown) return destroyed;
       tearingDown = true;
+      fence();
       const pending = starting;
       const settledProblems = [];
       destroyed = (async () => {
@@ -275,8 +294,9 @@ export function composeBrowserOnlyHostService(input, dependencies = {}) {
   };
 
   // Real terminal triggers: the caller's AbortSignal and the canonical allocation/run expiry.
+  const terminate = reason => { fence(); if (!destroyed) void service.destroy({reason}).catch(() => {}); };
   if (v.signal !== undefined) {
-    const onAbort = () => { if (!destroyed) void service.destroy({reason: 'revoked'}).catch(() => {}); };
+    const onAbort = () => terminate('revoked');
     v.signal.addEventListener('abort', onAbort, {once: true});
     listeners.push(() => v.signal.removeEventListener('abort', onAbort));
     if (v.signal.aborted) queueMicrotask(onAbort);
@@ -284,7 +304,7 @@ export function composeBrowserOnlyHostService(input, dependencies = {}) {
   const expiresAtMs = Math.min(v.deadlineMs, allocation.leaseDeadlineMs);
   const remaining = expiresAtMs - now();
   if (Number.isSafeInteger(remaining)) {
-    const onExpiry = () => { if (!destroyed) void service.destroy({reason: 'lease-expired'}).catch(() => {}); };
+    const onExpiry = () => terminate('lease-expired');
     const timer = setTimeout(onExpiry, Math.max(0, remaining));
     timer.unref?.();
     listeners.push(() => clearTimeout(timer));

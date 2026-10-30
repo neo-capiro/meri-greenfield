@@ -29,8 +29,11 @@ consumed. Neither substitutes for the other.
   `…_EGRESS_UNBOUND`, `…_HOST_UNBOUND`, `…_READRUN_UNBOUND`, `…_VIEWER_UNBOUND`, `…_CONFIGURATION`). Supplying
   `processClientFactory`, `runnerQuery`, `modelTransport`, `bash`, provider credentials or `capabilityPolicy` is a
   configuration error, not a feature.
-- `start()` — launches; the pre-exec callback prepares the admitted workspace, verifies the exact measured readback,
-  arms the per-profile observer and then the host-wide observer, all before GO; then mounts the pinned listener. It never
+- `start()` — prepares the admitted workspace FIRST, after an authenticated browser-purpose currentness read and
+  BEFORE any native launcher/child exists (the `prepare.mjs` contract), and retains that exact receipt. The pre-exec
+  callback then performs the measured readback and arms the per-profile observer followed by the host-wide observer,
+  all before GO; only then is the pinned listener mounted. Correction 05 supersedes the earlier text that placed all of
+  these steps inside the callback: the launcher needs the private tree to exist before its preexec READY. It never
   opens the session facade: the original `createBrowserOperationHost -> prepareBrowserRun` chain alone opens/adopts,
   grants egress and applies the hard activation gate, with the canonical `readRun.port.sessions` bound to this exact
   facade object.
@@ -44,8 +47,10 @@ consumed. Neither substitutes for the other.
   observer. A local close failure never prevents the independent physical attempt; `HOST_TEARDOWN_UNKNOWN` is returned
   as the receipt (UNKNOWN preserved, private state kept) and a local failure surfaces
   `BROWSER_HOST_SERVICE_CLEANUP_UNKNOWN`. Concurrent/ repeated `destroy()` settle once.
-- Terminal triggers are real: the caller's AbortSignal and the canonical allocation/run expiry both call the same
-  final teardown (including during startup). Local settlement is bounded by `localSettleMs`: a stalled start or close
+- Terminal triggers are real: the caller's AbortSignal, the canonical allocation/run expiry and any manual
+  destroy/startup failure abort one owned terminal signal that fences pending currentness/workspace/acquisition work;
+  a late resolution cannot prepare workspace state or acquire observers after settlement. All reach the same final
+  teardown (including during startup). Local settlement is bounded by `localSettleMs`: a stalled start or close
   becomes UNKNOWN and the independent instance/volume/ENI destroy+readback backstop still runs.
 - Stop is terminal while an acquisition is in flight: every async step re-checks terminal ownership, the late result is
   disposed (or the late listener closed) without publishing, and destroy awaits the pending start before tearing down.
@@ -56,15 +61,18 @@ host allocation/host identity, currentness reader, browser policy, browser netwo
 controls binder, session currentness, site workflows, hold, dispose, host-wide process observer (native cgroup ports +
 `verifyConfinement`), cloud `destroy`/`observeAbsent`, canonical `readRun`, context installation + pinned upstream,
 native helper path and browser uid/gid, viewer mTLS material, the hard-held activation record, and the still-UNBOUND
-provisioning LOGIN/protected credential reference. `entrypoint.mjs` derives readiness from the ACTUAL owner objects through the canonical validators (host binding,
-browser policy, context installation, workspace ownership, TLS bytes); a list of binding names can never produce
-`ready:true`, and
+provisioning LOGIN/protected credential reference. `entrypoint.mjs` derives readiness from the ACTUAL owner objects through the canonical validators (host binding/identity, browser policy, context installation and its egress match, the closed authority shape
+`{policySha256,readCurrent,maxFreshMs}`, the browser network plan/verify interface, distinct SDK/browser UID and GID
+pairs, non-expired canonical deadlines, and TLS bytes via `tlsBytes`/`checkedCertificate`); a list of binding names can
+never produce `ready:true`, and
 `createBrowserHostServiceEntrypoint({inputs})` returns the finite start/stop handles without starting anything.
 
 ## Tested here vs not tested here
 
-`node --test apps/runtime/browser-host-service/*.test.mjs` runs the real imported owners for their own refusals and the
-canonical browser-only teardown UNKNOWN receipt, plus service-lifecycle ordering. The native Linux launch, cgroup
+`node --test apps/runtime/browser-host-service/*.test.mjs` runs the real imported owners for their own refusals, the
+canonical browser-only teardown UNKNOWN receipt and every non-TLS pre-effect validation. TLS-dependent positive flows
+are skipped with an explicit reason: this tree has no approved static mTLS fixture (<=15 min lifetime, exact DNS SAN)
+and this allocation forbids minting certificates or running helper children. The native Linux launch, cgroup
 confinement, mTLS listener, browser context and physical absence paths are **not run on Windows**: they need the
 image-pinned Linux helper and kernel cgroup/network namespaces. Scripted ports in the lifecycle tests are not native
 evidence. Source composition is not deployed acceptance.

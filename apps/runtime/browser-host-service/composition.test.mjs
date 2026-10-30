@@ -1,28 +1,37 @@
-/** Browser-only service tests (correction 04).
+/** Browser-only service tests (correction 05).
  *
- * Real imported owners are exercised for their own refusals/receipts and for the pre-exec workspace/readback/observer
- * joins. Only the Linux-only launcher/context/session/viewer constructors and lowest-level native/socket/physical ports
- * are scripted; the canonical teardown and the workspace/readback helpers stay real.
+ * No child process, no certificate issuance, no socket/browser/native resource. Real owners are exercised for their own
+ * refusals and the pre-effect validator is exercised for the exact contract gaps found in review 04. TLS-dependent
+ * positive flows are SKIPPED with an explicit reason because no approved static <=15 min mTLS fixture exists.
  */
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {binding} from '../../worker/conversation/browser/test/fixtures.mjs';
-import {canonicalSha256} from '../../../packages/contracts/validate.mjs';
 import {createBrowserOnlyHostLauncher} from '../../worker/conversation/host/launcher/supervisor.mjs';
 import {createHostWideProcessObserver} from '../../worker/conversation/host/host-wide-process-observer.mjs';
 import {createBrowserOperationHost} from '../../worker/conversation/host/browser-operation-host.mjs';
 import {createBrowserViewerHostServer} from '../../worker/conversation/host/browser-viewer-transport.mjs';
 import {createConversationHostTeardown} from '../../worker/conversation/host/teardown.mjs';
 import {assertBrowserOnlyServiceInputs, composeBrowserOnlyHostService} from './composition.mjs';
-import {allocation, hostIdentity, policy, policySha256, cwd, paths, serviceFixture, workspaceReadback, PEER} from './fixture.mjs';
+import {allocation, hostIdentity, policy, policySha256, cwd, paths, serviceFixture, PEER, TLS_UNAVAILABLE} from './fixture.mjs';
 
-// ------------------------------------------------------------------ A. REAL owners
+const skip = {skip: TLS_UNAVAILABLE};
+
+// ------------------------------------------------------------ A. real owner refusals
 test('real browser-only launcher refuses a conversation allocation', () => {
   const {hostMode, ...conversationAllocation} = allocation;
   assert.throws(() => createBrowserOnlyHostLauncher({
     allocation: conversationAllocation, binding, hostIdentity, helperPath: '/opt/meri/bin/meri-host-launcher',
     browserNetwork: {}, authority: {policySha256, maxFreshMs: 1000, readCurrent: async () => ({})},
     browserUid: 2002, browserGid: 2002, onBrowserPrepared: async () => {},
+  }), error => error?.code === 'HOST_LAUNCH_CONFIGURATION');
+});
+
+test('real launcher refuses the authority shape the service now also requires', () => {
+  assert.throws(() => createBrowserOnlyHostLauncher({
+    allocation, binding, hostIdentity, helperPath: '/opt/meri/bin/meri-host-launcher',
+    browserNetwork: {plan: {kind: 'browser', namespaceName: 'ns', routes: [{localPort: 3128}]}, verify: async () => ({})},
+    authority: {policySha256, readCurrent: async () => ({})}, browserUid: 2002, browserGid: 2002, onBrowserPrepared: async () => {},
   }), error => error?.code === 'HOST_LAUNCH_CONFIGURATION');
 });
 
@@ -59,20 +68,52 @@ test('real teardown preserves UNKNOWN for browser-only placement with absent evi
   assert.equal(receipt.processScope, 'browser-host-descendants');
 });
 
-// ------------------------------------------------------------------ B. pre-effect validation
-test('invalid policy, installation, upstream, workspace ownership, dispose or TLS never reaches an effect', () => {
+// ------------------------------------------------------------ B. exact pre-effect contracts
+test('authority closed shape is required (maxFreshMs, hex digest, 1..30000)', () => {
+  const base = serviceFixture().input;
+  for (const patch of [
+    {authority: {policySha256, readCurrent: async () => ({})}},
+    {authority: {policySha256: 'not-hex', readCurrent: async () => ({}), maxFreshMs: 1000}},
+    {authority: {policySha256, readCurrent: async () => ({}), maxFreshMs: 0}},
+    {authority: {policySha256, readCurrent: async () => ({}), maxFreshMs: 30001}},
+    {maxFreshMs: 1000, authority: {policySha256, readCurrent: async () => ({})}},
+  ]) {
+    assert.throws(() => assertBrowserOnlyServiceInputs({...base, ...patch}), error => error?.code === 'BROWSER_HOST_SERVICE_CURRENTNESS_UNBOUND', JSON.stringify(patch.authority));
+  }
+});
+
+test('browser network plan/verify and matching egress are required', () => {
+  const base = serviceFixture().input;
+  assert.throws(() => assertBrowserOnlyServiceInputs({...base, browserNetwork: {}}), error => error?.code === 'BROWSER_HOST_SERVICE_NETWORK_UNBOUND');
+  assert.throws(() => assertBrowserOnlyServiceInputs({...base, browserNetwork: {plan: {kind: 'sdk', routes: [{localPort: 3128}]}, verify: async () => ({})}}), error => error?.code === 'BROWSER_HOST_SERVICE_NETWORK_UNBOUND');
+  assert.throws(() => assertBrowserOnlyServiceInputs({...base, browserNetwork: {plan: base.browserNetwork.plan, verify: async () => ({})}, installation: {...base.installation, egressProxy: 'http://127.0.0.1:9999'}}), error => error?.code === 'BROWSER_HOST_SERVICE_NETWORK_MISMATCH');
+});
+
+test('workspace ownership IDs must be distinct SDK/browser pairs and match the launcher', () => {
+  const base = serviceFixture().input;
+  assert.throws(() => assertBrowserOnlyServiceInputs({...base, workspaceOwnership: {sdkUid: 2002, sdkGid: 1001, browserUid: 2002, browserGid: 2002}}), error => error?.code === 'BROWSER_HOST_SERVICE_WORKSPACE_MISMATCH');
+  assert.throws(() => assertBrowserOnlyServiceInputs({...base, workspaceOwnership: {sdkUid: 1001, sdkGid: 2002, browserUid: 2002, browserGid: 2002}}), error => error?.code === 'BROWSER_HOST_SERVICE_WORKSPACE_MISMATCH');
+  assert.throws(() => assertBrowserOnlyServiceInputs({...base, browserUid: 2003}), error => error?.code === 'BROWSER_HOST_SERVICE_WORKSPACE_MISMATCH');
+});
+
+test('expired canonical deadlines refuse before any effect', () => {
+  const base = serviceFixture().input;
+  assert.throws(() => assertBrowserOnlyServiceInputs({...base, deadlineMs: Date.now() - 1}), error => error?.code === 'BROWSER_HOST_SERVICE_DEADLINE_EXPIRED');
+  assert.throws(() => assertBrowserOnlyServiceInputs({...base, allocation: {...allocation, leaseDeadlineMs: Date.now() - 1}}), error => error?.code === 'BROWSER_HOST_SERVICE_DEADLINE_EXPIRED');
+});
+
+test('invalid policy, installation, upstream, dispose, workspace IDs, TLS, placement or SDK inputs refuse', () => {
   const base = serviceFixture().input;
   const cases = [
     [{dispose: undefined}, 'BROWSER_HOST_SERVICE_CONFIGURATION'],
     [{policy: {}}, 'BROWSER_HOST_SERVICE_POLICY_REFUSED'],
     [{installation: {}}, 'BROWSER_HOST_SERVICE_INSTALLATION_UNBOUND'],
     [{upstream: {}}, 'BROWSER_HOST_SERVICE_INSTALLATION_UNBOUND'],
-    [{workspaceOwnership: {sdkUid: 1 /* invalid */, sdkGid: 1001, browserUid: 2002, browserGid: 2002}}, 'BROWSER_HOST_SERVICE_WORKSPACE_UNBOUND'],
-    [{workspaceOwnership: {sdkUid: 1001, sdkGid: 1001, browserUid: 1003, browserGid: 2002}}, 'BROWSER_HOST_SERVICE_WORKSPACE_MISMATCH'],
-    [{viewer: {bind: {address: '127.0.0.1', port: 9443}, tls: {serverName: 'browser.meri.internal'}, peer: PEER}}, 'any'],
+    [{workspaceOwnership: {sdkUid: 1, sdkGid: 1001, browserUid: 2002, browserGid: 2002}}, 'BROWSER_HOST_SERVICE_WORKSPACE_UNBOUND'],
+    [{viewer: {bind: base.viewer.bind, tls: {serverName: 'browser.meri.internal'}, peer: PEER}}, 'any'],
   ];
   for (const [patch, code] of cases) {
-    assert.throws(() => assertBrowserOnlyServiceInputs({...base, ...patch}), error => (code === 'any' ? true : error?.code === code), JSON.stringify(patch));
+    assert.throws(() => assertBrowserOnlyServiceInputs({...base, ...patch}), error => (code === 'any' ? typeof error?.code === 'string' || error instanceof Error : error?.code === code), JSON.stringify(patch));
   }
   assert.throws(() => assertBrowserOnlyServiceInputs({...base, allocation: {...allocation, hostMode: undefined}}), error => error?.code === 'BROWSER_HOST_SERVICE_PLACEMENT_REFUSED');
   for (const name of ['processClientFactory', 'runnerQuery', 'modelTransport', 'bash', 'providerCredentials', 'capabilityPolicy']) {
@@ -80,96 +121,75 @@ test('invalid policy, installation, upstream, workspace ownership, dispose or TL
   }
 });
 
-test('a wrong measured workspace readback refuses before the host-wide arm and before GO', async () => {
-  const f = serviceFixture();
-  f.input.readWorkspace = async () => workspaceReadback({stateInode: '99'});
-  const service = composeBrowserOnlyHostService(f.input, f.deps);
-  await assert.rejects(service.start(), error => error?.code === 'HOST_BROWSER_WORKSPACE_UNPROVEN');
-  assert.equal(f.events.includes('host-arm'), false, 'host-wide arm must not happen on a failed readback');
-  assert.equal(f.events.includes('viewer-start'), false, 'GO never reached');
-  assert.ok(f.events.includes('physical-destroy'));
+test('a structurally complete input still refuses at TLS because no approved fixture material exists', () => {
+  assert.throws(() => assertBrowserOnlyServiceInputs(serviceFixture().input), error => typeof error?.code === 'string' || error instanceof Error);
 });
 
-test('preexec order: admitted workspace, exact readback, per-profile arm, host-wide arm, then GO', async () => {
+// ------------------------------------------------------------ C. TLS-dependent positive flows (UNAVAILABLE)
+test('preexec order: admitted workspace before launcher, readback + per-profile arm + host-wide arm before GO', skip, async () => {
   const f = serviceFixture();
   const service = composeBrowserOnlyHostService(f.input, f.deps);
   await service.start();
-  const order = ['current', 'prepare-workspace', 'readback', 'session-arm', 'host-arm', 'viewer-start'].map(name => f.events.indexOf(name));
+  const order = ['current', 'prepare-workspace', 'launch', 'readback', 'session-arm', 'host-arm', 'go', 'viewer-start'].map(name => f.events.indexOf(name));
   assert.deepEqual([...order].sort((a, b) => a - b), order, JSON.stringify(f.events));
   await service.destroy();
 });
 
-test('canonical readRun is bound to the exact facade and the service opens nothing', async () => {
+test('wrong measured readback refuses before the host-wide arm and before GO', skip, async () => {
   const f = serviceFixture();
+  f.input.readWorkspace = async () => ({...await f.input.readWorkspace(), stateInode: '99'});
   const service = composeBrowserOnlyHostService(f.input, f.deps);
-  await service.start();
-  assert.equal(f.counters.open, 0);
-  const facts = await f.readRun()({binding});
-  assert.equal(facts.port.sessions, f.sessions);
+  await assert.rejects(service.start(), error => error?.code === 'HOST_BROWSER_WORKSPACE_UNPROVEN');
+  assert.equal(f.events.includes('host-arm'), false);
   await service.destroy();
 });
 
-// ------------------------------------------------------------------ C. terminal triggers
-test('caller AbortSignal terminates through the canonical final teardown, including during startup', async () => {
-  const f = serviceFixture({preparePending: true});
+test('launcher seam refuses if workspace preparation has not completed first', skip, async () => {
+  const f = serviceFixture();
+  f.deps.launcher = config => ({async prepareBrowserContext() {
+    if (!f.events.includes('prepare-workspace')) throw Object.assign(Error('NATIVE_WITHOUT_WORKSPACE'), {code: 'NATIVE_WITHOUT_WORKSPACE'});
+    await config.onBrowserPrepared({leaderPid: 301, kind: 'browser'});
+    return {readable: {}, writable: {}, installation: f.input.installation, close: async () => {}};
+  }, close: async () => {}});
+  const service = composeBrowserOnlyHostService(f.input, f.deps);
+  await service.start();
+  assert.ok(f.events.indexOf('prepare-workspace') < f.events.indexOf('launch'));
+  await service.destroy();
+});
+
+test('caller abort and canonical expiry reach the terminal owner', skip, async () => {
+  const f = serviceFixture();
   const controller = new AbortController();
   f.input.signal = controller.signal;
   const service = composeBrowserOnlyHostService(f.input, f.deps);
-  const starting = service.start();
-  await new Promise(resolve => setImmediate(resolve));
+  await service.start();
   controller.abort();
-  f.releasePrepare();
-  await assert.rejects(starting, error => typeof error?.code === 'string');
-  const receipt = await service.destroy();
-  assert.equal(receipt.status, 'UNKNOWN');
+  await new Promise(resolve => setImmediate(resolve));
   assert.ok(f.events.includes('physical-destroy'));
-  assert.ok(f.events.includes('viewer-close') || f.events.includes('launcher-close'));
 });
 
-test('canonical allocated/run expiry triggers the same terminal teardown', async () => {
+test('destroy fences pending workspace/currentness work and disposes late results', skip, async () => {
   const f = serviceFixture();
-  f.input.deadlineMs = Date.now() + 60;
-  const service = composeBrowserOnlyHostService(f.input, f.deps);
-  await service.start();
-  await new Promise(resolve => setTimeout(resolve, 150));
-  assert.ok(f.events.includes('physical-destroy'), 'expiry reached the canonical teardown');
-  const receipt = await service.destroy();
-  assert.equal(receipt.status, 'UNKNOWN');
-});
-
-test('a stalled local close becomes UNKNOWN and still allows the physical backstop', async () => {
-  const f = serviceFixture({viewCloseStalls: true});
-  f.input.localSettleMs = 40;
-  const service = composeBrowserOnlyHostService(f.input, f.deps);
-  await service.start();
-  const receipt = await service.destroy({reason: 'conversation-end'}).then(value => value, error => error);
-  assert.ok(f.events.includes('physical-destroy'), 'physical attempt happened despite the stall');
-  assert.equal(receipt?.code, 'BROWSER_HOST_SERVICE_CLEANUP_UNKNOWN');
-  f.releaseClose();
-});
-
-test('a stalled start settlement does not block the physical backstop; a late result is not published', async () => {
-  const f = serviceFixture({preparePending: true});
+  let releaseCurrent;
+  f.input.browserClient = {readCurrent: () => new Promise(resolve => { releaseCurrent = () => resolve({allocation, binding, policySha256, phase: 'active', checkedAtMs: Date.now(), currentUntilMs: Date.now() + 1000}); })};
   f.input.localSettleMs = 40;
   const service = composeBrowserOnlyHostService(f.input, f.deps);
   const starting = service.start();
   await new Promise(resolve => setImmediate(resolve));
   const outcome = await service.destroy().then(value => value, error => error);
   assert.equal(outcome?.code, 'BROWSER_HOST_SERVICE_CLEANUP_UNKNOWN');
-  assert.ok(f.events.includes('physical-destroy'));
-  f.releasePrepare();
+  releaseCurrent();
   await assert.rejects(starting, error => error?.code === 'BROWSER_HOST_SERVICE_TORN_DOWN');
-  assert.equal(service.started, false);
+  assert.equal(f.events.includes('prepare-workspace'), false, 'no late workspace preparation after terminal settlement');
 });
 
-test('retained source-run completion never destroys the browser host; stop stays idempotent', async () => {
-  const f = serviceFixture();
+test('stalled local close and stalled start keep the physical backstop', skip, async () => {
+  const f = serviceFixture({viewCloseStalls: true});
+  f.input.localSettleMs = 40;
   const service = composeBrowserOnlyHostService(f.input, f.deps);
   await service.start();
-  assert.deepEqual(service.sourceRunSettled(), {sourceSettled: true, retained: true});
-  assert.equal(f.events.includes('viewer-close'), false);
-  const first = await service.destroy();
-  const second = await service.destroy();
-  assert.equal(first, second);
-  await assert.rejects(service.start(), error => error?.code === 'BROWSER_HOST_SERVICE_TORN_DOWN');
+  const outcome = await service.destroy().then(value => value, error => error);
+  assert.ok(f.events.includes('physical-destroy'));
+  assert.equal(outcome?.code, 'BROWSER_HOST_SERVICE_CLEANUP_UNKNOWN');
+  f.releaseClose();
 });

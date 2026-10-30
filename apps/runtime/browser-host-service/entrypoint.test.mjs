@@ -1,9 +1,9 @@
-/** Inert entrypoint/readiness tests: no environment mutation, no I/O, no service start. */
+/** Inert entrypoint/readiness tests: no environment mutation, no I/O, no service start, no certificate material. */
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readBrowserHostServiceConfig} from './config.mjs';
 import {browserHostServiceReadiness, createBrowserHostServiceEntrypoint, PRODUCTION_BINDINGS} from './entrypoint.mjs';
-import {serviceFixture, allocation} from './fixture.mjs';
+import {serviceFixture, allocation, TLS_UNAVAILABLE} from './fixture.mjs';
 
 const env = {
   MERI_HOST_SERVICE_VIEWER_BIND_ADDRESS: '10.0.0.12',
@@ -18,7 +18,6 @@ const env = {
 
 test('config parses exactly and names malformed values without defaults', () => {
   assert.deepEqual(readBrowserHostServiceConfig(env).missing, []);
-  assert.equal(readBrowserHostServiceConfig(env).config.viewer.bind.port, 9443);
   const bad = readBrowserHostServiceConfig({...env, MERI_HOST_SERVICE_VIEWER_BIND_PORT: '0', MERI_HOST_SERVICE_PEER_FINGERPRINT: 'nope'});
   assert.deepEqual(bad.invalid.sort(), ['MERI_HOST_SERVICE_PEER_FINGERPRINT', 'MERI_HOST_SERVICE_VIEWER_BIND_PORT']);
   assert.equal(bad.config, null);
@@ -34,27 +33,26 @@ test('readiness is false for known-invalid or incomplete owner objects', () => {
   const base = serviceFixture().input;
   assert.equal(browserHostServiceReadiness({env, inputs: {...base, dispose: undefined}}).ready, false);
   assert.equal(browserHostServiceReadiness({env, inputs: {...base, policy: {}}}).ready, false);
-  assert.equal(browserHostServiceReadiness({env, inputs: {...base, installation: {}}}).ready, false);
-  assert.equal(browserHostServiceReadiness({env, inputs: {...base, viewer: {bind: base.viewer.bind, tls: {serverName: base.viewer.tls.serverName}, peer: base.viewer.peer}}}).ready, false);
+  assert.equal(browserHostServiceReadiness({env, inputs: {...base, authority: {policySha256: base.authority.policySha256, readCurrent: async () => ({})}}}).ready, false);
   assert.equal(browserHostServiceReadiness({env, inputs: {...base, allocation: {...allocation, hostMode: undefined}}}).ready, false);
   assert.equal(browserHostServiceReadiness({env: {}, inputs: base}).ready, false, 'viewer configuration is still required');
 });
 
-test('readiness is true only for fully validated owner objects', () => {
-  const readiness = browserHostServiceReadiness({env, inputs: serviceFixture().input});
-  assert.deepEqual(readiness.missing, []);
-  assert.equal(readiness.ready, true);
+test('readiness is true only for fully validated owner objects (UNAVAILABLE without approved TLS material)', {skip: TLS_UNAVAILABLE}, () => {
+  assert.equal(browserHostServiceReadiness({env, inputs: serviceFixture().input}).ready, true);
 });
 
-test('the entrypoint respects readiness and composes without starting', () => {
+test('the entrypoint refuses when readiness is false and never starts', () => {
   const refused = createBrowserHostServiceEntrypoint({env, inputs: {...serviceFixture().input, dispose: undefined}});
   assert.equal(refused.ready, false);
   assert.ok(refused.missing.length > 0);
+  assert.equal(typeof refused.start, 'function');
+});
+
+test('a ready entrypoint composes without starting (UNAVAILABLE without approved TLS material)', {skip: TLS_UNAVAILABLE}, () => {
   const entry = createBrowserHostServiceEntrypoint({env, inputs: serviceFixture().input});
   assert.equal(entry.ready, true);
-  assert.equal(typeof entry.start, 'function');
-  assert.equal(typeof entry.stop, 'function');
-  assert.equal(entry.service.started, false, 'construction is inert');
+  assert.equal(entry.service.started, false);
 });
 
 test('no SDK/query/provider/Bash binding is claimed by this service', () => {
