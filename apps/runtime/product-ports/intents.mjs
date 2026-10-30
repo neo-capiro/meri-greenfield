@@ -38,6 +38,8 @@ import {compilePreparedCandidateConfiguration} from '../prepared-candidate-confi
 import {documentApprovalOwnerFor,filingApprovalOwnerFor} from '../artifacts/intent-binding.mjs';
 import {createCoreFilingClient} from '../artifacts/core-filing-client.mjs';
 import {currentNativeApprovalSession,currentAttendedSession} from '../native-authority/approval-session.mjs';
+import {createPostgresApprovalMetadataReader} from '../../control/commands/approval-metadata/postgres-store.mjs';
+import {createApprovalMetadataReadback} from '../../control/commands/approval-metadata/readback.mjs';
 import {createResearchSharingCoreClient} from '../native-authority/research-sharing-client.mjs';
 import {createResearchActionCoreClient} from '../native-authority/research-action-client.mjs';
 import {researchShareValidators,researchActionValidators,legiwatchValidators,watchValidators,bizdevValidators,legislativeDocumentValidators} from '../../../packages/contracts/retrieval-0.2/validate.mjs';
@@ -91,7 +93,7 @@ function approvalForwarder(context,c,intents,now,transport){
  const core=intents.core;if(core===undefined)return null;
  if(!c.pool||typeof c.pool!=='object'||types.isProxy(c.pool)||typeof c.pool.connect!=='function')throw fault('PRODUCT_PORTS_CONFIGURATION');
  const readSecret=transport.readSecret??runtimeReadSecret,reserved=routinesReservedSecretFiles(c.configuration),relay=createReadCredentialRelay();
- let attended=null;
+ let attended=null,browserReadback=null;
  const candidate=c.configuration.nativeCandidate===undefined?null:compilePreparedCandidateConfiguration(c.configuration.nativeCandidate,c.configuration.versions);
  const forwarder=createCoreApprovalForwarder({origin:core.origin,nativeCredentials:relay.port,
   getServiceSecret:createRoutinesServiceSecret({file:core.serviceSecretFile,reservedFiles:reserved,readSecret}),
@@ -102,6 +104,21 @@ function approvalForwarder(context,c,intents,now,transport){
    const check=()=>{signal?.throwIfAborted();if(now()>=deadlineMs)throw fault('DEADLINE');};
    const current=await currentNativeApprovalSession({...attended,now,proposal,signal,check});
    return {binding:current.binding,selectedClientId:current.selectedClientId};
+  },
+  /** Browser custody is the REAL approval-metadata readback for this proposal and exact binding. */
+  readBrowserPreparation:async({proposalId,binding,signal})=>{
+   if(!browserReadback)throw executionOwnerUnavailable();
+   return browserReadback.read({schemaVersion:1,proposalId,binding,...(signal===undefined?{}:{signal})});
+  },
+  /** Attended selection for the exact original full browser binding (no successor allowance). */
+  async selectBrowserBinding({proposal,binding,signal,deadlineMs}){
+   if(!attended)throw executionOwnerUnavailable();
+   const run=proposal?.run,scopes=run?.scopes;
+   if(!run||!Array.isArray(scopes)||scopes.length!==1)throw executionOwnerUnavailable();
+   const selectedClientId=scopes[0].kind==='client'?scopes[0].resourceId:null;
+   const check=()=>{signal?.throwIfAborted();if(now()>=deadlineMs)throw fault('DEADLINE');};
+   const current=await currentAttendedSession({...attended,now,binding:run.binding,scopes,selectedClientId,signal,check});
+   return {binding:current.binding,selectedClientId};
   },
   ...(candidate===null?{}:{selectedClientId:candidate.identity.commandContext.clientResolution.clientId}),
   now,maxRequestMs:Math.min(c.configuration.limits?.requestMs??10000,30000),...(transport.fetchImpl===undefined?{}:{fetchImpl:transport.fetchImpl})});
@@ -162,7 +179,15 @@ function approvalForwarder(context,c,intents,now,transport){
    const current=await currentAttendedSession({...attended,now,binding:proposal.binding,scopes:proposal.scopes,selectedClientId,signal,check(){signal?.throwIfAborted();if(now()>=deadlineMs)throw fault('DEADLINE');}});
    return relay.port.nativeCredentialFor({binding:current.binding,selectedClientId,signal});
   }});
- return Object.freeze({forwarder,sharing,researchAction,legiwatch,watch,clientRecord,bizdev,legislativeDocument,relay,bind(sessions,retention,store){relay.bind(sessions);attended={sessions,retention,store};}});
+ return Object.freeze({forwarder,sharing,researchAction,legiwatch,watch,clientRecord,bizdev,legislativeDocument,relay,
+  bind(sessions,retention,store){
+   relay.bind(sessions);attended={sessions,retention,store};
+   // The real approval-metadata readback, constructed once its canonical owners exist; until then the
+   // browser ports refuse instead of handing out an unbound success.
+   try{browserReadback=createApprovalMetadataReadback({metadata:createPostgresApprovalMetadataReader({pool:c.pool}),
+    store,retention,now,maxRequestMs:Math.min(c.configuration.limits?.requestMs??3000,30000)});}
+   catch{browserReadback=null;}
+  }});
 }
 function compose(context,transport){
  let c;try{c=own(context,CONTEXT_KEYS,['artifactRecovery']);}catch{throw fault('PRODUCT_PORTS_CONFIGURATION');}

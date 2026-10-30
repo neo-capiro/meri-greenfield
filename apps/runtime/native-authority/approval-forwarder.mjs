@@ -295,7 +295,7 @@ export function createCoreApprovalForwarder(options){
    let retained;
    try{retained=await life.run(signal=>c.readBrowserPreparation({proposalId,binding,signal}));}
    catch(error){if(faults.has(error))throw error;refuse('UNAVAILABLE');}
-   if(!retained)fail('ACCESS_DENIED');
+   if(!retained)refuse('ACCESS_DENIED');
    return retained;
   },
   /** Attended selection for the EXACT original full binding; no generic successor allowance. */
@@ -306,7 +306,10 @@ export function createCoreApprovalForwarder(options){
     const value=data(own(await life.run(signal=>c.selectBrowserBinding({proposal,binding,signal,deadlineMs:life.deadline()})),
      ['binding','selectedClientId']));
     try{validateShape('RunBinding',value.binding);}catch{refuse('ACCESS_DENIED');}
-    if(!same(value.binding,binding)||(proposal?.binding&&!same(value.binding,proposal.binding)))refuse('ACCESS_DENIED');
+    // The retained preparation names its binding inside the record and inside the Run; both must be
+    // exactly the requested one (never a successor run/attempt/worker/fence).
+    const retainedBinding=proposal?.metadata?.record?.binding??proposal?.run?.binding;
+    if(!same(value.binding,binding)||!retainedBinding||!same(value.binding,retainedBinding))refuse('ACCESS_DENIED');
     if(pinned&&!same(value,pinned))refuse('ACCESS_DENIED');
     pinned=value;
    };

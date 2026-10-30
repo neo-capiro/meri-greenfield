@@ -21,7 +21,8 @@ function harness({answers}={}){
  const posts=[];
  const transport={
   lifetime:(signal,deadlineMs)=>({signal,deadlineMs,run:fn=>fn(),check(){},close(){},limitDeadline(){},deadline:()=>Infinity}),
-  proposal:async()=>({record:{request:{}}}) ,
+  proposal:async()=>({schemaVersion:1,commandSha256:'f'.repeat(64),
+   metadata:{record:{proposalId,request:{subjectSha256}}},run:{binding}}),
   selected:async()=>({binding,selectedClientId:null}),
   post:async(life,route,{selected,body})=>{posts.push({route,body,selected});const canned=answers?.[route];
    if(canned instanceof Error)throw canned;return {value:canned??statusOf(),sessionExpiresAtMs:NOW+60000};}};

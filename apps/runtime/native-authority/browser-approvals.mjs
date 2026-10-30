@@ -20,10 +20,13 @@ export function createBrowserApprovalOperations({transport,now}={}){
  if(typeof transport?.lifetime!=='function'||typeof transport?.post!=='function'||
   typeof transport?.proposal!=='function'||typeof transport?.selected!=='function'||typeof now!=='function')
   throw fail('BROWSER_APPROVAL_CONFIGURATION');
- /** The retained canonical preparation for this proposal under the exact binding. */
- async function prepared(life,{proposalId,binding}){
+ /** The retained canonical preparation for this proposal under the exact binding, correlated with the
+  * requested proposalId and subject digest BEFORE any Core call. */
+ async function prepared(life,{proposalId,subjectSha256,binding}){
   const retained=await transport.proposal(life,{proposalId,binding});
   if(!retained)fail('ACCESS_DENIED');
+  if(retained.schemaVersion!==1||retained.metadata?.record?.proposalId!==proposalId||
+   retained.metadata?.record?.request?.subjectSha256!==subjectSha256)fail('ACCESS_DENIED');
   return retained;
  }
  async function call({signal,deadlineMs}={},build){
@@ -40,7 +43,7 @@ export function createBrowserApprovalOperations({transport,now}={}){
  async function record({proposalId,subjectSha256,decision,approver,binding,signal,deadlineMs}={}){
   const life=transport.lifetime(signal,deadlineMs);
   try{
-   const proposal=await prepared(life,{proposalId,binding});
+   const proposal=await prepared(life,{proposalId,subjectSha256,binding});
    const body=recordBody({proposalId,subjectSha256,decision,approver,binding});
    // Attended self-approval: the approver IS the canonical run actor, never an independent reviewer.
    if(body.approver.actorId!==body.binding.actorId||body.approver.tenantId!==body.binding.tenantId)fail('ACCESS_DENIED');
@@ -55,7 +58,7 @@ export function createBrowserApprovalOperations({transport,now}={}){
  async function consume({proposalId,subjectSha256,binding,signal,deadlineMs}={}){
   const life=transport.lifetime(signal,deadlineMs);
   try{
-   const proposal=await prepared(life,{proposalId,binding});
+   const proposal=await prepared(life,{proposalId,subjectSha256,binding});
    const body=decideBody({proposalId,subjectSha256,binding});
    const selected=await transport.selected(life,proposal,binding);
    const answer=await transport.post(life,CORE_BROWSER_APPROVAL_ROUTES.consume,{selected,body});
@@ -71,7 +74,7 @@ export function createBrowserApprovalOperations({transport,now}={}){
  async function status({proposalId,subjectSha256,binding,signal,deadlineMs}={}){
   const life=transport.lifetime(signal,deadlineMs);
   try{
-   const proposal=await prepared(life,{proposalId,binding});
+   const proposal=await prepared(life,{proposalId,subjectSha256,binding});
    const body=decideBody({proposalId,subjectSha256,binding});
    const selected=await transport.selected(life,proposal,binding);
    const answer=await transport.post(life,CORE_BROWSER_APPROVAL_ROUTES.status,{selected,body});
@@ -83,7 +86,7 @@ export function createBrowserApprovalOperations({transport,now}={}){
  async function result({proposalId,subjectSha256,binding,outcome,result:settlement,signal,deadlineMs}={}){
   const life=transport.lifetime(signal,deadlineMs);
   try{
-   const proposal=await prepared(life,{proposalId,binding});
+   const proposal=await prepared(life,{proposalId,subjectSha256,binding});
    const body=resultBody({proposalId,subjectSha256,binding,outcome,result:settlement});
    const selected=await transport.selected(life,proposal,binding);
    const answer=await transport.post(life,CORE_BROWSER_APPROVAL_ROUTES.result,{selected,body});
