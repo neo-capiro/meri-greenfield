@@ -1,119 +1,197 @@
-/** Inert composition tests: local fakes only, no browser, host, SDK, provider or network. */
+/** Browser-only service tests.
+ *
+ * Two groups:
+ *  A. REAL owner APIs: every assertion below calls the imported merged constructor and checks its own refusal or receipt.
+ *  B. Service lifecycle: the Windows-hostile Linux launch chain (native exec, cgroup, socket) is replaced only at the
+ *     four constructor seams; the canonical teardown owner stays real. Scripted ports are not native/Linux evidence.
+ */
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {composeBrowserHostService, assertBrowserHostServiceInputs} from './composition.mjs';
+import {posix} from 'node:path';
+import {canonicalSha256} from '../../../packages/contracts/validate.mjs';
+import {binding, installation, enabledPolicy} from '../../worker/conversation/browser/test/fixtures.mjs';
+import {validateBrowserPolicy} from '../../worker/conversation/browser/policy.mjs';
+import {createBrowserOnlyHostLauncher} from '../../worker/conversation/host/launcher/supervisor.mjs';
+import {createHostWideProcessObserver} from '../../worker/conversation/host/host-wide-process-observer.mjs';
+import {createBrowserOperationHost} from '../../worker/conversation/host/browser-operation-host.mjs';
+import {createBrowserViewerHostServer} from '../../worker/conversation/host/browser-viewer-transport.mjs';
+import {createConversationHostTeardown, HOST_PROCESS_ABSENCE_SCHEMA} from '../../worker/conversation/host/teardown.mjs';
+import {assertBrowserOnlyServiceInputs, composeBrowserOnlyHostService} from './composition.mjs';
 
-const id = n => `${String(n).padStart(8, '0')}-0000-4000-8000-000000000000`;
-const binding = {tenantId: id(1), actorId: id(2), conversationId: id(3), runId: id(4), attemptId: id(5), workerId: id(6), writerFence: 1};
-const allocation = {hostId: id(8), generation: 1, leaseDeadlineMs: Date.now() + 60000};
+const {launch, ...contextInstallation} = installation;
+const policy = validateBrowserPolicy(enabledPolicy());
+const policySha256 = canonicalSha256(policy);
+const cwd = `/workspace/${binding.conversationId}`;
+const paths = Object.freeze({root: `${cwd}/.browser`, home: `${cwd}/.browser/home`, profile: `${cwd}/.browser/profile`, output: `${cwd}/.browser/output`});
+const allocation = Object.freeze({
+  schema: 'meri-conversation-host-allocation/1', tenantId: binding.tenantId, conversationId: binding.conversationId, generation: 1,
+  hostMode: 'browser-only', hostId: '00000000-0000-4000-8000-000000000002',
+  imageDigest: `sha256:${'a'.repeat(64)}`, leaseDeadlineMs: Date.now() + 300000,
+});
+const hostIdentity = Object.freeze({
+  schema: 'meri-d005-host-identity/1', instanceId: 'i-0123456789abcdef0',
+  bootId: '00000000-0000-4000-8000-000000000003', conversationId: binding.conversationId, hostId: allocation.hostId,
+});
 
-function fixture(overrides = {}) {
+function ports({processAbsent = false, hostAbsent = false, destroyThrows = true} = {}) {
   const calls = [];
-  const settleCalls = [];
-  let factoryTaken = 0;
-  const facade = Object.freeze({
-    ownerInstanceId: id(7),
-    readAdmission: async () => ({admitted: true}), execute: async () => ({}), prepareResume: async () => ({}),
-    adopt: async () => ({}), destroy: async () => ({destroyed: true}), open: async () => ({}),
-  });
-  const run = {
-    allocation, binding, hostIdentity: {hostId: id(8), generation: 1}, browserPort: undefined, browserHost: facade,
-    bashRuntimeFacts: {}, browserInstallation: undefined,
-    processClientFactory() { factoryTaken++; if (factoryTaken > 1) throw Object.assign(new Error('HOST_SDK_QUERY_REUSED'), {code: 'HOST_SDK_QUERY_REUSED'}); calls.push('factory'); return {kind: 'one-sdk-query'}; },
-    async settle({reason}) { settleCalls.push(reason); return {settled: true, reason}; },
+  return {
+    calls,
+    browser: {async revoke() { calls.push('revoke'); return {revoked: true}; }, async close() { calls.push('close'); return {closed: true}; }},
+    processes: {async arm() { return {armed: true}; }, async waitForExit() { calls.push('waitForExit'); return processAbsent ? {schema: HOST_PROCESS_ABSENCE_SCHEMA, observedAtMs: Date.now(), scope: 'browser-host-descendants', exited: true, remainingPids: []} : undefined; }, async close() {}},
+    host: {async destroy() { calls.push('destroy'); if (destroyThrows) throw Error('cloud-unbound'); return {resources: {}}; }, async observeAbsent() { return hostAbsent ? {} : undefined; }},
   };
-  const queries = [];
-  const input = {
-    allocation, binding, hostIdentity: run.hostIdentity, cwd: '/run/meri/x', deadlineMs: Date.now() + 60000,
-    capabilityPolicy: {forRun() {}}, readBrowserPolicy: async () => ({enabled: true}),
-    control: {}, model: {}, browser: {}, bash: {}, native: {}, network: {}, host: {},
-    viewer: {bind: {address: '127.0.0.1', port: 9443}, tls: {serverName: 'browser.meri.internal'}, peer: {name: 'control.meri.internal', fingerprintSha256: 'a'.repeat(64)}},
-    prepareGuestHostRun: async inputs => { calls.push('prepare'); assert.equal(inputs.binding, binding); return overrides.run ? await overrides.run(inputs, run) : run; },
-    createBrowserViewerHostServer: config => {
-      calls.push('viewer');
-      assert.equal(config.relay, run.browserHost, 'relay must be the stable facade');
-      assert.equal(config.custodyOwner, run.browserHost, 'custodyOwner must be the same facade identity');
-      if (overrides.viewer) return overrides.viewer(config);
-      return {async start() { calls.push('viewer-start'); return {address: '127.0.0.1', port: 9443}; }, async close() { calls.push('viewer-close'); return {closed: true}; }};
-    },
-    runnerQuery: query => { calls.push('query'); queries.push(query); if (overrides.runnerQuery) return overrides.runnerQuery(query); return {kind: 'prepared-query', client: query.processClientFactory()}; },
-  };
-  return {input, calls, settleCalls, queries, run, facade};
 }
 
-test('one prepared run, one viewer mount on the same facade, one prepared query', async () => {
-  const f = fixture();
-  const service = await composeBrowserHostService(f.input);
-  assert.equal(f.calls.filter(call => call === 'prepare').length, 1);
-  assert.equal(f.calls.filter(call => call === 'query').length, 1, 'exactly one prepared query');
-  assert.equal(f.queries.length, 1);
-  assert.equal(f.calls.filter(call => call === 'factory').length, 1, 'factory consumed once by the query');
-  assert.equal(service.facade, f.facade);
-  assert.equal(service.query.kind, 'prepared-query');
-  assert.equal(service.query.client.kind, 'one-sdk-query');
-  const started = await service.start();
-  assert.deepEqual(started, {browser: true, address: {address: '127.0.0.1', port: 9443}});
-  await assert.rejects(async () => service.start(), /BROWSER_HOST_SERVICE_VIEWER_STARTED/u);
-  assert.deepEqual(f.settleCalls, [], 'composition alone never settles the host');
+// ---------------------------------------------------------------- A. real owners
+test('real browser-only launcher refuses a conversation allocation', () => {
+  const {hostMode, ...conversationAllocation} = allocation;
+  assert.throws(() => createBrowserOnlyHostLauncher({
+    allocation: conversationAllocation, binding, hostIdentity, helperPath: '/opt/meri/bin/meri-host-launcher',
+    browserNetwork: {}, authority: {policySha256, maxFreshMs: 1000, readCurrent: async () => ({})},
+    browserUid: 2002, browserGid: 2002, onBrowserPrepared: async () => {},
+  }), error => error?.code === 'HOST_LAUNCH_CONFIGURATION');
 });
 
-test('source-run completion retains the physical host; final destroy settles exactly once', async () => {
-  const f = fixture();
-  const service = await composeBrowserHostService(f.input);
-  assert.deepEqual(service.sourceRunSettled(), {sourceSettled: true, retained: true});
-  assert.deepEqual(f.settleCalls, [], 'a finished source run must not tear the host down');
-  const first = await service.destroy({reason: 'final'});
-  assert.equal(first.settled, true);
-  assert.equal(first.viewerClosed, true);
-  assert.deepEqual(f.settleCalls, ['final']);
-  assert.equal(await service.destroy(), first, 'destroy is idempotent and settles once');
-  assert.deepEqual(f.settleCalls, ['final']);
+test('real host-wide observer refuses an sdk leader kind for a browser-only allocation', () => {
+  const stub = {openGroup: async () => ({}), readLeaderCgroup: async () => null, readBootId: async () => hostIdentity.bootId};
+  assert.throws(() => createHostWideProcessObserver({
+    allocation, binding, hostIdentity, profile: paths.profile, verifyConfinement: async () => ({}), ports: stub, leaderKind: 'sdk',
+  }), error => error?.code === 'HOST_PROCESS_CONFIGURATION');
 });
 
-test('SDK-only run (no browser facade) mounts no viewer and still uses one query', async () => {
-  const f = fixture({run: async (_inputs, base) => ({...base, browserHost: undefined})});
-  const service = await composeBrowserHostService(f.input);
-  assert.equal(service.viewer, null);
-  assert.deepEqual(await service.start(), {browser: false});
-  assert.equal(f.calls.filter(call => call === 'viewer').length, 0);
-  assert.equal(f.calls.filter(call => call === 'query').length, 1);
-  await service.destroy();
-  assert.deepEqual(f.settleCalls, ['final']);
+test('real operation host requires the sessions model-tool surface', () => {
+  assert.throws(() => createBrowserOperationHost({binding, readRun: async () => ({}), sessions: {}, now: () => 1}));
 });
 
-test('a query-construction failure settles the prepared host once and surfaces the error', async () => {
-  const failure = Object.assign(new Error('QUERY_BOOTSTRAP_FAILED'), {code: 'QUERY_BOOTSTRAP_FAILED'});
-  const f = fixture({runnerQuery: () => { throw failure; }});
-  await assert.rejects(composeBrowserHostService(f.input), error => error === failure);
-  assert.deepEqual(f.settleCalls, ['failed']);
+test('real viewer transport refuses a relay without execute/readAdmission', () => {
+  assert.throws(() => createBrowserViewerHostServer({
+    bind: {address: '127.0.0.1', port: 0}, tls: {serverName: 'browser.meri.internal'},
+    peer: {name: 'control.meri.internal', fingerprintSha256: 'a'.repeat(64)}, relay: {}, custodyOwner: {},
+  }));
 });
 
-test('an incomplete facade refuses before any query, and the prepared host is settled', async () => {
-  const f = fixture({run: async (_inputs, base) => ({...base, browserHost: {readAdmission() {}, execute() {}}})});
-  await assert.rejects(composeBrowserHostService(f.input), /BROWSER_HOST_SERVICE_FACADE_REFUSED/u);
-  assert.deepEqual(f.calls.filter(call => call === 'query'), []);
-  assert.deepEqual(f.settleCalls, ['failed']);
+test('real teardown preserves UNKNOWN for a browser-only allocation with absent evidence', async () => {
+  const p = ports({processAbsent: false, hostAbsent: false, destroyThrows: true});
+  const teardown = createConversationHostTeardown({
+    allocation, binding, hostIdentity, cwd, browserPolicySha256: policySha256,
+    ports: {browser: p.browser, processes: p.processes, host: p.host}, now: Date.now,
+  });
+  const receipt = await teardown.settle({reason: 'conversation-end'}).catch(error => { assert.equal(error?.code, 'HOST_TEARDOWN_UNKNOWN'); return error.receipt; });
+  assert.equal(receipt.status, 'UNKNOWN');
+  assert.equal(receipt.bashEgress, 'not-applicable');
+  assert.equal(receipt.processScope, 'browser-host-descendants');
+  assert.equal(receipt.processes, 'unknown');
+  assert.equal(receipt.browserEgress, 'closed');
 });
 
-test('a cleanup failure during composition is reported, never masked by the startup error', async () => {
-  const failure = Object.assign(new Error('QUERY_BOOTSTRAP_FAILED'), {code: 'QUERY_BOOTSTRAP_FAILED'});
-  const f = fixture({runnerQuery: () => { throw failure; }});
-  const original = f.input.prepareGuestHostRun;
-  f.input.prepareGuestHostRun = async inputs => {
-    const run = await original(inputs);
-    return {...run, settle: async () => { throw Object.assign(new Error('HOST_BOOTSTRAP_CLEANUP_UNKNOWN'), {code: 'HOST_BOOTSTRAP_CLEANUP_UNKNOWN'}); }};
+test('real teardown refuses browser-only ports for a conversation allocation', () => {
+  const {hostMode, ...conversationAllocation} = allocation;
+  const p = ports();
+  assert.throws(() => createConversationHostTeardown({
+    allocation: conversationAllocation, binding, hostIdentity, cwd, browserPolicySha256: policySha256,
+    ports: {browser: p.browser, processes: p.processes, host: p.host},
+  }), error => error?.code === 'HOST_TEARDOWN_CONFIGURATION');
+});
+
+test('the service accepts no SDK/provider/Bash configuration and requires browser-only placement', () => {
+  const base = {allocation, binding, hostIdentity, cwd, deadlineMs: Date.now() + 60000, policy, installation: contextInstallation,
+    upstream: {}, controls: {bind() {}}, current: async () => ({}), siteWorkflows: {}, hold: async () => ({}),
+    processes: ports().processes, host: ports().host, browser: ports().browser, browserNetwork: {}, authority: {readCurrent: async () => ({}), policySha256},
+    helperPath: '/opt/meri/bin/meri-host-launcher', browserUid: 2002, browserGid: 2002, readRun: async () => ({}),
+    viewer: {bind: {address: '127.0.0.1', port: 9443}, tls: {serverName: 'browser.meri.internal'}, peer: {name: 'control.meri.internal', fingerprintSha256: 'a'.repeat(64)}}};
+  for (const name of ['processClientFactory', 'runnerQuery', 'modelTransport', 'bash', 'providerCredentials', 'capabilityPolicy']) {
+    assert.throws(() => assertBrowserOnlyServiceInputs({...base, [name]: () => ({})}), error => error?.code === 'BROWSER_HOST_SERVICE_SDK_UNSUPPORTED', name);
+  }
+  assert.throws(() => assertBrowserOnlyServiceInputs({...base, allocation: {...allocation, hostMode: undefined}}), error => error?.code === 'BROWSER_HOST_SERVICE_PLACEMENT_REFUSED');
+  assert.throws(() => assertBrowserOnlyServiceInputs({...base, processes: {}}), error => error?.code === 'BROWSER_HOST_SERVICE_PROCESS_OBSERVER_UNBOUND');
+  assert.throws(() => assertBrowserOnlyServiceInputs({...base, viewer: {bind: {}}}), error => error?.code === 'BROWSER_HOST_SERVICE_VIEWER_UNBOUND');
+  assert.equal(assertBrowserOnlyServiceInputs(base), base);
+});
+
+// ---------------------------------------------------------------- B. lifecycle (scripted constructor seams)
+function lifecycle({launchFails = false, viewFails = false, openFails = false, teardownFails = false} = {}) {
+  const events = [];
+  const sessions = {
+    ownerInstanceId: 'session-facade',
+    async open() { events.push('session-open'); if (openFails) throw Object.assign(Error('OPEN_REFUSED'), {code: 'BROWSER_HOST_BINDING_REFUSED'}); },
+    async destroy() { events.push('session-destroy'); },
   };
-  await assert.rejects(composeBrowserHostService(f.input), /BROWSER_HOST_SERVICE_CLEANUP_UNKNOWN/u);
+  const input = {
+    allocation, binding, hostIdentity, cwd, deadlineMs: Date.now() + 60000, policy, installation: contextInstallation,
+    upstream: {}, controls: {bind() {}}, current: async () => ({}), siteWorkflows: {}, hold: async () => ({}),
+    processes: ports().processes, host: ports().host, browser: ports().browser, browserNetwork: {},
+    authority: {readCurrent: async () => ({}), policySha256},
+    helperPath: '/opt/meri/bin/meri-host-launcher', browserUid: 2002, browserGid: 2002,
+    readRun: async () => ({}), viewer: {bind: {address: '127.0.0.1', port: 9443}, tls: {serverName: 'browser.meri.internal'}, peer: {name: 'control.meri.internal', fingerprintSha256: 'a'.repeat(64)}},
+  };
+  const deps = {
+    launcher: () => ({
+      async prepareBrowserContext() { events.push('launch'); if (launchFails) throw Object.assign(Error('LAUNCH_REFUSED'), {code: 'HOST_LAUNCH_UNKNOWN'}); return {readable: {}, writable: {}, installation: contextInstallation, close: async () => { events.push('launch-close'); }}; },
+      close: async () => { events.push('launch-close'); },
+    }),
+    contextPort: () => ({async create() { return {}; }, close: async () => { events.push('context-close'); }}),
+    sessionHost: () => sessions,
+    operationHost: () => ({executeBrowserOperation: async () => ({})}),
+    viewer: () => ({async start() { events.push('viewer-start'); if (viewFails) throw Error('LISTEN_FAILED'); return {address: '10.0.0.12', port: 9443}; }, async close() { events.push('viewer-close'); return {closed: true}; }}),
+  };
+  return {input, deps, events, sessions};
+}
+
+test('a start rejection closes every obtained local resource and never reports success', async () => {
+  const f = lifecycle({viewFails: true});
+  const service = composeBrowserOnlyHostService(f.input, f.deps);
+  await assert.rejects(service.start(), /LISTEN_FAILED/u);
+  assert.equal(service.started, false);
+  for (const step of ['viewer-close', 'context-close', 'launch-close']) assert.ok(f.events.includes(step), `cleanup step ${step}`);
+  await assert.rejects(service.start(), /BROWSER_HOST_SERVICE/u);
 });
 
-test('missing external functions refuse before prepareGuestHostRun is reached', async () => {
-  const f = fixture();
-  const withoutQuery = {...f.input}; delete withoutQuery.runnerQuery;
-  assert.throws(() => assertBrowserHostServiceInputs(withoutQuery), /BROWSER_HOST_SERVICE_QUERY_UNBOUND/u);
-  await assert.rejects(composeBrowserHostService(withoutQuery), /BROWSER_HOST_SERVICE_QUERY_UNBOUND/u);
-  assert.deepEqual(f.calls.filter(call => call === 'prepare'), []);
-  const noPolicy = {...f.input, capabilityPolicy: {}};
-  assert.throws(() => assertBrowserHostServiceInputs(noPolicy), /BROWSER_HOST_SERVICE_POLICY_UNBOUND/u);
-  const noViewer = {...f.input, viewer: {bind: {}}};
-  assert.throws(() => assertBrowserHostServiceInputs(noViewer), /BROWSER_HOST_SERVICE_VIEWER_UNBOUND/u);
+test('a later constructor failure still closes earlier resources', async () => {
+  const f = lifecycle({openFails: true});
+  const service = composeBrowserOnlyHostService(f.input, f.deps);
+  await assert.rejects(service.start(), error => error?.code === 'BROWSER_HOST_BINDING_REFUSED');
+  assert.ok(f.events.includes('viewer-close'));
+  assert.ok(f.events.includes('launch-close'));
+});
+
+test('concurrent starts run one launch; repeated starts and post-destroy starts are refused', async () => {
+  const f = lifecycle();
+  const service = composeBrowserOnlyHostService(f.input, f.deps);
+  const [a, b] = await Promise.all([service.start(), service.start()]);
+  assert.deepEqual(a, b);
+  assert.equal(f.events.filter(step => step === 'launch').length, 1);
+  await assert.rejects(service.start(), /BROWSER_HOST_SERVICE_STARTED/u);
+  const receipt = await service.destroy({reason: 'conversation-end'});
+  assert.equal(receipt.status, 'UNKNOWN', 'absent physical evidence stays UNKNOWN');
+  assert.ok(f.events.includes('viewer-close'));
+  await assert.rejects(service.start(), /BROWSER_HOST_SERVICE_TORN_DOWN/u);
+});
+
+test('destroy is idempotent and settles the canonical teardown once', async () => {
+  const f = lifecycle();
+  const service = composeBrowserOnlyHostService(f.input, f.deps);
+  await service.start();
+  const first = await service.destroy();
+  const second = await service.destroy();
+  assert.equal(first, second);
+  assert.equal(f.events.filter(step => step === 'viewer-close').length, 1);
+});
+
+test('retained source-run completion does not destroy the browser host', async () => {
+  const f = lifecycle();
+  const service = composeBrowserOnlyHostService(f.input, f.deps);
+  await service.start();
+  assert.deepEqual(service.sourceRunSettled(), {sourceSettled: true, retained: true});
+  assert.equal(f.events.includes('viewer-close'), false);
+  const receipt = await service.destroy({reason: 'conversation-end'});
+  assert.equal(receipt.sourceSettled, true);
+  assert.equal(f.events.includes('viewer-close'), true);
+});
+
+test('a cleanup failure is reported, not masked as an ordinary result', async () => {
+  const f = lifecycle();
+  f.deps.viewer = () => ({async start() { throw Error('LISTEN_FAILED'); }, async close() { throw Error('CLOSE_FAILED'); }});
+  const service = composeBrowserOnlyHostService(f.input, f.deps);
+  await assert.rejects(service.start(), error => error?.code === 'BROWSER_HOST_SERVICE_CLEANUP_UNKNOWN');
 });

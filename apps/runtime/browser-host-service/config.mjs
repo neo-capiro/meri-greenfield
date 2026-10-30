@@ -1,10 +1,9 @@
-/** Pure configuration reader for the browser host service process.
+/** Pure configuration reader for the browser-only host service process.
  *
  * No environment value is defaulted, minted or interpreted as authority: every required setting must be present and
  * well formed, otherwise it is reported by name. Reading configuration performs no I/O and no effect.
  */
 const REQUIRED = Object.freeze([
-  'MERI_HOST_SERVICE_WORKSPACE',
   'MERI_HOST_SERVICE_VIEWER_BIND_ADDRESS',
   'MERI_HOST_SERVICE_VIEWER_BIND_PORT',
   'MERI_HOST_SERVICE_VIEWER_SERVER_NAME',
@@ -36,7 +35,6 @@ export function readBrowserHostServiceConfig(environment = {}) {
     missing: [],
     invalid: [],
     config: Object.freeze({
-      workspace: text('MERI_HOST_SERVICE_WORKSPACE'),
       viewer: Object.freeze({
         bind: Object.freeze({address: text('MERI_HOST_SERVICE_VIEWER_BIND_ADDRESS'), port: Number(text('MERI_HOST_SERVICE_VIEWER_BIND_PORT'))}),
         tls: Object.freeze({

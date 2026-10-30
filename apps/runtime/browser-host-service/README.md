@@ -1,46 +1,55 @@
-# Browser host service — caller composition (SCRUM-235, 2026-10-30)
+# Browser-only host service (SCRUM-235 continuation 02, 2026-10-30)
 
-Finite caller for the merged guest host bootstrap (`apps/worker/conversation/host/composition/run.mjs`,
-`prepareGuestHostRun`). It adds one new file layer plus build glue; it does not change the capabilities owner, the
-shared SDK runner mounts, the control browser-host owners or any contract.
+Composition and lifecycle seam for **one `hostMode:'browser-only'` allocation**. It replaces the earlier
+`prepareGuestHostRun` + `runnerQuery` composition, which was not a browser-only entrypoint: a browser-only host has no
+SDK query, process factory, model proxy, provider credential or Bash process. The canonical AgentCore runtime already
+owns the sole SDK query and in-process MCP.
 
-## What this directory is
+## Real owners composed (imported, never re-implemented)
 
-- `composition.mjs` — calls `prepareGuestHostRun` once with the validated run inputs, mounts the EXISTING
-  `createBrowserViewerHostServer({relay:browserHost,custodyOwner:browserHost})` with the same facade identity, and hands
-  the returned one-use `processClientFactory` to exactly one prepared runner query. It distinguishes source-run
-  completion (host retained for takeover, no `settle`) from final physical teardown (`settle` once).
-- `config.mjs` — pure, side-effect-free reader for the service's own invocation settings. Missing or malformed values
-  become named `missing` entries; nothing is defaulted, minted or guessed.
-- `entrypoint.mjs` — inert readiness/refusal surface that names every still-unbound production binding and refuses
-  before any browser/SDK/provider effect.
-- `*.test.mjs` — inert tests using local fakes only.
+| Caller file | Owner | Use |
+|---|---|---|
+| `host/launcher/supervisor.mjs` | `createBrowserOnlyHostLauncher` | browser-only launch, context-only `prepareBrowserContext`, currentness before/after the measured pre-exec |
+| `host/launcher/context-port.mjs` | `createConfinedContextPort` | single confined browser context over the native child transport |
+| `host/browser-session-host.mjs` | `createBrowserSessionHost` | `modelTransport:'host-owned'`, context-only installation; the one stable facade for relay and custody |
+| `host/browser-operation-host.mjs` | `createBrowserOperationHost` | named model operations against canonical `readRun` facts |
+| `host/browser-viewer-transport.mjs` | `createBrowserViewerHostServer` | pinned mTLS listener carrying viewer + named operations |
+| `host/teardown.mjs` | `createConversationHostTeardown` | browser-only receipt ports exactly `{browser,processes,host}` |
 
-## Deliberately NOT in this directory
+Process observation is the **host-wide** observer (`createHostWideProcessObserver`), armed from
+`onBrowserPrepared({leaderPid,kind:'browser'})` with `arm({browserLeaderPid})`. Browser-only polling is never substituted
+for that proof.
 
-`createPreparedRunnerQuery` is the shared integration owner's seam and does not exist in this tree (see
-`docs/coordination/handoffs/M8-BROWSER-BASH-SOURCE-DEPLOYMENT-20261018.md:131,141`). This caller therefore takes it as a
-required port named `runnerQuery` and refuses with `BROWSER_HOST_SERVICE_QUERY_UNBOUND` when it is absent. Wiring the
-real prepared query, its settlement and its sandbox mounts remains that owner's change.
+## Service seam
 
-Also unbound here, by design (owning decision, not this task): the production capability-policy producer
-(`capabilityPolicy.forRun`), the provisioning LOGIN/protected credential reference, the currentness store/DB client, the
-browser activation record, and the viewer mTLS material. Each is reported by name in the handback and by
-`entrypoint.mjs`.
+- `composeBrowserOnlyHostService(input, dependencies?)` — inert construction. `input` is validated before any effect and
+  refuses by name (`…_SDK_UNSUPPORTED`, `…_PLACEMENT_REFUSED`, `…_CURRENTNESS_UNBOUND`, `…_PROCESS_OBSERVER_UNBOUND`,
+  `…_EGRESS_UNBOUND`, `…_HOST_UNBOUND`, `…_READRUN_UNBOUND`, `…_VIEWER_UNBOUND`, `…_CONFIGURATION`). Supplying
+  `processClientFactory`, `runnerQuery`, `modelTransport`, `bash`, provider credentials or `capabilityPolicy` is a
+  configuration error, not a feature.
+- `start()` — launches, arms the observer from the measured leader, mounts the pinned listener and opens the session.
+  A rejection closes every resource actually obtained (viewer, context port, launcher, observer) and marks the service
+  failed; a retry is refused (`…_START_FAILED`). Concurrent `start()` calls share one launch.
+- `sourceRunSettled()` — records source-run completion. The physical browser host is **retained** for takeover; nothing
+  is torn down. Original AgentCore keeps ownership of source SDK takeover completion.
+- `destroy({reason})` — only path to physical teardown. Closes the listener and local resources and returns the
+  canonical receipt; `HOST_TEARDOWN_UNKNOWN` is returned as that receipt (UNKNOWN preserved, private state kept), a local
+  close failure surfaces `BROWSER_HOST_SERVICE_CLEANUP_UNKNOWN`, and the host destroy/absence attempt is never blocked by
+  a local failure. Repeated or concurrent `destroy()` returns the same receipt; `start()` after destroy is refused.
 
-## Invocation sketch (production inputs pending)
+## Trusted bindings still required (owners named in `entrypoint.mjs`)
 
-```js
-import {composeBrowserHostService} from './composition.mjs';
-const service = await composeBrowserHostService({
-  prepareGuestHostRun, createBrowserViewerHostServer, runnerQuery,
-  allocation, binding, hostIdentity, cwd, deadlineMs,
-  capabilityPolicy, readBrowserPolicy, control, model, browser, bash, native, network, host,
-  viewer: {bind, tls, peer}, now, signal,
-});
-await service.viewer?.start();
-// source run finishes: service.sourceRunSettled() — keeps the physical host for takeover
-// final physical end: await service.destroy() — settle() once, viewer closed, cleanup receipt
-```
+host allocation/host identity, currentness reader, browser policy, browser network plan/proof, browser egress port,
+controls binder, session currentness, site workflows, hold, dispose, host-wide process observer (native cgroup ports +
+`verifyConfinement`), cloud `destroy`/`observeAbsent`, canonical `readRun`, context installation + pinned upstream,
+native helper path and browser uid/gid, viewer mTLS material, the hard-held activation record, and the still-UNBOUND
+provisioning LOGIN/protected credential reference. `entrypoint.mjs` reports them and exits 3; a caller-declared "bound"
+list is not proof.
 
-Source composition is not deployed acceptance, and the tests here prove composition only.
+## Tested here vs not tested here
+
+`node --test apps/runtime/browser-host-service/*.test.mjs` runs the real imported owners for their own refusals and the
+canonical browser-only teardown UNKNOWN receipt, plus service-lifecycle ordering. The native Linux launch, cgroup
+confinement, mTLS listener, browser context and physical absence paths are **not run on Windows**: they need the
+image-pinned Linux helper and kernel cgroup/network namespaces. Scripted ports in the lifecycle tests are not native
+evidence. Source composition is not deployed acceptance.
