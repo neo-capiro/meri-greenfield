@@ -83,6 +83,9 @@ export function createBrowserHostComposition({declaration,pool,store,sessions,co
   const acknowledged=(body,options={})=>transact(pool,body,{check:()=>options.signal?.throwIfAborted(),unavailable:'HOST_CONTROL_UNAVAILABLE',uncertain:'HOST_CONTROL_UNKNOWN'});
   server=createHostCurrentnessServer({bind:declaration.bind,tls:serverTls,
    store:createPostgresHostCurrentnessStore({transact:acknowledged,readCanonicalRun:currentness.readHost,
+    // The named approval callback is the REAL prepared+Core wait owner; absent, the operation refuses.
+    decideBrowserApproval:browserApproval===null?undefined:({request,binding,signal,deadlineMs})=>
+     browserApproval.decide({request,binding,signal,deadlineMs}),
     readCanonicalFacts:(client,input)=>facts.readCanonicalFacts(client,input),
     resolveWorkflow:({binding,signal})=>{
      // A missing real Core admission owner refuses; it never answers from a static manifest callback.
@@ -105,7 +108,9 @@ export function createBrowserHostComposition({declaration,pool,store,sessions,co
   // this composition is built; it is late-bound once, like the other existing session binders.
 
   siteWorkflows(){return siteWorkflows;},
-  state:()=>Object.freeze({mounted:true,closed,listener:address,siteWorkflows:siteWorkflows!==null,browserApproval:browserApproval!==null}),
+  state:()=>Object.freeze({mounted:true,closed,listener:address,siteWorkflows:siteWorkflows!==null,
+  // Readiness is the BOUND callback plus a declared listener, not merely a constructed owner.
+  browserApproval:browserApproval!==null&&server!==null}),
   start(options={}){
    // A closed composition never opens a listener again.
    if(closed)return Promise.reject(Object.assign(new Error('BROWSER_HOST_CLOSED'),{code:'BROWSER_HOST_CLOSED'}));

@@ -1,8 +1,10 @@
 /** Fixed wire identity for one D005 currentness read. Shape checks never establish authority. */
 import {own,data,nativeSignal} from '../../../../../packages/contracts/commands-0.2/execution-boundary.mjs';
+import {canonicalSha256} from '../../../../../packages/contracts/validate.mjs';
 import {assertHostAllocation,assertHostRunBinding,assertD005HostIdentity,assertHostCurrent,assertBrowserHostCurrent} from '../binding.mjs';
 import {assertBrowserApprovalRequest} from '../../../../../packages/contracts/runtime-0.2/browser-approval-preparation.mjs';
-import {assertBrowserApprovalReceipt} from '../../../../../packages/contracts/runtime-0.2/browser-approval-channel.mjs';
+import {receiptRefusal} from '../../browser/approval-binding.mjs';
+import {browserPreparationProposalId} from '../../../../../packages/contracts/runtime-0.2/browser-approval-preparation.mjs';
 
 export const HOST_CONTROL_REQUEST_SCHEMA='meri-host-currentness-request/1';
 export const HOST_CONTROL_RESPONSE_SCHEMA='meri-host-currentness-response/1';
@@ -104,17 +106,28 @@ export function hostDecideRequest(value){
   r=assertBrowserApprovalRequest(v.request);
  }catch{fail();}
  if(v.schema!==HOST_DECIDE_REQUEST_SCHEMA||typeof v.nonce!=='string'||!HEX.test(v.nonce))fail();
- if(!Number.isSafeInteger(v.deadlineMs)||v.deadlineMs<HOST_DECIDE_MIN_WINDOW_MS||v.deadlineMs>HOST_DECIDE_MAX_WINDOW_MS)fail();
+ // `deadlineMs` is an ABSOLUTE epoch cutoff, never a duration: bound by the original request window and the
+ // allocation lease. The original window itself is validated by the request/3 validator above.
+ if(!Number.isSafeInteger(v.deadlineMs)||v.deadlineMs<=0)fail();
+ if(!same(r.subject.binding,v.binding))fail();
+ if(v.deadlineMs>Math.min(r.expiresAtMs,a.leaseDeadlineMs))fail();
  return Object.freeze({schema:HOST_DECIDE_REQUEST_SCHEMA,allocation:a,binding:b,hostIdentity:i,nonce:v.nonce,
   request:r,deadlineMs:v.deadlineMs});
 }
 /** The answer is either a canonical Core receipt or a CLOSED non-permissive outcome. Nothing here mints a grant. */
-export function hostDecideResponse(value,request){
+export function hostDecideResponse(value,request,atMs){
  let v;try{v=own(data(value),['schema','nonce','outcome','receipt','checkedAtMs','currentUntilMs']);
   if(v.schema!==HOST_DECIDE_RESPONSE_SCHEMA||v.nonce!==request.nonce||
    !['approved','rejected','revoked','expired','pending','unknown'].includes(v.outcome)||
    !Number.isSafeInteger(v.checkedAtMs)||!Number.isSafeInteger(v.currentUntilMs)||v.currentUntilMs<=v.checkedAtMs)fail();
-  if(v.outcome==='approved')assertBrowserApprovalReceipt(v.receipt);else if(v.receipt!==null)fail();
+  if(v.outcome==='approved'){
+   // The SAME canonical permit validator the real Core forwarder uses, at this observation clock, plus the
+   // deterministic proposal identity — never the weaker schema-only helper.
+   const request$=request.request,proposalId=browserPreparationProposalId({binding:request.binding,
+    toolUseId:request$.subject.toolUseId});
+   if(receiptRefusal(v.receipt,request$,atMs)!==null)fail();
+   if(v.receipt.proposalId!==proposalId||v.receipt.decision.proposalId!==proposalId)fail();
+  }else if(v.receipt!==null)fail();
  }catch{fail();}
  return Object.freeze({schema:HOST_DECIDE_RESPONSE_SCHEMA,nonce:v.nonce,outcome:v.outcome,receipt:v.receipt??null,
   checkedAtMs:v.checkedAtMs,currentUntilMs:v.currentUntilMs});
@@ -135,6 +148,7 @@ export const hostFactsRequest=value=>hostOperationRequest(value,HOST_FACTS_REQUE
 export const hostWorkflowRequest=value=>hostOperationRequest(value,HOST_WORKFLOW_REQUEST_SCHEMA);
 export const hostHoldRequest=value=>hostOperationRequest(value,HOST_HOLD_REQUEST_SCHEMA);
 
+const same=(a,b)=>canonicalSha256(a)===canonicalSha256(b);
 const envelope=(value,request,schema,field)=>{let v;try{
   v=own(data(value),['schema','nonce',field,'checkedAtMs','currentUntilMs']);
   if(v.schema!==schema||v.nonce!==request.nonce||!Number.isSafeInteger(v.checkedAtMs)||

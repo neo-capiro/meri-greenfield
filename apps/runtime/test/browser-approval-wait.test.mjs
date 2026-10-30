@@ -65,7 +65,7 @@ async function fixture({expiresAtMs=NOW+600000}={}){
    if(state.mode==='unknown')return {permitted:false,status:{schema:'meri-browser-approval-status/1',proposalId,
     subjectSha256,unknown:true,permissive:false,consumption:null,decision:null}};
    return {permitted:false,status:{schema:'meri-browser-approval-status/1',proposalId,
-    subjectSha256,toolUseId:'toolu_01HZX',permissive:false,unknown:false,consumption,
+    subjectSha256,toolUseId:'toolu_01HZX',permissive:false,unknown:false,revoked:state.revokedFlag===true,consumption,
     decision:['approved','claimed','lost-ack','completed'].includes(state.mode)?decision:{...decision,decision:state.mode}}};
   },
   async consume({proposalId,subjectSha256}){state.consumeCalls++;
@@ -186,4 +186,14 @@ test('an abort that arrives after the wait started stops it before any consume',
  f.state.onSleep=()=>{if(++sleeps===2)controller.abort();};
  await assert.rejects(f.owner.decide({request:f.request,binding,deadlineMs:NOW+60000,signal:controller.signal}));
  assert.equal(f.state.consumeCalls,0);
+});
+
+test('a top-level revoked status refuses immediately even with an approved decision',async()=>{
+ const f=await fixture();
+ f.state.mode='approved';
+ f.state.revokedFlag=true;
+ const settled=await f.owner.decide({request:f.request,binding,deadlineMs:NOW+60000});
+ assert.equal(settled.permitted,false);
+ assert.equal(f.state.consumeCalls,0);
+ assert.ok(f.state.statusCalls<=2,'a non-permissive answer is not polled to timeout');
 });

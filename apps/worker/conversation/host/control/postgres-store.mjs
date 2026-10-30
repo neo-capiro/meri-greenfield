@@ -9,7 +9,8 @@ import {assertHostAllocation,assertHostRunBinding,assertD005HostIdentity,MAX_HOS
 import {hostControlRequest,hostClientDnsName,HOST_CONTROL_RESPONSE_SCHEMA,
  hostFactsRequest,hostFactsResponse,HOST_FACTS_RESPONSE_SCHEMA,
  hostWorkflowRequest,hostWorkflowResponse,HOST_WORKFLOW_RESPONSE_SCHEMA,
- hostHoldRequest,hostHoldResponse,HOST_HOLD_RESPONSE_SCHEMA} from './protocol.mjs';
+ hostHoldRequest,hostHoldResponse,HOST_HOLD_RESPONSE_SCHEMA,
+ hostDecideRequest,hostDecideResponse,HOST_DECIDE_RESPONSE_SCHEMA} from './protocol.mjs';
 
 const HEX=/^[0-9a-f]{64}$/u;
 const fail=()=>{throw Object.assign(new Error('HOST_CONTROL_UNAVAILABLE'),{code:'HOST_CONTROL_UNAVAILABLE'});};
@@ -40,12 +41,13 @@ export const HOST_CONTROL_SQL=Object.freeze({
  * `resolveWorkflow({binding,signal})` is the borrowed Core domain read and runs with NO transaction held.
  * `holdCustody({client,binding,allocation,check})` is the lifecycle owner's same-client APPLIED/no-return read.
  * Every optional dependency refuses its own operation when absent; nothing degrades to a success stub. */
-export function createPostgresHostCurrentnessStore({transact,readCanonicalRun,readCanonicalFacts,resolveWorkflow,holdCustody,maxLeaseMs,maxFactsBytes}={}){
+export function createPostgresHostCurrentnessStore({transact,readCanonicalRun,readCanonicalFacts,resolveWorkflow,holdCustody,decideBrowserApproval,maxLeaseMs,maxFactsBytes}={}){
  if(typeof transact!=='function'||typeof readCanonicalRun!=='function'||
   !Number.isSafeInteger(maxLeaseMs)||maxLeaseMs<1||maxLeaseMs>MAX_HOST_CURRENTNESS_MS||
   readCanonicalFacts!==undefined&&typeof readCanonicalFacts!=='function'||
   resolveWorkflow!==undefined&&typeof resolveWorkflow!=='function'||
   holdCustody!==undefined&&typeof holdCustody!=='function'||
+  decideBrowserApproval!==undefined&&typeof decideBrowserApproval!=='function'||
   maxFactsBytes!==undefined&&(!Number.isSafeInteger(maxFactsBytes)||maxFactsBytes<1))fail();
  const factsBound=maxFactsBytes??262144;
 
@@ -191,6 +193,58 @@ const permittedPhase=state=>state.phase==='active'
      if(signal?.aborted||nowMs>=untilMs||nowMs>=a.leaseDeadlineMs)fail();
      return Object.freeze(hostWorkflowResponse({schema:HOST_WORKFLOW_RESPONSE_SCHEMA,nonce:admitted.q.nonce,workflow,
       checkedAtMs:nowMs,currentUntilMs:untilMs},admitted.q));
+    },{signal,readOnly:false});
+   }catch(error){throw refused(error);}
+  },
+
+  /** The named approval decision. The authenticated admission and nonce consumption happen in ONE short
+   * acknowledged transaction; the real approval owner (prepare + Core wait + canonical consume) runs with NO
+   * transaction held; a SECOND short transaction re-authenticates and requires the stable canonical authority
+   * to be unchanged before any canonical receipt is released. Only an approved canonical receipt is
+   * permission — every other answer is a closed non-permissive outcome. */
+  async decideBrowserApproval({request,fingerprintSha256,peerDnsName,signal}={}){
+   let admitted,answer;
+   try{
+    if(typeof decideBrowserApproval!=='function')fail();
+    const q=hostDecideRequest(request);nativeSignal(signal);
+    if(typeof fingerprintSha256!=='string'||!HEX.test(fingerprintSha256)||
+     peerDnsName!==hostClientDnsName(q.allocation)||signal?.aborted)fail();
+    admitted=await transact(async client=>{
+     const {a,b,h}=await admit(client,{request:q,fingerprintSha256,peerDnsName,signal});
+     const state=own(data(await readCanonicalRun(client,{allocation:a,binding:b,signal})),
+      ['binding','browserPolicySha256','capabilityPolicySha256','sdkAdmitted','browserAdmitted','bashAdmitted','phase','currentUntilMs'],['browserCustody','browserSuccessor']);
+     if(!same(state.binding,b)||state.browserAdmitted!==true||!permittedPhase(state))fail();
+     if(state.phase==='browser-held'){const custody=assertBrowserCustody(state.browserCustody,{binding:b});
+      if(custody.hostId!==a.hostId||custody.generation!==a.generation)fail();}
+     const beforeMs=await clock(client);
+     if(beforeMs>=cutoff(beforeMs,a,h,state.currentUntilMs)||beforeMs>=a.leaseDeadlineMs)fail();
+     await consume(client,a,q.nonce);
+     // The human window is the ORIGINAL request's, further capped by the canonical run, the peer certificate,
+     // the allocation lease and the caller's own cutoff. Observation freshness is NOT this duration.
+     const effectiveDeadline=Math.min(q.request.expiresAtMs,q.deadlineMs,ms(state.currentUntilMs),
+      ms(h.client_cert_not_after_ms),a.leaseDeadlineMs);
+     if(!Number.isSafeInteger(effectiveDeadline)||effectiveDeadline<=beforeMs)fail();
+     return {q,a,b,h,effectiveDeadline,stateSha256:canonicalSha256(stableProjection(state))};
+    },{signal,readOnly:false});
+    if(signal?.aborted)fail();
+    // No transaction, lock or connection is held across the approval wait.
+    answer=await decideBrowserApproval({request:admitted.q.request,binding:admitted.b,signal,
+     deadlineMs:admitted.effectiveDeadline});
+   }catch(error){throw refused(error);}
+   try{
+    return await transact(async client=>{
+     const {a,b,h}=await admit(client,{request:admitted.q,fingerprintSha256,peerDnsName,signal});
+     if(!same(a,admitted.a)||!same(b,admitted.b))fail();
+     const fresh=own(data(await readCanonicalRun(client,{allocation:a,binding:b,signal})),
+      ['binding','browserPolicySha256','capabilityPolicySha256','sdkAdmitted','browserAdmitted','bashAdmitted','phase','currentUntilMs'],['browserCustody','browserSuccessor']);
+     if(canonicalSha256(stableProjection(fresh))!==admitted.stateSha256||fresh.browserAdmitted!==true||
+      !permittedPhase(fresh))fail();
+     const nowMs=await clock(client),untilMs=cutoff(nowMs,a,h,fresh.currentUntilMs);
+     if(signal?.aborted||nowMs>=untilMs||nowMs>=a.leaseDeadlineMs||nowMs>=admitted.effectiveDeadline)fail();
+     const outcome=answer?.permitted===true?'approved':(answer?.terminal??(answer?.unknown===true?'unknown':
+      (answer?.expired===true?'expired':(answer?.statusOnly===true?'pending':'rejected'))));
+     return Object.freeze(hostDecideResponse({schema:HOST_DECIDE_RESPONSE_SCHEMA,nonce:admitted.q.nonce,outcome,
+      receipt:outcome==='approved'?answer.receipt:null,checkedAtMs:nowMs,currentUntilMs:untilMs},admitted.q,nowMs));
     },{signal,readOnly:false});
    }catch(error){throw refused(error);}
   },
