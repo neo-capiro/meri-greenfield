@@ -13,6 +13,8 @@ import {createServer} from 'node:https';
 import {nativeProcessingConfig} from './config.mjs';
 import {createInspectionHandler,NATIVE_INSPECTION_PATH} from './service.mjs';
 import {openNativeProcessingHost} from './bootstrap.mjs';
+import {createSignedDefinitionStore,createSignedDefinitionUpdater,runDefinitionProgram} from '../uploads/native-definitions.mjs';
+import {createDefinitionSnapshotOwner} from './definitions-owner.mjs';
 import {checkedCertificate,dnsName,fingerprint,privateAddress,sha256Der,tlsBytes} from '../../worker/conversation/host/control/tls.mjs';
 
 export function nativeProcessingReadiness({config,verifyCustody}){
@@ -24,13 +26,22 @@ export function nativeProcessingReadiness({config,verifyCustody}){
 
 export async function startNativeProcessingHost({env=globalThis.process?.env??{},readFile=readFileSync,
  verifyCustody=undefined,openHost=openNativeProcessingHost,serverFactory=createServer,
- authenticatePeer=undefined}={}){
+ authenticatePeer=undefined,definitionsOwner:injectedOwner}={}){
  const config=nativeProcessingConfig({env});
  const readiness=nativeProcessingReadiness({config,verifyCustody});
  if(!readiness.ready)return Object.freeze({started:false,readiness});
  const key=tlsBytes(readFile(config.tls.keyPath)),cert=tlsBytes(readFile(config.tls.certPath)),ca=tlsBytes(readFile(config.tls.caPath));
  void ca;
  const active=new Set();
+ // ONE host-lifetime definition owner: store (only reader/signature/prune owner), updater and pin accounting are created
+ // once, shared by every request. Freshclam provisioning stays outside the child's no-egress network.
+ const definitionsStore=createSignedDefinitionStore({root:config.paths.definitionsRoot,now:Date.now,run:runDefinitionProgram});
+ const definitionsUpdater=createSignedDefinitionUpdater({root:config.paths.definitionsRoot,run:runDefinitionProgram,now:Date.now});
+ const definitionsOwner=injectedOwner===undefined?createDefinitionSnapshotOwner({definitions:definitionsStore}):injectedOwner;
+ const definitionsLifecycle=Object.freeze({
+  provision:({deadlineMs,signal}={})=>definitionsUpdater.provision({deadlineMs,signal}),
+  pin:args=>definitionsOwner.pin(args),
+  pruneIfIdle:args=>definitionsOwner.pruneIfIdle(args)});
  privateAddress(config.listen.address);dnsName(config.tls.peerSan);
  // The CA is a trust anchor, not a leaf: it is passed to the TLS server as `ca` and must NOT be subjected to the peer
  // leaf SAN/15-minute-lifetime rules. The peer leaf is checked per connection in `authenticate`.
@@ -47,7 +58,7 @@ export async function startNativeProcessingHost({env=globalThis.process?.env??{}
   }),
   verifyCustody,
   openHost:({allocation,binding,hostIdentity,authority,deadlineMs,signal})=>openHost({config,allocation,binding,
-   hostIdentity,authority,deadlineMs,signal}),
+   hostIdentity,authority,deadlineMs,signal,definitionsOwner}),
   readBody:(req,limit,deadline,signal)=>new Promise((resolve,reject)=>{
    let total=0,finished=false;const chunks=[];
    const refuse=()=>Object.assign(Error('UPLOAD_INSPECTION_REQUEST_REFUSED'),{code:'UPLOAD_INSPECTION_REQUEST_REFUSED'});

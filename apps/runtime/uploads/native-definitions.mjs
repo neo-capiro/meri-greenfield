@@ -1,3 +1,4 @@
+import {runArtifactProcess} from '../../artifacts/process.mjs';
 /** Fixed, server-owned signed scanner-definition owner for uploads: immutable, atomic, content-addressed snapshots.
  *
  * Why it is shaped this way. A refresh must never be able to change what an in-flight scan read. So a refresh is
@@ -58,10 +59,10 @@ export const UPLOAD_FRESHCLAM='freshclam',UPLOAD_SIGTOOL='sigtool';
 export const DEFINITION_PROGRAMS=Object.freeze({[UPLOAD_SIGTOOL]:'/usr/bin/sigtool',[UPLOAD_FRESHCLAM]:'/usr/bin/freshclam'});
 /** Sanitized bounded runner for the signed-definition owner. It refuses any program outside DEFINITION_PROGRAMS and keeps
  * the existing bounded artifact-process contract (bounded output, deadline, cancellation, owned-group cleanup). */
-export async function runDefinitionProgram(program,args,{cwd='/',input=Buffer.alloc(0),signal,deadlineMs,maxOutput=262144}={}){
+export async function runDefinitionProgram(program,args,{cwd='/',input=Buffer.alloc(0),signal,deadlineMs,maxOutput=262144,ports}={}){
  const exe=DEFINITION_PROGRAMS[program];
  if(typeof exe!=='string'||!Array.isArray(args)||args.some(a=>typeof a!=='string'||a.includes('\0')))fail('UPLOAD_DEFINITIONS_CONFIGURATION');
- return runArtifactProcess(exe,args,{cwd,input,signal,deadlineMs,maxOutput});
+ return runArtifactProcess(exe,args,{cwd,input,signal,deadlineMs,maxOutput},ports);
 }
 export const UPLOAD_DEFINITIONS_MAX_AGE_MS=72*60*60*1000;
 /** Safety floor of the bounded storage disposition: it never reduces the published snapshot count below this, however
@@ -386,8 +387,14 @@ export function createSignedDefinitionStore({root,now=Date.now,maxAgeMs=UPLOAD_D
  const idle=id=>{const entry=readers.get(id);return entry!==undefined&&entry.tokens.size===0&&entry.completed>0;};
  const release=(id,token,completed)=>{
   const entry=readers.get(id);
-  if(entry===undefined||!entry.tokens.delete(token))return false;
-  if(completed===true)entry.completed+=1;
+  if(entry===undefined||!entry.tokens.has(token))return false;
+  if(completed!==true){
+   // An UNKNOWN child keeps its exact token: the snapshot is never provably idle, so it cannot be pruned. A later
+   // `completed:true` on this same token is the only thing that may close it.
+   return true;
+  }
+  entry.tokens.delete(token);
+  entry.completed+=1;
   if(entry.tokens.size===0&&entry.completed===0)readers.delete(id);
   return true;
  };

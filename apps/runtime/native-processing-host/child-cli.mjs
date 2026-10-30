@@ -6,6 +6,10 @@
  * EXISTING closed upload-inspection body. No environment, argv, cwd or program choice is read here; qualifier, scanner and
  * extractor all run through `runUploadSandbox` inside the finite cgroup/no-egress network of the launcher.
  */
+import {createHash} from 'node:crypto';
+import {readdir as readdirImpl,readFile as readFileImpl} from 'node:fs/promises';
+import {join} from 'node:path';
+import {definitionsSnapshotId} from '../uploads/native-definitions.mjs';
 import {composeUploadNativeHost} from '../uploads/composition.mjs';
 import {runUploadSandbox} from '../uploads/native-sandbox.mjs';
 import {createUploadInspection} from '../../control/uploads/extraction.mjs';
@@ -19,7 +23,7 @@ const fault=code=>{throw uploadInspectionFault(code);};
 export function childSettings(raw){
  const s=raw;
  const keys=s&&typeof s==='object'&&!Array.isArray(s)?Object.keys(s):null;
- const allowed=['runtimeUid','runtimeGid','imageDigest','definitionsRoot','extractorPath','scratchRoot','credentialPaths'];
+ const allowed=['runtimeUid','runtimeGid','imageDigest','definitionsRoot','extractorPath','scratchRoot','credentialPaths','snapshot'];
  if(keys===null||keys.length!==allowed.length||keys.some(key=>!allowed.includes(key)))fault('UPLOAD_INSPECTION_REQUEST_REFUSED');
  if(s.runtimeUid!==1000||s.runtimeGid!==1000) fault('UPLOAD_INSPECTION_REQUEST_REFUSED');
  if(typeof s.imageDigest!=='string'||!/^sha256:[a-f0-9]{64}$/u.test(s.imageDigest)) fault('UPLOAD_INSPECTION_REQUEST_REFUSED');
@@ -33,12 +37,36 @@ export function childSettings(raw){
 }
 
 /** Verify the exact host-pinned snapshot this child was given: same directory and sha256, nothing re-derived. */
-export function pinnedDefinitions(snapshot){
+export function pinnedDefinitions(snapshot,{readdir=readdirImpl,readFile=readFileImpl,joinPath=join}={}){
  if(snapshot===null||typeof snapshot!=='object')fault('UPLOAD_INSPECTION_REQUEST_REFUSED');
  if(typeof snapshot.databaseDirectory!=='string'||!snapshot.databaseDirectory.startsWith('/')||
-  typeof snapshot.sha256!=='string'||!/^[a-f0-9]{64}$/u.test(snapshot.sha256))fault('UPLOAD_INSPECTION_REQUEST_REFUSED');
- return Object.freeze({async snapshot(){return Object.freeze({databaseDirectory:snapshot.databaseDirectory,
-  sha256:snapshot.sha256,reader:{release:()=>true}});},async prune(){return Object.freeze({skipped:true});}});
+  typeof snapshot.sha256!=='string'||!/^[a-f0-9]{64}$/u.test(snapshot.sha256)||
+  !Number.isSafeInteger(snapshot.publishedAtMs)||!Array.isArray(snapshot.files)||snapshot.files.length===0)
+  fault('UPLOAD_INSPECTION_REQUEST_REFUSED');
+ const frozen=Object.freeze({databaseDirectory:snapshot.databaseDirectory,sha256:snapshot.sha256,
+  publishedAtMs:snapshot.publishedAtMs,files:Object.freeze(snapshot.files.map(f=>Object.freeze({name:f.name,format:f.format,sha256:f.sha256})))});
+ /** Re-verify the EXACT host-bound bytes: exact file set, exact sizes/hashes, and the recorded snapshot id. A pointer
+  * moved by a refresh or a same-UID substitution therefore fails closed instead of switching this child. */
+ const verify=async()=>{
+  const directory=joinPath(frozen.databaseDirectory,'database');
+  let entries;
+  try{entries=await readdir(directory,{withFileTypes:true});}catch{fault('UPLOAD_INSPECTION_UNAVAILABLE');}
+  const names=entries.map(entry=>entry.name).sort();
+  const expected=frozen.files.map(f=>f.name).sort();
+  if(names.length!==expected.length||names.some((name,index)=>name!==expected[index]))
+   fault('UPLOAD_DEFINITIONS_CORRUPT');
+  for(const file of frozen.files){
+   let bytes;try{bytes=await readFile(joinPath(directory,file.name));}catch{fault('UPLOAD_DEFINITIONS_CORRUPT');}
+   if(bytes.length!==file.bytes||createHash('sha256').update(bytes).digest('hex')!==file.sha256)
+    fault('UPLOAD_DEFINITIONS_CORRUPT');
+  }
+  if(definitionsSnapshotId([...frozen.files])!==frozen.sha256)fault('UPLOAD_DEFINITIONS_CORRUPT');
+ };
+ return Object.freeze({verification:verify,descriptor:frozen,
+  async snapshot({signal}={}){if(signal?.aborted)fault('UPLOAD_DEFINITIONS_CANCELLED');await verify();
+   return Object.freeze({databaseDirectory:frozen.databaseDirectory,sha256:frozen.sha256,
+    publishedAtMs:frozen.publishedAtMs,files:frozen.files,reader:{release:()=>true}});},
+  async prune(){return Object.freeze({skipped:true,reason:'CHILD_HAS_NO_PRUNE_AUTHORITY'});}});
 }
 
 export async function inspectFixed({raw,deadlineMs,signal,config,definitions,compose=composeUploadNativeHost,
@@ -87,7 +115,8 @@ export async function childMain({stdin,stdout,stdinLimit=UPLOAD_INSPECTION_WIRE_
   fault('UPLOAD_INSPECTION_REQUEST_REFUSED');
  const config=childSettings(parsed.settings);                     // normalized ONCE
  if(!Number.isSafeInteger(parsed.deadlineMs)||parsed.deadlineMs<=started)fault('UPLOAD_INSPECTION_REQUEST_REFUSED');
- const out=await inspect({raw:parsed.request,deadlineMs:parsed.deadlineMs,config,now});
+ const definitions=parsed.settings.snapshot===undefined?undefined:pinnedDefinitions(parsed.settings.snapshot);
+ const out=await inspect({raw:parsed.request,deadlineMs:parsed.deadlineMs,config,now,...(definitions===undefined?{}:{definitions})});
  const body=Buffer.from(JSON.stringify(out.body));
  if(body.length>16*1024*1024)fault('UPLOAD_INSPECTION_RESULT_REFUSED');
  await new Promise((resolve,reject)=>output.write(body,error=>error?reject(error):resolve(true)));

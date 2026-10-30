@@ -45,7 +45,7 @@ export function assertHostMatch({config,allocation,binding,hostIdentity,request,
  return true;
 }
 
-export async function openNativeProcessingHost({config,allocation,binding,hostIdentity,authority,signal,
+export async function openNativeProcessingHost({config,allocation,binding,hostIdentity,authority,signal,definitionsOwner,
  openCompartment=prepareProcessingCompartment,openPlacement=createProcessingPlacement}={}){
  if(!allocation||!binding||!hostIdentity||typeof authority?.readCurrent!=='function')
   fault('NATIVE_PROCESSING_AUTHORITY_UNBOUND');
@@ -74,10 +74,25 @@ export async function openNativeProcessingHost({config,allocation,binding,hostId
  return Object.freeze({placement,compartment,
   async runRequest({requestDocument,deadlineMs,signal:callSignal}){
    if(closing!==null)fault('NATIVE_PROCESSING_CLOSED');
-   const input=Buffer.from(JSON.stringify({settings,request:requestDocument,deadlineMs}));
+   // Acquire and hold the exact host-owned signed snapshot BEFORE the child is started.
+   let pin=null,pinnedSettings=settings;
+   if(definitionsOwner!==undefined&&definitionsOwner!==null){
+    pin=await definitionsOwner.pin({deadlineMs,signal:callSignal});
+    pinnedSettings=Object.freeze({...settings,snapshot:Object.freeze({databaseDirectory:pin.databaseDirectory,
+     sha256:pin.sha256,publishedAtMs:pin.publishedAtMs,files:pin.files})});
+   }
+   const input=Buffer.from(JSON.stringify({settings:pinnedSettings,request:requestDocument,deadlineMs}));
    if(input.length>UPLOAD_INSPECTION_WIRE_BYTES+65536)fault('UPLOAD_INSPECTION_REQUEST_REFUSED');
-   return placement.run(command,args,{cwd:config.paths.home,input,signal:callSignal,deadlineMs,
-    maxOutput:UPLOAD_INSPECTION_RESULT_BYTES});
+   try{
+    const out=await placement.run(command,args,{cwd:config.paths.home,input,signal:callSignal,deadlineMs,
+     maxOutput:UPLOAD_INSPECTION_RESULT_BYTES});
+    // The pin is released only on a PROVEN child completion; unknown/cancelled keeps it retained for pruning safety.
+    pin?.release({completed:out?.receipt?.exitCode===0});
+    return out;
+   }catch(error){
+    pin?.release({completed:false});
+    throw error;
+   }
   },
   close(){
    if(closing===null)closing=(async()=>{

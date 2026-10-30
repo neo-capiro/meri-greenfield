@@ -18,15 +18,21 @@ export function createDefinitionSnapshotOwner({definitions,now=Date.now}={}){
    const snapshot=await definitions.snapshot({deadlineMs,signal});
    const id=`pin-${++sequence}`;
    let released=false;
-   const entry={id,databaseDirectory:snapshot.databaseDirectory,sha256:snapshot.sha256,reader:snapshot.reader};
+   const entry={id,databaseDirectory:snapshot.databaseDirectory,sha256:snapshot.sha256,reader:snapshot.reader,
+  publishedAtMs:snapshot.publishedAtMs,files:snapshot.files};
    pins.set(id,entry);
    return Object.freeze({id,databaseDirectory:entry.databaseDirectory,sha256:entry.sha256,
+    publishedAtMs:entry.publishedAtMs,files:entry.files,
     /** Release only at actual child closure. A failed/unknown release keeps the pin and reports it. */
     release({completed=false}={}){
      if(released)return Object.freeze({released:true,already:true});
-     let value;
-     try{value=entry.reader?.release?.({completed})===true;}catch{return Object.freeze({released:false,code:'UPLOAD_DEFINITIONS_RELEASE_UNKNOWN'});}
-     if(value!==true)return Object.freeze({released:false,code:'UPLOAD_DEFINITIONS_RELEASE_UNKNOWN'});
+     let accepted;
+     try{accepted=entry.reader?.release?.({completed})===true;}
+     catch{return Object.freeze({released:false,code:'UPLOAD_DEFINITIONS_RELEASE_UNKNOWN'});}
+     if(accepted!==true)return Object.freeze({released:false,code:'UPLOAD_DEFINITIONS_RELEASE_UNKNOWN'});
+     // Only PROVEN completion drops the host pin. An unknown release is accepted by the store (which retains the token)
+     // and the pin is retained here too, so prune accounting can never treat this reader as idle.
+     if(completed!==true)return Object.freeze({released:false,code:'UPLOAD_DEFINITIONS_RELEASE_UNKNOWN',retained:true});
      released=true;pins.delete(id);
      return Object.freeze({released:true});
     }});
