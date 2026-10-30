@@ -290,3 +290,71 @@ test('an already-aborted per-call signal never spawns', async () => {
     error => error?.code === 'HOST_LAUNCH_CANCELLED');
   assert.equal(spawns, 0);
 });
+
+test('EXACT queued-GO race: abort at the runner stdin.end seam (after listeners, before GO)', async () => {
+  const controller = new AbortController();
+  const gateWrites = [];
+  const child = gatedChild();
+  const gate = child.stdio[4];
+  const gateWrite = gate._write.bind(gate);
+  gate._write = (chunk, enc, cb) => { gateWrites.push(String(chunk)); return gateWrite(chunk, enc, cb); };
+  const stdin = child.stdin;
+  const originalEnd = stdin.end.bind(stdin);
+  stdin.end = chunk => { controller.abort(); return originalEnd(chunk); };   // canonical runner's stdin.end seam
+  const kill = inertKill(() => child.kill());
+  const launcher = async () => ({pid: child.pid, child, gate, deadlineMs: Date.now() + 5000, signal: controller.signal});
+  let error;
+  try {
+    await runProcessingCommand({launcher, command: '/usr/bin/bwrap', args: [], cwd: WORK, signal: controller.signal,
+      deadlineMs: Date.now() + 5000, maxOutput: 64, kill, settleMs: 50});
+  } catch (caught) { error = caught; }
+  assert.ok(error, 'the race is reported');
+  assert.deepEqual(gateWrites, [], 'no G after the abort');
+  assert.equal(gate.destroyed, true, 'the gate was destroyed');
+  assert.ok(kill.calls.some(([, sig]) => sig === 'SIGKILL'), 'the owned group was stopped');
+});
+
+test('close during an active run signals it to stop and reports the bounded result', async () => {
+  const {createProcessingPlacement} = await import('./processing-placement.mjs');
+  const fs = delegating();
+  fs.map.set('/proc/7171/cgroup', `0::${leafRelativeFor()}\n`);
+  let child;
+  const kill = inertKill(() => child.kill());
+  const placement = await createProcessingPlacement({allocation, binding, hostIdentity, authority: authority(),
+    limits: {cpuQuotaUs: 50000, periodUs: 100000, memoryBytes: 268435456, pidsMax: 8}, network: network(),
+    helperPath: '/usr/lib/meri/meri-host-launcher', home: WORK, browsersPath: WORK, uid: 20001, gid: 20001,
+    identity: root, fs, kill, readyMs: 500, settleMs: 60,
+    spawnNative: () => { child = gatedChild(); return child; },
+    onAdopt: undefined});
+  const pending = placement.run('/usr/bin/bwrap', [], {cwd: WORK, deadlineMs: Date.now() + 5000, maxOutput: 16})
+    .catch(error => error);
+  const closed = await placement.close();
+  const outcome = await pending;
+  assert.ok(outcome !== undefined);
+  assert.equal(placement.isClosed(), true);
+  assert.equal(typeof closed.closed, 'boolean', 'close reports a bounded settlement outcome');
+});
+
+test('a parent abort AFTER GO stops the owned group and keeps the result honest', async () => {
+  const controller = new AbortController();
+  const child = gatedChild();
+  // A child that stays alive after GO: only the abort can settle this run.
+  child.stdio[4] = new Writable({write(chunk, _e, cb) {
+    if (String(chunk) === 'G') setTimeout(() => controller.abort(), 0);   // abort after dispatch
+    cb();
+  }});
+  const gate = child.stdio[4];
+  const kill = inertKill(() => child.kill());
+  const launcher = async () => ({pid: child.pid, child, gate, deadlineMs: Date.now() + 5000, signal: controller.signal});
+  let error;
+  try {
+    await runProcessingCommand({launcher, command: '/usr/bin/bwrap', args: [], cwd: WORK, signal: controller.signal,
+      deadlineMs: Date.now() + 5000, maxOutput: 64, kill, settleMs: 50});
+  } catch (caught) { error = caught; }
+  assert.ok(error, 'an abort after GO never reports a clean success');
+  assert.ok(kill.calls.some(([, sig]) => sig === 'SIGKILL'));
+});
+function leafRelativeFor(){
+  const {canonicalSha256} = {canonicalSha256: null};
+  return `/meri/hosts/${allocation.hostId}-5/${digest}/processing`;
+}

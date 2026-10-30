@@ -507,7 +507,7 @@ export async function runProcessingCommand({launcher,command,args,cwd,input=Buff
   return {code,gateDestroyed:true,killed,settled,unknown:!settled};
  };
  try{
-  const result=await runArtifactProcess(command,args,{cwd,input,signal,deadlineMs,
+  const result=await runArtifactProcess(command,args,{cwd,input,signal:life,deadlineMs,
    ...(maxOutput===undefined?{}:{maxOutput})},{
    kill,
    spawn:()=>{

@@ -27,18 +27,23 @@ export async function createProcessingPlacement({allocation,binding,hostIdentity
  leaf=await createFiniteCgroupLeaf({allocation,binding,hostIdentity,authority:policy,limits,scope:'processing',
   fs,identity,now,signal});
  let closing=null,closed=false,runs=0;
- const active=new Set();
+ const active=new Set(),controllers=new Set();
  const run=async(command,args,{cwd,input=new Uint8Array(0),signal:callSignal,deadlineMs,maxOutput}={})=>{
   if(closed||closing!==null)throw fault('HOST_PROCESSING_CLOSED');
   runs+=1;
-  const pending=runProcessingCommand({launcher,command,args,cwd,input,signal:callSignal??signal,deadlineMs,maxOutput,
+  // Each run owns a controller so close can SIGNAL active work to stop, not merely wait for it.
+  const controller=new AbortController();
+  controllers.add(controller);
+  const life=callSignal===undefined?controller.signal:AbortSignal.any([controller.signal,callSignal]);
+  const pending=runProcessingCommand({launcher,command,args,cwd,input,signal:life,deadlineMs,maxOutput,
    now,settleMs,...(kill===undefined?{}:{kill})});
   active.add(pending);
-  try{return await pending;}finally{active.delete(pending);}
+  try{return await pending;}finally{active.delete(pending);controllers.delete(controller);}
  };
  const close=()=>closing??=(async()=>{
   closed=true;
-  // New runs are refused from here on. Runs already owned are awaited, but never longer than the bounded settlement.
+  // New runs are refused. Owned work is signalled to stop, then awaited within one bounded settlement window.
+  for(const controller of controllers){try{controller.abort();}catch{}}
   let settled=true;
   if(active.size){settled=await new Promise(resolve=>{
     const timer=setTimeout(()=>resolve(false),Math.max(1,settleMs));

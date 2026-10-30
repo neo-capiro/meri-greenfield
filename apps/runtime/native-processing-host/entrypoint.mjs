@@ -33,8 +33,11 @@ export async function startNativeProcessingHost({env=globalThis.process?.env??{}
  const readiness=nativeProcessingReadiness({config,verifyCustody});
  if(!readiness.ready)return Object.freeze({started:false,readiness});
  const key=tlsBytes(readFile(config.tls.keyPath)),cert=tlsBytes(readFile(config.tls.certPath)),ca=tlsBytes(readFile(config.tls.caPath));
+ void ca;
+ const active=new Set();
  privateAddress(config.listen.address);dnsName(config.tls.peerSan);
- checkedCertificate(ca,{name:config.tls.peerSan,nowMs:Date.now()});
+ // The CA is a trust anchor, not a leaf: it is passed to the TLS server as `ca` and must NOT be subjected to the peer
+ // leaf SAN/15-minute-lifetime rules. The peer leaf is checked per connection in `authenticate`.
  const handler=createInspectionHandler({
   authenticate:async({socket})=>{
    if(socket.encrypted!==true)return {verified:false};
@@ -59,13 +62,32 @@ export async function startNativeProcessingHost({env=globalThis.process?.env??{}
     chunks.push(chunk);});
    req.on('end',()=>finish(null,Buffer.concat(chunks)));req.on('error',finish);
   }),
-  limits:{deadlineMaxMs:config.limits.deadlineMaxMs,bodyBytes:config.limits.bodyBytes}});
+  limits:{deadlineMaxMs:config.limits.deadlineMaxMs,bodyBytes:config.limits.bodyBytes},
+  onActivity:controller=>{active.add(controller);return()=>active.delete(controller);}});
  const server=createServer({key,cert,ca,minVersion:'TLSv1.3',maxVersion:'TLSv1.3',requestCert:true,rejectUnauthorized:true},handler);
  await new Promise((resolve,reject)=>{server.once('error',reject);server.listen(config.listen.port,config.listen.address,resolve);});
- const active=new Set();
  return Object.freeze({started:true,server,readiness,
   close:()=>new Promise(resolve=>{
+   // Shutdown signals active work to stop first, then closes the listener within one bounded settlement window.
+   for(const controller of active){try{controller.abort();}catch{}}
    const timer=setTimeout(()=>resolve({closed:false,code:'NATIVE_PROCESSING_CLEANUP_UNKNOWN'}),Math.max(1,config.limits.deadlineMaxMs));
-   server.close(()=>{clearTimeout(timer);resolve({closed:true,pending:active.size});});
+   server.close(()=>{clearTimeout(timer);resolve({closed:active.size===0,pending:active.size});});
   })});
 }
+
+/** Executable CLI main: composes the production verifier (Parent's canonical export) when it is installed and otherwise
+ * stops with the exact missing join. It is a real entrypoint, not an uninvoked factory. */
+export async function main({env=globalThis.process?.env??{}}= {}){
+ let verifyCustody;
+ try{({verifyNativeInspectionCustody:verifyCustody}=await import('../control/native-processing/custody-authority.mjs'));}
+ catch{verifyCustody=undefined;}
+ const started=await startNativeProcessingHost({env,verifyCustody});
+ if(started.started!==true){
+  globalThis.process.stderr.write(JSON.stringify({ready:false,missing:started.readiness.missing}));
+  globalThis.process.exitCode=3;
+  return started;
+ }
+ return started;
+}
+
+if(process.argv[1]&&process.argv[1].endsWith('entrypoint.mjs')){main().catch(()=>{process.exitCode=3;});}
