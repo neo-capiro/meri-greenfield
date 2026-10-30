@@ -8,7 +8,7 @@
  */
 import {createHash} from 'node:crypto';
 import {readdir as readdirImpl,readFile as readFileImpl} from 'node:fs/promises';
-import {join} from 'node:path';
+import {join,isAbsolute} from 'node:path';
 import {definitionsSnapshotId} from '../uploads/native-definitions.mjs';
 import {composeUploadNativeHost} from '../uploads/composition.mjs';
 import {runUploadSandbox} from '../uploads/native-sandbox.mjs';
@@ -41,7 +41,7 @@ export function childSettings(raw){
 /** Verify the exact host-pinned snapshot this child was given: same directory and sha256, nothing re-derived. */
 export function pinnedDefinitions(snapshot,{readdir=readdirImpl,readFile=readFileImpl,joinPath=join}={}){
  if(snapshot===null||typeof snapshot!=='object')fault('UPLOAD_INSPECTION_REQUEST_REFUSED');
- if(typeof snapshot.databaseDirectory!=='string'||!snapshot.databaseDirectory.startsWith('/')||
+ if(typeof snapshot.databaseDirectory!=='string'||!isAbsolute(snapshot.databaseDirectory)||
   typeof snapshot.sha256!=='string'||!/^[a-f0-9]{64}$/u.test(snapshot.sha256)||
   !Number.isSafeInteger(snapshot.publishedAtMs)||!Array.isArray(snapshot.files)||snapshot.files.length===0)
   fault('UPLOAD_INSPECTION_REQUEST_REFUSED');
@@ -50,7 +50,8 @@ export function pinnedDefinitions(snapshot,{readdir=readdirImpl,readFile=readFil
  /** Re-verify the EXACT host-bound bytes: exact file set, exact sizes/hashes, and the recorded snapshot id. A pointer
   * moved by a refresh or a same-UID substitution therefore fails closed instead of switching this child. */
  const verify=async()=>{
-  const directory=joinPath(frozen.databaseDirectory,'database');
+  // The store descriptor's databaseDirectory already points at the snapshot's database directory.
+  const directory=frozen.databaseDirectory;
   let entries;
   try{entries=await readdir(directory,{withFileTypes:true});}catch{fault('UPLOAD_INSPECTION_UNAVAILABLE');}
   const names=entries.map(entry=>entry.name).sort();
@@ -59,8 +60,8 @@ export function pinnedDefinitions(snapshot,{readdir=readdirImpl,readFile=readFil
    fault('UPLOAD_DEFINITIONS_CORRUPT');
   for(const file of frozen.files){
    let bytes;try{bytes=await readFile(joinPath(directory,file.name));}catch{fault('UPLOAD_DEFINITIONS_CORRUPT');}
-   if(bytes.length!==file.bytes||createHash('sha256').update(bytes).digest('hex')!==file.sha256)
-    fault('UPLOAD_DEFINITIONS_CORRUPT');
+   if(Number.isSafeInteger(file.bytes)&&bytes.length!==file.bytes)fault('UPLOAD_DEFINITIONS_CORRUPT');
+   if(createHash('sha256').update(bytes).digest('hex')!==file.sha256)fault('UPLOAD_DEFINITIONS_CORRUPT');
   }
   if(definitionsSnapshotId([...frozen.files])!==frozen.sha256)fault('UPLOAD_DEFINITIONS_CORRUPT');
  };

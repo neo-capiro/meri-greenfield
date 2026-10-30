@@ -38,9 +38,17 @@ export async function startNativeProcessingHost({env=globalThis.process?.env??{}
  const definitionsStore=createSignedDefinitionStore({root:config.paths.definitionsRoot,now:Date.now,run:runDefinitionProgram});
  const definitionsUpdater=createSignedDefinitionUpdater({root:config.paths.definitionsRoot,run:runDefinitionProgram,now:Date.now});
  const definitionsOwner=injectedOwner===undefined?createDefinitionSnapshotOwner({definitions:definitionsStore}):injectedOwner;
- const definitionsLifecycle=Object.freeze({
-  provision:({deadlineMs,signal}={})=>definitionsUpdater.provision({deadlineMs,signal}),
-  pin:args=>definitionsOwner.pin(args),
+ // ONE serialized provision over the SAME updater/store this host pins from; no second refresh path, no child updater.
+ let provisionInFlight=null;
+ const provisionDefinitions=({deadlineMs,signal}={})=>{
+  if(provisionInFlight!==null)return provisionInFlight;
+  const attempt=Promise.resolve().then(()=>definitionsUpdater.provision({deadlineMs,signal}));
+  provisionInFlight=attempt.then(value=>{if(provisionInFlight===shared)provisionInFlight=null;return value;},
+   error=>{if(provisionInFlight===shared)provisionInFlight=null;throw error;});
+  const shared=provisionInFlight;
+  return shared;
+ };
+ const definitionsLifecycle=Object.freeze({provision:provisionDefinitions,pin:args=>definitionsOwner.pin(args),
   pruneIfIdle:args=>definitionsOwner.pruneIfIdle(args)});
  privateAddress(config.listen.address);dnsName(config.tls.peerSan);
  // The CA is a trust anchor, not a leaf: it is passed to the TLS server as `ca` and must NOT be subjected to the peer

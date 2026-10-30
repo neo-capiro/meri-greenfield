@@ -71,6 +71,7 @@ export async function openNativeProcessingHost({config,allocation,binding,hostId
   throw error;
  }
  let closing=null;
+ const pins=[];              // acquired definition pins, held until ACTUAL placement/compartment closure
  return Object.freeze({placement,compartment,
   async runRequest({requestDocument,deadlineMs,signal:callSignal}){
    if(closing!==null)fault('NATIVE_PROCESSING_CLOSED');
@@ -83,25 +84,31 @@ export async function openNativeProcessingHost({config,allocation,binding,hostId
    }
    const input=Buffer.from(JSON.stringify({settings:pinnedSettings,request:requestDocument,deadlineMs}));
    if(input.length>UPLOAD_INSPECTION_WIRE_BYTES+65536)fault('UPLOAD_INSPECTION_REQUEST_REFUSED');
+   if(pin!==null)pins.push({pin,completed:false});
    try{
     const out=await placement.run(command,args,{cwd:config.paths.home,input,signal:callSignal,deadlineMs,
      maxOutput:UPLOAD_INSPECTION_RESULT_BYTES});
-    // The pin is released only on a PROVEN child completion; unknown/cancelled keeps it retained for pruning safety.
-    pin?.release({completed:out?.receipt?.exitCode===0});
+    // Record completion; the pin is released only after the OWNED host/placement close proves closure below.
+    if(pin!==null)pins[pins.length-1].completed=out?.receipt?.exitCode===0;
     return out;
    }catch(error){
-    pin?.release({completed:false});
     throw error;
    }
   },
   close(){
    if(closing===null)closing=(async()=>{
-    let code=null;
-    try{const p=await placement.close();if(p?.closed!==true)code=p?.code??'NATIVE_PROCESSING_CLEANUP_UNKNOWN';}
+    let code=null,placementClosed=false;
+    try{const p=await placement.close();placementClosed=p?.closed===true;
+     if(!placementClosed)code=p?.code??'NATIVE_PROCESSING_CLEANUP_UNKNOWN';}
     catch(error){code=error?.code??'NATIVE_PROCESSING_CLEANUP_UNKNOWN';}
     try{const c=await compartment.close();if(c?.closed!==true)code??=c?.code??'HOST_NETWORK_CLEANUP_UNKNOWN';}
     catch{code??='HOST_NETWORK_CLEANUP_UNKNOWN';}
-    if(code!==null)return Object.freeze({closed:false,code});
+    // Definition pins follow the ACTUAL placement closure: released only when closure is proven, retained otherwise.
+    for(const entry of pins.splice(0)){
+     if(placementClosed)entry.pin.release({completed:entry.completed===true});
+     else pins.push(entry);
+    }
+    if(code!==null||pins.length>0)return Object.freeze({closed:false,code:code??'NATIVE_PROCESSING_CLEANUP_UNKNOWN'});
     return Object.freeze({closed:true});
    })();
    return closing;

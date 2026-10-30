@@ -1,3 +1,4 @@
+import {spawn} from 'node:child_process';
 import {runArtifactProcess} from '../../artifacts/process.mjs';
 /** Fixed, server-owned signed scanner-definition owner for uploads: immutable, atomic, content-addressed snapshots.
  *
@@ -59,10 +60,17 @@ export const UPLOAD_FRESHCLAM='freshclam',UPLOAD_SIGTOOL='sigtool';
 export const DEFINITION_PROGRAMS=Object.freeze({[UPLOAD_SIGTOOL]:'/usr/bin/sigtool',[UPLOAD_FRESHCLAM]:'/usr/bin/freshclam'});
 /** Sanitized bounded runner for the signed-definition owner. It refuses any program outside DEFINITION_PROGRAMS and keeps
  * the existing bounded artifact-process contract (bounded output, deadline, cancellation, owned-group cleanup). */
+export const DEFINITION_CHILD_UID=1000,DEFINITION_CHILD_GID=1000;
+/** Fixed ordinary identity for definition programs: root bootstrap must NOT be inherited by sigtool/freshclam. */
+export function definitionSpawnPort(port=spawn){
+ return (exe,args,options)=>port(exe,args,{...options,uid:DEFINITION_CHILD_UID,gid:DEFINITION_CHILD_GID,
+  env:{PATH:'/usr/bin:/bin',LANG:'C.UTF-8',HOME:options?.cwd??'/tmp'}});
+}
 export async function runDefinitionProgram(program,args,{cwd='/',input=Buffer.alloc(0),signal,deadlineMs,maxOutput=262144,ports}={}){
  const exe=DEFINITION_PROGRAMS[program];
  if(typeof exe!=='string'||!Array.isArray(args)||args.some(a=>typeof a!=='string'||a.includes('\0')))fail('UPLOAD_DEFINITIONS_CONFIGURATION');
- return runArtifactProcess(exe,args,{cwd,input,signal,deadlineMs,maxOutput},ports);
+ const effective=ports===undefined?{spawn:definitionSpawnPort()}:{spawn:definitionSpawnPort(ports.spawn??spawn),kill:ports.kill};
+ return runArtifactProcess(exe,args,{cwd,input,signal,deadlineMs,maxOutput},effective);
 }
 export const UPLOAD_DEFINITIONS_MAX_AGE_MS=72*60*60*1000;
 /** Safety floor of the bounded storage disposition: it never reduces the published snapshot count below this, however
@@ -421,7 +429,7 @@ export function createSignedDefinitionStore({root,now=Date.now,maxAgeMs=UPLOAD_D
    const bytes=await readFile(path);
    if(bytes.length!==file.bytes||hash(bytes)!==file.sha256)fail('UPLOAD_DEFINITIONS_CORRUPT');
    await verifyStaged({run,database,file:file.name,staging:directory,signal,deadlineMs});
-   verified.push({name:file.name,format:file.format,sha256:file.sha256});
+   verified.push({name:file.name,format:file.format,sha256:file.sha256,bytes:file.bytes});
   }
   if(definitionsSnapshotId(verified)!==snapshot.sha256)fail('UPLOAD_DEFINITIONS_CORRUPT');
   if(snapshot.publishedAtMs>now())fail('UPLOAD_DEFINITIONS_CORRUPT');

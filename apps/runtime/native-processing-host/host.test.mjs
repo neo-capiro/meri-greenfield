@@ -499,3 +499,95 @@ test('OWNERSHIP: a valid result whose cleanup times out then succeeds still rele
  await new Promise(r=>setTimeout(r,60));
  assert.deepEqual(releases,['released'],'the late successful close releases activity');
 });
+
+/** Build a REAL signed-snapshot layout the existing store accepts; the sigtool signature effect is inert. */
+async function signedSnapshot(root){
+ const {mkdir,writeFile}=await import('node:fs/promises');
+ const {join}=await import('node:path');
+ const {definitionsSnapshotId,UPLOAD_DEFINITIONS_SCHEMA}=await import('../uploads/native-definitions.mjs');
+ const main=Buffer.from('CVD main fixture'),daily=Buffer.from('CVD daily fixture');
+ const files=[{name:'main.cvd',bytes:main.length,sha256:sha(main),format:'cvd'},
+  {name:'daily.cvd',bytes:daily.length,sha256:sha(daily),format:'cvd'}];
+ const id=definitionsSnapshotId(files);
+ const dir=join(root,'snapshots',id);
+ await mkdir(join(dir,'database'),{recursive:true});
+ await writeFile(join(dir,'database','main.cvd'),main);
+ await writeFile(join(dir,'database','daily.cvd'),daily);
+ await writeFile(join(dir,'snapshot.json'),JSON.stringify({schema:UPLOAD_DEFINITIONS_SCHEMA,sha256:id,
+  publishedAt:new Date(Date.now()-1000).toISOString(),publishedAtMs:Date.now()-1000,signatureVerified:true,
+  version:'fixture-1',files}));
+ await mkdir(root,{recursive:true});
+ await writeFile(join(root,'current'),id);
+ return {id,dir,main,daily,files};
+}
+
+test('REAL STORE: snapshot, pin, unknown reader retention and late completion', async () => {
+ const {mkdtemp,rm}=await import('node:fs/promises');
+ const {tmpdir}=await import('node:os');
+ const {join}=await import('node:path');
+ const {createSignedDefinitionStore}=await import('../uploads/native-definitions.mjs');
+ const {createDefinitionSnapshotOwner}=await import('./definitions-owner.mjs');
+ const root=await mkdtemp(join(tmpdir(),'meri-defs-'));
+ try{
+  const fixture=await signedSnapshot(root);
+  const calls=[];
+  const store=createSignedDefinitionStore({root,now:Date.now,run:async(program,args)=>{calls.push([program,args]);
+   return {stdout:Buffer.alloc(0)};}});
+  const owner=createDefinitionSnapshotOwner({definitions:store});
+  const first=await owner.pin({deadlineMs:Date.now()+2000});
+  const second=await owner.pin({deadlineMs:Date.now()+2000});
+  assert.equal(first.sha256,fixture.id);
+  assert.equal(first.databaseDirectory,join(fixture.dir,'database'));
+  assert.ok(calls.some(([program])=>program==='sigtool'),'the real store verified the CVD with sigtool');
+  assert.equal(calls.some(([program])=>program==='freshclam'),false,'no provisioning inside this owner');
+  assert.equal((await owner.pruneIfIdle({})).skipped,true,'prune refused while two readers are pinned');
+  assert.deepEqual(first.release({completed:false}),{released:false,code:'UPLOAD_DEFINITIONS_RELEASE_UNKNOWN',retained:true});
+  assert.equal(owner.active(),2,'an unknown reader keeps its pin');
+  assert.deepEqual(second.release({completed:true}),{released:true});
+  assert.equal(owner.active(),1);
+  assert.deepEqual(first.release({completed:true}),{released:true},'a late proven completion closes the same token');
+  assert.equal(owner.active(),0);
+ }finally{await rm(root,{recursive:true,force:true});}
+});
+
+test('CHILD PIN: the real store descriptor verifies exact bytes and fails closed on tamper', async () => {
+ const {mkdtemp,rm,writeFile}=await import('node:fs/promises');
+ const {tmpdir}=await import('node:os');
+ const {join}=await import('node:path');
+ const {createSignedDefinitionStore}=await import('../uploads/native-definitions.mjs');
+ const {pinnedDefinitions}=await import('./child-cli.mjs');
+ const root=await mkdtemp(join(tmpdir(),'meri-defs-'));
+ try{
+  const fixture=await signedSnapshot(root);
+  const store=createSignedDefinitionStore({root,now:Date.now,run:async()=>({stdout:Buffer.alloc(0)})});
+  const snapshot=await store.snapshot({deadlineMs:Date.now()+2000});
+  const defs=pinnedDefinitions({databaseDirectory:snapshot.databaseDirectory,sha256:snapshot.sha256,
+   publishedAtMs:snapshot.publishedAtMs,files:snapshot.files.map(f=>({name:f.name,format:f.format,sha256:f.sha256,bytes:f.bytes}))});
+  const bound=await defs.snapshot({});
+  assert.equal(bound.databaseDirectory,join(fixture.dir,'database'));
+  assert.equal(bound.sha256,fixture.id);
+  await writeFile(join(fixture.dir,'database','main.cvd'),Buffer.from('tampered'));
+  await assert.rejects(defs.snapshot({}),e=>e?.code==='UPLOAD_DEFINITIONS_CORRUPT');
+ }finally{await rm(root,{recursive:true,force:true});}
+});
+
+test('BOOTSTRAP: a definition pin is held until the placement/compartment close proves closure', async () => {
+ let pinReleased=null;
+ const definitionsOwner={async pin({deadlineMs,signal}){void signal;void deadlineMs;
+  return {databaseDirectory:'/run/meri/upload-definitions/snapshots/x/database',sha256:'b'.repeat(64),
+   publishedAtMs:Date.now()-1,files:[],release(args){pinReleased=args;return {released:args.completed===true};}};}};
+ let placementClosed=false;
+ const host=await openNativeProcessingHost({config:CONFIG,allocation:ALLOCATION,binding:BINDING,hostIdentity:IDENTITY,
+  authority:{readCurrent:async()=>({})},definitionsOwner,
+  openCompartment:async()=>({close:async()=>({closed:true})}),
+  openPlacement:async()=>({run:async(command,args,{input})=>{
+    const parsed=JSON.parse(Buffer.from(input).toString('utf8'));
+    assert.equal(parsed.settings.snapshot.sha256,'b'.repeat(64),'the pin descriptor crosses on closed stdin');
+    return {stdout:Buffer.from('{}'),receipt:{exitCode:0}};},
+   close:async()=>{placementClosed=true;return {closed:true};}})});
+ await host.runRequest({requestDocument:REQUEST,deadlineMs:Date.now()+2000});
+ assert.equal(placementClosed,false,'the pin is not released before the host closes');
+ assert.equal(pinReleased,null,'no release at dispatch');
+ assert.deepEqual(await host.close(),{closed:true});
+ assert.deepEqual(pinReleased,{completed:true},'released only after proven placement closure');
+});
