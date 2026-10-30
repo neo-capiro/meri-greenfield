@@ -38,10 +38,11 @@ async function fixture(){
  const fetchImpl=async(url,init)=>{requests.push({url,init});return new Response(JSON.stringify(next),{status:200,
   headers:{'content-type':'application/json'}});};
  const forwarder=createCoreApprovalForwarder({origin:'https://core.example',now:()=>NOW,maxRequestMs:3000,
-  nativeCredentials:{nativeCredentialFor:async()=>({credential:'synthetic-native-bearer-0123456789',expiresAtMs:NOW+60000})},
+  nativeCredentials:{nativeCredentialFor:()=>({credential:'synthetic-native-bearer-0123456789',expiresAtMs:NOW+60000})},
   getServiceSecret:async()=>'synthetic-core-service-secret',fetchImpl,readProposal:async()=>{throw Error('generic path must not serve browser');},
   readBrowserPreparation:async({proposalId,binding:requested,signal})=>readback.read({schemaVersion:1,proposalId,binding:requested,...(signal?{signal}:{})}),
-  selectBrowserBinding:async({proposal,binding:requested})=>({binding:proposal.run.binding,selectedClientId:null})});
+  selectBrowserBinding:async({proposal,binding:requested})=>({binding:proposal.run.binding,
+   selectedClientId:proposal.run.scopes[0]?.resourceId??null})});
  return {sql,record,forwarder,requests,readback,served:()=>served,setNext:value=>{next=value;}};
 }
 
@@ -49,7 +50,8 @@ async function fixture(){
 // createPostgresApprovalMetadataReader requires, so the readback refuses before any HTTP. The wiring is
 // exercised below (generic Command rejection and pre-HTTP binding refusal); the route assertion needs a
 // pool fixture with transaction support.
-test('a browser status request reaches the fixed Core route with real metadata and both credentials',{skip:'scripted metadata pool has no BEGIN/COMMIT for the real reader'},async()=>{
+test('a browser status request reaches the fixed Core route with real metadata and both credentials',
+ {skip:'metadata pool now transacts, but the real browser producer refuses this synthetic preparation with COMMAND_PREPARATION_REFUSED; needs the real producer request construction'},async()=>{
  const f=await fixture();
  f.setNext({schema:'meri-browser-approval-status/1',proposalId:f.record.proposalId,
   subjectSha256:hash(subject),toolUseId:'toolu_01',permissive:false,unknown:false,consumption:null});

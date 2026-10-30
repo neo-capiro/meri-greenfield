@@ -5,16 +5,26 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {createBrowserApprovalOperations} from '../browser-approvals.mjs';
 import {CORE_BROWSER_APPROVAL_ROUTES} from '../../../../packages/contracts/runtime-0.2/browser-approval-channel.mjs';
+import {browserPreparationFromRequest} from '../../../../packages/contracts/runtime-0.2/browser-approval-preparation.mjs';
+import {canonicalSha256 as hash} from '../../../../packages/contracts/validate.mjs';
 
 const NOW=1700000000000;
 const binding={tenantId:'tenant',actorId:'actor',conversationId:'22222222-2222-4222-8222-222222222222',
  runId:'33333333-3333-4333-8333-333333333333',attemptId:'44444444-4444-4444-8444-444444444444',
  workerId:'55555555-5555-4555-8555-555555555555',writerFence:7};
-const proposalId='88888888-8888-4888-8888-888888888888',subjectSha256='a'.repeat(64);
+const proposalId='88888888-8888-4888-8888-888888888888';
 const consumptionId='99999999-9999-4999-8999-999999999999';
-const receipt={schema:'meri-browser-approval-receipt/1',subjectSha256:subjectSha256,proposalId,toolUseId:'toolu_01',
- decision:{decision:'approved'},consumption:{consumed:true,consumptionId,consumedAtMs:NOW}};
-const statusOf=(overrides={})=>({schema:'meri-browser-approval-status/1',proposalId,subjectSha256,toolUseId:'toolu_01',
+const toolUseId='toolu_01';
+const subject={schema:'meri-browser-action/1',binding,server:'capiov2-browser',tool:'browser_click',toolUseId,
+ inputSha256:hash({tool:'browser_click'}),pageOrigin:'https://app.example',policySha256:'a'.repeat(64)};
+const subjectSha256=hash(subject);
+const preparation=browserPreparationFromRequest({schema:'meri-browser-approval-request/3',subject,
+ subjectSha256:hash(subject),input:{tool:'browser_click'},requestedAtMs:NOW-1000,expiresAtMs:NOW+60000});
+const decision={proposalId,commandSha256:subjectSha256,decision:'approved',decidedAt:new Date(NOW-500).toISOString(),
+ expiresAt:new Date(NOW+60000).toISOString(),approver:{tenantId:'tenant',actorId:'actor'},policyRevision:'policy1'};
+const receipt={schema:'meri-browser-approval-receipt/1',subjectSha256:subjectSha256,proposalId,toolUseId,
+ decision,consumption:{consumed:true,consumptionId,consumedAtMs:NOW}};
+const statusOf=(overrides={})=>({schema:'meri-browser-approval-status/1',proposalId,subjectSha256,toolUseId,
  permissive:false,unknown:true,consumption:{state:'CLAIMED',consumedAtMs:NOW,completedAtMs:null,result:null},...overrides});
 
 function harness({answers}={}){
@@ -22,7 +32,7 @@ function harness({answers}={}){
  const transport={
   lifetime:(signal,deadlineMs)=>({signal,deadlineMs,run:fn=>fn(),check(){},close(){},limitDeadline(){},deadline:()=>Infinity}),
   proposal:async()=>({schemaVersion:1,commandSha256:'f'.repeat(64),
-   metadata:{record:{proposalId,request:{subjectSha256}}},run:{binding}}),
+   metadata:{record:{proposalId,request:preparation}},run:{binding}}),
   selected:async()=>({binding,selectedClientId:null}),
   post:async(life,route,{selected,body})=>{posts.push({route,body,selected});const canned=answers?.[route];
    if(canned instanceof Error)throw canned;return {value:canned??statusOf(),sessionExpiresAtMs:NOW+60000};}};
@@ -31,7 +41,7 @@ function harness({answers}={}){
 }
 
 test('record posts exactly the Core04 body for the canonical actor and stamps Meri\'s clock',async()=>{
- const h=harness({answers:{[CORE_BROWSER_APPROVAL_ROUTES.record]:{decision:{decision:'approved'},checkedAtMs:1,revoked:false}}});
+ const h=harness({answers:{[CORE_BROWSER_APPROVAL_ROUTES.record]:{decision,checkedAtMs:1,revoked:false}}});
  const answer=await h.operations.record({proposalId,subjectSha256,decision:'approved',
   approver:{tenantId:'tenant',actorId:'actor'},binding});
  assert.equal(h.posts.length,1);
@@ -86,14 +96,32 @@ test('a permissive status or a receipt without consumption refuses',async()=>{
  await assert.rejects(harness({answers:{[CORE_BROWSER_APPROVAL_ROUTES.status]:statusOf({permissive:true})}})
   .operations.status({proposalId,subjectSha256,binding}),/BROWSER_APPROVAL_REFUSED|INVALID_COMMAND/u);
  await assert.rejects(harness({answers:{[CORE_BROWSER_APPROVAL_ROUTES.consume]:{...receipt,consumption:{consumed:false}}}})
-  .operations.consume({proposalId,subjectSha256,binding}),/BROWSER_APPROVAL_REFUSED|INVALID_COMMAND/u);
+  .operations.consume({proposalId,subjectSha256,binding}),/BROWSER_APPROVAL_REFUSED|INVALID_COMMAND|ACCESS_DENIED/u);
  // A receipt for ANOTHER subject is not permission for this one.
  await assert.rejects(harness({answers:{[CORE_BROWSER_APPROVAL_ROUTES.consume]:{...receipt,subjectSha256:'b'.repeat(64)}}})
-  .operations.consume({proposalId,subjectSha256,binding}),/BROWSER_APPROVAL_REFUSED|INVALID_COMMAND/u);
+  .operations.consume({proposalId,subjectSha256,binding}),/BROWSER_APPROVAL_REFUSED|INVALID_COMMAND|ACCESS_DENIED/u);
 });
 
 test('a missing transport dependency refuses at construction',()=>{
  assert.throws(()=>createBrowserApprovalOperations({}),{message:'BROWSER_APPROVAL_CONFIGURATION'});
  assert.throws(()=>createBrowserApprovalOperations({transport:{lifetime(){},post(){}},now:()=>NOW}),
   {message:'BROWSER_APPROVAL_CONFIGURATION'});
+});
+
+test('a malformed, rejected, expired, foreign or future-dated receipt never permits',async()=>{
+ const variants=[
+  ['rejected decision',{...receipt,decision:{...decision,decision:'rejected'}}],
+  ['expired decision',{...receipt,decision:{...decision,expiresAt:new Date(NOW-1).toISOString()}}],
+  ['decided in the future',{...receipt,decision:{...decision,decidedAt:new Date(NOW+1000).toISOString()}}],
+  ['incomplete decision',{...receipt,decision:{proposalId,commandSha256:subjectSha256,decision:'approved'}}],
+  ['wrong tool use',{...receipt,toolUseId:'toolu_other'}],
+  ['foreign proposal',{...receipt,proposalId:'99999999-9999-4999-8999-999999999999'}],
+  ['future consumption',{...receipt,consumption:{...receipt.consumption,consumedAtMs:NOW+1000}}],
+  ['no consumption',{...receipt,consumption:null}]];
+ for(const [name,answer] of variants){
+  const h=harness({answers:{[CORE_BROWSER_APPROVAL_ROUTES.consume]:answer}});
+  await assert.rejects(h.operations.consume({proposalId,subjectSha256,binding}),
+   /BROWSER_APPROVAL_|ACCESS_DENIED|INVALID/u,`${name} must not permit`);
+  assert.equal(h.posts.filter(p=>p.route===CORE_BROWSER_APPROVAL_ROUTES.consume).length,1,`${name} sends exactly one consume`);
+ }
 });
