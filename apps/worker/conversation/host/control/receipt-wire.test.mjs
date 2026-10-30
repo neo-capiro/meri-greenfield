@@ -13,6 +13,9 @@ import {createPostgresConversationStore} from '../../../../control/conversations
 import {storeFixture,binding,scopes,versions} from '../../../../control/conversations/test/store-fixture.mjs';
 import {MODEL_CATALOG} from '../../../../../packages/contracts/test/model-selection-fixture.mjs';
 import {browserActionReceiptEventId} from '../../../../../packages/contracts/runtime-0.2/browser-receipt.mjs';
+import {createBrowserHostRunFacts} from '../../../../runtime/browser-host-run-facts.mjs';
+import {DEFAULT_BROWSER_POLICY} from '../../browser/policy.mjs';
+import {NO_CAPABILITY_PLATFORM} from '../../../../runtime/product-ports/capability-policy.mjs';
 
 mock.module(new URL('./tls.mjs',import.meta.url).href,{exports:{
  privateAddress:v=>v,dnsName:v=>v,fingerprint:v=>v,tlsBytes:v=>Buffer.from(v),MAX_CERT_LIFETIME_MS:900000,
@@ -39,10 +42,6 @@ function conversationStore(){
  return createPostgresConversationStore({pool:f.pool,modelCatalog:MODEL_CATALOG});
 }
 
-function opts(){
- const {createHostCurrentnessClient}=null;return {};
-}
-
 async function route({currentnessOverrides={}}={}){
  const {createHostCurrentnessClient}=await import('./client.mjs');
  const {createHostCurrentnessServer}=await import('./server.mjs');
@@ -58,11 +57,16 @@ async function route({currentnessOverrides={}}={}){
   if(statement.includes('clock_timestamp'))return {rows:[{now_ms:clock.now}]};
   return {rows:[]};}};
  const transact=async effect=>{shared.depth++;try{return await effect(sqlClient);}finally{shared.depth--;}};
+ const browserPolicy={...DEFAULT_BROWSER_POLICY,enabled:true};
  const state={binding,currentUntilMs:NOW+300000,phase:'active',sdkAdmitted:true,bashAdmitted:false,
-  browserAdmitted:true,capabilityPolicySha256:'c'.repeat(64),browserPolicySha256:'a'.repeat(64),
-  ...currentnessOverrides};
- const facts={schema:'meri-browser-host-facts/1',binding,scopes,deadlineMs:NOW+300000,currentUntilMs:NOW+300000,
-  phase:'active',admitted:'browser'};
+  browserAdmitted:true,capabilityPolicySha256:hash(NO_CAPABILITY_PLATFORM),
+  browserPolicySha256:hash(browserPolicy),...currentnessOverrides};
+ // The REAL facts producer normalizes the currentness projection; a hand-copied DTO is never used.
+ const factsProducer=createBrowserHostRunFacts({currentness:{readFacts:async()=>Object.freeze({binding,scopes,
+  deadlineMs:NOW+300000,currentUntilMs:NOW+300000,phase:'active',sdkAdmitted:true,bashAdmitted:false,
+  browserAdmitted:true,capabilityPolicy:NO_CAPABILITY_PLATFORM,browserPolicy})}});
+ const facts=await factsProducer.readCanonicalFacts({query:async()=>({rows:[]})},
+  {allocation:{hostId:allocation.hostId,generation:allocation.generation},binding});
  const producer=createBrowserReceiptProducer({store:conversationStore(),now:()=>clock.now});
  const store=createPostgresHostCurrentnessStore({transact,readCanonicalRun:async()=>state,
   readCanonicalFacts:async()=>facts,maxLeaseMs:5000,

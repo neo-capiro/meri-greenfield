@@ -274,6 +274,10 @@ const permittedPhase=state=>state.phase==='active'
      if(typeof readCanonicalFacts!=='function')fail();
      const facts=assertBrowserHostFacts(await readCanonicalFacts(client,{allocation:a,binding:b,signal}),{binding:b});
      if(!same(facts.binding,b)||facts.scopes.length===0)fail();
+     // The facts document must describe the SAME active authority this route admitted.
+     if(facts.phase!=='active'||facts.admitted?.browser!==true||facts.admitted?.sdk!==true)fail();
+     if(facts.browserPolicySha256!==state.browserPolicySha256||
+      facts.capabilityPolicySha256!==state.capabilityPolicySha256)fail();
      const beforeMs=await clock(client);
      if(facts.currentUntilMs<=beforeMs||facts.deadlineMs<=beforeMs)fail();
      if(beforeMs>=cutoff(beforeMs,a,h,state.currentUntilMs)||beforeMs>=a.leaseDeadlineMs)fail();
@@ -300,7 +304,12 @@ const permittedPhase=state=>state.phase==='active'
      // The canonical scopes must not have changed across the append either.
      const after=assertBrowserHostFacts(await readCanonicalFacts(client,{allocation:a,binding:b,signal}),{binding:b});
      if(!same(after.binding,b)||canonicalSha256(after.scopes)!==admitted.scopesSha256)fail();
-     const nowMs=await clock(client),untilMs=cutoff(nowMs,a,h,fresh.currentUntilMs);
+     if(after.phase!=='active'||after.admitted?.browser!==true)fail();
+     const nowMs=await clock(client);
+     // The RELEASE cutoff is capped by the after-facts window, so an expired in-transit document cannot be
+     // released on the strength of the pre-append snapshot alone.
+     const untilMs=Math.min(cutoff(nowMs,a,h,fresh.currentUntilMs),after.currentUntilMs,after.deadlineMs);
+     if(after.currentUntilMs<=nowMs||after.deadlineMs<=nowMs)fail();
      if(signal?.aborted||nowMs>=untilMs||nowMs>=a.leaseDeadlineMs)fail();
      if(!ack||ack.recorded!==true||typeof ack.eventId!=='string'||!ack.event)fail();
      return Object.freeze(hostReceiptResponse({schema:HOST_RECEIPT_RESPONSE_SCHEMA,nonce:admitted.q.nonce,
