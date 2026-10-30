@@ -3,6 +3,7 @@
  * Core's `tenant.settings.manage` membership permission; every save is revisioned and audited. */
 import {canonicalSha256} from '../../../packages/contracts/validate.mjs';
 import {assertPlatformCapabilityLimits,resolveCapabilityPolicy} from '../../worker/conversation/capabilities/policy-resolution.mjs';
+import {assertPlatformBrowserLimits,resolveBrowserPolicy} from '../../worker/conversation/browser/resolution.mjs';
 import {ProductError,asProductError,refuse} from '../product-access/errors.mjs';
 import {closed,intIn} from '../product-access/shape.mjs';
 import {TENANT_SETTINGS_DEFAULTS,tenantSettings,DEFAULT_MODEL_LIMITS} from './documents.mjs';
@@ -11,11 +12,23 @@ import {settingsRevision,settingsAuditId} from './save-metadata.mjs';
 export {changedFields} from './save-metadata.mjs';
 export const TENANT_SETTINGS_PERMISSION='tenant.settings.manage';
 export function createSettingsService(options){
- const {store,readPlatformLimits,newId}=options??{};
+ const {store,readPlatformLimits,readBrowserPlatformLimits,newId}=options??{};
  if(['read','save','listAudit'].some(k=>typeof store?.[k]!=='function')||typeof readPlatformLimits!=='function'||typeof newId!=='function')throw new ProductError('PRODUCT_CONFIGURATION');
  const id=()=>settingsAuditId(newId),user=createUserPreferencesService({store,newId,modelCatalog:options.modelCatalog});
  async function platform(signal){
   try{return assertPlatformCapabilityLimits(await readPlatformLimits({signal}));}catch{refuse('SETTINGS_PLATFORM_UNAVAILABLE');}
+ }
+ async function browserPlatform(signal){
+  if(readBrowserPlatformLimits===undefined)return undefined;
+  try{return assertPlatformBrowserLimits(await readBrowserPlatformLimits({signal}));}catch{refuse('SETTINGS_PLATFORM_UNAVAILABLE');}
+ }
+ function browserEffective(limits,settings,principal){
+  if(limits===undefined)return {};
+  try{
+   if(Object.hasOwn(settings,'browserPolicy')&&settings.browserPolicy===null)throw Object.assign(Error(),{code:'BROWSER_TENANT_SETTINGS_REFUSED'});
+   return {browserStatus:'resolved',effectiveBrowserPolicy:resolveBrowserPolicy({platform:limits,tenant:settings.browserPolicy??{},role:principal.role})};
+  }
+  catch(error){return {browserStatus:typeof error?.code==='string'&&/^BROWSER_[A-Z_]+$/u.test(error.code)?error.code:'BROWSER_UNRESOLVED',effectiveBrowserPolicy:null};}
  }
  const admin=principal=>{if(!principal.permissions.includes(TENANT_SETTINGS_PERMISSION))refuse('SETTINGS_ADMIN_REQUIRED');};
  async function tenantRecord(principal,signal){
@@ -33,19 +46,29 @@ export function createSettingsService(options){
   ...user,
   /** Every member sees the tenant default timezone and their own effective capabilities; admins also see the record and platform limits. */
   readTenant:guard(async({principal,signal})=>{
-   const limits=await platform(signal),{revision,settings,model}=await tenantRecord(principal,signal);
-   const view={revision,defaultTimezone:settings.defaultTimezone,...effective(limits,settings,principal)};
+   const limits=await platform(signal),browserLimits=await browserPlatform(signal),{revision,settings,model}=await tenantRecord(principal,signal);
+   const view={revision,defaultTimezone:settings.defaultTimezone,...effective(limits,settings,principal),...browserEffective(browserLimits,settings,principal)};
    if(principal.permissions.includes(TENANT_SETTINGS_PERMISSION))Object.assign(view,{capabilityPolicy:settings.capabilityPolicy,platform:limits,model});
+   if(browserLimits!==undefined&&principal.permissions.includes(TENANT_SETTINGS_PERMISSION))Object.assign(view,{browserPolicy:settings.browserPolicy??{},browserPlatform:browserLimits});
    return Object.freeze(view);
   }),
   saveTenant:guard(async({principal,body,signal})=>{
    admin(principal);
    const r=closed(body,['expectedRevision','settings'],[],'SETTINGS_REQUEST_INVALID'),expectedRevision=settingsRevision(r.expectedRevision);
-   const limits=await platform(signal),settings=tenantSettings(r.settings,limits);
+   const limits=await platform(signal),browserLimits=await browserPlatform(signal);
+   let settings=tenantSettings(r.settings,limits,browserLimits);
+   // Older settings clients do not carry browserPolicy. Preserve its exact
+   // saved revision rather than silently removing an admin restriction. CAS
+   // below still refuses a change between this read and the actual write.
+   if(expectedRevision>0&&settings.browserPolicy===undefined){
+    const prior=await tenantRecord(principal,signal);
+    if(prior.revision!==expectedRevision)refuse('SETTINGS_REVISION_CONFLICT');
+    if(Object.hasOwn(prior.settings,'browserPolicy'))settings=tenantSettings({...settings,browserPolicy:prior.settings.browserPolicy},limits,browserLimits);
+   }
    // The store owns both CAS and audit differences from its actual locked revision.
    const saved=await store.save({kind:'tenant',tenantId:principal.tenantId,expectedRevision,document:settings,initialDocument:TENANT_SETTINGS_DEFAULTS,signal,
-    audit:{auditId:id(),actorId:principal.actorId,platformSha256:canonicalSha256(limits)}});
-   return Object.freeze({revision:saved.revision,defaultTimezone:settings.defaultTimezone,capabilityPolicy:settings.capabilityPolicy,...(saved.model?{model:saved.model}:{}),...effective(limits,settings,principal)});
+    audit:{auditId:id(),actorId:principal.actorId,platformSha256:canonicalSha256(browserLimits===undefined?limits:{capabilities:limits,browser:browserLimits})}});
+   return Object.freeze({revision:saved.revision,defaultTimezone:settings.defaultTimezone,capabilityPolicy:settings.capabilityPolicy,...(browserLimits===undefined?{}:{browserPolicy:settings.browserPolicy??{}}),...(saved.model?{model:saved.model}:{}),...effective(limits,settings,principal),...browserEffective(browserLimits,settings,principal)});
   }),
   readAudit:guard(async({principal,body,signal})=>{
    admin(principal);

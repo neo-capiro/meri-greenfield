@@ -9,6 +9,7 @@ import {assertModelCatalog} from '../../packages/contracts/model-selection.mjs';
 import {compileControlUserPreferencesConfiguration} from './user-preferences.mjs';
 import {compileScheduleServiceConfiguration} from './schedule-service-configuration.mjs';
 import {compileCapabilityPlatform} from './product-ports/capability-policy.mjs';
+import {compileBrowserPlatform} from './product-ports/browser-policy.mjs';
 import {compileRuntimeArtifactsConfiguration} from './artifacts/configuration.mjs';
 import {compileIntentsConfiguration} from './product-ports/intents.mjs';
 import {compileMemoryConfiguration} from './product-ports/memory.mjs';
@@ -30,7 +31,7 @@ export function validateConfiguration(raw,role){
  // owners are trusted in-process ports, never configuration, so JSON alone cannot start it; it may declare `native` (its client to
  // control's private occurrence operations, lane B3; schedule-service-configuration.mjs) and `routines` (Core's firing pin, lane B2).
  const common=['version','profile','sourceEnabled','limits',...(role==='schedule-worker'?[]:['native'])];
- own(c,[...common,...(role==='control'?['http','database','temporal','sessions','versions','agentcore','models']:role==='temporal-worker'?['http','temporal']:['http','temporal','versions','scheduledDispatch'])],role==='control'?['retention','telemetry','downloadLinks','privateHttp','userPreferences','tenantSettings','capabilityPlatform','routines','artifacts','intents','reads','objectiveGeneration','memory','uploads']:role==='schedule-worker'?['database','native','routines']:['objectiveGeneration']);
+ own(c,[...common,...(role==='control'?['http','database','temporal','sessions','versions','agentcore','models']:role==='temporal-worker'?['http','temporal']:['http','temporal','versions','scheduledDispatch'])],role==='control'?['retention','telemetry','downloadLinks','privateHttp','userPreferences','tenantSettings','capabilityPlatform','browserPlatform','routines','artifacts','intents','reads','objectiveGeneration','memory','uploads']:role==='schedule-worker'?['database','native','routines']:['objectiveGeneration']);
  if(role==='control')assertModelCatalog(c.models);
  if(c.userPreferences!==undefined){requireValue(role==='control','USER_PREFERENCES_CONFIGURATION');compileControlUserPreferencesConfiguration(c);}
  // Lane B control opt-ins (product-ports/settings.mjs, routines.mjs) and the trusted platform capability record (capability-policy.mjs, N3).
@@ -43,6 +44,7 @@ export function validateConfiguration(raw,role){
  // Attended routine dispatch names the separately configured schedule worker target; JSON alone never supplies its owners.
  if(c.routines?.workflow!==undefined){requireValue(role==='control'&&c.routines.enabled===true,'ROUTINES_CONFIGURATION');own(c.routines.workflow,['taskQueue','workflowIdPrefix']);requireValue(typeof c.routines.workflow.taskQueue==='string'&&/^[A-Za-z0-9._-]{1,128}$/u.test(c.routines.workflow.taskQueue)&&typeof c.routines.workflow.workflowIdPrefix==='string'&&/^[A-Za-z0-9._/-]{1,128}$/u.test(c.routines.workflow.workflowIdPrefix),'ROUTINES_CONFIGURATION');}
  if(c.capabilityPlatform!==undefined){requireValue(role==='control','CAPABILITY_PLATFORM_CONFIGURATION');compileCapabilityPlatform(c);}
+ if(c.browserPlatform!==undefined){requireValue(role==='control','BROWSER_PLATFORM_CONFIGURATION');compileBrowserPlatform(c);}
  // Objective generation opt-ins (objective-generation/configuration.mjs): control `runs`/`start`, worker `runs`. Absent = disabled.
  if(c.objectiveGeneration!==undefined)compileObjectiveGenerationConfiguration(c,role);
  // Retention serving is an explicit declaration: when enabled, control composes the canonical read gate over its own database and

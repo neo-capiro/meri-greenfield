@@ -2,6 +2,7 @@
  * wrong types and out-of-range values refuse with a field-named code. Capability-policy validation is the canonical
  * `policy-resolution.mjs` owner, so a tenant value that would widen the platform maximum or a role ceiling refuses with its codes. */
 import {assertTenantCapabilitySettings} from '../../worker/conversation/capabilities/policy-resolution.mjs';
+import {assertTenantBrowserSettings} from '../../worker/conversation/browser/resolution.mjs';
 import {ProductError,refuse} from '../product-access/errors.mjs';
 import {closed} from '../product-access/shape.mjs';
 import {USER_PREFERENCE_FIELDS,USER_PREFERENCE_DEFAULTS,userPreferencesDocument,storedUserPreferencesDocument,userPreferencesTimezone,userPreferencesDocumentFailure} from '../../../packages/contracts/user-preferences-application/document.mjs';
@@ -35,13 +36,21 @@ export function storedModelSettings(row){
 }
 /** Tenant settings, validated against the current platform record. Admins may enable or restrict inside the platform maximum and only
  * narrow role ceilings; widening refuses (CAPABILITY_TENANT_WIDENING_REFUSED / CAPABILITY_ROLE_WIDENING_REFUSED / CAPABILITY_ROLE_UNKNOWN). */
-export function tenantSettings(value,platform){
- const t=closed(value,['defaultTimezone','capabilityPolicy'],['model'],'SETTINGS_DOCUMENT_INVALID');
+export function tenantSettings(value,platform,browserPlatform){
+ const t=closed(value,['defaultTimezone','capabilityPolicy'],['model','browserPolicy'],'SETTINGS_DOCUMENT_INVALID');
  const defaultTimezone=timezone(t.defaultTimezone,'defaultTimezone');
  try{assertTenantCapabilitySettings(t.capabilityPolicy,platform);}
  catch(error){
   const code=typeof error?.code==='string'&&/^CAPABILITY_[A-Z_]+$/u.test(error.code)?error.code:'CAPABILITY_TENANT_SETTINGS_REFUSED';
   throw new ProductError(code,null,typeof error?.field==='string'?`capabilityPolicy.${error.field}`:'capabilityPolicy');
  }
- return Object.freeze({defaultTimezone,capabilityPolicy:t.capabilityPolicy,...(t.model===undefined?{}:{model:modelSettings(t.model)})});
+ if(t.browserPolicy!==undefined){
+  if(browserPlatform===undefined)refuse('SETTINGS_PLATFORM_UNAVAILABLE');
+  try{assertTenantBrowserSettings(t.browserPolicy,browserPlatform);}
+  catch(error){
+   const code=typeof error?.code==='string'&&/^BROWSER_[A-Z_]+$/u.test(error.code)?error.code:'BROWSER_TENANT_SETTINGS_REFUSED';
+   throw new ProductError(code,null,typeof error?.field==='string'?`browserPolicy.${error.field}`:'browserPolicy');
+  }
+ }
+ return Object.freeze({defaultTimezone,capabilityPolicy:t.capabilityPolicy,...(t.browserPolicy===undefined?{}:{browserPolicy:t.browserPolicy}),...(t.model===undefined?{}:{model:modelSettings(t.model)})});
 }

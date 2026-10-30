@@ -5,6 +5,8 @@ import {canonicalSha256} from '../../../../packages/contracts/validate.mjs';
 import {createProductPortsFactory} from '../index.mjs';
 import {createSettingsFamily,compileTenantSettingsConfiguration} from '../settings.mjs';
 import {PROPOSED_PREVIEW_CAPABILITY_PLATFORM,createRunCapabilityPolicy,compileCapabilityPlatform} from '../capability-policy.mjs';
+import {compileBrowserPlatform} from '../browser-policy.mjs';
+import {resolveBrowserPolicy} from '../../../worker/conversation/browser/resolution.mjs';
 import {captureRuntimePorts} from '../../product-applications.mjs';
 import {productReadiness} from '../../product-readiness.mjs';
 import {TENANT_SETTINGS_PERMISSION} from '../../../control/settings/service.mjs';
@@ -54,7 +56,7 @@ test('enabled family serves the tenant routes over the membership gate with the 
  // A member sees only the default timezone and their effective capabilities: the same current-role policy the run producer resolves.
  const member=await (await captured.settingsApplication.handle(post('/api/settings/tenant/read'))).json();
  const producer=createRunCapabilityPolicy({platform:compileCapabilityPlatform(configuration),readTenantSettings:async()=>({})});
- assert.deepEqual(member,{revision:0,defaultTimezone:'UTC',capabilityStatus:'resolved',effectiveCapabilities:JSON.parse(JSON.stringify(await producer.forRun({tenantId:who.tenantId,actorId:who.actorId,conversationId:id(903),actorRole:who.role})))});
+ assert.deepEqual(member,{revision:0,defaultTimezone:'UTC',capabilityStatus:'resolved',effectiveCapabilities:JSON.parse(JSON.stringify(await producer.forRun({tenantId:who.tenantId,actorId:who.actorId,conversationId:id(903),actorRole:who.role}))),browserStatus:'resolved',effectiveBrowserPolicy:resolveBrowserPolicy({platform:compileBrowserPlatform(configuration),role:who.role})});
  who=principal({actorId:'admin-1',role:'user_admin',permissions:[TENANT_SETTINGS_PERMISSION]});
  const admin=await (await captured.settingsApplication.handle(post('/api/settings/tenant/read'))).json();
  assert.deepEqual(admin.capabilityPolicy,{});assert.deepEqual(admin.platform,JSON.parse(JSON.stringify(compileCapabilityPlatform(configuration))));
@@ -66,7 +68,7 @@ test('enabled family serves the tenant routes over the membership gate with the 
 
 test('admin saves narrow inside the platform maximum through the real store statements; widening refuses before any write',async()=>{
  const configuration={...base,tenantSettings:{enabled:true},capabilityPlatform:PROPOSED_PREVIEW_CAPABILITY_PLATFORM};
- const settings={defaultTimezone:'UTC',capabilityPolicy:{capabilities:{bash:false}}},sha=canonicalSha256(settings),platformSha=canonicalSha256(compileCapabilityPlatform(configuration));
+ const settings={defaultTimezone:'UTC',capabilityPolicy:{capabilities:{bash:false}}},sha=canonicalSha256(settings),platformSha=canonicalSha256({capabilities:compileCapabilityPlatform(configuration),browser:compileBrowserPlatform(configuration)});
  const f=createSettingsPoolFixture([{steps:[
   {match:/^INSERT INTO meri_settings\.tenant_settings\(/u,rows:[{revision:1,document:settings,document_sha256:sha,monthly_cap_micro_usd:null,sdk_max_turns:20,sdk_max_budget_micro_usd:2000000}],inspect:params=>assert.deepEqual(params,['tenant-one',1,JSON.stringify(settings),sha,'admin-1',null,20,2000000])},
   {match:/^INSERT INTO meri_settings\.settings_audit\(/u,inspect:params=>{assert.equal(params[1],'tenant-one');assert.equal(params[2],'tenant');assert.equal(params[9],platformSha);assert.deepEqual(params[10],['capabilityPolicy.capabilities','model.maxBudgetMicroUsd','model.maxTurns']);}}]}]);

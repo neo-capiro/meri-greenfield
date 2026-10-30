@@ -17,6 +17,7 @@ import {createSettingsService} from '../../control/settings/service.mjs';
 import {createSettingsRoutes} from '../../control/settings/routes.mjs';
 import {TENANT_SETTINGS_PATHS,TENANT_SETTINGS_LIMITS as L} from '../../control/settings/tenant-application/protocol.mjs';
 import {compileCapabilityPlatform,createStaticPlatformLimits} from './capability-policy.mjs';
+import {compileBrowserPlatform,createStaticBrowserPlatformLimits} from './browser-policy.mjs';
 const fault=code=>Object.assign(new Error(code),{code});
 /** Control-only opt-in `{enabled:boolean}`; absent is off. It selects no owner, credential or store. Also the config.mjs validator. */
 export function compileTenantSettingsConfiguration(configuration){
@@ -29,9 +30,9 @@ export function createSettingsFamily(context,{newId=randomUUID}={}){
  const {configuration,pool,now=Date.now,canonicalProductPorts}=context??{};
  if(!compileTenantSettingsConfiguration(configuration))return {ports:{}};
  // The platform record is validated before the membership check, so a bad block fails startup even while Core is absent.
- const platform=compileCapabilityPlatform(configuration),gate=canonicalProductPorts?.conversationMembership;
+ const platform=compileCapabilityPlatform(configuration),browserPlatform=compileBrowserPlatform(configuration),gate=canonicalProductPorts?.conversationMembership;
  if(gate===undefined)return {ports:{}};
- const service=createSettingsService({store:createPostgresSettingsStore({pool}),readPlatformLimits:createStaticPlatformLimits(platform),newId});
+ const service=createSettingsService({store:createPostgresSettingsStore({pool}),readPlatformLimits:createStaticPlatformLimits(platform),readBrowserPlatformLimits:createStaticBrowserPlatformLimits(browserPlatform),newId});
  const canonical=createSettingsRoutes({service}),routes=Object.fromEntries(Object.values(TENANT_SETTINGS_PATHS).map(path=>[path,canonical[path]]));
  const application=createProductApplication({gate,routes,now,limits:{
   maxRequestMs:Math.min(configuration.limits.requestMs,L.maxRequestMs),
