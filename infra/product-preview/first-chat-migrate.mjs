@@ -150,7 +150,7 @@ export const PLAN=Object.freeze([
  ['migration','apps/control/browser-hosts/migrations/0003_browser_only_teardown.sql','ad06f879d0202b37b32e5de7fae612e7a2603e7388a7393d5834bb2983c85992','integration'],
  // Browser-call custody reuses the existing intent journal: append the delivery-identity extension as
  // ordinal 77 after the exact 1..76 prefix, preserving every reviewed pin and the two-key record rule.
- ['migration','apps/control/intents/migrations/0003_browser_operation_preparations.sql','5dbcd63ef53838019df3410631ab073537245984ef49cd10f438139382017ce5','integration'],
+ ['migration','apps/control/intents/migrations/0003_browser_operation_preparations.sql','eaa4558ad710d9ba26e2f18280b0ec4a8a439d515976f4a08f09c39152807408','integration'],
 ].map(([kind,path,pinned,declaredStage],index)=>Object.freeze({ordinal:index+1,kind,path,pinned,
  name:kind==='migration'?path:`${path}#${kind.slice(6)}`,
  stage:declaredStage??(kind==='phase:temporal_grants'?'temporal':'meri')})));

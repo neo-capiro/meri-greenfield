@@ -21,7 +21,7 @@ const policy={...DEFAULT_BROWSER_POLICY,allowedOrigins:['https://app.example']};
 
 /** Inert SQL boundary for meri_intents.preparations. It records statement order so the test can prove
  * the claim acknowledgement precedes the effect. */
-function intentPool({loseCommit=false,refuseSettle=false}={}){
+function intentPool({loseCommit=false,refuseSettle=false,onCommit=null}={}){
  const rows=new Map(),log=[];
  const keyOf=(t,a,c,d)=>JSON.stringify([t,a,c,d]);
  const client={async query(sql,p=[]){
@@ -29,6 +29,7 @@ function intentPool({loseCommit=false,refuseSettle=false}={}){
   if(/^(BEGIN|SET LOCAL|COMMIT|ROLLBACK)/u.test(text)){
    if(!text.startsWith('SET LOCAL'))log.push(text==='BEGIN ISOLATION LEVEL REPEATABLE READ READ ONLY'?'BEGIN':text);
    if(loseCommit&&text==='COMMIT')throw Object.assign(Error('ack lost'),{code:'STORE_COMMIT_UNKNOWN'});
+   if(text==='COMMIT'&&onCommit)onCommit();
    return {rows:[]};}
   if(text.startsWith('INSERT INTO meri_intents.preparations')){
    log.push('claim');const id=keyOf(p[0],p[1],p[2],p[3]);
@@ -144,6 +145,27 @@ test('a lost COMMIT on the claim never dispatches',async()=>{
  const h=harness({poolOptions:{loseCommit:true}});
  await assert.rejects(delivered(h),{message:'BROWSER_OPERATION_UNKNOWN'});
  assert.equal(h.effects.length,0);
+});
+
+test('a corrupted retained release binding or scopes never releases a replay',async()=>{
+ for(const corrupt of [
+  {release:{binding:{...binding,runId:'99999999-9999-4999-8999-999999999999'}},
+   label:'the release names another run'},
+  {release:{scopes:[{...scopes[0],policyRevision:'policy2'}]},label:'the release names other scopes'}]){
+  const h=harness();
+  await delivered(h);
+  const [storedKey]=[...h.sql.rows.keys()],row=h.sql.rows.get(storedKey);
+  h.sql.rows.set(storedKey,{...row,outcome:{...row.outcome,release:{...row.outcome.release,...corrupt.release}}});
+  await assert.rejects(delivered(h),{message:'BROWSER_OPERATION_UNAVAILABLE'},corrupt.label);
+  assert.equal(h.effects.length,1,`${corrupt.label}: no redispatch`);
+ }
+});
+
+test('a cancellation between the acknowledged claim and the forward reaches no effect',async()=>{
+ const controller=new AbortController();
+ const h=harness({poolOptions:{onCommit:()=>{if(h.sql.rows.size===1)controller.abort();}}});
+ await assert.rejects(delivered(h,{signal:controller.signal}).catch(error=>{throw error;}));
+ assert.equal(h.effects.length,0,'no effect after the claim was acknowledged');
 });
 
 test('the real runtime construction supplies the custody owner to browser operations',async()=>{

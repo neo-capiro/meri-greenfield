@@ -68,6 +68,17 @@ test('foreign scopes, a held run and a lost commit acknowledgement refuse',async
  await assert.rejects(append(lost,lost.input()),/UNKNOWN|EVENT/u);
 });
 
+test('the named receipt port refuses missing or empty canonical scopes',async()=>{
+ const h=setup();
+ await assert.throws(()=>h.store.appendBrowserReceipt(binding,h.input(),()=>{},undefined),{message:'BROWSER_RECEIPT_REFUSED'});
+ await assert.throws(()=>h.store.appendBrowserReceipt(binding,h.input(),()=>{},[]),{message:'BROWSER_RECEIPT_REFUSED'});
+ assert.equal(h.f.state.events.size,0,'nothing was stored');
+ // The valid path is unchanged: the same scopes still append and a retry still reuses the stored time.
+ const first=await append(h,h.input());
+ const later=await append(h,{...h.input(),createdAt:new Date(NOW+5000).toISOString()});
+ assert.equal(later.createdAt,first.createdAt);
+});
+
 test('a terminal run range refuses a late receipt',async()=>{
  const h=setup({state:'completed'});
  h.f.state.runs.get(key(binding)).sequence_end=9;

@@ -121,6 +121,15 @@ test('the migration is appended exactly once at ordinal 77 and only widens the d
  assert.match(sql,/att\.attname = 'delivery_id'/u,'located by attribute, not a guessed name');
  assert.match(sql,/pg_get_constraintdef/u);
  assert.doesNotMatch(sql,/CREATE TABLE|CREATE INDEX|GRANT |ALTER COLUMN|DROP TABLE/u);
+ // Exactly one original constraint, verified in full, and a hard refusal before any ALTER.
+ assert.match(sql,/SELECT count\(\*\) INTO matches/u,'counts the matching originals');
+ assert.match(sql,/IF matches <> 1 THEN/u);
+ assert.match(sql,/RAISE EXCEPTION 'MERI_INTENT_DELIVERY_CHECK_NOT_UNIQUE/u);
+ assert.match(sql,/IF definition NOT IN \(/u);
+ assert.match(sql,/RAISE EXCEPTION 'MERI_INTENT_DELIVERY_CHECK_UNEXPECTED/u);
+ assert.match(sql,/CHECK \(\(delivery_id ~ ''\^sdk:\[a-f0-9\]\{64\}\$''/u,'the exact original predicate');
+ assert.doesNotMatch(sql,/FOR constraint_name IN|LOOP/u,'no broad loop that can silently match nothing');
+ assert.equal((sql.match(/DROP CONSTRAINT/gu)??[]).length,1,'exactly one constraint is replaced');
  // The neighbouring ordinals keep their reviewed pins.
  assert.equal(PLAN[75].path,'apps/control/browser-hosts/migrations/0003_browser_only_teardown.sql');
  assert.equal(PLAN[75].pinned,'ad06f879d0202b37b32e5de7fae612e7a2603e7388a7393d5834bb2983c85992');

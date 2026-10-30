@@ -32,7 +32,10 @@ export function createBrowserOperations({hosts,readCapabilityRole,readBrowserPol
   const until=Math.min(execution.expiresAtMs,now()+budget);
   return Object.freeze({deadlineMs:until,async execute({signal}){
    if(descriptor===null){
-    const result=await hosts.executeBrowserOperation(operation,input,{signal,deadlineMs:until});
+    // Cancellation or elapsed budget immediately after the acknowledged claim never forwards the call.
+   signal?.throwIfAborted();
+   if(now()>=until)fail();
+   const result=await hosts.executeBrowserOperation(operation,input,{signal,deadlineMs:until});
     const response={binding:input.binding,result};assertBrowserOperationResponse(response,input.binding);return response;
    }
    // A real browser call without durable custody refuses: no unclaimed effect is ever dispatched.
@@ -43,8 +46,16 @@ export function createBrowserOperations({hosts,readCapabilityRole,readBrowserPol
     // PENDING/UNKNOWN/conflict never dispatch. Only an exact retained replay is released, and only
     // while its release window is still current.
     if(claim.variant!=='replayed'||!claim.result||!claim.release||claim.release.expiresAtMs<=now())fail();
+    // The retained release must describe THIS authenticated call: the same binding and the same
+    // currently authenticated scopes. A rehashed record digest never rescues a corrupted release.
+    if(canonicalSha256(claim.release.binding)!==canonicalSha256(input.binding)||
+     !Array.isArray(claim.release.scopes)||claim.release.scopes.length!==scopes.length||
+     claim.release.scopes.some((scope,index)=>canonicalSha256(scope)!==canonicalSha256(scopes[index])))fail();
     const replayed={binding:input.binding,result:claim.result};assertBrowserOperationResponse(replayed,input.binding);return replayed;
    }
+   // Cancellation or elapsed budget immediately after the acknowledged claim never forwards the call.
+   signal?.throwIfAborted();
+   if(now()>=until)fail();
    const result=await hosts.executeBrowserOperation(operation,input,{signal,deadlineMs:until});
    signal?.throwIfAborted();
    // The owner's acknowledgement is part of the answer: a lost settle is UNKNOWN, never success.

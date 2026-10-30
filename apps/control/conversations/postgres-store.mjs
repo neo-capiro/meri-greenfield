@@ -166,6 +166,9 @@ export function createPostgresConversationStore({pool,transitionAuthority,retent
   * other conversation event; only the receipt validator and the stored-time rule are added. */
  const appendBrowserReceipt=(binding,input,check,expectedScopes)=>{
   if(!isBrowserReceiptEventType(input?.type))fail('BROWSER_RECEIPT_REFUSED');
+  // A browser receipt is not appendable without the caller's canonical nonempty scopes; the existing
+  // run/scope checks then enforce exact equality with the stored run.
+  if(!Array.isArray(expectedScopes)||expectedScopes.length===0)fail('BROWSER_RECEIPT_REFUSED');
   return appendEvent(binding,input,check,expectedScopes);};
  const appendSource=(binding,input,check,expectedScopes)=>{if(!isNativeSourceEventType(input?.type)||!expectedScopes)fail('EVENT_TYPE_REFUSED');return appendEvent(binding,{...input,createdAt:new Date(now()).toISOString()},check,expectedScopes,false,true);};
  const lifecycle=createLifecycleJournal({tx,rowRun,transitionAuthority,assertConversationActive,now,onPublished,modelAdmission,cancelAppend:(binding,event,check,scopes)=>appendEvent(binding,event,check,scopes,true)});
