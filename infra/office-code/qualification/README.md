@@ -85,9 +85,16 @@ silent pass).
 
 ## `native-chart-flows.mjs` and `isolation-adapter.mjs`
 
-Stage order per case: open -> no-edit Save -> reopen of that saved identity ->
-unrelated title edit + Save -> intentional chart-data edit + Save -> reopen and
-re-check of the post-reopen bytes -> canonical Core verify.
+Stage order per invocation: open -> no-edit Save -> reopen -> unrelated title
+edit + Save -> intentional chart-data edit + Save -> reopen -> canonical Core
+verify.
+
+**One invocation = one manifest identity and its own original.** The case
+document, the `--identity`, the manifest entry and the original file must agree:
+the original's file name must equal the manifest `filename` and its SHA-256 must
+equal the manifest hash, checked before any navigation. The two affected
+documents are therefore two invocations, and pptx-04 keeps its own two slots
+(B2=9 and B2=11). Mixed case definitions are refused.
 
 They speak only the routes the retained public host
 (`work/code-native/host-font-corpus.mjs`) actually serves:
@@ -106,28 +113,37 @@ A label is a corpus manifest id with one of the host's supported suffixes
 routable set, so isolation comes from a separate host root, not from invented
 route identifiers. Anything else is refused as unroutable.
 
-`--editor` is required and supplies the browser work: `navigate(routePath)`
-(opening/relaunching and awaiting readiness) and `save()` (the editor's own
-Save). Save must advance the host's observed sequence; the adapter compares the
-sequence before and after and fails otherwise. Reopen renews claims and
-qualifies the saved label, never `/fresh`, and the flow compares the bytes and
-the sequence across the reopen.
+`--editor` is required and supplies the browser work: `preflight()`,
+`navigate(routePath)` (opening/relaunching and awaiting readiness) and `save()`
+(the editor's own Save). Save must advance the host's observed sequence;
+reopen renews claims and qualifies the saved label, never `/fresh`, and **both
+reopens** must keep the bytes and the save sequence unchanged.
 
-`materializeRunRoot()` copies the public harness layout into a new root: the
-host sits at the root it resolves `./cert.pem`, `./corpus/...` and its sibling
-modules from, so `run-root.json` records the paths the host will really use
-(`<root>/font-corpus/saved` in postgres mode, `<root>/corpus/saved` otherwise).
-Every relative module import of the copied host is checked to exist. It refuses
-a run root that overlaps the fixture root, a non-empty run root, an empty corpus
-selection, a manifest hash mismatch, and any PKI path inside the retained
-fixture; fresh operator certificate/key paths are explicit inputs and retained
-TLS material is never read or reused.
+Editor controls are resolved in an explicit **preflight** before any work: a
+control reported unavailable there makes its stage `NOT RUN` without being
+invoked. Once an effectful edit or save method has been called, any error —
+including `ControlUnavailable` after a partial edit — is `FAIL`, and the partial
+stage evidence stays in `stages.json`. `NOT RUN` makes the run `INCOMPLETE` with
+exit 3, never 0.
 
-There is no default host, editor, identity or output path. A missing editor
-control is `NOT RUN` only while that stage has not started work; a control lost
-after an edit or save has begun is `FAIL`, as is any other error. `NOT RUN`
-makes the run `INCOMPLETE` with exit 3, never 0. Stage results are written to
-`stages.json` after every stage, including on failure.
+`materializeRunRoot()` copies the public harness layout into a new root. A new
+root alone is not isolation: the public fixtures import their runtime modules by
+absolute `file:///.../wave6-capabilities-runtime/...` path and
+`core-native-port.mjs` spawns the retained bridge. So it requires an operator
+`runtimeRoot` and an isolated `coreBridge` (`{script, nodeExecutable}`), copies
+the public modules, and rewrites **only those import/spawn paths in the copy**.
+The host then sits at the root it resolves `./cert.pem`, `./corpus/...` and its
+sibling modules from, and `run-root.json` records the runtime, bridge,
+adaptations and the real output paths (`<root>/font-corpus/saved` in postgres
+mode, `<root>/corpus/saved` otherwise).
+
+Everything is validated before anything is written: resolved/real paths for
+fixture, runtime, run root, bridge and PKI; overlap and alias refusal; known
+public module selection only; manifest `filename` must be a plain file name;
+every selected input must match its manifest hash; every absolute runtime import
+must resolve under the operator runtime; and fresh operator certificate/key
+paths must be outside the retained fixture. Retained TLS is never read or
+reused, and the copied modules are never executed by these tests.
 
 The canonical verify body is correlated with the observed artifact: `id`,
 `sha256`, byte length and save `sequence` must match what the flow actually
@@ -140,29 +156,33 @@ flow reports `NOT RUN` rather than guessing. That is why no native stage is
 claimed here.
 
 ```
-node native-chart-flows.mjs --origin <isolated host origin> --identity <label> \
-  --manifest <corpus manifest.json> --cases <cases.json> --case-ids pptx-03,pptx-04 \
-  --original <pptx> --out <dir> --checker <checker path> --editor <module> \
+# one identity per invocation; repeat for pptx-03
+node native-chart-flows.mjs --origin <isolated host origin> --identity pptx-04 \
+  --manifest <run-root>/corpus/manifest.json --cases cases.json \
+  --original <run-root>/corpus/inputs/pptx-04.pptx --out <dir> \
+  --checker chart-workbook-fidelity.py --editor <driver module> \
   [--selectors <file> --playwright <module>] [--python python]
 ```
 
-`--case-ids` selects manifest identities from `cases.json`; the selection must
-be non-empty and every selected case must declare its chart slots and
-intentional edits.
+The case file supplies the chart slots and edits for that identity; the original
+must be that identity's manifest fixture, and nothing else is run.
 
 ## `test-flows.mjs`
 
 Inert tests for the orchestration and the adapter against a route-accurate
 in-memory host serving the same paths, with no socket, browser or CODE process:
-`/fresh` only on open, `/renew` + `/qualify` on reopen, observed save sequence,
-verify correlated by id/sha256/bytes/sequence (mismatched body, absent body and
-another identity all fail), empty/unknown selection refused, `cases.json` mapped
-to the two pptx-04 edits (B2=9 and B2=11), NOT RUN only before work and FAIL
-after it starts, and run-root materialization preserving the real layout while
-refusing overlapping roots, retained PKI, reused roots and empty selections.
+single-identity/native-hash binding and mixed-identity refusal, `/fresh` only on
+open, `/renew` + `/qualify` on reopen, observed save sequence, byte **and**
+sequence stability on both reopens, verify correlated by id/sha256/bytes/sequence,
+preflight-unavailable NOT RUN versus partial-edit FAIL, and run-root
+materialization over real public harness source text (pass
+`--public-fixture <code-native dir>`) that rebinds the copied absolute runtime
+imports and the copied Core bridge, validating everything before writing and
+refusing overlaps, aliases, retained PKI, traversal, hash mismatches, missing
+runtime modules and reused roots.
 
 ```
-node test-flows.mjs [--scratch <dir>]
+node test-flows.mjs [--scratch <dir>] [--public-fixture <code-native dir>]
 ```
 
 ## Running the gate

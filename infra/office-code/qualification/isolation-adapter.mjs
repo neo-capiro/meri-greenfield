@@ -2,42 +2,51 @@
  * Adapter between the Office241 chart flows and the EXISTING public
  * CODE/WOPI/Core qualification host (SCRUM-241).
  *
- * It encodes only what the retained public host actually does
- * (`work/code-native/host-font-corpus.mjs`):
+ * Only routes the retained public host actually serves are used:
  *
  *   GET  /fresh/<label>     create the document from the corpus input (RESETS)
  *   GET  /qualify/<label>   serve the editor for the existing identity
- *   POST /renew/<label>     refresh the editor claims and relaunch data
+ *   POST /renew/<label>     refresh editor claims and relaunch data
  *   GET  /state             {files: {<label>: {sequence, bytes, state, lock}}}
  *   GET  /saved/<label>     the saved bytes held by the host
  *   POST /verify/<label>    canonical persistence evidence (postgres host)
- *   <WOPI> /files/synthetic-<label>/contents
  *
- * Labels are `<manifest id>` with an optional supported suffix; that is the
- * complete routable set, so isolation comes from a separate host root and not
- * from inventing unsupported route identifiers.
+ * A label is a corpus manifest id plus one of the host's supported suffixes, so
+ * the complete routable set is accepted and isolation comes from a separate
+ * host root instead of invented identifiers.
  *
- * The host resolves every relative path from its own module URL, so an
- * isolated run root must contain the host at its root, next to the modules it
- * imports and the corpus manifest/inputs it reads. `materializeRunRoot` copies
- * exactly that public layout and refuses unsafe or aliased roots. Private TLS
- * material is never read or copied from the retained fixture: the operator
- * supplies fresh certificate/key paths explicitly.
+ * The host resolves every relative path from its own module URL, and two of its
+ * public modules reach outside that root:
+ *
+ *   qualification-fixture.mjs / qualification-pg-fixture.mjs
+ *       import absolute file:///...wave6-capabilities-runtime/... modules
+ *   core-native-port.mjs
+ *       spawns the retained core-native.cjs bridge
+ *
+ * A copied host therefore is NOT isolated by a new root alone. materializeRunRoot
+ * requires an operator-selected runtime source tree and an isolated Core bridge,
+ * then rewrites only those import/spawn paths in the COPY. The retained files
+ * are never modified, and retained private TLS/config is never read or copied.
+ *
+ * Everything is validated before anything is written.
  */
 import {createHash} from 'node:crypto';
-import {copyFile, mkdir, readdir, readFile, stat, writeFile} from 'node:fs/promises';
+import {copyFile, mkdir, readdir, readFile, realpath, stat, writeFile} from 'node:fs/promises';
 import {basename, dirname, join, relative, resolve, sep} from 'node:path';
 
-/** Suffixes the retained WOPI route and manifest lookup strip or accept. */
+/** Suffixes the retained WOPI route and manifest lookup accept. */
 export const HOST_SUFFIXES = ['', '-renew', '-revoke', '-expire', '-restart', '-lostack'];
 
-/** Modules the public host imports relative to its own root. */
+/** Public host modules copied as-is. core-native-port.mjs is adapted separately. */
 export const PUBLIC_HOST_FILES = [
   'host-font-corpus.mjs',
   'qualification-fixture.mjs',
   'qualification-pg-fixture.mjs',
-  'core-native-port.mjs',
 ];
+export const CORE_BRIDGE_FILE = 'core-native-port.mjs';
+
+/** The absolute source root the public fixtures import their runtime from. */
+export const RUNTIME_IMPORT_PATTERN = /file:\/\/\/(?:[^'"\s]*\/)?wave6-capabilities-runtime\//g;
 
 export class IsolationRefused extends Error {
   constructor(message) {
@@ -60,22 +69,15 @@ export class InputRefused extends Error {
   }
 }
 
-/** Split a routable label into manifest id and supported suffix. */
 export function parseFixtureLabel(label) {
   if (typeof label !== 'string' || !label) return null;
   for (const suffix of HOST_SUFFIXES) {
     if (!suffix) continue;
-    if (label.endsWith(suffix)) {
-      return {baseId: label.slice(0, -suffix.length), suffix};
-    }
+    if (label.endsWith(suffix)) return {baseId: label.slice(0, -suffix.length), suffix};
   }
   return {baseId: label, suffix: ''};
 }
 
-/**
- * Validate that a label is routable on the retained host: a manifest id plus a
- * supported suffix. Rejects anything else, because the host cannot route it.
- */
 export function resolveFixtureLabel(label, manifestIds) {
   const parsed = parseFixtureLabel(label);
   if (!parsed) throw new IsolationRefused('a routable fixture label is required');
@@ -89,12 +91,20 @@ export function resolveFixtureLabel(label, manifestIds) {
   return parsed;
 }
 
-function isInside(parent, child) {
+function inside(parent, child) {
   const path = relative(resolve(parent), resolve(child));
   return path === '' || (!path.startsWith('..') && !path.startsWith(sep));
 }
 
-/** Output paths the copied host will actually use, given its root. */
+async function realOrResolved(path) {
+  try {
+    return await realpath(path);
+  } catch {
+    return resolve(path);
+  }
+}
+
+/** Outputs the copied host will really use, given the run root it sits in. */
 export function expectedOutputs(runRoot, {postgres = true} = {}) {
   return {
     hostRoot: resolve(runRoot),
@@ -106,32 +116,56 @@ export function expectedOutputs(runRoot, {postgres = true} = {}) {
   };
 }
 
+function fileUrlOf(path) {
+  return 'file:///' + resolve(path).replace(/\\/g, '/').replace(/^\/+/, '');
+}
+
+/** Rewrite the runtime imports of a fixture module to the operator's tree. */
+export function adaptRuntimeImports(source, runtimeRoot) {
+  const replacement = fileUrlOf(runtimeRoot).replace(/\/+$/, '') + '/';
+  const hits = source.match(RUNTIME_IMPORT_PATTERN) ?? [];
+  const adapted = source.replace(RUNTIME_IMPORT_PATTERN, replacement);
+  return {adapted, count: hits.length};
+}
+
+/** Rewrite the retained bridge spawn to the operator's isolated bridge. */
+export function adaptCoreBridge(source, {script, nodeExecutable}) {
+  const spawnCall = /spawn\((?:[^;]*?),\[([^\]]*)\]/;
+  const match = source.match(spawnCall);
+  if (!match) {
+    throw new IsolationRefused('core-native-port.mjs does not expose the expected spawn call');
+  }
+  const args = script ? JSON.stringify(script) : null;
+  if (!args) throw new IsolationRefused('an isolated Core bridge script is required');
+  const executable = nodeExecutable
+    ? JSON.stringify(nodeExecutable)
+    : 'process.execPath';
+  const adapted = source.replace(spawnCall, `spawn(${executable},[${args}]`);
+  return {adapted, from: match[1], to: args};
+}
+
+const basenameOnly = name => typeof name === 'string' && name === basename(name)
+  && !name.includes('..') && !name.includes('/') && !name.includes('\\');
+
 /**
- * Copy the known public harness layout into a new isolated root.
+ * Copy the known public harness layout into a new isolated root, adapting only
+ * the copied absolute runtime/bridge paths to operator-selected sources.
  *
- * The host must end up at the root of the run root (it resolves `./cert.pem`,
- * `./corpus/...` and its sibling modules from import.meta.url). Every relative
- * import of the copied host is checked to exist afterwards, so a flattened copy
- * cannot silently break.
+ * Nothing is created until every input has been validated.
  */
 export async function materializeRunRoot({
-  fixtureRoot,
-  runRoot,
-  corpusIds,
-  postgres = true,
-  operatorPki,
-  files = PUBLIC_HOST_FILES,
-  fs = {},
+  fixtureRoot, runRoot, corpusIds, postgres = true,
+  runtimeRoot, coreBridge, operatorPki, fs = {},
 }) {
-  const ops = {copyFile, mkdir, readdir, readFile, stat, writeFile, ...fs};
-  if (!fixtureRoot || !runRoot) {
-    throw new IsolationRefused('fixtureRoot and runRoot are both required');
-  }
-  const fixture = resolve(fixtureRoot);
-  const target = resolve(runRoot);
-  if (isInside(fixture, target) || isInside(target, fixture)) {
+  const ops = {copyFile, mkdir, readdir, readFile, realpath, stat, writeFile, ...fs};
+  if (!fixtureRoot || !runRoot) throw new IsolationRefused('fixtureRoot and runRoot are required');
+  if (!runtimeRoot) {
     throw new IsolationRefused(
-      `runRoot ${target} overlaps the fixture root ${fixture}; choose a separate new root`);
+      'an explicit operator runtime source tree is required; the copied fixtures import it by absolute path');
+  }
+  if (postgres && !coreBridge) {
+    throw new IsolationRefused(
+      'an explicit isolated Core bridge is required for the postgres host; the retained bridge is not reused');
   }
   if (!Array.isArray(corpusIds) || !corpusIds.length) {
     throw new InputRefused('a non-empty corpus selection is required');
@@ -140,100 +174,171 @@ export async function materializeRunRoot({
     throw new IsolationRefused(
       'fresh operator PKI paths (certPath, keyPath) are required; retained TLS material is never reused');
   }
-  for (const [name, path] of Object.entries(operatorPki)) {
-    if (isInside(fixture, path)) {
-      throw new IsolationRefused(
-        `${name} ${path} is inside the retained fixture; supply a fresh operator copy`);
+
+  const fixtureReal = await realOrResolved(fixtureRoot);
+  const runtimeReal = await realOrResolved(runtimeRoot);
+  const parentReal = await realOrResolved(dirname(resolve(runRoot)));
+  const targetReal = join(parentReal, basename(resolve(runRoot)));
+
+  const guarded = [
+    ['runRoot', targetReal, fixtureReal],
+    ['runtime source', runtimeReal, fixtureReal],
+    ['PKI certificate', operatorPki.certPath, fixtureReal],
+    ['PKI key', operatorPki.keyPath, fixtureReal],
+  ];
+  for (const [name, path, root] of guarded) {
+    if (inside(root, path)) {
+      throw new IsolationRefused(`${name} ${path} is inside the retained fixture ${root}`);
     }
+  }
+  for (const other of [fixtureReal, runtimeReal]) {
+    if (inside(other, targetReal) || inside(targetReal, other)) {
+      throw new IsolationRefused(`runRoot ${targetReal} overlaps ${other}; choose a separate new root`);
+    }
+  }
+  if (coreBridge && coreBridge.script) {
+    const bridgeReal = await realOrResolved(coreBridge.script);
+    if (inside(fixtureReal, bridgeReal)) {
+      throw new IsolationRefused(`Core bridge ${bridgeReal} is inside the retained fixture`);
+    }
+    if (inside(targetReal, bridgeReal)) {
+      throw new IsolationRefused('the Core bridge must not live inside the run root it serves');
+    }
+    coreBridge = {...coreBridge, script: bridgeReal};
   }
 
   let exists = true;
   try {
-    await ops.stat(target);
+    await ops.stat(targetReal);
   } catch {
     exists = false;
   }
   if (exists) {
-    const entries = await ops.readdir(target);
-    if (entries.length) throw new IsolationRefused(`runRoot ${target} already exists and is not empty`);
+    const entries = await ops.readdir(targetReal);
+    if (entries.length) throw new IsolationRefused(`runRoot ${targetReal} already exists and is not empty`);
   }
-  await ops.mkdir(target, {recursive: true});
+  try {
+    await ops.stat(runtimeReal);
+  } catch {
+    throw new IsolationRefused(`runtime source ${runtimeReal} does not exist`);
+  }
 
-  const manifest = JSON.parse(await ops.readFile(join(fixture, 'corpus', 'manifest.json'), 'utf8'));
+  // ---- validation only, no writes yet ----
+  const manifest = JSON.parse(await ops.readFile(join(fixtureReal, 'corpus', 'manifest.json'), 'utf8'));
   if (!Array.isArray(manifest) || !manifest.length) {
     throw new IsolationRefused('the fixture corpus manifest is empty or malformed');
   }
-  const selected = manifest.filter(entry => corpusIds.includes(entry.id));
-  if (selected.length !== corpusIds.length) {
-    throw new InputRefused('every selected corpus id must exist in the fixture manifest');
-  }
-
-  const copied = [];
-  for (const name of files) {
-    const source = join(fixture, name);
-    const destination = join(target, name);
-    try {
-      await ops.copyFile(source, destination);
-    } catch (error) {
-      if (name === 'core-native-port.mjs') continue; // optional, postgres-only
-      throw new IsolationRefused(`cannot copy public harness file ${name}: ${error.message}`);
+  const selected = [];
+  for (const id of corpusIds) {
+    const entry = manifest.find(item => item.id === id);
+    if (!entry) throw new InputRefused(`${id} is not in the fixture manifest`);
+    if (!basenameOnly(entry.filename)) {
+      throw new IsolationRefused(`manifest filename ${entry.filename} is not a plain file name`);
     }
-    const payload = await ops.readFile(destination);
-    copied.push({name, sha256: createHash('sha256').update(payload).digest('hex')});
-  }
-
-  // Preserve the corpus layout the host reads: corpus/manifest.json + inputs/.
-  await ops.mkdir(join(target, 'corpus', 'inputs'), {recursive: true});
-  await ops.copyFile(join(fixture, 'corpus', 'manifest.json'),
-    join(target, 'corpus', 'manifest.json'));
-  const inputs = [];
-  for (const entry of selected) {
-    const source = join(fixture, 'corpus', 'inputs', entry.filename);
-    const destination = join(target, 'corpus', 'inputs', entry.filename);
-    await ops.copyFile(source, destination);
-    const payload = await ops.readFile(destination);
+    const source = join(fixtureReal, 'corpus', 'inputs', entry.filename);
+    const payload = await ops.readFile(source).catch(() => null);
+    if (!payload) throw new IsolationRefused(`corpus input ${entry.filename} is missing`);
     const digest = createHash('sha256').update(payload).digest('hex');
     if (entry.sha256 && digest !== entry.sha256) {
-      throw new IsolationRefused(`copied ${entry.filename} does not match its manifest hash`);
+      throw new IsolationRefused(`corpus input ${entry.filename} does not match its manifest hash`);
     }
-    inputs.push({id: entry.id, filename: entry.filename, sha256: digest});
+    selected.push({id, filename: entry.filename, sha256: digest, payload});
   }
 
-  await ops.copyFile(operatorPki.certPath, join(target, 'cert.pem'));
-  await ops.copyFile(operatorPki.keyPath, join(target, 'key.pem'));
+  const sources = {};
+  for (const name of PUBLIC_HOST_FILES) {
+    sources[name] = await ops.readFile(join(fixtureReal, name)).catch(() => null);
+    if (!sources[name]) throw new IsolationRefused(`public harness file ${name} is missing`);
+  }
+  let bridgeSource = null;
+  if (postgres) {
+    bridgeSource = await ops.readFile(join(fixtureReal, CORE_BRIDGE_FILE)).catch(() => null);
+    if (!bridgeSource) throw new IsolationRefused(`${CORE_BRIDGE_FILE} is missing from the fixture`);
+  }
 
-  // Every relative module import of the host must exist in the copy.
-  const hostSource = await ops.readFile(join(target, 'host-font-corpus.mjs'), 'utf8');
-  const relativeImports = [...hostSource.matchAll(/['"]\.\/([^'"]+\.mjs)['"]/g)]
-    .map(match => match[1]);
-  const missing = [];
-  for (const name of new Set(relativeImports)) {
+  // The adapted copies must resolve to real operator files.
+  const adaptations = [];
+  const adaptedFixtures = {};
+  for (const name of ['qualification-fixture.mjs', 'qualification-pg-fixture.mjs']) {
+    const {adapted, count} = adaptRuntimeImports(sources[name].toString('utf8'), runtimeReal);
+    if (!count) {
+      throw new IsolationRefused(`${name} has no runtime imports to rebind; layout changed`);
+    }
+    const imports = [...adapted.matchAll(/file:\/\/\/([^'"]+?\.mjs)/g)].map(match => match[1]);
+    for (const imported of imports) {
+      const path = process.platform === 'win32'
+        ? imported.replace(/^\/([A-Za-z]:)/, '$1')
+        : '/' + imported.replace(/^\/+/, '');
+      try {
+        await ops.stat(path);
+      } catch {
+        throw new IsolationRefused(`runtime source is missing ${path}`);
+      }
+    }
+    adaptedFixtures[name] = adapted;
+    adaptations.push({file: name, rebinds: count, runtime: fileUrlOf(runtimeReal)});
+  }
+  let bridgeAdaptation = null;
+  if (postgres) {
+    bridgeAdaptation = adaptCoreBridge(bridgeSource.toString('utf8'), coreBridge);
     try {
-      await ops.stat(join(target, name));
+      await ops.stat(coreBridge.script);
     } catch {
-      missing.push(name);
+      throw new IsolationRefused(`Core bridge ${coreBridge.script} does not exist`);
     }
-  }
-  if (missing.length) {
-    throw new IsolationRefused(`run root is missing host imports: ${missing.join(', ')}`);
+    adaptations.push({file: CORE_BRIDGE_FILE, bridge: coreBridge.script});
   }
 
-  const outputs = expectedOutputs(target, {postgres});
-  await ops.mkdir(outputs.saved, {recursive: true});
-  await ops.mkdir(dirname(outputs.continuous), {recursive: true});
+  // Every relative module import of the host must be satisfied by the copy.
+  const hostSource = sources['host-font-corpus.mjs'].toString('utf8');
+  const relativeImports = new Set([...hostSource.matchAll(/['"]\.\/([^'"]+\.mjs)['"]/g)]
+    .map(match => match[1]));
+  for (const name of relativeImports) {
+    if (!PUBLIC_HOST_FILES.includes(name) && name !== CORE_BRIDGE_FILE) {
+      throw new IsolationRefused(`host imports ${name}, which is not a known public module`);
+    }
+    if (name === CORE_BRIDGE_FILE && !postgres) continue;
+  }
+
+  // ---- writes start here ----
+  await ops.mkdir(join(targetReal, 'corpus', 'inputs'), {recursive: true});
+  await ops.mkdir(join(targetReal, 'font-corpus', 'saved'), {recursive: true});
+  const copied = [];
+  for (const name of PUBLIC_HOST_FILES) {
+    const payload = adaptedFixtures[name] !== undefined
+      ? Buffer.from(adaptedFixtures[name], 'utf8')
+      : sources[name];
+    await ops.writeFile(join(targetReal, name), payload);
+    copied.push({name, sha256: createHash('sha256').update(sources[name]).digest('hex')});
+  }
+  if (postgres) {
+    await ops.writeFile(join(targetReal, CORE_BRIDGE_FILE), bridgeAdaptation.adapted);
+    copied.push({name: CORE_BRIDGE_FILE, adapted: true});
+  }
+  await ops.copyFile(join(fixtureReal, 'corpus', 'manifest.json'), join(targetReal, 'corpus', 'manifest.json'));
+  for (const entry of selected) {
+    await ops.writeFile(join(targetReal, 'corpus', 'inputs', entry.filename), entry.payload);
+  }
+  await ops.copyFile(operatorPki.certPath, join(targetReal, 'cert.pem'));
+  await ops.copyFile(operatorPki.keyPath, join(targetReal, 'key.pem'));
+
+  const outputs = expectedOutputs(targetReal, {postgres});
   const record = {
-    schema: 'meri-office241-run-root/2',
+    schema: 'meri-office241-run-root/3',
     hostRoot: outputs.hostRoot,
-    host: basename(join(target, 'host-font-corpus.mjs')),
+    host: 'host-font-corpus.mjs',
     postgres,
     copied,
-    inputs,
+    inputs: selected.map(entry => ({id: entry.id, filename: entry.filename, sha256: entry.sha256})),
     outputs,
-    pki: {cert: join(target, 'cert.pem'), key: join(target, 'key.pem'),
+    runtime: {root: runtimeReal, url: fileUrlOf(runtimeReal)},
+    bridge: postgres ? {script: coreBridge.script, nodeExecutable: coreBridge.nodeExecutable ?? null} : null,
+    adaptations,
+    pki: {cert: join(targetReal, 'cert.pem'), key: join(targetReal, 'key.pem'),
       source: {certPath: operatorPki.certPath, keyPath: operatorPki.keyPath}},
     retainedTreeUntouched: true,
   };
-  await ops.writeFile(join(target, 'run-root.json'), JSON.stringify(record, null, 2) + '\n');
+  await ops.writeFile(join(targetReal, 'run-root.json'), JSON.stringify(record, null, 2) + '\n');
   return record;
 }
 
@@ -241,13 +346,7 @@ const decoder = new TextDecoder();
 
 /**
  * HTTP adapter for a host started from an isolated run root. Every request path
- * is one the retained host actually serves.
- *
- * `editor` performs the browser work outside this module:
- *   editor.navigate(routePath) -> opens/relaunches the editor and awaits ready
- *   editor.save()             -> triggers the editor's own Save and awaits it
- * A missing editor is refused: comparing the host's unchanged bytes would not
- * prove an open, an edit or a reopen.
+ * is one the retained host serves; the browser work is delegated to `editor`.
  */
 export async function createHttpAdapter({origin, identity, editor, manifestIds, fetchImpl}) {
   if (!origin || !/^https?:\/\//.test(origin)) {
@@ -260,7 +359,6 @@ export async function createHttpAdapter({origin, identity, editor, manifestIds, 
   }
   const request = fetchImpl ?? globalThis.fetch;
   if (typeof request !== 'function') throw new IsolationRefused('a fetch implementation is required');
-  const encode = identity;
 
   const state = async () => {
     const response = await request(`${origin}/state`);
@@ -272,38 +370,35 @@ export async function createHttpAdapter({origin, identity, editor, manifestIds, 
     origin,
     identity,
     async open() {
-      await editor.navigate(`/fresh/${encode}`);
+      await editor.navigate(`/fresh/${identity}`);
     },
     async save() {
-      const before = (await state()).files?.[encode]?.sequence ?? 0;
+      const before = (await state()).files?.[identity]?.sequence ?? 0;
       await editor.save();
-      const after = (await state()).files?.[encode]?.sequence ?? 0;
+      const after = (await state()).files?.[identity]?.sequence ?? 0;
       if (after <= before) {
         throw new Error(`native Save did not advance the host sequence (${before} -> ${after})`);
       }
       return {sequence: after};
     },
     async reopen() {
-      // The host resets on /fresh, so reopen renews the claims and reopens the
-      // existing identity through /qualify.
-      const renewal = await request(`${origin}/renew/${encode}`, {method: 'POST'});
+      const renewal = await request(`${origin}/renew/${identity}`, {method: 'POST'});
       if (!renewal.ok) throw new Error(`renew failed: ${renewal.status}`);
-      await editor.navigate(`/qualify/${encode}`);
+      await editor.navigate(`/qualify/${identity}`);
     },
     async bytes() {
-      const response = await request(`${origin}/saved/${encode}`);
+      const response = await request(`${origin}/saved/${identity}`);
       if (!response.ok) throw new Error(`saved bytes unavailable: ${response.status}`);
       return Buffer.from(await response.arrayBuffer());
     },
     async sequence() {
-      return (await state()).files?.[encode]?.sequence ?? 0;
+      return (await state()).files?.[identity]?.sequence ?? 0;
     },
     async verify() {
-      const response = await request(`${origin}/verify/${encode}`, {method: 'POST'});
-      const text = decoder.decode(await response.arrayBuffer());
+      const response = await request(`${origin}/verify/${identity}`, {method: 'POST'});
       let body = null;
       try {
-        body = JSON.parse(text);
+        body = JSON.parse(decoder.decode(await response.arrayBuffer()));
       } catch {
         body = null;
       }
@@ -312,47 +407,36 @@ export async function createHttpAdapter({origin, identity, editor, manifestIds, 
   };
 }
 
-/**
- * Route-accurate in-memory host for inert tests. It serves the same paths the
- * retained host serves, including the resetting /fresh and the non-resetting
- * /qualify, so the adapter can be tested without a socket.
- */
-export function createInertHost({manifestIds, documents = {}, postgres = true,
-  verifyBody = null} = {}) {
+/** Route-accurate in-memory host for inert tests (same paths, no socket). */
+export function createInertHost({manifestIds, documents = {}, postgres = true, verifyBody = null} = {}) {
   const files = new Map();
   const requests = [];
-  const ok = body => ({ok: true, status: 200,
-    json: async () => body, arrayBuffer: async () => Buffer.from(JSON.stringify(body))});
+  const ok = body => ({ok: true, status: 200, json: async () => body,
+    arrayBuffer: async () => Buffer.from(JSON.stringify(body))});
   const binary = payload => ({ok: true, status: 200,
-    json: async () => { throw new Error('not json'); },
-    arrayBuffer: async () => Buffer.from(payload)});
-  const fail = status => ({ok: false, status, json: async () => null,
-    arrayBuffer: async () => Buffer.alloc(0)});
+    json: async () => { throw new Error('not json'); }, arrayBuffer: async () => Buffer.from(payload)});
+  const fail = status => ({ok: false, status, json: async () => null, arrayBuffer: async () => Buffer.alloc(0)});
 
   const fetchImpl = async (url, options = {}) => {
-    const parsed = new URL(url);
-    const path = parsed.pathname;
+    const path = new URL(url).pathname;
     const method = options.method ?? 'GET';
     requests.push({method, path});
     const label = path.split('/').at(-1);
     if (path === '/state') {
       return ok({files: Object.fromEntries([...files].map(([key, value]) =>
-        [key, {sequence: value.sequence, bytes: value.bytes.length, state: 'draft',
-          lock: false}]))});
+        [key, {sequence: value.sequence, bytes: value.bytes.length, state: 'draft', lock: false}]))});
     }
     if (path.startsWith('/fresh/')) {
-      const parsedLabel = resolveFixtureLabel(label, manifestIds);
-      const seed = documents[parsedLabel.baseId];
-      if (!seed) return fail(404);
-      files.set(label, {sequence: 0, bytes: Buffer.from(seed)});
+      const parsed = resolveFixtureLabel(label, manifestIds);
+      if (!documents[parsed.baseId]) return fail(404);
+      files.set(label, {sequence: 0, bytes: Buffer.from(documents[parsed.baseId])});
       return ok({seeded: true});
     }
     if (path.startsWith('/qualify/')) {
       if (!files.has(label)) {
-        const parsedLabel = resolveFixtureLabel(label, manifestIds);
-        const seed = documents[parsedLabel.baseId];
-        if (!seed) return fail(404);
-        files.set(label, {sequence: 0, bytes: Buffer.from(seed)});
+        const parsed = resolveFixtureLabel(label, manifestIds);
+        if (!documents[parsed.baseId]) return fail(404);
+        files.set(label, {sequence: 0, bytes: Buffer.from(documents[parsed.baseId])});
       }
       return ok({qualified: true});
     }
@@ -362,16 +446,14 @@ export function createInertHost({manifestIds, documents = {}, postgres = true,
     }
     if (path.startsWith('/saved/')) {
       const entry = files.get(label);
-      if (!entry) return fail(404);
-      return binary(entry.bytes);
+      return entry ? binary(entry.bytes) : fail(404);
     }
     if (path.startsWith('/verify/') && method === 'POST') {
       if (!postgres) return fail(404);
       const entry = files.get(label);
       if (!entry || !entry.sequence) return fail(409);
       const body = typeof verifyBody === 'function' ? verifyBody({label, entry}) : verifyBody;
-      if (!body) return fail(500);
-      return ok(body);
+      return body ? ok(body) : fail(500);
     }
     return fail(404);
   };
@@ -380,7 +462,6 @@ export function createInertHost({manifestIds, documents = {}, postgres = true,
     fetchImpl,
     requests,
     state: files,
-    /** Simulate the editor performing a native Save of new bytes. */
     save(label, bytes) {
       const entry = files.get(label);
       if (!entry) throw new Error(`no identity ${label}`);
