@@ -92,7 +92,7 @@ async function stopChild(child,ms){
  if(!done)fail('HOST_LAUNCH_CLEANUP_UNKNOWN');return {stopped:true};
 }
 function nativeSpec(s,{kind,network,command,args,cwd,home,browsersPath,uid:runUid,gid:runGid}){
- if(!['sdk','browser','relay-sdk','relay-browser'].includes(kind)||!uid(runUid)||!uid(runGid)||
+ if(!['sdk','browser','relay-sdk','relay-browser','processing'].includes(kind)||!uid(runUid)||!uid(runGid)||
   ![command,cwd,home,browsersPath].every(absolute)||!Array.isArray(args)||args.length>100||
   args.some(value=>typeof value!=='string'||value.length>8192||value.includes('\0'))||
   !NAME.test(network.namespace)||!DECIMAL.test(network.namespaceDev)||!DECIMAL.test(network.namespaceIno))fail('HOST_LAUNCH_CONFIGURATION');
@@ -404,6 +404,29 @@ export function createBrowserOnlyHostLauncher(raw){
    return Object.freeze({installation:installed,readable:browser.stdout,writable:browser.stdin,close});
   }catch(error){try{await close();}catch{fail('HOST_LAUNCH_CLEANUP_UNKNOWN');}throw error;}
  }});
+}
+
+/** Fixed scan/extract/render processing child on the conversation host: one finite cgroup leaf, one direct confined
+ * child (kind `processing`), READY observed, placement verified BEFORE GO. No SDK, no relay, no model authority. */
+export async function startConfinedProcessing({allocation,binding,hostIdentity,helperPath,networkProof,command,args,
+ cwd,uid:runUid,gid:runGid,onPrepared,signal,spawnNative=spawn,readyMs=5000,stopMs=5000}={}){
+ const s=scope({allocation,binding,hostIdentity});
+ if(!absolute(helperPath)||!absolute(command)||!absolute(cwd)||typeof onPrepared!=='function'||
+  !uid(runUid)||!uid(runGid)||!maxMs(readyMs)||!maxMs(stopMs))fail('HOST_LAUNCH_CONFIGURATION');
+ nativeSignal(signal);
+ if(networkProof?.verified!==true||networkProof.kind!=='processing'||networkProof.allocationSha256!==s.allocationSha256||
+  networkProof.bindingSha256!==s.bindingSha256||!/^\/run\/netns\/[a-z0-9-]{1,63}$/u.test(networkProof.namespacePath))fail('HOST_LAUNCH_NETWORK_REFUSED');
+ const network={namespace:networkProof.namespacePath.split('/').at(-1),namespaceDev:networkProof.namespaceDev,namespaceIno:networkProof.namespaceIno};
+ if(signal?.aborted)fail('HOST_LAUNCH_CANCELLED');
+ const child=spawnNative(helperPath,['run',...nativeSpec(s,{kind:'processing',network,command,args,cwd,home:cwd,browsersPath:cwd,uid:runUid,gid:runGid})],
+  {env:{},stdio:['ignore','ignore','ignore','pipe','pipe'],windowsHide:true});
+ if(!child||!Number.isSafeInteger(child.pid)||!child.stdio?.[3]||!child.stdio?.[4])fail('HOST_LAUNCH_UNKNOWN');
+ try{
+  if(await within(()=>lineReader(child.stdio[3])(),readyMs,signal)!=='R')fail('HOST_LAUNCH_UNKNOWN');
+  await onPrepared({leaderPid:child.pid,kind:'processing',signal});
+  if(signal?.aborted)fail('HOST_LAUNCH_CANCELLED');child.stdio[4].end('G');
+  return Object.freeze({pid:child.pid,kind:'processing',async close(){await stopChild(child,stopMs);return Object.freeze({closed:true});}});
+ }catch(error){await stopChild(child,stopMs);throw error;}
 }
 
 /** Standalone port needed while the network owner is preparing its namespace-local loopback relay. The network
