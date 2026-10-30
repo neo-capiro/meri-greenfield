@@ -40,7 +40,9 @@ export function assertNativeProcessingAllocation(value){
 }
 /** Pin the entire admitted RunBinding, including attempt, worker and writer fence. */
 export function assertHostRunBinding(allocation,binding){
- const a=assertBrowserHostAllocation(allocation);
+ // GENERIC identity validator: the native-processing envelope pins its own binding through this, so it must
+ // accept a processing allocation; purpose checks live at the browser AUTHORITY entrypoints.
+ const a=assertHostAllocation(allocation);
  let b;try{b=data(binding);validateShape('RunBinding',b);}catch{fail('HOST_BINDING_REFUSED');}
  if(b.tenantId!==a.tenantId||b.conversationId!==a.conversationId)fail('HOST_BINDING_REFUSED');
  return Object.freeze(b);
@@ -48,7 +50,8 @@ export function assertHostRunBinding(allocation,binding){
 
 /** Native identity for the pinned allocation. The trusted bootstrap owner, not run data, must establish these IDs. */
 export function assertD005HostIdentity(value,binding,allocation){
- const a=assertBrowserHostAllocation(allocation),b=assertHostRunBinding(a,binding);
+ // Generic host identity: valid for every allocation mode.
+ const a=assertHostAllocation(allocation),b=assertHostRunBinding(a,binding);
  let i;try{i=record(value,['schema','instanceId','bootId','conversationId','hostId']);}catch{fail('HOST_IDENTITY_REFUSED');}
  if(i.schema!==D005_HOST_IDENTITY_SCHEMA||typeof i.instanceId!=='string'||!INSTANCE.test(i.instanceId)||typeof i.bootId!=='string'||!UUID.test(i.bootId)||i.conversationId!==b.conversationId||i.hostId!==a.hostId)fail('HOST_IDENTITY_REFUSED');
  return Object.freeze(i);

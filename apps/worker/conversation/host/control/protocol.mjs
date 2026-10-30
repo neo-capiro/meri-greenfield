@@ -1,6 +1,6 @@
 /** Fixed wire identity for one D005 currentness read. Shape checks never establish authority. */
 import {own,data,nativeSignal} from '../../../../../packages/contracts/commands-0.2/execution-boundary.mjs';
-import {assertHostAllocation,assertHostRunBinding,assertD005HostIdentity,assertHostCurrent,assertBrowserHostCurrent} from '../binding.mjs';
+import {assertHostAllocation,assertBrowserHostAllocation,assertHostRunBinding,assertD005HostIdentity,assertHostCurrent,assertBrowserHostCurrent} from '../binding.mjs';
 
 export const HOST_CONTROL_REQUEST_SCHEMA='meri-host-currentness-request/1';
 export const HOST_CONTROL_RESPONSE_SCHEMA='meri-host-currentness-response/1';
@@ -18,7 +18,8 @@ export function hostClientDnsName(allocation){
 export function hostControlRequest(value){
  let v,a,b,i;try{
   v=own(data(value),['schema','allocation','binding','hostIdentity','purpose','policySha256','nonce']);
-  a=assertHostAllocation(v.allocation);b=assertHostRunBinding(a,v.binding);i=assertD005HostIdentity(v.hostIdentity,b,a);
+  // Every NAMED browser/SDK/Bash authority path refuses a native-processing allocation here.
+  a=assertBrowserHostAllocation(v.allocation);b=assertHostRunBinding(a,v.binding);i=assertD005HostIdentity(v.hostIdentity,b,a);
  }catch{fail();}
  if(v.schema!==HOST_CONTROL_REQUEST_SCHEMA||!HOST_CONTROL_PURPOSES.includes(v.purpose)||
   typeof v.policySha256!=='string'||!HEX.test(v.policySha256)||
@@ -89,7 +90,8 @@ export const HOST_OPERATION_REQUEST_MAX_BYTES=HOST_CONTROL_MAX_BYTES;
 export function hostOperationRequest(value,schema){
  let v,a,b,i;try{
   v=own(data(value),['schema','allocation','binding','hostIdentity','nonce']);
-  a=assertHostAllocation(v.allocation);b=assertHostRunBinding(a,v.binding);i=assertD005HostIdentity(v.hostIdentity,b,a);
+  // Every NAMED browser/SDK/Bash authority path refuses a native-processing allocation here.
+  a=assertBrowserHostAllocation(v.allocation);b=assertHostRunBinding(a,v.binding);i=assertD005HostIdentity(v.hostIdentity,b,a);
  }catch{fail();}
  if(v.schema!==schema||typeof v.nonce!=='string'||!HEX.test(v.nonce))fail();
  return Object.freeze({schema,allocation:a,binding:b,hostIdentity:i,nonce:v.nonce});
