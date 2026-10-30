@@ -1,18 +1,16 @@
-/** Inert shared fixture for the browser-only service tests (no child processes, no certificate issuance).
+/** Inert shared fixture for the browser-only service tests.
  *
- * TLS: no approved compatible STATIC source certificate material (<=15 min lifetime, exact DNS SAN) exists in this tree,
- * and this allocation forbids minting certificates or running helper children. TLS-dependent positive flows are
- * therefore reported unavailable and skipped with an explicit reason; every non-TLS validation and real-owner refusal
- * still runs.
+ * mTLS bytes come from the STATIC fixture `testfixture/tls-fixture.mjs` (generated once offline; tests never run Python,
+ * a helper process or key/certificate generation). The explicit fixed clock is inside that leaf's 10-minute window.
  */
 import {binding, installation, enabledPolicy} from '../../worker/conversation/browser/test/fixtures.mjs';
 import {validateBrowserPolicy} from '../../worker/conversation/browser/policy.mjs';
 import {canonicalSha256} from '../../../packages/contracts/validate.mjs';
 import {BROWSER_WORKSPACE_READBACK_SCHEMA} from '../../worker/conversation/host/browser-workspace/readback.mjs';
 import {browserPaths} from '../../worker/conversation/browser/workspace.mjs';
+import {TLS, FIXTURE_NOW_MS} from './testfixture/tls-fixture.mjs';
 
-/** Exact reason shown for every skipped TLS-dependent case (no material is invented). */
-export const TLS_UNAVAILABLE = 'unavailable: no approved static <=15min mTLS fixture with the required DNS SAN; minting certificates and helper children are out of scope';
+export {TLS, FIXTURE_NOW_MS};
 
 export const {launch, ...contextInstallation} = installation;
 export const policy = validateBrowserPolicy(enabledPolicy());
@@ -22,7 +20,7 @@ export const paths = browserPaths(cwd);
 export const allocation = Object.freeze({
   schema: 'meri-conversation-host-allocation/1', tenantId: binding.tenantId, conversationId: binding.conversationId, generation: 1,
   hostMode: 'browser-only', hostId: '00000000-0000-4000-8000-000000000002',
-  imageDigest: `sha256:${'a'.repeat(64)}`, leaseDeadlineMs: Date.now() + 300000,
+  imageDigest: `sha256:${'a'.repeat(64)}`, leaseDeadlineMs: FIXTURE_NOW_MS + 240000,
 });
 export const hostIdentity = Object.freeze({
   schema: 'meri-d005-host-identity/1', instanceId: 'i-0123456789abcdef0',
@@ -37,18 +35,17 @@ export function workspaceReadback(overrides = {}) {
     hostIdentitySha256: canonicalSha256(hostIdentity), cwd, profile: paths.profile, output: paths.output, home: paths.home,
     browserUid: 2002, browserGid: 2002, sdkUid: 1001, sdkGid: 1001, leaderPid: 301,
     browserMountNamespace: 'mnt:[4026533000]', browserStartTicks: '12345', overlayMountId: '55', stateMountId: '56',
-    originalCwdInode: '42', stateInode: '43', observedAtMs: Date.now(), ...overrides,
+    originalCwdInode: '42', stateInode: '43', observedAtMs: FIXTURE_NOW_MS, ...overrides,
   };
 }
 
-/** Structurally complete input whose TLS bytes are absent; validation must refuse it before any effect. */
-export function baseInput(overrides = {}) {
-  const events = [];
+/** Structurally complete, canonically accepted input on the fixed clock. `events` is the shared recorder. */
+export function baseInput(events = [], overrides = {}) {
   const input = {
-    allocation, binding, hostIdentity, cwd, deadlineMs: Date.now() + 60000,
+    allocation, binding, hostIdentity, cwd, deadlineMs: FIXTURE_NOW_MS + 60000, now: () => FIXTURE_NOW_MS,
     policy, installation: contextInstallation, upstream: {createConnection() {}}, controls: {bind() {}},
     current: async () => ({binding}), siteWorkflows: {}, hold: async () => ({}), dispose: async () => ({disposed: true}),
-    browserClient: {async readCurrent() { events.push('current'); return {allocation, binding, policySha256, phase: 'active', checkedAtMs: Date.now(), currentUntilMs: Date.now() + 1000}; }},
+    browserClient: {async readCurrent() { events.push('current'); return {allocation, binding, policySha256, phase: 'active', checkedAtMs: FIXTURE_NOW_MS, currentUntilMs: FIXTURE_NOW_MS + 1000}; }},
     maxFreshMs: 1000,
     workspaceOwnership: {sdkUid: 1001, sdkGid: 1001, browserUid: 2002, browserGid: 2002},
     prepareBrowserWorkspace: () => { events.push('prepare-workspace'); return {cwd, paths, cwdInode: '42', stateInode: '43'}; },
@@ -60,8 +57,8 @@ export function baseInput(overrides = {}) {
     browserNetwork: {plan: {kind: 'browser', namespaceName: 'browser-ns', routes: [{name: 'browser-http', localPort: 3128}]}, verify: async () => ({})},
     authority: {readCurrent: async () => ({}), policySha256, maxFreshMs: 1000},
     helperPath: '/opt/meri/bin/meri-host-launcher', browserUid: 2002, browserGid: 2002,
-    readRun: async () => ({binding, cwd, deadlineMs: Date.now() + 60000, port: {modelTransport: 'host-owned', policy: async () => policy}}),
-    viewer: {bind: {address: '127.0.0.1', port: 9443}, tls: {serverName: 'browser.meri.internal'}, peer: PEER},
+    readRun: async () => ({binding, cwd, deadlineMs: FIXTURE_NOW_MS + 60000, port: {modelTransport: 'host-owned', policy: async () => policy}}),
+    viewer: {bind: {address: '127.0.0.1', port: 9443}, tls: TLS, peer: PEER},
   };
   return {...input, ...overrides};
 }
@@ -75,20 +72,22 @@ export function serviceFixture(overrides = {}) {
   const viewGate = new Promise(resolve => { releaseView = () => resolve({address: '127.0.0.1', port: 9443}); });
   const stalledClose = new Promise(resolve => { releaseClose = resolve; });
   const sessions = {ownerInstanceId: 'session-facade', async open() { counters.open++; events.push('session-open'); }, async destroy() { events.push('session-destroy'); }};
-  const input = baseInput(overrides.input);
+  const input = baseInput(events, overrides.input);
   const deps = {
-    launcher: config => ({
-      async prepareBrowserContext() {
-        events.push('launch');
-        if (overrides.prepareFails) throw Object.assign(Error('LAUNCH_REFUSED'), {code: 'HOST_LAUNCH_UNKNOWN'});
-        if (overrides.preparePending) { await prepareGate; events.push('prepare-late'); }
-        // The real launcher calls onBrowserPrepared before GO; a refused callback must refuse GO.
-        await config.onBrowserPrepared({leaderPid: 301, kind: 'browser'});
-        events.push('go');
-        return {readable: {}, writable: {}, installation: contextInstallation, close: async () => { events.push('launch-close'); }};
-      },
-      close: async () => { events.push('launcher-close'); },
-    }),
+    launcher: config => {
+      events.push('launcher-ctor');
+      return {
+        async prepareBrowserContext() {
+          events.push('prepare');
+          if (overrides.prepareFails) throw Object.assign(Error('LAUNCH_REFUSED'), {code: 'HOST_LAUNCH_UNKNOWN'});
+          if (overrides.preparePending) { await prepareGate; events.push('prepare-late'); }
+          await config.onBrowserPrepared({leaderPid: 301, kind: 'browser'});
+          events.push('go');
+          return {readable: {}, writable: {}, installation: contextInstallation, close: async () => { events.push('launch-close'); }};
+        },
+        close: async () => { events.push('launcher-close'); },
+      };
+    },
     contextPort: () => ({async create() { return {}; }, close: async () => { events.push('context-close'); }}),
     sessionHost: () => sessions,
     operationHost: () => ({executeBrowserOperation: async () => ({})}),

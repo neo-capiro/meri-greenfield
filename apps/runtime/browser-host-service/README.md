@@ -47,8 +47,9 @@ consumed. Neither substitutes for the other.
   observer. A local close failure never prevents the independent physical attempt; `HOST_TEARDOWN_UNKNOWN` is returned
   as the receipt (UNKNOWN preserved, private state kept) and a local failure surfaces
   `BROWSER_HOST_SERVICE_CLEANUP_UNKNOWN`. Concurrent/ repeated `destroy()` settle once.
-- Terminal triggers are real: the caller's AbortSignal, the canonical allocation/run expiry and any manual
-  destroy/startup failure abort one owned terminal signal that fences pending currentness/workspace/acquisition work;
+- Terminal triggers are real: the caller's AbortSignal, the canonical allocation/run expiry, manual destroy AND
+  startup failure all revoke one owned terminal lifetime before the canonical final teardown (correction 06; the earlier
+  text claimed startup failure was covered when it was not) that fences pending currentness/workspace/acquisition work;
   a late resolution cannot prepare workspace state or acquire observers after settlement. All reach the same final
   teardown (including during startup). Local settlement is bounded by `localSettleMs`: a stalled start or close
   becomes UNKNOWN and the independent instance/volume/ENI destroy+readback backstop still runs.
@@ -62,7 +63,8 @@ controls binder, session currentness, site workflows, hold, dispose, host-wide p
 `verifyConfinement`), cloud `destroy`/`observeAbsent`, canonical `readRun`, context installation + pinned upstream,
 native helper path and browser uid/gid, viewer mTLS material, the hard-held activation record, and the still-UNBOUND
 provisioning LOGIN/protected credential reference. `entrypoint.mjs` derives readiness from the ACTUAL owner objects through the canonical validators (host binding/identity, browser policy, context installation and its egress match, the closed authority shape
-`{policySha256,readCurrent,maxFreshMs}`, the browser network plan/verify interface, distinct SDK/browser UID and GID
+`{policySha256,readCurrent,maxFreshMs}` validated with the same closed-shape `own()` the real launcher uses, so extra
+keys are refused too, the browser network plan/verify interface, distinct SDK/browser UID and GID
 pairs, non-expired canonical deadlines, and TLS bytes via `tlsBytes`/`checkedCertificate`); a list of binding names can
 never produce `ready:true`, and
 `createBrowserHostServiceEntrypoint({inputs})` returns the finite start/stop handles without starting anything.
@@ -70,9 +72,10 @@ never produce `ready:true`, and
 ## Tested here vs not tested here
 
 `node --test apps/runtime/browser-host-service/*.test.mjs` runs the real imported owners for their own refusals, the
-canonical browser-only teardown UNKNOWN receipt and every non-TLS pre-effect validation. TLS-dependent positive flows
-are skipped with an explicit reason: this tree has no approved static mTLS fixture (<=15 min lifetime, exact DNS SAN)
-and this allocation forbids minting certificates or running helper children. The native Linux launch, cgroup
+canonical browser-only teardown UNKNOWN receipt, the pre-effect validations and the full positive lifecycle against the
+STATIC mTLS fixture in `testfixture/tls-fixture.mjs` (generated once offline in correction 06; 10-minute leaf, exact DNS
+SAN, fixed fixture clock). Tests only import those saved bytes: importing or running them never invokes Python, a helper
+process or key/certificate generation. The native Linux launch, cgroup
 confinement, mTLS listener, browser context and physical absence paths are **not run on Windows**: they need the
 image-pinned Linux helper and kernel cgroup/network namespaces. Scripted ports in the lifecycle tests are not native
 evidence. Source composition is not deployed acceptance.

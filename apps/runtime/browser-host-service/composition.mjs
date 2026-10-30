@@ -34,6 +34,7 @@ import {assertHostAllocation, assertHostRunBinding, assertD005HostIdentity} from
 import {validateBrowserPolicy} from '../../worker/conversation/browser/policy.mjs';
 import {validateBrowserContextInstallation} from '../../worker/conversation/browser/server.mjs';
 import {privateAddress, dnsName, fingerprint, tlsBytes, checkedCertificate} from '../../worker/conversation/host/control/tls.mjs';
+import {own} from '../../../packages/contracts/commands-0.2/execution-boundary.mjs';
 
 const fail = code => {
   throw Object.assign(new Error(code), {code});
@@ -78,7 +79,9 @@ export function assertBrowserOnlyServiceInputs(input) {
   // Trusted inputs and owner interfaces.
   if (typeof v.current !== 'function' || typeof v.hold !== 'function' || typeof v.dispose !== 'function') fail('BROWSER_HOST_SERVICE_CURRENTNESS_UNBOUND');
   // Closed authority shape exactly as the real launcher authorities() requires; v.maxFreshMs is not a substitute.
-  const authority = v.authority ?? {};
+  let authority;
+  try { authority = own(v.authority ?? {}, ['policySha256', 'readCurrent', 'maxFreshMs']); }
+  catch { fail('BROWSER_HOST_SERVICE_AUTHORITY_SHAPE_REFUSED'); }
   if (!/^[0-9a-f]{64}$/u.test(authority.policySha256 ?? '') || typeof authority.readCurrent !== 'function' ||
       !Number.isSafeInteger(authority.maxFreshMs) || authority.maxFreshMs < 1 || authority.maxFreshMs > 30000) fail('BROWSER_HOST_SERVICE_CURRENTNESS_UNBOUND');
   // Browser network plan/verify plus the matching egress configuration the real launcher requires.
@@ -143,7 +146,7 @@ export function composeBrowserOnlyHostService(input, dependencies = {}) {
   });
 
   let launch, contextPort, sessionHost, operationHost, viewer, preparedWorkspace;
-  let starting, started = false, tearingDown = false, destroyed, retained = false, armed = false;
+  let starting, started = false, tearingDown = false, destroying, destroyed, retained = false, armed = false;
   const terminal = new AbortController();
   const fence = () => { if (!terminal.signal.aborted) terminal.abort(Object.assign(Error('BROWSER_HOST_SERVICE_TORN_DOWN'), {code: 'BROWSER_HOST_SERVICE_TORN_DOWN'})); };
   const listeners = [];
@@ -214,16 +217,26 @@ export function composeBrowserOnlyHostService(input, dependencies = {}) {
             onBrowserPrepared: async ({leaderPid, kind}) => {
               if (kind !== 'browser' || armed) fail('BROWSER_HOST_SERVICE_PROCESS_ARM_REFUSED');
               if (!live() || terminal.signal.aborted || !preparedWorkspace) fail('BROWSER_HOST_SERVICE_TORN_DOWN');
-              // The workspace receipt exists before this launcher; do the measured readback + per-profile arm and the
-              // separate host-wide arm, both before GO.
+              // The workspace receipt exists before this launcher; the measured readback + per-profile arm inside the
+              // real helper and the separate host-wide arm are both fenced by the owned terminal lifetime.
+              const fencedObserver = Object.freeze({
+                async arm(input) {
+                  if (!live() || terminal.signal.aborted) fail('BROWSER_HOST_SERVICE_TORN_DOWN');
+                  const receipt = await v.sessionProcesses.arm(input);
+                  if (!live() || terminal.signal.aborted) throw Object.assign(Error('BROWSER_HOST_SERVICE_TORN_DOWN'), {code: 'BROWSER_HOST_SERVICE_TORN_DOWN'});
+                  return receipt;
+                },
+              });
               await owners.armWorkspaceReadback({
                 allocation, binding, hostIdentity, cwd: v.cwd, paths,
                 browserUid: v.browserUid, browserGid: v.browserGid,
                 sdkUid: v.workspaceOwnership.sdkUid, sdkGid: v.workspaceOwnership.sdkGid,
-                leaderPid, browserObserver: v.sessionProcesses, preparedWorkspace,
+                leaderPid, browserObserver: fencedObserver, preparedWorkspace,
                 ...(v.readWorkspace === undefined ? {} : {readWorkspace: v.readWorkspace}), now,
               });
+              if (!live() || terminal.signal.aborted) fail('BROWSER_HOST_SERVICE_TORN_DOWN');
               const receipt = await v.processes.arm({browserLeaderPid: leaderPid});
+              if (!live() || terminal.signal.aborted) throw Object.assign(Error('BROWSER_HOST_SERVICE_TORN_DOWN'), {code: 'BROWSER_HOST_SERVICE_TORN_DOWN'});
               if (receipt?.armed !== true) fail('BROWSER_HOST_SERVICE_PROCESS_ARM_REFUSED');
               armed = true;
             },
@@ -263,8 +276,12 @@ export function composeBrowserOnlyHostService(input, dependencies = {}) {
           started = true;
           return Object.freeze({started: true, address, ownerInstanceId: sessionHost.ownerInstanceId});
         } catch (error) {
-          if (error?.code === 'BROWSER_HOST_SERVICE_TORN_DOWN') throw error;
-          const {problems} = await finalTeardown('failed');
+          // Every terminal path revokes the owned lifetime; this is the same owner destroy() uses.
+          fence();
+          tearingDown = true;
+          if (error?.code === 'BROWSER_HOST_SERVICE_TORN_DOWN') { throw error; }
+          const {receipt, problems} = await finalTeardown('failed');
+          if (!destroyed) destroyed = Object.freeze({...(receipt ?? {status: 'UNKNOWN'}), failure: true});
           if (problems.length) fail('BROWSER_HOST_SERVICE_CLEANUP_UNKNOWN');
           throw error;
         }
@@ -273,23 +290,25 @@ export function composeBrowserOnlyHostService(input, dependencies = {}) {
     },
     destroy({reason = 'conversation-end'} = {}) {
       if (destroyed) return destroyed;
-      if (tearingDown) return destroyed;
+      if (destroying) return destroying;
       tearingDown = true;
       fence();
       const pending = starting;
       const settledProblems = [];
-      destroyed = (async () => {
+      destroying = (async () => {
         // A stalled acquisition may not block the physical backstop: bounded terminal settlement.
         if (pending) {
           const settled = await within(() => pending.catch(() => undefined), localSettleMs);
           if (settled.timedOut) settledProblems.push(Object.assign(Error('BROWSER_HOST_SERVICE_START_SETTLE_TIMEOUT'), {code: 'BROWSER_HOST_SERVICE_START_SETTLE_TIMEOUT'}));
         }
+        if (destroyed) return destroyed;
         const {receipt, problems} = await finalTeardown(reason);
         const all = [...settledProblems, ...problems];
         if (all.length) throw Object.assign(new Error('BROWSER_HOST_SERVICE_CLEANUP_UNKNOWN', {cause: all}), {code: 'BROWSER_HOST_SERVICE_CLEANUP_UNKNOWN'});
-        return Object.freeze({...receipt, sourceSettled: retained});
+        destroyed = Object.freeze({...receipt, sourceSettled: retained});
+        return destroyed;
       })();
-      return destroyed;
+      return destroying;
     },
   };
 
