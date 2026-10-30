@@ -19,12 +19,11 @@ export function nativeProcessingReadiness({config,verifyCustody}){
  const missing=[];
  if(config===null||typeof config!=='object')missing.push('configuration');
  if(typeof verifyCustody!=='function')missing.push('canonical.custody:pending-parent');
- return Object.freeze({ready:missing.length===0,missing:Object.freeze(missing),endpoint:NATIVE_INSPECTION_PATH,
-  export:PARENT_CUSTODY_EXPORTS});
+ return Object.freeze({ready:missing.length===0,missing:Object.freeze(missing),endpoint:NATIVE_INSPECTION_PATH,});
 }
 
 export async function startNativeProcessingHost({env=globalThis.process?.env??{},readFile=readFileSync,
- verifyCustody=undefined,openHost=openNativeProcessingHost}={}){
+ verifyCustody=undefined,openHost=openNativeProcessingHost,serverFactory=createServer}={}){
  const config=nativeProcessingConfig({env});
  const readiness=nativeProcessingReadiness({config,verifyCustody});
  if(!readiness.ready)return Object.freeze({started:false,readiness});
@@ -43,29 +42,31 @@ export async function startNativeProcessingHost({env=globalThis.process?.env??{}
    if(fingerprint(print)!==config.tls.peerFingerprint)return {verified:false};
    const checked=checkedCertificate(raw.raw,{name:config.tls.peerSan,nowMs:Date.now(),
     maxLifetimeMs:config.tls.maxPeerLifetimeMs,notAfterMs:config.tls.peerNotAfterMs});
-   return {verified:true,fingerprintSha256:checked.fingerprintSha256};
+   return {verified:true,fingerprintSha256:checked.fingerprintSha256,notAfterMs:checked.notAfterMs};
   },
   verifyCustody,
-  openHost:({allocation,binding,hostIdentity,authority,deadlineMs})=>openHost({config,allocation,binding,hostIdentity,
-   authority,deadlineMs}),
+  openHost:({allocation,binding,hostIdentity,authority,deadlineMs,signal})=>openHost({config,allocation,binding,
+   hostIdentity,authority,deadlineMs,signal}),
   readBody:(req,limit,deadline,signal)=>new Promise((resolve,reject)=>{
-   let total=0;const chunks=[];
-   const finish=(error,value)=>{clearTimeout(timer);error?reject(error):resolve(value);};
-   const timer=setTimeout(()=>{req.destroy();finish(Object.assign(Error('UPLOAD_INSPECTION_REQUEST_REFUSED'),{code:'UPLOAD_INSPECTION_REQUEST_REFUSED'}));},
-    Math.max(1,deadline-Date.now()));
-   const onAbort=()=>{finish(Object.assign(Error('UPLOAD_INSPECTION_REQUEST_REFUSED'),{code:'UPLOAD_INSPECTION_REQUEST_REFUSED'}));};
+   let total=0,finished=false;const chunks=[];
+   const refuse=()=>Object.assign(Error('UPLOAD_INSPECTION_REQUEST_REFUSED'),{code:'UPLOAD_INSPECTION_REQUEST_REFUSED'});
+   const detach=()=>{clearTimeout(timer);signal?.removeEventListener('abort',onAbort);
+    req.removeListener?.('data',onData);req.removeListener?.('end',onEnd);req.removeListener?.('error',onError);};
+   const finish=(error,value)=>{if(finished)return;finished=true;detach();error?reject(error):resolve(value);};
+   const timer=setTimeout(()=>{req.destroy?.();finish(refuse());},Math.max(1,deadline-Date.now()));
+   const onAbort=()=>finish(refuse());
+   const onData=chunk=>{if(finished)return;total+=chunk.length;
+    if(total>limit){req.destroy?.();finish(refuse());return;}chunks.push(chunk);};
+   const onEnd=()=>finish(null,Buffer.concat(chunks));
+   const onError=error=>finish(error);
    signal?.addEventListener('abort',onAbort,{once:true});
    if(signal?.aborted)onAbort();
-   const cleanup=()=>signal?.removeEventListener('abort',onAbort);
-   req.on('data',chunk=>{total+=chunk.length;
-    if(total>limit){cleanup();req.destroy();finish(Object.assign(Error('UPLOAD_INSPECTION_REQUEST_REFUSED'),{code:'UPLOAD_INSPECTION_REQUEST_REFUSED'}));return;}
-    chunks.push(chunk);});
-   req.on('end',()=>{cleanup();finish(null,Buffer.concat(chunks));});
-   req.on('error',error=>{cleanup();finish(error);});
+   req.on('data',onData);req.on('end',onEnd);req.on('error',onError);
   }),
-  limits:{deadlineMaxMs:config.limits.deadlineMaxMs,bodyBytes:config.limits.bodyBytes},
+  limits:{deadlineMaxMs:config.limits.deadlineMaxMs,bodyBytes:config.limits.bodyBytes,cleanupMs:config.limits.deadlineMaxMs,
+   leaseDeadlineMs:config.allocation.leaseDeadlineMs,peerNotAfterMs:config.tls.peerNotAfterMs},
   onActivity:controller=>{active.add(controller);return()=>active.delete(controller);}});
- const server=createServer({key,cert,ca,minVersion:'TLSv1.3',maxVersion:'TLSv1.3',requestCert:true,rejectUnauthorized:true},handler);
+ const server=serverFactory({key,cert,ca,minVersion:'TLSv1.3',maxVersion:'TLSv1.3',requestCert:true,rejectUnauthorized:true},handler);
  await new Promise((resolve,reject)=>{server.once('error',reject);server.listen(config.listen.port,config.listen.address,resolve);});
  return Object.freeze({started:true,server,readiness,
   close:()=>new Promise(resolve=>{
@@ -78,7 +79,7 @@ export async function startNativeProcessingHost({env=globalThis.process?.env??{}
 
 /** Executable CLI main: composes the production verifier (Parent's canonical export) when it is installed and otherwise
  * stops with the exact missing join. It is a real entrypoint, not an uninvoked factory. */
-export async function main({env=globalThis.process?.env??{},verifyCustody,onStarted}={}= {}){
+export async function main({env=globalThis.process?.env??{},verifyCustody,onStarted}={}){
  const started=await startNativeProcessingHost({env,verifyCustody});
  if(started.started!==true){
   globalThis.process.stderr.write(JSON.stringify({ready:false,missing:started.readiness.missing}));
@@ -86,7 +87,12 @@ export async function main({env=globalThis.process?.env??{},verifyCustody,onStar
   return started;
  }
  // Bounded SIGTERM/SIGINT cleanup: active work is signalled and the listener closed before exit.
- const stop=async()=>{try{await started.close();}finally{globalThis.process.exit(0);}};
+ let stopping=false;
+ const stop=async()=>{
+  if(stopping)return;stopping=true;
+  let disposition=null;try{disposition=await started.close();}catch{}
+  globalThis.process.exit(disposition?.closed===true?0:1);   // a cleanup unknown is a nonzero exit
+ };
  globalThis.process.once('SIGTERM',stop);globalThis.process.once('SIGINT',stop);
  onStarted?.(started);
  return started;

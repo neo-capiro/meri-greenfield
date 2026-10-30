@@ -64,7 +64,7 @@ function realChildRunner({status='clean',clock,delayMs=0} = {}, composeOverride)
   if(delayMs)await new Promise(resolve=>setTimeout(resolve,delayMs));
   let captured=Buffer.alloc(0);
   const stdout=new Writable({write(chunk,_e,cb){captured=Buffer.concat([captured,Buffer.from(chunk)]);cb();}});
-  await childMain({stdin:Readable.from([input]),stdout,now:clock,
+  await childMain({stdin:Readable.from([input]),stdout,now:clock,identity:()=>({uid:1000,gid:1000}),
    inspect:argsIn=>inspectFixed({...argsIn,compose:composeOverride??childCompose({status,clock}),
     run:async()=>({stdout:Buffer.alloc(0)})})});
   return {stdout:captured};
@@ -72,7 +72,8 @@ function realChildRunner({status='clean',clock,delayMs=0} = {}, composeOverride)
  return {run,calls};
 }
 
-function handlerFor({peer=true,custody=true,runner,complete=true,lateSetup=null,cleanup={closed:true}}={}) {
+function handlerFor({peer=true,custody=true,runner,complete=true,lateSetup=null,cleanup={closed:true},requestOverride=null}={}) {
+ const wireRequest=requestOverride??REQUEST;
  const calls=[];
  const handler=createInspectionHandler({
   authenticate:async()=>{calls.push('authenticate');return {verified:peer};},
@@ -90,7 +91,7 @@ function handlerFor({peer=true,custody=true,runner,complete=true,lateSetup=null,
    if(signal?.aborted)return reject(Object.assign(Error('UPLOAD_INSPECTION_REQUEST_REFUSED'),{code:'UPLOAD_INSPECTION_REQUEST_REFUSED'}));
    const timer=setTimeout(()=>reject(Object.assign(Error('UPLOAD_INSPECTION_REQUEST_REFUSED'),{code:'UPLOAD_INSPECTION_REQUEST_REFUSED'})),Math.max(1,deadline-Date.now()));
    setTimeout(()=>{clearTimeout(timer);resolve(Buffer.from(JSON.stringify({schema:NATIVE_INSPECTION_SCHEMA,
-     allocation:ALLOCATION,hostIdentity:IDENTITY,binding:BINDING,custody:{uploadId:uuid(9)},request:REQUEST})));},0);
+     allocation:ALLOCATION,hostIdentity:IDENTITY,binding:BINDING,custody:{uploadId:uuid(9)},request:wireRequest})));},0);
   }),
   limits:LIMITS});
  return {handler,calls};
@@ -145,6 +146,7 @@ test('CONNECTED: late setup after cancellation is unwound once and never reports
   const pending=handler(badReq,r); setTimeout(()=>badReq.emit('close'),5);
   await pending;
   assert.notEqual(r.status,200,'a cancelled operation never yields a successful inspection');
+  await new Promise(resolve=>setTimeout(resolve,90));
   assert.equal(closed,1,'the late owner was closed exactly once');
   assert.notEqual(JSON.parse(r.body).error,'NATIVE_INSPECTION_CLEANUP_UNKNOWN',
    'a proven unwind is reported as the cancellation, not as cleanup unknown');
@@ -229,4 +231,68 @@ test('cleanup unknown is never reported as a successful inspection', async () =>
   const r=res(); await handlerLeaky(req({complete:true}),r);
   assert.equal(r.status,503);
   assert.equal(JSON.parse(r.body).error,'NATIVE_INSPECTION_CLEANUP_UNKNOWN');
+});
+
+test('STARTUP: readiness evaluates without a ReferenceError and names the pending canonical join', async () => {
+ const {nativeProcessingReadiness}=await import('./entrypoint.mjs');
+ const readiness=nativeProcessingReadiness({config:{},verifyCustody:undefined});
+ assert.equal(readiness.ready,false);
+ assert.deepEqual(readiness.missing,['canonical.custody:pending-parent']);
+ assert.equal(readiness.endpoint,NATIVE_INSPECTION_PATH);
+});
+
+test('AUTH NEGATIVES: route, plaintext, peer, absent verifier and denied custody never dispatch', async () => {
+ const mk=({peer=true,custody=true,url=NATIVE_INSPECTION_PATH,encrypted=true}={})=>{
+  const calls=[];
+  const handler=createInspectionHandler({
+   authenticate:async()=>{calls.push('authenticate');return {verified:peer};},
+   verifyCustody:async()=>{calls.push('custody');return {authorized:custody};},
+   openHost:async()=>{calls.push('open');return {runRequest:async()=>({}),close:async()=>({closed:true})};},
+   readBody:async()=>Buffer.from(JSON.stringify({schema:NATIVE_INSPECTION_SCHEMA,allocation:ALLOCATION,
+    hostIdentity:IDENTITY,binding:BINDING,custody:{uploadId:uuid(9)},request:REQUEST})),
+   limits:{deadlineMaxMs:2000,bodyBytes:NATIVE_BODY_LIMIT}});
+  return {handler,calls,request:{method:'POST',url,socket:{encrypted},headers:{},once(){},removeListener(){}}};
+ };
+ const cases=[['route',{url:'/nope'},404],['tls',{encrypted:false},403],['peer',{peer:false},403],['custody',{custody:false},400]];
+ for(const [name,options,status] of cases){
+  const {handler,calls,request}=mk(options); const out=res();
+  await handler(request,out);
+  assert.equal(out.status,status,`${name}: ${out.body}`);
+  assert.equal(calls.includes('open'),false,`${name} dispatched`);
+ }
+ const noVerifier=createInspectionHandler({authenticate:async()=>({verified:true}),openHost:async()=>{throw Error('x');},
+  readBody:async()=>Buffer.from('{}'),limits:{deadlineMaxMs:1000,bodyBytes:4096}});
+ const out=res(); await noVerifier({method:'POST',url:NATIVE_INSPECTION_PATH,socket:{encrypted:true},headers:{},
+  once(){},removeListener(){}},out);
+ assert.equal(out.status,503);
+ assert.equal(JSON.parse(out.body).error,'NATIVE_INSPECTION_CUSTODY_UNBOUND');
+});
+
+test('LIFECYCLE: a permanently stalled setup is bounded, and a later owner is closed exactly once', async () => {
+ let resolveSetup=null,closed=0;
+ const stalling=async()=>new Promise(resolve=>{resolveSetup=()=>resolve({runRequest:async()=>({}),
+  close:async()=>{closed+=1;return {closed:true};}});});
+ const {handler,calls}=handlerFor({runner:realChildRunner(),lateSetup:stalling});
+ const out=res(); const began=Date.now();
+ await handler(req({complete:true}),out);
+ assert.ok(Date.now()-began<5000,'the operation settled instead of waiting for the stalled setup');
+ assert.notEqual(out.status,200);
+ assert.equal(calls.includes('open'),true);
+ resolveSetup();                                   // fulfillment AFTER the bounded cleanup window
+ await new Promise(r=>setTimeout(r,150));
+ assert.equal(closed,1,'the late owner is still closed exactly once');
+});
+
+test('LIFECYCLE: a request whose deadline already passed dispatches nothing', async () => {
+ const {handler,calls}=handlerFor({runner:realChildRunner(),
+  requestOverride:{...REQUEST,deadlineMs:Date.now()-1}});
+ const out=res(); await handler(req({complete:true}),out);
+ assert.notEqual(out.status,200);
+ assert.equal(calls.includes('open'),false);
+});
+
+test('CHILD: the actual process identity must be UID/GID 1000', async () => {
+ await assert.rejects(childMain({stdin:Readable.from([Buffer.from('{}')]),
+  stdout:new Writable({write(_c,_e,cb){cb();}}),identity:()=>({uid:0,gid:0})}),
+  e=>e?.code==='UPLOAD_INSPECTION_REQUEST_REFUSED');
 });

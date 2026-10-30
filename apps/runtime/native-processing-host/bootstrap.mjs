@@ -38,9 +38,10 @@ export function assertHostMatch({config,allocation,binding,hostIdentity,request,
   !same(hostIdentity.instanceId,fixed.instanceId)||!same(hostIdentity.bootId,fixed.bootId))refuse();
  if(allocation.imageDigest!==config.image.digest)refuse();
  if(request!==undefined&&request.imageDigest!==config.image.digest)refuse();
- for(const lease of [allocation.leaseDeadlineMs,fixed.leaseDeadlineMs]){
-  if(!Number.isSafeInteger(lease)||lease<=now())refuse();
- }
+ if(!Number.isSafeInteger(allocation.leaseDeadlineMs)||allocation.leaseDeadlineMs<=now())refuse();
+ if(!Number.isSafeInteger(fixed.leaseDeadlineMs)||fixed.leaseDeadlineMs<=now())refuse();
+ // The configuration pins THIS host's lease; an authorized allocation may not silently extend or shorten it.
+ if(allocation.leaseDeadlineMs!==fixed.leaseDeadlineMs)refuse();
  return true;
 }
 
@@ -52,8 +53,11 @@ export async function openNativeProcessingHost({config,allocation,binding,hostId
  if(config?.allocation?.leaseDeadlineMs<Date.now())fault('NATIVE_PROCESSING_ALLOCATION_REFUSED');
  const {command,args,settings}=childInvocation(config);
  let compartment=null,placement=null;
+ const checkLive=()=>{if(signal?.aborted)throw Object.assign(Error('NATIVE_PROCESSING_CANCELLED'),{code:'NATIVE_PROCESSING_CANCELLED'});};
  try{
+  checkLive();
   compartment=await openCompartment({allocation,binding,signal});
+  checkLive();
   placement=await openPlacement({allocation,binding,hostIdentity,authority,limits:config.limits,network:compartment,
    helperPath:config.paths.helperPath,home:config.paths.home,browsersPath:config.paths.home,
    uid:config.paths.runtimeUid,gid:config.paths.runtimeGid,signal});

@@ -12,15 +12,29 @@ export const NATIVE_INSPECTION_SCHEMA='meri-native-upload-inspection/1';
 export const NATIVE_INSPECTION_PATH='/internal/upload-inspection';
 const BODY_KEYS=Object.freeze(['schema','allocation','hostIdentity','binding','custody','request']);
 const fault=code=>{throw uploadInspectionFault(code);};
-/** Bounded settlement of a setup owner that resolved after the operation already failed. */
-async function settleLateOwner(pending,ms){
- let host=null;let settled=true;
- try{host=await Promise.race([pending,new Promise(resolve=>setTimeout(()=>resolve(undefined),ms))]);}
- catch{return 'unsettled';}
- if(host===undefined)return 'unsettled';
- try{const out=await Promise.race([host.close(),new Promise(resolve=>setTimeout(()=>resolve({closed:false}),ms))]);
-  settled=out?.closed===true;}catch{settled=false;}
- return settled?'closed':'unsettled';
+/** One idempotent cleanup promise per acquired owner, so a stale close call can never run twice. */
+const cleanups=new WeakMap();
+function cleanupOnce(host){
+ let pending=cleanups.get(host);
+ if(pending===undefined){
+  pending=(async()=>{
+   try{const value=await host.close();
+    return value?.closed===true?{closed:true}:{closed:false,code:value?.code??'NATIVE_INSPECTION_CLEANUP_UNKNOWN'};}
+   catch(error){return {closed:false,code:error?.code??'NATIVE_INSPECTION_CLEANUP_UNKNOWN'};}
+  })();
+  cleanups.set(host,pending);
+ }
+ return pending;
+}
+/** Bounded wait over an already-started promise. The timer is always cleared and the promise is never abandoned: a
+ * later fulfillment is still handled by its own continuation. */
+function boundedWait(promise,ms){
+ return new Promise(resolve=>{
+  let done=false;
+  const timer=setTimeout(()=>{if(done)return;done=true;resolve({settled:false});},Math.max(1,ms));
+  promise.then(value=>{if(done)return;done=true;clearTimeout(timer);resolve({settled:true,value});},
+   error=>{if(done)return;done=true;clearTimeout(timer);resolve({settled:true,value:{closed:false,code:error?.code}});});
+ });
 }
 
 /** Closed wire validation; the custody projection is opaque here and interpreted only by Parent's validator. */
@@ -32,7 +46,7 @@ export function nativeInspectionBody(raw){
   if(raw.schema!==NATIVE_INSPECTION_SCHEMA||!raw.allocation||!raw.hostIdentity||!raw.binding||!raw.custody)
    fault('UPLOAD_INSPECTION_REQUEST_REFUSED');
   value=raw;
- }catch(error){if(error?.code)fault('UPLOAD_INSPECTION_REQUEST_REFUSED');fault('UPLOAD_INSPECTION_REQUEST_REFUSED');}
+ }catch{fault('UPLOAD_INSPECTION_REQUEST_REFUSED');}
  const {request,bytes}=uploadInspectionRequest(value.request);
  return Object.freeze({allocation:value.allocation,hostIdentity:value.hostIdentity,binding:value.binding,
   custody:value.custody,request,bytes});
@@ -55,9 +69,11 @@ export function createInspectionHandler({authenticate,verifyCustody,openHost,rea
   req?.once?.('close',onReqClose);
   res?.once?.('close',onResClose);
   const track=onActivity===undefined?null:onActivity(controller);
+  let host=null,cleanupUnknown=false;
+  const cleanupMs=Number.isSafeInteger(limits.cleanupMs)&&limits.cleanupMs>0?limits.cleanupMs:5000;
+  const cleanupDeadline=()=>Math.max(1,(started+limits.deadlineMaxMs+cleanupMs)-now());
   const send=(status,payload)=>{try{res.writeHead(status,{'content-type':'application/json','cache-control':'no-store'});
    res.end(JSON.stringify(payload));}catch{}};
-  let host=null,cleanupUnknown=false;
   try{
    const life=createOperationLifetime({deadlineMs:started+limits.deadlineMaxMs,now,signal:controller.signal,
     errorFactory:uploadInspectionFault});
@@ -69,29 +85,42 @@ export function createInspectionHandler({authenticate,verifyCustody,openHost,rea
     const peer=await life.run(signal=>authenticate({socket:req.socket,headers:req.headers,deadlineMs:life.deadline(),signal}));
     if(peer?.verified!==true)fault('NATIVE_INSPECTION_PEER');
     if(typeof verifyCustody!=='function')fault('NATIVE_INSPECTION_CUSTODY_UNBOUND');
+    // The trusted lease and the peer certificate expiry are part of ONE operation deadline, applied to the lifetime.
+    const capped=Math.min(life.deadline(),Number.isSafeInteger(limits.leaseDeadlineMs)?limits.leaseDeadlineMs:Infinity,
+     Number.isSafeInteger(peer.notAfterMs)?peer.notAfterMs:Infinity,
+     Number.isSafeInteger(limits.peerNotAfterMs)?limits.peerNotAfterMs:Infinity);
+    life.limitDeadline(capped);
     const raw=await life.run(signal=>readBody(req,limits.bodyBytes,life.deadline(),signal));
     let parsed;try{parsed=JSON.parse(raw.toString('utf8'));}catch{fault('UPLOAD_INSPECTION_REQUEST_REFUSED');}
     const body=nativeInspectionBody(parsed);
-    // The request deadline is folded into the same lifetime, so authority/setup cannot outlive the request.
-    const deadline=Math.min(body.request.deadlineMs,life.deadline(),limits.leaseDeadlineMs??Infinity);
+    if(body.request.imageDigest!==body.allocation?.imageDigest&&body.allocation?.imageDigest!==undefined)
+     fault('NATIVE_INSPECTION_CUSTODY_REFUSED');
+    const deadline=Math.min(body.request.deadlineMs,life.deadline());
+    life.limitDeadline(deadline);
     const granted=await life.run(signal=>verifyCustody({allocation:body.allocation,hostIdentity:body.hostIdentity,
      binding:body.binding,custody:body.custody,request:body.request,peer,deadlineMs:deadline,signal}));
     if(granted?.authorized!==true)fault('NATIVE_INSPECTION_CUSTODY_REFUSED');
-    // Late setup: if the lifetime rejects while setup is still running, keep the pending owner and unwind whatever it
-    // eventually returns inside a separate bounded cleanup window. Nothing clean is reported while ownership is unsettled.
+    // Setup is raced through the SAME lifetime, and its promise is retained: if it fulfills after this operation already
+    // failed, the continuation below closes that owner exactly once instead of leaking it.
+    let settled=false,lateCleanup=null;
     const pendingSetup=Promise.resolve().then(()=>openHost({allocation:granted.allocation??body.allocation,
-     binding:granted.binding??body.binding,hostIdentity:granted.hostIdentity??body.hostIdentity,
-     authority:granted.currentness,deadlineMs:deadline,signal:controller.signal}));
-    try{host=await pendingSetup;}
-    catch(error){
-     const late=await settleLateOwner(pendingSetup,limits.cleanupMs??5000);
-     if(late!=='closed'){cleanupUnknown=true;fault('NATIVE_INSPECTION_CLEANUP_UNKNOWN');}
-     throw error;
+      binding:granted.binding??body.binding,hostIdentity:granted.hostIdentity??body.hostIdentity,
+      authority:granted.currentness,deadlineMs:deadline,signal:controller.signal}))
+     .then(value=>{if(settled){lateCleanup=cleanupOnce(value);}else{host=value;}return value;});
+    try{await life.run(()=>pendingSetup);}
+    catch(setupError){
+     settled=true;
+     const target=host??null;
+     if(target!==null){const result=await boundedWait(cleanupOnce(target),cleanupDeadline());if(result.settled!==true||result.value?.closed!==true)cleanupUnknown=true;}
+     else if(lateCleanup!==null){const result=await boundedWait(lateCleanup,cleanupDeadline());if(result.settled!==true||result.value?.closed!==true)cleanupUnknown=true;}
+     else cleanupUnknown=false;   // nothing acquired yet; the retained continuation still closes anything that arrives
+     throw setupError;
     }
+    settled=true;
+    if(host===null)fault('NATIVE_INSPECTION_UNKNOWN');
     let out;
     try{out=await life.run(signal=>host.runRequest({requestDocument:body.request,deadlineMs:deadline,signal}));}
     catch(error){
-     // The placement runner already settled the group; retain an honest unknown rather than a success or a bare kill.
      const code=error?.preDispatchCleanup?.unknown===true?'NATIVE_INSPECTION_CLEANUP_UNKNOWN':
       (typeof error?.code==='string'?error.code:'NATIVE_INSPECTION_UNKNOWN');
      fault(code);
@@ -99,14 +128,16 @@ export function createInspectionHandler({authenticate,verifyCustody,openHost,rea
     let value;try{value=JSON.parse(Buffer.from(out?.stdout??out).toString('utf8'));}catch{fault('UPLOAD_INSPECTION_RESULT_REFUSED');}
     const closed=uploadInspectionResult(value,{requestId:body.request.requestId,declaration:body.request.declaration,
      imageDigest:body.request.imageDigest,fromMs:started,toMs:now()});
-    // A success response is only sent when the owned operation's own cleanup succeeded.
-    if(host!==null){const disposition=await host.close();host=null;
-     if(disposition?.closed!==true){cleanupUnknown=true;fault('NATIVE_INSPECTION_CLEANUP_UNKNOWN');}}
+    life.check();
+    // A success response requires this operation's own cleanup to be proven closed within the bounded window.
+    const disposition=await boundedWait(cleanupOnce(host),cleanupDeadline());host=null;
+    if(disposition.settled!==true||disposition.value?.closed!==true){cleanupUnknown=true;
+     fault('NATIVE_INSPECTION_CLEANUP_UNKNOWN');}
     send(200,uploadInspectionBody({requestId:body.request.requestId,imageDigest:body.request.imageDigest,value:closed}));
    }finally{life.close();}
   }catch(error){
-   if(host!==null){try{const disposition=await host.close();if(disposition?.closed!==true)cleanupUnknown=true;}
-    catch{cleanupUnknown=true;}host=null;}
+   if(host!==null){const result=await boundedWait(cleanupOnce(host),cleanupDeadline());host=null;
+    if(result.settled!==true||result.value?.closed!==true)cleanupUnknown=true;}
    const code=cleanupUnknown?'NATIVE_INSPECTION_CLEANUP_UNKNOWN':
     (typeof error?.code==='string'?error.code:'NATIVE_INSPECTION_UNKNOWN');
    const status=code==='NATIVE_INSPECTION_ROUTE'?404:code==='NATIVE_INSPECTION_TLS'||code==='NATIVE_INSPECTION_PEER'?403:

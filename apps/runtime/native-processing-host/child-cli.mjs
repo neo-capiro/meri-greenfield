@@ -66,7 +66,9 @@ const readStdin=async(limit,stream)=>new Promise((resolve,reject)=>{
 });
 
 export async function childMain({stdin,stdout,stdinLimit=UPLOAD_INSPECTION_WIRE_BYTES+65536,now=Date.now,
- inspect=inspectFixed}={}){
+ inspect=inspectFixed,identity=()=>({uid:globalThis.process?.getuid?.(),gid:globalThis.process?.getgid?.()})}={}){
+ const id=identity();
+ if(id?.uid!==1000||id?.gid!==1000)fault('UPLOAD_INSPECTION_REQUEST_REFUSED');   // the ACTUAL process identity, not a claim
  const started=now();
  const input=stdin??process.stdin,output=stdout??process.stdout;
  const raw=await readStdin(stdinLimit,input);
