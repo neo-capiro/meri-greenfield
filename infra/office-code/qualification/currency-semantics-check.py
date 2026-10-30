@@ -44,8 +44,17 @@ BUILTIN = {
     39: "#,##0.00;(#,##0.00)", 40: "#,##0.00;[Red](#,##0.00)",
     45: "mm:ss", 46: "[h]:mm:ss", 47: "mmss.0", 48: "##0.0E+0", 49: "@",
 }
-# Escaping one of these changes meaning, so such a pair is never called equal.
+# Escaping or quoting one of these changes meaning, so such a pair is never
+# called equal. Letters are excluded too, because date/time/exponent tokens
+# (y m d h s E, AM/PM) only carry meaning when they are not escaped or quoted.
 CONTROL_CHARS = set("*_[]?0#,.;%@")
+PROVABLE_LITERAL = set(
+    chr(code) for code in range(32, 127)
+    if chr(code).isprintable()
+    and not chr(code).isalnum()
+    and chr(code) not in CONTROL_CHARS
+    and chr(code) != '"'
+) | {"€", "£", "¥", "₽", "₹", "₩", "₪", "₫", "฿", "₴", "₦", "₱"}
 CURRENCY = set("$€£¥₽₹₩₪₫฿₴₦₱")
 
 
@@ -54,7 +63,14 @@ def sha256(payload):
 
 
 def canonical(code):
-    """Unescape literals only. Returns None when an escape is not provable."""
+    """Unescape literals only.
+
+    A segment is unwrapped only when every character in it is a character that
+    means the same thing quoted/escaped and bare: punctuation, space, currency
+    signs. Quoting a whole format (``"$#,##0.00"``) turns digits and separators
+    into constant text and is therefore never equivalent, and escaping a letter
+    (``\\m``) turns a date token into a literal, so both return None.
+    """
     if code is None:
         return None
     out, index = [], 0
@@ -64,7 +80,7 @@ def canonical(code):
             if index + 1 >= len(code):
                 return None
             escaped = code[index + 1]
-            if escaped in CONTROL_CHARS:
+            if escaped not in PROVABLE_LITERAL:
                 return None
             out.append(escaped)
             index += 2
@@ -73,7 +89,10 @@ def canonical(code):
             end = code.find('"', index + 1)
             if end < 0:
                 return None
-            out.append(code[index + 1:end])
+            text = code[index + 1:end]
+            if not text or any(char not in PROVABLE_LITERAL for char in text):
+                return None
+            out.append(text)
             index = end + 1
             continue
         out.append(char)
@@ -261,8 +280,10 @@ def self_test():
     cases = [
         ("escaped-dollar is equivalent", base, escaped, True),
         ("identical code", base, base, True),
-        ("quoted-dollar is equivalent", base, '"$"#,##0.00', True),
+        ("quoted single currency sign is equivalent", base, '"$"#,##0.00', True),
         ("escaped dash in a date is equivalent", "yyyy-mm-dd", "yyyy\\-mm\\-dd", True),
+        ("wholly quoted format is a constant literal", base, '"' + base + '"', False),
+        ("escaped date token is a literal", "yyyy-mm-dd", "yyyy\\m\\m-dd", False),
         ("fill directive is material", base, base + "*x", False),
         ("spacing directive is material", base, base + "_x", False),
         ("currency symbol is material", base, "€#,##0.00", False),

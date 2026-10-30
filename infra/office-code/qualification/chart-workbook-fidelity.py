@@ -307,6 +307,11 @@ def resolve_slot(zf, slide, node, content_types):
     if rel["type"] != CHART_REL:
         record["failure"] = "chartRelationshipWrongType"
         return record
+    # An external edge is not an embedded part in this package.
+    record["chartRelationshipMode"] = rel.get("mode") or "Internal"
+    if record["chartRelationshipMode"] == "External":
+        record["failure"] = "chartRelationshipExternal"
+        return record
     chart_part = resolve_target(slide, rel["target"])
     record["chartPart"] = chart_part
     if chart_part not in zf.namelist():
@@ -327,6 +332,11 @@ def resolve_slot(zf, slide, node, content_types):
         record["failure"] = "externalDataRelationshipMissing"
         return record
     record["relationshipType"] = package["type"]
+    # The workbook edge must be an internal part of this package.
+    record["workbookRelationshipMode"] = package.get("mode") or "Internal"
+    if record["workbookRelationshipMode"] == "External":
+        record["failure"] = "externalDataRelationshipExternal"
+        return record
     workbook_part = resolve_target(chart_part, package["target"])
     record["workbookPart"] = workbook_part
     if workbook_part not in zf.namelist():
@@ -454,6 +464,10 @@ def check(original_zf, saved_zf, expectations=None):
             len(orig.get("series") or [])
         checks["externalDataPresent"] = bool(savec.get("externalDataRId"))
         checks["relationshipTypePackage"] = savec.get("relationshipType") == PACKAGE_REL
+        checks["chartRelationshipInternal"] = \
+            savec.get("chartRelationshipMode") != "External"
+        checks["workbookRelationshipInternal"] = \
+            savec.get("workbookRelationshipMode") != "External"
         checks["workbookPartPresent"] = savec.get("workbook") is not None
         checks["workbookContentType"] = savec.get("workbookContentType") == WORKBOOK_CT
 

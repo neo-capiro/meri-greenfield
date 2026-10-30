@@ -212,6 +212,22 @@ def repoint_package(pkg, chart_part, new_target, media_type=None):
     xml_patch(pkg, "[Content_Types].xml", mutate_types)
 
 
+def set_relationship_mode(pkg, rels_part, type_suffix, mode):
+    """Mark every relationship of a type as External (or Internal)."""
+    def mutate(root):
+        touched = 0
+        for rel in root.findall(RELS + "Relationship"):
+            if rel.get("Type", "").endswith(type_suffix):
+                if mode == "Internal":
+                    rel.attrib.pop("TargetMode", None)
+                else:
+                    rel.set("TargetMode", mode)
+                touched += 1
+        if not touched:
+            raise AssertionError("no %s relationship in %s" % (type_suffix, rels_part))
+    xml_patch(pkg, rels_part, mutate)
+
+
 def workbook_with_values(source_pkg, source_part, replacements):
     """A copy of an embedded workbook whose cells carry different values."""
     inner = Package(payload=source_pkg.data[source_part])
@@ -337,6 +353,18 @@ def main():
                     "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
     record("wrong chart-to-workbook association", "DIFFERENCE",
            outcome(run_chart(p4, saved("wrong-association", pkg))))
+
+    # 8b. an external workbook edge is not an embedded part of this package
+    pkg = Package(p4)
+    set_relationship_mode(pkg, "ppt/charts/_rels/chart2.xml.rels", "/package", "External")
+    record("external workbook relationship edge", "DIFFERENCE",
+           outcome(run_chart(p4, saved("external-workbook", pkg))))
+
+    # 8c. an external slide -> chart edge is not a chart in this package
+    pkg = Package(p4)
+    set_relationship_mode(pkg, "ppt/slides/_rels/slide1.xml.rels", "/chart", "External")
+    record("external chart relationship edge", "DIFFERENCE",
+           outcome(run_chart(p4, saved("external-chart", pkg))))
 
     # 9. intended single-chart edit, workbook and cache coherent
     def edited(pkg, slot_map):
@@ -464,10 +492,22 @@ def main():
         ("material sign section change", set_code("$#,##0.00", "$#,##0.00;($#,##0.00)")),
         ("material bracket currency", set_code("$#,##0.00", "[$€-407]#,##0.00")),
         ("unsupported escaped control char", set_code("$#,##0.00", "\\$#,##0.00\\#")),
+        ("wholly quoted currency literal", set_code("$#,##0.00", '"$#,##0.00"')),
     ]:
         record(name, "DIFFERENCE",
                currency.compare(x2, currency_mutation(name.replace(" ", "-"), mutation),
                                 {"B5"})["outcome"])
+
+    quoted_currency = currency.compare(
+        x2, currency_mutation("quoted-currency", set_code('$#,##0.00', '"$"#,##0.00')), {"B5"})
+    record("quoted single currency sign is equivalent", "PASS", quoted_currency["outcome"])
+    record("quoted single sign keeps strict difference", False,
+           quoted_currency["strictRawFormatEqual"])
+
+    escaped_date = currency.compare(
+        x2, currency_mutation("escaped-date-token", set_code("yyyy-mm-dd", "yyyy\\m\\m-dd")),
+        {"B7"})
+    record("escaped date token is not equivalent", "DIFFERENCE", escaped_date["outcome"])
 
     record("material value change", "DIFFERENCE",
            currency.compare(x2, currency_mutation("value", set_code(

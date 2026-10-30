@@ -2,33 +2,33 @@
  * Native PPTX chart-workbook flows for the EXISTING qualification framework
  * (SCRUM-241 / cool#16243).
  *
- * Stage order per case: open -> no-edit Save -> reopen of that saved identity
- * -> unrelated title edit + Save -> intentional chart-data edit + Save ->
- * reopen and re-check of the post-reopen bytes -> canonical Core verify.
+ * Per case: open -> no-edit Save -> reopen of that saved identity -> unrelated
+ * title edit + Save -> intentional chart-data edit + Save -> reopen and
+ * re-check of the post-reopen bytes -> canonical Core verify.
  *
- * Corrected versus the first preparation:
+ * Contract facts this module encodes:
  *
- *  - reopen addresses the identity that was already saved. It never re-opens
- *    `/fresh`, which creates a new document from the corpus input and would
- *    silently reset the file; the bytes are hashed before and after reopen and
- *    a change fails the stage.
- *  - the flow takes host and editor adapters, and every origin, identity,
- *    module and output path is an explicit input. There is no default host, so
- *    the retained fixture cannot be reused by accident, and its retained
- *    output/report destinations are never targeted (see isolation-adapter.mjs).
- *  - the intentional edit names the chart slot (slide + ordinal) plus sheet and
- *    cell, and the checker binds the expectation to that slot.
- *  - a missing editor control is NOT RUN; any error after an edit or save has
- *    begun is FAIL; NOT RUN makes the whole run INCOMPLETE with a non-zero exit.
- *  - the canonical `/verify` body is inspected, not just the HTTP status.
- *  - stage results are written after every stage, including on failure.
+ *  - reopen renews claims and reopens the SAVED identity through `/qualify`.
+ *    `/fresh` resets the document, so it is only used for the initial open.
+ *  - the host adapter performs editor navigation/save through an injected
+ *    editor driver, and save must advance the host's observed sequence.
+ *  - the selection must be non-empty and must name manifest identities, which
+ *    is what the host can route.
+ *  - a missing editor control is NOT RUN only while the stage has not started
+ *    work; once an edit or save has begun, any ControlUnavailable or other
+ *    error is FAIL.
+ *  - verify is correlated against the observed artifact: identity, byte
+ *    length, sha256 and sequence, plus the retained boolean evidence.
+ *  - stage results are written after every stage, including on failure, and a
+ *    NOT RUN makes the run INCOMPLETE with a non-zero exit.
  *
- * This module does not start CODE, a host or a browser.
+ * This module starts no CODE, host or browser.
  */
-import {mkdir, writeFile} from 'node:fs/promises';
+import {mkdir, readFile, writeFile} from 'node:fs/promises';
 import {join} from 'node:path';
 import {spawnSync} from 'node:child_process';
-import {ControlUnavailable} from './isolation-adapter.mjs';
+import {createHash} from 'node:crypto';
+import {ControlUnavailable, InputRefused, resolveFixtureLabel} from './isolation-adapter.mjs';
 
 const STAGE = {
   OPEN: 'open',
@@ -40,30 +40,68 @@ const STAGE = {
   VERIFY: 'core-verify',
 };
 
+const VERIFY_FLAGS = ['continuousNativeCodeToCore', 'nativeCoreReadExact',
+  'exactPublishedBytes', 'parentPreserved', 'replaySameVersion'];
+
+/**
+ * Map the committed cases.json schema to the flat edits the flow performs.
+ * A case with no intentional edit cannot qualify anything and is refused.
+ */
+export function selectCases(document, ids) {
+  if (!Array.isArray(ids) || ids.length === 0) {
+    throw new InputRefused('a non-empty --case-ids selection is required');
+  }
+  const cases = Array.isArray(document) ? document : document?.cases;
+  if (!Array.isArray(cases) || cases.length === 0) {
+    throw new InputRefused('the cases document must contain a non-empty cases array');
+  }
+  const selected = [];
+  for (const id of ids) {
+    const entry = cases.find(item => item.id === id);
+    if (!entry) throw new InputRefused(`${id} is not in the cases document`);
+    const charts = Array.isArray(entry.charts) ? entry.charts : [];
+    if (!charts.length) throw new InputRefused(`${id} declares no chart slots`);
+    for (const chart of charts) {
+      const edit = chart.intentionalEdit;
+      if (!edit || !edit.cell) {
+        throw new InputRefused(`${id} chart ${chart.ordinal} declares no intentional edit`);
+      }
+      selected.push({
+        id,
+        slide: chart.slide,
+        ordinal: chart.ordinal,
+        sheet: edit.sheet ?? 'Sheet1',
+        cell: edit.cell,
+        value: String(edit.value),
+        expectedWorkbookPart: chart.workbookPart,
+      });
+    }
+  }
+  if (!selected.length) throw new InputRefused('the selection produced no chart edits');
+  return selected;
+}
+
 function aggregate(stages) {
   if (stages.some(stage => stage.outcome === 'FAIL')) return {outcome: 'FAIL', exit: 1};
   if (stages.some(stage => stage.outcome === 'NOT RUN')) return {outcome: 'INCOMPLETE', exit: 3};
   return {outcome: 'COMPLETE', exit: 0};
 }
 
-/**
- * @param host   {open, save, reopen, bytes, sequence, verify}
- * @param editor {ready, editTitle, editChartData}
- * @param runCheck (savedPath, expectations) -> {exit, outcome}
- * @param cases  [{slide, ordinal, sheet, cell, value}] intentional edits
- */
-export async function runFlows({host, editor, runCheck, outDir, cases = [], evidence = {}}) {
+export async function runFlows({host, editor, runCheck, outDir, cases, identity, season = {}}) {
+  if (!Array.isArray(cases) || cases.length === 0) {
+    throw new InputRefused('runFlows requires at least one case edit');
+  }
   await mkdir(outDir, {recursive: true});
   const stages = [];
+  let observation = null; // {bytes, sequence} of the last host state read
 
   const persist = async () => {
-    await writeFile(join(outDir, 'stages.json'),
-      JSON.stringify({stages, evidence: {
-        caseId: evidence.caseId ?? null,
-        origin: evidence.origin ?? null,
-        identity: evidence.identity ?? null,
-        adapterEvents: evidence.events ? evidence.events() : undefined,
-      }}, null, 2) + '\n');
+    await writeFile(join(outDir, 'stages.json'), JSON.stringify({
+      identity: identity ?? host.identity ?? null,
+      origin: host.origin ?? null,
+      stages,
+      evidence: season.evidence ? season.evidence() : undefined,
+    }, null, 2) + '\n');
   };
   const push = async (stage, result) => {
     stages.push({stage, ...result});
@@ -76,33 +114,39 @@ export async function runFlows({host, editor, runCheck, outDir, cases = [], evid
     errorType: (error && error.name) || 'Error',
   });
 
-  // 1. open
-  try {
-    await host.open();
-    await editor.ready();
-    await push(STAGE.OPEN, {outcome: 'OPENED'});
-  } catch (error) {
-    await fail(STAGE.OPEN, error);
-    const summary = aggregate(stages);
-    return {stages, ...summary};
-  }
+  const observe = async () => {
+    const bytes = await host.bytes();
+    observation = {bytes, sequence: await host.sequence()};
+    return observation;
+  };
 
   const expectationArgs = () => cases.map(entry =>
     `${entry.slide}#${entry.ordinal}:${entry.sheet}!${entry.cell}=${entry.value}`);
 
   const check = async (stage, expectations = [], extra = {}) => {
-    const bytes = await host.bytes();
-    const path = join(outDir, `${evidence.caseId ?? 'case'}-${stage}.pptx`);
-    await writeFile(path, bytes);
+    const current = await observe();
+    const path = join(outDir, `${identity ?? 'case'}-${stage}.pptx`);
+    await writeFile(path, current.bytes);
     const result = runCheck(path, expectations);
     return push(stage, {
-      ...extra, path, bytes: bytes.length,
-      sha256: evidence.sha256 ? evidence.sha256(bytes) : null,
+      ...extra, path, bytes: current.bytes.length,
+      sha256: createHash('sha256').update(current.bytes).digest('hex'),
+      sequence: current.sequence,
       check: {exit: result.exit, outcome: result.exit === 0 ? 'PASS' : 'DIFFERENCE'},
       outcome: result.exit === 0 ? 'PASS' : 'FAIL',
       reason: result.exit === 0 ? undefined : 'chart-workbook-fidelity reported DIFFERENCE',
     });
   };
+
+  // 1. open: the only stage that may reset through /fresh
+  try {
+    await host.open();
+    await editor.ready?.();
+    await push(STAGE.OPEN, {outcome: 'OPENED'});
+  } catch (error) {
+    await fail(STAGE.OPEN, error);
+    return {stages, ...aggregate(stages)};
+  }
 
   // 2. no-edit Save
   try {
@@ -112,13 +156,16 @@ export async function runFlows({host, editor, runCheck, outDir, cases = [], evid
     await fail(STAGE.NOEDIT, error);
   }
 
-  // 3. reopen the SAME saved identity; the bytes must not change
+  // 3. reopen the saved identity without resetting it
   try {
-    const before = await host.bytes();
+    const before = observation ?? await observe();
     await host.reopen();
-    const after = await host.bytes();
-    if (!before.equals(after)) {
-      throw new Error('reopen changed the document bytes; the host re-seeded instead of reopening');
+    const after = await observe();
+    if (!before.bytes.equals(after.bytes)) {
+      throw new Error('reopen changed the document bytes; the host reset instead of reopening');
+    }
+    if (after.sequence !== before.sequence) {
+      throw new Error(`reopen changed the save sequence (${before.sequence} -> ${after.sequence})`);
     }
     await check(STAGE.REOPEN_NOEDIT, [], {reopenedSameBytes: true});
   } catch (error) {
@@ -126,26 +173,32 @@ export async function runFlows({host, editor, runCheck, outDir, cases = [], evid
   }
 
   // 4. unrelated title edit
+  let workStarted = false;
   try {
     await editor.editTitle();
+    workStarted = true;
     await host.save();
     await check(STAGE.TITLE);
   } catch (error) {
-    if (error instanceof ControlUnavailable) {
+    if (error instanceof ControlUnavailable && !workStarted) {
       await push(STAGE.TITLE, {outcome: 'NOT RUN', reason: error.message});
     } else {
       await fail(STAGE.TITLE, error);
     }
   }
 
-  // 5. intentional chart-data edit, bound to each case slot
+  // 5. intentional chart-data edit bound to each slot
   let dataEditNotRun = false;
+  workStarted = false;
   try {
-    for (const entry of cases) await editor.editChartData(entry);
+    for (const entry of cases) {
+      await editor.editChartData(entry);
+      workStarted = true;
+    }
     await host.save();
     await check(STAGE.DATAEDIT, expectationArgs());
   } catch (error) {
-    if (error instanceof ControlUnavailable) {
+    if (error instanceof ControlUnavailable && !workStarted) {
       dataEditNotRun = true;
       await push(STAGE.DATAEDIT, {outcome: 'NOT RUN', reason: error.message});
     } else {
@@ -153,17 +206,15 @@ export async function runFlows({host, editor, runCheck, outDir, cases = [], evid
     }
   }
 
-  // 6. reopen after the edit and re-check the post-reopen bytes. There is
-  //    nothing to reopen for when the edit never happened, so that leg is
-  //    NOT RUN as well instead of passing on unedited bytes.
+  // 6. reopen and re-check the post-reopen bytes
   if (dataEditNotRun) {
     await push(STAGE.REOPEN_DATAEDIT, {outcome: 'NOT RUN',
       reason: 'the intentional chart-data edit was not performed'});
   } else try {
-    const before = await host.bytes();
+    const before = await observe();
     await host.reopen();
-    const after = await host.bytes();
-    if (!before.equals(after)) {
+    const after = await observe();
+    if (!before.bytes.equals(after.bytes)) {
       throw new Error('reopen after edit changed the document bytes');
     }
     await check(STAGE.REOPEN_DATAEDIT, expectationArgs(), {reopenedSameBytes: true});
@@ -171,18 +222,27 @@ export async function runFlows({host, editor, runCheck, outDir, cases = [], evid
     await fail(STAGE.REOPEN_DATAEDIT, error);
   }
 
-  // 7. canonical Core verification body
+  // 7. canonical verify correlated with the observed artifact
   try {
+    const current = observation ?? await observe();
     const {status, body} = await host.verify();
     const problems = [];
     if (status !== 200) problems.push(`status ${status}`);
-    if (!body || typeof body !== 'object') problems.push('no canonical verify body');
-    for (const key of ['continuousNativeCodeToCore', 'nativeCoreReadExact',
-      'exactPublishedBytes', 'parentPreserved', 'replaySameVersion']) {
-      if (body && body[key] !== true) problems.push(`${key} is not true`);
-    }
-    if (body && evidence.caseId && body.id !== evidence.caseId) {
-      problems.push(`verify body id ${body.id} is not ${evidence.caseId}`);
+    if (!body || typeof body !== 'object') {
+      problems.push('no canonical verify body');
+    } else {
+      const digest = createHash('sha256').update(current.bytes).digest('hex');
+      if (body.id !== identity) problems.push(`id ${body.id} is not ${identity}`);
+      if (body.sha256 !== digest) problems.push('sha256 does not match the observed artifact');
+      if (body.bytes !== current.bytes.length) {
+        problems.push(`bytes ${body.bytes} is not ${current.bytes.length}`);
+      }
+      if (body.sequence !== current.sequence) {
+        problems.push(`sequence ${body.sequence} is not ${current.sequence}`);
+      }
+      for (const flag of VERIFY_FLAGS) {
+        if (body[flag] !== true) problems.push(`${flag} is not true`);
+      }
     }
     await push(STAGE.VERIFY, problems.length
       ? {outcome: 'FAIL', reason: problems.join('; '), body}
@@ -217,42 +277,43 @@ async function main() {
     const index = args.indexOf('--' + name);
     return index < 0 ? undefined : args[index + 1];
   };
-  const required = ['origin', 'identity', 'original', 'out', 'cases', 'checker'];
+  const required = ['origin', 'identity', 'manifest', 'cases', 'case-ids', 'original',
+    'out', 'checker', 'editor'];
   const missing = required.filter(name => !arg(name));
   if (missing.length) {
-    console.error('missing explicit inputs: ' + missing.map(name => '--' + name).join(', ')
-      + ' (there is no default host, identity or output path)');
+    console.error('missing explicit inputs: ' + missing.map(name => '--' + name).join(', '));
     process.exitCode = 2;
     return;
   }
-  const {createHttpAdapter, assertIsolatedIdentity, ControlUnavailable: Missing} =
-    await import('./isolation-adapter.mjs');
-  const {readFile} = await import('node:fs/promises');
-  const {createHash} = await import('node:crypto');
-  assertIsolatedIdentity(arg('identity'));
-  const cases = JSON.parse(await readFile(arg('cases'), 'utf8'));
-  const host = await createHttpAdapter({origin: arg('origin'), identity: arg('identity')});
-  const noControls = async message => { throw new Missing(message); };
-  const editor = arg('editor')
-    ? await (await import(arg('editor'))).createEditor({
-        origin: arg('origin'), identity: arg('identity'),
-        selectors: arg('selectors'), playwright: arg('playwright')})
-    : {ready: async () => {}, editTitle: () => noControls('no editor driver configured'),
-       editChartData: () => noControls('no editor driver configured')};
-  const result = await runFlows({
-    host, editor,
-    runCheck: createChecker({python: arg('python') || 'python', script: arg('checker'),
-      original: arg('original')}),
-    outDir: arg('out'),
-    cases,
-    evidence: {
-      caseId: arg('identity'), origin: arg('origin'), identity: arg('identity'),
-      sha256: payload => createHash('sha256').update(payload).digest('hex'),
-    },
-  });
-  console.log(JSON.stringify({outcome: result.outcome, exit: result.exit,
-    stages: result.stages.map(stage => stage.stage + ':' + stage.outcome)}));
-  process.exitCode = result.exit;
+  try {
+    const {createHttpAdapter} = await import('./isolation-adapter.mjs');
+    const manifest = JSON.parse(await readFile(arg('manifest'), 'utf8'));
+    const manifestIds = Array.isArray(manifest) ? manifest.map(entry => entry.id) : [];
+    resolveFixtureLabel(arg('identity'), manifestIds);
+    const cases = selectCases(JSON.parse(await readFile(arg('cases'), 'utf8')),
+      arg('case-ids').split(',').map(id => id.trim()).filter(Boolean));
+    const editor = await (await import(arg('editor'))).createEditor({
+      origin: arg('origin'), identity: arg('identity'),
+      selectors: arg('selectors'), playwright: arg('playwright'),
+    });
+    const host = await createHttpAdapter({
+      origin: arg('origin'), identity: arg('identity'), editor, manifestIds,
+    });
+    const result = await runFlows({
+      host, editor,
+      runCheck: createChecker({python: arg('python') || 'python',
+        script: arg('checker'), original: arg('original')}),
+      outDir: arg('out'),
+      cases,
+      identity: arg('identity'),
+    });
+    console.log(JSON.stringify({outcome: result.outcome, exit: result.exit,
+      stages: result.stages.map(stage => stage.stage + ':' + stage.outcome)}));
+    process.exitCode = result.exit;
+  } catch (error) {
+    console.error(`${error.name}: ${error.message}`);
+    process.exitCode = 2;
+  }
 }
 
 if (process.argv[1] && process.argv[1].endsWith('native-chart-flows.mjs')) {
