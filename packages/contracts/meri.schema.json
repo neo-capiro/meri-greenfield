@@ -582,8 +582,7 @@
           "enum": [
             "memory.propose",
             "task.create",
-            "artifact.file",
-            "browser.action"
+            "artifact.file"
           ]
         },
         "arguments": {

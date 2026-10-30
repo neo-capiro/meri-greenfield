@@ -8,12 +8,13 @@ import {validateShape} from '../../../../packages/contracts/validate.mjs';
 import {nativeSignal} from '../protocol.mjs';
 import {CommandError,data,deny,own,instant,canonicalSha256,immutablePayload,makePayload,assertReadIds,policySelection,policyReceipt,same} from './binding.mjs';
 import {BROWSER_ACTION,BROWSER_ACTION_OPERATION,assertBrowserActionContext,assertBrowserApprovalPreparation,
- browserPreparationProposalId,normalizeBrowserActionArguments,sameBrowserPreparation} from '../../../../packages/contracts/runtime-0.2/browser-approval-preparation.mjs';
+ assertBrowserPreparationDigests,browserInputSha256,browserPreparationProposalId,sameBrowserPreparation} from '../../../../packages/contracts/runtime-0.2/browser-approval-preparation.mjs';
 
 function safe(error,outcome,payload){
  const descriptor=error&&typeof error==='object'&&!types.isProxy(error)?Object.getOwnPropertyDescriptor(error,'message'):undefined;
  const code=descriptor&&Object.hasOwn(descriptor,'value')?descriptor.value:undefined;
- const admitted=['DEADLINE','CANCELLED','INVALID_COMMAND','COMMAND_PREPARATION_REFUSED','APPROVAL_METADATA_UNKNOWN'];
+ const admitted=['DEADLINE','CANCELLED','INVALID_COMMAND','COMMAND_PREPARATION_REFUSED','APPROVAL_METADATA_UNKNOWN',
+  'BROWSER_PREPARATION_REFUSED','BROWSER_PREPARATION_AUTHORITY_CHANGED'];
  const message=admitted.includes(code)?code:(outcome==='UNKNOWN'?'APPROVAL_METADATA_UNKNOWN':'COMMAND_PREPARATION_REFUSED');
  // The stable code stays the contract; the underlying refusal is kept as a cause for diagnosis.
  return Object.assign(new CommandError(message),{cause:error,outcome,...(payload?{metadataReference:data({proposalId:payload.record.proposalId,commandSha256:payload.commandSha256})}:{})});
@@ -42,8 +43,7 @@ export function createBrowserActionApprovalMetadataOwner(configuration){
   if(!same(preparation.subject.binding,v.binding))deny('COMMAND_PREPARATION_REFUSED');
   if(preparation.expiresAtMs<=at||preparation.requestedAtMs>at)deny('COMMAND_PREPARATION_REFUSED');
   const proposalId=browserPreparationProposalId({binding:v.binding,toolUseId:preparation.subject.toolUseId});
-  const normalized=normalizeBrowserActionArguments(preparation);
-  const inputSha256=canonicalSha256(normalized);
+  const inputSha256=browserInputSha256({request:preparation});
   return {v,at,preparation,proposalId,inputSha256,signal,
    lifetime:createOperationLifetime({deadlineMs:Math.min(v.deadlineMs,at+maxRequestMs),now,signal,errorFactory:code=>new CommandError(code)})};
  }
@@ -64,7 +64,13 @@ export function createBrowserActionApprovalMetadataOwner(configuration){
     const found=immutablePayload(existing);
     if(!same(found.record.binding,v.binding)||!sameBrowserPreparation(found.record.request,a.preparation)||
      found.record.action!==BROWSER_ACTION||canonicalSha256(found.record.request)!==canonicalSha256(a.preparation))deny('COMMAND_PREPARATION_REFUSED');
-    l.check();return data({...found.record,checkedAtMs:now(),resolved:true});
+    // Preprying is authorization-sensitive: a deterministic selector match never bypasses current authority,
+    // so the stored row is only returned while today's scopes, approver and expiry are still the same.
+    const repeat=await policy(l,'prepare',{operation:v.operation,action:v.action,binding:v.binding,
+     request:a.preparation,inputSha256:a.inputSha256,proposalId:a.proposalId});
+    if(!same(repeat.scopes,found.record.scopes)||!same(repeat.requiredApprover,found.record.requiredApprover)||
+     repeat.proposalExpiresAt!==found.record.expiresAt)deny('COMMAND_PREPARATION_REFUSED');
+    l.check();return data({...found.record,checkedAtMs:repeat.checkedAtMs,resolved:true});
    }
    const call={operation:v.operation,action:v.action,binding:v.binding,request:a.preparation,inputSha256:a.inputSha256,proposalId:a.proposalId};
    const p=await policy(l,'prepare',call);l.check();
@@ -82,7 +88,9 @@ export function createBrowserActionApprovalMetadataOwner(configuration){
    // UNKNOWN outcome reconciled by READING the same identity, never by writing a new proposal.
    const code=typeof error?.code==='string'?error.code:error?.message;
    const refused=['DEADLINE','CANCELLED','INVALID_COMMAND','COMMAND_PREPARATION_REFUSED'].includes(code);
-   const outcome=refused?(storedOk?'STORED_NOT_RELEASED':'NOT_STORED'):(attempted?'UNKNOWN':'NOT_STORED');
+   // A known stored acknowledgement makes a later authority refusal STORED_NOT_RELEASED. Once an insert was
+   // attempted without an exact acknowledgement nothing is known, so even a refusal outcome is UNKNOWN.
+   const outcome=storedOk?'STORED_NOT_RELEASED':attempted?'UNKNOWN':refused?'NOT_STORED':'NOT_STORED';
    throw safe(error,outcome,payload);
   }finally{l?.close();}
  }
@@ -103,6 +111,8 @@ export function createBrowserActionApprovalMetadataOwner(configuration){
    if(payload.record.action!==BROWSER_ACTION||!same(payload.record.binding,v.binding)||
     payload.record.proposalId.toLowerCase()!==v.proposalId.toLowerCase()||payload.commandSha256!==v.commandSha256||
     instant(payload.record.expiresAt)<=at)deny('COMMAND_PREPARATION_REFUSED');
+   // C, A, S and I are each recomputed here; a rehashed internal field never rescues a changed subject or input.
+   assertBrowserPreparationDigests({preparation:payload.record.request,record:payload.record,commandSha256:payload.commandSha256});
    const preparation=assertBrowserApprovalPreparation(payload.record.request);
    const expected=browserPreparationProposalId({binding:payload.record.binding,toolUseId:preparation.subject.toolUseId});
    if(expected!==payload.record.proposalId)deny('COMMAND_PREPARATION_REFUSED');
