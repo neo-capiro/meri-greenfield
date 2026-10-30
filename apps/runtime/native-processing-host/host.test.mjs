@@ -615,9 +615,10 @@ test('BOOTSTRAP: a pin settling after close is released and never dispatched', a
  const call=host.runRequest({requestDocument:REQUEST,deadlineMs:Date.now()+2000}).catch(e=>e);
  await new Promise(resolve=>setImmediate(resolve));
  const closed=await host.close();
- assert.equal(closed.closed,true);
+ assert.equal(closed.closed,false,'a pending acquisition is UNKNOWN, never a proven close');
+ assert.equal(closed.code,'NATIVE_PROCESSING_DEFINITIONS_PENDING');
  resolvePin({databaseDirectory:'/d',sha256:'c'.repeat(64),publishedAtMs:1,files:[],
-  release(args){releaseArgs=args;return {released:false};}});
+  release(args){releaseArgs=args;return {released:true};}});
  const error=await call;
  assert.equal(error?.code,'NATIVE_PROCESSING_CLOSED','no dispatch after close');
  assert.equal(ran,0,'the child never ran');
@@ -711,3 +712,75 @@ test('CONNECTED: a DEFERRED setup rejection after expiry answers within deadline
  rejectSetup(Object.assign(Error('removed'),{code:'NATIVE_PROCESSING_REMOVED',partialCleanup:'removed'}));
  await new Promise(resolve=>setTimeout(resolve,20));
 });
+
+test('BOOTSTRAP: an unsettled acquisition is represented, never reported as proven closure', async () => {
+ let acquire=null,entered=null,released=0,dispatched=0;
+ const ready=new Promise(resolve=>{entered=resolve;});
+ const host=await openNativeProcessingHost({config:CONFIG,allocation:ALLOCATION,binding:BINDING,hostIdentity:IDENTITY,
+  authority:{readCurrent:async()=>({})},
+  definitionsOwner:{pin:()=>{entered();return new Promise(resolve=>{acquire=()=>resolve(
+   {databaseDirectory:'/snapshot/database',sha256:'a'.repeat(64),publishedAtMs:Date.now(),files:[],
+    release(){released+=1;return {released:false};}});});}},
+  openCompartment:async()=>({close:async()=>({closed:true})}),
+  openPlacement:async()=>({run:async()=>{dispatched+=1;},close:async()=>({closed:true})})});
+ const pending=host.runRequest({requestDocument:{},deadlineMs:Date.now()+5000}).catch(error=>error.code);
+ await ready;
+ const first=await host.close();
+ assert.equal(first.closed,false,'a pending acquisition is UNKNOWN, never closed');
+ assert.equal(first.code,'NATIVE_PROCESSING_DEFINITIONS_PENDING');
+ acquire();
+ assert.equal(await pending,'NATIVE_PROCESSING_CLOSED','no dispatch after close');
+ assert.equal(dispatched,0);
+ assert.equal(released,1,'the late token was released');
+ const second=await host.close();
+ assert.equal(second.closed,false,'a REFUSED release is still unknown');
+ assert.equal(second.code,'NATIVE_PROCESSING_CLEANUP_UNKNOWN');
+});
+
+test('BOOTSTRAP: a late DEFINITIVE release lets a subsequent close report closure', async () => {
+ let acquire=null,entered=null,released=0;
+ const ready=new Promise(resolve=>{entered=resolve;});
+ const host=await openNativeProcessingHost({config:CONFIG,allocation:ALLOCATION,binding:BINDING,hostIdentity:IDENTITY,
+  authority:{readCurrent:async()=>({})},
+  definitionsOwner:{pin:()=>{entered();return new Promise(resolve=>{acquire=()=>resolve(
+   {databaseDirectory:'/snapshot/database',sha256:'a'.repeat(64),publishedAtMs:Date.now(),files:[],
+    release(){released+=1;return {released:true};}});});}},
+  openCompartment:async()=>({close:async()=>({closed:true})}),
+  openPlacement:async()=>({run:async()=>{},close:async()=>({closed:true})})});
+ const pending=host.runRequest({requestDocument:{},deadlineMs:Date.now()+5000}).catch(error=>error.code);
+ await ready;
+ assert.equal((await host.close()).closed,false,'acquisition is still pending');
+ acquire();
+ assert.equal(await pending,'NATIVE_PROCESSING_CLOSED');
+ assert.equal(released,1);
+ assert.equal((await host.close()).closed,true,'a definitive late release settles the tracked activity');
+});
+
+for(const [partialCleanup,expected] of [['removed',1],['not-created',1],['unknown',0]]){
+ test(`CONNECTED: a deferred setup rejection with partialCleanup=${partialCleanup} settles activity ${expected} time(s)`, async () => {
+  let entered=null,rejectSetup=null,releases=0;
+  const enteredPromise=new Promise(resolve=>{entered=resolve;});
+  const handler=createInspectionHandler({
+   authenticate:async()=>({verified:true}),
+   verifyCustody:async()=>SCOPED_CUSTODY,
+   openHost:()=>{entered();return new Promise((_,reject)=>{rejectSetup=reject;});},
+   readBody:async()=>Buffer.from(JSON.stringify({schema:NATIVE_INSPECTION_SCHEMA,allocation:ALLOCATION,
+    hostIdentity:IDENTITY,binding:BINDING,custody:SAVED_CUSTODY,
+    request:{...REQUEST,deadlineMs:Date.now()+120}})),
+   limits:{...LIMITS,cleanupMs:150},
+   onActivity:()=>()=>{releases+=1;}});
+  const body=Buffer.from(JSON.stringify({schema:NATIVE_INSPECTION_SCHEMA,allocation:ALLOCATION,
+   hostIdentity:IDENTITY,binding:BINDING,custody:SAVED_CUSTODY,
+   request:{...REQUEST,deadlineMs:Date.now()+120}}));
+  const stream=Readable.from([body]);
+  Object.assign(stream,{method:'POST',url:NATIVE_INSPECTION_PATH,headers:{},socket:{encrypted:true},complete:true});
+  const out=res();
+  await handler(stream,out);
+  await enteredPromise;
+  assert.notEqual(out.status,200);
+  rejectSetup(Object.assign(Error('settled'),{code:'NATIVE_PROCESSING_FAILED',
+   ...(partialCleanup==='unknown'?{}:{partialCleanup})}));
+  await new Promise(resolve=>setTimeout(resolve,40));
+  assert.equal(releases,expected,`activity releases for ${partialCleanup}`);
+ });
+}

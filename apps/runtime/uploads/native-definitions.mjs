@@ -49,29 +49,52 @@ import {runArtifactProcess} from '../../artifacts/process.mjs';
  * through an injected fixed process port and real execution is Release.
  */
 import {createHash} from 'node:crypto';
-import {copyFile,mkdir,readFile,readdir,writeFile,rename,rm,lstat,mkdtemp,chmod} from 'node:fs/promises';
+import {copyFile,mkdir,readFile,readdir,writeFile,rename,rm,lstat,mkdtemp,chmod,chown} from 'node:fs/promises';
+import {join,isAbsolute} from 'node:path';
 
 /** Fixed definition programs run as UID/GID 1000: prepare ONLY these exact owner-generated paths for them. Published
  * snapshots stay root-owned and READ-ONLY for the upload child (0755 dirs / 0644 files, never writable); the staging area
  * and its generated freshclam configuration are the only writable-for-refresh inputs. */
 // POSIX ownership/mode preparation is mandatory on the deployment platform; a Windows authoring host has no uid/gid or
 // POSIX modes to apply, so it is a no-op there ONLY (deployment validates the real modes).
+const isMissing=error=>error?.code==='ENOENT';
+// A Windows authoring host cannot express uid/gid; ownership is therefore a no-op ONLY there (Linux effects are Release).
+const defaultOwner=process.platform==='win32'?async()=>{}:chown;
+// POSIX modes are only meaningful on a POSIX host; a Windows authoring host no-ops them (Linux effects are Release).
 const defaultApply=process.platform==='win32'?async()=>{}:chmod;
-async function prepareDefinitionAccess({root,staging,config,snapshot,id,chmod:apply=defaultApply}){
- // The fixed programs run as UID/GID 1000 while the updater is root. Only the exact staging paths must accept that
- // ordinary writer (freshclam writes the database and its log); publication stays root-owned and READ-ONLY to the child.
- const mode=async(path,value)=>{try{await apply(path,value);}
-  catch(error){fail('UPLOAD_DEFINITIONS_ACCESS_FAILED');void error;}};
- for(const dir of [root,join(root,'staging'),staging,join(staging,'database')])await mode(dir,0o777);
- if(config!==undefined)await mode(config,0o644);
- if(snapshot!==undefined){const target=join(root,'snapshots',id);
-  await mode(join(root,'snapshots'),0o555);
-  for(const dir of [target,join(target,'database')])await mode(dir,0o555);
-  for(const file of snapshot.files)await mode(join(target,'database',file.name),0o444);
-  await mode(join(target,'snapshot.json'),0o444);}
- await mode(join(root,'current'),0o444);
+/** Narrow writer access: the fixed programs are UID/GID 1000 while the updater is root. Only the EXACT unique staging
+ * directory, its database and its log are handed to that uid; every parent stays root-owned and non-writable, and every
+ * published byte stays root-owned and read-only. Existence is verified before a mode/owner is applied, so a first
+ * publication never chmods a pointer that does not exist yet, and no mode/ownership failure is swallowed. */
+async function prepareDefinitionAccess({root,staging=null,config=null,snapshot=null,id=null,
+ chmod:apply=defaultApply,chown:owner=defaultOwner,lstat:stat=lstat,uid=1000,gid=1000}){
+ const set=async(path,mode,{allowMissing=false,toWriter=false}={})=>{
+  try{await stat(path);}catch(error){if(allowMissing&&isMissing(error))return false;fail('UPLOAD_DEFINITIONS_ACCESS_FAILED');}
+  try{await apply(path,mode);if(toWriter)await owner(path,uid,gid);}
+  catch{fail('UPLOAD_DEFINITIONS_ACCESS_FAILED');}
+  return true;
+ };
+ await mkdir(root,{recursive:true});
+ await mkdir(join(root,'staging'),{recursive:true});
+ await mkdir(join(root,'snapshots'),{recursive:true});
+ // Root-owned parents: traversable by the writer, never writable by it.
+ await set(root,0o755);
+ await set(join(root,'staging'),0o755);
+ await set(join(root,'snapshots'),0o555);
+ if(staging!==null){
+  await set(staging,0o750,{toWriter:true});
+  await set(join(staging,'database'),0o750,{toWriter:true});
+  await set(join(staging,'freshclam.log'),0o640,{toWriter:true,allowMissing:true});
+ }
+ if(config!==null)await set(config,0o644);
+ if(snapshot!==null){const target=join(root,'snapshots',id);
+  await set(target,0o555);
+  await set(join(target,'database'),0o555);
+  for(const file of snapshot.files)await set(join(target,'database',file.name),0o444);
+  await set(join(target,'snapshot.json'),0o444);}
+ // The pointer is created by the atomic rename; only an EXISTING pointer is narrowed here.
+ await set(join(root,'current'),0o444,{allowMissing:true});
 }
-import {join,isAbsolute} from 'node:path';
 
 export const UPLOAD_DEFINITIONS_SCHEMA='meri-upload-definitions/3';
 /** Official ClamAV CDN mirror; the only host freshclam is configured to contact. */
@@ -87,9 +110,23 @@ export function definitionSpawnPort(port=spawn){
  return (exe,args,options)=>port(exe,args,{...options,uid:DEFINITION_CHILD_UID,gid:DEFINITION_CHILD_GID,
   env:{PATH:'/usr/bin:/bin',LANG:'C.UTF-8',HOME:options?.cwd??'/tmp'}});
 }
+const FRESHCLAM_FORM=/^--config-file=\/[^\0]{1,4095}$/u;
+const SIGTOOL_PATH=/(^|--datadir=)\/[^\0]{1,4095}$/u;
+/** The ONLY argument forms the host itself generates: one freshclam configuration path, or sigtool --info naming an
+ * absolute published CVD path. Anything else is refused BEFORE a spawn port is reached. */
+function assertDefinitionForm(program,args){
+ if(program==='freshclam'){const ok=(args.length===1||(args.length===3&&args[1]==='--foreground'&&args[2]==='--no-warnings'))&&
+  FRESHCLAM_FORM.test(args[0]);
+  if(!ok)fail('UPLOAD_DEFINITIONS_PROGRAM_REFUSED');return;}
+ if(program==='sigtool'){const ok=args.length>=1&&args.length<=2&&args.some(a=>SIGTOOL_PATH.test(a))&&
+  args.every(a=>a==='--info'||SIGTOOL_PATH.test(a));
+  if(!ok)fail('UPLOAD_DEFINITIONS_PROGRAM_REFUSED');return;}
+ fail('UPLOAD_DEFINITIONS_PROGRAM_REFUSED');
+}
 export async function runDefinitionProgram(program,args,{cwd='/',input=Buffer.alloc(0),signal,deadlineMs,maxOutput=262144,ports}={}){
  const exe=DEFINITION_PROGRAMS[program];
  if(typeof exe!=='string'||!Array.isArray(args)||args.some(a=>typeof a!=='string'||a.includes('\0')))fail('UPLOAD_DEFINITIONS_CONFIGURATION');
+ assertDefinitionForm(program,args);
  const effective=ports===undefined?{spawn:definitionSpawnPort()}:{spawn:definitionSpawnPort(ports.spawn??spawn),kill:ports.kill};
  return runArtifactProcess(exe,args,{cwd,input,signal,deadlineMs,maxOutput},effective);
 }
@@ -323,7 +360,8 @@ export async function pruneSnapshots({root,now=Date.now,keep=[],isIdle,retain=UP
  * retains the last valid signed snapshot. Nothing is deleted here: the bounded storage disposition lives on the
  * reader-pin owner (`createSignedDefinitionStore`'s `prune`), which needs the reader accounting only the resolve owner
  * has, so an in-flight reader bound to an older snapshot always keeps a valid directory. */
-export function createSignedDefinitionUpdater({root,run,now=Date.now,chmod:chmodEffect}={}){
+export function createSignedDefinitionUpdater({root,run,now=Date.now,chmod:chmodEffect,chown:chownEffect,
+ lstat:lstatEffect}={}){
  if(typeof root!=='string'||!isAbsolute(root)||typeof run!=='function'||typeof now!=='function')fail('UPLOAD_DEFINITIONS_CONFIGURATION');
  return Object.freeze({async provision({signal,deadlineMs}={}){
   if(!Number.isSafeInteger(deadlineMs)||deadlineMs<=now())fail('UPLOAD_DEFINITIONS_EXPIRED');
@@ -334,7 +372,9 @@ export function createSignedDefinitionUpdater({root,run,now=Date.now,chmod:chmod
    await mkdir(database,{recursive:true,mode:0o700});
    const config=join(staging,'freshclam.conf');
    await writeFile(config,freshclamConfiguration(staging),{mode:0o600});
-   await prepareDefinitionAccess({root,staging,config,chmod:chmodEffect});   // UID/GID 1000 freshclam can read/traverse exactly these
+   await prepareDefinitionAccess({root,staging,config,
+    ...(chmodEffect===undefined?{}:{chmod:chmodEffect}),...(chownEffect===undefined?{}:{chown:chownEffect}),
+    ...(lstatEffect===undefined?{}:{lstat:lstatEffect})});   // UID/GID 1000 freshclam can read/traverse exactly these
    try{await run(UPLOAD_FRESHCLAM,freshclamArguments(config),{cwd:staging,input:Buffer.alloc(0),signal,deadlineMs});}
    catch{fail('UPLOAD_DEFINITIONS_REFRESH_FAILED');}
    const entries=await readdir(database,{withFileTypes:true}).catch(()=>[]);
@@ -380,11 +420,15 @@ export function createSignedDefinitionUpdater({root,run,now=Date.now,chmod:chmod
    // root never share a temporary name. The move onto `current` is atomic and the last writer wins; the bounded retry
    // covers a transient destination lock under writer contention (observed as EPERM on a Windows authoring host) and
    // never publishes a partial pointer.
-   await prepareDefinitionAccess({root,staging,snapshot,id,chmod:chmodEffect});
+   await prepareDefinitionAccess({root,staging,snapshot,id,
+    ...(chmodEffect===undefined?{}:{chmod:chmodEffect}),...(chownEffect===undefined?{}:{chown:chownEffect}),
+    ...(lstatEffect===undefined?{}:{lstat:lstatEffect})});
    const pointer=join(staging,'current.tmp');
    await writeFile(pointer,id,{mode:0o600});
    for(let attempt=0;;attempt+=1){
-    try{await rename(pointer,join(root,'current'));break;}
+    try{await rename(pointer,join(root,'current'));
+     try{await (chmodEffect??defaultApply)(join(root,'current'),0o444);}catch{fail('UPLOAD_DEFINITIONS_ACCESS_FAILED');}
+     break;}
     catch(error){
      if(attempt>=7||!['EPERM','EACCES','EBUSY'].includes(error?.code))fail('UPLOAD_DEFINITIONS_PUBLISH_FAILED');
      await new Promise(resolve=>setTimeout(resolve,10*(attempt+1)));

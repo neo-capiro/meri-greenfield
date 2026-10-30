@@ -5,14 +5,13 @@
  * `request` is the EXISTING closed upload-inspection request, validated unchanged by `uploadInspectionRequest`. The TLS pin
  * is NOT upload authorization: without Parent's canonical verifier the handler refuses. Every refusal THROWS.
  */
-import {uploadInspectionRequest,uploadInspectionBody,uploadInspectionResult,uploadInspectionFault} from '../uploads/agentcore-contract.mjs';
+import {uploadInspectionBody,uploadInspectionResult,uploadInspectionFault} from '../uploads/agentcore-contract.mjs';
 import {createOperationLifetime} from '../../../packages/runtime/operation-lifetime.mjs';
 import {NATIVE_UPLOAD_INSPECTION_PATH,NATIVE_UPLOAD_INSPECTION_SCHEMA,nativeUploadInspectionRequest} from '../uploads/native-host-contract.mjs';
 
 // Canonical Parent values, re-exported for existing callers: one contract, no Cap copy.
 export const NATIVE_INSPECTION_SCHEMA=NATIVE_UPLOAD_INSPECTION_SCHEMA;
 export const NATIVE_INSPECTION_PATH=NATIVE_UPLOAD_INSPECTION_PATH;
-const BODY_KEYS=Object.freeze(['schema','allocation','hostIdentity','binding','custody','request']);
 const fault=code=>{throw uploadInspectionFault(code);};
 /** One idempotent cleanup promise per acquired owner, so a stale close call can never run twice. */
 const cleanups=new WeakMap();
