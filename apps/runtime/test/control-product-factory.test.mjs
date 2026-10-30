@@ -3,6 +3,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {startControl} from '../control.mjs';
 import {agentcoreControlFixture} from './agentcore-fixture.mjs';
+import {binding,scopes} from '../../control/conversations/test/application-fixture.mjs';
 
 function fixture({connectHook,listenHook,nativeFailure=false}={}){
  const {configuration}=agentcoreControlFixture(),events=[];
@@ -57,4 +58,23 @@ test('borrowed identity owner is captured before asynchronous startup and keeps 
   if(configuration.http.port===8080){const r=await application.handle(new Request('https://synthetic.invalid/api/action-followthrough/session',{method:'POST',headers:{authorization:'Bearer synthetic-existing-authority','content-type':'application/json'},body:'{}'}));assert.equal(r.status,401);}
  }});
  const runtime=await f.start({productPorts:{identityContext}});assert.equal(calls,1);await runtime.close();
+});
+
+test('mounted browser issuance resolves existing identity independently and cannot authorize ordinary chat reads',async()=>{
+ let verified=0,browsers=0,ordinary=0,revoked=false;
+ const identityContext={
+  async verifyIdentity({credential}){verified++;if(revoked)throw Error('revoked');assert.equal(credential,'synthetic-existing-authority');return {principal:{tenantId:binding.tenantId,actorId:binding.actorId},identityRevision:'identity-1',checkedAtMs:Date.now(),expiresAtMs:Date.now()+60000};},
+  async resolveContext(){ordinary++;throw Error('paused ordinary run');},
+  async resolveBrowserContext({identitySha256,hints}){browsers++;assert.equal(hints.runId,binding.runId);return {identitySha256,binding,scopes,selectedClientId:scopes[0].resourceId,contextRevision:'browser-context-1',checkedAtMs:Date.now(),expiresAtMs:Date.now()+60000};},
+ };
+ const f=fixture({listenHook:async({configuration,application})=>{
+  if(configuration.http.port!==8080)return;
+  const request=(path,body,credential='synthetic-existing-authority')=>new Request('https://synthetic.invalid'+path,{method:'POST',headers:{authorization:`Bearer ${credential}`,'content-type':'application/json'},body:JSON.stringify(body)});
+  const hints={conversationId:binding.conversationId,runId:binding.runId,clientId:scopes[0].resourceId};
+  const issued=await application.handle(request('/api/action-followthrough/browser-session',hints));assert.equal(issued.status,200);
+  const receipt=await issued.json();assert.equal(receipt.context.runId,binding.runId);assert.equal(browsers,1);assert.equal(ordinary,0);
+  const chat=await application.handle(request('/api/conversations/history',{},receipt.credential));assert.equal(chat.status,403);assert.equal((await chat.json()).error.code,'SESSION_REFUSED');assert.equal(ordinary,0);
+  revoked=true;const denied=await application.handle(request('/api/action-followthrough/browser-session',hints));assert.equal(denied.status,401);assert.equal(browsers,1);assert.equal(verified,2);
+ }});
+ const runtime=await f.start({productPorts:{identityContext}});await runtime.close();
 });

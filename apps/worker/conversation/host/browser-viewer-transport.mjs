@@ -6,6 +6,7 @@ import {privateAddress,dnsName,fingerprint,tlsBytes,checkedCertificate} from './
 import {createOperationLifetime} from '../../../../packages/runtime/operation-lifetime.mjs';
 import {parseBytes} from '../../../../packages/contracts/document-application/boundary.mjs';
 import {canonicalSha256} from '../../../../packages/contracts/validate.mjs';
+import {assertBrowserReturn,assertBrowserCustody} from '../../../../packages/runtime/browser-custody.mjs';
 import {own} from '../../../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {BROWSER_VIEWER_LIMITS,receiveBrowserViewerResponse,receiveBrowserViewerRequest} from '../../../../packages/contracts/browser-viewer/receive.mjs';
 const PATH='/internal/browser-viewer',REQUEST_LIMIT=BROWSER_VIEWER_LIMITS.requestBytes+8192;
@@ -20,14 +21,16 @@ async function body(stream,limit,signal){
  signal.throwIfAborted();if(size!==Number(length))fail();return parseBytes(Buffer.concat(chunks,size),limit);
 }
 function operation(value){
- const q=own(value,['operation'],['binding','route','request','grant']);
- if(q.operation==='admission'){own(q,['operation','binding']);return q;}
+ const q=own(value,['operation'],['binding','route','request','grant','custody']);
+ if(['admission','prepare-resume'].includes(q.operation)){own(q,['operation','binding','custody']);if(q.custody!==null)assertBrowserCustody(q.custody,{binding:q.binding});else if(q.operation==='prepare-resume')fail();return q;}
  if(q.operation!=='execute')fail();own(q,['operation','route','request','grant']);
  return {...q,request:receiveBrowserViewerRequest(q.route,encode(q.request))};
 }
 function admission(result,binding){
- const r=own(result,['binding','admitted','expiresAtMs']);
- if(!same(r.binding,binding)||typeof r.admitted!=='boolean'||!Number.isSafeInteger(r.expiresAtMs))fail();return r;
+ const r=own(result,['binding','admitted','expiresAtMs','ownerInstanceId','state','leaseEpoch','leaseExpiresAtMs']);
+ if(!same(r.binding,binding)||typeof r.admitted!=='boolean'||!Number.isSafeInteger(r.expiresAtMs)||
+  typeof r.ownerInstanceId!=='string'||!['agent','fencing','drained','user','returning','drain-unknown','ended'].includes(r.state)||
+  !Number.isSafeInteger(r.leaseEpoch)||r.leaseEpoch<0||r.leaseExpiresAtMs!==null&&!Number.isSafeInteger(r.leaseExpiresAtMs))fail();return r;
 }
 
 /** One exact allocation per client. A canonical host resolver may select this
@@ -52,8 +55,14 @@ export function createBrowserViewerHostClient({binding,ownerInstanceId,hostId,ge
   }));}finally{life.close();}
  }
  return Object.freeze({
-  async read({binding:requested,signal}){
-   if(!same(source,requested))fail();return admission(await send({operation:'admission',binding:source},signal),source);
+  async read({binding:requested,custody=null,signal}){
+   if(!same(source,requested)||custody!==null&&(custody.hostId!==hostId||custody.generation!==generation||custody.ownerInstanceId!==ownerInstanceId))fail();
+   const result=admission(await send({operation:'admission',binding:source,custody},signal),source);if(result.ownerInstanceId!==ownerInstanceId)fail();return result;
+  },
+  async prepareResume({binding:requested,custody,signal}){
+   if(!same(source,requested)||custody.hostId!==hostId||custody.generation!==generation||custody.ownerInstanceId!==ownerInstanceId)fail();
+   const held=assertBrowserCustody(custody,{binding:source});
+   return assertBrowserReturn(await send({operation:'prepare-resume',binding:source,custody:held},signal),held);
   },
   async execute({route,request,grant,signal}){
    if(grant?.custody?.ownerInstanceId!==ownerInstanceId||grant.custody.hostId!==hostId||grant.custody.generation!==generation||!same(grant.custody.binding,source))fail();
@@ -64,7 +73,7 @@ export function createBrowserViewerHostClient({binding,ownerInstanceId,hostId,ge
  });
 }
 
-export function createBrowserViewerHostServer({bind,tls,peer,relay,now=Date.now,requestMs=10000}){
+export function createBrowserViewerHostServer({bind,tls,peer,relay,custodyOwner,now=Date.now,requestMs=10000}){
  const address=privateAddress(bind.address),serverName=dnsName(tls.serverName),cert=tlsBytes(tls.cert),key=tlsBytes(tls.key),ca=tlsBytes(tls.clientCa);
  const peerName=dnsName(peer.name),peerFingerprint=fingerprint(peer.fingerprintSha256);
  if(!Number.isSafeInteger(bind.port)||bind.port<0||bind.port>65535||bind.port===0&&address!=='127.0.0.1'||
@@ -82,7 +91,11 @@ export function createBrowserViewerHostServer({bind,tls,peer,relay,now=Date.now,
     const seen=new Set();for(let n=0;n<req.rawHeaders.length;n+=2){const name=req.rawHeaders[n].toLowerCase();if(seen.has(name)||!['host','content-type','content-length','connection'].includes(name))fail();seen.add(name);}
     checkedCertificate(req.socket.getPeerCertificate(false).raw,{name:peerName,nowMs:now(),fingerprintSha256:peerFingerprint});
     const q=operation(await life.run(signal=>body(req,REQUEST_LIMIT,signal)));
-    const result=await life.run(signal=>q.operation==='admission'?relay.readAdmission({binding:q.binding,signal}):relay.execute({route:q.route,request:q.request,grant:q.grant,signal}));
+    const result=await life.run(signal=>{
+     if(q.operation==='admission')return relay.readAdmission({binding:q.binding,custody:q.custody,signal});
+     if(q.operation==='prepare-resume'){if(typeof custodyOwner?.prepareResume!=='function')fail();return custodyOwner.prepareResume({binding:q.binding,custody:q.custody,signal});}
+     return relay.execute({route:q.route,request:q.request,grant:q.grant,signal});
+    });
     const bytes=encode(result);if(bytes.length>BROWSER_VIEWER_LIMITS.responseBytes)fail();life.check();
     res.writeHead(200,{'content-type':'application/json','content-length':String(bytes.length),'connection':'close','cache-control':'no-store'});res.end(bytes);
    }catch{if(!res.destroyed&&!res.headersSent){res.writeHead(503,{'content-length':'0','connection':'close'});res.end();}}

@@ -44,6 +44,18 @@ test('input uses a native page and consumes the last displayed frame exactly onc
  await f.execute('input',input);assert.equal(f.calls[1][1].page,f.page);assert.equal(f.calls[1][1].input.events[0].text,'private');
  await assert.rejects(f.execute('input',input));assert.equal(f.calls.filter(([kind])=>kind==='input').length,1);
 });
+
+test('explicit session renewal replaces the viewer without a second hold and fences its old frame',async t=>{
+ const f=await fixture(t),old=await f.connect(),read=await f.execute('read'),pageId=read.pages[0].pageId;
+ await f.execute('frame',{...old,requestId:id(12),pageId});
+ const renewed={...f.grant,sessionKey:'b'.repeat(64)};
+ await assert.rejects(f.execute('read',{},renewed),/BROWSER_VIEWER_BUSY/u);
+ const ticket=await f.execute('ticket',{requestId:id(14)},renewed);
+ const next=await f.execute('connect',{requestId:id(15),ticket:ticket.ticket},renewed);
+ assert.notEqual(next.lease.viewerId,old.viewerId);assert.equal(next.lease.leaseEpoch,old.leaseEpoch);
+ await assert.rejects(f.execute('input',{...old,requestId:id(16),pageId,frameId:'F'.repeat(43),events:[{type:'text',text:'old'}]}));
+ assert.equal(f.calls.filter(([kind])=>kind==='input').length,0);
+});
 test('removed pages and caller-selected identifiers cannot reach native capture',async t=>{
  const f=await fixture(t),lease=await f.connect(),read=await f.execute('read');f.closePage();
  await assert.rejects(f.execute('frame',{...lease,requestId:id(12),pageId:read.pages[0].pageId}));

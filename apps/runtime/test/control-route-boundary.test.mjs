@@ -1,4 +1,13 @@
 import test from 'node:test';
+test('viewer and browser session reach public authentication; private host transport never does',async()=>{
+ const called=[];
+ const routes=createControlRouteApplications({assembly:{handle(r){called.push(new URL(r.url).pathname);return new Response('authenticated owner');}},candidate:{handle(){throw Error('private host must not be public');}}});
+ for(const path of ['/api/meri/browser/read','/api/meri/browser/input','/api/action-followthrough/browser-session']){
+  assert.equal((await routes.public.handle(new Request('https://control.test'+path))).status,200);
+  assert.equal((await routes.private.handle(new Request('https://control.test'+path))).status,404);
+ }
+ assert.equal((await routes.public.handle(new Request('https://control.test/internal/browser-viewer'))).status,404);assert.equal(called.length,3);
+});
 import assert from 'node:assert/strict';
 import {createControlRouteApplications,listenControlApplications} from '../control-route-boundary.mjs';
 

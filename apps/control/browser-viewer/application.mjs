@@ -16,13 +16,14 @@ export function createBrowserViewerApplication({lifecycle,transport,now=Date.now
   }
   if(!current||current.expiresAtMs<=now())fail('EXPIRED');
   const context=contextOf(current);
-  if(!current.custody){
+  if(!current.custody||current.state==='unavailable'){
    if(route!=='read')fail(current.state==='pending'?'CONFLICT':'UNAVAILABLE');
-   return receiveBrowserViewerResponse(route,200,encode({schema,context,ownerId:current.ownerInstanceId??null,
+   return receiveBrowserViewerResponse(route,200,encode({schema,context,binding:current.sourceBinding,checkpoint:null,ownerId:current.ownerInstanceId??null,
     state:current.state==='available'?'agent':current.state==='pending'?'taking':'unavailable',lease:null,pages:[]}),request,context);
   }
   if(route!=='read'&&request.ownerId!==undefined&&request.ownerId!==current.ownerInstanceId)fail('CONFLICT');
-  const grant={context,sessionKey:createHash('sha256').update(credential).digest('hex'),expiresAtMs:current.expiresAtMs,custody:current.custody};
+  const checkpoint=current.checkpointId?{checkpointId:current.checkpointId,checkpointSha256:current.checkpointSha256}:null;
+  const grant={context,checkpoint,sessionKey:createHash('sha256').update(credential).digest('hex'),expiresAtMs:current.expiresAtMs,custody:current.custody};
   const answer=await transport.execute({route,request,grant,signal});signal?.throwIfAborted();
   // Re-read after the host request. Late pixels and replies cannot cross a revoke,
   // successor, changed owner or client selection.

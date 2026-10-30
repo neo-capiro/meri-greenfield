@@ -4,6 +4,7 @@
  * It never creates a hold, resumes the SDK, or handles model messages. */
 import {randomBytes,randomUUID,createHash} from 'node:crypto';
 import {canonicalSha256} from '../../../../packages/contracts/validate.mjs';
+import {assertBrowserCustody} from '../../../../packages/runtime/browser-custody.mjs';
 import {BROWSER_VIEWER_SCHEMA as schema,BROWSER_VIEWER_LIMITS,receiveBrowserViewerRequest,
  receiveBrowserViewerResponse} from '../../../../packages/contracts/browser-viewer/receive.mjs';
 const fault=code=>Object.assign(Error(code),{code});
@@ -69,10 +70,12 @@ export function createBrowserViewerRelay({ownerInstanceId,binding,expiresAtMs,no
     if(connection&&!owned)fail('BROWSER_VIEWER_BUSY');
     const mode=s.state==='user'?(owned?'user':'taking'):s.state==='agent'?'agent':s.state==='returning'?'returning':s.state==='ended'?'ended':'taking';
     if(owned)touch();
-    answer={...base,state:mode,lease:mode==='user'?publicLease():null,pages:mode==='user'?listPages():[]};
+    answer={...base,binding:source,checkpoint:grant.checkpoint??null,state:mode,lease:mode==='user'?publicLease():null,pages:mode==='user'?listPages():[]};
    }else if(route==='ticket'){
     if(s.state!=='user'||s.leaseEpoch!==grant.custody.leaseEpoch||s.leaseExpiresAtMs<=now())fail('BROWSER_VIEWER_NOT_HELD');
-    if(connection&&connection.sessionKey!==grant.sessionKey)fail('BROWSER_VIEWER_BUSY');
+    // Explicit reconnect may replace an expired credential's viewer for the
+    // same freshly authorized actor and run. Connect rotates the viewer ID;
+    // ordinary reads and old-frame input never borrow the replacement.
     const token=randomBytes(32).toString('base64url'),until=Math.min(now()+BROWSER_VIEWER_LIMITS.ticketMs,
      grant.expiresAtMs,expiresAtMs,grant.custody.expiresAtMs,s.leaseExpiresAtMs);
     ticket={digest:hash(token),sessionKey:grant.sessionKey,leaseEpoch:s.leaseEpoch,expiresAtMs:until};
@@ -117,11 +120,14 @@ export function createBrowserViewerRelay({ownerInstanceId,binding,expiresAtMs,no
  }
  async function close(){if(closed)return {closed:true};closed=true;lifetime.abort();disconnect();native=null;return {closed:true};}
  return Object.freeze({ownerInstanceId,execute,close,
-  async readAdmission({binding:requested,signal}={}){
+  async readAdmission({binding:requested,custody=null,signal}={}){
    if(closed||!native||!same(requested,source)||now()>=expiresAtMs)fail('BROWSER_VIEWER_AUTHORITY_REFUSED');
+   if(custody!==null){const held=assertBrowserCustody(custody,{binding:source});if(held.ownerInstanceId!==ownerInstanceId||held.expiresAtMs<=now())fail('BROWSER_VIEWER_AUTHORITY_REFUSED');}
    signal?.throwIfAborted();const value=await native.controls.readState({signal});signal?.throwIfAborted();
    if(closed||now()>=expiresAtMs)fail('BROWSER_VIEWER_AUTHORITY_REFUSED');
-   return Object.freeze({binding:source,admitted:value.state==='agent',expiresAtMs});
+   const admitted=custody===null?value.state==='agent':value.state==='user'&&value.leaseEpoch===custody.leaseEpoch||value.state==='returning'&&value.leaseEpoch===custody.leaseEpoch+1;
+   return Object.freeze({binding:{...source},admitted,expiresAtMs,ownerInstanceId,state:value.state,
+    leaseEpoch:value.leaseEpoch,leaseExpiresAtMs:value.leaseExpiresAtMs??null});
   },
   async bind({binding:requested,pages:readPages,controls}={}){
    if(closed||native||!same(requested,source)||typeof readPages!=='function'||

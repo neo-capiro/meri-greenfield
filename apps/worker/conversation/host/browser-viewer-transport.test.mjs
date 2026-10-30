@@ -44,12 +44,13 @@ async function fixture(t){
   view:async()=>{throw Error('No page');},userInput:async()=>{calls.push('input');},handBack(){state='returning';},endLease(){state='returning';}}});
  const server=createBrowserViewerHostServer({bind:{address:'127.0.0.1',port:0},
   tls:{serverName:'browser.meri.internal',cert:material.hostCert,key:material.hostKey,clientCa:material.caCert},
-  peer:{name:'control.meri.internal',fingerprintSha256:digest(material.controlCert)},relay,requestMs:2000});
+  peer:{name:'control.meri.internal',fingerprintSha256:digest(material.controlCert)},relay,requestMs:2000,
+  custodyOwner:{async prepareResume({binding:source,custody}){assert.deepEqual(source,binding);calls.push('prepare');return {ownerInstanceId,leaseEpoch:custody.leaseEpoch+1,snapshotSha256:'f'.repeat(64)};}}});
  t.after(async()=>{await server.close();await relay.close();});const at=await server.start();
  const config={binding,ownerInstanceId,hostId,generation:1,endpoint:{address:at.address,port:at.port,serverName:'browser.meri.internal',serverFingerprintSha256:digest(material.hostCert)},
   tls:{clientName:'control.meri.internal',cert:material.controlCert,key:material.controlKey,ca:material.caCert},requestMs:2000};
  const client=createBrowserViewerHostClient(config);t.after(()=>client.close());
- const grant={context,sessionKey:'a'.repeat(64),expiresAtMs:until,custody:{binding,ownerInstanceId,hostId,generation:1,leaseEpoch:1,expiresAtMs:until}};
+ const grant={context,binding,checkpoint:{checkpointId:binding.runId,checkpointSha256:'c'.repeat(64)},sessionKey:'a'.repeat(64),expiresAtMs:until,custody:{schema:'meri-browser-custody/1',binding,controlId:id(30),policySha256:'d'.repeat(64),ownerInstanceId,hostId,generation:1,leaseEpoch:1,expiresAtMs:until}};
  return {client,config,grant,hold:()=>{state='user';},calls};
 }
 test('real mTLS admission and one-use connection use an exact private host allocation',async t=>{
@@ -71,4 +72,14 @@ test('wrong TLS peer pin and changed custody cannot select another native owner'
 test('client closure refuses subsequent connections and public destinations are rejected',async t=>{
  const f=await fixture(t);f.client.close();await assert.rejects(f.client.read({binding}));
  assert.throws(()=>createBrowserViewerHostClient({...f.config,endpoint:{...f.config.endpoint,address:'8.8.8.8'}}));
+});
+
+test('held admission and explicit resume use the retained native custody owner over real TLS',async t=>{
+ const f=await fixture(t);f.hold();
+ const current=await f.client.read({binding,custody:f.grant.custody});
+ assert.equal(current.admitted,true);assert.equal(current.state,'user');assert.equal(current.leaseEpoch,1);
+ const returned=await f.client.prepareResume({binding,custody:f.grant.custody});
+ assert.equal(returned.leaseEpoch,2);assert.equal(returned.snapshotSha256,'f'.repeat(64));assert.deepEqual(f.calls,['prepare']);
+ await assert.rejects(f.client.prepareResume({binding,custody:{...f.grant.custody,generation:2}}));
+ assert.deepEqual(f.calls,['prepare']);
 });

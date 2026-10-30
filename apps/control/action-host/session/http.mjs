@@ -8,7 +8,8 @@ const getters=Object.fromEntries(['url','method','headers','signal','body'].map(
 const path='/api/action-followthrough/session';
 const response=(status,value)=>canonicalResponse(value,status);
 export function createActionSessionApplication(options){
- const {owner,maxRequestBytes=4096,maxRequestMs=3000,now=Date.now}=own(options,['owner'],['maxRequestBytes','maxRequestMs','now']);
+ const {owner,maxRequestBytes=4096,maxRequestMs=3000,now=Date.now,sessionPath=path}=own(options,['owner'],['maxRequestBytes','maxRequestMs','now','sessionPath']);
+ if(![path,'/api/action-followthrough/browser-session'].includes(sessionPath))throw Error('SESSION_CONFIGURATION');
  const {issue}=own(owner,['issue'],['issueDerived','authenticateSession','readCurrentState','verifyTransition','nativeCredentialFor','revoke','close','status']);
  if(typeof issue!=='function'||typeof now!=='function'||!Number.isSafeInteger(maxRequestBytes)||maxRequestBytes<1||maxRequestBytes>65536||!Number.isSafeInteger(maxRequestMs)||maxRequestMs<1||maxRequestMs>30000)throw Error('SESSION_CONFIGURATION');
  return Object.freeze({async handle(request){
@@ -16,7 +17,7 @@ export function createActionSessionApplication(options){
   try{
    if(!request||types.isProxy(request)||!(request instanceof Request))return fail(400,'SESSION_REQUEST_INVALID');
    const info=Object.fromEntries(Object.entries(getters).map(([k,g])=>[k,g.call(request)]));const header=k=>Headers.prototype.get.call(info.headers,k);
-   const url=new URL(info.url);if(url.pathname!==path||url.search||url.hash)return fail(404,'SESSION_ROUTE_NOT_FOUND');if(info.method!=='POST')return fail(405,'SESSION_METHOD_REFUSED');
+   const url=new URL(info.url);if(url.pathname!==sessionPath||url.search||url.hash)return fail(404,'SESSION_ROUTE_NOT_FOUND');if(info.method!=='POST')return fail(405,'SESSION_METHOD_REFUSED');
    if(!/^application\/json(?:\s*;\s*charset=utf-8)?$/i.test(header('content-type')??'')||![null,'identity'].includes(header('content-encoding')))return fail(400,'SESSION_REQUEST_INVALID');
    const auth=header('authorization');if(typeof auth!=='string'||!/^Bearer [\x21-\x2b\x2d-\x7e]{1,8192}$/u.test(auth))return fail(401,'SESSION_REFUSED');
    const length=header('content-length');if(length!==null&&(!/^\d+$/u.test(length)||!Number.isSafeInteger(Number(length))||Number(length)>maxRequestBytes))return fail(413,'SESSION_REQUEST_TOO_LARGE');
