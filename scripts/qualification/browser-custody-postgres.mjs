@@ -31,6 +31,11 @@ try{
  const freshStore=createPostgresConversationStore({pool,modelCatalog:MODEL_CATALOG});
  const selected={binding,scopes,selectedClientId:id(5)},first=await freshStore.lifecycle.browserCustody.read(selected,check);
  assert.equal(first.state,'held');assert.deepEqual(first.custody,custody);
+ const allocation={hostId:custody.hostId,generation:custody.generation,leaseDeadlineMs:custody.expiresAtMs};
+ const hostCurrent=async change=>{const client=await pool.connect();try{await client.query('BEGIN');
+  const result=await freshStore.lifecycle.browserCustody.currentHost(client,{...selected,allocation,...change},check);await client.query('COMMIT');return result;
+ }catch(error){await client.query('ROLLBACK');throw error;}finally{client.release();}};
+ assert.equal((await hostCurrent()).phase,'browser-held');
  const returned={ownerInstanceId:custody.ownerInstanceId,leaseEpoch:2,snapshotSha256:'b'.repeat(64)};
  await f.service.returnTakeover({credential:f.credential,returned});
  await assert.rejects(freshStore.lifecycle.browserCustody.returning({...selected,returned:{...returned,ownerInstanceId:randomUUID()}},check));
@@ -41,6 +46,10 @@ try{
  const target=resumed.targetBinding,execution=await freshStore.lifecycle.execution({...selected,binding:target},check);
  assert.deepEqual(execution.browserHandoff.custody,custody);assert.deepEqual(execution.browserHandoff.returned,returned);
  assert.deepEqual(execution.browserHandoff.targetBinding,target);assert.equal(execution.continuation.mode,'resume');
+ const current=await hostCurrent();assert.equal(current.phase,'browser-successor');assert.deepEqual(current.browserSuccessor.binding,target);
+ assert.deepEqual(current.binding,binding);assert.equal(current.sdkAdmitted,false);assert.equal(current.bashAdmitted,false);
+ await assert.rejects(hostCurrent({allocation:{...allocation,generation:2}}));
+ await assert.rejects(hostCurrent({binding:{...binding,actorId:'foreign'}}));
  f.state.context.binding=target;const session=await f.sessions.issue({identityCredential:'synthetic-current'});
  for(const state of ['starting','running'])await f.store.append(target,{eventId:randomUUID(),createdAt:new Date().toISOString(),type:'run.status',data:{state,reasonCode:null}},check);
  await f.service.recordUsage({credential:session.credential,binding:target,input:payload(500)});
@@ -48,8 +57,10 @@ try{
  assert.equal((await f.service.recordUsage({credential:session.credential,binding:target,input:payload(500)})).replayed,true);
  await assert.rejects(freshStore.nextRuns.current(binding,check),/NEXT_RUN_NOT_LATEST/);
  await assert.rejects(freshStore.lifecycle.browserCustody.read({...selected,binding:{...binding,actorId:'foreign'}},check));
+ await f.store.append(target,{eventId:randomUUID(),createdAt:new Date().toISOString(),type:'run.status',data:{state:'cancelled',reasonCode:'USER_CANCELLED'}},check);
+ await assert.rejects(hostCurrent(),/BROWSER_CUSTODY_REFUSED/);
  assert.equal(Number((await pool.query('SELECT count(*) AS n FROM meri_conversations.runs WHERE tenant_id=$1 AND conversation_id=$2',[tenantId,binding.conversationId])).rows[0].n),2);
  console.log(JSON.stringify({passed:true,postgresMajor:16,ordinaryRole:true,custodyRecovered:true,concurrentReplay:true,
-  exactSuccessor:true,staleSourceRefused:true,crossActorRefused:true,usageDeltaMicroUsd:200,
+  exactSuccessor:true,physicalBrowserFollowsCanonicalSuccessor:true,retiredSdkRemainsDenied:true,targetCancellationCutsBrowser:true,staleSourceRefused:true,crossActorRefused:true,usageDeltaMicroUsd:200,
   limits:'Scripted Core identity, SDK and native host; no browser, model, deployment or full host integration claim.'}));
 }finally{f?.close();await pool.end();}
