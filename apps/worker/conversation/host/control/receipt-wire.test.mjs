@@ -15,7 +15,7 @@ import {MODEL_CATALOG} from '../../../../../packages/contracts/test/model-select
 import {browserActionReceiptEventId} from '../../../../../packages/contracts/runtime-0.2/browser-receipt.mjs';
 import {createBrowserHostRunFacts} from '../../../../runtime/browser-host-run-facts.mjs';
 import {DEFAULT_BROWSER_POLICY} from '../../browser/policy.mjs';
-import {NO_CAPABILITY_PLATFORM} from '../../../../runtime/product-ports/capability-policy.mjs';
+import {assertCapabilityPolicy} from '../../capabilities/policy.mjs';
 
 mock.module(new URL('./tls.mjs',import.meta.url).href,{exports:{
  privateAddress:v=>v,dnsName:v=>v,fingerprint:v=>v,tlsBytes:v=>Buffer.from(v),MAX_CERT_LIFETIME_MS:900000,
@@ -58,13 +58,14 @@ async function route({currentnessOverrides={}}={}){
   return {rows:[]};}};
  const transact=async effect=>{shared.depth++;try{return await effect(sqlClient);}finally{shared.depth--;}};
  const browserPolicy={...DEFAULT_BROWSER_POLICY,enabled:true};
+ const capabilityPolicy=assertCapabilityPolicy({});
  const state={binding,currentUntilMs:NOW+300000,phase:'active',sdkAdmitted:true,bashAdmitted:false,
-  browserAdmitted:true,capabilityPolicySha256:hash(NO_CAPABILITY_PLATFORM),
+  browserAdmitted:true,capabilityPolicySha256:hash(capabilityPolicy),
   browserPolicySha256:hash(browserPolicy),...currentnessOverrides};
  // The REAL facts producer normalizes the currentness projection; a hand-copied DTO is never used.
  const factsProducer=createBrowserHostRunFacts({currentness:{readFacts:async()=>Object.freeze({binding,scopes,
   deadlineMs:NOW+300000,currentUntilMs:NOW+300000,phase:'active',sdkAdmitted:true,bashAdmitted:false,
-  browserAdmitted:true,capabilityPolicy:NO_CAPABILITY_PLATFORM,browserPolicy})}});
+  browserAdmitted:true,capabilityPolicy,browserPolicy})}});
  const facts=await factsProducer.readCanonicalFacts({query:async()=>({rows:[]})},
   {allocation:{hostId:allocation.hostId,generation:allocation.generation},binding});
  const producer=createBrowserReceiptProducer({store:conversationStore(),now:()=>clock.now});

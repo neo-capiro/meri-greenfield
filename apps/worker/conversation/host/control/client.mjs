@@ -187,7 +187,9 @@ export function createHostCurrentnessClient({allocation,binding,hostIdentity,pur
     if(closed||signal?.aborted)fail();
     localCertificate();
     const request=hostReceiptRequest({schema:'meri-host-receipt-request/1',allocation:a,binding:b,
-     hostIdentity:i,nonce:nonce(),receipt:{...receipt,binding:b}});
+     // The receipt travels UNCHANGED: its own binding is what the envelope must match, so a foreign claim
+     // is refused instead of being rewritten into a valid one here.
+     hostIdentity:i,nonce:nonce(),receipt});
     const response=await perform(HOST_RECEIPT_PATH,request,HOST_RECEIPT_WIRE_MAX_BYTES,
      HOST_RECEIPT_WIRE_MAX_BYTES,signal);
     const answer=hostReceiptResponse(response,request);

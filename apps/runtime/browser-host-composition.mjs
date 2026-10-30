@@ -87,7 +87,10 @@ export function createBrowserHostComposition({declaration,pool,store,sessions,co
     decideBrowserApproval:browserApproval===null?undefined:({request,binding,signal,deadlineMs})=>
      browserApproval.decide({request,binding,signal,deadlineMs}),
     // The REAL receipt producer Control already constructs; absent, the receipt route refuses.
-    recordBrowserReceipt:browserReceipts===null?undefined:value=>browserReceipts.appendAction(value),
+    // The action recorder (event + approved-effect settlement) when Control supplies one, else the raw
+    // producer; a missing owner still refuses the route.
+    recordBrowserReceipt:browserReceipts===null?undefined:value=>
+     (typeof browserReceipts.recordAction==='function'?browserReceipts.recordAction(value):browserReceipts.appendAction(value)),
     readCanonicalFacts:(client,input)=>facts.readCanonicalFacts(client,input),
     resolveWorkflow:({binding,signal})=>{
      // A missing real Core admission owner refuses; it never answers from a static manifest callback.

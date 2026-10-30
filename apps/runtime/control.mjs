@@ -61,7 +61,6 @@ import {bindApprovalSessions} from './native-authority/approval-forwarder.mjs';
 import {createObjectiveReaderApplication} from './product-ports/objective.mjs';
 import {createObjectiveGenerationReadback} from './objective-generation/retained-result.mjs';
 import {createApprovalMetadataReadback} from '../control/commands/approval-metadata/readback.mjs';
-import {createPostgresApprovalMetadataReader} from '../control/commands/approval-metadata/postgres-store.mjs';
 import {createApprovalMetadataReaderApplication} from './agentcore-control-http.mjs';
 import {createWorkspaceGenerationApplication} from '../control/conversations/workspace-generation/application.mjs';
 import {workspaceGenerationLimits} from '../control/conversations/workspace-generation/protocol.mjs';
@@ -77,6 +76,7 @@ import {createBrowserHostComposition,readBrowserHostMaterial} from './browser-ho
 import {compileBrowserHostConfiguration} from './browser-host-configuration.mjs';
 import {createBrowserOperationOwner} from '../control/intents/browser-operation-owner.mjs';
 import {createBrowserReceiptProducer} from '../control/browser-hosts/browser-receipts.mjs';
+import {createBrowserActionRecorder} from '../control/browser-hosts/action-settlement.mjs';
 function productBinding(options){
  const c=own(options,[],['productPorts','productPortsFactory']);
  if(c.productPorts!==undefined&&c.productPortsFactory!==undefined)throw fault('PRODUCT_PORTS_CONFIGURATION');
@@ -205,7 +205,11 @@ export function assembleControl(options){
         consume:productIntents.browser.consume,result:productIntents.browser.result},now,
        limits:{requestMs:configuration.limits.requestMs}});
     browserHosts=createBrowserHostComposition({declaration,pool,store,sessions,core:ports.browserHostCore,capabilityPolicy,readBrowserPolicy,
-     siteWorkflowAdmission:ports.siteWorkflowAdmission??null,browserApproval,browserReceipts,material:browserHostMaterial,now,limits:{requestMs:configuration.limits.requestMs}});
+     siteWorkflowAdmission:ports.siteWorkflowAdmission??null,browserApproval,
+     browserReceipts:createBrowserActionRecorder({metadata:createPostgresApprovalMetadataReader({pool}),
+      record:value=>browserReceipts.appendAction(value),result:value=>productIntents.browser.result(value),
+      status:value=>productIntents.browser.status(value),now}),
+     material:browserHostMaterial,now,limits:{requestMs:configuration.limits.requestMs}});
     if(browserHosts===null)throw fault('BROWSER_HOST_CONFIGURATION');
     ports=composeRuntimePorts(ports,{browserHosts:browserHosts.browserHosts});
    }
