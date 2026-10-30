@@ -75,6 +75,8 @@ import {createObjectiveGenerationDispatcher} from '../control/conversations/obje
 import {createBrowserHostComposition,readBrowserHostMaterial} from './browser-host-composition.mjs';
 import {compileBrowserHostConfiguration} from './browser-host-configuration.mjs';
 import {createBrowserOperationOwner} from '../control/intents/browser-operation-owner.mjs';
+import {createIntentJournal} from '../control/intents/journal.mjs';
+import {createPostgresIntentJournalStore} from '../control/intents/postgres-journal.mjs';
 import {createBrowserReceiptProducer} from '../control/browser-hosts/browser-receipts.mjs';
 import {createBrowserActionRecorder} from '../control/browser-hosts/action-settlement.mjs';
 function productBinding(options){
