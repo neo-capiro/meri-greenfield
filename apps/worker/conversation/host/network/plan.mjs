@@ -14,8 +14,10 @@ const v4=value=>{
 export function isPrivateServiceAddress(value){
  const b=v4(value);return !!b&&(b[0]===10||b[0]===172&&b[1]>=16&&b[1]<=31||b[0]===192&&b[1]===168);
 }
-const specs=Object.freeze({browser:['browser-http'],bash:['bash-http','bash-socks'],sdk:['model-proxy','control']});
-/** @param {{allocation:unknown,binding:unknown,kind:'browser'|'bash'|'sdk',routes:unknown}} input */
+const specs=Object.freeze({browser:['browser-http'],bash:['bash-http','bash-socks'],sdk:['model-proxy','control'],
+ /** Fixed native processing has NO route: an empty netns is the whole network plan (no relay, no model/control port). */
+ processing:[]});
+/** @param {{allocation:unknown,binding:unknown,kind:'browser'|'bash'|'sdk'|'processing',routes:unknown}} input */
 export function createNetworkPlan({allocation,binding,kind,routes}){
  const a=assertHostAllocation(allocation),b=assertHostRunBinding(a,binding);
  if(!Object.hasOwn(specs,kind)||!Array.isArray(routes)||

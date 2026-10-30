@@ -31,16 +31,15 @@ export async function createProcessingPlacement({allocation,binding,hostIdentity
   if(!released.released)throw Object.assign(Error('HOST_CGROUP_CLEANUP_UNKNOWN'),{code:'HOST_CGROUP_CLEANUP_UNKNOWN',cause:error,leaf});
   throw error;
  }
- let closed=false;
+ // The settled cleanup result is authoritative: a retry replays it and can never turn UNKNOWN into success.
+ const closing=(async()=>{
+  let childUnknown=null;
+  try{await child.close();}catch(error){childUnknown=error?.code??'HOST_LAUNCH_UNKNOWN';}
+  const released=releaseFiniteCgroupLeaf({leaf,fs});
+  if(childUnknown||!released.released)return Object.freeze({closed:false,released:released.released,
+   code:childUnknown??released.code});
+  return Object.freeze({closed:true,released:true});
+ })();
  return Object.freeze({schema:PROCESSING_PLACEMENT_SCHEMA,pid:child.pid,leaf,hierarchy,
-  async close(){
-   if(closed)return Object.freeze({closed:true,released:true});
-   closed=true;
-   let childUnknown=null;
-   try{await child.close();}catch(error){childUnknown=error?.code??'HOST_LAUNCH_UNKNOWN';}
-   const released=releaseFiniteCgroupLeaf({leaf,fs});
-   if(childUnknown||!released.released)return Object.freeze({closed:false,released:released.released,
-    code:childUnknown??released.code});
-   return Object.freeze({closed:true,released:true});
-  }});
+  close:()=>closing});
 }

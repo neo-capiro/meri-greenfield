@@ -119,12 +119,24 @@ export async function createFiniteCgroupLeaf({allocation,binding,hostIdentity,au
   if(members.trim()!=='')fail('HOST_CGROUP_OCCUPIED');
   if(!sameLimits(readLimits()))fail('HOST_CGROUP_FOREIGN');
  }else{
-  write(fs,`${absolute}/cpu.max`,expected.cpuMax);
-  write(fs,`${absolute}/memory.max`,expected.memoryMax);
-  write(fs,`${absolute}/pids.max`,expected.pidsMax);
-  const members=read(fs,`${absolute}/cgroup.procs`);
-  if(members===null||members.trim()!=='')fail('HOST_CGROUP_READBACK_REFUSED');
-  if(!sameLimits(readLimits()))fail('HOST_CGROUP_READBACK_REFUSED');
+  try{
+   write(fs,`${absolute}/cpu.max`,expected.cpuMax);
+   write(fs,`${absolute}/memory.max`,expected.memoryMax);
+   write(fs,`${absolute}/pids.max`,expected.pidsMax);
+   const members=read(fs,`${absolute}/cgroup.procs`);
+   if(members===null||members.trim()!=='')fail('HOST_CGROUP_READBACK_REFUSED');
+   if(!sameLimits(readLimits()))fail('HOST_CGROUP_READBACK_REFUSED');
+  }catch(error){
+   // This process created the leaf; account for it truthfully. Only an empty leaf it created is removed, and only when
+   // the removal can be read back. An adopted/foreign/occupied group is never removed here.
+   const members=read(fs,`${absolute}/cgroup.procs`);
+   let partialCleanup='unknown';
+   if(members!==null&&members.trim()===''){try{fs.rmdirSync(absolute);partialCleanup='removed';}catch{partialCleanup='unknown';}}
+   else if(members===null)partialCleanup='unknown';
+   else partialCleanup='occupied';
+   error.partialCleanup=partialCleanup;
+   throw error;
+  }
  }
  const observedAtMs=now();
  if(!Number.isSafeInteger(observedAtMs))fail('HOST_CGROUP_READBACK_REFUSED');

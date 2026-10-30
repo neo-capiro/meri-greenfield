@@ -7,6 +7,7 @@ import {EventEmitter} from 'node:events';
 import {stat,unlink} from 'node:fs/promises';
 import {posix} from 'node:path';
 import {PassThrough} from 'node:stream';
+import {runArtifactProcess} from '../../../../artifacts/process.mjs';
 import {canonicalSha256} from '../../../../../packages/contracts/validate.mjs';
 import {own,data,nativeSignal} from '../../../../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {playwrightHostCommand,validateBrowserInstallation,validateBrowserContextInstallation} from '../../browser/server.mjs';
@@ -431,6 +432,56 @@ export async function startConfinedProcessing({allocation,binding,hostIdentity,h
 
 /** Standalone port needed while the network owner is preparing its namespace-local loopback relay. The network
  * owner supplies the fixed entrypoint and verifies the actual listener by PID before treating the handle as ready. */
+/** Spawn port for one fixed processing command with REAL stdin/stdout/stderr. The host launcher execs the command in
+ * place after attaching the exact finite leaf, so fds 0/1/2 belong to the program and fds 3/4 carry the prepared-process
+ * READY/GO handshake. Trusted currentness and network verification run BEFORE the spawn and AGAIN after READY but before
+ * GO, so a revocation while preparation is pending cannot dispatch. Cancellation before GO closes the gate without `G`
+ * and the child dies at its own gate read. */
+export function createProcessingCommandLauncher({allocation,binding,hostIdentity,network,helperPath,cwd,home,browsersPath,
+ uid:runUid,gid:runGid,onPrepared,signal,spawnNative=spawn,readyMs=5000}={}){
+ const s=scope({allocation,binding,hostIdentity});
+ if(!absolute(helperPath)||![cwd,home,browsersPath].every(absolute)||!uid(runUid)||!uid(runGid)||
+  typeof onPrepared!=='function'||!network||typeof network.verify!=='function'||network.plan?.kind!=='processing'||
+  !maxMs(readyMs))fail('HOST_LAUNCH_CONFIGURATION');
+ nativeSignal(signal);
+ const preflight=async()=>{
+  if(signal?.aborted)fail('HOST_LAUNCH_CANCELLED');
+  const pin=await verifiedNetwork(s,network,'processing',signal,readyMs);
+  if(signal?.aborted)fail('HOST_LAUNCH_CANCELLED');
+  return pin;
+ };
+ return async function spawnProcessingCommand(command,args){
+  if(typeof command!=='string'||!absolute(command)||!Array.isArray(args)||args.length>100||
+   args.some(value=>typeof value!=='string'||value.length>8192||value.includes('\0')))fail('HOST_LAUNCH_CONFIGURATION');
+  const pin=await preflight();
+  const child=spawnNative(helperPath,['run',...nativeSpec(s,{kind:'processing',network:pin,command,args,cwd,home,
+   browsersPath,uid:runUid,gid:runGid})],{env:{},stdio:['pipe','pipe','pipe','pipe','pipe'],windowsHide:true});
+  if(!child||!Number.isSafeInteger(child.pid)||!child.stdio?.[3]||!child.stdio?.[4])fail('HOST_LAUNCH_UNKNOWN');
+  let gateOpen=false;
+  try{
+   if(await within(()=>lineReader(child.stdio[3])(),readyMs,signal)!=='R')fail('HOST_LAUNCH_UNKNOWN');
+   await onPrepared({leaderPid:child.pid,kind:'processing',signal});
+   await preflight();                       // exact current authority/network must still hold at dispatch
+   if(signal?.aborted)fail('HOST_LAUNCH_CANCELLED');
+   child.stdio[4].end('G');gateOpen=true;
+   return child;
+  }catch(error){
+   try{if(!child.stdio[4].destroyed)child.stdio[4].destroy();}catch{}
+   try{child.kill('SIGKILL');}catch{}
+   if(!gateOpen)error.dispatched=false;
+   throw error;
+  }
+ };
+}
+
+/** Run one fixed processing command through the existing bounded artifact runner: exact stdin bytes, bounded stdout,
+ * finite deadline, caller cancellation and owned-group cleanup are the runner's contract, not re-implemented here. */
+export async function runProcessingCommand({launcher,command,args,cwd,input=Buffer.alloc(0),signal,deadlineMs,maxOutput}){
+ const spawnChild=await launcher(command,args);
+ return runArtifactProcess(command,args,{cwd,input,signal,deadlineMs,...(maxOutput===undefined?{}:{maxOutput}),
+  ports:{spawn:()=>spawnChild}});
+}
+
 export async function startConfinedLocalRelay({allocation,binding,hostIdentity,helperPath,networkProof,kind,
  command,args,cwd,uid:runUid,gid:runGid,authorize,signal,spawnNative=spawn,readyMs=5000,stopMs=5000}={}){
  const s=scope({allocation,binding,hostIdentity});
