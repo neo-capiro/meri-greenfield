@@ -19,7 +19,7 @@ import {HOST_PROCESS_ABSENCE_SCHEMA} from './teardown.mjs';
 
 export const HOST_CGROUP_ROOT='/sys/fs/cgroup/meri/hosts';
 export const HOST_CGROUP_CONFINEMENT_SCHEMA='meri-d005-cgroup-confinement/1';
-const SCOPE='browser-bash-sdk-descendants';
+const scopes=Object.freeze({sdk:'browser-bash-sdk-descendants',browser:'browser-host-descendants'});
 const MAX_FRESH_MS=1000;
 const GROUP_PATH=/^\/sys\/fs\/cgroup\/meri\/hosts\/[0-9a-f-]{36}-[1-9][0-9]*$/u;
 const UUID=/^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/u;
@@ -69,13 +69,13 @@ export function createLinuxHostCgroupPorts(){
 
 /** Pure validation of the trusted launcher check, not an attestation generator. The launcher owns pre-exec cgroup
  * placement, mount/cgroupfs denial in every untrusted namespace, and the prohibition on alternate entrypoints. */
-function confinementCurrent(value,{allocation,binding,hostIdentity,groupIdentity,relative,sdkLeaderPid,nowMs}){
+function confinementCurrent(value,{allocation,binding,hostIdentity,groupIdentity,relative,leaderField,leaderPid,nowMs}){
  let r;try{r=own(data(value),['schema','allocationSha256','bindingSha256','hostIdentitySha256','groupIdentitySha256',
-  'cgroupRelative','sdkLeaderPid','observedAtMs','preExecPlacement','allEntrypointsConfined','untrustedCgroupfsUnavailable','untrustedMigrationDenied']);}
+  'cgroupRelative',leaderField,'observedAtMs','preExecPlacement','allEntrypointsConfined','untrustedCgroupfsUnavailable','untrustedMigrationDenied']);}
  catch{unknown();}
  if(r.schema!==HOST_CGROUP_CONFINEMENT_SCHEMA||r.allocationSha256!==canonicalSha256(allocation)||
   r.bindingSha256!==canonicalSha256(binding)||r.hostIdentitySha256!==canonicalSha256(hostIdentity)||
-  r.groupIdentitySha256!==canonicalSha256(groupIdentity)||r.cgroupRelative!==relative||r.sdkLeaderPid!==sdkLeaderPid||
+  r.groupIdentitySha256!==canonicalSha256(groupIdentity)||r.cgroupRelative!==relative||r[leaderField]!==leaderPid||
   !Number.isSafeInteger(r.observedAtMs)||r.observedAtMs>nowMs||r.observedAtMs<nowMs-MAX_FRESH_MS||
   r.preExecPlacement!==true||r.allEntrypointsConfined!==true||r.untrustedCgroupfsUnavailable!==true||
   r.untrustedMigrationDenied!==true)unknown();
@@ -83,11 +83,18 @@ function confinementCurrent(value,{allocation,binding,hostIdentity,groupIdentity
 
 /** `arm` must run while the real SDK leader is live in its exact run child cgroup. `verifyConfinement` is a
  * trusted launcher port and must measure/reaffirm that untrusted processes cannot move cgroups throughout the
- * wait. The observer never accepts a bare `{exited:true}` or a user/model-provided confinement flag. */
+ * wait. Explicit trusted leaderKind:'browser' instead arms the actual browser child and emits only
+ * browser-host-descendants. It still covers the recursive host cgroup, including local relays; it says nothing
+ * about the remote AgentCore SDK or Bash. The observer never accepts a bare `{exited:true}` or a
+ * user/model-provided confinement flag. */
 export function createHostWideProcessObserver({allocation,binding,hostIdentity,profile,verifyConfinement,
  ports=createLinuxHostCgroupPorts(),now=Date.now,monotonic=()=>performance.now(),pause=(ms,signal)=>sleep(ms,undefined,{signal}),
- timeoutMs=25000,armTimeoutMs=5000,pollMs=100}={}){
+ timeoutMs=25000,armTimeoutMs=5000,pollMs=100,leaderKind}={}){
  const scope=hostWideCgroup({allocation,binding,hostIdentity});
+ const allocatedKind=scope.allocation.hostMode==='browser-only'?'browser':'sdk';
+ if(leaderKind!==undefined&&leaderKind!==allocatedKind)fail('HOST_PROCESS_CONFIGURATION');leaderKind=allocatedKind;
+ const processScope=scopes[leaderKind],leaderField=leaderKind==='sdk'?'sdkLeaderPid':'browserLeaderPid',
+  leaderRelative=leaderKind==='sdk'?scope.sdkLeaderRelative:`${scope.relative}/${canonicalSha256(scope.binding)}/browser`;
  if(typeof profile!=='string'||!posix.isAbsolute(profile)||posix.resolve(profile)!==profile||
   !profile.endsWith(`/${scope.binding.conversationId}/.browser/profile`)||typeof verifyConfinement!=='function'||
   typeof ports?.openGroup!=='function'||typeof ports?.readLeaderCgroup!=='function'||typeof ports?.readBootId!=='function'||
@@ -96,7 +103,7 @@ export function createHostWideProcessObserver({allocation,binding,hostIdentity,p
   !Number.isSafeInteger(armTimeoutMs)||armTimeoutMs<1||armTimeoutMs>30000||
   !Number.isSafeInteger(pollMs)||pollMs<1||pollMs>timeoutMs)
   fail('HOST_PROCESS_CONFIGURATION');
- let state='new',group,sdkLeaderPid;
+ let state='new',group,leaderPid;
  const stopping=new AbortController();
  const lifetime=(ms,signal)=>createOperationLifetime({deadlineMs:Date.now()+ms,now:Date.now,signal,errorFactory:()=>Object.assign(new Error('HOST_PROCESS_OBSERVATION_UNKNOWN'),{code:'HOST_PROCESS_OBSERVATION_UNKNOWN'})});
  const closeHandle=async held=>{
@@ -107,26 +114,27 @@ export function createHostWideProcessObserver({allocation,binding,hostIdentity,p
  const closeGroup=async()=>{const held=group;group=undefined;await closeHandle(held);};
  const refuse=async()=>{if(state!=='closed')state='unknown';try{await closeGroup();}catch{}unknown();};
  const verify=async signal=>{
-  if(!group||!pidOk(sdkLeaderPid)||signal?.aborted)unknown();
+  if(!group||!pidOk(leaderPid)||signal?.aborted)unknown();
   const current=now();if(!Number.isSafeInteger(current)||await ports.readBootId()!==scope.hostIdentity.bootId)unknown();
   const check=await verifyConfinement({allocation:structuredClone(scope.allocation),binding:structuredClone(scope.binding),
-   hostIdentity:structuredClone(scope.hostIdentity),cgroupRelative:scope.relative,groupIdentity:structuredClone(group.identity),sdkLeaderPid},{signal});
+   hostIdentity:structuredClone(scope.hostIdentity),cgroupRelative:scope.relative,groupIdentity:structuredClone(group.identity),[leaderField]:leaderPid},{signal});
   const checkedAt=now();if(!Number.isSafeInteger(checkedAt))unknown();
-  confinementCurrent(check,{...scope,groupIdentity:group.identity,relative:scope.relative,sdkLeaderPid,nowMs:checkedAt});
+  confinementCurrent(check,{...scope,groupIdentity:group.identity,relative:scope.relative,leaderField,leaderPid,nowMs:checkedAt});
  };
  const populated=async()=>{if(!group||typeof group.readEvents!=='function')unknown();return parseCgroupEvents(await group.readEvents());};
  const exactRequest=request=>{
   let r;try{r=own(data(request),['allocation','binding','hostIdentity','profile','scope']);}catch{fail('HOST_PROCESS_BINDING_REFUSED');}
   if(canonicalSha256(r.allocation)!==canonicalSha256(scope.allocation)||
    canonicalSha256(r.binding)!==canonicalSha256(scope.binding)||
-   canonicalSha256(r.hostIdentity)!==canonicalSha256(scope.hostIdentity)||r.profile!==profile||r.scope!==SCOPE)
+   canonicalSha256(r.hostIdentity)!==canonicalSha256(scope.hostIdentity)||r.profile!==profile||r.scope!==processScope)
    fail('HOST_PROCESS_BINDING_REFUSED');
  };
  return Object.freeze({
-  scope:Object.freeze({path:scope.path,relative:scope.relative,sdkLeaderRelative:scope.sdkLeaderRelative}),
-  async arm({sdkLeaderPid:pid}={}){
+  scope:Object.freeze({path:scope.path,relative:scope.relative,[leaderKind==='sdk'?'sdkLeaderRelative':'browserLeaderRelative']:leaderRelative}),
+  async arm(raw={}){
+   let pid;try{pid=own(raw,[leaderField])[leaderField];}catch{fail('HOST_PROCESS_CONFIGURATION');}
    if(state!=='new'||!pidOk(pid))fail('HOST_PROCESS_CONFIGURATION');
-   state='arming';sdkLeaderPid=pid;
+   state='arming';leaderPid=pid;
    let life,opened;
    try{
     life=lifetime(armTimeoutMs,stopping.signal);
@@ -140,7 +148,7 @@ export function createHostWideProcessObserver({allocation,binding,hostIdentity,p
     });
     if(!group?.identity?.dev||!group.identity?.ino||typeof group.readEvents!=='function'||typeof group.close!=='function')unknown();
     if(await life.run(()=>ports.readBootId())!==scope.hostIdentity.bootId||
-       await life.run(()=>ports.readLeaderCgroup(pid))!==scope.sdkLeaderRelative||
+       await life.run(()=>ports.readLeaderCgroup(pid))!==leaderRelative||
        await life.run(()=>populated())!==1)unknown();
     await life.run(signal=>verify(signal));life.check();
     if(state!=='arming'||stopping.signal.aborted)unknown();
@@ -162,8 +170,8 @@ export function createHostWideProcessObserver({allocation,binding,hostIdentity,p
      const tick=monotonic();if(signal?.aborted||!Number.isFinite(tick)||tick<previous||tick-start>=timeoutMs)return refuse();previous=tick;
      await life.run(inner=>verify(inner));
      if(await life.run(()=>populated())===0){
-      // An alive SDK leader in another group means migration or PID reuse, not verified exit.
-      if(await life.run(()=>ports.readLeaderCgroup(sdkLeaderPid))!==null)return refuse();
+      // An alive selected leader in another group means migration or PID reuse, not verified exit.
+      if(await life.run(()=>ports.readLeaderCgroup(leaderPid))!==null)return refuse();
       await life.run(inner=>verify(inner));
       const observedAtMs=now();if(!Number.isSafeInteger(observedAtMs))return refuse();
       await life.run(()=>closeGroup());life.check();
@@ -171,7 +179,7 @@ export function createHostWideProcessObserver({allocation,binding,hostIdentity,p
       state='done';
       return Object.freeze({schema:HOST_PROCESS_ABSENCE_SCHEMA,allocationSha256:canonicalSha256(scope.allocation),
        bindingSha256:canonicalSha256(scope.binding),hostIdentitySha256:canonicalSha256(scope.hostIdentity),
-       observedAtMs,scope:SCOPE,exited:true,remainingPids:Object.freeze([])});
+       observedAtMs,scope:processScope,exited:true,remainingPids:Object.freeze([])});
      }
      await life.run(inner=>pause(Math.min(pollMs,Math.max(1,timeoutMs-(tick-start))),inner));
     }
