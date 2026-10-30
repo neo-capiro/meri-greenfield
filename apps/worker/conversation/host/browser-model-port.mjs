@@ -11,7 +11,7 @@ const wire=value=>{const result=data(value);if(Buffer.byteLength(JSON.stringify(
 
 export function createBoundBrowserModelPort({binding,policy,tools,call,deadlineMs=Number.MAX_SAFE_INTEGER,now=Date.now}){
  const bound=data(binding);validateShape('RunBinding',bound);const digest=canonicalSha256(bound),admitted=validateBrowserPolicy(policy);
- if(typeof tools!=='function'||typeof call!=='function'||typeof now!=='function'||!Number.isSafeInteger(deadlineMs)||deadlineMs<=now())fail();
+ if(!admitted.enabled||typeof tools!=='function'||typeof call!=='function'||typeof now!=='function'||!Number.isSafeInteger(deadlineMs)||deadlineMs<=now())fail();
  const owner=new AbortController();let closed=false;
  const input=(raw,keys)=>{const q=own(raw,['binding',...keys],['signal']);nativeSignal(q.signal);
   if(closed||q.signal?.aborted||canonicalSha256(data(q.binding))!==digest)fail();return q;};

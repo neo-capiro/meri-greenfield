@@ -9,6 +9,10 @@ const result={content:[{type:'text',text:'filtered snapshot'}]};
 const fixture=(overrides={})=>createBoundBrowserModelPort({binding,policy,tools:async()=>[descriptor],call:async()=>result,...overrides});
 const refused=promise=>assert.rejects(promise,error=>error.code==='BROWSER_CALL_REFUSED'&&error.message==='BROWSER_CALL_REFUSED');
 
+test('disabled browser policy cannot construct a model tool boundary',()=>{
+ assert.throws(()=>fixture({policy:{enabled:false}}),/BROWSER_CALL_REFUSED/);
+});
+
 test('host model port copies bounded tools and filtered text without exposing its context',async()=>{
  const port=fixture();assert.deepEqual(await port.tools({binding}),{tools:[descriptor]});
  const received=await port.call(request);assert.deepEqual(received,result);assert.throws(()=>{received.content[0].text='caller mutation';},TypeError);
