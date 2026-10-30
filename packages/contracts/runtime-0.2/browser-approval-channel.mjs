@@ -53,7 +53,10 @@ export function assertBrowserApprovalStatus(raw){
   ['decision','revoked']);
  if(r.schema!==BROWSER_APPROVAL_STATUS_SCHEMA||r.permissive!==false)deny();
  if(typeof r.unknown!=='boolean')deny();
- const c=data(r.consumption);if(!c||typeof c!=='object')deny();
+ // Core returns consumption:null for a valid status BEFORE any consumption; otherwise the exact
+ // state/time/result record. Either is non-permissive.
+ const c=r.consumption===null?null:data(r.consumption);
+ if(c!==null&&(typeof c!=='object'||Array.isArray(c)))deny();
  return Object.freeze({...r,proposalId:id(r.proposalId),subjectSha256:hex(r.subjectSha256),consumption:c});
 }
 /** True only for an exact current permission: fresh receipt/1 for THIS proposal and subject. */
