@@ -8,7 +8,8 @@ import {HOST_CONTROL_PATH,HOST_CONTROL_MAX_BYTES,hostControlRequest,hostControlR
  hostHoldRequest,hostHoldResponse,HOST_HOLD_PATH,HOST_HOLD_WIRE_MAX_BYTES,HOST_OPERATION_REQUEST_MAX_BYTES,
  hostClientDnsName,encodeHostControl,decodeHostControl,
  hostDecideRequest,hostDecideResponse,HOST_DECIDE_PATH,HOST_DECIDE_MAX_BYTES,HOST_DECIDE_WIRE_MAX_BYTES,
- HOST_DECIDE_MAX_WINDOW_MS} from './protocol.mjs';
+ HOST_DECIDE_MAX_WINDOW_MS,hostReceiptRequest,hostReceiptResponse,HOST_RECEIPT_PATH,
+ HOST_RECEIPT_WIRE_MAX_BYTES} from './protocol.mjs';
 import {MAX_HOST_CURRENTNESS_MS} from '../binding.mjs';
 
 const fail=()=>{throw Object.assign(new Error('HOST_CONTROL_UNAVAILABLE'),{code:'HOST_CONTROL_UNAVAILABLE'});};
@@ -28,6 +29,10 @@ const ROUTES=new Map([
  // admission transaction may this request's timer extend to the admitted absolute deadline.
  [HOST_DECIDE_PATH,{method:'decideBrowserApproval',requestMax:HOST_DECIDE_WIRE_MAX_BYTES,max:HOST_DECIDE_WIRE_MAX_BYTES,
   request:value=>hostDecideRequest(value),answer:(answer,q,atMs)=>hostDecideResponse(answer,q,atMs),long:true}],
+ // The ONE action-receipt route: bounded ingress, no long wait, the producer's own acknowledgement only.
+ [HOST_RECEIPT_PATH,{method:'recordBrowserReceipt',requestMax:HOST_RECEIPT_WIRE_MAX_BYTES,
+  max:HOST_RECEIPT_WIRE_MAX_BYTES,request:value=>hostReceiptRequest(value),
+  answer:(answer,q)=>hostReceiptResponse(answer,q)}],
 ]);
 function requestLength(req,routeMax){
  if(req.httpVersion!=='1.1'||req.method!=='POST'||!Number.isSafeInteger(routeMax))fail();

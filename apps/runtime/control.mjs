@@ -205,7 +205,7 @@ export function assembleControl(options){
         consume:productIntents.browser.consume,result:productIntents.browser.result},now,
        limits:{requestMs:configuration.limits.requestMs}});
     browserHosts=createBrowserHostComposition({declaration,pool,store,sessions,core:ports.browserHostCore,capabilityPolicy,readBrowserPolicy,
-     siteWorkflowAdmission:ports.siteWorkflowAdmission??null,browserApproval,material:browserHostMaterial,now,limits:{requestMs:configuration.limits.requestMs}});
+     siteWorkflowAdmission:ports.siteWorkflowAdmission??null,browserApproval,browserReceipts,material:browserHostMaterial,now,limits:{requestMs:configuration.limits.requestMs}});
     if(browserHosts===null)throw fault('BROWSER_HOST_CONFIGURATION');
     ports=composeRuntimePorts(ports,{browserHosts:browserHosts.browserHosts});
    }

@@ -96,7 +96,8 @@ async function route({decide,request=originalRequest,replayNonce=false,requestMs
  const runState={binding,currentUntilMs:NOW+300000,phase:'active',sdkAdmitted:true,bashAdmitted:false,
   browserAdmitted:true,capabilityPolicySha256:'c'.repeat(64),browserPolicySha256:'a'.repeat(64)};
  const store=createPostgresHostCurrentnessStore({transact,readCanonicalRun:async()=>runState,maxLeaseMs,
-  ...(decide===null?{}:{decideBrowserApproval:async input=>{shared.decideCalls++;return decide(input,shared);}})});
+  ...(decide===null?{}:{decideBrowserApproval:async input=>{shared.decideCalls++;shared.callbackDepth=shared.depth;
+   return decide(input,shared);}})});
  const captured={handler:null};const fake=new EventEmitter();
  fake.listening=false;fake.listen=()=>{fake.listening=true;fake.emit('listening');};
  fake.address=()=>({address:'127.0.0.1',port:8443});fake.close=cb=>cb?.();
@@ -118,7 +119,7 @@ test('the real client receives the canonical receipt through the captured handle
   assert.equal(answer.permitted,true);
   assert.equal(answer.receipt.proposalId,proposalId);
   assert.equal(f.shared.decideCalls,1);
-  assert.equal(f.shared.maxDepth,1,'the decision callback runs with no nested transaction');
+  assert.equal(f.shared.callbackDepth,0,'the decision callback itself runs at depth 0');
   assert.equal(f.queries.filter(q=>q.startsWith('INSERT INTO meri_host_control.request_nonces')).length,1);
  }finally{f.client.close();}
 });
@@ -154,7 +155,7 @@ test('a 5100ms human response wait completes past the 5000ms ingress bound',{tim
   const answer=await f.client.decideBrowserApproval(originalRequest);
   assert.equal(answer.permitted,true);
   assert.ok(Date.now()-started>=5000,'the response genuinely waited past the ingress bound');
-  assert.equal(f.shared.maxDepth,1);
+  assert.equal(f.shared.callbackDepth,0);
  }finally{f.client.close();}
 });
 

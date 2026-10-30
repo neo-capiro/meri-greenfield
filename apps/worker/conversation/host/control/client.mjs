@@ -14,7 +14,8 @@ import {HOST_CONTROL_PATH,HOST_CONTROL_MAX_BYTES,HOST_CONTROL_PURPOSES,
  hostWorkflowRequest,hostWorkflowResponse,HOST_WORKFLOW_PATH,HOST_WORKFLOW_WIRE_MAX_BYTES,
  hostHoldRequest,hostHoldResponse,HOST_HOLD_PATH,HOST_HOLD_WIRE_MAX_BYTES,
  hostClientDnsName,makeHostControlRequest,hostControlResponse,encodeHostControl,decodeHostControl,
- hostDecideRequest,hostDecideResponse,HOST_DECIDE_PATH,HOST_DECIDE_MAX_BYTES,HOST_DECIDE_WIRE_MAX_BYTES} from './protocol.mjs';
+ hostDecideRequest,hostDecideResponse,HOST_DECIDE_PATH,HOST_DECIDE_MAX_BYTES,HOST_DECIDE_WIRE_MAX_BYTES,
+ hostReceiptRequest,hostReceiptResponse,HOST_RECEIPT_PATH,HOST_RECEIPT_WIRE_MAX_BYTES} from './protocol.mjs';
 
 const fail=()=>{throw Object.assign(new Error('HOST_CONTROL_UNAVAILABLE'),{code:'HOST_CONTROL_UNAVAILABLE'});};
 const same=(a,b)=>canonicalSha256(a)===canonicalSha256(b);
@@ -176,6 +177,22 @@ export function createHostCurrentnessClient({allocation,binding,hostIdentity,pur
      checkedAtMs:answer.checkedAtMs,currentUntilMs:answer.currentUntilMs});
     return Object.freeze({permitted:false,outcome:answer.outcome,checkedAtMs:answer.checkedAtMs,
      currentUntilMs:answer.currentUntilMs});
+   }catch{fail();}
+  },
+  /** The ONE named action receipt. The caller hands the observed receipt; this client pins its own
+   * allocation/identity/nonce. Only the producer's actual durable acknowledgement is returned. */
+  async recordBrowserReceipt(receipt,{signal}={}){
+   try{
+    nativeSignal(signal);
+    if(closed||signal?.aborted)fail();
+    localCertificate();
+    const request=hostReceiptRequest({schema:'meri-host-receipt-request/1',allocation:a,binding:b,
+     hostIdentity:i,nonce:nonce(),receipt:{...receipt,binding:b}});
+    const response=await perform(HOST_RECEIPT_PATH,request,HOST_RECEIPT_WIRE_MAX_BYTES,
+     HOST_RECEIPT_WIRE_MAX_BYTES,signal);
+    const answer=hostReceiptResponse(response,request);
+    if(!fresh(answer,now(),maxFreshMs))fail();
+    return Object.freeze({eventId:answer.eventId,event:answer.event,checkedAtMs:answer.checkedAtMs});
    }catch{fail();}
   },
   close(){if(!closed){closed=true;lifetime.abort();}return Object.freeze({closed:true});},

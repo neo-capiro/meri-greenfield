@@ -10,7 +10,8 @@ import {hostControlRequest,hostClientDnsName,HOST_CONTROL_RESPONSE_SCHEMA,
  hostFactsRequest,hostFactsResponse,HOST_FACTS_RESPONSE_SCHEMA,
  hostWorkflowRequest,hostWorkflowResponse,HOST_WORKFLOW_RESPONSE_SCHEMA,
  hostHoldRequest,hostHoldResponse,HOST_HOLD_RESPONSE_SCHEMA,
- hostDecideRequest,hostDecideResponse,HOST_DECIDE_RESPONSE_SCHEMA} from './protocol.mjs';
+ hostDecideRequest,hostDecideResponse,HOST_DECIDE_RESPONSE_SCHEMA,
+ hostReceiptRequest,hostReceiptResponse,HOST_RECEIPT_RESPONSE_SCHEMA} from './protocol.mjs';
 
 const HEX=/^[0-9a-f]{64}$/u;
 const fail=()=>{throw Object.assign(new Error('HOST_CONTROL_UNAVAILABLE'),{code:'HOST_CONTROL_UNAVAILABLE'});};
@@ -41,13 +42,14 @@ export const HOST_CONTROL_SQL=Object.freeze({
  * `resolveWorkflow({binding,signal})` is the borrowed Core domain read and runs with NO transaction held.
  * `holdCustody({client,binding,allocation,check})` is the lifecycle owner's same-client APPLIED/no-return read.
  * Every optional dependency refuses its own operation when absent; nothing degrades to a success stub. */
-export function createPostgresHostCurrentnessStore({transact,readCanonicalRun,readCanonicalFacts,resolveWorkflow,holdCustody,decideBrowserApproval,maxLeaseMs,maxFactsBytes}={}){
+export function createPostgresHostCurrentnessStore({transact,readCanonicalRun,readCanonicalFacts,resolveWorkflow,holdCustody,decideBrowserApproval,recordBrowserReceipt,maxLeaseMs,maxFactsBytes}={}){
  if(typeof transact!=='function'||typeof readCanonicalRun!=='function'||
   !Number.isSafeInteger(maxLeaseMs)||maxLeaseMs<1||maxLeaseMs>MAX_HOST_CURRENTNESS_MS||
   readCanonicalFacts!==undefined&&typeof readCanonicalFacts!=='function'||
   resolveWorkflow!==undefined&&typeof resolveWorkflow!=='function'||
   holdCustody!==undefined&&typeof holdCustody!=='function'||
   decideBrowserApproval!==undefined&&typeof decideBrowserApproval!=='function'||
+  recordBrowserReceipt!==undefined&&typeof recordBrowserReceipt!=='function'||
   maxFactsBytes!==undefined&&(!Number.isSafeInteger(maxFactsBytes)||maxFactsBytes<1))fail();
  const factsBound=maxFactsBytes??262144;
 
@@ -247,6 +249,54 @@ const permittedPhase=state=>state.phase==='active'
       (answer?.expired===true?'expired':(answer?.statusOnly===true?'pending':'rejected'))));
      return Object.freeze(hostDecideResponse({schema:HOST_DECIDE_RESPONSE_SCHEMA,nonce:admitted.q.nonce,outcome,
       receipt:outcome==='approved'?answer.receipt:null,checkedAtMs:nowMs,currentUntilMs:untilMs},admitted.q,nowMs));
+    },{signal,readOnly:false});
+   }catch(error){throw refused(error);}
+  },
+
+  /** The named ACTION receipt. Admission and nonce in one short transaction; the real receipt producer
+   * appends on its own canonical conversation store with NO transaction held here; a second short
+   * transaction rechecks the stable authority before the producer's acknowledgement is released. */
+  async recordBrowserReceipt({request,fingerprintSha256,peerDnsName,signal}={}){
+   let admitted,ack;
+   try{
+    if(typeof recordBrowserReceipt!=='function')fail();
+    const q=hostReceiptRequest(request);nativeSignal(signal);
+    if(typeof fingerprintSha256!=='string'||!HEX.test(fingerprintSha256)||
+     peerDnsName!==hostClientDnsName(q.allocation)||signal?.aborted)fail();
+    admitted=await transact(async client=>{
+     const {a,b,h}=await admit(client,{request:q,fingerprintSha256,peerDnsName,signal});
+     const state=own(data(await readCanonicalRun(client,{allocation:a,binding:b,signal})),
+      ['binding','browserPolicySha256','capabilityPolicySha256','sdkAdmitted','browserAdmitted','bashAdmitted',
+       'phase','currentUntilMs','scopes'],['browserCustody','browserSuccessor']);
+     if(!same(state.binding,b)||state.browserAdmitted!==true||!permittedPhase(state))fail();
+     if(!Array.isArray(state.scopes)||state.scopes.length===0)fail();
+     const beforeMs=await clock(client);
+     if(beforeMs>=cutoff(beforeMs,a,h,state.currentUntilMs)||beforeMs>=a.leaseDeadlineMs)fail();
+     await consume(client,a,q.nonce);
+     return {q,a,b,h,scopes:Object.freeze(state.scopes.map(scope=>Object.freeze(data(scope)))),
+      stateSha256:canonicalSha256(stableProjection(state))};
+    },{signal,readOnly:false});
+    if(signal?.aborted)fail();
+    // No transaction, lock or connection is held while the canonical conversation store appends.
+    const r=admitted.q.receipt;
+    ack=await recordBrowserReceipt({binding:admitted.b,scopes:admitted.scopes,sessionId:r.sessionId,
+     toolUseId:r.toolUseId,action:r.action,urlHost:r.urlHost,atMs:r.atMs,outcome:r.outcome,
+     reference:r.reference,...(signal===undefined?{}:{signal})});
+   }catch(error){throw refused(error);}
+   try{
+    return await transact(async client=>{
+     const {a,b,h}=await admit(client,{request:admitted.q,fingerprintSha256,peerDnsName,signal});
+     if(!same(a,admitted.a)||!same(b,admitted.b))fail();
+     const fresh=own(data(await readCanonicalRun(client,{allocation:a,binding:b,signal})),
+      ['binding','browserPolicySha256','capabilityPolicySha256','sdkAdmitted','browserAdmitted','bashAdmitted',
+       'phase','currentUntilMs'],['browserCustody','browserSuccessor']);
+     if(canonicalSha256(stableProjection(fresh))!==admitted.stateSha256||fresh.browserAdmitted!==true||
+      !permittedPhase(fresh))fail();
+     const nowMs=await clock(client),untilMs=cutoff(nowMs,a,h,fresh.currentUntilMs);
+     if(signal?.aborted||nowMs>=untilMs||nowMs>=a.leaseDeadlineMs)fail();
+     if(!ack||ack.recorded!==true||typeof ack.eventId!=='string'||!ack.event)fail();
+     return Object.freeze(hostReceiptResponse({schema:HOST_RECEIPT_RESPONSE_SCHEMA,nonce:admitted.q.nonce,
+      eventId:ack.eventId,recorded:true,event:ack.event,checkedAtMs:nowMs,currentUntilMs:untilMs},admitted.q));
     },{signal,readOnly:false});
    }catch(error){throw refused(error);}
   },

@@ -52,7 +52,7 @@ export function createBrowserHostHoldCustody({store}={}){
 }
 /** `material` is already-loaded protected key material for exactly the declared references:
  * {privateClient:{clientName,cert,key,ca}, hostServer?:{serverName,cert,key,clientCa}}. */
-export function createBrowserHostComposition({declaration,pool,store,sessions,core,capabilityPolicy,readBrowserPolicy,siteWorkflowAdmission=null,browserApproval=null,material,now=Date.now,limits={}}={}){
+export function createBrowserHostComposition({declaration,pool,store,sessions,core,capabilityPolicy,readBrowserPolicy,siteWorkflowAdmission=null,browserApproval=null,browserReceipts=null,material,now=Date.now,limits={}}={}){
  if(declaration===null||declaration===undefined)return null;
  if(!pool||typeof pool.connect!=='function'||!store?.executions||!store?.lifecycle?.browserCustody||
   typeof sessions?.nativeCredentialFor!=='function'||typeof core?.readCurrent!=='function'||
@@ -86,6 +86,8 @@ export function createBrowserHostComposition({declaration,pool,store,sessions,co
     // The named approval callback is the REAL prepared+Core wait owner; absent, the operation refuses.
     decideBrowserApproval:browserApproval===null?undefined:({request,binding,signal,deadlineMs})=>
      browserApproval.decide({request,binding,signal,deadlineMs}),
+    // The REAL receipt producer Control already constructs; absent, the receipt route refuses.
+    recordBrowserReceipt:browserReceipts===null?undefined:value=>browserReceipts.appendAction(value),
     readCanonicalFacts:(client,input)=>facts.readCanonicalFacts(client,input),
     resolveWorkflow:({binding,signal})=>{
      // A missing real Core admission owner refuses; it never answers from a static manifest callback.
@@ -101,6 +103,7 @@ export function createBrowserHostComposition({declaration,pool,store,sessions,co
  return Object.freeze({browserHosts,currentness,allocations,facts,
   /** The retained browser approval PREPARATION owner, when Control composed one. It exposes no permission. */
   browserApproval:()=>browserApproval,
+  browserReceipts:()=>browserReceipts,
   get address(){return address;},
   // The protected nonce store binds THIS callback and passes its own transaction client.
   readCanonicalFacts:(client,input)=>facts.readCanonicalFacts(client,input),

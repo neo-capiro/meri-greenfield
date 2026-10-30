@@ -3,6 +3,7 @@ import {own,data,nativeSignal} from '../../../../../packages/contracts/commands-
 import {canonicalSha256} from '../../../../../packages/contracts/validate.mjs';
 import {assertHostAllocation,assertHostRunBinding,assertD005HostIdentity,assertHostCurrent,assertBrowserHostCurrent} from '../binding.mjs';
 import {assertBrowserApprovalRequest} from '../../../../../packages/contracts/runtime-0.2/browser-approval-preparation.mjs';
+import {assertBrowserActionReceipt} from '../../../../../packages/contracts/runtime-0.2/browser-receipt.mjs';
 import {receiptRefusal} from '../../browser/approval-binding.mjs';
 import {browserPreparationProposalId} from '../../../../../packages/contracts/runtime-0.2/browser-approval-preparation.mjs';
 
@@ -167,6 +168,36 @@ export function hostHoldResponse(value,request){let v;try{
  }catch{fail();}
  return Object.freeze({schema:HOST_HOLD_RESPONSE_SCHEMA,nonce:v.nonce,outcome:'APPLIED',custody:v.custody,
   checkedAtMs:v.checkedAtMs,currentUntilMs:v.currentUntilMs});}
+
+export const HOST_RECEIPT_PATH='/meri/host/receipt/v1';
+export const HOST_RECEIPT_REQUEST_SCHEMA='meri-host-receipt-request/1';
+export const HOST_RECEIPT_RESPONSE_SCHEMA='meri-host-receipt-response/1';
+export const HOST_RECEIPT_MAX_BYTES=16384;
+export const HOST_RECEIPT_ENVELOPE_BYTES=4096;
+export const HOST_RECEIPT_WIRE_MAX_BYTES=HOST_RECEIPT_MAX_BYTES+HOST_RECEIPT_ENVELOPE_BYTES;
+
+/** The named action receipt: envelope + the PostToolUse payload. The host never supplies scopes. */
+export function hostReceiptRequest(value){
+ let v,a,b,i,r;try{
+  v=own(data(value),['schema','allocation','binding','hostIdentity','nonce','receipt']);
+  a=assertHostAllocation(v.allocation);b=assertHostRunBinding(a,v.binding);i=assertD005HostIdentity(v.hostIdentity,b,a);
+  r=assertBrowserActionReceipt({...data(v.receipt),binding:b});
+ }catch{fail();}
+ if(v.schema!==HOST_RECEIPT_REQUEST_SCHEMA||typeof v.nonce!=='string'||!HEX.test(v.nonce))fail();
+ return Object.freeze({schema:HOST_RECEIPT_REQUEST_SCHEMA,allocation:a,binding:b,hostIdentity:i,nonce:v.nonce,receipt:r});
+}
+/** The answer carries the producer's ACTUAL durable acknowledgement, never a synthesized one. */
+export function hostReceiptResponse(value,request){
+ let v;try{
+  v=own(data(value),['schema','nonce','eventId','recorded','event','checkedAtMs','currentUntilMs']);
+  if(v.schema!==HOST_RECEIPT_RESPONSE_SCHEMA||v.nonce!==request.nonce||v.recorded!==true||
+   typeof v.eventId!=='string'||!v.event||typeof v.event!=='object')fail();
+  if(!Number.isSafeInteger(v.checkedAtMs)||!Number.isSafeInteger(v.currentUntilMs)||v.currentUntilMs<=v.checkedAtMs)fail();
+  if(data(v.event).id!==undefined&&v.event.id!==v.eventId)fail();
+ }catch{fail();}
+ return Object.freeze({schema:HOST_RECEIPT_RESPONSE_SCHEMA,nonce:v.nonce,eventId:v.eventId,recorded:true,
+  event:v.event,checkedAtMs:v.checkedAtMs,currentUntilMs:v.currentUntilMs});
+}
 
 export function encodeHostOperation(value,max){return encodeHostControl(value,max);}
 export function decodeHostOperation(bytes,max){return decodeHostControl(bytes,max);}
