@@ -145,7 +145,9 @@ export const PLAN=Object.freeze([
  ['phase:browser_host_roles','infra/product-preview/first-chat-browser-host-roles.sql','530f07a22d0d89ceef3468f91b67c8804fe0bdfa4e7bcdee1f90138bbc874dfb','integration'],
  ['migration','apps/control/browser-hosts/migrations/0001_host_allocations.sql','59e1f8d78c4afe0583e91beec43e2003357bfc3c62785d095fa5033668834b49','integration'],
  ['migration','apps/control/browser-hosts/migrations/0002_verified_teardown.sql','de647f85895bd622c6de29c644068f948fb448395e5f58a09a7d4a69f5a88a0d','integration'],
- ['phase:browser_host_control_grants','infra/product-preview/first-chat-browser-host-control-grants.sql','c1a397862c7ec77e157c8730338f877597786710e3975cc47f4b45cb21130d71','integration']
+ ['phase:browser_host_control_grants','infra/product-preview/first-chat-browser-host-control-grants.sql','c1a397862c7ec77e157c8730338f877597786710e3975cc47f4b45cb21130d71','integration'],
+ // Immutable browser-only placement and matching teardown; preserve1..75.
+ ['migration','apps/control/browser-hosts/migrations/0003_browser_only_teardown.sql','ad06f879d0202b37b32e5de7fae612e7a2603e7388a7393d5834bb2983c85992','integration']
 ].map(([kind,path,pinned,declaredStage],index)=>Object.freeze({ordinal:index+1,kind,path,pinned,
  name:kind==='migration'?path:`${path}#${kind.slice(6)}`,
  stage:declaredStage??(kind==='phase:temporal_grants'?'temporal':'meri')})));

@@ -12,12 +12,13 @@ const INSTANCE=/^i-[0-9a-f]{8,17}$/u;
 const IMAGE=/^sha256:[0-9a-f]{64}$/u;
 const HEX=/^[0-9a-f]{64}$/u;
 const fail=code=>{throw Object.assign(new Error(code),{code});};
-const record=(value,required)=>{try{return own(data(value),required);}catch{fail('HOST_BINDING_REFUSED');}};
+const record=(value,required,optional=[])=>{try{return own(data(value),required,optional);}catch{fail('HOST_BINDING_REFUSED');}};
 const same=(a,b)=>canonicalSha256(a)===canonicalSha256(b);
 
 /** One immutable allocation, for one tenant/conversation and one exact image. The control owner persists it. */
 export function assertHostAllocation(value){
- const a=record(value,['schema','tenantId','conversationId','generation','hostId','imageDigest','leaseDeadlineMs']);
+ const a=record(value,['schema','tenantId','conversationId','generation','hostId','imageDigest','leaseDeadlineMs'],['hostMode']);
+ if(a.hostMode!==undefined&&a.hostMode!=='browser-only')fail('HOST_BINDING_REFUSED');
  if(a.schema!==HOST_ALLOCATION_SCHEMA||typeof a.tenantId!=='string'||!a.tenantId||a.tenantId.length>128||typeof a.conversationId!=='string'||!UUID.test(a.conversationId)||typeof a.hostId!=='string'||!UUID.test(a.hostId)||typeof a.imageDigest!=='string'||!IMAGE.test(a.imageDigest)||!Number.isSafeInteger(a.generation)||a.generation<1||!Number.isSafeInteger(a.leaseDeadlineMs)||a.leaseDeadlineMs<1)fail('HOST_BINDING_REFUSED');
  return Object.freeze(a);
 }

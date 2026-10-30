@@ -12,7 +12,9 @@ import {HOST_CONTROL_REQUEST_SCHEMA} from '../../apps/worker/conversation/host/c
 import {publicCertificates} from '../../apps/control/browser-hosts/test/certificates.mjs';
 
 if(process.env.MERI_HOST_ALLOCATIONS_PG_ATTEST!=='isolated-local')throw Error('HOST_ALLOCATION_PG_ATTESTATION_REQUIRED');
-const connection={host:'127.0.0.1',port:55487,database:'wave6_browser_custody_20261030',connectionTimeoutMillis:1500};
+const port=Number(process.env.MERI_HOST_ALLOCATIONS_PG_PORT??55487);
+if(!Number.isInteger(port)||port<1024||port>65535)throw Error('HOST_ALLOCATION_PG_PORT_REFUSED');
+const connection={host:'127.0.0.1',port,database:'wave6_browser_custody_20261030',connectionTimeoutMillis:1500};
 const administrator='office_fixture_admin',writerRole='wave6_host_writer_20261030',readerRole='wave6_host_reader_20261030';
 const binding=()=>({tenantId:'host-qualification-'+randomUUID(),actorId:'fixture-actor',conversationId:randomUUID(),runId:randomUUID(),attemptId:randomUUID(),workerId:randomUUID(),writerFence:1});
 function input(source=binding()){
@@ -30,6 +32,8 @@ test('physical allocations and routing use actual PostgreSQL with separated ordi
  if(!installed){try{await admin.query(await readFile(new URL('../../apps/control/browser-hosts/migrations/0001_host_allocations.sql',import.meta.url),'utf8'));}catch(error){await admin.query('ROLLBACK');throw error;}}
  const teardownInstalled=(await admin.query("SELECT 1 FROM information_schema.columns WHERE table_schema='meri_host_control' AND table_name='host_allocations' AND column_name='teardown_json'")).rows.length;
  if(!teardownInstalled){try{await admin.query(await readFile(new URL('../../apps/control/browser-hosts/migrations/0002_verified_teardown.sql',import.meta.url),'utf8'));}catch(error){await admin.query('ROLLBACK');throw error;}}
+ const placementInstalled=(await admin.query("SELECT 1 FROM pg_constraint WHERE conrelid='meri_host_control.host_allocations'::regclass AND conname='host_allocation_placement'")).rows.length;
+ if(!placementInstalled){try{await admin.query(await readFile(new URL('../../apps/control/browser-hosts/migrations/0003_browser_only_teardown.sql',import.meta.url),'utf8'));}catch(error){await admin.query('ROLLBACK');throw error;}}
  await admin.query(`DO $$ BEGIN
   IF NOT EXISTS(SELECT 1 FROM pg_roles WHERE rolname='${writerRole}') THEN CREATE ROLE ${writerRole} LOGIN NOSUPERUSER NOBYPASSRLS NOCREATEROLE NOCREATEDB; END IF;
   IF NOT EXISTS(SELECT 1 FROM pg_roles WHERE rolname='${readerRole}') THEN CREATE ROLE ${readerRole} LOGIN NOSUPERUSER NOBYPASSRLS NOCREATEROLE NOCREATEDB; END IF;
@@ -111,5 +115,21 @@ test('physical allocations and routing use actual PostgreSQL with separated ordi
   await writer.admit({record:input(q.originalBinding)});
   await assert.rejects(reader.resolve({binding:q.originalBinding,custody:{schema:'meri-browser-custody/1',binding:q.originalBinding,controlId:randomUUID(),ownerInstanceId:q.ownerInstanceId,hostId:key.hostId,generation:1,leaseEpoch:1,policySha256:'a'.repeat(64),expiresAtMs:Date.now()+30000}}));
  });
- t.diagnostic('PostgreSQL ordinary-role allocation/custody boundaries passed; external Core/host currentness decisions are synthetic. No cloud, model, or deployed acceptance.');
+ await t.test('browser-only placement is immutable and both SQL and owner require the matching cleanup scope',async()=>{
+  const q=input();q.allocation.hostMode='browser-only';const saved=await writer.admit({record:q}),key={hostId:q.allocation.hostId,generation:1};
+  assert.equal(saved.allocation.hostMode,'browser-only');assert.equal((await reader.resolve({binding:q.originalBinding})).allocation.hostMode,'browser-only');
+  const receipt={schema:'meri-d005-host-teardown/1',allocationSha256:hash(saved.allocation),bindingSha256:hash(saved.originalBinding),hostIdentitySha256:hash(saved.hostIdentity),reason:'conversation-end',startedAtMs:Date.now(),browserEgress:'closed',bashEgress:'not-applicable',processScope:'browser-host-descendants',processes:'exited',browserState:'disposed',hostDestroy:'requested',hostAbsence:'confirmed',status:'VERIFIED'};
+  for(const change of [{processScope:'browser-bash-sdk-descendants'},{bashEgress:'closed'},{hostAbsence:'unknown'},{processScope:null}]){
+   const bad={...receipt,...change};await assert.rejects(writer.recordTeardown({...key,receipt:bad}));
+   await assert.rejects(writePool.query("UPDATE meri_host_control.host_allocations SET state='terminated',teardown_json=$2,teardown_sha256=$3 WHERE host_id=$1",[key.hostId,bad,hash(bad)]),{code:'23514'});
+  }
+  await assert.rejects(admin.query("UPDATE meri_host_control.host_allocations SET allocation_json=allocation_json-'hostMode' WHERE host_id=$1",[key.hostId]),/HOST_ALLOCATION_IMMUTABLE/);
+  const first=await writer.recordTeardown({...key,receipt});assert.deepEqual(await writer.recordTeardown({...key,receipt}),first);
+  assert.equal(first.receiptSha256,hash(receipt));await writer.admit({record:input(q.originalBinding)});
+  const legacy=input(),legacySaved=await writer.admit({record:legacy});
+  const relabeled={...receipt,allocationSha256:hash(legacySaved.allocation),bindingSha256:hash(legacySaved.originalBinding),hostIdentitySha256:hash(legacySaved.hostIdentity)};
+  await assert.rejects(writer.recordTeardown({...legacy.allocation,receipt:relabeled}));
+  await assert.rejects(writePool.query("UPDATE meri_host_control.host_allocations SET state='terminated',teardown_json=$2,teardown_sha256=$3 WHERE host_id=$1",[legacy.allocation.hostId,relabeled,hash(relabeled)]),{code:'23514'});
+ });
+ t.diagnostic('PostgreSQL ordinary-role allocation/custody/placement boundaries passed; external Core/host currentness decisions are synthetic. No cloud, model, or deployed acceptance.');
 });
