@@ -118,8 +118,8 @@
     },
     {
       "path": "../../apps/control/intents/approval.mjs",
-      "sha256": "f1817fecd7c8c23639d349d6c0bb25a8bdf191f4c11c31d365d13adfafd7da17",
-      "bytes": 42986
+      "sha256": "374fea5bca8a055ae8ed1bb4132d3d5476b0993f3f2dfeacccd5536ebc0f94df",
+      "bytes": 49777
     },
     {
       "path": "../../apps/control/intents/faults.mjs",
@@ -248,13 +248,13 @@
     },
     {
       "path": "intents-application/schema.mjs",
-      "sha256": "5c8be336652ac505686cc603cf99d6b5f4f3a78fd722a3bdea199008b4f93647",
-      "bytes": 22365
+      "sha256": "bbaaa06a9f8a7a0c8747be9bf8a65e32d76c8d0cdcef466e2646737109791094",
+      "bytes": 25865
     },
     {
       "path": "intents-application/semantics.mjs",
-      "sha256": "5450146cb86f174a69c8c27b3df4d34aa9344ba6876ca087dce72a9f63da8f7d",
-      "bytes": 29270
+      "sha256": "d3261a00f1f4741c5c6e5914fc53ca7557ab7288a35b67a654c4c9f72bb5c374",
+      "bytes": 31750
     },
     {
       "path": "meri.schema.json",
@@ -352,7 +352,7 @@
       "bytes": 3041
     }
   ],
-  "schemaSha256": "43759e17c7a6774c312d1f401c60fd210145fd0380735c32389ff0092189818d",
+  "schemaSha256": "76a5122f623c133c928b893e5b90bd9493f31018af93a659ca30ccf0cdc9640e",
   "browserInputs": [
     "artifacts-0.2/artifact-formats.mjs",
     "commands-0.2/mail-send-validation.mjs",

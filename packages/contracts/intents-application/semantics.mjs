@@ -58,6 +58,14 @@ async function proposal(value,conversationId){
    publishing&&value.scopes[0].kind==='client'&&value.request.clientId!==value.scopes[0].resourceId)conflict();
   return;
  }
+ if(value.kind==='browser_action'){
+  // Bounded reviewed display only: the proposal carries the tool, page origin, window, approver, scopes and
+  // the policy/input digests; C/A/S/I stay distinct and no raw browser input is published.
+  if(value.operation.id!=='browser_action'||value.operation.version!=='0.2.0')conflict();
+  if(value.binding.conversationId!==conversationId||value.scopes.some(scope=>scope.tenantId!==value.binding.tenantId)||
+   value.requiredApprover.tenantId!==value.binding.tenantId||value.expiresAtMs<=value.requestedAtMs)conflict();
+  exact(value.createdAt);return;
+ }
  const command=value.command;
  if(await sha(command)!==value.commandSha256||value.requiredApprover.tenantId!==command.binding.tenantId||command.binding.conversationId!==conversationId||
   command.scopes.some(scope=>scope.tenantId!==command.binding.tenantId)||parsed(value.expiresAt)<=parsed(value.createdAt))conflict();
@@ -221,6 +229,23 @@ async function item(value,conversationId){
  // The journal's createdAt is a bare millisecond-spelling pattern in the schema (no calendar check) and the journal writes toISOString(): read it exactly, so
  // an impossible day such as 2026-02-30 can not roll into March.
  exact(value.createdAt);
+ if(value.kind==='browser_action'){
+  if(!Object.hasOwn(value,'proposal'))return;
+  // The item names the PREPARATION operation; the proposal names the browser action it authorizes.
+  if(value.operation.id!=='browser_approval_preparation'||value.proposal.operation.id!=='browser_action'||
+   value.operation.version!=='0.2.0'||value.proposal.operation.version!=='0.2.0')conflict();
+  await proposal(value.proposal,conversationId);
+  const d=value.decision;
+  if(d!==null&&typeof d==='object'){
+   if(d.proposalId!==value.proposal.proposalId||d.subjectSha256!==value.proposal.subjectSha256||
+    !same(d.approver,value.proposal.requiredApprover)||parsed(d.decidedAt)<parsed(value.proposal.createdAt))conflict();
+  }
+  // A decision is a RECORDED human choice, never an execution: the phase must agree with it.
+  if(value.phase==='approved'&&!(typeof d==='object'&&d.decision==='approved'))conflict();
+  if(value.phase==='rejected'&&!(typeof d==='object'&&d.decision==='rejected'))conflict();
+  if(value.execution!==null&&typeof value.execution==='object'&&value.execution.state!=='completed')conflict();
+  return;
+ }
  if(value.kind==='saved_note'){savedNote(value,conversationId);return;}
  if(value.kind==='legiwatch_action'){if(!Object.hasOwn(value,'proposal'))return;if(value.operation.id!==value.proposal.operation)conflict();await proposal(value.proposal,conversationId);if(value.result!=='unavailable')await legiwatchResult(value.result,value.proposal);return;}
  if(value.kind==='legislative_document_action'){if(!Object.hasOwn(value,'proposal'))return;if(value.operation.id!==value.proposal.operation)conflict();await proposal(value.proposal,conversationId);if(value.result!=='unavailable')legislativeDocumentResult(value.result,value.proposal);return;}
@@ -270,6 +295,17 @@ export async function list(value,request){
  * binding of their own, so the retained proposal is what binds them to the request's conversation and approver. */
 export async function decide(value,request,retained){
  await proposal(retained,request.conversationId);
+ if(retained.kind==='browser_action'){
+  // A recorded approval means AWAITING EXECUTION; a rejection is final for this proposal. Neither answer
+  // carries an execution result, and the decision must belong to this exact proposal and approver.
+  if(request.subjectSha256!==retained.subjectSha256)conflict();
+  if(value.status!==(request.decision==='rejected'?'browser_rejected':'browser_decision_recorded')||
+   value.deliveryId!==request.deliveryId||value.proposalId!==request.proposalId)conflict();
+  const d=value.decision;
+  if(d.proposalId!==retained.proposalId||d.subjectSha256!==retained.subjectSha256||d.decision!==request.decision||
+   !same(d.approver,retained.requiredApprover)||parsed(d.decidedAt)<parsed(retained.createdAt))conflict();
+  return value;
+ }
  if(retained.kind==='legiwatch_action'){
   if(value.status!=='legiwatch_decided'||retained.proposalId!==request.proposalId||retained.commandSha256!==request.commandSha256||value.deliveryId!==request.deliveryId||value.proposalId!==request.proposalId)conflict();await legiwatchResult(value.result,retained);return value;
  }

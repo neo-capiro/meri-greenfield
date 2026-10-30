@@ -34,10 +34,15 @@ export function intentsSchema({errorStatuses,errorOutcomes,failureCodes,fieldPat
 // The client-record owner now publishes a successor beside its retained version, so its list item accepts
 // both. Every other intent keeps the single published operation ref above; this changes no other family.
  IntentsClientRecordOperation:object({id:{type:'string',pattern:'^[a-z][a-z_]{0,62}$'},version:{enum:['0.2.0','0.3.0']}}),
- IntentsListRequest:object({conversationId:ref('IntentsConversationId'),after:{anyOf:[ref('IntentsDeliveryId'),{type:'null'}]},limit:{type:'integer',minimum:1,maximum:50}},['conversationId']),
- IntentsDecideRequest:object({conversationId:ref('IntentsConversationId'),deliveryId:ref('IntentsDeliveryId'),proposalId:{type:'string',pattern:UUID},commandSha256:{type:'string',pattern:'^[a-f0-9]{64}$'},decision:{enum:['approved','rejected']}}),
+ IntentsListRequest:object({conversationId:ref('IntentsConversationId'),after:{anyOf:[ref('IntentsDeliveryId'),ref('IntentsBrowserDeliveryId'),{type:'null'}]},limit:{type:'integer',minimum:1,maximum:50}},['conversationId']),
+ IntentsDecideRequest:{oneOf:[
+  object({conversationId:ref('IntentsConversationId'),deliveryId:ref('IntentsDeliveryId'),proposalId:{type:'string',pattern:UUID},commandSha256:{type:'string',pattern:'^[a-f0-9]{64}$'},decision:{enum:['approved','rejected']}}),
+  // Browser decisions bind the SUBJECT digest (S), never a command digest: the retained preparation is the
+  // only proposal identity, and the decision is recorded against it unchanged.
+  object({conversationId:ref('IntentsConversationId'),deliveryId:ref('IntentsBrowserDeliveryId'),proposalId:{type:'string',pattern:UUID},subjectSha256:{type:'string',pattern:'^[a-f0-9]{64}$'},decision:{enum:['approved','rejected']}}),
+ ]},
  IntentsNativeProposal:{oneOf:[pub('ApprovalProposal'),update('TaskUpdateApprovalProposal'),mail('MailSendApprovalProposal'),document('DocumentDraftApprovalProposal')]},
- IntentsProposal:{oneOf:[ref('IntentsNativeProposal'),sharing('ResearchShareProposal'),researchAction('ResearchActionProposal'),legiwatch('LegiwatchProposal'),watch('WatchProposal'),clientRecord('ClientRecordProposal'),bizdev('BizdevProposal'),legislativeDocument('LegislativeDocumentProposal')]},
+ IntentsProposal:{oneOf:[ref('IntentsNativeProposal'),ref('IntentsBrowserProposal'),sharing('ResearchShareProposal'),researchAction('ResearchActionProposal'),legiwatch('LegiwatchProposal'),watch('WatchProposal'),clientRecord('ClientRecordProposal'),bizdev('BizdevProposal'),legislativeDocument('LegislativeDocumentProposal')]},
  IntentsClientRecordProposal:clientRecord('ClientRecordProposal'),
  IntentsLegiwatchProposal:legiwatch('LegiwatchProposal'),
  IntentsBizdevProposal:bizdev('BizdevProposal'),
@@ -45,6 +50,18 @@ export function intentsSchema({errorStatuses,errorOutcomes,failureCodes,fieldPat
  IntentsResearchShareProposal:sharing('ResearchShareProposal'),
  IntentsResearchActionProposal:researchAction('ResearchActionProposal'),
  IntentsDecision:pub('ApprovalDecision'),
+ // Browser-action intents are their own closed family: the delivery domain is `browser:` (execution custody
+ // keys on the MCP request, approval preparation on binding+tool use), the decision binds S (subject) rather
+ // than a command digest, and the display is the already-reviewed bounded context only.
+ IntentsBrowserDeliveryId:{type:'string',pattern:'^browser:[a-f0-9]{64}$'},
+ IntentsBrowserDisplay:object({tool:{type:'string',minLength:1,maxLength:128},pageOrigin:{type:'string',minLength:1,maxLength:255},server:{type:'string',minLength:1,maxLength:128},inputSha256:{type:'string',pattern:'^[a-f0-9]{64}$'},policySha256:{type:'string',pattern:'^[a-f0-9]{64}$'}}),
+ IntentsBrowserDecision:object({proposalId:{type:'string',pattern:UUID},subjectSha256:{type:'string',pattern:'^[a-f0-9]{64}$'},decision:{enum:['approved','rejected']},decidedAt:{type:'string',pattern:MILLIS},approver:pub('Identity'),policyRevision:{type:'string',minLength:1,maxLength:256}}),
+ IntentsBrowserProposal:object({kind:{const:'browser_action'},proposalId:{type:'string',pattern:UUID},subjectSha256:{type:'string',pattern:'^[a-f0-9]{64}$'},operation:object({id:{const:'browser_action'},version:{const:'0.2.0'}}),binding:pub('RunBinding'),display:ref('IntentsBrowserDisplay'),requiredApprover:pub('Identity'),scopes:{type:'array',items:pub('Scope'),minItems:1,maxItems:100},requestedAtMs:{type:'integer',minimum:0},expiresAtMs:{type:'integer',minimum:1},createdAt:{type:'string',pattern:MILLIS}}),
+ // A recorded approval means AWAITING EXECUTION. `execution` is the SEPARATE canonical read of what the
+ // browser actually reported; it is never implied by the decision.
+ IntentsBrowserExecution:object({state:{const:'completed'},outcome:{enum:['ok','error']},reference:{anyOf:[{type:'string',minLength:1,maxLength:1024},{type:'null'}]}}),
+ IntentsBrowserActionItem:object({deliveryId:ref('IntentsBrowserDeliveryId'),createdAt:{type:'string',pattern:MILLIS},operation:ref('IntentsOperation'),state:{const:'prepared'},kind:{const:'browser_action'},proposal:ref('IntentsBrowserProposal'),decision:{anyOf:[ref('IntentsBrowserDecision'),{type:'null'},{const:'unavailable'}]},execution:{anyOf:[ref('IntentsBrowserExecution'),{type:'null'},{const:'unavailable'}]},phase:{enum:['awaiting_approval','approved','rejected','expired','unknown','unknown_decision']}}),
+ IntentsWithheldBrowserActionItem:object({deliveryId:ref('IntentsBrowserDeliveryId'),createdAt:{type:'string',pattern:MILLIS},operation:ref('IntentsOperation'),state:{const:'prepared'},kind:{const:'browser_action'},withheld:{const:true}}),
  IntentsTaskCreateArguments:task('TaskCreateArguments'),
  IntentsTaskUpdateArguments:update('TaskUpdateArguments'),
  IntentsMailSendArguments:mail('MailSendArguments'),
@@ -96,9 +113,11 @@ IntentsWithheldSavedNoteItem:item({state:{const:'prepared'},kind:{const:'saved_n
  IntentsWithheldResearchShareItem:item({state:{const:'prepared'},kind:{const:'research_share'},withheld:{const:true}}),
  IntentsProposalItem:item({state:{const:'prepared'},kind:{const:'proposal'},proposal:ref('IntentsNativeProposal'),decision:{anyOf:[ref('IntentsDecision'),{type:'null'},{const:'unavailable'}]},
   execution:{anyOf:[ref('IntentsExecution'),{type:'null'},{const:'unavailable'}]},phase:{enum:[...INTENT_PHASES]}}),
- IntentsItem:{oneOf:['SavedNote','WithheldSavedNote','Pending','Unknown','Failed','Draft','WithheldDraft','MemoryReview','WithheldMemoryReview','ScheduleProposal','ScheduleReview','WithheldSchedule','WithheldProposal','Proposal','ResearchShare','WithheldResearchShare','ResearchAction','WithheldResearchAction','Legiwatch','WithheldLegiwatch','Watch','WithheldWatch','ClientRecord','WithheldClientRecord','Bizdev','WithheldBizdev','LegislativeDocument','WithheldLegislativeDocument'].map(name=>ref('Intents'+name+'Item'))},
- IntentsListResponse:object({conversationId:ref('IntentsConversationId'),intents:{type:'array',items:ref('IntentsItem'),maxItems:50},next:{anyOf:[ref('IntentsDeliveryId'),{type:'null'}]}}),
+ IntentsItem:{oneOf:['SavedNote','WithheldSavedNote','Pending','Unknown','Failed','Draft','WithheldDraft','MemoryReview','WithheldMemoryReview','ScheduleProposal','ScheduleReview','WithheldSchedule','WithheldProposal','Proposal','ResearchShare','WithheldResearchShare','ResearchAction','WithheldResearchAction','Legiwatch','WithheldLegiwatch','Watch','WithheldWatch','ClientRecord','WithheldClientRecord','Bizdev','WithheldBizdev','LegislativeDocument','WithheldLegislativeDocument','BrowserAction','WithheldBrowserAction'].map(name=>ref('Intents'+name+'Item'))},
+ IntentsListResponse:object({conversationId:ref('IntentsConversationId'),intents:{type:'array',items:ref('IntentsItem'),maxItems:50},next:{anyOf:[ref('IntentsDeliveryId'),ref('IntentsBrowserDeliveryId'),{type:'null'}]}}),
  IntentsDecideResponse:{oneOf:[
+  object({status:{const:'browser_decision_recorded'},deliveryId:ref('IntentsBrowserDeliveryId'),proposalId:{type:'string',pattern:UUID},decision:ref('IntentsBrowserDecision')}),
+  object({status:{const:'browser_rejected'},deliveryId:ref('IntentsBrowserDeliveryId'),proposalId:{type:'string',pattern:UUID},decision:ref('IntentsBrowserDecision')}),
   object({status:{const:'legislative_document_decided'},deliveryId:ref('IntentsDeliveryId'),proposalId:{type:'string',pattern:UUID},result:legislativeDocument('LegislativeDocumentCoreResult')}),
   object({status:{const:'legiwatch_decided'},deliveryId:ref('IntentsDeliveryId'),proposalId:{type:'string',pattern:UUID},result:legiwatch('LegiwatchCoreResult')}),
   object({status:{const:'client_record_decided'},deliveryId:ref('IntentsDeliveryId'),proposalId:{type:'string',pattern:UUID},result:clientRecord('ClientRecordCoreResult')}),

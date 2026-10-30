@@ -5,6 +5,7 @@ import {assertUploadSelections} from '../upload-selection.mjs';
 import {assertWorkSelection} from '../work-selection.mjs';
 import {assertNativeSourceEventSemantics} from '../conversation-sources/semantics.mjs';
 import {assertUploadSourceEventSemantics} from '../conversation-sources/upload-semantics.mjs';
+import {assertBrowserReceiptEventSemantics} from '../runtime-0.2/browser-receipt-semantics.mjs';
 import canonicalize from 'canonicalize';
 import {parseBytes} from '../document-application/boundary.mjs';
 import {validateSubmitRequest,validateHistoryRequest,validateCancelRequest,validateEventsRequest,validateSubmitted,validateHistory,validateCancelled,validateEvent,validateError,validateFeedbackRequest,validateFeedbackReadRequest,validateFeedback,validateFeedbackRead} from './generated-validator.mjs';
@@ -26,6 +27,12 @@ function assertEvent(event,run){
  if(event.type==='source.native-hearing-record'){try{assertHearingSourceEventSemantics(event);}catch{fail('INVALID_SOURCE_EVENT');}}
  if(event.type==='source.native-bill-text'){try{assertNativeSourceEventSemantics(event);}catch{fail('INVALID_SOURCE_EVENT');}}
  if(event.type==='source.native-upload'){try{assertUploadSourceEventSemantics(event);}catch{fail('INVALID_SOURCE_EVENT');}}
+ if(event.type==='browser.receipt'){
+  // Additive durable receipt: the SAME validated event the server admitted, correlated with the admitted run.
+  // An observation receipt is never proof of a remote website commit or a new permission.
+  try{assertBrowserReceiptEventSemantics(event,{binding:run.binding,scopes:run.scopes});}
+  catch{fail('INVALID_BROWSER_RECEIPT_EVENT');}
+ }
  if(event.type==='source.available'&&event.data.scopes.some(scope=>scope.tenantId!==run.binding.tenantId||!run.scopes.some(parent=>same(scope,parent))))fail('SOURCE_SCOPE_MISMATCH');
 }
 function assertWindowPair(request,window){

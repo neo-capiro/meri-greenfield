@@ -924,7 +924,8 @@ export interface ConversationHistoryEvent {
     | Canonical_NativeHearingSourceEvent_685F6175
     | Canonical_NativeUploadSourceEventC1E88004
     | Canonical_NativeUserQuestionEvent_2718130F
-    | Canonical_NativeUserQuestionAnsweredEventA7D02B8B;
+    | Canonical_NativeUserQuestionAnsweredEventA7D02B8B
+    | BrowserReceiptEvent;
 }
 export interface Canonical_SourceEvidenceD9008775 {
   sourceId: string;
@@ -1815,6 +1816,42 @@ export interface Canonical_NativeUserQuestionOutcome_255F6E68 {
   questionId: string;
   outcome: 'answered' | 'cancelled';
   reasonCode: string | null;
+}
+export interface BrowserReceiptEvent {
+  contractVersion: '0.1.0';
+  eventId: string;
+  binding: Canonical_RunBinding_84F2304C;
+  sequence: number;
+  createdAt: string;
+  /**
+   * @minItems 1
+   */
+  scopes: [Canonical_ScopeF882Edb5, ...Canonical_ScopeF882Edb5[]];
+  type: 'browser.receipt';
+  data:
+    | {
+        schema: 'meri-browser-receipt/1';
+        kind: 'browser.action';
+        binding: Canonical_RunBinding_84F2304C;
+        sessionId: string;
+        toolUseId: string | null;
+        action: string;
+        urlHost: string;
+        atMs: number;
+        reference: string | null;
+        outcome: 'ok' | 'error';
+      }
+    | {
+        schema: 'meri-browser-receipt/1';
+        kind: 'browser.download';
+        binding: Canonical_RunBinding_84F2304C;
+        urlHost: string;
+        atMs: number;
+        reference: string | null;
+        sha256: string | null;
+        bytes: number | null;
+        mimeType: string;
+      };
 }
 export interface ConversationHistoryPendingTurn {
   sourceBinding: Canonical_RunBinding_84F2304C;

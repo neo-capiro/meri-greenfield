@@ -143,8 +143,8 @@
     },
     {
       "path": "../../apps/control/conversations/postgres-store.mjs",
-      "sha256": "bdd466e3bdc88a3524129d4af670b28045577c4e5aae35f3d9e5e290803d564f",
-      "bytes": 23765
+      "sha256": "05071bb031783bf26ad3a74228fda1a7e794f039965730f7feb18263b3eba729",
+      "bytes": 24851
     },
     {
       "path": "../../apps/control/conversations/usage-overview/http.mjs",
@@ -178,8 +178,8 @@
     },
     {
       "path": "../../apps/runtime/product-applications.mjs",
-      "sha256": "c43d142830a1d1100df5a9f496a1b4ab4dce36409a5c9447eb1796aa37c8f663",
-      "bytes": 21060
+      "sha256": "cb38e11bf8e1e6d1c4f21fac07d4b25f1b301e1bdc2759829ff211db6557bfd9",
+      "bytes": 21860
     },
     {
       "path": "conversation-history/protocol.mjs",

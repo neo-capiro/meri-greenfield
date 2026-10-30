@@ -44,8 +44,8 @@
     },
     {
       "path": "dist/conversation-application.mjs",
-      "sha256": "58d865f198d5087d4911c96602fe9d6e0529879e7766cd850999fca53baf0d85",
-      "bytes": 1939897
+      "sha256": "493bc5fe65914d9b0b04ed5d37e623dc11717e2c7d9ae4b71810da88abb0519b",
+      "bytes": 2050739
     },
     {
       "path": "document-application/boundary.mjs",

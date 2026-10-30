@@ -61,8 +61,8 @@
     },
     {
       "path": "conversation-sources/validate.mjs",
-      "sha256": "ba49a99cffaf3a00415c35f4bd09aaa43a5abe6e839124e7cdd975b1b5799ac2",
-      "bytes": 4759
+      "sha256": "9ddcd43125b3ebf2a708451d8309137c4d81a5f2b04dc7f5f4ba8021ac1c9294",
+      "bytes": 5712
     },
     {
       "path": "document-application/boundary.mjs",

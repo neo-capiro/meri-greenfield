@@ -49,8 +49,8 @@
     },
     {
       "path": "../../apps/control/uploads/custody.mjs",
-      "sha256": "f13817f531da7a87f77ab66bb16db2fc4e21cd9669097dc7693527682e5911a2",
-      "bytes": 10782
+      "sha256": "abbe64f500d0aa8dc1f97145b23b64c64872bdfa92ff712522744905826d16c9",
+      "bytes": 11910
     },
     {
       "path": "../../apps/control/uploads/extraction.mjs",
@@ -69,8 +69,8 @@
     },
     {
       "path": "../../apps/runtime/product-applications.mjs",
-      "sha256": "c43d142830a1d1100df5a9f496a1b4ab4dce36409a5c9447eb1796aa37c8f663",
-      "bytes": 21060
+      "sha256": "cb38e11bf8e1e6d1c4f21fac07d4b25f1b301e1bdc2759829ff211db6557bfd9",
+      "bytes": 21860
     },
     {
       "path": "../../apps/runtime/product-ports/uploads.mjs",

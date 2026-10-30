@@ -59,6 +59,9 @@
               "$ref": "#/$defs/IntentsDeliveryId"
             },
             {
+              "$ref": "#/$defs/IntentsBrowserDeliveryId"
+            },
+            {
               "type": "null"
             }
           ]
@@ -75,37 +78,74 @@
       "additionalProperties": false
     },
     "IntentsDecideRequest": {
-      "type": "object",
-      "properties": {
-        "conversationId": {
-          "$ref": "#/$defs/IntentsConversationId"
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "conversationId": {
+              "$ref": "#/$defs/IntentsConversationId"
+            },
+            "deliveryId": {
+              "$ref": "#/$defs/IntentsDeliveryId"
+            },
+            "proposalId": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$"
+            },
+            "commandSha256": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            "decision": {
+              "enum": [
+                "approved",
+                "rejected"
+              ]
+            }
+          },
+          "required": [
+            "conversationId",
+            "deliveryId",
+            "proposalId",
+            "commandSha256",
+            "decision"
+          ],
+          "additionalProperties": false
         },
-        "deliveryId": {
-          "$ref": "#/$defs/IntentsDeliveryId"
-        },
-        "proposalId": {
-          "type": "string",
-          "pattern": "^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$"
-        },
-        "commandSha256": {
-          "type": "string",
-          "pattern": "^[a-f0-9]{64}$"
-        },
-        "decision": {
-          "enum": [
-            "approved",
-            "rejected"
-          ]
+        {
+          "type": "object",
+          "properties": {
+            "conversationId": {
+              "$ref": "#/$defs/IntentsConversationId"
+            },
+            "deliveryId": {
+              "$ref": "#/$defs/IntentsBrowserDeliveryId"
+            },
+            "proposalId": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$"
+            },
+            "subjectSha256": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            "decision": {
+              "enum": [
+                "approved",
+                "rejected"
+              ]
+            }
+          },
+          "required": [
+            "conversationId",
+            "deliveryId",
+            "proposalId",
+            "subjectSha256",
+            "decision"
+          ],
+          "additionalProperties": false
         }
-      },
-      "required": [
-        "conversationId",
-        "deliveryId",
-        "proposalId",
-        "commandSha256",
-        "decision"
-      ],
-      "additionalProperties": false
+      ]
     },
     "IntentsNativeProposal": {
       "oneOf": [
@@ -127,6 +167,9 @@
       "oneOf": [
         {
           "$ref": "#/$defs/IntentsNativeProposal"
+        },
+        {
+          "$ref": "#/$defs/IntentsBrowserProposal"
         },
         {
           "$ref": "#/$defs/Canonical_ResearchShareProposal_1cdbd32e"
@@ -171,6 +214,298 @@
     },
     "IntentsDecision": {
       "$ref": "#/$defs/Canonical_ApprovalDecision_5e8bdbcf"
+    },
+    "IntentsBrowserDeliveryId": {
+      "type": "string",
+      "pattern": "^browser:[a-f0-9]{64}$"
+    },
+    "IntentsBrowserDisplay": {
+      "type": "object",
+      "properties": {
+        "tool": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "pageOrigin": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 255
+        },
+        "server": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "inputSha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "policySha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        }
+      },
+      "required": [
+        "tool",
+        "pageOrigin",
+        "server",
+        "inputSha256",
+        "policySha256"
+      ],
+      "additionalProperties": false
+    },
+    "IntentsBrowserDecision": {
+      "type": "object",
+      "properties": {
+        "proposalId": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$"
+        },
+        "subjectSha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "decision": {
+          "enum": [
+            "approved",
+            "rejected"
+          ]
+        },
+        "decidedAt": {
+          "type": "string",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$"
+        },
+        "approver": {
+          "$ref": "#/$defs/Canonical_Identity_aba0a4e9"
+        },
+        "policyRevision": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        }
+      },
+      "required": [
+        "proposalId",
+        "subjectSha256",
+        "decision",
+        "decidedAt",
+        "approver",
+        "policyRevision"
+      ],
+      "additionalProperties": false
+    },
+    "IntentsBrowserProposal": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "const": "browser_action"
+        },
+        "proposalId": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$"
+        },
+        "subjectSha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "operation": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "const": "browser_action"
+            },
+            "version": {
+              "const": "0.2.0"
+            }
+          },
+          "required": [
+            "id",
+            "version"
+          ],
+          "additionalProperties": false
+        },
+        "binding": {
+          "$ref": "#/$defs/Canonical_RunBinding_84f2304c"
+        },
+        "display": {
+          "$ref": "#/$defs/IntentsBrowserDisplay"
+        },
+        "requiredApprover": {
+          "$ref": "#/$defs/Canonical_Identity_aba0a4e9"
+        },
+        "scopes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Canonical_Scope_f882edb5"
+          },
+          "minItems": 1,
+          "maxItems": 100
+        },
+        "requestedAtMs": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "expiresAtMs": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "createdAt": {
+          "type": "string",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$"
+        }
+      },
+      "required": [
+        "kind",
+        "proposalId",
+        "subjectSha256",
+        "operation",
+        "binding",
+        "display",
+        "requiredApprover",
+        "scopes",
+        "requestedAtMs",
+        "expiresAtMs",
+        "createdAt"
+      ],
+      "additionalProperties": false
+    },
+    "IntentsBrowserExecution": {
+      "type": "object",
+      "properties": {
+        "state": {
+          "const": "completed"
+        },
+        "outcome": {
+          "enum": [
+            "ok",
+            "error"
+          ]
+        },
+        "reference": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 1024
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "state",
+        "outcome",
+        "reference"
+      ],
+      "additionalProperties": false
+    },
+    "IntentsBrowserActionItem": {
+      "type": "object",
+      "properties": {
+        "deliveryId": {
+          "$ref": "#/$defs/IntentsBrowserDeliveryId"
+        },
+        "createdAt": {
+          "type": "string",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$"
+        },
+        "operation": {
+          "$ref": "#/$defs/IntentsOperation"
+        },
+        "state": {
+          "const": "prepared"
+        },
+        "kind": {
+          "const": "browser_action"
+        },
+        "proposal": {
+          "$ref": "#/$defs/IntentsBrowserProposal"
+        },
+        "decision": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/IntentsBrowserDecision"
+            },
+            {
+              "type": "null"
+            },
+            {
+              "const": "unavailable"
+            }
+          ]
+        },
+        "execution": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/IntentsBrowserExecution"
+            },
+            {
+              "type": "null"
+            },
+            {
+              "const": "unavailable"
+            }
+          ]
+        },
+        "phase": {
+          "enum": [
+            "awaiting_approval",
+            "approved",
+            "rejected",
+            "expired",
+            "unknown",
+            "unknown_decision"
+          ]
+        }
+      },
+      "required": [
+        "deliveryId",
+        "createdAt",
+        "operation",
+        "state",
+        "kind",
+        "proposal",
+        "decision",
+        "execution",
+        "phase"
+      ],
+      "additionalProperties": false
+    },
+    "IntentsWithheldBrowserActionItem": {
+      "type": "object",
+      "properties": {
+        "deliveryId": {
+          "$ref": "#/$defs/IntentsBrowserDeliveryId"
+        },
+        "createdAt": {
+          "type": "string",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$"
+        },
+        "operation": {
+          "$ref": "#/$defs/IntentsOperation"
+        },
+        "state": {
+          "const": "prepared"
+        },
+        "kind": {
+          "const": "browser_action"
+        },
+        "withheld": {
+          "const": true
+        }
+      },
+      "required": [
+        "deliveryId",
+        "createdAt",
+        "operation",
+        "state",
+        "kind",
+        "withheld"
+      ],
+      "additionalProperties": false
     },
     "IntentsTaskCreateArguments": {
       "$ref": "#/$defs/Canonical_TaskCreateArguments_1202c301"
@@ -1734,6 +2069,12 @@
         },
         {
           "$ref": "#/$defs/IntentsWithheldLegislativeDocumentItem"
+        },
+        {
+          "$ref": "#/$defs/IntentsBrowserActionItem"
+        },
+        {
+          "$ref": "#/$defs/IntentsWithheldBrowserActionItem"
         }
       ]
     },
@@ -1756,6 +2097,9 @@
               "$ref": "#/$defs/IntentsDeliveryId"
             },
             {
+              "$ref": "#/$defs/IntentsBrowserDeliveryId"
+            },
+            {
               "type": "null"
             }
           ]
@@ -1770,6 +2114,56 @@
     },
     "IntentsDecideResponse": {
       "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "status": {
+              "const": "browser_decision_recorded"
+            },
+            "deliveryId": {
+              "$ref": "#/$defs/IntentsBrowserDeliveryId"
+            },
+            "proposalId": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$"
+            },
+            "decision": {
+              "$ref": "#/$defs/IntentsBrowserDecision"
+            }
+          },
+          "required": [
+            "status",
+            "deliveryId",
+            "proposalId",
+            "decision"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "status": {
+              "const": "browser_rejected"
+            },
+            "deliveryId": {
+              "$ref": "#/$defs/IntentsBrowserDeliveryId"
+            },
+            "proposalId": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$"
+            },
+            "decision": {
+              "$ref": "#/$defs/IntentsBrowserDecision"
+            }
+          },
+          "required": [
+            "status",
+            "deliveryId",
+            "proposalId",
+            "decision"
+          ],
+          "additionalProperties": false
+        },
         {
           "type": "object",
           "properties": {

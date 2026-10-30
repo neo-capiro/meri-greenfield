@@ -74,13 +74,13 @@
     },
     {
       "path": "../../apps/control/settings/documents.mjs",
-      "sha256": "32071cc9b9196f909bd7f8bf629401f0f7eb051ed53097d8b3d9719d79377e0a",
-      "bytes": 4339
+      "sha256": "414bbc250aba0aabbfaebec1f8c7cc4ff310ccc33330092abbd13e5d372e5c5f",
+      "bytes": 4978
     },
     {
       "path": "../../apps/control/settings/routes.mjs",
-      "sha256": "07b995b89c965674b3820b634fab3dab58b171aa1d5a48e7ccb587c005659601",
-      "bytes": 1553
+      "sha256": "e84e35c4fca757737ad18ce969a3e6f1876d2ac571cd1619f3bb5543ed38f76d",
+      "bytes": 1713
     },
     {
       "path": "../../apps/control/settings/user-application/protocol.mjs",
