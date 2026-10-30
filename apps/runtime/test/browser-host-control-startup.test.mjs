@@ -85,3 +85,40 @@ test('a declared host with unreadable material refuses before assembling or list
  assert.deepEqual(f.events.filter(event=>event.startsWith('listen:')),[]);
  assert.equal(f.events.includes('candidate'),false,'the candidate is never started when its material cannot be read');
 });
+
+
+test('a rejecting assembly cleanup still runs every owned teardown and keeps both failures',async()=>{
+ const f=harness({browserHosts:{enabled:true,tls:tlsFiles}});
+ const original=Object.assign(new Error('SYNTHETIC_ASSEMBLY_FAILED'),{code:'SYNTHETIC_ASSEMBLY_FAILED'});
+ original.controlCleanup=Promise.reject(new Error('SYNTHETIC_CLEANUP_FAILED'));
+ f.owners.assemble=()=>{throw original;};
+ await assert.rejects(f.start(),(error)=>{
+  assert.equal(error.code,'TEMPORAL_PRODUCT_CLEANUP_UNKNOWN','the cleanup failure is surfaced, not hidden');
+  const seen=[error,...(error.cause?.errors??[])].map(entry=>entry?.message??String(entry));
+  assert.ok(seen.some(message=>message.includes('SYNTHETIC_ASSEMBLY_FAILED')),'the original assembly failure is preserved');
+  assert.ok(seen.some(message=>message.includes('SYNTHETIC_CLEANUP_FAILED')),'the cleanup failure is preserved');
+  return true;});
+ assert.ok(f.events.includes('close:candidate'),'the candidate is still retired');
+ assert.ok(f.events.includes('close:connection'),'the Temporal connection is still retired');
+ assert.ok(f.events.includes('close:pool'),'the pool is still retired even though cleanup rejected first');
+});
+
+test('a late constructor failure after session/browser creation retires every owner created so far',async()=>{
+ const unhandled=[];
+ const onUnhandled=reason=>unhandled.push(reason);
+ process.on('unhandledRejection',onUnhandled);
+ const f=harness({browserHosts:{enabled:true,tls:tlsFiles},
+  productPorts:{uploadApplicationFactory:Object.freeze({create:()=>null,state:()=>'composed',
+   createSource(){throw Object.assign(new Error('SYNTHETIC_LATE_FAILURE'),{code:'SYNTHETIC_LATE_FAILURE'});}})}});
+ delete f.owners.assemble; // the REAL assembleControl runs, not a stand-in
+ await assert.rejects(f.start(),(error)=>{
+  assert.equal(error.code,'CONTROL_STARTUP_FAILED');
+  assert.equal(error.cause?.message,'SYNTHETIC_LATE_FAILURE','the late failure is the reported cause');
+  return true;});
+ assert.ok(f.events.includes('close:pool'),'the owned pool is retired after a late assembly failure');
+ assert.ok(f.events.includes('close:connection'),'the Temporal connection is retired too');
+ assert.ok(f.events.includes('close:candidate'),'the candidate is retired too');
+ await new Promise(resolve=>setImmediate(resolve));
+ process.off('unhandledRejection',onUnhandled);
+ assert.deepEqual(unhandled,[],'no cleanup rejection is orphaned by the late failure');
+});

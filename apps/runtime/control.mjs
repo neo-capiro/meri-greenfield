@@ -151,6 +151,12 @@ export function assembleControl(options){
  // compose refuses HERE instead of mounting nothing: the session owner created above is closed before
  // the error escapes, so a failed assembly owns no live state.
  let browserHosts=null;
+ // One reusable cleanup for everything this assembly created after the store/session owners exist. It is
+ // handed to the async caller on ANY later failure, so no owner is orphaned and no rejection is lost.
+ const ownedCleanup=()=>{const failures=[];
+  return (async()=>{try{if(browserHosts!==null)await browserHosts.close();}catch(reason){failures.push(reason);}
+   try{await sessions.close();}catch(reason){failures.push(reason);}
+   if(failures.length)throw Object.assign(new Error('CONTROL_ASSEMBLY_CLEANUP_FAILED'),{code:'CONTROL_ASSEMBLY_CLEANUP_FAILED',failures:Object.freeze(failures)});})();};
  if(configuration.browserHosts!==undefined){
   // The declaration is compiled once at the actual caller (startControl) and passed in; a direct
   // assembleControl caller still gets the same normalization here. enabled:false is absent.
@@ -163,15 +169,11 @@ export function assembleControl(options){
     if(browserHosts===null)throw fault('BROWSER_HOST_CONFIGURATION');
     ports=composeRuntimePorts(ports,{browserHosts:browserHosts.browserHosts});
    }
-  }catch(error){
-   // Everything created so far is retired, and the cleanup promise is attached to the error so the
-   // async caller awaits it and surfaces a cleanup failure instead of losing it.
-   const cleanup=(async()=>{const failures=[];try{if(browserHosts!==null)await browserHosts.close();}catch(reason){failures.push(reason);}
-    try{await sessions.close();}catch(reason){failures.push(reason);}
-    if(failures.length)throw Object.assign(new Error('CONTROL_ASSEMBLY_CLEANUP_FAILED'),{code:'CONTROL_ASSEMBLY_CLEANUP_FAILED',failures:Object.freeze(failures)});})();
-   throw Object.assign(error,{controlCleanup:cleanup});
-  }
+  }catch(error){throw Object.assign(error,{controlCleanup:ownedCleanup()});}
  }
+ // Every constructor after the browser/session owners is inside this guard: a late failure retires them
+ // through the same owned cleanup instead of leaking the session owner or orphaning a rejection.
+ try{
  const browserOperations=ports.browserHosts?.executeBrowserOperation&&readCapabilityRole?createBrowserOperations({hosts:ports.browserHosts,readCapabilityRole,readBrowserPolicy,now}):undefined;
  const selected=configuration.sourceEnabled&&configuration.agentcore&&createReadsRuntime?createNativeSelectedComposition({configuration,pool,store,execution,createReadsRuntime:input=>createReadsRuntime({...input,capabilityPolicy,readCapabilityRole}),serviceFor:value=>createWorkerService(value),...(productContext?{revisionSource:value=>selectedDocumentRevisionSourceFor(productContext,value)}:{}),now}):null;
  if(selected)ports=composeRuntimePorts(ports,selected.ports);
@@ -202,6 +204,7 @@ export function assembleControl(options){
  const memoryTables=ports.memoryApplication?MEMORY_TABLES:Object.freeze([]);
  if(!injectedTurnTelemetry)turnTelemetry.start();
  return Object.freeze({service,store,sessions,retention,objectiveReadback,approvalMetadataReadback,userPreferences,intentTables,memoryTables,uploadTables,...(browserHosts?{browserHosts}:{}),productReadiness:()=>productReadiness({ports,retention,memoryRetentionBound,sourceEnabled:configuration.sourceEnabled,userPreferences:userPreferences.state()}),downloads:products.downloads,application:{handle:request=>turnTelemetry.provisional(()=>{if(new URL(request.url).pathname==='/api/outreach-generation/start')return outreachStart?.handle(request)??new Response(null,{status:404});const product=products.handle(request);if(product!==null)return product;const path=new URL(request.url).pathname;return path.startsWith('/api/meri/browser/')?browserViewer.handle(request):path==='/api/action-followthrough/browser-session'?browserIssuance.handle(request):Object.values(RUNNER_INTENT_PATHS).includes(path)?nativeIntents.handle(request):path==='/api/action-followthrough/session'?issuance.handle(request):path==='/api/conversations/input/admit'?input.handle(request):path===conversationInitialInputMetadata.routes.allocate.path?initialInput.handle(request):path.startsWith('/internal/')?worker.handle(request):conversation.handle(request);})},async close(){try{await browserHosts?.close();await selected?.close();}finally{userPreferences.close();if(!injectedTurnTelemetry)turnTelemetry.close();await sessions.close();}}});
+ }catch(error){throw Object.assign(error,{controlCleanup:ownedCleanup()});}
 }
 export async function startControl(configuration,options={}){
  // Validate compiled bindings before secret reads, connections or owned allocation.
