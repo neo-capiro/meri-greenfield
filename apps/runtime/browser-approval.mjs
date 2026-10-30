@@ -106,7 +106,7 @@ export function createBrowserApprovalOwner(configuration){
 
  /** A fresh grant needs an approved, unexpired decision for THIS proposal with consumption still null. */
  function fresh(status,proposalId,subjectSha256){
-  if(!status||status.unknown===true)return false;
+  if(!status||status.unknown===true||status.revoked===true)return false;
   if(status.proposalId!==proposalId||status.subjectSha256!==subjectSha256)return false;
   if(status.consumption!==null)return false;
   const d=status.decision;
@@ -135,6 +135,9 @@ export function createBrowserApprovalOwner(configuration){
    const state=status.decision?.decision;
    if(state==='rejected'||state==='revoked'||state==='expired')
     return Object.freeze({permitted:false,status,terminal:state,consumed:posted});
+   // An unresolved or already-consumed answer is non-permissive NOW, never polled to timeout.
+   if(status.unknown===true||status.revoked===true||status.consumption!==null)
+    return Object.freeze({permitted:false,status,statusOnly:true,consumed:posted});
    if(fresh(status,v.proposalId,v.subjectSha256)){
     if(posted)return Object.freeze({permitted:false,status,statusOnly:true,consumed:true});
     let claim;
@@ -172,5 +175,18 @@ export function createBrowserApprovalOwner(configuration){
   }
   return Object.freeze({permitted:false,status:last?.status??null,expired:true,consumed:posted});
  }
- return Object.freeze({prepare,wait});
+ /** The ONLY public approval entry: prepare the ORIGINAL request, then wait within its own window. The
+  * caller cannot pass an identity, a request digest or a longer window than the original request allows. */
+ async function decide(value){
+  const v=own(value,['request','binding'],['signal','deadlineMs']);
+  const signal=nativeSignal(v.signal);
+  const prepared=await prepare({request:v.request,binding:v.binding,
+   ...(signal===undefined?{}:{signal}),...(v.deadlineMs===undefined?{}:{deadlineMs:v.deadlineMs})});
+  const until=Math.min(v.request.expiresAtMs,v.deadlineMs??v.request.expiresAtMs);
+  if(!Number.isSafeInteger(until)||until<=now())fail('BROWSER_APPROVAL_REFUSED');
+  return wait({proposalId:prepared.proposalId,subjectSha256:prepared.subjectSha256,
+   requestSha256:canonicalSha256(v.request),toolUseId:v.request.subject.toolUseId,binding:v.binding,
+   deadlineMs:until,...(signal===undefined?{}:{signal})});
+ }
+ return Object.freeze({prepare,decide});
 }

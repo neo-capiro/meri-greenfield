@@ -42,7 +42,7 @@ function rowStore(){const rows=new Map(),state={settleThrows:false};
  return {ports,rows,state};
 }
 
-async function fixture(){
+async function fixture({expiresAtMs=NOW+600000}={}){
  const sql=createMetadataPoolFixture(),journalStore=rowStore();
  const journalOwner=createExecutionJournal({tx:runStore().tx,rowRun:value=>value,now:()=>NOW});
  const browserPolicy=createRunBrowserPolicy({platform:DEFAULT_BROWSER_PLATFORM,store:{read:async()=>null},now:()=>NOW});
@@ -50,7 +50,7 @@ async function fixture(){
  const subject={schema:'meri-browser-action/1',binding,server:'capiov2-browser',tool:'browser_click',
   toolUseId:'toolu_01HZX',inputSha256:hash(input),pageOrigin:'https://app.capiro.example',policySha256:policySha};;
  const request={schema:BROWSER_APPROVAL_REQUEST_SCHEMA,subject,subjectSha256:hash(subject),input,
-  requestedAtMs:NOW-1000,expiresAtMs:NOW+600000};
+  requestedAtMs:NOW-1000,expiresAtMs};
  const intentJournal=createIntentJournal(journalStore.ports);
  const state={clock:NOW,consumeCalls:0,statusCalls:0,mode:'approved',settleThrows:false,
   requestMsRecorded:[]};
@@ -60,10 +60,13 @@ async function fixture(){
    const decision={proposalId,commandSha256:subjectSha256,decision:state.mode==='approved'||state.mode==='lost-ack'?'approved':state.mode,
     decidedAt:new Date(NOW-500).toISOString(),expiresAt:new Date(state.clock+60000).toISOString(),
     approver:{tenantId:'tenant',actorId:'actor'},policyRevision:'policy-1'};
-   const consumption=state.mode==='claimed'?{state:'CLAIMED',consumptionId:id(81)}:null;
+   const consumption=state.mode==='claimed'?{state:'CLAIMED',consumptionId:id(81)}
+    :state.mode==='completed'?{state:'COMPLETED',consumptionId:id(81),consumedAtMs:NOW}:null;
+   if(state.mode==='unknown')return {permitted:false,status:{schema:'meri-browser-approval-status/1',proposalId,
+    subjectSha256,unknown:true,permissive:false,consumption:null,decision:null}};
    return {permitted:false,status:{schema:'meri-browser-approval-status/1',proposalId,
     subjectSha256,toolUseId:'toolu_01HZX',permissive:false,unknown:false,consumption,
-    decision:['approved','claimed','lost-ack'].includes(state.mode)?decision:{...decision,decision:state.mode}}};
+    decision:['approved','claimed','lost-ack','completed'].includes(state.mode)?decision:{...decision,decision:state.mode}}};
   },
   async consume({proposalId,subjectSha256}){state.consumeCalls++;
    if(state.mode==='lost-ack')throw Object.assign(Error('ACK_LOST'),{code:'ACK_LOST'});
@@ -75,18 +78,16 @@ async function fixture(){
   consumption:createBrowserApprovalConsumptionOwner({journal:intentJournal}),
   readCapabilityRole:async()=>({actorRole:'standard_user',checkedAtMs:NOW,expiresAtMs:NOW+600000}),
   readBrowserPolicy:browserPolicy,ports,now:()=>state.clock,limits:{requestMs:3000,pollMs:50},
-  sleep:async ms=>{state.clock+=ms;}});
+  sleep:async ms=>{state.clock+=ms;state.onSleep?.();}});
  const owner=build();
  const prepared=await owner.prepare({request,binding});
  return {sql,owner,rebuild:build,prepared,state,subject,request,journalStore};
 }
 
-const waitArgs=f=>({proposalId:f.prepared.proposalId,subjectSha256:hash(f.subject),
- requestSha256:hash(f.request),toolUseId:'toolu_01HZX',binding,deadlineMs:null});
 
 test('a fresh approved decision consumes exactly once',async()=>{
  const f=await fixture();
- const settled=await f.owner.wait({...waitArgs(f),deadlineMs:NOW+3000});
+ const settled=await f.owner.decide({request:f.request,binding,deadlineMs:NOW+3000});
  assert.equal(settled.permitted,true);
  assert.equal(settled.receipt.consumption.consumed,true);
  assert.equal(f.state.consumeCalls,1);
@@ -98,12 +99,12 @@ test('a fresh approved decision consumes exactly once',async()=>{
 test('a recreated owner after a lost consume ACK sends no further consume',async()=>{
  const f=await fixture();
  f.state.mode='lost-ack';
- const first=await f.owner.wait({...waitArgs(f),deadlineMs:NOW+3000});
+ const first=await f.owner.decide({request:f.request,binding,deadlineMs:NOW+3000});
  assert.equal(first.permitted,false);
  assert.equal(first.unknown,true);
  assert.equal(f.state.consumeCalls,1);
  const before=f.journalStore.rows.size;
- const second=await f.rebuild().wait({...waitArgs(f),deadlineMs:NOW+3000});
+ const second=await f.rebuild().decide({request:f.request,binding,deadlineMs:NOW+3000});
  assert.equal(second.permitted,false);
  assert.equal(second.statusOnly,true);
  assert.equal(f.state.consumeCalls,1,'no second consume after owner recreation');
@@ -114,7 +115,7 @@ test('a revoked or rejected decision never permits and never consumes',async()=>
  for(const mode of ['revoked','rejected']){
   const f=await fixture();
   f.state.mode=mode;
-  const settled=await f.owner.wait({...waitArgs(f),deadlineMs:NOW+3000});
+  const settled=await f.owner.decide({request:f.request,binding,deadlineMs:NOW+3000});
   assert.equal(settled.permitted,false);
   assert.equal(settled.terminal,mode);
   assert.equal(f.state.consumeCalls,0);
@@ -124,7 +125,7 @@ test('a revoked or rejected decision never permits and never consumes',async()=>
 test('an already CLAIMED consumption is status-only and never consumes',async()=>{
  const f=await fixture();
  f.state.mode='claimed';
- const settled=await f.owner.wait({...waitArgs(f),deadlineMs:NOW+400});
+ const settled=await f.owner.decide({request:f.request,binding,deadlineMs:NOW+400});
  assert.equal(settled.permitted,false);
  assert.equal(f.state.consumeCalls,0);
 });
@@ -134,16 +135,55 @@ test('cancellation during the wait stops without consuming',async()=>{
  f.state.mode='pending';
  // An already-aborted caller signal must stop the wait before any Core call or consume.
  const controller=new AbortController();controller.abort();
- await assert.rejects(f.owner.wait({...waitArgs(f),deadlineMs:NOW+60000,signal:controller.signal}));
+ await assert.rejects(f.owner.decide({request:f.request,binding,deadlineMs:NOW+60000,signal:controller.signal}));
  assert.equal(f.state.consumeCalls,0);
 });
 
 test('the wait outlives 5s with short Core calls and the original expiry caps it',async()=>{
  const f=await fixture();
  f.state.mode='pending';
- const settled=await f.owner.wait({...waitArgs(f),deadlineMs:NOW+8000});
+ const settled=await f.owner.decide({request:f.request,binding,deadlineMs:NOW+8000});
  assert.equal(settled.expired,true);
  assert.equal(settled.permitted,false);
  assert.ok(f.state.statusCalls>=10,'polling continued past 5s');
  assert.ok(f.state.requestMsRecorded.every(ms=>ms<=3000),'each Core call keeps the short bound');
+});
+
+test('decide() derives its window from the ORIGINAL request and refuses past it',async()=>{
+ // The request itself expires in 2s while the caller asks for ten minutes.
+ const f=await fixture({expiresAtMs:NOW+2000});
+ f.state.mode='pending';
+ // The caller asks for 10 minutes; the original request expires in 2 seconds, so the wait ends there.
+ const started=f.state.clock;
+ const settled=await f.owner.decide({request:f.request,binding,deadlineMs:NOW+600000});
+ assert.equal(settled.permitted,false);
+ assert.equal(settled.expired,true);
+ assert.ok(f.state.clock-started<=2100,'the original request window capped the wait');
+ assert.equal(f.state.consumeCalls,0);
+});
+
+test('decide() refuses a request that is already outside its original window',async()=>{
+ const f=await fixture();
+ const expired={...f.request,requestedAtMs:NOW-900000,expiresAtMs:NOW-1};
+ await assert.rejects(f.owner.decide({request:expired,binding}),/BROWSER_APPROVAL_REFUSED|BROWSER_PREPARATION|CONFLICT|AUTHORITY_CHANGED/u);
+});
+
+test('unknown, claimed and completed answers are immediate status-only refusals',async()=>{
+ for(const mode of ['unknown','claimed','completed']){
+  const f=await fixture();
+  f.state.mode=mode;
+  const settled=await f.owner.decide({request:f.request,binding,deadlineMs:NOW+60000});
+  assert.equal(settled.permitted,false,`${mode} never permits`);
+  assert.equal(f.state.consumeCalls,0,`${mode} never consumes`);
+  assert.ok(f.state.statusCalls<=2,`${mode} is not polled`);
+ }
+});
+
+test('an abort that arrives after the wait started stops it before any consume',async()=>{
+ const f=await fixture();
+ f.state.mode='pending';
+ let sleeps=0;const controller=new AbortController();
+ f.state.onSleep=()=>{if(++sleeps===2)controller.abort();};
+ await assert.rejects(f.owner.decide({request:f.request,binding,deadlineMs:NOW+60000,signal:controller.signal}));
+ assert.equal(f.state.consumeCalls,0);
 });

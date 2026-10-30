@@ -1,6 +1,8 @@
 /** Fixed wire identity for one D005 currentness read. Shape checks never establish authority. */
 import {own,data,nativeSignal} from '../../../../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {assertHostAllocation,assertHostRunBinding,assertD005HostIdentity,assertHostCurrent,assertBrowserHostCurrent} from '../binding.mjs';
+import {assertBrowserApprovalRequest} from '../../../../../packages/contracts/runtime-0.2/browser-approval-preparation.mjs';
+import {assertBrowserApprovalReceipt} from '../../../../../packages/contracts/runtime-0.2/browser-approval-channel.mjs';
 
 export const HOST_CONTROL_REQUEST_SCHEMA='meri-host-currentness-request/1';
 export const HOST_CONTROL_RESPONSE_SCHEMA='meri-host-currentness-response/1';
@@ -82,6 +84,41 @@ export const HOST_HOLD_MAX_BYTES=16384;
 export const HOST_HOLD_ENVELOPE_BYTES=2048;
 export const HOST_HOLD_WIRE_MAX_BYTES=HOST_HOLD_MAX_BYTES+HOST_HOLD_ENVELOPE_BYTES;
 export const HOST_OPERATION_REQUEST_MAX_BYTES=HOST_CONTROL_MAX_BYTES;
+
+export const HOST_DECIDE_PATH='/meri/host/decide/v1';
+export const HOST_DECIDE_REQUEST_SCHEMA='meri-host-decide-request/1';
+export const HOST_DECIDE_RESPONSE_SCHEMA='meri-host-decide-response/1';
+/** A decide request carries the ORIGINAL request/3 plus the pinned allocation envelope, so its body bound is
+ * its own; the currentness 32 KiB / 5000 ms path is unchanged. */
+export const HOST_DECIDE_MAX_BYTES=65536;
+export const HOST_DECIDE_ENVELOPE_BYTES=8192;
+export const HOST_DECIDE_WIRE_MAX_BYTES=HOST_DECIDE_MAX_BYTES+HOST_DECIDE_ENVELOPE_BYTES;
+export const HOST_DECIDE_MIN_WINDOW_MS=1000;
+export const HOST_DECIDE_MAX_WINDOW_MS=900000;
+
+/** The named approval request: envelope + the exact original meri-browser-approval-request/3 it captured. */
+export function hostDecideRequest(value){
+ let v,a,b,i,r;try{
+  v=own(data(value),['schema','allocation','binding','hostIdentity','nonce','request','deadlineMs']);
+  a=assertHostAllocation(v.allocation);b=assertHostRunBinding(a,v.binding);i=assertD005HostIdentity(v.hostIdentity,b,a);
+  r=assertBrowserApprovalRequest(v.request);
+ }catch{fail();}
+ if(v.schema!==HOST_DECIDE_REQUEST_SCHEMA||typeof v.nonce!=='string'||!HEX.test(v.nonce))fail();
+ if(!Number.isSafeInteger(v.deadlineMs)||v.deadlineMs<HOST_DECIDE_MIN_WINDOW_MS||v.deadlineMs>HOST_DECIDE_MAX_WINDOW_MS)fail();
+ return Object.freeze({schema:HOST_DECIDE_REQUEST_SCHEMA,allocation:a,binding:b,hostIdentity:i,nonce:v.nonce,
+  request:r,deadlineMs:v.deadlineMs});
+}
+/** The answer is either a canonical Core receipt or a CLOSED non-permissive outcome. Nothing here mints a grant. */
+export function hostDecideResponse(value,request){
+ let v;try{v=own(data(value),['schema','nonce','outcome','receipt','checkedAtMs','currentUntilMs']);
+  if(v.schema!==HOST_DECIDE_RESPONSE_SCHEMA||v.nonce!==request.nonce||
+   !['approved','rejected','revoked','expired','pending','unknown'].includes(v.outcome)||
+   !Number.isSafeInteger(v.checkedAtMs)||!Number.isSafeInteger(v.currentUntilMs)||v.currentUntilMs<=v.checkedAtMs)fail();
+  if(v.outcome==='approved')assertBrowserApprovalReceipt(v.receipt);else if(v.receipt!==null)fail();
+ }catch{fail();}
+ return Object.freeze({schema:HOST_DECIDE_RESPONSE_SCHEMA,nonce:v.nonce,outcome:v.outcome,receipt:v.receipt??null,
+  checkedAtMs:v.checkedAtMs,currentUntilMs:v.currentUntilMs});
+}
 
 /** Facts, workflow and hold share one closed request envelope: the host's pinned allocation identity,
  * the exact run binding, and a fresh single-use nonce. No policy digest is asserted by the host for
