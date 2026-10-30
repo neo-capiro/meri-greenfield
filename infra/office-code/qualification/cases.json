@@ -1,25 +1,28 @@
 {
-  "schema": "meri-office-fidelity-cases/1",
+  "schema": "meri-office-fidelity-cases/2",
   "story": "SCRUM-241",
   "upstreamChange": {
     "gerrit": 13516,
     "commit": "88acbed5df032ec987390749b2845bd3ba626438",
     "note": "Retains PPTX chart data workbooks through GrabBag on load and reexport on save. The change itself records the remaining chart-data-update issue; retention is not proof of intentional-edit correctness."
   },
-  "corpus": "C:/Users/Administrator/Documents/Codex/2026-10-28/wave6-capabilities/work/code-native/corpus/inputs",
+  "inputs": {
+    "corpus": "path to the retained corpus inputs directory, supplied explicitly at run time",
+    "saved": "path to the saved artifacts under test, supplied explicitly at run time"
+  },
   "cases": [
     {
       "id": "pptx-03",
       "owner": "chart-workbook",
       "filename": "pptx-03.pptx",
       "sha256": "5f767c85d6abdb320f4218a9ff3eaf2e3b48b65b122ef5bd8565a3e34124053d",
-      "expectedCharts": [
+      "charts": [
         {
           "slide": "ppt/slides/slide1.xml",
           "ordinal": 0,
           "kind": "barChart",
           "workbookPart": "ppt/embeddings/Microsoft_Excel_Worksheet1.xlsx",
-          "probeEdit": "Sheet1!B2=9"
+          "intentionalEdit": {"sheet": "Sheet1", "cell": "B2", "value": "9"}
         }
       ]
     },
@@ -28,23 +31,23 @@
       "owner": "chart-workbook",
       "filename": "pptx-04.pptx",
       "sha256": "adfe289cdf034d8b65980bb1ad9dcdb94f4fff64d68548a937c7a143b7cf017d",
-      "expectedCharts": [
+      "charts": [
         {
           "slide": "ppt/slides/slide1.xml",
           "ordinal": 0,
           "kind": "pieChart",
           "workbookPart": "ppt/embeddings/Microsoft_Excel_Worksheet2.xlsx",
-          "probeEdit": "Sheet1!B2=9"
+          "intentionalEdit": {"sheet": "Sheet1", "cell": "B2", "value": "9"}
         },
         {
           "slide": "ppt/slides/slide1.xml",
           "ordinal": 1,
           "kind": "lineChart",
           "workbookPart": "ppt/embeddings/Microsoft_Excel_Worksheet3.xlsx",
-          "probeEdit": "Sheet1!B2=11"
+          "intentionalEdit": {"sheet": "Sheet1", "cell": "B2", "value": "11"}
         }
       ],
-      "note": "Charts renumber on save (chart2/chart3 -> chart1/chart2) and keep identical caches, so charts are identified by slide plus relationship order, never by part name or cache."
+      "note": "The two charts carry distinct intentional edits. Charts renumber on save (chart2/chart3 -> chart1/chart2) and keep identical caches, so a chart is identified by slide plus the ordinal of its c:chart node, never by part name or cache."
     },
     {
       "id": "xlsx-02",
@@ -57,11 +60,11 @@
           "cell": "B5",
           "original": "$#,##0.00",
           "saved": "\\$#,##0.00",
-          "value": "1234.567",
-          "display": "$1,234.57"
+          "canonical": "$#,##0.00",
+          "value": "1234.567"
         }
       ],
-      "note": "The strict raw format difference is retained in the report; the semantic check proves the display and value are unchanged and rejects changed currency, precision, grouping or value."
+      "note": "The strict raw format difference is reported separately. Equivalence is only claimed for pure escaping/quoting changes; fill, spacing, symbol, precision, grouping, sign, value and formula changes are rejected."
     }
   ]
 }

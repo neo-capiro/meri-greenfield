@@ -1,31 +1,32 @@
 #!/usr/bin/env python3
-"""Equivalent-number-format check for the currency case (SCRUM-241).
+"""Equivalent number-format check for the currency case (SCRUM-241).
 
 The retained native save of xlsx-02 changes cell B5's format code from
-``$#,##0.00`` to ``\\$#,##0.00``.  In Excel/ODF number-format syntax a
-backslash escapes the next character, so ``\\$`` and ``$`` are both the literal
-currency symbol and render identically.  The value 1234.567 is untouched.
+``$#,##0.00`` to ``\\$#,##0.00``.  A backslash escapes the next character, so
+``\\$`` and ``$`` are both the literal currency symbol and render identically.
+The value 1234.567 is untouched.
 
-This check keeps the raw strict difference visible and adds a semantic
-equivalence proof:
+Equivalence here is deliberately narrow and conservative:
 
-* resolves each cell's effective number format through
-  cell ``s`` -> ``cellXfs`` -> ``numFmts`` (with the builtins),
-* canonicalises the format (escapes, quoted literals, ``[$SYM-LOC]``,
-  colours, percent, grouping, precision) into comparable structure,
-* renders the actual cell value through the format for both sides,
-* rejects materially changed currency symbol, precision, grouping, sign
-  section, literal text, numeric value or formula.
+* only escapes (``\\X``) and quoted literals (``"..."``) are removed, and only
+  when the escaped character is an ordinary literal.  Escaping a control
+  character (``*``, ``_``, ``[``, ``]``, ``?``, digits, separators, ``%``,
+  ``@``, ``;``) is not proven equivalent, because there it carries meaning;
+* everything else is compared verbatim: fill (``*x``) and spacing (``_x``)
+  directives, colour/condition/currency brackets, digits, separators, percent,
+  date tokens and section separators all have to match exactly.
 
-Pure standard library.  ``--self-test`` runs the rejection controls against
-in-memory mutations of the real retained codes.
+There is no format renderer, so no unsupported syntax is silently dropped: an
+unknown construct keeps its literal characters and can only compare equal to
+the same construct on the other side.  The strict raw-format difference is
+always reported separately, and cell values and formulas are compared exactly.
+
+Pure standard library.
 """
 import argparse
-import decimal
 import hashlib
 import json
 import posixpath
-import re
 import sys
 import zipfile
 import xml.etree.ElementTree as ET
@@ -43,13 +44,103 @@ BUILTIN = {
     39: "#,##0.00;(#,##0.00)", 40: "#,##0.00;[Red](#,##0.00)",
     45: "mm:ss", 46: "[h]:mm:ss", 47: "mmss.0", 48: "##0.0E+0", 49: "@",
 }
-CURRENCY = set("$€£¥₽₹₩₪₫฿₴₦₱R$")
-DATE_TOKENS = set("ymdhsYMDHS")
-NUM_PLACEHOLDERS = set("0#?")
+# Escaping one of these changes meaning, so such a pair is never called equal.
+CONTROL_CHARS = set("*_[]?0#,.;%@")
+CURRENCY = set("$€£¥₽₹₩₪₫฿₴₦₱")
 
 
 def sha256(payload):
     return hashlib.sha256(payload).hexdigest()
+
+
+def canonical(code):
+    """Unescape literals only. Returns None when an escape is not provable."""
+    if code is None:
+        return None
+    out, index = [], 0
+    while index < len(code):
+        char = code[index]
+        if char == "\\":
+            if index + 1 >= len(code):
+                return None
+            escaped = code[index + 1]
+            if escaped in CONTROL_CHARS:
+                return None
+            out.append(escaped)
+            index += 2
+            continue
+        if char == '"':
+            end = code.find('"', index + 1)
+            if end < 0:
+                return None
+            out.append(code[index + 1:end])
+            index = end + 1
+            continue
+        out.append(char)
+        index += 1
+    return "".join(out)
+
+
+def traits(code):
+    """Literal facts used to describe why two codes differ."""
+    text = canonical(code) or ""
+    currencies = sorted({char for char in text if char in CURRENCY})
+    integer, fraction, seen = [], [], False
+    for char in text:
+        if char == ".":
+            seen = True
+            continue
+        if char == ",":
+            (fraction if seen else integer).append(char)
+        elif char in "0#?":
+            (fraction if seen else integer).append(char)
+    return {
+        "currencies": currencies,
+        "grouping": "," in integer,
+        "minDecimals": fraction.count("0"),
+        "maxDecimals": len([char for char in fraction if char in "0#?"]),
+        "minIntegerDigits": integer.count("0"),
+        "percent": "%" in text,
+        "sections": text.count(";") + 1,
+        "fill": "*" in text,
+        "spacing": "_" in text,
+    }
+
+
+def differences_between(original, saved):
+    """Reasons the two format codes are not proven equivalent."""
+    if original == saved:
+        return []
+    left, right = canonical(original), canonical(saved)
+    if left is None or right is None:
+        return ["escape cannot be proven literal: %r vs %r" % (original, saved)]
+    if left == right:
+        return []
+    reasons = []
+    a, b = traits(original), traits(saved)
+    if a["currencies"] != b["currencies"]:
+        reasons.append("currency symbol %s -> %s" % (a["currencies"], b["currencies"]))
+    if a["minDecimals"] != b["minDecimals"] or a["maxDecimals"] != b["maxDecimals"]:
+        reasons.append("precision %d/%d -> %d/%d decimals"
+                       % (a["minDecimals"], a["maxDecimals"],
+                          b["minDecimals"], b["maxDecimals"]))
+    if a["grouping"] != b["grouping"]:
+        reasons.append("grouping %s -> %s" % (a["grouping"], b["grouping"]))
+    if a["minIntegerDigits"] != b["minIntegerDigits"]:
+        reasons.append("minimum integer digits %d -> %d"
+                       % (a["minIntegerDigits"], b["minIntegerDigits"]))
+    if a["percent"] != b["percent"]:
+        reasons.append("percent %s -> %s" % (a["percent"], b["percent"]))
+    if a["sections"] != b["sections"]:
+        reasons.append("sections %d -> %d" % (a["sections"], b["sections"]))
+    if a["fill"] != b["fill"]:
+        reasons.append("fill directive %s -> %s" % (a["fill"], b["fill"]))
+    if a["spacing"] != b["spacing"]:
+        reasons.append("spacing directive %s -> %s" % (a["spacing"], b["spacing"]))
+    if not reasons:
+        reasons.append("format code %r -> %r is not a pure escaping/quoting change"
+                       % (original, saved))
+    return reasons
 
 
 def rels_path(part):
@@ -62,222 +153,15 @@ def read_rels(zf, part):
     if path not in zf.namelist():
         return []
     root = ET.fromstring(zf.read(path))
-    return [{"id": n.get("Id"), "type": n.get("Type"), "target": n.get("Target")}
-            for n in root.findall(RELS + "Relationship")]
+    return [{"id": rel.get("Id"), "type": rel.get("Type"), "target": rel.get("Target")}
+            for rel in root.findall(RELS + "Relationship")]
 
 
-def split_sections(code):
-    sections, current, quote, bracket = [], [], False, False
-    index = 0
-    while index < len(code):
-        char = code[index]
-        if quote:
-            current.append(char)
-            if char == '"':
-                quote = False
-        elif bracket:
-            current.append(char)
-            if char == "]":
-                bracket = False
-        elif char == '"':
-            quote = True
-            current.append(char)
-        elif char == "[":
-            bracket = True
-            current.append(char)
-        elif char == "\\" and index + 1 < len(code):
-            current.append(char)
-            current.append(code[index + 1])
-            index += 1
-        elif char == ";":
-            sections.append("".join(current))
-            current = []
-        else:
-            current.append(char)
-        index += 1
-    sections.append("".join(current))
-    return sections
-
-
-def tokenise(section):
-    """Canonical token list: ('lit', text) | ('currency', sym) | ('digit', ch)
-    | ('group',) | ('decimal',) | ('percent',) | ('bracket', content) | ('skip', ch)."""
-    tokens, index = [], 0
-    while index < len(section):
-        char = section[index]
-        if char == "\\" and index + 1 < len(section):
-            escaped = section[index + 1]
-            # A backslash only escapes a literal: "\$" and "$" are the same symbol.
-            tokens.append(("currency", escaped) if escaped in CURRENCY else ("lit", escaped))
-            index += 2
-            continue
-        if char == '"':
-            end = section.find('"', index + 1)
-            end = len(section) if end < 0 else end
-            text = section[index + 1:end]
-            tokens.append(("currency", text) if len(text) == 1 and text in CURRENCY
-                          else ("lit", text))
-            index = end + 1
-            continue
-        if char == "[":
-            end = section.find("]", index + 1)
-            end = len(section) if end < 0 else end
-            content = section[index + 1:end]
-            if content.startswith("$"):
-                # [$SYM-LOCALE] names a currency; keep the symbol only
-                tokens.append(("currency", content[1:].split("-")[0]))
-            else:
-                tokens.append(("bracket", content.lower()))
-            index = end + 1
-            continue
-        if char == "_":
-            tokens.append(("skip", section[index + 1:index + 2]))
-            index += 2
-            continue
-        if char == "*":
-            index += 2
-            continue
-        if char in CURRENCY:
-            tokens.append(("currency", char))
-        elif char in NUM_PLACEHOLDERS:
-            tokens.append(("digit", char))
-        elif char == ",":
-            tokens.append(("group",))
-        elif char == ".":
-            tokens.append(("decimal",))
-        elif char == "%":
-            tokens.append(("percent",))
-        else:
-            tokens.append(("lit", char))
-        index += 1
-    return tokens
-
-
-def structure(code):
-    """Semantic attributes of a format code."""
-    sections = split_sections(code)
-    parsed = [tokenise(section) for section in sections]
-    primary = parsed[0]
-    integer, fraction, seen_decimal, integer_digits = [], [], False, []
-    for kind, *rest in primary:
-        if kind == "decimal":
-            seen_decimal = True
-            continue
-        if kind == "digit":
-            (fraction if seen_decimal else integer).append(rest[0])
-        if kind == "group":
-            (fraction if seen_decimal else integer).append(",")
-    integer_digits = [c for c in integer if c in NUM_PLACEHOLDERS]
-    return {
-        "sections": len(parsed),
-        "tokens": parsed,
-        "currencies": sorted({rest[0] for kind, *rest in primary if kind == "currency"}),
-        "grouping": "," in integer,
-        "minIntegerDigits": integer.count("0"),
-        "minDecimals": fraction.count("0"),
-        "maxDecimals": len([c for c in fraction if c in NUM_PLACEHOLDERS]),
-        "percent": any(kind == "percent" for kind, *_ in primary),
-        "general": code.strip().lower() == "general",
-        "date": any(
-            kind == "lit" and rest and set(rest[0]) & DATE_TOKENS
-            for kind, *rest in primary
-        ),
-    }
-
-
-def render(code, value):
-    """Render a numeric value through the format, or None if unsupported."""
-    if value is None:
-        return None
-    try:
-        number = decimal.Decimal(str(value))
-    except (decimal.InvalidOperation, ValueError):
-        return None
-    info = structure(code)
-    if info["general"]:
-        return "%s" % value
-    if info["date"] or info["sections"] > 2:
-        return None
-    sections = split_sections(code)
-    section = sections[0]
-    negative = number < 0
-    if negative and len(sections) > 1:
-        section = sections[1]
-    magnitude = abs(number) if len(sections) > 1 else number
-    tokens = tokenise(section)
-    local = structure(section)
-    if local["date"]:
-        return None
-    if local["percent"]:
-        magnitude = magnitude * 100
-    digits = local["maxDecimals"]
-    quant = decimal.Decimal(1).scaleb(-digits)
-    rounded = magnitude.quantize(quant, rounding=decimal.ROUND_HALF_UP)
-    text = ("%." + str(digits) + "f") % rounded if digits else "%d" % int(rounded)
-    int_part, _, frac_part = text.partition(".")
-    if local["grouping"]:
-        int_part = "{:,}".format(int(int_part)) if int_part else int_part
-    int_part = int_part.rjust(local["minIntegerDigits"], "0")
-    rendered = int_part + ("." + frac_part if frac_part else "")
-
-    out, replaced = [], False
-    for kind, *rest in tokens:
-        if kind in ("digit", "group", "decimal"):
-            if not replaced:
-                out.append(rendered)
-                replaced = True
-            continue
-        if kind == "currency":
-            out.append(rest[0])
-        elif kind == "lit":
-            out.append(rest[0])
-        elif kind == "percent":
-            out.append("%")
-        elif kind == "skip":
-            out.append(" ")
-    return "".join(out)
-
-
-def material_differences(original, saved):
-    """Reasons the two format codes are not semantically equivalent."""
-    if original == saved:
-        return []
-    left, right = structure(original), structure(saved)
-    reasons = []
-    if left["currencies"] != right["currencies"]:
-        reasons.append("currency symbol %s -> %s"
-                       % (left["currencies"] or None, right["currencies"] or None))
-    if left["minDecimals"] != right["minDecimals"] or \
-            left["maxDecimals"] != right["maxDecimals"]:
-        reasons.append("precision %d/%d -> %d/%d decimals"
-                       % (left["minDecimals"], left["maxDecimals"],
-                          right["minDecimals"], right["maxDecimals"]))
-    if left["grouping"] != right["grouping"]:
-        reasons.append("grouping %s -> %s" % (left["grouping"], right["grouping"]))
-    if left["minIntegerDigits"] != right["minIntegerDigits"]:
-        reasons.append("minimum integer digits %d -> %d"
-                       % (left["minIntegerDigits"], right["minIntegerDigits"]))
-    if left["percent"] != right["percent"]:
-        reasons.append("percent %s -> %s" % (left["percent"], right["percent"]))
-    if left["sections"] != right["sections"]:
-        reasons.append("sections %d -> %d" % (left["sections"], right["sections"]))
-    if left["tokens"] != right["tokens"]:
-        literals = lambda parsed: [
-            rest[0] for section in parsed for kind, *rest in section if kind == "lit"
-        ]
-        if literals(left["tokens"]) != literals(right["tokens"]):
-            reasons.append("literal text %s -> %s"
-                           % (literals(left["tokens"]), literals(right["tokens"])))
-        elif not reasons:
-            reasons.append("format tokens differ")
-    return reasons
-
-
-def effective_formats(zf):
-    """cell reference -> {sheet, format code, numFmtId, xf}"""
-    styles = ET.fromstring(zf.read("xl/styles.xml")) if "xl/styles.xml" in zf.namelist() else None
+def workbook_cells(zf):
+    """(sheet, cell) -> numFmtId, format code, value and formula."""
     formats, xfs = {}, []
-    if styles is not None:
+    if "xl/styles.xml" in zf.namelist():
+        styles = ET.fromstring(zf.read("xl/styles.xml"))
         for node in styles.iter(SML + "numFmt"):
             formats[int(node.get("numFmtId"))] = node.get("formatCode")
         cell_xfs = styles.find(SML + "cellXfs")
@@ -285,9 +169,13 @@ def effective_formats(zf):
             xfs = cell_xfs.findall(SML + "xf")
     result = {}
     if "xl/workbook.xml" not in zf.namelist():
-        return result, formats, xfs
+        return result
     workbook = ET.fromstring(zf.read("xl/workbook.xml"))
     rels = {rel["id"]: rel for rel in read_rels(zf, "xl/workbook.xml")}
+    shared = []
+    if "xl/sharedStrings.xml" in zf.namelist():
+        for si in ET.fromstring(zf.read("xl/sharedStrings.xml")).findall(SML + "si"):
+            shared.append("".join(node.text or "" for node in si.iter(SML + "t")))
     for sheet in workbook.iter(SML + "sheet"):
         target = rels.get(sheet.get(R + "id"), {}).get("target")
         if not target:
@@ -295,17 +183,9 @@ def effective_formats(zf):
         part = posixpath.normpath(posixpath.join("xl", target))
         if part not in zf.namelist():
             continue
-        root = ET.fromstring(zf.read(part))
-        shared = []
-        if "xl/sharedStrings.xml" in zf.namelist():
-            for si in ET.fromstring(zf.read("xl/sharedStrings.xml")).findall(SML + "si"):
-                shared.append("".join(n.text or "" for n in si.iter(SML + "t")))
-        for cell in root.iter(SML + "c"):
-            ref = cell.get("r")
+        for cell in ET.fromstring(zf.read(part)).iter(SML + "c"):
             style = int(cell.get("s", "0"))
-            num_fmt_id = 0
-            if style < len(xfs):
-                num_fmt_id = int(xfs[style].get("numFmtId", "0"))
+            num_fmt_id = int(xfs[style].get("numFmtId") or "0") if style < len(xfs) else 0
             code = formats.get(num_fmt_id, BUILTIN.get(num_fmt_id, "General"))
             value_node = cell.find(SML + "v")
             formula_node = cell.find(SML + "f")
@@ -314,31 +194,29 @@ def effective_formats(zf):
                 index = int(raw)
                 value = shared[index] if index < len(shared) else raw
             elif cell.get("t") == "inlineStr":
-                value = "".join(n.text or "" for n in cell.iter(SML + "t"))
+                value = "".join(node.text or "" for node in cell.iter(SML + "t"))
             else:
                 value = raw
-            result[(sheet.get("name"), ref)] = {
-                "numFmtId": num_fmt_id,
-                "format": code,
-                "value": value,
-                "formula": formula_node.text if formula_node is not None else None,
-            }
-    return result, formats, xfs
+            result[(sheet.get("name"), cell.get("r"))] = {
+                "numFmtId": num_fmt_id, "format": code, "value": value,
+                "formula": formula_node.text if formula_node is not None else None}
+    return result
 
 
 def compare(original_path, saved_path, cells=None):
+    """Compare two real workbooks; ``cells`` optionally restricts cell references."""
     with zipfile.ZipFile(original_path) as left_zf, zipfile.ZipFile(saved_path) as right_zf:
-        left, _, _ = effective_formats(left_zf)
-        right, _, _ = effective_formats(right_zf)
+        left, right = workbook_cells(left_zf), workbook_cells(right_zf)
     findings, differences = [], []
     keys = sorted(set(left) | set(right))
+    compared = 0
     for key in keys:
         if cells and key[1] not in cells and "%s!%s" % key not in cells:
             continue
+        compared += 1
         a, b = left.get(key), right.get(key)
         entry = {"sheet": key[0], "cell": key[1]}
         if a is None or b is None:
-            # A cell the edit added is reported, never hidden; a lost cell fails.
             side = "saved" if b is not None else "original"
             entry.update(outcome="ADDED" if b is not None else "DIFFERENCE",
                          differences=["cell present only on %s" % side])
@@ -346,21 +224,16 @@ def compare(original_path, saved_path, cells=None):
             if b is None:
                 differences.append("%s!%s missing from saved" % key)
             continue
-        reasons = material_differences(a["format"], b["format"])
+        reasons = differences_between(a["format"], b["format"])
         if a["value"] != b["value"]:
             reasons.append("value %r -> %r" % (a["value"], b["value"]))
         if a["formula"] != b["formula"]:
             reasons.append("formula %r -> %r" % (a["formula"], b["formula"]))
-        left_preview = render(a["format"], float(a["value"])) if _is_number(a["value"]) else None
-        right_preview = render(b["format"], float(b["value"])) if _is_number(b["value"]) else None
-        if left_preview is not None and right_preview is not None and \
-                left_preview != right_preview:
-            reasons.append("display %r -> %r" % (left_preview, right_preview))
         entry.update({
             "original": {"format": a["format"], "numFmtId": a["numFmtId"],
-                         "value": a["value"], "display": left_preview},
+                         "canonical": canonical(a["format"]), "value": a["value"]},
             "saved": {"format": b["format"], "numFmtId": b["numFmtId"],
-                      "value": b["value"], "display": right_preview},
+                      "canonical": canonical(b["format"]), "value": b["value"]},
             "rawFormatChanged": a["format"] != b["format"],
             "semanticEquivalent": not reasons,
             "differences": reasons,
@@ -372,8 +245,7 @@ def compare(original_path, saved_path, cells=None):
             differences.append("%s!%s %s" % (key[0], key[1], reason))
     return {
         "outcome": "PASS" if not differences else "DIFFERENCE",
-        "cellsCompared": len([k for k in keys if not cells or
-                              k[1] in cells or "%s!%s" % k in cells]),
+        "cellsCompared": compared,
         "rawFormatChanges": [f for f in findings if f.get("rawFormatChanged")],
         "addedCells": ["%s!%s" % (f["sheet"], f["cell"]) for f in findings
                        if f.get("outcome") == "ADDED"],
@@ -383,51 +255,34 @@ def compare(original_path, saved_path, cells=None):
     }
 
 
-def _is_number(value):
-    if value is None:
-        return False
-    try:
-        float(value)
-        return True
-    except (TypeError, ValueError):
-        return False
-
-
 def self_test():
-    """Rejection controls over the real retained format pair."""
+    """Verdict vectors over the demonstrated pair and its material changes."""
     base, escaped = "$#,##0.00", "\\$#,##0.00"
-    # name, original code, saved code, original value, saved value, expected
     cases = [
-        ("escaped-dollar is equivalent", base, escaped, 1234.567, 1234.567, True),
-        ("identical code", base, base, 1234.567, 1234.567, True),
-        ("currency symbol changed", base, "€#,##0.00", 1234.567, 1234.567, False),
-        ("precision reduced", base, "$#,##0.0", 1234.567, 1234.567, False),
-        ("precision increased", base, "$#,##0.000", 1234.567, 1234.567, False),
-        ("grouping removed", base, "$0.00", 1234.567, 1234.567, False),
-        ("value changed", base, escaped, 1234.567, 1234.5, False),
-        ("bracket currency changed", base, "[$€-407]#,##0.00", 1234.567, 1234.567, False),
+        ("escaped-dollar is equivalent", base, escaped, True),
+        ("identical code", base, base, True),
+        ("quoted-dollar is equivalent", base, '"$"#,##0.00', True),
+        ("escaped dash in a date is equivalent", "yyyy-mm-dd", "yyyy\\-mm\\-dd", True),
+        ("fill directive is material", base, base + "*x", False),
+        ("spacing directive is material", base, base + "_x", False),
+        ("currency symbol is material", base, "€#,##0.00", False),
+        ("precision is material", base, "$#,##0.0", False),
+        ("grouping is material", base, "$0.00", False),
+        ("sign section is material", base, base + ";(" + base + ")", False),
+        ("bracket currency is material", base, "[$€-407]#,##0.00", False),
+        ("escaped control char is unprovable", base, base + "\\#", False),
     ]
     failures, report = [], []
-    for name, left, right, left_value, right_value, expect_equivalent in cases:
-        reasons = material_differences(left, right)
-        if left_value != right_value:
-            reasons.append("value %r -> %r" % (left_value, right_value))
-        left_preview = render(left, left_value)
-        right_preview = render(right, right_value)
-        if left_preview != right_preview:
-            reasons.append("display %r -> %r" % (left_preview, right_preview))
-        equivalent = not reasons
-        report.append({"case": name, "equivalent": equivalent,
-                       "expected": expect_equivalent,
-                       "display": [left_preview, right_preview],
-                       "reasons": reasons})
-        if equivalent != expect_equivalent:
+    for name, left, right, expected in cases:
+        equivalent = not differences_between(left, right)
+        report.append({"case": name, "equivalent": equivalent, "expected": expected})
+        if equivalent != expected:
             failures.append(name)
     print(json.dumps(report, indent=2))
     if failures:
         print("SELF-TEST FAILED", failures)
         return 1
-    print("SELF-TEST PASS: %d controls" % len(report))
+    print("SELF-TEST PASS: %d vectors" % len(report))
     return 0
 
 
@@ -456,10 +311,10 @@ def main():
             json.dump(report, handle, indent=2, ensure_ascii=False)
             handle.write("\n")
     for finding in report["findings"]:
-        print(json.dumps({k: finding[k] for k in finding
-                          if k in ("sheet", "cell", "outcome", "rawFormatChanged",
-                                   "semanticEquivalent", "differences",
-                                   "original", "saved")}, ensure_ascii=False))
+        print(json.dumps({key: finding[key] for key in finding
+                          if key in ("sheet", "cell", "outcome", "rawFormatChanged",
+                                     "semanticEquivalent", "differences",
+                                     "original", "saved")}, ensure_ascii=False))
     print("strictRawFormatEqual", report["strictRawFormatEqual"],
           "| semantic OUTCOME", report["outcome"])
     return 0 if report["outcome"] == "PASS" else 1

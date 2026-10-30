@@ -1,57 +1,56 @@
 # Office fidelity qualification (SCRUM-241)
 
-Narrow acceptance checks for the two PPTX embedded-chart-workbook losses and the
-XLSX equivalent-currency-format case. They exist because the previous corpus
-checks only counted `ppt/embeddings/*.xlsx` parts and compared cached values, and
-both are blind to the actual damage: the retained pre-fix saves drop the workbook
-part, the chart `externalData` element and its package relationship while the
-cached values stay identical, and the exported series formulas degrade to
-LibreOffice-internal names (`label 0`, `categories`, `0`).
+Acceptance checks for the two PPTX embedded-chart-workbook losses and the XLSX
+equivalent-currency-format case. They exist because counting `ppt/embeddings/*.xlsx`
+parts and comparing cached values is blind to the real damage: the retained
+pre-fix saves drop the workbook part, the chart `externalData` element and its
+package relationship while the cached values stay byte-identical, and the
+exported series formulas degrade to LibreOffice-internal names (`label 0`,
+`categories`, `0`).
 
-Nothing here builds an image, starts CODE, touches the retained corpus, saved
-artifacts, reports, keys or certificates, or writes outside the caller's output
-directory.
+Nothing here builds an image, starts CODE, a host or a browser, or writes to the
+corpus, the retained saves, reports, keys or certificates. Every input path is an
+explicit argument; there are no default hosts, identities or outputs.
 
-## Checkers
+## `chart-workbook-fidelity.py`
 
-### `chart-workbook-fidelity.py`
+Chart identity starts at the document: each slide's actual `c:chart` nodes, in
+slide document order, resolved through that slide's relationship table by `r:id`.
+A relationship record no slide references is not a displayed chart, and the order
+of records inside the relationship part is not identity. The slot is
+`(slide part, ordinal of the c:chart node)`, so chart part renumbering and
+relationship reordering cannot change the mapping.
 
-Resolves the real package graph and compares data, not counts:
+Per slot it resolves chart part -> `c:externalData` -> chart relationship ->
+package target -> embedded workbook, then requires:
 
-```
-ppt/slides/slideN.xml
-  --ppt/slides/_rels/slideN.xml.rels--> chart part
-    --ppt/charts/_rels/chartN.xml.rels--> package target (embedded .xlsx)
-      --> cells, formulas and shared strings of that workbook
-```
-
-* Charts are matched by **slide part plus document order of the chart
-  relationships**, never by chart part name and never by cached values. Saving
-  renumbers the parts (`chart2`/`chart3` become `chart1`/`chart2` in pptx-04)
-  and keeps identical caches, so neither name nor cache identifies the data.
-* Series formulas must still be sheet ranges; internal names fail.
-* Workbook cells and formulas must equal the original exactly, unless
-  `--expect-edit Sheet1!B2=9` names the cell the intentional editor edit changed,
-  in which case every other cell must still match the original.
-* `[Content_Types].xml` must carry the spreadsheet override for the workbook part
-  and the relationship type must be the OOXML `package` relationship.
+* every series role (name, category, value) that referenced a range still does,
+  with a non-empty formula;
+* that range resolves to a sheet and cells that exist in the connected workbook;
+* the chart cache equals the values those cells hold (stale cache and a wrong
+  chart-to-workbook association both fail);
+* without an expected edit, cells, formulas, series ranges and caches equal the
+  original;
+* with `--expect-edit '<slide>#<ordinal>:<Sheet>!<Cell>=<value>'`, the edited cell
+  holds that value, the chart cache reflects it, and every other cell and every
+  other chart stay unchanged.
 
 ```
 python chart-workbook-fidelity.py --original <in.pptx> --saved <out.pptx> \
-  [--expect-edit Sheet1!B2=9] [--json report.json]
+  [--expect-edit 'ppt/slides/slide1.xml#0:Sheet1!B2=9'] [--json report.json]
 ```
 
-### `currency-semantics-check.py`
+## `currency-semantics-check.py`
 
-Keeps the raw strict difference visible (`strictRawFormatEqual`) and adds a
-semantic equivalence proof:
+Equivalence is narrow and conservative: only escapes (`\X`) and quoted literals
+are removed, and only when escaping is provably literal. Escaping a control
+character (`*`, `_`, `[`, `]`, `?`, digits, separators, `%`, `@`, `;`) is never
+called equivalent. Fill (`*x`) and spacing (`_x`) directives, brackets, digits,
+separators, percent, date tokens and section separators must match exactly. There
+is no format renderer, so no unsupported syntax is silently dropped.
 
-* resolves each cell's effective format through `s` -> `cellXfs` -> `numFmts`,
-* canonicalises escapes, quoted literals and `[$SYM-LOC]`, so `$#,##0.00` and
-  `\$#,##0.00` are the same format,
-* renders the actual value through the format on both sides,
-* rejects changed currency symbol, precision, grouping, sign section, literal
-  text, numeric value or formula.
+The strict raw-format difference is always reported separately
+(`strictRawFormatEqual`), and cell values and formulas are compared exactly.
 
 ```
 python currency-semantics-check.py --original <in.xlsx> --saved <out.xlsx> \
@@ -59,46 +58,87 @@ python currency-semantics-check.py --original <in.xlsx> --saved <out.xlsx> \
 python currency-semantics-check.py --self-test
 ```
 
-`--self-test` is the rejection control: it runs the real retained format pair
-plus mutated currency, precision, grouping and value variants and fails if any
-material change would be accepted.
+## `test-controls.py`
 
-## Cases
+Durable controls that build real ZIP packages from the retained originals in a
+scratch directory and run the actual checkers over them, including: disconnected
+slide `r:id`, removed formulas, nonexistent range, reordered relationship table
+(must stay valid), orphan relationship record (must not count as a chart),
+renumbered chart parts, wrong chart-to-workbook association, coherent single-chart
+edit, stale cache, cache-only change, the two distinct pptx-04 edits (B2=9 and
+B2=11), a missing second edit, edit bound to the wrong slot, a disturbed unedited
+chart, the retained pre-fix save, and the currency material-change vectors.
 
-`cases.json` pins the three affected corpus inputs by SHA-256 and the chart slots
-each one must resolve. The pinned corpus, the retained pre-fix saves and the
-existing CODE/WOPI/Core fixture live outside this repository (see the dated
-handback); these checks read them read-only.
+```
+python test-controls.py --corpus <corpus inputs> [--saved-dir <retained saves>] [--scratch <dir>]
+```
 
-## Running the offline gate
+Exit 0 only if every control behaves; 2 if the corpus was not supplied (never a
+silent pass).
+
+## `native-chart-flows.mjs` and `isolation-adapter.mjs`
+
+Stage order per case: open -> no-edit Save -> reopen of that saved identity ->
+unrelated title edit + Save -> intentional chart-data edit + Save -> reopen and
+re-check of the post-reopen bytes -> canonical Core `/verify` body.
+
+Two retained-fixture facts are handled explicitly:
+
+* `GET /fresh/<id>` creates a new document on every call, so reopen must address
+  the saved identity instead. The flow hashes the bytes before and after reopen
+  and fails the stage if they changed.
+* the retained host resolves its output relative to its own script URL
+  (`font-corpus/saved/<id>`, `continuous-native-results.json`,
+  `continuous-recovery-private.json`), so a caller-side `--out` does not isolate
+  host writes. `materializeRunRoot()` copies the retained host and its modules
+  into a new run root whose `run-root.json` records the isolated output paths and
+  the copied inputs' hashes; the retained tree is not modified.
+
+Every origin, identity, module and output path is an explicit argument and there
+is no default host. Run-scoped identities that match the retained corpus pattern
+(`pptx-04`, `pptx-03-restart`, ...) are refused. A missing editor control is
+`NOT RUN`; any error after an edit or save has begun is `FAIL`; and any `NOT RUN`
+makes the whole run `INCOMPLETE` with exit code 3, never 0. Stage results are
+written to `stages.json` after every stage, including on failure.
+
+The editor driver (Playwright selectors for the title placeholder and the chart
+data table, scoped to the intended chart slot and cell) is not committed: those
+controls are unverified until they run against the fixed candidate, so the flow
+reports `NOT RUN` rather than guessing. That is why no native stage is claimed
+here.
+
+```
+node native-chart-flows.mjs --origin <isolated host origin> --identity <run id> \
+  --original <pptx> --out <dir> --cases <cases.json> --checker <checker path> \
+  [--editor <module> --selectors <file> --playwright <module>] [--python python]
+```
+
+## `test-flows.mjs`
+
+Inert tests for the orchestration and the adapter, with no host, port, browser or
+CODE process: reopen that re-seeds fails, a missing editor control is NOT RUN and
+the run is INCOMPLETE/non-zero, a save error after the edit is FAIL, the `/verify`
+body is inspected rather than the status, stage results persist on failure,
+unsafe origins and retained identities are refused, and run-root materialization
+keeps host writes away from the retained tree.
+
+```
+node test-flows.mjs [--scratch <dir>]
+```
+
+## Running the gate
 
 ```
 sh run-offline-checks.sh <corpus-inputs-dir> <saved-artifacts-dir> <output-dir> [fixed|prefix]
 ```
 
-* `fixed` (default) is the acceptance gate for saved artifacts from the fixed
-  candidate: the chart workbooks must be preserved.
-* `prefix` is the sensitivity control over the retained pre-fix saves: the chart
-  checks **must** reject them.
-
-Use absolute paths, and `PYTHON=` to select the interpreter. Both checkers are
-pure standard library.
-
-## Native flows
-
-`native-chart-flows.mjs` drives the existing qualification host through
-open, no-edit Save, reopen, unrelated title edit, intentional chart-data edit and
-reopen again, writing each stage's exact saved bytes and screenshots to its own
-output directory, then runs the offline checkers on those bytes. A stage whose
-editor control is unavailable is reported `NOT RUN`, never passed.
-
-It requires a running host that serves `/fresh/<case>`, `/state`, `/saved/<case>`
-and `/verify/<case>`, which is the existing CODE/WOPI/Core fixture. Those flows
-have not been executed yet: they need the fixed native candidate, which is built
-and deployed by the release owner, not here.
+`fixed` requires the chart workbooks to be preserved; `prefix` requires the chart
+checks to reject the retained pre-fix saves. Both modes also run the control
+suites. Use absolute paths and `PYTHON=`/`NODE=` to select interpreters.
 
 ## Boundary
 
-These checks are qualification only. A green offline run on a candidate's saved
-bytes is not acceptance of the deployed editor; authenticated open/edit/Save and
-the deployed chart behavior remain required.
+These are qualification checks. A green offline run on a candidate's saved bytes
+is not acceptance of a deployed editor; the authenticated open/edit/Save and the
+deployed chart behaviour remain required, and the ARM64 build, scan and
+deployment stay with the release owner.
