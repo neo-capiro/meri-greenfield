@@ -2,13 +2,17 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFile} from 'node:fs/promises';
 import vm from 'node:vm';
+import {createHash} from 'node:crypto';
+import canonicalize from 'canonicalize';
+import {receiveConversationLifecycleRequest,receiveBrowserTakeoverControlResponse} from '@capiro/meri-contracts/conversation-lifecycle';
 import {generateBrowserViewerContracts} from '../generate-browser-viewer.mjs';
 import {BROWSER_VIEWER_SCHEMA as schema,receiveBrowserViewerRequest as request,
  receiveBrowserViewerResponse as receive,browserViewerPng} from '@capiro/meri-contracts/browser-viewer';
 const id=n=>`${String(n).padStart(8,'0')}-0000-4000-8000-000000000000`,encode=v=>new TextEncoder().encode(JSON.stringify(v));
 const context={tenantId:id(1),actorId:id(2),conversationId:id(3),runId:id(4),selectedClientId:null};
 const lease={viewerId:id(7),leaseEpoch:1,expiresAtMs:10000,connectRequestId:id(8)};
-const current={schema,context,ownerId:id(5),state:'user',lease,pages:[{pageId:id(9),origin:'https://example.invalid'}]};
+const {selectedClientId,...identifiers}=context,binding={...identifiers,attemptId:id(20),workerId:id(21),writerFence:1};
+const current={schema,context,binding,checkpoint:{checkpointId:context.runId,checkpointSha256:'a'.repeat(64)},ownerId:id(5),state:'user',lease,pages:[{pageId:id(9),origin:'https://example.invalid'}]};
 const frameRequest={schema,requestId:id(10),ownerId:id(5),viewerId:id(7),leaseEpoch:1,pageId:id(9)};
 function png(width=1,height=1){const p=Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+jGZkAAAAASUVORK5CYII=','base64');p.writeUInt32BE(width,16);p.writeUInt32BE(height,20);return p;}
 function frameResponse(){const {pageId,...base}=frameRequest;return {...base,context,frame:{pageId,frameId:'F'.repeat(43),width:1,height:1,image:{mimeType:'image/png',data:png().toString('base64')}}};}
@@ -63,4 +67,16 @@ test('the generated public receiver runs without Node imports or host authority'
  const q=module.namespace.receiveBrowserViewerRequest('read',encode({schema}));
  assert.equal(module.namespace.receiveBrowserViewerResponse('read',200,encode(current),q,context).state,'user');
  assert.equal(vm.runInContext('typeof process',realm),'undefined');
+});
+test('browser-only return uses canonical lifecycle correlation and requires an admitted browser read',async()=>{
+ const read=receive('read',200,encode(current),request('read',encode({schema})),context);
+ const input={controlId:id(22),intent:'takeover.end',...current.checkpoint};
+ const q=receiveConversationLifecycleRequest('control',encode(input));
+ const receipt={controlId:input.controlId,intent:input.intent,sourceBinding:binding,inputSha256:createHash('sha256').update(canonicalize(input)).digest('hex'),state:'PENDING',checkpointId:context.runId,targetBinding:null,admissionReceiptId:null,retirementReceiptId:null,replayed:false};
+ assert.deepEqual(await receiveBrowserTakeoverControlResponse(200,encode(receipt),q,read),receipt);
+ await assert.rejects(receiveBrowserTakeoverControlResponse(200,encode(receipt),q,{...read}),/UNADMITTED_VIEW/u);
+ await assert.rejects(receiveBrowserTakeoverControlResponse(200,encode({...receipt,inputSha256:'b'.repeat(64)}),q,read),/REQUEST_MISMATCH/u);
+ await assert.rejects(receiveBrowserTakeoverControlResponse(200,encode({...receipt,sourceBinding:{...binding,writerFence:2}}),q,read),/VIEW_MISMATCH/u);
+ const pause=receiveConversationLifecycleRequest('control',encode({controlId:id(23),intent:'pause'}));
+ await assert.rejects(receiveBrowserTakeoverControlResponse(200,encode(receipt),pause,read),/INVALID_REQUEST/u);
 });

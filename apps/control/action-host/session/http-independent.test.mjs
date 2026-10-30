@@ -4,6 +4,13 @@ import {createActionSessionApplication} from './http.mjs';
 import {createActionSessionOwner} from './owner.mjs';
 const url='http://127.0.0.1/api/action-followthrough/session';
 const req=(body='{}',extra={})=>new Request(url,{method:'POST',headers:{authorization:'Bearer native-opaque','content-type':'application/json'},body,...extra});
+test('browser-only issuance reuses the fixed native session boundary without replacing ordinary issuance',async()=>{
+ let calls=0;const app=createActionSessionApplication({owner:{async issue(){calls++;throw Error('Native refusal');}},sessionPath:'/api/action-followthrough/browser-session'});
+ assert.equal((await app.handle(req())).status,404);assert.equal(calls,0);
+ const browser=new Request('https://control.test/api/action-followthrough/browser-session',{method:'POST',headers:{authorization:'Bearer native-opaque','content-type':'application/json'},body:'{}'});
+ assert.equal((await app.handle(browser)).status,401);assert.equal(calls,1);
+ assert.throws(()=>createActionSessionApplication({owner:{issue(){}},sessionPath:'/api/arbitrary'}),/SESSION_CONFIGURATION/u);
+});
 function httpFixture(){const calls=[];const owner=createActionSessionOwner({mode:'process-local',limits:{maxSessions:1,maxRequestMs:200,maxTtlMs:500,maxFactBytes:65536},verifyIdentity:async value=>{calls.push(value);throw Error('synthetic native refusal');},resolveContext:async()=>{throw Error('unexpected context');}});const app=createActionSessionApplication({owner,maxRequestBytes:64,maxRequestMs:80});return{app,calls,owner};}
 for(const [name,request]of [['method',()=>new Request(url)],['query',()=>new Request(url+'?scope=other',{method:'POST'})],['fragment',()=>new Request(url+'#scope',{method:'POST',headers:{authorization:'Bearer native-opaque','content-type':'application/json'},body:'{}'})],['extra authority',()=>req('{"tenantId":"other"}')],['duplicate auth',()=>req('{}',{headers:[['authorization','Bearer native-opaque'],['authorization','Bearer forged'],['content-type','application/json']]})],['length mismatch',()=>req('{}',{headers:{authorization:'Bearer native-opaque','content-type':'application/json','content-length':'1'}})],['oversized stream',()=>req(' '.repeat(65))],['invalid utf8',()=>req(new Uint8Array([255]))]])test('independent session HTTP refuses '+name+' before owner',async()=>{const f=httpFixture(),r=await f.app.handle(request());assert.notEqual(r.status,200);assert.equal(f.calls.length,0);assert.doesNotMatch(await r.text(),/native-opaque|forged|tenantId|SECRET/);});
 test('independent session HTTP must not execute own Request accessors',async()=>{const f=httpFixture();let effects=0;const r=req();Object.defineProperty(r,'url',{get(){effects++;return url;}});await f.app.handle(r);assert.equal(effects,0);});

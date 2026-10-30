@@ -1,4 +1,5 @@
 // Generated from browser-viewer/api.d.ts.
+import type {RunBinding} from './contracts.js';
 export declare const BROWSER_VIEWER_SCHEMA:'meri.browser-viewer/1';
 export declare const BROWSER_VIEWER_ROUTES:readonly ['read','ticket','connect','frame','input','release'];
 export type BrowserViewerRoute=typeof BROWSER_VIEWER_ROUTES[number];
@@ -21,7 +22,7 @@ export type BrowserViewerFrame=Readonly<{frameId:string;pageId:string;width:numb
 type ResponseBase={readonly schema:typeof BROWSER_VIEWER_SCHEMA;readonly context:BrowserViewerContext;readonly ownerId:string};
 type ResponseLease=ResponseBase&{readonly requestId:string;readonly viewerId:string;readonly leaseEpoch:number};
 export type BrowserViewerResponseMap={
- read:Omit<ResponseBase,'ownerId'>&{readonly ownerId:string|null;readonly state:'unavailable'|'agent'|'taking'|'user'|'returning'|'ended';readonly lease:BrowserViewerLease|null;readonly pages:readonly BrowserViewerPage[]};
+ read:Omit<ResponseBase,'ownerId'>&{readonly ownerId:string|null;readonly binding:Readonly<RunBinding>;readonly checkpoint:Readonly<{checkpointId:string;checkpointSha256:string}>|null;readonly state:'unavailable'|'agent'|'taking'|'user'|'returning'|'ended';readonly lease:BrowserViewerLease|null;readonly pages:readonly BrowserViewerPage[]};
  ticket:ResponseBase&{readonly requestId:string;readonly ticket:string;readonly expiresAtMs:number};
  connect:ResponseBase&{readonly requestId:string;readonly state:'user';readonly lease:BrowserViewerLease};
  frame:ResponseLease&{readonly frame:BrowserViewerFrame};input:ResponseLease&{readonly accepted:true};release:ResponseLease&{readonly state:'returning'};
@@ -31,3 +32,4 @@ export declare function receiveBrowserViewerRequest<R extends BrowserViewerRoute
 export declare function receiveBrowserViewerResponse<R extends BrowserViewerRoute>(route:R,status:number,bytes:Uint8Array,request:BrowserViewerRequestMap[R],expected:BrowserViewerContext):BrowserViewerResponseMap[R]|BrowserViewerFailure;
 export declare function sameBrowserViewerContext(a:BrowserViewerContext,b:BrowserViewerContext):boolean;
 export declare function browserViewerPng(frame:BrowserViewerFrame):Uint8Array;
+export declare function browserTakeoverBinding(value:BrowserViewerResponseMap['read']):Readonly<RunBinding>;

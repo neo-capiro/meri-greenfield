@@ -9,13 +9,13 @@
     },
     {
       "path": "browser-viewer/api.d.ts",
-      "sha256": "580998033d9e8f25221dc7f0e97d35b0ea09d0668500a8349a1584b05e50899c",
-      "bytes": 3642
+      "sha256": "24b57d7b2d153731e44efa36ba1ce155143182ed428428b8b5bbade9e0c5b108",
+      "bytes": 3918
     },
     {
       "path": "browser-viewer/receive.mjs",
-      "sha256": "551442053bc109349d41aed0f5b4f3cbe4c53a3d2bfadede135eaef575d4ff9f",
-      "bytes": 7288
+      "sha256": "f1ae36cad2ee20969ee5ac32656d7029bfe6154f47fe3b34970748d6245ce026",
+      "bytes": 8120
     },
     {
       "path": "document-application/boundary.mjs",

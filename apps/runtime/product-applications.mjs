@@ -33,13 +33,14 @@ const capturedArtifactRecovery=new WeakMap();
 export function readRuntimeArtifactRecovery(ports){if(!capturedPorts.has(ports))throw fault('PRODUCT_PORTS_CONFIGURATION');return capturedArtifactRecovery.get(ports.artifactStore)??null;}
 export function captureRuntimePorts(value={}){
  if(capturedPorts.has(value))return value;
- const c=own(value,[],['executionOwner','objectiveSelection','identityContext','transitionAuthority','continuationAdmission','approvals','actionApplication','actionApplicationFactory','taskCommandApplication','taskCommandApplicationFactory','routinesApplicationFactory','uploadApplicationFactory','conversationMembership','conversationCurrentness','conversationManagement','conversationSourceReader','conversationTurns','artifactOptionsOwner','selectedController','sdkSessionOwner','sdkSessionSnapshot','selectedSkillAdmission','selectedOutputPublication','procedureAdmission','siteWorkflowAdmission','artifactStore','retentionLedgerSink','retentionStorage','intentApplication','settingsApplication','memoryApplication']);
+ const c=own(value,[],['executionOwner','objectiveSelection','identityContext','transitionAuthority','continuationAdmission','approvals','actionApplication','actionApplicationFactory','taskCommandApplication','taskCommandApplicationFactory','routinesApplicationFactory','uploadApplicationFactory','conversationMembership','conversationCurrentness','conversationManagement','conversationSourceReader','conversationTurns','artifactOptionsOwner','selectedController','sdkSessionOwner','sdkSessionSnapshot','selectedSkillAdmission','selectedOutputPublication','procedureAdmission','siteWorkflowAdmission','artifactStore','retentionLedgerSink','retentionStorage','intentApplication','settingsApplication','memoryApplication','browserHosts']);
  if(c.taskCommandApplication!==undefined&&c.taskCommandApplicationFactory!==undefined)throw fault('PRODUCT_PORTS_CONFIGURATION');
  if(c.actionApplication!==undefined&&c.actionApplicationFactory!==undefined)throw fault('PRODUCT_PORTS_CONFIGURATION');
  const methods=(port,names)=>Object.freeze(Object.fromEntries(names.map(name=>[name,storageMethod(port,name)])));
  const optionalMethod=(port,name)=>{let cursor=port;for(let depth=0;cursor!==null&&depth<32;depth++){if(types.isProxy(cursor))throw fault('PRODUCT_PORTS_CONFIGURATION');if(Object.getOwnPropertyDescriptor(cursor,name))return storageMethod(port,name);cursor=Object.getPrototypeOf(cursor);}if(cursor!==null)throw fault('PRODUCT_PORTS_CONFIGURATION');};
  const identity=c.identityContext===undefined?Object.freeze({verifyIdentity:async()=>{throw fault('NATIVE_AUTHORITY_UNAVAILABLE');},resolveContext:async()=>{throw fault('NATIVE_AUTHORITY_UNAVAILABLE');}}):methods(c.identityContext,['verifyIdentity','resolveContext']);
  const transitionResolver=c.identityContext===undefined?undefined:optionalMethod(c.identityContext,'resolveTransitionContext'),transitionContext=transitionResolver===undefined?{}:{resolveTransitionContext:transitionResolver};
+ const browserResolver=c.identityContext===undefined?undefined:optionalMethod(c.identityContext,'resolveBrowserContext');
  const authorityScope=c.identityContext===undefined?undefined:optionalMethod(c.identityContext,'withAuthority');
  const artifactStore=c.artifactStore===undefined?undefined:Object.freeze({...methods(c.artifactStore,['verifyPrivate']),...(c.artifactStore.objects===undefined?{}:{objects:methods(c.artifactStore.objects,['put','get'])})});
  const routineFactory=c.routinesApplicationFactory===undefined?undefined:methods(c.routinesApplicationFactory,['create','state']);
@@ -49,7 +50,7 @@ export function captureRuntimePorts(value={}){
  const captured=Object.freeze({
   configuredOwners:Object.freeze(Object.keys(c).filter(k=>c[k]!==undefined)),
   ...(c.executionOwner===undefined?{}:{executionOwner:methods(c.executionOwner,['authenticate'])}),
-  identityContext:Object.freeze({...identity,...transitionContext,...(authorityScope?{withAuthority:authorityScope}:{})}),
+  identityContext:Object.freeze({...identity,...transitionContext,...(browserResolver?{resolveBrowserContext:browserResolver}:{}),...(authorityScope?{withAuthority:authorityScope}:{})}),
   ...(c.transitionAuthority===undefined?{}:{transitionAuthority:methods(c.transitionAuthority,['readCurrent'])}),
   ...(c.continuationAdmission===undefined?{}:{continuationAdmission:methods(c.continuationAdmission,['admit','retire'])}),
   ...(c.approvals===undefined?{}:{approvals:methods(c.approvals,['read','readDecision'])}),
@@ -82,6 +83,7 @@ export function captureRuntimePorts(value={}){
   ...(c.intentApplication===undefined?{}:{intentApplication:methods(c.intentApplication,['handle'])}),
   ...(c.settingsApplication===undefined?{}:{settingsApplication:methods(c.settingsApplication,['handle'])}),
   ...(c.memoryApplication===undefined?{}:{memoryApplication:methods(c.memoryApplication,['handle'])}),
+  ...(c.browserHosts===undefined?{}:{browserHosts:methods(c.browserHosts,['read','prepareResume','execute'])}),
  });
  capturedPorts.add(captured);return captured;
 }

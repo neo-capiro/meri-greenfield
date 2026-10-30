@@ -1,3 +1,5 @@
+import {createBrowserViewerApplication} from '../control/browser-viewer/application.mjs';
+import {createBrowserViewerHttp} from '../control/browser-viewer/http.mjs';
 /** Trusted control composition. Single preview replica; source connectivity disabled. */
 import {Pool} from 'pg';
 import {createTurnTelemetry} from './telemetry/turn-context.mjs';
@@ -7,7 +9,7 @@ import {createPostgresConversationStore} from '../control/conversations/postgres
 import {documentRevisionSourceFor,selectedDocumentRevisionSourceFor} from './artifacts/intent-binding.mjs';
 import {createConversationService} from '../control/conversations/service.mjs';
 import {createTemporalConversationDispatcher} from '../control/conversations/temporal-dispatch.mjs';
-import {createActionSessionOwner} from '../control/action-host/session/owner.mjs';
+import {createActionSessionOwner,browserSessionAccess} from '../control/action-host/session/owner.mjs';
 import {createActionSessionApplication} from '../control/action-host/session/http.mjs';
 import {readSecret,fault,compileControlUserPreferencesConfiguration} from './config.mjs';
 import {readRuntimeTemporalTls as temporalTls} from './temporal-tls.mjs';
@@ -120,7 +122,7 @@ export function assembleControl(options){
  const store=createPostgresConversationStore({pool,now,modelCatalog:configuration.models,onPublished:event=>{turnTelemetry.bind(event.binding);turnTelemetry.summary(event);},...(retention?{retentionGate:retention.gate,retentionHead:retention.startup.ledger?.head}:{}),
   ...(ports.transitionAuthority?{transitionAuthority:ports.transitionAuthority}:{}),...(ports.conversationManagement?{assertConversationActive:ports.conversationManagement.assertActiveBinding}:{})});
  const management=ports.routinesApplicationFactory?.managementSessionConfiguration?.();
- const sessions=createActionSessionOwner({mode:'process-local',verifyIdentity:ports.identityContext.verifyIdentity,resolveContext:ports.identityContext.resolveContext,...(ports.identityContext.withAuthority?{withAuthority:ports.identityContext.withAuthority}:{}),...(management?{management}:{}),now,...(ports.conversationMembership?{membership:ports.conversationMembership}:{}),...(ports.transitionAuthority?{
+ const sessions=createActionSessionOwner({mode:'process-local',verifyIdentity:ports.identityContext.verifyIdentity,resolveContext:ports.identityContext.resolveContext,...(ports.identityContext.resolveBrowserContext?{resolveBrowserContext:ports.identityContext.resolveBrowserContext}:{}),...(ports.identityContext.withAuthority?{withAuthority:ports.identityContext.withAuthority}:{}),...(management?{management}:{}),now,...(ports.conversationMembership?{membership:ports.conversationMembership}:{}),...(ports.transitionAuthority?{
   readTransition:({signal,...input})=>store.lifecycle.readTransition({...input,signal},()=>signal?.throwIfAborted()),
   resolveTransitionContext:ports.identityContext.resolveTransitionContext,
  }:{}),limits:{maxSessions:configuration.sessions.maxSessions,maxRequestMs:configuration.limits.requestMs,maxTtlMs:configuration.sessions.maxTtlMs,maxFactBytes:131072}});
@@ -138,9 +140,11 @@ export function assembleControl(options){
  if(selected)ports=composeRuntimePorts(ports,selected.ports);
  const uploadInputSource=ports.uploadApplicationFactory?.createSource?.({sessions,retention:retention?.gate,conversationStore:store});
  const basic=createConversationService({uploadInputSource,sessions,store,dispatcher,versions:configuration.versions,modelCatalog:configuration.models,now,maxRequestMs:configuration.limits.requestMs,...(capabilityPolicy?{capabilityPolicy,readCapabilityRole}:{}),...(ports.selectedSkillAdmission?{selectedSkillAdmission:ports.selectedSkillAdmission}:{}),...(ports.selectedOutputPublication?{selectedOutputPublication:ports.selectedOutputPublication}:{}),...(ports.procedureAdmission?{procedureAdmission:ports.procedureAdmission}:{}),...(ports.siteWorkflowAdmission?{siteWorkflowAdmission:ports.siteWorkflowAdmission}:{}),...(retention?{retention:retention.gate}:{})});
- const rawService=createConversationLifecycleService({service:basic,store,dispatcher,sessions,now,maxRequestMs:configuration.limits.requestMs,reconcileOriginal:createOriginalReconciler({native,now,timeoutMs:configuration.limits.requestMs}),nativeAdmission:ports.continuationAdmission,approvals:ports.approvals,retention:retention?retention.gate:null});
+ const rawService=createConversationLifecycleService({service:basic,...(ports.browserHosts?{browserHosts:ports.browserHosts}:{}),store,dispatcher,sessions,now,maxRequestMs:configuration.limits.requestMs,reconcileOriginal:createOriginalReconciler({native,now,timeoutMs:configuration.limits.requestMs}),nativeAdmission:ports.continuationAdmission,approvals:ports.approvals,retention:retention?retention.gate:null});
  const observedInput=Object.fromEntries(['allocateInput','admitInput','submit'].map(name=>[name,async input=>turnTelemetry.provisional(async()=>{const value=await rawService[name](input);try{const binding=value.run?.binding??value.allocation?.binding;if(binding){turnTelemetry.bind(binding);if(name==='submit')turnTelemetry.stage(binding,'send.submit.accepted');}}catch{}return value;})]));
  const service=Object.freeze({...rawService,...observedInput});
+ const browserViewer=createBrowserViewerHttp({application:createBrowserViewerApplication({lifecycle:service,transport:ports.browserHosts??{execute:async()=>{throw fault('UNAVAILABLE');}},now}),now,maxRequestMs:Math.min(configuration.limits.requestMs,30000)});
+ const browserIssuance=createActionSessionApplication({owner:{issue:async q=>(await browserSessionAccess(sessions).issue(q)).receipt},sessionPath:'/api/action-followthrough/browser-session',now,maxRequestMs:Math.min(configuration.limits.requestMs,30000)});
  // Private runtime traffic uses the same domain/store owners with a request-bound execution
  // observation. User sessions and Core remain on public admission and business-data paths.
  const createWorkerService=({credential,binding})=>{
@@ -158,7 +162,7 @@ export function assembleControl(options){
  const uploadTables=Object.freeze(ports.uploadApplicationFactory?.state()==='composed'?['meri_uploads.originals']:[]);
  const memoryTables=ports.memoryApplication?MEMORY_TABLES:Object.freeze([]);
  if(!injectedTurnTelemetry)turnTelemetry.start();
- return Object.freeze({service,store,sessions,retention,objectiveReadback,approvalMetadataReadback,userPreferences,intentTables,memoryTables,uploadTables,productReadiness:()=>productReadiness({ports,retention,memoryRetentionBound,sourceEnabled:configuration.sourceEnabled,userPreferences:userPreferences.state()}),downloads:products.downloads,application:{handle:request=>turnTelemetry.provisional(()=>{const product=products.handle(request);if(product!==null)return product;const path=new URL(request.url).pathname;return Object.values(RUNNER_INTENT_PATHS).includes(path)?nativeIntents.handle(request):path==='/api/action-followthrough/session'?issuance.handle(request):path==='/api/conversations/input/admit'?input.handle(request):path===conversationInitialInputMetadata.routes.allocate.path?initialInput.handle(request):path.startsWith('/internal/')?worker.handle(request):conversation.handle(request);})},async close(){try{await selected?.close();}finally{userPreferences.close();if(!injectedTurnTelemetry)turnTelemetry.close();await sessions.close();}}});
+ return Object.freeze({service,store,sessions,retention,objectiveReadback,approvalMetadataReadback,userPreferences,intentTables,memoryTables,uploadTables,productReadiness:()=>productReadiness({ports,retention,memoryRetentionBound,sourceEnabled:configuration.sourceEnabled,userPreferences:userPreferences.state()}),downloads:products.downloads,application:{handle:request=>turnTelemetry.provisional(()=>{const product=products.handle(request);if(product!==null)return product;const path=new URL(request.url).pathname;return path.startsWith('/api/meri/browser/')?browserViewer.handle(request):path==='/api/action-followthrough/browser-session'?browserIssuance.handle(request):Object.values(RUNNER_INTENT_PATHS).includes(path)?nativeIntents.handle(request):path==='/api/action-followthrough/session'?issuance.handle(request):path==='/api/conversations/input/admit'?input.handle(request):path===conversationInitialInputMetadata.routes.allocate.path?initialInput.handle(request):path.startsWith('/internal/')?worker.handle(request):conversation.handle(request);})},async close(){try{await selected?.close();}finally{userPreferences.close();if(!injectedTurnTelemetry)turnTelemetry.close();await sessions.close();}}});
 }
 export async function startControl(configuration,options={}){
  // Validate compiled bindings before secret reads, connections or owned allocation.

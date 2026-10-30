@@ -9,7 +9,7 @@ export async function generateLifecycleContracts({check=false}={}){
  const [{default:Ajv},{default:formats},{default:standalone},{build},{compile}]=await Promise.all([import('ajv/dist/2020.js'),import('ajv-formats'),import('ajv/dist/standalone/index.js'),import('esbuild'),import('json-schema-to-typescript')]);
  const originals=new Map(),sources=new Map();
  for(const folder of [''])for(const name of await readdir(new URL(folder,HERE))){if(!name.endsWith('.schema.json'))continue;const path=folder+name,raw=await readFile(new URL(path,HERE)),schema=JSON.parse(raw);originals.set(schema.$id,{schema,path,sha256:hash(raw),bytes:raw.length});}
- for(const path of ['../../apps/control/conversations/lifecycle/service.mjs','../../apps/control/conversations/lifecycle/http.mjs','conversation-lifecycle/protocol.mjs','conversation-lifecycle/schema.mjs','conversation-lifecycle/validate.mjs','conversation-lifecycle/shape.mjs','conversation-lifecycle/receive.mjs','document-application/boundary.mjs','dist/conversation-application.mjs']){const raw=await readFile(new URL(path,HERE));sources.set(path,{path,sha256:hash(raw),bytes:raw.length});}
+ for(const path of ['../../apps/control/conversations/lifecycle/service.mjs','../../apps/control/conversations/lifecycle/http.mjs','conversation-lifecycle/protocol.mjs','conversation-lifecycle/schema.mjs','conversation-lifecycle/validate.mjs','conversation-lifecycle/shape.mjs','conversation-lifecycle/receive.mjs','document-application/boundary.mjs','dist/conversation-application.mjs','dist/browser-viewer.mjs']){const raw=await readFile(new URL(path,HERE));sources.set(path,{path,sha256:hash(raw),bytes:raw.length});}
  const root=lifecycleSchema(),defs={},seen=new Map();
  function transform(value,owner){if(Array.isArray(value))return value.map(v=>transform(v,owner));if(!value||typeof value!=='object')return value;
   const out={};for(const [key,v]of Object.entries(value)){if(key==='$ref'){
@@ -24,17 +24,19 @@ export async function generateLifecycleContracts({check=false}={}){
  const exportNames=['validateControlRequest','validateControlReceipt','validateInspectionRequest','validateInspectionReceipt','validateError'],exports={};
  names.forEach((name,i)=>{const ref=root.$id+'#/$defs/'+name;ajv.compile({$ref:ref});exports[exportNames[i]]=ref;});
  const generated=standalone(ajv,exports);
- const bundled=await build({absWorkingDir:dir,preserveSymlinks:true,stdin:{contents:await readFile(new URL('conversation-lifecycle/receive.mjs',HERE),'utf8'),sourcefile:'conversation-lifecycle-receiver.mjs',resolveDir:resolve(dir,'conversation-lifecycle')},bundle:true,write:false,platform:'browser',format:'esm',target:'es2022',legalComments:'inline',metafile:true,plugins:[{name:'conversation-generated',setup(b){b.onResolve({filter:/^\.\.\/dist\/conversation-application\.mjs$/},()=>({path:'./conversation-application.mjs',external:true}));b.onResolve({filter:/^\.\/generated-validator\.mjs$/},a=>({path:a.path,namespace:'conversation-generated'}));b.onLoad({filter:/.*/,namespace:'conversation-generated'},()=>({contents:generated,resolveDir:dir,loader:'js'}));}}]});
- if(Object.values(bundled.metafile.outputs).some(o=>o.imports.some(i=>i.path!=='./conversation-application.mjs')))throw Error('Conversation browser external import');
+ const bundled=await build({absWorkingDir:dir,preserveSymlinks:true,stdin:{contents:await readFile(new URL('conversation-lifecycle/receive.mjs',HERE),'utf8'),sourcefile:'conversation-lifecycle-receiver.mjs',resolveDir:resolve(dir,'conversation-lifecycle')},bundle:true,write:false,platform:'browser',format:'esm',target:'es2022',legalComments:'inline',metafile:true,plugins:[{name:'conversation-generated',setup(b){b.onResolve({filter:/^\.\.\/dist\/(conversation-application|browser-viewer)\.mjs$/},a=>({path:'./'+a.path.split('/').at(-1),external:true}));b.onResolve({filter:/^\.\/generated-validator\.mjs$/},a=>({path:a.path,namespace:'conversation-generated'}));b.onLoad({filter:/.*/,namespace:'conversation-generated'},()=>({contents:generated,resolveDir:dir,loader:'js'}));}}]});
+ if(Object.values(bundled.metafile.outputs).some(o=>o.imports.some(i=>!['./conversation-application.mjs','./browser-viewer.mjs'].includes(i.path))))throw Error('Conversation browser external import');
  const declarations=await compile({title:'ConversationLifecycleEnvelope',anyOf:names.map(name=>({$ref:'#/$defs/'+name})),$defs:root.$defs},'ConversationLifecycleEnvelope',{bannerComment:'// Generated from canonical lifecycle receiving schema. No authorization implied.',additionalProperties:false,style:{singleQuote:true}});
  const api=`
 import type {AdmittedConversationView} from './conversation-application.js';
+import type {BrowserViewerResponseMap} from './browser-viewer.js';
 export type ConversationLifecycleRoute='control'|'inspect';
 declare const admittedLifecycleRequest:unique symbol;
 export interface ConversationLifecycleRequestMap {control:ConversationLifecycleControlRequest;inspect:ConversationCheckpointInspectionRequest;}
 export type AdmittedConversationLifecycleRequest<R extends ConversationLifecycleRoute>=Readonly<ConversationLifecycleRequestMap[R]>&{readonly [admittedLifecycleRequest]:R};
 export interface ConversationLifecycleResponseMap {control:Readonly<ConversationLifecycleControlReceipt>;inspect:Readonly<ConversationCheckpointInspectionReceipt>;}
 export type ConversationLifecycleResponse<R extends ConversationLifecycleRoute>=ConversationLifecycleResponseMap[R]|ConversationLifecycleErrorResponse;
+export declare function receiveBrowserTakeoverControlResponse(httpStatus:number,utf8Bytes:Uint8Array,request:AdmittedConversationLifecycleRequest<'control'>,currentBrowser:BrowserViewerResponseMap['read']):Promise<ConversationLifecycleResponse<'control'>>;
 export declare class ConversationLifecycleResponseError extends Error {readonly code:string;}
 export declare const conversationLifecycleMetadata: ${JSON.stringify(conversationLifecycleMetadata,null,2)};
 export declare function receiveConversationLifecycleRequest<R extends ConversationLifecycleRoute>(route:R,utf8Bytes:Uint8Array):AdmittedConversationLifecycleRequest<R>;

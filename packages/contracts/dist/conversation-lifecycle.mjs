@@ -252,6 +252,7 @@ async function digest(bytes) {
 
 // conversation-lifecycle/conversation-lifecycle-receiver.mjs
 import { createConversationCursor } from "./conversation-application.mjs";
+import { browserTakeoverBinding } from "./browser-viewer.mjs";
 
 // conversation-generated:./generated-validator.mjs
 var validateControlRequest = validate30;
@@ -2955,13 +2956,26 @@ function receiveConversationLifecycleRequest(route, bytes) {
   return request;
 }
 async function receiveConversationLifecycleResponse(route, httpStatus, bytes, request, currentView) {
-  routeValidator(route);
-  if (requests.get(request) !== route) fail2("UNADMITTED_REQUEST");
   try {
     createConversationCursor(currentView);
   } catch {
     fail2("UNADMITTED_VIEW");
   }
+  return receiveBoundResponse(route, httpStatus, bytes, request, currentView.run.binding, currentView.lastSequence);
+}
+async function receiveBrowserTakeoverControlResponse(httpStatus, bytes, request, currentBrowser) {
+  let binding;
+  try {
+    binding = browserTakeoverBinding(currentBrowser);
+  } catch {
+    fail2("UNADMITTED_VIEW");
+  }
+  if (request?.intent !== "takeover.end") fail2("INVALID_REQUEST");
+  return receiveBoundResponse("control", httpStatus, bytes, request, binding, Infinity);
+}
+async function receiveBoundResponse(route, httpStatus, bytes, request, binding, lastSequence) {
+  routeValidator(route);
+  if (requests.get(request) !== route) fail2("UNADMITTED_REQUEST");
   if (!Number.isInteger(httpStatus) || httpStatus < 100 || httpStatus > 599) fail2("INVALID_STATUS");
   const result = parse(bytes, conversationLifecycleMetadata.limits.responseBytes);
   if (httpStatus !== 200) {
@@ -2969,9 +2983,9 @@ async function receiveConversationLifecycleResponse(route, httpStatus, bytes, re
     return result;
   }
   if (!(route === "control" ? validateControlReceipt : validateInspectionReceipt)(result)) fail2("INVALID_RESPONSE");
-  if (!same(result.sourceBinding, currentView.run.binding)) fail2("VIEW_MISMATCH");
+  if (!same(result.sourceBinding, binding)) fail2("VIEW_MISMATCH");
   if (route === "inspect") {
-    if (result.checkpointId !== request.checkpointId || result.lastEventSequence > currentView.lastSequence) fail2("CHECKPOINT_MISMATCH");
+    if (result.checkpointId !== request.checkpointId || result.lastEventSequence > lastSequence) fail2("CHECKPOINT_MISMATCH");
     return result;
   }
   if (result.controlId !== request.controlId || result.intent !== request.intent || result.inputSha256 !== await digest(new TextEncoder().encode(canonicalize(request)))) fail2("REQUEST_MISMATCH");
@@ -2988,6 +3002,7 @@ async function receiveConversationLifecycleResponse(route, httpStatus, bytes, re
 export {
   ConversationLifecycleResponseError,
   conversationLifecycleMetadata,
+  receiveBrowserTakeoverControlResponse,
   receiveConversationLifecycleRequest,
   receiveConversationLifecycleResponse
 };

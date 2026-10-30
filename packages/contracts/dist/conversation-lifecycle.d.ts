@@ -106,12 +106,14 @@ export interface ConversationLifecycleErrorResponse {
 }
 
 import type {AdmittedConversationView} from './conversation-application.js';
+import type {BrowserViewerResponseMap} from './browser-viewer.js';
 export type ConversationLifecycleRoute='control'|'inspect';
 declare const admittedLifecycleRequest:unique symbol;
 export interface ConversationLifecycleRequestMap {control:ConversationLifecycleControlRequest;inspect:ConversationCheckpointInspectionRequest;}
 export type AdmittedConversationLifecycleRequest<R extends ConversationLifecycleRoute>=Readonly<ConversationLifecycleRequestMap[R]>&{readonly [admittedLifecycleRequest]:R};
 export interface ConversationLifecycleResponseMap {control:Readonly<ConversationLifecycleControlReceipt>;inspect:Readonly<ConversationCheckpointInspectionReceipt>;}
 export type ConversationLifecycleResponse<R extends ConversationLifecycleRoute>=ConversationLifecycleResponseMap[R]|ConversationLifecycleErrorResponse;
+export declare function receiveBrowserTakeoverControlResponse(httpStatus:number,utf8Bytes:Uint8Array,request:AdmittedConversationLifecycleRequest<'control'>,currentBrowser:BrowserViewerResponseMap['read']):Promise<ConversationLifecycleResponse<'control'>>;
 export declare class ConversationLifecycleResponseError extends Error {readonly code:string;}
 export declare const conversationLifecycleMetadata: {
   "packageVersion": "0.1.4",
