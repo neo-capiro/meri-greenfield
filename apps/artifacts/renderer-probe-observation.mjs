@@ -223,26 +223,35 @@ export function readBoundedInput({readSync,fd=0,maxBytes=65536,chunkSize=4096}={
 /** Pure visible cgroup view with the established v1/fixed-path fallback. A resolved cgroup2 mapping supplies the
  * ancestor-aware values and the changed-identity refusal. When cgroup2 cannot be mapped, the prior fixed controller
  * files are returned so the shared renderer's v1 observation path still works; no hidden ancestor is inferred. */
+/** A well-formed stable v1 membership has at least one `id:controller-list:/path` record, no unified `0::` line,
+ * no raw CR anywhere and no empty controller list. Absence of a valid-looking unified line alone is not v1 proof. */
+function v1Membership(text){
+ if(typeof text!=='string'||text.length===0||text.includes('\r'))return false;
+ const lines=text.split('\n').filter(line=>line.length>0);
+ if(lines.length===0)return false;
+ return lines.every(line=>/^[0-9]+:[^:\r\n]+:\/[^\r\n]*$/u.test(line));
+}
 export function observeProbeCgroup({read}={}){
  const unknown=source=>Object.freeze({memoryMax:null,pidsMax:null,cpuMax:null,levels:0,mountRootIsRoot:false,
-  membershipResolved:false,identityChanged:source==='identity-changed',source});
+  membershipResolved:false,identityChanged:false,source});
  if(typeof read!=='function')return unknown('none');
  const self=read('/proc/self/cgroup'),mountinfo=read('/proc/self/mountinfo');
  const path=parseCgroupPath(self),mount=parseCgroupMount(mountinfo);
  const key=(p,m)=>p===null||m===null?null:[p,m.id,m.majorMinor,m.root,m.fstype].join('\0');
  const before=key(path,mount);
  const values=path===null||mount===null?null:resolveEffectiveCgroup({cgroupPath:path,mountRoot:mount.root,mount:CGROUP_MOUNT,read});
- const afterPath=parseCgroupPath(read('/proc/self/cgroup')),afterMount=parseCgroupMount(read('/proc/self/mountinfo'));
- const changed=before!==key(afterPath,afterMount);
- // A changed membership/mount can never attribute the values read below it, even to a fixed root. An explicit
- // unified 0:: record that cannot be mapped and a mapped membership with no usable cgroup2 mount are also failed
- // mappings, not stable v1: their values are unknown/null rather than rescued from fixed controller files.
- const unified=typeof self==='string'&&self.split('\n').some(line=>!line.includes('\r')&&line.startsWith('0::'));
- if(changed)return unknown('identity-changed');
- if(unified&&(path===null||mount===null||values===null))return unknown('mapping-failed');
+ const afterSelf=read('/proc/self/cgroup'),afterPath=parseCgroupPath(afterSelf),afterMount=parseCgroupMount(read('/proc/self/mountinfo'));
+ const changed=self!==afterSelf||before!==key(afterPath,afterMount);
+ if(changed)return Object.freeze({...unknown('identity-changed'),identityChanged:true});
+ // A unified record exists only when a non-CR `0::` line is present. Rejected/raw-CR, unreadable, empty, malformed
+ // and ambiguous membership cannot be reinterpreted as stable v1; only a positively valid v1 record may fall back.
+ const unifiedLines=typeof self==='string'?self.split('\n').filter(line=>line.startsWith('0::')).length:0;
+ const unified=unifiedLines>0;
+ if(unified&&(unifiedLines!==1||path===null||mount===null||values===null))return unknown('mapping-failed');
  if(values!==null)return Object.freeze({memoryMax:values.memoryMax,pidsMax:values.pidsMax,cpuMax:values.cpuMax,
   levels:values.levels,mountRootIsRoot:values.mountRootIsRoot===true,membershipResolved:true,identityChanged:false,source:'cgroup2'});
- // Genuine v1: no unified 0:: membership record. The established fixed-path fallback remains valid only here.
+ if(!v1Membership(self)||!v1Membership(afterSelf))return unknown('unknown');
+ // Genuine stable v1: a positively valid v1 membership recorded twice. The fixed-path fallback is valid only here.
  const first=names=>{for(const name of names){const v=read(CGROUP_MOUNT+'/'+name);if(typeof v==='string')return v.trim();}return null;};
  return Object.freeze({memoryMax:first(CGROUP_V1_FILES.memoryMax),pidsMax:first(CGROUP_V1_FILES.pidsMax),cpuMax:first(CGROUP_V1_FILES.cpuMax),
   levels:0,mountRootIsRoot:false,membershipResolved:false,identityChanged:false,source:'v1-fallback'});

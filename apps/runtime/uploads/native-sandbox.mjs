@@ -197,6 +197,7 @@ const limitStateProjection=state=>{
 };
 const limitPairProjection=pair=>pair===null||typeof pair!=='object'?null:Object.freeze({
  soft:limitStateProjection(pair.soft),hard:limitStateProjection(pair.hard)});
+const SOURCE_LABELS=Object.freeze(['none','cgroup2','v1-fallback','identity-changed','mapping-failed','unknown']);
 /** Minimal allowlisted observation projection through the qualifier: process-limit states and the child cgroup
  * mapping/source flags, never raw proc text, environment, credential paths or invented finite values. */
 export function projectObservation(observation){
@@ -209,7 +210,7 @@ export function projectObservation(observation){
    MaxOpenFiles:limitPairProjection(limits.MaxOpenFiles),
    MaxProcesses:limitPairProjection(limits.MaxProcesses)}),
   cgroup:Object.freeze({
-   source:typeof cg.source==='string'?cg.source:null,
+   source:typeof cg.source==='string'&&SOURCE_LABELS.includes(cg.source)?cg.source:null,
    membershipResolved:cg.membershipResolved===true,
    identityChanged:cg.identityChanged===true,
    levels:Number.isSafeInteger(cg.levels)&&cg.levels>=0?cg.levels:0,

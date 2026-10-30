@@ -10,6 +10,7 @@ import {RENDERER_PROBE_SCHEMA,RENDERER_CHILD_ENV} from '../../../artifacts/rende
 import {UPLOAD_SANDBOX_REQUIREMENTS,UPLOAD_ROLE_PREFIX,UPLOAD_IMAGE_PATHS,UPLOAD_CHILD_ENV,evaluateUploadSandbox,qualifyNativeUploadSandbox,
  resolveEffectiveCgroup,combineCgroupBounds,parseCgroupPath,parseCgroupMountRoot,readHostCgroup,
  uploadSandboxArguments,uploadScanArguments,uploadExtractArguments,runUploadSandbox} from '../native-sandbox.mjs';
+import {observeProbeCgroup,CGROUP_MOUNT} from '../../../artifacts/renderer-probe-observation.mjs';
 
 const ZERO='0'.repeat(16),DIGEST='sha256:'+'a'.repeat(64),ROOT=UPLOAD_IMAGE_PATHS.tempRoot;
 const sandboxed=(cwd,changes={})=>({schema:RENDERER_PROBE_SCHEMA,platform:'linux',uid:[1000,1000,1000,1000],gid:[1000,1000,1000,1000],noNewPrivs:1,
@@ -378,6 +379,24 @@ test('the qualifier keeps identity/mapping refusals and exposes the allowlisted 
  const stableV2=await qualifyNativeUploadSandbox({...bound,imageDigest:DIGEST,deadlineMs:Date.now()+30000,tempRoot:root,run:make(v2),hostCgroup:host});
  assert.equal(stableV2.admitted,true);assert.equal(stableV2.observation.cgroup.membershipResolved,true);
  assert.equal(stableV2.observation.cgroup.source,'cgroup2');
+ const mount='36 35 0:30 / /sys/fs/cgroup rw - cgroup2 cgroup2 rw\n';
+ const rootFiles={[CGROUP_MOUNT+'/cgroup.controllers']:'',[CGROUP_MOUNT+'/memory.max']:'1073741824',
+  [CGROUP_MOUNT+'/pids.max']:'64',[CGROUP_MOUNT+'/cpu.max']:'50000 100000'};
+ const view=self=>observeProbeCgroup({read:path=>path==='/proc/self/cgroup'?self:
+  (path==='/proc/self/mountinfo'?mount:(rootFiles[path]??null))});
+ for(const [label,self] of [['unreadable',null],['empty',''],['raw-CR-unified','0::/b\r\n'],
+  ['malformed-v1','1:memory:relative\n'],['ambiguous-unified','0::/b\n0::/c\n']]){
+  const refused=await qualifyNativeUploadSandbox({...bound,imageDigest:DIGEST,deadlineMs:Date.now()+30000,tempRoot:root,
+   run:make(view(self)),hostCgroup:host});
+  assert.equal(refused.admitted,false,`${label} must not be admitted`);
+  assert.equal(refused.evaluation.sandbox.boundedResources,false,`${label} cannot use finite root/host values`);
+  assert.deepEqual(refused.diagnostic.resources,{memoryMax:null,pidsMax:null,cpuMax:null});
+  assert.ok(['unknown','mapping-failed'].includes(refused.observation.cgroup.source),`${label} keeps an honest marker`);
+ }
+ const arbitrary=await qualifyNativeUploadSandbox({...bound,imageDigest:DIGEST,deadlineMs:Date.now()+30000,tempRoot:root,
+  run:make({...v2,source:'/fixture/not-a-source-kind'}),hostCgroup:host});
+ assert.equal(arbitrary.observation.cgroup.source,null,'an arbitrary source label is not echoed');
+ assert.equal(JSON.stringify(arbitrary).includes('/fixture/credential'),false,'no credential path is echoed');
 });
 
 test('the real runner refuses to spawn on this non-Linux host',{skip:process.platform==='linux'},async()=>{

@@ -124,4 +124,16 @@ test('probe cgroup view refuses changed identity and failed mapping, and keeps s
  assert.equal(bounded(unrelated),false,'a failed cgroup2 mapping is not a stable v1 fallback');
  const noMount=observeProbeCgroup({read:read({...finiteRoot,'/proc/self/cgroup':'0::/b\n','/proc/self/mountinfo':''})});
  assert.equal(noMount.source,'mapping-failed');assert.equal(noMount.memoryMax,null);assert.equal(bounded(noMount),false);
+ const membership=self=>observeProbeCgroup({read:path=>path==='/proc/self/cgroup'?self:(finiteRoot[path]??(path==='/proc/self/mountinfo'?mount:null))});
+ for(const [label,self] of [['unreadable',null],['empty',''],['raw-CR-unified','0::/b\r\n'],
+  ['malformed-v1','1:memory:relative\n'],['ambiguous-unified','0::/b\n0::/c\n']]){
+  const view=membership(self);
+  assert.deepEqual([view.memoryMax,view.pidsMax,view.cpuMax],[null,null,null],`${label} cannot use finite root values`);
+  assert.equal(bounded(view),false,`${label} must not qualify in the renderer`);
+ }
+ const changedV1=observeProbeCgroup({read:(()=>{const values=['1:memory:/legacy\n','1:memory:/other\n'];const counts=new Map();return path=>{
+  const n=counts.get(path)??0;counts.set(path,n+1);
+  if(path==='/proc/self/cgroup')return values[Math.min(n,values.length-1)];return path==='/proc/self/mountinfo'?mount:(finiteRoot[path]??null);};})()});
+ assert.equal(changedV1.source,'identity-changed');assert.equal(changedV1.identityChanged,true);
+ assert.equal(changedV1.memoryMax,null);assert.equal(bounded(changedV1),false,'a changed v1 membership is not stable v1');
 });
