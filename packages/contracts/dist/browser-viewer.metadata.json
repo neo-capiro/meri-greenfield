@@ -1,0 +1,36 @@
+{
+  "contractVersion": "1.0.0",
+  "schemaId": "meri.browser-viewer/1",
+  "sources": [
+    {
+      "path": "artifacts-0.2/artifact-formats.mjs",
+      "sha256": "4a2e725eb5bb628a66ae06f471741ec1fbb6ce1eb6e3ed842050393d3ab39334",
+      "bytes": 2579
+    },
+    {
+      "path": "browser-viewer/api.d.ts",
+      "sha256": "580998033d9e8f25221dc7f0e97d35b0ea09d0668500a8349a1584b05e50899c",
+      "bytes": 3642
+    },
+    {
+      "path": "browser-viewer/receive.mjs",
+      "sha256": "551442053bc109349d41aed0f5b4f3cbe4c53a3d2bfadede135eaef575d4ff9f",
+      "bytes": 7288
+    },
+    {
+      "path": "document-application/boundary.mjs",
+      "sha256": "3ea0f93063702f161970b8cf1aef5d4a7226400d541a2ae6cf7ae891a3fe0481",
+      "bytes": 2674
+    },
+    {
+      "path": "generate-browser-viewer.mjs",
+      "sha256": "c643868297ed8b7837832d23a516eebcec05387f2c85c5b276dc119ef0dee150",
+      "bytes": 2267
+    },
+    {
+      "path": "node_modules/canonicalize/lib/canonicalize.js",
+      "sha256": "c1d0195af2a0748454b06af8f218e5c90415c19d39154d0058fee8229c12d859",
+      "bytes": 7145
+    }
+  ]
+}
