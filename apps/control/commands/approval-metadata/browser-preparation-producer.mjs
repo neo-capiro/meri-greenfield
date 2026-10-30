@@ -11,7 +11,8 @@
  * Activation stays held: building this producer creates no listener, credential, host or activation.
  */
 import {canonicalSha256} from '../../../../packages/contracts/validate.mjs';
-import {own,data} from '../../../../packages/contracts/commands-0.2/execution-boundary.mjs';
+import {own,data,nativeSignal} from '../../../../packages/contracts/commands-0.2/execution-boundary.mjs';
+import {createOperationLifetime} from '../../../../packages/runtime/operation-lifetime.mjs';
 import {BROWSER_ACTION,BROWSER_ACTION_OPERATION,assertBrowserApprovalRequest,
  browserPreparationFromRequest,browserPreparationProposalId,browserCommandSha256}
  from '../../../../packages/contracts/runtime-0.2/browser-approval-preparation.mjs';
@@ -89,34 +90,47 @@ export function createBrowserPreparationProducer(configuration){
   let request,preparation;
   try{request=assertBrowserApprovalRequest(v.request);preparation=browserPreparationFromRequest(request);}
   catch{throw fail(DENIED);}
+  const signal=nativeSignal(v.signal);
   const binding=data(v.binding);
   if(canonicalSha256(data(request.subject.binding))!==canonicalSha256(data(binding)))throw fail(DENIED);
   if(request.subject.binding.tenantId!==approver.tenantId)throw fail(DENIED);
   const proposalId=browserPreparationProposalId({binding,toolUseId:preparation.subject.toolUseId});
   const requestSha256=canonicalSha256(request);
-  // Identity-only selector: the raw row tells us which command digest to ask the owner for. It is never
-  // treated as authority — owner.read re-resolves authority before AND after the row is read.
-  let raw;
-  try{raw=await store.read({tenantId:binding.tenantId,actorId:binding.actorId,proposalId},
-   ()=>{if(v.signal?.aborted)throw fail('CANCELLED');});}
-  catch{throw fail('BROWSER_APPROVAL_UNKNOWN');}
-  if(raw===null||raw===undefined)throw fail('BROWSER_APPROVAL_UNKNOWN');
-  let commandSha256;
-  try{commandSha256=immutablePayload(raw).commandSha256;}catch{throw fail(DENIED);}
-  boundPreparation=preparation;
-  let record;
+  const at=now(),deadlineMs=v.deadlineMs??at+maxRequestMs;
+  if(!Number.isSafeInteger(at)||!Number.isSafeInteger(deadlineMs)||deadlineMs<=at)throw fail('DEADLINE');
+  // ONE bounded lifetime covers the WHOLE read: the first raw row read, the authority work and the real owner
+  // read. Nothing here can outlive the original deadline or an abort.
+  const life=createOperationLifetime({deadlineMs,now,signal,
+   errorFactory:code=>Object.assign(Error(code),{code})});
   try{
-   record=await owner.read({proposalId,commandSha256,operation:BROWSER_ACTION_OPERATION,action:BROWSER_ACTION,
-    binding,deadlineMs:v.deadlineMs??now()+maxRequestMs,...(v.signal===undefined?{}:{signal:v.signal})});
-  }finally{boundPreparation=null;}
-  // The retained identity is the STORED canonical record: the owner's fresh observation fields are not
-  // allowed to replace it (that would change the fingerprint on every recovery).
-  const stored=(({checkedAtMs:_checked,resolved:_resolved,...canonical})=>canonical)(data(record));
-  let result;
-  try{result=assertBrowserPreparationResult({proposalId,subjectSha256:preparation.subjectSha256,requestSha256,
-   record:stored,recordSha256:canonicalSha256(stored)},{binding,toolUseId:preparation.subject.toolUseId});}
-  catch{throw fail(DENIED);}
-  return result;
+   life.check();
+   // Identity-only selector: it tells us which command digest to ask the owner for. Never authority — the
+   // owner re-resolves authority before AND after the real row read. It IS bounded by this lifetime.
+   let raw;
+   try{raw=await life.run(()=>store.read({tenantId:binding.tenantId,actorId:binding.actorId,proposalId},
+    life.check));}
+   catch(error){if(error?.code==='DEADLINE'||error?.code==='CANCELLED')throw error;
+    throw fail('BROWSER_APPROVAL_UNKNOWN');}
+   if(raw===null||raw===undefined)throw fail('BROWSER_APPROVAL_UNKNOWN');
+   let commandSha256;
+   try{commandSha256=immutablePayload(raw).commandSha256;}catch{throw fail(DENIED);}
+   life.check();
+   boundPreparation=preparation;
+   let record;
+   try{
+    record=await owner.read({proposalId,commandSha256,operation:BROWSER_ACTION_OPERATION,action:BROWSER_ACTION,
+     binding,deadlineMs:Math.min(deadlineMs,life.deadline()),...(signal===undefined?{}:{signal})});
+   }finally{boundPreparation=null;}
+   life.check();
+   // The retained identity is the STORED canonical record: the owner's fresh observation fields are not
+   // allowed to replace it (that would change the fingerprint on every recovery).
+   const stored=(({checkedAtMs:_checked,resolved:_resolved,...canonical})=>canonical)(data(record));
+   const result=assertBrowserPreparationResult({proposalId,subjectSha256:preparation.subjectSha256,requestSha256,
+    record:stored,recordSha256:canonicalSha256(stored)},{binding,toolUseId:preparation.subject.toolUseId});
+   life.check();
+   return result;
+  }catch(error){if(error?.code)throw error;throw fail(DENIED);}
+  finally{life.close();}
  }
  return Object.freeze({prepare,readPrepared,action:BROWSER_ACTION,operation:BROWSER_ACTION_OPERATION});
 }

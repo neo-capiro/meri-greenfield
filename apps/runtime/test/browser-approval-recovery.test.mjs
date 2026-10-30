@@ -74,7 +74,7 @@ function runStore(){
 }
 
 async function fixture(){
- const journal=journalStore(),metadata=await metadataStore();
+ const journal=journalStore(),metadata=await metadataStore(),clock={now:NOW};
  const journalOwner=createExecutionJournal({tx:runStore().tx,rowRun:value=>value,now:()=>NOW});
  const browserPolicy=createRunBrowserPolicy({platform:DEFAULT_BROWSER_PLATFORM,store:{read:async()=>null},now:()=>NOW});
  const browserPolicyValue=await browserPolicy({binding,scopes,actorRole:'standard_user'});
@@ -94,7 +94,7 @@ async function fixture(){
   readBrowserPolicy:async call=>{
    if(authority.policy!==null){const changed=await authority.policy(call);return changed;}
    return browserPolicy(call);},
-  ports:{status:async()=>{},consume:async()=>{}},now:()=>NOW,
+  ports:{status:async()=>{},consume:async()=>{}},now:()=>clock.now,
   limits:{requestMs:3000}});
  const buildDefault=()=>createBrowserApprovalOwner({journal:journalOwner,
   preparations:createBrowserApprovalPreparationOwner({journal:intentJournal}),
@@ -102,9 +102,9 @@ async function fixture(){
   readCapabilityRole:async()=>{if(authority.fail)throw Error('run is cancelled or superseded');
    return {actorRole:authority.role,checkedAtMs:NOW,expiresAtMs:NOW+600000};},
   readBrowserPolicy:async call=>authority.policy!==null?authority.policy(call):browserPolicy(call),
-  ports:{status:async()=>{},consume:async()=>{}},now:()=>NOW,limits:{requestMs:3000}});
- return {journal,metadata,authority,browserPolicyValue,owner:build(),rebuild:build,buildDefault,request,subject,
-  policySha};
+  ports:{status:async()=>{},consume:async()=>{}},now:()=>clock.now,limits:{requestMs:3000}});
+ return {journal,metadata,authority,browserPolicyValue,clock,owner:build(),rebuild:build,buildDefault,request,
+  subject,policySha};
 }
 
 test('a lost metadata COMMIT acknowledgement is recovered from the ACTUAL row by a new owner',async()=>{
@@ -243,4 +243,39 @@ test('a cancelled or superseded run refuses recovery without writing or releasin
   /UNKNOWN|BROWSER_APPROVAL_REFUSED|BROWSER_PREPARATION_AUTHORITY_CHANGED/u);
  assert.equal(f.metadata.base.rows.size,1,'no second metadata write');
  assert.equal([...f.journal.state.rows.values()][0].state,'PENDING','nothing released');
+});
+
+test('a pending FIRST raw read is bounded by the ORIGINAL deadline',{timeout:12000},async()=>{
+ const f=await fixture();
+ // The row exists, but the raw read never replies on its own.
+ const prepared=await f.owner.prepare({request:f.request,binding});
+ const reader=f.metadata.store.read;
+ let release;
+ f.metadata.store.read=async()=>new Promise(resolve=>{release=()=>resolve(reader.call(f.metadata.store,
+  {tenantId:binding.tenantId,actorId:binding.actorId,proposalId:prepared.proposalId},()=>{}));});
+ const pending=f.rebuild().prepare({request:f.request,binding,deadlineMs:NOW+10});
+ // The preparation settles by DEADLINE without any raw reply: the await is inside the lifetime.
+ await assert.rejects(()=>pending,/DEADLINE|UNKNOWN|CANCELLED|BROWSER_APPROVAL_REFUSED/u);
+ release?.(); // a late raw reply must change nothing
+ const state=[...f.journal.state.rows.values()][0].state;
+ assert.equal(state,'PREPARED','the earlier PREPARED delivery is untouched');
+ assert.equal(f.journal.state.rows.size,1,'no second delivery');
+});
+
+test('an abort while the FIRST raw read is pending refuses with no later effect',{timeout:12000},async()=>{
+ const f=await fixture();
+ f.metadata.state.loseInsertAck=true;
+ await assert.rejects(f.owner.prepare({request:f.request,binding}),/UNKNOWN|APPROVAL_METADATA_UNKNOWN/u);
+ const reader=f.metadata.store.read;
+ let release;
+ f.metadata.store.read=async(value,check)=>new Promise(resolve=>{release=()=>resolve(reader(value,check));});
+ const controller=new AbortController();
+ const pending=f.rebuild().prepare({request:f.request,binding,signal:controller.signal});
+ setTimeout(()=>controller.abort(),5);
+ await assert.rejects(()=>pending,/CANCELLED|ABORTED|UNKNOWN|BROWSER_APPROVAL_REFUSED/u);
+ // The held reply arrives AFTER the refusal: it must not settle or release anything.
+ release?.();
+ await new Promise(r=>setTimeout(r,10));
+ assert.equal([...f.journal.state.rows.values()][0].state,'PENDING','nothing released after abort');
+ assert.equal(f.metadata.base.rows.size,1,'no second metadata write');
 });
