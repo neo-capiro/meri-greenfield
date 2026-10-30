@@ -84,6 +84,7 @@ var BROWSER_VIEWER_ERRORS = Object.freeze({
 });
 var requests = /* @__PURE__ */ new WeakMap();
 var frames = /* @__PURE__ */ new WeakMap();
+var reads = /* @__PURE__ */ new WeakMap();
 var uuid = (v) => typeof v === "string" && /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/u.test(v);
 var opaque = (v) => typeof v === "string" && /^[A-Za-z0-9_-]{43}$/u.test(v);
 var integer = (v, min = 1, max = Number.MAX_SAFE_INTEGER) => Number.isSafeInteger(v) && v >= min && v <= max;
@@ -151,6 +152,15 @@ function page(v) {
   }
   if (!uuid(v.pageId) || typeof v.origin !== "string" || origin.origin !== v.origin || !["https:", "http:"].includes(origin.protocol)) fail2();
 }
+function runBinding(v, c) {
+  closed(v, ["tenantId", "actorId", "conversationId", "runId", "attemptId", "workerId", "writerFence"]);
+  if (!["tenantId", "actorId", "conversationId", "runId"].every((k) => v[k] === c[k]) || !uuid(v.attemptId) || !uuid(v.workerId) || !integer(v.writerFence)) fail2();
+}
+function checkpoint(v, c) {
+  if (v === null) return;
+  closed(v, ["checkpointId", "checkpointSha256"]);
+  if (v.checkpointId !== c.runId || typeof v.checkpointSha256 !== "string" || !/^[a-f0-9]{64}$/u.test(v.checkpointSha256)) fail2();
+}
 function frame(v, q) {
   closed(v, ["frameId", "pageId", "width", "height", "image"]);
   closed(v.image, ["mimeType", "data"]);
@@ -179,9 +189,11 @@ function receiveBrowserViewerResponse(route, status, bytes, q, expected) {
   }
   const base = ["schema", "context", "ownerId"];
   if (route === "read") {
-    closed(r, [...base, "state", "lease", "pages"]);
+    closed(r, [...base, "binding", "checkpoint", "state", "lease", "pages"]);
     context(r.context);
     lease(r.lease);
+    runBinding(r.binding, r.context);
+    checkpoint(r.checkpoint, r.context);
     if (!["unavailable", "agent", "taking", "user", "returning", "ended"].includes(r.state) || r.ownerId !== null && !uuid(r.ownerId) || !Array.isArray(r.pages) || r.pages.length > BROWSER_VIEWER_LIMITS.maxPages || new Set(r.pages.map((p) => p.pageId)).size !== r.pages.length) fail2();
     r.pages.forEach(page);
     if (r.state === "user" !== (r.lease !== null) || r.ownerId === null && (["user", "returning"].includes(r.state) || r.pages.length) || r.state !== "user" && r.pages.length) fail2();
@@ -202,6 +214,7 @@ function receiveBrowserViewerResponse(route, status, bytes, q, expected) {
     if (route === "input" && r.accepted !== true || route === "release" && r.state !== "returning") fail2();
   }
   if (r.schema !== BROWSER_VIEWER_SCHEMA || !sameBrowserViewerContext(r.context, expected) || route !== "read" && r.requestId !== q.requestId || q.ownerId !== void 0 && r.ownerId !== q.ownerId) fail2();
+  if (route === "read") reads.set(r, r.binding);
   return r;
 }
 function browserViewerPng(value) {
@@ -209,11 +222,17 @@ function browserViewerPng(value) {
   if (!bytes) fail2();
   return bytes.slice();
 }
+function browserTakeoverBinding(value) {
+  const binding = reads.get(value);
+  if (!binding) fail2();
+  return binding;
+}
 export {
   BROWSER_VIEWER_ERRORS,
   BROWSER_VIEWER_LIMITS,
   BROWSER_VIEWER_ROUTES,
   BROWSER_VIEWER_SCHEMA,
+  browserTakeoverBinding,
   browserViewerPng,
   receiveBrowserViewerRequest,
   receiveBrowserViewerResponse,

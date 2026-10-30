@@ -5,7 +5,7 @@ export const BROWSER_VIEWER_ROUTES=Object.freeze(['read','ticket','connect','fra
 export const BROWSER_VIEWER_LIMITS=Object.freeze({requestBytes:32768,responseBytes:12*1024*1024,pngBytes:8*1024*1024,ticketMs:60000,maxPages:32});
 export const BROWSER_VIEWER_ERRORS=Object.freeze({INVALID_REQUEST:400,UNAUTHENTICATED:401,ACCESS_DENIED:403,NOT_FOUND:404,
  METHOD_NOT_ALLOWED:405,CONFLICT:409,EXPIRED:410,TOO_LARGE:413,UNSUPPORTED_MEDIA_TYPE:415,UNAVAILABLE:503,REFUSED:502});
-const requests=new WeakMap(),frames=new WeakMap();
+const requests=new WeakMap(),frames=new WeakMap(),reads=new WeakMap();
 const uuid=v=>typeof v==='string'&&/^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/u.test(v);
 const opaque=v=>typeof v==='string'&&/^[A-Za-z0-9_-]{43}$/u.test(v);
 const integer=(v,min=1,max=Number.MAX_SAFE_INTEGER)=>Number.isSafeInteger(v)&&v>=min&&v<=max;
@@ -60,6 +60,15 @@ function page(v){
  let origin;try{origin=new URL(v.origin);}catch{fail();}
  if(!uuid(v.pageId)||typeof v.origin!=='string'||origin.origin!==v.origin||!['https:','http:'].includes(origin.protocol))fail();
 }
+function runBinding(v,c){
+ closed(v,['tenantId','actorId','conversationId','runId','attemptId','workerId','writerFence']);
+ if(!['tenantId','actorId','conversationId','runId'].every(k=>v[k]===c[k])||!uuid(v.attemptId)||!uuid(v.workerId)||!integer(v.writerFence))fail();
+}
+function checkpoint(v,c){
+ if(v===null)return;
+ closed(v,['checkpointId','checkpointSha256']);
+ if(v.checkpointId!==c.runId||typeof v.checkpointSha256!=='string'||!/^[a-f0-9]{64}$/u.test(v.checkpointSha256))fail();
+}
 function frame(v,q){
  closed(v,['frameId','pageId','width','height','image']);closed(v.image,['mimeType','data']);
  if(!opaque(v.frameId)||v.pageId!==q.pageId||!integer(v.width,1,4096)||!integer(v.height,1,4096)||v.image.mimeType!=='image/png'||
@@ -82,7 +91,7 @@ export function receiveBrowserViewerResponse(route,status,bytes,q,expected){
  }
  const base=['schema','context','ownerId'];
  if(route==='read'){
-  closed(r,[...base,'state','lease','pages']);context(r.context);lease(r.lease);
+  closed(r,[...base,'binding','checkpoint','state','lease','pages']);context(r.context);lease(r.lease);runBinding(r.binding,r.context);checkpoint(r.checkpoint,r.context);
   if(!['unavailable','agent','taking','user','returning','ended'].includes(r.state)||r.ownerId!==null&&!uuid(r.ownerId)||
    !Array.isArray(r.pages)||r.pages.length>BROWSER_VIEWER_LIMITS.maxPages||new Set(r.pages.map(p=>p.pageId)).size!==r.pages.length)fail();
   r.pages.forEach(page);
@@ -101,6 +110,9 @@ export function receiveBrowserViewerResponse(route,status,bytes,q,expected){
  }
  if(r.schema!==BROWSER_VIEWER_SCHEMA||!sameBrowserViewerContext(r.context,expected)||route!=='read'&&r.requestId!==q.requestId||
   q.ownerId!==undefined&&r.ownerId!==q.ownerId)fail();
+ if(route==='read')reads.set(r,r.binding);
  return r;
 }
 export function browserViewerPng(value){const bytes=frames.get(value);if(!bytes)fail();return bytes.slice();}
+/** Receiving provenance only; never an execution or authorization grant. */
+export function browserTakeoverBinding(value){const binding=reads.get(value);if(!binding)fail();return binding;}

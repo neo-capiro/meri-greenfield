@@ -1,6 +1,6 @@
 {
   "name": "@capiro/meri-contracts",
-  "version": "0.1.38",
+  "version": "0.1.39",
   "private": true,
   "license": "UNLICENSED",
   "type": "module",
@@ -137,7 +137,7 @@
     }
   },
   "scripts": {
-    "build": "node generate.mjs && node generate-actions.mjs && node generate-documents.mjs && node generate-conversations.mjs && node generate-lifecycle.mjs && node generate-history.mjs && node generate-input.mjs && node generate-user-preferences.mjs && node generate-task-commands.mjs && node generate-initial-input.mjs && node generate-intents.mjs && node generate-document-access.mjs && node generate-session.mjs && node generate-sources.mjs && node generate-usage.mjs && node generate-uploads.mjs && node generate-office.mjs && node generate-selected-tab.mjs && node generate-federal-workbench.mjs && node generate-browser-viewer.mjs",
+    "build": "node generate.mjs && node generate-actions.mjs && node generate-documents.mjs && node generate-conversations.mjs && node generate-browser-viewer.mjs && node generate-lifecycle.mjs && node generate-history.mjs && node generate-input.mjs && node generate-user-preferences.mjs && node generate-task-commands.mjs && node generate-initial-input.mjs && node generate-intents.mjs && node generate-document-access.mjs && node generate-session.mjs && node generate-sources.mjs && node generate-usage.mjs && node generate-uploads.mjs && node generate-office.mjs && node generate-selected-tab.mjs && node generate-federal-workbench.mjs",
     "build:input": "node generate-input.mjs",
     "build:history": "node generate-history.mjs",
     "check:generated": "node generate.mjs --check && node generate-actions.mjs --check && node generate-documents.mjs --check && node generate-conversations.mjs --check && node generate-lifecycle.mjs --check && node generate-history.mjs --check && node generate-input.mjs --check && node generate-user-preferences.mjs --check && node generate-task-commands.mjs --check && node generate-initial-input.mjs --check && node generate-intents.mjs --check && node generate-document-access.mjs --check && node generate-session.mjs --check && node generate-sources.mjs --check && node generate-usage.mjs --check && node generate-uploads.mjs --check && node generate-office.mjs --check && node generate-selected-tab.mjs --check && node generate-federal-workbench.mjs --check && node generate-browser-viewer.mjs --check",
