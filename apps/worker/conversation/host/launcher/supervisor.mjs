@@ -9,9 +9,9 @@ import {posix} from 'node:path';
 import {PassThrough} from 'node:stream';
 import {canonicalSha256} from '../../../../../packages/contracts/validate.mjs';
 import {own,data,nativeSignal} from '../../../../../packages/contracts/commands-0.2/execution-boundary.mjs';
-import {playwrightHostCommand,validateBrowserInstallation} from '../../browser/server.mjs';
+import {playwrightHostCommand,validateBrowserInstallation,validateBrowserContextInstallation} from '../../browser/server.mjs';
 import {validateBrowserPolicy} from '../../browser/policy.mjs';
-import {assertHostAllocation,assertHostRunBinding,assertD005HostIdentity,assertHostCurrent} from '../binding.mjs';
+import {assertHostAllocation,assertHostRunBinding,assertD005HostIdentity,assertHostCurrent,assertBrowserHostCurrent} from '../binding.mjs';
 import {namespaceProbeArgs,READINESS_MODEL_ENV} from '../../sandbox-readiness/readiness.mjs';
 import {createSdkChildQuiescenceObserver} from './sdk-quiescence.mjs';
 import {createSdkChildHold} from './sdk-hold.mjs';
@@ -165,6 +165,7 @@ export function createHostLauncher({allocation,binding,hostIdentity,helperPath,s
  signal,readBrowserCurrent,retainedBrowser,spawnNative=spawn,now=Date.now,createSdkHold=createSdkChildHold,createSdkObserver=createSdkChildQuiescenceObserver,
  readSocketDirectory=stat,readyMs=5000,stopMs=5000}={}){
  const s=scope({allocation,binding,hostIdentity}),readers=authorities(rawAuthorities);
+ if(s.allocation.hostMode!==undefined)fail('HOST_LAUNCH_CONFIGURATION');
  if(![helperPath,shimPath].every(absolute)||shimPath!=='/opt/meri/bin/meri-mcp-shim'||
   !uid(sdkUid)||!uid(sdkGid)||!uid(browserUid)||!uid(browserGid)||sdkUid===browserUid||sdkGid===browserGid||
   typeof validateSdkDescriptor!=='function'||typeof onSdkPrepared!=='function'||typeof onBrowserPrepared!=='function'||
@@ -354,6 +355,55 @@ export function createHostLauncher({allocation,binding,hostIdentity,helperPath,s
  return Object.freeze({scope:s,descriptor,prepareSdkRetirement,retireSdk,prepareSuccessor,prepareBrowserContext,prepareBrowserBroker,createSdkProcessClient,runReadinessProbe,close,
   freezeSdk:()=>sdkPhysicalHold(true),thawSdk:()=>sdkPhysicalHold(false),
   get signal(){return life.signal;}});
+}
+
+/** Browser-only native entrypoint for the AgentCore transport. Reuses the same
+ * pre-exec network/currentness/observer handshake; creates no SDK, broker,
+ * provider route or credentials. Workspace, recursive absence and host teardown
+ * stay with their existing owners. Closing this child is not an absence proof. */
+export function createBrowserOnlyHostLauncher(raw){
+ const c=own(raw,['allocation','binding','hostIdentity','helperPath','browserNetwork','authority','browserUid','browserGid','onBrowserPrepared'],
+  ['signal','spawnNative','readyMs','stopMs','now']);
+ const s=scope(c),authority=authorities([c.authority])[0],spawnNative=c.spawnNative??spawn,
+  readyMs=c.readyMs??5000,stopMs=c.stopMs??5000,now=c.now??Date.now;
+ if(s.allocation.hostMode!=='browser-only')fail('HOST_LAUNCH_CONFIGURATION');
+ if(!absolute(c.helperPath)||!uid(c.browserUid)||!uid(c.browserGid)||typeof c.onBrowserPrepared!=='function'||
+  typeof spawnNative!=='function'||typeof now!=='function'||!maxMs(readyMs)||!maxMs(stopMs))fail('HOST_LAUNCH_CONFIGURATION');
+ nativeSignal(c.signal);if(c.signal?.aborted)fail('HOST_LAUNCH_CANCELLED');
+ const owner=new AbortController(),pending=new Set();let browser,closed=false,taken=false,closing;
+ const check=async()=>{
+  if(closed||owner.signal.aborted||now()>=s.allocation.leaseDeadlineMs)fail('HOST_LAUNCH_EXPIRED');
+  const receipt=await within(signal=>authority.readCurrent({allocation:s.allocation,binding:s.binding,policySha256:authority.policySha256,signal}),readyMs,owner.signal);
+  assertBrowserHostCurrent({allocation:s.allocation,binding:s.binding,policySha256:authority.policySha256,current:receipt,nowMs:now(),maxFreshMs:authority.maxFreshMs});
+  if(closed||owner.signal.aborted)fail('HOST_LAUNCH_CANCELLED');
+ };
+ const abort=()=>{void close().catch(()=>{});};
+ function close(){
+  if(closing)return closing;closed=true;owner.abort();c.signal?.removeEventListener('abort',abort);
+  closing=(async()=>{
+   const results=await Promise.allSettled([...new Set([browser,...pending].filter(Boolean))].map(child=>stopChild(child,stopMs)));
+   if(results.some(result=>result.status==='rejected'))fail('HOST_LAUNCH_CLEANUP_UNKNOWN');
+   return Object.freeze({closed:true,processAbsenceProven:false});
+  })();return closing;
+ }
+ c.signal?.addEventListener('abort',abort,{once:true});
+ return Object.freeze({get signal(){return owner.signal;},close,async prepareBrowserContext(input){
+  if(closed||taken)fail('HOST_LAUNCH_REFUSED');taken=true;
+  const q=own(input,['policy','installation','paths']),installed=validateBrowserContextInstallation(q.installation),policy=validateBrowserPolicy(q.policy),paths=q.paths;
+  if(!policy.enabled||canonicalSha256(policy)!==authority.policySha256)fail('HOST_LAUNCH_CONFIGURATION');
+  const command=playwrightHostCommand(policy,installed,paths);
+  if(!absolute(command.args[0])||![paths.home,paths.profile,paths.output].every(absolute)||
+   installed.egressProxy!==`http://127.0.0.1:${c.browserNetwork?.plan?.routes?.[0]?.localPort}`)fail('HOST_LAUNCH_CONFIGURATION');
+  try{
+   browser=await preparedProcess({s,helperPath:c.helperPath,kind:'browser',network:c.browserNetwork,
+    command:command.command,args:command.args,cwd:paths.home,home:paths.home,browsersPath:installed.browsersPath,
+    runUid:c.browserUid,runGid:c.browserGid,env:{},spawnNative,readyMs,signal:owner.signal,check,
+    onPrepared:({leaderPid})=>c.onBrowserPrepared({leaderPid,kind:'browser'}),
+    onSpawn:child=>pending.add(child),onSettled:child=>pending.delete(child)});
+   pending.delete(browser);if(closed||owner.signal.aborted)fail('HOST_LAUNCH_CANCELLED');
+   return Object.freeze({installation:installed,readable:browser.stdout,writable:browser.stdin,close});
+  }catch(error){try{await close();}catch{fail('HOST_LAUNCH_CLEANUP_UNKNOWN');}throw error;}
+ }});
 }
 
 /** Standalone port needed while the network owner is preparing its namespace-local loopback relay. The network

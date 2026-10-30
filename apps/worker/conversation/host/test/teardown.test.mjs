@@ -22,7 +22,8 @@ async function workspace(fn){
  await writeFile(join(cwd,'.browser','profile','Cookies'),'synthetic');
  try{return await fn(cwd);}finally{await rm(root,{recursive:true,force:true});}
 }
-function fixture(cwd,overrides={}){
+function fixture(cwd,overrides={},admittedAllocation=allocation){
+ const allocation=admittedAllocation;
  const calls=[];
  const hashes={allocationSha256:canonicalSha256(allocation),bindingSha256:canonicalSha256(binding),hostIdentitySha256:canonicalSha256(hostIdentity)};
  const processReceipt=over=>({schema:HOST_PROCESS_ABSENCE_SCHEMA,...hashes,observedAtMs:Date.now(),
@@ -45,6 +46,42 @@ function fixture(cwd,overrides={}){
  return {calls,ports,processReceipt,requestReceipt,absenceReceipt};
 }
 const make=(cwd,ports,options={})=>createConversationHostTeardown({allocation,binding,hostIdentity,cwd,browserPolicySha256,ports,...options});
+
+test('browser-only teardown requires its exact local scope and omits all Bash calls',{skip:process.platform!=='linux'},()=>workspace(async cwd=>{
+ const browserAllocation={...allocation,hostMode:'browser-only'};
+ const f=fixture(cwd,{processes:{async waitForExit(request){f.calls.push('process-observe');assert.equal(request.scope,'browser-host-descendants');return f.processReceipt({scope:request.scope});}}},browserAllocation);
+ const {bash,...ports}=f.ports;
+ assert.throws(()=>make(cwd,ports),/HOST_TEARDOWN_CONFIGURATION/);
+ assert.throws(()=>make(cwd,ports,{hostMode:'browser-only'}),/HOST_TEARDOWN_CONFIGURATION/);
+ assert.throws(()=>make(cwd,f.ports,{allocation:browserAllocation}),/HOST_TEARDOWN_CONFIGURATION/);
+ assert.throws(()=>make(cwd,ports,{allocation:browserAllocation,hostMode:'conversation'}),/HOST_TEARDOWN_CONFIGURATION/);
+ const receipt=await make(cwd,ports,{allocation:browserAllocation}).settle({reason:'conversation-end'});
+ assert.equal(receipt.processScope,'browser-host-descendants');assert.equal(receipt.bashEgress,'not-applicable');
+ assert.equal(receipt.status,'VERIFIED');assert.equal(receipt.hostAbsence,'confirmed');assert.equal(await present(join(cwd,'.browser')),false);
+ assert.deepEqual(f.calls,['browser-revoke','browser-close','process-observe','host-destroy','host-absent']);
+}));
+
+test('browser-only cleanup rejects legacy or mismatched process proof and preserves private state',{skip:process.platform!=='linux'},()=>workspace(async cwd=>{
+ const browserAllocation={...allocation,hostMode:'browser-only'};
+ for(const changes of [{scope:'browser-bash-sdk-descendants'},{bindingSha256:'0'.repeat(64)},{remainingPids:[123]}]){
+  const f=fixture(cwd,{processes:{async waitForExit(){f.calls.push('process-observe');return f.processReceipt({scope:'browser-host-descendants',...changes});}},
+   host:{async destroy(){f.calls.push('host-destroy');return f.requestReceipt();}}},browserAllocation);
+  const {bash,...ports}=f.ports;
+  await assert.rejects(make(cwd,ports,{allocation:browserAllocation}).settle({reason:'failed'}),error=>error.code==='HOST_TEARDOWN_UNKNOWN'&&
+   error.receipt.processScope==='browser-host-descendants'&&error.receipt.processes==='unknown'&&error.receipt.browserState==='not-attempted'&&error.receipt.hostAbsence==='confirmed');
+  assert.equal(await present(join(cwd,'.browser','profile','Cookies')),true);
+  assert.deepEqual(f.calls.slice(-2),['host-destroy','host-absent']);
+ }
+}));
+
+test('local browser absence never substitutes for exact physical host resources',{skip:process.platform!=='linux'},()=>workspace(async cwd=>{
+ const browserAllocation={...allocation,hostMode:'browser-only'};
+ const f=fixture(cwd,{processes:{async waitForExit(){return f.processReceipt({scope:'browser-host-descendants'});}},
+  host:{async observeAbsent(){return f.absenceReceipt({rootVolumeAbsent:false});}}},browserAllocation);
+ const {bash,...ports}=f.ports;
+ await assert.rejects(make(cwd,ports,{allocation:browserAllocation}).settle({reason:'lease-expired'}),error=>error.code==='HOST_TEARDOWN_UNKNOWN'&&
+  error.receipt.processes==='exited'&&error.receipt.browserState==='disposed'&&error.receipt.hostAbsence==='unknown');
+}));
 
 test('verified teardown revokes both proxies, observes actual process absence, disposes state, then proves host and volume absence',()=>workspace(async cwd=>{
  const f=fixture(cwd),owner=make(cwd,f.ports),receipt=await owner.settle({reason:'conversation-end'});
