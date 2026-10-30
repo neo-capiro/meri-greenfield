@@ -159,7 +159,7 @@ export function assembleControl(options){
    if(declaration!==null){
     if(!browserHostMaterial)throw fault('BROWSER_HOST_CONFIGURATION');
     browserHosts=createBrowserHostComposition({declaration,pool,store,sessions,core:ports.browserHostCore,capabilityPolicy,readBrowserPolicy,
-     material:browserHostMaterial,now,limits:{requestMs:configuration.limits.requestMs}});
+     siteWorkflowAdmission:ports.siteWorkflowAdmission??null,material:browserHostMaterial,now,limits:{requestMs:configuration.limits.requestMs}});
     if(browserHosts===null)throw fault('BROWSER_HOST_CONFIGURATION');
     ports=composeRuntimePorts(ports,{browserHosts:browserHosts.browserHosts});
    }
@@ -180,8 +180,7 @@ export function assembleControl(options){
  const rawService=createConversationLifecycleService({service:basic,...(ports.browserHosts?{browserHosts:ports.browserHosts}:{}),store,dispatcher,sessions,now,maxRequestMs:configuration.limits.requestMs,reconcileOriginal:createOriginalReconciler({native,now,timeoutMs:configuration.limits.requestMs}),nativeAdmission:ports.continuationAdmission,approvals:ports.approvals,retention:retention?retention.gate:null});
  const observedInput=Object.fromEntries(['allocateInput','admitInput','submit'].map(name=>[name,async input=>turnTelemetry.provisional(async()=>{const value=await rawService[name](input);try{const binding=value.run?.binding??value.allocation?.binding;if(binding){turnTelemetry.bind(binding);if(name==='submit')turnTelemetry.stage(binding,'send.submit.accepted');}}catch{}return value;})]));
  const service=Object.freeze({...rawService,...observedInput});
- // The live site-workflow port is late-bound to this exact service (the same pattern as the session binders).
- if(browserHosts)browserHosts.bindService({service});
+
  const browserViewer=createBrowserViewerHttp({application:createBrowserViewerApplication({lifecycle:service,transport:ports.browserHosts??{execute:async()=>{throw fault('UNAVAILABLE');}},now}),now,maxRequestMs:Math.min(configuration.limits.requestMs,30000)});
  const browserIssuance=createActionSessionApplication({owner:{issue:async q=>(await browserSessionAccess(sessions).issue(q)).receipt},sessionPath:'/api/action-followthrough/browser-session',now,maxRequestMs:Math.min(configuration.limits.requestMs,30000)});
  // Private runtime traffic uses the same domain/store owners with a request-bound execution
@@ -311,8 +310,12 @@ export async function startControl(configuration,options={}){
   const uploadProvisioning=beginUploadNativeProvisioning({handle:uploadsNative,configuration,now:Date.now,signal});
   checkAuthorization();return Object.freeze({address:listener.address,...(privateListener?{privateAddress:privateListener.address}:{}),downloads,...(uploadsNative?{uploadNative:Object.freeze({missing:uploadsNative.missing,provisioning:uploadProvisioning.state})}:{}),close});
  }catch(error){
-  // A failed assembly may still own cleanup (sessions and any browser composition it created); awaiting
-  // it here keeps that failure visible instead of losing it after the throw.
-  if(typeof error?.controlCleanup?.then==='function')try{await error.controlCleanup;}catch(cleanup){throw temporalCleanupUnknown(new AggregateError([error,cleanup],'CONTROL_STARTUP_AND_CLEANUP_FAILED'));}
-  try{await close();}catch(cleanup){throw temporalCleanupUnknown(new AggregateError([error,cleanup],'CONTROL_STARTUP_AND_CLEANUP_FAILED'));}if(error?.code==='TEMPORAL_PRODUCT_CLEANUP_UNKNOWN')throw error;throw Object.assign(fault('CONTROL_STARTUP_FAILED'),{cause:error});}
+  // Every owned cleanup runs even when an earlier one fails: the failures are accumulated, never allowed
+  // to skip the remaining pool/Temporal/candidate teardown.
+  const cleanupFailures=[];
+  if(typeof error?.controlCleanup?.then==='function')try{await error.controlCleanup;}catch(cleanup){cleanupFailures.push(cleanup);}
+  try{await close();}catch(cleanup){cleanupFailures.push(cleanup);}
+  if(cleanupFailures.length)throw temporalCleanupUnknown(new AggregateError([error,...cleanupFailures],'CONTROL_STARTUP_AND_CLEANUP_FAILED'));
+  if(error?.code==='TEMPORAL_PRODUCT_CLEANUP_UNKNOWN')throw error;
+  throw Object.assign(fault('CONTROL_STARTUP_FAILED'),{cause:error});}
 }

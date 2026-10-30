@@ -57,7 +57,10 @@ export function createBrowserHostComposition({declaration,pool,store,sessions,co
  // reader, then the canonical facts projection on the acknowledged transaction client.
  // The facts producer is the protected store's callback: it consumes that store's own client.
  const facts=createBrowserHostRunFacts({currentness});
- let siteWorkflows=null,starting,closing,address=null,closed=false;
+ // The live workflow resolver is the REAL Core admission owner already supplied as a product port: it
+ // obtains its own native credential and performs the fixed Core read. Null when that port is absent.
+ const siteWorkflows=siteWorkflowAdmission===null?null:createBrowserHostSiteWorkflowPort({store,admission:siteWorkflowAdmission});
+ let starting,closing,address=null,closed=false;
  const wipe=()=>{for(const t of [privateTls,serverTls])if(t)for(const k of ['cert','key',t===privateTls?'ca':'clientCa'])try{t[k]?.fill?.(0);}catch{}};
  return Object.freeze({browserHosts,currentness,allocations,facts,
   get address(){return address;},
@@ -65,10 +68,7 @@ export function createBrowserHostComposition({declaration,pool,store,sessions,co
   readCanonicalFacts:(client,input)=>facts.readCanonicalFacts(client,input),
   // The live site-workflow port needs the assembled conversation service, which does not exist yet when
   // this composition is built; it is late-bound once, like the other existing session binders.
-  bindService({service}={}){
-   if(closed)fail('BROWSER_HOST_CLOSED');
-   if(siteWorkflows!==null)fail('BROWSER_HOST_COMPOSITION');
-   siteWorkflows=createBrowserHostSiteWorkflowPort({store,service,nativeCredentials:sessions});return siteWorkflows;},
+
   siteWorkflows(){return siteWorkflows;},
   state:()=>Object.freeze({mounted:true,closed,listener:address,siteWorkflows:siteWorkflows!==null}),
   start(options={}){

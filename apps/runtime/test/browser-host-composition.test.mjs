@@ -89,14 +89,12 @@ test('composition wires the real owners, closes idempotently and refuses to star
  for(const name of ['read','prepareResume','execute','executeBrowserOperation'])assert.equal(typeof composed.browserHosts[name],'function');
  for(const name of ['readHost','readRoute','readFacts'])assert.equal(typeof composed.currentness[name],'function');
  assert.equal(typeof composed.readCanonicalFacts,'function','the protected store binds this exact callback');
- assert.equal(typeof composed.bindService,'function');
- assert.equal(composed.siteWorkflows(),null,'the live port is late-bound, not fabricated');
+ assert.equal(composed.siteWorkflows(),null,'no Core admission port supplied => no workflow resolver');
  assert.equal(composed.state().siteWorkflows,false);
  assert.deepEqual(await composed.start(),{mounted:true,listener:null},'a client-only declaration starts without a listener');
  assert.deepEqual(await composed.close(),{closed:true});
  assert.deepEqual(await composed.close(),{closed:true});
  await assert.rejects(composed.start(),{code:'BROWSER_HOST_CLOSED'});
- assert.throws(()=>composed.bindService({service:{}}),{code:'BROWSER_HOST_CLOSED'});
 });
 
 test('material loader reads exactly the declared references',async()=>{
@@ -135,17 +133,18 @@ test('facts run on the caller client and refuse successor, held and missing-dead
  await assert.rejects(createBrowserHostRunFacts({currentness}).readCanonicalFacts({},{}),{code:'BROWSER_HOST_FACTS_REFUSED'});
 });
 
-test('the live site-workflow port takes selectedClientId from saved scopes and re-resolves through the service',async()=>{
- const calls=[];let resolved=0;
- const port=createBrowserHostSiteWorkflowPort({store:{read:async()=>({run:{binding,scopes,versions:{synthetic:1}},request:{}})},
-  nativeCredentials:{nativeCredentialFor:async({binding:value,selectedClientId})=>{calls.push(selectedClientId);assert.deepEqual(value,binding);return {credential:'synthetic-credential'};}},
-  service:{siteWorkflowResolve:async({credential,binding:value})=>{resolved++;assert.equal(credential,'synthetic-credential');assert.deepEqual(value,binding);
-   return {manifest:{synthetic:true},manifestSha256:'a'.repeat(64),enabled:true};}}});
+test('the live site-workflow port re-resolves through the real Core admission owner with saved selection',async()=>{
+ const calls=[];const selection={siteId:'synthetic-site',workflowId:'synthetic-flow',version:2,manifestSha256:'b'.repeat(64)};
+ const store={read:async()=>({run:{binding,scopes,versions:{synthetic:1}},request:{siteWorkflow:selection}})};
+ const admission={resolve:async(input)=>{calls.push(input);
+  return {manifest:{synthetic:true},manifestSha256:'a'.repeat(64),enabled:true};}};
+ const port=createBrowserHostSiteWorkflowPort({store,admission});
  assert.equal(Object.hasOwn(binding,'scopes'),false,'a RunBinding has no scopes');
  const first=await port.resolve({binding});
  const second=await port.resolve({binding});
- assert.deepEqual(calls,[U(7),U(7)],'the saved client scope, twice');
- assert.equal(resolved,2,'each call re-resolves current state');
+ assert.equal(calls.length,2,'each resolve re-reads and re-resolves');
+ assert.deepEqual(calls[0].selection,selection,'the SAVED selection is passed to the Core owner');
+ assert.deepEqual(calls[0].scopes,scopes);assert.deepEqual(calls[0].versions,{synthetic:1});
  assert.equal(first.enabled,true);assert.equal(second.enabled,true);
- assert.throws(()=>createBrowserHostSiteWorkflowPort({store:{},service:{},nativeCredentials:{}}),{code:'BROWSER_HOST_SITE_WORKFLOW_UNAVAILABLE'});
+ assert.throws(()=>createBrowserHostSiteWorkflowPort({store,admission:{}}),{code:'BROWSER_HOST_SITE_WORKFLOW_UNAVAILABLE'});
 });

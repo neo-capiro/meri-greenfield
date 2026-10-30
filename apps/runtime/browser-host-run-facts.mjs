@@ -22,35 +22,52 @@ export function createBrowserHostRunFacts({currentness}={}){
   if(!client||typeof client.query!=='function'||!allocation||typeof allocation!=='object'||!binding||typeof binding!=='object')fail('BROWSER_HOST_FACTS_REFUSED');
   signal?.throwIfAborted();
   const state=await currentness.readFacts(client,{allocation,binding,custody,signal});
-  if(state?.phase!=='active'||state.browserAdmitted!==true||!Number.isSafeInteger(state.deadlineMs))fail('BROWSER_HOST_FACTS_REFUSED');
-  // A later binding is a takeover successor; its selection is not the original's, and this path has no
-  // canonical successor selection source yet, so it refuses instead of silently reusing the original.
-  if(state.originalBinding!==undefined&&!same(state.originalBinding,binding))fail('BROWSER_HOST_FACTS_REFUSED');
+  if(!state||!Number.isSafeInteger(state.deadlineMs)||!Number.isSafeInteger(state.currentUntilMs)||state.browserAdmitted!==true)fail('BROWSER_HOST_FACTS_REFUSED');
+  const saved=state.savedRequest??null;
+  const sameBinding=state.originalBinding===undefined||same(state.originalBinding,binding);
+  // A later binding is the canonical takeover successor: it keeps browser custody but must not inherit the
+  // original run's saved selection, so no siteWorkflow is claimed for it.
+  const siteWorkflow=saved?.siteWorkflow===undefined||saved===null||!sameBinding?undefined:assertSiteWorkflowSelection(saved.siteWorkflow);
+  const common={schema:BROWSER_HOST_FACTS_SCHEMA,binding,scopes:state.scopes,deadlineMs:state.deadlineMs,
+   currentUntilMs:Math.min(state.currentUntilMs,state.deadlineMs),...(siteWorkflow===undefined?{}:{siteWorkflow})};
+  if(state.phase!=='active'){
+   // Held/successor: the browser operation host may still act under custody, but SDK and Bash are denied
+   // and there is no fresh policy snapshot to report.
+   if(state.sdkAdmitted!==false||state.bashAdmitted!==false)fail('BROWSER_HOST_FACTS_REFUSED');
+   return assertBrowserHostFacts({...common,phase:state.phase,admitted:{sdk:false,bash:false,browser:true},
+    ...(state.browserCustody===undefined?{}:{browserCustody:state.browserCustody}),
+    ...(state.browserHandoff===undefined?{}:{browserHandoff:state.browserHandoff})},{binding});
+  }
+  if(!sameBinding)fail('BROWSER_HOST_FACTS_REFUSED');
   const capabilityPolicy=assertCapabilityPolicy(data(state.capabilityPolicy??{}));
   const browserPolicy=validateBrowserPolicy(data(state.browserPolicy??{}));
-  const saved=state.savedRequest??null;
-  const siteWorkflow=saved?.siteWorkflow===undefined||saved===null?undefined:assertSiteWorkflowSelection(saved.siteWorkflow);
-  return assertBrowserHostFacts({schema:BROWSER_HOST_FACTS_SCHEMA,binding,scopes:state.scopes,deadlineMs:state.deadlineMs,
-   currentUntilMs:Math.min(state.currentUntilMs,state.deadlineMs),phase:'active',
-   admitted:{sdk:state.sdkAdmitted,bash:state.bashAdmitted,browser:state.browserAdmitted},
+  return assertBrowserHostFacts({...common,phase:'active',admitted:{sdk:true,bash:state.bashAdmitted,browser:true},
    capabilityPolicy,capabilityPolicySha256:canonicalSha256(capabilityPolicy),
    browserPolicy,browserPolicySha256:canonicalSha256(browserPolicy),
-   ...(siteWorkflow===undefined?{}:{siteWorkflow})},{binding});
+   ...(state.browserHandoff===undefined?{}:{browserHandoff:state.browserHandoff})},{binding});
  }});
 }
-/** The live `siteWorkflows.resolve({binding,signal})` port: selectedClientId comes from the SAVED
- * canonical scopes (a RunBinding has no scopes), then the existing conversation service re-reads the
- * saved selection, current scopes/versions and rechecks SESSION_CHANGED on every call. */
-export function createBrowserHostSiteWorkflowPort({store,service,nativeCredentials}={}){
- if(typeof store?.read!=='function'||typeof service?.siteWorkflowResolve!=='function'||
-  typeof nativeCredentials?.nativeCredentialFor!=='function')fail('BROWSER_HOST_SITE_WORKFLOW_UNAVAILABLE');
+/** The live `siteWorkflows.resolve({binding,signal})` port.
+ *
+ * `service.siteWorkflowResolve` authenticates an ACTION-SESSION credential (conversations/service.mjs
+ * `operation()` -> sessions.authenticateSession). `nativeCredentialFor` returns a Core-native identity
+ * credential and is the wrong class, so it must never be passed to that service. The port therefore
+ * requires an action-session issuer for the exact run and refuses without one; selectedClientId comes
+ * from the SAVED canonical scopes because a RunBinding carries none. */
+export function createBrowserHostSiteWorkflowPort({store,admission}={}){
+ if(typeof store?.read!=='function'||typeof admission?.resolve!=='function')fail('BROWSER_HOST_SITE_WORKFLOW_UNAVAILABLE');
  return Object.freeze({async resolve({binding,signal}={}){
   signal?.throwIfAborted();
+  // The exact saved selection/scopes/versions come from the canonical run row; the Core admission owner
+  // obtains the native credential itself and performs the fixed Core read with digest/selection checks.
   const saved=await store.read(binding,{after:0,limit:1},()=>signal?.throwIfAborted());
   if(!same(saved?.run?.binding,binding))fail('BROWSER_HOST_SITE_WORKFLOW_UNAVAILABLE');
-  const scopes=saved.run.scopes,selectedClientId=scopes.length===1&&scopes[0].kind==='client'?scopes[0].resourceId:null;
-  const credential=await nativeCredentials.nativeCredentialFor({binding,selectedClientId,signal});
-  if(typeof credential?.credential!=='string'||!credential.credential)fail('BROWSER_HOST_SITE_WORKFLOW_UNAVAILABLE');
-  return service.siteWorkflowResolve({credential:credential.credential,binding,signal});
+  if(saved.request?.siteWorkflow===undefined)fail('BROWSER_HOST_SITE_WORKFLOW_UNAVAILABLE');
+  const selection=assertSiteWorkflowSelection(saved.request.siteWorkflow);
+  const resolved=await admission.resolve({binding,selection,scopes:saved.run.scopes,versions:saved.run.versions,signal});
+  // SESSION_CHANGED parity with the existing service: the canonical row must be unchanged afterwards.
+  const latest=await store.read(binding,{after:0,limit:1},()=>signal?.throwIfAborted());
+  if(!same(latest?.run?.binding,binding)||!same(latest?.request,saved.request)||!same(latest?.run?.scopes,saved.run.scopes))fail('BROWSER_HOST_SITE_WORKFLOW_UNAVAILABLE');
+  return resolved;
  }});
 }

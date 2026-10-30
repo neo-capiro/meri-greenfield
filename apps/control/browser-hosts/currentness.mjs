@@ -15,6 +15,9 @@ import {HOST_ALLOCATION_SQL} from './postgres-allocations.mjs';
 import {createCurrentBrowserCoreAccess} from './current-core.mjs';
 import {createBrowserCustodyCurrentness} from './custody-currentness.mjs';
 
+/** `rowRun` keeps the immutable request on the ROW, beside `projection`; never inside it. Exported so the
+ * mapping is testable without a database. */
+export function savedRequestOf(row){return row?.request??null;}
 export function createBrowserHostCurrentness({store,core,nativeCredentials,capabilityPolicy,readBrowserPolicy,now=Date.now,maxRequestMs=3000}){
  const readExecution=storageMethod(store.executions,'readCurrentOnClient'),currentHost=storageMethod(store.lifecycle.browserCustody,'currentHost');
  const forRun=storageMethod(capabilityPolicy,'forRun'),readCore=createCurrentBrowserCoreAccess({core,nativeCredentials,now});
@@ -40,9 +43,21 @@ export function createBrowserHostCurrentness({store,core,nativeCredentials,capab
    if(!same(source.projection.binding,original))fail();
    const held=source.projection.state==='paused'&&source.hold_control_id!=null;
    if(held&&(route||same(binding,original))){
-    if(facts)fail();
     const state=await life.run(signal=>route?retained.readRoute(client,{allocation,originalBinding:original,binding,custody:v.custody,signal}):retained.readHost(client,{allocation,binding:original,signal}));
-    life.check();return {...state,browserAdmitted:state.browserAdmitted&&activationOpen(),currentUntilMs:Math.min(state.currentUntilMs,authorityCutoff)};
+    life.check();const held={...state,browserAdmitted:state.browserAdmitted&&activationOpen(),currentUntilMs:Math.min(state.currentUntilMs,authorityCutoff)};
+    if(!facts)return held;
+    // A held/successor run keeps legitimate browser custody while SDK and Bash stay denied. Its host-local
+    // policy consumer still needs the CURRENT browser policy, read through the same Core/session owners —
+    // no capability policy is claimed and no SDK/Bash admission is fabricated.
+    const heldScopes=source.projection.scopes;
+    const heldClient=heldScopes.length===1&&heldScopes[0].kind==='client'?heldScopes[0].resourceId:null;
+    const {receipt:heldAuthority,recheck:heldRecheck}=await readCore({binding,selectedClientId:heldClient,life});
+    const heldBrowser=validateBrowserPolicy(await life.run(signal=>readBrowserPolicy({binding,scopes:heldScopes,actorRole:heldAuthority.role,signal,deadlineMs:life.deadline()})));
+    const heldCutoff=Math.min(await heldRecheck(),held.currentUntilMs,heldAuthority.expiresAtMs);
+    life.check();
+    return {...held,browserAdmitted:heldBrowser.enabled&&activationOpen(),currentUntilMs:heldCutoff,sdkAdmitted:false,bashAdmitted:false,
+     scopes:heldScopes,deadlineMs:authorityCutoff,browserPolicy:heldBrowser,
+     savedRequest:savedRequestOf(source),originalBinding:original};
    }
    if(v.custody!=null)fail();
    // A retained physical host admits SDK/Bash only for its exact canonical
@@ -68,7 +83,7 @@ export function createBrowserHostCurrentness({store,core,nativeCredentials,capab
    // window, scopes, the saved request (authoritative selection source) and the policy VALUES. readHost
    // and readRoute keep their exact closed response.
    return facts?{...state,scopes:current.scopes,deadlineMs:current.deadlineMs,capabilityPolicy:policy,browserPolicy:browser,
-    savedRequest:source.projection.request??null,originalBinding:original}:state;
+    savedRequest:savedRequestOf(source),originalBinding:original}:state;
   }finally{life.close();}
  }
  // `readFacts` is the only way to obtain the wider projection, and it runs the identical checks on the
