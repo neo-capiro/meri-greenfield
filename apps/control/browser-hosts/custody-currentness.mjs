@@ -3,16 +3,17 @@
 import {own,nativeSignal} from '../../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {assertNativeConversationScope} from '../../../packages/contracts/runtime-0.2/session.mjs';
 import {createOperationLifetime} from '../../../packages/runtime/operation-lifetime.mjs';
-import {currentReceipt} from '../action-host/application-adapters/current-receipt.mjs';
 import {rowRun} from '../conversations/boundary.mjs';
 import {storageMethod} from '../../artifacts/storage/boundary.mjs';
 import {assertHostAllocation,assertHostRunBinding} from '../../worker/conversation/host/binding.mjs';
 import {same,fail} from './allocation.mjs';
+import {createCurrentBrowserCoreAccess} from './current-core.mjs';
+import {canonicalSha256 as hash} from '../../../packages/contracts/validate.mjs';
+import {validateBrowserPolicy} from '../../worker/conversation/browser/policy.mjs';
 
-export function createBrowserCustodyCurrentness({journal,core,nativeCredentials,now=Date.now,maxRequestMs=3000}){
- const currentHost=storageMethod(journal,'currentHost'),readCurrent=storageMethod(core,'readCurrent');
- const nativeCredentialFor=storageMethod(nativeCredentials,'nativeCredentialFor');
- if(typeof now!=='function'||!Number.isSafeInteger(maxRequestMs)||maxRequestMs<1||maxRequestMs>3000)fail();
+export function createBrowserCustodyCurrentness({journal,core,nativeCredentials,readBrowserPolicy,now=Date.now,maxRequestMs=3000}){
+ const currentHost=storageMethod(journal,'currentHost'),readCore=createCurrentBrowserCoreAccess({core,nativeCredentials,now});
+ if(typeof now!=='function'||readBrowserPolicy!==undefined&&typeof readBrowserPolicy!=='function'||!Number.isSafeInteger(maxRequestMs)||maxRequestMs<1||maxRequestMs>3000)fail();
  async function current(client,{allocation,binding,signal},selected){
   nativeSignal(signal);const a=assertHostAllocation(allocation),physical=assertHostRunBinding(a,binding);
   const life=createOperationLifetime({now,signal,deadlineMs:Math.min(now()+maxRequestMs,a.leaseDeadlineMs),errorFactory:()=>Object.assign(Error('BROWSER_HOST_CURRENTNESS_REFUSED'),{code:'BROWSER_HOST_CURRENTNESS_REFUSED'})});
@@ -37,17 +38,14 @@ export function createBrowserCustodyCurrentness({journal,core,nativeCredentials,
    }
    // Borrow only the current logical run's existing credential. A retired
    // source's credential cannot authorize a successor. Core performs policy.
-   const before=await life.run(signal=>nativeCredentialFor({binding:logical,selectedClientId,signal}));
-   if(typeof before?.credential!=='string'||!before.credential||!Number.isSafeInteger(before.expiresAtMs)||before.expiresAtMs<=now())fail();
-   life.limitDeadline(before.expiresAtMs);const started=now();
-   const authority=currentReceipt(await life.run(signal=>readCurrent({credential:before.credential,conversationId:logical.conversationId,clientId:selectedClientId,signal,deadlineMs:life.deadline()})));
-   if(authority.principal.tenantId!==logical.tenantId||authority.principal.actorId!==logical.actorId||
-    authority.conversationId!==logical.conversationId||authority.selectedClientId!==selectedClientId||
-    authority.checkedAtMs<started||authority.checkedAtMs>now())fail();
-   life.limitDeadline(authority.expiresAtMs);
-   const after=await life.run(signal=>nativeCredentialFor({binding:logical,selectedClientId,signal}));
-   if(after?.credential!==before.credential||!Number.isSafeInteger(after.expiresAtMs)||after.expiresAtMs<=now())fail();
-   life.check();const currentUntilMs=Math.min(state.currentUntilMs,authority.expiresAtMs,before.expiresAtMs,after.expiresAtMs);
+   const {receipt:authority,recheck}=await readCore({binding:logical,selectedClientId,life});
+   let credentialCutoff=authority.expiresAtMs;
+   if(readBrowserPolicy){
+    const policy=validateBrowserPolicy(await life.run(signal=>readBrowserPolicy({binding:logical,scopes:run.scopes,actorRole:authority.role,signal,deadlineMs:life.deadline()})));
+    if(policy.enabled!==true||hash(policy)!==state.browserPolicySha256)fail();
+    credentialCutoff=await recheck();
+   }
+   life.check();const currentUntilMs=Math.min(state.currentUntilMs,authority.expiresAtMs,credentialCutoff);
    if(!Number.isSafeInteger(currentUntilMs)||currentUntilMs<=now())fail();
    return Object.freeze({...state,...(selected?{binding:logical}:{}),currentUntilMs});
   }finally{life.close();}

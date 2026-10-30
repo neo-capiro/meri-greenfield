@@ -20,15 +20,26 @@ export function createExecutionJournal({tx,rowRun,now=Date.now}){
   if(saved.record?.phase!=='settled'&&(saved.record!==null||!['failed','cancelled'].includes(saved.run.state)))return {run:saved.run,settled:false};
   await readExecutionSettlement(c,b,saved.run.state,check);return {run:saved.run,settled:true};
  });}
- /** SessionStore flushes share the run lock; settlement/Stop cannot overtake an admitted callback. */
- async function withCurrentRun(value,effect){const v=own(value,['binding'],['signal','deadlineMs']),b=data(v.binding);validateShape('RunBinding',b);
-  if(typeof effect!=='function'||v.deadlineMs!==undefined&&(!Number.isSafeInteger(v.deadlineMs)||v.deadlineMs<1))fail('EXECUTION_ADMISSION_REFUSED');
-  let deadline=v.deadlineMs??Infinity;const check=()=>{if(v.signal?.aborted||now()>=deadline)fail('EXECUTION_ADMISSION_EXPIRED');};
-  return tx(b,check,async client=>{const run=await runRow(client,b,check),saved=await load(client,b,check,run),record=saved.record;
+ /** Same canonical read for owners that already hold the conversation lock
+  * in their transaction. No nested connection, new execution or effect. */
+ async function readCurrentOnClient(client,value,outerCheck=()=>{}){
+  const v=own(value,['binding'],['signal','deadlineMs']),b=data(v.binding);validateShape('RunBinding',b);
+  if(typeof client?.query!=='function'||typeof outerCheck!=='function'||v.deadlineMs!==undefined&&(!Number.isSafeInteger(v.deadlineMs)||v.deadlineMs<1))fail('EXECUTION_ADMISSION_REFUSED');
+  let deadline=v.deadlineMs??Infinity;const check=()=>{outerCheck();if(v.signal?.aborted||now()>=deadline)fail('EXECUTION_ADMISSION_EXPIRED');};
+  check();
+  const run=await runRow(client,b,check),saved=await load(client,b,check,run),record=saved.record;
    if(!record||['stopping','settled'].includes(record.phase)||run.sequence_end!=null||!['queued','starting','running','completed','failed','paused','waiting-for-approval'].includes(saved.run.state))fail('EXECUTION_ADMISSION_REFUSED');
    const runs=(await client.query('SELECT * FROM meri_conversations.runs WHERE tenant_id=$1 AND conversation_id=$2 FOR UPDATE',[b.tenantId,b.conversationId])).rows.map(rowRun);check();
    if(runs.some(r=>r.projection.binding.writerFence>=b.writerFence&&!same(r.projection.binding,b)))fail('STALE_WRITER');
    deadline=Math.min(deadline,record.expiresAtMs);check();const current=data({binding:b,scopes:saved.run.scopes,policyRevision:saved.run.policyRevision,deadlineMs:record.expiresAtMs,executionSha256:hash(executionIdentity(record)),executionPhase:record.phase,run:saved.run});
+  return current;
+ }
+ /** SessionStore flushes share the run lock; settlement/Stop cannot overtake an admitted callback. */
+ async function withCurrentRun(value,effect){const v=own(value,['binding'],['signal','deadlineMs']),b=data(v.binding);validateShape('RunBinding',b);
+  if(typeof effect!=='function'||v.deadlineMs!==undefined&&(!Number.isSafeInteger(v.deadlineMs)||v.deadlineMs<1))fail('EXECUTION_ADMISSION_REFUSED');
+  let deadline=v.deadlineMs??Infinity;const check=()=>{if(v.signal?.aborted||now()>=deadline)fail('EXECUTION_ADMISSION_EXPIRED');};
+  return tx(b,check,async client=>{
+   const current=await readCurrentOnClient(client,v,check);deadline=Math.min(deadline,current.deadlineMs);check();
    const result=await effect({client,current});check();return result;
   },{sessionSnapshot:true});
  }
@@ -53,5 +64,5 @@ export function createExecutionJournal({tx,rowRun,now=Date.now}){
    if(!old||old.executionId!==v.executionId||old.runtimeSessionId!==v.runtimeSessionId||!isExecutionOutcome(v.state)||saved.run.state!==v.state||!['stopping','settled'].includes(old.phase))fail('EXECUTION_STOP_REFUSED');
    if(old.phase==='settled'){if(old.native.state!==v.state||old.native.stopped!==true)fail('EXECUTION_STOP_REFUSED');return saved;}
    const next=data({...old,phase:'settled',native:{state:v.state,stopped:true}});await c.query('UPDATE meri_conversations.native_executions SET record=$4,record_sha256=$5 WHERE tenant_id=$1 AND conversation_id=$2 AND run_id=$3',[...args(v.binding),next,hash(next)]);check();return {...saved,record:next};});}
- return Object.freeze({claim,read,settlement,withCurrentRun,record,requestStop,settleStopped});
+ return Object.freeze({claim,read,settlement,readCurrentOnClient,withCurrentRun,record,requestStop,settleStopped});
 }
