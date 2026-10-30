@@ -118,8 +118,8 @@
     },
     {
       "path": "../../apps/control/intents/approval.mjs",
-      "sha256": "8dc56b524bc8425d6ec715f6593ef3c1646e108d26e3c22bc487e61fc34949fe",
-      "bytes": 49076
+      "sha256": "374fea5bca8a055ae8ed1bb4132d3d5476b0993f3f2dfeacccd5536ebc0f94df",
+      "bytes": 49777
     },
     {
       "path": "../../apps/control/intents/faults.mjs",

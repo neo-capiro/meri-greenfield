@@ -1,11 +1,16 @@
-/** Control browser-action intents: real approval owner over an in-memory journal and a synthetic Core
- * browser port. The public list/decide answers are validated with the REAL generated receiver. */
+/** Control browser-action intents over the REAL browser-approval adapter.
+ *
+ * The browser port is `createBrowserApprovalOperations` over an inert lowest transport (no HTTP, SQL, socket or
+ * credential). Only the transport's post/proposal/selected boundaries are synthetic; the adapter's Core04
+ * envelopes, lifetime and identity rules are the production ones.
+ */
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {canonicalSha256 as hash} from '../../../../packages/contracts/validate.mjs';
 import {receiveIntentsResponse} from '../../../../packages/contracts/dist/intents-application.mjs';
+import {createOperationLifetime} from '../../../../packages/runtime/operation-lifetime.mjs';
+import {createBrowserApprovalOperations} from '../../../runtime/native-authority/browser-approvals.mjs';
 import {createIntentApprovalOwner} from '../approval.mjs';
-import {browserProposalFromEntry} from '../browser-proposals.mjs';
 
 const id=n=>`00000000-0000-4000-8000-${String(n).padStart(12,'0')}`;
 const NOW=1700000000000,conversationId=id(1),proposalId=id(2),tenantId='tenant',actorId='actor';
@@ -22,121 +27,142 @@ const record={operation:{id:'browser_action',version:'0.2.0'},action:'browser.ac
  requiredApprover:{tenantId,actorId},checkedAtMs:NOW,resolved:false};
 const deliveryId='browser:'+'e'.repeat(64);
 const result={proposalId,subjectSha256,requestSha256:'f'.repeat(64),record,recordSha256:hash(record)};
-function entry(state='PREPARED'){return {deliveryId,createdAt:new Date(NOW).toISOString(),
+const entry=()=>({deliveryId,createdAt:new Date(NOW).toISOString(),
  record:{operation:{id:'browser_approval_preparation',version:'0.2.0'},argumentsSha256:'9'.repeat(64)},
- state,outcome:state==='PREPARED'?{result:structuredClone(result),
-  release:{binding,scopes,expiresAtMs:NOW+600000}}:null};}
+ state:'PREPARED',outcome:{result:structuredClone(result),release:{binding,scopes,expiresAtMs:NOW+600000}}});
 
-function statusDoc({proposalId,subjectSha256,decision,completed}){return {
- schema:'meri-browser-approval-status/1',proposalId,subjectSha256,toolUseId:'toolu_01HZX',
- permissive:false,unknown:false,
- consumption:completed?{state:'COMPLETED',consumedAtMs:NOW+2000,
-  result:{outcome:'ok',result:{reference:'downloads/r-1'}}}:null,
- ...(decision===null?{}:{decision:{proposalId,commandSha256:subjectSha256,decision,
-  decidedAt:new Date(NOW+1000).toISOString(),expiresAt:new Date(NOW+600000).toISOString(),
-  approver:{tenantId,actorId},policyRevision:'p1'}})};}
-
-function core({loseAck=false,decision='approved'}={}){
- const state={records:0,statusReads:0,committed:false,completed:false};
- return {state,
-  record:async({proposalId,subjectSha256,decision:choice='approved'})=>{
-   state.records++;
-   if(loseAck)throw Object.assign(Error('synthetic lost ACK'),{effect:'unknown'});
-   state.committed=true;state.choice=choice;
-   return statusDoc({proposalId,subjectSha256,decision:choice});},
-  status:async({proposalId,subjectSha256})=>{
-   state.statusReads++;
-   return statusDoc({proposalId,subjectSha256,decision:state.committed?state.choice:null,
-    completed:state.completed});}};
+function statusDoc({decision,completed,revoked=false,proposal=proposalId,subject=subjectSha256}={}){
+ return {schema:'meri-browser-approval-status/1',proposalId:proposal,subjectSha256:subject,
+  toolUseId:'toolu_01HZX',permissive:false,unknown:false,
+  ...(revoked?{revoked:true}:{}),
+  consumption:completed?{state:'COMPLETED',consumedAtMs:NOW+2000,
+   result:{outcome:'ok',result:{reference:'downloads/r-1'}}}:null,
+  ...(decision===null||decision===undefined?{}:{decision:{proposalId:proposal,commandSha256:subject,
+   decision,decidedAt:new Date(NOW).toISOString(),expiresAt:new Date(NOW+600000).toISOString(),
+   approver:{tenantId,actorId},policyRevision:'p1'}})};
 }
 
-function setup({state='PREPARED',coreOptions,principalActorId=actorId}={}){
- const e=entry(state),clock=()=>NOW,browser=core(coreOptions);
- const journal={read:async({key})=>key.deliveryId===deliveryId?e:null,
-  list:async()=>({entries:[e],next:null})};
- const port={record:browser.record,status:browser.status};
- const owner=createIntentApprovalOwner({journal,browser:port,now:clock,limits:{maxRequestMs:5000},enabled:true});
- const principal={tenantId,actorId:principalActorId,role:'member',permissions:[],clientIds:[],
-  membershipRevision:'m1'};
- const list=extra=>owner.list({principal,request:{conversationId,...extra}});
- const decide=(extra={},who=principal)=>owner.decide({principal:who,request:{conversationId,deliveryId,
-  proposalId,subjectSha256,decision:'approved',...extra}});
- return {e,browser,port,owner,principal,list,decide};
+/** The inert lowest transport; only these four calls exist. */
+function joined({loseAck=false}={}){
+ const state={committed:false,completed:false,revoked:false,records:0,statuses:0,forbidden:0,choice:null};
+ const calls=[];
+ const transport={
+  lifetime:(signal,deadlineMs)=>createOperationLifetime({deadlineMs:Math.min(deadlineMs??NOW+5000,NOW+5000),
+   now:()=>NOW,errorFactory:code=>Object.assign(Error(code),{code})}),
+  proposal:async()=>({schemaVersion:1,metadata:{record},run:{policyRevision:'p1'}}),
+  selected:async()=>({}),
+  post:async(_life,route,{body})=>{
+   calls.push(route);
+   if(route.endsWith('/consume')||route.endsWith('/result')){state.forbidden++;
+    throw Error('public path must not consume or report an outcome');}
+   if(route.endsWith('/record')){
+    state.records++;state.committed=true;state.choice=body.decision;
+    const d=statusDoc({decision:body.decision}).decision;
+    if(loseAck)throw Object.assign(Error('synthetic lost ACK'),{effect:'unknown'});
+    return {value:{decision:d,checkedAtMs:NOW,revoked:false},sessionExpiresAtMs:NOW+50000};
+   }
+   state.statuses++;
+   return {value:statusDoc({decision:state.committed?state.choice:null,completed:state.completed,
+    revoked:state.revoked}),sessionExpiresAtMs:NOW+50000};
+  }};
+ const ops=createBrowserApprovalOperations({transport,now:()=>NOW});
+ return {state,calls,ops,port:{record:ops.record,status:ops.status}};
 }
 
-test('a retained browser preparation lists as a bounded proposal and decides through Core record',async()=>{
+function setup({now=NOW,adaptorOptions}={}){
+ const e=entry(),joinedPort=joined(adaptorOptions);
+ const principal={tenantId,actorId,role:'member',permissions:[],clientIds:[],membershipRevision:'m1'};
+ const owner=createIntentApprovalOwner({journal:{read:async()=>e,list:async()=>({entries:[e],next:null})},
+  browser:joinedPort.port,now:()=>now,limits:{maxRequestMs:5000},enabled:true});
+ return {e,...joinedPort,owner,principal,
+  list:extra=>owner.list({principal,request:{conversationId,...extra}}),
+  decide:(extra={},who=principal)=>owner.decide({principal:who,request:{conversationId,deliveryId,
+   proposalId,subjectSha256,decision:'approved',...extra}})};
+}
+
+test('the REAL adapter record envelope becomes a recorded decision on both choices',async()=>{
  const s=setup();
  const page=await s.list();
- assert.equal(page.intents.length,1);
- const item=page.intents[0];
- assert.equal(item.kind,'browser_action');
- assert.equal(item.state,'prepared');
- assert.equal(item.proposal.display.tool,'browser_click');
- assert.equal(item.proposal.display.pageOrigin,'https://app.capiro.example');
- assert.equal(Object.hasOwn(item.proposal.display,'rawInput'),false);
- assert.equal(item.decision,null);
- assert.equal(item.phase,'awaiting_approval');
- // The REAL public receiver admits the owner's own answer.
+ assert.equal(page.intents[0].phase,'awaiting_approval');
+ assert.equal(page.intents[0].decision,null);
+ const approved=await s.decide();
+ assert.equal(approved.status,'browser_decision_recorded');
+ assert.equal(approved.decision.decision,'approved');
+ assert.equal(Object.hasOwn(approved,'outcome'),false);
+ assert.equal(s.state.records,1);
+ assert.equal(s.state.forbidden,0,'no consume and no result write from the public path');
  const admitted=await receiveIntentsResponse('list',200,JSON.stringify(page),
   {request:{conversationId,after:null,limit:20}});
  assert.equal(admitted.intents[0].kind,'browser_action');
-
- const answer=await s.decide();
- assert.equal(answer.status,'browser_decision_recorded');
- assert.equal(answer.decision.decision,'approved');
- assert.equal(s.browser.state.records,1,'exactly one Core record call');
- assert.equal(Object.hasOwn(s.port,'consume'),false,'the public path holds no consume port at all');
- const receiver=await receiveIntentsResponse('decide',200,JSON.stringify(answer),
-  {request:{conversationId,deliveryId,proposalId,subjectSha256,decision:'approved'},
-   proposal:item.proposal});
- assert.equal(receiver.status,'browser_decision_recorded');
 });
 
-test('rejection is recorded, still not an execution',async()=>{
+test('rejection is recorded without execution evidence',async()=>{
  const s=setup();
  const answer=await s.decide({decision:'rejected'});
  assert.equal(answer.status,'browser_rejected');
  assert.equal(answer.decision.decision,'rejected');
- assert.equal(Object.hasOwn(answer,'outcome'),false);
- assert.equal(s.browser.state.records,1);
+ assert.equal(s.state.forbidden,0);
 });
 
-test('a lost ACK stays UNKNOWN and reload reads the SAME identity',async()=>{
- const s=setup({coreOptions:{loseAck:true}});
- await assert.rejects(()=>s.decide(),/INTENT_EXECUTION_UNKNOWN|APPROVAL_DECISION_UNKNOWN/u);
- assert.equal(Object.hasOwn(s.port,'consume'),false);
- const page=await s.list();
- assert.equal(page.intents[0].proposal.proposalId,proposalId);
- assert.ok(page.intents[0].decision===null||page.intents[0].decision==='unavailable'||
-  page.intents[0].decision.decision==='approved','reload keeps the SAME proposal identity');
- assert.equal(s.browser.state.records,1,'a lost ACK never triggers a second record call');
-});
-
-test('foreign subject, approver, expiry and scopes are refused before any Core call',async()=>{
- const s=setup();
- await assert.rejects(()=>s.decide({subjectSha256:'0'.repeat(64)}),/INTENT_MISMATCH/u);
- await assert.rejects(()=>s.decide({}, {tenantId,actorId:id(9),clientIds:[]}),/APPROVER_REFUSED/u);
- await assert.rejects(()=>s.decide({deliveryId:'browser:'+'1'.repeat(64)}),/INTENT_NOT_FOUND|INTENT_NOT_PREPARED/u);
- assert.equal(s.browser.state.records,0,'no Core call before a refusal');
- const expired=entry();
- expired.outcome.result.record={...record,request:{...preparation,expiresAtMs:NOW-1}};
- expired.outcome.result.recordSha256=hash(expired.outcome.result.record);
- const clock=()=>NOW,journal={read:async()=>expired,list:async()=>({entries:[expired],next:null})};
- const raw=core();const owner=createIntentApprovalOwner({journal,browser:{record:raw.record,status:raw.status},now:clock,limits:{maxRequestMs:5000},enabled:true});
- const principal={tenantId,actorId,role:'member',permissions:[],clientIds:[],membershipRevision:'m1'};
- await assert.rejects(()=>owner.decide({principal,request:{conversationId,deliveryId,proposalId,subjectSha256,
-  decision:'approved'}}),/INTENT_NOT_APPROVABLE|INTENT_EXPIRED/u);
-});
-
-test('a completed consumption is the ONLY source of an executed outcome',async()=>{
+test('status evidence before and after a COMPLETED observation',async()=>{
  const s=setup();
  await s.decide();
  let page=await s.list();
+ assert.equal(page.intents[0].decision.decision,'approved');
  assert.equal(page.intents[0].execution,null,'a recorded decision is not an execution');
- s.browser.state.completed=true;
+ s.state.completed=true;
  page=await s.list();
  assert.equal(page.intents[0].execution.state,'completed');
  assert.equal(page.intents[0].execution.outcome,'ok');
  assert.equal(page.intents[0].execution.reference,'downloads/r-1');
- assert.equal(s.browser.state.records,1,'reading does not record again');
+ assert.equal(s.state.records,1,'reading never records again');
+ assert.equal(s.state.forbidden,0);
+});
+
+test('a lost ACK stays UNKNOWN and reload recovers the SAME identity read-only',async()=>{
+ const s=setup({adaptorOptions:{loseAck:true}});
+ await assert.rejects(()=>s.decide(),/INTENT_EXECUTION_UNKNOWN|APPROVAL_DECISION_UNKNOWN/u);
+ assert.equal(s.state.forbidden,0);
+ const before=s.state.records;
+ const page=await s.list();
+ assert.equal(page.intents[0].proposal.proposalId,proposalId);
+ assert.equal(page.intents[0].decision.decision,'approved');
+ assert.equal(s.state.records,before,'no second record call on reload');
+});
+
+test('revoked, foreign identity and hash mismatches are refused or shown truthfully',async()=>{
+ // Revoked approval: shown as no longer usable, never approved.
+ const revoked=setup();
+ await revoked.decide();
+ revoked.state.revoked=true;
+ const page=await revoked.list();
+ assert.equal(page.intents[0].decision,null);
+ assert.equal(page.intents[0].phase,'expired');
+
+ // Mismatched retained preparation (adapter's own identity check).
+ const s=setup();
+ const bad={...s.ops};
+ await assert.rejects(()=>createBrowserApprovalOperations({transport:{
+  lifetime:()=>createOperationLifetime({deadlineMs:NOW+5000,now:()=>NOW,errorFactory:c=>Object.assign(Error(c),{code:c})}),
+  proposal:async()=>({schemaVersion:1,metadata:{record:{...record,proposalId:id(9)}},run:{policyRevision:'p1'}}),
+  selected:async()=>({}),
+  post:async()=>{throw Error('must not post');}},now:()=>NOW}).record({proposalId,subjectSha256,
+   decision:'approved',approver:{tenantId,actorId},binding}),/ACCESS_DENIED/u);
+
+ await assert.rejects(()=>s.decide({subjectSha256:'0'.repeat(64)}),/INTENT_MISMATCH/u);
+ await assert.rejects(()=>s.decide({proposalId:id(999)}),/INTENT_MISMATCH/u);
+ await assert.rejects(()=>s.decide({}, {tenantId,actorId:id(9),clientIds:[]}),/INTENT_MISMATCH|APPROVER_REFUSED/u);
+ assert.equal(s.state.records,0,'refusals happen before any Core call');
+});
+
+test('an expired proposal refuses and a browser delivery cursor is accepted',async()=>{
+ const expired=setup({now:NOW+600001});
+ await assert.rejects(()=>expired.decide(),/INTENT_EXPIRED/u);
+ assert.equal(expired.state.records,0);
+ const s=setup();
+ await s.list({after:deliveryId});
+ const admitted=await receiveIntentsResponse('list',200,
+  JSON.stringify({conversationId,intents:[],next:null}),
+  {request:{conversationId,after:deliveryId,limit:20}});
+ assert.equal(admitted.next,null);
 });
