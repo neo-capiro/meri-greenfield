@@ -19,12 +19,12 @@ export async function receiveConversationLifecycleResponse(route,httpStatus,byte
  if(!same(result.sourceBinding,currentView.run.binding))fail('VIEW_MISMATCH');
  if(route==='inspect'){if(result.checkpointId!==request.checkpointId||result.lastEventSequence>currentView.lastSequence)fail('CHECKPOINT_MISMATCH');return result;}
  if(result.controlId!==request.controlId||result.intent!==request.intent||result.inputSha256!==await digest(new TextEncoder().encode(canonicalize(request))))fail('REQUEST_MISMATCH');
- if(['resume','fork'].includes(request.intent)&&result.checkpointId!==null&&result.checkpointId!==request.checkpointId)fail('CHECKPOINT_MISMATCH');
+ if(['resume','fork','takeover.end'].includes(request.intent)&&result.checkpointId!==null&&result.checkpointId!==request.checkpointId)fail('CHECKPOINT_MISMATCH');
  const source=result.sourceBinding,target=result.targetBinding;
- if(target!==null){if(!['resume','fork'].includes(request.intent)||target.tenantId!==source.tenantId||target.actorId!==source.actorId||['runId','attemptId','workerId'].some(k=>target[k]===source[k])||result.admissionReceiptId===null)fail('TARGET_MISMATCH');
-  if(request.intent==='resume'&&(target.conversationId!==source.conversationId||target.writerFence<=source.writerFence||result.retirementReceiptId===null)||request.intent==='fork'&&(target.conversationId===source.conversationId||result.retirementReceiptId!==null))fail('TARGET_MISMATCH');
+ if(target!==null){if(!['resume','fork','takeover.end'].includes(request.intent)||target.tenantId!==source.tenantId||target.actorId!==source.actorId||['runId','attemptId','workerId'].some(k=>target[k]===source[k])||result.admissionReceiptId===null)fail('TARGET_MISMATCH');
+  if(['resume','takeover.end'].includes(request.intent)&&(target.conversationId!==source.conversationId||target.writerFence<=source.writerFence||result.retirementReceiptId===null)||request.intent==='fork'&&(target.conversationId===source.conversationId||result.retirementReceiptId!==null))fail('TARGET_MISMATCH');
  }
- if(['resume','fork'].includes(request.intent)&&result.state==='APPLIED'&&(target===null||result.checkpointId===null||result.admissionReceiptId===null||request.intent==='resume'&&result.retirementReceiptId===null))fail('TARGET_MISMATCH');
- if(!['resume','fork'].includes(request.intent)&&(target!==null||result.admissionReceiptId!==null||result.retirementReceiptId!==null))fail('TARGET_MISMATCH');
+ if(['resume','fork','takeover.end'].includes(request.intent)&&result.state==='APPLIED'&&(target===null||result.checkpointId===null||result.admissionReceiptId===null||['resume','takeover.end'].includes(request.intent)&&result.retirementReceiptId===null))fail('TARGET_MISMATCH');
+ if(!['resume','fork','takeover.end'].includes(request.intent)&&(target!==null||result.admissionReceiptId!==null||result.retirementReceiptId!==null))fail('TARGET_MISMATCH');
  return result;
 }

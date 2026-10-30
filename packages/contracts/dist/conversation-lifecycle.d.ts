@@ -18,6 +18,10 @@ export type ConversationLifecycleControlRequest =
     }
   | {
       controlId: string;
+      intent: 'takeover.begin';
+    }
+  | {
+      controlId: string;
       intent: 'approval.wait';
       proposalId: string;
     }
@@ -40,11 +44,17 @@ export type ConversationLifecycleControlRequest =
       intent: 'fork';
       checkpointId: string;
       checkpointSha256: string;
+    }
+  | {
+      controlId: string;
+      intent: 'takeover.end';
+      checkpointId: string;
+      checkpointSha256: string;
     };
 
 export interface ConversationLifecycleControlReceipt {
   controlId: string;
-  intent: 'steer' | 'pause' | 'approval.wait' | 'answer' | 'resume' | 'fork';
+  intent: 'steer' | 'pause' | 'approval.wait' | 'answer' | 'resume' | 'fork' | 'takeover.begin' | 'takeover.end';
   sourceBinding: Canonical_RunBinding_84F2304C;
   inputSha256: string;
   state: 'PENDING' | 'DISPATCHING' | 'APPLIED' | 'UNKNOWN';

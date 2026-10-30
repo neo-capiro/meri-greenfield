@@ -60,6 +60,23 @@
               "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
             },
             "intent": {
+              "const": "takeover.begin"
+            }
+          },
+          "required": [
+            "controlId",
+            "intent"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "controlId": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+            },
+            "intent": {
               "const": "approval.wait"
             },
             "proposalId": {
@@ -180,6 +197,33 @@
             "checkpointSha256"
           ],
           "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "controlId": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+            },
+            "intent": {
+              "const": "takeover.end"
+            },
+            "checkpointId": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+            },
+            "checkpointSha256": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            }
+          },
+          "required": [
+            "controlId",
+            "intent",
+            "checkpointId",
+            "checkpointSha256"
+          ],
+          "additionalProperties": false
         }
       ]
     },
@@ -197,7 +241,9 @@
             "approval.wait",
             "answer",
             "resume",
-            "fork"
+            "fork",
+            "takeover.begin",
+            "takeover.end"
           ]
         },
         "sourceBinding": {
