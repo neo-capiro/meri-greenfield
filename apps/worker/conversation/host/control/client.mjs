@@ -17,6 +17,13 @@ import {HOST_CONTROL_PATH,HOST_CONTROL_MAX_BYTES,HOST_CONTROL_PURPOSES,
 
 const fail=()=>{throw Object.assign(new Error('HOST_CONTROL_UNAVAILABLE'),{code:'HOST_CONTROL_UNAVAILABLE'});};
 const same=(a,b)=>canonicalSha256(a)===canonicalSha256(b);
+/** Envelope freshness: a trusted answer is checked at or before this clock and no older than the
+ * configured max freshness. A future-dated or stale envelope is refused, not partially consumed. */
+const fresh=(answer,nowMs,maxFreshMs)=>{
+ if(!Number.isSafeInteger(answer.checkedAtMs)||!Number.isSafeInteger(answer.currentUntilMs))return false;
+ if(answer.checkedAtMs>nowMs||answer.currentUntilMs<=nowMs)return false;
+ return answer.currentUntilMs-answer.checkedAtMs<=maxFreshMs;
+};
 const bodyResponse=(res,signal,maxResponse)=>new Promise((resolve,reject)=>{
  let size=0,done=false;const chunks=[];
  const end=(error,bytes)=>{if(done)return;done=true;error?reject(error):resolve(bytes);};
@@ -97,8 +104,10 @@ export function createHostCurrentnessClient({allocation,binding,hostIdentity,pur
     const answer=hostFactsResponse(response,request);
     // A valid envelope nonce is not enough: the DOMAIN payload must validate against the canonical
     // facts contract for THIS exact binding, and its fresh cutoff must still be in the future.
-    assertBrowserHostFacts(answer.facts,{binding:b});
-    if(answer.currentUntilMs<=now())fail();
+    if(!fresh(answer,now(),maxFreshMs))fail();
+    const facts=assertBrowserHostFacts(answer.facts,{binding:b});
+    // The INNER payload must still be live too: an outer envelope cannot rescue an expired document.
+    if(facts.currentUntilMs<=now()||facts.deadlineMs<=now())fail();
     return answer;
    }catch{fail();}
   },
@@ -113,10 +122,10 @@ export function createHostCurrentnessClient({allocation,binding,hostIdentity,pur
     const answer=hostWorkflowResponse(response,request);
     // Canonical shape of the resolved workflow payload; the admission owner validates its content.
     const workflow=answer.workflow;
-    if(!workflow||typeof workflow!=='object'||Array.isArray(workflow)||typeof workflow.enabled!=='boolean'||
+    if(!workflow||typeof workflow!=='object'||Array.isArray(workflow)||workflow.enabled!==true||
      typeof workflow.manifestSha256!=='string'||!/^[0-9a-f]{64}$/u.test(workflow.manifestSha256)||
      !workflow.manifest||typeof workflow.manifest!=='object'||Array.isArray(workflow.manifest))fail();
-    if(answer.currentUntilMs<=now())fail();
+    if(!fresh(answer,now(),maxFreshMs))fail();
     return answer;
    }catch{fail();}
   },
@@ -130,8 +139,11 @@ export function createHostCurrentnessClient({allocation,binding,hostIdentity,pur
     const response=await perform(HOST_HOLD_PATH,request,HOST_HOLD_WIRE_MAX_BYTES,signal);
     const answer=hostHoldResponse(response,request);
     // The verified custody is bound to this exact run and must still be live on this clock.
+    if(!fresh(answer,now(),maxFreshMs))fail();
     const custody=assertBrowserCustody(answer.custody,{binding:b});
-    if(custody.expiresAtMs<=now()||answer.currentUntilMs<=now())fail();
+    // The verified custody must describe THIS authenticated host allocation, not any matching run.
+    if(custody.hostId!==a.hostId||custody.generation!==a.generation)fail();
+    if(custody.expiresAtMs<=now())fail();
     return answer;
    }catch{fail();}
   },
