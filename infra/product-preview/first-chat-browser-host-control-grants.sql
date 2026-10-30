@@ -7,7 +7,9 @@ SELECT CASE WHEN (:{?phase_browser_host_control_grants})::int = 1 THEN 'ok'
 BEGIN;
 DO $$ BEGIN
  IF current_database()<>'capiro' OR current_user<>session_user THEN RAISE EXCEPTION 'MERI_BROWSER_HOST_INSTALLER_REQUIRED'; END IF;
- IF NOT EXISTS(SELECT 1 FROM pg_roles WHERE rolname='meri_control_runtime' AND NOT rolcanlogin AND NOT rolsuper AND NOT rolcreatedb AND NOT rolcreaterole AND NOT rolbypassrls) THEN
+ -- The existing Control service role may be LOGIN. This readonly privilege
+ -- join neither changes login posture nor proves execution quiescence.
+ IF NOT EXISTS(SELECT 1 FROM pg_roles WHERE rolname='meri_control_runtime' AND NOT rolsuper AND NOT rolcreatedb AND NOT rolcreaterole AND NOT rolreplication AND NOT rolbypassrls) THEN
   RAISE EXCEPTION 'MERI_BROWSER_HOST_CONTROL_ROLE_REQUIRED';
  END IF;
 END $$;
