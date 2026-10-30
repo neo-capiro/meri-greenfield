@@ -1,0 +1,39 @@
+Retained browser handoff over authenticated host currentness — 30 October 2026
+
+Purpose and ownership
+The native owner must compare a successor request with canonical handoff metadata,
+not trust a worker-supplied target. Reuse journal.browserCustody.currentHost and its
+existing readExecution lineage. No second journal, grant or public viewer contract.
+The latest edge supplies custody, filtered-snapshot return digest, exact target
+binding and control ID. Browser-purpose mTLS currentness carries this optional
+closed record. SDK and Bash purpose responses reject it. The native composition
+returns the validated record to its existing browser owner.
+
+Dependency
+Includes merged Runtime405 physical allocation and readonly lock_allocation
+function unchanged. App/Memory owns apps/control/browser-hosts and its canonical
+same-client Core/currentness composition. This lane owns native adoption and
+host/control validation. Both retain original host generation, bounded custody
+expiry and stable browser owner identity. Relays remain immutable per target.
+
+Validation
+14 affected lifecycle/currentness tests pass, zero skips; runtime TypeScript
+passes. Existing local PostgreSQL16 ordinary-role qualification passes with exact
+currentHost handoff equal to canonical execution metadata, concurrent return
+replay, stale/foreign refusal, target cancellation and cumulative usage delta.
+No service/database reset, model prompt or cloud operation. The qualification
+script retains synthetic Core identity/native host; it is not a live-flow proof.
+Known five legacy next-run-owner fixture failures reproduce on untouched403,
+as recorded in BROWSER-SUCCESSOR-CURRENTNESS-20261030.txt; not counted passing.
+
+Next implementation
+Native successor attachment must consume the exact private prepared snapshot,
+retain the physical context, close source relays, create fresh immutable target
+SDK/broker/viewer resources and retain ordinary currentness denial for the source.
+Join allocation/routing/bootstrap and run the combined native flow before Release
+activation and existing Hermes acceptance. This wire change does not complete it.
+
+Deletion and limits
+Replaced the browser-currentness alias with its closed purpose-specific validator;
+the SDK/Bash validator is unchanged. No removed subsystem or test-count reduction.
+No public package, dependency, deployment or activation change in this slice.
