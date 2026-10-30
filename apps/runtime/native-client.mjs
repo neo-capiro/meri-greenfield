@@ -9,6 +9,7 @@ import {PINNED_NATIVE_UNANSWERED,PINNED_NATIVE_ERROR_BODY_MAX_BYTES,pinnedStatus
 import {fault} from './config.mjs';
 import {classifyStatus} from './telemetry/counting.mjs';
 import {NATIVE_FILE_LIMITS,nativeFileBindingHeader,assertNativeFileRequest,assertNativeFileRestore} from '../../packages/contracts/runtime-0.2/files.mjs';
+import {browserOperationName,browserOperationCeilingMs,assertBrowserOperationRequest,BROWSER_NATIVE_LIMITS} from '../../packages/contracts/runtime-0.2/browser-tools.mjs';
 const fileOperations=new Set(['runner/checkpoint/capture','runner/checkpoint/complete','runner/files/restore']);
 // The longer window is available only to bounded original-run operations.
 // Each caller must also pass its absolute lease-derived deadline; other operations
@@ -56,11 +57,11 @@ export function createNativeCapabilityClient({configuration,credential,fetch:tra
   try{return JSON.parse(new TextDecoder('utf-8',{fatal:true}).decode(Buffer.concat(parts)));}catch{throw fault('NATIVE_RESPONSE_INVALID');}
  }
  async function attempt(operation,input,{signal,deadlineMs,maxRequestMs:requestMaxMs}){
-  const requestCap=operation==='retention/sweep'?RETENTION_SWEEP_BUDGET.nativeMs:startupOperations.has(operation)?STARTUP_REQUEST_MAX_MS:null;
+  const browserOperation=browserOperationName(operation),requestCap=browserOperation?browserOperationCeilingMs(operation):operation==='retention/sweep'?RETENTION_SWEEP_BUDGET.nativeMs:startupOperations.has(operation)?STARTUP_REQUEST_MAX_MS:null;
   if(requestMaxMs!==undefined&&(requestCap===null||!Number.isSafeInteger(requestMaxMs)||requestMaxMs<1||requestMaxMs>requestCap||!Number.isSafeInteger(deadlineMs)))throw fault('NATIVE_CONFIGURATION');
   const limitMs=operation==='runner/load'?loadMaxRequestMs:requestMaxMs??maxRequestMs;
   const life=createOperationLifetime({deadlineMs:Math.min(deadlineMs??now()+limitMs,now()+limitMs),now,signal,errorFactory:fault});let response,dispatched=false,transient=false,cause,observedError,startedAt,turnTelemetry;
-  try{const payload=JSON.stringify(fileOperations.has(operation)?assertNativeFileRequest(operation,input):data(input));if(Buffer.byteLength(payload)>(fileOperations.has(operation)?NATIVE_FILE_LIMITS.requestBytes:2097152))throw fault('NATIVE_REQUEST_LIMIT');
+  try{const payload=JSON.stringify(browserOperation?assertBrowserOperationRequest(operation,input):fileOperations.has(operation)?assertNativeFileRequest(operation,input):data(input));if(Buffer.byteLength(payload)>(browserOperation?BROWSER_NATIVE_LIMITS.requestBytes:fileOperations.has(operation)?NATIVE_FILE_LIMITS.requestBytes:2097152))throw fault('NATIVE_REQUEST_LIMIT');
    response=await life.run(signal=>{dispatched=true;try{turnTelemetry=runnerTurnTelemetry();startedAt=turnTelemetry?.now();}catch{}return transport(c.origin+'/v1/'+operation,{method:'POST',redirect:'error',headers:{authorization:'Bearer '+credential,'content-type':'application/json',...(fileOperations.has(operation)?{'x-meri-run-binding':nativeFileBindingHeader(input.binding)}:{})},body:payload,signal});});
    if(response.status!==200){
     cause=pinnedStatusRefusal(response.status);
@@ -69,7 +70,7 @@ export function createNativeCapabilityClient({configuration,credential,fetch:tra
     throw fault('NATIVE_UNAVAILABLE');
    }
    if(!json(response))throw fault('NATIVE_UNAVAILABLE');
-   const value=await body(response,life,operation==='runner/files/restore'?NATIVE_FILE_LIMITS.requestBytes:c.maxResponseBytes);life.check();return operation==='runner/files/restore'?assertNativeFileRestore(value,input.binding):data(value);
+   const value=await body(response,life,browserOperation?Math.min(c.maxResponseBytes,BROWSER_NATIVE_LIMITS.responseBytes):operation==='runner/files/restore'?NATIVE_FILE_LIMITS.requestBytes:c.maxResponseBytes);life.check();return operation==='runner/files/restore'?assertNativeFileRestore(value,input.binding):data(value);
   }catch(error){
    observedError=error;const code=['DEADLINE','CANCELLED'].includes(error?.code)?error.code:'NATIVE_UNAVAILABLE',failure=fault(code);
    if(code==='NATIVE_UNAVAILABLE'){

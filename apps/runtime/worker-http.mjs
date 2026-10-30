@@ -10,17 +10,19 @@ import {assertExecutionIdentity} from '../control/conversations/execution-bounda
 import {storageMethod} from '../artifacts/storage/boundary.mjs';
 import {taskControlPage} from '../control/conversations/lifecycle/service.mjs';
 import {CHILD_DISPATCH_OPERATION,CHILD_SETTLE_OPERATION,assertChildOperationRequest} from '../control/conversations/lifecycle/child-assignments.mjs';
+import {browserOperationName,assertBrowserOperationRequest,BROWSER_NATIVE_LIMITS} from '../../packages/contracts/runtime-0.2/browser-tools.mjs';
 /** The two private child operations of the run owner: same route family, same authority fence, same service owner. */
 const childOperations=Object.freeze({[CHILD_DISPATCH_OPERATION]:'dispatchChild',[CHILD_SETTLE_OPERATION]:'settleChild'});
-export function createWorkerRunApplication({execution,createService,configuration,retention,now=Date.now,turnTelemetry}){
+export function createWorkerRunApplication({execution,createService,configuration,retention,browserOperations,now=Date.now,turnTelemetry}){
  let withRelease;try{withRelease=retention===undefined?null:storageMethod(retention,'withRelease');if(configuration.retention!==undefined&&!withRelease)throw Error();}catch{throw fault('WORKER_RETENTION_CONFIGURATION');}
  if(typeof execution?.authenticate!=='function'||typeof createService!=='function')throw fault('WORKER_EXECUTION_CONFIGURATION');
  return Object.freeze({async handle(request){const operation=async()=>{let life,route;try{
-  const url=new URL(request.url);route=/^\/internal\/conversations\/([a-z-]+)$/u.exec(url.pathname);if(!route||url.search||!Object.hasOwn(runOwnerOperations,route[1])&&!Object.hasOwn(childOperations,route[1]))return Response.json({error:{code:'NOT_FOUND'}},{status:404});if(request.method!=='POST')return Response.json({error:{code:'METHOD_NOT_ALLOWED'}},{status:405});
+  const url=new URL(request.url);route=/^\/internal\/conversations\/([a-z-]+)$/u.exec(url.pathname);if(!route||url.search||!Object.hasOwn(runOwnerOperations,route[1])&&!Object.hasOwn(childOperations,route[1])&&!browserOperationName(route[1]))return Response.json({error:{code:'NOT_FOUND'}},{status:404});if(request.method!=='POST')return Response.json({error:{code:'METHOD_NOT_ALLOWED'}},{status:405});
+  const browserOperation=browserOperationName(route[1]);
   const capability=request.headers.get('authorization');if(!/^Bearer [A-Za-z0-9._~+\/-]{1,8192}={0,2}$/u.test(capability??''))throw fault('WORKER_AUTHORITY_REFUSED');if(!/^application\/json(?:\s*;\s*charset=utf-8)?$/iu.test(request.headers.get('content-type')??'')||request.headers.get('content-encoding'))throw fault('WORKER_REQUEST_REFUSED');
   let deadlineMs=now()+configuration.limits.requestMs;life=createOperationLifetime({deadlineMs,now,signal:request.signal,errorFactory:fault});const length=request.headers.get('content-length');if(length!==null&&!/^(0|[1-9][0-9]*)$/u.test(length))throw fault('WORKER_REQUEST_REFUSED');
-  const body=await jsonBody({body:request.body,length:length===null?null:Number(length)},configuration.limits.requestBytes,life,life.check),
-   input=Object.hasOwn(childOperations,route[1])?assertChildOperationRequest(route[1],body):assertRunOwnerRequest(route[1],body),credential=capability.slice(7);try{turnTelemetry?.bind(input.binding);}catch{}let pinned;
+  const body=await jsonBody({body:request.body,length:length===null?null:Number(length)},browserOperation?Math.min(configuration.limits.requestBytes,BROWSER_NATIVE_LIMITS.requestBytes):configuration.limits.requestBytes,life,life.check),
+   input=browserOperation?assertBrowserOperationRequest(browserOperation,body):Object.hasOwn(childOperations,route[1])?assertChildOperationRequest(route[1],body):assertRunOwnerRequest(route[1],body),credential=capability.slice(7);try{turnTelemetry?.bind(input.binding);}catch{}let pinned;
   async function fresh(){let value;try{value=await life.run(signal=>execution.authenticate({credential,binding:input.binding,signal}));}
    catch(error){const code=productFailure(error)?.code??error?.code;if(['STORE_UNAVAILABLE','STORE_COMMIT_UNKNOWN','STORE_RELEASE_UNKNOWN','EXECUTION_STORE_UNAVAILABLE','EXECUTION_STORE_COMMIT_UNKNOWN'].includes(code))markAuthorityUnavailable(error);throw error;}
    const identity=assertExecutionIdentity(value.execution);if(!same(identity.binding,input.binding)||!Array.isArray(value.scopes)||!value.scopes.length||value.scopes.length>100)throw fault('WORKER_AUTHORITY_REFUSED');
@@ -28,14 +30,25 @@ export function createWorkerRunApplication({execution,createService,configuratio
    const current={execution:identity,scopes:value.scopes,selectedClientId:value.selectedClientId,policyRevision:value.policyRevision};
    if(pinned&&!same(pinned,current))throw fault('WORKER_AUTHORITY_CHANGED');pinned??=current;deadlineMs=Math.min(deadlineMs,identity.expiresAtMs);life.limitDeadline(deadlineMs);return current;
   }
-  await fresh();const service=await life.run(()=>createService({credential,binding:input.binding}));
+  await fresh();let result;
+  if(browserOperation){
+   if(typeof browserOperations?.prepare!=='function')throw fault('WORKER_REQUEST_REFUSED');
+   const prepared=await life.run(signal=>browserOperations.prepare({operation:browserOperation,request:input,execution:pinned.execution,scopes:pinned.scopes,signal,deadlineMs:life.deadline()}));
+   // Only the trusted policy owner can select a longer browser operation. The
+   // request body cannot increase any deadline; ordinary routes retain theirs.
+   life.check();life.close();deadlineMs=Math.min(prepared.deadlineMs,pinned.execution.expiresAtMs);
+   life=createOperationLifetime({deadlineMs,now,signal:request.signal,errorFactory:fault});
+   result=await life.run(signal=>prepared.execute({signal}));
+  }else{
+  const service=await life.run(()=>createService({credential,binding:input.binding}));
   const method=Object.hasOwn(childOperations,route[1])?childOperations[route[1]]:route[1]==='next-controls'?taskControlPage:runOwnerOperations[route[1]];
   if(typeof service?.[method]!=='function')throw fault('WORKER_REQUEST_REFUSED');
   // Control polling uses the canonical journal's task reader under these two current execution checks.
   // Other operations retain their service observations; no user session or remote Core admission is minted here.
-  const result=await life.run(signal=>service[method](route[1]==='next-controls'
+  result=await life.run(signal=>service[method](route[1]==='next-controls'
    ?{binding:input.binding,scopes:pinned.scopes,selectedClientId:pinned.selectedClientId,after:input.after??0,signal}
    :{credential,...input,signal}));
+  }
   // Terminal publication consumes current-run authority. Acknowledge only the
   // canonical event the service committed and rechecked; no further work is admitted.
   if(route[1]==='publish'&&input.event.type==='run.status'&&['completed','failed','cancelled'].includes(input.event.data?.state)){
@@ -44,7 +57,7 @@ export function createWorkerRunApplication({execution,createService,configuratio
       !same({eventId:result.eventId,createdAt:result.createdAt,type:result.type,data:result.data},input.event))throw fault('WORKER_TERMINAL_RECEIPT_REFUSED');
   }else await fresh();
   life.check();
-  if((route[1]==='load'||route[1]==='next-controls'||route[1]==='upload-source'||route[1]==='procedure-resolve'||route[1]==='site-workflow-resolve')&&withRelease){
+  if((browserOperation||route[1]==='load'||route[1]==='next-controls'||route[1]==='upload-source'||route[1]==='procedure-resolve'||route[1]==='site-workflow-resolve')&&withRelease){
    const subject={tenantId:pinned.execution.binding.tenantId,kind:'conversation',subjectId:pinned.execution.binding.conversationId};
    // The final execution check is awaited: suppression must be rechecked under the
    // canonical serving lock and that lock must cover response serialization.

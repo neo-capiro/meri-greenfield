@@ -8,11 +8,22 @@
  * already aborted run signal. */
 import {createOperationLifetime} from '../../../../packages/runtime/operation-lifetime.mjs';
 import {browserPaths,disposeBrowserState} from './workspace.mjs';
+import {own,data} from '../../../../packages/contracts/commands-0.2/execution-boundary.mjs';
+import {validateShape,canonicalSha256} from '../../../../packages/contracts/validate.mjs';
 export const BROWSER_RUN_OUTCOMES=Object.freeze(['ended','failed','cancelled']);
 export const BROWSER_CLEANUP_SCHEMA='meri-browser-cleanup/1';
 /** Default and maximum cleanup budget; the drain hard limit (Q-T7) is the upper bound. */
 export const BROWSER_CLEANUP_MS=Object.freeze({default:30000,max:130000});
 const fault=(code,receipt)=>Object.assign(new Error(code),{code,...(receipt?{receipt}:{})});
+/** A remote acknowledgement proves only the same complete cleanup receipt the
+ * host lifecycle produces. Missing or unknown physical cleanup stays unknown. */
+export function assertBrowserCleanupReceipt(raw,{binding,outcome}){
+ const value=data(own(raw,['schema','binding','outcome','activation','egress','process','profile']));
+ validateShape('RunBinding',value.binding);
+ const open=value.activation==='open';
+ if(value.schema!==BROWSER_CLEANUP_SCHEMA||canonicalSha256(value.binding)!==canonicalSha256(binding)||value.outcome!==outcome||!BROWSER_RUN_OUTCOMES.includes(outcome)||!['open','held','not-applicable'].includes(value.activation)||value.profile!=='done'||value.egress!==(open?'done':'not-applicable')||value.process!==(open?'done':'not-applicable'))throw fault('BROWSER_CLEANUP_UNKNOWN');
+ return Object.freeze(value);
+}
 /** Trusted host ports (open fragment only): `egress.revoke({binding,policySha256},{signal})` resolves `{revoked:true}`
  * and `processes.waitForExit({binding,profile},{signal})` resolves `{exited:true}` only when the host has observed
  * that no process of this run's browser remains. */

@@ -37,21 +37,21 @@ const digest=b=>new X509Certificate(b).fingerprint256.replaceAll(':','').toLower
 const id=n=>`${String(n).padStart(8,'0')}-0000-4000-8000-000000000000`;
 const binding={tenantId:id(1),actorId:id(2),conversationId:id(3),runId:id(4),attemptId:id(5),workerId:id(6),writerFence:1};
 const context={tenantId:id(1),actorId:id(2),conversationId:id(3),runId:id(4),selectedClientId:null};
-async function fixture(t){
+async function fixture(t,{operationOwner,requestMs=2000}={}){
  const ownerInstanceId=id(7),hostId=id(8),until=Date.now()+120000,calls=[];let state='agent';
  const relay=createBrowserViewerRelay({ownerInstanceId,binding,expiresAtMs:until});
  await relay.bind({binding,pages:()=>[],controls:{readState:async()=>({state,leaseEpoch:1,leaseExpiresAtMs:until}),
   view:async()=>{throw Error('No page');},userInput:async()=>{calls.push('input');},handBack(){state='returning';},endLease(){state='returning';}}});
  const server=createBrowserViewerHostServer({bind:{address:'127.0.0.1',port:0},
   tls:{serverName:'browser.meri.internal',cert:material.hostCert,key:material.hostKey,clientCa:material.caCert},
-  peer:{name:'control.meri.internal',fingerprintSha256:digest(material.controlCert)},relay,requestMs:2000,
+  peer:{name:'control.meri.internal',fingerprintSha256:digest(material.controlCert)},relay,requestMs,operationOwner,
   custodyOwner:{async prepareResume({binding:source,custody}){assert.deepEqual(source,binding);calls.push('prepare');return {ownerInstanceId,leaseEpoch:custody.leaseEpoch+1,snapshotSha256:'f'.repeat(64)};}}});
  t.after(async()=>{await server.close();await relay.close();});const at=await server.start();
  const config={binding,ownerInstanceId,hostId,generation:1,endpoint:{address:at.address,port:at.port,serverName:'browser.meri.internal',serverFingerprintSha256:digest(material.hostCert)},
-  tls:{clientName:'control.meri.internal',cert:material.controlCert,key:material.controlKey,ca:material.caCert},requestMs:2000};
+  tls:{clientName:'control.meri.internal',cert:material.controlCert,key:material.controlKey,ca:material.caCert},requestMs};
  const client=createBrowserViewerHostClient(config);t.after(()=>client.close());
  const grant={context,binding,checkpoint:{checkpointId:binding.runId,checkpointSha256:'c'.repeat(64)},sessionKey:'a'.repeat(64),expiresAtMs:until,custody:{schema:'meri-browser-custody/1',binding,controlId:id(30),policySha256:'d'.repeat(64),ownerInstanceId,hostId,generation:1,leaseEpoch:1,expiresAtMs:until}};
- return {client,config,grant,hold:()=>{state='user';},calls};
+ return {client,config,grant,hold:()=>{state='user';},calls,server};
 }
 test('real mTLS admission and one-use connection use an exact private host allocation',async t=>{
  const f=await fixture(t);assert.equal((await f.client.read({binding})).admitted,true);f.hold();
@@ -82,4 +82,33 @@ test('held admission and explicit resume use the retained native custody owner o
  assert.equal(returned.leaseEpoch,2);assert.equal(returned.snapshotSha256,'f'.repeat(64));assert.deepEqual(f.calls,['prepare']);
  await assert.rejects(f.client.prepareResume({binding,custody:{...f.grant.custody,generation:2}}));
  assert.deepEqual(f.calls,['prepare']);
+});
+
+test('named browser operation crosses existing pinned mTLS and unwraps only its exact binding',async t=>{
+ const calls=[],f=await fixture(t,{operationOwner:{async executeBrowserOperation(operation,request,options){calls.push({operation,request,options});return {binding,result:{tools:[]}};}}});
+ assert.deepEqual(await f.client.executeBrowserOperation('runner/browser-tools',{binding},{deadlineMs:Date.now()+2000}),{tools:[]});
+ assert.equal(calls.length,1);assert.equal(calls[0].operation,'browser-tools');assert.deepEqual(calls[0].request,{binding});
+ await assert.rejects(f.client.executeBrowserOperation('browser-tools',{binding:{...binding,writerFence:2}},{deadlineMs:Date.now()+2000}));
+ await assert.rejects(f.client.executeBrowserOperation('browser-prepare',{binding,endpoint:'https://other.example'},{deadlineMs:Date.now()+2000}));
+ await assert.rejects(f.client.executeBrowserOperation('browser-call',{binding,requestId:'a'.repeat(64),tool:'browser_snapshot',args:{data:'x'.repeat(262144)}},{deadlineMs:Date.now()+2000}));
+ assert.equal(calls.length,1);
+ const wrong=createBrowserViewerHostClient({...f.config,endpoint:{...f.config.endpoint,serverFingerprintSha256:'0'.repeat(64)}});t.after(()=>wrong.close());
+ await assert.rejects(wrong.executeBrowserOperation('browser-tools',{binding},{deadlineMs:Date.now()+2000}));assert.equal(calls.length,1);
+});
+
+test('browser execution gets its named deadline while missing handler and foreign response stay refused',async t=>{
+ const slow=await fixture(t,{requestMs:100,operationOwner:{async executeBrowserOperation(){await new Promise(resolve=>setTimeout(resolve,160));return {binding,result:{tools:[]}};}}});
+ assert.deepEqual(await slow.client.executeBrowserOperation('browser-tools',{binding},{deadlineMs:Date.now()+2000}),{tools:[]});
+ const absent=await fixture(t);await assert.rejects(absent.client.executeBrowserOperation('browser-tools',{binding},{deadlineMs:Date.now()+2000}));
+ const foreign=await fixture(t,{operationOwner:{async executeBrowserOperation(){return {binding:{...binding,writerFence:2},result:{tools:[]}};}}});
+ await assert.rejects(foreign.client.executeBrowserOperation('browser-tools',{binding},{deadlineMs:Date.now()+2000}));
+});
+
+test('mTLS disconnect cancels pending browser owner work and cannot release late output',async t=>{
+ let activeSignal,entered;const started=new Promise(resolve=>{entered=resolve;});
+ const f=await fixture(t,{operationOwner:{executeBrowserOperation(_operation,_request,{signal}){activeSignal=signal;entered();return new Promise(resolve=>signal.addEventListener('abort',()=>resolve({binding,result:{tools:[]}}),{once:true}));}}});
+ const controller=new AbortController(),pending=assert.rejects(f.client.executeBrowserOperation('browser-tools',{binding},{signal:controller.signal,deadlineMs:Date.now()+2000}));
+ await started;controller.abort();await pending;
+ for(let n=0;n<50&&!activeSignal.aborted;n++)await new Promise(resolve=>setTimeout(resolve,5));
+ assert.equal(activeSignal.aborted,true);
 });

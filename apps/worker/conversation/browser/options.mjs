@@ -32,7 +32,8 @@ export function routeBrowserPermissions(browser,others){
 /** @param {any} fragment */
 function assertOpenFragment(fragment){
  const servers=Object.keys(fragment.mcpServers??{});
- if(servers.length!==1||servers[0]!==BROWSER_SERVER_NAME||fragment.mcpServers[BROWSER_SERVER_NAME]?.type!=='stdio'||typeof fragment.canUseTool!=='function')fail();
+ const server=fragment.mcpServers?.[BROWSER_SERVER_NAME],sdk=server?.type==='sdk'&&server.name===BROWSER_SERVER_NAME&&typeof server.instance?.connect==='function'&&typeof server.instance?.close==='function';
+ if(servers.length!==1||servers[0]!==BROWSER_SERVER_NAME||!sdk&&server?.type!=='stdio'||typeof fragment.canUseTool!=='function')fail();
  for(const key of ['allowedTools','disallowedTools'])if(!Array.isArray(fragment[key])||fragment[key].some((/** @type {unknown} */t)=>typeof t!=='string'||!t.startsWith(BROWSER_TOOL_PREFIX)))fail();
  const events=Object.keys(fragment.hooks??{});
  if(!events.includes('PreToolUse')||events.some(e=>!BROWSER_EVENTS.includes(e)))fail();

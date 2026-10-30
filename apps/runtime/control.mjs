@@ -48,6 +48,8 @@ import {own,nativeSignal} from '../../packages/contracts/commands-0.2/execution-
 import {createRuntimeUserPreferences} from './user-preferences.mjs';
 import {createPostgresScheduleOwner} from '../control/schedules/postgres-schedule-owner.mjs';
 import {createConfiguredRunCapabilityPolicy} from './product-ports/capability-policy.mjs';
+import {createConfiguredRunBrowserPolicy} from './product-ports/browser-policy.mjs';
+import {createBrowserOperations} from './browser-operations.mjs';
 import {bindDocumentsSessions} from './artifacts/session-binding.mjs';
 import {createAgentCoreIntentResolver} from './native-authority/execution-composition.mjs';
 import {createRunnerIntentsApplication,RUNNER_INTENT_PATHS} from './native-authority/intents-http.mjs';
@@ -138,6 +140,7 @@ export function assembleControl(options){
   ...(retention?{retention:retention.gate}:{})});
  const dispatcher=createTemporalConversationDispatcher({client,taskQueue:configuration.temporal.taskQueue,lifecycle:true,now,maxRequestMs:configuration.limits.requestMs});
  const capabilityPolicy=configuration.capabilityPlatform===undefined?undefined:createConfiguredRunCapabilityPolicy(configuration,{pool});
+ const browserOperations=ports.browserHosts?.executeBrowserOperation&&readCapabilityRole?createBrowserOperations({hosts:ports.browserHosts,readCapabilityRole,readBrowserPolicy:createConfiguredRunBrowserPolicy(configuration,{pool,now}),now}):undefined;
  const selected=configuration.sourceEnabled&&configuration.agentcore&&createReadsRuntime?createNativeSelectedComposition({configuration,pool,store,execution,createReadsRuntime:input=>createReadsRuntime({...input,capabilityPolicy,readCapabilityRole}),serviceFor:value=>createWorkerService(value),...(productContext?{revisionSource:value=>selectedDocumentRevisionSourceFor(productContext,value)}:{}),now}):null;
  if(selected)ports=composeRuntimePorts(ports,selected.ports);
  const uploadInputSource=ports.uploadApplicationFactory?.createSource?.({sessions,retention:retention?.gate,conversationStore:store});
@@ -155,7 +158,7 @@ export function assembleControl(options){
   const localService=createConversationLifecycleService({service:localBasic,store,dispatcher,sessions:localSessions,now,maxRequestMs:configuration.limits.requestMs,reconcileOriginal:createOriginalReconciler({native,now,timeoutMs:configuration.limits.requestMs}),nativeAdmission:ports.continuationAdmission,approvals:ports.approvals,retention:retention?retention.gate:null});
   return telemetry?telemetry.observeRunOwner(localService):localService;
  };
- const conversation=createConversationLifecycleApplication({service,now,maxRequestBytes:configuration.limits.requestBytes,maxRequestMs:configuration.limits.requestMs}),input=createConversationInputApplication({service,now,turnTelemetry,maxRequestBytes:configuration.limits.requestBytes,maxRequestMs:configuration.limits.requestMs}),initialInput=createConversationInitialInputApplication({service,now,maxRequestBytes:configuration.limits.requestBytes,maxRequestMs:Math.min(configuration.limits.requestMs,conversationInitialInputMetadata.limits.maxRequestMs)}),issuance=createActionSessionApplication({owner:sessions,now,maxRequestMs:configuration.limits.requestMs}),worker=createWorkerRunApplication({execution,createService:createWorkerService,configuration,now,turnTelemetry,...(retention?{retention:retention.gate}:{})});
+ const conversation=createConversationLifecycleApplication({service,now,maxRequestBytes:configuration.limits.requestBytes,maxRequestMs:configuration.limits.requestMs}),input=createConversationInputApplication({service,now,turnTelemetry,maxRequestBytes:configuration.limits.requestBytes,maxRequestMs:configuration.limits.requestMs}),initialInput=createConversationInitialInputApplication({service,now,maxRequestBytes:configuration.limits.requestBytes,maxRequestMs:Math.min(configuration.limits.requestMs,conversationInitialInputMetadata.limits.maxRequestMs)}),issuance=createActionSessionApplication({owner:sessions,now,maxRequestMs:configuration.limits.requestMs}),worker=createWorkerRunApplication({execution,createService:createWorkerService,configuration,now,turnTelemetry,...(browserOperations?{browserOperations}:{}),...(retention?{retention:retention.gate}:{})});
  const outreachStart=configuration.sourceEnabled&&configuration.agentcore?createOutreachStartApplication({core:createOutreachCore({origin:configuration.agentcore.identity.origin,now,maxRequestMs:configuration.limits.requestMs}),sessions,service,now,maxRequestMs:configuration.limits.requestMs}):null;
  const objectiveReadback=compileObjectiveGenerationConfiguration(configuration,'control').runs?createObjectiveGenerationReadback({runStarts:createPostgresObjectiveRunStartStore({enabled:true,pool,now}),store,objects:ports.artifactStore?.objects,retention:retention?.gate,now,maxRequestMs:configuration.limits.requestMs}):null;
  const approvalMetadataReadback=ports.intentApplication&&configuration.intents?.core?createApprovalMetadataReadback({metadata:createPostgresApprovalMetadataReader({pool}),store,retention:retention?.gate,now,maxRequestMs:configuration.limits.requestMs}):null;

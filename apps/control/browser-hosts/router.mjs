@@ -4,6 +4,7 @@ import {createOperationLifetime} from '../../../packages/runtime/operation-lifet
 import {storageMethod} from '../../artifacts/storage/boundary.mjs';
 import {assertRequestedBinding,fail,same} from './allocation.mjs';
 import {own,nativeSignal} from '../../../packages/contracts/commands-0.2/execution-boundary.mjs';
+import {assertBrowserOperationRequest,browserOperationCeilingMs} from '../../../packages/contracts/runtime-0.2/browser-tools.mjs';
 
 export function createBrowserHostRouter({allocations,tls,now=Date.now,requestMs=10000,connect=createBrowserViewerHostClient}){
  const resolve=storageMethod(allocations,'resolve');
@@ -11,9 +12,9 @@ export function createBrowserHostRouter({allocations,tls,now=Date.now,requestMs=
  // Trusted runtime configuration supplies this control identity. The allocator stores only peer public pins.
  const privateTls=Object.freeze({...own(tls,['clientName','cert','key','ca']),cert:Buffer.from(tls.cert),key:Buffer.from(tls.key),ca:Buffer.from(tls.ca)});
  const lifetime=new AbortController();
- async function call(binding,custody,signal,operation){
+ async function call(binding,custody,signal,operation,{deadlineMs=now()+requestMs,requestCeiling=requestMs}={}){
   nativeSignal(signal);const source=assertRequestedBinding(binding);
-  const life=createOperationLifetime({now,deadlineMs:now()+requestMs,signal:AbortSignal.any([lifetime.signal,...(signal?[signal]:[])]),errorFactory:()=>Object.assign(Error('BROWSER_HOST_ROUTE_UNAVAILABLE'),{code:'BROWSER_HOST_ROUTE_UNAVAILABLE'})});
+  const life=createOperationLifetime({now,deadlineMs:Math.min(deadlineMs,now()+requestCeiling),signal:AbortSignal.any([lifetime.signal,...(signal?[signal]:[])]),errorFactory:()=>Object.assign(Error('BROWSER_HOST_ROUTE_UNAVAILABLE'),{code:'BROWSER_HOST_ROUTE_UNAVAILABLE'})});
   let client;
   try{
    const before=await life.run(signal=>resolve({binding:source,custody,signal}));life.check();
@@ -33,6 +34,11 @@ export function createBrowserHostRouter({allocations,tls,now=Date.now,requestMs=
    // Binding comes from the already authenticated canonical custody, not request.ownerId or pageId.
    const binding=grant.custody.binding;
    return call(binding,grant.custody,signal,(client,signal)=>client.execute({route,request,grant,signal}));
+  },
+  executeBrowserOperation(operation,raw,{signal,deadlineMs}){
+   const request=assertBrowserOperationRequest(operation,raw),requestCeiling=browserOperationCeilingMs(operation);
+   if(!Number.isSafeInteger(deadlineMs))fail();
+   return call(request.binding,null,signal,(client,signal)=>client.executeBrowserOperation(operation,request,{signal,deadlineMs}),{deadlineMs,requestCeiling});
   },
   close(){lifetime.abort();privateTls.key.fill(0);privateTls.cert.fill(0);privateTls.ca.fill(0);},
  });

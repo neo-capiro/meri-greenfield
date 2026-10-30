@@ -3,7 +3,7 @@
  * PostToolUse receipts and page tracking, download port and verified disposal. Module-internal: callers outside this
  * directory use `createBrowserCapability` (index.mjs), which validates the binding/workspace/policy and applies the
  * activation gate first. Tests exercise the open path here because the shipped gate is held. */
-import {BROWSER_SERVER_NAME,playwrightServerConfig,validateBrowserInstallation} from './server.mjs';
+import {BROWSER_SERVER_NAME,playwrightServerConfig,validateBrowserInstallation,validateBrowserContextInstallation} from './server.mjs';
 import {createReceiptHook} from './receipts.mjs';
 import {createDownloadPort,validateSourceScopes} from './downloads.mjs';
 import {createPermissionGate} from './permissions.mjs';
@@ -18,8 +18,9 @@ const fail=()=>{throw Object.assign(new Error('BROWSER_CONFIGURATION'),{code:'BR
  * and source scopes are trusted runtime facts; receipts are always required, artifacts only when downloads are on,
  * approvals only for interaction tools (without it every interaction is denied). `approvalDeadlineMs` is an optional
  * trusted runtime setting inside APPROVAL_DEADLINE_MS (default 120 s). */
-export function buildOpenBrowserFragment({binding,cwd,policy,installation:rawInstallation,sourceScopes:rawScopes,artifacts,receipts,approvals,approvalDeadlineMs,now,assertCurrent}){
- const installation=validateBrowserInstallation(rawInstallation,binding);
+export function buildOpenBrowserFragment({binding,cwd,policy,installation:rawInstallation,sourceScopes:rawScopes,artifacts,receipts,approvals,approvalDeadlineMs,now,assertCurrent,modelTransport}){
+ if(modelTransport!==undefined&&modelTransport!=='host-owned')fail();
+ const installation=modelTransport==='host-owned'?validateBrowserContextInstallation(rawInstallation):validateBrowserInstallation(rawInstallation,binding);
  if(policy?.enabled!==true||typeof receipts?.record!=='function'||policy.downloads.enabled&&typeof artifacts?.ingest!=='function')fail();
  const sourceScopes=policy.downloads.enabled?validateSourceScopes(rawScopes,binding):Object.freeze([]),paths=browserPaths(cwd);
  const name=t=>`mcp__${BROWSER_SERVER_NAME}__${t}`,policySha256=canonicalSha256(policy),pages=createPageContext();
@@ -28,7 +29,10 @@ export function buildOpenBrowserFragment({binding,cwd,policy,installation:rawIns
  const unadmitted=[...EXPOSED_UNADMITTED_TOOLS,...BROWSER_TOOLS.filter(t=>!policy.tools.includes(t))];
  const matcher=`mcp__${BROWSER_SERVER_NAME}__.*`;
  return Object.freeze({enabled:true,activation:'open',policy,policySha256,paths,status:Object.freeze({...browserStatus(policy),activation:'open'}),
-  mcpServers:Object.freeze({[BROWSER_SERVER_NAME]:playwrightServerConfig(policy,installation,paths)}),
+  // A remote browser host owns the gates and native context, not an SDK server.
+  // AgentCore separately mounts its real in-process MCP server. No placeholder
+  // shim, socket, nonce or executable descriptor is fabricated on either side.
+  mcpServers:Object.freeze(modelTransport==='host-owned'?{}:{[BROWSER_SERVER_NAME]:playwrightServerConfig(policy,installation,paths)}),
   allowedTools:Object.freeze(gate.preApproved.map(name)),
   disallowedTools:Object.freeze(unadmitted.map(name)),
   canUseTool:gate.canUseTool,

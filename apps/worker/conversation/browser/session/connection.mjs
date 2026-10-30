@@ -34,7 +34,7 @@ export async function createPinnedBrowserSession({upstream,context,policy,manife
     if(result?.isError!==false&&result?.isError!==undefined)fail('BROWSER_UPSTREAM_REFUSED');}});
   return Object.freeze({...owner,
    async resume(input){const result=await owner.prepareResume(input);await owner.completeResume({snapshot:result,signal:input?.signal});return result;},
-   async tools(){const result=await request('tools/list',{});if(!Array.isArray(result?.tools))fail('BROWSER_UPSTREAM_REFUSED');
+   async tools({signal}={}){const result=await request('tools/list',{},signal);if(!Array.isArray(result?.tools))fail('BROWSER_UPSTREAM_REFUSED');
     return result.tools.filter(tool=>policy.tools.includes(tool.name));},
    async destroy(input){try{return await owner.destroy(input);}finally{await server.close();}},
   });
