@@ -58,7 +58,10 @@ export function createBrowserHostCurrentness({store,core,nativeCredentials,capab
    const policy=assertCapabilityPolicy(await life.run(signal=>forRun({tenantId:binding.tenantId,actorId:binding.actorId,conversationId:binding.conversationId,actorRole:authority.role,signal}))??{});
    const browser=validateBrowserPolicy(await life.run(signal=>readBrowserPolicy({binding,scopes:current.scopes,actorRole:authority.role,signal,deadlineMs:life.deadline()})));
    const credentialCutoff=await recheck();life.check();return {binding,phase:'active',sdkAdmitted:true,bashAdmitted:policy.bash,browserAdmitted:browser.enabled&&activationOpen(),
-    capabilityPolicySha256:hash(policy),browserPolicySha256:hash(browser),currentUntilMs:Math.min(current.deadlineMs,authority.expiresAtMs,authorityCutoff,credentialCutoff)};
+     capabilityPolicySha256:hash(policy),browserPolicySha256:hash(browser),currentUntilMs:Math.min(current.deadlineMs,authority.expiresAtMs,authorityCutoff,credentialCutoff),
+     // The current VALUES this same read already validated, plus the canonical execution window, so a
+     // Control-side facts producer never re-derives authority or repeats the Core/policy reads.
+     scopes:current.scopes,deadlineMs:current.deadlineMs,capabilityPolicy:policy,browserPolicy:browser};
   }finally{life.close();}
  }
  return Object.freeze({readHost:(client,input)=>read(client,input,false),readRoute:(client,input)=>read(client,input,true)});
