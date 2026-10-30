@@ -32,7 +32,7 @@ export function nativeProcessingReadiness({config,verifyCustody}){
 export async function startNativeProcessingHost({env=globalThis.process?.env??{},readFile=readFileSync,
  verifyCustody=undefined,openHost=openNativeProcessingHost,serverFactory=createServer,
  authenticatePeer=undefined,definitionsOwner:injectedOwner,definitionsRun:runDefinitions=runDefinitionProgram,
- config:configOverride}={}){
+ config:configOverride,definitionsChmod}={}){
  const config=configOverride??nativeProcessingConfig({env});
  const readiness=nativeProcessingReadiness({config,verifyCustody});
  if(!readiness.ready)return Object.freeze({started:false,readiness});
@@ -42,7 +42,8 @@ export async function startNativeProcessingHost({env=globalThis.process?.env??{}
  // ONE host-lifetime definition composition: the SAME factored store/updater/serialized refresh the upload host uses,
  // plus the host pin owner. The child never gets an updater or prune authority.
  const definitionComposition=createUploadDefinitionsComposition({definitionsRoot:config.paths.definitionsRoot,
-  now:Date.now,definitionsRun:runDefinitions});
+  now:Date.now,definitionsRun:runDefinitions,
+  ...(definitionsChmod===undefined?{}:{chmod:definitionsChmod})});
  const definitionsOwner=injectedOwner===undefined?createDefinitionSnapshotOwner({definitions:definitionComposition.definitions}):injectedOwner;
  const definitionsLifecycle=Object.freeze({provision:definitionComposition.provisionDefinitions,
   refresh:definitionComposition.refresh,pin:args=>definitionsOwner.pin(args),

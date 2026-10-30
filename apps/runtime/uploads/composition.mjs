@@ -49,11 +49,12 @@ const REFRESHABLE=new Set(['UPLOAD_DEFINITIONS_UNAVAILABLE','UPLOAD_DEFINITIONS_
  * sandbox qualification, and only FRESHNESS conditions are refreshable (corrupt/unsigned/cancelled never fetch). An
  * injected pinned owner is used verbatim with no updater, so a pinned child can never fetch. */
 export function createUploadDefinitionsComposition({definitionsRoot,now=Date.now,definitionsRun=runDefinitionProgram,
- maxDefinitionsAgeMs,definitions:pinned}={}){
+ maxDefinitionsAgeMs,definitions:pinned,chmod:chmodEffect}={}){
  if(typeof definitionsRoot!=='string'||typeof now!=='function'||typeof definitionsRun!=='function')fail();
  const definitions=pinned??createSignedDefinitionStore({root:definitionsRoot,now,run:definitionsRun,
   ...(maxDefinitionsAgeMs===undefined?{}:{maxAgeMs:maxDefinitionsAgeMs})});
- const updater=pinned===undefined?createSignedDefinitionUpdater({root:definitionsRoot,run:definitionsRun,now}):null;
+ const updater=pinned===undefined?createSignedDefinitionUpdater({root:definitionsRoot,run:definitionsRun,now,
+  ...(chmodEffect===undefined?{}:{chmod:chmodEffect})}):null;
  let inFlight=null,disposition=null,provisioned=false,attempted=false,reason=null,storageUnavailable=false;
  const refresh=({signal,deadlineMs:until}={})=>{
   if(inFlight!==null)return inFlight;
@@ -74,16 +75,26 @@ export function createUploadDefinitionsComposition({definitionsRoot,now=Date.now
  const provisioningState=()=>Object.freeze({attempted,provisioned,reason,storageUnavailable,
   storageFault:storageUnavailable?'UPLOAD_DEFINITIONS_STORAGE_UNAVAILABLE':null,
   disposition:disposition===null?null:disposition});
- const probe=async({signal,deadlineMs}={})=>{
-  try{const snap=await definitions.snapshot({deadlineMs,signal});
-   attempted=true;reason=null;
-   try{snap.reader.release({completed:true});}catch{}
-  }catch(initial){
-   const code=typeof initial?.code==='string'?initial.code:'UPLOAD_DEFINITIONS_UNAVAILABLE';
-   attempted=true;reason=code;
-  }
-  return provisioningState();
- };
+ const probe=async({signal,deadlineMs}={})=>{
+
+  try{const snap=await definitions.snapshot({deadlineMs,signal});
+
+   attempted=true;reason=null;
+
+   try{snap.reader.release({completed:true});}catch{}
+
+  }catch(initial){
+
+   const code=typeof initial?.code==='string'?initial.code:'UPLOAD_DEFINITIONS_UNAVAILABLE';
+
+   attempted=true;reason=code;
+
+  }
+
+  return provisioningState();
+
+ };
+
  const startup=async({signal,deadlineMs}={})=>{
   try{const probe=await definitions.snapshot({deadlineMs,signal});try{probe.reader.release({completed:true});}catch{}}
   catch(initial){const code=typeof initial?.code==='string'?initial.code:'UPLOAD_DEFINITIONS_UNAVAILABLE';

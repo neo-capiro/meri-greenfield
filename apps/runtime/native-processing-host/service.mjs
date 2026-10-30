@@ -7,7 +7,7 @@
  */
 import {uploadInspectionRequest,uploadInspectionBody,uploadInspectionResult,uploadInspectionFault} from '../uploads/agentcore-contract.mjs';
 import {createOperationLifetime} from '../../../packages/runtime/operation-lifetime.mjs';
-import {NATIVE_UPLOAD_INSPECTION_PATH,NATIVE_UPLOAD_INSPECTION_SCHEMA} from '../uploads/native-host-contract.mjs';
+import {NATIVE_UPLOAD_INSPECTION_PATH,NATIVE_UPLOAD_INSPECTION_SCHEMA,nativeUploadInspectionRequest} from '../uploads/native-host-contract.mjs';
 
 // Canonical Parent values, re-exported for existing callers: one contract, no Cap copy.
 export const NATIVE_INSPECTION_SCHEMA=NATIVE_UPLOAD_INSPECTION_SCHEMA;
@@ -41,17 +41,11 @@ function boundedWait(promise,ms){
 
 /** Closed wire validation; the custody projection is opaque here and interpreted only by Parent's validator. */
 export function nativeInspectionBody(raw){
- let value;
- try{
-  if(raw===null||typeof raw!=='object'||Array.isArray(raw))fault('UPLOAD_INSPECTION_REQUEST_REFUSED');
-  if(Object.keys(raw).some(key=>!BODY_KEYS.includes(key)))fault('UPLOAD_INSPECTION_REQUEST_REFUSED');
-  if(raw.schema!==NATIVE_INSPECTION_SCHEMA||!raw.allocation||!raw.hostIdentity||!raw.binding||!raw.custody)
-   fault('UPLOAD_INSPECTION_REQUEST_REFUSED');
-  value=raw;
- }catch{fault('UPLOAD_INSPECTION_REQUEST_REFUSED');}
- const {request,bytes}=uploadInspectionRequest(value.request);
- return Object.freeze({allocation:value.allocation,hostIdentity:value.hostIdentity,binding:value.binding,
-  custody:value.custody,request,bytes});
+ // ONE canonical outer parser: Parent owns the schema, allocation/binding/identity cross-checks, the closed inspection
+ // request and the saved-upload custody projection. Cap keeps no copy of these rules.
+ const {envelope,bytes}=nativeUploadInspectionRequest(raw);
+ return Object.freeze({allocation:envelope.allocation,hostIdentity:envelope.hostIdentity,binding:envelope.binding,
+  custody:envelope.custody,request:envelope.request,bytes});
 }
 
 /** @param {{authenticate:Function,verifyCustody?:Function,openHost:Function,readBody:Function,limits:object,now?:Function}} input */

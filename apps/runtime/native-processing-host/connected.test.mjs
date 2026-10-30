@@ -1,213 +1,198 @@
-/** ACTUAL joined production path, one case: startNativeProcessingHost -> existing definition composition/store/updater
- *  -> real host pin -> openNativeProcessingHost -> closed stdin -> childMain -> createUploadInspection -> result ->
- *  real cleanup/release. Only low-level system effects are inert (TLS bytes, compartment, placement process spawn,
- *  sigtool/freshclam program execution, scanner/extractor receipts). No compose/store/owner substitution. */
+/** ACTUAL joined production path, authored from the independent review witness: real startNativeProcessingHost ->
+ *  real definition composition/updater (synthetic CVD published through the generated config) -> real store/pins ->
+ *  real bootstrap -> closed stdin -> real childMain/inspectFixed -> real composeUploadNativeHost ->
+ *  createUploadNativeInspection/createUploadInspection -> real cleanup/release.
+ *  ONLY low-level system effects are inert (TLS byte loading, compartment, placement spawn, sigtool/freshclam execution,
+ *  scanner/extractor process receipts). No compose/store/owner result is replaced. */
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {createHash} from 'node:crypto';
 import {Readable,Writable} from 'node:stream';
-import {mkdtemp,mkdir,writeFile,rm} from 'node:fs/promises';
-import {tmpdir} from 'node:os';
+import {mkdtemp,mkdir,readFile,writeFile,realpath,rm} from 'node:fs/promises';
 import {join} from 'node:path';
 import {startNativeProcessingHost} from './entrypoint.mjs';
 import {openNativeProcessingHost} from './bootstrap.mjs';
 import {childMain,inspectFixed} from './child-cli.mjs';
-import {NATIVE_INSPECTION_SCHEMA,NATIVE_INSPECTION_PATH} from './service.mjs';
-import {nativeProcessingConfig} from './config.mjs';
-import {createUploadInspection} from '../../control/uploads/extraction.mjs';
-import {definitionsSnapshotId,UPLOAD_DEFINITIONS_SCHEMA} from '../uploads/native-definitions.mjs';
+import {composeUploadNativeHost} from '../uploads/composition.mjs';
+import {nativeUploadCustody,NATIVE_UPLOAD_INSPECTION_PATH,NATIVE_UPLOAD_INSPECTION_SCHEMA} from '../uploads/native-host-contract.mjs';
+import {UPLOAD_CHILD_ENV,UPLOAD_SCAN_INPUT} from '../uploads/native-sandbox.mjs';
+import {RENDERER_PROBE_SCHEMA} from '../../artifacts/renderer-qualification.mjs';
 
-const sha=b=>createHash('sha256').update(b).digest('hex');
-const BYTES=Buffer.from('# fixed inspection content\n');
-const DECLARATION=Object.freeze({filename:'note.md',mimeType:'text/markdown',bytes:BYTES.length,sha256:sha(BYTES)});
-const IMAGE=`sha256:${'b'.repeat(64)}`;
-const REQUEST=Object.freeze({kind:'upload-inspection',requestId:'a'.repeat(64),imageDigest:IMAGE,
- declaration:DECLARATION,bytesBase64:BYTES.toString('base64'),inputSha256:sha(BYTES),deadlineMs:Date.now()+5000});
+const sha=bytes=>createHash('sha256').update(bytes).digest('hex');
 const uuid=n=>`00000000-0000-4000-8000-${String(n).padStart(12,'0')}`;
+const BYTES=Buffer.from('review exact original\n');
+const DECLARATION={filename:'review.txt',mimeType:'text/plain',bytes:BYTES.length,sha256:sha(BYTES)};
+const IMAGE=`sha256:${'b'.repeat(64)}`;
 const LEASE=Date.now()+600000;
-const ALLOCATION=Object.freeze({schema:'meri-conversation-host-allocation/1',tenantId:uuid(1),conversationId:uuid(3),
- generation:3,hostId:uuid(7),hostMode:'native-processing',imageDigest:IMAGE,leaseDeadlineMs:LEASE});
-const BINDING=Object.freeze({tenantId:uuid(1),actorId:uuid(2),conversationId:uuid(3),runId:uuid(4),attemptId:uuid(5),
- workerId:uuid(6),writerFence:1});
-const IDENTITY=Object.freeze({schema:'meri-d005-host-identity/1',instanceId:'i-0123456789abcdef0',bootId:uuid(8),
- conversationId:uuid(3),hostId:uuid(7)});
-const ENV=Object.freeze({
- MERI_NATIVE_PROCESSING_PORT:'9443',MERI_NATIVE_PROCESSING_ADDRESS:'127.0.0.1',
- MERI_NATIVE_PROCESSING_TLS_KEY:'/run/meri/tls.key',MERI_NATIVE_PROCESSING_TLS_CERT:'/run/meri/tls.crt',
- MERI_NATIVE_PROCESSING_TLS_CA:'/run/meri/ca.crt',MERI_NATIVE_PROCESSING_PEER_SAN:'control.meri.internal',
- MERI_NATIVE_PROCESSING_PEER_FINGERPRINT:'a'.repeat(64),MERI_NATIVE_PROCESSING_PEER_MAX_LIFETIME_MS:'900000',
- MERI_NATIVE_PROCESSING_PEER_NOT_AFTER_MS:String(Date.now()+600000),MERI_NATIVE_PROCESSING_IMAGE_DIGEST:IMAGE,
- MERI_NATIVE_PROCESSING_HOST_ID:uuid(7),MERI_NATIVE_PROCESSING_GENERATION:'3',
- MERI_NATIVE_PROCESSING_CONVERSATION_ID:uuid(3),MERI_NATIVE_PROCESSING_TENANT_ID:uuid(1),
- MERI_NATIVE_PROCESSING_INSTANCE_ID:'i-0123456789abcdef0',MERI_NATIVE_PROCESSING_BOOT_ID:uuid(8),
- MERI_NATIVE_PROCESSING_HOST_MODE:'native-processing',MERI_NATIVE_PROCESSING_LEASE_DEADLINE_MS:String(LEASE),
- MERI_NATIVE_PROCESSING_CPU_QUOTA_US:'50000',MERI_NATIVE_PROCESSING_CPU_PERIOD_US:'100000',
- MERI_NATIVE_PROCESSING_MEMORY_BYTES:'268435456',MERI_NATIVE_PROCESSING_PIDS_MAX:'16',
- MERI_NATIVE_PROCESSING_DEADLINE_MAX_MS:'30000',MERI_NATIVE_PROCESSING_BODY_BYTES:'13000000',
- MERI_NATIVE_PROCESSING_HELPER:'/usr/lib/meri/meri-host-launcher',MERI_NATIVE_PROCESSING_NODE:'/usr/local/bin/node',
- MERI_NATIVE_PROCESSING_CHILD:'/opt/meri/child-cli.mjs',MERI_NATIVE_PROCESSING_HOME:'/run/meri/processing',
- MERI_NATIVE_PROCESSING_DEFINITIONS:'/run/meri/upload-definitions',MERI_NATIVE_PROCESSING_EXTRACTOR:'/opt/meri/extract.py',
- MERI_NATIVE_PROCESSING_SCRATCH:'/run/meri/upload-scratch',MERI_NATIVE_PROCESSING_RUNTIME_UID:'1000',
- MERI_NATIVE_PROCESSING_RUNTIME_GID:'1000',MERI_NATIVE_PROCESSING_CREDENTIAL_PATHS:'/proc/1/environ'});
+const BINDING={tenantId:uuid(1),actorId:uuid(2),conversationId:uuid(3),runId:uuid(4),attemptId:uuid(5),workerId:uuid(6),
+ writerFence:1};
+const SCOPES=[{tenantId:BINDING.tenantId,kind:'private-user',resourceId:BINDING.actorId,policyRevision:'p1'}];
+const OWNER={tenantId:BINDING.tenantId,actorId:BINDING.actorId,conversationId:BINDING.conversationId,clientId:null};
+const RECORD={uploadId:uuid(20),requestId:uuid(21),owner:OWNER,declaration:DECLARATION,scopes:SCOPES,objectId:uuid(22),
+ object:{objectId:uuid(22),versionId:'SYNTHETIC_REVIEW_VERSION',sha256:DECLARATION.sha256,bytes:DECLARATION.bytes,
+  scopes:SCOPES},state:'stored',inspection:null,createdAtMs:Date.now(),updatedAtMs:Date.now(),revision:2};
+const CUSTODY=nativeUploadCustody(RECORD,{binding:BINDING,scopes:SCOPES,selectedClientId:null,
+ checkedAtMs:Date.now(),expiresAtMs:LEASE});
+const ALLOCATION={schema:'meri-conversation-host-allocation/1',tenantId:BINDING.tenantId,conversationId:BINDING.conversationId,
+ generation:3,hostId:uuid(7),hostMode:'native-processing',imageDigest:IMAGE,leaseDeadlineMs:LEASE};
+const IDENTITY={schema:'meri-d005-host-identity/1',hostId:uuid(7),conversationId:BINDING.conversationId,
+ instanceId:'i-0123456789abcdef0',bootId:uuid(8)};
 
-const scanReceipt=(file,at)=>({sourceSha256:file.sha256,sourceBytes:file.bytes,checkedAtMs:at,status:'clean',
- tool:{name:'clamav',version:'1.4.2',binarySha256:'a'.repeat(64)},definitionsSha256:'b'.repeat(64),reason:null});
-const extractReceipt=(file,at)=>({sourceSha256:file.sha256,sourceBytes:file.bytes,checkedAtMs:at,status:'available',
- tool:{name:'meri-upload-extractor',version:'3.13.16',binarySha256:'c'.repeat(64)},segments:[],limitations:[]});
-/** Real createUploadInspection over inert scanner/extractor PROCESS receipts. */
-const childCompose=async()=>{
- const inspection=createUploadInspection({now:Date.now,
-  scanner:{async scan({file}){return scanReceipt(file,Date.now());}},
-  extractor:{async extract({file}){return extractReceipt(file,Date.now());}}});
- return {scanner:{scan:()=>inspection.inspect(DECLARATION,BYTES,{deadlineMs:Date.now()+5000}).then(v=>({...v.scan}))},
-  extractor:{extract:()=>inspection.inspect(DECLARATION,BYTES,{deadlineMs:Date.now()+5000}).then(v=>v.extraction)},
-  describe(){return {};}};
-};
-
-async function publishFixture(root){
- const main=Buffer.from('CVD main fixture'),daily=Buffer.from('CVD daily fixture');
- const files=[{name:'main.cvd',bytes:main.length,sha256:sha(main),format:'cvd'},
-  {name:'daily.cvd',bytes:daily.length,sha256:sha(daily),format:'cvd'}];
- const id=definitionsSnapshotId(files),dir=join(root,'snapshots',id);
- await mkdir(join(dir,'database'),{recursive:true});
- await writeFile(join(dir,'database','main.cvd'),main);
- await writeFile(join(dir,'database','daily.cvd'),daily);
- await writeFile(join(dir,'snapshot.json'),JSON.stringify({schema:UPLOAD_DEFINITIONS_SCHEMA,sha256:id,
-  publishedAt:new Date(Date.now()-1000).toISOString(),publishedAtMs:Date.now()-1000,signatureVerified:true,
-  version:'fixture-1',files}));
- await writeFile(join(root,'current'),id);
- return {id,dir,files};
+async function boot({root,scratch,mode='success'}){
+ const childSettings={runtimeUid:1000,runtimeGid:1000,imageDigest:IMAGE,definitionsRoot:'/fixture/definitions',
+  extractorPath:'/fixture/extract.py',scratchRoot:'/fixture/scratch',credentialPaths:['/proc/1/environ']};
+ const config={listen:{address:'127.0.0.1',port:9443},
+  tls:{keyPath:'/fixture/key',certPath:'/fixture/cert',caPath:'/fixture/ca',peerSan:'control.meri.internal',
+   peerFingerprint:'a'.repeat(64),peerNotAfterMs:LEASE,maxPeerLifetimeMs:900000},
+  image:{digest:IMAGE},allocation:{...ALLOCATION,instanceId:IDENTITY.instanceId,bootId:IDENTITY.bootId},
+  limits:{cpuQuotaUs:50000,periodUs:100000,memoryBytes:268435456,pidsMax:16,deadlineMaxMs:5000,bodyBytes:15000000},
+  paths:{definitionsRoot:root,helperPath:'/fixed/helper',nodePath:'/fixed/node',childPath:'/fixed/child-cli.mjs',
+   home:'/fixture/home',runtimeUid:1000,runtimeGid:1000,childSettings}};
+ const programs=[],roles=[],scanDirectories=[],compositions=[];
+ let armed=false,releaseVerification=null,listener=null,started=null,activeAtPlacementClose=null;
+ // Inert FS effect port: records the exact owner-path modes instead of real chown/chmod (production applies them).
+ const modes=[];
+ const definitionsChmod=async(path,mode)=>{modes.push({path,mode});};
+ const definitionsRun=async(program,args)=>{
+  programs.push(program);
+  if(program==='sigtool'&&armed===true&&mode==='late-pin')await new Promise(resolve=>{releaseVerification=resolve;});
+  if(program==='freshclam'){const conf=await readFile(args[0].slice('--config-file='.length),'utf8');
+   const database=conf.split('\n').find(line=>line.startsWith('DatabaseDirectory ')).slice('DatabaseDirectory '.length);
+   await writeFile(join(database,'main.cvd'),Buffer.from('synthetic main CVD'));
+   await writeFile(join(database,'daily.cvd'),Buffer.from('synthetic daily CVD'));}
+  return {stdout:Buffer.alloc(0),receipt:{exitCode:0}};
+ };
+ const zero='0'.repeat(16);
+ const roleRun=async(role,options)=>{
+  roles.push(role);
+  if(role==='probe')return {stdout:Buffer.from(JSON.stringify({schema:RENDERER_PROBE_SCHEMA,inputValid:true,
+    platform:'linux',uid:[1000,1000,1000,1000],gid:[1000,1000,1000,1000],noNewPrivs:1,
+    capabilities:{CapInh:zero,CapPrm:zero,CapEff:zero,CapBnd:zero,CapAmb:zero},rootMountOptions:'ro,relatime',
+    interfaces:['lo'],cgroup:{memoryMax:'1073741824',pidsMax:'64',cpuMax:'50000 100000'},
+    envNames:[...UPLOAD_CHILD_ENV],cwd:options.cwd,home:options.cwd,tmpdir:options.cwd,
+    workspace:{mode:0o700,uid:1000},
+    credentialPathsReadable:JSON.parse(options.input).credentialPaths.map(path=>({path,readable:false}))})),
+   receipt:{exitCode:0}};
+  if(options.mode==='version')return {stdout:Buffer.from(role==='scan'?'ClamAV 1.4.2/27450/x\n':'Python 3.13.16\n'),
+   receipt:{exitCode:0}};
+  if(role==='scan'){scanDirectories.push(options.definitionsRoot);
+   assert.deepEqual(await readFile(join(options.cwd,UPLOAD_SCAN_INPUT)),BYTES,'the scanner saw the exact original bytes');
+   return {stdout:Buffer.from(UPLOAD_SCAN_INPUT+': OK\n'),receipt:{exitCode:0}};}
+  return {stdout:Buffer.from(JSON.stringify({status:'available',segments:[],limitations:[]})),receipt:{exitCode:0}};
+ };
+ started=await startNativeProcessingHost({config,readFile:()=>Buffer.from('synthetic TLS bytes'),definitionsRun,definitionsChmod,
+  authenticatePeer:async()=>({verified:true,notAfterMs:LEASE}),
+  verifyCustody:async()=>({authorized:true,allocation:ALLOCATION,binding:BINDING,hostIdentity:IDENTITY,
+   currentness:{readCurrent:async()=>({})}}),
+  serverFactory:(_opts,handler)=>{listener=handler;return {once(){},listen(_p,_a,cb){cb();},close(cb){cb?.();}};},
+  openHost:input=>openNativeProcessingHost({...input,
+   openCompartment:async()=>({close:async()=>({closed:true})}),
+   openPlacement:async()=>({run:async(_command,_args,{input:stdin})=>{
+     if(mode==='failed-child')throw Object.assign(Error('SYNTHETIC_CHILD_FAILURE'),{code:'ARTIFACT_PROCESS_FAILED'});
+     let captured=Buffer.alloc(0);
+     await childMain({stdin:Readable.from([stdin]),
+      stdout:new Writable({write(chunk,_e,cb){captured=Buffer.concat([captured,Buffer.from(chunk)]);cb();}}),
+      identity:()=>({uid:1000,gid:1000}),
+      inspect:args=>inspectFixed({...args,run:roleRun,
+       compose:async options=>{const result=await composeUploadNativeHost({...options,tempRoot:scratch,
+        configuration:{uploads:{native:{...options.configuration.uploads.native,definitionsRoot:root}}},
+        readFileImpl:async path=>Buffer.from('fixed-tool:'+path)});
+        compositions.push({missing:result.missing,reason:result.reason});return result;}})});
+     return {stdout:captured,receipt:{exitCode:0}};},
+    close:async()=>{activeAtPlacementClose=started.definitionsOwner.active();return {closed:true};}})})});
+ return {started,listener:()=>listener,programs,roles,scanDirectories,compositions,
+  activeAtPlacementClose:()=>activeAtPlacementClose,releaseVerification:()=>releaseVerification,
+  arm:()=>{armed=true;},modes};
 }
 
+const requestFor=deadlineMs=>({kind:'upload-inspection',requestId:'a'.repeat(64),imageDigest:IMAGE,
+ declaration:DECLARATION,bytesBase64:BYTES.toString('base64'),inputSha256:sha(BYTES),deadlineMs});
+const envelope=deadlineMs=>({schema:NATIVE_UPLOAD_INSPECTION_SCHEMA,allocation:ALLOCATION,hostIdentity:IDENTITY,
+ binding:BINDING,custody:CUSTODY,request:requestFor(deadlineMs)});
 function requestStream(body){
  const stream=Readable.from([Buffer.from(JSON.stringify(body))]);
- Object.assign(stream,{method:'POST',url:NATIVE_INSPECTION_PATH,headers:{},socket:{encrypted:true},complete:true});
+ Object.assign(stream,{method:'POST',url:NATIVE_UPLOAD_INSPECTION_PATH,headers:{},socket:{encrypted:true},complete:true});
  return stream;
 }
 const response=()=>{const r={status:0,body:'',listeners:new Map()};
  r.writeHead=s=>{r.status=s;};r.end=b=>{r.body=b;};r.once=(e,f)=>{r.listeners.set(e,f);};
  r.removeListener=e=>{r.listeners.delete(e);};return r;};
 
-test('JOINED: entrypoint -> real definitions -> pin -> bootstrap -> childMain -> inspection -> cleanup', async () => {
- const root=await mkdtemp(join(tmpdir(),'meri-joined-'));
+test('JOINED: real compose publishes/consumes the exact snapshot through the whole host path', async () => {
+ const owned=await realpath(await mkdtemp(join(process.env.TMPDIR??process.env.TEMP??'.', 'meri-joined27-')));
+ const root=join(owned,'definitions'),scratch=join(owned,'scratch');
+ await mkdir(root);await mkdir(scratch);
  try{
-  const fixture=await publishFixture(root);
-  const programs=[];
-  const definitionsRun=async program=>{programs.push(program);return {stdout:Buffer.alloc(0)};};
-  let listener=null;
-  const serverFactory=(options,handler)=>{void options;listener=handler;
-   return {once(){},listen(_p,_a,cb){cb();},close(cb){cb?.();}};};
-  const config={...nativeProcessingConfig({env:ENV}),paths:{...nativeProcessingConfig({env:ENV}).paths,
-   definitionsRoot:root}};
-  const started=await startNativeProcessingHost({env:ENV,config,readFile:()=>Buffer.from('-----BEGIN-----'),definitionsRun,serverFactory,
-   authenticatePeer:async()=>({verified:true,notAfterMs:Date.now()+60000}),
-   verifyCustody:async()=>({authorized:true,allocation:ALLOCATION,binding:BINDING,hostIdentity:IDENTITY,
-    currentness:{readCurrent:async()=>({})}}),
-   openHost:input=>openNativeProcessingHost({...input,config,
-    openCompartment:async()=>({close:async()=>({closed:true})}),
-    openPlacement:async()=>({run:async(command,args,{input:stdin,deadlineMs})=>{
-      let captured=Buffer.alloc(0);
-      const stdout=new Writable({write(chunk,_e,cb){captured=Buffer.concat([captured,Buffer.from(chunk)]);cb();}});
-      await childMain({stdin:Readable.from([stdin]),stdout,identity:()=>({uid:1000,gid:1000}),
-       inspect:argsIn=>inspectFixed({...argsIn,compose:childCompose,run:async()=>({stdout:Buffer.alloc(0)})})});
-      void command;void args;void deadlineMs;
-      return {stdout:captured,receipt:{exitCode:0}};
-     },close:async()=>({closed:true})})})});
-  assert.equal(started.started,true,JSON.stringify(started.readiness));
-  assert.equal(started.definitionComposition.provisioningState().reason,null,'the host probed a real signed snapshot');
-  assert.equal(started.definitionsOwner.active(),0,'no pin before work');
-
+  const host=await boot({root,scratch});
+  await host.started.provisioning.completion;
+  assert.ok(host.programs.includes('freshclam'),'updater ran');
+  const expectedSnapshot=(await readFile(join(root,'current'),'utf8')).trim();
   const res=response();
-  await listener(requestStream({schema:NATIVE_INSPECTION_SCHEMA,allocation:ALLOCATION,hostIdentity:IDENTITY,
-   binding:BINDING,custody:{uploadId:uuid(9)},request:REQUEST}),res);
-  assert.equal(res.status,200,res.body);
-  const body=JSON.parse(res.body);
-  assert.equal(body.requestId,REQUEST.requestId);
-  assert.equal(body.kind,'upload-inspection-result');
-  assert.equal(body.scan.status,'clean');
-  assert.equal(body.scan.definitionsSha256,'b'.repeat(64));
-  assert.equal(body.extraction.segments.length,0);
-  assert.equal(body.file.sha256,sha(BYTES),'the canonical result binds the exact inspected bytes');
-  assert.equal(body.provenance.expectedImageDigest,IMAGE);
-  assert.equal(programs.includes('freshclam'),false,'no refresh during the request');
-  assert.equal(started.definitionsOwner.active(),0,'the pin was released after proven placement closure');
-  assert.equal(started.definitionComposition.provisioningState().provisioned,false,'no provisioning was needed');
-
-  const closed=await started.close();
-  assert.equal(closed.closed,true);
- }finally{await rm(root,{recursive:true,force:true});}
+  await host.listener()(requestStream(envelope(Date.now()+5000)),res);
+  assert.equal(res.status,200,res.body+' compose='+JSON.stringify(host.compositions)+' roles='+JSON.stringify(host.roles));
+  const result=JSON.parse(res.body);
+  assert.equal(result.kind,'upload-inspection-result');
+  assert.equal(result.scan.status,'clean');
+  assert.equal(result.scan.definitionsSha256,expectedSnapshot,'the REAL published snapshot id was used');
+  assert.equal(result.file.sha256,sha(BYTES),'the exact original bytes were inspected');
+  assert.equal(result.extraction.status,'available');
+  assert.deepEqual(host.scanDirectories,[join(root,'snapshots',expectedSnapshot,'database')]);
+  assert.ok(host.roles.includes('probe'),'the real child probe ran first');
+  assert.equal(host.programs.includes('freshclam'),true,'the real updater published the fixture');
+  assert.equal(host.activeAtPlacementClose(),1,'the pin was held while the child was alive');
+  assert.equal(host.started.definitionsOwner.active(),0,'released only after proven closure');
+  assert.equal(host.compositions.length,1,'the real composeUploadNativeHost ran once');
+  await host.started.close();
+ }finally{await rm(owned,{recursive:true,force:true});}
 });
 
-/** Build the same joined host for negative cases: real composition/store, inert native effects. */
-async function boot({root,verifyCustody,definitionsRun,runImpl}){
- let listener=null;const placements=[];
- const serverFactory=(options,handler)=>{void options;listener=handler;
-  return {once(){},listen(_p,_a,cb){cb();},close(cb){cb?.();}};};
- const config={...nativeProcessingConfig({env:ENV}),paths:{...nativeProcessingConfig({env:ENV}).paths,
-  definitionsRoot:root}};
- const started=await startNativeProcessingHost({env:ENV,config,readFile:()=>Buffer.from('-----BEGIN-----'),
-  definitionsRun,serverFactory,authenticatePeer:async()=>({verified:true,notAfterMs:Date.now()+60000}),verifyCustody,
-  openHost:input=>openNativeProcessingHost({...input,config,
-   openCompartment:async()=>({close:async()=>({closed:true})}),
-   openPlacement:async()=>{placements.push(1);return {run:runImpl??(async()=>({stdout:Buffer.from('{}'),receipt:{exitCode:0}})),
-    close:async()=>({closed:true})};}})});
- return {started,listener:()=>listener,placements};
-}
-const scopedCustody=async()=>({authorized:true,allocation:ALLOCATION,binding:BINDING,hostIdentity:IDENTITY,
- currentness:{readCurrent:async()=>({})}});
-const envelope=()=>({schema:NATIVE_INSPECTION_SCHEMA,allocation:ALLOCATION,hostIdentity:IDENTITY,binding:BINDING,
- custody:{uploadId:uuid(9)},request:REQUEST});
-
-test('JOINED NEGATIVE: unbound custody never opens the host or dispatches', async () => {
- const root=await mkdtemp(join(tmpdir(),'meri-neg-'));
+test('JOINED defective child: a FAILED child with proven closure releases its pin', async () => {
+ const owned=await realpath(await mkdtemp(join(process.env.TMPDIR??process.env.TEMP??'.', 'meri-fail27-')));
+ const root=join(owned,'definitions'),scratch=join(owned,'scratch');
+ await mkdir(root);await mkdir(scratch);
  try{
-  await publishFixture(root);
-  const {started,listener,placements}=await boot({root,definitionsRun:async()=>({stdout:Buffer.alloc(0)}),
-   verifyCustody:async()=>({authorized:false})});
+  const host=await boot({root,scratch,mode:'failed-child'});
+  await host.started.provisioning.completion;
   const res=response();
-  await listener()(requestStream(envelope()),res);
+  await host.listener()(requestStream(envelope(Date.now()+5000)),res);
+  assert.notEqual(res.status,200,'a failed child never yields a successful inspection');
+  assert.equal(host.started.definitionsOwner.active(),0,
+   'proof of full closure means no future child, so its pin must not be retained');
+ }finally{await rm(owned,{recursive:true,force:true});}
+});
+
+test('JOINED late pin: a verification completing after handler expiry is not lost', async () => {
+ const owned=await realpath(await mkdtemp(join(process.env.TMPDIR??process.env.TEMP??'.', 'meri-late27-')));
+ const root=join(owned,'definitions'),scratch=join(owned,'scratch');
+ await mkdir(root);await mkdir(scratch);
+ try{
+  const host=await boot({root,scratch,mode:'late-pin'});
+  await host.started.provisioning.completion;
+  host.arm();
+  const res=response();
+  await host.listener()(requestStream(envelope(Date.now()+200)),res);
+  assert.notEqual(res.status,200,'an expired request is never served');
+  assert.equal(typeof host.releaseVerification(),'function','the held verification was actually pending');
+  host.releaseVerification();
+  await new Promise(resolve=>setTimeout(resolve,80));
+  assert.equal(host.started.definitionsOwner.active(),0,'a never-dispatched late pin cannot leak');
+ }finally{await rm(owned,{recursive:true,force:true});}
+});
+
+test('JOINED NEGATIVE: tampered custody is refused by the canonical parser, no child composition', async () => {
+ const owned=await realpath(await mkdtemp(join(process.env.TMPDIR??process.env.TEMP??'.', 'meri-cust27-')));
+ const root=join(owned,'definitions'),scratch=join(owned,'scratch');
+ await mkdir(root);await mkdir(scratch);
+ try{
+  const host=await boot({root,scratch});
+  await host.started.provisioning.completion;
+  const bad=envelope(Date.now()+5000);
+  bad.custody={...CUSTODY,sha256:'e'.repeat(64)};   // a REAL projection tampered to a different saved object hash
+  const res=response();
+  await host.listener()(requestStream(bad),res);
   assert.notEqual(res.status,200);
-  assert.equal(JSON.parse(res.body).error,'NATIVE_INSPECTION_CUSTODY_REFUSED',res.body);
-  assert.equal(placements.length,0,'no placement was opened');
-  await started.close();
- }finally{await rm(root,{recursive:true,force:true});}
-});
-
-test('JOINED NEGATIVE: a corrupt snapshot refuses before any child is placed', async () => {
- const root=await mkdtemp(join(tmpdir(),'meri-neg-'));
- try{
-  const fixture=await publishFixture(root);
-  await writeFile(join(fixture.dir,'database','main.cvd'),Buffer.from('tampered'));
-  const {started,listener,placements}=await boot({root,definitionsRun:async()=>({stdout:Buffer.alloc(0)}),
-   verifyCustody:scopedCustody});
-  assert.equal(started.startupState.reason,'UPLOAD_DEFINITIONS_CORRUPT');
-  const res=response();
-  await listener()(requestStream(envelope()),res);
-  assert.equal(res.status,400,res.body);
-  const code=JSON.parse(res.body).error;
-  assert.ok(['UPLOAD_DEFINITIONS_CORRUPT','NATIVE_INSPECTION_CLEANUP_UNKNOWN'].includes(code),code);
-  assert.equal(placements.length,1,'the placement exists but no child run was dispatched');
-  await started.close();
- }finally{await rm(root,{recursive:true,force:true});}
-});
-
-test('JOINED NEGATIVE: concurrent joined requests leave no pin and each binds its own result', async () => {
- const root=await mkdtemp(join(tmpdir(),'meri-neg-'));
- try{
-  await publishFixture(root);
-  const runImpl=async(command,args,{input:stdin})=>{void command;void args;
-   let captured=Buffer.alloc(0);
-   const stdout=new Writable({write(chunk,_e,cb){captured=Buffer.concat([captured,Buffer.from(chunk)]);cb();}});
-   await childMain({stdin:Readable.from([stdin]),stdout,identity:()=>({uid:1000,gid:1000}),
-    inspect:argsIn=>inspectFixed({...argsIn,compose:childCompose,run:async()=>({stdout:Buffer.alloc(0)})})});
-   return {stdout:captured,receipt:{exitCode:0}};};
-  const {started,listener}=await boot({root,definitionsRun:async()=>({stdout:Buffer.alloc(0)}),
-   verifyCustody:scopedCustody,runImpl});
-  const first=response(),second=response();
-  await Promise.all([listener()(requestStream(envelope()),first),listener()(requestStream(envelope()),second)]);
-  assert.equal(first.status,200,first.body);
-  assert.equal(second.status,200,second.body);
-  assert.equal(started.definitionsOwner.active(),0,'every pin was released after its own proven closure');
-  await started.close();
- }finally{await rm(root,{recursive:true,force:true});}
+  assert.equal(JSON.parse(res.body).error,'NATIVE_UPLOAD_INSPECTION_REFUSED','canonical refusal: '+res.body);
+  assert.equal(host.compositions.length,0,'no child composition ran');
+  await host.started.close();
+ }finally{await rm(owned,{recursive:true,force:true});}
 });

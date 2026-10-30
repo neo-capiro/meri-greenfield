@@ -76,7 +76,7 @@ export async function openNativeProcessingHost({config,allocation,binding,hostId
  return Object.freeze({placement,compartment,
   async runRequest({requestDocument,deadlineMs,signal:callSignal}){
    if(closing!==null)fault('NATIVE_PROCESSING_CLOSED');
-   const entry={pin:null,completed:false,started:false,settled:false};
+   const entry={pin:null,dispatched:false,finished:false};
    entries.push(entry);
    // The acquisition belongs to THIS operation: host close and the caller's cancellation both end it.
    const lifetime=closeController.signal;
@@ -85,8 +85,8 @@ export async function openNativeProcessingHost({config,allocation,binding,hostId
    try{
     if(definitionsOwner!==undefined&&definitionsOwner!==null){
      entry.pin=await definitionsOwner.pin({deadlineMs,signal:combined});
-     if(closing!==null){                                     // settled AFTER close: release, never dispatch, no leak
-      try{entry.pin.release({completed:false});}catch{}
+     if(closing!==null){                                     // settled AFTER close: never dispatched, so no future child
+      try{entry.pin.release({completed:true});}catch{}
       const at=entries.indexOf(entry);if(at>=0)entries.splice(at,1);
       fault('NATIVE_PROCESSING_CLOSED');
      }
@@ -96,13 +96,17 @@ export async function openNativeProcessingHost({config,allocation,binding,hostId
     if(closing!==null)fault('NATIVE_PROCESSING_CLOSED');     // no dispatch after close began, even if the pin arrived late
     const input=Buffer.from(JSON.stringify({settings:pinnedSettings,request:requestDocument,deadlineMs}));
     if(input.length>UPLOAD_INSPECTION_WIRE_BYTES+65536)fault('UPLOAD_INSPECTION_REQUEST_REFUSED');
-    entry.started=true;
+    entry.dispatched=true;
     const out=await placement.run(command,args,{cwd:config.paths.home,input,signal:combined,deadlineMs,
      maxOutput:UPLOAD_INSPECTION_RESULT_BYTES});
-    // Completion is recorded per exact entry; release still waits for ACTUAL placement closure in close().
-    entry.completed=out?.receipt?.exitCode===0;
+    // `completed` means NO FUTURE CHILD for this pin, never "the child exited 0": a failed child that is proven done is
+    // still a finished reader; only an unproven/unknown child keeps the pin.
+    entry.finished=true;
     return out;
-   }finally{entry.settled=true;}
+   }catch(error){
+    if(entry.dispatched)entry.finished=true;                 // the child ran and its run settled (failed or not)
+    throw error;
+   }
   },
   close(){
    if(closing===null)closing=(async()=>{
@@ -118,7 +122,9 @@ export async function openNativeProcessingHost({config,allocation,binding,hostId
     for(const entry of entries.splice(0)){
      if(entry.pin===null)continue;                            // nothing acquired: nothing to release
      if(!placementClosed){retained.push(entry);continue;}      // unknown closure retains the token
-     try{const released=entry.pin.release({completed:entry.completed===true});
+     // Dispatch proven done, or never dispatched at all: no future child can use this snapshot.
+     const complete=entry.finished===true||entry.dispatched===false;
+     try{const released=entry.pin.release({completed:complete});
       if(released===false||released?.released===false){retained.push(entry);code??='NATIVE_PROCESSING_CLEANUP_UNKNOWN';}}
      catch{retained.push(entry);code??='NATIVE_PROCESSING_CLEANUP_UNKNOWN';}
     }

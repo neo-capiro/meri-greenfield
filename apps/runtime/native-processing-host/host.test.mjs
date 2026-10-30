@@ -8,6 +8,7 @@ import {childMain,childSettings,inspectFixed} from './child-cli.mjs';
 import {nativeInspectionBody,createInspectionHandler,NATIVE_INSPECTION_SCHEMA,NATIVE_INSPECTION_PATH} from './service.mjs';
 import {childInvocation,assertHostMatch,openNativeProcessingHost} from './bootstrap.mjs';
 import {uploadInspectionBody,UPLOAD_INSPECTION_WIRE_BYTES} from '../uploads/agentcore-contract.mjs';
+import {nativeUploadCustody} from '../uploads/native-host-contract.mjs';
 import {createUploadInspection} from '../../control/uploads/extraction.mjs';
 import {NATIVE_BODY_LIMIT} from './config.mjs';
 
@@ -18,6 +19,16 @@ const IMAGE=`sha256:${'b'.repeat(64)}`;
 const REQUEST=Object.freeze({kind:'upload-inspection',requestId:'a'.repeat(64),imageDigest:IMAGE,
  declaration:DECLARATION,bytesBase64:BYTES.toString('base64'),inputSha256:sha(BYTES),deadlineMs:Date.now()+5000});
 const uuid=n=>`00000000-0000-4000-8000-${String(n).padStart(12,'0')}`;
+/** Real saved-upload custody projection built by the canonical helper (no placeholder ids). */
+const SCOPES=[{tenantId:uuid(1),kind:'private-user',resourceId:uuid(2),policyRevision:'p1'}];
+const savedCustodyFor=declaration=>nativeUploadCustody({uploadId:uuid(20),requestId:uuid(21),
+ owner:{tenantId:uuid(1),actorId:uuid(2),conversationId:uuid(3),clientId:null},declaration,scopes:SCOPES,
+ objectId:uuid(22),object:{objectId:uuid(22),versionId:'FIXTURE_VERSION',sha256:declaration.sha256,
+  bytes:declaration.bytes,scopes:SCOPES},state:'stored',inspection:null,createdAtMs:Date.now(),
+ updatedAtMs:Date.now(),revision:2},{binding:{tenantId:uuid(1),actorId:uuid(2),conversationId:uuid(3),runId:uuid(4),
+  attemptId:uuid(5),workerId:uuid(6),writerFence:1},scopes:SCOPES,selectedClientId:null,checkedAtMs:Date.now(),
+  expiresAtMs:Date.now()+600000});
+const SAVED_CUSTODY=savedCustodyFor(DECLARATION);
 const HOST_ID=uuid(7),CONV=uuid(3),TENANT=uuid(1),BOOT=uuid(8),INSTANCE='i-0123456789abcdef0';
 const LEASE=Date.now()+600000;
 const ALLOCATION=Object.freeze({schema:'meri-conversation-host-allocation/1',tenantId:TENANT,conversationId:CONV,
@@ -112,7 +123,7 @@ function handlerFor({peer=true,custody=true,runner,complete=true,lateSetup=null,
    if(signal?.aborted)return reject(Object.assign(Error('UPLOAD_INSPECTION_REQUEST_REFUSED'),{code:'UPLOAD_INSPECTION_REQUEST_REFUSED'}));
    const timer=setTimeout(()=>reject(Object.assign(Error('UPLOAD_INSPECTION_REQUEST_REFUSED'),{code:'UPLOAD_INSPECTION_REQUEST_REFUSED'})),Math.max(1,deadline-Date.now()));
    setTimeout(()=>{clearTimeout(timer);resolve(Buffer.from(JSON.stringify({schema:NATIVE_INSPECTION_SCHEMA,
-     allocation:ALLOCATION,hostIdentity:IDENTITY,binding:BINDING,custody:{uploadId:uuid(9)},request:wireRequest})));},0);
+     allocation:ALLOCATION,hostIdentity:IDENTITY,binding:BINDING,custody:SAVED_CUSTODY,request:wireRequest})));},0);
   }),
   limits:LIMITS});
  return {handler,calls};
@@ -246,7 +257,7 @@ test('cleanup unknown is never reported as a successful inspection', async () =>
    openHost:async()=>({runRequest:async()=>runner.run('x',[],{input:Buffer.from(JSON.stringify({settings:RAW_SETTINGS,
      request:REQUEST,deadlineMs:Date.now()+5000}))}),close:async()=>({closed:false,code:'NATIVE_PROCESSING_CLEANUP_UNKNOWN'})}),
    readBody:async()=>Buffer.from(JSON.stringify({schema:NATIVE_INSPECTION_SCHEMA,allocation:ALLOCATION,hostIdentity:IDENTITY,
-    binding:BINDING,custody:{uploadId:uuid(9)},request:REQUEST})),
+    binding:BINDING,custody:SAVED_CUSTODY,request:REQUEST})),
    limits:{deadlineMaxMs:30000,bodyBytes:NATIVE_BODY_LIMIT}});
   void handler;
   const r=res(); await handlerLeaky(req({complete:true}),r);
@@ -270,7 +281,7 @@ test('AUTH NEGATIVES: route, plaintext, peer, absent verifier and denied custody
    verifyCustody:async()=>{calls.push('custody');return {authorized:custody};},
    openHost:async()=>{calls.push('open');return {runRequest:async()=>({}),close:async()=>({closed:true})};},
    readBody:async()=>Buffer.from(JSON.stringify({schema:NATIVE_INSPECTION_SCHEMA,allocation:ALLOCATION,
-    hostIdentity:IDENTITY,binding:BINDING,custody:{uploadId:uuid(9)},request:REQUEST})),
+    hostIdentity:IDENTITY,binding:BINDING,custody:SAVED_CUSTODY,request:REQUEST})),
    limits:{deadlineMaxMs:2000,bodyBytes:NATIVE_BODY_LIMIT}});
   return {handler,calls,request:{method:'POST',url,socket:{encrypted},headers:{},once(){},removeListener(){}}};
  };
@@ -330,7 +341,7 @@ function streamRequest({body, complete=true, url=NATIVE_INSPECTION_PATH}={}) {
  return stream;
 }
 const ENVELOPE=()=>({schema:NATIVE_INSPECTION_SCHEMA,allocation:ALLOCATION,hostIdentity:IDENTITY,binding:BINDING,
- custody:{uploadId:uuid(9)},request:{...REQUEST,deadlineMs:Date.now()+5000}});
+ custody:SAVED_CUSTODY,request:{...REQUEST,deadlineMs:Date.now()+5000}});
 const SCOPED_CUSTODY={authorized:true,allocation:ALLOCATION,binding:BINDING,hostIdentity:IDENTITY,
  currentness:{readCurrent:async()=>({})}};
 
@@ -470,14 +481,14 @@ test('CANONICAL MAX: a 10MiB original is accepted; one byte above max is refused
  const big=Buffer.alloc(limit,0x61);
  const declaration={filename:'big.txt',mimeType:'text/plain',bytes:big.length,sha256:sha(big)};
  const envelope={schema:NATIVE_INSPECTION_SCHEMA,allocation:ALLOCATION,hostIdentity:IDENTITY,binding:BINDING,
-  custody:{uploadId:uuid(9)},request:{kind:'upload-inspection',requestId:'c'.repeat(64),imageDigest:IMAGE,declaration,
+  custody:savedCustodyFor(declaration),request:{kind:'upload-inspection',requestId:'c'.repeat(64),imageDigest:IMAGE,declaration,
    bytesBase64:big.toString('base64'),inputSha256:sha(big),deadlineMs:Date.now()+5000}};
  assert.equal(nativeInspectionBody(envelope).bytes.length,limit);
  const over=Buffer.alloc(limit+1,0x62);
  const overDeclaration={filename:'big.txt',mimeType:'text/plain',bytes:over.length,sha256:sha(over)};
- assert.throws(()=>nativeInspectionBody({...envelope,request:{...envelope.request,declaration:overDeclaration,
-  bytesBase64:over.toString('base64'),inputSha256:sha(over)}}),
-  e=>e?.code==='UPLOAD_INSPECTION_REQUEST_REFUSED');
+ assert.throws(()=>nativeInspectionBody({...envelope,custody:savedCustodyFor(overDeclaration),
+  request:{...envelope.request,declaration:overDeclaration,bytesBase64:over.toString('base64'),inputSha256:sha(over)}}),
+  e=>e?.code==='NATIVE_UPLOAD_INSPECTION_REFUSED','the canonical parser refuses one byte above the original-byte max');
 });
 
 test('OWNERSHIP: a valid result whose cleanup times out then succeeds still releases activity', async () => {
@@ -610,7 +621,7 @@ test('BOOTSTRAP: a pin settling after close is released and never dispatched', a
  const error=await call;
  assert.equal(error?.code,'NATIVE_PROCESSING_CLOSED','no dispatch after close');
  assert.equal(ran,0,'the child never ran');
- assert.deepEqual(releaseArgs,{completed:false},'the late token was still released, not leaked');
+ assert.deepEqual(releaseArgs,{completed:true},'a never-dispatched late token is complete: no child can use it');
 });
 
 test('BOOTSTRAP: a release refusal keeps the host unknown and retains the token', async () => {
@@ -642,7 +653,7 @@ test('BOOTSTRAP: a successful run with unknown placement closure retains its pin
  assert.equal(released,0,'exit status never releases a pin without proven closure');
 });
 
-test('BOOTSTRAP: a failed run with PROVEN closure releases as incomplete', async () => {
+test('BOOTSTRAP: a failed run with PROVEN closure releases its pin as finished', async () => {
  const seen=[];
  const definitionsOwner={async pin(){return {databaseDirectory:'/d',sha256:'f'.repeat(64),publishedAtMs:1,files:[],
   release(args){seen.push(args);return {released:true};}};}};
@@ -654,7 +665,7 @@ test('BOOTSTRAP: a failed run with PROVEN closure releases as incomplete', async
  await assert.rejects(host.runRequest({requestDocument:REQUEST,deadlineMs:Date.now()+2000}));
  const closed=await host.close();
  assert.equal(closed.closed,true);
- assert.deepEqual(seen,[{completed:false}]);
+ assert.deepEqual(seen,[{completed:true}],'a failed child that is proven done has no future reader');
 });
 
 test('BOOTSTRAP: concurrent calls release their OWN exact tokens', async () => {
@@ -673,5 +684,30 @@ test('BOOTSTRAP: concurrent calls release their OWN exact tokens', async () => {
  await Promise.allSettled([first,second]);
  const closed=await host.close();
  assert.equal(closed.closed,true);
- assert.deepEqual(seen.sort((a,b)=>a.id-b.id),[ {id:1,completed:true},{id:2,completed:false} ]);
+ assert.deepEqual(seen.sort((a,b)=>a.id-b.id),[ {id:1,completed:true},{id:2,completed:true} ],
+  'each call releases its OWN token with its own completion');
+});
+
+test('CONNECTED: a DEFERRED setup rejection after expiry answers within deadline+cleanup, then unwinds', async () => {
+ let entered=null,rejectSetup=null,sawAbort=false;
+ const enteredPromise=new Promise(resolve=>{entered=resolve;});
+ const handler=createInspectionHandler({
+  authenticate:async()=>({verified:true}),
+  verifyCustody:async()=>SCOPED_CUSTODY,
+  openHost:input=>{entered();input.signal?.addEventListener('abort',()=>{sawAbort=true;},{once:true});
+   return new Promise((_,reject)=>{rejectSetup=reject;});},
+  readBody:async()=>Buffer.from(JSON.stringify({schema:NATIVE_INSPECTION_SCHEMA,allocation:ALLOCATION,
+   hostIdentity:IDENTITY,binding:BINDING,custody:SAVED_CUSTODY,
+   request:{...REQUEST,deadlineMs:Date.now()+120}})),
+  limits:{...LIMITS,cleanupMs:150}});
+ const out=res();
+ const startedAt=Date.now();
+ await handler(req(),out);
+ const elapsed=Date.now()-startedAt;
+ await enteredPromise;
+ assert.equal(sawAbort,true,'the pending setup observed the operation abort');
+ assert.notEqual(out.status,200);
+ assert.ok(elapsed<120+150+400,`answered within the bounded window (${elapsed}ms)`);
+ rejectSetup(Object.assign(Error('removed'),{code:'NATIVE_PROCESSING_REMOVED',partialCleanup:'removed'}));
+ await new Promise(resolve=>setTimeout(resolve,20));
 });

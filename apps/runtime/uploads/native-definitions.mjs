@@ -54,15 +54,22 @@ import {copyFile,mkdir,readFile,readdir,writeFile,rename,rm,lstat,mkdtemp,chmod}
 /** Fixed definition programs run as UID/GID 1000: prepare ONLY these exact owner-generated paths for them. Published
  * snapshots stay root-owned and READ-ONLY for the upload child (0755 dirs / 0644 files, never writable); the staging area
  * and its generated freshclam configuration are the only writable-for-refresh inputs. */
-async function prepareDefinitionAccess({root,staging,config,snapshot,id}){
- for(const dir of [root,join(root,'snapshots'),join(root,'staging'),staging,join(staging,'database')])
-  await chmod(dir,0o755).catch(()=>{});
- if(config!==undefined)await chmod(config,0o644).catch(()=>{});
+// POSIX ownership/mode preparation is mandatory on the deployment platform; a Windows authoring host has no uid/gid or
+// POSIX modes to apply, so it is a no-op there ONLY (deployment validates the real modes).
+const defaultApply=process.platform==='win32'?async()=>{}:chmod;
+async function prepareDefinitionAccess({root,staging,config,snapshot,id,chmod:apply=defaultApply}){
+ // The fixed programs run as UID/GID 1000 while the updater is root. Only the exact staging paths must accept that
+ // ordinary writer (freshclam writes the database and its log); publication stays root-owned and READ-ONLY to the child.
+ const mode=async(path,value)=>{try{await apply(path,value);}
+  catch(error){fail('UPLOAD_DEFINITIONS_ACCESS_FAILED');void error;}};
+ for(const dir of [root,join(root,'staging'),staging,join(staging,'database')])await mode(dir,0o777);
+ if(config!==undefined)await mode(config,0o644);
  if(snapshot!==undefined){const target=join(root,'snapshots',id);
-  for(const dir of [target,join(target,'database')])await chmod(dir,0o755).catch(()=>{});
-  for(const file of snapshot.files)await chmod(join(target,'database',file.name),0o644).catch(()=>{});
-  await chmod(join(target,'snapshot.json'),0o644).catch(()=>{});}
- await chmod(join(root,'current'),0o644).catch(()=>{});
+  await mode(join(root,'snapshots'),0o555);
+  for(const dir of [target,join(target,'database')])await mode(dir,0o555);
+  for(const file of snapshot.files)await mode(join(target,'database',file.name),0o444);
+  await mode(join(target,'snapshot.json'),0o444);}
+ await mode(join(root,'current'),0o444);
 }
 import {join,isAbsolute} from 'node:path';
 
@@ -316,7 +323,7 @@ export async function pruneSnapshots({root,now=Date.now,keep=[],isIdle,retain=UP
  * retains the last valid signed snapshot. Nothing is deleted here: the bounded storage disposition lives on the
  * reader-pin owner (`createSignedDefinitionStore`'s `prune`), which needs the reader accounting only the resolve owner
  * has, so an in-flight reader bound to an older snapshot always keeps a valid directory. */
-export function createSignedDefinitionUpdater({root,run,now=Date.now}){
+export function createSignedDefinitionUpdater({root,run,now=Date.now,chmod:chmodEffect}={}){
  if(typeof root!=='string'||!isAbsolute(root)||typeof run!=='function'||typeof now!=='function')fail('UPLOAD_DEFINITIONS_CONFIGURATION');
  return Object.freeze({async provision({signal,deadlineMs}={}){
   if(!Number.isSafeInteger(deadlineMs)||deadlineMs<=now())fail('UPLOAD_DEFINITIONS_EXPIRED');
@@ -327,7 +334,7 @@ export function createSignedDefinitionUpdater({root,run,now=Date.now}){
    await mkdir(database,{recursive:true,mode:0o700});
    const config=join(staging,'freshclam.conf');
    await writeFile(config,freshclamConfiguration(staging),{mode:0o600});
-   await prepareDefinitionAccess({root,staging,config});   // UID/GID 1000 freshclam can read/traverse exactly these
+   await prepareDefinitionAccess({root,staging,config,chmod:chmodEffect});   // UID/GID 1000 freshclam can read/traverse exactly these
    try{await run(UPLOAD_FRESHCLAM,freshclamArguments(config),{cwd:staging,input:Buffer.alloc(0),signal,deadlineMs});}
    catch{fail('UPLOAD_DEFINITIONS_REFRESH_FAILED');}
    const entries=await readdir(database,{withFileTypes:true}).catch(()=>[]);
@@ -373,7 +380,7 @@ export function createSignedDefinitionUpdater({root,run,now=Date.now}){
    // root never share a temporary name. The move onto `current` is atomic and the last writer wins; the bounded retry
    // covers a transient destination lock under writer contention (observed as EPERM on a Windows authoring host) and
    // never publishes a partial pointer.
-   await prepareDefinitionAccess({root,staging,snapshot,id});
+   await prepareDefinitionAccess({root,staging,snapshot,id,chmod:chmodEffect});
    const pointer=join(staging,'current.tmp');
    await writeFile(pointer,id,{mode:0o600});
    for(let attempt=0;;attempt+=1){
