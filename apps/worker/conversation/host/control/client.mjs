@@ -169,6 +169,9 @@ export function createHostCurrentnessClient({allocation,binding,hostIdentity,pur
      signal,request.deadlineMs-now());
     // The third argument is the ACTUAL observation clock: the receipt is judged at this instant.
     const answer=hostDecideResponse(response,request,now());
+    // The authenticated ENVELOPE must still be fresh on this clock: a reply that expired in transit or is
+    // future-dated never grants, even when the underlying approval itself is unexpired.
+    if(!fresh(answer,now(),maxFreshMs))fail();
     if(answer.outcome==='approved')return Object.freeze({permitted:true,receipt:answer.receipt,
      checkedAtMs:answer.checkedAtMs,currentUntilMs:answer.currentUntilMs});
     return Object.freeze({permitted:false,outcome:answer.outcome,checkedAtMs:answer.checkedAtMs,

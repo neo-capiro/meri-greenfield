@@ -241,7 +241,7 @@ const permittedPhase=state=>state.phase==='active'
       ['binding','browserPolicySha256','capabilityPolicySha256','sdkAdmitted','browserAdmitted','bashAdmitted','phase','currentUntilMs'],['browserCustody','browserSuccessor']);
      if(canonicalSha256(stableProjection(fresh))!==admitted.stateSha256||fresh.browserAdmitted!==true||
       !permittedPhase(fresh))fail();
-     const nowMs=await clock(client),untilMs=cutoff(nowMs,a,h,fresh.currentUntilMs);
+     const nowMs=await clock(client),untilMs=Math.min(cutoff(nowMs,a,h,fresh.currentUntilMs),admitted.effectiveDeadline);
      if(signal?.aborted||nowMs>=untilMs||nowMs>=a.leaseDeadlineMs||nowMs>=admitted.effectiveDeadline)fail();
      const outcome=answer?.permitted===true?'approved':(answer?.terminal??(answer?.unknown===true?'unknown':
       (answer?.expired===true?'expired':(answer?.statusOnly===true?'pending':'rejected'))));
