@@ -10,11 +10,12 @@ import {playwrightServerConfig} from '../browser/server.mjs';
 const fail=()=>{throw Error('BROWSER_RELAY_REFUSED');};
 const refused=()=>({isError:true,content:[{type:'text',text:'BROWSER_CALL_REFUSED'}]});
 export function createNativeBrowserModelRelay({binding,policy,installation,paths,readable,writable,onDisconnect}){
- if(!(readable instanceof Readable)||!(writable instanceof Writable)||typeof onDisconnect!=='function')fail();
+ if(!(readable instanceof Readable)||!(writable instanceof Writable)||typeof onDisconnect!=='function'||
+  readable.destroyed||readable.readableEnded||writable.destroyed||writable.writableEnded)fail();
  const expected=canonicalSha256(binding);let bound=false;
  return Object.freeze({async bind(raw){
   const q=own(raw,['binding','installation','call','tools']);
-  if(bound||canonicalSha256(q.binding)!==expected||canonicalSha256(q.installation)!==canonicalSha256(installation)||typeof q.call!=='function'||typeof q.tools!=='function')fail();
+  if(bound||readable.destroyed||readable.readableEnded||writable.destroyed||writable.writableEnded||canonicalSha256(q.binding)!==expected||canonicalSha256(q.installation)!==canonicalSha256(installation)||typeof q.call!=='function'||typeof q.tools!=='function')fail();
   bound=true;
   const server=new Server({name:'meri-browser-session',version:'1.0.0'},{capabilities:{tools:{}}});
   const transport=new StdioServerTransport(readable,writable,{maxBufferSize:262144});

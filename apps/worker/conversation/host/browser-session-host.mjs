@@ -64,7 +64,8 @@ export function createBrowserSessionHost({binding,cwd,installation,upstream,cont
    return Object.freeze({mcpServers:expected,destroy:close});
   }catch(error){
    if(session)try{await close({trigger:'disconnect'});}catch{fail('BROWSER_DISPOSE_INCOMPLETE');}
-   else if(context)await context.close();throw error;
+   else try{await context?.close();}finally{await contexts.close?.();}
+   throw error;
   }
  }});
 }

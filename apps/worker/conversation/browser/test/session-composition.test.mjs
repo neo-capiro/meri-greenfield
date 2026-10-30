@@ -10,6 +10,17 @@ import {enabledPolicy,binding,installation} from './fixtures.mjs';
 const cwd='/workspace/'+binding.conversationId;
 import {validateBrowserPolicy} from '../policy.mjs';
 import {playwrightServerConfig} from '../server.mjs';
+
+test('authority refusal before context attachment closes the already prepared native context port',async()=>{
+ const calls=[];
+ const host=createBrowserSessionHost({binding,cwd,installation,upstream:{version:'0.0.83',createConnection:async()=>{throw Error('not reached');}},now:Date.now,
+  contexts:{create:async()=>{calls.push('create');},close:async()=>{calls.push('close');}},
+  relay:{bind:async()=>{throw Error('not reached');}},controls:{bind:async()=>{throw Error('not reached');}},
+  current:async()=>{throw Error('authority refused');},hold:async()=>{throw Error('not reached');},
+  processes:{waitForExit:async()=>{calls.push('absence');}},dispose:async()=>{calls.push('dispose');}});
+ await assert.rejects(host.open({binding,policy:enabledPolicy(),deadlineMs:Date.now()+10000,manifest:null}),/authority refused/);
+ assert.deepEqual(calls,['close']);
+});
 import {browserPaths} from '../workspace.mjs';
 import {siteWorkflowPolicy} from '../site-workflows/manifest.mjs';
 import {workflowCurrent,workflowManifest} from '../../../../../packages/contracts/test/site-workflow.fixture.mjs';

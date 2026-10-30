@@ -11,6 +11,15 @@ import {validateBrowserPolicy} from '../../browser/policy.mjs';
 import {createControlFence} from '../../browser/session/fence.mjs';
 const cwd='/workspace/'+binding.conversationId;
 
+test('an authenticated native stream lost before binding cannot expose a model server',async()=>{
+ const incoming=new PassThrough(),outgoing=new PassThrough(),policy=validateBrowserPolicy(enabledPolicy());
+ const owner=createNativeBrowserModelRelay({binding,policy,installation,paths:browserPaths(cwd),readable:incoming,writable:outgoing,onDisconnect:()=>{}});
+ incoming.destroy();
+ await assert.rejects(owner.bind({binding,installation,tools:async()=>[],call:async()=>({})}),/BROWSER_RELAY_REFUSED/);
+ assert.throws(()=>createNativeBrowserModelRelay({binding,policy,installation,paths:browserPaths(cwd),readable:incoming,writable:outgoing,onDisconnect:()=>{}}),/BROWSER_RELAY_REFUSED/);
+ outgoing.destroy();
+});
+
 async function fixture(t){
  const incoming=new PassThrough(),outgoing=new PassThrough(),policy=validateBrowserPolicy(enabledPolicy()),fence=createControlFence({now:Date.now});
  const state={calls:[],disconnected:0,raw:'',mode:'text'};outgoing.on('data',chunk=>{state.raw+=chunk;});

@@ -32,7 +32,7 @@ const sdkDescriptor={command:'/opt/meri/node',args:['/opt/meri/cli.js'],cwd:'/tm
 class Child extends EventEmitter {
  constructor(pid,mode){super();this.pid=pid;this.exitCode=null;this.signalCode=null;
   this.stdin=new PassThrough();this.stdout=new PassThrough();this.stderr=new PassThrough();
-  this.stdio=[this.stdin,this.stdout,this.stderr,new PassThrough(),new PassThrough(),new PassThrough()];
+  this.stdio=[this.stdin,this.stdout,this.stderr,new PassThrough(),new PassThrough(),new PassThrough(),new PassThrough()];
   this.stdio[4].on('data',value=>{this.go=(this.go??'')+value.toString();});
   queueMicrotask(()=>this.stdio[3].write(mode==='broker'?'L\n':'R\n'));
  }
@@ -108,27 +108,44 @@ test('readiness bwrap probe uses the paused native SDK path without model relay 
  assert.equal(await f.launcher.runReadinessProbe('/opt/bin/sh',[]).catch(error=>error.code),'HOST_LAUNCH_PROBE_REFUSED');
  await f.launcher.close();
 });
-test('browser broker exposes only bound one-shot shim and waits for browser observer before GO',async()=>{
+test('confined browser is prepared before the SDK; broker routes only authenticated model streams',async()=>{
  const f=fixture(),cwd=`/tmp/${binding.conversationId}`,paths=browserPaths(cwd);
+ await assert.rejects(f.launcher.prepareBrowserBroker({policy:enabledPolicy(),installation,paths}),/HOST_LAUNCH_REFUSED/);
+ const native=await f.launcher.prepareBrowserContext({policy:enabledPolicy(),installation,paths});
+ assert.equal(f.children[0].go,'G');assert.equal(native.readable,f.children[0].stdout);
+ assert.equal(f.calls[0].args[0],'run');assert.equal(f.calls[0].args[4],'browser');
+ assert.ok(f.calls[0].args.some(value=>value.endsWith('/context-child.mjs')));
+ assert.equal(f.calls[1].prepared,'browser');
  const held=await f.launcher.prepareBrowserBroker({policy:enabledPolicy(),installation,paths});
  assert.deepEqual(held.descriptor,f.launcher.descriptor);
  assert.equal(held.descriptor.socketPath,`/run/meri-launch/${canonicalSha256(binding)}.sock`);
- assert.equal(f.calls[0].args[0],'broker');assert.equal(f.calls[0].options.env&&Object.keys(f.calls[0].options.env).length,0);
- assert.ok(f.calls[0].args.includes('/opt/scripted/@playwright/mcp/cli.js'));
+ assert.equal(f.calls[2].args[0],'broker');assert.equal(Object.keys(f.calls[2].options.env).length,0);
+ assert.equal(f.calls[2].args.includes('/opt/scripted/@playwright/mcp/cli.js'),false);
  assert.ok(!Object.values(held.descriptor).join(' ').includes('/opt/scripted/node'));
- f.children[0].stdio[3].write('R 400\n');await held.failure;
- assert.equal(f.calls.at(-1).prepared,'browser');assert.equal(f.children[0].go,'G');
+ assert.equal(held.modelTransport.readable,f.children[1].stdio[6]);assert.equal(held.modelTransport.writable,f.children[1].stdio[6]);
+ assert.equal(f.children[1].go,undefined);f.children[1].stdio[3].write('A\n');await held.failure;
+ assert.equal(f.children[1].go,'G');
  await held.close();
 });
 test('browser broker receives only the one prepared SDK leader PID over private fd before accepting shim',async()=>{
  const f=fixture(),paths=browserPaths(`/tmp/${binding.conversationId}`);
+ await f.launcher.prepareBrowserContext({policy:enabledPolicy(),installation,paths});
  await f.launcher.prepareBrowserBroker({policy:enabledPolicy(),installation,paths});
- let leader='';f.children[0].stdio[5].on('data',chunk=>{leader+=chunk.toString();});
+ let leader='';f.children[1].stdio[5].on('data',chunk=>{leader+=chunk.toString();});
  const client=f.launcher.createSdkProcessClient();client.spawnClaudeCodeProcess(sdkDescriptor);
  await client.startPreparedProcess();
- assert.equal(leader,`${f.children[1].pid}\n`);
- assert.equal(f.calls[0].options.stdio.length,6);
+ assert.equal(leader,`${f.children[2].pid}\n`);
+ assert.equal(f.calls[2].options.stdio.length,7);
  await f.launcher.close();
+});
+
+test('concurrent broker preparation cannot allocate a second native listener while authority is pending',async()=>{
+ const waiting=Promise.withResolvers(),release=Promise.withResolvers();let block=false;
+ const f=fixture({authorities:[{...authority,readCurrent:async()=>{if(block){waiting.resolve();await release.promise;}return readCurrent();}}]}),paths=browserPaths(`/tmp/${binding.conversationId}`);
+ const request={policy:enabledPolicy(),installation,paths};await f.launcher.prepareBrowserContext(request);block=true;
+ const first=f.launcher.prepareBrowserBroker(request);await waiting.promise;
+ await assert.rejects(f.launcher.prepareBrowserBroker(request),/HOST_LAUNCH_REFUSED/);
+ release.resolve();await first;assert.equal(f.children.length,2);await f.launcher.close();
 });
 test('relay helper uses separate exact cgroup, no environment and two authority checks',async()=>{
  const children=[],calls=[];const handle=await startConfinedLocalRelay({allocation,binding,hostIdentity,

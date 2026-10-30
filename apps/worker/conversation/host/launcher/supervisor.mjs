@@ -168,46 +168,55 @@ export function createHostLauncher({allocation,binding,hostIdentity,helperPath,s
  nativeSignal(signal);if(signal?.aborted)fail('HOST_LAUNCH_CANCELLED');const life=new AbortController();
  const check=()=>checkAuthority(s,readers,life.signal,readyMs);
  const sdkHold=sdkMode==='conversation'&&browserNetwork?createSdkHold({allocation:s.allocation,binding:s.binding,hostIdentity:s.hostIdentity,timeoutMs:readyMs}):null;
- let broker,sdk,sdkRelease,clientMade=false,closed=false,closing,browserFailure;
+ let broker,browser,sdk,sdkRelease,clientMade=false,brokerTaken=false,closed=false,closing,browserFailure,browserPins;
  const pendingChildren=new Set();
  const nonce=randomBytes(32).toString('hex'),socketPath=`/run/meri-launch/${s.bindingSha256}.sock`;
  const descriptor=Object.freeze({shimPath,socketPath,nonce});
  async function close(){if(closing)return closing;closed=true;life.abort();
   closing=(async()=>{const failures=[];
-   for(const child of new Set([broker,sdk,...pendingChildren].filter(Boolean)))try{await stopChild(child,stopMs);}catch(error){failures.push(error);}
+   for(const child of new Set([broker,browser,sdk,...pendingChildren].filter(Boolean)))try{await stopChild(child,stopMs);}catch(error){failures.push(error);}
    try{await sdkHold?.close();}catch(error){failures.push(error);}
    if(!failures.length&&sdkRelease){sdkRelease();sdkRelease=undefined;}
    if(broker)try{await unlink(socketPath);}catch(error){if(error?.code!=='ENOENT')failures.push(error);}
    if(failures.length)fail('HOST_LAUNCH_CLEANUP_UNKNOWN');return Object.freeze({closed:true,processAbsenceProven:false});})();
   return closing;}
- async function prepareBrowserBroker({policy,installation,paths}){
-  if(closed||broker||sdkMode!=='conversation')fail('HOST_LAUNCH_REFUSED');
+ async function prepareBrowserContext({policy,installation,paths}){
+  if(closed||browser||browserPins||sdkMode!=='conversation')fail('HOST_LAUNCH_REFUSED');
   const installed=validateBrowserInstallation({...installation,launch:descriptor},s.binding);
-  const command=playwrightHostCommand(validateBrowserPolicy(policy),installed,paths);
-  if(!absolute(command.command)||!Array.isArray(command.args)||![paths.home,paths.profile,paths.output].every(absolute)||
+  const admitted=validateBrowserPolicy(policy),command=playwrightHostCommand(admitted,installed,paths);
+  if(!absolute(command.args[0])||![paths.home,paths.profile,paths.output].every(absolute)||
    installed.egressProxy!==`http://127.0.0.1:${browserNetwork?.plan?.routes?.[0]?.localPort}`)fail('HOST_LAUNCH_CONFIGURATION');
-  const network=await verifiedNetwork(s,browserNetwork,'browser',life.signal,readyMs);
+  browserPins=canonicalSha256({policy:admitted,installation:installed,paths});
+  try{
+   browser=await preparedProcess({s,helperPath,kind:'browser',network:browserNetwork,command:command.command,args:command.args,
+    cwd:paths.home,home:paths.home,browsersPath:installed.browsersPath,runUid:browserUid,runGid:browserGid,
+    env:{},spawnNative,readyMs,signal:life.signal,onPrepared:onBrowserPrepared,check,
+    onSpawn:child=>pendingChildren.add(child),onSettled:child=>pendingChildren.delete(child)});
+   pendingChildren.delete(browser);
+   return Object.freeze({installation:installed,readable:browser.stdout,writable:browser.stdin,close});
+  }catch(error){try{await close();}catch{}throw error;}
+ }
+ async function prepareBrowserBroker({policy,installation,paths}){
+  const installed=validateBrowserInstallation({...installation,launch:descriptor},s.binding);
+  if(closed||brokerTaken||!browser||browser.exitCode!==null||browser.signalCode!==null||sdkMode!=='conversation'||
+   browserPins!==canonicalSha256({policy:validateBrowserPolicy(policy),installation:installed,paths}))fail('HOST_LAUNCH_REFUSED');
+  brokerTaken=true;
   await check();
   const directory=await readSocketDirectory('/run/meri-launch');
   if(directory.uid!==0||directory.gid!==sdkGid||(directory.mode&0o077)!==0o010)fail('HOST_LAUNCH_CONFIGURATION');
   const args=['broker',socketPath,String(sdkUid),String(sdkGid),nonce,shimPath,
-   ...nativeSpec(s,{kind:'browser',network,command:command.command,args:command.args,cwd:paths.home,
-    home:command.env.HOME,browsersPath:command.env.PLAYWRIGHT_BROWSERS_PATH,uid:browserUid,gid:browserGid})];
-  broker=spawnNative(helperPath,args,{env:{},stdio:['ignore','ignore','ignore','pipe','pipe','pipe'],windowsHide:true});
-  if(!broker||!Number.isSafeInteger(broker.pid)||!broker.stdio?.[3]||!broker.stdio?.[4]||!broker.stdio?.[5])fail('HOST_LAUNCH_UNKNOWN');
+   s.allocation.hostId,String(s.allocation.generation),s.bindingSha256];
+  broker=spawnNative(helperPath,args,{env:{},stdio:['ignore','ignore','ignore','pipe','pipe','pipe','pipe'],windowsHide:true});
+  if(!broker||!Number.isSafeInteger(broker.pid)||!broker.stdio?.[3]||!broker.stdio?.[4]||!broker.stdio?.[5]||!broker.stdio?.[6])fail('HOST_LAUNCH_UNKNOWN');
   const next=lineReader(broker.stdio[3]);
   try{if(await within(()=>next(),readyMs,life.signal)!=='L')fail('HOST_LAUNCH_UNKNOWN');}
   catch(error){await close();throw error;}
   browserFailure=(async()=>{
-   try{const line=await next(),match=/^R ([1-9][0-9]*)$/u.exec(line);
-    if(!match)fail('HOST_LAUNCH_UNKNOWN');const leaderPid=Number(match[1]);
-    await within(()=>onBrowserPrepared({leaderPid,kind:'browser'}),readyMs,life.signal);
-    const again=await verifiedNetwork(s,browserNetwork,'browser',life.signal,readyMs);
-    if(canonicalSha256(again)!==canonicalSha256(network))fail('HOST_LAUNCH_NETWORK_REFUSED');
+   try{if(await next()!=='A')fail('HOST_LAUNCH_UNKNOWN');
     await check();if(closed)fail('HOST_LAUNCH_CANCELLED');broker.stdio[4].end('G');
    }catch(error){life.abort();try{await stopChild(broker,stopMs);}catch{}throw error;}
   })();browserFailure.catch(()=>{});
-  return Object.freeze({descriptor,installation:installed,failure:browserFailure,close});
+  return Object.freeze({descriptor,installation:installed,modelTransport:Object.freeze({readable:broker.stdio[6],writable:broker.stdio[6]}),failure:browserFailure,close});
  }
  function createSdkProcessClient(){
   if(closed||sdk||clientMade)fail('HOST_LAUNCH_REFUSED');clientMade=true;
@@ -283,7 +292,7 @@ export function createHostLauncher({allocation,binding,hostIdentity,helperPath,s
   }
  }
  signal?.addEventListener('abort',()=>{life.abort();void close().catch(()=>{});},{once:true});
- return Object.freeze({scope:s,descriptor,prepareBrowserBroker,createSdkProcessClient,runReadinessProbe,close,
+ return Object.freeze({scope:s,descriptor,prepareBrowserContext,prepareBrowserBroker,createSdkProcessClient,runReadinessProbe,close,
   freezeSdk:()=>sdkPhysicalHold(true),thawSdk:()=>sdkPhysicalHold(false),
   get signal(){return life.signal;}});
 }

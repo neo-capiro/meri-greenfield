@@ -22,7 +22,6 @@
 #include <sys/syscall.h>
 #include <sys/types.h>
 #include <sys/un.h>
-#include <sys/wait.h>
 #include <unistd.h>
 
 /* Root-owned, non-setuid host helper. It is invoked only by the trusted host supervisor. No tool UID can run it
@@ -382,11 +381,52 @@ static void verify_sdk_peer(struct ucred *peer,spec *s,const char *shim_path,pid
      approved.st_dev!=actual.st_dev||approved.st_ino!=actual.st_ino) die();
   close(pinned);
 }
+typedef struct {char bytes[65536];size_t size;} bridge_buffer;
+static void nonblocking(int fd) {int flags=fcntl(fd,F_GETFL);if(flags<0||fcntl(fd,F_SETFL,flags|O_NONBLOCK)) die();}
+static int bridge_read(int fd,bridge_buffer *b) {
+  ssize_t n=read(fd,b->bytes+b->size,sizeof(b->bytes)-b->size);
+  if(n>0){b->size+=(size_t)n;return 1;}
+  if(n<0&&(errno==EINTR||errno==EAGAIN))return 1;
+  return 0;
+}
+static int bridge_write(int fd,bridge_buffer *b) {
+  ssize_t n=write(fd,b->bytes,b->size);
+  if(n>0){b->size-=(size_t)n;memmove(b->bytes,b->bytes+n,b->size);return 1;}
+  if(n<0&&(errno==EINTR||errno==EAGAIN))return 1;
+  return 0;
+}
+/* The authenticated SDK sees only the supervisor's filtered MCP stream. The
+ * bounded, nonblocking byte bridge does not parse tools or launch upstream MCP. */
+static void bridge_stdio(int input,int output,int parent,int leader,int shim) {
+  bridge_buffer to_parent={.size=0},to_sdk={.size=0};
+  nonblocking(input);nonblocking(output);nonblocking(parent);
+  for(;;){
+    struct pollfd fds[5]={{.fd=input,.events=to_parent.size<sizeof(to_parent.bytes)?POLLIN:0},
+      {.fd=output,.events=to_sdk.size?POLLOUT:0},
+      {.fd=parent,.events=(to_sdk.size<sizeof(to_sdk.bytes)?POLLIN:0)|(to_parent.size?POLLOUT:0)},
+      {.fd=leader,.events=POLLIN},{.fd=shim,.events=POLLIN}};
+    int count;do{count=poll(fds,5,-1);}while(count<0&&errno==EINTR);if(count<0)die();
+    if(fds[3].revents||fds[4].revents)break;
+    for(int i=0;i<3;i++)if(fds[i].revents&(POLLERR|POLLNVAL))die();
+    if((fds[0].revents&POLLIN)&&!bridge_read(input,&to_parent))break;
+    if((fds[2].revents&POLLIN)&&!bridge_read(parent,&to_sdk))break;
+    if((fds[2].revents&POLLOUT)&&!bridge_write(parent,&to_parent))break;
+    if((fds[1].revents&POLLOUT)&&!bridge_write(output,&to_sdk))break;
+    if(fds[0].revents&POLLHUP||fds[1].revents&POLLHUP||fds[2].revents&POLLHUP)break;
+  }
+}
 static void broker_run(int argc,char **argv) {
-  if(argc<20||!valid_hex(argv[5],64)) die();
+  if(argc!=10||!valid_hex(argv[5],64)||!valid_uuid(argv[7])||!valid_hex(argv[9],64)||number(argv[8],999999999)<1) die();
   uid_t peer_uid=(uid_t)number(argv[3],65533);gid_t peer_gid=(gid_t)number(argv[4],65533);
   if(peer_uid<1000||peer_gid<1000) die();
-  spec s=parse_spec(argc,argv,7);if(strcmp(s.kind,"browser")) die();
+  spec s={.host_id=argv[7],.generation=argv[8],.binding_sha=argv[9]};
+  /* fd6 is a supervisor-created anonymous Unix socketpair, never a pathname or TCP listener. */
+  struct sockaddr_un parent_local,parent_remote;socklen_t ll=sizeof(parent_local),rl=sizeof(parent_remote);
+  int parent_type;socklen_t tl=sizeof(parent_type);
+  if(getsockname(6,(struct sockaddr *)&parent_local,&ll)||getpeername(6,(struct sockaddr *)&parent_remote,&rl)||
+     parent_local.sun_family!=AF_UNIX||parent_remote.sun_family!=AF_UNIX||
+     ll!=offsetof(struct sockaddr_un,sun_path)||rl!=offsetof(struct sockaddr_un,sun_path)||
+     getsockopt(6,SOL_SOCKET,SO_TYPE,&parent_type,&tl)||parent_type!=SOCK_STREAM)die();
   pid_t supervisor=getppid();
   if(prctl(PR_SET_PDEATHSIG,SIGKILL)||getppid()!=supervisor) die();
   char socket_path[108];
@@ -407,29 +447,20 @@ static void broker_run(int argc,char **argv) {
   if(getsockopt(conn,SOL_SOCKET,SO_PEERCRED,&peer,&size)||size!=sizeof(peer)||peer.uid!=peer_uid||peer.gid!=peer_gid) die();
   sdk_still_alive(sdk_pidfd);verify_sdk_peer(&peer,&s,argv[6],sdk_pid);
   int stdio[3];receive_stdio(conn,argv[5],stdio);
-  int ready[2],gate[2];if(pipe2(ready,O_CLOEXEC)||pipe2(gate,O_CLOEXEC)) die();
-  pid_t pid=fork();if(pid<0) die();
-  if(pid==0) {
-    close(conn);close(ready[0]);close(gate[1]);
-    for(int i=0;i<3;i++) if(dup2(stdio[i],i)<0) die();
-    for(int i=0;i<3;i++) if(stdio[i]>2) close(stdio[i]);
-    confined_exec(&s,ready[1],gate[0]);
-  }
-  close(ready[1]);close(gate[0]);for(int i=0;i<3;i++) close(stdio[i]);
-  char state[2];if(read_exact(ready[0],state,2)||memcmp(state,"R\n",2)) die();close(ready[0]);
-  char report[64];int n=snprintf(report,sizeof(report),"R %ld\n",(long)pid);
-  if(n<1||(size_t)n>=sizeof(report)||write_all(3,report,(size_t)n)) die();
+  close(stdio[2]);
+  if(write_all(3,"A\n",2))die();
+  char state;
+  if(read_exact(4,&state,1)||state!='G')die();
+  close(4);close(3);
   sdk_still_alive(sdk_pidfd);
-  if(read_exact(4,state,1)||state[0]!='G'||write_all(gate[1],"G",1)) {kill(pid,SIGKILL);die();}close(gate[1]);
-  int status;if(waitpid(pid,&status,0)!=pid) die();
-  char result=(WIFEXITED(status)&&WEXITSTATUS(status)==0)?'0':'1';
-  (void)write_all(conn,&result,1);close(conn);
-  _exit(result=='0'?0:FAIL);
+  bridge_stdio(stdio[0],stdio[1],6,sdk_pidfd,conn);
+  close(stdio[0]);close(stdio[1]);close(6);close(sdk_pidfd);
+  (void)write_all(conn,"0",1);close(conn);_exit(0);
 }
 int main(int argc,char **argv) {
   require_root();
   if(argc<2) die();
-  if(!strcmp(argv[1],"run")) {spec s=parse_spec(argc,argv,2);if(strcmp(s.kind,"sdk")&&strcmp(s.kind,"relay-sdk")&&strcmp(s.kind,"relay-browser")) die();direct_run(&s);}
+  if(!strcmp(argv[1],"run")) {spec s=parse_spec(argc,argv,2);direct_run(&s);}
   if(!strcmp(argv[1],"broker")) broker_run(argc,argv);
   die();
 }
