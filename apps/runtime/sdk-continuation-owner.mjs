@@ -1,4 +1,5 @@
 /** Current execution reads canonical native lineage; no task grant, object checkpoint or model authority. */
+import {outreachPromptHint} from '../../packages/runtime/outreach-generation.mjs';
 import {own,data} from '../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {canonicalSha256 as hash,validateShape} from '../../packages/contracts/validate.mjs';
 import {assertExecutionIdentity} from '../control/conversations/execution-boundary.mjs';
@@ -13,7 +14,7 @@ import {assertAutomaticClientContext} from '../worker/conversation/automatic-cli
 const same=(a,b)=>hash(a)===hash(b),hints=['continuation','nextTurn','sourceRequest','request','scopes'];
 const fail=code=>{throw Object.assign(Error(code),{code});};
 export function createNativeSessionContinuation(configuration){
- const c=own(configuration,['store','execution','versions','maxOutputBytes'],['objectiveSelection','automaticContext','routineCore','now','maxRequestMs']),now=c.now??Date.now,maxRequestMs=c.maxRequestMs??3000;
+ const c=own(configuration,['store','execution','versions','maxOutputBytes'],['objectiveSelection','outreach','automaticContext','routineCore','now','maxRequestMs']),now=c.now??Date.now,maxRequestMs=c.maxRequestMs??3000;
  const versions=data(c.versions);validateShape('RuntimeVersions',versions);
  if(typeof now!=='function'||!Number.isSafeInteger(maxRequestMs)||maxRequestMs<1||maxRequestMs>30000||!Number.isSafeInteger(c.maxOutputBytes)||c.maxOutputBytes<1||c.maxOutputBytes>1048576)fail('CONTINUATION_CONFIGURATION');
  const authenticate=storageMethod(c.execution,'authenticate'),read=storageMethod(c.store,'read'),next=storageMethod(c.store.nextRuns,'execution'),lifecycle=storageMethod(c.store.lifecycle,'execution');
@@ -66,12 +67,14 @@ export function createNativeSessionContinuation(configuration){
   if(objective&&saved.saved!==null)fail('CONTINUATION_REFUSED');
   const routine=c.routineCore===undefined?null:await life.run(signal=>storageMethod(c.routineCore,'forBinding')({binding:input.binding,signal,deadlineMs:life.deadline()}));
   if(routine&&objective)fail('CONTINUATION_REFUSED');if(routine)life.limitDeadline(routine.record.expiresAtMs);
+  const outreach=objective||routine||c.outreach===undefined||!outreachPromptHint(saved.target.request.prompt)?null:await life.run(signal=>storageMethod(c.outreach,'read')({binding:input.binding,run:saved.target.run,request:saved.target.request,selectedClientId:saved.admitted.selectedClientId,signal,deadlineMs:life.deadline()}));
+  if(outreach&&saved.saved!==null)fail('CONTINUATION_REFUSED');
   // Background jobs retain their saved context and current Core authorization.
-  const automaticClientContext=c.automaticContext===undefined?undefined:objective||routine||saved.admitted.selectedClientId===null?null:
+  const automaticClientContext=c.automaticContext===undefined?undefined:objective||routine||outreach||saved.admitted.selectedClientId===null?null:
    assertAutomaticClientContext(await life.run(signal=>storageMethod(c.automaticContext,'read')({binding:input.binding,run:saved.target.run,selectedClientId:saved.admitted.selectedClientId,signal,deadlineMs:life.deadline()})),
     {binding:input.binding,selectedClientId:saved.admitted.selectedClientId});
   await finalAuthority(raw,input.binding,saved.admitted,life);
-  return {binding:input.binding,versions,deadlineMs:saved.admitted.execution.expiresAtMs,maxOutputBytes:c.maxOutputBytes,sdkSessionKey:saved.key,...(objective===undefined?{}:{objective}),...(automaticClientContext===undefined?{}:{automaticClientContext})};
+  return {binding:input.binding,versions,deadlineMs:saved.admitted.execution.expiresAtMs,maxOutputBytes:c.maxOutputBytes,sdkSessionKey:saved.key,...(objective===undefined?{}:{objective}),...(c.outreach===undefined?{}:{outreach}),...(automaticClientContext===undefined?{}:{automaticClientContext})};
  });}
  async function readSnapshot(value){return operation(value,async(raw,life)=>{
   const input=data(own(raw.request,['binding'])),saved=await canonical(raw,input.binding,life);
@@ -90,5 +93,15 @@ export function createNativeSessionContinuation(configuration){
   if(!same(result.binding,input.binding)||!same(result.sdkSession,saved.reference))fail('CONTINUATION_REFUSED');if(result.files!==null)assertNativeFileState(result.files,{binding:saved.reference.binding,scopes:saved.admitted.scopes});
   await finalAuthority(raw,input.binding,saved.admitted,life);return result;
  });}
- return Object.freeze({prepareRuntime,readSnapshot,readFiles});
+ async function settleOutreach(value){return operation(value,async(raw,life)=>{
+  const input=data(raw.request),failure=Object.hasOwn(input,'errorCode');
+  own(input,['binding','generationJobId','itemId','conversationId','requestId',...(failure?['errorCode']:['output','model'])]);
+  const saved=await canonical(raw,input.binding,life);if(saved.saved!==null||!c.outreach)fail('CONTINUATION_REFUSED');
+  const current=await life.run(signal=>storageMethod(c.outreach,'read')({binding:input.binding,run:saved.target.run,request:saved.target.request,selectedClientId:saved.admitted.selectedClientId,signal,deadlineMs:life.deadline()}));
+  if(!current||['generationJobId','itemId','conversationId','requestId'].some(k=>input[k]!==current[k])||failure&&!['generation_failed','generation_unknown'].includes(input.errorCode)||!failure&&(typeof input.model!=='string'||!input.model||input.model.length>256))fail('CONTINUATION_REFUSED');
+  await finalAuthority(raw,input.binding,saved.admitted,life);
+  const result=await life.run(signal=>storageMethod(c.outreach,'settle')({binding:input.binding,run:saved.target.run,selection:current,...(failure?{errorCode:input.errorCode}:{output:input.output,model:input.model}),signal,deadlineMs:life.deadline()}));
+  await finalAuthority(raw,input.binding,saved.admitted,life);return result;
+ });}
+ return Object.freeze({prepareRuntime,readSnapshot,readFiles,settleOutreach});
 }
