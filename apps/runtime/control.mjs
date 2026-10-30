@@ -101,13 +101,13 @@ export function retentionGate(configuration,pool,ports={},binding=null,now=Date.
   ...(purge.enabled?{sweep:createConversationRetentionSweep({startup,now})}:{}),artifactRecovery:recovery.state,tables:['meri_conversations.retention_subjects','meri_conversations.retention_purges','meri_conversations.retention_purge_targets','meri_artifacts.retention_subjects','meri_artifacts.retention_purges','meri_conversations.retention_recovery_watermark']});
 }
 export function assembleControl(options){
- const {configuration,pool:injectedPool,client,native,execution,now=Date.now,telemetry,turnTelemetry:injectedTurnTelemetry,canonicalProductPorts,uploadsNative,createReadsRuntime,workerModelPolicy,readCapabilityRole,...binding}=own(options,['configuration','pool','client','native','execution'],['now','telemetry','turnTelemetry','canonicalProductPorts','uploadsNative','productPorts','productPortsFactory','createReadsRuntime','workerModelPolicy','readCapabilityRole']);
+ const {configuration,pool:injectedPool,client,native,execution,now=Date.now,telemetry,turnTelemetry:injectedTurnTelemetry,canonicalProductPorts,uploadsNative,createReadsRuntime,workerModelPolicy,readCapabilityRole,...binding}=own(options,['configuration','pool','client','native','execution'],['now','telemetry','turnTelemetry','canonicalProductPorts','uploadsNative','productPorts','productPortsFactory','createReadsRuntime','workerModelPolicy','readCapabilityRole','browserHostMaterial','browserHostDeclaration']);
  if(workerModelPolicy!==undefined&&typeof workerModelPolicy!=='function')throw fault('CONTROL_CONFIGURATION');
  const turnTelemetry=injectedTurnTelemetry??createTurnTelemetry({service:'control',environment:configuration.telemetry?.environment,now}),pool=countingPool(injectedPool,turnTelemetry);
  if(telemetry!==undefined&&typeof telemetry?.observeRunOwner!=='function')throw fault('TELEMETRY_CONFIGURATION');
  // Protected browser-host material is loaded by startControl (owner of the trusted reader) and only
  // consumed here; it is not a product port and must not reach productBinding's closed shape.
- const {browserHostMaterial,...productOptions}=binding;
+ const {browserHostMaterial,browserHostDeclaration,...productOptions}=binding;
  const captured=productBinding(productOptions),canonical=captureRuntimePorts(canonicalProductPorts);
  const artifactRecovery=configuration.retention===undefined?null:createArtifactRecoveryBinding({journal:createPostgresRetentionJournal({pool,now})});
  let supplied,productContext;
@@ -152,8 +152,9 @@ export function assembleControl(options){
  // the error escapes, so a failed assembly owns no live state.
  let browserHosts=null;
  if(configuration.browserHosts!==undefined){
-  // The declaration is compiled here (enabled:false is absent; enabled but unusable refuses).
-  const declaration=compileBrowserHostConfiguration(configuration);
+  // The declaration is compiled once at the actual caller (startControl) and passed in; a direct
+  // assembleControl caller still gets the same normalization here. enabled:false is absent.
+  const declaration=browserHostDeclaration!==undefined?browserHostDeclaration:compileBrowserHostConfiguration(configuration);
   try{
    if(declaration!==null){
     if(!browserHostMaterial)throw fault('BROWSER_HOST_CONFIGURATION');
@@ -162,7 +163,14 @@ export function assembleControl(options){
     if(browserHosts===null)throw fault('BROWSER_HOST_CONFIGURATION');
     ports=composeRuntimePorts(ports,{browserHosts:browserHosts.browserHosts});
    }
-  }catch(error){Promise.resolve(sessions.close()).catch(()=>{});throw error;}
+  }catch(error){
+   // Everything created so far is retired, and the cleanup promise is attached to the error so the
+   // async caller awaits it and surfaces a cleanup failure instead of losing it.
+   const cleanup=(async()=>{const failures=[];try{if(browserHosts!==null)await browserHosts.close();}catch(reason){failures.push(reason);}
+    try{await sessions.close();}catch(reason){failures.push(reason);}
+    if(failures.length)throw Object.assign(new Error('CONTROL_ASSEMBLY_CLEANUP_FAILED'),{code:'CONTROL_ASSEMBLY_CLEANUP_FAILED',failures:Object.freeze(failures)});})();
+   throw Object.assign(error,{controlCleanup:cleanup});
+  }
  }
  const browserOperations=ports.browserHosts?.executeBrowserOperation&&readCapabilityRole?createBrowserOperations({hosts:ports.browserHosts,readCapabilityRole,readBrowserPolicy,now}):undefined;
  const selected=configuration.sourceEnabled&&configuration.agentcore&&createReadsRuntime?createNativeSelectedComposition({configuration,pool,store,execution,createReadsRuntime:input=>createReadsRuntime({...input,capabilityPolicy,readCapabilityRole}),serviceFor:value=>createWorkerService(value),...(productContext?{revisionSource:value=>selectedDocumentRevisionSourceFor(productContext,value)}:{}),now}):null;
@@ -172,6 +180,8 @@ export function assembleControl(options){
  const rawService=createConversationLifecycleService({service:basic,...(ports.browserHosts?{browserHosts:ports.browserHosts}:{}),store,dispatcher,sessions,now,maxRequestMs:configuration.limits.requestMs,reconcileOriginal:createOriginalReconciler({native,now,timeoutMs:configuration.limits.requestMs}),nativeAdmission:ports.continuationAdmission,approvals:ports.approvals,retention:retention?retention.gate:null});
  const observedInput=Object.fromEntries(['allocateInput','admitInput','submit'].map(name=>[name,async input=>turnTelemetry.provisional(async()=>{const value=await rawService[name](input);try{const binding=value.run?.binding??value.allocation?.binding;if(binding){turnTelemetry.bind(binding);if(name==='submit')turnTelemetry.stage(binding,'send.submit.accepted');}}catch{}return value;})]));
  const service=Object.freeze({...rawService,...observedInput});
+ // The live site-workflow port is late-bound to this exact service (the same pattern as the session binders).
+ if(browserHosts)browserHosts.bindService({service});
  const browserViewer=createBrowserViewerHttp({application:createBrowserViewerApplication({lifecycle:service,transport:ports.browserHosts??{execute:async()=>{throw fault('UNAVAILABLE');}},now}),now,maxRequestMs:Math.min(configuration.limits.requestMs,30000)});
  const browserIssuance=createActionSessionApplication({owner:{issue:async q=>(await browserSessionAccess(sessions).issue(q)).receipt},sessionPath:'/api/action-followthrough/browser-session',now,maxRequestMs:Math.min(configuration.limits.requestMs,30000)});
  // Private runtime traffic uses the same domain/store owners with a request-bound execution
@@ -220,7 +230,10 @@ export async function startControl(configuration,options={}){
   signal?.throwIfAborted();
   // Declared browser hosts need their own protected client/server material before assembly; a declared
   // reference that cannot be read refuses startup here instead of composing a half-wired family.
-  const browserHostMaterial=configuration.browserHosts===undefined?undefined:await readBrowserHostMaterial(configuration.browserHosts,owners.readMaterial??readSecret);
+  // Compiled once, at the actual caller: enabled:false is absent (no tls access at all), and a declared
+  // but unreadable reference refuses startup before any listener opens.
+  const browserHostDeclaration=compileBrowserHostConfiguration(configuration);
+  const browserHostMaterial=browserHostDeclaration===null?undefined:await readBrowserHostMaterial(browserHostDeclaration,owners.readMaterial??readSecret);
   checkAuthorization();
   const connectionString=connectionBytes.toString('utf8').trim();let u;try{u=new URL(connectionString);}catch{throw fault('DATABASE_CONFIGURATION');}
   // URL.get() selects the first duplicate; pg's adopted parser selects the
@@ -236,7 +249,7 @@ export async function startControl(configuration,options={}){
   // destroy -- and it stays undefined until the mount resolves, so a startup failure closes nothing it never created.
   uploadsNative=configuration.uploads?.native?.enabled===true?await mountUploadNativeControl({configuration,now:Date.now,signal,deadlineMs:Date.now()+Math.min(configuration.limits.startupMs,UPLOAD_NATIVE_MOUNT_MS)}):null;
   checkAuthorization();if(configuration.uploads?.native?.enabled===true&&uploadsNative.missing.length)process.stderr.write(JSON.stringify({event:UPLOAD_NATIVE_UNAVAILABLE_EVENT,missing:uploadsNative.missing})+'\n');
-  assembly=(owners.assemble??assembleControl)({configuration,pool,client,native,execution:candidate.execution,createReadsRuntime,readCapabilityRole:candidate.readCapabilityRole,turnTelemetry,...(candidate.workerModelPolicy?{workerModelPolicy:candidate.workerModelPolicy}:{}),...(telemetry?{telemetry}:{}),...mounted,...(uploadsNative?{uploadsNative}:{}),...(browserHostMaterial?{browserHostMaterial}:{}),...(candidate?{canonicalProductPorts:candidate.productPorts}:{})});candidate?.bindApplication({...fence.wrap(assembly.application),sweepRetention:input=>{checkAuthorization();if(typeof assembly.retention?.sweep!=='function')throw fault('EXECUTION_STORE_UNAVAILABLE');return assembly.retention.sweep({...input,signal:input.signal?AbortSignal.any([input.signal,fence.signal]):fence.signal});}});
+  assembly=(owners.assemble??assembleControl)({configuration,pool,client,native,execution:candidate.execution,createReadsRuntime,readCapabilityRole:candidate.readCapabilityRole,turnTelemetry,...(candidate.workerModelPolicy?{workerModelPolicy:candidate.workerModelPolicy}:{}),...(telemetry?{telemetry}:{}),...mounted,...(uploadsNative?{uploadsNative}:{}),...(browserHostMaterial?{browserHostMaterial}:{}),...(browserHostDeclaration?{browserHostDeclaration}:{}),...(candidate?{canonicalProductPorts:candidate.productPorts}:{})});candidate?.bindApplication({...fence.wrap(assembly.application),sweepRetention:input=>{checkAuthorization();if(typeof assembly.retention?.sweep!=='function')throw fault('EXECUTION_STORE_UNAVAILABLE');return assembly.retention.sweep({...input,signal:input.signal?AbortSignal.any([input.signal,fence.signal]):fence.signal});}});
   // RC1 option A: the reads composer's late-bound live-session relay reaches this control's own action-session owner only.
   readCredentialRelay?.bind(assembly.sessions);
   // Proposal continuation binds to this control's durable conversation store.
@@ -297,5 +310,9 @@ export async function startControl(configuration,options={}){
   // an integrity or teardown condition is never re-provisioned as though it were merely stale.
   const uploadProvisioning=beginUploadNativeProvisioning({handle:uploadsNative,configuration,now:Date.now,signal});
   checkAuthorization();return Object.freeze({address:listener.address,...(privateListener?{privateAddress:privateListener.address}:{}),downloads,...(uploadsNative?{uploadNative:Object.freeze({missing:uploadsNative.missing,provisioning:uploadProvisioning.state})}:{}),close});
- }catch(error){try{await close();}catch(cleanup){throw temporalCleanupUnknown(new AggregateError([error,cleanup],'CONTROL_STARTUP_AND_CLEANUP_FAILED'));}if(error?.code==='TEMPORAL_PRODUCT_CLEANUP_UNKNOWN')throw error;throw Object.assign(fault('CONTROL_STARTUP_FAILED'),{cause:error});}
+ }catch(error){
+  // A failed assembly may still own cleanup (sessions and any browser composition it created); awaiting
+  // it here keeps that failure visible instead of losing it after the throw.
+  if(typeof error?.controlCleanup?.then==='function')try{await error.controlCleanup;}catch(cleanup){throw temporalCleanupUnknown(new AggregateError([error,cleanup],'CONTROL_STARTUP_AND_CLEANUP_FAILED'));}
+  try{await close();}catch(cleanup){throw temporalCleanupUnknown(new AggregateError([error,cleanup],'CONTROL_STARTUP_AND_CLEANUP_FAILED'));}if(error?.code==='TEMPORAL_PRODUCT_CLEANUP_UNKNOWN')throw error;throw Object.assign(fault('CONTROL_STARTUP_FAILED'),{cause:error});}
 }

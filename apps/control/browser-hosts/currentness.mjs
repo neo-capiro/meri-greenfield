@@ -64,9 +64,11 @@ export function createBrowserHostCurrentness({store,core,nativeCredentials,capab
    const browser=validateBrowserPolicy(await life.run(signal=>readBrowserPolicy({binding,scopes:current.scopes,actorRole:authority.role,signal,deadlineMs:life.deadline()})));
    const credentialCutoff=await recheck();life.check();const state={binding,phase:'active',sdkAdmitted:true,bashAdmitted:policy.bash,browserAdmitted:browser.enabled&&activationOpen(),
     capabilityPolicySha256:hash(policy),browserPolicySha256:hash(browser),currentUntilMs:Math.min(current.deadlineMs,authority.expiresAtMs,authorityCutoff,credentialCutoff)};
-   // The facts projection adds the canonical scopes, the execution deadline and the policy VALUES this
-   // same read already validated; readHost/readRoute keep their exact closed response.
-   return facts?{...state,scopes:current.scopes,deadlineMs:current.deadlineMs,capabilityPolicy:policy,browserPolicy:browser}:state;
+   // The facts projection adds what the SAME read already loaded from the canonical row: the execution
+   // window, scopes, the saved request (authoritative selection source) and the policy VALUES. readHost
+   // and readRoute keep their exact closed response.
+   return facts?{...state,scopes:current.scopes,deadlineMs:current.deadlineMs,capabilityPolicy:policy,browserPolicy:browser,
+    savedRequest:source.projection.request??null,originalBinding:original}:state;
   }finally{life.close();}
  }
  // `readFacts` is the only way to obtain the wider projection, and it runs the identical checks on the

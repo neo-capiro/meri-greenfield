@@ -5,7 +5,7 @@
 import {createBrowserHostCurrentness} from '../control/browser-hosts/currentness.mjs';
 import {createPostgresHostAllocationReader} from '../control/browser-hosts/postgres-allocations.mjs';
 import {createBrowserHostRouter} from '../control/browser-hosts/router.mjs';
-import {createBrowserHostFactAnswer,createBrowserHostRunFacts,createBrowserHostSavedSelection} from './browser-host-run-facts.mjs';
+import {createBrowserHostRunFacts,createBrowserHostSiteWorkflowPort} from './browser-host-run-facts.mjs';
 import {createPostgresHostCurrentnessStore} from '../worker/conversation/host/control/postgres-store.mjs';
 import {createHostCurrentnessServer} from '../worker/conversation/host/control/server.mjs';
 import {transact} from '../control/product-persistence/transaction.mjs';
@@ -55,13 +55,25 @@ export function createBrowserHostComposition({declaration,pool,store,sessions,co
  }
  // The facts answer is the Control-side source join for readRun: saved selection through the store's own
  // reader, then the canonical facts projection on the acknowledged transaction client.
- const facts=createBrowserHostFactAnswer({pool,savedSelection:createBrowserHostSavedSelection({store}),facts:createBrowserHostRunFacts({currentness})});
- let starting,closing,address=null;
+ // The facts producer is the protected store's callback: it consumes that store's own client.
+ const facts=createBrowserHostRunFacts({currentness});
+ let siteWorkflows=null,starting,closing,address=null,closed=false;
  const wipe=()=>{for(const t of [privateTls,serverTls])if(t)for(const k of ['cert','key',t===privateTls?'ca':'clientCa'])try{t[k]?.fill?.(0);}catch{}};
  return Object.freeze({browserHosts,currentness,allocations,facts,
   get address(){return address;},
-  state:()=>Object.freeze({mounted:true,listener:server===null?null:address,currentness:!server}),
+  // The protected nonce store binds THIS callback and passes its own transaction client.
+  readCanonicalFacts:(client,input)=>facts.readCanonicalFacts(client,input),
+  // The live site-workflow port needs the assembled conversation service, which does not exist yet when
+  // this composition is built; it is late-bound once, like the other existing session binders.
+  bindService({service}={}){
+   if(closed)fail('BROWSER_HOST_CLOSED');
+   if(siteWorkflows!==null)fail('BROWSER_HOST_COMPOSITION');
+   siteWorkflows=createBrowserHostSiteWorkflowPort({store,service,nativeCredentials:sessions});return siteWorkflows;},
+  siteWorkflows(){return siteWorkflows;},
+  state:()=>Object.freeze({mounted:true,closed,listener:address,siteWorkflows:siteWorkflows!==null}),
   start(options={}){
+   // A closed composition never opens a listener again.
+   if(closed)return Promise.reject(Object.assign(new Error('BROWSER_HOST_CLOSED'),{code:'BROWSER_HOST_CLOSED'}));
    if(server===null)return Promise.resolve(Object.freeze({mounted:true,listener:null}));
    return starting??=(async()=>{try{const started=await server.start();address=started?.address??null;options.signal?.throwIfAborted();return Object.freeze({mounted:true,listener:address});}
     catch(error){
@@ -71,7 +83,13 @@ export function createBrowserHostComposition({declaration,pool,store,sessions,co
      if(failures.length)throw Object.assign(new Error('BROWSER_HOST_START_AND_CLEANUP_FAILED'),{code:'BROWSER_HOST_START_AND_CLEANUP_FAILED',cause:new AggregateError([error,...failures])});
      throw error;}})();
   },
-  close(){return closing??=(async()=>{const results=[];try{browserHosts.close();}catch(reason){results.push(reason);}if(server!==null)try{await server.close();}catch(reason){results.push(reason);}wipe();
+  close(){return closing??=(async()=>{
+   closed=true;
+   // A close that arrives while a start is in flight waits for that attempt to settle (success or
+   // failure) before retiring the listener, so the listener can never outlive the close.
+   if(starting!==undefined)try{await starting;}catch{}
+   const results=[];try{browserHosts.close();}catch(reason){results.push(reason);}
+   if(server!==null)try{await server.close();}catch(reason){results.push(reason);}wipe();
    if(results.length)throw Object.assign(new Error('BROWSER_HOST_CLEANUP_FAILED'),{code:'BROWSER_HOST_CLEANUP_FAILED',failures:Object.freeze(results)});
    return Object.freeze({closed:true});})();},
  });
