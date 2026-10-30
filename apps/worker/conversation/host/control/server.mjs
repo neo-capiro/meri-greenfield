@@ -27,7 +27,7 @@ const ROUTES=new Map([
  // The ONE approval route. Its ingress is still bounded by requestMs; only AFTER the store acknowledges the
  // admission transaction may this request's timer extend to the admitted absolute deadline.
  [HOST_DECIDE_PATH,{method:'decideBrowserApproval',requestMax:HOST_DECIDE_MAX_BYTES,max:HOST_DECIDE_WIRE_MAX_BYTES,
-  request:value=>hostDecideRequest(value),answer:(answer,q)=>hostDecideResponse(answer,q,now()),long:true}],
+  request:value=>hostDecideRequest(value),answer:(answer,q,atMs)=>hostDecideResponse(answer,q,atMs),long:true}],
 ]);
 function requestLength(req,routeMax){
  if(req.httpVersion!=='1.1'||req.method!=='POST'||!Number.isSafeInteger(routeMax))fail();
@@ -99,7 +99,7 @@ export function createHostCurrentnessServer({bind,tls,store,maxFreshMs,requestMs
    if(closed||requestLifetime.signal.aborted)fail();
    const answer=await bounded(()=>store[route.method]({request:q,fingerprintSha256:certificate.fingerprintSha256,
     peerDnsName:peerName,signal:requestLifetime.signal,...(route.long?{onAdmitted:extend}:{})}),requestLifetime.signal);
-   if(route.method==='readCurrent')hostControlResponse(answer,q,{nowMs:now(),maxFreshMs});else route.answer(answer,q);
+   if(route.method==='readCurrent')hostControlResponse(answer,q,{nowMs:now(),maxFreshMs});else route.answer(answer,q,now());
    if(closed||requestLifetime.signal.aborted)fail();
    const bytes=encodeHostControl(answer,route.max);
    res.writeHead(200,{'content-type':'application/json','content-length':String(bytes.length),'connection':'close'});
@@ -110,9 +110,9 @@ export function createHostCurrentnessServer({bind,tls,store,maxFreshMs,requestMs
  });
  server.maxConnections=maxSockets;server.maxHeadersCount=8;
  server.headersTimeout=Math.min(requestMs,5000);
- // The per-request timer still enforces requestMs for every read route; the approval route's extension is
- // only reachable through its admitted deadline, so the connection-level ceiling must not cut it first.
-server.requestTimeout=HOST_DECIDE_MAX_WINDOW_MS+requestMs;
+ // The whole incoming request/body stays under requestMs; the long approval wait is the RESPONSE phase and is
+ // governed solely by the per-request timer extended after acknowledged admission.
+server.requestTimeout=requestMs;
  server.on('tlsClientError',(_error,socket)=>socket.destroy());
  server.on('connection',socket=>{if(sockets.size>=maxSockets){socket.destroy();return;}
   sockets.add(socket);socket.on('close',()=>sockets.delete(socket));

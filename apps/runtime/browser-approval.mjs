@@ -23,6 +23,13 @@ const fail=code=>{throw Object.assign(new Error(code),{code});};
 const CHANGED='BROWSER_PREPARATION_AUTHORITY_CHANGED';
 const DENIED='BROWSER_APPROVAL_REFUSED',UNKNOWN='BROWSER_APPROVAL_UNKNOWN';
 const TERMINAL=new Set(['rejected','revoked','expired']);
+/** Abortable pause: no timer or listener survives a cancelled wait. */
+const pause=(ms,signal)=>new Promise((resolve,reject)=>{
+ if(signal?.aborted)return reject(Object.assign(new Error('ABORTED'),{code:'ABORTED',name:'AbortError'}));
+ const timer=setTimeout(()=>{signal?.removeEventListener('abort',abort);resolve();},ms);
+ const abort=()=>{clearTimeout(timer);reject(Object.assign(new Error('ABORTED'),{code:'ABORTED',name:'AbortError'}));};
+ signal?.addEventListener('abort',abort,{once:true});
+});
 
 export function createBrowserApprovalOwner(configuration){
  const c=own(configuration,['journal','pool','readCapabilityRole','readBrowserPolicy','ports','preparations','consumption'],
@@ -152,6 +159,9 @@ export function createBrowserApprovalOwner(configuration){
      // A retained or unresolved claim is provenance: no consume POST, no permission.
      return Object.freeze({permitted:false,status,statusOnly:true,evidence:claim.evidence??null,
       consumed:false,variant:claim.variant});
+    // Cancellation or expiry immediately before the consume POST never sends it.
+    signal?.throwIfAborted();
+    if(now()>=until)fail(UNKNOWN);
     posted=true;
     let answerReceipt;
     try{answerReceipt=await ports.consume({proposalId:v.proposalId,subjectSha256:v.subjectSha256,binding,
@@ -169,9 +179,12 @@ export function createBrowserApprovalOwner(configuration){
      if(signal?.aborted)throw error;
      return Object.freeze({permitted:false,status,unknown:true,statusOnly:true,consumed:true});
     }
+    // ...and not after it either: a caller that aborted while the canonical receipt was being settled
+    // never receives a grant.
+    signal?.throwIfAborted();
     return Object.freeze({permitted:true,receipt:answerReceipt.receipt,status,consumed:true});
    }
-   await (c.sleep?c.sleep(pollMs):new Promise(resolve=>setTimeout(resolve,pollMs)));
+   await (c.sleep?c.sleep(pollMs):pause(pollMs,signal));
   }
   return Object.freeze({permitted:false,status:last?.status??null,expired:true,consumed:posted});
  }

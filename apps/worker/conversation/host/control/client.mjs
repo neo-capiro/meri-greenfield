@@ -14,7 +14,7 @@ import {HOST_CONTROL_PATH,HOST_CONTROL_MAX_BYTES,HOST_CONTROL_PURPOSES,
  hostWorkflowRequest,hostWorkflowResponse,HOST_WORKFLOW_PATH,HOST_WORKFLOW_WIRE_MAX_BYTES,
  hostHoldRequest,hostHoldResponse,HOST_HOLD_PATH,HOST_HOLD_WIRE_MAX_BYTES,
  hostClientDnsName,makeHostControlRequest,hostControlResponse,encodeHostControl,decodeHostControl,
- hostDecideRequest,hostDecideResponse,HOST_DECIDE_PATH,HOST_DECIDE_WIRE_MAX_BYTES} from './protocol.mjs';
+ hostDecideRequest,hostDecideResponse,HOST_DECIDE_PATH,HOST_DECIDE_MAX_BYTES,HOST_DECIDE_WIRE_MAX_BYTES} from './protocol.mjs';
 
 const fail=()=>{throw Object.assign(new Error('HOST_CONTROL_UNAVAILABLE'),{code:'HOST_CONTROL_UNAVAILABLE'});};
 const same=(a,b)=>canonicalSha256(a)===canonicalSha256(b);
@@ -62,8 +62,8 @@ export function createHostCurrentnessClient({allocation,binding,hostIdentity,pur
  try{localCertificate();}catch{fail();}
  /** One bounded, pinned exchange. The path, request and response bounds are fixed by the caller below;
    * nothing derived from a request, tool call or peer answer can select another endpoint. */
- async function perform(path,request,maxResponse,signal,budgetMs=timeoutMs){
-  const bytes=encodeHostControl(request,maxResponse),cutoff=Math.min(budgetMs,a.leaseDeadlineMs-now());
+ async function perform(path,request,requestMax,maxResponse,signal,budgetMs=timeoutMs){
+  const bytes=encodeHostControl(request,requestMax),cutoff=Math.min(budgetMs,a.leaseDeadlineMs-now());
   if(cutoff<1)fail();const started=performance.now();
   const timeout=AbortSignal.timeout(cutoff),combined=AbortSignal.any([lifetime.signal,timeout,...(signal?[signal]:[])]);
   const raw=await new Promise((resolve,reject)=>{
@@ -90,7 +90,7 @@ export function createHostCurrentnessClient({allocation,binding,hostIdentity,pur
     if(closed||signal?.aborted||!same(requestedAllocation,a)||!same(requestedBinding,b))fail();
     localCertificate();
     const request=makeHostControlRequest({allocation:a,binding:b,hostIdentity:i,purpose,policySha256,nonce:nonce(),signal});
-    const response=await perform(HOST_CONTROL_PATH,request,HOST_CONTROL_MAX_BYTES,signal);
+    const response=await perform(HOST_CONTROL_PATH,request,HOST_CONTROL_MAX_BYTES,HOST_CONTROL_MAX_BYTES,signal);
     return hostControlResponse(response,request,{nowMs:now(),maxFreshMs});
    }catch{fail();}
   },
@@ -101,7 +101,7 @@ export function createHostCurrentnessClient({allocation,binding,hostIdentity,pur
     if(closed||signal?.aborted||!same(requestedAllocation,a)||!same(requestedBinding,b))fail();
     localCertificate();
     const request=hostFactsRequest({schema:'meri-host-facts-request/1',allocation:a,binding:b,hostIdentity:i,nonce:nonce()});
-    const response=await perform(HOST_FACTS_PATH,request,HOST_FACTS_WIRE_MAX_BYTES,signal);
+    const response=await perform(HOST_FACTS_PATH,request,HOST_FACTS_WIRE_MAX_BYTES,HOST_FACTS_WIRE_MAX_BYTES,signal);
     const answer=hostFactsResponse(response,request);
     // A valid envelope nonce is not enough: the DOMAIN payload must validate against the canonical
     // facts contract for THIS exact binding, and its fresh cutoff must still be in the future.
@@ -119,7 +119,7 @@ export function createHostCurrentnessClient({allocation,binding,hostIdentity,pur
     if(closed||signal?.aborted||!same(requestedBinding,b))fail();
     localCertificate();
     const request=hostWorkflowRequest({schema:'meri-host-workflow-request/1',allocation:a,binding:b,hostIdentity:i,nonce:nonce()});
-    const response=await perform(HOST_WORKFLOW_PATH,request,HOST_WORKFLOW_WIRE_MAX_BYTES,signal);
+    const response=await perform(HOST_WORKFLOW_PATH,request,HOST_WORKFLOW_WIRE_MAX_BYTES,HOST_WORKFLOW_WIRE_MAX_BYTES,signal);
     const answer=hostWorkflowResponse(response,request);
     // Canonical shape of the resolved workflow payload; the admission owner validates its content.
     const workflow=answer.workflow;
@@ -137,7 +137,7 @@ export function createHostCurrentnessClient({allocation,binding,hostIdentity,pur
     if(closed||signal?.aborted||!same(requestedBinding,b))fail();
     localCertificate();
     const request=hostHoldRequest({schema:'meri-host-hold-request/1',allocation:a,binding:b,hostIdentity:i,nonce:nonce()});
-    const response=await perform(HOST_HOLD_PATH,request,HOST_HOLD_WIRE_MAX_BYTES,signal);
+    const response=await perform(HOST_HOLD_PATH,request,HOST_HOLD_WIRE_MAX_BYTES,HOST_HOLD_WIRE_MAX_BYTES,signal);
     const answer=hostHoldResponse(response,request);
     // The verified custody is bound to this exact run and must still be live on this clock.
     if(!fresh(answer,now(),maxFreshMs))fail();
@@ -160,8 +160,10 @@ export function createHostCurrentnessClient({allocation,binding,hostIdentity,pur
      nonce:nonce(),request:originalRequest,
      deadlineMs:Math.min(originalRequest.expiresAtMs,a.leaseDeadlineMs,local.notAfterMs)});
     if(closed||signal?.aborted)fail();
-    const response=await perform(HOST_DECIDE_PATH,request,HOST_DECIDE_WIRE_MAX_BYTES,signal,
-     request.deadlineMs-now());
+    // Encoded request and answer have SEPARATE bounds: the decide payload+envelope must fit the server's
+    // request bound, while the answer keeps its own larger wire ceiling.
+    const response=await perform(HOST_DECIDE_PATH,request,HOST_DECIDE_MAX_BYTES,HOST_DECIDE_WIRE_MAX_BYTES,
+     signal,request.deadlineMs-now());
     // The third argument is the ACTUAL observation clock: the receipt is judged at this instant.
     const answer=hostDecideResponse(response,request,now());
     if(answer.outcome==='approved')return Object.freeze({permitted:true,receipt:answer.receipt,
