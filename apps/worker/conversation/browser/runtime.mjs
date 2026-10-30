@@ -40,7 +40,7 @@ export async function grantBrowserEgress({fragment,egress,binding,deadlineMs,lif
 export async function prepareBrowserRun({port,binding,cwd,deadlineMs,now,signal,browserHandoff,siteWorkflow,siteWorkflows}){
  if(typeof port?.policy!=='function'||typeof now!=='function')throw fault('BROWSER_CONFIGURATION');
  let policy=await port.policy({binding:structuredClone(binding),signal}),workflow;
- const createFragment=()=>createBrowserCapability({binding,cwd,policy,installation:port.installation,sourceScopes:port.sourceScopes,approvals:port.approvals,artifacts:port.artifacts,receipts:port.receipts,approvalDeadlineMs:port.approvalDeadlineMs,now,assertCurrent:workflow?.assertCurrent});
+ const createFragment=()=>createBrowserCapability({binding,cwd,policy,installation:port.installation,sourceScopes:port.sourceScopes,approvals:port.approvals,artifacts:port.artifacts,receipts:port.receipts,approvalDeadlineMs:port.approvalDeadlineMs,modelTransport:port.modelTransport,now,assertCurrent:workflow?.assertCurrent});
  let fragment=createFragment(),lifecycle=createBrowserRunLifecycle({fragment,binding,cwd,egress:port.egress,processes:port.processes,now});
  if(siteWorkflow!==undefined){
   try{

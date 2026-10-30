@@ -13,6 +13,12 @@ const NONCE=/^[0-9a-f]{64}$/u;
 /** The host egress control listens on loopback in the same isolated unit as the browser. A remote proxy endpoint
  * would escape the run's local grant/revocation owner, even if supplied as a trusted installation mistake. */
 const proxyEndpoint=v=>{let u;try{u=new URL(v);}catch{return false;}return u.protocol==='http:'&&['127.0.0.1','[::1]'].includes(u.hostname)&&!!u.port&&!u.username&&!u.password&&u.pathname==='/'&&!u.search&&!u.hash&&v===u.origin;};
+/** Browser image/context facts do not select an SDK transport or carry an SDK identity. */
+export function validateBrowserContextInstallation(raw){
+ let i;try{i=own(raw,['nodePath','cliPath','browsersPath','version','egressProxy']);}catch{fail();}
+ if(![i.nodePath,i.cliPath,i.browsersPath].every(path)||i.version!==PLAYWRIGHT_MCP_VERSION||!proxyEndpoint(i.egressProxy))fail();
+ return Object.freeze({...i});
+}
 /** Trusted run preparation supplies image-pinned paths and a one-shot broker descriptor for this exact RunBinding.
  * A socket pathname or nonce is a rendezvous value, never authority: the native broker authenticates the peer,
  * pins the command and namespace, and consumes the descriptor once. */
@@ -20,8 +26,8 @@ export function validateBrowserInstallation(raw,binding){
  let i,launch;try{i=own(raw,['nodePath','cliPath','browsersPath','version','egressProxy','launch']);
   launch=own(i.launch,['shimPath','socketPath','nonce']);validateShape('RunBinding',binding);}catch{fail();}
  const match=typeof launch.socketPath==='string'?HOST_SOCKET.exec(launch.socketPath):null;
- if(![i.nodePath,i.cliPath,i.browsersPath].every(path)||i.version!==PLAYWRIGHT_MCP_VERSION||!proxyEndpoint(i.egressProxy)||
-  launch.shimPath!=='/opt/meri/bin/meri-mcp-shim'||!match||launch.socketPath.length>107||
+ const {launch:ignored,...context}=i;validateBrowserContextInstallation(context);
+ if(launch.shimPath!=='/opt/meri/bin/meri-mcp-shim'||!match||launch.socketPath.length>107||
   match[1]!==canonicalSha256(binding)||!NONCE.test(launch.nonce))fail();
  return Object.freeze({...i,launch:Object.freeze(launch)});
 }
