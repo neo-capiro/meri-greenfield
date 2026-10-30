@@ -1,0 +1,62 @@
+# Browser control composition — shared Runtime/Control (SCRUM-221)
+
+Date: 2026-10-30. Author session: Hermes 20261028_170326_d580c5.
+Branch `codex/browser-control-221-20261030`. Source only: nothing pushed, built or deployed.
+
+## What this covers
+
+The shared Control side of the private browser-host integration: composing the existing
+currentness/allocation/router owners, declaring their protected material, and producing the canonical
+run facts the host needs. The host-side consumer (`apps/worker/conversation/host/**`), the browser-host
+service (`apps/runtime/browser-host-service/**`) and any new route on the host channel remain with
+their owners.
+
+## Implemented source
+
+* `apps/runtime/browser-host-configuration.mjs` — `compileBrowserHostConfiguration(configuration)`:
+  closed `browserHosts` declaration (private client TLS, optional host-currentness server material and
+  bind, request/currentness/lease budgets). Absent or `enabled:false` composes nothing; unknown keys,
+  relative paths and a bind without server material refuse.
+* `apps/runtime/browser-host-composition.mjs` — `readBrowserHostMaterial` and
+  `createBrowserHostComposition`: the real `createBrowserHostCurrentness`,
+  `createPostgresHostAllocationReader` (bound to `currentness.readRoute`), `createBrowserHostRouter`,
+  and — when declared — `createPostgresHostCurrentnessStore` over the acknowledged Control transaction
+  plus `createHostCurrentnessServer`. Exposes `readCanonicalFacts` for the protected nonce store,
+  a late-bound live `siteWorkflows` port, and `start`/`close` with defined races.
+* `apps/runtime/browser-host-run-facts.mjs` — `createBrowserHostRunFacts` (facts on the caller's own
+  transaction client, saved selection read from that same canonical row, shared policy validators,
+  successor/held/missing-deadline refusal) and `createBrowserHostSiteWorkflowPort` (selectedClientId
+  from saved scopes, `service.siteWorkflowResolve` per call).
+* `packages/contracts/runtime-0.2/browser-host-facts.mjs` — `meri-browser-host-facts/3` wire:
+  closed shape, mandatory canonical digests, shared scope validation, named metadata bound and the
+  named base64 artifact bounds.
+* `apps/control/browser-hosts/currentness.mjs` — a third `readFacts` projection; `readHost`/`readRoute`
+  responses are unchanged so the protected currentness store keeps validating its closed state.
+* `apps/runtime/control.mjs` — compiles the declaration once at the startup caller, loads the declared
+  material, composes and joins the port before consumers, starts the listener before the public bind,
+  late-binds the site-workflow port to the assembled service, and retires everything on failure with
+  cleanup failures surfaced.
+* `apps/runtime/agentcore-candidate.mjs`, `apps/runtime/product-applications.mjs` — the candidate's own
+  Core authority client as `browserHostCore` (not `transitionAuthority`, which reacquires locks).
+
+## Limits and gaps (not "done")
+
+* Human browser approval: the canonical producer is still missing. `run.fragment.canUseTool` →
+  `approvals.decide` *consumes* a decision; Control has only `ports.approvals` (read/readDecision) and
+  `apps/control/commands/approval-metadata/postgres-store.mjs` (read). The authenticated decision plus
+  its one-time consumption receipt, on a long-lived (1000–900000 ms) host→Control operation with its own
+  deadline domain, is a required next source item.
+* `artifacts.ingest` / `receipts.record`: Control exposes the artifact store port
+  (`ports.artifactStore.objects.put/get`) and `apps/control/document-application/selected-output/receipts.mjs`,
+  but no browser ingest/receipt owner or transport exists. Exact shapes and the deterministic
+  idempotency key are recorded in EARLY-CONTRACT-03; artifact bytes need the named 34952536/35018072
+  bound.
+* Custody hold: `store.lifecycle.browserCustody` exposes `currentHost` only; there is no hold export in
+  Control and none was invented.
+* Protected facts route/store/client deltas (`/meri/host/facts/v1`, facts store, client method) remain
+  with the host channel owner.
+* No PG/native/deployed acceptance; source activation stays held.
+
+## Verification (local, in-process)
+
+See `HANDOFF-04.txt` beside the session outputs for exact commands, logs and results.
