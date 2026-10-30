@@ -6,7 +6,7 @@ import {assertNativeConversationScope} from '../../../packages/contracts/runtime
 import {createOperationLifetime} from '../../../packages/runtime/operation-lifetime.mjs';
 import {storageMethod} from '../../artifacts/storage/boundary.mjs';
 import {rowRun} from '../conversations/boundary.mjs';
-import {assertHostAllocation,assertHostRunBinding} from '../../worker/conversation/host/binding.mjs';
+import {assertBrowserHostAllocation,assertHostRunBinding} from '../../worker/conversation/host/binding.mjs';
 import {assertCapabilityPolicy} from '../../worker/conversation/capabilities/policy.mjs';
 import {validateBrowserPolicy} from '../../worker/conversation/browser/policy.mjs';
 import {activationOpen} from '../../worker/conversation/browser/activation.mjs';
@@ -29,7 +29,7 @@ export function createBrowserHostCurrentness({store,core,nativeCredentials,capab
   * shape), so facts can never be obtained by widening that response. */
  async function read(client,input,route,facts=false){
   const v=own(input,['allocation','binding'],['signal','originalBinding','custody']);nativeSignal(v.signal);
-  const allocation=assertHostAllocation(v.allocation),binding=assertHostRunBinding(allocation,v.binding);
+  const allocation=assertBrowserHostAllocation(v.allocation),binding=assertHostRunBinding(allocation,v.binding);
   const life=createOperationLifetime({now,signal:v.signal,deadlineMs:Math.min(now()+maxRequestMs,allocation.leaseDeadlineMs),errorFactory:()=>Error('BROWSER_HOST_CURRENTNESS_REFUSED')});
   try{
    const rows=await life.run(()=>client.query(HOST_ALLOCATION_SQL.lock,[allocation.hostId,allocation.generation]));

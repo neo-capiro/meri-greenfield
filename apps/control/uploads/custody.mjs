@@ -84,8 +84,26 @@ export function createUploadCustody({store,objects,inspection,current,retention,
     if(object!==null)r=await move(r,{state:'stored',object}); // Missing is still UNKNOWN, not permission to retry.
    }return r;});},
   inspect(uploadId,options){return operation(options,async({read,move,life,fresh,guard})=>{const r=await read(uploadId);if(r.state!=='stored')fail('UPLOAD_NOT_STORED');
-   const bytes=await life.run(signal=>objects.get(r.object,signal));await fresh();
-   const result=await life.run(signal=>inspection.inspect(r.declaration,bytes,{signal,deadlineMs:life.deadline()}));
+   const bytes=await life.run(signal=>objects.get(r.object,signal));
+   const current=await fresh(),binding=current?.binding;
+   // The inspected host receives a PRIVATE, immutable snapshot of what authority was current for this call.
+   // It can only use it through `assertCurrent`, which re-runs the SAME authority+retention owner and the
+   // same upload read; nothing here is serializable state and no credential is exposed.
+   const record=Object.freeze(data(r)),scopes=Object.freeze(current.scopes.map(scope=>Object.freeze({...scope})));
+   const pinned=Object.freeze({binding:Object.freeze({...binding}),scopes,selectedClientId:current.selectedClientId});
+   const custodyContext=Object.freeze({record,current:Object.freeze({...current,binding:pinned.binding,scopes}),
+    assertCurrent:async()=>{
+     life.check();
+     const latest=await fresh();
+     if(!latest||!equal(latest.binding,pinned.binding)||!equal(latest.scopes,pinned.scopes)||
+      latest.selectedClientId!==pinned.selectedClientId)fail('UPLOAD_AUTHORITY_CHANGED');
+     const again=await read(r.uploadId);
+     if(hash(again)!==hash(record))fail('UPLOAD_CHANGED');
+     life.check();
+     return latest;
+    }});
+   const result=await life.run(signal=>inspection.inspect(r.declaration,bytes,
+    {signal,deadlineMs:life.deadline(),custodyContext}));
    return guard(check=>move(r,{inspection:result},check));
   });},
   read(uploadId,options){return operation(options,async({read,life,fresh})=>{const r=await read(uploadId);
