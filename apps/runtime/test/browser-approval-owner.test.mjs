@@ -80,40 +80,9 @@ test('a role change between authority passes refuses and stores nothing',async()
  await assert.rejects(owner.prepare({request:f.request,binding}),/(REFUSED|AUTHORITY_CHANGED|CONFIGURATION)/u);
 });
 
-test('the wait permits once for a fresh approved decision with null consumption',async()=>{
+test('no settle port is exposed without a durable claim owner',async()=>{
  const f=await fixture();
- f.state.next={};
- const settled=await f.owner.settle({proposalId:id(80),subjectSha256:hash(f.subject),binding,deadlineMs:NOW+3000});
- assert.equal(settled.permitted,true);
- assert.equal(f.state.consumeCalls,1);
-});
-
-test('claimed or completed consumption is status-only and never consumes',async()=>{
- const f=await fixture();
- f.state.next={consumption:{state:'CLAIMED',consumptionId:id(81)}};
- const settled=await f.owner.settle({proposalId:id(80),subjectSha256:hash(f.subject),binding,deadlineMs:NOW+200});
- assert.equal(settled.permitted,false);
- assert.equal(f.state.consumeCalls,0);
- assert.equal(settled.expired,true);
-});
-
-test('a lost consume acknowledgement is status-only UNKNOWN and never retries',async()=>{
- const f=await fixture();
- f.state.consumeThrows=true;
- const settled=await f.owner.settle({proposalId:id(80),subjectSha256:hash(f.subject),binding,deadlineMs:NOW+3000});
- assert.equal(settled.permitted,false);
- assert.equal(settled.unknown,true);
- assert.equal(settled.statusOnly,true);
- assert.equal(f.state.consumeCalls,1);
-});
-
-test('a revocation status is terminal and never consumes',async()=>{
- const f=await fixture();
- f.state.next={decision:{proposalId:id(80),commandSha256:hash(f.subject),decision:'revoked',
-  decidedAt:new Date(NOW-500).toISOString(),expiresAt:new Date(NOW+60000).toISOString(),
-  approver:{tenantId:'tenant',actorId:'actor'},policyRevision:'policy-1'}};
- const settled=await f.owner.settle({proposalId:id(80),subjectSha256:hash(f.subject),binding,deadlineMs:NOW+3000});
- assert.equal(settled.permitted,false);
- assert.equal(settled.terminal,'revoked');
- assert.equal(f.state.consumeCalls,0);
+ // A local consumed flag cannot survive owner recreation, so this module deliberately exposes no
+ // permission path yet: recovery semantics arrive with the durable claim in the wait join.
+ assert.equal(f.owner.settle,undefined);
 });

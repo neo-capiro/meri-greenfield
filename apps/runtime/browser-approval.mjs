@@ -6,10 +6,10 @@
  * instead of freezing the value read when the owner was built. The self-approver is the canonical admitted
  * binding's actor, never a boot-time global.
  *
- * settle() waits on the canonical Core status and consumes AT MOST ONCE. A permit requires an approved,
- * unexpired decision on THIS proposal with consumption still null; any CLAIMED/COMPLETED/unknown answer is
- * status-only evidence, and a lost consume acknowledgement is reported UNKNOWN so recovery never
- * re-consumes.
+ * settle() is NOT exposed yet. A permission path needs a durable claim that survives owner recreation, and
+ * an in-process flag cannot provide that: a recreated owner would start with consumed=false and could
+ * consume a second time after a lost acknowledgement. The seam refuses to build a settle port until that
+ * durable claim exists, so no permission can be issued from this module today.
  *
  * Activation stays held: constructing this owner creates no listener, credential or schedule.
  */
@@ -24,7 +24,7 @@ const TERMINAL=new Set(['rejected','revoked','expired']);
 
 export function createBrowserApprovalOwner(configuration){
  const c=own(configuration,['journal','pool','readCapabilityRole','readBrowserPolicy','ports'],
-  ['now','limits','wait','store']);
+  ['now','limits','wait','store','claim']);
  const {journal,pool,readCapabilityRole,readBrowserPolicy,ports}=c;
  if(typeof journal?.withCurrentRun!=='function'||!pool||typeof pool.connect!=='function'||
   typeof readCapabilityRole!=='function'||typeof readBrowserPolicy!=='function'||
@@ -113,5 +113,9 @@ export function createBrowserApprovalOwner(configuration){
   }
   return Object.freeze({permitted:false,status:last?.status??null,consumed,expired:true});
  }
+ // A settle port is only exposed when the caller supplies the durable claim owner; until then there is no
+ // permission path here at all (a local flag is not recovery semantics).
+ const durable=typeof c.claim==='function';
+ if(!durable)return Object.freeze({prepare,settle:undefined});
  return Object.freeze({prepare,settle});
 }

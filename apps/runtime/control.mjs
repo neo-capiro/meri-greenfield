@@ -1,5 +1,7 @@
 import {createBrowserViewerApplication} from '../control/browser-viewer/application.mjs';
 import {createBrowserViewerHttp} from '../control/browser-viewer/http.mjs';
+import {intentsComposition} from './product-ports/intents.mjs';
+import {createBrowserApprovalOwner} from './browser-approval.mjs';
 /** Trusted control composition. Single preview replica; source connectivity disabled. */
 import {Pool} from 'pg';
 import {createTurnTelemetry} from './telemetry/turn-context.mjs';
@@ -173,8 +175,23 @@ export function assembleControl(options){
   try{
    if(declaration!==null){
     if(!browserHostMaterial)throw fault('BROWSER_HOST_CONFIGURATION');
+    // The retained browser approval PREPARATION owner, over the owners this Control already has. Its
+    // approval ports are the SAME shared Core forwarder the product composition exposes, and a missing
+    // dependency refuses here instead of mounting a browser family that cannot prepare.
+    // The product composition is the SAME object Control builds for the runner; when this Control has no
+    // product context (or it is not intents-enabled) there are simply no browser approval ports.
+    const productIntents=productContext===null?null:(()=>{try{return intentsComposition(productContext,{});}catch{return null;}})();
+    // Composed only from real owners; when the Core approval ports or the exporting role are absent the
+    // browser family still mounts its read routes, and the preparation owner stays absent (reported as
+    // browserApproval:false) rather than pretending to be ready.
+    const browserApproval=readCapabilityRole===undefined||typeof store?.executions?.withCurrentRun!=='function'||
+     typeof productIntents?.browser?.record!=='function'||typeof productIntents?.browser?.status!=='function'
+      ?null:createBrowserApprovalOwner({journal:store.executions,pool,readCapabilityRole,readBrowserPolicy,
+       ports:{record:productIntents.browser.record,status:productIntents.browser.status,
+        consume:productIntents.browser.consume,result:productIntents.browser.result},now,
+       limits:{requestMs:configuration.limits.requestMs}});
     browserHosts=createBrowserHostComposition({declaration,pool,store,sessions,core:ports.browserHostCore,capabilityPolicy,readBrowserPolicy,
-     siteWorkflowAdmission:ports.siteWorkflowAdmission??null,material:browserHostMaterial,now,limits:{requestMs:configuration.limits.requestMs}});
+     siteWorkflowAdmission:ports.siteWorkflowAdmission??null,browserApproval,material:browserHostMaterial,now,limits:{requestMs:configuration.limits.requestMs}});
     if(browserHosts===null)throw fault('BROWSER_HOST_CONFIGURATION');
     ports=composeRuntimePorts(ports,{browserHosts:browserHosts.browserHosts});
    }

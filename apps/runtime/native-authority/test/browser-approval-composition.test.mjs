@@ -54,7 +54,7 @@ async function fixture(t){
    return {binding:structuredClone(binding),scopes:structuredClone(scopes),selectedClientId:clientId,
     identitySha256:hash(identity),contextRevision:'fixture',checkedAtMs:now(),expiresAtMs:now()+120000};
   }});
- await sessions.issue({identityCredential:'synthetic-browser-user'});
+ const issued=await sessions.issue({identityCredential:'synthetic-browser-user'});
  t.after(()=>sessions.close?.());
  const gate={async admit(){return {principal,principalSha256:hash(principal),membershipRevision:'fixture',expiresAtMs:now()+600000};},
   async authorize(){return true;},
@@ -77,7 +77,7 @@ async function fixture(t){
  const answerFor=(kind,value)=>state.answers.set(kind,value);
  const statusDoc=(overrides={})=>({schema:'meri-browser-approval-status/1',proposalId:record.proposalId,
   subjectSha256:hash(subject),toolUseId:subject.toolUseId,permissive:false,unknown:false,consumption:null,...overrides});
- return {sql,record,subject,run,ports,state,answerFor,statusDoc,
+ return {sql,record,subject,run,ports,state,answerFor,statusDoc,issued,sessions,
   revoke:()=>{state.revoked=true;},refuseRetention:()=>{state.retentionRefused=true;}};
 }
 
@@ -107,6 +107,12 @@ test('a successor run/attempt/worker/fence and a wrong subject refuse before any
  assert.equal(f.state.requests.length,0);
 });
 
-// NOT MODELLED HERE: invocation-time revocation. A session issued before the switch stays live in the
-// process-local registry, so a revocation assertion would only pass by weakening the fixture. Revocation at
-// the Core boundary is covered by the composition checks in the record/consume path, not by this one.
+test('a genuinely revoked action session cannot produce an answer',async(t)=>{
+ const f=await fixture(t);
+ f.answerFor('status',f.statusDoc());
+ // REAL revocation of the issued session, not a fixture flag.
+ f.sessions.revoke(f.issued.credential);
+ await assert.rejects(f.ports.status({proposalId:f.record.proposalId,subjectSha256:hash(f.subject),binding}),
+  /ACCESS_DENIED|UNAVAILABLE|SESSION/u);
+ assert.equal(f.state.requests.length,0);
+});

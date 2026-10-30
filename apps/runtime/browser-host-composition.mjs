@@ -52,7 +52,7 @@ export function createBrowserHostHoldCustody({store}={}){
 }
 /** `material` is already-loaded protected key material for exactly the declared references:
  * {privateClient:{clientName,cert,key,ca}, hostServer?:{serverName,cert,key,clientCa}}. */
-export function createBrowserHostComposition({declaration,pool,store,sessions,core,capabilityPolicy,readBrowserPolicy,siteWorkflowAdmission=null,material,now=Date.now,limits={}}={}){
+export function createBrowserHostComposition({declaration,pool,store,sessions,core,capabilityPolicy,readBrowserPolicy,siteWorkflowAdmission=null,browserApproval=null,material,now=Date.now,limits={}}={}){
  if(declaration===null||declaration===undefined)return null;
  if(!pool||typeof pool.connect!=='function'||!store?.executions||!store?.lifecycle?.browserCustody||
   typeof sessions?.nativeCredentialFor!=='function'||typeof core?.readCurrent!=='function'||
@@ -96,6 +96,8 @@ export function createBrowserHostComposition({declaration,pool,store,sessions,co
  let starting,closing,address=null,closed=false;
  const wipe=()=>{for(const t of [privateTls,serverTls])if(t)for(const k of ['cert','key',t===privateTls?'ca':'clientCa'])try{t[k]?.fill?.(0);}catch{}};
  return Object.freeze({browserHosts,currentness,allocations,facts,
+  /** The retained browser approval PREPARATION owner, when Control composed one. It exposes no permission. */
+  browserApproval:()=>browserApproval,
   get address(){return address;},
   // The protected nonce store binds THIS callback and passes its own transaction client.
   readCanonicalFacts:(client,input)=>facts.readCanonicalFacts(client,input),
@@ -103,7 +105,7 @@ export function createBrowserHostComposition({declaration,pool,store,sessions,co
   // this composition is built; it is late-bound once, like the other existing session binders.
 
   siteWorkflows(){return siteWorkflows;},
-  state:()=>Object.freeze({mounted:true,closed,listener:address,siteWorkflows:siteWorkflows!==null}),
+  state:()=>Object.freeze({mounted:true,closed,listener:address,siteWorkflows:siteWorkflows!==null,browserApproval:browserApproval!==null}),
   start(options={}){
    // A closed composition never opens a listener again.
    if(closed)return Promise.reject(Object.assign(new Error('BROWSER_HOST_CLOSED'),{code:'BROWSER_HOST_CLOSED'}));
