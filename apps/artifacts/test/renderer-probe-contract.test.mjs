@@ -151,4 +151,19 @@ test('probe cgroup view refuses changed identity and failed mapping, and keeps s
  assert.equal(changedDuringValues,true);assert.equal(during.identityChanged,true);
  assert.equal(during.source,'identity-changed');assert.equal(during.memoryMax,null);
  assert.equal(bounded(during),false,'a v1 change during fallback value reads is refused');
+ const oldMount='36 35 0:30 / /sys/fs/cgroup rw - tmpfs tmpfs rw\n37 36 0:31 / /sys/fs/cgroup/memory rw - cgroup cgroup rw,memory\n';
+ const newMount='46 35 0:40 / /sys/fs/cgroup rw - tmpfs tmpfs rw\n47 46 0:41 / /sys/fs/cgroup/memory rw - cgroup cgroup rw,memory\n';
+ const v1values={[CGROUP_MOUNT+'/memory/memory.limit_in_bytes']:'1073741824',[CGROUP_MOUNT+'/pids/pids.max']:'64',
+  [CGROUP_MOUNT+'/cpu/cpu.cfs_quota_us']:'50000'};
+ let mountReads=0;
+ const mountSwitch=observeProbeCgroup({read:path=>{
+  if(path==='/proc/self/cgroup')return '1:memory:/a\n2:pids:/a\n3:cpu:/a\n';
+  if(path==='/proc/self/mountinfo')return ++mountReads===1?oldMount:newMount;
+  return v1values[path]??null;
+ }});
+ assert.equal(mountReads,2);assert.equal(mountSwitch.identityChanged,true);
+ assert.equal(mountSwitch.source,'identity-changed');
+ assert.deepEqual([mountSwitch.memoryMax,mountSwitch.pidsMax,mountSwitch.cpuMax],[null,null,null],
+  'a v1 mount change across fallback reads cannot return held values');
+ assert.equal(bounded(mountSwitch),false,'a v1 mount change must not qualify in the renderer');
 });

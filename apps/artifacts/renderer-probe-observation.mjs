@@ -264,8 +264,11 @@ export function observeProbeCgroup({read}={}){
  const values=stableV1?null:(path===null||mount===null?null:resolveEffectiveCgroup({cgroupPath:path,mountRoot:mount.root,mount:CGROUP_MOUNT,read}));
  const first=names=>{for(const name of names){const v=read(CGROUP_MOUNT+'/'+name);if(typeof v==='string')return v.trim();}return null;};
  const fallback=stableV1?{memoryMax:first(CGROUP_V1_FILES.memoryMax),pidsMax:first(CGROUP_V1_FILES.pidsMax),cpuMax:first(CGROUP_V1_FILES.cpuMax)}:null;
- const afterSelf=read('/proc/self/cgroup'),afterPath=parseCgroupPath(afterSelf),afterMount=parseCgroupMount(read('/proc/self/mountinfo'));
- const changed=self!==afterSelf||before!==key(afterPath,afterMount);
+ const afterSelf=read('/proc/self/cgroup'),afterMountinfo=read('/proc/self/mountinfo'),afterPath=parseCgroupPath(afterSelf),afterMount=parseCgroupMount(afterMountinfo);
+ // A v2 key is null whenever the unified path is absent, so the v1 branch compares the actual mount-table evidence
+ // held around its controller reads instead of relying on that null key.
+ const mountChanged=stableV1?mountinfo!==afterMountinfo:before!==key(afterPath,afterMount);
+ const changed=self!==afterSelf||mountChanged;
  if(changed)return Object.freeze({...unknown('identity-changed'),identityChanged:true});
  // A unified record exists only when a non-CR `0::` line is present. Rejected/raw-CR, unreadable, empty, malformed,
  // conflicting and ambiguous membership cannot be reinterpreted as stable v1; only a positively valid collection may fall back.

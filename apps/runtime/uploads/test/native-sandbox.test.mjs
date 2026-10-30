@@ -407,6 +407,22 @@ test('the qualifier keeps identity/mapping refusals and exposes the allowlisted 
  assert.equal(raced.evaluation.sandbox.boundedResources,false);
  assert.deepEqual(raced.diagnostic.resources,{memoryMax:null,pidsMax:null,cpuMax:null});
  assert.equal(raced.observation.cgroup.source,'identity-changed');
+ const oldMount='36 35 0:30 / /sys/fs/cgroup rw - tmpfs tmpfs rw\n37 36 0:31 / /sys/fs/cgroup/memory rw - cgroup cgroup rw,memory\n';
+ const newMount='46 35 0:40 / /sys/fs/cgroup rw - tmpfs tmpfs rw\n47 46 0:41 / /sys/fs/cgroup/memory rw - cgroup cgroup rw,memory\n';
+ const v1values={[CGROUP_MOUNT+'/memory/memory.limit_in_bytes']:'1073741824',[CGROUP_MOUNT+'/pids/pids.max']:'64',
+  [CGROUP_MOUNT+'/cpu/cpu.cfs_quota_us']:'50000'};
+ let mountReads=0;
+ const mountSwitch=observeProbeCgroup({read:path=>{
+  if(path==='/proc/self/cgroup')return '1:memory:/a\n2:pids:/a\n3:cpu:/a\n';
+  if(path==='/proc/self/mountinfo')return ++mountReads===1?oldMount:newMount;
+  return v1values[path]??null;
+ }});
+ const switched=await qualifyNativeUploadSandbox({...bound,imageDigest:DIGEST,deadlineMs:Date.now()+30000,tempRoot:root,
+  run:make(mountSwitch),hostCgroup:host});
+ assert.equal(mountReads,2);assert.equal(switched.admitted,false,'a v1 mount change across fallback reads must not be admitted');
+ assert.equal(switched.evaluation.sandbox.boundedResources,false);
+ assert.deepEqual(switched.diagnostic.resources,{memoryMax:null,pidsMax:null,cpuMax:null});
+ assert.equal(switched.observation.cgroup.source,'identity-changed');
  const arbitrary=await qualifyNativeUploadSandbox({...bound,imageDigest:DIGEST,deadlineMs:Date.now()+30000,tempRoot:root,
   run:make({...v2,source:'/fixture/not-a-source-kind'}),hostCgroup:host});
  assert.equal(arbitrary.observation.cgroup.source,null,'an arbitrary source label is not echoed');
