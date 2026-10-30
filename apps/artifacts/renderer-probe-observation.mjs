@@ -224,19 +224,28 @@ export function readBoundedInput({readSync,fd=0,maxBytes=65536,chunkSize=4096}={
  * ancestor-aware values and the changed-identity refusal. When cgroup2 cannot be mapped, the prior fixed controller
  * files are returned so the shared renderer's v1 observation path still works; no hidden ancestor is inferred. */
 export function observeProbeCgroup({read}={}){
- if(typeof read!=='function')return {memoryMax:null,pidsMax:null,cpuMax:null,levels:0,mountRootIsRoot:false,
-  membershipResolved:false,identityChanged:false,source:'none'};
- const path=parseCgroupPath(read('/proc/self/cgroup')),mount=parseCgroupMount(read('/proc/self/mountinfo'));
+ const unknown=source=>Object.freeze({memoryMax:null,pidsMax:null,cpuMax:null,levels:0,mountRootIsRoot:false,
+  membershipResolved:false,identityChanged:source==='identity-changed',source});
+ if(typeof read!=='function')return unknown('none');
+ const self=read('/proc/self/cgroup'),mountinfo=read('/proc/self/mountinfo');
+ const path=parseCgroupPath(self),mount=parseCgroupMount(mountinfo);
  const key=(p,m)=>p===null||m===null?null:[p,m.id,m.majorMinor,m.root,m.fstype].join('\0');
  const before=key(path,mount);
  const values=path===null||mount===null?null:resolveEffectiveCgroup({cgroupPath:path,mountRoot:mount.root,mount:CGROUP_MOUNT,read});
  const afterPath=parseCgroupPath(read('/proc/self/cgroup')),afterMount=parseCgroupMount(read('/proc/self/mountinfo'));
  const changed=before!==key(afterPath,afterMount);
- if(values!==null&&!changed)return {memoryMax:values.memoryMax,pidsMax:values.pidsMax,cpuMax:values.cpuMax,
-  levels:values.levels,mountRootIsRoot:values.mountRootIsRoot===true,membershipResolved:true,identityChanged:false,source:'cgroup2'};
+ // A changed membership/mount can never attribute the values read below it, even to a fixed root. An explicit
+ // unified 0:: record that cannot be mapped and a mapped membership with no usable cgroup2 mount are also failed
+ // mappings, not stable v1: their values are unknown/null rather than rescued from fixed controller files.
+ const unified=typeof self==='string'&&self.split('\n').some(line=>!line.includes('\r')&&line.startsWith('0::'));
+ if(changed)return unknown('identity-changed');
+ if(unified&&(path===null||mount===null||values===null))return unknown('mapping-failed');
+ if(values!==null)return Object.freeze({memoryMax:values.memoryMax,pidsMax:values.pidsMax,cpuMax:values.cpuMax,
+  levels:values.levels,mountRootIsRoot:values.mountRootIsRoot===true,membershipResolved:true,identityChanged:false,source:'cgroup2'});
+ // Genuine v1: no unified 0:: membership record. The established fixed-path fallback remains valid only here.
  const first=names=>{for(const name of names){const v=read(CGROUP_MOUNT+'/'+name);if(typeof v==='string')return v.trim();}return null;};
- return {memoryMax:first(CGROUP_V1_FILES.memoryMax),pidsMax:first(CGROUP_V1_FILES.pidsMax),cpuMax:first(CGROUP_V1_FILES.cpuMax),
-  levels:0,mountRootIsRoot:false,membershipResolved:false,identityChanged:changed,source:'v1-fallback'};
+ return Object.freeze({memoryMax:first(CGROUP_V1_FILES.memoryMax),pidsMax:first(CGROUP_V1_FILES.pidsMax),cpuMax:first(CGROUP_V1_FILES.cpuMax),
+  levels:0,mountRootIsRoot:false,membershipResolved:false,identityChanged:false,source:'v1-fallback'});
 }
 export function combineCgroupBounds(probe,host){
  const p=probe!==null&&typeof probe==='object'?probe:{};

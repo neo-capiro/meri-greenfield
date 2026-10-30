@@ -6,6 +6,7 @@ import {
  CGROUP_MOUNT,parseCgroupPath,parseCgroupMount,parseCgroupMountRoot,cgroupLevels,cgroupRelativePath,
  boundState,resolveEffectiveCgroup,combineCgroupBounds,limitState,parseProcLimits,readBoundedInput,observeProbeCgroup
 } from '../renderer-probe-observation.mjs';
+import {evaluateRendererSandbox} from '../renderer-qualification.mjs';
 
 test('cgroup path and mount parsing keep the established fail-closed distinctions',()=>{
  assert.equal(parseCgroupPath('0::/a/b\n'),'/a/b');
@@ -89,28 +90,38 @@ test('bounded stdin consumes an exact cap and reports empty, over-cap and read e
  assert.equal(failed.state,'read-error');
 });
 
-test('probe cgroup view uses cgroup2 when mapped and the established v1 fallback otherwise',()=>{
+test('probe cgroup view refuses changed identity and failed mapping, and keeps stable v1/v2',()=>{
  const mount='36 35 0:30 / /sys/fs/cgroup rw - cgroup2 cgroup2 rw\n';
- const v2={
-  '/proc/self/cgroup':'0::/b\n','/proc/self/mountinfo':mount,
+ const mountB='36 35 0:31 / /sys/fs/cgroup rw - cgroup2 cgroup2 rw\n';
+ const finiteRoot={[CGROUP_MOUNT+'/memory.max']:'1073741824',[CGROUP_MOUNT+'/pids.max']:'64',[CGROUP_MOUNT+'/cpu.max']:'50000 100000',
+  [CGROUP_MOUNT+'/cgroup.controllers']:''};
+ const v2={...finiteRoot,'/proc/self/cgroup':'0::/b\n','/proc/self/mountinfo':mount,
   [CGROUP_MOUNT+'/b/cgroup.controllers']:'',[CGROUP_MOUNT+'/b/memory.max']:'1073741824',
-  [CGROUP_MOUNT+'/b/pids.max']:'64',[CGROUP_MOUNT+'/b/cpu.max']:'50000 100000'
- };
+  [CGROUP_MOUNT+'/b/pids.max']:'64',[CGROUP_MOUNT+'/b/cpu.max']:'50000 100000'};
  const read=map=>path=>map[path]??null;
+ const bounded=cg=>evaluateRendererSandbox({schema:'meri-renderer-sandbox-observation/1',platform:'linux',cgroup:cg}).sandbox.boundedResources;
  const mapped=observeProbeCgroup({read:read(v2)});
  assert.equal(mapped.source,'cgroup2');assert.equal(mapped.membershipResolved,true);
- assert.equal(mapped.memoryMax,'1073741824');
- const v1={
-  '/proc/self/cgroup':'1:memory:/legacy\n','/proc/self/mountinfo':'',
+ assert.equal(mapped.memoryMax,'1073741824');assert.equal(bounded(mapped),true,'stable mapped v2 stays finite');
+ const v1={'/proc/self/cgroup':'1:memory:/legacy\n','/proc/self/mountinfo':'',
   [CGROUP_MOUNT+'/memory/memory.limit_in_bytes']:'1073741824',
-  [CGROUP_MOUNT+'/pids/pids.max']:'64',[CGROUP_MOUNT+'/cpu/cpu.cfs_quota_us']:'50000'
- };
+  [CGROUP_MOUNT+'/pids/pids.max']:'64',[CGROUP_MOUNT+'/cpu/cpu.cfs_quota_us']:'50000'};
  const fallback=observeProbeCgroup({read:read(v1)});
  assert.equal(fallback.source,'v1-fallback');assert.equal(fallback.membershipResolved,false);
- assert.equal(fallback.memoryMax,'1073741824');assert.equal(fallback.pidsMax,'64');assert.equal(fallback.cpuMax,'50000');
- const sequence=(map)=>{const counts=new Map();return path=>{const n=counts.get(path)??0;counts.set(path,n+1);
-  if(path==='/proc/self/cgroup')return n===0?'0::/b\n':'0::/c\n';return map[path]??null;};};
- const changed=observeProbeCgroup({read:sequence(v2)});
- assert.equal(changed.identityChanged,true,'a membership change between reads is refused');
- assert.equal(changed.membershipResolved,false);
+ assert.equal(fallback.memoryMax,'1073741824');assert.equal(bounded(fallback),true,'genuine stable v1 keeps its fallback');
+ const sequence=(map,key,values)=>{const counts=new Map();return path=>{const n=counts.get(path)??0;counts.set(path,n+1);
+  if(path===key)return values[Math.min(n,values.length-1)];return map[path]??null;};};
+ const changed=observeProbeCgroup({read:sequence(v2,'/proc/self/cgroup',['0::/b\n','0::/c\n'])});
+ assert.equal(changed.identityChanged,true);assert.equal(changed.membershipResolved,false);
+ assert.deepEqual([changed.memoryMax,changed.pidsMax,changed.cpuMax],[null,null,null],'finite root files cannot rescue a changed membership');
+ assert.equal(changed.source,'identity-changed');assert.equal(bounded(changed),false);
+ const remounted=observeProbeCgroup({read:sequence(v2,'/proc/self/mountinfo',[mount,mountB])});
+ assert.equal(remounted.identityChanged,true);assert.deepEqual([remounted.memoryMax,remounted.pidsMax,remounted.cpuMax],[null,null,null]);
+ assert.equal(bounded(remounted),false,'a changed mount identity cannot be rescued by finite fixed-root values');
+ const unrelated=observeProbeCgroup({read:read({...finiteRoot,'/proc/self/cgroup':'0::/x\n','/proc/self/mountinfo':mount})});
+ assert.equal(unrelated.source,'mapping-failed');assert.equal(unrelated.membershipResolved,false);assert.equal(unrelated.identityChanged,false);
+ assert.deepEqual([unrelated.memoryMax,unrelated.pidsMax,unrelated.cpuMax],[null,null,null]);
+ assert.equal(bounded(unrelated),false,'a failed cgroup2 mapping is not a stable v1 fallback');
+ const noMount=observeProbeCgroup({read:read({...finiteRoot,'/proc/self/cgroup':'0::/b\n','/proc/self/mountinfo':''})});
+ assert.equal(noMount.source,'mapping-failed');assert.equal(noMount.memoryMax,null);assert.equal(bounded(noMount),false);
 });

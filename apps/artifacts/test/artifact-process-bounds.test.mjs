@@ -9,9 +9,13 @@ import {runArtifactProcess} from '../process.mjs';
 import {uploadSandboxArguments,UPLOAD_IMAGE_PATHS} from '../../runtime/uploads/native-sandbox.mjs';
 import {RENDERER_PROBE_PATH} from '../renderer-qualification.mjs';
 
+class FakeStream extends EventEmitter{
+ constructor(){super();this.destroyed=0;}
+ destroy(){this.destroyed++;return this;}
+}
 class FakeChild extends EventEmitter{
- constructor({pid=4242}={}){super();this.pid=pid;this.stdout=new EventEmitter();this.stderr=new EventEmitter();
-  this.stdin=new EventEmitter();this.stdinData=null;this.stdin.end=data=>{this.stdinData=data;};}
+ constructor({pid=4242}={}){super();this.pid=pid;this.stdout=new FakeStream();this.stderr=new FakeStream();
+  this.stdin=new FakeStream();this.stdinData=null;this.stdin.end=data=>{this.stdinData=data;};}
 }
 const gone=()=>{const e=Error('gone');e.code='ESRCH';throw e;};
 // Inert group port: SIGKILL succeeds, signal-0 probes report absence. An `error` variant proves a failed drain.
@@ -89,6 +93,32 @@ test('an unobservable group drain is a cleanup failure, not absence',async()=>{
   {spawn:spawnOf(child,()=>setImmediate(()=>{child.stdout.emit('end');child.stderr.emit('end');
    child.emit('exit',0,null);child.emit('close',0,null);})),kill:failedKill}),
   error=>{assert.equal(error.code,'ARTIFACT_CLEANUP_FAILED');assert.equal(error.receipt.groupAbsent,false);return true;});
+});
+
+test('terminal settlement disposes owned stdio, freezes evidence and ignores late events',async()=>{
+ const child=new FakeChild();let kills=0;let error;
+ try{
+  await runArtifactProcess('/inert',[],{cwd:'/tmp',input:Buffer.alloc(0),deadlineMs:Date.now()+5000,maxOutput:4,settlementMs:10},
+   {spawn:spawnOf(child,()=>setImmediate(()=>child.emit('exit',0,null))),
+    kill:()=>{kills++;throw Object.assign(Error('absent'),{code:'ESRCH'});}});
+ }catch(caught){error=caught;}
+ assert.equal(error.code,'ARTIFACT_CLEANUP_FAILED');assert.equal(error.receipt.settlement,'timeout');
+ assert.equal(error.receipt.stdoutEnded,false,'local disposal is not EOF evidence');
+ assert.equal(error.receipt.groupAbsent,true,'group absence is still the bounded poll result');
+ for(const stream of [child.stdin,child.stdout,child.stderr])assert.equal(stream.destroyed,1,'each owned endpoint is disposed once');
+ assert.equal(child.stdout.listenerCount('data'),0);assert.equal(child.stderr.listenerCount('data'),0);
+ assert.equal(child.stdout.listenerCount('end'),0);assert.equal(child.stderr.listenerCount('end'),0);
+ assert.ok(child.stdout.listenerCount('error')>=1,'a no-op error listener stays so a late error is not uncaught');
+ const receipt=error.receipt,bytes=receipt.stdoutBytes,killsAt=kills;
+ assert.ok(Object.isFrozen(receipt));assert.ok(Object.isFrozen(receipt.streamErrors));
+ child.stdout.emit('data',Buffer.from('late output exceeds the cap'));
+ child.stderr.emit('data',Buffer.from('late error output'));
+ child.stdout.emit('error',Error('late stream error'));
+ child.emit('error',Error('late child error'));
+ child.emit('exit',3,null);child.emit('close',3,null);
+ assert.equal(kills,killsAt,'no post-settlement PID/group action');
+ assert.equal(receipt.stdoutBytes,bytes,'retained counters stay frozen');
+ assert.equal(error.receipt.stdoutRetainedBytes,0);
 });
 
 test('abort and pre-aborted signals never start a child',async()=>{

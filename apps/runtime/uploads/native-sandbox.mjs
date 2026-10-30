@@ -189,6 +189,33 @@ export function evaluateUploadSandbox(observation,{tempRoot}={}){
  const findings=UPLOAD_SANDBOX_REQUIREMENTS.filter(k=>sandbox[k]!==true).map(requirement=>({requirement,reason:linux?'NOT_OBSERVED':'NOT_LINUX'}));
  return {sandbox:Object.freeze(sandbox),findings:Object.freeze(findings),diagnostic};
 }
+const limitStateProjection=state=>{
+ if(state===null||typeof state!=='object')return null;
+ if(state.kind==='finite')return Object.freeze(Number.isSafeInteger(state.value)?{kind:'finite',value:state.value}:{kind:'unsupported'});
+ if(state.kind==='max'||state.kind==='malformed'||state.kind==='unsupported')return Object.freeze({kind:state.kind});
+ return null;
+};
+const limitPairProjection=pair=>pair===null||typeof pair!=='object'?null:Object.freeze({
+ soft:limitStateProjection(pair.soft),hard:limitStateProjection(pair.hard)});
+/** Minimal allowlisted observation projection through the qualifier: process-limit states and the child cgroup
+ * mapping/source flags, never raw proc text, environment, credential paths or invented finite values. */
+export function projectObservation(observation){
+ const o=observation!==null&&typeof observation==='object'&&!Array.isArray(observation)?observation:{};
+ const limits=o.processLimits!==null&&typeof o.processLimits==='object'?o.processLimits:{};
+ const cg=o.cgroup!==null&&typeof o.cgroup==='object'?o.cgroup:{};
+ return Object.freeze({
+  processLimits:Object.freeze({
+   MaxFileSize:limitPairProjection(limits.MaxFileSize),
+   MaxOpenFiles:limitPairProjection(limits.MaxOpenFiles),
+   MaxProcesses:limitPairProjection(limits.MaxProcesses)}),
+  cgroup:Object.freeze({
+   source:typeof cg.source==='string'?cg.source:null,
+   membershipResolved:cg.membershipResolved===true,
+   identityChanged:cg.identityChanged===true,
+   levels:Number.isSafeInteger(cg.levels)&&cg.levels>=0?cg.levels:0,
+   mountRootIsRoot:cg.mountRootIsRoot===true})
+ });
+}
 /** Observe the upload child boundary and issue an admission only when every shared requirement is attested. The probe
  * runs through the identical `runUploadSandbox('probe',...)` path scan/extract use, in the same owned workspace kind. */
 export async function qualifyNativeUploadSandbox({imageDigest,deadlineMs,signal,credentialPaths=[],tempRoot=UPLOAD_IMAGE_PATHS.tempRoot,run=runUploadSandbox,hostCgroup}={}){
@@ -205,7 +232,7 @@ export async function qualifyNativeUploadSandbox({imageDigest,deadlineMs,signal,
   // stdout accumulation, not only after the child returns.
   const measurementDeadline=Math.min(deadlineMs,Date.now()+30000);
   const out=(await run('probe',{cwd:workspace,input,signal,deadlineMs:measurementDeadline,maxOutput:UPLOAD_MAX_OBSERVATION_BYTES})).stdout;
-  if(out.length<2||out.length>UPLOAD_MAX_OBSERVATION_BYTES)return {admitted:false,reason:'UPLOAD_PROBE_INVALID',evaluation:null,missing:[...UPLOAD_SANDBOX_REQUIREMENTS]};
+  if(out.length<2||out.length>UPLOAD_MAX_OBSERVATION_BYTES)return {admitted:false,reason:'UPLOAD_PROBE_INVALID',evaluation:null,observation:null,missing:[...UPLOAD_SANDBOX_REQUIREMENTS]};
   const parsed=JSON.parse(out.toString('utf8'));
   const base=parsed!==null&&typeof parsed==='object'&&!Array.isArray(parsed)?parsed:{};
   // Exact stdin binding: the observation must report the same ordered credential paths the owner wrote, and mark its
@@ -214,17 +241,19 @@ export async function qualifyNativeUploadSandbox({imageDigest,deadlineMs,signal,
   const observedPaths=observed===null?null:observed.map(c=>c!==null&&typeof c==='object'&&typeof c.path==='string'?c.path:null);
   const bindingMatches=credentialPaths.length===0?true:base.inputValid===true&&observedPaths!==null&&
    observedPaths.length===credentialPaths.length&&observedPaths.every((p,index)=>p===credentialPaths[index]);
-  if(!bindingMatches)return {admitted:false,reason:'UPLOAD_PROBE_BINDING_MISMATCH',evaluation:null,missing:[...UPLOAD_SANDBOX_REQUIREMENTS]};
+  if(!bindingMatches)return {admitted:false,reason:'UPLOAD_PROBE_BINDING_MISMATCH',evaluation:null,observation:null,missing:[...UPLOAD_SANDBOX_REQUIREMENTS]};
   const host=hostCgroup!==undefined?hostCgroup:(realHost?await readHostCgroup({before:hostBefore}):null);
-  const observation=host===null||host===undefined?base:{...base,cgroup:combineCgroupBounds(base.cgroup,host)};
+  const projected=projectObservation(base);
+  const combined=host===null||host===undefined?null:combineCgroupBounds(base.cgroup,host);
+  const observation=combined===null?base:{...base,cgroup:{...base.cgroup,...combined}};
   const evaluation=evaluateUploadSandbox(observation,{tempRoot:await realpath(tempRoot).catch(()=>null)});
   const missing=evaluation.findings.map(f=>f.requirement);
   const diagnostic=Object.freeze({...evaluation.diagnostic,
    cgroupHost:Object.freeze({resolved:host!==null&&host!==undefined&&Number.isSafeInteger(host?.levels)&&host.levels>0,levels:host?.levels??0,mountRootIsRoot:host?.mountRootIsRoot===true})});
-  if(missing.length)return {admitted:false,reason:'UPLOAD_SANDBOX_UNQUALIFIED',evaluation,missing,diagnostic};
+  if(missing.length)return {admitted:false,reason:'UPLOAD_SANDBOX_UNQUALIFIED',evaluation,observation:projected,missing,diagnostic};
   // Tool/definition roots are read-only bind entries of the fixed plan above, so they share this admission.
   return {admitted:true,reason:'UPLOAD_SANDBOX_QUALIFIED',admission:Object.freeze({role:'upload-native',imageDigest,qualificationId:'upload-native-'+imageDigest.slice(7),
-   sandbox:Object.freeze({...evaluation.sandbox}),toolRootsReadOnly:true}),evaluation,missing:[]};
+   sandbox:Object.freeze({...evaluation.sandbox}),toolRootsReadOnly:true}),evaluation,observation:projected,missing:[],diagnostic};
  }catch(error){
   // A process failure settles honestly. Include only a bounded, content-free summary of the observed process states;
   // never raw stdout/stderr text, command lines, environment values or credential bytes. An attempted kill is not
@@ -237,7 +266,7 @@ export async function qualifyNativeUploadSandbox({imageDigest,deadlineMs,signal,
    stdoutEnded:r.stdoutEnded===true,stderrEnded:r.stderrEnded===true,streamErrors:Array.isArray(r.streamErrors)?r.streamErrors.filter(e=>e==='stdout'||e==='stderr'):[],
    groupKillAttempted:r.groupKillAttempted===true,groupAbsent:r.groupAbsent===true,settlement:typeof r.settlement==='string'?r.settlement:null
   }):null;
-  return {admitted:false,reason:typeof error?.code==='string'?error.code:'UPLOAD_PROBE_FAILED',evaluation:null,missing:[...UPLOAD_SANDBOX_REQUIREMENTS],process};
+  return {admitted:false,reason:typeof error?.code==='string'?error.code:'UPLOAD_PROBE_FAILED',evaluation:null,observation:null,missing:[...UPLOAD_SANDBOX_REQUIREMENTS],process};
  }
  finally{await rm(workspace,{recursive:true,force:true});}
 }
