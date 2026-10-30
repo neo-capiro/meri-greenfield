@@ -34,7 +34,7 @@ function harness({browserHosts,productPorts={}}={}){
    if(path==='C:/m/c.pem')return material.cert;if(path==='C:/m/k.pem')return material.key;if(path==='C:/m/ca.pem')return material.ca;
    assert.fail('unexpected material '+path);},
   async tls(){return {synthetic:true};},
-  createPool(){events.push('pool');return pool;},
+  createPool(options){pool.options=options;events.push('pool');return pool;},
   async connect(){events.push('connect');return connection;},
   createClient(){events.push('client');return {workflow:{async start(){return {}},getHandle(){return {}}}};},
   async startCandidate(){events.push('candidate');return candidate;},
