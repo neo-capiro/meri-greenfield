@@ -32,7 +32,7 @@ function harness({answers}={}){
  const transport={
   lifetime:(signal,deadlineMs)=>({signal,deadlineMs,run:fn=>fn(),check(){},close(){},limitDeadline(){},deadline:()=>Infinity}),
   proposal:async()=>({schemaVersion:1,commandSha256:'f'.repeat(64),
-   metadata:{record:{proposalId,request:preparation}},run:{binding}}),
+   metadata:{record:{proposalId,request:preparation}},run:{binding,policyRevision:'policy1'}}),
   selected:async()=>({binding,selectedClientId:null}),
   post:async(life,route,{selected,body})=>{posts.push({route,body,selected});const canned=answers?.[route];
    if(canned instanceof Error)throw canned;return {value:canned??statusOf(),sessionExpiresAtMs:NOW+60000};}};
@@ -117,11 +117,23 @@ test('a malformed, rejected, expired, foreign or future-dated receipt never perm
   ['wrong tool use',{...receipt,toolUseId:'toolu_other'}],
   ['foreign proposal',{...receipt,proposalId:'99999999-9999-4999-8999-999999999999'}],
   ['future consumption',{...receipt,consumption:{...receipt.consumption,consumedAtMs:NOW+1000}}],
-  ['no consumption',{...receipt,consumption:null}]];
+  ['no consumption',{...receipt,consumption:null}],
+  ['wrong actor',{...receipt,decision:{...decision,approver:{tenantId:'tenant',actorId:'someone-else'}}}],
+  ['wrong policy',{...receipt,decision:{...decision,policyRevision:'policy2'}}]];
  for(const [name,answer] of variants){
   const h=harness({answers:{[CORE_BROWSER_APPROVAL_ROUTES.consume]:answer}});
   await assert.rejects(h.operations.consume({proposalId,subjectSha256,binding}),
    /BROWSER_APPROVAL_|ACCESS_DENIED|INVALID/u,`${name} must not permit`);
   assert.equal(h.posts.filter(p=>p.route===CORE_BROWSER_APPROVAL_ROUTES.consume).length,1,`${name} sends exactly one consume`);
  }
+});
+
+test('a record answer with an extra field or a different decision is refused',async()=>{
+ const extra=harness({answers:{[CORE_BROWSER_APPROVAL_ROUTES.record]:{decision,checkedAtMs:1,revoked:false,extra:true}}});
+ await assert.rejects(extra.operations.record({proposalId,subjectSha256,decision:'approved',
+  approver:{tenantId:'tenant',actorId:'actor'},binding}),/UNAVAILABLE|ACCESS_DENIED/u);
+ const other=harness({answers:{[CORE_BROWSER_APPROVAL_ROUTES.record]:{decision:{...decision,decision:'rejected'},
+  checkedAtMs:1,revoked:false}}});
+ await assert.rejects(other.operations.record({proposalId,subjectSha256,decision:'approved',
+  approver:{tenantId:'tenant',actorId:'actor'},binding}),/ACCESS_DENIED|UNAVAILABLE/u);
 });

@@ -63,12 +63,15 @@ export function createBrowserApprovalOperations({transport,now}={}){
    // Core answers exactly {decision,checkedAtMs,revoked}; the returned decision must be the canonical
    // one for THIS proposal, subject and approver.
    const value=answer.value;
-   if(!value||typeof value!=='object'||typeof value.revoked!=='boolean'||!Number.isSafeInteger(value.checkedAtMs))fail('UNAVAILABLE');
+   // Exactly these three keys: an extra field is not part of the Core04 record answer.
+   if(!value||typeof value!=='object'||Object.keys(value).sort().join()!=='checkedAtMs,decision,revoked'||
+    typeof value.revoked!=='boolean'||!Number.isSafeInteger(value.checkedAtMs))fail('UNAVAILABLE');
    if(value.decision!==null){
     try{validateShape('ApprovalDecision',value.decision);}catch{fail('UNAVAILABLE');}
     const d=value.decision;
-    if(d.commandSha256!==subjectSha256||d.proposalId!==proposalId||
-     d.approver?.tenantId!==binding.tenantId||d.approver?.actorId!==binding.actorId)fail('ACCESS_DENIED');
+    if(d.commandSha256!==subjectSha256||d.proposalId!==proposalId||d.decision!==decision||
+     d.approver?.tenantId!==binding.tenantId||d.approver?.actorId!==binding.actorId||
+     d.policyRevision!==proposal.run?.policyRevision)fail('ACCESS_DENIED');
    }
    return Object.freeze({decision:value.decision??null,checkedAtMs:now(),revoked:value.revoked,
     sessionExpiresAtMs:answer.sessionExpiresAtMs});
@@ -92,6 +95,11 @@ export function createBrowserApprovalOperations({transport,now}={}){
    if(refusal===null){
     if(value.proposalId!==proposalId||value.subjectSha256!==subjectSha256)
      fail('ACCESS_DENIED');
+    // receiptRefusal checks the tenant but not the exact actor or policy revision: the approver must be
+    // the canonical run actor/requiredApprover and the policy the retained one.
+    if(value.decision.approver?.tenantId!==binding.tenantId||value.decision.approver?.actorId!==binding.actorId)
+     fail('ACCESS_DENIED');
+    if(value.decision.policyRevision!==proposal.run?.policyRevision)fail('ACCESS_DENIED');
     return Object.freeze({permitted:true,receipt:value,sessionExpiresAtMs:answer.sessionExpiresAtMs});
    }
    // A repeat, restart or lost acknowledgement: non-permissive status, and NO second consume.

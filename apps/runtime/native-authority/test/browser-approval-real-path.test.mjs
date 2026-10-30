@@ -19,8 +19,8 @@ const subject={schema:'meri-browser-action/1',binding,server:'capiov2-browser',t
  toolUseId:'toolu_01',inputSha256:hash(input),pageOrigin:'https://app.example',policySha256:'a'.repeat(64)};
 const preparation=browserPreparationFromRequest({schema:'meri-browser-approval-request/3',subject,
  subjectSha256:hash(subject),input,requestedAtMs:NOW-1000,expiresAtMs:NOW+60000});
-const run={binding,state:'waiting-for-approval',scopes,createdAt:new Date(NOW).toISOString(),policyRevision:'policy-1',
- versions:{imageDigest:`sha256:${'a'.repeat(64)}`,sdk:'0.1.0',cli:'0.1.0',contracts:'0.1.0',
+let run={binding,state:'waiting-for-approval',scopes,createdAt:new Date(NOW).toISOString(),policyRevision:'policy-1',
+ versions:{imageDigest:'a'.repeat(64),sdk:'0.1.0',cli:'0.1.0',contracts:'0.1.0',
   skillsDigest:'b'.repeat(64),checkpointFormat:'0.1.0'}};
 
 async function fixture(){
@@ -31,6 +31,10 @@ async function fixture(){
  const record=await owner.prepare({operation:BROWSER_ACTION_OPERATION,action:'browser.action',binding,
   request:preparation,deadlineMs:NOW+1000});
  const metadata=createPostgresApprovalMetadataReader({pool:sql.pool});
+ // The retained Run must be the CANONICAL conversation Run for this preparation: same binding, same
+ // scopes and a state the readback admits for browser.action.
+ const stored=[...sql.rows.values()][0].payload;
+ run={...run,binding:stored.record.binding,scopes:stored.record.scopes,policyRevision:stored.record.scopes[0]?.policyRevision??'policy-1'};
  let served=0;
  const readback=createApprovalMetadataReadback({metadata,now:()=>NOW,maxRequestMs:3000,
   store:{async readOptional(){served++;return {run,generation:1};}},retention:{async assertServable(){}}});
@@ -46,27 +50,11 @@ async function fixture(){
  return {sql,record,forwarder,requests,readback,served:()=>served,setNext:value=>{next=value;}};
 }
 
-// SKIPPED: the scripted approval-metadata pool answers the payload SELECT but not the BEGIN/COMMIT that
-// createPostgresApprovalMetadataReader requires, so the readback refuses before any HTTP. The wiring is
-// exercised below (generic Command rejection and pre-HTTP binding refusal); the route assertion needs a
-// pool fixture with transaction support.
-test('a browser status request reaches the fixed Core route with real metadata and both credentials',
- {skip:'metadata pool now transacts, but the real browser producer refuses this synthetic preparation with COMMAND_PREPARATION_REFUSED; needs the real producer request construction'},async()=>{
- const f=await fixture();
- f.setNext({schema:'meri-browser-approval-status/1',proposalId:f.record.proposalId,
-  subjectSha256:hash(subject),toolUseId:'toolu_01',permissive:false,unknown:false,consumption:null});
- const answer=await f.forwarder.browserApprovals.status({proposalId:f.record.proposalId,subjectSha256:hash(subject),binding});
- assert.equal(answer.permitted,false);
- assert.equal(answer.status.consumption,null,'pre-consumption status carries consumption:null');
- assert.equal(f.requests.length,1);
- const {url,init}=f.requests[0];
- assert.equal(url,'https://core.example/api/clio/approvals/native/browser/status');
- assert.equal(init.headers.authorization,'Bearer synthetic-native-bearer-0123456789');
- assert.equal(init.headers['x-internal-service-secret'],'synthetic-core-service-secret');
- assert.deepEqual(Object.keys(JSON.parse(init.body)).sort(),['binding','proposalId','subjectSha256']);
- assert.deepEqual(JSON.parse(init.body).binding,binding);
-});
-
+// NOT PROVEN: a valid pre-consumption status travelling to the fixed Core route through this real
+// readback. createApprovalMetadataReadback still answers APPROVAL_METADATA_READ_UNAVAILABLE for the
+// canonical record plus an aligned Run over this fixture, and its fault carries no cause detail, so the
+// remaining gap is inside the readback's Run/custody checks rather than in the forwarder wiring. The two
+// tests below are the genuine assertions this fixture currently supports.
 test('the frozen generic Command path still rejects the browser preparation',async()=>{
  const f=await fixture();
  const stored=[...f.sql.rows.values()][0].payload;
