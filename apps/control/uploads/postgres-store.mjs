@@ -41,6 +41,9 @@ export function createPostgresUploadStore({pool}){
   read(owner,uploadId,check){const o=uploadOwner(owner);uuid(uploadId);
    return transaction(check,async c=>{const r=decode((await c.query('SELECT * FROM meri_uploads.originals WHERE tenant_id=$1 AND owner_actor_id=$2 AND conversation_id=$3 AND upload_id=$4',[o.tenantId,o.actorId,o.conversationId,uploadId])).rows[0]);check();
     if(r&&!same(r.owner,o))fail('UPLOAD_ACCESS_DENIED');return r;});},
+  readByRequest(owner,requestId,check){const o=uploadOwner(owner);uuid(requestId);
+   return transaction(check,async c=>{const r=decode((await c.query('SELECT * FROM meri_uploads.originals WHERE tenant_id=$1 AND owner_actor_id=$2 AND conversation_id=$3 AND request_id=$4',[o.tenantId,o.actorId,o.conversationId,requestId])).rows[0]);check();
+    if(r&&!same(r.owner,o))fail('UPLOAD_ACCESS_DENIED');if(r&&r.requestId!==requestId)fail('UPLOAD_STORE_CORRUPT');return r;});},
   transition(previous,next,check){const [a,b]=transition(previous,next);
    return transaction(check,async c=>{
     const result=await c.query('UPDATE meri_uploads.originals SET revision=$5,record=$6,record_sha256=$7 WHERE tenant_id=$1 AND upload_id=$2 AND revision=$3 AND record_sha256=$4 RETURNING *',[a.owner.tenantId,a.uploadId,a.revision,hash(a),b.revision,b,hash(b)]);check();

@@ -67,3 +67,13 @@ test('binary receiving timeout and cancellation release the owned reader without
  await assert.rejects(download(response(stalled()),q,r,{timeoutMs:15}),/DEADLINE/);assert.equal(cancelled,1);
  const stop=new AbortController(),running=download(response(stalled()),q,r,{signal:stop.signal});stop.abort();await assert.rejects(running,/CANCELLED/);assert.equal(cancelled,2);
 });
+
+
+test('status accepts exactly one locator and correlates lost-init replies by request identity',()=>{
+ const q=admit('status',json({requestId:id(1)}));assert.equal(path('status',q),'/api/uploads/status');
+ assert.equal(receive('status',200,json(pending()),q).uploadId,id(2));
+ assert.throws(()=>receive('status',200,json({...pending(),requestId:id(8)}),q),/CORRELATION/);
+ for(const body of [{},{requestId:id(1),uploadId:id(2)},{requestId:id(1),tenantId:'forged'},{requestId:'bad'}])assert.throws(()=>admit('status',json(body)),/INVALID_UPLOAD_REQUEST/);
+ for(const route of ['read','remove','inspect','complete'])assert.throws(()=>admit(route,json({requestId:id(1)})),/INVALID_UPLOAD_REQUEST/);
+ assert.equal(receive('status',404,json({error:{code:'UPLOAD_NOT_FOUND',outcome:'READ_UNAVAILABLE'}}),q).error.outcome,'READ_UNAVAILABLE');
+});

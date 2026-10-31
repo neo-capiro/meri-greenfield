@@ -44,13 +44,13 @@
   "sources": [
     {
       "path": "../../apps/control/uploads/application.mjs",
-      "sha256": "a8a82c174eabd398c7f4569d48eb01ef82686035af10333c0f77e66c49f2f1f0",
-      "bytes": 7199
+      "sha256": "a3d47d36959ba9d07d18527e3e280032819c954edc4de6667783eb70bba997d0",
+      "bytes": 7375
     },
     {
       "path": "../../apps/control/uploads/custody.mjs",
-      "sha256": "abbe64f500d0aa8dc1f97145b23b64c64872bdfa92ff712522744905826d16c9",
-      "bytes": 11910
+      "sha256": "26dc00aeecec5ce8175ef36e9e66e61d2bfc330e014858f3b6cb72b3271be715",
+      "bytes": 12579
     },
     {
       "path": "../../apps/control/uploads/extraction.mjs",
@@ -64,8 +64,8 @@
     },
     {
       "path": "../../apps/control/uploads/postgres-store.mjs",
-      "sha256": "cebe36943284e177df7ed799443a41ac1c9e78060587ef551f11455f23aa6d97",
-      "bytes": 4251
+      "sha256": "adefd83a3f3b1bd0ea6090650d123ec8495fc8c8a2519f3ca559c831a5e50fa9",
+      "bytes": 4723
     },
     {
       "path": "../../apps/runtime/product-applications.mjs",
@@ -84,8 +84,8 @@
     },
     {
       "path": "generate-uploads.mjs",
-      "sha256": "08a42c91b0f5e4637076b7076014aa778ba7360a2c4c8295ed27a106e6ea08b7",
-      "bytes": 6716
+      "sha256": "5e1e254aba1ea31ce5c473da64366edb7226b1e6ebbbc4c8d0540a2a2d9046af",
+      "bytes": 6794
     },
     {
       "path": "meri.schema.json",
@@ -109,21 +109,21 @@
     },
     {
       "path": "uploads-application/receive.mjs",
-      "sha256": "d9dddd40bbf194606dc64f2efdbdf46fbc4565a40e140fe4856291d9329e4b6e",
-      "bytes": 3568
+      "sha256": "db9557ad1e4c098fb2f1490a676cf1ff7914aba82a7f778982fccdfce0ef2410",
+      "bytes": 3708
     },
     {
       "path": "uploads-application/schema.mjs",
-      "sha256": "d4a3fdfccb61fc318393da83e925012e21eef5e82e00fe0f8b2436243ca59b31",
-      "bytes": 1819
+      "sha256": "5e5285e090242df578c23ea2cfcd1f97b9faf68fa4f7ec04e2309cde53b5dfcb",
+      "bytes": 1901
     }
   ],
-  "schemaSha256": "ebed25f4275ae310318c42763069ad5dba7ce74eb7af99f5613ad85df8437613",
+  "schemaSha256": "4b14b154d01afc53936d799a79793da792532e3593a65d66a72bdd7b23c12ae3",
   "browserInputs": [
+    "../../node_modules/ajv/dist/runtime/ucs2length.js",
+    "../../node_modules/canonicalize/lib/canonicalize.js",
     "artifacts-0.2/artifact-formats.mjs",
     "document-application/boundary.mjs",
-    "node_modules/ajv/dist/runtime/ucs2length.js",
-    "node_modules/canonicalize/lib/canonicalize.js",
     "uploads-application/boundary.mjs",
     "uploads-application/download.mjs",
     "uploads-application/protocol.mjs",

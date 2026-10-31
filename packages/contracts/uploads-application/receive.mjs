@@ -1,4 +1,4 @@
-import {validateInitiate,validateId,validateReceipt,validateError} from './generated-validator.mjs';
+import {validateInitiate,validateId,validateStatus,validateReceipt,validateError} from './generated-validator.mjs';
 import {uploadApplicationMetadata as limits,uploadRoutes,uploadErrorStatuses,uploadNotDispatchedErrors} from './protocol.mjs';
 import {requests,receipts,fail,parse,declaration,copy,digest} from './boundary.mjs';
 export * from './protocol.mjs';
@@ -6,7 +6,7 @@ export {UploadResponseError} from './boundary.mjs';
 export {receiveUploadDownload} from './download.mjs';
 export function receiveUploadRequest(route,bytes){
  if(!uploadRoutes.includes(route))fail('INVALID_UPLOAD_ROUTE');const q=parse(bytes,limits.requestBytes);
- if(!(route==='initiate'?validateInitiate(q):validateId(q)))fail('INVALID_UPLOAD_REQUEST');
+ if(!(route==='initiate'?validateInitiate(q):route==='status'?validateStatus(q):validateId(q)))fail('INVALID_UPLOAD_REQUEST');
  if(route==='initiate')declaration(q);requests.set(q,route);return q;
 }
 export function uploadRequestPath(route,request){
@@ -24,7 +24,7 @@ export function receiveUploadResponse(route,status,bytes,request){
   return result;
  }
  if(route==='read')fail('UPLOAD_BINARY_REQUIRED');if(!validateReceipt(result))fail('INVALID_UPLOAD_RECEIPT');declaration(result.original);
- if(route==='initiate'?request.requestId!==result.requestId||['filename','mimeType','bytes','sha256'].some(key=>request[key]!==result.original[key]):request.uploadId!==result.uploadId)fail('UPLOAD_CORRELATION');
+ if(route==='initiate'?request.requestId!==result.requestId||['filename','mimeType','bytes','sha256'].some(key=>request[key]!==result.original[key]):route==='status'&&Object.hasOwn(request,'requestId')?request.requestId!==result.requestId:request.uploadId!==result.uploadId)fail('UPLOAD_CORRELATION');
  const {storageStatus:state,scanStatus:scan,extraction,original}=result;
  if(['awaiting_upload','unknown'].includes(state)&&(original.versionId!==null||scan!=='pending'||extraction.status!=='pending')||
   ['stored','removing'].includes(state)&&original.versionId===null||
