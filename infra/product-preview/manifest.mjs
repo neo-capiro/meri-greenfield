@@ -3,6 +3,8 @@ import {App, Stack, CfnOutput, CfnDeletionPolicy, BootstraplessSynthesizer, aws_
 import {Template} from 'aws-cdk-lib/assertions';
 import {parseStaticProductMaterialExpected} from '../../apps/runtime/material-init.mjs';
 import {CONTROL_NODE_CA_FILE} from '../../apps/runtime/control-ca-bundle.mjs';
+// Native preparation uses the same preview template entry point. None of these compilers deploys or enables a producer.
+export {compileNativeObserverTemplate,compileNativeWatchdogTemplate,compileNativeRuntimePolicyTemplate} from '../browser-enforcement/native-template.mjs';
 
 const ACCOUNT='967807252336', REGION='us-east-1';
 const hex64=/^[a-f0-9]{64}$/u,SUBNET=/^subnet-[a-f0-9]{8,17}$/u,SECURITY_GROUP=/^sg-[a-f0-9]{8,17}$/u;

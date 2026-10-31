@@ -7,8 +7,12 @@ const f=await observerFixture(),original=f.declaration.watchdog.input,version=f.
 const secret=Buffer.alloc(32,37),ca=Buffer.from('synthetic-private-CA');
 const input={schema:'meri-native-observer-invocation/1',mode:'prepare',originalInput:original,executionArn:f.declaration.watchdog.executionArn};
 const context={invokedFunctionArn:version,getRemainingTimeInMillis:()=>10000};
-function options(extra={}){return {functionVersionArn:version,stateMachineVersionArn:f.declaration.watchdog.stateMachineVersionArn,
+function options(extra={}){return {functionVersionArn:version,stateMachineArn:f.declaration.watchdog.stateMachineVersionArn.replace(/:[1-9][0-9]*$/u,''),
  keyId:'observer-v1',readKey:async()=>secret,readCa:async()=>ca,now:()=>62000,...extra};}
+test('bridge configuration accepts only the fixed base machine ARN, leaving immutable version admission to the worker',()=>{
+ assert.throws(()=>createNativeObserverBridge(options({stateMachineArn:f.declaration.watchdog.stateMachineVersionArn})));
+ assert.throws(()=>createNativeObserverBridge(options({stateMachineArn:undefined,stateMachineVersionArn:f.declaration.watchdog.stateMachineVersionArn})));
+});
 test('version-pinned adapter and dedicated verifier join exact bytes, invocation and original graph input',async()=>{
  let observed=0;
  const app=createNativeObserverHttpApplication({now:()=>62001,readKey:async key=>{assert.equal(key,'observer-v1');return secret;},

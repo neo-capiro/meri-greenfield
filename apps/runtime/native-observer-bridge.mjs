@@ -20,8 +20,10 @@ export function postNativeObserver({body,headers,ca,signal}){
   });req.on('error',reject);req.end(body);
  });
 }
-export function createNativeObserverBridge({functionVersionArn,stateMachineVersionArn,keyId,readKey,readCa,post=postNativeObserver,now=Date.now}={}){
- const graph=/^arn:aws:states:us-east-1:([0-9]{12}):stateMachine:([A-Za-z0-9_-]{1,80}):[1-9][0-9]*$/u.exec(stateMachineVersionArn??'');
+export function createNativeObserverBridge({functionVersionArn,stateMachineArn,keyId,readKey,readCa,post=postNativeObserver,now=Date.now}={}){
+ // Only the base machine identity participates in the execution ARN. Immutable graph/version admission
+ // remains owned by the worker and retained Control provenance; it is not established by Lambda context.
+ const graph=/^arn:aws:states:us-east-1:([0-9]{12}):stateMachine:([A-Za-z0-9_-]{1,80})$/u.exec(stateMachineArn??'');
  if(!graph||!new RegExp(`^arn:aws:lambda:us-east-1:${graph[1]}:function:[A-Za-z0-9_-]{1,64}:[1-9][0-9]*$`,'u').test(functionVersionArn??'')||
   !/^[A-Za-z0-9_-]{1,64}$/u.test(keyId??'')||[readKey,readCa,post].some(fn=>typeof fn!=='function'))fail();
  return async function handler(raw,context){
