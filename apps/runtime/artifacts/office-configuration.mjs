@@ -10,6 +10,14 @@ const plain=(value)=>{
  for(const [key,x] of Object.entries(d))if(!KEYS.includes(key)||!x.enumerable||!Object.hasOwn(x,'value'))throw fault();
  return Object.fromEntries(Object.entries(d).map(([key,x])=>[key,x.value]));
 };
+export function protectedMaterialFiles(configuration){
+ const values=[configuration?.native?.capabilityFile,configuration?.native?.serverCaFile,
+  configuration?.temporal?.tls?.caFile,configuration?.temporal?.tls?.certFile,configuration?.temporal?.tls?.keyFile,
+  configuration?.database?.connectionFile,configuration?.reads?.serviceSecretFile,
+  configuration?.artifacts?.authority?.serviceSecretFile,
+  ...routinesReservedSecretFiles(configuration)];
+ return Object.freeze([...new Set(values.filter(value=>typeof value==='string'))]);
+}
 const origin=value=>{let u;try{u=new URL(value);}catch{throw fault();}
  if(typeof value!=='string'||u.protocol!=='https:'||u.origin!==value||u.username||u.password||u.search||u.hash||u.pathname!=='/')throw fault();
  return u.origin;};
@@ -24,6 +32,6 @@ export function compileOfficeConfiguration(configuration){
  const editorOrigin=origin(o.editorOrigin),wopiOrigin=origin(o.wopiOrigin),browserOrigin=origin(o.browserOrigin),coreOrigin=origin(o.coreOrigin);
  if(wopiOrigin===editorOrigin||browserOrigin!==configuration.http?.frontendOrigin||
   configuration.privateHttp===undefined||!secretFile(o.keyFile)||!secretFile(o.serviceSecretFile)||
-  o.keyFile===o.serviceSecretFile||routinesReservedSecretFiles(configuration).some(path=>path===o.keyFile||path===o.serviceSecretFile))throw fault();
+  o.keyFile===o.serviceSecretFile||protectedMaterialFiles(configuration).some(path=>path===o.keyFile))throw fault();
  return Object.freeze({enabled:true,editorOrigin,wopiOrigin,browserOrigin,coreOrigin,keyFile:o.keyFile,serviceSecretFile:o.serviceSecretFile});
 }
