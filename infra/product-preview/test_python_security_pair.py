@@ -5,7 +5,7 @@ import re
 import unittest
 from pathlib import Path
 
-from test_native_apk_index import LOCK, ROOT, STAGED, STAGED_NAMES, _retained_index
+from test_native_apk_index import DOCKERFILE, LOCK, ROOT, STAGED, STAGED_NAMES, _retained_index
 
 
 def require_fixed_pair(lock):
@@ -49,6 +49,19 @@ class PythonSecurityPair(unittest.TestCase):
         self.assertEqual(set(new['depends']), set(old['depends']))
         self.assertEqual(entries['python-3.13-'+version]['depends'], ['python-3.13-base='+version])
         self.assertEqual([p for p in STAGED if 'python-3.13' in p and '3.13.16' in p], [])
+
+    def test_initial_runtime_install_pins_the_existing_uuid_provider(self):
+        # The new signed index also advertises libuuid r2, which is not staged. Name the
+        # unchanged r1 in this first transaction instead of leaving an unversioned choice.
+        entries, _ = _retained_index()
+        self.assertIn('so:libuuid.so.1', entries['python-3.13-base-'+require_fixed_pair(LOCK)[0]['version']]['depends'])
+        self.assertIn('libuuid-2.42.4-r2', entries)
+        runtime = DOCKERFILE.split(' AS runtime\n', 1)[1].replace('\\\n', ' ')
+        install = next(line for line in runtime.splitlines() if 'apk add ' in line)
+        required = ' libuuid=2.42.4-r1 '
+        self.assertIn(required, install)
+        self.assertNotIn(required, install.replace(required, ' '))
+        self.assertIn('libuuid-2.42.4-r1.apk', STAGED)
 
 
 if __name__ == '__main__':

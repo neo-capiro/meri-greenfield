@@ -706,7 +706,7 @@ RUN --mount=type=bind,from=native-repository,source=tmp/meri-native-repo,target=
     test "$(uname -m)" = aarch64 && \
     apk --version && \
     apk add --no-cache --no-network --repository /tmp/meri-native-repo --repository /tmp/meri-native-pip-repo --repositories-file /dev/null --update-cache \
-      bash=5.3-r14 libatomic=16.2.0-r1 libstdc++=16.2.0-r1 python-3.13=3.13.18_git20261030-r0 \
+      bash=5.3-r14 libatomic=16.2.0-r1 libstdc++=16.2.0-r1 python-3.13=3.13.18_git20261030-r0 libuuid=2.42.4-r1 \
       py3.13-pip=26.2.2-r1 py3.13-pip-base=26.2.2-r1 py3-pip-wheel=26.2.2-r1 \
       glibc-2.44=2.44-r10 glibc-2.44-iconv=2.44-r10 glibc-2.44-locale-posix=2.44-r10 ld-linux-2.44=2.44-r10 libcrypt1-2.44=2.44-r10 && \
     test "$(python3.13 --version)" = 'Python 3.13.18' && \
