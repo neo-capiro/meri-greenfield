@@ -17,6 +17,8 @@ export const executionSchemaSources = Object.freeze([
     exposed:Object.freeze([])}),
   Object.freeze({group:'schedule-tools-v3',path:'../schedules-0.3/tool-interface.schema.json',
     exposed:Object.freeze([])}),
+  Object.freeze({group:'capiro-data-v3',path:'../retrieval-0.3/capiro-data.schema.json',
+    exposed:Object.freeze([])}),
 ]);
 export const executionSchemaDependencies = Object.freeze([
   '../commands-0.2/mail-send.schema.json','../commands-0.2/task-create.schema.json','../commands-0.2/task-update.schema.json',

@@ -17,11 +17,12 @@ const RETRIEVAL=/^urn:meri:retrieval:([a-z0-9-]+):(0\.2\.0|0\.3\.0)$/u;
 const ANNOTATIONS=new Set(['$schema','$id','title','description','default','examples','$comment']);
 /** @param {string} id */
 function document(id){
- const match=RETRIEVAL.exec(id),group=match?.[1],version=match?.[2];if(!group||version==='0.3.0'&&group!=='client-knowledge-profile')fail();
+ const match=RETRIEVAL.exec(id),group=match?.[1],version=match?.[2];if(!group||version==='0.3.0'&&!['client-knowledge-profile','capiro-data'].includes(group))fail();
  const descriptor=catalog.operations.find(d=>d.inputSchema.id.split('#')[0]===id);
  const file=descriptor?resolveOperationContract(descriptor.operation).binding?.group:group;if(typeof file!=='string')fail();
  const schemaFile=file==='client-knowledge-profile'&&version==='0.3.0'?'client-knowledge-profile-v03':file;
- const bytes=readFileSync(new URL(`../../../../packages/contracts/retrieval-0.2/${schemaFile}.schema.json`,import.meta.url));
+ const path=file==='capiro-data-v3'&&version==='0.3.0'?'retrieval-0.3/capiro-data':`retrieval-0.2/${schemaFile}`;
+ const bytes=readFileSync(new URL(`../../../../packages/contracts/${path}.schema.json`,import.meta.url));
  const doc=JSON.parse(bytes.toString('utf8'));if(doc.$id!==id)fail();
  return {doc,sha256:createHash('sha256').update(bytes).digest('hex')};
 }
