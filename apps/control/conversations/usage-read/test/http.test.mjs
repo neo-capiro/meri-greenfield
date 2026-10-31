@@ -30,6 +30,20 @@ test('completed run usage reloads through the actual accounting reader and curre
 test('actual runtime product mount uses current bearer and final Core metadata, never source or runner dispatch',async()=>{
  const f=await fixture({runtimeMount:true,management:true}),response=await f.read();assert.equal(response.status,200,await response.clone().text());assert.equal(f.state.currentness,1);assert.equal(f.state.metadata,1);assert.equal(f.state.reads,1);
 });
+
+test('postterminal usage with persisted external search reads through the runtime mount without exposing private facts',async()=>{
+ const externalSearch={provider:'managed-search-synthetic',attempts:1,estimateMicroUsd:7005,billedMicroUsd:null,outcome:'completed',
+  calls:[{provider:'managed-search-synthetic',attempts:1,estimateMicroUsd:7005,billedMicroUsd:null,outcome:'completed'}],truncated:false};
+ const f=await fixture({runtimeMount:true,management:true,input:{...payload(),externalSearch}}),before=structuredClone(f.row());
+ assert.deepEqual(before.sdk_usage.externalSearch,externalSearch);
+ const response=await f.read();assert.equal(response.status,200,await response.clone().text());
+ const text=await response.text(),value=JSON.parse(text);
+ assert.equal(value.usage.runDelta.sdkEstimateUsd,0.3);assert.equal(value.usage.providerBilledUsd,null);
+ assert.doesNotMatch(text,/externalSearch|managed-search-synthetic|billedMicroUsd/);assert.deepEqual(f.row(),before);
+ assert.deepEqual(await (await f.read()).json(),value,'ordinary reload remains read-only');
+ f.row().sdk_usage.externalSearch.billedMicroUsd=0;f.row().sdk_usage_sha256=hash(f.row().sdk_usage);
+ const corrupt=await f.read();assert.equal(corrupt.status,500);assert.deepEqual(await corrupt.json(),{error:{code:'USAGE_RECORD_CORRUPT'}});
+});
 test('no record, unavailable null and recorded zero survive the authenticated boundary distinctly',async()=>{
  for(const [options,recording,status,amount]of [[{record:false},'not-recorded',undefined,undefined],[{input:payload({unavailable:true})},'recorded','unavailable',undefined],[{input:payload({zero:true})},'recorded','recorded',0]]){
   const f=await fixture(options),r=await f.read();assert.equal(r.status,200);const value=await r.json();assert.equal(value.recording,recording);assert.equal(value.usage?.status,status);assert.equal(value.usage?.runDelta?.sdkEstimateUsd,amount);
