@@ -70,7 +70,7 @@
     },
     {
       "path": "dist/conversation-application.metadata.json",
-      "sha256": "a3c8cc727d135389cac517d92ce3e306003013b6c33d6e376273036783522d55",
+      "sha256": "4acf4ddee62862db003746021f8b127286e92b897b9499657bb977e6bb840d34",
       "bytes": 12260
     },
     {
@@ -85,7 +85,7 @@
     },
     {
       "path": "dist/conversation-input.metadata.json",
-      "sha256": "743b771d43c3d7533a8e5866960171d0d086de2a38e2eaf1f64c15793026883d",
+      "sha256": "ff3a483224d0e824850aa049872c4e8c28a86e9fe5d6f5257c4dc12fba556844",
       "bytes": 3499
     },
     {

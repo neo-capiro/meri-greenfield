@@ -64,18 +64,18 @@
     },
     {
       "path": "../../apps/control/uploads/postgres-store.mjs",
-      "sha256": "adefd83a3f3b1bd0ea6090650d123ec8495fc8c8a2519f3ca559c831a5e50fa9",
-      "bytes": 4723
+      "sha256": "214ca993fc2b4a481fa0136a99ee3e7bdc4ef3ea85ebc50ae857739228c74834",
+      "bytes": 5422
     },
     {
       "path": "../../apps/runtime/product-applications.mjs",
-      "sha256": "cb38e11bf8e1e6d1c4f21fac07d4b25f1b301e1bdc2759829ff211db6557bfd9",
-      "bytes": 21860
+      "sha256": "08dd110a2f35e4e6ab522e8fa5e12a2c34e4374f709e60efc4dd68f7fb41242a",
+      "bytes": 22009
     },
     {
       "path": "../../apps/runtime/product-ports/uploads.mjs",
-      "sha256": "22cd6dc1afc39dfe4f53a83ec17a891f2a2e57fe9f0c32a1fcfae5be1dd39b06",
-      "bytes": 5219
+      "sha256": "aa6619e1e9863f8fcf88b3d458a5285909092bddff2c91739c2e2caa411ace37",
+      "bytes": 5333
     },
     {
       "path": "document-application/boundary.mjs",
@@ -120,10 +120,10 @@
   ],
   "schemaSha256": "4b14b154d01afc53936d799a79793da792532e3593a65d66a72bdd7b23c12ae3",
   "browserInputs": [
-    "../../node_modules/ajv/dist/runtime/ucs2length.js",
-    "../../node_modules/canonicalize/lib/canonicalize.js",
     "artifacts-0.2/artifact-formats.mjs",
     "document-application/boundary.mjs",
+    "node_modules/ajv/dist/runtime/ucs2length.js",
+    "node_modules/canonicalize/lib/canonicalize.js",
     "uploads-application/boundary.mjs",
     "uploads-application/download.mjs",
     "uploads-application/protocol.mjs",
