@@ -1,2 +1,3 @@
 * text=auto eol=lf
 *.docx binary
+apps/control/browser-hosts/migrations/0006_native_observer_journal.sql -text

@@ -155,6 +155,11 @@ export const PLAN=Object.freeze([
  ['migration','apps/control/browser-hosts/migrations/0004_native_processing.sql','2740ff5f098e36bcaf781f86b79885d9dd559b2f9418edd335f647b4702d11d2','integration'],
  // Ordinal 79: SCRUM-221 durable browser-download run reservations on the existing intent journal.
  ['migration','apps/control/intents/migrations/0004_browser_download_run_reservations.sql','894f177dae9e393e4285f004730c3e07204132f001a75b1c93c999d212fe5853','integration'],
+ // Native forward sequence: byte-exact SQL117, observer journal, then cleanup certificate window.
+ // Appended as ordinals 80..82 after unchanged 1..79; registration does not authorize application.
+ ['migration','apps/control/browser-hosts/migrations/0005_native_pre_effect.sql','0a760da5fd982b4d9b73fa79bfe7a82daa341aae36bc63a990e49eff9f47dbbb','integration'],
+ ['migration','apps/control/browser-hosts/migrations/0006_native_observer_journal.sql','f93f3a215b6eb8d178059aad7b572c19f08d00764e34f28c68c7ccb2e0a6b330','integration'],
+ ['migration','apps/control/browser-hosts/migrations/0007_native_cleanup_certificate_window.sql','c8f189b48d0114aca710c5224e155a65a814c27a5f9dfcb4f214e05406f50546','integration'],
 ].map(([kind,path,pinned,declaredStage],index)=>Object.freeze({ordinal:index+1,kind,path,pinned,
  name:kind==='migration'?path:`${path}#${kind.slice(6)}`,
  stage:declaredStage??(kind==='phase:temporal_grants'?'temporal':'meri')})));
