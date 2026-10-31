@@ -6,6 +6,12 @@ import {createOperationLifetime} from '../../packages/runtime/operation-lifetime
 import {createNativeObserverBridge} from './native-observer-bridge.mjs';
 const fail=()=>{throw Error('NATIVE_OBSERVER_ENTRYPOINT_REFUSED');};
 const sha=b=>createHash('sha256').update(b).digest('hex');
+/** Shared preparation of the exact secret bytes; it neither creates a key nor publishes material. */
+export function createNativeObserverSecret({keyId,key,ca}){
+ if(typeof keyId!=='string'||!/^[A-Za-z0-9_-]{1,64}$/u.test(keyId)||!Buffer.isBuffer(key)||key.length<32||key.length>128||
+  !Buffer.isBuffer(ca)||!ca.length||ca.length>8192||!new X509Certificate(ca).ca)fail();
+ return Buffer.from(JSON.stringify({schema:'meri-native-observer-material/1',keyId,keyBase64:key.toString('base64'),caCertificate:ca.toString('utf8')}));
+}
 export function observerEntrypointConfiguration(raw){
  try{
   const c=own(raw,['schema','functionArn','stateMachineArn','keyId','secretArn','secretVersionId','secretSha256','caSha256']);

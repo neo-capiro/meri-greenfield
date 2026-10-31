@@ -441,14 +441,15 @@ export function renderMaterial({deployment,core,runtime,stage3,private:pki,nowMs
  validateRendered(roles,{workerEnvironment,controlEnvironment});
  const summary=summarize({d,r,s,roles,pins,agentcore,expiresAtMs,nowMs,validityDays,notAfterMs,runWindowMs,deploymentRevision,controlPrivate,workerEnvironment,controlEnvironment,policyRevision});
  if(features.nativeProcessing!==undefined)summary.nativeProcessing={enabled:features.nativeProcessing.enabled,materialSha256:native.pins,
-  ...(native.materialNotAfterMs===undefined?{}:{materialNotAfterMs:native.materialNotAfterMs})};
+  ...(native.materialNotAfterMs===undefined?{}:{materialNotAfterMs:native.materialNotAfterMs,observerMaterialSha256:sha(native.observerMaterial),
+   observerCaSha256:sha(Buffer.from(features.nativeProcessing.deployment.bootstrapSpec.control.caCertificate))})};
  // Non-secret record of what the features rendered (absent without features, so the reviewed summary is unchanged). The secret
  // files are named by path, source ARN, VersionId and sha256 only, so the operator can re-verify the fetched value.
  if(Object.keys(features).length)summary.features={sourceEnabled,controlKeys:Object.keys(featureKeys),approvedReads:features.reads?.approvedReads!==undefined,
   secretFiles:Object.fromEntries(Object.entries(secretFiles).map(([key,v])=>[key==='reads.serviceSecret'?PATHS.readsServiceSecret:PATHS.readsReadModeServiceSecret,
    {feature:key,secretArn:v.secretArn,versionId:v.versionId,sha256:sha(v.bytes)}])),
   generatedFiles:downloadLinkKey?{[PATHS.downloadLinkKey]:'download-link signing key, fresh per render (32 random bytes, base64url)'}:{}};
- return {roles,summary};
+ return {roles,summary,...(native.observerMaterial===undefined?{}:{nativeObserverMaterial:native.observerMaterial})};
 }
 
 /** The material is Linux material: validators that use node:path (preparation-intent, config file checks) must see POSIX path
@@ -514,7 +515,7 @@ function summarize(x){
 }
 
 /** Writes into a NEW directory that must be outside the repository. Files are 0600, directories 0700. */
-export async function writeRendered(out,{roles,summary},{sourceRoot=SOURCE_ROOT}={}){
+export async function writeRendered(out,{roles,summary,nativeObserverMaterial},{sourceRoot=SOURCE_ROOT}={}){
  const target=resolve(out),rel=relative(sourceRoot,target);
  if(!rel||!rel.startsWith('..')&&!isAbsolute(rel))fail('RENDER_OUTPUT_REFUSED','output directory must be outside the repository');
  try{await lstat(target);fail('RENDER_OUTPUT_REFUSED','output directory already exists');}catch(error){if(error.code==='RENDER_OUTPUT_REFUSED')throw error;}
@@ -527,6 +528,7 @@ export async function writeRendered(out,{roles,summary},{sourceRoot=SOURCE_ROOT}
   await put(join(dir,'expected.json'),JSON.stringify(roles[role].expected));
  }
  await put(join(target,'summary.json'),JSON.stringify(summary,null,1)+'\n');
+ if(nativeObserverMaterial!==undefined)await put(join(target,'native-observer-material.json'),nativeObserverMaterial);
  return target;
 }
 

@@ -7,6 +7,8 @@ import {own} from '../../../packages/contracts/commands-0.2/execution-boundary.m
 import {canonicalSha256} from '../../../packages/contracts/validate.mjs';
 import {compileNativeDeployment} from '../../../apps/runtime/native-deployment-configuration.mjs';
 import {compileNativeWatchdogDefinition} from '../../browser-enforcement/workflow.mjs';
+import {createNativeObserverSecret} from '../../../apps/runtime/native-observer-entrypoint.mjs';
+import {NATIVE_OBSERVER_ORIGIN} from '../../../apps/runtime/native-observer-http.mjs';
 const ACCOUNT='967807252336',REGION='us-east-1',HEX=/^[a-f0-9]{64}$/u;
 const fail=()=>{throw Object.assign(Error('RENDER_NATIVE_PROCESSING_REFUSED'),{code:'RENDER_NATIVE_PROCESSING_REFUSED'});};
 const sha=b=>createHash('sha256').update(b).digest('hex');
@@ -46,9 +48,10 @@ export function composeNativeProcessing({feature,material={},deployment,pki,nowM
   const d=f.deployment,s=d.bootstrapSpec;
   if(d.sourceCommit!==deployment.images.nodeRuntimeSourceCommit||d.placement.vpcId!==deployment.vpcId||
    !deployment.privateSubnetIds.includes(d.placement.subnetId)||s.control.endpoint.serverName!==deployment.names.control_private||
+   s.control.endpoint.serverName!==new URL(NATIVE_OBSERVER_ORIGIN).hostname||s.control.endpoint.port!==443||
    !sameCert(s.control.serverCertificate,pki.certs['control-private'])||!sameCert(s.control.caCertificate,pki.certs['server-ca']))fail();
   for(const k of keys)if(!Buffer.isBuffer(m[k])||!m[k].length||m[k].length>32768||sha(m[k])!==f.materialSha256[k])fail();
-  if(m.observerKey.length<32||m.observerKey.length>64||!sameCert(m.issuerCaCertificate,s.issuerCaCertificate)||
+  if(m.observerKey.length<32||m.observerKey.length>128||!sameCert(m.issuerCaCertificate,s.issuerCaCertificate)||
    !sameCert(m.controlClientCertificate,s.control.clientCertificate)||
    !keyMatches(m.issuerCaCertificate,m.issuerCaKey)||!keyMatches(m.controlClientCertificate,m.controlClientKey)||!cert(m.issuerCaCertificate).ca)fail();
   for(const pem of [m.issuerCaCertificate,m.controlClientCertificate]){
@@ -72,7 +75,8 @@ export function composeNativeProcessing({feature,material={},deployment,pki,nowM
    issuerCaKeyFile:NATIVE_PATHS.issuerCaKey,deployment:d,watchdog:f.watchdog};
   const entries=names=>names.map(k=>[NATIVE_PATHS[k],Buffer.from(m[k])]);
   return {control,worker,files:{control:entries(['issuerCaCertificate','controlClientCertificate','controlClientKey','observerKey']),
-   worker:entries(['databaseConnection','issuerCaCertificate','issuerCaKey'])},pins:{...f.materialSha256},materialNotAfterMs:client.validToDate.getTime()};
+   worker:entries(['databaseConnection','issuerCaCertificate','issuerCaKey'])},pins:{...f.materialSha256},materialNotAfterMs:client.validToDate.getTime(),
+   observerMaterial:createNativeObserverSecret({keyId:f.observerKeyId,key:m.observerKey,ca:Buffer.from(s.control.caCertificate)})};
  }catch{fail();}
 }
 /** CLI input is an exact map of private absolute files. Never echo paths, values or raw exceptions. */

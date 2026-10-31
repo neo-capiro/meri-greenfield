@@ -51,6 +51,10 @@ test('existing renderer emits complete native /2 role configs and exact private 
  assert.equal(r.roles.control.expected.sha256ByPath[NATIVE_PATHS.issuerCaKey],undefined);
  assert.equal(r.roles['temporal-worker'].expected.sha256ByPath[NATIVE_PATHS.observerKey],undefined);
  assert.ok(!JSON.stringify(r.summary).includes('synthetic-password'));
+ const secret=JSON.parse(r.nativeObserverMaterial);assert.equal(secret.keyId,c.uploads.native.host.observer.keyId);
+ assert.deepEqual(Buffer.from(secret.keyBase64,'base64'),i.nativeMaterial.observerKey);
+ assert.equal(r.summary.nativeProcessing.observerMaterialSha256,sha(r.nativeObserverMaterial));
+ assert.equal(r.summary.nativeProcessing.observerCaSha256,sha(Buffer.from(secret.caCertificate)));
 });
 test('missing, extra, modified or foreign native material refuses before render',async()=>{
  for(const mutate of [i=>delete i.nativeMaterial.issuerCaKey,i=>i.nativeMaterial.extra=Buffer.from('x'),
