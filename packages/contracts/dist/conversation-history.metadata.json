@@ -1,7 +1,7 @@
 {
-  "packageVersion": "0.1.34",
-  "historyVersion": "1.6.0",
-  "schemaId": "urn:meri:conversation-history:1.6.0",
+  "packageVersion": "0.1.43",
+  "historyVersion": "1.7.0",
+  "schemaId": "urn:meri:conversation-history:1.7.0",
   "runIndex": {
     "version": "1.0.0",
     "schemaId": "urn:meri:run-index:1.0.0",
@@ -77,8 +77,8 @@
     },
     {
       "path": "conversation-history/protocol.mjs",
-      "sha256": "e56e26131695eab32bf3fb76f64611c209a26929baffc5c6fdf731b3ad461126",
-      "bytes": 2758
+      "sha256": "643237983d5bc9c9998f46363919e0fd67ab4dc0d1b8222632e68687f9a169bc",
+      "bytes": 2775
     },
     {
       "path": "conversation-history/receive.mjs",
@@ -112,13 +112,13 @@
     },
     {
       "path": "conversation-history/schema.mjs",
-      "sha256": "018942799373017137494ffe9d89080dcab6dcb69a00bd2b6ef74ee3301f6520",
-      "bytes": 8749
+      "sha256": "f50af31dac00c11f21cf909b7e6f604cd5c5120057ebd08516890fcbb05d3383",
+      "bytes": 9031
     },
     {
       "path": "conversation-history/semantics.mjs",
-      "sha256": "59360a8ed4c0b453acb44e465ede87126f9c4677eed1f0e7d86ea2d27628c0ff",
-      "bytes": 14245
+      "sha256": "42c270f18c3fd8e6060844eb3468775dce5ab20cded17768769a7c6d005d7f8d",
+      "bytes": 14398
     },
     {
       "path": "conversation-history/shape.mjs",
@@ -162,8 +162,8 @@
     },
     {
       "path": "generate-history.mjs",
-      "sha256": "34e832202850cbaca5b54025d951c93c0c012bd312b14e8563896b690794e29d",
-      "bytes": 13045
+      "sha256": "3e8bb93d14d8d81138dd65e906b429381afd0dcbf5b084286bd153ad107729fc",
+      "bytes": 13144
     },
     {
       "path": "meri.schema.json",
@@ -196,6 +196,11 @@
       "bytes": 2092
     },
     {
+      "path": "research-portfolio-scope.mjs",
+      "sha256": "da3a4aabb1d4cd8c3441df43a8790e4b3ad407632727f51bcfe160205ca904f0",
+      "bytes": 1332
+    },
+    {
       "path": "retrieval-0.2/hearing-fragments.mjs",
       "sha256": "24e106caa79140d31feb65bc79c816197b38220b0c30a42ec86ba8c6deed6174",
       "bytes": 787
@@ -216,7 +221,7 @@
       "bytes": 1986
     }
   ],
-  "schemaSha256": "a658f609315b18002a274fca55b90212391b6b2a06eaba17e5485d2c3b1822bf",
+  "schemaSha256": "8f26ccaac8e3c300a830ea47f97a4ac957f3c5609a5dbcd49c3648fedb4963c1",
   "browserInputs": [
     "artifacts-0.2/artifact-formats.mjs",
     "conversation-history/conversation-history-receiver.mjs",

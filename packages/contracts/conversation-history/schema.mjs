@@ -1,5 +1,6 @@
 import {conversationHistoryMetadata,DISCOVERY_SCHEMA,HISTORY_SCHEMA,TURN_SCHEMA,EXPORT_SCHEMA,MANAGEMENT_VERSION,historyErrorStatuses} from './protocol.mjs';
 import {SELECTED_DOCUMENT_REVISION_SKILL_SCHEMA} from '../document-revision.mjs';
+import {researchPortfolioCaptureSchema} from '../research-portfolio-scope.mjs';
 const ref=name=>({$ref:'#/$defs/'+name}),pub=name=>({$ref:'urn:meri:contracts:0.1.0#/$defs/'+name});
 const stored=name=>({$ref:'urn:meri:conversation-application:0.4.0#/$defs/ConversationStoredRequest/properties/'+name});
 const object=(properties,required=Object.keys(properties))=>({type:'object',properties,required,additionalProperties:false});
@@ -11,6 +12,7 @@ const date={type:'string',format:'date-time'},revision={type:'string',pattern:'^
 const managementFields={version:{const:MANAGEMENT_VERSION},requestId:uuid,conversationId:uuid,expectedRevision:revision};
 const deletionReference={requestId:uuid,createdAt:date,conversationId:uuid,revision,restoreUntil:date};
 const metadata={conversationId:uuid,title,status:{enum:['active','archived','trashed']},revision,scopeKind:{enum:['client','general']},clientId:nullable(uuid),updatedAt:date,archivedAt:nullable(date),trashedAt:nullable(date),restoreUntil:nullable(date)};
+const metadataSchema=extra=>({oneOf:[object({...metadata,...extra}),object({...metadata,scopeKind:{const:'research_portfolio'},clientId:{type:'null'},scope:researchPortfolioCaptureSchema(),...extra})]});
 export function historySchema(){return {$schema:'https://json-schema.org/draft/2020-12/schema',$id:conversationHistoryMetadata.schemaId,$defs:{
  ConversationDeletionReference:object(deletionReference),
  ConversationDeletionBefore:object({createdAt:date,requestId:uuid}),
@@ -22,8 +24,8 @@ export function historySchema(){return {$schema:'https://json-schema.org/draft/2
  ConversationHistoryExportRequest:object({conversationId:uuid}),
  ConversationHistoryExportResponse:object({schema:{const:EXPORT_SCHEMA},conversation:pub('Conversation'),throughSequence:integer(1),exportedAt:date,expiresAt:date,
  turns:{type:'array',minItems:1,maxItems:1000,items:object({runId:uuid,prompt:nullable({type:'string',maxLength:1048576}),messages:{type:'array',maxItems:2000,items:object({messageId:uuid,text:{type:'string',maxLength:1048576}})}})}}),
- ConversationMetadata:object(metadata),
- ConversationSummary:object({...metadata,hasTranscript:{type:'boolean'},canManage:{type:'boolean'}}),
+ ConversationMetadata:metadataSchema({}),
+ ConversationSummary:metadataSchema({hasTranscript:{type:'boolean'},canManage:{type:'boolean'}}),
  ConversationSummaryBefore:object({updatedAt:date,conversationId:uuid}),
  ConversationHistorySummariesRequest:object({version:{const:MANAGEMENT_VERSION},status:{enum:['active','archived','trashed']},title:{type:'string',maxLength:200},before:nullable(ref('ConversationSummaryBefore'))}),
  ConversationHistorySummariesResponse:object({version:{const:MANAGEMENT_VERSION},conversations:{type:'array',items:ref('ConversationSummary'),maxItems:20},nextBefore:nullable(ref('ConversationSummaryBefore'))}),

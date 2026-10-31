@@ -18,7 +18,7 @@ test('the successor labels are the settled ones and the previous labels are gone
  assert.equal(conversationApplicationMetadata.wireContractVersion,'0.4.0');
  assert.equal(conversationInputMetadata.schemaId,'urn:meri:conversation-input:1.3.0');
  assert.equal(conversationInitialInputMetadata.schemaId,'urn:meri:conversation-initial-input:1.3.0');
- assert.equal(conversationHistoryMetadata.schemaId,'urn:meri:conversation-history:1.6.0');
+ assert.equal(conversationHistoryMetadata.schemaId,'urn:meri:conversation-history:1.7.0');
  for(const composed of [conversationSchema(),inputSchema(),initialInputSchema(),historySchema()]){
   assert.equal(OLD.test(JSON.stringify(composed)),false,composed.$id);
  }

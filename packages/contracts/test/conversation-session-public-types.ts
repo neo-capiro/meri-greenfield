@@ -10,3 +10,9 @@ const targetRun:string|undefined=receipt.initialRunRebind?.targetRunId;
 const recoveryHint:ConversationSessionExpectedContext={...general,recovery:true};
 void general;void forged;void selected;
 void sourceRun;void targetRun;void recoveryHint;
+const research:ConversationSessionExpectedContext={tenantId:'t',actorId:'a',conversationId:'c',selectedClientId:null,scopeKind:'research_portfolio',scope:{kind:'research_portfolio',researchPortfolioId:'p',researchPortfolioName:'Captured',researchPortfolioRevision:1,scopeVersion:'hash'}};
+// @ts-expect-error Research always needs its independently admitted conversation and capture
+const uncorrelatedResearch:ConversationSessionExpectedContext={tenantId:'t',actorId:'a',selectedClientId:null,scopeKind:'research_portfolio'};
+// @ts-expect-error a captured Research scope never extends the legacy General branch
+const researchAsGeneral:ConversationSessionExpectedContext={...general,scope:research.scope};
+void research;void uncorrelatedResearch;void researchAsGeneral;

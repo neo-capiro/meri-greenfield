@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "urn:meri:conversation-session:1.0.0",
+  "$id": "urn:meri:conversation-session:1.1.0",
   "$defs": {
     "ConversationSessionReceipt": {
       "type": "object",
@@ -15,46 +15,125 @@
           "maximum": 9007199254740991
         },
         "context": {
-          "type": "object",
-          "properties": {
-            "tenantId": {
-              "type": "string",
-              "minLength": 1,
-              "maxLength": 256
-            },
-            "actorId": {
-              "type": "string",
-              "minLength": 1,
-              "maxLength": 256
-            },
-            "conversationId": {
-              "type": "string",
-              "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
-            },
-            "runId": {
-              "type": "string",
-              "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
-            },
-            "selectedClientId": {
-              "anyOf": [
-                {
+          "oneOf": [
+            {
+              "type": "object",
+              "properties": {
+                "tenantId": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 256
+                },
+                "actorId": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 256
+                },
+                "conversationId": {
                   "type": "string",
                   "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
                 },
-                {
-                  "type": "null"
+                "runId": {
+                  "type": "string",
+                  "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+                },
+                "selectedClientId": {
+                  "anyOf": [
+                    {
+                      "type": "string",
+                      "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
                 }
-              ]
+              },
+              "required": [
+                "tenantId",
+                "actorId",
+                "conversationId",
+                "runId",
+                "selectedClientId"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "properties": {
+                "tenantId": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 256
+                },
+                "actorId": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 256
+                },
+                "conversationId": {
+                  "type": "string",
+                  "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+                },
+                "runId": {
+                  "type": "string",
+                  "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+                },
+                "selectedClientId": {
+                  "type": "null"
+                },
+                "scopeKind": {
+                  "const": "research_portfolio"
+                },
+                "scope": {
+                  "title": "ResearchPortfolioCapture",
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "kind",
+                    "researchPortfolioId",
+                    "researchPortfolioName",
+                    "researchPortfolioRevision",
+                    "scopeVersion"
+                  ],
+                  "properties": {
+                    "kind": {
+                      "const": "research_portfolio"
+                    },
+                    "researchPortfolioId": {
+                      "type": "string",
+                      "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+                    },
+                    "researchPortfolioName": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 200,
+                      "pattern": "\\S"
+                    },
+                    "researchPortfolioRevision": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 9007199254740991
+                    },
+                    "scopeVersion": {
+                      "type": "string",
+                      "pattern": "^[0-9a-f]{64}$"
+                    }
+                  }
+                }
+              },
+              "required": [
+                "tenantId",
+                "actorId",
+                "conversationId",
+                "runId",
+                "selectedClientId",
+                "scopeKind",
+                "scope"
+              ],
+              "additionalProperties": false
             }
-          },
-          "required": [
-            "tenantId",
-            "actorId",
-            "conversationId",
-            "runId",
-            "selectedClientId"
-          ],
-          "additionalProperties": false
+          ]
         },
         "initialRunRebind": {
           "type": "object",
@@ -155,6 +234,80 @@
             "conversationId",
             "selectedClientId",
             "scopeKind"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "tenantId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 256
+            },
+            "actorId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 256
+            },
+            "conversationId": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+            },
+            "runId": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+            },
+            "selectedClientId": {
+              "type": "null"
+            },
+            "scopeKind": {
+              "const": "research_portfolio"
+            },
+            "scope": {
+              "title": "ResearchPortfolioCapture",
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "kind",
+                "researchPortfolioId",
+                "researchPortfolioName",
+                "researchPortfolioRevision",
+                "scopeVersion"
+              ],
+              "properties": {
+                "kind": {
+                  "const": "research_portfolio"
+                },
+                "researchPortfolioId": {
+                  "type": "string",
+                  "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+                },
+                "researchPortfolioName": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 200,
+                  "pattern": "\\S"
+                },
+                "researchPortfolioRevision": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9007199254740991
+                },
+                "scopeVersion": {
+                  "type": "string",
+                  "pattern": "^[0-9a-f]{64}$"
+                }
+              }
+            }
+          },
+          "required": [
+            "tenantId",
+            "actorId",
+            "conversationId",
+            "selectedClientId",
+            "scopeKind",
+            "scope"
           ],
           "additionalProperties": false
         }

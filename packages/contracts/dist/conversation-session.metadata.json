@@ -1,21 +1,26 @@
 {
-  "packageVersion": "0.1.12",
-  "schemaId": "urn:meri:conversation-session:1.0.0",
+  "packageVersion": "0.1.43",
+  "schemaId": "urn:meri:conversation-session:1.1.0",
   "sources": [
     {
+      "path": "research-portfolio-scope.mjs",
+      "sha256": "da3a4aabb1d4cd8c3441df43a8790e4b3ad407632727f51bcfe160205ca904f0",
+      "bytes": 1332
+    },
+    {
       "path": "session-receipt/schema.mjs",
-      "sha256": "f9215a5b61a00fab4dfc2f1fb5665d808958291e748ef6194b3ff4971df185c5",
-      "bytes": 1975
+      "sha256": "66bd82fe7f77b04ce927a8920a4ba45fe4668d3c45608b952a8e1e08f107dbaf",
+      "bytes": 2464
     },
     {
       "path": "session-receipt/validate.mjs",
-      "sha256": "bfa4760cc77c629dddc587a4559b99648483563bdcf685d768718f63b86030b4",
-      "bytes": 522
+      "sha256": "41ec074e27acd9c55ec5749a0eca97752acc07a527086a26c141e307673e9843",
+      "bytes": 593
     },
     {
       "path": "conversation-session/receive.mjs",
-      "sha256": "f6475332dbe02ae332f704bf28d992958ec2e33c58aff2d24633a57ea19836ba",
-      "bytes": 2037
+      "sha256": "871c78aaec190710f0cb7f060c2334e0f671624795feb98141a0d41e615f174b",
+      "bytes": 2673
     },
     {
       "path": "document-application/boundary.mjs",
@@ -24,8 +29,8 @@
     },
     {
       "path": "generate-session.mjs",
-      "sha256": "fb2724e088cfe595a14ee911d0d226125a5aad6529f4bced825d34542f3fff88",
-      "bytes": 4526
+      "sha256": "ac8993807fc01effd037cdd2e30be2d22fa4d902227e4d011f3cc37fee6b3b51",
+      "bytes": 4721
     }
   ],
   "browserInputs": [

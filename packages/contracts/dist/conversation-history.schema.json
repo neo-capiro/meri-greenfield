@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "urn:meri:conversation-history:1.6.0",
+  "$id": "urn:meri:conversation-history:1.7.0",
   "$defs": {
     "ConversationDeletionReference": {
       "type": "object",
@@ -354,196 +354,448 @@
       "additionalProperties": false
     },
     "ConversationMetadata": {
-      "type": "object",
-      "properties": {
-        "conversationId": {
-          "type": "string",
-          "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
-        },
-        "title": {
-          "type": "string",
-          "minLength": 1,
-          "maxLength": 200
-        },
-        "status": {
-          "enum": [
-            "active",
-            "archived",
-            "trashed"
-          ]
-        },
-        "revision": {
-          "type": "string",
-          "pattern": "^(0|[1-9][0-9]{0,17})$"
-        },
-        "scopeKind": {
-          "enum": [
-            "client",
-            "general"
-          ]
-        },
-        "clientId": {
-          "anyOf": [
-            {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "conversationId": {
               "type": "string",
               "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
             },
-            {
-              "type": "null"
-            }
-          ]
-        },
-        "updatedAt": {
-          "type": "string",
-          "format": "date-time"
-        },
-        "archivedAt": {
-          "anyOf": [
-            {
+            "title": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 200
+            },
+            "status": {
+              "enum": [
+                "active",
+                "archived",
+                "trashed"
+              ]
+            },
+            "revision": {
+              "type": "string",
+              "pattern": "^(0|[1-9][0-9]{0,17})$"
+            },
+            "scopeKind": {
+              "enum": [
+                "client",
+                "general"
+              ]
+            },
+            "clientId": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "updatedAt": {
               "type": "string",
               "format": "date-time"
             },
-            {
-              "type": "null"
+            "archivedAt": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "trashedAt": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "restoreUntil": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                {
+                  "type": "null"
+                }
+              ]
             }
-          ]
+          },
+          "required": [
+            "conversationId",
+            "title",
+            "status",
+            "revision",
+            "scopeKind",
+            "clientId",
+            "updatedAt",
+            "archivedAt",
+            "trashedAt",
+            "restoreUntil"
+          ],
+          "additionalProperties": false
         },
-        "trashedAt": {
-          "anyOf": [
-            {
+        {
+          "type": "object",
+          "properties": {
+            "conversationId": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+            },
+            "title": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 200
+            },
+            "status": {
+              "enum": [
+                "active",
+                "archived",
+                "trashed"
+              ]
+            },
+            "revision": {
+              "type": "string",
+              "pattern": "^(0|[1-9][0-9]{0,17})$"
+            },
+            "scopeKind": {
+              "const": "research_portfolio"
+            },
+            "clientId": {
+              "type": "null"
+            },
+            "updatedAt": {
               "type": "string",
               "format": "date-time"
             },
-            {
-              "type": "null"
-            }
-          ]
-        },
-        "restoreUntil": {
-          "anyOf": [
-            {
-              "type": "string",
-              "format": "date-time"
+            "archivedAt": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                {
+                  "type": "null"
+                }
+              ]
             },
-            {
-              "type": "null"
+            "trashedAt": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "restoreUntil": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "scope": {
+              "title": "ResearchPortfolioCapture",
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "kind",
+                "researchPortfolioId",
+                "researchPortfolioName",
+                "researchPortfolioRevision",
+                "scopeVersion"
+              ],
+              "properties": {
+                "kind": {
+                  "const": "research_portfolio"
+                },
+                "researchPortfolioId": {
+                  "type": "string",
+                  "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+                },
+                "researchPortfolioName": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 200,
+                  "pattern": "\\S"
+                },
+                "researchPortfolioRevision": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9007199254740991
+                },
+                "scopeVersion": {
+                  "type": "string",
+                  "pattern": "^[0-9a-f]{64}$"
+                }
+              }
             }
-          ]
+          },
+          "required": [
+            "conversationId",
+            "title",
+            "status",
+            "revision",
+            "scopeKind",
+            "clientId",
+            "updatedAt",
+            "archivedAt",
+            "trashedAt",
+            "restoreUntil",
+            "scope"
+          ],
+          "additionalProperties": false
         }
-      },
-      "required": [
-        "conversationId",
-        "title",
-        "status",
-        "revision",
-        "scopeKind",
-        "clientId",
-        "updatedAt",
-        "archivedAt",
-        "trashedAt",
-        "restoreUntil"
-      ],
-      "additionalProperties": false
+      ]
     },
     "ConversationSummary": {
-      "type": "object",
-      "properties": {
-        "conversationId": {
-          "type": "string",
-          "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
-        },
-        "title": {
-          "type": "string",
-          "minLength": 1,
-          "maxLength": 200
-        },
-        "status": {
-          "enum": [
-            "active",
-            "archived",
-            "trashed"
-          ]
-        },
-        "revision": {
-          "type": "string",
-          "pattern": "^(0|[1-9][0-9]{0,17})$"
-        },
-        "scopeKind": {
-          "enum": [
-            "client",
-            "general"
-          ]
-        },
-        "clientId": {
-          "anyOf": [
-            {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "conversationId": {
               "type": "string",
               "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
             },
-            {
-              "type": "null"
-            }
-          ]
-        },
-        "updatedAt": {
-          "type": "string",
-          "format": "date-time"
-        },
-        "archivedAt": {
-          "anyOf": [
-            {
+            "title": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 200
+            },
+            "status": {
+              "enum": [
+                "active",
+                "archived",
+                "trashed"
+              ]
+            },
+            "revision": {
+              "type": "string",
+              "pattern": "^(0|[1-9][0-9]{0,17})$"
+            },
+            "scopeKind": {
+              "enum": [
+                "client",
+                "general"
+              ]
+            },
+            "clientId": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "updatedAt": {
               "type": "string",
               "format": "date-time"
             },
-            {
-              "type": "null"
+            "archivedAt": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "trashedAt": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "restoreUntil": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "hasTranscript": {
+              "type": "boolean"
+            },
+            "canManage": {
+              "type": "boolean"
             }
-          ]
+          },
+          "required": [
+            "conversationId",
+            "title",
+            "status",
+            "revision",
+            "scopeKind",
+            "clientId",
+            "updatedAt",
+            "archivedAt",
+            "trashedAt",
+            "restoreUntil",
+            "hasTranscript",
+            "canManage"
+          ],
+          "additionalProperties": false
         },
-        "trashedAt": {
-          "anyOf": [
-            {
+        {
+          "type": "object",
+          "properties": {
+            "conversationId": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+            },
+            "title": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 200
+            },
+            "status": {
+              "enum": [
+                "active",
+                "archived",
+                "trashed"
+              ]
+            },
+            "revision": {
+              "type": "string",
+              "pattern": "^(0|[1-9][0-9]{0,17})$"
+            },
+            "scopeKind": {
+              "const": "research_portfolio"
+            },
+            "clientId": {
+              "type": "null"
+            },
+            "updatedAt": {
               "type": "string",
               "format": "date-time"
             },
-            {
-              "type": "null"
-            }
-          ]
-        },
-        "restoreUntil": {
-          "anyOf": [
-            {
-              "type": "string",
-              "format": "date-time"
+            "archivedAt": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                {
+                  "type": "null"
+                }
+              ]
             },
-            {
-              "type": "null"
+            "trashedAt": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "restoreUntil": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "scope": {
+              "title": "ResearchPortfolioCapture",
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "kind",
+                "researchPortfolioId",
+                "researchPortfolioName",
+                "researchPortfolioRevision",
+                "scopeVersion"
+              ],
+              "properties": {
+                "kind": {
+                  "const": "research_portfolio"
+                },
+                "researchPortfolioId": {
+                  "type": "string",
+                  "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+                },
+                "researchPortfolioName": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 200,
+                  "pattern": "\\S"
+                },
+                "researchPortfolioRevision": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9007199254740991
+                },
+                "scopeVersion": {
+                  "type": "string",
+                  "pattern": "^[0-9a-f]{64}$"
+                }
+              }
+            },
+            "hasTranscript": {
+              "type": "boolean"
+            },
+            "canManage": {
+              "type": "boolean"
             }
-          ]
-        },
-        "hasTranscript": {
-          "type": "boolean"
-        },
-        "canManage": {
-          "type": "boolean"
+          },
+          "required": [
+            "conversationId",
+            "title",
+            "status",
+            "revision",
+            "scopeKind",
+            "clientId",
+            "updatedAt",
+            "archivedAt",
+            "trashedAt",
+            "restoreUntil",
+            "scope",
+            "hasTranscript",
+            "canManage"
+          ],
+          "additionalProperties": false
         }
-      },
-      "required": [
-        "conversationId",
-        "title",
-        "status",
-        "revision",
-        "scopeKind",
-        "clientId",
-        "updatedAt",
-        "archivedAt",
-        "trashedAt",
-        "restoreUntil",
-        "hasTranscript",
-        "canManage"
-      ],
-      "additionalProperties": false
+      ]
     },
     "ConversationSummaryBefore": {
       "type": "object",
