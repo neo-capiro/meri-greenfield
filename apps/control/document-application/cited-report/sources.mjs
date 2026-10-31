@@ -21,8 +21,8 @@ import {citedReportOperation} from './skill.mjs';
 /** The exact bytes we received: a passage is bound by the hash of its UTF-8 text, not of a JSON string. */
 const passageDigest=value=>createHash('sha256').update(Buffer.from(value,'utf8')).digest('hex');
 
-/** A citation's read locator: the stored thread it quotes, or the portfolio evidence record it refers to. */
-export const readKey=citation=>citation.kind==='mail'?`mail:${citation.threadId}`:`portfolio-evidence:${citation.origin}:${citation.portfolioId}:${citation.recordId??''}`;
+/** Mail reads select one message, so only citations of that same thread/message may share a read. */
+export const readKey=citation=>citation.kind==='mail'?`mail:${citation.threadId}:${citation.messageId}`:`portfolio-evidence:${citation.origin}:${citation.portfolioId}:${citation.recordId??''}`;
 /** One real read per distinct cited locator, in first-citation order. */
 export function citedReportReadGroups(input,selected){
  const groups=new Map();
