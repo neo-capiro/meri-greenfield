@@ -58,3 +58,26 @@ test('approval metadata readback is private-only and disabled does not fall thro
  assert.equal((await routed.private.handle(new Request(path))).status,200);assert.equal(calls,1);assert.equal(candidateCalls,0);
  const disabled=createControlRouteApplications(configuration);assert.equal((await disabled.private.handle(new Request(path))).status,404);assert.equal(candidateCalls,0);
 });
+test('Office public operations derive from the canonical route export and WOPI is private only',async()=>{
+ const {OFFICE_ROUTES}=await import('../../../packages/contracts/office-application/receive.mjs');
+ const calls=[],office={async handleControl(request){calls.push(['control',new URL(request.url).pathname]);return new Response('office');},
+  async handleWopi(request){calls.push(['wopi',new URL(request.url).pathname]);return new Response('wopi');}};
+ const routes=createControlRouteApplications({assembly:{handle(){return new Response('assembly');}},candidate:{handle(){return null;}},office});
+ for(const route of OFFICE_ROUTES){
+  const response=await routes.public.handle(new Request('https://public.invalid/api/meri/office/'+route,{method:'POST'}));
+  assert.equal(response.status,200);assert.equal(await response.text(),'office');
+ }
+ assert.equal(calls.filter(row=>row[0]==='control').length,8);
+ const wopi='/api/meri/office/wopi/files/abc';
+ assert.equal((await routes.public.handle(new Request('https://public.invalid'+wopi,{method:'POST'}))).status,404);
+ assert.equal(calls.filter(row=>row[0]==='wopi').length,0);
+ assert.equal((await routes.private.handle(new Request('https://private.invalid'+wopi,{method:'POST'}))).status,200);
+ assert.equal(calls.filter(row=>row[0]==='wopi').length,1);
+ assert.equal((await routes.public.handle(new Request('https://public.invalid/api/meri/other',{method:'POST'}))).status,404);
+});
+test('absent Office keeps every operation and WOPI at 404',async()=>{
+ const routes=createControlRouteApplications({assembly:{handle(){return new Response('assembly');}},candidate:{handle(){return null;}},office:null});
+ for(const path of ['/api/meri/office/open','/api/meri/office/inspect','/api/meri/office/wopi/files/abc'])
+  assert.equal((await routes.public.handle(new Request('https://public.invalid'+path,{method:'POST'}))).status,404);
+ assert.equal((await routes.private.handle(new Request('https://private.invalid/api/meri/office/wopi/files/abc',{method:'POST'}))).status,404);
+});

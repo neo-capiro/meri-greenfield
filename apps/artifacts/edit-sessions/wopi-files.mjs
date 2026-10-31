@@ -10,6 +10,7 @@ import {own,data} from '../../../packages/contracts/commands-0.2/execution-bound
 import {assertNativeConversationScope} from '../../../packages/contracts/runtime-0.2/session.mjs';
 import {createOperationLifetime} from '../../../packages/runtime/operation-lifetime.mjs';
 import {inspectOfficeEdit} from './inspect-office.mjs';
+import {officeEditUnavailable} from './edit-admission.mjs';
 import {wopiRequest,wopiBody,wopiResponse,cancelWopiBody,refuse,refusalStatus} from './wopi-http.mjs';
 const sha=bytes=>createHash('sha256').update(bytes).digest('hex');
 const codeOf=e=>e&&typeof e==='object'&&!types.isProxy(e)?Object.getOwnPropertyDescriptor(e,'code')?.value:undefined;
@@ -52,6 +53,9 @@ export function createWopiFileApplication({codec,drafts,artifacts,resolveContext
     if(!Number.isSafeInteger(value)||value!==claims.suppressionGeneration)refuse(404);
    }
    let selected=await current(),draft=await call('editorRead',{},selected),base=await source(selected);correlate(draft,base);await retained(base);
+   const inspectUnsupported=(bytes,format)=>format==='pptx'?officeEditUnavailable(inspectOfficeEdit(bytes,format)):false;
+   let unsupported=inspectUnsupported(base.bytes,draft.format)||
+    (draft.bytesBase64===null?false:inspectUnsupported(Buffer.from(draft.bytesBase64,'base64'),draft.format));
    const writes=!['checkFileInfo','getFile'].includes(info.operation);
    if(writes&&!claims.userCanWrite)refuse(401);
    // Creating a relative file is deliberately forbidden for every user. The
@@ -61,11 +65,14 @@ export function createWopiFileApplication({codec,drafts,artifacts,resolveContext
    if(info.operation==='save'){
     if(!body.length)refuse(400);
     try{inspectOfficeEdit(body,draft.format);}catch{refuse(400);}
+    if(unsupported||inspectUnsupported(body,draft.format))refuse(409);
    }
    if(writes){
     // Even an empty lock request body may have arrived slowly. Re-admit
     // immediately before every effect, after all body and structure checks.
     selected=await current();draft=await call('editorRead',{},selected);base=await source(selected);correlate(draft,base);await retained(base);
+    unsupported=inspectUnsupported(base.bytes,draft.format)||(draft.bytesBase64===null?false:inspectUnsupported(Buffer.from(draft.bytesBase64,'base64'),draft.format));
+    if(unsupported&&info.operation==='save')refuse(409);
    }
    let result;
    if(writes){
@@ -83,6 +90,7 @@ export function createWopiFileApplication({codec,drafts,artifacts,resolveContext
    // No result/bytes leave after a lost native session, takeover or suppression.
    // Generation is the final awaited read, matching canonical download links.
    selected=await current();base=await source(selected);draft=await call('editorRead',{},selected);correlate(draft,base);await retained(base);
+   unsupported=inspectUnsupported(base.bytes,draft.format)||(draft.bytesBase64===null?false:inspectUnsupported(Buffer.from(draft.bytesBase64,'base64'),draft.format));
    codec.verify(info.token,{fileId:info.fileId});life.check();
    const bytes=draft.bytesBase64===null?base.bytes:Buffer.from(draft.bytesBase64,'base64');
    const version=r=>`${claims.editSessionId}:${r.sequence}:${r.sha256??r.baseSha256}`;
@@ -95,7 +103,7 @@ export function createWopiFileApplication({codec,drafts,artifacts,resolveContext
     if(bytes.length>info.maxExpectedSize)refuse(412);
     return wopiResponse(200,bytes,{'content-type':'application/octet-stream','content-length':String(bytes.length),'x-wopi-itemversion':version(draft)});
    }
-   const canWrite=claims.userCanWrite&&['draft','publish-refused'].includes(draft.state),user=sha(JSON.stringify([claims.tenantId,claims.actorId]));
+   const canWrite=claims.userCanWrite&&!unsupported&&['draft','publish-refused'].includes(draft.state),user=sha(JSON.stringify([claims.tenantId,claims.actorId]));
    return wopiResponse(200,JSON.stringify({BaseFileName:draft.filename,OwnerId:user,UserId:user,Size:bytes.length,Version:version(draft),
     UserCanWrite:canWrite,ReadOnly:!canWrite,UserCanNotWriteRelative:true,UserCanRename:false,
     SupportsLocks:canWrite,SupportsGetLock:canWrite,SupportsExtendedLockLength:true,SupportsUpdate:canWrite,

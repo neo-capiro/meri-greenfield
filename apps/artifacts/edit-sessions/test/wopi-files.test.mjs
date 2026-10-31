@@ -6,6 +6,9 @@ import {wopiFixture} from './wopi-fixture.mjs';
 import {ooxml} from '../../structure/test/fixtures.mjs';
 import {createWopiFileApplication} from '../wopi-files.mjs';
 import {createArtifactService} from '../../service.mjs';
+import {zip} from '../../structure/test/fixtures.mjs';
+import {createHash} from 'node:crypto';
+import {chart} from './embedded-chart-fixture.mjs';
 const edited=()=>ooxml('docx',{mainXml:'<w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"><w:body><w:p><w:r><w:t>Private edit</w:t></w:r></w:p></w:body></w:document>'});
 const bytes=async response=>Buffer.from(await response.arrayBuffer());
 test('native CODE forwarded expiry must match the signed token and cannot extend its lifetime',async t=>{
@@ -161,4 +164,33 @@ test('actual local HTTP GET/LOCK/PUT/GET traverses the adapter, canonical artifa
   return fetch(url,{method:request.method,headers:request.headers,...(request.body?{body:request.body,duplex:'half'}:{})});};
  assert.equal((await send('lock',{lock:'local CODE'})).status,200);assert.deepEqual(await bytes(await send('getFile')),f.baseBytes);
  assert.equal((await send('save',{lock:'local CODE',body:edited()})).status,200);assert.deepEqual(await bytes(await send('getFile')),edited());assert.equal(f.sql.state.versions.size,1);
+});
+
+test('workbook-bearing immutable base disables write and refuses old-token Save before Core',async t=>{
+ const f=await wopiFixture(t,{format:'pptx',baseBytes:zip(chart())});
+ f.state.lock='old-lock';
+ const info=await (await f.send()).json();
+ assert.equal(info.UserCanWrite,false);assert.equal(info.SupportsUpdate,false);assert.equal(info.ReadOnly,true);
+ const before={sequence:f.draft.sequence,sha256:f.draft.sha256,puts:f.state.puts,calls:f.state.calls.length};
+ const response=await f.send('save',{lock:'old-lock',body:ooxml('pptx')});
+ assert.equal(response.status,409);
+ assert.equal(f.state.calls.slice(before.calls).some(call=>call.route==='save'),false);
+ assert.equal(f.draft.sequence,before.sequence);assert.equal(f.draft.sha256,before.sha256);assert.equal(f.state.puts,before.puts);
+});
+test('workbook-bearing retained draft disables write and refuses Save before Core',async t=>{
+ const f=await wopiFixture(t,{format:'pptx'});
+ const chartBytes=zip(chart());Object.assign(f.draft,{sequence:1,sha256:createHash('sha256').update(chartBytes).digest('hex'),byteLength:chartBytes.length,bytesBase64:chartBytes.toString('base64'),state:'draft'});
+ f.state.lock='old-lock';
+ const infoResponse=await f.send();if(infoResponse.status!==200)assert.fail('CheckFileInfo '+infoResponse.status);const info=await infoResponse.json();assert.equal(info.UserCanWrite,false);assert.equal(info.SupportsUpdate,false);
+ const before={sequence:f.draft.sequence,sha256:f.draft.sha256,calls:f.state.calls.length};
+ assert.equal((await f.send('save',{lock:'old-lock',body:ooxml('pptx')})).status,409);
+ assert.equal(f.state.calls.slice(before.calls).some(call=>call.route==='save'),false);
+ assert.equal(f.draft.sequence,before.sequence);assert.equal(f.draft.sha256,before.sha256);
+});
+test('closed WOPI codec cannot issue or verify after key ownership is released',async()=>{
+ const {createWopiAccessTokenCodec}=await import('../wopi-access-token.mjs');
+ const codec=createWopiAccessTokenCodec({key:Buffer.alloc(32,7),now:()=>1000});
+ codec.close();
+ assert.throws(()=>codec.issue({}),{code:'WOPI_TOKEN_CONFIGURATION'});
+ assert.throws(()=>codec.verify('a.b',{fileId:'f'}),{code:'WOPI_TOKEN_CONFIGURATION'});
 });

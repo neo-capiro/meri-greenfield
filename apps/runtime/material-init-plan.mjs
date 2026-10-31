@@ -55,6 +55,10 @@ export function compileProductMaterialPlan({role,configuration,runtimeUser}){
   if(c.downloadLinks?.enabled)add(c.downloadLinks.keyFile,'download-signing-key');
   if(c.reads?.enabled===true){add(c.reads.serviceSecretFile,'reads-service-secret');if(c.reads.readModeServiceSecretFile!==undefined)add(c.reads.readModeServiceSecretFile,'reads-read-mode-service-secret');
   }
+  if(c.office?.enabled===true){add(c.office.keyFile,'office-wopi-signing-key');
+   // Intentional same-Core service secret reuse keeps ONE purpose; a dedicated file gets its own.
+   if(c.office.serviceSecretFile!==c.reads?.serviceSecretFile)add(c.office.serviceSecretFile,'office-core-service-secret');
+  }
  }
  for(const [path,purposes] of files){if(purposes.size>1)refuse();if(path!==configurationPath)direct(path);}
  const dynamicMaterialDirectory=null;
