@@ -479,6 +479,62 @@ export type ConversationHistoryManageRequest =
       expectedRevision: string;
       operation: 'archive' | 'restore' | 'trash';
     };
+export type ConversationSummary =
+  | {
+      conversationId: string;
+      title: string;
+      status: 'active' | 'archived' | 'trashed';
+      revision: string;
+      scopeKind: 'client' | 'general';
+      clientId: string | null;
+      updatedAt: string;
+      archivedAt: string | null;
+      trashedAt: string | null;
+      restoreUntil: string | null;
+      hasTranscript: boolean;
+      canManage: boolean;
+    }
+  | {
+      conversationId: string;
+      title: string;
+      status: 'active' | 'archived' | 'trashed';
+      revision: string;
+      scopeKind: 'research_portfolio';
+      clientId: null;
+      updatedAt: string;
+      archivedAt: string | null;
+      trashedAt: string | null;
+      restoreUntil: string | null;
+      scope: ResearchPortfolioCapture;
+      hasTranscript: boolean;
+      canManage: boolean;
+    };
+export type ConversationMetadata =
+  | {
+      conversationId: string;
+      title: string;
+      status: 'active' | 'archived' | 'trashed';
+      revision: string;
+      scopeKind: 'client' | 'general';
+      clientId: string | null;
+      updatedAt: string;
+      archivedAt: string | null;
+      trashedAt: string | null;
+      restoreUntil: string | null;
+    }
+  | {
+      conversationId: string;
+      title: string;
+      status: 'active' | 'archived' | 'trashed';
+      revision: string;
+      scopeKind: 'research_portfolio';
+      clientId: null;
+      updatedAt: string;
+      archivedAt: string | null;
+      trashedAt: string | null;
+      restoreUntil: string | null;
+      scope: ResearchPortfolioCapture1;
+    };
 
 export interface ConversationHistoryExportRequest {
   conversationId: string;
@@ -2143,36 +2199,24 @@ export interface ConversationHistorySummariesResponse {
       ];
   nextBefore: ConversationSummaryBefore | null;
 }
-export interface ConversationSummary {
-  conversationId: string;
-  title: string;
-  status: 'active' | 'archived' | 'trashed';
-  revision: string;
-  scopeKind: 'client' | 'general';
-  clientId: string | null;
-  updatedAt: string;
-  archivedAt: string | null;
-  trashedAt: string | null;
-  restoreUntil: string | null;
-  hasTranscript: boolean;
-  canManage: boolean;
+export interface ResearchPortfolioCapture {
+  kind: 'research_portfolio';
+  researchPortfolioId: string;
+  researchPortfolioName: string;
+  researchPortfolioRevision: number;
+  scopeVersion: string;
 }
 export interface ConversationHistoryManageResponse {
   version: 'meri.conversation-management.v1';
   requestId: string;
   conversation: ConversationMetadata;
 }
-export interface ConversationMetadata {
-  conversationId: string;
-  title: string;
-  status: 'active' | 'archived' | 'trashed';
-  revision: string;
-  scopeKind: 'client' | 'general';
-  clientId: string | null;
-  updatedAt: string;
-  archivedAt: string | null;
-  trashedAt: string | null;
-  restoreUntil: string | null;
+export interface ResearchPortfolioCapture1 {
+  kind: 'research_portfolio';
+  researchPortfolioId: string;
+  researchPortfolioName: string;
+  researchPortfolioRevision: number;
+  scopeVersion: string;
 }
 export interface ConversationHistoryDeletionsRequest {
   version: 'meri.conversation-management.v1';
@@ -2935,9 +2979,9 @@ export interface ConversationHistoryResponseMap {export:Readonly<ConversationHis
 export type ConversationHistoryResponse<R extends ConversationHistoryRoute>=ConversationHistoryResponseMap[R]|ConversationHistoryErrorResponse;
 export declare class ConversationHistoryResponseError extends Error {readonly code:string;}
 export declare const conversationHistoryMetadata: {
-  "packageVersion": "0.1.34",
-  "historyVersion": "1.6.0",
-  "schemaId": "urn:meri:conversation-history:1.6.0",
+  "packageVersion": "0.1.43",
+  "historyVersion": "1.7.0",
+  "schemaId": "urn:meri:conversation-history:1.7.0",
   "routes": {
     "export": {
       "method": "POST",
@@ -3077,7 +3121,7 @@ export declare const conversationHistoryMetadata: {
     ]
   }
 };
-export declare const conversationHistoryVersion:'1.6.0';
+export declare const conversationHistoryVersion:'1.7.0';
 export declare const EXPORT_SCHEMA:'meri.conversation-export/1';
 export declare const MANAGEMENT_VERSION:'meri.conversation-management.v1';
 export declare const HISTORY_PATHS: {

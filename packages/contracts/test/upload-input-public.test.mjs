@@ -36,7 +36,7 @@ test('every input family republishes one closed ordered selector owned by the ca
  assert.equal(app.$id,conversationApplicationMetadata.schemaId);assert.equal(conversationApplicationMetadata.wireContractVersion,'0.4.0');
  assert.equal(accepted.$id,'urn:meri:conversation-input:1.3.0');assert.equal(conversationInputMetadata.inputVersion,'1.3.0');
  assert.equal(allocated.$id,'urn:meri:conversation-initial-input:1.3.0');assert.equal(conversationInitialInputMetadata.initialInputVersion,'1.3.0');
- assert.equal(records.$id,'urn:meri:conversation-history:1.6.0');assert.equal(conversationHistoryMetadata.historyVersion,'1.6.0');
+ assert.equal(records.$id,'urn:meri:conversation-history:1.7.0');assert.equal(conversationHistoryMetadata.historyVersion,'1.7.0');
  assert.equal(run.versions.contracts,'0.1.0');
 });
 
@@ -66,7 +66,7 @@ test('selector assertion keeps exact order and refuses empty, oversized, duplica
 });
 
 test('canonical receivers admit the exact ordered selector set and refuse every non-canonical form',async()=>{
- assert.equal(application.conversationApplicationMetadata.wireContractVersion,'0.4.0');assert.equal(input.conversationInputVersion,'1.3.0');assert.equal(initial.conversationInitialInputVersion,'1.3.0');assert.equal(history.conversationHistoryVersion,'1.6.0');
+ assert.equal(application.conversationApplicationMetadata.wireContractVersion,'0.4.0');assert.equal(input.conversationInputVersion,'1.3.0');assert.equal(initial.conversationInitialInputVersion,'1.3.0');assert.equal(history.conversationHistoryVersion,'1.7.0');
  for(const receive of [value=>application.receiveConversationRequest('submit',value),input.receiveConversationInputRequest,initial.receiveConversationInitialInputRequest]){
   assert.deepEqual(receive(bytes(plain)),plain);assert.deepEqual(receive(bytes(request)),request);
   assert.deepEqual(receive(bytes({...request,uploads:selectors(8)})).uploads,selectors(8));
@@ -96,7 +96,7 @@ test('tracked generation records the selector helper as an exact browser-safe in
  const helper=await readFile(new URL('../upload-selection.mjs',import.meta.url));
  assert.equal(recorded.sha256,createHash('sha256').update(helper).digest('hex'));assert.equal(recorded.bytes,helper.length);assert.doesNotMatch(helper.toString('utf8'),/from ["']node:|require\(["']node:/u);
  const records=JSON.parse(await readFile(new URL('../dist/conversation-history.metadata.json',import.meta.url),'utf8'));
- assert.equal(records.schemaId,'urn:meri:conversation-history:1.6.0');
+ assert.equal(records.schemaId,'urn:meri:conversation-history:1.7.0');
  for(const [name,metadata,family] of [['application',evidence,'conversation-application'],['history',records,'conversation-history']]){
   assert.ok(metadata.sources.some(row=>row.path==='upload-selection.mjs'),name);assert.ok(metadata.browserInputs.includes('upload-selection.mjs'),name);
   const browser=await readFile(new URL('../dist/'+family+'.mjs',import.meta.url),'utf8');assert.doesNotMatch(browser,/from ["']node:|require\(["']node:/u);assert.match(browser,/UPLOAD_SELECTION/u);

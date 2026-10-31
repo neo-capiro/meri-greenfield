@@ -29,7 +29,7 @@ test('legacy null, v1 bootstrap, forged kind, foreign principal and stale receip
 });
 test('browser export records its canonical schema provenance and imports no server modules',async()=>{
  const metadata=JSON.parse(await readFile(new URL('../dist/conversation-session.metadata.json',import.meta.url)));
- assert.equal(conversationSessionMetadata.packageVersion,'0.1.12');assert.deepEqual(metadata.browserImports,[]);
+ assert.equal(conversationSessionMetadata.packageVersion,'0.1.43');assert.deepEqual(metadata.browserImports,[]);
  assert.ok(metadata.sources.some(row=>row.path==='session-receipt/schema.mjs'));
  for(const row of metadata.sources)assert.equal(createHash('sha256').update(await readFile(new URL('../'+row.path,import.meta.url))).digest('hex'),row.sha256,row.path);
  const source=await readFile(new URL('../dist/conversation-session.mjs',import.meta.url),'utf8');assert.doesNotMatch(source,/from ['"]node:|require\(['"]node:/u);
