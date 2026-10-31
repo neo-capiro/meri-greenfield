@@ -16,7 +16,7 @@ async function fixture(t,{format='docx',discoveryFormat=format,baseBytes}={}){
  const state=Object.assign(f.state,{observations:[],phaseHook:null,modeDenied:null});
  const limits={maxRequestMs:5000,maxRequestBytes:2097152,maxResponseBytes:16777216};
  const optionsOwner={async resolve(call){
-  const required={revise:'artifact.revise',inspect:'artifact.inspect',download:'artifact.download'}[call.intent];
+  const required={'office-edit':'artifact.revise',inspect:'artifact.inspect',download:'artifact.download'}[call.intent];
   const authorize=async x=>{if(x.action!==required||state.modeDenied===call.intent)throw Object.assign(Error('ACCESS_DENIED'),{code:'ACCESS_DENIED'});return f.artifactOptions.authorize(x);};
   return {documentOptions:{sessions:f.sessions,selectedClientId:f.claims.selectedClientId,artifactOptions:{...f.artifactOptions,now,authorize,ids:()=>({artifactId:id(960),versionId:id(961),objectId:id(962)})},now,limits,enabled:true},
    async recheck({phase}){state.observations.push({intent:call.intent,phase});await state.phaseHook?.(call.intent,phase);if(state.modeDenied===call.intent)throw Object.assign(Error('ACCESS_DENIED'),{code:'ACCESS_DENIED'});}};
@@ -97,7 +97,7 @@ test('missing discovery action and wrong selected source refuse before acquiring
  await assert.rejects(other.start(),{code:'EDITOR_SOURCE_MISMATCH'});assert.ok(!other.state.calls.some(c=>c.route==='editor'));
 });
 test('view uses download permission and its token cannot lock or Save',async t=>{
- const f=await fixture(t);f.state.modeDenied='revise';const opened=await f.start({mode:'view'});
+ const f=await fixture(t);f.state.modeDenied='office-edit';const opened=await f.start({mode:'view'});
  assert.equal((await f.wopi(opened.launch)).status,200);assert.equal((await f.wopi(opened.launch,'lock',{lock:'CODE'})).status,401);
  assert.ok(f.state.observations.every(o=>o.intent==='download'));
 });
@@ -138,7 +138,7 @@ test('release-time access loss and retention generation change never return a la
 });
 test('current Core artifact authority is checked again after a delayed byte read',async t=>{
  const f=await fixture(t),started=await f.start(),get=f.artifactOptions.objects.get;
- f.artifactOptions.objects.get=async(...args)=>{const bytes=await get(...args);f.state.modeDenied='revise';return bytes;};
+ f.artifactOptions.objects.get=async(...args)=>{const bytes=await get(...args);f.state.modeDenied='office-edit';return bytes;};
  assert.equal((await f.wopi(started.launch,'getFile')).status,500);assert.equal(f.state.puts,1);
 });
 test('discard is explicit, clears saved private bytes, and remains blocked during uncertain Publish',async t=>{
