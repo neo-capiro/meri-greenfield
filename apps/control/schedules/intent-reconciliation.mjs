@@ -12,6 +12,7 @@ import {createOperationLifetime} from '../../../packages/runtime/operation-lifet
 import {assertScheduleIntent,canonicalSha256,frozenScheduleData,denySchedule,scheduleErrorCode} from '../../../packages/contracts/schedules-0.2/lifecycle-validation.mjs';
 import {sdkMethod,exactHandle} from './temporal-schedule-mutations.mjs';
 import {approvedScheduleEffect,describedScheduleEffect} from './schedule-effect.mjs';
+import {isTerminalWorkflowStatus} from './temporal-run-history.mjs';
 
 const OPTIONS=['scheduleClient','workflowClient','scheduleOwner','scheduleNotFoundError','clock','maxRequestMs'];
 const uuid=/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/u;
@@ -51,10 +52,10 @@ export function createScheduleIntentReconciler(options) {
      const d=await describeSchedule(id),state=field(d,'state');
      if(field(d,'scheduleId')!==id||field(state,'paused')!==true||field(state,'note',true)!==c.note)return false;
     }
-    // request_cancel cannot read back a cancel request; a listed run that is no longer RUNNING has the requested effect.
+    // request_cancel cannot read back a cancel request; require every exact listed run to have a validated terminal status.
     if(c.running==='request_cancel')for(const run of c.runs) {
      const d=await rpc(workflowConnection,()=>{const h=sdkMethod(o.workflowClient,'getHandle')(run.workflowId,run.runId);life.check();return sdkMethod(h,'describe')();});
-     if(field(d,'workflowId')!==run.workflowId||field(d,'runId')!==run.runId||field(field(d,'status'),'name')==='RUNNING')return false;
+     if(field(d,'workflowId')!==run.workflowId||field(d,'runId')!==run.runId||!isTerminalWorkflowStatus(field(d,'status')))return false;
     }
     return true;
    }
