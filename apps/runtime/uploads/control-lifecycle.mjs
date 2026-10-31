@@ -1,3 +1,9 @@
+import {readFileSync} from 'node:fs';
+import {createNativeHostInspectionClient} from './native-host-client.mjs';
+import {NATIVE_UPLOAD_INSPECTION_PATH,nativeUploadCustody} from './native-host-contract.mjs';
+import {createOperationLifetime} from '../../../packages/runtime/operation-lifetime.mjs';
+import * as tls from '../../worker/conversation/host/control/tls.mjs';
+import * as binding from '../../worker/conversation/host/binding.mjs';
 /** The CONTROL-native upload lifecycle seam.
  *
  * A5 owns the sandbox, the definitions store, the native host composition (`composition.mjs`) and the upload
@@ -73,7 +79,7 @@ export function compileUploadNativeConfiguration(configuration){
  let native;
  try{
   const uploads=own(configuration.uploads,['native']);
-  native=own(uploads.native,['enabled'],['imageDigest','definitionsRoot','extractorPath','scratchRoot','maxDefinitionsAgeMs','provisionMs','agentcore']);
+  native=own(uploads.native,['enabled'],['imageDigest','definitionsRoot','extractorPath','scratchRoot','maxDefinitionsAgeMs','provisionMs','agentcore','host','policySha256']);
  }catch{throw uploadFault('UPLOAD_NATIVE_CONFIGURATION');}
  requireValue(typeof native.enabled==='boolean');
  // A disabled declaration names nothing else, matching the `reads` convention: an inert digest or root is refused
@@ -83,6 +89,44 @@ export function compileUploadNativeConfiguration(configuration){
  // and qualifier) is the existing `configuration.agentcore` declaration. Nothing else may be declared beside it: this
  // host composes no sandbox at all in this case, so an unconsumed local digest, root or budget could only be mistaken
  // for an attested host, and it is refused here for the same reason a disabled declaration refuses them.
+ if(native.host!==undefined){
+  // Per-operation target: configuration carries ONLY the trusted TLS references, budget and policy digest. The physical
+  // allocation/identity/binding/endpoint come from the canonical allocation reader for the saved upload.
+  // EXACT closed shape for a host declaration: enabled/host/policySha256 only; nested host: tls/maxRequestMs only.
+  requireValue(Object.keys(native).length===3);
+  let h;try{h=own(native.host,['tls'],['maxRequestMs','deployment','observer']);}catch{throw uploadFault('UPLOAD_NATIVE_CONFIGURATION');}
+  if(h.maxRequestMs!==undefined)requireValue(integer(h.maxRequestMs,1,30000));
+  let tlsRefs;try{tlsRefs=own(h.tls,['caPath','certPath','keyPath'],['clientName']);}catch{throw uploadFault('UPLOAD_NATIVE_CONFIGURATION');}
+  for(const k of ['caPath','certPath','keyPath'])absolute(tlsRefs[k]);
+  if(tlsRefs.clientName!==undefined)requireValue(typeof tlsRefs.clientName==='string'&&
+   /^[A-Za-z0-9](?:[A-Za-z0-9.-]{0,251}[A-Za-z0-9])?$/u.test(tlsRefs.clientName));
+  requireValue(native.policySha256!==undefined&&typeof native.policySha256==='string'&&/^[a-f0-9]{64}$/u.test(native.policySha256));
+  // Exact physical facts for the EXISTING Control-owned EC2 teardown port. These are closed and explicit:
+  // no security-group array is accepted, so no arbitrary first member can be chosen.
+  let deployment;
+  if(h.deployment!==undefined){
+   let d;try{d=own(h.deployment,['accountId','region','amiId','vpcId','subnetId','securityGroupId','rootDeviceName']);}
+   catch{throw uploadFault('UPLOAD_NATIVE_CONFIGURATION');}
+   const AWS_ID=/^(?:ami|vpc|subnet|sg)-(?:[0-9a-f]{8}|[0-9a-f]{17})$/u;
+   requireValue(typeof d.accountId==='string'&&/^[0-9]{12}$/u.test(d.accountId)&&
+    typeof d.region==='string'&&/^[a-z]{2}-[a-z]+-[0-9]$/u.test(d.region)&&
+    typeof d.amiId==='string'&&d.amiId.startsWith('ami-')&&AWS_ID.test(d.amiId)&&
+    typeof d.vpcId==='string'&&d.vpcId.startsWith('vpc-')&&AWS_ID.test(d.vpcId)&&
+    typeof d.subnetId==='string'&&d.subnetId.startsWith('subnet-')&&AWS_ID.test(d.subnetId)&&
+    typeof d.securityGroupId==='string'&&d.securityGroupId.startsWith('sg-')&&AWS_ID.test(d.securityGroupId)&&
+    d.rootDeviceName==='/dev/xvda');
+   deployment=Object.freeze({...d});
+  }
+  let observer;
+  if(h.observer!==undefined){
+   let o;try{o=own(h.observer,['keyId','keyPath']);}catch{throw uploadFault('UPLOAD_NATIVE_CONFIGURATION');}
+   requireValue(typeof o.keyId==='string'&&/^[A-Za-z0-9_-]{1,64}$/u.test(o.keyId));absolute(o.keyPath);
+   requireValue(deployment!==undefined);observer=Object.freeze({...o});
+  }
+  return Object.freeze({enabled:true,host:Object.freeze({tls:Object.freeze({...tlsRefs}),
+   maxRequestMs:h.maxRequestMs??3000,...(deployment===undefined?{}:{deployment}),...(observer===undefined?{}:{observer}),policySha256:native.policySha256}),
+   policySha256:native.policySha256});
+ }
  if(native.agentcore!==undefined){
   // A malformed nested block is the same declaration fault as a malformed top-level key, so the closed-shape
   // refusal and the digest refusal are reported identically rather than as a raw shape error.
@@ -90,6 +134,7 @@ export function compileUploadNativeConfiguration(configuration){
   requireValue(Object.keys(native).length===2&&typeof remote.imageDigest==='string'&&DIGEST.test(remote.imageDigest));
   return Object.freeze({enabled:true,agentcore:Object.freeze({imageDigest:remote.imageDigest})});
  }
+ if(native.policySha256!==undefined)requireValue(typeof native.policySha256==='string'&&/^[a-f0-9]{64}$/u.test(native.policySha256));
  requireValue(typeof native.imageDigest==='string'&&DIGEST.test(native.imageDigest));
  for(const key of ['definitionsRoot','extractorPath','scratchRoot'])if(native[key]!==undefined)absolute(native[key]);
  if(native.maxDefinitionsAgeMs!==undefined)requireValue(integer(native.maxDefinitionsAgeMs,1000,604800000));
@@ -114,9 +159,175 @@ const unavailable=(missing,host)=>Object.freeze({inspection:null,host,missing:Ob
  * is a content-free list of unmet declarations for the single stderr event. The returned handle is frozen and holds no
  * request-derived value; `deadlineMs` bounds the mount only.
  */
-export async function mountUploadNativeControl({configuration,now=Date.now,signal,deadlineMs,run,processing,paths,readFileImpl}={}){
+/** Existing pinned HTTPS pattern for the fixed native host: TLS with peer verification, the pinned certificate
+ * fingerprint re-checked on the live socket, one bounded request, and the socket always destroyed. */
+export async function pinnedHttpsConnect({address,port,serverName,serverFingerprintSha256,signal,deadlineMs,tls:material,
+ readFile}){
+ tls.privateAddress(address);tls.dnsName(serverName);tls.fingerprint(serverFingerprintSha256);
+ if(!Number.isSafeInteger(port)||port<1||port>65535)throw uploadFault('UPLOAD_NATIVE_TRANSPORT_CONFIGURATION');
+ if(signal?.aborted===true||!Number.isSafeInteger(deadlineMs)||deadlineMs<=Date.now())
+  throw uploadFault('UPLOAD_INSPECTION_EXPIRED');
+ // The protected material is REQUIRED and loaded ONLY from the trusted declaration paths through the supplied reader.
+ const refs=material;
+ if(refs===null||typeof refs!=='object'||typeof refs.certPath!=='string'||typeof refs.keyPath!=='string'||
+  typeof refs.caPath!=='string'||typeof readFile!=='function')throw uploadFault('UPLOAD_NATIVE_TLS_CONFIGURATION');
+ // Canonical bounded material check (existing helper), no new parser.
+ const load=path=>{let bytes;try{bytes=readFile(path);}catch{throw uploadFault('UPLOAD_NATIVE_TLS_CONFIGURATION');}
+  try{return tls.tlsBytes(bytes);}catch{throw uploadFault('UPLOAD_NATIVE_TLS_CONFIGURATION');}};
+ const cert=load(refs.certPath),key=load(refs.keyPath),ca=load(refs.caPath);
+ const https=await import('node:https');
+ const {createHash}=await import('node:crypto');
+ // Close the asynchronous-setup window: nothing is emitted if the operation was cancelled/expired meanwhile.
+ if(signal?.aborted===true||deadlineMs<=Date.now())throw uploadFault('UPLOAD_INSPECTION_EXPIRED');
+ const request=https.request({host:address,port,servername:serverName,method:'POST',
+  path:NATIVE_UPLOAD_INSPECTION_PATH,rejectUnauthorized:true,agent:false,cert,key,ca,
+  minVersion:'TLSv1.3',maxVersion:'TLSv1.3',headers:{'content-type':'application/json'}});
+ let settled=false,settleOutstanding=null,timer=null,response=null;const chunksRef=[];
+ const terminal=error=>{
+  if(settled)return;settled=true;
+  if(timer!==null)clearTimeout(timer);timer=null;
+  signal?.removeEventListener?.('abort',onAbort);
+  // Dispose the response by DESTROYING it: no resume, no retained chunks/listeners after refusal.
+  try{
+   if(response!==null){response.removeAllListeners?.('data');response.removeAllListeners?.('end');
+    response.removeAllListeners?.('close');response.removeAllListeners?.('error');
+    chunksRef.length=0;response.destroy?.();}
+  }catch{void 0;}
+  response=null;
+  request.destroy();
+  settleOutstanding?.(error);
+  settleOutstanding=null;
+  rejectOnce(error);
+ };
+ let rejectOnce=()=>{};
+ const onAbort=()=>terminal(Object.assign(Error('UPLOAD_INSPECTION_CANCELLED'),
+  {code:'UPLOAD_INSPECTION_CANCELLED'}));
+ const done=new Promise((resolve,reject)=>{
+  rejectOnce=reject;
+  let admitted=false,admit=null;
+  const admittedPromise=new Promise(r=>{admit=r;});
+  request.on('socket',socket=>socket.once('secureConnect',()=>{
+   const peer=socket.getPeerCertificate?.();
+   const print=peer?.raw?createHash('sha256').update(peer.raw).digest('hex'):null;
+   if(print!==serverFingerprintSha256)return terminal(Object.assign(Error('UPLOAD_NATIVE_PEER_REFUSED'),
+    {code:'UPLOAD_NATIVE_PEER_REFUSED'}));
+   admitted=true;admit();
+  }));
+  // A premature close or request-side abort terminates ONE outstanding exchange instead of leaving it waiting.
+  request.on('error',()=>terminal(Object.assign(Error('UPLOAD_INSPECTION_REFUSED'),
+   {code:'UPLOAD_INSPECTION_REFUSED'})));
+  request.on('close',()=>{if(!settled)terminal(Object.assign(Error('UPLOAD_INSPECTION_REFUSED'),
+   {code:'UPLOAD_INSPECTION_REFUSED'}));});
+  request.on('aborted',()=>terminal(Object.assign(Error('UPLOAD_INSPECTION_REFUSED'),
+   {code:'UPLOAD_INSPECTION_REFUSED'})));
+  timer=setTimeout(()=>terminal(Object.assign(Error('UPLOAD_INSPECTION_EXPIRED'),
+   {code:'UPLOAD_INSPECTION_EXPIRED'})),Math.max(1,deadlineMs-Date.now()));
+  signal?.addEventListener('abort',onAbort,{once:true});
+  // The wire is usable only AFTER the pin is admitted; no request body is written before then.
+  resolve(Object.freeze({send:({body})=>new Promise((resolveResponse,rejectResponse)=>{
+   if(settled)return rejectResponse(Object.assign(Error('UPLOAD_INSPECTION_REFUSED'),
+    {code:'UPLOAD_INSPECTION_REFUSED'}));
+   settleOutstanding=rejectResponse;
+   const start=()=>{
+    if(settled)return;
+    request.once('response',res=>{
+     response=res;
+     const chunks=chunksRef;chunks.length=0;let total=0;
+     res.on('data',chunk=>{if(settled)return;total+=chunk.length;
+      if(total>16*1024*1024){chunks.length=0;return terminal(Object.assign(Error('UPLOAD_INSPECTION_RESULT_REFUSED'),
+       {code:'UPLOAD_INSPECTION_RESULT_REFUSED'}));}
+      chunks.push(chunk);});
+     res.on('aborted',()=>terminal(Object.assign(Error('UPLOAD_INSPECTION_REFUSED'),
+      {code:'UPLOAD_INSPECTION_REFUSED'})));
+     res.on('close',()=>{if(!res.complete)terminal(Object.assign(Error('UPLOAD_INSPECTION_REFUSED'),
+      {code:'UPLOAD_INSPECTION_REFUSED'}));});
+     res.on('error',()=>terminal(Object.assign(Error('UPLOAD_INSPECTION_REFUSED'),
+      {code:'UPLOAD_INSPECTION_REFUSED'})));
+     res.on('end',()=>{
+      if(settled)return;
+      if(!res.complete)return terminal(Object.assign(Error('UPLOAD_INSPECTION_REFUSED'),
+       {code:'UPLOAD_INSPECTION_REFUSED'}));
+      settled=true;if(timer!==null)clearTimeout(timer);timer=null;
+      signal?.removeEventListener?.('abort',onAbort);
+      settleOutstanding=null;response=null;
+      resolveResponse({status:res.statusCode,body:Buffer.concat(chunks)});
+     });
+    });
+    request.end(body);
+   };
+   const guard=()=>{if(settled)return;
+    if(signal?.aborted===true||deadlineMs<=Date.now())
+     return terminal(Object.assign(Error('UPLOAD_INSPECTION_CANCELLED'),{code:'UPLOAD_INSPECTION_CANCELLED'}));
+    start();};
+   if(admitted)guard();else admittedPromise.then(guard);
+  }),close:async()=>{
+   if(!settled)terminal(Object.assign(Error('UPLOAD_INSPECTION_CANCELLED'),{code:'UPLOAD_INSPECTION_CANCELLED'}));
+   else{try{request.destroy();}catch{}}
+   return Object.freeze({closed:true});
+  }}));
+ });
+ return await done;
+}
+export async function mountUploadNativeControl({configuration,allocations,now=Date.now,signal,deadlineMs,run,processing,paths,readFileImpl,connect}={}){
  const declared=configuration?.uploads?.native??null;
  if(declared===null||typeof declared!=='object'||declared.enabled!==true)return unavailable(['uploads.native.enabled'],null);
+ // A DECLARED native host (fixed address/port/SAN/fingerprint + the exact protected allocation/identity/binding) is a
+ // pinned authenticated remote inspection. It precedes the AgentCore branch: a declared native host is never silently
+ // replaced by another transport, and no local composition of the uploaded bytes is attempted.
+ if(declared.host!==undefined){
+  const reader=allocations;
+  if(reader===null||typeof reader?.resolve!=='function')return unavailable(['uploads.native.allocations'],null);
+  try{
+   const h=declared.host;
+   if(typeof h?.tls?.certPath!=='string'||typeof h.tls.keyPath!=='string'||typeof h.tls.caPath!=='string')
+    return unavailable(['uploads.native.tls'],null);
+   const trustedReader=readFileImpl===undefined?readFileSync:readFileImpl;
+   const connectImplementation=connect??(options=>pinnedHttpsConnect({...options,tls:h.tls,readFile:trustedReader}));
+   // ONE thin per-operation port over the existing client; no second router/service/authority registry.
+   const inspection=Object.freeze({async inspect(declaration,bytes,{deadlineMs,signal,custodyContext}={}){
+    const began=now();
+    const requested=Math.min(Number.isSafeInteger(deadlineMs)?deadlineMs:began+(h.maxRequestMs??3000),
+     began+(h.maxRequestMs??3000));
+    if(signal?.aborted===true||requested<=began)throw uploadFault('UPLOAD_INSPECTION_EXPIRED');
+    if(custodyContext===null||typeof custodyContext!=='object')throw uploadFault('UPLOAD_NATIVE_CUSTODY_REQUIRED');
+    const life=createOperationLifetime({now,deadlineMs:requested,signal,errorFactory:()=>
+     Object.assign(Error('UPLOAD_INSPECTION_CANCELLED'),{code:'UPLOAD_INSPECTION_CANCELLED'})});
+    try{
+     life.check();
+     // Canonical owner-current authority first: the derived signal bounds the lookup, and no dispatch happens without it.
+     const fresh=await life.run(()=>Promise.resolve(custodyContext.assertCurrent()));
+     life.check();
+     if(!Number.isSafeInteger(fresh?.expiresAtMs)||fresh.expiresAtMs<=now())
+      throw uploadFault('UPLOAD_INSPECTION_CUSTODY_REFUSED');
+     const custody=nativeUploadCustody(custodyContext.record,{binding:fresh.binding,scopes:fresh.scopes,
+      selectedClientId:fresh.selectedClientId,checkedAtMs:began,expiresAtMs:Math.min(fresh.expiresAtMs,requested)});
+     // The fresh authority expiry bounds the ACTUAL lifetime BEFORE the allocation lookup.
+     life.limitDeadline(Math.min(requested,fresh.expiresAtMs));
+     const resolved=await life.run(()=>Promise.resolve(reader.resolve({binding:fresh.binding,custody,declaration,
+      signal:life.signal})));
+     life.check();
+     if(resolved===null||typeof resolved!=='object')throw uploadFault('NATIVE_HOST_ALLOCATION_REFUSED');
+     const a=resolved.allocation;
+     if(a?.hostMode!=='native-processing'||a.tenantId!==fresh.binding.tenantId||
+      a.conversationId!==fresh.binding.conversationId||typeof a.imageDigest!=='string')throw uploadFault('NATIVE_HOST_ALLOCATION_REFUSED');
+     if(!Number.isSafeInteger(resolved.expiresAtMs)||resolved.expiresAtMs<=now())
+      throw uploadFault('NATIVE_HOST_ALLOCATION_REFUSED');
+     if(resolved.expiresAtMs<a.leaseDeadlineMs&&resolved.expiresAtMs<=began)
+      throw uploadFault('NATIVE_HOST_ALLOCATION_REFUSED');
+     // Clamp the ACTUAL lifetime again to the resolved per-operation expiry.
+     const until=Math.min(requested,resolved.expiresAtMs);
+     life.limitDeadline(until);
+     const client=createNativeHostInspectionClient({endpoint:resolved.endpoint,allocation:a,
+      hostIdentity:resolved.hostIdentity,binding:fresh.binding,imageDigest:a.imageDigest,now,
+      maxRequestMs:h.maxRequestMs??3000,connect:connectImplementation});
+     try{
+      return await client.inspect(declaration,bytes,{deadlineMs:until,signal:life.signal,custodyContext});
+     }finally{life.close();}
+    }finally{life.close();}
+   }});
+   return Object.freeze({inspection,host:null,missing:Object.freeze([]),provisionDefinitions:null,remote:true});
+  }catch{return unavailable(['uploads.native.host'],null);}
+ }
  // REMOTE first and unconditionally: no local composition is even attempted, so a declared remote inspection can
  // never degrade into CONTROL executing the uploaded bytes itself. The region is the runtime ARN's own, so the
  // transport cannot be aimed at a runtime in another region than the one the declaration names.

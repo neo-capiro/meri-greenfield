@@ -33,7 +33,7 @@ export function createBrowserHostReadRun(raw){
   cwd=v.cwd;
   client=v.client;
   if(!client||typeof client.readFacts!=='function'||typeof client.resolveBrowserWorkflow!=='function'||
-   typeof client.decideBrowserApproval!=='function'||typeof client.recordBrowserReceipt!=='function')refuse();
+   typeof client.decideBrowserApproval!=='function'||typeof client.recordBrowserReceipt!=='function'||typeof client.recordBrowserDownloadReceipt!=='function' )refuse();
   installation=v.installation;egress=v.egress;processes=v.processes;artifacts=v.artifacts;
   if(!installation||!egress||!processes||!artifacts||typeof artifacts.ingest!=='function')refuse();
   approvalDeadlineMs=v.approvalDeadlineMs;sessions=v.sessions;
@@ -88,7 +88,10 @@ export function createBrowserHostReadRun(raw){
   /** The original receipt goes through unchanged and the actual acknowledged event is returned. */
   async record(originalReceipt,options){
    const {signal}=own(options??{},[],['signal']);const life=live(signal);
-   const ack=await client.recordBrowserReceipt(originalReceipt,{signal:life});
+   // The canonical download receipt goes to its OWN named route; an action receipt keeps the existing one.
+   const ack=originalReceipt?.kind==='browser.download'
+    ? await client.recordBrowserDownloadReceipt(originalReceipt,{signal:life})
+    : await client.recordBrowserReceipt(originalReceipt,{signal:life});
    settle(life); // a durable ack that arrives after cancellation is reported, never re-effected here
    return ack;
   }});

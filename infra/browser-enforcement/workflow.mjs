@@ -1,5 +1,6 @@
 // Finite browser watchdog ASL compiler. No launcher, AWS adapter or admission flag.
 import { FIXED, validateBinding } from './binding.mjs';
+import {applyNativeObserverGraph} from './native-observer-graph.mjs';
 
 const expr = text => `{% ${text} %}`;
 const literal = value => JSON.stringify(value);
@@ -144,4 +145,178 @@ export function compileWatchdog(input) {
   s.Confirmed = { Type: 'Pass', Output: expr('{"cleanup":"TERMINATED_AND_ROOT_ABSENT","qualification":$ctx.failed?"FAILED":"NOT_ASSESSED","ledger":$ctx.ledger,"runUUID":$ctx.runUUID,"t0Ms":$ctx.t0Ms,"C":$ctx.C}'), End: true };
   s.Unknown = { Type: 'Pass', Output: expr('{"cleanup":"UNKNOWN","qualification":$ctx.failed?"FAILED":"NOT_ASSESSED","ledger":$ctx.ledger,"runUUID":$ctx.runUUID,"t0Ms":$ctx.t0Ms,"C":$ctx.C,"uncertain":true,"lastError":$ctx.error}'), End: true };
   return { QueryLanguage: 'JSONata', Comment: 'INERT inspection graph. No caller input enables admission. Root-not-found wire/error mapping remains blocked.', StartAt: 'AdmissionGuard', States: s };
+}
+
+/** Native RunInstances watchdog. Only the protected /2 overlay may admit a new execution. */
+export function compileNativeWatchdogDefinition({physicalObserver}={}) {
+  const s = {};
+  s.AdmissionGuard = { Type: 'Choice', Choices: [{ Condition: expr(
+    "false and $type($states.input)='object' and $states.input.schema='meri-native-watchdog-input/1' and "+
+    "$type($states.input.hostId)='string' and $type($states.input.generation)='number' and "+
+    "$type($states.input.provisionToken)='string' and $exists($match($states.input.provisionToken,/^[0-9a-f]{64}$/)) and "+
+    "$type($states.input.originalT0Ms)='number' and $type($states.input.deadlineMs)='number' and "+
+    "$states.input.deadlineMs>$states.input.originalT0Ms"), Next: 'Initialize' }], Default: 'SourceOnlyRefusal' };
+  s.SourceOnlyRefusal = refusalDefinition().States.SourceOnlyRefusal;
+  s.Initialize = { Type: 'Pass', Assign: { ctx: expr(
+    '{"hostId":$states.input.hostId,"generation":$states.input.generation,"accountId":$states.input.accountId,'+
+    '"region":$states.input.region,"provisionToken":$states.input.provisionToken,'+
+    '"allocationSha256":$states.input.allocationSha256,"placement":$states.input.placement,'+
+    '"launch":$states.input.launch,"t0Ms":$states.input.originalT0Ms,"leaseDeadlineMs":$states.input.leaseDeadlineMs,"cleanupCeilingMs":$states.input.cleanupCeilingMs,"deadlineMs":$states.input.deadlineMs,'+
+    '"token":null,"pages":0,"owned":[],"index":0,"terminations":0,"rootAbsent":0,"rootAbsentRounds":0,"eniIndex":0,"roundValid":false,"uncertain":false,"last":null,"lastError":null}') }, Next: 'TimeGate' };
+  s.TimeGate = { Type: 'Choice', Choices: [
+    { Condition: expr(`${now}>=$ctx.cleanupCeilingMs`), Next: 'Unknown' },
+    { Condition: expr(`${now}<$ctx.leaseDeadlineMs`), Next: 'PrearmWait' }], Default: 'PageRoute' };
+  s.PrearmWait = { Type: 'Wait', Seconds: expr(
+    '$max([1,$min([30,$ceil(($ctx.leaseDeadlineMs-$toMillis($now()))/1000)])])'), Next: 'TimeGate' };
+  // Two literal shapes instead of one always-sent optional field: the first page carries no NextToken,
+  // and a later page carries exactly the token an accepted previous page returned.
+  const discover = (argumentsValue) => ({ Type: 'Task', Resource: 'arn:aws:states:::aws-sdk:ec2:describeInstances',
+    Arguments: argumentsValue,
+    TimeoutSeconds: expr('$max([1,$min([10,$ceil(($ctx.deadlineMs-$toMillis($now()))/1000)])])'),
+    Assign: { ctx: merge('{"last":$states.result,"pages":$ctx.pages+1}') },
+    Catch: [{ ErrorEquals: ['States.ALL'], Assign: { ctx: merge('{"uncertain":true,"last":$states.errorOutput}') },
+      Next: 'WaitBounded' }], Next: 'RetainOwned' });
+  s.DiscoverFirst = discover({ Filters: [{ Name: 'tag:MeriProvisionToken', Values: ['{% $ctx.provisionToken %}'] }],
+    MaxResults: 100 });
+  s.DiscoverNext = discover({ Filters: [{ Name: 'tag:MeriProvisionToken', Values: ['{% $ctx.provisionToken %}'] }],
+    MaxResults: 100, NextToken: '{% $ctx.token %}' });
+  // Instance fields are bound explicitly: inside a predicate the context is the mapping, so an unqualified
+  // RootDeviceName resolves to the mapping's own field and never matches the root device.
+  s.RetainOwned = { Type: 'Pass', Assign: { ctx: expr(`(
+    $items := $ctx.last.Reservations.Instances;
+    $ownedNow := [$filter($items,function($i){
+      $type($i.InstanceId)='string' and $exists($match($i.InstanceId,/^i-[0-9a-f]{17}$/)) and
+      $type($i.Tags)='array' and
+      $count($i.Tags[Key='MeriProvisionToken' and Value=$ctx.provisionToken])=1 and
+      $count($i.Tags[Key='MeriHostId' and Value=$ctx.hostId])=1 and
+      $count($i.Tags[Key='MeriGeneration' and Value=$string($ctx.generation)])=1 and
+      $count($i.Tags[Key='MeriAllocationSha256' and Value=$ctx.allocationSha256])=1
+    })];
+    $rows := $ownedNow.($i := $; {"instanceId":$i.InstanceId,
+      "rootVolumeId":$i.BlockDeviceMappings[DeviceName=$i.RootDeviceName].Ebs.VolumeId,
+      "networkInterfaceIds":[$i.NetworkInterfaces.NetworkInterfaceId]});
+    $merge([$ctx,{"owned":$count($rows)>0?$distinct($append($ctx.owned,$rows)):$ctx.owned,
+      "token":$exists($ctx.last.NextToken)?$ctx.last.NextToken:null,"index":0}])
+  )`) }, Next: 'PageCheck' };
+  s.PageCheck = { Type: 'Choice', Choices: [
+    { Condition: expr('$ctx.token!=null and $ctx.pages<20'), Next: 'PageGate' },
+    { Condition: expr('$ctx.token!=null'), Next: 'ScanUnknown' }], Default: 'HasOwned' };
+  // Every continuation page re-checks the ORIGINAL cleanup ceiling; paging never renews or extends it.
+  s.PageGate = { Type: 'Choice', Choices: [
+    { Condition: expr(`${now}>=$ctx.cleanupCeilingMs`), Next: 'Unknown' }], Default: 'PageRoute' };
+  // The first page has no NextToken at all; a retained accepted token resumes exactly where it stopped.
+  s.PageRoute = { Type: 'Choice', Choices: [{ Condition: expr('$ctx.token=null'), Next: 'DiscoverFirst' }],
+    Default: 'DiscoverNext' };
+  s.HasOwned = { Type: 'Choice', Choices: [{ Condition: expr('$count($ctx.owned)>0'), Next: 'SelectOwned' }],
+    Default: 'WaitBounded' };
+  s.ScanUnknown = { Type: 'Pass', Assign: { ctx: merge('{"uncertain":true}') }, Next: 'Unknown' };
+  s.SelectOwned = { Type: 'Choice', Choices: [{ Condition: expr('$ctx.index<$count($ctx.owned)'), Next: 'OwnedGate' }],
+    Default: 'CorrelatedBudget' };
+  // The per-instance direct read is also bounded by the original cleanup ceiling.
+  s.OwnedGate = { Type: 'Choice', Choices: [
+    { Condition: expr(`${now}>=$ctx.cleanupCeilingMs`), Next: 'Unknown' }], Default: 'DescribeOwned' };
+  s.DescribeOwned = { Type: 'Task', Resource: 'arn:aws:states:::aws-sdk:ec2:describeInstances',
+    Arguments: { InstanceIds: ['{% $ctx.owned[$ctx.index].instanceId %}'] }, TimeoutSeconds: 10,
+    Assign: { ctx: merge('{"last":$states.result}') },
+    Catch: [{ ErrorEquals: ['States.ALL'], Assign: { ctx: merge('{"uncertain":true}') }, Next: 'NextOwned' }],
+    Next: 'CheckOwned' };
+  s.CheckOwned = { Type: 'Choice', Choices: [{ Condition: expr(`(
+    $count($ctx.last.Reservations)=1 and $count($ctx.last.Reservations[0].Instances)=1 and
+    $ctx.last.Reservations[0].OwnerId=$ctx.accountId and
+    $ctx.last.Reservations[0].Instances[0].InstanceId=$ctx.owned[$ctx.index].instanceId and
+    $count($ctx.last.Reservations[0].Instances[0].Tags[Key='MeriProvisionToken' and Value=$ctx.provisionToken])=1 and
+    $count($ctx.last.Reservations[0].Instances[0].Tags[Key='MeriHostId' and Value=$ctx.hostId])=1 and
+    $count($ctx.last.Reservations[0].Instances[0].Tags[Key='MeriGeneration' and Value=$string($ctx.generation)])=1 and
+    $count($ctx.last.Reservations[0].Instances[0].Tags[Key='MeriAllocationSha256' and Value=$ctx.allocationSha256])=1 and
+    $ctx.last.Reservations[0].Instances[0].ImageId=$ctx.launch.ImageId and
+    $ctx.last.Reservations[0].Instances[0].VpcId=$ctx.placement.vpcId and
+    $ctx.last.Reservations[0].Instances[0].SubnetId=$ctx.placement.subnetId and
+    $count($ctx.last.Reservations[0].Instances[0].NetworkInterfaces[
+      OwnerId!=$ctx.accountId or VpcId!=$ctx.placement.vpcId or SubnetId!=$ctx.placement.subnetId or
+      $count(Groups[GroupId in $ctx.placement.securityGroupIds])!=1
+    ])=0
+  )`), Next: 'IsTerminated' }], Default: 'MarkUncertain' };
+  s.MarkUncertain = { Type: 'Pass', Assign: { ctx: merge('{"uncertain":true}') }, Next: 'NextOwned' };
+  s.IsTerminated = { Type: 'Choice', Choices: [{ Condition: expr(
+    "$ctx.last.Reservations[0].Instances[0].State.Name='terminated'"), Next: 'NextOwned' }],
+    Default: 'TerminateBudget' };
+  s.TerminateBudget = { Type: 'Choice', Choices: [{ Condition: expr(
+    `${now}<$ctx.deadlineMs and $ctx.terminations<16`), Next: 'TerminateOwned' }], Default: 'WaitBounded' };
+  s.TerminateOwned = { Type: 'Task', Resource: 'arn:aws:states:::aws-sdk:ec2:terminateInstances',
+    Arguments: { InstanceIds: ['{% $ctx.owned[$ctx.index].instanceId %}'] }, TimeoutSeconds: 10,
+    Assign: { ctx: merge('{"terminations":$ctx.terminations+1}') },
+    Catch: [{ ErrorEquals: ['States.ALL'], Assign: { ctx: merge('{"uncertain":true}') }, Next: 'NextOwned' }],
+    Next: 'NextOwned' };
+  s.NextOwned = { Type: 'Pass', Assign: { ctx: merge('{"index":$ctx.index+1}') }, Next: 'SelectOwned' };
+  s.WaitBounded = { Type: 'Wait', Seconds: expr(
+    '$max([1,$min([5,$ceil(($ctx.deadlineMs-$toMillis($now()))/1000)])])'), Next: 'TimeGate' };
+  s.CorrelatedBudget = { Type: 'Choice', Choices: [
+    { Condition: expr(`${now}<$ctx.cleanupCeilingMs and $count($ctx.owned)=1`), Next: 'CorrelatedTerminal' }],
+    Default: 'Unknown' };
+  s.CorrelatedTerminal = { Type: 'Task', Resource: 'arn:aws:states:::aws-sdk:ec2:describeInstances',
+    Arguments: { InstanceIds: ['{% $ctx.owned[0].instanceId %}'] }, TimeoutSeconds: 10,
+    Assign: { ctx: merge('{"last":$states.result}') },
+    Catch: [{ ErrorEquals: ['States.ALL'], Assign: { ctx: merge('{"uncertain":true}') }, Next: 'WaitCorrelated' }],
+    Next: 'TerminalCheck' };
+  s.TerminalCheck = { Type: 'Choice', Choices: [{ Condition: expr(`(
+    $count($ctx.last.Reservations)=1 and $count($ctx.last.Reservations[0].Instances)=1 and
+    $ctx.last.Reservations[0].OwnerId=$ctx.accountId and
+    $ctx.last.Reservations[0].Instances[0].InstanceId=$ctx.owned[0].instanceId and
+    $ctx.last.Reservations[0].Instances[0].State.Name='terminated'
+  )`), Next: 'RootBudget' }], Default: 'WaitCorrelated' };
+  s.RootBudget = { Type: 'Choice', Choices: [
+    { Condition: expr(`${now}<$ctx.cleanupCeilingMs and $ctx.owned[0].rootVolumeId!=null`), Next: 'ReadRoot' }],
+    Default: 'Unknown' };
+  s.ReadRoot = { Type: 'Task', Resource: 'arn:aws:states:::aws-sdk:ec2:describeVolumes',
+    Arguments: { VolumeIds: ['{% $ctx.owned[0].rootVolumeId %}'] }, TimeoutSeconds: 10,
+    Assign: { ctx: merge('{"last":$states.result}') },
+    Catch: [{ ErrorEquals: ['States.ALL'], Assign: { ctx: merge('{"lastError":$states.errorOutput}') }, Next: 'RootError' }],
+    Next: 'RootState' };
+  s.RootState = { Type: 'Choice', Choices: [{ Condition: expr(
+    "$count($ctx.last.Volumes)=1 and $ctx.last.Volumes[0].VolumeId=$ctx.owned[0].rootVolumeId and $ctx.last.Volumes[0].State='deleted'"),
+    Next: 'RootAbsent' }], Default: 'RootPresent' };
+  s.RootError = { Type: 'Choice', Choices: [{ Condition: expr(
+    "$ctx.lastError.Error='InvalidVolume.NotFound'"), Next: 'RootAbsent' }], Default: 'RootPresent' };
+  s.RootAbsent = { Type: 'Pass', Assign: { ctx: merge('{"rootAbsent":1,"rootAt":$toMillis($now())}') },
+    Next: 'EniBudget' };
+  s.RootPresent = { Type: 'Pass', Assign: { ctx: merge('{"rootAbsent":0,"uncertain":true}') }, Next: 'EniBudget' };
+  s.EniBudget = { Type: 'Choice', Choices: [{ Condition: expr(
+    `${now}<$ctx.cleanupCeilingMs and $count($ctx.owned[0].networkInterfaceIds)>0`), Next: 'EniStart' }],
+    Default: 'Unknown' };
+  s.EniStart = { Type: 'Pass', Assign: { ctx: merge('{"eniIndex":0,"roundValid":true,"eniUnknown":false}') },
+    Next: 'EniSelect' };
+  s.EniSelect = { Type: 'Choice', Choices: [{ Condition: expr(
+    '$ctx.eniIndex<$count($ctx.owned[0].networkInterfaceIds)'), Next: 'EniGate' }], Default: 'RoundEnd' };
+  // Every per-ENI iteration re-checks the ORIGINAL cleanup ceiling before issuing the next exact-ID read.
+  s.EniGate = { Type: 'Choice', Choices: [
+    { Condition: expr(`${now}>=$ctx.cleanupCeilingMs`), Next: 'Unknown' }], Default: 'ReadEni' };
+  s.ReadEni = { Type: 'Task', Resource: 'arn:aws:states:::aws-sdk:ec2:describeNetworkInterfaces',
+    Arguments: { NetworkInterfaceIds: ['{% $ctx.owned[0].networkInterfaceIds[$ctx.eniIndex] %}'] }, TimeoutSeconds: 10,
+    Assign: { ctx: merge('{"last":$states.result}') },
+    Catch: [{ ErrorEquals: ['States.ALL'], Assign: { ctx: merge('{"lastError":$states.errorOutput}') }, Next: 'EniError' }],
+    Next: 'EniPresent' };
+  s.EniError = { Type: 'Choice', Choices: [{ Condition: expr(
+    "$ctx.lastError.Error='InvalidNetworkInterfaceID.NotFound'"), Next: 'EniAbsent' }],
+    Default: 'EniUnknown' };
+  s.EniAbsent = { Type: 'Pass', Assign: { ctx: merge('{"eniIndex":$ctx.eniIndex+1}') }, Next: 'EniSelect' };
+  // Presence or any unqualified error invalidates this whole round; it never counts as absence.
+  s.EniPresent = { Type: 'Pass', Assign: { ctx: merge('{"roundValid":false,"eniIndex":$ctx.eniIndex+1}') },
+    Next: 'EniSelect' };
+  s.EniUnknown = { Type: 'Pass', Assign: { ctx: merge('{"roundValid":false,"eniUnknown":true,"eniIndex":$ctx.eniIndex+1}') },
+    Next: 'EniSelect' };
+  s.RoundEnd = { Type: 'Choice', Choices: [{ Condition: expr(
+    '$ctx.roundValid and $ctx.rootAbsent>0'), Next: 'RoundAbsent' }], Default: 'RoundReset' };
+  s.RoundAbsent = { Type: 'Pass', Assign: { ctx: merge('{"rootAbsentRounds":$ctx.rootAbsentRounds+1,"rootAbsent":0}') },
+    Next: 'CorrelatedCheck' };
+  s.RoundReset = { Type: 'Pass', Assign: { ctx: merge('{"rootAbsentRounds":0,"rootAbsent":0,"uncertain":true}') },
+    Next: 'CorrelatedCheck' };
+  s.CorrelatedCheck = { Type: 'Choice', Choices: [{ Condition: expr(
+    '$ctx.rootAbsentRounds>=2 and $ctx.roundValid'), Next: 'Confirmed' }], Default: 'WaitCorrelated' };
+  s.WaitCorrelated = { Type: 'Wait', Seconds: 5, Next: 'CorrelatedBudget' };
+  s.Confirmed = { Type: 'Pass', Output: expr(
+    '{"schema":"meri-native-watchdog-result/1","cleanup":"TERMINATED_AND_CORRELATED_ABSENT","hostId":$ctx.hostId,"generation":$ctx.generation,"instanceId":$ctx.owned[0].instanceId,"rootVolumeId":$ctx.owned[0].rootVolumeId,"networkInterfaceIds":$ctx.owned[0].networkInterfaceIds,"rootAbsentCount":$ctx.rootAbsent,"eniAbsentCount":$ctx.eniAbsent,"owned":$ctx.owned,"deadlineMs":$ctx.cleanupCeilingMs}'), End: true };
+  s.Unknown = { Type: 'Pass', Output: expr(
+    '{"schema":"meri-native-watchdog-result/1","cleanup":"UNKNOWN","reason":"deadline_or_incomplete_observation","hostId":$ctx.hostId,"generation":$ctx.generation,"t0Ms":$ctx.t0Ms,"deadlineMs":$ctx.deadlineMs,"owned":$ctx.owned,"terminations":$ctx.terminations,"uncertain":$ctx.uncertain}'), End: true };
+  if(physicalObserver!==undefined)applyNativeObserverGraph(s,physicalObserver);
+  return { QueryLanguage: 'JSONata', Comment: 'Native RunInstances watchdog. Waits for the original lease deadline before exact-token cleanup. Root/ENI correlated proof remains the runtime receipt protocol.', StartAt: 'AdmissionGuard', States: s };
 }

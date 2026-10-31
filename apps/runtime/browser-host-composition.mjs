@@ -52,7 +52,7 @@ export function createBrowserHostHoldCustody({store}={}){
 }
 /** `material` is already-loaded protected key material for exactly the declared references:
  * {privateClient:{clientName,cert,key,ca}, hostServer?:{serverName,cert,key,clientCa}}. */
-export function createBrowserHostComposition({declaration,pool,store,sessions,core,capabilityPolicy,readBrowserPolicy,siteWorkflowAdmission=null,browserApproval=null,browserReceipts=null,material,now=Date.now,limits={}}={}){
+export function createBrowserHostComposition({declaration,pool,store,sessions,core,capabilityPolicy,readBrowserPolicy,siteWorkflowAdmission=null,browserApproval=null,browserReceipts=null,ingestBrowserArtifact=null,downloadReservations=null,nativeCurrentness=null,material,now=Date.now,limits={}}={}){
  if(declaration===null||declaration===undefined)return null;
  if(!pool||typeof pool.connect!=='function'||!store?.executions||!store?.lifecycle?.browserCustody||
   typeof sessions?.nativeCredentialFor!=='function'||typeof core?.readCurrent!=='function'||
@@ -83,12 +83,26 @@ export function createBrowserHostComposition({declaration,pool,store,sessions,co
   const acknowledged=(body,options={})=>transact(pool,body,{check:()=>options.signal?.throwIfAborted(),unavailable:'HOST_CONTROL_UNAVAILABLE',uncertain:'HOST_CONTROL_UNKNOWN'});
   server=createHostCurrentnessServer({bind:declaration.bind,tls:serverTls,
    store:createPostgresHostCurrentnessStore({transact:acknowledged,readCanonicalRun:currentness.readHost,
+    // The SAME canonical native producer the assembly built once; absent, the native purpose refuses while
+    // browser currentness remains unaffected.
+    readCanonicalNative:nativeCurrentness?.readCanonicalNative,
     // The named approval callback is the REAL prepared+Core wait owner; absent, the operation refuses.
     decideBrowserApproval:browserApproval===null?undefined:({request,binding,signal,deadlineMs})=>
      browserApproval.decide({request,binding,signal,deadlineMs}),
     // The REAL receipt producer Control already constructs; absent, the receipt route refuses.
     // The action recorder (event + approved-effect settlement) when Control supplies one, else the raw
     // producer; a missing owner still refuses the route.
+    // The REAL publication owner Control composes; absent, the ingest route refuses.
+    ingestBrowserArtifact:ingestBrowserArtifact===null?undefined:(value)=>ingestBrowserArtifact(value),
+    downloadReservations:downloadReservations===null?undefined:downloadReservations,
+    reconcileDownload:browserReceipts===null||typeof browserReceipts.reconcile!=='function'?undefined:
+     value=>browserReceipts.reconcile(value),
+    // The named DOWNLOAD receipt producer Control already constructs; absent, the route refuses.
+    recordBrowserDownloadReceipt:browserReceipts===null?undefined:value=>
+     (typeof browserReceipts.appendDownload==='function'?browserReceipts.appendDownload(value):undefined),
+    // The READ-ONLY discovery owner for a recreated worker whose output file is gone; absent, that route refuses.
+    reconcileBrowserDownload:browserReceipts===null||typeof browserReceipts.reconcile!=='function'?undefined:
+     value=>browserReceipts.reconcile(value),
     recordBrowserReceipt:browserReceipts===null?undefined:value=>
      (typeof browserReceipts.recordAction==='function'?browserReceipts.recordAction(value):browserReceipts.appendAction(value)),
     readCanonicalFacts:(client,input)=>facts.readCanonicalFacts(client,input),

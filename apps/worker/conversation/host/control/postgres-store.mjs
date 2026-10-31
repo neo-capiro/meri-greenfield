@@ -6,12 +6,16 @@ import {assertBrowserHostFacts} from '../../../../../packages/contracts/runtime-
 import {canonicalSha256} from '../../../../../packages/contracts/validate.mjs';
 import {own,data,nativeSignal} from '../../../../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {assertHostAllocation,assertHostRunBinding,assertD005HostIdentity,MAX_HOST_CURRENTNESS_MS} from '../binding.mjs';
-import {hostControlRequest,hostClientDnsName,HOST_CONTROL_RESPONSE_SCHEMA,
+import {hostControlRequest,hostClientDnsName,HOST_NATIVE_CONTROL_PURPOSE,HOST_CONTROL_RESPONSE_SCHEMA,
  hostFactsRequest,hostFactsResponse,HOST_FACTS_RESPONSE_SCHEMA,
  hostWorkflowRequest,hostWorkflowResponse,HOST_WORKFLOW_RESPONSE_SCHEMA,
  hostHoldRequest,hostHoldResponse,HOST_HOLD_RESPONSE_SCHEMA,
  hostDecideRequest,hostDecideResponse,HOST_DECIDE_RESPONSE_SCHEMA,
- hostReceiptRequest,hostReceiptResponse,HOST_RECEIPT_RESPONSE_SCHEMA} from './protocol.mjs';
+ hostReceiptRequest,hostReceiptResponse,HOST_RECEIPT_RESPONSE_SCHEMA,
+ hostIngestRequest,hostIngestResponse,HOST_INGEST_RESPONSE_SCHEMA,
+ hostDownloadReceiptRequest,hostDownloadReceiptResponse,HOST_DOWNLOAD_RECEIPT_RESPONSE_SCHEMA,
+ hostDownloadReconcileRequest,hostDownloadReconcileResponse,HOST_DOWNLOAD_RECONCILE_RESPONSE_SCHEMA} from './protocol.mjs';
+import {egressDecision} from '../../browser/egress.mjs';
 
 const HEX=/^[0-9a-f]{64}$/u;
 const fail=()=>{throw Object.assign(new Error('HOST_CONTROL_UNAVAILABLE'),{code:'HOST_CONTROL_UNAVAILABLE'});};
@@ -42,14 +46,19 @@ export const HOST_CONTROL_SQL=Object.freeze({
  * `resolveWorkflow({binding,signal})` is the borrowed Core domain read and runs with NO transaction held.
  * `holdCustody({client,binding,allocation,check})` is the lifecycle owner's same-client APPLIED/no-return read.
  * Every optional dependency refuses its own operation when absent; nothing degrades to a success stub. */
-export function createPostgresHostCurrentnessStore({transact,readCanonicalRun,readCanonicalFacts,resolveWorkflow,holdCustody,decideBrowserApproval,recordBrowserReceipt,maxLeaseMs,maxFactsBytes}={}){
+export function createPostgresHostCurrentnessStore({transact,readCanonicalRun,readCanonicalNative,readCanonicalFacts,resolveWorkflow,holdCustody,decideBrowserApproval,recordBrowserReceipt,recordBrowserDownloadReceipt:recordBrowserDownloadReceiptAppend,reconcileBrowserDownload:reconcileBrowserDownloadOwner,downloadReservations,ingestBrowserArtifact,maxLeaseMs,maxFactsBytes}={}){
  if(typeof transact!=='function'||typeof readCanonicalRun!=='function'||
+  readCanonicalNative!==undefined&&typeof readCanonicalNative!=='function'||
   !Number.isSafeInteger(maxLeaseMs)||maxLeaseMs<1||maxLeaseMs>MAX_HOST_CURRENTNESS_MS||
   readCanonicalFacts!==undefined&&typeof readCanonicalFacts!=='function'||
   resolveWorkflow!==undefined&&typeof resolveWorkflow!=='function'||
   holdCustody!==undefined&&typeof holdCustody!=='function'||
   decideBrowserApproval!==undefined&&typeof decideBrowserApproval!=='function'||
   recordBrowserReceipt!==undefined&&typeof recordBrowserReceipt!=='function'||
+  recordBrowserDownloadReceiptAppend!==undefined&&typeof recordBrowserDownloadReceiptAppend!=='function'||
+  reconcileBrowserDownloadOwner!==undefined&&typeof reconcileBrowserDownloadOwner!=='function'||
+  downloadReservations!==undefined&&(typeof downloadReservations?.begin!=='function'||typeof downloadReservations?.prepared!=='function'||typeof downloadReservations?.refused!=='function')||
+  ingestBrowserArtifact!==undefined&&typeof ingestBrowserArtifact!=='function'||
   maxFactsBytes!==undefined&&(!Number.isSafeInteger(maxFactsBytes)||maxFactsBytes<1))fail();
  const factsBound=maxFactsBytes??262144;
 
@@ -105,6 +114,22 @@ const permittedPhase=state=>state.phase==='active'
    try{return await transact(async client=>{
     const {a,b,h}=await admit(client,{request:q,fingerprintSha256,peerDnsName,signal});
     // This port is supplied by the canonical admitted-run owner, not by the request or a local cache.
+    if(q.purpose===HOST_NATIVE_CONTROL_PURPOSE){
+     // The native host currentness path uses the canonical native producer (execution/Core/retention), not the
+     // browser run projection, and never reads an upload custody here.
+     if(typeof readCanonicalNative!=='function')fail();
+     const native=own(data(await readCanonicalNative(client,{allocation:a,binding:b,signal,
+      ...(q.inspection?{custody:q.inspection.custody,declaration:q.inspection.declaration}:{})})),
+      ['binding','currentUntilMs','policySha256'],['scopes','selectedClientId']);
+     if(!same(native.binding,b)||native.policySha256!==q.policySha256||
+      !Number.isSafeInteger(native.currentUntilMs))fail();
+     await consume(client,a,q.nonce);
+     const nowMs=await clock(client),untilMs=cutoff(nowMs,a,h,native.currentUntilMs);
+     if(signal?.aborted||nowMs>=untilMs||nowMs>=a.leaseDeadlineMs)fail();
+     return Object.freeze({schema:HOST_CONTROL_RESPONSE_SCHEMA,nonce:q.nonce,purpose:q.purpose,
+      receipt:Object.freeze({allocation:a,binding:b,policySha256:q.policySha256,phase:'active',
+       checkedAtMs:nowMs,currentUntilMs:untilMs})});
+    }
     const state=own(data(await readCanonicalRun(client,{allocation:a,binding:b,signal})),
      ['binding','browserPolicySha256','capabilityPolicySha256','sdkAdmitted','browserAdmitted','bashAdmitted','phase','currentUntilMs'],['browserCustody','browserSuccessor']);
     const selected=q.purpose==='browser'
@@ -283,7 +308,7 @@ const permittedPhase=state=>state.phase==='active'
      if(beforeMs>=cutoff(beforeMs,a,h,state.currentUntilMs)||beforeMs>=a.leaseDeadlineMs)fail();
      await consume(client,a,q.nonce);
      return {q,a,b,h,scopes:facts.scopes,scopesSha256:canonicalSha256(facts.scopes),
-      stateSha256:canonicalSha256(stableProjection(state))};
+      deadlineMs:facts.deadlineMs,stateSha256:canonicalSha256(stableProjection(state))};
     },{signal,readOnly:false});
     if(signal?.aborted)fail();
     // No transaction, lock or connection is held while the canonical conversation store appends.
@@ -318,6 +343,72 @@ const permittedPhase=state=>state.phase==='active'
    }catch(error){throw refused(error);}
   },
 
+  /** The named DOWNLOAD receipt. Admission and nonce in one short transaction; the real receipt producer
+   * appends on its own canonical conversation store with NO transaction held here; a second short
+   * transaction rechecks the stable authority before the producer's acknowledgement is released. */
+  async recordBrowserDownloadReceipt({request,fingerprintSha256,peerDnsName,signal}={}){
+   let admitted,ack;
+   try{
+    if(typeof recordBrowserDownloadReceiptAppend!=='function')fail();
+    const q=hostDownloadReceiptRequest(request);nativeSignal(signal);
+    if(typeof fingerprintSha256!=='string'||!HEX.test(fingerprintSha256)||
+     peerDnsName!==hostClientDnsName(q.allocation)||signal?.aborted)fail();
+    admitted=await transact(async client=>{
+     const {a,b,h}=await admit(client,{request:q,fingerprintSha256,peerDnsName,signal});
+     const state=own(data(await readCanonicalRun(client,{allocation:a,binding:b,signal})),
+      ['binding','browserPolicySha256','capabilityPolicySha256','sdkAdmitted','browserAdmitted','bashAdmitted',
+       'phase','currentUntilMs'],['browserCustody','browserSuccessor']);
+     if(!same(state.binding,b)||state.browserAdmitted!==true||!permittedPhase(state))fail();
+     // Canonical scopes come from the REAL facts producer on this same admitted client; the currentness
+     // projection deliberately does not carry them.
+     if(typeof readCanonicalFacts!=='function')fail();
+     const facts=assertBrowserHostFacts(await readCanonicalFacts(client,{allocation:a,binding:b,signal}),{binding:b});
+     if(!same(facts.binding,b)||facts.scopes.length===0)fail();
+     // The facts document must describe the SAME active authority this route admitted.
+     if(facts.phase!=='active'||facts.admitted?.browser!==true||facts.admitted?.sdk!==true)fail();
+     if(facts.browserPolicySha256!==state.browserPolicySha256||
+      facts.capabilityPolicySha256!==state.capabilityPolicySha256)fail();
+     const beforeMs=await clock(client);
+     if(facts.currentUntilMs<=beforeMs||facts.deadlineMs<=beforeMs)fail();
+     if(beforeMs>=cutoff(beforeMs,a,h,state.currentUntilMs)||beforeMs>=a.leaseDeadlineMs)fail();
+     await consume(client,a,q.nonce);
+     return {q,a,b,h,scopes:facts.scopes,scopesSha256:canonicalSha256(facts.scopes),
+      deadlineMs:facts.deadlineMs,stateSha256:canonicalSha256(stableProjection(state))};
+    },{signal,readOnly:false});
+    if(signal?.aborted)fail();
+    // No transaction, lock or connection is held while the canonical conversation store appends.
+    const r=admitted.q.receipt;
+    ack=await recordBrowserDownloadReceiptAppend({binding:admitted.b,scopes:admitted.scopes,
+     urlHost:r.urlHost,atMs:r.atMs,reference:r.reference,sha256:r.sha256,bytes:r.bytes,mimeType:r.mimeType,
+     deadlineMs:admitted.deadlineMs,
+     ...(signal===undefined?{}:{signal})});
+   }catch(error){throw refused(error);}
+   try{
+    return await transact(async client=>{
+     const {a,b,h}=await admit(client,{request:admitted.q,fingerprintSha256,peerDnsName,signal});
+     if(!same(a,admitted.a)||!same(b,admitted.b))fail();
+     const fresh=own(data(await readCanonicalRun(client,{allocation:a,binding:b,signal})),
+      ['binding','browserPolicySha256','capabilityPolicySha256','sdkAdmitted','browserAdmitted','bashAdmitted',
+       'phase','currentUntilMs'],['browserCustody','browserSuccessor']);
+     if(canonicalSha256(stableProjection(fresh))!==admitted.stateSha256||fresh.browserAdmitted!==true||
+      !permittedPhase(fresh))fail();
+     // The canonical scopes must not have changed across the append either.
+     const after=assertBrowserHostFacts(await readCanonicalFacts(client,{allocation:a,binding:b,signal}),{binding:b});
+     if(!same(after.binding,b)||canonicalSha256(after.scopes)!==admitted.scopesSha256)fail();
+     if(after.phase!=='active'||after.admitted?.browser!==true)fail();
+     const nowMs=await clock(client);
+     // The RELEASE cutoff is capped by the after-facts window, so an expired in-transit document cannot be
+     // released on the strength of the pre-append snapshot alone.
+     const untilMs=Math.min(cutoff(nowMs,a,h,fresh.currentUntilMs),after.currentUntilMs,after.deadlineMs);
+     if(after.currentUntilMs<=nowMs||after.deadlineMs<=nowMs)fail();
+     if(signal?.aborted||nowMs>=untilMs||nowMs>=a.leaseDeadlineMs)fail();
+     if(!ack||ack.recorded!==true||typeof ack.eventId!=='string'||!ack.event)fail();
+     return Object.freeze(hostDownloadReceiptResponse({schema:HOST_DOWNLOAD_RECEIPT_RESPONSE_SCHEMA,nonce:admitted.q.nonce,
+      eventId:ack.eventId,recorded:true,event:ack.event,checkedAtMs:nowMs,currentUntilMs:untilMs},admitted.q));
+    },{signal,readOnly:false});
+   }catch(error){throw refused(error);}
+  },
+
   /** Read-only verification of an ALREADY applied takeover. It never dispatches service.control, never
    * claims or checkpoints, and it refuses returned, expired, foreign or successor custody. */
   async holdBrowser({request,fingerprintSha256,peerDnsName,signal}={}){
@@ -343,6 +434,170 @@ const permittedPhase=state=>state.phase==='active'
      if(signal?.aborted||nowMs>=untilMs||nowMs>=a.leaseDeadlineMs)fail();
      return Object.freeze(hostHoldResponse({schema:HOST_HOLD_RESPONSE_SCHEMA,nonce:q.nonce,outcome:'APPLIED',
       custody,checkedAtMs:nowMs,currentUntilMs:untilMs},q));
+    },{signal,readOnly:false});
+   }catch(error){throw refused(error);}
+  },
+
+  /** READ-ONLY discovery of this run's ORIGINAL browser download. Short admission, then a bounded owner read
+   * with NO transaction/lock held, then a short fresh release revalidation; the original WRITE deadline may be
+   * gone and is never revived. A revoked/expired lease/certificate/run at return refuses the answer. */
+  async reconcileBrowserDownload({request,fingerprintSha256,peerDnsName,signal}={}){
+   let admitted,found;
+   try{
+    if(typeof reconcileBrowserDownloadOwner!=='function')fail();
+    const q=hostDownloadReconcileRequest(request);nativeSignal(signal);
+    if(typeof fingerprintSha256!=='string'||!HEX.test(fingerprintSha256)||
+     peerDnsName!==hostClientDnsName(q.allocation)||signal?.aborted)fail();
+    admitted=await transact(async client=>{
+     const {a,b,h}=await admit(client,{request:q,fingerprintSha256,peerDnsName,signal});
+     const state=own(data(await readCanonicalRun(client,{allocation:a,binding:b,signal})),
+      ['binding','browserPolicySha256','capabilityPolicySha256','sdkAdmitted','browserAdmitted','bashAdmitted',
+       'phase','currentUntilMs'],['browserCustody','browserSuccessor']);
+     if(!same(state.binding,b)||state.browserAdmitted!==true||!permittedPhase(state))fail();
+     const facts=assertBrowserHostFacts(await readCanonicalFacts(client,{allocation:a,binding:b,signal}),{binding:b});
+     if(!same(facts.binding,b)||facts.scopes.length===0||facts.phase!=='active'||
+      facts.admitted?.browser!==true||facts.admitted?.sdk!==true)fail();
+     if(facts.browserPolicySha256!==state.browserPolicySha256||
+      facts.capabilityPolicySha256!==state.capabilityPolicySha256)fail();
+     const beforeMs=await clock(client);
+     if(beforeMs>=state.currentUntilMs||beforeMs>=a.leaseDeadlineMs||beforeMs>=h.client_cert_not_after_ms)fail();
+     if(beforeMs>=cutoff(beforeMs,a,h,state.currentUntilMs))fail();
+     await consume(client,a,q.nonce);
+     return {q,a,b,h,scopes:facts.scopes,scopesSha256:canonicalSha256(facts.scopes),
+      stateSha256:canonicalSha256(stableProjection(state)),admittedAtMs:beforeMs,
+      readDeadline:Math.min(beforeMs+5000,h.client_cert_not_after_ms,a.leaseDeadlineMs,state.currentUntilMs)};
+    },{signal,readOnly:false});
+    if(signal?.aborted)fail();
+    // The canonical artifact/Core/conversation READ happens with no transaction, lock or connection held.
+    found=await reconcileBrowserDownloadOwner({binding:admitted.b,scopes:admitted.scopes,filename:admitted.q.filename,
+     deadlineMs:admitted.readDeadline,...(signal===undefined?{}:{signal})});
+    if(signal?.aborted)fail();
+   }catch(error){throw refused(error);}
+   try{
+    return await transact(async client=>{
+     // Fresh short RELEASE revalidation of the SAME admitted authority; nothing is re-read externally here.
+     const {a,b,h}=await admit(client,{request:admitted.q,fingerprintSha256,peerDnsName,signal});
+     if(!same(a,admitted.a)||!same(b,admitted.b))fail();
+     const fresh=own(data(await readCanonicalRun(client,{allocation:a,binding:b,signal})),
+      ['binding','browserPolicySha256','capabilityPolicySha256','sdkAdmitted','browserAdmitted','bashAdmitted',
+       'phase','currentUntilMs'],['browserCustody','browserSuccessor']);
+     if(canonicalSha256(stableProjection(fresh))!==admitted.stateSha256||fresh.browserAdmitted!==true||
+      !permittedPhase(fresh))fail();
+     const afterMs=await clock(client);
+     if(afterMs>=fresh.currentUntilMs||afterMs>=a.leaseDeadlineMs||afterMs>=h.client_cert_not_after_ms)fail();
+     if(afterMs>=cutoff(afterMs,a,h,fresh.currentUntilMs))fail();
+     return hostDownloadReconcileResponse({schema:HOST_DOWNLOAD_RECONCILE_RESPONSE_SCHEMA,nonce:admitted.q.nonce,
+      versionId:found.versionId,sha256:found.sha256,bytes:found.bytes,mimeType:found.mimeType,
+      receipt:found.receipt??null,checkedAtMs:afterMs,currentUntilMs:Math.min(fresh.currentUntilMs,admitted.readDeadline)},admitted.q);
+    },{signal,readOnly:false});
+   }catch(error){throw refused(error);}
+  },
+  /** The named download-ingest operation. Admission and the single-use nonce are consumed in ONE short
+   * acknowledged transaction that also reads the canonical run, canonical scopes and the ACTIVE browser
+   * policy; the origin the worker observed is only a CLAIM checked against that policy here. The canonical
+   * publication owner then runs with NO transaction held, and a second short transaction re-authenticates
+   * that the exact authority is unchanged before the publication ACK is released. */
+  async ingestBrowserArtifact({request,fingerprintSha256,peerDnsName,signal}={}){
+   let admitted,ack,claim=null,replayed=false;
+   try{
+    if(typeof ingestBrowserArtifact!=='function')fail();
+    const q=hostIngestRequest(request);nativeSignal(signal);
+    if(typeof fingerprintSha256!=='string'||!HEX.test(fingerprintSha256)||
+     peerDnsName!==hostClientDnsName(q.allocation)||signal?.aborted)fail();
+    admitted=await transact(async client=>{
+     const {a,b,h}=await admit(client,{request:q,fingerprintSha256,peerDnsName,signal});
+     const state=own(data(await readCanonicalRun(client,{allocation:a,binding:b,signal})),
+      ['binding','browserPolicySha256','capabilityPolicySha256','sdkAdmitted','browserAdmitted','bashAdmitted','phase','currentUntilMs'],['browserCustody','browserSuccessor']);
+     if(!same(state.binding,b)||state.browserAdmitted!==true||!permittedPhase(state))fail();
+     if(typeof readCanonicalFacts!=='function')fail();
+     const facts=assertBrowserHostFacts(await readCanonicalFacts(client,{allocation:a,binding:b,signal}),{binding:b});
+     if(!same(facts.binding,b)||facts.scopes.length===0)fail();
+     if(facts.phase!=='active'||facts.admitted?.browser!==true)fail();
+     if(facts.browserPolicySha256!==state.browserPolicySha256||
+      facts.capabilityPolicySha256!==state.capabilityPolicySha256)fail();
+     const beforeMs=await clock(client);
+     if(facts.currentUntilMs<=beforeMs||facts.deadlineMs<=beforeMs)fail();
+     if(beforeMs>=cutoff(beforeMs,a,h,state.currentUntilMs)||beforeMs>=a.leaseDeadlineMs)fail();
+     // The claimed destination must satisfy THIS fresh canonical policy for a download connection.
+     const policy=facts.browserPolicy;
+     if(!policy)fail();
+     const decision=egressDecision(policy,{kind:'download',url:q.ingest.origin});
+     if(!decision.ok)fail();
+     await consume(client,a,q.nonce);
+     const deadlineMs=Math.min(facts.deadlineMs,facts.currentUntilMs,ms(state.currentUntilMs),
+      ms(h.client_cert_not_after_ms),a.leaseDeadlineMs);
+     if(!Number.isSafeInteger(deadlineMs)||deadlineMs<=beforeMs)fail();
+     // The deterministic key is DERIVED here from the canonical binding, reviewed filename and content digest.
+     const idempotencyKey=canonicalSha256({schema:'meri-browser-download/1',tenantId:b.tenantId,
+      conversationId:b.conversationId,runId:b.runId,filename:q.ingest.filename,sha256:q.ingest.sha256});
+     return {maxFiles:policy.downloads?.maxFiles,q,a,b,h,scopes:facts.scopes,origin:decision.origin,
+      policySha256:facts.browserPolicySha256,deadlineMs,idempotencyKey,
+      stateSha256:canonicalSha256(stableProjection(state))};
+    },{signal,readOnly:false});
+    if(signal?.aborted)fail();
+    // Durable capacity: the claim is made AFTER authenticated admission and settles PENDING/limit/replay in its
+    // OWN short journal transaction. No host/intent transaction is open while publication or receipts run.
+    if(downloadReservations!==undefined){
+     claim=await downloadReservations.begin({binding:admitted.b,filename:admitted.q.ingest.filename,
+      sha256:admitted.q.ingest.sha256,maxFiles:admitted.maxFiles,...(signal===undefined?{}:{signal})});
+     if(claim.limit===true)fail('BROWSER_DOWNLOAD_LIMIT');
+     if(claim.admitted!==true)fail('BROWSER_DOWNLOAD_CAPACITY');
+     if(claim.replayed===true){
+      // An unresolved or retained delivery NEVER runs ingest again: read the canonical publication for this
+      // exact original run+filename and only accept the SAME content digest.
+      if(typeof reconcileBrowserDownloadOwner!=='function')fail('BROWSER_DOWNLOAD_EFFECT_UNKNOWN');
+      const existing=await reconcileBrowserDownloadOwner({binding:admitted.b,scopes:admitted.scopes,
+       filename:admitted.q.ingest.filename,deadlineMs:admitted.deadlineMs,...(signal===undefined?{}:{signal})});
+      if(!existing||existing.sha256!==admitted.q.ingest.sha256)fail('BROWSER_DOWNLOAD_EFFECT_UNKNOWN');
+      ack={versionId:existing.versionId,sha256:existing.sha256,bytes:existing.bytes,
+       idempotencyKey:admitted.idempotencyKey,
+       ...(Number.isSafeInteger(existing.acquiredAtMs)?{acquiredAtMs:existing.acquiredAtMs}:{})};
+      replayed=true;
+     }
+    }
+    // No transaction, lock or connection is held while the publication owner writes.
+    if(!replayed)ack=await ingestBrowserArtifact({binding:admitted.b,scopes:admitted.scopes,
+     filename:admitted.q.ingest.filename,format:admitted.q.ingest.format,mimeType:admitted.q.ingest.mimeType,
+     bytes:Buffer.from(admitted.q.ingest.bytesBase64,'base64'),origin:admitted.origin,policySha256:admitted.policySha256,
+     deadlineMs:admitted.deadlineMs,idempotencyKey:admitted.idempotencyKey,
+     ...(signal===undefined?{}:{signal})});
+    if(!replayed&&downloadReservations!==undefined){
+     try{await downloadReservations.prepared({binding:admitted.b,filename:admitted.q.ingest.filename,
+      sha256:admitted.q.ingest.sha256,result:{versionId:ack.versionId,sha256:ack.sha256,bytes:ack.bytes},
+      release:{binding:admitted.b,scopes:admitted.scopes,expiresAtMs:admitted.deadlineMs},
+      ...(signal===undefined?{}:{signal})});}
+     catch{fail('BROWSER_DOWNLOAD_EFFECT_UNKNOWN');}
+    }
+   }catch(error){
+    if(claim?.admitted===true&&claim.replayed!==true&&downloadReservations!==undefined){
+     // Only this publication owner's explicit pre-ingest admission refusal may release a NEW claim.
+     // Service/transport/release errors can follow a committed effect and must retain PENDING for recovery.
+     if(error?.code==='BROWSER_ARTIFACT_ADMISSION_REFUSED'){
+      try{await downloadReservations.refused({binding:admitted.b,filename:admitted.q.ingest.filename,
+       sha256:admitted.q.ingest.sha256,code:'REFUSED',...(signal===undefined?{}:{signal})});}catch{}
+     }
+    }
+    throw refused(error);}
+   try{
+    return await transact(async client=>{
+     const {a,b,h}=await admit(client,{request:admitted.q,fingerprintSha256,peerDnsName,signal});
+     if(!same(a,admitted.a)||!same(b,admitted.b))fail();
+     const fresh=own(data(await readCanonicalRun(client,{allocation:a,binding:b,signal})),
+      ['binding','browserPolicySha256','capabilityPolicySha256','sdkAdmitted','browserAdmitted','bashAdmitted','phase','currentUntilMs'],['browserCustody','browserSuccessor']);
+     if(canonicalSha256(stableProjection(fresh))!==admitted.stateSha256||fresh.browserAdmitted!==true||
+      !permittedPhase(fresh))fail();
+     const after=assertBrowserHostFacts(await readCanonicalFacts(client,{allocation:a,binding:b,signal}),{binding:b});
+     if(!same(after.binding,b)||after.phase!=='active'||after.admitted?.browser!==true)fail();
+     const nowMs=await clock(client);
+     const untilMs=Math.min(cutoff(nowMs,a,h,fresh.currentUntilMs),after.currentUntilMs,after.deadlineMs,
+      admitted.deadlineMs);
+     if(after.currentUntilMs<=nowMs||after.deadlineMs<=nowMs)fail();
+     if(signal?.aborted||nowMs>=untilMs||nowMs>=a.leaseDeadlineMs||nowMs>=admitted.deadlineMs)fail();
+     return Object.freeze(hostIngestResponse({schema:HOST_INGEST_RESPONSE_SCHEMA,nonce:admitted.q.nonce,
+      versionId:ack?.versionId,sha256:ack?.sha256,bytes:ack?.bytes,idempotencyKey:ack?.idempotencyKey,
+      checkedAtMs:nowMs,currentUntilMs:untilMs,
+      ...(Number.isSafeInteger(ack?.acquiredAtMs)?{acquiredAtMs:ack.acquiredAtMs}:{}),
+      ...(replayed===true||ack?.reconciled===true?{replay:true}:{})},admitted.q));
     },{signal,readOnly:false});
    }catch(error){throw refused(error);}
   },

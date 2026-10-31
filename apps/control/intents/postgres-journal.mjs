@@ -21,7 +21,7 @@ function key(raw){
  * list decides here, and an unregistered version or unknown id still refuses. */
 // Internal operation registrations. These are admitted ONLY here, so the model-facing catalog stays
 // exactly as reviewed: no browser operation is added to the tool catalog by this change.
-const INTERNAL_OPERATIONS=Object.freeze(['browser_action@0.2.0','browser_approval_preparation@0.2.0','browser_approval_consumption@0.2.0']);
+const INTERNAL_OPERATIONS=Object.freeze(['browser_action@0.2.0','browser_approval_preparation@0.2.0','browser_approval_consumption@0.2.0','browser_download@0.2.0']);
 const registered=operation=>{
  const reference=`${operation.id}@${operation.version}`;
  if(INTERNAL_OPERATIONS.includes(reference))return true;
@@ -46,6 +46,7 @@ function entry(row){
  if(!row)refuse('INTENT_JOURNAL_STATE');const r=record(row.record);
  if(row.record_sha256!==hash(r))refuse('INTENT_JOURNAL_STATE');return data({record:r,state:row.state,outcome:outcome(row.state,row.outcome)});
 }
+const stableBinding=b=>Object.freeze({tenantId:b.tenantId,actorId:b.actorId,conversationId:b.conversationId,runId:b.runId});
 function journalTransaction(pool){
  assertPool(pool);
  return async function tx(signal,body,{readOnly=false}={}){
@@ -55,7 +56,7 @@ function journalTransaction(pool){
    const result=await transact(pool,body,{check,readOnly,unavailable:'INTENT_JOURNAL_UNAVAILABLE',uncertain:'INTENT_JOURNAL_UNKNOWN'});
    if(readOnly)check();return result;
   }
-  catch(error){const code=productFailure(error)?.code;throw intentFault(code==='CANCELLED'?'CANCELLED':code==='INTENT_JOURNAL_UNAVAILABLE'?'UNAVAILABLE':'UNKNOWN');}
+  catch(error){const code=productFailure(error)?.code;throw intentFault(code==='CANCELLED'?'CANCELLED':code==='INTENT_JOURNAL_UNAVAILABLE'?'UNAVAILABLE':code==='CONFLICT'?'CONFLICT':'UNKNOWN');}
  };
 }
 export function createPostgresIntentJournalStore({pool}){
@@ -97,6 +98,83 @@ export function createPostgresIntentJournalStore({pool}){
      return data({deliveryId:row.delivery_id,createdAt:created.toISOString(),...entry(row)});
     });
     return data({entries:page,next:rows.length>limit?page.at(-1).deliveryId:null});
+   });
+  },
+  /** DURABLE per-original-run browser-download reservation. One canonical transaction: run-scoped advisory lock,
+   * exact-delivery replay read, scoped count of PENDING/UNKNOWN/PREPARED registrations, then the PENDING insert.
+   * No artifact/network/receipt effect runs while the transaction is open. */
+  async claimDownload({binding:rawBinding,filename,sha256,maxFiles,signal}){
+   const b=data(rawBinding);validateShape('RunBinding',b);
+   if(typeof filename!=='string'||!filename||filename.length>255||filename!==filename.normalize('NFC')||
+    filename.includes('/')||filename.includes(String.fromCharCode(92))||filename==='.'||filename==='..')
+    refuse('INTENT_JOURNAL_STATE');
+   if(typeof sha256!=='string'||!digest.test(sha256)||!Number.isSafeInteger(maxFiles)||maxFiles<1||maxFiles>1000)
+    refuse('INTENT_JOURNAL_STATE');
+   const stable=stableBinding(b),
+    delivery='browser:'+hash({domain:'meri.browser-download/1',binding:stable,filename}),
+    k=key({tenantId:b.tenantId,actorId:b.actorId,conversationId:b.conversationId,deliveryId:delivery}),
+    r=record({operation:{id:'browser_download',version:'0.2.0'},
+     argumentsSha256:hash({binding:stable,filename,sha256})}),sha=hash(r);
+   return tx(signal,async client=>{
+    await client.query('SELECT pg_advisory_xact_lock(hashtextextended($1,0))',
+     [`${b.tenantId}:${b.conversationId}:${b.runId}:browser-download`]);
+    // Pre-79 browser_download custody may have NULL run_id and cannot be attributed: fail closed for this
+    // actor/conversation instead of assuming absence or freeing an uncertain slot.
+    const orphan=(await client.query(`SELECT count(*)::int AS n FROM ${TABLE} WHERE tenant_id=$1 AND actor_id=$2
+     AND conversation_id=$3 AND record->'operation'->>'id'='browser_download' AND run_id IS NULL AND state<>'FAILED'`,
+     [b.tenantId,b.actorId,b.conversationId])).rows[0];
+    if(!Number.isSafeInteger(orphan?.n)||orphan.n<0)refuse('INTENT_JOURNAL_STATE');
+    if(orphan.n>0)return data({claimed:false,limit:true,count:orphan.n,unresolved:true});
+    const old=(await client.query(`SELECT ${COLUMNS} FROM ${TABLE} WHERE tenant_id=$1 AND actor_id=$2 AND
+     conversation_id=$3 AND delivery_id=$4`,k)).rows;
+    if(old.length>1)refuse('INTENT_JOURNAL_STATE');
+    if(old.length===1){
+     const e=entry(old[0]);
+     if(hash(e.record)!==sha)refuse('CONFLICT');
+     if(e.state==='FAILED')return data({claimed:false,refused:true,entry:e});
+     return data({claimed:false,entry:e});
+    }
+    const counted=(await client.query(`SELECT count(*)::int AS n FROM ${TABLE} WHERE tenant_id=$1 AND actor_id=$2
+     AND conversation_id=$3 AND run_id=$4 AND record->'operation'->>'id'='browser_download' AND state<>'FAILED'`,
+     [b.tenantId,b.actorId,b.conversationId,b.runId])).rows[0];
+    const n=counted?.n;
+    if(!Number.isSafeInteger(n)||n<0)refuse('INTENT_JOURNAL_STATE');
+    if(n>=maxFiles)return data({claimed:false,limit:true,count:n});
+    const inserted=(await client.query(`INSERT INTO ${TABLE}(tenant_id,actor_id,conversation_id,delivery_id,record,
+     record_sha256,state,run_id) VALUES($1,$2,$3,$4,$5::jsonb,$6,'PENDING',$7)
+     ON CONFLICT (tenant_id,actor_id,conversation_id,delivery_id) DO NOTHING RETURNING ${COLUMNS}`,
+     [...k,r,sha,b.runId])).rows;
+    if(inserted.length!==1)refuse('INTENT_JOURNAL_STATE');
+    const e=entry(inserted[0]);if(e.state!=='PENDING'||hash(e.record)!==sha)refuse('INTENT_JOURNAL_STATE');
+    return data({claimed:true,count:n+1,entry:e});
+   });
+  },
+  /** The ONE durable reservation of this original run+filename, or null. Read-only. */
+  async readDownload({binding:rawBinding,filename,signal}){
+   const b=data(rawBinding);validateShape('RunBinding',b);
+   const delivery='browser:'+hash({domain:'meri.browser-download/1',binding:stableBinding(b),filename});
+   const k=key({tenantId:b.tenantId,actorId:b.actorId,conversationId:b.conversationId,deliveryId:delivery});
+   return tx(signal,async client=>{
+    const rows=(await client.query(`SELECT ${COLUMNS} FROM ${TABLE} WHERE tenant_id=$1 AND actor_id=$2 AND
+     conversation_id=$3 AND delivery_id=$4`,k)).rows;
+    if(rows.length>1)refuse('INTENT_JOURNAL_STATE');return rows.length===0?null:entry(rows[0]);
+   });
+  },
+  /** Settle the SAME PENDING claim: PREPARED after accepted effect, FAILED for a proven pre-effect refusal only. */
+  async settleDownload({binding:rawBinding,filename,sha256,state,outcome:rawOutcome,signal}){
+   const b=data(rawBinding);validateShape('RunBinding',b);if(state==='PENDING')refuse('INTENT_JOURNAL_STATE');
+   const o=outcome(state,rawOutcome);
+   if(state==='PREPARED'&&o.release===undefined)refuse('INTENT_JOURNAL_STATE');
+   const stable=stableBinding(b),
+    delivery='browser:'+hash({domain:'meri.browser-download/1',binding:stable,filename}),
+    k=key({tenantId:b.tenantId,actorId:b.actorId,conversationId:b.conversationId,deliveryId:delivery}),
+    r=record({operation:{id:'browser_download',version:'0.2.0'},
+     argumentsSha256:hash({binding:stable,filename,sha256})}),sha=hash(r);
+   return tx(signal,async client=>{
+    const rows=(await client.query(`UPDATE ${TABLE} SET state=$6,outcome=$7::jsonb,settled_at=clock_timestamp()
+     WHERE tenant_id=$1 AND actor_id=$2 AND conversation_id=$3 AND delivery_id=$4 AND record_sha256=$5
+     AND state='PENDING' RETURNING ${COLUMNS}`,[...k,sha,state,o])).rows;
+    if(rows.length!==1)refuse('INTENT_JOURNAL_STATE');return entry(rows[0]);
    });
   },
   async settle({key:rawKey,record:rawRecord,state,outcome:rawOutcome,signal}){

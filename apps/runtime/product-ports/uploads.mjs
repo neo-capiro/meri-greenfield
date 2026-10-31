@@ -54,7 +54,8 @@ export function uploadsFamily(owners={}){
   }])));
   const store=createPostgresUploadStore({pool}),storage=createRuntimeRetentionStorage({...s3,now,maxRequestMs});
   const inspection=supplied.inspection??uploadsInspection??createUploadInspection({now}),removeOriginal=createUploadOriginalRemoval(storage,now);
-  return {ports:{uploadApplicationFactory:Object.freeze({state:()=> 'composed',create({sessions,retention}){
+  const nativeUploadStore=Object.freeze({readOnClient:(...args)=>store.readOnClient(...args)});
+  return {ports:{nativeUploadStore,uploadApplicationFactory:Object.freeze({state:()=> 'composed',create({sessions,retention}){
    if(!retention)fail('UPLOAD_CONFIGURATION');
    return createUploadApplication({sessions,store,objects,inspection,retention,removeOriginal,now,ids:supplied.ids??randomUUID});
   },createSource({sessions,retention,conversationStore}){

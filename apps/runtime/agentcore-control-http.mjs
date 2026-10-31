@@ -41,6 +41,9 @@ const routes=new Map([
  ['/v1/execution/kickoff',{method:'kickoff',control:true,fields:['binding','executionKey']}],
  ['/v1/execution/kickoff/status',{method:'status',control:true,fields:['binding','executionId']}],
  ['/v1/execution/kickoff/stop',{method:'stop',control:true,fields:['binding','executionId']}],
+ ['/v1/execution/native/prerequisite',{method:'nativePrerequisite',control:true,optional:true,fields:['binding','executionId']}],
+ ['/v1/execution/native/host-authority',{method:'hostAuthority',control:true,optional:true,fields:['binding','selectedClientId','expectedPolicySha256','deadlineMs']}],
+ ['/v1/execution/native/host-teardown',{method:'hostTeardown',control:true,optional:true,fields:['binding','generation','hostId']}],
  ['/v1/runner/execution',{method:'admitted',fields:['execution','versions']}],
  ['/v1/runner/execution/settle',{method:'settle',fields:['execution','state']}],
 ]);

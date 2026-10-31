@@ -9,7 +9,11 @@ import {HOST_CONTROL_PATH,HOST_CONTROL_MAX_BYTES,hostControlRequest,hostControlR
  hostClientDnsName,encodeHostControl,decodeHostControl,
  hostDecideRequest,hostDecideResponse,HOST_DECIDE_PATH,HOST_DECIDE_MAX_BYTES,HOST_DECIDE_WIRE_MAX_BYTES,
  HOST_DECIDE_MAX_WINDOW_MS,hostReceiptRequest,hostReceiptResponse,HOST_RECEIPT_PATH,
- HOST_RECEIPT_WIRE_MAX_BYTES} from './protocol.mjs';
+ HOST_RECEIPT_WIRE_MAX_BYTES,hostIngestRequest,hostIngestResponse,HOST_INGEST_PATH,
+ HOST_INGEST_WIRE_MAX_BYTES,HOST_INGEST_RESPONSE_MAX_BYTES,hostDownloadReceiptRequest,
+ hostDownloadReceiptResponse,HOST_DOWNLOAD_RECEIPT_PATH,HOST_DOWNLOAD_RECEIPT_WIRE_MAX_BYTES,
+ hostDownloadReconcileRequest,hostDownloadReconcileResponse,HOST_DOWNLOAD_RECONCILE_PATH,
+ HOST_DOWNLOAD_RECONCILE_WIRE_MAX_BYTES} from './protocol.mjs';
 import {MAX_HOST_CURRENTNESS_MS} from '../binding.mjs';
 
 const fail=()=>{throw Object.assign(new Error('HOST_CONTROL_UNAVAILABLE'),{code:'HOST_CONTROL_UNAVAILABLE'});};
@@ -33,6 +37,19 @@ const ROUTES=new Map([
  [HOST_RECEIPT_PATH,{method:'recordBrowserReceipt',requestMax:HOST_RECEIPT_WIRE_MAX_BYTES,
   max:HOST_RECEIPT_WIRE_MAX_BYTES,request:value=>hostReceiptRequest(value),
   answer:(answer,q)=>hostReceiptResponse(answer,q)}],
+ // The ONE artifact-ingest route: the byte envelope is bounded by the SAME canonical constant the client and
+ // the parser use; the answer is the publication owner's small ACK, never a file.
+ [HOST_INGEST_PATH,{method:'ingestBrowserArtifact',requestMax:HOST_INGEST_WIRE_MAX_BYTES,
+  max:HOST_INGEST_RESPONSE_MAX_BYTES,request:value=>hostIngestRequest(value),
+  answer:(answer,q)=>hostIngestResponse(answer,q)}],
+ // The named DOWNLOAD receipt route: bounded ingress, no long wait, producer acknowledgement only.
+ [HOST_DOWNLOAD_RECEIPT_PATH,{method:'recordBrowserDownloadReceipt',requestMax:HOST_DOWNLOAD_RECEIPT_WIRE_MAX_BYTES,
+  max:HOST_DOWNLOAD_RECEIPT_WIRE_MAX_BYTES,request:value=>hostDownloadReceiptRequest(value),
+  answer:(answer,q)=>hostDownloadReceiptResponse(answer,q)}],
+ // The named READ-ONLY DOWNLOAD reconcile route: discovers one committed original download; never writes.
+ [HOST_DOWNLOAD_RECONCILE_PATH,{method:'reconcileBrowserDownload',requestMax:HOST_DOWNLOAD_RECONCILE_WIRE_MAX_BYTES,
+  max:HOST_DOWNLOAD_RECONCILE_WIRE_MAX_BYTES,request:value=>hostDownloadReconcileRequest(value),
+  answer:(answer,q)=>hostDownloadReconcileResponse(answer,q)}],
 ]);
 function requestLength(req,routeMax){
  if(req.httpVersion!=='1.1'||req.method!=='POST'||!Number.isSafeInteger(routeMax))fail();

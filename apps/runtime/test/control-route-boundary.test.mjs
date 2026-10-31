@@ -10,6 +10,15 @@ test('viewer and browser session reach public authentication; private host trans
 });
 import assert from 'node:assert/strict';
 import {createControlRouteApplications,listenControlApplications} from '../control-route-boundary.mjs';
+test('native observer is a dedicated private leaf, including when disabled',async()=>{
+ let observed=0,broad=0;const base={assembly:{handle(){return new Response('public');}},candidate:{handle(){broad++;return new Response('broad');}}};
+ const url='https://control.invalid/v1/execution/native/physical-observer';
+ const enabled=createControlRouteApplications({...base,nativeObserver:{handle(){observed++;return new Response('observer');}}});
+ assert.equal((await enabled.public.handle(new Request(url))).status,404);
+ assert.equal(await (await enabled.private.handle(new Request(url))).text(),'observer');
+ assert.equal((await createControlRouteApplications(base).private.handle(new Request(url))).status,404);
+ assert.equal(observed,1);assert.equal(broad,0);
+});
 
 test('public listener admits only the exact preview API paths and never protected native paths',async()=>{
  const calls=[],assembly={handle(request){calls.push(['public',new URL(request.url).pathname]);return new Response('public');}},candidate={handle(request){calls.push(['private',new URL(request.url).pathname]);return new Response('private');}};

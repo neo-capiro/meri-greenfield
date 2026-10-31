@@ -11,11 +11,12 @@ const parentMatches=artifactPublicationParentMatches;
 export const emptyArtifactPublications=tenantId=>({publicationVersion,namespace,tenantId,decisions:[],heads:[],tombstones:[]});
 export function verifyArtifactPublicationInput(value,{historical=false}={}){
  const p=data(own(value,['record','expectedParentVersionId','authorization','invocation'])),r=recordValue(p.record),b=r.version.binding,a=own(p.authorization,['receiptId','decision','action','binding','scopesSha256','resourceSha256','requestSha256','expiresAtMs']);
- const native=p.invocation?.kind==='native-document',i=own(p.invocation,native?['kind','versionId','invocationId','binding','requestSha256']:['versionId','budgetTicketId','binding','requestSha256','ownedInvocationId']);
+ const native=p.invocation?.kind==='native-document',imported=p.invocation?.kind==='browser-import',i=own(p.invocation,native?['kind','versionId','invocationId','binding','requestSha256']:imported?['kind','versionId','binding','requestSha256','idempotencyKey']:['versionId','budgetTicketId','binding','requestSha256','ownedInvocationId']);
  if(p.expectedParentVersionId!==null)uuid(p.expectedParentVersionId);
  if(p.expectedParentVersionId!==r.version.parentVersionId||typeof a.receiptId!=='string'||!a.receiptId||a.receiptId.length>1024||a.decision!=='allow'||a.action!==(p.expectedParentVersionId===null?'artifact.generate':'artifact.revise')||!same(a.binding,b)||a.scopesSha256!==v.hash(r.version.scopes)||a.requestSha256!==r.requestSha256||!Number.isSafeInteger(a.expiresAtMs)||a.expiresAtMs<1)corrupt();digest(a.resourceSha256);
  if(i.versionId!==r.version.versionId||!same(i.binding,b)||i.requestSha256!==r.requestSha256)corrupt();
  if(native){if(typeof i.invocationId!=='string'||!/^sdk:[a-f0-9]{64}$/u.test(i.invocationId))corrupt();}
+ else if(imported){if(typeof i.idempotencyKey!=='string'||!/^[a-f0-9]{64}$/u.test(i.idempotencyKey))corrupt();}
  else if(!historical||typeof i.budgetTicketId!=='string'||!i.budgetTicketId||i.budgetTicketId.length>1024||!(i.ownedInvocationId===null||typeof i.ownedInvocationId==='string'&&i.ownedInvocationId==='owned_'+r.version.versionId))corrupt();return p;
 }
 export function verifyArtifactPublications(value,tenantId,maxDecisions=1024){

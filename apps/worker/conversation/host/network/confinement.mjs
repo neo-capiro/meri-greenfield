@@ -1,7 +1,7 @@
 /** Privileged D005 network setup for one exact run. Never call this from a tool process. This module changes only
  * the per-run Linux netns, veth and nft tables it creates; no VPC, IAM or cloud resource is touched. */
 import {spawn} from 'node:child_process';
-import {openSync,closeSync,fstatSync,statfsSync,readFileSync,constants as fsConstants,existsSync} from 'node:fs';
+import {openSync,closeSync,fstatSync,statfsSync,readFileSync,lstatSync,constants as fsConstants,existsSync} from 'node:fs';
 import {createNetworkPlan} from './plan.mjs';
 import {buildNetworkFirewalls,buildHostRelayDenyFirewall,assertNetworkFirewallReadback,buildFirewallReplaceTransaction} from './firewall.mjs';
 
@@ -32,6 +32,10 @@ export function runLinuxNetworkCommand({file,args,input='',timeoutMs=5000}){
  });
 }
 
+/** ONLY ENOENT proves the namespace path is gone; a present/recreated path, EACCES or EIO stay unknown. */
+function defaultNamespaceAbsent(path){
+ try{lstatSync(path);return false;}catch(error){return error?.code==='ENOENT';}
+}
 function namespaceIdentity(path){
  let fd;try{fd=openSync(path,fsConstants.O_RDONLY|fsConstants.O_NOFOLLOW);
   const stat=fstatSync(fd),fs=statfsSync(`/proc/self/fd/${fd}`);
@@ -344,7 +348,9 @@ export async function prepareNetworkCompartment({allocation,binding,kind,routes,
  * model/control/SDK path. `verify()` re-reads the namespace identity, links and routes on every call, so a changed
  * namespace or an added interface refuses before dispatch. */
 export async function prepareProcessingCompartment({allocation,binding,execute=runLinuxNetworkCommand,
- readNamespace=namespaceIdentity,now=Date.now}={}){
+ readNamespace=namespaceIdentity,namespaceAbsent=defaultNamespaceAbsent,now=Date.now}={}){
+ // An unverifiable close must be refused BEFORE any namespace exists.
+ if(typeof namespaceAbsent!=='function')fail('HOST_NETWORK_CONFIGURATION');
  const plan=createNetworkPlan({allocation,binding,kind:'processing',routes:[]});
  if(!Array.isArray(plan.routes)||plan.routes.length!==0)fail('HOST_NETWORK_CONFIGURATION');
  const ip=async(...args)=>(await execute({file:IP,args,timeoutMs:5000})).stdout;
@@ -382,13 +388,18 @@ export async function prepareProcessingCompartment({allocation,binding,execute=r
    closed=true;
    try{await execute({file:IP,args:['netns','delete',plan.namespaceName],timeoutMs:5000});}
    catch{return Object.freeze({closed:false,code:'HOST_NETWORK_CLEANUP_UNKNOWN'});}
+   // A successful delete command is an acknowledgement, not absence: read the exact owned namespace path back.
+   let absent=false;try{absent=namespaceAbsent(plan.namespacePath)===true;}catch{absent=false;}
+   if(!absent)return Object.freeze({closed:false,code:'HOST_NETWORK_CLEANUP_UNKNOWN'});
    return Object.freeze({closed:true});
   })();
   return Object.freeze({plan,identity,verify,close});
  }catch(error){
   // Only a namespace this call actually created is deleted here; a failed `netns add` created nothing.
   let cleanup='not-created';
-  if(created){try{await execute({file:IP,args:['netns','delete',plan.namespaceName],timeoutMs:5000});cleanup='removed';}
+  if(created){try{await execute({file:IP,args:['netns','delete',plan.namespaceName],timeoutMs:5000});
+   let absent=false;try{absent=namespaceAbsent(plan.namespacePath)===true;}catch{absent=false;}
+   if(absent)cleanup='removed';else cleanup='unknown';}
    catch{cleanup='unknown';}}
   error.partialCleanup=cleanup;
   throw error;

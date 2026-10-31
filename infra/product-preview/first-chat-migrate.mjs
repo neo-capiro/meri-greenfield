@@ -151,6 +151,10 @@ export const PLAN=Object.freeze([
  // Browser-call custody reuses the existing intent journal: append the delivery-identity extension as
  // ordinal 77 after the exact 1..76 prefix, preserving every reviewed pin and the two-key record rule.
  ['migration','apps/control/intents/migrations/0003_browser_operation_preparations.sql','eaa4558ad710d9ba26e2f18280b0ec4a8a439d515976f4a08f09c39152807408','integration'],
+ // Ordinal 78: accepted native-processing schema (DB correction02 qualified); imported byte-exact, unapplied here.
+ ['migration','apps/control/browser-hosts/migrations/0004_native_processing.sql','2740ff5f098e36bcaf781f86b79885d9dd559b2f9418edd335f647b4702d11d2','integration'],
+ // Ordinal 79: SCRUM-221 durable browser-download run reservations on the existing intent journal.
+ ['migration','apps/control/intents/migrations/0004_browser_download_run_reservations.sql','894f177dae9e393e4285f004730c3e07204132f001a75b1c93c999d212fe5853','integration'],
 ].map(([kind,path,pinned,declaredStage],index)=>Object.freeze({ordinal:index+1,kind,path,pinned,
  name:kind==='migration'?path:`${path}#${kind.slice(6)}`,
  stage:declaredStage??(kind==='phase:temporal_grants'?'temporal':'meri')})));

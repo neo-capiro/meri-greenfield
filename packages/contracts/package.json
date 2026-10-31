@@ -14,7 +14,16 @@
     "README.md",
     "THIRD-PARTY-NOTICES.md",
     "outreach-generation.mjs",
-    "outreach-generation.d.ts"
+    "outreach-generation.d.ts",
+    "native-lifecycle.mjs",
+    "native-lifecycle.d.ts",
+    "commands-0.2",
+    "native-bootstrap.mjs",
+    "native-bootstrap.d.ts",
+    "native-tls-kernel.mjs",
+    "retrieval-0.2/operation-contracts.mjs",
+    "native-observer.mjs",
+    "native-observer.d.ts"
   ],
   "exports": {
     "./objective-generation": {
@@ -134,6 +143,18 @@
     "./browser-viewer": {
       "types": "./dist/browser-viewer.d.ts",
       "default": "./dist/browser-viewer.mjs"
+    },
+    "./native-lifecycle": {
+      "types": "./native-lifecycle.d.ts",
+      "default": "./native-lifecycle.mjs"
+    },
+    "./native-observer": {
+      "types": "./native-observer.d.ts",
+      "default": "./native-observer.mjs"
+    },
+    "./native-bootstrap": {
+      "types": "./native-bootstrap.d.ts",
+      "default": "./native-bootstrap.mjs"
     }
   },
   "scripts": {

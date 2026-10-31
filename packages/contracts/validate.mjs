@@ -23,6 +23,11 @@ export function validateShape(name, value) {
   return value;
 }
 
+export function canonicalJson(value){
+  const bytes=canonicalize(value);
+  if(typeof bytes!=='string')throw new Error('Value is not canonical JSON');
+  return bytes;
+}
 export function canonicalSha256(value) {
   const bytes = canonicalize(value);
   if (typeof bytes !== 'string') throw new Error('Value is not canonical JSON');

@@ -11,6 +11,7 @@ import {Readable,Writable} from 'node:stream';
 import {mkdtemp,mkdir,readFile,writeFile,realpath,rm} from 'node:fs/promises';
 import {join} from 'node:path';
 import {startNativeProcessingHost} from './entrypoint.mjs';
+import {makeInertHierarchyPort} from './test-hierarchy-port.mjs';
 import {openNativeProcessingHost} from './bootstrap.mjs';
 import {childMain,inspectFixed} from './child-cli.mjs';
 import {composeUploadNativeHost} from '../uploads/composition.mjs';
@@ -19,6 +20,7 @@ import {UPLOAD_CHILD_ENV,UPLOAD_SCAN_INPUT} from '../uploads/native-sandbox.mjs'
 import {RENDERER_PROBE_SCHEMA} from '../../artifacts/renderer-qualification.mjs';
 
 const sha=bytes=>createHash('sha256').update(bytes).digest('hex');
+const closedReceipt=()=>({exitCode:0,leaderClosed:true,groupAbsent:true,settlement:'closed'});
 const uuid=n=>`00000000-0000-4000-8000-${String(n).padStart(12,'0')}`;
 const BYTES=Buffer.from('review exact original\n');
 const DECLARATION={filename:'review.txt',mimeType:'text/plain',bytes:BYTES.length,sha256:sha(BYTES)};
@@ -41,10 +43,15 @@ const IDENTITY={schema:'meri-d005-host-identity/1',hostId:uuid(7),conversationId
 async function boot({root,scratch,mode='success'}){
  const childSettings={runtimeUid:1000,runtimeGid:1000,imageDigest:IMAGE,definitionsRoot:'/fixture/definitions',
   extractorPath:'/fixture/extract.py',scratchRoot:'/fixture/scratch',credentialPaths:['/proc/1/environ']};
- const config={listen:{address:'127.0.0.1',port:9443},
+ 
+// Synthetic low-level Linux ports: only the kernel effect is inert; the producer is the REAL one.
+const lifecyclePortsFor=boot=>({async readBootId(){return boot;},
+ async openGroup(){return {async readEvents(){return 'populated 0\nfrozen 0\n';},async close(){}};}});
+const lifecycleLstat=()=>{throw Object.assign(Error('ENOENT'),{code:'ENOENT'});};
+const config={listen:{address:'127.0.0.1',port:9443},
   tls:{keyPath:'/fixture/key',certPath:'/fixture/cert',caPath:'/fixture/ca',peerSan:'control.meri.internal',
    peerFingerprint:'a'.repeat(64),peerNotAfterMs:LEASE,maxPeerLifetimeMs:900000},
-  image:{digest:IMAGE},allocation:{...ALLOCATION,instanceId:IDENTITY.instanceId,bootId:IDENTITY.bootId},
+  image:{digest:IMAGE},binding:BINDING,allocation:{...ALLOCATION,instanceId:IDENTITY.instanceId,bootId:IDENTITY.bootId},
   limits:{cpuQuotaUs:50000,periodUs:100000,memoryBytes:268435456,pidsMax:16,deadlineMaxMs:5000,bodyBytes:15000000},
   paths:{definitionsRoot:root,helperPath:'/fixed/helper',nodePath:'/fixed/node',childPath:'/fixed/child-cli.mjs',
    home:'/fixture/home',runtimeUid:1000,runtimeGid:1000,childSettings}};
@@ -57,7 +64,7 @@ async function boot({root,scratch,mode='success'}){
    const database=conf.split('\n').find(line=>line.startsWith('DatabaseDirectory ')).slice('DatabaseDirectory '.length);
    await writeFile(join(database,'main.cvd'),Buffer.from('synthetic main CVD'));
    await writeFile(join(database,'daily.cvd'),Buffer.from('synthetic daily CVD'));}
-  return {stdout:Buffer.alloc(0),receipt:{exitCode:0}};
+  return {stdout:Buffer.alloc(0),receipt:closedReceipt()};
  };
  const zero='0'.repeat(16);
  const roleRun=async(role,options)=>{
@@ -69,18 +76,18 @@ async function boot({root,scratch,mode='success'}){
     envNames:[...UPLOAD_CHILD_ENV],cwd:options.cwd,home:options.cwd,tmpdir:options.cwd,
     workspace:{mode:0o700,uid:1000},
     credentialPathsReadable:JSON.parse(options.input).credentialPaths.map(path=>({path,readable:false}))})),
-   receipt:{exitCode:0}};
+   receipt:closedReceipt()};
   if(options.mode==='version')return {stdout:Buffer.from(role==='scan'?'ClamAV 1.4.2/27450/x\n':'Python 3.13.16\n'),
-   receipt:{exitCode:0}};
+   receipt:closedReceipt()};
   if(role==='scan'){scanDirectories.push(options.definitionsRoot);
    assert.deepEqual(await readFile(join(options.cwd,UPLOAD_SCAN_INPUT)),BYTES,'the scanner saw the exact original bytes');
-   return {stdout:Buffer.from(UPLOAD_SCAN_INPUT+': OK\n'),receipt:{exitCode:0}};}
-  return {stdout:Buffer.from(JSON.stringify({status:'available',segments:[],limitations:[]})),receipt:{exitCode:0}};
+   return {stdout:Buffer.from(UPLOAD_SCAN_INPUT+': OK\n'),receipt:closedReceipt()};}
+  return {stdout:Buffer.from(JSON.stringify({status:'available',segments:[],limitations:[]})),receipt:closedReceipt()};
  };
- started=await startNativeProcessingHost({config,readFile:()=>Buffer.from('synthetic TLS bytes'),definitionsRun,
+ started=await startNativeProcessingHost({hierarchyPort:makeInertHierarchyPort(),config,lifecyclePorts:lifecyclePortsFor(IDENTITY.bootId),lifecycleLstat,readFile:()=>Buffer.from('synthetic TLS bytes'),definitionsRun,
   authenticatePeer:async()=>({verified:true,notAfterMs:LEASE}),
   verifyCustody:async()=>({authorized:true,allocation:ALLOCATION,binding:BINDING,hostIdentity:IDENTITY,
-   currentness:{readCurrent:async()=>({})}}),
+   currentness:{policySha256:'f'.repeat(64),maxFreshMs:1000,readCurrent:async({allocation,binding})=>({allocation,binding,policySha256:'f'.repeat(64),phase:'active',checkedAtMs:Date.now(),currentUntilMs:Date.now()+500})}}),
   serverFactory:(_opts,handler)=>{listener=handler;return {once(){},listen(_p,_a,cb){cb();},close(cb){cb?.();}};},
   openHost:input=>openNativeProcessingHost({...input,
    openCompartment:async()=>({close:async()=>({closed:true})}),
@@ -95,7 +102,7 @@ async function boot({root,scratch,mode='success'}){
         configuration:{uploads:{native:{...options.configuration.uploads.native,definitionsRoot:root}}},
         readFileImpl:async path=>Buffer.from('fixed-tool:'+path)});
         compositions.push({missing:result.missing,reason:result.reason});return result;}})});
-     return {stdout:captured,receipt:{exitCode:0}};},
+     return {stdout:captured,receipt:closedReceipt()};},
     close:async()=>{activeAtPlacementClose=started.definitionsOwner.active();return {closed:true};}})})});
  return {started,listener:()=>listener,programs,roles,scanDirectories,compositions,
   activeAtPlacementClose:()=>activeAtPlacementClose,releaseVerification:()=>releaseVerification,
@@ -175,7 +182,8 @@ test('JOINED late pin: a verification completing after handler expiry is not los
   assert.equal(host.started.definitionsOwner.active(),0,'a never-dispatched late pin cannot leak');
   assert.equal(host.compositions.length,0,'the expired request never dispatched a child');
   const closed=await host.started.close();
-  assert.deepEqual(closed,{closed:true,pending:0},'the definitive late release settles the host activity');
+  assert.equal(closed.closed,true,'the definitive late release settles the host activity');
+ assert.ok(Number.isSafeInteger(closed.quiescedAtMs));
  }finally{await rm(owned,{recursive:true,force:true});}
 });
 

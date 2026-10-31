@@ -114,7 +114,7 @@ async function compose({factOverrides={},workflowOverrides={},decide=null,record
  const store=createPostgresHostCurrentnessStore({transact:async effect=>effect(sqlClient),
   readCanonicalRun:async()=>runState,readCanonicalFacts:async()=>facts(),
   resolveWorkflow:async()=>workflow,maxLeaseMs:5000,...(decide===null?{}:{decideBrowserApproval:decide}),
-  ...(record===null?{}:{recordBrowserReceipt:record})});
+  ...(record===null?{}:{recordBrowserReceipt:record}),recordBrowserDownloadReceipt:async()=>({eventId:'d',recorded:true})});
  const captured={handler:null};const fake=new EventEmitter();
  fake.listening=false;fake.listen=()=>{fake.listening=true;fake.emit('listening');};
  fake.address=()=>({address:'127.0.0.1',port:8443});fake.close=cb=>cb?.();
@@ -179,7 +179,8 @@ test('a foreign binding, a bad digest, an out-of-policy origin and a changed sel
 test('the receipt closure forwards the ORIGINAL receipt and its own signal',async()=>{
  const seen=[];
  const fakeClient={readFacts(){},resolveBrowserWorkflow(){},decideBrowserApproval(){},
-  async recordBrowserReceipt(receipt,options){seen.push([receipt,options?.signal]);return {eventId:'e',recorded:true};}};
+  async recordBrowserReceipt(receipt,options){seen.push([receipt,options?.signal]);return {eventId:'e',recorded:true};},
+  async recordBrowserDownloadReceipt(receipt,options){seen.push([receipt,options?.signal]);return {eventId:'d',recorded:true};}};
  const {createBrowserHostReadRun}=await import('./runtime-read-run.mjs');
  const run=createBrowserHostReadRun({allocation,binding,cwd,client:fakeClient,installation:contextInstallation,
   egress:{endpoint:installation.egressProxy,async grant(){},async revoke(){}},
@@ -220,7 +221,7 @@ test('expired facts are refused, and construction requires every trusted owner',
  const base={allocation,binding,cwd,installation:contextInstallation,
   egress:{endpoint:installation.egressProxy,async grant(){},async revoke(){}},
   processes:{async waitForExit(){}},artifacts:{async ingest(){}}};
- const client={readFacts(){},resolveBrowserWorkflow(){},decideBrowserApproval(){},recordBrowserReceipt(){}};
+ const client={readFacts(){},resolveBrowserWorkflow(){},decideBrowserApproval(){},recordBrowserReceipt(){},recordBrowserDownloadReceipt(){}};
  const noArtifacts={...base,client};delete noArtifacts.artifacts;
  assert.throws(()=>createBrowserHostReadRun(noArtifacts),/BROWSER_HOST_READ_RUN_REFUSED/u,
   'the artifact owner is required');
@@ -298,7 +299,8 @@ test('terminal abort during a deferred exchange denies the answer; a pre-aborted
  // A trusted client that IGNORES the abort: only the helper's post-await guard can deny the result.
  const client={async readFacts(){calls.read++;return {facts:null};},resolveBrowserWorkflow(){},
   async decideBrowserApproval(){calls.decide++;await gate;return {permitted:true,receipt:approvedReceipt('toolu_x')};},
-  async recordBrowserReceipt(){return {recorded:true};}};
+  async recordBrowserReceipt(){return {recorded:true};},
+  async recordBrowserDownloadReceipt(){return {recorded:true};}};
  const terminal=new AbortController();
  const run=helper(client,{terminalSignal:terminal.signal});
  const pending=run.approvals.decide(request_('toolu_x'),{signal:new AbortController().signal});
@@ -310,7 +312,8 @@ test('terminal abort during a deferred exchange denies the answer; a pre-aborted
  let release2;const gate2=new Promise(r=>{release2=r;});
  const client2={async readFacts(){return {facts:null};},resolveBrowserWorkflow(){},
   async decideBrowserApproval(){await gate2;return {permitted:true,receipt:approvedReceipt('toolu_y')};},
-  async recordBrowserReceipt(){return {recorded:true};}};
+  async recordBrowserReceipt(){return {recorded:true};},
+  async recordBrowserDownloadReceipt(){return {recorded:true};}};
  const own=new AbortController();
  const run2=helper(client2);
  const pending2=run2.approvals.decide(request_('toolu_y'),{signal:own.signal});
@@ -319,7 +322,7 @@ test('terminal abort during a deferred exchange denies the answer; a pre-aborted
  // An already-aborted terminal refuses every entry point without touching the client.
  const deadTerminal=new AbortController();deadTerminal.abort();
  const spy={readFacts(){calls.read++;return {facts:null};},resolveBrowserWorkflow(){calls.read++;},
-  decideBrowserApproval(){calls.decide++;},recordBrowserReceipt(){calls.decide++;}};
+  decideBrowserApproval(){calls.decide++;},recordBrowserReceipt(){calls.decide++;},recordBrowserDownloadReceipt(){calls.decide++;}};
  const dead=helper(spy,{terminalSignal:deadTerminal.signal});
  const signals=new AbortController().signal;
  await assert.rejects(()=>dead.readRun({binding,signal:signals}),/BROWSER_HOST_READ_RUN_REFUSED/u);

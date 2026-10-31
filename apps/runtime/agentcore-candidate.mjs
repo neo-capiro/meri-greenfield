@@ -50,7 +50,7 @@ const check=signal=>()=>signal?.throwIfAborted();
 const absent=code=>Response.json({error:{code}},{status:503,headers:{'cache-control':'no-store'}});
 
 /** Dependencies are borrowed. Only startAgentCoreCandidate creates and closes the provider client. */
-export function assembleAgentCoreCandidate({configuration,pool,provider,controlCredential,nativeCredentials,
+export function assembleAgentCoreCandidate({configuration,pool,provider,controlCredential,nativeCredentials,nativeNeed,nativeReady,nativeHostAuthority,nativeHostTeardown,
  store,initialBindings=createInitialRunBindingJournal({pool}),
  fetchImpl=globalThis.fetch,now=Date.now,createReadsRuntime,turnTelemetry,getCoreServiceSecret,readSecret=readRuntimeSecret}){
  const config=compileAgentCoreConfiguration(configuration.agentcore),versions=configuration.versions;
@@ -221,7 +221,7 @@ export function assembleAgentCoreCandidate({configuration,pool,provider,controlC
   }finally{life.close();}
  }});
  const execution=createAgentCoreExecutionOwner({store,provider,versions,
-  plan:{runtimeArn:config.runtimeArn,runtimeVersion:config.runtimeVersion,qualifier:config.qualifier},credentialSecret:controlCredential,admit,contextFor,now,
+  plan:{runtimeArn:config.runtimeArn,runtimeVersion:config.runtimeVersion,qualifier:config.qualifier},credentialSecret:controlCredential,admit,contextFor,now,...(nativeNeed?{nativeNeed}:{}),...(nativeReady?{nativeReady}:{}),
   ...(routineCore?{beforeInvocation:routineCore.beforeInvocation}:{})});
  const reconciler=createRunReconciler({store,stopExecution:execution.stopExecution,now,maxReconcileMs:Math.min(120000,configuration.limits.shutdownMs)});
  async function stop({binding,executionId,signal}){
@@ -244,7 +244,8 @@ export function assembleAgentCoreCandidate({configuration,pool,provider,controlC
   if(result.rows.length!==tables.length||result.rows.some(row=>row.relation===null))throw fault('DATABASE_SCHEMA_UNAVAILABLE');
   return {service:'meri-native-capability-provider/1',ready:true};
  }
- const owner=Object.freeze({...execution,stop,readiness,retentionSweep:input=>{
+ const owner=Object.freeze({...execution,...(nativeHostAuthority?{hostAuthority:async(input)=>{if(typeof nativeHostAuthority!=='function')throw fault('NATIVE_HOST_AUTHORITY_UNAVAILABLE');return nativeHostAuthority(input);}}:{}),
+  ...(nativeHostTeardown?{hostTeardown:async(input)=>{if(typeof nativeHostTeardown?.settle!=='function')throw fault('NATIVE_HOST_TEARDOWN_UNAVAILABLE');return nativeHostTeardown.settle(input);}}:{}),stop,readiness,retentionSweep:input=>{
   if(typeof outerApplication?.sweepRetention!=='function')throw fault('EXECUTION_STORE_UNAVAILABLE');
   return outerApplication.sweepRetention(input);
  }});
@@ -306,7 +307,7 @@ export function assembleAgentCoreCandidate({configuration,pool,provider,controlC
  const native=Object.freeze({verifyIdentity:identityContext.verifyIdentity,resolveContext:identityContext.resolveContext,
   call(operation,input,{signal}={}){const invoke=async()=>{
    if(closed)throw fault('EXECUTION_UNAVAILABLE');
-   const method={'execution/kickoff':'kickoff','execution/kickoff/status':'status','execution/kickoff/stop':'stop'}[operation];
+   const method={'execution/kickoff':'kickoff','execution/kickoff/status':'status','execution/kickoff/stop':'stop','execution/native/prerequisite':'nativePrerequisite','execution/native/host-authority':'hostAuthority','execution/native/host-teardown':'hostTeardown'}[operation];
    if(!method)throw fault('NATIVE_OPERATION_UNAVAILABLE');return owner[method]({...input,signal});
   };return turnTelemetry?turnTelemetry.provisional(invoke):invoke();},readiness});
  const routinesOccurrenceOwners=routinesTask===null?null:createNativeRoutinesOccurrenceOwners({configuration,native,store,now});
@@ -317,12 +318,12 @@ export function assembleAgentCoreCandidate({configuration,pool,provider,controlC
   async close(){closed=true;await execution.close();}});
 }
 
-export async function startAgentCoreCandidate({configuration,pool,signal,controlCredential,nativeCredentials,createReadsRuntime,turnTelemetry,getCoreServiceSecret}){
+export async function startAgentCoreCandidate({configuration,pool,signal,controlCredential,nativeCredentials,createReadsRuntime,turnTelemetry,getCoreServiceSecret,nativeNeed,nativeReady,nativeHostAuthority,nativeHostTeardown}){
  const config=compileAgentCoreConfiguration(configuration.agentcore);signal?.throwIfAborted();
  const {createAgentCoreClient}=await import('./agentcore-client.mjs');
  const provider=createAgentCoreClient({region:'us-east-1',agentRuntimeArn:config.runtimeArn,qualifier:config.qualifier});
  try{
-  const candidate=assembleAgentCoreCandidate({configuration,pool,provider,controlCredential,nativeCredentials,createReadsRuntime,turnTelemetry,getCoreServiceSecret});
+  const candidate=assembleAgentCoreCandidate({configuration,pool,provider,controlCredential,nativeCredentials,createReadsRuntime,turnTelemetry,getCoreServiceSecret,...(nativeNeed?{nativeNeed}:{}),...(nativeReady?{nativeReady}:{}),...(nativeHostAuthority?{nativeHostAuthority}:{}),...(nativeHostTeardown?{nativeHostTeardown}:{})});
   return Object.freeze({...candidate,async close(){try{await candidate.close();}finally{provider.close();}}});
  }catch(error){provider.close();throw error;}
 }

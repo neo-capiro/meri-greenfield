@@ -12,7 +12,7 @@ import {canonicalSha256} from '../../../../../packages/contracts/validate.mjs';
 import {own,data,nativeSignal} from '../../../../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {playwrightHostCommand,validateBrowserInstallation,validateBrowserContextInstallation} from '../../browser/server.mjs';
 import {validateBrowserPolicy} from '../../browser/policy.mjs';
-import {assertHostAllocation,assertHostRunBinding,assertD005HostIdentity,assertHostCurrent,assertBrowserHostCurrent} from '../binding.mjs';
+import {assertHostAllocation,assertHostRunBinding,assertD005HostIdentity,assertHostCurrent,assertBrowserHostCurrent,assertCurrentForAllocation} from '../binding.mjs';
 import {namespaceProbeArgs,READINESS_MODEL_ENV} from '../../sandbox-readiness/readiness.mjs';
 import {createSdkChildQuiescenceObserver} from './sdk-quiescence.mjs';
 import {createSdkChildHold} from './sdk-hold.mjs';
@@ -132,7 +132,7 @@ async function checkAuthority(s,readers,signal,ms){
  for(const authority of readers){
   const receipt=await within(inner=>authority.readCurrent({allocation:structuredClone(s.allocation),binding:structuredClone(s.binding),
    policySha256:authority.policySha256,signal:inner}),ms,signal);
-  assertHostCurrent({allocation:s.allocation,binding:s.binding,policySha256:authority.policySha256,
+  assertCurrentForAllocation(s.allocation)({allocation:s.allocation,binding:s.binding,policySha256:authority.policySha256,
    current:receipt,nowMs:Date.now(),maxFreshMs:authority.maxFreshMs});
  }
 }
@@ -438,8 +438,8 @@ export function createProcessingCommandLauncher({allocation,binding,hostIdentity
     policySha256:authority.policySha256,signal:life}),remaining(),life);}
    catch{fail('HOST_LAUNCH_CURRENTNESS_REFUSED');}
    if(aborted())fail('HOST_LAUNCH_CANCELLED');
-   try{assertHostCurrent({allocation:s.allocation,binding:s.binding,policySha256:authority.policySha256,current,
-    nowMs:now(),maxFreshMs:authority.maxFreshMs});}catch{fail('HOST_LAUNCH_CURRENTNESS_REFUSED');}
+   try{assertCurrentForAllocation(s.allocation)({allocation:s.allocation,binding:s.binding,policySha256:authority.policySha256,
+    current,nowMs:now(),maxFreshMs:authority.maxFreshMs});}catch{fail('HOST_LAUNCH_CURRENTNESS_REFUSED');}
    remaining();
    const pin=await verifiedNetwork(s,network,'processing',life,remaining());
    if(aborted())fail('HOST_LAUNCH_CANCELLED');

@@ -16,6 +16,7 @@ import {OBJECTIVE_GENERATION_START_PATH} from './objective-generation/start-appl
 import {APPROVAL_METADATA_READ_PATH} from './agentcore-control-http.mjs';
 import {workspaceGenerationPaths} from '../control/conversations/workspace-generation/protocol.mjs';
 import {RETENTION_WITNESS_PATH} from '../control/retention/serving-witness.mjs';
+import {NATIVE_OBSERVER_ROUTE} from '../../packages/contracts/native-observer.mjs';
 import {SOURCE_EVENT_BINDING_PATH,SOURCE_EVENT_PATH} from '../control/schedules/source-event-contract.mjs';
 const SOURCE_EVENT_PATHS=Object.freeze([SOURCE_EVENT_PATH,SOURCE_EVENT_BINDING_PATH]);
 const absent=()=>Response.json({error:{code:'ROUTE_NOT_FOUND'}},{status:404,headers:{'cache-control':'no-store','x-content-type-options':'nosniff'}});
@@ -23,8 +24,8 @@ const OFFICE_PUBLIC_PATHS=Object.freeze(OFFICE_ROUTES.map(route=>'/api/meri/offi
 const publicPath=path=>OFFICE_PUBLIC_PATHS.includes(path)||path==='/api/outreach-generation/start'||path==='/api/conversations'||path.startsWith('/api/conversations/')||path==='/api/action-followthrough/session'||path==='/api/action-followthrough/browser-session'||path.startsWith('/api/meri/browser/')||path==='/api/action-followthrough/query'||path===ROUTINE_MANAGEMENT_SESSION_PATH||Object.values(USER_PREFERENCES_PATHS).includes(path)||Object.values(taskCommandPaths).includes(path)||Object.values(ROUTINE_PATHS).includes(path)||Object.values(TENANT_SETTINGS_PATHS).includes(path)||Object.values(MEMORY_PATHS).includes(path)||path.startsWith('/api/documents/')||Boolean(matchUploadApplicationPath(path));
 const privatePath=path=>path.startsWith('/v1/')||path.startsWith('/internal/conversations/')||path.startsWith(OBJECTIVE_READER_PREFIX);
 
-export function createControlRouteApplications({assembly,candidate,router=null,poststart=null,privateIngress=null,objectiveReader=null,approvalMetadataReader=null,objectiveRuns=null,objectiveStart=null,routinesOccurrences=null,sourceEvents=null,workspaceGeneration=null,retentionWitness=null,office=null}){
- if(typeof assembly?.handle!=='function'||typeof candidate?.handle!=='function'||(office!==null&&(typeof office?.handleControl!=='function'||typeof office?.handleWopi!=='function'))||[objectiveReader,approvalMetadataReader,objectiveRuns,objectiveStart,routinesOccurrences,sourceEvents,workspaceGeneration,retentionWitness].some(app=>app!==null&&typeof app?.handle!=='function'))throw Error('PRIVATE_CONTROL_CONFIGURATION');
+export function createControlRouteApplications({assembly,candidate,router=null,poststart=null,privateIngress=null,objectiveReader=null,approvalMetadataReader=null,objectiveRuns=null,objectiveStart=null,routinesOccurrences=null,sourceEvents=null,workspaceGeneration=null,retentionWitness=null,office=null,nativeObserver=null}){
+ if(typeof assembly?.handle!=='function'||typeof candidate?.handle!=='function'||(office!==null&&(typeof office?.handleControl!=='function'||typeof office?.handleWopi!=='function'))||[objectiveReader,approvalMetadataReader,objectiveRuns,objectiveStart,routinesOccurrences,sourceEvents,workspaceGeneration,retentionWitness,nativeObserver].some(app=>app!==null&&typeof app?.handle!=='function'))throw Error('PRIVATE_CONTROL_CONFIGURATION');
  const marker=privateIngress?.issue();
  if(router!==null&&(!marker||typeof router.privateApplication?.handle!=='function'))throw Error('PRIVATE_CONTROL_CONFIGURATION');
  if(poststart!==null&&(!marker||typeof poststart.privateApplication?.handle!=='function'))throw Error('PRIVATE_CONTROL_CONFIGURATION');
@@ -37,6 +38,7 @@ export function createControlRouteApplications({assembly,candidate,router=null,p
   private:Object.freeze({async handle(request){const path=new URL(request.url).pathname;
    if(path.startsWith('/api/meri/office/wopi/files/'))return office===null?absent():(await office.handleWopi(request))??absent();
    if(!privatePath(path))return absent();
+   if(path===NATIVE_OBSERVER_ROUTE)return nativeObserver===null?absent():(await nativeObserver.handle(request))??absent();
    if(path===RETENTION_WITNESS_PATH)return (retentionWitness===null?null:await retentionWitness.handle(request))??absent();
    if(path===APPROVAL_METADATA_READ_PATH)return (approvalMetadataReader===null?null:await approvalMetadataReader.handle(request))??absent();
    // The Workspace generation leaf: the current identity credential in the request authenticates the

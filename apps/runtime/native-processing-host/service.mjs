@@ -48,12 +48,22 @@ export function nativeInspectionBody(raw){
 }
 
 /** @param {{authenticate:Function,verifyCustody?:Function,openHost:Function,readBody:Function,limits:object,now?:Function}} input */
-export function createInspectionHandler({authenticate,verifyCustody,openHost,readBody,limits,now=Date.now,onActivity}={}){
+export function createInspectionHandler({authenticate,verifyCustody,openHost,readBody,limits,now=Date.now,onActivity,admission}={}){
  if(typeof authenticate!=='function'||typeof openHost!=='function'||typeof readBody!=='function'||
+  (admission!==undefined&&typeof admission!=='function')||
   !limits||!Number.isSafeInteger(limits.deadlineMaxMs)||!Number.isSafeInteger(limits.bodyBytes))
   fault('NATIVE_INSPECTION_CONFIGURATION');
  return async function handle(req,res){
   const started=now();
+  // Trusted admission gate: refused at ENTRY, BEFORE any cancellation listener or activity owner is attached.
+  const admitted=()=>admission===undefined||admission()===true;
+  if(!admitted()){
+   try{
+    res.writeHead(503,{'content-type':'application/json'});
+    res.end(JSON.stringify({error:'NATIVE_PROCESSING_CLOSED'}));
+   }catch{}
+   return;
+  }
   const controller=new AbortController();
   // HTTP `close` fires on NORMAL message completion too. Only a PREMATURE end (message not fully received, or the
   // response/socket destroyed before finish) is a cancellation; an ordinary completed body continues to inspection.
@@ -108,9 +118,19 @@ export function createInspectionHandler({authenticate,verifyCustody,openHost,rea
     // Setup is raced through the SAME lifetime signal, and its promise is retained: if it fulfills after this operation
     // already failed, the continuation closes that owner exactly once and only then releases its activity.
     let settled=false,lateCleanup=null,pendingComplete=false;
-    const pendingSetup=Promise.resolve().then(()=>openHost({allocation:granted.allocation??body.allocation,
+    let dispatched=false;
+    const notCreated=code=>Object.assign(Error(code),{code,partialCleanup:'not-created'});
+    const pendingSetup=Promise.resolve().then(()=>{
+      if(!admitted())throw notCreated('NATIVE_PROCESSING_CLOSED');
+      // The SAME boundary: a lifetime refusal here is BEFORE openHost, so it is known not-created. An error from
+      // openHost itself still needs its own partialCleanup evidence and is never annotated here.
+      try{life.check();}
+      catch(error){throw notCreated(typeof error?.code==='string'?error.code:'NATIVE_INSPECTION_CANCELLED');}
+      dispatched=true;
+      return openHost({allocation:granted.allocation??body.allocation,
       binding:granted.binding??body.binding,hostIdentity:granted.hostIdentity??body.hostIdentity,
-      authority:granted.currentness,deadlineMs:deadline,signal:life.signal}))
+      authority:granted.currentness,deadlineMs:deadline,signal:life.signal});
+     })
      .then(value=>{
       pendingComplete=true;
       if(settled){lateCleanup=settleOwner(value);}
@@ -118,7 +138,9 @@ export function createInspectionHandler({authenticate,verifyCustody,openHost,rea
       return value;},
       error=>{pendingComplete=true;
        // A proven late unwind releases the retained activity even after the bounded wait has expired; unknown keeps it.
-       if(error?.partialCleanup==='removed'||error?.partialCleanup==='not-created')releaseActivityOnce();
+       // A pre-dispatch refusal is known not-created; an actual openHost failure must carry its own partialCleanup evidence.
+       if(error?.partialCleanup==='removed'||error?.partialCleanup==='not-created'||
+        (dispatched===false&&error?.partialCleanup===undefined))releaseActivityOnce();
        throw error;});
     try{await life.run(()=>pendingSetup);}
     catch(setupError){

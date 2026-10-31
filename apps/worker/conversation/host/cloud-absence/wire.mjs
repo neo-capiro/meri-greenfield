@@ -61,7 +61,10 @@ export function decodeOwnedInstance(raw,{allocation,hostIdentity,expected}){
  same(field(instance,'VpcId'),expected.vpcId);
  same(field(instance,'SubnetId'),expected.subnetId);
  tagged(field(instance,'Tags'),ownerTags({allocation,allocationSha256:canonicalSha256(allocation)}));
- if(optional(instance,'PublicIpAddress')!==undefined||optional(instance,'PublicDnsName')!==undefined)fail();
+ const publicIp=optional(instance,'PublicIpAddress'),publicDns=optional(instance,'PublicDnsName');
+ // AWS returns these as empty strings on private instances. Any real public address/name is refused.
+ if(publicIp!==undefined&&publicIp!==null&&publicIp!=='')fail();
+ if(publicDns!==undefined&&publicDns!==null&&publicDns!=='')fail();
  const state=field(instance,'State');
  const states=new Map([['pending',0],['running',16],['shutting-down',32],['terminated',48],['stopping',64],['stopped',80]]);
  if(states.get(field(state,'Name'))!==field(state,'Code'))fail();
@@ -86,13 +89,27 @@ export function decodeOwnedInstance(raw,{allocation,hostIdentity,expected}){
   if(groups.length!==1||field(groups[0],'GroupId')!==expected.securityGroupId)fail();
   if(optional(nic,'Association')!==undefined&&optional(nic,'Association')!==null)fail();
   const attachment=field(nic,'Attachment');
-  same(field(attachment,'InstanceId'),hostIdentity.instanceId);
+  // InstanceNetworkInterfaceAttachment has no InstanceId. The independent DescribeNetworkInterfaces read
+  // (decodeAttachedEni) proves the actual attachment identity; this read records ownership/delete intent.
+  if(optional(attachment,'InstanceId')!==undefined)same(field(attachment,'InstanceId'),hostIdentity.instanceId);
   same(field(attachment,'DeleteOnTermination'),true);
   if(networkInterfaces.length===1)same(field(attachment,'DeviceIndex'),0);
+  const attachmentId=optional(attachment,'AttachmentId');
+  if(attachmentId!==undefined&&(typeof attachmentId!=='string'||!/^eni-attach-[0-9a-f]{8,17}$/u.test(attachmentId)))fail();
+  const status=optional(attachment,'Status');
+  if(status!==undefined&&(typeof status!=='string'||!['attaching','attached','detaching','detached'].includes(status)))fail();
   networkInterfaceIds.push(eniId);
  }
  return Object.freeze({instanceId:hostIdentity.instanceId,rootVolumeId,
-  networkInterfaceIds:Object.freeze(networkInterfaceIds)});
+  networkInterfaceIds:Object.freeze(networkInterfaceIds),
+  preObservation:Object.freeze({schema:'meri-native-preobservation/1',accountId:expected.accountId,
+   region:expected.region,instanceId:hostIdentity.instanceId,rootVolumeId,
+   networkInterfaceIds:Object.freeze([...networkInterfaceIds]),
+   rootVolumeDeleteOnTermination:true,
+   attachments:Object.freeze(networkInterfaces.map(nic=>Object.freeze({id:field(nic,'NetworkInterfaceId'),
+    attachmentId:optional(field(nic,'Attachment'),'AttachmentId'),
+    deleteOnTermination:true,deviceIndex:field(field(nic,'Attachment'),'DeviceIndex')}))),
+   requestId:raw.$metadata?.requestId,httpStatusCode:raw.$metadata?.httpStatusCode})});
 }
 
 /** Pre-termination exact-ID reads prevent a stale instance mapping from authorizing a foreign resource. */

@@ -38,7 +38,8 @@ test('SDK offers all three schedules through the real family and one journal; ex
  assert.deepEqual(available.operations.map(o=>o.id),['schedule_task','update_scheduled_task','cancel_scheduled_task']);
  const prepared=await f.prepare();assert.equal(f.preparations.state.rows.size,1);assert.equal(f.temporal.calls.create,0);assert.deepEqual(prepared.request,routineRequest());
  assertPreparedResult('schedule',{id:'schedule_task',version:'0.2.0'},prepared,binding,{scopes:f.scopes(),nowMs:f.now()});
- const history=createIntentApprovalOwner({journal:createPostgresIntentJournalStore({pool:f.pool}),now:f.now,limits:{maxRequestMs:5000},enabled:true});
+ const {read,list}=createPostgresIntentJournalStore({pool:f.pool});
+ const history=createIntentApprovalOwner({journal:{read,list},now:f.now,limits:{maxRequestMs:5000},enabled:true});
  const principal={tenantId:binding.tenantId,actorId:binding.actorId,clientIds:[clientId]},request={conversationId:binding.conversationId};
  const listed=await history.list({principal,request}),received=await receiveIntentsResponse('list',200,JSON.stringify(listed),{request});
  assert.deepEqual(received.intents[0].request,prepared.request);assert.deepEqual(received.intents[0].proposal,prepared.proposal);assert.deepEqual(received.intents[0].binding,binding);

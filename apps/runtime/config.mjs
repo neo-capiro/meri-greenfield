@@ -18,6 +18,7 @@ import {compileMemoryConfiguration} from './product-ports/memory.mjs';
 import {compileUploadNativeConfiguration} from './uploads/control-lifecycle.mjs';
 import {compileRoutinesCoreConfiguration} from './native-authority/routines-configuration.mjs';
 import {compileObjectiveGenerationConfiguration} from './objective-generation/configuration.mjs';
+import {compileNativeDeployment} from './native-deployment-configuration.mjs';
 export {compileControlUserPreferencesConfiguration};
 // Control carries the full read roster in its capability and admission policies.
 // Other role configurations and individual secret files retain their 32 KiB bound.
@@ -33,7 +34,7 @@ export function validateConfiguration(raw,role){
  // owners are trusted in-process ports, never configuration, so JSON alone cannot start it; it may declare `native` (its client to
  // control's private occurrence operations, lane B3; schedule-service-configuration.mjs) and `routines` (Core's firing pin, lane B2).
  const common=['version','profile','sourceEnabled','limits',...(role==='schedule-worker'?[]:['native'])];
- own(c,[...common,...(role==='control'?['http','database','temporal','sessions','versions','agentcore','models']:role==='temporal-worker'?['http','temporal']:['http','temporal','versions','scheduledDispatch'])],role==='control'?['retention','telemetry','downloadLinks','privateHttp','userPreferences','tenantSettings','capabilityPlatform','browserPlatform','routines','artifacts','intents','reads','objectiveGeneration','memory','uploads','browserHosts','office']:role==='schedule-worker'?['database','native','routines']:['objectiveGeneration']);
+ own(c,[...common,...(role==='control'?['http','database','temporal','sessions','versions','agentcore','models']:role==='temporal-worker'?['http','temporal']:['http','temporal','versions','scheduledDispatch'])],role==='control'?['retention','telemetry','downloadLinks','privateHttp','userPreferences','tenantSettings','capabilityPlatform','browserPlatform','routines','artifacts','intents','reads','objectiveGeneration','memory','uploads','browserHosts','office']:role==='schedule-worker'?['database','native','routines']:['objectiveGeneration','nativeProvisioning']);
  if(role==='control')assertModelCatalog(c.models);
  if(c.userPreferences!==undefined){requireValue(role==='control','USER_PREFERENCES_CONFIGURATION');compileControlUserPreferencesConfiguration(c);}
  // Lane B control opt-ins (product-ports/settings.mjs, routines.mjs) and the trusted platform capability record (capability-policy.mjs, N3).
@@ -56,6 +57,21 @@ export function validateConfiguration(raw,role){
  // readiness requires the retention projections; when absent, no gate exists and nothing pretends otherwise.
  // Purge is an explicit switch that this source only accepts off: activation is a reviewed change, never a configuration value.
  if(c.retention!==undefined){requireValue(role==='control','RETENTION_CONFIGURATION');own(c.retention,['enabled'],['purge']);requireValue(c.retention.enabled===true,'RETENTION_CONFIGURATION');if(c.retention.purge!==undefined){own(c.retention.purge,['enabled']);requireValue(typeof c.retention.purge.enabled==='boolean','RETENTION_CONFIGURATION');}}
+
+ if(c.nativeProvisioning!==undefined){
+  requireValue(role==='temporal-worker','NATIVE_PROVISIONING_CONFIGURATION');
+  const p=c.nativeProvisioning;own(p,['enabled'],['databaseFile','issuerCaCertFile','issuerCaKeyFile','deployment','watchdog']);
+  requireValue(typeof p.enabled==='boolean','NATIVE_PROVISIONING_CONFIGURATION');
+  if(p.enabled){
+   for(const k of ['databaseFile','issuerCaCertFile','issuerCaKeyFile','deployment','watchdog']){
+    requireValue(p[k]!==undefined,'NATIVE_PROVISIONING_CONFIGURATION');
+   }
+   own(p.watchdog,['stateMachineVersionArn','definitionSha256','qualificationEvidenceSha256']);
+   for(const k of ['databaseFile','issuerCaCertFile','issuerCaKeyFile'])file(p[k]);
+   try{compileNativeDeployment(p.deployment);}catch{throw fault('NATIVE_PROVISIONING_CONFIGURATION');}
+  }else requireValue(p.databaseFile===undefined&&p.issuerCaCertFile===undefined&&p.issuerCaKeyFile===undefined&&
+   p.deployment===undefined&&p.watchdog===undefined,'NATIVE_PROVISIONING_CONFIGURATION');
+ }
  // G1: source connectivity is an explicit boolean (decided: 10-15 #5, D015 #4a). The schedule worker stays source-disabled
  // (schedule-service-configuration.mjs); every source owner keeps its own enablement, authority and fail-closed checks.
  requireValue(c.version===1&&c.profile==='isolated-preview'&&typeof c.sourceEnabled==='boolean'&&(role!=='schedule-worker'||c.sourceEnabled===false));
