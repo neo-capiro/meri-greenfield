@@ -209,3 +209,18 @@ test('trusted CODE postmessage origin requires an exact HTTPS origin',async t=>{
  for(const browserOrigin of [undefined,'*','http://app.example.test','https://app.example.test/path','https://user:password@app.example.test'])
   assert.throws(()=>createRuntimeOfficeApplication({...f.config,browserOrigin}));
 });
+test('pptx launch cannot return a write token after the final read becomes workbook-bearing',async t=>{
+ const {zip}=await import('../../../artifacts/structure/test/fixtures.mjs');
+ const {chart}=await import('../../../artifacts/edit-sessions/test/embedded-chart-fixture.mjs');
+ const f=await fixture(t,{format:'pptx'}),bytes=zip(chart());let changed=false;
+ f.state.hook=r=>{if(r==='editor/read'){changed=true;Object.assign(f.draft,{sequence:1,sha256:f.sha(bytes),byteLength:bytes.length,bytesBase64:bytes.toString('base64'),state:'draft'});}};
+ await assert.rejects(f.start(),{code:'EDITOR_CODE_ACTION_UNAVAILABLE'});assert.equal(changed,true);assert.equal(f.draft.sha256,f.sha(bytes));assert.equal(f.state.puts,1);
+});
+test('pptx renew cannot return a write token after the final read becomes workbook-bearing',async t=>{
+ const {zip}=await import('../../../artifacts/structure/test/fixtures.mjs');
+ const {chart}=await import('../../../artifacts/edit-sessions/test/embedded-chart-fixture.mjs');
+ const f=await fixture(t,{format:'pptx'}),bytes=zip(chart());let changed=false;
+ f.state.hook=r=>{if(r==='editor/read'){changed=true;Object.assign(f.draft,{sequence:1,sha256:f.sha(bytes),byteLength:bytes.length,bytesBase64:bytes.toString('base64'),state:'draft'});}};
+ await assert.rejects(f.execute('renew',{editorId:f.claims.editorId,expectedEpoch:1,mode:'edit'}),{code:'EDITOR_CODE_ACTION_UNAVAILABLE'});
+ assert.equal(changed,true);assert.equal(f.draft.sha256,f.sha(bytes));assert.equal(f.state.puts,1);
+});
