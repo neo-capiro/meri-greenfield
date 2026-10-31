@@ -1,7 +1,7 @@
 /** Source projection for the trusted native gateway. A pure converter is not an
  * authorization or provenance receipt; the gateway owns the authenticated read. */
 import {resolveOperationContract,artifactValidators} from '../../../packages/contracts/retrieval-0.2/validate.mjs';
-import {compileFederalDraft,FEDERAL_TEXT_PARSER} from './engine.mjs';
+import {compileFederalDraft,FEDERAL_TEXT_PARSER,federalDraftSource} from './engine.mjs';
 import canonicalize from 'canonicalize';
 const sourceContract=resolveOperationContract({id:'read_federal_draft_source',version:'0.2.0'});
 const fault=code=>{throw Object.assign(Error(code),{code});};
@@ -17,7 +17,7 @@ export function projectNativeFederalSource(selection,result){
    'Current at read only. Enactment and legal currency are unresolved; an enrolled bill is not proof of enactment.',
    'Canonical federal source metadata: '+canonicalize(identity),
   ]},scopes:[{id:'document',label:'the selected bill text',start:0,end:text.length,sha256:identity.textHash}]};
- return source;
+ return federalDraftSource(source);
 }
 export function prepareNativeFederalDraft(selection,result,operations){
  const source=projectNativeFederalSource(selection,result),identity=result.source;

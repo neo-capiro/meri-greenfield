@@ -334,127 +334,263 @@
       "additionalProperties": false
     },
     "FederalDraftCompilerSource_449cfb6a": {
-      "type": "object",
-      "properties": {
-        "documentId": {
-          "type": "string",
-          "minLength": 1,
-          "maxLength": 512
-        },
-        "publisher": {
-          "type": "string",
-          "minLength": 1,
-          "maxLength": 512
-        },
-        "sourceVersion": {
-          "type": "string",
-          "minLength": 1,
-          "maxLength": 512
-        },
-        "sourceUrl": {
-          "type": "string",
-          "minLength": 1,
-          "maxLength": 2048
-        },
-        "publishedAt": {
-          "anyOf": [
-            {
-              "type": "string",
-              "format": "date"
-            },
-            {
-              "type": "null"
-            }
-          ]
-        },
-        "parserVersion": {
-          "const": "federal-plain-text/1"
-        },
-        "sha256": {
-          "type": "string",
-          "pattern": "^[a-f0-9]{64}$"
-        },
-        "text": {
-          "type": "string",
-          "minLength": 1,
-          "maxLength": 131072
-        },
-        "coverage": {
+      "oneOf": [
+        {
           "type": "object",
           "properties": {
-            "complete": {
-              "type": "boolean"
+            "documentId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 512
             },
-            "limitations": {
+            "publisher": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 512
+            },
+            "sourceVersion": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 512
+            },
+            "sourceUrl": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 2048
+            },
+            "publishedAt": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "parserVersion": {
+              "const": "federal-plain-text/1"
+            },
+            "sha256": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            "text": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 131072
+            },
+            "coverage": {
+              "type": "object",
+              "properties": {
+                "complete": {
+                  "type": "boolean"
+                },
+                "limitations": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 1000
+                  },
+                  "minItems": 1,
+                  "maxItems": 32
+                }
+              },
+              "required": [
+                "complete",
+                "limitations"
+              ],
+              "additionalProperties": false
+            },
+            "scopes": {
               "type": "array",
               "items": {
-                "type": "string",
-                "minLength": 1,
-                "maxLength": 1000
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]{0,127}$"
+                  },
+                  "label": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 512
+                  },
+                  "start": {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  "end": {
+                    "type": "integer",
+                    "minimum": 1
+                  },
+                  "sha256": {
+                    "type": "string",
+                    "pattern": "^[a-f0-9]{64}$"
+                  }
+                },
+                "required": [
+                  "id",
+                  "label",
+                  "start",
+                  "end",
+                  "sha256"
+                ],
+                "additionalProperties": false
               },
               "minItems": 1,
-              "maxItems": 32
+              "maxItems": 128
             }
           },
           "required": [
-            "complete",
-            "limitations"
+            "documentId",
+            "publisher",
+            "sourceVersion",
+            "sourceUrl",
+            "publishedAt",
+            "parserVersion",
+            "sha256",
+            "text",
+            "coverage",
+            "scopes"
           ],
           "additionalProperties": false
         },
-        "scopes": {
-          "type": "array",
-          "items": {
-            "type": "object",
-            "properties": {
-              "id": {
-                "type": "string",
-                "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]{0,127}$"
-              },
-              "label": {
-                "type": "string",
-                "minLength": 1,
-                "maxLength": 512
-              },
-              "start": {
-                "type": "integer",
-                "minimum": 0
-              },
-              "end": {
-                "type": "integer",
-                "minimum": 1
-              },
-              "sha256": {
-                "type": "string",
-                "pattern": "^[a-f0-9]{64}$"
-              }
+        {
+          "type": "object",
+          "properties": {
+            "documentId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 512
             },
-            "required": [
-              "id",
-              "label",
-              "start",
-              "end",
-              "sha256"
-            ],
-            "additionalProperties": false
+            "publisher": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 512
+            },
+            "sourceVersion": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 512
+            },
+            "sourceUrl": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 2048
+            },
+            "publishedAt": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "parserVersion": {
+              "const": "federal-scoped-text/2"
+            },
+            "sha256": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            "text": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 131072
+            },
+            "coverage": {
+              "type": "object",
+              "properties": {
+                "complete": {
+                  "type": "boolean"
+                },
+                "limitations": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 1000
+                  },
+                  "minItems": 1,
+                  "maxItems": 32
+                }
+              },
+              "required": [
+                "complete",
+                "limitations"
+              ],
+              "additionalProperties": false
+            },
+            "scopes": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]{0,127}$"
+                  },
+                  "label": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 512
+                  },
+                  "start": {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  "end": {
+                    "type": "integer",
+                    "minimum": 1
+                  },
+                  "sha256": {
+                    "type": "string",
+                    "pattern": "^[a-f0-9]{64}$"
+                  },
+                  "ancestorPath": {
+                    "type": "array",
+                    "maxItems": 127,
+                    "items": {
+                      "type": "string",
+                      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]{0,127}$"
+                    }
+                  }
+                },
+                "required": [
+                  "id",
+                  "label",
+                  "start",
+                  "end",
+                  "sha256",
+                  "ancestorPath"
+                ],
+                "additionalProperties": false
+              },
+              "minItems": 1,
+              "maxItems": 128
+            }
           },
-          "minItems": 1,
-          "maxItems": 128
+          "required": [
+            "documentId",
+            "publisher",
+            "sourceVersion",
+            "sourceUrl",
+            "publishedAt",
+            "parserVersion",
+            "sha256",
+            "text",
+            "coverage",
+            "scopes"
+          ],
+          "additionalProperties": false
         }
-      },
-      "required": [
-        "documentId",
-        "publisher",
-        "sourceVersion",
-        "sourceUrl",
-        "publishedAt",
-        "parserVersion",
-        "sha256",
-        "text",
-        "coverage",
-        "scopes"
-      ],
-      "additionalProperties": false
+      ]
     },
     "FederalDraftSourceInput_dec6989a": {
       "type": "object",
@@ -1610,7 +1746,10 @@
       "type": "object",
       "properties": {
         "parserVersion": {
-          "const": "federal-plain-text/1"
+          "enum": [
+            "federal-plain-text/1",
+            "federal-scoped-text/2"
+          ]
         },
         "source": {
           "$ref": "#/$defs/FederalDraftCompilerSource_449cfb6a"

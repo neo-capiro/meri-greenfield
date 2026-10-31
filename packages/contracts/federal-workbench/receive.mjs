@@ -1,3 +1,4 @@
+import {assertFederalTextLayout} from './source-layout.mjs';
 import canonicalize from 'canonicalize';
 import {validateSource,validateSourceEnvelope,validateImport,validateImported,validatePrepare,validateLoad,validatePublish,validateReview,validatePublication,validateError} from './generated-validator.mjs';
 import {parseBytes,digest,fail} from '../document-application/boundary.mjs';
@@ -6,17 +7,18 @@ const requests=new WeakMap(),reviews=new WeakSet(),same=(a,b)=>canonicalize(a)==
 const hash=value=>digest(new TextEncoder().encode(canonicalize(value)));
 const textHash=value=>digest(new TextEncoder().encode(value));
 const validators={'federal-prepare':validatePrepare,'federal-load':validateLoad,'federal-publish':validatePublish,'federal-import':validateImport};
-export const federalWorkbenchVersion='1.1.0';
+export const federalWorkbenchVersion='1.2.0';
 /** Read an already-inspected/downloaded retained envelope. Shape/hash checks do not
  * authenticate its publisher or source URL; the artifact read owner grants access. */
 async function sourceValue(source){
+ try{assertFederalTextLayout(source);}catch{fail('SOURCE_MISMATCH');}
  if(!validateSource(source)||await textHash(source.text)!==source.sha256)fail('SOURCE_MISMATCH');
  for(const scope of source.scopes)if(scope.start>=scope.end||scope.end>source.text.length||await textHash(source.text.slice(scope.start,scope.end))!==scope.sha256)fail('SOURCE_MISMATCH');
  return source;
 }
 function sourcePins(envelope){
  const {selection:s,source}=envelope;
- if(source.documentId!==s.billId||source.sha256!==s.textHash||source.sourceVersion!==s.versionCode+'/'+s.revisionId||source.coverage.complete!==true)fail('SOURCE_MISMATCH');
+ if(source.parserVersion!=='federal-plain-text/1'||source.documentId!==s.billId||source.sha256!==s.textHash||source.sourceVersion!==s.versionCode+'/'+s.revisionId||source.coverage.complete!==true)fail('SOURCE_MISMATCH');
 }
 export async function receiveFederalSource(bytes){
  const stored=parseBytes(bytes,1048576);
@@ -40,6 +42,9 @@ function version(v){
 }
 async function preparation(p){
  const {revisionSha256,approval,...material}=p.draft;
+ await sourceValue(p.draft.source);
+ if(p.draft.parserVersion!==p.draft.source.parserVersion)fail('SOURCE_MISMATCH');
+ if(p.draft.outputs.segments.filter(part=>part.kind!=='insert').map(part=>part.text).join('')!==p.draft.source.text||p.draft.outputs.segments.filter(part=>part.kind!=='delete').map(part=>part.text).join('')!==p.draft.outputs.consolidated)fail('OUTPUT_MISMATCH');
  if(await hash(material)!==revisionSha256||await hash({sourceArtifact:p.sourceArtifact,draftSha256:revisionSha256})!==p.revisionSha256||
   await textHash(p.draft.source.text)!==p.draft.source.sha256)fail('REVISION_MISMATCH');
  for(const kind of ['operative','consolidated','redline'])if(await textHash(p.draft.outputs[kind])!==p.draft.outputHashes[kind])fail('OUTPUT_MISMATCH');
