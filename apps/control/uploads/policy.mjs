@@ -4,6 +4,7 @@ import {data,own} from '../../../packages/contracts/commands-0.2/execution-bound
 import {readZip} from '../../artifacts/structure/zip.mjs';
 import {verifyOoxml,OPC_NAMESPACES} from '../../artifacts/structure/ooxml.mjs';
 import {readXmlPart} from '../../artifacts/structure/xml.mjs';
+import {inspectOfficeEdit} from '../../artifacts/edit-sessions/inspect-office.mjs';
 
 import {UPLOAD_POLICY_VERSION,UPLOAD_LIMITS,UPLOAD_MIME} from '../../../packages/contracts/uploads-application/protocol.mjs';
 export {UPLOAD_POLICY_VERSION,UPLOAD_LIMITS,UPLOAD_MIME};
@@ -25,9 +26,12 @@ const REL_BASES=['http://schemas.openxmlformats.org/officeDocument/2006/relation
 const HYPERLINKS=new Set(REL_BASES.map(base=>`${base}hyperlink`));
 const ACTIVE_RELATIONSHIPS=new Set(REL_BASES.flatMap(base=>['oleObject','package','control','attachedTemplate','aFChunk'].map(kind=>`${base}${kind}`)));
 /** Every relationship part is checked, not only the main document. Hyperlinks remain inert text/targets. */
-function passiveOffice(entries){
+function passiveOffice(entries,chartWorkbooks=false){
  for(const [name,bytes] of entries){
-  if(/(?:^|\/)(?:activeX|embeddings|externalLinks)(?:\/|$)|(?:^|\/)(?:vbaProject|vbaData)\./iu.test(name))refuse('UPLOAD_ACTIVE_CONTENT');
+  // This exception is reachable only after the shared recursive inspector has
+  // proved the chart/data bindings and checked every nested workbook.
+  const chartPart=chartWorkbooks&&(/^ppt\/embeddings\/[^/]+\.xlsx$/u.test(name)||name==='ppt/embeddings/'&&bytes.length===0);
+  if(!chartPart&&/(?:^|\/)(?:activeX|embeddings|externalLinks)(?:\/|$)|(?:^|\/)(?:vbaProject|vbaData)\./iu.test(name))refuse('UPLOAD_ACTIVE_CONTENT');
   if(!name.endsWith('.rels'))continue;
   const {root,children}=readXmlPart(bytes,{elementOnlyRoot:true});
   if(root.uri!==OPC_NAMESPACES.relationships||root.local!=='Relationships')refuse('UPLOAD_RELATIONSHIP');
@@ -36,7 +40,9 @@ function passiveOffice(entries){
    if(uri!==OPC_NAMESPACES.relationships||local!=='Relationship'||!a.Id||ids.has(a.Id)||!a.Type||!a.Target||
     ![undefined,'Internal','External'].includes(a.TargetMode))refuse('UPLOAD_RELATIONSHIP');
    ids.add(a.Id);
-   if(ACTIVE_RELATIONSHIPS.has(a.Type)||a.TargetMode==='External'&&!HYPERLINKS.has(a.Type))refuse('UPLOAD_ACTIVE_CONTENT');
+   const chartPackage=chartWorkbooks&&/^ppt\/charts\/_rels\/[^/]+\.xml\.rels$/u.test(name)&&
+    REL_BASES.some(base=>a.Type===base+'package')&&a.TargetMode!=='External';
+   if(ACTIVE_RELATIONSHIPS.has(a.Type)&&!chartPackage||a.TargetMode==='External'&&!HYPERLINKS.has(a.Type))refuse('UPLOAD_ACTIVE_CONTENT');
   }
  }
 }
@@ -58,7 +64,14 @@ export function inspectUploadOriginal(declaration,input){
   if(bytes.length<4||bytes[0]!==255||bytes[1]!==216||bytes[2]!==255)refuse('UPLOAD_MAGIC');
  }else{
   const entries=readZip(bytes,{maxEntries:UPLOAD_LIMITS.zipEntries,maxTotalUncompressed:UPLOAD_LIMITS.expandedBytes,maxRatio:UPLOAD_LIMITS.compressionRatio});
-  verifyOoxml(entries,file.format);passiveOffice(entries);
+  verifyOoxml(entries,file.format);
+  const chartWorkbooks=file.format==='pptx'&&[...entries.keys()].some(name=>/^ppt\/embeddings\//u.test(name));
+  if(chartWorkbooks){
+   try{inspectOfficeEdit(bytes,file.format,{maxOriginalBytes:UPLOAD_LIMITS.originalBytes,maxEntries:UPLOAD_LIMITS.zipEntries,
+    maxTotalUncompressed:UPLOAD_LIMITS.expandedBytes,maxRatio:UPLOAD_LIMITS.compressionRatio});}
+   catch{refuse('UPLOAD_ACTIVE_CONTENT');}
+  }
+  passiveOffice(entries,chartWorkbooks);
  }
  return Object.freeze({...file,policyVersion:UPLOAD_POLICY_VERSION});
 }
