@@ -40,9 +40,18 @@ function preferredVersions(rows){
  return rows.filter(row=>{
   const versions=rows.filter(other=>other.operation.id===row.operation.id);
   if(versions.length===1)return true;
-  const preferred=catalog.originals.find(original=>original.id===row.operation.id)?.replacement;
-  if(!preferred||!versions.some(other=>key(other.operation)===key(preferred)))throw Error('READ_TOOL_COLLISION');
-  return key(row.operation)===key(preferred);
+  let preferred=catalog.originals.find(original=>original.id===row.operation.id)?.replacement;
+  // A staged SQL installation may still admit both retained versions while its
+  // newest version is not installed/enabled. Choose only a registered retained
+  // version already in these gated rows, still BEFORE discovery and after exact
+  // selected-skill narrowing. Discovery denial never falls back to another tool.
+  if(['describe_capiro_data','query_capiro_data'].includes(row.operation.id)&&
+   !versions.some(other=>preferred&&key(other.operation)===key(preferred)))
+   preferred=['0.3.0','0.2.0'].map(version=>({id:row.operation.id,version}))
+    .find(ref=>versions.some(other=>key(other.operation)===key(ref)));
+  const chosen=preferred;
+  if(!chosen||!versions.some(other=>key(other.operation)===key(chosen)))throw Error('READ_TOOL_COLLISION');
+  return key(row.operation)===key(chosen);
  });
 }
 /** @param {{policy:{generalReads?:boolean,readFamilies?:readonly string[]},installation:{operations:readonly OperationRef[]},

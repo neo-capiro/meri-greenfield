@@ -11,7 +11,7 @@ import {canonicalSha256} from '../../../packages/contracts/validate.mjs';
 const uuid=d=>`${d.repeat(8)}-${d.repeat(4)}-4${d.repeat(3)}-8${d.repeat(3)}-${d.repeat(12)}`;
 const clientId=uuid('d'),otherClient=uuid('e');
 
-for(const version of ['0.2.0','0.3.0']){
+for(const version of ['0.2.0','0.3.0','0.4.0']){
 const versionTest=(name,fn)=>test(`${version}: ${name}`,fn);
 async function fixture({selected=null,narrowed,source='client_records'}={}){
  const request={source,sql:'SELECT COUNT(*) AS total FROM client_objectives',parameters:[],rowLimit:2,...(narrowed?{clientId:narrowed}:{})};

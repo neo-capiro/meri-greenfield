@@ -18,6 +18,7 @@ export const READ_FAMILIES=Object.freeze({'watch-state':Object.freeze({clientSco
  'strategy-saved-records':Object.freeze({clientScope:'optional'}),
  'capiro-data':Object.freeze({clientScope:'optional'}),
  'capiro-data-v3':Object.freeze({clientScope:'optional'}),
+ 'capiro-data-v4':Object.freeze({clientScope:'optional'}),
  'connected-apps':Object.freeze({clientScope:'optional'}),
  'teams-channels':Object.freeze({clientScope:'optional'}),
  'meeting-source':Object.freeze({clientScope:'optional'}),
