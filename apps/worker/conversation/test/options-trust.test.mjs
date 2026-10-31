@@ -30,5 +30,6 @@ test('native task list is pinned only inside the owned private SDK configuration
  const r=runtime({sdkConfigDirectory:'/run/meri/config/run',sdkSecureStorageDirectory:'/run/meri/secure',providerEnvironment:{CLAUDE_CODE_TASK_LIST_ID:'foreign-list'}});
  const o=buildConversationOptions(r,new AbortController());
  assert.equal(o.env.CLAUDE_CONFIG_DIR,r.sdkConfigDirectory);assert.equal(o.env.CLAUDE_CODE_TASK_LIST_ID,'meri');
+ assert.equal(o.env.TMPDIR,'/run/meri/tmp-run');assert.notEqual(o.env.TMPDIR,o.cwd);
  assert.equal(buildConversationOptions(runtime({providerEnvironment:{CLAUDE_CODE_TASK_LIST_ID:'foreign-list'}}),new AbortController()).env.CLAUDE_CODE_TASK_LIST_ID,undefined);
 });
