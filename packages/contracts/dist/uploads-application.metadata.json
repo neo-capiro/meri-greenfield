@@ -59,8 +59,8 @@
     },
     {
       "path": "../../apps/control/uploads/policy.mjs",
-      "sha256": "8a0d7708609a80c3a7bc29676b21445614a0afd1b2747f14c735b65274ad2082",
-      "bytes": 4570
+      "sha256": "bfa7625c8e7079430d46f06628a076954aad355fa7a1d49b25cff59a10441e72",
+      "bytes": 5570
     },
     {
       "path": "../../apps/control/uploads/postgres-store.mjs",
