@@ -15,7 +15,7 @@ export async function generateUploadContracts({check=false,toolchainRoot}={}){
    '../../apps/runtime/product-ports/uploads.mjs','../../apps/runtime/product-applications.mjs']){
    const bytes=await readFile(new URL(path,HERE));sources.push({path,sha256:hash(bytes),bytes:bytes.length});
   }
-  const schema=uploadApplicationSchema(),names=['UploadInitiateRequest','UploadIdRequest','UploadReceipt','UploadError'],exports=['validateInitiate','validateId','validateReceipt','validateError'];
+  const schema=uploadApplicationSchema(),names=['UploadInitiateRequest','UploadIdRequest','UploadStatusRequest','UploadReceipt','UploadError'],exports=['validateInitiate','validateId','validateStatus','validateReceipt','validateError'];
   const ajv=new Ajv({strict:true,allErrors:false,code:{source:true,esm:true}});formats(ajv);ajv.addSchema(schema);const refs={};
   names.forEach((name,index)=>{const ref=schema.$id+'#/$defs/'+name;ajv.compile({$ref:ref});refs[exports[index]]=ref;});const validators=standalone(ajv,refs);
   const bundled=await esbuild.build({absWorkingDir:dir,preserveSymlinks:true,stdin:{contents:await readFile(new URL('uploads-application/receive.mjs',HERE),'utf8'),sourcefile:'uploads-receiver.mjs',resolveDir:resolve(dir,'uploads-application')},
@@ -27,7 +27,7 @@ export async function generateUploadContracts({check=false,toolchainRoot}={}){
   const api=`
 declare const uploadRequestBrand:unique symbol,uploadReceiptBrand:unique symbol;
 export type UploadRoute=${uploadRoutes.map(value=>JSON.stringify(value)).join('|')};
-export type AdmittedUploadRequest<R extends UploadRoute>=Readonly<R extends 'initiate'?UploadInitiateRequest:UploadIdRequest>&{readonly [uploadRequestBrand]:R};
+export type AdmittedUploadRequest<R extends UploadRoute>=Readonly<R extends 'initiate'?UploadInitiateRequest:R extends 'status'?UploadStatusRequest:UploadIdRequest>&{readonly [uploadRequestBrand]:R};
 export type AdmittedUploadReceipt=Readonly<UploadReceipt>&{readonly [uploadReceiptBrand]:true};
 export declare class UploadResponseError extends Error {readonly code:string;}
 export declare const uploadApplicationVersion:'1.0.0',UPLOAD_POLICY_VERSION:'upload-1';
