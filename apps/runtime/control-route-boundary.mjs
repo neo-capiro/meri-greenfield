@@ -1,6 +1,7 @@
 import {assertTemporalRuntimeCleanup,temporalCleanupUnknown} from './temporal-runtime-fence.mjs';
 /** Product control has distinct public and protected listener applications.
  * Listener placement supplies trust; request headers never select a listener. */
+import {OFFICE_ROUTES} from '../../packages/contracts/office-application/receive.mjs';
 import {USER_PREFERENCES_PATHS} from '../control/settings/user-application/protocol.mjs';
 import {taskCommandPaths} from '../../packages/contracts/task-command-application/protocol.mjs';
 import {ROUTINE_PATHS} from '../control/schedules/application-http.mjs';
@@ -18,7 +19,7 @@ import {RETENTION_WITNESS_PATH} from '../control/retention/serving-witness.mjs';
 import {SOURCE_EVENT_BINDING_PATH,SOURCE_EVENT_PATH} from '../control/schedules/source-event-contract.mjs';
 const SOURCE_EVENT_PATHS=Object.freeze([SOURCE_EVENT_PATH,SOURCE_EVENT_BINDING_PATH]);
 const absent=()=>Response.json({error:{code:'ROUTE_NOT_FOUND'}},{status:404,headers:{'cache-control':'no-store','x-content-type-options':'nosniff'}});
-const OFFICE_PUBLIC_PATHS=Object.freeze(['open','read','launch','renew','release','discard','publish','inspect'].map(route=>'/api/meri/office/'+route));
+const OFFICE_PUBLIC_PATHS=Object.freeze(OFFICE_ROUTES.map(route=>'/api/meri/office/'+route));
 const publicPath=path=>OFFICE_PUBLIC_PATHS.includes(path)||path==='/api/outreach-generation/start'||path==='/api/conversations'||path.startsWith('/api/conversations/')||path==='/api/action-followthrough/session'||path==='/api/action-followthrough/browser-session'||path.startsWith('/api/meri/browser/')||path==='/api/action-followthrough/query'||path===ROUTINE_MANAGEMENT_SESSION_PATH||Object.values(USER_PREFERENCES_PATHS).includes(path)||Object.values(taskCommandPaths).includes(path)||Object.values(ROUTINE_PATHS).includes(path)||Object.values(TENANT_SETTINGS_PATHS).includes(path)||Object.values(MEMORY_PATHS).includes(path)||path.startsWith('/api/documents/')||Boolean(matchUploadApplicationPath(path));
 const privatePath=path=>path.startsWith('/v1/')||path.startsWith('/internal/conversations/')||path.startsWith(OBJECTIVE_READER_PREFIX);
 

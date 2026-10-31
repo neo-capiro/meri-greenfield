@@ -1,4 +1,5 @@
 /** Closed optional `office` control declaration. Pure: no secret read, fetch or network. */
+import {routinesReservedSecretFiles} from '../native-authority/routines-configuration.mjs';
 const fault=()=>Object.assign(new Error('OFFICE_CONFIGURATION'),{code:'OFFICE_CONFIGURATION'});
 const KEYS=Object.freeze(['enabled','editorOrigin','wopiOrigin','browserOrigin','keyFile','serviceSecretFile','coreOrigin']);
 const SECRET_FILE=/^\/[A-Za-z0-9._\-\/]{1,4095}$/u;
@@ -23,6 +24,6 @@ export function compileOfficeConfiguration(configuration){
  const editorOrigin=origin(o.editorOrigin),wopiOrigin=origin(o.wopiOrigin),browserOrigin=origin(o.browserOrigin),coreOrigin=origin(o.coreOrigin);
  if(wopiOrigin===editorOrigin||browserOrigin!==configuration.http?.frontendOrigin||
   configuration.privateHttp===undefined||!secretFile(o.keyFile)||!secretFile(o.serviceSecretFile)||
-  o.keyFile===o.serviceSecretFile)throw fault();
+  o.keyFile===o.serviceSecretFile||routinesReservedSecretFiles(configuration).some(path=>path===o.keyFile||path===o.serviceSecretFile))throw fault();
  return Object.freeze({enabled:true,editorOrigin,wopiOrigin,browserOrigin,coreOrigin,keyFile:o.keyFile,serviceSecretFile:o.serviceSecretFile});
 }

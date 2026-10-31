@@ -21,20 +21,20 @@ export async function readCodeDiscovery({editorOrigin,signal,now=Date.now,timeou
   errorFactory:code=>Object.assign(Error('OFFICE_DISCOVERY_'+code),{code:'OFFICE_DISCOVERY_'+code})});
  try{
   const response=await life.run(s=>fetchImpl(editorOrigin+'/hosting/discovery',{method:'GET',redirect:'error',
-   credentials:'omit',cache:'no-store',signal:s,headers:{accept:'application/json','accept-encoding':'identity'}}));
+   credentials:'omit',cache:'no-store',signal:s,headers:{accept:'application/xml','accept-encoding':'identity'}}));
   if(!response||response.status!==200||response.url!==editorOrigin+'/hosting/discovery'||response.redirected)throw fault();
   const length=response.headers?.get?.('content-length');
   if(length!==null&&length!==undefined&&(!/^[0-9]+$/u.test(length)||Number(length)>CODE_DISCOVERY_MAX_BYTES))throw fault();
   const reader=response.body?.getReader?.();
   if(!reader)throw fault();
-  const chunks=[];let total=0;
-  for(;;){
-   const {done,value}=await life.run(()=>reader.read());if(done)break;
+  const chunks=[];let total=0,completed=false;
+  try{for(;;){
+   const {done,value}=await life.run(()=>reader.read());if(done){completed=true;break;}
    if(!(value instanceof Uint8Array))throw fault();
    total+=value.byteLength;if(total>CODE_DISCOVERY_MAX_BYTES)throw fault();
    chunks.push(value);
-  }
-  return Buffer.concat(chunks.map(chunk=>Buffer.from(chunk)));
+  }return Buffer.concat(chunks.map(chunk=>Buffer.from(chunk)));}
+  finally{if(!completed)await reader.cancel().catch(()=>{});}
  }finally{life.close();}
 }
 
@@ -59,6 +59,7 @@ export function composeOffice({configuration,office,ports,sessions,retention,now
   typeof sessions?.nativeCredentialFor!=='function'||typeof optionsOwner?.resolve!=='function'||
   typeof now!=='function')throw fault();
  const key=material.key,reserved=routinesReservedSecretFiles(configuration);
+ try{
  if(reserved.includes(office.keyFile))throw fault();
  const codec=createWopiAccessTokenCodec({key,now});
  const getServiceSecret=createRoutinesServiceSecret({file:office.serviceSecretFile,reservedFiles:reserved,readSecret});
@@ -73,4 +74,5 @@ export function composeOffice({configuration,office,ports,sessions,retention,now
   limits:{maxRequestMs:configuration.limits.requestMs},drafts,codec,launch,generation,browserOrigin:office.browserOrigin});
  if(typeof application.handleControl!=='function'||typeof application.handleWopi!=='function')throw fault();
  return Object.freeze({application,codec,close(){key.fill(0);}});
+ }catch(error){key.fill(0);throw error;}
 }
