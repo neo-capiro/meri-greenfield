@@ -20,3 +20,11 @@ test('refuses same editor/wopi, browser mismatch, missing private listener and k
  assert.throws(()=>compileOfficeConfiguration({http:base.http,office:valid}),/OFFICE_CONFIGURATION/);
  assert.throws(()=>compileOfficeConfiguration({...base,office:{...valid,serviceSecretFile:valid.keyFile}}),/OFFICE_CONFIGURATION/);
 });
+test('signing and service material cannot alias download or read-mode signers',()=>{
+ const protectedConfig={...base,downloadLinks:{keyFile:'/run/meri/download.key'},reads:{serviceSecretFile:'/run/meri/reads.secret',readModeServiceSecretFile:'/run/meri/read-mode.secret'}};
+ assert.throws(()=>compileOfficeConfiguration({...protectedConfig,office:{...valid,keyFile:'/run/meri/download.key'}}),/OFFICE_CONFIGURATION/);
+ assert.throws(()=>compileOfficeConfiguration({...protectedConfig,office:{...valid,keyFile:'/run/meri/read-mode.secret'}}),/OFFICE_CONFIGURATION/);
+ assert.throws(()=>compileOfficeConfiguration({...protectedConfig,office:{...valid,serviceSecretFile:'/run/meri/download.key'}}),/OFFICE_CONFIGURATION/);
+ assert.throws(()=>compileOfficeConfiguration({...protectedConfig,office:{...valid,serviceSecretFile:'/run/meri/read-mode.secret'}}),/OFFICE_CONFIGURATION/);
+ assert.equal(compileOfficeConfiguration({...protectedConfig,office:{...valid,serviceSecretFile:'/run/meri/reads.secret'}}).enabled,true);
+});

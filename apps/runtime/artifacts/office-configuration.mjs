@@ -15,7 +15,8 @@ const plain=(value)=>{
 export function protectedMaterialFiles(configuration){
  const values=[configuration?.native?.capabilityFile,configuration?.native?.serverCaFile,
   configuration?.temporal?.tls?.caFile,configuration?.temporal?.tls?.certFile,configuration?.temporal?.tls?.keyFile,
-  configuration?.database?.connectionFile,configuration?.reads?.serviceSecretFile,
+  configuration?.database?.connectionFile,configuration?.reads?.serviceSecretFile,configuration?.reads?.readModeServiceSecretFile,
+  configuration?.downloadLinks?.keyFile,
   configuration?.artifacts?.authority?.serviceSecretFile,
   ...routinesReservedSecretFiles(configuration)];
  return Object.freeze([...new Set(values.filter(value=>typeof value==='string'))]);
@@ -34,6 +35,10 @@ export function compileOfficeConfiguration(configuration){
  const editorOrigin=origin(o.editorOrigin),wopiOrigin=origin(o.wopiOrigin),browserOrigin=origin(o.browserOrigin),coreOrigin=origin(o.coreOrigin);
  if(wopiOrigin===editorOrigin||browserOrigin!==configuration.http?.frontendOrigin||
   configuration.privateHttp===undefined||!secretFile(o.keyFile)||!secretFile(o.serviceSecretFile)||
-  o.keyFile===o.serviceSecretFile||protectedMaterialFiles(configuration).some(path=>path===o.keyFile))throw fault();
+  o.keyFile===o.serviceSecretFile)throw fault();
+ const protectedPaths=protectedMaterialFiles(configuration);
+ const coreReuse=new Set([configuration.reads?.serviceSecretFile,configuration.artifacts?.authority?.serviceSecretFile].filter(value=>typeof value==='string'));
+ if(protectedPaths.includes(o.keyFile))throw fault();
+ if(protectedPaths.includes(o.serviceSecretFile)&&!coreReuse.has(o.serviceSecretFile))throw fault();
  return Object.freeze({enabled:true,editorOrigin,wopiOrigin,browserOrigin,coreOrigin,keyFile:o.keyFile,serviceSecretFile:o.serviceSecretFile});
 }
