@@ -20,6 +20,7 @@ import {compileRuntimeArtifactsConfiguration} from '../../../apps/runtime/artifa
 import {compileObjectiveGenerationConfiguration} from '../../../apps/runtime/objective-generation/configuration.mjs';
 import {assertNativeReadConfiguration} from '../../../packages/contracts/runtime-0.2/reads.mjs';
 import {compileRoutinesCoreConfiguration} from '../../../apps/runtime/native-authority/routines-configuration.mjs';
+import {parseNativeProcessing,composeNativeProcessing,readNativeMaterial} from './native-processing-material.mjs';
 
 export const SOURCE_ROOT=resolve(fileURLToPath(new URL('../../../',import.meta.url)));
 const ACCOUNT='967807252336',REGION='us-east-1',ECS=`arn:aws:ecs:${REGION}:${ACCOUNT}:`;
@@ -103,7 +104,7 @@ export function parseRuntimeValues(raw){
 }
 
 /** Product-family activation (header: `features`). Returns null when absent; otherwise the closed, validated entries. Pure. */
-export const FEATURE_KEYS=Object.freeze(['sourceEnabled','userPreferences','tenantSettings','intents','routines','retention','artifacts','downloadLinks','capabilityPlatform','reads','memory','objectiveGeneration','uploads']);
+export const FEATURE_KEYS=Object.freeze(['sourceEnabled','userPreferences','tenantSettings','intents','routines','retention','artifacts','downloadLinks','capabilityPlatform','reads','memory','objectiveGeneration','uploads','nativeProcessing']);
 /** --feature-secrets keys -> the deployment-inputs ARN field each must name. */
 export const FEATURE_SECRETS=Object.freeze({'reads.serviceSecret':'serviceSecretArn','reads.readModeServiceSecret':'readModeServiceSecretArn'});
 /** Exact (complete, suffixed) Secrets Manager secret ARN in this account and region. A bare name, another account/region/partition, a
@@ -193,6 +194,10 @@ export function parseFeatures(raw,{secrets={}}={}){
  // Native upload inspection (uploads/control-lifecycle.mjs): a control-only opt-in. The digest is not declarable here — it
  // is the deployment's own image digest, emitted by the renderer below, so an input cannot point this purpose at another host.
  if(f.uploads!==undefined){const u=record(f.uploads,'features.uploads',['enabled']);out.uploads={enabled:bool(u.enabled,'features.uploads.enabled')};}
+ if(f.nativeProcessing!==undefined){
+  out.nativeProcessing=parseNativeProcessing(f.nativeProcessing);
+  if(out.nativeProcessing.enabled&&(out.sourceEnabled!==true||out.uploads?.enabled!==true))fail('RENDER_INPUT_REFUSED','nativeProcessing requires sourceEnabled and uploads');
+ }
  if(f.objectiveGeneration!==undefined){
   let declared;try{declared=compileObjectiveGenerationConfiguration({objectiveGeneration:f.objectiveGeneration},'control');}catch{fail('RENDER_INPUT_REFUSED','features.objectiveGeneration (objective-generation/configuration.mjs)');}
   if(declared.runs&&out.reads?.enabled!==true)fail('RENDER_INPUT_REFUSED','features.objectiveGeneration reuses the reads Core service secret: it needs features.reads enabled');
@@ -237,7 +242,11 @@ export function parseDeploymentInputs(raw){
  record(d.temporalClients,'deployment.temporalClients',['control','worker','schedule']);
  for(const role of ['control','worker','schedule'])if(d.temporalClients[role]!==`meri-temporal-${role}`)fail('RENDER_INPUT_REFUSED','Temporal client certificate identity');
  const features=parseFeatures(d.features,{secrets:d.secrets}),schedule=deploymentRoles(d).includes('schedule-worker');
- record(d.database.roles,'deployment.database.roles',['control',...(schedule?['schedule']:[])]);
+ record(d.database.roles,'deployment.database.roles',['control',...(schedule?['schedule']:[]),...(features?.nativeProcessing?.enabled?['nativeWorker']:[])]);
+ if(features?.nativeProcessing?.enabled&&(!/^[a-z_][a-z0-9_]{0,62}$/u.test(d.database.roles.nativeWorker)||
+  Object.entries(d.database.roles).some(([k,v])=>k!=='nativeWorker'&&v===d.database.roles.nativeWorker)))fail('RENDER_INPUT_REFUSED','nativeProcessing requires a distinct reviewed database role');
+ if(features?.nativeProcessing?.enabled&&(!/^arn:aws:iam::967807252336:role\/[A-Za-z0-9_+=,.@/-]{1,512}$/u.test(d.foundation.WorkerTaskRoleArn??'')||
+  d.foundation.WorkerTaskRoleArn===d.foundation.ControlTaskRoleArn))fail('RENDER_INPUT_REFUSED','nativeProcessing requires a distinct worker task role');
  if(schedule){
   if(features?.sourceEnabled!==true||features.routines?.enabled!==true||!features.routines.task||!features.routines.core?.unattendedGrant||features.reads?.enabled!==true)
    fail('RENDER_INPUT_REFUSED','schedule-worker requires sourceEnabled, routines task/Core unattendedGrant and enabled reads');
@@ -329,13 +338,14 @@ export function assertProductCliGates(role,c,environment){
 
 /** Pure render (reads only the private material passed in). Returns every role's exact bytes plus the non-secret summary. */
 export function renderMaterial({deployment,core,runtime,stage3,private:pki,nowMs=Date.now(),validityDays=DEFAULTS.validityDays,
- deploymentRevision=DEFAULTS.deploymentRevision,featureSecrets={}}){
+ deploymentRevision=DEFAULTS.deploymentRevision,featureSecrets={},nativeMaterial={}}){
  const d=parseDeploymentInputs(deployment),activeRoles=deploymentRoles(d),schedule=activeRoles.includes('schedule-worker'),k=parseCoreValues(core),r=parseRuntimeValues(runtime),s=parseStage3(stage3,{clusterName:d.clusterName,roles:activeRoles});
  if(!Number.isSafeInteger(nowMs)||nowMs<1)fail('RENDER_INPUT_REFUSED','nowMs');
  if(!Number.isFinite(validityDays)||validityDays<=0)fail('RENDER_INPUT_REFUSED','validityDays must be positive');
  if(!/^[A-Za-z0-9_-]{1,128}$/u.test(deploymentRevision))fail('RENDER_INPUT_REFUSED','deploymentRevision');
  const features=d.features??{},secretFiles=featureSecretFiles(features,featureSecrets);
  const {pins,notAfterMs}=verifyPki(d,pki);
+ const native=composeNativeProcessing({feature:features.nativeProcessing,material:nativeMaterial,deployment:d,pki,nowMs});
  // Certificate validity is independent of each admitted conversation execution.
  const validityMs=Math.round(validityDays*DAY_MS),expiresAtMs=nowMs+validityMs;
  if(expiresAtMs>=notAfterMs)fail('RENDER_VALIDITY_REFUSED',`validity ends after the earliest certificate notAfter ${new Date(notAfterMs).toISOString()}`);
@@ -368,6 +378,7 @@ export function renderMaterial({deployment,core,runtime,stage3,private:pki,nowMs
  // digest `versions.imageDigest` records — and to the existing deployment.agentcore owner. Absent emits no
  // key at all; `enabled:false` emits the inert declaration and nothing else, so no digest can be declared.
  if(features.uploads!==undefined)featureKeys.uploads={native:features.uploads.enabled?{enabled:true,agentcore:{imageDigest:'sha256:'+nodeDigest}}:{enabled:false}};
+ if(native.control!==null)featureKeys.uploads=native.control;
  if(features.capabilityPlatform!==undefined)featureKeys.capabilityPlatform=structuredClone(features.capabilityPlatform);
  // Memory (lane M): review-only proposals over Core M2 at the Core origin, with the same Core service secret file as reads.
  if(features.memory!==undefined)featureKeys.memory=features.memory.enabled?{enabled:true,origin:k.coreOrigin,serviceSecretFile:PATHS.readsServiceSecret}:{enabled:false};
@@ -391,6 +402,7 @@ export function renderMaterial({deployment,core,runtime,stage3,private:pki,nowMs
  const worker={version:1,profile:'isolated-preview',sourceEnabled,limits,
   native:{origin:controlPrivate,capabilityFile:PATHS.controlCapability,serverCaFile:PATHS.serverCa,serverCaSha256:pins.der['server-ca'],loopback:false,maxResponseBytes:2097152,preparedKickoff:true},
   http:{hostname:'0.0.0.0',port:8081,frontendOrigin:k.frontendOrigin},temporal:temporal(),
+  ...(native.worker===undefined?{}:{nativeProvisioning:native.worker}),
   ...(features.objectiveGeneration===undefined?{}:{objectiveGeneration:{runs:{enabled:features.objectiveGeneration.runs?.enabled===true}}})};
 
  const db=d.database,logins=pki.logins;
@@ -412,8 +424,8 @@ export function renderMaterial({deployment,core,runtime,stage3,private:pki,nowMs
    // Feature material, control only and only when rendered: the Core service secrets for reads and the download-link signing key.
    ...(secretFiles['reads.serviceSecret']?[[PATHS.readsServiceSecret,secretFiles['reads.serviceSecret'].bytes]]:[]),
    ...(secretFiles['reads.readModeServiceSecret']?[[PATHS.readsReadModeServiceSecret,secretFiles['reads.readModeServiceSecret'].bytes]]:[]),
-   ...(downloadLinkKey?[[PATHS.downloadLinkKey,downloadLinkKey]]:[])]),
-  'temporal-worker':new Map([[PATHS.worker,configBytes['temporal-worker']],[PATHS.controlCapability,capabilityBytes.control],...temporalFiles('temporal-worker')]),
+   ...(downloadLinkKey?[[PATHS.downloadLinkKey,downloadLinkKey]]:[]),...native.files.control]),
+  'temporal-worker':new Map([[PATHS.worker,configBytes['temporal-worker']],[PATHS.controlCapability,capabilityBytes.control],...temporalFiles('temporal-worker'),...native.files.worker]),
  };
  if(schedule)files['schedule-worker']=new Map([[PATHS.schedule,configBytes['schedule-worker']],
   [PATHS.database,Buffer.from(dsn(db.roles.schedule,password(logins,'schedule',db.roles.schedule),db.host,db.port,db.database))],
@@ -428,6 +440,8 @@ export function renderMaterial({deployment,core,runtime,stage3,private:pki,nowMs
  const workerEnvironment={NODE_EXTRA_CA_CERTS:PATHS.serverCa},controlEnvironment={NODE_EXTRA_CA_CERTS:CONTROL_NODE_CA_FILE};
  validateRendered(roles,{workerEnvironment,controlEnvironment});
  const summary=summarize({d,r,s,roles,pins,agentcore,expiresAtMs,nowMs,validityDays,notAfterMs,runWindowMs,deploymentRevision,controlPrivate,workerEnvironment,controlEnvironment,policyRevision});
+ if(features.nativeProcessing!==undefined)summary.nativeProcessing={enabled:features.nativeProcessing.enabled,materialSha256:native.pins,
+  ...(native.materialNotAfterMs===undefined?{}:{materialNotAfterMs:native.materialNotAfterMs})};
  // Non-secret record of what the features rendered (absent without features, so the reviewed summary is unchanged). The secret
  // files are named by path, source ARN, VersionId and sha256 only, so the operator can re-verify the fetched value.
  if(Object.keys(features).length)summary.features={sourceEnabled,controlKeys:Object.keys(featureKeys),approvedReads:features.reads?.approvedReads!==undefined,
@@ -485,6 +499,7 @@ function summarize(x){
  };
  if(roles['schedule-worker'])wiring['schedule-worker']={family:s.taskDefinitions['schedule-worker'],containerName:'schedule-worker',image:roles['schedule-worker'].image,user:'1000:1000',entryPoint:['node','apps/runtime/cli.mjs'],command:['schedule-worker','--config',PATHS.schedule],
   environment:[env('MERI_PRODUCT_PREVIEW_REQUIRED','1'),env('NODE_EXTRA_CA_CERTS',x.controlEnvironment.NODE_EXTRA_CA_CERTS)],ports:[8083],volumes:{'/run/meri':'material (read-only)','/tmp':'tmp (writable; init writes control CA bundle)'},init:init('schedule-worker')};
+ if(d.features?.nativeProcessing?.enabled)wiring['temporal-worker'].taskRoleArn=d.foundation.WorkerTaskRoleArn;
  return {schemaVersion:1,generatedAtMs:x.nowMs,
   validity:{validityDays:x.validityDays,notAfterMs:x.expiresAtMs,notAfter:new Date(x.expiresAtMs).toISOString(),earliestCertificateNotAfter:new Date(x.notAfterMs).toISOString(),runWindowMs:x.runWindowMs},
   roles:Object.fromEntries(Object.keys(roles).map(role=>[role,{configPath:roles[role].configPath,configSha256:roles[role].configSha256,materialContractSha256:roles[role].expected.materialContractSha256,
@@ -519,6 +534,7 @@ const USAGE=`Usage: node infra/product-preview/first-chat/render-material.mjs \\
   --deployment-inputs infra/product-preview/first-chat/deployment-inputs.json --private <pki-dir> \\
   --core <core-values.json> --runtime <runtime-values.json> --stage3 <stage3.json> --out <new-dir-outside-repo> \\
   [--validity-days 7] [--now-ms <epoch ms>] [--deployment-revision first-chat-preview-1]   [--feature-secrets <feature-secrets.json>]   (only with features.reads: {"reads.serviceSecret":{secretArn,versionId,path}, ...})
+  [--native-material <private-file-map.json>] (only with features.nativeProcessing; six exact purpose/path entries)
 Prints only the non-secret summary path and config hashes. Exit 0 rendered; 2 arguments/inputs/validation refused.`;
 export async function main(argv=process.argv.slice(2)){
  if(argv.length===0||argv.includes('--help')){process.stdout.write(USAGE+'\n');return argv.length?0:2;}
@@ -530,7 +546,8 @@ export async function main(argv=process.argv.slice(2)){
   const rendered=renderMaterial({deployment,core,runtime:await json(a.runtime),stage3:await json(a.stage3),private:pki,
    ...(a['now-ms']?{nowMs:Number(a['now-ms'])}:{}),...(a['validity-days']?{validityDays:Number(a['validity-days'])}:{}),
    ...(a['deployment-revision']?{deploymentRevision:a['deployment-revision']}:{}),
-   ...(a['feature-secrets']?{featureSecrets:await readFeatureSecrets(await json(resolve(a['feature-secrets'])))}:{})});
+   ...(a['feature-secrets']?{featureSecrets:await readFeatureSecrets(await json(resolve(a['feature-secrets'])))}:{}),
+   ...(a['native-material']?{nativeMaterial:await readNativeMaterial(await json(resolve(a['native-material'])))}:{})});
   const out=await writeRendered(a.out,rendered);
   process.stdout.write(JSON.stringify({status:'MERI_FIRST_CHAT_MATERIAL_RENDERED',out,summary:join(out,'summary.json'),configSha256:rendered.summary.taskDefinitionConfigPins})+'\n');
   return 0;
