@@ -5,6 +5,7 @@ import {own,nativeSignal} from '../../../packages/contracts/commands-0.2/executi
 import {NATIVE_TASK_LIST_ID,assertNativeFileUpload,assertNativeFileState,nativeFileSha256} from '../../../packages/contracts/runtime-0.2/files.mjs';
 import {createWorkspaceCapture} from './workspace-capture.mjs';
 import {restoreWorkspaceBytes,verifyWorkspaceBytes,retainWorkspaceBytes} from './workspace-restore.mjs';
+import {identifyWorkspaceCaptureRoot} from '../../../packages/runtime/workspace-capture-diagnostics.mjs';
 const fail=()=>{throw Error('NATIVE_FILES_REFUSED');};
 export function nativeTaskDirectory(sdkConfigDirectory){if(typeof sdkConfigDirectory!=='string'||!isAbsolute(sdkConfigDirectory)||resolve(sdkConfigDirectory)!==sdkConfigDirectory)fail();return join(sdkConfigDirectory,'tasks',NATIVE_TASK_LIST_ID);}
 async function directory(path){const s=await lstat(path);if(!s.isDirectory()||s.isSymbolicLink()||await realpath(path)!==path||process.getuid&&s.uid!==process.getuid())fail();return s;}
@@ -16,7 +17,8 @@ export function createNativeFiles(configuration){const c=own(configuration,['wor
  const pathInside=(a,b)=>{const p=relative(a,b);return p===''||!p.startsWith('..')&&!isAbsolute(p);};if(pathInside(c.workspace,c.sdkConfigDirectory)||pathInside(c.sdkConfigDirectory,c.workspace))fail();
  const files=createWorkspaceCapture({workspace:c.workspace,expiresAtMs:c.expiresAtMs,now}),taskFiles=createWorkspaceCapture({workspace:tasks,expiresAtMs:c.expiresAtMs,now});
  function check(signal){nativeSignal(signal);if(signal?.aborted||now()>=c.expiresAtMs)fail();}
- return Object.freeze({capture({signal}={}){check(signal);const result=assertNativeFileUpload({files:files.capture({signal}),taskFiles:taskFiles.capture({signal})});check(signal);return result;},
+ const captureRoot=(owner,root,signal)=>{try{return owner.capture({signal});}catch(error){throw identifyWorkspaceCaptureRoot(error,root);}};
+ return Object.freeze({capture({signal}={}){check(signal);const result=assertNativeFileUpload({files:captureRoot(files,'CWD',signal),taskFiles:captureRoot(taskFiles,'SDK_TASKS',signal)});check(signal);return result;},
   async restore({state,files:rawFiles,taskFiles:rawTasks,signal}){check(signal);const saved=assertNativeFileState(state);
    // The caller fetched exact immutable objects from the authenticated source mapping. Verify every byte before changing either tree.
    const verify=(entries,raw)=>{if(!Array.isArray(raw)||raw.length!==entries.length)fail();return raw.map((b,i)=>{if(!Buffer.isBuffer(b)||b.length!==entries[i].object.bytes||nativeFileSha256(b)!==entries[i].object.sha256)fail();return Buffer.from(b);});};

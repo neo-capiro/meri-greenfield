@@ -4,6 +4,7 @@ import {createHash} from 'node:crypto';
 import {types} from 'node:util';
 import {createTurnTelemetry} from './telemetry/turn-context.mjs';
 import {DIAGNOSTIC_STAGES,timeoutClass} from './telemetry/turn-lines.mjs';
+import {workspaceCaptureDiagnosticCause} from '../../packages/runtime/workspace-capture-diagnostics.mjs';
 
 /** The pinned native transport's fixed failure classes (pinned-native-transport.mjs documents each), owned here with the
  * rest of the allowlist so the transport, the clients that read its answers and RUNNER_FIRST_FAILURE share one vocabulary. */
@@ -109,7 +110,7 @@ function classify(error){
 function describe(error){
  let fixed;try{fixed=classify(error);}catch{return nonError;}if(fixed===nonError)return nonError;
  const detail=(read,fallback)=>{try{return read();}catch{return fallback;}};
- return {...fixed,cause:detail(()=>{const cause=ownValue(error,'cause');return cause===undefined?'none':classify(cause).code;},'NON_ERROR'),
+ return {...fixed,cause:detail(()=>{const capture=workspaceCaptureDiagnosticCause(error);if(capture)return capture;const cause=ownValue(error,'cause');return cause===undefined?'none':classify(cause).code;},'NON_ERROR'),
   // SDK-tagged failures and SyntaxErrors interpolate a stderr tail or an input snippet: their hash would only confirm guessed
   // text, and their class/exit/signal fields already identify them.
   msg:detail(()=>{const message=ownValue(error,'message');if(typeof message!=='string')return 'none';

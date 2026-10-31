@@ -1,5 +1,7 @@
 /** Fixed telemetry vocabulary drawn from reviewed runtime/owner refusal constants. Unknown values never become log content. */
+import {WORKSPACE_CAPTURE_DIAGNOSTIC_CODES} from '../../../packages/runtime/workspace-capture-diagnostics.mjs';
 export const TELEMETRY_CODES = Object.freeze([
+  ...WORKSPACE_CAPTURE_DIAGNOSTIC_CODES,
   'AGENTCORE_CONFIGURATION',
   'AGENTCORE_REQUEST_REFUSED',
   'AGENTCORE_RESULT_REFUSED',
