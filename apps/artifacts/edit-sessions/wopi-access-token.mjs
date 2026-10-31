@@ -26,16 +26,18 @@ function claims(value,code){
 }
 export function createWopiAccessTokenCodec({key,now}){
  if(!Buffer.isBuffer(key)||key.length<MIN_KEY_BYTES||typeof now!=='function')fault('WOPI_TOKEN_CONFIGURATION');
+ let active=true;
  const secret=Buffer.from(key),mac=payload=>createHmac('sha256',secret).update(DOMAIN+payload).digest();
+ const guard=()=>{if(!active)fault('WOPI_TOKEN_CONFIGURATION');};
  return Object.freeze({
   /** Signs claims whose expiry lies in the future and within 10 minutes of now. */
   issue(value){
-   const c=claims(value,'WOPI_TOKEN_CLAIMS'),t=now();if(!Number.isSafeInteger(t)||t<0||c.expiresAtMs<=t||c.expiresAtMs>t+MAX_TTL_MS)fault('WOPI_TOKEN_CLAIMS');
+   guard();const c=claims(value,'WOPI_TOKEN_CLAIMS'),t=now();if(!Number.isSafeInteger(t)||t<0||c.expiresAtMs<=t||c.expiresAtMs>t+MAX_TTL_MS)fault('WOPI_TOKEN_CLAIMS');
    const payload=Buffer.from(JSON.stringify(c)).toString('base64url');return `${payload}.${mac(payload).toString('base64url')}`;
   },
   /** Authenticated, unexpired claims bound to the WOPI file being called; anything else refuses. */
   verify(token,{fileId}){
-   if(typeof token!=='string'||!TOKEN.test(token))fault('WOPI_TOKEN_INVALID');
+   guard();if(typeof token!=='string'||!TOKEN.test(token))fault('WOPI_TOKEN_INVALID');
    const [payload,signature]=token.split('.'),given=Buffer.from(signature,'base64url'),expected=mac(payload);
    if(given.length!==expected.length||!timingSafeEqual(given,expected)||given.toString('base64url')!==signature)fault('WOPI_TOKEN_INVALID');
    let parsed;try{parsed=JSON.parse(Buffer.from(payload,'base64url').toString('utf8'));}catch{fault('WOPI_TOKEN_INVALID');}
@@ -44,5 +46,6 @@ export function createWopiAccessTokenCodec({key,now}){
    if(c.fileId!==fileId)fault('WOPI_TOKEN_FILE_MISMATCH');
    return c;
   },
+  close(){if(active){secret.fill(0);active=false;}},
  });
 }
