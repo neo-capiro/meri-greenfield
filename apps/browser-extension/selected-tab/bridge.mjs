@@ -9,6 +9,9 @@ const webUrl=value=>{const u=new URL(value);if(!['https:','http:'].includes(u.pr
  * current conversation owner, never these labels, authorizes the eventual upload. */
 export function createSelectedTabBridge(chrome,{origins,now=Date.now,newId=()=>crypto.randomUUID(),setTimer=setTimeout,clearTimer=clearTimeout}={}){
  const deviceId=newId(),listeners=new Set();let peer=null,pair=null,state='disconnected',selection=null,transfer=null;
+ // Correlation only, never receipts or captured bytes. The app republishes its
+ // earlier attachment outcomes when any upload changes in the same pairing.
+ const settledSelections=new Set();
  let epoch=0,timer=null,busy=false,targetTab=null;
  const view=()=>Object.freeze({state,busy,origin:peer?.origin??null,labels:pair?.labels??null,expiresAtMs:pair?.expiresAtMs??null,
   selection:selection?{title:selection.packet.title,url:selection.packet.url,text:selection.packet.text,bytes:selection.packet.bytes}:null,
@@ -19,7 +22,7 @@ export function createSelectedTabBridge(chrome,{origins,now=Date.now,newId=()=>c
  function clearSelection(){epoch++;selection=null;targetTab=null;busy=false;}
  function end(next){
   const old=peer;clearSelection();state=next;clearTimer(timer);timer=null;
-  status(false);peer=null;pair=null;transfer=null;old?.port.disconnect();changed();
+  status(false);peer=null;pair=null;transfer=null;settledSelections.clear();old?.port.disconnect();changed();
  }
  function assertActive(){if(!current()){end('expired');throw Error('PAIRING_EXPIRED');}if(state!=='active')throw Error('PAIRING_NOT_ACTIVE');}
  function assertAttempt(token){assertActive();if(token!==epoch)throw Error('SELECTION_CHANGED');}
@@ -43,6 +46,7 @@ export function createSelectedTabBridge(chrome,{origins,now=Date.now,newId=()=>c
    if(!current()){end('expired');return;}
    if(message.type==='pause'){pause();return;}
    if(message.type==='outcome'){
+    if(settledSelections.has(message.selectionId))return;
     if(!transfer||message.selectionId!==transfer.selectionId)throw Error('UNKNOWN_SELECTION');
     if(transfer.state!=='stored')transfer={selectionId:transfer.selectionId,state:message.state};changed();
    }
@@ -66,7 +70,7 @@ export function createSelectedTabBridge(chrome,{origins,now=Date.now,newId=()=>c
   assertAttempt(token);if(rows.length!==1||rows[0].frameId!==0||rows[0].documentId!==documentId||rows[0].result!==rawUrl)throw Error('SELECTION_CHANGED');
  }
  async function capture(){
-  assertActive();if(busy||transfer?.state==='unknown')throw Error('CHECK_PREVIOUS_SHARE');clearSelection();transfer=null;busy=true;changed();
+  assertActive();if(busy||transfer?.state==='unknown')throw Error('CHECK_PREVIOUS_SHARE');clearSelection();busy=true;changed();
   const token=epoch,bound=pair,capturedAtMs=now();
   try{
    const tab=await selectedTab();assertAttempt(token);targetTab=tab.id;
@@ -89,6 +93,12 @@ export function createSelectedTabBridge(chrome,{origins,now=Date.now,newId=()=>c
    if(now()-chosen.packet.capturedAtMs>=limits.captureMs)throw Error('CAPTURE_EXPIRED');
    // Spend before crossing the port. Lost acknowledgement is UNKNOWN, never a
    // reason to send the original again. The app's upload status owns recovery.
+   if(transfer){
+    settledSelections.add(transfer.selectionId);
+    // The application admits at most eight shares per pairing. Bound retained
+    // correlation even if a future consumer has a different lifetime policy.
+    if(settledSelections.size>8)settledSelections.delete(settledSelections.values().next().value);
+   }
    selection=null;transfer={selectionId:chosen.packet.selectionId,state:'unknown'};
    peer.port.postMessage(JSON.stringify(chosen.packet));
   }finally{if(token===epoch){selection=null;busy=false;changed();}}

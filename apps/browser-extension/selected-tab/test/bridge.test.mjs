@@ -103,3 +103,27 @@ test('disconnect during share is never retried and status failure terminates wit
  f.port.postMessage=()=>{count++;throw Error('port disconnected');};await assert.rejects(f.bridge.share());assert.equal(count,1);
  f.bridge.pause();assert.equal(f.bridge.view().state,'disconnected');assert.equal(f.port.closed,true);
 });
+test('republished outcomes for settled attachments do not revoke a later capture or share',async()=>{
+ const f=fixture();await f.ready();await f.bridge.capture();await f.bridge.share();
+ const first=f.port.sent.find(m=>m.type==='share');
+ const outcome={schema,type:'outcome',pairingId:f.pair.pairingId,selectionId:first.selectionId,state:'stored',requestId:randomUUID()};
+ await f.send(outcome);await f.bridge.capture();await f.send(outcome);
+ assert.equal(f.bridge.view().state,'active');assert.ok(f.bridge.view().selection);
+ await f.bridge.share();await f.send(outcome);
+ assert.equal(f.bridge.view().state,'active');assert.equal(f.bridge.view().outcome,'unknown');
+ await assert.rejects(f.bridge.capture(),/CHECK_PREVIOUS_SHARE/u);
+ const second=f.port.sent.filter(m=>m.type==='share')[1];
+ await f.send({...outcome,selectionId:second.selectionId,requestId:randomUUID()});
+ assert.equal(f.bridge.view().outcome,'stored');assert.equal(f.port.sent.filter(m=>m.type==='share').length,2);
+ await f.send({...outcome,selectionId:randomUUID()});assert.equal(f.bridge.view().state,'revoked');f.bridge.dispose();
+});
+test('worker recreation restores neither consent, capture nor an unknown share',async()=>{
+ const before=fixture();await before.ready();await before.bridge.capture();await before.bridge.share();
+ assert.equal(before.bridge.view().outcome,'unknown');before.bridge.dispose();
+ const after=fixture();assert.equal(after.bridge.view().state,'disconnected');
+ assert.equal(after.bridge.view().selection,null);assert.equal(after.bridge.view().outcome,null);
+ await assert.rejects(after.bridge.share(),/PAIRING_EXPIRED/u);assert.equal(after.calls.length,0);
+ await after.connect();await assert.rejects(after.bridge.capture(),/NOT_ACTIVE/u);
+ assert.equal(after.port.sent.filter(m=>m.type==='share').length,0);
+ after.bridge.approve();await after.bridge.capture();assert.ok(after.bridge.view().selection);after.bridge.dispose();
+});
