@@ -5,6 +5,8 @@ import {assertCorePrincipal,retainedOrigin} from '../../../packages/contracts/ru
 import {nativeReadFault,nativeReadFailureCode} from '../../../packages/contracts/runtime-0.2/reads.mjs';
 import {createOperationLifetime} from '../../../packages/runtime/operation-lifetime.mjs';
 import {createCapiroApplicationAuthorityClient} from '../../control/action-host/application-adapters/authority-http.mjs';
+import {researchContextFields,researchContextFromCurrent,sameResearchContext} from '../../control/action-host/application-adapters/research-context.mjs';
+import {researchPortfolioObservation} from '../../control/action-host/application-adapters/research-current-receipt.mjs';
 import {createConversationAuthorityReader} from './conversation-authority.mjs';
 import {createClientReferenceReader} from './client-reference.mjs';
 import {createReadModeObservationReader} from './read-mode-observation.mjs';
@@ -17,7 +19,14 @@ const refuse=code=>{throw nativeReadFault(code);};
 const failure=error=>nativeReadFault(nativeReadFailureCode(error)??(safeFailure(error).message==='INTERNAL_ERROR'?'UNAVAILABLE':safeFailure(error).message));
 function clocks(v,{started,now}){const at=now();if(!Number.isSafeInteger(v.checkedAtMs)||v.checkedAtMs<started||v.checkedAtMs>at||!Number.isSafeInteger(v.expiresAtMs)||v.expiresAtMs<=at)refuse('ACCESS_DENIED');}
 export function assertNativeToolAuthority(raw,{started,now}){
- const v=data(own(raw,['principal','identityRevision','actorRole','membershipRevision','checkedAtMs','expiresAtMs'],['clientIds']));
+ const v=data(own(raw,['principal','identityRevision','actorRole','membershipRevision','checkedAtMs','expiresAtMs'],['clientIds','scopeKind','scope','researchPortfolio','contextRevision']));
+ const subject=researchContextFields(v);
+ if(subject.scopeKind){
+  const observed=researchPortfolioObservation(v.researchPortfolio);
+  if(!SHA.test(v.contextRevision)||!sameResearchContext(subject,{scopeKind:'research_portfolio',scope:{kind:observed.kind,
+   researchPortfolioId:observed.researchPortfolioId,researchPortfolioName:observed.researchPortfolioName,
+   researchPortfolioRevision:observed.researchPortfolioRevision,scopeVersion:observed.scopeVersion}}))refuse('ACCESS_DENIED');
+ }else if(Object.hasOwn(v,'researchPortfolio')||Object.hasOwn(v,'contextRevision'))refuse('ACCESS_DENIED');
  assertCorePrincipal(v.principal);clocks(v,{started,now});
  if(!SHA.test(v.identityRevision)||!SHA.test(v.membershipRevision)||!ROLES.has(v.actorRole))refuse('ACCESS_DENIED');
  // Optional only for older trusted fake ports. The real current-context client below always carries this current roster.
@@ -31,15 +40,18 @@ export function createNativeToolAuthorityClient(configuration={}){
  if(c.fetchImpl!==undefined&&(typeof c.fetchImpl!=='function'||types.isProxy(c.fetchImpl)))refuse('CONFIGURATION');
  const available=Boolean(enabled&&origin&&c.fetchImpl&&c.binding&&Object.hasOwn(c,'selectedClientId')),identity=available?createCapiroApplicationAuthorityClient({origin,fetchImpl:c.fetchImpl,now,enabled:true,limits:{maxRequestMs,maxResponseBytes:16384}}):null;
  async function readCurrent(raw){let life;try{
-  if(!available)refuse('UNAVAILABLE');const v=own(raw,['credential','deadlineMs'],['signal']);nativeSignal(v.signal);
+  if(!available)refuse('UNAVAILABLE');const v=own(raw,['credential','deadlineMs'],['signal','scopeKind','scope']);nativeSignal(v.signal);
+  const subject=researchContextFields(v),research=subject.scopeKind==='research_portfolio';if(research&&c.selectedClientId!==null)refuse('ACCESS_DENIED');
   if(typeof v.credential!=='string'||!/^\S{1,8192}$/u.test(v.credential)||!Number.isSafeInteger(v.deadlineMs))refuse('INVALID_ARGUMENTS');
   const began=now(),cutoff=Math.min(v.deadlineMs,began+maxRequestMs);life=createOperationLifetime({now,deadlineMs:cutoff,signal:v.signal,errorFactory:nativeReadFault});
-  const r=await life.run(signal=>identity.readCurrent({credential:v.credential,conversationId:c.binding.conversationId,clientId:c.selectedClientId,signal,deadlineMs:cutoff}));
+  const r=await life.run(signal=>identity[research?'readResearchCurrent':'readCurrent']({credential:v.credential,conversationId:c.binding.conversationId,clientId:c.selectedClientId,signal,deadlineMs:cutoff}));
+  if(research&&!sameResearchContext(subject,researchContextFromCurrent(r)))refuse('ACCESS_DENIED');
   if(r.principal.tenantId!==c.binding.tenantId||r.principal.actorId!==c.binding.actorId||r.conversationId!==c.binding.conversationId||r.selectedClientId!==c.selectedClientId||
    !ROLES.has(r.role)||c.selectedClientId!==null&&!r.clientIds.includes(c.selectedClientId))refuse('ACCESS_DENIED');
   life.limitDeadline(r.expiresAtMs);life.check();
   return assertNativeToolAuthority({principal:r.principal,identityRevision:r.identityRevision,actorRole:r.role,clientIds:r.clientIds,membershipRevision:r.membershipRevision,
-   checkedAtMs:r.checkedAtMs,expiresAtMs:Math.min(cutoff,r.expiresAtMs)},{started:began,now});
+   checkedAtMs:r.checkedAtMs,expiresAtMs:Math.min(cutoff,r.expiresAtMs),
+   ...(research?{...subject,researchPortfolio:r.researchPortfolio,contextRevision:r.contextRevision}:{})},{started:began,now});
  }catch(error){if([401,403,409].includes(error?.status))refuse('ACCESS_DENIED');throw failure(error);}finally{life?.close();}}
  const resourceIdentity=identity?{readIdentity:identity.readIdentity,readContext:identity.readContext}:null;
  const readConversation=createConversationAuthorityReader({available,authorityClient:resourceIdentity,now,maxRequestMs});

@@ -1,5 +1,6 @@
 import {isResumeIntent} from '../../conversations/lifecycle/browser-custody.mjs';
 import {validSessionReceipt} from '../../../../packages/contracts/session-receipt/validate.mjs';
+import {researchContextFields,researchHints,sameResearchContext} from '../application-adapters/research-context.mjs';
 /** Bounded process-local opaque sessions. Identity and current authorization belong to injected owners. */
 import {randomBytes,randomUUID,createHash} from 'node:crypto';
 import {types} from 'node:util';
@@ -46,15 +47,16 @@ export function createSessionRefusalDiagnostics({write=line=>process.stderr.writ
   write(`CONTROL_SESSION_REFUSED step=${where} code=${reason}\n`);}catch{}};
 }
 // One minimal issuance wire owner, reused at construction and HTTP release.
-export function assertActionSessionReceipt(value,at){
- const v=data(value);own(v,['credential','expiresAtMs','context'],['initialRunRebind']);own(v.context,['tenantId','actorId','conversationId','runId','selectedClientId']);
- if(!validSessionReceipt(v,at,{general:true})||Buffer.byteLength(JSON.stringify(v))>4096)deny();
+export function assertActionSessionReceipt(value,at,{research=false}={}){
+ const v=data(value);own(v,['credential','expiresAtMs','context'],['initialRunRebind']);own(v.context,['tenantId','actorId','conversationId','runId','selectedClientId'],['scopeKind','scope']);
+ const subject=researchContextFields(v.context);if(subject.scopeKind&&(!research||v.context.selectedClientId!==null))deny();
+ if(!validSessionReceipt(v,at,{general:true,research})||Buffer.byteLength(JSON.stringify(v))>4096)deny();
  if(v.initialRunRebind){const {sourceRunId,targetRunId}=v.initialRunRebind;
   if(targetRunId!==v.context.runId||sourceRunId===targetRunId)deny();
  }
  return v;
 }
-const publicContext=(binding,selectedClientId)=>({tenantId:binding.tenantId,actorId:binding.actorId,conversationId:binding.conversationId,runId:binding.runId,selectedClientId});
+const publicContext=(binding,selectedClientId,subject={})=>({tenantId:binding.tenantId,actorId:binding.actorId,conversationId:binding.conversationId,runId:binding.runId,selectedClientId,...researchContextFields(subject)});
 export function createActionSessionOwner(configuration){
  const {mode,verifyIdentity,resolveContext,resolveBrowserContext,now=Date.now,limits,readTransition,resolveTransitionContext,membership,withAuthority,management,refusals=createSessionRefusalDiagnostics()}=own(configuration,['mode','verifyIdentity','resolveContext','limits'],['resolveBrowserContext','now','readTransition','resolveTransitionContext','membership','withAuthority','management','refusals']);
  const l=data(own(limits,['maxSessions','maxRequestMs','maxTtlMs','maxFactBytes']));
@@ -74,7 +76,7 @@ export function createActionSessionOwner(configuration){
  function valid(r,signal){const at=active(signal);if(!r||sessions.get(r.digest)!==r||ids.get(r.sessionId)!==r||r.expiresAtMs<=at) {if(r)remove(r);deny();}return at;}
  function release(r,t){t.check();valid(r,t.signal);t.check();}
  // A recheck re-verifies exactly the bound run: it names that conversation and run, so selection can never move or reserve a successor.
- function boundHints(r){return data({...r.hints,conversationId:r.context.binding.conversationId,runId:r.context.binding.runId});}
+ function boundHints(r){return data({...r.hints,...researchContextFields(r.context),conversationId:r.context.binding.conversationId,runId:r.context.binding.runId});}
  function life(deadlineMs,signal){
   nativeSignal(signal);const at=active(signal);if(deadlineMs!==undefined&&!Number.isSafeInteger(deadlineMs))deny();let cutoff=Math.min(deadlineMs??at+l.maxRequestMs,at+l.maxRequestMs),requestCancellation;
   const timer=createOperationLifetime({deadlineMs:cutoff,now,signal,errorFactory:code=>{
@@ -95,7 +97,7 @@ export function createActionSessionOwner(configuration){
   remove(record);deny();
  }
  function fact(value,keys,started,t,optional=[]){const v=data(value);own(v,keys,optional);if(Buffer.byteLength(JSON.stringify(v))>l.maxFactBytes)deny();const at=active(t.signal);t.check();if(!Number.isSafeInteger(v.checkedAtMs)||v.checkedAtMs<started||v.checkedAtMs>at||!Number.isSafeInteger(v.expiresAtMs)||v.expiresAtMs<=at)deny();t.limitDeadline(v.expiresAtMs);return v;}
- function hints(value){const v=data(value);own(v,[],['conversationId','runId','clientId']);if(Object.entries(v).some(([k,x])=>!(k==='clientId'&&x===null)&&(typeof x!=='string'||!uuid.test(x))))deny();return v;}
+ function hints(value){const v=researchHints(value);if(Object.entries(v).some(([k,x])=>!['scopeKind','scope'].includes(k)&&!(k==='clientId'&&x===null)&&(typeof x!=='string'||!uuid.test(x))))deny();return v;}
  // The membership owner is independent of Core's native /identity and /context
  // receipt join. Keep the original identity bytes for that join and pin only the
  // admitted membership principal beside the opaque session.
@@ -134,7 +136,9 @@ export function createActionSessionOwner(configuration){
   progress.step='membership-admit';const membershipAdmission=member&&!record?await admitMember(nativeCredential,identity,t):undefined;
   const membershipPrincipal=member?(record?record.membershipPrincipal:membershipAdmission.principal):undefined;
   progress.step='membership-recheck';if(member&&record)await recheckMember(membershipPrincipal,nativeCredential,identity,t,record.context.selectedClientId,record);
-  progress.step='context';started=active(t.signal);const current=fact(await t.run(signal=>(browser?resolveBrowserContext:resolveContext)({identityCredential:nativeCredential,identity,identitySha256:canonicalSha256(identity),hints:selected,signal,deadlineMs:t.deadline()})),['identitySha256','binding','scopes','selectedClientId','contextRevision','checkedAtMs','expiresAtMs'],started,t,['rebind']);
+  progress.step='context';started=active(t.signal);const current=fact(await t.run(signal=>(browser?resolveBrowserContext:resolveContext)({identityCredential:nativeCredential,identity,identitySha256:canonicalSha256(identity),hints:selected,signal,deadlineMs:t.deadline()})),['identitySha256','binding','scopes','selectedClientId','contextRevision','checkedAtMs','expiresAtMs'],started,t,['rebind','scopeKind','scope']);
+  const captured=researchContextFields(current);
+  if(selected.scopeKind!==captured.scopeKind||Object.hasOwn(selected,'scope')&&!sameResearchContext(selected,current))deny();
   if(record)valid(record,t.signal);validateShape('RunBinding',current.binding);if(current.identitySha256!==canonicalSha256(identity)||current.binding.tenantId!==identity.principal.tenantId||current.binding.actorId!==identity.principal.actorId||current.selectedClientId!==null&&(typeof current.selectedClientId!=='string'||!uuid.test(current.selectedClientId))||typeof current.contextRevision!=='string'||!current.contextRevision||current.contextRevision.length>256||!Array.isArray(current.scopes)||!current.scopes.length||current.scopes.length>100)deny();
   // The initial owner's atomic exact-source supersession, already validated by the adapter against its own transaction.
   // It may accompany only a FRESH issuance whose named run is that proof's source; a recheck never rebinds.
@@ -145,21 +149,21 @@ export function createActionSessionOwner(configuration){
   const provenRun=key=>key==='runId'&&proof!==undefined&&!record&&selected.runId===proof.source.runId&&same(proof.target,current.binding);
   for(const key of ['conversationId','runId'])if(selected[key]!==undefined&&selected[key]!==current.binding[key]&&!provenRun(key))deny();if(selected.clientId!==undefined&&selected.clientId!==current.selectedClientId)deny();
   progress.step='membership-recheck';if(member)await recheckMember(membershipPrincipal,nativeCredential,identity,t,current.selectedClientId,record);
-  progress.step='context';const context=data({binding:current.binding,scopes:current.scopes,selectedClientId:current.selectedClientId,contextRevision:current.contextRevision});if(record&&!same(context,record.context))deny();progress.step='release';
+  progress.step='context';const context=data({binding:current.binding,scopes:current.scopes,selectedClientId:current.selectedClientId,...researchContextFields(current),contextRevision:current.contextRevision});if(record&&!same(context,record.context))deny();progress.step='release';
   const expiresAtMs=Math.min(identity.expiresAtMs,current.expiresAtMs,record?.expiresAtMs??ceiling,membershipAdmission?.expiresAtMs??Infinity);t.limitDeadline(expiresAtMs);active(t.signal);t.check();return {identity,context,expiresAtMs,...(member?{membershipPrincipal}:{}),...(proof&&selected.runId!==undefined?{initialRunRebind:{sourceRunId:proof.source.runId,targetRunId:proof.target.runId}}:{})};
  }
  async function issue(value,{relayEligible,withCurrent,browser=false}){const {identityCredential,hints:rawHints={},signal,deadlineMs}=own(value,['identityCredential'],['hints','signal','deadlineMs']);if(typeof identityCredential!=='string'||!identityCredential||identityCredential.length>8192||!/^\S+$/u.test(identityCredential))deny();const selected=hints(rawHints),t=life(deadlineMs,signal),progress={step:'capacity'};let record;
   try{const started=active(t.signal);for(const r of sessions.values())if(r.expiresAtMs<=started)remove(r);if(sessions.size>=l.maxSessions)deny('SESSION_CAPACITY');const resolved=await resolve(identityCredential,selected,t,undefined,started+l.maxTtlMs,progress,false,browser);
    progress.step='capacity';active(t.signal);t.check();if(sessions.size>=l.maxSessions)deny('SESSION_CAPACITY');progress.step='release';const credential=`action_session_${randomBytes(32).toString('base64url')}`,sessionId=randomUUID();record={...resolved,relayEligible,browserOnly:browser,digest:hash(credential),sessionId,sessionRevision:randomUUID(),nativeCredential:identityCredential,hints:selected,receipts:new Set()};sessions.set(record.digest,record);ids.set(sessionId,record);
    credentials.set(record,credential);
-   const b=record.context.binding,out=assertActionSessionReceipt({credential,expiresAtMs:record.expiresAtMs,context:publicContext(b,record.context.selectedClientId),...(record.initialRunRebind?{initialRunRebind:record.initialRunRebind}:{})},active(t.signal));release(record,t);
-   return withCurrent?data({receipt:out,current:{binding:b,scopes:record.context.scopes,selectedClientId:record.context.selectedClientId,checkedAtMs:active(t.signal),expiresAtMs:record.expiresAtMs}}):out;
+   const b=record.context.binding,out=assertActionSessionReceipt({credential,expiresAtMs:record.expiresAtMs,context:publicContext(b,record.context.selectedClientId,record.context),...(record.initialRunRebind?{initialRunRebind:record.initialRunRebind}:{})},active(t.signal),{research:record.context.scopeKind==='research_portfolio'});release(record,t);
+   return withCurrent?data({receipt:out,current:{binding:b,scopes:record.context.scopes,selectedClientId:record.context.selectedClientId,...researchContextFields(record.context),checkedAtMs:active(t.signal),expiresAtMs:record.expiresAtMs}}):out;
   }catch(error){if(record)remove(record);if(!t.isRequestCancellation(error))refusals(progress.step,error);if(errors.has(error))throw error;
    // An owner that did not answer refuses only this issuance, as it does a recheck. The issuance route still answers 401
    // (http.mjs); worker-http answers 503 so the runner can replay an idempotent call.
    if(isAuthorityUnavailable(error))throw markAuthorityUnavailable(new ActionSessionError('SESSION_AUTHORITY_UNAVAILABLE'));deny();}finally{t.close();}
  }
- function currentReceipt(r,authentication,current,t){return data({authenticationSha256:canonicalSha256(authentication),binding:current.context.binding,scopes:current.context.scopes,selectedClientId:current.context.selectedClientId,checkedAtMs:active(t.signal),expiresAtMs:r.expiresAtMs});}
+ function currentReceipt(r,authentication,current,t){return data({authenticationSha256:canonicalSha256(authentication),binding:current.context.binding,scopes:current.context.scopes,selectedClientId:current.context.selectedClientId,...researchContextFields(current.context),checkedAtMs:active(t.signal),expiresAtMs:r.expiresAtMs});}
  async function authenticate(value,includeCurrent,browser=false){const {credential,signal,deadlineMs}=own(value,['credential'],['signal','deadlineMs']);if(typeof credential!=='string'||!/^action_session_[A-Za-z0-9_-]{43}$/u.test(credential))deny();const r=sessions.get(hash(credential));valid(r,signal);if(r.browserOnly&&!browser)deny();const t=life(Math.min(deadlineMs??r.expiresAtMs,r.expiresAtMs),signal);
   const progress={};try{const current=await resolve(r.nativeCredential,boundHints(r),t,r,Infinity,progress,true,browser);valid(r,t.signal);r.expiresAtMs=current.expiresAtMs;const b=r.context.binding,authentication=data({principal:{sessionId:r.sessionId,tenantId:b.tenantId,actorId:b.actorId,conversationId:b.conversationId,runId:b.runId},sessionRevision:r.sessionRevision,checkedAtMs:active(t.signal),expiresAtMs:r.expiresAtMs});t.check();r.receipts.add(canonicalSha256(authentication));if(r.receipts.size>64)r.receipts.delete(r.receipts.values().next().value);
    const out=includeCurrent?data({authentication,current:currentReceipt(r,authentication,current,t)}):authentication;release(r,t);return out;
@@ -201,7 +205,8 @@ export function createActionSessionOwner(configuration){
    }
    const before=await transition(),started=active(t.signal);
    let current;try{
-    current=fact(await t.run(signal=>resolveTransitionContext({identityCredential:nativeCredential,identity,identitySha256:canonicalSha256(identity),sourceContext,transition:before,signal,deadlineMs:t.deadline()})),['identitySha256','binding','scopes','selectedClientId','contextRevision','checkedAtMs','expiresAtMs'],started,t);check();
+    current=fact(await t.run(signal=>resolveTransitionContext({identityCredential:nativeCredential,identity,identitySha256:canonicalSha256(identity),sourceContext,transition:before,signal,deadlineMs:t.deadline()})),['identitySha256','binding','scopes','selectedClientId','contextRevision','checkedAtMs','expiresAtMs'],started,t,['scopeKind','scope']);check();
+    if(!sameResearchContext(sourceContext,current))deny();
     validateShape('RunBinding',current.binding);if(current.identitySha256!==canonicalSha256(identity)||!same(current.binding,before.targetBinding)||!same(current.scopes,sourceContext.scopes)||current.selectedClientId!==sourceContext.selectedClientId||typeof current.contextRevision!=='string'||!current.contextRevision||current.contextRevision.length>256)deny();
    }catch{if(!t.signal.aborted)remove(r);else try{valid(r);}catch{}deny();}
    const after=await transition();if(transitionHash(before)!==transitionHash(after))deny();check();
@@ -215,13 +220,15 @@ export function createActionSessionOwner(configuration){
   * refuses, and every read still re-verifies identity and membership at Core with it. Session records never hold the marked
   * control credential, and no credential is minted here. Unattended runs have no live session, so their reads refuse. */
  function nativeCredentialFor(input){
-  const v=own(input,['binding','selectedClientId'],['signal']);nativeSignal(v.signal);const at=active(v.signal);
+  const v=own(input,['binding','selectedClientId'],['signal','includeSubject']);nativeSignal(v.signal);const at=active(v.signal);
+  if(v.includeSubject!==undefined&&typeof v.includeSubject!=='boolean')deny();
   const b=data(v.binding);if(b===null||typeof b!=='object'||Array.isArray(b))deny();
   const keys=['tenantId','actorId','conversationId','runId'];if(keys.some(k=>typeof b[k]!=='string'||!b[k])||!uuid.test(b.conversationId)||!uuid.test(b.runId)||v.selectedClientId!==null&&(typeof v.selectedClientId!=='string'||!uuid.test(v.selectedClientId)))deny();
   let best=null;
   for(const r of sessions.values()){const c=r.context.binding;if(r.relayEligible!==true||r.expiresAtMs<=at||!r.nativeCredential||keys.some(k=>c?.[k]!==b[k])||r.context.selectedClientId!==v.selectedClientId)continue;if(best===null||r.expiresAtMs>best.expiresAtMs)best=r;}
   if(best===null)deny('SESSION_UNAVAILABLE');valid(best,v.signal);
-  return Object.freeze({credential:best.nativeCredential,expiresAtMs:best.expiresAtMs});
+  return Object.freeze({credential:best.nativeCredential,expiresAtMs:best.expiresAtMs,
+   ...(v.includeSubject===true?researchContextFields(best.context):{})});
  }
  const owner=Object.freeze({issue:value=>issue(value,{relayEligible:true,withCurrent:false}),issueDerived:value=>issue(value,{relayEligible:false,withCurrent:false}),authenticateSession,readCurrentState,verifyTransition,nativeCredentialFor,revoke(credential){if(typeof credential!=='string')deny();const r=sessions.get(hash(credential));if(r)remove(r);},close(){closed=true;for(const r of sessions.values())remove(r);},status:()=>data({mode,closed,sessions:sessions.size})});
  if(managementConfig!==null){
@@ -273,7 +280,7 @@ export function createActionSessionOwner(configuration){
   const keys=['tenantId','actorId','conversationId','runId'];
   let best;for(const r of sessions.values())if(r.relayEligible===true&&r.expiresAtMs>at&&keys.every(k=>r.context.binding?.[k]===binding[k])&&r.context.selectedClientId===selectedClientId&&(!best||r.expiresAtMs>best.expiresAtMs))best=r;
   if(!best)deny('SESSION_UNAVAILABLE');valid(best,signal);const b=best.context.binding;
-  return assertActionSessionReceipt({credential:credentials.get(best),expiresAtMs:best.expiresAtMs,context:{tenantId:b.tenantId,actorId:b.actorId,conversationId:b.conversationId,runId:b.runId,selectedClientId:best.context.selectedClientId}},at);
+  return assertActionSessionReceipt({credential:credentials.get(best),expiresAtMs:best.expiresAtMs,context:publicContext(b,best.context.selectedClientId,best.context)},at,{research:best.context.scopeKind==='research_portfolio'});
  });
  if(resolveBrowserContext)browserReaders.set(owner,Object.freeze({issue:value=>issue(value,{relayEligible:false,withCurrent:true,browser:true}),readCurrent:value=>authenticate(value,true,true)}));
  currentReaders.set(owner,value=>authenticate(value,true));currentIssuers.set(owner,value=>issue(value,{relayEligible:true,withCurrent:true}));return owner;

@@ -9,6 +9,7 @@ import {createReadsOwner} from './reads-owner.mjs';
 import {createBillWatchReadPolicy} from './selected/bill-watch-read-policy.mjs';
 import {createReadsApplication} from './reads-http.mjs';
 import {prepareReadFamilies,GENERAL_READ_ADAPTER_FAMILIES} from './read-families.mjs';
+import {researchContextFields,sameResearchContext} from '../control/action-host/application-adapters/research-context.mjs';
 
 const token=value=>typeof value==='string'&&/^[\x21-\x7e]{1,8192}$/u.test(value);
 const deny=code=>{throw nativeReadFault(code);};
@@ -24,13 +25,13 @@ export async function createControlReadsComposer(configuration){
   const value=Buffer.isBuffer(bytes)?bytes.toString('utf8').trim():null;if(!token(value))deny('UNAVAILABLE');return value;}
  const getServiceSecret=()=>secret(c.serviceSecretFile),getReadModeServiceSecret=c.readModeServiceSecretFile===undefined?undefined:()=>secret(c.readModeServiceSecretFile);
  async function getNativeCredential(request){
-  const first=data(own(await c.nativeCredentials.nativeCredentialFor({binding:request.binding,selectedClientId:request.selectedClientId,signal:request.signal}),['credential','expiresAtMs']));
+  const first=data(own(await c.nativeCredentials.nativeCredentialFor({binding:request.binding,selectedClientId:request.selectedClientId,signal:request.signal,includeSubject:true}),['credential','expiresAtMs'],['scopeKind','scope']));
   if(!token(first.credential)||!Number.isSafeInteger(first.expiresAtMs)||first.expiresAtMs<=now())deny('UNAVAILABLE');
   const service=await getServiceSecret();if(service===first.credential)deny('UNAVAILABLE');
   if(getReadModeServiceSecret&&(await getReadModeServiceSecret())===first.credential)deny('UNAVAILABLE');
-  const after=data(own(await c.nativeCredentials.nativeCredentialFor({binding:request.binding,selectedClientId:request.selectedClientId,signal:request.signal}),['credential','expiresAtMs']));
-  if(after.credential!==first.credential||!Number.isSafeInteger(after.expiresAtMs)||after.expiresAtMs<=now())deny('UNAVAILABLE');
-  return {credential:first.credential,expiresAtMs:Math.min(first.expiresAtMs,after.expiresAtMs)};
+  const after=data(own(await c.nativeCredentials.nativeCredentialFor({binding:request.binding,selectedClientId:request.selectedClientId,signal:request.signal,includeSubject:true}),['credential','expiresAtMs'],['scopeKind','scope']));
+  if(after.credential!==first.credential||!sameResearchContext(first,after)||!Number.isSafeInteger(after.expiresAtMs)||after.expiresAtMs<=now())deny('UNAVAILABLE');
+  return {credential:first.credential,expiresAtMs:Math.min(first.expiresAtMs,after.expiresAtMs),...researchContextFields(first)};
  }
  const families=prepareReadFamilies({familyIds,coreOrigin,fetchImpl,now,newId,capabilityPolicy:c.capabilityPolicy,getNativeCredential,getServiceSecret,
   ...(c.primaryCredentials===undefined?{}:{primaryCredentials:c.primaryCredentials}),

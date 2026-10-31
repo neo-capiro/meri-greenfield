@@ -9,7 +9,7 @@ function unique(values, label) {
 // binding may declare `sinceCatalogVersion`: a catalog must carry every binding its own version
 // includes, and is never required to carry a later successor's. Neither value is caller-controlled,
 // and a preserved catalog therefore keeps asserting at its own exact counts.
-export const CURRENT_CATALOG_VERSION = '0.2.29';
+export const CURRENT_CATALOG_VERSION = '0.2.30';
 function compareCatalogVersions(left, right) {
   const parts = value => String(value).split('.').map(Number);
   const a = parts(left), b = parts(right);
@@ -70,6 +70,10 @@ export const CATALOG_OPERATION_BINDINGS = Object.freeze([
  Object.freeze({id:'read_saved_record',nativeId:'read_saved_record',group:'saved-records',input:'SavedRecordRequest',output:'SavedRecordOutput',version:'0.2.0',contextKeys:Object.freeze(['savedRecordScope']),
   normalize:(v,request,context)=>v.savedRecordValidators.normalizeInput('read_saved_record',request,context),
   outputAssert:(v,page,request,context)=>v.savedRecordValidators.assertOutput('read_saved_record',page,request,context)}),
+  ...['describe_capiro_data','query_capiro_data'].map((id,index)=>Object.freeze({id,nativeId:id,group:'capiro-data-v4',
+    input:index?'CapiroDataQueryRequest':'CapiroDataDescribeRequest',output:index?'CapiroDataQueryOutput':'CapiroDataDescribeOutput',version:'0.4.0',sinceCatalogVersion:'0.2.30',contextKeys:Object.freeze(['capiroDataScope']),
+    normalize:(v,request,context)=>v.capiroData4Validators.normalizeInput(id,request,context),
+    outputAssert:(v,page,request,context)=>v.capiroData4Validators.assertOutput(id,page,request,context)})),
   ...['describe_capiro_data','query_capiro_data'].map((id,index)=>Object.freeze({id,nativeId:id,group:'capiro-data-v3',
     input:index?'CapiroDataQueryRequest':'CapiroDataDescribeRequest',output:index?'CapiroDataQueryOutput':'CapiroDataDescribeOutput',version:'0.3.0',sinceCatalogVersion:'0.2.29',contextKeys:Object.freeze(['capiroDataScope']),
     normalize:(v,request,context)=>v.capiroData3Validators.normalizeInput(id,request,context),
