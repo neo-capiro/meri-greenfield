@@ -87,9 +87,9 @@ test('MR-04 visibility: every listed row carries its own truthful consent observ
  const active=(await f.call('list',{limit:20,observation:'consent'})).page.rows[0];
  assert.equal(active.projection.state,'active');assert.equal(active.consent.state,'active');assert.equal(active.consent.expiresAtMs,NOW+60000);
  assert.equal(active.consent.rightsSha256,'a'.repeat(64));assert.equal(active.consent.scopeCount,1);assert.equal(active.consent.stale,false);
- observation.state.rows[0].expiresAtMs=NOW-1000;
+ observation.state.rows[0].expiresAtMs=NOW-500;
  const lapsed=(await f.call('list',{limit:20,observation:'consent'})).page.rows[0];
- assert.equal(lapsed.projection.state,'active');assert.equal(lapsed.consent.state,'expired');assert.equal(lapsed.consent.expiresAtMs,NOW-1000);
+ assert.equal(lapsed.projection.state,'active');assert.equal(lapsed.consent.state,'expired');assert.equal(lapsed.consent.expiresAtMs,NOW-500);
  assert.equal(lapsed.consent.rightsSha256,null);
  // The observation is released only after this request's own fresh current scope/generation authorization.
  assert.ok(f.state.policies.length>policies);
@@ -405,4 +405,33 @@ test('MR-04 renewal custody (R1): a received 403 still settles FAILED, and the o
  const row=(await f.call('list',{limit:20,observation:'consent'})).page.rows[0];
  assert.equal(row.consent.state,'unknown');assert.equal(row.consent.observedAtMs,null);assert.equal(row.consent.stale,false);
  assert.equal(observation.state.calls.length,1);assert.ok(observation.state.calls[0].url.endsWith(CONSENT_OBSERVATION_ROUTE));
+});
+
+for(const mode of ['update','pause'])test(`a concurrent ${mode} cannot attach the old active consent to a listed or reviewed routine`,async t=>{
+ for(const method of ['list','consentReview']){
+  let held,mutate=false,asks=0;
+  const observe=async value=>{
+   asks++;
+   if(mutate){
+    mutate=false;
+    const request=mode==='update'?{...routineRequest(),scheduleId:value.scheduleId,taskInstruction:'Changed approved instructions.'}:
+     {scheduleId:value.scheduleId,mode:'pause',note:'Paused during consent observation',running:'leave',runs:[]};
+    const operation=mode==='update'?'update_scheduled_task':'cancel_scheduled_task';
+    await held.approve(await held.prepare(request,operation,'concurrent-change'),request);
+   }
+   return {schemaVersion:1,state:'active',pinsMatched:true,observedAtMs:NOW,generation:value.generation,
+    consentGeneration:value.generation,issuedAtMs:NOW-1000,expiresAtMs:NOW+60000,scopeCount:1,cause:null,rightsSha256:'a'.repeat(64)};
+  };
+  held=await applicationFixture({consentObservation:observe});t.after(held.close);
+  const created=await held.approve(await held.prepare()),scheduleId=created.receipt.projection.scheduleId;
+  mutate=true;
+  const result=await held.call(method,method==='list'?{limit:20,observation:'consent'}:{scheduleId});
+  const displayed=method==='list'?result.page.rows[0]:result;
+  assert.equal(displayed.generation,1);assert.equal(displayed.consent.generation,1);
+  assert.equal(displayed.consent.state,'unknown');assert.equal(displayed.consent.stale,true);
+  assert.equal(displayed.consent.rightsSha256,null);assert.equal(asks,1);
+  const current=await held.owner.readFiring({tenantId:binding.tenantId,scheduleId},()=>{});
+  assert.equal(current.generation,2);
+  assert.equal(current.projection.state,mode==='pause'?'paused':'active');
+ }
 });

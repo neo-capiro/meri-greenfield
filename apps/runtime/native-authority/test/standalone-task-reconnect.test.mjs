@@ -26,8 +26,13 @@ async function fixture(t,general){
 for(const general of [false,true])test(`lost standalone ${general?'General':'client'} preparation response recovers after actual initial expiry and session rebind`,async t=>{
  const f=await fixture(t,general),first=await f.issue(),answer=await f.call(first,'prepare',f.raw);assert.equal(answer.status,200,await answer.clone().text());
  const prepared=await answer.json(),original=structuredClone(prepared.proposal.command.binding);assert.equal(f.metadata.rows.size,1);
- f.advance(61000);await assert.rejects(f.issue(first.context.runId));
- const next=await f.issue();assert.notEqual(next.context.runId,first.context.runId);assert.equal(f.db.bindings.length,2);
+ // Fresh issuance may name the exact expired, never-started original. The canonical identity owner returns proof of
+ // its single atomic rebind; the superseded selector is refused on subsequent issuance, not silently rebound again.
+ f.advance(61000);const next=await f.issue(first.context.runId);
+ assert.notEqual(next.context.runId,first.context.runId);
+ assert.deepEqual(next.initialRunRebind,{sourceRunId:first.context.runId,targetRunId:next.context.runId});
+ await assert.rejects(f.issue(first.context.runId),{code:'SESSION_REFUSED'});
+ assert.equal((await f.issue()).context.runId,next.context.runId);assert.equal(f.db.bindings.length,2);
  await assert.rejects(f.store.initialBindings.readPreparation({binding:original},()=>{}));
  const replay=await f.call(next,'prepare',f.raw);assert.equal(replay.status,200,await replay.clone().text());assert.deepEqual(await replay.json(),prepared);
  assert.notEqual((await f.call(next,'prepare',{...f.raw,arguments:{...f.raw.arguments,title:'Changed'}})).status,200);

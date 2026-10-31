@@ -265,7 +265,7 @@ export function createRoutinesService(configuration){
    try{
     const auth=await current(v,READ_AUTHORIZATION,l),who=principal(auth);
     const saved=renewalFacts(await l.run(()=>readFiring({tenantId:who.tenantId,scheduleId:b.scheduleId},l.check)),who,b.scheduleId);
-    const consent=consents===null?null:await l.run(signal=>consents.one({principal:who,scheduleId:b.scheduleId,generation:saved.review.generation,signal,deadlineMs:Math.min(v.deadlineMs,c.now()+c.maxRequestMs),check:l.check}));
+    const consent=consents===null?null:await l.run(signal=>consents.one({principal:who,scheduleId:b.scheduleId,generation:saved.review.generation,projectionSha256:saved.review.projectionSha256,signal,deadlineMs:Math.min(v.deadlineMs,c.now()+c.maxRequestMs),check:l.check}));
     const fresh=await current(v,READ_AUTHORIZATION,l);if(!sameCurrent(fresh,auth))deny();l.check();
     return data({status:'review_required',scheduleId:b.scheduleId,generation:saved.review.generation,intentSha256:saved.review.intentSha256,
      projectionSha256:saved.review.projectionSha256,scopesSha256:saved.review.scopesSha256,limits:saved.review.limits,intent:saved.intent,consent,reviewSha256:hash(saved.review)});
