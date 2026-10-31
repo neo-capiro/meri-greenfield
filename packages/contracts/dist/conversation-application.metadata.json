@@ -174,8 +174,8 @@
     },
     {
       "path": "../skills/index.mjs",
-      "sha256": "a7ccc19bcf45f4b772d7ffd0c70a1563b5f7d5398f050a5724105747d8a9a64b",
-      "bytes": 3098
+      "sha256": "fc26364e305da89303c71ccc6154a97cea0f4879e247131b6d2fc394ce01e119",
+      "bytes": 3791
     },
     {
       "path": "../skills/plugin.mjs",

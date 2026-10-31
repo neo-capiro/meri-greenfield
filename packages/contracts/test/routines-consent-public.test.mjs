@@ -3,7 +3,7 @@
  * released `@capiro/meri-contracts@0.1.26` receiver the installed clients already carry. No live Core, model, provider,
  * database or browser is touched, and no authority is claimed by validating a shape. */
 import test from 'node:test';import assert from 'node:assert/strict';
-import {createHash} from 'node:crypto';import {readFileSync} from 'node:fs';import {fileURLToPath,pathToFileURL} from 'node:url';
+import {createHash} from 'node:crypto';import {resolve} from 'node:path';import {readFileSync} from 'node:fs';import {fileURLToPath,pathToFileURL} from 'node:url';
 import {receiveRoutinesRequest,receiveRoutinesResponse,routinesPaths,routinesMetadata} from '../dist/intents-application.mjs';
 import {routinesPublicFixture} from './routines-application-fixture.mjs';
 import {NOW,clientId} from '../../../apps/control/schedules/test/application-fixture.mjs';
@@ -15,7 +15,9 @@ import canonicalTool from '../schedules-0.3/tool-interface.schema.json' with {ty
 const code=expected=>error=>error?.code===expected;
 /** The PHYSICAL released receiver the installed clients carry, reached by its installed path and never by the package
  *  name: from inside this package the name resolves to this source, which is exactly the difference being measured. */
-const physicalPath=fileURLToPath(new URL('../../../node_modules/@capiro/meri-contracts/dist/intents-application.mjs',import.meta.url));
+const legacyRoot=process.env.MERI_TEST_LEGACY_CONTRACTS_ROOT;
+if(legacyRoot)assert.equal(JSON.parse(readFileSync(resolve(legacyRoot,'package.json'),'utf8')).version,'0.1.26');
+const physicalPath=legacyRoot?resolve(legacyRoot,'dist/intents-application.mjs'):fileURLToPath(new URL('../../../node_modules/@capiro/meri-contracts/dist/intents-application.mjs',import.meta.url));
 const physical=await import(pathToFileURL(physicalPath).href);
 const physicalRequest=physical.receiveRoutinesRequest,physicalResponse=physical.receiveRoutinesResponse;
 /** The scripted Core wire D: Core's own newest stored row for this owner and schedule, or Core's own `absent`. */

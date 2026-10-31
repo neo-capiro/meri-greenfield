@@ -15,6 +15,7 @@ function fixture(){
  const current=async()=>{if(state.denied)throw Error('CURRENT_DENIED');return {binding:copy(binding),scopes:copy(scopes),selectedClientId:null,checkedAtMs:now(),expiresAtMs:now()+300000};};
  const store={
   async prepare(r){const old=[...state.rows.values()].find(v=>v.requestId===r.requestId);if(old)return copy(old);state.rows.set(r.uploadId,copy(r));return copy(r);},
+  async readByRequest(owner,key){return copy([...state.rows.values()].find(r=>r.requestId===key)??null);},
   async read(owner,key){return copy(state.rows.get(key)??null);},
   async transition(a,b,check){await state.onTransition?.(a,b);check();if(hash(state.rows.get(a.uploadId))!==hash(a))throw Error('UPLOAD_CHANGED');state.rows.set(a.uploadId,copy(b));return copy(b);},
  };
@@ -229,4 +230,28 @@ test('the custody closure refuses a changed record, run binding, revocation or r
   hook:f=>async()=>{f.__override({runId:id(77),attemptId:id(78),workerFence:f.binding.writerFence+1});}});
  await run('revoked current authority',{hook:f=>async()=>{f.state.denied=true;}});
  await run('retention suppression',{hook:f=>async()=>{f.state.suppressed=true;}});
+});
+
+
+test('request status restores lost initiate and write replies without allocating or replaying',async()=>{
+ const f=fixture(),r=await f.initiate(f.create());
+ assert.equal((await f.create().statusByRequest(r.requestId,f.options)).uploadId,r.uploadId);
+ assert.equal(f.state.rows.size,1);assert.equal(f.state.puts,0);
+ f.state.lostAck=true;await assert.rejects(f.create().put(r.uploadId,f.bytes,f.options));f.state.absent=true;
+ assert.equal((await f.create().statusByRequest(r.requestId,f.options)).state,'writing');
+ f.state.absent=false;assert.equal((await f.create().statusByRequest(r.requestId,f.options)).state,'stored');assert.equal(f.state.puts,1);
+ await assert.rejects(f.create().statusByRequest(id(99),f.options),{code:'UPLOAD_NOT_FOUND'});
+ const wrong=f.create({current:async()=>({...await f.config.current(),binding:{...f.binding,actorId:id(8)},scopes:[{...f.scopes[0],resourceId:id(8)}]})});
+ await assert.rejects(wrong.statusByRequest(r.requestId,f.options),{code:'UPLOAD_ACCESS_DENIED'});
+ f.state.suppressed=true;await assert.rejects(f.create().statusByRequest(r.requestId,f.options),/RETENTION/);
+ f.state.suppressed=false;f.state.denied=true;await assert.rejects(f.create().statusByRequest(r.requestId,f.options),/CURRENT_DENIED/);
+});
+test('status HTTP request selector is closed, authenticated and never an initiate',async()=>{
+ const f=applicationFixture();await f.initiate(f.create());
+ const result=await f.app.handle(f.request('status',{requestId:id(10)}));assert.equal(result.status,200);assert.equal((await result.json()).requestId,id(10));
+ const missing=await f.app.handle(f.request('status',{requestId:id(99)}));assert.equal(missing.status,404);assert.equal((await missing.json()).error.outcome,'READ_UNAVAILABLE');
+ for(const body of [{requestId:id(10),uploadId:id(20)},{requestId:id(10),actorId:id(2)}])assert.notEqual((await f.app.handle(f.request('status',body))).status,200);
+ for(const route of ['remove','inspect','read'])assert.notEqual((await f.app.handle(f.request(route,{requestId:id(10)}))).status,200);
+ assert.equal(f.state.rows.size,1);assert.equal(f.state.puts,0);f.state.denied=true;
+ assert.equal((await f.app.handle(f.request('status',{requestId:id(10)}))).status,403);
 });

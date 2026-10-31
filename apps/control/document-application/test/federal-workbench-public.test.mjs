@@ -1,3 +1,4 @@
+import {scopedSource} from '../../../artifacts/federal-drafting/test/scoped-fixture.mjs';
 /** Mounted native document application, deterministic compiler and canonical artifact owners;
  * SQL/object storage and native identity are isolated synthetic ports, not live qualification. */
 import test from 'node:test';
@@ -32,10 +33,10 @@ test('public package admits the mounted official import and downloaded envelope'
  await assert.rejects(distributedFederal.receiveFederalResponse('federal-import',200,bytes(changed),input));
 });
 
-async function fixture(t,{native=false}={}){
+async function fixture(t,{native=false,nested=false}={}){
  const binding={tenantId:id(100),actorId:id(101),conversationId:id(102),runId:id(103),attemptId:id(104),workerId:id(105),writerFence:1};
  const clientId=id(106),scopes=[{tenantId:binding.tenantId,kind:'client',resourceId:clientId,policyRevision:'policy1'}];
- const f=nativeDocumentFixture({binding,scopes}),source=sourceFor();
+ const f=nativeDocumentFixture({binding,scopes}),source=nested?scopedSource():sourceFor();
  const retained=await f.run({...f.call,request:{...f.call.request,title:'Synthetic federal source',content:{text:JSON.stringify(source)}}});
  const {deadlineMs}=f.context,now=f.options.now;
  const state={closed:false,revoked:false,artifactChecks:0},ports=createLocalDocumentPorts({binding,scopes,clientId,deadlineMs,now,state});
@@ -58,7 +59,7 @@ async function fixture(t,{native=false}={}){
  const session=await ports.sessions.issue({identityCredential:ports.nativeCredential});
  const post=(intent,body)=>listeners.public.handle(new Request('https://meri.synthetic.invalid/api/documents/'+intent,{method:'POST',
   headers:{authorization:'Bearer '+session.credential,'content-type':'application/json'},body:JSON.stringify(body)}));
- const selection={versionId:retained.version.versionId,expectedArtifactSha256:retained.version.object.sha256,operations:[opFor(source)]};
+ const selection={versionId:retained.version.versionId,expectedArtifactSha256:retained.version.object.sha256,operations:[opFor(source,{scopeId:nested?'a':'section-1'})]};
  return {f,state,nativeState,source,selection,post,deny:()=>{denyRelease=true;},allow:()=>{denyRelease=false;},
   suppress:()=>f.sql.suppressed.add(binding.tenantId+':artifact:'+retained.version.artifactId),
   reads:createArtifactService({...f.options,ids:()=>({artifactId:randomUUID(),versionId:randomUUID(),objectId:randomUUID()})})};
@@ -68,6 +69,59 @@ const publication=(selection,revisionSha256,output,extra={})=>({selection,revisi
 const importRequest=()=>({selection:structuredClone(official.request),deliveryId:randomUUID()});
 const importedSelection=result=>({versionId:result.publication.version.versionId,expectedArtifactSha256:result.publication.version.object.sha256,
  operations:[opFor(result.source,{scopeId:'document',expectedText:'$20',text:'$25'})]});
+
+test('nested retained source saves, reloads, exports and revises through the public receiver and immutable history',async t=>{
+ const x=await fixture(t,{nested:true}),bytes=value=>new TextEncoder().encode(JSON.stringify(value));
+ assert.deepEqual(await distributedFederal.receiveFederalSource(bytes(x.source)),x.source);
+ const prepare=distributedFederal.receiveFederalRequest('federal-prepare',bytes({selection:x.selection}));
+ const review=await distributedFederal.receiveFederalResponse('federal-prepare',200,bytes(await ok(await x.post('federal-prepare',prepare))),prepare);
+ assert.equal(review.prepared.draft.outputs.consolidated,x.source.text.replace('$100','$150'));
+ let saved;
+ for(const output of ['draft','operative','consolidated','redline']){
+  const request=distributedFederal.receiveFederalRequest('federal-publish',bytes(publication(x.selection,review.prepared.revisionSha256,output)));
+  const exported=await distributedFederal.receiveFederalResponse('federal-publish',200,bytes(await ok(await x.post('federal-publish',request))),request,review);
+  const downloaded=await x.reads.download(exported.publication.version.versionId,x.f.context);
+  if(output==='draft')saved=exported;
+  else assert.equal(downloaded.bytes.toString('utf8'),review.prepared.draft.outputs[output]);
+  const count=x.f.state.executions.length;
+  assert.equal((await ok(await x.post('federal-publish',request))).publication.version.versionId,exported.publication.version.versionId);
+  assert.equal(x.f.state.executions.length,count);
+ }
+ const load=distributedFederal.receiveFederalRequest('federal-load',bytes({versionId:saved.publication.version.versionId,expectedArtifactSha256:saved.publication.version.object.sha256}));
+ const loaded=await distributedFederal.receiveFederalResponse('federal-load',200,bytes(await ok(await x.post('federal-load',load))),load);
+ assert.deepEqual(loaded.prepared,review.prepared);
+ const selection={...x.selection,operations:[opFor(x.source,{scopeId:'a',text:'$175'})]};
+ const next=await ok(await x.post('federal-prepare',{selection}));
+ const child=await ok(await x.post('federal-publish',publication(selection,next.prepared.revisionSha256,'draft',{
+  baseVersionId:saved.publication.version.versionId,baseRevisionSha256:review.prepared.revisionSha256})));
+ assert.equal(child.publication.version.parentVersionId,saved.publication.version.versionId);
+ assert.equal(child.publication.version.artifactId,saved.publication.version.artifactId);
+ assert.equal(next.prepared.approval,'unapproved');
+ const writes=x.f.state.executions.length;x.suppress();
+ assert.notEqual((await x.post('federal-load',load)).status,200);
+ assert.notEqual((await x.post('federal-publish',publication(selection,next.prepared.revisionSha256,'operative'))).status,200);
+ assert.equal(x.f.state.executions.length,writes);
+});
+
+test('invalidated ancestor paths refuse atomically through mounted prepare/publish and the distributed receiver',async t=>{
+ const x=await fixture(t,{nested:true}),bytes=value=>new TextEncoder().encode(JSON.stringify(value));
+ const valid=await ok(await x.post('federal-prepare',{selection:x.selection}));
+ const selection={...x.selection,operations:[
+  opFor(x.source,{id:'cross-parent',scopeId:'document',expectedText:'Act\r\nSEC. 1.',text:'New introduction.'}),
+  opFor(x.source,{id:'use-child',scopeId:'b',text:'$200',dependsOn:['cross-parent']})]};
+ const before=structuredClone(selection),writes=x.f.state.executions.length;
+ for(const [route,body] of [['federal-prepare',{selection}],['federal-publish',publication(selection,valid.prepared.revisionSha256,'draft')]]){
+  const request=distributedFederal.receiveFederalRequest(route,bytes(body));
+  const response=await x.post(route,request),raw=await response.json();
+  assert.equal(response.status,422);assert.equal(raw.error.code,'DRAFT_PREPARATION_REFUSED');
+  const refused=await distributedFederal.receiveFederalResponse(route,response.status,bytes(raw),request);
+  assert.deepEqual(refused,raw);assert.equal('prepared' in refused,false);assert.equal('publication' in refused,false);
+  assert.equal(x.f.state.executions.length,writes);assert.deepEqual(selection,before);
+ }
+ // A failed candidate must not corrupt the existing source or valid review.
+ const unchanged=await ok(await x.post('federal-prepare',{selection:x.selection}));
+ assert.deepEqual(unchanged.prepared,valid.prepared);assert.equal(x.f.state.executions.length,writes);
+});
 
 test('official import retains exact Core projection and replays original custody before review and export',async t=>{
  const x=await fixture(t,{native:true}),input=importRequest(),result=await ok(await x.post('federal-import',input));
