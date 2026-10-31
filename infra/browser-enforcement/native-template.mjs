@@ -1,6 +1,6 @@
 /** Native /2 CloudFormation source through the existing template path. Compilers never call AWS or enable application producers. */
 import {own} from '../../packages/contracts/commands-0.2/execution-boundary.mjs';
-import {canonicalSha256 as hash} from '../../packages/contracts/validate.mjs';
+import {canonicalJson,canonicalSha256 as hash} from '../../packages/contracts/validate.mjs';
 import {assertNativeObserver} from '../../packages/contracts/native-observer.mjs';
 import {observerEntrypointConfiguration} from '../../apps/runtime/native-observer-entrypoint.mjs';
 import {compileNativeDeployment} from '../../apps/runtime/native-deployment-configuration.mjs';
@@ -88,13 +88,13 @@ export function compileNativeWatchdogTemplate(raw={enabled:false}){
   t.Resources.NativeWatchdog={Type:'AWS::StepFunctions::StateMachine',DeletionPolicy:'Retain',UpdateReplacePolicy:'Retain',
    Metadata:context('Existing native /2 graph with its original physical observer and finite cleanup window.',[
     'No retry/redrive controller; UNKNOWN remains unresolved.','Publishing is not a host launch or cleanup receipt.']),
-   Properties:{StateMachineName:b.name,StateMachineType:'STANDARD',RoleArn:{'Fn::GetAtt':['NativeWatchdogRole','Arn']},Definition:definition,
+   Properties:{StateMachineName:b.name,StateMachineType:'STANDARD',RoleArn:{'Fn::GetAtt':['NativeWatchdogRole','Arn']},DefinitionString:canonicalJson(definition),
     Tags:[{Key:'Project',Value:'meri-greenfield'}]}};
   t.Resources.NativeWatchdogVersion={Type:'AWS::StepFunctions::StateMachineVersion',DeletionPolicy:'Retain',UpdateReplacePolicy:'Retain',
    Metadata:context('Pin exact graph revision; preserve historical executions.',['Record returned version and compare the complete definition before worker activation.']),
    Properties:{StateMachineArn:{Ref:'NativeWatchdog'},StateMachineRevisionId:{'Fn::GetAtt':['NativeWatchdog','StateMachineRevisionId']},Description:`Native graph ${hash(definition)}`}};
   t.Outputs.NativeWatchdogVersionArn=output({Ref:'NativeWatchdogVersion'},'Actual numeric graph version, never an alias.');
-  t.Outputs.NativeWatchdogDefinitionSha256=output(hash(definition),'Canonical JSON hash used by the existing worker admission.');
+  t.Outputs.NativeWatchdogDefinitionSha256=output(hash(definition),'Expected SHA-256 of the exact UTF-8 DefinitionString; verify unchanged numeric-version DescribeStateMachine.definition bytes before rendering worker material.');
   return t;
  }catch{fail();}
 }

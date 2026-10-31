@@ -4,7 +4,7 @@ import {open,lstat} from 'node:fs/promises';
 import {constants} from 'node:fs';
 import {isAbsolute} from 'node:path';
 import {own} from '../../../packages/contracts/commands-0.2/execution-boundary.mjs';
-import {canonicalSha256} from '../../../packages/contracts/validate.mjs';
+import {canonicalJson} from '../../../packages/contracts/validate.mjs';
 import {compileNativeDeployment} from '../../../apps/runtime/native-deployment-configuration.mjs';
 import {compileNativeWatchdogDefinition} from '../../browser-enforcement/workflow.mjs';
 import {createNativeObserverSecret} from '../../../apps/runtime/native-observer-entrypoint.mjs';
@@ -24,10 +24,16 @@ export function parseNativeProcessing(raw){
   const v=own(raw,['enabled'],['deployment','watchdog','observerKeyId','maxRequestMs','materialSha256']);
   if(typeof v.enabled!=='boolean')fail();
   if(!v.enabled){if(Object.keys(v).length!==1)fail();return {enabled:false};}
-  const d=compileNativeDeployment(v.deployment),w=own(v.watchdog,['stateMachineVersionArn','definitionSha256','qualificationEvidenceSha256']);
+  const d=compileNativeDeployment(v.deployment),w=own(v.watchdog,['stateMachineVersionArn','definitionSha256','qualificationEvidenceSha256','definitionReadback']);
+  // Release supplies this projection of the actual numeric-version DescribeStateMachine result, without parsing/re-encoding its definition.
+  // Publication uses canonical bytes deliberately; the unchanged worker independently hashes the raw service string before effects.
+  const readback=own(w.definitionReadback,['stateMachineArn','type','status','revisionId','definition']);
+  const definition=canonicalJson(compileNativeWatchdogDefinition({physicalObserver:d.physicalObserver}));
   if(d.accountId!==ACCOUNT||d.region!==REGION||
    !new RegExp(`^arn:aws:states:${REGION}:${ACCOUNT}:stateMachine:[A-Za-z0-9_-]{1,80}:[1-9][0-9]*$`,'u').test(w.stateMachineVersionArn)||
-   !HEX.test(w.qualificationEvidenceSha256)||w.definitionSha256!==canonicalSha256(compileNativeWatchdogDefinition({physicalObserver:d.physicalObserver}))||
+   !HEX.test(w.qualificationEvidenceSha256)||readback.stateMachineArn!==w.stateMachineVersionArn||readback.type!=='STANDARD'||readback.status!=='ACTIVE'||
+   typeof readback.revisionId!=='string'||!readback.revisionId||readback.revisionId.length>128||
+   readback.definition!==definition||w.definitionSha256!==sha(readback.definition)||
    typeof v.observerKeyId!=='string'||!/^[A-Za-z0-9_-]{1,64}$/u.test(v.observerKeyId)||
    !Number.isSafeInteger(v.maxRequestMs)||v.maxRequestMs<1||v.maxRequestMs>30000)fail();
   const pins=own(v.materialSha256,keys);if(keys.some(k=>!HEX.test(pins[k])))fail();
@@ -71,8 +77,9 @@ export function composeNativeProcessing({feature,material={},deployment,pki,nowM
    deployment:{accountId:d.accountId,region:d.region,amiId:d.launch.ImageId,vpcId:d.placement.vpcId,subnetId:d.placement.subnetId,
     securityGroupId:d.placement.securityGroupIds[0],rootDeviceName:'/dev/xvda'},
   }}};
+  const {definitionReadback,...watchdog}=f.watchdog;
   const worker={enabled:true,databaseFile:NATIVE_PATHS.databaseConnection,issuerCaCertFile:NATIVE_PATHS.issuerCaCertificate,
-   issuerCaKeyFile:NATIVE_PATHS.issuerCaKey,deployment:d,watchdog:f.watchdog};
+   issuerCaKeyFile:NATIVE_PATHS.issuerCaKey,deployment:d,watchdog};
   const entries=names=>names.map(k=>[NATIVE_PATHS[k],Buffer.from(m[k])]);
   return {control,worker,files:{control:entries(['issuerCaCertificate','controlClientCertificate','controlClientKey','observerKey']),
    worker:entries(['databaseConnection','issuerCaCertificate','issuerCaKey'])},pins:{...f.materialSha256},materialNotAfterMs:client.validToDate.getTime(),

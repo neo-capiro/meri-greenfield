@@ -39,7 +39,7 @@ test('watchdog and existing role policies preserve version, scope, original grap
  assert.equal(statements.find(s=>s.Action.includes('lambda:InvokeFunction')).Resource,deployment.physicalObserver.bridgeFunctionVersionArn);
  const terminate=statements.find(s=>s.Action.includes('ec2:TerminateInstances'));
  assert.equal(terminate.Condition.StringEquals['ec2:ResourceTag/Project'],'meri-greenfield');
- const graph=t.Resources.NativeWatchdog.Properties.Definition;
+ const graph=JSON.parse(t.Resources.NativeWatchdog.Properties.DefinitionString);
  assert.ok(!JSON.stringify(graph).includes('"Retry"'));assert.match(graph.States.PrearmWait.Seconds,/leaseDeadlineMs/u);
  const roles=compileNativeRuntimePolicyTemplate(runtimeBinding);
  assert.equal(roles.Resources.NativeWorkerPolicy.Properties.Roles[0],'synthetic-worker');
