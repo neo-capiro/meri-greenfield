@@ -23,6 +23,20 @@ test('unknown commit does not double debit; exact retry recovers the original ro
  const f=fixture();await f.start();f.state.commitUnknown=true;await assert.rejects(f.record(),/SDK_USAGE_COMMIT_UNKNOWN/);f.state.commitUnknown=false;
  assert.equal((await f.record()).replayed,true);assert.equal(f.state.calls.filter(s=>s.startsWith('UPDATE meri_conversations.runs SET sdk_usage=')).length,1);
 });
+
+test('provider mismatch persists as unavailable and exact recovery never replaces the evidence',async()=>{
+ const f=fixture();await f.start();const input=payload();
+ input.usage.models['us.anthropic.claude-sonnet-4-6'].provider='firstParty';
+ f.state.commitUnknown=true;await assert.rejects(f.record(input),/SDK_USAGE_COMMIT_UNKNOWN/);f.state.commitUnknown=false;
+ const saved=structuredClone(f.saved().sdk_usage);
+ assert.equal(saved.reason,'configuration_mismatch');assert.equal(f.saved().sdk_charge_micro_usd,null);
+ assert.equal(saved.cumulative.models['us.anthropic.claude-sonnet-4-6'].provider,'firstParty');
+ const fresh=createPostgresConversationStore({pool:f.pool});
+ assert.deepEqual(await fresh.recordUsage({binding,scopes,input},check),{status:'unavailable',reason:'configuration_mismatch',replayed:true});
+ await assert.rejects(f.record(payload()),/SDK_USAGE_REPLAY_REFUSED/);
+ assert.deepEqual(f.saved().sdk_usage,saved);
+ assert.equal(f.state.calls.filter(s=>s.startsWith('UPDATE meri_conversations.runs SET sdk_usage=')).length,1);
+});
 test('canonical binding and scope changes cannot record usage or read another tenant policy',async()=>{
  for(const change of [{tenantId:'other'},{actorId:'other'},{conversationId:id(70)},{runId:id(71)},{attemptId:id(72)},{workerId:id(73)},{writerFence:2}]){
   const f=fixture();await f.start();await assert.rejects(f.record(payload(),{...binding,...change}));await assert.rejects(f.store.readModelPolicy({...binding,...change},check));assert.equal(f.saved().sdk_usage,undefined);

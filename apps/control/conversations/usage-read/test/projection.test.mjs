@@ -19,6 +19,15 @@ test('unknown billing basis retains the recorded estimate without claiming provi
  const input=payload();input.usage.models['model.alpha'].provider='unknown';input.usage.models['model.alpha'].costBasis='unknown';const value=projectRecordedUsage(savedUsage(input),request);
  assert.equal(value.usage.status,'unavailable');assert.equal(value.usage.reason,'rates_unavailable');assert.equal(value.usage.cumulative.models[0].costBasis,'unknown');assert.equal(value.usage.runDelta.sdkEstimateUsd,0.3);assert.equal(value.usage.providerBilledUsd,null);
 });
+
+test('provider mismatch remains visible as unavailable with the original provider and estimate',()=>{
+ const input=payload();input.usage.models['model.beta'].provider='firstParty';
+ const value=projectRecordedUsage(savedUsage(input),request);
+ assert.equal(value.usage.status,'unavailable');assert.equal(value.usage.reason,'configuration_mismatch');
+ assert.equal(value.usage.cumulative.basis.provider,'bedrock');
+ assert.equal(value.usage.cumulative.models[1].provider,'firstParty');
+ assert.equal(value.usage.runDelta.sdkEstimateUsd,0.3);assert.equal(value.usage.providerBilledUsd,null);
+});
 test('native outcomes disclose partial hook coverage and unknown duration, dropping all private join/session identities',()=>{
  const record=savedUsage(payload({omitted:4}));record.parentRunId=id(55);const value=projectRecordedUsage(record,request),text=JSON.stringify(value);
  assert.deepEqual(value.toolAudit,{coverage:'recorded-hooks-only',partial:true,omitted:4,tools:[{name:'Read',executionOutcome:'completed',durationMs:0},{name:'mcp__capiro__read',executionOutcome:'failed',durationMs:null}]});

@@ -75,6 +75,13 @@ export function accountSdkUsage({result,mode,parentSessionId=null,baseline=null,
  // SDK decimal USD is an estimate; preserve it separately from integer application accounting.
  sdkEstimateUsd=Number(estimate.toFixed(12));delta=models;
  for(const evidence of Object.values(cumulative.models))if(!['bedrock','firstParty'].includes(evidence.provider)||evidence.costBasis!=='list')return unavailable('rates_unavailable');
+ // A resumed SDK snapshot includes historical providers. Only unchanged history may
+ // differ from this turn's provider; any new entry, cost or counter must match it.
+ const provider=basis.provider==='claude-api'?'firstParty':'bedrock';
+ for(const [name,current] of Object.entries(cumulative.models)){
+  const old=previous?.models[name],advanced=!old||current.sdkEstimateUsd>old.sdkEstimateUsd||Object.values(models[name]).some(n=>n>0);
+  if(advanced&&current.provider!==provider)return unavailable('configuration_mismatch');
+ }
  // Native cost includes model-specific cache/tool pricing and subagents. It is an
  // estimate for the existing cap, never an invoice or a second token-price catalog.
  const charge=Math.ceil(Number((sdkEstimateUsd*1e6).toFixed(6)));

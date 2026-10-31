@@ -166,27 +166,60 @@ test('actual local HTTP GET/LOCK/PUT/GET traverses the adapter, canonical artifa
  assert.equal((await send('save',{lock:'local CODE',body:edited()})).status,200);assert.deepEqual(await bytes(await send('getFile')),edited());assert.equal(f.sql.state.versions.size,1);
 });
 
-test('workbook-bearing immutable base disables write and refuses old-token Save before Core',async t=>{
- const f=await wopiFixture(t,{format:'pptx',baseBytes:zip(chart())});
- f.state.lock='old-lock';
- const info=await (await f.send()).json();
- assert.equal(info.UserCanWrite,false);assert.equal(info.SupportsUpdate,false);assert.equal(info.ReadOnly,true);
- const before={sequence:f.draft.sequence,sha256:f.draft.sha256,puts:f.state.puts,calls:f.state.calls.length};
- const response=await f.send('save',{lock:'old-lock',body:ooxml('pptx')});
- assert.equal(response.status,409);
- assert.equal(f.state.calls.slice(before.calls).some(call=>call.route==='save'),false);
- assert.equal(f.draft.sequence,before.sequence);assert.equal(f.draft.sha256,before.sha256);assert.equal(f.state.puts,before.puts);
+test('validated workbook base and retained draft remain writable with exact private bytes',async t=>{
+ const f=await wopiFixture(t,{format:'pptx',baseBytes:zip(chart())}),entries=chart();
+ entries['ppt/charts/chart1.xml']=entries['ppt/charts/chart1.xml'].replace('val="0"','val="1"');
+ const saved=zip(entries),info=await (await f.send()).json();
+ assert.equal(info.UserCanWrite,true);assert.equal(info.SupportsUpdate,true);assert.equal(info.ReadOnly,false);
+ assert.equal((await f.send('lock',{lock:'chart-lock'})).status,200);
+ const response=await f.send('save',{lock:'chart-lock',body:saved});assert.equal(response.status,200);
+ assert.equal(f.draft.sequence,1);assert.equal(f.draft.sha256,f.sha(saved));
+ assert.equal(response.headers.get('x-wopi-itemversion'),`${f.draft.draftId}:1:${f.sha(saved)}`);
+ assert.deepEqual(await bytes(await f.send('getFile')),saved);
+ assert.equal((await (await f.send()).json()).UserCanWrite,true);
+ assert.equal(f.state.puts,1);assert.equal(f.sql.state.versions.size,1);
 });
-test('workbook-bearing retained draft disables write and refuses Save before Core',async t=>{
- const f=await wopiFixture(t,{format:'pptx'});
- const chartBytes=zip(chart());Object.assign(f.draft,{sequence:1,sha256:createHash('sha256').update(chartBytes).digest('hex'),byteLength:chartBytes.length,bytesBase64:chartBytes.toString('base64'),state:'draft'});
- f.state.lock='old-lock';
- const infoResponse=await f.send();if(infoResponse.status!==200)assert.fail('CheckFileInfo '+infoResponse.status);const info=await infoResponse.json();assert.equal(info.UserCanWrite,false);assert.equal(info.SupportsUpdate,false);
+
+test('malformed chart-workbook Save refuses before Core and preserves the last good draft',async t=>{
+ const f=await wopiFixture(t,{format:'pptx',baseBytes:zip(chart())});
+ await f.send('lock',{lock:'chart-lock'});await f.send('save',{lock:'chart-lock',body:f.baseBytes});
+ const entries=chart();entries['ppt/charts/chart1.xml']=entries['ppt/charts/chart1.xml'].replace('rId1','missing');
  const before={sequence:f.draft.sequence,sha256:f.draft.sha256,calls:f.state.calls.length};
- assert.equal((await f.send('save',{lock:'old-lock',body:ooxml('pptx')})).status,409);
+ assert.equal((await f.send('save',{lock:'chart-lock',body:zip(entries)})).status,400);
  assert.equal(f.state.calls.slice(before.calls).some(call=>call.route==='save'),false);
  assert.equal(f.draft.sequence,before.sequence);assert.equal(f.draft.sha256,before.sha256);
+ assert.deepEqual(await bytes(await f.send('getFile')),f.baseBytes);
 });
+
+test('structurally valid engine output that drops a workbook never reaches Core Save',async t=>{
+ const f=await wopiFixture(t,{format:'pptx',baseBytes:zip(chart())});await f.send('lock',{lock:'one'});
+ await f.send('save',{lock:'one',body:f.baseBytes});const before=f.state.calls.length;
+ assert.equal((await f.send('save',{lock:'one',body:ooxml('pptx')})).status,400);
+ assert.equal(f.state.calls.slice(before).some(c=>c.route==='save'),false);assert.equal(f.draft.sequence,1);
+ assert.equal(f.draft.sha256,f.sha(f.baseBytes));assert.deepEqual(await bytes(await f.send('getFile')),f.baseBytes);
+});
+
+test('valid chart and workbook part renumbering is accepted without splicing original bytes',async t=>{
+ const f=await wopiFixture(t,{format:'pptx',baseBytes:zip(chart())}),e=chart();
+ e['ppt/charts/chart9.xml']=e['ppt/charts/chart1.xml'];delete e['ppt/charts/chart1.xml'];
+ e['ppt/charts/_rels/chart9.xml.rels']=e['ppt/charts/_rels/chart1.xml.rels'].replace('data.xlsx','renamed.xlsx');delete e['ppt/charts/_rels/chart1.xml.rels'];
+ e['ppt/embeddings/renamed.xlsx']=e['ppt/embeddings/data.xlsx'];delete e['ppt/embeddings/data.xlsx'];
+ e['[Content_Types].xml']=e['[Content_Types].xml'].replace('chart1.xml','chart9.xml');const saved=zip(e);
+ await f.send('lock',{lock:'one'});assert.equal((await f.send('save',{lock:'one',body:saved})).status,200);
+ assert.deepEqual(await bytes(await f.send('getFile')),saved);assert.equal(f.draft.sha256,f.sha(saved));
+});
+
+for(const loss of ['epoch','lock','access','session','retention'])test(`chart-workbook save still enforces ${loss}`,async t=>{
+ const f=await wopiFixture(t,{format:'pptx',baseBytes:zip(chart())});await f.send('lock',{lock:'one'});
+ if(loss==='epoch')f.state.epoch++;
+ if(loss==='lock')f.state.lock='other';
+ if(loss==='access')f.state.readonly=true;
+ if(loss==='session')f.sessions.revoke(f.session.credential);
+ if(loss==='retention')f.sql.suppressed.add(`${f.context.binding.tenantId}:artifact:${f.first.version.artifactId}`);
+ assert.notEqual((await f.send('save',{lock:'one',body:f.baseBytes})).status,200);
+ assert.equal(f.draft.sequence,0);assert.equal(f.draft.bytesBase64,null);assert.equal(f.state.puts,1);
+});
+
 test('closed WOPI codec cannot issue or verify after key ownership is released',async()=>{
  const {createWopiAccessTokenCodec}=await import('../wopi-access-token.mjs');
  const codec=createWopiAccessTokenCodec({key:Buffer.alloc(32,7),now:()=>1000});

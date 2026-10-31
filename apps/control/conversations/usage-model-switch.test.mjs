@@ -46,7 +46,32 @@ test('conflicting aggregate/model estimates never satisfy a cap as a free turn',
 });
 
 test('native aggregate summation roundoff is tolerated without accepting material discrepancies',()=>{
- const value=accountSdkUsage({mode:'new',result:result({[bedrock]:row('bedrock',0.1),[api]:row('firstParty',0.2)},0.3)});
+ const other='us.anthropic.claude-opus-4-6-v1';
+ const value=accountSdkUsage({mode:'new',result:result({[bedrock]:row('bedrock',0.1),[other]:row('bedrock',0.2)},0.3)});
  assert.equal(value.status,'recorded');assert.equal(value.chargeMicroUsd,300000);
- assert.equal(accountSdkUsage({mode:'new',result:result({[bedrock]:row('bedrock',0.1),[api]:row('firstParty',0.2)},0.30000001)}).reason,'estimate_mismatch');
+ assert.equal(accountSdkUsage({mode:'new',result:result({[bedrock]:row('bedrock',0.1),[other]:row('bedrock',0.2)},0.30000001)}).reason,'estimate_mismatch');
+});
+
+test('new usage from a different provider cannot be reported as the selected provider',()=>{
+ for(const [basis,models] of [
+  [SDK_USAGE_BASIS,{[api]:row('firstParty',0.1)}],
+  [apiBasis,{[bedrock]:row('bedrock',0.1)}],
+  [SDK_USAGE_BASIS,{[bedrock]:row('bedrock',0.05),[api]:row('firstParty',0.05)}],
+ ]){
+  const value=accountSdkUsage({mode:'new',basis,result:result(models,0.1)});
+  assert.equal(value.status,'unavailable');assert.equal(value.reason,'configuration_mismatch');
+  assert.equal(value.chargeMicroUsd,null);assert.ok(value.cumulative);
+ }
+});
+
+test('resume retains unchanged former-provider history but refuses its new costs or counters',()=>{
+ const baseline=sdkUsageSnapshot(result({[bedrock]:row('bedrock',0.1)},0.1));
+ for(const old of [row('bedrock',0.11),row('bedrock',0.1,11),{...row('bedrock',0.1),webSearchRequests:2}]){
+  const value=accountSdkUsage({mode:'resume',parentSessionId:session,baseline,basis:apiBasis,
+   result:result({[bedrock]:old,[api]:row('firstParty',0.04)},old.costUSD+0.04)});
+  assert.equal(value.reason,'configuration_mismatch');assert.equal(value.chargeMicroUsd,null);
+ }
+ // Zero-price native work still has provider identity; it is not an exemption.
+ const value=accountSdkUsage({mode:'new',result:result({[api]:row('firstParty',0)},0)});
+ assert.equal(value.reason,'configuration_mismatch');assert.equal(value.chargeMicroUsd,null);
 });

@@ -13,8 +13,8 @@
  *  2. `pinsMatched: false` is stale, never a no-consent declaration. Core answers it when the newest stored consent
  *     for this owner and schedule does not pin the generation/intent/projection the caller sent (and, when it carries
  *     a `consentGeneration`, when a stored row exists that simply is not the requested one). The caller re-reads the
- *     current pins from the schedule owner once and asks again; if the pins did not move, or the second answer still
- *     does not pin them, the row stays `unknown` with `stale: true`. It is never downgraded to `absent`.
+ *     current pins from the schedule owner before and after the observation. A changed generation or projection
+ *     stays `unknown` with `stale: true`; a newer consent is never attached to an older displayed row.
  *  3. Observed expiry is consent state, not scheduling state. `expiresAtMs`/`issuedAtMs`/`scopeCount` are Core's own
  *     row values under Core's own database clock; they never replace or reinterpret the projection's `state`, and an
  *     unattended read that succeeded says nothing about consent. Both are reported side by side and neither is derived
@@ -44,6 +44,10 @@ function answer(value){
   if(!(r.cause===null||causes.has(r.cause))||!(r.rightsSha256===null||typeof r.rightsSha256==='string'&&hex.test(r.rightsSha256)))return null;
   if(r.state==='active'&&(r.pinsMatched!==true||r.rightsSha256===null||r.expiresAtMs===null||r.consentGeneration===null))return null;
   if(r.state!=='active'&&r.rightsSha256!==null)return null;
+  // These are Core's own timestamps, not the caller's clock. An internally contradictory window is not evidence.
+  if(['active','expired'].includes(r.state)&&(r.pinsMatched!==true||r.consentGeneration!==r.generation||
+   r.issuedAtMs===null||r.expiresAtMs===null||r.issuedAtMs>r.observedAtMs||r.expiresAtMs<=r.issuedAtMs||
+   (r.state==='active')!==(r.expiresAtMs>r.observedAtMs)))return null;
   return r;
  }catch{return null;}
 }
@@ -53,6 +57,7 @@ export function unobserved(row){return empty('unknown',Number.isSafeInteger(row?
 /** Core's answer as the closed facet. `unknown` is the only answer for anything this module cannot read as itself. */
 export function consentFacet(value,generation){
  const r=answer(value);if(r===null)return empty('unknown',generation);
+ if(r.generation!==generation)return {...empty('unknown',generation),stale:true};
  const carried={state:r.state,pinsMatched:r.pinsMatched,stale:false,observedAtMs:r.observedAtMs,generation:r.generation,
   consentGeneration:r.consentGeneration,issuedAtMs:r.issuedAtMs,expiresAtMs:r.expiresAtMs,scopeCount:r.scopeCount,cause:r.cause,rightsSha256:r.rightsSha256};
  // A stored consent that does not pin this request is a re-read, never a declaration that the owner has no consent.
@@ -74,16 +79,20 @@ const samePins=(a,b)=>a!==null&&b!==null&&a.generation===b.generation&&a.intentS
 export function createRoutineConsentObservation(configuration){
  const {observe,readFiring}=configuration??{};
  if(typeof observe!=='function'||typeof readFiring!=='function')throw TypeError('ROUTINES_CONSENT_OBSERVATION_CONFIGURATION');
- const pins=async(principal,scheduleId,check)=>consentPins(await readFiring({tenantId:principal.tenantId,scheduleId},check),principal.tenantId,scheduleId);
+ const pins=async(principal,scheduleId,check)=>{
+  const result=consentPins(await readFiring({tenantId:principal.tenantId,scheduleId},check),principal.tenantId,scheduleId);
+  return result?.ownerActorId===principal.actorId?result:null;
+ };
  const ask=async value=>{try{return consentFacet(await observe(value),value.generation);}catch{return empty('unknown',value.generation);}};
- /** One row: the exact current pins, Core's answer, and — only when Core says a stored row does not pin them — a
-  *  single re-read of the owner's current pins and one more ask. The bound is one retry: this never loops. */
- const one=async({principal,scheduleId,generation,signal,deadlineMs,check})=>{
-  const exact=await pins(principal,scheduleId,check);if(exact===null)return empty('unknown',generation);
-  const first=await ask({...exact,signal,deadlineMs});if(!first.stale)return first;
+ /** Observe only the selected row/review generation. Re-read custody after Core answers even on success, since an
+  *  update or cancellation can land during that read. A moved row requires a fresh list/review, not a replacement ask. */
+ const one=async({principal,scheduleId,generation,projectionSha256,signal,deadlineMs,check})=>{
+  const stale=()=>({...empty('unknown',generation),stale:true});
+  const exact=await pins(principal,scheduleId,check);
+  if(exact===null||exact.generation!==generation||projectionSha256!==undefined&&exact.projectionSha256!==projectionSha256)return stale();
+  const first=await ask({...exact,signal,deadlineMs});
   const again=await pins(principal,scheduleId,check);
-  if(again===null||samePins(exact,again))return first;
-  return await ask({...again,signal,deadlineMs});
+  return samePins(exact,again)?first:stale();
  };
  /** The public list rows, each with its own observation. Rows are observed in order and never re-ordered. */
  const observeRows=async({rows,principal,signal,deadlineMs,check})=>{
@@ -91,7 +100,7 @@ export function createRoutineConsentObservation(configuration){
   const out=[];
   for(const row of rows){
    const scheduleId=row?.projection?.scheduleId,generation=Number.isSafeInteger(row?.generation)&&row.generation>=1?row.generation:1;
-   out.push(typeof scheduleId==='string'?{...row,consent:await one({principal,scheduleId,generation,signal,deadlineMs,check})}:{...row,consent:unobserved(row)});
+   out.push(typeof scheduleId==='string'?{...row,consent:await one({principal,scheduleId,generation,projectionSha256:hash(row.projection),signal,deadlineMs,check})}:{...row,consent:unobserved(row)});
   }
   return out;
  };

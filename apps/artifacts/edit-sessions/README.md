@@ -5,6 +5,41 @@ development/testing. A paid quote is not a prerequisite. Live editor activation
 remains held until the actual host, draft/retention bridge, immutable publisher,
 frontend and Office fidelity checks are complete.
 
+## Embedded chart workbook application admission (31 October)
+
+PPTX chart workbooks use the same bounded structural admission at attended
+open/renew, WOPI read/save and explicit Publish. The former unconditional
+`ppt/embeddings/*.xlsx` refusal has been removed. Each workbook must be a valid
+nested XLSX under the shared inflated-byte/entry budget, have the spreadsheet
+content type, and be referenced by the chart's actual namespaced `externalData`
+ID through exactly one internal package relationship. Orphan or mismatched
+links, duplicate data references, OLE, macros, controls and external-data parts
+are refused; active relationships/content types cannot bypass checks by moving
+to an innocuous filename. No package is rewritten by admission.
+
+A conservative transition guard also rejects any Save or Publish with fewer
+embedded workbooks than its validated source/current saved draft. This catches
+the known engine workbook-drop regression even if the remaining PPTX is valid.
+Renamed parts are allowed. Intentional workbook removal is currently refused
+too: no removal-intent protocol is claimed by this bounded correction. Counts
+do not prove chart-slot identity or values; the engine corpus remains necessary.
+
+Save still stores only private exact bytes. Current Core sequence/hash reads
+confirm Save; editor release invalidates the old epoch/token, and reopening
+reads those saved bytes. Separate Publish retains the same bytes and immutable
+parent through the existing journal and stale-head CAS. The exclusive-editor,
+lock, access and retention owners are unchanged. Synthetic fixtures cover this
+path for DOCX/XLSX/PPTX, including two distinct chart workbooks, plus hostile
+packages and stale/denied writes.
+
+These are application checks, not an engine capability declaration. The Office46
+pin is unchanged. Release must qualify its actual ARM64 image with the retained
+corpus and the positive/pre-fix chart sensitivity harness before enabling the
+Office workflow. In particular, workbook retention does not prove intentional
+chart-data editing, formula recalculation, fonts or visual/layout fidelity.
+Real Save/Release/Publish/reopen and WOPI/current-access/retention acceptance
+against the serving frontend, Core and Meri tuple remain required.
+
 ## 29 October isolated native qualification
 
 The user authorized isolated local qualification. CODE 26.04.5.2 ran in the
