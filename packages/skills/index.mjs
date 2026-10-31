@@ -3,6 +3,7 @@ import {readFileSync} from 'node:fs';
 import {createHash} from 'node:crypto';
 import assets from './assets.json' with {type:'json'};
 import catalog from '../contracts/retrieval-0.2/catalog.json' with {type:'json'};
+import installationCatalog from '../contracts/retrieval-0.3/catalog.json' with {type:'json'};
 import {assertCatalog} from '../contracts/retrieval-0.2/validate.mjs';
 import {assertInstalledSkillManifest} from '../contracts/retrieval-0.3/installed-skill.mjs';
 import {canonicalSha256} from '../contracts/validate.mjs';
@@ -13,10 +14,17 @@ const digest=bytes=>createHash('sha256').update(bytes).digest('hex');
 const fail=code=>{throw new Error(code);};
 const index=new Map(assets.assets.map(asset=>[key(asset.skillId,asset.skillVersion),asset]));
 const cache=new Map();
+// Current process installation, distinct from immutable persisted selection pins.
+const installationCatalogSha256='0d47a60b1398cbe5d97805296e9f286b5805b05e988e82e98e1312efa01f3811';
 
 function verifyCatalog(){
   assertCatalog(catalog);
   if(assets.schema!=='meri-original-skill-assets/1'||index.size!==assets.assets.length||canonicalSha256(catalog)!==assets.installationCatalogSha256)fail('SKILL_CATALOG_PIN');
+  assertCatalog(installationCatalog);
+  const installedRows=new Set(installationCatalog.operations.map(canonicalSha256));
+  if(canonicalSha256(installationCatalog)!==installationCatalogSha256||
+    installationCatalog.sourceRegistryCommit!==catalog.sourceRegistryCommit||
+    catalog.operations.some(old=>!installedRows.has(canonicalSha256(old))))fail('SKILL_INSTALLATION_CATALOG_PIN');
 }
 function readAsset(path){
   const bytes=readFileSync(new URL(path,import.meta.url));
@@ -30,10 +38,11 @@ function load(asset){
   // by skillId: the closed 0.2.0 foundation keeps refusing every id it does not enumerate, an additive 0.3.0
   // identity is admitted only through the versioned receiver, and an unavailable operation stays unavailable.
   assertInstalledSkillManifest(manifest,catalog);
+  assertInstalledSkillManifest(manifest,installationCatalog);
   if(manifest.skillId!==asset.skillId||manifest.skillVersion!==asset.skillVersion||
     manifest.prose.sha256!==asset.proseSha256||digest(Buffer.from(prose))!==asset.proseSha256||
     canonicalSha256(manifest)!==asset.manifestSha256)fail('SKILL_ASSET_PIN');
-  return snapshotPreservationData({manifest,prose,installationCatalogSha256:assets.installationCatalogSha256,pin:{skillId:asset.skillId,skillVersion:asset.skillVersion,
+  return snapshotPreservationData({manifest,prose,installationCatalogSha256,pin:{skillId:asset.skillId,skillVersion:asset.skillVersion,
     manifestSha256:asset.manifestSha256,proseSha256:asset.proseSha256,catalogSha256:asset.catalogSha256??assets.catalogSha256}});
 }
 

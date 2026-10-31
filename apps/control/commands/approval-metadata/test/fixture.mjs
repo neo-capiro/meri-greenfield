@@ -11,7 +11,7 @@ export function createMetadataPoolFixture(){
   // string form, so the inert fixture must support both or statement would be undefined.
   const statement=typeof config==='string'?config:config?.text;
   const values=typeof config==='string'?(args??[]):(config?.values??[]);
-  calls.push({text:statement,values});
+  calls.push({text:statement,values,...(typeof config==='string'?{}:{query_timeout:config?.query_timeout})});
   // Transaction control used by the real readback/reader; the fixture has no rollback semantics to model.
   if(/^(?:BEGIN|COMMIT|ROLLBACK)\b/u.test(statement)||/^SET (?:LOCAL )/u.test(statement))return {rows:[],rowCount:0};
   const text=statement.replace(/^(INSERT INTO |SELECT payload,payload_sha256 FROM )meri_commands\.approval_metadata /u,'$1approval_metadata ');
