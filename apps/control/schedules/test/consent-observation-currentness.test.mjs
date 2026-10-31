@@ -49,7 +49,11 @@ test('changed scope or missing custody during the read cannot release the origin
 });
 
 test('list projection and owner must match the consent custody before a Core read',async()=>{
- for(const current of [firing(1,'client-two'),{...firing(),projection:{...firing().projection,owner:{...principal,actorId:'other-owner'}}}]){
+ const foreignOwner=firing(),foreignTenant=firing();
+ foreignOwner.projection.owner={...principal,actorId:'other-owner'};
+ foreignTenant.projection.owner={...principal,tenantId:'other-tenant'};
+ // Each foreign intent still hashes to its own projection: this exercises owner isolation, not a corrupt digest.
+ for(const current of [firing(1,'client-two'),foreignOwner,foreignTenant]){
   let asks=0;
   const observer=createRoutineConsentObservation({readFiring:async()=>current,observe:async()=>{asks++;return answer();}});
   const rows=await observer.observe({rows:[{projection:firing().projection,generation:1}],...call});
