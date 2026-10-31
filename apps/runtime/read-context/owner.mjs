@@ -11,6 +11,7 @@ import {retainedCall,credentialProof} from '../../gateway/sources/retained-reads
 import {GatewayDenied,safeFailure} from '../../gateway/dispatch/operation-result.mjs';
 import {acceptsInvocationId} from '../../gateway/dispatch/native-read-context.mjs';
 import {assertNativeToolAuthority} from './core-client.mjs';
+import {researchContextFields,sameResearchContext} from '../../control/action-host/application-adapters/research-context.mjs';
 import {nativeReadOperationAllowed} from '../../gateway/sources/retained-reads/native-families.mjs';
 import {captureBusinessDevelopmentResource} from '../../gateway/sources/business-development/request-context.mjs';
 import {assertNativeConversationAuthority} from './conversation-authority.mjs';
@@ -28,7 +29,7 @@ const token=v=>typeof v==='string'&&/^[\x21-\x7e]{1,8192}$/u.test(v);
 /** A native bearer is a token string, or `{credential, expiresAtMs}` when it carries its own authority expiry (the live action
  * session, RC1 option A). That expiry then bounds every later Core call and the source transport; it is never extended. */
 const nativeBearer=issued=>{if(typeof issued==='string')return token(issued)?{credential:issued}:refuse('UNAVAILABLE');
- let v;try{v=data(own(issued,['credential','expiresAtMs']));}catch{refuse('UNAVAILABLE');}
+ let v;try{v=data(own(issued,['credential','expiresAtMs'],['scopeKind','scope']));researchContextFields(v);}catch{refuse('UNAVAILABLE');}
  if(!token(v.credential)||!Number.isSafeInteger(v.expiresAtMs))refuse('UNAVAILABLE');return v;};
 export function createReadContextOwner(configuration){
  const c=own(configuration,['binding','expiresAtMs'],['current','executionSha256','approvedReads','coreAuthority','getNativeCredential','getServiceSecret','getReadModeServiceSecret','defaultCongress','now','enabled']),binding=data(c.binding),now=c.now??Date.now,enabled=c.enabled??false;
@@ -80,7 +81,8 @@ export function createReadContextOwner(configuration){
   /** Final result release re-observes the canonical current Core context: a client selection lost
    * after the source value was produced withholds that value. The original expiry still bounds the call. */
   async function observeRelease(proof,prior){
-   const started=now(),fresh=assertNativeToolAuthority(await life.run(signal=>currentCore({credential:prior.credential,signal,deadlineMs:cutoff})),{started,now});
+   const started=now(),fresh=assertNativeToolAuthority(await life.run(signal=>currentCore({credential:prior.credential,...researchContextFields(prior.native),signal,deadlineMs:cutoff})),{started,now});
+   if(!sameResearchContext(prior.native,fresh))refuse('ACCESS_DENIED');
    // Graph paths can include client-attributed notes behind non-client nodes.
    // Reuse the canonical current roster for release, including General reads.
    if(proof.operation.id==='find_path_to'&&(!Array.isArray(prior.native.clientIds)||!Array.isArray(fresh.clientIds)||
@@ -103,7 +105,8 @@ export function createReadContextOwner(configuration){
     life.check();return {...prior,expiresAtMs:cutoff};}
    const bearer=nativeBearer(await life.run(signal=>c.getNativeCredential({binding,operation:proof.operation,requestSha256:proof.requestSha256,...(callKey===undefined?{}:{callKey}),signal,deadlineMs:cutoff}))),credential=bearer.credential;
    if(bearer.expiresAtMs!==undefined)limit(bearer.expiresAtMs);
-   const began=now(),native=assertNativeToolAuthority(await life.run(signal=>currentCore({credential,signal,deadlineMs:cutoff})),{started:began,now});limit(native.expiresAtMs);
+   const began=now(),native=assertNativeToolAuthority(await life.run(signal=>currentCore({credential,...researchContextFields(bearer),signal,deadlineMs:cutoff})),{started:began,now});limit(native.expiresAtMs);
+   if(!sameResearchContext(bearer,native))refuse('ACCESS_DENIED');
    // Equality is permitted only for the canonical Core UUID principal already captured by native startup. No conversion/mapping.
    if(native.principal.tenantId!==binding.tenantId||native.principal.actorId!==binding.actorId)refuse('UNAVAILABLE');
    const contract=resolveOperationContract(proof.operation);let conversation=null,clientReferenceObservation=null,modeObservation=null,attachmentObservation=null;

@@ -7,6 +7,7 @@ import {ProductError,asProductError} from '../product-access/errors.mjs';
 import {registerScheduledCurrentness} from '../product-access/currentness-serving-reader.mjs';
 import {storageMethod} from '../../artifacts/storage/boundary.mjs';
 import {snapshotScheduledJobSelection} from './scheduled-job-lineage.mjs';
+import {researchContextFields} from '../action-host/application-adapters/research-context.mjs';
 
 export const SCHEDULED_MERI_INBOX_DESTINATION='meri-inbox';
 const fail=()=>{throw new ProductError('CONVERSATION_UNAVAILABLE');},same=(a,b)=>hash(a)===hash(b);
@@ -32,7 +33,7 @@ export function createScheduledConversationCurrentness(configuration){
   c.maxRequestMs??=10000;
   if(typeof c.now!=='function'||!Number.isSafeInteger(c.maxRequestMs)||c.maxRequestMs<1||c.maxRequestMs>30000)fail();
  }catch{throw new ProductError('PRODUCT_CONFIGURATION');}
- return registerScheduledCurrentness(Object.freeze({async assertCurrent(value,readScheduleOriginRows,readOrdinaryMetadata){
+ return registerScheduledCurrentness(Object.freeze({async assertCurrent(value,readScheduleOriginRows,readOrdinaryMetadata,readOrdinarySubject){
   let life;
   try{
    const call=own(value,['credential','principal','conversationId','scopes','deadlineMs'],['signal']);nativeSignal(call.signal);
@@ -45,10 +46,14 @@ export function createScheduledConversationCurrentness(configuration){
    const member=async()=>{const result=await life.run(signal=>recheck({...native,signal}));if(!same(result,principal))fail();};
    const origin=()=>life.run(()=>read({tenantId:principal.tenantId,conversationId:call.conversationId},life.check,readScheduleOriginRows));
    if(readOrdinaryMetadata!==undefined&&typeof readOrdinaryMetadata!=='function')fail();
+   if(readOrdinarySubject!==undefined&&(typeof readOrdinarySubject!=='function'||readOrdinaryMetadata!==undefined))fail();
    await member();const first=await origin();let metadata=null;
    if(first===null){
     if(readOrdinaryMetadata)metadata=await life.run(()=>readOrdinaryMetadata());
-    else await life.run(signal=>core({...call,principal,scopes,signal,deadlineMs}));
+    else {
+     const subject=readOrdinarySubject?researchContextFields(await life.run(()=>readOrdinarySubject())):{};
+     await life.run(signal=>core({...call,...subject,principal,scopes,signal,deadlineMs}));
+    }
    }
    else snapshotScheduledConversationOrigin(first,{principal,conversationId:call.conversationId,scopes});
    await member();const last=await origin();

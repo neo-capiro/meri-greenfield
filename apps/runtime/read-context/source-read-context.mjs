@@ -64,6 +64,7 @@ function visibleSelector(native,subject,id){
 }
 
 function privateDataContext(proof,native){
+ if(native.scopeKind==='research_portfolio')refuse('ACCESS_DENIED');
  const request=proof.request,selected=proof.subject.kind==='client'||proof.subject.entityType==='client'?clientSubject(proof,native):null;
  if(selected===null&&(proof.subject.kind!=='personal'||proof.subject.entityType!=='user'))refuse('ACCESS_DENIED');
  if(Object.hasOwn(request,'clientId')&&(typeof request.clientId!=='string'||!UUID.test(request.clientId)))refuse('INVALID_ARGUMENTS');

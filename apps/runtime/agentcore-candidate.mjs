@@ -6,6 +6,7 @@ import {assertForkBootstrapReceipt} from '../../packages/contracts/conversation-
 import {createOperationLifetime} from '../../packages/runtime/operation-lifetime.mjs';
 import {jsonBody} from '../control/action-application/http.mjs';
 import {createCapiroApplicationAuthorityClient} from '../control/action-host/application-adapters/authority-http.mjs';
+import {researchContextFields,researchContextFromCurrent,sameResearchContext} from '../control/action-host/application-adapters/research-context.mjs';
 import {createCoreMembershipGate} from '../control/product-access/core-membership.mjs';
 import {createPostgresConversationStore} from '../control/conversations/postgres-store.mjs';
 import {createInitialRunBindingJournal} from '../control/conversations/initial-run-binding-journal.mjs';
@@ -114,19 +115,19 @@ export function assembleAgentCoreCandidate({configuration,pool,provider,controlC
  }
  async function nativeAccess({binding,run,context,signal}){
   let origin,credentialBinding=binding,borrowed;
-  try{borrowed=nativeCredentials.nativeCredentialFor({binding,selectedClientId:context.selectedClientId,signal});}
+  try{borrowed=nativeCredentials.nativeCredentialFor({binding,selectedClientId:context.selectedClientId,signal,includeSubject:true});}
   catch(error){
    if(error?.code!=='SESSION_UNAVAILABLE')throw error;
    origin=await continuationOrigin(binding,run,context,signal);credentialBinding=origin.sourceBinding;
    const source=(await store.read(credentialBinding,{after:0,limit:1},check(signal))).run;
    const sourceContext=await contextFor({binding:credentialBinding,run:source,signal});
    if(!same(source.scopes,run.scopes)||!same(sourceContext,context))refuse();
-   borrowed=nativeCredentials.nativeCredentialFor({binding:credentialBinding,selectedClientId:context.selectedClientId,signal});
+   borrowed=nativeCredentials.nativeCredentialFor({binding:credentialBinding,selectedClientId:context.selectedClientId,signal,includeSubject:true});
   }
   if(typeof borrowed?.credential!=='string'||!Number.isSafeInteger(borrowed.expiresAtMs)||borrowed.expiresAtMs<=now())refuse();
-  return {credential:borrowed.credential,async verify(){
-   check(signal)();const after=nativeCredentials.nativeCredentialFor({binding:credentialBinding,selectedClientId:context.selectedClientId,signal});
-   if(after.credential!==borrowed.credential||after.expiresAtMs<=now())refuse();
+  return {credential:borrowed.credential,...researchContextFields(borrowed),async verify(){
+   check(signal)();const after=nativeCredentials.nativeCredentialFor({binding:credentialBinding,selectedClientId:context.selectedClientId,signal,includeSubject:true});
+   if(after.credential!==borrowed.credential||!sameResearchContext(borrowed,after)||after.expiresAtMs<=now())refuse();
    if(origin&&!same(await continuationOrigin(binding,run,context,signal),origin))refuse();
   }};
  }
@@ -146,7 +147,9 @@ export function assembleAgentCoreCandidate({configuration,pool,provider,controlC
    }
   }
   const access=await nativeAccess({binding,run,context,signal}),started=now();
-  const current=await core.readCurrent({credential:access.credential,conversationId:binding.conversationId,clientId:context.selectedClientId,signal,deadlineMs:Math.min(deadlineMs,started+requestMs)});
+  const research=access.scopeKind==='research_portfolio';if(research&&context.selectedClientId!==null)refuse();
+  const current=await core[research?'readResearchCurrent':'readCurrent']({credential:access.credential,conversationId:binding.conversationId,clientId:context.selectedClientId,signal,deadlineMs:Math.min(deadlineMs,started+requestMs)});
+  if(research&&!sameResearchContext(access,researchContextFromCurrent(current)))refuse();
   await access.verify();
   if(current.checkedAtMs<started||current.checkedAtMs>now()||current.expiresAtMs<=now()||current.principal.tenantId!==binding.tenantId||current.principal.actorId!==binding.actorId||current.conversationId!==binding.conversationId||current.selectedClientId!==context.selectedClientId)refuse();
   return current;

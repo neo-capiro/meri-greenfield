@@ -1,6 +1,7 @@
 /** Real control/session/service/execution composition over scripted SQL and Core/Temporal/provider ports. No server or model. */
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import {createHash} from 'node:crypto';
 import {assembleControl} from '../control.mjs';
 import {assembleAgentCoreCandidate} from '../agentcore-candidate.mjs';
 import {createReadCredentialRelay} from '../read-credential-relay.mjs';
@@ -35,16 +36,18 @@ test('AgentCore startup installs the real request-local membership gate with the
  }finally{await candidate.close();}
 });
 
-test('public action session and submit reach the real execution and private worker without any task allocation',async t=>{
+for(const research of [false,true])test(`${research?'Research':'Client'} public action session and submit reach the real execution and private worker without any task allocation`,async t=>{
  const f=initialInputFixture(),configuration=agentcoreControlFixture().configuration,relay=createReadCredentialRelay();
  configuration.sourceEnabled=true;configuration.intents={enabled:true};
- const clientId=id(5);
- const pending=Promise.withResolvers();pending.promise.catch(()=>{});let invocation,starts=0,coreCalls=0;
+ const clientId=research?null:id(5),fields={kind:'research_portfolio',researchPortfolioId:id(8),researchPortfolioName:'Captured portfolio',researchPortfolioRevision:2};
+ const scope={...fields,scopeVersion:createHash('sha256').update(JSON.stringify(fields)).digest('hex')},subject=research?{scopeKind:'research_portfolio',scope}:{};
+ const pending=Promise.withResolvers(),invoked=Promise.withResolvers();pending.promise.catch(()=>{});let invocation,starts=0,coreCalls=0;
  const fetchImpl=async(url,request)=>{assert.ok(url.endsWith('/current'));assert.equal(request.headers.authorization,'Bearer actual-user-bearer');coreCalls++;
-  const now=Date.now(),input=JSON.parse(request.body);return Response.json({principal:{tenantId:binding.tenantId,actorId:binding.actorId},role:'standard_user',permissions:[],clientIds:[clientId],
-   identityRevision:'a'.repeat(64),membershipRevision:'b'.repeat(64),contextRevision:'c'.repeat(64),conversationId:input.conversationId,selectedClientId:input.clientId,checkedAtMs:now,expiresAtMs:now+120000});};
+  const now=Date.now(),input=JSON.parse(request.body);if(research)assert.equal(input.scopeKind,'research_portfolio');return Response.json({principal:{tenantId:binding.tenantId,actorId:binding.actorId},role:'standard_user',permissions:[],clientIds:clientId?[clientId]:[],
+   identityRevision:'a'.repeat(64),membershipRevision:'b'.repeat(64),contextRevision:'c'.repeat(64),conversationId:input.conversationId,selectedClientId:input.clientId,checkedAtMs:now,expiresAtMs:now+120000,
+   ...(research?{researchPortfolio:{...scope,currentResearchPortfolioName:'Current portfolio',currentResearchPortfolioRevision:3,stale:true,resourceRevision:'d'.repeat(64)}}:{})});};
  const candidate=assembleAgentCoreCandidate({configuration,pool:f.pool,controlCredential:'synthetic-control-credential-long-enough',nativeCredentials:relay.port,fetchImpl,
-  provider:{async invoke(input){invocation=input;return pending.promise;},async stop(){throw Error('No stop in this completed invocation');}}});
+  provider:{async invoke(input){invocation=input;invoked.resolve();return pending.promise;},async stop(){throw Error('No stop in this completed invocation');}}});
  const client={connection:{withDeadline(_deadline,operation){return operation();},withAbortSignal(_signal,operation){return operation();}},workflow:{async start(){starts++;},getHandle(){return {async signal(){},async cancel(){}};}}};
  const assembly=assembleControl({configuration,pool:f.pool,client,native:candidate.native,execution:candidate.execution,canonicalProductPorts:candidate.productPorts,
   productPortsFactory:context=>{registerDocumentIntentOwner(context,({binding})=>[{binding,owner:'document',operation:{id:'create_word',version:'0.2.0'},prepare(){assert.fail('availability does not prepare');}}]);return {};}});
@@ -52,13 +55,15 @@ test('public action session and submit reach the real execution and private work
  const routes=createControlRouteApplications({assembly:assembly.application,candidate:candidate.application});
  const call=(path,body,credential)=>new Request('https://control.synthetic.invalid'+path,{method:'POST',headers:{authorization:'Bearer '+credential,'content-type':'application/json'},body:JSON.stringify(body)});
  try{
-  const response=await assembly.application.handle(call('/api/action-followthrough/session',{conversationId:binding.conversationId,clientId},'actual-user-bearer'));
+  const response=await assembly.application.handle(call('/api/action-followthrough/session',{conversationId:binding.conversationId,clientId,...subject},'actual-user-bearer'));
   assert.equal(response.status,200);const session=await response.json();assert.notEqual(session.credential,'actual-user-bearer');
   const input={requestId:id(600),prompt:'Synthetic composition only'};
   await assembly.service.allocateInput({credential:session.credential,input});await assembly.service.submit({credential:session.credential,input});assert.equal(starts,1);
   const selected=await assembly.sessions.authenticateSession({credential:session.credential});const current=await assembly.sessions.readCurrentState({authentication:selected});
   const activeBinding=current.binding;
-  await candidate.native.call('execution/kickoff',{binding:activeBinding,executionKey:hash(activeBinding)});assert.ok(invocation);
+  await candidate.native.call('execution/kickoff',{binding:activeBinding,executionKey:hash(activeBinding)});
+  let waitTimer;try{await Promise.race([invoked.promise,new Promise((_,reject)=>{waitTimer=setTimeout(()=>reject(Error('Synthetic invocation was not observed')),3000);})]);}finally{clearTimeout(waitTimer);}
+  assert.ok(invocation);
   const intentRequest=credential=>call('/v1/runner/intents/availability',{binding:activeBinding},credential);
   assert.equal((await routes.public.handle(intentRequest(invocation.credential))).status,404);
   assert.equal((await routes.private.handle(intentRequest('synthetic-control-credential-long-enough'))).status,403);

@@ -5,6 +5,8 @@ import {canonicalSha256,validateShape} from '../../../../packages/contracts/vali
 import {own,data,nativeSignal} from '../../../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {createOperationLifetime} from '../../../../packages/runtime/operation-lifetime.mjs';
 import {currentReceipt} from './current-receipt.mjs';
+import {researchCurrentReceipt} from './research-current-receipt.mjs';
+import {researchContextFields,researchContextFromCurrent,sameResearchContext} from './research-context.mjs';
 import {markAuthorityUnavailable,isAuthorityUnavailable} from '../../../../packages/runtime/authority-availability.mjs';
 // The refusal names only the step it reached and the cause's own code (a fixed constant of our owners), for the session owner's
 // refusal line (session/owner.mjs); never a message, identifier or Core answer.
@@ -22,7 +24,7 @@ export function createApplicationContextAdapters(configuration){
  // Fresh Core receipts establish the principal and exact conversation scope before the durable initial owner runs.
  // An optional runId hint constrains that owner; it never authorizes a new binding or a successor.
  const {client,currentRun,now,limits,admitInitialConversation}=own(configuration,['client','currentRun','now','limits','admitInitialConversation']);
- const ports=own(client,['readIdentity','readContext'],['readCurrent']),l=data(own(limits,['maxRequestMs','maxFactBytes']));
+ const ports=own(client,['readIdentity','readContext'],['readCurrent','readResearchCurrent']),l=data(own(limits,['maxRequestMs','maxFactBytes']));
  if(Object.values(ports).some(p=>typeof p!=='function')||typeof currentRun!=='function'||typeof admitInitialConversation!=='function'||typeof now!=='function'||!Number.isSafeInteger(l.maxRequestMs)||l.maxRequestMs<1||l.maxRequestMs>30000||!Number.isSafeInteger(l.maxFactBytes)||l.maxFactBytes<1||l.maxFactBytes>131072)refuse();
  function start(call){nativeSignal(call.signal);const at=now();if(!Number.isSafeInteger(at)||at<0||!Number.isSafeInteger(call.deadlineMs))refuse();let cutoff=Math.min(call.deadlineMs,at+l.maxRequestMs);
  // Running out of time without the caller cancelling means Core did not answer; it is not a refusal.
@@ -32,9 +34,11 @@ export function createApplicationContextAdapters(configuration){
  function identity(v){own(v.principal,['tenantId','actorId']);if(typeof v.identityRevision!=='string'||!v.identityRevision||v.identityRevision.length>256)refuse();}
  async function verifyIdentity(value){const call=own(value,['credential','deadlineMs'],['signal']),life=start(call);try{const started=now();const result=fact(await life.run(signal=>ports.readIdentity({...call,signal,deadlineMs:life.deadline()})),assertAuthorityIdentityReceipt,started,life);identity(result);life.check();return result;}catch(error){refuseUnless(error);}finally{life.close();}}
  async function resolve(value,retained){
-  const call=own(value,['identityCredential','identity','identitySha256','hints','deadlineMs'],['signal']),original=assertAuthorityIdentityReceipt(snapshot(call.identity)),hints=snapshot(call.hints);identity(original);own(hints,['conversationId','clientId'],['runId']);
+  const call=own(value,['identityCredential','identity','identitySha256','hints','deadlineMs'],['signal']),original=assertAuthorityIdentityReceipt(snapshot(call.identity)),hints=snapshot(call.hints);identity(original);own(hints,['conversationId','clientId'],['runId','scopeKind','scope']);
+  const subject=researchContextFields(hints),research=subject.scopeKind==='research_portfolio';
   const principal=original.principal;
   const conversationId=hints.conversationId,selectedClientId=hints.clientId;
+  if(research&&(selectedClientId!==null||typeof ports.readResearchCurrent!=='function'))refuse();
   if(call.identitySha256!==canonicalSha256(original)||typeof conversationId!=='string'||!uuid.test(conversationId)||selectedClientId!==null&&(typeof selectedClientId!=='string'||!uuid.test(selectedClientId)))refuse();
   const life=start(call),exact=Object.hasOwn(hints,'runId')?{runId:hints.runId}:{};let cutoff=Math.min(life.deadline(),original.expiresAtMs),binding,selected,preflight,step='input';
   function runFact(raw,started){if(typeof raw!=='string')refuse();const r=snapshot(raw);own(r,['binding','policyRevision','deadlineMs','checkedAtMs'],['rebind']);validateShape('RunBinding',r.binding);
@@ -47,6 +51,11 @@ export function createApplicationContextAdapters(configuration){
   // /context contract remains client-only; membership never substitutes for it.
   async function readContext(conversationId){
    const started=now();
+   if(research){
+    const r=fact(await life.run(signal=>ports.readResearchCurrent({credential:call.identityCredential,conversationId,clientId:null,signal,deadlineMs:cutoff})),researchCurrentReceipt,started,life);
+    const captured=researchContextFromCurrent(r);if(!sameResearchContext(subject,captured))refuse();
+    return data({principal:r.principal,identityRevision:r.identityRevision,identitySha256:call.identitySha256,conversationId:r.conversationId,selectedClientId:null,contextRevision:r.contextRevision,...captured,checkedAtMs:r.checkedAtMs,expiresAtMs:r.expiresAtMs});
+   }
    if(selectedClientId!==null||!ports.readCurrent)return fact(await life.run(signal=>ports.readContext({credential:call.identityCredential,identitySha256:call.identitySha256,conversationId,clientId:selectedClientId,signal,deadlineMs:cutoff})),assertAuthorityContextReceipt,started,life);
    const r=fact(await life.run(signal=>ports.readCurrent({credential:call.identityCredential,conversationId,clientId:selectedClientId,signal,deadlineMs:cutoff})),currentReceipt,started,life);
    return data({principal:r.principal,identityRevision:r.identityRevision,identitySha256:call.identitySha256,conversationId:r.conversationId,selectedClientId:r.selectedClientId,contextRevision:r.contextRevision,checkedAtMs:r.checkedAtMs,expiresAtMs:r.expiresAtMs});
@@ -70,21 +79,21 @@ export function createApplicationContextAdapters(configuration){
    const scopes=[{kind:selectedClientId===null?'private-user':'client',tenantId:principal.tenantId,resourceId:selectedClientId===null?principal.actorId:selectedClientId,policyRevision:after.policyRevision}];validateShape('Scope',scopes[0]);
    if(retained){const {sourceContext,transition}=retained;
     const sourceRevision=canonicalSha256({identityRevision:original.identityRevision,nativeContextRevision:native.contextRevision,binding:sourceContext.binding,policyRevision:after.policyRevision});
-    if(!same(binding,transition.targetBinding)||after.policyRevision!==transition.policyRevision||!same(scopes,sourceContext.scopes)||!same(scopes,transition.scopes)||sourceRevision!==sourceContext.contextRevision)refuse();
+    if(!sameResearchContext(sourceContext,native)||!same(binding,transition.targetBinding)||after.policyRevision!==transition.policyRevision||!same(scopes,sourceContext.scopes)||!same(scopes,transition.scopes)||sourceRevision!==sourceContext.contextRevision)refuse();
    }
-   const result=data({identitySha256:call.identitySha256,binding,scopes,selectedClientId:native.selectedClientId,contextRevision:canonicalSha256({identityRevision:original.identityRevision,nativeContextRevision:native.contextRevision,binding,policyRevision:after.policyRevision}),checkedAtMs:now(),expiresAtMs:Math.min(original.expiresAtMs,native.expiresAtMs,before.deadlineMs,after.deadlineMs,selected?.deadlineMs??Infinity),...(selected?.rebind?{rebind:selected.rebind}:{})});life.check();if(call.signal?.aborted)refuse();return result;
+   const result=data({identitySha256:call.identitySha256,binding,scopes,selectedClientId:native.selectedClientId,...researchContextFields(native),contextRevision:canonicalSha256({identityRevision:original.identityRevision,nativeContextRevision:native.contextRevision,binding,policyRevision:after.policyRevision}),checkedAtMs:now(),expiresAtMs:Math.min(original.expiresAtMs,native.expiresAtMs,before.deadlineMs,after.deadlineMs,selected?.deadlineMs??Infinity),...(selected?.rebind?{rebind:selected.rebind}:{})});life.check();if(call.signal?.aborted)refuse();return result;
   }catch(error){refuseUnless(error,step);}finally{life.close();}
  }
  const resolveContext=value=>resolve(value);
  async function resolveTransitionContext(value){
   const call=own(value,['identityCredential','identity','identitySha256','sourceContext','transition','deadlineMs'],['signal']),sourceContext=snapshot(call.sourceContext),transition=snapshot(call.transition);
-  own(sourceContext,['binding','scopes','selectedClientId','contextRevision']);validateShape('RunBinding',sourceContext.binding);validateShape('RunBinding',transition.sourceBinding);validateShape('RunBinding',transition.targetBinding);
+  own(sourceContext,['binding','scopes','selectedClientId','contextRevision'],['scopeKind','scope']);researchContextFields(sourceContext);validateShape('RunBinding',sourceContext.binding);validateShape('RunBinding',transition.sourceBinding);validateShape('RunBinding',transition.targetBinding);
   const source=sourceContext.binding,target=transition.targetBinding,fork=transition.intent==='fork',principal=assertAuthorityIdentityReceipt(snapshot(call.identity)).principal;
   // The transition's `intent` is the lifecycle journal's (session owner `readTransition`). A resume continues the source conversation
   // under a higher writer fence; a fork opens a NEW conversation of the same principal whose first run (writer fence 1) only the
   // dynamic initial-conversation owner admits, never the fixed conversation and never the source's own.
   if(!['resume','takeover.end','fork'].includes(transition.intent)||!same(source,transition.sourceBinding)||source.tenantId!==principal.tenantId||source.actorId!==principal.actorId||target.tenantId!==principal.tenantId||target.actorId!==principal.actorId||(fork?target.conversationId===source.conversationId||target.writerFence!==1:target.conversationId!==source.conversationId||target.writerFence<=source.writerFence)||target.runId===source.runId||target.attemptId===source.attemptId||target.workerId===source.workerId||transition.selectedClientId!==sourceContext.selectedClientId||typeof sourceContext.contextRevision!=='string'||!/^[a-f0-9]{64}$/u.test(sourceContext.contextRevision))refuse();
-  return resolve({identityCredential:call.identityCredential,identity:call.identity,identitySha256:call.identitySha256,hints:{conversationId:target.conversationId,runId:target.runId,clientId:sourceContext.selectedClientId},deadlineMs:call.deadlineMs,signal:call.signal},{sourceContext,transition});
+  return resolve({identityCredential:call.identityCredential,identity:call.identity,identitySha256:call.identitySha256,hints:{conversationId:target.conversationId,runId:target.runId,clientId:sourceContext.selectedClientId,...researchContextFields(sourceContext)},deadlineMs:call.deadlineMs,signal:call.signal},{sourceContext,transition});
  }
  return Object.freeze({verifyIdentity,resolveContext,resolveTransitionContext});
 }
