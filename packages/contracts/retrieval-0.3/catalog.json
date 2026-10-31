@@ -12142,7 +12142,7 @@
         "Current installation, authorization and source availability are required; catalog publication alone enables nothing.",
         "Coverage is ingested and query-bounded; unknown source freshness/version is null. Empty output is not complete source absence.",
         "Derived query rows do not become immutable source evidence cards. Use canonical source readers for full evidence.",
-        "Client-record SQL covers the fourteen published current-authorized client projections, including saved profiles, teams, targets, engagement and outreach tracking. Saved records are not fresh enrichment. General may narrow to an authorized client; selected-client chat cannot broaden. Saved jobs have no private SQL admission."
+        "Client-record SQL covers the fifteen published current-authorized client projections, including saved meeting/client associations, profiles, teams, targets, engagement and outreach tracking. Saved records are not fresh enrichment. General may narrow to an authorized client; selected-client chat cannot broaden. Saved jobs have no private SQL admission."
       ],
       "positiveExamples": [
         "Inspect the declared stored projection within the current authorized source scope."
@@ -12208,7 +12208,7 @@
         "Current installation, authorization and source availability are required; catalog publication alone enables nothing.",
         "Coverage is ingested and query-bounded; unknown source freshness/version is null. Empty output is not complete source absence.",
         "Derived query rows do not become immutable source evidence cards. Use canonical source readers for full evidence.",
-        "Client-record SQL covers the fourteen published current-authorized client projections, including saved profiles, teams, targets, engagement and outreach tracking. Saved records are not fresh enrichment. General may narrow to an authorized client; selected-client chat cannot broaden. Saved jobs have no private SQL admission."
+        "Client-record SQL covers the fifteen published current-authorized client projections, including saved meeting/client associations, profiles, teams, targets, engagement and outreach tracking. Saved records are not fresh enrichment. General may narrow to an authorized client; selected-client chat cannot broaden. Saved jobs have no private SQL admission."
       ],
       "positiveExamples": [
         "Inspect the declared stored projection within the current authorized source scope."
