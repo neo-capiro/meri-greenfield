@@ -7,10 +7,10 @@ import {posix} from 'node:path';
 import {own,data,nativeSignal} from '../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {canonicalSha256} from '../../packages/contracts/validate.mjs';
 import {createOperationLifetime} from '../../packages/runtime/operation-lifetime.mjs';
-import {compileProductMaterialPlan,verifyProductMaterial,productMaterialPolicy,productMaterialIdentity} from './material-init-plan.mjs';
+import {compileProductMaterialPlan,verifyProductMaterial,productMaterialPolicy,productMaterialIdentity,inspectPreservedDirectory,verifyPreservedSet} from './material-init-plan.mjs';
 import {configurationMaxBytes} from './config.mjs';
 
-const {directory:root,maxBytes,configurationNames}=productMaterialPolicy;
+const {directory:root,maxBytes,configurationNames,preservedDirectories}=productMaterialPolicy;
 const receipts=new WeakMap(),hex64=/^[a-f0-9]{64}$/u;
 const fail=code=>{throw Object.assign(Error('STATIC_INIT_'+code),{code:'STATIC_INIT_'+code});};
 const sha=bytes=>createHash('sha256').update(bytes).digest('hex');
@@ -80,7 +80,7 @@ async function acquireDirectory(plan){
  let created=false;
  try{await mkdir(root,{mode:0o700});created=true;}catch(error){if(error?.code!=='EEXIST')throw error;}
  let st;try{st=await lstat(root);}catch(error){if(created)fail('CLEANUP_FAILED');throw error;}
- return {directory:identity(st),created,cleanupOwned:created,files:[],released:false,owner:{uid:plan.uid,gid:plan.gid}};
+ return {directory:identity(st),created,cleanupOwned:created,files:[],preserved:new Map(),released:false,owner:{uid:plan.uid,gid:plan.gid}};
 }
 async function writeFile(state,path,bytes,check){
  await checkedDirectory(state,state.directory);check();let handle;
@@ -101,10 +101,21 @@ async function releaseOwned(state){
  if(state.released)return {removed:0};
  await checkedDirectory(state,state.directory);
  const entries=await readdir(root),files=new Map(state.files.map(file=>[posix.basename(file.path),file]));
- if(entries.length!==files.size||entries.some(name=>!files.has(name)))fail('CLEANUP_REFUSED');
- // Validate the whole owned set before removing anything. A replacement or foreign entry is preserved for the task owner.
+ // Classify the complete root: tracked material files, the exact admitted upload directories, nothing else.
+ const preserved=[];
  for(const name of entries){
-  const file=files.get(name),st=await lstat(file.path);
+  if(files.has(name))continue;
+  if(!preservedDirectories.includes(name))fail('CLEANUP_REFUSED');
+  preserved.push(name);
+ }
+ // The complete tracked owned-file set must be present. A missing tracked file refuses here, before any removal,
+ // instead of surfacing later during unlink after earlier files were already removed.
+ if(files.size!==state.files.length||entries.length!==files.size+preserved.length)fail('CLEANUP_REFUSED');
+ for(const name of files.keys())if(!entries.includes(name))fail('CLEANUP_REFUSED');
+ // Validate the whole owned set, then the admitted directories, before removing anything.
+ for(const name of entries){
+  const file=files.get(name);if(!file)continue;
+  const st=await lstat(file.path);
   if(!st.isFile()||st.isSymbolicLink()||!sameIdentity(st,file)||st.nlink!==1)fail('CLEANUP_REFUSED');
   if(file.sha256!==undefined){let handle,bytes;try{
    handle=await open(file.path,constants.O_RDONLY|constants.O_NOFOLLOW|constants.O_NONBLOCK);
@@ -116,6 +127,7 @@ async function releaseOwned(state){
    if(used!==file.bytes||!sameIdentity(after,file)||after.size!==file.bytes||sha(bytes.subarray(0,used))!==file.sha256)fail('CLEANUP_REFUSED');
   }finally{bytes?.fill(0);await handle?.close();}}
  }
+ try{await verifyPreservedSet(state.preserved,state.owner.uid,state.owner.gid);}catch{fail('CLEANUP_REFUSED');}
  await checkedDirectory(state,state.directory);
  for(const file of state.files)await unlink(file.path);
  if(state.created)await rmdir(root);
@@ -136,10 +148,23 @@ export async function materializeStaticProductMaterial({expected,delivery,now=Da
   p=prepared(e,await life.run(signal=>delivery.fetch({...request,signal})));life.check();
   state=await acquireDirectory(p.plan);
   await checkedDirectory(state,state.directory);
-  if((await readdir(root)).length!==0)fail('DIRECTORY_NOT_EMPTY');
+  // The image legitimately owns the two empty upload directories under this fixed root. They are admitted only in
+  // that exact form; every other entry, nonempty upload directory, symlink/reparse path, wrong type, owner or mode
+  // refuses before any material is written, and none of these directories is ever removed.
+  const admitted=new Map();
+  for(const name of await readdir(root)){
+   if(!preservedDirectories.includes(name))fail('DIRECTORY_NOT_EMPTY');
+   const entry=await inspectPreservedDirectory(name,state.owner.uid,state.owner.gid);
+   if(!entry)fail('DIRECTORY_REFUSED');
+   admitted.set(name,entry);
+  }
+  // Bind the admitted directory identities for the whole lifecycle (init, verification, cleanup).
+  state.preserved=admitted;
   state.cleanupOwned=true;life.check();
   for(const [path,bytes] of p.files)await writeFile(state,path,bytes,life.check);
   await verifyProductMaterial(p.plan,{expectedSha256ByPath:e.sha256ByPath});life.check();
+  // No replacement, disappearance or set drift of the admitted image directories between stages.
+  try{await verifyPreservedSet(state.preserved,state.owner.uid,state.owner.gid);}catch{fail('DIRECTORY_REFUSED');}
   const receipt=summary(p);receipts.set(receipt,state);
   return Object.freeze({configurationPath:p.plan.configurationPath,receipt});
  }catch(error){
