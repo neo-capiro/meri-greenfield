@@ -1,6 +1,15 @@
 // @ts-check
 /** The SDK receives only the selected provider's explicit environment. Bedrock uses the
  * platform role; the runtime alone supplies a Secrets Manager API key for Claude API. */
+import path from 'node:path';
+/** A fresh run-owned sibling of the conversation's config parent. Keeping the path short
+ * also leaves room for the SDK's Unix socket names. The directory owner creates it before query. */
+export function sdkTemporaryDirectory(configDirectory){
+ if(typeof configDirectory!=='string')throw Error('SDK_PROVIDER_CONFIGURATION_REFUSED');
+ const paths=configDirectory.startsWith('/')?path.posix:path;
+ if(!paths.isAbsolute(configDirectory)||paths.resolve(configDirectory)!==configDirectory)throw Error('SDK_PROVIDER_CONFIGURATION_REFUSED');
+ return paths.join(paths.dirname(paths.dirname(configDirectory)),'tmp-'+paths.basename(configDirectory));
+}
 export const BEDROCK_MODEL='us.anthropic.claude-sonnet-4-6';
 export const BEDROCK_REGION='us-east-1';
 export const NATIVE_CACHE_SETTINGS=Object.freeze({promptCacheTtl:'5m',subagentPromptCacheTtl:'5m'});
@@ -28,7 +37,7 @@ export function sdkProviderEnvironment({provider='bedrock',apiKey,cwd,model,regi
   ...(environment.AWS_CONTAINER_CREDENTIALS_RELATIVE_URI?{AWS_CONTAINER_CREDENTIALS_RELATIVE_URI:environment.AWS_CONTAINER_CREDENTIALS_RELATIVE_URI}:{}),
   ...Object.fromEntries(['AWS_ACCESS_KEY_ID','AWS_SECRET_ACCESS_KEY','AWS_SESSION_TOKEN'].filter(key=>environment[key]!==undefined).map(key=>[key,environment[key]])),
   AWS_REGION:region,AWS_DEFAULT_REGION:region,AWS_EC2_METADATA_V1_DISABLED:'true',CLAUDE_CODE_USE_BEDROCK:'1'};
- return {PATH:environment.PATH??'/usr/local/bin:/usr/bin:/bin',HOME:cwd,TMPDIR:cwd,LANG:'C.UTF-8',...credentials,
+ return {PATH:environment.PATH??'/usr/local/bin:/usr/bin:/bin',HOME:cwd,TMPDIR:configDirectory?sdkTemporaryDirectory(configDirectory):cwd,LANG:'C.UTF-8',...credentials,
   ...(configDirectory?{CLAUDE_CONFIG_DIR:configDirectory}:{}),...(secureStorageDirectory?{CLAUDE_SECURESTORAGE_CONFIG_DIR:secureStorageDirectory}:{}),
   CLAUDE_CODE_DISABLE_AUTO_MEMORY:'1',CLAUDE_CODE_MAX_OUTPUT_TOKENS:String(maxOutputTokens),
   ANTHROPIC_DEFAULT_HAIKU_MODEL:model,ANTHROPIC_DEFAULT_SONNET_MODEL:model,ANTHROPIC_DEFAULT_OPUS_MODEL:model};

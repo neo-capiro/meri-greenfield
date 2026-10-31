@@ -6,9 +6,10 @@ import {fault} from './config.mjs';
 import {runnerStartupBudget,ACTIVITY_PREPARATION_MAX_MS} from '../../packages/runtime/runner-load-budget.mjs';
 import {createOperationLifetime} from '../../packages/runtime/operation-lifetime.mjs';
 import {lstat,realpath,mkdir} from 'node:fs/promises';
-import {join,dirname} from 'node:path';
+import {mkdirSync,lstatSync,realpathSync} from 'node:fs';
+import {join,dirname,relative,isAbsolute,sep} from 'node:path';
 import {prepareRunSkillPlugin,sdkSkillPluginDirectory} from '../worker/conversation/capabilities/skill-plugin.mjs';
-import {assertProviderEnvironment} from '../worker/conversation/provider.mjs';
+import {assertProviderEnvironment,sdkTemporaryDirectory} from '../worker/conversation/provider.mjs';
 import {createLifecycleRunOwner} from '../control/conversations/lifecycle/worker-owner.mjs';
 import {createTaskSelectedSkills} from './selected/task.mjs';
 import {createTaskSiteWorkflowPort} from '../worker/conversation/browser/site-workflows/task-port.mjs';
@@ -34,17 +35,28 @@ export function sdkConfigurationDirectories(configuration){
 }
 /** A directory the SDK may use only if it is a real directory owned by this task's uid, private to it, and reached without symlinks. */
 async function assertOwnedPrivateDirectory(path,uid){let stat;try{stat=await lstat(path);}catch{throw fault('RUNNER_SDK_DIRECTORY_REFUSED');}if(stat.isSymbolicLink()||!stat.isDirectory()||stat.uid!==uid||(stat.mode&0o077)!==0||await realpath(path)!==path)throw fault('RUNNER_SDK_DIRECTORY_REFUSED');}
-/** The config directory is fresh per run (an existing one refuses); secure storage may pre-exist. Parents and both directories are verified owned, private and symlink-free before any SDK initialization. */
+/** Config and temporary directories are fresh per run; secure storage may pre-exist.
+ * Every directory is verified owned, private and symlink-free before SDK initialization. */
 export async function ensureSdkConfigurationDirectories(directories,options={}){
  if(directories.sdkConfigDirectory===undefined)return directories;
+ options.signal?.throwIfAborted();
  const uid=options.uid??process.getuid?.();if(!Number.isSafeInteger(uid)||uid<0)throw fault('RUNNER_SDK_DIRECTORY_REFUSED');
  const {sdkConfigDirectory,sdkSecureStorageDirectory}=directories;
+ const temporary=sdkTemporaryDirectory(sdkConfigDirectory),inside=(a,b)=>{const p=relative(a,b);return p===''||p!=='..'&&!p.startsWith('..'+sep)&&!isAbsolute(p);};
+ if([sdkConfigDirectory,sdkSecureStorageDirectory].some(p=>inside(p,temporary)||inside(temporary,p)))throw fault('RUNNER_SDK_DIRECTORY_REFUSED');
+ await assertOwnedPrivateDirectory(dirname(temporary),uid);
  await assertOwnedPrivateDirectory(dirname(sdkConfigDirectory),uid);
  try{await mkdir(sdkConfigDirectory,{mode:0o700});}catch{throw fault('RUNNER_SDK_DIRECTORY_REFUSED');}
  await assertOwnedPrivateDirectory(sdkConfigDirectory,uid);
  await assertOwnedPrivateDirectory(dirname(sdkSecureStorageDirectory),uid);
  try{await mkdir(sdkSecureStorageDirectory,{mode:0o700});}catch(error){if(error?.code!=='EEXIST')throw fault('RUNNER_SDK_DIRECTORY_REFUSED');}
  await assertOwnedPrivateDirectory(sdkSecureStorageDirectory,uid);
+ // SDK-owned temporary IPC is not durable cwd/task content. Never adopt an existing run's tree.
+ // Creation and verification do not yield: an aborted async preparation cannot create this root late.
+ options.signal?.throwIfAborted();
+ try{mkdirSync(temporary,{mode:0o700});}catch{throw fault('RUNNER_SDK_DIRECTORY_REFUSED');}
+ const temporaryStat=lstatSync(temporary);
+ if(temporaryStat.isSymbolicLink()||!temporaryStat.isDirectory()||temporaryStat.uid!==uid||(temporaryStat.mode&0o077)!==0||realpathSync(temporary)!==temporary)throw fault('RUNNER_SDK_DIRECTORY_REFUSED');
  return directories;
 }
 const lifecycleOperations=new Set(['runner/next-controls','runner/claim-control','runner/ack-control','runner/record-checkpoint','runner/child-dispatch','runner/child-settle']);
@@ -109,7 +121,7 @@ export function assembleConversationRunner({configuration,native,query,credentia
   }
    markRunnerStage('sdk-session');if(sessionFactory!==undefined){if(sdkSessionKey===undefined||sdkSessionKey===null&&lineage!==null)throw fault('RUNNER_SDK_REGISTRATION_UNAVAILABLE');sessionStore=await sdkSession.prepare({binding:b,sessionKey:sdkSessionKey,signal:localSignal,...(lineage??{}),...(sdkSessionKey===null||lineage!==null?{runtimeSignal}:{})});}
   else sessionStore={load:key=>call('runner/session/load',{key}).then(v=>{own(v,['entries']);return v.entries;}),append:(key,entries)=>call('runner/session/append',{key,entries}).then(v=>{own(v,['committed']);if(v.committed!==true)throw fault('SESSION_PERSISTENCE_FAILED');})};
-   markRunnerStage('sdk-directories');const directories=await ensureSdkConfigurationDirectories(sdkConfigurationDirectories(configuration));
+   markRunnerStage('sdk-directories');const directories=await ensureSdkConfigurationDirectories(sdkConfigurationDirectories(configuration),{signal:localSignal});
    if(directories.sdkConfigDirectory!==undefined){
     if(!sdkSession)throw fault('RUNNER_SDK_SESSION_UNKNOWN');
     await prepareNativeTaskDirectory(directories.sdkConfigDirectory);
