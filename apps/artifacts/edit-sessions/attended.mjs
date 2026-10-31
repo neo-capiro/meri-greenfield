@@ -6,7 +6,8 @@ import {ARTIFACT_MIME_TYPES} from '../../../packages/contracts/artifacts-0.2/art
 import {MAX_TTL_MS} from './wopi-access-token.mjs';
 import {officeDraftRequest} from './core-draft-wire.mjs';
 import {createOfficeDraftPublisher} from './publish-draft.mjs';
-import {inspectOfficeEditAdmitted} from './edit-admission.mjs';
+import {inspectOfficeEdit} from './inspect-office.mjs';
+import {assertOfficeWorkbooksPreserved} from './chart-workbooks.mjs';
 const fail=code=>{throw Object.assign(Error(code),{code});};
 const metadata=draft=>{const {bytesBase64,...receipt}=draft;return receipt;};
 const routes=Object.freeze({open:'revise',read:'download',launch:'revise',renew:'revise',release:'download',discard:'revise',publish:'revise'});
@@ -41,8 +42,8 @@ export function createAttendedOffice({drafts,launch,generation,now}){
   }
   let draft=route==='open'?null:correlate(await call('read'));
   const admit=(baseValue,draftValue)=>{
-   inspectOfficeEditAdmitted(baseValue.bytes,format);
-   if(draftValue?.bytesBase64)inspectOfficeEditAdmitted(Buffer.from(draftValue.bytesBase64,'base64'),format);
+   const original=inspectOfficeEdit(baseValue.bytes,format);
+   if(draftValue?.bytesBase64)assertOfficeWorkbooksPreserved(original,inspectOfficeEdit(Buffer.from(draftValue.bytesBase64,'base64'),format));
   };
   if(write)admit(base,draft);
   if(['launch','renew'].includes(route)&&!launch.supports(format,q.mode))fail('EDITOR_CODE_ACTION_UNAVAILABLE');

@@ -7,11 +7,12 @@ import {createCollaboraCodeLaunch} from '../../../artifacts/edit-sessions/collab
 import {createRuntimeOfficeApplication} from '../office-application.mjs';
 import {id} from '../../../artifacts/storage/test/sql-fixture.mjs';
 import {ooxml} from '../../../artifacts/structure/test/fixtures.mjs';
+import {preservationBytes} from '../../../artifacts/edit-sessions/test/preservation-fixture.mjs';
 import {OFFICE_SCHEMA,receiveOfficeRequest,receiveOfficeResponse,receiveOfficeDownload} from '../../../../packages/contracts/dist/office-application.mjs';
 import {receiveDocumentRequest,receiveDocumentResponse} from '../../../../packages/contracts/dist/document-access-application.mjs';
 const encode=value=>new TextEncoder().encode(JSON.stringify(value));
-async function fixture(t,{format='docx',discoveryFormat=format}={}){
- const f=await wopiFixture(t,{format}),now=f.options.now;
+async function fixture(t,{format='docx',discoveryFormat=format,baseBytes}={}){
+ const f=await wopiFixture(t,{format,...(baseBytes?{baseBytes}:{})}),now=f.options.now;
  const state=Object.assign(f.state,{observations:[],phaseHook:null,modeDenied:null});
  const limits={maxRequestMs:5000,maxRequestBytes:2097152,maxResponseBytes:16777216};
  const optionsOwner={async resolve(call){
@@ -47,6 +48,30 @@ for(const format of ['docx','xlsx','pptx'])test(`${format}: attended open, launc
  const published=await f.execute('publish',{sequence:recovered.draft.sequence,sha256:recovered.draft.sha256});
  assert.equal(published.draft.state,'published');assert.equal(published.publication.version.parentVersionId,f.first.version.versionId);
  assert.equal(f.state.puts,2);assert.equal(f.state.executions.length,1);
+});
+
+for(const format of ['docx','xlsx','pptx'])test(`${format}: preserve saved package through reopen, release and immutable revision`,async t=>{
+ const baseBytes=preservationBytes(format),saved=preservationBytes(format,'after'),f=await fixture(t,{format,baseBytes});
+ await f.execute('open');const started=await f.start();
+ assert.equal((await f.wopi(started.launch,'lock',{lock:'preserve'})).status,200);
+ const save=await f.wopi(started.launch,'save',{lock:'preserve',body:saved});assert.equal(save.status,200);
+ const confirmed=await f.execute('read');
+ assert.equal(confirmed.draft.sequence,1);assert.equal(confirmed.draft.sha256,f.sha(saved));assert.equal(confirmed.draft.byteLength,saved.length);
+ assert.equal(f.state.puts,1);assert.equal(f.sql.state.versions.size,1);
+ const released=await f.execute('release',{editorId:started.editor.editorId,expectedEpoch:started.editor.epoch});
+ assert.equal(released.editor.editorId,null);assert.equal((await f.wopi(started.launch,'getFile')).status,404);
+ const reopened=await f.start({expectedEpoch:released.editor.epoch});
+ assert.deepEqual(Buffer.from(await (await f.wopi(reopened.launch,'getFile')).arrayBuffer()),saved);
+ await f.execute('release',{editorId:reopened.editor.editorId,expectedEpoch:reopened.editor.epoch});
+ const input={sequence:confirmed.draft.sequence,sha256:confirmed.draft.sha256},published=await f.execute('publish',input);
+ assert.equal(published.publication.version.parentVersionId,f.first.version.versionId);
+ assert.equal(published.publication.version.object.sha256,f.sha(saved));assert.equal(published.publication.version.object.bytes,saved.length);
+ const source=await f.options.artifacts.editorSource(published.publication.version.versionId,f.context,{write:true});
+ assert.deepEqual(source.bytes,saved);
+ assert.deepEqual((await f.options.artifacts.editorSource(f.first.version.versionId,f.context,{write:false})).bytes,baseBytes);
+ const replay=await f.execute('publish',input);assert.equal(replay.publication.version.versionId,published.publication.version.versionId);
+ assert.equal(f.state.puts,2);assert.equal(f.sql.state.versions.size,2);assert.equal(f.state.executions.length,1);
+ assert.equal(published.publication.inspection.nativeOpened,false);assert.equal(published.publication.inspection.recalculated,false);
 });
 test('renew clips the token to current native expiry and release invalidates WOPI while preserving private bytes',async t=>{
  const f=await fixture(t),started=await f.start();
@@ -209,18 +234,28 @@ test('trusted CODE postmessage origin requires an exact HTTPS origin',async t=>{
  for(const browserOrigin of [undefined,'*','http://app.example.test','https://app.example.test/path','https://user:password@app.example.test'])
   assert.throws(()=>createRuntimeOfficeApplication({...f.config,browserOrigin}));
 });
-test('pptx launch cannot return a write token after the final read becomes workbook-bearing',async t=>{
+test('pptx launch cannot return a write token after the final read contains an unbound chart workbook',async t=>{
  const {zip}=await import('../../../artifacts/structure/test/fixtures.mjs');
  const {chart}=await import('../../../artifacts/edit-sessions/test/embedded-chart-fixture.mjs');
- const f=await fixture(t,{format:'pptx'}),bytes=zip(chart());let changed=false;
+ const entries=chart();entries['ppt/charts/chart1.xml']=entries['ppt/charts/chart1.xml'].replace('rId1','missing');
+ const f=await fixture(t,{format:'pptx'}),bytes=zip(entries);let changed=false;
  f.state.hook=r=>{if(r==='editor/read'){changed=true;Object.assign(f.draft,{sequence:1,sha256:f.sha(bytes),byteLength:bytes.length,bytesBase64:bytes.toString('base64'),state:'draft'});}};
- await assert.rejects(f.start(),{code:'EDITOR_CODE_ACTION_UNAVAILABLE'});assert.equal(changed,true);assert.equal(f.draft.sha256,f.sha(bytes));assert.equal(f.state.puts,1);
+ await assert.rejects(f.start(),{code:'EDITOR_STRUCTURE_REFUSED'});assert.equal(changed,true);assert.equal(f.draft.sha256,f.sha(bytes));assert.equal(f.state.puts,1);
 });
-test('pptx renew cannot return a write token after the final read becomes workbook-bearing',async t=>{
+
+test('historical workbook-loss draft is recoverable metadata but cannot receive an edit token',async t=>{
+ const f=await fixture(t,{format:'pptx',baseBytes:preservationBytes('pptx')}),bytes=ooxml('pptx');
+ Object.assign(f.draft,{sequence:1,sha256:f.sha(bytes),byteLength:bytes.length,bytesBase64:bytes.toString('base64')});
+ assert.equal((await f.execute('read')).draft.sha256,f.sha(bytes));
+ await assert.rejects(f.start(),{code:'EDITOR_STRUCTURE_REFUSED'});
+ assert.equal(f.state.calls.some(c=>c.route==='editor'&&c.request.operation==='acquire'),false);assert.equal(f.state.puts,1);
+});
+test('pptx renew cannot return a write token after the final read contains an unbound chart workbook',async t=>{
  const {zip}=await import('../../../artifacts/structure/test/fixtures.mjs');
  const {chart}=await import('../../../artifacts/edit-sessions/test/embedded-chart-fixture.mjs');
- const f=await fixture(t,{format:'pptx'}),bytes=zip(chart());let changed=false;
+ const entries=chart();entries['ppt/charts/chart1.xml']=entries['ppt/charts/chart1.xml'].replace('rId1','missing');
+ const f=await fixture(t,{format:'pptx'}),bytes=zip(entries);let changed=false;
  f.state.hook=r=>{if(r==='editor/read'){changed=true;Object.assign(f.draft,{sequence:1,sha256:f.sha(bytes),byteLength:bytes.length,bytesBase64:bytes.toString('base64'),state:'draft'});}};
- await assert.rejects(f.execute('renew',{editorId:f.claims.editorId,expectedEpoch:1,mode:'edit'}),{code:'EDITOR_CODE_ACTION_UNAVAILABLE'});
+ await assert.rejects(f.execute('renew',{editorId:f.claims.editorId,expectedEpoch:1,mode:'edit'}),{code:'EDITOR_STRUCTURE_REFUSED'});
  assert.equal(changed,true);assert.equal(f.draft.sha256,f.sha(bytes));assert.equal(f.state.puts,1);
 });

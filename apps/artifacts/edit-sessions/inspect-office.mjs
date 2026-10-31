@@ -5,6 +5,7 @@ import {readZip,ZIP_LIMITS} from '../structure/zip.mjs';
 import {verifyOoxml,OOXML_FORMATS,readOoxmlRelationships,resolveOoxmlTarget} from '../structure/ooxml.mjs';
 import {readXmlPart} from '../structure/xml.mjs';
 import {OFFICE_FORMULA_CACHE} from '../../../packages/contracts/office-edit.mjs';
+import {verifyChartWorkbooks} from './chart-workbooks.mjs';
 const fail=()=>{throw Object.assign(Error('EDITOR_STRUCTURE_REFUSED'),{code:'EDITOR_STRUCTURE_REFUSED'});};
 const namespaces={word:new Set(['http://schemas.openxmlformats.org/wordprocessingml/2006/main','http://purl.oclc.org/ooxml/wordprocessingml/main']),
  sheet:new Set(['http://schemas.openxmlformats.org/spreadsheetml/2006/main','http://purl.oclc.org/ooxml/spreadsheetml/main']),
@@ -18,6 +19,10 @@ function inspect(bytes,format,budget){
   const entries=readZip(bytes,{...ZIP_LIMITS,maxTotalUncompressed:budget.bytes,maxEntries:budget.entries}),main=verifyOoxml(entries,format);
   budget.entries-=entries.size;for(const content of entries.values())budget.bytes-=content.length;
   if([...entries.keys()].some(name=>name.length>500||/(?:^|\/)(?:activeX|externalLinks)\//iu.test(name)))fail();
+  // Active payloads cannot evade the filename rules by moving to another part.
+  // Apply these checks recursively to embedded XLSX as well as the outer file.
+  const {children:types}=readXmlPart(entries.get('[Content_Types].xml'));
+  if(types.some(({attributes:a})=>/(?:macroEnabled|vbaProject|activeX|oleObject|(?:intl)?macrosheet|externalLink)/iu.test(a.ContentType)))fail();
   const embedded=new Set(),referenced=new Set();
   for(const [name,content]of entries)if(/(?:^|\/)embeddings\//iu.test(name)){
    // Native PowerPoint charts use one data workbook. Arbitrary OLE objects,
@@ -35,6 +40,7 @@ function inspect(bytes,format,budget){
     const source=name.toLowerCase()==='_rels/.rels'?'':match?(match[1]??'')+match[2]:null;
     if(source===null||source!==''&&!entries.has(source))fail();
     for(const r of readOoxmlRelationships(content,'OPC_PART_RELATIONSHIPS')){
+     if(/\/(?:oleObject|control|vbaProject|attachedTemplate|aFChunk|externalLink|externalLinkPath|xlMacrosheet|xlIntlMacrosheet)$/iu.test(r.type))fail();
      if(r.external){
       if(!/^http:\/\/(?:schemas.openxmlformats.org\/officeDocument\/2006|purl.oclc.org\/ooxml\/officeDocument)\/relationships\/hyperlink$/u.test(r.type)||
         !/^https?:\/\//iu.test(r.target))fail();
@@ -64,6 +70,7 @@ function inspect(bytes,format,budget){
    }});
   }
   if([...embedded].some(name=>!referenced.has(name)))fail();
+  if(format==='pptx')verifyChartWorkbooks(entries,embedded);
   const details=format==='docx'?{paragraphs,tables,pictures}:format==='xlsx'?{sheets,formulas,formulaCache:OFFICE_FORMULA_CACHE}:
    {slides,editable:true,visualInspection:'pending'};
   return {sha256:createHash('sha256').update(bytes).digest('hex'),bytes:bytes.length,format,nativeOpened:false,rendered:false,recalculated:false,
