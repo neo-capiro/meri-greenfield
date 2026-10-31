@@ -167,7 +167,6 @@ ADD --checksum=sha256:f1c58ed46eded3d8751b43c221aa968a386e9a8e628684e4db80207053
 ADD --checksum=sha256:2f0ff74cd04a5c9c6a43404bb058e6fcf6e02b64d24d7f9f29740fee51372cd2 https://packages.wolfi.dev/os/aarch64/font-liberation-2.1.5-r6.apk /tmp/meri-native-repo/aarch64/font-liberation-2.1.5-r6.apk
 ADD --checksum=sha256:02f7d7bec8e641734b52855a33ff5474d6b0c0be24e9244b76c20c3f48c20768 https://packages.wolfi.dev/os/aarch64/libstdc++-16.2.0-r1.apk /tmp/meri-native-repo/aarch64/libstdc++-16.2.0-r1.apk
 ADD --checksum=sha256:032e5b2779dfedd065f0d7241757b79a47394e03babe2feb1833c92e2a2755dc https://packages.wolfi.dev/os/aarch64/libglvnd-1.7.0-r12.apk /tmp/meri-native-repo/aarch64/libglvnd-1.7.0-r12.apk
-ADD --checksum=sha256:0baaae06fe50c478491eeaa686c8f443f8dd6969a3c5af8d6f2cb6c1a237519f https://packages.wolfi.dev/os/aarch64/python-3.13-base-3.13.16_git20261016-r2.apk /tmp/meri-native-repo/aarch64/python-3.13-base-3.13.16_git20261016-r2.apk
 ADD --checksum=sha256:0d4deeb0c6f70a4afca1241a8250c5be5252a50bba72acff28d5f36dad9610d9 https://packages.wolfi.dev/os/aarch64/cups-libs-2.4.20-r0.apk /tmp/meri-native-repo/aarch64/cups-libs-2.4.20-r0.apk
 ADD --checksum=sha256:0ea1994225a6c4c7967dbfec85ace0f6ef9aa81d26d8c730508c9bce8c4144c5 https://packages.wolfi.dev/os/aarch64/libxcursor-1.2.3-r7.apk /tmp/meri-native-repo/aarch64/libxcursor-1.2.3-r7.apk
 ADD --checksum=sha256:0ee271413c53d5e92d080bdc78e3c0889327beca7881573792ef7441e13e8b66 https://packages.wolfi.dev/os/aarch64/libatk-1.0-2.62.1-r0.apk /tmp/meri-native-repo/aarch64/libatk-1.0-2.62.1-r0.apk
@@ -248,7 +247,6 @@ ADD --checksum=sha256:e27930aba23159e4f85723271aeb78d57555ec0cbdce8464d84f186e90
 ADD --checksum=sha256:e641179fe3e0357928c3edd8d8d1ae0cc55a4db19600358aa7c4029c8476f853 https://packages.wolfi.dev/os/aarch64/lz4-1.10.0-r11.apk /tmp/meri-native-repo/aarch64/lz4-1.10.0-r11.apk
 ADD --checksum=sha256:e96ab85096c17f607c99e025bb9047c590195583096ce3ea0d857ec77ea3c55d https://packages.wolfi.dev/os/aarch64/libice-1.1.2-r8.apk /tmp/meri-native-repo/aarch64/libice-1.1.2-r8.apk
 ADD --checksum=sha256:ebbd4c32ddea2408a8d7f938a1fb31a994da01d7b15351f12ef1ea64ccd1ce0e https://packages.wolfi.dev/os/aarch64/libtheora-1.2.0-r10.apk /tmp/meri-native-repo/aarch64/libtheora-1.2.0-r10.apk
-ADD --checksum=sha256:ec5c434e7baeed78102d684cca26d8bad793d8408719dbed836c26f3bac7e97f https://packages.wolfi.dev/os/aarch64/python-3.13-3.13.16_git20261016-r2.apk /tmp/meri-native-repo/aarch64/python-3.13-3.13.16_git20261016-r2.apk
 ADD --checksum=sha256:ec68f956c38a01460bc0fd35f35b845e3fb15a5b43fc7838a65c5d2e9919c9a2 https://packages.wolfi.dev/os/aarch64/brotli-1.2.1-r2.apk /tmp/meri-native-repo/aarch64/brotli-1.2.1-r2.apk
 ADD --checksum=sha256:ee1d0c652a89932c9f1b3d1e8c348bd1a18329f32a1a63eaa1aaae9dd3eb6994 https://packages.wolfi.dev/os/aarch64/rav1e-0.8.1-r13.apk /tmp/meri-native-repo/aarch64/rav1e-0.8.1-r13.apk
 ADD --checksum=sha256:ef0fed8829139b2b1ec2589d1be348855fdd6e27a0406bb4635d605c4c23131c https://packages.wolfi.dev/os/aarch64/wayland-libs-cursor-1.26.0-r3.apk /tmp/meri-native-repo/aarch64/wayland-libs-cursor-1.26.0-r3.apk
@@ -462,10 +460,13 @@ COPY --from=native-repo-2 /tmp/meri-native-repo /tmp/meri-native-repo
 COPY --from=native-repo-3 /tmp/meri-native-repo /tmp/meri-native-repo
 COPY --from=native-repo-4 /tmp/meri-native-repo /tmp/meri-native-repo
 # Second, separate offline repository: the officially signed Wolfi index that carries the fixed pip
-# trio. The frozen 5c84 index above stays authoritative for the rest of the locked closure (the new
+# trio and Python security pair. The frozen 5c84 index above stays authoritative for the rest of the locked closure (the new
 # index omits gst-plugins-base 1.29.2-r3 and gstreamer 1.29.2-r4), and no index is edited, merged or
 # synthesized: both are the vendor's own signed bytes, staged by their exact content hash.
-COPY infra/product-preview/native-apk-index/aarch64-APKINDEX-e37b60006139bac29cffecabf9b1decce4c9636249936e2149ef9c90f6ca7c0c.tar.gz /tmp/meri-native-pip-repo/aarch64/APKINDEX.tar.gz
+COPY infra/product-preview/native-apk-index/aarch64-APKINDEX-d0b9dba15872808df79eaaefec9d51e26359c61d0f0ff155300ab136118bd5a3.tar.gz /tmp/meri-native-pip-repo/aarch64/APKINDEX.tar.gz
+# CVE-2026-115557: authenticated fixed interpreter and stdlib pair, shared by compiler and runtime.
+ADD --checksum=sha256:cf02deba28610c4d886c7efddb286bb26855f2c4a23fe56ca9cea0dc5c70cbf2 https://packages.wolfi.dev/os/aarch64/python-3.13-3.13.18_git20261030-r0.apk /tmp/meri-native-pip-repo/aarch64/python-3.13-3.13.18_git20261030-r0.apk
+ADD --checksum=sha256:d6984fe10393415db29b3778d3514cea81ab343465d98c7984c6fc035e93208f https://packages.wolfi.dev/os/aarch64/python-3.13-base-3.13.18_git20261030-r0.apk /tmp/meri-native-pip-repo/aarch64/python-3.13-base-3.13.18_git20261030-r0.apk
 ADD --checksum=sha256:3481499c46ac5ae2b7e10ee50ff80f5c4c0e55501e0d096c8c06437f51283c93 https://packages.wolfi.dev/os/aarch64/py3-pip-wheel-26.2.2-r1.apk /tmp/meri-native-pip-repo/aarch64/py3-pip-wheel-26.2.2-r1.apk
 ADD --checksum=sha256:34a962e6d79bf3bfd9eca4f73ea8c2688a5535316d27e9f41d01d49f31dfd800 https://packages.wolfi.dev/os/aarch64/py3.13-pip-26.2.2-r1.apk /tmp/meri-native-pip-repo/aarch64/py3.13-pip-26.2.2-r1.apk
 ADD --checksum=sha256:66b1b058b55b931e1a925961099d251f0d35ab2958269dc07de76721e7f8983a https://packages.wolfi.dev/os/aarch64/py3.13-pip-base-26.2.2-r1.apk /tmp/meri-native-pip-repo/aarch64/py3.13-pip-base-26.2.2-r1.apk
@@ -563,13 +564,13 @@ RUN --network=none \
       check-dev=0.15.2-r10 check=0.15.2-r10 linux-headers=7.3-r0 && \
     gcc --version | head -1 && cmake --version | head -1 && make --version | head -1 && pkg-config --version && \
     apk add --no-cache --no-network --repository /tmp/meri-native-runtime-repo --repository /tmp/meri-native-pip-repo --repositories-file /dev/null --update-cache \
-      python-3.13=3.13.16_git20261016-r2 python-3.13-base=3.13.16_git20261016-r2 \
+      python-3.13=3.13.18_git20261030-r0 python-3.13-base=3.13.18_git20261030-r0 \
       py3-pip-wheel=26.2.2-r1 && \
-    for pkg in python-3.13-3.13.16_git20261016-r2 python-3.13-base-3.13.16_git20261016-r2 \
+    for pkg in python-3.13-3.13.18_git20261030-r0 python-3.13-base-3.13.18_git20261030-r0 \
                py3-pip-wheel-26.2.2-r1; do \
       apk info -v | grep -qx "$pkg" || { echo "unexpected native interpreter package $pkg"; exit 1; }; done && \
     python3.13 --version && \
-    python3.13 -c 'import sys; assert sys.version_info[:3] == (3, 13, 16), sys.version; print("interpreter", sys.version)' && \
+    python3.13 -c 'import sys; assert sys.version_info[:3] == (3, 13, 18), sys.version; print("interpreter", sys.version)' && \
     python3.13 -m unittest --help > /dev/null && \
     python3.13 -c 'import argparse, errno, functools, getpass, hashlib, http.server, logging, multiprocessing, os, pathlib, platform, random, re, shutil, signal, socket, socketserver, struct, subprocess, sys, tempfile, threading, time, typing, unittest, unittest.mock, zipfile, zlib' && \
     apk add --no-cache --no-network --repository /tmp/meri-native-dev-repo --repositories-file /dev/null --update-cache \
@@ -705,10 +706,10 @@ RUN --mount=type=bind,from=native-repository,source=tmp/meri-native-repo,target=
     test "$(uname -m)" = aarch64 && \
     apk --version && \
     apk add --no-cache --no-network --repository /tmp/meri-native-repo --repository /tmp/meri-native-pip-repo --repositories-file /dev/null --update-cache \
-      bash=5.3-r14 libatomic=16.2.0-r1 libstdc++=16.2.0-r1 python-3.13=3.13.16_git20261016-r2 \
+      bash=5.3-r14 libatomic=16.2.0-r1 libstdc++=16.2.0-r1 python-3.13=3.13.18_git20261030-r0 libuuid=2.42.4-r1 \
       py3.13-pip=26.2.2-r1 py3.13-pip-base=26.2.2-r1 py3-pip-wheel=26.2.2-r1 \
       glibc-2.44=2.44-r10 glibc-2.44-iconv=2.44-r10 glibc-2.44-locale-posix=2.44-r10 ld-linux-2.44=2.44-r10 libcrypt1-2.44=2.44-r10 && \
-    test "$(python3.13 --version)" = 'Python 3.13.16' && \
+    test "$(python3.13 --version)" = 'Python 3.13.18' && \
     apk info -v | grep -qx glibc-2.44-iconv-2.44-r10 && \
     apk info -v | grep -qx py3-pip-wheel-26.2.2-r1 && \
     test -x /usr/bin/iconv && \
