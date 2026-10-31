@@ -258,17 +258,32 @@ The same conversation retains memory content in two existing mechanisms:
   the outstanding accuracy questions there (the `meri_conversations.run_issuances`/`model_run_issuances` rows are not enumerated or
   purged by any mounted owner); that is a shared-owner dependency, not a reason to re-add a per-class schema.
 
-No `bindMemoryCommandRetention` bundle or four-class command-retention bundle is mounted, and no approval prerequisite gates
-memory writes. The current native receiver is the candidate/intents path, not historical command approval:
-`apps/runtime/product-ports/memory.mjs:115-147` composes `intentPreparersFor` only with a live run credential relay, gated by
-`bindMemoryRetention` (it returns `[]` until the retention gate is bound). For each preparation it re-borrows the run's live
-session, checks `gate.admit` membership and the selected client, then `retention.assertServable` and `checkCurrent`, and submits one
-pending candidate through the governed producer via `createMemoryCommandSource` → `createMemoryIntentPreparer`
-(`apps/control/memory/command-options.mjs`), which returns `{status:'review_pending'}` and never creates task approval metadata.
-Historical approval/command payload rows still exist and are retained/tombstoned by the `receipts`-class path above; that retention
-is independent of the current receiver and must not be re-created as an approval prerequisite. Personal memory within a
-selected-client run uses that run's selected-client UUID for live credential lookup while the personal command arguments carry
-`clientId:null`; a truly unscoped chat has no compatible action-session credential and stays unavailable before prepare.
+### Current native producer and separate approvals, 31 October 2026
+
+No `bindMemoryCommandRetention` bundle or four-class command-retention bundle is mounted. The current native producer uses the
+existing intent and approval owners. `apps/runtime/product-ports/memory.mjs` composes `intentPreparersFor` only with a live run
+credential relay, gated by `bindMemoryRetention` (it returns `[]` until the retention gate is bound). Preparation re-borrows the
+run's live session and checks membership, the trusted General/client selection, retention and current run authority.
+
+The SDK tool `mcp__meri_intents__propose_memory` exposes `save_memory@0.2.0`. `createMemoryIntentPreparer` in `command-options.mjs`
+creates immutable `memory.propose` approval metadata and returns `approval_required`. Preparation creates no candidate or active
+memory. A separate submission approval through `apps/control/intents/approval.mjs` dispatches the exact approved proposal through
+the native memory execution port to Core. Core's native receiver derives the addition candidate ID from the proposal ID and
+retains the exact conversation/run/command provenance with a pending review. This path does not submit through the legacy Meri
+candidate journal; a new `meri_memory.candidates` row is not evidence required for native submission.
+
+Submission approval is not publication approval. The candidate remains pending until a separate canonical memory owner decision
+publishes it. Native submission is addition-only; matching an existing key must not silently replace approved memory. Corrections
+use the existing governed correction/version path. Read the same proposal/execution receipt after an unknown outcome rather than
+creating a new proposal to retry it. Approved memory is recalled only through the existing canonical eligibility owner.
+
+Personal memory in a selected-client run uses that run's selected-client UUID for live credential lookup while personal command
+arguments carry `clientId:null`. General is supported with its trusted private-user scope and a null selected client; the model
+cannot supply `clientId`. See `apps/control/intents/test/native-memory.test.mjs`, `native-memory-execution.test.mjs`,
+`apps/worker/conversation/intents/test/native-memory.test.mjs` and `apps/runtime/product-ports/test/memory.test.mjs` for synthetic
+preparation, separate submission, General/client and refusal coverage. These checks do not establish a deployed producer run,
+publication, recall or retention witness. Existing approval/command/intent payloads remain governed by the central `receipts`
+retention path above; do not re-create a per-class retention schema.
 
 ### Integration checkpoint, 18 October 2026
 
