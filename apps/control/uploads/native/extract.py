@@ -7,6 +7,7 @@ import csv
 import io
 import json
 from pathlib import Path
+import posixpath
 import re
 import subprocess
 import sys
@@ -14,6 +15,7 @@ import threading
 import time
 import warnings
 import zipfile
+from urllib.parse import unquote, urlsplit
 
 MAX_TEXT = 2_000_000
 MAX_PAGES = 200
@@ -134,7 +136,7 @@ class Extraction:
 
     def add(self, text, method="native", confidence=None, **location):
         self.check()
-        if not text:
+        if not text or not text.strip():
             return
         remaining = MAX_TEXT - self.characters
         if remaining <= 0:
@@ -215,6 +217,87 @@ def xml(bytes_):
     return root
 
 
+OPC_RELATIONSHIPS = "http://schemas.openxmlformats.org/package/2006/relationships"
+OFFICE_RELATIONSHIPS = ("http://schemas.openxmlformats.org/officeDocument/2006/relationships/",
+                        "http://purl.oclc.org/ooxml/officeDocument/relationships/")
+PRESENTATION_NAMESPACES = ("http://schemas.openxmlformats.org/presentationml/2006/main",
+                          "http://purl.oclc.org/ooxml/presentationml/main")
+
+
+def package_relationships(package, source):
+    """Read inert OPC metadata only. No relationship can cause a filesystem or network read."""
+    part = (posixpath.join(posixpath.dirname(source), "_rels", posixpath.basename(source) + ".rels")
+            if source else "_rels/.rels")
+    try:
+        root = xml(package.read(part))
+    except KeyError:
+        raise Limited("PARSER_ERROR") from None
+    if root.tag != "{%s}Relationships" % OPC_RELATIONSHIPS:
+        raise Limited("PARSER_ERROR")
+    relationships = {}
+    for node in root:
+        if not isinstance(node.tag, str):  # XML comments are not relationships.
+            continue
+        rid, kind, target = (node.get(key) for key in ("Id", "Type", "Target"))
+        if (node.tag != "{%s}Relationship" % OPC_RELATIONSHIPS or not rid or rid in relationships
+                or not kind or not target or node.get("TargetMode", "Internal") not in ("Internal", "External")):
+            raise Limited("PARSER_ERROR")
+        relationships[rid] = node
+    return relationships
+
+
+def package_target(package, source, relationship):
+    """Resolve one internal package part, including root-relative/escaped OPC names, without opening links."""
+    target = relationship.get("Target")
+    if (relationship.get("TargetMode", "Internal") != "Internal" or not target or "\\" in target
+            or re.search(r"%(?![0-9a-fA-F]{2})", target)):
+        raise Limited("PARSER_ERROR")
+    try:
+        uri = urlsplit(target)
+        path = unquote(uri.path, errors="strict")
+    except (ValueError, UnicodeError):
+        raise Limited("PARSER_ERROR") from None
+    if uri.scheme or uri.netloc or uri.query or uri.fragment or "?" in target or "#" in target or "\\" in path:
+        raise Limited("PARSER_ERROR")
+    part = posixpath.normpath(path.lstrip("/") if path.startswith("/")
+                              else posixpath.join(posixpath.dirname(source), path))
+    if part in ("", ".", "..") or part.startswith("../") or part not in package.namelist():
+        raise Limited("PARSER_ERROR")
+    return part
+
+
+def presentation_slides(package, out):
+    """Presentation order owns slide numbers; part filenames and unreferenced ZIP members do not."""
+    office = [r for r in package_relationships(package, "").values()
+              if r.get("Type") in tuple(base + "officeDocument" for base in OFFICE_RELATIONSHIPS)]
+    if len(office) != 1:
+        raise Limited("PARSER_ERROR")
+    main = package_target(package, "", office[0])
+    root = xml(package.read(main))
+    ns = next((ns for ns in PRESENTATION_NAMESPACES if root.tag == "{%s}presentation" % ns), None)
+    if ns is None:
+        raise Limited("PARSER_ERROR")
+    lists = root.findall("{%s}sldIdLst" % ns)
+    if len(lists) > 1:
+        raise Limited("PARSER_ERROR")
+    slides = list(lists[0]) if lists else []
+    slides = [node for node in slides if isinstance(node.tag, str)]
+    if len(slides) > MAX_SLIDES:
+        out.limited("SLIDE_LIMIT")
+    if not slides:
+        return
+    relationships = package_relationships(package, main)
+    for node in slides[:MAX_SLIDES]:
+        out.check()
+        ids = [node.get("{%s}id" % base[:-1]) for base in OFFICE_RELATIONSHIPS]
+        ids = [rid for rid in ids if rid is not None]
+        relationship = relationships.get(ids[0]) if len(ids) == 1 else None
+        if (node.tag != "{%s}sldId" % ns or relationship is None
+                or relationship.get("Type") not in tuple(base + "slide" for base in OFFICE_RELATIONSHIPS)):
+            raise Limited("PARSER_ERROR")
+        yield package_target(package, main, relationship)
+
+
 def extract(path, format_, out):
     if format_ in ("txt", "md"):
         out.add(path.read_text(encoding="utf-8-sig", errors="strict"))
@@ -226,12 +309,11 @@ def extract(path, format_, out):
             out.add("\n".join("".join(p.xpath(".//*[local-name()='t']/text()")) for p in paragraphs))
     elif format_ == "pptx":
         with zipfile.ZipFile(path) as package:
-            slides = sorted((name for name in package.namelist() if re.fullmatch(r"ppt/slides/slide[1-9][0-9]*\.xml", name)),
-                            key=lambda name: int(re.search(r"slide([0-9]+)", name).group(1)))
-            if len(slides) > MAX_SLIDES:
-                out.limited("SLIDE_LIMIT")
-            for index, name in enumerate(slides[:MAX_SLIDES], 1):
-                out.add("\n".join(xml(package.read(name)).xpath("//*[local-name()='t']/text()")), slide=index)
+            for index, name in enumerate(presentation_slides(package, out), 1):
+                slide = xml(package.read(name))
+                if slide.tag not in tuple("{%s}sld" % ns for ns in PRESENTATION_NAMESPACES):
+                    raise Limited("PARSER_ERROR")
+                out.add("\n".join(slide.xpath("//*[local-name()='t']/text()")), slide=index)
     elif format_ == "xlsx":
         import openpyxl
         values = openpyxl.load_workbook(path, read_only=True, data_only=True, keep_links=False)
@@ -397,6 +479,8 @@ def main():
         out.limited("PARSER_ERROR")
     except (subprocess.SubprocessError, OSError, ValueError, ImportError):
         out.limited("NATIVE_EXTRACTION_UNAVAILABLE")
+    if not out.segments and not out.limitations:
+        out.limited("NO_TEXT_EXTRACTED")
     if "ENCRYPTED_DOCUMENT" in out.limitations:
         status = "blocked"
     elif out.limitations:
