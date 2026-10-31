@@ -37,7 +37,7 @@ test('the closed 0.2.0 foundation is byte-unchanged and still refuses the new id
  for(const name of ['SkillInvocation','SkillManifest','PinnedSkill'])assert.deepEqual([...closed.$defs[name].properties.skillId.enum],CLOSED,`${name} ids are unchanged`);
  assert.equal(closed.$defs.SkillManifest.properties.contractVersion.const,'0.2.0');
  assertCatalog(catalog);
- assert.equal(canonicalSha256(catalog),FROZEN.installationCatalogSha256,'the closed 0.2.0 catalog pin is unchanged');
+ assert.equal(canonicalSha256(catalog),'efb54982b15c793e30229d459abb4bd3ed3c1552ed53a3bc8ab92932ab6b47ed','the retained 0.2 catalog snapshot stays exact; the cited-report selection keeps its older published pin');
  const installed=selectSkill('quick_skill.cited_report','1.0.0');
  assert.throws(()=>validateShape('SkillManifest',installed.manifest),/must be equal to one of the allowed values/u,'an old 0.2.0 consumer still refuses the added identity');
  assert.equal(listSkills().length,19);

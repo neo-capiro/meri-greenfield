@@ -5,6 +5,7 @@ import {pathToFileURL} from 'node:url';
 import {canonicalSha256 as hash} from '../../../../packages/contracts/validate.mjs';
 import {compositionFixture} from './composition-fixture.mjs';
 import {assembleAgentCoreCandidate} from '../../agentcore-candidate.mjs';
+import historicalCatalog from '../../../../packages/contracts/retrieval-0.2/catalog.json' with {type:'json'};
 const require=createRequire(new URL('../../../worker/conversation/package.json',import.meta.url));
 const {Client}=await import(pathToFileURL(require.resolve('@modelcontextprotocol/sdk/client/index.js')).href);
 const {InMemoryTransport}=await import(pathToFileURL(require.resolve('@modelcontextprotocol/sdk/inMemory.js')).href);
@@ -44,4 +45,25 @@ test('actual AgentCore candidate forwards only the four selected routes to the m
   const response=await candidate.application.handle(request('prepare'));assert.equal(response.status,200);assert.deepEqual((await response.json()).binding,x.f.context.binding);
   assert.equal((await candidate.application.handle(request('prepare','foreign'))).status,403);assert.equal(await candidate.application.handle(request('replace')),null);
  }finally{await candidate?.close();await x.close();}
+});
+
+test('real reads and selected admission refuse historical or altered snapshots before publication',async()=>{
+ const x=await compositionFixture();try{
+  const current=x.state.installationCatalogSha256;
+  for(const wrong of [hash(historicalCatalog),'d'.repeat(64)]){
+   x.state.installationCatalogSha256=wrong;await assert.rejects(x.prepare());
+   assert.equal(x.state.readCalls,0);assert.equal(x.base.state.selectedOutputs.size,0);assert.equal(x.metadata.rows.size,0);assert.equal(x.intents.state.rows.size,0);
+  }
+  x.state.installationCatalogSha256=current;assert(await x.prepare());
+ }finally{await x.close();}
+});
+
+test('an established selected session refuses a later incompatible installation before source reads',async()=>{
+ const x=await compositionFixture();let client;try{
+  const runtime=await x.prepare();client=await connect(runtime);
+  x.state.installationCatalogSha256=hash(historicalCatalog);
+  assert.equal((await read(x,runtime,client)).isError,true);assert.equal(x.state.readCalls,0);
+  await assert.rejects(runtime.finish({type:'result',subtype:'success',is_error:false,structured_output:x.f.input}));
+  assert.equal(x.base.state.selectedOutputs.size,0);assert.equal(x.metadata.rows.size,0);assert.equal(x.intents.state.rows.size,0);
+ }finally{await client?.close();await x.close();}
 });

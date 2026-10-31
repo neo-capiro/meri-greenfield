@@ -132,7 +132,8 @@ test('recipe/prose/catalog pins and future as-of refuse before source dispatch',
  assert.equal(selectSkill(reportManifest().skillId,reportManifest().skillVersion).pin.proseSha256,reportSkillPin().proseSha256);
  assert.equal(v.hash(reportManifest()),reportSkillPin().manifestSha256);
  const briefPin=selectSkill('quick_skill.bill_watch','1.0.0').pin;
- assert.equal(reportSkillPin().catalogSha256,selectSkill(reportManifest().skillId,reportManifest().skillVersion).installationCatalogSha256);
+ assert.equal(reportSkillPin().catalogSha256,'1f901f26ec134e1585ff12541c3344fda77da1fb07f599f8d59e9338ecaa6eb6','persisted report identity retains its published catalog pin');
+ assert.notEqual(reportSkillPin().catalogSha256,selectSkill(reportManifest().skillId,reportManifest().skillVersion).installationCatalogSha256);
  assert.notEqual(reportSkillPin().proseSha256,briefPin.proseSha256);
  assert.notEqual(reportSkillPin().manifestSha256,briefPin.manifestSha256);
  assert.equal(digest(await readFile(new URL('../../research-brief/SKILL.md',import.meta.url))),briefPin.proseSha256);

@@ -12,6 +12,7 @@ import {validateShape,assertSkillManifest} from '../../contracts/retrieval-0.2/v
 import {assertInstalledSkillManifest,installedSkillContractVersion,ADDED_SKILL_CONTRACT_VERSION} from '../../contracts/retrieval-0.3/installed-skill.mjs';
 import {canonicalSha256} from '../../contracts/validate.mjs';
 import catalog from '../../contracts/retrieval-0.2/catalog.json' with {type:'json'};
+import installationCatalog from '../../contracts/retrieval-0.3/catalog.json' with {type:'json'};
 import inventory from '../../../docs/coordination/r2/skills.json' with {type:'json'};
 const sha=value=>createHash('sha256').update(value).digest('hex');
 
@@ -46,7 +47,7 @@ test('the original fourteen identities plus the one additive identity retain exp
   assertInstalledSkillManifest(asset.manifest,catalog);
   assert.equal(asset.pin.manifestSha256,canonicalSha256(asset.manifest));
   const row=assets.assets.find(row=>row.skillId===entry.skillId&&row.skillVersion===entry.skillVersion);
-  assert.equal(asset.pin.proseSha256,sha(Buffer.from(asset.prose)));assert.equal(asset.pin.catalogSha256,row.catalogSha256??assets.catalogSha256);assert.equal(asset.installationCatalogSha256,canonicalSha256(catalog));
+  assert.equal(asset.pin.proseSha256,sha(Buffer.from(asset.prose)));assert.equal(asset.pin.catalogSha256,row.catalogSha256??assets.catalogSha256);assert.equal(asset.installationCatalogSha256,canonicalSha256(installationCatalog));
   assert.equal(asset.manifest.approval.autoCreateTasks,false);assert.equal(asset.manifest.completion.negativeClaims,'complete-covered-only');
   assert.throws(()=>assertSkillManifest(asset.manifest,catalog),installedSkillContractVersion(asset.manifest)===ADDED_SKILL_CONTRACT_VERSION?/must be equal to one of the allowed values/u:/unavailable operation/u);
  }
