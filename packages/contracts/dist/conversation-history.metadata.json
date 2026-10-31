@@ -42,8 +42,8 @@
     },
     {
       "path": "../../apps/control/conversations/history/service.mjs",
-      "sha256": "b7637801f7da193b202c946856940224ebb8ded00118a2694a5f9fd2abe42dc8",
-      "bytes": 9667
+      "sha256": "6060402c5bdff03aa380fa4e8d89ea216388494076ecc1370f363e8334725178",
+      "bytes": 10107
     },
     {
       "path": "../../apps/control/conversations/history/store.mjs",
@@ -77,8 +77,8 @@
     },
     {
       "path": "conversation-history/protocol.mjs",
-      "sha256": "643237983d5bc9c9998f46363919e0fd67ab4dc0d1b8222632e68687f9a169bc",
-      "bytes": 2775
+      "sha256": "8da1f730afa4aba267e410843b8085deca716f265c413ba4c0b4e525c183bca9",
+      "bytes": 2758
     },
     {
       "path": "conversation-history/receive.mjs",
@@ -162,8 +162,8 @@
     },
     {
       "path": "generate-history.mjs",
-      "sha256": "3e8bb93d14d8d81138dd65e906b429381afd0dcbf5b084286bd153ad107729fc",
-      "bytes": 13144
+      "sha256": "57ae2dc49422164874ee87e1f2526fc8bcd630b14f2a28c09f82e0ccd5309522",
+      "bytes": 13076
     },
     {
       "path": "meri.schema.json",

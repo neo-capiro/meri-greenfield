@@ -29,8 +29,8 @@
     },
     {
       "path": "generate-session.mjs",
-      "sha256": "ac8993807fc01effd037cdd2e30be2d22fa4d902227e4d011f3cc37fee6b3b51",
-      "bytes": 4721
+      "sha256": "508c80699d6893f02493f0b20eda2ed90b19937592e6d5e705d21d6fb765f067",
+      "bytes": 4691
     }
   ],
   "browserInputs": [
