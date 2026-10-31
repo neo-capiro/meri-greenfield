@@ -12,12 +12,11 @@ chrome.runtime.onConnect.addListener(port=>{
  if(port.name!=='selected-tab-popup'||port.sender?.id!==chrome.runtime.id||port.sender?.url!==chrome.runtime.getURL('popup.html')){port.disconnect();return;}
  const send=view=>{try{port.postMessage({type:'view',view});}catch{}};
  const unsubscribe=bridge.subscribe(send);send(bridge.view());
- let busy=false;
  port.onMessage.addListener(async message=>{
-  if(busy||!message||Object.keys(message).length!==1||!['approve','pause','revoke','capture','share'].includes(message.action))return;
-  busy=true;
+  if(!message||Object.keys(message).length!==1||!['approve','pause','revoke','capture','share'].includes(message.action))return;
+  // The bridge serializes capture/share and invalidates their epoch on pause or
+  // revoke. A popup mutex must not discard those controls while a read awaits.
   try{await bridge[message.action]();}catch{try{port.postMessage({type:'error',message:'This selection is unavailable. Capture the current tab again or reconnect.'});}catch{}}
-  finally{busy=false;}
  });
  port.onDisconnect.addListener(unsubscribe);
 });

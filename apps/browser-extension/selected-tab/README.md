@@ -1,11 +1,13 @@
 # One selected tab
 
-29 October 2026 source slice for the user's selected A4 scope. Chromium Manifest
+31 October 2026 source slice for the user's selected A4 scope. Chromium Manifest
 V3, Chrome 120 or newer. This is the extension producer and receiving contract;
 the Capiro current-conversation/upload consumer is integrated in source. Isolated
-unpacked Chromium qualification now passes. The public receiving package still
-needs the native document-token fix packaged and pinned by its release owner
-before authenticated application acceptance. No store submission or deployment occurred.
+unpacked Chromium qualification passed on 29 October. The native document-token
+fix was published in contracts0.1.36 and pinned by Frontend343/344; Frontend345
+qualified the synthetic composer handoff. No store submission or authenticated
+deployment acceptance is established by those checks. See [DISTRIBUTION.md](DISTRIBUTION.md)
+for the package, activation dependencies and bounded acceptance cases.
 
 ## User flow and authority
 
@@ -50,6 +52,9 @@ that tab invalidates capture. Before capture acceptance and Share, the extension
 checks the selected tab, full private URL and browser-assigned document ID again.
 Epoch checks discard late asynchronous results. Pausing requires another explicit
 popup confirmation to resume; changing account/chat requires a new pairing.
+Popup Pause and Disconnect remain effective during an outstanding capture. Older
+settled attachment status messages cannot revoke a newer selection or resolve its
+unknown outcome; the bridge retains only a bounded set of correlation IDs.
 
 Share spends the selection before crossing the port. A lost acknowledgement is
 shown as unresolved, and no capture/share replay occurs. The app's existing upload
@@ -57,6 +62,10 @@ receipt and status readback decide stored, refused or unknown; receipt checking
 can update the displayed outcome later. Disconnect cannot undo an upload already
 dispatched. The Capiro consumer must stop admission on account/session change,
 retain its canonical uncertain-upload recovery, and never auto-submit a chat turn.
+Worker restart discards consent and never replays a share. Full application-page
+reload recovery of an attachment not yet submitted in a chat remains a separate
+upload-owner gap: the current composer attempt ledger is memory-only. Do not
+equate a fresh extension connection with reconciliation of that old attempt.
 
 ## Source preparation and checks
 
@@ -74,7 +83,7 @@ Run from the repository root:
 ```sh
 node packages/contracts/generate-selected-tab.mjs --check
 node apps/browser-extension/selected-tab/prepare-source.mjs --check
-node --experimental-vm-modules --test packages/contracts/test/selected-tab-application.test.mjs packages/contracts/test/selected-tab-distribution.test.mjs apps/browser-extension/selected-tab/test/bridge.test.mjs
+node --experimental-vm-modules --test packages/contracts/test/selected-tab-application.test.mjs packages/contracts/test/selected-tab-distribution.test.mjs apps/browser-extension/selected-tab/test/bridge.test.mjs apps/browser-extension/selected-tab/test/background.test.mjs
 node --test apps/browser-extension/selected-tab/test/capture.browser.test.mjs
 ```
 
