@@ -20,6 +20,9 @@ export function researchContextFromCurrent(raw){
 }
 /** An explicit selector is not a grant. A null client never supplies this kind. */
 export function researchHints(raw){
- const h=data(own(raw,[],['conversationId','runId','clientId','scopeKind','scope'])),subject=researchContextFields(h);
- if(subject.scopeKind&&h.clientId!==null)refuse();return h;
+ const h=data(own(raw,[],['conversationId','runId','clientId','scopeKind','scope']));
+ // Public issuance selects Research without supplying authority or a capture.
+ // Retained internal hints may carry the complete server-derived capture.
+ if(Object.hasOwn(h,'scope'))researchContextFields(h);
+ if(Object.hasOwn(h,'scopeKind')&&(h.scopeKind!=='research_portfolio'||h.clientId!==null))refuse();return h;
 }

@@ -30,7 +30,7 @@ function fixture(t){
   currentOwner:{async currentRun(){state.local++;return run();}}});
  const sessions=createActionSessionOwner({mode:'process-local',now,verifyIdentity:identity.verifyIdentity,resolveContext:identity.resolveContext,
   withAuthority:identity.withAuthority,limits:{...limits,maxSessions:10,maxTtlMs:100000},refusals:()=>{}});t.after(()=>sessions.close());
- const hints={conversationId:binding.conversationId,clientId:null,...subject};
+ const hints={conversationId:binding.conversationId,clientId:null,scopeKind:'research_portfolio'};
  const issue=()=>sessions.issue({identityCredential:'native',hints});
  return {state,now,binding,limits,fetchImpl,receipt,sessions,hints,issue};
 }
@@ -47,16 +47,28 @@ test('Research refusal after the initial-binding await withholds session issuanc
  const f=fixture(t);f.state.beforeAdmit=()=>{f.state.status=403;};await assert.rejects(f.issue());assert.equal(f.sessions.status().sessions,0);
  assert.equal(f.state.calls.length,2);
 });
+test('selector-only issuance pins the first Core capture across initial admission',async t=>{
+ const f=fixture(t);f.state.beforeAdmit=()=>{f.state.subject=capture('Replaced during admission',3);};
+ await assert.rejects(f.issue());assert.equal(f.sessions.status().sessions,0);assert.equal(f.state.calls.length,2);
+});
+test('internal retained capture mismatch is refused, never replaced by a new capture',async t=>{
+ const f=fixture(t);await assert.rejects(f.sessions.issue({identityCredential:'native',hints:{...f.hints,scope:capture('Wrong capture',3)}}));
+ assert.equal(f.sessions.status().sessions,0);assert.equal(f.state.calls.length,1);
+});
 test('Research capture changes during a later fresh observation refuse and invalidate the old session',async t=>{
  const f=fixture(t),session=await f.issue();f.state.subject=capture('Changed capture',3);
  await assert.rejects(f.sessions.authenticateSession({credential:session.credential}));assert.equal(f.sessions.status().sessions,0);
 });
-test('Research HTTP issuance carries the closed capture and refuses absent opt-in',async t=>{
+test('Research HTTP accepts only the public selector and derives the capture from Core',async t=>{
  const f=fixture(t),app=createActionSessionApplication({owner:f.sessions,now:f.now,maxRequestBytes:65536,maxRequestMs:3000});
  const post=hints=>app.handle(new Request('https://control.synthetic.invalid/api/action-followthrough/session',{method:'POST',headers:{authorization:'Bearer native','content-type':'application/json'},body:JSON.stringify(hints)}));
  const response=await post(f.hints);assert.equal(response.status,200);assert.deepEqual((await response.json()).context.scope,scope);
  assert.equal((await post({conversationId:f.binding.conversationId,clientId:null})).status,401);
- assert.equal((await post({...f.hints,scope:undefined})).status,401);
+ assert.equal((await post({...f.hints,scope})).status,400);
+ assert.equal((await post({...f.hints,scopeKind:'general'})).status,401);
+ assert.equal((await post({...f.hints,clientId:id(5)})).status,401);
+ const reconnect=await post({...f.hints,runId:f.binding.runId});assert.equal(reconnect.status,200);
+ assert.deepEqual((await reconnect.json()).context.scope,scope);
 });
 test('Research cache entries are isolated from General and from another exact capture',async t=>{
  const f=fixture(t),calls=[];const owner=createRunCurrentAuthority({now:f.now,monotonic:()=>0,client:{

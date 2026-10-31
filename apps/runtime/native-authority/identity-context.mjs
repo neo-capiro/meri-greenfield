@@ -9,7 +9,7 @@ import {performance} from 'node:perf_hooks';
 import {createRunCurrentAuthority,CURRENT_REUSE_MS,CURRENT_MAX_WAIT_MS} from './run-current-authority.mjs';
 import {currentReceipt} from '../../control/action-host/application-adapters/current-receipt.mjs';
 import {researchCurrentReceipt} from '../../control/action-host/application-adapters/research-current-receipt.mjs';
-import {researchContextFields,researchContextFromCurrent,sameResearchContext} from '../../control/action-host/application-adapters/research-context.mjs';
+import {researchContextFields,researchContextFromCurrent,researchHints,sameResearchContext} from '../../control/action-host/application-adapters/research-context.mjs';
 import {currentTurnTelemetry} from '../telemetry/turn-context.mjs';
 const receiptSkewMs=5000;
 export function createNativeIdentityContext(configuration){
@@ -44,11 +44,13 @@ export function createNativeIdentityContext(configuration){
   /** The action session's one Core /current observation per issuance or recheck. A recheck of an issued session (`binding`) may
    * reuse that session's own receipt for up to 20 s; issuance is always fresh. */
   async withAuthority({credential,hints={},binding,sessionFence,fresh=false,signal,deadlineMs},operation){
-   if(!enabled)unavailable();const conversationId=hints.conversationId,clientId=hints.clientId;
+   if(!enabled)unavailable();hints=researchHints(hints);const conversationId=hints.conversationId,clientId=hints.clientId;
    if(typeof conversationId!=='string'||!Object.hasOwn(hints,'clientId'))unavailable();
-   const subject=researchContextFields(hints),research=subject.scopeKind==='research_portfolio';if(research&&clientId!==null)unavailable();
+   const research=hints.scopeKind==='research_portfolio';let subject=research?(Object.hasOwn(hints,'scope')?researchContextFields(hints):undefined):{};
+   if(research&&(clientId!==null||binding!==undefined&&!subject))unavailable();
    const reusable=binding!==undefined;
-   const readFresh=async()=>{currentTurnTelemetry()?.recordAuthority?.('fresh');const receipt=(research?researchCurrentReceipt:currentReceipt)(await client[research?'readResearchCurrent':'readCurrent']({credential,conversationId,clientId,signal,deadlineMs:Math.min(deadlineMs,now()+CURRENT_MAX_WAIT_MS)}));if(research&&!sameResearchContext(subject,researchContextFromCurrent(receipt)))unavailable();return receipt;};
+   const readFresh=async()=>{currentTurnTelemetry()?.recordAuthority?.('fresh');const receipt=(research?researchCurrentReceipt:currentReceipt)(await client[research?'readResearchCurrent':'readCurrent']({credential,conversationId,clientId,signal,deadlineMs:Math.min(deadlineMs,now()+CURRENT_MAX_WAIT_MS)}));
+    if(research){const captured=researchContextFromCurrent(receipt);if(subject&&!sameResearchContext(subject,captured))unavailable();subject??=captured;}return receipt;};
    let receipt,sendStart=performance.now(),wallSend=now();
    if(!reusable)receipt=await readFresh();
    else receipt=await receipts.read({credential,binding,selectedClientId:clientId,...subject,sessionFence,fresh,signal,deadlineMs});

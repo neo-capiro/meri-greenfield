@@ -76,7 +76,7 @@ export function createActionSessionOwner(configuration){
  function valid(r,signal){const at=active(signal);if(!r||sessions.get(r.digest)!==r||ids.get(r.sessionId)!==r||r.expiresAtMs<=at) {if(r)remove(r);deny();}return at;}
  function release(r,t){t.check();valid(r,t.signal);t.check();}
  // A recheck re-verifies exactly the bound run: it names that conversation and run, so selection can never move or reserve a successor.
- function boundHints(r){return data({...r.hints,conversationId:r.context.binding.conversationId,runId:r.context.binding.runId});}
+ function boundHints(r){return data({...r.hints,...researchContextFields(r.context),conversationId:r.context.binding.conversationId,runId:r.context.binding.runId});}
  function life(deadlineMs,signal){
   nativeSignal(signal);const at=active(signal);if(deadlineMs!==undefined&&!Number.isSafeInteger(deadlineMs))deny();let cutoff=Math.min(deadlineMs??at+l.maxRequestMs,at+l.maxRequestMs),requestCancellation;
   const timer=createOperationLifetime({deadlineMs:cutoff,now,signal,errorFactory:code=>{
@@ -137,7 +137,8 @@ export function createActionSessionOwner(configuration){
   const membershipPrincipal=member?(record?record.membershipPrincipal:membershipAdmission.principal):undefined;
   progress.step='membership-recheck';if(member&&record)await recheckMember(membershipPrincipal,nativeCredential,identity,t,record.context.selectedClientId,record);
   progress.step='context';started=active(t.signal);const current=fact(await t.run(signal=>(browser?resolveBrowserContext:resolveContext)({identityCredential:nativeCredential,identity,identitySha256:canonicalSha256(identity),hints:selected,signal,deadlineMs:t.deadline()})),['identitySha256','binding','scopes','selectedClientId','contextRevision','checkedAtMs','expiresAtMs'],started,t,['rebind','scopeKind','scope']);
-  if(!sameResearchContext(selected,current))deny();
+  const captured=researchContextFields(current);
+  if(selected.scopeKind!==captured.scopeKind||Object.hasOwn(selected,'scope')&&!sameResearchContext(selected,current))deny();
   if(record)valid(record,t.signal);validateShape('RunBinding',current.binding);if(current.identitySha256!==canonicalSha256(identity)||current.binding.tenantId!==identity.principal.tenantId||current.binding.actorId!==identity.principal.actorId||current.selectedClientId!==null&&(typeof current.selectedClientId!=='string'||!uuid.test(current.selectedClientId))||typeof current.contextRevision!=='string'||!current.contextRevision||current.contextRevision.length>256||!Array.isArray(current.scopes)||!current.scopes.length||current.scopes.length>100)deny();
   // The initial owner's atomic exact-source supersession, already validated by the adapter against its own transaction.
   // It may accompany only a FRESH issuance whose named run is that proof's source; a recheck never rebinds.

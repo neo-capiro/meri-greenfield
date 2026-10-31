@@ -6,7 +6,7 @@ import {own,data,nativeSignal} from '../../../../packages/contracts/commands-0.2
 import {createOperationLifetime} from '../../../../packages/runtime/operation-lifetime.mjs';
 import {currentReceipt} from './current-receipt.mjs';
 import {researchCurrentReceipt} from './research-current-receipt.mjs';
-import {researchContextFields,researchContextFromCurrent,sameResearchContext} from './research-context.mjs';
+import {researchContextFields,researchContextFromCurrent,researchHints,sameResearchContext} from './research-context.mjs';
 import {markAuthorityUnavailable,isAuthorityUnavailable} from '../../../../packages/runtime/authority-availability.mjs';
 // The refusal names only the step it reached and the cause's own code (a fixed constant of our owners), for the session owner's
 // refusal line (session/owner.mjs); never a message, identifier or Core answer.
@@ -35,7 +35,8 @@ export function createApplicationContextAdapters(configuration){
  async function verifyIdentity(value){const call=own(value,['credential','deadlineMs'],['signal']),life=start(call);try{const started=now();const result=fact(await life.run(signal=>ports.readIdentity({...call,signal,deadlineMs:life.deadline()})),assertAuthorityIdentityReceipt,started,life);identity(result);life.check();return result;}catch(error){refuseUnless(error);}finally{life.close();}}
  async function resolve(value,retained){
   const call=own(value,['identityCredential','identity','identitySha256','hints','deadlineMs'],['signal']),original=assertAuthorityIdentityReceipt(snapshot(call.identity)),hints=snapshot(call.hints);identity(original);own(hints,['conversationId','clientId'],['runId','scopeKind','scope']);
-  const subject=researchContextFields(hints),research=subject.scopeKind==='research_portfolio';
+  researchHints(hints);const research=hints.scopeKind==='research_portfolio';
+  let subject=Object.hasOwn(hints,'scope')?researchContextFields(hints):undefined;
   const principal=original.principal;
   const conversationId=hints.conversationId,selectedClientId=hints.clientId;
   if(research&&(selectedClientId!==null||typeof ports.readResearchCurrent!=='function'))refuse();
@@ -53,7 +54,7 @@ export function createApplicationContextAdapters(configuration){
    const started=now();
    if(research){
     const r=fact(await life.run(signal=>ports.readResearchCurrent({credential:call.identityCredential,conversationId,clientId:null,signal,deadlineMs:cutoff})),researchCurrentReceipt,started,life);
-    const captured=researchContextFromCurrent(r);if(!sameResearchContext(subject,captured))refuse();
+    const captured=researchContextFromCurrent(r);if(subject&&!sameResearchContext(subject,captured))refuse();subject??=captured;
     return data({principal:r.principal,identityRevision:r.identityRevision,identitySha256:call.identitySha256,conversationId:r.conversationId,selectedClientId:null,contextRevision:r.contextRevision,...captured,checkedAtMs:r.checkedAtMs,expiresAtMs:r.expiresAtMs});
    }
    if(selectedClientId!==null||!ports.readCurrent)return fact(await life.run(signal=>ports.readContext({credential:call.identityCredential,identitySha256:call.identitySha256,conversationId,clientId:selectedClientId,signal,deadlineMs:cutoff})),assertAuthorityContextReceipt,started,life);

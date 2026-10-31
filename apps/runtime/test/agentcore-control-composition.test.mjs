@@ -40,7 +40,7 @@ for(const research of [false,true])test(`${research?'Research':'Client'} public 
  const f=initialInputFixture(),configuration=agentcoreControlFixture().configuration,relay=createReadCredentialRelay();
  configuration.sourceEnabled=true;configuration.intents={enabled:true};
  const clientId=research?null:id(5),fields={kind:'research_portfolio',researchPortfolioId:id(8),researchPortfolioName:'Captured portfolio',researchPortfolioRevision:2};
- const scope={...fields,scopeVersion:createHash('sha256').update(JSON.stringify(fields)).digest('hex')},subject=research?{scopeKind:'research_portfolio',scope}:{};
+ const scope={...fields,scopeVersion:createHash('sha256').update(JSON.stringify(fields)).digest('hex')},subject=research?{scopeKind:'research_portfolio'}:{};
  const pending=Promise.withResolvers(),invoked=Promise.withResolvers();pending.promise.catch(()=>{});let invocation,starts=0,coreCalls=0;
  const fetchImpl=async(url,request)=>{assert.ok(url.endsWith('/current'));assert.equal(request.headers.authorization,'Bearer actual-user-bearer');coreCalls++;
   const now=Date.now(),input=JSON.parse(request.body);if(research)assert.equal(input.scopeKind,'research_portfolio');return Response.json({principal:{tenantId:binding.tenantId,actorId:binding.actorId},role:'standard_user',permissions:[],clientIds:clientId?[clientId]:[],
@@ -57,6 +57,7 @@ for(const research of [false,true])test(`${research?'Research':'Client'} public 
  try{
   const response=await assembly.application.handle(call('/api/action-followthrough/session',{conversationId:binding.conversationId,clientId,...subject},'actual-user-bearer'));
   assert.equal(response.status,200);const session=await response.json();assert.notEqual(session.credential,'actual-user-bearer');
+  if(research)assert.deepEqual(session.context.scope,scope);
   const input={requestId:id(600),prompt:'Synthetic composition only'};
   await assembly.service.allocateInput({credential:session.credential,input});await assembly.service.submit({credential:session.credential,input});assert.equal(starts,1);
   const selected=await assembly.sessions.authenticateSession({credential:session.credential});const current=await assembly.sessions.readCurrentState({authentication:selected});
