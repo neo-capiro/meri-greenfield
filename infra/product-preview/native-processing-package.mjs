@@ -3,7 +3,7 @@
 import {execFileSync} from 'node:child_process';
 import {createRequire} from 'node:module';
 import {createHash} from 'node:crypto';
-import {readFileSync,readdirSync,lstatSync,mkdirSync,writeFileSync} from 'node:fs';
+import {readFileSync,readdirSync,lstatSync,mkdirSync,writeFileSync,realpathSync} from 'node:fs';
 import {resolve,dirname,join,relative,isAbsolute,sep} from 'node:path';
 import {pathToFileURL} from 'node:url';
 const fail=()=>{throw Error('NATIVE_OBSERVER_PACKAGE_REFUSED');};
@@ -13,11 +13,16 @@ const runtimeFiles=['apps/runtime/native-observer-entrypoint.mjs','apps/runtime/
 const entry='apps/runtime/native-observer-entrypoint.mjs';
 const git=(root,...args)=>execFileSync('git',['-C',root,...args],{maxBuffer:32*1024*1024,windowsHide:true});
 const safe=p=>typeof p==='string'&&p.length<1024&&!p.startsWith('/')&&!p.includes('\\')&&!p.split('/').some(x=>!x||x==='.'||x==='..');
-function packageAt(root,name){
- const req=createRequire(pathToFileURL(join(root,'package.json')));let path=dirname(req.resolve(name));
- for(let n=0;n<25;n++){
-  try{const data=JSON.parse(readFileSync(join(path,'package.json')));if(data.name===name)return {root:path,data};}catch{}
-  const next=dirname(path);if(next===path)break;path=next;
+function packageAt(root,name,allowed){
+ const req=createRequire(pathToFileURL(join(root,'package.json')));
+ // Some SDK packages export only named subpaths. Find their manifest through Node's dependency search order,
+ // without requiring a nonexistent package entrypoint or escaping the supplied image dependency directories.
+ for(const location of req.resolve.paths(name)??[]){
+  try{
+   const path=dirname(realpathSync(join(location,name,'package.json')));
+   if(!allowed.some(anchor=>{const rel=relative(anchor,path);return rel&&!isAbsolute(rel)&&rel!=='..'&&!rel.startsWith('..'+sep);}))continue;
+   const data=JSON.parse(readFileSync(join(path,'package.json')));if(data.name===name)return {root:path,data};
+  }catch{}
  }
  fail();
 }
@@ -27,6 +32,8 @@ export function prepareNativeObserverPackage({sourceRoot,commit,runtimeRoot,cont
  sourceRoot=resolve(sourceRoot);out=resolve(out);
  for(const root of [sourceRoot,runtimeRoot,contractsRoot]){const rel=relative(resolve(root),out);if(!rel||!(rel==='..'||rel.startsWith('..'+sep)||isAbsolute(rel)))fail();}
  if(git(sourceRoot,'rev-parse',`${commit}^{commit}`).toString().trim()!==commit)fail();
+ const allowedDependencies=[runtimeRoot,contractsRoot].map(root=>realpathSync(join(root,'node_modules')));
+ const findPackage=(root,name)=>packageAt(root,name,allowedDependencies);
  const sourcePaths=git(sourceRoot,'ls-tree','-r','--name-only',commit,'--','packages/contracts').toString().trim().split(/\r?\n/u)
   .filter(p=>p&&!/(?:^|\/)(?:test|tests|fixtures)(?:\/|$)|\.test\./u.test(p));
  const paths=[...new Set([...runtimeFiles,...sourcePaths])].sort();
@@ -53,7 +60,7 @@ export function prepareNativeObserverPackage({sourceRoot,commit,runtimeRoot,cont
  }
  if(offset!==objects.length)fail();
  function dependency(name,from,parentDestination=''){
-  const found=packageAt(from,name),identity=`${name}@${found.data.version}`;
+  const found=findPackage(from,name),identity=`${name}@${found.data.version}`;
   if(!known.has(identity))fail();
   const prior=placed.get(name);
   if(prior?.identity===identity)return;
@@ -72,13 +79,14 @@ export function prepareNativeObserverPackage({sourceRoot,commit,runtimeRoot,cont
   const all={...found.data.dependencies,...found.data.optionalDependencies};
   for(const child of Object.keys(all).sort()){
    // Optional packages absent from the qualified image remain absent; required dependencies never fall back to the Lambda SDK.
-   try{packageAt(found.root,child);}catch{if(Object.hasOwn(found.data.optionalDependencies??{},child))continue;throw Error('NATIVE_OBSERVER_PACKAGE_REFUSED');}
+   try{findPackage(found.root,child);}catch(error){if(Object.hasOwn(found.data.optionalDependencies??{},child))continue;
+    throw Object.assign(Error('NATIVE_OBSERVER_PACKAGE_REFUSED',{cause:error}),{dependency:child,parentPackage:identity});}
    dependency(child,found.root,destination);
   }
  }
  for(const [name,root,expected] of [['@aws-sdk/client-secrets-manager',runtimeRoot,direct.runtime['@aws-sdk/client-secrets-manager']],
   ...['ajv','ajv-formats','canonicalize'].map(name=>[name,contractsRoot,direct.contracts[name]])]){
-  if(packageAt(root,name).data.version!==expected)fail();dependency(name,root);
+  if(findPackage(root,name).data.version!==expected)fail();dependency(name,root);
  }
  const manifest={schema:'meri-native-observer-package/1',sourceCommit:commit,dependencyImageDigest:imageDigest,
   handler:'apps/runtime/native-observer-entrypoint.handler',platform:'linux/arm64',runtime:'nodejs24.x',dependencies,members};
