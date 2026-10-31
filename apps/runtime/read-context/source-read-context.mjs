@@ -133,7 +133,7 @@ export function createSourceReadContext({contract,proof,native,defaultCongress,n
   return {asOf,...savedOwnerContext({...proof,request},native,'legislative-comparisons')};
  }
  // Recompute on final release: membership changes must also fence aggregate rows with no client IDs.
- if(group==='capiro-data'&&proof.request.source==='client_records')return privateDataContext(proof,native);
+ if(['capiro-data','capiro-data-v3'].includes(group)&&proof.request.source==='client_records')return privateDataContext(proof,native);
  if(group==='connected-apps'||group==='teams-channels'){
   const selected=contract.normalizeInput(proof.request,{}).input.clientId??null;
   if(proof.subject.kind==='client'||proof.subject.entityType==='client'){

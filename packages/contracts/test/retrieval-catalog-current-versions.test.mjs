@@ -17,7 +17,7 @@ const read=p=>JSON.parse(readFileSync(new URL(p,import.meta.url)));
 const preserved=read('../retrieval-0.2/catalog.json'),current=read('../retrieval-0.3/catalog.json');
 const key=o=>`${o.id}@${o.version}`;
 const rowOf=(catalog,ref)=>catalog.operations.find(row=>key(row.operation)===key(ref));
-const SUCCESSORS=['prepare_federal_draft@0.2.0','read_federal_draft_source@0.2.0','create_client@0.3.0','schedule_task@0.3.0','list_scheduled_tasks@0.3.0','cancel_scheduled_task@0.3.0','update_scheduled_task@0.3.0','explain_opportunity_match@0.2.0','compare_funding_opportunities@0.2.0','build_opportunity_action_plan@0.2.0','get_pe_buyer_workspace@0.2.0','find_path_to@0.2.0'];
+const SUCCESSORS=['describe_capiro_data@0.3.0','query_capiro_data@0.3.0','prepare_federal_draft@0.2.0','read_federal_draft_source@0.2.0','create_client@0.3.0','schedule_task@0.3.0','list_scheduled_tasks@0.3.0','cancel_scheduled_task@0.3.0','update_scheduled_task@0.3.0','explain_opportunity_match@0.2.0','compare_funding_opportunities@0.2.0','build_opportunity_action_plan@0.2.0','get_pe_buyer_workspace@0.2.0','find_path_to@0.2.0'];
 const CR03='urn:meri:retrieval:client-record-action:0.3.0',SC03='urn:meri:schedules:tool-interface:0.3.0';
 const CR03_SHA='14b5923738b0f0d530a9c841f127bb8114e9757c4ca284b7b6f2beaf325b336f';
 const SC03_SHA='56c169022a2759b861863e324996571a8acd3bf203cc486d3612db7828e77e64';

@@ -1,7 +1,7 @@
 {
   "contractVersion": "0.2.0",
   "catalogId": "meri.retrieval",
-  "catalogVersion": "0.2.28",
+  "catalogVersion": "0.2.29",
   "sourceRegistryCommit": "87ea34a812c56524644e4983b215ded5ce8a8f7d",
   "originals": [
     {
@@ -1419,7 +1419,7 @@
       "boundary": "Additive public SQL read over Core-published curated relations; existing QuerySpec and source readers remain unchanged.",
       "replacement": {
         "id": "describe_capiro_data",
-        "version": "0.2.0"
+        "version": "0.3.0"
       },
       "state": "mapped"
     },
@@ -1429,7 +1429,7 @@
       "boundary": "Additive public SQL read over Core-published curated relations; existing QuerySpec and source readers remain unchanged.",
       "replacement": {
         "id": "query_capiro_data",
-        "version": "0.2.0"
+        "version": "0.3.0"
       },
       "state": "mapped"
     },
@@ -11997,6 +11997,138 @@
       ],
       "fixtureIds": [
         "catalog.binding.prepare_federal_draft"
+      ]
+    },
+    {
+      "operation": {
+        "id": "describe_capiro_data",
+        "version": "0.3.0"
+      },
+      "displayName": "Describe Capiro data",
+      "whenToUse": "Discover the published public or currently authorized client-record Capiro SQL relations, columns, canonical keys, join relationships, units and coverage limits. Publication is not evidence of populated data or current grants. Use query_capiro_data for bounded model-authored SQL; use existing canonical readers for complete source evidence.",
+      "limitations": [
+        "Current installation, authorization and source availability are required; catalog publication alone enables nothing.",
+        "Coverage is ingested and query-bounded; unknown source freshness/version is null. Empty output is not complete source absence.",
+        "Derived query rows do not become immutable source evidence cards. Use canonical source readers for full evidence.",
+        "Client-record SQL covers the fourteen published current-authorized client projections, including saved profiles, teams, targets, engagement and outreach tracking. Saved records are not fresh enrichment. General may narrow to an authorized client; selected-client chat cannot broaden. Saved jobs have no private SQL admission."
+      ],
+      "positiveExamples": [
+        "Inspect the declared stored projection within the current authorized source scope."
+      ],
+      "negativeExamples": [
+        "Treat a model selector, empty page, cursor, timestamp or reported coverage as proof of authorization, freshness or exhaustive absence."
+      ],
+      "sourceRequirements": [
+        {
+          "sourceId": "dataset_metadata",
+          "authority": "derived",
+          "purpose": "evidence"
+        }
+      ],
+      "inputSchema": {
+        "id": "urn:meri:retrieval:capiro-data:0.3.0#/$defs/CapiroDataDescribeRequest",
+        "sha256": "2fb858a992e5834acb6fd39839c1e0b9841ff7cadbb191193c8286ef5f774b11"
+      },
+      "outputSchema": {
+        "id": "urn:meri:retrieval:capiro-data:0.3.0#/$defs/CapiroDataDescribeOutput",
+        "sha256": "2fb858a992e5834acb6fd39839c1e0b9841ff7cadbb191193c8286ef5f774b11"
+      },
+      "aliases": [],
+      "sideEffect": "none",
+      "requiredGrants": [
+        "tool.read"
+      ],
+      "approvalBoundary": "none",
+      "handler": null,
+      "availability": "unimplemented",
+      "qualification": "pending",
+      "retry": {
+        "maxRetries": 0,
+        "retryableCodes": [],
+        "unknownOutcome": "reconcile-before-retry"
+      },
+      "replacement": null,
+      "requirementIds": [
+        "R-01",
+        "R-04",
+        "R-05"
+      ],
+      "ticketIds": [
+        "REL-02"
+      ],
+      "gateIds": [
+        "RG-02",
+        "RG-05",
+        "RG-07"
+      ],
+      "fixtureIds": [
+        "catalog.binding.describe_capiro_data"
+      ]
+    },
+    {
+      "operation": {
+        "id": "query_capiro_data",
+        "version": "0.3.0"
+      },
+      "displayName": "Query Capiro data",
+      "whenToUse": "Query published public or currently authorized client-record Capiro relations using model-authored PostgreSQL SELECT and separately bound scalar parameters. Discover names, canonical join keys, grains and units with describe_capiro_data first. Integer and decimal cells are exact strings. Inspect rowLimitReached, byteTruncated and query-bounded coverage; returned rows never prove source completeness. Preserve PE cycle, asserted fiscal year, value kind and units; aggregate parent amounts before project joins to avoid fanout. Use canonical bill IDs and Bioguide IDs, not names. Existing canonical readers provide full source evidence.",
+      "limitations": [
+        "Current installation, authorization and source availability are required; catalog publication alone enables nothing.",
+        "Coverage is ingested and query-bounded; unknown source freshness/version is null. Empty output is not complete source absence.",
+        "Derived query rows do not become immutable source evidence cards. Use canonical source readers for full evidence.",
+        "Client-record SQL covers the fourteen published current-authorized client projections, including saved profiles, teams, targets, engagement and outreach tracking. Saved records are not fresh enrichment. General may narrow to an authorized client; selected-client chat cannot broaden. Saved jobs have no private SQL admission."
+      ],
+      "positiveExamples": [
+        "Inspect the declared stored projection within the current authorized source scope."
+      ],
+      "negativeExamples": [
+        "Treat a model selector, empty page, cursor, timestamp or reported coverage as proof of authorization, freshness or exhaustive absence."
+      ],
+      "sourceRequirements": [
+        {
+          "sourceId": "capiro_data_query",
+          "authority": "derived",
+          "purpose": "evidence"
+        }
+      ],
+      "inputSchema": {
+        "id": "urn:meri:retrieval:capiro-data:0.3.0#/$defs/CapiroDataQueryRequest",
+        "sha256": "2fb858a992e5834acb6fd39839c1e0b9841ff7cadbb191193c8286ef5f774b11"
+      },
+      "outputSchema": {
+        "id": "urn:meri:retrieval:capiro-data:0.3.0#/$defs/CapiroDataQueryOutput",
+        "sha256": "2fb858a992e5834acb6fd39839c1e0b9841ff7cadbb191193c8286ef5f774b11"
+      },
+      "aliases": [],
+      "sideEffect": "none",
+      "requiredGrants": [
+        "tool.read"
+      ],
+      "approvalBoundary": "none",
+      "handler": null,
+      "availability": "unimplemented",
+      "qualification": "pending",
+      "retry": {
+        "maxRetries": 0,
+        "retryableCodes": [],
+        "unknownOutcome": "reconcile-before-retry"
+      },
+      "replacement": null,
+      "requirementIds": [
+        "R-01",
+        "R-04",
+        "R-05"
+      ],
+      "ticketIds": [
+        "REL-02"
+      ],
+      "gateIds": [
+        "RG-02",
+        "RG-05",
+        "RG-07"
+      ],
+      "fixtureIds": [
+        "catalog.binding.query_capiro_data"
       ]
     }
   ]
