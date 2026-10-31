@@ -84,7 +84,7 @@ function composition({skillId='quick_skill.cited_report',skillVersion='1.0.0'}={
  const retained=createSelectedOutputRetention({journal:store.selectedOutputs,now:()=>NOW,currentOutputAccess:async()=>{throw Error('NO_OUTPUT_APPROVAL');}});
  const journal=createIntentJournal({async claim({key,record}){const k=hash(key),e=state.proposals.get(k);if(e)return {claimed:false,entry:e};state.proposals.set(k,{record,state:'PENDING',outcome:null});return {claimed:true};},
   async settle({key,record,state:next,outcome}){const row=state.proposals.get(hash(key));if(row.state!=='PENDING'||hash(row.record)!==hash(record))throw Error('JOURNAL_REFUSED');Object.assign(row,{state:next,outcome});return row;}});
- const proposals=createSelectedDocumentProposals({journal,metadataStore:createPostgresApprovalMetadataStore({pool:metadata.pool}),now:()=>NOW,
+ const proposals=createSelectedDocumentProposals({journal:{begin:journal.begin,settle:journal.settle},metadataStore:createPostgresApprovalMetadataStore({pool:metadata.pool}),now:()=>NOW,
   readCurrent:async()=>{if(state.revoked)throw Error('CURRENT_REFUSED');return {binding,scopes,checkedAtMs:NOW,expiresAtMs:NOW+5000};}});
  const installation={binding,skill:selected.pin,requestSha256:hash(request),selectionSha256:hash(selection()),baseCatalogSha256:selected.installationCatalogSha256,
   installationId:uid(62),executionCatalogSha256:'a'.repeat(64),operations:selected.manifest.allowedOperations.map(op=>v.snapshot(op)),checkedAtMs:NOW,expiresAtMs:NOW+5000};

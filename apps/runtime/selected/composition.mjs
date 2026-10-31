@@ -31,7 +31,7 @@ export function createNativeSelectedComposition({configuration,pool,store,execut
   loadConversation:({signal})=>store.read(binding,{after:0,limit:1},check(signal)),readSelection:selection,
   readCurrentContext:({signal})=>current({binding,credential,signal})});
  const metadataStore=createTransactionalApprovalMetadataStore({pool}),journal=createIntentJournal(createPostgresIntentJournalStore({pool}));
- const proposals=createSelectedDocumentProposals({journal,metadataStore,now,maxRequestMs:configuration.limits.requestMs,
+ const proposals=createSelectedDocumentProposals({journal:{begin:journal.begin,settle:journal.settle},metadataStore,now,maxRequestMs:configuration.limits.requestMs,
   async readCurrent(call){const {selectedClientId,...r}=await current(call);return r;}});
  // Only retention's existing writer is used during a running query. Approval reads
  // construct their own current session/Core access callback in the document owner.

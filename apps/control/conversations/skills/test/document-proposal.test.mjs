@@ -18,7 +18,7 @@ export async function proposalFixture(kind='commitments'){
  const store=createPostgresApprovalMetadataStore({pool:sql.pool}),metadataStore={read:store.read,async insert(...args){state.metadataCalls++;const r=await store.insert(...args);if(state.failMetadata)throw Error('lost metadata ACK');return r;}};
  const journal=createIntentJournal({async claim({key,record}){const k=hash(key),row=rows.get(k);if(row)return {claimed:false,entry:structuredClone(row)};rows.set(k,{record:structuredClone(record),state:'PENDING',outcome:null});return {claimed:true};},async settle({key,record,state:next,outcome}){const row=rows.get(hash(key));assert.equal(row.state,'PENDING');assert.equal(hash(row.record),hash(record));Object.assign(row,{state:next,outcome:structuredClone(outcome)});if(state.loseSettle)throw Error('lost journal ACK');return structuredClone(row);}});
  const readCurrent=async()=>{state.currentCalls++;if(state.deny)throw Error('current denied');const r={binding:context.binding,scopes:context.scopes,checkedAtMs:state.now,expiresAtMs:domain.NOW+60000};state.mutate?.(r);return r;};
- const config={journal,metadataStore,readCurrent,now:()=>state.now},call={prepared,binding:context.binding,request,selection,reads};
+ const config={journal:{begin:journal.begin,settle:journal.settle},metadataStore,readCurrent,now:()=>state.now},call={prepared,binding:context.binding,request,selection,reads};
  return {state,rows,sql,context,call,config,owner:createSelectedDocumentProposals(config)};
 }
 for(const kind of ['commitments','relationships'])test(`${kind}: real compiler prepares one immutable native proposal and restart replays it`,async()=>{
