@@ -65,9 +65,10 @@ export function composeOffice({configuration,office,ports,sessions,retention,now
   typeof sessions?.nativeCredentialFor!=='function'||typeof optionsOwner?.resolve!=='function'||
   typeof now!=='function')throw fault();
  const key=material.key,reserved=Object.freeze([...new Set([...routinesReservedSecretFiles(configuration),...(configuration.native?.capabilityFile?[configuration.native.capabilityFile]:[])])]);
+ let codec=null;
  try{
  if(reserved.includes(office.keyFile)||protectedMaterialFiles(configuration).includes(office.keyFile))throw fault();
- const codec=createWopiAccessTokenCodec({key,now});
+ codec=createWopiAccessTokenCodec({key,now});
  const getServiceSecret=createRoutinesServiceSecret({file:office.serviceSecretFile,reservedFiles:reserved,readSecret});
  const reservedCredentials=createReservedCredentialDigests({files:reserved,readSecret});
  const drafts=createCoreOfficeDraftClient({origin:office.coreOrigin,
@@ -79,6 +80,6 @@ export function composeOffice({configuration,office,ports,sessions,retention,now
  const application=createRuntimeOfficeApplication({optionsOwner,sessions,now,
   limits:{maxRequestMs:configuration.limits.requestMs,maxRequestBytes:configuration.limits.requestBytes,maxResponseBytes:configuration.native.maxResponseBytes},drafts,codec,launch,generation,browserOrigin:office.browserOrigin});
  if(typeof application.handleControl!=='function'||typeof application.handleWopi!=='function')throw fault();
- return Object.freeze({application,codec,close(){codec.close();key.fill(0);}});
- }catch(error){key.fill(0);throw error;}
+ return Object.freeze({application,codec,close(){try{codec.close();}finally{key.fill(0);}}});
+ }catch(error){try{codec?.close();}finally{key.fill(0);}throw error;}
 }
