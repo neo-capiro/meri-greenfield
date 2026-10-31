@@ -33,6 +33,18 @@ export function familyReads(families=READ_FAMILIES){
  return catalog.operations.flatMap(descriptor=>{const family=resolveOperationContract(descriptor.operation).binding?.group;
   return typeof family==='string'&&Object.hasOwn(families,family)&&(!families[family].operationIds||families[family].operationIds.includes(descriptor.operation.id))?[{operation:descriptor.operation,family,descriptor}]:[];});
 }
+/** Keep one SDK name. A catalog preference never admits a version absent from the gated rows.
+ * Exact selected-skill narrowing occurs first; discovery cannot downgrade a denied successor.
+ * @param {AvailableRead[]} rows @returns {AvailableRead[]} */
+function preferredVersions(rows){
+ return rows.filter(row=>{
+  const versions=rows.filter(other=>other.operation.id===row.operation.id);
+  if(versions.length===1)return true;
+  const preferred=catalog.originals.find(original=>original.id===row.operation.id)?.replacement;
+  if(!preferred||!versions.some(other=>key(other.operation)===key(preferred)))throw Error('READ_TOOL_COLLISION');
+  return key(row.operation)===key(preferred);
+ });
+}
 /** @param {{policy:{generalReads?:boolean,readFamilies?:readonly string[]},installation:{operations:readonly OperationRef[]},
  *  discovery:{operations:readonly OperationRef[]},scopes:readonly {kind:string}[],families?:Readonly<Record<string,import('./families.mjs').ReadFamily>>,
  *  narrowTo?:readonly OperationRef[],exclude?:readonly OperationRef[]}} input
@@ -46,13 +58,14 @@ export function resolveAvailableReads({policy,installation,discovery,scopes,fami
   const open=d.sideEffect==='none'&&d.approvalBoundary==='none'&&
    installed(row.operation)&&
    policy.generalReads===true&&(policy.readFamilies??[]).includes(row.family)&&
-   eligible(row.operation)&&
    (client||family.clientScope!=='required'&&!family.requiredClientOperations?.includes(row.operation.id))&&
    !deferred.has(row.operation.id)&&!deferred.has(sdkToolName(row.operation))&&
    narrowed(row.operation)&&!excluded(row.operation);
   if(open)available.push(row);else if(!excluded(row.operation))unavailable.push(d.displayName);
  }
- return {available,unavailable};
+ const preferred=preferredVersions(available);
+ for(const row of preferred)if(!eligible(row.operation))unavailable.push(row.descriptor.displayName);
+ return {available:preferred.filter(row=>eligible(row.operation)),unavailable};
 }
 /** G3: the reads a run's measured release profile mounts (`mount:'profile'` in runtime.mjs): the exact active operation allowlist,
  * contract, capability family policy, deferred exclusion, a selected skill's narrowing and operations another server exposes.
@@ -63,7 +76,7 @@ export function resolveAvailableReads({policy,installation,discovery,scopes,fami
  *  narrowTo?:readonly OperationRef[],exclude?:readonly OperationRef[]}} input @returns {AvailableRead[]} */
 export function profileReads({policy,families=READ_FAMILIES,narrowTo,exclude=[]}){
  const excluded=among(exclude),narrowed=narrowTo===undefined?()=>true:among(narrowTo),active=among(policy.activeReadOperations??[]),deferred=new Set(DEFERRED_ORIGINALS);
- return familyReads(families).filter(row=>{const d=row.descriptor;return d.sideEffect==='none'&&d.approvalBoundary==='none'&&
+ return preferredVersions(familyReads(families).filter(row=>{const d=row.descriptor;return d.sideEffect==='none'&&d.approvalBoundary==='none'&&
   policy.generalReads===true&&(policy.readFamilies??[]).includes(row.family)&&!deferred.has(row.operation.id)&&!deferred.has(sdkToolName(row.operation))&&
-  active(row.operation)&&narrowed(row.operation)&&!excluded(row.operation);});
+  active(row.operation)&&narrowed(row.operation)&&!excluded(row.operation);}));
 }

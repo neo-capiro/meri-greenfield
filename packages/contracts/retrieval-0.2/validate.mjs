@@ -323,6 +323,9 @@ const samOpportunitiesValidators = createSamOpportunitiesValidators({validateSha
 const savedRecordValidators=createSavedRecordValidators({validateShape});
 const strategySavedValidators=createStrategySavedValidators({validateShape});
 const capiroDataValidators = createCapiroDataValidators({validateShape});
+export const validateCapiroData3Shape = (name, value) => executionShape('capiro-data-v3', name, value);
+const capiroData3Validators = createCapiroDataValidators({
+  validateShape: validateCapiroData3Shape});
 const connectedAppValidators = createConnectedAppValidators({validateShape});
 const teamsChannelValidators = createTeamsChannelValidators({validateShape});
 const floridaBudgetValidators = createFloridaBudgetValidators({validateShape, schema: schemas[groups.indexOf('florida-budget')]});
@@ -406,4 +409,4 @@ export const {resolveOperationContract} = createOperationContracts({catalog: sou
     ...publicWebValidators, ...samOpportunitiesValidators, floridaBudgetValidators, connectedAppValidators, teamsChannelValidators, savedRecordValidators, strategySavedValidators, capiroDataValidators,
     ...outreachQueryValidators, ...programElementValidators,
     clientKnowledgeSearchValidators, clientKnowledgeMondayValidators, clientKnowledgeAttachmentValidators, clientKnowledgeMemoryValidators, clientKnowledgeProfileValidators, ...researchLegalCandidatesValidators, ...publicDomainQueryValidators, ...researchLegalLegislationValidators, ...actionItemsCompleteValidators, ...researchLegalNewsValidators, ...publicDomainHearingsValidators,
-    clientRecord3Validators, schedule3ToolValidators})});
+    clientRecord3Validators, schedule3ToolValidators, capiroData3Validators})});

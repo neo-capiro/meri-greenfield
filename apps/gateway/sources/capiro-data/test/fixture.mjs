@@ -1,7 +1,7 @@
 /** Synthetic Core envelopes; no database, provider or live source qualification. */
 import {resolveOperationContract} from '../../../../../packages/contracts/retrieval-0.2/validate.mjs';
 import {billTextCase,readContext} from '../../bill-text/test/fixture.mjs';
-import {createCapiroDataHandlers} from '../handler.mjs';
+import {createCapiroDataHandlers,createCapiroData3Handlers} from '../handler.mjs';
 export const ids=['describe_capiro_data','query_capiro_data'];
 export const requests={describe_capiro_data:{relations:['program_elements']},query_capiro_data:{sql:'SELECT pe_code, total, count, absent FROM program_elements WHERE pe_code = $1',parameters:['0600001A'],rowLimit:2}};
 export function capiroDataPage(id=ids[1]){
@@ -15,16 +15,16 @@ export function privateCapiroDataPage(id=ids[1],clientId=null){
   else{page.relationsUsed=['client_objectives'];page.coverage.relations[0].name='client_objectives';page.columns[0].name='outcome';delete page.columns[1].unit;for(const row of page.rows){row.outcome=row.pe_code;delete row.pe_code;}}
   return page;
 }
-export function capiroDataCase(id=ids[1],{request=requests[id]}={}){
-  const scene=billTextCase(),operation={id,version:'0.2.0'},contract=resolveOperationContract(operation),normalizationContext=request.source==='client_records'?{
+export function capiroDataCase(id=ids[1],{request=requests[id],version='0.2.0'}={}){
+  const scene=billTextCase(),operation={id,version},contract=resolveOperationContract(operation),normalizationContext=request.source==='client_records'?{
     capiroDataScope:{clientId:request.clientId??null,identityRevision:'a'.repeat(64),membershipRevision:'b'.repeat(64)}}:{};
   const {authority,state,now,wire}=scene;
-  authority.decision.operation=`${id}@0.2.0`;authority.sourceIds=contract.descriptor.sourceRequirements.map(source=>source.sourceId);
+  authority.decision.operation=`${id}@${version}`;authority.sourceIds=contract.descriptor.sourceRequirements.map(source=>source.sourceId);
   const page=request.source==='client_records'?privateCapiroDataPage(id,request.clientId??null):capiroDataPage(id),transport={...scene.transport,async fetchImpl(url,options){
     wire.push({url,options,body:JSON.parse(options.body)});const value=structuredClone(state.page??page);
     state.nativeValue=value;state.resultMutator?.(value);state.afterSource?.();return state.responseFactory?state.responseFactory(value):Response.json(value);
   }};
   const call=()=>{const normalized=contract.normalizeInput(request,normalizationContext);return {request,input:normalized.input,argumentsSha256:normalized.argumentsSha256,normalizationContext,authority:readContext(authority)};};
-  return {...scene,family:'capiro-data',operation,contract,arguments:request,normalizationContext,transport,page,call,
-    handler:changes=>{const config={...transport,now,...changes};if(config.credentialsForCall)delete config.getCredentials;return createCapiroDataHandlers(config,[operation])[0].execute;}};
+  return {...scene,family:contract.binding.group,operation,contract,arguments:request,normalizationContext,transport,page,call,
+    handler:changes=>{const config={...transport,now,...changes};if(config.credentialsForCall)delete config.getCredentials;return (version==='0.3.0'?createCapiroData3Handlers:createCapiroDataHandlers)(config,[operation])[0].execute;}};
 }

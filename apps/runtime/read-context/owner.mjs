@@ -2,7 +2,7 @@
 import {types} from 'node:util';
 import {own,data,nativeSignal} from '../../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {canonicalSha256 as hash,validateShape} from '../../../packages/contracts/validate.mjs';
-import {resolveOperationContract,assertSubject,validateShape as readShape} from '../../../packages/contracts/retrieval-0.2/validate.mjs';
+import {resolveOperationContract,assertSubject,validateShape as readShape,validateCapiroData3Shape} from '../../../packages/contracts/retrieval-0.2/validate.mjs';
 import {assertNativeReadConfiguration,nativeReadFault,nativeReadFailureCode} from '../../../packages/contracts/runtime-0.2/reads.mjs';
 import {retainedOrigin} from '../../../packages/contracts/runtime-0.2/retained-reads.mjs';
 import {createOperationLifetime} from '../../../packages/runtime/operation-lifetime.mjs';
@@ -45,7 +45,9 @@ export function createReadContextOwner(configuration){
  function observation(raw){const v=data(own(raw,['binding','subject','operation','request','requestSha256','policyRevision','sourceIds','deadlineMs']));validateShape('RunBinding',v.binding);assertSubject(v.subject,v.binding);readShape('OperationRef',v.operation);
   const contract=resolveOperationContract(v.operation);if(!nativeReadOperationAllowed(contract.binding.group,v.operation.id)||contract.descriptor.sideEffect!=='none'||contract.descriptor.approvalBoundary!=='none')refuse('ACCESS_DENIED');if(['bill-text','federal-legislation'].includes(contract.binding.group)&&c.defaultCongress===undefined)refuse('UNAVAILABLE');
   // Data-search's canonical raw-selector normalizer also validates its selector combination.
-  if(contract.binding.group==='data-search')contract.normalizeInput(v.request,{});else if(contract.binding.group!=='state-status-votes')readShape(contract.binding.input,v.request);
+  if(contract.binding.group==='data-search')contract.normalizeInput(v.request,{});
+  else if(contract.binding.group==='capiro-data-v3')validateCapiroData3Shape(contract.binding.input,v.request);
+  else if(contract.binding.group!=='state-status-votes')readShape(contract.binding.input,v.request);
   assertSourceReadRequest(contract,v.request,v.subject);
   if(sourceReadClientReference(contract,v.request)!==null&&!readClientReference)refuse('UNAVAILABLE');
   if(MODE_READ_OPERATIONS.includes(v.operation.id)&&(!readModeObservation||!c.getReadModeServiceSecret))refuse('UNAVAILABLE');

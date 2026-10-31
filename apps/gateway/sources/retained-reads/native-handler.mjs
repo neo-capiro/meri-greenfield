@@ -20,13 +20,15 @@ export function createStoredNativeReadHandlers(configuration,operations,specific
  if(['certification-status','rule-status','sam-opportunities'].includes(family)&&!producerObservation)deny('GATEWAY_CONFIGURATION');
  if(['funding-opportunities','funding-analysis'].includes(family)&&observation!=='funding-asof')deny('GATEWAY_CONFIGURATION');
  const fixed=frozenData(routes);
+ // Only this reviewed successor uses 0.3; all retained native reads keep their exact 0.2 binding.
+ const version=family==='capiro-data-v3'?'0.3.0':'0.2.0';
  if(!fixed||Array.isArray(fixed)||typeof fixed!=='object'||!Object.keys(fixed).length)deny('GATEWAY_CONFIGURATION');
  if(knowledgeObservation&&(Object.keys(fixed).length!==1||!Object.hasOwn(fixed,'search_client_knowledge'))||
   family==='client-knowledge-search'&&Object.hasOwn(fixed,'search_client_knowledge')&&!knowledgeObservation)deny('GATEWAY_CONFIGURATION');
  for(const [id,path] of Object.entries(fixed)){
   if(path!==(family==='client-knowledge-attachments'&&id==='read_chat_attachments'?'/api/clio/attachments/read':`/api/clio/tools/${id}`))deny('GATEWAY_CONFIGURATION');
   if((modeObservation||producerObservation&&id==='search_sam_opportunities')!==MODE_READ_OPERATIONS.includes(id))deny('GATEWAY_CONFIGURATION');
-  let contract;try{contract=resolveOperationContract({id,version:'0.2.0'});}catch{deny('GATEWAY_CONFIGURATION');}
+  let contract;try{contract=resolveOperationContract({id,version});}catch{deny('GATEWAY_CONFIGURATION');}
   if(contract.binding.group!==family||!nativeReadOperationAllowed(family,id)||contract.descriptor.sideEffect!=='none'||contract.descriptor.approvalBoundary!=='none')deny('GATEWAY_CONFIGURATION');
  }
  const {credentialsForCall,...c}=ownFields(configuration,['origin','now'],['getCredentials','credentialsForCall','readSource','fetchImpl','maxRequestMs','maxResponseBytes']);
@@ -36,7 +38,7 @@ export function createStoredNativeReadHandlers(configuration,operations,specific
  const transport=createRetainedHttpTransport(c),seen=new Set();
  return selectedOperations.map(reference=>{
   const operation=frozenData(ownFields(reference,['id','version']));
-  if(operation.version!=='0.2.0'||!Object.hasOwn(fixed,operation.id)||seen.has(operation.id))deny('GATEWAY_CONFIGURATION');seen.add(operation.id);
+  if(operation.version!==version||!Object.hasOwn(fixed,operation.id)||seen.has(operation.id))deny('GATEWAY_CONFIGURATION');seen.add(operation.id);
   const contract=resolveOperationContract(operation);
   return {operation,async execute(call){try{
    const {signal,...fields}=ownFields(call,['input','request','authority','argumentsSha256','normalizationContext'],['signal']),data=frozenData(fields);

@@ -11,9 +11,11 @@ import {canonicalSha256} from '../../../packages/contracts/validate.mjs';
 const uuid=d=>`${d.repeat(8)}-${d.repeat(4)}-4${d.repeat(3)}-8${d.repeat(3)}-${d.repeat(12)}`;
 const clientId=uuid('d'),otherClient=uuid('e');
 
+for(const version of ['0.2.0','0.3.0']){
+const versionTest=(name,fn)=>test(`${version}: ${name}`,fn);
 async function fixture({selected=null,narrowed,source='client_records'}={}){
  const request={source,sql:'SELECT COUNT(*) AS total FROM client_objectives',parameters:[],rowLimit:2,...(narrowed?{clientId:narrowed}:{})};
- const scene=capiroDataCase('query_capiro_data',{request}),binding=scene.authority.binding;
+ const scene=capiroDataCase('query_capiro_data',{request,version}),binding=scene.authority.binding;
  binding.tenantId=uuid('b');binding.actorId=uuid('c');
  const subject=scene.authority.subject;delete subject.authorizationDecisionId;
  Object.assign(subject,{tenantId:binding.tenantId,actorId:binding.actorId,kind:selected?'client':'personal',entityType:selected?'client':'user',entityIds:[selected??binding.actorId],
@@ -23,9 +25,9 @@ async function fixture({selected=null,narrowed,source='client_records'}={}){
  const approvedReads={schemaVersion:'meri-native-general-reads/1',enabled:true,operations:[scene.operation],maxExecuteMs:5000,maxRequestBytes:65536,maxResponseBytes:1048576};
  const state={identityRevision:'a'.repeat(64),membershipRevision:'b'.repeat(64),clientIds:[clientId,otherClient],revoked:false};
  const currentBodies=[];let after=()=>{},sourceStatus=200;
- const composer=await createControlReadsComposer({coreOrigin:'https://core.example.invalid',familyIds:['capiro-data'],
+ const composer=await createControlReadsComposer({coreOrigin:'https://core.example.invalid',familyIds:[scene.family],
    nativeCredentials:{async nativeCredentialFor(){return {credential:'SYNTHETIC_USER',expiresAtMs:identity.expiresAtMs};}},readSecret:async()=>Buffer.from('SYNTHETIC_SERVICE'),serviceSecretFile:'synthetic',now:scene.now,newId:()=>binding.attemptId,
-   capabilityPolicy:{async forRun(){return {generalReads:true,readFamilies:['capiro-data'],activeReadOperations:[scene.operation]};}},
+   capabilityPolicy:{async forRun(){return {generalReads:true,readFamilies:[scene.family],activeReadOperations:[scene.operation]};}},
    async fetchImpl(url,options){
      const path=new URL(url).pathname;assert.equal(options.headers.authorization,'Bearer SYNTHETIC_USER');
      if(path.endsWith('/application-authority/current')){
@@ -46,7 +48,7 @@ async function fixture({selected=null,narrowed,source='client_records'}={}){
  return {scene,state,execute,currentBodies,after(fn){after=fn;},status(value){sourceStatus=value;}};
 }
 
-for(const [selected,narrowed] of [[null,undefined],[null,clientId],[clientId,undefined],[clientId,clientId]])test(`private composition preserves conversation ${selected} with narrowing ${narrowed}`,async()=>{
+for(const [selected,narrowed] of [[null,undefined],[null,clientId],[clientId,undefined],[clientId,clientId]])versionTest(`private composition preserves conversation ${selected} with narrowing ${narrowed}`,async()=>{
  const f=await fixture({selected,narrowed}),response=await f.execute();assert.equal(response.status,200,await response.clone().text());
  assert(f.currentBodies.every(body=>body.clientId===selected));const page=JSON.parse((await response.json()).resultJson).result;
  assert.equal(page.scope.clientId,narrowed??selected);assert.deepEqual(page,f.scene.page);
@@ -55,23 +57,23 @@ for(const [selected,narrowed] of [[null,undefined],[null,clientId],[clientId,und
  assert.equal(correlation.subject.kind,selected?'client':'personal');
 });
 
-for(const revision of ['identityRevision','membershipRevision'])test(`fresh ${revision} change after General aggregate withholds result`,async()=>{
+for(const revision of ['identityRevision','membershipRevision'])versionTest(`fresh ${revision} change after General aggregate withholds result`,async()=>{
  const f=await fixture();f.after(()=>{f.state[revision]='d'.repeat(64);if(revision==='membershipRevision')f.state.clientIds.pop();});
  const response=await f.execute();assert.equal(response.status,403);assert.equal(f.scene.wire.length,1);assert.doesNotMatch(await response.text(),/9007199254740993/);
 });
 
-test('private selected broadening, invisible narrowing and authority outage dispatch no SQL',async()=>{
+versionTest('private selected broadening, invisible narrowing and authority outage dispatch no SQL',async()=>{
  const wrong=await fixture({selected:clientId,narrowed:otherClient});assert.notEqual((await wrong.execute()).status,200);assert.equal(wrong.scene.wire.length,0);
  const hidden=await fixture({narrowed:clientId});hidden.state.clientIds=[];assert.notEqual((await hidden.execute()).status,200);assert.equal(hidden.scene.wire.length,0);
  const missing=await fixture();missing.state.membershipRevision='';assert.notEqual((await missing.execute()).status,200);assert.equal(missing.scene.wire.length,0);
 });
 
-test('private Core denial and late execution retirement cannot release evidence',async()=>{
+versionTest('private Core denial and late execution retirement cannot release evidence',async()=>{
  const denied=await fixture();denied.status(403);assert.equal((await denied.execute()).status,403);
  const retired=await fixture();retired.after(()=>{retired.state.revoked=true;});assert.equal((await retired.execute()).status,403);assert.equal(retired.scene.wire.length,1);
 });
 
-test('saved routine context cannot synthesize missing interactive identity/membership revisions',async()=>{
+versionTest('saved routine context cannot synthesize missing interactive identity/membership revisions',async()=>{
  const f=await fixture(),a=f.scene.authority,controller=new AbortController(),request=f.scene.arguments;
  const record={binding:a.binding,selectedClientId:null,expiresAtMs:f.scene.now()+5000};
  const owner=createRoutineReadContext({record,current:{role:'standard_user',clientIds:[clientId]},readSource:async()=>{assert.fail('no private saved-job source call');},policyRevision:a.policyRevision,
@@ -81,3 +83,5 @@ test('saved routine context cannot synthesize missing interactive identity/membe
  // The domain context itself requires revisions, not just a visible UUID.
  assert.throws(()=>createSourceReadContext({contract:f.scene.contract,proof:{request,subject:a.subject},native:{actorRole:'standard_user',clientIds:[clientId]},now:f.scene.now}));
 });
+
+}

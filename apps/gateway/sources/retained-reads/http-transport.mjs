@@ -26,10 +26,10 @@ export function createRetainedHttpTransport(configuration){
   const modeObservation=observation==='evidence-mode'&&['public-data','program-elements'].includes(c.contract.binding.group)&&MODE_READ_OPERATIONS.includes(c.operation.id);
   const producerObservation=observation==='producer-context'&&['certification-status','rule-status','sam-opportunities'].includes(c.contract.binding.group);
   const savedOwner=['saved-records','strategy-saved-records','legiwatch-review','legiwatch-relevance','legislative-comparisons','florida-budget'].includes(c.contract.binding.group);
-  const privateData=c.contract.binding.group==='capiro-data'&&c.request.source==='client_records';
+  const privateData=['capiro-data','capiro-data-v3'].includes(c.contract.binding.group)&&c.request.source==='client_records';
   if((savedOwner||privateData)&&readSource)deny('ACCESS_DENIED');
   const strategyData=c.contract.binding.group==='strategy-saved-records',legiwatchData=['legiwatch-review','legiwatch-relevance','legislative-comparisons','florida-budget'].includes(c.contract.binding.group);
-  if((privateData||strategyData||legiwatchData)&&(c.operation.version!=='0.2.0'||!(legiwatchData?['get_legiwatch_review','preview_legiwatch_relevance','get_florida_budget_project','compare_florida_budget_amounts','compare_legislative_versions']:strategyData?['read_saved_strategy_records']:['describe_capiro_data','query_capiro_data']).includes(c.operation.id)||
+  if((privateData||strategyData||legiwatchData)&&(c.operation.version!==(c.contract.binding.group==='capiro-data-v3'?'0.3.0':'0.2.0')||!(legiwatchData?['get_legiwatch_review','preview_legiwatch_relevance','get_florida_budget_project','compare_florida_budget_amounts','compare_legislative_versions']:strategyData?['read_saved_strategy_records']:['describe_capiro_data','query_capiro_data']).includes(c.operation.id)||
    method!=='POST'||path!==`/api/clio/tools/${c.operation.id}`||!serviceSecret||!same(body,c.operation.id==='get_florida_budget_project'?c.input:c.request)))deny('GATEWAY_CONFIGURATION');
   const correlation=privateData||strategyData||legiwatchData?canonicalize(frozenData({binding:c.authority.binding,subject:c.authority.subject,
    policyRevision:c.authority.policyRevision,normalizationContext:c.normalizationContext})):undefined;
