@@ -11,8 +11,10 @@ export function projectRecordedUsage(raw,request){
  try{
   const identity={schemaVersion:CONVERSATION_USAGE_SCHEMA,conversationId:request.conversationId,runId:request.runId};
   if(raw===null)return assertConversationUsageResponse({...identity,recording:'not-recorded',usage:null,toolAudit:null},request);
-  const record=data(own(raw,['status','reason','cumulative','delta','sdkEstimateUsd','chargeMicroUsd','priceRevision','parentRunId','inputSha256','toolsUsed']));
-  const input=assertUsageInput({usage:record.cumulative,toolsUsed:record.toolsUsed});
+  const record=data(own(raw,['status','reason','cumulative','delta','sdkEstimateUsd','chargeMicroUsd','priceRevision','parentRunId','inputSha256','toolsUsed'],['externalSearch']));
+  // Validate persisted private search facts with the writer's contract; never expose or reprice them here.
+  const input=assertUsageInput({usage:record.cumulative,toolsUsed:record.toolsUsed,
+   ...(Object.hasOwn(record,'externalSearch')?{externalSearch:record.externalSearch}:{})});
   if(!['recorded','unavailable'].includes(record.status)||typeof record.inputSha256!=='string'||!/^[a-f0-9]{64}$/u.test(record.inputSha256)||
    typeof record.priceRevision!=='string'||!/^[a-zA-Z0-9][a-zA-Z0-9_:\-./]{0,199}$/u.test(record.priceRevision)||
    record.parentRunId!==null&&(typeof record.parentRunId!=='string'||!/^[a-f0-9]{8}-[a-f0-9]{4}-[1-8][a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$/iu.test(record.parentRunId)))corrupt();
