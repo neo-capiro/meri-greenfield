@@ -12,14 +12,14 @@ export function createSelectedTabBridge(chrome,{origins,now=Date.now,newId=()=>c
  // Correlation only, never receipts or captured bytes. The app republishes its
  // earlier attachment outcomes when any upload changes in the same pairing.
  const settledSelections=new Set();
- let epoch=0,timer=null,busy=false,targetTab=null;
+ let epoch=0,timer=null,selectionTimer=null,busy=false,targetTab=null;
  const view=()=>Object.freeze({state,busy,origin:peer?.origin??null,labels:pair?.labels??null,expiresAtMs:pair?.expiresAtMs??null,
   selection:selection?{title:selection.packet.title,url:selection.packet.url,text:selection.packet.text,bytes:selection.packet.bytes}:null,
   outcome:transfer?.state??null});
  const changed=()=>{for(const listener of listeners)listener(view());};
  const current=()=>peer&&pair&&pair.expiresAtMs>now();
  function status(closeOnFailure=true){if(peer&&pair)try{peer.port.postMessage(JSON.stringify({schema,type:'status',pairingId:pair.pairingId,deviceId,state}));}catch{if(closeOnFailure)end('disconnected');}}
- function clearSelection(){epoch++;selection=null;targetTab=null;busy=false;}
+ function clearSelection(){epoch++;clearTimer(selectionTimer);selectionTimer=null;selection=null;targetTab=null;busy=false;}
  function end(next){
   const old=peer;clearSelection();state=next;clearTimer(timer);timer=null;
   status(false);peer=null;pair=null;transfer=null;settledSelections.clear();old?.port.disconnect();changed();
@@ -83,6 +83,9 @@ export function createSelectedTabBridge(chrome,{origins,now=Date.now,newId=()=>c
    await stillSelected(tab.id,captured.documentId,tab.url,token);
    if(now()-capturedAtMs>=limits.captureMs)throw Error('CAPTURE_EXPIRED');
    selection={packet,rawUrl:tab.url,token};
+   // Erase the popup preview at its existing capture deadline, including while
+   // final document proof awaits. Share still checks the clock if timers lag.
+   selectionTimer=setTimer(()=>{if(token===epoch){clearSelection();changed();}},limits.captureMs-(now()-capturedAtMs));
   }finally{if(token===epoch){busy=false;changed();}}
  }
  async function share(){
@@ -99,9 +102,10 @@ export function createSelectedTabBridge(chrome,{origins,now=Date.now,newId=()=>c
     // correlation even if a future consumer has a different lifetime policy.
     if(settledSelections.size>8)settledSelections.delete(settledSelections.values().next().value);
    }
+   clearTimer(selectionTimer);selectionTimer=null;
    selection=null;transfer={selectionId:chosen.packet.selectionId,state:'unknown'};
    peer.port.postMessage(JSON.stringify(chosen.packet));
-  }finally{if(token===epoch){selection=null;busy=false;changed();}}
+  }finally{if(token===epoch){clearTimer(selectionTimer);selectionTimer=null;selection=null;busy=false;changed();}}
  }
  function tabChanged(tabId,change){
   if(peer?.tabId===tabId&&(change.status==='loading'||change.url)){end('disconnected');return;}
