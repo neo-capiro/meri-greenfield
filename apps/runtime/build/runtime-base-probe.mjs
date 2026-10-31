@@ -43,7 +43,7 @@ export async function probeRuntimeImage() {
   const python=String.raw`
 import importlib,importlib.metadata,json,platform,ssl,sys,sysconfig
 assert platform.machine()=='aarch64'
-assert sys.version_info[:3]==(3,13,16)
+assert sys.version_info[:3]==(3,13,18)
 with open(sys.argv[1]) as stream: lock=json.load(stream)
 assert sysconfig.get_path('purelib')==lock['sitePackages']
 import pip

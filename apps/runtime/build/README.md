@@ -2,7 +2,7 @@
 
 `apps/runtime/Dockerfile` builds the ordinary runtime image on native Linux
 ARM64. The builder is official Node 24.22.1 on Debian trixie; the final base is
-Wolfi with its native CPython 3.13.16 packages. Both are pinned to complete ARM64
+Wolfi with its native CPython 3.13.18 packages. Both are pinned to complete ARM64
 child-manifest digests in `infra/product-preview/runtime-packages.lock.json`.
 The Node image uses the public ECR Docker Library mirror; Wolfi uses Chainguard's
 public registry. Node's GNU/Linux binary and the retained native modules require
