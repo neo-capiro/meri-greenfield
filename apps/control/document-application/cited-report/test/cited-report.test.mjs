@@ -169,12 +169,47 @@ test('one read per distinct locator, and the citations stay bound to their own r
  const twice=input({findings:[{id:'excerpt',kind:'excerpt',text:EXCERPT,citations:[mailCitation()]},
   {id:'again',kind:'claim',text:'The same stored message is cited again.',citations:[mailCitation(0,BODY.length)]}],conflicts:[]});
  const prepared=await compile(read).prepare(twice,context(),{selection:selected});
- assert.equal(read.calls.length,1,'a second citation of the same thread does not read the source twice');
+ assert.equal(read.calls.length,1,'a second citation of the same message does not read the source twice');
  assert.equal(read.calls[0].operation.id,'mail.read_thread');
  assert.equal(prepared.findings[1].citations[0].passage,BODY);
  assert.equal(prepared.context.evidence.length,1,'the same stored record is one evidence record');
  assert.deepEqual(citedReportReadGroups(twice,selected).map(group=>group.key),[readKey(twice.findings[0].citations[0])]);
  assert.equal(readKey(portfolioCitation()),'portfolio-evidence:snapshot:'+PORTFOLIO+':'+CLAIM_RECORD);
+});
+
+test('citations of different messages in one thread each read and retain their own evidence',async()=>{
+ const selected=selection(),secondMessage=uid(25),secondText='The later reply changes the review date.',calls=[];
+ const report=input({findings:[
+  {id:'first',kind:'excerpt',text:EXCERPT,citations:[mailCitation()]},
+  {id:'second',kind:'excerpt',text:secondText,citations:[{...mailCitation(0,secondText.length),messageId:secondMessage}]},
+  {id:'repeated',kind:'claim',text:'The later reply is cited again.',citations:[{...mailCitation(0,secondText.length),messageId:secondMessage}]}
+ ],conflicts:[]});
+ const read=async({request})=>{
+  calls.push(request);
+  const second=request.messageId===secondMessage;
+  const page=mailPage(request,{text:second?secondText:BODY,citationId:second?uid(26):uid(23),
+   recordVersionId:second?'independent-record-version-2':'independent-record-version-1'});
+  page.messages[0].messageId=request.messageId;
+  return page;
+ };
+ const prepared=await compile(read).prepare(report,context(),{selection:selected});
+ assert.deepEqual(calls.map(request=>request.messageId),[MESSAGE,secondMessage]);
+ assert.ok(calls.every(request=>request.threadId===THREAD&&request.limit===1));
+ assert.deepEqual(prepared.findings.map(finding=>finding.citations[0].passage),[EXCERPT,secondText,secondText]);
+ assert.deepEqual(prepared.context.evidence.map(item=>[item.recordId,item.citationId,item.contentSha256]),
+  [[MESSAGE,uid(23),digest(BODY)],[secondMessage,uid(26),digest(secondText)]]);
+ assert.ok(body(prepared).includes(secondText));
+});
+
+test('a same-thread read cannot substitute the first message for a second cited message',async()=>{
+ const selected=selection(),secondMessage=uid(25),calls=[];
+ const report=input({findings:[
+  {id:'first',kind:'excerpt',text:EXCERPT,citations:[mailCitation()]},
+  {id:'second',kind:'excerpt',text:EXCERPT,citations:[{...mailCitation(),messageId:secondMessage}]}
+ ],conflicts:[]});
+ await assert.rejects(compile(async({request})=>{calls.push(request);return mailPage(request);})
+  .prepare(report,context(),{selection:selected}),/Mail thread\/message selection mismatch/u);
+ assert.deepEqual(calls.map(request=>request.messageId),[MESSAGE,secondMessage]);
 });
 
 for(const [label,edit,pattern] of [
