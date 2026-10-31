@@ -60,6 +60,31 @@ test('ancestor deletion invalidates consumed descendants; cannot revive an old i
  const replace={...remove,kind:'replace',text:'(a) Replaced $100.\r\n'};
  assert.throws(()=>compileFederalDraft(source,[replace,opFor(source,{id:'a1',scopeId:'a',dependsOn:['p1']})]),{code:'DRAFT_SCOPE_INVALIDATED'});
 });
+
+test('surviving children and indirect descendants cannot target through an invalidated declared ancestor',()=>{
+ const source=scopedSource(),b=source.scopes.find(s=>s.id==='b'),start=source.text.indexOf('$100',b.start);
+ source.scopes.splice(4,0,{id:'b-amount',label:'amount in section 1(b)',start,end:start+4,sha256:textSha256('$100'),ancestorPath:['document','s1','b']});
+ const crossing=opFor(source,{id:'cross-parent',scopeId:'document',expectedText:'Act\r\nSEC. 1.',text:'New introduction.'});
+ const independent=opFor(source,{id:'independent',scopeId:'s2',expectedText:'Review',text:'Report',dependsOn:['cross-parent']});
+ for(const scopeId of ['s1','a','b','b-amount']){
+  for(const dependsOn of [[],['cross-parent'],['independent']]){
+   const ops=[crossing,...(dependsOn.includes('independent')?[independent]:[]),opFor(source,{id:'use-child',scopeId,text:'$200',dependsOn})];
+   const before=structuredClone({source,ops});
+   assert.throws(()=>compileFederalDraft(source,ops),{code:'DRAFT_SCOPE_INVALIDATED',operationId:'use-child'});
+   assert.deepEqual({source,ops},before);
+  }
+ }
+ // An unrelated subtree with a valid path remains usable after the same edit.
+ compile(source,[crossing,independent],source.text.replace('Act\r\nSEC. 1.','New introduction.').replace('Review','Report'));
+});
+
+test('crossing the end of an ancestor also invalidates untouched earlier child paths',()=>{
+ const source=scopedSource(),crossing=opFor(source,{id:'cross-end',scopeId:'document',expectedText:'(b) Pay $100.\r\nSEC. 2.',text:'New ending.'});
+ const child=opFor(source,{id:'use-earlier-child',scopeId:'a',text:'$200',dependsOn:['cross-end']});
+ const before=structuredClone({source,ops:[crossing,child]});
+ assert.throws(()=>compileFederalDraft(source,[crossing,child]),{code:'DRAFT_SCOPE_INVALIDATED',operationId:'use-earlier-child'});
+ assert.deepEqual({source,ops:[crossing,child]},before);
+});
 test('a cross-boundary edit invalidates both touched descendants and yields no partial package on later failure',()=>{
  const source=scopedSource(),op=opFor(source,{id:'p1',scopeId:'s1',expectedText:'😀\r\n(b)',text:'combined'});
  const before=structuredClone(source);

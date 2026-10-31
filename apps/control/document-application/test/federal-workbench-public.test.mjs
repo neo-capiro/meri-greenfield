@@ -103,6 +103,26 @@ test('nested retained source saves, reloads, exports and revises through the pub
  assert.equal(x.f.state.executions.length,writes);
 });
 
+test('invalidated ancestor paths refuse atomically through mounted prepare/publish and the distributed receiver',async t=>{
+ const x=await fixture(t,{nested:true}),bytes=value=>new TextEncoder().encode(JSON.stringify(value));
+ const valid=await ok(await x.post('federal-prepare',{selection:x.selection}));
+ const selection={...x.selection,operations:[
+  opFor(x.source,{id:'cross-parent',scopeId:'document',expectedText:'Act\r\nSEC. 1.',text:'New introduction.'}),
+  opFor(x.source,{id:'use-child',scopeId:'b',text:'$200',dependsOn:['cross-parent']})]};
+ const before=structuredClone(selection),writes=x.f.state.executions.length;
+ for(const [route,body] of [['federal-prepare',{selection}],['federal-publish',publication(selection,valid.prepared.revisionSha256,'draft')]]){
+  const request=distributedFederal.receiveFederalRequest(route,bytes(body));
+  const response=await x.post(route,request),raw=await response.json();
+  assert.equal(response.status,422);assert.equal(raw.error.code,'DRAFT_PREPARATION_REFUSED');
+  const refused=await distributedFederal.receiveFederalResponse(route,response.status,bytes(raw),request);
+  assert.deepEqual(refused,raw);assert.equal('prepared' in refused,false);assert.equal('publication' in refused,false);
+  assert.equal(x.f.state.executions.length,writes);assert.deepEqual(selection,before);
+ }
+ // A failed candidate must not corrupt the existing source or valid review.
+ const unchanged=await ok(await x.post('federal-prepare',{selection:x.selection}));
+ assert.deepEqual(unchanged.prepared,valid.prepared);assert.equal(x.f.state.executions.length,writes);
+});
+
 test('official import retains exact Core projection and replays original custody before review and export',async t=>{
  const x=await fixture(t,{native:true}),input=importRequest(),result=await ok(await x.post('federal-import',input));
  assert.deepEqual(result.source,projectNativeFederalSource(official.request,official.response));

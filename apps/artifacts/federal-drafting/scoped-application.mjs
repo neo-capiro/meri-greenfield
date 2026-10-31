@@ -24,7 +24,9 @@ export function scopedApplication(source){
  function read(op){
   const scope=scopes.get(op.scopeId);
   if(!scope)fault('DRAFT_SCOPE_UNKNOWN',op.id);
-  if(!scope.valid)fault('DRAFT_SCOPE_INVALIDATED',op.id);
+  // Surviving text cannot resolve an identity through a destroyed declared path.
+  // Dependencies and matching hashes never restore an invalidated ancestor.
+  if(!scope.valid||scope.ancestorPath.some(id=>!scopes.get(id)?.valid))fault('DRAFT_SCOPE_INVALIDATED',op.id);
   const closure=new Set(op.dependsOn.flatMap(id=>[id,...closures.get(id)]));
   if([...scope.dependencies].some(id=>!closure.has(id)))fault('DRAFT_DEPENDENCY_REQUIRED',op.id);
   return {text:text.slice(scope.start,scope.end),closure};
