@@ -1,16 +1,19 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {inspectOfficeEdit} from '../inspect-office.mjs';
+import {officeEditUnavailable,inspectOfficeEditAdmitted} from '../edit-admission.mjs';
+import {chart} from './embedded-chart-fixture.mjs';
 import {ooxmlEntries,zip,relationshipsXml} from '../../structure/test/fixtures.mjs';
 const packageType='http://schemas.openxmlformats.org/officeDocument/2006/relationships/package';
-function chart(workbook=ooxmlEntries('xlsx')){
- const entries=ooxmlEntries('pptx');
- entries['[Content_Types].xml']=entries['[Content_Types].xml'].replace('</Types>','<Default Extension="xlsx" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"/></Types>');
- entries['ppt/charts/chart1.xml']='<c:chartSpace xmlns:c="http://schemas.openxmlformats.org/drawingml/2006/chart"/>';
- entries['ppt/charts/_rels/chart1.xml.rels']=relationshipsXml('<Relationship Id="rId1" Type="'+packageType+'" Target="../embeddings/data.xlsx"/>');
- entries['ppt/embeddings/']='';entries['ppt/embeddings/data.xlsx']=zip(workbook);
- return entries;
-}
+test('workbook-bearing PPTX is structurally inspectable but not admitted for editing',()=>{
+ const bytes=zip(chart()),inspection=inspectOfficeEdit(bytes,'pptx');
+ assert.equal(inspection.members.includes('ppt/embeddings/data.xlsx'),true);
+ assert.equal(officeEditUnavailable(inspection),true);
+ assert.throws(()=>inspectOfficeEditAdmitted(bytes,'pptx'),{code:'EDITOR_CODE_ACTION_UNAVAILABLE'});
+ const plain=zip(ooxmlEntries('pptx'));
+ assert.equal(officeEditUnavailable(inspectOfficeEdit(plain,'pptx')),false);
+ assert.equal(inspectOfficeEditAdmitted(plain,'pptx').format,'pptx');
+});
 test('native chart data workbook is validated without changing exact presentation bytes',()=>{
  const bytes=zip(chart()),before=Buffer.from(bytes),result=inspectOfficeEdit(bytes,'pptx');
  assert.deepEqual(bytes,before);assert.ok(result.members.includes('ppt/embeddings/data.xlsx'));assert.equal(result.nativeOpened,false);

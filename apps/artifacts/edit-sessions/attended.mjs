@@ -6,6 +6,7 @@ import {ARTIFACT_MIME_TYPES} from '../../../packages/contracts/artifacts-0.2/art
 import {MAX_TTL_MS} from './wopi-access-token.mjs';
 import {officeDraftRequest} from './core-draft-wire.mjs';
 import {createOfficeDraftPublisher} from './publish-draft.mjs';
+import {inspectOfficeEditAdmitted} from './edit-admission.mjs';
 const fail=code=>{throw Object.assign(Error(code),{code});};
 const metadata=draft=>{const {bytesBase64,...receipt}=draft;return receipt;};
 const routes=Object.freeze({open:'revise',read:'download',launch:'revise',renew:'revise',release:'download',discard:'revise',publish:'revise'});
