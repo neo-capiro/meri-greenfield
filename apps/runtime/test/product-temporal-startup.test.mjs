@@ -14,7 +14,7 @@ function configuration(role='control'){
  c.temporal.tls={caFile:'/run/meri/temporal-ca.pem',certFile:'/run/meri/temporal-cert.pem',keyFile:'/run/meri/temporal-key.pem'};
  c.temporal.namespace='meri';c.temporal.taskQueue='meri-conversations';
  if(role==='temporal-worker'){
-  for(const k of ['database','sessions','versions','agentcore','privateHttp'])delete c[k];
+  for(const k of ['database','sessions','versions','agentcore','privateHttp','models'])delete c[k];
   c.native.preparedKickoff=true;c.http.port=8081;
  }
  return c;
@@ -45,4 +45,26 @@ test('old issuer/token blocks and incomplete native TLS cannot silently survive 
  for(const change of [c=>{c.native.serverCaSha256='wrong';},c=>{delete c.native.serverCaFile;},c=>{c.temporal.tls.certFile=c.temporal.tls.keyFile;}]){
   const c=configuration();change(c);assert.throws(()=>compileProductMaterialPlan({role:'control',configuration:c,runtimeUser:'1000:1000'}));
  }
+});
+import {compileOfficeConfiguration} from '../artifacts/office-configuration.mjs';
+const officeConfig=c=>({enabled:true,editorOrigin:'https://office.example.test',wopiOrigin:'https://wopi.example.test',
+ browserOrigin:c.http.frontendOrigin,coreOrigin:'https://core.example.test',keyFile:'/run/meri/office.key',
+ serviceSecretFile:'/run/meri/office-core.secret'});
+test('enabled Control material plan inventories Office signing and Core secret',()=>{
+ const c=configuration('control');c.office=officeConfig(c);validateConfiguration(c,'control');compileOfficeConfiguration(c);
+ const plan=compileProductMaterialPlan({role:'control',configuration:c,runtimeUser:'1000:1000'});
+ const byPath=new Map(plan.requiredFiles.map(file=>[file.path,file.purposes]));
+ assert.deepEqual(byPath.get('/run/meri/office.key'),['office-wopi-signing-key']);
+ assert.deepEqual(byPath.get('/run/meri/office-core.secret'),['office-core-service-secret']);
+ assert.equal([...byPath.keys()].filter(path=>path.includes('office')).length,2);
+});
+test('Office signing key cannot alias canonical native material',()=>{
+ const c=configuration('control');c.office={...officeConfig(c),keyFile:c.native.capabilityFile};
+ assert.throws(()=>validateConfiguration(c,'control'),/OFFICE_CONFIGURATION/);
+});
+test('disabled Office adds no material and other roles are unchanged',()=>{
+ const control=configuration('control');const before=compileProductMaterialPlan({role:'control',configuration:control,runtimeUser:'1000:1000'});
+ assert.equal(before.requiredFiles.some(file=>file.purposes.some(p=>p.startsWith('office-'))),false);
+ const worker=configuration('temporal-worker');const plan=compileProductMaterialPlan({role:'temporal-worker',configuration:worker,runtimeUser:'1000:1000'});
+ assert.equal(plan.requiredFiles.some(file=>file.purposes.some(p=>p.startsWith('office-'))),false);
 });

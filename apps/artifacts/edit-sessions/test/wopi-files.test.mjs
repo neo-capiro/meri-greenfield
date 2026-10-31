@@ -187,3 +187,10 @@ test('workbook-bearing retained draft disables write and refuses Save before Cor
  assert.equal(f.state.calls.slice(before.calls).some(call=>call.route==='save'),false);
  assert.equal(f.draft.sequence,before.sequence);assert.equal(f.draft.sha256,before.sha256);
 });
+test('closed WOPI codec cannot issue or verify after key ownership is released',async()=>{
+ const {createWopiAccessTokenCodec}=await import('../wopi-access-token.mjs');
+ const codec=createWopiAccessTokenCodec({key:Buffer.alloc(32,7),now:()=>1000});
+ codec.close();
+ assert.throws(()=>codec.issue({}),{code:'WOPI_TOKEN_CONFIGURATION'});
+ assert.throws(()=>codec.verify('a.b',{fileId:'f'}),{code:'WOPI_TOKEN_CONFIGURATION'});
+});

@@ -48,7 +48,7 @@ export async function readCodeDiscovery({editorOrigin,signal,now=Date.now,timeou
 export async function prepareOfficeMaterial({configuration,office,signal,now=Date.now,fetchImpl,readMaterial=readSecret}){
  if(office===null||office===undefined||office.enabled!==true)return null;
  const key=await readMaterial(office.keyFile);
- if(!Buffer.isBuffer(key)||key.byteLength<32)throw fault();
+ if(!Buffer.isBuffer(key)||key.byteLength<32){if(Buffer.isBuffer(key))key.fill(0);throw fault();}
  try{
   const discoveryBytes=await readCodeDiscovery({editorOrigin:office.editorOrigin,signal,now,fetchImpl});
   return Object.freeze({key,discoveryBytes});
@@ -79,6 +79,6 @@ export function composeOffice({configuration,office,ports,sessions,retention,now
  const application=createRuntimeOfficeApplication({optionsOwner,sessions,now,
   limits:{maxRequestMs:configuration.limits.requestMs,maxRequestBytes:configuration.limits.requestBytes,maxResponseBytes:configuration.native.maxResponseBytes},drafts,codec,launch,generation,browserOrigin:office.browserOrigin});
  if(typeof application.handleControl!=='function'||typeof application.handleWopi!=='function')throw fault();
- return Object.freeze({application,codec,close(){key.fill(0);}});
+ return Object.freeze({application,codec,close(){codec.close();key.fill(0);}});
  }catch(error){key.fill(0);throw error;}
 }
