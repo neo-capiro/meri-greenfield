@@ -13,7 +13,7 @@ import {compileProductMaterialPlan, verifyProductMaterial} from '../material-ini
 import {verifyControlCaBundle} from '../control-ca-bundle.mjs';
 import {materialInitEnvironment} from '../material-init-cli.mjs';
 import {validateConfiguration} from '../config.mjs';
-import {agentcoreControlFixture} from '../test/agentcore-fixture.mjs';
+import {imageProbeControlFixture} from './material-init-probe-fixture.mjs';
 import {canonicalSha256} from '../../../packages/contracts/validate.mjs';
 
 const root = '/run/meri';
@@ -104,7 +104,7 @@ export function publicAnchor() {
 
 /** Closed role configuration grounded in the packaged pure AgentCore fixture and the canonical validators. */
 export function roleConfiguration(role, anchorPin) {
-  const base = agentcoreControlFixture().configuration;
+  const base = imageProbeControlFixture().configuration;
   base.native = Object.assign({}, base.native, {capabilityFile: root + '/capability.json'});
   base.database = {connectionFile: root + '/database-url'};
   base.temporal = Object.assign({}, base.temporal, {
