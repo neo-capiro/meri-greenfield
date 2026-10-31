@@ -1,6 +1,7 @@
 /** Stable bounded source bytes inside an owned SDK workspace or task directory. */
 import * as fs from 'node:fs';import path from 'node:path';import {createHash} from 'node:crypto';
 import {own,nativeSignal} from '../../../packages/contracts/commands-0.2/execution-boundary.mjs';
+import {workspaceCaptureEntryRefusal} from '../../../packages/runtime/workspace-capture-diagnostics.mjs';
 const fail=()=>{throw Error('WORKSPACE_CAPTURE_REFUSED');},sha=bytes=>createHash('sha256').update(bytes).digest('hex');
 const identity=s=>`${s.dev}:${s.ino}:${s.mode}:${s.nlink}:${s.uid}:${s.gid}:${s.size}:${s.mtimeMs}:${s.ctimeMs}`;
 const anchor=s=>`${s.dev}:${s.ino}:${s.mode}:${s.uid}:${s.gid}`;
@@ -23,7 +24,14 @@ export function captureWorkspaceBytes(configuration){
    if(depth>12)fail();for(const name of membersBefore){check();if(++members>512||name.length>128||name.normalize('NFC')!==name||/[\\\x00-\x1f\x7f:]/u.test(name)||name==='.'||name==='..')fail();
     const rel=relative?relative+'/'+name:name;if(rel.length>4096||names.has(rel.toLowerCase()))fail();names.add(rel.toLowerCase());const p=path.join(dir,name),s=fs.lstatSync(p);check();
     if(s.isDirectory()&&!s.isSymbolicLink()){visit(p,rel,depth+1);continue;}
-    if(!s.isFile()||s.isSymbolicLink()||s.nlink!==1||fs.realpathSync(p)!==p||rows.length>=256||s.size>8*1024*1024||total+s.size>32*1024*1024)fail();check();
+    // Keep the same admission predicates and order; only the refused predicate gets internal fixed context.
+    if(!s.isFile())throw workspaceCaptureEntryRefusal(s.isSymbolicLink()?'SYMLINK':'TYPE');
+    if(s.isSymbolicLink())throw workspaceCaptureEntryRefusal('SYMLINK');
+    if(s.nlink!==1)throw workspaceCaptureEntryRefusal('LINK_COUNT');
+    if(fs.realpathSync(p)!==p)throw workspaceCaptureEntryRefusal('CANONICAL_PATH');
+    if(rows.length>=256)throw workspaceCaptureEntryRefusal('FILE_COUNT');
+    if(s.size>8*1024*1024)throw workspaceCaptureEntryRefusal('FILE_SIZE');
+    if(total+s.size>32*1024*1024)throw workspaceCaptureEntryRefusal('TOTAL_BYTES');check();
     const fd=fs.openSync(p,fs.constants.O_RDONLY|fs.constants.O_NOFOLLOW|fs.constants.O_NONBLOCK);let bytes;
     try{check();if(identity(fs.fstatSync(fd))!==identity(s))fail();bytes=Buffer.alloc(s.size);let offset=0;
      while(offset<bytes.length){check();const n=fs.readSync(fd,bytes,offset,Math.min(65536,bytes.length-offset),offset);check();if(!n)fail();offset+=n;}
