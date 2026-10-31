@@ -5,8 +5,10 @@ import {createOfficeDraftPublisher} from '../publish-draft.mjs';
 import {artifactValidators as v} from '../../../../packages/contracts/retrieval-0.2/validate.mjs';
 import {id} from '../../storage/test/sql-fixture.mjs';
 import {ooxml} from '../../structure/test/fixtures.mjs';
-async function fixture(t,format='docx',withEvidence=false){
- const f=await wopiFixture(t,{format,withEvidence}),bytes=ooxml(format);
+import {zip} from '../../structure/test/fixtures.mjs';
+import {chart} from './embedded-chart-fixture.mjs';
+async function fixture(t,format='docx',withEvidence=false,baseBytes){
+ const f=await wopiFixture(t,{format,withEvidence,...(baseBytes?{baseBytes}:{})}),bytes=baseBytes??ooxml(format);
  assert.equal((await f.send('lock',{lock:'CODE'})).status,200);
  assert.equal((await f.send('save',{lock:'CODE',body:bytes})).status,200);
  const options={...f.options,validators:v,publisherFor:(context,retained)=>f.owner({officeEditWrites:true,context,...retained})};
@@ -73,6 +75,21 @@ for(const bad of ['sequence','hash','base','bytes','limit','readonly','session',
 test('a concurrent Save invalidates the explicit selected draft before Core can begin publication',async t=>{
  const f=await fixture(t);f.state.hook=route=>{if(route==='publish/begin'){f.draft.sequence++;}};
  await assert.rejects(f.publish(),{code:'OFFICE_DRAFT_CONFLICT'});assert.equal(f.state.puts,1);assert.equal(f.draft.state,'draft');
+});
+
+test('a retained malformed chart workbook cannot claim either publication owner',async t=>{
+ const f=await fixture(t,'pptx'),entries=chart();entries['ppt/charts/chart1.xml']=entries['ppt/charts/chart1.xml'].replace('rId1','missing');
+ const bytes=zip(entries);Object.assign(f.draft,{bytesBase64:bytes.toString('base64'),byteLength:bytes.length,sha256:f.sha(bytes)});
+ await assert.rejects(f.publish({...f.input,sha256:f.draft.sha256}),{code:'EDITOR_STRUCTURE_REFUSED'});
+ assert.equal(f.state.calls.some(c=>c.route==='publish/begin'),false);assert.equal(f.state.puts,1);assert.equal(f.sql.state.versions.size,1);
+ assert.equal(f.draft.bytesBase64,bytes.toString('base64'));
+});
+
+test('a historical workbook-loss draft cannot claim either publication owner',async t=>{
+ const f=await fixture(t,'pptx',false,zip(chart())),bytes=ooxml('pptx');
+ Object.assign(f.draft,{bytesBase64:bytes.toString('base64'),byteLength:bytes.length,sha256:f.sha(bytes)});
+ await assert.rejects(f.publish({...f.input,sha256:f.draft.sha256}),{code:'EDITOR_STRUCTURE_REFUSED'});
+ assert.equal(f.state.calls.some(c=>c.route==='publish/begin'),false);assert.equal(f.state.puts,1);assert.equal(f.sql.state.versions.size,1);
 });
 test('canonical stale head becomes conflict and preserves private bytes without overwriting the new head',async t=>{
  const f=await fixture(t),next=await f.run({...f.call,deliveryId:'another-publication',baseVersionId:f.first.version.versionId,
