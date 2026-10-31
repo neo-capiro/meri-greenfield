@@ -11,6 +11,7 @@ const allocation={schema:HOST_ALLOCATION_SCHEMA,tenantId:binding.tenantId,conver
  leaseDeadlineMs:Date.now()+600000};
 const hostIdentity={schema:D005_HOST_IDENTITY_SCHEMA,instanceId:'i-0123456789abcdef0',
  bootId:'00000021-b0a1-4000-8000-000000000000',conversationId:binding.conversationId,hostId:allocation.hostId};
+const caller={accountId:'967807252336',region:'us-east-1',arn:'arn:aws:sts::967807252336:assumed-role/Control/session',userId:'AROAEXAMPLE:session'};
 const expected={accountId:'967807252336',region:'us-east-1',amiId:'ami-0123456789abcdef0',
  vpcId:'vpc-0123456789abcdef0',subnetId:'subnet-0123456789abcdef0',
  securityGroupId:'sg-0123456789abcdef0',rootDeviceName:'/dev/xvda'};
@@ -26,14 +27,14 @@ const instance=(state='running')=>output({Reservations:[{OwnerId:expected.accoun
  BlockDeviceMappings:[{DeviceName:'/dev/xvda',Ebs:{VolumeId:rootVolumeId,DeleteOnTermination:true}}],
  NetworkInterfaces:[{NetworkInterfaceId:eniId,OwnerId:expected.accountId,VpcId:expected.vpcId,
   SubnetId:expected.subnetId,Groups:[{GroupId:expected.securityGroupId}],
-  Attachment:{InstanceId:hostIdentity.instanceId,DeleteOnTermination:true,DeviceIndex:0}}],
+  Attachment:{AttachmentId:'eni-attach-0123456789abcdef0',DeleteOnTermination:true,DeviceIndex:0,Status:'attached'}}],
 }]}]});
 const volume=(state='in-use')=>output({Volumes:[{VolumeId:rootVolumeId,State:state,OwnerId:expected.accountId,
  Encrypted:true,Tags:tags(),Attachments:[{InstanceId:hostIdentity.instanceId,VolumeId:rootVolumeId,
   Device:'/dev/xvda',DeleteOnTermination:true}]}]});
 const eni=()=>output({NetworkInterfaces:[{NetworkInterfaceId:eniId,OwnerId:expected.accountId,
  VpcId:expected.vpcId,SubnetId:expected.subnetId,Groups:[{GroupId:expected.securityGroupId}],
- Attachment:{InstanceId:hostIdentity.instanceId,DeleteOnTermination:true}}]});
+ Attachment:{AttachmentId:'eni-attach-0123456789abcdef0',InstanceId:hostIdentity.instanceId,DeleteOnTermination:true,Status:'attached'}}]});
 const ack=()=>output({TerminatingInstances:[{InstanceId:hostIdentity.instanceId,
  CurrentState:{Name:'shutting-down',Code:32}}]});
 function fixture(overrides={}){
@@ -44,25 +45,21 @@ function fixture(overrides={}){
   async describeNetworkInterfaces(args){calls.push(['eni',args]);return terminated?output({NetworkInterfaces:[]}):eni();},
   async terminateInstances(args){calls.push(['terminate',args]);terminated=true;return ack();},
   ...overrides};
- const host=createEc2PhysicalTeardownPort({allocation,binding,hostIdentity,expected,ec2,maxRounds:2,pollMs:1});
+ const host=createEc2PhysicalTeardownPort({allocation,binding,hostIdentity,expected,caller,ec2,maxRounds:2,pollMs:1});
  return {calls,host,ec2};
 }
 
 test('one exact termination request is followed by independent raw reads; empty ENI result stays UNKNOWN',async()=>{
  const f=fixture(),resources=await f.host.destroy(request());
  assert.deepEqual(resources,{requested:true,instanceId:hostIdentity.instanceId,rootVolumeId,networkInterfaceIds:[eniId]});
- const observed=await f.host.observeAbsent({...request(),resources});
- assert.equal(observed.schema,HOST_PHYSICAL_ABSENCE_SCHEMA);
- assert.equal(observed.instanceState,'terminated');
- assert.equal(observed.rootVolumeAbsent,true);
- assert.equal(observed.networkInterfacesAbsent,false);
+ await assert.rejects(f.host.observeAbsent({...request(),resources}),e=>e.code==='HOST_PHYSICAL_UNKNOWN');
  assert.deepEqual(f.calls.map(c=>c[0]),['instance','volume','eni','terminate','instance','volume','eni','instance','volume','eni']);
  for(const [name,args] of f.calls){
   assert.deepEqual(args,name==='instance'||name==='terminate'?{InstanceIds:[hostIdentity.instanceId]}:
    name==='volume'?{VolumeIds:[rootVolumeId]}:{NetworkInterfaceIds:[eniId]});
  }
- assert.equal(await f.host.destroy(request()),resources,'one destroy attempt');
- assert.equal(await f.host.observeAbsent({...request(),resources}),observed,'one readback sequence');
+ await assert.rejects(f.host.destroy(request()),e=>e.code==='HOST_PHYSICAL_UNKNOWN');
+ await assert.rejects(f.host.observeAbsent({...request(),resources}),e=>e.code==='HOST_PHYSICAL_UNKNOWN');
 });
 
 test('foreign, incomplete, or contradictory pre-termination EC2 reads cannot authorize termination',async()=>{
@@ -106,29 +103,57 @@ test('uncertain termination acknowledgement is sticky and cannot dispatch anothe
   rootVolumeId,networkInterfaceIds:[eniId]}}),e=>e.code==='HOST_PHYSICAL_UNKNOWN');
 });
 
-test('a Describe exception after termination is UNKNOWN forever, never a NotFound absence receipt',async()=>{
+test('a single NotFound observation is not a correlated absence and cannot become verified',async()=>{
  const f=fixture({async describeVolumes(args){f.calls.push(['volume',args]);
   if(f.calls.some(c=>c[0]==='terminate'))throw Object.assign(new Error('not found'),{name:'InvalidVolume.NotFound'});
   return volume();}});
  const resources=await f.host.destroy(request());
  await assert.rejects(f.host.observeAbsent({...request(),resources}),e=>e.code==='HOST_PHYSICAL_UNKNOWN');
- await assert.rejects(f.host.observeAbsent({...request(),resources}),e=>e.code==='HOST_PHYSICAL_UNKNOWN');
- assert.equal(f.calls.filter(c=>c[0]==='volume').length,2);
 });
 
 test('an empty successful exact-ID volume list is still not positive physical absence',async()=>{
  const f=fixture({async describeVolumes(args){f.calls.push(['volume',args]);
   return f.calls.some(c=>c[0]==='terminate')?output({Volumes:[]}):volume();}});
  const resources=await f.host.destroy(request());
- const observed=await f.host.observeAbsent({...request(),resources});
- assert.equal(observed.instanceState,'terminated');
- assert.equal(observed.rootVolumeAbsent,false);
- assert.equal(observed.networkInterfacesAbsent,false);
+ await assert.rejects(f.host.observeAbsent({...request(),resources}),e=>e.code==='HOST_PHYSICAL_UNKNOWN');
 });
 
 test('a hung preflight read is bounded and cannot proceed to a termination request',async()=>{
  const f=fixture({async describeInstances(args){f.calls.push(['instance',args]);return new Promise(()=>{});}});
- const host=createEc2PhysicalTeardownPort({allocation,binding,hostIdentity,expected,ec2:f.ec2,operationMs:100,pollMs:1});
+ const host=createEc2PhysicalTeardownPort({allocation,binding,hostIdentity,expected,caller,ec2:f.ec2,operationMs:100,pollMs:1});
  await assert.rejects(host.destroy(request()),e=>e.code==='HOST_PHYSICAL_UNKNOWN');
  assert.deepEqual(f.calls.map(c=>c[0]),['instance']);
+});
+
+test('two separated exact NotFound observations per volume and ENI establish correlated absence',async()=>{
+ let clock=1000,terminated=false;const calls=[];
+ const ec2={scope:{accountId:expected.accountId,region:expected.region},
+  async describeInstances(){calls.push('instance');return instance('terminated');},
+  async describeVolumes(){calls.push('volume');
+   if(terminated)throw Object.assign(Error('absent'),{name:'InvalidVolume.NotFound',$metadata:{httpStatusCode:400,requestId:'vol-'+clock}});return volume();},
+  async describeNetworkInterfaces(){calls.push('eni');
+   if(terminated)throw Object.assign(Error('absent'),{name:'InvalidNetworkInterfaceID.NotFound',$metadata:{httpStatusCode:400,requestId:'eni-'+clock}});return eni();},
+  async terminateInstances(){calls.push('terminate');terminated=true;return ack();}};
+ const host=createEc2PhysicalTeardownPort({allocation,binding,hostIdentity,expected,caller,ec2,now:()=>clock,
+  pause:async ms=>{clock+=ms;},maxRounds:4,pollMs:5});
+ const resources=await host.destroy(request());
+ const observed=await host.observeAbsent({...request(),resources});
+ assert.equal(observed.instanceState,'terminated');assert.equal(observed.rootVolumeAbsent,true);
+ assert.equal(observed.networkInterfacesAbsent,true);assert.equal(observed.evidence.protocolVersion,1);
+ assert.ok(observed.evidence.resources.every(r=>r.observations.length>=2));
+ assert.ok(observed.evidence.resources.every(r=>r.observations.every(o=>o.absent===true)));
+});
+test('presence between observations invalidates the earlier absence sequence',async()=>{
+ let clock=1000,n=0,terminated=false;const calls=[];
+ const ec2={scope:{accountId:expected.accountId,region:expected.region},
+  async describeInstances(){return instance('terminated');},
+  async describeVolumes(){n++;
+   if(n===1)return volume();if(n===2)return volume('deleted');return volume('in-use');},
+  async describeNetworkInterfaces(){if(!terminated)return eni();
+   throw Object.assign(Error('absent'),{name:'InvalidNetworkInterfaceID.NotFound'});},
+  async terminateInstances(){terminated=true;return ack();}};
+ const host=createEc2PhysicalTeardownPort({allocation,binding,hostIdentity,expected,caller,ec2,now:()=>clock,
+  pause:async ms=>{clock+=ms;},maxRounds:2,pollMs:5});
+ const resources=await host.destroy(request());
+ await assert.rejects(host.observeAbsent({...request(),resources}),e=>e.code==='HOST_PHYSICAL_UNKNOWN');
 });

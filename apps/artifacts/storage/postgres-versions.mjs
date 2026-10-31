@@ -64,6 +64,59 @@ export function createPostgresArtifactVersions(options){const {pool,now,maxReque
    if(!rows.length)throw Object.assign(Error('ENOENT'),{code:'ENOENT'});if(rows.length!==1)fail('ARTIFACT_VERSION_CORRUPT');
    // rawVersion decodes the row and checks its relational tenant/conversation columns against the record.
    const record=await rawVersion(c,rows[0].version_id,life);if(record.version.binding.tenantId!==q.tenantId||record.version.binding.conversationId!==q.conversationId||record.version.object.objectId!==q.objectId)fail('ARTIFACT_VERSION_CORRUPT');await allowed(record,life);const {sql}=await verified(c,q.tenantId,record.version.artifactId,life);if(!sql.records.some(r=>same(r,record)))fail('ARTIFACT_PUBLICATION_PROJECTION_STALE');await allowed(record,life);return record.version.versionId;});}
+ /** The ONE committed browser-import version for this ORIGINAL run identity and exact filename, read-only.
+  * No recovery/repair, no projection rewrite and no publication write happens here: a stale or unavailable
+  * projection refuses. The legacy index reads by tenant/conversation/actor/run + filename + private source kind;
+  * a paged publication owner is searched through its verified snapshot/index and each candidate is checked with
+  * paged.ensure(...,{repair:false}) using the SAME verified read path as read(). */
+ async function findBrowserImport(value,signal){const q=data(own(value,['tenantId','conversationId','actorId','runId','filename']));
+  uuid(q.conversationId);uuid(q.runId);if(typeof q.tenantId!=='string'||!q.tenantId||typeof q.actorId!=='string'||!q.actorId)fail('ARTIFACT_STORAGE_INPUT');
+  if(typeof q.filename!=='string'||!q.filename)fail('ARTIFACT_STORAGE_INPUT');if(tenantId!==null&&q.tenantId!==tenantId)fail('ARTIFACT_STORAGE_INPUT');owner(q.tenantId);
+  return transaction(signal,async(c,life)=>{
+   const originalRun=record=>{const v=record.version;return v.binding.tenantId===q.tenantId&&v.binding.conversationId===q.conversationId&&
+    v.binding.actorId===q.actorId&&v.binding.runId===q.runId&&
+    record.spec.sourceKind==='meri.browser-download/1'&&record.spec.source?.kind==='browser-download';};
+   const identify=record=>originalRun(record)&&record.spec.originalFilename===q.filename;
+   let id;const pagedRoot=await paged.mode(life,q.tenantId);
+   if(pagedRoot){
+    // Canonical paged publication: bounded list pages through the owner's own verified `page` API; no recovery,
+    // no repair, no full-tenant materialisation. The position pins the read to one verified root.
+    const p=owner(q.tenantId),snap=await paged.snapshot(life,q.tenantId),scan=storageMethod(p,'page'),max=1024,pageSize=100;
+    const matches=[];let offset=0,exhausted=false;
+    while(offset<max){
+     const limit=Math.min(pageSize,max-offset);
+     const result=data(await life.run(sig=>scan({kind:'list',offset,limit,positionSha256:snap.positionSha256},sig)));own(result,['records','nextOffset'],['positionSha256','anchor']);
+     if(!Array.isArray(result.records)||result.records.length>limit)fail('ARTIFACT_PUBLICATION_CORRUPT');
+     for(const item of result.records){const record=item?.decision?.record??item?.record??item;
+      if(record&&originalRun(record)&&record.spec.originalFilename===undefined)fail('ARTIFACT_BROWSER_IMPORT_IDENTITY_UNKNOWN');
+      if(record&&identify(record))matches.push(record.version.versionId);}
+     if(matches.length>1)fail('ARTIFACT_VERSION_AMBIGUOUS');
+     if(result.nextOffset===null){exhausted=true;break;}
+     // A list page may contain only tombstoned heads and therefore no records, while its scan continues.
+     if(!Number.isSafeInteger(result.nextOffset)||result.nextOffset<=offset||result.nextOffset>offset+limit)fail('ARTIFACT_PUBLICATION_CORRUPT');
+     offset=result.nextOffset;
+    }
+    // A bounded prefix proves neither absence nor uniqueness. Preserve an unresolved recovery when more
+    // committed records remain; never free a reservation or acknowledge a possibly ambiguous publication.
+    if(!exhausted)fail('ARTIFACT_BROWSER_IMPORT_SCAN_INCOMPLETE');
+    if(!matches.length)throw Object.assign(Error('ENOENT'),{code:'ENOENT'});id=matches[0];
+    const verified=await paged.ensure(c,life,q.tenantId,id,{repair:false});
+    const record=verified.record;if(!identify(record))fail('ARTIFACT_VERSION_CORRUPT');
+    await allowed(record,life);await allowed(record,life);
+    return Object.freeze({versionId:record.version.versionId,artifactId:record.version.artifactId,sha256:record.version.object.sha256,
+     bytes:record.version.object.bytes,mimeType:record.version.mimeType,specSha256:record.specSha256,
+     acquiredAtMs:record.spec.source?.acquiredAtMs});
+   }
+   const rows=(await life.run(()=>c.query("SELECT version_id FROM meri_artifacts.versions WHERE tenant_id=$1 AND conversation_id=$2 AND record #>> '{version,binding,actorId}'=$3 AND record #>> '{version,binding,runId}'=$4 AND (record #>> '{spec,originalFilename}'=$5 OR record #>> '{spec,originalFilename}' IS NULL) AND record #>> '{spec,source,kind}'='browser-download' ORDER BY version_id LIMIT 2",[q.tenantId,q.conversationId,q.actorId,q.runId,q.filename]))).rows;life.check();
+   for(const row of rows){const candidate=await rawVersion(c,row.version_id,life);
+    if(originalRun(candidate)&&candidate.spec.originalFilename===undefined)fail('ARTIFACT_BROWSER_IMPORT_IDENTITY_UNKNOWN');}
+   if(!rows.length)throw Object.assign(Error('ENOENT'),{code:'ENOENT'});if(rows.length!==1)fail('ARTIFACT_VERSION_AMBIGUOUS');id=rows[0].version_id;
+   const record=await rawVersion(c,id,life);if(!identify(record))fail('ARTIFACT_VERSION_CORRUPT');
+   await allowed(record,life);const {sql}=await verified(c,q.tenantId,record.version.artifactId,life);if(!sql.records.some(r=>same(r,record)))fail('ARTIFACT_PUBLICATION_PROJECTION_STALE');await allowed(record,life);
+   return Object.freeze({versionId:record.version.versionId,artifactId:record.version.artifactId,sha256:record.version.object.sha256,
+    bytes:record.version.object.bytes,mimeType:record.version.mimeType,specSha256:record.specSha256,
+    acquiredAtMs:record.spec.source?.acquiredAtMs});});
+ }
  async function commit(value,signal,authority){const {expectedParentVersionId,...raw}=data(own(value,['version','spec','specSha256','requestSha256','inspection','expectedParentVersionId'],['assets'])),record=recordValue(raw),version=record.version,b=version.binding;
   if(tenantId!==null&&b.tenantId!==tenantId||version.parentVersionId!==expectedParentVersionId)fail('ARTIFACT_COMMIT_INPUT');if(expectedParentVersionId!==null)uuid(expectedParentVersionId);
   const publish=storageMethod(owner(b.tenantId),'publish');
@@ -135,5 +188,5 @@ export function createPostgresArtifactVersions(options){const {pool,now,maxReque
   return {artifactId,anchorVersionId:q.versionId,headVersionId:anchor.result.head.versionId,records,nextOffset:page.nextOffset,positionSha256:page.positionSha256};
  });}
  // readExclusive is metadata validation only, for the existing recovery exclusion before the serving fence opens.
- return Object.freeze({read:(value,signal)=>readValue(value,signal),readExclusive:(value,signal)=>readValue(value,signal,true),history,list,commit,findByObject,recoverExclusive,recoverTenant,publicationSnapshot,recoverVersion,recoverVersionsExclusive,recoverPage,listPage,historyPage});
+ return Object.freeze({read:(value,signal)=>readValue(value,signal),readExclusive:(value,signal)=>readValue(value,signal,true),history,list,commit,findByObject,findBrowserImport,recoverExclusive,recoverTenant,publicationSnapshot,recoverVersion,recoverVersionsExclusive,recoverPage,listPage,historyPage});
 }

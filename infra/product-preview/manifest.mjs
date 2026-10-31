@@ -70,11 +70,11 @@ function controlWebSearch(value){
 }
 function validate(value){
  const b=record(value,['account','region','enabled','materialDelivery','clusterArn','imageUri','controlTaskRoleArn','runtimeUser','network','sizing'],
-  ['executionRoleArn','executionRoleArns','logGroupName','logGroupNames','controlTargetGroupArn','controlPrivateTargetGroupArn','sourceCommit','controlWebSearch']);
+  ['executionRoleArn','executionRoleArns','logGroupName','logGroupNames','controlTargetGroupArn','controlPrivateTargetGroupArn','workerTaskRoleArn','sourceCommit','controlWebSearch']);
  if(b.account!==ACCOUNT||b.region!==REGION||b.enabled!==false||
     !/^arn:aws:ecs:us-east-1:967807252336:cluster\/[A-Za-z0-9_-]{1,255}$/u.test(b.clusterArn)||
     !new RegExp(`^${ACCOUNT}\\.dkr\\.ecr\\.${REGION}\\.amazonaws\\.com\\/[a-z0-9._/-]+@sha256:[a-f0-9]{64}$`).test(b.imageUri)||
-    !ROLE_ARN.test(b.controlTaskRoleArn)||
+    !ROLE_ARN.test(b.controlTaskRoleArn)||(b.workerTaskRoleArn!==undefined&&!ROLE_ARN.test(b.workerTaskRoleArn))||
     b.runtimeUser!=='1000:1000'||
     b.sourceCommit!==undefined&&!/^[a-f0-9]{40}$/u.test(b.sourceCommit))fail();
  perRole(b,'executionRoleArn','executionRoleArns',ROLE_ARN,b.controlTaskRoleArn);
@@ -128,7 +128,7 @@ function task(stack,b,role,port){
  const definition=new ecs.CfnTaskDefinition(stack,`${role}Task`,{family:`meri-product-preview-${name}`,networkMode:'awsvpc',requiresCompatibilities:['FARGATE'],
   cpu:String(size.cpu),memory:String(size.memoryMiB),ephemeralStorage:{sizeInGiB:size.ephemeralStorageGiB},
   runtimePlatform:{cpuArchitecture:'ARM64',operatingSystemFamily:'LINUX'},executionRoleArn:roleValue(b,'executionRoleArn','executionRoleArns',role),
-  ...(role==='control'?{taskRoleArn:b.controlTaskRoleArn}:{}),
+  ...(role==='control'?{taskRoleArn:b.controlTaskRoleArn}:role==='temporalWorker'&&b.workerTaskRoleArn!==undefined?{taskRoleArn:b.workerTaskRoleArn}:{}),
   volumes:[{name:'workspace'},{name:'tmp'},{name:'material'}],containerDefinitions:[init,c]});
  definition.cfnOptions.updateReplacePolicy=CfnDeletionPolicy.RETAIN;
  return definition;

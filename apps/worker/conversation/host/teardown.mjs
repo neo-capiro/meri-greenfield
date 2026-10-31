@@ -9,6 +9,7 @@ import {own,data} from '../../../../packages/contracts/commands-0.2/execution-bo
 import {createOperationLifetime} from '../../../../packages/runtime/operation-lifetime.mjs';
 import {browserPaths,disposeBrowserState} from '../browser/workspace.mjs';
 import {assertHostAllocation,assertHostRunBinding,assertD005HostIdentity} from './binding.mjs';
+import {nativeAbsenceRecord} from '../../../runtime/native-processing-host/lifecycle-contract.mjs';
 
 export const HOST_TEARDOWN_SCHEMA='meri-d005-host-teardown/1';
 export const HOST_PROCESS_ABSENCE_SCHEMA='meri-d005-process-absence/1';
@@ -45,7 +46,7 @@ function requestedResources(value,identity){
  * exact instance as terminated and its identified root volume and network interfaces as absent. */
 function physicallyAbsent(value,{allocation,binding,identity,resources,afterMs,nowMs}){
  if(!resources)return false;
- let r;try{r=own(data(value),['schema','allocationSha256','bindingSha256','hostIdentitySha256','instanceId','rootVolumeId','networkInterfaceIds','observedAtMs','instanceState','rootVolumeAbsent','networkInterfacesAbsent']);}
+ let r;try{r=own(data(value),['schema','allocationSha256','bindingSha256','hostIdentitySha256','instanceId','rootVolumeId','networkInterfaceIds','observedAtMs','instanceState','rootVolumeAbsent','networkInterfacesAbsent'],['evidence']);}
  catch{return false;}
  return r.schema===HOST_PHYSICAL_ABSENCE_SCHEMA&&r.allocationSha256===canonicalSha256(allocation)&&
   r.bindingSha256===canonicalSha256(binding)&&r.hostIdentitySha256===canonicalSha256(identity)&&
@@ -65,7 +66,86 @@ function physicallyAbsent(value,{allocation,binding,identity,resources,afterMs,n
 /** Explicit trusted hostMode:'browser-only' accepts only browser/process/host ports and requires the distinct
  * browser-host-descendants observation. It reports Bash as not applicable, never as remotely closed. All local
  * process, profile and exact physical resource proofs remain mandatory; legacy receipts keep their old shape. */
+
+/* An EXPLICIT allocation-owned native-processing teardown. It performs no browser/Bash cleanup,
+ * reports those concerns honestly as not-applicable, and verifies the native process scope plus the owned cgroup and
+ * network-namespace absence observed by the trusted native OS port. The legacy/browser code path below is untouched. */
+async function nativeTeardown({a,b,i,raw,now,localCleanupMs,hostCleanupMs,reason}){
+ const quiesce=method(raw.native,'close'),waitForExit=method(raw.processes,'waitForExit'),destroy=method(raw.host,'destroy'),
+  observeAbsent=method(raw.host,'observeAbsent'),observeNative=method(raw.native,'observe');
+ const startedAtMs=now();
+ const receipt={schema:HOST_TEARDOWN_SCHEMA,allocationSha256:canonicalSha256(a),bindingSha256:canonicalSha256(b),
+  hostIdentitySha256:canonicalSha256(i),reason,startedAtMs,browserEgress:'not-applicable',bashEgress:'not-applicable',
+  processScope:'native-processing-descendants',processes:'unknown',browserState:'not-applicable',
+  cgroup:'unknown',networkNamespace:'unknown',hostDestroy:'unknown',hostAbsence:'unknown',status:'UNKNOWN'};
+ const request=()=>({allocation:structuredClone(a),binding:structuredClone(b),hostIdentity:structuredClone(i)});
+ async function bounded(operation,accept,deadlineMs){
+  if(!Number.isSafeInteger(now())||now()>=deadlineMs)return false;
+  let life;try{life=createOperationLifetime({deadlineMs,now,errorFactory:code=>fault(code)});
+   return accept(await life.run(signal=>operation(signal)),now())===true;
+  }catch{return false;}finally{life?.close();}
+ }
+ const localDeadline=startedAtMs+localCleanupMs;
+ // The native owner QUIESCES first (stop new work, cancel and settle owned operations) inside the ONE local deadline.
+ const quiesced=await bounded(signal=>quiesce(request(),{signal}),r=>r?.closed===true,localDeadline);
+ const afterProcessMs=now();
+ // Recursive native descendants first; the cgroup/netns readback is only meaningful after the scope is empty.
+ if(quiesced&&await bounded(signal=>waitForExit({...request(),scope:'native-processing-descendants'},{signal}),
+  (r,checkedAt)=>processAbsent(r,{allocation:a,binding:b,identity:i,afterMs:afterProcessMs,
+   nowMs:checkedAt,processScope:'native-processing-descendants'}),localDeadline))receipt.processes='exited';
+ // Owned OS readback of the exact native compartment: absence of the cgroup and the network namespace, not a delete ACK.
+ const observedAt=now();
+ if(await bounded(signal=>observeNative(request(),{signal}),(r,checkedAt)=>{
+   // The canonical PURE validator enforces schema:'meri-d005-native-absence/1', scope:'native-processing-descendants',
+   // the exact closed shape (no extra fields) and removed/absent cgroup+namespace.
+   const record=nativeAbsenceRecord(r);
+   if(record===null)return false;
+   return record.allocationSha256===canonicalSha256(a)&&record.bindingSha256===canonicalSha256(b)&&
+    record.hostIdentitySha256===canonicalSha256(i)&&record.observedAtMs>=observedAt&&
+    record.observedAtMs<=checkedAt;},localDeadline)){
+  receipt.cgroup='removed';receipt.networkNamespace='removed';
+ }
+
+ const hostDeadline=now()+hostCleanupMs,hostRequestAtMs=now();
+ let resources=null,absenceRaw=null;
+ if(await bounded(signal=>destroy(request(),{signal}),r=>{resources=requestedResources(r,i);return resources!==null;},hostDeadline))
+  receipt.hostDestroy='requested';
+ if(await bounded(signal=>observeAbsent({...request(),...(resources?{resources:structuredClone(resources)}:{})},{signal}),
+  (r,checkedAt)=>{const ok=physicallyAbsent(r,{allocation:a,binding:b,identity:i,resources,afterMs:hostRequestAtMs,nowMs:checkedAt});
+   if(ok)absenceRaw=r;return ok;},
+  hostDeadline))receipt.hostAbsence='confirmed';
+ if(receipt.processes==='exited'&&receipt.cgroup==='removed'&&receipt.networkNamespace==='removed'&&
+  receipt.hostDestroy==='requested'&&receipt.hostAbsence==='confirmed')receipt.status='VERIFIED';
+ if(receipt.status==='VERIFIED'&&absenceRaw?.evidence?.protocolVersion===1){receipt.physicalEvidence=absenceRaw.evidence;
+  receipt.physicalProtocolVersion=1;}
+ const frozen=Object.freeze(receipt);
+ if(frozen.status!=='VERIFIED')throw fault('HOST_TEARDOWN_UNKNOWN',frozen);
+ return frozen;
+}
+
 export function createConversationHostTeardown({allocation,binding,hostIdentity,cwd,browserPolicySha256,ports,now=Date.now,localCleanupMs=30000,hostCleanupMs=30000,hostMode}={}){
+ if(allocation?.hostMode==='native-processing'){
+  if(hostMode!==undefined&&hostMode!=='native-processing')fail('HOST_TEARDOWN_CONFIGURATION');
+  let na,nb,ni,nraw;
+  try{na=assertHostAllocation(allocation);nb=assertHostRunBinding(na,binding);ni=assertD005HostIdentity(hostIdentity,nb,na);
+   nraw=own(ports,['native','processes','host']);
+   // Bind the required owners ONCE, at construction, exactly like the browser path: a later mutation of the caller's
+   // object cannot retarget the native or physical owners used by the settle.
+   nraw=Object.freeze({
+    native:Object.freeze({close:method(nraw.native,'close'),observe:method(nraw.native,'observe')}),
+    processes:Object.freeze({waitForExit:method(nraw.processes,'waitForExit')}),
+    host:Object.freeze({destroy:method(nraw.host,'destroy'),observeAbsent:method(nraw.host,'observeAbsent')})});}
+  catch{fail('HOST_TEARDOWN_CONFIGURATION');}
+  if(typeof now!=='function'||![localCleanupMs,hostCleanupMs].every(n=>Number.isSafeInteger(n)&&n>=4&&n<=MAX_PHASE_MS))
+   fail('HOST_TEARDOWN_CONFIGURATION');
+  let settledNative;
+  return Object.freeze({settle({reason}={}){
+   if(!['conversation-end','cancelled','failed','revoked','lease-expired'].includes(reason))
+    return Promise.reject(fault('HOST_TEARDOWN_CONFIGURATION'));
+   settledNative??=nativeTeardown({a:na,b:nb,i:ni,raw:nraw,now,localCleanupMs,hostCleanupMs,reason});
+   return settledNative;
+  }});
+ }
  let a,b,i,raw,browserOnly,processScope;
  try{a=assertHostAllocation(allocation);b=assertHostRunBinding(a,binding);i=assertD005HostIdentity(hostIdentity,b,a);
   const allocatedMode=a.hostMode??'conversation';if(hostMode!==undefined&&hostMode!==allocatedMode)fail('HOST_TEARDOWN_CONFIGURATION');

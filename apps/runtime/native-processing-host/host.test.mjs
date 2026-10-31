@@ -1,6 +1,7 @@
 /** Connected host tests: actual handler -> actual bootstrap serialization -> actual childMain -> real validators.
  *  Only native/TLS/FS/authority and scanner/extractor PROCESS effects are inert. */
 import test from 'node:test';
+import {makeInertHierarchyPort} from './test-hierarchy-port.mjs';
 import assert from 'node:assert/strict';
 import {createHash} from 'node:crypto';
 import {Readable,Writable} from 'node:stream';
@@ -10,7 +11,13 @@ import {childInvocation,assertHostMatch,openNativeProcessingHost} from './bootst
 import {uploadInspectionBody,UPLOAD_INSPECTION_WIRE_BYTES} from '../uploads/agentcore-contract.mjs';
 import {nativeUploadCustody} from '../uploads/native-host-contract.mjs';
 import {createUploadInspection} from '../../control/uploads/extraction.mjs';
-import {NATIVE_BODY_LIMIT} from './config.mjs';
+import {NATIVE_BODY_LIMIT,nativeProcessingConfig} from './config.mjs';
+
+// Synthetic low-level Linux ports: only the kernel effect is inert; the producer is the REAL one.
+const EVENTS0='populated 0'+String.fromCharCode(10)+'frozen 0'+String.fromCharCode(10);
+const lifecyclePortsFor=boot=>({async readBootId(){return boot;},
+ async openGroup(){return {async readEvents(){return EVENTS0;},async close(){}};}});
+const lifecycleLstat=()=>{throw Object.assign(Error('ENOENT'),{code:'ENOENT'});};
 
 const sha=bytes=>createHash('sha256').update(bytes).digest('hex');
 const BYTES=Buffer.from('# fixed inspection content\n');
@@ -18,6 +25,7 @@ const DECLARATION=Object.freeze({filename:'note.md',mimeType:'text/markdown',byt
 const IMAGE=`sha256:${'b'.repeat(64)}`;
 const REQUEST=Object.freeze({kind:'upload-inspection',requestId:'a'.repeat(64),imageDigest:IMAGE,
  declaration:DECLARATION,bytesBase64:BYTES.toString('base64'),inputSha256:sha(BYTES),deadlineMs:Date.now()+5000});
+const closedReceipt=()=>({exitCode:0,leaderClosed:true,groupAbsent:true,settlement:'closed'});
 const uuid=n=>`00000000-0000-4000-8000-${String(n).padStart(12,'0')}`;
 /** Real saved-upload custody projection built by the canonical helper (no placeholder ids). */
 const SCOPES=[{tenantId:uuid(1),kind:'private-user',resourceId:uuid(2),policyRevision:'p1'}];
@@ -41,15 +49,20 @@ const RAW_SETTINGS=Object.freeze({runtimeUid:1000,runtimeGid:1000,imageDigest:IM
  definitionsRoot:'/run/meri/upload-definitions',extractorPath:'/opt/meri/extract.py',scratchRoot:'/run/meri/upload-scratch',
  credentialPaths:['/proc/1/environ']});
 const HOST_ENV=Object.freeze({
+ MERI_NATIVE_PROCESSING_CONTROL_ADDRESS:'10.0.0.5',MERI_NATIVE_PROCESSING_CONTROL_PORT:'9443',
+ MERI_NATIVE_PROCESSING_CONTROL_SERVER_NAME:'control.meri.internal',
+ MERI_NATIVE_PROCESSING_CONTROL_FINGERPRINT:'d'.repeat(64),MERI_NATIVE_PROCESSING_POLICY_SHA256:'f'.repeat(64),
  MERI_NATIVE_PROCESSING_PORT:'9443',MERI_NATIVE_PROCESSING_ADDRESS:'127.0.0.1',
  MERI_NATIVE_PROCESSING_TLS_KEY:'/run/meri/tls.key',MERI_NATIVE_PROCESSING_TLS_CERT:'/run/meri/tls.crt',
- MERI_NATIVE_PROCESSING_TLS_CA:'/run/meri/ca.crt',MERI_NATIVE_PROCESSING_PEER_SAN:'control.meri.internal',
+ MERI_NATIVE_PROCESSING_TLS_CA:'/run/meri/ca.crt',
+ MERI_NATIVE_PROCESSING_CONTROL_CLIENT_KEY:'/run/meri/client.key',MERI_NATIVE_PROCESSING_CONTROL_CLIENT_CERT:'/run/meri/client.crt',
+ MERI_NATIVE_PROCESSING_CONTROL_CA:'/run/meri/control-ca.crt',MERI_NATIVE_PROCESSING_PEER_SAN:'control.meri.internal',
  MERI_NATIVE_PROCESSING_PEER_FINGERPRINT:'a'.repeat(64),MERI_NATIVE_PROCESSING_PEER_MAX_LIFETIME_MS:'900000',
  MERI_NATIVE_PROCESSING_PEER_NOT_AFTER_MS:String(Date.now()+600000),
  MERI_NATIVE_PROCESSING_IMAGE_DIGEST:IMAGE,MERI_NATIVE_PROCESSING_HOST_ID:HOST_ID,
  MERI_NATIVE_PROCESSING_GENERATION:'3',MERI_NATIVE_PROCESSING_CONVERSATION_ID:CONV,
  MERI_NATIVE_PROCESSING_TENANT_ID:TENANT,MERI_NATIVE_PROCESSING_INSTANCE_ID:INSTANCE,
- MERI_NATIVE_PROCESSING_BOOT_ID:BOOT,MERI_NATIVE_PROCESSING_HOST_MODE:'native-processing',
+ MERI_NATIVE_PROCESSING_BOOT_ID:BOOT,MERI_NATIVE_PROCESSING_HOST_MODE:'native-processing',MERI_NATIVE_PROCESSING_ORIGINAL_BINDING:JSON.stringify(BINDING),
  MERI_NATIVE_PROCESSING_LEASE_DEADLINE_MS:String(LEASE),
  MERI_NATIVE_PROCESSING_CPU_QUOTA_US:'50000',MERI_NATIVE_PROCESSING_CPU_PERIOD_US:'100000',
  MERI_NATIVE_PROCESSING_MEMORY_BYTES:'268435456',MERI_NATIVE_PROCESSING_PIDS_MAX:'16',
@@ -110,11 +123,11 @@ function handlerFor({peer=true,custody=true,runner,complete=true,lateSetup=null,
  const handler=createInspectionHandler({
   authenticate:async()=>{calls.push('authenticate');return {verified:peer};},
   verifyCustody:async()=>{calls.push('custody');return {authorized:custody,allocation:ALLOCATION,binding:BINDING,
-    hostIdentity:IDENTITY,currentness:{readCurrent:async()=>({})}};},
+    hostIdentity:IDENTITY,currentness:{policySha256:'f'.repeat(64),maxFreshMs:1000,readCurrent:async({allocation,binding})=>({allocation,binding,policySha256:'f'.repeat(64),phase:'active',checkedAtMs:Date.now(),currentUntilMs:Date.now()+500})}};},
   openHost:async input=>{
    calls.push('open');
    if(lateSetup)return lateSetup(input);
-   return openNativeProcessingHost({config:CONFIG,...input,
+   return openNativeProcessingHost({config:CONFIG,hierarchyPort:makeInertHierarchyPort({boot:CONFIG.allocation.bootId,existingHost:true}),hierarchyPort:makeInertHierarchyPort({boot:CONFIG.allocation.bootId,existingHost:true}),...input,
      openCompartment:async()=>({close:async()=>({closed:true})}),
      openPlacement:async args=>({run:runner.run,
        close:async()=>({closed:true})})});
@@ -238,9 +251,12 @@ test('the body bound derives from the canonical inspection wire limit, not an in
 
 test('partial setup failure closes the compartment it opened and reports the unwind truthfully', async () => {
   let closed=0;
-  const error=await openNativeProcessingHost({config:CONFIG,allocation:ALLOCATION,binding:BINDING,hostIdentity:IDENTITY,
-   authority:{readCurrent:async()=>({})},openCompartment:async()=>({close:async()=>{closed+=1;return {closed:true};}}),
-   openPlacement:async()=>{throw Object.assign(Error('HOST_CGROUP_OCCUPIED'),{code:'HOST_CGROUP_OCCUPIED'});}})
+  const error=await openNativeProcessingHost({config:CONFIG,hierarchyPort:makeInertHierarchyPort({boot:CONFIG.allocation.bootId,existingHost:true}),allocation:ALLOCATION,binding:BINDING,hostIdentity:IDENTITY,
+   authority:{policySha256:'f'.repeat(64),maxFreshMs:1000,readCurrent:async({allocation,binding})=>({allocation,binding,policySha256:'f'.repeat(64),phase:'active',checkedAtMs:Date.now(),currentUntilMs:Date.now()+500})},openCompartment:async()=>({close:async()=>{closed+=1;return {closed:true};}}),
+   // Truthful low-level evidence: the real finite-leaf/network unwind reports its own disposition. A placement failure with
+   // NO such evidence stays unknown (covered separately), so this fixture must carry the proof rather than the rule bend.
+   openPlacement:async()=>{throw Object.assign(Error('HOST_CGROUP_OCCUPIED'),{code:'HOST_CGROUP_OCCUPIED',
+    partialCleanup:'removed'});}})
    .then(()=>null,e=>e);
   assert.equal(error?.code,'HOST_CGROUP_OCCUPIED');
   assert.equal(error?.partialCleanup,'removed');
@@ -253,7 +269,7 @@ test('cleanup unknown is never reported as a successful inspection', async () =>
   const handlerLeaky=createInspectionHandler({
    authenticate:async()=>({verified:true}),
    verifyCustody:async()=>({authorized:true,allocation:ALLOCATION,binding:BINDING,hostIdentity:IDENTITY,
-     currentness:{readCurrent:async()=>({})}}),
+     currentness:{policySha256:'f'.repeat(64),maxFreshMs:1000,readCurrent:async({allocation,binding})=>({allocation,binding,policySha256:'f'.repeat(64),phase:'active',checkedAtMs:Date.now(),currentUntilMs:Date.now()+500})}}),
    openHost:async()=>({runRequest:async()=>runner.run('x',[],{input:Buffer.from(JSON.stringify({settings:RAW_SETTINGS,
      request:REQUEST,deadlineMs:Date.now()+5000}))}),close:async()=>({closed:false,code:'NATIVE_PROCESSING_CLEANUP_UNKNOWN'})}),
    readBody:async()=>Buffer.from(JSON.stringify({schema:NATIVE_INSPECTION_SCHEMA,allocation:ALLOCATION,hostIdentity:IDENTITY,
@@ -265,11 +281,11 @@ test('cleanup unknown is never reported as a successful inspection', async () =>
   assert.equal(JSON.parse(r.body).error,'NATIVE_INSPECTION_CLEANUP_UNKNOWN');
 });
 
-test('STARTUP: readiness evaluates without a ReferenceError and names the pending canonical join', async () => {
+test('STARTUP: readiness evaluates without a ReferenceError and names any missing protected join', async () => {
  const {nativeProcessingReadiness}=await import('./entrypoint.mjs');
  const readiness=nativeProcessingReadiness({config:{},verifyCustody:undefined});
  assert.equal(readiness.ready,false);
- assert.deepEqual(readiness.missing,['canonical.custody:pending-parent']);
+ assert.deepEqual(readiness.missing,['canonical.currentness:endpoint']);
  assert.equal(readiness.endpoint,NATIVE_INSPECTION_PATH);
 });
 
@@ -343,20 +359,25 @@ function streamRequest({body, complete=true, url=NATIVE_INSPECTION_PATH}={}) {
 const ENVELOPE=()=>({schema:NATIVE_INSPECTION_SCHEMA,allocation:ALLOCATION,hostIdentity:IDENTITY,binding:BINDING,
  custody:SAVED_CUSTODY,request:{...REQUEST,deadlineMs:Date.now()+5000}});
 const SCOPED_CUSTODY={authorized:true,allocation:ALLOCATION,binding:BINDING,hostIdentity:IDENTITY,
- currentness:{readCurrent:async()=>({})}};
+ currentness:{policySha256:'f'.repeat(64),maxFreshMs:1000,readCurrent:async({allocation,binding})=>({allocation,binding,policySha256:'f'.repeat(64),phase:'active',checkedAtMs:Date.now(),currentUntilMs:Date.now()+500})}};
 
 test('ENTRYPOINT SUCCESS: inert server factory wiring drives the real handler through bootstrap+childMain', async () => {
  const {startNativeProcessingHost}=await import('./entrypoint.mjs');
  const runner=realChildRunner();
  let captured=null,options=null;
- const serverFactory=(opts,handler)=>{options=opts;captured=handler;
+ 
+// Synthetic low-level Linux ports: only the kernel effect is inert; the producer is the REAL one.
+const lifecyclePortsFor=boot=>({async readBootId(){return boot;},
+ async openGroup(){return {async readEvents(){return 'populated 0\nfrozen 0\n';},async close(){}};}});
+const lifecycleLstat=()=>{throw Object.assign(Error('ENOENT'),{code:'ENOENT'});};
+const serverFactory=(opts,handler)=>{options=opts;captured=handler;
   return {once(){},listen(_port,_addr,cb){cb();},close(cb){cb?.();}};};
- const openHost=async input=>openNativeProcessingHost({config:CONFIG,...input,
+ const openHost=async input=>openNativeProcessingHost({config:CONFIG,hierarchyPort:makeInertHierarchyPort({boot:CONFIG.allocation.bootId,existingHost:true}),...input,
   openCompartment:async()=>({close:async()=>({closed:true})}),
   openPlacement:async()=>({run:runner.run,close:async()=>({closed:true})})});
- const started=await startNativeProcessingHost({env:HOST_ENV,verifyCustody:async()=>SCOPED_CUSTODY,
+ const started=await startNativeProcessingHost({env:HOST_ENV,hierarchyPort:makeInertHierarchyPort(),lifecyclePorts:lifecyclePortsFor(BOOT),lifecycleLstat,verifyCustody:async()=>SCOPED_CUSTODY,
   openHost,serverFactory,authenticatePeer:async()=>({verified:true,notAfterMs:Date.now()+60000}),
-  definitionsOwner:null,readFile:()=>Buffer.from('-----BEGIN-----')});
+  definitionsOwner:null,definitionsRun:async()=>({stdout:Buffer.alloc(0),receipt:closedReceipt()}),readFile:()=>Buffer.from('-----BEGIN-----')});
  assert.equal(started.started,true);
  assert.equal(options.minVersion,'TLSv1.3');
  assert.equal(options.maxVersion,'TLSv1.3');
@@ -368,7 +389,9 @@ test('ENTRYPOINT SUCCESS: inert server factory wiring drives the real handler th
  assert.equal(out.status,200,`unexpected ${out.status} ${out.body}`);
  assert.equal(JSON.parse(out.body).requestId,REQUEST.requestId);
  assert.equal(runner.calls.length,1);
- assert.deepEqual(await started.close(),{closed:true,pending:0});
+ const closed=await started.close();
+ assert.equal(closed.closed,true);
+ assert.ok(Number.isSafeInteger(closed.quiescedAtMs),'a truthful quiesced timestamp is returned');
 });
 
 test('ENTRYPOINT SHUTDOWN: an unresolved setup keeps close false until its owner settles', async () => {
@@ -377,8 +400,10 @@ test('ENTRYPOINT SHUTDOWN: an unresolved setup keeps close false until its owner
  const setupEntered=new Promise(resolve=>{entered=resolve;});
  const serverFactory=(_opts,handler)=>{captured=handler;
   return {once(){},listen(_p,_a,cb){cb();},close(cb){cb?.();}};};
- const started=await startNativeProcessingHost({env:HOST_ENV,verifyCustody:async()=>SCOPED_CUSTODY,
-  serverFactory,authenticatePeer:async()=>({verified:true,notAfterMs:Date.now()+60000}),definitionsOwner:null,
+ const baseConfig=nativeProcessingConfig({env:HOST_ENV});
+ const boundedConfig={...baseConfig,limits:{...baseConfig.limits,deadlineMaxMs:150}};
+ const started=await startNativeProcessingHost({hierarchyPort:makeInertHierarchyPort(),config:boundedConfig,lifecyclePorts:lifecyclePortsFor(BOOT),lifecycleLstat,verifyCustody:async()=>SCOPED_CUSTODY,
+  serverFactory,authenticatePeer:async()=>({verified:true,notAfterMs:Date.now()+60000}),definitionsOwner:null,definitionsRun:async()=>({stdout:Buffer.alloc(0),receipt:closedReceipt()}),
   readFile:()=>Buffer.from('x'),
   openHost:async()=>{entered();return new Promise(resolve=>{resolveSetup=()=>resolve({runRequest:async()=>({}),
    close:async()=>{closedOwners+=1;return {closed:true};}});});}});
@@ -588,13 +613,13 @@ test('BOOTSTRAP: a definition pin is held until the placement/compartment close 
   return {databaseDirectory:'/run/meri/upload-definitions/snapshots/x/database',sha256:'b'.repeat(64),
    publishedAtMs:Date.now()-1,files:[],release(args){pinReleased=args;return {released:args.completed===true};}};}};
  let placementClosed=false;
- const host=await openNativeProcessingHost({config:CONFIG,allocation:ALLOCATION,binding:BINDING,hostIdentity:IDENTITY,
-  authority:{readCurrent:async()=>({})},definitionsOwner,
+ const host=await openNativeProcessingHost({config:CONFIG,hierarchyPort:makeInertHierarchyPort({boot:CONFIG.allocation.bootId,existingHost:true}),allocation:ALLOCATION,binding:BINDING,hostIdentity:IDENTITY,
+  authority:{policySha256:'f'.repeat(64),maxFreshMs:1000,readCurrent:async({allocation,binding})=>({allocation,binding,policySha256:'f'.repeat(64),phase:'active',checkedAtMs:Date.now(),currentUntilMs:Date.now()+500})},definitionsOwner,
   openCompartment:async()=>({close:async()=>({closed:true})}),
   openPlacement:async()=>({run:async(command,args,{input})=>{
     const parsed=JSON.parse(Buffer.from(input).toString('utf8'));
     assert.equal(parsed.settings.snapshot.sha256,'b'.repeat(64),'the pin descriptor crosses on closed stdin');
-    return {stdout:Buffer.from('{}'),receipt:{exitCode:0}};},
+    return {stdout:Buffer.from('{}'),receipt:closedReceipt()};},
    close:async()=>{placementClosed=true;return {closed:true};}})});
  await host.runRequest({requestDocument:REQUEST,deadlineMs:Date.now()+2000});
  assert.equal(placementClosed,false,'the pin is not released before the host closes');
@@ -607,10 +632,10 @@ test('BOOTSTRAP: a pin settling after close is released and never dispatched', a
  let releaseArgs=null,resolvePin=null;
  const definitionsOwner={pin:()=>new Promise(resolve=>{resolvePin=resolve;})};
  let ran=0;
- const host=await openNativeProcessingHost({config:CONFIG,allocation:ALLOCATION,binding:BINDING,hostIdentity:IDENTITY,
-  authority:{readCurrent:async()=>({})},definitionsOwner,
+ const host=await openNativeProcessingHost({config:CONFIG,hierarchyPort:makeInertHierarchyPort({boot:CONFIG.allocation.bootId,existingHost:true}),allocation:ALLOCATION,binding:BINDING,hostIdentity:IDENTITY,
+  authority:{policySha256:'f'.repeat(64),maxFreshMs:1000,readCurrent:async({allocation,binding})=>({allocation,binding,policySha256:'f'.repeat(64),phase:'active',checkedAtMs:Date.now(),currentUntilMs:Date.now()+500})},definitionsOwner,
   openCompartment:async()=>({close:async()=>({closed:true})}),
-  openPlacement:async()=>({run:async()=>{ran+=1;return {stdout:Buffer.from('{}'),receipt:{exitCode:0}};},
+  openPlacement:async()=>({run:async()=>{ran+=1;return {stdout:Buffer.from('{}'),receipt:closedReceipt()};},
    close:async()=>({closed:true})})});
  const call=host.runRequest({requestDocument:REQUEST,deadlineMs:Date.now()+2000}).catch(e=>e);
  await new Promise(resolve=>setImmediate(resolve));
@@ -631,10 +656,10 @@ test('BOOTSTRAP: a release refusal keeps the host unknown and retains the token'
  let refusal=0;
  const definitionsOwner={async pin(){return {databaseDirectory:'/d',sha256:'d'.repeat(64),publishedAtMs:1,files:[],
   release(){refusal+=1;return {released:false};}};}};
- const host=await openNativeProcessingHost({config:CONFIG,allocation:ALLOCATION,binding:BINDING,hostIdentity:IDENTITY,
-  authority:{readCurrent:async()=>({})},definitionsOwner,
+ const host=await openNativeProcessingHost({config:CONFIG,hierarchyPort:makeInertHierarchyPort({boot:CONFIG.allocation.bootId,existingHost:true}),allocation:ALLOCATION,binding:BINDING,hostIdentity:IDENTITY,
+  authority:{policySha256:'f'.repeat(64),maxFreshMs:1000,readCurrent:async({allocation,binding})=>({allocation,binding,policySha256:'f'.repeat(64),phase:'active',checkedAtMs:Date.now(),currentUntilMs:Date.now()+500})},definitionsOwner,
   openCompartment:async()=>({close:async()=>({closed:true})}),
-  openPlacement:async()=>({run:async()=>({stdout:Buffer.from('{}'),receipt:{exitCode:0}}),close:async()=>({closed:true})})});
+  openPlacement:async()=>({run:async()=>({stdout:Buffer.from('{}'),receipt:closedReceipt()}),close:async()=>({closed:true})})});
  await host.runRequest({requestDocument:REQUEST,deadlineMs:Date.now()+2000});
  const closed=await host.close();
  assert.equal(closed.closed,false,'a refused release is not closure');
@@ -645,10 +670,10 @@ test('BOOTSTRAP: a successful run with unknown placement closure retains its pin
  let released=0;
  const definitionsOwner={async pin(){return {databaseDirectory:'/d',sha256:'e'.repeat(64),publishedAtMs:1,files:[],
   release(){released+=1;return {released:true};}};}};
- const host=await openNativeProcessingHost({config:CONFIG,allocation:ALLOCATION,binding:BINDING,hostIdentity:IDENTITY,
-  authority:{readCurrent:async()=>({})},definitionsOwner,
+ const host=await openNativeProcessingHost({config:CONFIG,hierarchyPort:makeInertHierarchyPort({boot:CONFIG.allocation.bootId,existingHost:true}),allocation:ALLOCATION,binding:BINDING,hostIdentity:IDENTITY,
+  authority:{policySha256:'f'.repeat(64),maxFreshMs:1000,readCurrent:async({allocation,binding})=>({allocation,binding,policySha256:'f'.repeat(64),phase:'active',checkedAtMs:Date.now(),currentUntilMs:Date.now()+500})},definitionsOwner,
   openCompartment:async()=>({close:async()=>({closed:true})}),
-  openPlacement:async()=>({run:async()=>({stdout:Buffer.from('{}'),receipt:{exitCode:0}}),
+  openPlacement:async()=>({run:async()=>({stdout:Buffer.from('{}'),receipt:closedReceipt()}),
    close:async()=>({closed:false,code:'HOST_CGROUP_CLEANUP_UNKNOWN'})})});
  await host.runRequest({requestDocument:REQUEST,deadlineMs:Date.now()+2000});
  const closed=await host.close();
@@ -660,8 +685,8 @@ test('BOOTSTRAP: a failed run with PROVEN closure releases its pin as finished',
  const seen=[];
  const definitionsOwner={async pin(){return {databaseDirectory:'/d',sha256:'f'.repeat(64),publishedAtMs:1,files:[],
   release(args){seen.push(args);return {released:true};}};}};
- const host=await openNativeProcessingHost({config:CONFIG,allocation:ALLOCATION,binding:BINDING,hostIdentity:IDENTITY,
-  authority:{readCurrent:async()=>({})},definitionsOwner,
+ const host=await openNativeProcessingHost({config:CONFIG,hierarchyPort:makeInertHierarchyPort({boot:CONFIG.allocation.bootId,existingHost:true}),allocation:ALLOCATION,binding:BINDING,hostIdentity:IDENTITY,
+  authority:{policySha256:'f'.repeat(64),maxFreshMs:1000,readCurrent:async({allocation,binding})=>({allocation,binding,policySha256:'f'.repeat(64),phase:'active',checkedAtMs:Date.now(),currentUntilMs:Date.now()+500})},definitionsOwner,
   openCompartment:async()=>({close:async()=>({closed:true})}),
   openPlacement:async()=>({run:async()=>{throw Object.assign(Error('child failed'),{code:'HOST_LAUNCH_FAILED'});},
    close:async()=>({closed:true})})});
@@ -676,8 +701,8 @@ test('BOOTSTRAP: concurrent calls release their OWN exact tokens', async () => {
  let n=0;
  const definitionsOwner={async pin(){const id=++n;return {databaseDirectory:`/d${id}`,sha256:String(id).repeat(64).slice(0,64),
   publishedAtMs:1,files:[],release(args){seen.push({id,...args});return {released:true};}};}};
- const host=await openNativeProcessingHost({config:CONFIG,allocation:ALLOCATION,binding:BINDING,hostIdentity:IDENTITY,
-  authority:{readCurrent:async()=>({})},definitionsOwner,
+ const host=await openNativeProcessingHost({config:CONFIG,hierarchyPort:makeInertHierarchyPort({boot:CONFIG.allocation.bootId,existingHost:true}),allocation:ALLOCATION,binding:BINDING,hostIdentity:IDENTITY,
+  authority:{policySha256:'f'.repeat(64),maxFreshMs:1000,readCurrent:async({allocation,binding})=>({allocation,binding,policySha256:'f'.repeat(64),phase:'active',checkedAtMs:Date.now(),currentUntilMs:Date.now()+500})},definitionsOwner,
   openCompartment:async()=>({close:async()=>({closed:true})}),
   openPlacement:async()=>({run:async(command,args,{input})=>{const doc=JSON.parse(Buffer.from(input).toString('utf8'));
     const id=doc.settings.snapshot.databaseDirectory;
@@ -718,8 +743,8 @@ test('CONNECTED: a DEFERRED setup rejection after expiry answers within deadline
 test('BOOTSTRAP: an unsettled acquisition is represented, never reported as proven closure', async () => {
  let acquire=null,entered=null,released=0,dispatched=0;
  const ready=new Promise(resolve=>{entered=resolve;});
- const host=await openNativeProcessingHost({config:CONFIG,allocation:ALLOCATION,binding:BINDING,hostIdentity:IDENTITY,
-  authority:{readCurrent:async()=>({})},
+ const host=await openNativeProcessingHost({config:CONFIG,hierarchyPort:makeInertHierarchyPort({boot:CONFIG.allocation.bootId,existingHost:true}),allocation:ALLOCATION,binding:BINDING,hostIdentity:IDENTITY,
+  authority:{policySha256:'f'.repeat(64),maxFreshMs:1000,readCurrent:async({allocation,binding})=>({allocation,binding,policySha256:'f'.repeat(64),phase:'active',checkedAtMs:Date.now(),currentUntilMs:Date.now()+500})},
   definitionsOwner:{pin:()=>{entered();return new Promise(resolve=>{acquire=()=>resolve(
    {databaseDirectory:'/snapshot/database',sha256:'a'.repeat(64),publishedAtMs:Date.now(),files:[],
     release(){released+=1;return {released:false};}});});}},
@@ -741,8 +766,8 @@ test('BOOTSTRAP: an unsettled acquisition is represented, never reported as prov
 test('BOOTSTRAP: a late DEFINITIVE release lets a subsequent close report closure', async () => {
  let acquire=null,entered=null,released=0;
  const ready=new Promise(resolve=>{entered=resolve;});
- const host=await openNativeProcessingHost({config:CONFIG,allocation:ALLOCATION,binding:BINDING,hostIdentity:IDENTITY,
-  authority:{readCurrent:async()=>({})},
+ const host=await openNativeProcessingHost({config:CONFIG,hierarchyPort:makeInertHierarchyPort({boot:CONFIG.allocation.bootId,existingHost:true}),allocation:ALLOCATION,binding:BINDING,hostIdentity:IDENTITY,
+  authority:{policySha256:'f'.repeat(64),maxFreshMs:1000,readCurrent:async({allocation,binding})=>({allocation,binding,policySha256:'f'.repeat(64),phase:'active',checkedAtMs:Date.now(),currentUntilMs:Date.now()+500})},
   definitionsOwner:{pin:()=>{entered();return new Promise(resolve=>{acquire=()=>resolve(
    {databaseDirectory:'/snapshot/database',sha256:'a'.repeat(64),publishedAtMs:Date.now(),files:[],
     release(){released+=1;return {released:true};}});});}},

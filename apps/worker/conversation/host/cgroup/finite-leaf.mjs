@@ -13,7 +13,7 @@
 import * as realFs from 'node:fs';
 import {posix} from 'node:path';
 import {canonicalSha256} from '../../../../../packages/contracts/validate.mjs';
-import {assertHostAllocation,assertHostRunBinding,assertD005HostIdentity,assertBrowserHostCurrent} from '../binding.mjs';
+import {assertHostAllocation,assertHostRunBinding,assertD005HostIdentity,assertCurrentForAllocation} from '../binding.mjs';
 
 export const FINITE_CGROUP_SCHEMA='meri-d005-finite-cgroup/1';
 export const HIERARCHY_SCHEMA='meri-d005-processing-hierarchy/1';
@@ -87,7 +87,9 @@ export async function createFiniteCgroupLeaf({allocation,binding,hostIdentity,au
  let current;
  try{
   current=await auth.readCurrent({allocation:structuredClone(a),binding:structuredClone(b),policySha256:auth.policySha256,signal});
-  assertBrowserHostCurrent({allocation:a,binding:b,policySha256:auth.policySha256,current,nowMs:now(),
+  // The purpose selector owns both paths: native-processing uses the native currentness validator, legacy/browser keep
+  // their existing browser-only/generic validator. A browser wrapper can never accept a native allocation.
+  assertCurrentForAllocation(a)({allocation:a,binding:b,policySha256:auth.policySha256,current,nowMs:now(),
    maxFreshMs:auth.maxFreshMs});
  }catch{fail('HOST_CGROUP_CURRENTNESS_REFUSED');}
  if(signal?.aborted)fail('HOST_CGROUP_CURRENTNESS_REFUSED');
@@ -131,7 +133,15 @@ export async function createFiniteCgroupLeaf({allocation,binding,hostIdentity,au
    // the removal can be read back. An adopted/foreign/occupied group is never removed here.
    const members=read(fs,`${absolute}/cgroup.procs`);
    let partialCleanup='unknown';
-   if(members!==null&&members.trim()===''){try{fs.rmdirSync(absolute);partialCleanup='removed';}catch{partialCleanup='unknown';}}
+   if(members!==null&&members.trim()===''){
+    let removed=false;
+    try{fs.rmdirSync(absolute);removed=true;}catch{removed=false;}
+    // Only a successful rmdir followed by ENOENT on the EXACT owned path proves removal.
+    if(removed){
+     let absent;try{fs.lstatSync(absolute);absent=false;}catch(e){absent=e?.code==='ENOENT';}
+     partialCleanup=absent?'removed':'unknown';
+    }else partialCleanup='unknown';
+   }
    else if(members===null)partialCleanup='unknown';
    else partialCleanup='occupied';
    error.partialCleanup=partialCleanup;
@@ -186,5 +196,10 @@ export function releaseFiniteCgroupLeaf({leaf,fs=realFs}={}){
  if(members===null)return Object.freeze({released:false,code:'HOST_CGROUP_READBACK_REFUSED'});
  if(members.trim()!=='')return Object.freeze({released:false,code:'HOST_CGROUP_OCCUPIED'});
  try{fs.rmdirSync(leaf.absolutePath);}catch{return Object.freeze({released:false,code:'HOST_CGROUP_CLEANUP_UNKNOWN'});}
+ // rmdir acknowledgement is not absence: only ENOENT on the EXACT owned leaf proves it is gone.
+ let absent;
+ try{fs.lstatSync(leaf.absolutePath);absent=false;}
+ catch(error){absent=error?.code==='ENOENT';}
+ if(!absent)return Object.freeze({released:false,code:'HOST_CGROUP_CLEANUP_UNKNOWN'});
  return Object.freeze({released:true,relativePath:leaf.relativePath});
 }

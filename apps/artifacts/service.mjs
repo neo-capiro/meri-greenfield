@@ -1,5 +1,6 @@
 import {createHash} from 'node:crypto';
 import {createOperationLifetime} from '../../packages/runtime/operation-lifetime.mjs';
+import {data,own} from '../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {recoverArtifact,recoverOfficeEdit} from './recovery.mjs';
 import {readArtifactLibrary} from './library.mjs';
 import {readPagedArtifactHistory} from './history-page.mjs';
@@ -10,6 +11,7 @@ import {inspectOfficeEdit} from './edit-sessions/inspect-office.mjs';
 // revision and this write identify exactly the same references instead of two walks that can drift.
 import {referencedAssetIds} from '../control/intents/document-revision.mjs';
 import {ARTIFACT_MIME_TYPES as mime,artifactFilename as filenameFor} from '../../packages/contracts/artifacts-0.2/artifact-formats.mjs';
+import {BROWSER_IMPORT_KIND,BROWSER_IMPORT_OPERATION,browserImportSource,browserImportInspection,browserImportRequestSha256,isBrowserImport} from '../../packages/contracts/browser-import.mjs';
 const sha=bytes=>createHash('sha256').update(bytes).digest('hex');
 const fail=code=>{throw Object.assign(new Error(code),{code});};
 const closed=(value,keys)=>{if(!value||Array.isArray(value)||Object.keys(value).sort().join()!==keys.sort().join())fail('ARTIFACT_PORT_SHAPE');};
@@ -173,6 +175,75 @@ export function createArtifactService({validators:v,authorize,versions,objects,e
       return {artifactId:result.artifactId,anchorVersionId:query.versionId,headVersionId:result.headVersionId,versions:page,nextCursor:nextOffset<records.length?cursorAt(nextOffset):null};
     }catch(error){error.lifetime=life.close();throw error;}finally{life.close();}
   }
+  /** One downloaded file, published immutably through the same authority, retention, object custody, version CAS
+   * and publication journal as a generated artifact — without pretending a renderer or SDK produced it. The
+   * identity is derived from the caller's idempotency key, so a retried or restarted attempt reconciles the
+   * SAME version instead of publishing a second one. */
+  const IMPORT_MAX_BYTES=16777216;
+  function importIds(key){
+    const seed=role=>{const h=createHash('sha256').update(`meri-browser-import:${role}:${key}`).digest('hex'),c=h.slice(0,32).split('');
+      c[12]='4';c[16]=((parseInt(c[16],16)&0x3)|0x8).toString(16);const x=c.join('');
+      return `${x.slice(0,8)}-${x.slice(8,12)}-${x.slice(12,16)}-${x.slice(16,20)}-${x.slice(20)}`;};
+    return {artifactId:seed('artifact'),versionId:seed('version'),objectId:seed('object')};
+  }
+  async function ingest(requestValue,contextValue,{signal}={}){
+    // Bytes are kept out of the generic snapshot: a Buffer stays a Buffer and is re-hashed here.
+    if(!requestValue||typeof requestValue!=='object'||!Buffer.isBuffer(requestValue.bytes))fail('BROWSER_IMPORT_BYTES');
+    const raw=own(requestValue,['binding','scopes','filename','format','mimeType','bytes','sha256','idempotencyKey','source']);
+    const context=v.context(contextValue);
+    const bytes=Buffer.from(raw.bytes),max=Math.min(context.maxBytes??IMPORT_MAX_BYTES,IMPORT_MAX_BYTES);
+    if(!bytes.length||bytes.length>max)fail('ARTIFACT_OUTPUT_LIMIT');
+    if(typeof raw.mimeType!=='string'||raw.mimeType!==mime[raw.format])fail('BROWSER_IMPORT_FORMAT');
+    if(typeof raw.sha256!=='string'||raw.sha256!==sha(bytes))fail('BROWSER_IMPORT_HASH');
+    if(!same(raw.binding,context.binding)||!same(raw.scopes,context.scopes))fail('BROWSER_IMPORT_CONTEXT');
+    const title=raw.filename.slice(0,-(String(raw.format).length+1));
+    const spec=browserImportSource({sourceKind:BROWSER_IMPORT_KIND,operation:BROWSER_IMPORT_OPERATION,format:raw.format,title,originalFilename:raw.filename,source:data(raw.source),sha256:raw.sha256,bytes:bytes.length});
+    const requestSha256=browserImportRequestSha256(v,spec,raw.idempotencyKey,context),action='artifact.generate';
+    const life=operation(context,signal),resource={versionId:null,object:null,assetObjects:[]},allocation=importIds(raw.idempotencyKey);
+    const inspection=browserImportInspection({sha256:raw.sha256,bytes:bytes.length,format:raw.format,nativeOpened:false,rendered:false,recalculated:false,members:[],details:{mimeType:raw.mimeType}});
+    let writeStarted=false,version=null;
+    try{
+      let receipt=await authority(life,action,resource,requestSha256,context);
+      await servable(life,context);await recoverTenant(life,context,allocation.versionId);
+      // Restart/retry reconciliation: the deterministic identity already admitted a version, so the ORIGINAL
+      // record is read back under current authority/retention instead of publishing a second one. The acquisition
+      // timestamp is provenance, not identity: a restarted caller with a new clock still reconciles.
+      let existing=null;
+      try{existing=scopeVersion(await life.run(signal=>versions.read(allocation.versionId,signal)),allocation.versionId,context);}
+      catch(error){if(error?.code!=='ENOENT')throw error;}
+      if(existing){
+        await servable(life,context,existing);
+        if(isBrowserImport(existing.spec)&&existing.spec.originalFilename===undefined)fail('BROWSER_IMPORT_IDENTITY_UNKNOWN');
+        if(!isBrowserImport(existing.spec)||existing.spec.sha256!==raw.sha256||existing.spec.bytes!==bytes.length||
+          existing.spec.format!==raw.format||existing.spec.title!==title||existing.spec.originalFilename!==raw.filename||
+          existing.spec.source.origin!==raw.source.origin||existing.spec.source.urlHost!==raw.source.urlHost||
+          existing.spec.source.policySha256!==raw.source.policySha256)fail('BROWSER_IMPORT_CONFLICT');
+        receipt=await authority(life,action,{versionId:existing.version.versionId,object:existing.version.object,assetObjects:[]},requestSha256,context);
+        return Object.freeze({versionId:existing.version.versionId,sha256:raw.sha256,bytes:bytes.length,idempotencyKey:raw.idempotencyKey,
+         acquiredAtMs:existing.spec.source.acquiredAtMs,reconciled:true});
+      }
+      receipt=await authority(life,action,resource,requestSha256,context);
+      writeStarted=true;
+      const object=v.object(await life.run(signal=>objects.put({objectId:allocation.objectId,bytes:Buffer.from(bytes),scopes:v.snapshot(context.scopes),requestSha256},signal)));
+      if(object.objectId!==allocation.objectId||object.bytes!==bytes.length||object.sha256!==raw.sha256||!same(object.scopes,context.scopes))fail('ARTIFACT_OBJECT_MISMATCH');
+      await bytesFor(life,object,max);
+      receipt=await authority(life,action,resource,requestSha256,context);
+      version=v.version({contractVersion:'0.2.0',artifactId:allocation.artifactId,versionId:allocation.versionId,parentVersionId:null,binding:context.binding,object,filename:filenameFor(spec),mimeType:mime[spec.format],scopes:context.scopes,evidence:[],generationStatus:'draft',previewStatus:'pending',createdAt:new Date(raw.source.acquiredAtMs).toISOString()});
+      await servable(life,context,{version});
+      const publication={authorization:receipt,invocation:{kind:'browser-import',versionId:version.versionId,binding:v.snapshot(context.binding),requestSha256,idempotencyKey:raw.idempotencyKey}};
+      const commit=v.snapshot(await life.run(signal=>versions.commit({version:v.snapshot(version),spec:v.snapshot(spec),specSha256:v.hash(spec),requestSha256,inspection:v.snapshot(inspection),expectedParentVersionId:null},signal,publication)));
+      closed(commit,['status','versionId','requestSha256','versionSha256']);
+      if(!['committed','duplicate'].includes(commit.status)||commit.versionId!==version.versionId||commit.requestSha256!==requestSha256||commit.versionSha256!==v.hash(version))fail('ARTIFACT_COMMIT_RECEIPT');
+      return Object.freeze({versionId:version.versionId,sha256:raw.sha256,bytes:bytes.length,idempotencyKey:raw.idempotencyKey,
+       acquiredAtMs:spec.source.acquiredAtMs});
+    }catch(cause){
+      // A repeated attempt that reconciles the identical immutable version is a definite success, not an unknown.
+      const error=writeStarted&&cause?.code!=='ARTIFACT_COMMIT_RECEIPT'&&cause?.code!=='ARTIFACT_IMMUTABLE_CONFLICT'
+        ?Object.assign(new Error('ARTIFACT_EFFECT_UNKNOWN'),{code:'ARTIFACT_EFFECT_UNKNOWN',cause,versionId:allocation.versionId,version})
+        :Object.assign(cause instanceof Error?cause:new Error(String(cause)),{versionId:allocation.versionId});
+      error.lifetime=life.close();throw error;
+    }finally{life.close();}
+  }
   return Object.freeze({create:(request,context,options)=>generate(null,request,context,options),revise:(baseVersionId,request,context,options)=>{if(typeof baseVersionId!=='string')fail('ARTIFACT_VERSION_ID');return generate(baseVersionId,request,context,options);},
     publishOfficeEdit:(baseVersionId,request,bytes,context,options)=>generate(baseVersionId,request,context,options,bytes),
     recover:(baseVersionId,request,context,options)=>recoverArtifact({v,operation,authority,scopeVersion,bytesFor,inspectBytes,versions,servable,recoverTenant},baseVersionId,request,context,options),
@@ -180,5 +251,6 @@ export function createArtifactService({validators:v,authorize,versions,objects,e
     list:(query,context,options)=>readArtifactLibrary({v,versions,authorizeOrigin,operation,authority,servable,recoverTenant,now},query,context,options),
     history,revisionSource:(id,context,options)=>read(id,context,options,false,true),inspect:(id,context,options)=>read(id,context,options),download:(id,context,options)=>read(id,context,options,true),
     editorSource:(id,context,{write,signal}={})=>{if(typeof write!=='boolean')fail('ARTIFACT_CONFIGURATION');return read(id,context,{signal},true,false,write);},
-    prepareFederalDraft:(input,context,options)=>prepareFederalDraft({read:(id,c,o)=>read(id,c,o,false,true)},input,context,options)});
+    prepareFederalDraft:(input,context,options)=>prepareFederalDraft({read:(id,c,o)=>read(id,c,o,false,true)},input,context,options),
+    ingest:(request,context,options={})=>ingest(request,context,options)});
 }

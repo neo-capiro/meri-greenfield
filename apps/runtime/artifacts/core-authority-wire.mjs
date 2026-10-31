@@ -27,6 +27,8 @@ export const INTENT_OPERATIONS=Object.freeze({
  'federal-load':Object.freeze(['artifact.download','artifact.inspect']),
  'federal-publish':Object.freeze(['artifact.download','artifact.generate','artifact.inspect','artifact.revise']),
  'federal-import':Object.freeze(['artifact.generate']),
+ // A reviewed browser download is published as an immutable artifact; Core 307/308 already maps this intent.
+ 'browser-import':Object.freeze(['artifact.generate']),
 });
 /** Core's receipt lifetime on Core's own clock (expiresAtMs - checkedAtMs). Meri counts it from its own pre-send instant. */
 export const MAX_RECEIPT_TTL_MS=60000;

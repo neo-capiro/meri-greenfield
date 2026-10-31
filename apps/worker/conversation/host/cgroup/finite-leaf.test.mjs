@@ -36,6 +36,8 @@ function memoryFs(entries = {}) {
     writeFileSync(path, value) { writes.push(path); map.set(path, String(value)); },
     mkdirSync(path) { if (map.has(path)) { const error = Error('EEXIST'); error.code = 'EEXIST'; throw error; } map.set(path, ''); map.set(`${path}/cgroup.procs`, ''); },
     rmdirSync(path) { map.delete(path); map.delete(`${path}/cgroup.procs`); },
+    // Faithful absence observer: the deleted leaf genuinely disappears, and a present path is an existing one.
+    lstatSync(path) { if (!map.has(path)) { const e = Error('ENOENT'); e.code = 'ENOENT'; throw e; } return { path }; },
   };
 }
 const delegating = () => memoryFs({
@@ -198,4 +200,64 @@ test('release removes only an empty owned leaf and reports honest unknowns other
   const third = await createFiniteCgroupLeaf(base({fs: failing}));
   failing.rmdirSync = () => { throw Error('busy'); };
   assert.deepEqual(releaseFiniteCgroupLeaf({leaf: third, fs: failing}), {released: false, code: 'HOST_CGROUP_CLEANUP_UNKNOWN'});
+});
+
+const leaf=()=>({schema:FINITE_CGROUP_SCHEMA,absolutePath:leafPath,relativePath:'processing'});
+test('READBACK: rmdir acknowledgement with the exact leaf still present is not released',()=>{
+ const fs=delegating();fs.map.set(leafPath,'');fs.map.set(`${leafPath}/cgroup.procs`,'');
+ fs.rmdirSync=()=>{};                                  // ACK without deleting
+ const result=releaseFiniteCgroupLeaf({leaf:leaf(),fs});
+ assert.equal(result.released,false);assert.equal(result.code,'HOST_CGROUP_CLEANUP_UNKNOWN');
+ assert.equal(fs.map.has(leafPath),true);
+});
+test('READBACK: a leaf recreated after deletion is not released',()=>{
+ const fs=delegating();fs.map.set(leafPath,'');fs.map.set(`${leafPath}/cgroup.procs`,'');
+ fs.rmdirSync=path=>{fs.map.delete(path);fs.map.delete(`${path}/cgroup.procs`);fs.map.set(path,{recreated:true});};
+ const result=releaseFiniteCgroupLeaf({leaf:leaf(),fs});
+ assert.equal(result.released,false);assert.equal(result.code,'HOST_CGROUP_CLEANUP_UNKNOWN');
+});
+test('READBACK: EACCES/EIO/missing observer stay unknown; an empty owned leaf is released',()=>{
+ for(const code of ['EACCES','EIO']){
+  const fs=delegating();fs.map.set(leafPath,'');fs.map.set(`${leafPath}/cgroup.procs`,'');
+  fs.lstatSync=()=>{const e=Error(code);e.code=code;throw e;};
+  const result=releaseFiniteCgroupLeaf({leaf:leaf(),fs});
+  assert.equal(result.released,false);assert.equal(result.code,'HOST_CGROUP_CLEANUP_UNKNOWN',code);
+ }
+ const missing=delegating();missing.map.set(leafPath,'');missing.map.set(`${leafPath}/cgroup.procs`,'');
+ delete missing.lstatSync;
+ assert.equal(releaseFiniteCgroupLeaf({leaf:leaf(),fs:missing}).released,false);
+ const ok=delegating();ok.map.set(leafPath,'');ok.map.set(`${leafPath}/cgroup.procs`,'');
+ assert.deepEqual(releaseFiniteCgroupLeaf({leaf:leaf(),fs:ok}),{released:true,relativePath:'processing'});
+ assert.equal(ok.map.has(leafPath),false,'the exact owned leaf is gone');
+});
+
+const nativeAllocation=Object.freeze({...allocation,hostMode:'native-processing'});
+const nativeAuthority=(over={})=>({policySha256:'c'.repeat(64),maxFreshMs:1000,
+ readCurrent:async()=>({allocation:nativeAllocation,binding,policySha256:'c'.repeat(64),phase:'active',
+  checkedAtMs:now()-100,currentUntilMs:now()+500,...over})});
+
+test('NATIVE: a real canonical native allocation + native currentness creates the leaf with exactly 3 finite writes',async()=>{
+ const fs=delegating();
+ const leaf=await createFiniteCgroupLeaf(base({allocation:nativeAllocation,authority:nativeAuthority(),fs}));
+ assert.equal(leaf.schema,FINITE_CGROUP_SCHEMA);
+ assert.equal(leaf.absolutePath,`${parent}/processing`);
+ assert.deepEqual(fs.writes.slice().sort(),[
+  `${parent}/processing/cpu.max`,`${parent}/processing/memory.max`,`${parent}/processing/pids.max`].sort(),
+  'exactly the three finite limit writes');
+});
+
+test('NATIVE: stale, revoked, cross-mode and cross-run currentness are denied with ZERO writes',async()=>{
+ const cases=[
+  ['stale',nativeAuthority({currentUntilMs:now()-1})],
+  ['revoked',nativeAuthority({phase:'revoked'})],
+  ['cross-mode',{policySha256:'c'.repeat(64),maxFreshMs:1000,readCurrent:async()=>({allocation,binding,
+   policySha256:'c'.repeat(64),phase:'active',checkedAtMs:now()-100,currentUntilMs:now()+500})}],
+  ['cross-run',nativeAuthority({binding:{...binding,runId:uuid(44)}})],
+ ];
+ for(const [name,authority] of cases){
+  const fs=delegating();
+  await assert.rejects(createFiniteCgroupLeaf(base({allocation:nativeAllocation,authority,fs})),
+   e=>e?.code==='HOST_CGROUP_CURRENTNESS_REFUSED',name);
+  assert.equal(fs.writes.length,0,`no limit write for ${name}`);
+ }
 });

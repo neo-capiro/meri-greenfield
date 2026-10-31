@@ -102,7 +102,7 @@ test('the verify read distinguishes absent, in-flight, dispatched and refused wi
 
 test('the journal admits the internal operation, keeps sdk rows public and separates the domains',async()=>{
  const source=readFileSync(new URL('../postgres-journal.mjs',import.meta.url),'utf8');
- assert.match(source,/INTERNAL_OPERATIONS=Object\.freeze\(\['browser_action@0\.2\.0','browser_approval_preparation@0\.2\.0','browser_approval_consumption@0\.2\.0'\]\)/u);
+ assert.match(source,/INTERNAL_OPERATIONS=Object\.freeze\(\['browser_action@0\.2\.0','browser_approval_preparation@0\.2\.0','browser_approval_consumption@0\.2\.0','browser_download@0\.2\.0'\]\)/u);
  assert.match(source,/delivery_id LIKE 'sdk:%'/u,'the public list stays sdk-only');
  assert.match(source,/\^\(\?:sdk\|browser\):\[a-f0-9\]\{64\}\$/u,'row keys accept both families');
  // An execution delivery never equals an approval delivery for the same binding and request.
@@ -112,7 +112,7 @@ test('the journal admits the internal operation, keeps sdk rows public and separ
 });
 
 test('the migration is appended exactly once at ordinal 77 and only widens the delivery identity',()=>{
- assert.equal(PLAN.length,77);
+ assert.equal(PLAN.length,79);
  const entry=PLAN[76];
  assert.equal(entry.ordinal,77);
  assert.equal(entry.path,'apps/control/intents/migrations/0003_browser_operation_preparations.sql');
@@ -134,7 +134,24 @@ test('the migration is appended exactly once at ordinal 77 and only widens the d
  assert.match(sql,/CHECK \(\(delivery_id ~ ''\^sdk:\[a-f0-9\]\{64\}\$''/u,'the exact original predicate');
  assert.doesNotMatch(sql,/FOR constraint_name IN|LOOP/u,'no broad loop that can silently match nothing');
  assert.equal((sql.match(/DROP CONSTRAINT/gu)??[]).length,1,'exactly one constraint is replaced');
+ // Ordinal 78 is the accepted native schema; ordinal 79 is this browser-download reservation migration.
+ assert.equal(PLAN[77].path,'apps/control/browser-hosts/migrations/0004_native_processing.sql');
+ const nativeBytes=readFileSync(new URL('../../browser-hosts/migrations/0004_native_processing.sql',import.meta.url));
+ assert.equal(createHash('sha256').update(nativeBytes).digest('hex'),PLAN[77].pinned);
+ assert.equal(PLAN[78].path,'apps/control/intents/migrations/0004_browser_download_run_reservations.sql');
+ const reserveBytes=readFileSync(new URL('../migrations/0004_browser_download_run_reservations.sql',import.meta.url));
+ assert.equal(createHash('sha256').update(reserveBytes).digest('hex'),PLAN[78].pinned);
  // The neighbouring ordinals keep their reviewed pins.
+ // Correction 01: ordinal 79 extends the ACTUAL 0002 guard instead of the obsolete 0001 body.
+ const reserve=readFileSync(new URL('../migrations/0004_browser_download_run_reservations.sql',import.meta.url),'utf8');
+ assert.match(reserve,/TG_OP = 'TRUNCATE' OR TG_OP = 'DELETE'/u);
+ assert.match(reserve,/INTENT_PREPARATION_CLAIM_REQUIRED/u);
+ assert.match(reserve,/INTENT_PREPARATION_RUN_REQUIRED/u);
+ assert.match(reserve,/INTENT_PREPARATION_RUN_IMMUTABLE/u);
+ assert.match(reserve,/NEW\.state = 'REDACTED'/u);
+ assert.match(reserve,/save_memory/u);
+ assert.match(reserve,/retention_purge_targets/u);
+ assert.doesNotMatch(reserve,/ADD CONSTRAINT/u,'no validating CHECK over historical rows');
  assert.equal(PLAN[75].path,'apps/control/browser-hosts/migrations/0003_browser_only_teardown.sql');
  assert.equal(PLAN[75].pinned,'ad06f879d0202b37b32e5de7fae612e7a2603e7388a7393d5834bb2983c85992');
 });

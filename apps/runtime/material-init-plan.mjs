@@ -91,11 +91,21 @@ export function compileProductMaterialPlan({role,configuration,runtimeUser}){
  add(c.native.capabilityFile,'native-capability');
  add(c.temporal.tls.caFile,'temporal-ca');add(c.temporal.tls.certFile,'temporal-cert');add(c.temporal.tls.keyFile,'temporal-key');
  if(c.native?.serverCaFile!==undefined)add(c.native.serverCaFile,'control-server-ca');
+ if(role==='temporal-worker'&&c.nativeProvisioning?.enabled){
+  add(c.nativeProvisioning.databaseFile,'database-connection');
+  add(c.nativeProvisioning.issuerCaCertFile,'native-issuer-ca');
+  add(c.nativeProvisioning.issuerCaKeyFile,'native-issuer-key');
+ }
  if(role==='control'||role==='schedule-worker'){
   add(c.database.connectionFile,'database-connection');
   if(role==='schedule-worker'&&c.routines?.enabled===true&&c.routines.core!==undefined)add(c.routines.core.serviceSecretFile,'routines-core-service-secret');
   if(c.downloadLinks?.enabled)add(c.downloadLinks.keyFile,'download-signing-key');
   if(c.reads?.enabled===true){add(c.reads.serviceSecretFile,'reads-service-secret');if(c.reads.readModeServiceSecretFile!==undefined)add(c.reads.readModeServiceSecretFile,'reads-read-mode-service-secret');
+  }
+  if(role==='control'&&c.uploads?.native?.enabled===true&&c.uploads.native.host!==undefined){
+   const host=c.uploads.native.host;
+   add(host.tls.caPath,'native-host-ca');add(host.tls.certPath,'native-host-cert');add(host.tls.keyPath,'native-host-key');
+   if(host.observer!==undefined)add(host.observer.keyPath,'native-observer-key');
   }
   if(c.office?.enabled===true){add(c.office.keyFile,'office-wopi-signing-key');
    // Intentional same-Core service secret reuse keeps ONE purpose; a dedicated file gets its own.

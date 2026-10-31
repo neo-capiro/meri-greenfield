@@ -7,12 +7,13 @@ import {EventEmitter} from 'node:events';
 import {Readable} from 'node:stream';
 import {canonicalSha256 as hash} from '../../../../../packages/contracts/validate.mjs';
 import {assertHostAllocation,assertHostRunBinding} from '../binding.mjs';
-import {hostClientDnsName,HOST_RECEIPT_PATH} from './protocol.mjs';
+import {hostClientDnsName,HOST_RECEIPT_PATH,HOST_DOWNLOAD_RECEIPT_PATH} from './protocol.mjs';
 import {createBrowserReceiptProducer} from '../../../../control/browser-hosts/browser-receipts.mjs';
 import {createPostgresConversationStore} from '../../../../control/conversations/postgres-store.mjs';
 import {storeFixture,binding,scopes,versions} from '../../../../control/conversations/test/store-fixture.mjs';
 import {MODEL_CATALOG} from '../../../../../packages/contracts/test/model-selection-fixture.mjs';
-import {browserActionReceiptEventId} from '../../../../../packages/contracts/runtime-0.2/browser-receipt.mjs';
+import {browserActionReceiptEventId,browserDownloadReceiptEventId} from '../../../../../packages/contracts/runtime-0.2/browser-receipt.mjs';
+import {createHash} from 'node:crypto';
 import {createBrowserHostRunFacts} from '../../../../runtime/browser-host-run-facts.mjs';
 import {DEFAULT_BROWSER_POLICY} from '../../browser/policy.mjs';
 import {assertCapabilityPolicy} from '../../capabilities/policy.mjs';
@@ -42,7 +43,7 @@ function conversationStore(){
  return createPostgresConversationStore({pool:f.pool,modelCatalog:MODEL_CATALOG});
 }
 
-async function route({currentnessOverrides={}}={}){
+async function route({currentnessOverrides={},dropFirstResponsePath=null}={}){
  const {createHostCurrentnessClient}=await import('./client.mjs');
  const {createHostCurrentnessServer}=await import('./server.mjs');
  const {createPostgresHostCurrentnessStore}=await import('./postgres-store.mjs');
@@ -71,7 +72,9 @@ async function route({currentnessOverrides={}}={}){
  const producer=createBrowserReceiptProducer({store:conversationStore(),now:()=>clock.now});
  const store=createPostgresHostCurrentnessStore({transact,readCanonicalRun:async()=>state,
   readCanonicalFacts:async()=>facts,maxLeaseMs:5000,
-  recordBrowserReceipt:async value=>{shared.appends++;shared.appendDepth=shared.depth;return producer.appendAction(value);}});
+  recordBrowserReceipt:async value=>{shared.appends++;shared.appendDepth=shared.depth;return producer.appendAction(value);},
+  recordBrowserDownloadReceipt:async value=>{shared.appends++;shared.appendDepth=shared.depth;
+   const {deadlineMs:_window,...receipt}=value;return producer.appendDownload(receipt);}});
  const captured={handler:null};const fake=new EventEmitter();
  fake.listening=false;fake.listen=()=>{fake.listening=true;fake.emit('listening');};
  fake.address=()=>({address:'127.0.0.1',port:8443});fake.close=cb=>cb?.();
@@ -89,7 +92,9 @@ async function route({currentnessOverrides={}}={}){
     c.statusCode=res.statusCode;c.headers={...res.headers};c.destroy=()=>{};c.resume=()=>{};
     callback(c);setImmediate(()=>{if(payload.length)c.emit('data',payload);c.emit('end');});};
    res.destroy=()=>finish(Buffer.alloc(0));
-   res.end=payload=>finish(payload??Buffer.alloc(0));
+   const drop=dropFirstResponsePath===options.path&&!shared.dropped;
+   if(drop)shared.dropped=true;
+   res.end=payload=>drop?finish(Buffer.alloc(0)):finish(payload??Buffer.alloc(0));
    const req=Readable.from([Buffer.from(bytes)]);
    req.httpVersion='1.1';req.method='POST';req.url=options.path;
    req.rawHeaders=['host','h','content-type','application/json','content-length',String(Buffer.byteLength(bytes))];
@@ -137,6 +142,70 @@ test('a receipt claiming another binding is refused before the append',{timeout:
  try{
   const foreign=receiptFor({binding:{...binding,runId:'88888888-8888-4888-8888-888888888888'}});
   await assert.rejects(f.client.recordBrowserReceipt(foreign),/HOST_CONTROL_UNAVAILABLE/u);
+  assert.equal(f.shared.appends,0);
+ }finally{f.client.close();}
+});
+
+const downloadBytes=Buffer.from('downloaded filing bytes\n');
+const sha256=b=>createHash('sha256').update(b).digest('hex');
+const downloadReceiptFor=(overrides={})=>({schema:'meri-browser-receipt/1',kind:'browser.download',binding,
+ urlHost:'files.example',atMs:NOW,reference:'33333333-3333-4333-8333-0000000000a9',
+ sha256:sha256(downloadBytes),bytes:downloadBytes.length,mimeType:'text/plain; charset=utf-8',...overrides});
+
+test('the real client records a DOWNLOAD receipt on its named route and receives the durable event',{timeout:12000},async()=>{
+ const f=await route();
+ try{
+  const receipt=downloadReceiptFor();
+  const ack=await f.client.recordBrowserDownloadReceipt(receipt);
+  assert.equal(ack.eventId,browserDownloadReceiptEventId({binding,reference:receipt.reference}));
+  assert.equal(ack.event.type,'browser.receipt');
+  assert.equal(ack.event.data.kind,'browser.download');
+  assert.equal(f.shared.appends,1);
+  assert.equal(f.shared.appendDepth,0,'the producer appends with no host transaction held');
+  const again=await f.client.recordBrowserDownloadReceipt(receipt);
+  assert.equal(again.eventId,ack.eventId);
+  assert.equal(again.event.createdAt,ack.event.createdAt,'stored time is preserved on an equal retry');
+ }finally{f.client.close();}
+});
+
+test('a changed download payload under the same identity conflicts',{timeout:12000},async()=>{
+ const f=await route();
+ try{
+  await f.client.recordBrowserDownloadReceipt(downloadReceiptFor());
+  await assert.rejects(f.client.recordBrowserDownloadReceipt(downloadReceiptFor({sha256:'0'.repeat(64)})),
+   /HOST_CONTROL_UNAVAILABLE/u);
+ }finally{f.client.close();}
+});
+
+test('a download receipt claiming another binding is refused before the append',{timeout:12000},async()=>{
+ const f=await route();
+ try{
+  const foreign=downloadReceiptFor({binding:{...binding,runId:'88888888-8888-4888-8888-888888888888'}});
+  await assert.rejects(f.client.recordBrowserDownloadReceipt(foreign),/HOST_CONTROL_UNAVAILABLE/u);
+  assert.equal(f.shared.appends,0);
+ }finally{f.client.close();}
+});
+
+test('a lost acknowledgement after a durable append is recovered by a later same-identity retry',{timeout:12000},async()=>{
+ const f=await route({dropFirstResponsePath:HOST_DOWNLOAD_RECEIPT_PATH});
+ try{
+  const receipt=downloadReceiptFor();
+  await assert.rejects(f.client.recordBrowserDownloadReceipt(receipt),/HOST_CONTROL_UNAVAILABLE/u);
+  assert.equal(f.shared.appends,1,'the append committed before the acknowledgement was lost');
+  clock.now=NOW+5000;
+  const retry=await f.client.recordBrowserDownloadReceipt(receipt);
+  assert.equal(retry.eventId,browserDownloadReceiptEventId({binding,reference:receipt.reference}));
+  assert.equal(retry.event.createdAt,new Date(NOW).toISOString(),'the original operation timestamp is preserved');
+  assert.equal(f.shared.appends,2);
+ }finally{f.client.close();clock.now=NOW;}
+});
+
+test('an aborted caller never records a download receipt',{timeout:12000},async()=>{
+ const f=await route();
+ try{
+  const controller=new AbortController();controller.abort();
+  await assert.rejects(f.client.recordBrowserDownloadReceipt(downloadReceiptFor(),{signal:controller.signal}),
+   /HOST_CONTROL_UNAVAILABLE/u);
   assert.equal(f.shared.appends,0);
  }finally{f.client.close();}
 });

@@ -6,6 +6,7 @@
  */
 import {readBrowserHostServiceConfig} from './config.mjs';
 import {assertBrowserOnlyServiceInputs, composeBrowserOnlyHostService, BROWSER_ONLY_REQUIRED_INPUTS} from './composition.mjs';
+import {createBrowserOnlyReadRun} from './read-run.mjs';
 
 export const PRODUCTION_BINDINGS = Object.freeze([
   {name: 'host.allocate', owner: 'control host provisioner', detail: 'allocation hostMode:"browser-only", hostIdentity, cwd, lease deadline'},
@@ -70,12 +71,19 @@ export function browserHostServiceReadiness({env = {}, inputs} = {}) {
 
 /** Finite start/stop entrypoint: composes validated concrete objects and starts nothing. */
 export function createBrowserHostServiceEntrypoint({inputs, dependencies = {}, env = {}} = {}) {
-  const readiness = browserHostServiceReadiness({env, inputs});
+  // The browser-only service CONSTRUCTS its own canonical readRun from the authenticated currentness client and
+  // the already-validated placement; a caller may still pass an explicit one. A client without the closed ingest
+  // method yields no readRun, and readiness then names it instead of mounting a partial service.
+  let complete = inputs;
+  if (inputs && inputs.readRun === undefined && inputs.browserClient !== undefined) {
+    try { complete = {...inputs, readRun: createBrowserOnlyReadRun(inputs).readRun}; } catch { complete = inputs; }
+  }
+  const readiness = browserHostServiceReadiness({env, inputs: complete});
   if (!readiness.ready) {
     const refuse = async () => { throw Object.assign(new Error('BROWSER_HOST_SERVICE_CONFIGURATION'), {code: 'BROWSER_HOST_SERVICE_CONFIGURATION'}); };
     return Object.freeze({ready: false, missing: readiness.missing, start: refuse, stop: refuse});
   }
-  const service = composeBrowserOnlyHostService(inputs, dependencies);
+  const service = composeBrowserOnlyHostService(complete, dependencies);
   return Object.freeze({ready: true, missing: [], service, start: () => service.start(), stop: options => service.destroy(options)});
 }
 

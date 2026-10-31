@@ -12,13 +12,18 @@ import {assertHostAllocation,assertHostRunBinding,assertD005HostIdentity,MAX_HOS
 import {assertBrowserHostFacts} from '../../../../../packages/contracts/runtime-0.2/browser-host-facts.mjs';
 import {assertBrowserCustody} from '../../../../../packages/runtime/browser-custody.mjs';
 import {privateAddress,dnsName,fingerprint,tlsBytes,checkedCertificate,MAX_CERT_LIFETIME_MS} from './tls.mjs';
-import {HOST_CONTROL_PATH,HOST_CONTROL_MAX_BYTES,HOST_CONTROL_PURPOSES,
+import {HOST_CONTROL_PATH,HOST_CONTROL_MAX_BYTES,HOST_CONTROL_PURPOSES,HOST_NATIVE_CONTROL_PURPOSE,
  hostFactsRequest,hostFactsResponse,HOST_FACTS_PATH,HOST_FACTS_WIRE_MAX_BYTES,
  hostWorkflowRequest,hostWorkflowResponse,HOST_WORKFLOW_PATH,HOST_WORKFLOW_WIRE_MAX_BYTES,
  hostHoldRequest,hostHoldResponse,HOST_HOLD_PATH,HOST_HOLD_WIRE_MAX_BYTES,
  hostClientDnsName,makeHostControlRequest,hostControlResponse,encodeHostControl,decodeHostControl,
  hostDecideRequest,hostDecideResponse,HOST_DECIDE_PATH,HOST_DECIDE_MAX_BYTES,HOST_DECIDE_WIRE_MAX_BYTES,
- hostReceiptRequest,hostReceiptResponse,HOST_RECEIPT_PATH,HOST_RECEIPT_WIRE_MAX_BYTES} from './protocol.mjs';
+ hostReceiptRequest,hostReceiptResponse,HOST_RECEIPT_PATH,HOST_RECEIPT_WIRE_MAX_BYTES,
+ hostIngestRequest,hostIngestResponse,HOST_INGEST_PATH,HOST_INGEST_WIRE_MAX_BYTES,
+ HOST_INGEST_RESPONSE_MAX_BYTES,HOST_INGEST_MAX_BYTES,hostDownloadReceiptRequest,
+ hostDownloadReceiptResponse,HOST_DOWNLOAD_RECEIPT_PATH,HOST_DOWNLOAD_RECEIPT_WIRE_MAX_BYTES,
+ hostDownloadReconcileRequest,hostDownloadReconcileResponse,HOST_DOWNLOAD_RECONCILE_PATH,
+ HOST_DOWNLOAD_RECONCILE_WIRE_MAX_BYTES} from './protocol.mjs';
 
 const fail=()=>{throw Object.assign(new Error('HOST_CONTROL_UNAVAILABLE'),{code:'HOST_CONTROL_UNAVAILABLE'});};
 const same=(a,b)=>canonicalSha256(a)===canonicalSha256(b);
@@ -51,7 +56,8 @@ const bodyResponse=(res,signal,maxResponse)=>new Promise((resolve,reject)=>{
 export function createHostCurrentnessClient({allocation,binding,hostIdentity,purpose,endpoint,tls,maxFreshMs,timeoutMs,
  now=Date.now,httpsModule=https}={}){
  const a=assertHostAllocation(allocation),b=assertHostRunBinding(a,binding),i=assertD005HostIdentity(hostIdentity,b,a);
- if(!endpoint||!tls||!HOST_CONTROL_PURPOSES.includes(purpose)||typeof now!=='function'||typeof httpsModule?.request!=='function'||
+ if(!endpoint||!tls||!(HOST_CONTROL_PURPOSES.includes(purpose)||purpose===HOST_NATIVE_CONTROL_PURPOSE)||
+  typeof now!=='function'||typeof httpsModule?.request!=='function'||
   !Number.isSafeInteger(maxFreshMs)||maxFreshMs<1||maxFreshMs>MAX_HOST_CURRENTNESS_MS||
   !Number.isSafeInteger(timeoutMs)||timeoutMs<1||timeoutMs>Math.min(5000,maxFreshMs))fail();
  let address,serverName,serverFingerprintSha256,cert,key,ca;
@@ -102,15 +108,37 @@ export function createHostCurrentnessClient({allocation,binding,hostIdentity,pur
   if(facts.currentUntilMs<=now()||facts.deadlineMs<=now())fail();
   return answer;
  }
+ async function currentRead(policySha256,signal,inspection,deadlineMs){
+  nativeSignal(signal);
+  if(closed||signal?.aborted)fail();
+  localCertificate();
+  const request=makeHostControlRequest({allocation:a,binding:b,hostIdentity:i,purpose,policySha256,nonce:nonce(),signal,
+   ...(inspection?{inspection}:{})});
+  // An absolute caller deadline is a CAP, never renewed: the wire attempt and release check both stay inside it.
+  const budget=Number.isSafeInteger(deadlineMs)?Math.min(timeoutMs,deadlineMs-now()):timeoutMs;
+  if(!Number.isSafeInteger(budget)||budget<1)fail();
+  const response=await perform(HOST_CONTROL_PATH,request,HOST_CONTROL_MAX_BYTES,HOST_CONTROL_MAX_BYTES,signal,budget);
+  return hostControlResponse(response,request,{nowMs:now(),maxFreshMs});
+ }
  return Object.freeze({
   async readCurrent({allocation:requestedAllocation,binding:requestedBinding,policySha256,signal}={}){
    try{
-    nativeSignal(signal);
-    if(closed||signal?.aborted||!same(requestedAllocation,a)||!same(requestedBinding,b))fail();
-    localCertificate();
-    const request=makeHostControlRequest({allocation:a,binding:b,hostIdentity:i,purpose,policySha256,nonce:nonce(),signal});
-    const response=await perform(HOST_CONTROL_PATH,request,HOST_CONTROL_MAX_BYTES,HOST_CONTROL_MAX_BYTES,signal);
-    return hostControlResponse(response,request,{nowMs:now(),maxFreshMs});
+    if(!same(requestedAllocation,a)||!same(requestedBinding,b))fail();
+    return await currentRead(policySha256,signal);
+   }catch{fail();}
+  },
+  /** Native verifier surface: one fresh authenticated native currentness read; custody/declaration were already
+   * checked by the inspection path and are NOT a wire authority here. */
+  async readNativeCurrentness({custody,declaration,policySha256,signal,deadlineMs}={}){
+   try{
+    if(purpose!==HOST_NATIVE_CONTROL_PURPOSE)throw Error();
+    // Inspection evidence travels over the SAME authenticated wire; absence is never downcast to host-only.
+    if(custody===undefined||declaration===undefined)throw Error();
+    const inspection=Object.freeze({custody:data(custody),declaration:data(declaration)});
+    if(deadlineMs!==undefined&&(!Number.isSafeInteger(deadlineMs)||deadlineMs<=now()))throw Error();
+    const answer=await currentRead(policySha256,signal,inspection,deadlineMs);
+    if(deadlineMs!==undefined&&now()>=deadlineMs)throw Error();
+    return answer;
    }catch{fail();}
   },
   /** Canonical facts3 for this exact allocated host and run. The answer is data only. */
@@ -220,6 +248,63 @@ export function createHostCurrentnessClient({allocation,binding,hostIdentity,pur
     const answer=hostReceiptResponse(response,request);
     if(!fresh(answer,now(),maxFreshMs))fail();
     return Object.freeze({eventId:answer.eventId,event:answer.event,checkedAtMs:answer.checkedAtMs});
+   }catch{fail();}
+  },
+  /** The ONE named download ingest. The caller hands the reviewed file facts and the origin it observed; this
+   * client pins its own allocation/identity/nonce and derives NO authority. Only the publication owner's
+   * exact ACK is returned. The exchange is bounded by the caller signal, the original lease and the
+   * configured timeout — never a fresh window. */
+  async ingest(ingest,{signal}={}){
+   try{
+    nativeSignal(signal);
+    if(closed||signal?.aborted)fail();
+    const local=localCertificate();
+    if(!Buffer.isBuffer(ingest?.bytes)||!ingest.bytes.length||ingest.bytes.length>HOST_INGEST_MAX_BYTES)fail();
+    // Validate the WIRE form (base64) and send that SAME object: the validated internal shape holds a Buffer and
+    // is not itself encodable JSON.
+    const request=hostIngestRequest({schema:'meri-host-ingest-request/1',allocation:a,binding:b,hostIdentity:i,
+     nonce:nonce(),ingest:{filename:ingest.filename,format:ingest.format,mimeType:ingest.mimeType,
+      sha256:ingest.sha256,origin:ingest.origin,bytesBase64:Buffer.from(ingest.bytes).toString('base64')}});
+    const response=await perform(HOST_INGEST_PATH,request,HOST_INGEST_WIRE_MAX_BYTES,
+     HOST_INGEST_RESPONSE_MAX_BYTES,signal,Math.min(timeoutMs,a.leaseDeadlineMs-now(),local.notAfterMs-now()));
+    const answer=hostIngestResponse(response,request);
+    if(!fresh(answer,now(),maxFreshMs))fail();
+    return Object.freeze({versionId:answer.versionId,sha256:answer.sha256,bytes:answer.bytes,
+     idempotencyKey:answer.idempotencyKey,
+     ...(answer.acquiredAtMs===undefined?{}:{acquiredAtMs:answer.acquiredAtMs}),
+     ...(answer.replay===undefined?{}:{replay:answer.replay})});
+   }catch{fail();}
+  },
+  /** The ONE named DOWNLOAD receipt. The caller hands the acknowledged canonical receipt; this client pins its
+   * own allocation/identity/nonce. Only the producer's actual durable acknowledgement is returned. */
+  async recordBrowserDownloadReceipt(receipt,{signal}={}){
+   try{
+    nativeSignal(signal);
+    if(closed||signal?.aborted)fail();
+    localCertificate();
+    const request=hostDownloadReceiptRequest({schema:'meri-host-download-receipt-request/1',allocation:a,
+     binding:b,hostIdentity:i,nonce:nonce(),receipt});
+    const response=await perform(HOST_DOWNLOAD_RECEIPT_PATH,request,HOST_DOWNLOAD_RECEIPT_WIRE_MAX_BYTES,
+     HOST_DOWNLOAD_RECEIPT_WIRE_MAX_BYTES,signal);
+    const answer=hostDownloadReceiptResponse(response,request);
+    if(!fresh(answer,now(),maxFreshMs))fail();
+    return Object.freeze({eventId:answer.eventId,event:answer.event,checkedAtMs:answer.checkedAtMs});
+   }catch{fail();}
+  },
+  /** READ-ONLY discovery of this run's ORIGINAL download by exact filename; never ingests or appends. */
+  async reconcileBrowserDownload({filename}={},{signal}={}){
+   try{
+    nativeSignal(signal);
+    if(closed||signal?.aborted)fail();
+    localCertificate();
+    const request=hostDownloadReconcileRequest({schema:'meri-host-download-reconcile-request/1',allocation:a,
+     binding:b,hostIdentity:i,nonce:nonce(),filename});
+    const response=await perform(HOST_DOWNLOAD_RECONCILE_PATH,request,HOST_DOWNLOAD_RECONCILE_WIRE_MAX_BYTES,
+     HOST_DOWNLOAD_RECONCILE_WIRE_MAX_BYTES,signal);
+    const answer=hostDownloadReconcileResponse(response,request);
+    if(!fresh(answer,now(),maxFreshMs))fail();
+    return Object.freeze({versionId:answer.versionId,sha256:answer.sha256,bytes:answer.bytes,
+     mimeType:answer.mimeType,receipt:answer.receipt,checkedAtMs:answer.checkedAtMs});
    }catch{fail();}
   },
   close(){if(!closed){closed=true;lifetime.abort();}return Object.freeze({closed:true});},

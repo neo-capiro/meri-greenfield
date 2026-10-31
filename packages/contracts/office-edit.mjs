@@ -2,6 +2,7 @@
  * request: the model's typed document schemas deliberately continue to refuse it.
  * `operation` retains the existing artifact format owner and journal identity. */
 import {data,own} from './commands-0.2/execution-boundary.mjs';
+import {isBrowserImport,browserImportSource,browserImportInspection} from './browser-import.mjs';
 const fail=()=>{throw Object.assign(Error('OFFICE_EDIT_SOURCE'),{code:'OFFICE_EDIT_SOURCE'});};
 const UUID=/^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/u,SHA=/^[a-f0-9]{64}$/u;
 export const OFFICE_EDIT_KIND='meri.office-edit/1';
@@ -22,12 +23,14 @@ export function officeEditSource(value){
 }
 /** New readers accept both private source kinds; public generation stays typed. */
 export function storedArtifactSource(v,value){
- const s=v.snapshot(value);return isOfficeEdit(s)?officeEditSource(s):v.request(s);
+ const s=v.snapshot(value);return isOfficeEdit(s)?officeEditSource(s):isBrowserImport(s)?browserImportSource(s):v.request(s);
 }
 /** Extend only the private edited-file reader. The immutable typed tool schema
  * and its catalog digest stay unchanged. The substitution below checks the
  * shared shape only; the returned/stored inspection keeps its truthful label. */
 export function storedArtifactInspection(v,spec,value){
+ // A downloaded file keeps its truthful byte-only inspection: nothing opened, rendered or recalculated.
+ if(isBrowserImport(spec))return browserImportInspection(value);
  if(!isOfficeEdit(spec)||spec.format!=='xlsx')return v.inspection(value);
  const inspection=v.snapshot(value);
  if(inspection?.details?.formulaCache!==OFFICE_FORMULA_CACHE||Object.hasOwn(inspection.details,'revisionMethod'))fail();

@@ -208,7 +208,8 @@ function memoryFs(entries = {}) {
     readFileSync(path) { if (!map.has(path)) { const e = Error('ENOENT'); e.code = 'ENOENT'; throw e; } return map.get(path); },
     writeFileSync(path, value) { writes.push(path); map.set(path, String(value)); },
     mkdirSync(path) { if (map.has(path)) { const e = Error('EEXIST'); e.code = 'EEXIST'; throw e; } map.set(path, ''); map.set(`${path}/cgroup.procs`, ''); },
-    rmdirSync(path) { map.delete(path); map.delete(`${path}/cgroup.procs`); }};
+    rmdirSync(path) { map.delete(path); map.delete(`${path}/cgroup.procs`); },
+    lstatSync(path) { if (!map.has(path)) { const e = Error('ENOENT'); e.code = 'ENOENT'; throw e; } return { path }; }};
 }
 const root = () => ({uid: 0, euid: 0});
 const delegating = () => memoryFs({[`${parent}/cgroup.controllers`]: 'cpu memory pids\n',

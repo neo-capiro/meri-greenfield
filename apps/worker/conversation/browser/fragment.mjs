@@ -40,6 +40,7 @@ export function buildOpenBrowserFragment({binding,cwd,policy,installation:rawIns
    PreToolUse:Object.freeze([Object.freeze({matcher,hooks:Object.freeze([gate.preToolUse])})]),
    PostToolUse:Object.freeze([Object.freeze({matcher,hooks:Object.freeze([createReceiptHook({binding,paths,cwd,server:BROWSER_SERVER_NAME,tools:policy.tools,receipts,now}),tracking.post])})]),
    PostToolUseFailure:Object.freeze([Object.freeze({matcher,hooks:Object.freeze([tracking.failure])})])}),
-  downloads:createDownloadPort({binding,policy,policySha256,sourceScopes,paths,artifacts,receipts,now,assertCurrent}),
+  downloads:createDownloadPort({binding,policy,policySha256,sourceScopes,paths,artifacts,receipts,
+   ...(typeof artifacts?.reconcile==='function'?{reconcile:artifacts.reconcile}:{}),now,assertCurrent}),
   dispose:options=>disposeBrowserState(paths,options)});
 }

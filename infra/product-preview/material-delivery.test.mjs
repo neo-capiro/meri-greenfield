@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import {compileProductMaterialPlan,verifyProductMaterial} from './material-delivery.mjs';
 import {configurationMaxBytes} from '../../apps/runtime/config.mjs';
 import {runtimeUser as user,materialRoot as root,controlMaterialConfiguration as control,workerMaterialConfiguration as worker} from './material-test-fixture.mjs';
+import {observerFixture} from '../../apps/runtime/test/native-observer-fixture.mjs';
 
 const plan=(role,configuration)=>compileProductMaterialPlan({role,configuration,runtimeUser:user});
 
@@ -19,13 +20,15 @@ test('control plan derives exactly the canonical static files without per-run or
  assert.equal(JSON.stringify(p).includes('synthetic-existing'),false,'the plan carries paths and constraints, not values');
 });
 
-test('worker plan omits control-only files and exposes an explicit Temporal rotation requirement',()=>{
- const c=worker();c.temporal.authorization={tokenFile:root+'temporal-token',namespace:c.temporal.namespace,audience:'temporal.meri',issuer:'https://issuer.synthetic.invalid',refreshMs:5000,maxLifetimeMs:60000};
+test('worker plan retains the current mTLS-only inventory and refuses the retired token authorization field',()=>{
+ const c=worker();
  const p=plan('temporal-worker',c);
  assert.deepEqual(p.requiredFiles.map(file=>file.path),[
-  'control-capability','temporal-ca','temporal-cert','temporal-key','temporal-token','worker.json',
+  'control-capability','temporal-ca','temporal-cert','temporal-key','worker.json',
  ].map(name=>root+name).sort());
- assert.equal(p.requiresTokenRotation,true);assert.equal(p.containerName,'temporal-worker');
+ assert.equal(p.requiresTokenRotation,false);assert.equal(p.containerName,'temporal-worker');
+ c.temporal.authorization={tokenFile:root+'temporal-token',namespace:c.temporal.namespace,audience:'temporal.meri',issuer:'https://issuer.synthetic.invalid',refreshMs:5000,maxLifetimeMs:60000};
+ assert.throws(()=>plan('temporal-worker',c),/PRODUCT_MATERIAL_REFUSED/);
 });
 
 test('optional signing material is declared only when configured; per-run material is absent',()=>{
@@ -59,4 +62,20 @@ test('wrong role, runtime user, HTTP binding, foreign secret paths and accidenta
 test('preflight rejects a forged plan and refuses this non-Linux host before any file IO',async()=>{
  await assert.rejects(verifyProductMaterial({role:'control'},{}),/PRODUCT_MATERIAL_REFUSED/);
  if(process.platform!=='linux')await assert.rejects(verifyProductMaterial(plan('control',control()),{expectedSha256ByPath:{}}),/PRODUCT_MATERIAL_REFUSED/);
+});
+
+test('enabled native worker adds only its three protected files and retains ordinary path and alias refusals',async()=>{
+ const f=await observerFixture(),d=f.declaration,w=d.watchdog,c=worker(),ordinary=plan('temporal-worker',c);
+ c.nativeProvisioning={enabled:false};assert.deepEqual(plan('temporal-worker',c),ordinary);
+ c.nativeProvisioning={enabled:true,databaseFile:root+'native-db',issuerCaCertFile:root+'native-issuer-ca',issuerCaKeyFile:root+'native-issuer-key',
+  deployment:Object.fromEntries(['accountId','region','placement','launch','imageDigest','sourceCommit','bootstrapSha256','bootstrapSpec','physicalObserver','launchTagPolicy'].map(k=>[k,d[k]])),
+  watchdog:{stateMachineVersionArn:w.stateMachineVersionArn,definitionSha256:w.definitionSha256,qualificationEvidenceSha256:w.qualificationEvidenceSha256}};
+ const enabled=plan('temporal-worker',c),originalPaths=new Set(ordinary.requiredFiles.map(f=>f.path));
+ assert.deepEqual(enabled.requiredFiles.filter(f=>originalPaths.has(f.path)),ordinary.requiredFiles);
+ assert.deepEqual(enabled.requiredFiles.filter(f=>!originalPaths.has(f.path)).map(f=>[f.path,f.purposes]),[
+  [root+'native-db',['database-connection']],[root+'native-issuer-ca',['native-issuer-ca']],[root+'native-issuer-key',['native-issuer-key']]]);
+ for(const mutate of [x=>{x.nativeProvisioning.issuerCaKeyFile=x.temporal.tls.keyFile;},x=>{x.nativeProvisioning.databaseFile='/outside/native-db';},
+  x=>{x.nativeProvisioning.issuerCaCertFile=root+'nested/issuer-ca';}]){
+  const invalid=structuredClone(c);mutate(invalid);assert.throws(()=>plan('temporal-worker',invalid),/PRODUCT_MATERIAL_REFUSED/);
+ }
 });

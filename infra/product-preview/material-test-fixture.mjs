@@ -13,7 +13,7 @@ export function controlMaterialConfiguration(){
  return c;
 }
 export function workerMaterialConfiguration(){
- const c=controlMaterialConfiguration();delete c.database;delete c.sessions;delete c.versions;delete c.agentcore;delete c.privateHttp;
+ const c=controlMaterialConfiguration();delete c.database;delete c.sessions;delete c.versions;delete c.agentcore;delete c.privateHttp;delete c.models;
  c.native={...c.native,preparedKickoff:true};c.http.port=8081;return c;
 }
 export function staticMaterialFixture(role='control',configuration=role==='control'?controlMaterialConfiguration():workerMaterialConfiguration()){

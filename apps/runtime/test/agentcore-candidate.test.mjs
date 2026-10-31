@@ -30,9 +30,9 @@ function fixture(options={}){
   operations:options.approvedOperations??[readOperation],maxExecuteMs:1000,maxRequestBytes:4096,maxResponseBytes:8192};}
  const run={binding:b,versions,scopes:[{kind:'client',tenantId:b.tenantId,resourceId:clientId,policyRevision}],policyRevision,state:'queued'};
  let record=null,invocations=0,coreCalls=0,stops=0,claimCalls=0,relayCalls=0,coreInput,invocation,schemaQueries=0,schemaRelations=[];
- const pending=Promise.withResolvers();
+ const pending=Promise.withResolvers(),invoked=Promise.withResolvers();
  const check=f=>f?.();
- const store={async read(request,_cursor,c){check(c);assert.deepEqual(request,b);return {run,events:[{type:'run.status',data:{state:run.state},createdAt:new Date(at-1).toISOString()}],lastSequence:1};},async readOptional(){return {run};},
+ const store={async read(request,_cursor,c){check(c);assert.deepEqual(request,b);return {run,request:{requestId:id(999),prompt:'Synthetic ordinary request'},events:[{type:'run.status',data:{state:run.state},createdAt:new Date(at-1).toISOString()}],lastSequence:1};},async readOptional(){return {run};},
   async append(_binding,event){run.state=event.data.state;},async appendSource(request,event,c,expectedScopes){check(c);assert.deepEqual(request,b);assert.deepEqual(expectedScopes,run.scopes);assert.equal(event.type,'source.native-bill-text');options.sourcePublications??=[];options.sourcePublications.push(structuredClone(event));},async readModelPolicy(){assert.fail('Ordinary absent Objective selection never reads model policy');},
   async readModelSelection(){assert.fail('Ordinary absent Objective selection never reads model selection');},
   lifecycle:{async execution(){return null;},async get(){throw Error('No lifecycle use in this control');},async readSessionCapture(){throw Error('No lifecycle use in this control');}},
@@ -60,12 +60,13 @@ function fixture(options={}){
   if(new URL(_url).pathname==='/api/clio/client-context/automatic'){assert.equal(request.headers['x-internal-service-secret'],'synthetic-service');assert.deepEqual(JSON.parse(request.body),{schemaVersion:1,clientId});return Response.json(automaticContextFixture(b,clientId,at));}
   if(options.status)return Response.json({error:'refused'},{status:options.status});
   return Response.json({principal:{tenantId:b.tenantId,actorId:b.actorId},role:'standard_user',permissions:[],clientIds:[clientId],identityRevision:'a'.repeat(64),membershipRevision:'b'.repeat(64),contextRevision:'c'.repeat(64),conversationId:b.conversationId,selectedClientId:clientId,checkedAtMs:at,expiresAtMs:at+120000,...options.receipt});};
- const provider={async invoke(input){invocations++;invocation=input;return pending.promise;},async stop(input){stops++;if(options.stopUnknown)throw Error('transport lost');return {...input,signal:undefined,stopped:true};}};
+ const provider={async invoke(input){invocations++;invocation=input;invoked.resolve(input);return pending.promise;},async stop(input){stops++;if(options.stopUnknown)throw Error('transport lost');return {...input,signal:undefined,stopped:true};}};
  // Keep the exact transport receipt closed (AbortSignal is request-only).
  provider.stop=async({signal,...input})=>{signal?.throwIfAborted();stops++;if(options.stopUnknown)throw Error('transport lost');return {...input,stopped:true};};
  const candidate=assembleAgentCoreCandidate({configuration,pool,store,initialBindings,provider,controlCredential,nativeCredentials,fetchImpl,turnTelemetry:options.turnTelemetry,...(options.automaticContext?{getCoreServiceSecret:async()=> 'synthetic-service'}:{}),now:()=>at,...(options.createReadsRuntime?{createReadsRuntime:options.createReadsRuntime}:{})});
  return {candidate,configuration,run,store,pending,counts:()=>({invocations,coreCalls,stops,claimCalls,relayCalls}),schema:()=>({queries:schemaQueries,relations:schemaRelations}),coreInput:()=>coreInput,invocation:()=>invocation,record:()=>record,
   async kickoff(){return candidate.native.call('execution/kickoff',{binding:b,executionKey:hash(b)});},
+  async waitForInvocation(){let timer;try{return await Promise.race([invoked.promise,new Promise((_,reject)=>{timer=setTimeout(()=>reject(Error('Provider invocation did not arrive')),1000);})]);}finally{clearTimeout(timer);}},
   async finish(state='completed'){run.state=state;const v=invocation;pending.resolve(await candidate.execution.settle({credential:v.credential,execution:v.execution,state}));await candidate.close();}};
 }
 
@@ -84,7 +85,7 @@ test('one real Core current admission and durable execution; private callbacks d
  const f=fixture();await f.kickoff();assert.equal(f.counts().coreCalls,1);assert.equal(f.coreInput().headers.authorization,'Bearer actual-user-bearer');
  assert.deepEqual(f.coreInput().body,{conversationId:binding.conversationId,clientId});
  assert.equal(f.record().expiresAtMs,at+900000,'execution lifetime is the reviewed run window, not action-session TTL');
- const v=f.invocation();await f.candidate.execution.admitted({credential:v.credential,execution:v.execution,versions});
+ const v=await f.waitForInvocation();await f.candidate.execution.admitted({credential:v.credential,execution:v.execution,versions});
  await f.kickoff();assert.equal(f.counts().invocations,1);assert.equal(f.counts().coreCalls,1);
  await f.finish();
 });
@@ -98,7 +99,7 @@ for(const [name,options] of [
 ])test(name+' refuses before invocation or claim',async()=>{
  const f=fixture(options);await assert.rejects(f.kickoff());assert.equal(f.counts().invocations,0);assert.equal(f.counts().claimCalls,0);await f.candidate.close();
 });
-test('no configured original can replace the required durable binding',async()=>{const f=fixture({context:null});try{await assert.rejects(f.kickoff(),/AGENTCORE_ADMISSION_REFUSED/);assert.equal(f.counts().invocations,0);assert.equal(f.counts().claimCalls,0);}finally{await f.candidate.close();}});
+test('no configured original can replace the required durable binding',async()=>{const f=fixture({context:null});try{await assert.rejects(f.kickoff(),/AGENTCORE_ADMISSION_REFUSED/);assert.equal(f.counts().invocations,0);assert.equal(f.counts().claimCalls,0);}finally{f.pending.resolve(null);await f.candidate.close();}});
 test('Stop uses canonical fencing and exact provider session; unknown is not acknowledged',async()=>{
  for(const stopUnknown of [false,true]){const f=fixture({stopUnknown});await f.kickoff();
   const call=f.candidate.native.call('execution/kickoff/stop',{binding,executionId:hash(binding)});
@@ -133,7 +134,7 @@ test('read factory receives canonical policy and private current-role owner; uno
 });
 
 test('private candidate mounts every declared native file operation with the original execution credential and binding',async t=>{
- const f=fixture();await f.kickoff();t.after(()=>f.finish());const called=[];
+ const f=fixture();await f.kickoff();await f.waitForInvocation();t.after(()=>f.finish());const called=[];
  const fileApplication=createNativeFileApplication({now:()=>at,owner:{authenticate:f.candidate.execution.authenticate,
   ...Object.fromEntries(Object.values(NATIVE_FILE_PATHS).map(method=>[method,async({credential,request})=>{
    assert.equal(credential,f.invocation().credential);assert.deepEqual(request.binding,binding);called.push(method);
@@ -174,10 +175,10 @@ test('candidate mounts real runtime preparation and refuses unclaimed credential
  const request=credential=>new Request('https://control.synthetic.invalid/v1/runner/runtime',{method:'POST',headers:{authorization:`Bearer ${credential}`,'content-type':'application/json'},body:JSON.stringify({binding,versions})});
  try{
   assert.equal((await f.candidate.application.handle(request('unclaimed'))).status,503);assert.equal(forwarded,0);
-  await f.kickoff();const response=await f.candidate.application.handle(request(f.invocation().credential));assert.equal(response.status,200);
-  assert.deepEqual(await response.json(),{binding,versions,deadlineMs:at+900000,maxOutputBytes:262144,sdkSessionKey:null,objective:null,automaticClientContext:automaticContextFixture(binding,clientId,at)});assert.equal(forwarded,0);assert.equal(f.counts().coreCalls,2);
+  await f.kickoff();await f.waitForInvocation();const response=await f.candidate.application.handle(request(f.invocation().credential));assert.equal(response.status,200);
+  assert.deepEqual(await response.json(),{binding,versions,deadlineMs:at+900000,maxOutputBytes:262144,sdkSessionKey:null,objective:null,outreach:null,automaticClientContext:automaticContextFixture(binding,clientId,at)});assert.equal(forwarded,0);assert.equal(f.counts().coreCalls,2);
   await f.finish();
- }finally{await f.candidate.close();}
+ }finally{f.pending.resolve(null);await f.candidate.close();}
 });
 test('the actual Temporal native client readiness reaches the control-only schema owner',async()=>{
  const f=fixture();
@@ -194,7 +195,7 @@ test('readiness checks the canonical conversation and native execution schema wi
   await f.candidate.native.readiness();assert.deepEqual(f.schema(),{queries:1,relations:canonicalRelations});
   assert.equal(new Set(f.schema().relations).size,canonicalRelations.length);
   assert.deepEqual(f.counts(),{invocations:0,coreCalls:0,stops:0,claimCalls:0,relayCalls:0});
- }finally{await f.candidate.close();}
+ }finally{f.pending.resolve(null);await f.candidate.close();}
 });
 for(const missingRelation of canonicalRelations)test(`readiness refuses missing ${missingRelation} before any admission or invocation`,async()=>{
  const f=fixture({missingRelation});try{
@@ -291,7 +292,7 @@ for(const [name,change] of [
  f.after(()=>change(options));const response=await f.execute(available);assert.notEqual(response.status,200);assert.equal(f.sourceCalls(),1);assert.doesNotMatch(await response.text(),/resultJson/);
 });
 test('private role reads use the current canonical observation, preserve original expiry and do not alter local polling',async t=>{
- const options={},f=fixture(options);await f.kickoff();t.after(()=>f.finish());
+ const options={},f=fixture(options);await f.kickoff();await f.waitForInvocation();t.after(()=>f.finish());
  for(let n=0;n<4;n++)await f.candidate.execution.authenticate({credential:f.invocation().credential,binding});
  assert.equal(f.counts().coreCalls,1);
  const role=await f.candidate.readCapabilityRole({binding});assert.deepEqual(role,{actorRole:'standard_user',checkedAtMs:at,expiresAtMs:at+120000});assert.equal(f.counts().coreCalls,2);

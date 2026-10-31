@@ -1,22 +1,16 @@
 /** Shared strict mTLS material checks. Certificates are supplied by the runtime credential owner, never read
  * from environment, arbitrary paths, run data or tool inputs by this module. */
-import {createHash,X509Certificate} from 'node:crypto';
-import {isIP} from 'node:net';
+import {X509Certificate} from 'node:crypto';
+import {privateAddress as sharedPrivateAddress,dnsName as sharedDnsName,sha256Der} from '../../../../../packages/contracts/native-tls-kernel.mjs';
+export {sha256Der};
 
 const HEX=/^[0-9a-f]{64}$/u;
 const DNS=/^[a-z0-9](?:[a-z0-9.-]{0,251}[a-z0-9])?$/u;
 const fail=()=>{throw Object.assign(new Error('HOST_CONTROL_TLS_REFUSED'),{code:'HOST_CONTROL_TLS_REFUSED'});};
 export const MAX_CERT_LIFETIME_MS=900000;
 
-export function privateAddress(value){
- if(typeof value!=='string'||isIP(value)!==4)fail();
- const octets=value.split('.').map(Number);
- if(!(octets[0]===10||octets[0]===172&&octets[1]>=16&&octets[1]<=31||
-  octets[0]===192&&octets[1]===168||value==='127.0.0.1'))fail();
- return value;
-}
-export function dnsName(value){if(typeof value!=='string'||!DNS.test(value)||value.includes('..')||value.startsWith('*.'))fail();return value;}
-export function sha256Der(raw){if(!Buffer.isBuffer(raw)||!raw.length)fail();return createHash('sha256').update(raw).digest('hex');}
+export function privateAddress(value){return sharedPrivateAddress(value,{allowLoopback:true});}
+export function dnsName(value){return sharedDnsName(value);}
 export function fingerprint(value){if(typeof value!=='string'||!HEX.test(value))fail();return value;}
 export function tlsBytes(value){if(!Buffer.isBuffer(value)||value.length<1||value.length>131072)fail();return Buffer.from(value);}
 

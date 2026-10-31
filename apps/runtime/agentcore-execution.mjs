@@ -10,10 +10,10 @@ const same=(a,b)=>hash(a)===hash(b);
 const refuse=code=>{throw Object.assign(Error(code),{code});};
 const checkSignal=signal=>()=>signal?.throwIfAborted();
 
-export function createAgentCoreExecutionOwner({store,provider,versions,plan,credentialSecret,admit,contextFor,beforeInvocation,
+export function createAgentCoreExecutionOwner({store,provider,versions,plan,credentialSecret,admit,contextFor,beforeInvocation,nativeNeed,nativeReady,
  now=Date.now,newId=randomUUID,onUnknown=()=>{}}){
  validateShape('RuntimeVersions',versions);
- if(typeof credentialSecret!=='string'||credentialSecret.length<32||typeof admit!=='function'||typeof contextFor!=='function'||beforeInvocation!==undefined&&typeof beforeInvocation!=='function')refuse('EXECUTION_CONFIGURATION');
+ if(typeof credentialSecret!=='string'||credentialSecret.length<32||typeof admit!=='function'||typeof contextFor!=='function'||beforeInvocation!==undefined&&typeof beforeInvocation!=='function'||nativeNeed!==undefined&&typeof nativeNeed!=='function'||nativeReady!==undefined&&typeof nativeReady!=='function')refuse('EXECUTION_CONFIGURATION');
  const journal=store.executions,pending=new Map(),observation=new AbortController();let closed=false;
  const credentialFor=execution=>'meri_execution_'+createHmac('sha256',credentialSecret)
   .update('meri-agentcore-execution-v1\0').update(hash(assertExecutionIdentity(execution))).digest('base64url');
@@ -43,6 +43,24 @@ export function createAgentCoreExecutionOwner({store,provider,versions,plan,cred
     const admitted=await existing(execution.binding,observation.signal);
     if(admitted.record?.phase!=='launching'||!['queued','starting','running'].includes(admitted.run.state)||execution.expiresAtMs<=now())refuse('EXECUTION_ADMISSION_REFUSED');
    }
+   let native=null;
+   if(nativeReady)native=await nativeReady({binding:execution.binding,executionId:execution.executionId,
+    signal:observation.signal,deadlineMs:execution.expiresAtMs});
+   observation.signal.throwIfAborted();
+   const checkFinal=finalRun=>
+    finalRun.record?.executionId!==execution.executionId||finalRun.record?.phase!=='launching'||
+    !['queued','starting','running'].includes(finalRun.run?.state)||hash(finalRun.record?.binding)!==hash(execution.binding)||
+    hash(finalRun.run?.binding)!==hash(execution.binding)||!Number.isSafeInteger(finalRun.record?.expiresAtMs)||
+    finalRun.record.expiresAtMs<=now()||execution.expiresAtMs<=now();
+   if(checkFinal(await existing(execution.binding,observation.signal)))refuse('EXECUTION_ADMISSION_REFUSED');
+   if(nativeReady)native=await nativeReady({binding:execution.binding,executionId:execution.executionId,
+    signal:observation.signal,deadlineMs:execution.expiresAtMs});
+   observation.signal.throwIfAborted();
+   if(checkFinal(await existing(execution.binding,observation.signal)))refuse('EXECUTION_ADMISSION_REFUSED');
+   if(native!==null&&(!['ready','none'].includes(native?.status)||
+    native.status==='ready'&&(!Number.isSafeInteger(native.currentUntilMs)||native.currentUntilMs<=now()||
+     !Number.isSafeInteger(native.leaseDeadlineMs)||native.leaseDeadlineMs<=now())))refuse('EXECUTION_ADMISSION_REFUSED');
+   observation.signal.throwIfAborted();
    const result=await provider.invoke({execution,versions,credential:credentialFor(execution),...settings,signal:observation.signal});
    own(result,['execution','state','settled']);
    if(!same(result.execution,execution)||!isExecutionOutcome(result.state)||result.settled!==true)refuse('EXECUTION_RESPONSE_REFUSED');
@@ -56,6 +74,18 @@ export function createAgentCoreExecutionOwner({store,provider,versions,plan,cred
    }catch{}
    try{onUnknown('AGENTCORE_INVOCATION_UNKNOWN');}catch{}
   }finally{pending.delete(execution.executionId);}
+ }
+ async function nativePrerequisite({binding,executionId,signal}){
+  validateShape('RunBinding',binding);
+  const saved=await existing(binding,signal),record=saved.record;
+  if(!record||record.executionId!==executionId)refuse('EXECUTION_NOT_FOUND');
+  if(nativeNeed===undefined)return {kind:'none'};
+  const need=own(await nativeNeed({binding,executionId,signal,deadlineMs:record.expiresAtMs}),['kind'],['hostMode','policySha256','uploadCount']);
+  if(!['none','native-processing'].includes(need.kind))refuse('EXECUTION_NATIVE_PREREQUISITE_REFUSED');
+  if(need.kind==='none')return {kind:'none'};
+  if(need.hostMode!=='native-processing'||!/^[a-f0-9]{64}$/u.test(need.policySha256)||
+   !Number.isSafeInteger(need.uploadCount)||need.uploadCount<1)refuse('EXECUTION_NATIVE_PREREQUISITE_REFUSED');
+  return {kind:'native-processing',hostMode:'native-processing',policySha256:need.policySha256,uploadCount:need.uploadCount};
  }
  async function kickoff({binding,executionKey,signal}){
   if(closed||executionKey!==hash(binding))refuse('EXECUTION_REFUSED');
@@ -111,7 +141,7 @@ export function createAgentCoreExecutionOwner({store,provider,versions,plan,cred
   await journal.record({binding:execution.binding,executionId:execution.executionId,phase:'settled',native:{state}},checkSignal(signal));
   return {execution,state,settled:true};
  }
- return Object.freeze({kickoff,status,authenticate,admitted,settle,
+ return Object.freeze({kickoff,status,nativePrerequisite,authenticate,admitted,settle,
   stopExecution:input=>provider.stop(input),
   async close(){closed=true;observation.abort();await Promise.allSettled(pending.values());}});
 }
