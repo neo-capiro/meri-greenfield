@@ -27,3 +27,10 @@ const unadmitted: AdmittedFederalRequest<'federal-prepare'> = {selection};
 // @ts-expect-error Unknown routes cannot bypass request validation.
 receiveFederalRequest('federal-approve', bytes);
 void [source, request, published, publication, unadmitted, imported, envelope];
+
+// The parser discriminant narrows the declared nested source locations.
+declare const nestedOrFlat: FederalCompilerSource;
+if (nestedOrFlat.parserVersion === 'federal-scoped-text/2') {
+  const ancestors: string[] = nestedOrFlat.scopes[0].ancestorPath;
+  void ancestors;
+}

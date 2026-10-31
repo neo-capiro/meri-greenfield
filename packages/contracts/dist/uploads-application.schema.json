@@ -58,6 +58,36 @@
       ],
       "additionalProperties": false
     },
+    "UploadStatusRequest": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "uploadId": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          "required": [
+            "uploadId"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "requestId": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          "required": [
+            "requestId"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    },
     "UploadOriginal": {
       "type": "object",
       "properties": {

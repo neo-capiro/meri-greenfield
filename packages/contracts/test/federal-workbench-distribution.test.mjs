@@ -7,8 +7,18 @@ import {receiveFederalSource, receiveFederalRequest, receiveFederalResponse} fro
 import {sourceFor, opFor} from '../../../apps/artifacts/federal-drafting/test/fixtures.mjs';
 import official from './fixtures/federal-draft-source.wire.json' with {type:'json'};
 import {projectNativeFederalSource} from '../../../apps/artifacts/federal-drafting/native-source.mjs';
+import {scopedSource} from '../../../apps/artifacts/federal-drafting/test/scoped-fixture.mjs';
 
 const bytes = value => new TextEncoder().encode(JSON.stringify(value));
+
+test('distributed nested source validates explicit ancestors and rejects malformed locations', async () => {
+  const source=scopedSource();
+  assert.deepEqual(await receiveFederalSource(bytes(source)),source);
+  for(const mutate of [s=>s.scopes[2].ancestorPath=[],s=>s.scopes.reverse(),s=>s.scopes[3].start--,s=>s.scopes[2].id=s.scopes[1].id]){
+    const changed=structuredClone(source);mutate(changed);
+    await assert.rejects(receiveFederalSource(bytes(changed)),/SOURCE_MISMATCH/);
+  }
+});
 
 test('distributed official import binds the selection and retained source envelope', async () => {
   const selection = structuredClone(official.request);
@@ -58,6 +68,6 @@ test('distributed receiver runs with browser globals and no external imports', a
   const source = sourceFor();
   const received = await module.namespace.receiveFederalSource(bytes(source));
   assert.equal(received.sha256, source.sha256);
-  assert.equal(module.namespace.federalWorkbenchVersion, '1.1.0');
+  assert.equal(module.namespace.federalWorkbenchVersion, '1.2.0');
   await assert.rejects(module.namespace.receiveFederalSource(bytes({...source, sha256: '0'.repeat(64)})));
 });
