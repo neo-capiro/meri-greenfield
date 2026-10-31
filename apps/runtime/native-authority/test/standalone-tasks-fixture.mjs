@@ -28,7 +28,9 @@ export function standaloneFixture({general=false,maxResponseBytes=262144,retenti
   const outcome={execution:{kind:'native-task',proposalId:proposal.proposalId,commandSha256:proposal.commandSha256,idempotencyKey:c.idempotencyKey,binding:c.binding,completedAt,approvalDecisionSha256:hash(decision)},result};
   effects.set(proposal.proposalId,outcome);await state.afterExecute?.();return {status:'observed',outcome};
  }};
- const shared={tasks,owner:createIntentApprovalOwner({journal:createPostgresIntentJournalStore({pool}),decisions,tasks,now,limits:{maxRequestMs:3000},enabled:true})};
+ const journalStore=createPostgresIntentJournalStore({pool});
+ const journal=Object.fromEntries(['read','list','claim','settle'].map(key=>[key,journalStore[key]]));
+ const shared={tasks,owner:createIntentApprovalOwner({journal,decisions,tasks,now,limits:{maxRequestMs:3000},enabled:true})};
  const app=createStandaloneTaskApplication({context,sessions,store,shared,retention});
  const raw={requestId:id(70),arguments:{taskId:id(21),title:' Updated ',status:'open'}};
  const request=(route,body,options={})=>new Request('https://meri.invalid/api/task-commands/'+route,{method:'POST',headers:{'content-type':'application/json',authorization:'Bearer synthetic-session'},body:JSON.stringify(body),...options});

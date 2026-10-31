@@ -1,6 +1,7 @@
 /** Source composition only: no listener or configuration activation. The caller
  * supplies the existing document options/session owners and self-hosted CODE. */
 import {createRuntimeOfficeAccess} from './office-access.mjs';
+import {importOfficeOriginal} from './office-original.mjs';
 import {types} from 'node:util';
 import {own,data} from '../../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {OFFICE_SCHEMA,receiveOfficeRequest} from '../../../packages/contracts/dist/office-application.mjs';
@@ -9,7 +10,7 @@ import {borrowedRunSession} from '../../control/action-host/session/owner.mjs';
 import {createAttendedOffice,attendedRequest,attendedIntent} from '../../artifacts/edit-sessions/attended.mjs';
 import {createWopiFileApplication} from '../../artifacts/edit-sessions/wopi-files.mjs';
 import {wopiRequest,wopiResponse,cancelWopiBody,refusalStatus} from '../../artifacts/edit-sessions/wopi-http.mjs';
-export function createRuntimeOfficeApplication({optionsOwner,sessions,now,limits,drafts,codec,launch,generation,browserOrigin}){
+export function createRuntimeOfficeApplication({optionsOwner,sessions,now,limits,drafts,codec,launch,generation,browserOrigin,originalSource}){
  let origin;try{origin=new URL(browserOrigin);}catch{throw Error('OFFICE_CONFIGURATION');}
  if(typeof browserOrigin!=='string'||origin.protocol!=='https:'||origin.origin!==browserOrigin)throw Error('OFFICE_CONFIGURATION');
  const access=createRuntimeOfficeAccess({optionsOwner,sessions,now,limits}),borrow=borrowedRunSession(sessions);
@@ -17,6 +18,12 @@ export function createRuntimeOfficeApplication({optionsOwner,sessions,now,limits
  if(typeof borrow!=='function'||typeof codec?.verify!=='function')throw Error('OFFICE_CONFIGURATION');
  const application={
   async execute(route,value,{credential,deadlineMs,signal}){
+   if(route==='import'){
+    const input=data(own(value,['uploadId','sha256','operation']));receiveOfficeRequest('import',Buffer.from(JSON.stringify({schema:OFFICE_SCHEMA,...input})));
+    const selection={uploadId:input.uploadId,sha256:input.sha256};
+    return access.run({credential,deadlineMs,signal,intent:'office-import',versionId:null,selection},
+     current=>importOfficeOriginal({source:originalSource,current,selection,operation:input.operation,credential,generation}));
+   }
    if(route==='inspect'){
     const input=data(own(value,['versionId']));receiveOfficeRequest('inspect',Buffer.from(JSON.stringify({schema:OFFICE_SCHEMA,...input})));
     return access.run({credential,deadlineMs,signal,intent:'inspect',versionId:input.versionId},async current=>{

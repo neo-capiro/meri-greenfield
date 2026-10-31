@@ -58,7 +58,7 @@ export function captureRuntimePorts(value={}){
   ...(c.actionApplicationFactory===undefined?{}:{actionApplicationFactory:methods(c.actionApplicationFactory,['create','state'])}),
   ...(c.taskCommandApplication===undefined?{}:{taskCommandApplication:methods(c.taskCommandApplication,['handle'])}),
   ...(c.taskCommandApplicationFactory===undefined?{}:{taskCommandApplicationFactory:methods(c.taskCommandApplicationFactory,['create','state'])}),
-  ...(c.uploadApplicationFactory===undefined?{}:{uploadApplicationFactory:methods(c.uploadApplicationFactory,['create','state',...(Object.hasOwn(c.uploadApplicationFactory,'createSource')?['createSource']:[])])}),
+  ...(c.uploadApplicationFactory===undefined?{}:{uploadApplicationFactory:methods(c.uploadApplicationFactory,['create','state',...(Object.hasOwn(c.uploadApplicationFactory,'createSource')?['createSource']:[]),...(Object.hasOwn(c.uploadApplicationFactory,'createOfficeSource')?['createOfficeSource']:[])])}),
   ...(c.nativeUploadStore===undefined?{}:{nativeUploadStore:methods(c.nativeUploadStore,['readOnClient'])}),
   ...(routineFactory===undefined?{}:{routinesApplicationFactory:Object.freeze({...routineFactory,...(routineHistory===undefined?{}:{historyCurrentness:routineHistory}),...(routineInboxState===undefined?{}:{inboxState:routineInboxState}),...(routineManagement===undefined?{}:{managementSessionConfiguration:routineManagement})})}),
   ...(c.conversationMembership===undefined?{}:{conversationMembership:methods(c.conversationMembership,['admit','recheck'])}),

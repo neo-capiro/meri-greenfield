@@ -5,6 +5,16 @@ import nativeFederalSchema from '../retrieval-0.2/federal-draft-source.schema.js
 export const retainedFederalSchema=structuredClone(nativeFederalSchema);
 retainedFederalSchema.$id='urn:meri:federal-retained-source:1';
 retainedFederalSchema.$defs.FederalDraftCompilerSource.properties.coverage.properties.complete={type:'boolean'};
+// Native official imports keep their frozen flat-text contract. Only retained,
+// explicitly versioned envelopes admit declared nested text locations.
+const flat=retainedFederalSchema.$defs.FederalDraftCompilerSource;
+const scoped=structuredClone(flat);
+scoped.properties.parserVersion={const:'federal-scoped-text/2'};
+scoped.properties.scopes.items.properties.ancestorPath={type:'array',maxItems:127,items:{type:'string',pattern:'^[A-Za-z0-9][A-Za-z0-9_.:-]{0,127}$'}};
+scoped.properties.scopes.items.required.push('ancestorPath');
+retainedFederalSchema.$defs.FederalDraftCompilerSource={oneOf:[flat,scoped]};
+retainedFederalSchema.$defs.FederalDraftCompilation.properties.parserVersion={enum:['federal-plain-text/1','federal-scoped-text/2']};
+
 const object=properties=>({type:'object',properties,required:Object.keys(properties),additionalProperties:false});
 const ref=name=>({$ref:'#/$defs/'+name});
 const sha={type:'string',pattern:'^[a-f0-9]{64}$'},uuid={type:'string',format:'uuid'};

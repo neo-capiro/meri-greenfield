@@ -2,6 +2,98 @@
 
 /**
  * This interface was referenced by `FederalWorkbench`'s JSON-Schema
+ * via the `definition` "FederalCompilerSource".
+ *
+ * This interface was referenced by `FederalWorkbench`'s JSON-Schema
+ * via the `definition` "FederalDraftCompilerSource_449cfb6a".
+ */
+export type FederalCompilerSource =
+  | {
+      documentId: string;
+      publisher: string;
+      sourceVersion: string;
+      sourceUrl: string;
+      publishedAt: string | null;
+      parserVersion: "federal-plain-text/1";
+      sha256: string;
+      text: string;
+      coverage: {
+        complete: boolean;
+        /**
+         * @minItems 1
+         * @maxItems 32
+         */
+        limitations: [string, ...string[]];
+      };
+      /**
+       * @minItems 1
+       * @maxItems 128
+       */
+      scopes: [
+        {
+          id: string;
+          label: string;
+          start: number;
+          end: number;
+          sha256: string;
+        },
+        ...{
+          id: string;
+          label: string;
+          start: number;
+          end: number;
+          sha256: string;
+        }[]
+      ];
+    }
+  | {
+      documentId: string;
+      publisher: string;
+      sourceVersion: string;
+      sourceUrl: string;
+      publishedAt: string | null;
+      parserVersion: "federal-scoped-text/2";
+      sha256: string;
+      text: string;
+      coverage: {
+        complete: boolean;
+        /**
+         * @minItems 1
+         * @maxItems 32
+         */
+        limitations: [string, ...string[]];
+      };
+      /**
+       * @minItems 1
+       * @maxItems 128
+       */
+      scopes: [
+        {
+          id: string;
+          label: string;
+          start: number;
+          end: number;
+          sha256: string;
+          /**
+           * @maxItems 127
+           */
+          ancestorPath: string[];
+        },
+        ...{
+          id: string;
+          label: string;
+          start: number;
+          end: number;
+          sha256: string;
+          /**
+           * @maxItems 127
+           */
+          ancestorPath: string[];
+        }[]
+      ];
+    };
+/**
+ * This interface was referenced by `FederalWorkbench`'s JSON-Schema
  * via the `definition` "ArtifactVersion_7f9c56fa".
  */
 export type ArtifactVersion_7F9C56Fa = ArtifactVersionD54B8Ac9 | NativeArtifactVersionFf97D150;
@@ -219,51 +311,6 @@ export interface FederalWorkbench {
 }
 /**
  * This interface was referenced by `FederalWorkbench`'s JSON-Schema
- * via the `definition` "FederalCompilerSource".
- *
- * This interface was referenced by `FederalWorkbench`'s JSON-Schema
- * via the `definition` "FederalDraftCompilerSource_449cfb6a".
- */
-export interface FederalDraftCompilerSource_449Cfb6A {
-  documentId: string;
-  publisher: string;
-  sourceVersion: string;
-  sourceUrl: string;
-  publishedAt: string | null;
-  parserVersion: "federal-plain-text/1";
-  sha256: string;
-  text: string;
-  coverage: {
-    complete: boolean;
-    /**
-     * @minItems 1
-     * @maxItems 32
-     */
-    limitations: [string, ...string[]];
-  };
-  /**
-   * @minItems 1
-   * @maxItems 128
-   */
-  scopes: [
-    {
-      id: string;
-      label: string;
-      start: number;
-      end: number;
-      sha256: string;
-    },
-    ...{
-      id: string;
-      label: string;
-      start: number;
-      end: number;
-      sha256: string;
-    }[]
-  ];
-}
-/**
- * This interface was referenced by `FederalWorkbench`'s JSON-Schema
  * via the `definition` "FederalNativeSelection".
  *
  * This interface was referenced by `FederalWorkbench`'s JSON-Schema
@@ -283,7 +330,7 @@ export interface FederalNativeSelection {
 export interface FederalSourceEnvelope {
   schema: "meri.federal-source.v1";
   selection: FederalNativeSelection;
-  source: FederalDraftCompilerSource_449Cfb6A;
+  source: FederalCompilerSource;
 }
 /**
  * This interface was referenced by `FederalWorkbench`'s JSON-Schema
@@ -300,7 +347,7 @@ export interface FederalImportRequest {
 export interface FederalImportResult {
   schema: "meri.federal-source.v1";
   selection: FederalNativeSelection;
-  source: FederalDraftCompilerSource_449Cfb6A;
+  source: FederalCompilerSource;
   publication: ArtifactCreatedResult_183A755E;
 }
 /**
@@ -537,8 +584,8 @@ export interface FederalRetainedPreparation {
  * via the `definition` "FederalDraftCompilation_66ff9248".
  */
 export interface FederalDraftCompilation_66Ff9248 {
-  parserVersion: "federal-plain-text/1";
-  source: FederalDraftCompilerSource_449Cfb6A;
+  parserVersion: "federal-plain-text/1" | "federal-scoped-text/2";
+  source: FederalCompilerSource;
   /**
    * @minItems 1
    * @maxItems 64
@@ -633,7 +680,7 @@ declare const federalReview:unique symbol;
 export type AdmittedFederalRequest<R extends FederalRoute>=Readonly<FederalRequest<R>>&{readonly[federalRequest]:R};
 export type AdmittedFederalReview=Readonly<FederalReview>&{readonly[federalReview]:true};
 export type FederalResponse<R extends FederalRoute>=(R extends 'federal-import'?Readonly<FederalImportResult>:R extends 'federal-publish'?Readonly<FederalPublication>:AdmittedFederalReview)|Readonly<FederalError>;
-export declare const federalWorkbenchVersion:'1.1.0';
+export declare const federalWorkbenchVersion:'1.2.0';
 export declare function receiveFederalSource(bytes:Uint8Array):Promise<Readonly<FederalCompilerSource>>;
 export declare function receiveFederalRequest<R extends FederalRoute>(route:R,bytes:Uint8Array):AdmittedFederalRequest<R>;
 export declare function receiveFederalResponse<R extends FederalRoute>(route:R,status:number,bytes:Uint8Array,request:AdmittedFederalRequest<R>,review?:AdmittedFederalReview):Promise<FederalResponse<R>>;

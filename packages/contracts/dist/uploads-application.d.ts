@@ -1,6 +1,14 @@
 // Generated upload integrity boundary. No authority, malware qualification or retry grant.
 
-export type UploadEnvelope = UploadInitiateRequest | UploadIdRequest | UploadReceipt | UploadError;
+export type UploadEnvelope =
+  UploadInitiateRequest | UploadIdRequest | UploadStatusRequest | UploadReceipt | UploadError;
+export type UploadStatusRequest =
+  | {
+      uploadId: string;
+    }
+  | {
+      requestId: string;
+    };
 
 export interface UploadInitiateRequest {
   requestId: string;
@@ -163,7 +171,7 @@ export interface UploadError {
 
 declare const uploadRequestBrand:unique symbol,uploadReceiptBrand:unique symbol;
 export type UploadRoute="initiate"|"complete"|"status"|"inspect"|"read"|"remove";
-export type AdmittedUploadRequest<R extends UploadRoute>=Readonly<R extends 'initiate'?UploadInitiateRequest:UploadIdRequest>&{readonly [uploadRequestBrand]:R};
+export type AdmittedUploadRequest<R extends UploadRoute>=Readonly<R extends 'initiate'?UploadInitiateRequest:R extends 'status'?UploadStatusRequest:UploadIdRequest>&{readonly [uploadRequestBrand]:R};
 export type AdmittedUploadReceipt=Readonly<UploadReceipt>&{readonly [uploadReceiptBrand]:true};
 export declare class UploadResponseError extends Error {readonly code:string;}
 export declare const uploadApplicationVersion:'1.0.0',UPLOAD_POLICY_VERSION:'upload-1';

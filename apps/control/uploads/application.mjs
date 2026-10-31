@@ -64,6 +64,7 @@ export function createUploadApplication(configuration){
    else{
     const body=await jsonBody({body:request.body,length},8192,life,life.check);
     if(intent==='initiate'){const call=own(data(body),['requestId','filename','mimeType','bytes','sha256']);const {requestId,...declaration}=call;mutating=true;result=await custody.initiate({requestId,declaration},options);}
+    else if(intent==='status'&&Object.hasOwn(body,'requestId')){const {requestId}=own(data(body),['requestId']);result=await custody.statusByRequest(uuid(requestId),options);}
     else{const {uploadId}=own(data(body),['uploadId']);uuid(uploadId);mutating=['inspect','remove'].includes(intent);result=await custody[intent](uploadId,options);}
    }
    await current.fresh(life);life.check();

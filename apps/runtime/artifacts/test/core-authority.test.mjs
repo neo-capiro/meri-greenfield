@@ -284,7 +284,7 @@ test('authority refuses before Core: forged digest, revoked session, marked bear
  // run row of its own is pinned by the fresh Core observation above and still resolves, while every other intent refuses.
  h.store.missing=true;
  assert.equal((await h.authority.resolve(h.call('download',{versionId:'00000000-0000-4000-8000-00000000f001'}))).artifactOptions.context.maxBytes,limits.maxResponseBytes,'a retained read with no run row of its own stays readable, pinned by the current observation');
- await assert.rejects(h.authority.resolve(h.call('create',createBody)),code('ACCESS_DENIED'),'the same absent run row refuses every non-retained intent');
+ await assert.rejects(h.authority.resolve(h.call('create',createBody)),code('ACCESS_DENIED'),'the same absent run row still refuses model generation');
  h.store.missing=false;h.store.state='cancelled';
  await assert.rejects(h.authority.resolve(h.call('create',createBody)),code('ACCESS_DENIED'),'a cancelled run refuses generation');
  assert.equal((await h.authority.resolve(h.call('download',{versionId:'00000000-0000-4000-8000-00000000f001'}))).artifactOptions.context.maxBytes,limits.maxResponseBytes,'cancellation never suppresses an already published artifact read');
@@ -360,4 +360,15 @@ test('composed family through the runtime document application: Core gates admis
  // Without a declared authority origin the same supplied authority composes the store only.
  const plain=family(Object.freeze({...context,configuration:{...context.configuration,artifacts:artifacts({authority:undefined})}}));
  assert.deepEqual(Object.keys(plain.ports),['artifactStore']);
+});
+
+for(const [intent,operation] of [['office-import','artifact.generate'],['office-edit','artifact.revise']])test(`${intent}: attended original editing before a submitted turn keeps current authority and cancellation fences`,async t=>{
+ const h=await authorityHarness();t.after(()=>h.live.sessions.close());h.store.missing=true;
+ const body={selection:{uploadId:ids.runId,sha256:'a'.repeat(64)}};
+ const resolved=await h.authority.resolve(h.call(intent,body));
+ assert.deepEqual(INTENT_OPERATIONS[intent],[operation]);
+ assert.equal(resolved.artifactOptions.context.binding.conversationId,ids.conversationId);
+ h.core.operations=[];await assert.rejects(h.authority.resolve(h.call(intent,body)),code('ACCESS_DENIED'));
+ h.core.operations=[operation];h.store.missing=false;h.store.state='cancelled';
+ await assert.rejects(h.authority.resolve(h.call(intent,body)),code('ACCESS_DENIED'));
 });
