@@ -2,7 +2,7 @@
   "schemaVersion": 2,
   "platform": "linux/arm64",
   "nodeVersion": "v24.22.1",
-  "pythonVersion": "3.13.16",
+  "pythonVersion": "3.13.18",
   "nodeImageUri": "public.ecr.aws/docker/library/node@sha256:401346cb1fc12bb388a82ed58ea72eeed2fe8530804d2964bcddce63a4eda4d8",
   "runtimeImageUri": "cgr.dev/chainguard/wolfi-base@sha256:4e354e15b41a49dc249d07a4e38974c4ef6db8a4cc70059c4d625f5cdaa92657",
   "baseProvenance": {
@@ -40,19 +40,19 @@
     },
     {
       "name": "python-3.13",
-      "version": "3.13.16_git20261016-r2",
+      "version": "3.13.18_git20261030-r0",
       "architecture": "aarch64",
-      "source": "https://packages.wolfi.dev/os/aarch64/python-3.13-3.13.16_git20261016-r2.apk",
-      "sha256": "ec5c434e7baeed78102d684cca26d8bad793d8408719dbed836c26f3bac7e97f",
-      "bytes": 15649
+      "source": "https://packages.wolfi.dev/os/aarch64/python-3.13-3.13.18_git20261030-r0.apk",
+      "sha256": "cf02deba28610c4d886c7efddb286bb26855f2c4a23fe56ca9cea0dc5c70cbf2",
+      "bytes": 21342
     },
     {
       "name": "python-3.13-base",
-      "version": "3.13.16_git20261016-r2",
+      "version": "3.13.18_git20261030-r0",
       "architecture": "aarch64",
-      "source": "https://packages.wolfi.dev/os/aarch64/python-3.13-base-3.13.16_git20261016-r2.apk",
-      "sha256": "0baaae06fe50c478491eeaa686c8f443f8dd6969a3c5af8d6f2cb6c1a237519f",
-      "bytes": 11899055
+      "source": "https://packages.wolfi.dev/os/aarch64/python-3.13-base-3.13.18_git20261030-r0.apk",
+      "sha256": "d6984fe10393415db29b3778d3514cea81ab343465d98c7984c6fc035e93208f",
+      "bytes": 11921197
     },
     {
       "name": "py3.13-pip",
@@ -3215,23 +3215,23 @@
         "requiredBy": "clamav-1.5.4/CMakeLists.txt 219-231 requires find_package(Libcheck REQUIRED) and find_package(Python3 REQUIRED), or EXACT when PYTHON_FIND_VERSION is defined, whenever ENABLE_TESTS=ON; 256-277 runs the unit-test input generators with ${Python3_EXECUTABLE} at build time and requires `${Python3_EXECUTABLE} -m unittest --help` to exit 0; the ctestGateCorrection record below installs pytest in the same stage, so CMake selects `-m pytest -v` for the ctest suites",
         "stage": "clamav-source-build (build-only)",
         "repositoryPath": "/tmp/meri-native-runtime-repo",
-        "repository": "the retained runtime staging set (native-repository: the same vendor-signed index and the same authenticated archives the exported runtime stage already installs python-3.13 from), mounted read-only at its own path, so the interpreter costs no new source, no new checksum and no new trust decision",
-        "exclusiveRepository": "one --repository with --repositories-file /dev/null and --no-network, as the development closure install already is, so the staged signed index stays the only possible source and an incomplete closure fails the build instead of resolving elsewhere",
+        "repository": "The existing two offline vendor-signed repositories, mounted read-only: fixed Python pair from the second index, unchanged dependency closure from the retained first index.",
+        "exclusiveRepository": "Two named offline repositories with --repositories-file /dev/null and --no-network; no untrusted-file exception or live resolution.",
         "requested": [
          {
           "name": "python-3.13",
-          "version": "3.13.16_git20261016-r2",
-          "filename": "python-3.13-3.13.16_git20261016-r2.apk",
-          "sha256": "ec5c434e7baeed78102d684cca26d8bad793d8408719dbed836c26f3bac7e97f",
-          "url": "https://packages.wolfi.dev/os/aarch64/python-3.13-3.13.16_git20261016-r2.apk",
+          "version": "3.13.18_git20261030-r0",
+          "filename": "python-3.13-3.13.18_git20261030-r0.apk",
+          "sha256": "cf02deba28610c4d886c7efddb286bb26855f2c4a23fe56ca9cea0dc5c70cbf2",
+          "url": "https://packages.wolfi.dev/os/aarch64/python-3.13-3.13.18_git20261030-r0.apk",
           "role": "named in the interpreter install"
          },
          {
           "name": "python-3.13-base",
-          "version": "3.13.16_git20261016-r2",
-          "filename": "python-3.13-base-3.13.16_git20261016-r2.apk",
-          "sha256": "0baaae06fe50c478491eeaa686c8f443f8dd6969a3c5af8d6f2cb6c1a237519f",
-          "url": "https://packages.wolfi.dev/os/aarch64/python-3.13-base-3.13.16_git20261016-r2.apk",
+          "version": "3.13.18_git20261030-r0",
+          "filename": "python-3.13-base-3.13.18_git20261030-r0.apk",
+          "sha256": "d6984fe10393415db29b3778d3514cea81ab343465d98c7984c6fc035e93208f",
+          "url": "https://packages.wolfi.dev/os/aarch64/python-3.13-base-3.13.18_git20261030-r0.apk",
           "role": "named in the interpreter install"
          },
          {
@@ -3262,23 +3262,23 @@
          },
          {
           "name": "python-3.13",
-          "version": "3.13.16_git20261016-r2",
-          "filename": "python-3.13-3.13.16_git20261016-r2.apk",
-          "sha256": "ec5c434e7baeed78102d684cca26d8bad793d8408719dbed836c26f3bac7e97f",
-          "url": "https://packages.wolfi.dev/os/aarch64/python-3.13-3.13.16_git20261016-r2.apk",
+          "version": "3.13.18_git20261030-r0",
+          "filename": "python-3.13-3.13.18_git20261030-r0.apk",
+          "sha256": "cf02deba28610c4d886c7efddb286bb26855f2c4a23fe56ca9cea0dc5c70cbf2",
+          "url": "https://packages.wolfi.dev/os/aarch64/python-3.13-3.13.18_git20261030-r0.apk",
           "role": "resolved by apk from the mounted retained runtime staging set"
          },
          {
           "name": "python-3.13-base",
-          "version": "3.13.16_git20261016-r2",
-          "filename": "python-3.13-base-3.13.16_git20261016-r2.apk",
-          "sha256": "0baaae06fe50c478491eeaa686c8f443f8dd6969a3c5af8d6f2cb6c1a237519f",
-          "url": "https://packages.wolfi.dev/os/aarch64/python-3.13-base-3.13.16_git20261016-r2.apk",
+          "version": "3.13.18_git20261030-r0",
+          "filename": "python-3.13-base-3.13.18_git20261030-r0.apk",
+          "sha256": "d6984fe10393415db29b3778d3514cea81ab343465d98c7984c6fc035e93208f",
+          "url": "https://packages.wolfi.dev/os/aarch64/python-3.13-base-3.13.18_git20261030-r0.apk",
           "role": "resolved by apk from the mounted retained runtime staging set"
          }
         ],
         "satisfiedByTheDevelopmentClosure": "the interpreter's remaining dependencies are already installed by the pinned 136-archive development closure: glibc-2.44 2.44-r10 with ld-linux-2.44 2.44-r10 (so:libc.so.6, so:libm.so.6, so:ld-linux-aarch64.so.1), ncurses 6.6.20261024-r0 (so:libncursesw.so.6, so:libtinfo.so.6, so:libpanelw.so.6), readline 8.3-r3, gdbm 1.26-r9 (so:libgdbm.so.6, so:libgdbm_compat.so.4), xz 5.8.4-r0 (so:liblzma.so.5), zlib-dev 1.3.2.1_rc20260921-r1 (so:libz.so.1), openssl-dev 3.6.5-r6 with the openssl-4.0 libraries (so:libcrypto.so.4, so:libssl.so.4), libexpat1 2.9.0-r0, libbz2-1 1.0.8-r28, sqlite-libs 3.54.1-r0, libgcc 16.2.0-r2 and libstdc++ 16.2.0-r2; libffi 3.8.0-r2, libuuid 2.42.4-r1 and ncurses-terminfo-base 6.6.20261024-r0 are now installed by the completed development closure as well.",
-        "versionAssertion": "python3.13 -c 'import sys; assert sys.version_info[:3] == (3, 13, 16), sys.version; print(\"interpreter\", sys.version)'",
+        "versionAssertion": "python3.13 -c 'import sys; assert sys.version_info[:3] == (3, 13, 18), sys.version; print(\"interpreter\", sys.version)'",
         "reportedVersion": "python3.13 --version is printed into the build log immediately before the assertion",
         "unittestAssertion": "python3.13 -m unittest --help > /dev/null",
         "unittestAssertionReason": "the upstream block accepts pytest, then `${Python3_EXECUTABLE} -m pytest`, and otherwise requires `${Python3_EXECUTABLE} -m unittest --help` to exit 0 or it stops configure with FATAL_ERROR; the ctestGateCorrection installs pytest in this stage, so configure takes the pytest branch and the ctest suites run under `-m pytest -v`, while the unittest entry point stays present and asserted",
@@ -3314,7 +3314,7 @@
          "zlib"
         ],
         "pinDrift": "the development closure's own version assertion loop still runs after the interpreter install, so an interpreter install that replaced or moved a pinned development package fails the build",
-        "compilerOnly": "installed in the build-only compiler stage through a bind mount released with that RUN; the exported runtime stage keeps its own pinned python-3.13=3.13.16_git20261016-r2 install and names neither the mount nor the compiler stage's repository path",
+        "compilerOnly": "installed in the build-only compiler stage through a bind mount released with that RUN; the exported runtime stage keeps its own pinned python-3.13=3.13.18_git20261030-r0 install and names neither the mount nor the compiler stage's repository path",
         "notProven": "Unqualified: no ARM build has run, so whether apk resolves this closure in stage, whether the interpreter executes the upstream unit tests and the resulting payload's behaviour, ABI, size and scan result remain unproven"
        },
        "qualification": "Unqualified source preparation. No image was built, installed, probed or scanned, so the built payload's behaviour, its size against the 3 GiB measured ceiling, its ABI and its scan result remain unproven and require a separately allocated ARM build, probe and scan."
@@ -3322,13 +3322,37 @@
       "packageIndex": "https://packages.wolfi.dev/os/aarch64/APKINDEX.tar.gz",
       "packageIndexSha256": "991dd62e3a14e255819e7ac013a6deded970555e1f0943e6b2709c09a5edbd24",
       "retrievedOn": "2026-10-28",
+      "pythonSecurityCorrection": {
+        "cve": "CVE-2026-115557",
+        "failedBuild": "73ab784f-563e-406c-bf11-5e9477b24324",
+        "affectedVersion": "3.13.16_git20261016-r2",
+        "fixedVersion": "3.13.18_git20261030-r0",
+        "upstreamRelease": "https://www.python.org/downloads/release/python-31318/",
+        "vendorRecipe": "https://github.com/wolfi-dev/os/blob/main/python-3.13.yaml",
+        "index": "fixedPipIndex",
+        "packages": [
+          {
+            "name": "python-3.13",
+            "version": "3.13.18_git20261030-r0",
+            "sha256": "cf02deba28610c4d886c7efddb286bb26855f2c4a23fe56ca9cea0dc5c70cbf2",
+            "bytes": 21342
+          },
+          {
+            "name": "python-3.13-base",
+            "version": "3.13.18_git20261030-r0",
+            "sha256": "d6984fe10393415db29b3778d3514cea81ab343465d98c7984c6fc035e93208f",
+            "bytes": 11921197
+          }
+        ],
+        "qualification": "Authenticated source/index/package closure only; actual ARM image execution and zero-HIGH/CRITICAL scan required."
+      },
       "fixedPipIndex": {
     "source": "https://packages.wolfi.dev/os/aarch64/APKINDEX.tar.gz",
-    "path": "infra/product-preview/native-apk-index/aarch64-APKINDEX-e37b60006139bac29cffecabf9b1decce4c9636249936e2149ef9c90f6ca7c0c.tar.gz",
-    "sha256": "e37b60006139bac29cffecabf9b1decce4c9636249936e2149ef9c90f6ca7c0c",
-    "bytes": 9152935,
+    "path": "infra/product-preview/native-apk-index/aarch64-APKINDEX-d0b9dba15872808df79eaaefec9d51e26359c61d0f0ff155300ab136118bd5a3.tar.gz",
+    "sha256": "d0b9dba15872808df79eaaefec9d51e26359c61d0f0ff155300ab136118bd5a3",
+    "bytes": 9237212,
     "architecture": "aarch64",
-    "role": "second, separate offline repository used by the runtime python install only: the vendor's own signed index carrying the fixed pip trio (CVE-2026-114613, HIGH). The retained 5c84 index above stays authoritative for the rest of the locked closure because this one omits gst-plugins-base 1.29.2-r3 and gstreamer 1.29.2-r4; neither index is edited, merged or synthesized",
+    "role": "Second offline vendor-signed repository for the fixed pip trio and Python 3.13.18 security pair. Both compiler and runtime use it; the retained first index remains authoritative for the two GStreamer revisions absent here. No index is edited or synthesized.",
     "trustRoot": "the vendor RSA keys already installed in the pinned base keyring; apk verifies this index signature before selecting any package from it"
   },
   "fixedPipPackages": [

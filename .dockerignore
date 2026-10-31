@@ -58,7 +58,7 @@ infra/product-preview/runtime-packages/*
 !infra/product-preview/native-apk-index/
 infra/product-preview/native-apk-index/*
 !infra/product-preview/native-apk-index/aarch64-APKINDEX-5c84e4b835a811c1624d9692f011df3de446c8011be4dedaabf6f3dbf41ec536.tar.gz
-!infra/product-preview/native-apk-index/aarch64-APKINDEX-e37b60006139bac29cffecabf9b1decce4c9636249936e2149ef9c90f6ca7c0c.tar.gz
+!infra/product-preview/native-apk-index/aarch64-APKINDEX-d0b9dba15872808df79eaaefec9d51e26359c61d0f0ff155300ab136118bd5a3.tar.gz
 # The two dearmored vendor keyrings the ClamAV preparation stage verifies signatures with, copied by
 # apps/runtime/Dockerfile and pinned by sha256 inside the build. The armored originals are staged from their
 # published URLs by ADD --checksum, so both forms of each key are present and neither directory is opened wider.

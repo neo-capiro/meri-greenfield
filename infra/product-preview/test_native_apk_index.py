@@ -520,10 +520,14 @@ class RetainedNativeApkIndex(unittest.TestCase):
                                                    PIP_REPO_DIR, package["name"], package["version"])
                         for package in sorted(LOCK["uploadNativeProvenance"]["fixedPipPackages"],
                                                key=lambda item: item["name"])]
+        python_archives = ["ADD --checksum=sha256:%s https://packages.wolfi.dev/os/aarch64/%s-%s.apk "
+                           "%s/aarch64/%s-%s.apk" % (package["sha256"], package["name"], package["version"],
+                                                      PIP_REPO_DIR, package["name"], package["version"])
+                           for package in LOCK["uploadNativeProvenance"]["pythonSecurityCorrection"]["packages"]]
         self.assertEqual(distribution["instructions"],
                          [index_copy] + ["COPY --from=%s %s %s" % (name, REPO_DIR, REPO_DIR)
                                          for name in staging if name.startswith("native-repo-")]
-                         + [pip_copy] + pip_archives
+                         + [pip_copy] + python_archives + pip_archives
                          + [instruction for instruction in distribution["instructions"]
                             if instruction.startswith("RUN --network=none set -e; for apk in /tmp/meri-native-repo")],
                          "the runtime repository stage does not assemble the retained index and each distribution "
@@ -657,7 +661,7 @@ class SourceBuiltClamavPayload(unittest.TestCase):
             self.assertEqual(STAGED.get("%s-%s.apk" % (name, member["version"])), member["sha256"],
                              "the correction's archive %s is not staged at its locked checksum" % name)
         self.assertIn("python3.13 -m pytest --version", build, "the test runner is not exercised after installation")
-        self.assertLess(build.index("python-3.13=3.13.16"), build.index("py3.13-pytest="),
+        self.assertLess(build.index("python-3.13=3.13.18"), build.index("py3.13-pytest="),
                         "pytest is requested before the interpreter it must run on")
 
     def test_the_runtime_image_carries_the_converters_the_delivered_scanner_uses(self):
@@ -1126,7 +1130,7 @@ class SourceBuiltClamavPayload(unittest.TestCase):
                         "the development closure's own version assertions no longer run after the interpreter "
                         "install, so an interpreter install that replaced a pinned development package would pass")
         runtime = " ".join(self.STAGES["runtime"]["instructions"])
-        self.assertIn("python-3.13=3.13.16_git20261016-r2", runtime,
+        self.assertIn("python-3.13=3.13.18_git20261030-r0", runtime,
                       "the exported runtime stage lost its own pinned interpreter install")
         self.assertNotIn(interpreter["repositoryPath"], runtime,
                          "the compiler stage's interpreter repository reaches the exported runtime stage")
@@ -1361,24 +1365,24 @@ class SourceBuiltClamavPayload(unittest.TestCase):
                       "the compiler interpreter install no longer names the second repository")
 
         # negatives, each expressed on the real derived facts
-        dropped = [name for name in sources if name == "python-3.13-base-3.13.16_git20261016-r2.apk"]
+        dropped = [name for name in sources if name == "bash-5.3-r14.apk"]
         self.assertEqual(len(dropped), 1)
         self.assertTrue(unreadable(DOCKERFILE, [name for name in sources + pip_repo if name not in dropped],
                                    fixed, runtime_repo, excluded),
-                        "removing python-3.13-base from the mirrored set was not detected")
+                        "removing bash from the mirrored set was not detected")
         self.assertTrue(unreadable(DOCKERFILE, list(pip_repo), fixed, runtime_repo, excluded),
                         "a mirroring loop that copies nothing was not detected")
-        widened = sorted(excluded + ["python-3.13-3.13.16_git20261016-r2.apk"])
+        widened = sorted(excluded + ["bash-5.3-r14.apk"])
         self.assertTrue(unreadable(DOCKERFILE, [n for n in sources + pip_repo if n not in widened], fixed,
                                    runtime_repo, widened),
                         "widening the exclusions to drop a used archive was not detected")
         mutated = dict(fixed)
-        mutated["python-3.13-3.13.16_git20261016-r2.apk"] = ("Q1DIFFERENT", mutated[
-            "python-3.13-3.13.16_git20261016-r2.apk"][1])
-        self.assertNotEqual(retained.get("python-3.13-3.13.16_git20261016-r2.apk"),
-                            mutated["python-3.13-3.13.16_git20261016-r2.apk"],
+        mutated["bash-5.3-r14.apk"] = ("Q1DIFFERENT", mutated[
+            "bash-5.3-r14.apk"][1])
+        self.assertNotEqual(retained.get("bash-5.3-r14.apk"),
+                            mutated["bash-5.3-r14.apk"],
                             "the differing-checksum control is not actually different")
-        self.assertIn("python-3.13-3.13.16_git20261016-r2.apk", runtime_repo)
+        self.assertIn("bash-5.3-r14.apk", runtime_repo)
 
     def TWO_REPOSITORY_INSTALLS(self, text_body):
         """The apk add statements that name the fixed-pip repository, as complete logical instructions."""
