@@ -13,8 +13,8 @@ export function createRuntimeOfficeAccess(value){
  const nativeCurrent=authenticatedCurrentState(c.sessions);
  if(typeof nativeCurrent!=='function'||typeof c.now!=='function')fail('OFFICE_CONFIGURATION');
  return Object.freeze({async run(value,work){
-  const q=own(value,['credential','intent','versionId','deadlineMs'],['signal']);
-  if(!['revise','download','inspect'].includes(q.intent)||typeof work!=='function')fail('OFFICE_CONFIGURATION');
+  const q=own(value,['credential','intent','versionId','deadlineMs'],['signal','selection']);
+  if(!['revise','download','inspect','office-import'].includes(q.intent)||typeof work!=='function')fail('OFFICE_CONFIGURATION');
   const life=createOperationLifetime({now:c.now,signal:q.signal,deadlineMs:Math.min(q.deadlineMs,c.now()+limits.maxRequestMs),errorFactory:code=>Object.assign(Error(code),{code})});
   const owners=new Map();let initial;
   async function native(){
@@ -24,9 +24,10 @@ export function createRuntimeOfficeAccess(value){
    if(initial&&pin!==initial.pin)fail('ACCESS_DENIED');initial??={pin,state};life.limitDeadline(Math.min(state.expiresAtMs,result.authentication.expiresAtMs));
    return {...state,sessionSha256:hash({principal:result.authentication.principal,sessionRevision:result.authentication.sessionRevision})};
   }
-  async function owner(intent){
-   if(owners.has(intent))return owners.get(intent);
-   const body={versionId:q.versionId},requestSha256=hash({intent,body});
+  async function owner(action,versionId=q.versionId){
+   const intent=action==='revise'?'office-edit':action,key=action+':'+versionId;
+   if(owners.has(key))return owners.get(key);
+   const body=intent==='office-import'?{selection:q.selection}:{versionId},requestSha256=hash({intent,body});
    const raw=await life.run(signal=>resolve({credential:q.credential,intent,body,requestSha256,deadlineMs:life.deadline(),signal}));
    if(raw===null)fail('UNAVAILABLE');const resolved=own(raw,['documentOptions','recheck']);
    if(resolved.documentOptions.sessions!==c.sessions||resolved.documentOptions.now!==c.now)fail('ACCESS_DENIED');
@@ -43,16 +44,16 @@ export function createRuntimeOfficeAccess(value){
    // Each actual source read/publication authorization refreshes Core, including
    // the artifact owner's last authorization after an awaited byte operation.
    const authorize=async call=>{await fresh('effect');return current.authorize(call);};
-   const result={config,context,fresh,authorize,service:createArtifactService({...config.options,authorize})};owners.set(intent,result);return result;
+   const result={config,context,fresh,authorize,service:createArtifactService({...config.options,authorize})};owners.set(key,result);return result;
   }
   try{
    await native();const primary=await owner(q.intent);
    const context={...primary.context,deadlineMs:life.deadline()},selectedClientId=initial.state.selectedClientId;
    const fresh=async(phase='release')=>{for(const o of owners.values())await o.fresh(phase);return native();};
    const artifacts=Object.freeze({
-    async editorSource(id,ctx,options){const o=await owner(options.write?'revise':'download');return o.service.editorSource(id,{...ctx,maxBytes:Math.min(ctx.maxBytes,o.context.maxBytes)},options);},
-    async revisionSource(id,ctx,options){const o=await owner('inspect');return o.service.revisionSource(id,{...ctx,maxBytes:Math.min(ctx.maxBytes,o.context.maxBytes)},options);},
-    async inspect(id,ctx,options){const o=await owner('inspect');return o.service.inspect(id,{...ctx,maxBytes:Math.min(ctx.maxBytes,o.context.maxBytes)},options);},
+    async editorSource(id,ctx,options){const o=await owner(options.write?'revise':'download',id);return o.service.editorSource(id,{...ctx,maxBytes:Math.min(ctx.maxBytes,o.context.maxBytes)},options);},
+    async revisionSource(id,ctx,options){const o=await owner('inspect',id);return o.service.revisionSource(id,{...ctx,maxBytes:Math.min(ctx.maxBytes,o.context.maxBytes)},options);},
+    async inspect(id,ctx,options){const o=await owner('inspect',id);return o.service.inspect(id,{...ctx,maxBytes:Math.min(ctx.maxBytes,o.context.maxBytes)},options);},
    });
    const publisherFor=(publicationContext,retained)=>{
     if(q.intent!=='revise')fail('ACCESS_DENIED');
@@ -61,7 +62,13 @@ export function createRuntimeOfficeAccess(value){
     return createPostgresArtifactService({...options,context:publicationContext,authorize:primary.authorize,officeEditWrites:true,
      admitRetainedEvidence:value=>retained.admitRetainedEvidence(value)===undefined&&(previous===undefined||previous(value)===undefined)?undefined:1});
    };
-   const result=await work({context,selectedClientId,artifacts,publisherFor,fresh,life,validators:primary.config.options.validators});
+   const originalPublisherFor=(publicationContext,assertOriginal)=>{
+    if(q.intent!=='office-import'||typeof assertOriginal!=='function')fail('ACCESS_DENIED');
+    const {ids,authorizeOrigin,...options}=primary.config.options;
+    return createPostgresArtifactService({...options,context:publicationContext,officeOriginalWrites:true,
+     authorize:async call=>{const receipt=await primary.authorize(call);await assertOriginal();return receipt;}});
+   };
+   const result=await work({context,selectedClientId,artifacts,publisherFor,originalPublisherFor,fresh,life,validators:primary.config.options.validators});
    // Callers with a generation fence perform their final release before return;
    // no new asynchronous work may follow that fence here.
    life.check();return result;

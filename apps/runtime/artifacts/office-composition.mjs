@@ -77,7 +77,8 @@ export function composeOffice({configuration,office,ports,sessions,retention,now
  const launch=createCollaboraCodeLaunch({editorOrigin:office.editorOrigin,wopiOrigin:office.wopiOrigin,
   discoveryBytes:material.discoveryBytes,codec,now});
  const generation=createSuppressionGeneration({journal:retention.journal,serving:retention.serving});
- const application=createRuntimeOfficeApplication({optionsOwner,sessions,now,
+ const originalSource=ports.uploadApplicationFactory?.createOfficeSource?.({sessions,retention:retention.gate});
+ const application=createRuntimeOfficeApplication({optionsOwner,sessions,now,originalSource,
   limits:{maxRequestMs:configuration.limits.requestMs,maxRequestBytes:configuration.limits.requestBytes,maxResponseBytes:configuration.native.maxResponseBytes},drafts,codec,launch,generation,browserOrigin:office.browserOrigin});
  if(typeof application.handleControl!=='function'||typeof application.handleWopi!=='function')throw fault();
  return Object.freeze({application,codec,close(){try{codec.close();}finally{key.fill(0);}}});

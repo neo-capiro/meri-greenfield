@@ -1,12 +1,13 @@
 import type {DocumentInspectionResponse,DocumentVersion,DocumentDownloadOptions} from '@capiro/meri-contracts/document-access-application';
 export declare const OFFICE_SCHEMA:'meri.office-application/1';
-export type OfficeRoute='open'|'read'|'launch'|'renew'|'release'|'discard'|'publish'|'inspect';
+export type OfficeRoute='open'|'read'|'launch'|'renew'|'release'|'discard'|'publish'|'inspect'|'import';
 export declare const OFFICE_ROUTES:readonly OfficeRoute[];
 export declare const OFFICE_ERROR_STATUSES:Readonly<Record<OfficeErrorCode,number>>;
-export type OfficeErrorCode='INVALID_REQUEST'|'UNAUTHENTICATED'|'ACCESS_DENIED'|'NOT_FOUND'|'METHOD_NOT_ALLOWED'|'DEADLINE'|'CONFLICT'|'PUBLISH_UNRESOLVED'|'TOO_LARGE'|'UNSUPPORTED_MEDIA_TYPE'|'CANCELLED'|'REFUSED'|'UNAVAILABLE';
+export type OfficeErrorCode='INVALID_REQUEST'|'UNAUTHENTICATED'|'ACCESS_DENIED'|'NOT_FOUND'|'METHOD_NOT_ALLOWED'|'DEADLINE'|'CONFLICT'|'PUBLISH_UNRESOLVED'|'IMPORT_UNRESOLVED'|'TOO_LARGE'|'UNSUPPORTED_MEDIA_TYPE'|'CANCELLED'|'REFUSED'|'UNAVAILABLE';
 type Selection={readonly schema:typeof OFFICE_SCHEMA;readonly versionId:string;readonly draftId:string};
 type EditorSelection={readonly editorId:string;readonly expectedEpoch:number};
 export interface OfficeRequestMap {
+ import:{readonly schema:typeof OFFICE_SCHEMA;readonly uploadId:string;readonly sha256:string;readonly operation:'import'|'recover'};
  open:Selection;read:Selection;discard:Selection;
  launch:Selection&EditorSelection&{readonly mode:'edit'|'view';readonly operation:'acquire'|'takeover'};
  renew:Selection&EditorSelection&{readonly mode:'edit'|'view'};
@@ -35,6 +36,7 @@ export type OfficeVersion=Readonly<DocumentVersion>&{readonly [versionBrand]:tru
 export interface OfficeDocument {readonly version:OfficeVersion;readonly inspection:OfficeInspection;}
 export interface OfficeSnapshot {readonly schema:typeof OFFICE_SCHEMA;readonly draft:OfficeDraft;readonly editor:OfficeEditor;readonly launch:OfficeLaunch|null;}
 export interface OfficeResponseMap {
+ import:{readonly schema:typeof OFFICE_SCHEMA;readonly uploadId:string;readonly sha256:string;readonly document:OfficeDocument};
  open:OfficeSnapshot;read:OfficeSnapshot;launch:OfficeSnapshot;renew:OfficeSnapshot;release:OfficeSnapshot;
  discard:{readonly schema:typeof OFFICE_SCHEMA;readonly discarded:true};
  publish:{readonly schema:typeof OFFICE_SCHEMA;readonly draft:OfficeDraft;readonly publication:OfficeDocument};

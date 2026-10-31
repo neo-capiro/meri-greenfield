@@ -5,6 +5,7 @@ import {own} from '../../../packages/contracts/commands-0.2/execution-boundary.m
 import {UPLOAD_LIMITS} from '../../../packages/contracts/uploads-application/protocol.mjs';
 import {createUploadApplication} from '../../control/uploads/application.mjs';
 import {createUploadInputReader} from '../../control/uploads/input-source.mjs';
+import {createOfficeOriginalReader} from '../../control/uploads/office-source.mjs';
 import {createUploadInspection} from '../../control/uploads/extraction.mjs';
 import {createPostgresUploadStore} from '../../control/uploads/postgres-store.mjs';
 import {hash,fail} from '../../control/uploads/custody.mjs';
@@ -58,6 +59,9 @@ export function uploadsFamily(owners={}){
   return {ports:{nativeUploadStore,uploadApplicationFactory:Object.freeze({state:()=> 'composed',create({sessions,retention}){
    if(!retention)fail('UPLOAD_CONFIGURATION');
    return createUploadApplication({sessions,store,objects,inspection,retention,removeOriginal,now,ids:supplied.ids??randomUUID});
+  },createOfficeSource({sessions,retention}){
+   if(!retention)fail('UPLOAD_CONFIGURATION');
+   return createOfficeOriginalReader({sessions,retention,store,objects,inspection,removeOriginal,now});
   },createSource({sessions,retention,conversationStore}){
    if(!retention||typeof conversationStore?.read!=='function')fail('UPLOAD_CONFIGURATION');
    return createUploadInputReader({sessions,retention,conversationStore,store,objects,inspection,removeOriginal,now});
