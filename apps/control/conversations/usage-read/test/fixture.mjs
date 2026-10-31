@@ -11,7 +11,7 @@ export function payload({zero=false,unavailable=false,omitted=0}={}){
  const n=zero?0:1;
  return {usage:unavailable?null:sdkUsageSnapshot({type:'result',session_id:id(50),total_cost_usd:0.3*n,modelUsage:{
   'model.alpha':{inputTokens:100*n,outputTokens:20*n,cacheReadInputTokens:40*n,cacheCreationInputTokens:60*n,webSearchRequests:n,costUSD:0.1*n,provider:'bedrock',costBasis:'list'},
-  'model.beta':{inputTokens:200*n,outputTokens:30*n,cacheReadInputTokens:50*n,cacheCreationInputTokens:70*n,webSearchRequests:0,costUSD:0.2*n,provider:'firstParty',costBasis:'list'},
+  'model.beta':{inputTokens:200*n,outputTokens:30*n,cacheReadInputTokens:50*n,cacheCreationInputTokens:70*n,webSearchRequests:0,costUSD:0.2*n,provider:'bedrock',costBasis:'list'},
  }}),toolsUsed:{tools:[{tool:'Read',toolUseId:'private-tool-audit',outcome:'completed',durationMs:0},{tool:'mcp__capiro__read',toolUseId:'another-private-tool-audit',outcome:'failed',durationMs:null}],omitted}};
 }
 export function savedUsage(input=payload(),context={mode:'new'}){
