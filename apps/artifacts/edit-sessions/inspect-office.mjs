@@ -10,15 +10,26 @@ const fail=()=>{throw Object.assign(Error('EDITOR_STRUCTURE_REFUSED'),{code:'EDI
 const namespaces={word:new Set(['http://schemas.openxmlformats.org/wordprocessingml/2006/main','http://purl.oclc.org/ooxml/wordprocessingml/main']),
  sheet:new Set(['http://schemas.openxmlformats.org/spreadsheetml/2006/main','http://purl.oclc.org/ooxml/spreadsheetml/main']),
  slide:new Set(['http://schemas.openxmlformats.org/presentationml/2006/main','http://purl.oclc.org/ooxml/presentationml/main'])};
-export function inspectOfficeEdit(bytes,format){
- return inspect(bytes,format,{bytes:ZIP_LIMITS.maxTotalUncompressed,entries:5000});
+const inspectionLimits=Object.freeze({maxOriginalBytes:20*1024*1024,maxEntries:5000,
+ maxTotalUncompressed:ZIP_LIMITS.maxTotalUncompressed,maxRatio:ZIP_LIMITS.maxRatio});
+/** Trusted callers may tighten the existing limits, never widen them. All nested
+ * workbooks consume the same entry/inflated-byte budget and compression bound. */
+export function inspectOfficeEdit(bytes,format,limits={}){
+ if(!limits||typeof limits!=='object'||Array.isArray(limits))fail();
+ const bounds={...inspectionLimits};
+ for(const key of Reflect.ownKeys(limits)){
+  const d=Object.getOwnPropertyDescriptor(limits,key);
+  if(!Object.hasOwn(bounds,key)||!d||!Object.hasOwn(d,'value')||!Number.isSafeInteger(d.value)||d.value<1||d.value>bounds[key])fail();
+  bounds[key]=d.value;
+ }
+ return inspect(bytes,format,{bytes:bounds.maxTotalUncompressed,entries:bounds.maxEntries},bounds);
 }
-function inspect(bytes,format,budget){
- if(!Buffer.isBuffer(bytes)||bytes.length<1||bytes.length>20*1024*1024||!Object.hasOwn(OOXML_FORMATS,format))fail();
+function inspect(bytes,format,budget,bounds){
+ if(!Buffer.isBuffer(bytes)||bytes.length<1||bytes.length>bounds.maxOriginalBytes||!Object.hasOwn(OOXML_FORMATS,format))fail();
  try{
-  const entries=readZip(bytes,{...ZIP_LIMITS,maxTotalUncompressed:budget.bytes,maxEntries:budget.entries}),main=verifyOoxml(entries,format);
+  const entries=readZip(bytes,{...ZIP_LIMITS,maxRatio:bounds.maxRatio,maxTotalUncompressed:budget.bytes,maxEntries:budget.entries}),main=verifyOoxml(entries,format);
   budget.entries-=entries.size;for(const content of entries.values())budget.bytes-=content.length;
-  if([...entries.keys()].some(name=>name.length>500||/(?:^|\/)(?:activeX|externalLinks)\//iu.test(name)))fail();
+  if([...entries.keys()].some(name=>name.length>500||/(?:^|\/)(?:activeX|externalLinks)(?:\/|$)|(?:^|\/)(?:vbaProject|vbaData)\./iu.test(name)))fail();
   // Active payloads cannot evade the filename rules by moving to another part.
   // Apply these checks recursively to embedded XLSX as well as the outer file.
   const {children:types}=readXmlPart(entries.get('[Content_Types].xml'));
@@ -30,7 +41,7 @@ function inspect(bytes,format,budget){
    if(format!=='pptx')fail();
    if(name==='ppt/embeddings/'&&content.length===0)continue;
    if(!/^ppt\/embeddings\/[^/]+\.xlsx$/u.test(name))fail();
-   inspect(content,'xlsx',budget);embedded.add(name);
+   inspect(content,'xlsx',budget,bounds);embedded.add(name);
   }
   let paragraphs=0,tables=0,pictures=0,formulas=0,slides=0;const sheets=[];
   for(const [name,content]of entries){
@@ -48,6 +59,7 @@ function inspect(bytes,format,budget){
      }else{
       const target=resolveOoxmlTarget(source,r.target,'OPC_PART_RELATIONSHIPS');
       if(!entries.has(target))fail();
+      if(/\/package$/iu.test(r.type)&&!embedded.has(target))fail();
       if(embedded.has(target)){
        if(!/^ppt\/charts\/[^/]+\.xml$/u.test(source)||!/^http:\/\/(?:schemas.openxmlformats.org\/officeDocument\/2006|purl.oclc.org\/ooxml\/officeDocument)\/relationships\/package$/u.test(r.type))fail();
        const {root}=readXmlPart(entries.get(source));
