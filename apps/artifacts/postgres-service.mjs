@@ -5,6 +5,7 @@ import {createPostgresIntentJournalStore} from '../control/intents/postgres-jour
 import {createArtifactService} from './service.mjs';
 import {officeEditSource,officeEditRequestSha256} from '../../packages/contracts/office-edit.mjs';
 import {inspectOfficeEdit} from './edit-sessions/inspect-office.mjs';
+import {createOfficeOriginalPublisher} from './office-original.mjs';
 const fail=code=>{throw Object.assign(new Error(code),{code});};
 const same=(a,b)=>hash(a)===hash(b);
 const own=(v,required,optional=[])=>{if(!v||Array.isArray(v)||required.some(k=>!Object.hasOwn(v,k))||Object.keys(v).some(k=>![...required,...optional].includes(k)))fail('ARTIFACT_CONFIGURATION');return v;};
@@ -16,12 +17,13 @@ export async function readDocumentInvocation({pool,binding,invocationId,signal})
  return entry===null?null:{entry,versionId:id(invocationId,'version')};
 }
 export function createPostgresArtifactService(options){
- const c=own(options,['pool','context','validators','authorize','versions','objects','executor','now'],['retention','admitRetainedEvidence','selectedInvocationId','retainedAssetMapWrites','officeEditWrites']),v=c.validators,context=v.context(c.context);
+ const c=own(options,['pool','context','validators','authorize','versions','objects','executor','now'],['retention','admitRetainedEvidence','selectedInvocationId','retainedAssetMapWrites','officeEditWrites','officeOriginalWrites']),v=c.validators,context=v.context(c.context);
  if(![v.nativeRequestSha256,c.authorize,c.versions?.read,c.versions?.commit,c.objects?.get,c.objects?.put,c.executor?.execute,c.now].every(f=>typeof f==='function'))fail('ARTIFACT_CONFIGURATION');
  validateShape('RunBinding',context.binding);
  if(c.admitRetainedEvidence!==undefined&&typeof c.admitRetainedEvidence!=='function')fail('ARTIFACT_CONFIGURATION');
  if(c.retainedAssetMapWrites!==undefined&&typeof c.retainedAssetMapWrites!=='boolean')fail('ARTIFACT_CONFIGURATION');
  if(c.officeEditWrites!==undefined&&typeof c.officeEditWrites!=='boolean')fail('ARTIFACT_CONFIGURATION');
+ if(c.officeOriginalWrites!==undefined&&typeof c.officeOriginalWrites!=='boolean')fail('ARTIFACT_CONFIGURATION');
  if(c.selectedInvocationId!==undefined&&(!/^sdk:[a-f0-9]{64}$/u.test(c.selectedInvocationId)||typeof c.admitRetainedEvidence!=='function'||c.admitRetainedEvidence(v.snapshot(context))!==undefined))fail('ARTIFACT_INVOCATION');
  const retained=context.evidence.map(v.nativeSourceEvidence).some(e=>!same(e.binding,context.binding));
  if(retained&&(typeof c.admitRetainedEvidence!=='function'||c.admitRetainedEvidence(v.snapshot(context))!==undefined))fail('ARTIFACT_EVIDENCE_BINDING');
@@ -103,6 +105,6 @@ export function createPostgresArtifactService(options){
   catch(cause){throw Object.assign(Error('ARTIFACT_EFFECT_UNKNOWN'),{code:'ARTIFACT_EFFECT_UNKNOWN',cause,versionId:invocation.versionId,versionCommitted:true});}
   return result;
  }
- return Object.freeze({execute,executeOfficeEdit:(value,bytes,signal)=>executeOfficeEdit(value,bytes,signal),
+ return Object.freeze({...createOfficeOriginalPublisher({options:c,context,journal,storage,id}),execute,executeOfficeEdit:(value,bytes,signal)=>executeOfficeEdit(value,bytes,signal),
   recoverOfficeEdit:(value,bytes,signal)=>executeOfficeEdit(value,bytes,signal,true)});
 }

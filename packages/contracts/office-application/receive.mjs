@@ -5,9 +5,9 @@ import {receiveDocumentRequest,receiveDocumentResponse,receiveDocumentDownload} 
 export {DocumentResponseError as OfficeResponseError} from '../document-application/boundary.mjs';
 export {receiveDocumentDownload as receiveOfficeDownload};
 export const OFFICE_SCHEMA='meri.office-application/1';
-export const OFFICE_ROUTES=Object.freeze(['open','read','launch','renew','release','discard','publish','inspect']);
+export const OFFICE_ROUTES=Object.freeze(['open','read','launch','renew','release','discard','publish','inspect','import']);
 export const OFFICE_ERROR_STATUSES=Object.freeze({INVALID_REQUEST:400,UNAUTHENTICATED:401,ACCESS_DENIED:403,NOT_FOUND:404,METHOD_NOT_ALLOWED:405,
- DEADLINE:408,CONFLICT:409,PUBLISH_UNRESOLVED:409,TOO_LARGE:413,UNSUPPORTED_MEDIA_TYPE:415,CANCELLED:499,REFUSED:502,UNAVAILABLE:503});
+ DEADLINE:408,CONFLICT:409,PUBLISH_UNRESOLVED:409,IMPORT_UNRESOLVED:409,TOO_LARGE:413,UNSUPPORTED_MEDIA_TYPE:415,CANCELLED:499,REFUSED:502,UNAVAILABLE:503});
 const requests=new WeakMap(),uuid=v=>typeof v==='string'&&/^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/u.test(v);
 const sha=v=>typeof v==='string'&&/^[a-f0-9]{64}$/u.test(v),sequence=v=>Number.isInteger(v)&&v>=0&&v<=2147483647;
 const instant=v=>typeof v==='string'&&Number.isFinite(Date.parse(v))&&new Date(v).toISOString()===v;
@@ -16,6 +16,11 @@ function closed(value,keys){if(!value||typeof value!=='object'||Array.isArray(va
 function route(value){if(typeof value!=='string'||!OFFICE_ROUTES.includes(value))fail('INVALID_ROUTE');}
 export function receiveOfficeRequest(name,bytes){
  route(name);const q=parseBytes(bytes,8192),editor=['launch','renew','release'].includes(name);
+ if(name==='import'){
+  closed(q,['schema','uploadId','sha256','operation']);
+  if(q.schema!==OFFICE_SCHEMA||!uuid(q.uploadId)||!sha(q.sha256)||!['import','recover'].includes(q.operation))fail('INVALID_REQUEST');
+  requests.set(q,name);return Object.freeze(q);
+ }
  const extra=editor?['editorId','expectedEpoch',...(name==='release'?[]:['mode']),...(name==='launch'?['operation']:[])]:name==='publish'?['sequence','sha256']:[];
  closed(q,['schema','versionId',...(name==='inspect'?[]:['draftId']),...extra]);
  if(q.schema!==OFFICE_SCHEMA||!uuid(q.versionId)||name!=='inspect'&&!uuid(q.draftId))fail('INVALID_REQUEST');
@@ -74,6 +79,13 @@ export async function receiveOfficeResponse(name,status,bytes,q){
  }
  if(name==='discard'){closed(r,['schema','discarded']);if(r.schema!==OFFICE_SCHEMA||r.discarded!==true)fail('INVALID_RESPONSE');return r;}
  if(name==='inspect'){closed(r,['schema','document']);if(r.schema!==OFFICE_SCHEMA)fail('INVALID_RESPONSE');return Object.freeze({...r,document:await document(r.document,q.versionId)});}
+ if(name==='import'){
+  closed(r,['schema','uploadId','sha256','document']);
+  if(r.schema!==OFFICE_SCHEMA||r.uploadId!==q.uploadId||r.sha256!==q.sha256||!uuid(r.document?.version?.versionId))fail('IMPORT_MISMATCH');
+  const imported=await document(r.document,r.document.version.versionId);
+  if(imported.version.parentVersionId!==null||imported.version.object.sha256!==q.sha256)fail('IMPORT_MISMATCH');
+  return Object.freeze({...r,document:imported});
+ }
  closed(r,name==='publish'?['schema','draft','publication']:['schema','draft','editor','launch']);
  if(r.schema!==OFFICE_SCHEMA)fail('INVALID_RESPONSE');draft(r.draft,q);
  if(name==='publish'){

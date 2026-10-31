@@ -29,13 +29,13 @@
     },
     {
       "path": "office-application/api.d.ts",
-      "sha256": "92beccb71a4812159dd23481b7f699e194bc3b768c1cb51398fb28a441e6d515",
-      "bytes": 4423
+      "sha256": "e4abc2e2870ab8420350fda9a1f28e0e6252d9aaad9970a41f755722d7368cea",
+      "bytes": 4715
     },
     {
       "path": "office-application/receive.mjs",
-      "sha256": "37b2eeac5dfd34947e8f64ce0705c666dc0e31c6668918b492ac3fbce33d094d",
-      "bytes": 8744
+      "sha256": "6c68e291f37c5e154dfc6498790726e0bb77cc0cb9d18496627114d9138a0da2",
+      "bytes": 9496
     }
   ],
   "semantics": {

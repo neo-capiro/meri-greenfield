@@ -12,6 +12,8 @@ test('production upload family is lazy, borrows exact current sessions/retention
  const family=uploadsFamily({createS3Client:({region})=>{assert.equal(region,'us-east-1');return {send:unused};}});
  const ports=captureRuntimePorts(family({configuration,pool:{connect:unused},now}).ports);
  assert.equal(ports.uploadApplicationFactory.state(),'composed');assert.throws(()=>ports.uploadApplicationFactory.create({sessions}),/UPLOAD_CONFIGURATION/);
+ assert.throws(()=>ports.uploadApplicationFactory.createOfficeSource({sessions}),/UPLOAD_CONFIGURATION/);
+ const original=ports.uploadApplicationFactory.createOfficeSource({sessions,retention});assert.equal(typeof original.open,'function');
  const app=createRuntimeProductApplications({configuration,sessions,ports,now,retention});
  const result=await app.handle(new Request('https://synthetic.invalid/api/uploads/initiate',{method:'POST',headers:{'content-type':'application/json'},body:'{}'}));
  assert.equal(result.status,403);assert.equal((await result.json()).error.code,'UPLOAD_ACCESS_DENIED');

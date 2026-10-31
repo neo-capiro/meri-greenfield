@@ -11,6 +11,9 @@ import {INTENT_OPERATIONS,ArtifactAuthorityError,isArtifactAuthorityError,refuse
 const SHA=/^[0-9a-f]{64}$/u,UUID=/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/u,TOKEN=/^[\x21-\x7e]{1,8192}$/u;
 const PHASES=Object.freeze(['admission','effect','release']);
 const RETAINED_READ_INTENTS=Object.freeze(['inspect','history','list','results','download','preview']);
+// Attended file operations may precede the first submitted chat turn. They
+// still require current Core permissions and the upload/artifact owner's proof.
+const ATTENDED_OFFICE_INTENTS=Object.freeze(['office-import','office-edit']);
 const sha=value=>createHash('sha256').update(value).digest('hex');
 const lifeError=code=>new ArtifactAuthorityError(['DEADLINE','CANCELLED'].includes(code)?code:'ACCESS_DENIED');
 /** Session-owner refusals stay SESSION_REFUSED; every other foreign error becomes the given closed code. */
@@ -102,7 +105,7 @@ export function createCoreArtifactAuthority(configuration){
    const conversationRead=RETAINED_READ_INTENTS.includes(call.intent);
    async function canonicalRun(observation,t){
     const saved=await t.run(()=>readRunOptional(observation.binding,{limit:1},t.check));
-    if(saved===null){if(!conversationRead)refuse('ACCESS_DENIED');return null;}
+    if(saved===null){if(!conversationRead&&!ATTENDED_OFFICE_INTENTS.includes(call.intent))refuse('ACCESS_DENIED');return null;}
     if(canonicalSha256(saved.run?.binding)!==canonicalSha256(observation.binding)||canonicalSha256(saved.run.scopes)!==canonicalSha256(observation.scopes)||saved.run.state==='cancelled'&&!conversationRead)refuse('ACCESS_DENIED');
     return saved.run;
    }
