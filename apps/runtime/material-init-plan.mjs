@@ -8,12 +8,54 @@ import {configurationMaxBytes,validateConfiguration} from './config.mjs';
 
 const root='/run/meri', mode=0o600, maxBytes=32768;
 const names=Object.freeze({control:'control.json','temporal-worker':'worker.json','schedule-worker':'schedule-worker.json'});
-export const productMaterialPolicy=Object.freeze({directory:root,maxBytes,configurationNames:names});
+// The image creates these two upload directories beneath the fixed material root and owns them as the service
+// identity. They are admitted only while empty, correctly typed/owned/moded and never removed by material ownership.
+const preserved=Object.freeze(['upload-scratch','upload-definitions']);
+export const productMaterialPolicy=Object.freeze({directory:root,maxBytes,configurationNames:names,preservedDirectories:preserved});
 const plans=new WeakSet();
 const hex64=/^[a-f0-9]{64}$/u;
+const sameKernelIdentity=(a,b)=>a.dev===b.dev&&a.ino===b.ino&&a.uid===b.uid&&a.gid===b.gid;
 const refuse=()=>{throw Object.assign(Error('PRODUCT_MATERIAL_REFUSED'),{code:'PRODUCT_MATERIAL_REFUSED'});};
 const own=(value)=>value!==null&&typeof value==='object'&&!Array.isArray(value)&&[Object.prototype,null].includes(Object.getPrototypeOf(value));
 const hash=bytes=>createHash('sha256').update(bytes).digest('hex');
+
+/** True only for an admitted image-owned upload directory: exact name, real directory, same non-root identity,
+ * mode 0700, not a symlink/reparse path, and still empty. No other directory name is ever admitted. */
+export async function inspectPreservedDirectory(name,uid,gid){
+ if(!preserved.includes(name))return null;
+ const path=`${root}/${name}`;const flags=constants.O_RDONLY|constants.O_DIRECTORY|constants.O_NOFOLLOW;
+ let handle,second;
+ try{
+  // Stable no-follow observation. The admitted object is the one the open handle refers to; the pathname is
+  // re-opened after enumeration and must resolve to the SAME kernel object, so a replacement during readdir cannot
+  // leave an old handle passing while a different directory is enumerated.
+  handle=await open(path,flags,0o700);
+  const before=await handle.stat();
+  if(!before.isDirectory()||before.isSymbolicLink()||before.uid!==uid||before.gid!==gid||(before.mode&0o7777)!==0o700)return null;
+  if(await realpath(path)!==path)return null;
+  const entries=await readdir(path);
+  second=await open(path,flags,0o700);
+  const current=await second.stat();
+  if(!current.isDirectory()||current.isSymbolicLink()||current.uid!==uid||current.gid!==gid||(current.mode&0o7777)!==0o700)return null;
+  if(!sameKernelIdentity(before,current))return null;
+  const after=await handle.stat();
+  if(!after.isDirectory()||!sameKernelIdentity(before,after)||(after.mode&0o7777)!==0o700)return null;
+  if(entries.length!==0)return null;
+  return Object.freeze({dev:current.dev,ino:current.ino,uid:current.uid,gid:current.gid});
+ }catch{return null;}finally{await second?.close();await handle?.close();}
+}
+/** Re-verify the admitted preserved directories are the SAME kernel objects and still empty. */
+export async function verifyPreservedSet(admitted,uid,gid){
+ if(!(admitted instanceof Map)||admitted.size>preserved.length)refuse();
+ for(const [name,expected] of admitted){
+  if(!preserved.includes(name))refuse();
+  const current=await inspectPreservedDirectory(name,uid,gid);
+  if(!current||!sameKernelIdentity(current,expected))refuse();
+ }
+ // No addition after admission: any preserved directory present in the root must be one that was admitted.
+ const entries=await readdir(root);
+ for(const name of entries)if(preserved.includes(name)&&!admitted.has(name))refuse();
+}
 
 export function parseProductRuntimeUser(value){
  if(typeof value!=='string'||!/^([1-9][0-9]{0,9}):([1-9][0-9]{0,9})$/u.test(value))refuse();
@@ -73,8 +115,11 @@ export async function verifyProductMaterial(plan,{expectedSha256ByPath}={}){
  if(process.getuid()!==ownerUid||process.getgid()!==ownerGid)refuse();
  const paths=plan.requiredFiles.map(file=>file.path),keys=Object.keys(expectedSha256ByPath);
  if(keys.length!==paths.length||keys.some(key=>!paths.includes(key)||!hex64.test(expectedSha256ByPath[key])))refuse();
- let directory;try{directory=await lstat(root);if(!directory.isDirectory()||directory.isSymbolicLink()||directory.uid!==ownerUid||directory.gid!==ownerGid||(directory.mode&0o777)!==0o700||await realpath(root)!==root)refuse();
-  const entries=await readdir(root);if(entries.length!==paths.length||entries.some(name=>!paths.includes(`${root}/${name}`)))refuse();}catch{refuse();}
+ let directory;const admittedSet=new Map();try{directory=await lstat(root);if(!directory.isDirectory()||directory.isSymbolicLink()||directory.uid!==ownerUid||directory.gid!==ownerGid||(directory.mode&0o777)!==0o700||await realpath(root)!==root)refuse();
+  const entries=await readdir(root);let owned=0;
+  for(const name of entries){const path=`${root}/${name}`;if(paths.includes(path)){owned++;continue;}
+   const admitted=await inspectPreservedDirectory(name,ownerUid,ownerGid);if(!admitted)refuse();admittedSet.set(name,admitted);}
+  if(owned!==paths.length)refuse();}catch{refuse();}
  let parsed;
  for(const {path,maxBytes} of plan.requiredFiles){
   let handle,bytes;try{
@@ -92,5 +137,7 @@ export async function verifyProductMaterial(plan,{expectedSha256ByPath}={}){
  if(actual.requiredFiles.length!==plan.requiredFiles.length||actual.requiredFiles.some((file,index)=>file.path!==plan.requiredFiles[index].path||file.purposes.join(',')!==plan.requiredFiles[index].purposes.join(',')))refuse();
  let after;try{after=await lstat(root);}catch{refuse();}
  if(!after.isDirectory()||after.dev!==directory.dev||after.ino!==directory.ino||after.uid!==directory.uid||after.gid!==directory.gid||(after.mode&0o777)!==0o700)refuse();
+ // Standalone preflight proves the admitted image directories it observed are the same objects and still empty.
+ try{await verifyPreservedSet(admittedSet,ownerUid,ownerGid);}catch{refuse();}
  return Object.freeze({ready:true,role:plan.role,configurationPath:plan.configurationPath,fileCount:paths.length});
 }

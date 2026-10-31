@@ -22,6 +22,157 @@ evidence="$(dirname "$PWD")/image-evidence"
 [[ ! -e $evidence && ! -e $PWD/image-evidence ]] || exit 2
 scratch=''
 owned_probe=0 owned_image=0 owned_evidence=0
+# >>> init-probe lifecycle. Every role owns distinct, create-once evidence and resources.
+init_probe_role=''
+init_probe_invocation=''
+init_probe_container_name=''
+init_probe_volume_name=''
+init_probe_container_id=''
+init_probe_container_owned=0
+init_probe_volume_owned=0
+init_probe_unknown=''
+init_probe_cleanup_done=0
+init_probe_cleanup_status=0
+init_probe_volume_create_status=null
+init_probe_container_create_status=null
+init_probe_start_status=null
+init_probe_inspect_status=null
+init_probe_record() {
+  local stage=$1 original=${2:-null} cleanup_status=${3:-null}
+  # Role/stage/name/invocation are generated locally, never Docker output or secrets.
+  (set -o noclobber; printf '%s\n' "{\"role\":\"$init_probe_role\",\"invocation\":\"$init_probe_invocation\",\"stage\":\"$stage\",\"volume\":\"$init_probe_volume_name\",\"container\":\"$init_probe_container_name\",\"containerId\":\"$init_probe_container_id\",\"containerOwned\":$init_probe_container_owned,\"volumeOwned\":$init_probe_volume_owned,\"unknown\":\"$init_probe_unknown\",\"volumeCreateStatus\":$init_probe_volume_create_status,\"containerCreateStatus\":$init_probe_container_create_status,\"startStatus\":$init_probe_start_status,\"inspectStatus\":$init_probe_inspect_status,\"originalStatus\":$original,\"cleanupStatus\":$cleanup_status}" > "$evidence/init-$init_probe_role-$stage.json")
+}
+init_probe_label() { printf 'meri.init.%s=%s' "$1" "$2"; }
+init_probe_reconcile_volume() {
+  local phase=$1
+  if run 20 "init-$init_probe_role-$phase-volume-inspect.json" docker volume inspect "$init_probe_volume_name"; then :; else return $?; fi
+  python3 -I -B -S - "$evidence/init-$init_probe_role-$phase-volume-inspect.json" "$init_probe_volume_name" "$init_probe_invocation" "$SOURCE_COMMIT" "$init_probe_role" "$image_id" <<'PY'
+import json,sys
+rows=json.load(open(sys.argv[1])); assert len(rows)==1
+v=rows[0]; labels=v.get('Labels') or {}
+assert v['Name']==sys.argv[2] and labels.get('meri.init.invocation')==sys.argv[3]
+assert labels.get('meri.init.revision')==sys.argv[4] and labels.get('meri.init.role')==sys.argv[5]
+assert labels.get('meri.init.image')==sys.argv[6]
+PY
+}
+init_probe_reconcile_container() {
+  local phase=$1 expected_id=${2:-} id=''
+  if run 20 "init-$init_probe_role-$phase-container-inspect.json" docker inspect "${expected_id:-$init_probe_container_name}"; then :; else return $?; fi
+  if id=$(python3 -I -B -S - "$evidence/init-$init_probe_role-$phase-container-inspect.json" "$init_probe_container_name" "$image_id" "$init_probe_invocation" "$init_probe_volume_name" "$expected_id" <<'PY'
+import json,re,sys
+rows=json.load(open(sys.argv[1])); assert len(rows)==1
+v=rows[0]; labels=v['Config'].get('Labels') or {}
+assert re.fullmatch('[a-f0-9]{64}',v['Id'])
+assert not sys.argv[6] or v['Id']==sys.argv[6]
+assert v['Name'].lstrip('/')==sys.argv[2] and v['Image']==sys.argv[3]
+assert labels.get('meri.init.invocation')==sys.argv[4]
+assert v['Config'].get('User')=='1000:1000'
+assert v['HostConfig'].get('ReadonlyRootfs') is True and v['HostConfig'].get('NetworkMode')=='none'
+assert v['HostConfig'].get('Privileged') is False and (v['HostConfig'].get('CapDrop') or [])==['ALL']
+assert '/run/meri-temporal' in (v['HostConfig'].get('Tmpfs') or {})
+mounts=[m for m in v['Mounts'] if m.get('Destination')=='/run/meri']
+assert len(mounts)==1 and mounts[0].get('Type')=='volume' and mounts[0].get('Name')==sys.argv[5]
+print(v['Id'])
+PY
+  ); then :; else return 1; fi
+  [[ $id =~ ^[a-f0-9]{64}$ ]] || return 1
+  printf '%s' "$id"
+}
+init_probe_cleanup() {
+  local original=$1 rc=0 id='' absence_status=0
+  [[ -n $init_probe_role ]] || return 0
+  if (( init_probe_cleanup_done == 1 )); then return "$init_probe_cleanup_status"; fi
+  # An interrupted cleanup remains failed; the EXIT trap must never invent success.
+  init_probe_cleanup_done=1; init_probe_cleanup_status=1
+  init_probe_record cleanup-intent "$original" || return 1
+  # Durable intent is written BEFORE the native create. Reconcile even if cancellation
+  # arrived after the effect but before the shell could assign the returned identity.
+  if [[ -f $evidence/init-$init_probe_role-container-create-intent.json ]]; then
+    if id=$(init_probe_reconcile_container cleanup "$init_probe_container_id"); then
+      init_probe_container_id=$id; init_probe_container_owned=1
+      if ! run 20 "init-$init_probe_role-container-remove.log" docker rm -f "$id"; then rc=1; fi
+      if run 20 "init-$init_probe_role-container-absence.log" docker ps -aq --filter "id=$id"; then absence_status=0; else absence_status=$?; fi
+      if (( absence_status == 0 )) && [[ ! -s $evidence/init-$init_probe_role-container-absence.log ]]; then
+        init_probe_container_owned=0
+      else init_probe_unknown="container-absence:$init_probe_container_name"; rc=1; fi
+    else
+      # Failed inspect is not absence. A successful exact-name listing may establish it.
+      if run 20 "init-$init_probe_role-container-candidate-absence.log" docker ps -aq --filter "name=^/${init_probe_container_name}$"; then absence_status=0; else absence_status=$?; fi
+      if (( absence_status == 0 )) && [[ ! -s $evidence/init-$init_probe_role-container-candidate-absence.log ]]; then
+        init_probe_container_owned=0
+      else init_probe_unknown="container:$init_probe_container_name"; rc=1; fi
+    fi
+  fi
+  # Never remove a volume while its possible container remains unresolved.
+  if [[ -z $init_probe_unknown && $init_probe_container_owned -eq 0 && -f $evidence/init-$init_probe_role-volume-create-intent.json ]]; then
+    if init_probe_reconcile_volume cleanup; then
+      init_probe_volume_owned=1
+      if ! run 20 "init-$init_probe_role-volume-remove.log" docker volume rm "$init_probe_volume_name"; then rc=1; fi
+      if run 20 "init-$init_probe_role-volume-absence.log" docker volume ls -q --filter "name=^${init_probe_volume_name}$"; then absence_status=0; else absence_status=$?; fi
+      if (( absence_status == 0 )) && [[ ! -s $evidence/init-$init_probe_role-volume-absence.log ]]; then
+        init_probe_volume_owned=0
+      else init_probe_unknown="volume-absence:$init_probe_volume_name"; rc=1; fi
+    else
+      if run 20 "init-$init_probe_role-volume-candidate-absence.log" docker volume ls -q --filter "name=^${init_probe_volume_name}$"; then absence_status=0; else absence_status=$?; fi
+      if (( absence_status == 0 )) && [[ ! -s $evidence/init-$init_probe_role-volume-candidate-absence.log ]]; then
+        init_probe_volume_owned=0
+      else init_probe_unknown="volume:$init_probe_volume_name"; rc=1; fi
+    fi
+  fi
+  [[ -z $init_probe_unknown ]] || rc=1
+  init_probe_record cleanup-result "$original" "$rc" || return 1
+  init_probe_cleanup_status=$rc
+  return "$rc"
+}
+init_probe_run() {
+  local role=$1 volume=$2 container=$3 inv=$4 id='' status=0
+  if [[ -n $init_probe_role ]] && { (( init_probe_cleanup_done != 1 || init_probe_cleanup_status != 0 || init_probe_container_owned != 0 || init_probe_volume_owned != 0 )) || [[ -n $init_probe_unknown ]]; }; then
+    echo 'previous init probe ownership/cleanup unresolved' >&2; return 1
+  fi
+  init_probe_role=$role; init_probe_invocation=$inv
+  init_probe_volume_name=$volume; init_probe_container_name=$container
+  init_probe_container_id=''; init_probe_container_owned=0; init_probe_volume_owned=0
+  init_probe_unknown=''; init_probe_cleanup_done=0; init_probe_cleanup_status=0
+  init_probe_volume_create_status=null; init_probe_container_create_status=null
+  init_probe_start_status=null; init_probe_inspect_status=null
+  init_probe_record precheck || return 1
+  if ! run 20 "init-$role-preexisting-container.log" docker ps -aq --filter "name=^/${container}$"; then init_probe_unknown="container:$container"; return 1; fi
+  if [[ -s $evidence/init-$role-preexisting-container.log ]]; then init_probe_unknown="container:$container"; return 1; fi
+  if ! run 20 "init-$role-preexisting-volume.log" docker volume ls -q --filter "name=^${volume}$"; then init_probe_unknown="volume:$volume"; return 1; fi
+  if [[ -s $evidence/init-$role-preexisting-volume.log ]]; then init_probe_unknown="volume:$volume"; return 1; fi
+  init_probe_record volume-create-intent || return 1
+  if run 20 "init-$role-volume-create.log" docker volume create --label "$(init_probe_label invocation "$inv")" \
+    --label "$(init_probe_label revision "$SOURCE_COMMIT")" --label "$(init_probe_label role "$role")" \
+    --label "$(init_probe_label image "$image_id")" "$volume"; then init_probe_volume_create_status=0; else init_probe_volume_create_status=$?; fi
+  init_probe_record volume-create-result || return 1
+  if init_probe_reconcile_volume created; then init_probe_volume_owned=1; else return 1; fi
+  init_probe_record volume-reconciled || return 1
+  init_probe_record container-create-intent || return 1
+  if run 20 "init-$role-container-create.log" docker create --name "$container" --label "$(init_probe_label invocation "$inv")" \
+    --platform linux/arm64 --read-only --user 1000:1000 --network none --cap-drop ALL --security-opt no-new-privileges \
+    --pids-limit 256 --cpus 2 --memory 2g \
+    --tmpfs /tmp:rw,nosuid,nodev,noexec,size=256m,mode=1777 \
+    --tmpfs /workspace:rw,nosuid,nodev,noexec,size=64m,uid=1000,gid=1000,mode=0700 \
+    --tmpfs /run/meri-temporal:rw,nosuid,nodev,noexec,size=16m,uid=1000,gid=1000,mode=0700 \
+    --mount "type=volume,source=$volume,destination=/run/meri" \
+    --entrypoint node "$image_id" apps/runtime/build/material-init-image-probe.mjs "$role"; then init_probe_container_create_status=0; else init_probe_container_create_status=$?; fi
+  init_probe_record container-create-result || return 1
+  # Even a successful create response is verified before start; a lost ACK is never resent.
+  id=$(tr -d ' \r\n' < "$evidence/init-$role-container-create.log")
+  [[ $id =~ ^[a-f0-9]{64}$ ]] || id=''
+  if id=$(init_probe_reconcile_container created "$id"); then init_probe_container_id=$id; init_probe_container_owned=1; else return 1; fi
+  init_probe_record container-reconciled || return 1
+  init_probe_record start-intent || return 1
+  if run 120 "init-$role.log" docker start -a "$id"; then init_probe_start_status=0; else init_probe_start_status=$?; fi
+  init_probe_record start-result || return 1
+  if init_probe_reconcile_container completed "$id" > /dev/null; then init_probe_inspect_status=0; else init_probe_inspect_status=$?; fi
+  init_probe_record inspect-result || return 1
+  status=$init_probe_start_status
+  if (( status == 0 && init_probe_inspect_status != 0 )); then status=$init_probe_inspect_status; fi
+  init_probe_record completed "$status" || return 1
+  return "$status"
+}
+# <<< init-probe lifecycle
 # Private files cap output while the command runs; timeout kills the whole command group.
 run() {
   local seconds=$1 log=$2
@@ -30,8 +181,11 @@ run() {
 }
 cleanup() {
   local rc=$? clean=0
+  last_status=$rc
   trap - EXIT INT TERM
   ((owned_evidence)) || exit "$rc"
+  init_probe_cleanup "$last_status" || clean=1
+  if [[ -n $init_probe_role ]]; then init_probe_record final-cleanup "$last_status" "$init_probe_cleanup_status" || clean=1; fi
   if ((owned_probe)); then
     run 15 container-cleanup.log docker rm -f "$probe" || true
     run 15 container-check.log docker ps -aq --filter "name=^/$probe$" || clean=1
@@ -46,7 +200,7 @@ cleanup() {
     rm -rf -- "$scratch" || clean=1
     [[ ! -e $scratch ]] || clean=1
   fi
-  ((clean == 0)) || rc=1
+  if (( clean != 0 && rc == 0 )); then rc=1; fi
   printf '{"exitCode":%s,"cleanupFailed":%s}\n' "$rc" "$clean" > "$evidence/cleanup.json"
   if ((rc != 0)); then
     rm -f -- "$evidence/result.json"
@@ -59,6 +213,7 @@ cleanup() {
   if ((rc != 0)); then printf '%s\n' 'IMAGE_BUILD_FAILED; inspect private build evidence.' >&2; fi
   exit "$rc"
 }
+last_status=0
 trap cleanup EXIT
 trap 'exit 130' INT
 trap 'exit 143' TERM
@@ -97,7 +252,18 @@ run 15 preexisting-image.log docker images -q "$image"
 [[ ! -s $evidence/preexisting-image.log ]] || exit 2
 owned_image=1
 run 1800 build.log docker build --platform linux/arm64 --build-arg "NODE_IMAGE=${bases[0]}" --build-arg "RUNTIME_IMAGE=${bases[1]}" --label "org.opencontainers.image.revision=$SOURCE_COMMIT" -f apps/runtime/Dockerfile -t "$image" --iidfile "$evidence/image.id" .
-run 15 image-inspect.json docker image inspect "$image"
+run 15 image-inspect.json docker image inspect "$image" || exit 1
+image_id=$(python3 -I -B -S - "$evidence/image-inspect.json" "$SOURCE_COMMIT" <<'PY'
+import json,sys
+rows=json.load(open(sys.argv[1])); assert len(rows)==1
+v=rows[0]; assert v['Id'].startswith('sha256:') and len(v['Id'])==71
+labels=(v['Config'].get('Labels') or {})
+assert labels.get('org.opencontainers.image.revision')==sys.argv[2], labels
+print(v['Id'])
+PY
+) || exit 1
+[[ $image_id =~ ^sha256:[a-f0-9]{64}$ ]] || { echo "missing immutable local image id" >&2; exit 1; }
+[[ "$(tr -d ' \r\n' < "$evidence/image.id")" == "$image_id" ]] || { echo "iidfile/image-inspect mismatch" >&2; exit 1; }
 python3 -I -B -S - "$evidence/image-inspect.json" "$SOURCE_COMMIT" <<'PY'
 import json,sys
 v=json.load(open(sys.argv[1])); assert len(v)==1
@@ -151,6 +317,19 @@ rows=json.load(open(sys.argv[1]))['repositories']; assert len(rows)==1
 v=rows[0]; assert v['repositoryUri']==sys.argv[2] and v['imageTagMutability']=='IMMUTABLE'
 assert v['imageScanningConfiguration']['scanOnPush'] is True
 PY
+
+init_probe_final_status=0
+cleanup_rc=0
+for role in control temporal-worker schedule-worker; do
+  tag="${IMAGE_TAG##*-}"
+  inv=$(od -An -tx1 -N16 /dev/urandom | tr -d ' \r\n')
+  if init_probe_run "$role" "meri-init-$tag-$role-vol" "meri-init-$tag-$role" "$inv"; then status=0; else status=$?; fi
+  init_probe_cleanup "$status" || cleanup_rc=1
+  if (( status != 0 )); then init_probe_final_status=$status; break; fi
+  if (( ${cleanup_rc:-0} != 0 )); then init_probe_final_status=1; break; fi
+done
+(( init_probe_final_status == 0 )) || { echo "init probe failed: status $init_probe_final_status" >&2; exit "$init_probe_final_status"; }
+
 # Never echo the password or supply model/DB/service credentials to build or probes.
 run 30 registry-login.log bash -o pipefail -c 'aws --region us-east-1 --no-cli-pager --no-cli-auto-prompt --cli-connect-timeout 5 --cli-read-timeout 20 ecr get-login-password | docker login --username AWS --password-stdin "$1"' -- "$registry"
 run 300 push.log docker push "$image"
