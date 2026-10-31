@@ -72,7 +72,6 @@ export function createAttendedOffice({drafts,launch,generation,now}){
    draft=correlate(await call(['launch','renew'].includes(route)?'editorRead':'read',
     ['launch','renew'].includes(route)?{editorId:editor.editorId,editorEpoch:editor.epoch}:{}));
    if(write)admit(finalBase,draft);
-   if(write)admit(finalBase,draft);
    const currentEditor=await call('editor',{operation:'inspect'});
    if(['launch','renew'].includes(route)&&(currentEditor.editorId!==editor.editorId||currentEditor.epoch!==editor.epoch||currentEditor.expiresAt!==editor.expiresAt))fail('OFFICE_DRAFT_CONFLICT');
    editor=currentEditor;
