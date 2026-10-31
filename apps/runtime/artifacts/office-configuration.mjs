@@ -1,9 +1,11 @@
 /** Closed optional `office` control declaration. Pure: no secret read, fetch or network. */
+import {posix} from 'node:path';
 import {routinesReservedSecretFiles} from '../native-authority/routines-configuration.mjs';
 const fault=()=>Object.assign(new Error('OFFICE_CONFIGURATION'),{code:'OFFICE_CONFIGURATION'});
 const KEYS=Object.freeze(['enabled','editorOrigin','wopiOrigin','browserOrigin','keyFile','serviceSecretFile','coreOrigin']);
 const SECRET_FILE=/^\/[A-Za-z0-9._\-\/]{1,4095}$/u;
-const secretFile=value=>typeof value==='string'&&SECRET_FILE.test(value)&&!value.includes('//')&&!value.split('/').includes('..');
+const secretFile=value=>typeof value==='string'&&SECRET_FILE.test(value)&&posix.dirname(value)==='/run/meri'&&
+ posix.basename(value)!=='.'&&posix.basename(value)!=='..'&&!value.includes('//');
 const plain=(value)=>{
  if(value===null||typeof value!=='object'||Array.isArray(value)||![Object.prototype,null].includes(Object.getPrototypeOf(value)))throw fault();
  const d=Object.getOwnPropertyDescriptors(value);

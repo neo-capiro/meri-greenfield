@@ -90,6 +90,7 @@ export function createWopiFileApplication({codec,drafts,artifacts,resolveContext
    // No result/bytes leave after a lost native session, takeover or suppression.
    // Generation is the final awaited read, matching canonical download links.
    selected=await current();base=await source(selected);draft=await call('editorRead',{},selected);correlate(draft,base);await retained(base);
+   unsupported=inspectUnsupported(base.bytes,draft.format)||(draft.bytesBase64===null?false:inspectUnsupported(Buffer.from(draft.bytesBase64,'base64'),draft.format));
    codec.verify(info.token,{fileId:info.fileId});life.check();
    const bytes=draft.bytesBase64===null?base.bytes:Buffer.from(draft.bytesBase64,'base64');
    const version=r=>`${claims.editSessionId}:${r.sequence}:${r.sha256??r.baseSha256}`;

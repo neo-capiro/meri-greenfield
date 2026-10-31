@@ -40,6 +40,11 @@ export function createAttendedOffice({drafts,launch,generation,now}){
    return draft;
   }
   let draft=route==='open'?null:correlate(await call('read'));
+  const admit=(baseValue,draftValue)=>{
+   inspectOfficeEditAdmitted(baseValue.bytes,format);
+   if(draftValue?.bytesBase64)inspectOfficeEditAdmitted(Buffer.from(draftValue.bytesBase64,'base64'),format);
+  };
+  if(write)admit(base,draft);
   if(['launch','renew'].includes(route)&&!launch.supports(format,q.mode))fail('EDITOR_CODE_ACTION_UNAVAILABLE');
   if(['launch','renew','release'].includes(route))officeDraftRequest('editor',{...key,
    operation:route==='launch'?q.operation:route==='renew'?'refresh':'release',editorId:q.editorId,expectedEpoch:q.expectedEpoch});
@@ -62,10 +67,12 @@ export function createAttendedOffice({drafts,launch,generation,now}){
   }
   // Each effect is followed by current Core artifact authority and native session
   // checks. Final generation is the last await, before any token/result release.
-  await access.fresh('release');await source();
+  await access.fresh('release');const finalBase=await source();
   if(!['discard','publish'].includes(route)){
    draft=correlate(await call(['launch','renew'].includes(route)?'editorRead':'read',
     ['launch','renew'].includes(route)?{editorId:editor.editorId,editorEpoch:editor.epoch}:{}));
+   if(write)admit(finalBase,draft);
+   if(write)admit(finalBase,draft);
    const currentEditor=await call('editor',{operation:'inspect'});
    if(['launch','renew'].includes(route)&&(currentEditor.editorId!==editor.editorId||currentEditor.epoch!==editor.epoch||currentEditor.expiresAt!==editor.expiresAt))fail('OFFICE_DRAFT_CONFLICT');
    editor=currentEditor;
