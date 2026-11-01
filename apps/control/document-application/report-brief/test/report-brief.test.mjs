@@ -210,13 +210,18 @@ test('an evidence-bearing revision keeps the retained evidence and immutable par
  assert.notEqual(revised.version.object.sha256,created.version.object.sha256);
  const again=await f.options.versions.read(created.version.versionId);
  assert.deepEqual(again.version,created.version);assert.deepEqual(again.specSha256,retained.specSha256);
- // A source revocation at release authority: the replacement was executed but cannot be committed,
- // so the caller gets an unknown effect and every already-committed version stays exactly as it was.
+ // A superseded parent is a definite conflict before any render: the original is no longer the head.
  const beforeCount=renders;
- f.state.executorHook=()=>{f.state.denied=true;};
- await assert.rejects(write(second,created.version.versionId),{code:'ARTIFACT_EFFECT_UNKNOWN'});
+ await assert.rejects(write(second,created.version.versionId),{code:'ARTIFACT_STALE_PARENT'});
+ assert.equal(renders,beforeCount);
+ // A source revocation at release authority on the current head: the replacement was executed but cannot
+ // be committed, so the caller gets an unknown effect and every already-committed version stays exactly as it was.
+ const head=await f.options.versions.read(revised.version.versionId),headParent={versionId:revised.version.versionId,specSha256:head.specSha256};
+ const third=await createCongressionalReportCompiler({readSource:revisionRead,readBase,now:()=>NOW}).prepare(next,revisionContext,{selection:selection(),base:headParent});
+ f.state.authorizeHook=()=>{if(renders>beforeCount)f.state.denied=true;};
+ await assert.rejects(write(third,revised.version.versionId),{code:'ARTIFACT_EFFECT_UNKNOWN'});
  assert.equal(renders,beforeCount+1);
- f.state.executorHook=null;f.state.denied=false;
+ f.state.authorizeHook=null;f.state.denied=false;
  const survivors=await f.options.versions.read(revised.version.versionId);
  assert.deepEqual(survivors.version,revised.version);
 });

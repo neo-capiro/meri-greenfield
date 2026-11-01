@@ -22,7 +22,8 @@ export function createOfficeOriginalReader({sessions,store,objects,inspection,re
   const custody=createUploadCustody({store,objects,inspection,retention,removeOriginal,now,current,ids:()=>fail('UPLOAD_SOURCE_READ_ONLY')});
   const options={signal:life.signal,deadlineMs:life.deadline()};
   const provenance=r=>{
-   if(r.state!=='stored'||r.inspection?.scan.status!=='clean'||r.declaration.sha256!==selection.sha256||!same(r.scopes,q.scopes))fail('UPLOAD_NOT_CLEAN');
+   // A structurally refused original (active content, bad container) is retained as a blocked extraction; it is never offered to the editor.
+   if(r.state!=='stored'||r.inspection?.scan.status!=='clean'||r.inspection.extraction.status==='blocked'||r.declaration.sha256!==selection.sha256||!same(r.scopes,q.scopes))fail('UPLOAD_NOT_CLEAN');
    const format=r.inspection.file.format;
    if(!Object.hasOwn(OFFICE_OPERATIONS,format))fail('EDITOR_FORMAT_UNSUPPORTED');
    const original={uploadId:r.uploadId,requestId:r.requestId,objectId:r.object.objectId,objectVersionId:r.object.versionId,

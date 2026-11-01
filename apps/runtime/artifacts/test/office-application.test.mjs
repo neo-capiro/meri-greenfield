@@ -259,3 +259,18 @@ test('pptx renew cannot return a write token after the final read contains an un
  await assert.rejects(f.execute('renew',{editorId:f.claims.editorId,expectedEpoch:1,mode:'edit'}),{code:'EDITOR_STRUCTURE_REFUSED'});
  assert.equal(changed,true);assert.equal(f.draft.sha256,f.sha(bytes));assert.equal(f.state.puts,1);
 });
+test('an editor that crashes without Release is recovered once its lease lapses: plain acquire, saved private bytes served, crashed token dead',async t=>{
+ const saved=preservationBytes('docx','after'),f=await fixture(t,{baseBytes:preservationBytes('docx')}),started=await f.start();
+ assert.equal((await f.wopi(started.launch,'lock',{lock:'CODE'})).status,200);
+ assert.equal((await f.wopi(started.launch,'save',{lock:'CODE',body:saved})).status,200);
+ // The editor process dies here: no Release, lock and lease left behind. While the lease is live a plain acquire conflicts.
+ await assert.rejects(f.start({editorId:id(702),expectedEpoch:started.editor.epoch}),{code:'OFFICE_DRAFT_CONFLICT'});
+ f.state.editorExpires=f.state.clock-1;
+ const reopened=await f.start({editorId:id(702),expectedEpoch:started.editor.epoch});
+ assert.equal(reopened.editor.epoch,started.editor.epoch+1);assert.equal(reopened.draft.sequence,1);assert.equal(f.state.lock,'','the lapsed editor lock is cleared with the lease');
+ assert.equal((await f.wopi(started.launch,'getFile')).status,404,'the crashed editor token no longer reads');
+ assert.equal((await f.wopi(started.launch,'save',{lock:'CODE',body:saved})).status,404,'the crashed editor token no longer saves');
+ assert.deepEqual(Buffer.from(await (await f.wopi(reopened.launch,'getFile')).arrayBuffer()),saved,'the reopened editor reads the last private Save');
+ assert.equal((await f.wopi(reopened.launch,'lock',{lock:'CODE-2'})).status,200);
+ assert.equal(f.state.puts,1);assert.equal(f.sql.state.versions.size,1,'recovery publishes nothing');
+});

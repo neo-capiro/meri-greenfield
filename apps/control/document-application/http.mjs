@@ -4,6 +4,8 @@ import {jsonBody,response} from '../action-application/http.mjs';
 export {jsonBody,response};
 const faults=new WeakMap();
 export function fail(code,status=400){const error=new Error(code);faults.set(error,{code,status});throw error;}
+/** The admitted fault of an error this module raised, or null. */
+export const faultOf=error=>error&&typeof error==='object'&&!types.isProxy(error)?faults.get(error)??null:null;
 const getter=name=>Object.getOwnPropertyDescriptor(Request.prototype,name).get;
 export function requestInfo(request){
  if(!request||types.isProxy(request))fail('INVALID_REQUEST');
@@ -19,7 +21,7 @@ export function requestInfo(request){
  if(length!==null&&!/^(0|[1-9][0-9]*)$/u.test(length))fail('INVALID_REQUEST');
  return {...info,intent:match[1],credential:auth.slice(7),length:length===null?null:Number(length)};
 }
-const codes=new Map([['ARTIFACT_LIBRARY_CURSOR',409],['ARTIFACT_HISTORY_CURSOR',409],['ARTIFACT_PREVIEW_PENDING',409],['ARTIFACT_PREVIEW_UNSUPPORTED',422],['ARTIFACT_RENDERER_UNAVAILABLE',503],['PREVIEW_UNAVAILABLE',503],['SESSION_REFUSED',403],['ACCESS_DENIED',403],['UNAVAILABLE',503],['DEADLINE',408],['CANCELLED',499],['ARTIFACT_DEADLINE',408],['ARTIFACT_CANCELLED',499],['ARTIFACT_EFFECT_UNKNOWN',502],['ARTIFACT_BUDGET_RESERVATION_UNKNOWN',502],['ARTIFACT_BUDGET_SETTLEMENT_UNKNOWN',502]]);
+const codes=new Map([['ARTIFACT_LIBRARY_CURSOR',409],['ARTIFACT_HISTORY_CURSOR',409],['ARTIFACT_PREVIEW_PENDING',409],['ARTIFACT_PREVIEW_UNSUPPORTED',422],['ARTIFACT_RENDERER_UNAVAILABLE',503],['ARTIFACT_STALE_PARENT',409],['CONFLICT',409],['PREVIEW_UNAVAILABLE',503],['SESSION_REFUSED',403],['ACCESS_DENIED',403],['UNAVAILABLE',503],['DEADLINE',408],['CANCELLED',499],['ARTIFACT_DEADLINE',408],['ARTIFACT_CANCELLED',499],['ARTIFACT_EFFECT_UNKNOWN',502],['ARTIFACT_BUDGET_RESERVATION_UNKNOWN',502],['ARTIFACT_BUDGET_SETTLEMENT_UNKNOWN',502]]);
 export function errorResponse(error,state){
  let admitted=error&&typeof error==='object'&&!types.isProxy(error)?faults.get(error):null;
  if(!admitted&&error&&typeof error==='object'&&!types.isProxy(error)){
@@ -27,6 +29,9 @@ export function errorResponse(error,state){
   if(codes.has(code))admitted={code,status:codes.get(code)};
  }
  admitted??={code:'DOCUMENT_REFUSED',status:502};
- const outcome=state.completed?'RESULT_NOT_RELEASED':state.writeStarted?'UNKNOWN':state.readStarted?'READ_UNAVAILABLE':'NOT_DISPATCHED';
+ // A superseded parent, an unbound renderer and a delivery-identity conflict are definite refusals of the
+ // canonical owners: nothing was generated or committed, so a started write is still NOT_DISPATCHED.
+ const definite=!state.completed&&['ARTIFACT_STALE_PARENT','ARTIFACT_RENDERER_UNAVAILABLE','CONFLICT'].includes(admitted.code);
+ const outcome=state.completed?'RESULT_NOT_RELEASED':definite?'NOT_DISPATCHED':state.writeStarted?'UNKNOWN':state.readStarted?'READ_UNAVAILABLE':'NOT_DISPATCHED';
  return response({error:{code:admitted.code,outcome}},admitted.status);
 }

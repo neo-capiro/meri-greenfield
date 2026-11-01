@@ -90,6 +90,9 @@ export function createUploadCustody({store,objects,inspection,current,retention,
   status(uploadId,options){return status(uploadId,false,options);},
   statusByRequest(requestId,options){return status(requestId,true,options);},
   inspect(uploadId,options){return operation(options,async({read,move,life,fresh,guard})=>{const r=await read(uploadId);if(r.state!=='stored')fail('UPLOAD_NOT_STORED');
+   // A lost inspect reply is reconciled from the retained settled observation; only an outage (no scanner or no
+   // extractor verdict) may be inspected again. Neither path re-runs a native tool over a settled original.
+   if(r.inspection!==null&&(r.inspection.scan.status==='infected'||r.inspection.scan.status==='clean'&&r.inspection.extraction.status!=='unavailable'))return r;
    const bytes=await life.run(signal=>objects.get(r.object,signal));
    const current=await fresh(),binding=current?.binding;
    // The inspected host receives a PRIVATE, immutable snapshot of what authority was current for this call.

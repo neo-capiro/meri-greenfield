@@ -56,9 +56,9 @@ async function httpLineage(t,renderer,synthetic){
  assert.deepEqual(replay.version,second.version);assert.deepEqual(replay.inspection,second.inspection);assert.equal(a.counts.generations,2);assert.equal(a.f.stats().deliveries,2);
  // The same delivery with a different request is not a replay.
  assert.notEqual((await a.post('revise',{deliveryId:'pdf-revision',baseVersionId:first.version.versionId,request:{...revised,title:'Other'}})).status,200);assert.equal(a.counts.generations,2);
- // A stale parent is refused at commit: effect UNKNOWN, no new version, both versions unchanged.
+ // A stale parent is a definite conflict before generation: no new version, no render, both versions unchanged.
  const stale=await a.post('revise',{deliveryId:'pdf-stale',baseVersionId:first.version.versionId,request:{...revised,title:'Stale'}});
- assert.equal(stale.status,502);assert.deepEqual((await stale.json()).error,{code:'ARTIFACT_EFFECT_UNKNOWN',outcome:'UNKNOWN'});
+ assert.equal(stale.status,409);assert.deepEqual((await stale.json()).error,{code:'ARTIFACT_STALE_PARENT',outcome:'NOT_DISPATCHED'});assert.equal(a.counts.generations,2);
  assert.deepEqual(Buffer.from(await (await ok(await a.post('download',{versionId:second.version.versionId}))).arrayBuffer()),child);
  // Revoked authority: refused before any generation.
  const generations=a.counts.generations;a.f.revoke();

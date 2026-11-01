@@ -3,7 +3,6 @@ import {createHmac} from 'node:crypto';
 
 import {createWopiAccessTokenCodec,MAX_TTL_MS} from '../wopi-access-token.mjs';
 import {createSignedDownloadCodec} from '../../storage/signed-download.mjs';
-import {EDITOR_ACTIVATION,EDITOR_REQUIREMENTS,editorActivationOpen} from '../activation.mjs';
 import {plannedClasses,dataClass} from '../../../control/retention/data-classes.mjs';
 /** Pure decisions only: no editor, storage, network or vendor. */
 const code=c=>e=>e.code===c;
@@ -11,9 +10,7 @@ const clock=()=>{let t=1_760_000_000_000;const now=()=>t;now.advance=ms=>{t+=ms;
 const A='a'.repeat(64),B='b'.repeat(64),V1='00000001-0000-4000-8000-000000000001';
 const attended=(tenantId='tenant',actorId='actor')=>({runBinding:{tenantId,actorId,conversationId:V1,runId:V1,attemptId:V1,workerId:V1,writerFence:1},selectedClientId:null,scopesSha256:A,sessionSha256:B});
 
-test('editor activation is held; the drafts class is owner-managed and its owner stays the shipped one (Q-O9)',()=>{
- assert.equal(EDITOR_ACTIVATION.state,'held');assert.equal(editorActivationOpen(),false);
- assert.equal(editorActivationOpen({state:'open',evidence:'e/x.json',requirements:[...EDITOR_REQUIREMENTS]}),false);
+test('the drafts class is owner-managed and its owner stays the shipped one (Q-O9)',()=>{
  const drafts=dataClass('editorDrafts');
  assert.equal(drafts.status,'owner-managed');assert.equal(drafts.owner,'apps/control/retention/office-core-client.mjs');
  assert.equal(drafts.deletion,'owner-custody');assert.equal(plannedClasses.includes('editorDrafts'),false);

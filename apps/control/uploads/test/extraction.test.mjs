@@ -50,3 +50,26 @@ test('retained nonempty extraction preserves canonical source provenance on relo
  }
  await assert.rejects(createUploadInspection({...options,extractor:{extract:async()=>({...extracted(),segments:[{...segment(),trust:'external_untrusted',sourceSha256:declaration.sha256}]})}}).inspect(declaration,bytes,call));
 });
+
+test('a structural refusal after a clean scan is retained as blocked, never thrown after storage, and reloads unchanged',async()=>{
+ const {zip,ooxmlEntries}=await import('../../../artifacts/structure/test/fixtures.mjs');
+ const cases=[
+  {original:zip({...ooxmlEntries('docx'),'word/embeddings/embedded.xml':'<data/>'}),filename:'macro.docx',mimeType:'application/vnd.openxmlformats-officedocument.wordprocessingml.document',code:'UPLOAD_ACTIVE_CONTENT'},
+  {original:Buffer.from([255,254,0]),filename:'binary.txt',mimeType:'text/plain',code:'UPLOAD_ENCODING'},
+  {original:Buffer.from('not a pdf'),filename:'fake.pdf',mimeType:'application/pdf',code:'UPLOAD_MAGIC'},
+ ];
+ for(const {original,filename,mimeType,code} of cases){
+  const file={filename,mimeType,bytes:original.length,sha256:uploadHash(original)},identity={sourceSha256:file.sha256,sourceBytes:original.length,checkedAtMs:at};
+  let scans=0,extracts=0;
+  const owner=createUploadInspection({now:()=>at,scanner:{scan:async()=>{scans++;return {...identity,status:'clean',tool,definitionsSha256:'d'.repeat(64),reason:null};}},extractor:{extract:async()=>{extracts++;return {...identity,status:'available',tool,segments:[],limitations:[]};}}});
+  const out=await owner.inspect(file,original,call);
+  assert.equal(scans,1,code+': the scanner still examines the stored original');assert.equal(extracts,0,code+': no extractor runs over refused structure');
+  assert.equal(out.scan.status,'clean');assert.equal(out.extraction.status,'blocked');assert.deepEqual(out.extraction.limitations,[code]);assert.deepEqual(out.extraction.segments,[]);assert.equal(out.extraction.tool,null);
+  assert.deepEqual(validateUploadInspection(out,file,{fromMs:at,toMs:at}),out,code+': the retained refusal revalidates on reload');
+  // Identity is still a precondition: bytes that are not this original were never stored as it.
+  await assert.rejects(owner.inspect(file,Buffer.concat([original,Buffer.from('x')]),call),{code:'UPLOAD_ORIGINAL_MISMATCH'});
+  // Without a clean scan there is no structural verdict either way.
+  const unscanned=await createUploadInspection({now:()=>at,extractor:{extract:async()=>{extracts++;}}}).inspect(file,original,call);
+  assert.equal(unscanned.scan.status,'unavailable');assert.equal(unscanned.extraction.status,'unavailable');assert.equal(extracts,0);
+ }
+});

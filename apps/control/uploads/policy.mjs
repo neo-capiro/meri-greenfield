@@ -4,6 +4,7 @@ import {data,own} from '../../../packages/contracts/commands-0.2/execution-bound
 import {readZip} from '../../artifacts/structure/zip.mjs';
 import {verifyOoxml,OPC_NAMESPACES} from '../../artifacts/structure/ooxml.mjs';
 import {readXmlPart} from '../../artifacts/structure/xml.mjs';
+import {StructureInvalid} from '../../artifacts/structure/refusal.mjs';
 import {inspectOfficeEdit} from '../../artifacts/edit-sessions/inspect-office.mjs';
 
 import {UPLOAD_POLICY_VERSION,UPLOAD_LIMITS,UPLOAD_MIME} from '../../../packages/contracts/uploads-application/protocol.mjs';
@@ -46,11 +47,14 @@ function passiveOffice(entries,chartWorkbooks=false){
   }
  }
 }
-/** Complete hash and structural preflight. A successful result is NOT a malware scan or an extraction receipt. */
-export function inspectUploadOriginal(declaration,input){
+/** Declared identity of exact bytes (format, size, hash). It is not a structural, malware or extraction verdict. */
+export function uploadOriginalIdentity(declaration,input){
  const file=uploadDeclaration(declaration);
  if(!Buffer.isBuffer(input)||input.length!==file.bytes||uploadHash(input)!==file.sha256)refuse('UPLOAD_ORIGINAL_MISMATCH');
- const bytes=Buffer.from(input);
+ return file;
+}
+/** Structural preflight of identified bytes. Throws the specific refusal code; it never rewrites the bytes. */
+function inspectUploadStructure(file,bytes){
  if(['txt','md'].includes(file.format)){
   let text;try{text=new TextDecoder('utf-8',{fatal:true}).decode(bytes);}catch{refuse('UPLOAD_ENCODING');}
   if(text.includes('\0'))refuse('UPLOAD_ENCODING');
@@ -73,5 +77,22 @@ export function inspectUploadOriginal(declaration,input){
   }
   passiveOffice(entries,chartWorkbooks);
  }
+}
+/** Complete hash and structural preflight. A successful result is NOT a malware scan or an extraction receipt. */
+export function inspectUploadOriginal(declaration,input){
+ const file=uploadOriginalIdentity(declaration,input);
+ inspectUploadStructure(file,Buffer.from(input));
  return Object.freeze({...file,policyVersion:UPLOAD_POLICY_VERSION});
+}
+/** The structural refusal of already-identified bytes as a retained limitation code, or null when the bytes pass.
+ * Only this module's own policy refusals and the shared structure parser's coded refusals are limitations; any other
+ * failure is an outage of the preflight and is rethrown rather than recorded as a verdict about the document. */
+export function uploadStructureRefusal(file,input){
+ const {filename,mimeType,bytes,sha256}=file;
+ try{inspectUploadStructure(uploadOriginalIdentity({filename,mimeType,bytes,sha256},input),Buffer.from(input));return null;}
+ catch(error){
+  const code=error instanceof StructureInvalid?error.reason:typeof error?.code==='string'&&error.code.startsWith('UPLOAD_')?error.code:null;
+  if(code!==null&&/^[A-Z][A-Z0-9_]{0,79}$/u.test(code))return code;
+  throw error;
+ }
 }

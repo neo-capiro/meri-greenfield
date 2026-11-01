@@ -7,7 +7,7 @@ import {same} from '../action-host/current.mjs';
 import {assertNativeConversationScope} from '../../../packages/contracts/runtime-0.2/session.mjs';
 import {fail} from './http.mjs';
 export {data,own,same,v};
-const portCodes=new Set(['ACCESS_DENIED','SESSION_REFUSED','DEADLINE','CANCELLED','UNAVAILABLE','ARTIFACT_DEADLINE','ARTIFACT_CANCELLED','ARTIFACT_EFFECT_UNKNOWN','ARTIFACT_REPLAY_UNRESOLVED','CONFLICT','ENOENT','RETENTION_SUPPRESSED','RETENTION_RECOVERY_BARRIER','RETENTION_READ_UNAVAILABLE']);
+const portCodes=new Set(['ACCESS_DENIED','SESSION_REFUSED','DEADLINE','CANCELLED','UNAVAILABLE','ARTIFACT_DEADLINE','ARTIFACT_CANCELLED','ARTIFACT_EFFECT_UNKNOWN','ARTIFACT_REPLAY_UNRESOLVED','ARTIFACT_STALE_PARENT','ARTIFACT_RENDERER_UNAVAILABLE','CONFLICT','ENOENT','RETENTION_SUPPRESSED','RETENTION_RECOVERY_BARRIER','RETENTION_READ_UNAVAILABLE']);
 function portError(error){
  let code='DOCUMENT_PORT_REFUSED';
  if(error&&typeof error==='object'&&!types.isProxy(error)){const d=Object.getOwnPropertyDescriptors(error),candidate=d.code?.value??d.message?.value;if(portCodes.has(candidate))code=candidate;}

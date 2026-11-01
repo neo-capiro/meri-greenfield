@@ -2,8 +2,24 @@
 
 The 29 October user decision selects free self-hosted Collabora CODE for
 development/testing. A paid quote is not a prerequisite. Live editor activation
-remains held until the actual host, draft/retention bridge, immutable publisher,
-frontend and Office fidelity checks are complete.
+is the deployment's `office.enabled` configuration (`apps/runtime/artifacts/
+office-composition.mjs`); the former source-level `EDITOR_ACTIVATION` record was
+never consulted by composition and has been removed. Release enables the
+workflow only after these are complete:
+
+- fidelity: held-out corpus of at least 30 DOCX/XLSX/PPTX, including
+  embedded-workbook PPTX, through real Save/reopen/export (design 4.6 item 1);
+- edition: the exact deployed CODE version and image digest recorded, with the
+  component and licence in `docs/COMPONENTS.md` (Q-X4);
+- placement: disposable single-session editor containers on approved hosting
+  (Q-O3, Q-X2) with zero HIGH/CRITICAL image findings, macros and external
+  links disabled and container egress only to the WOPI host;
+- WOPI conformance: the validator suite including lock semantics against the
+  registered WOPI host (design 4.6 item 2);
+- retention: `editorDrafts` purge composed through its owner (Q-O9) and the S4
+  suppression generations measured at 30 s propagation (Q-X7);
+- frontend: the editor frame and every save, draft, publish, conflict,
+  recovery, lock and expiry state on capiro-frontend main.
 
 ## Embedded chart workbook application admission (31 October)
 
@@ -61,8 +77,15 @@ version on replay, with no re-render or second publication.
 This exercise used scripted Core HTTP/SQL/object ports beneath the actual
 artifact/native-session/WOPI owners. It is not ordinary-role PostgreSQL, the
 deployed frontend, ARM64 image qualification or the planned 30-file fidelity
-corpus. Native renewal/revocation/crash recovery and that larger corpus remain
-open. Local services are stopped after the run; source, input/output files,
+corpus. At source, the runtime suite now covers an editor that dies without
+Release: while its Core lease is live a plain acquire conflicts; once the lease
+lapses a plain acquire (not a takeover) succeeds, the lapsed lock is cleared,
+the crashed editor's token can neither read nor save, and the reopened editor
+reads the last private Save with nothing published. The WOPI suite covers every
+lock-bearing write (LOCK, REFRESH_LOCK, UNLOCK, UnlockAndRelock, PutFile) with a
+missing or mismatched lock answering 409 with the current lock. Real CODE
+renewal/revocation/crash behaviour and that larger corpus remain live-only.
+Local services are stopped after the run; source, input/output files,
 screenshots, failure logs and dependency caches remain in the task work folder.
 The focused source suite has 102 passing checks (including ten chart-workbook
 cases and the native query-shape case), zero skips; runtime types and diff pass.
@@ -79,9 +102,9 @@ action URL contains only the credential-free WOPISrc in addition to approved
 discovery parameters. The existing short-lived WOPI token and its absolute expiry
 are form fields; the application must not persist/log them and must return the
 descriptor with no-store caching. View mode cannot fall back to edit. The fixed
-`/api/meri/office/wopi/files/:fileId` path is the allocated host route. Its Fetch
-adapter is described below; deployment registration remains pending. The launch
-module performs no fetch or editor process launch.
+`/api/meri/office/wopi/files/:fileId` path is the host route, registered by
+`apps/runtime/control-route-boundary.mjs` to the composed `handleWopi` adapter
+described below. The launch module performs no fetch or editor process launch.
 
 Core `apps/api/src/meri/office-drafts` now owns durable private draft bytes and
 exclusive locks, with the reserved `20281029020000_office_draft_owner` migration.
@@ -203,8 +226,8 @@ WOPI server, browser frontend or native Office qualification.
 `wopi-files.mjs` exposes a private Fetch `handle(Request) -> Response` adapter for
 CheckFileInfo, GetFile, Lock, RefreshLock, Unlock, atomic UnlockAndRelock, GetLock
 and PutFile. `wopi-http.mjs` owns native request admission, bounded binary input
-and empty, no-store refusals. The adapter starts no listener and is not yet
-registered in the deployment. Rename/delete are unsupported; relative-file
+and empty, no-store refusals. The adapter starts no listener; the control
+route boundary registers it under the fixed WOPI path. Rename/delete are unsupported; relative-file
 creation is denied and advertised as unavailable to the user. Save calls only
 Core's private draft owner. No WOPI operation invokes immutable publication.
 
