@@ -25,13 +25,13 @@
     },
     {
       "path": "../../apps/control/conversations/postgres-store.mjs",
-      "sha256": "05071bb031783bf26ad3a74228fda1a7e794f039965730f7feb18263b3eba729",
-      "bytes": 24851
+      "sha256": "fb527eb69792a1e82836ee2e5f2df7f8a4270ed577801c013af1ed2d51bba6a9",
+      "bytes": 26658
     },
     {
       "path": "../../apps/control/conversations/service.mjs",
-      "sha256": "addb44350829d8a45a288ea1c26f0464ba57b566998d2e578f51fe994d673a59",
-      "bytes": 38304
+      "sha256": "5eb88052622c63cf4a3ed36e0f3b3fdcfab6a505ccb6ca4ff4744653043c6b19",
+      "bytes": 40604
     },
     {
       "path": "conversation-initial-input/protocol.mjs",
@@ -70,13 +70,13 @@
     },
     {
       "path": "dist/conversation-application.metadata.json",
-      "sha256": "6bc11587c12f9aed904d60c2f7f8bb5e92ebabf750205a26ba160de498650e8f",
+      "sha256": "c3c78649fb7a73bf3949161a1c1b4d27560ad2e557b1254e811f18b19734ea1d",
       "bytes": 12217
     },
     {
       "path": "dist/conversation-application.mjs",
-      "sha256": "309f1d1c6c6eb370d3ac094b0e789142142440085d15813747b346b1a710bb57",
-      "bytes": 2064135
+      "sha256": "60dad81af9c075937cf930a2ddefd4b81e740cf324e17a9a325688a9400cb591",
+      "bytes": 2064722
     },
     {
       "path": "dist/conversation-input.d.ts",
@@ -85,13 +85,13 @@
     },
     {
       "path": "dist/conversation-input.metadata.json",
-      "sha256": "fdba1c4d9749e6afb15ea5afe52fbcae65050ad5b1e2989c2be084e4db63e8a3",
+      "sha256": "cc431122ba77b04d46632c5090f47f48ab1ea5714edd095c91d62e5082584b6b",
       "bytes": 3499
     },
     {
       "path": "dist/conversation-input.mjs",
-      "sha256": "04a9e8af7b2a05a4cca5e4331d42a2e5c4d471210f2733003ac387f2170ece3d",
-      "bytes": 774776
+      "sha256": "e2005b9a3f6ccb51a13482a0c6af95afa115c2f8c482cbfbcd1c2e782f04101b",
+      "bytes": 774815
     },
     {
       "path": "dist/conversation-input.schema.json",
@@ -136,7 +136,7 @@
     {
       "path": "./conversation-input.mjs",
       "artifact": "dist/conversation-input.mjs",
-      "sha256": "04a9e8af7b2a05a4cca5e4331d42a2e5c4d471210f2733003ac387f2170ece3d"
+      "sha256": "e2005b9a3f6ccb51a13482a0c6af95afa115c2f8c482cbfbcd1c2e782f04101b"
     }
   ]
 }

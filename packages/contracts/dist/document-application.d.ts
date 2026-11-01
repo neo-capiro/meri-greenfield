@@ -24,6 +24,14 @@ export type DocumentContentRequest =
       };
     }
   | {
+      operation: 'create_word';
+      format: 'xml';
+      title: string;
+      content: {
+        text: string;
+      };
+    }
+  | {
       operation: 'create_excel';
       format: 'xlsx';
       title: string;
@@ -36,6 +44,7 @@ export type DocumentVersion = Canonical_ArtifactVersion_7F9C56Fa & {
   filename?: string;
   mimeType?:
     | 'text/plain; charset=utf-8'
+    | 'application/xml; charset=utf-8'
     | 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
     | 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
 };
@@ -84,6 +93,24 @@ export type DocumentInspectionResponse =
             details: {
               encoding: 'UTF-8';
               whitespace: 'unchanged';
+            };
+            currentBytesVerified: true;
+          }
+        | {
+            sha256: string;
+            bytes: number;
+            format: 'xml';
+            nativeOpened: false;
+            rendered: false;
+            recalculated: false;
+            /**
+             * @maxItems 0
+             */
+            members: [];
+            details: {
+              encoding: 'UTF-8';
+              whitespace: 'unchanged';
+              wellFormed: true;
             };
             currentBytesVerified: true;
           }
@@ -176,6 +203,7 @@ export interface Canonical_WordContent_58F3Dc3C {
 }
 export interface Canonical_ParagraphA313D7Be {
   kind: 'paragraph';
+  quoteDepth?: number;
   /**
    * @minItems 1
    * @maxItems 100
@@ -187,6 +215,8 @@ export interface Canonical_Run_4453Fced {
   text: string;
   bold?: boolean;
   italic?: boolean;
+  strike?: boolean;
+  underline?: boolean;
 }
 export interface Canonical_Table_02Fd45F0 {
   kind: 'table';
@@ -858,6 +888,23 @@ export interface DocumentCreatedResponse {
         details: {
           encoding: 'UTF-8';
           whitespace: 'unchanged';
+        };
+      }
+    | {
+        sha256: string;
+        bytes: number;
+        format: 'xml';
+        nativeOpened: false;
+        rendered: false;
+        recalculated: false;
+        /**
+         * @maxItems 0
+         */
+        members: [];
+        details: {
+          encoding: 'UTF-8';
+          whitespace: 'unchanged';
+          wellFormed: true;
         };
       }
     | {

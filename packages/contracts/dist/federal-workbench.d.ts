@@ -345,6 +345,23 @@ export type ArtifactInspection_3Ae45145 =
   | {
       sha256: string;
       bytes: number;
+      format: "xml";
+      nativeOpened: false;
+      rendered: false;
+      recalculated: false;
+      /**
+       * @maxItems 0
+       */
+      members: [];
+      details: {
+        encoding: "UTF-8";
+        whitespace: "unchanged";
+        wellFormed: true;
+      };
+    }
+  | {
+      sha256: string;
+      bytes: number;
       format: "docx";
       nativeOpened: false;
       rendered: false;

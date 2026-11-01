@@ -7450,11 +7450,11 @@
       ],
       "inputSchema": {
         "id": "urn:meri:artifacts:0.2.0#/$defs/WordRequest",
-        "sha256": "2f0db5c164b3231f93d5ad10dbf3fd09b1cca8a8291d181e200170645c3c2276"
+        "sha256": "2b30963f6556488ee2c7454ab3eddd582877a557f73c1778031d6b1c4c13695a"
       },
       "outputSchema": {
         "id": "urn:meri:artifacts:0.2.0#/$defs/ArtifactCreatedResult",
-        "sha256": "2f0db5c164b3231f93d5ad10dbf3fd09b1cca8a8291d181e200170645c3c2276"
+        "sha256": "2b30963f6556488ee2c7454ab3eddd582877a557f73c1778031d6b1c4c13695a"
       },
       "aliases": [],
       "sideEffect": "local-artifact",
@@ -7518,11 +7518,11 @@
       ],
       "inputSchema": {
         "id": "urn:meri:artifacts:0.2.0#/$defs/ExcelRequest",
-        "sha256": "2f0db5c164b3231f93d5ad10dbf3fd09b1cca8a8291d181e200170645c3c2276"
+        "sha256": "2b30963f6556488ee2c7454ab3eddd582877a557f73c1778031d6b1c4c13695a"
       },
       "outputSchema": {
         "id": "urn:meri:artifacts:0.2.0#/$defs/ArtifactCreatedResult",
-        "sha256": "2f0db5c164b3231f93d5ad10dbf3fd09b1cca8a8291d181e200170645c3c2276"
+        "sha256": "2b30963f6556488ee2c7454ab3eddd582877a557f73c1778031d6b1c4c13695a"
       },
       "aliases": [],
       "sideEffect": "local-artifact",
@@ -7586,11 +7586,11 @@
       ],
       "inputSchema": {
         "id": "urn:meri:artifacts:0.2.0#/$defs/PowerpointRequest",
-        "sha256": "2f0db5c164b3231f93d5ad10dbf3fd09b1cca8a8291d181e200170645c3c2276"
+        "sha256": "2b30963f6556488ee2c7454ab3eddd582877a557f73c1778031d6b1c4c13695a"
       },
       "outputSchema": {
         "id": "urn:meri:artifacts:0.2.0#/$defs/ArtifactCreatedResult",
-        "sha256": "2f0db5c164b3231f93d5ad10dbf3fd09b1cca8a8291d181e200170645c3c2276"
+        "sha256": "2b30963f6556488ee2c7454ab3eddd582877a557f73c1778031d6b1c4c13695a"
       },
       "aliases": [],
       "sideEffect": "local-artifact",
@@ -7656,11 +7656,11 @@
       ],
       "inputSchema": {
         "id": "urn:meri:artifacts:0.2.0#/$defs/AnalysisRequest",
-        "sha256": "2f0db5c164b3231f93d5ad10dbf3fd09b1cca8a8291d181e200170645c3c2276"
+        "sha256": "2b30963f6556488ee2c7454ab3eddd582877a557f73c1778031d6b1c4c13695a"
       },
       "outputSchema": {
         "id": "urn:meri:artifacts:0.2.0#/$defs/ArtifactOperationResult",
-        "sha256": "2f0db5c164b3231f93d5ad10dbf3fd09b1cca8a8291d181e200170645c3c2276"
+        "sha256": "2b30963f6556488ee2c7454ab3eddd582877a557f73c1778031d6b1c4c13695a"
       },
       "aliases": [],
       "sideEffect": "local-artifact",

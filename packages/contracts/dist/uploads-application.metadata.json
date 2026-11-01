@@ -49,18 +49,18 @@
     },
     {
       "path": "../../apps/control/uploads/custody.mjs",
-      "sha256": "26dc00aeecec5ce8175ef36e9e66e61d2bfc330e014858f3b6cb72b3271be715",
-      "bytes": 12579
+      "sha256": "0e0e755cd0cfeb474f1a94157786ffb960cc59c450cebe3330224e168288bc83",
+      "bytes": 12962
     },
     {
       "path": "../../apps/control/uploads/extraction.mjs",
-      "sha256": "06c1b2cf2137b3fe966b881e1a3fe5f7a9edd5627f90fcabb22e0a575e3706ac",
-      "bytes": 6937
+      "sha256": "b0ca53a5337f5be1262fa8d91b1f388586bc5113bbffd889e5e892976224ad84",
+      "bytes": 7479
     },
     {
       "path": "../../apps/control/uploads/policy.mjs",
-      "sha256": "bfa7625c8e7079430d46f06628a076954aad355fa7a1d49b25cff59a10441e72",
-      "bytes": 5570
+      "sha256": "7c72d4cb8ba63e2dd5cc0a30c73e23515b1ceda580ca572d61cfa744287cccda",
+      "bytes": 6524
     },
     {
       "path": "../../apps/control/uploads/postgres-store.mjs",
@@ -69,13 +69,13 @@
     },
     {
       "path": "../../apps/runtime/product-applications.mjs",
-      "sha256": "08dd110a2f35e4e6ab522e8fa5e12a2c34e4374f709e60efc4dd68f7fb41242a",
-      "bytes": 22009
+      "sha256": "21aa482079a3ce40c2ebcab1a15ea07c896db7917e8bab687890fe94201bfe2c",
+      "bytes": 22103
     },
     {
       "path": "../../apps/runtime/product-ports/uploads.mjs",
-      "sha256": "aa6619e1e9863f8fcf88b3d458a5285909092bddff2c91739c2e2caa411ace37",
-      "bytes": 5333
+      "sha256": "02609554619933b631035478091da5ea2f5d4dd0317602df5ad688cd04998e2b",
+      "bytes": 5614
     },
     {
       "path": "document-application/boundary.mjs",

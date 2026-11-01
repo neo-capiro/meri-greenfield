@@ -4,13 +4,13 @@
   "sources": [
     {
       "path": "artifacts-0.2/artifact-formats.mjs",
-      "sha256": "4a2e725eb5bb628a66ae06f471741ec1fbb6ce1eb6e3ed842050393d3ab39334",
-      "bytes": 2579
+      "sha256": "cf9aab9fcefb0a8a040d5f8bcfd2a4907931a7a64f0947fad7e47ab3721caf36",
+      "bytes": 2616
     },
     {
       "path": "dist/document-access-application.mjs",
-      "sha256": "17c1502b5fbc39dd1200ae338bf82a1f7709fe74e70330acd323463816c5d5d8",
-      "bytes": 593770
+      "sha256": "68fafcbebfe12161d7e5558dc8c5f4f7f95c737e7d11f3da22a1e108c38f823f",
+      "bytes": 624217
     },
     {
       "path": "document-application/boundary.mjs",

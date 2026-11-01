@@ -9,13 +9,13 @@
     },
     {
       "path": "../../apps/control/document-application/current.mjs",
-      "sha256": "4d12b4d86e8159ff43d2ef5beccd1192e6344a7b60201b4f21bbb14aa9d3649e",
-      "bytes": 7326
+      "sha256": "b8c1bac33cea95904e210c8bdb6fd6826d2b2b7a161c18002c900d668f96ae98",
+      "bytes": 7536
     },
     {
       "path": "../../apps/control/document-application/format-admission.mjs",
-      "sha256": "3747bd0143130bb51b5928715ecebe22bd4a932e951a8ae32f87dc86b59b758d",
-      "bytes": 1976
+      "sha256": "de1decfcb276619add5697e96b034d8ec68a1a8e578f5a4e81cdd9808353aa91",
+      "bytes": 1988
     },
     {
       "path": "../../apps/control/document-application/http.mjs",
@@ -29,8 +29,8 @@
     },
     {
       "path": "artifacts-0.2/artifact.schema.json",
-      "sha256": "2f0db5c164b3231f93d5ad10dbf3fd09b1cca8a8291d181e200170645c3c2276",
-      "bytes": 48251
+      "sha256": "2b30963f6556488ee2c7454ab3eddd582877a557f73c1778031d6b1c4c13695a",
+      "bytes": 51966
     },
     {
       "path": "meri.schema.json",
@@ -38,7 +38,7 @@
       "bytes": 50043
     }
   ],
-  "schemaSha256": "b4cbd56c2f46a3b1b6feb167ac063a2d5be392995abfc1a8236e81841306c07b",
+  "schemaSha256": "4eebb430f782ba1b742f3f8ea1e06a082f99fc94d8319a0c46aabda5c119f883",
   "browserInputs": [
     "artifacts-0.2/artifact-formats.mjs",
     "document-application/boundary.mjs",
