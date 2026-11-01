@@ -46,6 +46,12 @@ function entry(row){
  if(!row)refuse('INTENT_JOURNAL_STATE');const r=record(row.record);
  if(row.record_sha256!==hash(r))refuse('INTENT_JOURNAL_STATE');return data({record:r,state:row.state,outcome:outcome(row.state,row.outcome)});
 }
+/** The operation ids an inbox read is scoped to: a closed, non-empty list of registered operation ids. */
+function inboxOperations(raw){
+ const list=data(raw);
+ if(!Array.isArray(list)||list.length===0||list.length>64||list.some(id=>typeof id!=='string'||!/^[a-z][a-z_]{0,62}$/u.test(id))||new Set(list).size!==list.length)refuse('INTENT_JOURNAL_STATE');
+ return list;
+}
 const stableBinding=b=>Object.freeze({tenantId:b.tenantId,actorId:b.actorId,conversationId:b.conversationId,runId:b.runId});
 function journalTransaction(pool){
  assertPool(pool);
@@ -103,16 +109,17 @@ export function createPostgresIntentJournalStore({pool}){
   /** Every conversation's sdk deliveries of one tenant/actor, newest first (keyset before an existing delivery), at most `limit`
    * (1..50). Read-only. The same table and sdk-family scope as `list`; the cursor names a row by conversation and delivery because
    * delivery ids are unique only within a conversation. */
-  async listForActor({actor:rawActor,after=null,limit,signal}){
-   const a=data(own(rawActor,['tenantId','actorId']));validateShape('Identity',a);
+  async listForActor({actor:rawActor,after=null,limit,operations:rawOperations,signal}){
+   const a=data(own(rawActor,['tenantId','actorId']));validateShape('Identity',a);const operations=inboxOperations(rawOperations);
    if(!Number.isSafeInteger(limit)||limit<1||limit>50)refuse('INTENT_JOURNAL_STATE');
    const cursor=after===null?null:key({...data(own(after,['conversationId','deliveryId'])),tenantId:a.tenantId,actorId:a.actorId});
    return tx(signal,async client=>{
-    const scope="tenant_id=$1 AND actor_id=$2 AND delivery_id LIKE 'sdk:%'";
+    // Only prepared rows of the operations the inbox lists are read; the cursor row itself may be any sdk delivery of the actor.
+    const scope="tenant_id=$1 AND actor_id=$2 AND delivery_id LIKE 'sdk:%'",kinds=` AND state='PREPARED' AND record->'operation'->>'id' = ANY($${cursor===null?3:5}::text[])`;
     if(cursor!==null&&(await client.query(`SELECT delivery_id FROM ${TABLE} WHERE ${scope} AND conversation_id=$3 AND delivery_id=$4`,cursor)).rows.length!==1)refuse('INTENT_JOURNAL_CURSOR');
     const before=cursor===null?'':` AND (created_at,conversation_id,delivery_id) < (SELECT created_at,conversation_id,delivery_id FROM ${TABLE} WHERE ${scope} AND conversation_id=$3 AND delivery_id=$4)`;
-    const rows=(await client.query(`SELECT conversation_id,delivery_id,created_at,${COLUMNS} FROM ${TABLE} WHERE ${scope}${before} ORDER BY created_at DESC,conversation_id DESC,delivery_id DESC LIMIT ${limit+1}`,
-     cursor===null?[a.tenantId,a.actorId]:cursor)).rows;
+    const rows=(await client.query(`SELECT conversation_id,delivery_id,created_at,${COLUMNS} FROM ${TABLE} WHERE ${scope}${kinds}${before} ORDER BY created_at DESC,conversation_id DESC,delivery_id DESC LIMIT ${limit+1}`,
+     cursor===null?[a.tenantId,a.actorId,operations]:[...cursor,operations])).rows;
     const page=rows.slice(0,limit).map(row=>{
      const created=row.created_at instanceof Date?row.created_at:new Date(row.created_at);
      if(typeof row.delivery_id!=='string'||!/^sdk:[a-f0-9]{64}$/u.test(row.delivery_id)||!Number.isFinite(created.getTime()))refuse('INTENT_JOURNAL_STATE');
@@ -122,6 +129,16 @@ export function createPostgresIntentJournalStore({pool}){
     const last=page.at(-1);
     return data({entries:page,next:rows.length>limit?{conversationId:last.conversationId,deliveryId:last.deliveryId}:null});
    });
+  },
+  /** How many of one actor's prepared inbox rows are still inside their release window at `nowMs`: a cheap badge count read
+   * before any decision owner is consulted, so it can only overstate what the inbox page later shows as awaiting. */
+  async countForActor({actor:rawActor,operations:rawOperations,nowMs,signal}){
+   const a=data(own(rawActor,['tenantId','actorId']));validateShape('Identity',a);const operations=inboxOperations(rawOperations);
+   if(!Number.isSafeInteger(nowMs)||nowMs<1)refuse('INTENT_JOURNAL_STATE');
+   return tx(signal,async client=>{
+    const rows=(await client.query(`SELECT count(*)::int AS n FROM ${TABLE} WHERE tenant_id=$1 AND actor_id=$2 AND delivery_id LIKE 'sdk:%' AND state='PREPARED' AND record->'operation'->>'id' = ANY($3::text[]) AND (outcome->'release'->>'expiresAtMs')::numeric > $4`,[a.tenantId,a.actorId,operations,nowMs])).rows;
+    const n=rows[0]?.n;if(!Number.isSafeInteger(n)||n<0)refuse('INTENT_JOURNAL_STATE');return n;
+   },{readOnly:true});
   },
   /** DURABLE per-original-run browser-download reservation. One canonical transaction: run-scoped advisory lock,
    * exact-delivery replay read, scoped count of PENDING/UNKNOWN/PREPARED registrations, then the PENDING insert.

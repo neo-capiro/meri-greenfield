@@ -70,10 +70,10 @@ export declare function receiveRoutinesResponse<R extends RoutinesRoute>(route:R
 export declare const routineManagementSessionPath:'/api/routines/session';
 export declare function receiveRoutineManagementSessionRequest(jsonText:unknown):RoutinesManagementSessionRequest;
 export declare function receiveRoutineManagementSessionReceipt(jsonText:unknown,expected:RoutinesManagementContext,at:number):RoutinesManagementSessionReceipt;
-export type IntentsRoute='list'|'inbox'|'decide';
-export interface IntentsRequestMap {list:IntentsListRequest;inbox:IntentsInboxRequest;decide:IntentsDecideRequest;}
-export interface IntentsResponseMap {list:IntentsListResponse;inbox:IntentsInboxResponse;decide:IntentsDecideResponse;}
-export interface IntentsExpectationMap {list:{request:IntentsListRequest};inbox:{request:IntentsInboxRequest};decide:{request:IntentsDecideRequest;proposal:IntentsProposal};}
+export type IntentsRoute='list'|'inbox'|'inboxCount'|'decide';
+export interface IntentsRequestMap {list:IntentsListRequest;inbox:IntentsInboxRequest;inboxCount:IntentsInboxCountRequest;decide:IntentsDecideRequest;}
+export interface IntentsResponseMap {list:IntentsListResponse;inbox:IntentsInboxResponse;inboxCount:IntentsInboxCountResponse;decide:IntentsDecideResponse;}
+export interface IntentsExpectationMap {list:{request:IntentsListRequest};inbox:{request:IntentsInboxRequest};inboxCount:{request:IntentsInboxCountRequest};decide:{request:IntentsDecideRequest;proposal:IntentsProposal};}
 export type IntentsResponse<R extends IntentsRoute>=IntentsResponseMap[R]|IntentsErrorResponse;
 export declare class IntentsResponseError extends Error {readonly code:string;}
 export declare const intentsVersion:'0.1.0';

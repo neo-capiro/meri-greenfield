@@ -75,6 +75,9 @@ test('actual inbox answers are admitted: newest first, pending count, page curso
  const refusal=await s.exchange('inbox',{after:{conversationId:s.conversationId,deliveryId:delivery(9)}});assert.equal(refusal.status,503);assert.equal(refusal.admitted.error.code,'INTENT_JOURNAL_UNAVAILABLE');
  // A request the contract refuses never leaves the browser; the handler's own refusal of the same body is the 400 it would have met.
  await assert.rejects(request('inbox',JSON.stringify({limit:0})),refused('INTENTS_SHAPE'));
+ const count=await s.exchange('inboxCount',{});assert.equal(count.status,200);assert.equal(count.admitted.open,2,'both prepared proposals are still inside their window: the badge count is read before decisions and can only overstate');assert.equal(count.admitted.checkedAt,new Date(s.c.f.state.now).toISOString());
+ await assert.rejects(request('inboxCount',JSON.stringify({limit:1})),refused('INTENTS_SHAPE'));
+ assert.deepEqual(await receive('inbox',503,JSON.stringify({error:{code:'INTENTS_UNAVAILABLE',outcome:'NOT_DISPATCHED'}}),{request:{}}),{error:{code:'INTENTS_UNAVAILABLE',outcome:'NOT_DISPATCHED'}},'the fixed mount answer is admitted, never a shape failure');
  const invalid=await s.app.handle(new Request('http://127.0.0.1'+INTENT_PATHS.inbox,{method:'POST',headers:{'content-type':'application/json',authorization:'Bearer token'},body:JSON.stringify({limit:0})}));
  assert.equal(invalid.status,400);assert.equal((await invalid.json()).error.field,'limit');
 });
@@ -289,10 +292,10 @@ test('generated bundle is independent of the checkout layout',async()=>{
  assert(metadata.browserInputs.every(entry=>!layout.test(entry)));
 });
 test('metadata, paths and vocabularies describe the canonical mounted approval actions',async()=>{
- assert.deepEqual(intentsPaths,INTENT_PATHS);assert.deepEqual(intentsMetadata.routes,{list:{method:'POST',path:'/api/conversations/intents/list',response:'json'},inbox:{method:'POST',path:'/api/conversations/intents/inbox',response:'json'},decide:{method:'POST',path:'/api/conversations/intents/decide',response:'json'}});
+ assert.deepEqual(intentsPaths,INTENT_PATHS);assert.deepEqual(intentsMetadata.routes,{list:{method:'POST',path:'/api/conversations/intents/list',response:'json'},inbox:{method:'POST',path:'/api/conversations/intents/inbox',response:'json'},inboxCount:{method:'POST',path:'/api/conversations/intents/inbox-count',response:'json'},decide:{method:'POST',path:'/api/conversations/intents/decide',response:'json'}});
  assert.deepEqual(intentsMetadata.inboxKinds,protocol.INTENTS_INBOX_KINDS);
  assert.deepEqual(intentsMetadata.errorStatuses,protocol.INTENTS_ERROR_STATUSES);assert.deepEqual(intentsMetadata.approvableActions,protocol.INTENTS_APPROVABLE_ACTIONS);assert.deepEqual(intentsMetadata.approvableActions,['task.create','task.update','document.draft','artifact.file','mail.send','memory.propose']);assert.deepEqual(intentsMetadata.failureCodes,protocol.INTENTS_FAILURE_CODES);
- assert.deepEqual(intentsMetadata.errorOutcomes,['NOT_DISPATCHED','UNKNOWN','RESULT_NOT_RELEASED']);assert.equal(Object.keys(intentsMetadata.routes).length,3,'no approve/execute route exists in this contract');
+ assert.deepEqual(intentsMetadata.errorOutcomes,['NOT_DISPATCHED','UNKNOWN','RESULT_NOT_RELEASED']);assert.equal(Object.keys(intentsMetadata.routes).length,4,'no approve/execute route exists in this contract');assert.equal(intentsMetadata.errorStatuses.INTENTS_UNAVAILABLE,503,'the unmounted-family answer is part of the closed table');
  assert(Object.isFrozen(intentsMetadata)&&Object.isFrozen(intentsMetadata.errorStatuses));
  const schema=JSON.parse(await readFile(new URL('../dist/intents-application.schema.json',import.meta.url),'utf8')),text=JSON.stringify(schema);
  assert.equal(schema.$id,'urn:meri:intents-application:0.1.0');assert(!/"\$ref":"(?!#)/u.test(text),'every reference is local to the distribution');

@@ -10,6 +10,7 @@ export const createIntentsMetadata=({paths,limits,errorStatuses,errorOutcomes,fa
  errorStatuses,errorOutcomes,failureCodes,approvableActions,inboxKinds,
  semantics:{
   list:'read-only durable history of this conversation\'s prepared intents; next is the last returned deliveryId when more remain, otherwise null',
+  inboxCount:'the badge count: prepared inbox rows still inside their release window, counted in the journal before any decision owner is read, so it can only overstate the page\'s awaiting_approval rows (an approved, unexecuted proposal counts until its window ends)',
   inbox:'read-only, newest-first page of the caller\'s prepared proposals across every conversation (inboxKinds only), read with the same visibility as list; rows list and link, the conversation\'s list/decide routes decide; pending.count counts this page\'s awaiting_approval rows and pending.complete says the page reached the journal\'s end',
   decision:'approved or rejected is recorded by the canonical decision owner for exactly the named proposal, command hash and approver; display, stream or model text never approves',
   execution:'only actions in approvableActions execute; any other prepared proposal answers INTENT_NOT_APPROVABLE and stays prepared',

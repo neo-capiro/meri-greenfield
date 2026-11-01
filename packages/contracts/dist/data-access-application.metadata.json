@@ -35,7 +35,8 @@
     "PRODUCT_UNAVAILABLE": 502,
     "DATA_ACCESS_REQUEST_INVALID": 400,
     "DATA_ACCESS_CLIENT_REFUSED": 403,
-    "DATA_ACCESS_POLICY_UNAVAILABLE": 503
+    "DATA_ACCESS_POLICY_UNAVAILABLE": 503,
+    "DATA_ACCESS_UNAVAILABLE": 503
   },
   "states": [
     "not_installed",
@@ -63,8 +64,8 @@
     },
     {
       "path": "../../apps/control/data-access/protocol.mjs",
-      "sha256": "2dbfc0750d5078829af94a74056aee07e10e6cbcc8a860b6bd5c1435698d9a68",
-      "bytes": 1384
+      "sha256": "9eebf2479a398f301e704fecd585020cd4b951718d662daefb990bc0f836ea1b",
+      "bytes": 1594
     },
     {
       "path": "../../apps/control/data-access/reader.mjs",
@@ -147,7 +148,7 @@
       "bytes": 8487
     }
   ],
-  "schemaSha256": "2aab04e15c90e2482bbb55160ea10143fd664d4b849670648e062edfbd395a4b",
+  "schemaSha256": "b4d3a0a1303fcb3c6c8e733a3f6bf347611189fbdc566b0cc5da23846fa80b7d",
   "browserInputs": [
     "artifacts-0.2/artifact-formats.mjs",
     "data-access-application/data-access-application-receiver.mjs",

@@ -32,6 +32,8 @@ import {ProductError,productFailure} from '../product-access/errors.mjs';
 import {nativeTaskOutcome} from './task-outcome.mjs';
 import {nativeMailOutcome} from './mail-outcome.mjs';
 import {SCHEDULE_INTENT_OPERATIONS} from './schedule-preparer.mjs';
+import {OWNER_OPERATIONS} from './mount.mjs';
+import {BROWSER_PREPARATION_OPERATION} from './browser-proposals.mjs';
 import {ANALYSIS_INTENT_OPERATIONS} from './analysis-preparer.mjs';
 import {nativeArtifactFileOutcome} from './filing-outcome.mjs';
 import {assertMemoryReviewResult} from '../../../packages/contracts/commands-0.2/memory-review-result.mjs';
@@ -86,6 +88,11 @@ function inboxRequest(value){
 /** The item kinds a person decides (inline, in their conversation). Drafts, notes, pending analyses, memory reviews and schedule
  * proposals have their own owners and surfaces and are not inbox rows. */
 export const INBOX_KINDS=Object.freeze(['proposal','browser_action','watch_action','legiwatch_action','client_record_action','bizdev_action','legislative_document_action','research_action','research_share']);
+/** The operation ids whose prepared rows can become inbox rows: the owner kinds behind INBOX_KINDS plus the browser preparation.
+ * The journal applies this in SQL so rows of other kinds (notes, documents, analyses, schedules) are never read for the inbox. */
+export const INBOX_OPERATIONS=Object.freeze([...new Set([...['command','watch','legiwatch','client-record','bizdev','legislative-document','research-action','research-sharing'].flatMap(owner=>OWNER_OPERATIONS[owner]),BROWSER_PREPARATION_OPERATION])]);
+/** One inbox page with its pending summary; the release fence rebuilds it when a suppressed conversation's rows are dropped. */
+export const inboxPage=(rows,next)=>data({rows,next,pending:{count:rows.filter(row=>row.withheld===false&&row.phase==='awaiting_approval').length,complete:next===null}});
 /** Core owner statuses (watch/legiwatch/client-record/bizdev/legislative-document/research families) read as inbox phases. */
 const OWNER_PHASES=Object.freeze({proposed:'awaiting_approval',approved:'approved',executing:'executing',succeeded:'completed',failed_terminal:'completed',blocked:'completed',
  failed_retryable:'unknown',outcome_unknown:'unknown',dismissed:'rejected',expired:'expired'});
@@ -114,8 +121,8 @@ function commandProposal(entry){
 }
 export function createIntentApprovalOwner(configuration){
  const c=own(configuration,['journal','now','limits'],['decisions','documents','tasks','filing','mail','memory','sharing','researchAction','legiwatch','watch','clientRecord','bizdev','legislativeDocument','browser','enabled']);
- const journal=own(c.journal,['read','list'],['claim','settle','listForActor']),limits=data(c.limits);own(limits,['maxRequestMs']);
- if(typeof journal.read!=='function'||typeof journal.list!=='function'||journal.listForActor!==undefined&&typeof journal.listForActor!=='function'||typeof c.now!=='function'||typeof(c.enabled??false)!=='boolean'||
+ const journal=own(c.journal,['read','list'],['claim','settle','listForActor','countForActor']),limits=data(c.limits);own(limits,['maxRequestMs']);
+ if(typeof journal.read!=='function'||typeof journal.list!=='function'||journal.listForActor!==undefined&&typeof journal.listForActor!=='function'||journal.countForActor!==undefined&&typeof journal.countForActor!=='function'||typeof c.now!=='function'||typeof(c.enabled??false)!=='boolean'||
   !Number.isSafeInteger(limits.maxRequestMs)||limits.maxRequestMs<1||limits.maxRequestMs>30000)throw new ProductError('PRODUCT_CONFIGURATION');
  const decisions=c.decisions===undefined?undefined:own(c.decisions,[],['record','readDecision','getCurrent','revoke']);
  // Browser decisions use their own Core route with the human's attended bearer; the port is required to decide.
@@ -577,7 +584,7 @@ async function decideWatch(life,principal,entry,r){
   const r=inboxRequest(request),life=lifetime(deadlineMs,signal);
   try{
    let page;
-   try{page=data(await life.run(s=>journal.listForActor.call(c.journal,{actor:{tenantId:principal.tenantId,actorId:principal.actorId},after:r.after,limit:r.limit,signal:s})));}
+   try{page=data(await life.run(s=>journal.listForActor.call(c.journal,{actor:{tenantId:principal.tenantId,actorId:principal.actorId},after:r.after,limit:r.limit,operations:INBOX_OPERATIONS,signal:s})));}
    catch(error){const f=productFailure(error);if(f&&['DEADLINE','CANCELLED'].includes(f.code))throw error;fail('INTENT_JOURNAL_UNAVAILABLE');}
    own(page,['entries','next']);if(!Array.isArray(page.entries)||page.entries.length>r.limit)fail('INTENT_JOURNAL_UNAVAILABLE');
    const rows=[];
@@ -586,11 +593,24 @@ async function decideWatch(life,principal,entry,r){
     const row=inboxRow(await item(life,principal,entry,entry.conversationId),entry.conversationId,c.now());
     if(row!==null)rows.push(row);
    }
-   const count=rows.filter(row=>row.withheld===false&&row.phase==='awaiting_approval').length;
-   return data({rows,next:page.next,pending:{count,complete:page.next===null}});
+   return inboxPage(rows,page.next);
   }finally{life.close();}
  }
- return Object.freeze({decide,list,inbox});
+ /** The badge count: prepared inbox rows still inside their release window, before any decision owner is consulted. It can
+  * only overstate what the inbox page shows as awaiting (an approved, unexecuted proposal still counts until its window ends). */
+ async function inboxCount({principal,request,signal,deadlineMs}){
+  enabled();if(typeof journal.countForActor!=='function')fail('INTENT_JOURNAL_UNAVAILABLE');
+  try{own(request,[]);}catch{fail('INTENT_REQUEST_INVALID');}
+  const life=lifetime(deadlineMs,signal),at=c.now();
+  try{
+   let open;
+   try{open=await life.run(s=>journal.countForActor.call(c.journal,{actor:{tenantId:principal.tenantId,actorId:principal.actorId},operations:INBOX_OPERATIONS,nowMs:at,signal:s}));}
+   catch(error){const f=productFailure(error);if(f&&['DEADLINE','CANCELLED'].includes(f.code))throw error;fail('INTENT_JOURNAL_UNAVAILABLE');}
+   if(!Number.isSafeInteger(open)||open<0)fail('INTENT_JOURNAL_UNAVAILABLE');
+   return data({open,checkedAt:new Date(at).toISOString()});
+  }finally{life.close();}
+ }
+ return Object.freeze({decide,list,inbox,inboxCount});
 }
 
 /** Publication correlation only. Current access, original preparation and exact

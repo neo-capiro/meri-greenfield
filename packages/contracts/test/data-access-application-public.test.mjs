@@ -52,10 +52,11 @@ test('actual error bodies are admitted against the closed table; a request the c
  const unauthenticated=await s.exchange({clientId:null},{token:null});assert.equal(unauthenticated.status,401);assert.equal(unauthenticated.admitted.error.code,'UNAUTHENTICATED');
  const down=await setup({policy:'down'}).exchange({clientId:null});assert.equal(down.status,503);assert.deepEqual(down.admitted,{error:{code:'DATA_ACCESS_POLICY_UNAVAILABLE'}});
  assert.throws(()=>receive(404,JSON.stringify({error:{code:'DATA_ACCESS_CLIENT_REFUSED'}}),{clientId:null}),refused('DATA_ACCESS_STATUS'),'a status that does not match the closed table');
+ assert.deepEqual(receive(503,JSON.stringify({error:{code:'DATA_ACCESS_UNAVAILABLE',outcome:'NOT_DISPATCHED'}}),{clientId:null}),{error:{code:'DATA_ACCESS_UNAVAILABLE',outcome:'NOT_DISPATCHED'}},'the fixed mount answer while the family is not composed is admitted');
 });
 test('metadata and the distribution describe the canonical route and nothing more',async()=>{
  assert.deepEqual(dataAccessMetadata.routes,{read:{method:'POST',path:protocol.DATA_ACCESS_PATH,response:'json'}});assert.deepEqual(dataAccessMetadata.errorStatuses,protocol.DATA_ACCESS_ERROR_STATUSES);
- assert.deepEqual(dataAccessMetadata.states,['not_installed','policy_off','client_required','available']);assert.deepEqual(dataAccessMetadata.requirements,['mailbox']);assert(Object.isFrozen(dataAccessMetadata));
+ assert.deepEqual(dataAccessMetadata.states,['not_installed','policy_off','client_required','available']);assert.equal(dataAccessMetadata.errorStatuses.DATA_ACCESS_UNAVAILABLE,503);assert.deepEqual(dataAccessMetadata.requirements,['mailbox']);assert(Object.isFrozen(dataAccessMetadata));
  const source=await readFile(new URL('../dist/data-access-application.mjs',import.meta.url),'utf8'),metadata=JSON.parse(await readFile(new URL('../dist/data-access-application.metadata.json',import.meta.url),'utf8'));
  assert.deepEqual(metadata.browserImports,[]);assert(!/(?:^|\n)\s*import\s/u.test(source));
  for(const path of ['../../apps/control/data-access/protocol.mjs','../../apps/control/data-access/reader.mjs','../../apps/control/data-access/http.mjs','../../apps/runtime/product-ports/data-access.mjs','../../apps/worker/conversation/reads/families.mjs'])assert(metadata.sources.some(s=>s.path===path),path);

@@ -25,12 +25,15 @@ export function createMemoryJournalStore(){
    const start=after===null?0:mine.findIndex(([[,,,d]])=>d===after)+1;if(after!==null&&start===0)throw Error('synthetic cursor refused');
    const page=mine.slice(start,start+limit).map(([[,,,deliveryId],row],i)=>structuredClone({deliveryId,createdAt:new Date(NOW+start+i).toISOString(),record:row.record,state:row.state,outcome:row.outcome}));
    return {entries:page,next:mine.length>start+limit?page.at(-1).deliveryId:null};},
-  async listForActor({actor:a,after=null,limit}){if(state.readDown)throw Error('synthetic store unavailable');
-   // Newest first: insertion order stands in for created_at, so the reverse of the map order is the page order.
-   const mine=[...rows].map(([at,row])=>[JSON.parse(at),row]).filter(([[t,actor]])=>t===a.tenantId&&actor===a.actorId).reverse();
+  async listForActor({actor:a,after=null,limit,operations}){if(state.readDown)throw Error('synthetic store unavailable');
+   // Newest first: insertion order stands in for created_at, so the reverse of the map order is the page order. Like the SQL,
+   // only PREPARED rows of the inbox operations are rows; the cursor may name any of the actor's deliveries.
+   const mine=[...rows].map(([at,row])=>[JSON.parse(at),row]).filter(([[t,actor],row])=>t===a.tenantId&&actor===a.actorId&&row.state==='PREPARED'&&operations.includes(row.record.operation.id)).reverse();
    const start=after===null?0:mine.findIndex(([[,,conv,d]])=>conv===after.conversationId&&d===after.deliveryId)+1;if(after!==null&&start===0)throw Error('synthetic cursor refused');
    const page=mine.slice(start,start+limit).map(([[,,conversationId,deliveryId],row],i)=>structuredClone({conversationId,deliveryId,createdAt:new Date(NOW-start-i).toISOString(),record:row.record,state:row.state,outcome:row.outcome}));
-   const last=page.at(-1);return {entries:page,next:mine.length>start+limit?{conversationId:last.conversationId,deliveryId:last.deliveryId}:null};}}};
+   const last=page.at(-1);return {entries:page,next:mine.length>start+limit?{conversationId:last.conversationId,deliveryId:last.deliveryId}:null};},
+  async countForActor({actor:a,operations,nowMs}){if(state.readDown)throw Error('synthetic store unavailable');
+   return [...rows].filter(([at,row])=>{const [t,actor]=JSON.parse(at);return t===a.tenantId&&actor===a.actorId&&row.state==='PREPARED'&&operations.includes(row.record.operation.id)&&row.outcome.release.expiresAtMs>nowMs;}).length;}}};
 }
 /** A task.create composition: real metadata owner + real prepare-only command interface. */
 export function commandComposition({tenantId='tenant',action='task.create',approverActorId='reviewer'}={}){

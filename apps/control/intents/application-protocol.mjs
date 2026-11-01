@@ -11,8 +11,10 @@ export const INTENTS_PATHS=INTENT_PATHS;
 export const INTENTS_LIMITS=Object.freeze({maxRequestMs:30000,maxRequestBytes:4096,maxResponseBytes:16777216});
 /** Every outcome the intent owners attach to a failure (`approval.mjs` fail/ProductError calls; `http.mjs` effect:true adds UNKNOWN and RESULT_NOT_RELEASED). */
 export const INTENTS_ERROR_OUTCOMES=Object.freeze(['NOT_DISPATCHED','UNKNOWN','RESULT_NOT_RELEASED']);
+/** The fixed product mount's answer while the intents family is not composed (`apps/runtime/product-applications.mjs`). */
+export const INTENTS_UNAVAILABLE='INTENTS_UNAVAILABLE';
 /** Transport/membership statuses plus the intent domain codes, exactly as `createProductApplication` answers them. */
-export const INTENTS_ERROR_STATUSES=Object.freeze({...PRODUCT_ERROR_STATUSES,...INTENT_APPROVAL_ERRORS});
+export const INTENTS_ERROR_STATUSES=Object.freeze({...PRODUCT_ERROR_STATUSES,...INTENT_APPROVAL_ERRORS,[INTENTS_UNAVAILABLE]:503});
 /** Actions an approved intent may execute today; every other prepared proposal answers INTENT_NOT_APPROVABLE. */
 export const INTENTS_APPROVABLE_ACTIONS=APPROVABLE_ACTIONS;
 /** Closed `failed` item codes from the intent journal. */

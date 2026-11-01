@@ -75,3 +75,9 @@ if(!('error'in inbox)){
 const inboxPath:'/api/conversations/intents/inbox'=intentsPaths.inbox;void inboxPath;
 // @ts-expect-error an inbox answer needs no proposal and admits none
 await receiveIntentsResponse('inbox',200,'{}',{request:inboxRequest,proposal:retained});
+const countRequest=await receiveIntentsRequest('inboxCount','{}');
+const counted=await receiveIntentsResponse('inboxCount',200,'{}',{request:countRequest});
+if(!('error'in counted)){const open:number=counted.open,checkedAt:string=counted.checkedAt;void open;void checkedAt;
+ // @ts-expect-error the count carries no rows
+ const rows=counted.rows;void rows;}
+const countPath:'/api/conversations/intents/inbox-count'=intentsPaths.inboxCount;void countPath;

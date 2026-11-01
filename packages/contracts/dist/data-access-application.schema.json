@@ -199,7 +199,8 @@
                 "PRODUCT_UNAVAILABLE",
                 "DATA_ACCESS_REQUEST_INVALID",
                 "DATA_ACCESS_CLIENT_REFUSED",
-                "DATA_ACCESS_POLICY_UNAVAILABLE"
+                "DATA_ACCESS_POLICY_UNAVAILABLE",
+                "DATA_ACCESS_UNAVAILABLE"
               ]
             },
             "outcome": {

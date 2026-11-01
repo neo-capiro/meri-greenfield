@@ -6,7 +6,9 @@ export const DATA_ACCESS_PATH='/api/data-access/read';
 export const DATA_ACCESS_LIMITS=Object.freeze({maxRequestMs:30000,maxRequestBytes:1024,maxResponseBytes:1048576});
 /** Domain refusals; transport/membership codes belong to `product-access/http.mjs`. */
 export const DATA_ACCESS_ERRORS=Object.freeze({DATA_ACCESS_REQUEST_INVALID:400,DATA_ACCESS_CLIENT_REFUSED:403,DATA_ACCESS_POLICY_UNAVAILABLE:503});
-export const DATA_ACCESS_ERROR_STATUSES=Object.freeze({...PRODUCT_ERROR_STATUSES,...DATA_ACCESS_ERRORS});
+/** The fixed product mount's answer while the family is not composed (`apps/runtime/product-applications.mjs`). */
+export const DATA_ACCESS_UNAVAILABLE='DATA_ACCESS_UNAVAILABLE';
+export const DATA_ACCESS_ERROR_STATUSES=Object.freeze({...PRODUCT_ERROR_STATUSES,...DATA_ACCESS_ERRORS,[DATA_ACCESS_UNAVAILABLE]:503});
 /** Why a family is or is not readable for this member and client right now, in the order the reader decides them. */
 export const DATA_ACCESS_STATES=Object.freeze(['not_installed','policy_off','client_required','available']);
 /** What a family needs beyond policy before a read can answer; the frontend joins it with the member's own connections. */

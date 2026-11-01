@@ -6,6 +6,8 @@ export type IntentsApplicationEnvelope =
   | IntentsInboxKind
   | IntentsInboxRow
   | IntentsInboxResponse
+  | IntentsInboxCountRequest
+  | IntentsInboxCountResponse
   | IntentsConversationId
   | IntentsDeliveryId
   | IntentsOperation
@@ -2276,6 +2278,11 @@ export interface IntentsInboxResponse {
     count: number;
     complete: boolean;
   };
+}
+export interface IntentsInboxCountRequest {}
+export interface IntentsInboxCountResponse {
+  open: number;
+  checkedAt: string;
 }
 export interface IntentsOperation {
   id: string;
@@ -4659,7 +4666,8 @@ export interface IntentsErrorResponse {
       | 'INTENT_RESULT_NOT_RELEASED'
       | 'INTENT_EXECUTION_UNKNOWN'
       | 'INTENT_JOURNAL_UNAVAILABLE'
-      | 'INTENT_REQUEST_INVALID';
+      | 'INTENT_REQUEST_INVALID'
+      | 'INTENTS_UNAVAILABLE';
     outcome?: 'NOT_DISPATCHED' | 'UNKNOWN' | 'RESULT_NOT_RELEASED';
     field?: string;
   };
@@ -5729,14 +5737,14 @@ export declare function receiveRoutinesResponse<R extends RoutinesRoute>(route:R
 export declare const routineManagementSessionPath:'/api/routines/session';
 export declare function receiveRoutineManagementSessionRequest(jsonText:unknown):RoutinesManagementSessionRequest;
 export declare function receiveRoutineManagementSessionReceipt(jsonText:unknown,expected:RoutinesManagementContext,at:number):RoutinesManagementSessionReceipt;
-export type IntentsRoute='list'|'inbox'|'decide';
-export interface IntentsRequestMap {list:IntentsListRequest;inbox:IntentsInboxRequest;decide:IntentsDecideRequest;}
-export interface IntentsResponseMap {list:IntentsListResponse;inbox:IntentsInboxResponse;decide:IntentsDecideResponse;}
-export interface IntentsExpectationMap {list:{request:IntentsListRequest};inbox:{request:IntentsInboxRequest};decide:{request:IntentsDecideRequest;proposal:IntentsProposal};}
+export type IntentsRoute='list'|'inbox'|'inboxCount'|'decide';
+export interface IntentsRequestMap {list:IntentsListRequest;inbox:IntentsInboxRequest;inboxCount:IntentsInboxCountRequest;decide:IntentsDecideRequest;}
+export interface IntentsResponseMap {list:IntentsListResponse;inbox:IntentsInboxResponse;inboxCount:IntentsInboxCountResponse;decide:IntentsDecideResponse;}
+export interface IntentsExpectationMap {list:{request:IntentsListRequest};inbox:{request:IntentsInboxRequest};inboxCount:{request:IntentsInboxCountRequest};decide:{request:IntentsDecideRequest;proposal:IntentsProposal};}
 export type IntentsResponse<R extends IntentsRoute>=IntentsResponseMap[R]|IntentsErrorResponse;
 export declare class IntentsResponseError extends Error {readonly code:string;}
 export declare const intentsVersion:'0.1.0';
-export declare const intentsPaths:Readonly<{"list":"/api/conversations/intents/list","inbox":"/api/conversations/intents/inbox","decide":"/api/conversations/intents/decide"}>;
+export declare const intentsPaths:Readonly<{"list":"/api/conversations/intents/list","inbox":"/api/conversations/intents/inbox","inboxCount":"/api/conversations/intents/inbox-count","decide":"/api/conversations/intents/decide"}>;
 export declare const intentsMetadata:{
   "contractVersion": "0.1.0",
   "schemaId": "urn:meri:intents-application:0.1.0",
@@ -5749,6 +5757,11 @@ export declare const intentsMetadata:{
     "inbox": {
       "method": "POST",
       "path": "/api/conversations/intents/inbox",
+      "response": "json"
+    },
+    "inboxCount": {
+      "method": "POST",
+      "path": "/api/conversations/intents/inbox-count",
       "response": "json"
     },
     "decide": {
@@ -5805,7 +5818,8 @@ export declare const intentsMetadata:{
     "INTENT_RESULT_NOT_RELEASED": 502,
     "INTENT_EXECUTION_UNKNOWN": 502,
     "INTENT_JOURNAL_UNAVAILABLE": 503,
-    "INTENT_REQUEST_INVALID": 400
+    "INTENT_REQUEST_INVALID": 400,
+    "INTENTS_UNAVAILABLE": 503
   },
   "errorOutcomes": [
     "NOT_DISPATCHED",
@@ -5843,6 +5857,7 @@ export declare const intentsMetadata:{
   ],
   "semantics": {
     "list": "read-only durable history of this conversation's prepared intents; next is the last returned deliveryId when more remain, otherwise null",
+    "inboxCount": "the badge count: prepared inbox rows still inside their release window, counted in the journal before any decision owner is read, so it can only overstate the page's awaiting_approval rows (an approved, unexecuted proposal counts until its window ends)",
     "inbox": "read-only, newest-first page of the caller's prepared proposals across every conversation (inboxKinds only), read with the same visibility as list; rows list and link, the conversation's list/decide routes decide; pending.count counts this page's awaiting_approval rows and pending.complete says the page reached the journal's end",
     "decision": "approved or rejected is recorded by the canonical decision owner for exactly the named proposal, command hash and approver; display, stream or model text never approves",
     "execution": "only actions in approvableActions execute; any other prepared proposal answers INTENT_NOT_APPROVABLE and stays prepared",

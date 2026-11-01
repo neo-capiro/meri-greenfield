@@ -6,9 +6,9 @@ export {IntentsResponseError} from './boundary.mjs';
 export {intentsVersion} from './protocol.mjs';
 export {intentsMetadata,intentsPaths};
 export {routinesPaths,routinesMetadata,receiveRoutinesRequest,receiveRoutinesResponse,routineManagementSessionPath,receiveRoutineManagementSessionRequest,receiveRoutineManagementSessionReceipt} from './routines.mjs';
-const requests=Object.freeze({list:'IntentsListRequest',inbox:'IntentsInboxRequest',decide:'IntentsDecideRequest'}),responses=Object.freeze({list:'IntentsListResponse',inbox:'IntentsInboxResponse',decide:'IntentsDecideResponse'});
+const requests=Object.freeze({list:'IntentsListRequest',inbox:'IntentsInboxRequest',inboxCount:'IntentsInboxCountRequest',decide:'IntentsDecideRequest'}),responses=Object.freeze({list:'IntentsListResponse',inbox:'IntentsInboxResponse',inboxCount:'IntentsInboxCountResponse',decide:'IntentsDecideResponse'});
 /** The context each route is answered against: the captured request, and for decide also the proposal admitted from an earlier list answer. */
-const expectationKeys=Object.freeze({list:['request'],inbox:['request'],decide:['proposal','request']});
+const expectationKeys=Object.freeze({list:['request'],inbox:['request'],inboxCount:['request'],decide:['proposal','request']});
 const selected=(table,route)=>{if(typeof route!=='string'||!Object.hasOwn(table,route))fail('INTENTS_ROUTE');return table[route];};
 const check=(name,value)=>{if(!validators[name](value))fail('INTENTS_SHAPE');return value;};
 const freeze=value=>{if(value&&typeof value==='object'&&!Object.isFrozen(value)){Object.values(value).forEach(freeze);Object.freeze(value);}return value;};
@@ -30,5 +30,5 @@ export async function receiveIntentsResponse(route,httpStatus,jsonText,expected)
   return freeze(value);
  }
  check(response,value);
- return freeze(route==='list'?await semantics.list(value,expectation.request):route==='inbox'?semantics.inbox(value,expectation.request):await semantics.decide(value,expectation.request,expectation.proposal));
+ return freeze(route==='list'?await semantics.list(value,expectation.request):route==='inbox'?semantics.inbox(value,expectation.request):route==='inboxCount'?value:await semantics.decide(value,expectation.request,expectation.proposal));
 }

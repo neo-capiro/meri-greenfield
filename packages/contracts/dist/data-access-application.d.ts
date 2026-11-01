@@ -64,7 +64,8 @@ export interface DataAccessErrorResponse {
       | 'PRODUCT_UNAVAILABLE'
       | 'DATA_ACCESS_REQUEST_INVALID'
       | 'DATA_ACCESS_CLIENT_REFUSED'
-      | 'DATA_ACCESS_POLICY_UNAVAILABLE';
+      | 'DATA_ACCESS_POLICY_UNAVAILABLE'
+      | 'DATA_ACCESS_UNAVAILABLE';
     outcome?: 'NOT_DISPATCHED';
     field?: string;
   };
@@ -109,7 +110,8 @@ export declare const dataAccessMetadata:{
     "PRODUCT_UNAVAILABLE": 502,
     "DATA_ACCESS_REQUEST_INVALID": 400,
     "DATA_ACCESS_CLIENT_REFUSED": 403,
-    "DATA_ACCESS_POLICY_UNAVAILABLE": 503
+    "DATA_ACCESS_POLICY_UNAVAILABLE": 503,
+    "DATA_ACCESS_UNAVAILABLE": 503
   },
   "states": [
     "not_installed",

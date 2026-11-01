@@ -25,9 +25,10 @@ import {USER_PREFERENCES_PATHS,userPreferencesUnavailable} from '../control/sett
 import {ROUTINE_PATHS,routinesUnavailable} from '../control/schedules/application-http.mjs';
 import {ROUTINE_MANAGEMENT_SESSION_PATH} from '../../packages/contracts/schedules-0.2/application-protocol.mjs';
 import {INTENT_PATHS} from '../control/intents/http.mjs';
+import {INTENTS_UNAVAILABLE} from '../control/intents/application-protocol.mjs';
 import {TENANT_SETTINGS_PATHS} from '../control/settings/tenant-application/protocol.mjs';
 import {MEMORY_PATHS,memoryUnavailable} from '../control/memory/protocol.mjs';
-import {DATA_ACCESS_PATH} from '../control/data-access/protocol.mjs';
+import {DATA_ACCESS_PATH,DATA_ACCESS_UNAVAILABLE} from '../control/data-access/protocol.mjs';
 // Provenance is process-private. Caller-authored configuredOwners fields remain unknown keys and never establish readiness.
 const capturedPorts=new WeakSet();
 const capturedArtifactRecovery=new WeakMap();
@@ -132,10 +133,10 @@ export function createRuntimeProductApplications({configuration,sessions,ports,n
   if(path.startsWith('/api/uploads/'))return handleUploads?handleUploads(request):Response.json({error:{code:'UPLOAD_UNAVAILABLE',outcome:'NOT_DISPATCHED'}},{status:503,headers:{'cache-control':'no-store','x-content-type-options':'nosniff'}});
   if(Object.values(USER_PREFERENCES_PATHS).includes(path))return userPreferences?userPreferences.handle(request):userPreferencesUnavailable();
   if(path===ROUTINE_MANAGEMENT_SESSION_PATH||Object.values(ROUTINE_PATHS).includes(path))return routines?routines.handle(request):routinesUnavailable();
-  if(Object.values(INTENT_PATHS).includes(path))return ports.intentApplication?ports.intentApplication.handle(request):Response.json({error:{code:'INTENTS_UNAVAILABLE',outcome:'NOT_DISPATCHED'}},{status:503,headers:{'cache-control':'no-store','x-content-type-options':'nosniff'}});
+  if(Object.values(INTENT_PATHS).includes(path))return ports.intentApplication?ports.intentApplication.handle(request):Response.json({error:{code:INTENTS_UNAVAILABLE,outcome:'NOT_DISPATCHED'}},{status:503,headers:{'cache-control':'no-store','x-content-type-options':'nosniff'}});
   if(Object.values(TENANT_SETTINGS_PATHS).includes(path))return ports.settingsApplication?ports.settingsApplication.handle(request):Response.json({error:{code:'SETTINGS_UNAVAILABLE',outcome:'NOT_DISPATCHED'}},{status:503,headers:{'cache-control':'no-store','x-content-type-options':'nosniff'}});
   if(Object.values(MEMORY_PATHS).includes(path))return ports.memoryApplication?ports.memoryApplication.handle(request):memoryUnavailable();
-  if(path===DATA_ACCESS_PATH)return ports.dataAccessApplication?ports.dataAccessApplication.handle(request):Response.json({error:{code:'DATA_ACCESS_UNAVAILABLE',outcome:'NOT_DISPATCHED'}},{status:503,headers:{'cache-control':'no-store','x-content-type-options':'nosniff'}});
+  if(path===DATA_ACCESS_PATH)return ports.dataAccessApplication?ports.dataAccessApplication.handle(request):Response.json({error:{code:DATA_ACCESS_UNAVAILABLE,outcome:'NOT_DISPATCHED'}},{status:503,headers:{'cache-control':'no-store','x-content-type-options':'nosniff'}});
   if(Object.values(RUN_INDEX_PATHS).includes(path))return runIndex?runIndex.handle(request):Response.json({error:{code:'RUN_INDEX_UNAVAILABLE'}},{status:503,headers:{'cache-control':'no-store','x-content-type-options':'nosniff'}});
   if(path===CONVERSATION_USAGE_PATH)return usage?usage.handle(request):Response.json({error:{code:'USAGE_UNAVAILABLE'}},{status:503,headers:{'cache-control':'no-store','x-content-type-options':'nosniff'}});
   if(path===USAGE_OVERVIEW_PATH)return usageOverview?usageOverview.handle(request):Response.json({error:{code:'USAGE_OVERVIEW_UNAVAILABLE'}},{status:503,headers:{'cache-control':'no-store','x-content-type-options':'nosniff'}});

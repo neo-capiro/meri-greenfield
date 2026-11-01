@@ -160,6 +160,8 @@ export const PLAN=Object.freeze([
  ['migration','apps/control/browser-hosts/migrations/0005_native_pre_effect.sql','0a760da5fd982b4d9b73fa79bfe7a82daa341aae36bc63a990e49eff9f47dbbb','integration'],
  ['migration','apps/control/browser-hosts/migrations/0006_native_observer_journal.sql','f93f3a215b6eb8d178059aad7b572c19f08d00764e34f28c68c7ccb2e0a6b330','integration'],
  ['migration','apps/control/browser-hosts/migrations/0007_native_cleanup_certificate_window.sql','c8f189b48d0114aca710c5224e155a65a814c27a5f9dfcb4f214e05406f50546','integration'],
+ // Ordinal 83: I4 actor-wide approval inbox read index on the unchanged intent journal (neo-capiro/meri-greenfield#504).
+ ['migration','apps/control/intents/migrations/0005_actor_inbox_index.sql','fd04b221c7ec9a7d058d709d806e4b9f113182b98803e12420a968ddcbdf9ad3','integration'],
 ].map(([kind,path,pinned,declaredStage],index)=>Object.freeze({ordinal:index+1,kind,path,pinned,
  name:kind==='migration'?path:`${path}#${kind.slice(6)}`,
  stage:declaredStage??(kind==='phase:temporal_grants'?'temporal':'meri')})));

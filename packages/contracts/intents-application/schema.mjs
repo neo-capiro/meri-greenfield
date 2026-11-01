@@ -39,6 +39,9 @@ export function intentsSchema({errorStatuses,errorOutcomes,failureCodes,fieldPat
    clientId:{anyOf:[{type:'string',minLength:1,maxLength:256},{type:'null'}]},expiresAt:{type:'string',format:'date-time'},phase:{enum:[...INTENT_PHASES]}}),
  ]},
  IntentsInboxResponse:object({rows:{type:'array',items:ref('IntentsInboxRow'),maxItems:50},next:{anyOf:[ref('IntentsInboxCursor'),{type:'null'}]},pending:object({count:{type:'integer',minimum:0,maximum:50},complete:{type:'boolean'}})}),
+ // The badge count: prepared inbox rows still inside their release window, counted before any decision owner is read.
+ IntentsInboxCountRequest:object({},[]),
+ IntentsInboxCountResponse:object({open:{type:'integer',minimum:0},checkedAt:{type:'string',pattern:MILLIS}}),
  IntentsConversationId:{type:'string',pattern:UUID},
  IntentsDeliveryId:{type:'string',pattern:DELIVERY},
  IntentsOperation:object({id:{type:'string',pattern:'^[a-z][a-z_]{0,62}$'},version:{const:'0.2.0'}}),
