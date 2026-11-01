@@ -3,7 +3,7 @@ import {randomUUID} from 'node:crypto';
 import {canonicalSha256} from '../../../../packages/contracts/validate.mjs';
 import {createActionSessionOwner} from '../../action-host/session/owner.mjs';
 
-export function createLocalDocumentPorts({binding,scopes,clientId,deadlineMs,now,state}) {
+export function createLocalDocumentPorts({binding,scopes,clientId,deadlineMs,now,state,sessionTtlMs=30000}) {
   const clone = value => structuredClone(value);
   const active = signal => {
     if (state.closed || state.revoked || signal?.aborted || now() >= deadlineMs) throw Error('SYNTHETIC_DOCUMENT_REFUSED');
@@ -11,7 +11,7 @@ export function createLocalDocumentPorts({binding,scopes,clientId,deadlineMs,now
   const stamp = () => ({checkedAtMs: now(), expiresAtMs: deadlineMs});
   const nativeCredential = `fixture_identity_${randomUUID()}`;
   const sessions = createActionSessionOwner({mode: 'process-local', now,
-    limits: {maxSessions: 8, maxRequestMs: 3000, maxTtlMs: 30000, maxFactBytes: 65536},
+    limits: {maxSessions: 8, maxRequestMs: 3000, maxTtlMs: sessionTtlMs, maxFactBytes: 65536},
     async verifyIdentity({credential,signal}) {
       active(signal); if (credential !== nativeCredential) throw Error('SYNTHETIC_IDENTITY_REFUSED');
       return {principal: {tenantId: binding.tenantId,actorId: binding.actorId}, identityRevision: 'synthetic-identity-1', ...stamp()};

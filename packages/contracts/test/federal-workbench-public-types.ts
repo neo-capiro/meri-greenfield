@@ -67,3 +67,18 @@ if ('resultKind' in review.prepared.draft && review.prepared.draft.resultKind ==
   const empty: '' = review.prepared.draft.outputs.consolidated;
   void empty;
 }
+
+if (nestedOrFlat.parserVersion === 'federal-uslm-xml/2') {
+  const profile: 'uslm-2.1.0' = nestedOrFlat.validation.profile;
+  const valid: true = nestedOrFlat.validation.valid;
+  const ancestors: string[] = nestedOrFlat.scopes[0].ancestorPath;
+  void [profile, valid, ancestors];
+} else {
+  // @ts-expect-error Earlier parser profiles carry no schema-validity receipt.
+  nestedOrFlat.validation;
+}
+if (review.prepared.schemaValidation) {
+  const sourceHash: string = review.prepared.schemaValidation.source.sourceSha256;
+  const valid: true | undefined = review.prepared.schemaValidation.consolidated?.valid;
+  void [sourceHash, valid];
+}

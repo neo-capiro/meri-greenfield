@@ -7,7 +7,7 @@ import {same} from '../action-host/current.mjs';
 import {assertNativeConversationScope} from '../../../packages/contracts/runtime-0.2/session.mjs';
 import {fail} from './http.mjs';
 export {data,own,same,v};
-const portCodes=new Set(['ACCESS_DENIED','SESSION_REFUSED','DEADLINE','CANCELLED','UNAVAILABLE','ARTIFACT_DEADLINE','ARTIFACT_CANCELLED','ARTIFACT_EFFECT_UNKNOWN','ARTIFACT_REPLAY_UNRESOLVED','ARTIFACT_STALE_PARENT','ARTIFACT_RENDERER_UNAVAILABLE','CONFLICT','ENOENT','RETENTION_SUPPRESSED','RETENTION_RECOVERY_BARRIER','RETENTION_READ_UNAVAILABLE']);
+const portCodes=new Set(['ACCESS_DENIED','SESSION_REFUSED','DEADLINE','CANCELLED','UNAVAILABLE','ARTIFACT_DEADLINE','ARTIFACT_CANCELLED','ARTIFACT_CLEANUP_FAILED','DRAFT_SCHEMA_VALIDATOR_UNAVAILABLE','DRAFT_SCHEMA_INVALID','ARTIFACT_EFFECT_UNKNOWN','ARTIFACT_REPLAY_UNRESOLVED','ARTIFACT_STALE_PARENT','ARTIFACT_RENDERER_UNAVAILABLE','CONFLICT','ENOENT','RETENTION_SUPPRESSED','RETENTION_RECOVERY_BARRIER','RETENTION_READ_UNAVAILABLE']);
 function portError(error){
  let code='DOCUMENT_PORT_REFUSED';
  if(error&&typeof error==='object'&&!types.isProxy(error)){const d=Object.getOwnPropertyDescriptors(error),candidate=d.code?.value??d.message?.value;if(portCodes.has(candidate))code=candidate;}
@@ -28,7 +28,7 @@ export function documentLimits(value){
  return limits;
 }
 export function configuration(value){
- const c=own(value,['sessions','selectedClientId','artifactOptions','now','limits'],['enabled','admitPdf','previewOptions','nativeFiles','nativeResults','federalSource']);
+ const c=own(value,['sessions','selectedClientId','artifactOptions','now','limits'],['enabled','admitPdf','previewOptions','nativeFiles','nativeResults','federalSource','federalValidator']);
  const o=own(c.artifactOptions,['pool','context','validators','authorize','versions','objects','executor','now','ids'],['retention','admitRetainedEvidence','selectedInvocationId','authorizeOrigin','retainedAssetMapWrites']);
  if(o.authorizeOrigin!==undefined&&(typeof o.authorizeOrigin!=='function'||types.isProxy(o.authorizeOrigin)))fail('DOCUMENT_CONFIGURATION',500);
  if(o.retention!==undefined&&typeof o.retention?.assertServable!=='function')fail('DOCUMENT_CONFIGURATION',500);
@@ -45,7 +45,8 @@ export function configuration(value){
   options,formatAdmission:admitDocumentFormats({pdf:c.admitPdf??false}),limits,now:c.now,selectedClientId:c.selectedClientId,enabled:c.enabled??false,previewOptions:c.previewOptions,
   nativeFiles:c.nativeFiles===undefined?null:{read:method(c.nativeFiles,'read')},
   nativeResults:c.nativeResults===undefined?null:{list:method(c.nativeResults,'list')},
-  federalSource:c.federalSource===undefined?null:{read:method(c.federalSource,'read')}};
+  federalSource:c.federalSource===undefined?null:{read:method(c.federalSource,'read')},
+  federalValidator:c.federalValidator===undefined?null:{validate:method(c.federalValidator,'validate')}};
 }
 export function requestCurrent(config,info,life,deadlineMs){
  const context=config.options.context;let cutoff=deadlineMs,identity=null;

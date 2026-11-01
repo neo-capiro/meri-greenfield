@@ -1,0 +1,5 @@
+# Upstream assets are byte-pinned, including their original whitespace.
+*.xsd -text -whitespace
+LICENSE.md -text -whitespace
+manifest.json -text -whitespace
+test/fixtures/*.xml -text -whitespace

@@ -5,6 +5,7 @@ import {federalDraftExportRequests} from '../../artifacts/federal-drafting/prepa
 import {federalSourceSelection,readFederalSourceEnvelope,federalSourceRequest} from '../../artifacts/federal-drafting/source-custody.mjs';
 import {FEDERAL_REVIEW_SCHEMA,federalRevisionRecord,federalApprovalRecord,encodeFederalReview,decodeFederalReview,assertFederalApprovalBinds} from '../../artifacts/federal-drafting/review-record.mjs';
 import {federalDraftDossier} from '../../artifacts/federal-drafting/dossier.mjs';
+import {federalValidatorForOperation} from '../../artifacts/federal-drafting/schema-qualification.mjs';
 import {receiveFederalRequest} from '@capiro/meri-contracts/federal-workbench';
 import {canonicalSha256 as hash} from '../../../packages/contracts/validate.mjs';
 import {own,data} from '../../../packages/contracts/commands-0.2/execution-boundary.mjs';
@@ -24,7 +25,7 @@ function selection(raw){
 export function federalWorkbenchInput(intent,raw){
  const q=data(raw);
  if(intent==='federal-import'){
-  own(q,['selection','deliveryId'],['representation']);if(!delivery(q.deliveryId)||q.representation!==undefined&&q.representation!=='retained-raw-utf8/1')fail('INVALID_REQUEST');
+  try{receiveFederalRequest('federal-import',new TextEncoder().encode(JSON.stringify(q)));}catch{fail('INVALID_REQUEST');}
   return {...q,selection:federalSourceSelection(q.selection)};
  }
  if(intent==='federal-load'){
@@ -83,6 +84,7 @@ async function reviewHistory(reads,call,context,life){
  return {schema:FEDERAL_REVIEW_SCHEMA,artifactId:page.artifactId,anchorVersionId:page.anchorVersionId,headVersionId:page.headVersionId,revisions,nextCursor:page.nextCursor};
 }
 export async function federalWorkbenchRoute({intent,call,config,current,life,state,releasePublication}){
+ const federalValidator=federalValidatorForOperation(config.federalValidator);
  const context=config.options.context,reads=createArtifactService({...config.options,authorize:current.authorize});
  state.readStarted=true;
  // Compiler refusals are released as their exact reason: the public error keeps `code` as the reason and names the
@@ -90,14 +92,15 @@ export async function federalWorkbenchRoute({intent,call,config,current,life,sta
  const sourceFailure=error=>{
   const code=error?.code;
   if(code==='DRAFT_SOURCE_STALE')fail(code,409);
+  if(code==='DRAFT_SCHEMA_VALIDATOR_UNAVAILABLE')fail(code,503);
   if(code==='DRAFT_SOURCE_READER_UNAVAILABLE')fail('UNAVAILABLE',503);
   if(typeof code==='string'&&code.startsWith('DRAFT_'))fail(code,422,{operationId:typeof error.operationId==='string'?error.operationId:null});
   throw error;
  };
- const prepare=selected=>life.run(signal=>reads.prepareFederalDraft(selected,context,{signal,readNative:config.federalSource?.read})).catch(sourceFailure);
+ const prepare=selected=>life.run(signal=>reads.prepareFederalDraft(selected,context,{signal,readNative:config.federalSource?.read,federalValidator})).catch(sourceFailure);
  const writer=authorize=>{const {ids,...options}=config.options;return createPostgresArtifactService({...options,authorize});};
  if(intent==='federal-import'){
-  const read=()=>life.run(signal=>readFederalSourceEnvelope(config.federalSource?.read,call.selection,{signal,deadlineMs:context.deadlineMs,representation:call.representation})).catch(sourceFailure);
+  const read=()=>life.run(signal=>readFederalSourceEnvelope(config.federalSource?.read,call.selection,{signal,deadlineMs:context.deadlineMs,representation:call.representation,validationProfile:call.validationProfile,federalValidator})).catch(sourceFailure);
   const envelope=await read();
   let request;try{request=config.options.validators.request(federalSourceRequest(envelope));}catch{fail('DRAFT_OUTPUT_UNEXPORTABLE',422);}
   const recheck=async()=>{if(hash(await read())!==hash(envelope))fail('DRAFT_SOURCE_STALE',409);};

@@ -7,7 +7,9 @@ import {admittedConverter,isRendererPort} from '../../artifacts/renderer.mjs';
 import {createPostgresS3PreviewCustody} from '../../artifacts/preview/postgres-composition.mjs';
 import {createS3ArtifactPublications} from '../../artifacts/storage/s3-artifact-publication.mjs';
 import {projectNativeResults} from './native-result-discovery.mjs';
+import {createFederalSchemaValidator} from '../../artifacts/federal-drafting/schema-validator.mjs';
 const recoveryOwners=new WeakMap();
+const federalValidators=new WeakMap();
 /** Internal provenance only. Recovery cannot be supplied by a lookalike product port or a JSON configuration callback. */
 export function runtimeArtifactRecovery(storage){return recoveryOwners.get(storage)??null;}
 export function createRuntimeArtifactStorage(options){const c=own(options,['s3','versionsPool','now'],['maxRequestMs','maxBytes','custody']);
@@ -34,7 +36,9 @@ export function createRuntimeArtifactStorage(options){const c=own(options,['s3',
  * a raw `officeTransformer` is refused, and an absent or unavailable port leaves PDF fail-closed (ARTIFACT_RENDERER_UNAVAILABLE). */
 export function createFixedRuntimeArtifactExecutor(configuration){const {renderer,...c}=own(configuration,['pythonExecutable','nodeExecutable','pptxModulePath','tempRoot'],['timeoutMs','renderer']);
  if(renderer!==undefined&&!isRendererPort(renderer))throw Error('ARTIFACT_RUNTIME_CONFIGURATION');
- return createLocalArtifactExecutor({...c,officeTransformer:admittedConverter(renderer)});}
+ const executor=createLocalArtifactExecutor({...c,officeTransformer:admittedConverter(renderer)});
+ federalValidators.set(executor,createFederalSchemaValidator({pythonExecutable:c.pythonExecutable,tempRoot:c.tempRoot}));
+ return executor;}
 /** Usable by approvedOutput.read independently of the browser HTTP mount. `renderer` is the same qualified-renderer port bound into `executor`. PDF is admitted only when the explicit `pdfAdmission`
  * switch is true AND that port is available; the switch alone never admits PDF. `previews` (a preview record store) composes
  * preview publication and serving with the same renderer; without it the preview routes stay unavailable. `retainedAssetMapWrites` is the private write activation forwarded from the declared `artifacts`
@@ -42,7 +46,7 @@ export function createFixedRuntimeArtifactExecutor(configuration){const {rendere
  * retains the immutable asset map on new records only when a deployment explicitly turns it on. */
 export function createRuntimeDocumentOptionsComposer(options){const c=own(options,['storage','executor','pool','sessions','store','now'],['renderer','pdfAdmission','previews','previewStoreForContext','maxPreviewBytes','retainedAssetMapWrites']);
  const storage=own(c.storage,['objects','versions'],['verifyPrivate','previews']);if(typeof c.now!=='function'||typeof c.store?.lifecycle?.readArtifactFile!=='function'||c.renderer!==undefined&&!isRendererPort(c.renderer)||typeof(c.pdfAdmission??false)!=='boolean'||typeof(c.retainedAssetMapWrites??false)!=='boolean'||c.previews!==undefined&&storage.previews!==undefined&&c.previews!==storage.previews)throw Error('ARTIFACT_RUNTIME_CONFIGURATION');
- const admitPdf=c.pdfAdmission===true&&admittedConverter(c.renderer)!==null,previews=c.previews??storage.previews;
+ const admitPdf=c.pdfAdmission===true&&admittedConverter(c.renderer)!==null,previews=c.previews??storage.previews,federalValidator=federalValidators.get(c.executor);
  if(c.previewStoreForContext!==undefined&&(typeof c.previewStoreForContext!=='function'||previews!==undefined))throw Error('ARTIFACT_RUNTIME_CONFIGURATION');
  return trusted=>{const o=own(trusted,['artifactOptions','selectedClientId','limits'],['enabled','federalSource']),a=own(o.artifactOptions,['pool','context','validators','authorize','versions','objects','executor','now','ids'],['retention','admitRetainedEvidence','authorizeOrigin']);
   if(a.validators!==v||a.now!==c.now)throw Error('ARTIFACT_RUNTIME_CONFIGURATION');
@@ -60,5 +64,5 @@ export function createRuntimeDocumentOptionsComposer(options){const c=own(option
    const captured=await c.store.lifecycle.readSessionCapture({binding:a.context.binding,scopes:a.context.scopes,selectedClientId:o.selectedClientId,checkpointId:a.context.binding.runId},check);
    if(!captured||!captured.proof?.files)return null;
    return projectNativeResults({files:captured.proof.files,binding:captured.proof.sdkSession.binding,scopes:a.context.scopes,owner:a.context.binding});}};
-  return {...o,sessions:c.sessions,now:c.now,admitPdf,nativeFiles,nativeResults,...(previewOptions?{previewOptions}:{}),artifactOptions:{...a,...(c.retainedAssetMapWrites===true?{retainedAssetMapWrites:true}:{}),pool:c.pool,versions:storage.versions,objects:storage.objects,executor:c.executor}};
+  return {...o,sessions:c.sessions,now:c.now,admitPdf,nativeFiles,nativeResults,...(federalValidator?{federalValidator}:{}),...(previewOptions?{previewOptions}:{}),artifactOptions:{...a,...(c.retainedAssetMapWrites===true?{retainedAssetMapWrites:true}:{}),pool:c.pool,versions:storage.versions,objects:storage.objects,executor:c.executor}};
  };}
