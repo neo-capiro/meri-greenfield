@@ -3600,7 +3600,7 @@ export interface Canonical_OfficeEditProposalE1D57A77 {
    * @maxItems 50
    */
   operations: [Canonical_OfficeEditOperation_98514085, ...Canonical_OfficeEditOperation_98514085[]];
-  result: Canonical_OfficeEditResultBytes_35C2A215;
+  result: Canonical_OfficeEditResultPartsCd394612;
   createdAt: string;
   expiresAt: string;
   requiredApprover: Canonical_IdentityAba0A4E9;
@@ -3617,9 +3617,12 @@ export interface Canonical_OfficeEditDocument_450519Db {
   title: string;
   filename: string;
 }
-export interface Canonical_OfficeEditResultBytes_35C2A215 {
-  sha256: string;
-  bytes: number;
+/**
+ * The document a proposal produces, pinned by the digest of its decompressed parts (name and content, in name order) and their count: independent of how a compressor packs the package.
+ */
+export interface Canonical_OfficeEditResultPartsCd394612 {
+  partsSha256: string;
+  parts: number;
 }
 export interface Canonical_ApprovalDecision_5E8Bdbcf {
   proposalId: string;

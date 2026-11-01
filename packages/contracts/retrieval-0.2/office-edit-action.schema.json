@@ -108,13 +108,14 @@
       "required": ["status", "operation", "binding", "scopes", "document", "outline", "observedAt", "expiresAt"],
       "additionalProperties": false
     },
-    "OfficeEditResultBytes": {
+    "OfficeEditResultParts": {
+      "description": "The document a proposal produces, pinned by the digest of its decompressed parts (name and content, in name order) and their count: independent of how a compressor packs the package.",
       "type": "object",
       "properties": {
-        "sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
-        "bytes": {"type": "integer", "minimum": 1, "maximum": 20971520}
+        "partsSha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+        "parts": {"type": "integer", "minimum": 1, "maximum": 5000}
       },
-      "required": ["sha256", "bytes"],
+      "required": ["partsSha256", "parts"],
       "additionalProperties": false
     },
     "OfficeEditProposal": {
@@ -130,7 +131,7 @@
         "document": {"$ref": "#/$defs/OfficeEditDocument"},
         "summary": {"type": "string", "minLength": 1, "maxLength": 500},
         "operations": {"type": "array", "items": {"$ref": "#/$defs/OfficeEditOperation"}, "minItems": 1, "maxItems": 50},
-        "result": {"$ref": "#/$defs/OfficeEditResultBytes"},
+        "result": {"$ref": "#/$defs/OfficeEditResultParts"},
         "createdAt": {"type": "string", "format": "date-time"},
         "expiresAt": {"type": "string", "format": "date-time"},
         "requiredApprover": {"$ref": "urn:meri:contracts:0.1.0#/$defs/Identity"}

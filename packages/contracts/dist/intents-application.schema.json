@@ -7189,22 +7189,23 @@
         }
       ]
     },
-    "Canonical_OfficeEditResultBytes_35c2a215": {
+    "Canonical_OfficeEditResultParts_cd394612": {
+      "description": "The document a proposal produces, pinned by the digest of its decompressed parts (name and content, in name order) and their count: independent of how a compressor packs the package.",
       "type": "object",
       "properties": {
-        "sha256": {
+        "partsSha256": {
           "type": "string",
           "pattern": "^[a-f0-9]{64}$"
         },
-        "bytes": {
+        "parts": {
           "type": "integer",
           "minimum": 1,
-          "maximum": 20971520
+          "maximum": 5000
         }
       },
       "required": [
-        "sha256",
-        "bytes"
+        "partsSha256",
+        "parts"
       ],
       "additionalProperties": false
     },
@@ -7257,7 +7258,7 @@
           "maxItems": 50
         },
         "result": {
-          "$ref": "#/$defs/Canonical_OfficeEditResultBytes_35c2a215"
+          "$ref": "#/$defs/Canonical_OfficeEditResultParts_cd394612"
         },
         "createdAt": {
           "type": "string",

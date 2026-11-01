@@ -118,8 +118,8 @@
     },
     {
       "path": "../../apps/control/intents/approval.mjs",
-      "sha256": "4cc8c4effa573c8ff7a3a016903187a5366398066b08b7d4ddbd7bd2208a4d6b",
-      "bytes": 56147
+      "sha256": "69e85da85e13d214c64e5939ab32e0ff20fea7270b99559b08f7bebb356b2c23",
+      "bytes": 56169
     },
     {
       "path": "../../apps/control/intents/faults.mjs",
@@ -253,8 +253,8 @@
     },
     {
       "path": "intents-application/semantics.mjs",
-      "sha256": "404a3afa4971e359d9dc4fe5344eddcc14010a600945dd930534e547ea119da1",
-      "bytes": 33937
+      "sha256": "67e840dfeb1b4714ce214d9a082ac23a2b857eb2911867faa22713d142a6837a",
+      "bytes": 33919
     },
     {
       "path": "meri.schema.json",
@@ -293,8 +293,8 @@
     },
     {
       "path": "retrieval-0.2/office-edit-action.schema.json",
-      "sha256": "03675d380592a6f0198a7fac2c187def4d80fa5a225190f6fb23154087b83b37",
-      "bytes": 7853
+      "sha256": "faf0b9f669f12d59296c2aa61e06baab187858d0ccebc16cd51d5f7a0ead4f3e",
+      "bytes": 8066
     },
     {
       "path": "retrieval-0.2/research-portfolio-action.schema.json",
@@ -357,7 +357,7 @@
       "bytes": 3041
     }
   ],
-  "schemaSha256": "895a087110aa580e1131e6ec854b404c80b93e09f04b14e0e243e9ca26ebf204",
+  "schemaSha256": "d66281703c0de62480a9bcde1af55380ab364806dd4d37268a17f6ea4546134e",
   "browserInputs": [
     "artifacts-0.2/artifact-formats.mjs",
     "commands-0.2/mail-send-validation.mjs",

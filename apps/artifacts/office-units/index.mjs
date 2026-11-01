@@ -3,6 +3,7 @@
  * ZIP/OPC/XML readers the edit-session inspector uses; only the parts that hold a touched unit are rewritten,
  * and inside such a part only the touched element spans change. The result is re-inspected by the caller
  * (`inspectOfficeEdit`) before it can become a version. Nothing here renders, recalculates or regenerates. */
+import {createHash} from 'node:crypto';
 import {readZip,ZIP_LIMITS} from '../structure/zip.mjs';
 import {verifyOoxml} from '../structure/ooxml.mjs';
 import {writeZip} from './zip-write.mjs';
@@ -34,8 +35,16 @@ export function officeOutline(bytes,format){
   return Object.freeze({unit:u.unit,kind:u.kind,text:long?u.text.slice(0,OFFICE_OUTLINE_LIMITS.maxUnitText):u.text,editable:u.editable&&!long});
  }))});
 }
+/** The digest a proposal pins: every decompressed part's name and content digest, in name order. It identifies
+ * the document an edit produces independently of how a compressor packs it, so a proposal prepared on one Node
+ * build still matches the package another build writes at Apply. */
+export function officePartsDigest(bytes,format){
+ const {entries}=open(bytes,format),names=[...entries.keys()].sort(),digest=createHash('sha256');
+ for(const name of names)digest.update(name,'utf8').update(Buffer.from([0])).update(createHash('sha256').update(entries.get(name)).digest()).update('\n');
+ return Object.freeze({partsSha256:digest.digest('hex'),parts:names.length});
+}
 /** Applies the operations to the exact bytes and returns the rewritten package. Deterministic: the same bytes and
- * the same operations always produce the same output, which is what lets a proposal pin its result digest. */
+ * the same operations always produce the same parts, which is what lets a proposal pin its result digest. */
 export function applyOfficeOperations(bytes,format,operations){
  const {entries,main}=open(bytes,format);
  if(!Array.isArray(operations)||!operations.length||operations.length>50)fail('OFFICE_EDIT_OPERATIONS');

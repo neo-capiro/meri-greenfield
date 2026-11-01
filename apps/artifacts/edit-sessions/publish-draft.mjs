@@ -59,7 +59,7 @@ export function createOfficeDraftPublisher({drafts,artifacts,publisherFor,valida
     // late authority/error code cannot establish that no write happened.
     if(begun.receipt.state!=='published'){
      const code=codeOf(error);
-     try{await settle(code==='ARTIFACT_STALE_PARENT'?'conflict':['EDITOR_STRUCTURE_REFUSED','EDITOR_SAVE_INVALID'].includes(code)?'refused':'unknown');}catch{}
+     try{await settle(code==='ARTIFACT_STALE_PARENT'?'conflict':['EDITOR_STRUCTURE_REFUSED','EDITOR_SAVE_INVALID','EDITOR_PUBLISH_REFUSED'].includes(code)?'refused':'unknown');}catch{}
     }
     throw error;
    }

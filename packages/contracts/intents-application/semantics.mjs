@@ -181,11 +181,12 @@ function legislativeDocumentRequest(operation,request){
  if(briefing&&!Number.isFinite(Date.parse(request.cutoff)))conflict();
 }
 /** The durable reading of one office proposal: an applied result names the new version of the same artifact, the exact
- * parent and the exact bytes the proposal pinned; every other status carries no version. */
+ * parent and the same filename (its package digest is the owner's, the proposal pins the parts); every other status
+ * carries no version. */
 function officeEditResult(value,retained){
  if(value.proposalId!==retained.proposalId||(value.proposalStatus==='applied')!==(value.version!==null))conflict();
  const v=value.version;
- if(v!==null&&(v.artifactId!==retained.document.artifactId||v.parentVersionId!==retained.document.versionId||v.sha256!==retained.result.sha256||v.bytes!==retained.result.bytes||v.filename!==retained.document.filename))conflict();
+ if(v!==null&&(v.artifactId!==retained.document.artifactId||v.parentVersionId!==retained.document.versionId||v.filename!==retained.document.filename))conflict();
 }
 function legislativeDocumentResult(value,retained){
  if(value.operation!==retained.operation||value.proposalId!==retained.proposalId||!same(value.request,retained.request)||!same(value.context,retained.context)||value.createdAt!==retained.createdAt||value.expiresAt!==retained.expiresAt)conflict();

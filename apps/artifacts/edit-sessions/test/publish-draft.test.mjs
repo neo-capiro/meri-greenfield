@@ -80,6 +80,19 @@ test('bytes the WOPI save gate never admitted are refused by the artifact owner 
  assert.equal(f.state.commands.filter(c=>c.sql.startsWith('INSERT')).length,before);assert.equal(f.state.puts,1);assert.equal(f.sql.state.versions.size,1);
  assert.equal(f.draft.state,'publish-refused');
 });
+test('a draft that dropped a chart workbook (stored before the WOPI save gate existed) is refused by the artifact owner and never becomes a version',async t=>{
+ // The WOPI save owner refuses such bytes today; this models a draft Core retained before that gate. The artifact
+ // owner compares the parent's inspection with the draft's before claiming, for an editor Publish and a proposal alike.
+ const f=await fixture(t,'pptx',false,zip(chart())),bytes=ooxml('pptx');
+ Object.assign(f.draft,{bytesBase64:bytes.toString('base64'),byteLength:bytes.length,sha256:f.sha(bytes)});
+ const before=f.state.commands.filter(c=>c.sql.startsWith('INSERT')).length;
+ await assert.rejects(f.publish({...f.input,sha256:f.draft.sha256}),{code:'EDITOR_STRUCTURE_REFUSED'});
+ assert.equal(f.state.commands.filter(c=>c.sql.startsWith('INSERT')).length,before+1,'the owner claims its journal row, then refuses before any write');
+ assert.equal(f.state.puts,1);assert.equal(f.sql.state.versions.size,1);assert.equal(f.draft.state,'publish-refused');
+ // The refusal is settled, not unknown: a retry replays it without a second claim or any write.
+ await assert.rejects(f.publish({...f.input,sha256:f.draft.sha256}),{code:'EDITOR_PUBLISH_REFUSED'});
+ assert.equal(f.state.commands.filter(c=>c.sql.startsWith('INSERT')).length,before+1);assert.equal(f.state.puts,1);assert.equal(f.sql.state.versions.size,1);assert.equal(f.draft.state,'publish-refused');
+});
 test('a concurrent Save invalidates the explicit selected draft before Core can begin publication',async t=>{
  const f=await fixture(t);f.state.hook=route=>{if(route==='publish/begin'){f.draft.sequence++;}};
  await assert.rejects(f.publish(),{code:'OFFICE_DRAFT_CONFLICT'});assert.equal(f.state.puts,1);assert.equal(f.draft.state,'draft');

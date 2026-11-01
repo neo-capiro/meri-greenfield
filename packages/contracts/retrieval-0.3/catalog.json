@@ -9964,7 +9964,7 @@
       "limitations": [
         "Only the exact selected Office version (artifact, version and object hash) is read or edited; a filename, extracted text or an unselected document is never a target.",
         "Operations name outline units and must state the current text as \"before\"; a unit that changed, is unknown or is a formula cell is refused before any proposal exists.",
-        "Applying publishes a new immutable version only after the user approves it, with the parent still the head and no private editor draft open on it; every other byte of the manual document is preserved.",
+        "Applying publishes a new immutable version only after the user approves it and only while the parent is still the head; a manual Publish in the meantime makes the proposal a conflict, and every other byte of the manual document is preserved.",
         "No typed body replacement, no rendering, no recalculation and no automatic retry of an unknown effect."
       ],
       "positiveExamples": [
@@ -9985,11 +9985,11 @@
       ],
       "inputSchema": {
         "id": "urn:meri:retrieval:office-edit-action:0.2.0#/$defs/OfficeEditInput",
-        "sha256": "03675d380592a6f0198a7fac2c187def4d80fa5a225190f6fb23154087b83b37"
+        "sha256": "faf0b9f669f12d59296c2aa61e06baab187858d0ccebc16cd51d5f7a0ead4f3e"
       },
       "outputSchema": {
         "id": "urn:meri:retrieval:office-edit-action:0.2.0#/$defs/OfficeEditPrepared",
-        "sha256": "03675d380592a6f0198a7fac2c187def4d80fa5a225190f6fb23154087b83b37"
+        "sha256": "faf0b9f669f12d59296c2aa61e06baab187858d0ccebc16cd51d5f7a0ead4f3e"
       },
       "aliases": [],
       "sideEffect": "source-command",

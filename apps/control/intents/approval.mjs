@@ -105,7 +105,7 @@ export function createIntentApprovalOwner(configuration){
  if(c.legiwatch!==undefined)own(c.legiwatch,['decide','read']);
  if(c.bizdev!==undefined)own(c.bizdev,['decide','read']);
  if(c.legislativeDocument!==undefined)own(c.legislativeDocument,['decide','read']);
- const office=c.office===undefined?undefined:own(c.office,['apply','read']);
+ const office=c.office===undefined?undefined:own(c.office,['apply','reject','read']);
  if(office&&Object.values(office).some(f=>typeof f!=='function'))throw new ProductError('PRODUCT_CONFIGURATION');
 if(c.watch!==undefined)own(c.watch,['decide','read']);
  if(sharing&&Object.values(sharing).some(f=>typeof f!=='function'))throw new ProductError('PRODUCT_CONFIGURATION');
@@ -209,32 +209,37 @@ if(c.watch!==undefined)own(c.watch,['decide','read']);
   }catch{fail('INTENT_JOURNAL_UNAVAILABLE');}return p;
  }
  const officeEditVisible=(p,principal)=>visible(p.scopes,principal)&&(p.context.selectedClientId===null||principal.clientIds.includes(p.context.selectedClientId));
- /** Apply publishes through the artifact owner (one durable attempt per proposal); reject records nothing and the
-  * proposal simply expires. A definite refusal (stale head, mismatch, expiry) is answered as its own status so the
-  * browser can explain it; an uncertain publication stays UNKNOWN exactly as a document delivery does. */
+ /** Apply publishes through the artifact owner and Reject settles the same durable row as a definite refusal (one row
+  * per proposal, so a reload or another tab reads the same decision). A definite refusal (stale head, mismatch,
+  * expiry) is answered as its own status so the browser can explain it; an uncertain publication stays UNKNOWN exactly
+  * as a document delivery does. The opposite decision after a settled one is refused, never silently re-answered. */
  async function decideOfficeEdit(life,principal,entry,r){
   const p=officeEditProposal(entry,principal,r.conversationId);
   if(p.proposalId!==r.proposalId||p.commandSha256!==r.commandSha256)fail('INTENT_MISMATCH','NOT_DISPATCHED');
   if(!officeEditVisible(p,principal))fail('INTENT_SCOPE_WITHHELD','NOT_DISPATCHED');
-  if(r.decision==='rejected')return data({status:'office_edit_decided',deliveryId:r.deliveryId,proposalId:p.proposalId,result:officeEditValidators.result({proposalId:p.proposalId,proposalStatus:'rejected',version:null,code:null},p)});
   if(!office)fail('EXECUTION_OWNER_UNAVAILABLE','NOT_DISPATCHED');
+  const answer=result=>{
+   if(result.proposalStatus==='applied'&&r.decision==='rejected')fail('APPROVAL_DECISION_REFUSED','NOT_DISPATCHED');
+   return data({status:'office_edit_decided',deliveryId:r.deliveryId,proposalId:p.proposalId,result});
+  };
   if(!(instant(p.expiresAt)>c.now())){
-   const current=await officeEditStatus(life,p);
-   if(current.proposalStatus==='applied')return data({status:'office_edit_decided',deliveryId:r.deliveryId,proposalId:p.proposalId,result:current});
+   const current=await officeEditStatus(life,principal,p);
+   if(['applied','rejected'].includes(current.proposalStatus))return answer(current);
    fail('INTENT_EXPIRED','NOT_DISPATCHED');
   }
   life.limitDeadline(instant(p.expiresAt));
+  const port=r.decision==='rejected'?office.reject:office.apply;
   let outcome;
-  try{outcome=await life.run(signal=>office.apply.call(c.office,{proposal:p,principal,signal,deadlineMs:life.deadline()}));}
+  try{outcome=await life.run(signal=>port.call(c.office,{proposal:p,principal,signal,deadlineMs:life.deadline()}));}
   catch(error){
    const code=error?.code;
    if(['OFFICE_EDIT_STALE_HEAD','OFFICE_EDIT_PROPOSAL_MISMATCH','OFFICE_EDIT_TOO_LARGE','INTENT_EXPIRED'].includes(code))
-    return data({status:'office_edit_decided',deliveryId:r.deliveryId,proposalId:p.proposalId,result:officeEditValidators.result({proposalId:p.proposalId,proposalStatus:code==='OFFICE_EDIT_STALE_HEAD'?'conflict':code==='INTENT_EXPIRED'?'expired':'refused',version:null,code},p)});
+    return answer(officeEditValidators.result({proposalId:p.proposalId,proposalStatus:code==='OFFICE_EDIT_STALE_HEAD'?'conflict':code==='INTENT_EXPIRED'?'expired':'refused',version:null,code},p));
    if(code==='ACCESS_DENIED'||code==='UNAVAILABLE'||error?.effect==='none')fail(code==='UNAVAILABLE'?'EXECUTION_OWNER_UNAVAILABLE':'EXECUTION_AUTHORITY_REFUSED','NOT_DISPATCHED');
    if(['DEADLINE','CANCELLED'].includes(productFailure(error)?.code))throw error;
    fail('INTENT_EXECUTION_UNKNOWN','UNKNOWN');
   }
-  return data({status:'office_edit_decided',deliveryId:r.deliveryId,proposalId:p.proposalId,result:officeEditOutcome(outcome,p)});
+  return answer(officeEditOutcome(outcome,p));
  }
  function officeEditOutcome(raw,p){
   let outcome;try{outcome=data(own(raw,['status','publication']));}catch{fail('INTENT_RESULT_NOT_RELEASED','RESULT_NOT_RELEASED');}
@@ -243,9 +248,9 @@ if(c.watch!==undefined)own(c.watch,['decide','read']);
   catch{fail('INTENT_RESULT_NOT_RELEASED','RESULT_NOT_RELEASED');}
   try{return officeEditValidators.result({proposalId:p.proposalId,proposalStatus:'applied',version,code:null},p);}catch{fail('INTENT_RESULT_NOT_RELEASED','RESULT_NOT_RELEASED');}
  }
- async function officeEditStatus(life,p){
+ async function officeEditStatus(life,principal,p){
   if(!office)return 'unavailable';
-  try{return officeEditOutcome(await life.run(signal=>office.read.call(c.office,{proposal:p,signal,deadlineMs:life.deadline()})),p);}
+  try{return officeEditOutcome(await life.run(signal=>office.read.call(c.office,{proposal:p,principal,signal,deadlineMs:life.deadline()})),p);}
   catch(error){const f=productFailure(error);if(f&&['DEADLINE','CANCELLED'].includes(f.code))throw error;return 'unavailable';}
  }
  function legiwatchProposal(entry,principal,conversationId){
@@ -495,7 +500,7 @@ async function decideWatch(life,principal,entry,r){
   if(result?.proposal?.kind==='office_edit'){
    const proposal=officeEditProposal(entry,principal,conversationId);
    if(!officeEditVisible(proposal,principal))return {...base,state:'prepared',kind:'office_edit',withheld:true};
-   return {...base,state:'prepared',kind:'office_edit',proposal,result:await officeEditStatus(life,proposal)};
+   return {...base,state:'prepared',kind:'office_edit',proposal,result:await officeEditStatus(life,principal,proposal)};
   }
   if(result?.proposal?.kind==='legislative_document_action'){
    const proposal=legislativeDocumentProposal(entry,principal,conversationId);

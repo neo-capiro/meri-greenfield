@@ -412,9 +412,12 @@ still pending.
 
 `apply-proposal.mjs` is the second retained-byte revision owner beside `publish-draft.mjs`. A reviewed proposal from the
 governed intent `propose_office_edit` (prepared by `apps/control/intents/office-edit-preparer.mjs` over the bounded unit
-editor in `apps/artifacts/office-units/`) is applied on the user's Apply: the exact parent bytes are read again under
-current revise authority, the operations are re-applied and must reproduce the digest the proposal pinned, the parent must
-still be the artifact head (`OFFICE_EDIT_STALE_HEAD` before any write), and the result is published through the same
-artifact owner, commit CAS and intent journal as an editor Publish with a `meri.office-proposal/1` source. One proposal has
-one durable publication; a repeated Apply replays it. The unit editor rewrites only the touched element spans of the
-touched parts; every other byte of the manual document is copied unchanged.
+editor in `apps/artifacts/office-units/`; a proposal is prepared under revise authority, the outline read under download)
+is applied on the user's Apply: the exact parent bytes are read again under current revise authority, the operations are
+re-applied and the decompressed parts must match the digest the proposal pinned (`result.partsSha256`, independent of the
+compressor), the parent must still be the artifact head (`OFFICE_EDIT_STALE_HEAD` before any write), and the result is
+published through the same artifact owner, commit CAS and intent journal as an editor Publish with a `meri.office-proposal/1`
+source. One proposal has one durable journal row: Apply publishes once and replays afterwards, Reject settles the row
+`FAILED {code:'REFUSED'}` so no later Apply from any tab can publish it, and a read reports whichever happened. The artifact
+owner's own pre-write refusals (malformed package, dropped chart workbook) settle the row the same way. The unit editor
+rewrites only the touched element spans of the touched parts; every other byte of the manual document is copied unchanged.

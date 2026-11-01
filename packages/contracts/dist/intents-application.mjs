@@ -21795,7 +21795,7 @@ function validate82(data, { instancePath = "", parentData, parentDataProperty, r
   return errors2 === 0;
 }
 validate82.evaluated = { "props": true, "dynamicProps": false, "dynamicItems": false };
-var schema144 = { "type": "object", "properties": { "kind": { "const": "office_edit" }, "operation": { "const": "propose_office_edit" }, "proposalId": { "type": "string", "format": "uuid", "pattern": "^[a-f0-9-]+$" }, "commandSha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" }, "binding": { "$ref": "#/$defs/Canonical_RunBinding_84f2304c" }, "scopes": { "type": "array", "items": { "$ref": "#/$defs/Canonical_Scope_f882edb5" }, "minItems": 1, "maxItems": 1 }, "context": { "$ref": "#/$defs/Canonical_OfficeEditContext_9f9189a5" }, "document": { "$ref": "#/$defs/Canonical_OfficeEditDocument_450519db" }, "summary": { "type": "string", "minLength": 1, "maxLength": 500 }, "operations": { "type": "array", "items": { "$ref": "#/$defs/Canonical_OfficeEditOperation_98514085" }, "minItems": 1, "maxItems": 50 }, "result": { "$ref": "#/$defs/Canonical_OfficeEditResultBytes_35c2a215" }, "createdAt": { "type": "string", "format": "date-time" }, "expiresAt": { "type": "string", "format": "date-time" }, "requiredApprover": { "$ref": "#/$defs/Canonical_Identity_aba0a4e9" } }, "required": ["kind", "operation", "proposalId", "commandSha256", "binding", "scopes", "context", "document", "summary", "operations", "result", "createdAt", "expiresAt", "requiredApprover"], "additionalProperties": false };
+var schema144 = { "type": "object", "properties": { "kind": { "const": "office_edit" }, "operation": { "const": "propose_office_edit" }, "proposalId": { "type": "string", "format": "uuid", "pattern": "^[a-f0-9-]+$" }, "commandSha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" }, "binding": { "$ref": "#/$defs/Canonical_RunBinding_84f2304c" }, "scopes": { "type": "array", "items": { "$ref": "#/$defs/Canonical_Scope_f882edb5" }, "minItems": 1, "maxItems": 1 }, "context": { "$ref": "#/$defs/Canonical_OfficeEditContext_9f9189a5" }, "document": { "$ref": "#/$defs/Canonical_OfficeEditDocument_450519db" }, "summary": { "type": "string", "minLength": 1, "maxLength": 500 }, "operations": { "type": "array", "items": { "$ref": "#/$defs/Canonical_OfficeEditOperation_98514085" }, "minItems": 1, "maxItems": 50 }, "result": { "$ref": "#/$defs/Canonical_OfficeEditResultParts_cd394612" }, "createdAt": { "type": "string", "format": "date-time" }, "expiresAt": { "type": "string", "format": "date-time" }, "requiredApprover": { "$ref": "#/$defs/Canonical_Identity_aba0a4e9" } }, "required": ["kind", "operation", "proposalId", "commandSha256", "binding", "scopes", "context", "document", "summary", "operations", "result", "createdAt", "expiresAt", "requiredApprover"], "additionalProperties": false };
 var schema149 = { "enum": ["docx", "xlsx", "pptx"] };
 function validate89(data, { instancePath = "", parentData, parentDataProperty, rootData = data, dynamicAnchors = {} } = {}) {
   let vErrors = null;
@@ -23073,30 +23073,30 @@ function validate88(data, { instancePath = "", parentData, parentDataProperty, r
                                 if (errors2 === _errs59) {
                                   if (data25 && typeof data25 == "object" && !Array.isArray(data25)) {
                                     let missing4;
-                                    if (data25.sha256 === void 0 && (missing4 = "sha256") || data25.bytes === void 0 && (missing4 = "bytes")) {
-                                      validate88.errors = [{ instancePath: instancePath + "/result", schemaPath: "#/$defs/Canonical_OfficeEditResultBytes_35c2a215/required", keyword: "required", params: { missingProperty: missing4 }, message: "must have required property '" + missing4 + "'" }];
+                                    if (data25.partsSha256 === void 0 && (missing4 = "partsSha256") || data25.parts === void 0 && (missing4 = "parts")) {
+                                      validate88.errors = [{ instancePath: instancePath + "/result", schemaPath: "#/$defs/Canonical_OfficeEditResultParts_cd394612/required", keyword: "required", params: { missingProperty: missing4 }, message: "must have required property '" + missing4 + "'" }];
                                       return false;
                                     } else {
                                       const _errs61 = errors2;
                                       for (const key4 in data25) {
-                                        if (!(key4 === "sha256" || key4 === "bytes")) {
-                                          validate88.errors = [{ instancePath: instancePath + "/result", schemaPath: "#/$defs/Canonical_OfficeEditResultBytes_35c2a215/additionalProperties", keyword: "additionalProperties", params: { additionalProperty: key4 }, message: "must NOT have additional properties" }];
+                                        if (!(key4 === "partsSha256" || key4 === "parts")) {
+                                          validate88.errors = [{ instancePath: instancePath + "/result", schemaPath: "#/$defs/Canonical_OfficeEditResultParts_cd394612/additionalProperties", keyword: "additionalProperties", params: { additionalProperty: key4 }, message: "must NOT have additional properties" }];
                                           return false;
                                           break;
                                         }
                                       }
                                       if (_errs61 === errors2) {
-                                        if (data25.sha256 !== void 0) {
-                                          let data26 = data25.sha256;
+                                        if (data25.partsSha256 !== void 0) {
+                                          let data26 = data25.partsSha256;
                                           const _errs62 = errors2;
                                           if (errors2 === _errs62) {
                                             if (typeof data26 === "string") {
                                               if (!pattern14.test(data26)) {
-                                                validate88.errors = [{ instancePath: instancePath + "/result/sha256", schemaPath: "#/$defs/Canonical_OfficeEditResultBytes_35c2a215/properties/sha256/pattern", keyword: "pattern", params: { pattern: "^[a-f0-9]{64}$" }, message: 'must match pattern "^[a-f0-9]{64}$"' }];
+                                                validate88.errors = [{ instancePath: instancePath + "/result/partsSha256", schemaPath: "#/$defs/Canonical_OfficeEditResultParts_cd394612/properties/partsSha256/pattern", keyword: "pattern", params: { pattern: "^[a-f0-9]{64}$" }, message: 'must match pattern "^[a-f0-9]{64}$"' }];
                                                 return false;
                                               }
                                             } else {
-                                              validate88.errors = [{ instancePath: instancePath + "/result/sha256", schemaPath: "#/$defs/Canonical_OfficeEditResultBytes_35c2a215/properties/sha256/type", keyword: "type", params: { type: "string" }, message: "must be string" }];
+                                              validate88.errors = [{ instancePath: instancePath + "/result/partsSha256", schemaPath: "#/$defs/Canonical_OfficeEditResultParts_cd394612/properties/partsSha256/type", keyword: "type", params: { type: "string" }, message: "must be string" }];
                                               return false;
                                             }
                                           }
@@ -23105,21 +23105,21 @@ function validate88(data, { instancePath = "", parentData, parentDataProperty, r
                                           var valid11 = true;
                                         }
                                         if (valid11) {
-                                          if (data25.bytes !== void 0) {
-                                            let data27 = data25.bytes;
+                                          if (data25.parts !== void 0) {
+                                            let data27 = data25.parts;
                                             const _errs64 = errors2;
                                             if (!(typeof data27 == "number" && (!(data27 % 1) && !isNaN(data27)) && isFinite(data27))) {
-                                              validate88.errors = [{ instancePath: instancePath + "/result/bytes", schemaPath: "#/$defs/Canonical_OfficeEditResultBytes_35c2a215/properties/bytes/type", keyword: "type", params: { type: "integer" }, message: "must be integer" }];
+                                              validate88.errors = [{ instancePath: instancePath + "/result/parts", schemaPath: "#/$defs/Canonical_OfficeEditResultParts_cd394612/properties/parts/type", keyword: "type", params: { type: "integer" }, message: "must be integer" }];
                                               return false;
                                             }
                                             if (errors2 === _errs64) {
                                               if (typeof data27 == "number" && isFinite(data27)) {
-                                                if (data27 > 20971520 || isNaN(data27)) {
-                                                  validate88.errors = [{ instancePath: instancePath + "/result/bytes", schemaPath: "#/$defs/Canonical_OfficeEditResultBytes_35c2a215/properties/bytes/maximum", keyword: "maximum", params: { comparison: "<=", limit: 20971520 }, message: "must be <= 20971520" }];
+                                                if (data27 > 5e3 || isNaN(data27)) {
+                                                  validate88.errors = [{ instancePath: instancePath + "/result/parts", schemaPath: "#/$defs/Canonical_OfficeEditResultParts_cd394612/properties/parts/maximum", keyword: "maximum", params: { comparison: "<=", limit: 5e3 }, message: "must be <= 5000" }];
                                                   return false;
                                                 } else {
                                                   if (data27 < 1 || isNaN(data27)) {
-                                                    validate88.errors = [{ instancePath: instancePath + "/result/bytes", schemaPath: "#/$defs/Canonical_OfficeEditResultBytes_35c2a215/properties/bytes/minimum", keyword: "minimum", params: { comparison: ">=", limit: 1 }, message: "must be >= 1" }];
+                                                    validate88.errors = [{ instancePath: instancePath + "/result/parts", schemaPath: "#/$defs/Canonical_OfficeEditResultParts_cd394612/properties/parts/minimum", keyword: "minimum", params: { comparison: ">=", limit: 1 }, message: "must be >= 1" }];
                                                     return false;
                                                   }
                                                 }
@@ -23133,7 +23133,7 @@ function validate88(data, { instancePath = "", parentData, parentDataProperty, r
                                       }
                                     }
                                   } else {
-                                    validate88.errors = [{ instancePath: instancePath + "/result", schemaPath: "#/$defs/Canonical_OfficeEditResultBytes_35c2a215/type", keyword: "type", params: { type: "object" }, message: "must be object" }];
+                                    validate88.errors = [{ instancePath: instancePath + "/result", schemaPath: "#/$defs/Canonical_OfficeEditResultParts_cd394612/type", keyword: "type", params: { type: "object" }, message: "must be object" }];
                                     return false;
                                   }
                                 }
@@ -106163,7 +106163,7 @@ function legislativeDocumentRequest(operation, request) {
 function officeEditResult(value, retained) {
   if (value.proposalId !== retained.proposalId || value.proposalStatus === "applied" !== (value.version !== null)) conflict2();
   const v = value.version;
-  if (v !== null && (v.artifactId !== retained.document.artifactId || v.parentVersionId !== retained.document.versionId || v.sha256 !== retained.result.sha256 || v.bytes !== retained.result.bytes || v.filename !== retained.document.filename)) conflict2();
+  if (v !== null && (v.artifactId !== retained.document.artifactId || v.parentVersionId !== retained.document.versionId || v.filename !== retained.document.filename)) conflict2();
 }
 function legislativeDocumentResult(value, retained) {
   if (value.operation !== retained.operation || value.proposalId !== retained.proposalId || !same2(value.request, retained.request) || !same2(value.context, retained.context) || value.createdAt !== retained.createdAt || value.expiresAt !== retained.expiresAt) conflict2();

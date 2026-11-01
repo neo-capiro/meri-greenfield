@@ -7,6 +7,7 @@ import {readPagedArtifactHistory} from './history-page.mjs';
 import {prepareFederalDraft} from './federal-drafting/preparation.mjs';
 import {officeRevisionSource,officeRevisionOutputSha256,isOfficeRetained,storedArtifactSource,storedArtifactInspection,assertOfficeEditRecord,officeEditRequestSha256,officeEditParentMatches} from '../../packages/contracts/office-edit.mjs';
 import {inspectOfficeEdit} from './edit-sessions/inspect-office.mjs';
+import {assertOfficeWorkbooksPreserved} from './edit-sessions/chart-workbooks.mjs';
 import {officeOriginalSource,officeOriginalRequestSha256} from '../../packages/contracts/office-edit.mjs';
 // The canonical immutable-spec asset identification the intent layer already owns, so a retained
 // revision and this write identify exactly the same references instead of two walks that can drift.
@@ -111,7 +112,12 @@ export function createArtifactService({validators:v,authorize,versions,objects,e
       const assets=[];for(const asset of context.assets){const bytes=await bytesFor(life,asset.object,2097152);assets.push({id:asset.id,bytes});}
       receipt=await authority(life,action,resource,requestSha256,context);await servable(life,context,readBase);
       let result;
-      if(office||original){life.check();result={bytes:editedBytes,inspection:inspectOfficeEdit(editedBytes,request.format)};life.check();}
+      if(office||original){
+       life.check();result={bytes:editedBytes,inspection:inspectOfficeEdit(editedBytes,request.format)};life.check();
+       // The one owner-level structure gate for every retained revision (editor Publish or an approved proposal): a
+       // revision that dropped a chart workbook never becomes a version, whichever path or era its bytes came from.
+       if(office)assertOfficeWorkbooksPreserved(readBase.inspection,result.inspection);
+      }
       else{executionStarted=true;result=await life.run(signal=>executor.execute({request:v.snapshot(request),assets,base:readBase?{request:v.snapshot(readBase.spec),bytes:Buffer.from(baseBytes)}:null,deadlineMs:Math.min(context.deadlineMs,receipt.expiresAtMs),maxBytes:context.maxBytes,signal}));}
       if(!Buffer.isBuffer(result.bytes)||result.bytes.length>context.maxBytes)fail('ARTIFACT_OUTPUT_LIMIT');
       const bytes=Buffer.from(result.bytes),inspection=inspectBytes(result.inspection,bytes,request.format,request);

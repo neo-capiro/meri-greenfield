@@ -64,12 +64,13 @@ export function createRuntimeOfficeApplication({optionsOwner,sessions,now,limits
    finally{cancelWopiBody(request);}
   },
  };
- /** The exact selected version for the governed propose_office_edit read/prepare: current download authority, exact
-  * bytes, immutable title and current head. The selection is the run's own immutable document selection. */
- async function readSelected({credential,selection:raw,deadlineMs,signal}){
-  const selection=assertDocumentRevisionSelection(raw);
-  return access.run({credential,deadlineMs,signal,intent:'download',versionId:selection.versionId},async current=>{
-   const {context,life}=current,source=await current.artifacts.editorSource(selection.versionId,context,{write:false,signal:life.signal});
+ /** The exact selected version for the governed propose_office_edit read (download authority) or prepare (revise
+  * authority, the same Apply needs): exact bytes, immutable title and current head. The selection is the run's own
+  * immutable document selection. */
+ async function readSelected({credential,selection:raw,intent,deadlineMs,signal}){
+  const selection=assertDocumentRevisionSelection(raw);if(!['download','revise'].includes(intent))refuse('OFFICE_CONFIGURATION');
+  return access.run({credential,deadlineMs,signal,intent,versionId:selection.versionId},async current=>{
+   const {context,life}=current,source=await current.artifacts.editorSource(selection.versionId,context,{write:intent==='revise',signal:life.signal});
    const base=await current.artifacts.revisionSource(selection.versionId,context,{signal:life.signal});
    if(source.version.artifactId!==selection.artifactId||source.version.object.sha256!==selection.objectSha256||base.version.versionId!==selection.versionId)refuse('ACCESS_DENIED');
    const format=source.version.filename.split('.').at(-1);
@@ -90,5 +91,5 @@ export function createRuntimeOfficeApplication({optionsOwner,sessions,now,limits
   await current.fresh();current.life.check();return result;
  });
  const control=createOfficeControlApplication({application,now,maxRequestMs:limits.maxRequestMs});
- return Object.freeze({...application,handleControl:control.handle,readSelected,applyProposal:value=>proposalRun('apply',value),readProposal:value=>proposalRun('read',value)});
+ return Object.freeze({...application,handleControl:control.handle,readSelected,applyProposal:value=>proposalRun('apply',value),rejectProposal:value=>proposalRun('reject',value),readProposal:value=>proposalRun('read',value)});
 }

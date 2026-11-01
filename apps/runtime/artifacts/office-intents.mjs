@@ -1,5 +1,5 @@
 /** The governed same-document Office owner for one control process: the `propose_office_edit` preparer for a run
- * whose immutable request selected an Office version, and the approval ports that apply or read a retained
+ * whose immutable request selected an Office version, and the approval ports that apply, reject or read a retained
  * proposal under the approver's current attended session. Every read and write goes through the existing
  * office access owner (current Core artifact authority, retention, exact bytes) and the artifact publisher;
  * this module borrows sessions and never mints, stores or forwards a credential. */
@@ -12,16 +12,17 @@ import {currentAttendedSession} from '../native-authority/approval-session.mjs';
 import {documentRevisionSelectionFor} from './intent-binding.mjs';
 const fail=code=>{throw Object.assign(Error(code),{code});};
 export function createOfficeIntentOwner({context,application,sessions,store,retention,now,limits}){
- if(!context||typeof context!=='object'||types.isProxy(context)||['readSelected','applyProposal','readProposal'].some(k=>typeof application?.[k]!=='function')||typeof now!=='function'||!Number.isSafeInteger(limits?.maxRequestMs))fail('OFFICE_CONFIGURATION');
+ if(!context||typeof context!=='object'||types.isProxy(context)||['readSelected','applyProposal','rejectProposal','readProposal'].some(k=>typeof application?.[k]!=='function')||typeof now!=='function'||!Number.isSafeInteger(limits?.maxRequestMs))fail('OFFICE_CONFIGURATION');
  const borrow=borrowedRunSession(sessions);if(typeof borrow!=='function')fail('OFFICE_CONFIGURATION');
  /** Composed only for a run with a selected document; the read itself refuses a selection that is not Office. */
  async function prepareForRun(value){
   const v=own(value,['binding','scopes','selectedClientId','policyRevision','currentRights','deadlineMs'],['signal']);
   const selection=await documentRevisionSelectionFor(context,{binding:v.binding,signal:v.signal});
   if(selection===null)return [];
-  const document={async read({signal}){
+  // The outline read needs download authority; a proposal needs the revise authority its Apply will need.
+  const document={async read({signal,write}){
    const session=assertActionSessionReceipt(await borrow({binding:v.binding,selectedClientId:v.selectedClientId,signal}),now());
-   return application.readSelected({credential:session.credential,selection,deadlineMs:Math.min(v.deadlineMs,session.expiresAtMs),signal});
+   return application.readSelected({credential:session.credential,selection,intent:write===true?'revise':'download',deadlineMs:Math.min(v.deadlineMs,session.expiresAtMs),signal});
   }};
   return [createOfficeEditPreparer({binding:v.binding,scopes:v.scopes,selectedClientId:v.selectedClientId,document,now,deadlineMs:v.deadlineMs,currentRights:v.currentRights,policyRevision:v.policyRevision})];
  }
@@ -31,11 +32,14 @@ export function createOfficeIntentOwner({context,application,sessions,store,rete
   const check=()=>{signal?.throwIfAborted();if(now()>=deadlineMs)fail('DEADLINE');};
   return currentAttendedSession({store,sessions,retention,now,binding:proposal.binding,scopes:proposal.scopes,selectedClientId:proposal.context.selectedClientId,signal,check});
  }
+ /** Every port names the signed-in principal, who must be the proposal's own actor; the attended session then binds
+  * that principal to the live conversation before any owner call. */
  const run=method=>async value=>{
-  const v=own(value,['proposal'],['principal','signal','deadlineMs']),proposal=officeEditValidators.assertProposal(v.proposal);
-  if(v.principal!==undefined&&(v.principal.tenantId!==proposal.binding.tenantId||v.principal.actorId!==proposal.binding.actorId))fail('ACCESS_DENIED');
+  const v=own(value,['proposal','principal'],['signal','deadlineMs']),proposal=officeEditValidators.assertProposal(v.proposal);
+  const principal=v.principal;
+  if(!principal||typeof principal!=='object'||types.isProxy(principal)||principal.tenantId!==proposal.binding.tenantId||principal.actorId!==proposal.binding.actorId)fail('ACCESS_DENIED');
   const deadlineMs=Math.min(v.deadlineMs??Infinity,now()+limits.maxRequestMs),current=await attended(proposal,v.signal,deadlineMs);
   return application[method]({credential:current.session.credential,proposal,deadlineMs:Math.min(deadlineMs,current.session.expiresAtMs),signal:v.signal});
  };
- return Object.freeze({prepareForRun,apply:run('applyProposal'),read:run('readProposal')});
+ return Object.freeze({prepareForRun,apply:run('applyProposal'),reject:run('rejectProposal'),read:run('readProposal')});
 }

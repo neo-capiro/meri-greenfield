@@ -68,7 +68,7 @@ export function createOfficeEditValidators({validateShape,canonicalSha256:hash})
   const c=context(p.context);if(c.conversationId!==p.binding.conversationId)fail();scopes(p.scopes,p.binding,c.selectedClientId);
   document(p.document);
   if(!text(p.summary,500,1)||!Array.isArray(p.operations)||p.operations.length<1||p.operations.length>50)fail();p.operations.forEach(operation);
-  const r=own(p.result,['sha256','bytes']);if(!hex.test(r.sha256)||!Number.isSafeInteger(r.bytes)||r.bytes<1||r.bytes>20971520)fail();
+  const r=own(p.result,['partsSha256','parts']);if(!hex.test(r.partsSha256)||!Number.isSafeInteger(r.parts)||r.parts<1||r.parts>5000)fail();
   if(!instant(p.createdAt)||!instant(p.expiresAt)||Date.parse(p.expiresAt)<=Date.parse(p.createdAt))fail();
   if(p.requiredApprover.tenantId!==p.binding.tenantId||p.requiredApprover.actorId!==p.binding.actorId)fail();
   return p;
@@ -82,7 +82,8 @@ export function createOfficeEditValidators({validateShape,canonicalSha256:hash})
  function version(value,proposal){
   const r=data(own(value,['artifactId','versionId','parentVersionId','sha256','bytes','filename']));
   if(!uuid.test(r.artifactId)||!uuid.test(r.versionId)||!uuid.test(r.parentVersionId)||!hex.test(r.sha256)||!Number.isSafeInteger(r.bytes)||r.bytes<1||!text(r.filename,255,1))fail();
-  if(proposal&&(r.artifactId!==proposal.document.artifactId||r.parentVersionId!==proposal.document.versionId||r.sha256!==proposal.result.sha256||r.bytes!==proposal.result.bytes||r.filename!==proposal.document.filename))fail();
+  // The package digest is the compressor's; the proposal pins the parts, which the owner checked before publishing.
+  if(proposal&&(r.artifactId!==proposal.document.artifactId||r.parentVersionId!==proposal.document.versionId||r.filename!==proposal.document.filename))fail();
   return r;
  }
  /** The durable reading of what happened to one proposal, correlated with the retained proposal when known. */

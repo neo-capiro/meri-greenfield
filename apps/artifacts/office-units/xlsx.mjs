@@ -1,9 +1,12 @@
 /** Workbook cells as addressable units: every `c` element of every sheet, addressed `<sheet name>!<A1>`, with
  * its current value resolved through the shared-string table or inline string. A formula cell is readable
  * (its cached value) but never editable: the editor owns formulas and their caches. A replacement rewrites
- * only that `c` element, keeping its reference and style index: a numeric text becomes a number, anything
- * else an inline string, and an empty text clears the value. The shared-string table, every other cell and
- * every other part are copied unchanged. */
+ * only that `c` element, keeping its reference and style index: a canonical decimal becomes a number (a leading
+ * zero, as in an account number or a code, stays text), anything else an inline string, and an empty text clears
+ * the value. The shared-string table, every other cell and every other part are copied unchanged, except that
+ * the workbook part is marked `fullCalcOnLoad`: a formula depending on an edited cell keeps a stale cached value
+ * until an application opens the workbook, and this flag makes that application recompute every formula
+ * instead of showing the stale cache. */
 import {readXmlSpans,rewriteXmlSpans,escapeXml,prefixFor} from './xml-edit.mjs';
 import {readXmlPart} from '../structure/xml.mjs';
 import {resolveOoxmlTarget} from '../structure/ooxml.mjs';
@@ -13,7 +16,10 @@ const RELATIONSHIP_NAMESPACES=['http://schemas.openxmlformats.org/officeDocument
 const WORKSHEET_TYPES=RELATIONSHIP_NAMESPACES.map(ns=>ns+'/worksheet'),SHARED_STRINGS_TYPES=RELATIONSHIP_NAMESPACES.map(ns=>ns+'/sharedStrings');
 const sheet=(e,local)=>SHEET_NAMESPACES.includes(e.uri)&&(local===undefined||e.local===local);
 const relsOf=part=>part.replace(/([^/]+)$/u,'_rels/$1.rels');
-const NUMBER=/^-?(?:\d+\.?\d*|\.\d+)(?:[eE][+-]?\d+)?$/u;
+const NUMBER=/^-?(?:0|[1-9]\d*)(?:\.\d+)?$/u;
+const CALC_ATTRIBUTE=/\sfullCalcOnLoad\s*=\s*(?:"[^"]*"|'[^']*')/u;
+/** Workbook children that follow `calcPr` in the schema order; a new `calcPr` goes before the first of them. */
+const AFTER_CALC=new Set(['oleSize','customWorkbookViews','pivotCaches','smartTagPr','smartTagTypes','webPublishing','fileRecoveryPr','webPublishObjects','extLst']);
 /** The workbook's sheets in `sheets` order with their part names, plus the shared strings part when present. */
 export function workbookParts(entries,main){
  const rels=entries.get(relsOf(main));if(!rels)return {sheets:[],sharedStrings:null};
@@ -54,7 +60,20 @@ export function xlsxUnits(entries,main){
  }
  return {units,parts};
 }
-/** Applies replace_text to cells; returns Map(part -> rewritten bytes) for every touched sheet. */
+/** The workbook part with `calcPr fullCalcOnLoad="1"`: set on the existing element, or added in schema order. */
+function recalculateOnLoad(entries,main){
+ const spans=readXmlSpans(entries.get(main)),{text,root}=spans,prefix=prefixFor(text,root,root.uri);
+ if(prefix===null||!sheet(root,'workbook'))unitFault('OFFICE_EDIT_UNIT_UNSUPPORTED',main);
+ const calc=root.children.find(c=>sheet(c,'calcPr'));
+ if(calc){
+  const close=text.indexOf('>',calc.start),head=text.slice(calc.start,close),selfClose=head.endsWith('/'),open=selfClose?head.slice(0,-1):head;
+  const tag=(CALC_ATTRIBUTE.test(open)?open.replace(CALC_ATTRIBUTE,' fullCalcOnLoad="1"'):open+' fullCalcOnLoad="1"')+(selfClose?'/':'');
+  return rewriteXmlSpans(spans,[{start:calc.start,end:close,value:tag}]);
+ }
+ const next=root.children.find(c=>sheet(c)&&AFTER_CALC.has(c.local)),at=next?next.start:text.lastIndexOf('</',root.end);
+ return rewriteXmlSpans(spans,[{start:at,end:at,value:`<${prefix?prefix+':':''}calcPr fullCalcOnLoad="1"/>`}]);
+}
+/** Applies replace_text to cells; returns Map(part -> rewritten bytes) for every touched sheet and the workbook part. */
 export function applyXlsx(entries,main,operations){
  const {units,parts}=xlsxUnits(entries,main),byUnit=new Map(units.map(u=>[u.unit,u])),perPart=new Map(),touched=new Set();
  for(const op of operations){
@@ -67,5 +86,7 @@ export function applyXlsx(entries,main,operations){
    `<${x}c r="${ref}"${style} t="inlineStr"><${x}is><${x}t xml:space="preserve">${escapeXml(op.after)}</${x}t></${x}is></${x}c>`;
   if(!perPart.has(u.part))perPart.set(u.part,[]);perPart.get(u.part).push({start:e.start,end:e.end,value});
  }
- return new Map([...perPart].map(([part,replacements])=>[part,rewriteXmlSpans(parts.get(part),replacements)]));
+ const rewritten=new Map([...perPart].map(([part,replacements])=>[part,rewriteXmlSpans(parts.get(part),replacements)]));
+ rewritten.set(main,recalculateOnLoad(entries,main));
+ return rewritten;
 }
