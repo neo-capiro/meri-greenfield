@@ -40,10 +40,39 @@ const DEFAULT_PROTOCOL = '2026-07-28', DEFAULT_RESPONSE_BYTES = 1048576, DEFAULT
  * one gateway invocation. Client identity travels in the documented `_meta` fields. */
 const CLIENT_INFO = Object.freeze({name: 'meri-control', version: '1.0.0'});
 
+/** Normalize whitespace, cut at the cap and trim the cut edge. The index returns page-text excerpts, so snippets are
+ * cut at 320 characters on nearly every row; a cut that lands on a space would leave a trailing blank, which the
+ * receiving contract refuses as non-normalized text and the whole discovery would be withheld as INVALID_RESULT.
+ * A cut inside a surrogate pair would publish a lone surrogate. */
 const boundedText = (value, cap) => {
   if (typeof value !== 'string') return null;
-  const normalized = value.replace(/\s+/gu, ' ').trim();
-  return normalized ? normalized.slice(0, cap) : null;
+  let normalized = value.replace(/\s+/gu, ' ').trim();
+  if (normalized.length > cap) normalized = normalized.slice(0, cap).replace(/[\uD800-\uDBFF]$/u, '').trim();
+  return normalized || null;
+};
+const MONTHS = Object.freeze({jan: 1, feb: 2, mar: 3, apr: 4, may: 5, jun: 6, jul: 7, aug: 8, sep: 9, oct: 10, nov: 11, dec: 12});
+const FULL_MONTHS = Object.freeze(['january', 'february', 'march', 'april', 'may', 'june', 'july', 'august', 'september', 'october', 'november', 'december']);
+const daysIn = (year, month) => month === 2 ? (year % 4 === 0 && (year % 100 !== 0 || year % 400 === 0) ? 29 : 28) : [4, 6, 9, 11].includes(month) ? 30 : 31;
+/** The connector publishes `publishedDate` as a display string such as "05:00PM, Wednesday, September 29 2021, PDT"
+ * (longer than the 40-character contract cap) or the literal "unknown". A value is projected only when it names one
+ * calendar date without ambiguity: an ISO date or instant is kept whole, and a month-name form (full or three-letter,
+ * with or without weekday, time and zone) becomes the YYYY-MM-DD it names after the day is checked against the month
+ * and leap year. Everything else is absence: "unknown", a numeric form whose day and month order is unknown
+ * ("03/04/2026"), a relative phrase ("2 days ago"), an impossible day. Never a wrong date, never a raw non-ISO string. */
+const publicationDate = value => {
+  if (typeof value !== 'string') return null;
+  const text = value.replace(/\s+/gu, ' ').trim();
+  const iso = /^(\d{4})-(\d{2})-(\d{2})(?:[T ]\d{2}:\d{2}(?::\d{2}(?:\.\d+)?)?(?:Z|[+-]\d{2}:?\d{2})?)?$/u.exec(text);
+  if (iso) {
+    const year = Number(iso[1]), month = Number(iso[2]), day = Number(iso[3]);
+    return month >= 1 && month <= 12 && day >= 1 && day <= daysIn(year, month) && text.length <= MAX_DATE ? text : null;
+  }
+  const display = /^(?:\d{1,2}:\d{2} ?[AP]M, ?)?(?:[A-Za-z]+, ?)?([A-Za-z]+) (\d{1,2}),? (\d{4})(?:, ?[A-Z]{2,5})?$/u.exec(text);
+  if (!display) return null;
+  const name = display[1].toLowerCase(), month = FULL_MONTHS.includes(name) || name.length === 3 ? MONTHS[name.slice(0, 3)] : undefined;
+  const day = Number(display[2]), year = Number(display[3]);
+  if (!month || day < 1 || day > daysIn(year, month)) return null;
+  return `${display[3]}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
 };
 const clamp = (value, minimum, maximum, fallback) => {
   const parsed = typeof value === 'number' ? value : typeof value === 'string' ? Number(value) : NaN;
@@ -101,7 +130,7 @@ export function projectRow(row) {
   if (url === null) return undefined;
   return Object.freeze({title: boundedText(row.title, MAX_TITLE), url,
     snippet: boundedText(row.text ?? row.snippet, MAX_SNIPPET), source: AGENTCORE_SEARCH_PROVIDER,
-    publishedAt: boundedText(row.publishedDate ?? row.publishedAt, MAX_DATE)});
+    publishedAt: publicationDate(row.publishedDate ?? row.publishedAt)});
 }
 
 /** Bounded response read: the lifetime owns cancellation, this owns bytes. */
