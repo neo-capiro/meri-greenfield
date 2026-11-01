@@ -15,10 +15,10 @@ const describe=version=>resolveOperationContract({id:'describe_capiro_data',vers
 const context={capiroDataScope:{clientId:null,identityRevision:'a'.repeat(64),membershipRevision:'b'.repeat(64)}};
 
 // Exact-pinned operation versions remain installed; their live schemas admit the current Core source generation.
-test('retained SQL schema bytes carry the current Core descriptor pin and the successor advertises larger bounds',()=>{
+test('retained SQL schema bytes carry the current Core retirement pin and the successor advertises larger bounds',()=>{
  const bytes=readFileSync(new URL('../retrieval-0.2/capiro-data.schema.json',import.meta.url));
- assert.equal(createHash('sha256').update(bytes).digest('hex'),'a64acc8c28d245ca40e43820faec41d31c2e8f7cb2945de575b8d8d8c97d3c65');
- assert.equal(describe('0.2.0').descriptor.inputSchema.sha256,'a64acc8c28d245ca40e43820faec41d31c2e8f7cb2945de575b8d8d8c97d3c65');
+ assert.equal(createHash('sha256').update(bytes).digest('hex'),'58e0935a0d113adc1a48ec0f557d232ab9d980ee13737efbafd5bfa0dc0da2ae');
+ assert.equal(describe('0.2.0').descriptor.inputSchema.sha256,'58e0935a0d113adc1a48ec0f557d232ab9d980ee13737efbafd5bfa0dc0da2ae');
  assert.equal(describe('0.3.0').binding.group,'capiro-data-v3');
  assert.throws(()=>describe('0.2.0').normalizeInput({relations:publicNames}));
  assert.deepEqual(describe('0.3.0').normalizeInput({relations:publicNames}).input,{relations:publicNames});

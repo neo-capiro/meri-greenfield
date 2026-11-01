@@ -12,7 +12,7 @@ const contract=(id='describe_capiro_data',version='0.4.0')=>resolveOperationCont
 const request={source:'client_records',relations:names};
 
 test('private successor preserves both current SQL envelope/descriptor schema documents and their private allowlists',()=>{
- for(const [version,expected] of [['0.2','a64acc8c28d245ca40e43820faec41d31c2e8f7cb2945de575b8d8d8c97d3c65'],['0.3','791dbc39ca84fe4870ae1a29f290667dca58517d892ba83e995aad5f840e6081']]){
+ for(const [version,expected] of [['0.2','58e0935a0d113adc1a48ec0f557d232ab9d980ee13737efbafd5bfa0dc0da2ae'],['0.3','daec7d0a52fa16a1ac7acbcccf2f5528967fc27b8fc4d2a64d017fd6841e6add']]){
   const raw=readFileSync(new URL(`../retrieval-${version}/capiro-data.schema.json`,import.meta.url));
   assert.equal(createHash('sha256').update(raw).digest('hex'),expected);
   assert.deepEqual(JSON.parse(raw).$defs.CapiroDataPrivateRelation.properties.name.enum,RETAINED_CAPIRO_PRIVATE_RELATIONS);

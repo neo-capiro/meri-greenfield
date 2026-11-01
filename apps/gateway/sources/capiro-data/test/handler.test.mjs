@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {capiroDataCase,ids,nextGenerationPage,sqlRefusal} from './fixture.mjs';
+import {capiroDataCase,ids,sqlRefusal} from './fixture.mjs';
 import canonicalize from 'canonicalize';
 
 for(const id of ids)test(`${id}: fixed native route preserves authored input, exact result and request binding`,async()=>{
@@ -16,7 +16,7 @@ test('current authority and original argument hash reject before Core dispatch',
   }
 });
 test('native error is preserved as an error envelope and never converted to empty rows',async()=>{
-  const f=capiroDataCase();f.state.page={version:'0.1.0',generatedAt:f.page.generatedAt,ok:false,error:{code:'QUERY_TIMEOUT',message:'Query exceeded the time budget.'}};
+  const f=capiroDataCase();f.state.page={version:'0.2.0',generatedAt:f.page.generatedAt,ok:false,error:{code:'QUERY_TIMEOUT',message:'Query exceeded the time budget.'}};
   const result=JSON.parse(await f.handler()(f.call()));assert.deepEqual(result.result,f.state.page);assert.equal(Object.hasOwn(result.result,'rows'),false);
 });
 test('Core HTTP failures map to unavailability, denial or withheld result rather than one generic code',async()=>{
@@ -69,20 +69,20 @@ test('private source result cannot substitute a public page or a different clien
   await assert.rejects(f.handler({credentialsForCall:()=>f.transport.getCredentials})(f.call()),{message:'INVALID_RESULT'});
 });
 
-// Core 362 (capiro-backend#362) envelope generation; deleted with the pre-362 pages by fable/sql-envelope-retire-old-generation.
+// Current Core envelopes remain supported by both operation versions.
 test('the Core 362 generation passes through both versions unchanged: success, describe, private scope and PostgreSQL refusals',async()=>{
   for(const version of ['0.2.0','0.3.0'])for(const id of ids){
-    const f=capiroDataCase(id,{version});f.state.page=nextGenerationPage(f.page);
-    const result=JSON.parse(await f.handler()(f.call()));assert.deepEqual(result.result,f.state.page);assert.equal(result.operation.version,version);
+    const f=capiroDataCase(id,{version});
+    const result=JSON.parse(await f.handler()(f.call()));assert.deepEqual(result.result,f.page);assert.equal(result.operation.version,version);
   }
   const refused=capiroDataCase();refused.state.page=sqlRefusal();
   const refusal=JSON.parse(await refused.handler()(refused.call()));assert.deepEqual(refusal.result,refused.state.page);assert.equal(refusal.result.error.position,8);
   const request={source:'client_records',sql:'SELECT COUNT(*) AS total FROM client_objectives',parameters:[],rowLimit:2};
-  const f=capiroDataCase('query_capiro_data',{request});f.state.page=nextGenerationPage(f.page);
-  assert.deepEqual(JSON.parse(await f.handler({credentialsForCall:()=>f.transport.getCredentials})(f.call())).result,f.state.page);
+  const f=capiroDataCase('query_capiro_data',{request});
+  assert.deepEqual(JSON.parse(await f.handler({credentialsForCall:()=>f.transport.getCredentials})(f.call())).result,f.page);
   // The generation of the other source is still withheld, and so is a diagnostic outside the closed shape.
   for(const [mutate,id] of [[p=>p.version='0.3.0','query_capiro_data'],[p=>p.version='0.3.0','describe_capiro_data']]){
-    const g=capiroDataCase(id);g.state.page=nextGenerationPage(g.page);g.state.resultMutator=mutate;
+    const g=capiroDataCase(id);g.state.resultMutator=mutate;
     await assert.rejects(g.handler()(g.call()),{message:'INVALID_RESULT'});
   }
   const h=capiroDataCase();h.state.page=sqlRefusal({position:'8'});await assert.rejects(h.handler()(h.call()),{message:'INVALID_RESULT'});

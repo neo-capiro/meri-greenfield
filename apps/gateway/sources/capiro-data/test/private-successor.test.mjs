@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {capiroDataCase,nextGenerationPage} from './fixture.mjs';
+import {capiroDataCase} from './fixture.mjs';
 import {withSqlContract} from './sql-contract-fixture.mjs';
 import {RETAINED_CAPIRO_PRIVATE_RELATIONS} from '../../../../../packages/contracts/retrieval-0.2/capiro-data-validation.mjs';
 const names=[...RETAINED_CAPIRO_PRIVATE_RELATIONS,'client_meetings'];
@@ -16,10 +16,10 @@ for(const version of ['0.2.0','0.3.0','0.4.0'])test(`${version}: default private
 
 for(const version of ['0.2.0','0.3.0'])test(`${version}: retained private metadata narrows before Core descriptor hashing`,async()=>{
  const f=capiroDataCase('describe_capiro_data',{version,request:{source:'client_records'}});page(f,RETAINED_CAPIRO_PRIVATE_RELATIONS);
- f.state.page=withSqlContract(nextGenerationPage(f.page));
+ f.state.page=withSqlContract(structuredClone(f.page));
  const result=JSON.parse(await f.handler({credentialsForCall:()=>f.transport.getCredentials})(f.call())).result;
  assert.deepEqual(result,f.state.page);assert.deepEqual(f.wire[0].body.relations,RETAINED_CAPIRO_PRIVATE_RELATIONS);
- const bad=capiroDataCase('describe_capiro_data',{version,request:{source:'client_records'}});page(bad,names);bad.state.page=withSqlContract(nextGenerationPage(bad.page));
+ const bad=capiroDataCase('describe_capiro_data',{version,request:{source:'client_records'}});page(bad,names);bad.state.page=withSqlContract(structuredClone(bad.page));
  await assert.rejects(bad.handler({credentialsForCall:()=>bad.transport.getCredentials})(bad.call()),{message:'INVALID_RESULT'});
 });
 
@@ -36,7 +36,7 @@ test('private successor refuses a static credential or injected source and prese
  const f=capiroDataCase('describe_capiro_data',{version:'0.4.0',request:{source:'client_records'}});
  await assert.rejects(f.handler()(f.call()),{message:'UNAVAILABLE'});assert.equal(f.wire.length,0);
  let reads=0;await assert.rejects(f.handler({getCredentials:undefined,readSource:async()=>{reads++;return f.page;}})(f.call()),{message:'ACCESS_DENIED'});assert.equal(reads,0);
- f.state.page={version:'0.2.0',generatedAt:f.page.generatedAt,ok:false,error:{code:'SOURCE_UNAVAILABLE',message:'Unavailable'}};
+ f.state.page={version:'0.3.0',generatedAt:f.page.generatedAt,ok:false,error:{code:'SOURCE_UNAVAILABLE',message:'Unavailable'}};
  const out=JSON.parse(await f.handler({credentialsForCall:()=>f.transport.getCredentials})(f.call()));
  assert.deepEqual(out.result,f.state.page);
 });

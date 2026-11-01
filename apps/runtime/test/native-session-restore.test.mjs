@@ -1,5 +1,8 @@
 /** Native reference -> real SessionStore HTTP owner; SDK callbacks are synthetic. */
 import test from 'node:test';import assert from 'node:assert/strict';
+import {canonicalSha256} from '../../../packages/contracts/validate.mjs';
+import {resolveOperationContract} from '../../../packages/contracts/retrieval-0.2/validate.mjs';
+import {capiroDataPage,privateCapiroDataPage,requests} from '../../gateway/sources/capiro-data/test/fixture.mjs';
 import {createRuntimeSdkSessionFactory} from '../sdk-session-runtime.mjs';
 import {createNativeSdkSessionApplication} from '../sdk-session-http.mjs';
 import {fixture,id,NOW} from '../native-authority/test/fixture.mjs';
@@ -39,4 +42,19 @@ test('wrong init and close during pending init never register or replay a restor
 test('revoked target registration preserves immutable source and never claims settlement',async()=>{
  const f=await setup('resume'),mirror=await f.open();f.revoke();mirror.store.observeInit({type:'system',subtype:'init',session_id:f.target.sessionId});
  await assert.rejects(mirror.store.append(f.target,[{type:'system'}]));await assert.rejects(mirror.settle());await assert.rejects(mirror.close());assert.equal(f.state().owner,null);assert.deepEqual(f.calls,['snapshot','register']);
+});
+
+for(const mode of ['resume','fork'])test(`${mode} preserves obsolete SQL result bytes in historical SDK transcript without admitting them as fresh output`,async()=>{
+ const publicPage={...capiroDataPage(),version:'0.1.0'},privatePage={...privateCapiroDataPage(),version:'0.2.0'};
+ // An old tool result is opaque SDK history, never relabelled as the current producer generation.
+ publicPage.rows[0].last_synced_at='2026-01-01T00:00:00.000Z';
+ const f=await setup(mode,{mutate:raw=>{for(const [i,page]of [publicPage,privatePage].entries())raw.transcripts[0].entries[i].message={role:'user',content:[{type:'tool_result',tool_use_id:'historical_'+i,content:JSON.stringify({result:page})}]};}});
+ const before=structuredClone(f.transcripts),digest=canonicalSha256(before),mirror=await f.open();
+ try{
+  assert.deepEqual(await mirror.store.load(f.key),before[0].entries);assert.equal(canonicalSha256(f.transcripts),digest);
+  const contract=resolveOperationContract({id:'query_capiro_data',version:'0.2.0'});
+  assert.throws(()=>contract.assertOutput(publicPage,{request:requests.query_capiro_data}));
+  assert.throws(()=>contract.assertOutput(privatePage,{request:{...requests.query_capiro_data,source:'client_records'},capiroDataScope:{clientId:null,identityRevision:'a'.repeat(64),membershipRevision:'b'.repeat(64)}}));
+  assert.deepEqual(f.calls,['snapshot']);assert.equal(f.state().owner,null);
+ }finally{await mirror.close();}
 });

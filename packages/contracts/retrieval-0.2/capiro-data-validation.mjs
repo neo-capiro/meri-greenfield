@@ -12,14 +12,11 @@ const integer=/^-?(?:0|[1-9]\d*)$/u;
 const decimal=/^-?(?:0|[1-9]\d*)(?:\.\d+)?(?:[eE][+-]?\d+)?$/u;
 const instant=value=>typeof value==='string'&&Number.isFinite(Date.parse(value));
 const uuid=/^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/u;
-// Core 362 (capiro-backend#362) returns timestamp cells as PostgreSQL text in UTC with microseconds
-// (`2025-01-04 01:02:03.123456+00`; plain `timestamp` carries no offset) and moves the envelope version
-// public 0.1.0 -> 0.2.0, private 0.2.0 -> 0.3.0. The two services deploy separately, so both generations
-// are accepted here. TRANSITIONAL: the ISO timestamp form, the first version of each pair and their
-// fixtures are deleted by the follow-up fable/sql-envelope-retire-old-generation once Core 362 is live.
+// Core's current public/private generations are source-bound below. Timestamp cells retain
+// supported PostgreSQL text (including microseconds) and ISO representations independently of envelope version.
 const pgTimestamp=/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}(?:\.\d{1,6})?(?:[+-]\d{2}(?::\d{2})?)?$/u;
 const isoTimestamp=/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{1,6})?(?:Z|[+-]\d{2}:\d{2})$/u;
-const ENVELOPE_VERSIONS=Object.freeze({public:Object.freeze(['0.1.0','0.2.0']),client_records:Object.freeze(['0.2.0','0.3.0'])});
+const ENVELOPE_VERSIONS=Object.freeze({public:'0.2.0',client_records:'0.3.0'});
 
 function privateScope(input,context){
  const scope=context.capiroDataScope;
@@ -47,7 +44,7 @@ function cell(column,value){
 function describe(page,input){
   if(page.contract!==undefined){
     const {revisionSha256,...contract}=page.contract;
-    const {maxColumns,...limits}=page.limits;
+    const limits=page.limits;
     if(contract.source!==(input.source??'public')||canonicalSha256(contract.limits)!==canonicalSha256(limits)||
       canonicalSha256({...contract,relations:page.relations})!==revisionSha256)fail();
   }
@@ -108,7 +105,7 @@ export function createCapiroDataValidators({validateShape,privateRelations=RETAI
     const {input}=normalizeInput(id,request,context),page=snapshotOperationData(raw);validateShape(definition(id,true),page);
     const scope=sourceScope(input,context);
     const domain=scope&&['research_portfolio','classic_outreach'].includes(input.source);
-    if(!(domain?['0.3.0']:ENVELOPE_VERSIONS[scope?'client_records':'public']).includes(page.version))fail();
+    if(page.version!==(domain?'0.3.0':ENVELOPE_VERSIONS[scope?'client_records':'public']))fail();
     if(page.ok&&scope){
       const expected=input.source==='research_portfolio'?scope.researchPortfolio:{kind:input.source,clientId:scope.clientId};
       if(canonicalSha256(page.scope)!==canonicalSha256(expected))fail();
