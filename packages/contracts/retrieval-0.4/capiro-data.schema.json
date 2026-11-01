@@ -116,6 +116,21 @@
         "unit": {
           "type": "string",
           "maxLength": 128
+        },
+        "pgType": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "enum": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "maxLength": 256
+          },
+          "minItems": 1,
+          "maxItems": 256,
+          "uniqueItems": true
         }
       },
       "required": [
@@ -149,6 +164,11 @@
         },
         "unit": {
           "type": "string",
+          "maxLength": 128
+        },
+        "pgType": {
+          "type": "string",
+          "minLength": 1,
           "maxLength": 128
         }
       },
@@ -339,9 +359,6 @@
         },
         "maxParameterBytes": {
           "const": 32768
-        },
-        "maxColumns": {
-          "const": 32
         }
       },
       "required": [
@@ -350,8 +367,7 @@
         "maxOutputBytes",
         "maxSqlBytes",
         "maxParameters",
-        "maxParameterBytes",
-        "maxColumns"
+        "maxParameterBytes"
       ]
     },
     "CapiroDataQueryLimits": {
@@ -446,7 +462,7 @@
       "additionalProperties": false,
       "properties": {
         "version": {
-          "const": "0.1.0"
+          "const": "0.2.0"
         },
         "generatedAt": {
           "type": "string",
@@ -476,6 +492,31 @@
               "type": "string",
               "minLength": 1,
               "maxLength": 512
+            },
+            "position": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 16384
+            },
+            "hint": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 1024
+            },
+            "sqlstate": {
+              "type": "string",
+              "pattern": "^[0-9A-Z]{5}$"
+            },
+            "candidates": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "pattern": "^[a-zA-Z_][a-zA-Z0-9_]*$",
+                "maxLength": 128
+              },
+              "minItems": 0,
+              "maxItems": 8,
+              "uniqueItems": true
             }
           },
           "required": [
@@ -496,7 +537,7 @@
       "additionalProperties": false,
       "properties": {
         "version": {
-          "const": "0.1.0"
+          "const": "0.2.0"
         },
         "generatedAt": {
           "type": "string",
@@ -516,6 +557,9 @@
         },
         "limits": {
           "$ref": "#/$defs/CapiroDataDescribeLimits"
+        },
+        "contract": {
+          "$ref": "#/$defs/CapiroDataSqlContract"
         }
       },
       "required": [
@@ -531,7 +575,7 @@
       "additionalProperties": false,
       "properties": {
         "version": {
-          "const": "0.1.0"
+          "const": "0.2.0"
         },
         "generatedAt": {
           "type": "string",
@@ -546,15 +590,13 @@
           "items": {
             "$ref": "#/$defs/CapiroDataColumn"
           },
-          "minItems": 1,
-          "maxItems": 32
+          "minItems": 1
         },
         "rows": {
           "type": "array",
           "items": {
             "type": "object",
             "minProperties": 1,
-            "maxProperties": 32,
             "additionalProperties": {
               "anyOf": [
                 {
@@ -619,7 +661,7 @@
       ]
     },
     "CapiroDataDescribeOutput": {
-      "oneOf": [
+      "anyOf": [
         {
           "$ref": "#/$defs/CapiroDataDescribeSuccess"
         },
@@ -635,7 +677,7 @@
       ]
     },
     "CapiroDataQueryOutput": {
-      "oneOf": [
+      "anyOf": [
         {
           "$ref": "#/$defs/CapiroDataQuerySuccess"
         },
@@ -883,7 +925,7 @@
       "additionalProperties": false,
       "properties": {
         "version": {
-          "const": "0.2.0"
+          "const": "0.3.0"
         },
         "generatedAt": {
           "type": "string",
@@ -913,6 +955,31 @@
               "type": "string",
               "minLength": 1,
               "maxLength": 512
+            },
+            "position": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 16384
+            },
+            "hint": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 1024
+            },
+            "sqlstate": {
+              "type": "string",
+              "pattern": "^[0-9A-Z]{5}$"
+            },
+            "candidates": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "pattern": "^[a-zA-Z_][a-zA-Z0-9_]*$",
+                "maxLength": 128
+              },
+              "minItems": 0,
+              "maxItems": 8,
+              "uniqueItems": true
             }
           },
           "required": [
@@ -933,7 +1000,7 @@
       "additionalProperties": false,
       "properties": {
         "version": {
-          "const": "0.2.0"
+          "const": "0.3.0"
         },
         "generatedAt": {
           "type": "string",
@@ -956,6 +1023,9 @@
         },
         "scope": {
           "$ref": "#/$defs/CapiroDataPrivateScope"
+        },
+        "contract": {
+          "$ref": "#/$defs/CapiroDataSqlContract"
         }
       },
       "required": [
@@ -972,7 +1042,7 @@
       "additionalProperties": false,
       "properties": {
         "version": {
-          "const": "0.2.0"
+          "const": "0.3.0"
         },
         "generatedAt": {
           "type": "string",
@@ -987,15 +1057,13 @@
           "items": {
             "$ref": "#/$defs/CapiroDataColumn"
           },
-          "minItems": 1,
-          "maxItems": 32
+          "minItems": 1
         },
         "rows": {
           "type": "array",
           "items": {
             "type": "object",
             "minProperties": 1,
-            "maxProperties": 32,
             "additionalProperties": {
               "anyOf": [
                 {
@@ -1075,6 +1143,119 @@
         "coverage",
         "limits",
         "scope"
+      ]
+    },
+    "CapiroDataSqlContract": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "version": {
+          "const": "capiro.sql-contract/1"
+        },
+        "revisionSha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "source": {
+          "enum": [
+            "public",
+            "client_records"
+          ]
+        },
+        "grammar": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "version": {
+              "const": "postgresql-select/1"
+            },
+            "statements": {
+              "const": [
+                "SELECT",
+                "WITH_SELECT"
+              ]
+            },
+            "parameterStyle": {
+              "const": "dollar-numbered-contiguous"
+            },
+            "blockedKeywords": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "pattern": "^[a-z_][a-z0-9_]*$",
+                "maxLength": 128
+              },
+              "uniqueItems": true
+            },
+            "blockedFunctions": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "pattern": "^[a-z_][a-z0-9_]*$",
+                "maxLength": 128
+              },
+              "uniqueItems": true
+            },
+            "blockedFunctionPatterns": {
+              "const": []
+            },
+            "sourceMixing": {
+              "const": false
+            }
+          },
+          "required": [
+            "version",
+            "statements",
+            "parameterStyle",
+            "blockedKeywords",
+            "blockedFunctions",
+            "blockedFunctionPatterns",
+            "sourceMixing"
+          ]
+        },
+        "limits": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "defaultRowLimit": {
+              "const": 200
+            },
+            "maxRowLimit": {
+              "const": 1000
+            },
+            "maxOutputBytes": {
+              "const": 262144
+            },
+            "maxSqlBytes": {
+              "const": 16384
+            },
+            "maxParameters": {
+              "const": 64
+            },
+            "maxParameterBytes": {
+              "const": 32768
+            }
+          },
+          "required": [
+            "defaultRowLimit",
+            "maxRowLimit",
+            "maxOutputBytes",
+            "maxSqlBytes",
+            "maxParameters",
+            "maxParameterBytes"
+          ]
+        },
+        "columnCountLimit": {
+          "type": "null"
+        }
+      },
+      "required": [
+        "version",
+        "revisionSha256",
+        "source",
+        "grammar",
+        "limits",
+        "columnCountLimit"
       ]
     }
   }

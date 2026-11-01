@@ -60,7 +60,7 @@ export const grammar={
   "sourceMixing": false
 };
 export function withSqlContract(page){
- const result=structuredClone(page),{maxColumns,...limits}=result.limits;
+ const result=structuredClone(page),limits=result.limits;
  const contract={version:'capiro.sql-contract/1',source:result.scope?'client_records':'public',grammar:structuredClone(grammar),limits,columnCountLimit:null};
  result.contract={...contract,revisionSha256:canonicalSha256({...contract,relations:result.relations})};
  return result;

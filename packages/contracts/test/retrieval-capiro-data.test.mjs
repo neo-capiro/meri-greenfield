@@ -2,7 +2,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {resolveOperationContract} from '../retrieval-0.2/validate.mjs';
-import {capiroDataPage,nextGenerationPage,privateCapiroDataPage,requests,sqlRefusal} from '../../../apps/gateway/sources/capiro-data/test/fixture.mjs';
+import {capiroDataPage,privateCapiroDataPage,requests,sqlRefusal} from '../../../apps/gateway/sources/capiro-data/test/fixture.mjs';
 const query=resolveOperationContract({id:'query_capiro_data',version:'0.2.0'});
 const check=page=>query.assertOutput(page,{request:requests.query_capiro_data});
 test('SQL text is preserved exactly with separately bound finite scalar parameters',()=>{
@@ -57,8 +57,8 @@ test('private output binds source version and effective scope for success and er
   for(const mutate of [p=>p.version='0.1.0',p=>p.scope.clientId='10000000-0000-4000-8000-000000000001',p=>p.relationsUsed=['program_elements'],p=>p.rows[0].count=0]){
     const bad=structuredClone(page);mutate(bad);assert.throws(()=>check(bad));
   }
-  const error={version:'0.2.0',generatedAt:page.generatedAt,ok:false,error:{code:'QUERY_TIMEOUT',message:'Time budget exceeded.'}};
-  // 0.2.0 is also the public Core 362 generation, so the public refusal check uses the version only the private source carries.
+  const error={version:'0.3.0',generatedAt:page.generatedAt,ok:false,error:{code:'QUERY_TIMEOUT',message:'Time budget exceeded.'}};
+  // Operation versions are independent of Core source versions; private now requires 0.3.0.
   assert.deepEqual(check(error),error);assert.throws(()=>check({...error,version:'0.1.0'}));assert.throws(()=>query.assertOutput({...error,version:'0.3.0'},{request:requests.query_capiro_data}));
 });
 test('private description admits the two owner projections with authorized-record coverage',()=>{
@@ -69,13 +69,13 @@ test('private description admits the two owner projections with authorized-recor
   }
 });
 
-// Core 362 (capiro-backend#362) envelope generation; the pre-362 cases above are deleted by fable/sql-envelope-retire-old-generation.
-for(const version of ['0.2.0','0.3.0'])test(`${version}: both envelope generations per source, pgType/enum, PostgreSQL diagnostics and timestamp text`,()=>{
+// Current Core generation: source-specific versions and unchanged value representations.
+for(const version of ['0.2.0','0.3.0','0.4.0','0.5.0'])test(`${version}: current envelope generation per source, pgType/enum, PostgreSQL diagnostics and timestamp text`,()=>{
   const q=resolveOperationContract({id:'query_capiro_data',version}),d=resolveOperationContract({id:'describe_capiro_data',version});
   const publicQuery={request:requests.query_capiro_data},privateQuery={request:privateRequest,...context};
   const publicDescribe={request:requests.describe_capiro_data},privateDescribe={request:{source:'client_records',relations:['client_objectives']},...context};
-  const page=nextGenerationPage(capiroDataPage()),described=nextGenerationPage(capiroDataPage('describe_capiro_data'));
-  const privatePage=nextGenerationPage(privateCapiroDataPage()),privateDescribed=nextGenerationPage(privateCapiroDataPage('describe_capiro_data'));
+  const page=capiroDataPage(),described=capiroDataPage('describe_capiro_data');
+  const privatePage=privateCapiroDataPage(),privateDescribed=privateCapiroDataPage('describe_capiro_data');
   assert.equal(page.version,'0.2.0');assert.equal(privatePage.version,'0.3.0');assert.equal(Object.hasOwn(described.limits,'maxColumns'),false);
   assert.deepEqual(q.assertOutput(page,publicQuery),page);assert.deepEqual(d.assertOutput(described,publicDescribe),described);
   assert.deepEqual(q.assertOutput(privatePage,privateQuery),privatePage);assert.deepEqual(d.assertOutput(privateDescribed,privateDescribe),privateDescribed);
@@ -85,7 +85,7 @@ for(const version of ['0.2.0','0.3.0'])test(`${version}: both envelope generatio
   delete unknownRelation.error.position;delete unknownRelation.error.hint;delete unknownRelation.error.sqlstate;
   assert.deepEqual(d.assertOutput(unknownRelation,publicDescribe),unknownRelation);
   assert.deepEqual(q.assertOutput(sqlRefusal({candidates:[]}),publicQuery).error.candidates,[]);
-  // The version set is bound to the request's source: a public page never carries 0.3.0, a private one never 0.1.0.
+  // The version is bound to the request source: public0.2.0 and private0.3.0 only.
   assert.throws(()=>q.assertOutput({...page,version:'0.3.0'},publicQuery));assert.throws(()=>q.assertOutput({...privatePage,version:'0.1.0'},privateQuery));
   assert.throws(()=>q.assertOutput({...refusal,version:'0.3.0'},publicQuery));assert.throws(()=>q.assertOutput({...privateRefusal,version:'0.1.0'},privateQuery));
   assert.throws(()=>q.assertOutput({...refusal,version:'0.4.0'},publicQuery));
@@ -96,10 +96,10 @@ for(const version of ['0.2.0','0.3.0'])test(`${version}: both envelope generatio
   for(const mutate of [p=>p.columns[0].pgType='',p=>p.columns[0].pgType=7,p=>p.columns[0].enum=['x'],p=>p.columns[0].extra='x']){
     const bad=structuredClone(page);mutate(bad);assert.throws(()=>q.assertOutput(bad,publicQuery));
   }
-  for(const mutate of [p=>p.relations[0].fields[1].enum=[],p=>p.relations[0].fields[1].enum=['total','total'],p=>p.relations[0].fields[1].enum=[1],p=>p.relations[0].fields[0].pgType='',p=>p.limits.maxColumns=33]){
+  for(const mutate of [p=>p.relations[0].fields[1].enum=[],p=>p.relations[0].fields[1].enum=['total','total'],p=>p.relations[0].fields[1].enum=[1],p=>p.relations[0].fields[0].pgType='',p=>p.limits.maxColumns=32]){
     const bad=structuredClone(described);mutate(bad);assert.throws(()=>d.assertOutput(bad,publicDescribe));
   }
-  // Timestamp cells: PostgreSQL text in UTC with up to six fractional digits (plain timestamp without an offset) or the pre-362 ISO form.
+  // Timestamp cells: PostgreSQL text in UTC with up to six fractional digits (plain timestamp without an offset) or supported ISO values; scalar forms are independent of envelope retirement.
   for(const value of ['2026-01-01 00:00:00.123456+00','2026-01-01 00:00:00+00','2026-01-01 00:00:00.5','2026-01-01 00:00:00','2026-01-01 00:00:00.123456+05:30','2026-01-01T00:00:00.000Z','2026-01-01T00:00:00+00:00']){
     const ok=structuredClone(page);ok.rows[0].last_synced_at=value;assert.doesNotThrow(()=>q.assertOutput(ok,publicQuery),value);
   }
@@ -108,9 +108,9 @@ for(const version of ['0.2.0','0.3.0'])test(`${version}: both envelope generatio
   }
 });
 
-for(const version of ['0.2.0','0.3.0'])for(const privateSource of [false,true])test(`${version}: ${privateSource?'private':'public'} output width is bounded by bytes, not an invented column count`,()=>{
+for(const version of ['0.2.0','0.3.0','0.4.0','0.5.0'])for(const privateSource of [false,true])test(`${version}: ${privateSource?'private':'public'} output width is bounded by bytes, not an invented column count`,()=>{
  const q=resolveOperationContract({id:'query_capiro_data',version});
- const page=nextGenerationPage(privateSource?privateCapiroDataPage():capiroDataPage());
+ const page=privateSource?privateCapiroDataPage():capiroDataPage();
  page.columns=Array.from({length:40},(_,i)=>({name:'field_'+i,type:'string',pgType:'text',nullable:false}));
  page.rows=page.rows.map(()=>Object.fromEntries(page.columns.map(column=>[column.name,'value'])));
  const options=privateSource?{request:privateRequest,...context}:{request:requests.query_capiro_data};
@@ -118,4 +118,19 @@ for(const version of ['0.2.0','0.3.0'])for(const privateSource of [false,true])t
  const duplicate=structuredClone(page);duplicate.columns[39].name='field_0';assert.throws(()=>q.assertOutput(duplicate,options));
  const extra=structuredClone(page);extra.rows[0].undisclosed='value';assert.throws(()=>q.assertOutput(extra,options));
  page.rows[0].field_0='界'.repeat(90000);assert.throws(()=>q.assertOutput(page,options));
+});
+
+for(const version of ['0.2.0','0.3.0','0.4.0','0.5.0'])for(const id of ['describe_capiro_data','query_capiro_data'])test(`${id}@${version} rejects obsolete public/private success and error generations`,()=>{
+ const contract=resolveOperationContract({id,version});
+ for(const privateSource of [false,true]){
+  const page=(privateSource?privateCapiroDataPage:capiroDataPage)(id),request=privateSource?
+   (id==='describe_capiro_data'?{source:'client_records',relations:['client_objectives']}:privateRequest):requests[id];
+  const options={request,...(privateSource?context:{})};
+  assert.deepEqual(contract.assertOutput(page,options),page);
+  if(id==='describe_capiro_data')assert.throws(()=>contract.assertOutput({...page,limits:{...page.limits,maxColumns:32}},options));
+  const obsolete=privateSource?'0.2.0':'0.1.0';
+  assert.throws(()=>contract.assertOutput({...page,version:obsolete},options));
+  assert.throws(()=>contract.assertOutput({version:obsolete,generatedAt:page.generatedAt,ok:false,error:{code:'QUERY_TIMEOUT',message:'Old producer'}},options));
+  assert.deepEqual(contract.assertOutput(sqlRefusal({},page.version),options),sqlRefusal({},page.version));
+ }
 });

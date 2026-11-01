@@ -7,13 +7,13 @@ const original=['congress_bills','congress_bill_subjects','congress_bill_cospons
 const expanded=[...original,'state_bills','committee_hearings','committee_hearing_bills','legislative_agenda_items','state_bill_calendar_events','federal_grants','sam_opportunities'];
 function descriptions(f,names){f.page.relations=names.map(name=>({...structuredClone(f.page.relations[0]),name}));}
 
-test('retained default public description works after Core publishes fifteen relations',async()=>{
- const f=capiroDataCase('describe_capiro_data',{request:{}});descriptions(f,expanded);
+test('retained default public description requests its eight names at Core',async()=>{
+ const f=capiroDataCase('describe_capiro_data',{request:{}});descriptions(f,original);
  const result=JSON.parse(await f.handler()(f.call()));
  assert.deepEqual(result.result.relations.map(row=>row.name),original);
  assert.deepEqual(f.wire[0].body,{relations:original});assert.equal(result.operation.version,'0.2.0');
 });
-for(const names of [original,expanded])test(`successor works with old/new Core (${names.length} public relations)`,async()=>{
+for(const names of [original,expanded])test(`successor works with published surfaces (${names.length} public relations)`,async()=>{
  const f=capiroDataCase('describe_capiro_data',{version:'0.3.0',request:{}});descriptions(f,names);
  const result=JSON.parse(await f.handler()(f.call()));
  assert.deepEqual(result.result,f.page);assert.equal(result.operation.version,'0.3.0');
@@ -40,9 +40,14 @@ test('successor private read retains per-call credentials, exact correlation and
 test('both versions preserve unavailable/errors and malformed results never become empty success',async()=>{
  for(const version of ['0.2.0','0.3.0']){
   const f=capiroDataCase('describe_capiro_data',{version,request:{}});
-  f.state.page={version:'0.1.0',generatedAt:f.page.generatedAt,ok:false,error:{code:'SOURCE_UNAVAILABLE',message:'Unavailable'}};
+  f.state.page={version:'0.2.0',generatedAt:f.page.generatedAt,ok:false,error:{code:'SOURCE_UNAVAILABLE',message:'Unavailable'}};
   assert.deepEqual(JSON.parse(await f.handler()(f.call())).result,f.state.page);
   f.state.page={...f.page,relations:'malformed'};
   await assert.rejects(f.handler()(f.call()),{message:'INVALID_RESULT'});
  }
+});
+
+test('retained default never post-filters a producer that ignores the explicit selection',async()=>{
+ const f=capiroDataCase('describe_capiro_data',{request:{}});descriptions(f,expanded);
+ await assert.rejects(f.handler()(f.call()),{message:'INVALID_RESULT'});assert.deepEqual(f.wire[0].body,{relations:original});
 });

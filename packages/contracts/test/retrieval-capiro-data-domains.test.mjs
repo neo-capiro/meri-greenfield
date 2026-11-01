@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import {createHash} from 'node:crypto';
 import {canonicalSha256} from '../validate.mjs';
 import {resolveOperationContract} from '../retrieval-0.2/validate.mjs';
-import {capiroDataPage,privateCapiroDataPage,nextGenerationPage} from '../../../apps/gateway/sources/capiro-data/test/fixture.mjs';
+import {capiroDataPage,privateCapiroDataPage} from '../../../apps/gateway/sources/capiro-data/test/fixture.mjs';
 import {withSqlContract} from '../../../apps/gateway/sources/capiro-data/test/sql-contract-fixture.mjs';
 const id='70000000-0000-4000-8000-000000000001';
 const capture={kind:'research_portfolio',researchPortfolioId:id,researchPortfolioName:'Captured research',researchPortfolioRevision:2};
@@ -14,7 +14,7 @@ function fixture(source,operation='query_capiro_data'){
  const relation=source==='research_portfolio'?'research_portfolio_members':'classic_outreach_records';
  const context={capiroDataScope:{source,...revisions,...(source==='research_portfolio'?{researchPortfolio:research}:{clientId:null})}};
  const request=operation==='describe_capiro_data'?{source,relations:[relation]}:{source,sql:`SELECT COUNT(*) AS count FROM ${relation}`,parameters:[],rowLimit:2};
- const page=nextGenerationPage(privateCapiroDataPage(operation));
+ const page=structuredClone(privateCapiroDataPage(operation));
  page.scope=source==='research_portfolio'?structuredClone(research):{kind:source,clientId:null};
  if(operation==='describe_capiro_data'){
   page.relations[0].name=relation;page.relations[0].coverage.basis=source==='research_portfolio'?'authorized_research_portfolio':'authorized_classic_outreach';
@@ -49,12 +49,12 @@ test('Research stale same-portfolio capture is retained, not silently repinned',
 test('new private domains do not reintroduce the obsolete 32-column output cap',()=>{
  const f=fixture('classic_outreach'),page=f.page;page.columns=Array.from({length:40},(_,i)=>({name:`c${i}`,type:'string',nullable:false,pgType:'text'}));page.rows=[Object.fromEntries(page.columns.map(c=>[c.name,'value']))];page.rowCount=1;assert.deepEqual(contract().assertOutput(page,f.options),page);
 });
-test('historical .4 wire keeps its old envelopes and explicitly refuses new-only Core envelopes',()=>{
+test('retained .4 callable wire accepts current envelopes and refuses obsolete fresh output',()=>{
  const c=contract('query_capiro_data','0.4.0'),page=privateCapiroDataPage(),options={request:{source:'client_records',sql:'SELECT count FROM client_objectives',parameters:[],rowLimit:2},capiroDataScope:{clientId:null,identityRevision:'a'.repeat(64),membershipRevision:'b'.repeat(64)}};
- assert.deepEqual(c.assertOutput(page,options),page);assert.throws(()=>c.assertOutput(nextGenerationPage(page),options));
+ assert.deepEqual(c.assertOutput(page,options),page);assert.throws(()=>c.assertOutput({...page,version:'0.2.0'},options));
 });
 test('v5 preserves the public text-SQL envelope without manufacturing private scope',()=>{
- const request={sql:'SELECT count FROM program_elements',parameters:[],rowLimit:2},page=nextGenerationPage(capiroDataPage());assert.deepEqual(contract().assertOutput(page,{request}),page);
+ const request={sql:'SELECT count FROM program_elements',parameters:[],rowLimit:2},page=structuredClone(capiroDataPage());assert.deepEqual(contract().assertOutput(page,{request}),page);
  assert.throws(()=>contract().assertOutput(page,{request,capiroDataScope:{source:'classic_outreach',clientId:null,...revisions}}));
 });
 
