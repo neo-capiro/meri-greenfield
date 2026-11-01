@@ -133,8 +133,8 @@
   "sources": [
     {
       "path": "../../apps/control/conversations/history/service.mjs",
-      "sha256": "b7637801f7da193b202c946856940224ebb8ded00118a2694a5f9fd2abe42dc8",
-      "bytes": 9667
+      "sha256": "6060402c5bdff03aa380fa4e8d89ea216388494076ecc1370f363e8334725178",
+      "bytes": 10107
     },
     {
       "path": "../../apps/control/conversations/history/store.mjs",
@@ -183,7 +183,7 @@
     },
     {
       "path": "conversation-history/protocol.mjs",
-      "sha256": "e56e26131695eab32bf3fb76f64611c209a26929baffc5c6fdf731b3ad461126",
+      "sha256": "8da1f730afa4aba267e410843b8085deca716f265c413ba4c0b4e525c183bca9",
       "bytes": 2758
     },
     {
