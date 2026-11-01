@@ -475,8 +475,16 @@
             "version": "0.2.0"
           },
           {
+            "id": "describe_capiro_data",
+            "version": "0.3.0"
+          },
+          {
             "id": "query_capiro_data",
             "version": "0.2.0"
+          },
+          {
+            "id": "query_capiro_data",
+            "version": "0.3.0"
           },
           {
             "id": "read_saved_record",
@@ -873,8 +881,16 @@
             "version": "0.2.0"
           },
           {
+            "id": "describe_capiro_data",
+            "version": "0.3.0"
+          },
+          {
             "id": "query_capiro_data",
             "version": "0.2.0"
+          },
+          {
+            "id": "query_capiro_data",
+            "version": "0.3.0"
           },
           {
             "id": "read_saved_record",
@@ -1272,8 +1288,16 @@
               "version": "0.2.0"
             },
             {
+              "id": "describe_capiro_data",
+              "version": "0.3.0"
+            },
+            {
               "id": "query_capiro_data",
               "version": "0.2.0"
+            },
+            {
+              "id": "query_capiro_data",
+              "version": "0.3.0"
             },
             {
               "id": "read_saved_record",
@@ -1670,8 +1694,16 @@
               "version": "0.2.0"
             },
             {
+              "id": "describe_capiro_data",
+              "version": "0.3.0"
+            },
+            {
               "id": "query_capiro_data",
               "version": "0.2.0"
+            },
+            {
+              "id": "query_capiro_data",
+              "version": "0.3.0"
             },
             {
               "id": "read_saved_record",
@@ -2068,8 +2100,16 @@
               "version": "0.2.0"
             },
             {
+              "id": "describe_capiro_data",
+              "version": "0.3.0"
+            },
+            {
               "id": "query_capiro_data",
               "version": "0.2.0"
+            },
+            {
+              "id": "query_capiro_data",
+              "version": "0.3.0"
             },
             {
               "id": "read_saved_record",
@@ -2448,8 +2488,16 @@
             "version": "0.2.0"
           },
           {
+            "id": "describe_capiro_data",
+            "version": "0.3.0"
+          },
+          {
             "id": "query_capiro_data",
             "version": "0.2.0"
+          },
+          {
+            "id": "query_capiro_data",
+            "version": "0.3.0"
           },
           {
             "id": "read_saved_record",
