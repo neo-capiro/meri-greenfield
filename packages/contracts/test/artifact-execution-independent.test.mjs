@@ -15,6 +15,34 @@ const scope={tenantId:'tenant-a',kind:'client',resourceId:'client-a',policyRevis
 const binding={tenantId:'tenant-a',actorId:'actor-a',conversationId:id(1),runId:id(2),attemptId:id(3),workerId:id(4),writerFence:1};
 const context=()=>({binding:structuredClone(binding),scopes:[structuredClone(scope)],evidence:[],assets:[],deadlineMs:200000,maxBytes:1048576});
 const word=()=>({operation:'create_word',format:'docx',title:'Quarterly brief',content:{blocks:[{kind:'paragraph',runs:[{text:'Revenue ↑',bold:true}]},{kind:'table',rows:[['Region','Amount'],['North','250']]}]}});
+test('Word structural fields are optional and preserve legacy request identity',()=>{
+ const input=word(),bytes=JSON.stringify(input),hash=canonicalSha256(input);
+ const out=v.request(input);
+ assert.equal(JSON.stringify(out),bytes);
+ assert.equal(canonicalSha256(out),hash);
+ assert.equal(Object.hasOwn(out.content.blocks[0],'quoteDepth'),false);
+ for(const field of ['strike','underline'])assert.equal(Object.hasOwn(out.content.blocks[0].runs[0],field),false);
+});
+test('Word accepts bounded quote depth and explicit visible text marks for DOCX and PDF',()=>{
+ for(const format of ['docx','pdf'])for(const quoteDepth of [1,8])for(const mark of [false,true]){
+  const input=word();input.format=format;
+  Object.assign(input.content.blocks[0],{quoteDepth});
+  Object.assign(input.content.blocks[0].runs[0],{strike:mark,underline:mark});
+  assert.deepEqual(v.request(input),input);
+ }
+});
+test('Word rejects malformed structural fields and unsupported rich table content',()=>{
+ for(const quoteDepth of [0,9,-1,1.5,true,'1',null]){
+  const input=word();input.content.blocks[0].quoteDepth=quoteDepth;assert.throws(()=>v.request(input));
+ }
+ for(const field of ['strike','underline'])for(const value of [0,1,'true',null,{}]){
+  const input=word();input.content.blocks[0].runs[0][field]=value;assert.throws(()=>v.request(input));
+ }
+ for(const rows of [[['a','b'],['c']],[[{text:'rich'}]],[[['nested']]]]){
+  const input=word();input.content.blocks[1].rows=rows;assert.throws(()=>v.request(input));
+ }
+ const input=word();input.content.blocks[0].sourceSpan={start:0,end:1};assert.throws(()=>v.request(input));
+});
 const excel=()=>({operation:'create_excel',format:'xlsx',title:'Revenues',content:{sheets:[{name:'Data',rows:[[{value:'=literal'},{value:2},{formula:'=SUM(B1:B1)'}]]}]}});
 const slides=()=>({operation:'create_powerpoint',format:'pptx',title:'Brief',content:{slides:[{title:'Overview',bullets:['First','Second'],notes:'Retained notes'},{title:'Data',table:[['Region','Amount'],['North','250']]}]}});
 const analysis=()=>({operation:'run_analysis',format:'zip',title:'Totals',content:{tables:[{name:'data',columns:['region','value'],rows:[['N',100],['N',150],['S',80]]}],source:'data',steps:[{kind:'aggregate',groupBy:['region'],column:'value',function:'sum',name:'total'}]}});

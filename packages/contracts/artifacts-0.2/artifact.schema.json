@@ -31,6 +31,12 @@
         },
         "italic": {
           "type": "boolean"
+        },
+        "strike": {
+          "type": "boolean"
+        },
+        "underline": {
+          "type": "boolean"
         }
       },
       "required": [
@@ -132,6 +138,11 @@
       "properties": {
         "kind": {
           "const": "paragraph"
+        },
+        "quoteDepth": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 8
         },
         "runs": {
           "type": "array",
