@@ -57,7 +57,7 @@ for(const skill of [...describeSkillPlugin().skills,{skillId:'quick_skill.bill_w
   const result=await f.execute({binding}).catch(error=>{throw f.failures[0]??error;});assert.deepEqual(result,{state:'completed'});assert.equal(f.queryCalls(),1);
   const options=f.options();assert.ok(options.systemPrompt.append.includes(f.selected.prose));assert.ok(options.mcpServers.meri_reads);assert.equal(options.mcpServers.meri_original_reads,undefined);
   assert.equal(options.skills,'all');assert.equal(await readFile(join(options.plugins[0].path,'skills',skill.name,'SKILL.md'),'utf8'),f.selected.prose);assert.equal(options.outputFormat,undefined);
-  assert.equal(options.maxTurns,Math.min(50,f.selected.manifest.budgets.maxTurns));assert.equal(options.maxBudgetUsd,Math.min(1,f.selected.manifest.budgets.maxCostMicroUSD/1000000));
+  assert.equal(options.maxTurns,Math.min(50,f.selected.manifest.budgets.maxTurns));assert.equal(options.maxBudgetUsd,1,'the tenant model budget is not narrowed by the skill tool-charge budget');
   const after=await f.service.history({credential:f.credential});assert.equal(after.run.state,'completed');assert.deepEqual(after.request,accepted.request);
  }finally{await f.close();}
 });

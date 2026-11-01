@@ -175,7 +175,9 @@ export function createConversationActivity({runOwner,prepareRuntime,query=sdkQue
      const nativeSkill=describeSkillPlugin({selection:selected.pin}).skills.find(s=>s.skillId===selected.pin.skillId&&s.skillVersion===selected.pin.skillVersion);
      if(!nativeSkill||!policy?.skillPlugin||!policy.generalReads||generalReads===undefined||!runtime.skillPluginDirectory||policy.skillNames!==null&&!policy.skillNames.includes(nativeSkill.name))throw fault('SKILL_RUNTIME_REFUSED');
     }else assertInstalledSkillManifest(selected.manifest,catalog);
-    options.maxTurns=Math.min(options.maxTurns,selected.manifest.budgets.maxTurns);options.maxBudgetUsd=Math.min(options.maxBudgetUsd,selected.manifest.budgets.maxCostMicroUSD/1000000);life.limitDeadline(now()+selected.manifest.budgets.maxRuntimeSeconds*1000);options.systemPrompt.append+='\n'+selected.prose;
+    // A manifest's maxCostMicroUSD bounds gateway tool charges in tariff micro-units (assertOneHoldFits), not provider spend: dividing
+    // it into maxBudgetUsd gave every selected-skill run a $0.001 model budget. The tenant policy's maxBudgetUsd stays the model budget.
+    options.maxTurns=Math.min(options.maxTurns,selected.manifest.budgets.maxTurns);life.limitDeadline(now()+selected.manifest.budgets.maxRuntimeSeconds*1000);options.systemPrompt.append+='\n'+selected.prose;
    }
    // Add application context to the full native preset, never replace the SDK system prompt.
    options.systemPrompt.append+=requestContextSuffix({window:saved.request.window,scopes:saved.run.scopes,skill:saved.request.skill,automaticClientContext});

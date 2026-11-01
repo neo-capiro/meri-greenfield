@@ -1,36 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {createHash} from 'node:crypto';
-import {resolveOperationContract} from '../../../packages/contracts/retrieval-0.2/validate.mjs';
-import {billTextCase} from '../../gateway/sources/bill-text/test/fixture.mjs';
+import {connectedAppScene as scene,CAPABILITY as capability} from '../../gateway/general-reads/test/connected-apps-fixture.mjs';
 import {fixture,uuid} from './reads-native-fixture.mjs';
-
-const inputSchema={type:'object',additionalProperties:false,properties:{query:{type:'string'},cursor:{type:'string'}},required:['query']};
-const capability={connectionId:uuid('d'),provider:'slack',tool:'search_messages',inputSchema,
- schemaHash:createHash('sha256').update(JSON.stringify(inputSchema)).digest('hex')};
-function scene(id='read_connected_app',{general=false}={}){
- const f=billTextCase(),operation={id,version:'0.2.0'},contract=resolveOperationContract(operation);
- const a=f.authority;
- if(general){Object.assign(a.subject,{kind:'personal',entityType:'user',entityIds:[a.binding.actorId],
-  scopes:[{tenantId:a.binding.tenantId,kind:'private-user',resourceId:a.binding.actorId,policyRevision:a.policyRevision}]});}
- else Object.assign(a.subject,{kind:'client',entityType:'client',entityIds:[uuid('a')],
-  scopes:[{tenantId:a.binding.tenantId,kind:'client',resourceId:uuid('a'),policyRevision:a.policyRevision}]});
- const clientId=general?null:a.subject.entityIds[0];
- const request=id==='list_connected_app_reads'?{clientId}:{clientId,connectionId:capability.connectionId,
-  provider:capability.provider,tool:capability.tool,schemaHash:capability.schemaHash,arguments:{query:'quarterly',cursor:'page-2'}};
- a.decision.operation=`${id}@0.2.0`;a.sourceIds=['connected_app_reads'];
- const page=id==='list_connected_app_reads'?{operation:id,clientId,observedAt:new Date(f.now()).toISOString(),status:'ok',
-  untrusted:true,complete:false,scope:'current_connection_catalog',managedAvailability:'ok',capabilities:[capability]}:
- {operation:id,clientId,connectionId:capability.connectionId,provider:capability.provider,tool:capability.tool,
-  schemaHash:capability.schemaHash,observedAt:new Date(f.now()).toISOString(),status:'ok',untrusted:true,scope:'connection_permissions',
-  completeness:'provider_page',reason:null,content:'Untrusted quarterly text',
-  providerResult:{content:[{type:'text',text:'Quarterly plan'}],structuredContent:{messages:[{id:'m2',text:'Quarterly plan'}],next_cursor:'page-3',has_more:true}}};
- const transport={...f.transport,async fetchImpl(url,options){
-  f.wire.push({url,options,body:JSON.parse(options.body)});const result=structuredClone(f.state.page??page);
-  f.state.afterSource?.();return f.state.responseFactory?f.state.responseFactory(result):Response.json(result);
- }};
- return {...f,family:'connected-apps',operation,contract,arguments:request,normalizationContext:{},page,transport};
-}
 
 for(const general of [true,false])for(const id of ['list_connected_app_reads','read_connected_app'])
  test(`${id}: ${general?'General':'selected client'} actual current runtime and fixed HTTP source`,async()=>{
