@@ -50,6 +50,12 @@ export const READ_GUIDANCE=Object.freeze({
  meeting_read_client_meetings:Object.freeze({usage:Object.freeze([]),limitations:Object.freeze([]),failures:Object.freeze({
   INVALID_ARGUMENTS:'For a continued meeting list, restart without the cursor; if the continuation limit was reached, narrow the from/to time range and restart.',
  })}),
+ describe_capiro_data:Object.freeze({usage:Object.freeze([]),limitations:Object.freeze([]),failures:Object.freeze({
+  INVALID_ARGUMENTS:'describe_capiro_data takes optional relations (1-15 unique lowercase relation names), source ("public" or "client_records") and clientId (UUID, client_records only).',
+ })}),
+ query_capiro_data:Object.freeze({usage:Object.freeze([]),limitations:Object.freeze([]),failures:Object.freeze({
+  INVALID_ARGUMENTS:'query_capiro_data takes sql (1-16384 bytes) and parameters (required; [] when nothing is bound; at most 64 strings, finite safe-integer numbers, booleans or nulls), plus optional rowLimit (integer 1-1000), source ("public" or "client_records") and clientId (UUID, client_records only).',
+ })}),
 });
 /** @param {string} sdkName the read's SDK tool name (`search_public_web`), with or without the `mcp__<server>__` prefix
  * @returns {ReadGuidance|undefined} */

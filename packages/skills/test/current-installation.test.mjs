@@ -9,7 +9,7 @@ import historical from '../../contracts/retrieval-0.2/catalog.json' with {type:'
 import current from '../../contracts/retrieval-0.3/catalog.json' with {type:'json'};
 import {canonicalSha256 as hash} from '../../contracts/validate.mjs';
 import {assertSkillInstallation} from '../../contracts/selected-skills/validate.mjs';
-const currentHash='d580d51e549dbf706ff0b94728adbb29a339f08ca861df61ee531c3000cdcece';
+const currentHash='a63009c43b190f18e78f9e1a348e3b3db17e367220511b9871286a85e9d05c11';
 
 test('all nineteen original asset identities survive the exact additive installation without added grants',()=>{
  assert.equal(createHash('sha256').update(readFileSync(new URL('../assets.json',import.meta.url))).digest('hex'),'f3be2619e1df98cbe02c6f0b036645f74b32396aa230b22ee972273d15a27745');
