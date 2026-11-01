@@ -8,7 +8,7 @@ import {createSdkCapabilities} from '../../capabilities/index.mjs';
 import {applicationFixture,binding,versions,id} from '../../../../control/conversations/test/application-fixture.mjs';
 import {BEDROCK_MODEL} from '../../provider.mjs';
 import {generalReadFixture,mountReads} from './fixture.mjs';
-const cwd=`/workspace/conversations/${binding.conversationId}`,DEFAULT_SENTENCE='No institutional source tool is enabled for this activity.';
+const cwd=`/workspace/conversations/${binding.conversationId}`,DEFAULT_SENTENCE=`Capiro's data is not connected in this conversation: tell the user so in their own terms, answer only what is not specific to Capiro's or the client's records, and say plainly that those records could not be read. Never quote internal words such as bounded, read-disabled, UNAVAILABLE, tool or activity to the user, and never recommend a third-party API or scraping as a workaround.`;
 const MAIL_REFS=catalog.operations.filter(d=>d.operation.id.startsWith('mail.')).map(d=>d.operation);
 const runtime=()=>({binding,versions,cwd,model:BEDROCK_MODEL,region:'us-east-1',maxOutputTokens:4096,providerEnvironment:{},sessionStore:{async load(){return null;},async append(){}},deadlineMs:Date.now()+1000,maxTurns:2,maxCostMicroUSD:1000,maxOutputBytes:1024});
 const skillOptions=name=>({mcpServers:{meri_original_reads:{type:'sdk',name:'meri_original_reads',instance:{close(){}}}},allowedTools:[`mcp__meri_original_reads__${name}`],canUseTool:async n=>n===`mcp__meri_original_reads__${name}`?{behavior:'allow',updatedInput:{}}:{behavior:'deny',message:'Tool unavailable'},hooks:{PreToolUse:[{matcher:'mcp__meri_original_reads__.*',hooks:[async()=>({})]}]}});
