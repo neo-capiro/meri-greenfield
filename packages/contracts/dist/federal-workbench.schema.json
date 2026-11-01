@@ -73,6 +73,9 @@
         },
         "representation": {
           "const": "retained-raw-utf8/1"
+        },
+        "validationProfile": {
+          "const": "uslm-2.1.0"
         }
       },
       "required": [
@@ -362,6 +365,85 @@
         },
         "approval": {
           "const": "unapproved"
+        },
+        "schemaValidation": {
+          "type": "object",
+          "properties": {
+            "source": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "profile",
+                "schemaSha256",
+                "sourceSha256",
+                "bytes",
+                "valid"
+              ],
+              "properties": {
+                "profile": {
+                  "const": "uslm-2.1.0"
+                },
+                "schemaSha256": {
+                  "const": "c68c058345f99689144c183c99d47552f3d56aa365ff1380127a9180fe18ce44"
+                },
+                "sourceSha256": {
+                  "type": "string",
+                  "pattern": "^[a-f0-9]{64}$"
+                },
+                "bytes": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 131072
+                },
+                "valid": {
+                  "const": true
+                }
+              }
+            },
+            "consolidated": {
+              "anyOf": [
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "profile",
+                    "schemaSha256",
+                    "sourceSha256",
+                    "bytes",
+                    "valid"
+                  ],
+                  "properties": {
+                    "profile": {
+                      "const": "uslm-2.1.0"
+                    },
+                    "schemaSha256": {
+                      "const": "c68c058345f99689144c183c99d47552f3d56aa365ff1380127a9180fe18ce44"
+                    },
+                    "sourceSha256": {
+                      "type": "string",
+                      "pattern": "^[a-f0-9]{64}$"
+                    },
+                    "bytes": {
+                      "type": "integer",
+                      "minimum": 1,
+                      "maximum": 131072
+                    },
+                    "valid": {
+                      "const": true
+                    }
+                  }
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          },
+          "required": [
+            "source",
+            "consolidated"
+          ],
+          "additionalProperties": false
         }
       },
       "required": [
@@ -994,6 +1076,170 @@
             "text",
             "coverage",
             "scopes"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "documentId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 512
+            },
+            "publisher": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 512
+            },
+            "sourceVersion": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 512
+            },
+            "sourceUrl": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 2048
+            },
+            "publishedAt": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "parserVersion": {
+              "const": "federal-uslm-xml/2"
+            },
+            "sha256": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            "text": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 131072
+            },
+            "coverage": {
+              "type": "object",
+              "properties": {
+                "complete": {
+                  "type": "boolean"
+                },
+                "limitations": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 1000
+                  },
+                  "minItems": 1,
+                  "maxItems": 32
+                }
+              },
+              "required": [
+                "complete",
+                "limitations"
+              ],
+              "additionalProperties": false
+            },
+            "scopes": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]{0,127}$"
+                  },
+                  "label": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 512
+                  },
+                  "start": {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  "end": {
+                    "type": "integer",
+                    "minimum": 1
+                  },
+                  "sha256": {
+                    "type": "string",
+                    "pattern": "^[a-f0-9]{64}$"
+                  },
+                  "ancestorPath": {
+                    "type": "array",
+                    "maxItems": 127,
+                    "items": {
+                      "type": "string",
+                      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]{0,127}$"
+                    }
+                  }
+                },
+                "required": [
+                  "id",
+                  "label",
+                  "start",
+                  "end",
+                  "sha256",
+                  "ancestorPath"
+                ],
+                "additionalProperties": false
+              },
+              "minItems": 1,
+              "maxItems": 1024
+            },
+            "validation": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "profile",
+                "schemaSha256",
+                "sourceSha256",
+                "bytes",
+                "valid"
+              ],
+              "properties": {
+                "profile": {
+                  "const": "uslm-2.1.0"
+                },
+                "schemaSha256": {
+                  "const": "c68c058345f99689144c183c99d47552f3d56aa365ff1380127a9180fe18ce44"
+                },
+                "sourceSha256": {
+                  "type": "string",
+                  "pattern": "^[a-f0-9]{64}$"
+                },
+                "bytes": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 131072
+                },
+                "valid": {
+                  "const": true
+                }
+              }
+            }
+          },
+          "required": [
+            "documentId",
+            "publisher",
+            "sourceVersion",
+            "sourceUrl",
+            "publishedAt",
+            "parserVersion",
+            "sha256",
+            "text",
+            "coverage",
+            "scopes",
+            "validation"
           ],
           "additionalProperties": false
         }
@@ -2254,7 +2500,8 @@
               "enum": [
                 "federal-plain-text/1",
                 "federal-scoped-text/2",
-                "federal-uslm-xml/1"
+                "federal-uslm-xml/1",
+                "federal-uslm-xml/2"
               ]
             },
             "source": {
@@ -2401,7 +2648,8 @@
               "enum": [
                 "federal-plain-text/1",
                 "federal-scoped-text/2",
-                "federal-uslm-xml/1"
+                "federal-uslm-xml/1",
+                "federal-uslm-xml/2"
               ]
             },
             "source": {

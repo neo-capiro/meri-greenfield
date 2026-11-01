@@ -1,5 +1,6 @@
 /** Additive workbench wire. Compiler and artifact fields remain canonical schema references. */
 import nativeFederalSchema from '../retrieval-0.2/federal-draft-source.schema.json' with {type:'json'};
+import {USLM_SCHEMA_PROFILE,USLM_SCHEMA_SHA256} from './schema-receipt.mjs';
 import rawFederalSchema from './raw-source.schema.json' with {type:'json'};
 // The retained compiler also admits explicitly partial sources. Native official-source
 // preparation still requires complete coverage; its frozen contract is unchanged.
@@ -17,8 +18,13 @@ scoped.properties.scopes.items.required.push('ancestorPath');
 const uslm=structuredClone(scoped);
 uslm.properties.parserVersion={const:'federal-uslm-xml/1'};
 uslm.properties.scopes.maxItems=1024;
-retainedFederalSchema.$defs.FederalDraftCompilerSource={oneOf:[flat,scoped,uslm]};
-retainedFederalSchema.$defs.FederalDraftCompilation.properties.parserVersion={enum:['federal-plain-text/1','federal-scoped-text/2','federal-uslm-xml/1']};
+const schemaReceipt={type:'object',additionalProperties:false,required:['profile','schemaSha256','sourceSha256','bytes','valid'],properties:{
+ profile:{const:USLM_SCHEMA_PROFILE},schemaSha256:{const:USLM_SCHEMA_SHA256},sourceSha256:{type:'string',pattern:'^[a-f0-9]{64}$'},bytes:{type:'integer',minimum:1,maximum:131072},valid:{const:true}}};
+const schemaUslm=structuredClone(uslm);
+schemaUslm.properties.parserVersion={const:'federal-uslm-xml/2'};
+schemaUslm.properties.validation=schemaReceipt;schemaUslm.required.push('validation');
+retainedFederalSchema.$defs.FederalDraftCompilerSource={oneOf:[flat,scoped,uslm,schemaUslm]};
+retainedFederalSchema.$defs.FederalDraftCompilation.properties.parserVersion={enum:['federal-plain-text/1','federal-scoped-text/2','federal-uslm-xml/1','federal-uslm-xml/2']};
 
 const object=properties=>({type:'object',properties,required:Object.keys(properties),additionalProperties:false});
 const ref=name=>({$ref:'#/$defs/'+name});
@@ -48,7 +54,7 @@ export const federalWorkbenchSchema={
   FederalCompilerSource:federal('FederalDraftCompilerSource'),
   FederalNativeSelection:{$ref:nativeFederalSchema.$id+'#/$defs/FederalDraftSourceInput'},
   FederalSourceEnvelope:{oneOf:[object(legacyEnvelope),object(rawEnvelope)]},
-  FederalImportRequest:{...object({selection:ref('FederalNativeSelection'),deliveryId}),properties:{selection:ref('FederalNativeSelection'),deliveryId,representation}},
+  FederalImportRequest:{...object({selection:ref('FederalNativeSelection'),deliveryId}),properties:{selection:ref('FederalNativeSelection'),deliveryId,representation,validationProfile:{const:USLM_SCHEMA_PROFILE}}},
   FederalImportResult:{oneOf:[object({...legacyEnvelope,publication:artifact('ArtifactCreatedResult')}),object({...rawEnvelope,publication:artifact('ArtifactCreatedResult')})]},
   FederalSelection:object({versionId:uuid,expectedArtifactSha256:sha,operations:{type:'array',minItems:1,maxItems:64,items:federal('FederalDraftOperation')}}),
   FederalSourceArtifact:object({versionId:uuid,sha256:sha,specSha256:sha}),
@@ -62,7 +68,7 @@ export const federalWorkbenchSchema={
    required:['selection','revisionSha256','output','deliveryId','baseVersionId','baseRevisionSha256'],additionalProperties:false},
   FederalApproveRequest:object({versionId:uuid,expectedArtifactSha256:sha,revisionSha256:sha,deliveryId}),
   FederalHistoryRequest:object({versionId:uuid,limit:{type:'integer',minimum:1,maximum:100},cursor:nullable(sha)}),
-  FederalRetainedPreparation:object({sourceArtifact:ref('FederalSourceArtifact'),draft:federal('FederalDraftCompilation'),revisionSha256:sha,approval:{const:'unapproved'}}),
+  FederalRetainedPreparation:{...object({sourceArtifact:ref('FederalSourceArtifact'),draft:federal('FederalDraftCompilation'),revisionSha256:sha,approval:{const:'unapproved'}}),properties:{sourceArtifact:ref('FederalSourceArtifact'),draft:federal('FederalDraftCompilation'),revisionSha256:sha,approval:{const:'unapproved'},schemaValidation:object({source:schemaReceipt,consolidated:nullable(schemaReceipt)})}},
   // An approval binds exactly one compiled revision hash to the saved review version it approved; it is recorded as
   // that version's own immutable child and never carried by a later revision.
   FederalApproval:object({revisionSha256:sha,reviewVersionId:uuid}),

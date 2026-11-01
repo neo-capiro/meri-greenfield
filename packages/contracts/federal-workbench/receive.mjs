@@ -1,4 +1,5 @@
-import {assertFederalTextLayout,FEDERAL_USLM_XML_PARSER} from './source-layout.mjs';
+import {assertFederalTextLayout,FEDERAL_USLM_XML_PARSER,FEDERAL_USLM_SCHEMA_PARSER,isFederalUslm} from './source-layout.mjs';
+import {assertSchemaReceipt,assertPreparedSchema} from './schema-receipt.mjs';
 import canonicalize from 'canonicalize';
 import {validateSource,validateSourceEnvelope,validateImport,validateImported,validatePrepare,validateLoad,validatePublish,validateApprove,validateHistory,validateReview,validatePublication,validateHistoryResult,validateError} from './generated-validator.mjs';
 import {parseBytes,digest,fail} from '../document-application/boundary.mjs';
@@ -8,22 +9,24 @@ const hash=value=>digest(new TextEncoder().encode(canonicalize(value)));
 const textHash=value=>digest(new TextEncoder().encode(value));
 const validators={'federal-prepare':validatePrepare,'federal-load':validateLoad,'federal-publish':validatePublish,'federal-import':validateImport,'federal-approve':validateApprove,'federal-history':validateHistory};
 const titles={draft:'Federal review',operative:'Operative amendment',consolidated:'Consolidated text',redline:'Legal redline',docx:'Federal review dossier'};
-export const federalWorkbenchVersion='1.5.0';
+export const federalWorkbenchVersion='1.6.0';
 /** Read an already-inspected/downloaded retained envelope. Shape/hash checks do not
  * authenticate its publisher or source URL; the artifact read owner grants access. */
 async function sourceValue(source){
  try{assertFederalTextLayout(source);}catch{fail('SOURCE_MISMATCH');}
+ if(source.parserVersion===FEDERAL_USLM_SCHEMA_PARSER){try{assertSchemaReceipt(source.validation,source.sha256,new TextEncoder().encode(source.text).length);}catch{fail('SOURCE_MISMATCH');}}
  if(!validateSource(source)||await textHash(source.text)!==source.sha256)fail('SOURCE_MISMATCH');
  for(const scope of source.scopes)if(scope.start>=scope.end||scope.end>source.text.length||await textHash(source.text.slice(scope.start,scope.end))!==scope.sha256)fail('SOURCE_MISMATCH');
  return source;
 }
 function sourcePins(envelope){
  const {selection:s,source}=envelope;
- if(!['federal-plain-text/1',FEDERAL_USLM_XML_PARSER].includes(source.parserVersion)||source.documentId!==s.billId||source.sha256!==s.textHash||source.sourceVersion!==s.versionCode+'/'+s.revisionId||source.coverage.complete!==true)fail('SOURCE_MISMATCH');
+ if(!['federal-plain-text/1',FEDERAL_USLM_XML_PARSER,FEDERAL_USLM_SCHEMA_PARSER].includes(source.parserVersion)||source.documentId!==s.billId||source.sha256!==s.textHash||source.sourceVersion!==s.versionCode+'/'+s.revisionId||source.coverage.complete!==true)fail('SOURCE_MISMATCH');
+ if(source.parserVersion===FEDERAL_USLM_SCHEMA_PARSER&&envelope.schema!=='meri.federal-source.v2')fail('SOURCE_MISMATCH');
  if(envelope.schema==='meri.federal-source.v2'){
   const capture=envelope.capture;
   if(capture.sha256!==source.sha256||capture.sha256!==s.versionHash||capture.byteLength!==new TextEncoder().encode(source.text).length||
-   (capture.format==='xml')!==(source.parserVersion===FEDERAL_USLM_XML_PARSER))fail('SOURCE_MISMATCH');
+   (capture.format==='xml')!==isFederalUslm(source.parserVersion))fail('SOURCE_MISMATCH');
  }
 }
 export async function receiveFederalSource(bytes){
@@ -36,6 +39,7 @@ export async function receiveFederalSource(bytes){
 export function receiveFederalRequest(route,bytes){
  const request=parseBytes(bytes,2*1024*1024);
  if(!Object.hasOwn(validators,route)||!validators[route](request))fail('INVALID_REQUEST');
+ if(route==='federal-import'&&request.validationProfile!==undefined&&request.representation!=='retained-raw-utf8/1')fail('INVALID_REQUEST');
  if(route==='federal-publish'){
   if(request.baseVersionId===null?request.baseRevisionSha256!==null:request.baseRevisionSha256===null||request.output!=='draft')fail('INVALID_REQUEST');
   if(request.output==='draft'&&(request.reviewVersionId??null)!==null)fail('INVALID_REQUEST');
@@ -51,6 +55,8 @@ function version(v,format='txt'){
 }
 async function preparation(p){
  const {revisionSha256,approval,...material}=p.draft;
+ try{assertPreparedSchema(p);}catch{fail('SOURCE_MISMATCH');}
+ const qualified=Object.hasOwn(p,'schemaValidation')?{schemaValidation:p.schemaValidation}:{};
  await sourceValue(p.draft.source);
  if(p.draft.parserVersion!==p.draft.source.parserVersion)fail('SOURCE_MISMATCH');
  const removal=p.draft.operations.filter(op=>op.kind==='remove_source_text');
@@ -67,7 +73,7 @@ async function preparation(p){
   if(prior.some(previous=>!closure.has(previous.id))||!prior.length&&op.expectedTextSha256!==p.draft.source.sha256)fail('OUTPUT_MISMATCH');
  }else if(removal.length||!p.draft.outputs.consolidated.length)fail('OUTPUT_MISMATCH');
  if(p.draft.outputs.segments.filter(part=>part.kind!=='insert').map(part=>part.text).join('')!==p.draft.source.text||p.draft.outputs.segments.filter(part=>part.kind!=='delete').map(part=>part.text).join('')!==p.draft.outputs.consolidated)fail('OUTPUT_MISMATCH');
- if(await hash(material)!==revisionSha256||await hash({sourceArtifact:p.sourceArtifact,draftSha256:revisionSha256})!==p.revisionSha256||
+ if(await hash(material)!==revisionSha256||await hash({sourceArtifact:p.sourceArtifact,draftSha256:revisionSha256,...qualified})!==p.revisionSha256||
   await textHash(p.draft.source.text)!==p.draft.source.sha256)fail('REVISION_MISMATCH');
  for(const kind of ['operative','consolidated','redline'])if(await textHash(p.draft.outputs[kind])!==p.draft.outputHashes[kind])fail('OUTPUT_MISMATCH');
  for(const s of p.draft.source.scopes)if(s.end>p.draft.source.text.length||s.end<=s.start||await textHash(p.draft.source.text.slice(s.start,s.end))!==s.sha256)fail('SOURCE_MISMATCH');
@@ -89,6 +95,7 @@ export async function receiveFederalResponse(route,status,bytes,request,review){
  if(route==='federal-import'){
   if(!validateImported(result)||!same(result.selection,request.selection))fail('INVALID_RESPONSE');
   if((request.representation==='retained-raw-utf8/1')!==(result.schema==='meri.federal-source.v2'))fail('SOURCE_MISMATCH');
+  if((request.validationProfile==='uslm-2.1.0')!==(result.source.parserVersion===FEDERAL_USLM_SCHEMA_PARSER))fail('SOURCE_MISMATCH');
   await sourceValue(result.source);sourcePins(result);
   const {publication,...envelope}=result,{version:v,inspection,execution}=publication;
   const content=JSON.stringify(envelope),title=(`Federal source [${await hash(envelope)}]: ${result.selection.billId}`).slice(0,160);

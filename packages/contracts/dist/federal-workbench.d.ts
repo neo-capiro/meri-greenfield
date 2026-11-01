@@ -137,6 +137,59 @@ export type FederalCompilerSource =
           ancestorPath: string[];
         }[]
       ];
+    }
+  | {
+      documentId: string;
+      publisher: string;
+      sourceVersion: string;
+      sourceUrl: string;
+      publishedAt: string | null;
+      parserVersion: "federal-uslm-xml/2";
+      sha256: string;
+      text: string;
+      coverage: {
+        complete: boolean;
+        /**
+         * @minItems 1
+         * @maxItems 32
+         */
+        limitations: [string, ...string[]];
+      };
+      /**
+       * @minItems 1
+       * @maxItems 1024
+       */
+      scopes: [
+        {
+          id: string;
+          label: string;
+          start: number;
+          end: number;
+          sha256: string;
+          /**
+           * @maxItems 127
+           */
+          ancestorPath: string[];
+        },
+        ...{
+          id: string;
+          label: string;
+          start: number;
+          end: number;
+          sha256: string;
+          /**
+           * @maxItems 127
+           */
+          ancestorPath: string[];
+        }[]
+      ];
+      validation: {
+        profile: "uslm-2.1.0";
+        schemaSha256: "c68c058345f99689144c183c99d47552f3d56aa365ff1380127a9180fe18ce44";
+        sourceSha256: string;
+        bytes: number;
+        valid: true;
+      };
     };
 /**
  * This interface was referenced by `FederalWorkbench`'s JSON-Schema
@@ -423,7 +476,7 @@ export type FederalDraftOperationEcfa206F =
  */
 export type FederalDraftCompilation_66Ff9248 =
   | {
-      parserVersion: "federal-plain-text/1" | "federal-scoped-text/2" | "federal-uslm-xml/1";
+      parserVersion: "federal-plain-text/1" | "federal-scoped-text/2" | "federal-uslm-xml/1" | "federal-uslm-xml/2";
       source: FederalCompilerSource;
       /**
        * @minItems 1
@@ -471,7 +524,7 @@ export type FederalDraftCompilation_66Ff9248 =
       approval: "unapproved";
     }
   | {
-      parserVersion: "federal-plain-text/1" | "federal-scoped-text/2" | "federal-uslm-xml/1";
+      parserVersion: "federal-plain-text/1" | "federal-scoped-text/2" | "federal-uslm-xml/1" | "federal-uslm-xml/2";
       source: FederalCompilerSource;
       /**
        * @minItems 1
@@ -559,6 +612,7 @@ export interface FederalImportRequest {
   selection: FederalNativeSelection;
   deliveryId: string;
   representation?: "retained-raw-utf8/1";
+  validationProfile?: "uslm-2.1.0";
 }
 /**
  * This interface was referenced by `FederalWorkbench`'s JSON-Schema
@@ -789,6 +843,22 @@ export interface FederalRetainedPreparation {
   draft: FederalDraftCompilation_66Ff9248;
   revisionSha256: string;
   approval: "unapproved";
+  schemaValidation?: {
+    source: {
+      profile: "uslm-2.1.0";
+      schemaSha256: "c68c058345f99689144c183c99d47552f3d56aa365ff1380127a9180fe18ce44";
+      sourceSha256: string;
+      bytes: number;
+      valid: true;
+    };
+    consolidated: {
+      profile: "uslm-2.1.0";
+      schemaSha256: "c68c058345f99689144c183c99d47552f3d56aa365ff1380127a9180fe18ce44";
+      sourceSha256: string;
+      bytes: number;
+      valid: true;
+    } | null;
+  };
 }
 /**
  * This interface was referenced by `FederalWorkbench`'s JSON-Schema
@@ -876,7 +946,7 @@ declare const federalReview:unique symbol;
 export type AdmittedFederalRequest<R extends FederalRoute>=Readonly<FederalRequest<R>>&{readonly[federalRequest]:R};
 export type AdmittedFederalReview=Readonly<FederalReview>&{readonly[federalReview]:true};
 export type FederalResponse<R extends FederalRoute>=(R extends 'federal-import'?Readonly<FederalImportResult>:R extends 'federal-publish'?Readonly<FederalPublication>:R extends 'federal-history'?Readonly<FederalHistory>:AdmittedFederalReview)|Readonly<FederalError>;
-export declare const federalWorkbenchVersion:'1.5.0';
+export declare const federalWorkbenchVersion:'1.6.0';
 export declare function receiveFederalSource(bytes:Uint8Array):Promise<Readonly<FederalCompilerSource>>;
 export declare function receiveFederalRequest<R extends FederalRoute>(route:R,bytes:Uint8Array):AdmittedFederalRequest<R>;
 export declare function receiveFederalResponse<R extends FederalRoute>(route:R,status:number,bytes:Uint8Array,request:AdmittedFederalRequest<R>,review?:AdmittedFederalReview):Promise<FederalResponse<R>>;

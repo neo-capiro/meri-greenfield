@@ -5,10 +5,11 @@
 import {createHash} from 'node:crypto';
 import {own,data} from '../../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {canonicalSha256} from '../../../packages/contracts/validate.mjs';
-import {assertFederalTextLayout,FEDERAL_SCOPED_TEXT_PARSER,FEDERAL_USLM_XML_PARSER,FEDERAL_PARSERS} from '../../../packages/contracts/federal-workbench/source-layout.mjs';
+import {assertFederalTextLayout,FEDERAL_SCOPED_TEXT_PARSER,FEDERAL_USLM_XML_PARSER,FEDERAL_USLM_SCHEMA_PARSER,isFederalUslm,FEDERAL_PARSERS} from '../../../packages/contracts/federal-workbench/source-layout.mjs';
 import {scopedApplication} from './scoped-application.mjs';
 import {deriveUslmScopes,assertUslmResult,USLM_ROOT_SCOPE} from './uslm-source.mjs';
 import canonicalize from 'canonicalize';
+import {assertSchemaReceipt} from '../../../packages/contracts/federal-workbench/schema-receipt.mjs';
 export {FEDERAL_SCOPED_TEXT_PARSER};
 
 export const FEDERAL_TEXT_PARSER='federal-plain-text/1';
@@ -21,7 +22,7 @@ const freeze=value=>{if(value&&typeof value==='object'){Object.values(value).for
 
 /** Identity is supplied by the source custodian, not inferred from text or an amendment instruction. */
 export function federalDraftSource(raw){
- let source;try{source=data(own(raw,['documentId','publisher','sourceVersion','sourceUrl','publishedAt','parserVersion','sha256','text','coverage','scopes']));}catch{fault('DRAFT_SOURCE_INVALID');}
+ let source;try{source=data(own(raw,['documentId','publisher','sourceVersion','sourceUrl','publishedAt','parserVersion','sha256','text','coverage','scopes'],['validation']));}catch{fault('DRAFT_SOURCE_INVALID');}
  for(const field of ['documentId','publisher','sourceVersion'])if(!text(source[field],512))fault('DRAFT_SOURCE_INVALID');
  let url;try{url=new URL(source.sourceUrl);}catch{fault('DRAFT_SOURCE_INVALID');}
  if(url.protocol!=='https:'||url.username||url.password||url.hash||url.search||!text(source.sourceUrl,2048))fault('DRAFT_SOURCE_INVALID');
@@ -30,7 +31,7 @@ export function federalDraftSource(raw){
  if(!FEDERAL_PARSERS.includes(source.parserVersion)||!SHA.test(source.sha256)||!text(source.text,DRAFT_LIMITS.sourceBytes)||textSha256(source.text)!==source.sha256)fault('DRAFT_SOURCE_MISMATCH');
  let coverage;try{coverage=own(source.coverage,['complete','limitations']);}catch{fault('DRAFT_SOURCE_INVALID');}
  if(typeof coverage.complete!=='boolean'||!Array.isArray(coverage.limitations)||coverage.limitations.length>32||coverage.limitations.some(v=>!text(v,1000))||!coverage.complete&&!coverage.limitations.length)fault('DRAFT_SOURCE_INVALID');
- const uslm=source.parserVersion===FEDERAL_USLM_XML_PARSER,nested=uslm||source.parserVersion===FEDERAL_SCOPED_TEXT_PARSER;
+ const uslm=isFederalUslm(source.parserVersion),nested=uslm||source.parserVersion===FEDERAL_SCOPED_TEXT_PARSER;
  if(!Array.isArray(source.scopes)||!source.scopes.length||source.scopes.length>(uslm?DRAFT_LIMITS.uslmScopes:DRAFT_LIMITS.scopes))fault('DRAFT_SOURCE_INVALID');
  const seen=new Set();
  for(const rawScope of source.scopes){
@@ -40,11 +41,13 @@ export function federalDraftSource(raw){
   seen.add(scope.id);
  }
  assertFederalTextLayout(source);
+ if(source.parserVersion===FEDERAL_USLM_SCHEMA_PARSER)assertSchemaReceipt(source.validation,source.sha256,Buffer.byteLength(source.text));
+ else if(Object.hasOwn(source,'validation'))fault('DRAFT_SOURCE_INVALID');
  for(const scope of source.scopes){const slice=source.text.slice(scope.start,scope.end);
   if(Buffer.from(slice).toString('utf8')!==slice||textSha256(slice)!==scope.sha256)fault('DRAFT_SCOPE_MISMATCH');}
  // Declared USLM identity must be exactly what the one derivation owner reads from the bytes; no custodian may
  // declare an element span, identifier or ancestry the markup does not carry.
- if(uslm&&canonicalize(deriveUslmScopes(source.text).scopes)!==canonicalize(source.scopes))fault('DRAFT_USLM_SCOPES_MISMATCH');
+ if(uslm&&canonicalize(deriveUslmScopes(source.text,source.parserVersion).scopes)!==canonicalize(source.scopes))fault('DRAFT_USLM_SCOPES_MISMATCH');
  return freeze(source);
 }
 
@@ -157,9 +160,9 @@ export function compileFederalDraft(rawSource,rawOperations){
  if(Buffer.byteLength(result.consolidated)>DRAFT_LIMITS.sourceBytes)fault('DRAFT_OUTPUT_LIMIT');
  // Removing the entire source is a proposed repeal, not a text amendment: there is no exact consolidated text to
  // retain, so it is an explicit refusal rather than an empty document or a placeholder that falsifies bytes.
- if(!removed&&(!result.consolidated.length||source.parserVersion===FEDERAL_USLM_XML_PARSER&&working.get(USLM_ROOT_SCOPE)===''))fault('DRAFT_WHOLE_SOURCE_REPEAL_UNSUPPORTED');
+ if(!removed&&(!result.consolidated.length||isFederalUslm(source.parserVersion)&&working.get(USLM_ROOT_SCOPE)===''))fault('DRAFT_WHOLE_SOURCE_REPEAL_UNSUPPORTED');
  if(result.consolidated===source.text)fault('DRAFT_NO_CHANGE');
- if(!removed&&source.parserVersion===FEDERAL_USLM_XML_PARSER)assertUslmResult(result.consolidated,deriveUslmScopes(source.text).root,DRAFT_LIMITS.uslmScopes);
+ if(!removed&&isFederalUslm(source.parserVersion))assertUslmResult(result.consolidated,deriveUslmScopes(source.text,source.parserVersion).root,DRAFT_LIMITS.uslmScopes,source.parserVersion);
  const findings=[{category:'source-integrity',status:'passed',location:source.documentId,severity:'info'},
   ...operations.map(op=>({category:'exact-target',status:'passed',location:op.scopeId??source.documentId,operationId:op.id,severity:'info'})),
   ...['numbering','cross-references','arithmetic','substantive-law'].map(category=>({category,status:'unresolved',location:source.documentId,severity:'review-required'}))];

@@ -6,7 +6,7 @@
  * or DTD validation of USLM; it establishes well-formedness, the declared namespace and element identity only. */
 import {createHash} from 'node:crypto';
 import {SaxesParser} from 'saxes';
-import {FEDERAL_USLM_XML_PARSER} from '../../../packages/contracts/federal-workbench/source-layout.mjs';
+import {FEDERAL_USLM_XML_PARSER,FEDERAL_USLM_SCHEMA_PARSER} from '../../../packages/contracts/federal-workbench/source-layout.mjs';
 export {FEDERAL_USLM_XML_PARSER};
 const USLM_NAMESPACES=Object.freeze(['http://xml.house.gov/schemas/uslm/1.0','http://schemas.gpo.gov/xml/uslm']);
 export const USLM_ROOT_SCOPE='document';
@@ -33,7 +33,7 @@ function parse(text,visit){
 }
 
 /** Preorder scopes: the root element as `document`, then every USLM-namespace element with an `identifier`. */
-export function deriveUslmScopes(text){
+export function deriveUslmScopes(text,parserVersion=FEDERAL_USLM_XML_PARSER){
  const closed=[];
  const root=parse(text,(tag,start,end,depth)=>closed.push({tag,start,end,depth}));
  if(!USLM_NAMESPACES.includes(root.uri))fault('DRAFT_USLM_NAMESPACE_UNSUPPORTED');
@@ -42,9 +42,9 @@ export function deriveUslmScopes(text){
  const scopes=[],stack=[],seen=new Set();
  for(const {tag,start,end,depth} of closed){
   while(stack.length&&start>=stack.at(-1).end)stack.pop();
-  const identifier=tag.attributes.identifier,named=identifier!==undefined&&identifier.uri===''&&USLM_NAMESPACES.includes(tag.uri);
+  const identifier=tag.attributes.identifier??(parserVersion===FEDERAL_USLM_SCHEMA_PARSER?tag.attributes.id:undefined),named=identifier!==undefined&&identifier.uri===''&&USLM_NAMESPACES.includes(tag.uri);
   if(depth!==1&&!named)continue;
-  const id=depth===1?USLM_ROOT_SCOPE:uslmScopeId(identifier.value);
+  const id=depth===1?USLM_ROOT_SCOPE:(identifier.local==='id'?'xml:'+identifier.value:uslmScopeId(identifier.value));
   if(depth!==1&&!ID.test(id))fault('DRAFT_USLM_IDENTIFIER_INVALID');
   if(seen.has(id))fault('DRAFT_USLM_IDENTIFIER_DUPLICATE');
   seen.add(id);
@@ -56,9 +56,9 @@ export function deriveUslmScopes(text){
 }
 
 /** A compiled result retains the original root and an importable declared-identifier tree. */
-export function assertUslmResult(text,expectedRoot,maxScopes=Infinity){
+export function assertUslmResult(text,expectedRoot,maxScopes=Infinity,parserVersion=FEDERAL_USLM_XML_PARSER){
  let derived;
- try{derived=deriveUslmScopes(text);}catch(error){
+ try{derived=deriveUslmScopes(text,parserVersion);}catch(error){
   fault(['DRAFT_XML_DOCTYPE_UNSUPPORTED','DRAFT_USLM_IDENTIFIER_INVALID','DRAFT_USLM_IDENTIFIER_DUPLICATE'].includes(error?.code)?error.code:'DRAFT_XML_RESULT_MALFORMED');
  }
  if(derived.root.uri!==expectedRoot.uri||derived.root.local!==expectedRoot.local)fault('DRAFT_XML_RESULT_MALFORMED');

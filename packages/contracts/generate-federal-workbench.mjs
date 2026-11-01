@@ -34,11 +34,11 @@ export async function generateFederalWorkbench({outDir=resolve(here,'dist'),chec
   if(Object.values(bundle.metafile.outputs).some(o=>o.imports.length))throw Error('External browser imports');
   const declarations=await compiler.compile(root,'FederalWorkbench',{bannerComment:'/* Generated from canonical schemas. */',unreachableDefinitions:true});
   const api=await readFile(resolve(here,'federal-workbench/api.d.ts'),'utf8');
-  for(const path of ['federal-workbench/schema.mjs','federal-workbench/receive.mjs','federal-workbench/source-layout.mjs','federal-workbench/api.d.ts','generate-federal-workbench.mjs']){
+  for(const path of ['federal-workbench/schema.mjs','federal-workbench/receive.mjs','federal-workbench/source-layout.mjs','federal-workbench/schema-receipt.mjs','federal-workbench/api.d.ts','generate-federal-workbench.mjs']){
    sources.push({path,sha256:hash(await readFile(resolve(here,path)))});
   }
   const files={'federal-workbench.mjs':bundle.outputFiles[0].text,'federal-workbench.d.ts':declarations+'\n'+api,
-   'federal-workbench.schema.json':JSON.stringify(root,null,2)+'\n','federal-workbench.metadata.json':JSON.stringify({version:'1.5.0',sources},null,2)+'\n'};
+   'federal-workbench.schema.json':JSON.stringify(root,null,2)+'\n','federal-workbench.metadata.json':JSON.stringify({version:'1.6.0',sources},null,2)+'\n'};
   if(!check)await mkdir(outDir,{recursive:true});
   for(const [name,bytes]of Object.entries(files)){const path=resolve(outDir,name);if(check){if(await readFile(path,'utf8')!==bytes)throw Error('Contract drift: '+name);}else await writeFile(path,bytes);}
   return Object.keys(files);
