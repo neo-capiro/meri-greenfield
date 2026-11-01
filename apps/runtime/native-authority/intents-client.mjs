@@ -15,6 +15,7 @@ import {createOperationLifetime} from '../../../packages/runtime/operation-lifet
 import {resolveOperationContract} from '../../../packages/contracts/retrieval-0.2/validate.mjs';
 import {INTENT_AVAILABILITY_RUNNER_MS} from '../../../packages/runtime/runner-load-budget.mjs';
 import catalog from '../../../packages/contracts/retrieval-0.3/catalog.json' with {type:'json'};
+import {INTENT_ROWS} from '../../worker/conversation/intents/catalog.mjs';
 /* Shared wire protocol (this module imports only packages/*, so the runner image gains one file; intents-http.mjs reuses it). */
 /** Closed transport failures and their statuses: the intent mount's codes plus RESOURCE_LIMIT for an over-limit body. */
 export const RUNNER_INTENT_FAILURES=Object.freeze({UNAVAILABLE:503,ACCESS_DENIED:403,REFUSED:409,INVALID_ARGUMENTS:400,DEADLINE:408,CANCELLED:408,CONFLICT:409,UNKNOWN:502,RESOURCE_LIMIT:413});
@@ -22,7 +23,9 @@ export const RUNNER_INTENT_PATHS=Object.freeze({availability:'/v1/runner/intents
 export const runnerIntentFault=code=>Object.assign(new Error(code),{code:Object.hasOwn(RUNNER_INTENT_FAILURES,code)?code:'UNAVAILABLE'});
 /** The closed code an error carries as an own data property, or null. Never runs accessors or proxy traps. */
 export const runnerIntentCode=error=>{const code=error!==null&&typeof error==='object'&&!types.isProxy(error)?Object.getOwnPropertyDescriptor(error,'code')?.value:undefined;return typeof code==='string'&&Object.hasOwn(RUNNER_INTENT_FAILURES,code)?code:null;};
-const OPERATION=/^[a-z][a-z_]{0,62}$/u,DELIVERY=/^sdk:[a-f0-9]{64}$/u,MAX_OPERATIONS=32;
+// An availability snapshot can name at most every intent the worker catalog mounts: the client-scoped composition
+// mounts all of them (General omits the attachment filing intent), so the bound is the catalog itself, not a literal.
+const OPERATION=/^[a-z][a-z_]{0,62}$/u,DELIVERY=/^sdk:[a-f0-9]{64}$/u,MAX_OPERATIONS=INTENT_ROWS.length;
 /** The canonical authority for an admissible intent operation version: the catalog owner's own resolver, so an exact
  * `id@version` is admitted only when it resolves to its registered descriptor and immutable schema. The retained 0.2
  * reference and the current 0.3 successor both pass; an unregistered version or unknown id still refuses. Neither a
