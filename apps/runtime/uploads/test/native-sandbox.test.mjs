@@ -7,7 +7,7 @@ import {tmpdir} from 'node:os';
 import {join} from 'node:path';
 import {mkdtemp,rm,realpath} from 'node:fs/promises';
 import {RENDERER_PROBE_SCHEMA,RENDERER_CHILD_ENV} from '../../../artifacts/renderer-qualification.mjs';
-import {UPLOAD_SANDBOX_REQUIREMENTS,UPLOAD_ROLE_PREFIX,UPLOAD_IMAGE_PATHS,UPLOAD_CHILD_ENV,evaluateUploadSandbox,qualifyNativeUploadSandbox,
+import {UPLOAD_SANDBOX_REQUIREMENTS,UPLOAD_ROLE_PREFIX,UPLOAD_IMAGE_PATHS,UPLOAD_CHILD_ENV,UPLOAD_CPU_SECONDS,evaluateUploadSandbox,qualifyNativeUploadSandbox,
  resolveEffectiveCgroup,combineCgroupBounds,parseCgroupPath,parseCgroupMountRoot,readHostCgroup,
  uploadSandboxArguments,uploadScanArguments,uploadExtractArguments,runUploadSandbox} from '../native-sandbox.mjs';
 import {observeProbeCgroup,CGROUP_MOUNT} from '../../../artifacts/renderer-probe-observation.mjs';
@@ -41,6 +41,15 @@ test('the fixed plans admit only host-owned programs and arguments',()=>{
 test('bubblewrap plan is refused for any workspace or role the fixed policy does not own',()=>{
  const probe=uploadSandboxArguments({role:'probe',cwd:ROOT+'/meri-upload-probe-abc123'});
  assert.equal(probe.includes('--unshare-all'),true);assert.equal(probe.includes('--cap-drop'),true);
+ // Every fixed child carries the per-process CPU bound (the resource cap that holds on the microVM) and never an
+ // address-space cap (V8's reserved cage and ClamAV's mapped database would refuse it).
+ assert.equal(UPLOAD_CPU_SECONDS,120);
+ for(const plan of [probe,uploadSandboxArguments({role:'scan',cwd:ROOT+'/meri-upload-scan-abc123',definitionsRoot:'/srv/defs'}),
+  uploadSandboxArguments({role:'extract',cwd:ROOT+'/meri-upload-extract-abc123',extractorPath:'/opt/meri/extract.py',format:'docx'})]){
+  assert.equal(plan.includes('--cpu='+UPLOAD_CPU_SECONDS+':'+UPLOAD_CPU_SECONDS),true);
+  assert.equal(plan.some(a=>a.startsWith('--as=')),false);
+  assert.ok(plan.indexOf('--cpu='+UPLOAD_CPU_SECONDS+':'+UPLOAD_CPU_SECONDS)>plan.indexOf(UPLOAD_IMAGE_PATHS.prlimit),'the cap is a prlimit argument');
+ }
  assert.equal(probe.includes(ROOT+'/meri-upload-probe-abc123'),true);
  const scan=uploadSandboxArguments({role:'scan',cwd:ROOT+'/meri-upload-scan-abc123',definitionsRoot:'/srv/defs'});
  assert.equal(scan.includes('/srv/defs'),true,'definitions root is read-only bound');
@@ -353,7 +362,7 @@ test('the native measurement clamps its deadline, passes the output cap and bind
 test('the qualifier keeps identity/mapping refusals and exposes the allowlisted child projection',async()=>{
  const root=await realpath(tmpdir()),bound={credentialPaths:['/run/meri/core-secret']};
  const limits={MaxFileSize:{soft:{kind:'max'},hard:{kind:'malformed'}},MaxOpenFiles:null,
-  MaxProcesses:{soft:{kind:'finite',value:64},hard:{kind:'unsupported'}}};
+  MaxProcesses:{soft:{kind:'finite',value:64},hard:{kind:'unsupported'}},MaxCpuTime:{soft:{kind:'finite',value:120},hard:{kind:'finite',value:120}}};
  const make=cg=>async(role,{cwd,input})=>({stdout:Buffer.from(JSON.stringify(sandboxed(cwd,{cgroup:cg,inputValid:true,processLimits:limits,
   credentialPathsReadable:JSON.parse(input.toString()).credentialPaths.map(path=>({path,readable:false}))}))),receipt:{exitCode:0}});
  const host={memoryMax:'1073741824',pidsMax:'64',cpuMax:'50000 100000',levels:2,mountRootIsRoot:true};
@@ -433,4 +442,57 @@ test('the real runner refuses to spawn on this non-Linux host',{skip:process.pla
  const cwd=await mkdtemp(join(tmpdir(),UPLOAD_ROLE_PREFIX.scan));
  try{await assert.rejects(()=>runUploadSandbox('scan',{cwd,definitionsRoot:'/srv/defs',deadlineMs:Date.now()+1000,input:Buffer.alloc(0)}),{code:'UPLOAD_SANDBOX_REFUSED'});}
  finally{await rm(cwd,{recursive:true,force:true});}
+});
+
+test('the AgentCore microVM shape attests boundedResources ONLY with the platform evidence; every other host keeps the finite gate',async()=>{
+ const cwd=ROOT+'/'+UPLOAD_ROLE_PREFIX.probe+'a1b2c3',platform={runtime:'agentcore'};
+ // The live container shape: one unlimited root cgroup v2, membership resolved, identity unchanged.
+ const microvm={memoryMax:'max',pidsMax:'max',cpuMax:'max 100000',levels:1,mountRootIsRoot:true,membershipResolved:true,identityChanged:false,source:'cgroup2'};
+ const attested=evaluateUploadSandbox(sandboxed(cwd,{cgroup:microvm}),{tempRoot:ROOT,platform});
+ assert.deepEqual(attested.findings,[]);assert.equal(attested.sandbox.boundedResources,true);
+ assert.equal(attested.diagnostic.boundedBy,'agentcore-microvm','the diagnostic records WHICH layer bounded the child');
+ assert.deepEqual(attested.diagnostic.resources,{memoryMax:0,pidsMax:0,cpuMax:0},'the observed facts stay honest: every bound reads max');
+ // The SAME shape without the verified runtime environment is still refused: a local or EC2 host that merely shows an
+ // unlimited root is not a microVM.
+ const unattested=evaluateUploadSandbox(sandboxed(cwd,{cgroup:microvm}),{tempRoot:ROOT});
+ assert.deepEqual(unattested.findings.map(f=>f.requirement),['boundedResources']);assert.equal(unattested.diagnostic.boundedBy,null);
+ for(const platformValue of [null,undefined,{},{runtime:'ecs'},{runtime:'AGENTCORE'},'agentcore'])
+  assert.equal(evaluateUploadSandbox(sandboxed(cwd,{cgroup:microvm}),{tempRoot:ROOT,platform:platformValue}).sandbox.boundedResources,false,JSON.stringify(platformValue??null));
+ // With the evidence, only the exact microVM shape is attested: a deeper hierarchy, a subtree-rooted mount, a changed or
+ // unresolved identity, a v1 fallback or an absent controller is still the ordinary finite requirement.
+ for(const changes of [{levels:2},{mountRootIsRoot:false},{identityChanged:true,source:'identity-changed',membershipResolved:false},{membershipResolved:false,source:'mapping-failed'},
+  {source:'v1-fallback',levels:0,mountRootIsRoot:false,membershipResolved:false},{memoryMax:null},{pidsMax:null},{cpuMax:null}]){
+  const refused=evaluateUploadSandbox(sandboxed(cwd,{cgroup:{...microvm,...changes}}),{tempRoot:ROOT,platform});
+  assert.equal(refused.sandbox.boundedResources,false,JSON.stringify(changes));assert.equal(refused.diagnostic.boundedBy,null);
+ }
+ // A finite leaf (the EC2 native host's path) is attested by the cgroup itself, with or without platform evidence.
+ const finite=evaluateUploadSandbox(sandboxed(cwd),{tempRoot:ROOT,platform});
+ assert.equal(finite.sandbox.boundedResources,true);assert.equal(finite.diagnostic.boundedBy,'cgroup');
+ assert.equal(evaluateUploadSandbox(sandboxed(cwd),{tempRoot:ROOT}).diagnostic.boundedBy,'cgroup');
+ // The qualifier: the host's resolved hierarchy supplies the shape it is judged on. The live AgentCore host read
+ // (levels:1, root mount, every bound max) is admitted with the attestation recorded; an EC2 finite leaf is unchanged.
+ const root=await realpath(tmpdir());
+ const run=async(role,options)=>({stdout:Buffer.from(JSON.stringify(sandboxed(options.cwd,{cgroup:microvm}))),receipt:{exitCode:0}});
+ const hostMicrovm={memoryMax:'max',pidsMax:'max',cpuMax:'max 100000',levels:1,mountRootIsRoot:true};
+ const admitted=await qualifyNativeUploadSandbox({imageDigest:DIGEST,deadlineMs:Date.now()+30000,tempRoot:root,run,hostCgroup:hostMicrovm,platform});
+ assert.equal(admitted.admitted,true);assert.equal(admitted.admission.sandbox.boundedResources,true);
+ assert.equal(admitted.diagnostic.boundedBy,'agentcore-microvm');
+ assert.deepEqual(admitted.diagnostic.cgroupHost,{resolved:true,levels:1,mountRootIsRoot:true});
+ assert.deepEqual(admitted.diagnostic.resources,{memoryMax:0,pidsMax:0,cpuMax:0});
+ const refused=await qualifyNativeUploadSandbox({imageDigest:DIGEST,deadlineMs:Date.now()+30000,tempRoot:root,run,hostCgroup:hostMicrovm});
+ assert.equal(refused.admitted,false);assert.deepEqual(refused.missing,['boundedResources']);assert.equal(refused.diagnostic.boundedBy,null);
+ // No host read: the observation is the child's namespaced view, which inside bwrap is ALWAYS one unlimited root --
+ // the same shape as the microVM -- so the attestation would rest on the environment evidence alone. It is withheld.
+ const unresolved=await qualifyNativeUploadSandbox({imageDigest:DIGEST,deadlineMs:Date.now()+30000,tempRoot:root,run,hostCgroup:null,platform});
+ assert.equal(unresolved.admitted,false);assert.deepEqual(unresolved.missing,['boundedResources']);
+ assert.equal(unresolved.diagnostic.boundedBy,null);assert.deepEqual(unresolved.diagnostic.cgroupHost,{resolved:false,levels:0,mountRootIsRoot:false});
+ // A host whose hierarchy is deeper than the microVM's (a leaf below the root) is judged on the host shape, not on
+ // whatever the child reported, so platform evidence cannot attest it.
+ const deeper=await qualifyNativeUploadSandbox({imageDigest:DIGEST,deadlineMs:Date.now()+30000,tempRoot:root,run,platform,
+  hostCgroup:{...hostMicrovm,levels:2}});
+ assert.equal(deeper.admitted,false);assert.deepEqual(deeper.missing,['boundedResources']);
+ const ec2=await qualifyNativeUploadSandbox({imageDigest:DIGEST,deadlineMs:Date.now()+30000,tempRoot:root,run,
+  hostCgroup:{memoryMax:'1073741824',pidsMax:'64',cpuMax:'50000 100000',levels:2,mountRootIsRoot:true}});
+ assert.equal(ec2.admitted,true);assert.equal(ec2.diagnostic.boundedBy,'cgroup');
+ await assert.rejects(qualifyNativeUploadSandbox({imageDigest:DIGEST,deadlineMs:Date.now()+30000,tempRoot:root,run,platform:'agentcore'}),{code:'UPLOAD_QUALIFICATION_CONFIGURATION'});
 });

@@ -14,7 +14,7 @@ import {join} from 'node:path';
 import {realpath,mkdtemp,writeFile} from 'node:fs/promises';
 import {RENDERER_PROBE_SCHEMA} from '../../../artifacts/renderer-qualification.mjs';
 import {UPLOAD_CHILD_ENV} from '../native-sandbox.mjs';
-import {RUNTIME_CREDENTIAL_PATHS} from '../../artifacts/renderer-sandbox.mjs';
+import {RUNTIME_CREDENTIAL_PATHS} from '../../credential-inventory.mjs';
 import {validateUploadInspection} from '../../../control/uploads/extraction.mjs';
 import {uploadHash,UPLOAD_MIME} from '../../../control/uploads/policy.mjs';
 import {AGENTCORE_SESSION_HEADER} from '../../agentcore-contract.mjs';
@@ -23,6 +23,17 @@ import {createUploadInspectionApplication,composeUploadInspectionHost,uploadInsp
  UPLOAD_INSPECTION_IMAGE_ENVIRONMENT} from '../agentcore-http.mjs';
 import {uploadInspectionSessionId} from '../agentcore-contract.mjs';
 import {beginUploadNativeProvisioning,UPLOAD_NATIVE_DEFAULT_PROVISION_MS} from '../control-lifecycle.mjs';
+import {agentcoreRuntimePlatform} from '../../agentcore-platform.mjs';
+import {createRunnerTlsCertificateFixture} from '../../native-authority/test/runner-tls-fixture.mjs';
+import {createHash} from 'node:crypto';
+/** The live AgentCore container's cgroup view: one unlimited root cgroup v2. */
+const MICROVM=Object.freeze({memoryMax:'max',pidsMax:'max',cpuMax:'max 100000',levels:1,mountRootIsRoot:true,membershipResolved:true,identityChanged:false,source:'cgroup2'});
+/** The AgentCore runtime environment the entrypoint verifies before serving: the only platform evidence admitted. */
+function agentcoreRuntimeEnvironment(t){
+ const certificates=createRunnerTlsCertificateFixture(t);
+ return {MERI_CONTROL_ORIGIN:'https://control.synthetic.invalid',MERI_CONTROL_CA_BASE64:certificates.ca.toString('base64'),
+  MERI_CONTROL_CA_SHA256:createHash('sha256').update(certificates.ca).digest('hex'),AWS_REGION:'us-east-1'};
+}
 
 const IMAGE='sha256:'+'e'.repeat(64),ZERO='0'.repeat(16);
 const BYTES=Buffer.from('wave5 container-side inspection fixture\n','utf8');
@@ -190,4 +201,51 @@ test('an attested host is REALLY composed, and the real application serves its o
  assert.equal(Object.hasOwn(provisioningMs,'provisionMs'),false,'the container declares no provisioning budget of its own');
  assert.equal(UPLOAD_NATIVE_DEFAULT_PROVISION_MS,120000);
  await app.close({deadlineMs:now()+5000});
+});
+
+test('the platform evidence is the verified AgentCore runtime environment, never a flag',t=>{
+ const environment=agentcoreRuntimeEnvironment(t);
+ assert.deepEqual(agentcoreRuntimePlatform(environment),{runtime:'agentcore'});
+ for(const patch of [{MERI_CONTROL_ORIGIN:undefined},{MERI_CONTROL_CA_SHA256:'a'.repeat(64)},{AWS_REGION:'eu-west-1'},{MERI_CONTROL_CA_BASE64:'bm90IGEgY2VydA=='}])
+  assert.equal(agentcoreRuntimePlatform({...environment,...patch}),null,JSON.stringify(Object.keys(patch)));
+ assert.equal(agentcoreRuntimePlatform({}),null);assert.equal(agentcoreRuntimePlatform({AGENTCORE:'1',MERI_PLATFORM:'agentcore'}),null);
+});
+
+test('on the AgentCore microVM the join attests boundedResources from the verified environment plus the observed root cgroup',async t=>{
+ const tempRoot=await realpath(tmpdir()),definitionsRoot=await mkdtemp(join(tempRoot,'meri-defs-microvm-'));
+ const environment={...agentcoreRuntimeEnvironment(t),[UPLOAD_INSPECTION_IMAGE_ENVIRONMENT]:IMAGE};
+ const run=async(first,second,third)=>{
+  const options=typeof second==='object'&&!Array.isArray(second)?second:(third??{});
+  if(first==='freshclam'){await writeFile(join(options.cwd,'database','main.cvd'),Buffer.from('fixture-main-cvd'));
+   await writeFile(join(options.cwd,'database','daily.cvd'),Buffer.from('fixture-daily-cvd'));return {stdout:Buffer.alloc(0)};}
+  if(first==='sigtool')return {stdout:Buffer.alloc(0)};
+  if(first==='probe')return {stdout:Buffer.from(JSON.stringify({...sandboxed(options.cwd,options.input),cgroup:{...MICROVM}}))};
+  if(first==='scan')return options.mode==='version'?{stdout:Buffer.from('ClamAV 1.4.2/27450/x\n')}:{stdout:Buffer.alloc(0),receipt:{exitCode:0}};
+  if(first==='extract')return options.mode==='version'?{stdout:Buffer.from('Python 3.13.16\n')}:
+   {stdout:Buffer.from(JSON.stringify({status:'available',segments:[{...SEGMENT}],limitations:[]})),receipt:{exitCode:0}};
+  throw Object.assign(Error('UPLOAD_SANDBOX_REFUSED'),{code:'UPLOAD_SANDBOX_REFUSED'});
+ };
+ // `hostCgroup` is the host-side read (`readHostCgroup`) this non-Linux check cannot perform: the live container's
+ // resolved hierarchy, one unlimited root. It is the same narrow fixture port the composition's own checks inject.
+ const hostCgroup={memoryMax:'max',pidsMax:'max',cpuMax:'max 100000',levels:1,mountRootIsRoot:true};
+ const compose=(env,host=hostCgroup)=>composeUploadInspectionHost({environment:env,run,readFileImpl:async path=>Buffer.from('bin:'+path),scratchRoot:tempRoot,definitionsRoot,deadlineMs:Date.now()+30000,
+  ...(host===undefined?{}:{hostCgroup:host})});
+ const handle=await compose(environment);
+ assert.deepEqual(handle.missing,[],'the microVM-bounded sandbox is admitted and the real ports are composed');
+ assert.notEqual(handle.inspection,null);
+ assert.equal(handle.host.admission.sandbox.boundedResources,true);
+ assert.equal(handle.host.diagnostic.boundedBy,'agentcore-microvm','the admission records the platform attestation');
+ assert.deepEqual(handle.host.diagnostic.resources,{memoryMax:0,pidsMax:0,cpuMax:0},'the observed facts are not rewritten');
+ assert.deepEqual(handle.host.diagnostic.cgroupHost,{resolved:true,levels:1,mountRootIsRoot:true});
+ assert.equal(handle.host.diagnostic.credentials.checked,RUNTIME_CREDENTIAL_PATHS.length);
+ // Without a resolved host hierarchy the child's namespaced view (always one unlimited root under bwrap) is not
+ // evidence of the microVM shape, so the verified environment alone attests nothing.
+ const unresolved=await compose(environment,null);
+ assert.equal(unresolved.inspection,null);assert.deepEqual(unresolved.requirements,['boundedResources']);
+ assert.equal(unresolved.diagnostic.boundedBy,null);assert.equal(unresolved.diagnostic.cgroupHost.resolved,false);
+ // The SAME image, shape and inventory without the verified runtime environment is still refused on boundedResources:
+ // the evidence is the platform's, not a value the digest or any other variable supplies.
+ const unverified=await compose({[UPLOAD_INSPECTION_IMAGE_ENVIRONMENT]:IMAGE,AGENTCORE:'1'});
+ assert.equal(unverified.inspection,null);assert.equal(unverified.reason,'UPLOAD_SANDBOX_UNQUALIFIED');
+ assert.deepEqual(unverified.requirements,['boundedResources']);assert.equal(unverified.diagnostic.boundedBy,null);
 });

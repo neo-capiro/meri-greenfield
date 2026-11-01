@@ -17,6 +17,7 @@ import {fileURLToPath} from 'node:url';
 import {createHash} from 'node:crypto';
 import {runArtifactProcess} from './process.mjs';
 import {RENDERER_SANDBOX_REQUIREMENTS,createLibreOfficeRendererPort} from './renderer.mjs';
+import {platformBoundedCgroup} from './renderer-probe-observation.mjs';
 export const RENDERER_PROBE_PATH=fileURLToPath(new URL('./renderer-probe.mjs',import.meta.url));
 export const RENDERER_PROBE_SCHEMA='meri-renderer-sandbox-observation/1';
 /** The only environment a converter child may receive: exactly what `process.mjs` sets. Any other name fails `noCredentials`. */
@@ -33,8 +34,10 @@ function finiteLimit(value,{quota=false}={}){
  if(!/^[0-9]{1,20}$/u.test(first))return false;
  const n=BigInt(first);return n>0n&&n<UNLIMITED;
 }
-/** Pure: one observation -> the eight requirement flags plus a finding per false flag. Never throws; malformed input is all false. */
-export function evaluateRendererSandbox(observation,{tempRoot}={}){
+/** Pure: one observation -> the eight requirement flags plus a finding per false flag. Never throws; malformed input is all false.
+ * `boundedBy` records which layer attested `boundedResources`: `'cgroup'` for finite observed bounds, `'agentcore-microvm'`
+ * when the platform evidence in `platform` and the observed single-root shape attest it (`platformBoundedCgroup`), null otherwise. */
+export function evaluateRendererSandbox(observation,{tempRoot,platform=null}={}){
  const o=observation!==null&&typeof observation==='object'&&!Array.isArray(observation)?observation:{};
  const linux=o.schema===RENDERER_PROBE_SCHEMA&&o.platform==='linux';
  const caps=o.capabilities&&typeof o.capabilities==='object'?o.capabilities:{};
@@ -43,6 +46,8 @@ export function evaluateRendererSandbox(observation,{tempRoot}={}){
  const env=Array.isArray(o.envNames)?o.envNames:null;
  const creds=Array.isArray(o.credentialPathsReadable)?o.credentialPathsReadable:null;
  const ws=o.workspace&&typeof o.workspace==='object'?o.workspace:null;
+ const finite=linux&&finiteLimit(cg.memoryMax)&&finiteLimit(cg.pidsMax)&&finiteLimit(cg.cpuMax,{quota:true});
+ const bound=linux&&!finite?platformBoundedCgroup(cg,platform):null;
  const sandbox={
   nonRootUser:linux&&positiveIds(o.uid)&&positiveIds(o.gid),
   noNetwork:linux&&ifaces!==null&&ifaces.length>0&&ifaces.every(name=>name==='lo'),
@@ -51,13 +56,13 @@ export function evaluateRendererSandbox(observation,{tempRoot}={}){
   dropAllCapabilities:linux&&['CapInh','CapPrm','CapEff','CapAmb'].every(k=>zeroCaps(caps[k])),
   privateWorkspace:linux&&typeof o.cwd==='string'&&typeof tempRoot==='string'&&dirname(o.cwd)===tempRoot&&basename(o.cwd).startsWith(WORKSPACE_PREFIX)&&
    o.home===o.cwd&&o.tmpdir===o.cwd&&ws!==null&&ws.mode===0o700&&positiveIds(o.uid)&&ws.uid===o.uid[1],
-  boundedResources:linux&&finiteLimit(cg.memoryMax)&&finiteLimit(cg.pidsMax)&&finiteLimit(cg.cpuMax,{quota:true}),
+  boundedResources:finite||bound!==null,
   noCredentials:false,
  };
  // Without network isolation a child can reach instance/task credential endpoints, so noCredentials also requires noNetwork.
  sandbox.noCredentials=linux&&sandbox.noNetwork&&env!==null&&env.every(name=>RENDERER_CHILD_ENV.includes(name))&&creds!==null&&creds.every(c=>c&&c.readable===false);
  const findings=RENDERER_SANDBOX_REQUIREMENTS.filter(k=>sandbox[k]!==true).map(requirement=>({requirement,reason:linux?'NOT_OBSERVED':'NOT_LINUX'}));
- return {sandbox:Object.freeze(sandbox),findings:Object.freeze(findings)};
+ return {sandbox:Object.freeze(sandbox),findings:Object.freeze(findings),boundedBy:finite?'cgroup':bound?.boundedBy??null};
 }
 /** `LibreOffice 24.2.7.2 <build>` -> `24.2.7.2`; anything else is null. */
 export function parseLibreOfficeVersion(stdout){
@@ -68,8 +73,9 @@ function configuration(value){
  const absolute=p=>typeof p==='string'&&isAbsolute(p);
  if(!absolute(c.executable)||!absolute(c.nodeExecutable)||!absolute(c.tempRoot)||typeof c.imageDigest!=='string'||!/^sha256:[a-f0-9]{64}$/u.test(c.imageDigest)||
   typeof c.qualificationId!=='string'||!/^[A-Za-z0-9._:-]{1,128}$/u.test(c.qualificationId)||!Array.isArray(c.credentialPaths??[])||!(c.credentialPaths??[]).every(absolute)||
-  (c.credentialPaths??[]).length>64||!Number.isSafeInteger(c.deadlineMs)||c.run!==undefined&&typeof c.run!=='function')fail('RENDERER_QUALIFICATION_CONFIGURATION');
- return {...c,credentialPaths:[...(c.credentialPaths??[])],run:c.run??runArtifactProcess};
+  (c.credentialPaths??[]).length>64||!Number.isSafeInteger(c.deadlineMs)||c.run!==undefined&&typeof c.run!=='function'||
+  c.platform!==undefined&&c.platform!==null&&typeof c.platform!=='object')fail('RENDERER_QUALIFICATION_CONFIGURATION');
+ return {...c,credentialPaths:[...(c.credentialPaths??[])],run:c.run??runArtifactProcess,platform:c.platform??null};
 }
 /** Observe, evaluate and bind. Returns `{port,admission,evaluation,receipt}`; `port` is always a renderer port, available only
  * when every requirement was observed. A probe or version failure yields an unadmitted port and a closed `failure` code. */
@@ -88,9 +94,9 @@ export async function qualifyLibreOfficeRenderer(options){
   if(out.length>MAX_OBSERVATION_BYTES)return unadmitted('RENDERER_PROBE_INVALID');receipt.observationSha256=sha(out);observation=JSON.parse(out.toString('utf8'));}
  catch(error){return unadmitted(error?.code==='RENDERER_PROBE_CLEANUP_FAILED'?error.code:error instanceof SyntaxError?'RENDERER_PROBE_INVALID':'RENDERER_PROBE_FAILED');}
  // The probe reports getcwd(), which resolves symlinks, so the workspace parent is compared with the resolved temp root.
- const evaluation=evaluateRendererSandbox(observation,{tempRoot:await realpath(c.tempRoot).catch(()=>null)});
+ const evaluation=evaluateRendererSandbox(observation,{tempRoot:await realpath(c.tempRoot).catch(()=>null),platform:c.platform});
  const admission={rendererId:'libreoffice',rendererVersion:version,executable:c.executable,imageDigest:c.imageDigest,qualificationId:c.qualificationId,sandbox:{...evaluation.sandbox}};
  // The probe and every later conversion must use the identical host-owned child runner, including its namespace boundary.
  const port=createLibreOfficeRendererPort({admission,executable:c.executable,tempRoot:c.tempRoot,run:c.run});
- return {port,admission,evaluation,receipt:{...receipt,state:port.state,reason:port.reason,missingRequirements:[...port.missingRequirements]}};
+ return {port,admission,evaluation,receipt:{...receipt,state:port.state,reason:port.reason,missingRequirements:[...port.missingRequirements],boundedBy:evaluation.boundedBy}};
 }

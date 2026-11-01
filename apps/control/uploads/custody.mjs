@@ -40,7 +40,10 @@ export function createUploadCustody({store,objects,inspection,current,retention,
  store=Object.fromEntries(['prepare','read','transition'].map(k=>[k,storageMethod(store,k)]));
  objects=Object.fromEntries(['put','get','observePut'].map(k=>[k,storageMethod(objects,k)]));
  inspection={inspect:storageMethod(inspection,'inspect')};retention=Object.fromEntries(['assertServable','withRelease'].map(k=>[k,storageMethod(retention,k)]));
- async function operation(options,body){
+ /** `reconcile` is for pure state reads: a read that raced a concurrent publication (the server-side inspection
+  * landing between its read and the guard's re-read) reports the record as it is NOW instead of UPLOAD_CHANGED,
+  * since a read of state is never invalidated by that state having advanced. Every effect keeps the strict check. */
+ async function operation(options,body,{reconcile=false}={}){
   const {signal,deadlineMs}=options??{};nativeSignal(signal);
   const life=createOperationLifetime({signal,deadlineMs,now,errorFactory:uploadError});let owner=null;
   async function fresh(assertServable=retention.assertServable,check=life.check){
@@ -63,14 +66,14 @@ export function createUploadCustody({store,objects,inspection,current,retention,
    if(r===null)fail('UPLOAD_NOT_FOUND');const record=uploadRecord(r);if(!equal(record.owner,owner))fail('UPLOAD_ACCESS_DENIED');if(record.requestId!==id)fail('UPLOAD_STORE_CORRUPT');return record;}
   async function move(r,patch,check=life.check){check();const next=uploadRecord({...r,...patch,revision:r.revision+1,updatedAtMs:now()});return uploadRecord(await life.run(()=>store.transition(r,next,check)));}
   try{const context=await fresh();const result=await body({life,owner,context,fresh,read,readByRequest,move,guard});
-   return await guard(async check=>{const r=result.record??result,again=await read(r.uploadId);check();if(!equal(r,again))fail('UPLOAD_CHANGED');return result;});
+   return await guard(async check=>{const r=result.record??result,again=await read(r.uploadId);check();if(equal(r,again))return result;if(!reconcile)fail('UPLOAD_CHANGED');return again;});
   }finally{life.close();}
  }
  function status(id,byRequest,options){return operation(options,async({read,readByRequest,move,life})=>{let r=await (byRequest?readByRequest:read)(id);
    if(r.state==='writing'){
     const object=await life.run(signal=>objects.observePut({objectId:r.objectId,scopes:r.scopes,sha256:r.declaration.sha256,bytes:r.declaration.bytes,requestSha256:uploadRequestHash(r)},signal));
     if(object!==null)r=await move(r,{state:'stored',object}); // Missing is still UNKNOWN, not permission to retry.
-   }return r;});}
+   }return r;},{reconcile:true});}
 
  const owner={
   initiate(raw,options){const call=own(data(raw),['requestId','declaration']);uuid(call.requestId);uploadDeclaration(call.declaration);

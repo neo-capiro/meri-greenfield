@@ -17,7 +17,8 @@ import {jsonBody} from '../../control/action-application/http.mjs';
 import {AGENTCORE_SESSION_HEADER} from '../agentcore-contract.mjs';
 import {storageMethod} from '../../artifacts/storage/boundary.mjs';
 import {UPLOAD_NATIVE_MOUNT_MS,mountUploadNativeControl} from './control-lifecycle.mjs';
-import {RUNTIME_CREDENTIAL_PATHS} from '../artifacts/renderer-sandbox.mjs';
+import {RUNTIME_CREDENTIAL_PATHS} from '../credential-inventory.mjs';
+import {agentcoreRuntimePlatform} from '../agentcore-platform.mjs';
 import {uploadInspectionFault,uploadInspectionPurpose,uploadInspectionRequest,uploadInspectionBody,
  UPLOAD_INSPECTION_WIRE_BYTES,UPLOAD_INSPECTION_RESULT_BYTES,UPLOAD_INSPECTION_MAX_DEADLINE_MS} from './agentcore-contract.mjs';
 
@@ -110,15 +111,22 @@ export function uploadInspectionHostConfiguration(environment=globalThis.process
  * every path the child could not read; without it the live container reported `noCredentials` unmet with
  * `checked:0`, and the purpose was permanently 503 regardless of the actual sandbox.
  *
+ * The probe is also handed `agentcoreRuntimePlatform(environment)`: evidence derived from the verified entrypoint
+ * environment (control origin, pinned CA, region) that the deployment controls, not an external platform signal (see
+ * the accepted limit and follow-up in `agentcore-platform.mjs`). On the AgentCore microVM, whose single unlimited root
+ * cgroup uid 1000 can neither tighten nor leaf, that evidence plus the HOST-observed shape attests `boundedResources`
+ * as `boundedBy:'agentcore-microvm'`; without the verified environment, or without a resolved host hierarchy, the
+ * finite-cgroup requirement stands unchanged.
+ *
  * A host that cannot attest the sandbox, observe the tools or resolve a signed snapshot yields `inspection:null` plus
  * the exact `missing` list, so the application answers 503 and no caller ever sees a fabricated scan. */
-export async function composeUploadInspectionHost({environment=globalThis.process?.env??{},now=Date.now,signal,deadlineMs,run,processing,paths,readFileImpl,scratchRoot,definitionsRoot}={}){
+export async function composeUploadInspectionHost({environment=globalThis.process?.env??{},now=Date.now,signal,deadlineMs,run,processing,paths,readFileImpl,scratchRoot,definitionsRoot,hostCgroup}={}){
  const roots={...(scratchRoot===undefined?{}:{scratchRoot}),...(definitionsRoot===undefined?{}:{definitionsRoot})};
  const configuration=uploadInspectionHostConfiguration(environment,roots);
- const handle=await mountUploadNativeControl({configuration,now,signal,credentialPaths:[...RUNTIME_CREDENTIAL_PATHS],
+ const handle=await mountUploadNativeControl({configuration,now,signal,credentialPaths:[...RUNTIME_CREDENTIAL_PATHS],platform:agentcoreRuntimePlatform(environment),
   deadlineMs:Number.isSafeInteger(deadlineMs)?deadlineMs:now()+UPLOAD_NATIVE_MOUNT_MS,
   ...(processing===undefined?{}:{processing}),...(run===undefined?{}:{run}),...(paths===undefined?{}:{paths}),
-  ...(readFileImpl===undefined?{}:{readFileImpl})});
+  ...(readFileImpl===undefined?{}:{readFileImpl}),...(hostCgroup===undefined?{}:{hostCgroup})});
  const declared=configuration.uploads.native.enabled===true?configuration.uploads.native.imageDigest:null;
  if(handle.inspection!==null&&declared!==null&&handle.host?.admission?.imageDigest!==declared)
   return Object.freeze({inspection:null,host:handle.host,missing:Object.freeze(['uploads.native.imageDigest']),
