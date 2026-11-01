@@ -26,7 +26,7 @@ export async function generateFederalWorkbench({outDir=resolve(here,'dist'),chec
   }
   root.$defs={...transform(root.$defs,root.$id),...defs};
   const ajv=new Ajv({strict:true,code:{source:true,esm:true}});formats(ajv);ajv.addSchema(root);
-  const entries={validateSource:'FederalCompilerSource',validateSourceEnvelope:'FederalSourceEnvelope',validateImport:'FederalImportRequest',validateImported:'FederalImportResult',validatePrepare:'FederalPrepareRequest',validateLoad:'FederalLoadRequest',validatePublish:'FederalPublishRequest',validateReview:'FederalReview',validatePublication:'FederalPublication',validateError:'FederalError'},refs={};
+  const entries={validateSource:'FederalCompilerSource',validateSourceEnvelope:'FederalSourceEnvelope',validateImport:'FederalImportRequest',validateImported:'FederalImportResult',validatePrepare:'FederalPrepareRequest',validateLoad:'FederalLoadRequest',validatePublish:'FederalPublishRequest',validateApprove:'FederalApproveRequest',validateHistory:'FederalHistoryRequest',validateReview:'FederalReview',validatePublication:'FederalPublication',validateHistoryResult:'FederalHistory',validateError:'FederalError'},refs={};
   for(const [name,def]of Object.entries(entries)){const ref=root.$id+'#/$defs/'+def;ajv.compile({$ref:ref});refs[name]=ref;}
   const generated=standalone(ajv,refs);
   const bundle=await esbuild.build({absWorkingDir:here,entryPoints:['federal-workbench/receive.mjs'],bundle:true,write:false,platform:'browser',format:'esm',target:'es2022',metafile:true,preserveSymlinks:true,
@@ -38,7 +38,7 @@ export async function generateFederalWorkbench({outDir=resolve(here,'dist'),chec
    sources.push({path,sha256:hash(await readFile(resolve(here,path)))});
   }
   const files={'federal-workbench.mjs':bundle.outputFiles[0].text,'federal-workbench.d.ts':declarations+'\n'+api,
-   'federal-workbench.schema.json':JSON.stringify(root,null,2)+'\n','federal-workbench.metadata.json':JSON.stringify({version:'1.2.0',sources},null,2)+'\n'};
+   'federal-workbench.schema.json':JSON.stringify(root,null,2)+'\n','federal-workbench.metadata.json':JSON.stringify({version:'1.3.0',sources},null,2)+'\n'};
   if(!check)await mkdir(outDir,{recursive:true});
   for(const [name,bytes]of Object.entries(files)){const path=resolve(outDir,name);if(check){if(await readFile(path,'utf8')!==bytes)throw Error('Contract drift: '+name);}else await writeFile(path,bytes);}
   return Object.keys(files);

@@ -82,6 +82,7 @@ export function createDocumentApplication(options){
     result=await federalWorkbenchRoute({intent:info.intent,call,config,current,life,state,
       releasePublication:(value,write)=>created(value,write,context,admission)});
     if(result.savedDraft)result.savedDraft=version(result.savedDraft,context,admission);
+    if(result.revisions)result.revisions=result.revisions.map(entry=>({...entry,version:version(entry.version,context,admission)}));
    }else if(info.intent==='create'||info.intent==='revise'){
     const {ids,...writeOptions}=config.options;const writes=createPostgresArtifactService({...writeOptions,authorize:current.authorize});
     state.writeStarted=true;

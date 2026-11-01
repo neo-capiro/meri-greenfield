@@ -84,7 +84,7 @@ export function createRuntimeArtifactApplication(configuration){const c=own(conf
   // never multiplied around every local immutable storage operation.
   const app=createDocumentApplication({...options,limits:effectiveLimits,artifactOptions:o});
   await fresh('admission');const serialized=JSON.stringify(body),headers=new Headers(info.headers);headers.set('content-length',String(Buffer.byteLength(serialized)));
-  state.writeStarted=['create','revise','preview-publish','federal-publish','federal-import'].includes(info.intent);state.readStarted=!state.writeStarted;
+  state.writeStarted=['create','revise','preview-publish','federal-publish','federal-import','federal-approve'].includes(info.intent);state.readStarted=!state.writeStarted;
   const response=await life.run(signal=>app.handle(new Request(info.url,{method:info.method,headers,body:serialized,signal})));if(response.status!==200)return response;state.completed=true;
   await fresh('release');life.check();return response;
  }catch(error){return errorResponse(error,state);}finally{life?.close();}}});
