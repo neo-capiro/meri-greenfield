@@ -7,6 +7,7 @@ import {createPrimaryWebSearch,createPrimarySearchReadSource,primarySearchTarget
  AGENTCORE_SEARCH_PROVIDER} from '../primary-search.mjs';
 import {signAwsRequest,resolveAwsCredentials,amzDate} from '../aws-signing.mjs';
 import * as payloads from './mcp-payloads.mjs';
+import {storedCase} from './fixture.mjs';
 
 // The documented gatewayUrl is the MCP invocation endpoint; the producer binds it unchanged.
 const ENDPOINT='https://meri-abc123.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp';
@@ -285,19 +286,21 @@ test('the receiving contract admits the managed provider rows, including an abse
  assert.throws(()=>contract.assertOutput({...page,total:7,results:Array.from({length:7},(_,i)=>({...page.results[0],url:`https://public.example.invalid/${i}`}))},{request:{query:'q'}}));
 });
 
-test('the read source asks the index for the contract limit: an omitted limit yields six rows, never an INVALID_RESULT',async()=>{
+test('the handler hands the index the contract-normalized input: an omitted limit asks for six rows, never the provider default',async()=>{
  const calls=[];
  const primary={provider:AGENTCORE_SEARCH_PROVIDER,search:async({query,limit})=>{calls.push({query,limit});return {
   tool:'search_public_web',contentStatus:'discovered',generatedAt:'2026-10-29T00:00:00.000Z',provider:AGENTCORE_SEARCH_PROVIDER,total:0,results:[]};}};
- const source=createPrimarySearchReadSource(primary);
- await source({operation:'search_public_web',input:{query:'  policy   change '},context:{normalizationContext:{}},deadlineMs:NOW+5000});
- await source({operation:'search_public_web',input:{query:'policy change',limit:null},deadlineMs:NOW+5000});
- await source({operation:'search_public_web',input:{query:'policy change',limit:'40'},deadlineMs:NOW+5000});
- await source({operation:'search_public_web',input:{query:'policy change',limit:0},deadlineMs:NOW+5000});
- assert.deepEqual(calls,[{query:'policy   change',limit:6},{query:'policy change',limit:6},{query:'policy change',limit:12},{query:'policy change',limit:1}]);
- await assert.rejects(source({operation:'search_public_web',input:{query:''},deadlineMs:NOW+5000}),{message:'INVALID_ARGUMENTS'});
- await assert.rejects(source({operation:'search_public_web',input:{query:'q',tenantId:'x'},deadlineMs:NOW+5000}),{message:'INVALID_ARGUMENTS'});
- assert.equal(calls.length,4);
+ const handler=createPublicWebHandlers({origin:'https://core.example.invalid',now:()=>NOW},[{id:'search_public_web',version:'0.2.0'}],primary)[0];
+ for(const [request,expected] of [[{query:'  policy   change '},{query:'policy   change',limit:6}],[{query:'policy change',limit:null},{query:'policy change',limit:6}],
+  [{query:'policy change',limit:'40'},{query:'policy change',limit:12}],[{query:'policy change',limit:0},{query:'policy change',limit:1}]]){
+  const f=storedCase('search_public_web',{request});await handler.execute(f.call());assert.deepEqual(calls.at(-1),expected,JSON.stringify(request));
+ }
+ // the retained call context, not the read source, refuses a request whose normalization differs or carries authority
+ const f=storedCase('search_public_web',{request:{query:'policy change'}});
+ await assert.rejects(handler.execute({...f.call(),input:{query:'policy change',limit:10}}),{message:'INVALID_ARGUMENTS'});
+ await assert.rejects(handler.execute({...f.call(),request:{query:'policy change',tenantId:'x'}}),{message:'INVALID_ARGUMENTS'});
+ await assert.rejects(handler.execute({...f.call(),request:{query:''}}),{message:'INVALID_ARGUMENTS'});
+ assert.equal(calls.length,4,'a refused request never reaches the index');
 });
 
 test('recorded success payloads: dated and undated rows project with title, URL, snippet and date',async()=>{

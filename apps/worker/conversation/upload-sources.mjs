@@ -12,8 +12,7 @@ const ROOT_PREFIX='.meri-upload-data-';
 /** Removes materialized upload text a crashed or restarted worker left under the conversation workspace. Runs are
  * serialized per conversation, so every existing root is stale when a new run prepares; only real directories with
  * the exact prefix directly under `cwd` are removed (never symlinks, never anything else). */
-export async function sweepStaleUploadReadSources(cwd){
- if(!isAbsolute(cwd))throw fault();
+async function sweepStaleUploadReadSources(cwd){
  const parent=await realpath(cwd),removed=[];
  for(const entry of await readdir(parent,{withFileTypes:true})){
   if(!entry.name.startsWith(ROOT_PREFIX)||!entry.isDirectory()||entry.isSymbolicLink())continue;

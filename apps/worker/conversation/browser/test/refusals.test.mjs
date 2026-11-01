@@ -2,7 +2,7 @@
  * onto the set, and anything else collapses to BROWSER_CALL_REFUSED without leaking its message. */
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {BROWSER_MODEL_REFUSALS,browserRefusalCode,browserRefusalResult,isBrowserRefusalCode,isBrowserRefusalResult} from '../refusals.mjs';
+import {BROWSER_MODEL_REFUSALS,browserRefusalCode,browserRefusalResult,isBrowserRefusalResult} from '../refusals.mjs';
 
 test('every closed code renders a distinct isError text with the code as its head',()=>{
  const texts=new Set();
@@ -10,7 +10,7 @@ test('every closed code renders a distinct isError text with the code as its hea
   const result=browserRefusalResult(code);
   assert.equal(result.isError,true);assert.equal(result.content.length,1);assert.equal(result.content[0].type,'text');
   assert.ok(result.content[0].text.startsWith(`${code}: `),code);texts.add(result.content[0].text);
-  assert.ok(isBrowserRefusalResult(result),code);assert.ok(isBrowserRefusalCode(code));
+  assert.ok(isBrowserRefusalResult(result),code);
   assert.throws(()=>{result.content[0].text='mutated';},TypeError,'refusal texts are frozen');
  }
  assert.equal(texts.size,BROWSER_MODEL_REFUSALS.length);

@@ -47,19 +47,16 @@ test('cleanup removes materialized data even when the SDK never delivers a post-
 
 test('materialized upload text left by a restarted worker is swept before a new run materializes',async()=>{
  const {mkdir,writeFile,stat}=await import('node:fs/promises');
- const {sweepStaleUploadReadSources}=await import('../upload-sources.mjs');
  const cwd=await mkdtemp(join(tmpdir(),'meri-upload-sweep-test-'));
  try{
   const stale=join(cwd,'.meri-upload-data-stale01');await mkdir(stale);await writeFile(join(stale,selection.uploadId+'-0.txt'),'{"kind":"uploaded-source-data"}\n');
   await mkdir(join(cwd,'.meri-other'));await writeFile(join(cwd,'.meri-upload-data-not-a-dir'),'x');
-  assert.deepEqual(await sweepStaleUploadReadSources(cwd),['.meri-upload-data-stale01']);
-  await assert.rejects(stat(stale));assert.ok(await stat(join(cwd,'.meri-other')));assert.ok(await stat(join(cwd,'.meri-upload-data-not-a-dir')),'only directories with the exact prefix are removed');
-  await mkdir(stale);await writeFile(join(stale,'leftover.txt'),'x');
   const runOwner={async readUploadSource(){return structuredClone(page);}};
   const owner=await prepareUploadReadSources({binding,request:{uploads:[selection]},manifests:[manifest],runOwner,cwd,deadlineMs:Date.now()+30000,abort(){}});
   try{
    const entries=(await readdir(cwd,{withFileTypes:true})).filter(entry=>entry.isDirectory()&&entry.name.startsWith('.meri-upload-data-')).map(entry=>entry.name);
    assert.equal(entries.length,1,'exactly the new run root remains');assert.notEqual(entries[0],'.meri-upload-data-stale01');
+   await assert.rejects(stat(stale));assert.ok(await stat(join(cwd,'.meri-other')));assert.ok(await stat(join(cwd,'.meri-upload-data-not-a-dir')),'only directories with the exact prefix are removed');
   }finally{await owner.close();}
  }finally{await rm(cwd,{recursive:true,force:true});}
 });

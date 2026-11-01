@@ -7,6 +7,7 @@
  * correctly (argument bounds, result shape, what each failure means and what to do next) are owned here, keyed by
  * the read's SDK name, until a catalog successor carries them. Guidance is prose only: it never widens a schema,
  * grants anything or changes result bytes, and the gateway still normalizes and validates every call. */
+import {bareReadToolName} from './vocabulary.mjs';
 /** @typedef {{usage:readonly string[],limitations:readonly string[],failures:Readonly<Record<string,string>>}} ReadGuidance */
 const SEARCH_FAILURES=Object.freeze({
  INVALID_ARGUMENTS:'For search_public_web the query must be 1-200 characters and limit an integer 1-12; shorten or correct the arguments and call again.',
@@ -60,6 +61,6 @@ export const READ_GUIDANCE=Object.freeze({
 /** @param {string} sdkName the read's SDK tool name (`search_public_web`), with or without the `mcp__<server>__` prefix
  * @returns {ReadGuidance|undefined} */
 export function readGuidance(sdkName){
- const bare=/^mcp__[a-z0-9_]+__(.+)$/u.exec(sdkName)?.[1]??sdkName;
- return Object.hasOwn(READ_GUIDANCE,bare)?READ_GUIDANCE[bare]:undefined;
+ const bare=bareReadToolName(sdkName);
+ return bare!==null&&Object.hasOwn(READ_GUIDANCE,bare)?READ_GUIDANCE[bare]:undefined;
 }

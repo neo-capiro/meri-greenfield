@@ -32,7 +32,6 @@ export function browserRefusalCode(error,{dispatched=false}={}){
  if(code==='DEADLINE'||code==='CANCELLED')return dispatched?'BROWSER_ACTION_OUTCOME_UNKNOWN':'BROWSER_CALL_TIMEOUT';
  return Object.hasOwn(TEXTS,code)?code:'BROWSER_CALL_REFUSED';
 }
-export const isBrowserRefusalCode=code=>typeof code==='string'&&Object.hasOwn(TEXTS,code);
 /** One `isError` text result for the model: `CODE: fixed text`. */
 export function browserRefusalResult(code){
  const fixed=Object.hasOwn(TEXTS,code)?code:'BROWSER_CALL_REFUSED';

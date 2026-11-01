@@ -9,13 +9,13 @@
     },
     {
       "path": "../../apps/control/conversations/http.mjs",
-      "sha256": "adeb8f4e334d8908db1b318847bb2937ad0bcdc1b814f0cde953f1f30bdbcd0f",
-      "bytes": 6372
+      "sha256": "807a0fb7426061364e851f4f6516039bc1aaa1e220c5aca9fe2b5e2472777e5e",
+      "bytes": 6812
     },
     {
       "path": "../../apps/control/conversations/service.mjs",
-      "sha256": "0f9bc22e6ed620cdbd26c962d3c74ed5f18423167d4db3ba5466652a8b1cd558",
-      "bytes": 37466
+      "sha256": "e25abd74ee650483d1db85097a57b2142506dc6e358c71e2897522a4e8796f8c",
+      "bytes": 37801
     },
     {
       "path": "../skills/../../apps/control/document-application/cited-report/manifest.json",
@@ -174,7 +174,7 @@
     },
     {
       "path": "../skills/index.mjs",
-      "sha256": "fc26364e305da89303c71ccc6154a97cea0f4879e247131b6d2fc394ce01e119",
+      "sha256": "ba383a9e00ad1d61668f18e52dffed30a08e0fad3d41c07f356ed6783e1c1fcf",
       "bytes": 3791
     },
     {

@@ -8,6 +8,7 @@
  * A receipt records what the browser OBSERVED. It is never proof of a remote website commit, a new permission
  * or a completed browser execution, and it grants nothing.
  */
+import {assertSiteWorkflowSelection} from '../site-workflow-selection.mjs';
 export const BROWSER_RECEIPT_SCHEMA='meri-browser-receipt/1';
 export const BROWSER_RECEIPT_EVENT='browser.receipt';
 
@@ -27,14 +28,11 @@ const uuid=value=>{if(typeof value!=='string'||!UUID.test(value))deny();return v
 const at=value=>{if(!Number.isSafeInteger(value)||value<1)deny();return value;};
 const host=value=>{if(typeof value!=='string'||!value||value.length>255)deny();return value;};
 const sequence=value=>{if(!Number.isSafeInteger(value)||value<0)deny();return value;};
-const SLUG=/^[a-z][a-z0-9-]{1,63}$/u;
 /** Optional output provenance: the exact site workflow selection a browser action or download ran under. */
 function siteWorkflow(value){
  if(value===undefined)return undefined;
- const w=closed(value,['siteId','workflowId','version','manifestSha256']);
- if(typeof w.siteId!=='string'||!SLUG.test(w.siteId)||typeof w.workflowId!=='string'||!SLUG.test(w.workflowId)||
-  !Number.isSafeInteger(w.version)||w.version<1||typeof w.manifestSha256!=='string'||!HEX.test(w.manifestSha256))deny();
- return {siteId:w.siteId,workflowId:w.workflowId,version:w.version,manifestSha256:w.manifestSha256};
+ try{const w=assertSiteWorkflowSelection(value);return {siteId:w.siteId,workflowId:w.workflowId,version:w.version,manifestSha256:w.manifestSha256};}
+ catch{return deny();}
 }
 
 /** Structural equality over inert JSON: key order never matters, and no hash is required. */

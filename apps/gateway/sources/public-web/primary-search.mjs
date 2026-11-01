@@ -16,7 +16,6 @@ import {createDispatchLifetime} from '../../dispatch/dispatch-lifetime.mjs';
 import {cancelBody,responseBody} from '../json-response.mjs';
 import {ownFields} from '../source-admission.mjs';
 import {signAwsRequest,resolveAwsCredentials} from './aws-signing.mjs';
-import {resolveOperationContract} from '../../../../packages/contracts/retrieval-0.2/validate.mjs';
 
 /** Provider label of the AWS-owned index; distinct from `tavily`, `serper`, `duckduckgo` and from Claude's builtin. */
 export const AGENTCORE_SEARCH_PROVIDER = 'agentcore-web-search';
@@ -37,7 +36,6 @@ const MAX_ROW_RESULTS = 12, MAX_TITLE = 180, MAX_SNIPPET = 320, MAX_URL = 2000, 
  * the bound covers 25 generous rows and is read incrementally. A managed search is a remote index query, so the
  * request window exceeds the typical provider latency instead of turning an ordinary slow search into DEADLINE. */
 const DEFAULT_PROTOCOL = '2026-07-28', DEFAULT_RESPONSE_BYTES = 1048576, DEFAULT_REQUEST_MS = 15000;
-const SEARCH_CONTRACT = Object.freeze({id: 'search_public_web', version: '0.2.0'});
 /** Stateless MCP revision 2026-07-28: no `initialize` handshake and no session, so one tools/call is
  * one gateway invocation. Client identity travels in the documented `_meta` fields. */
 const CLIENT_INFO = Object.freeze({name: 'meri-control', version: '1.0.0'});
@@ -274,18 +272,14 @@ export function createPrimaryWebSearch(configuration) {
   });
 }
 
-/** `readSource` port of the retained read transport: primary discovery for search only.
- * The transport hands the original flat request through; the receiving contract's own normalization pass
- * (trim, 1-12 rows, default 6) decides what is asked of the index, so the rows delivered can never exceed
- * the limit the same contract later enforces on the result. */
+/** `readSource` port of the retained read transport: primary discovery for search only. The handler supplies the
+ * contract-normalized input (`handler.mjs` PRIMARY_SPECIFICATION); the retained call context has already refused any
+ * request whose normalization differs, so this port carries no validation of its own. */
 export function createPrimarySearchReadSource(primary) {
   if (primary === null || typeof primary !== 'object' || typeof primary.search !== 'function') deny('GATEWAY_CONFIGURATION');
-  const contract = resolveOperationContract(SEARCH_CONTRACT);
-  return async ({operation, input, context, deadlineMs, signal}) => {
+  return async ({operation, input, deadlineMs, signal}) => {
     if (operation !== 'search_public_web') deny('GATEWAY_CONFIGURATION');
-    let normalized;
-    try { normalized = contract.normalizeInput(input, context?.normalizationContext ?? {}).input; } catch { deny('INVALID_ARGUMENTS'); }
-    return primary.search({query: normalized.query, limit: normalized.limit, deadlineMs, signal});
+    return primary.search({query: input.query, limit: input.limit, deadlineMs, signal});
   };
 }
 

@@ -68,12 +68,12 @@ established by a `tools/list` discovery receipt. A different exposed name is
 bound through `MERI_WEB_SEARCH_TOOL`; nothing here asserts the two are equal.
 
 Documented limits honoured here: `query` <= 200 characters, `maxResults` 1-25, and the
-receiving-contract caps (12 rows, 180-character title, 320-character snippet). The read
-source applies the receiving contract's own normalization pass to the flat request before
-dispatch (trimmed query, `limit` 1-12 with the contract default of 6), so the index is asked
-for exactly the rows the same contract will later admit; a request without `limit` can never
-be withheld as `INVALID_RESULT` because the provider default (10) exceeded the contract
-default (6). A query longer than 200 characters is refused as `INVALID_ARGUMENTS` rather than
+receiving-contract caps (12 rows, 180-character title, 320-character snippet). The retained
+handler hands the read source the input the call context already proved equal to the receiving
+contract's normalization (trimmed query, `limit` 1-12 with the contract default of 6), so the
+index is asked for exactly the rows the same contract will later admit and no second
+normalization exists; a request without `limit` can never be withheld as `INVALID_RESULT`
+because the provider default (10) exceeded the contract default (6). A query longer than 200 characters is refused as `INVALID_ARGUMENTS` rather than
 silently truncated into a different search. Row text is untrusted source material. A row is
 kept only when it carries a byte-exact valid `http`/`https` locator of at most 2000
 characters — the value is published unchanged, never truncated or repaired, and a row

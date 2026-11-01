@@ -521,12 +521,14 @@ var sequence = (value) => {
   if (!Number.isSafeInteger(value) || value < 0) deny();
   return value;
 };
-var SLUG = /^[a-z][a-z0-9-]{1,63}$/u;
 function siteWorkflow(value) {
   if (value === void 0) return void 0;
-  const w = closed(value, ["siteId", "workflowId", "version", "manifestSha256"]);
-  if (typeof w.siteId !== "string" || !SLUG.test(w.siteId) || typeof w.workflowId !== "string" || !SLUG.test(w.workflowId) || !Number.isSafeInteger(w.version) || w.version < 1 || typeof w.manifestSha256 !== "string" || !HEX.test(w.manifestSha256)) deny();
-  return { siteId: w.siteId, workflowId: w.workflowId, version: w.version, manifestSha256: w.manifestSha256 };
+  try {
+    const w = assertSiteWorkflowSelection(value);
+    return { siteId: w.siteId, workflowId: w.workflowId, version: w.version, manifestSha256: w.manifestSha256 };
+  } catch {
+    return deny();
+  }
 }
 function sameJson(a, b) {
   if (a === b) return true;
