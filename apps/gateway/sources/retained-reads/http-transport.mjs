@@ -1,4 +1,5 @@
 /** Fixed source routes with bounded ordinary Core user/service credentials. */
+import {RETAINED_CAPIRO_PRIVATE_RELATIONS} from '../../../../packages/contracts/retrieval-0.2/capiro-data-validation.mjs';
 import {createHash} from 'node:crypto';
 import canonicalize from 'canonicalize';
 import {canonicalSha256} from '../../../../packages/contracts/validate.mjs';
@@ -26,11 +27,12 @@ export function createRetainedHttpTransport(configuration){
   const modeObservation=observation==='evidence-mode'&&['public-data','program-elements'].includes(c.contract.binding.group)&&MODE_READ_OPERATIONS.includes(c.operation.id);
   const producerObservation=observation==='producer-context'&&['certification-status','rule-status','sam-opportunities'].includes(c.contract.binding.group);
   const savedOwner=['saved-records','strategy-saved-records','legiwatch-review','legiwatch-relevance','legislative-comparisons','florida-budget'].includes(c.contract.binding.group);
-  const privateData=['capiro-data','capiro-data-v3'].includes(c.contract.binding.group)&&c.request.source==='client_records';
+  const privateData=['capiro-data','capiro-data-v3','capiro-data-v4','capiro-data-v5'].includes(c.contract.binding.group)&&['client_records','research_portfolio','classic_outreach'].includes(c.request.source);
+  const expectedPrivateRequest=privateData&&['capiro-data','capiro-data-v3'].includes(c.contract.binding.group)&&c.operation.id==='describe_capiro_data'&&c.request.relations===undefined?{...c.request,relations:[...RETAINED_CAPIRO_PRIVATE_RELATIONS]}:c.request;
   if((savedOwner||privateData)&&readSource)deny('ACCESS_DENIED');
   const strategyData=c.contract.binding.group==='strategy-saved-records',legiwatchData=['legiwatch-review','legiwatch-relevance','legislative-comparisons','florida-budget'].includes(c.contract.binding.group);
-  if((privateData||strategyData||legiwatchData)&&(c.operation.version!==(c.contract.binding.group==='capiro-data-v3'?'0.3.0':'0.2.0')||!(legiwatchData?['get_legiwatch_review','preview_legiwatch_relevance','get_florida_budget_project','compare_florida_budget_amounts','compare_legislative_versions']:strategyData?['read_saved_strategy_records']:['describe_capiro_data','query_capiro_data']).includes(c.operation.id)||
-   method!=='POST'||path!==`/api/clio/tools/${c.operation.id}`||!serviceSecret||!same(body,c.operation.id==='get_florida_budget_project'?c.input:c.request)))deny('GATEWAY_CONFIGURATION');
+  if((privateData||strategyData||legiwatchData)&&(c.operation.version!==(c.contract.binding.group==='capiro-data-v5'?'0.5.0':c.contract.binding.group==='capiro-data-v4'?'0.4.0':c.contract.binding.group==='capiro-data-v3'?'0.3.0':'0.2.0')||!(legiwatchData?['get_legiwatch_review','preview_legiwatch_relevance','get_florida_budget_project','compare_florida_budget_amounts','compare_legislative_versions']:strategyData?['read_saved_strategy_records']:['describe_capiro_data','query_capiro_data']).includes(c.operation.id)||
+   method!=='POST'||path!==`/api/clio/tools/${c.operation.id}`||!serviceSecret||!same(body,c.operation.id==='get_florida_budget_project'?c.input:privateData?expectedPrivateRequest:c.request)))deny('GATEWAY_CONFIGURATION');
   const correlation=privateData||strategyData||legiwatchData?canonicalize(frozenData({binding:c.authority.binding,subject:c.authority.subject,
    policyRevision:c.authority.policyRevision,normalizationContext:c.normalizationContext})):undefined;
   if((privateData||strategyData||legiwatchData)&&(typeof correlation!=='string'||Buffer.byteLength(correlation,'utf8')>8192))deny('RESOURCE_LIMIT');

@@ -6,6 +6,8 @@ import {own,data,nativeSignal} from '../../../packages/contracts/commands-0.2/ex
 import {createOperationLifetime} from '../../../packages/runtime/operation-lifetime.mjs';
 import {markAuthorityUnavailable} from '../../../packages/runtime/authority-availability.mjs';
 import {currentReceipt,currentRequest} from '../../control/action-host/application-adapters/current-receipt.mjs';
+import {researchCurrentReceipt} from '../../control/action-host/application-adapters/research-current-receipt.mjs';
+import {researchContextFields,researchContextFromCurrent,sameResearchContext} from '../../control/action-host/application-adapters/research-context.mjs';
 import {currentTurnTelemetry} from '../telemetry/turn-context.mjs';
 const refuse=()=>{throw Object.assign(Error('APPLICATION_AUTHORITY_REFUSED'),{status:403});};
 const unavailable=()=>markAuthorityUnavailable(Object.assign(Error('APPLICATION_AUTHORITY_UNAVAILABLE'),{status:503}));
@@ -16,16 +18,19 @@ export function createRunCurrentAuthority(configuration){
  const {client,now=Date.now,monotonic=()=>performance.now(),record=kind=>currentTurnTelemetry()?.recordAuthority?.(kind)}=own(configuration,['client'],['now','monotonic','record']);
  if(!client||typeof client!=='object'||types.isProxy(client))refuse();const reader=Object.getOwnPropertyDescriptor(client,'readCurrent');
  if(!reader||!Object.hasOwn(reader,'value')||[reader.value,now,monotonic,record].some(fn=>typeof fn!=='function'||types.isProxy(fn)))refuse();
- const readCurrent=call=>Reflect.apply(reader.value,client,[call]);
+ const researchReader=Object.getOwnPropertyDescriptor(client,'readResearchCurrent');
+ if(researchReader&&(!Object.hasOwn(researchReader,'value')||typeof researchReader.value!=='function'||types.isProxy(researchReader.value)))refuse();
+ const readCurrent=(call,research)=>{const port=research?researchReader:reader;if(!port)refuse();return Reflect.apply(port.value,client,[call]);};
  const entries=new Map(),pending=new Map();let sequence=0,freshCalls=0,reuses=0;
  const count=kind=>{if(kind==='fresh')freshCalls++;else reuses++;try{record(kind);}catch{}};
  const clock=()=>{const at=monotonic();if(typeof at!=='number'||!Number.isFinite(at)||at<0)refuse();return at;};
  async function read(raw){
-  const call=own(raw,['credential','binding','selectedClientId','sessionFence','deadlineMs'],['signal','fresh']);nativeSignal(call.signal);
+  const call=own(raw,['credential','binding','selectedClientId','sessionFence','deadlineMs'],['signal','fresh','scopeKind','scope']);nativeSignal(call.signal);
+  const subject=researchContextFields(call),research=subject.scopeKind==='research_portfolio';if(research&&call.selectedClientId!==null)refuse();
   const binding=data(call.binding);validateShape('RunBinding',binding);
   const selectors=currentRequest({conversationId:binding.conversationId,clientId:call.selectedClientId});
   if(typeof call.credential!=='string'||!/^\S{1,8192}$/u.test(call.credential)||typeof call.sessionFence!=='string'||!call.sessionFence||call.sessionFence.length>512||call.fresh!==undefined&&typeof call.fresh!=='boolean'||!Number.isSafeInteger(call.deadlineMs))refuse();
-  const key=hash({binding,clientId:call.selectedClientId,sessionFence:call.sessionFence,credential:hash(call.credential)});
+  const key=hash({binding,clientId:call.selectedClientId,...subject,sessionFence:call.sessionFence,credential:hash(call.credential)});
   const life=createOperationLifetime({now,deadlineMs:Math.min(call.deadlineMs,now()+CURRENT_MAX_WAIT_MS),signal:call.signal,errorFactory:code=>code==='DEADLINE'?unavailable():Object.assign(Error('APPLICATION_AUTHORITY_REFUSED'),{status:403})});
   try{
    life.check();const prior=entries.get(key),age=prior===undefined?Infinity:clock()-prior.sendStart;
@@ -39,7 +44,8 @@ export function createRunCurrentAuthority(configuration){
     const sendStart=clock(),wallSend=now();count('fresh');
     let receipt;
     try{
-     receipt=currentReceipt(await life.run(signal=>readCurrent({credential:call.credential,...selectors,deadlineMs:Math.min(call.deadlineMs,now()+CURRENT_MAX_WAIT_MS),signal})));
+     receipt=(research?researchCurrentReceipt:currentReceipt)(await life.run(signal=>readCurrent({credential:call.credential,...selectors,deadlineMs:Math.min(call.deadlineMs,now()+CURRENT_MAX_WAIT_MS),signal},research)));
+     if(research&&!sameResearchContext(subject,researchContextFromCurrent(receipt)))refuse();
      life.check();const age=clock()-sendStart;
      if(age>=CURRENT_MAX_WAIT_MS)throw unavailable();
      if(receipt.principal.tenantId!==binding.tenantId||receipt.principal.actorId!==binding.actorId||receipt.conversationId!==binding.conversationId||receipt.selectedClientId!==call.selectedClientId||

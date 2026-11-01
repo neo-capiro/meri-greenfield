@@ -1,7 +1,7 @@
 /** Synthetic Core envelopes; no database, provider or live source qualification. */
 import {resolveOperationContract} from '../../../../../packages/contracts/retrieval-0.2/validate.mjs';
 import {billTextCase,readContext} from '../../bill-text/test/fixture.mjs';
-import {createCapiroDataHandlers,createCapiroData3Handlers} from '../handler.mjs';
+import {createCapiroDataHandlers,createCapiroData3Handlers,createCapiroData4Handlers,createCapiroData5Handlers} from '../handler.mjs';
 export const ids=['describe_capiro_data','query_capiro_data'];
 export const requests={describe_capiro_data:{relations:['program_elements']},query_capiro_data:{sql:'SELECT pe_code, total, count, absent FROM program_elements WHERE pe_code = $1',parameters:['0600001A'],rowLimit:2}};
 export function capiroDataPage(id=ids[1]){
@@ -35,9 +35,9 @@ export function nextGenerationPage(page){
 export function sqlRefusal(error={},version='0.2.0'){
   return {version,generatedAt:'2026-10-26T12:00:00.000Z',ok:false,error:{code:'UNKNOWN_FIELD',message:'column b.titel does not exist',position:8,hint:'Perhaps you meant "b.title".',sqlstate:'42703',candidates:['title'],...error}};
 }
-export function capiroDataCase(id=ids[1],{request=requests[id],version='0.2.0'}={}){
-  const scene=billTextCase(),operation={id,version},contract=resolveOperationContract(operation),normalizationContext=request.source==='client_records'?{
-    capiroDataScope:{clientId:request.clientId??null,identityRevision:'a'.repeat(64),membershipRevision:'b'.repeat(64)}}:{};
+export function capiroDataCase(id=ids[1],{request=requests[id],version='0.2.0',context}={}){
+  const scene=billTextCase(),operation={id,version},contract=resolveOperationContract(operation),normalizationContext=context??(request.source==='client_records'?{
+    capiroDataScope:{clientId:request.clientId??null,identityRevision:'a'.repeat(64),membershipRevision:'b'.repeat(64)}}:{});
   const {authority,state,now,wire}=scene;
   authority.decision.operation=`${id}@${version}`;authority.sourceIds=contract.descriptor.sourceRequirements.map(source=>source.sourceId);
   const page=request.source==='client_records'?privateCapiroDataPage(id,request.clientId??null):capiroDataPage(id),transport={...scene.transport,async fetchImpl(url,options){
@@ -46,5 +46,5 @@ export function capiroDataCase(id=ids[1],{request=requests[id],version='0.2.0'}=
   }};
   const call=()=>{const normalized=contract.normalizeInput(request,normalizationContext);return {request,input:normalized.input,argumentsSha256:normalized.argumentsSha256,normalizationContext,authority:readContext(authority)};};
   return {...scene,family:contract.binding.group,operation,contract,arguments:request,normalizationContext,transport,page,call,
-    handler:changes=>{const config={...transport,now,...changes};if(config.credentialsForCall)delete config.getCredentials;return (version==='0.3.0'?createCapiroData3Handlers:createCapiroDataHandlers)(config,[operation])[0].execute;}};
+    handler:changes=>{const config={...transport,now,...changes};if(config.credentialsForCall)delete config.getCredentials;return (version==='0.5.0'?createCapiroData5Handlers:version==='0.4.0'?createCapiroData4Handlers:version==='0.3.0'?createCapiroData3Handlers:createCapiroDataHandlers)(config,[operation])[0].execute;}};
 }

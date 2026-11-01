@@ -5,7 +5,7 @@ export function schemaRelativePath(group){
  const external={artifacts:'../artifacts-0.2/artifact.schema.json','command-tools':'../commands-0.2/tool-interface.schema.json','schedule-tools':'../schedules-0.2/tool-interface.schema.json',
   // Registered successors keep their own disjoint documents; the retained groups above are unchanged.
   'client-record-action-03':'../retrieval-0.3/client-record-action.schema.json','schedule-tools-v3':'../schedules-0.3/tool-interface.schema.json',
-  'capiro-data-v3':'../retrieval-0.3/capiro-data.schema.json'};
+  'capiro-data-v3':'../retrieval-0.3/capiro-data.schema.json','capiro-data-v5':'../retrieval-0.5/capiro-data.schema.json','capiro-data-v4':'../retrieval-0.4/capiro-data.schema.json'};
  return external[group]??`../retrieval-0.2/${group}${group==='client-knowledge-profile'?'-v03':''}.schema.json`;
 }
 

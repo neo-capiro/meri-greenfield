@@ -6,6 +6,7 @@ import {createOperationLifetime} from '../../../packages/runtime/operation-lifet
 import {jsonBody,response,serializedResponse} from '../action-application/http.mjs';
 import {ProductError,productFailure,refuse} from './errors.mjs';
 import {acceptsServingReader} from './currentness-serving-reader.mjs';
+import {researchContextFields} from '../action-host/application-adapters/research-context.mjs';
 const getters=Object.fromEntries(['url','method','headers','signal','body'].map(k=>[k,Object.getOwnPropertyDescriptor(Request.prototype,k).get]));
 /** Transport and membership statuses shared by every product route; routes add their own domain codes. */
 export const PRODUCT_ERROR_STATUSES=Object.freeze({INVALID_REQUEST:400,UNAUTHENTICATED:401,ACCESS_DENIED:403,MEMBERSHIP_REVOKED:403,NOT_FOUND:404,
@@ -61,8 +62,15 @@ export function createProductApplication(options){
    const recheckMembership=()=>lifetime.run(signal=>gate.recheck({principal,credential:auth.slice(7),signal,deadlineMs:accessDeadline}));
    const recheckConversation=conversationCurrentness===undefined?undefined:({conversationId,scopes},readScheduleOriginRows)=>lifetime.run(signal=>{
     const call={credential:auth.slice(7),principal,conversationId,scopes,signal,deadlineMs:accessDeadline};
-    return readScheduleOriginRows!==undefined&&acceptsServingReader(conversationCurrentness)?
-     conversationCurrentness.assertCurrent(call,readScheduleOriginRows):conversationCurrentness.assertCurrent(call);
+    const subject=async()=>{
+     const metadata=management?await management.metadata(conversationId):null;
+     return metadata?.scopeKind==='research_portfolio'?researchContextFields(metadata):{};
+    };
+    // The scheduled owner selects its own positively verified origin first.
+    // Only the ordinary path reads Core metadata; absence/refusal never falls back.
+    return acceptsServingReader(conversationCurrentness)?
+     conversationCurrentness.assertCurrent(call,readScheduleOriginRows,undefined,subject):
+     subject().then(subject=>conversationCurrentness.assertCurrent({...call,...subject}));
    });
    const management=conversationManagement?.forRequest({credential:auth.slice(7),principal,signal:lifetime.signal,deadlineMs:accessDeadline});
    const sourceReader=conversationSourceReader?.forRequest({credential:auth.slice(7),principal,signal:lifetime.signal,deadlineMs:accessDeadline});

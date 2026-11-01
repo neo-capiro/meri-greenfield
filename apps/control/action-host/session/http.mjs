@@ -23,8 +23,8 @@ export function createActionSessionApplication(options){
    const length=header('content-length');if(length!==null&&(!/^\d+$/u.test(length)||!Number.isSafeInteger(Number(length))||Number(length)>maxRequestBytes))return fail(413,'SESSION_REQUEST_TOO_LARGE');
    const deadlineMs=now()+maxRequestMs;life=createOperationLifetime({deadlineMs,now,signal:info.signal,errorFactory:()=>new Error('SESSION_REFUSED')});
    let hints;try{hints=await jsonBody({...info,length:length===null?null:Number(length)},maxRequestBytes,life,()=>life.check());}catch(error){const status=canonicalErrorResponse(error,{}).status;if(status===413)return fail(413,'SESSION_REQUEST_TOO_LARGE');if(status===400)return fail(400,'SESSION_REQUEST_INVALID');throw error;}
-   try{own(hints,[],['conversationId','runId','clientId']);}catch{return fail(400,'SESSION_REQUEST_INVALID');}
-   const issued=await life.run(signal=>issue({identityCredential:auth.slice(7),hints,signal,deadlineMs}));life.check();const admitted=assertActionSessionReceipt(issued,now());life.check();if(info.signal.aborted)throw Error('SESSION_REFUSED');return response(200,admitted);
+   try{own(hints,[],['conversationId','runId','clientId','scopeKind']);}catch{return fail(400,'SESSION_REQUEST_INVALID');}
+   const issued=await life.run(signal=>issue({identityCredential:auth.slice(7),hints,signal,deadlineMs}));life.check();const admitted=assertActionSessionReceipt(issued,now(),{research:hints.scopeKind==='research_portfolio'});life.check();if(info.signal.aborted)throw Error('SESSION_REFUSED');return response(200,admitted);
   }catch{return fail(401,'SESSION_REFUSED');}finally{life?.close();}
  }});
 }

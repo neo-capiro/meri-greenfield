@@ -9,9 +9,9 @@ function fixture({runtime=false}={}){
  const entries=[projectRunRow(row(2),principal),projectRunRow(row(1,{general:true,usage:'absent'}),principal)],state={reads:0,membership:0,metadata:0,fenced:false,revoked:false,suppressed:new Set(),archived:new Set(),afterRead:null};
  const gate={async admit({credential}){if(credential!=='SYNTHETIC')throw new ProductError('UNAUTHENTICATED');return {principal,expiresAtMs:2000};},async recheck(){state.membership++;if(state.revoked)throw new ProductError('MEMBERSHIP_REVOKED');}};
  const currentness={async assertCurrent(){throw Error('existing metadata owner should provide ordinary currentness');}};
- const management={assertActiveBinding(){throw Error('read-only');},forRequest(){return {async metadata(conversationId){assert.equal(state.fenced,true);state.metadata++;if(state.revoked)throw new ProductError('ACCESS_DENIED');return {conversationId,clientId:conversationId===id(102)?principal.clientIds[0]:null,status:state.archived.has(conversationId)?'archived':'active'};}};}};
+ const management={assertActiveBinding(){throw Error('read-only');},forRequest(){return {async metadata(conversationId){assert.equal(state.fenced,true);state.metadata++;if(state.revoked)throw new ProductError('ACCESS_DENIED');return {conversationId,clientId:conversationId===id(102)?principal.clientIds[0]:null,status:state.archived.has(conversationId)?'archived':'active',...(state.research&&conversationId===id(101)?{scopeKind:'research_portfolio'}:{})};}};}};
  const retention={async assertServable({subjectId}){if(state.suppressed.has(subjectId))throw Object.assign(Error('RETENTION_SUPPRESSED'),{code:'RETENTION_SUPPRESSED'});},async withRelease(subjects,release){state.fenced=true;try{return await release(undefined,v=>retention.assertServable(v));}finally{state.fenced=false;}}};
- const store={history:{async list(){throw Error('no conversation inventory');},async transcript(){throw Error('no transcript scan');}},runs:{async list(){state.reads++;state.afterRead?.();return {entries,nextCursor:null};},async detail({request:r}){state.reads++;state.afterRead?.();return entries.find(e=>e.summary.runId===r.runId);}}};
+ const store={history:{async list(){throw Error('no conversation inventory');},async transcript(){throw Error('no transcript scan');}},runs:{async list({request:q}){state.reads++;state.afterRead?.();return {entries:q.scope.kind==='general'?entries.filter(e=>e.summary.clientIds.length===0):entries,nextCursor:null};},async detail({request:r}){state.reads++;state.afterRead?.();return entries.find(e=>e.summary.runId===r.runId);}}};
  const history=createConversationHistoryService({store,gate,retention}),limits={maxRequestMs:1000,maxRequestBytes:4096,maxResponseBytes:131072};
  const app=runtime?createRuntimeProductApplications({configuration:{sourceEnabled:false,limits:{requestMs:1000,requestBytes:4096},native:{maxResponseBytes:131072}},sessions:{},ports:captureRuntimePorts({conversationMembership:gate,conversationCurrentness:currentness,conversationManagement:management}),conversationStore:store,retention,now:()=>1000}):createRunIndexApplication({store,history,gate,currentness,management,retention,now:()=>1000,limits});
  const read=(route='list',body=request,credential='SYNTHETIC')=>app.handle(new Request('https://example.invalid/api/conversations/runs/'+route,{method:'POST',headers:{authorization:'Bearer '+credential,'content-type':'application/json'},body:JSON.stringify(body)}));
@@ -27,4 +27,9 @@ test('archive and retention remove rows, final revocation withholds entire resul
 });
 test('detail remains an exact current read and never represents physical cancellation or execution authority',async()=>{
  const f=fixture(),r=await f.read('detail',{schemaVersion:'meri.run-detail/1',conversationId:id(101),runId:id(201)});assert.equal(r.status,200,await r.clone().text());const value=await r.json();assert.equal(value.run.runId,id(201));assert.equal(value.continuation.physicalStopVerified,false);assert.equal(value.run.usage.recording,'not-recorded');
+});
+test('General run filter cannot infer Research eligibility from private-user storage',async()=>{
+ const f=fixture();f.state.research=true;
+ const response=await f.read('list',{...request,scope:{kind:'general'}});
+ assert.equal(response.status,200);assert.ok((await response.json()).runs.every(row=>row.conversationId!==id(101)));
 });
