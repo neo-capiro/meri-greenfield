@@ -33,7 +33,8 @@ export function createMemoryJournalStore(){
    const page=mine.slice(start,start+limit).map(([[,,conversationId,deliveryId],row],i)=>structuredClone({conversationId,deliveryId,createdAt:new Date(NOW-start-i).toISOString(),record:row.record,state:row.state,outcome:row.outcome}));
    const last=page.at(-1);return {entries:page,next:mine.length>start+limit?{conversationId:last.conversationId,deliveryId:last.deliveryId}:null};},
   async countForActor({actor:a,operations,nowMs}){if(state.readDown)throw Error('synthetic store unavailable');
-   return [...rows].filter(([at,row])=>{const [t,actor]=JSON.parse(at);return t===a.tenantId&&actor===a.actorId&&row.state==='PREPARED'&&operations.includes(row.record.operation.id)&&row.outcome.release.expiresAtMs>nowMs;}).length;}}};
+   const open=new Map();for(const [at,row] of rows){const [t,actor,conversationId]=JSON.parse(at);if(t===a.tenantId&&actor===a.actorId&&row.state==='PREPARED'&&operations.includes(row.record.operation.id)&&row.outcome.release.expiresAtMs>nowMs)open.set(conversationId,(open.get(conversationId)??0)+1);}
+   return [...open].map(([conversationId,n])=>({conversationId,open:n}));}}};
 }
 /** A task.create composition: real metadata owner + real prepare-only command interface. */
 export function commandComposition({tenantId='tenant',action='task.create',approverActorId='reviewer'}={}){

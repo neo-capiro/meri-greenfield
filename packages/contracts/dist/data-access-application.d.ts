@@ -20,11 +20,6 @@ export interface DataAccessFamily {
   freshness: string | null;
   structured: boolean;
   clientScope: 'required' | 'optional';
-  /**
-   * @minItems 1
-   * @maxItems 32
-   */
-  operations: [string, ...string[]];
   state: DataAccessState;
   requires: 'mailbox' | null;
 }

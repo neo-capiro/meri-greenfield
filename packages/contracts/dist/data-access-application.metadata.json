@@ -69,8 +69,8 @@
     },
     {
       "path": "../../apps/control/data-access/reader.mjs",
-      "sha256": "857a97d7d195868597bef5091cf7fc521d1ebc5e4a7ad563289f78af07eb4c31",
-      "bytes": 5927
+      "sha256": "d420a84947c869202ae530b527f21802b54db66b239e72c8c918a4776407bfb5",
+      "bytes": 5836
     },
     {
       "path": "../../apps/control/product-access/errors.mjs",
@@ -89,8 +89,8 @@
     },
     {
       "path": "../../apps/runtime/product-ports/capability-policy.mjs",
-      "sha256": "0d335e6d9a893ab439f3b12b6b007b4bfd14d21a55f3d7677c551be0557b766c",
-      "bytes": 8257
+      "sha256": "f1a8320b31dbf487eb05e695283c596bc841687d481890e7a58cf56f589a3f20",
+      "bytes": 9626
     },
     {
       "path": "../../apps/runtime/product-ports/data-access.mjs",
@@ -109,8 +109,8 @@
     },
     {
       "path": "../../apps/worker/conversation/reads/family-guidance.mjs",
-      "sha256": "d79669ececcc0243521ad131787fed04e407c668807a5e186bfda1063ee3213b",
-      "bytes": 30100
+      "sha256": "ba56c23dad2daf07c81ef2bcab6fe591c24fc802f25a5e691794657bac9ad9e1",
+      "bytes": 30527
     },
     {
       "path": "data-access-application/protocol.mjs",
@@ -119,8 +119,8 @@
     },
     {
       "path": "data-access-application/README.md",
-      "sha256": "e3606baf4513fac6a0280d1becb5d46238f0e3f82eab5ea6b9b0d5b2d58f352c",
-      "bytes": 2796
+      "sha256": "4e2fbcabdbece0de90790d9ea055510ea0a0c557ea1f5e739fc65dcbb322f00f",
+      "bytes": 2782
     },
     {
       "path": "data-access-application/receive.mjs",
@@ -129,8 +129,8 @@
     },
     {
       "path": "data-access-application/schema.mjs",
-      "sha256": "acbdd2526651e1541c1f3c1945544e4ffb240ddc5e9d5acbf4f47b96cf22214f",
-      "bytes": 2731
+      "sha256": "cad9eec9d28fc72b1d2e1fe8ec588dc0fce0730bc9bb2d64b975cfa604f6e602",
+      "bytes": 2607
     },
     {
       "path": "document-application/boundary.mjs",
@@ -148,7 +148,7 @@
       "bytes": 8487
     }
   ],
-  "schemaSha256": "b4d3a0a1303fcb3c6c8e733a3f6bf347611189fbdc566b0cc5da23846fa80b7d",
+  "schemaSha256": "d5bde50f3119fc2c43cc220bb26bd20a92a4299b315612d72a91d47f97db622b",
   "browserInputs": [
     "artifacts-0.2/artifact-formats.mjs",
     "data-access-application/data-access-application-receiver.mjs",

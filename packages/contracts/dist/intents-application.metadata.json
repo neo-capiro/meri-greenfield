@@ -142,8 +142,8 @@
     },
     {
       "path": "../../apps/control/intents/approval.mjs",
-      "sha256": "233102c3cfda5d97c5717d11509bde55784c6a0193743a53c98f8dd0f47615ea",
-      "bytes": 57649
+      "sha256": "de69f87015e054fb2a4ee24499b5d35bc4d9234e3d61baa4a7a26ab7e2263186",
+      "bytes": 58011
     },
     {
       "path": "../../apps/control/intents/faults.mjs",
@@ -152,8 +152,8 @@
     },
     {
       "path": "../../apps/control/intents/http.mjs",
-      "sha256": "b22ac4ec112213a3276961f8faae1ab1907f66f6666548706af98d480ebbace3",
-      "bytes": 4045
+      "sha256": "148f86d302bd704ffb94a49544b3146414a96e0129e60ee5310cfc9a83d61719",
+      "bytes": 4935
     },
     {
       "path": "../../apps/control/product-access/errors.mjs",

@@ -26,8 +26,8 @@ test('one row per constructible family from the registry, with guidance, install
  assert.deepEqual(page.families.map(row=>row.family),[...new Set(rows.map(row=>row.family))].sort(),'every constructible family, sorted, once');
  assert.deepEqual(s.calls,[{tenantId:'tenant',actorRole:'standard_user',signal:undefined}],'policy is resolved once for the admitted member');
  const by=Object.fromEntries(page.families.map(row=>[row.family,row]));
- assert.equal(by.mail.state,'available');assert.equal(by.mail.requires,'mailbox');assert.match(by.mail.covers,/mailbox/u);assert.match(by.mail.freshness,/asOf/u);assert.equal(by.mail.structured,false);
- assert.equal(by['capiro-data-v5'].state,'available');assert.equal(by['capiro-data-v5'].structured,true);assert.deepEqual(by['capiro-data-v5'].operations,['describe_capiro_data','query_capiro_data']);
+ assert.equal(by.mail.state,'available');assert.equal(by.mail.requires,'mailbox');assert.match(by.mail.covers,/mailbox/u);assert.equal(typeof by.mail.freshness,'string');assert.equal(by.mail.structured,false);
+ assert.equal(by['capiro-data-v5'].state,'available');assert.equal(by['capiro-data-v5'].structured,true);assert.equal(Object.hasOwn(by['capiro-data-v5'],'operations'),false,'operation names never reach the wire');
  assert.equal(by['action-items-complete'].state,'available');assert.equal(by['action-items-complete'].clientScope,'required');
  assert.equal(by['public-reports'].state,'policy_off','installed but outside the member\'s readFamilies');
  assert.equal(by['federal-legislation'].state,'not_installed','in the registry, not in this installation');

@@ -73,16 +73,6 @@
             "optional"
           ]
         },
-        "operations": {
-          "type": "array",
-          "items": {
-            "type": "string",
-            "pattern": "^[a-z][a-z0-9_.-]{0,127}$"
-          },
-          "minItems": 1,
-          "maxItems": 32,
-          "uniqueItems": true
-        },
         "state": {
           "$ref": "#/$defs/DataAccessState"
         },
@@ -105,7 +95,6 @@
         "freshness",
         "structured",
         "clientScope",
-        "operations",
         "state",
         "requires"
       ],

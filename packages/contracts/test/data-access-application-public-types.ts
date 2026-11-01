@@ -5,7 +5,9 @@ const exact:DataAccessResponse|DataAccessErrorResponse=response;void exact;
 if(!('error'in response)){
  const version:'meri.data-access/1'=response.schemaVersion,client:string|null=response.clientId,reads:boolean=response.generalReads;void version;void client;void reads;
  for(const family of response.families){const row:DataAccessFamily=family;const state:DataAccessState=row.state;const requires:'mailbox'|null=row.requires;const scope:'required'|'optional'=row.clientScope;void state;void requires;void scope;
-  const covers:string|null=row.covers,freshness:string|null=row.freshness,structured:boolean=row.structured,operations:string[]=row.operations;void covers;void freshness;void structured;void operations;}
+  const covers:string|null=row.covers,freshness:string|null=row.freshness,structured:boolean=row.structured;void covers;void freshness;void structured;
+  // @ts-expect-error operation names are not part of the wire contract
+  const operations=row.operations;void operations;}
  for(const relation of response.relations){const row:DataAccessRelation=relation;const source:'public'|'client_records'=row.source;void row;void source;}
  const closed:'not_installed'|'policy_off'|'client_required'|'available'=response.families[0]!.state;void closed;
 }

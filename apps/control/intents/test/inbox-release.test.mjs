@@ -15,7 +15,7 @@ function setup({page,suppressed=new Set(),fenceError=null}){
    if(suppressed.has(subject.subjectId))throw Object.assign(Error('RETENTION_SUPPRESSED'),{code:'RETENTION_SUPPRESSED'});});
  }};
  const gate={async admit(){return {principal,expiresAtMs:NOW+60000};},async recheck({principal:p}){fence.rechecks=(fence.rechecks??0)+1;return p;}};
- const owner={async inbox(){return page;},async list(){throw Error('unused');},async decide(){throw Error('unused');},async inboxCount(){return {open:page.rows.length,checkedAt:new Date(NOW).toISOString()};}};
+ const owner={async inbox(){return page;},async list(){throw Error('unused');},async decide(){throw Error('unused');},async inboxCount(){const by=new Map();for(const r of page.rows)by.set(r.conversationId,(by.get(r.conversationId)??0)+1);const conversations=[...by].map(([conversationId,open])=>({conversationId,open}));return {open:page.rows.length,checkedAt:new Date(NOW).toISOString(),conversations};}};
  const app=createIntentApplication({owner,gate,now:()=>NOW,limits:{maxRequestMs:5000,maxRequestBytes:4096,maxResponseBytes:262144},retention});
  return {fence,post:async(path=INTENT_PATHS.inbox,body={})=>{const r=await app.handle(new Request('http://127.0.0.1'+path,{method:'POST',headers:{'content-type':'application/json',authorization:'Bearer token'},body:JSON.stringify(body)}));return {status:r.status,json:await r.json()};}};
 }
@@ -32,5 +32,11 @@ test('nothing suppressed serves the page unchanged; an empty page needs no fence
  const plain=await setup({page}).post();assert.deepEqual(plain.json,page);
  const empty=setup({page:{rows:[],next:null,pending:{count:0,complete:true}}});const nothing=await empty.post();assert.equal(nothing.status,200);assert.deepEqual(empty.fence.released,[]);
  const barrier=await setup({page,fenceError:'RETENTION_RECOVERY_BARRIER'}).post();assert.equal(barrier.status,502);assert.equal(barrier.json.error.code,'PRODUCT_UNAVAILABLE');
- const count=await setup({page}).post(INTENT_PATHS.inboxCount,{});assert.equal(count.status,200);assert.deepEqual(count.json,{open:4,checkedAt:new Date(NOW).toISOString()});
+ const count=await setup({page}).post(INTENT_PATHS.inboxCount,{});assert.equal(count.status,200);assert.deepEqual(count.json,{open:4,checkedAt:new Date(NOW).toISOString()},'the breakdown never leaves the control');
+});
+test('the badge count leaves out a suppressed conversation exactly as the page does, and an empty count needs no fence',async()=>{
+ const s=setup({page,suppressed:new Set([id(1)])}),count=await s.post(INTENT_PATHS.inboxCount,{});
+ assert.equal(count.status,200);assert.deepEqual(count.json,{open:2,checkedAt:new Date(NOW).toISOString()});assert.deepEqual(s.fence.released,[[id(1),id(2),id(3)]]);
+ const none=setup({page:{rows:[],next:null,pending:{count:0,complete:true}}});assert.deepEqual((await none.post(INTENT_PATHS.inboxCount,{})).json,{open:0,checkedAt:new Date(NOW).toISOString()});assert.deepEqual(none.fence.released,[]);
+ const barrier=await setup({page,fenceError:'RETENTION_RECOVERY_BARRIER'}).post(INTENT_PATHS.inboxCount,{});assert.equal(barrier.status,502);
 });

@@ -597,17 +597,19 @@ async function decideWatch(life,principal,entry,r){
   }finally{life.close();}
  }
  /** The badge count: prepared inbox rows still inside their release window, before any decision owner is consulted. It can
-  * only overstate what the inbox page shows as awaiting (an approved, unexecuted proposal still counts until its window ends). */
+  * only overstate what the inbox page shows as awaiting (an approved, unexecuted proposal still counts until its window ends).
+  * `conversations` is the per-conversation breakdown the serving route uses to leave out suppressed conversations; `open` is
+  * their sum before that fence. */
  async function inboxCount({principal,request,signal,deadlineMs}){
   enabled();if(typeof journal.countForActor!=='function')fail('INTENT_JOURNAL_UNAVAILABLE');
   try{own(request,[]);}catch{fail('INTENT_REQUEST_INVALID');}
   const life=lifetime(deadlineMs,signal),at=c.now();
   try{
-   let open;
-   try{open=await life.run(s=>journal.countForActor.call(c.journal,{actor:{tenantId:principal.tenantId,actorId:principal.actorId},operations:INBOX_OPERATIONS,nowMs:at,signal:s}));}
+   let conversations;
+   try{conversations=data(await life.run(s=>journal.countForActor.call(c.journal,{actor:{tenantId:principal.tenantId,actorId:principal.actorId},operations:INBOX_OPERATIONS,nowMs:at,signal:s})));}
    catch(error){const f=productFailure(error);if(f&&['DEADLINE','CANCELLED'].includes(f.code))throw error;fail('INTENT_JOURNAL_UNAVAILABLE');}
-   if(!Number.isSafeInteger(open)||open<0)fail('INTENT_JOURNAL_UNAVAILABLE');
-   return data({open,checkedAt:new Date(at).toISOString()});
+   if(!Array.isArray(conversations)||conversations.some(c=>typeof c?.conversationId!=='string'||!UUID.test(c.conversationId)||!Number.isSafeInteger(c.open)||c.open<0))fail('INTENT_JOURNAL_UNAVAILABLE');
+   return data({open:conversations.reduce((n,c)=>n+c.open,0),checkedAt:new Date(at).toISOString(),conversations});
   }finally{life.close();}
  }
  return Object.freeze({decide,list,inbox,inboxCount});

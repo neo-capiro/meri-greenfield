@@ -64,7 +64,7 @@ export function createDataAccessReader(configuration){
    catch(error){const owned=productFailure(error);if(owned&&['DEADLINE','CANCELLED'].includes(owned.code))throw error;fail('DATA_ACCESS_POLICY_UNAVAILABLE');}
    signal?.throwIfAborted();
    const rows=families.map(entry=>({family:entry.family,covers:entry.covers,freshness:entry.freshness,structured:entry.structured,clientScope:entry.clientScope,
-    operations:entry.operations.map(op=>op.id).filter((id,index,all)=>all.indexOf(id)===index),state:state(entry,policy,r.clientId),requires:entry.requires}));
+    state:state(entry,policy,r.clientId),requires:entry.requires}));
    const sql=rows.filter(row=>SQL_FAMILIES.includes(row.family)).reduce((best,row)=>rank(row.state)>rank(best)?row.state:best,'not_installed');
    const relations=[...RETAINED_PUBLIC_RELATIONS.map(name=>({name,source:'public',state:sql})),
     ...RETAINED_CAPIRO_PRIVATE_RELATIONS.map(name=>({name,source:'client_records',state:sql==='available'&&r.clientId===null?'client_required':sql}))];

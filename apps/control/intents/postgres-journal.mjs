@@ -130,14 +130,17 @@ export function createPostgresIntentJournalStore({pool}){
     return data({entries:page,next:rows.length>limit?{conversationId:last.conversationId,deliveryId:last.deliveryId}:null});
    });
   },
-  /** How many of one actor's prepared inbox rows are still inside their release window at `nowMs`: a cheap badge count read
-   * before any decision owner is consulted, so it can only overstate what the inbox page later shows as awaiting. */
+  /** Per conversation, how many of one actor's prepared inbox rows are still inside their release window at `nowMs`: a cheap
+   * badge count read before any decision owner is consulted, so it can only overstate what the inbox page later shows as
+   * awaiting. Grouped by conversation so the serving route can leave out a retention-suppressed conversation. */
   async countForActor({actor:rawActor,operations:rawOperations,nowMs,signal}){
    const a=data(own(rawActor,['tenantId','actorId']));validateShape('Identity',a);const operations=inboxOperations(rawOperations);
    if(!Number.isSafeInteger(nowMs)||nowMs<1)refuse('INTENT_JOURNAL_STATE');
    return tx(signal,async client=>{
-    const rows=(await client.query(`SELECT count(*)::int AS n FROM ${TABLE} WHERE tenant_id=$1 AND actor_id=$2 AND delivery_id LIKE 'sdk:%' AND state='PREPARED' AND record->'operation'->>'id' = ANY($3::text[]) AND (outcome->'release'->>'expiresAtMs')::numeric > $4`,[a.tenantId,a.actorId,operations,nowMs])).rows;
-    const n=rows[0]?.n;if(!Number.isSafeInteger(n)||n<0)refuse('INTENT_JOURNAL_STATE');return n;
+    const rows=(await client.query(`SELECT conversation_id,count(*)::int AS n FROM ${TABLE} WHERE tenant_id=$1 AND actor_id=$2 AND delivery_id LIKE 'sdk:%' AND state='PREPARED' AND record->'operation'->>'id' = ANY($3::text[]) AND (outcome->'release'->>'expiresAtMs')::numeric > $4 GROUP BY conversation_id`,[a.tenantId,a.actorId,operations,nowMs])).rows;
+    if(!Array.isArray(rows)||rows.length>100000)refuse('INTENT_JOURNAL_STATE');
+    return data(rows.map(row=>{key({tenantId:a.tenantId,actorId:a.actorId,conversationId:row.conversation_id,deliveryId:'sdk:'+'0'.repeat(64)});
+     if(!Number.isSafeInteger(row.n)||row.n<1)refuse('INTENT_JOURNAL_STATE');return {conversationId:row.conversation_id,open:row.n};}));
    },{readOnly:true});
   },
   /** DURABLE per-original-run browser-download reservation. One canonical transaction: run-scoped advisory lock,

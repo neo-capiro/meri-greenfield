@@ -21,9 +21,10 @@ function fixture(seed){
   assert.ok(sql.includes('meri_intents.preparations'));
   const actorRows=[...rows].map(([k,r])=>[JSON.parse(k),r]).filter(([[t,a,,d]])=>t===p[0]&&a===p[1]&&d.startsWith('sdk:'));
   if(sql.startsWith('SELECT delivery_id FROM'))return answer(rows.has(JSON.stringify(p.slice(0,4)))?[{delivery_id:p[3]}]:[]);
-  if(sql.startsWith('SELECT count(*)::int AS n')){
-   const [,,ops,nowMs]=p;assert.match(sql,/state='PREPARED'/u);assert.match(sql,/delivery_id LIKE 'sdk:%'/u);
-   return answer([{n:actorRows.filter(([,r])=>r.state==='PREPARED'&&ops.includes(r.record.operation.id)&&r.outcome.release.expiresAtMs>nowMs).length}]);
+  if(sql.startsWith('SELECT conversation_id,count(*)::int AS n')){
+   const [,,ops,nowMs]=p;assert.match(sql,/state='PREPARED'/u);assert.match(sql,/delivery_id LIKE 'sdk:%'/u);assert.match(sql,/GROUP BY conversation_id$/u);
+   const open=new Map();for(const [,r] of actorRows)if(r.state==='PREPARED'&&ops.includes(r.record.operation.id)&&r.outcome.release.expiresAtMs>nowMs)open.set(r.conversation_id,(open.get(r.conversation_id)??0)+1);
+   return answer([...open].map(([conversation_id,n])=>({conversation_id,n})));
   }
   if(sql.startsWith('SELECT conversation_id,delivery_id,created_at,')){
    assert.match(sql,/ORDER BY created_at DESC,conversation_id DESC,delivery_id DESC LIMIT \d+$/u);assert.match(sql,/state='PREPARED' AND record->'operation'->>'id' = ANY\(\$\d::text\[\]\)/u);
@@ -64,13 +65,13 @@ test('the cursor pages newest first by (created_at, conversation, delivery); a f
  await assert.rejects(f.store.listForActor({actor,limit:2,operations:[]}),e=>e.message==='INTENT_JOURNAL_STATE');
  await assert.rejects(f.store.listForActor({actor,limit:2,operations:['DROP TABLE']}),e=>e.message==='INTENT_JOURNAL_STATE');
 });
-test('countForActor counts prepared inbox rows still inside their window for this actor only, in one read-only statement',async()=>{
+test('countForActor counts prepared inbox rows still inside their window for this actor only, per conversation, in one read-only statement',async()=>{
  const f=fixture([
   row({conversationId:id(11),n:1,at:1,expiresAtMs:2000}),row({conversationId:id(12),n:2,at:2,expiresAtMs:999}),row({conversationId:id(13),n:3,at:3,operation:'save_note',expiresAtMs:2000}),
-  row({conversationId:id(14),n:4,at:4,state:'PENDING'}),row({conversationId:id(21),n:5,at:5,actorId:'someone-else',expiresAtMs:2000}),
+  row({conversationId:id(14),n:4,at:4,state:'PENDING'}),row({conversationId:id(21),n:5,at:5,actorId:'someone-else',expiresAtMs:2000}),row({conversationId:id(11),n:6,at:6,expiresAtMs:2000}),
  ]);
- assert.equal(await f.store.countForActor({actor,operations:OPERATIONS,nowMs:1000}),1);
- const count=f.commands.find(c=>c.sql.startsWith('SELECT count'));assert.deepEqual(count.p,['tenant','actor',OPERATIONS,1000]);
+ assert.deepEqual(await f.store.countForActor({actor,operations:OPERATIONS,nowMs:1000}),[{conversationId:id(11),open:2}]);
+ const count=f.commands.find(c=>c.sql.startsWith('SELECT conversation_id,count'));assert.deepEqual(count.p,['tenant','actor',OPERATIONS,1000]);
  assert.ok(f.commands.some(c=>c.sql==='BEGIN ISOLATION LEVEL REPEATABLE READ READ ONLY'),'the count is a read-only transaction');
  await assert.rejects(f.store.countForActor({actor,operations:OPERATIONS,nowMs:0}),e=>e.message==='INTENT_JOURNAL_STATE');
 });

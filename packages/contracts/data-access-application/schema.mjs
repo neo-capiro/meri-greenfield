@@ -14,7 +14,7 @@ export function dataAccessSchema({errorStatuses,fieldPattern,states,requirements
   * must own besides policy; the caller joins it with their own connections rather than this contract claiming one. */
  DataAccessFamily:object({family:{type:'string',pattern:'^[a-z][a-z0-9-]{0,63}$'},covers:{anyOf:[{type:'string',minLength:1,maxLength:240},{type:'null'}]},
   freshness:{anyOf:[{type:'string',minLength:1,maxLength:260},{type:'null'}]},structured:{type:'boolean'},clientScope:{enum:['required','optional']},
-  operations:{type:'array',items:{type:'string',pattern:'^[a-z][a-z0-9_.-]{0,127}$'},minItems:1,maxItems:32,uniqueItems:true},state:ref('DataAccessState'),
+  state:ref('DataAccessState'),
   requires:{anyOf:[{enum:[...requirements]},{type:'null'}]}}),
  /** A relation the describe path publishes; client_records relations need a selected client. */
  DataAccessRelation:object({name:{type:'string',pattern:'^[a-z][a-z0-9_]{0,63}$'},source:{enum:['public','client_records']},state:ref('DataAccessState')}),

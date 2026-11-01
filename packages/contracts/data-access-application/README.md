@@ -8,8 +8,7 @@ reader's actual answer. It grants no read authority and is not deployment, membe
   generalReads, families, relations}` for the admitted member and the named client (or General when null). The client must be
   one the current Core admission holds (`DATA_ACCESS_CLIENT_REFUSED` otherwise).
 - `families`: one row per read family the worker can construct (`reads/families.mjs`, the same registry
-  `scripts/retrieval-audit.mjs` reconciles), sorted: `{family, covers, freshness, structured, clientScope, operations, state,
-  requires}`. `covers` and `freshness` are the family guidance's `covers` and `returns` texts (null for a family without
+  `scripts/retrieval-audit.mjs` reconciles), sorted: `{family, covers, freshness, structured, clientScope, state, requires}`. `covers` and `freshness` are the family guidance's `covers` and `returns` texts (null for a family without
   guidance). `state` is `not_installed`, `policy_off`, `client_required` or `available`, composed from the control's installed
   read operations and the member's resolved capability policy (platform ∧ tenant ∧ role, the same resolver every run uses).
   `requires` is `mailbox` for the mail family and null otherwise; whether a mailbox is connected is the member's own
