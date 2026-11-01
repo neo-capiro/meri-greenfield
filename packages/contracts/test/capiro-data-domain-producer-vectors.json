@@ -1,0 +1,661 @@
+{
+  "kind": "SYNTHETIC_SOURCE_PRODUCER_VECTORS_NOT_DATABASE_EVIDENCE",
+  "generatedBy": "Actual Core createPrivateSqlQueries/descriptor/gate; mocked catalog and executor only",
+  "research": {
+    "source": "research_portfolio",
+    "scope": {
+      "kind": "research_portfolio",
+      "researchPortfolioId": "10000000-0000-4000-8000-000000000009",
+      "researchPortfolioName": "Synthetic original portfolio",
+      "researchPortfolioRevision": 1,
+      "scopeVersion": "db7bf148524d8544bf00fb335df8c60a499a88e2f9e8c3054e7a435397a095a1",
+      "currentResearchPortfolioName": "Synthetic current portfolio",
+      "currentResearchPortfolioRevision": 2,
+      "stale": true,
+      "resourceRevision": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd"
+    },
+    "describe": {
+      "version": "0.3.0",
+      "generatedAt": "2026-11-01T04:18:24.567Z",
+      "scope": {
+        "kind": "research_portfolio",
+        "researchPortfolioId": "10000000-0000-4000-8000-000000000009",
+        "researchPortfolioName": "Synthetic original portfolio",
+        "researchPortfolioRevision": 1,
+        "scopeVersion": "db7bf148524d8544bf00fb335df8c60a499a88e2f9e8c3054e7a435397a095a1",
+        "currentResearchPortfolioName": "Synthetic current portfolio",
+        "currentResearchPortfolioRevision": 2,
+        "stale": true,
+        "resourceRevision": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd"
+      },
+      "ok": true,
+      "relations": [
+        {
+          "name": "research_portfolios",
+          "description": "Current scalar summary of the conversation-captured Research Portfolio.",
+          "fields": [
+            {
+              "name": "portfolio_id",
+              "type": "string",
+              "nullable": false,
+              "description": "The one portfolio captured by the owned conversation; a selector cannot change it.",
+              "pgType": "uuid"
+            },
+            {
+              "name": "name",
+              "type": "string",
+              "nullable": false,
+              "description": "Current saved portfolio name.",
+              "pgType": "text"
+            },
+            {
+              "name": "purpose",
+              "type": "string",
+              "nullable": true,
+              "description": "Full saved purpose.",
+              "pgType": "text"
+            },
+            {
+              "name": "mode",
+              "type": "string",
+              "nullable": false,
+              "description": "Saved portfolio mode.",
+              "pgType": "text"
+            },
+            {
+              "name": "lifecycle",
+              "type": "string",
+              "nullable": false,
+              "description": "Current active or archived lifecycle.",
+              "pgType": "text"
+            },
+            {
+              "name": "revision",
+              "type": "integer",
+              "nullable": false,
+              "description": "Current portfolio revision; not the original conversation capture revision.",
+              "pgType": "int4"
+            },
+            {
+              "name": "my_role",
+              "type": "string",
+              "nullable": false,
+              "description": "Current actor explicit grant role; no other user grants are exported.",
+              "pgType": "text"
+            },
+            {
+              "name": "archived_at",
+              "type": "timestamp",
+              "nullable": true,
+              "description": "Saved archive instant; null when absent.",
+              "pgType": "timestamp with time zone"
+            },
+            {
+              "name": "created_at",
+              "type": "timestamp",
+              "nullable": false,
+              "description": "Portfolio creation instant.",
+              "pgType": "timestamp with time zone"
+            },
+            {
+              "name": "updated_at",
+              "type": "timestamp",
+              "nullable": false,
+              "description": "Saved last update instant.",
+              "pgType": "timestamp with time zone"
+            }
+          ],
+          "primaryKey": [
+            "portfolio_id"
+          ],
+          "relationships": [],
+          "grain": "One current authorized captured portfolio per portfolio_id.",
+          "coverage": {
+            "basis": "authorized_research_portfolio",
+            "limitations": [
+              "Requires the owned conversation capture and a current explicit viewer-or-better grant. General/client membership alone does not grant access.",
+              "Active and archived portfolios are retained. Captured and current revisions are distinct; an old valid capture is not silently repinned.",
+              "No arbitrary portfolio discovery, grant-table export, artifacts, private client links or source bodies."
+            ]
+          },
+          "freshness": {
+            "field": "updated_at",
+            "sourceAsOf": null,
+            "sourceVersion": null
+          }
+        },
+        {
+          "name": "research_portfolio_members",
+          "description": "Saved membership scalars in the conversation-captured Research Portfolio.",
+          "fields": [
+            {
+              "name": "portfolio_id",
+              "type": "string",
+              "nullable": false,
+              "description": "The one portfolio captured by the owned conversation; a selector cannot change it.",
+              "pgType": "uuid"
+            },
+            {
+              "name": "id",
+              "type": "string",
+              "nullable": false,
+              "description": "Canonical saved membership row ID.",
+              "pgType": "uuid"
+            },
+            {
+              "name": "target_kind",
+              "type": "string",
+              "nullable": false,
+              "description": "Saved target domain kind.",
+              "pgType": "text"
+            },
+            {
+              "name": "target_id",
+              "type": "string",
+              "nullable": false,
+              "description": "Canonical domain identifier as text; public bill identifiers are not coerced to UUID.",
+              "pgType": "text"
+            },
+            {
+              "name": "label",
+              "type": "string",
+              "nullable": true,
+              "description": "Saved membership label.",
+              "pgType": "text"
+            },
+            {
+              "name": "disposition",
+              "type": "string",
+              "nullable": false,
+              "description": "Saved included, excluded or unresolved disposition.",
+              "pgType": "text"
+            },
+            {
+              "name": "origin",
+              "type": "string",
+              "nullable": false,
+              "description": "Saved membership origin.",
+              "pgType": "text"
+            },
+            {
+              "name": "reason",
+              "type": "string",
+              "nullable": true,
+              "description": "Full saved membership reason.",
+              "pgType": "text"
+            },
+            {
+              "name": "resolved_at",
+              "type": "timestamp",
+              "nullable": true,
+              "description": "Saved resolution instant, not a fresh target lookup.",
+              "pgType": "timestamp with time zone"
+            },
+            {
+              "name": "revision",
+              "type": "integer",
+              "nullable": false,
+              "description": "Current saved membership revision.",
+              "pgType": "int4"
+            },
+            {
+              "name": "created_by_user_id",
+              "type": "string",
+              "nullable": false,
+              "description": "Saved creator UUID.",
+              "pgType": "uuid"
+            },
+            {
+              "name": "updated_by_user_id",
+              "type": "string",
+              "nullable": false,
+              "description": "Saved last editor UUID.",
+              "pgType": "uuid"
+            },
+            {
+              "name": "created_at",
+              "type": "timestamp",
+              "nullable": false,
+              "description": "Membership creation instant.",
+              "pgType": "timestamp with time zone"
+            },
+            {
+              "name": "updated_at",
+              "type": "timestamp",
+              "nullable": false,
+              "description": "Saved last update instant.",
+              "pgType": "timestamp with time zone"
+            }
+          ],
+          "primaryKey": [
+            "portfolio_id",
+            "id"
+          ],
+          "relationships": [
+            {
+              "fields": [
+                "portfolio_id"
+              ],
+              "referencedRelation": "research_portfolios",
+              "referencedFields": [
+                "portfolio_id"
+              ],
+              "cardinality": "many_to_one",
+              "integrity": "enforced"
+            }
+          ],
+          "grain": "One saved membership per portfolio_id and id; distinct targets retain their target_kind and target_id.",
+          "coverage": {
+            "basis": "authorized_research_portfolio",
+            "limitations": [
+              "Requires the owned conversation capture and a current explicit viewer-or-better grant. General/client membership alone does not grant access.",
+              "Active and archived portfolios are retained. Captured and current revisions are distinct; an old valid capture is not silently repinned.",
+              "All current dispositions remain explicit. A saved target reference is not access to its body or proof of current target resolution.",
+              "Evidence/unresolved-input JSON, rules, decisions and artifacts are not projected. Any later hydration uses its current source owner."
+            ]
+          },
+          "freshness": {
+            "field": "updated_at",
+            "sourceAsOf": null,
+            "sourceVersion": null
+          }
+        }
+      ],
+      "limits": {
+        "defaultRowLimit": 200,
+        "maxRowLimit": 1000,
+        "maxOutputBytes": 262144,
+        "maxSqlBytes": 16384,
+        "maxParameters": 64,
+        "maxParameterBytes": 32768
+      },
+      "contract": {
+        "version": "capiro.sql-contract/1",
+        "source": "research_portfolio",
+        "grammar": {
+          "version": "postgresql-select/1",
+          "statements": [
+            "SELECT",
+            "WITH_SELECT"
+          ],
+          "parameterStyle": "dollar-numbered-contiguous",
+          "blockedKeywords": [
+            "insert",
+            "update",
+            "delete",
+            "merge",
+            "into"
+          ],
+          "blockedFunctions": [
+            "set_config",
+            "pg_sleep",
+            "pg_sleep_for",
+            "pg_sleep_until",
+            "pg_terminate_backend",
+            "pg_cancel_backend",
+            "pg_advisory_lock",
+            "pg_advisory_lock_shared",
+            "pg_advisory_xact_lock",
+            "pg_advisory_xact_lock_shared",
+            "pg_try_advisory_lock",
+            "pg_try_advisory_lock_shared",
+            "pg_try_advisory_xact_lock",
+            "pg_try_advisory_xact_lock_shared",
+            "pg_advisory_unlock",
+            "pg_advisory_unlock_all",
+            "pg_advisory_unlock_shared",
+            "pg_notify",
+            "pg_reload_conf",
+            "pg_rotate_logfile",
+            "pg_logical_emit_message",
+            "pg_export_snapshot",
+            "pg_read_file",
+            "pg_read_binary_file",
+            "pg_ls_dir",
+            "pg_stat_file",
+            "lo_import",
+            "lo_export",
+            "lo_get",
+            "lo_put",
+            "lo_create",
+            "lo_creat",
+            "lo_unlink",
+            "lo_open",
+            "lo_from_bytea",
+            "loread",
+            "lowrite",
+            "dblink",
+            "dblink_connect",
+            "dblink_exec"
+          ],
+          "blockedFunctionPatterns": [],
+          "sourceMixing": false
+        },
+        "limits": {
+          "defaultRowLimit": 200,
+          "maxRowLimit": 1000,
+          "maxOutputBytes": 262144,
+          "maxSqlBytes": 16384,
+          "maxParameters": 64,
+          "maxParameterBytes": 32768
+        },
+        "columnCountLimit": null,
+        "revisionSha256": "a7f9b1959ea975b8fa8450f20be307f63d26b43acab4d7f1330000303509e6b2"
+      }
+    },
+    "query": {
+      "version": "0.3.0",
+      "generatedAt": "2026-11-01T04:18:24.568Z",
+      "scope": {
+        "kind": "research_portfolio",
+        "researchPortfolioId": "10000000-0000-4000-8000-000000000009",
+        "researchPortfolioName": "Synthetic original portfolio",
+        "researchPortfolioRevision": 1,
+        "scopeVersion": "db7bf148524d8544bf00fb335df8c60a499a88e2f9e8c3054e7a435397a095a1",
+        "currentResearchPortfolioName": "Synthetic current portfolio",
+        "currentResearchPortfolioRevision": 2,
+        "stale": true,
+        "resourceRevision": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd"
+      },
+      "ok": true,
+      "columns": [
+        {
+          "name": "total",
+          "type": "integer",
+          "pgType": "int8",
+          "nullable": true
+        }
+      ],
+      "rows": [
+        {
+          "total": "1"
+        }
+      ],
+      "rowCount": 1,
+      "relationsUsed": [
+        "research_portfolios"
+      ],
+      "rowLimitReached": false,
+      "byteTruncated": false,
+      "limits": {
+        "rowLimit": 200,
+        "maxOutputBytes": 262144
+      },
+      "coverage": {
+        "basis": "query_bounded",
+        "sourceUniverseComplete": false,
+        "sqlLimit": null,
+        "relations": [
+          {
+            "name": "research_portfolios",
+            "sourceAsOf": null,
+            "sourceVersion": null,
+            "limitations": [
+              "Requires the owned conversation capture and a current explicit viewer-or-better grant. General/client membership alone does not grant access.",
+              "Active and archived portfolios are retained. Captured and current revisions are distinct; an old valid capture is not silently repinned.",
+              "No arbitrary portfolio discovery, grant-table export, artifacts, private client links or source bodies."
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "classic": {
+    "source": "classic_outreach",
+    "scope": {
+      "kind": "classic_outreach",
+      "clientId": null
+    },
+    "describe": {
+      "version": "0.3.0",
+      "generatedAt": "2026-11-01T04:18:24.584Z",
+      "scope": {
+        "kind": "classic_outreach",
+        "clientId": null
+      },
+      "ok": true,
+      "relations": [
+        {
+          "name": "classic_outreach_records",
+          "description": "Saved Classic OutreachRecord scalars under current creator, client and linked-source access.",
+          "fields": [
+            {
+              "name": "id",
+              "type": "string",
+              "nullable": false,
+              "description": "Canonical OutreachRecord ID, not an EngagementCampaign ID.",
+              "pgType": "uuid"
+            },
+            {
+              "name": "client_id",
+              "type": "string",
+              "nullable": true,
+              "description": "Saved explicit client association; null is personal Classic.",
+              "pgType": "uuid"
+            },
+            {
+              "name": "type",
+              "type": "string",
+              "nullable": false,
+              "description": "Saved Classic type; internal outreach_v3 records are excluded.",
+              "pgType": "text"
+            },
+            {
+              "name": "status",
+              "type": "string",
+              "nullable": false,
+              "description": "Saved status, not current provider delivery evidence.",
+              "pgType": "text"
+            },
+            {
+              "name": "title",
+              "type": "string",
+              "nullable": false,
+              "description": "Full saved title.",
+              "pgType": "text"
+            },
+            {
+              "name": "subject",
+              "type": "string",
+              "nullable": true,
+              "description": "Full saved subject.",
+              "pgType": "text"
+            },
+            {
+              "name": "body",
+              "type": "string",
+              "nullable": true,
+              "description": "Full saved body under the canonical linked-source guard.",
+              "pgType": "text"
+            },
+            {
+              "name": "recipient_count",
+              "type": "integer",
+              "nullable": false,
+              "description": "Stored recipient count, not a delivery count.",
+              "pgType": "int4"
+            },
+            {
+              "name": "sent_at",
+              "type": "timestamp",
+              "nullable": true,
+              "description": "Saved historical sent time; not permission to send.",
+              "pgType": "timestamp with time zone"
+            },
+            {
+              "name": "opened_in_email_at",
+              "type": "timestamp",
+              "nullable": true,
+              "description": "Saved email-open action time, not recipient engagement.",
+              "pgType": "timestamp with time zone"
+            },
+            {
+              "name": "created_at",
+              "type": "timestamp",
+              "nullable": false,
+              "description": "Record creation time.",
+              "pgType": "timestamp with time zone"
+            },
+            {
+              "name": "updated_at",
+              "type": "timestamp",
+              "nullable": false,
+              "description": "Record update time.",
+              "pgType": "timestamp with time zone"
+            }
+          ],
+          "primaryKey": [
+            "id"
+          ],
+          "relationships": [],
+          "grain": "One currently accessible, nondeleted actor-created Classic OutreachRecord per id.",
+          "coverage": {
+            "basis": "authorized_classic_outreach",
+            "limitations": [
+              "Complete candidate authorization is bounded to 100 records; a larger universe refuses before querying and requires a narrower client scope.",
+              "Current access to every linked client and the latest meeting prep/debrief sources is required. Ambiguous latest children are excluded by the ordinary Classic reader.",
+              "Personal Classic explicitly includes client-less records; this is never a client_records General fallback.",
+              "Recipients, metadata, stats, linked source bodies and send authority are not exported. Query filters and limits do not establish delivery or upstream completeness."
+            ]
+          },
+          "freshness": {
+            "field": "updated_at",
+            "sourceAsOf": null,
+            "sourceVersion": null
+          }
+        }
+      ],
+      "limits": {
+        "defaultRowLimit": 200,
+        "maxRowLimit": 1000,
+        "maxOutputBytes": 262144,
+        "maxSqlBytes": 16384,
+        "maxParameters": 64,
+        "maxParameterBytes": 32768
+      },
+      "contract": {
+        "version": "capiro.sql-contract/1",
+        "source": "classic_outreach",
+        "grammar": {
+          "version": "postgresql-select/1",
+          "statements": [
+            "SELECT",
+            "WITH_SELECT"
+          ],
+          "parameterStyle": "dollar-numbered-contiguous",
+          "blockedKeywords": [
+            "insert",
+            "update",
+            "delete",
+            "merge",
+            "into"
+          ],
+          "blockedFunctions": [
+            "set_config",
+            "pg_sleep",
+            "pg_sleep_for",
+            "pg_sleep_until",
+            "pg_terminate_backend",
+            "pg_cancel_backend",
+            "pg_advisory_lock",
+            "pg_advisory_lock_shared",
+            "pg_advisory_xact_lock",
+            "pg_advisory_xact_lock_shared",
+            "pg_try_advisory_lock",
+            "pg_try_advisory_lock_shared",
+            "pg_try_advisory_xact_lock",
+            "pg_try_advisory_xact_lock_shared",
+            "pg_advisory_unlock",
+            "pg_advisory_unlock_all",
+            "pg_advisory_unlock_shared",
+            "pg_notify",
+            "pg_reload_conf",
+            "pg_rotate_logfile",
+            "pg_logical_emit_message",
+            "pg_export_snapshot",
+            "pg_read_file",
+            "pg_read_binary_file",
+            "pg_ls_dir",
+            "pg_stat_file",
+            "lo_import",
+            "lo_export",
+            "lo_get",
+            "lo_put",
+            "lo_create",
+            "lo_creat",
+            "lo_unlink",
+            "lo_open",
+            "lo_from_bytea",
+            "loread",
+            "lowrite",
+            "dblink",
+            "dblink_connect",
+            "dblink_exec"
+          ],
+          "blockedFunctionPatterns": [],
+          "sourceMixing": false
+        },
+        "limits": {
+          "defaultRowLimit": 200,
+          "maxRowLimit": 1000,
+          "maxOutputBytes": 262144,
+          "maxSqlBytes": 16384,
+          "maxParameters": 64,
+          "maxParameterBytes": 32768
+        },
+        "columnCountLimit": null,
+        "revisionSha256": "b9467bae683be083c6dbb496a8e4d75d068453a05b08788cd56392f6b80b36e6"
+      }
+    },
+    "query": {
+      "version": "0.3.0",
+      "generatedAt": "2026-11-01T04:18:24.585Z",
+      "scope": {
+        "kind": "classic_outreach",
+        "clientId": null
+      },
+      "ok": true,
+      "columns": [
+        {
+          "name": "total",
+          "type": "integer",
+          "pgType": "int8",
+          "nullable": true
+        }
+      ],
+      "rows": [
+        {
+          "total": "1"
+        }
+      ],
+      "rowCount": 1,
+      "relationsUsed": [
+        "classic_outreach_records"
+      ],
+      "rowLimitReached": false,
+      "byteTruncated": false,
+      "limits": {
+        "rowLimit": 200,
+        "maxOutputBytes": 262144
+      },
+      "coverage": {
+        "basis": "query_bounded",
+        "sourceUniverseComplete": false,
+        "sqlLimit": null,
+        "relations": [
+          {
+            "name": "classic_outreach_records",
+            "sourceAsOf": null,
+            "sourceVersion": null,
+            "limitations": [
+              "Complete candidate authorization is bounded to 100 records; a larger universe refuses before querying and requires a narrower client scope.",
+              "Current access to every linked client and the latest meeting prep/debrief sources is required. Ambiguous latest children are excluded by the ordinary Classic reader.",
+              "Personal Classic explicitly includes client-less records; this is never a client_records General fallback.",
+              "Recipients, metadata, stats, linked source bodies and send authority are not exported. Query filters and limits do not establish delivery or upstream completeness."
+            ]
+          }
+        ]
+      }
+    }
+  }
+}

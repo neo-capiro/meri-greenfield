@@ -20,8 +20,8 @@ export function createStoredNativeReadHandlers(configuration,operations,specific
  if(['certification-status','rule-status','sam-opportunities'].includes(family)&&!producerObservation)deny('GATEWAY_CONFIGURATION');
  if(['funding-opportunities','funding-analysis'].includes(family)&&observation!=='funding-asof')deny('GATEWAY_CONFIGURATION');
  const fixed=frozenData(routes);
- // Only this reviewed successor uses 0.3; all retained native reads keep their exact 0.2 binding.
- const version=family==='capiro-data-v3'?'0.3.0':'0.2.0';
+ // SQL successors have exact reviewed versions; other retained reads keep their 0.2 binding.
+ const version=family==='capiro-data-v5'?'0.5.0':family==='capiro-data-v4'?'0.4.0':family==='capiro-data-v3'?'0.3.0':'0.2.0';
  if(!fixed||Array.isArray(fixed)||typeof fixed!=='object'||!Object.keys(fixed).length)deny('GATEWAY_CONFIGURATION');
  if(knowledgeObservation&&(Object.keys(fixed).length!==1||!Object.hasOwn(fixed,'search_client_knowledge'))||
   family==='client-knowledge-search'&&Object.hasOwn(fixed,'search_client_knowledge')&&!knowledgeObservation)deny('GATEWAY_CONFIGURATION');

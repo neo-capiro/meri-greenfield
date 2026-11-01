@@ -6,6 +6,7 @@ import {ProductError,productFailure} from '../../control/product-access/errors.m
 import {isAuthorityUnavailable,markAuthorityUnavailable} from '../../../packages/runtime/authority-availability.mjs';
 import {currentTurnTelemetry} from '../telemetry/turn-context.mjs';
 import {CURRENT_MAX_WAIT_MS} from './run-current-authority.mjs';
+import {researchContextFields,researchContextFromCurrent,sameResearchContext} from '../../control/action-host/application-adapters/research-context.mjs';
 
 const unavailable=()=>{throw new ProductError('CONVERSATION_UNAVAILABLE');};
 const uuid=/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/u;
@@ -18,13 +19,15 @@ export function createCoreConversationCurrentness(configuration){
  const fresh=(receipt,started)=>{const at=c.now();if(!Number.isSafeInteger(started)||!Number.isSafeInteger(at)||at<started||receipt.checkedAtMs<started||receipt.checkedAtMs>at||receipt.expiresAtMs<=at)unavailable();};
  return Object.freeze({async assertCurrent(value){
   try{
-   const call=own(value,['credential','principal','conversationId','scopes','deadlineMs'],['signal']),principal=own(call.principal,['tenantId','actorId','clientIds'],['role','permissions','membershipRevision']);
+   const call=own(value,['credential','principal','conversationId','scopes','deadlineMs'],['signal','scopeKind','scope']),principal=own(call.principal,['tenantId','actorId','clientIds'],['role','permissions','membershipRevision']);
+   const subject=researchContextFields(call),research=subject.scopeKind==='research_portfolio';
    nativeSignal(call.signal);
    const scopes=data(call.scopes),clientIds=data(principal.clientIds);
    if(!Array.isArray(scopes)||scopes.length<1||!Array.isArray(clientIds))unavailable();
    const clients=scopes.filter(scope=>scope.kind==='client');
    if(clients.length>1||clients.length===0&&!(scopes.length===1&&scopes[0].kind==='private-user'&&scopes[0].tenantId===principal.tenantId&&scopes[0].resourceId===principal.actorId))unavailable();
    const selectedClientId=clients.length===1?clients[0].resourceId:null;
+   if(research&&selectedClientId!==null)unavailable();
    if(typeof call.credential!=='string'||!call.credential||!Number.isSafeInteger(call.deadlineMs)||typeof call.conversationId!=='string'||!uuid.test(call.conversationId)||selectedClientId!==null&&!clientIds.includes(selectedClientId))unavailable();
    for(const scope of scopes){validateShape('Scope',scope);if(scope.tenantId!==principal.tenantId||scope.kind==='client'&&!clientIds.includes(scope.resourceId))unavailable();}
    if(selectedClientId===null?scopes.length!==1||scopes[0].kind!=='private-user'||scopes[0].resourceId!==principal.actorId:!scopes.some(scope=>scope.kind==='client'&&scope.resourceId===selectedClientId))unavailable();
@@ -34,8 +37,9 @@ export function createCoreConversationCurrentness(configuration){
    // Membership admission supplies this pin; no identity/context revision is invented from stored local policy scopes.
    const expect=principal.membershipRevision===undefined?undefined:{membershipRevision:principal.membershipRevision};
    currentTurnTelemetry()?.recordAuthority?.('fresh');
-   const receipt=await client.readCurrent({credential:call.credential,conversationId:call.conversationId,clientId:selectedClientId,...(expect?{expect}:{}),signal:call.signal,deadlineMs:Math.min(deadlineMs,started+CURRENT_MAX_WAIT_MS)});
+   const receipt=await client[research?'readResearchCurrent':'readCurrent']({credential:call.credential,conversationId:call.conversationId,clientId:selectedClientId,...(expect?{expect}:{}),signal:call.signal,deadlineMs:Math.min(deadlineMs,started+CURRENT_MAX_WAIT_MS)});
    fresh(receipt,started);
+   if(research&&!sameResearchContext(subject,researchContextFromCurrent(receipt)))unavailable();
    if(!samePrincipal(receipt,principal)||receipt.conversationId!==call.conversationId||receipt.selectedClientId!==selectedClientId)unavailable();
    if(call.signal?.aborted||c.now()>=Math.min(deadlineMs,receipt.expiresAtMs))unavailable();
   }catch(cause){

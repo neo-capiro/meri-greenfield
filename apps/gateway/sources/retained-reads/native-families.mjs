@@ -1,6 +1,6 @@
 /** Eligibility of finite native tool producers; data only. Source presence never grants installation or authority. */
 export const NATIVE_READ_FAMILIES=Object.freeze([
- 'federal-draft-source','graph-paths','buyer-workspace','funding-analysis','client-knowledge-attachments','capiro-data-v3',
+ 'federal-draft-source','graph-paths','buyer-workspace','funding-analysis','client-knowledge-attachments','capiro-data-v3','capiro-data-v5','capiro-data-v4',
  'watch-state','legiwatch-review','legiwatch-relevance','legislative-comparisons','florida-budget',
  'research-portfolio-sharing','research-portfolio-workflow','saved-records','strategy-saved-records','capiro-data','connected-apps','teams-channels',
  'bill-text','public-reports','acquisition-personnel','disclosures','legislative-directory',

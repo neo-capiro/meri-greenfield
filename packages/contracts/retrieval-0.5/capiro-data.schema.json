@@ -1,0 +1,1555 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:meri:retrieval:capiro-data:0.5.0",
+  "$defs": {
+    "CapiroDataDescribeRequest": {
+      "anyOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "relations": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "pattern": "^[a-zA-Z_][a-zA-Z0-9_]*$",
+                "maxLength": 128
+              },
+              "minItems": 1,
+              "maxItems": 15,
+              "uniqueItems": true,
+              "description": "Relation names to describe; omit to list every published relation of the selected source. Names are lowercase and must be spelled exactly as query_capiro_data uses them."
+            },
+            "source": {
+              "type": "string",
+              "enum": [
+                "public",
+                "client_records"
+              ],
+              "description": "Omit for public relations. Client records require current interactive authority."
+            },
+            "clientId": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$",
+              "description": "Allowed only with source client_records. Optional narrowing in General; selected-client conversations cannot select another client."
+            }
+          },
+          "required": []
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "relations": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": [
+                  "research_portfolios",
+                  "research_portfolio_members"
+                ]
+              },
+              "minItems": 1,
+              "maxItems": 2,
+              "uniqueItems": true,
+              "description": "Relation names to describe; omit to list every published relation of the selected source. Names are lowercase and must be spelled exactly as query_capiro_data uses them."
+            },
+            "source": {
+              "const": "research_portfolio",
+              "description": "The original conversation-captured portfolio under current authority. No model portfolio or client selector."
+            }
+          },
+          "required": [
+            "source"
+          ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "relations": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": [
+                  "classic_outreach_records"
+                ]
+              },
+              "minItems": 1,
+              "maxItems": 1,
+              "uniqueItems": true,
+              "description": "Relation names to describe; omit to list every published relation of the selected source. Names are lowercase and must be spelled exactly as query_capiro_data uses them."
+            },
+            "source": {
+              "const": "classic_outreach",
+              "description": "Actor-owned Classic Outreach under the actual General or selected-client context. No model client selector."
+            }
+          },
+          "required": [
+            "source"
+          ]
+        }
+      ]
+    },
+    "CapiroDataQueryRequest": {
+      "anyOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "sql": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 16384,
+              "description": "One read-only PostgreSQL statement over the relations describe_capiro_data returns. Use its optional versioned contract for the current grammar, blocked keywords/functions and limits; the descriptor is metadata, never an authorization grant. Bind values as $1..$n and alias expression columns. Core owns SQL admission and returns diagnostic refusals to correct and retry; Meri does not parse SQL. When an older Core omits contract, use one SELECT or WITH ... SELECT and follow its refusal message. Public and client_records are separate sources."
+            },
+            "parameters": {
+              "type": "array",
+              "items": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  },
+                  {
+                    "type": "boolean"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "minItems": 0,
+              "maxItems": 64,
+              "description": "Values bound to $1..$n in order; required, so pass [] when the SQL binds nothing; $1..$n must be contiguous and every entry referenced. Use strings for text, dates (YYYY-MM-DD), timestamps (ISO 8601 or PostgreSQL text, UTC), UUIDs and exact decimals or large integers; numbers only for safe integers; booleans; null (compare nulls with IS NULL, not = $n). PostgreSQL infers each parameter's type from where it is used; cast it ($1::date) when the context does not fix the type."
+            },
+            "rowLimit": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 1000,
+              "description": "Maximum rows returned, 1-1000 (default 200), applied as an outer LIMIT around the SQL. rowLimitReached in the result reports that more rows matched; page by keyset (ORDER BY the full key, WHERE key > $n) instead of OFFSET."
+            },
+            "source": {
+              "type": "string",
+              "enum": [
+                "public",
+                "client_records"
+              ],
+              "description": "Omit for public relations. Client records require current interactive authority."
+            },
+            "clientId": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$",
+              "description": "Allowed only with source client_records. Optional narrowing in General; selected-client conversations cannot select another client."
+            }
+          },
+          "required": [
+            "sql",
+            "parameters"
+          ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "sql": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 16384,
+              "description": "One read-only PostgreSQL statement over the relations describe_capiro_data returns. Use its optional versioned contract for the current grammar, blocked keywords/functions and limits; the descriptor is metadata, never an authorization grant. Bind values as $1..$n and alias expression columns. Core owns SQL admission and returns diagnostic refusals to correct and retry; Meri does not parse SQL. When an older Core omits contract, use one SELECT or WITH ... SELECT and follow its refusal message. Each query reads exactly one source. Public, client_records, research_portfolio and classic_outreach never share relation scope."
+            },
+            "parameters": {
+              "type": "array",
+              "items": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  },
+                  {
+                    "type": "boolean"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "minItems": 0,
+              "maxItems": 64,
+              "description": "Values bound to $1..$n in order; required, so pass [] when the SQL binds nothing; $1..$n must be contiguous and every entry referenced. Use strings for text, dates (YYYY-MM-DD), timestamps (ISO 8601 or PostgreSQL text, UTC), UUIDs and exact decimals or large integers; numbers only for safe integers; booleans; null (compare nulls with IS NULL, not = $n). PostgreSQL infers each parameter's type from where it is used; cast it ($1::date) when the context does not fix the type."
+            },
+            "rowLimit": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 1000,
+              "description": "Maximum rows returned, 1-1000 (default 200), applied as an outer LIMIT around the SQL. rowLimitReached in the result reports that more rows matched; page by keyset (ORDER BY the full key, WHERE key > $n) instead of OFFSET."
+            },
+            "source": {
+              "const": "research_portfolio",
+              "description": "The original conversation-captured portfolio under current authority. No model portfolio or client selector."
+            }
+          },
+          "required": [
+            "sql",
+            "parameters",
+            "source"
+          ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "sql": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 16384,
+              "description": "One read-only PostgreSQL statement over the relations describe_capiro_data returns. Use its optional versioned contract for the current grammar, blocked keywords/functions and limits; the descriptor is metadata, never an authorization grant. Bind values as $1..$n and alias expression columns. Core owns SQL admission and returns diagnostic refusals to correct and retry; Meri does not parse SQL. When an older Core omits contract, use one SELECT or WITH ... SELECT and follow its refusal message. Each query reads exactly one source. Public, client_records, research_portfolio and classic_outreach never share relation scope."
+            },
+            "parameters": {
+              "type": "array",
+              "items": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  },
+                  {
+                    "type": "boolean"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "minItems": 0,
+              "maxItems": 64,
+              "description": "Values bound to $1..$n in order; required, so pass [] when the SQL binds nothing; $1..$n must be contiguous and every entry referenced. Use strings for text, dates (YYYY-MM-DD), timestamps (ISO 8601 or PostgreSQL text, UTC), UUIDs and exact decimals or large integers; numbers only for safe integers; booleans; null (compare nulls with IS NULL, not = $n). PostgreSQL infers each parameter's type from where it is used; cast it ($1::date) when the context does not fix the type."
+            },
+            "rowLimit": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 1000,
+              "description": "Maximum rows returned, 1-1000 (default 200), applied as an outer LIMIT around the SQL. rowLimitReached in the result reports that more rows matched; page by keyset (ORDER BY the full key, WHERE key > $n) instead of OFFSET."
+            },
+            "source": {
+              "const": "classic_outreach",
+              "description": "Actor-owned Classic Outreach under the actual General or selected-client context. No model client selector."
+            }
+          },
+          "required": [
+            "sql",
+            "parameters",
+            "source"
+          ]
+        }
+      ]
+    },
+    "CapiroDataField": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "type": "string",
+          "pattern": "^[a-zA-Z_][a-zA-Z0-9_]*$",
+          "maxLength": 128
+        },
+        "type": {
+          "enum": [
+            "string",
+            "integer",
+            "decimal",
+            "boolean",
+            "date",
+            "timestamp"
+          ]
+        },
+        "nullable": {
+          "type": "boolean"
+        },
+        "description": {
+          "type": "string",
+          "maxLength": 2048
+        },
+        "unit": {
+          "type": "string",
+          "maxLength": 128
+        },
+        "pgType": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "enum": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "maxLength": 256
+          },
+          "minItems": 1,
+          "maxItems": 256,
+          "uniqueItems": true
+        }
+      },
+      "required": [
+        "name",
+        "type",
+        "nullable",
+        "description"
+      ]
+    },
+    "CapiroDataColumn": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "type": "string",
+          "pattern": "^[a-zA-Z_][a-zA-Z0-9_]*$",
+          "maxLength": 128
+        },
+        "type": {
+          "enum": [
+            "string",
+            "integer",
+            "decimal",
+            "boolean",
+            "date",
+            "timestamp"
+          ]
+        },
+        "nullable": {
+          "type": "boolean"
+        },
+        "unit": {
+          "type": "string",
+          "maxLength": 128
+        },
+        "pgType": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        }
+      },
+      "required": [
+        "name",
+        "type",
+        "nullable"
+      ]
+    },
+    "CapiroDataRelationship": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "fields": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[a-zA-Z_][a-zA-Z0-9_]*$",
+            "maxLength": 128
+          },
+          "minItems": 1,
+          "maxItems": 8,
+          "uniqueItems": true
+        },
+        "referencedRelation": {
+          "type": "string",
+          "pattern": "^[a-zA-Z_][a-zA-Z0-9_]*$",
+          "maxLength": 128
+        },
+        "referencedFields": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[a-zA-Z_][a-zA-Z0-9_]*$",
+            "maxLength": 128
+          },
+          "minItems": 1,
+          "maxItems": 8,
+          "uniqueItems": true
+        },
+        "cardinality": {
+          "enum": [
+            "many_to_one"
+          ]
+        },
+        "integrity": {
+          "enum": [
+            "enforced",
+            "soft"
+          ]
+        }
+      },
+      "required": [
+        "fields",
+        "referencedRelation",
+        "referencedFields",
+        "cardinality",
+        "integrity"
+      ]
+    },
+    "CapiroDataRelation": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "type": "string",
+          "pattern": "^[a-zA-Z_][a-zA-Z0-9_]*$",
+          "maxLength": 128
+        },
+        "description": {
+          "type": "string",
+          "maxLength": 2048
+        },
+        "fields": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/CapiroDataField"
+          },
+          "minItems": 1,
+          "maxItems": 64
+        },
+        "primaryKey": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[a-zA-Z_][a-zA-Z0-9_]*$",
+            "maxLength": 128
+          },
+          "minItems": 1,
+          "maxItems": 8,
+          "uniqueItems": true
+        },
+        "relationships": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/CapiroDataRelationship"
+          },
+          "minItems": 0,
+          "maxItems": 16
+        },
+        "grain": {
+          "type": "string",
+          "maxLength": 2048
+        },
+        "coverage": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "basis": {
+              "enum": [
+                "ingested_public_records"
+              ]
+            },
+            "limitations": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "maxLength": 2048
+              },
+              "minItems": 0,
+              "maxItems": 32
+            }
+          },
+          "required": [
+            "basis",
+            "limitations"
+          ]
+        },
+        "freshness": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "field": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "pattern": "^[a-zA-Z_][a-zA-Z0-9_]*$",
+                  "maxLength": 128
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "sourceAsOf": {
+              "type": "null"
+            },
+            "sourceVersion": {
+              "type": "null"
+            }
+          },
+          "required": [
+            "field",
+            "sourceAsOf",
+            "sourceVersion"
+          ]
+        }
+      },
+      "required": [
+        "name",
+        "description",
+        "fields",
+        "primaryKey",
+        "relationships",
+        "grain",
+        "coverage",
+        "freshness"
+      ]
+    },
+    "CapiroDataDescribeLimits": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "defaultRowLimit": {
+          "const": 200
+        },
+        "maxRowLimit": {
+          "const": 1000
+        },
+        "maxOutputBytes": {
+          "const": 262144
+        },
+        "maxSqlBytes": {
+          "const": 16384
+        },
+        "maxParameters": {
+          "const": 64
+        },
+        "maxParameterBytes": {
+          "const": 32768
+        },
+        "maxColumns": {
+          "const": 32
+        }
+      },
+      "required": [
+        "defaultRowLimit",
+        "maxRowLimit",
+        "maxOutputBytes",
+        "maxSqlBytes",
+        "maxParameters",
+        "maxParameterBytes"
+      ]
+    },
+    "CapiroDataQueryLimits": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "rowLimit": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 1000
+        },
+        "maxOutputBytes": {
+          "const": 262144
+        }
+      },
+      "required": [
+        "rowLimit",
+        "maxOutputBytes"
+      ]
+    },
+    "CapiroDataCoverage": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "basis": {
+          "enum": [
+            "query_bounded"
+          ]
+        },
+        "sourceUniverseComplete": {
+          "const": false
+        },
+        "sqlLimit": {
+          "anyOf": [
+            {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "relations": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "name": {
+                "type": "string",
+                "pattern": "^[a-zA-Z_][a-zA-Z0-9_]*$",
+                "maxLength": 128
+              },
+              "sourceAsOf": {
+                "type": "null"
+              },
+              "sourceVersion": {
+                "type": "null"
+              },
+              "limitations": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "maxLength": 2048
+                },
+                "minItems": 0,
+                "maxItems": 32
+              }
+            },
+            "required": [
+              "name",
+              "sourceAsOf",
+              "sourceVersion",
+              "limitations"
+            ]
+          },
+          "minItems": 1,
+          "maxItems": 15
+        }
+      },
+      "required": [
+        "basis",
+        "sourceUniverseComplete",
+        "sqlLimit",
+        "relations"
+      ]
+    },
+    "CapiroDataError": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "version": {
+          "enum": [
+            "0.1.0",
+            "0.2.0"
+          ]
+        },
+        "generatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "maxLength": 40
+        },
+        "ok": {
+          "const": false
+        },
+        "error": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "code": {
+              "enum": [
+                "INVALID_QUERY",
+                "UNSUPPORTED_SQL",
+                "UNKNOWN_RELATION",
+                "UNKNOWN_FIELD",
+                "PARAMETER_MISMATCH",
+                "SOURCE_UNAVAILABLE",
+                "QUERY_TIMEOUT",
+                "OUTPUT_LIMIT"
+              ]
+            },
+            "message": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 512
+            },
+            "position": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 16384
+            },
+            "hint": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 1024
+            },
+            "sqlstate": {
+              "type": "string",
+              "pattern": "^[0-9A-Z]{5}$"
+            },
+            "candidates": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "pattern": "^[a-zA-Z_][a-zA-Z0-9_]*$",
+                "maxLength": 128
+              },
+              "minItems": 0,
+              "maxItems": 8,
+              "uniqueItems": true
+            }
+          },
+          "required": [
+            "code",
+            "message"
+          ]
+        }
+      },
+      "required": [
+        "version",
+        "generatedAt",
+        "ok",
+        "error"
+      ]
+    },
+    "CapiroDataDescribeSuccess": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "version": {
+          "enum": [
+            "0.1.0",
+            "0.2.0"
+          ]
+        },
+        "generatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "maxLength": 40
+        },
+        "ok": {
+          "const": true
+        },
+        "relations": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/CapiroDataRelation"
+          },
+          "minItems": 1,
+          "maxItems": 15
+        },
+        "limits": {
+          "$ref": "#/$defs/CapiroDataDescribeLimits"
+        },
+        "contract": {
+          "$ref": "#/$defs/CapiroDataSqlContract"
+        }
+      },
+      "required": [
+        "version",
+        "generatedAt",
+        "ok",
+        "relations",
+        "limits"
+      ]
+    },
+    "CapiroDataQuerySuccess": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "version": {
+          "enum": [
+            "0.1.0",
+            "0.2.0"
+          ]
+        },
+        "generatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "maxLength": 40
+        },
+        "ok": {
+          "const": true
+        },
+        "columns": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/CapiroDataColumn"
+          },
+          "minItems": 1
+        },
+        "rows": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "minProperties": 1,
+            "additionalProperties": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "boolean"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          },
+          "minItems": 0,
+          "maxItems": 1000
+        },
+        "rowCount": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 1000
+        },
+        "relationsUsed": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[a-zA-Z_][a-zA-Z0-9_]*$",
+            "maxLength": 128
+          },
+          "minItems": 1,
+          "maxItems": 15,
+          "uniqueItems": true
+        },
+        "rowLimitReached": {
+          "type": "boolean"
+        },
+        "byteTruncated": {
+          "type": "boolean"
+        },
+        "coverage": {
+          "$ref": "#/$defs/CapiroDataCoverage"
+        },
+        "limits": {
+          "$ref": "#/$defs/CapiroDataQueryLimits"
+        }
+      },
+      "required": [
+        "version",
+        "generatedAt",
+        "ok",
+        "columns",
+        "rows",
+        "rowCount",
+        "relationsUsed",
+        "rowLimitReached",
+        "byteTruncated",
+        "coverage",
+        "limits"
+      ]
+    },
+    "CapiroDataDescribeOutput": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/CapiroDataDescribeSuccess"
+        },
+        {
+          "$ref": "#/$defs/CapiroDataError"
+        },
+        {
+          "$ref": "#/$defs/CapiroDataPrivateDescribeSuccess"
+        },
+        {
+          "$ref": "#/$defs/CapiroDataPrivateError"
+        }
+      ]
+    },
+    "CapiroDataQueryOutput": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/CapiroDataQuerySuccess"
+        },
+        {
+          "$ref": "#/$defs/CapiroDataError"
+        },
+        {
+          "$ref": "#/$defs/CapiroDataPrivateQuerySuccess"
+        },
+        {
+          "$ref": "#/$defs/CapiroDataPrivateError"
+        }
+      ]
+    },
+    "CapiroDataPrivateScope": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "const": "client_records"
+        },
+        "clientId": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "kind",
+        "clientId"
+      ]
+    },
+    "CapiroDataPrivateRelation": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "enum": [
+            "client_objectives",
+            "client_activity",
+            "client_team_roster",
+            "client_account_owners",
+            "client_targets",
+            "client_profiles",
+            "client_profile_codes",
+            "client_people",
+            "client_contacts",
+            "client_engagement_tasks",
+            "client_action_items",
+            "client_tracked_bills",
+            "client_outreach_campaigns",
+            "client_campaign_recipients",
+            "client_meetings",
+            "research_portfolios",
+            "research_portfolio_members",
+            "classic_outreach_records"
+          ]
+        },
+        "description": {
+          "type": "string",
+          "maxLength": 2048
+        },
+        "fields": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/CapiroDataField"
+          },
+          "minItems": 1,
+          "maxItems": 64
+        },
+        "primaryKey": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[a-zA-Z_][a-zA-Z0-9_]*$",
+            "maxLength": 128
+          },
+          "minItems": 1,
+          "maxItems": 8,
+          "uniqueItems": true
+        },
+        "relationships": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/CapiroDataRelationship"
+          },
+          "minItems": 0,
+          "maxItems": 16
+        },
+        "grain": {
+          "type": "string",
+          "maxLength": 2048
+        },
+        "coverage": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "basis": {
+              "enum": [
+                "authorized_client_records",
+                "authorized_research_portfolio",
+                "authorized_classic_outreach"
+              ]
+            },
+            "limitations": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "maxLength": 2048
+              },
+              "minItems": 0,
+              "maxItems": 32
+            }
+          },
+          "required": [
+            "basis",
+            "limitations"
+          ]
+        },
+        "freshness": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "field": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "pattern": "^[a-zA-Z_][a-zA-Z0-9_]*$",
+                  "maxLength": 128
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "sourceAsOf": {
+              "type": "null"
+            },
+            "sourceVersion": {
+              "type": "null"
+            }
+          },
+          "required": [
+            "field",
+            "sourceAsOf",
+            "sourceVersion"
+          ]
+        }
+      },
+      "required": [
+        "name",
+        "description",
+        "fields",
+        "primaryKey",
+        "relationships",
+        "grain",
+        "coverage",
+        "freshness"
+      ]
+    },
+    "CapiroDataPrivateCoverage": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "basis": {
+          "enum": [
+            "query_bounded"
+          ]
+        },
+        "sourceUniverseComplete": {
+          "const": false
+        },
+        "sqlLimit": {
+          "anyOf": [
+            {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "relations": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "name": {
+                "enum": [
+                  "client_objectives",
+                  "client_activity",
+                  "client_team_roster",
+                  "client_account_owners",
+                  "client_targets",
+                  "client_profiles",
+                  "client_profile_codes",
+                  "client_people",
+                  "client_contacts",
+                  "client_engagement_tasks",
+                  "client_action_items",
+                  "client_tracked_bills",
+                  "client_outreach_campaigns",
+                  "client_campaign_recipients",
+                  "client_meetings",
+                  "research_portfolios",
+                  "research_portfolio_members",
+                  "classic_outreach_records"
+                ]
+              },
+              "sourceAsOf": {
+                "type": "null"
+              },
+              "sourceVersion": {
+                "type": "null"
+              },
+              "limitations": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "maxLength": 2048
+                },
+                "minItems": 0,
+                "maxItems": 32
+              }
+            },
+            "required": [
+              "name",
+              "sourceAsOf",
+              "sourceVersion",
+              "limitations"
+            ]
+          },
+          "minItems": 1,
+          "maxItems": 18
+        }
+      },
+      "required": [
+        "basis",
+        "sourceUniverseComplete",
+        "sqlLimit",
+        "relations"
+      ]
+    },
+    "CapiroDataPrivateError": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "version": {
+          "enum": [
+            "0.2.0",
+            "0.3.0"
+          ]
+        },
+        "generatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "maxLength": 40
+        },
+        "ok": {
+          "const": false
+        },
+        "error": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "code": {
+              "enum": [
+                "INVALID_QUERY",
+                "UNSUPPORTED_SQL",
+                "UNKNOWN_RELATION",
+                "UNKNOWN_FIELD",
+                "PARAMETER_MISMATCH",
+                "SOURCE_UNAVAILABLE",
+                "QUERY_TIMEOUT",
+                "OUTPUT_LIMIT"
+              ]
+            },
+            "message": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 512
+            },
+            "position": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 16384
+            },
+            "hint": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 1024
+            },
+            "sqlstate": {
+              "type": "string",
+              "pattern": "^[0-9A-Z]{5}$"
+            },
+            "candidates": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "pattern": "^[a-zA-Z_][a-zA-Z0-9_]*$",
+                "maxLength": 128
+              },
+              "minItems": 0,
+              "maxItems": 8,
+              "uniqueItems": true
+            }
+          },
+          "required": [
+            "code",
+            "message"
+          ]
+        }
+      },
+      "required": [
+        "version",
+        "generatedAt",
+        "ok",
+        "error"
+      ]
+    },
+    "CapiroDataPrivateDescribeSuccess": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "version": {
+          "enum": [
+            "0.2.0",
+            "0.3.0"
+          ]
+        },
+        "generatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "maxLength": 40
+        },
+        "ok": {
+          "const": true
+        },
+        "relations": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/CapiroDataPrivateRelation"
+          },
+          "minItems": 1,
+          "maxItems": 18
+        },
+        "limits": {
+          "$ref": "#/$defs/CapiroDataDescribeLimits"
+        },
+        "scope": {
+          "$ref": "#/$defs/CapiroDataDomainScope"
+        },
+        "contract": {
+          "$ref": "#/$defs/CapiroDataSqlContract"
+        }
+      },
+      "required": [
+        "version",
+        "generatedAt",
+        "ok",
+        "relations",
+        "limits",
+        "scope"
+      ]
+    },
+    "CapiroDataPrivateQuerySuccess": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "version": {
+          "enum": [
+            "0.2.0",
+            "0.3.0"
+          ]
+        },
+        "generatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "maxLength": 40
+        },
+        "ok": {
+          "const": true
+        },
+        "columns": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/CapiroDataColumn"
+          },
+          "minItems": 1
+        },
+        "rows": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "minProperties": 1,
+            "additionalProperties": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "boolean"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          },
+          "minItems": 0,
+          "maxItems": 1000
+        },
+        "rowCount": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 1000
+        },
+        "relationsUsed": {
+          "type": "array",
+          "items": {
+            "enum": [
+              "client_objectives",
+              "client_activity",
+              "client_team_roster",
+              "client_account_owners",
+              "client_targets",
+              "client_profiles",
+              "client_profile_codes",
+              "client_people",
+              "client_contacts",
+              "client_engagement_tasks",
+              "client_action_items",
+              "client_tracked_bills",
+              "client_outreach_campaigns",
+              "client_campaign_recipients",
+              "client_meetings",
+              "research_portfolios",
+              "research_portfolio_members",
+              "classic_outreach_records"
+            ]
+          },
+          "minItems": 1,
+          "maxItems": 18,
+          "uniqueItems": true
+        },
+        "rowLimitReached": {
+          "type": "boolean"
+        },
+        "byteTruncated": {
+          "type": "boolean"
+        },
+        "coverage": {
+          "$ref": "#/$defs/CapiroDataPrivateCoverage"
+        },
+        "limits": {
+          "$ref": "#/$defs/CapiroDataQueryLimits"
+        },
+        "scope": {
+          "$ref": "#/$defs/CapiroDataDomainScope"
+        }
+      },
+      "required": [
+        "version",
+        "generatedAt",
+        "ok",
+        "columns",
+        "rows",
+        "rowCount",
+        "relationsUsed",
+        "rowLimitReached",
+        "byteTruncated",
+        "coverage",
+        "limits",
+        "scope"
+      ]
+    },
+    "CapiroDataSqlContract": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "version": {
+          "const": "capiro.sql-contract/1"
+        },
+        "revisionSha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "source": {
+          "enum": [
+            "public",
+            "client_records",
+            "research_portfolio",
+            "classic_outreach"
+          ]
+        },
+        "grammar": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "version": {
+              "const": "postgresql-select/1"
+            },
+            "statements": {
+              "const": [
+                "SELECT",
+                "WITH_SELECT"
+              ]
+            },
+            "parameterStyle": {
+              "const": "dollar-numbered-contiguous"
+            },
+            "blockedKeywords": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "pattern": "^[a-z_][a-z0-9_]*$",
+                "maxLength": 128
+              },
+              "uniqueItems": true
+            },
+            "blockedFunctions": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "pattern": "^[a-z_][a-z0-9_]*$",
+                "maxLength": 128
+              },
+              "uniqueItems": true
+            },
+            "blockedFunctionPatterns": {
+              "const": []
+            },
+            "sourceMixing": {
+              "const": false
+            }
+          },
+          "required": [
+            "version",
+            "statements",
+            "parameterStyle",
+            "blockedKeywords",
+            "blockedFunctions",
+            "blockedFunctionPatterns",
+            "sourceMixing"
+          ]
+        },
+        "limits": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "defaultRowLimit": {
+              "const": 200
+            },
+            "maxRowLimit": {
+              "const": 1000
+            },
+            "maxOutputBytes": {
+              "const": 262144
+            },
+            "maxSqlBytes": {
+              "const": 16384
+            },
+            "maxParameters": {
+              "const": 64
+            },
+            "maxParameterBytes": {
+              "const": 32768
+            }
+          },
+          "required": [
+            "defaultRowLimit",
+            "maxRowLimit",
+            "maxOutputBytes",
+            "maxSqlBytes",
+            "maxParameters",
+            "maxParameterBytes"
+          ]
+        },
+        "columnCountLimit": {
+          "type": "null"
+        }
+      },
+      "required": [
+        "version",
+        "revisionSha256",
+        "source",
+        "grammar",
+        "limits",
+        "columnCountLimit"
+      ]
+    },
+    "CapiroDataResearchScope": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "const": "research_portfolio"
+        },
+        "researchPortfolioId": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$"
+        },
+        "researchPortfolioName": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200,
+          "pattern": "\\S"
+        },
+        "researchPortfolioRevision": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "scopeVersion": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "currentResearchPortfolioName": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200,
+          "pattern": "\\S"
+        },
+        "currentResearchPortfolioRevision": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "stale": {
+          "type": "boolean"
+        },
+        "resourceRevision": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        }
+      },
+      "required": [
+        "kind",
+        "researchPortfolioId",
+        "researchPortfolioName",
+        "researchPortfolioRevision",
+        "scopeVersion",
+        "currentResearchPortfolioName",
+        "currentResearchPortfolioRevision",
+        "stale",
+        "resourceRevision"
+      ]
+    },
+    "CapiroDataClassicScope": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "const": "classic_outreach"
+        },
+        "clientId": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "kind",
+        "clientId"
+      ]
+    },
+    "CapiroDataDomainScope": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/CapiroDataPrivateScope"
+        },
+        {
+          "$ref": "#/$defs/CapiroDataResearchScope"
+        },
+        {
+          "$ref": "#/$defs/CapiroDataClassicScope"
+        }
+      ]
+    }
+  }
+}

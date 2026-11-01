@@ -36,7 +36,7 @@ import { createPublicWebValidators } from './public-web-validation.mjs';
 import { createSamOpportunitiesValidators } from './sam-opportunities-validation.mjs';
 import {createSavedRecordValidators} from './saved-records-validation.mjs';
 import {createStrategySavedValidators} from './strategy-saved-records-validation.mjs';
-import { createCapiroDataValidators } from './capiro-data-validation.mjs';
+import { createCapiroDataValidators,RETAINED_CAPIRO_PRIVATE_RELATIONS } from './capiro-data-validation.mjs';
 import { createConnectedAppValidators } from './connected-apps-validation.mjs';
 import { createTeamsChannelValidators } from './teams-channels-validation.mjs';
 import { createFloridaBudgetValidators } from './florida-budget-validation.mjs';
@@ -326,6 +326,11 @@ const capiroDataValidators = createCapiroDataValidators({validateShape});
 export const validateCapiroData3Shape = (name, value) => executionShape('capiro-data-v3', name, value);
 const capiroData3Validators = createCapiroDataValidators({
   validateShape: validateCapiroData3Shape});
+export const validateCapiroData5Shape = (name, value) => executionShape('capiro-data-v5', name, value);
+const capiroData5Validators=createCapiroDataValidators({validateShape:validateCapiroData5Shape,privateRelations:Object.freeze([...RETAINED_CAPIRO_PRIVATE_RELATIONS,'client_meetings']),domainSources:true});
+export const validateCapiroData4Shape = (name, value) => executionShape('capiro-data-v4', name, value);
+const capiroData4Validators = createCapiroDataValidators({validateShape:validateCapiroData4Shape,
+  privateRelations:Object.freeze([...RETAINED_CAPIRO_PRIVATE_RELATIONS,'client_meetings'])});
 const connectedAppValidators = createConnectedAppValidators({validateShape});
 const teamsChannelValidators = createTeamsChannelValidators({validateShape});
 const floridaBudgetValidators = createFloridaBudgetValidators({validateShape, schema: schemas[groups.indexOf('florida-budget')]});
@@ -409,4 +414,4 @@ export const {resolveOperationContract} = createOperationContracts({catalog: sou
     ...publicWebValidators, ...samOpportunitiesValidators, floridaBudgetValidators, connectedAppValidators, teamsChannelValidators, savedRecordValidators, strategySavedValidators, capiroDataValidators,
     ...outreachQueryValidators, ...programElementValidators,
     clientKnowledgeSearchValidators, clientKnowledgeMondayValidators, clientKnowledgeAttachmentValidators, clientKnowledgeMemoryValidators, clientKnowledgeProfileValidators, ...researchLegalCandidatesValidators, ...publicDomainQueryValidators, ...researchLegalLegislationValidators, ...actionItemsCompleteValidators, ...researchLegalNewsValidators, ...publicDomainHearingsValidators,
-    clientRecord3Validators, schedule3ToolValidators, capiroData3Validators})});
+    clientRecord3Validators, schedule3ToolValidators, capiroData3Validators, capiroData4Validators, capiroData5Validators})});

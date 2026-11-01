@@ -7,6 +7,7 @@ import {createOperationLifetime} from '../../../packages/runtime/operation-lifet
 import {jsonBody} from '../../control/action-application/http.mjs';
 import {ProductError} from '../../control/product-access/errors.mjs';
 import {createCapiroApplicationAuthorityClient} from '../../control/action-host/application-adapters/authority-http.mjs';
+import {researchContextFields,researchContextFromCurrent,sameResearchContext} from '../../control/action-host/application-adapters/research-context.mjs';
 const refuse=(code='CONVERSATION_UNAVAILABLE',outcome)=>{throw new ProductError(code,outcome);};
 const receiptSkewMs=5000;
 export function createCoreConversationManagement({origin,getServiceSecret,policyRevision,nativeCredentials,fetchImpl=fetch,now=Date.now,maxRequestMs}){
@@ -30,7 +31,8 @@ export function createCoreConversationManagement({origin,getServiceSecret,policy
    if(result.receipt!==null)result.receipt=assertConversationHistoryResponse('manage',result.receipt,q);
    if(result.releaseRetention?(q.operation!=='restore'||result.receipt===null||result.current.status!=='active'||result.current.revision!==result.receipt.conversation.revision||typeof result.suppressionRequestId!=='string'||!/^[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}$/u.test(result.suppressionRequestId)):result.suppressionRequestId!==null)refuse();return result;
   }
-  async function active(metadata){if(metadata.status!=='active')refuse('CONVERSATION_MANAGEMENT_CONFLICT');const at=now(),receipt=await current.readCurrent({credential,conversationId:metadata.conversationId,clientId:metadata.clientId,signal,deadlineMs});
+  async function active(metadata){if(metadata.status!=='active')refuse('CONVERSATION_MANAGEMENT_CONFLICT');const research=metadata.scopeKind==='research_portfolio',at=now(),receipt=await current[research?'readResearchCurrent':'readCurrent']({credential,conversationId:metadata.conversationId,clientId:metadata.clientId,signal,deadlineMs});
+   if(research&&!sameResearchContext(researchContextFields(metadata),researchContextFromCurrent(receipt)))refuse();
    if(receipt.principal.tenantId!==principal.tenantId||receipt.principal.actorId!==principal.actorId||receipt.conversationId!==metadata.conversationId||receipt.selectedClientId!==metadata.clientId||receipt.checkedAtMs<at-receiptSkewMs||receipt.checkedAtMs>now()+receiptSkewMs||receipt.expiresAtMs<=now())refuse();
   }
   return Object.freeze({metadata,
@@ -43,10 +45,12 @@ export function createCoreConversationManagement({origin,getServiceSecret,policy
  }
  async function assertActiveBinding({binding,scopes,selectedClientId},check=()=>{}){
   check();const clients=scopes.filter(s=>s.kind==='client'),selected=selectedClientId===undefined?(clients.length===1?clients[0].resourceId:null):selectedClientId;
-  const borrowed=nativeCredentials.nativeCredentialFor({binding,selectedClientId:selected}),started=now();
-  const receipt=await current.readCurrent({credential:borrowed.credential,conversationId:binding.conversationId,clientId:selected,deadlineMs:started+maxRequestMs});check();
-  const after=nativeCredentials.nativeCredentialFor({binding,selectedClientId:selected});
-  if(after.credential!==borrowed.credential||after.expiresAtMs<=now()||receipt.principal.tenantId!==binding.tenantId||receipt.principal.actorId!==binding.actorId||receipt.conversationId!==binding.conversationId||receipt.selectedClientId!==selected||receipt.checkedAtMs<started-receiptSkewMs||receipt.checkedAtMs>now()+receiptSkewMs||receipt.expiresAtMs<=now())refuse();
+  const borrowed=nativeCredentials.nativeCredentialFor({binding,selectedClientId:selected,includeSubject:true}),started=now();
+  const subject=researchContextFields(borrowed),research=subject.scopeKind==='research_portfolio';if(research&&selected!==null)refuse();
+  const receipt=await current[research?'readResearchCurrent':'readCurrent']({credential:borrowed.credential,conversationId:binding.conversationId,clientId:selected,deadlineMs:started+maxRequestMs});check();
+  if(research&&!sameResearchContext(subject,researchContextFromCurrent(receipt)))refuse();
+  const after=nativeCredentials.nativeCredentialFor({binding,selectedClientId:selected,includeSubject:true});
+  if(after.credential!==borrowed.credential||!sameResearchContext(borrowed,after)||after.expiresAtMs<=now()||receipt.principal.tenantId!==binding.tenantId||receipt.principal.actorId!==binding.actorId||receipt.conversationId!==binding.conversationId||receipt.selectedClientId!==selected||receipt.checkedAtMs<started-receiptSkewMs||receipt.checkedAtMs>now()+receiptSkewMs||receipt.expiresAtMs<=now())refuse();
  }
  return Object.freeze({forRequest,assertActiveBinding});
 }

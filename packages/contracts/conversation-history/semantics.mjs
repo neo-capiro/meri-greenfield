@@ -49,7 +49,8 @@ const iso=value=>typeof value==='string'&&Number.isFinite(Date.parse(value))&&ne
 const validTitle=value=>typeof value==='string'&&value.length>0&&value.length<=200&&value===value.trim();
 const summaryOrder=(a,b)=>order({...a,createdAt:a.updatedAt},{...b,createdAt:b.updatedAt});
 export function assertConversationMetadataSemantics(c){
- if(!validTitle(c.title)||!iso(c.updatedAt)||(c.scopeKind==='general'?c.clientId!==null:c.clientId===null))fail('METADATA_MISMATCH');
+ const scopeMatches=c.scopeKind==='client'?c.clientId!==null:c.scopeKind==='general'?c.clientId===null:c.scopeKind==='research_portfolio'?c.clientId===null&&c.scope?.kind==='research_portfolio':false;
+ if(!validTitle(c.title)||!iso(c.updatedAt)||!scopeMatches)fail('METADATA_MISMATCH');
  for(const key of ['archivedAt','trashedAt','restoreUntil'])if(c[key]!==null&&!iso(c[key]))fail('METADATA_MISMATCH');
  if(c.status==='active'&&(c.archivedAt!==null||c.trashedAt!==null||c.restoreUntil!==null)||c.status==='archived'&&(c.archivedAt===null||c.trashedAt!==null||c.restoreUntil!==null)||c.status==='trashed'&&(c.trashedAt===null||c.restoreUntil===null||Date.parse(c.restoreUntil)-Date.parse(c.trashedAt)!==30*24*60*60*1000))fail('METADATA_MISMATCH');
 }
