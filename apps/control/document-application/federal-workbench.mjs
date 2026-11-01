@@ -9,9 +9,7 @@ import {validateShape} from '../../../packages/contracts/retrieval-0.2/validate.
 import {canonicalSha256 as hash} from '../../../packages/contracts/validate.mjs';
 import {own,data} from '../../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {fail} from './http.mjs';
-import {ARTIFACT_MIME_TYPES} from '../../../packages/contracts/artifacts-0.2/artifact-formats.mjs';
 
-export {FEDERAL_REVIEW_SCHEMA};
 const uuid=v=>typeof v==='string'&&/^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/u.test(v);
 const sha=v=>typeof v==='string'&&/^[0-9a-f]{64}$/u.test(v);
 const kinds=['draft','operative','consolidated','redline','docx'];
@@ -40,14 +38,12 @@ export function federalWorkbenchInput(intent,raw){
   own(q,['versionId','limit','cursor']);
   if(!uuid(q.versionId)||!Number.isInteger(q.limit)||q.limit<1||q.limit>100||q.cursor!==null&&!sha(q.cursor))fail('INVALID_REQUEST');return q;
  }
- own(q,intent==='federal-prepare'?['selection']:['selection','revisionSha256','output','deliveryId','baseVersionId','baseRevisionSha256'],intent==='federal-prepare'?[]:['reviewVersionId']);
+ own(q,intent==='federal-prepare'?['selection']:['selection','revisionSha256','output','deliveryId','baseVersionId','baseRevisionSha256','reviewVersionId']);
  const selected=selection(q.selection);
  if(intent==='federal-publish'){
-  const reviewVersionId=q.reviewVersionId??null;
-  if(!sha(q.revisionSha256)||!kinds.includes(q.output)||!delivery(q.deliveryId)||reviewVersionId!==null&&!uuid(reviewVersionId)||
+  if(!sha(q.revisionSha256)||!kinds.includes(q.output)||!delivery(q.deliveryId)||q.reviewVersionId!==null&&!uuid(q.reviewVersionId)||
    (q.baseVersionId===null?q.baseRevisionSha256!==null:!uuid(q.baseVersionId)||!sha(q.baseRevisionSha256)||q.output!=='draft')||
-   q.output==='draft'&&reviewVersionId!==null)fail('INVALID_REQUEST');
-  return {...q,selection:selected,reviewVersionId};
+   q.output==='draft'&&q.reviewVersionId!==null)fail('INVALID_REQUEST');
  }
  return {...q,selection:selected};
 }
@@ -55,7 +51,7 @@ export function federalWorkbenchInput(intent,raw){
  * source and the approval is held to the store rule before anything is released. */
 async function readRecord(reads,versionId,expectedSha256,context,life){
  const retained=await life.run(signal=>reads.download(versionId,context,{signal}));
- if(retained.version.mimeType!==ARTIFACT_MIME_TYPES.txt||expectedSha256!==null&&retained.version.object.sha256!==expectedSha256)fail('DRAFT_REVIEW_CHANGED',409);
+ if(expectedSha256!==null&&retained.version.object.sha256!==expectedSha256)fail('DRAFT_REVIEW_CHANGED',409);
  let stored;try{stored=decodeFederalReview(retained.bytes.toString('utf8'));}catch{fail('DRAFT_REVIEW_INVALID',422);}
  return {retained,stored};
 }
@@ -77,8 +73,7 @@ async function reviewHistory(reads,call,context,life){
  own(page,['artifactId','anchorVersionId','headVersionId','versions','nextCursor']);
  const revisions=[];
  for(const version of page.versions){
-  const {retained,stored}=await readRecord(reads,version.versionId,version.object.sha256,context,life);
-  if(hash(retained.version)!==hash(version))fail('DRAFT_REVIEW_INVALID',422);
+  const {stored}=await readRecord(reads,version.versionId,version.object.sha256,context,life);
   try{assertFederalApprovalBinds(stored.approval,stored.prepared,version.parentVersionId);}catch{fail('DRAFT_REVIEW_INVALID',422);}
   revisions.push({version,revisionSha256:stored.prepared.revisionSha256,sourceArtifact:stored.prepared.sourceArtifact,approval:stored.approval});
  }
@@ -117,7 +112,6 @@ export async function federalWorkbenchRoute({intent,call,config,current,life,sta
   if(intent==='federal-load'||intent==='federal-approve')({prepared,selection:selected,savedDraft,approval}=await loadReview(reads,prepare,call.versionId,call.expectedArtifactSha256,context,life));
   else prepared=await prepare(selected);
  }catch(error){sourceFailure(error);}
- const exports=federalDraftExportRequests(prepared,prepared.revisionSha256);
  if(intent==='federal-prepare'||intent==='federal-load'){
   state.completed=true;return {schema:FEDERAL_REVIEW_SCHEMA,selection:selected,prepared,savedDraft,approval};
  }
@@ -144,7 +138,8 @@ export async function federalWorkbenchRoute({intent,call,config,current,life,sta
   }
   baseVersionId=call.baseVersionId;
   const selectedRequest=call.output==='draft'?{operation:'create_word',format:'txt',title:labels.draft,content:{text:encodeFederalReview(federalRevisionRecord(prepared))}}
-   :call.output==='docx'?(()=>{try{return federalDraftDossier(prepared,approval);}catch{fail('DRAFT_OUTPUT_UNEXPORTABLE',422);}})():exports[call.output];
+   :call.output==='docx'?(()=>{try{return federalDraftDossier(prepared,approval);}catch{fail('DRAFT_OUTPUT_UNEXPORTABLE',422);}})()
+   :federalDraftExportRequests(prepared,prepared.revisionSha256)[call.output];
   // Persist the complete reviewed revision in the canonical immutable request.
   // Even equal output bytes from different source/operation pins cannot reuse a delivery.
   request={...selectedRequest,title:`${labels[call.output]} [${prepared.revisionSha256}]: ${prepared.draft.source.documentId}`.slice(0,160)};

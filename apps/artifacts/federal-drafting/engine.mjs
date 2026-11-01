@@ -7,12 +7,12 @@ import {own,data} from '../../../packages/contracts/commands-0.2/execution-bound
 import {canonicalSha256} from '../../../packages/contracts/validate.mjs';
 import {assertFederalTextLayout,FEDERAL_SCOPED_TEXT_PARSER,FEDERAL_USLM_XML_PARSER,FEDERAL_PARSERS} from '../../../packages/contracts/federal-workbench/source-layout.mjs';
 import {scopedApplication} from './scoped-application.mjs';
-import {deriveUslmScopes,assertUslmResult,USLM_SCOPE_LIMIT,USLM_ROOT_SCOPE} from './uslm-source.mjs';
+import {deriveUslmScopes,assertUslmResult,USLM_ROOT_SCOPE} from './uslm-source.mjs';
 import canonicalize from 'canonicalize';
-export {FEDERAL_SCOPED_TEXT_PARSER,FEDERAL_USLM_XML_PARSER};
+export {FEDERAL_SCOPED_TEXT_PARSER};
 
 export const FEDERAL_TEXT_PARSER='federal-plain-text/1';
-export const DRAFT_LIMITS=Object.freeze({sourceBytes:131072,scopes:128,operations:64,operationBytes:16384});
+export const DRAFT_LIMITS=Object.freeze({sourceBytes:131072,scopes:128,uslmScopes:1024,operations:64,operationBytes:16384});
 const SHA=/^[a-f0-9]{64}$/u,ID=/^[A-Za-z0-9][A-Za-z0-9_.:-]{0,127}$/u;
 export const textSha256=text=>createHash('sha256').update(text,'utf8').digest('hex');
 const fault=(code,operationId=null)=>{throw Object.assign(Error(code),{code,operationId});};
@@ -31,7 +31,7 @@ export function federalDraftSource(raw){
  let coverage;try{coverage=own(source.coverage,['complete','limitations']);}catch{fault('DRAFT_SOURCE_INVALID');}
  if(typeof coverage.complete!=='boolean'||!Array.isArray(coverage.limitations)||coverage.limitations.length>32||coverage.limitations.some(v=>!text(v,1000))||!coverage.complete&&!coverage.limitations.length)fault('DRAFT_SOURCE_INVALID');
  const uslm=source.parserVersion===FEDERAL_USLM_XML_PARSER,nested=uslm||source.parserVersion===FEDERAL_SCOPED_TEXT_PARSER;
- if(!Array.isArray(source.scopes)||!source.scopes.length||source.scopes.length>(uslm?USLM_SCOPE_LIMIT:DRAFT_LIMITS.scopes))fault('DRAFT_SOURCE_INVALID');
+ if(!Array.isArray(source.scopes)||!source.scopes.length||source.scopes.length>(uslm?DRAFT_LIMITS.uslmScopes:DRAFT_LIMITS.scopes))fault('DRAFT_SOURCE_INVALID');
  const seen=new Set();
  for(const rawScope of source.scopes){
   let scope;try{scope=own(rawScope,['id','label','start','end','sha256',...(nested?['ancestorPath']:[])]);}catch{fault('DRAFT_SCOPE_INVALID');}

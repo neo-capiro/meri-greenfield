@@ -38,11 +38,10 @@ export const federalWorkbenchSchema={
   FederalSourceArtifact:object({versionId:uuid,sha256:sha,specSha256:sha}),
   FederalPrepareRequest:object({selection:ref('FederalSelection')}),
   FederalLoadRequest:object({versionId:uuid,expectedArtifactSha256:sha}),
-  // `reviewVersionId` (optional, default null) cites the saved review an export comes from; only that exact version's
-  // own approval, for this exact revision, makes the export approved. A draft save never cites one.
-  FederalPublishRequest:{type:'object',properties:{selection:ref('FederalSelection'),revisionSha256:sha,output:{enum:outputs},deliveryId,
-   baseVersionId:nullable(uuid),baseRevisionSha256:nullable(sha),reviewVersionId:nullable(uuid)},
-   required:['selection','revisionSha256','output','deliveryId','baseVersionId','baseRevisionSha256'],additionalProperties:false},
+  // `reviewVersionId` (null or a saved review version) cites the saved review an export comes from; only that exact
+  // version's own approval, for this exact revision, makes the export approved. A draft save never cites one.
+  FederalPublishRequest:object({selection:ref('FederalSelection'),revisionSha256:sha,output:{enum:outputs},deliveryId,
+   baseVersionId:nullable(uuid),baseRevisionSha256:nullable(sha),reviewVersionId:nullable(uuid)}),
   FederalApproveRequest:object({versionId:uuid,expectedArtifactSha256:sha,revisionSha256:sha,deliveryId}),
   FederalHistoryRequest:object({versionId:uuid,limit:{type:'integer',minimum:1,maximum:100},cursor:nullable(sha)}),
   FederalRetainedPreparation:object({sourceArtifact:ref('FederalSourceArtifact'),draft:federal('FederalDraftCompilation'),revisionSha256:sha,approval:{const:'unapproved'}}),

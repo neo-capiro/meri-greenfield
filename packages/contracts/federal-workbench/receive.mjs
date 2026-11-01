@@ -32,9 +32,8 @@ export function receiveFederalRequest(route,bytes){
  const request=parseBytes(bytes,2*1024*1024);
  if(!Object.hasOwn(validators,route)||!validators[route](request))fail('INVALID_REQUEST');
  if(route==='federal-publish'){
-  const reviewVersionId=request.reviewVersionId??null;
   if(request.baseVersionId===null?request.baseRevisionSha256!==null:request.baseRevisionSha256===null||request.output!=='draft')fail('INVALID_REQUEST');
-  if(request.output==='draft'&&reviewVersionId!==null)fail('INVALID_REQUEST');
+  if(request.output==='draft'&&request.reviewVersionId!==null)fail('INVALID_REQUEST');
  }
  requests.set(request,route);return request;
 }
@@ -114,7 +113,7 @@ export async function receiveFederalResponse(route,status,bytes,request,review){
   reviews.add(result);return result;
  }
  // A cited approval names the version it approved (the cited version's parent) and exactly this revision.
- const reviewVersionId=request.reviewVersionId??null,expectedReview=request.output==='draft'?'unapproved':result.approval===null?'confirmed-for-export':'approved';
+ const reviewVersionId=request.reviewVersionId,expectedReview=request.output==='draft'?'unapproved':result.approval===null?'confirmed-for-export':'approved';
  if(!reviews.has(review)||!validatePublication(result)||!same(request.selection,review.selection)||request.revisionSha256!==review.prepared.revisionSha256||
   result.revisionSha256!==request.revisionSha256||!same(result.sourceArtifact,review.prepared.sourceArtifact)||result.output!==request.output||
   result.review!==expectedReview||request.output==='draft'&&result.approval!==null||reviewVersionId===null&&result.approval!==null||

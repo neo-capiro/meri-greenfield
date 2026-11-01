@@ -88,9 +88,11 @@ test('approval, history and refusal reasons are closed public shapes', async () 
   await assert.rejects(receiveFederalResponse('federal-history', 200, bytes({}), history), /INVALID_RESPONSE/);
   // An export may cite the saved review it comes from; a draft save never does. The Word dossier is an export.
   const selection = {versionId, expectedArtifactSha256: source.sha256, operations: [opFor(source)]};
-  const publish = (output, extra = {}) => ({selection, revisionSha256, output, deliveryId: randomUUID(), baseVersionId: null, baseRevisionSha256: null, ...extra});
+  const publish = (output, extra = {}) => ({selection, revisionSha256, output, deliveryId: randomUUID(), baseVersionId: null, baseRevisionSha256: null, reviewVersionId: null, ...extra});
   assert.equal(receiveFederalRequest('federal-publish', bytes(publish('docx', {reviewVersionId: randomUUID()}))).output, 'docx');
-  assert.equal(receiveFederalRequest('federal-publish', bytes(publish('operative'))).reviewVersionId, undefined);
+  assert.equal(receiveFederalRequest('federal-publish', bytes(publish('operative'))).reviewVersionId, null);
+  const {reviewVersionId: omitted, ...withoutCitation} = publish('operative');
+  assert.throws(() => receiveFederalRequest('federal-publish', bytes(withoutCitation)));
   assert.throws(() => receiveFederalRequest('federal-publish', bytes(publish('draft', {reviewVersionId: randomUUID()}))));
   assert.throws(() => receiveFederalRequest('federal-publish', bytes(publish('operative', {reviewVersionId: 'latest'}))));
 });

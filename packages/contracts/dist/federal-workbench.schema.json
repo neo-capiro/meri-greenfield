@@ -213,7 +213,8 @@
         "output",
         "deliveryId",
         "baseVersionId",
-        "baseRevisionSha256"
+        "baseRevisionSha256",
+        "reviewVersionId"
       ],
       "additionalProperties": false
     },

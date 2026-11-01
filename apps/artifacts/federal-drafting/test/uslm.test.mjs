@@ -91,4 +91,7 @@ test('official USLM extractions import as structured sources only through the wo
   ['<bill xmlns="http://xml.house.gov/schemas/uslm/1.0"><section identifier="/s 1"/></bill>','DRAFT_USLM_IDENTIFIER_INVALID']]){
   const x=officialXml(text);assert.throws(()=>projectNativeFederalSource(x.selection,x.result,{structured:true}),{code});
  }
+ // The engine's scope limit is the one bound: 1024 identified elements plus the root exceeds it.
+ const large=officialXml('<bill xmlns="http://xml.house.gov/schemas/uslm/1.0">'+Array.from({length:1024},(_,i)=>`<section identifier="/s${i}"/>`).join('')+'</bill>');
+ assert.throws(()=>projectNativeFederalSource(large.selection,large.result,{structured:true}),{code:'DRAFT_SOURCE_INVALID'});
 });

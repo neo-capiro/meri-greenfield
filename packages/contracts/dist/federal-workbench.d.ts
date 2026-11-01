@@ -614,7 +614,7 @@ export interface FederalPublishRequest {
   deliveryId: string;
   baseVersionId: string | null;
   baseRevisionSha256: string | null;
-  reviewVersionId?: string | null;
+  reviewVersionId: string | null;
 }
 /**
  * This interface was referenced by `FederalWorkbench`'s JSON-Schema

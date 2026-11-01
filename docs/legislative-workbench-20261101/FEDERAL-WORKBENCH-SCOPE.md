@@ -29,7 +29,6 @@ All compiler refusals are released with status 422, `code` as below and `operati
 | `DRAFT_XML_ENCODING_UNSUPPORTED` | The XML declaration names a non-UTF-8 encoding. | Non-UTF-8 XML not supported |
 | `DRAFT_XML_MALFORMED` | The source is not one well-formed XML document. | Malformed XML source |
 | `DRAFT_USLM_IDENTIFIER_INVALID` / `DRAFT_USLM_IDENTIFIER_DUPLICATE` | An `identifier` cannot become a scope id, or repeats. | Unusable section identifier |
-| `DRAFT_USLM_SCOPE_LIMIT` | More than 1024 identified elements. | Document too large to identify |
 | `DRAFT_USLM_SCOPES_MISMATCH` | A retained envelope declares scopes the markup does not carry. | Source scopes do not match the XML |
 | `DRAFT_XML_RESULT_MALFORMED` | An edit would leave the document not well-formed (for example a bare `<` or `&`, or a changed root). | Edit breaks the XML document |
 | `DRAFT_WHOLE_SOURCE_REPEAL_UNSUPPORTED` | The operations leave no consolidated text or remove the root element. | Whole-source repeal is not an amendment |
@@ -38,7 +37,7 @@ All compiler refusals are released with status 422, `code` as below and `operati
 | `DRAFT_DEPENDENCY_REQUIRED` / `DRAFT_DEPENDENCY_INVALID` | A prior change of this text is not in the dependency closure, or a dependency is unknown. | Operation order not declared |
 | `DRAFT_SCOPE_INVALIDATED` / `DRAFT_SCOPE_UNKNOWN` | The target or an ancestor was consumed by an earlier edit, or does not exist. | Section no longer exists in this draft |
 | `DRAFT_NO_CHANGE` | A replace equals its anchor, or the result equals the source. | No change |
-| `DRAFT_OPERATION_INVALID` / `DRAFT_SELECTION_INVALID` / `DRAFT_SOURCE_INVALID` / `DRAFT_SCOPE_INVALID` / `DRAFT_SCOPE_MISMATCH` / `DRAFT_SOURCE_MISMATCH` | Shape, bound or hash failures of the operation, selection or source. | Invalid draft input |
+| `DRAFT_OPERATION_INVALID` / `DRAFT_SELECTION_INVALID` / `DRAFT_SOURCE_INVALID` / `DRAFT_SCOPE_INVALID` / `DRAFT_SCOPE_MISMATCH` / `DRAFT_SOURCE_MISMATCH` | Shape, bound or hash failures of the operation, selection or source (including more than 1024 identified USLM elements). | Invalid draft input |
 | `DRAFT_OUTPUT_LIMIT` / `DRAFT_OUTPUT_UNEXPORTABLE` | An output exceeds the compiler or artifact contract (the DOCX dossier has its own Word bound). | Output too large to export |
 | `DRAFT_SOURCE_CHANGED` / `DRAFT_SOURCE_FORMAT` | The retained source artifact hash changed or is not a federal envelope. | Source artifact changed |
 | `DRAFT_REVIEW_CHANGED` (409) | The saved review no longer recompiles to the named revision, or a cited review carries another revision. | Review changed; reload |

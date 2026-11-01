@@ -15,11 +15,11 @@
     },
     {
       "path": "federal-workbench/schema.mjs",
-      "sha256": "45597b415b35258c0d679301f875c526d07178cca40b11f751c352681faa5861"
+      "sha256": "87d22e30774d4805223cd1fa206063193ef6237b5d45943ce4024c10ba80bdfb"
     },
     {
       "path": "federal-workbench/receive.mjs",
-      "sha256": "894cfd6af554df42c5e64c64bf070a692e1dd174f1a1d14eaadc21453b019004"
+      "sha256": "2ba8a833417fd5f5b27401e3149b33f2e4954b8750cf90bb8c571dd44e670720"
     },
     {
       "path": "federal-workbench/source-layout.mjs",

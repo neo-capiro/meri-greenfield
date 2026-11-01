@@ -6,9 +6,9 @@
  * or DTD validation of USLM; it establishes well-formedness, the declared namespace and element identity only. */
 import {createHash} from 'node:crypto';
 import {SaxesParser} from 'saxes';
-export const FEDERAL_USLM_XML_PARSER='federal-uslm-xml/1';
-export const USLM_NAMESPACES=Object.freeze(['http://xml.house.gov/schemas/uslm/1.0','http://schemas.gpo.gov/xml/uslm']);
-export const USLM_SCOPE_LIMIT=1024;
+import {FEDERAL_USLM_XML_PARSER} from '../../../packages/contracts/federal-workbench/source-layout.mjs';
+export {FEDERAL_USLM_XML_PARSER};
+const USLM_NAMESPACES=Object.freeze(['http://xml.house.gov/schemas/uslm/1.0','http://schemas.gpo.gov/xml/uslm']);
 export const USLM_ROOT_SCOPE='document';
 const ID=/^[A-Za-z0-9][A-Za-z0-9_.:-]{0,127}$/u;
 const fault=code=>{throw Object.assign(Error(code),{code,operationId:null});};
@@ -16,7 +16,7 @@ const sha=text=>createHash('sha256').update(text,'utf8').digest('hex');
 /** The same markup signature the browser-safe layout guard uses; a plain-text baseline must not start with it. */
 export const looksLikeMarkup=text=>/^[\s﻿]*(?:<\?xml\b|<!DOCTYPE\b|<!--|<[A-Za-z_][\w.:-]*(?=[\s/>]|$))/iu.test(text);
 /** A USLM identifier such as `/us/bill/119/hr/1/s2/a` becomes the scope id `us:bill:119:hr:1:s2:a`. */
-export const uslmScopeId=identifier=>identifier.replace(/^\//u,'').replaceAll('/',':');
+const uslmScopeId=identifier=>identifier.replace(/^\//u,'').replaceAll('/',':');
 
 function parse(text,visit){
  const bom=text.startsWith('﻿')?1:0,body=bom?text.slice(1):text,parser=new SaxesParser({xmlns:true,position:true});
@@ -51,7 +51,6 @@ export function deriveUslmScopes(text){
   const label=depth===1?`${tag.local}${identifier?.uri===''?' '+identifier.value:''}`:`${tag.local} ${identifier.value}`;
   const scope={id,label:label.slice(0,512),start,end,sha256:sha(text.slice(start,end)),ancestorPath:stack.map(s=>s.id)};
   scopes.push(scope);stack.push(scope);
-  if(scopes.length>USLM_SCOPE_LIMIT)fault('DRAFT_USLM_SCOPE_LIMIT');
  }
  return Object.freeze({root:Object.freeze(root),scopes:Object.freeze(scopes.map(s=>Object.freeze({...s,ancestorPath:Object.freeze(s.ancestorPath)})))});
 }

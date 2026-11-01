@@ -13,11 +13,10 @@ import official from '../../../../packages/contracts/test/fixtures/federal-draft
 import {projectNativeFederalSource} from '../../../artifacts/federal-drafting/native-source.mjs';
 import * as distributedFederal from '@capiro/meri-contracts/federal-workbench';
 import {fixture,ok,publication,importedSelection} from './federal-workbench-fixture.mjs';
-const importRequest=()=>({selection:structuredClone(official.request),deliveryId:randomUUID()});
 
 test('public package admits the mounted official import and downloaded envelope', async t => {
  const x=await fixture(t,{native:true}),bytes=value=>new TextEncoder().encode(JSON.stringify(value));
- const input=distributedFederal.receiveFederalRequest('federal-import',bytes(importRequest()));
+ const input=distributedFederal.receiveFederalRequest('federal-import',bytes(x.importRequest()));
  const response=await x.post('federal-import',input),raw=await response.json();
  const received=await distributedFederal.receiveFederalResponse('federal-import',response.status,bytes(raw),input);
  assert.deepEqual(received,raw);
@@ -81,7 +80,7 @@ test('invalidated ancestor paths refuse atomically through mounted prepare/publi
 });
 
 test('official import retains exact Core projection and replays original custody before review and export',async t=>{
- const x=await fixture(t,{native:true}),input=importRequest(),result=await ok(await x.post('federal-import',input));
+ const x=await fixture(t,{native:true}),input=x.importRequest(),result=await ok(await x.post('federal-import',input));
  assert.deepEqual(result.source,projectNativeFederalSource(official.request,official.response));
  const bytes=await x.reads.download(result.publication.version.versionId,x.f.context);
  assert.deepEqual(JSON.parse(bytes.bytes),{schema:result.schema,selection:result.selection,source:result.source});
@@ -94,7 +93,7 @@ test('official import retains exact Core projection and replays original custody
  await ok(await x.post('federal-load',load));
  await ok(await x.post('federal-publish',publication(selection,review.prepared.revisionSha256,'operative')));
  const before=x.f.state.executions.length;x.nativeState.available=false;
- for(const [route,body] of [['federal-import',importRequest()],['federal-prepare',{selection}],['federal-load',load],['federal-publish',publication(selection,review.prepared.revisionSha256,'redline')]]){
+ for(const [route,body] of [['federal-import',x.importRequest()],['federal-prepare',{selection}],['federal-load',load],['federal-publish',publication(selection,review.prepared.revisionSha256,'redline')]]){
   const response=await x.post(route,body);assert.equal(response.status,409);assert.equal((await response.json()).error.code,'DRAFT_SOURCE_STALE');
  }
  assert.equal(x.f.state.executions.length,before);
@@ -104,15 +103,15 @@ test('official marker never substitutes for a current Core reader; changed metad
  const x=await fixture(t),source=projectNativeFederalSource(official.request,official.response);
  const retained=await x.f.run({...x.f.call,deliveryId:randomUUID(),request:{...x.f.call.request,content:{text:JSON.stringify({schema:'meri.federal-source.v1',selection:official.request,source})}}});
  const selection=importedSelection({source,publication:retained});
- assert.equal((await x.post('federal-import',importRequest())).status,503);
+ assert.equal((await x.post('federal-import',x.importRequest())).status,503);
  assert.equal((await x.post('federal-prepare',{selection})).status,503);
- const y=await fixture(t,{native:true}),result=await ok(await y.post('federal-import',importRequest()));
+ const y=await fixture(t,{native:true}),result=await ok(await y.post('federal-import',y.importRequest()));
  y.nativeState.mutate=value=>{value.source.fetchedAt='2026-01-04T00:00:00.000Z';};
  assert.equal((await y.post('federal-prepare',{selection:importedSelection(result)})).status,409);
 });
 
 test('source change before commit preserves an unknown original delivery without repeating generation',async t=>{
- const x=await fixture(t,{native:true}),input=importRequest();
+ const x=await fixture(t,{native:true}),input=x.importRequest();
  x.f.state.executorHook=()=>{x.nativeState.available=false;};
  const result=await x.post('federal-import',input);assert.notEqual(result.status,200);
  const before=x.f.state.executions.length;
@@ -123,7 +122,7 @@ test('source change before commit preserves an unknown original delivery without
 });
 
 test('committed import withheld at release recovers the same version after current authority returns',async t=>{
- const x=await fixture(t,{native:true}),input=importRequest();x.deny();
+ const x=await fixture(t,{native:true}),input=x.importRequest();x.deny();
  const response=await x.post('federal-import',input);assert.equal(response.status,403);
  assert.equal((await response.json()).error.outcome,'RESULT_NOT_RELEASED');
  const count=x.f.state.executions.length;x.allow();
@@ -240,7 +239,7 @@ test('generated browser receiver admits actual mounted bytes and refuses changed
  await assert.rejects(receive('federal-prepare',200,bytes(changed),prepare));
  await assert.rejects(receive('federal-prepare',200,bytes(raw),structuredClone(prepare)));
  assert.throws(()=>request('federal-prepare',bytes({selection:x.selection,approved:true})));
- const y=await fixture(t,{native:true}),imported=request('federal-import',bytes(importRequest()));
+ const y=await fixture(t,{native:true}),imported=request('federal-import',bytes(y.importRequest()));
  const saved=await ok(await y.post('federal-import',imported));
  assert.deepEqual(await receive('federal-import',200,bytes(saved),imported),saved);
  const {publication:unused,...envelope}=saved;
