@@ -185,7 +185,7 @@ test('mail refuses correlation larger than the ingress cap before credentials or
 for (const id of operations) test(`${id}: exact selected client and mailbox remain scoped independently of connection status`, async () => {
   const f = createMailFixture(id, {client: true}), result = JSON.parse(await execute(f));
   assert.deepEqual(result.subject, f.subject); assert.equal(result.messages[0].mailboxId, f.mailboxId);
-  assert.equal(result.messages[0].connectionStatus, 'disconnected'); assert.equal(result.selection.subject.entityId, f.clientId);
+  assert.equal(result.messages[0].connectionStatus, 'disabled'); assert.equal(result.selection.subject.entityId, f.clientId);
   if (id !== 'mail.read_thread') assert.equal(result.messages[0].clientId, f.clientId);
 });
 

@@ -5,7 +5,6 @@ import {canonicalSha256} from '../../../../../packages/contracts/validate.mjs';
 import {selectSkill} from '../../../../../packages/skills/index.mjs';
 import {fixture} from '../../../../runtime/test/reads-native-fixture.mjs';
 import {capiroDataCase,ids,sqlRefusal} from '../../../../gateway/sources/capiro-data/test/fixture.mjs';
-import {withSqlContract} from '../../../../gateway/sources/capiro-data/test/sql-contract-fixture.mjs';
 import {connect} from './native-mcp-fixture.mjs';
 import {advertisedArguments} from '../schema.mjs';
 import {assertNativeReadResponse} from '../../../../../packages/contracts/runtime-0.2/reads.mjs';
@@ -95,15 +94,13 @@ for(const id of ids)test(`${id}: private wire uses one existing SDK tool name an
   assert.ok(scene.wire[0].options.headers['x-meri-read-correlation']);
 });
 
-test('Core descriptor reaches the model as current grammar while canonical source and receipt bytes remain exact',async t=>{
- const scene=capiroDataCase('describe_capiro_data');scene.state.page=withSqlContract(scene.page);
+test('a Core 362 describe page reaches the model with one orientation line while canonical source and receipt bytes remain exact',async t=>{
+ const scene=capiroDataCase('describe_capiro_data');
  const f=await fixture('capiro-data','describe_capiro_data',{scene}),m=await connect(t,f),out=await m.call();
  assert.equal(out.isError,undefined,JSON.stringify(out));assert.equal(out.content.length,2);
- const envelope=JSON.parse(out.content[0].text);assert.deepEqual(envelope.result,scene.state.page);
- assert.match(out.content[1].text,/Core SQL contract capiro.sql-contract\/1 revision/);
- assert.ok(out.content[1].text.includes(scene.state.page.contract.revisionSha256));
- assert.match(out.content[1].text,/Blocked functions \(exact names\): set_config, pg_sleep,/);
- assert.match(out.content[1].text,/no column-count cap/);assert.match(out.content[1].text,/grants no authority/);
+ const envelope=JSON.parse(out.content[0].text);assert.deepEqual(envelope.result,scene.page);
+ assert.match(out.content[1].text,/^Notice: 1 public relation\(s\) described: program_elements\. Spell relation and column names exactly as listed/);
+ assert.match(out.content[1].text,/rowLimit default 200, max 1000\.$/);
  assert.equal(m.runtime.receipts()[0].resultSha256,canonicalSha256(envelope));
 });
 
