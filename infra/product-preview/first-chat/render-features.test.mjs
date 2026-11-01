@@ -339,13 +339,15 @@ test('approved reads allow valid narrowed role capabilities and reject invalid a
  for(const extra of [{maxTurns:20},{model:'deployment-model'}])assert.throws(()=>RV.parsePolicy({...policy,runtime:{...policy.runtime,...extra}}),{code:'RUNTIME_VALUES_REFUSED'});
 });
 
-test('the complete 87-read roster survives all six rendered control lists',async()=>{
+test('the committed deployment inputs render every approved read into all six control lists under the material caps',async()=>{
+ // Render the example exactly as the operator does: its own reads roster and capability platform, no synthetic overlay.
  const example=JSON.parse(await readFile(new URL('deployment-inputs.json',import.meta.url),'utf8'));
- const operations=[...example.features.reads.approvedReads.operations,...[
-  'get_certification_status','get_state_rule_status','search_sam_opportunities','get_research_portfolio_share_links',
- ].map(id=>({id,version:'0.2.0'}))];
- assert.equal(operations.length,87);assert.equal(new Set(operations.map(x=>x.id)).size,87);
- const rendered=await render(withFeatures({sourceEnabled:true,reads:{...READS,approvedReads:{...APPROVED_READS,operations}},userPreferences:{enabled:true},tenantSettings:{enabled:true},intents:{enabled:true}}),{featureSecrets:featureSecrets()});
+ const operations=example.features.reads.approvedReads.operations,key=x=>`${x.id}@${x.version}`;
+ // An operation may be approved at more than one version (a staged SQL installation admits both retained versions), never twice at one.
+ assert.equal(new Set(operations.map(key)).size,operations.length);
+ for(const version of ['0.2.0','0.3.0'])for(const id of ['describe_capiro_data','query_capiro_data'])assert.ok(operations.some(x=>key(x)===`${id}@${version}`),`${id}@${version}`);
+ const secrets={'reads.serviceSecret':{secretArn:example.features.reads.serviceSecretArn,versionId:VERSION,bytes:Buffer.from(SECRET.service)}};
+ const rendered=await render(i=>{i.deployment.features=structuredClone(example.features);},{featureSecrets:secrets});
  const control=config(rendered,'control'),platform=control.capabilityPlatform;
  for(const list of [control.agentcore.approvedReads.operations,platform.maximum.activeReadOperations,platform.defaults.activeReadOperations,...Object.values(platform.roleCeilings).map(x=>x.activeReadOperations)])assert.deepEqual(list,operations);
  assert.ok(rendered.roles.control.configBytes.length<=40*1024);

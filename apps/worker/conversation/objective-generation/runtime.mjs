@@ -16,7 +16,7 @@ export function createObjectiveGenerationRuntime({selection,now=Date.now,codec=l
    if(selected.strategy.executionSelection.model!==v.model)refuse();
    const deadlineMs=Math.min(v.deadlineMs,entry.expiresAtMs);life.limitDeadline(deadlineMs);
    const selectedCodec=await life.run(()=>codec(selected.strategy.request)),bound=selectedCodec.selection(selected);let captured=false;
-   return Object.freeze({outputFormat:selectedCodec.outputFormat(),deadlineMs,async capture({sdkResult,signal}){
+   return Object.freeze({outputFormat:selectedCodec.outputFormat(bound),deadlineMs,async capture({sdkResult,signal}){
     if(captured||signal?.aborted||now()>=deadlineMs)refuse();captured=true;
     const captureLife=createOperationLifetime({now,signal,deadlineMs:Math.min(deadlineMs,now()+maxRequestMs),errorFactory:typedFault});
     try{const current=await captureLife.run(signal=>read({binding:v.binding,signal}));if(current===null||!same(current,entry))refuse();

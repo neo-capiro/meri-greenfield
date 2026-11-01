@@ -84,48 +84,120 @@
                   "pattern": "^[a-f0-9]{64}$"
                 },
                 "intent": {
-                  "type": "object",
-                  "properties": {
-                    "outcome": {
-                      "type": "string",
-                      "minLength": 1,
-                      "maxLength": 4000,
-                      "pattern": "\\S"
+                  "oneOf": [
+                    {
+                      "type": "object",
+                      "properties": {
+                        "outcome": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 4000,
+                          "pattern": "\\S"
+                        },
+                        "governmentProblem": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 4000,
+                          "pattern": "\\S"
+                        },
+                        "askType": {
+                          "enum": [
+                            "funding",
+                            "policy_authority",
+                            "both",
+                            "protect_funding",
+                            "meri_propose"
+                          ]
+                        },
+                        "minimumWin": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 4000,
+                          "pattern": "\\S"
+                        },
+                        "limits": {
+                          "type": "string",
+                          "maxLength": 4000
+                        }
+                      },
+                      "required": [
+                        "outcome",
+                        "governmentProblem",
+                        "askType",
+                        "minimumWin",
+                        "limits"
+                      ],
+                      "additionalProperties": false
                     },
-                    "governmentProblem": {
-                      "type": "string",
-                      "minLength": 1,
-                      "maxLength": 4000,
-                      "pattern": "\\S"
-                    },
-                    "askType": {
-                      "enum": [
-                        "funding",
-                        "policy_authority",
-                        "both",
-                        "protect_funding",
-                        "meri_propose"
-                      ]
-                    },
-                    "minimumWin": {
-                      "type": "string",
-                      "minLength": 1,
-                      "maxLength": 4000,
-                      "pattern": "\\S"
-                    },
-                    "limits": {
-                      "type": "string",
-                      "maxLength": 4000
+                    {
+                      "type": "object",
+                      "properties": {
+                        "kind": {
+                          "const": "strategy-intake"
+                        },
+                        "strategyIntake": {
+                          "type": "object",
+                          "properties": {
+                            "schemaVersion": {
+                              "const": 1
+                            },
+                            "type": {
+                              "enum": [
+                                "appropriations",
+                                "authorization",
+                                "regulatory",
+                                "coalition",
+                                "procurement",
+                                "earmark",
+                                "amendment"
+                              ]
+                            },
+                            "goal": {
+                              "type": "string",
+                              "minLength": 1,
+                              "maxLength": 4000,
+                              "pattern": "\\S"
+                            },
+                            "ownerUserId": {
+                              "type": "string",
+                              "minLength": 1,
+                              "maxLength": 120,
+                              "pattern": "\\S"
+                            },
+                            "targetDate": {
+                              "anyOf": [
+                                {
+                                  "type": "string",
+                                  "format": "date"
+                                },
+                                {
+                                  "type": "null"
+                                }
+                              ]
+                            },
+                            "meriContext": {
+                              "type": "string",
+                              "maxLength": 8000
+                            }
+                          },
+                          "required": [
+                            "schemaVersion",
+                            "type",
+                            "goal",
+                            "ownerUserId",
+                            "targetDate",
+                            "meriContext"
+                          ],
+                          "additionalProperties": false
+                        }
+                      },
+                      "required": [
+                        "kind",
+                        "strategyIntake"
+                      ],
+                      "additionalProperties": false
                     }
-                  },
-                  "required": [
-                    "outcome",
-                    "governmentProblem",
-                    "askType",
-                    "minimumWin",
-                    "limits"
-                  ],
-                  "additionalProperties": false
+                  ]
                 }
               },
               "required": [
