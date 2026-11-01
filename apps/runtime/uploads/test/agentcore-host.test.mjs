@@ -14,6 +14,7 @@ import {join} from 'node:path';
 import {realpath,mkdtemp,writeFile} from 'node:fs/promises';
 import {RENDERER_PROBE_SCHEMA} from '../../../artifacts/renderer-qualification.mjs';
 import {UPLOAD_CHILD_ENV} from '../native-sandbox.mjs';
+import {RUNTIME_CREDENTIAL_PATHS} from '../../artifacts/renderer-sandbox.mjs';
 import {validateUploadInspection} from '../../../control/uploads/extraction.mjs';
 import {uploadHash,UPLOAD_MIME} from '../../../control/uploads/policy.mjs';
 import {AGENTCORE_SESSION_HEADER} from '../../agentcore-contract.mjs';
@@ -28,10 +29,12 @@ const BYTES=Buffer.from('wave5 container-side inspection fixture\n','utf8');
 const DECLARATION=Object.freeze({filename:'note.txt',mimeType:UPLOAD_MIME.txt,bytes:BYTES.length,sha256:uploadHash(BYTES)});
 const SEGMENT=Object.freeze({ordinal:0,text:'fixture text',method:'native',confidence:null,
  location:Object.freeze({page:null,slide:null,sheet:null,rowStart:null,rowEnd:null})});
-const sandboxed=cwd=>({schema:RENDERER_PROBE_SCHEMA,platform:'linux',uid:[1000,1000,1000,1000],gid:[1000,1000,1000,1000],noNewPrivs:1,
+/** The probe's observation for the inventory the host actually handed it (the qualifier binds the two exactly). */
+const requested=input=>JSON.parse(Buffer.from(input??'{}').toString('utf8')).credentialPaths??[];
+const sandboxed=(cwd,input)=>({schema:RENDERER_PROBE_SCHEMA,platform:'linux',uid:[1000,1000,1000,1000],gid:[1000,1000,1000,1000],noNewPrivs:1,
  capabilities:{CapInh:ZERO,CapPrm:ZERO,CapEff:ZERO,CapBnd:ZERO,CapAmb:ZERO},rootMountOptions:'ro,relatime',interfaces:['lo'],
  cgroup:{memoryMax:'1073741824',pidsMax:'64',cpuMax:'50000 100000'},envNames:[...UPLOAD_CHILD_ENV],cwd,home:cwd,tmpdir:cwd,
- workspace:{mode:0o700,uid:1000},credentialPathsReadable:[{path:'/run/meri/core-secret',readable:false}]});
+ workspace:{mode:0o700,uid:1000},inputValid:true,credentialPathsReadable:requested(input).map(path=>({path,readable:false}))});
 /** The real purpose's one request, built exactly as the transport builds it. */
 const inspectionRequest=({requestId,imageDigest=IMAGE,declaration=DECLARATION,bytes=BYTES,deadlineMs})=>{
  const session=uploadInspectionSessionId(requestId);
@@ -68,15 +71,41 @@ test('the REAL default startup path on an unattested host yields no port, and th
 
 test('the unqualified startup handle carries the bounded numeric and credential diagnostic',async()=>{
  const tempRoot=await realpath(tmpdir());
- const observation={...sandboxed(tempRoot+'/meri-upload-probe-abc123'),noNewPrivs:0,
-  cgroup:{memoryMax:'max',pidsMax:'64',cpuMax:'max 100000'}};
+ const probes=[];
  const handle=await composeUploadInspectionHost({environment:{[UPLOAD_INSPECTION_IMAGE_ENVIRONMENT]:IMAGE},scratchRoot:tempRoot,
-  run:async(role,options)=>({stdout:Buffer.from(JSON.stringify({...observation,cwd:options.cwd,home:options.cwd,tmpdir:options.cwd,
-   workspace:{mode:0o700,uid:1000}})),receipt:{exitCode:0}})});
+  run:async(role,options)=>{probes.push(requested(options.input));
+   return {stdout:Buffer.from(JSON.stringify({...sandboxed(options.cwd,options.input),noNewPrivs:0,
+    cgroup:{memoryMax:'max',pidsMax:'64',cpuMax:'max 100000'}})),receipt:{exitCode:0}};}});
  assert.equal(handle.inspection,null);assert.equal(handle.reason,'UPLOAD_SANDBOX_UNQUALIFIED');
  assert.deepEqual(handle.diagnostic.resources,{memoryMax:0,pidsMax:64,cpuMax:0});
  assert.equal(handle.diagnostic.credentials.envAllowed,true);
  assert.equal(handle.diagnostic.credentials.allowedCount,UPLOAD_CHILD_ENV.length);
+ // The container-side join hands the probe this image's protected-path inventory, and the probe proved none readable:
+ // `noCredentials` is attested, so only the two observed gaps remain.
+ assert.deepEqual(probes,[[...RUNTIME_CREDENTIAL_PATHS]],'exactly one probe, bound to the image inventory');
+ assert.deepEqual(handle.diagnostic.credentials,{networkIsolated:true,envCount:UPLOAD_CHILD_ENV.length,allowedCount:UPLOAD_CHILD_ENV.length,
+  envAllowed:true,checked:RUNTIME_CREDENTIAL_PATHS.length,readable:0});
+ assert.deepEqual(handle.requirements,['noNewPrivileges','boundedResources']);
+});
+
+test('the live AgentCore startup shape: an unlimited root cgroup leaves boundedResources as the ONLY unmet requirement',async()=>{
+ // The deployed container reported requirements ['boundedResources','noCredentials'] with credentials {checked:0,
+ // readable:0}: the sandbox itself was isolated, but the join had handed the probe NO inventory, which the qualifier
+ // rightly refuses to attest. With the image inventory the credential requirement is met on that same observation,
+ // and the event names only the host's actual gap (every cgroup bound reads `max`).
+ const tempRoot=await realpath(tmpdir());
+ const handle=await composeUploadInspectionHost({environment:{[UPLOAD_INSPECTION_IMAGE_ENVIRONMENT]:IMAGE},scratchRoot:tempRoot,
+  run:async(role,options)=>({stdout:Buffer.from(JSON.stringify({...sandboxed(options.cwd,options.input),
+   cgroup:{memoryMax:'max',pidsMax:'max',cpuMax:'max 100000'}})),receipt:{exitCode:0}})});
+ assert.equal(handle.inspection,null);assert.equal(handle.reason,'UPLOAD_SANDBOX_UNQUALIFIED');
+ assert.deepEqual(handle.requirements,['boundedResources']);
+ assert.deepEqual(handle.diagnostic.resources,{memoryMax:0,pidsMax:0,cpuMax:0});
+ assert.equal(handle.diagnostic.credentials.checked,RUNTIME_CREDENTIAL_PATHS.length);
+ assert.equal(handle.diagnostic.credentials.readable,0);
+ const app=createUploadInspectionApplication({inspection:handle.inspection,imageDigest:IMAGE});
+ const response=await app.handle(inspectionRequest({requestId:'c'.repeat(64),deadlineMs:Date.now()+30000}).request);
+ assert.equal(response.status,503,'an unbounded host still never serves a scan');
+ await app.close({deadlineMs:Date.now()+5000});
 });
 
 test('an attested host is REALLY composed, and the real application serves its own fixed owner',async()=>{
@@ -98,7 +127,7 @@ test('an attested host is REALLY composed, and the real application serves its o
    await writeFile(join(options.cwd,'database','daily.cvd'),Buffer.from('fixture-daily-cvd'));
    return {stdout:Buffer.alloc(0)};}
   if(first==='sigtool')return {stdout:Buffer.alloc(0)};
-  if(first==='probe')return {stdout:Buffer.from(JSON.stringify(sandboxed(options.cwd)))};
+  if(first==='probe')return {stdout:Buffer.from(JSON.stringify(sandboxed(options.cwd,options.input)))};
   children.push({role:first,mode:options.mode??'default'});
   if(first==='scan')return options.mode==='version'?{stdout:Buffer.from('ClamAV 1.4.2/27450/x\n')}:{stdout:Buffer.alloc(0),receipt:{exitCode:0}};
   if(first==='extract')return options.mode==='version'?{stdout:Buffer.from('Python 3.13.16\n')}:

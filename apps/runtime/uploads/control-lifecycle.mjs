@@ -268,7 +268,7 @@ export async function pinnedHttpsConnect({address,port,serverName,serverFingerpr
  });
  return await done;
 }
-export async function mountUploadNativeControl({configuration,allocations,now=Date.now,signal,deadlineMs,run,processing,paths,readFileImpl,connect}={}){
+export async function mountUploadNativeControl({configuration,allocations,now=Date.now,signal,deadlineMs,run,processing,paths,readFileImpl,connect,credentialPaths}={}){
  const declared=configuration?.uploads?.native??null;
  if(declared===null||typeof declared!=='object'||declared.enabled!==true)return unavailable(['uploads.native.enabled'],null);
  // A DECLARED native host (fixed address/port/SAN/fingerprint + the exact protected allocation/identity/binding) is a
@@ -343,7 +343,11 @@ export async function mountUploadNativeControl({configuration,allocations,now=Da
  try{
   // `run`/`paths`/`readFileImpl` are the host owner's narrow fixture ports, exactly as its own composition accepts
   // them. Production startControl supplies none of the three, so from the running system they are unreachable.
+  // `credentialPaths` is the host's protected-path inventory the probe must prove unreadable: the qualifier refuses
+  // an EMPTY inventory as unattestable, so a host that composes locally has to name its own (the container-side join
+  // names the runtime image's). It is a host-owned list, never a request or declaration value.
   const host=await composeUploadNativeHost({configuration,now,signal,deadlineMs:deadlineMs??now()+UPLOAD_NATIVE_MOUNT_MS,
+   ...(credentialPaths===undefined?{}:{credentialPaths}),
    ...(typeof declared.scratchRoot==='string'?{tempRoot:declared.scratchRoot}:{}),
    ...(processing===undefined?{}:{processing}),...(run===undefined?{}:{run}),...(paths===undefined?{}:{paths}),
    ...(readFileImpl===undefined?{}:{readFileImpl})});
