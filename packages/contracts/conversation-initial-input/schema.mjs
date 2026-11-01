@@ -10,5 +10,5 @@ export function initialInputSchema(){return {$schema:'https://json-schema.org/dr
  ConversationInitialInputExpectedContext:input('ConversationInputExpectedContext'),
  ConversationInitialInputAllocation:object({binding:pub('RunBinding'),scopes:{type:'array',items:pub('Scope'),minItems:1,maxItems:100,uniqueItems:true},versions:pub('RuntimeVersions'),selectedClientId:{anyOf:[uuid,{type:'null'}]},requestId:uuid,inputSha256:digest,requestSha256:digest,allocatedAtMs:integer(0),expiresAtMs:integer(1),modelSelection:MODEL_SELECTION_SCHEMA},['binding','scopes','versions','selectedClientId','requestId','inputSha256','requestSha256','allocatedAtMs','expiresAtMs']),
  ConversationInitialInputAllocatedResponse:object({allocation:ref('ConversationInitialInputAllocation'),state:{enum:['RESERVED','ACCEPTED']},created:{type:'boolean'}}),
- ConversationInitialInputErrorResponse:object({error:object({code:{enum:Object.keys(initialInputErrorStatuses)},outcome:{enum:['NOT_DISPATCHED','UNKNOWN']}})}),
+ ConversationInitialInputErrorResponse:object({error:object({code:{enum:Object.keys(initialInputErrorStatuses)},outcome:{enum:['NOT_DISPATCHED','UNKNOWN']},sources:input('SkillRefusalSources'),requiredScope:input('SkillRequiredScope')},['code','outcome'])}),
  }};}

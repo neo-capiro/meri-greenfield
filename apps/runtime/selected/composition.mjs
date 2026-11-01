@@ -8,12 +8,18 @@ import {createTransactionalApprovalMetadataStore} from '../../control/commands/a
 import {createIntentJournal} from '../../control/intents/journal.mjs';
 import {createPostgresIntentJournalStore} from '../../control/intents/postgres-journal.mjs';
 import {createNativeReadsClient} from '../reads-client.mjs';
+import {resolveAvailableReads,familyReads,scopeAdmitsRead} from '../../worker/conversation/reads/availability.mjs';
+import {READ_FAMILIES} from '../../worker/conversation/reads/families.mjs';
+import {assertAvailabilitySnapshot} from '../../worker/conversation/reads/snapshot.mjs';
+import {assertCapabilityPolicy} from '../../worker/conversation/capabilities/policy.mjs';
 import {createSelectedControl} from './control.mjs';
 import {supportsSelectedDocumentRevision} from '../../../packages/contracts/document-revision.mjs';
+import installationCatalog from '../../../packages/contracts/retrieval-0.3/catalog.json' with {type:'json'};
 
 const same=(a,b)=>hash(a)===hash(b),fail=()=>{throw Object.assign(Error('SELECTED_CURRENT_REFUSED'),{code:'SELECTED_CURRENT_REFUSED'});};
-export function createNativeSelectedComposition({configuration,pool,store,execution,createReadsRuntime,serviceFor,revisionSource,now}){
+export function createNativeSelectedComposition({configuration,pool,store,execution,createReadsRuntime,readAvailability,capabilityPolicy,readSessionCapabilityRole,serviceFor,revisionSource,now}){
  if(typeof execution?.authenticate!=='function'||typeof createReadsRuntime!=='function'||typeof serviceFor!=='function'||typeof now!=='function')fail();
+ if(readAvailability!==undefined&&(typeof readAvailability!=='function'||typeof capabilityPolicy?.forRun!=='function'||typeof readSessionCapabilityRole!=='function'))fail();
  const approvedReads=configuration.agentcore.approvedReads,defaultCongress=configuration.reads?.defaultCongress;
  if(!approvedReads?.enabled||!Number.isSafeInteger(defaultCongress))return null;
  const check=signal=>()=>signal?.throwIfAborted();
@@ -27,9 +33,29 @@ export function createNativeSelectedComposition({configuration,pool,store,execut
   if(typeof clientId!=='string'||!scopes.length||scopes.some(s=>s.tenantId!==binding.tenantId)||!scopes.some(s=>s.kind==='client'&&s.resourceId===clientId)||!request.window)fail();
   return {subject:{kind:'client',entityType:'client',entityIds:[clientId],tenantId:binding.tenantId,actorId:binding.actorId,policyRevision:scopes[0].policyRevision,scopes,rosterVersionId:null},window:request.window,mondayBoardIds:[]};
  }
+ // Which of a selected skill's allowed operations the worker would find unavailable, decided before the run exists from the
+ // same three inputs the worker's mount uses: the gateway's availability snapshot (installation and discovery) under the
+ // session's authority, the run capability policy for the session's Core role, and the worker's own gate (reads/availability.mjs).
+ // Without the session producers every operation is unavailable: no selection is admitted on a hope.
+ const GENERAL_READS=familyReads();
+ async function readSkillAvailability({binding,scopes,selectedClientId,operations,expiresAtMs,signal}){
+  // Only the allowed operations some general-read family offers, and this scope admits, are this gate's to decide: a
+  // client-only read in General is a disclosed absence by design, not an unavailable source.
+  const considered=operations.filter(op=>GENERAL_READS.some(row=>same(row.operation,op)&&scopeAdmitsRead(READ_FAMILIES[row.family],op,scopes)));
+  if(readAvailability===undefined)return {considered,unavailable:considered};
+  const policyRevision=scopes[0].policyRevision,role=await readSessionCapabilityRole({binding,scopes,selectedClientId,signal,deadlineMs:expiresAtMs});
+  const authorityExpiresAtMs=Math.min(expiresAtMs,role.expiresAtMs),observation={binding,scopes,policyRevision,selectedClientId,expiresAtMs:authorityExpiresAtMs};
+  const current=async()=>({execution:{expiresAtMs:authorityExpiresAtMs},executionSha256:hash(observation),scopes,policyRevision,selectedClientId});
+  const [raw,resolved]=await Promise.all([
+   readAvailability({binding,current,approvedReads,signal,deadlineMs:authorityExpiresAtMs,readCapabilityRole:async()=>role}),
+   capabilityPolicy.forRun({tenantId:binding.tenantId,actorId:binding.actorId,conversationId:binding.conversationId,actorRole:role.actorRole,signal})]);
+  const snapshot=assertAvailabilitySnapshot(raw,{binding,policyRevision,catalogSha256:hash(installationCatalog),now}),policy=resolved===null?undefined:assertCapabilityPolicy(resolved);
+  const {available}=resolveAvailableReads({policy:policy??{generalReads:false},installation:snapshot.installation,discovery:snapshot.discovery,scopes,narrowTo:considered});
+  return {considered,unavailable:considered.filter(op=>!available.some(row=>same(row.operation,op)))};
+ }
  const admission=(binding,{credential}={})=>createOriginalSkillAdmissionOwner({binding,now,
   loadConversation:({signal})=>store.read(binding,{after:0,limit:1},check(signal)),readSelection:selection,
-  readCurrentContext:({signal})=>current({binding,credential,signal})});
+  readCurrentContext:({signal})=>current({binding,credential,signal}),readSkillAvailability});
  const metadataStore=createTransactionalApprovalMetadataStore({pool}),journal=createIntentJournal(createPostgresIntentJournalStore({pool}));
  const proposals=createSelectedDocumentProposals({journal:{begin:journal.begin,settle:journal.settle},metadataStore,now,maxRequestMs:configuration.limits.requestMs,
   async readCurrent(call){const {selectedClientId,...r}=await current(call);return r;}});

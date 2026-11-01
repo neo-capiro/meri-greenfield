@@ -123,3 +123,16 @@ and conversation exports are unchanged. Validation grants no authorization.
 ## Native memory submission — package 0.1.28
 
 The additive intents distribution exports IntentsNativeMemoryOutcome. Its execution.completedAt records pending-candidate submission, while result.review is the current owner-observed review state. candidateId equals the immutable proposalId; candidateSha256 binds the exact content, scope and origin. reviewId is a content-free submission correlation, **not** a memory_review_request ID or navigable review URL. Only approved with a publishedMemoryId establishes publication. Pending, rejected, withdrawn and not_found do not. Missing or uncertain outcomes must be read using the original proposal; never prepare a replacement to recover a timeout. Existing task, document, mail, filing and historical memory-review shapes remain available.
+
+## Skill selection refusals and run reason codes — package 0.1.47
+
+`conversation-application` 0.1.16, `conversation-input` 0.1.8 and `conversation-initial-input` 0.1.11 are additive. Two typed-selection
+refusals keep their own public 400 code on allocate, admit and submit instead of collapsing to `INVALID_REQUEST`: `SKILL_SOURCES_UNAVAILABLE`
+carries `sources`, the required source ids of the selected skill no available read covers for this actor and scope, decided from the
+gateway's own availability answer before any run exists (plugin-path skills only: a recipe with its own document compiler reads
+through the selected skill server, never the general reads); `SKILL_SCOPE_REFUSED` carries `requiredScope`, the scope the skill
+needs (`client` for a client-only skill in General, `general` for a General-only skill in a client conversation). The error object admits these two optional fields only. `RUN_REASON_CODES` (and the `RunReasonCode`
+type) is the closed `run.status` reasonCode vocabulary a worker publishes: the specific code for a fault it can name
+(`SKILL_RUNTIME_REFUSED`, `SKILL_SOURCES_UNAVAILABLE`, `MODEL_TURNS_EXHAUSTED`, `MODEL_BUDGET_EXHAUSTED`, `OUTPUT_LIMIT`) and
+`EXECUTION_FAILED` only for one it cannot; the schema keeps `reasonCode` as a free string so earlier history still validates. Validation
+grants no authorization and no availability.

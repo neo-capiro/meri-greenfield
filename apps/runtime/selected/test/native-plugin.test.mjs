@@ -1,4 +1,4 @@
-/** Actual admission/store, plugin projection and SDK options; scripted model and unavailable data transport. */
+/** Actual admission/store, plugin projection and SDK options; scripted model, available general-read snapshot, unavailable data transport. */
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {describeSkillPlugin} from '../../../../packages/skills/plugin.mjs';
@@ -7,6 +7,8 @@ import {createOriginalSkillAdmissionOwner} from '../../../control/conversations/
 import {applicationFixture,binding,scopes,versions,id} from '../../../control/conversations/test/application-fixture.mjs';
 import {createConversationActivity} from '../../../worker/conversation/activity.mjs';
 import {plugin,preparedWorkspace} from '../../../worker/conversation/test/capability-fixture.mjs';
+import catalog from '../../../../packages/contracts/retrieval-0.3/catalog.json' with {type:'json'};
+import {canonicalSha256} from '../../../../packages/contracts/validate.mjs';
 import {createTaskSelectedSkills} from '../task.mjs';
 import {selectedOutputCompiler} from '../output-format.mjs';
 import {familyReads} from '../../../worker/conversation/reads/availability.mjs';
@@ -22,14 +24,16 @@ async function fixture(skill,{general,capabilities,versionedPlugin=false}={}){
  general??=!selected.manifest.subjectKinds.includes('client');
  const activeScopes=general?[{tenantId:binding.tenantId,kind:'private-user',resourceId:binding.actorId,policyRevision:scopes[0].policyRevision}]:scopes;
  const selectedClientId=general?null:id(5);
- const selectedSkillAdmission={admitSelection:input=>createOriginalSkillAdmissionOwner({binding:input.binding,now:Date.now,loadConversation:unused,readCurrentContext:unused,
+ const selectedSkillAdmission={admitSelection:input=>createOriginalSkillAdmissionOwner({binding:input.binding,now:Date.now,loadConversation:unused,readCurrentContext:unused,readSkillAvailability:async({operations})=>({considered:operations,unavailable:[]}),
   readSelection:({request,scopes,selectedClientId})=>({subject:{kind:'client',entityType:'client',entityIds:[selectedClientId],tenantId:binding.tenantId,actorId:binding.actorId,policyRevision:scopes[0].policyRevision,scopes,rosterVersionId:null},window:request.window,mondayBoardIds:[]})}).admitSelection(input)};
  const f=await applicationFixture({initialInput:true,scopes:activeScopes,selectedClientId,serviceOptions:{selectedSkillAdmission}});
  const input={...f.input,prompt:'Run the reviewed original skill',skill:{skillId:skill.skillId,skillVersion:skill.skillVersion},windowRequest};
  const task=createTaskSelectedSkills({sourceEnabled:true,native:{call:unused}});let queryCalls=0,seen,n=800;const failures=[];
  const root=versionedPlugin?await mkdtemp(join(tmpdir(),'meri-selected-version-')):null;let selectedPlugin=plugin;
- const reads={async readAvailability(){throw Error('synthetic source unavailable');},execute:unused};
  const activeReadOperations=familyReads().filter(row=>selected.manifest.allowedOperations.some(op=>op.id===row.operation.id&&op.version===row.operation.version)).map(row=>row.operation);
+ // The skill's general reads are installed and discovered (the plugin-path source backstop in activity.mjs needs every required
+ // source covered); the data transport itself stays unavailable, and the scripted model never calls a tool.
+ const reads={async readAvailability(){const at=Date.now();return {installation:{installationId:id(80),baseCatalogSha256:canonicalSha256(catalog),executionCatalogSha256:'e'.repeat(64),operations:activeReadOperations,checkedAtMs:at-1000,expiresAtMs:at+600000},discovery:{binding,policyRevision:activeScopes[0].policyRevision,operations:activeReadOperations,checkedAtMs:at-1000,expiresAtMs:at+600000}};},execute:unused};
  const runOwner={...f.runOwner,async load(args){return {...await f.runOwner.load(args),capabilities:capabilities??{skillPlugin:true,generalReads:true,skillNames:[skill.name],activeReadOperations}};}};
  const execute=createConversationActivity({runOwner,selectedSkills:task,generalReads:reads,newId:()=>id(n++),diagnostics:{failure:error=>failures.push(error)},
   prepareRuntime:async({request})=>{if(root){assert.deepEqual(request.skill,selected.pin);selectedPlugin=sdkSkillPluginDirectory(root,request.skill);await prepareRunSkillPlugin(selectedPlugin,{selection:request.skill});}const directory=preparedWorkspace(binding.conversationId),cwd=root&&process.platform==='win32'?directory.replaceAll('\\','/').replace(/^[A-Za-z]:/u,''):directory;return {binding,versions,cwd,skillPluginDirectory:selectedPlugin,

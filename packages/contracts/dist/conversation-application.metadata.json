@@ -1,5 +1,5 @@
 {
-  "packageVersion": "0.1.15",
+  "packageVersion": "0.1.16",
   "schemaId": "urn:meri:conversation-application:0.4.0",
   "sources": [
     {
@@ -9,13 +9,13 @@
     },
     {
       "path": "../../apps/control/conversations/http.mjs",
-      "sha256": "7722b05114d5bf0f97c9669b0505035c9a5b21e95b8b7446bac4e7bb8acf7c3b",
-      "bytes": 6896
+      "sha256": "5d623eeac2f87beaa727ae3a17d5d5840ecb2b2c7fae9b7ff7332e1eb0469843",
+      "bytes": 6977
     },
     {
       "path": "../../apps/control/conversations/service.mjs",
-      "sha256": "5eb88052622c63cf4a3ed36e0f3b3fdcfab6a505ccb6ca4ff4744653043c6b19",
-      "bytes": 40604
+      "sha256": "e08705afe928b71d2eaef8fa94f4aa0a12857ffbdd0a498e4bff12760d6fe543",
+      "bytes": 40825
     },
     {
       "path": "../skills/./originals/bill_watch/1.1.1/manifest.json",
@@ -174,7 +174,7 @@
     },
     {
       "path": "../skills/index.mjs",
-      "sha256": "be4fc50870aea26ed0099f8b6775c2ea6f9c27e0127596f2674a6edee816891d",
+      "sha256": "9e04f5297fb068f07f2b13caa323ddb048db357ca9737dea0f33f88295362ff1",
       "bytes": 5185
     },
     {
@@ -194,18 +194,18 @@
     },
     {
       "path": "conversation-application/protocol.mjs",
-      "sha256": "8bc4cafb62dabba118790efb8791b506f36c79d31109b8738eca7af1a6d1e7a2",
-      "bytes": 2515
+      "sha256": "4ecdb8014f1e1fc0229e26cdb0afb1c06ba2f6f195c57cc43217a7ac3e605f4e",
+      "bytes": 4242
     },
     {
       "path": "conversation-application/receive.mjs",
-      "sha256": "41d2c05f8324e354dfc1041b8970ff352ea7b00d3566204094ec298cf3fc964e",
-      "bytes": 10593
+      "sha256": "a1c3d92a01b9503993e0d8384f7646b62e1c3f3dedc82c8c2f39723ca99a26f8",
+      "bytes": 10610
     },
     {
       "path": "conversation-application/schema.mjs",
-      "sha256": "001e62da66e82230192e080aaf7e81034f4812d95370f03b581df0466b591ea0",
-      "bytes": 6369
+      "sha256": "751a8a74cfeaf952f80ca617e85f96b6900bf6a11bdabeab67863eff2e6f1bfc",
+      "bytes": 6629
     },
     {
       "path": "conversation-sources/hearing-semantics.mjs",
@@ -313,7 +313,7 @@
       "bytes": 1986
     }
   ],
-  "schemaSha256": "205a6ec40fd358aa0c17033ac91ce0945fee77da39c0da736fca8b06843afe7b",
+  "schemaSha256": "880a041fccdea439f45e6b608b5d3c58aed1ac10511dd65aa3da4b377a9de5cf",
   "browserInputs": [
     "artifacts-0.2/artifact-formats.mjs",
     "conversation-application/conversation-application-receiver.mjs",
