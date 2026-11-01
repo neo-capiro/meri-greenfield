@@ -78,18 +78,12 @@ function inspectUploadStructure(file,bytes){
   passiveOffice(entries,chartWorkbooks);
  }
 }
-/** Complete hash and structural preflight. A successful result is NOT a malware scan or an extraction receipt. */
-export function inspectUploadOriginal(declaration,input){
- const file=uploadOriginalIdentity(declaration,input);
- inspectUploadStructure(file,Buffer.from(input));
- return Object.freeze({...file,policyVersion:UPLOAD_POLICY_VERSION});
-}
-/** The structural refusal of already-identified bytes as a retained limitation code, or null when the bytes pass.
- * Only this module's own policy refusals and the shared structure parser's coded refusals are limitations; any other
- * failure is an outage of the preflight and is rethrown rather than recorded as a verdict about the document. */
+/** The structural refusal of bytes already identified by `uploadOriginalIdentity` as a retained limitation code, or
+ * null when the bytes pass. A successful result is NOT a malware scan or an extraction receipt. Only this module's own
+ * policy refusals and the shared structure parser's coded refusals are limitations; any other failure is an outage of
+ * the preflight and is rethrown rather than recorded as a verdict about the document. */
 export function uploadStructureRefusal(file,input){
- const {filename,mimeType,bytes,sha256}=file;
- try{inspectUploadStructure(uploadOriginalIdentity({filename,mimeType,bytes,sha256},input),Buffer.from(input));return null;}
+ try{inspectUploadStructure(file,Buffer.from(input));return null;}
  catch(error){
   const code=error instanceof StructureInvalid?error.reason:typeof error?.code==='string'&&error.code.startsWith('UPLOAD_')?error.code:null;
   if(code!==null&&/^[A-Z][A-Z0-9_]{0,79}$/u.test(code))return code;

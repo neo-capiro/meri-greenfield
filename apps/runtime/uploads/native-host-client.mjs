@@ -5,7 +5,7 @@
  * exact original bytes are serialized. Nothing credential-like or closure-like crosses the wire. */
 import {randomBytes} from 'node:crypto';
 import {uploadInspectionRequest,uploadInspectionResult} from './agentcore-contract.mjs';
-import {uploadOriginalIdentity,uploadDeclaration,uploadHash} from '../../control/uploads/policy.mjs';
+import {uploadHash} from '../../control/uploads/policy.mjs';
 import {NATIVE_UPLOAD_INSPECTION_PATH,NATIVE_UPLOAD_INSPECTION_SCHEMA,nativeUploadCustody} from './native-host-contract.mjs';
 import {assertNativeConversationScope} from '../../../packages/contracts/runtime-0.2/session.mjs';
 import {dnsName,fingerprint,privateAddress} from '../../worker/conversation/host/control/tls.mjs';
@@ -52,12 +52,11 @@ export function createNativeHostInspectionClient({endpoint,allocation,hostIdenti
     pinned.leaseDeadlineMs);
    if(signal?.aborted===true)fault('UPLOAD_INSPECTION_CANCELLED');
    if(until<=began)fault('UPLOAD_INSPECTION_EXPIRED');
-   // Validate the ORIGINAL bytes' identity, but keep the wire declaration closed and unenriched; the structural
-   // verdict belongs to the host's receipt after its clean scan.
-   uploadOriginalIdentity(declaration,Buffer.isBuffer(bytes)?bytes:Buffer.alloc(0));
+   // Keep the wire declaration closed and unenriched; `uploadInspectionRequest` below binds the exact bytes to
+   // it, and the structural verdict belongs to the host's receipt after its clean scan.
+   bytes=Buffer.isBuffer(bytes)?bytes:Buffer.alloc(0);
    const closed={filename:String(declaration.filename),mimeType:String(declaration.mimeType),
     bytes:Number(declaration.bytes),sha256:String(declaration.sha256)};
-   uploadDeclaration(closed);
    const context=custodyContext;
    if(context===undefined||typeof context.assertCurrent!=='function'||context.record===undefined||context.current===undefined)
     fault('UPLOAD_NATIVE_CUSTODY_REQUIRED');

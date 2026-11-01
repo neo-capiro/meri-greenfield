@@ -23,7 +23,7 @@
  */
 import {randomBytes} from 'node:crypto';
 import {createOperationLifetime} from '../../../packages/runtime/operation-lifetime.mjs';
-import {uploadOriginalIdentity,uploadHash} from '../../control/uploads/policy.mjs';
+import {uploadHash} from '../../control/uploads/policy.mjs';
 import {uploadInspectionFault,uploadInspectionRequest,uploadInspectionResult,uploadInspectionSessionId,
  UPLOAD_INSPECTION_RESULT_BYTES,UPLOAD_INSPECTION_MAX_DEADLINE_MS,UPLOAD_INSPECTION_CLOCK_SKEW_MS} from './agentcore-contract.mjs';
 
@@ -73,10 +73,10 @@ export function createUploadInspectionClient({region,agentRuntimeArn,qualifier,i
   return owned;
  };
  return Object.freeze({
-  /** Inspect one already-materialized exact original. The declaration/byte identity gate runs BEFORE anything is
-   * dispatched; the structural verdict is the host's, retained in its receipt after a clean scan. */
+  /** Inspect one already-materialized exact original. `uploadInspectionRequest` binds the exact bytes to the
+   * declaration BEFORE anything is dispatched; the structural verdict is the host's, retained in its receipt. */
   async inspect(declaration,bytes,{deadlineMs,signal}={}){
-   const file=uploadOriginalIdentity(declaration,Buffer.isBuffer(bytes)?bytes:Buffer.alloc(0));
+   bytes=Buffer.isBuffer(bytes)?bytes:Buffer.alloc(0);
    const began=now(),until=Math.min(Number.isSafeInteger(deadlineMs)?deadlineMs:began+UPLOAD_INSPECTION_MAX_DEADLINE_MS,began+UPLOAD_INSPECTION_MAX_DEADLINE_MS);
    const requestId=randomBytes(32).toString('hex'),session=uploadInspectionSessionId(requestId);
    const request=uploadInspectionRequest({kind:'upload-inspection',requestId,imageDigest,declaration,
