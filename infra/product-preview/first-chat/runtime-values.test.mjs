@@ -16,19 +16,19 @@ test('policy carries execution limits and the explicit qualified model catalog',
 });
 
 test('the served catalog offers Sonnet at its default effort only; Opus and explicit Sonnet efforts stay unavailable until Release flips them',async()=>{
- const policy=await json('policy.json'),{models}=policy.models,sonnet=models.find(m=>m.modelId==='us.anthropic.claude-sonnet-4-6'),opus=models.find(m=>m.modelId==='us.anthropic.claude-opus-4-6');
+ const policy=await json('policy.json'),{models}=policy.models,sonnet=models.find(m=>m.modelId==='us.anthropic.claude-sonnet-4-6'),opus=models.find(m=>m.modelId==='us.anthropic.claude-opus-4-6-v1');
  assert.deepEqual(policy.models.defaultSelection,{provider:'bedrock',modelId:'us.anthropic.claude-sonnet-4-6',effort:null});
  assert.deepEqual(sonnet,{provider:'bedrock',modelId:'us.anthropic.claude-sonnet-4-6',label:'Claude Sonnet 4.6',efforts:[null],available:true,unavailableReason:null},'the live-proven Sonnet row is byte-for-byte the retained catalog row');
- assert.deepEqual(opus,{provider:'bedrock',modelId:'us.anthropic.claude-opus-4-6',label:'Claude Opus 4.6',efforts:[null,'high','max'],available:false,unavailableReason:'model_unqualified'});
+ assert.deepEqual(opus,{provider:'bedrock',modelId:'us.anthropic.claude-opus-4-6-v1',label:'Claude Opus 4.6',efforts:[null,'high','max'],available:false,unavailableReason:'model_unqualified'});
  assert.deepEqual(policy.pendingModels,[{provider:'bedrock',modelId:'us.anthropic.claude-sonnet-4-6',label:'Claude Sonnet 4.6',efforts:['high','max'],available:false,unavailableReason:'model_unqualified'}]);
- for(const selection of [{provider:'bedrock',modelId:'us.anthropic.claude-opus-4-6',effort:null},{provider:'bedrock',modelId:'us.anthropic.claude-opus-4-6',effort:'high'},{provider:'bedrock',modelId:'us.anthropic.claude-sonnet-4-6',effort:'high'},{provider:'bedrock',modelId:'us.anthropic.claude-sonnet-4-6',effort:'max'},{provider:'claude-api',modelId:'claude-sonnet-4-6',effort:null}])
+ for(const selection of [{provider:'bedrock',modelId:'us.anthropic.claude-opus-4-6-v1',effort:null},{provider:'bedrock',modelId:'us.anthropic.claude-opus-4-6-v1',effort:'high'},{provider:'bedrock',modelId:'us.anthropic.claude-sonnet-4-6',effort:'high'},{provider:'bedrock',modelId:'us.anthropic.claude-sonnet-4-6',effort:'max'},{provider:'claude-api',modelId:'claude-sonnet-4-6',effort:null}])
   assert.throws(()=>availableModelSelection(policy.models,selection),{code:'MODEL_SELECTION_UNAVAILABLE'},JSON.stringify(selection));
  assert.deepEqual(availableModelSelection(policy.models,policy.models.defaultSelection),policy.models.defaultSelection);
  // The runtime values and served configuration carry `models` only; pending rows never reach the catalog.
  const values=structuredClone(await parserFixture());assert.equal(Object.hasOwn(parseRuntimeValues(values),'pendingModels'),false);
  const flipped=structuredClone(policy);flipped.models.models[1].available=true;flipped.models.models[1].unavailableReason=null;
  assert.equal(parsePolicy(flipped),flipped,'Release flips a row by setting available:true and clearing the reason');
- assert.deepEqual(availableModelSelection(flipped.models,{provider:'bedrock',modelId:'us.anthropic.claude-opus-4-6',effort:'max'}),{provider:'bedrock',modelId:'us.anthropic.claude-opus-4-6',effort:'max'});
+ assert.deepEqual(availableModelSelection(flipped.models,{provider:'bedrock',modelId:'us.anthropic.claude-opus-4-6-v1',effort:'max'}),{provider:'bedrock',modelId:'us.anthropic.claude-opus-4-6-v1',effort:'max'});
  const merged=structuredClone(policy);merged.models.models[0].efforts=[null,'high','max'];merged.pendingModels=[];
  assert.equal(parsePolicy(merged),merged,'Release flips pending Sonnet efforts by moving them onto the served row');
  assert.deepEqual(availableModelSelection(merged.models,{provider:'bedrock',modelId:'us.anthropic.claude-sonnet-4-6',effort:'high'}).effort,'high');
