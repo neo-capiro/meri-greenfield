@@ -12,6 +12,7 @@ import {agentcoreConfig} from './agentcore-fixture.mjs';
 import {binding,versions,id} from '../../control/conversations/test/application-fixture.mjs';
 import {createControlReadsComposer} from '../reads-composer.mjs';
 import {PROPOSED_PREVIEW_CAPABILITY_PLATFORM} from '../product-ports/capability-policy.mjs';
+import {EGRESS_REQUIREMENTS_SHA256} from '../../worker/conversation/browser/activation.mjs';
 import {billTextCase} from '../../gateway/sources/bill-text/test/fixture.mjs';
 import {createTurnTelemetry} from '../telemetry/turn-context.mjs';
 import {countingFetch} from '../telemetry/counting.mjs';
@@ -26,6 +27,7 @@ function readPlatform(operations=[readOperation]){
 function fixture(options={}){
  const b=options.binding??binding,configuration={agentcore:agentcoreConfig(),versions,sourceEnabled:false,limits:{requestMs:3000,requestBytes:131072,shutdownMs:30000}};
  if(options.reads)configuration.capabilityPlatform=options.platform??readPlatform();
+ if(options.browserActivation)configuration.browserActivation=options.browserActivation;
  if(options.readBudget||options.reads){if(options.readBudget)configuration.limits.requestMs=10;configuration.agentcore.approvedReads={schemaVersion:'meri-native-general-reads/1',enabled:true,
   operations:options.approvedOperations??[readOperation],maxExecuteMs:1000,maxRequestBytes:4096,maxResponseBytes:8192};}
  const run={binding:b,versions,scopes:[{kind:'client',tenantId:b.tenantId,resourceId:clientId,policyRevision}],policyRevision,state:'queued'};
@@ -70,6 +72,15 @@ function fixture(options={}){
   async finish(state='completed'){run.state=state;const v=invocation;pending.resolve(await candidate.execution.settle({credential:v.credential,execution:v.execution,state}));await candidate.close();}};
 }
 
+test('admission settings carry the configured browser activation verdict to the runner; absent or held is false',async t=>{
+ const held=fixture();await held.kickoff();await held.waitForInvocation();t.after(()=>held.finish());
+ assert.deepEqual(held.invocation().browser,{enabled:false});
+ const explicit=fixture({browserActivation:{state:'held'}});await explicit.kickoff();await explicit.waitForInvocation();t.after(()=>explicit.finish());
+ assert.deepEqual(explicit.invocation().browser,{enabled:false});
+ const open=fixture({browserActivation:{state:'open',evidence:'docs/qualification/browser-egress/record.md',evidenceSha256:'a'.repeat(64),requirementsSha256:EGRESS_REQUIREMENTS_SHA256}});
+ await open.kickoff();await open.waitForInvocation();t.after(()=>open.finish());
+ assert.deepEqual(open.invocation().browser,{enabled:true});
+});
 test('the private expiry sweep reaches only the bound control retention owner',async()=>{
  const f=fixture();let calls=0;
  const post=credential=>f.candidate.application.handle(new Request('https://control.invalid/v1/retention/sweep',{

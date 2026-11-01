@@ -28,7 +28,7 @@ export const PRODUCTION_BINDINGS = Object.freeze([
   {name: 'installation/upstream', owner: 'browser installation owner', detail: 'context-only installation and pinned upstream'},
   {name: 'nativeLaunch', owner: 'image/native owner', detail: 'helperPath plus distinct browser uid/gid'},
   {name: 'viewer.tlsMaterial', owner: 'release/provisioning', detail: 'mTLS server cert/key and control client CA bytes'},
-  {name: 'browserActivation', owner: 'browser activation record owner', detail: 'hard-held activation record; source cannot open it'},
+  {name: 'browserActivation', owner: 'control configuration (browserActivation)', detail: 'evidence-bearing record compiled by control; the host learns it only through browser-admitted currentness'},
   {name: 'provisioning.loginCredentialReference', owner: 'provisioning decision (UNBOUND)', detail: 'LOGIN/protected credential reference; no guessed user, no embedded secret'},
 ]);
 

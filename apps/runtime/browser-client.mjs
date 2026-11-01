@@ -23,7 +23,7 @@ export function createNativeBrowserPort({native,binding:raw,deadlineMs,now=Date.
   // from another logical run as this SDK's prepared state.
   assertBrowserOperationResponse({binding:result.binding,result:null},binding);
   const policy=validateBrowserPolicy(result.policy);
-  if(!['open','held','not-applicable'].includes(result.activation)||result.activation==='not-applicable'&&policy.enabled||result.activation!=='not-applicable'&&!policy.enabled||result.reason!==undefined&&(typeof result.reason!=='string'||!/^BROWSER_[A-Z_]{1,96}$/u.test(result.reason)))fail();
+  if(!['open','not-applicable'].includes(result.activation)||result.activation==='not-applicable'&&policy.enabled||result.activation!=='not-applicable'&&!policy.enabled||result.reason!==undefined&&(typeof result.reason!=='string'||!/^BROWSER_[A-Z_]{1,96}$/u.test(result.reason)))fail();
   browserOperationBudgetMs('browser-approve',result);
   prepared=Object.freeze({...result,policy});return prepared;
  }

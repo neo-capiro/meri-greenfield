@@ -1,13 +1,15 @@
 // @ts-check
 /** Trusted guest bootstrap for one D005 run. The only conversation SDK process is the descriptor captured by
  * createPreparedRunnerQuery through the returned one-use processClientFactory. Importing this module is inert.
- * The browser activation record remains authoritative; preparing a denied proxy/broker never opens that gate. */
+ * Control's compiled browser activation record (`browserActivation`, default held) decides whether browser owners are
+ * composed at all, and control's browser-purpose currentness refuses every browser read while that record is held;
+ * preparing a denied proxy/broker never opens that gate. */
 import {posix} from 'node:path';
 import {canonicalSha256} from '../../../../../packages/contracts/validate.mjs';
 import {data,nativeSignal} from '../../../../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {assertCapabilityPolicy} from '../../capabilities/policy.mjs';
 import {validateBrowserPolicy} from '../../browser/policy.mjs';
-import {activationOpen} from '../../browser/activation.mjs';
+import {activationOpen,HELD_BROWSER_ACTIVATION} from '../../browser/activation.mjs';
 import {browserPaths,disposeBrowserState} from '../../browser/workspace.mjs';
 import {createHostCurrentnessClient} from '../control/client.mjs';
 import {startHostRunCurrentnessMonitor} from '../run-currentness-monitor.mjs';
@@ -107,7 +109,7 @@ export async function armBrowserAfterWorkspaceReadback({allocation,binding,hostI
  * destroy/readback ports are supplied only by their canonical owners. `components` is a focused-test seam, not an
  * authorization API. Every resource created here is closed or left explicitly UNKNOWN before return/rejection. */
 export async function prepareGuestHostRun({allocation,binding,hostIdentity,cwd,deadlineMs,capabilityPolicy,
- readBrowserPolicy,control,model,browser,bash,native,network,host,now=Date.now,signal,
+ readBrowserPolicy,browserActivation=HELD_BROWSER_ACTIVATION,control,model,browser,bash,native,network,host,now=Date.now,signal,
  components=DEFAULT_COMPONENTS}={}){
  const a=assertHostAllocation(allocation),b=assertHostRunBinding(a,binding),i=assertD005HostIdentity(hostIdentity,b,a);
  let policy;try{policy=assertCapabilityPolicy(capabilityPolicy);}catch{fail('HOST_BOOTSTRAP_CONFIGURATION');}
@@ -213,8 +215,9 @@ export async function prepareGuestHostRun({allocation,binding,hostIdentity,cwd,d
   // Read canonical policy before allocating local resources; pin the command and future fragment to one digest.
   const first=validateBrowserPolicy(data(await readBrowserPolicy({binding:structuredClone(b),signal:owner.signal})));
   browserDigest=canonicalSha256(first);stopped(owner.signal);
-  // This hard source gate is intentionally not injectable: no runtime argument can activate browser.
-  browserActive=first.enabled&&activationOpen();
+  // Only control's compiled activation record (a trusted bootstrap input, never model or run data) composes the browser
+  // owners; the browser-purpose currentness client below refuses every read while that record is held.
+  browserActive=first.enabled&&activationOpen(browserActivation);
   if(browserActive){
    if(typeof browser.resolve!=='function')fail('HOST_BOOTSTRAP_CONFIGURATION');
    required(browser.approvals,['decide']);required(browser.artifacts,['ingest']);

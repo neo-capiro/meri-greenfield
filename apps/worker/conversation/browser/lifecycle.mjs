@@ -21,7 +21,7 @@ export function assertBrowserCleanupReceipt(raw,{binding,outcome}){
  const value=data(own(raw,['schema','binding','outcome','activation','egress','process','profile']));
  validateShape('RunBinding',value.binding);
  const open=value.activation==='open';
- if(value.schema!==BROWSER_CLEANUP_SCHEMA||canonicalSha256(value.binding)!==canonicalSha256(binding)||value.outcome!==outcome||!BROWSER_RUN_OUTCOMES.includes(outcome)||!['open','held','not-applicable'].includes(value.activation)||value.profile!=='done'||value.egress!==(open?'done':'not-applicable')||value.process!==(open?'done':'not-applicable'))throw fault('BROWSER_CLEANUP_UNKNOWN');
+ if(value.schema!==BROWSER_CLEANUP_SCHEMA||canonicalSha256(value.binding)!==canonicalSha256(binding)||value.outcome!==outcome||!BROWSER_RUN_OUTCOMES.includes(outcome)||!['open','not-applicable'].includes(value.activation)||value.profile!=='done'||value.egress!==(open?'done':'not-applicable')||value.process!==(open?'done':'not-applicable'))throw fault('BROWSER_CLEANUP_UNKNOWN');
  return Object.freeze(value);
 }
 /** Trusted host ports (open fragment only): `egress.revoke({binding,policySha256},{signal})` resolves `{revoked:true}`

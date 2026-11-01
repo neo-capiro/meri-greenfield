@@ -50,22 +50,29 @@ test('receipt failure survives hook aggregation and cannot become successful con
 });
 
 function hostFixture(){
- let now=Date.now();const state={reads:0,policies:0,opens:0,policy:enabledPolicy(),deadlineMs:now+60000};
- const port={modelTransport:'host-owned',installation:contextInstallation,sourceScopes,
-  policy:async()=>{state.policies++;return state.policy;},sessions:{open:async()=>{state.opens++;throw Error('activation bypass');}}};
+ let now=Date.now();const state={reads:0,policies:0,opens:0,grants:0,revokes:0,policy:enabledPolicy(),deadlineMs:now+60000},r=recorders();
+ // The trusted host ports an admitted run composes: session owner, egress grant/revoke, process observer, receipts, artifacts, approvals.
+ const port={modelTransport:'host-owned',installation:contextInstallation,sourceScopes,artifacts:r.artifactPort,receipts:r.receiptPort,approvals:r.approvals('approve'),
+  policy:async()=>{state.policies++;return state.policy;},
+  egress:{grant:async grant=>{state.grants++;return {granted:true,policySha256:grant.policySha256};},revoke:async()=>{state.revokes++;return {revoked:true};}},
+  processes:{waitForExit:async()=>({exited:true})},
+  sessions:{open:async()=>{state.opens++;return {mcpServers:{},async destroy(){}};}}};
  const sessions={readModelTools:async()=>{throw Error('not prepared');},callModelTool:async()=>{throw Error('not prepared');}};
  const readRun=async()=>{state.reads++;if(state.refused)throw Error('PRIVATE CANONICAL ERROR');return {binding,cwd,deadlineMs:state.deadlineMs,port};};
  const host=createBrowserOperationHost({binding,readRun,sessions,now:()=>now});
  return {host,state,expire:()=>{now=state.deadlineMs+1;},call:(name,fields={})=>host.executeBrowserOperation(name,{binding,...fields})};
 }
 
-test('production preparation keeps the source gate held, replays no launch and returns no private path',async()=>{
+test('preparation opens only what control admits: a refused facts read launches nothing; an admitted read opens once, replays without a second launch and returns no private path',async()=>{
+ const held=hostFixture();held.state.refused=true;
+ await assert.rejects(held.call('runner/browser-prepare'),/BROWSER_OPERATION_REFUSED/);
+ assert.equal(held.state.opens,0);assert.equal(held.state.grants,0);assert.equal(held.state.policies,0,'no policy read without control facts');
  const f=hostFixture(),first=await f.call('runner/browser-prepare');
- assert.equal(first.result.activation,'held');assert.equal(f.state.opens,0);
+ assert.equal(first.result.activation,'open');assert.equal(f.state.opens,1);assert.equal(f.state.grants,1);
  assert.doesNotMatch(JSON.stringify(first),/cliPath|browsersPath|workspace|shimPath|nonce/);
- assert.deepEqual(await f.call('browser-prepare'),first);assert.equal(f.state.reads,2);assert.equal(f.state.policies,2);
+ assert.deepEqual(await f.call('browser-prepare'),first);assert.equal(f.state.reads,2);assert.equal(f.state.policies,2);assert.equal(f.state.opens,1,'replay never launches again');
  await assert.rejects(f.call('browser-tools'),/BROWSER_OPERATION_REFUSED/);
- const result=await f.call('browser-settle',{outcome:'ended'});assert.equal(result.result.profile,'done');
+ const result=await f.call('browser-settle',{outcome:'ended'});assert.equal(result.result.profile,'done');assert.equal(f.state.revokes,1);
  await assert.rejects(f.call('browser-prepare'),/BROWSER_OPERATION_REFUSED/);
 });
 
@@ -80,7 +87,7 @@ test('fresh policy change and unavailable canonical authority refuse after prepa
  const f=hostFixture();await f.call('browser-prepare');f.state.policy={enabled:false};
  await assert.rejects(f.call('browser-prepare'),/BROWSER_OPERATION_REFUSED/);
  f.state.refused=true;await assert.rejects(f.call('browser-settle',{outcome:'failed'}),/BROWSER_CLEANUP_UNKNOWN/);
- assert.equal(f.state.opens,0);
+ assert.equal(f.state.opens,1,'the one admitted preparation; a changed policy never opens a second session');
 });
 
 test('expired run refuses work but authenticated exact-owner cleanup uses its independent budget',async()=>{

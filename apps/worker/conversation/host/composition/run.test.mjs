@@ -12,6 +12,7 @@ import {createBrowserHostRuntimePort} from '../browser-runtime-port.mjs';
 import {armBrowserAfterWorkspaceReadback,prepareAdmittedBrowserWorkspace,prepareGuestHostRun} from './run.mjs';
 import {BROWSER_WORKSPACE_READBACK_SCHEMA} from '../browser-workspace/readback.mjs';
 import {browserPaths} from '../../browser/workspace.mjs';
+import {compileBrowserActivation,EGRESS_REQUIREMENTS_SHA256} from '../../browser/activation.mjs';
 
 const fault=code=>error=>error?.code===code;
 const allocation=()=>({schema:HOST_ALLOCATION_SCHEMA,tenantId:binding.tenantId,conversationId:binding.conversationId,
@@ -302,10 +303,10 @@ test('uncertain teardown after startup failure surfaces UNKNOWN',async()=>{
 });
 
 test('active guest exposes successor preparation after retention and owns every target cleanup',async t=>{
- // Test-local module mock only; the shipped source activation record remains held.
- t.mock.module('../../browser/activation.mjs',{namedExports:{activationOpen:()=>true}});
- const {prepareGuestHostRun:prepareActive}=await import('./run.mjs?active-successor-composition');
+ // Control's compiled open record is a trusted bootstrap input; control's browser-purpose currentness is the gate (scripted here).
+ const prepareActive=prepareGuestHostRun;
  const f=fixture(),c=f.input.components,make=c.createLauncher,startEgress=c.startBrowserEgress;
+ f.input.browserActivation=compileBrowserActivation({state:'open',evidence:'docs/qualification/browser-egress/record.md',evidenceSha256:'a'.repeat(64),requirementsSha256:EGRESS_REQUIREMENTS_SHA256});
  const ownerId='00000099-b0a1-4000-8000-000000000000';let sourceRetirement,targetRetirement,canonical;
  f.input.browser.controls={ownerInstanceId:ownerId,async bind(){}};f.input.browser.hold=async()=>{};
  c.prepareBrowserWorkspace=({cwd})=>({cwd,paths:browserPaths(cwd),cwdInode:'11',stateInode:'12'});

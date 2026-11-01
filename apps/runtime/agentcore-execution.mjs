@@ -93,7 +93,7 @@ export function createAgentCoreExecutionOwner({store,provider,versions,plan,cred
   if(saved.record)return acknowledge(saved.record); // Retries observe the one durable claim; they never invoke again.
   const admission=await admit({binding,signal}),run=admission.run;
   if(!same(run.binding,binding)||!same(run.versions,versions)||run.state!=='queued'||admission.expiresAtMs<=now())refuse('EXECUTION_ADMISSION_REFUSED');
-  const settings=own(admission.settings??{},[],['sourceEnabled','approvedReads','intents']);
+  const settings=own(admission.settings??{},[],['sourceEnabled','approvedReads','intents','browser']);
   const runtimeSessionId=await chooseSession(binding,run,signal);
   const {versions:ignored,...execution}=createExecutionBinding({binding,versions,plan,expiresAtMs:admission.expiresAtMs,runtimeSessionId});
   let claimed;

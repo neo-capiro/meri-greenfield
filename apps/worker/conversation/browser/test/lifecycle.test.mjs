@@ -39,17 +39,17 @@ test('an unconfirmed process exit keeps the profile and reports UNKNOWN; a faile
  await assert.rejects(life.settle({outcome:'cancelled'}),e=>e.code==='BROWSER_CLEANUP_UNKNOWN'&&e.receipt.egress==='unknown'&&e.receipt.process==='done'&&e.receipt.profile==='done');
  assert.equal(await gone(join(cwd,'.browser')),true);
 }));
-test('a held or disabled fragment started nothing: cleanup only verifies that no browser state remains',()=>within(async cwd=>{
+test('a disabled fragment started nothing: cleanup only verifies that no browser state remains; an enabled policy needs the host ports',()=>within(async cwd=>{
  // The runtime's canonical conversation workspace uses forward separators.
  cwd=cwd.replaceAll('\\','/');
  const port={async policy(){return enabledPolicy();},installation,sourceScopes,artifacts:recorders().artifactPort,receipts:recorders().receiptPort};
- const run=await prepareBrowserRun({port,binding,cwd,deadlineMs:clock()+60000,now:clock});
- assert.equal(run.fragment.activation,'held');assert.equal(run.status.activation,'held');assert.equal(run.status.capability,'enabled');
- assert.deepEqual(await run.settle({outcome:'ended'}),{schema:BROWSER_CLEANUP_SCHEMA,binding,outcome:'ended',activation:'held',egress:'not-applicable',process:'not-applicable',profile:'done'});
- assert.equal(await gone(join(cwd,'.browser')),true,'stale state from an earlier run is removed');
  const off=await prepareBrowserRun({port:{...port,async policy(){return {enabled:false};}},binding,cwd,deadlineMs:clock()+1,now:clock});
- assert.equal(off.status.capability,'disabled');assert.equal((await off.settle({outcome:'failed'})).activation,'not-applicable');
- await assert.rejects(run.settle({outcome:'paused'}),e=>e.code==='BROWSER_CONFIGURATION','closed outcome vocabulary');
+ assert.equal(off.status.capability,'disabled');assert.equal(off.fragment.activation,'not-applicable');
+ assert.deepEqual(await off.settle({outcome:'failed'}),{schema:BROWSER_CLEANUP_SCHEMA,binding,outcome:'failed',activation:'not-applicable',egress:'not-applicable',process:'not-applicable',profile:'done'});
+ assert.equal(await gone(join(cwd,'.browser')),true,'stale state from an earlier run is removed');
+ // There is no held fragment: an enabled policy builds the open fragment, whose lifecycle requires the trusted host
+ // egress and process ports before anything can be granted or launched.
+ await assert.rejects(prepareBrowserRun({port,binding,cwd,deadlineMs:clock()+60000,now:clock}),e=>e.code==='BROWSER_CONFIGURATION');
  await assert.rejects(createBrowserRunLifecycle({binding,cwd,now:clock}).settle({outcome:'paused'}),e=>e.code==='BROWSER_CONFIGURATION');
  assert.throws(()=>createBrowserRunLifecycle({fragment:openFragment({cwd}).cap,binding,cwd,now:clock}),e=>e.code==='BROWSER_CONFIGURATION','an open fragment needs the host ports');
  await assert.rejects(prepareBrowserRun({port:{},binding,cwd,deadlineMs:1,now:clock}),e=>e.code==='BROWSER_CONFIGURATION');

@@ -5,7 +5,6 @@ import {isExecutionOutcome} from '../control/conversations/execution-boundary.mj
 import {assembleConversationRunner,assertRunnerEnvironment,assertRunnerWorkspace} from './conversation-runner.mjs';
 import {createNativeCapabilityClient} from './native-client.mjs';
 import {createNativeBrowserPort} from './browser-client.mjs';
-import {activationOpen} from '../worker/conversation/browser/activation.mjs';
 import {createRuntimeSdkSessionFactory} from './sdk-session-runtime.mjs';
 import {createNativeReadsClient} from './reads-client.mjs';
 import {createRunnerIntentsClient} from './native-authority/intents-client.mjs';
@@ -28,9 +27,9 @@ export function createAgentCoreQuery({origin,fetchImpl,workspace,query,providerC
   markRunnerStage('agentcore-clients');const sessions=sessionFactory({origin,credential,binding,fetchImpl,now,startupMaxRequestMs:23000,startupExpiresAtMs:execution.expiresAtMs-23000});
   const reads=input.sourceEnabled===true&&input.approvedReads?.enabled===true?createNativeReadsClient({origin,credential,binding,approvedReads:input.approvedReads,fetchImpl,now}):undefined;
   const intents=input.sourceEnabled===true&&input.intents?.enabled===true?createRunnerIntentsClient({origin,credential,binding,fetchImpl,enabled:true}):undefined;
-  // The SDK and its direct provider stay in this AgentCore process. The existing
-  // browser activation gate alone admits the run-authenticated tool transport.
-  const browser=activationOpen()?createNativeBrowserPort({native,binding,deadlineMs:execution.expiresAtMs,now}):undefined;
+  // The SDK and its direct provider stay in this AgentCore process. Control's admission settings carry its
+  // configured browser activation record's verdict; only that admits the run-authenticated tool transport.
+  const browser=input.browser?.enabled===true?createNativeBrowserPort({native,binding,deadlineMs:execution.expiresAtMs,now}):undefined;
   markRunnerStage('agentcore-assemble');const run=assemble({configuration,native,credentialForBinding:async()=>credential,sessionFactory:sessions,now,...(providerCredentials?{providerCredentials}:{}),...(query?{query}:{}),...(reads?{generalReads:reads}:{}),...(intents?{governedIntents:intents}:{}),...(browser?{browser}:{})});
   markRunnerStage('activity');let result,failure;try{result=await run({binding,signal});}catch(error){captureRunnerFailure(error);failure=error;}
   markRunnerStage('agentcore-cleanup');

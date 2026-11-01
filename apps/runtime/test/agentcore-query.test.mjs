@@ -5,14 +5,12 @@ import {binding,versions} from '../../control/conversations/test/store-fixture.m
 import {settlementFor} from '../agentcore-contract.mjs';
 import {withRunnerDiagnostics} from '../runner-runtime-diagnostics.mjs';
 let workspaces=0;
-let browserOpen=false;
-mock.module('../../worker/conversation/browser/activation.mjs',{namedExports:{activationOpen:()=>browserOpen}});
 // Linux directory ownership is exercised by the native gate; this closed suite isolates the query/HTTP settlement ordering.
 mock.module('../conversation-runner.mjs',{namedExports:{assembleConversationRunner(){throw Error('explicit test assembly required');},assertRunnerEnvironment(){},async assertRunnerWorkspace(){workspaces++;}}});
 const {createAgentCoreQuery}=await import('../agentcore-query.mjs');
-const make=()=>{const {versions:_,...execution}=createExecutionBinding({binding,versions,plan:{synthetic:true},expiresAtMs:Date.now()+60000,runtimeSessionId:'synthetic-session-11111111111111111111'});return {execution,versions,credential:'synthetic-run-only'};};
+const make=(extra={})=>{const {versions:_,...execution}=createExecutionBinding({binding,versions,plan:{synthetic:true},expiresAtMs:Date.now()+60000,runtimeSessionId:'synthetic-session-11111111111111111111'});return {execution,versions,credential:'synthetic-run-only',...extra};};
 function fixture(options={}){
- const input=make(),calls=[],cleanup={pendingInitializations:0,closed:true,failures:[],...options.cleanup};let queryCalls=0,admissions=0;
+ const input=make(options.browser===undefined?{}:{browser:options.browser}),calls=[],cleanup={pendingInitializations:0,closed:true,failures:[],...options.cleanup};let queryCalls=0,admissions=0;
  const execute=createAgentCoreQuery({origin:'https://control.synthetic.invalid',environment:{},workspace:{async prepare(execution){assert.deepEqual(execution,input.execution);calls.push('workspace');if(options.workspaceError)throw options.workspaceError;return {workspace:'/workspace/'+binding.conversationId,sdk:{configParentDirectory:'/run/meri/private',secureStorageDirectory:'/run/meri/private/secure'}};}},sessionFactory:()=>{if(options.sessionError)throw options.sessionError;return ()=>{};},
  fetchImpl:async(url,init)=>{const path=new URL(url).pathname;calls.push(path);assert.equal(init.headers.authorization,'Bearer '+input.credential);const request=JSON.parse(init.body);assert.deepEqual(request.execution,input.execution);
  if(path.endsWith('/settle'))return Response.json(options.badSettlement?{...settlementFor(input.execution,request.state),settled:false}:settlementFor(input.execution,request.state));
@@ -25,10 +23,12 @@ test('query acknowledges settlement only after actual activity and mirror cleanu
  const f=fixture();assert.deepEqual(await f.run(),settlementFor(f.input.execution,'completed'));
  assert.deepEqual(f.calls,['/v1/runner/execution','workspace','query','closed','/v1/runner/execution/settle']);assert.equal(f.queryCalls(),1);
 });
-test('the existing activation gate mounts the browser native client into the same AgentCore assembly',async()=>{
- let seen;browserOpen=true;
- try{const f=fixture({inspectAssembly:value=>{seen=value;}});await f.run();assert.equal(seen.browser.transport,'native-control');assert.equal(typeof seen.browser.hook,'function');assert.equal(typeof seen.browser.settle,'function');assert.equal(f.queryCalls(),1);assert.equal('preparedHost' in seen,false);}
- finally{browserOpen=false;}
+test('control admission settings alone mount the browser native client into the same AgentCore assembly',async()=>{
+ let seen;const f=fixture({browser:{enabled:true},inspectAssembly:value=>{seen=value;}});await f.run();
+ assert.equal(seen.browser.transport,'native-control');assert.equal(typeof seen.browser.hook,'function');assert.equal(typeof seen.browser.settle,'function');assert.equal(f.queryCalls(),1);assert.equal('preparedHost' in seen,false);
+ for(const browser of [undefined,{enabled:false}]){let assembly;const held=fixture({browser,inspectAssembly:value=>{assembly=value;}});await held.run();assert.equal('browser' in assembly,false,JSON.stringify(browser));}
+ // A malformed setting refuses the whole invocation before any query starts.
+ for(const browser of [{enabled:'yes'},{open:true},{}]){const bad=fixture({browser});await assert.rejects(bad.run(),{code:'AGENTCORE_REQUEST_REFUSED'});assert.equal(bad.queryCalls(),0);}
 });
 test('failed activity requires canonical terminal readback; running or unknown never becomes settled',async()=>{
  for(const state of ['failed','running']){const f=fixture({failure:true,readback:state});if(state==='failed')assert.deepEqual(await f.run(),settlementFor(f.input.execution,'failed'));else await assert.rejects(f.run());assert.equal(f.queryCalls(),1);assert.equal(f.calls.filter(x=>x.endsWith('/settle')).length,state==='failed'?1:0);}

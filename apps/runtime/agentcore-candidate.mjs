@@ -13,6 +13,7 @@ import {createInitialRunBindingJournal} from '../control/conversations/initial-r
 import {createNextRunOwner} from '../control/conversations/next-run.mjs';
 import {createRunReconciler} from '../control/conversations/run-reconciler.mjs';
 import {compileAgentCoreConfiguration} from './agentcore-configuration.mjs';
+import {compileBrowserActivation,activationOpen} from '../worker/conversation/browser/activation.mjs';
 import {createAgentCoreExecutionOwner} from './agentcore-execution.mjs';
 import {createAgentCoreControlApplication} from './agentcore-control-http.mjs';
 import {createConversationIdentity} from './conversation-identity.mjs';
@@ -174,7 +175,10 @@ export function assembleAgentCoreCandidate({configuration,pool,provider,controlC
   // This is the execution lifetime, not a cached permission receipt. Business-data access rechecks Core through its own gateway.
   return {run,expiresAtMs:current.routine?current.expiresAtMs:now()+config.runWindowMs,settings:{sourceEnabled:configuration.sourceEnabled,
    ...(config.approvedReads===undefined?{}:{approvedReads:config.approvedReads}),
-   ...(configuration.intents===undefined?{}:{intents:{enabled:configuration.intents.enabled}})}};
+   ...(configuration.intents===undefined?{}:{intents:{enabled:configuration.intents.enabled}}),
+   // Control's configured activation record (config.mjs `browserActivation`) is the only thing that mounts the
+   // runtime's browser port; the host independently refuses every browser read while the same record is held.
+   browser:{enabled:activationOpen(compileBrowserActivation(configuration.browserActivation))}}};
  }
  async function admitFork(value){
   const {signal,...raw}=own(value,['controlId','sourceBinding','scopes','selectedClientId','versions'],['signal']),v=data(raw);

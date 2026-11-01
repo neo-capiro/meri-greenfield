@@ -16,6 +16,8 @@ import {compileAgentCoreConfiguration} from '../../../apps/runtime/agentcore-con
 import {compileProductMaterialPlan} from '../../../apps/runtime/material-init-plan.mjs';
 import {validateStaticProductDelivery} from '../../../apps/runtime/material-init.mjs';
 import {APPROVED_READS_LITERAL,compileCapabilityPlatform} from '../../../apps/runtime/product-ports/capability-policy.mjs';
+import {compileBrowserPlatform} from '../../../apps/runtime/product-ports/browser-policy.mjs';
+import {compileBrowserActivation,activationOpen} from '../../../apps/worker/conversation/browser/activation.mjs';
 import {compileRuntimeArtifactsConfiguration} from '../../../apps/runtime/artifacts/configuration.mjs';
 import {compileObjectiveGenerationConfiguration} from '../../../apps/runtime/objective-generation/configuration.mjs';
 import {assertNativeReadConfiguration} from '../../../packages/contracts/runtime-0.2/reads.mjs';
@@ -104,7 +106,7 @@ export function parseRuntimeValues(raw){
 }
 
 /** Product-family activation (header: `features`). Returns null when absent; otherwise the closed, validated entries. Pure. */
-export const FEATURE_KEYS=Object.freeze(['sourceEnabled','userPreferences','tenantSettings','intents','routines','retention','artifacts','downloadLinks','capabilityPlatform','reads','memory','objectiveGeneration','uploads','nativeProcessing']);
+export const FEATURE_KEYS=Object.freeze(['sourceEnabled','userPreferences','tenantSettings','intents','routines','retention','artifacts','downloadLinks','capabilityPlatform','reads','memory','objectiveGeneration','uploads','nativeProcessing','browserPlatform','browserActivation']);
 /** --feature-secrets keys -> the deployment-inputs ARN field each must name. */
 export const FEATURE_SECRETS=Object.freeze({'reads.serviceSecret':'serviceSecretArn','reads.readModeServiceSecret':'readModeServiceSecretArn'});
 /** Exact (complete, suffixed) Secrets Manager secret ARN in this account and region. A bare name, another account/region/partition, a
@@ -203,6 +205,17 @@ export function parseFeatures(raw,{secrets={}}={}){
  if(f.nativeProcessing!==undefined){
   out.nativeProcessing=parseNativeProcessing(f.nativeProcessing);
   if(out.nativeProcessing.enabled&&(out.sourceEnabled!==true||out.uploads?.enabled!==true))fail('RENDER_INPUT_REFUSED','nativeProcessing requires sourceEnabled and uploads');
+ }
+ // Browser destinations (product-ports/browser-policy.mjs): the platform-approved origin set tenant admins may narrow,
+ // never widen. The runtime's own compiler validates it, so a malformed or widening record refuses here, not at startup.
+ if(f.browserPlatform!==undefined){try{out.browserPlatform=compileBrowserPlatform({browserPlatform:f.browserPlatform});}catch{fail('RENDER_INPUT_REFUSED','features.browserPlatform (product-ports/browser-policy.mjs)');}}
+ // Browser activation (browser/activation.mjs): held, or the evidence record measured on the isolated host and pinned to the
+ // source's exact egress requirements. An open record needs the native host family: the control-to-host router it uses is
+ // rendered from that family's material below, and the runtime validator refuses an open record without that router.
+ if(f.browserActivation!==undefined){
+  let activation;try{activation=compileBrowserActivation(f.browserActivation);}catch{fail('RENDER_INPUT_REFUSED','features.browserActivation (browser/activation.mjs)');}
+  if(activationOpen(activation)&&out.nativeProcessing?.enabled!==true)fail('RENDER_INPUT_REFUSED','features.browserActivation open requires features.nativeProcessing');
+  out.browserActivation=activation;
  }
  if(f.objectiveGeneration!==undefined){
   let declared;try{declared=compileObjectiveGenerationConfiguration({objectiveGeneration:f.objectiveGeneration},'control');}catch{fail('RENDER_INPUT_REFUSED','features.objectiveGeneration (objective-generation/configuration.mjs)');}
@@ -384,7 +397,19 @@ export function renderMaterial({deployment,core,runtime,stage3,private:pki,nowMs
  // digest `versions.imageDigest` records — and to the existing deployment.agentcore owner. Absent emits no
  // key at all; `enabled:false` emits the inert declaration and nothing else, so no digest can be declared.
  if(features.uploads!==undefined)featureKeys.uploads={native:features.uploads.enabled?{enabled:true,agentcore:{imageDigest:'sha256:'+nodeDigest}}:{enabled:false}};
- if(native.control!==null)featureKeys.uploads=native.control;
+ if(native.control!==null){
+  featureKeys.uploads=native.control;
+  // The browser-host router (browser-host-configuration.mjs) is the SAME control-to-host mTLS identity the native inspection
+  // host already pins: the Control client leaf and the issuer root that signs every host certificate. Only the router is
+  // rendered; the host-currentness listener (`tls.hostServer` + `bind`) needs listener material and a host-to-Control network
+  // path that no deployment input declares yet (docs/handover/20261101/BROWSER-ENABLEMENT-RUNBOOK-20261101.md).
+  const t=native.control.native.host.tls;
+  featureKeys.browserHosts={enabled:true,tls:{privateClient:{clientName:t.clientName,certFile:t.certPath,keyFile:t.keyPath,caFile:t.caPath}}};
+ }
+ if(features.browserPlatform!==undefined)featureKeys.browserPlatform=structuredClone(features.browserPlatform);
+ // The held record renders as exactly `{state:'held'}` (the runtime compiles it back to the same held record); an open one
+ // renders verbatim so the deployed control carries the evidence path, its digest and the requirement digest it was measured against.
+ if(features.browserActivation!==undefined)featureKeys.browserActivation=features.browserActivation.state==='open'?structuredClone(features.browserActivation):{state:'held'};
  if(features.capabilityPlatform!==undefined)featureKeys.capabilityPlatform=structuredClone(features.capabilityPlatform);
  // Memory (lane M): review-only proposals over Core M2 at the Core origin, with the same Core service secret file as reads.
  if(features.memory!==undefined)featureKeys.memory=features.memory.enabled?{enabled:true,origin:k.coreOrigin,serviceSecretFile:PATHS.readsServiceSecret}:{enabled:false};

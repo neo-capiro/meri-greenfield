@@ -2,7 +2,8 @@ import test from 'node:test';import assert from 'node:assert/strict';
 import {mkdtemp,mkdir,writeFile,rm,realpath,symlink,access} from 'node:fs/promises';import {tmpdir} from 'node:os';import {join} from 'node:path';
 import {createBrowserCapability} from '../index.mjs';
 import {DEFAULT_BROWSER_POLICY,INTERACTION_TOOLS,BROWSER_TOOLS} from '../policy.mjs';
-import {BROWSER_ACTIVATION,EGRESS_REQUIREMENTS,activationOpen} from '../activation.mjs';
+import {HELD_BROWSER_ACTIVATION,EGRESS_REQUIREMENTS,EGRESS_REQUIREMENTS_SHA256,activationOpen,compileBrowserActivation} from '../activation.mjs';
+import {canonicalSha256} from '../../../../../packages/contracts/validate.mjs';
 import {PLATFORM_BLOCKED_ORIGINS} from '../public-web.mjs';
 import {playwrightHostCommand,validateBrowserInstallation} from '../server.mjs';
 import {browserPaths} from '../workspace.mjs';
@@ -13,19 +14,20 @@ import {binding,enabledPolicy,recorders,clock,installation,installationFor,sourc
 const cwd=`/workspace/${binding.conversationId}`;
 const workspace=async()=>{const root=await realpath(await mkdtemp(join(tmpdir(),'meri-browser-')));const dir=join(root,binding.conversationId);await mkdir(join(dir,'.browser','output'),{recursive:true});return {root,cwd:dir};};
 const post=(tool,{input={},response=[{type:'text',text:'### Result\nok'}],id='toolu_01'}={})=>({hook_event_name:'PostToolUse',session_id:'00000000-0000-4000-8000-0000000000aa',transcript_path:'/x',cwd:'/x',tool_name:`mcp__meri_browser__${tool}`,tool_input:input,tool_response:response,tool_use_id:id});
-test('the capability is on by default with no destinations; the held activation gate contributes no server, tool, hook or download path',async()=>{
+test('the capability is on by default with no destinations; the builder has no gate of its own, control admission reaches it only under an open configured record',()=>{
  assert.equal(DEFAULT_BROWSER_POLICY.enabled,true);assert.deepEqual(DEFAULT_BROWSER_POLICY.allowedOrigins,[]);
- const r=recorders();
+ const r=recorders(),ports={installation,sourceScopes,artifacts:r.artifactPort,receipts:r.receiptPort,approvals:r.approvals('approve')};
  for(const policy of [undefined,DEFAULT_BROWSER_POLICY,{enabled:true},enabledPolicy()]){
-  const cap=createBrowserCapability({binding,cwd,policy,installation,sourceScopes,artifacts:r.artifactPort,receipts:r.receiptPort,approvals:r.approvals('approve'),now:clock});
-  assert.equal(cap.enabled,false);assert.equal(cap.activation,'held');assert.equal(cap.reason,'BROWSER_EGRESS_UNQUALIFIED');assert.equal(cap.policy.enabled,true);
-  assert.equal(cap.status.capability,'enabled');assert.equal(cap.status.activation,'held');
-  assert.deepEqual(cap.mcpServers,{});assert.deepEqual(cap.allowedTools,[]);assert.deepEqual(cap.hooks,{});assert.equal(cap.canUseTool,undefined);
-  await assert.rejects(cap.downloads.accept({filename:'a.pdf',url:`${APPROVED[0]}/a.pdf`}),e=>e.code==='BROWSER_ACTIVATION_HELD');}
- const def=createBrowserCapability({binding,cwd,now:clock});
- assert.deepEqual(def.policy.allowedOrigins,[]);assert.deepEqual(def.status,{capability:'enabled',destinations:'none',allowedOriginCount:0,notice:'BROWSER_NO_ALLOWED_DESTINATIONS',activation:'held'});
- assert.deepEqual(createBrowserCapability({binding,cwd,policy:enabledPolicy(),now:clock}).status,{capability:'enabled',destinations:'allowlisted',allowedOriginCount:2,activation:'held'});
+  const cap=createBrowserCapability({binding,cwd,policy,...ports,now:clock});
+  assert.equal(cap.enabled,true);assert.equal(cap.activation,'open');assert.equal(cap.policy.enabled,true);
+  assert.equal(cap.status.capability,'enabled');assert.equal(cap.status.activation,'open');
+  assert.deepEqual(Object.keys(cap.mcpServers),['meri_browser']);assert.equal(typeof cap.canUseTool,'function');}
+ const def=createBrowserCapability({binding,cwd,...ports,now:clock});
+ assert.deepEqual(def.policy.allowedOrigins,[]);assert.deepEqual(def.status,{capability:'enabled',destinations:'none',allowedOriginCount:0,notice:'BROWSER_NO_ALLOWED_DESTINATIONS',activation:'open'});
+ assert.deepEqual(createBrowserCapability({binding,cwd,policy:enabledPolicy(),...ports,now:clock}).status,{capability:'enabled',destinations:'allowlisted',allowedOriginCount:2,activation:'open'});
  assert.equal(r.receipts.length+r.ingested.length+r.approvalRequests.length,0);
+ // Building the fragment is not activation: nothing is launched, and no argument of the builder opens or holds the gate.
+ assert.equal(createBrowserCapability.length,1,'no activation argument');
 });
 test('a tenant-disabled policy contributes nothing; a partial disabled shape refuses',async()=>{
  const cap=createBrowserCapability({binding,cwd,policy:{enabled:false},now:clock});
@@ -33,15 +35,21 @@ test('a tenant-disabled policy contributes nothing; a partial disabled shape ref
  await assert.rejects(cap.downloads.accept({filename:'a.pdf',url:'https://records.example/a.pdf'}),/BROWSER_DOWNLOADS_DISABLED/);
  assert.throws(()=>createBrowserCapability({binding,cwd,policy:{enabled:false,tools:['browser_navigate']},now:clock}),/BROWSER_POLICY/);
 });
-test('the shipped activation record is held and only an evidence-bearing open record of the exact requirements opens',()=>{
- assert.equal(BROWSER_ACTIVATION.state,'held');assert.equal(BROWSER_ACTIVATION.evidence,null);assert.equal(activationOpen(),false);assert.equal(activationOpen(BROWSER_ACTIVATION),false);
- assert.ok(Object.isFrozen(BROWSER_ACTIVATION)&&Object.isFrozen(EGRESS_REQUIREMENTS));
+test('an absent or held configuration compiles to the held record; only a complete open record of the exact requirements opens; malformed records refuse',()=>{
+ assert.equal(HELD_BROWSER_ACTIVATION.state,'held');assert.equal(HELD_BROWSER_ACTIVATION.evidence,null);assert.equal(HELD_BROWSER_ACTIVATION.reason,'BROWSER_EGRESS_UNQUALIFIED');
+ assert.equal(compileBrowserActivation(undefined),HELD_BROWSER_ACTIVATION);assert.equal(compileBrowserActivation({state:'held'}),HELD_BROWSER_ACTIVATION);
+ assert.equal(activationOpen(HELD_BROWSER_ACTIVATION),false);assert.equal(activationOpen(undefined),false);
+ assert.ok(Object.isFrozen(HELD_BROWSER_ACTIVATION)&&Object.isFrozen(EGRESS_REQUIREMENTS));
+ assert.equal(EGRESS_REQUIREMENTS_SHA256,canonicalSha256(EGRESS_REQUIREMENTS));
  for(const id of ['deny-non-public-destinations','enforce-on-resolved-address','dns-rebinding','redirects','no-proxy-bypass','evidence'])assert.ok(EGRESS_REQUIREMENTS.some(r=>r.startsWith(`${id}:`)),id);
  for(const range of ['169.254','10/8','172.16/12','192.168/16','127/8','fc00::/7','fe80::/10','2000::/3'])assert.ok(EGRESS_REQUIREMENTS[0].includes(range),range);
- assert.equal(activationOpen({state:'open',evidence:null,requirements:EGRESS_REQUIREMENTS}),false);
- assert.equal(activationOpen({state:'open',evidence:'docs/x',requirements:[...EGRESS_REQUIREMENTS]}),false);
- assert.equal(activationOpen({state:'open',evidence:'docs/qualification/egress-record',requirements:EGRESS_REQUIREMENTS}),true);
- assert.equal(createBrowserCapability.length,1,'no activation argument');
+ const open={state:'open',evidence:'docs/qualification/browser-egress/BROWSER-EGRESS-EVIDENCE-20261101.md',evidenceSha256:'a'.repeat(64),requirementsSha256:EGRESS_REQUIREMENTS_SHA256};
+ const compiled=compileBrowserActivation(open);assert.equal(activationOpen(compiled),true);assert.deepEqual(compiled,open);assert.ok(Object.isFrozen(compiled));
+ for(const bad of [{state:'open'},{...open,evidence:null},{...open,evidence:'../evidence'},{...open,evidence:'a b'},{...open,evidenceSha256:'A'.repeat(64)},
+  {...open,requirementsSha256:'b'.repeat(64)},{state:'held',evidence:'x'},{state:'opened'},{...open,extra:true},'open',null])
+  assert.throws(()=>compileBrowserActivation(bad),{code:'BROWSER_ACTIVATION_CONFIGURATION'},JSON.stringify(bad));
+ assert.equal(activationOpen({...open,requirementsSha256:'b'.repeat(64)}),false,'a record measured against other requirements never opens');
+ assert.equal(activationOpen({...open,evidence:''}),false);
 });
 test('the SDK sees only the run-bound shim; native context preparation owns the separate profile and proxy',()=>{
  const r=recorders(),open=policy=>buildOpenBrowserFragment({binding,cwd,policy:validateBrowserPolicy(policy),installation,sourceScopes,artifacts:r.artifactPort,receipts:r.receiptPort,now:clock});

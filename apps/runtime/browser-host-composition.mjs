@@ -52,13 +52,13 @@ export function createBrowserHostHoldCustody({store}={}){
 }
 /** `material` is already-loaded protected key material for exactly the declared references:
  * {privateClient:{clientName,cert,key,ca}, hostServer?:{serverName,cert,key,clientCa}}. */
-export function createBrowserHostComposition({declaration,pool,store,sessions,core,capabilityPolicy,readBrowserPolicy,siteWorkflowAdmission=null,browserApproval=null,browserReceipts=null,ingestBrowserArtifact=null,downloadReservations=null,nativeCurrentness=null,material,now=Date.now,limits={}}={}){
+export function createBrowserHostComposition({declaration,pool,store,sessions,core,capabilityPolicy,readBrowserPolicy,activation,siteWorkflowAdmission=null,browserApproval=null,browserReceipts=null,ingestBrowserArtifact=null,downloadReservations=null,nativeCurrentness=null,material,now=Date.now,limits={}}={}){
  if(declaration===null||declaration===undefined)return null;
  if(!pool||typeof pool.connect!=='function'||!store?.executions||!store?.lifecycle?.browserCustody||
   typeof sessions?.nativeCredentialFor!=='function'||typeof core?.readCurrent!=='function'||
   typeof capabilityPolicy?.forRun!=='function'||typeof readBrowserPolicy!=='function'||typeof now!=='function')fail('BROWSER_HOST_COMPOSITION');
  const maxRequestMs=Math.min(declaration.maxCurrentnessMs,Number.isSafeInteger(limits.requestMs)?limits.requestMs:declaration.maxCurrentnessMs);
- const currentness=createBrowserHostCurrentness({store,core,nativeCredentials:sessions,capabilityPolicy,readBrowserPolicy,now,maxRequestMs});
+ const currentness=createBrowserHostCurrentness({store,core,nativeCredentials:sessions,capabilityPolicy,readBrowserPolicy,activation,now,maxRequestMs});
  const allocations=createPostgresHostAllocationReader({pool,readCanonicalRun:currentness.readRoute,now});
  const client=material?.privateClient;
  if(!client)fail('BROWSER_HOST_COMPOSITION');
