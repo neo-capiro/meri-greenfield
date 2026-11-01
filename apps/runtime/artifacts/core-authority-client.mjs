@@ -9,8 +9,9 @@
  * Refusals carry closed codes (artifactAuthorityStatusCode); bodies, bearers and secrets never appear in an error. */
 import {randomUUID} from 'node:crypto';
 import {types} from 'node:util';
-import {own,nativeSignal} from '../../../packages/contracts/commands-0.2/execution-boundary.mjs';
+import {own,data,nativeSignal} from '../../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {resolveOperationContract} from '../../../packages/contracts/retrieval-0.2/validate.mjs';
+import {normalizeFederalRawRequest,assertFederalRawSource} from '../../../packages/contracts/federal-workbench/raw-source.mjs';
 import {createOperationLifetime} from '../../../packages/runtime/operation-lifetime.mjs';
 import {readJsonResponse,responseBody,cancelBody} from '../../gateway/sources/json-response.mjs';
 import {ARTIFACT_AUTHORITY_CONTRACT,ARTIFACT_AUTHORITY_GENERAL_CONTRACT,ARTIFACT_AUTHORITY_ROUTE,MAX_RECEIPT_BYTES,assertArtifactAuthorityRequest,assertArtifactAuthorityReceipt,
@@ -69,6 +70,7 @@ export function createCoreArtifactAuthorityClient(configuration){
  }
  // Same transport and credentials, fixed native source route; no caller-selected URL.
  function readFederalSource(value){return exchange(value,{path:'/api/clio/tools/read_federal_draft_source',maxBytes:2097152,
-  requestFor(raw){return federalContract.normalizeInput(raw).input;},receive(parsed,request){federalContract.assertOutput(parsed,{request});return parsed;}});}
+  requestFor(raw){const input=data(raw);return Object.hasOwn(input,'representation')?normalizeFederalRawRequest(input):federalContract.normalizeInput(input).input;},
+  receive(parsed,request){if(Object.hasOwn(request,'representation'))assertFederalRawSource(parsed,request);else federalContract.assertOutput(parsed,{request});return parsed;}});}
  return Object.freeze({origin,route:ARTIFACT_AUTHORITY_ROUTE,read,readFederalSource});
 }

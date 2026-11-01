@@ -140,6 +140,42 @@ export type FederalCompilerSource =
     };
 /**
  * This interface was referenced by `FederalWorkbench`'s JSON-Schema
+ * via the `definition` "FederalSourceEnvelope".
+ */
+export type FederalSourceEnvelope =
+  | {
+      schema: "meri.federal-source.v1";
+      selection: FederalNativeSelection;
+      source: FederalCompilerSource;
+    }
+  | {
+      schema: "meri.federal-source.v2";
+      representation: "retained-raw-utf8/1";
+      capture: FederalSourceCapture_69443Be0;
+      selection: FederalNativeSelection;
+      source: FederalCompilerSource;
+    };
+/**
+ * This interface was referenced by `FederalWorkbench`'s JSON-Schema
+ * via the `definition` "FederalImportResult".
+ */
+export type FederalImportResult =
+  | {
+      schema: "meri.federal-source.v1";
+      selection: FederalNativeSelection;
+      source: FederalCompilerSource;
+      publication: ArtifactCreatedResult_183A755E;
+    }
+  | {
+      schema: "meri.federal-source.v2";
+      representation: "retained-raw-utf8/1";
+      capture: FederalSourceCapture_69443Be0;
+      selection: FederalNativeSelection;
+      source: FederalCompilerSource;
+      publication: ArtifactCreatedResult_183A755E;
+    };
+/**
+ * This interface was referenced by `FederalWorkbench`'s JSON-Schema
  * via the `definition` "ArtifactVersion_7f9c56fa".
  */
 export type ArtifactVersion_7F9C56Fa = ArtifactVersionD54B8Ac9 | NativeArtifactVersionFf97D150;
@@ -503,12 +539,17 @@ export interface FederalNativeSelection {
 }
 /**
  * This interface was referenced by `FederalWorkbench`'s JSON-Schema
- * via the `definition` "FederalSourceEnvelope".
+ * via the `definition` "FederalSourceCapture_69443be0".
  */
-export interface FederalSourceEnvelope {
-  schema: "meri.federal-source.v1";
-  selection: FederalNativeSelection;
-  source: FederalCompilerSource;
+export interface FederalSourceCapture_69443Be0 {
+  version: "federal-source-capture/1";
+  representation: "response-body";
+  format: "xml" | "txt";
+  mediaType: string | null;
+  encoding: "utf-8";
+  byteLength: number;
+  sha256: string;
+  utf8RoundTrip: true;
 }
 /**
  * This interface was referenced by `FederalWorkbench`'s JSON-Schema
@@ -517,16 +558,7 @@ export interface FederalSourceEnvelope {
 export interface FederalImportRequest {
   selection: FederalNativeSelection;
   deliveryId: string;
-}
-/**
- * This interface was referenced by `FederalWorkbench`'s JSON-Schema
- * via the `definition` "FederalImportResult".
- */
-export interface FederalImportResult {
-  schema: "meri.federal-source.v1";
-  selection: FederalNativeSelection;
-  source: FederalCompilerSource;
-  publication: ArtifactCreatedResult_183A755E;
+  representation?: "retained-raw-utf8/1";
 }
 /**
  * This interface was referenced by `FederalWorkbench`'s JSON-Schema
@@ -844,7 +876,7 @@ declare const federalReview:unique symbol;
 export type AdmittedFederalRequest<R extends FederalRoute>=Readonly<FederalRequest<R>>&{readonly[federalRequest]:R};
 export type AdmittedFederalReview=Readonly<FederalReview>&{readonly[federalReview]:true};
 export type FederalResponse<R extends FederalRoute>=(R extends 'federal-import'?Readonly<FederalImportResult>:R extends 'federal-publish'?Readonly<FederalPublication>:R extends 'federal-history'?Readonly<FederalHistory>:AdmittedFederalReview)|Readonly<FederalError>;
-export declare const federalWorkbenchVersion:'1.4.0';
+export declare const federalWorkbenchVersion:'1.5.0';
 export declare function receiveFederalSource(bytes:Uint8Array):Promise<Readonly<FederalCompilerSource>>;
 export declare function receiveFederalRequest<R extends FederalRoute>(route:R,bytes:Uint8Array):AdmittedFederalRequest<R>;
 export declare function receiveFederalResponse<R extends FederalRoute>(route:R,status:number,bytes:Uint8Array,request:AdmittedFederalRequest<R>,review?:AdmittedFederalReview):Promise<FederalResponse<R>>;

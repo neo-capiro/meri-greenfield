@@ -10,9 +10,45 @@ import {tmpdir} from 'node:os';
 import {join} from 'node:path';
 import {pathToFileURL} from 'node:url';
 import official from '../../../../packages/contracts/test/fixtures/federal-draft-source.wire.json' with {type:'json'};
+import rawOfficial from '../../../../packages/contracts/test/fixtures/federal-raw-source.wire.json' with {type:'json'};
 import {projectNativeFederalSource} from '../../../artifacts/federal-drafting/native-source.mjs';
 import * as distributedFederal from '@capiro/meri-contracts/federal-workbench';
 import {fixture,ok,publication,importedSelection} from './federal-workbench-fixture.mjs';
+
+test('qualified raw import binds exact capture receipt, downloaded source and saved review currentness',async t=>{
+ const x=await fixture(t,{native:true,raw:true}),bytes=value=>new TextEncoder().encode(JSON.stringify(value));
+ const request=distributedFederal.receiveFederalRequest('federal-import',bytes(x.importRequest()));
+ const raw=await ok(await x.post('federal-import',request));
+ const imported=await distributedFederal.receiveFederalResponse('federal-import',200,bytes(raw),request);
+ assert.equal(imported.schema,'meri.federal-source.v2');assert.deepEqual(imported.capture,rawOfficial.response.raw.capture);
+ assert.equal(imported.source.text,rawOfficial.response.raw.text);assert.equal(imported.source.sha256,rawOfficial.response.raw.sha256);
+ const downloaded=await x.reads.download(imported.publication.version.versionId,x.f.context);
+ assert.deepEqual(await distributedFederal.receiveFederalSource(downloaded.bytes),imported.source);
+ const {publication:unused,...envelope}=imported;
+ for(const mutate of [e=>{e.capture.sha256='0'.repeat(64);},e=>{e.capture.byteLength++;},e=>{e.capture.format='txt';}]){
+  const changed=structuredClone(envelope);mutate(changed);await assert.rejects(distributedFederal.receiveFederalSource(bytes(changed)));
+ }
+ const legacyRequest=distributedFederal.receiveFederalRequest('federal-import',bytes({selection:request.selection,deliveryId:randomUUID()}));
+ await assert.rejects(distributedFederal.receiveFederalResponse('federal-import',200,bytes(imported),legacyRequest));
+ const selection={versionId:imported.publication.version.versionId,expectedArtifactSha256:imported.publication.version.object.sha256,
+  operations:[opFor(imported.source,{scopeId:'synthetic:s1',expectedText:'Synthetic',text:'Proposed'})]};
+ const prepare=distributedFederal.receiveFederalRequest('federal-prepare',bytes({selection}));
+ const review=await distributedFederal.receiveFederalResponse('federal-prepare',200,bytes(await ok(await x.post('federal-prepare',prepare))),prepare);
+ const saved=await ok(await x.post('federal-publish',publication(selection,review.prepared.revisionSha256,'draft')));
+ const load={versionId:saved.publication.version.versionId,expectedArtifactSha256:saved.publication.version.object.sha256};
+ assert.deepEqual((await ok(await x.post('federal-load',load))).prepared,review.prepared);
+ const before=x.f.state.executions.length;x.nativeState.mutate=r=>{r.raw.capture.mediaType='text/xml; charset=UTF-8';};
+ assert.notEqual((await x.post('federal-load',load)).status,200);assert.equal(x.f.state.executions.length,before);
+});
+
+test('raw capture unavailable or corrupt refuses import before artifact publication',async t=>{
+ for(const mutate of [r=>{r.raw.capture.sha256='0'.repeat(64);},r=>{r.raw.text+='changed';},r=>{delete r.raw;}]){
+  const x=await fixture(t,{native:true,raw:true});x.nativeState.mutate=mutate;const before=x.f.state.executions.length;
+  assert.notEqual((await x.post('federal-import',x.importRequest())).status,200);assert.equal(x.f.state.executions.length,before);
+ }
+ const x=await fixture(t,{native:true,raw:true});x.nativeState.available=false;const before=x.f.state.executions.length;
+ assert.notEqual((await x.post('federal-import',x.importRequest())).status,200);assert.equal(x.f.state.executions.length,before);
+});
 
 test('public package admits the mounted official import and downloaded envelope', async t => {
  const x=await fixture(t,{native:true}),bytes=value=>new TextEncoder().encode(JSON.stringify(value));

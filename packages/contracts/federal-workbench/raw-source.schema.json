@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:meri:federal-raw-source:1",
+  "$defs": {
+    "FederalSourceCapture": {
+      "type": "object",
+      "properties": {
+        "version": {"const": "federal-source-capture/1"},
+        "representation": {"const": "response-body"},
+        "format": {"enum": ["xml", "txt"]},
+        "mediaType": {"anyOf": [{"type": "string", "maxLength": 256, "pattern": "^[^\\r\\n]*$"}, {"type": "null"}]},
+        "encoding": {"const": "utf-8"},
+        "byteLength": {"type": "integer", "minimum": 1, "maximum": 131072},
+        "sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+        "utf8RoundTrip": {"const": true}
+      },
+      "required": ["version", "representation", "format", "mediaType", "encoding", "byteLength", "sha256", "utf8RoundTrip"],
+      "additionalProperties": false
+    },
+    "FederalRawSource": {
+      "type": "object",
+      "properties": {
+        "text": {"type": "string", "minLength": 1, "maxLength": 131072},
+        "sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+        "byteLength": {"type": "integer", "minimum": 1, "maximum": 131072},
+        "format": {"enum": ["xml", "txt"]},
+        "capture": {"$ref": "#/$defs/FederalSourceCapture"}
+      },
+      "required": ["text", "sha256", "byteLength", "format", "capture"],
+      "additionalProperties": false
+    }
+  }
+}

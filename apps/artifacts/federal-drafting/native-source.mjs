@@ -3,6 +3,7 @@
 import {resolveOperationContract,artifactValidators} from '../../../packages/contracts/retrieval-0.2/validate.mjs';
 import {compileFederalDraft,FEDERAL_TEXT_PARSER,federalDraftSource} from './engine.mjs';
 import {FEDERAL_USLM_XML_PARSER,deriveUslmScopes,looksLikeMarkup} from './uslm-source.mjs';
+import {FEDERAL_RAW_REPRESENTATION,assertFederalRawSource} from '../../../packages/contracts/federal-workbench/raw-source.mjs';
 import canonicalize from 'canonicalize';
 const sourceContract=resolveOperationContract({id:'read_federal_draft_source',version:'0.2.0'});
 const fault=code=>{throw Object.assign(Error(code),{code});};
@@ -28,6 +29,15 @@ export function projectNativeFederalSource(selection,result,{structured=false}={
  return federalDraftSource({...base,parserVersion:FEDERAL_TEXT_PARSER,coverage:{complete:true,limitations:[
   'One flat full-document scope; legal structure, numbering, cross-references, arithmetic and substantive law require review.',
   ...shared(identity)]},scopes:[{id:'document',label:'the selected bill text',start:0,end:text.length,sha256:identity.textHash}]});
+}
+/** Qualified response-body capture remains distinct from schema validity and substantive law. */
+export function projectRawFederalSource(selection,result){
+ assertFederalRawSource(result,{...selection,representation:FEDERAL_RAW_REPRESENTATION});
+ if(result.currentStatus!=='available')fault('DRAFT_SOURCE_UNAVAILABLE');
+ const {representation,raw,...legacy}=result;
+ const source=projectNativeFederalSource(selection,legacy,{structured:true});
+ return federalDraftSource({...source,coverage:{...source.coverage,limitations:source.coverage.limitations.map(line=>
+  line.startsWith('Core retained UTF-8 content')?'Captured response-body UTF-8 bytes and exact SHA-256 verified; compressed HTTP transport frames are not retained.':line).concat('Captured response-body receipt: '+canonicalize(raw.capture))}});
 }
 export function prepareNativeFederalDraft(selection,result,operations){
  const source=projectNativeFederalSource(selection,result),identity=result.source;

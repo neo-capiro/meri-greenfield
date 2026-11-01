@@ -14,7 +14,7 @@ Still proposed, not implemented:
 
 - XSD/DTD validation against the pinned USLM `100338992150c276aae5544d01d9b821a27eb383` and bill DTD `18a68dad697ea7447881e0c10dd96dcecbdeb508` assets. Well-formedness and the declared namespace are checked; schema validity is not claimed. A DOCTYPE is refused rather than resolved.
 - Decoded text-run anchoring (operations expressed over rendered text with reversible run offsets, refusal across an intervening `<ref>`), node replacement, renumbering, tables and page/line metadata. Today an anchor is literal markup text; inserted text is literal markup and must leave the document well-formed.
-- A Core raw-format projection carrying the original bytes and declared schema version. Today the USLM baseline is Core's retained extracted text when that extraction is XML; the frozen SDK `prepare_federal_draft` tool stays flat-only and refuses markup explicitly.
+- A declared/pinned schema-validation receipt and reversible structural mapping remain open. The separately negotiated `retained-raw-utf8/1` path now carries verified response-body UTF-8 bytes/hash/length and format in a v2 retained envelope; historical unreported rows do not qualify. Capture evidence does not establish schema validity. The frozen SDK `prepare_federal_draft` tool stays flat-only and refuses markup explicitly.
 
 ## Whole-source removal / proposed repeal
 

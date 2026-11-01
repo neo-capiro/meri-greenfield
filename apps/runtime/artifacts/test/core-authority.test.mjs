@@ -5,6 +5,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
+import {createHash} from 'node:crypto';
 import catalog from '../../../../packages/contracts/retrieval-0.2/catalog.json' with {type:'json'};
 import {canonicalSha256} from '../../../../packages/contracts/validate.mjs';
 import {createActionSessionOwner} from '../../../control/action-host/session/owner.mjs';
@@ -19,6 +20,7 @@ import {createRuntimeArtifactApplication} from '../application.mjs';
 import {bindDocumentsSessions} from '../session-binding.mjs';
 import {captureRuntimePorts} from '../../product-applications.mjs';
 import official from '../../../../packages/contracts/test/fixtures/federal-draft-source.wire.json' with {type:'json'};
+import rawOfficial from '../../../../packages/contracts/test/fixtures/federal-raw-source.wire.json' with {type:'json'};
 
 const vector=JSON.parse(readFileSync(new URL('../../../../docs/integration/artifact-current-authority.vector.json',import.meta.url),'utf8'));
 const code=c=>e=>{assert.equal(e?.code,c,`expected ${c}, got ${e?.code} (${e?.message})`);return true;};
@@ -42,9 +44,9 @@ function scriptedCore(){
  core.fetch=async(url,init)=>{
   const headers=init.headers,request=JSON.parse(init.body);
   if(url===ORIGIN+'/api/clio/tools/read_federal_draft_source'){
-   assert.deepEqual(request,official.request);assert.equal(headers.authorization,'Bearer '+BEARER);assert.equal(headers['x-internal-service-secret'],SECRET);
+   assert.deepEqual(request,(core.sourceVector??official).request);assert.equal(headers.authorization,'Bearer '+BEARER);assert.equal(headers['x-internal-service-secret'],SECRET);
    assert.equal(init.redirect,'error');assert.equal(init.credentials,'omit');assert.equal(init.cache,'no-store');
-   await core.onSource?.();return Response.json(official.response);
+   await core.onSource?.();return Response.json((core.sourceVector??official).response);
   }
   core.calls.push({url,method:init.method,authorization:headers.authorization,service:headers['x-internal-service-secret'],request,init});core.onCall?.(core.calls.length);
   assert.equal(url,ORIGIN+ARTIFACT_AUTHORITY_ROUTE);assert.equal(init.method,'POST');assert.equal(init.redirect,'error');assert.equal(init.credentials,'omit');assert.equal(init.cache,'no-store');
@@ -116,6 +118,27 @@ test('native source transport refuses malformed pins, oversized or mismatched re
  reply=()=>Response.json({pad:'x'.repeat(2097152)});await assert.rejects(read());
  reply=()=>Response.redirect('https://foreign.synthetic.invalid');await assert.rejects(read());
  const count=calls;await assert.rejects(read(official.request,{signal:AbortSignal.abort()}),code('CANCELLED'));assert.equal(calls,count);
+});
+
+test('dedicated captured-source negotiation uses the same live authority and exact five pins',async t=>{
+ const h=await authorityHarness();t.after(()=>h.live.sessions.close());h.core.sourceVector=rawOfficial;
+ const {representation,...selection}=rawOfficial.request;
+ const resolved=await h.authority.resolve(h.call('federal-import',{selection,representation,deliveryId:'synthetic-raw-import'}));
+ const read=()=>resolved.federalSource.read({selection,representation,deadlineMs:Date.now()+2000});
+ assert.deepEqual(await read(),rawOfficial.response);
+ h.core.onSource=()=>h.live.sessions.close();await assert.rejects(read());
+});
+
+test('raw transport admits the worst JSON escaping at the existing 128KiB source bound without truncation',async()=>{
+ const text='\u0001'.repeat(131071)+'A',sha256=createHash('sha256').update(text).digest('hex');
+ const reply=structuredClone(rawOfficial.response),request={...rawOfficial.request,versionHash:sha256,textHash:sha256};
+ Object.assign(reply.source,{text,versionHash:sha256,textHash:sha256});
+ Object.assign(reply.raw,{text,sha256,byteLength:131072,format:'txt'});
+ Object.assign(reply.raw.capture,{sha256,byteLength:131072,format:'txt',mediaType:'text/plain; charset=utf-8'});
+ const encoded=JSON.stringify(reply);assert.ok(Buffer.byteLength(encoded)>1048576);assert.ok(Buffer.byteLength(encoded)<2097152);
+ const client=createCoreArtifactAuthorityClient({origin:ORIGIN,now:Date.now,fetchImpl:async()=>new Response(encoded,{headers:{'content-type':'application/json'}})});
+ const received=await client.readFederalSource({bearer:BEARER,serviceSecret:SECRET,request,deadlineMs:Date.now()+2000});
+ assert.equal(received.raw.text,text);assert.equal(received.source.text,text);assert.equal(received.raw.capture.byteLength,131072);
 });
 
 test('golden vectors: exact request bytes and digest, accepted receipts, every listed refusal, status mapping',()=>{

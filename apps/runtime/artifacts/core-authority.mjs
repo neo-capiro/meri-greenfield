@@ -116,7 +116,7 @@ export function createCoreArtifactAuthority(configuration){
    life.check();
    let latest=first;
    const federalSource=!call.intent.startsWith('federal-')||readFederal===null?undefined:{async read(raw){
-    let q;try{q=own(raw,['selection','deadlineMs'],['signal']);nativeSignal(q.signal);if(!Number.isSafeInteger(q.deadlineMs))throw Error();}catch{refuse('ACCESS_DENIED');}
+    let q;try{q=own(raw,['selection','deadlineMs'],['signal','representation']);nativeSignal(q.signal);if(!Number.isSafeInteger(q.deadlineMs)||q.representation!==undefined&&q.representation!=='retained-raw-utf8/1')throw Error();}catch{refuse('ACCESS_DENIED');}
     const t=lifetime(Math.min(q.deadlineMs,context.deadlineMs,latest.expiresAtMs),q.signal);
     const lookup=()=>{let issued;try{issued=data(own(ports.nativeCredentialFor({binding:first.binding,selectedClientId:first.selectedClientId,signal:t.signal}),['credential','expiresAtMs']));}catch{refuse('UNAVAILABLE');}
      if(!TOKEN.test(issued.credential??'')||!Number.isSafeInteger(issued.expiresAtMs)||issued.expiresAtMs<=now()||sha(issued.credential)!==latest.bearerSha256)refuse('ACCESS_DENIED');
@@ -124,7 +124,8 @@ export function createCoreArtifactAuthority(configuration){
     try{
      const bearer=lookup(),secret=await t.run(()=>serviceSecret());
      if(admitBearer(bearer,secret)!==bearer||lookup()!==bearer)refuse('ACCESS_DENIED');
-     const result=await t.run(signal=>readFederal({bearer,serviceSecret:secret,request:q.selection,deadlineMs:t.deadline(),signal}));
+     const request=q.representation===undefined?q.selection:{...data(q.selection),representation:q.representation};
+     const result=await t.run(signal=>readFederal({bearer,serviceSecret:secret,request,deadlineMs:t.deadline(),signal}));
      if(lookup()!==bearer)refuse('ACCESS_DENIED');t.check();return result;
     }catch(error){throw closedError(error,'UNAVAILABLE');}finally{t.close();}
    }};
