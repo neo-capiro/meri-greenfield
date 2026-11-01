@@ -6,7 +6,7 @@ declare const federalReview:unique symbol;
 export type AdmittedFederalRequest<R extends FederalRoute>=Readonly<FederalRequest<R>>&{readonly[federalRequest]:R};
 export type AdmittedFederalReview=Readonly<FederalReview>&{readonly[federalReview]:true};
 export type FederalResponse<R extends FederalRoute>=(R extends 'federal-import'?Readonly<FederalImportResult>:R extends 'federal-publish'?Readonly<FederalPublication>:R extends 'federal-history'?Readonly<FederalHistory>:AdmittedFederalReview)|Readonly<FederalError>;
-export declare const federalWorkbenchVersion:'1.3.0';
+export declare const federalWorkbenchVersion:'1.4.0';
 export declare function receiveFederalSource(bytes:Uint8Array):Promise<Readonly<FederalCompilerSource>>;
 export declare function receiveFederalRequest<R extends FederalRoute>(route:R,bytes:Uint8Array):AdmittedFederalRequest<R>;
 export declare function receiveFederalResponse<R extends FederalRoute>(route:R,status:number,bytes:Uint8Array,request:AdmittedFederalRequest<R>,review?:AdmittedFederalReview):Promise<FederalResponse<R>>;

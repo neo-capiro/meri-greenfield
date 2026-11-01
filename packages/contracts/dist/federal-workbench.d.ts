@@ -351,6 +351,138 @@ export type ArtifactInspection_3Ae45145 =
  * via the `definition` "ArtifactExecution_28c65a3e".
  */
 export type ArtifactExecution_28C65A3E = LegacyArtifactExecution_4Afe1663 | NativeArtifactExecution_26204926;
+/**
+ * This interface was referenced by `FederalWorkbench`'s JSON-Schema
+ * via the `definition` "FederalDraftOperation_ecfa206f".
+ */
+export type FederalDraftOperationEcfa206F =
+  | {
+      id: string;
+      kind: "replace" | "insert" | "delete";
+      scopeId: string;
+      expectedScopeSha256: string;
+      expectedText: string;
+      expectedTextSha256: string;
+      /**
+       * @minItems 0
+       * @maxItems 64
+       */
+      dependsOn: string[];
+      text?: string;
+      position?: "before" | "after";
+    }
+  | {
+      id: string;
+      kind: "remove_source_text";
+      expectedSourceSha256: string;
+      expectedTextSha256: string;
+      /**
+       * @maxItems 64
+       */
+      dependsOn: string[];
+    };
+/**
+ * This interface was referenced by `FederalWorkbench`'s JSON-Schema
+ * via the `definition` "FederalDraftCompilation_66ff9248".
+ */
+export type FederalDraftCompilation_66Ff9248 =
+  | {
+      parserVersion: "federal-plain-text/1" | "federal-scoped-text/2" | "federal-uslm-xml/1";
+      source: FederalCompilerSource;
+      /**
+       * @minItems 1
+       * @maxItems 64
+       */
+      operations: [FederalDraftOperationEcfa206F, ...FederalDraftOperationEcfa206F[]];
+      outputs: {
+        operative: string;
+        consolidated: string;
+        redline: string;
+        /**
+         * @minItems 1
+         * @maxItems 512
+         */
+        segments: [FederalDraftSegmentE752Af1D, ...FederalDraftSegmentE752Af1D[]];
+      };
+      /**
+       * @minItems 1
+       * @maxItems 70
+       */
+      findings: [
+        {
+          category:
+            "source-integrity" | "exact-target" | "numbering" | "cross-references" | "arithmetic" | "substantive-law";
+          status: "passed" | "unresolved";
+          location: string;
+          severity: "info" | "review-required";
+          operationId?: string;
+        },
+        ...{
+          category:
+            "source-integrity" | "exact-target" | "numbering" | "cross-references" | "arithmetic" | "substantive-law";
+          status: "passed" | "unresolved";
+          location: string;
+          severity: "info" | "review-required";
+          operationId?: string;
+        }[]
+      ];
+      outputHashes: {
+        operative: string;
+        consolidated: string;
+        redline: string;
+      };
+      revisionSha256: string;
+      approval: "unapproved";
+    }
+  | {
+      parserVersion: "federal-plain-text/1" | "federal-scoped-text/2" | "federal-uslm-xml/1";
+      source: FederalCompilerSource;
+      /**
+       * @minItems 1
+       * @maxItems 64
+       */
+      operations: [FederalDraftOperationEcfa206F, ...FederalDraftOperationEcfa206F[]];
+      outputs: {
+        operative: string;
+        consolidated: "";
+        redline: string;
+        /**
+         * @minItems 1
+         * @maxItems 512
+         */
+        segments: [FederalDraftSegmentE752Af1D, ...FederalDraftSegmentE752Af1D[]];
+      };
+      /**
+       * @minItems 1
+       * @maxItems 70
+       */
+      findings: [
+        {
+          category:
+            "source-integrity" | "exact-target" | "numbering" | "cross-references" | "arithmetic" | "substantive-law";
+          status: "passed" | "unresolved";
+          location: string;
+          severity: "info" | "review-required";
+          operationId?: string;
+        },
+        ...{
+          category:
+            "source-integrity" | "exact-target" | "numbering" | "cross-references" | "arithmetic" | "substantive-law";
+          status: "passed" | "unresolved";
+          location: string;
+          severity: "info" | "review-required";
+          operationId?: string;
+        }[]
+      ];
+      outputHashes: {
+        operative: string;
+        consolidated: "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855";
+        redline: string;
+      };
+      revisionSha256: string;
+      approval: "unapproved";
+      resultKind: "source-text-removed";
+    };
 
 export interface FederalWorkbench {
   [k: string]: unknown;
@@ -562,25 +694,6 @@ export interface FederalSelection {
 }
 /**
  * This interface was referenced by `FederalWorkbench`'s JSON-Schema
- * via the `definition` "FederalDraftOperation_ecfa206f".
- */
-export interface FederalDraftOperationEcfa206F {
-  id: string;
-  kind: "replace" | "insert" | "delete";
-  scopeId: string;
-  expectedScopeSha256: string;
-  expectedText: string;
-  expectedTextSha256: string;
-  /**
-   * @minItems 0
-   * @maxItems 64
-   */
-  dependsOn: string[];
-  text?: string;
-  position?: "before" | "after";
-}
-/**
- * This interface was referenced by `FederalWorkbench`'s JSON-Schema
  * via the `definition` "FederalSourceArtifact".
  */
 export interface FederalSourceArtifact {
@@ -642,58 +755,6 @@ export interface FederalHistoryRequest {
 export interface FederalRetainedPreparation {
   sourceArtifact: FederalSourceArtifact;
   draft: FederalDraftCompilation_66Ff9248;
-  revisionSha256: string;
-  approval: "unapproved";
-}
-/**
- * This interface was referenced by `FederalWorkbench`'s JSON-Schema
- * via the `definition` "FederalDraftCompilation_66ff9248".
- */
-export interface FederalDraftCompilation_66Ff9248 {
-  parserVersion: "federal-plain-text/1" | "federal-scoped-text/2" | "federal-uslm-xml/1";
-  source: FederalCompilerSource;
-  /**
-   * @minItems 1
-   * @maxItems 64
-   */
-  operations: [FederalDraftOperationEcfa206F, ...FederalDraftOperationEcfa206F[]];
-  outputs: {
-    operative: string;
-    consolidated: string;
-    redline: string;
-    /**
-     * @minItems 1
-     * @maxItems 512
-     */
-    segments: [FederalDraftSegmentE752Af1D, ...FederalDraftSegmentE752Af1D[]];
-  };
-  /**
-   * @minItems 1
-   * @maxItems 70
-   */
-  findings: [
-    {
-      category:
-        "source-integrity" | "exact-target" | "numbering" | "cross-references" | "arithmetic" | "substantive-law";
-      status: "passed" | "unresolved";
-      location: string;
-      severity: "info" | "review-required";
-      operationId?: string;
-    },
-    ...{
-      category:
-        "source-integrity" | "exact-target" | "numbering" | "cross-references" | "arithmetic" | "substantive-law";
-      status: "passed" | "unresolved";
-      location: string;
-      severity: "info" | "review-required";
-      operationId?: string;
-    }[]
-  ];
-  outputHashes: {
-    operative: string;
-    consolidated: string;
-    redline: string;
-  };
   revisionSha256: string;
   approval: "unapproved";
 }
@@ -783,7 +844,7 @@ declare const federalReview:unique symbol;
 export type AdmittedFederalRequest<R extends FederalRoute>=Readonly<FederalRequest<R>>&{readonly[federalRequest]:R};
 export type AdmittedFederalReview=Readonly<FederalReview>&{readonly[federalReview]:true};
 export type FederalResponse<R extends FederalRoute>=(R extends 'federal-import'?Readonly<FederalImportResult>:R extends 'federal-publish'?Readonly<FederalPublication>:R extends 'federal-history'?Readonly<FederalHistory>:AdmittedFederalReview)|Readonly<FederalError>;
-export declare const federalWorkbenchVersion:'1.3.0';
+export declare const federalWorkbenchVersion:'1.4.0';
 export declare function receiveFederalSource(bytes:Uint8Array):Promise<Readonly<FederalCompilerSource>>;
 export declare function receiveFederalRequest<R extends FederalRoute>(route:R,bytes:Uint8Array):AdmittedFederalRequest<R>;
 export declare function receiveFederalResponse<R extends FederalRoute>(route:R,status:number,bytes:Uint8Array,request:AdmittedFederalRequest<R>,review?:AdmittedFederalReview):Promise<FederalResponse<R>>;

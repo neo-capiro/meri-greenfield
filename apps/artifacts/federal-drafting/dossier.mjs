@@ -33,7 +33,7 @@ export function federalDraftDossier(prepared,approval=null){
   ...source.coverage.limitations.map(text=>p('Source limitation: '+text)),
   ...draft.findings.filter(f=>f.status!=='passed').map(f=>p(`Unresolved: ${f.category} (${f.severity}) at ${f.location}.`)),
   p('Operative amendment','Heading 1'),...lines(draft.outputs.operative).filter(Boolean).map(text=>p(text)),
-  p('Consolidated text','Heading 1'),...lines(draft.outputs.consolidated).map(text=>p(text)),
+  p('Consolidated text','Heading 1'),...(draft.resultKind==='source-text-removed'?[p('Proposed source-text removal: the separate consolidated TXT export contains exactly zero bytes. This review record does not establish enactment or legal effect.')]:lines(draft.outputs.consolidated).map(text=>p(text))),
   p('Legal comparison','Heading 1'),p(FEDERAL_DOSSIER_LEGEND),...comparisonParagraphs(draft.outputs.segments)];
  try{return artifactValidators.request({operation:'create_word',format:'docx',title:`Federal review dossier: ${source.documentId}`.slice(0,160),content:{blocks}});}
  catch{fault('DRAFT_OUTPUT_UNEXPORTABLE');}

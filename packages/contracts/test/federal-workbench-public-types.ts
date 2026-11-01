@@ -55,3 +55,15 @@ if (nestedOrFlat.parserVersion === 'federal-scoped-text/2' || nestedOrFlat.parse
   const ancestors: string[] = nestedOrFlat.scopes[0].ancestorPath;
   void ancestors;
 }
+
+const removal: FederalSelection['operations'][number] = {id:'remove',kind:'remove_source_text',expectedSourceSha256:'0'.repeat(64),expectedTextSha256:'0'.repeat(64),dependsOn:[]};
+if (removal.kind === 'remove_source_text') {
+  const sourceHash: string = removal.expectedSourceSha256;
+  // @ts-expect-error Whole-source removal is not a scope text amendment.
+  removal.scopeId;
+  void sourceHash;
+}
+if ('resultKind' in review.prepared.draft && review.prepared.draft.resultKind === 'source-text-removed') {
+  const empty: '' = review.prepared.draft.outputs.consolidated;
+  void empty;
+}

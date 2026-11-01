@@ -23,6 +23,18 @@ const object=properties=>({type:'object',properties,required:Object.keys(propert
 const ref=name=>({$ref:'#/$defs/'+name});
 const sha={type:'string',pattern:'^[a-f0-9]{64}$'},uuid={type:'string',format:'uuid'},nullable=schema=>({anyOf:[schema,{type:'null'}]});
 const deliveryId={type:'string',pattern:'^[A-Za-z0-9_.:@/-]{1,255}$'},operationId={type:'string',pattern:'^[A-Za-z0-9][A-Za-z0-9_.:-]{0,127}$'};
+// The dedicated workbench admits a terminal full-source operation. The SDK's original schema stays frozen.
+const amendment=retainedFederalSchema.$defs.FederalDraftOperation;
+const removal=object({id:operationId,kind:{const:'remove_source_text'},expectedSourceSha256:sha,expectedTextSha256:sha,
+ dependsOn:{type:'array',maxItems:64,uniqueItems:true,items:operationId}});
+retainedFederalSchema.$defs.FederalDraftOperation={oneOf:[amendment,removal]};
+const compilation=retainedFederalSchema.$defs.FederalDraftCompilation;
+const removedCompilation=structuredClone(compilation);
+removedCompilation.properties.resultKind={const:'source-text-removed'};
+removedCompilation.required.push('resultKind');
+removedCompilation.properties.outputs.properties.consolidated={const:''};
+removedCompilation.properties.outputHashes.properties.consolidated={const:'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855'};
+retainedFederalSchema.$defs.FederalDraftCompilation={oneOf:[compilation,removedCompilation]};
 const outputs=['draft','operative','consolidated','redline','docx'];
 const artifact=name=>({$ref:'urn:meri:artifacts:0.2.0#/$defs/'+name});
 const federal=name=>({$ref:'urn:meri:federal-retained-source:1#/$defs/'+name});

@@ -7,6 +7,8 @@ import {opFor} from '../../../artifacts/federal-drafting/test/fixtures.mjs';
 import {USLM_TEXT,A,S1,B,slice} from '../../../artifacts/federal-drafting/test/uslm-fixture.mjs';
 import {FEDERAL_DOSSIER_LEGEND} from '../../../artifacts/federal-drafting/dossier.mjs';
 import {FEDERAL_REVIEW_SCHEMA} from '../../../artifacts/federal-drafting/review-record.mjs';
+import {canonicalSha256} from '../../../../packages/contracts/validate.mjs';
+import {textSha256} from '../../../artifacts/federal-drafting/engine.mjs';
 import * as distributedFederal from '@capiro/meri-contracts/federal-workbench';
 import {fixture,bytes,ok,publication,importedSelection} from './federal-workbench-fixture.mjs';
 
@@ -153,4 +155,61 @@ test('non-USLM markup, DOCTYPE and whole-source repeal are explicit public refus
  assert.equal(repeal.status,422);assert.deepEqual(repeal.raw.error,{code:'DRAFT_WHOLE_SOURCE_REPEAL_UNSUPPORTED',outcome:'READ_UNAVAILABLE',operationId:null});
  const sectionRepeal=await ok(await whole.post('federal-prepare',{selection:{...whole.selection,operations:[opFor(whole.source,{scopeId:'s2',kind:'delete',expectedText:'SEC. 2. Review.\r\n'})]}}));
  assert.equal(sectionRepeal.prepared.draft.outputs.consolidated,whole.source.text.replace('SEC. 2. Review.\r\n',''));
+});
+
+test('typed removal saves as a child, reloads, exports genuine zero bytes and recovers its original withheld delivery',async t=>{
+ const x=await fixture(t,{native:true,docx:true});
+ const imported=(await roundTrip(x,'federal-import',x.importRequest())).received;
+ const selected=importedSelection(imported),original=(await roundTrip(x,'federal-prepare',{selection:selected})).received;
+ const saved=(await roundTrip(x,'federal-publish',publication(selected,original.prepared.revisionSha256,'draft'),original)).received;
+ const removal={id:'remove',kind:'remove_source_text',expectedSourceSha256:imported.source.sha256,
+  expectedTextSha256:original.prepared.draft.outputHashes.consolidated,dependsOn:selected.operations.map(op=>op.id)};
+ const selection={...selected,operations:[...selected.operations,removal]},review=(await roundTrip(x,'federal-prepare',{selection})).received;
+ assert.equal(review.prepared.draft.resultKind,'source-text-removed');assert.equal(review.prepared.draft.outputs.consolidated,'');
+ const revision=review.prepared.revisionSha256;
+ const child=(await roundTrip(x,'federal-publish',publication(selection,revision,'draft',{baseVersionId:saved.publication.version.versionId,baseRevisionSha256:original.prepared.revisionSha256}),review)).received;
+ const loaded=(await roundTrip(x,'federal-load',{versionId:child.publication.version.versionId,expectedArtifactSha256:child.publication.version.object.sha256})).received;
+ assert.deepEqual(loaded.prepared,review.prepared);assert.equal(loaded.approval,null);
+ const consolidated=publication(selection,revision,'consolidated',{reviewVersionId:child.publication.version.versionId});
+ x.deny();const withheld=await x.post('federal-publish',consolidated);
+ assert.equal(withheld.status,403);assert.equal((await withheld.json()).error.outcome,'RESULT_NOT_RELEASED');
+ const executions=x.f.state.executions.length;x.allow();
+ const published=(await roundTrip(x,'federal-publish',consolidated,loaded)).received;
+ assert.equal(x.f.state.executions.length,executions);
+ const downloaded=await x.reads.download(published.publication.version.versionId,x.f.context);
+ assert.equal(downloaded.bytes.length,0);assert.equal(published.publication.version.object.bytes,0);
+ assert.equal(published.publication.version.object.sha256,'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855');
+ for(const output of ['operative','redline','docx']){
+  const exported=(await roundTrip(x,'federal-publish',publication(selection,revision,output),loaded)).received;
+  const result=await x.reads.download(exported.publication.version.versionId,x.f.context);
+  if(output==='docx')assert.match(result.bytes.toString(),/contains exactly zero bytes/);
+  else assert.equal(result.bytes.toString(),loaded.prepared.draft.outputs[output]);
+ }
+ const history=(await roundTrip(x,'federal-history',{versionId:child.publication.version.versionId,limit:10,cursor:null})).received;
+ assert.deepEqual(history.revisions.map(r=>r.revisionSha256),[revision,original.prepared.revisionSha256]);
+ const old=(await roundTrip(x,'federal-load',{versionId:saved.publication.version.versionId,expectedArtifactSha256:saved.publication.version.object.sha256})).received;
+ assert.deepEqual(old.prepared,original.prepared);
+ const before=x.f.state.executions.length;x.nativeState.available=false;
+ assert.notEqual((await x.post('federal-publish',publication(selection,revision,'consolidated'))).status,200);
+ assert.notEqual((await x.post('federal-load',{versionId:child.publication.version.versionId,expectedArtifactSha256:child.publication.version.object.sha256})).status,200);
+ assert.equal(x.f.state.executions.length,before);
+});
+
+test('receiver rejects forged empty outcome semantics even with recomputed revision hashes',async t=>{
+ const x=await fixture(t,{native:true}),imported=(await roundTrip(x,'federal-import',x.importRequest())).received;
+ const selection={...importedSelection(imported),operations:[{id:'remove',kind:'remove_source_text',expectedSourceSha256:imported.source.sha256,expectedTextSha256:imported.source.sha256,dependsOn:[]}]};
+ const request=admit('federal-prepare',{selection}),raw=await ok(await x.post('federal-prepare',request));
+ for(const mutate of [r=>{delete r.prepared.draft.resultKind;},r=>{r.prepared.draft.source.coverage.complete=false;},
+  r=>{r.prepared.draft.operations[0].expectedSourceSha256='0'.repeat(64);},r=>{r.prepared.draft.operations[0].expectedTextSha256='0'.repeat(64);},
+  r=>{r.prepared.draft.outputs.segments=[];},r=>{r.prepared.draft.outputs.consolidated='\n';}]){
+  const changed=structuredClone(raw);mutate(changed);
+  const p=changed.prepared,draft=p.draft;draft.outputHashes.consolidated=textSha256(draft.outputs.consolidated);
+  const {revisionSha256,approval,...material}=draft;draft.revisionSha256=canonicalSha256(material);
+  p.revisionSha256=canonicalSha256({sourceArtifact:p.sourceArtifact,draftSha256:draft.revisionSha256});
+  await assert.rejects(distributedFederal.receiveFederalResponse('federal-prepare',200,bytes(changed),request));
+ }
+ const bad={...selection,operations:[{...selection.operations[0],expectedTextSha256:'0'.repeat(64)}]};
+ const before=x.f.state.executions.length,response=await x.post('federal-prepare',{selection:bad});
+ assert.equal(response.status,422);assert.equal((await response.json()).error.code,'DRAFT_ANCESTOR_CHANGED');
+ assert.equal(x.f.state.executions.length,before);
 });

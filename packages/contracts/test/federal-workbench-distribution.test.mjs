@@ -68,7 +68,7 @@ test('distributed receiver runs with browser globals and no external imports', a
   const source = sourceFor();
   const received = await module.namespace.receiveFederalSource(bytes(source));
   assert.equal(received.sha256, source.sha256);
-  assert.equal(module.namespace.federalWorkbenchVersion, '1.3.0');
+  assert.equal(module.namespace.federalWorkbenchVersion, '1.4.0');
   await assert.rejects(module.namespace.receiveFederalSource(bytes({...source, sha256: '0'.repeat(64)})));
 });
 

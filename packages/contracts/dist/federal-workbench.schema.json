@@ -1994,67 +1994,108 @@
       "additionalProperties": false
     },
     "FederalDraftOperation_ecfa206f": {
-      "type": "object",
-      "properties": {
-        "id": {
-          "type": "string",
-          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]{0,127}$"
-        },
-        "kind": {
-          "enum": [
-            "replace",
-            "insert",
-            "delete"
-          ]
-        },
-        "scopeId": {
-          "type": "string",
-          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]{0,127}$"
-        },
-        "expectedScopeSha256": {
-          "type": "string",
-          "pattern": "^[a-f0-9]{64}$"
-        },
-        "expectedText": {
-          "type": "string",
-          "minLength": 1,
-          "maxLength": 16384
-        },
-        "expectedTextSha256": {
-          "type": "string",
-          "pattern": "^[a-f0-9]{64}$"
-        },
-        "dependsOn": {
-          "type": "array",
-          "items": {
-            "type": "string",
-            "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]{0,127}$"
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]{0,127}$"
+            },
+            "kind": {
+              "enum": [
+                "replace",
+                "insert",
+                "delete"
+              ]
+            },
+            "scopeId": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]{0,127}$"
+            },
+            "expectedScopeSha256": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            "expectedText": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 16384
+            },
+            "expectedTextSha256": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            "dependsOn": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]{0,127}$"
+              },
+              "minItems": 0,
+              "maxItems": 64
+            },
+            "text": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 16384
+            },
+            "position": {
+              "enum": [
+                "before",
+                "after"
+              ]
+            }
           },
-          "minItems": 0,
-          "maxItems": 64
+          "required": [
+            "id",
+            "kind",
+            "scopeId",
+            "expectedScopeSha256",
+            "expectedText",
+            "expectedTextSha256",
+            "dependsOn"
+          ],
+          "additionalProperties": false
         },
-        "text": {
-          "type": "string",
-          "minLength": 1,
-          "maxLength": 16384
-        },
-        "position": {
-          "enum": [
-            "before",
-            "after"
-          ]
+        {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]{0,127}$"
+            },
+            "kind": {
+              "const": "remove_source_text"
+            },
+            "expectedSourceSha256": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            "expectedTextSha256": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            "dependsOn": {
+              "type": "array",
+              "maxItems": 64,
+              "uniqueItems": true,
+              "items": {
+                "type": "string",
+                "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]{0,127}$"
+              }
+            }
+          },
+          "required": [
+            "id",
+            "kind",
+            "expectedSourceSha256",
+            "expectedTextSha256",
+            "dependsOn"
+          ],
+          "additionalProperties": false
         }
-      },
-      "required": [
-        "id",
-        "kind",
-        "scopeId",
-        "expectedScopeSha256",
-        "expectedText",
-        "expectedTextSha256",
-        "dependsOn"
-      ],
-      "additionalProperties": false
+      ]
     },
     "FederalDraftSegment_e752af1d": {
       "type": "object",
@@ -2079,151 +2120,303 @@
       "additionalProperties": false
     },
     "FederalDraftCompilation_66ff9248": {
-      "type": "object",
-      "properties": {
-        "parserVersion": {
-          "enum": [
-            "federal-plain-text/1",
-            "federal-scoped-text/2",
-            "federal-uslm-xml/1"
-          ]
-        },
-        "source": {
-          "$ref": "#/$defs/FederalDraftCompilerSource_449cfb6a"
-        },
-        "operations": {
-          "type": "array",
-          "items": {
-            "$ref": "#/$defs/FederalDraftOperation_ecfa206f"
-          },
-          "minItems": 1,
-          "maxItems": 64
-        },
-        "outputs": {
+      "oneOf": [
+        {
           "type": "object",
           "properties": {
-            "operative": {
-              "type": "string",
-              "minLength": 1,
-              "maxLength": 1048576
+            "parserVersion": {
+              "enum": [
+                "federal-plain-text/1",
+                "federal-scoped-text/2",
+                "federal-uslm-xml/1"
+              ]
             },
-            "consolidated": {
-              "type": "string",
-              "minLength": 1,
-              "maxLength": 131072
+            "source": {
+              "$ref": "#/$defs/FederalDraftCompilerSource_449cfb6a"
             },
-            "redline": {
-              "type": "string",
-              "minLength": 1,
-              "maxLength": 1048576
-            },
-            "segments": {
+            "operations": {
               "type": "array",
               "items": {
-                "$ref": "#/$defs/FederalDraftSegment_e752af1d"
+                "$ref": "#/$defs/FederalDraftOperation_ecfa206f"
               },
               "minItems": 1,
-              "maxItems": 512
+              "maxItems": 64
+            },
+            "outputs": {
+              "type": "object",
+              "properties": {
+                "operative": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 1048576
+                },
+                "consolidated": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 131072
+                },
+                "redline": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 1048576
+                },
+                "segments": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/$defs/FederalDraftSegment_e752af1d"
+                  },
+                  "minItems": 1,
+                  "maxItems": 512
+                }
+              },
+              "required": [
+                "operative",
+                "consolidated",
+                "redline",
+                "segments"
+              ],
+              "additionalProperties": false
+            },
+            "findings": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "category": {
+                    "enum": [
+                      "source-integrity",
+                      "exact-target",
+                      "numbering",
+                      "cross-references",
+                      "arithmetic",
+                      "substantive-law"
+                    ]
+                  },
+                  "status": {
+                    "enum": [
+                      "passed",
+                      "unresolved"
+                    ]
+                  },
+                  "location": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 512
+                  },
+                  "severity": {
+                    "enum": [
+                      "info",
+                      "review-required"
+                    ]
+                  },
+                  "operationId": {
+                    "type": "string",
+                    "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]{0,127}$"
+                  }
+                },
+                "required": [
+                  "category",
+                  "status",
+                  "location",
+                  "severity"
+                ],
+                "additionalProperties": false
+              },
+              "minItems": 1,
+              "maxItems": 70
+            },
+            "outputHashes": {
+              "type": "object",
+              "properties": {
+                "operative": {
+                  "type": "string",
+                  "pattern": "^[a-f0-9]{64}$"
+                },
+                "consolidated": {
+                  "type": "string",
+                  "pattern": "^[a-f0-9]{64}$"
+                },
+                "redline": {
+                  "type": "string",
+                  "pattern": "^[a-f0-9]{64}$"
+                }
+              },
+              "required": [
+                "operative",
+                "consolidated",
+                "redline"
+              ],
+              "additionalProperties": false
+            },
+            "revisionSha256": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            "approval": {
+              "const": "unapproved"
             }
           },
           "required": [
-            "operative",
-            "consolidated",
-            "redline",
-            "segments"
+            "parserVersion",
+            "source",
+            "operations",
+            "outputs",
+            "findings",
+            "outputHashes",
+            "revisionSha256",
+            "approval"
           ],
           "additionalProperties": false
         },
-        "findings": {
-          "type": "array",
-          "items": {
-            "type": "object",
-            "properties": {
-              "category": {
-                "enum": [
-                  "source-integrity",
-                  "exact-target",
-                  "numbering",
-                  "cross-references",
-                  "arithmetic",
-                  "substantive-law"
-                ]
-              },
-              "status": {
-                "enum": [
-                  "passed",
-                  "unresolved"
-                ]
-              },
-              "location": {
-                "type": "string",
-                "minLength": 1,
-                "maxLength": 512
-              },
-              "severity": {
-                "enum": [
-                  "info",
-                  "review-required"
-                ]
-              },
-              "operationId": {
-                "type": "string",
-                "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]{0,127}$"
-              }
-            },
-            "required": [
-              "category",
-              "status",
-              "location",
-              "severity"
-            ],
-            "additionalProperties": false
-          },
-          "minItems": 1,
-          "maxItems": 70
-        },
-        "outputHashes": {
+        {
           "type": "object",
           "properties": {
-            "operative": {
+            "parserVersion": {
+              "enum": [
+                "federal-plain-text/1",
+                "federal-scoped-text/2",
+                "federal-uslm-xml/1"
+              ]
+            },
+            "source": {
+              "$ref": "#/$defs/FederalDraftCompilerSource_449cfb6a"
+            },
+            "operations": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/FederalDraftOperation_ecfa206f"
+              },
+              "minItems": 1,
+              "maxItems": 64
+            },
+            "outputs": {
+              "type": "object",
+              "properties": {
+                "operative": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 1048576
+                },
+                "consolidated": {
+                  "const": ""
+                },
+                "redline": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 1048576
+                },
+                "segments": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/$defs/FederalDraftSegment_e752af1d"
+                  },
+                  "minItems": 1,
+                  "maxItems": 512
+                }
+              },
+              "required": [
+                "operative",
+                "consolidated",
+                "redline",
+                "segments"
+              ],
+              "additionalProperties": false
+            },
+            "findings": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "category": {
+                    "enum": [
+                      "source-integrity",
+                      "exact-target",
+                      "numbering",
+                      "cross-references",
+                      "arithmetic",
+                      "substantive-law"
+                    ]
+                  },
+                  "status": {
+                    "enum": [
+                      "passed",
+                      "unresolved"
+                    ]
+                  },
+                  "location": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 512
+                  },
+                  "severity": {
+                    "enum": [
+                      "info",
+                      "review-required"
+                    ]
+                  },
+                  "operationId": {
+                    "type": "string",
+                    "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]{0,127}$"
+                  }
+                },
+                "required": [
+                  "category",
+                  "status",
+                  "location",
+                  "severity"
+                ],
+                "additionalProperties": false
+              },
+              "minItems": 1,
+              "maxItems": 70
+            },
+            "outputHashes": {
+              "type": "object",
+              "properties": {
+                "operative": {
+                  "type": "string",
+                  "pattern": "^[a-f0-9]{64}$"
+                },
+                "consolidated": {
+                  "const": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+                },
+                "redline": {
+                  "type": "string",
+                  "pattern": "^[a-f0-9]{64}$"
+                }
+              },
+              "required": [
+                "operative",
+                "consolidated",
+                "redline"
+              ],
+              "additionalProperties": false
+            },
+            "revisionSha256": {
               "type": "string",
               "pattern": "^[a-f0-9]{64}$"
             },
-            "consolidated": {
-              "type": "string",
-              "pattern": "^[a-f0-9]{64}$"
+            "approval": {
+              "const": "unapproved"
             },
-            "redline": {
-              "type": "string",
-              "pattern": "^[a-f0-9]{64}$"
+            "resultKind": {
+              "const": "source-text-removed"
             }
           },
           "required": [
-            "operative",
-            "consolidated",
-            "redline"
+            "parserVersion",
+            "source",
+            "operations",
+            "outputs",
+            "findings",
+            "outputHashes",
+            "revisionSha256",
+            "approval",
+            "resultKind"
           ],
           "additionalProperties": false
-        },
-        "revisionSha256": {
-          "type": "string",
-          "pattern": "^[a-f0-9]{64}$"
-        },
-        "approval": {
-          "const": "unapproved"
         }
-      },
-      "required": [
-        "parserVersion",
-        "source",
-        "operations",
-        "outputs",
-        "findings",
-        "outputHashes",
-        "revisionSha256",
-        "approval"
-      ],
-      "additionalProperties": false
+      ]
     }
   }
 }

@@ -5,7 +5,7 @@ import {federalDraftExportRequests} from '../../artifacts/federal-drafting/prepa
 import {FEDERAL_SOURCE_SCHEMA,federalSourceSelection,readFederalSourceEnvelope,federalSourceRequest} from '../../artifacts/federal-drafting/source-custody.mjs';
 import {FEDERAL_REVIEW_SCHEMA,federalRevisionRecord,federalApprovalRecord,encodeFederalReview,decodeFederalReview,assertFederalApprovalBinds} from '../../artifacts/federal-drafting/review-record.mjs';
 import {federalDraftDossier} from '../../artifacts/federal-drafting/dossier.mjs';
-import {validateShape} from '../../../packages/contracts/retrieval-0.2/validate.mjs';
+import {receiveFederalRequest} from '@capiro/meri-contracts/federal-workbench';
 import {canonicalSha256 as hash} from '../../../packages/contracts/validate.mjs';
 import {own,data} from '../../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {fail} from './http.mjs';
@@ -18,7 +18,7 @@ const delivery=v=>typeof v==='string'&&/^[A-Za-z0-9_.:@/-]{1,255}$/u.test(v);
 function selection(raw){
  const s=data(own(raw,['versionId','expectedArtifactSha256','operations']));
  if(!uuid(s.versionId)||!sha(s.expectedArtifactSha256)||!Array.isArray(s.operations)||!s.operations.length||s.operations.length>64)fail('INVALID_REQUEST');
- for(const operation of s.operations)validateShape('FederalDraftOperation',operation);
+ try{receiveFederalRequest('federal-prepare',new TextEncoder().encode(JSON.stringify({selection:s})));}catch{fail('INVALID_REQUEST');}
  return s;
 }
 export function federalWorkbenchInput(intent,raw){

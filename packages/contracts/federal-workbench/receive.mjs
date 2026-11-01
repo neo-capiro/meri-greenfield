@@ -8,7 +8,7 @@ const hash=value=>digest(new TextEncoder().encode(canonicalize(value)));
 const textHash=value=>digest(new TextEncoder().encode(value));
 const validators={'federal-prepare':validatePrepare,'federal-load':validateLoad,'federal-publish':validatePublish,'federal-import':validateImport,'federal-approve':validateApprove,'federal-history':validateHistory};
 const titles={draft:'Federal review',operative:'Operative amendment',consolidated:'Consolidated text',redline:'Legal redline',docx:'Federal review dossier'};
-export const federalWorkbenchVersion='1.3.0';
+export const federalWorkbenchVersion='1.4.0';
 /** Read an already-inspected/downloaded retained envelope. Shape/hash checks do not
  * authenticate its publisher or source URL; the artifact read owner grants access. */
 async function sourceValue(source){
@@ -48,6 +48,19 @@ async function preparation(p){
  const {revisionSha256,approval,...material}=p.draft;
  await sourceValue(p.draft.source);
  if(p.draft.parserVersion!==p.draft.source.parserVersion)fail('SOURCE_MISMATCH');
+ const removal=p.draft.operations.filter(op=>op.kind==='remove_source_text');
+ if(p.draft.resultKind==='source-text-removed'){
+  const op=p.draft.operations.at(-1),prior=p.draft.operations.slice(0,-1),ids=new Map(),closure=new Set();
+  if(removal.length!==1||op!==removal[0]||!p.draft.source.coverage.complete||op.expectedSourceSha256!==p.draft.source.sha256||
+   p.draft.outputs.consolidated!==''||!same(p.draft.outputs.segments,[{kind:'delete',text:p.draft.source.text}]))fail('OUTPUT_MISMATCH');
+  for(const previous of prior){
+   if(ids.has(previous.id)||previous.dependsOn.some(id=>!ids.has(id)))fail('OUTPUT_MISMATCH');
+   ids.set(previous.id,previous);
+  }
+  if(ids.has(op.id)||op.dependsOn.some(id=>!ids.has(id)))fail('OUTPUT_MISMATCH');
+  const include=id=>{if(closure.has(id))return;closure.add(id);ids.get(id).dependsOn.forEach(include);};op.dependsOn.forEach(include);
+  if(prior.some(previous=>!closure.has(previous.id))||!prior.length&&op.expectedTextSha256!==p.draft.source.sha256)fail('OUTPUT_MISMATCH');
+ }else if(removal.length||!p.draft.outputs.consolidated.length)fail('OUTPUT_MISMATCH');
  if(p.draft.outputs.segments.filter(part=>part.kind!=='insert').map(part=>part.text).join('')!==p.draft.source.text||p.draft.outputs.segments.filter(part=>part.kind!=='delete').map(part=>part.text).join('')!==p.draft.outputs.consolidated)fail('OUTPUT_MISMATCH');
  if(await hash(material)!==revisionSha256||await hash({sourceArtifact:p.sourceArtifact,draftSha256:revisionSha256})!==p.revisionSha256||
   await textHash(p.draft.source.text)!==p.draft.source.sha256)fail('REVISION_MISMATCH');
