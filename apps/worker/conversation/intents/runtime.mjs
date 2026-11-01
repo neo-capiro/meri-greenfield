@@ -13,7 +13,8 @@
  * every owner-backed row; the initial offer only decides which rows are exposed for the run (never widened mid-run), and every other
  * call answers a typed UNAVAILABLE without reaching the port. The SDK options are then a function of the profile alone. A failed
  * offer is never silent: `diagnostic` receives one closed `{code, layer, elapsedMs}` fact (the layer whose bound answered: this
- * worker, the runner client or control) and the server tells the model the write path could not be checked, not that it is off. */
+ * worker, the runner client or control); an unanswered (transient) offer also makes the server tell the model that whether a
+ * request can be prepared could not be checked, never that the capability is off. The same applies to a mid-run re-check. */
 import {own,data,nativeSignal} from '../../../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {canonicalSha256,validateShape} from '../../../../packages/contracts/validate.mjs';
 import {createOperationLifetime} from '../../../../packages/runtime/operation-lifetime.mjs';
@@ -44,6 +45,11 @@ const offerFailure=(error,elapsedMs)=>{
  const ownValue=(/** @type {string} */name)=>error!==null&&typeof error==='object'?Object.getOwnPropertyDescriptor(error,name)?.value:undefined,code=ownValue('code'),layer=ownValue('layer');
  return Object.freeze({code:typeof code==='string'?code:'UNAVAILABLE',layer:layer==='runner'||layer==='control'?layer:'worker',elapsedMs});
 };
+/** A failure that says the offer was not answered rather than refused: a deadline or cancellation at any layer, or the runner
+ * client's own UNAVAILABLE (transport loss before control answered). Control's UNAVAILABLE is an answer (intents off, nothing
+ * composed), and an absent port, ACCESS_DENIED or a malformed offer is decided: those keep the plain "not available" wording and
+ * never invite a retry. @param {{code:string,layer:string}} failure */
+const transient=failure=>failure.code==='DEADLINE'||failure.code==='CANCELLED'||failure.code==='UNAVAILABLE'&&failure.layer==='runner';
 /** Validate the port's availability facts for this run; anything malformed, foreign or stale refuses.
  * @param {unknown} raw @param {any} binding @param {number} at @returns {Set<string>} */
 export function assertIntentAvailability(raw,binding,at){
@@ -74,17 +80,22 @@ export async function createIntentRuntime(configuration){
  const read=async signal=>{const life=createOperationLifetime({deadlineMs:c.now()+INTENT_AVAILABILITY_WORKER_MS,now:c.now,signal,errorFactory:fault});
   try{return assertIntentAvailability(await life.run(s=>port.readAvailability.call(c.port,{signal:s})),binding,c.now());}finally{life.close();}};
  const gates=(/** @type {Set<string>} */offered)=>INTENT_ROWS.filter(r=>r.unavailable===null&&offered.has(key(r.operation)));
- // Profile mount (G3): every owner-backed intent row is mounted whatever this run's offer; a failing offer exposes nothing, is
- // reported once through `diagnostic`, and marks the server `unchecked` so the model learns the write path was not checked.
+ /** Report one failed offer (initial or mid-run) through `diagnostic` and return its closed fact. @param {unknown} error @param {number} started */
+ const report=(error,started)=>{const failure=offerFailure(error,c.now()-started);try{c.diagnostic?.(failure);}catch{}return failure;};
+ // Profile mount (G3): every owner-backed intent row is mounted whatever this run's offer; a failing offer exposes nothing and is
+ // reported once; an unanswered (transient) one also marks the server `unchecked`, so the model asks for a retry instead of
+ // reporting the capability as off, while a decided refusal keeps the plain "not available" answer.
  const mounted=profile?INTENT_ROWS.filter(r=>r.unavailable===null):undefined;
  /** @type {Set<string>} */let initial=new Set();let unchecked=false;const started=c.now();
- try{initial=await read(c.signal);}catch(error){if(!profile)return null;unchecked=true;try{c.diagnostic?.(offerFailure(error,c.now()-started));}catch{}}
+ try{initial=await read(c.signal);}catch(error){if(!profile)return null;unchecked=transient(report(error,started));}
  const available=gates(initial);if(!profile&&!available.length)return null;
  const exposed=new Set(available.map(r=>key(r.operation)));
- // Mid-run revocation or a narrowed composition makes a listed intent unavailable; it is never widened mid-run.
+ // Mid-run revocation or a narrowed composition makes a listed intent unavailable; it is never widened mid-run. A mid-run offer
+ // loss is reported the same way; when transient this one call answers "could not be checked" instead of "not available".
  const stillAvailable=async(/** @type {{id:string,version:string}} */operation,/** @type {AbortSignal} */signal)=>{
   if(!exposed.has(key(operation)))return false;
-  let offered;try{offered=await read(signal);}catch{if(signal.aborted)throw fault('CANCELLED');return false;}
+  const started=c.now();let offered;
+  try{offered=await read(signal);}catch(error){if(signal.aborted)throw fault('CANCELLED');if(transient(report(error,started)))throw Object.assign(fault('UNAVAILABLE'),{unchecked:true});return false;}
   return gates(offered).some(r=>key(r.operation)===key(operation));
  };
  const server=createIntentServer({available,...(mounted?{mounted,unchecked}:{}),binding,scopes,...(c.expectedSessionId?{expectedSessionId:c.expectedSessionId}:{}),timeoutMs,deadlineMs:c.deadlineMs,now:c.now,stillAvailable,

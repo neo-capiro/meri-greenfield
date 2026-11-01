@@ -56,7 +56,7 @@ async function unavailable(options,tool,operation,args,answer=/^UNAVAILABLE:/u){
 }
 test('a failed offer reaches the activity diagnostics once and the mounted profile says the write path could not be checked',async()=>{
  const reported=[],failed=await activity({capabilities:{governedIntents:true},failing:true,diagnostics:{intentAvailability:failure=>reported.push(failure)},
-  during:o=>unavailable(o,'propose_task','create_task',{title:'Task'},/^UNAVAILABLE: mcp__meri_intents__propose_task could not be checked for this conversation right now: .*ask the user to try again/u)});
+  during:o=>unavailable(o,'propose_task','create_task',{title:'Task'},/^UNAVAILABLE: mcp__meri_intents__propose_task could not check whether this request can be prepared right now: .*ask the user to try again/u)});
  try{assert.deepEqual(await failed.run(),{state:'completed'});assert.equal(failed.asked(),1);assert.equal(failed.prepared(),0);
   assert.equal(reported.length,1);assert.equal(reported[0].code,'DEADLINE');assert.equal(reported[0].layer,'runner');assert.ok(Number.isSafeInteger(reported[0].elapsedMs));
   assert.deepEqual(failed.options().allowedTools.filter(tool=>tool.startsWith('mcp__meri_intents__')),PROFILE_TOOLS);
