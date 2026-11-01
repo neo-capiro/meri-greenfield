@@ -175,3 +175,30 @@ test('every bridge refusal has one fixed popup sentence and unknown errors keep 
  assert.equal(describeSelectedTabError(Error('something private')),'This selection is unavailable. Capture the current tab again or reconnect.');
  await assert.rejects(f.bridge.capture(),error=>describeSelectedTabError(error)===SELECTED_TAB_ERROR_TEXTS.PAIRING_NOT_ACTIVE);f.bridge.dispose();
 });
+test('capture expiry erases preview without waiting for another popup action',async()=>{
+ const f=fixture();await f.ready();await f.bridge.capture();
+ const expiry=[...f.timers.values()].find(timer=>timer.ms===60000);
+ assert.ok(expiry,'Capture must have its own bounded expiry timer');
+ f.clock(61000);expiry.fn();assert.equal(f.bridge.view().selection,null);
+ assert.equal(f.bridge.view().state,'active');assert.equal(f.bridge.view().busy,false);
+ await assert.rejects(f.bridge.share(),/CAPTURE_REQUIRED/u);assert.equal(f.port.sent.filter(m=>m.type==='share').length,0);
+ f.bridge.dispose();assert.equal(f.timers.size,0);
+});
+test('capture expiry during final document proof cannot send late bytes',async()=>{
+ const f=fixture();let release;await f.ready();await f.bridge.capture();
+ try{
+  const expiry=[...f.timers.values()].find(timer=>timer.ms===60000);assert.ok(expiry);
+  let entered;const reached=new Promise(r=>{entered=r;}),hold=new Promise(r=>{release=r;});
+  f.hook(async()=>{entered();await hold;});const pending=f.bridge.share();await reached;
+  f.clock(61000);expiry.fn();release();await assert.rejects(pending,/CHANGED/u);
+  assert.equal(f.bridge.view().selection,null);assert.equal(f.port.sent.filter(m=>m.type==='share').length,0);
+ }finally{release?.();f.bridge.dispose();}
+});
+test('a cancelled expiry cannot erase a newer selection or resolve a dispatched share',async()=>{
+ const f=fixture();await f.ready();await f.bridge.capture();
+ const first=[...f.timers.values()].find(timer=>timer.ms===60000);assert.ok(first);
+ f.bridge.pause();assert.equal(f.timers.size,1);f.bridge.approve();await f.bridge.capture();
+ first.fn();assert.ok(f.bridge.view().selection);await f.bridge.share();
+ assert.equal(f.timers.size,1);assert.equal(f.bridge.view().outcome,'unknown');
+ first.fn();assert.equal(f.bridge.view().outcome,'unknown');f.bridge.dispose();assert.equal(f.timers.size,0);
+});

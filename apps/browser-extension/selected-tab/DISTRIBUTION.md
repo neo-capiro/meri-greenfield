@@ -49,29 +49,36 @@ Release owns the frontend build/config/shipment. No native VM/browser-host
 provisioning, SQL migration or shared browser grant is needed for this text-only
 producer; do not wait for host automation to finish the independent source work.
 
-## Restart boundary requiring the document/upload owner
+## Restart compatibility with the document/upload owner
 
 The extension intentionally stores neither credentials nor durable pairing/text.
 An MV3 worker restart or app port loss requires a new pairing and explicit popup
 consent, and cannot resend an earlier capture. Same-page unknown upload outcomes
 are reconciled by the existing upload receipt/status owner, without another write.
 
-At frontend main a622ef4f8944fc0e03ad1fcdbd1b0c005c1e7312,
-`meri-uploads/upload-controller.ts` and `upload-recovery.ts` retain composer items
-and exact-attempt receipts in memory. `meri-conversations/port.ts` restores only
-already accepted conversation upload references. A page/browser restart before a
-selected-tab attachment enters a submitted chat therefore has no demonstrated
-durable recovery locator in that composition. This is an implementation dependency,
-not a passing restart criterion. The shared document/upload owner must reconcile it.
+The original memory-only unsent-upload gap was corrected by the existing document
+owner. At frontend main `2c9ecd30fb592bd51517d2d2b56a745e48a0a3c1`, the upload owner
+persists only `{version, scope, requestId}` before dispatch. Scope binds tenant,
+actor, client and conversation. Recreation restores an unknown row without an
+upload ID, original bytes, receipt or send argument. Explicit Check resolves it
+through the existing canonical request-ID status lookup; no original is replayed.
+An awaiting-upload receipt remains unknown. Denied locator storage refuses a new
+share before dispatch. Extension pairing, text and consent remain memory-only.
 
-Concrete proposal: extend that existing owner with a bounded, account/tenant/
-conversation-bound attempt reference persisted before dispatch, using its approved
-recovery storage. Restore only an unknown/status-read row under fresh canonical
-authorization; keep credentials, page text and originals out of extension storage,
-never reconstruct or automatically replay the original upload, and preserve
-unresolved initiation when no canonical lookup key exists. Confirm the existing
-backend request-status lookup before choosing persistence fields. This is not a
-second extension upload ledger and is not implemented in this source allocation.
+The joined offline fixture uses this actual frontend source, its pinned public
+contracts0.1.42 archive
+`capiro-meri-contracts-0.1.42-d8357230-79aff3bffff9.tgz` (SHA-256
+`79aff3bffff9599281c07d769a6a38065677b2f3b51a293140ce1113b8774332`), and the exact
+packaged extension background. The selected-tab public receiver is byte-identical
+to the extension receiver. Simulated ports/HTTP/localStorage exercise sequential
+shares, lost initiate/PUT acknowledgements, app-owner recreation, explicit status
+readback, reconnect/new consent, scope replacement, storage denial and selection
+change. No frontend/private-contract overlay or new dependency install is used.
+
+These source checks supersede the original missing-source dependency, not live
+acceptance. Release must ship the compatible frontend and Control request-ID
+receiver before restart qualification. The extension never owns durable upload
+recovery and must not acquire a second receipt ledger.
 
 ## Bounded acceptance handoff (not executed)
 
@@ -102,7 +109,7 @@ retain only hashes/counts and fixture evidence in general handoff records.
    fresh consent. No unrelated tab is read and no grant/cookie is copied.
 6. After an explicitly allocated worker stop/restart, no consent/text/automatic
    share survives; new pairing is required. Separately test app/browser reload
-   after unknown upload once the shared upload-owner recovery gap is fixed. Read
+   after unknown upload with the recovery-capable frontend and Control serving. Read
    the original durable receipt under fresh authority; do not create a replacement
    upload to make the recovery test pass. Saved-chat attachment reopening is a
    separate case from an unsent composer attachment.
