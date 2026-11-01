@@ -10,24 +10,56 @@
       "$ref": "#/$defs/FederalDraftSourceInput_dec6989a"
     },
     "FederalSourceEnvelope": {
-      "type": "object",
-      "properties": {
-        "schema": {
-          "const": "meri.federal-source.v1"
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "schema": {
+              "const": "meri.federal-source.v1"
+            },
+            "selection": {
+              "$ref": "#/$defs/FederalNativeSelection"
+            },
+            "source": {
+              "$ref": "#/$defs/FederalCompilerSource"
+            }
+          },
+          "required": [
+            "schema",
+            "selection",
+            "source"
+          ],
+          "additionalProperties": false
         },
-        "selection": {
-          "$ref": "#/$defs/FederalNativeSelection"
-        },
-        "source": {
-          "$ref": "#/$defs/FederalCompilerSource"
+        {
+          "type": "object",
+          "properties": {
+            "schema": {
+              "const": "meri.federal-source.v2"
+            },
+            "representation": {
+              "const": "retained-raw-utf8/1"
+            },
+            "capture": {
+              "$ref": "#/$defs/FederalSourceCapture_69443be0"
+            },
+            "selection": {
+              "$ref": "#/$defs/FederalNativeSelection"
+            },
+            "source": {
+              "$ref": "#/$defs/FederalCompilerSource"
+            }
+          },
+          "required": [
+            "schema",
+            "representation",
+            "capture",
+            "selection",
+            "source"
+          ],
+          "additionalProperties": false
         }
-      },
-      "required": [
-        "schema",
-        "selection",
-        "source"
-      ],
-      "additionalProperties": false
+      ]
     },
     "FederalImportRequest": {
       "type": "object",
@@ -38,6 +70,9 @@
         "deliveryId": {
           "type": "string",
           "pattern": "^[A-Za-z0-9_.:@/-]{1,255}$"
+        },
+        "representation": {
+          "const": "retained-raw-utf8/1"
         }
       },
       "required": [
@@ -47,28 +82,64 @@
       "additionalProperties": false
     },
     "FederalImportResult": {
-      "type": "object",
-      "properties": {
-        "schema": {
-          "const": "meri.federal-source.v1"
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "schema": {
+              "const": "meri.federal-source.v1"
+            },
+            "selection": {
+              "$ref": "#/$defs/FederalNativeSelection"
+            },
+            "source": {
+              "$ref": "#/$defs/FederalCompilerSource"
+            },
+            "publication": {
+              "$ref": "#/$defs/ArtifactCreatedResult_183a755e"
+            }
+          },
+          "required": [
+            "schema",
+            "selection",
+            "source",
+            "publication"
+          ],
+          "additionalProperties": false
         },
-        "selection": {
-          "$ref": "#/$defs/FederalNativeSelection"
-        },
-        "source": {
-          "$ref": "#/$defs/FederalCompilerSource"
-        },
-        "publication": {
-          "$ref": "#/$defs/ArtifactCreatedResult_183a755e"
+        {
+          "type": "object",
+          "properties": {
+            "schema": {
+              "const": "meri.federal-source.v2"
+            },
+            "representation": {
+              "const": "retained-raw-utf8/1"
+            },
+            "capture": {
+              "$ref": "#/$defs/FederalSourceCapture_69443be0"
+            },
+            "selection": {
+              "$ref": "#/$defs/FederalNativeSelection"
+            },
+            "source": {
+              "$ref": "#/$defs/FederalCompilerSource"
+            },
+            "publication": {
+              "$ref": "#/$defs/ArtifactCreatedResult_183a755e"
+            }
+          },
+          "required": [
+            "schema",
+            "representation",
+            "capture",
+            "selection",
+            "source",
+            "publication"
+          ],
+          "additionalProperties": false
         }
-      },
-      "required": [
-        "schema",
-        "selection",
-        "source",
-        "publication"
-      ],
-      "additionalProperties": false
+      ]
     },
     "FederalSelection": {
       "type": "object",
@@ -958,6 +1029,61 @@
         "revisionId",
         "versionHash",
         "textHash"
+      ],
+      "additionalProperties": false
+    },
+    "FederalSourceCapture_69443be0": {
+      "type": "object",
+      "properties": {
+        "version": {
+          "const": "federal-source-capture/1"
+        },
+        "representation": {
+          "const": "response-body"
+        },
+        "format": {
+          "enum": [
+            "xml",
+            "txt"
+          ]
+        },
+        "mediaType": {
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 256,
+              "pattern": "^[^\\r\\n]*$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "encoding": {
+          "const": "utf-8"
+        },
+        "byteLength": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 131072
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "utf8RoundTrip": {
+          "const": true
+        }
+      },
+      "required": [
+        "version",
+        "representation",
+        "format",
+        "mediaType",
+        "encoding",
+        "byteLength",
+        "sha256",
+        "utf8RoundTrip"
       ],
       "additionalProperties": false
     },

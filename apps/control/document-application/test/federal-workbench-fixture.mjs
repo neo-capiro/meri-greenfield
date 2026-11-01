@@ -13,6 +13,7 @@ import {createRuntimeDocumentOptionsComposer} from '../../../runtime/artifacts/c
 import {createControlRouteApplications} from '../../../runtime/control-route-boundary.mjs';
 import {createArtifactService} from '../../../artifacts/service.mjs';
 import official from '../../../../packages/contracts/test/fixtures/federal-draft-source.wire.json' with {type:'json'};
+import rawOfficial from '../../../../packages/contracts/test/fixtures/federal-raw-source.wire.json' with {type:'json'};
 
 export const bytes=value=>new TextEncoder().encode(JSON.stringify(value));
 export async function ok(response){const body=await response.json();assert.equal(response.status,200,JSON.stringify(body));return body;}
@@ -21,18 +22,20 @@ export const importedSelection=(result,over={})=>({versionId:result.publication.
  operations:[opFor(result.source,{scopeId:'document',expectedText:'$20',text:'$25',...over})]});
 
 /** `text` replaces the official fixture's extracted text (and its hash pin); `docx` adds a synthetic Word renderer port. */
-export async function fixture(t,{native=false,nested=false,text=null,docx=false}={}){
+export async function fixture(t,{native=false,nested=false,text=null,docx=false,raw=false}={}){
  const binding={tenantId:id(100),actorId:id(101),conversationId:id(102),runId:id(103),attemptId:id(104),workerId:id(105),writerFence:1};
  const clientId=id(106),scopes=[{tenantId:binding.tenantId,kind:'client',resourceId:clientId,policyRevision:'policy1'}];
  const f=nativeDocumentFixture({binding,scopes}),source=nested?scopedSource():sourceFor();
  const retained=await f.run({...f.call,request:{...f.call.request,title:'Synthetic federal source',content:{text:JSON.stringify(source)}}});
  const {deadlineMs}=f.context,now=f.options.now;
  const state={closed:false,revoked:false,artifactChecks:0},ports=createLocalDocumentPorts({binding,scopes,clientId,deadlineMs,now,state});
- const nativeState={calls:0,available:true,mutate:null},expectedSelection=structuredClone(official.request);
+ const nativeState={calls:0,available:true,mutate:null},expectedSelection=structuredClone(raw?rawOfficial.request:official.request);
+ delete expectedSelection.representation;
  if(text!==null)expectedSelection.textHash=textSha256(text);
- const federalSource={async read({selection,signal}){
+ const federalSource={async read({selection,signal,representation}){
   assert.equal(signal.aborted,false);assert.deepEqual(selection,expectedSelection);nativeState.calls++;
-  const result=nativeState.available?structuredClone(official.response):{tool:'read_federal_draft_source',authoritativeOwner:'federal_evidence_current',currentStatus:'unavailable',selection,reason:'exact_current_source_unavailable'};
+  assert.equal(representation,raw?'retained-raw-utf8/1':undefined);
+  const result=nativeState.available?structuredClone(raw?rawOfficial.response:official.response):{tool:'read_federal_draft_source',authoritativeOwner:'federal_evidence_current',currentStatus:'unavailable',selection,reason:'exact_current_source_unavailable',...(raw?{representation}:{})};
   if(text!==null&&nativeState.available){result.source.text=text;result.source.textHash=expectedSelection.textHash;}
   nativeState.mutate?.(result);return result;
  }};
@@ -56,7 +59,7 @@ export async function fixture(t,{native=false,nested=false,text=null,docx=false}
   headers:{authorization:'Bearer '+session.credential,'content-type':'application/json'},body:JSON.stringify(body)}));
  const selection={versionId:retained.version.versionId,expectedArtifactSha256:retained.version.object.sha256,operations:[opFor(source,{scopeId:nested?'a':'section-1'})]};
  return {f,state,nativeState,source,selection,post,deny:()=>{denyRelease=true;},allow:()=>{denyRelease=false;},
-  importRequest:()=>({selection:structuredClone(expectedSelection),deliveryId:randomUUID()}),
+  importRequest:()=>({selection:structuredClone(expectedSelection),deliveryId:randomUUID(),...(raw?{representation:'retained-raw-utf8/1'}:{})}),
   suppress:()=>f.sql.suppressed.add(binding.tenantId+':artifact:'+retained.version.artifactId),
   reads:createArtifactService({...f.options,ids:()=>({artifactId:randomUUID(),versionId:randomUUID(),objectId:randomUUID()})})};
 }

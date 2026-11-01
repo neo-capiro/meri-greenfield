@@ -1,5 +1,6 @@
 /** Additive workbench wire. Compiler and artifact fields remain canonical schema references. */
 import nativeFederalSchema from '../retrieval-0.2/federal-draft-source.schema.json' with {type:'json'};
+import rawFederalSchema from './raw-source.schema.json' with {type:'json'};
 // The retained compiler also admits explicitly partial sources. Native official-source
 // preparation still requires complete coverage; its frozen contract is unchanged.
 export const retainedFederalSchema=structuredClone(nativeFederalSchema);
@@ -38,14 +39,17 @@ retainedFederalSchema.$defs.FederalDraftCompilation={oneOf:[compilation,removedC
 const outputs=['draft','operative','consolidated','redline','docx'];
 const artifact=name=>({$ref:'urn:meri:artifacts:0.2.0#/$defs/'+name});
 const federal=name=>({$ref:'urn:meri:federal-retained-source:1#/$defs/'+name});
+const representation={const:'retained-raw-utf8/1'};
+const legacyEnvelope={schema:{const:'meri.federal-source.v1'},selection:ref('FederalNativeSelection'),source:ref('FederalCompilerSource')};
+const rawEnvelope={schema:{const:'meri.federal-source.v2'},representation,capture:{$ref:rawFederalSchema.$id+'#/$defs/FederalSourceCapture'},selection:ref('FederalNativeSelection'),source:ref('FederalCompilerSource')};
 export const federalWorkbenchSchema={
  $schema:'https://json-schema.org/draft/2020-12/schema',$id:'urn:meri:federal-workbench:1',title:'Federal workbench',
  $defs:{
   FederalCompilerSource:federal('FederalDraftCompilerSource'),
   FederalNativeSelection:{$ref:nativeFederalSchema.$id+'#/$defs/FederalDraftSourceInput'},
-  FederalSourceEnvelope:object({schema:{const:'meri.federal-source.v1'},selection:ref('FederalNativeSelection'),source:ref('FederalCompilerSource')}),
-  FederalImportRequest:object({selection:ref('FederalNativeSelection'),deliveryId}),
-  FederalImportResult:object({schema:{const:'meri.federal-source.v1'},selection:ref('FederalNativeSelection'),source:ref('FederalCompilerSource'),publication:artifact('ArtifactCreatedResult')}),
+  FederalSourceEnvelope:{oneOf:[object(legacyEnvelope),object(rawEnvelope)]},
+  FederalImportRequest:{...object({selection:ref('FederalNativeSelection'),deliveryId}),properties:{selection:ref('FederalNativeSelection'),deliveryId,representation}},
+  FederalImportResult:{oneOf:[object({...legacyEnvelope,publication:artifact('ArtifactCreatedResult')}),object({...rawEnvelope,publication:artifact('ArtifactCreatedResult')})]},
   FederalSelection:object({versionId:uuid,expectedArtifactSha256:sha,operations:{type:'array',minItems:1,maxItems:64,items:federal('FederalDraftOperation')}}),
   FederalSourceArtifact:object({versionId:uuid,sha256:sha,specSha256:sha}),
   FederalPrepareRequest:object({selection:ref('FederalSelection')}),

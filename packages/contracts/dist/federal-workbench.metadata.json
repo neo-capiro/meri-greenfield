@@ -1,5 +1,5 @@
 {
-  "version": "1.4.0",
+  "version": "1.5.0",
   "sources": [
     {
       "path": "meri.schema.json",
@@ -14,12 +14,16 @@
       "sha256": "0f3fe4b938874fd2d5229954d5741d47e431bd0e26ae44dd90fde363f889648d"
     },
     {
+      "path": "federal-workbench/raw-source.schema.json",
+      "sha256": "01664587f914335fe804a9feac5c1d1a75cd20061eef86e2ba0eb8d77c049b20"
+    },
+    {
       "path": "federal-workbench/schema.mjs",
-      "sha256": "7201c26dcde8be04446f5f392ae469895614e22efc4230bf0faf371a981fc1a5"
+      "sha256": "9b229b95eb6205478bc03167cca7f0882eb038eea9d790030c5ca0919c70259f"
     },
     {
       "path": "federal-workbench/receive.mjs",
-      "sha256": "dc078880e5c53d1b2db9e8dab3b16a5f9641bad73409e7dacee838f69bcb3a47"
+      "sha256": "cec05f7bf8d7811edd2f8e75d0cbc7745a7402118c1da7d5d5ec42e436a351a9"
     },
     {
       "path": "federal-workbench/source-layout.mjs",
@@ -27,11 +31,11 @@
     },
     {
       "path": "federal-workbench/api.d.ts",
-      "sha256": "1634e57fa5c3f7bc69fd7277d734547fab518b32fe7be14599bccac016ab8dc5"
+      "sha256": "f805e70169c82f351b0ab3e5298c329f6005bc8215b4a3c7a36a93b769a38161"
     },
     {
       "path": "generate-federal-workbench.mjs",
-      "sha256": "2ea02977940e569d7c33ae256684a0bf26e8e1f2ba768d6c9ff6d49a613e7ede"
+      "sha256": "7fcb6999f6eb79425490a2df3e761d2988c7c3525781b5eea44d1d3ac6298923"
     }
   ]
 }

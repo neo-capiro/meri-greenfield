@@ -8,7 +8,7 @@ const hash=value=>digest(new TextEncoder().encode(canonicalize(value)));
 const textHash=value=>digest(new TextEncoder().encode(value));
 const validators={'federal-prepare':validatePrepare,'federal-load':validateLoad,'federal-publish':validatePublish,'federal-import':validateImport,'federal-approve':validateApprove,'federal-history':validateHistory};
 const titles={draft:'Federal review',operative:'Operative amendment',consolidated:'Consolidated text',redline:'Legal redline',docx:'Federal review dossier'};
-export const federalWorkbenchVersion='1.4.0';
+export const federalWorkbenchVersion='1.5.0';
 /** Read an already-inspected/downloaded retained envelope. Shape/hash checks do not
  * authenticate its publisher or source URL; the artifact read owner grants access. */
 async function sourceValue(source){
@@ -20,10 +20,15 @@ async function sourceValue(source){
 function sourcePins(envelope){
  const {selection:s,source}=envelope;
  if(!['federal-plain-text/1',FEDERAL_USLM_XML_PARSER].includes(source.parserVersion)||source.documentId!==s.billId||source.sha256!==s.textHash||source.sourceVersion!==s.versionCode+'/'+s.revisionId||source.coverage.complete!==true)fail('SOURCE_MISMATCH');
+ if(envelope.schema==='meri.federal-source.v2'){
+  const capture=envelope.capture;
+  if(capture.sha256!==source.sha256||capture.sha256!==s.versionHash||capture.byteLength!==new TextEncoder().encode(source.text).length||
+   (capture.format==='xml')!==(source.parserVersion===FEDERAL_USLM_XML_PARSER))fail('SOURCE_MISMATCH');
+ }
 }
 export async function receiveFederalSource(bytes){
  const stored=parseBytes(bytes,1048576);
- if(stored?.schema==='meri.federal-source.v1'){
+ if(['meri.federal-source.v1','meri.federal-source.v2'].includes(stored?.schema)){
   if(!validateSourceEnvelope(stored))fail('SOURCE_MISMATCH');sourcePins(stored);return sourceValue(stored.source);
  }
  return sourceValue(stored);
@@ -83,6 +88,7 @@ export async function receiveFederalResponse(route,status,bytes,request,review){
  if(status!==200){if(!Number.isInteger(status)||status<400||status>599||!validateError(result))fail('INVALID_ERROR_RESPONSE');return result;}
  if(route==='federal-import'){
   if(!validateImported(result)||!same(result.selection,request.selection))fail('INVALID_RESPONSE');
+  if((request.representation==='retained-raw-utf8/1')!==(result.schema==='meri.federal-source.v2'))fail('SOURCE_MISMATCH');
   await sourceValue(result.source);sourcePins(result);
   const {publication,...envelope}=result,{version:v,inspection,execution}=publication;
   const content=JSON.stringify(envelope),title=(`Federal source [${await hash(envelope)}]: ${result.selection.billId}`).slice(0,160);

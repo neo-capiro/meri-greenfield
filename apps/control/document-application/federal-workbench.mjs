@@ -2,7 +2,7 @@
 import {createArtifactService} from '../../artifacts/service.mjs';
 import {createPostgresArtifactService} from '../../artifacts/postgres-service.mjs';
 import {federalDraftExportRequests} from '../../artifacts/federal-drafting/preparation.mjs';
-import {FEDERAL_SOURCE_SCHEMA,federalSourceSelection,readFederalSourceEnvelope,federalSourceRequest} from '../../artifacts/federal-drafting/source-custody.mjs';
+import {federalSourceSelection,readFederalSourceEnvelope,federalSourceRequest} from '../../artifacts/federal-drafting/source-custody.mjs';
 import {FEDERAL_REVIEW_SCHEMA,federalRevisionRecord,federalApprovalRecord,encodeFederalReview,decodeFederalReview,assertFederalApprovalBinds} from '../../artifacts/federal-drafting/review-record.mjs';
 import {federalDraftDossier} from '../../artifacts/federal-drafting/dossier.mjs';
 import {receiveFederalRequest} from '@capiro/meri-contracts/federal-workbench';
@@ -24,7 +24,7 @@ function selection(raw){
 export function federalWorkbenchInput(intent,raw){
  const q=data(raw);
  if(intent==='federal-import'){
-  own(q,['selection','deliveryId']);if(!delivery(q.deliveryId))fail('INVALID_REQUEST');
+  own(q,['selection','deliveryId'],['representation']);if(!delivery(q.deliveryId)||q.representation!==undefined&&q.representation!=='retained-raw-utf8/1')fail('INVALID_REQUEST');
   return {...q,selection:federalSourceSelection(q.selection)};
  }
  if(intent==='federal-load'){
@@ -97,7 +97,7 @@ export async function federalWorkbenchRoute({intent,call,config,current,life,sta
  const prepare=selected=>life.run(signal=>reads.prepareFederalDraft(selected,context,{signal,readNative:config.federalSource?.read})).catch(sourceFailure);
  const writer=authorize=>{const {ids,...options}=config.options;return createPostgresArtifactService({...options,authorize});};
  if(intent==='federal-import'){
-  const read=()=>life.run(signal=>readFederalSourceEnvelope(config.federalSource?.read,call.selection,{signal,deadlineMs:context.deadlineMs})).catch(sourceFailure);
+  const read=()=>life.run(signal=>readFederalSourceEnvelope(config.federalSource?.read,call.selection,{signal,deadlineMs:context.deadlineMs,representation:call.representation})).catch(sourceFailure);
   const envelope=await read();
   let request;try{request=config.options.validators.request(federalSourceRequest(envelope));}catch{fail('DRAFT_OUTPUT_UNEXPORTABLE',422);}
   const recheck=async()=>{if(hash(await read())!==hash(envelope))fail('DRAFT_SOURCE_STALE',409);};
@@ -105,7 +105,7 @@ export async function federalWorkbenchRoute({intent,call,config,current,life,sta
   await current.fresh();state.writeStarted=true;
   const write={deliveryId:call.deliveryId,baseVersionId:null,request};
   const publication=releasePublication(await life.run(signal=>writes.execute(write,signal)),write);state.completed=true;
-  await recheck();return {schema:FEDERAL_SOURCE_SCHEMA,selection:envelope.selection,source:envelope.source,publication};
+  await recheck();return {...envelope,publication};
  }
  if(intent==='federal-history'){
   const result=await reviewHistory(reads,call,context,life);state.completed=true;return result;

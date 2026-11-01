@@ -9,7 +9,7 @@ export async function generateFederalWorkbench({outDir=resolve(here,'dist'),chec
  const [{default:Ajv},{default:formats},{default:standalone},esbuild,compiler]=await Promise.all([import('ajv/dist/2020.js'),import('ajv-formats'),import('ajv/dist/standalone/index.js'),import('esbuild'),import('json-schema-to-typescript')]);
  try{
   const root=structuredClone(federalWorkbenchSchema),originals=new Map([[root.$id,root],[retainedFederalSchema.$id,retainedFederalSchema]]),sources=[];
-  for(const path of ['meri.schema.json','artifacts-0.2/artifact.schema.json','retrieval-0.2/federal-draft-source.schema.json']){
+  for(const path of ['meri.schema.json','artifacts-0.2/artifact.schema.json','retrieval-0.2/federal-draft-source.schema.json','federal-workbench/raw-source.schema.json']){
    const raw=await readFile(resolve(here,path));const s=JSON.parse(raw);originals.set(s.$id,s);sources.push({path,sha256:hash(raw)});
   }
   const defs={},seen=new Map();
@@ -38,7 +38,7 @@ export async function generateFederalWorkbench({outDir=resolve(here,'dist'),chec
    sources.push({path,sha256:hash(await readFile(resolve(here,path)))});
   }
   const files={'federal-workbench.mjs':bundle.outputFiles[0].text,'federal-workbench.d.ts':declarations+'\n'+api,
-   'federal-workbench.schema.json':JSON.stringify(root,null,2)+'\n','federal-workbench.metadata.json':JSON.stringify({version:'1.4.0',sources},null,2)+'\n'};
+   'federal-workbench.schema.json':JSON.stringify(root,null,2)+'\n','federal-workbench.metadata.json':JSON.stringify({version:'1.5.0',sources},null,2)+'\n'};
   if(!check)await mkdir(outDir,{recursive:true});
   for(const [name,bytes]of Object.entries(files)){const path=resolve(outDir,name);if(check){if(await readFile(path,'utf8')!==bytes)throw Error('Contract drift: '+name);}else await writeFile(path,bytes);}
   return Object.keys(files);
