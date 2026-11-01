@@ -48,7 +48,7 @@ export function createConversationService({sessions,store,dispatcher,versions,fi
  if(admissionPort!==undefined&&typeof admissionPort.admitSelection!=='function'||publicationPort!==undefined&&typeof publicationPort.prepareEvent!=='function'||procedurePort!==undefined&&typeof procedurePort.resolve!=='function'||siteWorkflowPort!==undefined&&typeof siteWorkflowPort.resolve!=='function')fail('CONTROL_CONFIGURATION');
  // The trusted current run capability-policy producer (apps/runtime/product-ports/capability-policy.mjs). Absent, or answering null, a loaded run
  // carries no `capabilities` and keeps first-chat behaviour; the worker validates the record (capabilities/policy.mjs readCapabilityPolicy).
- const capabilityPort=capabilityPolicy===undefined?undefined:own(capabilityPolicy,['forRun']);if(capabilityPort!==undefined&&typeof capabilityPort.forRun!=='function'||readCapabilityRole!==undefined&&typeof readCapabilityRole!=='function')fail('CONTROL_CONFIGURATION');
+ const capabilityPort=capabilityPolicy===undefined?undefined:own(capabilityPolicy,['forRun'],['forActor']);if(capabilityPort!==undefined&&typeof capabilityPort.forRun!=='function'||readCapabilityRole!==undefined&&typeof readCapabilityRole!=='function')fail('CONTROL_CONFIGURATION');
  // The run's admitted allocation budgets (read-only, apps/gateway/budget/run-allocation-budgets.mjs) for the worker's early read ledger.
  // Absent, or answering null (no installed allocation yet), a loaded run carries no `runBudgets` and the ledger keeps its default.
  const runBudgetPort=runBudgets===undefined?undefined:own(runBudgets,['read']);if(runBudgetPort!==undefined&&typeof runBudgetPort.read!=='function')fail('CONTROL_CONFIGURATION');
