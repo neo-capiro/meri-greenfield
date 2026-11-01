@@ -21,6 +21,11 @@ test('typed read configuration refuses obsolete grant/installation/delegation kn
   const v=structuredClone(c);v.reads[key]=value;assert.throws(()=>validateConfiguration(v,'control'));
  }
  const missing=structuredClone(c);delete missing.capabilityPlatform;assert.throws(()=>validateConfiguration(missing,'control'));
+ // The platform may name the approved roster once by literal; without `agentcore.approvedReads` that literal refuses at boot.
+ const literal=structuredClone(c);for(const policy of [literal.capabilityPlatform.maximum,literal.capabilityPlatform.defaults,...Object.values(literal.capabilityPlatform.roleCeilings)])policy.activeReadOperations='approved';
+ assert.throws(()=>validateConfiguration(literal,'control'),{code:'CAPABILITY_PLATFORM_CONFIGURATION'});
+ literal.agentcore.approvedReads={schemaVersion:'meri-native-general-reads/1',enabled:true,operations:[{id:'read_bill_text',version:'0.2.0'}],maxExecuteMs:20000,maxRequestBytes:65536,maxResponseBytes:1048576};
+ assert.equal(validateConfiguration(literal,'control').capabilityPlatform.maximum.activeReadOperations,'approved');
 });
 test('the obsolete per-task runner CLI role cannot be configured; CLI imports without its removed export',async()=>{
  assert.throws(()=>validateConfiguration(agentcoreControlFixture().configuration,'conversation-runner'));
