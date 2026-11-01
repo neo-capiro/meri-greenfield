@@ -21,7 +21,7 @@
     "SourceRefValue"
   ],
   "sources": {
-    "shapes.mjs": "9f33e47397bf56d59f9a7f2f07a88a656957b0b7da5ad46400b08fda326f4752",
+    "shapes.mjs": "7789d95135da126e172b004c2409102babb906805edcba967527d9d9508308a5",
     "schema.mjs": "ec65c6c7296affbd388ac5b49f27bfbf51bab9be5e82324a03d7714bbc2c50de",
     "graph.mjs": "388144d6dc9bc3b382e5e68d6dab5bc20d716022189f5cf694905aacf3f99271",
     "draft-context.mjs": "49602c74b084ad8496a7fd452127c99e00db7d1956fed74d12fd6bde0a5b76f2",
@@ -31,11 +31,11 @@
   },
   "localDependencies": {
     "../meri.schema.json": "e3de878198bbd557843ac440e48664ad5175eecd99f7ec932021ffc465bf8c5b",
-    "../validate.mjs": "bc72b4cbc240e133742350d3dcc7dcd995a426d9dc85439f1886b49aa41c0605",
+    "../validate.mjs": "583a9135486b38d130492377e3db732fc845f8651aff941a1163bd551a8dab60",
     "../commands-0.2/execution-boundary.mjs": "e1c3cfb9fd75b7e623f1bc9492ab06793b4145277336eac1039ff5eef8e6690c",
-    "../retrieval-0.2/operation-contracts.mjs": "faea00e1b12401a0012dfb89dfb927aaabeb544d6c98aef29b062794bfbacdc5",
-    "../package.json": "459d3de92ab855e76c5da6b8dac50aecb9496e84b4a66262a6c7a5a5ea63eccb",
-    "../package-lock.json": "03e8eed9466cccd99f25fd4060a584d596cb15f758e080e23b4a3eb1eff16ee1"
+    "../retrieval-0.2/operation-contracts.mjs": "2008b7687ef25a90d9575d15854cc86d3aa016419856ffd39c53be86aec945f9",
+    "../package.json": "f25135128101d17dd6eb242bdd42ca8db60bb5a9039bbfffcd1038ad62e5e7f9",
+    "../package-lock.json": "7c90ca4150c3c921d311ad35388b41179288419e5a78377bfac6731342f471a2"
   },
   "externalDependencies": {
     "node_modules/ajv": {
@@ -86,10 +86,24 @@
       "resolved": "https://registry.npmjs.org/require-from-string/-/require-from-string-2.0.2.tgz",
       "integrity": "sha512-Xf0nWe6RseziFMu+Ap9biiUbmplq6S9/p+7w7YXP/JBHhrUDDUhwa+vANyubuqfZWTveU//DYVGsDG7RKL/vEw==",
       "dependencies": {}
+    },
+    "node_modules/saxes": {
+      "version": "6.0.0",
+      "resolved": "https://registry.npmjs.org/saxes/-/saxes-6.0.0.tgz",
+      "integrity": "sha512-xAg7SOnEhrm5zI3puOOKyy1OMcMlIJZYNJY7xLBwSze0UjhPLnWfj2GF2EpT0jmzaJKIWKHLsaSSajf35bcYnA==",
+      "dependencies": {
+        "xmlchars": "^2.2.0"
+      }
+    },
+    "node_modules/xmlchars": {
+      "version": "2.2.0",
+      "resolved": "https://registry.npmjs.org/xmlchars/-/xmlchars-2.2.0.tgz",
+      "integrity": "sha512-JZnDKK8B0RCDw84FNdDAIpZK+JuJw+s7Lz8nksI7SIuU3UXJJslUthsi+uWBUYOwPFwW7W7PRLRfUKpxjtjFCw==",
+      "dependencies": {}
     }
   },
   "artifacts": {
-    "candidate.schema.json": "73d28d7c2aa1908fafd16f8cc56c3ec363e7bf0989940670633cc3fcbb2700ef",
+    "candidate.schema.json": "2e3d6eeaffd218d77dbd5b427ce60b11e381f0c793eea0583c5676577153f1cf",
     "fixtures/strategy.draft.request.json": "b0dd3e91a82f0a6cf3ec930e78fde6c9985fc24c20a32e7b9123935f77ab4f21",
     "fixtures/strategy.draft.result.json": "fa1845b4b205418224b545e472e9ace52283b33b92f7390c4908053c61b17ed7",
     "fixtures/strategy.edit.request.json": "b8b35cc4f9548a00a3523af2be9d550cd2030f4543b061fea0589b960283563b",

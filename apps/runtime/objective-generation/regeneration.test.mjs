@@ -40,6 +40,19 @@ test('Core-produced regeneration keeps the actual basis and expected version thr
  const wrongType=structuredClone(model);wrongType.structured_output.payload.type='appropriations';assert.throws(()=>codec.encode({selection:selected,executionSelection:actual.objectiveStrategy.executionSelection,sdkResult:wrongType,sessionId:x.binding.conversationId,receiptRef:x.binding.runId,resultRef:x.binding.runId,completedAtMs:x.now+1}));
 });
 const actualPair=x=>({objectiveGeneration:x.objectiveGeneration,objectiveStrategy:x.objectiveStrategy});
+test('shared intake stays source data while regeneration keeps the existing Strategy type',()=>{
+ const x=fixture(),r=structuredClone(x.w.request),answers={schemaVersion:1,type:'appropriations',goal:'g'.repeat(4000),ownerUserId:r.principal.ownerActorId,targetDate:null,meriContext:''};
+ r.source.intent={kind:'strategy-intake',strategyIntake:answers};
+ r.input={...r.input,goal:answers.goal,ownerUserId:answers.ownerUserId,targetDate:answers.targetDate,meriContext:answers.meriContext};
+ r.context.draft.input=structuredClone(r.input);
+ r.context.contextSha256=hash(Object.fromEntries(Object.entries(r.context).filter(([k])=>k!=='contextSha256')));
+ r.inputSha256=hash(Object.fromEntries(Object.entries(r).filter(([k])=>k!=='inputSha256')));
+ const publication={...x.publication,request:r,requestSha256:hash(r)};
+ assert.deepEqual(decodePublicationReply(publication,x.source,{admission:x.a}).request.source.intent.strategyIntake,answers);
+ const record=createObjectiveRunStartRecord({binding:x.binding,generationJobId:x.a.generationJobId,selection:{...x.selected,request:r},nowMs:x.now});
+ assert.equal(record.selection.queuedType,'authorization');
+ assert.equal(record.selection.request.source.intent.strategyIntake.type,'appropriations');
+});
 test('regeneration refuses substituted basis/version/admission, removed delegation and incoherent context even with a new request hash',()=>{
  for(const change of [r=>{r.basis.snapshot.extra='changed';},r=>{r.applicationTarget.expectedStrategyVersionId='00000000-0000-4000-8000-000000000088';},r=>{r.basis.sourceAdmissionSha256='0'.repeat(64);},r=>{r.delegation={credential:'synthetic'};},r=>{r.principal.actorId='user_fixture';},r=>{r.context.draft.selectedOwnerActorId='different';},r=>{r.originalExpiresAtMs=r.requestedAtMs+900001;}]){
   const x=fixture(),p=structuredClone(x.publication);change(p.request);p.request.inputSha256=hash(Object.fromEntries(Object.entries(p.request).filter(([k])=>k!=='inputSha256')));p.requestSha256=hash(p.request);
