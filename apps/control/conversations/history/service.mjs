@@ -5,6 +5,7 @@ import {createConversationDeletionService} from './deletions.mjs';
 import {TURN_SCHEMA} from './protocol.mjs';
 import {terminal} from '../boundary.mjs';
 import {createConversationManagementService,assertManagedScope} from './management.mjs';
+import {sameResearchContext} from '../../action-host/application-adapters/research-context.mjs';
 // Core currentness rows are independent reads; this many run at once on a released page.
 const CURRENTNESS_CONCURRENCY=4;
 export function createConversationHistoryService({store,nextRunOwner,gate,retention,suppression,deletionStatus}){
@@ -50,7 +51,8 @@ export function createConversationHistoryService({store,nextRunOwner,gate,retent
    // Its transition already settled under the exclusive fence; no content is released.
    if(operation==='manage'||operation==='summaries'){await recheckMembership();
     const rows=operation==='manage'?[result.conversation]:result.conversations;
-    for(const row of rows){const current=await core.metadata(row.conversationId);if(current.scopeKind!==row.scopeKind||current.clientId!==row.clientId)refuse('CONVERSATION_UNAVAILABLE');}
+    for(const row of rows){const current=await core.metadata(row.conversationId);if(current.scopeKind!==row.scopeKind||current.clientId!==row.clientId||
+     row.scopeKind==='research_portfolio'&&!sameResearchContext(current,row))refuse('CONVERSATION_UNAVAILABLE');}
     check(signal)();return publish(result);
    }
    let conversations=operation==='list'?result.conversations:[result.conversation];
@@ -67,6 +69,9 @@ export function createConversationHistoryService({store,nextRunOwner,gate,retent
      const metadata=await readAll(conversations,c=>recheckMetadata(c,readScheduleOriginRows));
      conversations=conversations.filter((conversation,index)=>{const m=metadata[index];if(m===null)return true;
       assertManagedScope(principal,m,conversation);if(operation==='list'&&m.status!=='active')return false;
+      // The separate run-index v1 General selector has no Research subject.
+      // Private-user storage must not make a Research run eligible for it.
+      if(operation==='list'&&request.scope?.kind==='general'&&m.scopeKind==='research_portfolio')return false;
       if(m.status==='trashed')refuse('CONVERSATION_NOT_FOUND');return true;});
     }else await currentAll(recheckConversation,conversations,readScheduleOriginRows);
     if(operation==='list'){const visible=[];

@@ -1,6 +1,7 @@
 /** The reviewed revision as the existing typed Word request: provenance (source identity, source hash, retained
  * source artifact, revision hash, approval state), the operative instructions, the exact consolidated text and the
  * legal comparison. The canonical renderer owns the DOCX bytes; this builds only the exact request. */
+import {structuralDossierMaterial} from '../../../packages/contracts/federal-workbench/structural-dossier.mjs';
 import {artifactValidators} from '../../../packages/contracts/retrieval-0.2/validate.mjs';
 const fault=code=>{throw Object.assign(Error(code),{code,operationId:null});};
 const paragraph=(runs,style)=>({kind:'paragraph',...(style?{style}:{}),runs});
@@ -21,7 +22,9 @@ function comparisonParagraphs(segments){
  paragraphs.push(paragraph(runs.length?runs:[{text:''}]));
  return paragraphs;
 }
-export function federalDraftDossier(prepared,approval=null){
+export function federalDraftDossier(prepared,approval=null,format='docx'){
+ if(prepared.draft.source.parserVersion==='federal-uslm-xml/3'){const {request}=structuralDossierMaterial(prepared,approval,format);try{return artifactValidators.request(request);}catch{fault('DRAFT_OUTPUT_UNEXPORTABLE');}}
+ if(format!=='docx')fault('DRAFT_STRUCTURAL_PROFILE_REQUIRED');
  const {draft,sourceArtifact,revisionSha256}=prepared,source=draft.source;
  const blocks=[p(`Federal review dossier: ${source.documentId}`,'Title'),p('Provenance','Heading 1'),
   p(`Document ${source.documentId}; publisher ${source.publisher}; version ${source.sourceVersion}; published ${source.publishedAt??'unreported'}.`),

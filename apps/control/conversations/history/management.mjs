@@ -14,7 +14,7 @@ export function createConversationManagementService({store,suppression}){
  const required=core=>{if(['metadata','read','apply','registration','summaries'].some(k=>typeof core?.[k]!=='function'))refuse('CONVERSATION_UNAVAILABLE');};
  async function summaries({principal,request,management:core,signal}){required(core);const result=await core.summaries(request),conversations=[];
   for(const metadata of result.conversations){check(signal)();const state=await store.management.inspect({principal,conversationId:metadata.conversationId},check(signal));sameScope(principal,metadata,state.conversation);
-   conversations.push({...metadata,hasTranscript:state.hasTranscript,canManage:state.canManage});}
+   conversations.push({...metadata,hasTranscript:state.hasTranscript,canManage:metadata.scopeKind!=='research_portfolio'&&state.canManage});}
   return {...result,conversations};
  }
  async function manage({principal,request,management:core,signal}){required(core);

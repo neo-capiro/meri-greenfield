@@ -34,8 +34,13 @@ def word(spec,assets,path,base=None):
     for block in spec['blocks']:
         if block['kind']=='paragraph':
             p=document.add_paragraph(style=block.get('style','Normal'))
+            if 'quoteDepth' in block:
+                p.paragraph_format.left_indent=Inches(0.25*block['quoteDepth'])
+                p.paragraph_format.right_indent=Inches(0.25*block['quoteDepth'])
             for item in block['runs']:
                 r=p.add_run(item['text']);r.bold=item.get('bold',False);r.italic=item.get('italic',False)
+                if 'strike' in item:r.font.strike=item['strike']
+                if 'underline' in item:r.underline=item['underline']
         elif block['kind']=='table':
             table=document.add_table(rows=len(block['rows']),cols=len(block['rows'][0]));table.style='Table Grid'
             for row,values in zip(table.rows,block['rows']):

@@ -4,8 +4,8 @@
   "sources": [
     {
       "path": "artifacts-0.2/artifact-formats.mjs",
-      "sha256": "4a2e725eb5bb628a66ae06f471741ec1fbb6ce1eb6e3ed842050393d3ab39334",
-      "bytes": 2579
+      "sha256": "cf9aab9fcefb0a8a040d5f8bcfd2a4907931a7a64f0947fad7e47ab3721caf36",
+      "bytes": 2616
     },
     {
       "path": "browser-viewer/api.d.ts",

@@ -2,12 +2,16 @@
 export const FEDERAL_SCOPED_TEXT_PARSER='federal-scoped-text/2';
 /** Raw USLM XML text whose nested scopes are declared element spans; well-formedness is the server compiler's check. */
 export const FEDERAL_USLM_XML_PARSER='federal-uslm-xml/1';
-export const FEDERAL_PARSERS=Object.freeze(['federal-plain-text/1',FEDERAL_SCOPED_TEXT_PARSER,FEDERAL_USLM_XML_PARSER]);
+export const FEDERAL_USLM_SCHEMA_PARSER='federal-uslm-xml/2';
+export const FEDERAL_USLM_RUN_PARSER='federal-uslm-xml/3';
+export const isSchemaUslm=parser=>[FEDERAL_USLM_SCHEMA_PARSER,FEDERAL_USLM_RUN_PARSER].includes(parser);
+export const isFederalUslm=parser=>parser===FEDERAL_USLM_XML_PARSER||isSchemaUslm(parser);
+export const FEDERAL_PARSERS=Object.freeze(['federal-plain-text/1',FEDERAL_SCOPED_TEXT_PARSER,FEDERAL_USLM_XML_PARSER,FEDERAL_USLM_SCHEMA_PARSER,FEDERAL_USLM_RUN_PARSER]);
 const fail=code=>{throw Object.assign(Error(code),{code});};
 const boundary=(text,at)=>at===0||at===text.length||!(text.charCodeAt(at-1)>=0xd800&&text.charCodeAt(at-1)<=0xdbff&&text.charCodeAt(at)>=0xdc00&&text.charCodeAt(at)<=0xdfff);
 const markup=/^[\s﻿]*(?:<\?xml\b|<!DOCTYPE\b|<!--|<[A-Za-z_][\w.:-]*(?=[\s/>]|$))/iu;
 export function assertFederalTextLayout(source){
- const uslm=source.parserVersion===FEDERAL_USLM_XML_PARSER,nested=uslm||source.parserVersion===FEDERAL_SCOPED_TEXT_PARSER;
+ const uslm=isFederalUslm(source.parserVersion),nested=uslm||source.parserVersion===FEDERAL_SCOPED_TEXT_PARSER;
  if(!FEDERAL_PARSERS.includes(source.parserVersion))fail('DRAFT_SOURCE_MISMATCH');
  // A retained XML/HTML document is not a plain-text editing baseline, and a USLM baseline must be markup. This is a
  // refusal guard, not an XML parser or a claim that arbitrary text is schema-valid.

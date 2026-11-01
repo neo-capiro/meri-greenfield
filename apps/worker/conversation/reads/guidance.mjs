@@ -18,7 +18,7 @@ import {bareReadToolName} from './vocabulary.mjs';
 export const SQL_REFUSAL_GUIDANCE=Object.freeze({
  INVALID_QUERY:'rowLimit must be an integer 1-1000 and sql 1-16384 UTF-8 bytes; a PostgreSQL syntax or type error names the character position to fix. Correct the SQL or the request and run it again.',
  UNSUPPORTED_SQL:'Use the current describe_capiro_data contract grammar and Core refusal message to correct the statement. If an older Core omits contract, send exactly one read-only SELECT or WITH ... SELECT. Rewrite the statement and run it again.',
- UNKNOWN_RELATION:'Use a relation name exactly as describe_capiro_data lists it (lowercase, unqualified); one query reads one source, so client projections need source client_records on both calls and never mix with public relations.',
+ UNKNOWN_RELATION:'Use a relation name exactly as describe_capiro_data lists it (lowercase, unqualified); one query reads one source. Use the same source on describe and query and never mix relations from different sources.',
  UNKNOWN_FIELD:'Use column names exactly as describe_capiro_data lists them, qualified by the relation alias when two relations share a name. Re-read the relation with describe_capiro_data relations:[...] when unsure.',
  PARAMETER_MISMATCH:'parameters must bind $1..$n contiguously with every entry referenced; use strings for exact decimals, large integers, dates and UUIDs and numbers only for safe integers.',
  SOURCE_UNAVAILABLE:'The data source is unavailable now; this is not an empty result and must not trigger broader or unscoped retrieval.',
@@ -68,10 +68,10 @@ export const READ_GUIDANCE=Object.freeze({
   INVALID_ARGUMENTS:'For a continued meeting list, restart without the cursor; if the continuation limit was reached, narrow the from/to time range and restart.',
  })}),
  describe_capiro_data:Object.freeze({usage:Object.freeze([]),limitations:Object.freeze([]),failures:Object.freeze({
-  INVALID_ARGUMENTS:'describe_capiro_data takes optional relations (1-15 unique lowercase relation names), source ("public" or "client_records") and clientId (UUID, client_records only).',
+  INVALID_ARGUMENTS:'describe_capiro_data takes optional relations (1-15 unique lowercase relation names), source (from the installed tool schema) and clientId (UUID, client_records only).',
  }),refusals:SQL_REFUSAL_GUIDANCE}),
  query_capiro_data:Object.freeze({usage:Object.freeze([]),limitations:Object.freeze([]),failures:Object.freeze({
-  INVALID_ARGUMENTS:'query_capiro_data takes sql (1-16384 bytes) and parameters (required; [] when nothing is bound; at most 64 strings, finite safe-integer numbers, booleans or nulls), plus optional rowLimit (integer 1-1000), source ("public" or "client_records") and clientId (UUID, client_records only).',
+  INVALID_ARGUMENTS:'query_capiro_data takes sql (1-16384 bytes) and parameters (required; [] when nothing is bound; at most 64 strings, finite safe-integer numbers, booleans or nulls), plus optional rowLimit (integer 1-1000), source (from the installed tool schema) and clientId (UUID, client_records only).',
  }),refusals:SQL_REFUSAL_GUIDANCE}),
 });
 /** @param {string} sdkName the read's SDK tool name (`search_public_web`), with or without the `mcp__<server>__` prefix

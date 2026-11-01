@@ -1,4 +1,5 @@
 /** Finite CONTROL contexts over current native facts. Selectors never create a client grant. */
+import {researchPortfolioObservation} from '../../control/action-host/application-adapters/research-current-receipt.mjs';
 import {watchValidators,publicDomainDatasetRegistry} from '../../../packages/contracts/retrieval-0.2/validate.mjs';
 import {nativeReadFault} from '../../../packages/contracts/runtime-0.2/reads.mjs';
 import {MODE_READ_OPERATIONS} from '../../../packages/contracts/native-read-observation-0.2/validate.mjs';
@@ -64,6 +65,7 @@ function visibleSelector(native,subject,id){
 }
 
 function privateDataContext(proof,native){
+ if(native.scopeKind==='research_portfolio')refuse('ACCESS_DENIED');
  const request=proof.request,selected=proof.subject.kind==='client'||proof.subject.entityType==='client'?clientSubject(proof,native):null;
  if(selected===null&&(proof.subject.kind!=='personal'||proof.subject.entityType!=='user'))refuse('ACCESS_DENIED');
  if(Object.hasOwn(request,'clientId')&&(typeof request.clientId!=='string'||!UUID.test(request.clientId)))refuse('INVALID_ARGUMENTS');
@@ -73,6 +75,22 @@ function privateDataContext(proof,native){
  // Saved jobs have no interactive native revisions. Never manufacture one from a role or UUID.
  if(![native.identityRevision,native.membershipRevision].every(value=>typeof value==='string'&&/^[a-f0-9]{64}$/u.test(value)))refuse('UNAVAILABLE');
  return {capiroDataScope:{clientId,identityRevision:native.identityRevision,membershipRevision:native.membershipRevision}};
+}
+
+function domainDataContext(proof,native){
+ const source=proof.request.source;
+ if(Object.hasOwn(proof.request,'clientId'))refuse('INVALID_ARGUMENTS');
+ if(![native.identityRevision,native.membershipRevision,native.contextRevision].every(v=>typeof v==='string'&&/^[a-f0-9]{64}$/u.test(v)))refuse('UNAVAILABLE');
+ const revisions={identityRevision:native.identityRevision,membershipRevision:native.membershipRevision,contextRevision:native.contextRevision};
+ if(source==='research_portfolio'){
+  if(native.scopeKind!=='research_portfolio'||proof.subject.kind!=='personal'||proof.subject.entityType!=='user')refuse('ACCESS_DENIED');
+  let researchPortfolio;try{researchPortfolio=researchPortfolioObservation(native.researchPortfolio);}catch{refuse('ACCESS_DENIED');}
+  return {capiroDataScope:{source,...revisions,researchPortfolio}};
+ }
+ if(native.scopeKind==='research_portfolio')refuse('ACCESS_DENIED');
+ const clientId=proof.subject.kind==='client'||proof.subject.entityType==='client'?clientSubject(proof,native):null;
+ if(clientId===null&&(proof.subject.kind!=='personal'||proof.subject.entityType!=='user'))refuse('ACCESS_DENIED');
+ return {capiroDataScope:{source,clientId,...revisions}};
 }
 
 function savedOwnerContext(proof,native,group){
@@ -133,7 +151,8 @@ export function createSourceReadContext({contract,proof,native,defaultCongress,n
   return {asOf,...savedOwnerContext({...proof,request},native,'legislative-comparisons')};
  }
  // Recompute on final release: membership changes must also fence aggregate rows with no client IDs.
- if(['capiro-data','capiro-data-v3'].includes(group)&&proof.request.source==='client_records')return privateDataContext(proof,native);
+ if(group==='capiro-data-v5'&&['research_portfolio','classic_outreach'].includes(proof.request.source))return domainDataContext(proof,native);
+ if(['capiro-data','capiro-data-v3','capiro-data-v4','capiro-data-v5'].includes(group)&&proof.request.source==='client_records')return privateDataContext(proof,native);
  if(group==='connected-apps'||group==='teams-channels'){
   // A URL, credential or malformed selector is an argument failure the model can correct, never an unavailable source.
   let selected;try{selected=contract.normalizeInput(proof.request,{}).input.clientId??null;}catch{refuse('INVALID_ARGUMENTS');}

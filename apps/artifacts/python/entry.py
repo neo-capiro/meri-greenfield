@@ -28,15 +28,20 @@ def main(validate_assets=False):
     if validate_assets:
         print(json.dumps({'assets':[{'id':key,'sha256':hashlib.sha256(value).hexdigest(),'bytes':len(value)} for key,value in assets.items()]}));return
     form=request['format']
-    if form not in ('docx','txt','xlsx','zip'):raise ValueError('Unsupported Python artifact format')
+    if form not in ('docx','txt','xml','xlsx','zip'):raise ValueError('Unsupported Python artifact format')
     path=pathlib.Path('artifact.'+form)
     if path.exists():raise ValueError('Output already exists')
     base=data.get('base')
     if base:
         base={'request':base['request'],'bytes':base64.b64decode(base['base64'],validate=True)}
         # Each format's retained bytes go only to that format's own revision owner.
-        if base['request'].get('format')!=form or (form!='txt' and not base['bytes'].startswith(b'PK\x03\x04')):raise BaseFormatMismatch()
+        if base['request'].get('format')!=form or (form not in ('txt','xml') and not base['bytes'].startswith(b'PK\x03\x04')):raise BaseFormatMismatch()
+        if form=='xml':load('xml_text').validate_xml(base['bytes'])
     if form=='txt':path.write_bytes(request['content']['text'].encode('utf8'));details={'encoding':'UTF-8','whitespace':'unchanged'}
+    elif form=='xml':
+        raw=request['content']['text'].encode('utf8');details=load('xml_text').validate_xml(raw)
+        if len(raw)>data['maxBytes']:raise ValueError('Output byte limit')
+        path.write_bytes(raw)
     elif form=='docx':details=load('office').word(request['content'],assets,path,base)
     elif form=='xlsx':
         details=load('office').excel(request['content'],assets,path,base)
@@ -44,7 +49,7 @@ def main(validate_assets=False):
     result=path.read_bytes()
     if len(result)>data['maxBytes']:raise ValueError('Output byte limit')
     members=[]
-    if form!='txt':
+    if form not in ('txt','xml'):
         with zipfile.ZipFile(path) as archive:
             if len(archive.infolist())>5000 or sum(v.file_size for v in archive.infolist())>33554432:raise ValueError('Archive expansion limit')
             if archive.testzip() is not None:raise ValueError('Archive CRC failure')

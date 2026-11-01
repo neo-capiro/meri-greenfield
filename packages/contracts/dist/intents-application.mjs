@@ -42711,7 +42711,7 @@ function validate170(data, { instancePath = "", parentData, parentDataProperty, 
   return errors2 === 0;
 }
 validate170.evaluated = { "props": true, "dynamicProps": false, "dynamicItems": false };
-var schema301 = { "oneOf": [{ "type": "object", "properties": { "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" }, "bytes": { "type": "integer", "minimum": 0, "maximum": 9007199254740991 }, "format": { "const": "txt" }, "nativeOpened": { "const": false }, "rendered": { "const": false }, "recalculated": { "const": false }, "members": { "type": "array", "items": { "type": "string", "maxLength": 500 }, "maxItems": 5e3 }, "details": { "type": "object", "properties": { "encoding": { "const": "UTF-8" }, "whitespace": { "const": "unchanged" } }, "required": ["encoding", "whitespace"], "additionalProperties": false } }, "required": ["sha256", "bytes", "format", "nativeOpened", "rendered", "recalculated", "members", "details"], "additionalProperties": false }, { "type": "object", "properties": { "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" }, "bytes": { "type": "integer", "minimum": 0, "maximum": 9007199254740991 }, "format": { "const": "docx" }, "nativeOpened": { "const": false }, "rendered": { "const": false }, "recalculated": { "const": false }, "members": { "type": "array", "items": { "type": "string", "maxLength": 500 }, "maxItems": 5e3 }, "details": { "type": "object", "properties": { "paragraphs": { "type": "integer", "minimum": 0, "maximum": 9007199254740991 }, "tables": { "type": "integer", "minimum": 0, "maximum": 9007199254740991 }, "pictures": { "type": "integer", "minimum": 0, "maximum": 9007199254740991 } }, "required": ["paragraphs", "tables", "pictures"], "additionalProperties": false } }, "required": ["sha256", "bytes", "format", "nativeOpened", "rendered", "recalculated", "members", "details"], "additionalProperties": false }, { "type": "object", "properties": { "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" }, "bytes": { "type": "integer", "minimum": 0, "maximum": 9007199254740991 }, "format": { "const": "xlsx" }, "nativeOpened": { "const": false }, "rendered": { "const": false }, "recalculated": { "const": false }, "members": { "type": "array", "items": { "type": "string", "maxLength": 500 }, "maxItems": 5e3 }, "details": { "type": "object", "properties": { "sheets": { "type": "array", "items": { "type": "string" }, "maxItems": 30 }, "formulas": { "type": "integer", "minimum": 0, "maximum": 9007199254740991 }, "formulaCache": { "enum": ["unverified-zero-placeholder; recalculation required", "removed/unverified; recalculation required"] }, "revisionMethod": { "const": "openpyxl typed-cell replacement" } }, "required": ["sheets", "formulas", "formulaCache"], "additionalProperties": false } }, "required": ["sha256", "bytes", "format", "nativeOpened", "rendered", "recalculated", "members", "details"], "additionalProperties": false }, { "type": "object", "properties": { "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" }, "bytes": { "type": "integer", "minimum": 0, "maximum": 9007199254740991 }, "format": { "const": "pptx" }, "nativeOpened": { "const": false }, "rendered": { "const": false }, "recalculated": { "const": false }, "members": { "type": "array", "items": { "type": "string", "maxLength": 500 }, "maxItems": 5e3 }, "details": { "type": "object", "properties": { "slides": { "type": "integer", "minimum": 0, "maximum": 9007199254740991 }, "editable": { "const": true }, "visualInspection": { "const": "pending" } }, "required": ["slides", "editable", "visualInspection"], "additionalProperties": false } }, "required": ["sha256", "bytes", "format", "nativeOpened", "rendered", "recalculated", "members", "details"], "additionalProperties": false }, { "type": "object", "properties": { "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" }, "bytes": { "type": "integer", "minimum": 0, "maximum": 9007199254740991 }, "format": { "const": "zip" }, "nativeOpened": { "const": false }, "rendered": { "const": false }, "recalculated": { "const": false }, "members": { "type": "array", "items": { "type": "string", "maxLength": 500 }, "maxItems": 5e3 }, "details": { "type": "object", "properties": { "rows": { "type": "integer", "minimum": 0, "maximum": 9007199254740991 }, "columns": { "type": "array", "items": { "type": "string" }, "maxItems": 200 }, "chart": { "type": "boolean" } }, "required": ["rows", "columns", "chart"], "additionalProperties": false } }, "required": ["sha256", "bytes", "format", "nativeOpened", "rendered", "recalculated", "members", "details"], "additionalProperties": false }, { "type": "object", "properties": { "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" }, "bytes": { "type": "integer", "minimum": 0, "maximum": 9007199254740991 }, "format": { "const": "pdf" }, "nativeOpened": { "const": false }, "rendered": { "const": false }, "recalculated": { "const": false }, "members": { "type": "array", "items": { "type": "string", "maxLength": 500 }, "maxItems": 5e3 }, "details": { "type": "object", "properties": { "conversionCompleted": { "const": true }, "renderInspection": { "const": "pending" }, "sourceDocxSha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" } }, "required": ["conversionCompleted", "renderInspection", "sourceDocxSha256"], "additionalProperties": false } }, "required": ["sha256", "bytes", "format", "nativeOpened", "rendered", "recalculated", "members", "details"], "additionalProperties": false }] };
+var schema301 = { "oneOf": [{ "type": "object", "properties": { "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" }, "bytes": { "type": "integer", "minimum": 0, "maximum": 9007199254740991 }, "format": { "const": "txt" }, "nativeOpened": { "const": false }, "rendered": { "const": false }, "recalculated": { "const": false }, "members": { "type": "array", "items": { "type": "string", "maxLength": 500 }, "maxItems": 5e3 }, "details": { "type": "object", "properties": { "encoding": { "const": "UTF-8" }, "whitespace": { "const": "unchanged" } }, "required": ["encoding", "whitespace"], "additionalProperties": false } }, "required": ["sha256", "bytes", "format", "nativeOpened", "rendered", "recalculated", "members", "details"], "additionalProperties": false }, { "type": "object", "properties": { "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" }, "bytes": { "type": "integer", "minimum": 1, "maximum": 9007199254740991 }, "format": { "const": "xml" }, "nativeOpened": { "const": false }, "rendered": { "const": false }, "recalculated": { "const": false }, "members": { "type": "array", "items": { "type": "string", "maxLength": 500 }, "maxItems": 0 }, "details": { "type": "object", "properties": { "encoding": { "const": "UTF-8" }, "whitespace": { "const": "unchanged" }, "wellFormed": { "const": true } }, "required": ["encoding", "whitespace", "wellFormed"], "additionalProperties": false } }, "required": ["sha256", "bytes", "format", "nativeOpened", "rendered", "recalculated", "members", "details"], "additionalProperties": false }, { "type": "object", "properties": { "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" }, "bytes": { "type": "integer", "minimum": 0, "maximum": 9007199254740991 }, "format": { "const": "docx" }, "nativeOpened": { "const": false }, "rendered": { "const": false }, "recalculated": { "const": false }, "members": { "type": "array", "items": { "type": "string", "maxLength": 500 }, "maxItems": 5e3 }, "details": { "type": "object", "properties": { "paragraphs": { "type": "integer", "minimum": 0, "maximum": 9007199254740991 }, "tables": { "type": "integer", "minimum": 0, "maximum": 9007199254740991 }, "pictures": { "type": "integer", "minimum": 0, "maximum": 9007199254740991 } }, "required": ["paragraphs", "tables", "pictures"], "additionalProperties": false } }, "required": ["sha256", "bytes", "format", "nativeOpened", "rendered", "recalculated", "members", "details"], "additionalProperties": false }, { "type": "object", "properties": { "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" }, "bytes": { "type": "integer", "minimum": 0, "maximum": 9007199254740991 }, "format": { "const": "xlsx" }, "nativeOpened": { "const": false }, "rendered": { "const": false }, "recalculated": { "const": false }, "members": { "type": "array", "items": { "type": "string", "maxLength": 500 }, "maxItems": 5e3 }, "details": { "type": "object", "properties": { "sheets": { "type": "array", "items": { "type": "string" }, "maxItems": 30 }, "formulas": { "type": "integer", "minimum": 0, "maximum": 9007199254740991 }, "formulaCache": { "enum": ["unverified-zero-placeholder; recalculation required", "removed/unverified; recalculation required"] }, "revisionMethod": { "const": "openpyxl typed-cell replacement" } }, "required": ["sheets", "formulas", "formulaCache"], "additionalProperties": false } }, "required": ["sha256", "bytes", "format", "nativeOpened", "rendered", "recalculated", "members", "details"], "additionalProperties": false }, { "type": "object", "properties": { "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" }, "bytes": { "type": "integer", "minimum": 0, "maximum": 9007199254740991 }, "format": { "const": "pptx" }, "nativeOpened": { "const": false }, "rendered": { "const": false }, "recalculated": { "const": false }, "members": { "type": "array", "items": { "type": "string", "maxLength": 500 }, "maxItems": 5e3 }, "details": { "type": "object", "properties": { "slides": { "type": "integer", "minimum": 0, "maximum": 9007199254740991 }, "editable": { "const": true }, "visualInspection": { "const": "pending" } }, "required": ["slides", "editable", "visualInspection"], "additionalProperties": false } }, "required": ["sha256", "bytes", "format", "nativeOpened", "rendered", "recalculated", "members", "details"], "additionalProperties": false }, { "type": "object", "properties": { "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" }, "bytes": { "type": "integer", "minimum": 0, "maximum": 9007199254740991 }, "format": { "const": "zip" }, "nativeOpened": { "const": false }, "rendered": { "const": false }, "recalculated": { "const": false }, "members": { "type": "array", "items": { "type": "string", "maxLength": 500 }, "maxItems": 5e3 }, "details": { "type": "object", "properties": { "rows": { "type": "integer", "minimum": 0, "maximum": 9007199254740991 }, "columns": { "type": "array", "items": { "type": "string" }, "maxItems": 200 }, "chart": { "type": "boolean" } }, "required": ["rows", "columns", "chart"], "additionalProperties": false } }, "required": ["sha256", "bytes", "format", "nativeOpened", "rendered", "recalculated", "members", "details"], "additionalProperties": false }, { "type": "object", "properties": { "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" }, "bytes": { "type": "integer", "minimum": 0, "maximum": 9007199254740991 }, "format": { "const": "pdf" }, "nativeOpened": { "const": false }, "rendered": { "const": false }, "recalculated": { "const": false }, "members": { "type": "array", "items": { "type": "string", "maxLength": 500 }, "maxItems": 5e3 }, "details": { "type": "object", "properties": { "conversionCompleted": { "const": true }, "renderInspection": { "const": "pending" }, "sourceDocxSha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" } }, "required": ["conversionCompleted", "renderInspection", "sourceDocxSha256"], "additionalProperties": false } }, "required": ["sha256", "bytes", "format", "nativeOpened", "rendered", "recalculated", "members", "details"], "additionalProperties": false }] };
 var schema271 = { "type": "object", "properties": { "contractVersion": { "const": "0.1.0" }, "artifactId": { "type": "string", "format": "uuid" }, "versionId": { "type": "string", "format": "uuid" }, "parentVersionId": { "anyOf": [{ "type": "string", "format": "uuid" }, { "type": "null" }] }, "binding": { "$ref": "#/$defs/Canonical_RunBinding_84f2304c" }, "object": { "$ref": "#/$defs/Canonical_ObjectReference_a099bd1c" }, "filename": { "type": "string", "minLength": 1, "maxLength": 255 }, "mimeType": { "type": "string", "minLength": 1 }, "scopes": { "type": "array", "items": { "$ref": "#/$defs/Canonical_Scope_f882edb5" }, "minItems": 1, "uniqueItems": true }, "evidence": { "type": "array", "items": { "$ref": "#/$defs/Canonical_SourceEvidence_d9008775" } }, "generationStatus": { "type": "string", "enum": ["draft", "validated", "published", "failed"] }, "previewStatus": { "type": "string", "enum": ["pending", "validated", "unsupported", "failed"] }, "createdAt": { "type": "string", "format": "date-time", "pattern": "Z$" } }, "required": ["contractVersion", "artifactId", "versionId", "parentVersionId", "binding", "object", "filename", "mimeType", "scopes", "evidence", "generationStatus", "previewStatus", "createdAt"], "additionalProperties": false };
 var schema274 = { "type": "object", "properties": { "sourceId": { "type": "string", "minLength": 1 }, "recordId": { "type": "string", "minLength": 1 }, "sourceVersionId": { "type": "string", "minLength": 1 }, "observedAt": { "type": "string", "format": "date-time", "pattern": "Z$" }, "sourceUpdatedAt": { "anyOf": [{ "type": "string", "format": "date-time", "pattern": "Z$" }, { "type": "null" }] }, "citationId": { "type": "string", "format": "uuid" }, "scopes": { "type": "array", "items": { "$ref": "#/$defs/Canonical_Scope_f882edb5" }, "minItems": 1, "uniqueItems": true }, "contentSha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" }, "authorizationDecisionId": { "type": "string", "format": "uuid" } }, "required": ["sourceId", "recordId", "sourceVersionId", "observedAt", "sourceUpdatedAt", "citationId", "scopes", "contentSha256", "authorizationDecisionId"], "additionalProperties": false };
 function validate177(data, { instancePath = "", parentData, parentDataProperty, rootData = data, dynamicAnchors = {} } = {}) {
@@ -45460,7 +45460,7 @@ function validate174(data, { instancePath = "", parentData, parentDataProperty, 
   return errors2 === 0;
 }
 validate174.evaluated = { "dynamicProps": true, "dynamicItems": false };
-var pattern297 = new RegExp("^[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$", "u");
+var pattern298 = new RegExp("^[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$", "u");
 function validate191(data, { instancePath = "", parentData, parentDataProperty, rootData = data, dynamicAnchors = {} } = {}) {
   let vErrors = null;
   let errors2 = 0;
@@ -45766,7 +45766,7 @@ function validate191(data, { instancePath = "", parentData, parentDataProperty, 
                   const _errs23 = errors2;
                   if (errors2 === _errs23) {
                     if (typeof data9 === "string") {
-                      if (!pattern297.test(data9)) {
+                      if (!pattern298.test(data9)) {
                         const err19 = { instancePath: instancePath + "/authorizationReceiptId", schemaPath: "#/$defs/Canonical_NativeArtifactExecution_26204926/properties/authorizationReceiptId/pattern", keyword: "pattern", params: { pattern: "^[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$" }, message: 'must match pattern "^[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$"' };
                         if (vErrors === null) {
                           vErrors = [err19];
@@ -46338,8 +46338,8 @@ function validate173(data, { instancePath = "", parentData, parentDataProperty, 
                                 }
                                 errors2++;
                               } else {
-                                if (data14 < 0 || isNaN(data14)) {
-                                  const err27 = { instancePath: instancePath + "/inspection/bytes", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/1/properties/bytes/minimum", keyword: "minimum", params: { comparison: ">=", limit: 0 }, message: "must be >= 0" };
+                                if (data14 < 1 || isNaN(data14)) {
+                                  const err27 = { instancePath: instancePath + "/inspection/bytes", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/1/properties/bytes/minimum", keyword: "minimum", params: { comparison: ">=", limit: 1 }, message: "must be >= 1" };
                                   if (vErrors === null) {
                                     vErrors = [err27];
                                   } else {
@@ -46357,8 +46357,8 @@ function validate173(data, { instancePath = "", parentData, parentDataProperty, 
                         if (valid6) {
                           if (data1.format !== void 0) {
                             const _errs33 = errors2;
-                            if ("docx" !== data1.format) {
-                              const err28 = { instancePath: instancePath + "/inspection/format", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/1/properties/format/const", keyword: "const", params: { allowedValue: "docx" }, message: "must be equal to constant" };
+                            if ("xml" !== data1.format) {
+                              const err28 = { instancePath: instancePath + "/inspection/format", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/1/properties/format/const", keyword: "const", params: { allowedValue: "xml" }, message: "must be equal to constant" };
                               if (vErrors === null) {
                                 vErrors = [err28];
                               } else {
@@ -46424,8 +46424,8 @@ function validate173(data, { instancePath = "", parentData, parentDataProperty, 
                                     const _errs37 = errors2;
                                     if (errors2 === _errs37) {
                                       if (Array.isArray(data19)) {
-                                        if (data19.length > 5e3) {
-                                          const err32 = { instancePath: instancePath + "/inspection/members", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/1/properties/members/maxItems", keyword: "maxItems", params: { limit: 5e3 }, message: "must NOT have more than 5000 items" };
+                                        if (data19.length > 0) {
+                                          const err32 = { instancePath: instancePath + "/inspection/members", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/1/properties/members/maxItems", keyword: "maxItems", params: { limit: 0 }, message: "must NOT have more than 0 items" };
                                           if (vErrors === null) {
                                             vErrors = [err32];
                                           } else {
@@ -46486,7 +46486,7 @@ function validate173(data, { instancePath = "", parentData, parentDataProperty, 
                                       if (errors2 === _errs41) {
                                         if (data21 && typeof data21 == "object" && !Array.isArray(data21)) {
                                           let missing4;
-                                          if (data21.paragraphs === void 0 && (missing4 = "paragraphs") || data21.tables === void 0 && (missing4 = "tables") || data21.pictures === void 0 && (missing4 = "pictures")) {
+                                          if (data21.encoding === void 0 && (missing4 = "encoding") || data21.whitespace === void 0 && (missing4 = "whitespace") || data21.wellFormed === void 0 && (missing4 = "wellFormed")) {
                                             const err36 = { instancePath: instancePath + "/inspection/details", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/1/properties/details/required", keyword: "required", params: { missingProperty: missing4 }, message: "must have required property '" + missing4 + "'" };
                                             if (vErrors === null) {
                                               vErrors = [err36];
@@ -46497,7 +46497,7 @@ function validate173(data, { instancePath = "", parentData, parentDataProperty, 
                                           } else {
                                             const _errs43 = errors2;
                                             for (const key4 in data21) {
-                                              if (!(key4 === "paragraphs" || key4 === "tables" || key4 === "pictures")) {
+                                              if (!(key4 === "encoding" || key4 === "whitespace" || key4 === "wellFormed")) {
                                                 const err37 = { instancePath: instancePath + "/inspection/details", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/1/properties/details/additionalProperties", keyword: "additionalProperties", params: { additionalProperty: key4 }, message: "must NOT have additional properties" };
                                                 if (vErrors === null) {
                                                   vErrors = [err37];
@@ -46509,11 +46509,10 @@ function validate173(data, { instancePath = "", parentData, parentDataProperty, 
                                               }
                                             }
                                             if (_errs43 === errors2) {
-                                              if (data21.paragraphs !== void 0) {
-                                                let data22 = data21.paragraphs;
+                                              if (data21.encoding !== void 0) {
                                                 const _errs44 = errors2;
-                                                if (!(typeof data22 == "number" && (!(data22 % 1) && !isNaN(data22)) && isFinite(data22))) {
-                                                  const err38 = { instancePath: instancePath + "/inspection/details/paragraphs", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/1/properties/details/properties/paragraphs/type", keyword: "type", params: { type: "integer" }, message: "must be integer" };
+                                                if ("UTF-8" !== data21.encoding) {
+                                                  const err38 = { instancePath: instancePath + "/inspection/details/encoding", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/1/properties/details/properties/encoding/const", keyword: "const", params: { allowedValue: "UTF-8" }, message: "must be equal to constant" };
                                                   if (vErrors === null) {
                                                     vErrors = [err38];
                                                   } else {
@@ -46521,110 +46520,39 @@ function validate173(data, { instancePath = "", parentData, parentDataProperty, 
                                                   }
                                                   errors2++;
                                                 }
-                                                if (errors2 === _errs44) {
-                                                  if (typeof data22 == "number" && isFinite(data22)) {
-                                                    if (data22 > 9007199254740991 || isNaN(data22)) {
-                                                      const err39 = { instancePath: instancePath + "/inspection/details/paragraphs", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/1/properties/details/properties/paragraphs/maximum", keyword: "maximum", params: { comparison: "<=", limit: 9007199254740991 }, message: "must be <= 9007199254740991" };
-                                                      if (vErrors === null) {
-                                                        vErrors = [err39];
-                                                      } else {
-                                                        vErrors.push(err39);
-                                                      }
-                                                      errors2++;
-                                                    } else {
-                                                      if (data22 < 0 || isNaN(data22)) {
-                                                        const err40 = { instancePath: instancePath + "/inspection/details/paragraphs", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/1/properties/details/properties/paragraphs/minimum", keyword: "minimum", params: { comparison: ">=", limit: 0 }, message: "must be >= 0" };
-                                                        if (vErrors === null) {
-                                                          vErrors = [err40];
-                                                        } else {
-                                                          vErrors.push(err40);
-                                                        }
-                                                        errors2++;
-                                                      }
-                                                    }
-                                                  }
-                                                }
                                                 var valid8 = _errs44 === errors2;
                                               } else {
                                                 var valid8 = true;
                                               }
                                               if (valid8) {
-                                                if (data21.tables !== void 0) {
-                                                  let data23 = data21.tables;
-                                                  const _errs46 = errors2;
-                                                  if (!(typeof data23 == "number" && (!(data23 % 1) && !isNaN(data23)) && isFinite(data23))) {
-                                                    const err41 = { instancePath: instancePath + "/inspection/details/tables", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/1/properties/details/properties/tables/type", keyword: "type", params: { type: "integer" }, message: "must be integer" };
+                                                if (data21.whitespace !== void 0) {
+                                                  const _errs45 = errors2;
+                                                  if ("unchanged" !== data21.whitespace) {
+                                                    const err39 = { instancePath: instancePath + "/inspection/details/whitespace", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/1/properties/details/properties/whitespace/const", keyword: "const", params: { allowedValue: "unchanged" }, message: "must be equal to constant" };
                                                     if (vErrors === null) {
-                                                      vErrors = [err41];
+                                                      vErrors = [err39];
                                                     } else {
-                                                      vErrors.push(err41);
+                                                      vErrors.push(err39);
                                                     }
                                                     errors2++;
                                                   }
-                                                  if (errors2 === _errs46) {
-                                                    if (typeof data23 == "number" && isFinite(data23)) {
-                                                      if (data23 > 9007199254740991 || isNaN(data23)) {
-                                                        const err42 = { instancePath: instancePath + "/inspection/details/tables", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/1/properties/details/properties/tables/maximum", keyword: "maximum", params: { comparison: "<=", limit: 9007199254740991 }, message: "must be <= 9007199254740991" };
-                                                        if (vErrors === null) {
-                                                          vErrors = [err42];
-                                                        } else {
-                                                          vErrors.push(err42);
-                                                        }
-                                                        errors2++;
-                                                      } else {
-                                                        if (data23 < 0 || isNaN(data23)) {
-                                                          const err43 = { instancePath: instancePath + "/inspection/details/tables", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/1/properties/details/properties/tables/minimum", keyword: "minimum", params: { comparison: ">=", limit: 0 }, message: "must be >= 0" };
-                                                          if (vErrors === null) {
-                                                            vErrors = [err43];
-                                                          } else {
-                                                            vErrors.push(err43);
-                                                          }
-                                                          errors2++;
-                                                        }
-                                                      }
-                                                    }
-                                                  }
-                                                  var valid8 = _errs46 === errors2;
+                                                  var valid8 = _errs45 === errors2;
                                                 } else {
                                                   var valid8 = true;
                                                 }
                                                 if (valid8) {
-                                                  if (data21.pictures !== void 0) {
-                                                    let data24 = data21.pictures;
-                                                    const _errs48 = errors2;
-                                                    if (!(typeof data24 == "number" && (!(data24 % 1) && !isNaN(data24)) && isFinite(data24))) {
-                                                      const err44 = { instancePath: instancePath + "/inspection/details/pictures", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/1/properties/details/properties/pictures/type", keyword: "type", params: { type: "integer" }, message: "must be integer" };
+                                                  if (data21.wellFormed !== void 0) {
+                                                    const _errs46 = errors2;
+                                                    if (true !== data21.wellFormed) {
+                                                      const err40 = { instancePath: instancePath + "/inspection/details/wellFormed", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/1/properties/details/properties/wellFormed/const", keyword: "const", params: { allowedValue: true }, message: "must be equal to constant" };
                                                       if (vErrors === null) {
-                                                        vErrors = [err44];
+                                                        vErrors = [err40];
                                                       } else {
-                                                        vErrors.push(err44);
+                                                        vErrors.push(err40);
                                                       }
                                                       errors2++;
                                                     }
-                                                    if (errors2 === _errs48) {
-                                                      if (typeof data24 == "number" && isFinite(data24)) {
-                                                        if (data24 > 9007199254740991 || isNaN(data24)) {
-                                                          const err45 = { instancePath: instancePath + "/inspection/details/pictures", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/1/properties/details/properties/pictures/maximum", keyword: "maximum", params: { comparison: "<=", limit: 9007199254740991 }, message: "must be <= 9007199254740991" };
-                                                          if (vErrors === null) {
-                                                            vErrors = [err45];
-                                                          } else {
-                                                            vErrors.push(err45);
-                                                          }
-                                                          errors2++;
-                                                        } else {
-                                                          if (data24 < 0 || isNaN(data24)) {
-                                                            const err46 = { instancePath: instancePath + "/inspection/details/pictures", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/1/properties/details/properties/pictures/minimum", keyword: "minimum", params: { comparison: ">=", limit: 0 }, message: "must be >= 0" };
-                                                            if (vErrors === null) {
-                                                              vErrors = [err46];
-                                                            } else {
-                                                              vErrors.push(err46);
-                                                            }
-                                                            errors2++;
-                                                          }
-                                                        }
-                                                      }
-                                                    }
-                                                    var valid8 = _errs48 === errors2;
+                                                    var valid8 = _errs46 === errors2;
                                                   } else {
                                                     var valid8 = true;
                                                   }
@@ -46633,11 +46561,11 @@ function validate173(data, { instancePath = "", parentData, parentDataProperty, 
                                             }
                                           }
                                         } else {
-                                          const err47 = { instancePath: instancePath + "/inspection/details", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/1/properties/details/type", keyword: "type", params: { type: "object" }, message: "must be object" };
+                                          const err41 = { instancePath: instancePath + "/inspection/details", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/1/properties/details/type", keyword: "type", params: { type: "object" }, message: "must be object" };
                                           if (vErrors === null) {
-                                            vErrors = [err47];
+                                            vErrors = [err41];
                                           } else {
-                                            vErrors.push(err47);
+                                            vErrors.push(err41);
                                           }
                                           errors2++;
                                         }
@@ -46656,11 +46584,11 @@ function validate173(data, { instancePath = "", parentData, parentDataProperty, 
                     }
                   }
                 } else {
-                  const err48 = { instancePath: instancePath + "/inspection", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/1/type", keyword: "type", params: { type: "object" }, message: "must be object" };
+                  const err42 = { instancePath: instancePath + "/inspection", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/1/type", keyword: "type", params: { type: "object" }, message: "must be object" };
                   if (vErrors === null) {
-                    vErrors = [err48];
+                    vErrors = [err42];
                   } else {
-                    vErrors.push(err48);
+                    vErrors.push(err42);
                   }
                   errors2++;
                 }
@@ -46677,177 +46605,177 @@ function validate173(data, { instancePath = "", parentData, parentDataProperty, 
                     props1 = true;
                   }
                 }
-                const _errs50 = errors2;
-                if (errors2 === _errs50) {
+                const _errs47 = errors2;
+                if (errors2 === _errs47) {
                   if (data1 && typeof data1 == "object" && !Array.isArray(data1)) {
                     let missing5;
                     if (data1.sha256 === void 0 && (missing5 = "sha256") || data1.bytes === void 0 && (missing5 = "bytes") || data1.format === void 0 && (missing5 = "format") || data1.nativeOpened === void 0 && (missing5 = "nativeOpened") || data1.rendered === void 0 && (missing5 = "rendered") || data1.recalculated === void 0 && (missing5 = "recalculated") || data1.members === void 0 && (missing5 = "members") || data1.details === void 0 && (missing5 = "details")) {
-                      const err49 = { instancePath: instancePath + "/inspection", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/2/required", keyword: "required", params: { missingProperty: missing5 }, message: "must have required property '" + missing5 + "'" };
+                      const err43 = { instancePath: instancePath + "/inspection", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/2/required", keyword: "required", params: { missingProperty: missing5 }, message: "must have required property '" + missing5 + "'" };
                       if (vErrors === null) {
-                        vErrors = [err49];
+                        vErrors = [err43];
                       } else {
-                        vErrors.push(err49);
+                        vErrors.push(err43);
                       }
                       errors2++;
                     } else {
-                      const _errs52 = errors2;
+                      const _errs49 = errors2;
                       for (const key5 in data1) {
                         if (!(key5 === "sha256" || key5 === "bytes" || key5 === "format" || key5 === "nativeOpened" || key5 === "rendered" || key5 === "recalculated" || key5 === "members" || key5 === "details")) {
-                          const err50 = { instancePath: instancePath + "/inspection", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/2/additionalProperties", keyword: "additionalProperties", params: { additionalProperty: key5 }, message: "must NOT have additional properties" };
+                          const err44 = { instancePath: instancePath + "/inspection", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/2/additionalProperties", keyword: "additionalProperties", params: { additionalProperty: key5 }, message: "must NOT have additional properties" };
                           if (vErrors === null) {
-                            vErrors = [err50];
+                            vErrors = [err44];
                           } else {
-                            vErrors.push(err50);
+                            vErrors.push(err44);
                           }
                           errors2++;
                           break;
                         }
                       }
-                      if (_errs52 === errors2) {
+                      if (_errs49 === errors2) {
                         if (data1.sha256 !== void 0) {
                           let data25 = data1.sha256;
-                          const _errs53 = errors2;
-                          if (errors2 === _errs53) {
+                          const _errs50 = errors2;
+                          if (errors2 === _errs50) {
                             if (typeof data25 === "string") {
                               if (!pattern14.test(data25)) {
-                                const err51 = { instancePath: instancePath + "/inspection/sha256", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/2/properties/sha256/pattern", keyword: "pattern", params: { pattern: "^[a-f0-9]{64}$" }, message: 'must match pattern "^[a-f0-9]{64}$"' };
+                                const err45 = { instancePath: instancePath + "/inspection/sha256", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/2/properties/sha256/pattern", keyword: "pattern", params: { pattern: "^[a-f0-9]{64}$" }, message: 'must match pattern "^[a-f0-9]{64}$"' };
                                 if (vErrors === null) {
-                                  vErrors = [err51];
+                                  vErrors = [err45];
                                 } else {
-                                  vErrors.push(err51);
+                                  vErrors.push(err45);
                                 }
                                 errors2++;
                               }
                             } else {
-                              const err52 = { instancePath: instancePath + "/inspection/sha256", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/2/properties/sha256/type", keyword: "type", params: { type: "string" }, message: "must be string" };
+                              const err46 = { instancePath: instancePath + "/inspection/sha256", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/2/properties/sha256/type", keyword: "type", params: { type: "string" }, message: "must be string" };
                               if (vErrors === null) {
-                                vErrors = [err52];
+                                vErrors = [err46];
                               } else {
-                                vErrors.push(err52);
+                                vErrors.push(err46);
                               }
                               errors2++;
                             }
                           }
-                          var valid9 = _errs53 === errors2;
+                          var valid9 = _errs50 === errors2;
                         } else {
                           var valid9 = true;
                         }
                         if (valid9) {
                           if (data1.bytes !== void 0) {
                             let data26 = data1.bytes;
-                            const _errs55 = errors2;
+                            const _errs52 = errors2;
                             if (!(typeof data26 == "number" && (!(data26 % 1) && !isNaN(data26)) && isFinite(data26))) {
-                              const err53 = { instancePath: instancePath + "/inspection/bytes", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/2/properties/bytes/type", keyword: "type", params: { type: "integer" }, message: "must be integer" };
+                              const err47 = { instancePath: instancePath + "/inspection/bytes", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/2/properties/bytes/type", keyword: "type", params: { type: "integer" }, message: "must be integer" };
                               if (vErrors === null) {
-                                vErrors = [err53];
+                                vErrors = [err47];
                               } else {
-                                vErrors.push(err53);
+                                vErrors.push(err47);
                               }
                               errors2++;
                             }
-                            if (errors2 === _errs55) {
+                            if (errors2 === _errs52) {
                               if (typeof data26 == "number" && isFinite(data26)) {
                                 if (data26 > 9007199254740991 || isNaN(data26)) {
-                                  const err54 = { instancePath: instancePath + "/inspection/bytes", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/2/properties/bytes/maximum", keyword: "maximum", params: { comparison: "<=", limit: 9007199254740991 }, message: "must be <= 9007199254740991" };
+                                  const err48 = { instancePath: instancePath + "/inspection/bytes", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/2/properties/bytes/maximum", keyword: "maximum", params: { comparison: "<=", limit: 9007199254740991 }, message: "must be <= 9007199254740991" };
                                   if (vErrors === null) {
-                                    vErrors = [err54];
+                                    vErrors = [err48];
                                   } else {
-                                    vErrors.push(err54);
+                                    vErrors.push(err48);
                                   }
                                   errors2++;
                                 } else {
                                   if (data26 < 0 || isNaN(data26)) {
-                                    const err55 = { instancePath: instancePath + "/inspection/bytes", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/2/properties/bytes/minimum", keyword: "minimum", params: { comparison: ">=", limit: 0 }, message: "must be >= 0" };
+                                    const err49 = { instancePath: instancePath + "/inspection/bytes", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/2/properties/bytes/minimum", keyword: "minimum", params: { comparison: ">=", limit: 0 }, message: "must be >= 0" };
                                     if (vErrors === null) {
-                                      vErrors = [err55];
+                                      vErrors = [err49];
                                     } else {
-                                      vErrors.push(err55);
+                                      vErrors.push(err49);
                                     }
                                     errors2++;
                                   }
                                 }
                               }
                             }
-                            var valid9 = _errs55 === errors2;
+                            var valid9 = _errs52 === errors2;
                           } else {
                             var valid9 = true;
                           }
                           if (valid9) {
                             if (data1.format !== void 0) {
-                              const _errs57 = errors2;
-                              if ("xlsx" !== data1.format) {
-                                const err56 = { instancePath: instancePath + "/inspection/format", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/2/properties/format/const", keyword: "const", params: { allowedValue: "xlsx" }, message: "must be equal to constant" };
+                              const _errs54 = errors2;
+                              if ("docx" !== data1.format) {
+                                const err50 = { instancePath: instancePath + "/inspection/format", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/2/properties/format/const", keyword: "const", params: { allowedValue: "docx" }, message: "must be equal to constant" };
                                 if (vErrors === null) {
-                                  vErrors = [err56];
+                                  vErrors = [err50];
                                 } else {
-                                  vErrors.push(err56);
+                                  vErrors.push(err50);
                                 }
                                 errors2++;
                               }
-                              var valid9 = _errs57 === errors2;
+                              var valid9 = _errs54 === errors2;
                             } else {
                               var valid9 = true;
                             }
                             if (valid9) {
                               if (data1.nativeOpened !== void 0) {
-                                const _errs58 = errors2;
+                                const _errs55 = errors2;
                                 if (false !== data1.nativeOpened) {
-                                  const err57 = { instancePath: instancePath + "/inspection/nativeOpened", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/2/properties/nativeOpened/const", keyword: "const", params: { allowedValue: false }, message: "must be equal to constant" };
+                                  const err51 = { instancePath: instancePath + "/inspection/nativeOpened", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/2/properties/nativeOpened/const", keyword: "const", params: { allowedValue: false }, message: "must be equal to constant" };
                                   if (vErrors === null) {
-                                    vErrors = [err57];
+                                    vErrors = [err51];
                                   } else {
-                                    vErrors.push(err57);
+                                    vErrors.push(err51);
                                   }
                                   errors2++;
                                 }
-                                var valid9 = _errs58 === errors2;
+                                var valid9 = _errs55 === errors2;
                               } else {
                                 var valid9 = true;
                               }
                               if (valid9) {
                                 if (data1.rendered !== void 0) {
-                                  const _errs59 = errors2;
+                                  const _errs56 = errors2;
                                   if (false !== data1.rendered) {
-                                    const err58 = { instancePath: instancePath + "/inspection/rendered", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/2/properties/rendered/const", keyword: "const", params: { allowedValue: false }, message: "must be equal to constant" };
+                                    const err52 = { instancePath: instancePath + "/inspection/rendered", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/2/properties/rendered/const", keyword: "const", params: { allowedValue: false }, message: "must be equal to constant" };
                                     if (vErrors === null) {
-                                      vErrors = [err58];
+                                      vErrors = [err52];
                                     } else {
-                                      vErrors.push(err58);
+                                      vErrors.push(err52);
                                     }
                                     errors2++;
                                   }
-                                  var valid9 = _errs59 === errors2;
+                                  var valid9 = _errs56 === errors2;
                                 } else {
                                   var valid9 = true;
                                 }
                                 if (valid9) {
                                   if (data1.recalculated !== void 0) {
-                                    const _errs60 = errors2;
+                                    const _errs57 = errors2;
                                     if (false !== data1.recalculated) {
-                                      const err59 = { instancePath: instancePath + "/inspection/recalculated", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/2/properties/recalculated/const", keyword: "const", params: { allowedValue: false }, message: "must be equal to constant" };
+                                      const err53 = { instancePath: instancePath + "/inspection/recalculated", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/2/properties/recalculated/const", keyword: "const", params: { allowedValue: false }, message: "must be equal to constant" };
                                       if (vErrors === null) {
-                                        vErrors = [err59];
+                                        vErrors = [err53];
                                       } else {
-                                        vErrors.push(err59);
+                                        vErrors.push(err53);
                                       }
                                       errors2++;
                                     }
-                                    var valid9 = _errs60 === errors2;
+                                    var valid9 = _errs57 === errors2;
                                   } else {
                                     var valid9 = true;
                                   }
                                   if (valid9) {
                                     if (data1.members !== void 0) {
                                       let data31 = data1.members;
-                                      const _errs61 = errors2;
-                                      if (errors2 === _errs61) {
+                                      const _errs58 = errors2;
+                                      if (errors2 === _errs58) {
                                         if (Array.isArray(data31)) {
                                           if (data31.length > 5e3) {
-                                            const err60 = { instancePath: instancePath + "/inspection/members", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/2/properties/members/maxItems", keyword: "maxItems", params: { limit: 5e3 }, message: "must NOT have more than 5000 items" };
+                                            const err54 = { instancePath: instancePath + "/inspection/members", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/2/properties/members/maxItems", keyword: "maxItems", params: { limit: 5e3 }, message: "must NOT have more than 5000 items" };
                                             if (vErrors === null) {
-                                              vErrors = [err60];
+                                              vErrors = [err54];
                                             } else {
-                                              vErrors.push(err60);
+                                              vErrors.push(err54);
                                             }
                                             errors2++;
                                           } else {
@@ -46855,214 +46783,212 @@ function validate173(data, { instancePath = "", parentData, parentDataProperty, 
                                             const len2 = data31.length;
                                             for (let i2 = 0; i2 < len2; i2++) {
                                               let data32 = data31[i2];
-                                              const _errs63 = errors2;
-                                              if (errors2 === _errs63) {
+                                              const _errs60 = errors2;
+                                              if (errors2 === _errs60) {
                                                 if (typeof data32 === "string") {
                                                   if (func1(data32) > 500) {
-                                                    const err61 = { instancePath: instancePath + "/inspection/members/" + i2, schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/2/properties/members/items/maxLength", keyword: "maxLength", params: { limit: 500 }, message: "must NOT have more than 500 characters" };
+                                                    const err55 = { instancePath: instancePath + "/inspection/members/" + i2, schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/2/properties/members/items/maxLength", keyword: "maxLength", params: { limit: 500 }, message: "must NOT have more than 500 characters" };
                                                     if (vErrors === null) {
-                                                      vErrors = [err61];
+                                                      vErrors = [err55];
                                                     } else {
-                                                      vErrors.push(err61);
+                                                      vErrors.push(err55);
                                                     }
                                                     errors2++;
                                                   }
                                                 } else {
-                                                  const err62 = { instancePath: instancePath + "/inspection/members/" + i2, schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/2/properties/members/items/type", keyword: "type", params: { type: "string" }, message: "must be string" };
+                                                  const err56 = { instancePath: instancePath + "/inspection/members/" + i2, schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/2/properties/members/items/type", keyword: "type", params: { type: "string" }, message: "must be string" };
                                                   if (vErrors === null) {
-                                                    vErrors = [err62];
+                                                    vErrors = [err56];
                                                   } else {
-                                                    vErrors.push(err62);
+                                                    vErrors.push(err56);
                                                   }
                                                   errors2++;
                                                 }
                                               }
-                                              var valid10 = _errs63 === errors2;
+                                              var valid10 = _errs60 === errors2;
                                               if (!valid10) {
                                                 break;
                                               }
                                             }
                                           }
                                         } else {
-                                          const err63 = { instancePath: instancePath + "/inspection/members", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/2/properties/members/type", keyword: "type", params: { type: "array" }, message: "must be array" };
+                                          const err57 = { instancePath: instancePath + "/inspection/members", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/2/properties/members/type", keyword: "type", params: { type: "array" }, message: "must be array" };
                                           if (vErrors === null) {
-                                            vErrors = [err63];
+                                            vErrors = [err57];
                                           } else {
-                                            vErrors.push(err63);
+                                            vErrors.push(err57);
                                           }
                                           errors2++;
                                         }
                                       }
-                                      var valid9 = _errs61 === errors2;
+                                      var valid9 = _errs58 === errors2;
                                     } else {
                                       var valid9 = true;
                                     }
                                     if (valid9) {
                                       if (data1.details !== void 0) {
                                         let data33 = data1.details;
-                                        const _errs65 = errors2;
-                                        if (errors2 === _errs65) {
+                                        const _errs62 = errors2;
+                                        if (errors2 === _errs62) {
                                           if (data33 && typeof data33 == "object" && !Array.isArray(data33)) {
                                             let missing6;
-                                            if (data33.sheets === void 0 && (missing6 = "sheets") || data33.formulas === void 0 && (missing6 = "formulas") || data33.formulaCache === void 0 && (missing6 = "formulaCache")) {
-                                              const err64 = { instancePath: instancePath + "/inspection/details", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/2/properties/details/required", keyword: "required", params: { missingProperty: missing6 }, message: "must have required property '" + missing6 + "'" };
+                                            if (data33.paragraphs === void 0 && (missing6 = "paragraphs") || data33.tables === void 0 && (missing6 = "tables") || data33.pictures === void 0 && (missing6 = "pictures")) {
+                                              const err58 = { instancePath: instancePath + "/inspection/details", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/2/properties/details/required", keyword: "required", params: { missingProperty: missing6 }, message: "must have required property '" + missing6 + "'" };
                                               if (vErrors === null) {
-                                                vErrors = [err64];
+                                                vErrors = [err58];
                                               } else {
-                                                vErrors.push(err64);
+                                                vErrors.push(err58);
                                               }
                                               errors2++;
                                             } else {
-                                              const _errs67 = errors2;
+                                              const _errs64 = errors2;
                                               for (const key6 in data33) {
-                                                if (!(key6 === "sheets" || key6 === "formulas" || key6 === "formulaCache" || key6 === "revisionMethod")) {
-                                                  const err65 = { instancePath: instancePath + "/inspection/details", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/2/properties/details/additionalProperties", keyword: "additionalProperties", params: { additionalProperty: key6 }, message: "must NOT have additional properties" };
+                                                if (!(key6 === "paragraphs" || key6 === "tables" || key6 === "pictures")) {
+                                                  const err59 = { instancePath: instancePath + "/inspection/details", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/2/properties/details/additionalProperties", keyword: "additionalProperties", params: { additionalProperty: key6 }, message: "must NOT have additional properties" };
                                                   if (vErrors === null) {
-                                                    vErrors = [err65];
+                                                    vErrors = [err59];
                                                   } else {
-                                                    vErrors.push(err65);
+                                                    vErrors.push(err59);
                                                   }
                                                   errors2++;
                                                   break;
                                                 }
                                               }
-                                              if (_errs67 === errors2) {
-                                                if (data33.sheets !== void 0) {
-                                                  let data34 = data33.sheets;
-                                                  const _errs68 = errors2;
-                                                  if (errors2 === _errs68) {
-                                                    if (Array.isArray(data34)) {
-                                                      if (data34.length > 30) {
-                                                        const err66 = { instancePath: instancePath + "/inspection/details/sheets", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/2/properties/details/properties/sheets/maxItems", keyword: "maxItems", params: { limit: 30 }, message: "must NOT have more than 30 items" };
+                                              if (_errs64 === errors2) {
+                                                if (data33.paragraphs !== void 0) {
+                                                  let data34 = data33.paragraphs;
+                                                  const _errs65 = errors2;
+                                                  if (!(typeof data34 == "number" && (!(data34 % 1) && !isNaN(data34)) && isFinite(data34))) {
+                                                    const err60 = { instancePath: instancePath + "/inspection/details/paragraphs", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/2/properties/details/properties/paragraphs/type", keyword: "type", params: { type: "integer" }, message: "must be integer" };
+                                                    if (vErrors === null) {
+                                                      vErrors = [err60];
+                                                    } else {
+                                                      vErrors.push(err60);
+                                                    }
+                                                    errors2++;
+                                                  }
+                                                  if (errors2 === _errs65) {
+                                                    if (typeof data34 == "number" && isFinite(data34)) {
+                                                      if (data34 > 9007199254740991 || isNaN(data34)) {
+                                                        const err61 = { instancePath: instancePath + "/inspection/details/paragraphs", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/2/properties/details/properties/paragraphs/maximum", keyword: "maximum", params: { comparison: "<=", limit: 9007199254740991 }, message: "must be <= 9007199254740991" };
+                                                        if (vErrors === null) {
+                                                          vErrors = [err61];
+                                                        } else {
+                                                          vErrors.push(err61);
+                                                        }
+                                                        errors2++;
+                                                      } else {
+                                                        if (data34 < 0 || isNaN(data34)) {
+                                                          const err62 = { instancePath: instancePath + "/inspection/details/paragraphs", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/2/properties/details/properties/paragraphs/minimum", keyword: "minimum", params: { comparison: ">=", limit: 0 }, message: "must be >= 0" };
+                                                          if (vErrors === null) {
+                                                            vErrors = [err62];
+                                                          } else {
+                                                            vErrors.push(err62);
+                                                          }
+                                                          errors2++;
+                                                        }
+                                                      }
+                                                    }
+                                                  }
+                                                  var valid11 = _errs65 === errors2;
+                                                } else {
+                                                  var valid11 = true;
+                                                }
+                                                if (valid11) {
+                                                  if (data33.tables !== void 0) {
+                                                    let data35 = data33.tables;
+                                                    const _errs67 = errors2;
+                                                    if (!(typeof data35 == "number" && (!(data35 % 1) && !isNaN(data35)) && isFinite(data35))) {
+                                                      const err63 = { instancePath: instancePath + "/inspection/details/tables", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/2/properties/details/properties/tables/type", keyword: "type", params: { type: "integer" }, message: "must be integer" };
+                                                      if (vErrors === null) {
+                                                        vErrors = [err63];
+                                                      } else {
+                                                        vErrors.push(err63);
+                                                      }
+                                                      errors2++;
+                                                    }
+                                                    if (errors2 === _errs67) {
+                                                      if (typeof data35 == "number" && isFinite(data35)) {
+                                                        if (data35 > 9007199254740991 || isNaN(data35)) {
+                                                          const err64 = { instancePath: instancePath + "/inspection/details/tables", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/2/properties/details/properties/tables/maximum", keyword: "maximum", params: { comparison: "<=", limit: 9007199254740991 }, message: "must be <= 9007199254740991" };
+                                                          if (vErrors === null) {
+                                                            vErrors = [err64];
+                                                          } else {
+                                                            vErrors.push(err64);
+                                                          }
+                                                          errors2++;
+                                                        } else {
+                                                          if (data35 < 0 || isNaN(data35)) {
+                                                            const err65 = { instancePath: instancePath + "/inspection/details/tables", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/2/properties/details/properties/tables/minimum", keyword: "minimum", params: { comparison: ">=", limit: 0 }, message: "must be >= 0" };
+                                                            if (vErrors === null) {
+                                                              vErrors = [err65];
+                                                            } else {
+                                                              vErrors.push(err65);
+                                                            }
+                                                            errors2++;
+                                                          }
+                                                        }
+                                                      }
+                                                    }
+                                                    var valid11 = _errs67 === errors2;
+                                                  } else {
+                                                    var valid11 = true;
+                                                  }
+                                                  if (valid11) {
+                                                    if (data33.pictures !== void 0) {
+                                                      let data36 = data33.pictures;
+                                                      const _errs69 = errors2;
+                                                      if (!(typeof data36 == "number" && (!(data36 % 1) && !isNaN(data36)) && isFinite(data36))) {
+                                                        const err66 = { instancePath: instancePath + "/inspection/details/pictures", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/2/properties/details/properties/pictures/type", keyword: "type", params: { type: "integer" }, message: "must be integer" };
                                                         if (vErrors === null) {
                                                           vErrors = [err66];
                                                         } else {
                                                           vErrors.push(err66);
                                                         }
                                                         errors2++;
-                                                      } else {
-                                                        var valid12 = true;
-                                                        const len3 = data34.length;
-                                                        for (let i3 = 0; i3 < len3; i3++) {
-                                                          const _errs70 = errors2;
-                                                          if (typeof data34[i3] !== "string") {
-                                                            const err67 = { instancePath: instancePath + "/inspection/details/sheets/" + i3, schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/2/properties/details/properties/sheets/items/type", keyword: "type", params: { type: "string" }, message: "must be string" };
+                                                      }
+                                                      if (errors2 === _errs69) {
+                                                        if (typeof data36 == "number" && isFinite(data36)) {
+                                                          if (data36 > 9007199254740991 || isNaN(data36)) {
+                                                            const err67 = { instancePath: instancePath + "/inspection/details/pictures", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/2/properties/details/properties/pictures/maximum", keyword: "maximum", params: { comparison: "<=", limit: 9007199254740991 }, message: "must be <= 9007199254740991" };
                                                             if (vErrors === null) {
                                                               vErrors = [err67];
                                                             } else {
                                                               vErrors.push(err67);
                                                             }
                                                             errors2++;
-                                                          }
-                                                          var valid12 = _errs70 === errors2;
-                                                          if (!valid12) {
-                                                            break;
-                                                          }
-                                                        }
-                                                      }
-                                                    } else {
-                                                      const err68 = { instancePath: instancePath + "/inspection/details/sheets", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/2/properties/details/properties/sheets/type", keyword: "type", params: { type: "array" }, message: "must be array" };
-                                                      if (vErrors === null) {
-                                                        vErrors = [err68];
-                                                      } else {
-                                                        vErrors.push(err68);
-                                                      }
-                                                      errors2++;
-                                                    }
-                                                  }
-                                                  var valid11 = _errs68 === errors2;
-                                                } else {
-                                                  var valid11 = true;
-                                                }
-                                                if (valid11) {
-                                                  if (data33.formulas !== void 0) {
-                                                    let data36 = data33.formulas;
-                                                    const _errs72 = errors2;
-                                                    if (!(typeof data36 == "number" && (!(data36 % 1) && !isNaN(data36)) && isFinite(data36))) {
-                                                      const err69 = { instancePath: instancePath + "/inspection/details/formulas", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/2/properties/details/properties/formulas/type", keyword: "type", params: { type: "integer" }, message: "must be integer" };
-                                                      if (vErrors === null) {
-                                                        vErrors = [err69];
-                                                      } else {
-                                                        vErrors.push(err69);
-                                                      }
-                                                      errors2++;
-                                                    }
-                                                    if (errors2 === _errs72) {
-                                                      if (typeof data36 == "number" && isFinite(data36)) {
-                                                        if (data36 > 9007199254740991 || isNaN(data36)) {
-                                                          const err70 = { instancePath: instancePath + "/inspection/details/formulas", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/2/properties/details/properties/formulas/maximum", keyword: "maximum", params: { comparison: "<=", limit: 9007199254740991 }, message: "must be <= 9007199254740991" };
-                                                          if (vErrors === null) {
-                                                            vErrors = [err70];
                                                           } else {
-                                                            vErrors.push(err70);
-                                                          }
-                                                          errors2++;
-                                                        } else {
-                                                          if (data36 < 0 || isNaN(data36)) {
-                                                            const err71 = { instancePath: instancePath + "/inspection/details/formulas", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/2/properties/details/properties/formulas/minimum", keyword: "minimum", params: { comparison: ">=", limit: 0 }, message: "must be >= 0" };
-                                                            if (vErrors === null) {
-                                                              vErrors = [err71];
-                                                            } else {
-                                                              vErrors.push(err71);
+                                                            if (data36 < 0 || isNaN(data36)) {
+                                                              const err68 = { instancePath: instancePath + "/inspection/details/pictures", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/2/properties/details/properties/pictures/minimum", keyword: "minimum", params: { comparison: ">=", limit: 0 }, message: "must be >= 0" };
+                                                              if (vErrors === null) {
+                                                                vErrors = [err68];
+                                                              } else {
+                                                                vErrors.push(err68);
+                                                              }
+                                                              errors2++;
                                                             }
-                                                            errors2++;
                                                           }
                                                         }
                                                       }
-                                                    }
-                                                    var valid11 = _errs72 === errors2;
-                                                  } else {
-                                                    var valid11 = true;
-                                                  }
-                                                  if (valid11) {
-                                                    if (data33.formulaCache !== void 0) {
-                                                      let data37 = data33.formulaCache;
-                                                      const _errs74 = errors2;
-                                                      if (!(data37 === "unverified-zero-placeholder; recalculation required" || data37 === "removed/unverified; recalculation required")) {
-                                                        const err72 = { instancePath: instancePath + "/inspection/details/formulaCache", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/2/properties/details/properties/formulaCache/enum", keyword: "enum", params: { allowedValues: schema301.oneOf[2].properties.details.properties.formulaCache.enum }, message: "must be equal to one of the allowed values" };
-                                                        if (vErrors === null) {
-                                                          vErrors = [err72];
-                                                        } else {
-                                                          vErrors.push(err72);
-                                                        }
-                                                        errors2++;
-                                                      }
-                                                      var valid11 = _errs74 === errors2;
+                                                      var valid11 = _errs69 === errors2;
                                                     } else {
                                                       var valid11 = true;
-                                                    }
-                                                    if (valid11) {
-                                                      if (data33.revisionMethod !== void 0) {
-                                                        const _errs75 = errors2;
-                                                        if ("openpyxl typed-cell replacement" !== data33.revisionMethod) {
-                                                          const err73 = { instancePath: instancePath + "/inspection/details/revisionMethod", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/2/properties/details/properties/revisionMethod/const", keyword: "const", params: { allowedValue: "openpyxl typed-cell replacement" }, message: "must be equal to constant" };
-                                                          if (vErrors === null) {
-                                                            vErrors = [err73];
-                                                          } else {
-                                                            vErrors.push(err73);
-                                                          }
-                                                          errors2++;
-                                                        }
-                                                        var valid11 = _errs75 === errors2;
-                                                      } else {
-                                                        var valid11 = true;
-                                                      }
                                                     }
                                                   }
                                                 }
                                               }
                                             }
                                           } else {
-                                            const err74 = { instancePath: instancePath + "/inspection/details", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/2/properties/details/type", keyword: "type", params: { type: "object" }, message: "must be object" };
+                                            const err69 = { instancePath: instancePath + "/inspection/details", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/2/properties/details/type", keyword: "type", params: { type: "object" }, message: "must be object" };
                                             if (vErrors === null) {
-                                              vErrors = [err74];
+                                              vErrors = [err69];
                                             } else {
-                                              vErrors.push(err74);
+                                              vErrors.push(err69);
                                             }
                                             errors2++;
                                           }
                                         }
-                                        var valid9 = _errs65 === errors2;
+                                        var valid9 = _errs62 === errors2;
                                       } else {
                                         var valid9 = true;
                                       }
@@ -47076,16 +47002,16 @@ function validate173(data, { instancePath = "", parentData, parentDataProperty, 
                       }
                     }
                   } else {
-                    const err75 = { instancePath: instancePath + "/inspection", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/2/type", keyword: "type", params: { type: "object" }, message: "must be object" };
+                    const err70 = { instancePath: instancePath + "/inspection", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/2/type", keyword: "type", params: { type: "object" }, message: "must be object" };
                     if (vErrors === null) {
-                      vErrors = [err75];
+                      vErrors = [err70];
                     } else {
-                      vErrors.push(err75);
+                      vErrors.push(err70);
                     }
                     errors2++;
                   }
                 }
-                var _valid0 = _errs50 === errors2;
+                var _valid0 = _errs47 === errors2;
                 if (_valid0 && valid2) {
                   valid2 = false;
                   passing0 = [passing0, 2];
@@ -47097,40 +47023,106 @@ function validate173(data, { instancePath = "", parentData, parentDataProperty, 
                       props1 = true;
                     }
                   }
-                  const _errs76 = errors2;
-                  if (errors2 === _errs76) {
+                  const _errs71 = errors2;
+                  if (errors2 === _errs71) {
                     if (data1 && typeof data1 == "object" && !Array.isArray(data1)) {
                       let missing7;
                       if (data1.sha256 === void 0 && (missing7 = "sha256") || data1.bytes === void 0 && (missing7 = "bytes") || data1.format === void 0 && (missing7 = "format") || data1.nativeOpened === void 0 && (missing7 = "nativeOpened") || data1.rendered === void 0 && (missing7 = "rendered") || data1.recalculated === void 0 && (missing7 = "recalculated") || data1.members === void 0 && (missing7 = "members") || data1.details === void 0 && (missing7 = "details")) {
-                        const err76 = { instancePath: instancePath + "/inspection", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/3/required", keyword: "required", params: { missingProperty: missing7 }, message: "must have required property '" + missing7 + "'" };
+                        const err71 = { instancePath: instancePath + "/inspection", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/3/required", keyword: "required", params: { missingProperty: missing7 }, message: "must have required property '" + missing7 + "'" };
                         if (vErrors === null) {
-                          vErrors = [err76];
+                          vErrors = [err71];
                         } else {
-                          vErrors.push(err76);
+                          vErrors.push(err71);
                         }
                         errors2++;
                       } else {
-                        const _errs78 = errors2;
+                        const _errs73 = errors2;
                         for (const key7 in data1) {
                           if (!(key7 === "sha256" || key7 === "bytes" || key7 === "format" || key7 === "nativeOpened" || key7 === "rendered" || key7 === "recalculated" || key7 === "members" || key7 === "details")) {
-                            const err77 = { instancePath: instancePath + "/inspection", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/3/additionalProperties", keyword: "additionalProperties", params: { additionalProperty: key7 }, message: "must NOT have additional properties" };
+                            const err72 = { instancePath: instancePath + "/inspection", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/3/additionalProperties", keyword: "additionalProperties", params: { additionalProperty: key7 }, message: "must NOT have additional properties" };
                             if (vErrors === null) {
-                              vErrors = [err77];
+                              vErrors = [err72];
                             } else {
-                              vErrors.push(err77);
+                              vErrors.push(err72);
                             }
                             errors2++;
                             break;
                           }
                         }
-                        if (_errs78 === errors2) {
+                        if (_errs73 === errors2) {
                           if (data1.sha256 !== void 0) {
-                            let data39 = data1.sha256;
-                            const _errs79 = errors2;
-                            if (errors2 === _errs79) {
-                              if (typeof data39 === "string") {
-                                if (!pattern14.test(data39)) {
-                                  const err78 = { instancePath: instancePath + "/inspection/sha256", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/3/properties/sha256/pattern", keyword: "pattern", params: { pattern: "^[a-f0-9]{64}$" }, message: 'must match pattern "^[a-f0-9]{64}$"' };
+                            let data37 = data1.sha256;
+                            const _errs74 = errors2;
+                            if (errors2 === _errs74) {
+                              if (typeof data37 === "string") {
+                                if (!pattern14.test(data37)) {
+                                  const err73 = { instancePath: instancePath + "/inspection/sha256", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/3/properties/sha256/pattern", keyword: "pattern", params: { pattern: "^[a-f0-9]{64}$" }, message: 'must match pattern "^[a-f0-9]{64}$"' };
+                                  if (vErrors === null) {
+                                    vErrors = [err73];
+                                  } else {
+                                    vErrors.push(err73);
+                                  }
+                                  errors2++;
+                                }
+                              } else {
+                                const err74 = { instancePath: instancePath + "/inspection/sha256", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/3/properties/sha256/type", keyword: "type", params: { type: "string" }, message: "must be string" };
+                                if (vErrors === null) {
+                                  vErrors = [err74];
+                                } else {
+                                  vErrors.push(err74);
+                                }
+                                errors2++;
+                              }
+                            }
+                            var valid12 = _errs74 === errors2;
+                          } else {
+                            var valid12 = true;
+                          }
+                          if (valid12) {
+                            if (data1.bytes !== void 0) {
+                              let data38 = data1.bytes;
+                              const _errs76 = errors2;
+                              if (!(typeof data38 == "number" && (!(data38 % 1) && !isNaN(data38)) && isFinite(data38))) {
+                                const err75 = { instancePath: instancePath + "/inspection/bytes", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/3/properties/bytes/type", keyword: "type", params: { type: "integer" }, message: "must be integer" };
+                                if (vErrors === null) {
+                                  vErrors = [err75];
+                                } else {
+                                  vErrors.push(err75);
+                                }
+                                errors2++;
+                              }
+                              if (errors2 === _errs76) {
+                                if (typeof data38 == "number" && isFinite(data38)) {
+                                  if (data38 > 9007199254740991 || isNaN(data38)) {
+                                    const err76 = { instancePath: instancePath + "/inspection/bytes", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/3/properties/bytes/maximum", keyword: "maximum", params: { comparison: "<=", limit: 9007199254740991 }, message: "must be <= 9007199254740991" };
+                                    if (vErrors === null) {
+                                      vErrors = [err76];
+                                    } else {
+                                      vErrors.push(err76);
+                                    }
+                                    errors2++;
+                                  } else {
+                                    if (data38 < 0 || isNaN(data38)) {
+                                      const err77 = { instancePath: instancePath + "/inspection/bytes", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/3/properties/bytes/minimum", keyword: "minimum", params: { comparison: ">=", limit: 0 }, message: "must be >= 0" };
+                                      if (vErrors === null) {
+                                        vErrors = [err77];
+                                      } else {
+                                        vErrors.push(err77);
+                                      }
+                                      errors2++;
+                                    }
+                                  }
+                                }
+                              }
+                              var valid12 = _errs76 === errors2;
+                            } else {
+                              var valid12 = true;
+                            }
+                            if (valid12) {
+                              if (data1.format !== void 0) {
+                                const _errs78 = errors2;
+                                if ("xlsx" !== data1.format) {
+                                  const err78 = { instancePath: instancePath + "/inspection/format", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/3/properties/format/const", keyword: "const", params: { allowedValue: "xlsx" }, message: "must be equal to constant" };
                                   if (vErrors === null) {
                                     vErrors = [err78];
                                   } else {
@@ -47138,240 +47130,258 @@ function validate173(data, { instancePath = "", parentData, parentDataProperty, 
                                   }
                                   errors2++;
                                 }
+                                var valid12 = _errs78 === errors2;
                               } else {
-                                const err79 = { instancePath: instancePath + "/inspection/sha256", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/3/properties/sha256/type", keyword: "type", params: { type: "string" }, message: "must be string" };
-                                if (vErrors === null) {
-                                  vErrors = [err79];
-                                } else {
-                                  vErrors.push(err79);
-                                }
-                                errors2++;
+                                var valid12 = true;
                               }
-                            }
-                            var valid13 = _errs79 === errors2;
-                          } else {
-                            var valid13 = true;
-                          }
-                          if (valid13) {
-                            if (data1.bytes !== void 0) {
-                              let data40 = data1.bytes;
-                              const _errs81 = errors2;
-                              if (!(typeof data40 == "number" && (!(data40 % 1) && !isNaN(data40)) && isFinite(data40))) {
-                                const err80 = { instancePath: instancePath + "/inspection/bytes", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/3/properties/bytes/type", keyword: "type", params: { type: "integer" }, message: "must be integer" };
-                                if (vErrors === null) {
-                                  vErrors = [err80];
-                                } else {
-                                  vErrors.push(err80);
-                                }
-                                errors2++;
-                              }
-                              if (errors2 === _errs81) {
-                                if (typeof data40 == "number" && isFinite(data40)) {
-                                  if (data40 > 9007199254740991 || isNaN(data40)) {
-                                    const err81 = { instancePath: instancePath + "/inspection/bytes", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/3/properties/bytes/maximum", keyword: "maximum", params: { comparison: "<=", limit: 9007199254740991 }, message: "must be <= 9007199254740991" };
-                                    if (vErrors === null) {
-                                      vErrors = [err81];
-                                    } else {
-                                      vErrors.push(err81);
-                                    }
-                                    errors2++;
-                                  } else {
-                                    if (data40 < 0 || isNaN(data40)) {
-                                      const err82 = { instancePath: instancePath + "/inspection/bytes", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/3/properties/bytes/minimum", keyword: "minimum", params: { comparison: ">=", limit: 0 }, message: "must be >= 0" };
-                                      if (vErrors === null) {
-                                        vErrors = [err82];
-                                      } else {
-                                        vErrors.push(err82);
-                                      }
-                                      errors2++;
-                                    }
-                                  }
-                                }
-                              }
-                              var valid13 = _errs81 === errors2;
-                            } else {
-                              var valid13 = true;
-                            }
-                            if (valid13) {
-                              if (data1.format !== void 0) {
-                                const _errs83 = errors2;
-                                if ("pptx" !== data1.format) {
-                                  const err83 = { instancePath: instancePath + "/inspection/format", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/3/properties/format/const", keyword: "const", params: { allowedValue: "pptx" }, message: "must be equal to constant" };
-                                  if (vErrors === null) {
-                                    vErrors = [err83];
-                                  } else {
-                                    vErrors.push(err83);
-                                  }
-                                  errors2++;
-                                }
-                                var valid13 = _errs83 === errors2;
-                              } else {
-                                var valid13 = true;
-                              }
-                              if (valid13) {
+                              if (valid12) {
                                 if (data1.nativeOpened !== void 0) {
-                                  const _errs84 = errors2;
+                                  const _errs79 = errors2;
                                   if (false !== data1.nativeOpened) {
-                                    const err84 = { instancePath: instancePath + "/inspection/nativeOpened", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/3/properties/nativeOpened/const", keyword: "const", params: { allowedValue: false }, message: "must be equal to constant" };
+                                    const err79 = { instancePath: instancePath + "/inspection/nativeOpened", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/3/properties/nativeOpened/const", keyword: "const", params: { allowedValue: false }, message: "must be equal to constant" };
                                     if (vErrors === null) {
-                                      vErrors = [err84];
+                                      vErrors = [err79];
                                     } else {
-                                      vErrors.push(err84);
+                                      vErrors.push(err79);
                                     }
                                     errors2++;
                                   }
-                                  var valid13 = _errs84 === errors2;
+                                  var valid12 = _errs79 === errors2;
                                 } else {
-                                  var valid13 = true;
+                                  var valid12 = true;
                                 }
-                                if (valid13) {
+                                if (valid12) {
                                   if (data1.rendered !== void 0) {
-                                    const _errs85 = errors2;
+                                    const _errs80 = errors2;
                                     if (false !== data1.rendered) {
-                                      const err85 = { instancePath: instancePath + "/inspection/rendered", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/3/properties/rendered/const", keyword: "const", params: { allowedValue: false }, message: "must be equal to constant" };
+                                      const err80 = { instancePath: instancePath + "/inspection/rendered", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/3/properties/rendered/const", keyword: "const", params: { allowedValue: false }, message: "must be equal to constant" };
                                       if (vErrors === null) {
-                                        vErrors = [err85];
+                                        vErrors = [err80];
                                       } else {
-                                        vErrors.push(err85);
+                                        vErrors.push(err80);
                                       }
                                       errors2++;
                                     }
-                                    var valid13 = _errs85 === errors2;
+                                    var valid12 = _errs80 === errors2;
                                   } else {
-                                    var valid13 = true;
+                                    var valid12 = true;
                                   }
-                                  if (valid13) {
+                                  if (valid12) {
                                     if (data1.recalculated !== void 0) {
-                                      const _errs86 = errors2;
+                                      const _errs81 = errors2;
                                       if (false !== data1.recalculated) {
-                                        const err86 = { instancePath: instancePath + "/inspection/recalculated", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/3/properties/recalculated/const", keyword: "const", params: { allowedValue: false }, message: "must be equal to constant" };
+                                        const err81 = { instancePath: instancePath + "/inspection/recalculated", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/3/properties/recalculated/const", keyword: "const", params: { allowedValue: false }, message: "must be equal to constant" };
                                         if (vErrors === null) {
-                                          vErrors = [err86];
+                                          vErrors = [err81];
                                         } else {
-                                          vErrors.push(err86);
+                                          vErrors.push(err81);
                                         }
                                         errors2++;
                                       }
-                                      var valid13 = _errs86 === errors2;
+                                      var valid12 = _errs81 === errors2;
                                     } else {
-                                      var valid13 = true;
+                                      var valid12 = true;
                                     }
-                                    if (valid13) {
+                                    if (valid12) {
                                       if (data1.members !== void 0) {
-                                        let data45 = data1.members;
-                                        const _errs87 = errors2;
-                                        if (errors2 === _errs87) {
-                                          if (Array.isArray(data45)) {
-                                            if (data45.length > 5e3) {
-                                              const err87 = { instancePath: instancePath + "/inspection/members", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/3/properties/members/maxItems", keyword: "maxItems", params: { limit: 5e3 }, message: "must NOT have more than 5000 items" };
+                                        let data43 = data1.members;
+                                        const _errs82 = errors2;
+                                        if (errors2 === _errs82) {
+                                          if (Array.isArray(data43)) {
+                                            if (data43.length > 5e3) {
+                                              const err82 = { instancePath: instancePath + "/inspection/members", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/3/properties/members/maxItems", keyword: "maxItems", params: { limit: 5e3 }, message: "must NOT have more than 5000 items" };
                                               if (vErrors === null) {
-                                                vErrors = [err87];
+                                                vErrors = [err82];
                                               } else {
-                                                vErrors.push(err87);
+                                                vErrors.push(err82);
                                               }
                                               errors2++;
                                             } else {
-                                              var valid14 = true;
-                                              const len4 = data45.length;
-                                              for (let i4 = 0; i4 < len4; i4++) {
-                                                let data46 = data45[i4];
-                                                const _errs89 = errors2;
-                                                if (errors2 === _errs89) {
-                                                  if (typeof data46 === "string") {
-                                                    if (func1(data46) > 500) {
-                                                      const err88 = { instancePath: instancePath + "/inspection/members/" + i4, schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/3/properties/members/items/maxLength", keyword: "maxLength", params: { limit: 500 }, message: "must NOT have more than 500 characters" };
+                                              var valid13 = true;
+                                              const len3 = data43.length;
+                                              for (let i3 = 0; i3 < len3; i3++) {
+                                                let data44 = data43[i3];
+                                                const _errs84 = errors2;
+                                                if (errors2 === _errs84) {
+                                                  if (typeof data44 === "string") {
+                                                    if (func1(data44) > 500) {
+                                                      const err83 = { instancePath: instancePath + "/inspection/members/" + i3, schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/3/properties/members/items/maxLength", keyword: "maxLength", params: { limit: 500 }, message: "must NOT have more than 500 characters" };
                                                       if (vErrors === null) {
-                                                        vErrors = [err88];
+                                                        vErrors = [err83];
                                                       } else {
-                                                        vErrors.push(err88);
+                                                        vErrors.push(err83);
                                                       }
                                                       errors2++;
                                                     }
                                                   } else {
-                                                    const err89 = { instancePath: instancePath + "/inspection/members/" + i4, schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/3/properties/members/items/type", keyword: "type", params: { type: "string" }, message: "must be string" };
+                                                    const err84 = { instancePath: instancePath + "/inspection/members/" + i3, schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/3/properties/members/items/type", keyword: "type", params: { type: "string" }, message: "must be string" };
                                                     if (vErrors === null) {
-                                                      vErrors = [err89];
+                                                      vErrors = [err84];
                                                     } else {
-                                                      vErrors.push(err89);
+                                                      vErrors.push(err84);
                                                     }
                                                     errors2++;
                                                   }
                                                 }
-                                                var valid14 = _errs89 === errors2;
-                                                if (!valid14) {
+                                                var valid13 = _errs84 === errors2;
+                                                if (!valid13) {
                                                   break;
                                                 }
                                               }
                                             }
                                           } else {
-                                            const err90 = { instancePath: instancePath + "/inspection/members", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/3/properties/members/type", keyword: "type", params: { type: "array" }, message: "must be array" };
+                                            const err85 = { instancePath: instancePath + "/inspection/members", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/3/properties/members/type", keyword: "type", params: { type: "array" }, message: "must be array" };
                                             if (vErrors === null) {
-                                              vErrors = [err90];
+                                              vErrors = [err85];
                                             } else {
-                                              vErrors.push(err90);
+                                              vErrors.push(err85);
                                             }
                                             errors2++;
                                           }
                                         }
-                                        var valid13 = _errs87 === errors2;
+                                        var valid12 = _errs82 === errors2;
                                       } else {
-                                        var valid13 = true;
+                                        var valid12 = true;
                                       }
-                                      if (valid13) {
+                                      if (valid12) {
                                         if (data1.details !== void 0) {
-                                          let data47 = data1.details;
-                                          const _errs91 = errors2;
-                                          if (errors2 === _errs91) {
-                                            if (data47 && typeof data47 == "object" && !Array.isArray(data47)) {
+                                          let data45 = data1.details;
+                                          const _errs86 = errors2;
+                                          if (errors2 === _errs86) {
+                                            if (data45 && typeof data45 == "object" && !Array.isArray(data45)) {
                                               let missing8;
-                                              if (data47.slides === void 0 && (missing8 = "slides") || data47.editable === void 0 && (missing8 = "editable") || data47.visualInspection === void 0 && (missing8 = "visualInspection")) {
-                                                const err91 = { instancePath: instancePath + "/inspection/details", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/3/properties/details/required", keyword: "required", params: { missingProperty: missing8 }, message: "must have required property '" + missing8 + "'" };
+                                              if (data45.sheets === void 0 && (missing8 = "sheets") || data45.formulas === void 0 && (missing8 = "formulas") || data45.formulaCache === void 0 && (missing8 = "formulaCache")) {
+                                                const err86 = { instancePath: instancePath + "/inspection/details", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/3/properties/details/required", keyword: "required", params: { missingProperty: missing8 }, message: "must have required property '" + missing8 + "'" };
                                                 if (vErrors === null) {
-                                                  vErrors = [err91];
+                                                  vErrors = [err86];
                                                 } else {
-                                                  vErrors.push(err91);
+                                                  vErrors.push(err86);
                                                 }
                                                 errors2++;
                                               } else {
-                                                const _errs93 = errors2;
-                                                for (const key8 in data47) {
-                                                  if (!(key8 === "slides" || key8 === "editable" || key8 === "visualInspection")) {
-                                                    const err92 = { instancePath: instancePath + "/inspection/details", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/3/properties/details/additionalProperties", keyword: "additionalProperties", params: { additionalProperty: key8 }, message: "must NOT have additional properties" };
+                                                const _errs88 = errors2;
+                                                for (const key8 in data45) {
+                                                  if (!(key8 === "sheets" || key8 === "formulas" || key8 === "formulaCache" || key8 === "revisionMethod")) {
+                                                    const err87 = { instancePath: instancePath + "/inspection/details", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/3/properties/details/additionalProperties", keyword: "additionalProperties", params: { additionalProperty: key8 }, message: "must NOT have additional properties" };
                                                     if (vErrors === null) {
-                                                      vErrors = [err92];
+                                                      vErrors = [err87];
                                                     } else {
-                                                      vErrors.push(err92);
+                                                      vErrors.push(err87);
                                                     }
                                                     errors2++;
                                                     break;
                                                   }
                                                 }
-                                                if (_errs93 === errors2) {
-                                                  if (data47.slides !== void 0) {
-                                                    let data48 = data47.slides;
-                                                    const _errs94 = errors2;
-                                                    if (!(typeof data48 == "number" && (!(data48 % 1) && !isNaN(data48)) && isFinite(data48))) {
-                                                      const err93 = { instancePath: instancePath + "/inspection/details/slides", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/3/properties/details/properties/slides/type", keyword: "type", params: { type: "integer" }, message: "must be integer" };
-                                                      if (vErrors === null) {
-                                                        vErrors = [err93];
+                                                if (_errs88 === errors2) {
+                                                  if (data45.sheets !== void 0) {
+                                                    let data46 = data45.sheets;
+                                                    const _errs89 = errors2;
+                                                    if (errors2 === _errs89) {
+                                                      if (Array.isArray(data46)) {
+                                                        if (data46.length > 30) {
+                                                          const err88 = { instancePath: instancePath + "/inspection/details/sheets", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/3/properties/details/properties/sheets/maxItems", keyword: "maxItems", params: { limit: 30 }, message: "must NOT have more than 30 items" };
+                                                          if (vErrors === null) {
+                                                            vErrors = [err88];
+                                                          } else {
+                                                            vErrors.push(err88);
+                                                          }
+                                                          errors2++;
+                                                        } else {
+                                                          var valid15 = true;
+                                                          const len4 = data46.length;
+                                                          for (let i4 = 0; i4 < len4; i4++) {
+                                                            const _errs91 = errors2;
+                                                            if (typeof data46[i4] !== "string") {
+                                                              const err89 = { instancePath: instancePath + "/inspection/details/sheets/" + i4, schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/3/properties/details/properties/sheets/items/type", keyword: "type", params: { type: "string" }, message: "must be string" };
+                                                              if (vErrors === null) {
+                                                                vErrors = [err89];
+                                                              } else {
+                                                                vErrors.push(err89);
+                                                              }
+                                                              errors2++;
+                                                            }
+                                                            var valid15 = _errs91 === errors2;
+                                                            if (!valid15) {
+                                                              break;
+                                                            }
+                                                          }
+                                                        }
                                                       } else {
-                                                        vErrors.push(err93);
+                                                        const err90 = { instancePath: instancePath + "/inspection/details/sheets", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/3/properties/details/properties/sheets/type", keyword: "type", params: { type: "array" }, message: "must be array" };
+                                                        if (vErrors === null) {
+                                                          vErrors = [err90];
+                                                        } else {
+                                                          vErrors.push(err90);
+                                                        }
+                                                        errors2++;
                                                       }
-                                                      errors2++;
                                                     }
-                                                    if (errors2 === _errs94) {
-                                                      if (typeof data48 == "number" && isFinite(data48)) {
-                                                        if (data48 > 9007199254740991 || isNaN(data48)) {
-                                                          const err94 = { instancePath: instancePath + "/inspection/details/slides", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/3/properties/details/properties/slides/maximum", keyword: "maximum", params: { comparison: "<=", limit: 9007199254740991 }, message: "must be <= 9007199254740991" };
+                                                    var valid14 = _errs89 === errors2;
+                                                  } else {
+                                                    var valid14 = true;
+                                                  }
+                                                  if (valid14) {
+                                                    if (data45.formulas !== void 0) {
+                                                      let data48 = data45.formulas;
+                                                      const _errs93 = errors2;
+                                                      if (!(typeof data48 == "number" && (!(data48 % 1) && !isNaN(data48)) && isFinite(data48))) {
+                                                        const err91 = { instancePath: instancePath + "/inspection/details/formulas", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/3/properties/details/properties/formulas/type", keyword: "type", params: { type: "integer" }, message: "must be integer" };
+                                                        if (vErrors === null) {
+                                                          vErrors = [err91];
+                                                        } else {
+                                                          vErrors.push(err91);
+                                                        }
+                                                        errors2++;
+                                                      }
+                                                      if (errors2 === _errs93) {
+                                                        if (typeof data48 == "number" && isFinite(data48)) {
+                                                          if (data48 > 9007199254740991 || isNaN(data48)) {
+                                                            const err92 = { instancePath: instancePath + "/inspection/details/formulas", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/3/properties/details/properties/formulas/maximum", keyword: "maximum", params: { comparison: "<=", limit: 9007199254740991 }, message: "must be <= 9007199254740991" };
+                                                            if (vErrors === null) {
+                                                              vErrors = [err92];
+                                                            } else {
+                                                              vErrors.push(err92);
+                                                            }
+                                                            errors2++;
+                                                          } else {
+                                                            if (data48 < 0 || isNaN(data48)) {
+                                                              const err93 = { instancePath: instancePath + "/inspection/details/formulas", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/3/properties/details/properties/formulas/minimum", keyword: "minimum", params: { comparison: ">=", limit: 0 }, message: "must be >= 0" };
+                                                              if (vErrors === null) {
+                                                                vErrors = [err93];
+                                                              } else {
+                                                                vErrors.push(err93);
+                                                              }
+                                                              errors2++;
+                                                            }
+                                                          }
+                                                        }
+                                                      }
+                                                      var valid14 = _errs93 === errors2;
+                                                    } else {
+                                                      var valid14 = true;
+                                                    }
+                                                    if (valid14) {
+                                                      if (data45.formulaCache !== void 0) {
+                                                        let data49 = data45.formulaCache;
+                                                        const _errs95 = errors2;
+                                                        if (!(data49 === "unverified-zero-placeholder; recalculation required" || data49 === "removed/unverified; recalculation required")) {
+                                                          const err94 = { instancePath: instancePath + "/inspection/details/formulaCache", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/3/properties/details/properties/formulaCache/enum", keyword: "enum", params: { allowedValues: schema301.oneOf[3].properties.details.properties.formulaCache.enum }, message: "must be equal to one of the allowed values" };
                                                           if (vErrors === null) {
                                                             vErrors = [err94];
                                                           } else {
                                                             vErrors.push(err94);
                                                           }
                                                           errors2++;
-                                                        } else {
-                                                          if (data48 < 0 || isNaN(data48)) {
-                                                            const err95 = { instancePath: instancePath + "/inspection/details/slides", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/3/properties/details/properties/slides/minimum", keyword: "minimum", params: { comparison: ">=", limit: 0 }, message: "must be >= 0" };
+                                                        }
+                                                        var valid14 = _errs95 === errors2;
+                                                      } else {
+                                                        var valid14 = true;
+                                                      }
+                                                      if (valid14) {
+                                                        if (data45.revisionMethod !== void 0) {
+                                                          const _errs96 = errors2;
+                                                          if ("openpyxl typed-cell replacement" !== data45.revisionMethod) {
+                                                            const err95 = { instancePath: instancePath + "/inspection/details/revisionMethod", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/3/properties/details/properties/revisionMethod/const", keyword: "const", params: { allowedValue: "openpyxl typed-cell replacement" }, message: "must be equal to constant" };
                                                             if (vErrors === null) {
                                                               vErrors = [err95];
                                                             } else {
@@ -47379,62 +47389,28 @@ function validate173(data, { instancePath = "", parentData, parentDataProperty, 
                                                             }
                                                             errors2++;
                                                           }
-                                                        }
-                                                      }
-                                                    }
-                                                    var valid15 = _errs94 === errors2;
-                                                  } else {
-                                                    var valid15 = true;
-                                                  }
-                                                  if (valid15) {
-                                                    if (data47.editable !== void 0) {
-                                                      const _errs96 = errors2;
-                                                      if (true !== data47.editable) {
-                                                        const err96 = { instancePath: instancePath + "/inspection/details/editable", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/3/properties/details/properties/editable/const", keyword: "const", params: { allowedValue: true }, message: "must be equal to constant" };
-                                                        if (vErrors === null) {
-                                                          vErrors = [err96];
+                                                          var valid14 = _errs96 === errors2;
                                                         } else {
-                                                          vErrors.push(err96);
+                                                          var valid14 = true;
                                                         }
-                                                        errors2++;
-                                                      }
-                                                      var valid15 = _errs96 === errors2;
-                                                    } else {
-                                                      var valid15 = true;
-                                                    }
-                                                    if (valid15) {
-                                                      if (data47.visualInspection !== void 0) {
-                                                        const _errs97 = errors2;
-                                                        if ("pending" !== data47.visualInspection) {
-                                                          const err97 = { instancePath: instancePath + "/inspection/details/visualInspection", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/3/properties/details/properties/visualInspection/const", keyword: "const", params: { allowedValue: "pending" }, message: "must be equal to constant" };
-                                                          if (vErrors === null) {
-                                                            vErrors = [err97];
-                                                          } else {
-                                                            vErrors.push(err97);
-                                                          }
-                                                          errors2++;
-                                                        }
-                                                        var valid15 = _errs97 === errors2;
-                                                      } else {
-                                                        var valid15 = true;
                                                       }
                                                     }
                                                   }
                                                 }
                                               }
                                             } else {
-                                              const err98 = { instancePath: instancePath + "/inspection/details", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/3/properties/details/type", keyword: "type", params: { type: "object" }, message: "must be object" };
+                                              const err96 = { instancePath: instancePath + "/inspection/details", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/3/properties/details/type", keyword: "type", params: { type: "object" }, message: "must be object" };
                                               if (vErrors === null) {
-                                                vErrors = [err98];
+                                                vErrors = [err96];
                                               } else {
-                                                vErrors.push(err98);
+                                                vErrors.push(err96);
                                               }
                                               errors2++;
                                             }
                                           }
-                                          var valid13 = _errs91 === errors2;
+                                          var valid12 = _errs86 === errors2;
                                         } else {
-                                          var valid13 = true;
+                                          var valid12 = true;
                                         }
                                       }
                                     }
@@ -47446,16 +47422,16 @@ function validate173(data, { instancePath = "", parentData, parentDataProperty, 
                         }
                       }
                     } else {
-                      const err99 = { instancePath: instancePath + "/inspection", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/3/type", keyword: "type", params: { type: "object" }, message: "must be object" };
+                      const err97 = { instancePath: instancePath + "/inspection", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/3/type", keyword: "type", params: { type: "object" }, message: "must be object" };
                       if (vErrors === null) {
-                        vErrors = [err99];
+                        vErrors = [err97];
                       } else {
-                        vErrors.push(err99);
+                        vErrors.push(err97);
                       }
                       errors2++;
                     }
                   }
-                  var _valid0 = _errs76 === errors2;
+                  var _valid0 = _errs71 === errors2;
                   if (_valid0 && valid2) {
                     valid2 = false;
                     passing0 = [passing0, 3];
@@ -47467,177 +47443,177 @@ function validate173(data, { instancePath = "", parentData, parentDataProperty, 
                         props1 = true;
                       }
                     }
-                    const _errs98 = errors2;
-                    if (errors2 === _errs98) {
+                    const _errs97 = errors2;
+                    if (errors2 === _errs97) {
                       if (data1 && typeof data1 == "object" && !Array.isArray(data1)) {
                         let missing9;
                         if (data1.sha256 === void 0 && (missing9 = "sha256") || data1.bytes === void 0 && (missing9 = "bytes") || data1.format === void 0 && (missing9 = "format") || data1.nativeOpened === void 0 && (missing9 = "nativeOpened") || data1.rendered === void 0 && (missing9 = "rendered") || data1.recalculated === void 0 && (missing9 = "recalculated") || data1.members === void 0 && (missing9 = "members") || data1.details === void 0 && (missing9 = "details")) {
-                          const err100 = { instancePath: instancePath + "/inspection", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/4/required", keyword: "required", params: { missingProperty: missing9 }, message: "must have required property '" + missing9 + "'" };
+                          const err98 = { instancePath: instancePath + "/inspection", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/4/required", keyword: "required", params: { missingProperty: missing9 }, message: "must have required property '" + missing9 + "'" };
                           if (vErrors === null) {
-                            vErrors = [err100];
+                            vErrors = [err98];
                           } else {
-                            vErrors.push(err100);
+                            vErrors.push(err98);
                           }
                           errors2++;
                         } else {
-                          const _errs100 = errors2;
+                          const _errs99 = errors2;
                           for (const key9 in data1) {
                             if (!(key9 === "sha256" || key9 === "bytes" || key9 === "format" || key9 === "nativeOpened" || key9 === "rendered" || key9 === "recalculated" || key9 === "members" || key9 === "details")) {
-                              const err101 = { instancePath: instancePath + "/inspection", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/4/additionalProperties", keyword: "additionalProperties", params: { additionalProperty: key9 }, message: "must NOT have additional properties" };
+                              const err99 = { instancePath: instancePath + "/inspection", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/4/additionalProperties", keyword: "additionalProperties", params: { additionalProperty: key9 }, message: "must NOT have additional properties" };
                               if (vErrors === null) {
-                                vErrors = [err101];
+                                vErrors = [err99];
                               } else {
-                                vErrors.push(err101);
+                                vErrors.push(err99);
                               }
                               errors2++;
                               break;
                             }
                           }
-                          if (_errs100 === errors2) {
+                          if (_errs99 === errors2) {
                             if (data1.sha256 !== void 0) {
                               let data51 = data1.sha256;
-                              const _errs101 = errors2;
-                              if (errors2 === _errs101) {
+                              const _errs100 = errors2;
+                              if (errors2 === _errs100) {
                                 if (typeof data51 === "string") {
                                   if (!pattern14.test(data51)) {
-                                    const err102 = { instancePath: instancePath + "/inspection/sha256", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/4/properties/sha256/pattern", keyword: "pattern", params: { pattern: "^[a-f0-9]{64}$" }, message: 'must match pattern "^[a-f0-9]{64}$"' };
+                                    const err100 = { instancePath: instancePath + "/inspection/sha256", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/4/properties/sha256/pattern", keyword: "pattern", params: { pattern: "^[a-f0-9]{64}$" }, message: 'must match pattern "^[a-f0-9]{64}$"' };
                                     if (vErrors === null) {
-                                      vErrors = [err102];
+                                      vErrors = [err100];
                                     } else {
-                                      vErrors.push(err102);
+                                      vErrors.push(err100);
                                     }
                                     errors2++;
                                   }
                                 } else {
-                                  const err103 = { instancePath: instancePath + "/inspection/sha256", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/4/properties/sha256/type", keyword: "type", params: { type: "string" }, message: "must be string" };
+                                  const err101 = { instancePath: instancePath + "/inspection/sha256", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/4/properties/sha256/type", keyword: "type", params: { type: "string" }, message: "must be string" };
                                   if (vErrors === null) {
-                                    vErrors = [err103];
+                                    vErrors = [err101];
                                   } else {
-                                    vErrors.push(err103);
+                                    vErrors.push(err101);
                                   }
                                   errors2++;
                                 }
                               }
-                              var valid16 = _errs101 === errors2;
+                              var valid16 = _errs100 === errors2;
                             } else {
                               var valid16 = true;
                             }
                             if (valid16) {
                               if (data1.bytes !== void 0) {
                                 let data52 = data1.bytes;
-                                const _errs103 = errors2;
+                                const _errs102 = errors2;
                                 if (!(typeof data52 == "number" && (!(data52 % 1) && !isNaN(data52)) && isFinite(data52))) {
-                                  const err104 = { instancePath: instancePath + "/inspection/bytes", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/4/properties/bytes/type", keyword: "type", params: { type: "integer" }, message: "must be integer" };
+                                  const err102 = { instancePath: instancePath + "/inspection/bytes", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/4/properties/bytes/type", keyword: "type", params: { type: "integer" }, message: "must be integer" };
                                   if (vErrors === null) {
-                                    vErrors = [err104];
+                                    vErrors = [err102];
                                   } else {
-                                    vErrors.push(err104);
+                                    vErrors.push(err102);
                                   }
                                   errors2++;
                                 }
-                                if (errors2 === _errs103) {
+                                if (errors2 === _errs102) {
                                   if (typeof data52 == "number" && isFinite(data52)) {
                                     if (data52 > 9007199254740991 || isNaN(data52)) {
-                                      const err105 = { instancePath: instancePath + "/inspection/bytes", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/4/properties/bytes/maximum", keyword: "maximum", params: { comparison: "<=", limit: 9007199254740991 }, message: "must be <= 9007199254740991" };
+                                      const err103 = { instancePath: instancePath + "/inspection/bytes", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/4/properties/bytes/maximum", keyword: "maximum", params: { comparison: "<=", limit: 9007199254740991 }, message: "must be <= 9007199254740991" };
                                       if (vErrors === null) {
-                                        vErrors = [err105];
+                                        vErrors = [err103];
                                       } else {
-                                        vErrors.push(err105);
+                                        vErrors.push(err103);
                                       }
                                       errors2++;
                                     } else {
                                       if (data52 < 0 || isNaN(data52)) {
-                                        const err106 = { instancePath: instancePath + "/inspection/bytes", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/4/properties/bytes/minimum", keyword: "minimum", params: { comparison: ">=", limit: 0 }, message: "must be >= 0" };
+                                        const err104 = { instancePath: instancePath + "/inspection/bytes", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/4/properties/bytes/minimum", keyword: "minimum", params: { comparison: ">=", limit: 0 }, message: "must be >= 0" };
                                         if (vErrors === null) {
-                                          vErrors = [err106];
+                                          vErrors = [err104];
                                         } else {
-                                          vErrors.push(err106);
+                                          vErrors.push(err104);
                                         }
                                         errors2++;
                                       }
                                     }
                                   }
                                 }
-                                var valid16 = _errs103 === errors2;
+                                var valid16 = _errs102 === errors2;
                               } else {
                                 var valid16 = true;
                               }
                               if (valid16) {
                                 if (data1.format !== void 0) {
-                                  const _errs105 = errors2;
-                                  if ("zip" !== data1.format) {
-                                    const err107 = { instancePath: instancePath + "/inspection/format", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/4/properties/format/const", keyword: "const", params: { allowedValue: "zip" }, message: "must be equal to constant" };
+                                  const _errs104 = errors2;
+                                  if ("pptx" !== data1.format) {
+                                    const err105 = { instancePath: instancePath + "/inspection/format", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/4/properties/format/const", keyword: "const", params: { allowedValue: "pptx" }, message: "must be equal to constant" };
                                     if (vErrors === null) {
-                                      vErrors = [err107];
+                                      vErrors = [err105];
                                     } else {
-                                      vErrors.push(err107);
+                                      vErrors.push(err105);
                                     }
                                     errors2++;
                                   }
-                                  var valid16 = _errs105 === errors2;
+                                  var valid16 = _errs104 === errors2;
                                 } else {
                                   var valid16 = true;
                                 }
                                 if (valid16) {
                                   if (data1.nativeOpened !== void 0) {
-                                    const _errs106 = errors2;
+                                    const _errs105 = errors2;
                                     if (false !== data1.nativeOpened) {
-                                      const err108 = { instancePath: instancePath + "/inspection/nativeOpened", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/4/properties/nativeOpened/const", keyword: "const", params: { allowedValue: false }, message: "must be equal to constant" };
+                                      const err106 = { instancePath: instancePath + "/inspection/nativeOpened", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/4/properties/nativeOpened/const", keyword: "const", params: { allowedValue: false }, message: "must be equal to constant" };
                                       if (vErrors === null) {
-                                        vErrors = [err108];
+                                        vErrors = [err106];
                                       } else {
-                                        vErrors.push(err108);
+                                        vErrors.push(err106);
                                       }
                                       errors2++;
                                     }
-                                    var valid16 = _errs106 === errors2;
+                                    var valid16 = _errs105 === errors2;
                                   } else {
                                     var valid16 = true;
                                   }
                                   if (valid16) {
                                     if (data1.rendered !== void 0) {
-                                      const _errs107 = errors2;
+                                      const _errs106 = errors2;
                                       if (false !== data1.rendered) {
-                                        const err109 = { instancePath: instancePath + "/inspection/rendered", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/4/properties/rendered/const", keyword: "const", params: { allowedValue: false }, message: "must be equal to constant" };
+                                        const err107 = { instancePath: instancePath + "/inspection/rendered", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/4/properties/rendered/const", keyword: "const", params: { allowedValue: false }, message: "must be equal to constant" };
                                         if (vErrors === null) {
-                                          vErrors = [err109];
+                                          vErrors = [err107];
                                         } else {
-                                          vErrors.push(err109);
+                                          vErrors.push(err107);
                                         }
                                         errors2++;
                                       }
-                                      var valid16 = _errs107 === errors2;
+                                      var valid16 = _errs106 === errors2;
                                     } else {
                                       var valid16 = true;
                                     }
                                     if (valid16) {
                                       if (data1.recalculated !== void 0) {
-                                        const _errs108 = errors2;
+                                        const _errs107 = errors2;
                                         if (false !== data1.recalculated) {
-                                          const err110 = { instancePath: instancePath + "/inspection/recalculated", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/4/properties/recalculated/const", keyword: "const", params: { allowedValue: false }, message: "must be equal to constant" };
+                                          const err108 = { instancePath: instancePath + "/inspection/recalculated", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/4/properties/recalculated/const", keyword: "const", params: { allowedValue: false }, message: "must be equal to constant" };
                                           if (vErrors === null) {
-                                            vErrors = [err110];
+                                            vErrors = [err108];
                                           } else {
-                                            vErrors.push(err110);
+                                            vErrors.push(err108);
                                           }
                                           errors2++;
                                         }
-                                        var valid16 = _errs108 === errors2;
+                                        var valid16 = _errs107 === errors2;
                                       } else {
                                         var valid16 = true;
                                       }
                                       if (valid16) {
                                         if (data1.members !== void 0) {
                                           let data57 = data1.members;
-                                          const _errs109 = errors2;
-                                          if (errors2 === _errs109) {
+                                          const _errs108 = errors2;
+                                          if (errors2 === _errs108) {
                                             if (Array.isArray(data57)) {
                                               if (data57.length > 5e3) {
-                                                const err111 = { instancePath: instancePath + "/inspection/members", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/4/properties/members/maxItems", keyword: "maxItems", params: { limit: 5e3 }, message: "must NOT have more than 5000 items" };
+                                                const err109 = { instancePath: instancePath + "/inspection/members", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/4/properties/members/maxItems", keyword: "maxItems", params: { limit: 5e3 }, message: "must NOT have more than 5000 items" };
                                                 if (vErrors === null) {
-                                                  vErrors = [err111];
+                                                  vErrors = [err109];
                                                 } else {
-                                                  vErrors.push(err111);
+                                                  vErrors.push(err109);
                                                 }
                                                 errors2++;
                                               } else {
@@ -47645,178 +47621,146 @@ function validate173(data, { instancePath = "", parentData, parentDataProperty, 
                                                 const len5 = data57.length;
                                                 for (let i5 = 0; i5 < len5; i5++) {
                                                   let data58 = data57[i5];
-                                                  const _errs111 = errors2;
-                                                  if (errors2 === _errs111) {
+                                                  const _errs110 = errors2;
+                                                  if (errors2 === _errs110) {
                                                     if (typeof data58 === "string") {
                                                       if (func1(data58) > 500) {
-                                                        const err112 = { instancePath: instancePath + "/inspection/members/" + i5, schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/4/properties/members/items/maxLength", keyword: "maxLength", params: { limit: 500 }, message: "must NOT have more than 500 characters" };
+                                                        const err110 = { instancePath: instancePath + "/inspection/members/" + i5, schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/4/properties/members/items/maxLength", keyword: "maxLength", params: { limit: 500 }, message: "must NOT have more than 500 characters" };
                                                         if (vErrors === null) {
-                                                          vErrors = [err112];
+                                                          vErrors = [err110];
                                                         } else {
-                                                          vErrors.push(err112);
+                                                          vErrors.push(err110);
                                                         }
                                                         errors2++;
                                                       }
                                                     } else {
-                                                      const err113 = { instancePath: instancePath + "/inspection/members/" + i5, schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/4/properties/members/items/type", keyword: "type", params: { type: "string" }, message: "must be string" };
+                                                      const err111 = { instancePath: instancePath + "/inspection/members/" + i5, schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/4/properties/members/items/type", keyword: "type", params: { type: "string" }, message: "must be string" };
                                                       if (vErrors === null) {
-                                                        vErrors = [err113];
+                                                        vErrors = [err111];
                                                       } else {
-                                                        vErrors.push(err113);
+                                                        vErrors.push(err111);
                                                       }
                                                       errors2++;
                                                     }
                                                   }
-                                                  var valid17 = _errs111 === errors2;
+                                                  var valid17 = _errs110 === errors2;
                                                   if (!valid17) {
                                                     break;
                                                   }
                                                 }
                                               }
                                             } else {
-                                              const err114 = { instancePath: instancePath + "/inspection/members", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/4/properties/members/type", keyword: "type", params: { type: "array" }, message: "must be array" };
+                                              const err112 = { instancePath: instancePath + "/inspection/members", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/4/properties/members/type", keyword: "type", params: { type: "array" }, message: "must be array" };
                                               if (vErrors === null) {
-                                                vErrors = [err114];
+                                                vErrors = [err112];
                                               } else {
-                                                vErrors.push(err114);
+                                                vErrors.push(err112);
                                               }
                                               errors2++;
                                             }
                                           }
-                                          var valid16 = _errs109 === errors2;
+                                          var valid16 = _errs108 === errors2;
                                         } else {
                                           var valid16 = true;
                                         }
                                         if (valid16) {
                                           if (data1.details !== void 0) {
                                             let data59 = data1.details;
-                                            const _errs113 = errors2;
-                                            if (errors2 === _errs113) {
+                                            const _errs112 = errors2;
+                                            if (errors2 === _errs112) {
                                               if (data59 && typeof data59 == "object" && !Array.isArray(data59)) {
                                                 let missing10;
-                                                if (data59.rows === void 0 && (missing10 = "rows") || data59.columns === void 0 && (missing10 = "columns") || data59.chart === void 0 && (missing10 = "chart")) {
-                                                  const err115 = { instancePath: instancePath + "/inspection/details", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/4/properties/details/required", keyword: "required", params: { missingProperty: missing10 }, message: "must have required property '" + missing10 + "'" };
+                                                if (data59.slides === void 0 && (missing10 = "slides") || data59.editable === void 0 && (missing10 = "editable") || data59.visualInspection === void 0 && (missing10 = "visualInspection")) {
+                                                  const err113 = { instancePath: instancePath + "/inspection/details", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/4/properties/details/required", keyword: "required", params: { missingProperty: missing10 }, message: "must have required property '" + missing10 + "'" };
                                                   if (vErrors === null) {
-                                                    vErrors = [err115];
+                                                    vErrors = [err113];
                                                   } else {
-                                                    vErrors.push(err115);
+                                                    vErrors.push(err113);
                                                   }
                                                   errors2++;
                                                 } else {
-                                                  const _errs115 = errors2;
+                                                  const _errs114 = errors2;
                                                   for (const key10 in data59) {
-                                                    if (!(key10 === "rows" || key10 === "columns" || key10 === "chart")) {
-                                                      const err116 = { instancePath: instancePath + "/inspection/details", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/4/properties/details/additionalProperties", keyword: "additionalProperties", params: { additionalProperty: key10 }, message: "must NOT have additional properties" };
+                                                    if (!(key10 === "slides" || key10 === "editable" || key10 === "visualInspection")) {
+                                                      const err114 = { instancePath: instancePath + "/inspection/details", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/4/properties/details/additionalProperties", keyword: "additionalProperties", params: { additionalProperty: key10 }, message: "must NOT have additional properties" };
                                                       if (vErrors === null) {
-                                                        vErrors = [err116];
+                                                        vErrors = [err114];
                                                       } else {
-                                                        vErrors.push(err116);
+                                                        vErrors.push(err114);
                                                       }
                                                       errors2++;
                                                       break;
                                                     }
                                                   }
-                                                  if (_errs115 === errors2) {
-                                                    if (data59.rows !== void 0) {
-                                                      let data60 = data59.rows;
-                                                      const _errs116 = errors2;
+                                                  if (_errs114 === errors2) {
+                                                    if (data59.slides !== void 0) {
+                                                      let data60 = data59.slides;
+                                                      const _errs115 = errors2;
                                                       if (!(typeof data60 == "number" && (!(data60 % 1) && !isNaN(data60)) && isFinite(data60))) {
-                                                        const err117 = { instancePath: instancePath + "/inspection/details/rows", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/4/properties/details/properties/rows/type", keyword: "type", params: { type: "integer" }, message: "must be integer" };
+                                                        const err115 = { instancePath: instancePath + "/inspection/details/slides", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/4/properties/details/properties/slides/type", keyword: "type", params: { type: "integer" }, message: "must be integer" };
                                                         if (vErrors === null) {
-                                                          vErrors = [err117];
+                                                          vErrors = [err115];
                                                         } else {
-                                                          vErrors.push(err117);
+                                                          vErrors.push(err115);
                                                         }
                                                         errors2++;
                                                       }
-                                                      if (errors2 === _errs116) {
+                                                      if (errors2 === _errs115) {
                                                         if (typeof data60 == "number" && isFinite(data60)) {
                                                           if (data60 > 9007199254740991 || isNaN(data60)) {
-                                                            const err118 = { instancePath: instancePath + "/inspection/details/rows", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/4/properties/details/properties/rows/maximum", keyword: "maximum", params: { comparison: "<=", limit: 9007199254740991 }, message: "must be <= 9007199254740991" };
+                                                            const err116 = { instancePath: instancePath + "/inspection/details/slides", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/4/properties/details/properties/slides/maximum", keyword: "maximum", params: { comparison: "<=", limit: 9007199254740991 }, message: "must be <= 9007199254740991" };
                                                             if (vErrors === null) {
-                                                              vErrors = [err118];
+                                                              vErrors = [err116];
                                                             } else {
-                                                              vErrors.push(err118);
+                                                              vErrors.push(err116);
                                                             }
                                                             errors2++;
                                                           } else {
                                                             if (data60 < 0 || isNaN(data60)) {
-                                                              const err119 = { instancePath: instancePath + "/inspection/details/rows", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/4/properties/details/properties/rows/minimum", keyword: "minimum", params: { comparison: ">=", limit: 0 }, message: "must be >= 0" };
+                                                              const err117 = { instancePath: instancePath + "/inspection/details/slides", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/4/properties/details/properties/slides/minimum", keyword: "minimum", params: { comparison: ">=", limit: 0 }, message: "must be >= 0" };
                                                               if (vErrors === null) {
-                                                                vErrors = [err119];
+                                                                vErrors = [err117];
                                                               } else {
-                                                                vErrors.push(err119);
+                                                                vErrors.push(err117);
                                                               }
                                                               errors2++;
                                                             }
                                                           }
                                                         }
                                                       }
-                                                      var valid18 = _errs116 === errors2;
+                                                      var valid18 = _errs115 === errors2;
                                                     } else {
                                                       var valid18 = true;
                                                     }
                                                     if (valid18) {
-                                                      if (data59.columns !== void 0) {
-                                                        let data61 = data59.columns;
-                                                        const _errs118 = errors2;
-                                                        if (errors2 === _errs118) {
-                                                          if (Array.isArray(data61)) {
-                                                            if (data61.length > 200) {
-                                                              const err120 = { instancePath: instancePath + "/inspection/details/columns", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/4/properties/details/properties/columns/maxItems", keyword: "maxItems", params: { limit: 200 }, message: "must NOT have more than 200 items" };
-                                                              if (vErrors === null) {
-                                                                vErrors = [err120];
-                                                              } else {
-                                                                vErrors.push(err120);
-                                                              }
-                                                              errors2++;
-                                                            } else {
-                                                              var valid19 = true;
-                                                              const len6 = data61.length;
-                                                              for (let i6 = 0; i6 < len6; i6++) {
-                                                                const _errs120 = errors2;
-                                                                if (typeof data61[i6] !== "string") {
-                                                                  const err121 = { instancePath: instancePath + "/inspection/details/columns/" + i6, schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/4/properties/details/properties/columns/items/type", keyword: "type", params: { type: "string" }, message: "must be string" };
-                                                                  if (vErrors === null) {
-                                                                    vErrors = [err121];
-                                                                  } else {
-                                                                    vErrors.push(err121);
-                                                                  }
-                                                                  errors2++;
-                                                                }
-                                                                var valid19 = _errs120 === errors2;
-                                                                if (!valid19) {
-                                                                  break;
-                                                                }
-                                                              }
-                                                            }
+                                                      if (data59.editable !== void 0) {
+                                                        const _errs117 = errors2;
+                                                        if (true !== data59.editable) {
+                                                          const err118 = { instancePath: instancePath + "/inspection/details/editable", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/4/properties/details/properties/editable/const", keyword: "const", params: { allowedValue: true }, message: "must be equal to constant" };
+                                                          if (vErrors === null) {
+                                                            vErrors = [err118];
                                                           } else {
-                                                            const err122 = { instancePath: instancePath + "/inspection/details/columns", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/4/properties/details/properties/columns/type", keyword: "type", params: { type: "array" }, message: "must be array" };
-                                                            if (vErrors === null) {
-                                                              vErrors = [err122];
-                                                            } else {
-                                                              vErrors.push(err122);
-                                                            }
-                                                            errors2++;
+                                                            vErrors.push(err118);
                                                           }
+                                                          errors2++;
                                                         }
-                                                        var valid18 = _errs118 === errors2;
+                                                        var valid18 = _errs117 === errors2;
                                                       } else {
                                                         var valid18 = true;
                                                       }
                                                       if (valid18) {
-                                                        if (data59.chart !== void 0) {
-                                                          const _errs122 = errors2;
-                                                          if (typeof data59.chart !== "boolean") {
-                                                            const err123 = { instancePath: instancePath + "/inspection/details/chart", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/4/properties/details/properties/chart/type", keyword: "type", params: { type: "boolean" }, message: "must be boolean" };
+                                                        if (data59.visualInspection !== void 0) {
+                                                          const _errs118 = errors2;
+                                                          if ("pending" !== data59.visualInspection) {
+                                                            const err119 = { instancePath: instancePath + "/inspection/details/visualInspection", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/4/properties/details/properties/visualInspection/const", keyword: "const", params: { allowedValue: "pending" }, message: "must be equal to constant" };
                                                             if (vErrors === null) {
-                                                              vErrors = [err123];
+                                                              vErrors = [err119];
                                                             } else {
-                                                              vErrors.push(err123);
+                                                              vErrors.push(err119);
                                                             }
                                                             errors2++;
                                                           }
-                                                          var valid18 = _errs122 === errors2;
+                                                          var valid18 = _errs118 === errors2;
                                                         } else {
                                                           var valid18 = true;
                                                         }
@@ -47825,16 +47769,16 @@ function validate173(data, { instancePath = "", parentData, parentDataProperty, 
                                                   }
                                                 }
                                               } else {
-                                                const err124 = { instancePath: instancePath + "/inspection/details", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/4/properties/details/type", keyword: "type", params: { type: "object" }, message: "must be object" };
+                                                const err120 = { instancePath: instancePath + "/inspection/details", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/4/properties/details/type", keyword: "type", params: { type: "object" }, message: "must be object" };
                                                 if (vErrors === null) {
-                                                  vErrors = [err124];
+                                                  vErrors = [err120];
                                                 } else {
-                                                  vErrors.push(err124);
+                                                  vErrors.push(err120);
                                                 }
                                                 errors2++;
                                               }
                                             }
-                                            var valid16 = _errs113 === errors2;
+                                            var valid16 = _errs112 === errors2;
                                           } else {
                                             var valid16 = true;
                                           }
@@ -47848,16 +47792,16 @@ function validate173(data, { instancePath = "", parentData, parentDataProperty, 
                           }
                         }
                       } else {
-                        const err125 = { instancePath: instancePath + "/inspection", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/4/type", keyword: "type", params: { type: "object" }, message: "must be object" };
+                        const err121 = { instancePath: instancePath + "/inspection", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/4/type", keyword: "type", params: { type: "object" }, message: "must be object" };
                         if (vErrors === null) {
-                          vErrors = [err125];
+                          vErrors = [err121];
                         } else {
-                          vErrors.push(err125);
+                          vErrors.push(err121);
                         }
                         errors2++;
                       }
                     }
-                    var _valid0 = _errs98 === errors2;
+                    var _valid0 = _errs97 === errors2;
                     if (_valid0 && valid2) {
                       valid2 = false;
                       passing0 = [passing0, 4];
@@ -47869,333 +47813,376 @@ function validate173(data, { instancePath = "", parentData, parentDataProperty, 
                           props1 = true;
                         }
                       }
-                      const _errs124 = errors2;
-                      if (errors2 === _errs124) {
+                      const _errs119 = errors2;
+                      if (errors2 === _errs119) {
                         if (data1 && typeof data1 == "object" && !Array.isArray(data1)) {
                           let missing11;
                           if (data1.sha256 === void 0 && (missing11 = "sha256") || data1.bytes === void 0 && (missing11 = "bytes") || data1.format === void 0 && (missing11 = "format") || data1.nativeOpened === void 0 && (missing11 = "nativeOpened") || data1.rendered === void 0 && (missing11 = "rendered") || data1.recalculated === void 0 && (missing11 = "recalculated") || data1.members === void 0 && (missing11 = "members") || data1.details === void 0 && (missing11 = "details")) {
-                            const err126 = { instancePath: instancePath + "/inspection", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/5/required", keyword: "required", params: { missingProperty: missing11 }, message: "must have required property '" + missing11 + "'" };
+                            const err122 = { instancePath: instancePath + "/inspection", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/5/required", keyword: "required", params: { missingProperty: missing11 }, message: "must have required property '" + missing11 + "'" };
                             if (vErrors === null) {
-                              vErrors = [err126];
+                              vErrors = [err122];
                             } else {
-                              vErrors.push(err126);
+                              vErrors.push(err122);
                             }
                             errors2++;
                           } else {
-                            const _errs126 = errors2;
+                            const _errs121 = errors2;
                             for (const key11 in data1) {
                               if (!(key11 === "sha256" || key11 === "bytes" || key11 === "format" || key11 === "nativeOpened" || key11 === "rendered" || key11 === "recalculated" || key11 === "members" || key11 === "details")) {
-                                const err127 = { instancePath: instancePath + "/inspection", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/5/additionalProperties", keyword: "additionalProperties", params: { additionalProperty: key11 }, message: "must NOT have additional properties" };
+                                const err123 = { instancePath: instancePath + "/inspection", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/5/additionalProperties", keyword: "additionalProperties", params: { additionalProperty: key11 }, message: "must NOT have additional properties" };
                                 if (vErrors === null) {
-                                  vErrors = [err127];
+                                  vErrors = [err123];
                                 } else {
-                                  vErrors.push(err127);
+                                  vErrors.push(err123);
                                 }
                                 errors2++;
                                 break;
                               }
                             }
-                            if (_errs126 === errors2) {
+                            if (_errs121 === errors2) {
                               if (data1.sha256 !== void 0) {
-                                let data64 = data1.sha256;
-                                const _errs127 = errors2;
-                                if (errors2 === _errs127) {
-                                  if (typeof data64 === "string") {
-                                    if (!pattern14.test(data64)) {
-                                      const err128 = { instancePath: instancePath + "/inspection/sha256", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/5/properties/sha256/pattern", keyword: "pattern", params: { pattern: "^[a-f0-9]{64}$" }, message: 'must match pattern "^[a-f0-9]{64}$"' };
+                                let data63 = data1.sha256;
+                                const _errs122 = errors2;
+                                if (errors2 === _errs122) {
+                                  if (typeof data63 === "string") {
+                                    if (!pattern14.test(data63)) {
+                                      const err124 = { instancePath: instancePath + "/inspection/sha256", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/5/properties/sha256/pattern", keyword: "pattern", params: { pattern: "^[a-f0-9]{64}$" }, message: 'must match pattern "^[a-f0-9]{64}$"' };
                                       if (vErrors === null) {
-                                        vErrors = [err128];
+                                        vErrors = [err124];
                                       } else {
-                                        vErrors.push(err128);
+                                        vErrors.push(err124);
                                       }
                                       errors2++;
                                     }
                                   } else {
-                                    const err129 = { instancePath: instancePath + "/inspection/sha256", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/5/properties/sha256/type", keyword: "type", params: { type: "string" }, message: "must be string" };
+                                    const err125 = { instancePath: instancePath + "/inspection/sha256", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/5/properties/sha256/type", keyword: "type", params: { type: "string" }, message: "must be string" };
                                     if (vErrors === null) {
-                                      vErrors = [err129];
+                                      vErrors = [err125];
                                     } else {
-                                      vErrors.push(err129);
+                                      vErrors.push(err125);
                                     }
                                     errors2++;
                                   }
                                 }
-                                var valid20 = _errs127 === errors2;
+                                var valid19 = _errs122 === errors2;
                               } else {
-                                var valid20 = true;
+                                var valid19 = true;
                               }
-                              if (valid20) {
+                              if (valid19) {
                                 if (data1.bytes !== void 0) {
-                                  let data65 = data1.bytes;
-                                  const _errs129 = errors2;
-                                  if (!(typeof data65 == "number" && (!(data65 % 1) && !isNaN(data65)) && isFinite(data65))) {
-                                    const err130 = { instancePath: instancePath + "/inspection/bytes", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/5/properties/bytes/type", keyword: "type", params: { type: "integer" }, message: "must be integer" };
+                                  let data64 = data1.bytes;
+                                  const _errs124 = errors2;
+                                  if (!(typeof data64 == "number" && (!(data64 % 1) && !isNaN(data64)) && isFinite(data64))) {
+                                    const err126 = { instancePath: instancePath + "/inspection/bytes", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/5/properties/bytes/type", keyword: "type", params: { type: "integer" }, message: "must be integer" };
                                     if (vErrors === null) {
-                                      vErrors = [err130];
+                                      vErrors = [err126];
                                     } else {
-                                      vErrors.push(err130);
+                                      vErrors.push(err126);
                                     }
                                     errors2++;
                                   }
-                                  if (errors2 === _errs129) {
-                                    if (typeof data65 == "number" && isFinite(data65)) {
-                                      if (data65 > 9007199254740991 || isNaN(data65)) {
-                                        const err131 = { instancePath: instancePath + "/inspection/bytes", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/5/properties/bytes/maximum", keyword: "maximum", params: { comparison: "<=", limit: 9007199254740991 }, message: "must be <= 9007199254740991" };
+                                  if (errors2 === _errs124) {
+                                    if (typeof data64 == "number" && isFinite(data64)) {
+                                      if (data64 > 9007199254740991 || isNaN(data64)) {
+                                        const err127 = { instancePath: instancePath + "/inspection/bytes", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/5/properties/bytes/maximum", keyword: "maximum", params: { comparison: "<=", limit: 9007199254740991 }, message: "must be <= 9007199254740991" };
                                         if (vErrors === null) {
-                                          vErrors = [err131];
+                                          vErrors = [err127];
                                         } else {
-                                          vErrors.push(err131);
+                                          vErrors.push(err127);
                                         }
                                         errors2++;
                                       } else {
-                                        if (data65 < 0 || isNaN(data65)) {
-                                          const err132 = { instancePath: instancePath + "/inspection/bytes", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/5/properties/bytes/minimum", keyword: "minimum", params: { comparison: ">=", limit: 0 }, message: "must be >= 0" };
+                                        if (data64 < 0 || isNaN(data64)) {
+                                          const err128 = { instancePath: instancePath + "/inspection/bytes", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/5/properties/bytes/minimum", keyword: "minimum", params: { comparison: ">=", limit: 0 }, message: "must be >= 0" };
                                           if (vErrors === null) {
-                                            vErrors = [err132];
+                                            vErrors = [err128];
                                           } else {
-                                            vErrors.push(err132);
+                                            vErrors.push(err128);
                                           }
                                           errors2++;
                                         }
                                       }
                                     }
                                   }
-                                  var valid20 = _errs129 === errors2;
+                                  var valid19 = _errs124 === errors2;
                                 } else {
-                                  var valid20 = true;
+                                  var valid19 = true;
                                 }
-                                if (valid20) {
+                                if (valid19) {
                                   if (data1.format !== void 0) {
-                                    const _errs131 = errors2;
-                                    if ("pdf" !== data1.format) {
-                                      const err133 = { instancePath: instancePath + "/inspection/format", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/5/properties/format/const", keyword: "const", params: { allowedValue: "pdf" }, message: "must be equal to constant" };
+                                    const _errs126 = errors2;
+                                    if ("zip" !== data1.format) {
+                                      const err129 = { instancePath: instancePath + "/inspection/format", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/5/properties/format/const", keyword: "const", params: { allowedValue: "zip" }, message: "must be equal to constant" };
                                       if (vErrors === null) {
-                                        vErrors = [err133];
+                                        vErrors = [err129];
                                       } else {
-                                        vErrors.push(err133);
+                                        vErrors.push(err129);
                                       }
                                       errors2++;
                                     }
-                                    var valid20 = _errs131 === errors2;
+                                    var valid19 = _errs126 === errors2;
                                   } else {
-                                    var valid20 = true;
+                                    var valid19 = true;
                                   }
-                                  if (valid20) {
+                                  if (valid19) {
                                     if (data1.nativeOpened !== void 0) {
-                                      const _errs132 = errors2;
+                                      const _errs127 = errors2;
                                       if (false !== data1.nativeOpened) {
-                                        const err134 = { instancePath: instancePath + "/inspection/nativeOpened", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/5/properties/nativeOpened/const", keyword: "const", params: { allowedValue: false }, message: "must be equal to constant" };
+                                        const err130 = { instancePath: instancePath + "/inspection/nativeOpened", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/5/properties/nativeOpened/const", keyword: "const", params: { allowedValue: false }, message: "must be equal to constant" };
                                         if (vErrors === null) {
-                                          vErrors = [err134];
+                                          vErrors = [err130];
                                         } else {
-                                          vErrors.push(err134);
+                                          vErrors.push(err130);
                                         }
                                         errors2++;
                                       }
-                                      var valid20 = _errs132 === errors2;
+                                      var valid19 = _errs127 === errors2;
                                     } else {
-                                      var valid20 = true;
+                                      var valid19 = true;
                                     }
-                                    if (valid20) {
+                                    if (valid19) {
                                       if (data1.rendered !== void 0) {
-                                        const _errs133 = errors2;
+                                        const _errs128 = errors2;
                                         if (false !== data1.rendered) {
-                                          const err135 = { instancePath: instancePath + "/inspection/rendered", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/5/properties/rendered/const", keyword: "const", params: { allowedValue: false }, message: "must be equal to constant" };
+                                          const err131 = { instancePath: instancePath + "/inspection/rendered", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/5/properties/rendered/const", keyword: "const", params: { allowedValue: false }, message: "must be equal to constant" };
                                           if (vErrors === null) {
-                                            vErrors = [err135];
+                                            vErrors = [err131];
                                           } else {
-                                            vErrors.push(err135);
+                                            vErrors.push(err131);
                                           }
                                           errors2++;
                                         }
-                                        var valid20 = _errs133 === errors2;
+                                        var valid19 = _errs128 === errors2;
                                       } else {
-                                        var valid20 = true;
+                                        var valid19 = true;
                                       }
-                                      if (valid20) {
+                                      if (valid19) {
                                         if (data1.recalculated !== void 0) {
-                                          const _errs134 = errors2;
+                                          const _errs129 = errors2;
                                           if (false !== data1.recalculated) {
-                                            const err136 = { instancePath: instancePath + "/inspection/recalculated", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/5/properties/recalculated/const", keyword: "const", params: { allowedValue: false }, message: "must be equal to constant" };
+                                            const err132 = { instancePath: instancePath + "/inspection/recalculated", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/5/properties/recalculated/const", keyword: "const", params: { allowedValue: false }, message: "must be equal to constant" };
                                             if (vErrors === null) {
-                                              vErrors = [err136];
+                                              vErrors = [err132];
                                             } else {
-                                              vErrors.push(err136);
+                                              vErrors.push(err132);
                                             }
                                             errors2++;
                                           }
-                                          var valid20 = _errs134 === errors2;
+                                          var valid19 = _errs129 === errors2;
                                         } else {
-                                          var valid20 = true;
+                                          var valid19 = true;
                                         }
-                                        if (valid20) {
+                                        if (valid19) {
                                           if (data1.members !== void 0) {
-                                            let data70 = data1.members;
-                                            const _errs135 = errors2;
-                                            if (errors2 === _errs135) {
-                                              if (Array.isArray(data70)) {
-                                                if (data70.length > 5e3) {
-                                                  const err137 = { instancePath: instancePath + "/inspection/members", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/5/properties/members/maxItems", keyword: "maxItems", params: { limit: 5e3 }, message: "must NOT have more than 5000 items" };
+                                            let data69 = data1.members;
+                                            const _errs130 = errors2;
+                                            if (errors2 === _errs130) {
+                                              if (Array.isArray(data69)) {
+                                                if (data69.length > 5e3) {
+                                                  const err133 = { instancePath: instancePath + "/inspection/members", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/5/properties/members/maxItems", keyword: "maxItems", params: { limit: 5e3 }, message: "must NOT have more than 5000 items" };
                                                   if (vErrors === null) {
-                                                    vErrors = [err137];
+                                                    vErrors = [err133];
                                                   } else {
-                                                    vErrors.push(err137);
+                                                    vErrors.push(err133);
                                                   }
                                                   errors2++;
                                                 } else {
-                                                  var valid21 = true;
-                                                  const len7 = data70.length;
-                                                  for (let i7 = 0; i7 < len7; i7++) {
-                                                    let data71 = data70[i7];
-                                                    const _errs137 = errors2;
-                                                    if (errors2 === _errs137) {
-                                                      if (typeof data71 === "string") {
-                                                        if (func1(data71) > 500) {
-                                                          const err138 = { instancePath: instancePath + "/inspection/members/" + i7, schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/5/properties/members/items/maxLength", keyword: "maxLength", params: { limit: 500 }, message: "must NOT have more than 500 characters" };
+                                                  var valid20 = true;
+                                                  const len6 = data69.length;
+                                                  for (let i6 = 0; i6 < len6; i6++) {
+                                                    let data70 = data69[i6];
+                                                    const _errs132 = errors2;
+                                                    if (errors2 === _errs132) {
+                                                      if (typeof data70 === "string") {
+                                                        if (func1(data70) > 500) {
+                                                          const err134 = { instancePath: instancePath + "/inspection/members/" + i6, schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/5/properties/members/items/maxLength", keyword: "maxLength", params: { limit: 500 }, message: "must NOT have more than 500 characters" };
                                                           if (vErrors === null) {
-                                                            vErrors = [err138];
+                                                            vErrors = [err134];
                                                           } else {
-                                                            vErrors.push(err138);
+                                                            vErrors.push(err134);
                                                           }
                                                           errors2++;
                                                         }
                                                       } else {
-                                                        const err139 = { instancePath: instancePath + "/inspection/members/" + i7, schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/5/properties/members/items/type", keyword: "type", params: { type: "string" }, message: "must be string" };
+                                                        const err135 = { instancePath: instancePath + "/inspection/members/" + i6, schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/5/properties/members/items/type", keyword: "type", params: { type: "string" }, message: "must be string" };
                                                         if (vErrors === null) {
-                                                          vErrors = [err139];
+                                                          vErrors = [err135];
                                                         } else {
-                                                          vErrors.push(err139);
+                                                          vErrors.push(err135);
                                                         }
                                                         errors2++;
                                                       }
                                                     }
-                                                    var valid21 = _errs137 === errors2;
-                                                    if (!valid21) {
+                                                    var valid20 = _errs132 === errors2;
+                                                    if (!valid20) {
                                                       break;
                                                     }
                                                   }
                                                 }
                                               } else {
-                                                const err140 = { instancePath: instancePath + "/inspection/members", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/5/properties/members/type", keyword: "type", params: { type: "array" }, message: "must be array" };
+                                                const err136 = { instancePath: instancePath + "/inspection/members", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/5/properties/members/type", keyword: "type", params: { type: "array" }, message: "must be array" };
                                                 if (vErrors === null) {
-                                                  vErrors = [err140];
+                                                  vErrors = [err136];
                                                 } else {
-                                                  vErrors.push(err140);
+                                                  vErrors.push(err136);
                                                 }
                                                 errors2++;
                                               }
                                             }
-                                            var valid20 = _errs135 === errors2;
+                                            var valid19 = _errs130 === errors2;
                                           } else {
-                                            var valid20 = true;
+                                            var valid19 = true;
                                           }
-                                          if (valid20) {
+                                          if (valid19) {
                                             if (data1.details !== void 0) {
-                                              let data72 = data1.details;
-                                              const _errs139 = errors2;
-                                              if (errors2 === _errs139) {
-                                                if (data72 && typeof data72 == "object" && !Array.isArray(data72)) {
+                                              let data71 = data1.details;
+                                              const _errs134 = errors2;
+                                              if (errors2 === _errs134) {
+                                                if (data71 && typeof data71 == "object" && !Array.isArray(data71)) {
                                                   let missing12;
-                                                  if (data72.conversionCompleted === void 0 && (missing12 = "conversionCompleted") || data72.renderInspection === void 0 && (missing12 = "renderInspection") || data72.sourceDocxSha256 === void 0 && (missing12 = "sourceDocxSha256")) {
-                                                    const err141 = { instancePath: instancePath + "/inspection/details", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/5/properties/details/required", keyword: "required", params: { missingProperty: missing12 }, message: "must have required property '" + missing12 + "'" };
+                                                  if (data71.rows === void 0 && (missing12 = "rows") || data71.columns === void 0 && (missing12 = "columns") || data71.chart === void 0 && (missing12 = "chart")) {
+                                                    const err137 = { instancePath: instancePath + "/inspection/details", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/5/properties/details/required", keyword: "required", params: { missingProperty: missing12 }, message: "must have required property '" + missing12 + "'" };
                                                     if (vErrors === null) {
-                                                      vErrors = [err141];
+                                                      vErrors = [err137];
                                                     } else {
-                                                      vErrors.push(err141);
+                                                      vErrors.push(err137);
                                                     }
                                                     errors2++;
                                                   } else {
-                                                    const _errs141 = errors2;
-                                                    for (const key12 in data72) {
-                                                      if (!(key12 === "conversionCompleted" || key12 === "renderInspection" || key12 === "sourceDocxSha256")) {
-                                                        const err142 = { instancePath: instancePath + "/inspection/details", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/5/properties/details/additionalProperties", keyword: "additionalProperties", params: { additionalProperty: key12 }, message: "must NOT have additional properties" };
+                                                    const _errs136 = errors2;
+                                                    for (const key12 in data71) {
+                                                      if (!(key12 === "rows" || key12 === "columns" || key12 === "chart")) {
+                                                        const err138 = { instancePath: instancePath + "/inspection/details", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/5/properties/details/additionalProperties", keyword: "additionalProperties", params: { additionalProperty: key12 }, message: "must NOT have additional properties" };
                                                         if (vErrors === null) {
-                                                          vErrors = [err142];
+                                                          vErrors = [err138];
                                                         } else {
-                                                          vErrors.push(err142);
+                                                          vErrors.push(err138);
                                                         }
                                                         errors2++;
                                                         break;
                                                       }
                                                     }
-                                                    if (_errs141 === errors2) {
-                                                      if (data72.conversionCompleted !== void 0) {
-                                                        const _errs142 = errors2;
-                                                        if (true !== data72.conversionCompleted) {
-                                                          const err143 = { instancePath: instancePath + "/inspection/details/conversionCompleted", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/5/properties/details/properties/conversionCompleted/const", keyword: "const", params: { allowedValue: true }, message: "must be equal to constant" };
+                                                    if (_errs136 === errors2) {
+                                                      if (data71.rows !== void 0) {
+                                                        let data72 = data71.rows;
+                                                        const _errs137 = errors2;
+                                                        if (!(typeof data72 == "number" && (!(data72 % 1) && !isNaN(data72)) && isFinite(data72))) {
+                                                          const err139 = { instancePath: instancePath + "/inspection/details/rows", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/5/properties/details/properties/rows/type", keyword: "type", params: { type: "integer" }, message: "must be integer" };
                                                           if (vErrors === null) {
-                                                            vErrors = [err143];
+                                                            vErrors = [err139];
                                                           } else {
-                                                            vErrors.push(err143);
+                                                            vErrors.push(err139);
                                                           }
                                                           errors2++;
                                                         }
-                                                        var valid22 = _errs142 === errors2;
-                                                      } else {
-                                                        var valid22 = true;
-                                                      }
-                                                      if (valid22) {
-                                                        if (data72.renderInspection !== void 0) {
-                                                          const _errs143 = errors2;
-                                                          if ("pending" !== data72.renderInspection) {
-                                                            const err144 = { instancePath: instancePath + "/inspection/details/renderInspection", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/5/properties/details/properties/renderInspection/const", keyword: "const", params: { allowedValue: "pending" }, message: "must be equal to constant" };
-                                                            if (vErrors === null) {
-                                                              vErrors = [err144];
-                                                            } else {
-                                                              vErrors.push(err144);
-                                                            }
-                                                            errors2++;
-                                                          }
-                                                          var valid22 = _errs143 === errors2;
-                                                        } else {
-                                                          var valid22 = true;
-                                                        }
-                                                        if (valid22) {
-                                                          if (data72.sourceDocxSha256 !== void 0) {
-                                                            let data75 = data72.sourceDocxSha256;
-                                                            const _errs144 = errors2;
-                                                            if (errors2 === _errs144) {
-                                                              if (typeof data75 === "string") {
-                                                                if (!pattern14.test(data75)) {
-                                                                  const err145 = { instancePath: instancePath + "/inspection/details/sourceDocxSha256", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/5/properties/details/properties/sourceDocxSha256/pattern", keyword: "pattern", params: { pattern: "^[a-f0-9]{64}$" }, message: 'must match pattern "^[a-f0-9]{64}$"' };
-                                                                  if (vErrors === null) {
-                                                                    vErrors = [err145];
-                                                                  } else {
-                                                                    vErrors.push(err145);
-                                                                  }
-                                                                  errors2++;
-                                                                }
+                                                        if (errors2 === _errs137) {
+                                                          if (typeof data72 == "number" && isFinite(data72)) {
+                                                            if (data72 > 9007199254740991 || isNaN(data72)) {
+                                                              const err140 = { instancePath: instancePath + "/inspection/details/rows", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/5/properties/details/properties/rows/maximum", keyword: "maximum", params: { comparison: "<=", limit: 9007199254740991 }, message: "must be <= 9007199254740991" };
+                                                              if (vErrors === null) {
+                                                                vErrors = [err140];
                                                               } else {
-                                                                const err146 = { instancePath: instancePath + "/inspection/details/sourceDocxSha256", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/5/properties/details/properties/sourceDocxSha256/type", keyword: "type", params: { type: "string" }, message: "must be string" };
+                                                                vErrors.push(err140);
+                                                              }
+                                                              errors2++;
+                                                            } else {
+                                                              if (data72 < 0 || isNaN(data72)) {
+                                                                const err141 = { instancePath: instancePath + "/inspection/details/rows", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/5/properties/details/properties/rows/minimum", keyword: "minimum", params: { comparison: ">=", limit: 0 }, message: "must be >= 0" };
                                                                 if (vErrors === null) {
-                                                                  vErrors = [err146];
+                                                                  vErrors = [err141];
                                                                 } else {
-                                                                  vErrors.push(err146);
+                                                                  vErrors.push(err141);
                                                                 }
                                                                 errors2++;
                                                               }
                                                             }
-                                                            var valid22 = _errs144 === errors2;
+                                                          }
+                                                        }
+                                                        var valid21 = _errs137 === errors2;
+                                                      } else {
+                                                        var valid21 = true;
+                                                      }
+                                                      if (valid21) {
+                                                        if (data71.columns !== void 0) {
+                                                          let data73 = data71.columns;
+                                                          const _errs139 = errors2;
+                                                          if (errors2 === _errs139) {
+                                                            if (Array.isArray(data73)) {
+                                                              if (data73.length > 200) {
+                                                                const err142 = { instancePath: instancePath + "/inspection/details/columns", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/5/properties/details/properties/columns/maxItems", keyword: "maxItems", params: { limit: 200 }, message: "must NOT have more than 200 items" };
+                                                                if (vErrors === null) {
+                                                                  vErrors = [err142];
+                                                                } else {
+                                                                  vErrors.push(err142);
+                                                                }
+                                                                errors2++;
+                                                              } else {
+                                                                var valid22 = true;
+                                                                const len7 = data73.length;
+                                                                for (let i7 = 0; i7 < len7; i7++) {
+                                                                  const _errs141 = errors2;
+                                                                  if (typeof data73[i7] !== "string") {
+                                                                    const err143 = { instancePath: instancePath + "/inspection/details/columns/" + i7, schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/5/properties/details/properties/columns/items/type", keyword: "type", params: { type: "string" }, message: "must be string" };
+                                                                    if (vErrors === null) {
+                                                                      vErrors = [err143];
+                                                                    } else {
+                                                                      vErrors.push(err143);
+                                                                    }
+                                                                    errors2++;
+                                                                  }
+                                                                  var valid22 = _errs141 === errors2;
+                                                                  if (!valid22) {
+                                                                    break;
+                                                                  }
+                                                                }
+                                                              }
+                                                            } else {
+                                                              const err144 = { instancePath: instancePath + "/inspection/details/columns", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/5/properties/details/properties/columns/type", keyword: "type", params: { type: "array" }, message: "must be array" };
+                                                              if (vErrors === null) {
+                                                                vErrors = [err144];
+                                                              } else {
+                                                                vErrors.push(err144);
+                                                              }
+                                                              errors2++;
+                                                            }
+                                                          }
+                                                          var valid21 = _errs139 === errors2;
+                                                        } else {
+                                                          var valid21 = true;
+                                                        }
+                                                        if (valid21) {
+                                                          if (data71.chart !== void 0) {
+                                                            const _errs143 = errors2;
+                                                            if (typeof data71.chart !== "boolean") {
+                                                              const err145 = { instancePath: instancePath + "/inspection/details/chart", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/5/properties/details/properties/chart/type", keyword: "type", params: { type: "boolean" }, message: "must be boolean" };
+                                                              if (vErrors === null) {
+                                                                vErrors = [err145];
+                                                              } else {
+                                                                vErrors.push(err145);
+                                                              }
+                                                              errors2++;
+                                                            }
+                                                            var valid21 = _errs143 === errors2;
                                                           } else {
-                                                            var valid22 = true;
+                                                            var valid21 = true;
                                                           }
                                                         }
                                                       }
                                                     }
                                                   }
                                                 } else {
-                                                  const err147 = { instancePath: instancePath + "/inspection/details", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/5/properties/details/type", keyword: "type", params: { type: "object" }, message: "must be object" };
+                                                  const err146 = { instancePath: instancePath + "/inspection/details", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/5/properties/details/type", keyword: "type", params: { type: "object" }, message: "must be object" };
                                                   if (vErrors === null) {
-                                                    vErrors = [err147];
+                                                    vErrors = [err146];
                                                   } else {
-                                                    vErrors.push(err147);
+                                                    vErrors.push(err146);
                                                   }
                                                   errors2++;
                                                 }
                                               }
-                                              var valid20 = _errs139 === errors2;
+                                              var valid19 = _errs134 === errors2;
                                             } else {
-                                              var valid20 = true;
+                                              var valid19 = true;
                                             }
                                           }
                                         }
@@ -48207,16 +48194,16 @@ function validate173(data, { instancePath = "", parentData, parentDataProperty, 
                             }
                           }
                         } else {
-                          const err148 = { instancePath: instancePath + "/inspection", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/5/type", keyword: "type", params: { type: "object" }, message: "must be object" };
+                          const err147 = { instancePath: instancePath + "/inspection", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/5/type", keyword: "type", params: { type: "object" }, message: "must be object" };
                           if (vErrors === null) {
-                            vErrors = [err148];
+                            vErrors = [err147];
                           } else {
-                            vErrors.push(err148);
+                            vErrors.push(err147);
                           }
                           errors2++;
                         }
                       }
-                      var _valid0 = _errs124 === errors2;
+                      var _valid0 = _errs119 === errors2;
                       if (_valid0 && valid2) {
                         valid2 = false;
                         passing0 = [passing0, 5];
@@ -48228,17 +48215,377 @@ function validate173(data, { instancePath = "", parentData, parentDataProperty, 
                             props1 = true;
                           }
                         }
+                        const _errs145 = errors2;
+                        if (errors2 === _errs145) {
+                          if (data1 && typeof data1 == "object" && !Array.isArray(data1)) {
+                            let missing13;
+                            if (data1.sha256 === void 0 && (missing13 = "sha256") || data1.bytes === void 0 && (missing13 = "bytes") || data1.format === void 0 && (missing13 = "format") || data1.nativeOpened === void 0 && (missing13 = "nativeOpened") || data1.rendered === void 0 && (missing13 = "rendered") || data1.recalculated === void 0 && (missing13 = "recalculated") || data1.members === void 0 && (missing13 = "members") || data1.details === void 0 && (missing13 = "details")) {
+                              const err148 = { instancePath: instancePath + "/inspection", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/6/required", keyword: "required", params: { missingProperty: missing13 }, message: "must have required property '" + missing13 + "'" };
+                              if (vErrors === null) {
+                                vErrors = [err148];
+                              } else {
+                                vErrors.push(err148);
+                              }
+                              errors2++;
+                            } else {
+                              const _errs147 = errors2;
+                              for (const key13 in data1) {
+                                if (!(key13 === "sha256" || key13 === "bytes" || key13 === "format" || key13 === "nativeOpened" || key13 === "rendered" || key13 === "recalculated" || key13 === "members" || key13 === "details")) {
+                                  const err149 = { instancePath: instancePath + "/inspection", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/6/additionalProperties", keyword: "additionalProperties", params: { additionalProperty: key13 }, message: "must NOT have additional properties" };
+                                  if (vErrors === null) {
+                                    vErrors = [err149];
+                                  } else {
+                                    vErrors.push(err149);
+                                  }
+                                  errors2++;
+                                  break;
+                                }
+                              }
+                              if (_errs147 === errors2) {
+                                if (data1.sha256 !== void 0) {
+                                  let data76 = data1.sha256;
+                                  const _errs148 = errors2;
+                                  if (errors2 === _errs148) {
+                                    if (typeof data76 === "string") {
+                                      if (!pattern14.test(data76)) {
+                                        const err150 = { instancePath: instancePath + "/inspection/sha256", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/6/properties/sha256/pattern", keyword: "pattern", params: { pattern: "^[a-f0-9]{64}$" }, message: 'must match pattern "^[a-f0-9]{64}$"' };
+                                        if (vErrors === null) {
+                                          vErrors = [err150];
+                                        } else {
+                                          vErrors.push(err150);
+                                        }
+                                        errors2++;
+                                      }
+                                    } else {
+                                      const err151 = { instancePath: instancePath + "/inspection/sha256", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/6/properties/sha256/type", keyword: "type", params: { type: "string" }, message: "must be string" };
+                                      if (vErrors === null) {
+                                        vErrors = [err151];
+                                      } else {
+                                        vErrors.push(err151);
+                                      }
+                                      errors2++;
+                                    }
+                                  }
+                                  var valid23 = _errs148 === errors2;
+                                } else {
+                                  var valid23 = true;
+                                }
+                                if (valid23) {
+                                  if (data1.bytes !== void 0) {
+                                    let data77 = data1.bytes;
+                                    const _errs150 = errors2;
+                                    if (!(typeof data77 == "number" && (!(data77 % 1) && !isNaN(data77)) && isFinite(data77))) {
+                                      const err152 = { instancePath: instancePath + "/inspection/bytes", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/6/properties/bytes/type", keyword: "type", params: { type: "integer" }, message: "must be integer" };
+                                      if (vErrors === null) {
+                                        vErrors = [err152];
+                                      } else {
+                                        vErrors.push(err152);
+                                      }
+                                      errors2++;
+                                    }
+                                    if (errors2 === _errs150) {
+                                      if (typeof data77 == "number" && isFinite(data77)) {
+                                        if (data77 > 9007199254740991 || isNaN(data77)) {
+                                          const err153 = { instancePath: instancePath + "/inspection/bytes", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/6/properties/bytes/maximum", keyword: "maximum", params: { comparison: "<=", limit: 9007199254740991 }, message: "must be <= 9007199254740991" };
+                                          if (vErrors === null) {
+                                            vErrors = [err153];
+                                          } else {
+                                            vErrors.push(err153);
+                                          }
+                                          errors2++;
+                                        } else {
+                                          if (data77 < 0 || isNaN(data77)) {
+                                            const err154 = { instancePath: instancePath + "/inspection/bytes", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/6/properties/bytes/minimum", keyword: "minimum", params: { comparison: ">=", limit: 0 }, message: "must be >= 0" };
+                                            if (vErrors === null) {
+                                              vErrors = [err154];
+                                            } else {
+                                              vErrors.push(err154);
+                                            }
+                                            errors2++;
+                                          }
+                                        }
+                                      }
+                                    }
+                                    var valid23 = _errs150 === errors2;
+                                  } else {
+                                    var valid23 = true;
+                                  }
+                                  if (valid23) {
+                                    if (data1.format !== void 0) {
+                                      const _errs152 = errors2;
+                                      if ("pdf" !== data1.format) {
+                                        const err155 = { instancePath: instancePath + "/inspection/format", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/6/properties/format/const", keyword: "const", params: { allowedValue: "pdf" }, message: "must be equal to constant" };
+                                        if (vErrors === null) {
+                                          vErrors = [err155];
+                                        } else {
+                                          vErrors.push(err155);
+                                        }
+                                        errors2++;
+                                      }
+                                      var valid23 = _errs152 === errors2;
+                                    } else {
+                                      var valid23 = true;
+                                    }
+                                    if (valid23) {
+                                      if (data1.nativeOpened !== void 0) {
+                                        const _errs153 = errors2;
+                                        if (false !== data1.nativeOpened) {
+                                          const err156 = { instancePath: instancePath + "/inspection/nativeOpened", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/6/properties/nativeOpened/const", keyword: "const", params: { allowedValue: false }, message: "must be equal to constant" };
+                                          if (vErrors === null) {
+                                            vErrors = [err156];
+                                          } else {
+                                            vErrors.push(err156);
+                                          }
+                                          errors2++;
+                                        }
+                                        var valid23 = _errs153 === errors2;
+                                      } else {
+                                        var valid23 = true;
+                                      }
+                                      if (valid23) {
+                                        if (data1.rendered !== void 0) {
+                                          const _errs154 = errors2;
+                                          if (false !== data1.rendered) {
+                                            const err157 = { instancePath: instancePath + "/inspection/rendered", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/6/properties/rendered/const", keyword: "const", params: { allowedValue: false }, message: "must be equal to constant" };
+                                            if (vErrors === null) {
+                                              vErrors = [err157];
+                                            } else {
+                                              vErrors.push(err157);
+                                            }
+                                            errors2++;
+                                          }
+                                          var valid23 = _errs154 === errors2;
+                                        } else {
+                                          var valid23 = true;
+                                        }
+                                        if (valid23) {
+                                          if (data1.recalculated !== void 0) {
+                                            const _errs155 = errors2;
+                                            if (false !== data1.recalculated) {
+                                              const err158 = { instancePath: instancePath + "/inspection/recalculated", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/6/properties/recalculated/const", keyword: "const", params: { allowedValue: false }, message: "must be equal to constant" };
+                                              if (vErrors === null) {
+                                                vErrors = [err158];
+                                              } else {
+                                                vErrors.push(err158);
+                                              }
+                                              errors2++;
+                                            }
+                                            var valid23 = _errs155 === errors2;
+                                          } else {
+                                            var valid23 = true;
+                                          }
+                                          if (valid23) {
+                                            if (data1.members !== void 0) {
+                                              let data82 = data1.members;
+                                              const _errs156 = errors2;
+                                              if (errors2 === _errs156) {
+                                                if (Array.isArray(data82)) {
+                                                  if (data82.length > 5e3) {
+                                                    const err159 = { instancePath: instancePath + "/inspection/members", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/6/properties/members/maxItems", keyword: "maxItems", params: { limit: 5e3 }, message: "must NOT have more than 5000 items" };
+                                                    if (vErrors === null) {
+                                                      vErrors = [err159];
+                                                    } else {
+                                                      vErrors.push(err159);
+                                                    }
+                                                    errors2++;
+                                                  } else {
+                                                    var valid24 = true;
+                                                    const len8 = data82.length;
+                                                    for (let i8 = 0; i8 < len8; i8++) {
+                                                      let data83 = data82[i8];
+                                                      const _errs158 = errors2;
+                                                      if (errors2 === _errs158) {
+                                                        if (typeof data83 === "string") {
+                                                          if (func1(data83) > 500) {
+                                                            const err160 = { instancePath: instancePath + "/inspection/members/" + i8, schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/6/properties/members/items/maxLength", keyword: "maxLength", params: { limit: 500 }, message: "must NOT have more than 500 characters" };
+                                                            if (vErrors === null) {
+                                                              vErrors = [err160];
+                                                            } else {
+                                                              vErrors.push(err160);
+                                                            }
+                                                            errors2++;
+                                                          }
+                                                        } else {
+                                                          const err161 = { instancePath: instancePath + "/inspection/members/" + i8, schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/6/properties/members/items/type", keyword: "type", params: { type: "string" }, message: "must be string" };
+                                                          if (vErrors === null) {
+                                                            vErrors = [err161];
+                                                          } else {
+                                                            vErrors.push(err161);
+                                                          }
+                                                          errors2++;
+                                                        }
+                                                      }
+                                                      var valid24 = _errs158 === errors2;
+                                                      if (!valid24) {
+                                                        break;
+                                                      }
+                                                    }
+                                                  }
+                                                } else {
+                                                  const err162 = { instancePath: instancePath + "/inspection/members", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/6/properties/members/type", keyword: "type", params: { type: "array" }, message: "must be array" };
+                                                  if (vErrors === null) {
+                                                    vErrors = [err162];
+                                                  } else {
+                                                    vErrors.push(err162);
+                                                  }
+                                                  errors2++;
+                                                }
+                                              }
+                                              var valid23 = _errs156 === errors2;
+                                            } else {
+                                              var valid23 = true;
+                                            }
+                                            if (valid23) {
+                                              if (data1.details !== void 0) {
+                                                let data84 = data1.details;
+                                                const _errs160 = errors2;
+                                                if (errors2 === _errs160) {
+                                                  if (data84 && typeof data84 == "object" && !Array.isArray(data84)) {
+                                                    let missing14;
+                                                    if (data84.conversionCompleted === void 0 && (missing14 = "conversionCompleted") || data84.renderInspection === void 0 && (missing14 = "renderInspection") || data84.sourceDocxSha256 === void 0 && (missing14 = "sourceDocxSha256")) {
+                                                      const err163 = { instancePath: instancePath + "/inspection/details", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/6/properties/details/required", keyword: "required", params: { missingProperty: missing14 }, message: "must have required property '" + missing14 + "'" };
+                                                      if (vErrors === null) {
+                                                        vErrors = [err163];
+                                                      } else {
+                                                        vErrors.push(err163);
+                                                      }
+                                                      errors2++;
+                                                    } else {
+                                                      const _errs162 = errors2;
+                                                      for (const key14 in data84) {
+                                                        if (!(key14 === "conversionCompleted" || key14 === "renderInspection" || key14 === "sourceDocxSha256")) {
+                                                          const err164 = { instancePath: instancePath + "/inspection/details", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/6/properties/details/additionalProperties", keyword: "additionalProperties", params: { additionalProperty: key14 }, message: "must NOT have additional properties" };
+                                                          if (vErrors === null) {
+                                                            vErrors = [err164];
+                                                          } else {
+                                                            vErrors.push(err164);
+                                                          }
+                                                          errors2++;
+                                                          break;
+                                                        }
+                                                      }
+                                                      if (_errs162 === errors2) {
+                                                        if (data84.conversionCompleted !== void 0) {
+                                                          const _errs163 = errors2;
+                                                          if (true !== data84.conversionCompleted) {
+                                                            const err165 = { instancePath: instancePath + "/inspection/details/conversionCompleted", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/6/properties/details/properties/conversionCompleted/const", keyword: "const", params: { allowedValue: true }, message: "must be equal to constant" };
+                                                            if (vErrors === null) {
+                                                              vErrors = [err165];
+                                                            } else {
+                                                              vErrors.push(err165);
+                                                            }
+                                                            errors2++;
+                                                          }
+                                                          var valid25 = _errs163 === errors2;
+                                                        } else {
+                                                          var valid25 = true;
+                                                        }
+                                                        if (valid25) {
+                                                          if (data84.renderInspection !== void 0) {
+                                                            const _errs164 = errors2;
+                                                            if ("pending" !== data84.renderInspection) {
+                                                              const err166 = { instancePath: instancePath + "/inspection/details/renderInspection", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/6/properties/details/properties/renderInspection/const", keyword: "const", params: { allowedValue: "pending" }, message: "must be equal to constant" };
+                                                              if (vErrors === null) {
+                                                                vErrors = [err166];
+                                                              } else {
+                                                                vErrors.push(err166);
+                                                              }
+                                                              errors2++;
+                                                            }
+                                                            var valid25 = _errs164 === errors2;
+                                                          } else {
+                                                            var valid25 = true;
+                                                          }
+                                                          if (valid25) {
+                                                            if (data84.sourceDocxSha256 !== void 0) {
+                                                              let data87 = data84.sourceDocxSha256;
+                                                              const _errs165 = errors2;
+                                                              if (errors2 === _errs165) {
+                                                                if (typeof data87 === "string") {
+                                                                  if (!pattern14.test(data87)) {
+                                                                    const err167 = { instancePath: instancePath + "/inspection/details/sourceDocxSha256", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/6/properties/details/properties/sourceDocxSha256/pattern", keyword: "pattern", params: { pattern: "^[a-f0-9]{64}$" }, message: 'must match pattern "^[a-f0-9]{64}$"' };
+                                                                    if (vErrors === null) {
+                                                                      vErrors = [err167];
+                                                                    } else {
+                                                                      vErrors.push(err167);
+                                                                    }
+                                                                    errors2++;
+                                                                  }
+                                                                } else {
+                                                                  const err168 = { instancePath: instancePath + "/inspection/details/sourceDocxSha256", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/6/properties/details/properties/sourceDocxSha256/type", keyword: "type", params: { type: "string" }, message: "must be string" };
+                                                                  if (vErrors === null) {
+                                                                    vErrors = [err168];
+                                                                  } else {
+                                                                    vErrors.push(err168);
+                                                                  }
+                                                                  errors2++;
+                                                                }
+                                                              }
+                                                              var valid25 = _errs165 === errors2;
+                                                            } else {
+                                                              var valid25 = true;
+                                                            }
+                                                          }
+                                                        }
+                                                      }
+                                                    }
+                                                  } else {
+                                                    const err169 = { instancePath: instancePath + "/inspection/details", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/6/properties/details/type", keyword: "type", params: { type: "object" }, message: "must be object" };
+                                                    if (vErrors === null) {
+                                                      vErrors = [err169];
+                                                    } else {
+                                                      vErrors.push(err169);
+                                                    }
+                                                    errors2++;
+                                                  }
+                                                }
+                                                var valid23 = _errs160 === errors2;
+                                              } else {
+                                                var valid23 = true;
+                                              }
+                                            }
+                                          }
+                                        }
+                                      }
+                                    }
+                                  }
+                                }
+                              }
+                            }
+                          } else {
+                            const err170 = { instancePath: instancePath + "/inspection", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf/6/type", keyword: "type", params: { type: "object" }, message: "must be object" };
+                            if (vErrors === null) {
+                              vErrors = [err170];
+                            } else {
+                              vErrors.push(err170);
+                            }
+                            errors2++;
+                          }
+                        }
+                        var _valid0 = _errs145 === errors2;
+                        if (_valid0 && valid2) {
+                          valid2 = false;
+                          passing0 = [passing0, 6];
+                        } else {
+                          if (_valid0) {
+                            valid2 = true;
+                            passing0 = 6;
+                            if (props1 !== true) {
+                              props1 = true;
+                            }
+                          }
+                        }
                       }
                     }
                   }
                 }
               }
               if (!valid2) {
-                const err149 = { instancePath: instancePath + "/inspection", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf", keyword: "oneOf", params: { passingSchemas: passing0 }, message: "must match exactly one schema in oneOf" };
+                const err171 = { instancePath: instancePath + "/inspection", schemaPath: "#/$defs/Canonical_ArtifactInspection_3ae45145/oneOf", keyword: "oneOf", params: { passingSchemas: passing0 }, message: "must match exactly one schema in oneOf" };
                 if (vErrors === null) {
-                  vErrors = [err149];
+                  vErrors = [err171];
                 } else {
-                  vErrors.push(err149);
+                  vErrors.push(err171);
                 }
                 errors2++;
                 validate173.errors = vErrors;
@@ -48259,12 +48606,12 @@ function validate173(data, { instancePath = "", parentData, parentDataProperty, 
             }
             if (valid0) {
               if (data.execution !== void 0) {
-                const _errs146 = errors2;
+                const _errs167 = errors2;
                 if (!validate191(data.execution, { instancePath: instancePath + "/execution", parentData: data, parentDataProperty: "execution", rootData, dynamicAnchors })) {
                   vErrors = vErrors === null ? validate191.errors : vErrors.concat(validate191.errors);
                   errors2 = vErrors.length;
                 }
-                var valid0 = _errs146 === errors2;
+                var valid0 = _errs167 === errors2;
               } else {
                 var valid0 = true;
               }
@@ -78879,7 +79226,7 @@ function validate758(data, { instancePath = "", parentData, parentDataProperty, 
 }
 validate758.evaluated = { "props": true, "dynamicProps": false, "dynamicItems": false };
 var validateIntentsDecideResponse = validate760;
-var pattern570 = new RegExp("^/share/(research/)?[a-f0-9]{64}$", "u");
+var pattern571 = new RegExp("^/share/(research/)?[a-f0-9]{64}$", "u");
 function validate760(data, { instancePath = "", parentData, parentDataProperty, rootData = data, dynamicAnchors = {} } = {}) {
   let vErrors = null;
   let errors2 = 0;
@@ -80822,7 +81169,7 @@ function validate760(data, { instancePath = "", parentData, parentDataProperty, 
                                                   const _errs149 = errors2;
                                                   if (errors2 === _errs149) {
                                                     if (typeof data55 === "string") {
-                                                      if (!pattern570.test(data55)) {
+                                                      if (!pattern571.test(data55)) {
                                                         const err115 = { instancePath: instancePath + "/oneTimeResult/sharePath", schemaPath: "#/$defs/Canonical_ResearchShareOneTimeResult_9258e7d0/properties/sharePath/pattern", keyword: "pattern", params: { pattern: "^/share/(research/)?[a-f0-9]{64}$" }, message: 'must match pattern "^/share/(research/)?[a-f0-9]{64}$"' };
                                                         if (vErrors === null) {
                                                           vErrors = [err115];
@@ -80944,7 +81291,7 @@ function validate760(data, { instancePath = "", parentData, parentDataProperty, 
 validate760.evaluated = { "dynamicProps": true, "dynamicItems": false };
 var validateIntentsErrorResponse = validate772;
 var schema619 = { "type": "object", "properties": { "error": { "type": "object", "properties": { "code": { "type": "string", "enum": ["INVALID_REQUEST", "UNAUTHENTICATED", "ACCESS_DENIED", "MEMBERSHIP_REVOKED", "NOT_FOUND", "METHOD_NOT_ALLOWED", "DEADLINE", "MEMBERSHIP_CHANGED", "REQUEST_TOO_LARGE", "UNSUPPORTED_MEDIA_TYPE", "CANCELLED", "PRODUCT_UNAVAILABLE", "INTENT_APPROVALS_DISABLED", "INTENT_NOT_FOUND", "INTENT_NOT_PREPARED", "INTENT_NOT_APPROVABLE", "INTENT_MISMATCH", "INTENT_EXPIRED", "INTENT_SCOPE_WITHHELD", "APPROVER_REFUSED", "APPROVAL_OWNER_UNAVAILABLE", "APPROVAL_DECISION_REFUSED", "APPROVAL_DECISION_UNKNOWN", "EXECUTION_OWNER_UNAVAILABLE", "EXECUTION_AUTHORITY_REFUSED", "INTENT_CROSS_RUN", "COMMAND_APPROVAL_REFUSED", "COMMAND_AUTHORITY_REFUSED", "COMMAND_PREPARATION_REFUSED", "COMMAND_REFUSED", "COMMAND_OUTCOME_UNKNOWN", "INTENT_RESULT_NOT_RELEASED", "INTENT_EXECUTION_UNKNOWN", "INTENT_JOURNAL_UNAVAILABLE", "INTENT_REQUEST_INVALID"] }, "outcome": { "type": "string", "enum": ["NOT_DISPATCHED", "UNKNOWN", "RESULT_NOT_RELEASED"] }, "field": { "type": "string", "pattern": "^[A-Za-z][A-Za-z0-9_.-]{0,127}$" } }, "required": ["code"], "additionalProperties": false } }, "required": ["error"], "additionalProperties": false };
-var pattern571 = new RegExp("^[A-Za-z][A-Za-z0-9_.-]{0,127}$", "u");
+var pattern572 = new RegExp("^[A-Za-z][A-Za-z0-9_.-]{0,127}$", "u");
 function validate772(data, { instancePath = "", parentData, parentDataProperty, rootData = data, dynamicAnchors = {} } = {}) {
   let vErrors = null;
   let errors2 = 0;
@@ -81027,7 +81374,7 @@ function validate772(data, { instancePath = "", parentData, parentDataProperty, 
                           const _errs9 = errors2;
                           if (errors2 === _errs9) {
                             if (typeof data3 === "string") {
-                              if (!pattern571.test(data3)) {
+                              if (!pattern572.test(data3)) {
                                 validate772.errors = [{ instancePath: instancePath + "/error/field", schemaPath: "#/properties/error/properties/field/pattern", keyword: "pattern", params: { pattern: "^[A-Za-z][A-Za-z0-9_.-]{0,127}$" }, message: 'must match pattern "^[A-Za-z][A-Za-z0-9_.-]{0,127}$"' }];
                                 return false;
                               }
@@ -81314,7 +81661,7 @@ function validate774(data, { instancePath = "", parentData, parentDataProperty, 
 }
 validate774.evaluated = { "props": true, "dynamicProps": false, "dynamicItems": false };
 var validateRoutinesManagementSessionReceipt = validate775;
-var pattern574 = new RegExp("^routine_session_[A-Za-z0-9_-]{43}$", "u");
+var pattern575 = new RegExp("^routine_session_[A-Za-z0-9_-]{43}$", "u");
 function validate775(data, { instancePath = "", parentData, parentDataProperty, rootData = data, dynamicAnchors = {} } = {}) {
   let vErrors = null;
   let errors2 = 0;
@@ -81357,7 +81704,7 @@ function validate775(data, { instancePath = "", parentData, parentDataProperty, 
               const _errs3 = errors2;
               if (errors2 === _errs3) {
                 if (typeof data1 === "string") {
-                  if (!pattern574.test(data1)) {
+                  if (!pattern575.test(data1)) {
                     validate775.errors = [{ instancePath: instancePath + "/credential", schemaPath: "#/properties/credential/pattern", keyword: "pattern", params: { pattern: "^routine_session_[A-Za-z0-9_-]{43}$" }, message: 'must match pattern "^routine_session_[A-Za-z0-9_-]{43}$"' }];
                     return false;
                   }
@@ -81558,7 +81905,7 @@ function validate775(data, { instancePath = "", parentData, parentDataProperty, 
 validate775.evaluated = { "props": true, "dynamicProps": false, "dynamicItems": false };
 var validateRoutinesMutationRequest = validate776;
 var schema630 = { "type": "object", "properties": { "entry": { "enum": ["start-work", "delegate"] }, "jobKind": { "enum": ["research", "deliverable", "audit", "scheduled"] }, "deliverables": { "type": "array", "maxItems": 20, "uniqueItems": true, "items": { "type": "string", "minLength": 1, "maxLength": 200, "pattern": "\\S" } }, "dependencies": { "type": "array", "maxItems": 20, "uniqueItems": true, "items": { "type": "string", "minLength": 1, "maxLength": 200, "pattern": "\\S" } } }, "required": ["entry", "jobKind", "deliverables", "dependencies"], "additionalProperties": false, "$id": "urn:meri:work:selection:0.1.0" };
-var pattern576 = new RegExp("\\S", "u");
+var pattern577 = new RegExp("\\S", "u");
 var schema631 = { "type": "object", "properties": { "spec": { "$ref": "#/$defs/Canonical_spec_061d770e" }, "overlap": { "$ref": "#/$defs/Canonical_overlap_de9b7a1c" }, "catchupWindowMs": { "$ref": "#/$defs/Canonical_catchupWindowMs_67f5ffbf" }, "pauseOnFailure": { "$ref": "#/$defs/Canonical_pauseOnFailure_319e36bf" }, "remainingActions": { "$ref": "#/$defs/Canonical_remainingActions_f333bcc2" }, "paused": { "$ref": "#/$defs/Canonical_paused_151ea49e" }, "note": { "$ref": "#/$defs/Canonical_note_299b10ff" }, "runNow": { "$ref": "#/$defs/Canonical_runNow_53bfd55d" }, "runNowOverlap": { "$ref": "#/$defs/Canonical_runNowOverlap_40c0e869" }, "sourceTrigger": { "anyOf": [{ "$ref": "#/$defs/Canonical_SourceTrigger_bca20fe1" }, { "type": "null" }] } }, "required": ["spec", "overlap", "catchupWindowMs", "pauseOnFailure", "remainingActions", "paused", "note", "runNow", "runNowOverlap"], "additionalProperties": false };
 var schema635 = { "enum": ["SKIP", "BUFFER_ONE", "BUFFER_ALL", "CANCEL_OTHER", "TERMINATE_OTHER", "ALLOW_ALL"] };
 var schema643 = { "type": "object", "properties": { "producer": { "const": "bizdev.watch.alert.v1" }, "sourceFamily": { "enum": ["federal_award", "federal_assistance_award", "sam_opportunity", "tango_resource", "lda_filing", "acquisition_revision"] }, "resourceKey": { "type": "string", "format": "uuid" } }, "required": ["producer", "sourceFamily", "resourceKey"], "additionalProperties": false };
@@ -85870,7 +86217,7 @@ function validate513(data, { instancePath = "", parentData, parentDataProperty, 
                                           }
                                           errors2++;
                                         } else {
-                                          if (!pattern576.test(data4)) {
+                                          if (!pattern577.test(data4)) {
                                             const err7 = { instancePath: instancePath + "/work/deliverables/" + i0, schemaPath: "#/$defs/Canonical_Work_df539be9/properties/deliverables/items/pattern", keyword: "pattern", params: { pattern: "\\S" }, message: 'must match pattern "\\S"' };
                                             if (vErrors === null) {
                                               vErrors = [err7];
@@ -85976,7 +86323,7 @@ function validate513(data, { instancePath = "", parentData, parentDataProperty, 
                                             }
                                             errors2++;
                                           } else {
-                                            if (!pattern576.test(data6)) {
+                                            if (!pattern577.test(data6)) {
                                               const err14 = { instancePath: instancePath + "/work/dependencies/" + i2, schemaPath: "#/$defs/Canonical_Work_df539be9/properties/dependencies/items/pattern", keyword: "pattern", params: { pattern: "\\S" }, message: 'must match pattern "\\S"' };
                                               if (vErrors === null) {
                                                 vErrors = [err14];
@@ -86312,7 +86659,7 @@ function validate521(data, { instancePath = "", parentData, parentDataProperty, 
                                           }
                                           errors2++;
                                         } else {
-                                          if (!pattern576.test(data4)) {
+                                          if (!pattern577.test(data4)) {
                                             const err7 = { instancePath: instancePath + "/work/deliverables/" + i0, schemaPath: "#/$defs/Canonical_Work_df539be9/properties/deliverables/items/pattern", keyword: "pattern", params: { pattern: "\\S" }, message: 'must match pattern "\\S"' };
                                             if (vErrors === null) {
                                               vErrors = [err7];
@@ -86418,7 +86765,7 @@ function validate521(data, { instancePath = "", parentData, parentDataProperty, 
                                             }
                                             errors2++;
                                           } else {
-                                            if (!pattern576.test(data6)) {
+                                            if (!pattern577.test(data6)) {
                                               const err14 = { instancePath: instancePath + "/work/dependencies/" + i2, schemaPath: "#/$defs/Canonical_Work_df539be9/properties/dependencies/items/pattern", keyword: "pattern", params: { pattern: "\\S" }, message: 'must match pattern "\\S"' };
                                               if (vErrors === null) {
                                                 vErrors = [err14];
@@ -87526,7 +87873,7 @@ function validate780(data, { instancePath = "", parentData, parentDataProperty, 
                                                           }
                                                           errors2++;
                                                         } else {
-                                                          if (!pattern576.test(data12)) {
+                                                          if (!pattern577.test(data12)) {
                                                             const err16 = { instancePath: instancePath + "/work/deliverables/" + i0, schemaPath: "#/$defs/Canonical_Work_df539be9/properties/deliverables/items/pattern", keyword: "pattern", params: { pattern: "\\S" }, message: 'must match pattern "\\S"' };
                                                             if (vErrors === null) {
                                                               vErrors = [err16];
@@ -87632,7 +87979,7 @@ function validate780(data, { instancePath = "", parentData, parentDataProperty, 
                                                             }
                                                             errors2++;
                                                           } else {
-                                                            if (!pattern576.test(data14)) {
+                                                            if (!pattern577.test(data14)) {
                                                               const err23 = { instancePath: instancePath + "/work/dependencies/" + i2, schemaPath: "#/$defs/Canonical_Work_df539be9/properties/dependencies/items/pattern", keyword: "pattern", params: { pattern: "\\S" }, message: 'must match pattern "\\S"' };
                                                               if (vErrors === null) {
                                                                 vErrors = [err23];
@@ -87771,7 +88118,7 @@ function validate780(data, { instancePath = "", parentData, parentDataProperty, 
 }
 validate780.evaluated = { "props": true, "dynamicProps": false, "dynamicItems": false };
 var validateRoutinesPrepareRequest = validate784;
-var pattern585 = new RegExp("^[A-Za-z0-9._-]{1,128}$", "u");
+var pattern586 = new RegExp("^[A-Za-z0-9._-]{1,128}$", "u");
 function validate784(data, { instancePath = "", parentData, parentDataProperty, rootData = data, dynamicAnchors = {} } = {}) {
   let vErrors = null;
   let errors2 = 0;
@@ -87817,7 +88164,7 @@ function validate784(data, { instancePath = "", parentData, parentDataProperty, 
             const _errs4 = errors2;
             if (errors2 === _errs4) {
               if (typeof data0 === "string") {
-                if (!pattern585.test(data0)) {
+                if (!pattern586.test(data0)) {
                   const err2 = { instancePath: instancePath + "/requestId", schemaPath: "#/oneOf/0/properties/requestId/pattern", keyword: "pattern", params: { pattern: "^[A-Za-z0-9._-]{1,128}$" }, message: 'must match pattern "^[A-Za-z0-9._-]{1,128}$"' };
                   if (vErrors === null) {
                     vErrors = [err2];
@@ -87919,7 +88266,7 @@ function validate784(data, { instancePath = "", parentData, parentDataProperty, 
             const _errs11 = errors2;
             if (errors2 === _errs11) {
               if (typeof data3 === "string") {
-                if (!pattern585.test(data3)) {
+                if (!pattern586.test(data3)) {
                   const err8 = { instancePath: instancePath + "/requestId", schemaPath: "#/oneOf/1/properties/requestId/pattern", keyword: "pattern", params: { pattern: "^[A-Za-z0-9._-]{1,128}$" }, message: 'must match pattern "^[A-Za-z0-9._-]{1,128}$"' };
                   if (vErrors === null) {
                     vErrors = [err8];
@@ -88027,7 +88374,7 @@ function validate784(data, { instancePath = "", parentData, parentDataProperty, 
               const _errs18 = errors2;
               if (errors2 === _errs18) {
                 if (typeof data6 === "string") {
-                  if (!pattern585.test(data6)) {
+                  if (!pattern586.test(data6)) {
                     const err14 = { instancePath: instancePath + "/requestId", schemaPath: "#/oneOf/2/properties/requestId/pattern", keyword: "pattern", params: { pattern: "^[A-Za-z0-9._-]{1,128}$" }, message: 'must match pattern "^[A-Za-z0-9._-]{1,128}$"' };
                     if (vErrors === null) {
                       vErrors = [err14];
@@ -88511,7 +88858,7 @@ function validate545(data, { instancePath = "", parentData, parentDataProperty, 
                                                           }
                                                           errors2++;
                                                         } else {
-                                                          if (!pattern576.test(data12)) {
+                                                          if (!pattern577.test(data12)) {
                                                             const err16 = { instancePath: instancePath + "/work/deliverables/" + i0, schemaPath: "#/$defs/Canonical_Work_df539be9/properties/deliverables/items/pattern", keyword: "pattern", params: { pattern: "\\S" }, message: 'must match pattern "\\S"' };
                                                             if (vErrors === null) {
                                                               vErrors = [err16];
@@ -88617,7 +88964,7 @@ function validate545(data, { instancePath = "", parentData, parentDataProperty, 
                                                             }
                                                             errors2++;
                                                           } else {
-                                                            if (!pattern576.test(data14)) {
+                                                            if (!pattern577.test(data14)) {
                                                               const err23 = { instancePath: instancePath + "/work/dependencies/" + i2, schemaPath: "#/$defs/Canonical_Work_df539be9/properties/dependencies/items/pattern", keyword: "pattern", params: { pattern: "\\S" }, message: 'must match pattern "\\S"' };
                                                               if (vErrors === null) {
                                                                 vErrors = [err23];
@@ -99893,7 +100240,7 @@ function validate604(data, { instancePath = "", parentData, parentDataProperty, 
                                                                             }
                                                                             errors2++;
                                                                           } else {
-                                                                            if (!pattern576.test(data17)) {
+                                                                            if (!pattern577.test(data17)) {
                                                                               const err12 = { instancePath: instancePath + "/task/work/deliverables/" + i0, schemaPath: "#/$defs/Canonical_Work_df539be9/properties/deliverables/items/pattern", keyword: "pattern", params: { pattern: "\\S" }, message: 'must match pattern "\\S"' };
                                                                               if (vErrors === null) {
                                                                                 vErrors = [err12];
@@ -99999,7 +100346,7 @@ function validate604(data, { instancePath = "", parentData, parentDataProperty, 
                                                                               }
                                                                               errors2++;
                                                                             } else {
-                                                                              if (!pattern576.test(data19)) {
+                                                                              if (!pattern577.test(data19)) {
                                                                                 const err19 = { instancePath: instancePath + "/task/work/dependencies/" + i2, schemaPath: "#/$defs/Canonical_Work_df539be9/properties/dependencies/items/pattern", keyword: "pattern", params: { pattern: "\\S" }, message: 'must match pattern "\\S"' };
                                                                                 if (vErrors === null) {
                                                                                   vErrors = [err19];
@@ -101766,7 +102113,7 @@ function validate816(data, { instancePath = "", parentData, parentDataProperty, 
                 const _errs6 = errors2;
                 if (errors2 === _errs6) {
                   if (typeof data2 === "string") {
-                    if (!pattern585.test(data2)) {
+                    if (!pattern586.test(data2)) {
                       validate816.errors = [{ instancePath: instancePath + "/requestId", schemaPath: "#/properties/requestId/pattern", keyword: "pattern", params: { pattern: "^[A-Za-z0-9._-]{1,128}$" }, message: 'must match pattern "^[A-Za-z0-9._-]{1,128}$"' }];
                       return false;
                     }
@@ -102009,7 +102356,7 @@ function validate817(data, { instancePath = "", parentData, parentDataProperty, 
 validate817.evaluated = { "props": true, "dynamicProps": false, "dynamicItems": false };
 var validateRoutinesErrorResponse = validate818;
 var schema720 = { "type": "object", "properties": { "error": { "type": "object", "properties": { "code": { "type": "string", "pattern": "^[A-Z][A-Z0-9_]{0,63}$" }, "outcome": { "enum": ["NOT_DISPATCHED", "UNKNOWN", "ACKNOWLEDGED_NOT_RELEASED", "UNRESOLVED"] } }, "required": ["code"], "additionalProperties": false } }, "required": ["error"], "additionalProperties": false };
-var pattern627 = new RegExp("^[A-Z][A-Z0-9_]{0,63}$", "u");
+var pattern628 = new RegExp("^[A-Z][A-Z0-9_]{0,63}$", "u");
 function validate818(data, { instancePath = "", parentData, parentDataProperty, rootData = data, dynamicAnchors = {} } = {}) {
   let vErrors = null;
   let errors2 = 0;
@@ -102060,7 +102407,7 @@ function validate818(data, { instancePath = "", parentData, parentDataProperty, 
                       const _errs5 = errors2;
                       if (errors2 === _errs5) {
                         if (typeof data1 === "string") {
-                          if (!pattern627.test(data1)) {
+                          if (!pattern628.test(data1)) {
                             validate818.errors = [{ instancePath: instancePath + "/error/code", schemaPath: "#/properties/error/properties/code/pattern", keyword: "pattern", params: { pattern: "^[A-Z][A-Z0-9_]{0,63}$" }, message: 'must match pattern "^[A-Z][A-Z0-9_]{0,63}$"' }];
                             return false;
                           }
@@ -102295,7 +102642,7 @@ function canonicalize(object) {
 }
 
 // artifacts-0.2/artifact-formats.mjs
-var ARTIFACT_MIME_TYPES = Object.freeze({ docx: "application/vnd.openxmlformats-officedocument.wordprocessingml.document", txt: "text/plain; charset=utf-8", xlsx: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", pptx: "application/vnd.openxmlformats-officedocument.presentationml.presentation", pdf: "application/pdf", zip: "application/zip" });
+var ARTIFACT_MIME_TYPES = Object.freeze({ docx: "application/vnd.openxmlformats-officedocument.wordprocessingml.document", txt: "text/plain; charset=utf-8", xml: "application/xml; charset=utf-8", xlsx: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", pptx: "application/vnd.openxmlformats-officedocument.presentationml.presentation", pdf: "application/pdf", zip: "application/zip" });
 function assertNativeArtifactEvidenceBinding(binding, evidence) {
   for (const item2 of evidence) if (Object.hasOwn(item2, "binding") && ["tenantId", "actorId", "conversationId"].some((key) => item2.binding[key] !== binding[key])) throw Error("NATIVE_ARTIFACT_EVIDENCE_BINDING");
 }

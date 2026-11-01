@@ -13,12 +13,18 @@
 import {readZip} from './zip.mjs';
 import {verifyOoxml,OOXML_FORMATS} from './ooxml.mjs';
 import {verifyPdf} from './pdf.mjs';
+import {assertArtifactXmlText} from '../../../packages/contracts/artifacts-0.2/artifact-validation.mjs';
 import {StructureInvalid,refuse} from './refusal.mjs';
 export {readZip};
 export {STRUCTURE_REASONS} from './refusal.mjs';
 const strict=new TextDecoder('utf-8',{fatal:true});
+const xmlDecoder=new TextDecoder('utf-8',{fatal:true,ignoreBOM:true});
 function verify(bytes,format){
  if(format==='txt'){try{strict.decode(bytes);}catch{refuse('TEXT_ENCODING');}if(bytes.includes(0))refuse('TEXT_ENCODING');return;}
+ if(format==='xml'){
+  let text;try{text=xmlDecoder.decode(bytes);}catch{refuse('XML_ENCODING');}
+  try{assertArtifactXmlText(text);}catch(error){refuse(['XML_DOCTYPE','XML_ENCODING'].includes(error.code)?error.code:'XML_MALFORMED');}return;
+ }
  if(format==='pdf')return verifyPdf(bytes);
  if(format==='zip'){readZip(bytes);return;}
  if(Object.hasOwn(OOXML_FORMATS,format))return verifyOoxml(readZip(bytes),format);

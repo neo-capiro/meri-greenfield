@@ -138,8 +138,8 @@
     },
     {
       "path": "../../apps/control/product-access/http.mjs",
-      "sha256": "3e636edde46932c6a79f7e9f8ccfbe340c82108b2fc7869fb0f6d6c8bfe2b3df",
-      "bytes": 9527
+      "sha256": "d443095c9fa060ec803c49e53c741afea314e7045a10d4cd17dc93414e00ed84",
+      "bytes": 10020
     },
     {
       "path": "../../apps/control/schedules/application-http.mjs",
@@ -153,13 +153,13 @@
     },
     {
       "path": "artifacts-0.2/artifact-formats.mjs",
-      "sha256": "4a2e725eb5bb628a66ae06f471741ec1fbb6ce1eb6e3ed842050393d3ab39334",
-      "bytes": 2579
+      "sha256": "cf9aab9fcefb0a8a040d5f8bcfd2a4907931a7a64f0947fad7e47ab3721caf36",
+      "bytes": 2616
     },
     {
       "path": "artifacts-0.2/artifact.schema.json",
-      "sha256": "2f0db5c164b3231f93d5ad10dbf3fd09b1cca8a8291d181e200170645c3c2276",
-      "bytes": 48251
+      "sha256": "2b30963f6556488ee2c7454ab3eddd582877a557f73c1778031d6b1c4c13695a",
+      "bytes": 51966
     },
     {
       "path": "commands-0.2/artifact-file.schema.json",
@@ -352,7 +352,7 @@
       "bytes": 3041
     }
   ],
-  "schemaSha256": "76a5122f623c133c928b893e5b90bd9493f31018af93a659ca30ccf0cdc9640e",
+  "schemaSha256": "884b9247cb41de4459fb75bcbd94b34c13f756052c48ddc8923fc1054bef0235",
   "browserInputs": [
     "artifacts-0.2/artifact-formats.mjs",
     "commands-0.2/mail-send-validation.mjs",

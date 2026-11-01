@@ -1,5 +1,5 @@
 // artifacts-0.2/artifact-formats.mjs
-var ARTIFACT_MIME_TYPES = Object.freeze({ docx: "application/vnd.openxmlformats-officedocument.wordprocessingml.document", txt: "text/plain; charset=utf-8", xlsx: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", pptx: "application/vnd.openxmlformats-officedocument.presentationml.presentation", pdf: "application/pdf", zip: "application/zip" });
+var ARTIFACT_MIME_TYPES = Object.freeze({ docx: "application/vnd.openxmlformats-officedocument.wordprocessingml.document", txt: "text/plain; charset=utf-8", xml: "application/xml; charset=utf-8", xlsx: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", pptx: "application/vnd.openxmlformats-officedocument.presentationml.presentation", pdf: "application/pdf", zip: "application/zip" });
 
 // document-application/boundary.mjs
 var errors = /* @__PURE__ */ new WeakSet();
@@ -100,6 +100,8 @@ var require_ucs2length = __commonJS({
 var validateReceipt = validate23;
 var pattern4 = new RegExp("^action_session_[A-Za-z0-9_-]{43}$", "u");
 var pattern5 = new RegExp("^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$", "u");
+var pattern11 = new RegExp("\\S", "u");
+var pattern12 = new RegExp("^[0-9a-f]{64}$", "u");
 var func1 = require_ucs2length().default;
 function validate23(data, { instancePath = "", parentData, parentDataProperty, rootData = data, dynamicAnchors = {} } = {}) {
   let vErrors = null;
@@ -174,172 +176,234 @@ function validate23(data, { instancePath = "", parentData, parentDataProperty, r
               if (data.context !== void 0) {
                 let data2 = data.context;
                 const _errs6 = errors2;
-                if (errors2 === _errs6) {
+                const _errs7 = errors2;
+                let valid1 = false;
+                let passing0 = null;
+                const _errs8 = errors2;
+                if (errors2 === _errs8) {
                   if (data2 && typeof data2 == "object" && !Array.isArray(data2)) {
                     let missing1;
                     if (data2.tenantId === void 0 && (missing1 = "tenantId") || data2.actorId === void 0 && (missing1 = "actorId") || data2.conversationId === void 0 && (missing1 = "conversationId") || data2.runId === void 0 && (missing1 = "runId") || data2.selectedClientId === void 0 && (missing1 = "selectedClientId")) {
-                      validate23.errors = [{ instancePath: instancePath + "/context", schemaPath: "#/properties/context/required", keyword: "required", params: { missingProperty: missing1 }, message: "must have required property '" + missing1 + "'" }];
-                      return false;
+                      const err0 = { instancePath: instancePath + "/context", schemaPath: "#/properties/context/oneOf/0/required", keyword: "required", params: { missingProperty: missing1 }, message: "must have required property '" + missing1 + "'" };
+                      if (vErrors === null) {
+                        vErrors = [err0];
+                      } else {
+                        vErrors.push(err0);
+                      }
+                      errors2++;
                     } else {
-                      const _errs8 = errors2;
+                      const _errs10 = errors2;
                       for (const key1 in data2) {
                         if (!(key1 === "tenantId" || key1 === "actorId" || key1 === "conversationId" || key1 === "runId" || key1 === "selectedClientId")) {
-                          validate23.errors = [{ instancePath: instancePath + "/context", schemaPath: "#/properties/context/additionalProperties", keyword: "additionalProperties", params: { additionalProperty: key1 }, message: "must NOT have additional properties" }];
-                          return false;
+                          const err1 = { instancePath: instancePath + "/context", schemaPath: "#/properties/context/oneOf/0/additionalProperties", keyword: "additionalProperties", params: { additionalProperty: key1 }, message: "must NOT have additional properties" };
+                          if (vErrors === null) {
+                            vErrors = [err1];
+                          } else {
+                            vErrors.push(err1);
+                          }
+                          errors2++;
                           break;
                         }
                       }
-                      if (_errs8 === errors2) {
+                      if (_errs10 === errors2) {
                         if (data2.tenantId !== void 0) {
                           let data3 = data2.tenantId;
-                          const _errs9 = errors2;
-                          if (errors2 === _errs9) {
+                          const _errs11 = errors2;
+                          if (errors2 === _errs11) {
                             if (typeof data3 === "string") {
                               if (func1(data3) > 256) {
-                                validate23.errors = [{ instancePath: instancePath + "/context/tenantId", schemaPath: "#/properties/context/properties/tenantId/maxLength", keyword: "maxLength", params: { limit: 256 }, message: "must NOT have more than 256 characters" }];
-                                return false;
+                                const err2 = { instancePath: instancePath + "/context/tenantId", schemaPath: "#/properties/context/oneOf/0/properties/tenantId/maxLength", keyword: "maxLength", params: { limit: 256 }, message: "must NOT have more than 256 characters" };
+                                if (vErrors === null) {
+                                  vErrors = [err2];
+                                } else {
+                                  vErrors.push(err2);
+                                }
+                                errors2++;
                               } else {
                                 if (func1(data3) < 1) {
-                                  validate23.errors = [{ instancePath: instancePath + "/context/tenantId", schemaPath: "#/properties/context/properties/tenantId/minLength", keyword: "minLength", params: { limit: 1 }, message: "must NOT have fewer than 1 characters" }];
-                                  return false;
+                                  const err3 = { instancePath: instancePath + "/context/tenantId", schemaPath: "#/properties/context/oneOf/0/properties/tenantId/minLength", keyword: "minLength", params: { limit: 1 }, message: "must NOT have fewer than 1 characters" };
+                                  if (vErrors === null) {
+                                    vErrors = [err3];
+                                  } else {
+                                    vErrors.push(err3);
+                                  }
+                                  errors2++;
                                 }
                               }
                             } else {
-                              validate23.errors = [{ instancePath: instancePath + "/context/tenantId", schemaPath: "#/properties/context/properties/tenantId/type", keyword: "type", params: { type: "string" }, message: "must be string" }];
-                              return false;
+                              const err4 = { instancePath: instancePath + "/context/tenantId", schemaPath: "#/properties/context/oneOf/0/properties/tenantId/type", keyword: "type", params: { type: "string" }, message: "must be string" };
+                              if (vErrors === null) {
+                                vErrors = [err4];
+                              } else {
+                                vErrors.push(err4);
+                              }
+                              errors2++;
                             }
                           }
-                          var valid1 = _errs9 === errors2;
+                          var valid2 = _errs11 === errors2;
                         } else {
-                          var valid1 = true;
+                          var valid2 = true;
                         }
-                        if (valid1) {
+                        if (valid2) {
                           if (data2.actorId !== void 0) {
                             let data4 = data2.actorId;
-                            const _errs11 = errors2;
-                            if (errors2 === _errs11) {
+                            const _errs13 = errors2;
+                            if (errors2 === _errs13) {
                               if (typeof data4 === "string") {
                                 if (func1(data4) > 256) {
-                                  validate23.errors = [{ instancePath: instancePath + "/context/actorId", schemaPath: "#/properties/context/properties/actorId/maxLength", keyword: "maxLength", params: { limit: 256 }, message: "must NOT have more than 256 characters" }];
-                                  return false;
+                                  const err5 = { instancePath: instancePath + "/context/actorId", schemaPath: "#/properties/context/oneOf/0/properties/actorId/maxLength", keyword: "maxLength", params: { limit: 256 }, message: "must NOT have more than 256 characters" };
+                                  if (vErrors === null) {
+                                    vErrors = [err5];
+                                  } else {
+                                    vErrors.push(err5);
+                                  }
+                                  errors2++;
                                 } else {
                                   if (func1(data4) < 1) {
-                                    validate23.errors = [{ instancePath: instancePath + "/context/actorId", schemaPath: "#/properties/context/properties/actorId/minLength", keyword: "minLength", params: { limit: 1 }, message: "must NOT have fewer than 1 characters" }];
-                                    return false;
+                                    const err6 = { instancePath: instancePath + "/context/actorId", schemaPath: "#/properties/context/oneOf/0/properties/actorId/minLength", keyword: "minLength", params: { limit: 1 }, message: "must NOT have fewer than 1 characters" };
+                                    if (vErrors === null) {
+                                      vErrors = [err6];
+                                    } else {
+                                      vErrors.push(err6);
+                                    }
+                                    errors2++;
                                   }
                                 }
                               } else {
-                                validate23.errors = [{ instancePath: instancePath + "/context/actorId", schemaPath: "#/properties/context/properties/actorId/type", keyword: "type", params: { type: "string" }, message: "must be string" }];
-                                return false;
+                                const err7 = { instancePath: instancePath + "/context/actorId", schemaPath: "#/properties/context/oneOf/0/properties/actorId/type", keyword: "type", params: { type: "string" }, message: "must be string" };
+                                if (vErrors === null) {
+                                  vErrors = [err7];
+                                } else {
+                                  vErrors.push(err7);
+                                }
+                                errors2++;
                               }
                             }
-                            var valid1 = _errs11 === errors2;
+                            var valid2 = _errs13 === errors2;
                           } else {
-                            var valid1 = true;
+                            var valid2 = true;
                           }
-                          if (valid1) {
+                          if (valid2) {
                             if (data2.conversationId !== void 0) {
                               let data5 = data2.conversationId;
-                              const _errs13 = errors2;
-                              if (errors2 === _errs13) {
+                              const _errs15 = errors2;
+                              if (errors2 === _errs15) {
                                 if (typeof data5 === "string") {
                                   if (!pattern5.test(data5)) {
-                                    validate23.errors = [{ instancePath: instancePath + "/context/conversationId", schemaPath: "#/properties/context/properties/conversationId/pattern", keyword: "pattern", params: { pattern: "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$" }, message: 'must match pattern "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"' }];
-                                    return false;
+                                    const err8 = { instancePath: instancePath + "/context/conversationId", schemaPath: "#/properties/context/oneOf/0/properties/conversationId/pattern", keyword: "pattern", params: { pattern: "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$" }, message: 'must match pattern "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"' };
+                                    if (vErrors === null) {
+                                      vErrors = [err8];
+                                    } else {
+                                      vErrors.push(err8);
+                                    }
+                                    errors2++;
                                   }
                                 } else {
-                                  validate23.errors = [{ instancePath: instancePath + "/context/conversationId", schemaPath: "#/properties/context/properties/conversationId/type", keyword: "type", params: { type: "string" }, message: "must be string" }];
-                                  return false;
+                                  const err9 = { instancePath: instancePath + "/context/conversationId", schemaPath: "#/properties/context/oneOf/0/properties/conversationId/type", keyword: "type", params: { type: "string" }, message: "must be string" };
+                                  if (vErrors === null) {
+                                    vErrors = [err9];
+                                  } else {
+                                    vErrors.push(err9);
+                                  }
+                                  errors2++;
                                 }
                               }
-                              var valid1 = _errs13 === errors2;
+                              var valid2 = _errs15 === errors2;
                             } else {
-                              var valid1 = true;
+                              var valid2 = true;
                             }
-                            if (valid1) {
+                            if (valid2) {
                               if (data2.runId !== void 0) {
                                 let data6 = data2.runId;
-                                const _errs15 = errors2;
-                                if (errors2 === _errs15) {
+                                const _errs17 = errors2;
+                                if (errors2 === _errs17) {
                                   if (typeof data6 === "string") {
                                     if (!pattern5.test(data6)) {
-                                      validate23.errors = [{ instancePath: instancePath + "/context/runId", schemaPath: "#/properties/context/properties/runId/pattern", keyword: "pattern", params: { pattern: "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$" }, message: 'must match pattern "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"' }];
-                                      return false;
+                                      const err10 = { instancePath: instancePath + "/context/runId", schemaPath: "#/properties/context/oneOf/0/properties/runId/pattern", keyword: "pattern", params: { pattern: "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$" }, message: 'must match pattern "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"' };
+                                      if (vErrors === null) {
+                                        vErrors = [err10];
+                                      } else {
+                                        vErrors.push(err10);
+                                      }
+                                      errors2++;
                                     }
                                   } else {
-                                    validate23.errors = [{ instancePath: instancePath + "/context/runId", schemaPath: "#/properties/context/properties/runId/type", keyword: "type", params: { type: "string" }, message: "must be string" }];
-                                    return false;
+                                    const err11 = { instancePath: instancePath + "/context/runId", schemaPath: "#/properties/context/oneOf/0/properties/runId/type", keyword: "type", params: { type: "string" }, message: "must be string" };
+                                    if (vErrors === null) {
+                                      vErrors = [err11];
+                                    } else {
+                                      vErrors.push(err11);
+                                    }
+                                    errors2++;
                                   }
                                 }
-                                var valid1 = _errs15 === errors2;
+                                var valid2 = _errs17 === errors2;
                               } else {
-                                var valid1 = true;
+                                var valid2 = true;
                               }
-                              if (valid1) {
+                              if (valid2) {
                                 if (data2.selectedClientId !== void 0) {
                                   let data7 = data2.selectedClientId;
-                                  const _errs17 = errors2;
-                                  const _errs18 = errors2;
-                                  let valid2 = false;
                                   const _errs19 = errors2;
-                                  if (errors2 === _errs19) {
+                                  const _errs20 = errors2;
+                                  let valid3 = false;
+                                  const _errs21 = errors2;
+                                  if (errors2 === _errs21) {
                                     if (typeof data7 === "string") {
                                       if (!pattern5.test(data7)) {
-                                        const err0 = { instancePath: instancePath + "/context/selectedClientId", schemaPath: "#/properties/context/properties/selectedClientId/anyOf/0/pattern", keyword: "pattern", params: { pattern: "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$" }, message: 'must match pattern "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"' };
+                                        const err12 = { instancePath: instancePath + "/context/selectedClientId", schemaPath: "#/properties/context/oneOf/0/properties/selectedClientId/anyOf/0/pattern", keyword: "pattern", params: { pattern: "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$" }, message: 'must match pattern "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"' };
                                         if (vErrors === null) {
-                                          vErrors = [err0];
+                                          vErrors = [err12];
                                         } else {
-                                          vErrors.push(err0);
+                                          vErrors.push(err12);
                                         }
                                         errors2++;
                                       }
                                     } else {
-                                      const err1 = { instancePath: instancePath + "/context/selectedClientId", schemaPath: "#/properties/context/properties/selectedClientId/anyOf/0/type", keyword: "type", params: { type: "string" }, message: "must be string" };
+                                      const err13 = { instancePath: instancePath + "/context/selectedClientId", schemaPath: "#/properties/context/oneOf/0/properties/selectedClientId/anyOf/0/type", keyword: "type", params: { type: "string" }, message: "must be string" };
                                       if (vErrors === null) {
-                                        vErrors = [err1];
+                                        vErrors = [err13];
                                       } else {
-                                        vErrors.push(err1);
+                                        vErrors.push(err13);
                                       }
                                       errors2++;
                                     }
                                   }
-                                  var _valid0 = _errs19 === errors2;
-                                  valid2 = valid2 || _valid0;
-                                  const _errs21 = errors2;
+                                  var _valid1 = _errs21 === errors2;
+                                  valid3 = valid3 || _valid1;
+                                  const _errs23 = errors2;
                                   if (data7 !== null) {
-                                    const err2 = { instancePath: instancePath + "/context/selectedClientId", schemaPath: "#/properties/context/properties/selectedClientId/anyOf/1/type", keyword: "type", params: { type: "null" }, message: "must be null" };
+                                    const err14 = { instancePath: instancePath + "/context/selectedClientId", schemaPath: "#/properties/context/oneOf/0/properties/selectedClientId/anyOf/1/type", keyword: "type", params: { type: "null" }, message: "must be null" };
                                     if (vErrors === null) {
-                                      vErrors = [err2];
+                                      vErrors = [err14];
                                     } else {
-                                      vErrors.push(err2);
+                                      vErrors.push(err14);
                                     }
                                     errors2++;
                                   }
-                                  var _valid0 = _errs21 === errors2;
-                                  valid2 = valid2 || _valid0;
-                                  if (!valid2) {
-                                    const err3 = { instancePath: instancePath + "/context/selectedClientId", schemaPath: "#/properties/context/properties/selectedClientId/anyOf", keyword: "anyOf", params: {}, message: "must match a schema in anyOf" };
+                                  var _valid1 = _errs23 === errors2;
+                                  valid3 = valid3 || _valid1;
+                                  if (!valid3) {
+                                    const err15 = { instancePath: instancePath + "/context/selectedClientId", schemaPath: "#/properties/context/oneOf/0/properties/selectedClientId/anyOf", keyword: "anyOf", params: {}, message: "must match a schema in anyOf" };
                                     if (vErrors === null) {
-                                      vErrors = [err3];
+                                      vErrors = [err15];
                                     } else {
-                                      vErrors.push(err3);
+                                      vErrors.push(err15);
                                     }
                                     errors2++;
-                                    validate23.errors = vErrors;
-                                    return false;
                                   } else {
-                                    errors2 = _errs18;
+                                    errors2 = _errs20;
                                     if (vErrors !== null) {
-                                      if (_errs18) {
-                                        vErrors.length = _errs18;
+                                      if (_errs20) {
+                                        vErrors.length = _errs20;
                                       } else {
                                         vErrors = null;
                                       }
                                     }
                                   }
-                                  var valid1 = _errs17 === errors2;
+                                  var valid2 = _errs19 === errors2;
                                 } else {
-                                  var valid1 = true;
+                                  var valid2 = true;
                                 }
                               }
                             }
@@ -348,8 +412,476 @@ function validate23(data, { instancePath = "", parentData, parentDataProperty, r
                       }
                     }
                   } else {
-                    validate23.errors = [{ instancePath: instancePath + "/context", schemaPath: "#/properties/context/type", keyword: "type", params: { type: "object" }, message: "must be object" }];
-                    return false;
+                    const err16 = { instancePath: instancePath + "/context", schemaPath: "#/properties/context/oneOf/0/type", keyword: "type", params: { type: "object" }, message: "must be object" };
+                    if (vErrors === null) {
+                      vErrors = [err16];
+                    } else {
+                      vErrors.push(err16);
+                    }
+                    errors2++;
+                  }
+                }
+                var _valid0 = _errs8 === errors2;
+                if (_valid0) {
+                  valid1 = true;
+                  passing0 = 0;
+                  var props0 = true;
+                }
+                const _errs25 = errors2;
+                if (errors2 === _errs25) {
+                  if (data2 && typeof data2 == "object" && !Array.isArray(data2)) {
+                    let missing2;
+                    if (data2.tenantId === void 0 && (missing2 = "tenantId") || data2.actorId === void 0 && (missing2 = "actorId") || data2.conversationId === void 0 && (missing2 = "conversationId") || data2.runId === void 0 && (missing2 = "runId") || data2.selectedClientId === void 0 && (missing2 = "selectedClientId") || data2.scopeKind === void 0 && (missing2 = "scopeKind") || data2.scope === void 0 && (missing2 = "scope")) {
+                      const err17 = { instancePath: instancePath + "/context", schemaPath: "#/properties/context/oneOf/1/required", keyword: "required", params: { missingProperty: missing2 }, message: "must have required property '" + missing2 + "'" };
+                      if (vErrors === null) {
+                        vErrors = [err17];
+                      } else {
+                        vErrors.push(err17);
+                      }
+                      errors2++;
+                    } else {
+                      const _errs27 = errors2;
+                      for (const key2 in data2) {
+                        if (!(key2 === "tenantId" || key2 === "actorId" || key2 === "conversationId" || key2 === "runId" || key2 === "selectedClientId" || key2 === "scopeKind" || key2 === "scope")) {
+                          const err18 = { instancePath: instancePath + "/context", schemaPath: "#/properties/context/oneOf/1/additionalProperties", keyword: "additionalProperties", params: { additionalProperty: key2 }, message: "must NOT have additional properties" };
+                          if (vErrors === null) {
+                            vErrors = [err18];
+                          } else {
+                            vErrors.push(err18);
+                          }
+                          errors2++;
+                          break;
+                        }
+                      }
+                      if (_errs27 === errors2) {
+                        if (data2.tenantId !== void 0) {
+                          let data8 = data2.tenantId;
+                          const _errs28 = errors2;
+                          if (errors2 === _errs28) {
+                            if (typeof data8 === "string") {
+                              if (func1(data8) > 256) {
+                                const err19 = { instancePath: instancePath + "/context/tenantId", schemaPath: "#/properties/context/oneOf/1/properties/tenantId/maxLength", keyword: "maxLength", params: { limit: 256 }, message: "must NOT have more than 256 characters" };
+                                if (vErrors === null) {
+                                  vErrors = [err19];
+                                } else {
+                                  vErrors.push(err19);
+                                }
+                                errors2++;
+                              } else {
+                                if (func1(data8) < 1) {
+                                  const err20 = { instancePath: instancePath + "/context/tenantId", schemaPath: "#/properties/context/oneOf/1/properties/tenantId/minLength", keyword: "minLength", params: { limit: 1 }, message: "must NOT have fewer than 1 characters" };
+                                  if (vErrors === null) {
+                                    vErrors = [err20];
+                                  } else {
+                                    vErrors.push(err20);
+                                  }
+                                  errors2++;
+                                }
+                              }
+                            } else {
+                              const err21 = { instancePath: instancePath + "/context/tenantId", schemaPath: "#/properties/context/oneOf/1/properties/tenantId/type", keyword: "type", params: { type: "string" }, message: "must be string" };
+                              if (vErrors === null) {
+                                vErrors = [err21];
+                              } else {
+                                vErrors.push(err21);
+                              }
+                              errors2++;
+                            }
+                          }
+                          var valid4 = _errs28 === errors2;
+                        } else {
+                          var valid4 = true;
+                        }
+                        if (valid4) {
+                          if (data2.actorId !== void 0) {
+                            let data9 = data2.actorId;
+                            const _errs30 = errors2;
+                            if (errors2 === _errs30) {
+                              if (typeof data9 === "string") {
+                                if (func1(data9) > 256) {
+                                  const err22 = { instancePath: instancePath + "/context/actorId", schemaPath: "#/properties/context/oneOf/1/properties/actorId/maxLength", keyword: "maxLength", params: { limit: 256 }, message: "must NOT have more than 256 characters" };
+                                  if (vErrors === null) {
+                                    vErrors = [err22];
+                                  } else {
+                                    vErrors.push(err22);
+                                  }
+                                  errors2++;
+                                } else {
+                                  if (func1(data9) < 1) {
+                                    const err23 = { instancePath: instancePath + "/context/actorId", schemaPath: "#/properties/context/oneOf/1/properties/actorId/minLength", keyword: "minLength", params: { limit: 1 }, message: "must NOT have fewer than 1 characters" };
+                                    if (vErrors === null) {
+                                      vErrors = [err23];
+                                    } else {
+                                      vErrors.push(err23);
+                                    }
+                                    errors2++;
+                                  }
+                                }
+                              } else {
+                                const err24 = { instancePath: instancePath + "/context/actorId", schemaPath: "#/properties/context/oneOf/1/properties/actorId/type", keyword: "type", params: { type: "string" }, message: "must be string" };
+                                if (vErrors === null) {
+                                  vErrors = [err24];
+                                } else {
+                                  vErrors.push(err24);
+                                }
+                                errors2++;
+                              }
+                            }
+                            var valid4 = _errs30 === errors2;
+                          } else {
+                            var valid4 = true;
+                          }
+                          if (valid4) {
+                            if (data2.conversationId !== void 0) {
+                              let data10 = data2.conversationId;
+                              const _errs32 = errors2;
+                              if (errors2 === _errs32) {
+                                if (typeof data10 === "string") {
+                                  if (!pattern5.test(data10)) {
+                                    const err25 = { instancePath: instancePath + "/context/conversationId", schemaPath: "#/properties/context/oneOf/1/properties/conversationId/pattern", keyword: "pattern", params: { pattern: "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$" }, message: 'must match pattern "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"' };
+                                    if (vErrors === null) {
+                                      vErrors = [err25];
+                                    } else {
+                                      vErrors.push(err25);
+                                    }
+                                    errors2++;
+                                  }
+                                } else {
+                                  const err26 = { instancePath: instancePath + "/context/conversationId", schemaPath: "#/properties/context/oneOf/1/properties/conversationId/type", keyword: "type", params: { type: "string" }, message: "must be string" };
+                                  if (vErrors === null) {
+                                    vErrors = [err26];
+                                  } else {
+                                    vErrors.push(err26);
+                                  }
+                                  errors2++;
+                                }
+                              }
+                              var valid4 = _errs32 === errors2;
+                            } else {
+                              var valid4 = true;
+                            }
+                            if (valid4) {
+                              if (data2.runId !== void 0) {
+                                let data11 = data2.runId;
+                                const _errs34 = errors2;
+                                if (errors2 === _errs34) {
+                                  if (typeof data11 === "string") {
+                                    if (!pattern5.test(data11)) {
+                                      const err27 = { instancePath: instancePath + "/context/runId", schemaPath: "#/properties/context/oneOf/1/properties/runId/pattern", keyword: "pattern", params: { pattern: "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$" }, message: 'must match pattern "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"' };
+                                      if (vErrors === null) {
+                                        vErrors = [err27];
+                                      } else {
+                                        vErrors.push(err27);
+                                      }
+                                      errors2++;
+                                    }
+                                  } else {
+                                    const err28 = { instancePath: instancePath + "/context/runId", schemaPath: "#/properties/context/oneOf/1/properties/runId/type", keyword: "type", params: { type: "string" }, message: "must be string" };
+                                    if (vErrors === null) {
+                                      vErrors = [err28];
+                                    } else {
+                                      vErrors.push(err28);
+                                    }
+                                    errors2++;
+                                  }
+                                }
+                                var valid4 = _errs34 === errors2;
+                              } else {
+                                var valid4 = true;
+                              }
+                              if (valid4) {
+                                if (data2.selectedClientId !== void 0) {
+                                  const _errs36 = errors2;
+                                  if (data2.selectedClientId !== null) {
+                                    const err29 = { instancePath: instancePath + "/context/selectedClientId", schemaPath: "#/properties/context/oneOf/1/properties/selectedClientId/type", keyword: "type", params: { type: "null" }, message: "must be null" };
+                                    if (vErrors === null) {
+                                      vErrors = [err29];
+                                    } else {
+                                      vErrors.push(err29);
+                                    }
+                                    errors2++;
+                                  }
+                                  var valid4 = _errs36 === errors2;
+                                } else {
+                                  var valid4 = true;
+                                }
+                                if (valid4) {
+                                  if (data2.scopeKind !== void 0) {
+                                    const _errs38 = errors2;
+                                    if ("research_portfolio" !== data2.scopeKind) {
+                                      const err30 = { instancePath: instancePath + "/context/scopeKind", schemaPath: "#/properties/context/oneOf/1/properties/scopeKind/const", keyword: "const", params: { allowedValue: "research_portfolio" }, message: "must be equal to constant" };
+                                      if (vErrors === null) {
+                                        vErrors = [err30];
+                                      } else {
+                                        vErrors.push(err30);
+                                      }
+                                      errors2++;
+                                    }
+                                    var valid4 = _errs38 === errors2;
+                                  } else {
+                                    var valid4 = true;
+                                  }
+                                  if (valid4) {
+                                    if (data2.scope !== void 0) {
+                                      let data14 = data2.scope;
+                                      const _errs39 = errors2;
+                                      if (errors2 === _errs39) {
+                                        if (data14 && typeof data14 == "object" && !Array.isArray(data14)) {
+                                          let missing3;
+                                          if (data14.kind === void 0 && (missing3 = "kind") || data14.researchPortfolioId === void 0 && (missing3 = "researchPortfolioId") || data14.researchPortfolioName === void 0 && (missing3 = "researchPortfolioName") || data14.researchPortfolioRevision === void 0 && (missing3 = "researchPortfolioRevision") || data14.scopeVersion === void 0 && (missing3 = "scopeVersion")) {
+                                            const err31 = { instancePath: instancePath + "/context/scope", schemaPath: "#/properties/context/oneOf/1/properties/scope/required", keyword: "required", params: { missingProperty: missing3 }, message: "must have required property '" + missing3 + "'" };
+                                            if (vErrors === null) {
+                                              vErrors = [err31];
+                                            } else {
+                                              vErrors.push(err31);
+                                            }
+                                            errors2++;
+                                          } else {
+                                            const _errs41 = errors2;
+                                            for (const key3 in data14) {
+                                              if (!(key3 === "kind" || key3 === "researchPortfolioId" || key3 === "researchPortfolioName" || key3 === "researchPortfolioRevision" || key3 === "scopeVersion")) {
+                                                const err32 = { instancePath: instancePath + "/context/scope", schemaPath: "#/properties/context/oneOf/1/properties/scope/additionalProperties", keyword: "additionalProperties", params: { additionalProperty: key3 }, message: "must NOT have additional properties" };
+                                                if (vErrors === null) {
+                                                  vErrors = [err32];
+                                                } else {
+                                                  vErrors.push(err32);
+                                                }
+                                                errors2++;
+                                                break;
+                                              }
+                                            }
+                                            if (_errs41 === errors2) {
+                                              if (data14.kind !== void 0) {
+                                                const _errs42 = errors2;
+                                                if ("research_portfolio" !== data14.kind) {
+                                                  const err33 = { instancePath: instancePath + "/context/scope/kind", schemaPath: "#/properties/context/oneOf/1/properties/scope/properties/kind/const", keyword: "const", params: { allowedValue: "research_portfolio" }, message: "must be equal to constant" };
+                                                  if (vErrors === null) {
+                                                    vErrors = [err33];
+                                                  } else {
+                                                    vErrors.push(err33);
+                                                  }
+                                                  errors2++;
+                                                }
+                                                var valid5 = _errs42 === errors2;
+                                              } else {
+                                                var valid5 = true;
+                                              }
+                                              if (valid5) {
+                                                if (data14.researchPortfolioId !== void 0) {
+                                                  let data16 = data14.researchPortfolioId;
+                                                  const _errs43 = errors2;
+                                                  if (errors2 === _errs43) {
+                                                    if (typeof data16 === "string") {
+                                                      if (!pattern5.test(data16)) {
+                                                        const err34 = { instancePath: instancePath + "/context/scope/researchPortfolioId", schemaPath: "#/properties/context/oneOf/1/properties/scope/properties/researchPortfolioId/pattern", keyword: "pattern", params: { pattern: "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$" }, message: 'must match pattern "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"' };
+                                                        if (vErrors === null) {
+                                                          vErrors = [err34];
+                                                        } else {
+                                                          vErrors.push(err34);
+                                                        }
+                                                        errors2++;
+                                                      }
+                                                    } else {
+                                                      const err35 = { instancePath: instancePath + "/context/scope/researchPortfolioId", schemaPath: "#/properties/context/oneOf/1/properties/scope/properties/researchPortfolioId/type", keyword: "type", params: { type: "string" }, message: "must be string" };
+                                                      if (vErrors === null) {
+                                                        vErrors = [err35];
+                                                      } else {
+                                                        vErrors.push(err35);
+                                                      }
+                                                      errors2++;
+                                                    }
+                                                  }
+                                                  var valid5 = _errs43 === errors2;
+                                                } else {
+                                                  var valid5 = true;
+                                                }
+                                                if (valid5) {
+                                                  if (data14.researchPortfolioName !== void 0) {
+                                                    let data17 = data14.researchPortfolioName;
+                                                    const _errs45 = errors2;
+                                                    if (errors2 === _errs45) {
+                                                      if (typeof data17 === "string") {
+                                                        if (func1(data17) > 200) {
+                                                          const err36 = { instancePath: instancePath + "/context/scope/researchPortfolioName", schemaPath: "#/properties/context/oneOf/1/properties/scope/properties/researchPortfolioName/maxLength", keyword: "maxLength", params: { limit: 200 }, message: "must NOT have more than 200 characters" };
+                                                          if (vErrors === null) {
+                                                            vErrors = [err36];
+                                                          } else {
+                                                            vErrors.push(err36);
+                                                          }
+                                                          errors2++;
+                                                        } else {
+                                                          if (func1(data17) < 1) {
+                                                            const err37 = { instancePath: instancePath + "/context/scope/researchPortfolioName", schemaPath: "#/properties/context/oneOf/1/properties/scope/properties/researchPortfolioName/minLength", keyword: "minLength", params: { limit: 1 }, message: "must NOT have fewer than 1 characters" };
+                                                            if (vErrors === null) {
+                                                              vErrors = [err37];
+                                                            } else {
+                                                              vErrors.push(err37);
+                                                            }
+                                                            errors2++;
+                                                          } else {
+                                                            if (!pattern11.test(data17)) {
+                                                              const err38 = { instancePath: instancePath + "/context/scope/researchPortfolioName", schemaPath: "#/properties/context/oneOf/1/properties/scope/properties/researchPortfolioName/pattern", keyword: "pattern", params: { pattern: "\\S" }, message: 'must match pattern "\\S"' };
+                                                              if (vErrors === null) {
+                                                                vErrors = [err38];
+                                                              } else {
+                                                                vErrors.push(err38);
+                                                              }
+                                                              errors2++;
+                                                            }
+                                                          }
+                                                        }
+                                                      } else {
+                                                        const err39 = { instancePath: instancePath + "/context/scope/researchPortfolioName", schemaPath: "#/properties/context/oneOf/1/properties/scope/properties/researchPortfolioName/type", keyword: "type", params: { type: "string" }, message: "must be string" };
+                                                        if (vErrors === null) {
+                                                          vErrors = [err39];
+                                                        } else {
+                                                          vErrors.push(err39);
+                                                        }
+                                                        errors2++;
+                                                      }
+                                                    }
+                                                    var valid5 = _errs45 === errors2;
+                                                  } else {
+                                                    var valid5 = true;
+                                                  }
+                                                  if (valid5) {
+                                                    if (data14.researchPortfolioRevision !== void 0) {
+                                                      let data18 = data14.researchPortfolioRevision;
+                                                      const _errs47 = errors2;
+                                                      if (!(typeof data18 == "number" && (!(data18 % 1) && !isNaN(data18)) && isFinite(data18))) {
+                                                        const err40 = { instancePath: instancePath + "/context/scope/researchPortfolioRevision", schemaPath: "#/properties/context/oneOf/1/properties/scope/properties/researchPortfolioRevision/type", keyword: "type", params: { type: "integer" }, message: "must be integer" };
+                                                        if (vErrors === null) {
+                                                          vErrors = [err40];
+                                                        } else {
+                                                          vErrors.push(err40);
+                                                        }
+                                                        errors2++;
+                                                      }
+                                                      if (errors2 === _errs47) {
+                                                        if (typeof data18 == "number" && isFinite(data18)) {
+                                                          if (data18 > 9007199254740991 || isNaN(data18)) {
+                                                            const err41 = { instancePath: instancePath + "/context/scope/researchPortfolioRevision", schemaPath: "#/properties/context/oneOf/1/properties/scope/properties/researchPortfolioRevision/maximum", keyword: "maximum", params: { comparison: "<=", limit: 9007199254740991 }, message: "must be <= 9007199254740991" };
+                                                            if (vErrors === null) {
+                                                              vErrors = [err41];
+                                                            } else {
+                                                              vErrors.push(err41);
+                                                            }
+                                                            errors2++;
+                                                          } else {
+                                                            if (data18 < 0 || isNaN(data18)) {
+                                                              const err42 = { instancePath: instancePath + "/context/scope/researchPortfolioRevision", schemaPath: "#/properties/context/oneOf/1/properties/scope/properties/researchPortfolioRevision/minimum", keyword: "minimum", params: { comparison: ">=", limit: 0 }, message: "must be >= 0" };
+                                                              if (vErrors === null) {
+                                                                vErrors = [err42];
+                                                              } else {
+                                                                vErrors.push(err42);
+                                                              }
+                                                              errors2++;
+                                                            }
+                                                          }
+                                                        }
+                                                      }
+                                                      var valid5 = _errs47 === errors2;
+                                                    } else {
+                                                      var valid5 = true;
+                                                    }
+                                                    if (valid5) {
+                                                      if (data14.scopeVersion !== void 0) {
+                                                        let data19 = data14.scopeVersion;
+                                                        const _errs49 = errors2;
+                                                        if (errors2 === _errs49) {
+                                                          if (typeof data19 === "string") {
+                                                            if (!pattern12.test(data19)) {
+                                                              const err43 = { instancePath: instancePath + "/context/scope/scopeVersion", schemaPath: "#/properties/context/oneOf/1/properties/scope/properties/scopeVersion/pattern", keyword: "pattern", params: { pattern: "^[0-9a-f]{64}$" }, message: 'must match pattern "^[0-9a-f]{64}$"' };
+                                                              if (vErrors === null) {
+                                                                vErrors = [err43];
+                                                              } else {
+                                                                vErrors.push(err43);
+                                                              }
+                                                              errors2++;
+                                                            }
+                                                          } else {
+                                                            const err44 = { instancePath: instancePath + "/context/scope/scopeVersion", schemaPath: "#/properties/context/oneOf/1/properties/scope/properties/scopeVersion/type", keyword: "type", params: { type: "string" }, message: "must be string" };
+                                                            if (vErrors === null) {
+                                                              vErrors = [err44];
+                                                            } else {
+                                                              vErrors.push(err44);
+                                                            }
+                                                            errors2++;
+                                                          }
+                                                        }
+                                                        var valid5 = _errs49 === errors2;
+                                                      } else {
+                                                        var valid5 = true;
+                                                      }
+                                                    }
+                                                  }
+                                                }
+                                              }
+                                            }
+                                          }
+                                        } else {
+                                          const err45 = { instancePath: instancePath + "/context/scope", schemaPath: "#/properties/context/oneOf/1/properties/scope/type", keyword: "type", params: { type: "object" }, message: "must be object" };
+                                          if (vErrors === null) {
+                                            vErrors = [err45];
+                                          } else {
+                                            vErrors.push(err45);
+                                          }
+                                          errors2++;
+                                        }
+                                      }
+                                      var valid4 = _errs39 === errors2;
+                                    } else {
+                                      var valid4 = true;
+                                    }
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  } else {
+                    const err46 = { instancePath: instancePath + "/context", schemaPath: "#/properties/context/oneOf/1/type", keyword: "type", params: { type: "object" }, message: "must be object" };
+                    if (vErrors === null) {
+                      vErrors = [err46];
+                    } else {
+                      vErrors.push(err46);
+                    }
+                    errors2++;
+                  }
+                }
+                var _valid0 = _errs25 === errors2;
+                if (_valid0 && valid1) {
+                  valid1 = false;
+                  passing0 = [passing0, 1];
+                } else {
+                  if (_valid0) {
+                    valid1 = true;
+                    passing0 = 1;
+                    if (props0 !== true) {
+                      props0 = true;
+                    }
+                  }
+                }
+                if (!valid1) {
+                  const err47 = { instancePath: instancePath + "/context", schemaPath: "#/properties/context/oneOf", keyword: "oneOf", params: { passingSchemas: passing0 }, message: "must match exactly one schema in oneOf" };
+                  if (vErrors === null) {
+                    vErrors = [err47];
+                  } else {
+                    vErrors.push(err47);
+                  }
+                  errors2++;
+                  validate23.errors = vErrors;
+                  return false;
+                } else {
+                  errors2 = _errs7;
+                  if (vErrors !== null) {
+                    if (_errs7) {
+                      vErrors.length = _errs7;
+                    } else {
+                      vErrors = null;
+                    }
                   }
                 }
                 var valid0 = _errs6 === errors2;
@@ -358,30 +890,30 @@ function validate23(data, { instancePath = "", parentData, parentDataProperty, r
               }
               if (valid0) {
                 if (data.initialRunRebind !== void 0) {
-                  let data8 = data.initialRunRebind;
-                  const _errs23 = errors2;
-                  if (errors2 === _errs23) {
-                    if (data8 && typeof data8 == "object" && !Array.isArray(data8)) {
-                      let missing2;
-                      if (data8.sourceRunId === void 0 && (missing2 = "sourceRunId") || data8.targetRunId === void 0 && (missing2 = "targetRunId")) {
-                        validate23.errors = [{ instancePath: instancePath + "/initialRunRebind", schemaPath: "#/properties/initialRunRebind/required", keyword: "required", params: { missingProperty: missing2 }, message: "must have required property '" + missing2 + "'" }];
+                  let data20 = data.initialRunRebind;
+                  const _errs51 = errors2;
+                  if (errors2 === _errs51) {
+                    if (data20 && typeof data20 == "object" && !Array.isArray(data20)) {
+                      let missing4;
+                      if (data20.sourceRunId === void 0 && (missing4 = "sourceRunId") || data20.targetRunId === void 0 && (missing4 = "targetRunId")) {
+                        validate23.errors = [{ instancePath: instancePath + "/initialRunRebind", schemaPath: "#/properties/initialRunRebind/required", keyword: "required", params: { missingProperty: missing4 }, message: "must have required property '" + missing4 + "'" }];
                         return false;
                       } else {
-                        const _errs25 = errors2;
-                        for (const key2 in data8) {
-                          if (!(key2 === "sourceRunId" || key2 === "targetRunId")) {
-                            validate23.errors = [{ instancePath: instancePath + "/initialRunRebind", schemaPath: "#/properties/initialRunRebind/additionalProperties", keyword: "additionalProperties", params: { additionalProperty: key2 }, message: "must NOT have additional properties" }];
+                        const _errs53 = errors2;
+                        for (const key4 in data20) {
+                          if (!(key4 === "sourceRunId" || key4 === "targetRunId")) {
+                            validate23.errors = [{ instancePath: instancePath + "/initialRunRebind", schemaPath: "#/properties/initialRunRebind/additionalProperties", keyword: "additionalProperties", params: { additionalProperty: key4 }, message: "must NOT have additional properties" }];
                             return false;
                             break;
                           }
                         }
-                        if (_errs25 === errors2) {
-                          if (data8.sourceRunId !== void 0) {
-                            let data9 = data8.sourceRunId;
-                            const _errs26 = errors2;
-                            if (errors2 === _errs26) {
-                              if (typeof data9 === "string") {
-                                if (!pattern5.test(data9)) {
+                        if (_errs53 === errors2) {
+                          if (data20.sourceRunId !== void 0) {
+                            let data21 = data20.sourceRunId;
+                            const _errs54 = errors2;
+                            if (errors2 === _errs54) {
+                              if (typeof data21 === "string") {
+                                if (!pattern5.test(data21)) {
                                   validate23.errors = [{ instancePath: instancePath + "/initialRunRebind/sourceRunId", schemaPath: "#/properties/initialRunRebind/properties/sourceRunId/pattern", keyword: "pattern", params: { pattern: "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$" }, message: 'must match pattern "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"' }];
                                   return false;
                                 }
@@ -390,17 +922,17 @@ function validate23(data, { instancePath = "", parentData, parentDataProperty, r
                                 return false;
                               }
                             }
-                            var valid3 = _errs26 === errors2;
+                            var valid6 = _errs54 === errors2;
                           } else {
-                            var valid3 = true;
+                            var valid6 = true;
                           }
-                          if (valid3) {
-                            if (data8.targetRunId !== void 0) {
-                              let data10 = data8.targetRunId;
-                              const _errs28 = errors2;
-                              if (errors2 === _errs28) {
-                                if (typeof data10 === "string") {
-                                  if (!pattern5.test(data10)) {
+                          if (valid6) {
+                            if (data20.targetRunId !== void 0) {
+                              let data22 = data20.targetRunId;
+                              const _errs56 = errors2;
+                              if (errors2 === _errs56) {
+                                if (typeof data22 === "string") {
+                                  if (!pattern5.test(data22)) {
                                     validate23.errors = [{ instancePath: instancePath + "/initialRunRebind/targetRunId", schemaPath: "#/properties/initialRunRebind/properties/targetRunId/pattern", keyword: "pattern", params: { pattern: "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$" }, message: 'must match pattern "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"' }];
                                     return false;
                                   }
@@ -409,9 +941,9 @@ function validate23(data, { instancePath = "", parentData, parentDataProperty, r
                                   return false;
                                 }
                               }
-                              var valid3 = _errs28 === errors2;
+                              var valid6 = _errs56 === errors2;
                             } else {
-                              var valid3 = true;
+                              var valid6 = true;
                             }
                           }
                         }
@@ -421,7 +953,7 @@ function validate23(data, { instancePath = "", parentData, parentDataProperty, r
                       return false;
                     }
                   }
-                  var valid0 = _errs23 === errors2;
+                  var valid0 = _errs51 === errors2;
                 } else {
                   var valid0 = true;
                 }
@@ -906,13 +1438,450 @@ function validate24(data, { instancePath = "", parentData, parentDataProperty, r
         props0 = true;
       }
     }
+    const _errs29 = errors2;
+    if (errors2 === _errs29) {
+      if (data && typeof data == "object" && !Array.isArray(data)) {
+        let missing2;
+        if (data.tenantId === void 0 && (missing2 = "tenantId") || data.actorId === void 0 && (missing2 = "actorId") || data.conversationId === void 0 && (missing2 = "conversationId") || data.selectedClientId === void 0 && (missing2 = "selectedClientId") || data.scopeKind === void 0 && (missing2 = "scopeKind") || data.scope === void 0 && (missing2 = "scope")) {
+          const err31 = { instancePath, schemaPath: "#/oneOf/2/required", keyword: "required", params: { missingProperty: missing2 }, message: "must have required property '" + missing2 + "'" };
+          if (vErrors === null) {
+            vErrors = [err31];
+          } else {
+            vErrors.push(err31);
+          }
+          errors2++;
+        } else {
+          const _errs31 = errors2;
+          for (const key2 in data) {
+            if (!(key2 === "tenantId" || key2 === "actorId" || key2 === "conversationId" || key2 === "runId" || key2 === "selectedClientId" || key2 === "scopeKind" || key2 === "scope")) {
+              const err32 = { instancePath, schemaPath: "#/oneOf/2/additionalProperties", keyword: "additionalProperties", params: { additionalProperty: key2 }, message: "must NOT have additional properties" };
+              if (vErrors === null) {
+                vErrors = [err32];
+              } else {
+                vErrors.push(err32);
+              }
+              errors2++;
+              break;
+            }
+          }
+          if (_errs31 === errors2) {
+            if (data.tenantId !== void 0) {
+              let data12 = data.tenantId;
+              const _errs32 = errors2;
+              if (errors2 === _errs32) {
+                if (typeof data12 === "string") {
+                  if (func1(data12) > 256) {
+                    const err33 = { instancePath: instancePath + "/tenantId", schemaPath: "#/oneOf/2/properties/tenantId/maxLength", keyword: "maxLength", params: { limit: 256 }, message: "must NOT have more than 256 characters" };
+                    if (vErrors === null) {
+                      vErrors = [err33];
+                    } else {
+                      vErrors.push(err33);
+                    }
+                    errors2++;
+                  } else {
+                    if (func1(data12) < 1) {
+                      const err34 = { instancePath: instancePath + "/tenantId", schemaPath: "#/oneOf/2/properties/tenantId/minLength", keyword: "minLength", params: { limit: 1 }, message: "must NOT have fewer than 1 characters" };
+                      if (vErrors === null) {
+                        vErrors = [err34];
+                      } else {
+                        vErrors.push(err34);
+                      }
+                      errors2++;
+                    }
+                  }
+                } else {
+                  const err35 = { instancePath: instancePath + "/tenantId", schemaPath: "#/oneOf/2/properties/tenantId/type", keyword: "type", params: { type: "string" }, message: "must be string" };
+                  if (vErrors === null) {
+                    vErrors = [err35];
+                  } else {
+                    vErrors.push(err35);
+                  }
+                  errors2++;
+                }
+              }
+              var valid3 = _errs32 === errors2;
+            } else {
+              var valid3 = true;
+            }
+            if (valid3) {
+              if (data.actorId !== void 0) {
+                let data13 = data.actorId;
+                const _errs34 = errors2;
+                if (errors2 === _errs34) {
+                  if (typeof data13 === "string") {
+                    if (func1(data13) > 256) {
+                      const err36 = { instancePath: instancePath + "/actorId", schemaPath: "#/oneOf/2/properties/actorId/maxLength", keyword: "maxLength", params: { limit: 256 }, message: "must NOT have more than 256 characters" };
+                      if (vErrors === null) {
+                        vErrors = [err36];
+                      } else {
+                        vErrors.push(err36);
+                      }
+                      errors2++;
+                    } else {
+                      if (func1(data13) < 1) {
+                        const err37 = { instancePath: instancePath + "/actorId", schemaPath: "#/oneOf/2/properties/actorId/minLength", keyword: "minLength", params: { limit: 1 }, message: "must NOT have fewer than 1 characters" };
+                        if (vErrors === null) {
+                          vErrors = [err37];
+                        } else {
+                          vErrors.push(err37);
+                        }
+                        errors2++;
+                      }
+                    }
+                  } else {
+                    const err38 = { instancePath: instancePath + "/actorId", schemaPath: "#/oneOf/2/properties/actorId/type", keyword: "type", params: { type: "string" }, message: "must be string" };
+                    if (vErrors === null) {
+                      vErrors = [err38];
+                    } else {
+                      vErrors.push(err38);
+                    }
+                    errors2++;
+                  }
+                }
+                var valid3 = _errs34 === errors2;
+              } else {
+                var valid3 = true;
+              }
+              if (valid3) {
+                if (data.conversationId !== void 0) {
+                  let data14 = data.conversationId;
+                  const _errs36 = errors2;
+                  if (errors2 === _errs36) {
+                    if (typeof data14 === "string") {
+                      if (!pattern5.test(data14)) {
+                        const err39 = { instancePath: instancePath + "/conversationId", schemaPath: "#/oneOf/2/properties/conversationId/pattern", keyword: "pattern", params: { pattern: "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$" }, message: 'must match pattern "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"' };
+                        if (vErrors === null) {
+                          vErrors = [err39];
+                        } else {
+                          vErrors.push(err39);
+                        }
+                        errors2++;
+                      }
+                    } else {
+                      const err40 = { instancePath: instancePath + "/conversationId", schemaPath: "#/oneOf/2/properties/conversationId/type", keyword: "type", params: { type: "string" }, message: "must be string" };
+                      if (vErrors === null) {
+                        vErrors = [err40];
+                      } else {
+                        vErrors.push(err40);
+                      }
+                      errors2++;
+                    }
+                  }
+                  var valid3 = _errs36 === errors2;
+                } else {
+                  var valid3 = true;
+                }
+                if (valid3) {
+                  if (data.runId !== void 0) {
+                    let data15 = data.runId;
+                    const _errs38 = errors2;
+                    if (errors2 === _errs38) {
+                      if (typeof data15 === "string") {
+                        if (!pattern5.test(data15)) {
+                          const err41 = { instancePath: instancePath + "/runId", schemaPath: "#/oneOf/2/properties/runId/pattern", keyword: "pattern", params: { pattern: "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$" }, message: 'must match pattern "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"' };
+                          if (vErrors === null) {
+                            vErrors = [err41];
+                          } else {
+                            vErrors.push(err41);
+                          }
+                          errors2++;
+                        }
+                      } else {
+                        const err42 = { instancePath: instancePath + "/runId", schemaPath: "#/oneOf/2/properties/runId/type", keyword: "type", params: { type: "string" }, message: "must be string" };
+                        if (vErrors === null) {
+                          vErrors = [err42];
+                        } else {
+                          vErrors.push(err42);
+                        }
+                        errors2++;
+                      }
+                    }
+                    var valid3 = _errs38 === errors2;
+                  } else {
+                    var valid3 = true;
+                  }
+                  if (valid3) {
+                    if (data.selectedClientId !== void 0) {
+                      const _errs40 = errors2;
+                      if (data.selectedClientId !== null) {
+                        const err43 = { instancePath: instancePath + "/selectedClientId", schemaPath: "#/oneOf/2/properties/selectedClientId/type", keyword: "type", params: { type: "null" }, message: "must be null" };
+                        if (vErrors === null) {
+                          vErrors = [err43];
+                        } else {
+                          vErrors.push(err43);
+                        }
+                        errors2++;
+                      }
+                      var valid3 = _errs40 === errors2;
+                    } else {
+                      var valid3 = true;
+                    }
+                    if (valid3) {
+                      if (data.scopeKind !== void 0) {
+                        const _errs42 = errors2;
+                        if ("research_portfolio" !== data.scopeKind) {
+                          const err44 = { instancePath: instancePath + "/scopeKind", schemaPath: "#/oneOf/2/properties/scopeKind/const", keyword: "const", params: { allowedValue: "research_portfolio" }, message: "must be equal to constant" };
+                          if (vErrors === null) {
+                            vErrors = [err44];
+                          } else {
+                            vErrors.push(err44);
+                          }
+                          errors2++;
+                        }
+                        var valid3 = _errs42 === errors2;
+                      } else {
+                        var valid3 = true;
+                      }
+                      if (valid3) {
+                        if (data.scope !== void 0) {
+                          let data18 = data.scope;
+                          const _errs43 = errors2;
+                          if (errors2 === _errs43) {
+                            if (data18 && typeof data18 == "object" && !Array.isArray(data18)) {
+                              let missing3;
+                              if (data18.kind === void 0 && (missing3 = "kind") || data18.researchPortfolioId === void 0 && (missing3 = "researchPortfolioId") || data18.researchPortfolioName === void 0 && (missing3 = "researchPortfolioName") || data18.researchPortfolioRevision === void 0 && (missing3 = "researchPortfolioRevision") || data18.scopeVersion === void 0 && (missing3 = "scopeVersion")) {
+                                const err45 = { instancePath: instancePath + "/scope", schemaPath: "#/oneOf/2/properties/scope/required", keyword: "required", params: { missingProperty: missing3 }, message: "must have required property '" + missing3 + "'" };
+                                if (vErrors === null) {
+                                  vErrors = [err45];
+                                } else {
+                                  vErrors.push(err45);
+                                }
+                                errors2++;
+                              } else {
+                                const _errs45 = errors2;
+                                for (const key3 in data18) {
+                                  if (!(key3 === "kind" || key3 === "researchPortfolioId" || key3 === "researchPortfolioName" || key3 === "researchPortfolioRevision" || key3 === "scopeVersion")) {
+                                    const err46 = { instancePath: instancePath + "/scope", schemaPath: "#/oneOf/2/properties/scope/additionalProperties", keyword: "additionalProperties", params: { additionalProperty: key3 }, message: "must NOT have additional properties" };
+                                    if (vErrors === null) {
+                                      vErrors = [err46];
+                                    } else {
+                                      vErrors.push(err46);
+                                    }
+                                    errors2++;
+                                    break;
+                                  }
+                                }
+                                if (_errs45 === errors2) {
+                                  if (data18.kind !== void 0) {
+                                    const _errs46 = errors2;
+                                    if ("research_portfolio" !== data18.kind) {
+                                      const err47 = { instancePath: instancePath + "/scope/kind", schemaPath: "#/oneOf/2/properties/scope/properties/kind/const", keyword: "const", params: { allowedValue: "research_portfolio" }, message: "must be equal to constant" };
+                                      if (vErrors === null) {
+                                        vErrors = [err47];
+                                      } else {
+                                        vErrors.push(err47);
+                                      }
+                                      errors2++;
+                                    }
+                                    var valid4 = _errs46 === errors2;
+                                  } else {
+                                    var valid4 = true;
+                                  }
+                                  if (valid4) {
+                                    if (data18.researchPortfolioId !== void 0) {
+                                      let data20 = data18.researchPortfolioId;
+                                      const _errs47 = errors2;
+                                      if (errors2 === _errs47) {
+                                        if (typeof data20 === "string") {
+                                          if (!pattern5.test(data20)) {
+                                            const err48 = { instancePath: instancePath + "/scope/researchPortfolioId", schemaPath: "#/oneOf/2/properties/scope/properties/researchPortfolioId/pattern", keyword: "pattern", params: { pattern: "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$" }, message: 'must match pattern "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"' };
+                                            if (vErrors === null) {
+                                              vErrors = [err48];
+                                            } else {
+                                              vErrors.push(err48);
+                                            }
+                                            errors2++;
+                                          }
+                                        } else {
+                                          const err49 = { instancePath: instancePath + "/scope/researchPortfolioId", schemaPath: "#/oneOf/2/properties/scope/properties/researchPortfolioId/type", keyword: "type", params: { type: "string" }, message: "must be string" };
+                                          if (vErrors === null) {
+                                            vErrors = [err49];
+                                          } else {
+                                            vErrors.push(err49);
+                                          }
+                                          errors2++;
+                                        }
+                                      }
+                                      var valid4 = _errs47 === errors2;
+                                    } else {
+                                      var valid4 = true;
+                                    }
+                                    if (valid4) {
+                                      if (data18.researchPortfolioName !== void 0) {
+                                        let data21 = data18.researchPortfolioName;
+                                        const _errs49 = errors2;
+                                        if (errors2 === _errs49) {
+                                          if (typeof data21 === "string") {
+                                            if (func1(data21) > 200) {
+                                              const err50 = { instancePath: instancePath + "/scope/researchPortfolioName", schemaPath: "#/oneOf/2/properties/scope/properties/researchPortfolioName/maxLength", keyword: "maxLength", params: { limit: 200 }, message: "must NOT have more than 200 characters" };
+                                              if (vErrors === null) {
+                                                vErrors = [err50];
+                                              } else {
+                                                vErrors.push(err50);
+                                              }
+                                              errors2++;
+                                            } else {
+                                              if (func1(data21) < 1) {
+                                                const err51 = { instancePath: instancePath + "/scope/researchPortfolioName", schemaPath: "#/oneOf/2/properties/scope/properties/researchPortfolioName/minLength", keyword: "minLength", params: { limit: 1 }, message: "must NOT have fewer than 1 characters" };
+                                                if (vErrors === null) {
+                                                  vErrors = [err51];
+                                                } else {
+                                                  vErrors.push(err51);
+                                                }
+                                                errors2++;
+                                              } else {
+                                                if (!pattern11.test(data21)) {
+                                                  const err52 = { instancePath: instancePath + "/scope/researchPortfolioName", schemaPath: "#/oneOf/2/properties/scope/properties/researchPortfolioName/pattern", keyword: "pattern", params: { pattern: "\\S" }, message: 'must match pattern "\\S"' };
+                                                  if (vErrors === null) {
+                                                    vErrors = [err52];
+                                                  } else {
+                                                    vErrors.push(err52);
+                                                  }
+                                                  errors2++;
+                                                }
+                                              }
+                                            }
+                                          } else {
+                                            const err53 = { instancePath: instancePath + "/scope/researchPortfolioName", schemaPath: "#/oneOf/2/properties/scope/properties/researchPortfolioName/type", keyword: "type", params: { type: "string" }, message: "must be string" };
+                                            if (vErrors === null) {
+                                              vErrors = [err53];
+                                            } else {
+                                              vErrors.push(err53);
+                                            }
+                                            errors2++;
+                                          }
+                                        }
+                                        var valid4 = _errs49 === errors2;
+                                      } else {
+                                        var valid4 = true;
+                                      }
+                                      if (valid4) {
+                                        if (data18.researchPortfolioRevision !== void 0) {
+                                          let data22 = data18.researchPortfolioRevision;
+                                          const _errs51 = errors2;
+                                          if (!(typeof data22 == "number" && (!(data22 % 1) && !isNaN(data22)) && isFinite(data22))) {
+                                            const err54 = { instancePath: instancePath + "/scope/researchPortfolioRevision", schemaPath: "#/oneOf/2/properties/scope/properties/researchPortfolioRevision/type", keyword: "type", params: { type: "integer" }, message: "must be integer" };
+                                            if (vErrors === null) {
+                                              vErrors = [err54];
+                                            } else {
+                                              vErrors.push(err54);
+                                            }
+                                            errors2++;
+                                          }
+                                          if (errors2 === _errs51) {
+                                            if (typeof data22 == "number" && isFinite(data22)) {
+                                              if (data22 > 9007199254740991 || isNaN(data22)) {
+                                                const err55 = { instancePath: instancePath + "/scope/researchPortfolioRevision", schemaPath: "#/oneOf/2/properties/scope/properties/researchPortfolioRevision/maximum", keyword: "maximum", params: { comparison: "<=", limit: 9007199254740991 }, message: "must be <= 9007199254740991" };
+                                                if (vErrors === null) {
+                                                  vErrors = [err55];
+                                                } else {
+                                                  vErrors.push(err55);
+                                                }
+                                                errors2++;
+                                              } else {
+                                                if (data22 < 0 || isNaN(data22)) {
+                                                  const err56 = { instancePath: instancePath + "/scope/researchPortfolioRevision", schemaPath: "#/oneOf/2/properties/scope/properties/researchPortfolioRevision/minimum", keyword: "minimum", params: { comparison: ">=", limit: 0 }, message: "must be >= 0" };
+                                                  if (vErrors === null) {
+                                                    vErrors = [err56];
+                                                  } else {
+                                                    vErrors.push(err56);
+                                                  }
+                                                  errors2++;
+                                                }
+                                              }
+                                            }
+                                          }
+                                          var valid4 = _errs51 === errors2;
+                                        } else {
+                                          var valid4 = true;
+                                        }
+                                        if (valid4) {
+                                          if (data18.scopeVersion !== void 0) {
+                                            let data23 = data18.scopeVersion;
+                                            const _errs53 = errors2;
+                                            if (errors2 === _errs53) {
+                                              if (typeof data23 === "string") {
+                                                if (!pattern12.test(data23)) {
+                                                  const err57 = { instancePath: instancePath + "/scope/scopeVersion", schemaPath: "#/oneOf/2/properties/scope/properties/scopeVersion/pattern", keyword: "pattern", params: { pattern: "^[0-9a-f]{64}$" }, message: 'must match pattern "^[0-9a-f]{64}$"' };
+                                                  if (vErrors === null) {
+                                                    vErrors = [err57];
+                                                  } else {
+                                                    vErrors.push(err57);
+                                                  }
+                                                  errors2++;
+                                                }
+                                              } else {
+                                                const err58 = { instancePath: instancePath + "/scope/scopeVersion", schemaPath: "#/oneOf/2/properties/scope/properties/scopeVersion/type", keyword: "type", params: { type: "string" }, message: "must be string" };
+                                                if (vErrors === null) {
+                                                  vErrors = [err58];
+                                                } else {
+                                                  vErrors.push(err58);
+                                                }
+                                                errors2++;
+                                              }
+                                            }
+                                            var valid4 = _errs53 === errors2;
+                                          } else {
+                                            var valid4 = true;
+                                          }
+                                        }
+                                      }
+                                    }
+                                  }
+                                }
+                              }
+                            } else {
+                              const err59 = { instancePath: instancePath + "/scope", schemaPath: "#/oneOf/2/properties/scope/type", keyword: "type", params: { type: "object" }, message: "must be object" };
+                              if (vErrors === null) {
+                                vErrors = [err59];
+                              } else {
+                                vErrors.push(err59);
+                              }
+                              errors2++;
+                            }
+                          }
+                          var valid3 = _errs43 === errors2;
+                        } else {
+                          var valid3 = true;
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      } else {
+        const err60 = { instancePath, schemaPath: "#/oneOf/2/type", keyword: "type", params: { type: "object" }, message: "must be object" };
+        if (vErrors === null) {
+          vErrors = [err60];
+        } else {
+          vErrors.push(err60);
+        }
+        errors2++;
+      }
+    }
+    var _valid0 = _errs29 === errors2;
+    if (_valid0 && valid0) {
+      valid0 = false;
+      passing0 = [passing0, 2];
+    } else {
+      if (_valid0) {
+        valid0 = true;
+        passing0 = 2;
+        if (props0 !== true) {
+          props0 = true;
+        }
+      }
+    }
   }
   if (!valid0) {
-    const err31 = { instancePath, schemaPath: "#/oneOf", keyword: "oneOf", params: { passingSchemas: passing0 }, message: "must match exactly one schema in oneOf" };
+    const err61 = { instancePath, schemaPath: "#/oneOf", keyword: "oneOf", params: { passingSchemas: passing0 }, message: "must match exactly one schema in oneOf" };
     if (vErrors === null) {
-      vErrors = [err31];
+      vErrors = [err61];
     } else {
-      vErrors.push(err31);
+      vErrors.push(err61);
     }
     errors2++;
     validate24.errors = vErrors;
@@ -934,13 +1903,13 @@ function validate24(data, { instancePath = "", parentData, parentDataProperty, r
 validate24.evaluated = { "dynamicProps": true, "dynamicItems": false };
 
 // session-receipt/validate.mjs
-function validSessionReceipt(value, at, { general = false } = {}) {
-  return Number.isSafeInteger(at) && at >= 0 && validateReceipt(value) && value.expiresAtMs > at && (general || value.context.selectedClientId !== null) && value.context.tenantId.length <= 256 && value.context.actorId.length <= 256;
+function validSessionReceipt(value, at, { general = false, research = false } = {}) {
+  return Number.isSafeInteger(at) && at >= 0 && validateReceipt(value) && value.expiresAtMs > at && (value.context.scopeKind === "research_portfolio" ? research : general || value.context.selectedClientId !== null) && value.context.tenantId.length <= 256 && value.context.actorId.length <= 256;
 }
 
 // conversation-session/receive.mjs
-var conversationSessionVersion = "1.0.0";
-var conversationSessionMetadata = Object.freeze({ packageVersion: "0.1.12", sessionVersion: conversationSessionVersion, responseBytes: 4096, scopeSource: "Core explicit immutable bootstrap receipt; null alone is not General eligibility", authority: "validation grants no authority" });
+var conversationSessionVersion = "1.1.0";
+var conversationSessionMetadata = Object.freeze({ packageVersion: "0.1.43", sessionVersion: conversationSessionVersion, responseBytes: 4096, scopeSource: "Core explicit immutable capture; Research is disjoint from General and null grants neither", authority: "validation grants no authority" });
 var ConversationSessionResponseError = class extends Error {
   constructor() {
     super("CONVERSATION_SESSION_REFUSED");
@@ -951,10 +1920,25 @@ var ConversationSessionResponseError = class extends Error {
 var refuse = () => {
   throw new ConversationSessionResponseError();
 };
+function receiveConversationSessionExpectedContext(utf8Bytes) {
+  try {
+    const expected = parseBytes(utf8Bytes, 4096);
+    if (!validateExpected(expected)) refuse();
+    if (expected.scopeKind !== "research_portfolio") parseBytes(utf8Bytes, 2048);
+    return expected;
+  } catch {
+    refuse();
+  }
+}
 function receiveConversationSessionReceipt(utf8Bytes, expectedContextBytes, at) {
   try {
-    const receipt = parseBytes(utf8Bytes, 4096), expected = parseBytes(expectedContextBytes, 2048);
-    if (!validSessionReceipt(receipt, at, { general: true }) || !validateExpected(expected)) refuse();
+    const receipt = parseBytes(utf8Bytes, 4096), expected = receiveConversationSessionExpectedContext(expectedContextBytes);
+    if (!validSessionReceipt(receipt, at, { general: true, research: true })) refuse();
+    const research = expected.scopeKind === "research_portfolio";
+    if (research !== (receipt.context.scopeKind === "research_portfolio")) refuse();
+    if (research) {
+      if (Object.keys(expected.scope).some((key) => expected.scope[key] !== receipt.context.scope[key])) refuse();
+    }
     const keys = ["tenantId", "actorId", "conversationId", "runId", "selectedClientId"], rebind = receipt.initialRunRebind;
     if (rebind) {
       if (keys.some((key) => !Object.hasOwn(expected, key)) || keys.filter((key) => key !== "runId").some((key) => expected[key] !== receipt.context[key]) || expected.runId !== rebind.sourceRunId || receipt.context.runId !== rebind.targetRunId || rebind.sourceRunId === rebind.targetRunId) refuse();
@@ -968,5 +1952,6 @@ export {
   ConversationSessionResponseError,
   conversationSessionMetadata,
   conversationSessionVersion,
+  receiveConversationSessionExpectedContext,
   receiveConversationSessionReceipt
 };

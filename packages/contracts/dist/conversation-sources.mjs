@@ -284,7 +284,7 @@ var require_equal = __commonJS({
 });
 
 // artifacts-0.2/artifact-formats.mjs
-var ARTIFACT_MIME_TYPES = Object.freeze({ docx: "application/vnd.openxmlformats-officedocument.wordprocessingml.document", txt: "text/plain; charset=utf-8", xlsx: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", pptx: "application/vnd.openxmlformats-officedocument.presentationml.presentation", pdf: "application/pdf", zip: "application/zip" });
+var ARTIFACT_MIME_TYPES = Object.freeze({ docx: "application/vnd.openxmlformats-officedocument.wordprocessingml.document", txt: "text/plain; charset=utf-8", xml: "application/xml; charset=utf-8", xlsx: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", pptx: "application/vnd.openxmlformats-officedocument.presentationml.presentation", pdf: "application/pdf", zip: "application/zip" });
 
 // document-application/boundary.mjs
 var errors = /* @__PURE__ */ new WeakSet();
@@ -16508,14 +16508,14 @@ var freeze = (value) => {
   }
   return value;
 };
-var conversationHistoryVersion = "1.6.0";
+var conversationHistoryVersion = "1.7.0";
 var HISTORY_PATHS = freeze({ export: "/api/conversations/export", list: "/api/conversations/list", transcript: "/api/conversations/transcript", nextTurn: "/api/conversations/next-turn", summaries: "/api/conversations/summaries", manage: "/api/conversations/manage", deletions: "/api/conversations/deletions/list", deletionStatus: "/api/conversations/deletions/status" });
 var historyDomainErrorStatuses = freeze({ CONVERSATION_EXPORT_TOO_LARGE: 413, CONVERSATION_REQUEST_INVALID: 400, CONVERSATION_CURSOR_INVALID: 400, CONVERSATION_NOT_FOUND: 404, CONVERSATION_TURN_CONFLICT: 409, CONVERSATION_MANAGEMENT_CONFLICT: 409, CONVERSATION_RESTORE_EXPIRED: 410, CONVERSATION_STORE_CORRUPT: 500, CONVERSATION_TURN_UNAVAILABLE: 503, CONVERSATION_UNAVAILABLE: 503 });
 var historyErrorStatuses = freeze({ INVALID_REQUEST: [400], UNAUTHENTICATED: [401], ACCESS_DENIED: [403], MEMBERSHIP_REVOKED: [403], NOT_FOUND: [404], METHOD_NOT_ALLOWED: [405], DEADLINE: [408], MEMBERSHIP_CHANGED: [409], REQUEST_TOO_LARGE: [413], UNSUPPORTED_MEDIA_TYPE: [415], CANCELLED: [499], PRODUCT_UNAVAILABLE: [502], ...Object.fromEntries(Object.entries(historyDomainErrorStatuses).map(([code, status]) => [code, [status]])) });
 var conversationHistoryMetadata = freeze({
-  packageVersion: "0.1.34",
+  packageVersion: "0.1.43",
   historyVersion: conversationHistoryVersion,
-  schemaId: "urn:meri:conversation-history:1.6.0",
+  schemaId: "urn:meri:conversation-history:1.7.0",
   routes: Object.fromEntries(Object.entries(HISTORY_PATHS).map(([route, path]) => [route, { method: "POST", path }])),
   authentication: { owner: "native identity and current Core membership", header: "authorization", scheme: "Bearer", serverSideCredentialOnly: true, validationGrantsAuthority: false },
   export: { events: 1e4, turns: 1e3, messages: 2e3, textBytes: 1048576, lifetimeMs: 6e4 },

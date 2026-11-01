@@ -3,6 +3,7 @@ import {mkdtemp,readFile,lstat,rm} from 'node:fs/promises';
 import {join,isAbsolute} from 'node:path';
 import {fileURLToPath} from 'node:url';
 import {createHash} from 'node:crypto';
+import {structurallyValid} from './structure/file-structure.mjs';
 const here=fileURLToPath(new URL('.',import.meta.url));
 const sha=bytes=>createHash('sha256').update(bytes).digest('hex');
 const error=code=>Object.assign(new Error(code),{code});
@@ -15,10 +16,14 @@ export function createLocalArtifactExecutor({pythonExecutable,nodeExecutable,ppt
     // The exact parent stays the lineage base (verified by the service); its PDF bytes never reach a generator.
     if(request.format==='pdf'&&base!==null&&base.request?.format!=='pdf')throw error('ARTIFACT_REVISION_FORMAT');
     if(request.format==='pdf'&&!officeTransformer)throw error('ARTIFACT_RENDERER_UNAVAILABLE');
+    if(request.format==='xml'){
+      if(base!==null&&base.request?.format!=='xml')throw error('ARTIFACT_REVISION_FORMAT');
+      if(typeof request.content?.text!=='string'||!request.content.text.isWellFormed()||!structurallyValid(Buffer.from(request.content.text),'xml')||base!==null&&!structurallyValid(base.bytes,'xml'))throw error('ARTIFACT_FORMAT');
+    }
     const generationBase=request.format==='pdf'?null:base;
     const dir=await mkdtemp(join(tempRoot,'meri-artifact-'));let receipt;
     try{
-      if(!['docx','txt','xlsx','pptx','zip','pdf'].includes(request.format))throw error('ARTIFACT_FORMAT');
+      if(!['docx','txt','xml','xlsx','pptx','zip','pdf'].includes(request.format))throw error('ARTIFACT_FORMAT');
       const generationRequest=request.format==='pdf'?{...request,format:'docx'}:request;
       const input=Buffer.from(JSON.stringify({request:generationRequest,maxBytes,base:generationBase?{request:generationBase.request,base64:generationBase.bytes.toString('base64')}:null,assets:assets.map(a=>({id:a.id,base64:a.bytes.toString('base64')}))}));if(input.length>16777216)throw error('ARTIFACT_INPUT_LIMIT');
       const presentation=request.format==='pptx';

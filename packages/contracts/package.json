@@ -1,6 +1,6 @@
 {
   "name": "@capiro/meri-contracts",
-  "version": "0.1.42",
+  "version": "0.1.44",
   "private": true,
   "license": "UNLICENSED",
   "type": "module",
@@ -165,7 +165,7 @@
     "check:input": "node generate-input.mjs --check",
     "check:history": "node generate-history.mjs --check",
     "typecheck": "tsc --noEmit --strict --skipLibCheck --target ES2022 --module NodeNext --moduleResolution NodeNext test/public-types.ts test/action-application-public-types.ts test/document-application-public-types.ts test/conversation-application-public-types.ts test/conversation-lifecycle-public-types.ts test/conversation-history-public-types.ts test/conversation-input-public-types.ts test/user-preferences-application-public-types.ts test/task-command-application-public-types.ts test/conversation-initial-input-public-types.ts test/intents-application-public-types.ts test/document-access-application-public-types.ts test/conversation-session-public-types.ts test/objective-generation-public-types.ts test/routines-application-public-types.ts test/conversation-sources-public-types.ts test/conversation-usage-public-types.ts test/uploads-application-public-types.ts test/upload-input-public-types.ts test/procedure-input-public-types.ts test/selected-revision-input-public-types.ts test/conversation-work-public-types.ts test/usage-overview-public-types.ts test/office-application-public-types.ts test/selected-tab-application-public-types.ts test/federal-workbench-public-types.ts test/browser-viewer-public-types.ts",
-    "test:public": "node --test test/public-package.test.mjs test/action-application-public.test.mjs test/document-application-public.test.mjs test/conversation-application-public.test.mjs test/conversation-lifecycle-public.test.mjs test/conversation-history-public.test.mjs test/conversation-history-source.test.mjs test/conversation-input-public.test.mjs test/user-preferences-application-public.test.mjs test/task-command-application-public.test.mjs test/conversation-initial-input-public.test.mjs test/intents-application-public.test.mjs test/document-access-application-public.test.mjs test/conversation-session-public.test.mjs test/document-native-file-public.test.mjs test/artifact-native-evidence.test.mjs test/document-draft-command.test.mjs test/objective-generation-public.test.mjs test/routines-application-public.test.mjs test/conversation-sources-public.test.mjs test/conversation-usage-public.test.mjs test/uploads-application-public.test.mjs test/upload-input-public.test.mjs test/procedure-input-public.test.mjs test/selected-revision-input-public.test.mjs test/conversation-sources-upload-public.test.mjs test/routines-consent-public.test.mjs test/schedule-source-trigger.test.mjs test/work-selection-public.test.mjs test/native-results-public.test.mjs test/work-selector-successor-wiring.test.mjs test/retrieval-catalog-current-versions.test.mjs test/usage-overview-public.test.mjs && npm run test:office test/selected-tab-application-public.test.mjs && npm run test:federal && npm run test:browser-viewer",
+    "test:public": "node --test test/research-session-history-public.test.mjs test/public-package.test.mjs test/action-application-public.test.mjs test/document-application-public.test.mjs test/conversation-application-public.test.mjs test/conversation-lifecycle-public.test.mjs test/conversation-history-public.test.mjs test/conversation-history-source.test.mjs test/conversation-input-public.test.mjs test/user-preferences-application-public.test.mjs test/task-command-application-public.test.mjs test/conversation-initial-input-public.test.mjs test/intents-application-public.test.mjs test/document-access-application-public.test.mjs test/conversation-session-public.test.mjs test/document-native-file-public.test.mjs test/artifact-native-evidence.test.mjs test/document-draft-command.test.mjs test/objective-generation-public.test.mjs test/routines-application-public.test.mjs test/conversation-sources-public.test.mjs test/conversation-usage-public.test.mjs test/uploads-application-public.test.mjs test/upload-input-public.test.mjs test/procedure-input-public.test.mjs test/selected-revision-input-public.test.mjs test/conversation-sources-upload-public.test.mjs test/routines-consent-public.test.mjs test/schedule-source-trigger.test.mjs test/work-selection-public.test.mjs test/native-results-public.test.mjs test/work-selector-successor-wiring.test.mjs test/retrieval-catalog-current-versions.test.mjs test/usage-overview-public.test.mjs && npm run test:office test/selected-tab-application-public.test.mjs && npm run test:federal && npm run test:browser-viewer",
     "check": "npm run check:generated && npm run typecheck && npm run test:public",
     "build:initial-input": "node generate-initial-input.mjs",
     "check:initial-input": "node generate-initial-input.mjs --check",
@@ -194,7 +194,8 @@
   "dependencies": {
     "ajv": "8.20.0",
     "ajv-formats": "3.0.1",
-    "canonicalize": "5.1.0"
+    "canonicalize": "5.1.0",
+    "saxes": "6.0.0"
   },
   "devDependencies": {
     "esbuild": "0.28.2",

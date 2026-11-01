@@ -1,5 +1,5 @@
 {
-  "version": "1.5.0",
+  "version": "1.7.0",
   "sources": [
     {
       "path": "meri.schema.json",
@@ -7,7 +7,7 @@
     },
     {
       "path": "artifacts-0.2/artifact.schema.json",
-      "sha256": "2f0db5c164b3231f93d5ad10dbf3fd09b1cca8a8291d181e200170645c3c2276"
+      "sha256": "2b30963f6556488ee2c7454ab3eddd582877a557f73c1778031d6b1c4c13695a"
     },
     {
       "path": "retrieval-0.2/federal-draft-source.schema.json",
@@ -19,23 +19,39 @@
     },
     {
       "path": "federal-workbench/schema.mjs",
-      "sha256": "9b229b95eb6205478bc03167cca7f0882eb038eea9d790030c5ca0919c70259f"
+      "sha256": "ac19b8a83e2d55f86fb6a7dc4426fc6227f417b8b190c8d365a743076ebda590"
     },
     {
       "path": "federal-workbench/receive.mjs",
-      "sha256": "cec05f7bf8d7811edd2f8e75d0cbc7745a7402118c1da7d5d5ec42e436a351a9"
+      "sha256": "4c44fc8f02c415c563cda0c96096b3a55a3343067766ab652df3630b3ae42cc1"
     },
     {
       "path": "federal-workbench/source-layout.mjs",
-      "sha256": "71b86be915d6c502ec62edcae115f14d0317b7c8c20c6a628b1cc3c19d0271aa"
+      "sha256": "9a9bcc57abe841bc0694b9662de7f8ec7f98a0228a0b5bccc8a2e0188f336185"
+    },
+    {
+      "path": "federal-workbench/schema-receipt.mjs",
+      "sha256": "8a8ffcff8e8bf60ebe9da272bee3fd017a593c3fddf7a07d1d362881f47972c6"
+    },
+    {
+      "path": "federal-workbench/xml-text-runs.mjs",
+      "sha256": "5e38101fd0ba58944c54f95e747cd7193863ca45b234461fb1e89526fa223de1"
+    },
+    {
+      "path": "federal-workbench/structural-dossier.mjs",
+      "sha256": "a060712f512246d232e1722a050bb64c0cc00f2d083c6bddf982ca4a7618e904"
+    },
+    {
+      "path": "federal-workbench/structural-receipt.mjs",
+      "sha256": "ae606978e6bd381fe02126a712ceea3c98ac445db93b4b6b398bf4e0db27794a"
     },
     {
       "path": "federal-workbench/api.d.ts",
-      "sha256": "f805e70169c82f351b0ab3e5298c329f6005bc8215b4a3c7a36a93b769a38161"
+      "sha256": "b665c1827e4b61cf82f5842f13d900e34c057c7479a6d4371e3cb43dd62267ed"
     },
     {
       "path": "generate-federal-workbench.mjs",
-      "sha256": "7fcb6999f6eb79425490a2df3e761d2988c7c3525781b5eea44d1d3ac6298923"
+      "sha256": "df0100a0bcf1557f01a99ff1ad7a5a44c93589c161d9f4065bb243d3a26a6036"
     }
   ]
 }

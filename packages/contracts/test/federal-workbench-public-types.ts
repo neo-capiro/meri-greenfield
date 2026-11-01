@@ -67,3 +67,34 @@ if ('resultKind' in review.prepared.draft && review.prepared.draft.resultKind ==
   const empty: '' = review.prepared.draft.outputs.consolidated;
   void empty;
 }
+
+if (nestedOrFlat.parserVersion === 'federal-uslm-xml/2' || nestedOrFlat.parserVersion === 'federal-uslm-xml/3') {
+  const profile: 'uslm-2.1.0' = nestedOrFlat.validation.profile;
+  const valid: true = nestedOrFlat.validation.valid;
+  const ancestors: string[] = nestedOrFlat.scopes[0].ancestorPath;
+  void [profile, valid, ancestors];
+} else {
+  // @ts-expect-error Earlier parser profiles carry no schema-validity receipt.
+  nestedOrFlat.validation;
+}
+if (nestedOrFlat.parserVersion === 'federal-uslm-xml/3') {
+  const decoded: string | undefined = nestedOrFlat.scopes[0].textRun?.decoded;
+  const rawStart: number | undefined = nestedOrFlat.scopes[0].textRun?.spans[0].rawStart;
+  void [decoded, rawStart];
+}
+if (review.prepared.draft.structuralProjection?.status === 'supported') {
+  const block = review.prepared.draft.structuralProjection.original.blocks[0];
+  const mapping = review.prepared.draft.structuralProjection.original.mapping[0];
+  if (mapping.kind === 'run') { const index: number = mapping.runIndex; void index; }
+  void block;
+}
+if (publication.structuralReceipt) {
+  const profile: 'uslm-word/1' = publication.structuralReceipt.profile;
+  const specHash: string = publication.structuralReceipt.specSha256;
+  void [profile, specHash];
+}
+if (review.prepared.schemaValidation) {
+  const sourceHash: string = review.prepared.schemaValidation.source.sourceSha256;
+  const valid: true | undefined = review.prepared.schemaValidation.consolidated?.valid;
+  void [sourceHash, valid];
+}

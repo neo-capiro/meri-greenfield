@@ -26,6 +26,7 @@
   "formats": [
     "docx",
     "txt",
+    "xml",
     "xlsx",
     "pptx",
     "pdf",
@@ -34,6 +35,7 @@
   "mimeTypes": {
     "docx": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
     "txt": "text/plain; charset=utf-8",
+    "xml": "application/xml; charset=utf-8",
     "xlsx": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
     "pptx": "application/vnd.openxmlformats-officedocument.presentationml.presentation",
     "pdf": "application/pdf",
@@ -48,11 +50,13 @@
   "operationFormats": {
     "create_word": [
       "docx",
-      "txt"
+      "txt",
+      "xml"
     ],
     "create_word_with_pdf": [
       "docx",
       "txt",
+      "xml",
       "pdf"
     ],
     "create_excel": [
@@ -77,7 +81,9 @@
     "ARTIFACT_PREVIEW_PENDING": 409,
     "ARTIFACT_PREVIEW_UNSUPPORTED": 422,
     "ARTIFACT_RENDERER_UNAVAILABLE": 503,
+    "ARTIFACT_STALE_PARENT": 409,
     "CANCELLED": 499,
+    "CONFLICT": 409,
     "DEADLINE": 408,
     "DOCUMENT_CLOCK": 500,
     "DOCUMENT_CONFIGURATION": 500,
@@ -135,23 +141,23 @@
     },
     {
       "path": "../../apps/control/document-application/current.mjs",
-      "sha256": "88e21befa2caf6591adfcb06cca0211e07c2a417ac5094e0481a7ceabdab99df",
-      "bytes": 7270
+      "sha256": "b8c1bac33cea95904e210c8bdb6fd6826d2b2b7a161c18002c900d668f96ae98",
+      "bytes": 7536
     },
     {
       "path": "../../apps/control/document-application/format-admission.mjs",
-      "sha256": "3747bd0143130bb51b5928715ecebe22bd4a932e951a8ae32f87dc86b59b758d",
-      "bytes": 1976
+      "sha256": "de1decfcb276619add5697e96b034d8ec68a1a8e578f5a4e81cdd9808353aa91",
+      "bytes": 1988
     },
     {
       "path": "../../apps/control/document-application/http.mjs",
-      "sha256": "46432d9e60e2644d0895d965d5ad41e9923b3aa4502a173f704a3f3758b801ac",
-      "bytes": 2786
+      "sha256": "4bb887bd826e151fd4f5e63f3284ff0f9e934f260879240bb6c62a7710cddba6",
+      "bytes": 3567
     },
     {
       "path": "../../apps/control/document-application/index.mjs",
-      "sha256": "a2ebafa10853d24e2347f53a9b5c0ed7a5f80fbc27e26331c932a7be9dae09de",
-      "bytes": 12893
+      "sha256": "db5f6d810000dbb272c37b9eb6756bba64d5162e4ec3c98031e62f48c1f02cb3",
+      "bytes": 13251
     },
     {
       "path": "../../apps/control/document-application/preview-route.mjs",
@@ -160,13 +166,13 @@
     },
     {
       "path": "artifacts-0.2/artifact-formats.mjs",
-      "sha256": "4a2e725eb5bb628a66ae06f471741ec1fbb6ce1eb6e3ed842050393d3ab39334",
-      "bytes": 2579
+      "sha256": "cf9aab9fcefb0a8a040d5f8bcfd2a4907931a7a64f0947fad7e47ab3721caf36",
+      "bytes": 2616
     },
     {
       "path": "artifacts-0.2/artifact.schema.json",
-      "sha256": "2f0db5c164b3231f93d5ad10dbf3fd09b1cca8a8291d181e200170645c3c2276",
-      "bytes": 48251
+      "sha256": "2b30963f6556488ee2c7454ab3eddd582877a557f73c1778031d6b1c4c13695a",
+      "bytes": 51966
     },
     {
       "path": "document-access-application/native-results.mjs",
@@ -225,11 +231,11 @@
     },
     {
       "path": "retrieval-0.2/catalog.json",
-      "sha256": "0319a3a2ba430dfb0e04683db7b8dd3366562597f52ba8f8cd6b1dd15b51816b",
+      "sha256": "e263d884bd067eba75e0d075c7b6910fc4cbd1814cc781adbce8406500689a75",
       "bytes": 447717
     }
   ],
-  "schemaSha256": "0ece4a9488ba2ffa0bab56df64d385231f222465ee06d5eacc892ae47c67e00d",
+  "schemaSha256": "9f3760d191191d0a363bea07e486815eca661b6d6eab891786b2eeafc6508916",
   "browserInputs": [
     "artifacts-0.2/artifact-formats.mjs",
     "document-access-application/document-access-application-receiver.mjs",

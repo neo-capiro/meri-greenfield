@@ -18,6 +18,7 @@ const binding={tenantId:'synthetic',actorId:'actor',conversationId:randomUUID(),
 const BYTES=new TextEncoder().encode('bounded synthetic bytes');
 /** Details exactly as each producer emits them: presentation.mjs, local-executor.mjs (PDF conversion), python/analysis.py. */
 const DETAILS={
+ xml:()=>({encoding:'UTF-8',whitespace:'unchanged',wellFormed:true}),
  txt:()=>({encoding:'UTF-8',whitespace:'unchanged'}),docx:()=>({paragraphs:1,tables:0,pictures:0}),xlsx:()=>({sheets:['Data'],formulas:1,formulaCache:'unverified-zero-placeholder; recalculation required'}),
  pptx:()=>({slides:3,editable:true,visualInspection:'pending'}),pdf:()=>({conversionCompleted:true,renderInspection:'pending',sourceDocxSha256:hash(utf8('source docx'))}),zip:()=>({rows:4,columns:['region','total'],chart:true}),
 };
@@ -133,12 +134,18 @@ test('prior error codes retain frozen admission and the new history refusal stay
 });
 
 /** Metadata and distribution. */
+test('XML inspect admits exact metadata and verifies downloaded bytes without claiming preview',async()=>{
+ const r=receipt('xml'),result=await inspect(access,r.value);
+ assert.equal(result.ok,true);assert.equal(result.value.inspection.details.wellFormed,true);
+ assert.deepEqual((await access.receiveDocumentDownload(download(result.value),result.value.version)).bytes,BYTES);
+ assert.equal(access.documentAccessMetadata.previewFormats.includes('xml'),false);
+});
 test('metadata is derived from the artifact vocabulary, the real admission function and the preview owner',async()=>{
  const m=access.documentAccessMetadata,descriptor=id=>{const e=catalog.operations.find(x=>x.operation.id===id);return {operation:e.operation,requiredGrants:e.requiredGrants,sourceRequirements:e.sourceRequirements};};
  assert.deepEqual(m.formats,Object.keys(ARTIFACT_MIME_TYPES));assert.deepEqual(m.mimeTypes,ARTIFACT_MIME_TYPES);assert.deepEqual(m.previewFormats,[...PREVIEW_FORMATS]);
  assert.deepEqual(m.operationFormats,{create_word:[...admitDocumentDescriptor(descriptor('create_word')).formats],create_word_with_pdf:[...admitDocumentDescriptor(descriptor('create_word'),{pdf:true}).formats],create_excel:[...admitDocumentDescriptor(descriptor('create_excel')).formats],create_powerpoint:[...admitDocumentDescriptor(descriptor('create_powerpoint')).formats],run_analysis:[...admitDocumentDescriptor(descriptor('run_analysis')).formats]});
  assert.deepEqual(new Set(Object.values(m.operationFormats).flat()),new Set(m.formats));
- assert.deepEqual(m.previewFormats.filter(format=>!m.formats.includes(format)),[]);assert.deepEqual(m.formats.filter(format=>!m.previewFormats.includes(format)).sort(),['txt','zip'],'txt and zip have no preview');
+ assert.deepEqual(m.previewFormats.filter(format=>!m.formats.includes(format)),[]);assert.deepEqual(m.formats.filter(format=>!m.previewFormats.includes(format)).sort(),['txt','xml','zip'],'txt, xml and zip have no preview');
  assert.deepEqual(Object.keys(m.routes),['inspect','download','history','list']);assert.deepEqual(m.routes.download,{method:'POST',path:'/api/documents/download',response:'bytes'});assert.deepEqual(m.routes.history,{method:'POST',path:'/api/documents/history',response:'json'});assert.deepEqual(m.routes.list,{method:'POST',path:'/api/documents/list',response:'json'});assert(Object.isFrozen(m)&&Object.isFrozen(m.errorStatuses));
  const frozenSchema=JSON.parse(await readFile(new URL('../dist/document-application.schema.json',import.meta.url),'utf8')),schema=JSON.parse(await readFile(new URL('../dist/document-access-application.schema.json',import.meta.url),'utf8'));
  const oldCodes=frozenSchema.$defs.DocumentErrorResponse.properties.error.properties.code.enum;
