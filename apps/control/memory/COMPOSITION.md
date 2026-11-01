@@ -120,9 +120,7 @@ branch (today the relay is created only inside the `reads.enabled` block) and `r
 
 ### Lane X seam (`apps/runtime/native-authority/execution-composition.mjs`)
 
-For a `memory.propose` proposal: `const {commandSourceFor}=memoryComposition(context); const source=commandSourceFor?.({binding:
-run.binding, scopes: run scopes})` and pass it as the durable executor's `source` (it carries `personalPending:true`, which
-`durable-executor.mjs` requires for personal scope). Without the relay `commandSourceFor` is `null`: keep `PENDING_PRODUCER_UNAVAILABLE`.
+This historical executor seam is superseded. Memory proposals use `command-options.mjs`; approved submissions and readback use the current native approval receiver through `runtime/native-authority/approval-forwarder.mjs`. The generic durable command executor and its legacy fixed-route source have been retired. Personal memory remains a pending candidate until the existing review owner decides it.
 
 ## Migration plan line and grants (`infra/**`, not edited)
 

@@ -59,8 +59,8 @@ export function createNativeAttachmentFilingPreparer(configuration){
   const requestStore={read:store.read,insert(value,check){if(closed)throw intentFault('CANCELLED','none');check();insertEntered=true;return store.insert(value,check);}};
   const approvalMetadataOwner=createCommandApprovalMetadataOwner({store:requestStore,commandContext,preparePolicy,now:c.now,maxRequestMs:c.maxRequestMs},'artifact.file');
   const preparer=createCommandIntentPreparer({commandOptions:{operation:descriptor.operation,action:'artifact.file',
-   outputShape:descriptor.outputSchema.id.split('#/$defs/')[1],commandContext,validators:commandToolValidators,
-   assertProposal:kind.assertProposal,approvalMetadataOwner,executor:{execute:deny},now:c.now,
+   commandContext,validators:commandToolValidators,
+   assertProposal:kind.assertProposal,approvalMetadataOwner,now:c.now,
    limits:{maxRequestMs:c.maxRequestMs,maxFactBytes:131072}}});
   try{return await preparer.prepare({arguments:request,signal:input.signal});}
   catch(error){

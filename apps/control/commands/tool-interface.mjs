@@ -1,14 +1,14 @@
-/** Raw agent arguments to an immutable proposal, then the existing guarded owner. */
+/** Raw agent arguments to an immutable proposal. Native approval receivers own execution. */
 import {canonicalSha256} from '../../../packages/contracts/validate.mjs';
 import {createOperationLifetime} from '../../../packages/runtime/operation-lifetime.mjs';
 import {CommandError,data,deny,instant,nativeSignal,own,safe} from './protocol.mjs';
 const same=(a,b)=>canonicalSha256(a)===canonicalSha256(b);
 export function createCommandToolInterface(options){
- const {operation,action,outputShape,commandContext,validators,assertProposal,approvalMetadataOwner,executor,now,limits}=own(options,
-  ['operation','action','outputShape','commandContext','validators','assertProposal','approvalMetadataOwner','executor','now','limits']);
- const trusted=data({operation,action,outputShape,commandContext,limits});own(trusted.operation,['id','version']);own(trusted.limits,['maxRequestMs','maxFactBytes']);
- if(typeof action!=='string'||typeof outputShape!=='string'||typeof trusted.operation.id!=='string'||trusted.operation.version!=='0.2.0'||typeof now!=='function'||typeof assertProposal!=='function'||
-  typeof validators?.normalizeCommandToolInput!=='function'||typeof validators?.assertCommandToolProposal!=='function'||typeof validators?.assertCommandToolOutput!=='function'||typeof approvalMetadataOwner?.prepare!=='function'||typeof approvalMetadataOwner?.read!=='function'||typeof executor?.execute!=='function'||
+ const {operation,action,commandContext,validators,assertProposal,approvalMetadataOwner,now,limits}=own(options,
+  ['operation','action','commandContext','validators','assertProposal','approvalMetadataOwner','now','limits']);
+ const trusted=data({operation,action,commandContext,limits});own(trusted.operation,['id','version']);own(trusted.limits,['maxRequestMs','maxFactBytes']);
+ if(typeof action!=='string'||typeof trusted.operation.id!=='string'||trusted.operation.version!=='0.2.0'||typeof now!=='function'||typeof assertProposal!=='function'||
+  typeof validators?.normalizeCommandToolInput!=='function'||typeof validators?.assertCommandToolProposal!=='function'||typeof approvalMetadataOwner?.prepare!=='function'||
   !Number.isSafeInteger(trusted.limits.maxRequestMs)||trusted.limits.maxRequestMs<1||trusted.limits.maxRequestMs>3600000||
   !Number.isSafeInteger(trusted.limits.maxFactBytes)||trusted.limits.maxFactBytes<1||trusted.limits.maxFactBytes>16*1024*1024)deny('COMMAND_CONFIGURATION');
  const binding=trusted.commandContext.binding;
@@ -43,24 +43,5 @@ export function createCommandToolInterface(options){
    const admitted=record(raw,started,lifetime,request);return data({status:'approval_required',proposal:admitted.proposal});
   });
  }
- async function executeApproved(proposalValue,executionValue,credential,signal){
-  const proposal=data(proposalValue),execution=data(executionValue);assertProposal(proposal,trusted.commandContext);
-  if(proposal.command.action!==action)deny('COMMAND_PREPARATION_REFUSED');
-  const prepared=await run(signal,async(lifetime,deadlineMs)=>{
-   lifetime.limitDeadline(instant(proposal.expiresAt));const started=now();
-   const raw=await lifetime.run(signal=>approvalMetadataOwner.read({proposalId:proposal.proposalId,commandSha256:proposal.commandSha256,operation:trusted.operation,action,binding,deadlineMs:Math.min(deadlineMs,instant(proposal.expiresAt)),signal}));
-   const admitted=record(raw,started,lifetime);
-   if(!same(admitted.proposal,proposal))deny('COMMAND_PREPARATION_REFUSED');
-   lifetime.check();if(lifetime.signal.aborted)deny('CANCELLED');return admitted;
-  });
-  // Metadata has its own bounded phase. The existing executor owns execution
-  // authority/expiry/lifetime; no second unsynchronized total-request timer.
-  if(signal?.aborted)deny('CANCELLED');
-  const result=await executor.execute({proposal:prepared.proposal,execution},credential,signal);
-  if(signal?.aborted)deny('CANCELLED');
-  const admitted=data(validators.assertCommandToolOutput(action,trusted.outputShape,result,prepared.request,{commandContext:trusted.commandContext,command:prepared.proposal.command}));
-  if(signal?.aborted)deny('CANCELLED');
-  return admitted;
- }
- return Object.freeze({prepare,executeApproved});
+ return Object.freeze({prepare});
 }

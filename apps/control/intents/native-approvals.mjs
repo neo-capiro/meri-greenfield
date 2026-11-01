@@ -4,7 +4,7 @@
  * (`native.call(operation,input,{signal})`, the same transport `apps/runtime/control.mjs` uses for `checkpoint/read`):
  *  - `record`       → `approval/record`   {proposal,decision,approver,binding} → {decision:ApprovalDecision,checkedAtMs,revoked}
  *  - `readDecision` → `approval/decision` {proposalId,commandSha256,binding}   → {decision:ApprovalDecision|null,checkedAtMs,revoked}
- *  - `getCurrent`   → the same read, serialized for the command executor's approval guard (`commands/approval-context.mjs`).
+ *  - `getCurrent`   → the same current read in the retained serialized compatibility shape.
  *  - `revoke`       → `approval/revoke`   {proposalId,commandSha256,approver,binding} → {decision,checkedAtMs,revoked:true} (lane RD).
  * `approval/decision` is listed as a required provider contract in `apps/runtime/README.md`; `approval/record` is the Core
  * contract of lane 3 proposal P-INT-10. Core serves both as `POST /api/clio/approvals/native/{record,decision}` (capiro-backend

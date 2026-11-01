@@ -1,5 +1,5 @@
 /** Prepares a command intent through the existing command tool interface (`commands/tool-interface.mjs` `prepare`)
- * and its approval-metadata owner. It never calls `executeApproved`: the result is the owner's immutable
+ * and its approval-metadata owner. The result is the owner's immutable
  * `approval_required` proposal, executable later only through the existing approval route with fresh authority.
  *
  * Task creation and task updates use their action-specific approval-metadata owners. Other command actions stay
@@ -15,15 +15,13 @@ import {intentFault} from './faults.mjs';
 export const COMMAND_INTENT_OPERATIONS=Object.freeze({mail_send:'mail.send',create_task:'task.create',update_task:'task.update',save_memory:'memory.propose',save_chat_attachments:'artifact.file'});
 /** @param {{commandOptions:object}} configuration the exact `createCommandToolInterface` options of the trusted composition */
 export function createCommandIntentPreparer(configuration){
- const {commandOptions}=own(configuration,['commandOptions']),options=own(commandOptions,['operation','action','outputShape','commandContext','validators','assertProposal','approvalMetadataOwner','executor','now','limits']);
+ const {commandOptions}=own(configuration,['commandOptions']),options=own(commandOptions,['operation','action','commandContext','validators','assertProposal','approvalMetadataOwner','now','limits']);
  const operation=data(options.operation);own(operation,['id','version']);
  if(COMMAND_INTENT_OPERATIONS[operation.id]!==options.action||operation.version!=='0.2.0')throw intentFault('INTENT_CONFIGURATION');
  const metadata=own(options.approvalMetadataOwner,['prepare','read']);if(typeof metadata.prepare!=='function')throw intentFault('INTENT_CONFIGURATION');
- const refuse=()=>{throw intentFault('INTENT_EXECUTION_REFUSED');};
- // One prepare-only interface per call: its metadata wrapper records whether the owner was reached, and its executor
- // and metadata read refuse, so no execution is reachable from this path.
- const prepareOnly=state=>createCommandToolInterface({...options,executor:{execute:refuse},
-  approvalMetadataOwner:{prepare:value=>{state.called=true;return metadata.prepare.call(options.approvalMetadataOwner,value);},read:refuse}});
+ // One prepare-only interface per call; record whether the metadata owner was reached.
+ const prepareOnly=state=>createCommandToolInterface({...options,
+  approvalMetadataOwner:{prepare:value=>{state.called=true;return metadata.prepare.call(options.approvalMetadataOwner,value);}}});
  const binding=data(options.commandContext).binding;prepareOnly({}); // configuration is validated now, not at the first call
  return Object.freeze({operation:Object.freeze({...operation}),owner:'command',binding,
   async prepare({arguments:request,signal}){

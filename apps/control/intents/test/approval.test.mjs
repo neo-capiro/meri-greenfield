@@ -26,7 +26,7 @@ function syntheticCore(clock){
 function setup({approverActorId='actor',enabled=true,afterExecute}={}){
  let c;const clock=()=>c.f.state.now,core=syntheticCore(clock);
  const native=createNativeIntentApprovals({call:core.call,now:clock,maxFactBytes:65536});
- c=commandComposition({approverActorId,approvalStore:{getCurrent:v=>native.getCurrent(v)}});
+ c=commandComposition({approverActorId});
  const {store,mount:m}=mount({binding:c.binding,preparers:[c.preparer()],now:clock});
  const tasks=nativeTaskPortFixture({now:clock,afterExecute});
  const owner=createIntentApprovalOwner({journal:store.port,decisions:native,tasks:tasks.port,now:clock,limits:{maxRequestMs:5000},enabled});

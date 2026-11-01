@@ -1,5 +1,5 @@
 /** SYNTHETIC: the actual `meri_intents` server → actual control intent mount → actual task.create proposal owners and
- * existing approved-execution path (fixture.mjs). Real SDK → control → backend qualification is UNRUN. */
+ * prepare-only metadata path (fixture.mjs). Real SDK → control → backend qualification is UNRUN. */
 import test from 'node:test';import assert from 'node:assert/strict';
 import {CommandError} from '../../../../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {canonicalSha256} from '../../../../../packages/contracts/validate.mjs';
@@ -27,17 +27,8 @@ test('conversation → proposal only; the existing approval control is required 
  const f=intentFixture(),m=await mountIntents(f);
  try{const r=await m.call('propose_task',CREATE,{toolUseId:'toolu_prepare'});assert.equal(r.isError,undefined);
   const prepared=JSON.parse(text(r));assert.equal(prepared.status,'approval_required');assert.match(r.content[1].text,/^PREPARED PROPOSAL: nothing has been changed\./u);
-  assert.equal(f.f.state.fetches,0);assert.equal(f.f.pg.rows.size,0);
+  assert.equal(f.sql.rows.size,1);
   const [receipt]=m.runtime.receipts();assert.equal(receipt.outcome,'prepared');assert.equal(receipt.reference,prepared.proposal.proposalId);assert.equal(receipt.deliveryId,intentDeliveryId(f.binding,SESSION,'toolu_prepare'));
-  await assert.rejects(f.executeApproved(prepared.proposal));assert.equal(f.f.state.fetches,0,'no approval, no effect');
-  f.approve(prepared.proposal);assert.equal((await f.executeApproved(prepared.proposal)).status,'observed');assert.equal(f.f.state.fetches,1);
- }finally{await m.close();}
-});
-
-test('authority revoked between prepare and approve: the approved proposal is refused at execution',async()=>{
- const f=intentFixture(),m=await mountIntents(f);
- try{const {proposal}=JSON.parse(text(await m.call('propose_task',CREATE)));f.approve(proposal);f.f.state.revoked=true;
-  await assert.rejects(f.executeApproved(proposal));assert.equal(f.f.state.fetches,0);
  }finally{await m.close();}
 });
 

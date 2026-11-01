@@ -46,8 +46,8 @@ export function createNativeTaskPreparers({pool,binding,scopes,selectedClientId,
    }
    const factory=updating?createTaskUpdateApprovalMetadataOwner:createTaskCreateApprovalMetadataOwner;
    const approvalMetadataOwner=factory({store,commandContext,preparePolicy,now,maxRequestMs});
-   const preparer=createCommandIntentPreparer({commandOptions:{operation,action,outputShape:updating?'TaskUpdateToolResult':'TaskCreateToolResult',commandContext,validators:commandToolValidators,
-    assertProposal:updating?assertTaskUpdateProposal:assertProposalIntegrity,approvalMetadataOwner,executor:{execute:deny},now,limits:{maxRequestMs,maxFactBytes:131072}}});
+   const preparer=createCommandIntentPreparer({commandOptions:{operation,action,commandContext,validators:commandToolValidators,
+    assertProposal:updating?assertTaskUpdateProposal:assertProposalIntegrity,approvalMetadataOwner,now,limits:{maxRequestMs,maxFactBytes:131072}}});
    return preparer.prepare({arguments:request,signal});
   }});
  });
