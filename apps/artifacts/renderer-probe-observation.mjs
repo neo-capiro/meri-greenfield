@@ -173,6 +173,19 @@ export function resolveEffectiveCgroup({cgroupPath='/',mountRoot='/',mount=CGROU
  return Object.freeze({levels:levels.length,mountRootIsRoot:mountRoot==='/',
   memoryMax:pickScalar('memory.max'),pidsMax:pickScalar('pids.max'),cpuMax:pickCpu()});
 }
+export const PLATFORM_BOUND_AGENTCORE='agentcore-microvm';
+/** Pure: the platform attestation of `boundedResources` for a child whose cgroup bounds are not finite. It applies ONLY
+ * to the AgentCore microVM, and only when the observed hierarchy is the one that platform exposes: a resolved cgroup2
+ * membership whose identity did not change, exactly one level, the mount rooted at `/`, and every controller present
+ * (finite or `max`). `platform` is the runtime's own verified evidence (`agentcoreRuntimePlatform`), never a request,
+ * declaration or configuration value. Any other host, and any other shape, is null: the finite-cgroup gate stands. */
+export function platformBoundedCgroup(cgroup,platform){
+ if(platform===null||typeof platform!=='object'||platform.runtime!=='agentcore')return null;
+ const cg=cgroup!==null&&typeof cgroup==='object'?cgroup:{};
+ if(cg.source!=='cgroup2'||cg.membershipResolved!==true||cg.identityChanged===true||cg.levels!==1||cg.mountRootIsRoot!==true||
+  !['memoryMax','pidsMax','cpuMax'].every(key=>typeof cg[key]==='string'))return null;
+ return Object.freeze({boundedBy:PLATFORM_BOUND_AGENTCORE,levels:1,mountRootIsRoot:true});
+}
 /** Combine the child's own cgroup view with the host's effective hierarchy for the same inherited cgroup. Only a
  * present-but-unlimited child value (`max`) can be filled by a finite host ancestor; a missing/malformed child value is
  * never rescued and a zero child value stays strictest. CPU compares quota/period ratios and returns the original valid

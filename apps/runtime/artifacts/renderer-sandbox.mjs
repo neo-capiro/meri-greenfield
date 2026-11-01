@@ -4,11 +4,8 @@ import {realpath,lstat} from 'node:fs/promises';import {dirname,basename,join} f
 import {runArtifactProcess} from '../../artifacts/process.mjs';import {officeTransformArguments} from '../../artifacts/office-transform.mjs';
 import {RENDERER_PROBE_PATH,qualifyLibreOfficeRenderer} from '../../artifacts/renderer-qualification.mjs';
 import {rendererFault} from './renderer-contract.mjs';
-/** The runtime image's protected-path inventory every fixed child must prove it cannot read. It is the SAME list for
- * every no-model purpose in this image (renderer and upload inspection): a child that cannot reach the task-local
- * material root, the Temporal material, the AWS credential file, the SDK workspace or the platform secrets mount has no
- * credential path left to read, so `noCredentials` is attestable on exactly this inventory and never on an empty one. */
-export const RUNTIME_CREDENTIAL_PATHS=Object.freeze(['/run/meri','/run/meri-temporal','/home/node/.aws/credentials','/workspace','/var/run/secrets']);
+import {RUNTIME_CREDENTIAL_PATHS} from '../credential-inventory.mjs';
+import {agentcoreRuntimePlatform} from '../agentcore-platform.mjs';
 export const RENDERER_IMAGE_PATHS=Object.freeze({bwrap:'/usr/bin/bwrap',prlimit:'/usr/bin/prlimit',executable:'/usr/lib/libreoffice/program/soffice',nodeExecutable:'/usr/local/bin/node',tempRoot:'/tmp'});
 const PROBE_OBSERVATION_PATH=join(dirname(RENDERER_PROBE_PATH),'renderer-probe-observation.mjs');
 /** The image is a closed allowlist. No host /run, /home, /workspace, parent /proc, socket, environment or credential mount. */
@@ -32,7 +29,10 @@ export async function runRendererSandbox(executable,args,options){
  if(process.platform!=='linux'||process.getuid?.()!==1000||s.isSymbolicLink()||!s.isDirectory()||s.uid!==1000||(s.mode&0o777)!==0o700||await realpath(options.cwd)!==options.cwd)throw rendererFault('RENDERER_SANDBOX_REFUSED');
  return runArtifactProcess(p.bwrap,rendererSandboxArguments({executable,args,cwd:options.cwd}),options);
 }
-export function qualifyRuntimeRenderer({imageDigest,deadlineMs,signal}){
+/** The renderer purpose composes on the same platform evidence as upload inspection: on the AgentCore microVM the
+ * verified runtime environment plus the observed single-root cgroup attest `boundedResources`; elsewhere `platform` is
+ * null and the finite-cgroup requirement is unchanged. */
+export function qualifyRuntimeRenderer({imageDigest,deadlineMs,signal,environment=process.env}){
  return qualifyLibreOfficeRenderer({...RENDERER_IMAGE_PATHS,imageDigest,qualificationId:'runtime-renderer-'+imageDigest.slice(7),deadlineMs,signal,
-  credentialPaths:[...RUNTIME_CREDENTIAL_PATHS],run:runRendererSandbox});
+  credentialPaths:[...RUNTIME_CREDENTIAL_PATHS],run:runRendererSandbox,platform:agentcoreRuntimePlatform(environment)});
 }

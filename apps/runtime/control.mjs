@@ -45,6 +45,7 @@ import {createNativeExecutionPrerequisite} from './native-execution-prerequisite
 import {NATIVE_PROVISIONING_EFFECT_TIMEOUT_MS} from './native-host-provisioning.mjs';
 import {createCanonicalNativeCurrentness,createCanonicalHostAuthority} from '../control/browser-hosts/native-currentness.mjs';
 import {UPLOAD_NATIVE_MOUNT_MS,UPLOAD_NATIVE_UNAVAILABLE_EVENT,beginUploadNativeProvisioning,mountUploadNativeControl} from './uploads/control-lifecycle.mjs';
+import {RUNTIME_CREDENTIAL_PATHS} from './credential-inventory.mjs';
 import {capabilityDigest} from './native-authority/task-verifier.mjs';
 import {createPostgresRetentionJournal} from '../control/retention/postgres-journal.mjs';
 import {createPostgresWatermarkStore} from '../control/retention/postgres-watermark.mjs';
@@ -381,7 +382,7 @@ export async function startControl(configuration,options={}){
   // handle is declared with the other closables above, because a remote mount owns an SDK client that shutdown must
   // destroy -- and it stays undefined until the mount resolves, so a startup failure closes nothing it never created.
   nativeAllocations=createNativeAllocationRelay();
-  uploadsNative=configuration.uploads?.native?.enabled===true?await mountUploadNativeControl({configuration,allocations:nativeAllocations,now:Date.now,signal,deadlineMs:Date.now()+Math.min(configuration.limits.startupMs,UPLOAD_NATIVE_MOUNT_MS)}):null;
+  uploadsNative=configuration.uploads?.native?.enabled===true?await mountUploadNativeControl({configuration,allocations:nativeAllocations,now:Date.now,signal,credentialPaths:[...RUNTIME_CREDENTIAL_PATHS],deadlineMs:Date.now()+Math.min(configuration.limits.startupMs,UPLOAD_NATIVE_MOUNT_MS)}):null;
   checkAuthorization();if(configuration.uploads?.native?.enabled===true&&uploadsNative.missing.length)process.stderr.write(JSON.stringify({event:UPLOAD_NATIVE_UNAVAILABLE_EVENT,missing:uploadsNative.missing})+'\n');
   const officeDeclared=compileOfficeConfiguration(configuration);
   officeMaterial=officeDeclared?.enabled===true?await prepareOfficeMaterial({configuration,office:officeDeclared,signal,readMaterial:owners.readMaterial??readSecret}):null;

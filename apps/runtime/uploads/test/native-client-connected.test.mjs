@@ -9,6 +9,7 @@ const IMAGE=`sha256:${'b'.repeat(64)}`,POLICY='f'.repeat(64);
 const BYTES=Buffer.from('native upload exact bytes\n');
 const DECLARATION={filename:'note.txt',mimeType:'text/plain',bytes:BYTES.length,sha256:sha(BYTES)};
 const {compileUploadNativeConfiguration,mountUploadNativeControl}=await import('../control-lifecycle.mjs');
+const INVENTORY=Object.freeze(['/run/meri','/var/run/secrets']);
 const {nativeUploadInspectionRequest}=await import('../native-host-contract.mjs');
 const {uploadInspectionBody}=await import('../agentcore-contract.mjs');
 const {createUploadCustody}=await import('../../../control/uploads/custody.mjs');
@@ -61,7 +62,7 @@ test('CONNECTED: one mounted per-operation port resolves EACH conversation to it
   return {allocation:t.allocation,hostIdentity:t.hostIdentity,endpoint:t.endpoint,ownerInstanceId:uuid(9),
    recordSha256:'e'.repeat(64),expiresAtMs:Date.now()+30000};}};
  const addresses=[];
- const mounted=await mountUploadNativeControl({configuration:{uploads:{native:compiled}},allocations,
+ const mounted=await mountUploadNativeControl({credentialPaths:INVENTORY,configuration:{uploads:{native:compiled}},allocations,
   connect:async options=>{connects++;addresses.push(options.address);
    return {close:async()=>{closes++;return {closed:true};},send:async({body})=>responseFor(body)};}});
  assert.equal(mounted.missing.length,0);
@@ -91,7 +92,7 @@ test('CONNECTED: one mounted per-operation port resolves EACH conversation to it
 test('HELD LOOKUP: caller abort during the allocation lookup refuses with zero connects',async()=>{
  let release,connects=0;
  const allocations={async resolve(){return new Promise(resolve=>{release=resolve;});}};
- const mounted=await mountUploadNativeControl({configuration:{uploads:{native:compiled}},allocations,
+ const mounted=await mountUploadNativeControl({credentialPaths:INVENTORY,configuration:{uploads:{native:compiled}},allocations,
   connect:async()=>{connects++;throw Error('MUST_NOT_CONNECT');}});
  const t=conversation(3);const controller=new AbortController();
  const pending=mounted.inspection.inspect(DECLARATION,BYTES,{deadlineMs:Date.now()+80,signal:controller.signal,
@@ -110,7 +111,7 @@ test('EXPIRED TARGET: a late already-expired allocation resolves zero connects',
  const allocations={async resolve(){await new Promise(resolve=>setTimeout(resolve,40));
   return {allocation:t.allocation,hostIdentity:t.hostIdentity,endpoint:t.endpoint,ownerInstanceId:uuid(9),
    recordSha256:'e'.repeat(64),expiresAtMs:Date.now()-1};}};
- const mounted=await mountUploadNativeControl({configuration:{uploads:{native:compiled}},allocations,
+ const mounted=await mountUploadNativeControl({credentialPaths:INVENTORY,configuration:{uploads:{native:compiled}},allocations,
   connect:async()=>{connects++;throw Error('MUST_NOT_CONNECT');}});
  await assert.rejects(mounted.inspection.inspect(DECLARATION,BYTES,{deadlineMs:Date.now()+2000,
   custodyContext:{record:t.record,current:await t.current(),assertCurrent:t.current}}),e=>e?.code==='NATIVE_HOST_ALLOCATION_REFUSED');
@@ -121,7 +122,7 @@ test('WRONG PURPOSE: a browser-only target is refused with zero connects',async(
  let connects=0;const t=conversation(3);
  const allocations={async resolve(){return {allocation:{...t.allocation,hostMode:'browser-only'},hostIdentity:t.hostIdentity,
   endpoint:t.endpoint,ownerInstanceId:uuid(9),recordSha256:'e'.repeat(64),expiresAtMs:Date.now()+30000};}};
- const mounted=await mountUploadNativeControl({configuration:{uploads:{native:compiled}},allocations,
+ const mounted=await mountUploadNativeControl({credentialPaths:INVENTORY,configuration:{uploads:{native:compiled}},allocations,
   connect:async()=>{connects++;throw Error('MUST_NOT_CONNECT');}});
  await assert.rejects(mounted.inspection.inspect(DECLARATION,BYTES,{deadlineMs:Date.now()+2000,
   custodyContext:{record:t.record,current:await t.current(),assertCurrent:t.current}}),e=>e?.code==='NATIVE_HOST_ALLOCATION_REFUSED');
@@ -129,7 +130,7 @@ test('WRONG PURPOSE: a browser-only target is refused with zero connects',async(
 });
 
 test('ABSENT DEPENDENCY: no allocations port means the native host is unavailable',async()=>{
- const mounted=await mountUploadNativeControl({configuration:{uploads:{native:compiled}}});
+ const mounted=await mountUploadNativeControl({credentialPaths:INVENTORY,configuration:{uploads:{native:compiled}}});
  assert.deepEqual([...mounted.missing],['uploads.native.allocations']);
  assert.equal(mounted.inspection??null,null);
 });
@@ -138,7 +139,7 @@ test('FRESH EXPIRY: the derived transport signal aborts when the owner authority
  const t=conversation(3);let forwarded,release;
  const allocations={async resolve(){return {allocation:t.allocation,hostIdentity:t.hostIdentity,endpoint:t.endpoint,
   ownerInstanceId:uuid(9),recordSha256:'e'.repeat(64),expiresAtMs:Date.now()+30000};}};
- const mounted=await mountUploadNativeControl({configuration:{uploads:{native:compiled}},allocations,
+ const mounted=await mountUploadNativeControl({credentialPaths:INVENTORY,configuration:{uploads:{native:compiled}},allocations,
   connect:async options=>{forwarded=options.signal;return {close:async()=>({closed:true}),
    send:()=>new Promise(resolve=>{release=resolve;})};}});
  const expires=Date.now()+120;
@@ -154,7 +155,7 @@ test('HELD LOOKUP + FRESH EXPIRY: lookup signal aborts before the caller deadlin
  const t=conversation(3);let capturedSignal,release,connects=0;
  const expires=Date.now()+120;
  const allocations={async resolve({signal}){capturedSignal=signal;return new Promise(resolve=>{release=resolve;});}};
- const mounted=await mountUploadNativeControl({configuration:{uploads:{native:compiled}},allocations,
+ const mounted=await mountUploadNativeControl({credentialPaths:INVENTORY,configuration:{uploads:{native:compiled}},allocations,
   connect:async()=>{connects++;throw Error('MUST_NOT_CONNECT');}});
  const pending=mounted.inspection.inspect(DECLARATION,BYTES,{deadlineMs:Date.now()+5000,
   custodyContext:{record:t.record,current:{...await t.current(),expiresAtMs:expires},

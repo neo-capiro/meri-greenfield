@@ -15,7 +15,7 @@ import {runArtifactProcess} from '../../artifacts/process.mjs';
 import {RENDERER_SANDBOX_REQUIREMENTS} from '../../artifacts/renderer.mjs';
 import {RENDERER_PROBE_PATH,RENDERER_PROBE_SCHEMA,RENDERER_CHILD_ENV} from '../../artifacts/renderer-qualification.mjs';
 import {CGROUP_MOUNT,CGROUP_FILES,cgroupLevels,cgroupRelativePath,parseCgroupPath,parseCgroupMount,parseCgroupMountRoot,
- resolveEffectiveCgroup,combineCgroupBounds} from '../../artifacts/renderer-probe-observation.mjs';
+ resolveEffectiveCgroup,combineCgroupBounds,platformBoundedCgroup} from '../../artifacts/renderer-probe-observation.mjs';
 export {resolveEffectiveCgroup,combineCgroupBounds,cgroupRelativePath,parseCgroupPath,parseCgroupMount,parseCgroupMountRoot};
 /** The shared probe imports this pure helper. The fixed child filesystem is a fresh directory, so the helper must be
  * an explicit read-only bind entry beside the probe; otherwise the actual upload child cannot resolve its import. */
@@ -154,8 +154,11 @@ export async function readHostCgroup({readText=HOST_READ,before=undefined,platfo
  return resolveEffectiveCgroup({cgroupPath:identityBefore.cgroupPath,mountRoot:identityBefore.mountRoot,mount:CGROUP_MOUNT,read:path=>values.get(path)??null});
 }
 /** Pure: one probe observation -> the eight shared requirement flags. Mirrors the renderer evaluator but accepts the
- * upload probe workspace prefix; malformed input is all false and never throws. */
-export function evaluateUploadSandbox(observation,{tempRoot}={}){
+ * upload probe workspace prefix; malformed input is all false and never throws. `platform` is the runtime's own verified
+ * evidence (`agentcoreRuntimePlatform`): with it, the AgentCore microVM's single unlimited root cgroup attests
+ * `boundedResources` as `diagnostic.boundedBy:'agentcore-microvm'` (`platformBoundedCgroup`); without it, or on any
+ * other shape, only finite observed bounds do (`'cgroup'`). */
+export function evaluateUploadSandbox(observation,{tempRoot,platform=null}={}){
  const o=observation!==null&&typeof observation==='object'&&!Array.isArray(observation)?observation:{};
  const linux=o.schema===RENDERER_PROBE_SCHEMA&&o.platform==='linux';
  const caps=o.capabilities&&typeof o.capabilities==='object'?o.capabilities:{};
@@ -163,6 +166,8 @@ export function evaluateUploadSandbox(observation,{tempRoot}={}){
  const ifaces=Array.isArray(o.interfaces)?o.interfaces:null,env=Array.isArray(o.envNames)?o.envNames:null;
  const creds=Array.isArray(o.credentialPathsReadable)?o.credentialPathsReadable:null;
  const ws=o.workspace&&typeof o.workspace==='object'?o.workspace:null;
+ const finite=linux&&finiteLimit(cg.memoryMax)&&finiteLimit(cg.pidsMax)&&finiteLimit(cg.cpuMax,{quota:true});
+ const bound=linux&&!finite?platformBoundedCgroup(cg,platform):null;
  const sandbox={
   nonRootUser:linux&&positiveIds(o.uid)&&positiveIds(o.gid),
   noNetwork:linux&&ifaces!==null&&ifaces.length>0&&ifaces.every(name=>name==='lo'),
@@ -172,7 +177,7 @@ export function evaluateUploadSandbox(observation,{tempRoot}={}){
   privateWorkspace:linux&&typeof o.cwd==='string'&&typeof tempRoot==='string'&&dirname(o.cwd)===tempRoot&&
    basename(o.cwd).startsWith(UPLOAD_ROLE_PREFIX.probe)&&/^[A-Za-z0-9]{6}$/u.test(basename(o.cwd).slice(UPLOAD_ROLE_PREFIX.probe.length))&&
    o.home===o.cwd&&o.tmpdir===o.cwd&&ws!==null&&ws.mode===0o700&&positiveIds(o.uid)&&ws.uid===o.uid[1],
-  boundedResources:linux&&finiteLimit(cg.memoryMax)&&finiteLimit(cg.pidsMax)&&finiteLimit(cg.cpuMax,{quota:true}),
+  boundedResources:finite||bound!==null,
   noCredentials:false,
  };
  const envAllowed=env!==null&&env.every(name=>UPLOAD_CHILD_ENV.includes(name));
@@ -182,6 +187,7 @@ export function evaluateUploadSandbox(observation,{tempRoot}={}){
   creds!==null&&creds.length>0&&creds.every(c=>c&&c.readable===false);
  const diagnostic=Object.freeze({
   resources:Object.freeze({memoryMax:numericLimit(cg.memoryMax),pidsMax:numericLimit(cg.pidsMax),cpuMax:numericLimit(cg.cpuMax,{quota:true})}),
+  boundedBy:finite?'cgroup':bound?.boundedBy??null,
   credentials:Object.freeze({networkIsolated:sandbox.noNetwork,envCount:env===null?0:env.length,
    allowedCount:UPLOAD_CHILD_ENV.length,envAllowed,
    checked:creds===null?0:creds.length,readable:creds===null?0:creds.filter(c=>c&&c.readable===true).length})
@@ -219,9 +225,10 @@ export function projectObservation(observation){
 }
 /** Observe the upload child boundary and issue an admission only when every shared requirement is attested. The probe
  * runs through the identical `runUploadSandbox('probe',...)` path scan/extract use, in the same owned workspace kind. */
-export async function qualifyNativeUploadSandbox({imageDigest,deadlineMs,signal,credentialPaths=[],tempRoot=UPLOAD_IMAGE_PATHS.tempRoot,run=runUploadSandbox,hostCgroup}={}){
+export async function qualifyNativeUploadSandbox({imageDigest,deadlineMs,signal,credentialPaths=[],tempRoot=UPLOAD_IMAGE_PATHS.tempRoot,run=runUploadSandbox,hostCgroup,platform=null}={}){
  if(typeof imageDigest!=='string'||!/^sha256:[a-f0-9]{64}$/u.test(imageDigest)||!Number.isSafeInteger(deadlineMs)||
-  !Array.isArray(credentialPaths)||credentialPaths.length>64||!credentialPaths.every(p=>typeof p==='string'&&isAbsolute(p)))
+  !Array.isArray(credentialPaths)||credentialPaths.length>64||!credentialPaths.every(p=>typeof p==='string'&&isAbsolute(p))||
+  platform!==null&&typeof platform!=='object')
   throw uploadFault('UPLOAD_QUALIFICATION_CONFIGURATION');
  const workspace=await mkdtemp(join(tempRoot,UPLOAD_ROLE_PREFIX.probe));
  try{
@@ -246,8 +253,10 @@ export async function qualifyNativeUploadSandbox({imageDigest,deadlineMs,signal,
   const host=hostCgroup!==undefined?hostCgroup:(realHost?await readHostCgroup({before:hostBefore}):null);
   const projected=projectObservation(base);
   const combined=host===null||host===undefined?null:combineCgroupBounds(base.cgroup,host);
-  const observation=combined===null?base:{...base,cgroup:{...base.cgroup,...combined}};
-  const evaluation=evaluateUploadSandbox(observation,{tempRoot:await realpath(tempRoot).catch(()=>null)});
+  // The host's effective hierarchy is the authority for the inherited membership's values AND shape: when it resolved,
+  // its level count and mount root are the facts the platform attestation is judged on, never a child-reported shape.
+  const observation=combined===null?base:{...base,cgroup:{...base.cgroup,...combined,levels:host.levels,mountRootIsRoot:host.mountRootIsRoot===true}};
+  const evaluation=evaluateUploadSandbox(observation,{tempRoot:await realpath(tempRoot).catch(()=>null),platform});
   const missing=evaluation.findings.map(f=>f.requirement);
   const diagnostic=Object.freeze({...evaluation.diagnostic,
    cgroupHost:Object.freeze({resolved:host!==null&&host!==undefined&&Number.isSafeInteger(host?.levels)&&host.levels>0,levels:host?.levels??0,mountRootIsRoot:host?.mountRootIsRoot===true})});

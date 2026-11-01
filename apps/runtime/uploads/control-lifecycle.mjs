@@ -56,6 +56,9 @@ export const UPLOAD_NATIVE_MOUNT_MS=10000;
 export const UPLOAD_NATIVE_DEFAULT_PROVISION_MS=120000;
 /** One content-free stderr event, carrying only the unsatisfied declarations. It never carries stderr, paths or text. */
 export const UPLOAD_NATIVE_UNAVAILABLE_EVENT='runtime.uploads.native.unavailable';
+/** The matching content-free event for an ADMITTED local host: which layer attested `boundedResources` and the
+ * observed cgroup facts, so a deployed container's log says whether the platform or a finite cgroup bounded it. */
+export const UPLOAD_NATIVE_AVAILABLE_EVENT='runtime.uploads.native.available';
 /**
  * The only definition conditions under which one bounded re-provision is meaningful: the snapshot could not be made
  * available and neither its integrity nor the runtime's lifetime is in question (a longer budget may simply succeed
@@ -268,7 +271,14 @@ export async function pinnedHttpsConnect({address,port,serverName,serverFingerpr
  });
  return await done;
 }
-export async function mountUploadNativeControl({configuration,allocations,now=Date.now,signal,deadlineMs,run,processing,paths,readFileImpl,connect,credentialPaths}={}){
+export async function mountUploadNativeControl({configuration,allocations,now=Date.now,signal,deadlineMs,run,processing,paths,readFileImpl,connect,credentialPaths,platform=null}={}){
+ // The host's protected-path inventory is a REQUIRED host-owned argument: every host names its own (the runtime image's
+ // for the container-side join and the CONTROL host alike), so no local composition can silently probe an inventory it
+ // never declared. An EMPTY list is still an honest input -- the qualifier refuses it as unattestable -- but an omitted
+ // one is a programming fault of the host, not an unavailable sandbox. `platform` is the runtime's own verified
+ // evidence (`agentcoreRuntimePlatform`), supplied only by the container-side join; CONTROL and EC2 hosts pass none.
+ if(!Array.isArray(credentialPaths)||!credentialPaths.every(p=>typeof p==='string'&&isAbsolute(p))||
+  platform!==null&&typeof platform!=='object')throw uploadFault('UPLOAD_NATIVE_CONFIGURATION');
  const declared=configuration?.uploads?.native??null;
  if(declared===null||typeof declared!=='object'||declared.enabled!==true)return unavailable(['uploads.native.enabled'],null);
  // A DECLARED native host (fixed address/port/SAN/fingerprint + the exact protected allocation/identity/binding) is a
@@ -344,10 +354,9 @@ export async function mountUploadNativeControl({configuration,allocations,now=Da
   // `run`/`paths`/`readFileImpl` are the host owner's narrow fixture ports, exactly as its own composition accepts
   // them. Production startControl supplies none of the three, so from the running system they are unreachable.
   // `credentialPaths` is the host's protected-path inventory the probe must prove unreadable: the qualifier refuses
-  // an EMPTY inventory as unattestable, so a host that composes locally has to name its own (the container-side join
-  // names the runtime image's). It is a host-owned list, never a request or declaration value.
+  // an EMPTY inventory as unattestable. It is a host-owned list, never a request or declaration value.
   const host=await composeUploadNativeHost({configuration,now,signal,deadlineMs:deadlineMs??now()+UPLOAD_NATIVE_MOUNT_MS,
-   ...(credentialPaths===undefined?{}:{credentialPaths}),
+   credentialPaths,...(platform===null?{}:{platform}),
    ...(typeof declared.scratchRoot==='string'?{tempRoot:declared.scratchRoot}:{}),
    ...(processing===undefined?{}:{processing}),...(run===undefined?{}:{run}),...(paths===undefined?{}:{paths}),
    ...(readFileImpl===undefined?{}:{readFileImpl})});

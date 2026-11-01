@@ -17,10 +17,12 @@ import {compileUploadNativeConfiguration,mountUploadNativeControl,beginUploadNat
  UPLOAD_NATIVE_PROVISIONABLE,UPLOAD_NATIVE_DEFAULT_PROVISION_MS} from '../control-lifecycle.mjs';
 
 const ZERO='0'.repeat(16),DIGEST='sha256:'+'f'.repeat(64);
+/** The host inventory every mount below names; the fixed probe fixture reports exactly it as unreadable. */
+const INVENTORY=Object.freeze(['/run/meri/core-secret']);
 const sandboxed=cwd=>({schema:RENDERER_PROBE_SCHEMA,platform:'linux',uid:[1000,1000,1000,1000],gid:[1000,1000,1000,1000],noNewPrivs:1,
  capabilities:{CapInh:ZERO,CapPrm:ZERO,CapEff:ZERO,CapBnd:ZERO,CapAmb:ZERO},rootMountOptions:'ro,relatime',interfaces:['lo'],
  cgroup:{memoryMax:'1073741824',pidsMax:'64',cpuMax:'50000 100000'},envNames:[...UPLOAD_CHILD_ENV],cwd,home:cwd,tmpdir:cwd,
- workspace:{mode:0o700,uid:1000},credentialPathsReadable:[{path:'/run/meri/core-secret',readable:false}]});
+ workspace:{mode:0o700,uid:1000},inputValid:true,credentialPathsReadable:INVENTORY.map(path=>({path,readable:false}))});
 
 test('the uploads.native declaration is closed, control-only, and asserts nothing about a host',async()=>{
  const {agentcoreControlFixture}=await import('../../test/agentcore-fixture.mjs');
@@ -49,20 +51,20 @@ test('the uploads.native declaration is closed, control-only, and asserts nothin
 });
 
 test('the mount is opt-in: absent, disabled or unattested yields an honest unavailable handle',async()=>{
- const absent=await mountUploadNativeControl({configuration:{}});
+ const absent=await mountUploadNativeControl({credentialPaths:INVENTORY,configuration:{}});
  assert.equal(absent.inspection,null);assert.deepEqual(absent.missing,['uploads.native.enabled']);
  assert.equal(absent.host,null);assert.equal(absent.provisionDefinitions,null);
- const disabled=await mountUploadNativeControl({configuration:{uploads:{native:{enabled:false}}},run:async()=>assert.fail('a disabled declaration never probes')});
+ const disabled=await mountUploadNativeControl({credentialPaths:INVENTORY,configuration:{uploads:{native:{enabled:false}}},run:async()=>assert.fail('a disabled declaration never probes')});
  assert.equal(disabled.inspection,null);assert.deepEqual(disabled.missing,['uploads.native.enabled']);
  // Enabled, but THIS host cannot attest the sandbox: the real qualification runs and refuses, so CONTROL keeps the
  // uploads family honestly unavailable. This is the current host's observed state, never a claim of availability.
- const unattested=await mountUploadNativeControl({configuration:{uploads:{native:{enabled:true,imageDigest:DIGEST}}}});
+ const unattested=await mountUploadNativeControl({credentialPaths:INVENTORY,configuration:{uploads:{native:{enabled:true,imageDigest:DIGEST}}}});
  assert.equal(unattested.inspection,null);
  assert.ok(unattested.missing.length>0);assert.equal(typeof unattested.missing[0],'string');
  assert.equal(typeof unattested.reason,'string');assert.ok(unattested.reason.length>0,'the composition reason is lifted to the mount handle');
 });
 
-test('the mount forwards the host credential inventory to the probe, and forwards none when the host names none',async()=>{
+test('the mount forwards the host credential inventory to the probe; an empty one is refused and an omitted one is a host fault',async()=>{
  const tempRoot=await realpath(tmpdir()),inventory=['/run/meri','/var/run/secrets'],probes=[];
  const run=async(role,options)=>{const paths=JSON.parse(Buffer.from(options.input??'{}').toString('utf8')).credentialPaths??[];probes.push(paths);
   return {stdout:Buffer.from(JSON.stringify({...sandboxed(options.cwd),noNewPrivs:0,inputValid:true,
@@ -72,19 +74,23 @@ test('the mount forwards the host credential inventory to the probe, and forward
  assert.equal(named.reason,'UPLOAD_SANDBOX_UNQUALIFIED');
  assert.deepEqual(named.requirements,['noNewPrivileges'],'an inventory the child could not read attests noCredentials');
  assert.deepEqual(named.diagnostic.credentials,{networkIsolated:true,envCount:UPLOAD_CHILD_ENV.length,allowedCount:UPLOAD_CHILD_ENV.length,envAllowed:true,checked:2,readable:0});
- // A host that names no inventory still cannot attest the credential requirement: the empty list is refused, never
- // treated as "nothing to check".
- const unnamed=await mountUploadNativeControl({configuration,run});
+ // A host that names an EMPTY inventory still cannot attest the credential requirement: the empty list is refused,
+ // never treated as "nothing to check".
+ const unnamed=await mountUploadNativeControl({configuration,run,credentialPaths:[]});
  assert.deepEqual(unnamed.requirements,['noNewPrivileges','noCredentials']);
  assert.equal(unnamed.diagnostic.credentials.checked,0);
  assert.deepEqual(probes,[inventory,[]],'the probe receives exactly the host inventory, and nothing invented');
+ // An OMITTED or malformed inventory is a host programming fault, not an unavailable sandbox: no host can leave it out.
+ for(const credentialPaths of [undefined,null,'/run/meri',['relative']])
+  await assert.rejects(mountUploadNativeControl({configuration,run,credentialPaths}),{code:'UPLOAD_NATIVE_CONFIGURATION'});
+ assert.equal(probes.length,2,'a refused mount never probes');
 });
 
 test('the unqualified mount handle carries the numeric resource and credential predicate diagnostic',async()=>{
  const tempRoot=await realpath(tmpdir());
  const observation={...sandboxed(tempRoot+'/meri-upload-probe-abc123'),noNewPrivs:0,
   cgroup:{memoryMax:'max',pidsMax:'64',cpuMax:'max 100000'}};
- const handle=await mountUploadNativeControl({configuration:{uploads:{native:{enabled:true,imageDigest:DIGEST,scratchRoot:tempRoot}}},
+ const handle=await mountUploadNativeControl({credentialPaths:INVENTORY,configuration:{uploads:{native:{enabled:true,imageDigest:DIGEST,scratchRoot:tempRoot}}},
   run:async(role,options)=>({stdout:Buffer.from(JSON.stringify({...observation,cwd:options.cwd,home:options.cwd,tmpdir:options.cwd,
    workspace:{mode:0o700,uid:1000}})),receipt:{exitCode:0}})});
  assert.equal(handle.inspection,null);assert.equal(handle.reason,'UPLOAD_SANDBOX_UNQUALIFIED');
@@ -112,7 +118,7 @@ test('an attested host mounts the real inspection and the ONE lifecycle attempt 
  const definitionsRoot=await mkdtemp(join(tempRoot,'meri-defs-control-'));
  const configuration={uploads:{native:{enabled:true,imageDigest:DIGEST,definitionsRoot,scratchRoot:tempRoot}}};
  const mountDeadline=now()+10000;
- const handle=await mountUploadNativeControl({configuration,now,deadlineMs:mountDeadline,run,readFileImpl:async path=>Buffer.from('bin:'+path)});
+ const handle=await mountUploadNativeControl({credentialPaths:INVENTORY,configuration,now,deadlineMs:mountDeadline,run,readFileImpl:async path=>Buffer.from('bin:'+path)});
  assert.deepEqual(handle.missing,[]);
  assert.equal(typeof handle.inspection.inspect,'function','A5 createUploadInspection is bound to the host ports');
  assert.equal(typeof handle.provisionDefinitions,'function');
@@ -154,7 +160,7 @@ test('integrity and teardown conditions are never re-provisioned as though they 
  assert.equal(beginUploadNativeProvisioning({configuration,now}).started,false);
  // A healthy REMOTE mount is not an unavailable host: the runtime provisions its own snapshot, so CONTROL has nothing
  // to attempt and must report no fault. Its state names the remote case instead of looking broken to an operator.
- const remote=await mountUploadNativeControl({configuration:{uploads:{native:{enabled:true,agentcore:{imageDigest:DIGEST}}},
+ const remote=await mountUploadNativeControl({credentialPaths:INVENTORY,configuration:{uploads:{native:{enabled:true,agentcore:{imageDigest:DIGEST}}},
   agentcore:{runtimeArn:'arn:aws:bedrock-agentcore:us-east-1:111122223333:runtime/meri_synthetic',qualifier:'preview'}}});
  assert.equal(remote.inspection!==null,true);
  const remoteIdle=beginUploadNativeProvisioning({handle:remote,configuration,now});
@@ -184,10 +190,24 @@ test('closing CONTROL aborts the attempt through the runtime fence and nothing r
 test('no request-shaped value mounts native execution: the seam reads only the trusted declaration',async()=>{
  const request={body:{uploads:{native:{enabled:true,imageDigest:DIGEST}}},
   uploadsInspection:{inspect:async()=>({status:'clean'})},uploads:{native:{enabled:true,imageDigest:DIGEST}}};
- const noDeclaration=await mountUploadNativeControl({configuration:{request},run:async()=>assert.fail('a request body never starts a sandbox probe')});
+ const noDeclaration=await mountUploadNativeControl({credentialPaths:INVENTORY,configuration:{request},run:async()=>assert.fail('a request body never starts a sandbox probe')});
  assert.equal(noDeclaration.inspection,null);assert.deepEqual(noDeclaration.missing,['uploads.native.enabled']);
- const disabled=await mountUploadNativeControl({configuration:{uploads:{native:{enabled:false}},request},run:async()=>assert.fail('a request never overrides the declaration')});
+ const disabled=await mountUploadNativeControl({credentialPaths:INVENTORY,configuration:{uploads:{native:{enabled:false}},request},run:async()=>assert.fail('a request never overrides the declaration')});
  assert.equal(disabled.inspection,null);
  // The only enablement is the trusted JSON declaration; the request-shaped keys above are inert at every step.
  assert.equal(compileUploadNativeConfiguration({uploads:{native:{enabled:false}}}).enabled,false);
+});
+
+test('the CONTROL host path keeps the finite-cgroup requirement: an unlimited root is never attested without platform evidence',async()=>{
+ const tempRoot=await realpath(tmpdir());
+ const microvm={memoryMax:'max',pidsMax:'max',cpuMax:'max 100000',levels:1,mountRootIsRoot:true,membershipResolved:true,identityChanged:false,source:'cgroup2'};
+ const run=async(role,options)=>({stdout:Buffer.from(JSON.stringify({...sandboxed(options.cwd),cgroup:microvm})),receipt:{exitCode:0}});
+ const configuration={uploads:{native:{enabled:true,imageDigest:DIGEST,scratchRoot:tempRoot}}};
+ // Exactly what startControl passes: an inventory and no platform. The same shape the AgentCore container attests is
+ // refused here, because CONTROL and the EC2 native host own no microVM boundary.
+ const refused=await mountUploadNativeControl({configuration,run,credentialPaths:INVENTORY});
+ assert.equal(refused.inspection,null);assert.equal(refused.reason,'UPLOAD_SANDBOX_UNQUALIFIED');
+ assert.deepEqual(refused.requirements,['boundedResources']);assert.equal(refused.diagnostic.boundedBy,null);
+ // A malformed platform value is a host programming fault, never silently ignored as "no evidence".
+ await assert.rejects(mountUploadNativeControl({configuration,run,credentialPaths:INVENTORY,platform:'agentcore'}),{code:'UPLOAD_NATIVE_CONFIGURATION'});
 });
