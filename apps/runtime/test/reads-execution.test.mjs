@@ -33,6 +33,19 @@ for(const kind of ['availability','execute'])test(`${kind} binds the existing ex
  assert.equal(value.executionSha256,hash(f.identity));assert.equal(value.policyRevision,'policy1');assert.deepEqual(value.binding,binding);
  assert.equal(Object.hasOwn(value,'allocationSha256'),false);assert.equal(f.calls.includes('execute'),kind==='execute');
 });
+// The control owner is the one refusal point for mid-run loss: it re-reads its own snapshot and current authority on
+// every execute, so the worker server never re-fetches availability before a call (reads/runtime.mjs).
+for(const [loss,mutate] of [['installation',s=>({...s,installation:{...s.installation,operations:[]}})],['discovery',s=>({...s,discovery:{...s.discovery,operations:[]}})]])
+ test(`a read mounted at start is refused UNAVAILABLE on execute once ${loss} no longer carries it, before any source call`,async()=>{
+  const f=fixture();assert.equal((await f.app.handle(f.request('availability'))).status,200);
+  f.availability(mutate);const r=await f.app.handle(f.request());assert.equal(r.status,503);assert.deepEqual(await r.json(),{error:{code:'UNAVAILABLE'}});
+  assert.equal(f.calls.includes('execute'),false);
+ });
+test('a read whose execution authority is revoked between mount and execute is refused ACCESS_DENIED before any source call',async()=>{
+ const f=fixture();assert.equal((await f.app.handle(f.request('availability'))).status,200);
+ f.authError(Object.assign(Error('EXECUTION_AUTHORITY_REFUSED'),{code:'EXECUTION_AUTHORITY_REFUSED'}));
+ const r=await f.app.handle(f.request());assert.equal(r.status,403);assert.deepEqual(await r.json(),{error:{code:'ACCESS_DENIED'}});assert.equal(f.calls.includes('execute'),false);
+});
 for(const state of ['completed','failed','cancelled','paused','waiting-for-approval'])test(`terminal/held ${state} never starts another read`,async()=>{
  const f=fixture();f.change(v=>({...v,state}));assert.equal((await f.app.handle(f.request())).status,403);assert.equal(f.created(),0);
 });

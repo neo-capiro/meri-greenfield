@@ -6,8 +6,9 @@
  *   the tool is in this run's available list, that the tool-use id is new, and the per-run call budget; it records a
  *   one-time token keyed to the argument hash, derives `deliveryId = 'sdk:' + sha256({binding,sessionId,toolUseId})`
  *   and rewrites the input to `{arguments, _meriInvocation}`. Any failure denies.
- * - The handler consumes the token (exact operation and argument hash), rechecks current availability, calls the
- *   gateway port within the per-call deadline, enforces output bytes, and records a receipt. Every failure is a closed
+ * - The handler consumes the token (exact operation and argument hash), refuses a registered read outside the set
+ *   available at mount, calls the gateway port within the per-call deadline (control re-checks installation, discovery
+ *   and current authority on every execute), enforces output bytes, and records a receipt. Every failure is a closed
  *   `isError` text (`results.mjs`).
  * - `canUseTool` allows only this server's exact names and denies everything else; options composition chains it with
  *   the capability fragment, and the names are pre-approved in `allowedTools`, so the SDK hook chain (correlation and
@@ -28,16 +29,15 @@ const deny=(/** @type {string} */reason)=>({hookSpecificOutput:{hookEventName:/*
 /** @typedef {{deliveryId:string,operation:OperationRef,argumentsSha256:string,resultSha256:string,decisionId:string|null,policyRevision:string|null,executionCatalogSha256:string}} ReadReceipt */
 /**
  * `mounted` (G3 profile mount, runtime.mjs `mount:'profile'`): the tools to register, a superset of `available`, which may then be
- * empty. A mounted tool outside `available` is listed but deferred (never always-loaded) and its calls answer UNAVAILABLE through
- * `stillAvailable`. Without `mounted` exactly the available tools are registered, as before.
+ * empty. A mounted tool outside `available` is listed but deferred (never always-loaded) and its calls answer UNAVAILABLE.
+ * Without `mounted` exactly the available tools are registered, as before.
  * @param {{available:{operation:OperationRef,descriptor:any}[],unavailable:string[],mounted?:{operation:OperationRef,descriptor:any}[],binding:unknown,expectedSessionId?:string,
  *  budgets:import('./budget.mjs').ReadBudgets,timeoutMs:number,deadlineMs:number,now:()=>number,executionCatalogSha256:string|null,
- *  stillAvailable:(operation:OperationRef,signal:AbortSignal)=>Promise<boolean>,
  *  execute:(call:{operation:OperationRef,arguments:unknown,deliveryId:string,signal:AbortSignal})=>Promise<unknown>}} c
  */
 export function createGeneralReadServer(c){
  const profile=c.mounted!==undefined,registered=profile?c.mounted:c.available;
- if(!Array.isArray(c.available)||!Array.isArray(registered)||!registered.length||!profile&&!c.available.length||typeof c.execute!=='function'||typeof c.stillAvailable!=='function'||typeof c.now!=='function'||
+ if(!Array.isArray(c.available)||!Array.isArray(registered)||!registered.length||!profile&&!c.available.length||typeof c.execute!=='function'||typeof c.now!=='function'||
   !Number.isSafeInteger(c.timeoutMs)||c.timeoutMs<READ_TIMEOUT_MS.min||c.timeoutMs>READ_TIMEOUT_MS.max||!Number.isSafeInteger(c.deadlineMs)||
   c.expectedSessionId!==undefined&&!SESSION.test(c.expectedSessionId))throw fault('READ_SERVER_CONFIGURATION');
  const binding=data(c.binding),ledger=createReadLedger(c.budgets),correlations=new Map(),seenToolUses=new Set(),receipts=/** @type {ReadReceipt[]} */([]);
@@ -65,7 +65,7 @@ export function createGeneralReadServer(c){
    if(!entry||canonicalSha256(entry.operation)!==canonicalSha256(row.operation)||entry.argumentsSha256!==canonicalSha256(args))throw fault('ACCESS_DENIED');
    correlations.delete(token);if(closed)throw fault('UNAVAILABLE');
    life=createOperationLifetime({deadlineMs:Math.min(c.now()+c.timeoutMs,c.deadlineMs),now:c.now,signal:extra?.signal,errorFactory:fault});
-   if(!await life.run(signal=>c.stillAvailable(row.operation,signal)))throw fault('UNAVAILABLE');
+   if(!availableNames.has(name))throw fault('UNAVAILABLE');
    const result=await life.run(signal=>c.execute({operation:row.operation,arguments:args,deliveryId:entry.deliveryId,signal}));
    if(typeof result!=='string')throw fault('INVALID_RESULT');
    let parsed;try{parsed=data(JSON.parse(result));}catch{throw fault('INVALID_RESULT');}
