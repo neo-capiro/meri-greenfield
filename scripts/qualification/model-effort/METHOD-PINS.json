@@ -1,0 +1,107 @@
+{
+  "schema": "meri.model-qualification-method/2",
+  "baseSourceCommit": "d8cdbca1db57e8c2f3a51a7a74f5014e6fc3f34d",
+  "baseSourceTree": "514245eca0ff473fb84c7fd089dd9e8a8f957aaf",
+  "baseImageDigest": "sha256:3b2ee09f99d75d1647c3a1206cdf16bbe7836bb52b8debc56cdd548e221e2037",
+  "sdk": "0.3.295",
+  "cli": "2.1.295",
+  "sdkTypeEvidenceSha256": "e4d91d71404ce4ffc918aa590f545c7a67df6a1dfe5de8cd28a05db0a7fe872b",
+  "files": [
+    {
+      "path": "apps/runtime/agentcore-query.mjs",
+      "sha256": "21d3c9c9d8b4ebc7ad1024c06f5dc0707e1678eec4ccc442172282e0a1c9e79a"
+    },
+    {
+      "path": "apps/runtime/agentcore-http.mjs",
+      "sha256": "75ce091d2be1f1d8581c9a9458fc7554d924708ef78f3f24f6a9266938d2c3ca"
+    },
+    {
+      "path": "apps/runtime/agentcore-control-client.mjs",
+      "sha256": "de3c82f07a6effee5d27e555f20465d8a1a1c8ebf3dc7cf3f61c6d5003030c0a"
+    },
+    {
+      "path": "apps/runtime/agentcore-workspace.mjs",
+      "sha256": "fc8db37cdd4efba5dbef3dd9eeb38ed04ded472a7e6a91c9d228221fa3e4487e"
+    },
+    {
+      "path": "apps/runtime/conversation-runner.mjs",
+      "sha256": "0e7b1e17760d5971006744f3a3cf41149bc70d9f2541cb2c9ca53fc08768c2c0"
+    },
+    {
+      "path": "apps/runtime/sdk-session-runtime.mjs",
+      "sha256": "7409fd81b124592a65a8a882889295489f813e003893ba83110ded557fc71458"
+    },
+    {
+      "path": "apps/runtime/native-client.mjs",
+      "sha256": "42552cb819cbaacc7f5a19f8f58af4d7b6ee8996b8cbf2334195b74821f4d9bb"
+    },
+    {
+      "path": "apps/runtime/http-server.mjs",
+      "sha256": "fb1c01d6d5ddff79df773444dcd3af50596fc49745fdfec3ce23f883514e1ea0"
+    },
+    {
+      "path": "apps/worker/conversation/activity.mjs",
+      "sha256": "6672e0c48f66e7dfa38ee8cb74d459748eb5d41bd990602b2bd39efe1639ada5"
+    },
+    {
+      "path": "packages/contracts/dist/conversation-initial-input.mjs",
+      "sha256": "01d8518ddbd523a6b9eb4cf87473198988a47c2a9a86cbdf4ac209063846ceda"
+    },
+    {
+      "path": "packages/contracts/dist/conversation-application.mjs",
+      "sha256": "0b6b975e7da1bc920057d3e14936f5167e19914eb2fbde30fb698a2757fc70ed"
+    },
+    {
+      "path": "packages/contracts/dist/conversation-usage.mjs",
+      "sha256": "4d76dd75449f8809303ae693e7561c6927681d7b995415ef33a69f03e339e1a6"
+    },
+    {
+      "path": "packages/contracts/model-selection.mjs",
+      "sha256": "403fb77243ee1f7649d958e9536f08bb3f9d590707c9045f74c197bb5b16a18b"
+    },
+    {
+      "path": "packages/contracts/validate.mjs",
+      "sha256": "583a9135486b38d130492377e3db732fc845f8651aff941a1163bd551a8dab60"
+    },
+    {
+      "path": "scripts/qualification/model-effort/.gitattributes",
+      "sha256": "a79691a93b46e49ce460c26ef22afcc03d6eca1e63bf2edbc20e96159510f6c9"
+    },
+    {
+      "path": "scripts/qualification/model-effort/README.md",
+      "sha256": "05f18d70e7416dcbdf4c5c2636959e3d6bf07d03d977927108e00f380d419935"
+    },
+    {
+      "path": "scripts/qualification/model-effort/controls.test.mjs",
+      "sha256": "24b316f6debc4912c6d703d765b7209e30f3eaa88b790e2ac8315c55f16d80e2"
+    },
+    {
+      "path": "scripts/qualification/model-effort/driver.mjs",
+      "sha256": "b73c246c4c5769c0852873760b00ce0d9de186ceedccf35c27f2896032b77c48"
+    },
+    {
+      "path": "scripts/qualification/model-effort/native-receipt.mjs",
+      "sha256": "e4624ae4a982c0523bd79c2270010d322d38d7af598dfb7ef594a3ff1c239a76"
+    },
+    {
+      "path": "scripts/qualification/model-effort/observe.mjs",
+      "sha256": "67d2aa7b952304b88318d5509ba54a40e9d5779ebd562b2046b84b9bf87fe9d5"
+    },
+    {
+      "path": "scripts/qualification/model-effort/plan.mjs",
+      "sha256": "f60f7127a37bf02eb83fc91dec05ccc990a4b918302efe00d297b8a6c35f8e4c"
+    },
+    {
+      "path": "scripts/qualification/model-effort/review.mjs",
+      "sha256": "b4a4301c3b23d3e007a86f2bf159852b255d799a507d9f24ec0f73dc4a615842"
+    },
+    {
+      "path": "scripts/qualification/model-effort/runtime.mjs",
+      "sha256": "8658f478f7800ce3ba96d0f22a7e4d8feaa2b1af7003e7639ac075ac1b617654"
+    },
+    {
+      "path": "scripts/qualification/model-effort/transport.mjs",
+      "sha256": "10f7bdde216bdb71c8db5bab839628481c64a2006837a9cb2925a26e9a9746a9"
+    }
+  ]
+}
