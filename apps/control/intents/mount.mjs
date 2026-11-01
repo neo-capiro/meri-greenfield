@@ -31,7 +31,8 @@ import {researchActionValidators} from '../../../packages/contracts/retrieval-0.
 // exact family pin that owner declares (`scheduleOperationDeclared`), never by a semver shape and never
 // by "the current family". Every other owner kind keeps the shape rule above unchanged.
 const VERSION=/^\d+\.\d+\.\d+$/u,DELIVERY=/^sdk:[a-f0-9]{64}$/u,AVAILABILITY_MS=30000;
-const OWNERS=Object.freeze({note:['save_note'],watch:['watch_action'],'legislative-document':['prepare_legiwatch_briefing','save_legislative_research'],bizdev:['save_business_development_brief'],'client-record':['create_client','update_client_profile'],legiwatch:['apply_legiwatch_suggestion','save_legiwatch_relevance'],'research-sharing':['publish_research_portfolio_share_link','revoke_research_portfolio_share_link'],'research-action':RESEARCH_ACTION_INTENTS,command:Object.keys(COMMAND_INTENT_OPERATIONS),schedule:SCHEDULE_INTENT_OPERATIONS,document:DOCUMENT_INTENT_OPERATIONS,artifact:ANALYSIS_INTENT_OPERATIONS,memory:[MEMORY_COMMAND_OPERATION.id]});
+/** Every operation each canonical prepare-only owner kind may advertise; `approval.mjs` derives the inbox's SQL filter from it. */
+export const OWNER_OPERATIONS=Object.freeze({note:['save_note'],watch:['watch_action'],'legislative-document':['prepare_legiwatch_briefing','save_legislative_research'],bizdev:['save_business_development_brief'],'client-record':['create_client','update_client_profile'],legiwatch:['apply_legiwatch_suggestion','save_legiwatch_relevance'],'research-sharing':['publish_research_portfolio_share_link','revoke_research_portfolio_share_link'],'research-action':RESEARCH_ACTION_INTENTS,command:Object.keys(COMMAND_INTENT_OPERATIONS),schedule:SCHEDULE_INTENT_OPERATIONS,document:DOCUMENT_INTENT_OPERATIONS,artifact:ANALYSIS_INTENT_OPERATIONS,memory:[MEMORY_COMMAND_OPERATION.id]});
 const CODES=new Set(INTENT_FAILURE_CODES);
 const closed=code=>CODES.has(code)?code:'UNKNOWN';
 /** @param {{binding:object,preparers:readonly object[],journalStore:object,now:()=>number,limits:{maxRequestMs:number},enabled?:boolean,resultRelease?:object}} configuration */
@@ -42,7 +43,7 @@ export function createIntentMount(configuration){
  const journal=createIntentJournal(c.journalStore),release=createIntentResultRelease({authority:c.resultRelease,binding,now:c.now}),byOperation=new Map();
  for(const p of c.preparers){
   // Only owner kinds with a canonical prepare-only path, for this run's exact binding, one preparer per operation.
-  if(!OWNERS[p?.owner]?.includes(p.operation?.id)||!(p.owner==='schedule'?scheduleOperationDeclared(p.operation?.version):VERSION.test(p.operation?.version))||typeof p.prepare!=='function'||canonicalSha256(p.binding)!==canonicalSha256(binding)||byOperation.has(p.operation.id))throw intentFault('INTENT_CONFIGURATION');
+  if(!OWNER_OPERATIONS[p?.owner]?.includes(p.operation?.id)||!(p.owner==='schedule'?scheduleOperationDeclared(p.operation?.version):VERSION.test(p.operation?.version))||typeof p.prepare!=='function'||canonicalSha256(p.binding)!==canonicalSha256(binding)||byOperation.has(p.operation.id))throw intentFault('INTENT_CONFIGURATION');
   byOperation.set(p.operation.id,p);
  }
  const operations=Object.freeze([...byOperation.values()].map(p=>p.operation));

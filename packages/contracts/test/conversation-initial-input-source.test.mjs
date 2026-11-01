@@ -20,7 +20,7 @@ function fixture({input={requestId:id(6),prompt:'Hello'},stored,scopes}={}){
 async function receive(status,raw,request,context,options){const receipt=data(raw);assertInitialInputShape(status===200?'ConversationInitialInputAllocatedResponse':'ConversationInitialInputErrorResponse',receipt);return admitInitialInputResponse(status,receipt,request,context,options);}
 
 test('metadata fixes allocation transport, separate errors and unchanged old bridge cap',()=>{
- assert.equal(metadata.packageVersion,'0.1.10');assert.equal(metadata.schemaId,'urn:meri:conversation-initial-input:1.3.0');assert.equal(metadata.routes.allocate.path,'/api/conversations/input/allocate');
+ assert.equal(metadata.packageVersion,'0.1.11');assert.equal(metadata.schemaId,'urn:meri:conversation-initial-input:1.3.0');assert.equal(metadata.routes.allocate.path,'/api/conversations/input/allocate');
  assert.deepEqual(metadata.limits,{requestBytes:131072,responseBytes:131072,maxRequestMs:25000});assert.equal(metadata.bridge.responseBytes,2097152);assert.equal(metadata.bridge.responseBytes,conversationInputMetadata.limits.responseBytes);
  assert.equal(initialInputErrorOutcomes.INVALID_REQUEST,'NOT_DISPATCHED');assert.equal(initialInputErrorOutcomes.INITIAL_INPUT_UNAVAILABLE,'UNKNOWN');assert.ok(Object.isFrozen(initialInputErrorStatuses));
 });

@@ -3,7 +3,7 @@ export function productReadiness({ports,retention,sourceEnabled,userPreferences,
  const available=new Set(ports.configuredOwners??[]),owners=[];
  for(const [name,port] of [['authority.identity','identityContext'],['lifecycle.currentAuthority','transitionAuthority'],['lifecycle.admissionRetirement','continuationAdmission'],
   ['lifecycle.approvals','approvals'],['browser.hosts','browserHosts'],['artifacts.options','artifactOptionsOwner'],['artifacts.privateStore','artifactStore'],
-  ['tasks.selected','selectedController'],['sessions.sdk','sdkSessionOwner'],['sessions.snapshot','sdkSessionSnapshot'],['history.membership','conversationMembership'],['history.nextTurn','conversationTurns'],['intents.application','intentApplication'],['settings.tenant','settingsApplication']])
+  ['tasks.selected','selectedController'],['sessions.sdk','sdkSessionOwner'],['sessions.snapshot','sdkSessionSnapshot'],['history.membership','conversationMembership'],['history.nextTurn','conversationTurns'],['intents.application','intentApplication'],['settings.tenant','settingsApplication'],['data-access.application','dataAccessApplication']])
   owners.push({name,state:available.has(port)?'composed':'unavailable'});
  owners.push({name:'memory.producer',state:available.has('memoryApplication')&&memoryRetentionBound===true?'composed':'unavailable'});
  owners.push({name:'uploads.custody',state:sourceEnabled!==true?'disabled':available.has('uploadApplicationFactory')?ports.uploadApplicationFactory.state():'unavailable'});

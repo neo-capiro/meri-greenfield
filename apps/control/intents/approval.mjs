@@ -32,6 +32,8 @@ import {ProductError,productFailure} from '../product-access/errors.mjs';
 import {nativeTaskOutcome} from './task-outcome.mjs';
 import {nativeMailOutcome} from './mail-outcome.mjs';
 import {SCHEDULE_INTENT_OPERATIONS} from './schedule-preparer.mjs';
+import {OWNER_OPERATIONS} from './mount.mjs';
+import {BROWSER_PREPARATION_OPERATION} from './browser-proposals.mjs';
 import {ANALYSIS_INTENT_OPERATIONS} from './analysis-preparer.mjs';
 import {nativeArtifactFileOutcome} from './filing-outcome.mjs';
 import {assertMemoryReviewResult} from '../../../packages/contracts/commands-0.2/memory-review-result.mjs';
@@ -74,6 +76,41 @@ function listRequest(value){
  if(r.limit!==undefined&&(!Number.isSafeInteger(r.limit)||r.limit<1||r.limit>50))fail('INTENT_REQUEST_INVALID',null,'limit');
  return {conversationId:r.conversationId,after:r.after??null,limit:r.limit??20};
 }
+function inboxRequest(value){
+ let r;try{r=data(own(value,[],['after','limit']));}catch{fail('INTENT_REQUEST_INVALID');}
+ if(r.after!==undefined&&r.after!==null){
+  let a;try{a=own(r.after,['conversationId','deliveryId']);}catch{fail('INTENT_REQUEST_INVALID',null,'after');}
+  if(typeof a.conversationId!=='string'||!UUID.test(a.conversationId)||typeof a.deliveryId!=='string'||!DELIVERY.test(a.deliveryId))fail('INTENT_REQUEST_INVALID',null,'after');
+ }
+ if(r.limit!==undefined&&(!Number.isSafeInteger(r.limit)||r.limit<1||r.limit>50))fail('INTENT_REQUEST_INVALID',null,'limit');
+ return {after:r.after??null,limit:r.limit??20};
+}
+/** The item kinds a person decides (inline, in their conversation). Drafts, notes, pending analyses, memory reviews and schedule
+ * proposals have their own owners and surfaces and are not inbox rows. */
+export const INBOX_KINDS=Object.freeze(['proposal','browser_action','watch_action','legiwatch_action','client_record_action','bizdev_action','legislative_document_action','research_action','research_share']);
+/** The operation ids whose prepared rows can become inbox rows: the owner kinds behind INBOX_KINDS plus the browser preparation.
+ * The journal applies this in SQL so rows of other kinds (notes, documents, analyses, schedules) are never read for the inbox. */
+export const INBOX_OPERATIONS=Object.freeze([...new Set([...['command','watch','legiwatch','client-record','bizdev','legislative-document','research-action','research-sharing'].flatMap(owner=>OWNER_OPERATIONS[owner]),BROWSER_PREPARATION_OPERATION])]);
+/** One inbox page with its pending summary; the release fence rebuilds it when a suppressed conversation's rows are dropped. */
+export const inboxPage=(rows,next)=>data({rows,next,pending:{count:rows.filter(row=>row.withheld===false&&row.phase==='awaiting_approval').length,complete:next===null}});
+/** Core owner statuses (watch/legiwatch/client-record/bizdev/legislative-document/research families) read as inbox phases. */
+const OWNER_PHASES=Object.freeze({proposed:'awaiting_approval',approved:'approved',executing:'executing',succeeded:'completed',failed_terminal:'completed',blocked:'completed',
+ failed_retryable:'unknown',outcome_unknown:'unknown',dismissed:'rejected',expired:'expired'});
+const clientOf=scopes=>scopes.find(s=>s.kind==='client')?.resourceId??null;
+/** One `item` reading projected to an inbox row, or null when the item is not something a person decides. Nothing is re-read:
+ * the phase is the same reading `list` publishes (decision/execution owners first, then expiry). */
+export function inboxRow(view,conversationId,at){
+ if(view.state!=='prepared'||!INBOX_KINDS.includes(view.kind))return null;
+ const base={conversationId,deliveryId:view.deliveryId,createdAt:view.createdAt,operation:view.operation,kind:view.kind};
+ if(view.withheld===true)return {...base,withheld:true};
+ const p=view.proposal;
+ if(view.kind==='proposal')return {...base,withheld:false,clientId:clientOf(p.command.scopes),expiresAt:p.expiresAt,phase:view.phase};
+ if(view.kind==='browser_action')return {...base,withheld:false,clientId:clientOf(p.scopes),expiresAt:new Date(p.expiresAtMs).toISOString(),phase:view.phase};
+ const status=view.kind==='research_share'?view.proposalStatus:view.result==='unavailable'?'unavailable':view.kind==='research_action'?view.result.proposalStatus:view.result.status;
+ const owner=OWNER_PHASES[status],expired=!(instant(p.expiresAt)>at);
+ const phase=status==='unavailable'?'unknown_decision':owner===undefined?'unknown':owner==='awaiting_approval'&&expired?'expired':owner;
+ return {...base,withheld:false,clientId:clientOf(p.scopes),expiresAt:p.expiresAt,phase};
+}
 /** Client-kind scopes must still be among the caller's current membership clients; other kinds are tenant-bound already. */
 const visible=(scopes,principal)=>Array.isArray(scopes)&&scopes.every(s=>s?.tenantId===principal.tenantId&&(s.kind!=='client'||principal.clientIds.includes(String(s.resourceId).toLowerCase())));
 /** A PREPARED command proposal from a journal entry, or null for any other prepared kind. */
@@ -84,8 +121,8 @@ function commandProposal(entry){
 }
 export function createIntentApprovalOwner(configuration){
  const c=own(configuration,['journal','now','limits'],['decisions','documents','tasks','filing','mail','memory','sharing','researchAction','legiwatch','watch','clientRecord','bizdev','legislativeDocument','browser','enabled']);
- const journal=own(c.journal,['read','list'],['claim','settle']),limits=data(c.limits);own(limits,['maxRequestMs']);
- if(typeof journal.read!=='function'||typeof journal.list!=='function'||typeof c.now!=='function'||typeof(c.enabled??false)!=='boolean'||
+ const journal=own(c.journal,['read','list'],['claim','settle','listForActor','countForActor']),limits=data(c.limits);own(limits,['maxRequestMs']);
+ if(typeof journal.read!=='function'||typeof journal.list!=='function'||journal.listForActor!==undefined&&typeof journal.listForActor!=='function'||journal.countForActor!==undefined&&typeof journal.countForActor!=='function'||typeof c.now!=='function'||typeof(c.enabled??false)!=='boolean'||
   !Number.isSafeInteger(limits.maxRequestMs)||limits.maxRequestMs<1||limits.maxRequestMs>30000)throw new ProductError('PRODUCT_CONFIGURATION');
  const decisions=c.decisions===undefined?undefined:own(c.decisions,[],['record','readDecision','getCurrent','revoke']);
  // Browser decisions use their own Core route with the human's attended bearer; the port is required to decide.
@@ -538,7 +575,44 @@ async function decideWatch(life,principal,entry,r){
    return data({conversationId:r.conversationId,intents,next:page.next});
   }finally{life.close();}
  }
- return Object.freeze({decide,list});
+ /** The actor's approval inbox: every conversation's prepared proposals, newest first, read through the same `item` reading as
+  * `list` (same tenant/actor/conversation key, same scope visibility, same decision and owner reads) and projected to the
+  * fields a cross-conversation list needs. It lists and links; the conversation's list/decide routes stay the only place a
+  * decision is made. `pending` counts the page's awaiting proposals and says whether the page was the whole journal. */
+ async function inbox({principal,request,signal,deadlineMs}){
+  enabled();if(typeof journal.listForActor!=='function')fail('INTENT_JOURNAL_UNAVAILABLE');
+  const r=inboxRequest(request),life=lifetime(deadlineMs,signal);
+  try{
+   let page;
+   try{page=data(await life.run(s=>journal.listForActor.call(c.journal,{actor:{tenantId:principal.tenantId,actorId:principal.actorId},after:r.after,limit:r.limit,operations:INBOX_OPERATIONS,signal:s})));}
+   catch(error){const f=productFailure(error);if(f&&['DEADLINE','CANCELLED'].includes(f.code))throw error;fail('INTENT_JOURNAL_UNAVAILABLE');}
+   own(page,['entries','next']);if(!Array.isArray(page.entries)||page.entries.length>r.limit)fail('INTENT_JOURNAL_UNAVAILABLE');
+   const rows=[];
+   for(const entry of page.entries){
+    if(typeof entry?.conversationId!=='string'||!UUID.test(entry.conversationId))fail('INTENT_JOURNAL_UNAVAILABLE');
+    const row=inboxRow(await item(life,principal,entry,entry.conversationId),entry.conversationId,c.now());
+    if(row!==null)rows.push(row);
+   }
+   return inboxPage(rows,page.next);
+  }finally{life.close();}
+ }
+ /** The badge count: prepared inbox rows still inside their release window, before any decision owner is consulted. It can
+  * only overstate what the inbox page shows as awaiting (an approved, unexecuted proposal still counts until its window ends).
+  * `conversations` is the per-conversation breakdown the serving route uses to leave out suppressed conversations; `open` is
+  * their sum before that fence. */
+ async function inboxCount({principal,request,signal,deadlineMs}){
+  enabled();if(typeof journal.countForActor!=='function')fail('INTENT_JOURNAL_UNAVAILABLE');
+  try{own(request,[]);}catch{fail('INTENT_REQUEST_INVALID');}
+  const life=lifetime(deadlineMs,signal),at=c.now();
+  try{
+   let conversations;
+   try{conversations=data(await life.run(s=>journal.countForActor.call(c.journal,{actor:{tenantId:principal.tenantId,actorId:principal.actorId},operations:INBOX_OPERATIONS,nowMs:at,signal:s})));}
+   catch(error){const f=productFailure(error);if(f&&['DEADLINE','CANCELLED'].includes(f.code))throw error;fail('INTENT_JOURNAL_UNAVAILABLE');}
+   if(!Array.isArray(conversations)||conversations.some(c=>typeof c?.conversationId!=='string'||!UUID.test(c.conversationId)||!Number.isSafeInteger(c.open)||c.open<0))fail('INTENT_JOURNAL_UNAVAILABLE');
+   return data({open:conversations.reduce((n,c)=>n+c.open,0),checkedAt:new Date(at).toISOString(),conversations});
+  }finally{life.close();}
+ }
+ return Object.freeze({decide,list,inbox,inboxCount});
 }
 
 /** Publication correlation only. Current access, original preparation and exact

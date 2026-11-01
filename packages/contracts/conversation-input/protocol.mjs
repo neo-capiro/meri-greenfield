@@ -4,7 +4,7 @@ const freeze=value=>{if(value&&typeof value==='object'){Object.values(value).for
 export const conversationInputVersion='1.3.0';
 export const conversationInputPath='/api/conversations/input/admit';
 export const inputErrorStatuses=conversationApplicationMetadata.errorStatuses;
-export const conversationInputMetadata=freeze({packageVersion:'0.1.7',inputVersion:conversationInputVersion,schemaId:'urn:meri:conversation-input:1.3.0',
+export const conversationInputMetadata=freeze({packageVersion:'0.1.8',inputVersion:conversationInputVersion,schemaId:'urn:meri:conversation-input:1.3.0',
  routes:{admit:{method:'POST',path:conversationInputPath,response:'json'}},
  authentication:{...conversationApplicationMetadata.authentication,expectedContext:'independently authenticated tenant, actor, conversation, run and selected client'},
  limits:{requestBytes:conversationApplicationMetadata.limits.requestBytes,responseBytes:conversationApplicationMetadata.limits.responseBytes},

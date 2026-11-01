@@ -74,9 +74,9 @@ test('routine revocation after source read withholds content and continuation',a
  const f=await fixture({routine:true});f.after(f.revoke);const r=await f.execute();assert.notEqual(r.status,200);assert.equal(f.records.size,0);assert.doesNotMatch(await r.text(),/Synthetic mail candidate/);
 });
 
-for(const client of [false,true])for(const id of ['mail.list_messages','mail.search_messages','mail.read_thread'])test(`actual ${id} reads disconnected stored ${client?'client':'General'} mail`,async()=>{
+for(const client of [false,true])for(const id of ['mail.list_messages','mail.search_messages','mail.read_thread'])test(`actual ${id} reads stored ${client?'client':'General'} mail from a disabled mailbox`,async()=>{
  const f=await fixture({client,id}),r=await f.execute();assert.equal(r.status,200,await r.clone().text());
- const page=JSON.parse((await r.json()).resultJson);assert.equal(page.messages[0].connectionStatus,'disconnected');assert.equal(page.subject.kind,client?'client':'personal');
+ const page=JSON.parse((await r.json()).resultJson);assert.equal(page.messages[0].connectionStatus,'disabled','the stored engagement_connection_status value passes through unchanged');assert.equal(page.subject.kind,client?'client':'personal');
  assert(f.calls.includes('/api/engagement/integrations'));assert.equal(f.calls.filter(x=>x.startsWith('/api/clio/tools/')).length,1);
 });
 test('candidate continuation reloads exact stored page on a newly composed owner',async()=>{

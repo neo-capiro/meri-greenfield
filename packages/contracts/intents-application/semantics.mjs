@@ -293,6 +293,20 @@ export async function list(value,request){
 }
 /** `retained` is the proposal this caller admitted from an earlier list answer. Rejected and indeterminate replies carry no conversation, command or
  * binding of their own, so the retained proposal is what binds them to the request's conversation and approver. */
+/** An inbox page answers only its own request: at most `limit` rows, each conversation/delivery once, newest first, and a pending
+ * summary that counts exactly the page's awaiting rows. The journal filters rows that are not a person's decision after paging,
+ * so `next` may follow a page shorter than `limit`; it is the journal's own cursor and is only checked for shape. */
+export function inbox(value,request){
+ const limit=request.limit??20,rows=value.rows;
+ if(rows.length>limit)conflict();
+ const keys=rows.map(row=>row.conversationId+'/'+row.deliveryId);
+ if(new Set(keys).size!==keys.length)conflict();
+ let previous=Infinity;
+ for(const row of rows){const at=exact(row.createdAt);if(at>previous)conflict();previous=at;if(row.withheld===false)parsed(row.expiresAt);}
+ const pending=rows.filter(row=>row.withheld===false&&row.phase==='awaiting_approval').length;
+ if(value.pending.count!==pending||value.pending.complete!==(value.next===null))conflict();
+ return value;
+}
 export async function decide(value,request,retained){
  await proposal(retained,request.conversationId);
  if(retained.kind==='browser_action'){

@@ -10,4 +10,5 @@ export function inputSchema(){return {$schema:'https://json-schema.org/draft/202
  ConversationInputAdmittedResponse:object({run:pub('Run'),request:canonical('ConversationStoredRequest'),lastSequence:{type:'integer',minimum:1,maximum:Number.MAX_SAFE_INTEGER},replayed:{type:'boolean'}}),
  ConversationInputExpectedContext:object({tenantId:principal,actorId:principal,conversationId:uuid,runId:uuid,clientId:{anyOf:[uuid,{type:'null'}]}}),
  ConversationInputErrorResponse:canonical('ConversationErrorResponse'),
+ SkillRefusalSources:canonical('SkillRefusalSources'),SkillRequiredScope:canonical('SkillRequiredScope'),
  }};}
