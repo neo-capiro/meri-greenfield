@@ -57,7 +57,7 @@ export async function main(argv=process.argv.slice(2)){
     memoryContexts:memoryContextRelay,...(c.reads.defaultCongress===undefined?{}:{defaultCongress:c.reads.defaultCongress}),
     fetchImpl:countingFetch(globalThis.fetch,controlTurnTelemetry,{origin:c.agentcore.identity.origin})});
    if(reads.missing.length)process.stderr.write(JSON.stringify({event:'runtime.reads.unavailable',missing:reads.missing})+'\n');
-   Object.assign(productPorts,{createReadsRuntime:reads.createReadsRuntime,memoryContextRelay});
+   Object.assign(productPorts,{createReadsRuntime:reads.createReadsRuntime,readAvailability:reads.readAvailability,memoryContextRelay});
   }
   if(role==='control'&&c.routines?.enabled===true){
    const {createAttendedRoutinesOwnerComposition}=await import('./native-authority/routines-owner-composition.mjs');

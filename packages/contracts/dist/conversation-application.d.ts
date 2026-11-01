@@ -736,6 +736,12 @@ export type ConversationEvent =
   | Canonical_NativeUserQuestionEvent_2718130F
   | Canonical_NativeUserQuestionAnsweredEventA7D02B8B
   | BrowserReceiptEvent;
+/**
+ * @minItems 1
+ * @maxItems 32
+ */
+export type SkillRefusalSources = [string, ...string[]];
+export type SkillRequiredScope = 'client' | 'general';
 export type ConversationFeedbackTarget =
   | {
       kind: 'message';
@@ -2275,7 +2281,11 @@ export interface ConversationErrorResponse {
       | 'FEEDBACK_REVISION_CHANGED'
       | 'FEEDBACK_REPLAY_REFUSED'
       | 'FEEDBACK_LIMIT'
-      | 'FEEDBACK_WRITE_UNKNOWN';
+      | 'FEEDBACK_WRITE_UNKNOWN'
+      | 'SKILL_SOURCES_UNAVAILABLE'
+      | 'SKILL_SCOPE_REFUSED';
+    sources?: SkillRefusalSources;
+    requiredScope?: SkillRequiredScope;
   };
 }
 export interface ConversationFeedbackRequest {
@@ -2369,6 +2379,9 @@ export type ConversationRoute = 'submit' | 'history' | 'cancel' | 'events' | 'fe
 /** Canonical immutable choices; runtime authorization and availability are decided by the server. */
 export interface ConversationSkillDescriptor {readonly skillId:NonNullable<ConversationSubmitRequest['skill']>['skillId'];readonly version:string;readonly displayName:string;readonly subjectKinds:readonly ('client'|'entity'|'personal'|'portfolio')[];readonly windowBases:readonly NonNullable<ConversationSubmitRequest['windowRequest']>['basis'][];readonly manifestSha256:string;readonly proseSha256:string;}
 export declare const CONVERSATION_SKILLS:readonly ConversationSkillDescriptor[];
+/** The closed run.status reasonCode vocabulary (conversation-application/protocol.mjs RUN_REASON_CODES); null on an ordinary transition. */
+export type RunReasonCode = 'EXECUTION_FAILED' | 'EXECUTION_STOPPED' | 'USER_CANCELLED' | 'CONTROL_CHECKPOINTED' | 'HOLD_CHECKPOINT_FAILED' | 'ATTEMPT_LOST' | 'SKILL_RUNTIME_REFUSED' | 'SKILL_SOURCES_UNAVAILABLE' | 'MODEL_TURNS_EXHAUSTED' | 'MODEL_BUDGET_EXHAUSTED' | 'OUTPUT_LIMIT';
+export declare const RUN_REASON_CODES:readonly RunReasonCode[];
 declare const admittedRequest: unique symbol;
 declare const admittedView: unique symbol;
 declare const admittedCursor: unique symbol;
@@ -2380,7 +2393,7 @@ export type ConversationResponse<R extends ConversationRoute> = ConversationResp
 export interface ConversationCursor {readonly conversationId:string; readonly after:number; readonly [admittedCursor]:true;}
 export declare class ConversationResponseError extends Error {readonly code:string;}
 export declare const conversationApplicationMetadata: {
-  "packageVersion": "0.1.15",
+  "packageVersion": "0.1.16",
   "schemaId": "urn:meri:conversation-application:0.4.0",
   "wireContractVersion": "0.4.0",
   "routes": {
@@ -2522,6 +2535,12 @@ export declare const conversationApplicationMetadata: {
     ],
     "FEEDBACK_WRITE_UNKNOWN": [
       503
+    ],
+    "SKILL_SOURCES_UNAVAILABLE": [
+      400
+    ],
+    "SKILL_SCOPE_REFUSED": [
+      400
     ]
   }
 };

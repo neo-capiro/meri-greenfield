@@ -55,19 +55,27 @@ export function createAgentCoreIntentResolver({context,execution,transitionAutho
    if(pinned&&!same(pinned,facts))throw intentFault('ACCESS_DENIED');pinned??=facts;
    return facts;
   }
-  async function currentRights({signal,policyRevision}){
-   const first=await fresh(signal),started=now();
-   if(policyRevision!==first.policyRevision)throw intentFault('ACCESS_DENIED');
-   const current=data(own(await transitionAuthority.readCurrent({binding,scopes:first.scopes,selectedClientId:first.selectedClientId,policyRevision,
-    deadlineMs:Math.min(deadlineMs,first.execution.expiresAtMs),signal}),['binding','scopes','selectedClientId','policyRevision','checkedAtMs','expiresAtMs']));
-   if(!same(current.binding,binding)||!same(current.scopes,first.scopes)||current.selectedClientId!==first.selectedClientId||current.policyRevision!==policyRevision||
+  /** The current transition authority of the execution `facts` describe, checked against them. */
+  async function authority(facts,signal){
+   const started=now();
+   const current=data(own(await transitionAuthority.readCurrent({binding,scopes:facts.scopes,selectedClientId:facts.selectedClientId,policyRevision:facts.policyRevision,
+    deadlineMs:Math.min(deadlineMs,facts.execution.expiresAtMs),signal}),['binding','scopes','selectedClientId','policyRevision','checkedAtMs','expiresAtMs']));
+   if(!same(current.binding,binding)||!same(current.scopes,facts.scopes)||current.selectedClientId!==facts.selectedClientId||current.policyRevision!==facts.policyRevision||
     !Number.isSafeInteger(current.checkedAtMs)||current.checkedAtMs<started||current.checkedAtMs>now()||!Number.isSafeInteger(current.expiresAtMs)||current.expiresAtMs<=now())throw intentFault('ACCESS_DENIED');
-   await fresh(signal);
    return {tenantId:binding.tenantId,actorId:binding.actorId,scopes:current.scopes,checkedAtMs:current.checkedAtMs,expiresAtMs:current.expiresAtMs};
   }
+  async function currentRights({signal,policyRevision}){
+   const current=await fresh(signal);
+   if(policyRevision!==current.policyRevision)throw intentFault('ACCESS_DENIED');
+   const rights=await authority(current,signal);
+   await fresh(signal);
+   return rights;
+  }
   const first=await fresh(signal);
-  // Availability is a description of composed preparers, but it still belongs to the same current authorized run.
-  await currentRights({signal,policyRevision:first.policyRevision});
+  // Availability is a description of composed preparers, but it still belongs to the same current authorized run: the execution
+  // authenticated once above is the one whose current authority is read. Each preparation re-runs the full fresh/authority/fresh
+  // check through `currentRights`, so nothing retained depends on authenticating again here.
+  await authority(first,signal);
   const sharingCore=configuration.intents.core,nativeSharing=nativeCredentials&&sharingCore?createResearchSharingCoreClient({origin:sharingCore.origin,now,maxRequestMs:configuration.limits.requestMs,...(fetchImpl?{fetchImpl}:{}),
    getServiceSecret:createRoutinesServiceSecret({file:sharingCore.serviceSecretFile,reservedFiles:routinesReservedSecretFiles(configuration),readSecret:async path=>(await import('../config.mjs')).readSecret(path)}),
    reservedCredentials:createReservedCredentialDigests({files:routinesReservedSecretFiles(configuration),readSecret:async path=>(await import('../config.mjs')).readSecret(path)}),

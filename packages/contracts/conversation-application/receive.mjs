@@ -11,7 +11,7 @@ import {parseBytes} from '../document-application/boundary.mjs';
 import {validateSubmitRequest,validateHistoryRequest,validateCancelRequest,validateEventsRequest,validateSubmitted,validateHistory,validateCancelled,validateEvent,validateError,validateFeedbackRequest,validateFeedbackReadRequest,validateFeedback,validateFeedbackRead} from './generated-validator.mjs';
 import {assertFeedbackResponse} from './feedback-semantics.mjs';
 import {conversationErrorStatuses,conversationApplicationMetadata} from './protocol.mjs';
-export {conversationApplicationMetadata} from './protocol.mjs';
+export {conversationApplicationMetadata,RUN_REASON_CODES} from './protocol.mjs';
 export class ConversationResponseError extends Error {constructor(code){super(code);this.name='ConversationResponseError';this.code=code;}}
 const fail=code=>{throw new ConversationResponseError(code);};
 const parse=(bytes,cap)=>{try{return parseBytes(bytes,cap);}catch(error){fail(error.code??'INVALID_BYTES');}};

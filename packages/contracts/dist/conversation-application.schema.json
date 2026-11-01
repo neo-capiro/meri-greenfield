@@ -1710,8 +1710,16 @@
                 "FEEDBACK_REVISION_CHANGED",
                 "FEEDBACK_REPLAY_REFUSED",
                 "FEEDBACK_LIMIT",
-                "FEEDBACK_WRITE_UNKNOWN"
+                "FEEDBACK_WRITE_UNKNOWN",
+                "SKILL_SOURCES_UNAVAILABLE",
+                "SKILL_SCOPE_REFUSED"
               ]
+            },
+            "sources": {
+              "$ref": "#/$defs/SkillRefusalSources"
+            },
+            "requiredScope": {
+              "$ref": "#/$defs/SkillRequiredScope"
             }
           },
           "required": [
@@ -1724,6 +1732,23 @@
         "error"
       ],
       "additionalProperties": false
+    },
+    "SkillRefusalSources": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 128
+      },
+      "minItems": 1,
+      "maxItems": 32,
+      "uniqueItems": true
+    },
+    "SkillRequiredScope": {
+      "enum": [
+        "client",
+        "general"
+      ]
     },
     "Canonical_WindowRequest_f314f340": {
       "oneOf": [

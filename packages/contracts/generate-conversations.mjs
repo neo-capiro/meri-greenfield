@@ -3,7 +3,7 @@ import {createHash} from 'node:crypto';
 import {fileURLToPath,pathToFileURL} from 'node:url';
 import {resolve} from 'node:path';
 import {conversationSchema} from './conversation-application/schema.mjs';
-import {conversationApplicationMetadata} from './conversation-application/protocol.mjs';
+import {conversationApplicationMetadata,RUN_REASON_CODES} from './conversation-application/protocol.mjs';
 import {describeSkillPlugin} from '../skills/plugin.mjs';
 import {selectSkill} from '../skills/index.mjs';
 const HERE=new URL('./',import.meta.url),dir=fileURLToPath(HERE),hash=bytes=>createHash('sha256').update(bytes).digest('hex');
@@ -44,6 +44,9 @@ export type ConversationRoute = 'submit' | 'history' | 'cancel' | 'events' | 'fe
 /** Canonical immutable choices; runtime authorization and availability are decided by the server. */
 export interface ConversationSkillDescriptor {readonly skillId:NonNullable<ConversationSubmitRequest['skill']>['skillId'];readonly version:string;readonly displayName:string;readonly subjectKinds:readonly ('client'|'entity'|'personal'|'portfolio')[];readonly windowBases:readonly NonNullable<ConversationSubmitRequest['windowRequest']>['basis'][];readonly manifestSha256:string;readonly proseSha256:string;}
 export declare const CONVERSATION_SKILLS:readonly ConversationSkillDescriptor[];
+/** The closed run.status reasonCode vocabulary (conversation-application/protocol.mjs RUN_REASON_CODES); null on an ordinary transition. */
+export type RunReasonCode = ${RUN_REASON_CODES.map(code=>"'"+code+"'").join(' | ')};
+export declare const RUN_REASON_CODES:readonly RunReasonCode[];
 declare const admittedRequest: unique symbol;
 declare const admittedView: unique symbol;
 declare const admittedCursor: unique symbol;
@@ -62,7 +65,7 @@ export declare function receiveConversationEvent(utf8Bytes:Uint8Array,cursor:Con
 export declare function conversationReconnect(cursor:ConversationCursor):Readonly<{method:'GET';path:string;headers:Readonly<{'x-meri-resume-sequence':string}>}>;
 `;
  const skillExport='\n// Immutable asset descriptions do not grant runtime availability.\nexport const CONVERSATION_SKILLS=Object.freeze('+JSON.stringify(skills)+'.map(s=>Object.freeze({...s,subjectKinds:Object.freeze(s.subjectKinds),windowBases:Object.freeze(s.windowBases)})));\n';
- const outputs=new Map([['conversation-application.mjs','// Generated browser receiving boundary; no authority.\n'+bundled.outputFiles[0].text+skillExport],['conversation-application.d.ts',declarations+api],['conversation-application.schema.json',JSON.stringify(root,null,2)+'\n'],['conversation-application.metadata.json',JSON.stringify({packageVersion:'0.1.15',schemaId:root.$id,sources:[...sources.values()].sort((a,b)=>a.path.localeCompare(b.path)),schemaSha256:hash(JSON.stringify(root,null,2)+'\n'),browserInputs:Object.keys(bundled.metafile.inputs).sort()},null,2)+'\n']]);
+ const outputs=new Map([['conversation-application.mjs','// Generated browser receiving boundary; no authority.\n'+bundled.outputFiles[0].text+skillExport],['conversation-application.d.ts',declarations+api],['conversation-application.schema.json',JSON.stringify(root,null,2)+'\n'],['conversation-application.metadata.json',JSON.stringify({packageVersion:conversationApplicationMetadata.packageVersion,schemaId:root.$id,sources:[...sources.values()].sort((a,b)=>a.path.localeCompare(b.path)),schemaSha256:hash(JSON.stringify(root,null,2)+'\n'),browserInputs:Object.keys(bundled.metafile.inputs).sort()},null,2)+'\n']]);
  if(check){for(const [name,content]of outputs)if(await readFile(new URL('dist/'+name,HERE),'utf8')!==content)throw Error('Generated drift: '+name);}else{await mkdir(new URL('dist/',HERE),{recursive:true});for(const[name,content]of outputs)await writeFile(new URL('dist/'+name,HERE),content);}
  return [...outputs].map(([path,content])=>({path,bytes:Buffer.byteLength(content),sha256:hash(content)}));
 }

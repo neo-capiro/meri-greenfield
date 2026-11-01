@@ -13,13 +13,12 @@ import {own,data,nativeSignal} from '../../../packages/contracts/commands-0.2/ex
 import {canonicalSha256 as hash,validateShape} from '../../../packages/contracts/validate.mjs';
 import {createOperationLifetime} from '../../../packages/runtime/operation-lifetime.mjs';
 import {resolveOperationContract} from '../../../packages/contracts/retrieval-0.2/validate.mjs';
+import {INTENT_AVAILABILITY_RUNNER_MS} from '../../../packages/runtime/runner-load-budget.mjs';
 import catalog from '../../../packages/contracts/retrieval-0.3/catalog.json' with {type:'json'};
 /* Shared wire protocol (this module imports only packages/*, so the runner image gains one file; intents-http.mjs reuses it). */
 /** Closed transport failures and their statuses: the intent mount's codes plus RESOURCE_LIMIT for an over-limit body. */
 export const RUNNER_INTENT_FAILURES=Object.freeze({UNAVAILABLE:503,ACCESS_DENIED:403,REFUSED:409,INVALID_ARGUMENTS:400,DEADLINE:408,CANCELLED:408,CONFLICT:409,UNKNOWN:502,RESOURCE_LIMIT:413});
 export const RUNNER_INTENT_PATHS=Object.freeze({availability:'/v1/runner/intents/availability',prepare:'/v1/runner/intents/prepare'});
-/** Availability is a snapshot read: its own short bound, as for native reads. */
-export const RUNNER_INTENT_AVAILABILITY_MS=3000;
 export const runnerIntentFault=code=>Object.assign(new Error(code),{code:Object.hasOwn(RUNNER_INTENT_FAILURES,code)?code:'UNAVAILABLE'});
 /** The closed code an error carries as an own data property, or null. Never runs accessors or proxy traps. */
 export const runnerIntentCode=error=>{const code=error!==null&&typeof error==='object'&&!types.isProxy(error)?Object.getOwnPropertyDescriptor(error,'code')?.value:undefined;return typeof code==='string'&&Object.hasOwn(RUNNER_INTENT_FAILURES,code)?code:null;};
@@ -70,7 +69,8 @@ export function createRunnerIntentsClient(configuration){
   if(!enabled)throw runnerIntentFault('UNAVAILABLE');nativeSignal(signal);
   const request=runnerIntentRequest(route,{binding,...fields}),body=JSON.stringify(request),url=origin+'/v1/runner/intents/'+route;
   if(Buffer.byteLength(body,'utf8')>limits.maxRequestBytes)throw runnerIntentFault('RESOURCE_LIMIT');
-  const life=createOperationLifetime({now,deadlineMs:now()+(route==='prepare'?limits.maxPrepareMs:RUNNER_INTENT_AVAILABILITY_MS),signal,errorFactory:runnerIntentFault});let response,reader,dispatched=false;
+  // Availability keeps the shared runner bound (one control margin above control's own), so control answers before this client gives up.
+  const life=createOperationLifetime({now,deadlineMs:now()+(route==='prepare'?limits.maxPrepareMs:INTENT_AVAILABILITY_RUNNER_MS),signal,errorFactory:runnerIntentFault});let response,reader,dispatched=false;
   try{
    dispatched=true;response=await life.run(signal=>{const pending=Promise.resolve(fetchImpl(url,{method:'POST',redirect:'error',credentials:'omit',cache:'no-store',headers:{authorization:'Bearer '+credential,'content-type':'application/json'},body,signal}));pending.then(r=>{if(life.signal.aborted)try{get.body.call(r)?.cancel().catch(()=>{});}catch{}},()=>{});return pending;});
    if(types.isProxy(response)||!(response instanceof Response)||get.redirected.call(response))throw 0;const responseUrl=get.url.call(response);if(responseUrl&&responseUrl!==url)throw 0;
@@ -85,10 +85,12 @@ export function createRunnerIntentsClient(configuration){
     if(typeof code!=='string'||!Object.hasOwn(RUNNER_INTENT_FAILURES,code)||RUNNER_INTENT_FAILURES[code]!==get.status.call(response))throw 0;throw new ControlAnswer(code);}
    life.check();return raw;
   }catch(error){
-   if(error instanceof ControlAnswer)throw runnerIntentFault(error.code);
+   // `layer` names where the closed failure was decided (control's answer or this client's own bound/transport); the worker's
+   // availability diagnostic prints it, so a DEADLINE is attributable to the hop that reached its bound.
+   if(error instanceof ControlAnswer)throw Object.assign(runnerIntentFault(error.code),{layer:'control'});
    // Nothing reached control's mount, or control's answer was lost or malformed after a prepare was sent.
    const code=runnerIntentCode(error);
-   throw runnerIntentFault(route==='prepare'&&dispatched?'UNKNOWN':code==='DEADLINE'||code==='CANCELLED'?code:'UNAVAILABLE');
+   throw Object.assign(runnerIntentFault(route==='prepare'&&dispatched?'UNKNOWN':code==='DEADLINE'||code==='CANCELLED'?code:'UNAVAILABLE'),{layer:'runner'});
   }
   finally{try{if(reader){void reader.cancel().catch(()=>{});reader.releaseLock();}else if(response&&!types.isProxy(response)&&response instanceof Response)void get.body.call(response)?.cancel().catch(()=>{});}catch{}life.close();}
  }

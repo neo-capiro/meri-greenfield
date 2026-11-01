@@ -61,6 +61,9 @@ export const LINE_SCHEMAS=Object.freeze({
    refusal:value=>({gate:choice(['pair','exchange','ingress','admission','reserve','settle','bootstrap','owner','request','other'])(value?.gate),step:safeCode(value?.step),code:safeCode(value?.code)}),
    bootstrapMs:nullable,bedrockHeadersMs:nullable,firstChunkMs:nullable,streamEndMs:nullable,settleMs:nullable,
    ownerExchanges:exchanges,ownerExchangeMs:number,aws,awsMs:number,inputTokens:number,outputTokens:number},
+ // A governed-intent availability offer that failed: the layer whose bound answered (the worker, the runner client or control) and its
+ // closed code, so an UNAVAILABLE write tool is explained in the run's own log stream. Emitted by the runner and by control.
+ 'meri.intent.availability':{...COMMON,layer:choice(['worker','runner','control']),code:safeCode,elapsedMs:number},
  'meri.health':{service:choice(SERVICES),atMs:number,component:choice(COMPONENTS),transition:choice(['quarantined','poisoned','retired','unavailable','reproven']),code:safeCode},
  'meri.budget.quarantined':{...COMMON,reason:safeCode},
  'meri.process.rollup':{service:choice(SERVICES),atMs:number,windowMs:number,...COUNTERS,ownerExchanges:exchanges,telemetryDropped:number},

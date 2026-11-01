@@ -99,8 +99,8 @@
     },
     {
       "path": "../../apps/worker/conversation/reads/availability.mjs",
-      "sha256": "6732e896776c48962bab97a82ea095558c1f593a6699dbec647779f9ce825e82",
-      "bytes": 7690
+      "sha256": "fb800ef17f8820d9604e0b90bd51a1b0096d81c2420f7b0ea2ba0015ece123b1",
+      "bytes": 8159
     },
     {
       "path": "../../apps/worker/conversation/reads/families.mjs",
