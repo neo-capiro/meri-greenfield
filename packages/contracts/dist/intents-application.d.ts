@@ -1,6 +1,11 @@
 // Generated additive intents contract from its canonical HTTP/approval owners. No authority implied.
 
 export type IntentsApplicationEnvelope =
+  | IntentsInboxCursor
+  | IntentsInboxRequest
+  | IntentsInboxKind
+  | IntentsInboxRow
+  | IntentsInboxResponse
   | IntentsConversationId
   | IntentsDeliveryId
   | IntentsOperation
@@ -95,6 +100,44 @@ export type IntentsApplicationEnvelope =
 export type IntentsConversationId = string;
 export type IntentsDeliveryId = string;
 export type IntentsBrowserDeliveryId = string;
+export type IntentsInboxKind =
+  | 'proposal'
+  | 'browser_action'
+  | 'watch_action'
+  | 'legiwatch_action'
+  | 'client_record_action'
+  | 'bizdev_action'
+  | 'legislative_document_action'
+  | 'research_action'
+  | 'research_share';
+export type IntentsInboxRow =
+  | {
+      conversationId: IntentsConversationId;
+      deliveryId: IntentsDeliveryId | IntentsBrowserDeliveryId;
+      createdAt: string;
+      operation: IntentsClientRecordOperation;
+      kind: IntentsInboxKind;
+      withheld: true;
+    }
+  | {
+      conversationId: IntentsConversationId;
+      deliveryId: IntentsDeliveryId | IntentsBrowserDeliveryId;
+      createdAt: string;
+      operation: IntentsClientRecordOperation;
+      kind: IntentsInboxKind;
+      withheld: false;
+      clientId: string | null;
+      expiresAt: string;
+      phase:
+        | 'awaiting_approval'
+        | 'approved'
+        | 'rejected'
+        | 'expired'
+        | 'executing'
+        | 'completed'
+        | 'unknown'
+        | 'unknown_decision';
+    };
 export type IntentsDecideRequest =
   | {
       conversationId: IntentsConversationId;
@@ -2211,13 +2254,32 @@ export type Canonical_TriggerObservation_3D888Ab2 =
       kind: 'unavailable';
     };
 
-export interface IntentsOperation {
-  id: string;
-  version: '0.2.0';
+export interface IntentsInboxCursor {
+  conversationId: IntentsConversationId;
+  deliveryId: IntentsDeliveryId | IntentsBrowserDeliveryId;
+}
+export interface IntentsInboxRequest {
+  after?: IntentsInboxCursor | null;
+  limit?: number;
 }
 export interface IntentsClientRecordOperation {
   id: string;
   version: '0.2.0' | '0.3.0';
+}
+export interface IntentsInboxResponse {
+  /**
+   * @maxItems 50
+   */
+  rows: IntentsInboxRow[];
+  next: IntentsInboxCursor | null;
+  pending: {
+    count: number;
+    complete: boolean;
+  };
+}
+export interface IntentsOperation {
+  id: string;
+  version: '0.2.0';
 }
 export interface IntentsListRequest {
   conversationId: IntentsConversationId;
@@ -5667,14 +5729,14 @@ export declare function receiveRoutinesResponse<R extends RoutinesRoute>(route:R
 export declare const routineManagementSessionPath:'/api/routines/session';
 export declare function receiveRoutineManagementSessionRequest(jsonText:unknown):RoutinesManagementSessionRequest;
 export declare function receiveRoutineManagementSessionReceipt(jsonText:unknown,expected:RoutinesManagementContext,at:number):RoutinesManagementSessionReceipt;
-export type IntentsRoute='list'|'decide';
-export interface IntentsRequestMap {list:IntentsListRequest;decide:IntentsDecideRequest;}
-export interface IntentsResponseMap {list:IntentsListResponse;decide:IntentsDecideResponse;}
-export interface IntentsExpectationMap {list:{request:IntentsListRequest};decide:{request:IntentsDecideRequest;proposal:IntentsProposal};}
+export type IntentsRoute='list'|'inbox'|'decide';
+export interface IntentsRequestMap {list:IntentsListRequest;inbox:IntentsInboxRequest;decide:IntentsDecideRequest;}
+export interface IntentsResponseMap {list:IntentsListResponse;inbox:IntentsInboxResponse;decide:IntentsDecideResponse;}
+export interface IntentsExpectationMap {list:{request:IntentsListRequest};inbox:{request:IntentsInboxRequest};decide:{request:IntentsDecideRequest;proposal:IntentsProposal};}
 export type IntentsResponse<R extends IntentsRoute>=IntentsResponseMap[R]|IntentsErrorResponse;
 export declare class IntentsResponseError extends Error {readonly code:string;}
 export declare const intentsVersion:'0.1.0';
-export declare const intentsPaths:Readonly<{"list":"/api/conversations/intents/list","decide":"/api/conversations/intents/decide"}>;
+export declare const intentsPaths:Readonly<{"list":"/api/conversations/intents/list","inbox":"/api/conversations/intents/inbox","decide":"/api/conversations/intents/decide"}>;
 export declare const intentsMetadata:{
   "contractVersion": "0.1.0",
   "schemaId": "urn:meri:intents-application:0.1.0",
@@ -5682,6 +5744,11 @@ export declare const intentsMetadata:{
     "list": {
       "method": "POST",
       "path": "/api/conversations/intents/list",
+      "response": "json"
+    },
+    "inbox": {
+      "method": "POST",
+      "path": "/api/conversations/intents/inbox",
       "response": "json"
     },
     "decide": {
@@ -5763,8 +5830,20 @@ export declare const intentsMetadata:{
     "mail.send",
     "memory.propose"
   ],
+  "inboxKinds": [
+    "proposal",
+    "browser_action",
+    "watch_action",
+    "legiwatch_action",
+    "client_record_action",
+    "bizdev_action",
+    "legislative_document_action",
+    "research_action",
+    "research_share"
+  ],
   "semantics": {
     "list": "read-only durable history of this conversation's prepared intents; next is the last returned deliveryId when more remain, otherwise null",
+    "inbox": "read-only, newest-first page of the caller's prepared proposals across every conversation (inboxKinds only), read with the same visibility as list; rows list and link, the conversation's list/decide routes decide; pending.count counts this page's awaiting_approval rows and pending.complete says the page reached the journal's end",
     "decision": "approved or rejected is recorded by the canonical decision owner for exactly the named proposal, command hash and approver; display, stream or model text never approves",
     "execution": "only actions in approvableActions execute; any other prepared proposal answers INTENT_NOT_APPROVABLE and stays prepared",
     "executed": "status executed returns the actual owner outcome: Core native task.create/task.update execution and result, a historical task.create receipt/result, document.draft ArtifactCreatedResult after publication, or native mail accepted/failed durable attempt (provider acceptance is not delivery); approval alone remains approved or indeterminate",

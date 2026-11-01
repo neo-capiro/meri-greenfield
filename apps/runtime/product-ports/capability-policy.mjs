@@ -74,13 +74,23 @@ export function createRunCapabilityPolicy(options){
   if(!CORE_ROLES.includes(i.actorRole))throw fault('CAPABILITY_ROLE_UNKNOWN');
   i.signal?.throwIfAborted();return i;
  }
+ /** Platform ∧ tenant ∧ role for one decision, or null when every capability is disabled. */
+ async function resolve({tenantId,actorRole,signal}){
+  const tenant=await readTenant({tenantId,signal});signal?.throwIfAborted();
+  if(tenant===null||tenant===undefined)throw fault('CAPABILITY_TENANT_SETTINGS_REFUSED');
+  const policy=resolveCapabilityPolicy({platform,tenant,role:actorRole});
+  return POLICY_FLAGS.some(flag=>policy[flag]===true)?policy:null;
+ }
  return Object.freeze({
   /** The validated policy for this decision, or null when every capability is disabled. */
-  async forRun(value){
-   const i=input(value),tenant=await readTenant({tenantId:i.tenantId,signal:i.signal});i.signal?.throwIfAborted();
-   if(tenant===null||tenant===undefined)throw fault('CAPABILITY_TENANT_SETTINGS_REFUSED');
-   const policy=resolveCapabilityPolicy({platform,tenant,role:i.actorRole});
-   return POLICY_FLAGS.some(flag=>policy[flag]===true)?policy:null;
+  async forRun(value){return resolve(input(value));},
+  /** The same resolution for an admitted member outside any run: what a run of theirs would be allowed. It decides nothing by itself;
+   * the data-access reader uses it to describe the read families a conversation for this actor would be able to construct. */
+  async forActor(value){
+   const i=own(value,['tenantId','actorRole'],['signal']);nativeSignal(i.signal);
+   if(!text(i.tenantId,128))throw fault('CAPABILITY_POLICY_REQUEST');
+   if(!CORE_ROLES.includes(i.actorRole))throw fault('CAPABILITY_ROLE_UNKNOWN');
+   i.signal?.throwIfAborted();return resolve(i);
   },
  });
 }

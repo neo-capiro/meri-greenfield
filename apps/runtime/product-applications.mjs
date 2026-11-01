@@ -27,13 +27,14 @@ import {ROUTINE_MANAGEMENT_SESSION_PATH} from '../../packages/contracts/schedule
 import {INTENT_PATHS} from '../control/intents/http.mjs';
 import {TENANT_SETTINGS_PATHS} from '../control/settings/tenant-application/protocol.mjs';
 import {MEMORY_PATHS,memoryUnavailable} from '../control/memory/protocol.mjs';
+import {DATA_ACCESS_PATH} from '../control/data-access/protocol.mjs';
 // Provenance is process-private. Caller-authored configuredOwners fields remain unknown keys and never establish readiness.
 const capturedPorts=new WeakSet();
 const capturedArtifactRecovery=new WeakMap();
 export function readRuntimeArtifactRecovery(ports){if(!capturedPorts.has(ports))throw fault('PRODUCT_PORTS_CONFIGURATION');return capturedArtifactRecovery.get(ports.artifactStore)??null;}
 export function captureRuntimePorts(value={}){
  if(capturedPorts.has(value))return value;
- const c=own(value,[],['executionOwner','objectiveSelection','identityContext','transitionAuthority','continuationAdmission','approvals','actionApplication','actionApplicationFactory','taskCommandApplication','taskCommandApplicationFactory','routinesApplicationFactory','uploadApplicationFactory','nativeUploadStore','nativeUploadStore','conversationMembership','conversationCurrentness','conversationManagement','conversationSourceReader','conversationTurns','artifactOptionsOwner','selectedController','sdkSessionOwner','sdkSessionSnapshot','selectedSkillAdmission','selectedOutputPublication','procedureAdmission','siteWorkflowAdmission','artifactStore','retentionLedgerSink','retentionStorage','intentApplication','settingsApplication','memoryApplication','browserHosts','browserHostCore']);
+ const c=own(value,[],['executionOwner','objectiveSelection','identityContext','transitionAuthority','continuationAdmission','approvals','actionApplication','actionApplicationFactory','taskCommandApplication','taskCommandApplicationFactory','routinesApplicationFactory','uploadApplicationFactory','nativeUploadStore','nativeUploadStore','conversationMembership','conversationCurrentness','conversationManagement','conversationSourceReader','conversationTurns','artifactOptionsOwner','selectedController','sdkSessionOwner','sdkSessionSnapshot','selectedSkillAdmission','selectedOutputPublication','procedureAdmission','siteWorkflowAdmission','artifactStore','retentionLedgerSink','retentionStorage','intentApplication','settingsApplication','memoryApplication','dataAccessApplication','browserHosts','browserHostCore']);
  if(c.taskCommandApplication!==undefined&&c.taskCommandApplicationFactory!==undefined)throw fault('PRODUCT_PORTS_CONFIGURATION');
  if(c.actionApplication!==undefined&&c.actionApplicationFactory!==undefined)throw fault('PRODUCT_PORTS_CONFIGURATION');
  const methods=(port,names)=>Object.freeze(Object.fromEntries(names.map(name=>[name,storageMethod(port,name)])));
@@ -84,6 +85,8 @@ export function captureRuntimePorts(value={}){
   ...(c.intentApplication===undefined?{}:{intentApplication:methods(c.intentApplication,['handle'])}),
   ...(c.settingsApplication===undefined?{}:{settingsApplication:methods(c.settingsApplication,['handle'])}),
   ...(c.memoryApplication===undefined?{}:{memoryApplication:methods(c.memoryApplication,['handle'])}),
+  // The data-access center read (I4): one public application composed by its family over the same membership gate.
+  ...(c.dataAccessApplication===undefined?{}:{dataAccessApplication:methods(c.dataAccessApplication,['handle'])}),
   // The candidate's own Core authority HTTP client (readCurrent only). The higher transitionAuthority
   // wrapper reacquires conversation locks and must not be used as the browser-host Core reader.
   ...(c.browserHostCore===undefined?{}:{browserHostCore:methods(c.browserHostCore,['readCurrent'])}),
@@ -132,6 +135,7 @@ export function createRuntimeProductApplications({configuration,sessions,ports,n
   if(Object.values(INTENT_PATHS).includes(path))return ports.intentApplication?ports.intentApplication.handle(request):Response.json({error:{code:'INTENTS_UNAVAILABLE',outcome:'NOT_DISPATCHED'}},{status:503,headers:{'cache-control':'no-store','x-content-type-options':'nosniff'}});
   if(Object.values(TENANT_SETTINGS_PATHS).includes(path))return ports.settingsApplication?ports.settingsApplication.handle(request):Response.json({error:{code:'SETTINGS_UNAVAILABLE',outcome:'NOT_DISPATCHED'}},{status:503,headers:{'cache-control':'no-store','x-content-type-options':'nosniff'}});
   if(Object.values(MEMORY_PATHS).includes(path))return ports.memoryApplication?ports.memoryApplication.handle(request):memoryUnavailable();
+  if(path===DATA_ACCESS_PATH)return ports.dataAccessApplication?ports.dataAccessApplication.handle(request):Response.json({error:{code:'DATA_ACCESS_UNAVAILABLE',outcome:'NOT_DISPATCHED'}},{status:503,headers:{'cache-control':'no-store','x-content-type-options':'nosniff'}});
   if(Object.values(RUN_INDEX_PATHS).includes(path))return runIndex?runIndex.handle(request):Response.json({error:{code:'RUN_INDEX_UNAVAILABLE'}},{status:503,headers:{'cache-control':'no-store','x-content-type-options':'nosniff'}});
   if(path===CONVERSATION_USAGE_PATH)return usage?usage.handle(request):Response.json({error:{code:'USAGE_UNAVAILABLE'}},{status:503,headers:{'cache-control':'no-store','x-content-type-options':'nosniff'}});
   if(path===USAGE_OVERVIEW_PATH)return usageOverview?usageOverview.handle(request):Response.json({error:{code:'USAGE_OVERVIEW_UNAVAILABLE'}},{status:503,headers:{'cache-control':'no-store','x-content-type-options':'nosniff'}});

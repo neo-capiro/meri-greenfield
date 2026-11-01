@@ -100,6 +100,29 @@ export function createPostgresIntentJournalStore({pool}){
     return data({entries:page,next:rows.length>limit?page.at(-1).deliveryId:null});
    });
   },
+  /** Every conversation's sdk deliveries of one tenant/actor, newest first (keyset before an existing delivery), at most `limit`
+   * (1..50). Read-only. The same table and sdk-family scope as `list`; the cursor names a row by conversation and delivery because
+   * delivery ids are unique only within a conversation. */
+  async listForActor({actor:rawActor,after=null,limit,signal}){
+   const a=data(own(rawActor,['tenantId','actorId']));validateShape('Identity',a);
+   if(!Number.isSafeInteger(limit)||limit<1||limit>50)refuse('INTENT_JOURNAL_STATE');
+   const cursor=after===null?null:key({...data(own(after,['conversationId','deliveryId'])),tenantId:a.tenantId,actorId:a.actorId});
+   return tx(signal,async client=>{
+    const scope="tenant_id=$1 AND actor_id=$2 AND delivery_id LIKE 'sdk:%'";
+    if(cursor!==null&&(await client.query(`SELECT delivery_id FROM ${TABLE} WHERE ${scope} AND conversation_id=$3 AND delivery_id=$4`,cursor)).rows.length!==1)refuse('INTENT_JOURNAL_CURSOR');
+    const before=cursor===null?'':` AND (created_at,conversation_id,delivery_id) < (SELECT created_at,conversation_id,delivery_id FROM ${TABLE} WHERE ${scope} AND conversation_id=$3 AND delivery_id=$4)`;
+    const rows=(await client.query(`SELECT conversation_id,delivery_id,created_at,${COLUMNS} FROM ${TABLE} WHERE ${scope}${before} ORDER BY created_at DESC,conversation_id DESC,delivery_id DESC LIMIT ${limit+1}`,
+     cursor===null?[a.tenantId,a.actorId]:cursor)).rows;
+    const page=rows.slice(0,limit).map(row=>{
+     const created=row.created_at instanceof Date?row.created_at:new Date(row.created_at);
+     if(typeof row.delivery_id!=='string'||!/^sdk:[a-f0-9]{64}$/u.test(row.delivery_id)||!Number.isFinite(created.getTime()))refuse('INTENT_JOURNAL_STATE');
+     key({tenantId:a.tenantId,actorId:a.actorId,conversationId:row.conversation_id,deliveryId:row.delivery_id});
+     return data({conversationId:row.conversation_id,deliveryId:row.delivery_id,createdAt:created.toISOString(),...entry(row)});
+    });
+    const last=page.at(-1);
+    return data({entries:page,next:rows.length>limit?{conversationId:last.conversationId,deliveryId:last.deliveryId}:null});
+   });
+  },
   /** DURABLE per-original-run browser-download reservation. One canonical transaction: run-scoped advisory lock,
    * exact-delivery replay read, scoped count of PENDING/UNKNOWN/PREPARED registrations, then the PENDING insert.
    * No artifact/network/receipt effect runs while the transaction is open. */

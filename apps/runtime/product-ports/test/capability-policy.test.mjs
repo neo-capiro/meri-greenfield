@@ -17,7 +17,20 @@ test('canonical absent row inherits defaults; stored narrowing is read anew and 
   {steps:[{match:select,rows:[{revision:1,document,document_sha256:hash(document)}]}]}]);
  const p=createConfiguredRunCapabilityPolicy({capabilityPlatform:PLATFORM},{pool:f.pool});
  assert.equal((await p.forRun(run())).generalReads,true);assert.equal((await p.forRun(run())).generalReads,false);
- assert.equal(f.connections(),2);assert.deepEqual(Object.keys(p),['forRun']);
+ assert.equal(f.connections(),2);assert.deepEqual(Object.keys(p),['forRun','forActor']);
+});
+
+test('forActor is the same platform ∧ tenant ∧ role resolution without a run binding; it refuses unknown roles and malformed input',async()=>{
+ const document={defaultTimezone:'UTC',capabilityPolicy:{capabilities:{generalReads:false}}};
+ const f=createSettingsPoolFixture([{steps:[{match:select,rows:[],inspect:params=>assert.deepEqual(params,['tenant-one'])}]},{steps:[{match:select,rows:[{revision:1,document,document_sha256:hash(document)}]}]}]);
+ const p=createConfiguredRunCapabilityPolicy({capabilityPlatform:PLATFORM},{pool:f.pool});
+ const absent=await p.forActor({tenantId:'tenant-one',actorRole:'standard_user'});assert.equal(absent.generalReads,true);
+ assert.equal((await p.forActor({tenantId:'tenant-one',actorRole:'standard_user'})).generalReads,false,'a saved narrowing is read anew');
+ assert.equal(f.connections(),2);
+ await assert.rejects(p.forActor({tenantId:'tenant-one',actorRole:'owner'}),e=>e.code==='CAPABILITY_ROLE_UNKNOWN');
+ await assert.rejects(p.forActor({tenantId:'',actorRole:'standard_user'}),e=>e.code==='CAPABILITY_POLICY_REQUEST');
+ await assert.rejects(p.forActor({tenantId:'tenant-one',actorRole:'standard_user',conversationId:'x'}),e=>e.message==='INVALID_COMMAND','a run binding field is not part of the actor resolution');
+ assert.equal(await producer(NO_CAPABILITY_PLATFORM).forActor({tenantId:'tenant-one',actorRole:'standard_user'}),null);
 });
 
 test('default platform enables nothing and full preview preserves every SDK capability and original skill',async()=>{

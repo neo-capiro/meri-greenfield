@@ -24,7 +24,13 @@ export function createMemoryJournalStore(){
    const mine=[...rows].map(([at,row])=>[JSON.parse(at),row]).filter(([[t,a,conv]])=>t===c.tenantId&&a===c.actorId&&conv===c.conversationId);
    const start=after===null?0:mine.findIndex(([[,,,d]])=>d===after)+1;if(after!==null&&start===0)throw Error('synthetic cursor refused');
    const page=mine.slice(start,start+limit).map(([[,,,deliveryId],row],i)=>structuredClone({deliveryId,createdAt:new Date(NOW+start+i).toISOString(),record:row.record,state:row.state,outcome:row.outcome}));
-   return {entries:page,next:mine.length>start+limit?page.at(-1).deliveryId:null};}}};
+   return {entries:page,next:mine.length>start+limit?page.at(-1).deliveryId:null};},
+  async listForActor({actor:a,after=null,limit}){if(state.readDown)throw Error('synthetic store unavailable');
+   // Newest first: insertion order stands in for created_at, so the reverse of the map order is the page order.
+   const mine=[...rows].map(([at,row])=>[JSON.parse(at),row]).filter(([[t,actor]])=>t===a.tenantId&&actor===a.actorId).reverse();
+   const start=after===null?0:mine.findIndex(([[,,conv,d]])=>conv===after.conversationId&&d===after.deliveryId)+1;if(after!==null&&start===0)throw Error('synthetic cursor refused');
+   const page=mine.slice(start,start+limit).map(([[,,conversationId,deliveryId],row],i)=>structuredClone({conversationId,deliveryId,createdAt:new Date(NOW-start-i).toISOString(),record:row.record,state:row.state,outcome:row.outcome}));
+   const last=page.at(-1);return {entries:page,next:mine.length>start+limit?{conversationId:last.conversationId,deliveryId:last.deliveryId}:null};}}};
 }
 /** A task.create composition: real metadata owner + real prepare-only command interface. */
 export function commandComposition({tenantId='tenant',action='task.create',approverActorId='reviewer'}={}){

@@ -1,0 +1,227 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:meri:data-access-application:0.1.0",
+  "$defs": {
+    "DataAccessClientId": {
+      "anyOf": [
+        {
+          "type": "string",
+          "pattern": "^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "DataAccessRequest": {
+      "type": "object",
+      "properties": {
+        "clientId": {
+          "$ref": "#/$defs/DataAccessClientId"
+        }
+      },
+      "required": [
+        "clientId"
+      ],
+      "additionalProperties": false
+    },
+    "DataAccessState": {
+      "enum": [
+        "not_installed",
+        "policy_off",
+        "client_required",
+        "available"
+      ]
+    },
+    "DataAccessFamily": {
+      "type": "object",
+      "properties": {
+        "family": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9-]{0,63}$"
+        },
+        "covers": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 240
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "freshness": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 260
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "structured": {
+          "type": "boolean"
+        },
+        "clientScope": {
+          "enum": [
+            "required",
+            "optional"
+          ]
+        },
+        "operations": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9_.-]{0,127}$"
+          },
+          "minItems": 1,
+          "maxItems": 32,
+          "uniqueItems": true
+        },
+        "state": {
+          "$ref": "#/$defs/DataAccessState"
+        },
+        "requires": {
+          "anyOf": [
+            {
+              "enum": [
+                "mailbox"
+              ]
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "family",
+        "covers",
+        "freshness",
+        "structured",
+        "clientScope",
+        "operations",
+        "state",
+        "requires"
+      ],
+      "additionalProperties": false
+    },
+    "DataAccessRelation": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_]{0,63}$"
+        },
+        "source": {
+          "enum": [
+            "public",
+            "client_records"
+          ]
+        },
+        "state": {
+          "$ref": "#/$defs/DataAccessState"
+        }
+      },
+      "required": [
+        "name",
+        "source",
+        "state"
+      ],
+      "additionalProperties": false
+    },
+    "DataAccessResponse": {
+      "type": "object",
+      "properties": {
+        "schemaVersion": {
+          "const": "meri.data-access/1"
+        },
+        "checkedAt": {
+          "type": "string",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$"
+        },
+        "clientId": {
+          "$ref": "#/$defs/DataAccessClientId"
+        },
+        "generalReads": {
+          "type": "boolean"
+        },
+        "families": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/DataAccessFamily"
+          },
+          "maxItems": 256
+        },
+        "relations": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/DataAccessRelation"
+          },
+          "maxItems": 256
+        }
+      },
+      "required": [
+        "schemaVersion",
+        "checkedAt",
+        "clientId",
+        "generalReads",
+        "families",
+        "relations"
+      ],
+      "additionalProperties": false
+    },
+    "DataAccessErrorResponse": {
+      "type": "object",
+      "properties": {
+        "error": {
+          "type": "object",
+          "properties": {
+            "code": {
+              "type": "string",
+              "enum": [
+                "INVALID_REQUEST",
+                "UNAUTHENTICATED",
+                "ACCESS_DENIED",
+                "MEMBERSHIP_REVOKED",
+                "NOT_FOUND",
+                "METHOD_NOT_ALLOWED",
+                "DEADLINE",
+                "MEMBERSHIP_CHANGED",
+                "REQUEST_TOO_LARGE",
+                "UNSUPPORTED_MEDIA_TYPE",
+                "CANCELLED",
+                "PRODUCT_UNAVAILABLE",
+                "DATA_ACCESS_REQUEST_INVALID",
+                "DATA_ACCESS_CLIENT_REFUSED",
+                "DATA_ACCESS_POLICY_UNAVAILABLE"
+              ]
+            },
+            "outcome": {
+              "enum": [
+                "NOT_DISPATCHED"
+              ]
+            },
+            "field": {
+              "type": "string",
+              "pattern": "^[A-Za-z][A-Za-z0-9_.-]{0,127}$"
+            }
+          },
+          "required": [
+            "code"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "error"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

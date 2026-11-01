@@ -27,7 +27,18 @@ const note=name=>({$ref:'urn:meri:retrieval:note-action:0.2.0#/$defs/'+name});
 const ref=name=>({$ref:'#/$defs/'+name});
 const object=(properties,required=Object.keys(properties))=>({type:'object',properties,required,additionalProperties:false});
 const item=(extra,required,operation='IntentsOperation')=>object({deliveryId:ref('IntentsDeliveryId'),createdAt:{type:'string',pattern:MILLIS},operation:ref(operation),...extra},['deliveryId','createdAt','operation',...required??Object.keys(extra)]);
-export function intentsSchema({errorStatuses,errorOutcomes,failureCodes,fieldPattern}){return {$schema:'https://json-schema.org/draft/2020-12/schema',$id:INTENTS_SCHEMA_ID,$defs:{
+export function intentsSchema({errorStatuses,errorOutcomes,failureCodes,fieldPattern,inboxKinds}){return {$schema:'https://json-schema.org/draft/2020-12/schema',$id:INTENTS_SCHEMA_ID,$defs:{
+ // The actor-wide inbox: the same journal items `list` publishes, read across every conversation of the caller and projected to
+ // what a cross-conversation list needs. A row names its conversation; the conversation's list/decide routes decide.
+ IntentsInboxCursor:object({conversationId:ref('IntentsConversationId'),deliveryId:{anyOf:[ref('IntentsDeliveryId'),ref('IntentsBrowserDeliveryId')]}}),
+ IntentsInboxRequest:object({after:{anyOf:[ref('IntentsInboxCursor'),{type:'null'}]},limit:{type:'integer',minimum:1,maximum:50}},[]),
+ IntentsInboxKind:{enum:[...inboxKinds]},
+ IntentsInboxRow:{oneOf:[
+  object({conversationId:ref('IntentsConversationId'),deliveryId:{anyOf:[ref('IntentsDeliveryId'),ref('IntentsBrowserDeliveryId')]},createdAt:{type:'string',pattern:MILLIS},operation:ref('IntentsClientRecordOperation'),kind:ref('IntentsInboxKind'),withheld:{const:true}}),
+  object({conversationId:ref('IntentsConversationId'),deliveryId:{anyOf:[ref('IntentsDeliveryId'),ref('IntentsBrowserDeliveryId')]},createdAt:{type:'string',pattern:MILLIS},operation:ref('IntentsClientRecordOperation'),kind:ref('IntentsInboxKind'),withheld:{const:false},
+   clientId:{anyOf:[{type:'string',minLength:1,maxLength:256},{type:'null'}]},expiresAt:{type:'string',format:'date-time'},phase:{enum:[...INTENT_PHASES]}}),
+ ]},
+ IntentsInboxResponse:object({rows:{type:'array',items:ref('IntentsInboxRow'),maxItems:50},next:{anyOf:[ref('IntentsInboxCursor'),{type:'null'}]},pending:object({count:{type:'integer',minimum:0,maximum:50},complete:{type:'boolean'}})}),
  IntentsConversationId:{type:'string',pattern:UUID},
  IntentsDeliveryId:{type:'string',pattern:DELIVERY},
  IntentsOperation:object({id:{type:'string',pattern:'^[a-z][a-z_]{0,62}$'},version:{const:'0.2.0'}}),

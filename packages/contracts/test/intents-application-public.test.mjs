@@ -57,6 +57,27 @@ test('actual list and decide answers are admitted: awaiting, approve, executed, 
  const again=await s.exchange('decide',body);assert.deepEqual(again.admitted.outcome,done.admitted.outcome);assert.equal(s.tasks.state.effects,1,'identical repeat replays; no second effect');
  assert(Object.isFrozen(done.admitted)&&Object.isFrozen(done.admitted.outcome.execution)&&Object.isFrozen(after.admitted.intents));
 });
+test('actual inbox answers are admitted: newest first, pending count, page cursor, completion after a decision; hostile pages refuse',async()=>{
+ const s=setup();for(const n of [1,2])await s.prepare(n);
+ const page=await s.exchange('inbox',{});assert.equal(page.status,200);
+ assert.deepEqual(page.admitted.rows.map(row=>[row.deliveryId,row.kind,row.phase,row.withheld]),[[delivery(2),'proposal','awaiting_approval',false],[delivery(1),'proposal','awaiting_approval',false]]);
+ assert.equal(page.admitted.rows[0].conversationId,s.conversationId);assert.deepEqual(page.admitted.pending,{count:2,complete:true});assert.equal(page.admitted.next,null);
+ const first=await s.exchange('inbox',{limit:1});assert.deepEqual(first.admitted.next,{conversationId:s.conversationId,deliveryId:delivery(2)});assert.deepEqual(first.admitted.pending,{count:1,complete:false});
+ const rest=await s.exchange('inbox',{limit:1,after:first.admitted.next});assert.deepEqual(rest.admitted.rows.map(row=>row.deliveryId),[delivery(1)]);assert.equal(rest.admitted.next,null);
+ const proposal=[...s.store.rows.values()][0].outcome.result.proposal;await s.exchange('decide',s.decideBody(proposal));
+ const after=await s.exchange('inbox',{});assert.deepEqual(after.admitted.rows.map(row=>row.phase),['awaiting_approval','completed']);assert.equal(after.admitted.pending.count,1);
+ assert(Object.isFrozen(after.admitted.rows[0]));
+ for(const [name,mutate] of Object.entries({
+  'pending count':v=>{v.pending.count=0;},'completion flag':v=>{v.pending.complete=false;},'extra row':v=>{v.rows.push(clone(v.rows[0]));},
+  'order':v=>{v.rows.reverse();},'authority':v=>{v.rows[0].approved=true;},'phase vocabulary':v=>{v.rows[0].phase='signed';},'unknown kind':v=>{v.rows[0].kind='memory_review';}}))
+  {const value=clone(page.json);mutate(value);await assert.rejects(receive('inbox',200,JSON.stringify(value),{request:{}}),e=>e instanceof IntentsResponseError&&['INTENTS_SHAPE','INTENTS_CORRELATION'].includes(e.code),name);}
+ await assert.rejects(receive('inbox',200,JSON.stringify(page.json),{request:{limit:1}}),refused('INTENTS_CORRELATION'),'more rows than the captured limit');
+ const refusal=await s.exchange('inbox',{after:{conversationId:s.conversationId,deliveryId:delivery(9)}});assert.equal(refusal.status,503);assert.equal(refusal.admitted.error.code,'INTENT_JOURNAL_UNAVAILABLE');
+ // A request the contract refuses never leaves the browser; the handler's own refusal of the same body is the 400 it would have met.
+ await assert.rejects(request('inbox',JSON.stringify({limit:0})),refused('INTENTS_SHAPE'));
+ const invalid=await s.app.handle(new Request('http://127.0.0.1'+INTENT_PATHS.inbox,{method:'POST',headers:{'content-type':'application/json',authorization:'Bearer token'},body:JSON.stringify({limit:0})}));
+ assert.equal(invalid.status,400);assert.equal((await invalid.json()).error.field,'limit');
+});
 test('rejected answer is admitted only for a rejection and history reads rejected',async()=>{
  const s=setup(),{proposal}=await s.prepare(),body=s.decideBody(proposal,1,'rejected'),done=await s.exchange('decide',body);
  assert.equal(done.admitted.status,'rejected');assert.equal(done.admitted.decision.decision,'rejected');assert.equal((await s.exchange('list',s.listBody())).admitted.intents[0].phase,'rejected');
@@ -268,9 +289,10 @@ test('generated bundle is independent of the checkout layout',async()=>{
  assert(metadata.browserInputs.every(entry=>!layout.test(entry)));
 });
 test('metadata, paths and vocabularies describe the canonical mounted approval actions',async()=>{
- assert.deepEqual(intentsPaths,INTENT_PATHS);assert.deepEqual(intentsMetadata.routes,{list:{method:'POST',path:'/api/conversations/intents/list',response:'json'},decide:{method:'POST',path:'/api/conversations/intents/decide',response:'json'}});
+ assert.deepEqual(intentsPaths,INTENT_PATHS);assert.deepEqual(intentsMetadata.routes,{list:{method:'POST',path:'/api/conversations/intents/list',response:'json'},inbox:{method:'POST',path:'/api/conversations/intents/inbox',response:'json'},decide:{method:'POST',path:'/api/conversations/intents/decide',response:'json'}});
+ assert.deepEqual(intentsMetadata.inboxKinds,protocol.INTENTS_INBOX_KINDS);
  assert.deepEqual(intentsMetadata.errorStatuses,protocol.INTENTS_ERROR_STATUSES);assert.deepEqual(intentsMetadata.approvableActions,protocol.INTENTS_APPROVABLE_ACTIONS);assert.deepEqual(intentsMetadata.approvableActions,['task.create','task.update','document.draft','artifact.file','mail.send','memory.propose']);assert.deepEqual(intentsMetadata.failureCodes,protocol.INTENTS_FAILURE_CODES);
- assert.deepEqual(intentsMetadata.errorOutcomes,['NOT_DISPATCHED','UNKNOWN','RESULT_NOT_RELEASED']);assert.equal(Object.keys(intentsMetadata.routes).length,2,'no approve/execute route exists in this contract');
+ assert.deepEqual(intentsMetadata.errorOutcomes,['NOT_DISPATCHED','UNKNOWN','RESULT_NOT_RELEASED']);assert.equal(Object.keys(intentsMetadata.routes).length,3,'no approve/execute route exists in this contract');
  assert(Object.isFrozen(intentsMetadata)&&Object.isFrozen(intentsMetadata.errorStatuses));
  const schema=JSON.parse(await readFile(new URL('../dist/intents-application.schema.json',import.meta.url),'utf8')),text=JSON.stringify(schema);
  assert.equal(schema.$id,'urn:meri:intents-application:0.1.0');assert(!/"\$ref":"(?!#)/u.test(text),'every reference is local to the distribution');

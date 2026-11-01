@@ -1,6 +1,6 @@
 /** Real preparation, approval/list and HTTP owners over a synthetic atomic Core task receiver. */
 import test from 'node:test';import assert from 'node:assert/strict';
-import {createIntentApprovalOwner} from '../approval.mjs';
+import {createIntentApprovalOwner,inboxRow,INBOX_KINDS} from '../approval.mjs';
 import {createIntentApplication,INTENT_PATHS} from '../http.mjs';
 import {createNativeIntentApprovals} from '../native-approvals.mjs';
 import {composeIntentApprovals} from '../compose.mjs';
@@ -170,4 +170,45 @@ test('an admitted analysis is listed as its own pending kind and withheld withou
  assert.equal(seen.kind,'analysis_pending');assert.deepEqual(seen.pending,{sandboxId:'synthetic-sandbox'});assert.equal(Object.hasOwn(seen,'proposal'),false);
  f.store.rows.set(key(6),{record:{operation:{id:'create_task',version:'0.2.0'},argumentsSha256:'b'.repeat(64)},state:'PREPARED',outcome:{result:{status:'invented'},release:{binding:b,scopes}}});
  await assert.rejects(f.list(),e=>productFailure(e)?.code==='INTENT_JOURNAL_UNAVAILABLE');
+});
+
+test('inbox: every conversation of the actor newest first, same visibility reading as list, page cursor, pending summary, disabled and portless journals refuse',async()=>{
+ const s=setup();for(const n of [1,2,3])await s.prepare(n);
+ const inbox=(who=s.principal,extra={})=>s.owner.inbox({principal:who,request:extra});
+ const all=await inbox();
+ assert.deepEqual(all.rows.map(r=>[r.conversationId,r.deliveryId,r.kind,r.phase,r.withheld,r.clientId]),[3,2,1].map(n=>[s.c.binding.conversationId,delivery(n),'proposal','awaiting_approval',false,null]));
+ assert.deepEqual(all.pending,{count:3,complete:true});assert.equal(all.next,null);assert.equal(all.rows[0].expiresAt,[...s.store.rows.values()][2].outcome.result.proposal.expiresAt);
+ const first=await inbox(s.principal,{limit:2});assert.deepEqual(first.rows.map(r=>r.deliveryId),[delivery(3),delivery(2)]);assert.deepEqual(first.next,{conversationId:s.c.binding.conversationId,deliveryId:delivery(2)});assert.deepEqual(first.pending,{count:2,complete:false});
+ const second=await inbox(s.principal,{limit:2,after:first.next});assert.deepEqual(second.rows.map(r=>r.deliveryId),[delivery(1)]);assert.equal(second.next,null);
+ await assert.rejects(inbox(s.principal,{after:{conversationId:s.c.binding.conversationId,deliveryId:delivery(9)}}),code('INTENT_JOURNAL_UNAVAILABLE',null));
+ await assert.rejects(inbox(s.principal,{limit:51}),e=>e.message==='INTENT_REQUEST_INVALID'&&productFailure(e).field==='limit');
+ await assert.rejects(inbox(s.principal,{after:{conversationId:'x',deliveryId:delivery(1)}}),e=>e.message==='INTENT_REQUEST_INVALID'&&productFailure(e).field==='after');
+ await assert.rejects(inbox(s.principal,{conversationId:s.c.binding.conversationId}),code('INTENT_REQUEST_INVALID',null));
+ // A decision read by its owner changes the phase and the pending count; nothing here decides.
+ const {proposal}=await s.prepare(4);await s.decide(s.request(proposal,4));
+ const decided=await inbox();assert.deepEqual(decided.rows.map(r=>r.phase),['completed','awaiting_approval','awaiting_approval','awaiting_approval']);assert.equal(decided.pending.count,3);assert.equal(s.tasks.state.effects,1);
+ // Lost client access withholds the row's content exactly as list withholds the item.
+ const row=[...s.store.rows.values()][0];row.outcome.result.proposal.command.scopes=[{tenantId:'tenant',kind:'client',resourceId:'00000000-0000-4000-8000-000000000901',policyRevision:'p1'}];
+ const hidden=(await inbox()).rows.at(-1);assert.deepEqual(hidden,{conversationId:s.c.binding.conversationId,deliveryId:delivery(1),createdAt:hidden.createdAt,operation:{id:'create_task',version:'0.2.0'},kind:'proposal',withheld:true});
+ const visible=(await inbox({...s.principal,clientIds:['00000000-0000-4000-8000-000000000901']})).rows.at(-1);assert.equal(visible.clientId,'00000000-0000-4000-8000-000000000901');assert.equal(visible.withheld,false);
+ // Another actor's journal is another inbox.
+ assert.deepEqual(await inbox({...s.principal,actorId:'someone-else'}),{rows:[],next:null,pending:{count:0,complete:true}});
+ const off=setup({enabled:false});await assert.rejects(off.owner.inbox({principal:off.principal,request:{}}),code('INTENT_APPROVALS_DISABLED'));
+ const portless=createIntentApprovalOwner({journal:{read:s.store.port.read,list:s.store.port.list},now:()=>NOW,limits:{maxRequestMs:5000},enabled:true});
+ await assert.rejects(portless.inbox({principal:s.principal,request:{}}),code('INTENT_JOURNAL_UNAVAILABLE',null));
+});
+test('inbox rows read owner statuses as phases and leave non-decision items out',()=>{
+ const at=NOW,base={deliveryId:delivery(1),createdAt:new Date(NOW).toISOString(),operation:{id:'watch_action',version:'0.2.0'},state:'prepared'};
+ const proposal={scopes:[{tenantId:'tenant',kind:'client',resourceId:'client-a',policyRevision:'p1'}],expiresAt:new Date(NOW+60000).toISOString()};
+ const row=(kind,extra)=>inboxRow({...base,kind,proposal,...extra},'00000000-0000-4000-8000-000000000777',at);
+ for(const [status,phase] of [['proposed','awaiting_approval'],['approved','approved'],['executing','executing'],['succeeded','completed'],['failed_terminal','completed'],['blocked','completed'],['failed_retryable','unknown'],['outcome_unknown','unknown'],['dismissed','rejected'],['expired','expired']])
+  for(const kind of ['watch_action','legiwatch_action','client_record_action','bizdev_action','legislative_document_action'])assert.equal(row(kind,{result:{status}}).phase,phase,`${kind} ${status}`);
+ assert.equal(row('research_action',{result:{proposalStatus:'proposed'}}).phase,'awaiting_approval');assert.equal(row('research_share',{proposalStatus:'succeeded'}).phase,'completed');
+ assert.equal(row('watch_action',{result:'unavailable'}).phase,'unknown_decision');
+ assert.equal(inboxRow({...base,kind:'watch_action',proposal:{...proposal,expiresAt:new Date(NOW-1).toISOString()},result:{status:'proposed'}},'00000000-0000-4000-8000-000000000777',at).phase,'expired','a proposed owner status past its window is expired, never approvable');
+ assert.deepEqual(row('watch_action',{result:{status:'proposed'}}).clientId,'client-a');
+ assert.equal(inboxRow({...base,kind:'browser_action',phase:'awaiting_approval',proposal:{scopes:[{tenantId:'tenant',kind:'private-user',resourceId:'actor',policyRevision:'p1'}],expiresAtMs:NOW+5000}},'00000000-0000-4000-8000-000000000777',at).expiresAt,new Date(NOW+5000).toISOString());
+ for(const kind of ['draft','saved_note','memory_review','schedule_proposal','analysis_pending'])assert.equal(row(kind,{}),null,kind);
+ for(const state of ['pending','unknown','failed'])assert.equal(inboxRow({...base,state},'00000000-0000-4000-8000-000000000777',at),null,state);
+ assert.deepEqual(INBOX_KINDS,['proposal','browser_action','watch_action','legiwatch_action','client_record_action','bizdev_action','legislative_document_action','research_action','research_share']);
 });

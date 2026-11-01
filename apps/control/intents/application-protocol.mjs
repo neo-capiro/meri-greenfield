@@ -3,7 +3,7 @@
  * (`packages/contracts/generate-intents.mjs`) reads these constants, never a copy of them. */
 import {PRODUCT_ERROR_STATUSES} from '../product-access/http.mjs';
 import {INTENT_PATHS} from './http.mjs';
-import {APPROVABLE_ACTIONS,INTENT_APPROVAL_ERRORS} from './approval.mjs';
+import {APPROVABLE_ACTIONS,INBOX_KINDS,INTENT_APPROVAL_ERRORS} from './approval.mjs';
 import {INTENT_FAILURE_CODES} from './faults.mjs';
 export const INTENTS_PATHS=INTENT_PATHS;
 /** The request ceiling is the contract's own (list/decide bodies are tiny); the response ceiling and deadline are the product-access
@@ -17,3 +17,5 @@ export const INTENTS_ERROR_STATUSES=Object.freeze({...PRODUCT_ERROR_STATUSES,...
 export const INTENTS_APPROVABLE_ACTIONS=APPROVABLE_ACTIONS;
 /** Closed `failed` item codes from the intent journal. */
 export const INTENTS_FAILURE_CODES=INTENT_FAILURE_CODES;
+/** The item kinds the actor-wide inbox lists: what a person decides inline in a conversation. */
+export const INTENTS_INBOX_KINDS=INBOX_KINDS;
