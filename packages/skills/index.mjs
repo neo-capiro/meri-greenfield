@@ -15,7 +15,7 @@ const fail=code=>{throw new Error(code);};
 const index=new Map(assets.assets.map(asset=>[key(asset.skillId,asset.skillVersion),asset]));
 const cache=new Map();
 // Current process installation, distinct from immutable persisted selection pins.
-const installationCatalogSha256='d580d51e549dbf706ff0b94728adbb29a339f08ca861df61ee531c3000cdcece';
+const installationCatalogSha256='a63009c43b190f18e78f9e1a348e3b3db17e367220511b9871286a85e9d05c11';
 
 function verifyCatalog(){
   assertCatalog(catalog);

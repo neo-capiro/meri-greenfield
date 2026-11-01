@@ -68,7 +68,7 @@ export function createGeneralReadServer(c){
    const result=await life.run(signal=>c.execute({operation:row.operation,arguments:args,deliveryId:entry.deliveryId,signal}));
    if(typeof result!=='string')throw fault('INVALID_RESULT');
    let parsed;try{parsed=data(JSON.parse(result));}catch{throw fault('INVALID_RESULT');}
-   const notices=readNotices(row.operation,result);
+   const notices=readNotices(row.operation,result,parsed);
    ledger.account([result,...notices.map(n=>n.text)].join(''));life.check();
    const subject=/** @type {any} */(parsed)?.subject;
    receipts.push(Object.freeze({deliveryId:entry.deliveryId,operation:row.operation,argumentsSha256:entry.argumentsSha256,resultSha256:canonicalSha256(parsed),

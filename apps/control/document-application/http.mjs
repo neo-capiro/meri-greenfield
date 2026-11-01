@@ -3,14 +3,15 @@ import {types} from 'node:util';
 import {jsonBody,response} from '../action-application/http.mjs';
 export {jsonBody,response};
 const faults=new WeakMap();
-export function fail(code,status=400){const error=new Error(code);faults.set(error,{code,status});throw error;}
+/** `detail` carries closed, non-secret refusal facts a route chooses to release (for example an operation id). */
+export function fail(code,status=400,detail=null){const error=new Error(code);faults.set(error,{code,status,detail});throw error;}
 /** The admitted fault of an error this module raised, or null. */
 export const faultOf=error=>error&&typeof error==='object'&&!types.isProxy(error)?faults.get(error)??null:null;
 const getter=name=>Object.getOwnPropertyDescriptor(Request.prototype,name).get;
 export function requestInfo(request){
  if(!request||types.isProxy(request))fail('INVALID_REQUEST');
  let info;try{info=Object.fromEntries(['url','method','headers','signal','body'].map(k=>[k,getter(k).call(request)]));}catch{fail('INVALID_REQUEST');}
- const url=new URL(info.url),match=/^\/api\/documents\/(create|revise|inspect|download|history|list|results|preview|preview-publish|federal-prepare|federal-load|federal-publish|federal-import)$/u.exec(url.pathname);
+ const url=new URL(info.url),match=/^\/api\/documents\/(create|revise|inspect|download|history|list|results|preview|preview-publish|federal-prepare|federal-load|federal-publish|federal-import|federal-approve|federal-history)$/u.exec(url.pathname);
  if(!match||url.search||url.hash)fail('NOT_FOUND',404);
  if(info.method!=='POST')fail('METHOD_NOT_ALLOWED',405);
  const content=Headers.prototype.get.call(info.headers,'content-type');
@@ -33,5 +34,6 @@ export function errorResponse(error,state){
  // canonical owners: nothing was generated or committed, so a started write is still NOT_DISPATCHED.
  const definite=!state.completed&&['ARTIFACT_STALE_PARENT','ARTIFACT_RENDERER_UNAVAILABLE','CONFLICT'].includes(admitted.code);
  const outcome=state.completed?'RESULT_NOT_RELEASED':definite?'NOT_DISPATCHED':state.writeStarted?'UNKNOWN':state.readStarted?'READ_UNAVAILABLE':'NOT_DISPATCHED';
- return response({error:{code:admitted.code,outcome}},admitted.status);
+ return response({error:{code:admitted.code,outcome,...(admitted.detail??{})}},admitted.status);
+
 }

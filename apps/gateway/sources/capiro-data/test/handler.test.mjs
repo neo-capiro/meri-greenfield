@@ -19,6 +19,14 @@ test('native error is preserved as an error envelope and never converted to empt
   const f=capiroDataCase();f.state.page={version:'0.1.0',generatedAt:f.page.generatedAt,ok:false,error:{code:'QUERY_TIMEOUT',message:'Query exceeded the time budget.'}};
   const result=JSON.parse(await f.handler()(f.call()));assert.deepEqual(result.result,f.state.page);assert.equal(Object.hasOwn(result.result,'rows'),false);
 });
+test('Core HTTP failures map to unavailability, denial or withheld result rather than one generic code',async()=>{
+  for(const [status,code] of [[503,'UNAVAILABLE'],[500,'UNAVAILABLE'],[429,'UNAVAILABLE'],[408,'UNAVAILABLE'],[403,'ACCESS_DENIED'],[401,'ACCESS_DENIED'],[404,'INVALID_RESULT'],[400,'INVALID_RESULT']]){
+    for(const id of ids){
+      const f=capiroDataCase(id);f.state.responseFactory=()=>Response.json({message:'refused'},{status});
+      await assert.rejects(f.handler()(f.call()),{message:code},`${id} ${status}`);assert.equal(f.wire.length,1);
+    }
+  }
+});
 test('numeric coercion, false counts, undisclosed fields and mismatched limits fail closed',async()=>{
   for(const mutate of [p=>p.rows[0].total=100.1,p=>p.rows[0].count=9007199254740992,p=>p.rowCount=1,p=>p.rows[0].hidden='x',p=>p.limits.rowLimit=200,p=>p.coverage.sourceUniverseComplete=true]){
     const f=capiroDataCase();f.state.resultMutator=mutate;await assert.rejects(f.handler()(f.call()),{message:'INVALID_RESULT'});assert.equal(f.wire.length,1);

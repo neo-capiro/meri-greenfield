@@ -9,8 +9,8 @@
     },
     {
       "path": "../../apps/control/document-application/current.mjs",
-      "sha256": "88e21befa2caf6591adfcb06cca0211e07c2a417ac5094e0481a7ceabdab99df",
-      "bytes": 7270
+      "sha256": "4d12b4d86e8159ff43d2ef5beccd1192e6344a7b60201b4f21bbb14aa9d3649e",
+      "bytes": 7326
     },
     {
       "path": "../../apps/control/document-application/format-admission.mjs",
@@ -19,13 +19,13 @@
     },
     {
       "path": "../../apps/control/document-application/http.mjs",
-      "sha256": "46432d9e60e2644d0895d965d5ad41e9923b3aa4502a173f704a3f3758b801ac",
-      "bytes": 2786
+      "sha256": "4bb887bd826e151fd4f5e63f3284ff0f9e934f260879240bb6c62a7710cddba6",
+      "bytes": 3567
     },
     {
       "path": "../../apps/control/document-application/index.mjs",
-      "sha256": "a2ebafa10853d24e2347f53a9b5c0ed7a5f80fbc27e26331c932a7be9dae09de",
-      "bytes": 12893
+      "sha256": "db5f6d810000dbb272c37b9eb6756bba64d5162e4ec3c98031e62f48c1f02cb3",
+      "bytes": 13251
     },
     {
       "path": "artifacts-0.2/artifact.schema.json",
@@ -38,7 +38,7 @@
       "bytes": 50043
     }
   ],
-  "schemaSha256": "202ec9660148323c94d9b8b4e96fdfde24aa46930d7453a66c26de11d21d4223",
+  "schemaSha256": "b4cbd56c2f46a3b1b6feb167ac063a2d5be392995abfc1a8236e81841306c07b",
   "browserInputs": [
     "artifacts-0.2/artifact-formats.mjs",
     "document-application/boundary.mjs",

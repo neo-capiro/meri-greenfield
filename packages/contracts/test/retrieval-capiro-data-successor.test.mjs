@@ -23,6 +23,31 @@ test('retained SQL schema bytes and descriptor remain frozen while successor adv
  assert.deepEqual(describe('0.3.0').normalizeInput({relations:publicNames}).input,{relations:publicNames});
 });
 
+test('successor schema and descriptors state the SQL grammar, binding rules and refusal codes to the model',()=>{
+ const bytes=readFileSync(new URL('../retrieval-0.3/capiro-data.schema.json',import.meta.url)),schema=JSON.parse(bytes.toString('utf8'));
+ const sha=createHash('sha256').update(bytes).digest('hex'),query=resolveOperationContract({id:'query_capiro_data',version:'0.3.0'});
+ assert.equal(describe('0.3.0').descriptor.inputSchema.sha256,sha);assert.equal(query.descriptor.inputSchema.sha256,sha);
+ const request=schema.$defs.CapiroDataQueryRequest.properties;
+ assert.match(request.sql.description,/One read-only PostgreSQL SELECT.*non-recursive CTEs/);
+ assert.match(request.sql.description,/INNER JOIN or LEFT JOIN \.\.\. ON equality of declared key columns/);
+ assert.match(request.sql.description,/=, <>, <, <=, >, >=, AND, OR, ILIKE, IS NULL and IS NOT NULL/);
+ assert.match(request.sql.description,/String literals, IN, BETWEEN, NOT, LIKE, CASE, COALESCE, casts, arithmetic, functions, window or FILTER clauses, subqueries, OFFSET, UNION, NULLS LAST/);
+ assert.match(request.parameters.description,/pass \[\] when the SQL binds nothing/);
+ assert.match(request.rowLimit.description,/1-1000 \(default 200\)/);
+ assert.match(schema.$defs.CapiroDataDescribeRequest.properties.relations.description,/omit to list every published relation/);
+ // Annotations only: the successor keeps every structural constraint of the retained request shape.
+ const retained=JSON.parse(readFileSync(new URL('../retrieval-0.2/capiro-data.schema.json',import.meta.url),'utf8'));
+ const strip=value=>JSON.parse(JSON.stringify(value,(key,v)=>key==='description'?undefined:v));
+ assert.deepEqual(strip(request.sql),strip(retained.$defs.CapiroDataQueryRequest.properties.sql));
+ assert.deepEqual(strip(request.parameters),strip(retained.$defs.CapiroDataQueryRequest.properties.parameters));
+ assert.deepEqual(strip(request.rowLimit),strip(retained.$defs.CapiroDataQueryRequest.properties.rowLimit));
+ assert.match(query.descriptor.whenToUse,/INVALID_QUERY, UNSUPPORTED_SQL, UNKNOWN_RELATION, UNKNOWN_FIELD or PARAMETER_MISMATCH/);
+ assert.match(query.descriptor.whenToUse,/fix the SQL and run again, not switch sources/);
+ assert.match(query.descriptor.whenToUse,/rowLimit default 200, max 1000/);
+ assert.match(describe('0.3.0').descriptor.whenToUse,/once before the first query/);
+ for(const version of ['0.2.0','0.3.0'])assert.equal(resolveOperationContract({id:'query_capiro_data',version}).descriptor.sideEffect,'none');
+});
+
 test('successor permits fifteen public descriptions with exact request correlation and unchanged output budget',()=>{
  const page=capiroDataPage('describe_capiro_data');
  page.relations=publicNames.map(name=>({...structuredClone(page.relations[0]),name}));

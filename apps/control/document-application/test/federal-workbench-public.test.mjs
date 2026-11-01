@@ -1,17 +1,9 @@
-import {scopedSource} from '../../../artifacts/federal-drafting/test/scoped-fixture.mjs';
 /** Mounted native document application, deterministic compiler and canonical artifact owners;
  * SQL/object storage and native identity are isolated synthetic ports, not live qualification. */
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {randomUUID} from 'node:crypto';
-import {nativeDocumentFixture} from '../../../artifacts/test/native-document-fixture.mjs';
-import {id} from '../../../artifacts/storage/test/sql-fixture.mjs';
-import {sourceFor,opFor} from '../../../artifacts/federal-drafting/test/fixtures.mjs';
-import {createLocalDocumentPorts} from '../local/ports.mjs';
-import {createRuntimeArtifactApplication} from '../../../runtime/artifacts/application.mjs';
-import {createRuntimeDocumentOptionsComposer} from '../../../runtime/artifacts/composition.mjs';
-import {createControlRouteApplications} from '../../../runtime/control-route-boundary.mjs';
-import {createArtifactService} from '../../../artifacts/service.mjs';
+import {opFor} from '../../../artifacts/federal-drafting/test/fixtures.mjs';
 import {generateFederalWorkbench} from '../../../../packages/contracts/generate-federal-workbench.mjs';
 import {mkdtemp,rm} from 'node:fs/promises';
 import {tmpdir} from 'node:os';
@@ -20,10 +12,11 @@ import {pathToFileURL} from 'node:url';
 import official from '../../../../packages/contracts/test/fixtures/federal-draft-source.wire.json' with {type:'json'};
 import {projectNativeFederalSource} from '../../../artifacts/federal-drafting/native-source.mjs';
 import * as distributedFederal from '@capiro/meri-contracts/federal-workbench';
+import {fixture,ok,publication,importedSelection} from './federal-workbench-fixture.mjs';
 
 test('public package admits the mounted official import and downloaded envelope', async t => {
  const x=await fixture(t,{native:true}),bytes=value=>new TextEncoder().encode(JSON.stringify(value));
- const input=distributedFederal.receiveFederalRequest('federal-import',bytes(importRequest()));
+ const input=distributedFederal.receiveFederalRequest('federal-import',bytes(x.importRequest()));
  const response=await x.post('federal-import',input),raw=await response.json();
  const received=await distributedFederal.receiveFederalResponse('federal-import',response.status,bytes(raw),input);
  assert.deepEqual(received,raw);
@@ -32,43 +25,6 @@ test('public package admits the mounted official import and downloaded envelope'
  const changed=structuredClone(raw);changed.selection.revisionId=randomUUID();
  await assert.rejects(distributedFederal.receiveFederalResponse('federal-import',200,bytes(changed),input));
 });
-
-async function fixture(t,{native=false,nested=false}={}){
- const binding={tenantId:id(100),actorId:id(101),conversationId:id(102),runId:id(103),attemptId:id(104),workerId:id(105),writerFence:1};
- const clientId=id(106),scopes=[{tenantId:binding.tenantId,kind:'client',resourceId:clientId,policyRevision:'policy1'}];
- const f=nativeDocumentFixture({binding,scopes}),source=nested?scopedSource():sourceFor();
- const retained=await f.run({...f.call,request:{...f.call.request,title:'Synthetic federal source',content:{text:JSON.stringify(source)}}});
- const {deadlineMs}=f.context,now=f.options.now;
- const state={closed:false,revoked:false,artifactChecks:0},ports=createLocalDocumentPorts({binding,scopes,clientId,deadlineMs,now,state});
- const nativeState={calls:0,available:true,mutate:null};
- const federalSource={async read({selection,signal}){
-  assert.equal(signal.aborted,false);assert.deepEqual(selection,official.request);nativeState.calls++;
-  const result=nativeState.available?structuredClone(official.response):{tool:'read_federal_draft_source',authoritativeOwner:'federal_evidence_current',currentStatus:'unavailable',selection,reason:'exact_current_source_unavailable'};
-  nativeState.mutate?.(result);return result;
- }};
- t.after(()=>ports.sessions.close());
- const limits={maxRequestMs:5000,maxRequestBytes:1048576,maxResponseBytes:2097152};
- const compose=createRuntimeDocumentOptionsComposer({storage:{objects:f.options.objects,versions:f.options.versions},executor:f.options.executor,
-  pool:f.options.pool,store:{lifecycle:{readArtifactFile:async()=>null}},sessions:ports.sessions,now});
- let denyRelease=false;
- const optionsOwner={async resolve(){return {documentOptions:compose({artifactOptions:{...f.options,authorize:ports.authorize,
-  ids:()=>({artifactId:randomUUID(),versionId:randomUUID(),objectId:randomUUID()})},selectedClientId:clientId,limits,enabled:true,...(native?{federalSource}:{})}),
-  async recheck(check){if(denyRelease&&check.phase==='release')throw Object.assign(Error('ACCESS_DENIED'),{code:'ACCESS_DENIED'});}};}};
- const runtime=createRuntimeArtifactApplication({sessions:ports.sessions,optionsOwner,now,limits});
- const listeners=createControlRouteApplications({assembly:runtime,candidate:{async handle(){return null;}}});
- const session=await ports.sessions.issue({identityCredential:ports.nativeCredential});
- const post=(intent,body)=>listeners.public.handle(new Request('https://meri.synthetic.invalid/api/documents/'+intent,{method:'POST',
-  headers:{authorization:'Bearer '+session.credential,'content-type':'application/json'},body:JSON.stringify(body)}));
- const selection={versionId:retained.version.versionId,expectedArtifactSha256:retained.version.object.sha256,operations:[opFor(source,{scopeId:nested?'a':'section-1'})]};
- return {f,state,nativeState,source,selection,post,deny:()=>{denyRelease=true;},allow:()=>{denyRelease=false;},
-  suppress:()=>f.sql.suppressed.add(binding.tenantId+':artifact:'+retained.version.artifactId),
-  reads:createArtifactService({...f.options,ids:()=>({artifactId:randomUUID(),versionId:randomUUID(),objectId:randomUUID()})})};
-}
-async function ok(response){const body=await response.json();assert.equal(response.status,200,JSON.stringify(body));return body;}
-const publication=(selection,revisionSha256,output,extra={})=>({selection,revisionSha256,output,deliveryId:randomUUID(),baseVersionId:null,baseRevisionSha256:null,...extra});
-const importRequest=()=>({selection:structuredClone(official.request),deliveryId:randomUUID()});
-const importedSelection=result=>({versionId:result.publication.version.versionId,expectedArtifactSha256:result.publication.version.object.sha256,
- operations:[opFor(result.source,{scopeId:'document',expectedText:'$20',text:'$25'})]});
 
 test('nested retained source saves, reloads, exports and revises through the public receiver and immutable history',async t=>{
  const x=await fixture(t,{nested:true}),bytes=value=>new TextEncoder().encode(JSON.stringify(value));
@@ -113,7 +69,7 @@ test('invalidated ancestor paths refuse atomically through mounted prepare/publi
  for(const [route,body] of [['federal-prepare',{selection}],['federal-publish',publication(selection,valid.prepared.revisionSha256,'draft')]]){
   const request=distributedFederal.receiveFederalRequest(route,bytes(body));
   const response=await x.post(route,request),raw=await response.json();
-  assert.equal(response.status,422);assert.equal(raw.error.code,'DRAFT_PREPARATION_REFUSED');
+  assert.equal(response.status,422);assert.deepEqual(raw.error,{code:'DRAFT_SCOPE_INVALIDATED',outcome:'READ_UNAVAILABLE',operationId:'use-child'});
   const refused=await distributedFederal.receiveFederalResponse(route,response.status,bytes(raw),request);
   assert.deepEqual(refused,raw);assert.equal('prepared' in refused,false);assert.equal('publication' in refused,false);
   assert.equal(x.f.state.executions.length,writes);assert.deepEqual(selection,before);
@@ -124,7 +80,7 @@ test('invalidated ancestor paths refuse atomically through mounted prepare/publi
 });
 
 test('official import retains exact Core projection and replays original custody before review and export',async t=>{
- const x=await fixture(t,{native:true}),input=importRequest(),result=await ok(await x.post('federal-import',input));
+ const x=await fixture(t,{native:true}),input=x.importRequest(),result=await ok(await x.post('federal-import',input));
  assert.deepEqual(result.source,projectNativeFederalSource(official.request,official.response));
  const bytes=await x.reads.download(result.publication.version.versionId,x.f.context);
  assert.deepEqual(JSON.parse(bytes.bytes),{schema:result.schema,selection:result.selection,source:result.source});
@@ -137,7 +93,7 @@ test('official import retains exact Core projection and replays original custody
  await ok(await x.post('federal-load',load));
  await ok(await x.post('federal-publish',publication(selection,review.prepared.revisionSha256,'operative')));
  const before=x.f.state.executions.length;x.nativeState.available=false;
- for(const [route,body] of [['federal-import',importRequest()],['federal-prepare',{selection}],['federal-load',load],['federal-publish',publication(selection,review.prepared.revisionSha256,'redline')]]){
+ for(const [route,body] of [['federal-import',x.importRequest()],['federal-prepare',{selection}],['federal-load',load],['federal-publish',publication(selection,review.prepared.revisionSha256,'redline')]]){
   const response=await x.post(route,body);assert.equal(response.status,409);assert.equal((await response.json()).error.code,'DRAFT_SOURCE_STALE');
  }
  assert.equal(x.f.state.executions.length,before);
@@ -147,15 +103,15 @@ test('official marker never substitutes for a current Core reader; changed metad
  const x=await fixture(t),source=projectNativeFederalSource(official.request,official.response);
  const retained=await x.f.run({...x.f.call,deliveryId:randomUUID(),request:{...x.f.call.request,content:{text:JSON.stringify({schema:'meri.federal-source.v1',selection:official.request,source})}}});
  const selection=importedSelection({source,publication:retained});
- assert.equal((await x.post('federal-import',importRequest())).status,503);
+ assert.equal((await x.post('federal-import',x.importRequest())).status,503);
  assert.equal((await x.post('federal-prepare',{selection})).status,503);
- const y=await fixture(t,{native:true}),result=await ok(await y.post('federal-import',importRequest()));
+ const y=await fixture(t,{native:true}),result=await ok(await y.post('federal-import',y.importRequest()));
  y.nativeState.mutate=value=>{value.source.fetchedAt='2026-01-04T00:00:00.000Z';};
  assert.equal((await y.post('federal-prepare',{selection:importedSelection(result)})).status,409);
 });
 
 test('source change before commit preserves an unknown original delivery without repeating generation',async t=>{
- const x=await fixture(t,{native:true}),input=importRequest();
+ const x=await fixture(t,{native:true}),input=x.importRequest();
  x.f.state.executorHook=()=>{x.nativeState.available=false;};
  const result=await x.post('federal-import',input);assert.notEqual(result.status,200);
  const before=x.f.state.executions.length;
@@ -166,7 +122,7 @@ test('source change before commit preserves an unknown original delivery without
 });
 
 test('committed import withheld at release recovers the same version after current authority returns',async t=>{
- const x=await fixture(t,{native:true}),input=importRequest();x.deny();
+ const x=await fixture(t,{native:true}),input=x.importRequest();x.deny();
  const response=await x.post('federal-import',input);assert.equal(response.status,403);
  assert.equal((await response.json()).error.outcome,'RESULT_NOT_RELEASED');
  const count=x.f.state.executions.length;x.allow();
@@ -283,7 +239,7 @@ test('generated browser receiver admits actual mounted bytes and refuses changed
  await assert.rejects(receive('federal-prepare',200,bytes(changed),prepare));
  await assert.rejects(receive('federal-prepare',200,bytes(raw),structuredClone(prepare)));
  assert.throws(()=>request('federal-prepare',bytes({selection:x.selection,approved:true})));
- const y=await fixture(t,{native:true}),imported=request('federal-import',bytes(importRequest()));
+ const y=await fixture(t,{native:true}),imported=request('federal-import',bytes(y.importRequest()));
  const saved=await ok(await y.post('federal-import',imported));
  assert.deepEqual(await receive('federal-import',200,bytes(saved),imported),saved);
  const {publication:unused,...envelope}=saved;
