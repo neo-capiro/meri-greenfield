@@ -11,11 +11,13 @@ const OPERATION_VERSION=Object.freeze({create_client:'0.3.0',update_client_profi
 export function createClientRecordPreparer({operation,binding,scopes,selectedClientId,client,currentRights,policyRevision,now,deadlineMs}){
  if(!Object.hasOwn(OPERATION_VERSION,operation))throw intentFault('INTENT_CONFIGURATION');
  return Object.freeze({binding,owner:'client-record',operation:{id:operation,version:OPERATION_VERSION[operation]},async prepare(raw){
-  const {arguments:input,signal}=own(raw,['arguments','deliveryId'],['signal']),request={operation,input:validators.normalizeInput(operation,input)};
-  if(hash(input)!==hash(request.input))throw intentFault('INVALID_ARGUMENTS');
-  if(operation==='update_client_profile'&&selectedClientId!==null&&request.input.clientId!==selectedClientId)throw intentFault('ACCESS_DENIED');
-  const check=async()=>{const rights=await currentRights({signal,policyRevision});if(hash(rights.scopes)!==hash(scopes)||rights.expiresAtMs<=now())throw intentFault('ACCESS_DENIED');};
-  await check();const result=await client.prepare({binding,selectedClientId,request,signal,deadlineMs});await check();
+  const {arguments:input,signal}=own(raw,['arguments','deliveryId'],['signal']);
+  let request;try{request={operation,input:validators.normalizeInput(operation,input)};}catch{throw intentFault('INVALID_ARGUMENTS','none');}
+  if(hash(input)!==hash(request.input))throw intentFault('INVALID_ARGUMENTS','none');
+  if(operation==='update_client_profile'&&selectedClientId!==null&&request.input.clientId!==selectedClientId)throw intentFault('ACCESS_DENIED','none');
+  // Before the owner call a refusal left nothing behind (FAILED, replayable); after it a proposal may exist (UNKNOWN).
+  const check=async effect=>{const rights=await currentRights({signal,policyRevision});if(hash(rights.scopes)!==hash(scopes)||rights.expiresAtMs<=now())throw intentFault('ACCESS_DENIED',effect);};
+  await check('none');const result=await client.prepare({binding,selectedClientId,request,signal,deadlineMs});await check('unknown');
   // `preflight` is current preparation evidence, never part of the immutable command: keeping it out of `bound`
   // leaves commandSha256 exactly as it was, so the same request still yields one proposal and one retained id,
   // and review reads the live preflight through the Core client instead of a prepare-time snapshot.

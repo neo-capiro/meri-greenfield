@@ -25,6 +25,5 @@ export function work(value){
  actor(w.actorId);for(const key of ['generationJobId','generationRequestId','strategyId','strategyVersionId','plannerRequestId'])uuid(w[key]);digest(w.strategyReceiptSha256);digest(w.snapshotDigest);
  if(w.strategyId!==w.canonical.canonicalStrategyId||w.plannerRequestId!==requestId({canonical:w.canonical,actorId:w.actorId}))fail('ASSOCIATION_UNAVAILABLE');return w;
 }
-export const workflowId=value=>{const w=work(value);return 'meri:objective-planner:'+hash({canonical:w.canonical,actorId:w.actorId});};
 export function expectedSource(value){const w=work(value),c=w.canonical;return data({generationJobId:w.generationJobId,generationRequestId:w.generationRequestId,clientId:c.clientId,objectiveId:c.objectiveId,objectiveVersion:c.requestedObjectiveVersion,objectiveRevisionId:c.requestedObjectiveRevisionId,strategyId:w.strategyId,strategyVersionId:w.strategyVersionId,snapshotDigest:w.snapshotDigest});}
 export function materializationInput(value){const w=work(value);return data({requestId:w.plannerRequestId,generationJobId:w.generationJobId,expected:{strategyId:w.strategyId,strategyVersionId:w.strategyVersionId,objectiveRevisionId:w.canonical.requestedObjectiveRevisionId}});}

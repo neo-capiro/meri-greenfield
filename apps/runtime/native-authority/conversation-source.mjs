@@ -5,7 +5,7 @@ import {ProductError,productFailure} from '../../control/product-access/errors.m
 import {assertNativeSourceEvent} from '../../../packages/contracts/conversation-sources/validate.mjs';
 import {savedBillTextRequest,releaseBillTextPage} from '../../control/conversations/sources/bill-text.mjs';
 import {savedHearingRequest,releaseHearingPage} from '../../control/conversations/sources/hearing-record.mjs';
-import {HEARING_SOURCE_EVENT} from '../../../packages/contracts/conversation-sources/protocol.mjs';
+import {HEARING_SOURCE_EVENT,BILL_TEXT_SOURCE_EVENT} from '../../../packages/contracts/conversation-sources/protocol.mjs';
 const refuse=(code='SOURCE_REFERENCE_UNAVAILABLE')=>{throw new ProductError(code);};
 export function createCoreConversationSourceReader({origin,getServiceSecret,fetchImpl=fetch,now=Date.now,maxRequestMs}){
  const url=new URL(origin);if(url.protocol!=='https:'||url.pathname!=='/'||url.search||url.hash||url.username||url.password||typeof getServiceSecret!=='function'||typeof fetchImpl!=='function'||!Number.isSafeInteger(maxRequestMs)||maxRequestMs<1||maxRequestMs>30000)refuse();
@@ -13,7 +13,11 @@ export function createCoreConversationSourceReader({origin,getServiceSecret,fetc
   if(typeof credential!=='string'||!/^\S{1,8192}$/u.test(credential))refuse('UNAUTHENTICATED');
   async function read(raw,playback){
    const event=assertNativeSourceEvent(raw),b=event.binding;
-   const hearing=event.type===HEARING_SOURCE_EVENT,operation=hearing?'search_committee_hearings':'read_bill_text',request=hearing?savedHearingRequest(event):savedBillTextRequest(event);
+   const hearing=event.type===HEARING_SOURCE_EVENT;
+   // Only a saved bill page or hearing record has a current source to re-read. Saved upload metadata is immutable custody
+   // with no current read: it is unsupported here, never re-labelled as a bill request and sent to Core.
+   if(!hearing&&event.type!==BILL_TEXT_SOURCE_EVENT)refuse('SOURCE_REFERENCE_NOT_FOUND');
+   const operation=hearing?'search_committee_hearings':'read_bill_text',request=hearing?savedHearingRequest(event):savedBillTextRequest(event);
    const media=playback!==undefined;if(media&&!hearing)refuse('SOURCE_REFERENCE_NOT_FOUND');
    if(b.tenantId!==principal.tenantId||b.actorId!==principal.actorId||event.scopes.some(s=>s.kind==='client'&&!principal.clientIds.includes(s.resourceId)))refuse('ACCESS_DENIED');
    if(hearing&&request.clientId!==null&&!principal.clientIds.includes(request.clientId))refuse('ACCESS_DENIED');

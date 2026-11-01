@@ -20,6 +20,9 @@ export function createNoteIntentPreparer({binding,scopes,selectedClientId,client
   // names a meeting carries no client here: the canonical meeting owner resolves the meeting's client and asserts
   // ownership, the current visible roster and the selected client before anything is written.
   if(request.clientId!==undefined&&(selectedClientId===null||request.clientId!==selectedClientId))throw intentFault('ACCESS_DENIED','none');
+  // A bodied note that names neither a meeting nor a client is stamped with the trusted selected client: a client
+  // conversation never writes to General silently. A General conversation (no selection) keeps General.
+  if(request.clientId===undefined&&request.meetingId===undefined&&selectedClientId!==null)request.clientId=selectedClientId;
   const check=async()=>{const rights=await currentRights({signal,policyRevision});if(hash(rights.scopes)!==hash(scopes)||rights.expiresAtMs<=now())throw intentFault('ACCESS_DENIED');};
   await check();
   const core=await client.prepare({binding,selectedClientId,request,signal,deadlineMs});

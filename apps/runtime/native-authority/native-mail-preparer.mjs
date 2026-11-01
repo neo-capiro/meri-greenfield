@@ -15,7 +15,8 @@ export function createNativeMailPreparer({pool,binding,scopes,selectedClientId,p
  return Object.freeze({binding,operation,owner:'command',async prepare(value){
   const {arguments:raw,signal}=own(value,['arguments','deliveryId','signal']);
   const request=normalizeMailSendInput(raw,commandContext);
-  if(selectedClientId!==null&&request.clientId!==selectedClientId)deny();
+  // The client association is the trusted selection, never a model argument: a General conversation keeps clientId null.
+  if(request.clientId!==selectedClientId)deny();
   let proposalExpiresAt;
   async function preparePolicy(value){
    const {phase,selection,selectionSha256,signal,limitDeadline}=own(value,['phase','selection','selectionSha256','signal','limitDeadline']);

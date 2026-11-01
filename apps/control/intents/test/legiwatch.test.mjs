@@ -42,7 +42,7 @@ function setup(){
  const owner=createIntentApprovalOwner({journal:m.store.port,legiwatch:{read:client.read,decide:client.decide},now:()=>NOW,limits:{maxRequestMs:5000},enabled:true});
  const call={operation:{id:operation,version:'0.2.0'},arguments:request,deliveryId:delivery(1)};
  const decideRequest=(p,decision='approved')=>({conversationId:binding.conversationId,deliveryId:delivery(1),proposalId:p.proposalId,commandSha256:p.commandSha256,decision});
- return {state,binding,scopes,request,call,client,owner,principal,store:m.store,decideRequest,prepare:()=>m.mount.prepare(call),list:()=>owner.list({principal,request:{conversationId:binding.conversationId}}),decide:(p,decision='approved')=>owner.decide({principal,request:decideRequest(p,decision)})};
+ return {state,binding,scopes,request,call,client,owner,principal,store:m.store,decideRequest,prepare:()=>m.mount.prepare(call),prepareWith:(args,n)=>m.mount.prepare({...call,arguments:args,deliveryId:'sdk:'+String(n).padStart(64,'0')}),list:()=>owner.list({principal,request:{conversationId:binding.conversationId}}),decide:(p,decision='approved')=>owner.decide({principal,request:decideRequest(p,decision)})};
 }
 test('canonical intent mount prepares once and explicit approval preserves stale owner outcome',async()=>{
  const f=setup(),prepared=await f.prepare(),p=prepared.proposal;
@@ -91,3 +91,11 @@ test('revoked principal withholds history and refuses a decision before Core',as
 test('different owner request is never released as the prepared receipt',async()=>{const f=setup(),{proposal}=await f.prepare();f.state.corrupt=true;await assert.rejects(f.client.read({proposal}));assert.equal((await f.list()).intents[0].result,'unavailable');f.state.corrupt=false;f.state.corruptTime=true;await assert.rejects(f.client.read({proposal}));});
 test('expired deadline makes no HTTP call',async()=>{const f=setup(),before=f.state.paths.length;await assert.rejects(f.client.prepare({binding:f.binding,selectedClientId:f.request.clientId,request:{...f.request,requestKey:'synthetic-key'},deadlineMs:NOW}));assert.equal(f.state.paths.length,before);});
 test('catalog maps one prepare-only operation and worker rejects an applied result',async()=>{const f=setup(),p=await f.prepare();const c=resolveOperationContract(f.call.operation);c.assertOutput(p,{request:f.request});assert.throws(()=>assertPreparedResult('legiwatch',f.call.operation,{status:'executed',proposal:p.proposal},f.binding,{scopes:f.scopes,nowMs:NOW}));});
+test('pre-call refusals settle FAILED and replay the same refusal without a Core call',async()=>{
+ const f=setup();
+ for(const [n,args,code] of [[7,{},'INVALID_ARGUMENTS'],[8,{...f.request,clientId:id(6)},'ACCESS_DENIED']]){
+  await assert.rejects(f.prepareWith(args,n),{code});await assert.rejects(f.prepareWith(args,n),{code});
+  assert.equal([...f.store.rows.values()].filter(r=>r.state==='FAILED').length,n-6);
+ }
+ assert.equal(f.state.prepares,0);
+});

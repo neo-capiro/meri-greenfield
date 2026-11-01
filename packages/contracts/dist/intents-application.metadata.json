@@ -118,8 +118,8 @@
     },
     {
       "path": "../../apps/control/intents/approval.mjs",
-      "sha256": "374fea5bca8a055ae8ed1bb4132d3d5476b0993f3f2dfeacccd5536ebc0f94df",
-      "bytes": 49777
+      "sha256": "253a91dd08bff7757fe7844f47a821af82b70427f4163f105346d2cb18c71045",
+      "bytes": 51025
     },
     {
       "path": "../../apps/control/intents/faults.mjs",
@@ -178,8 +178,8 @@
     },
     {
       "path": "commands-0.2/mail-send-validation.mjs",
-      "sha256": "a4293335b3b376f8e04c0466217a0b49faf7b8c16a30b90b55afc5d5475a2af8",
-      "bytes": 2875
+      "sha256": "9356d2177746db352c3f4a6bbb5d863a6314b98101fc5ae1760e2097d1881e38",
+      "bytes": 2904
     },
     {
       "path": "commands-0.2/mail-send.schema.json",

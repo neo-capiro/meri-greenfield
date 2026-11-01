@@ -188,3 +188,9 @@ test('actual Core normalized bodies cross the mounted note owner and public rece
   }
  }
 });
+test('in a client conversation a plain note is stamped with the selected client, never saved to General silently',async()=>{
+ const f=setup(),prepared=await f.prepare({body:'Client conversation note'},12);
+ assert.equal(prepared.status,'saved');assert.equal(prepared.destination,'client_document');assert.equal(prepared.documentId,id(42));assert.equal(f.state.prepares,1);
+ // A meeting note keeps the meeting destination: the canonical meeting owner resolves the client.
+ const meeting=await f.prepare({body:'Meeting note',meetingId:id(41)},13);assert.equal(meeting.destination,'meeting');
+});

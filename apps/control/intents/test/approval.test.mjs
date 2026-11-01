@@ -161,3 +161,13 @@ test('composition is inert and disabled by default; the native adapter refuses f
  const bad=createNativeIntentApprovals({call:async()=>({decision:{decision:'approved'},checkedAtMs:NOW,revoked:false}),now:()=>NOW,maxFactBytes:65536});
  await assert.rejects(bad.record({proposal:{},decision:'approved',approver:{},binding:c.binding}),'a malformed decision receipt is refused');
 });
+test('an admitted analysis is listed as its own pending kind and withheld without its scopes; a request-less row of another kind never reads as a schedule proposal',async()=>{
+ const f=setup(),b=f.c.binding,key=n=>JSON.stringify([b.tenantId,b.actorId,b.conversationId,delivery(n)]);
+ const scopes=[{tenantId:b.tenantId,kind:'client',resourceId:'00000000-0000-4000-8000-00000000c1e1',policyRevision:'p1'}];
+ f.store.rows.set(key(5),{record:{operation:{id:'run_analysis',version:'0.2.0'},argumentsSha256:'a'.repeat(64)},state:'PREPARED',outcome:{result:{status:'analysis_pending',binding:b,scopes,result:{sandboxId:'synthetic-sandbox'}},release:{binding:b,scopes}}});
+ const withheld=(await f.list()).intents.find(i=>i.deliveryId===delivery(5));assert.deepEqual({kind:withheld.kind,withheld:withheld.withheld},{kind:'analysis_pending',withheld:true});
+ const seen=(await f.list({...f.principal,clientIds:[scopes[0].resourceId]})).intents.find(i=>i.deliveryId===delivery(5));
+ assert.equal(seen.kind,'analysis_pending');assert.deepEqual(seen.pending,{sandboxId:'synthetic-sandbox'});assert.equal(Object.hasOwn(seen,'proposal'),false);
+ f.store.rows.set(key(6),{record:{operation:{id:'create_task',version:'0.2.0'},argumentsSha256:'b'.repeat(64)},state:'PREPARED',outcome:{result:{status:'invented'},release:{binding:b,scopes}}});
+ await assert.rejects(f.list(),e=>productFailure(e)?.code==='INTENT_JOURNAL_UNAVAILABLE');
+});
