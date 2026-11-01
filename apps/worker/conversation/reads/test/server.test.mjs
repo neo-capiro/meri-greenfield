@@ -23,7 +23,8 @@ test('lists exactly the available mail reads, derived from descriptors, with sch
 
 test('an authorized read returns the canonical page and one receipt bound to the SDK delivery',async()=>{
  const f=await generalReadFixture(),m=await mountReads(f);
- try{const r=await m.call('mail_search_messages',f.search,{toolUseId:'toolu_receipt'});assert.equal(r.isError,undefined);assert.equal(r.content.length,1);
+ try{const r=await m.call('mail_search_messages',f.search,{toolUseId:'toolu_receipt'});assert.equal(r.isError,undefined);assert.equal(r.content.length,2,'the canonical page and one orientation notice');
+  assert.match(r.content[1].text,/^Notice: 1 stored message candidate\(s\) of 2 matching; more exist, continue with offset 1\./);
   const page=JSON.parse(text(r));assert.deepEqual(page.operation,MAIL_OPERATIONS[1]);assert.deepEqual(page.binding,f.binding);
   const [receipt,...rest]=m.runtime.receipts();assert.equal(rest.length,0);
   assert.equal(receipt.deliveryId,'sdk:'+canonicalSha256({binding:f.binding,sessionId:SESSION,toolUseId:'toolu_receipt'}));

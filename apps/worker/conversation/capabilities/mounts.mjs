@@ -11,7 +11,8 @@ export const UNAVAILABLE_INTENT_PORT=Object.freeze({async readAvailability(){thr
 /**
  * @param {{policy:import('./policy.mjs').CapabilityPolicy|undefined,binding:unknown,scopes:any[],now:()=>number,deadlineMs:number,
  *  generalReads?:{readAvailability:Function,execute:Function},governedIntents?:{readAvailability:Function,prepare:Function},
- *  expectedSessionId?:string,skill?:any,procedure?:{allowedTools:string[]},exclude?:{id:string,version:string}[],runBudgets?:{maxToolCalls:number,maxOutputBytes?:number,maxAggregateOutputBytes?:number},signal?:AbortSignal}} c
+ *  expectedSessionId?:string,skill?:any,procedure?:{allowedTools:string[]},exclude?:{id:string,version:string}[],runBudgets?:{maxToolCalls:number,maxOutputBytes?:number,maxAggregateOutputBytes?:number},signal?:AbortSignal,
+ *  diagnostic?:(failure:{code:string,layer:'worker'|'runner'|'control',elapsedMs:number})=>void}} c `diagnostic` receives a failed intent offer (`intents/runtime.mjs`)
  * @returns {Promise<{reads:any,intents:any}>} each runtime, or null when the profile does not enable it (or mounts no tool)
  */
 export async function createProfileMounts(c){
@@ -26,7 +27,7 @@ export async function createProfileMounts(c){
  // nothing can be prepared and no `meri_intents` tool exists to call. A run with no procedure is unchanged.
  const readOnlyProcedure=c.procedure!==undefined&&c.procedure.effectMode==='read_only';
  let intents=null;
- try{intents=c.policy?.governedIntents===true&&!readOnlyProcedure?await createIntentRuntime({...shared,port:c.governedIntents??UNAVAILABLE_INTENT_PORT}):null;}
+ try{intents=c.policy?.governedIntents===true&&!readOnlyProcedure?await createIntentRuntime({...shared,port:c.governedIntents??UNAVAILABLE_INTENT_PORT,...(c.diagnostic===undefined?{}:{diagnostic:c.diagnostic})}):null;}
  catch(error){await reads?.close();throw error;}
  return {reads,intents};
 }

@@ -3,9 +3,9 @@
  * failure is `isError:true` with one fixed text per closed code and no owner detail. UNKNOWN is never rendered as a
  * failure that may be retried: the preparation may exist, and repeating the request is refused by the replay journal. */
 const UNCHANGED='Nothing has been changed.';
-/** @type {Readonly<Record<string,(tool:string)=>string>>} */
+/** @type {Readonly<Record<string,(tool:string,reason?:string)=>string>>} */
 const TEXTS=Object.freeze({
- UNAVAILABLE:tool=>`UNAVAILABLE: ${tool} is not available in this conversation. ${UNCHANGED}`,
+ UNAVAILABLE:(tool,reason='is not available in this conversation')=>`UNAVAILABLE: ${tool} ${reason}. ${UNCHANGED}`,
  ACCESS_DENIED:tool=>`ACCESS_DENIED: ${tool} is not permitted for this user, client or conversation now. ${UNCHANGED}`,
  REFUSED:tool=>`REFUSED: ${tool} was refused by its owner (arguments, permissions or current state). ${UNCHANGED}`,
  INVALID_ARGUMENTS:tool=>`INVALID_ARGUMENTS: ${tool} refused these arguments; supply literal arguments matching its input schema. ${UNCHANGED}`,
@@ -24,10 +24,13 @@ export function intentFailureCode(error){
  const code=typeof e?.code==='string'?e.code:e?.message;
  return typeof code==='string'&&Object.hasOwn(TEXTS,code)?code:'INTERNAL_ERROR';
 }
-/** @param {string} code @param {string} tool */
-export function intentFailureResult(code,tool){
- if(tool.endsWith('propose_memory'))return {isError:true,content:[{type:/** @type {const} */('text'),text:`${Object.hasOwn(TEXTS,code)?code:'INTERNAL_ERROR'}: the memory proposal result was not released; do not repeat the request. Check the original conversation request. This is not confirmation of submission or active memory.`}]};
- return {isError:true,content:[{type:/** @type {const} */('text'),text:(Object.hasOwn(TEXTS,code)?TEXTS[code]:TEXTS.INTERNAL_ERROR)(tool)}]};
+/** `reason` (UNAVAILABLE only): a closed phrase replacing the default one, e.g. that the run's offer could not be checked.
+ * @param {string} code @param {string} tool @param {string} [reason] */
+export function intentFailureResult(code,tool,reason){
+ const unavailableFor=code==='UNAVAILABLE'&&typeof reason==='string'?reason:undefined;
+ // A memory failure after the port was reached stays uncertain; an unchecked offer never reached it, so the plain reason applies.
+ if(tool.endsWith('propose_memory')&&unavailableFor===undefined)return {isError:true,content:[{type:/** @type {const} */('text'),text:`${Object.hasOwn(TEXTS,code)?code:'INTERNAL_ERROR'}: the memory proposal result was not released; do not repeat the request. Check the original conversation request. This is not confirmation of submission or active memory.`}]};
+ return {isError:true,content:[{type:/** @type {const} */('text'),text:(Object.hasOwn(TEXTS,code)?TEXTS[code]:TEXTS.INTERNAL_ERROR)(tool,unavailableFor)}]};
 }
 /** The prepared result exactly as the owner returned it, then one fixed instruction block.
  * @param {string} json @param {'approval_required'|'draft'|'analysis_pending'|'review_pending'|'read'} status @param {string} [operation] */

@@ -31,6 +31,15 @@ export const CONTROL_CAPTURE_CHANNEL_MS=CONTROL_CHECKPOINT_CAPTURE_MS-RUNNER_LOA
 export const TASK_ROUTER_CAPTURE_MS=CONTROL_CAPTURE_CHANNEL_MS-RUNNER_LOAD_CONTROL_MARGIN_MS;
 export const RUNNER_CAPTURE_MS=TASK_ROUTER_CAPTURE_MS-RUNNER_LOAD_CONTROL_MARGIN_MS;
 
+// Governed-intent availability: worker `intents/runtime.mjs` -> runner `intents-client.mjs` -> control `intents-http.mjs`. Control's
+// resolver authenticates the execution, reads current transition authority (conversation lock, native access, Core readCurrent,
+// access verify), composes the preparers and verifies the retention fence; at the live Core round trip (about 290 ms a call) that
+// chain outran the earlier 3 s snapshot bound, so every offer failed and every governed write answered UNAVAILABLE. Each enclosing
+// hop keeps one control margin above the hop it encloses, so control refuses first and the outer layers still answer.
+export const INTENT_AVAILABILITY_CONTROL_MS=8000;
+export const INTENT_AVAILABILITY_RUNNER_MS=INTENT_AVAILABILITY_CONTROL_MS+RUNNER_LOAD_CONTROL_MARGIN_MS;
+export const INTENT_AVAILABILITY_WORKER_MS=INTENT_AVAILABILITY_RUNNER_MS+RUNNER_LOAD_CONTROL_MARGIN_MS;
+
 // SDK session preparation; a continuation reads its checkpoint snapshot from control here.
 const LOCAL_STAGE_MS=RUNNER_SESSION_RPC_MS.snapshot+RUNNER_LOAD_CONTROL_MARGIN_MS;
 // The activity's bound on runtime preparation: the runner/runtime call, then the local stage. It is the one place where an

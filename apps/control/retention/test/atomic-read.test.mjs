@@ -44,12 +44,17 @@ test('synthetic atomic read: recovery cannot enter between the memory projection
  assert.deepEqual(f.journal.lock.state(),{readers:0,writer:false,waiting:0});
 });
 
-test('synthetic atomic read: split-read and malformed snapshot stores fail closed rather than guessing unsuppressed',async()=>{
+test('synthetic atomic read: split-read stores are refused at composition; a malformed snapshot refuses its request, while a corrupt stored answer or malformed position closes the fence; never guessing unsuppressed',async()=>{
  const f=composeStartup(),subject=subjectOf();const {readProjection,...legacy}=f.watermark;
  assert.throws(()=>createRetentionStartup({journal:f.journal,watermark:legacy,ledgerSink:f.sink,purge:{enabled:false}}),/RETENTION_CONFIGURATION/);
- for(const snapshot of [{watermark:{sequence:0,entrySha256:null}},{projection:undefined,watermark:{sequence:0,entrySha256:null}},{projection:null,watermark:null}]){
-  const startup=createRetentionStartup({journal:f.journal,watermark:{...f.watermark,async readProjection(){return snapshot;}},ledgerSink:f.sink,purge:{enabled:false},now:f.clock.now});
-  await startup.start();await assert.rejects(startup.gate.assertServable(subject),/RETENTION_RECOVERY_BARRIER/);assert.equal(startup.state().enabled,false);
+ const corrupt=Object.assign(Error('RETENTION_STORE_CORRUPT'),{code:'RETENTION_STORE_CORRUPT'});
+ for(const [snapshot,code,enabled,reason] of [
+  [{watermark:{sequence:0,entrySha256:null}},'RETENTION_READ_UNAVAILABLE',true,null],
+  [{projection:undefined,watermark:{sequence:0,entrySha256:null}},'RETENTION_READ_UNAVAILABLE',true,null],
+  [{projection:null,watermark:null},'RETENTION_RECOVERY_BARRIER',false,'RETENTION_WATERMARK_UNVERIFIED'],
+  [corrupt,'RETENTION_RECOVERY_BARRIER',false,'RETENTION_STORE_CORRUPT']]){
+  const startup=createRetentionStartup({journal:f.journal,watermark:{...f.watermark,async readProjection(){if(snapshot===corrupt)throw corrupt;return snapshot;}},ledgerSink:f.sink,purge:{enabled:false},now:f.clock.now,log(){}});
+  await startup.start();await assert.rejects(startup.gate.assertServable(subject),e=>e.code===code);assert.equal(startup.state().enabled,enabled,JSON.stringify(snapshot));assert.equal(startup.state().reason,reason);
  }
 });
 

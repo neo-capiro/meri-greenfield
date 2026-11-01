@@ -3,7 +3,7 @@ import test from 'node:test';import assert from 'node:assert/strict';
 import {canonicalSha256 as hash} from '../../../../packages/contracts/validate.mjs';
 import {describeSkillPlugin} from '../../../../packages/skills/plugin.mjs';
 import {assertCapabilityPolicy,readCapabilityPolicy,POLICY_FLAGS} from '../../../worker/conversation/capabilities/policy.mjs';
-import {CORE_ROLES,NO_CAPABILITY_PLATFORM,PLUGIN_SKILL_NAMES,PROPOSED_PREVIEW_CAPABILITY_PLATFORM as PLATFORM,compileCapabilityPlatform,createStaticPlatformLimits,
+import {CORE_ROLES,NO_CAPABILITY_PLATFORM,PLUGIN_SKILL_NAMES,PROPOSED_PREVIEW_CAPABILITY_PLATFORM as PLATFORM,APPROVED_READS_LITERAL,compileCapabilityPlatform,createStaticPlatformLimits,
  createRunCapabilityPolicy,createConfiguredRunCapabilityPolicy,tenantCapabilitySettingsReader,projectCapabilityRole} from '../capability-policy.mjs';
 import {createSettingsPoolFixture} from '../../../control/settings/test/postgres-store-fixture.mjs';
 const code=c=>e=>e?.code===c;
@@ -63,4 +63,26 @@ test('requests/configuration stay closed and cancellable; obsolete policy pin op
  assert.throws(()=>createRunCapabilityPolicy({platform:PLATFORM,readTenantSettings:async()=>({}),pinnedProfiles:['a'.repeat(64)]}),code('CAPABILITY_PRODUCER_CONFIGURATION'));
  for(const capabilityPlatform of [{maximum:{},defaults:{bash:true},roleCeilings:{standard_user:{}}},{maximum:{},defaults:{},roleCeilings:{}}])assert.throws(()=>compileCapabilityPlatform({capabilityPlatform}),code('CAPABILITY_PLATFORM_CONFIGURATION'));
  const read=createStaticPlatformLimits(PLATFORM);assert.equal(await read(),await read());await assert.rejects(read({signal:AbortSignal.abort()}));
+});
+test('a platform policy may name the approved reads roster by literal; it compiles and resolves exactly as the explicit list',async()=>{
+ const operations=[{id:'read_bill_text',version:'0.2.0'},{id:'search_congress_bills',version:'0.2.0'}],narrowed=[operations[1]];
+ const approvedReads={schemaVersion:'meri-native-general-reads/1',enabled:true,operations,maxExecuteMs:20000,maxRequestBytes:65536,maxResponseBytes:1048576};
+ const platform=list=>{const p=structuredClone(PLATFORM);for(const policy of [p.maximum,p.defaults,...Object.values(p.roleCeilings)])policy.activeReadOperations=structuredClone(list);
+  p.roleCeilings.standard_user.activeReadOperations=structuredClone(narrowed);return p;};
+ const explicit={agentcore:{approvedReads},capabilityPlatform:platform(operations)},literal={agentcore:{approvedReads},capabilityPlatform:platform(APPROVED_READS_LITERAL)};
+ // The compiled records are identical, carry only lists, and every role resolves to the same active roster under the same tenant narrowing.
+ const compiled=compileCapabilityPlatform(literal);assert.deepEqual(compiled,compileCapabilityPlatform(explicit));
+ for(const policy of [compiled.maximum,compiled.defaults,...Object.values(compiled.roleCeilings)])assert.ok(Array.isArray(policy.activeReadOperations));
+ assert.deepEqual(compiled.maximum.activeReadOperations,operations);assert.deepEqual(compiled.roleCeilings.standard_user.activeReadOperations,narrowed);
+ for(const tenant of [{},{capabilities:{activeReadOperations:narrowed}},{roles:{user_admin:{activeReadOperations:[]}}}])for(const actorRole of CORE_ROLES){
+  const [a,b]=await Promise.all([explicit,literal].map(c=>producer(compileCapabilityPlatform(c),async()=>tenant).forRun(run({actorRole}))));
+  assert.deepEqual(a,b,`${actorRole} ${JSON.stringify(tenant)}`);
+  assert.deepEqual(a.activeReadOperations,tenant.roles?.[actorRole]?[]:tenant.capabilities?.activeReadOperations??(actorRole==='standard_user'?narrowed:operations));
+ }
+ // The literal is a platform compile-time form only: it needs the roster beside it, is case-exact, and is never a tenant value.
+ assert.throws(()=>compileCapabilityPlatform({capabilityPlatform:platform(APPROVED_READS_LITERAL)}),code('CAPABILITY_PLATFORM_CONFIGURATION'));
+ assert.throws(()=>compileCapabilityPlatform({agentcore:{approvedReads:{...approvedReads,operations:'approved'}},capabilityPlatform:platform(APPROVED_READS_LITERAL)}),code('CAPABILITY_PLATFORM_CONFIGURATION'));
+ for(const value of ['Approved','all',['approved']])assert.throws(()=>compileCapabilityPlatform({agentcore:{approvedReads},capabilityPlatform:platform(value)}),code('CAPABILITY_PLATFORM_CONFIGURATION'));
+ await assert.rejects(producer(compiled,async()=>({capabilities:{activeReadOperations:APPROVED_READS_LITERAL}})).forRun(run()),code('CAPABILITY_POLICY_REFUSED'));
+ assert.throws(()=>createRunCapabilityPolicy({platform:literal.capabilityPlatform,readTenantSettings:async()=>({})}),code('CAPABILITY_PRODUCER_CONFIGURATION'));
 });
