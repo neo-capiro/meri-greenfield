@@ -19,7 +19,17 @@ test('SQL routing is admitted only with both actual query tools, and only as rou
  assert.match(prompt,/query-bounded rows, not source completeness; generatedAt is query time/);
  // The retired contract envelope and the per-tool argument and result detail stay out of the prompt.
  assert.doesNotMatch(prompt,/contract grammar|rowLimitReached|byteTruncated|keyset|legacy global query tools|Use read_saved_record/);
- assert.ok(prompt.length<1500,`${prompt.length} characters`);
+ assert.ok(prompt.length<2200,`${prompt.length} characters`);
+});
+
+const REFUSED_OR_EMPTY='A refused or empty read is reported as exactly that: never answer about the user\'s records from your own knowledge in its place, and never say that data does not exist unless the query that would show it ran and returned nothing.';
+const SHOWN_DATA='Numbers in prose must agree with the table or figures you show; summarise a trend from those numbers and state the actual high and low. When the data lacks a field the answer needs (for example names), say so before ranking or inferring, and keep facts about the world (for example two senators per state) consistent with the data shown.';
+test('answers about records are bound to what the mounted reads returned, whichever reads are mounted',()=>{
+ for(const tools of [[],[describe,query],[memory],[...mail]]){const prompt=readPromptSentence(true,tools);assert.ok(prompt.includes(REFUSED_OR_EMPTY),'refused or empty');assert.ok(prompt.includes(SHOWN_DATA),'shown data');
+  assert.equal(prompt.split(REFUSED_OR_EMPTY).length-1,1);assert.equal(prompt.split(SHOWN_DATA).length-1,1);
+  assert.ok(prompt.indexOf('UNAVAILABLE or ACCESS_DENIED')<prompt.indexOf(REFUSED_OR_EMPTY)&&prompt.indexOf(REFUSED_OR_EMPTY)<prompt.indexOf(SHOWN_DATA),'after the refusal terms, before routing');}
+ // Without reads there is nothing returned to bind to: the disconnected sentence alone applies.
+ const none=readPromptSentence(false,[describe,query]);assert.doesNotMatch(none,/refused or empty read|Numbers in prose/);
 });
 
 test('memory and mail routing follow their mounted tools and never claim completeness',()=>{

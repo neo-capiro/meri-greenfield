@@ -13,8 +13,8 @@ export function composeIntentApprovals(configuration){
  if(c.decisions!==undefined&&['record','readDecision','getCurrent'].some(k=>typeof c.decisions?.[k]!=='function'))throw Error('INTENT_APPROVAL_CONFIGURATION');
  const decisions=c.decisions??createNativeIntentApprovals({call:(operation,input,options)=>c.native.call(operation,input,options),now:c.now,maxFactBytes:limits.maxFactBytes});
  // Approval history borrows only reads; download reservations remain with their existing owner.
- const {read,list}=createPostgresIntentJournalStore({pool:c.pool});
- const owner=createIntentApprovalOwner({journal:{read,list},decisions,
+ const {read,list,listForActor,countForActor}=createPostgresIntentJournalStore({pool:c.pool});
+ const owner=createIntentApprovalOwner({journal:{read,list,listForActor,countForActor},decisions,
   ...(c.documents?{documents:c.documents}:{}),...(c.tasks?{tasks:c.tasks}:{}),...(c.mail?{mail:c.mail}:{}),...(c.memory?{memory:c.memory}:{}),...(c.filing?{filing:c.filing}:{}),...(c.sharing?{sharing:c.sharing}:{}),...(c.researchAction?{researchAction:c.researchAction}:{}),...(c.clientRecord?{clientRecord:c.clientRecord}:{}),...(c.legiwatch?{legiwatch:c.legiwatch}:{}),...(c.bizdev?{bizdev:c.bizdev}:{}),...(c.watch?{watch:c.watch}:{}),...(c.legislativeDocument?{legislativeDocument:c.legislativeDocument}:{}),...(c.office?{office:c.office}:{}),// The public approval path receives NO consume port: list/decide can record a decision and read status,
  // never spend the approval or dispatch a browser effect.
  ...(c.browser?{browser:{record:c.browser.record,...(c.browser.status?{status:c.browser.status}:{}),

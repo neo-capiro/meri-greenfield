@@ -17,6 +17,7 @@ import {jsonBody} from '../../control/action-application/http.mjs';
 import {AGENTCORE_SESSION_HEADER} from '../agentcore-contract.mjs';
 import {storageMethod} from '../../artifacts/storage/boundary.mjs';
 import {UPLOAD_NATIVE_MOUNT_MS,mountUploadNativeControl} from './control-lifecycle.mjs';
+import {RUNTIME_CREDENTIAL_PATHS} from '../artifacts/renderer-sandbox.mjs';
 import {uploadInspectionFault,uploadInspectionPurpose,uploadInspectionRequest,uploadInspectionBody,
  UPLOAD_INSPECTION_WIRE_BYTES,UPLOAD_INSPECTION_RESULT_BYTES,UPLOAD_INSPECTION_MAX_DEADLINE_MS} from './agentcore-contract.mjs';
 
@@ -104,12 +105,17 @@ export function uploadInspectionHostConfiguration(environment=globalThis.process
  *    correlation the existing renderer owner applies. No observed digest is claimed or invented here -- observing a
  *    running image remains the separate image owner's join.
  *
+ * The probe is handed this image's protected-path inventory (`RUNTIME_CREDENTIAL_PATHS`, the same list the renderer
+ * purpose in this image proves unreadable). The qualifier admits `noCredentials` only over a NON-EMPTY inventory whose
+ * every path the child could not read; without it the live container reported `noCredentials` unmet with
+ * `checked:0`, and the purpose was permanently 503 regardless of the actual sandbox.
+ *
  * A host that cannot attest the sandbox, observe the tools or resolve a signed snapshot yields `inspection:null` plus
  * the exact `missing` list, so the application answers 503 and no caller ever sees a fabricated scan. */
 export async function composeUploadInspectionHost({environment=globalThis.process?.env??{},now=Date.now,signal,deadlineMs,run,processing,paths,readFileImpl,scratchRoot,definitionsRoot}={}){
  const roots={...(scratchRoot===undefined?{}:{scratchRoot}),...(definitionsRoot===undefined?{}:{definitionsRoot})};
  const configuration=uploadInspectionHostConfiguration(environment,roots);
- const handle=await mountUploadNativeControl({configuration,now,signal,
+ const handle=await mountUploadNativeControl({configuration,now,signal,credentialPaths:[...RUNTIME_CREDENTIAL_PATHS],
   deadlineMs:Number.isSafeInteger(deadlineMs)?deadlineMs:now()+UPLOAD_NATIVE_MOUNT_MS,
   ...(processing===undefined?{}:{processing}),...(run===undefined?{}:{run}),...(paths===undefined?{}:{paths}),
   ...(readFileImpl===undefined?{}:{readFileImpl})});

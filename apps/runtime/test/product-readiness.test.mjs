@@ -12,5 +12,5 @@ test('missing owners name the foreground application and separately supervised s
 test('composed owners do not conceal remaining source or placement gaps',()=>{
  const result=productReadiness({ports:{configuredOwners:['identityContext','transitionAuthority','continuationAdmission','approvals','artifactOptionsOwner','artifactStore','actionApplication','selectedController','sdkSessionOwner','sdkSessionSnapshot','conversationMembership','conversationTurns','intentApplication','settingsApplication','retentionLedgerSink']},retention:{},sourceEnabled:true});
  assert.equal(result.owners.find(o=>o.name==='sources.currentInstallation').state,'per-run-check-required');
- assert.equal(result.ready,false);assert.deepEqual(result.missingOwners,['browser.hosts','memory.producer','uploads.custody','tasks.commands','schedules.application','schedules.inbox','sources.currentInstallation','schedules.dispatchWorker']);
+ assert.equal(result.ready,false);assert.deepEqual(result.missingOwners,['browser.hosts','data-access.application','memory.producer','uploads.custody','tasks.commands','schedules.application','schedules.inbox','sources.currentInstallation','schedules.dispatchWorker']);
 });

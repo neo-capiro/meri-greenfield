@@ -15,7 +15,7 @@ const skillOptions=name=>({mcpServers:{meri_original_reads:{type:'sdk',name:'mer
 async function reads(){const f=await generalReadFixture();return {f,m:await mountReads(f)};}
 
 test('without general reads the default prompt sentence and options are unchanged',()=>{
- const o=buildConversationOptions(runtime(),new AbortController());assert.equal(o.systemPrompt.preset,'claude_code');assert.ok(o.systemPrompt.append.includes(DEFAULT_SENTENCE));assert.equal(o.mcpServers,undefined);
+ const o=buildConversationOptions(runtime(),new AbortController());assert.equal(o.systemPrompt.preset,'claude_code');assert.ok(o.systemPrompt.append.includes(DEFAULT_SENTENCE));assert.equal(o.mcpServers,undefined);assert.doesNotMatch(o.systemPrompt.append,/refused or empty read|Numbers in prose/u,'read-bound rules are absent without reads');
  assert.equal(JSON.stringify(Object.keys(buildConversationOptions(runtime(),new AbortController(),undefined,undefined,undefined,undefined))),JSON.stringify(Object.keys(o)));
 });
 
@@ -24,6 +24,8 @@ test('mounted reads add one server, exact pre-approved names, the correlation ho
  try{const fragment=createSdkCapabilities({auditHooks:true,workspaceTools:true,workspaceToolNames:['Read']},{runOwner:{append:async()=>{}},binding,cwd,now:Date.now,newId:()=>id(1)}).options;
   const o=buildConversationOptions(runtime(),new AbortController(),undefined,undefined,fragment,m.runtime.sdkOptions);
   assert.deepEqual(Object.keys(o.mcpServers),['meri_reads']);assert.equal(o.systemPrompt.append.includes(DEFAULT_SENTENCE),false);assert.match(o.systemPrompt.append,/Only the read-only institutional source tools listed for this activity are enabled/u);
+  assert.match(o.systemPrompt.append,/A refused or empty read is reported as exactly that: .* never say that data does not exist unless the query that would show it ran and returned nothing./u);
+  assert.match(o.systemPrompt.append,/Numbers in prose must agree with the table or figures you show; .* say so before ranking or inferring, .* consistent with the data shown./u);
   for(const name of m.runtime.sdkOptions.allowedTools){assert.ok(o.allowedTools.includes(name));assert.equal((await o.canUseTool(name,{},{})).behavior,'allow');}
   assert.deepEqual(o.settings.permissions.allow,[`Read(/${cwd}/**)`,`Edit(/${cwd}/**)`],'native workspace rules still merge');
   for(const name of ['Bash','mcp__meri_reads__send_email','mcp__meri_reads__query_global_data','mcp__meri_original_reads__mail_search_messages'])assert.equal((await o.canUseTool(name,{},{})).behavior,'deny',name);

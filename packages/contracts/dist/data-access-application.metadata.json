@@ -1,0 +1,164 @@
+{
+  "contractVersion": "0.1.0",
+  "schemaId": "urn:meri:data-access-application:0.1.0",
+  "schemaVersion": "meri.data-access/1",
+  "routes": {
+    "read": {
+      "method": "POST",
+      "path": "/api/data-access/read",
+      "response": "json"
+    }
+  },
+  "authentication": {
+    "scheme": "Bearer",
+    "authority": "native session admitted by Core membership on every request; tenant, actor, role and clients come only from that admission, never from the body"
+  },
+  "limits": {
+    "requestBytes": 1024,
+    "responseBytes": 1048576,
+    "requestMs": 30000,
+    "jsonDepth": 64,
+    "jsonNodes": 100000
+  },
+  "errorStatuses": {
+    "INVALID_REQUEST": 400,
+    "UNAUTHENTICATED": 401,
+    "ACCESS_DENIED": 403,
+    "MEMBERSHIP_REVOKED": 403,
+    "NOT_FOUND": 404,
+    "METHOD_NOT_ALLOWED": 405,
+    "DEADLINE": 408,
+    "MEMBERSHIP_CHANGED": 409,
+    "REQUEST_TOO_LARGE": 413,
+    "UNSUPPORTED_MEDIA_TYPE": 415,
+    "CANCELLED": 499,
+    "PRODUCT_UNAVAILABLE": 502,
+    "DATA_ACCESS_REQUEST_INVALID": 400,
+    "DATA_ACCESS_CLIENT_REFUSED": 403,
+    "DATA_ACCESS_POLICY_UNAVAILABLE": 503,
+    "DATA_ACCESS_UNAVAILABLE": 503
+  },
+  "states": [
+    "not_installed",
+    "policy_off",
+    "client_required",
+    "available"
+  ],
+  "requirements": [
+    "mailbox"
+  ],
+  "semantics": {
+    "read": "a read-only view over the registry of constructible read families, the control's installed read operations and the member's resolved capability policy (platform, tenant, role) for the named client or General; it reads no source and changes no policy",
+    "state": "not_installed: no operation of the family is in this installation; policy_off: the resolved policy does not admit the family or none of its installed operations is active; client_required: the family needs a selected client and the request named none; available: a run for this member would list the family (every gate still applies on each call)",
+    "requires": "mailbox means the family answers only through a mailbox connection the member owns; the caller reads their own connections to say whether one is connected",
+    "relations": "the relation names the describe path publishes; public relations follow the best SQL family state, client_records relations also need a selected client",
+    "correlation": "an answer is admitted only against the captured request: it describes the same client, lists each family and relation once, and its families are sorted"
+  },
+  "bundler": "esbuild",
+  "declarations": "json-schema-to-typescript",
+  "sources": [
+    {
+      "path": "../../apps/control/data-access/http.mjs",
+      "sha256": "130b18ed5b9cb72a2b52d4dce75c7c46fa687cba0166a12ad531c4fc539b1f9c",
+      "bytes": 622
+    },
+    {
+      "path": "../../apps/control/data-access/protocol.mjs",
+      "sha256": "9eebf2479a398f301e704fecd585020cd4b951718d662daefb990bc0f836ea1b",
+      "bytes": 1594
+    },
+    {
+      "path": "../../apps/control/data-access/reader.mjs",
+      "sha256": "d420a84947c869202ae530b527f21802b54db66b239e72c8c918a4776407bfb5",
+      "bytes": 5836
+    },
+    {
+      "path": "../../apps/control/product-access/errors.mjs",
+      "sha256": "8fa3c0f395f509d8f76704580f50408bcc56fc7088e4ce242638c3cc9d1eedd0",
+      "bytes": 1100
+    },
+    {
+      "path": "../../apps/control/product-access/http.mjs",
+      "sha256": "d443095c9fa060ec803c49e53c741afea314e7045a10d4cd17dc93414e00ed84",
+      "bytes": 10020
+    },
+    {
+      "path": "../../apps/gateway/sources/capiro-data/handler.mjs",
+      "sha256": "64a2bb5a198b5b012a6be58a524cfa0ef553949c245619ea93099975c6f259ec",
+      "bytes": 4056
+    },
+    {
+      "path": "../../apps/runtime/product-ports/capability-policy.mjs",
+      "sha256": "f1a8320b31dbf487eb05e695283c596bc841687d481890e7a58cf56f589a3f20",
+      "bytes": 9626
+    },
+    {
+      "path": "../../apps/runtime/product-ports/data-access.mjs",
+      "sha256": "5617b3b9452208afa0b8319c38c8c703a5d3b0f36a672bb51012ef56f9efeddf",
+      "bytes": 2133
+    },
+    {
+      "path": "../../apps/worker/conversation/reads/availability.mjs",
+      "sha256": "fb800ef17f8820d9604e0b90bd51a1b0096d81c2420f7b0ea2ba0015ece123b1",
+      "bytes": 8159
+    },
+    {
+      "path": "../../apps/worker/conversation/reads/families.mjs",
+      "sha256": "4f2adc736443f5f27215c6f829aaf99040a28a59c300daf9e00caae99ccfaf47",
+      "bytes": 6006
+    },
+    {
+      "path": "../../apps/worker/conversation/reads/family-guidance.mjs",
+      "sha256": "ba56c23dad2daf07c81ef2bcab6fe591c24fc802f25a5e691794657bac9ad9e1",
+      "bytes": 30527
+    },
+    {
+      "path": "data-access-application/protocol.mjs",
+      "sha256": "7639a6f11623cb53a9d57dfe336eab3c76719e3be5fe20bdd37ee4f78b66ed76",
+      "bytes": 2153
+    },
+    {
+      "path": "data-access-application/README.md",
+      "sha256": "4e2fbcabdbece0de90790d9ea055510ea0a0c557ea1f5e739fc65dcbb322f00f",
+      "bytes": 2782
+    },
+    {
+      "path": "data-access-application/receive.mjs",
+      "sha256": "db79779cff5b0d616dd5c8d85b06bb92ad343d3d1aefb9bb7602ffaa31fa17b1",
+      "bytes": 2797
+    },
+    {
+      "path": "data-access-application/schema.mjs",
+      "sha256": "cad9eec9d28fc72b1d2e1fe8ec588dc0fce0730bc9bb2d64b975cfa604f6e602",
+      "bytes": 2607
+    },
+    {
+      "path": "document-application/boundary.mjs",
+      "sha256": "3ea0f93063702f161970b8cf1aef5d4a7226400d541a2ae6cf7ae891a3fe0481",
+      "bytes": 2674
+    },
+    {
+      "path": "generate-data-access.mjs",
+      "sha256": "fa970af34953eb9d3d17e10a28f755f761ee1234f2d29ccb98f56c489d7ee9e7",
+      "bytes": 8073
+    },
+    {
+      "path": "retrieval-0.2/capiro-data-validation.mjs",
+      "sha256": "2d564a9eb570f4bcbaa3e15f31f1d96f1a33fa3e7212cc0f6931f8c7fba8c002",
+      "bytes": 8487
+    }
+  ],
+  "schemaSha256": "d5bde50f3119fc2c43cc220bb26bd20a92a4299b315612d72a91d47f97db622b",
+  "browserInputs": [
+    "artifacts-0.2/artifact-formats.mjs",
+    "data-access-application/data-access-application-receiver.mjs",
+    "data-access-application/protocol.mjs",
+    "data-access-application/schema.mjs",
+    "data-access-generated:./generated-protocol.mjs",
+    "data-access-generated:./generated-validator.mjs",
+    "document-application/boundary.mjs",
+    "node_modules/ajv/dist/runtime/ucs2length.js",
+    "node_modules/canonicalize/lib/canonicalize.js"
+  ],
+  "browserImports": []
+}

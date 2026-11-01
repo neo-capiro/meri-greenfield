@@ -18,8 +18,8 @@ export async function generateIntentsContracts({check=false,toolchainRoot}={}){
   // copied into a parallel shape, so the distribution inlines the same definition the runtime family validators mount.
   const work=workSelectionSchema();originals.set(work.$id,{schema:work,path:'work-selection.mjs'});await record('work-selection.mjs');
   const errors=(await record('../../apps/control/product-access/errors.mjs')).toString(),fieldPattern=/const FIELD=\/(.+)\/u;/u.exec(errors)?.[1];if(!fieldPattern)throw Error('Missing canonical product error field pattern');
-  for(const name of ['INTENTS_PATHS','INTENTS_LIMITS','INTENTS_ERROR_OUTCOMES','INTENTS_ERROR_STATUSES','INTENTS_APPROVABLE_ACTIONS','INTENTS_FAILURE_CODES'])if(application[name]===undefined)throw Error('Missing canonical intents declaration '+name);
-  const config={paths:application.INTENTS_PATHS,limits:application.INTENTS_LIMITS,errorStatuses:application.INTENTS_ERROR_STATUSES,errorOutcomes:application.INTENTS_ERROR_OUTCOMES,failureCodes:application.INTENTS_FAILURE_CODES,approvableActions:application.INTENTS_APPROVABLE_ACTIONS,fieldPattern};
+  for(const name of ['INTENTS_PATHS','INTENTS_LIMITS','INTENTS_ERROR_OUTCOMES','INTENTS_ERROR_STATUSES','INTENTS_APPROVABLE_ACTIONS','INTENTS_FAILURE_CODES','INTENTS_INBOX_KINDS'])if(application[name]===undefined)throw Error('Missing canonical intents declaration '+name);
+  const config={paths:application.INTENTS_PATHS,limits:application.INTENTS_LIMITS,errorStatuses:application.INTENTS_ERROR_STATUSES,errorOutcomes:application.INTENTS_ERROR_OUTCOMES,failureCodes:application.INTENTS_FAILURE_CODES,approvableActions:application.INTENTS_APPROVABLE_ACTIONS,inboxKinds:application.INTENTS_INBOX_KINDS,fieldPattern};
   const metadata=createIntentsMetadata(config);
   for(const path of ['generate-intents.mjs',...['README.md','schema.mjs','protocol.mjs','boundary.mjs','semantics.mjs','routines.mjs','receive.mjs'].map(name=>'intents-application/'+name),'document-application/boundary.mjs',
    'schedules-0.2/application-protocol.mjs','../../apps/control/schedules/application.mjs','../../apps/control/schedules/application-http.mjs','artifacts-0.2/artifact-formats.mjs','commands-0.2/document-draft-validation.mjs','commands-0.2/mail-send-validation.mjs','commands-0.2/memory-review-result.mjs','commands-0.2/native-memory-result.mjs',
@@ -70,10 +70,10 @@ export declare function receiveRoutinesResponse<R extends RoutinesRoute>(route:R
 export declare const routineManagementSessionPath:'/api/routines/session';
 export declare function receiveRoutineManagementSessionRequest(jsonText:unknown):RoutinesManagementSessionRequest;
 export declare function receiveRoutineManagementSessionReceipt(jsonText:unknown,expected:RoutinesManagementContext,at:number):RoutinesManagementSessionReceipt;
-export type IntentsRoute='list'|'decide';
-export interface IntentsRequestMap {list:IntentsListRequest;decide:IntentsDecideRequest;}
-export interface IntentsResponseMap {list:IntentsListResponse;decide:IntentsDecideResponse;}
-export interface IntentsExpectationMap {list:{request:IntentsListRequest};decide:{request:IntentsDecideRequest;proposal:IntentsProposal};}
+export type IntentsRoute='list'|'inbox'|'inboxCount'|'decide';
+export interface IntentsRequestMap {list:IntentsListRequest;inbox:IntentsInboxRequest;inboxCount:IntentsInboxCountRequest;decide:IntentsDecideRequest;}
+export interface IntentsResponseMap {list:IntentsListResponse;inbox:IntentsInboxResponse;inboxCount:IntentsInboxCountResponse;decide:IntentsDecideResponse;}
+export interface IntentsExpectationMap {list:{request:IntentsListRequest};inbox:{request:IntentsInboxRequest};inboxCount:{request:IntentsInboxCountRequest};decide:{request:IntentsDecideRequest;proposal:IntentsProposal};}
 export type IntentsResponse<R extends IntentsRoute>=IntentsResponseMap[R]|IntentsErrorResponse;
 export declare class IntentsResponseError extends Error {readonly code:string;}
 export declare const intentsVersion:'0.1.0';
