@@ -6,7 +6,8 @@ import {receiveConversationRequest} from '../../../../packages/contracts/dist/co
 import {conversationErrorStatuses} from '../../../../packages/contracts/conversation-application/protocol.mjs';
 import {assertInputShape} from '../../../../packages/contracts/conversation-input/shape.mjs';
 import {fail} from '../boundary.mjs';
-import {SKILL_SELECTION_REFUSALS,skillRefusalBody} from '../service.mjs';
+import {SKILL_SELECTION_REFUSALS} from '../service.mjs';
+import {skillRefusalBody} from '../skills/refusals.mjs';
 export function createConversationInputApplication({service,now=Date.now,maxRequestBytes=131072,maxResponseBytes=2097152,maxRequestMs=3000,turnTelemetry}){
  if(typeof service?.admitInput!=='function'||!Number.isSafeInteger(maxRequestBytes)||maxRequestBytes<1||maxRequestBytes>131072||!Number.isSafeInteger(maxResponseBytes)||maxResponseBytes<1||maxResponseBytes>2097152||!Number.isSafeInteger(maxRequestMs)||maxRequestMs<1||maxRequestMs>30000)fail('HTTP_CONFIGURATION');
  return Object.freeze({async handle(request){let receivedAt;try{receivedAt=turnTelemetry?.now();}catch{}const operation=async()=>{let life;try{

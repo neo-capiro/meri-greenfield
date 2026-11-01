@@ -66,8 +66,8 @@ test('a portfolio-only workflow is unavailable in a client conversation without 
  for(const skillId of ['quick_skill.portfolio_changes','quick_skill.portfolio_overlap']){
   const descriptor=CONVERSATION_SKILLS.find(s=>s.skillId===skillId);assert.deepEqual(descriptor.subjectKinds,['portfolio']);
   const input={requestId:id(60),prompt:'Portfolio',skill:{skillId:descriptor.skillId,skillVersion:descriptor.version},windowRequest:{basis:'explicit',startInclusive:'2026-10-01T00:00:00Z',endExclusive:'2026-10-24T00:00:00Z',timezone:'UTC'}};
-  await assert.rejects(f.allocate(input),error=>code(error)==='SKILL_SCOPE_REFUSED'&&error.requiredScope==='client');
-  const allocate=await f.allocateHttp(input);assert.equal(allocate.status,400);assert.deepEqual(await allocate.json(),{error:{code:'SKILL_SCOPE_REFUSED',outcome:'NOT_DISPATCHED',requiredScope:'client'}});
+  await assert.rejects(f.allocate(input),error=>code(error)==='SKILL_SCOPE_REFUSED'&&error.requiredScope==='general','a General-only skill in a client conversation points at General');
+  const allocate=await f.allocateHttp(input);assert.equal(allocate.status,400);assert.deepEqual(await allocate.json(),{error:{code:'SKILL_SCOPE_REFUSED',outcome:'NOT_DISPATCHED',requiredScope:'general'}});
  }
  assert.equal(f.allocations.size,0);assert.equal(f.state.runs.size,0);
 });

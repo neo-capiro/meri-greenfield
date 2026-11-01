@@ -11167,7 +11167,7 @@ function validate47(data, { instancePath = "", parentData, parentDataProperty, r
 }
 validate47.evaluated = { "props": true, "dynamicProps": false, "dynamicItems": false };
 var schema56 = { "type": "object", "properties": { "error": { "type": "object", "properties": { "code": { "enum": ["NOT_FOUND", "METHOD_NOT_ALLOWED", "SESSION_REFUSED", "UNSUPPORTED_MEDIA_TYPE", "INVALID_REQUEST", "INVALID_CURSOR", "REQUEST_REPLAY_REFUSED", "SCOPE_REFUSED", "SESSION_CHANGED", "STALE_WRITER", "CONVERSATION_SELECTOR_REFUSED", "DEADLINE", "CANCELLED", "REQUEST_TOO_LARGE", "CONVERSATION_UNAVAILABLE", "MODEL_SELECTION_UNAVAILABLE", "MODEL_SETTINGS_UNAVAILABLE", "FEEDBACK_TARGET_REFUSED", "FEEDBACK_SOURCE_REFUSED", "FEEDBACK_REVISION_CHANGED", "FEEDBACK_REPLAY_REFUSED", "FEEDBACK_LIMIT", "FEEDBACK_WRITE_UNKNOWN", "SKILL_SOURCES_UNAVAILABLE", "SKILL_SCOPE_REFUSED"] }, "sources": { "$ref": "#/$defs/Canonical_SkillRefusalSources_0f6c1274" }, "requiredScope": { "$ref": "#/$defs/Canonical_SkillRequiredScope_61c2e60c" } }, "required": ["code"], "additionalProperties": false } }, "required": ["error"], "additionalProperties": false };
-var schema58 = { "enum": ["client"] };
+var schema58 = { "enum": ["client", "general"] };
 function validate48(data, { instancePath = "", parentData, parentDataProperty, rootData = data, dynamicAnchors = {} } = {}) {
   let vErrors = null;
   let errors2 = 0;
@@ -11298,8 +11298,9 @@ function validate48(data, { instancePath = "", parentData, parentDataProperty, r
                       }
                       if (valid1) {
                         if (data0.requiredScope !== void 0) {
+                          let data4 = data0.requiredScope;
                           const _errs11 = errors2;
-                          if (!(data0.requiredScope === "client")) {
+                          if (!(data4 === "client" || data4 === "general")) {
                             validate48.errors = [{ instancePath: instancePath + "/error/requiredScope", schemaPath: "#/$defs/Canonical_SkillRequiredScope_61c2e60c/enum", keyword: "enum", params: { allowedValues: schema58.enum }, message: "must be equal to one of the allowed values" }];
                             return false;
                           }

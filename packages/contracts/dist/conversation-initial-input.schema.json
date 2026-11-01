@@ -973,7 +973,8 @@
     },
     "Canonical_Canonical_SkillRequiredScope_61c2e60c_a52a55eb": {
       "enum": [
-        "client"
+        "client",
+        "general"
       ]
     },
     "Canonical_SkillRequiredScope_8806a8fe": {

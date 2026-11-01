@@ -741,7 +741,7 @@ export type ConversationEvent =
  * @maxItems 32
  */
 export type SkillRefusalSources = [string, ...string[]];
-export type SkillRequiredScope = 'client';
+export type SkillRequiredScope = 'client' | 'general';
 export type ConversationFeedbackTarget =
   | {
       kind: 'message';

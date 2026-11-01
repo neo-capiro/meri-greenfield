@@ -2,17 +2,14 @@
 import {own,data,nativeSignal} from '../../../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {canonicalSha256,validateShape} from '../../../../packages/contracts/validate.mjs';
 import {assertSubject,assertWindow} from '../../../../packages/contracts/retrieval-0.2/validate.mjs';
-import {selectSkill} from '../../../../packages/skills/index.mjs';
+import {selectSkill,documentCompiler} from '../../../../packages/skills/index.mjs';
 import {describeSkillPlugin} from '../../../../packages/skills/plugin.mjs';
+import {skillRefusal,isSkillTypedRefusal,SKILL_AVAILABILITY_UNAVAILABLE} from './refusals.mjs';
 import {assertNativeConversationScope} from '../../../../packages/contracts/runtime-0.2/session.mjs';
 import {createOperationLifetime} from '../../../../packages/runtime/operation-lifetime.mjs';
 import {unavailableSkillSources} from '../../../../packages/contracts/selected-skills/sources.mjs';
 const same=(a,b)=>canonicalSha256(a)===canonicalSha256(b);
-const fault=()=>Object.assign(Error('SKILL_ADMISSION_REFUSED'),{code:'SKILL_ADMISSION_REFUSED'}),fail=()=>{throw fault();};
-/** The two refusals a user can act on keep their own code and detail through the service to the public response. */
-export const SKILL_TYPED_REFUSALS=Object.freeze(['SKILL_SCOPE_REFUSED','SKILL_SOURCES_UNAVAILABLE']);
-const refuse=(code,detail)=>{throw Object.assign(Error(code),{code,...detail});};
-const isTypedRefusal=error=>SKILL_TYPED_REFUSALS.includes(error?.code);
+const fault=()=>Object.assign(Error('SKILL_ADMISSION_REFUSED'),{code:'SKILL_ADMISSION_REFUSED'}),fail=()=>{throw fault();},refuse=(code,detail)=>{throw skillRefusal(code,detail);};
 export function createOriginalSkillAdmissionOwner(configuration){
  const c=own(configuration,['binding','loadConversation','readSelection','readCurrentContext','readSkillAvailability','now'],['maxRequestMs']);
  const binding=data(c.binding),maxRequestMs=c.maxRequestMs??3000;validateShape('RunBinding',binding);
@@ -31,28 +28,32 @@ export function createOriginalSkillAdmissionOwner(configuration){
    // not a resolved portfolio roster; each native read still authorizes actual clients.
    selection={scopes,selectedClientId:null,window:request.window};
   }else{
-   if(!selected.manifest.subjectKinds.includes('client'))fail();
+   if(!selected.manifest.subjectKinds.includes('client'))refuse('SKILL_SCOPE_REFUSED',{requiredScope:'general'});
    selection=data(own(await life.run(signal=>c.readSelection({binding,request,scopes,selectedClientId,signal})),['subject','window','mondayBoardIds']));
    assertSubject(selection.subject,binding);assertWindow(selection.window);
    if(selection.subject.kind!=='client'||selection.subject.entityType!=='client'||selection.subject.entityIds.length!==1||selection.subject.entityIds[0]!==selectedClientId||!same(selection.subject.scopes,scopes)||!same(selection.window,request.window)||!Array.isArray(selection.mondayBoardIds)||selection.mondayBoardIds.some(id=>typeof id!=='string'||!id)||new Set(selection.mondayBoardIds).size!==selection.mondayBoardIds.length)fail();
   }
   life.check();return {binding,skill:selected.pin,requestSha256:canonicalSha256(request),selectionSha256:canonicalSha256(selection),manifestSha256:selected.pin.manifestSha256,catalogSha256:selected.pin.catalogSha256,budgets:selected.manifest.budgets,policyRevision:scopes[0].policyRevision,checkedAtMs:c.now(),expiresAtMs:life.deadline()};
  }
- /** The same availability answer the worker mounts from (the gateway's snapshot gated by the worker's own rule): a required
-  * source no available allowed operation covers refuses the selection before any run exists, naming the sources. Only the
+ /** The same availability answer the worker mounts from (the gateway's snapshot gated by the worker's own general-read rule): a
+  * required source no available allowed operation covers refuses the selection before any run exists, naming the sources. Only
+  * a plugin-path skill reads through the general reads; a recipe with its own document compiler reads through the selected
+  * skill server and its own installation receipt, so the general-read policy never decides its admission. Only the
   * pre-persistence admission asks; the running recheck keeps to the run, and every read keeps its own gateway refusal. */
  async function assertSourcesAvailable({request,scopes,selectedClientId,life}){
-  const selected=selectSkill(request.skill.skillId,request.skill.skillVersion);
-  const unavailable=data(own(await life.run(signal=>c.readSkillAvailability({binding,scopes,selectedClientId,operations:selected.manifest.allowedOperations,expiresAtMs:life.deadline(),signal})),['unavailable'])).unavailable;
-  if(!Array.isArray(unavailable)||unavailable.some(op=>!selected.manifest.allowedOperations.some(allowed=>same(allowed,op))))fail();
-  const available=selected.manifest.allowedOperations.filter(op=>!unavailable.some(missing=>same(missing,op))),sources=unavailableSkillSources(selected.manifest,available);
+  const selected=selectSkill(request.skill.skillId,request.skill.skillVersion);if(documentCompiler(selected.pin)!==null)return;
+  let answer;try{answer=await life.run(signal=>c.readSkillAvailability({binding,scopes,selectedClientId,operations:selected.manifest.allowedOperations,expiresAtMs:life.deadline(),signal}));}catch{throw skillRefusal(SKILL_AVAILABILITY_UNAVAILABLE);}
+  // `considered`: the allowed operations the general-read gate decides (the port's own family knowledge); `unavailable` within them.
+  const {considered,unavailable}=data(own(answer,['considered','unavailable']));
+  if(!Array.isArray(considered)||!Array.isArray(unavailable)||considered.some(op=>!selected.manifest.allowedOperations.some(allowed=>same(allowed,op)))||unavailable.some(op=>!considered.some(candidate=>same(candidate,op))))fail();
+  const available=considered.filter(op=>!unavailable.some(missing=>same(missing,op))),sources=unavailableSkillSources(selected.manifest,available,considered);
   if(sources.length)refuse('SKILL_SOURCES_UNAVAILABLE',{sources});life.check();
  }
  /** The conversation service supplies its already-authenticated scope/deadline and
   * rechecks that same session around persistence. No execution exists at this point. */
  async function admitSelection(value){
   const {signal,...raw}=own(value,['binding','request','scopes','selectedClientId','deadlineMs'],['signal']);nativeSignal(signal);const input=data(raw);if(!same(input.binding,binding))fail();const life=lifetime(signal,input.deadlineMs);
-  try{const receipt=await selectionReceipt({...input,life});await assertSourcesAvailable({...input,life});return data({...receipt,scopes:input.scopes,selectedClientId:input.selectedClientId});}catch(error){if(isTypedRefusal(error))throw error;throw fault();}finally{life.close();}
+  try{const receipt=await selectionReceipt({...input,life});await assertSourcesAvailable({...input,life});return data({...receipt,scopes:input.scopes,selectedClientId:input.selectedClientId});}catch(error){if(isSkillTypedRefusal(error))throw error;throw fault();}finally{life.close();}
  }
  /** Runtime checks use the authenticated execution's canonical run/context;
   * actual Core data access remains in the typed read gateway. */

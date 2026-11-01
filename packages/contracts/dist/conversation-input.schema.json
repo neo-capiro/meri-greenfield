@@ -1426,7 +1426,8 @@
     },
     "Canonical_SkillRequiredScope_61c2e60c": {
       "enum": [
-        "client"
+        "client",
+        "general"
       ]
     },
     "Canonical_ConversationErrorResponse_4441f55d": {

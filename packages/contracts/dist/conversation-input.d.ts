@@ -565,7 +565,7 @@ export type Canonical_Canonical_NormalizedWindowE50Ec0EdBabbab24 =
  * @maxItems 32
  */
 export type Canonical_SkillRefusalSources_0F6C1274 = [string, ...string[]];
-export type SkillRequiredScope = 'client';
+export type SkillRequiredScope = 'client' | 'general';
 
 export interface Canonical_ConversationSubmitRequest_9C9B616B {
   requestId: string;

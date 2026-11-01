@@ -43,6 +43,14 @@ for(const [name,changes,sources] of [
 ])test(`${name}: refused before any run with SKILL_SOURCES_UNAVAILABLE naming the uncovered required sources`,async()=>{
  const f=fixture(changes);try{await assert.rejects(f.admit(),error=>error.code==='SKILL_SOURCES_UNAVAILABLE'&&JSON.stringify(error.sources)===JSON.stringify(sources));}finally{await f.selected.close();}
 });
+test('Cited Report (own document compiler) is admitted in a client conversation with general reads off, without any availability, policy or role read',async()=>{
+ const clientId=id(5),clientScopes=[{tenantId:binding.tenantId,kind:'client',resourceId:clientId,policyRevision:'policy-1'}],cited=selectSkill('quick_skill.cited_report','1.0.1');
+ const pool={query:denied,connect:denied,options:{connectionTimeoutMillis:25000,query_timeout:25000}};
+ const selected=createNativeSelectedComposition({configuration:{agentcore:{approvedReads},reads:{defaultCongress:119},limits:{requestMs:25000}},pool,store:createPostgresConversationStore({pool}),execution:{authenticate:denied},createReadsRuntime:denied,serviceFor:denied,now,
+  readAvailability:denied,capabilityPolicy:{forRun:denied},readSessionCapabilityRole:denied});
+ try{const receipt=await selected.ports.selectedSkillAdmission.admitSelection({binding,request:{requestId:id(61),prompt:'Cited report',skill:cited.pin,window:{basis:'unbounded'},windowRequest:null},scopes:clientScopes,selectedClientId:clientId,deadlineMs:NOW+5000});
+  assert.deepEqual(receipt.skill,cited.pin);assert.equal(receipt.selectedClientId,clientId);}finally{await selected.close();}
+});
 test('without the session producers the composition admits no selection: every operation is unavailable',async()=>{
  const pool={query:denied,connect:denied,options:{connectionTimeoutMillis:25000,query_timeout:25000}};
  const selected=createNativeSelectedComposition({configuration:{agentcore:{approvedReads},reads:{defaultCongress:119},limits:{requestMs:25000}},pool,store:createPostgresConversationStore({pool}),execution:{authenticate:denied},createReadsRuntime:denied,serviceFor:denied,now});

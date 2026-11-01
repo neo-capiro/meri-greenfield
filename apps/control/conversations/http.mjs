@@ -7,7 +7,8 @@ import {conversationErrorStatuses} from '../../../packages/contracts/conversatio
 import {assertFeedbackShape} from '../../../packages/contracts/conversation-application/feedback-validate.mjs';
 import {createConversationEventSource} from './events.mjs';
 import {own,fail} from './boundary.mjs';
-import {SKILL_SELECTION_REFUSALS,skillRefusalBody} from './service.mjs';
+import {SKILL_SELECTION_REFUSALS} from './service.mjs';
+import {skillRefusalBody} from './skills/refusals.mjs';
 import {types} from 'node:util';
 import {randomUUID} from 'node:crypto';
 import {beginHistoryDiagnostic,historyTraceHeader} from './history-diagnostics.mjs';

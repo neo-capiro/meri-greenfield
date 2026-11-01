@@ -5,13 +5,13 @@
   "sources": [
     {
       "path": "../../apps/control/conversations/input/http.mjs",
-      "sha256": "e9170b09abcc3bfd8a538203d136b3ac62fc64810f1d435031ad62740a4eadda",
-      "bytes": 4064
+      "sha256": "0b37490a6879936ac87cc5a2de45eda0d8c4e03b4397063048a69bb1bb090417",
+      "bytes": 4104
     },
     {
       "path": "../../apps/control/conversations/service.mjs",
-      "sha256": "01a43cc4c2a37be66941d93d54ede21274dc70fdd7cdd53a7f15cd0d6736f35a",
-      "bytes": 41327
+      "sha256": "e08705afe928b71d2eaef8fa94f4aa0a12857ffbdd0a498e4bff12760d6fe543",
+      "bytes": 40825
     },
     {
       "path": "conversation-input/protocol.mjs",
@@ -45,23 +45,23 @@
     },
     {
       "path": "dist/conversation-application.d.ts",
-      "sha256": "242d678c934fd2900c7cda3d2fec879549c803f355651e044cab7146ff494e19",
-      "bytes": 63152
+      "sha256": "06b5cf2db4d6c68376ad0edad0812ae821205aa9853e7173cabfdf0f421b7f8a",
+      "bytes": 63164
     },
     {
       "path": "dist/conversation-application.metadata.json",
-      "sha256": "983f6248992820b41656421d93ebab234e6ed6288df460d95468c0b7298976e1",
+      "sha256": "49724081d9f1bf733518dbddfb1e56092c3d223393c0474c7985ebaad4e843b6",
       "bytes": 12217
     },
     {
       "path": "dist/conversation-application.mjs",
-      "sha256": "f14188b533ba62c361b7ff0f62e7a158288f7cd918709b0b1d45836350279212",
-      "bytes": 2072391
+      "sha256": "0e560e8cb6cad45d8454b4b592adb131c0fdc72a44c3572a5d166cf90c310190",
+      "bytes": 2072470
     },
     {
       "path": "dist/conversation-application.schema.json",
-      "sha256": "36a1bde379bd7452fb5d9ef1f721ad7378d91620eb3c8c6d7766f1b6beb76322",
-      "bytes": 105674
+      "sha256": "880a041fccdea439f45e6b608b5d3c58aed1ac10511dd65aa3da4b377a9de5cf",
+      "bytes": 105693
     },
     {
       "path": "document-application/boundary.mjs",
@@ -79,7 +79,7 @@
       "bytes": 50043
     }
   ],
-  "schemaSha256": "b7625f7d18e0cdacd4894bda4ff6a42fa0824d526dcaa8ee29456275cd7d7d68",
+  "schemaSha256": "033191dfcaae980e8854b93bf716c816ccb2660668acf17068b95f0296af22a9",
   "browserInputs": [
     "artifacts-0.2/artifact-formats.mjs",
     "conversation-input/conversation-input-receiver.mjs",
@@ -97,7 +97,7 @@
     {
       "path": "./conversation-application.mjs",
       "artifact": "dist/conversation-application.mjs",
-      "sha256": "f14188b533ba62c361b7ff0f62e7a158288f7cd918709b0b1d45836350279212"
+      "sha256": "0e560e8cb6cad45d8454b4b592adb131c0fdc72a44c3572a5d166cf90c310190"
     }
   ]
 }

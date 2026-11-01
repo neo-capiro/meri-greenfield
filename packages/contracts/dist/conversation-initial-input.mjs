@@ -1225,7 +1225,7 @@ function validate29(data, { instancePath = "", parentData, parentDataProperty, r
 validate29.evaluated = { "props": true, "dynamicProps": false, "dynamicItems": false };
 var validateError = validate31;
 var schema39 = { "type": "object", "properties": { "error": { "type": "object", "properties": { "code": { "enum": ["NOT_FOUND", "METHOD_NOT_ALLOWED", "INVALID_REQUEST", "SKILL_SOURCES_UNAVAILABLE", "SKILL_SCOPE_REFUSED", "SESSION_REFUSED", "SCOPE_REFUSED", "SESSION_CHANGED", "STALE_WRITER", "INITIAL_INPUT_CONFLICT", "INITIAL_INPUT_ALREADY_EXISTS", "INITIAL_INPUT_EXPIRED", "DEADLINE", "CANCELLED", "INITIAL_INPUT_REQUIRED", "INITIAL_INPUT_CORRUPT", "INITIAL_INPUT_UNAVAILABLE", "REQUEST_TOO_LARGE", "UNSUPPORTED_MEDIA_TYPE", "MODEL_SELECTION_UNAVAILABLE", "MODEL_SETTINGS_UNAVAILABLE"] }, "outcome": { "enum": ["NOT_DISPATCHED", "UNKNOWN"] }, "sources": { "$ref": "#/$defs/Canonical_SkillRefusalSources_54e0533a" }, "requiredScope": { "$ref": "#/$defs/Canonical_SkillRequiredScope_8806a8fe" } }, "required": ["code", "outcome"], "additionalProperties": false } }, "required": ["error"], "additionalProperties": false };
-var schema41 = { "enum": ["client"] };
+var schema41 = { "enum": ["client", "general"] };
 function validate31(data, { instancePath = "", parentData, parentDataProperty, rootData = data, dynamicAnchors = {} } = {}) {
   let vErrors = null;
   let errors2 = 0;
@@ -1368,8 +1368,9 @@ function validate31(data, { instancePath = "", parentData, parentDataProperty, r
                         }
                         if (valid1) {
                           if (data0.requiredScope !== void 0) {
+                            let data5 = data0.requiredScope;
                             const _errs12 = errors2;
-                            if (!(data0.requiredScope === "client")) {
+                            if (!(data5 === "client" || data5 === "general")) {
                               validate31.errors = [{ instancePath: instancePath + "/error/requiredScope", schemaPath: "#/$defs/Canonical_SkillRequiredScope_8806a8fe/enum", keyword: "enum", params: { allowedValues: schema41.enum }, message: "must be equal to one of the allowed values" }];
                               return false;
                             }

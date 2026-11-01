@@ -152,8 +152,8 @@
     },
     {
       "path": "dist/conversation-application.schema.json",
-      "sha256": "36a1bde379bd7452fb5d9ef1f721ad7378d91620eb3c8c6d7766f1b6beb76322",
-      "bytes": 105674
+      "sha256": "880a041fccdea439f45e6b608b5d3c58aed1ac10511dd65aa3da4b377a9de5cf",
+      "bytes": 105693
     },
     {
       "path": "document-application/boundary.mjs",

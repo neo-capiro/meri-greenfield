@@ -6,7 +6,8 @@ import {receiveConversationRequest} from '../../../../packages/contracts/dist/co
 import {conversationInitialInputPath,initialInputErrorStatuses,initialInputErrorOutcomes} from '../../../../packages/contracts/conversation-initial-input/protocol.mjs';
 import {assertInitialInputShape} from '../../../../packages/contracts/conversation-initial-input/shape.mjs';
 import {fail} from '../boundary.mjs';
-import {SKILL_SELECTION_REFUSALS,skillRefusalBody} from '../service.mjs';
+import {SKILL_SELECTION_REFUSALS} from '../service.mjs';
+import {skillRefusalBody} from '../skills/refusals.mjs';
 import {productFailure} from '../../product-access/errors.mjs';
 const rejected=(code,detail={},status=initialInputErrorStatuses[code].at(-1))=>response({error:{code,outcome:initialInputErrorOutcomes[code],...detail}},status);
 export function createConversationInitialInputApplication({service,now=Date.now,maxRequestBytes=131072,maxResponseBytes=131072,maxRequestMs=3000}){

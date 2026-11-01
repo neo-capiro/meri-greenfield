@@ -1746,7 +1746,8 @@
     },
     "SkillRequiredScope": {
       "enum": [
-        "client"
+        "client",
+        "general"
       ]
     },
     "Canonical_WindowRequest_f314f340": {

@@ -8,7 +8,7 @@ import {createTransactionalApprovalMetadataStore} from '../../control/commands/a
 import {createIntentJournal} from '../../control/intents/journal.mjs';
 import {createPostgresIntentJournalStore} from '../../control/intents/postgres-journal.mjs';
 import {createNativeReadsClient} from '../reads-client.mjs';
-import {resolveAvailableReads} from '../../worker/conversation/reads/availability.mjs';
+import {resolveAvailableReads,familyReads} from '../../worker/conversation/reads/availability.mjs';
 import {assertAvailabilitySnapshot} from '../../worker/conversation/reads/snapshot.mjs';
 import {assertCapabilityPolicy} from '../../worker/conversation/capabilities/policy.mjs';
 import {createSelectedControl} from './control.mjs';
@@ -36,8 +36,11 @@ export function createNativeSelectedComposition({configuration,pool,store,execut
  // same three inputs the worker's mount uses: the gateway's availability snapshot (installation and discovery) under the
  // session's authority, the run capability policy for the session's Core role, and the worker's own gate (reads/availability.mjs).
  // Without the session producers every operation is unavailable: no selection is admitted on a hope.
+ const GENERAL_READS=familyReads().map(row=>row.operation);
  async function readSkillAvailability({binding,scopes,selectedClientId,operations,expiresAtMs,signal}){
-  if(readAvailability===undefined)return {unavailable:operations};
+  // Only the allowed operations some general-read family offers are this gate's to decide.
+  const considered=operations.filter(op=>GENERAL_READS.some(row=>same(row,op)));
+  if(readAvailability===undefined)return {considered,unavailable:considered};
   const policyRevision=scopes[0].policyRevision,role=await readSessionCapabilityRole({binding,scopes,selectedClientId,signal,deadlineMs:expiresAtMs});
   const authorityExpiresAtMs=Math.min(expiresAtMs,role.expiresAtMs),observation={binding,scopes,policyRevision,selectedClientId,expiresAtMs:authorityExpiresAtMs};
   const current=async()=>({execution:{expiresAtMs:authorityExpiresAtMs},executionSha256:hash(observation),scopes,policyRevision,selectedClientId});
@@ -45,8 +48,8 @@ export function createNativeSelectedComposition({configuration,pool,store,execut
    readAvailability({binding,current,approvedReads,signal,deadlineMs:authorityExpiresAtMs,readCapabilityRole:async()=>role}),
    capabilityPolicy.forRun({tenantId:binding.tenantId,actorId:binding.actorId,conversationId:binding.conversationId,actorRole:role.actorRole,signal})]);
   const snapshot=assertAvailabilitySnapshot(raw,{binding,policyRevision,catalogSha256:hash(installationCatalog),now}),policy=resolved===null?undefined:assertCapabilityPolicy(resolved);
-  const {available}=resolveAvailableReads({policy:policy??{generalReads:false},installation:snapshot.installation,discovery:snapshot.discovery,scopes,narrowTo:operations});
-  return {unavailable:operations.filter(op=>!available.some(row=>same(row.operation,op)))};
+  const {available}=resolveAvailableReads({policy:policy??{generalReads:false},installation:snapshot.installation,discovery:snapshot.discovery,scopes,narrowTo:considered});
+  return {considered,unavailable:considered.filter(op=>!available.some(row=>same(row.operation,op)))};
  }
  const admission=(binding,{credential}={})=>createOriginalSkillAdmissionOwner({binding,now,
   loadConversation:({signal})=>store.read(binding,{after:0,limit:1},check(signal)),readSelection:selection,

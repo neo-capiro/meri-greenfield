@@ -7,7 +7,7 @@ export type ConversationInitialInputEnvelope =
  * @maxItems 32
  */
 export type Canonical_Canonical_SkillRefusalSources_0F6C1274F79D7367 = [string, ...string[]];
-export type Canonical_Canonical_SkillRequiredScope_61C2E60CA52A55Eb = 'client';
+export type Canonical_Canonical_SkillRequiredScope_61C2E60CA52A55Eb = 'client' | 'general';
 
 export interface ConversationInitialInputAllocatedResponse {
   allocation: ConversationInitialInputAllocation;

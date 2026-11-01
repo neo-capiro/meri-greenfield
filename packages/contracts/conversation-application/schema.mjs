@@ -38,6 +38,6 @@ export function conversationSchema(){
   BrowserReceiptEvent:object({contractVersion:{const:'0.1.0'},eventId:uuid,binding:pub('RunBinding'),sequence,createdAt:{type:'string',format:'date-time'},scopes:{type:'array',items:pub('Scope'),minItems:1},type:{const:'browser.receipt'},data:ref('BrowserReceiptData')}),
   ConversationErrorResponse:object({error:object({code:{enum:Object.keys(conversationErrorStatuses)},sources:ref('SkillRefusalSources'),requiredScope:ref('SkillRequiredScope')},['code'])}),
   SkillRefusalSources:{type:'array',items:{type:'string',minLength:1,maxLength:128},minItems:1,maxItems:32,uniqueItems:true},
-  SkillRequiredScope:{enum:['client']},
+  SkillRequiredScope:{enum:['client','general']},
  }};
 }

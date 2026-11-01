@@ -7,7 +7,8 @@ import {createConversationService} from '../service.mjs';
 import {createConversationApplication} from '../http.mjs';
 import {createConversationInitialInputApplication} from '../initial-input/http.mjs';
 import {createConversationInputApplication} from '../input/http.mjs';
-import {createOriginalSkillAdmissionOwner,SKILL_TYPED_REFUSALS} from '../skills/admission.mjs';
+import {createOriginalSkillAdmissionOwner} from '../skills/admission.mjs';
+import {SKILL_TYPED_REFUSALS} from '../skills/refusals.mjs';
 import {initialInputFixture} from './initial-input-fixture.mjs';
 import {binding,versions,id} from './store-fixture.mjs';
 import {hash} from '../boundary.mjs';
@@ -27,7 +28,7 @@ function fixture({selectedClientId=null,unavailable=()=>[]}={}){
  const f=initialInputFixture(),state=Object.assign(f.state,{context:structuredClone({binding,scopes,selectedClientId}),ttl:30000,starts:[],availabilityCalls:[]});let serial=200;
  const sessions={async authenticateSession(){return {principal:{tenantId:binding.tenantId,actorId:binding.actorId,conversationId:binding.conversationId,runId:binding.runId},checkedAtMs:f.now(),expiresAtMs:f.now()+state.ttl};},async readCurrentState({authentication}){return {authenticationSha256:hash(authentication),...structuredClone(state.context),checkedAtMs:f.now(),expiresAtMs:f.now()+state.ttl};}};
  const admission=createOriginalSkillAdmissionOwner({binding,now:f.now,loadConversation:async()=>{throw Error('no run exists at admission');},readSelection:async()=>{throw Error('General admission pins no client selection');},readCurrentContext:async()=>{throw Error('unused');},
-  async readSkillAvailability(call){state.availabilityCalls.push(structuredClone(call));return {unavailable:unavailable(call.operations)};}});
+  async readSkillAvailability(call){state.availabilityCalls.push(structuredClone(call));return {considered:call.operations,unavailable:unavailable(call.operations)};}});
  const service=createConversationService({sessions,store:f.store(),versions,modelCatalog:MODEL_CATALOG,now:f.now,newId:()=>id(serial++),selectedSkillAdmission:{admitSelection:value=>admission.admitSelection(value)},dispatcher:{async start({binding}){state.starts.push(binding);},async cancel(){}}});
  const args=input=>({credential:'synthetic',input}),request=(body,path)=>new Request('https://synthetic.invalid'+path,{method:'POST',headers:{authorization:'Bearer synthetic','content-type':'application/json'},body:JSON.stringify(body)});
  return {...f,state,service,scopes,allocate:i=>service.allocateInput(args(i)),admit:i=>service.admitInput(args(i)),submit:i=>service.submit(args(i)),
@@ -73,16 +74,33 @@ test('the same client-only skill is admitted in a client conversation when its s
  const clientId=id(5),f=fixture({selectedClientId:clientId});
  const admission=createOriginalSkillAdmissionOwner({binding,now:f.now,loadConversation:async()=>{throw Error('unused');},readCurrentContext:async()=>{throw Error('unused');},
   readSelection:async({request})=>({subject:{kind:'client',entityType:'client',entityIds:[clientId],tenantId:binding.tenantId,actorId:binding.actorId,policyRevision:'policy-1',scopes:f.scopes,rosterVersionId:null},window:request.window,mondayBoardIds:[]}),
-  readSkillAvailability:async()=>({unavailable:[]})});
+  readSkillAvailability:async({operations})=>({considered:operations,unavailable:[]})});
  const receipt=await admission.admitSelection({binding,request:{requestId:id(60),prompt:'Audit',skill:audit.pin,window:{basis:'unbounded'},windowRequest:null},scopes:f.scopes,selectedClientId:clientId,deadlineMs:f.now()+2000});
  assert.deepEqual(receipt.skill,audit.pin);assert.equal(receipt.selectedClientId,clientId);
 });
-test('an availability port that answers operations outside the manifest, or fails, refuses as SKILL_ADMISSION_REFUSED without naming anything',async()=>{
- for(const unavailable of [()=>[{id:'search_public_web',version:'0.2.0'}],()=>{throw Error('PRIVATE gateway detail');},()=>null]){
-  const f=fixture({unavailable});await assert.rejects(f.allocate(intent(mail)),error=>code(error)==='SKILL_ADMISSION_REFUSED'&&!JSON.stringify(error).includes('PRIVATE'));
+test('an availability answer outside the manifest refuses as SKILL_ADMISSION_REFUSED without naming anything',async()=>{
+ for(const unavailable of [()=>[{id:'search_public_web',version:'0.2.0'}],()=>null,operations=>[{...operations[0],version:'9.9.9'}]]){
+  const f=fixture({unavailable});await assert.rejects(f.allocate(intent(mail)),error=>code(error)==='SKILL_ADMISSION_REFUSED');
   const allocate=await f.allocateHttp(intent(mail));assert.equal(allocate.status,400);assert.deepEqual(await allocate.json(),{error:{code:'INVALID_REQUEST',outcome:'NOT_DISPATCHED'}});}
+});
+test('a transient Core or gateway failure while reading availability is the service unavailability on every route, never a 400 refusal of the choice',async()=>{
+ let down=false;const f=fixture({unavailable:()=>{if(down)throw Object.assign(Error('PRIVATE Core outage'),{code:'UNAVAILABLE'});return [];}}),input=intent(mail);
+ await f.allocate(input);down=true;
+ await assert.rejects(f.allocate(input),error=>code(error)==='SKILL_AVAILABILITY_UNAVAILABLE'&&!JSON.stringify(error).includes('PRIVATE'));
+ const allocate=await f.allocateHttp(input);assert.equal(allocate.status,503);assert.deepEqual(await allocate.json(),{error:{code:'INITIAL_INPUT_UNAVAILABLE',outcome:'UNKNOWN'}});
+ const admit=await f.admitHttp(input);assert.equal(admit.status,502);assert.deepEqual(await admit.json(),{error:{code:'CONVERSATION_UNAVAILABLE'}});
+ const submit=await f.submitHttp(input);assert.equal(submit.status,502);assert.deepEqual(await submit.json(),{error:{code:'CONVERSATION_UNAVAILABLE'}});
+ assert.equal(f.state.runs.size,0);assert.equal(f.state.starts.length,0);
+});
+test('a compiler-path recipe (Cited Report) is admitted without consulting the general-read availability at all',async()=>{
+ const clientId=id(5),f=fixture({selectedClientId:clientId}),cited=selectSkill('quick_skill.cited_report','1.0.1');
+ const admission=createOriginalSkillAdmissionOwner({binding,now:f.now,loadConversation:async()=>{throw Error('unused');},readCurrentContext:async()=>{throw Error('unused');},
+  readSelection:async({request})=>({subject:{kind:'client',entityType:'client',entityIds:[clientId],tenantId:binding.tenantId,actorId:binding.actorId,policyRevision:'policy-1',scopes:f.scopes,rosterVersionId:null},window:request.window,mondayBoardIds:[]}),
+  readSkillAvailability:async()=>{throw Error('never asked');}});
+ const receipt=await admission.admitSelection({binding,request:{requestId:id(60),prompt:'Cited report',skill:cited.pin,window:{basis:'unbounded'},windowRequest:null},scopes:f.scopes,selectedClientId:clientId,deadlineMs:f.now()+2000});
+ assert.deepEqual(receipt.skill,cited.pin);
 });
 test('the two typed refusals are public 400 codes on every input route and the rest of the skill refusals stay INVALID_REQUEST',()=>{
  for(const refusal of SKILL_TYPED_REFUSALS){assert.deepEqual(conversationErrorStatuses[refusal],[400]);assert.deepEqual(initialInputErrorStatuses[refusal],[400]);}
- for(const other of ['SKILL_UNAVAILABLE','SKILL_WINDOW_REQUIRED','SKILL_WINDOW_REFUSED','SKILL_ADMISSION_REFUSED']){assert.equal(Object.hasOwn(conversationErrorStatuses,other),false);assert.equal(Object.hasOwn(initialInputErrorStatuses,other),false);}
+ for(const other of ['SKILL_UNAVAILABLE','SKILL_WINDOW_REQUIRED','SKILL_WINDOW_REFUSED','SKILL_ADMISSION_REFUSED','SKILL_AVAILABILITY_UNAVAILABLE']){assert.equal(Object.hasOwn(conversationErrorStatuses,other),false);assert.equal(Object.hasOwn(initialInputErrorStatuses,other),false);}
 });
