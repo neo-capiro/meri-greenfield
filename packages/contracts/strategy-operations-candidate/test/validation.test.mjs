@@ -71,6 +71,22 @@ test('every askType and explicit manual draft works; Objective source and Strate
  for(const askType of ['funding','policy_authority','both','protect_funding','meri_propose']){const r=request();r.source.intent.askType=askType;assertRequest(rehashRequest(r));}
  const r=request();r.source={kind:'manual',manualRequestId:id(91),goal:'Synthetic explicit manual draft'};assertRequest(rehashRequest(r));
 });
+
+test('complete shared intake preserves the submitted answers without inventing legacy Objective fields',()=>{
+ const r=request(),answers={schemaVersion:1,type:'appropriations',goal:'  '+ 'g'.repeat(3996)+'  ',ownerUserId:'user_synthetic_owner',targetDate:null,meriContext:''};
+ r.source.intent={kind:'strategy-intake',strategyIntake:answers};
+ assert.deepEqual(assertRequest(rehashRequest(r)).source.intent,{kind:'strategy-intake',strategyIntake:answers});
+ assert.equal(r.source.intent.strategyIntake.goal.length,4000);
+ for(const change of [
+  v=>{v.source.intent.strategyIntake.type=null;},v=>{v.source.intent.strategyIntake.ownerUserId=null;},
+  v=>{v.source.intent.strategyIntake.goal=' ';},v=>{v.source.intent.strategyIntake.goal='g'.repeat(4001);},
+  v=>{v.source.intent.strategyIntake.ownerUserId=' ';},v=>{v.source.intent.strategyIntake.ownerUserId='u'.repeat(121);},
+  v=>{v.source.intent.strategyIntake.meriContext='x'.repeat(8001);},v=>{v.source.intent.strategyIntake.targetDate='2026-02-30';},
+  v=>{delete v.source.intent.strategyIntake.meriContext;},v=>{v.source.intent.governmentProblem='invented';},
+  v=>{v.source.intent.strategyIntake.minimumWin='invented';},v=>{v.source.intent.kind='unknown';},
+ ]){const changed=structuredClone(r);change(changed);assert.throws(()=>assertRequest(rehashRequest(changed)));}
+ const full=structuredClone(r);full.source.intent.strategyIntake.meriContext='c'.repeat(8000);full.source.intent.strategyIntake.targetDate='2026-12-01';assertRequest(rehashRequest(full));
+});
 test('result binds exact original request/revision/context/attempt/payload and never silently accepts changed replay',()=>{
  const r=request(),verify=v=>assertResult(v,{request:r,binding:binding()});
  refused(verify,result(r),[v=>{v.binding.writerFence++;rehashResult(v);},v=>{v.contextSha256=hash('other');rehashResult(v);},v=>{v.sourceSha256=hash('other');rehashResult(v);},v=>{v.payload.summary='altered';},v=>{v.completedAtMs=r.originalExpiresAtMs;rehashResult(v);},v=>{v.operation='strategy.edit';rehashResult(v);}]);

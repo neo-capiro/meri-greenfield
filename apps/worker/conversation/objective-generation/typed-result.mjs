@@ -23,20 +23,23 @@ export function createTypedRegenerationCodec(contract){
 }
 function createCodec(contract,protocol){
  if(['assertRequest','assertSdkPayload','assertRetainedResult','candidateSchema'].some(k=>typeof contract?.[k]!=='function'))refuse();
- // The initial candidate lets the model choose a type; regeneration pins the existing type.
+ // Legacy initial hints are advisory. Shared intake binds its selected type;
+ // regeneration always pins the existing Strategy type, even after intake edits.
  const initialDraft=protocol.kind===OBJECTIVE_DRAFT_PROTOCOL.kind;
+ const requiredType=s=>initialDraft?(s.strategy.request.source.intent?.kind==='strategy-intake'?s.strategy.request.source.intent.strategyIntake.type:null):s.strategy.queuedType;
  function selection(value){
   const v=own(value,['binding','acceptedRequest','sourceAdmissionSha256','strategy'],['sourceRequestSha256']),s=data(own(v.strategy,['schemaVersion','operation','request','requestSha256','executionContext','queuedType','executionSelection'])),r=contract.assertRequest(s.request);
   if(s.schemaVersion!==1||s.operation!=='strategy.draft'||objectiveRequestProtocol(r,{sourceAdmissionSha256:v.sourceAdmissionSha256}).kind!==protocol.kind||r.source.kind!=='objective'||hash(r)!==s.requestSha256||r.requestId!==v.acceptedRequest.requestId||r.principal.tenantId!==v.binding.tenantId||r.principal.actorId!==v.binding.actorId||(!initialDraft&&r.input.typeHint===null)||r.input.typeHint!==s.queuedType)refuse();
+  if(initialDraft&&r.source.intent?.kind==='strategy-intake'&&r.source.intent.strategyIntake.type!==s.queuedType)refuse();
   const e=data(own(s.executionSelection,['provider','model']));if(Object.values(e).some(x=>typeof x!=='string'||!x.trim()||x.length>128)||typeof v.sourceAdmissionSha256!=='string'||v.sourceAdmissionSha256.length!==64||!/^[a-f0-9]{64}$/u.test(v.sourceAdmissionSha256)||v.sourceRequestSha256!==undefined&&v.sourceRequestSha256!==hash(v.acceptedRequest))refuse();
   assertObjectiveExecutionContext(s.executionContext,{request:r,acceptedRequest:v.acceptedRequest});return data({binding:v.binding,acceptedRequest:v.acceptedRequest,sourceAdmissionSha256:v.sourceAdmissionSha256,strategy:s,sourceRequestSha256:hash(v.acceptedRequest)});
  }
- function outputFormat(){const defs=contract.candidateSchema().$defs,outcome=data(defs.ModelOutcome),schema={...outcome,properties:{...outcome.properties,operation:{const:'strategy.draft'},payload:{anyOf:[defs.Draft,{type:'null'}]}}};return data({type:'json_schema',schema});}
+ function outputFormat(value){const type=requiredType(selection(value)),defs=contract.candidateSchema().$defs,outcome=data(defs.ModelOutcome),draft=type===null?defs.Draft:{...defs.Draft,properties:{...defs.Draft.properties,type:{const:type}}},schema={...outcome,properties:{...outcome.properties,operation:{const:'strategy.draft'},payload:{anyOf:[draft,{type:'null'}]}}};return data({type:'json_schema',schema});}
  function encode(value){
   const v=own(value,['selection','executionSelection','sdkResult','sessionId','receiptRef','resultRef','completedAtMs']),s=selection(v.selection),actual=data(own(v.executionSelection,['provider','model'])),r=s.strategy.request,m=contract.assertSdkPayload(v.sdkResult,{request:r});
   // Runtime must obtain this from its actual query/proxy owner; these data checks grant no authority by themselves.
   if(hash(actual)!==hash(s.strategy.executionSelection))refuse();
-  if((!initialDraft&&m.state==='succeeded'&&m.payload.type!==s.strategy.queuedType)||!Number.isSafeInteger(v.completedAtMs)||v.completedAtMs<r.requestedAtMs||v.completedAtMs>=r.originalExpiresAtMs)refuse();
+  if((requiredType(s)!==null&&m.state==='succeeded'&&m.payload.type!==requiredType(s))||!Number.isSafeInteger(v.completedAtMs)||v.completedAtMs<r.requestedAtMs||v.completedAtMs>=r.originalExpiresAtMs)refuse();
   const execution={...actual,receiptRef:v.receiptRef,receiptSha256:'0'.repeat(64),bindingSha256:hash(s.binding)},observation={sessionId:v.sessionId,completedAtMs:v.completedAtMs,state:m.state,payloadSha256:hash(m.payload)};
   const witness={sourceAdmissionSha256:s.sourceAdmissionSha256,sourceRequestSha256:s.sourceRequestSha256,typedRequestSha256:s.strategy.requestSha256,execution,observation};execution.receiptSha256=hash(typedExecutionWitness(witness));
   const body=data({[protocol.versionKey]:protocol.version,operation:'strategy.draft',requestId:r.requestId,jobId:r.jobId,requestSha256:s.strategy.requestSha256,inputSha256:r.inputSha256,sourceSha256:hash(r.source),contextSha256:r.context.contextSha256,basisSha256:r.basis===null?null:r.basisSha256,binding:s.binding,execution,resultRef:v.resultRef,completedAtMs:v.completedAtMs,state:m.state,payload:m.payload,payloadSha256:hash(m.payload),issues:m.issues});
@@ -51,7 +54,7 @@ function createCodec(contract,protocol){
   // This writer serializes once with JSON.stringify; reject duplicate keys, whitespace rewrites and alternate spellings.
   if(!Buffer.from(JSON.stringify(r),'utf8').equals(bytes)||r[protocol.versionKey]!==protocol.version||r.basisSha256!==(s.strategy.request.basis===null?null:s.strategy.request.basisSha256)||r.completedAtMs!==d.observation.completedAtMs||r.state!==d.observation.state||r.payloadSha256!==d.observation.payloadSha256)refuse();
   contract.assertRetainedResult(r,{request:s.strategy.request,binding:s.binding,execution:d.execution,resultRef:d.resultRef,resultSha256:d.resultSha256});
-  if(!initialDraft&&r.state==='succeeded'&&r.payload.type!==s.strategy.queuedType)refuse();return r;
+  if(requiredType(s)!==null&&r.state==='succeeded'&&r.payload.type!==requiredType(s))refuse();return r;
  }
  return Object.freeze({selection,outputFormat,encode,decode});
 }
