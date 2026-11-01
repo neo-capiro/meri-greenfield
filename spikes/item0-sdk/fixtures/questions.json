@@ -1,0 +1,27 @@
+[
+  {
+    "id": "seed",
+    "scope": "Synthetic client Atlas",
+    "prompt": "/meri-original-skills:meri-meeting-prep Prepare a short meeting brief for synthetic client Atlas using only fixture-records.txt and the synthetic fixture_records MCP tool. Separate facts, inference, open commitments and unavailable sources. Cite record labels. Treat the fixtures as the entire supplied evidence, not complete Capiro coverage. Remember the private rehearsal phrase amber-lantern for the next turn. Use TaskCreate to create one brief task and TaskUpdate to mark it in_progress. Save brief.md with Write, then mark the task completed with TaskUpdate and verify its final state with TaskGet and TaskList. Keep the answer below 400 words."
+  },
+  {
+    "id": "resume",
+    "scope": "Synthetic client Atlas",
+    "prompt": "Continue our prior brief. What rehearsal phrase did I ask you to remember? Without inventing evidence, rank the three next actions, identify who owns each and what is still unconfirmed. Do not read a previous answer from disk; use this conversation's resumed context. Keep the answer below 250 words."
+  },
+  {
+    "id": "fork",
+    "scope": "Synthetic client Atlas",
+    "prompt": "This is an alternative branch of the original brief. What rehearsal phrase did I give you? Assume the hearing moved from October 28 to November 4; label this as a hypothetical, not a source correction. Explain what changes in the action plan and what stays unresolved. Keep the answer below 250 words."
+  },
+  {
+    "id": "compare",
+    "scope": "Synthetic General",
+    "prompt": "Compare synthetic clients Atlas and Beacon using fixture-records.txt and the synthetic fixture_records MCP tool. Which has the more urgent evidence gap? Use the verification subagent once, wait for its report, and separate its findings from your recommendation. Cite exact record labels; these fixtures are not proof of real authorization or complete coverage. Keep the answer below 350 words."
+  },
+  {
+    "id": "web",
+    "scope": "Synthetic General; public research only",
+    "prompt": "Use built-in WebSearch to find an official GAO explanation of its role, then built-in WebFetch on https://www.gao.gov/about . Explain in under 150 words how a GAO report differs from enacted legislation. Cite only official sources you actually accessed. If either tool is unavailable, say so explicitly and do not substitute an invented search result."
+  }
+]
