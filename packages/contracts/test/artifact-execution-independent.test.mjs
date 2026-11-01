@@ -66,6 +66,8 @@ test('XML request admission matches the fixed writer grammar without imposing xm
  const input=text=>({operation:'create_word',format:'xml',title:'XML',content:{text}});
  for(const text of ['<r xml:id="not an ID"/>','<r><a xml:id="same"/><b xml:id="same"/></r>','<r>'.repeat(256)+'</r>'.repeat(256)])assert.deepEqual(v.request(input(text)),input(text));
  for(const text of ['\ufeff\ufeff<r/>','<?xml version="1.1"?><r/>','<?xml version="1.1"?><r>&#x1;</r>','<r>'.repeat(257)+'</r>'.repeat(257)])assert.throws(()=>v.request(input(text)));
+ for(const uri of ['http://a b','http://%zz','urn:α','http://a{b}','http://a&quot;b'])assert.throws(()=>v.request(input(`<r xmlns:x="${uri}"><x:a/></r>`)));
+ for(const uri of ['relative','urn:fixture','https://example.invalid/a%20b'])assert.deepEqual(v.request(input(`<r xmlns:x="${uri}"><x:a/></r>`)),input(`<r xmlns:x="${uri}"><x:a/></r>`));
 });
 test('canonical document projections admit XML writes, inspections and retained history metadata',()=>{
  const write=documentSchema(schema,{INVALID_REQUEST:400}),read=documentAccessSchema(schema,{INVALID_REQUEST:400});

@@ -91,6 +91,11 @@ class XmlEntry(unittest.TestCase):
                 with self.assertRaises(Exception):
                     self.run_entry(text)
                 self.assertEqual(list(Path('.').iterdir()), [])
+        for uri in ['http://a b', 'http://%zz', 'urn:α', 'http://a{b}', 'http://a&quot;b']:
+            with self.subTest(uri=uri), tempfile.TemporaryDirectory() as directory, chdir(directory):
+                with self.assertRaises(Exception):
+                    self.run_entry(f'<r xmlns:x="{uri}"><x:a/></r>')
+                self.assertEqual(list(Path('.').iterdir()), [])
 
 
 if __name__ == '__main__':

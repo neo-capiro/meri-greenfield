@@ -12,6 +12,7 @@ test('XML uses the bounded UTF-8 namespace parser and preserves the supplied byt
  refused(Buffer.from('<?xml version="1.0" encoding="ISO-8859-1"?><a/>'),'xml','XML_ENCODING');
  for(const text of ['\ufeff\ufeff<r/>','<?xml version="1.1"?><r/>','<r>'.repeat(257)+'</r>'.repeat(257)])refused(Buffer.from(text),'xml','XML_MALFORMED');
  for(const text of ['<r xml:id="not an ID"/>','<r><a xml:id="same"/><b xml:id="same"/></r>','<r>'.repeat(256)+'</r>'.repeat(256)])assert.deepEqual(structureCheck(Buffer.from(text),'xml'),{valid:true});
+ for(const uri of ['http://a b','http://%zz','urn:α','http://a{b}','http://a&quot;b'])refused(Buffer.from(`<r xmlns:x="${uri}"><x:a/></r>`),'xml','XML_MALFORMED');
 });
 test('valid minimal packages of every canonical format pass, stored or deflated',()=>{
  for(const format of ['docx','xlsx','pptx']){assert.equal(structurallyValid(ooxml(format),format),true,format);assert.equal(structurallyValid(zip(ooxmlEntries(format),{method:0}),format),true,`${format} stored`);}
