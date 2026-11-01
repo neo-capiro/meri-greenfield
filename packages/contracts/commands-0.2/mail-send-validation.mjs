@@ -20,7 +20,7 @@ export function createMailSendValidators({validateShape,canonicalSha256:hash,sna
   normalizeMailSendInput(c.arguments,context);
   if(!same(c.binding,context.binding)||c.scopes.length!==1||c.scopes.some(s=>s.tenantId!==c.binding.tenantId)||
    (c.scopes[0].kind==='client'?c.arguments.clientId!==c.scopes[0].resourceId:
-    c.scopes[0].kind!=='private-user'||c.scopes[0].resourceId!==c.binding.actorId))fail();return c;
+    c.scopes[0].kind!=='private-user'||c.scopes[0].resourceId!==c.binding.actorId||c.arguments.clientId!==null))fail();return c;
  }
  function assertMailSendProposal(value,context){
   const p=snapshotOperationData(value);validateShape('MailSendApprovalProposal',p);assertMailSendCommand(p.command,context);

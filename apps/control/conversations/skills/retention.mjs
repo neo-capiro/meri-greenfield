@@ -3,7 +3,7 @@ import {bounded,hash,same,fail,own,validateShape} from '../boundary.mjs';
 import {selectedApprovalDecision} from '../../document-application/selected-output/receipts.mjs';
 import {nativeSignal} from '../../../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {artifactValidators as v,assertSubject} from '../../../../packages/contracts/retrieval-0.2/validate.mjs';
-import {selectSkill} from '../../../../packages/skills/index.mjs';
+import {selectSkill,documentCompiler} from '../../../../packages/skills/index.mjs';
 import {assertSelectedOutput} from '../../../../packages/contracts/selected-skills/validate.mjs';
 import {createOperationLifetime} from '../../../../packages/runtime/operation-lifetime.mjs';
 import {admitPreparedCommitmentsAudit} from '../../document-application/commitments-audit/compose.mjs';
@@ -12,13 +12,11 @@ import {admitPreparedReport} from '../../document-application/report-brief/compo
 import {admitPreparedCitedReport} from '../../document-application/cited-report/compose.mjs';
 import {retainedAssetMap} from '../../intents/document-revision.mjs';
 const candidates=new WeakSet(),journals=new WeakSet(),digest=x=>{if(typeof x!=='string'||!/^[a-f0-9]{64}$/u.test(x))fail('SELECTED_OUTPUT_PINS_REFUSED');return x;};
-/** The ordinary original recipes keep their admission; the sourced cited report only as its own installed version. */
-const admitted=pin=>['quick_skill.commitments_audit','quick_skill.relationship_brief'].includes(pin.skillId)||(pin.skillId==='quick_skill.bill_watch'&&pin.skillVersion==='2.0.0')||(pin.skillId==='quick_skill.cited_report'&&pin.skillVersion==='1.0.0');
+/** Only installed versions the skill package registers with a document compiler are retained. */
+const admitted=pin=>documentCompiler(pin)!==null;
 const stableSubject=s=>{const {authorizationDecisionId,...rest}=s;return rest;};
-const originalGuard=(skill,p,c)=>skill.skillId==='quick_skill.commitments_audit'?admitPreparedCommitmentsAudit(p,c):
- skill.skillId==='quick_skill.relationship_brief'?admitPreparedRelationshipBrief(p,c):
- skill.skillId==='quick_skill.bill_watch'&&skill.skillVersion==='2.0.0'?admitPreparedReport(p,c):
- skill.skillId==='quick_skill.cited_report'&&skill.skillVersion==='1.0.0'?admitPreparedCitedReport(p,c):fail('SELECTED_OUTPUT_SKILL_REFUSED');
+const guards={'quick_skill.commitments_audit':admitPreparedCommitmentsAudit,'quick_skill.relationship_brief':admitPreparedRelationshipBrief,'quick_skill.bill_watch':admitPreparedReport,'quick_skill.cited_report':admitPreparedCitedReport};
+const originalGuard=(skill,p,c)=>{const guard=guards[documentCompiler(skill)];return guard?guard(p,c):fail('SELECTED_OUTPUT_SKILL_REFUSED');};
 function pins(record){const {pending:p,prepared}=record;return {sourceBinding:p.sourceBinding,requestSha256:p.requestSha256,selectionSha256:p.selectionSha256,
  inputSha256:p.inputSha256,preparationSha256:p.preparationSha256,artifactRequestSha256:p.artifactRequestSha256,sourceContextSha256:hash(prepared.context),
  compilerReadsSha256:prepared.provenance.readsSha256,readsSha256:hash(record.reads),sourceEvidenceSha256:hash(prepared.context.evidence),sourceScopes:prepared.context.scopes};}

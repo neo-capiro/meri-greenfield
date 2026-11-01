@@ -12,7 +12,7 @@ test('facility native flat DTO is wrapped with current Meri lineage and original
  assert.equal(wire.options.headers['x-internal-service-secret'],'SYNTHETIC_INTERNAL_SERVICE');assert.equal(wire.options.redirect,'error');assert.equal(wire.options.credentials,'omit');
 });
 test('facility current client, context, actor decision and source substitutions stop before credentials',async()=>{
- for(const mutate of [c=>c.request.clientId='88888888-8888-4888-8888-888888888888',c=>c.normalizationContext={...c.normalizationContext,binding:{...c.normalizationContext.binding,writerFence:2}},c=>c.authority.decision.operation='list_members@0.2.0',c=>c.authority.decision.actor.actorId='other',c=>c.authority.sourceIds=[],c=>c.authority.claims.actions=[]]){
+ for(const mutate of [c=>c.request.clientId='88888888-8888-4888-8888-888888888888',c=>c.normalizationContext={...c.normalizationContext,binding:{...c.normalizationContext.binding,writerFence:2}},c=>c.authority.binding.tenantId='other',c=>c.authority.subject.actorId='other',c=>c.authority.policyRevision='0'.repeat(64),c=>c.authority.scopes=[],c=>c.authority.sourceIds=[]]){
   const f=storedCase(),call=structuredClone(f.call());mutate(call);await assert.rejects(f.handler()(call));assert.equal(f.credentialCalls.length,0);assert.equal(f.wire.length,0);
  }
  const f=storedCase();await assert.rejects(f.handler()({...f.call(),request:{clientId,authorized:true}}),{message:'INVALID_ARGUMENTS'});assert.equal(f.wire.length,0);

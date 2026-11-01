@@ -1,6 +1,6 @@
 /** Synthetic source-shaped JSON and correlated native credentials; no source execution. */
 import {resolveOperationContract} from '../../../../../packages/contracts/retrieval-0.2/validate.mjs';
-import {billTextCase} from '../../bill-text/test/fixture.mjs';
+import {billTextCase,readContext} from '../../bill-text/test/fixture.mjs';
 import {createStoredIntelligenceHandlers} from '../handler.mjs';
 export const id='search_intel_articles';
 export function storedCase(selected=id,{request={query:'Stored',source:'synthetic-source',limit:1}}={}){
@@ -16,7 +16,7 @@ export function storedCase(selected=id,{request={query:'Stored',source:'syntheti
  const nativeReadContextPorts={async readCurrent({request:ignored,deadlineMs,signal,...proof}){
   if(signal?.aborted)throw Error('CANCELLED');return JSON.stringify({...proof,context:{},checkedAtMs:now(),expiresAtMs:Math.min(deadlineMs,authority.deadlineMs)});
  }};
- const call=(original=request,current=authority,context={})=>{const normalized=contract.normalizeInput(original,context);return {request:original,input:normalized.input,argumentsSha256:normalized.argumentsSha256,normalizationContext:context,authority:current};};
+ const call=(original=request,current=authority,context={})=>{const normalized=contract.normalizeInput(original,context);return {request:original,input:normalized.input,argumentsSha256:normalized.argumentsSha256,normalizationContext:context,authority:readContext(current)};};
  return {...scene,family:'stored-intelligence',operation,contract,arguments:request,normalizationContext,transport,page,nativeReadContextPorts,call,
   handler:(changes={})=>createStoredIntelligenceHandlers({...transport,now,...changes},[operation])[0].execute};
 }

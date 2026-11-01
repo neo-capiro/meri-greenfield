@@ -103,3 +103,23 @@ for(const change of ['historical','mixed','foreign binding','scope','extra field
  if(change==='foreign binding')native.binding.runId=id(702);if(change==='scope')native.scopes[0].resourceId=id(703);if(change==='extra field')native.authorizationDecisionId=id(704);
  await assert.rejects(async()=>f.owner({context}).execute(f.call));assert.equal(f.state.rows.size,0);assert.equal(f.state.executions.length,0);assert.equal(f.state.puts,0);assert.equal(f.sql.durable.state.writes,0);
 });
+
+test('a typed revision whose exact parent was superseded is a definite conflict: no generation, FAILED delivery, same refusal on replay',async()=>{
+ const f=nativeDocumentFixture(),first=await f.run(),second=await f.run({...f.call,deliveryId:'revision',baseVersionId:first.version.versionId,request:{...f.call.request,content:{text:'Revised\n'}}});
+ const stale={...f.call,deliveryId:'stale',baseVersionId:first.version.versionId,request:{...f.call.request,content:{text:'Stale\n'}}},executions=f.state.executions.length,puts=f.state.puts;
+ await assert.rejects(f.run(stale),{code:'ARTIFACT_STALE_PARENT'});
+ assert.equal(f.state.executions.length,executions,'a superseded parent is refused before any generator runs');assert.equal(f.state.puts,puts);assert.equal(f.sql.state.versions.size,2);
+ assert.deepEqual([...f.state.rows.values()].map(r=>r.state).sort(),['FAILED','PREPARED','PREPARED'],'the refused delivery settles FAILED, not UNKNOWN');
+ await assert.rejects(f.run(stale),e=>e.code==='CONFLICT'&&e.replayed===true,'the same delivery replays the same definite refusal');
+ assert.equal(f.state.executions.length,executions);assert.equal(f.state.puts,puts);
+ const third=await f.run({...stale,deliveryId:'third',baseVersionId:second.version.versionId});
+ assert.equal(third.version.parentVersionId,second.version.versionId);assert.equal(f.sql.state.versions.size,3);
+ assert.equal(f.state.objects.get(v.hash(first.version.object)).toString(),'First version\n','the superseded original is untouched');
+});
+
+test('an executor that refuses for want of a qualified renderer is a definite refusal: nothing written, FAILED delivery, same refusal on replay',async()=>{
+ const f=nativeDocumentFixture();f.state.executorHook=()=>{throw Object.assign(Error('ARTIFACT_RENDERER_UNAVAILABLE'),{code:'ARTIFACT_RENDERER_UNAVAILABLE'});};
+ await assert.rejects(f.run(),{code:'ARTIFACT_RENDERER_UNAVAILABLE'});assert.equal(f.state.puts,0);assert.equal(f.sql.state.versions.size,0);
+ assert.deepEqual([...f.state.rows.values()].map(r=>r.state),['FAILED']);
+ f.state.executorHook=null;await assert.rejects(f.run(),e=>e.code==='UNAVAILABLE'&&e.replayed===true);assert.equal(f.state.executions.length,1);assert.equal(f.state.puts,0);
+});

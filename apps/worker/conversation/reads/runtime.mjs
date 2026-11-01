@@ -6,8 +6,9 @@
  *
  * `mount:'profile'` (G3, the product path through `capabilities/mounts.mjs`): the server registers only the profile's fixed
  * `activeReadOperations` that survive family/skill exclusions. The initial snapshot decides which of those may execute for this
- * run; a later current check can only remove them. A failing or absent snapshot exposes nothing for execution. The registered
- * tool list and SDK options remain a function of the measured profile alone. */
+ * run; nothing widens that set later, and every execute is re-checked by control against its own fresh snapshot and current
+ * authority. A failing or absent snapshot exposes nothing for execution. The registered tool list and SDK options remain a
+ * function of the measured profile alone. */
 import catalog from '../../../../packages/contracts/retrieval-0.3/catalog.json' with {type:'json'};
 import {own,data,nativeSignal} from '../../../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {canonicalSha256,validateShape} from '../../../../packages/contracts/validate.mjs';
@@ -58,15 +59,11 @@ export async function createGeneralReadRuntime(configuration){
  const grantedRead=row=>procedureGranted===null||procedureGrantsRead(procedureGranted,row.operation.id);
  const available=procedureGranted===null?gatedAvailable:gatedAvailable.filter(grantedRead);
  if(!profile&&!available.length)return null;
- const exposed=new Set(available.map(row=>canonicalSha256(row.operation)));
- // Mid-run revocation, expiry or a narrowed grant makes a listed read unavailable; it is never widened mid-run.
- const stillAvailable=async(/** @type {{id:string,version:string}} */operation,/** @type {AbortSignal} */signal)=>{
-  if(!exposed.has(canonicalSha256(operation)))return false;
-  let snapshot;try{snapshot=await read(signal);}catch{if(signal.aborted)throw fault('CANCELLED');return false;}
-  return gates(snapshot).available.some(row=>canonicalSha256(row.operation)===canonicalSha256(operation));
- };
+ // The set mounted here is never widened mid-run: the server answers UNAVAILABLE for any registered read outside it.
+ // Mid-run revocation, expiry, installation or discovery loss is refused by the control reads owner on every execute
+ // from its own fresh snapshot and current authority (apps/runtime/reads-owner.mjs); the worker does not re-read it.
  const server=createGeneralReadServer({available,unavailable,...(mounted?{mounted}:{}),binding,...(c.expectedSessionId?{expectedSessionId:c.expectedSessionId}:{}),budgets,timeoutMs,deadlineMs:c.deadlineMs,now:c.now,
-  executionCatalogSha256:initial?.installation.executionCatalogSha256??null,stillAvailable,execute:call=>port.execute.call(c.port,call)});
+  executionCatalogSha256:initial?.installation.executionCatalogSha256??null,execute:call=>port.execute.call(c.port,call)});
  return Object.freeze({available:Object.freeze(available.map(row=>row.operation)),
   sdkOptions:Object.freeze({mcpServers:Object.freeze({meri_reads:server.server}),allowedTools:server.allowedTools,canUseTool:server.canUseTool,hooks:server.hooks}),
   receipts:server.receipts,close:()=>server.close()});

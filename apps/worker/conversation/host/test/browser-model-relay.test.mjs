@@ -47,7 +47,7 @@ test('native model stream exposes only listed browser tools and forwards filtere
 test('native private errors and images cannot cross the model stream',async t=>{
  const f=await fixture(t);
  for(const mode of ['throw','image']){f.state.mode=mode;const result=await f.client.callTool({name:'browser_snapshot',arguments:{}});
-  assert.equal(result.isError,true);assert.equal(result.content[0].text,'BROWSER_CALL_REFUSED');}
+  assert.equal(result.isError,true);assert.match(result.content[0].text,/^BROWSER_CALL_REFUSED: /u);}
  f.state.mode='throw';await assert.rejects(f.client.listTools(),/BROWSER_CALL_REFUSED/);
  assert.equal(f.state.raw.includes('CONFIDENTIAL_NATIVE_ERROR'),false);assert.equal(f.state.raw.includes('PRIVATE_IMAGE'),false);
 });

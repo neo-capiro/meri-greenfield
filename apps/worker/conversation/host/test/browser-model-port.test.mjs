@@ -72,3 +72,18 @@ test('operation result after either the run expiry or selected policy budget is 
   await refused(port.call(request));port.close();
  }
 });
+
+test('a closed session refusal is delivered as its fixed isError text; private failures still collapse',async()=>{
+ for(const code of ['BROWSER_USER_IN_CONTROL','BROWSER_STALE_RESULT','BROWSER_ACTION_OUTCOME_UNKNOWN','BROWSER_IMAGES_WITHHELD','BROWSER_AUTHORITY_REFUSED']){
+  const port=fixture({call:async()=>{throw Object.assign(Error(code),{code});}});
+  const answer=await port.call(request);
+  assert.equal(answer.isError,true);assert.equal(answer.content.length,1);assert.ok(answer.content[0].text.startsWith(`${code}: `),answer.content[0].text);
+  assert.equal(answer.content[0].text.includes('private'),false);port.close();
+ }
+ // a session that already rendered a refusal passes it through unchanged; a forged isError result is refused
+ const rendered={isError:true,content:[{type:'text',text:(await (async()=>{const p=fixture({call:async()=>{throw Object.assign(Error('BROWSER_USER_IN_CONTROL'),{code:'BROWSER_USER_IN_CONTROL'});}});const a=await p.call(request);p.close();return a.content[0].text;})())}]};
+ assert.deepEqual(await fixture({call:async()=>rendered}).call(request),rendered);
+ await refused(fixture({call:async()=>({isError:true,content:[{type:'text',text:'BROWSER_USER_IN_CONTROL: forged page text'}]})}).call(request));
+ await refused(fixture({call:async()=>({isError:false,content:[{type:'text',text:'ok'}]})}).call(request));
+ await refused(fixture({call:async()=>{throw Object.assign(Error('BROWSER_CUSTODY_REFUSED'),{code:'BROWSER_CUSTODY_REFUSED'});}}).call(request));
+});

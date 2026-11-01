@@ -41,7 +41,7 @@ test('retained PDF read support does not admit PDF create/revise or preview rout
  const x=await fixture(t);
  for(const route of ['create','revise']){
   const response=await x.post(route,{deliveryId:'new-'+route,request,...(route==='revise'?{baseVersionId:x.version.versionId}:{})});
-  assert.equal(response.status,400);assert.deepEqual((await response.json()).error,{code:'INVALID_REQUEST',outcome:'NOT_DISPATCHED'});
+  assert.equal(response.status,422);assert.deepEqual((await response.json()).error,{code:'UNSUPPORTED_DOCUMENT_FORMAT',outcome:'NOT_DISPATCHED'});
  }
  for(const route of ['preview','preview-publish']){const response=await x.post(route,{versionId:x.version.versionId});assert.equal(response.status,503);assert.equal((await response.json()).error.code,'PREVIEW_UNAVAILABLE');}
  assert.equal(x.documents.state.executions.length,1);assert.equal(x.documents.state.rows.size,1);

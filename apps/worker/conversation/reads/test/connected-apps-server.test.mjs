@@ -260,41 +260,10 @@ test("the server exposes only the operations the snapshot granted", async () => 
   }
 });
 
-/** Mid-run availability transitions (M12). After the server is mounted from one snapshot, every later call rechecks
- * current availability: a grant narrowed, revoked, expired, moved to another actor or re-issued under another policy
- * revision refuses the read with a closed secret-free text before the gateway is called; a widened grant never adds a
- * read mid-run. */
-const closedText=(r,code)=>{assert.equal(r.isError,true,JSON.stringify(r));assert.equal(r.content.length,1);
- assert.match(r.content[0].text,new RegExp(`^${code}: mcp__meri_reads__read_connected_app `,'u'));
- assert.match(r.content[0].text,/No evidence, absence or completeness is established\.$/u);};
-const MID_RUN=[
- ["grant unchanged",f=>snapshot(f),null],
- ["read grant narrowed to the list only",f=>snapshot(f,{operations:[OPERATIONS[0]]}),"UNAVAILABLE"],
- ["grant revoked (discovery refuses)",()=>{throw Error("READ_AVAILABILITY_REFUSED");},"UNAVAILABLE"],
- ["discovery grant expired",f=>{const s=snapshot(f);s.discovery.expiresAtMs=f.now();return s;},"UNAVAILABLE"],
- ["installation receipt expired",f=>{const s=snapshot(f);s.installation.expiresAtMs=f.now();return s;},"UNAVAILABLE"],
- ["grant re-issued to another actor",f=>snapshot(f,{binding:{...f.binding,actorId:"aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa"}}),"UNAVAILABLE"],
- ["grant re-issued to another tenant",f=>snapshot(f,{binding:{...f.binding,tenantId:"bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb"}}),"UNAVAILABLE"],
- ["grant under another policy revision",f=>{const s=snapshot(f);s.discovery.policyRevision="c".repeat(64);return s;},"UNAVAILABLE"],
- ["discovery granting a foreign operation",f=>{const s=snapshot(f);s.discovery.operations=[{id:"search_gao_reports",version:"0.2.0"}];return s;},"UNAVAILABLE"],
-];
-for(const [label,after,code] of MID_RUN)test(`mid-run: ${label} -> ${code??"read proceeds"}`,async()=>{
- const f=await generalReadFixture();
- let first=true;const calls=[];
- const mounted=await mountReads(f,{policy:{generalReads:true,readFamilies:["connected-apps"]},port:{
-  async readAvailability(){if(first){first=false;return snapshot(f);}return after(f);},
-  async execute(call){calls.push(call);return JSON.stringify({binding:f.binding,operation:call.operation,result:readPage});},
- }});
- assert.ok(mounted);
- try{
-  const args={clientId:null,connectionId:capability.connectionId,provider:capability.provider,tool:capability.tool,schemaHash:capability.schemaHash,arguments:{query:"quarterly"}};
-  const result=await mounted.call("read_connected_app",args);
-  if(code===null){assert.equal(result.isError,undefined);assert.equal(calls.length,1);assert.equal(mounted.runtime.receipts().length,1);}
-  else{closedText(result,code);assert.equal(calls.length,0,"the gateway is never called for a read that is no longer available");assert.deepEqual(mounted.runtime.receipts(),[]);}
-  for(const part of result.content)assert.equal(/SYNTHETIC|https?:/u.test(part.text),false);
- }finally{await mounted.close();}
-});
-
+/** Mid-run availability transitions (M12). A grant narrowed, revoked, expired, moved to another actor or re-issued
+ * under another policy revision is refused by the control reads owner from its own fresh snapshot and current
+ * authority on every execute (apps/runtime/test/reads-execution.test.mjs proves it before any source call); the worker
+ * does not re-read availability. The worker still never widens: a read that was not mounted cannot be added later. */
 test("mid-run: a widened grant never adds a read that was not mounted",async()=>{
  const f=await generalReadFixture();
  let first=true;const calls=[];

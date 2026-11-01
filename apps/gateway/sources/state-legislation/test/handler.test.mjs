@@ -19,9 +19,7 @@ for(const id of ids){
   assert.equal(Object.hasOwn(result.result,'complete'),false);assert.equal(Object.hasOwn(result.result,'authoritative'),false);
  });
  test(`${id}: current tenant, actor, operation decision and source authority are required before credential IO`,async()=>{
-  for(const mutate of [a=>a.claims.audience='other',a=>a.claims.actions=[],a=>a.binding.tenantId='other',
-   a=>a.decision.actor.actorId='other',a=>a.decision.operation='other@0.2.0',a=>a.decision.decision='denied',
-   a=>a.decision.scopes=[],a=>a.sourceIds=[],a=>a.claims.issuedAt=new Date(a.deadlineMs).toISOString()]){
+  for(const mutate of [a=>a.binding.tenantId='other',a=>a.subject.actorId='other',a=>a.policyRevision='0'.repeat(64),a=>a.scopes=[],a=>a.sourceIds=['other'],a=>a.subject.scopes=[{...a.subject.scopes[0],kind:'client',resourceId:'ffffffff-ffff-4fff-8fff-ffffffffffff'}],a=>a.executionSha256='not-a-digest']){
    const f=storedCase(id),call=structuredClone(f.call());mutate(call.authority);
    await assert.rejects(f.handler()(call));assert.equal(f.credentialCalls.length,0);assert.equal(f.wire.length,0);
   }
@@ -44,7 +42,8 @@ for(const id of ids){
   const f=storedCase(id);await assert.rejects(f.handler({getCredentials:undefined})(f.call()),{message:'UNAVAILABLE'});assert.equal(f.wire.length,0);
  });
  test(`${id}: malformed native DTOs and domain errors cannot become results`,async()=>{
-  for(const response of [()=>Response.json({error:'SYNTHETIC_PRIVATE'}),()=>Response.json({},{status:403}),
+  const denied=storedCase(id);denied.state.responseFactory=()=>Response.json({},{status:403});await assert.rejects(denied.handler()(denied.call()),{message:'ACCESS_DENIED'});
+  for(const response of [()=>Response.json({error:'SYNTHETIC_PRIVATE'}),
    page=>Response.json({...page,complete:true}),page=>Response.json({...page,tool:'other'})]){
    const f=storedCase(id);f.state.responseFactory=response;
    await assert.rejects(f.handler()(f.call()),{message:'INVALID_RESULT'});

@@ -6,7 +6,7 @@ import {storageMethod} from '../artifacts/storage/boundary.mjs';
 import {jsonBody,response,ApplicationError} from '../control/action-application/http.mjs';
 import {createOperationLifetime} from '../../packages/runtime/operation-lifetime.mjs';
 const get=Object.fromEntries(['url','method','headers','body','signal'].map(k=>[k,Object.getOwnPropertyDescriptor(Request.prototype,k).get]));
-const status={CONFIGURATION:503,INVALID_ARGUMENTS:400,ACCESS_DENIED:403,UNAVAILABLE:503,DEADLINE:408,CANCELLED:408,INVALID_RESULT:502,RESOURCE_LIMIT:413,BUDGET_UNCERTAIN:409,SOURCE_PUBLICATION_UNKNOWN:503,SOURCE_PUBLICATION_CONFLICT:409};
+const status={CONFIGURATION:503,INVALID_ARGUMENTS:400,ACCESS_DENIED:403,UNAVAILABLE:503,SOURCE_UNAVAILABLE:503,DEADLINE:408,CANCELLED:408,INVALID_RESULT:502,RESOURCE_LIMIT:413,BUDGET_UNCERTAIN:409,SOURCE_PUBLICATION_UNKNOWN:503,SOURCE_PUBLICATION_CONFLICT:409};
 export function createReadsApplication(configuration){
  const c=own(configuration,['owner'],['approvedReads','now']),config=c.approvedReads===undefined?undefined:assertNativeReadConfiguration(c.approvedReads),handle=storageMethod(c.owner,'handle'),now=c.now??Date.now;if(typeof now!=='function')throw nativeReadFault('CONFIGURATION');
  return Object.freeze({async handle(request){let info,life,publicationStarted=false;try{

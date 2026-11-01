@@ -12,7 +12,6 @@ import Ajv from 'ajv';
 import {canonicalSha256 as hash} from '../../../../packages/contracts/validate.mjs';
 import {artifactValidators as v} from '../../../../packages/contracts/retrieval-0.2/validate.mjs';
 import {selectSkill} from '../../../../packages/skills/index.mjs';
-import {reportSkillPin} from '../../../control/document-application/report-brief/skill.mjs';
 import {createArtifactService} from '../../../artifacts/service.mjs';
 import {nativeDocumentFixture,sha} from '../../../artifacts/test/native-document-fixture.mjs';
 import {createActionSessionOwner} from '../../../control/action-host/session/owner.mjs';

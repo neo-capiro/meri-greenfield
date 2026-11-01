@@ -1,7 +1,8 @@
 /** Closed feedback texts for the text-to-SQL tools: argument refusals, Core SQL refusals and result count lines. */
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {failureResult,readNotices,SQL_REFUSAL_GUIDANCE,READ_FAILURE_CODES} from '../results.mjs';
+import {failureResult,readNotices,READ_FAILURE_CODES} from '../results.mjs';
+import {READ_GUIDANCE,SQL_REFUSAL_GUIDANCE} from '../guidance.mjs';
 import {capiroDataPage,sqlRefusal} from '../../../../gateway/sources/capiro-data/test/fixture.mjs';
 
 const NOTHING='No evidence, absence or completeness is established.';
@@ -23,6 +24,7 @@ test('SQL argument refusals name the exact request shape; other tools keep the g
 test('every closed Core SQL refusal code yields one fixed correction notice and the unknown code only names itself',()=>{
  const codes=['INVALID_QUERY','UNSUPPORTED_SQL','UNKNOWN_RELATION','UNKNOWN_FIELD','PARAMETER_MISMATCH','SOURCE_UNAVAILABLE','QUERY_TIMEOUT','OUTPUT_LIMIT'];
  assert.deepEqual(Object.keys(SQL_REFUSAL_GUIDANCE).sort(),[...codes].sort());
+ for(const id of ['describe_capiro_data','query_capiro_data'])assert.equal(READ_GUIDANCE[id].refusals,SQL_REFUSAL_GUIDANCE,`${id} refusal guidance has one owner`);
  for(const operation of [query,describe])for(const code of codes){
   const page={version:'0.1.0',generatedAt:'2026-10-26T12:00:00.000Z',ok:false,error:{code,message:'PRIVATE detail from Core'}};
   const [notice,...rest]=notices(operation,page);assert.equal(rest.length,0);assert.equal(notice.type,'text');

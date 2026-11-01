@@ -152,8 +152,8 @@
     },
     {
       "path": "dist/conversation-application.schema.json",
-      "sha256": "2abe4829a135f26c96ad8dfddae49280971e81acae611aae39801096a433457c",
-      "bytes": 103144
+      "sha256": "205a6ec40fd358aa0c17033ac91ce0945fee77da39c0da736fca8b06843afe7b",
+      "bytes": 105096
     },
     {
       "path": "document-application/boundary.mjs",
@@ -216,7 +216,7 @@
       "bytes": 1986
     }
   ],
-  "schemaSha256": "a658f609315b18002a274fca55b90212391b6b2a06eaba17e5485d2c3b1822bf",
+  "schemaSha256": "df64bc0ae25dec7f47b4252b49479d76f3ddd3c9d6685dddb073005ef63029e2",
   "browserInputs": [
     "artifacts-0.2/artifact-formats.mjs",
     "conversation-history/conversation-history-receiver.mjs",

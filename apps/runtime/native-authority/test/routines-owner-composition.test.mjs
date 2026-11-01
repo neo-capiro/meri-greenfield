@@ -57,13 +57,16 @@ test('native routine task keeps configured identity and pins the effective SDK p
 
 test('native occurrence templates use each approved owner and scope, and retirement requires canonical settlement',async()=>{
  const f=await scheduledAdmissionFixture({agentcore:true}),configuration={agentcore:{...agentcoreConfig(),policyRevision:f.template.policyRevision},versions:f.template.versions,sourceEnabled:true,models:MODEL_CATALOG,routines:{enabled:true,task:{taskId:f.template.task.taskId,version:1}},limits:{requestMs:1000}};
- const task=compileNativeRoutinesTask(configuration),occurrence={...f.occurrence,task};let settled=false;
- const owners=createNativeRoutinesOccurrenceOwners({configuration,now:f.now,native:{async call(_operation,input){return {...input,expiresAtMs:f.now()+1000};}},store:{executions:{async settlement(binding){return {run:{binding},settled};}}}});
+ const task=compileNativeRoutinesTask(configuration),occurrence={...f.occurrence,task};let settled=false,stopped=false;
+ const owners=createNativeRoutinesOccurrenceOwners({configuration,now:f.now,native:{async call(_operation,input){return {...input,expiresAtMs:f.now()+1000};}},store:{executions:{async settlement(binding){return {run:{binding},settled,stopped};}}}});
  const template=owners.templateFor(occurrence);assert.deepEqual(template.principal,occurrence.projection.owner);assert.deepEqual(template.task,task);assert.equal(Object.hasOwn(template,'allocationJson'),false);
  const general={...occurrence,projection:{...occurrence.projection,scopes:[{tenantId:template.principal.tenantId,kind:'private-user',resourceId:template.principal.actorId,policyRevision:template.policyRevision}]}};
  assert.equal(owners.templateFor(general).selectedClientId,null);
  assert.throws(()=>owners.templateFor({...occurrence,task:{...task,manifestSha256:'d'.repeat(64)}}));
- await assert.rejects(owners.retirement.retire({binding:f.identity.binding}));settled=true;assert.deepEqual(await owners.retirement.retire({binding:f.identity.binding}),{physicalStopProven:true});
+ await assert.rejects(owners.retirement.retire({binding:f.identity.binding}));settled=true;
+ // A settled record is the runner's acknowledgement; without a provider-confirmed stop the retirement is honestly unproven.
+ assert.deepEqual(await owners.retirement.retire({binding:f.identity.binding}),{physicalStopProven:false});stopped=true;
+ assert.deepEqual(await owners.retirement.retire({binding:f.identity.binding}),{physicalStopProven:true});
  const derived=deriveAttendedRoutinesOwners({configuration:{...configuration,routines:{...configuration.routines,core:{cancellationProof:{}}}},candidate:{routinesTask:task,routinesOccurrenceOwners:owners},workflow:{taskQueue:'synthetic-routines',workflowIdPrefix:'synthetic-routine'},allocations:f.store,now:f.now});
  assert.deepEqual(derived.context.template,task);assert.equal(Object.hasOwn(derived.context,'allocationJson'),false);assert.equal(typeof derived.contextOwnerFactory,'function');
 });

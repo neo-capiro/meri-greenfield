@@ -5,7 +5,7 @@ import {artifactValidators as v,assertSubject,assertWindow} from '../../../../pa
 import {own} from '../../../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {createOperationLifetime} from '../../../../packages/runtime/operation-lifetime.mjs';
 import {fail,hash,REPORT_SECTIONS,reportInput} from './input.mjs';
-import {reportManifest,reportSkillPin} from './skill.mjs';
+import {reportManifest} from './skill.mjs';
 import {createReportNativeSources,assessReportFindings} from './native-source.mjs';
 import {admitRetainedDocumentAssets,retainedAssetBlocks} from '../retained-assets.mjs';
 const prepared=new WeakMap();
@@ -93,7 +93,7 @@ export function createCongressionalReportCompiler({readSource,readBase,now}){
   if(typeof readSource!=='function'||typeof now!=='function'||readBase!==undefined&&typeof readBase!=='function')fail('REPORT_CONFIGURATION');
   return Object.freeze({async prepare(inputValue,contextValue,{base=null,selection,signal}={}){
     if(signal?.aborted)fail('REPORT_CANCELLED');
-    const input=reportInput(inputValue,reportSkillPin()),context=v.context(contextValue),selected=reportSelection(selection,context);
+    const input=reportInput(inputValue),context=v.context(contextValue),selected=reportSelection(selection,context);
     if(Date.parse(input.asOf)>now()||context.assets.length||context.analysisAdmission)fail('REPORT_CONTEXT');
     if(base!==null){own(base,['versionId','specSha256']);if(!hash(base.specSha256)||typeof base.versionId!=='string'||!readBase)fail('REPORT_BASE');}
     const life=createOperationLifetime({deadlineMs:context.deadlineMs,now,signal,errorFactory:code=>Object.assign(new Error('REPORT_'+code),{code:'REPORT_'+code})});

@@ -19,8 +19,11 @@ export function createExecutionJournal({tx,rowRun,now=Date.now}){
  /** Read-only schedule observation. Missing failed/cancelled invocations still check historical custody under this lock. */
  async function settlement(binding,check){const b=data(binding);validateShape('RunBinding',b);return tx(b,check,async c=>{
   const saved=await load(c,b,check);
-  if(saved.record?.phase!=='settled'&&(saved.record!==null||!['failed','cancelled'].includes(saved.run.state)))return {run:saved.run,settled:false};
-  await readExecutionSettlement(c,b,saved.run.state,check);return {run:saved.run,settled:true};
+  if(saved.record?.phase!=='settled'&&(saved.record!==null||!['failed','cancelled'].includes(saved.run.state)))return {run:saved.run,settled:false,stopped:false};
+  await readExecutionSettlement(c,b,saved.run.state,check);
+  // A runner's own settlement is an acknowledgement, not retirement: only a provider-confirmed stop (settleStopped) or an
+  // invocation that was never claimed proves the compute is gone.
+  return {run:saved.run,settled:true,stopped:saved.record===null||saved.record.native?.stopped===true};
  });}
  /** Same canonical read for owners that already hold the conversation lock
   * in their transaction. No nested connection, new execution or effect. */

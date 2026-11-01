@@ -91,6 +91,52 @@ export type FederalCompilerSource =
           ancestorPath: string[];
         }[]
       ];
+    }
+  | {
+      documentId: string;
+      publisher: string;
+      sourceVersion: string;
+      sourceUrl: string;
+      publishedAt: string | null;
+      parserVersion: "federal-uslm-xml/1";
+      sha256: string;
+      text: string;
+      coverage: {
+        complete: boolean;
+        /**
+         * @minItems 1
+         * @maxItems 32
+         */
+        limitations: [string, ...string[]];
+      };
+      /**
+       * @minItems 1
+       * @maxItems 1024
+       */
+      scopes: [
+        {
+          id: string;
+          label: string;
+          start: number;
+          end: number;
+          sha256: string;
+          /**
+           * @maxItems 127
+           */
+          ancestorPath: string[];
+        },
+        ...{
+          id: string;
+          label: string;
+          start: number;
+          end: number;
+          sha256: string;
+          /**
+           * @maxItems 127
+           */
+          ancestorPath: string[];
+        }[]
+      ];
     };
 /**
  * This interface was referenced by `FederalWorkbench`'s JSON-Schema
@@ -564,10 +610,30 @@ export interface FederalLoadRequest {
 export interface FederalPublishRequest {
   selection: FederalSelection;
   revisionSha256: string;
-  output: "draft" | "operative" | "consolidated" | "redline";
+  output: "draft" | "operative" | "consolidated" | "redline" | "docx";
   deliveryId: string;
   baseVersionId: string | null;
   baseRevisionSha256: string | null;
+  reviewVersionId?: string | null;
+}
+/**
+ * This interface was referenced by `FederalWorkbench`'s JSON-Schema
+ * via the `definition` "FederalApproveRequest".
+ */
+export interface FederalApproveRequest {
+  versionId: string;
+  expectedArtifactSha256: string;
+  revisionSha256: string;
+  deliveryId: string;
+}
+/**
+ * This interface was referenced by `FederalWorkbench`'s JSON-Schema
+ * via the `definition` "FederalHistoryRequest".
+ */
+export interface FederalHistoryRequest {
+  versionId: string;
+  limit: number;
+  cursor: string | null;
 }
 /**
  * This interface was referenced by `FederalWorkbench`'s JSON-Schema
@@ -584,7 +650,7 @@ export interface FederalRetainedPreparation {
  * via the `definition` "FederalDraftCompilation_66ff9248".
  */
 export interface FederalDraftCompilation_66Ff9248 {
-  parserVersion: "federal-plain-text/1" | "federal-scoped-text/2";
+  parserVersion: "federal-plain-text/1" | "federal-scoped-text/2" | "federal-uslm-xml/1";
   source: FederalCompilerSource;
   /**
    * @minItems 1
@@ -641,6 +707,14 @@ export interface FederalDraftSegmentE752Af1D {
 }
 /**
  * This interface was referenced by `FederalWorkbench`'s JSON-Schema
+ * via the `definition` "FederalApproval".
+ */
+export interface FederalApproval {
+  revisionSha256: string;
+  reviewVersionId: string;
+}
+/**
+ * This interface was referenced by `FederalWorkbench`'s JSON-Schema
  * via the `definition` "FederalReview".
  */
 export interface FederalReview {
@@ -648,6 +722,7 @@ export interface FederalReview {
   selection: FederalSelection;
   prepared: FederalRetainedPreparation;
   savedDraft: ArtifactVersion_7F9C56Fa | null;
+  approval: FederalApproval | null;
 }
 /**
  * This interface was referenced by `FederalWorkbench`'s JSON-Schema
@@ -657,9 +732,36 @@ export interface FederalPublication {
   schema: "meri.federal-review.v1";
   sourceArtifact: FederalSourceArtifact;
   revisionSha256: string;
-  output: "draft" | "operative" | "consolidated" | "redline";
-  review: "unapproved" | "confirmed-for-export";
+  output: "draft" | "operative" | "consolidated" | "redline" | "docx";
+  review: "unapproved" | "confirmed-for-export" | "approved";
+  approval: FederalApproval | null;
   publication: ArtifactCreatedResult_183A755E;
+}
+/**
+ * This interface was referenced by `FederalWorkbench`'s JSON-Schema
+ * via the `definition` "FederalHistoryEntry".
+ */
+export interface FederalHistoryEntry {
+  version: ArtifactVersion_7F9C56Fa;
+  revisionSha256: string;
+  sourceArtifact: FederalSourceArtifact;
+  approval: FederalApproval | null;
+}
+/**
+ * This interface was referenced by `FederalWorkbench`'s JSON-Schema
+ * via the `definition` "FederalHistory".
+ */
+export interface FederalHistory {
+  schema: "meri.federal-review.v1";
+  artifactId: string;
+  anchorVersionId: string;
+  headVersionId: string;
+  /**
+   * @minItems 1
+   * @maxItems 100
+   */
+  revisions: [FederalHistoryEntry, ...FederalHistoryEntry[]];
+  nextCursor: string | null;
 }
 /**
  * This interface was referenced by `FederalWorkbench`'s JSON-Schema
@@ -669,18 +771,19 @@ export interface FederalError {
   error: {
     code: string;
     outcome: "NOT_DISPATCHED" | "READ_UNAVAILABLE" | "UNKNOWN" | "RESULT_NOT_RELEASED";
+    operationId?: string | null;
   };
 }
 
-export type FederalRoute='federal-prepare'|'federal-load'|'federal-publish'|'federal-import';
+export type FederalRoute='federal-prepare'|'federal-load'|'federal-publish'|'federal-import'|'federal-approve'|'federal-history';
 export type FederalCompilerSource=FederalRetainedPreparation['draft']['source'];
-export type FederalRequest<R extends FederalRoute>=R extends 'federal-import'?FederalImportRequest:R extends 'federal-prepare'?FederalPrepareRequest:R extends 'federal-load'?FederalLoadRequest:FederalPublishRequest;
+export type FederalRequest<R extends FederalRoute>=R extends 'federal-import'?FederalImportRequest:R extends 'federal-prepare'?FederalPrepareRequest:R extends 'federal-load'?FederalLoadRequest:R extends 'federal-approve'?FederalApproveRequest:R extends 'federal-history'?FederalHistoryRequest:FederalPublishRequest;
 declare const federalRequest:unique symbol;
 declare const federalReview:unique symbol;
 export type AdmittedFederalRequest<R extends FederalRoute>=Readonly<FederalRequest<R>>&{readonly[federalRequest]:R};
 export type AdmittedFederalReview=Readonly<FederalReview>&{readonly[federalReview]:true};
-export type FederalResponse<R extends FederalRoute>=(R extends 'federal-import'?Readonly<FederalImportResult>:R extends 'federal-publish'?Readonly<FederalPublication>:AdmittedFederalReview)|Readonly<FederalError>;
-export declare const federalWorkbenchVersion:'1.2.0';
+export type FederalResponse<R extends FederalRoute>=(R extends 'federal-import'?Readonly<FederalImportResult>:R extends 'federal-publish'?Readonly<FederalPublication>:R extends 'federal-history'?Readonly<FederalHistory>:AdmittedFederalReview)|Readonly<FederalError>;
+export declare const federalWorkbenchVersion:'1.3.0';
 export declare function receiveFederalSource(bytes:Uint8Array):Promise<Readonly<FederalCompilerSource>>;
 export declare function receiveFederalRequest<R extends FederalRoute>(route:R,bytes:Uint8Array):AdmittedFederalRequest<R>;
 export declare function receiveFederalResponse<R extends FederalRoute>(route:R,status:number,bytes:Uint8Array,request:AdmittedFederalRequest<R>,review?:AdmittedFederalReview):Promise<FederalResponse<R>>;

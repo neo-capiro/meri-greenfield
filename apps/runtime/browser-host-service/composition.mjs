@@ -152,8 +152,18 @@ export function composeBrowserOnlyHostService(input, dependencies = {}) {
   const listeners = [];
   const live = () => !tearingDown && destroyed === undefined;
 
-  const closeLocal = async () => {
+  /** The session owner's ordered teardown (S1 fence and drain, logout, context close, S3 destruction receipt) runs
+   * before the physical resources it borrows are closed. A session host that never opened has nothing to destroy;
+   * an unconfirmed destruction is a cleanup problem, never silently physical-only. */
+  const SESSION_TRIGGERS = Object.freeze({'conversation-end': 'conversation-end', revoked: 'revocation', 'lease-expired': 'ttl-expiry', failed: 'disconnect'});
+  const closeLocal = async reason => {
     const problems = [];
+    if (sessionHost) {
+      const result = await within(() => sessionHost.destroy({trigger: SESSION_TRIGGERS[reason] ?? 'disconnect'})
+        .catch(error => { if (error?.code !== 'BROWSER_CUSTODY_UNAVAILABLE') throw error; }), localSettleMs);
+      if (result.timedOut) problems.push(Object.assign(Error('BROWSER_HOST_SERVICE_LOCAL_CLOSE_TIMEOUT'), {code: 'BROWSER_HOST_SERVICE_LOCAL_CLOSE_TIMEOUT'}));
+      else if (result.error) problems.push(result.error);
+    }
     for (const resource of [viewer, contextPort, launch]) {
       if (!resource) continue;
       const result = await within(() => resource.close(), localSettleMs);
@@ -165,7 +175,7 @@ export function composeBrowserOnlyHostService(input, dependencies = {}) {
 
   /** Canonical owned final path: bounded local stop, one teardown, then retire both observers if obtained. */
   const finalTeardown = async reason => {
-    const problems = await closeLocal();
+    const problems = await closeLocal(reason);
     let receipt;
     try { receipt = await teardown.settle({reason}); }
     catch (error) {

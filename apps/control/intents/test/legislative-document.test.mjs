@@ -117,7 +117,9 @@ test('prepare -> approval -> read is explicit, immutable and bound to the curren
   assert.equal(again.proposal.request.requestKey,p.proposal.request.requestKey);
   // a different conversation scope is refused before any effect
   await assert.rejects(()=>preparerFor(BRIEFING,coreClient({onPrepare:(body)=>coreResult({operation:BRIEFING,request:body.request})}).client)
-    .prepare({arguments:briefingInput({clientId:id(99)}),deliveryId:id(12)}),/ACCESS_DENIED/u);
+    .prepare({arguments:briefingInput({clientId:id(99)}),deliveryId:id(12)}),error=>error.code==='ACCESS_DENIED'&&error.effect==='none');
+  // malformed arguments are refused before any owner call, as a definite (replayable) failure
+  await assert.rejects(()=>preparerFor(BRIEFING,coreClient({onPrepare:()=>{throw Error('never called');}}).client).prepare({arguments:{},deliveryId:id(13)}),error=>error.code==='INVALID_ARGUMENTS'&&error.effect==='none');
   const decided=await client.decide({proposal:p.proposal,decision:'approved',deadlineMs});
   assert.equal(decided.status,'approved');
   const read=await client.read({proposal:p.proposal,deadlineMs});

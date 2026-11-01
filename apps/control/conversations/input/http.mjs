@@ -6,6 +6,7 @@ import {receiveConversationRequest} from '../../../../packages/contracts/dist/co
 import {conversationErrorStatuses} from '../../../../packages/contracts/conversation-application/protocol.mjs';
 import {assertInputShape} from '../../../../packages/contracts/conversation-input/shape.mjs';
 import {fail} from '../boundary.mjs';
+import {SKILL_SELECTION_REFUSALS} from '../service.mjs';
 export function createConversationInputApplication({service,now=Date.now,maxRequestBytes=131072,maxResponseBytes=2097152,maxRequestMs=3000,turnTelemetry}){
  if(typeof service?.admitInput!=='function'||!Number.isSafeInteger(maxRequestBytes)||maxRequestBytes<1||maxRequestBytes>131072||!Number.isSafeInteger(maxResponseBytes)||maxResponseBytes<1||maxResponseBytes>2097152||!Number.isSafeInteger(maxRequestMs)||maxRequestMs<1||maxRequestMs>30000)fail('HTTP_CONFIGURATION');
  return Object.freeze({async handle(request){let receivedAt;try{receivedAt=turnTelemetry?.now();}catch{}const operation=async()=>{let life;try{
@@ -24,5 +25,5 @@ export function createConversationInputApplication({service,now=Date.now,maxRequ
   const saved=await life.run(signal=>service.admitInput({credential:auth.slice(7),input,signal}));
   assertInputShape('ConversationInputAdmittedResponse',saved);try{turnTelemetry?.bind(saved.run.binding);turnTelemetry?.stage(saved.run.binding,'send.admit.received',receivedAt);}catch{}const encoded=JSON.stringify(saved);if(Buffer.byteLength(encoded)>maxResponseBytes)fail('CONVERSATION_UNAVAILABLE');life.check();
   return new Response(encoded,{status:200,headers:{'content-type':'application/json; charset=utf-8','cache-control':'no-store','x-content-type-options':'nosniff'}});
- }catch(error){const observed=error?.code??error?.message,code=['INVALID_JSON','INVALID_UTF8','INVALID_BODY','INVALID_CONTENT_LENGTH'].includes(observed)?'INVALID_REQUEST':observed==='INITIAL_INPUT_CONFLICT'?'REQUEST_REPLAY_REFUSED':observed,status=Object.hasOwn(conversationErrorStatuses,code)?conversationErrorStatuses[code].at(-1):502;return response({error:{code:status===502?'CONVERSATION_UNAVAILABLE':code}},status);}finally{life?.close();}};return turnTelemetry?turnTelemetry.provisional(operation):operation();}});
+ }catch(error){const observed=error?.code??error?.message,code=['INVALID_JSON','INVALID_UTF8','INVALID_BODY','INVALID_CONTENT_LENGTH',...SKILL_SELECTION_REFUSALS].includes(observed)?'INVALID_REQUEST':observed==='INITIAL_INPUT_CONFLICT'?'REQUEST_REPLAY_REFUSED':observed,status=Object.hasOwn(conversationErrorStatuses,code)?conversationErrorStatuses[code].at(-1):502;return response({error:{code:status===502?'CONVERSATION_UNAVAILABLE':code}},status);}finally{life?.close();}};return turnTelemetry?turnTelemetry.provisional(operation):operation();}});
 }

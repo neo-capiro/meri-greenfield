@@ -6,8 +6,9 @@
  *   the tool is in this run's available list, that the tool-use id is new, and the per-run call budget; it records a
  *   one-time token keyed to the argument hash, derives `deliveryId = 'sdk:' + sha256({binding,sessionId,toolUseId})`
  *   and rewrites the input to `{arguments, _meriInvocation}`. Any failure denies.
- * - The handler consumes the token (exact operation and argument hash), rechecks current availability, calls the
- *   gateway port within the per-call deadline, enforces output bytes, and records a receipt. Every failure is a closed
+ * - The handler consumes the token (exact operation and argument hash), refuses a registered read outside the set
+ *   available at mount, calls the gateway port within the per-call deadline (control re-checks installation, discovery
+ *   and current authority on every execute), enforces output bytes, and records a receipt. Every failure is a closed
  *   `isError` text (`results.mjs`).
  * - `canUseTool` allows only this server's exact names and denies everything else; options composition chains it with
  *   the capability fragment, and the names are pre-approved in `allowedTools`, so the SDK hook chain (correlation and
@@ -18,6 +19,7 @@ import {own,data} from '../../../../packages/contracts/commands-0.2/execution-bo
 import {canonicalSha256} from '../../../../packages/contracts/validate.mjs';
 import {createOperationLifetime} from '../../../../packages/runtime/operation-lifetime.mjs';
 import {READ_SERVER_NAME,READ_TOOL_PREFIX,readToolName,defineReadTool,assertConvertible} from './tools.mjs';
+import {RESULT_STATE_GUIDANCE} from './family-guidance.mjs';
 import {failureCode,failureResult,readNotices} from './results.mjs';
 import {createReadLedger,READ_TIMEOUT_MS} from './budget.mjs';
 const fault=(/** @type {string} */code)=>Object.assign(Error(code),{code});
@@ -27,16 +29,15 @@ const deny=(/** @type {string} */reason)=>({hookSpecificOutput:{hookEventName:/*
 /** @typedef {{deliveryId:string,operation:OperationRef,argumentsSha256:string,resultSha256:string,decisionId:string|null,policyRevision:string|null,executionCatalogSha256:string}} ReadReceipt */
 /**
  * `mounted` (G3 profile mount, runtime.mjs `mount:'profile'`): the tools to register, a superset of `available`, which may then be
- * empty. A mounted tool outside `available` is listed but deferred (never always-loaded) and its calls answer UNAVAILABLE through
- * `stillAvailable`. Without `mounted` exactly the available tools are registered, as before.
+ * empty. A mounted tool outside `available` is listed but deferred (never always-loaded) and its calls answer UNAVAILABLE.
+ * Without `mounted` exactly the available tools are registered, as before.
  * @param {{available:{operation:OperationRef,descriptor:any}[],unavailable:string[],mounted?:{operation:OperationRef,descriptor:any}[],binding:unknown,expectedSessionId?:string,
  *  budgets:import('./budget.mjs').ReadBudgets,timeoutMs:number,deadlineMs:number,now:()=>number,executionCatalogSha256:string|null,
- *  stillAvailable:(operation:OperationRef,signal:AbortSignal)=>Promise<boolean>,
  *  execute:(call:{operation:OperationRef,arguments:unknown,deliveryId:string,signal:AbortSignal})=>Promise<unknown>}} c
  */
 export function createGeneralReadServer(c){
  const profile=c.mounted!==undefined,registered=profile?c.mounted:c.available;
- if(!Array.isArray(c.available)||!Array.isArray(registered)||!registered.length||!profile&&!c.available.length||typeof c.execute!=='function'||typeof c.stillAvailable!=='function'||typeof c.now!=='function'||
+ if(!Array.isArray(c.available)||!Array.isArray(registered)||!registered.length||!profile&&!c.available.length||typeof c.execute!=='function'||typeof c.now!=='function'||
   !Number.isSafeInteger(c.timeoutMs)||c.timeoutMs<READ_TIMEOUT_MS.min||c.timeoutMs>READ_TIMEOUT_MS.max||!Number.isSafeInteger(c.deadlineMs)||
   c.expectedSessionId!==undefined&&!SESSION.test(c.expectedSessionId))throw fault('READ_SERVER_CONFIGURATION');
  const binding=data(c.binding),ledger=createReadLedger(c.budgets),correlations=new Map(),seenToolUses=new Set(),receipts=/** @type {ReadReceipt[]} */([]);
@@ -64,7 +65,7 @@ export function createGeneralReadServer(c){
    if(!entry||canonicalSha256(entry.operation)!==canonicalSha256(row.operation)||entry.argumentsSha256!==canonicalSha256(args))throw fault('ACCESS_DENIED');
    correlations.delete(token);if(closed)throw fault('UNAVAILABLE');
    life=createOperationLifetime({deadlineMs:Math.min(c.now()+c.timeoutMs,c.deadlineMs),now:c.now,signal:extra?.signal,errorFactory:fault});
-   if(!await life.run(signal=>c.stillAvailable(row.operation,signal)))throw fault('UNAVAILABLE');
+   if(!availableNames.has(name))throw fault('UNAVAILABLE');
    const result=await life.run(signal=>c.execute({operation:row.operation,arguments:args,deliveryId:entry.deliveryId,signal}));
    if(typeof result!=='string')throw fault('INVALID_RESULT');
    let parsed;try{parsed=data(JSON.parse(result));}catch{throw fault('INVALID_RESULT');}
@@ -77,9 +78,12 @@ export function createGeneralReadServer(c){
   }catch(error){return failureResult(failureCode(error),name);}finally{life?.close();}
  };
  // Profile mount: only reads exposed for this run may load eagerly; the others stay deferred and answer UNAVAILABLE.
- const alwaysLoad=c.available.length<=ALWAYS_LOAD_MAX,tools=registered.map(row=>defineReadTool(row,handler(row),alwaysLoad&&availableNames.has(readToolName(row))));
+ // Structured families route counts and filters to text-to-SQL first only when both SQL tools can answer in this run.
+ const sqlPrimary=['describe_capiro_data','query_capiro_data'].every(id=>c.available.some(row=>row.operation.id===id));
+ const alwaysLoad=c.available.length<=ALWAYS_LOAD_MAX,tools=registered.map(row=>defineReadTool(row,handler(row),alwaysLoad&&availableNames.has(readToolName(row)),{sqlPrimary}));
  for(const t of tools)assertConvertible(t.shape);
  const instructions=['Read-only Meri institutional sources for this conversation. Preserve exact source IDs, versions, hashes and scopes; separate inference; disclose partial or unavailable evidence. An error result establishes no evidence, absence or completeness. No write, external action or artifact is exposed here.',
+  RESULT_STATE_GUIDANCE,
   'In General, client profile, documents, meeting sources, knowledge search and tracked bills require one explicit client UUID. Resolve a named client with lookup_client_registry first and use its returned UUID; ask the user to disambiguate multiple matches. A registry result does not grant access and these reads do not search across all clients. In a selected-client conversation, keep that selected client.',
   ...(profile?[c.available.length?`Available now: ${c.available.map(row=>row.descriptor.displayName).join('; ')}.`:'No institutional source tool is available in this conversation right now.',
    'Every other tool of this server answers UNAVAILABLE in this conversation.']

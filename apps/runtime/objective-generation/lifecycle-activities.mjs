@@ -10,9 +10,8 @@
  *    run for {binding, generationJobId} with Core's published prompt and associate
  *    the decoded Objective selection for protected-fact compilation, then dispatch
  *    the existing conversation workflow; it must be idempotent for that identity.
- *    read returns the run projection or null. NOT COMPOSED in this source: it needs
- *    the run-to-Objective-selection persistence decision, the prepared-run splice
- *    and the conversation-runner SDK mount (see lane-7 record). Absent => not-started.
+ *    read returns the run projection or null. Composed by `objective-runs-composition.mjs`
+ *    over the run-start persistence (D7-4) and the conversation-runner SDK mount; absent => not-started.
  */
 import {Context} from '@temporalio/activity';
 import {own,data} from '../../../packages/contracts/commands-0.2/execution-boundary.mjs';

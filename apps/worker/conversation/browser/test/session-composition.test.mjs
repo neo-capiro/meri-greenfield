@@ -101,7 +101,7 @@ test('takeover requires applied canonical hold and explicit filtered hand-back; 
  const x=fixture(t),session=await createPinnedBrowserSession(x.args);t.after(()=>session.destroy({trigger:'conversation-end'}));
  x.state.hold='UNKNOWN';await assert.rejects(session.takeover(),/HOLD_NOT_APPLIED/);
  x.state.hold='APPLIED';
- await assert.rejects(call(session),/BROWSER_CALL_REFUSED/);assert.equal(x.state.calls,0);
+ await assert.rejects(call(session),/BROWSER_USER_IN_CONTROL/);assert.equal(x.state.calls,0);
  // The native hold port now resolves the original hold, permitting one lease.
  assert.equal((await session.takeover()).leaseEpoch,1);
 });
@@ -177,13 +177,13 @@ test('revocation during native input preflight prevents keyboard dispatch',async
 });
 test('source revocation blocks page dispatch',async t=>{
  const x=fixture(t),session=await createPinnedBrowserSession(x.args);t.after(()=>session.destroy({trigger:'conversation-end'}));
- x.state.refused=true;await assert.rejects(call(session),/BROWSER_CALL_REFUSED/);assert.equal(x.state.calls,0);
+ x.state.refused=true;await assert.rejects(call(session),/BROWSER_AUTHORITY_REFUSED/);assert.equal(x.state.calls,0);
  await session.destroy({trigger:'revocation'});assert.deepEqual(x.state.events,['context','exit','dispose']);
 });
 
 test('revocation during preflight snapshot is rechecked before dispatch and destroys state',async t=>{
  const x=fixture(t,{capture:state=>{state.refused=true;}}),session=await createPinnedBrowserSession(x.args);
- await assert.rejects(call(session),/BROWSER_CALL_REFUSED/);assert.equal(x.state.calls,0);
+ await assert.rejects(call(session),/BROWSER_AUTHORITY_REFUSED/);assert.equal(x.state.calls,0);
  await session.destroy({trigger:'revocation'});assert.deepEqual(x.state.events,['context','exit','dispose']);
 });
 
@@ -219,7 +219,7 @@ test('host rechecks the exact configured task at model execution and refuses a s
  const x=hostedWorkflow(t),session=await x.open();t.after(()=>session.destroy({trigger:'conversation-end'}));
  await call(x.state.model);const before=x.state.reads;
  x.state.answer.manifest.taskSummary='Changed synthetic task';
- await assert.rejects(call(x.state.model,'changed'),/BROWSER_CALL_REFUSED/);assert.ok(x.state.reads>before);
+ await assert.rejects(call(x.state.model,'changed'),/BROWSER_AUTHORITY_REFUSED/);assert.ok(x.state.reads>before);
  assert.equal(x.native.calls,1);assert.equal(x.state.created,1);
  await session.destroy({trigger:'revocation'});assert.deepEqual(x.native.events,['context','exit','dispose']);
 });
@@ -243,7 +243,7 @@ test('host workflow disablement at hand-back prevents resume',async t=>{
 test('takeover drains an already-dispatched definite result without releasing it to the model',async t=>{
  let release;const wait=new Promise(resolve=>{release=resolve;}),x=fixture(t,{invoke:()=>wait}),session=await createPinnedBrowserSession(x.args);
  t.after(()=>session.destroy({trigger:'conversation-end'}));
- const result=call(session);const rejected=assert.rejects(result,/BROWSER_CALL_REFUSED/);
+ const result=call(session);const rejected=assert.rejects(result,/BROWSER_STALE_RESULT/);
  while(x.state.calls===0)await new Promise(resolve=>setImmediate(resolve));
  const lease=session.takeover();await new Promise(resolve=>setImmediate(resolve));assert.equal(session.state().state,'fencing');
  release();await rejected;assert.equal((await lease).leaseEpoch,1);assert.equal(session.state().state,'user');
@@ -273,7 +273,7 @@ test('resume stays fenced until the exact fresh snapshot is committed once under
  assert.ok((await session.readState()).leaseExpiresAtMs<=x.args.deadlineMs);session.handBack();
  await assert.rejects(session.completeResume(),/TAKEOVER_RESUME_REFUSED/);
  const snapshot=await session.prepareResume({explicit:true});assert.equal(session.state().state,'returning');
- await assert.rejects(call(session),/BROWSER_CALL_REFUSED/);
+ await assert.rejects(call(session),/BROWSER_USER_IN_CONTROL/);
  await assert.rejects(session.completeResume({snapshot:{...snapshot}}),/TAKEOVER_RESUME_REFUSED/);
  await session.completeResume({snapshot});assert.equal(session.state().state,'agent');
  await assert.rejects(session.completeResume({snapshot}),/TAKEOVER_RESUME_REFUSED/);
@@ -346,4 +346,15 @@ test('canonical successive handoffs retain one context and filter while replacin
   currentBinding=target;
  }
  assert.equal(x.state.calls,2);assert.equal(viewers.length,3);assert.deepEqual(viewers.map(x=>x.binding.writerFence),[1,2,3]);
+});
+
+test('a site workflow sign-in expires after the manifest TTL of inactivity, not at a fixed time from creation',async t=>{
+ const manifest={sessionTtlMs:120,logoutUrl:null,sensitiveSelectors:[],idpOrigins:[],signInUrl:'https://records.example/login'};
+ const x=fixture(t),session=await createPinnedBrowserSession({...x.args,manifest,deadlineMs:Date.now()+60000});
+ const sleep=ms=>new Promise(resolve=>setTimeout(resolve,ms));
+ await sleep(70);await call(session,'first');            // activity at ~70 ms re-arms the idle timer
+ await sleep(70);assert.deepEqual(x.state.events,[],'140 ms after creation the session is still alive because it was active at 70 ms');
+ await call(session,'second');
+ await sleep(260);assert.deepEqual(x.state.events,['context','exit','dispose'],'idle for the TTL destroys the state');
+ await assert.rejects(call(session,'third'),/BROWSER_SESSION_ENDING/);
 });

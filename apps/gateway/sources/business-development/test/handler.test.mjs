@@ -107,7 +107,7 @@ test('complete DTO admission rejects unknown private nested fields and broken co
 });
 
 test('foreign/failed native replies, mismatched credential proof and output limits withhold the whole result',async()=>{
- for(const [response,code] of [[()=>Response.json({error:'PRIVATE'}),'INVALID_RESULT'],[()=>Response.json({},{status:403}),'ACCESS_DENIED'],[()=>Response.json({},{status:404}),'INVALID_RESULT'],[()=>Response.json({tool:'get_business_development_evidence'}),'INVALID_RESULT']]){
+ for(const [response,code] of [[()=>Response.json({error:'PRIVATE'}),'INVALID_RESULT'],[()=>Response.json({},{status:403}),'ACCESS_DENIED'],[()=>Response.json({},{status:404}),'UNAVAILABLE'],[()=>Response.json({tool:'get_business_development_evidence'}),'INVALID_RESULT']]){
   const f=storedCase();f.state.responseFactory=response;await assert.rejects(f.handler()(f.call()),{message:code});
  }
  const g=storedCase();g.state.credentialMutator=p=>p.requestSha256='a'.repeat(64);await assert.rejects(g.handler()(g.call()),{message:'ACCESS_DENIED'});assert.equal(g.wire.length,0);

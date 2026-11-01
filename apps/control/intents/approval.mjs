@@ -31,6 +31,8 @@ import {browserProposalFromEntry,isBrowserPreparation} from './browser-proposals
 import {ProductError,productFailure} from '../product-access/errors.mjs';
 import {nativeTaskOutcome} from './task-outcome.mjs';
 import {nativeMailOutcome} from './mail-outcome.mjs';
+import {SCHEDULE_INTENT_OPERATIONS} from './schedule-preparer.mjs';
+import {ANALYSIS_INTENT_OPERATIONS} from './analysis-preparer.mjs';
 import {nativeArtifactFileOutcome} from './filing-outcome.mjs';
 import {assertMemoryReviewResult} from '../../../packages/contracts/commands-0.2/memory-review-result.mjs';
 const UUID=/^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/u,DELIVERY=/^sdk:[a-f0-9]{64}$/u,DIGEST=/^[a-f0-9]{64}$/u;
@@ -484,9 +486,20 @@ async function decideWatch(life,principal,entry,r){
    if(!visible(result.version?.scopes,principal))return {...base,state:'prepared',kind:'draft',withheld:true};
    return {...base,state:'prepared',kind:'draft',versionId:result.version.versionId};
   }
+  if(result?.status==='analysis_pending'){
+   // A sandbox analysis admitted inside prepare is this run's own pending work: bound to the released scopes, withheld
+   // when they are no longer visible, and never a proposal (nothing here decides or executes it).
+   const release=entry.outcome.release;
+   if(!ANALYSIS_INTENT_OPERATIONS.includes(base.operation.id)||!same(result.binding,release?.binding)||!Array.isArray(release.scopes)||
+    !Array.isArray(result.scopes)||result.scopes.some(scope=>!release.scopes.some(original=>same(scope,original)))||
+    !same(conversationOf(result.binding),{tenantId:principal.tenantId,actorId:principal.actorId,conversationId}))fail('INTENT_JOURNAL_UNAVAILABLE');
+   if(!visible(result.scopes,principal))return {...base,state:'prepared',kind:'analysis_pending',withheld:true};
+   return {...base,state:'prepared',kind:'analysis_pending',pending:result.result};
+  }
   const proposal=commandProposal(entry);
   if(!proposal){
-   if(result?.request===undefined)return {...base,state:'prepared',kind:'schedule_proposal',proposalId:result?.proposal?.proposalId??null};
+   // Only a schedule owner prepares a proposal without a retained request (a direct schedule-preparer mount).
+   if(result?.request===undefined){if(!SCHEDULE_INTENT_OPERATIONS.includes(base.operation.id))fail('INTENT_JOURNAL_UNAVAILABLE');return {...base,state:'prepared',kind:'schedule_proposal',proposalId:result?.proposal?.proposalId??null};}
    const p=artifactShape('ScheduleMutationOutput',result.proposal),binding=entry.outcome.release?.binding;
    scheduleToolValidators.normalizeRequest(base.operation.id,result.request);validateShape('RunBinding',binding);
    if(p.status!=='approval_required'||p.operation!==base.operation.id||hash(result.request)!==entry.record.argumentsSha256||

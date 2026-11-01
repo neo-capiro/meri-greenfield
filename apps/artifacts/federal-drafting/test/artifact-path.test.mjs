@@ -60,3 +60,26 @@ test('preparation refuses a package that exceeds the existing native export cont
  await assert.rejects(artifacts.prepareFederalDraft({versionId:retained.version.versionId,expectedArtifactSha256:retained.version.object.sha256,operations},f.context),{code:'DRAFT_OUTPUT_UNEXPORTABLE'});
  assert.equal(f.state.puts,writes);
 });
+
+test('ordered multi-operation preparation exports three exact outputs and replays the same revision',async()=>{
+ const f=await fixture(),selection={...f.selection,operations:[
+  opFor(f.source,{id:'op-1',scopeId:'section-1',text:'$150'}),
+  opFor(f.source,{id:'op-2',scopeId:'section-2',text:'$250'})]};
+ const prepared=await f.artifacts.prepareFederalDraft(selection,f.context);
+ assert.deepEqual(prepared.draft.operations.map(operation=>operation.dependsOn),[[],[]]);
+ assert.equal(prepared.draft.outputs.consolidated,f.source.text.replace('$100','$150').replace('$100','$250'));
+ // Each changed scope contributes one exact comparison: dropping deleted segments rebuilds
+ // the consolidated text and dropping inserted segments rebuilds the original source.
+ const segments=prepared.draft.outputs.segments;
+ assert.equal(segments.filter(part=>part.kind!=='delete').map(part=>part.text).join(''),prepared.draft.outputs.consolidated);
+ assert.equal(segments.filter(part=>part.kind!=='insert').map(part=>part.text).join(''),f.source.text);
+ const requests=federalDraftExportRequests(prepared,prepared.revisionSha256);
+ for(const [kind,request] of Object.entries(requests)){
+  const output=await f.run({deliveryId:'multi-'+kind,baseVersionId:null,request});
+  const downloaded=await f.artifacts.download(output.version.versionId,f.context);
+  assert.equal(downloaded.bytes.toString('utf8'),prepared.draft.outputs[kind]);
+ }
+ assert.equal(prepared.approval,'unapproved');
+ const replay=await f.artifacts.prepareFederalDraft(selection,f.context);
+ assert.equal(replay.revisionSha256,prepared.revisionSha256);
+});

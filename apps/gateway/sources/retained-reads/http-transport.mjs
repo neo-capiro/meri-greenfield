@@ -11,7 +11,6 @@ import {createNativeReadObservation,encodeNativeReadObservation,NATIVE_READ_OBSE
 import {FUNDING_READ_OPERATIONS} from '../../../../packages/contracts/native-read-observation-0.2/validate.mjs';
 const same=(a,b)=>canonicalSha256(a)===canonicalSha256(b);
 const token=value=>typeof value==='string'&&/^[\x21-\x7e]{1,8192}$/.test(value);
-const UNAVAILABLE_STATUS_OPERATIONS=new Set(['query_knowledge_graph','describe_capiro_data','query_capiro_data']);
 export function createRetainedHttpTransport(configuration){
  const {origin,now,getCredentials,readSource,fetchImpl=globalThis.fetch,maxRequestMs=15000,maxResponseBytes=1048576}=
   ownFields(configuration,['origin','now'],['getCredentials','readSource','fetchImpl','maxRequestMs','maxResponseBytes']);
@@ -65,12 +64,6 @@ export function createRetainedHttpTransport(configuration){
       ...(serviceSecret?{'x-internal-service-secret':credentials.serviceSecret}:{}),...(body===undefined?{}:{'content-type':'application/json'})},
      ...(bytes===undefined?{}:{body:bytes})});
     acquired=result;
-    // Core answers a SQL request it could not serve (private reader absent, overloaded, timed out) with a 5xx/408/429
-    // status: that is unavailability the model must not read as a withheld or invalid result.
-    if(UNAVAILABLE_STATUS_OPERATIONS.has(c.operation.id)){
-     responseBody(result);
-     if(!result.redirected&&(result.status===408||result.status===429||result.status>=500))deny('UNAVAILABLE');
-    }
     try{lifetime.check();return result;}catch(error){try{cancelBody(responseBody(result));}catch{}throw error;}
    });
    const value=frozenData(await readJsonResponse(response,{lifetime,maxResponseBytes:Math.min(maxResponseBytes,c.authority.maxOutputBytes)}));

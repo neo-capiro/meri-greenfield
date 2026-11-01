@@ -10,7 +10,8 @@
  * Pure data checks against the caller's trusted expected source. A decoded reply
  * is evidence for comparison, never authority: it authenticates no caller, issues
  * nothing and cannot create the accepted run, issuance or custody it is compared to.
- * Initial Strategy only: regeneration replies and non-null Strategy versions refuse.
+ * Initial Strategy and Core-produced regeneration (an admission naming the expected Strategy version) are both
+ * admitted; every reply is compared to the trusted expected source before it is used.
  */
 import {createHash} from 'node:crypto';
 import {types} from 'node:util';

@@ -2,7 +2,7 @@
  * No page functions, attributes containing values, forms, frames or storage. */
 export function captureRenderedText(){
  const started=performance.now(),out=[];let visited=0,characters=0;
- const deny='script,style,noscript,template,iframe,frame,object,embed,form,input,textarea,select,option,[contenteditable]:not([contenteditable="false"]),[role="textbox"],[hidden],[aria-hidden="true"]';
+ const deny='script,style,noscript,template,iframe,frame,object,embed,form,input,textarea,select,option,[contenteditable]:not([contenteditable="false"]),[role="textbox"],[hidden],[aria-hidden="true"],[inert]';
  const walk=node=>{
   if(++visited>20000||performance.now()-started>1000)throw Error('PAGE_LIMIT');
   if(node.nodeType===Node.ELEMENT_NODE){
@@ -11,7 +11,10 @@ export function captureRenderedText(){
    if(style.display==='none'||style.visibility==='hidden'||style.visibility==='collapse'||style.opacity==='0')return;
    for(const child of node.childNodes)walk(child);
   }else if(node.nodeType===Node.TEXT_NODE){
-   if(!node.parentElement?.getClientRects().length)return;
+   // Rendered means laid out with a visible box: clipped, zero-size, collapsed and off-layout text (screen-reader
+   // only patterns, 1px clips, zero-height containers) is not what the user sees and is not captured.
+   const rects=node.parentElement?.getClientRects();
+   if(!rects?.length||!Array.from(rects).some(rect=>rect.width>=1&&rect.height>=1))return;
    const raw=node.textContent;if(raw.length>131072)throw Error('PAGE_LIMIT');
    const text=raw.replace(/\s+/gu,' ').trim();if(!text)return;
    characters+=text.length;if(characters>131072)throw Error('PAGE_LIMIT');out.push(text);

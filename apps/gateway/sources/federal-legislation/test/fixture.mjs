@@ -1,7 +1,7 @@
 /** Synthetic stored DTOs crossing actual HTTP JSON bytes; no Core/live qualification. */
 import schema from '../../../../../packages/contracts/retrieval-0.2/federal-legislation.schema.json' with {type:'json'};
 import {resolveOperationContract} from '../../../../../packages/contracts/retrieval-0.2/validate.mjs';
-import {billTextCase} from '../../bill-text/test/fixture.mjs';
+import {billTextCase,readContext} from '../../bill-text/test/fixture.mjs';
 import {createFederalLegislationHandlers} from '../handler.mjs';
 
 export const ids=Object.freeze(['get_bill_status','search_floor_votes']);
@@ -38,7 +38,7 @@ export function storedCase(id=ids[0],{defaultCongress=119,request=id===ids[0]?{b
  }};
  const call=(raw=request,current=authority,context=normalizationContext)=>{
   const normalized=contract.normalizeInput(raw,context);
-  return {input:normalized.input,request:raw,authority:current,argumentsSha256:normalized.argumentsSha256,normalizationContext:context};
+  return {input:normalized.input,request:raw,authority:readContext(current),argumentsSha256:normalized.argumentsSha256,normalizationContext:context};
  };
  return {...scene,family:'federal-legislation',operation,contract,arguments:request,normalizationContext,transport,page,nativeReadContextPorts,call,
   handler:(changes={})=>createFederalLegislationHandlers({...transport,now,...changes},[operation])[0].execute};

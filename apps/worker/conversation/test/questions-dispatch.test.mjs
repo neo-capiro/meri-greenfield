@@ -16,6 +16,9 @@ function owner(){const events=[],acks=[];let n=900;return {events,acks,
 /** Wrap one appended event in the envelope the control store adds before validating. */
 const envelope=(event,sequence)=>({contractVersion:'0.1.0',eventId:event.eventId,binding,sequence,createdAt:event.createdAt,scopes,type:event.type,data:event.data});
 const until=async predicate=>{for(let i=0;i<200;i++){if(predicate())return;await Promise.resolve();}throw Error('NOT_RECORDED');};
+/** The question a reconnecting client finds pending in the run's own events. */
+const pendingIn=runOwner=>runOwner.events.filter(e=>e.type==='question.pending'&&!runOwner.events.some(a=>a.type==='question.answered'&&a.data.questionId===e.data.questionId)).map(e=>e.data);
+const waitingFor=async runOwner=>{await until(()=>pendingIn(runOwner).length===1);return pendingIn(runOwner)[0];};
 
 test('a pending question and its resolution are durable run events the contract accepts',async()=>{
  const runOwner=owner(),journal=createQuestionEventJournal({runOwner,binding,now,newId:()=>id(901)});
@@ -31,12 +34,12 @@ test('a pending question and its resolution are durable run events the contract 
  assert.deepEqual(event.data.questions[0].options.map(o=>o.label),['Summary','Detailed']);
  assert.equal(event.data.expiresAt,new Date(T0+900000).toISOString());
  assert.equal(assertConversationEvent(envelope(event,1)).type,'question.pending');
- const [outstanding]=await (async()=>{await until(()=>registry.outstanding().length===1);return registry.outstanding();})();
- assert.equal(await registry.deliver({questionId:outstanding.subject.questionId,answers:{'How should I format the output?':'Summary'},binding}),'ANSWERED');
+ const outstanding=await waitingFor(runOwner);
+ assert.equal(await registry.deliver({questionId:outstanding.questionId,answers:{'How should I format the output?':'Summary'}}),'ANSWERED');
  await until(()=>runOwner.events.length===2);
  const resolution=runOwner.events[1];
  assert.equal(resolution.type,'question.answered');
- assert.deepEqual(resolution.data,{questionId:outstanding.subject.questionId,outcome:'answered',reasonCode:null});
+ assert.deepEqual(resolution.data,{questionId:outstanding.questionId,outcome:'answered',reasonCode:null});
  assert.equal(assertConversationEvent(envelope(resolution,2)).type,'question.answered');
  assert.equal((await pending).behavior,'allow');
  assert.deepEqual(runOwner.events.map(e=>e.type),['question.pending','question.answered'],'the registry record vocabulary is the run-event vocabulary, not a second one');
@@ -81,10 +84,9 @@ test('an answered control is acknowledged APPLIED through the existing owner',as
  const runOwner=owner(),registry=createQuestionRegistry({journal:createQuestionEventJournal({runOwner,binding,now,newId:()=>id(910)}),now});
  const gate=createUserQuestionGate({binding,questions:registry,now,newId:()=>id(911)});
  const pending=gate(USER_QUESTION_TOOL,{questions:[question]},{toolUseID:'toolu_ack',signal:new AbortController().signal});
- await until(()=>registry.outstanding().length===1);
- const [outstanding]=registry.outstanding();
+ const outstanding=await waitingFor(runOwner);
  runOwner.claimControl=async()=>({claimed:true,control:{controlSequence:1,commandSha256:'b'.repeat(64),
-  command:{controlId:id(912),action:'answerQuestion',questionId:outstanding.subject.questionId,answers:{'How should I format the output?':'Detailed'}}}});
+  command:{controlId:id(912),action:'answerQuestion',questionId:outstanding.questionId,answers:{'How should I format the output?':'Detailed'}}}});
  const controller=new AbortController();
  const claim=await createQuestionControlDispatch({runOwner,registry,binding}).claimControl({controlId:id(912),signal:controller.signal});
  assert.deepEqual(claim,{claimed:false,receipt:{controlId:id(912),state:'APPLIED'}});
@@ -96,19 +98,18 @@ test('a malformed answer is never acknowledged APPLIED and never closes the pend
  const runOwner=owner(),registry=createQuestionRegistry({journal:createQuestionEventJournal({runOwner,binding,now,newId:()=>id(920)}),now});
  const gate=createUserQuestionGate({binding,questions:registry,now,newId:()=>id(921)});
  const pending=gate(USER_QUESTION_TOOL,{questions:[question]},{toolUseID:'toolu_malformed',signal:new AbortController().signal});
- await until(()=>registry.outstanding().length===1);
- const [asked]=registry.outstanding();
+ const asked=await waitingFor(runOwner);
  // The owner claims the answer, but an array on a single-select question is not an answer at all.
  runOwner.claimControl=async()=>({claimed:true,control:{controlSequence:1,commandSha256:'d'.repeat(64),
-  command:{controlId:id(922),action:'answerQuestion',questionId:asked.subject.questionId,answers:{'How should I format the output?':['Summary']}}}});
+  command:{controlId:id(922),action:'answerQuestion',questionId:asked.questionId,answers:{'How should I format the output?':['Summary']}}}});
  const claim=await createQuestionControlDispatch({runOwner,registry,binding}).claimControl({controlId:id(922)});
  assert.equal(claim.claimed,false);
  assert.equal(runOwner.acks.at(-1).outcome,'UNKNOWN','a refused answer is not acknowledged as applied');
  assert.equal(runOwner.events.filter(e=>e.type==='question.answered').length,0,'no success event is recorded');
- assert.equal(registry.outstanding().length,1,'the question is still pending and answerable');
+ assert.equal(pendingIn(runOwner).length,1,'the question is still pending and answerable');
  // The same pending question still accepts a valid answer, and only then is APPLIED acknowledged.
  runOwner.claimControl=async()=>({claimed:true,control:{controlSequence:2,commandSha256:'e'.repeat(64),
-  command:{controlId:id(923),action:'answerQuestion',questionId:asked.subject.questionId,answers:{'How should I format the output?':'Summary'}}}});
+  command:{controlId:id(923),action:'answerQuestion',questionId:asked.questionId,answers:{'How should I format the output?':'Summary'}}}});
  await createQuestionControlDispatch({runOwner,registry,binding}).claimControl({controlId:id(923)});
  assert.equal(runOwner.acks.at(-1).outcome,'APPLIED');
  assert.equal(runOwner.events.filter(e=>e.type==='question.answered').length,1);

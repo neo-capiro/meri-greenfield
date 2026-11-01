@@ -27,7 +27,8 @@ import {storeFixture,versions} from '../../../conversations/test/store-fixture.m
 import {createIntentJournal} from '../../../intents/journal.mjs';
 import {createPostgresApprovalMetadataStore} from '../../../commands/approval-metadata/postgres-store.mjs';
 import {createMetadataPoolFixture} from '../../../commands/approval-metadata/test/fixture.mjs';
-import {citedReportManifest,citedReportSkillPin} from '../skill.mjs';
+import {citedReportManifest} from '../skill.mjs';
+const citedReportSkillPin=()=>selectSkill('quick_skill.cited_report','1.0.0').pin;
 import {citedReportReadGroups} from '../sources.mjs';
 import {selectSkill} from '../../../../../packages/skills/index.mjs';
 import {canonicalSha256 as hash} from '../../../../../packages/contracts/validate.mjs';

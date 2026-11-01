@@ -1,15 +1,13 @@
-/** SDK output steering for the three admitted original document compilers.
+/** SDK output steering for the admitted original document compilers.
  * The compilers remain the authority for the literal result and its source evidence. */
+import {documentCompiler} from '../../../packages/skills/index.mjs';
 const text=maxLength=>({type:'string',minLength:1,...(maxLength===undefined?{}:{maxLength})}),nullable=value=>({anyOf:[value,{type:'null'}]}),
  object=(properties,required=Object.keys(properties))=>({type:'object',properties,required,additionalProperties:false}),
  list=(items,maxItems)=>({type:'array',items,maxItems});
 const passage=(sourceId,recordText,quoteText)=>object({sourceId,recordId:recordText,recordVersionId:recordText,start:{type:'integer',minimum:0},end:{type:'integer',minimum:1},quote:quoteText});
 
-/** The two ordinary recipes keep their single admitted version; the sourced cited report and the general long-form
- * cited report are admitted by their own exact installed version. */
-export const selectedOutputCompiler=({pin})=>pin.skillId==='quick_skill.bill_watch'&&pin.skillVersion==='2.0.0'?'quick_skill.bill_watch':
- pin.skillId==='quick_skill.cited_report'&&pin.skillVersion==='1.0.0'?'quick_skill.cited_report':
- pin.skillVersion==='1.0.0'&&['quick_skill.commitments_audit','quick_skill.relationship_brief'].includes(pin.skillId)?pin.skillId:null;
+/** The compiler an installed version is admitted to comes from the skill package's explicit per-version registry. */
+export const selectedOutputCompiler=({pin})=>documentCompiler(pin);
 export function selectedOutputFormat(selected){
  const {pin,manifest}=selected,skill=object(Object.fromEntries(Object.entries(pin).map(([key,value])=>[key,{const:value}]))),
   sources=[...new Set(manifest.requiredSources.map(source=>source.sourceId))];

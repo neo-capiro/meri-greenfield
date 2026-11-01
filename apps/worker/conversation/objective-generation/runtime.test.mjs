@@ -5,13 +5,14 @@ import {createObjectiveSelectionOwner} from '../../../runtime/objective-generati
 import {runStartFixture,id,NOW} from '../../../runtime/objective-source/test/run-start-fixture.mjs';
 import {versions} from '../../../control/conversations/test/store-fixture.mjs';
 import {SDK_MODEL_CONFIGURATION} from '../../../control/conversations/usage.mjs';
+import {HISTORICAL_MODEL_SELECTION} from '../../../../packages/contracts/model-selection.mjs';
 import {result} from '../../../../packages/contracts/strategy-operations-candidate/fixture-source.mjs';
 import {loadTypedDraftCodec} from './typed-result.mjs';
 import {assertPreparedObjectiveSelection,typedCheckpointObject,hash} from '../../../../packages/runtime/objective-generation-custody.mjs';
 import {validateCompletionProof} from '../../../control/conversations/completion-journal.mjs';
 async function fixture(){const f=runStartFixture(),scopes=[{kind:'client',tenantId:f.tenantId,resourceId:f.clientId,policyRevision:'policy'}];
  const run={binding:f.binding,scopes,versions,state:'running',policyRevision:'policy',createdAt:new Date(NOW).toISOString()};
- const owner=createObjectiveSelectionOwner({runStarts:{read:async()=>({state:'STARTED',record:f.record})},store:{read:async()=>({run,request:f.acceptedRequest}),readModelPolicy:async()=>({})},now:()=>NOW});
+ const owner=createObjectiveSelectionOwner({runStarts:{read:async()=>({state:'STARTED',record:f.record})},store:{read:async()=>({run,request:f.acceptedRequest}),readModelPolicy:async()=>({maxTurns:20,maxBudgetMicroUsd:2000000}),readModelSelection:async()=>HISTORICAL_MODEL_SELECTION},now:()=>NOW});
  const state={at:NOW,wire:structuredClone(await owner.read({binding:f.binding})),writes:[],failWrite:false};
  const runtime=createObjectiveGenerationRuntime({selection:{read:async()=>structuredClone(state.wire)},now:()=>state.at,writeFile:async v=>{state.writes.push(v);if(state.failWrite)throw Error('unknown write');}});
  const input={binding:f.binding,request:f.acceptedRequest,versions,scopes,cwd:'/synthetic-workspace',model:SDK_MODEL_CONFIGURATION.model,deadlineMs:NOW+100000};

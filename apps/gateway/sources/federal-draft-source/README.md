@@ -11,4 +11,4 @@ Missing publication dates remain null and render as unreported. Modified and fet
 
 Attended preparation is composed into the native SDK read surface. Saved-job preparation is explicitly unavailable; it cannot use an attended source alias to widen that owner's closed operation list. Deployed/native installation and activation remain unqualified.
 
-Remaining A5 work includes the dedicated public workbench with revision history and exact revision review/export, hierarchical/USLM source handling where required, and legal/Office fidelity qualification. The flat bounded compiler and connected native preparation are not full A5 acceptance.
+The SDK tool keeps the frozen flat-text contract: a retained extraction that is USLM or other markup is refused here with `DRAFT_SOURCE_FORMAT_UNSUPPORTED`; the document application's workbench routes import USLM with section identity, save reviews with approval and history, and export TXT/DOCX (`apps/artifacts/federal-drafting/README.md`). Legal/Office fidelity qualification and live acceptance remain outstanding; the flat bounded compiler and connected native preparation are not full A5 acceptance.

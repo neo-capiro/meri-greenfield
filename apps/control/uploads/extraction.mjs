@@ -1,7 +1,7 @@
 /** Upload inspection pipeline. Only trusted scanner/parser ports produce observations; no model invocation. */
 import {data,own} from '../../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {createOperationLifetime} from '../../../packages/runtime/operation-lifetime.mjs';
-import {inspectUploadOriginal,uploadDeclaration,uploadError,UPLOAD_LIMITS,UPLOAD_POLICY_VERSION} from './policy.mjs';
+import {uploadOriginalIdentity,uploadStructureRefusal,uploadDeclaration,uploadError,UPLOAD_LIMITS,UPLOAD_POLICY_VERSION} from './policy.mjs';
 import {storageMethod} from '../../artifacts/storage/boundary.mjs';
 const fail=()=>{throw uploadError('UPLOAD_TOOL_RECEIPT');};
 const hash=v=>typeof v==='string'&&/^[a-f0-9]{64}$/u.test(v);
@@ -63,14 +63,19 @@ export function createUploadInspection({scanner=null,extractor=null,now=Date.now
  }
  return Object.freeze({async inspect(declaration,bytes,{deadlineMs,signal}={}){
   if(!Number.isSafeInteger(deadlineMs)||deadlineMs<=now()||signal?.aborted)throw uploadError('UPLOAD_EXPIRED');
-  const file=inspectUploadOriginal(declaration,bytes),base={sourceSha256:file.sha256,sourceBytes:file.bytes};
-  const unavailable=(name,reason)=>({...base,checkedAtMs:now(),status:'unavailable',tool:null,...(name==='scan'?{definitionsSha256:null,reason}:{segments:[],limitations:[reason]})});
+  // Only identity is a precondition: mismatched bytes were never this original. Structure is judged AFTER a clean scan
+  // and retained on the stored record as a blocked extraction, so a refusal of an already-stored original is reported
+  // as "stored, then refused" rather than thrown away as an effect-free failure.
+  const file=Object.freeze({...uploadOriginalIdentity(declaration,bytes),policyVersion:UPLOAD_POLICY_VERSION}),base={sourceSha256:file.sha256,sourceBytes:file.bytes};
+  const unavailable=(name,reason,status='unavailable')=>({...base,checkedAtMs:now(),status,tool:null,...(name==='scan'?{definitionsSha256:null,reason}:{segments:[],limitations:[reason]})});
   let scan;
   if(scanner===null)scan=unavailable('scan','SCANNER_UNAVAILABLE');
   else{const out=await call(scanner,'scan',file,bytes,UPLOAD_LIMITS.scanMs,deadlineMs,signal);scan=scanReceipt(out.value,file,out.began,out.at);}
   if(scan.status!=='clean')return {file,scan,extraction:unavailable('extraction',scan.status==='infected'?'MALWARE_DETECTED':'SCAN_UNAVAILABLE')};
+  const refusal=uploadStructureRefusal(file,bytes);
   let extraction;
-  if(extractor===null)extraction=unavailable('extraction','EXTRACTOR_UNAVAILABLE');
+  if(refusal!==null)extraction=unavailable('extraction',refusal,'blocked');
+  else if(extractor===null)extraction=unavailable('extraction','EXTRACTOR_UNAVAILABLE');
   else{const out=await call(extractor,'extract',file,bytes,UPLOAD_LIMITS.parseMs+UPLOAD_LIMITS.ocrMs,deadlineMs,signal);extraction=extractionReceipt(out.value,file,out.began,out.at);}
   if(signal?.aborted||now()>=deadlineMs)throw uploadError('UPLOAD_EXPIRED');
   return {file,scan,extraction};

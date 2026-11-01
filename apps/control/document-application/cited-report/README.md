@@ -29,9 +29,18 @@ which returns the operation's canonical typed result. This recipe uses exactly t
 second retrieval loop and no authority of its own — and admits each returned result with the receiver the
 source family already owns (`assertMailThreadSourcePage`, `assertResearchPortfolioEvidenceOutput`).
 
-## Caller join (owed, not landed)
+## Caller join
 
-The installed identity is selectable today, but this recipe is not yet connected to the shared selected
-execution path. The exact two-span delta is recorded in `work/hermes-implementation/report-native-bridge/`:
-the control-service compiler branch and the worker-side SDK output dispatch/format. Those spans are owned by
-the selected-runtime owner and are applied on its release, not here.
+The installed identity is dispatched by the shared selected execution path
+(`apps/control/conversations/skills/execution.mjs`, `quick_skill.cited_report` 1.0.0), which compiles through this recipe,
+retains the prepared report and proposes the immutable document write; `test/cited-report-caller.test.mjs`
+exercises that join with the real selected caller.
+
+## Finding status
+
+An `excerpt` finding is `verified` only when its single mail citation is byte-verified AND the finding text is
+exactly the passage read; a quote that differs from the stored characters is refused
+(`CITED_REPORT_CITATION_UNPROVEN`), never printed as verified. A `claim` finding is model prose: it is `cited`
+when every citation is byte-verified and `claimed` otherwise. A portfolio citation records the projection's
+own revision, content hash and calculation version beside the locator, and a revision refuses a fresh read
+that reuses a retained citation id with different content, record or version.

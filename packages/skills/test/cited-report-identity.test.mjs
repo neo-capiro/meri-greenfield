@@ -40,7 +40,7 @@ test('the closed 0.2.0 foundation is byte-unchanged and still refuses the new id
  assert.equal(canonicalSha256(catalog),'812a0fbade3b560809da6a62dcc4ba3065f762ab4a72255786b349b50d08d4a9','the retained 0.2 catalog snapshot stays exact; the cited-report selection keeps its older published pin');
  const installed=selectSkill('quick_skill.cited_report','1.0.0');
  assert.throws(()=>validateShape('SkillManifest',installed.manifest),/must be equal to one of the allowed values/u,'an old 0.2.0 consumer still refuses the added identity');
- assert.equal(listSkills().length,19);
+ assert.equal(listSkills().length,35);
 });
 
 test('the 0.3.0 receiver is versioned, minimal and composes the frozen shape instead of copying it',()=>{
@@ -106,15 +106,24 @@ test('the installed identity is selectable, launchable and pinned to its own pro
  assert.deepEqual([...installed.manifest.subjectKinds],['client']);
  assert.equal(installed.manifest.prose.id,'urn:meri:original:general-cited-report:1.0.0');
  assert.throws(()=>selectSkill('quick_skill.cited_report','2.0.0'),/SKILL_VERSION_UNAVAILABLE/u,'no latest-version fallback');
- const plugin=describeSkillPlugin(),cited=plugin.skills.filter(skill=>skill.skillId==='quick_skill.cited_report');
- assert.equal(plugin.skills.length,15);assert.deepEqual(cited,[{skillId:'quick_skill.cited_report',skillVersion:'1.0.0',name:'meri-cited-report',proseSha256:installed.pin.proseSha256}]);
+ // New selections are offered the runtime-budget successor (1.0.1); the original 1.0.0 pin stays installed and
+ // selectable, and an explicit selection of it is still launched as itself.
+ const plugin=describeSkillPlugin(),cited=plugin.skills.filter(skill=>skill.skillId==='quick_skill.cited_report'),successor=selectSkill('quick_skill.cited_report','1.0.1');
+ assert.equal(plugin.skills.length,15);assert.deepEqual(cited,[{skillId:'quick_skill.cited_report',skillVersion:'1.0.1',name:'meri-cited-report',proseSha256:successor.pin.proseSha256}]);
+ assert.deepEqual(describeSkillPlugin({selection:installed.pin}).skills.filter(skill=>skill.skillId==='quick_skill.cited_report'),[{skillId:'quick_skill.cited_report',skillVersion:'1.0.0',name:'meri-cited-report',proseSha256:installed.pin.proseSha256}]);
  assert.equal(new Set(plugin.skills.map(skill=>skill.name)).size,15,'no launcher name collision');
- assert.deepEqual(plugin.skills.filter(skill=>skill.skillId==='quick_skill.bill_watch'),[{skillId:'quick_skill.bill_watch',skillVersion:'1.1.0',name:'meri-bill-watch',proseSha256:FROZEN['quick_skill.bill_watch@1.1.0'][1]}],'Bill1.1 keeps its own version, name and prose');
- assert.deepEqual(plugin.excluded,[
+ assert.deepEqual(plugin.skills.filter(skill=>skill.skillId==='quick_skill.bill_watch'),[{skillId:'quick_skill.bill_watch',skillVersion:'1.1.1',name:'meri-bill-watch',proseSha256:selectSkill('quick_skill.bill_watch','1.1.1').pin.proseSha256}],'Bill Watch offers its runtime-budget successor under its own name');
+ for(const original of [
   {skillId:'quick_skill.bill_watch',skillVersion:'1.0.0',reason:'NO_SDK_FRONTMATTER'},
   {skillId:'quick_skill.pe_deep_dive',skillVersion:'1.0.0',reason:'NOT_SELECTED_SDK_VERSION'},
   {skillId:'quick_skill.bill_watch',skillVersion:'1.0.1',reason:'NOT_SELECTED_SDK_VERSION'},
-  {skillId:'quick_skill.bill_watch',skillVersion:'2.0.0',reason:'NOT_SELECTED_SDK_VERSION'}],'the original exclusions are unchanged');
+  {skillId:'quick_skill.bill_watch',skillVersion:'2.0.0',reason:'NOT_SELECTED_SDK_VERSION'}])assert.ok(plugin.excluded.some(row=>row.skillId===original.skillId&&row.skillVersion===original.skillVersion&&row.reason===original.reason),'the original exclusions are unchanged');
+ // Every installed version that is not the offered default is excluded from a fresh plugin as NOT_SELECTED_SDK_VERSION
+ // (not dropped): the frontmatter-less sourced brief is the only other exclusion.
+ const offered=new Set(plugin.skills.map(skill=>`${skill.skillId}@${skill.skillVersion}`));
+ assert.deepEqual(plugin.excluded.filter(row=>row.reason==='NOT_SELECTED_SDK_VERSION').map(row=>`${row.skillId}@${row.skillVersion}`),
+  listSkills().filter(row=>!offered.has(`${row.skillId}@${row.skillVersion}`)&&!(row.skillId==='quick_skill.bill_watch'&&row.skillVersion==='1.0.0')).map(row=>`${row.skillId}@${row.skillVersion}`));
+ assert.deepEqual(plugin.excluded.filter(row=>row.reason!=='NOT_SELECTED_SDK_VERSION'),[{skillId:'quick_skill.bill_watch',skillVersion:'1.0.0',reason:'NO_SDK_FRONTMATTER'}]);
 });
 
 test('every published original pin is byte-unchanged',()=>{
@@ -126,7 +135,7 @@ test('every published original pin is byte-unchanged',()=>{
   assert.equal(row.manifestSha256,manifestSha256,`${identity} manifest bytes unchanged`);
   assert.equal(row.proseSha256,proseSha256,`${identity} prose bytes unchanged`);
  }
- assert.equal(rows.size,19);
+ assert.equal(rows.size,35);
  assert.equal(new Set([...rows.keys()].map(key=>key.split('@')[0])).size,15,'the fourteen original ids plus exactly one added id');
  for(const id of CLOSED)assert.ok([...rows.keys()].some(key=>key.startsWith(id+'@')),`${id} is still published`);
 });

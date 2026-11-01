@@ -27,7 +27,7 @@ export function createWatchStateHandlers(configuration,operations){
   let result;
   try{result=await client.inspect({binding:current.authority.binding,selectedClientId:current.normalizationContext.watchStateScope.selectedClientId,
    target:current.input,signal:current.signal,deadlineMs:current.deadlineMs});}
-  catch(error){deny(['ACCESS_DENIED','INVALID_ARGUMENTS','INVALID_RESULT','DEADLINE','CANCELLED'].includes(error?.code)?error.code:'UNAVAILABLE');}
+  catch(error){deny(['ACCESS_DENIED','INVALID_ARGUMENTS','INVALID_RESULT','SOURCE_UNAVAILABLE','DEADLINE','CANCELLED'].includes(error?.code)?error.code:'UNAVAILABLE');}
   try{current.contract.assertOutput(result,{request:current.request,...current.normalizationContext});}catch{deny('INVALID_RESULT');}
   if(current.signal?.aborted)deny('CANCELLED');if(c.now()>=current.deadlineMs)deny('DEADLINE');
   if(Buffer.byteLength(JSON.stringify(result),'utf8')>Math.min(c.maxResponseBytes??32768,current.authority.maxOutputBytes))deny('RESOURCE_LIMIT');

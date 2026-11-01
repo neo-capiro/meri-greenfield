@@ -9,16 +9,16 @@ import historical from '../../contracts/retrieval-0.2/catalog.json' with {type:'
 import current from '../../contracts/retrieval-0.3/catalog.json' with {type:'json'};
 import {canonicalSha256 as hash} from '../../contracts/validate.mjs';
 import {assertSkillInstallation} from '../../contracts/selected-skills/validate.mjs';
-const currentHash='76a7e8cdaa84daa7437c874debc9b5aafd3f8b75eeea700df515790418687d34';
+const currentHash='eeee7ed0de7957b12b59cd368b152a415d535741986962e9235184a7940b1d7e';
 
-test('all nineteen original asset identities survive the exact additive installation without added grants',()=>{
- assert.equal(createHash('sha256').update(readFileSync(new URL('../assets.json',import.meta.url))).digest('hex'),'cf07474e7bf56b25c7bd556fa18496709bd2c4d5a7151398dee7d88e8b722ca6');
+test('all thirty-five original asset identities survive the exact additive installation without added grants',()=>{
+ assert.equal(createHash('sha256').update(readFileSync(new URL('../assets.json',import.meta.url))).digest('hex'),'f3e87c00cd4c3c0e4e5940a7202fab6079d4ccafa61d125703f4bcf1b698415a');
  assert.equal(hash(historical),assets.installationCatalogSha256);assert.equal(hash(current),currentHash);
  assert.equal(current.sourceRegistryCommit,historical.sourceRegistryCommit);
  assert.equal(historical.operations.length,142);assert.equal(current.operations.length,156);
  const oldRows=new Map(historical.operations.map(row=>[hash(row.operation),row])),newRows=new Map(current.operations.map(row=>[hash(row.operation),row]));
  for(const [key,row]of oldRows)assert.deepEqual(newRows.get(key),row);
- assert.equal(listSkills().length,19);
+ assert.equal(listSkills().length,35);
  for(const row of assets.assets){
   const selected=selectSkill(row.skillId,row.skillVersion);
   assert.deepEqual(selected.pin,{skillId:row.skillId,skillVersion:row.skillVersion,manifestSha256:row.manifestSha256,proseSha256:row.proseSha256,catalogSha256:row.catalogSha256??assets.catalogSha256});
@@ -29,8 +29,8 @@ test('all nineteen original asset identities survive the exact additive installa
  }
 });
 
-test('all four selected compilers require current installation and refuse historical, altered, foreign and changed receipts',()=>{
- for(const [skillId,skillVersion]of [['quick_skill.commitments_audit','1.0.0'],['quick_skill.relationship_brief','1.0.0'],['quick_skill.bill_watch','2.0.0'],['quick_skill.cited_report','1.0.0']]){
+test('all four selected compilers, at every registered version, require current installation and refuse historical, altered, foreign and changed receipts',()=>{
+ for(const [skillId,skillVersion]of [['quick_skill.commitments_audit','1.0.0'],['quick_skill.commitments_audit','1.0.1'],['quick_skill.relationship_brief','1.0.0'],['quick_skill.relationship_brief','1.0.1'],['quick_skill.bill_watch','2.0.0'],['quick_skill.bill_watch','2.0.1'],['quick_skill.cited_report','1.0.0'],['quick_skill.cited_report','1.0.1']]){
   const selected=selectSkill(skillId,skillVersion),input={binding:{tenantId:'synthetic',actorId:'owner'},skill:selected.pin,requestSha256:'a'.repeat(64),selectionSha256:'b'.repeat(64)};
   const receipt={...input,baseCatalogSha256:currentHash,installationId:'71000000-0000-4000-8000-000000000091',executionCatalogSha256:'c'.repeat(64),operations:selected.manifest.allowedOperations,checkedAtMs:100,expiresAtMs:200};
   const options={input,selected,started:100,now:()=>100,life:{limitDeadline(){}}};
@@ -46,5 +46,5 @@ test('loader refuses a changed current catalog even when all historical operatio
  const original=current.originals[0].boundary;
  try{current.originals[0].boundary=original+' Altered routing claim.';assert.throws(()=>listSkills(),/SKILL_INSTALLATION_CATALOG_PIN/u);}
  finally{current.originals[0].boundary=original;}
- assert.equal(listSkills().length,19);
+ assert.equal(listSkills().length,35);
 });

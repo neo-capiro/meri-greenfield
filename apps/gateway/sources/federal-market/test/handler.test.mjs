@@ -12,7 +12,7 @@ for(const id of ids){
   assert.equal(wire.options.headers.authorization,'Bearer SYNTHETIC_NATIVE_USER');assert.equal(wire.options.headers['x-internal-service-secret'],'SYNTHETIC_INTERNAL_SERVICE');assert.equal(wire.options.cache,'no-store');assert.equal(wire.options.redirect,'error');
  });
  test(`${id}: caller authority exact operation and source grants fail before credential IO`,async()=>{
-  for(const mutate of [c=>c.request.tenantId='forged',c=>c.argumentsSha256='0'.repeat(64),c=>c.authority.decision.decision='denied',c=>c.authority.decision.operation='get_representation@0.2.0',c=>c.authority.decision.actor.actorId='other',c=>c.authority.decision.scopes=[],c=>c.authority.sourceIds=[]]){
+  for(const mutate of [c=>c.request.tenantId='forged',c=>c.argumentsSha256='0'.repeat(64),c=>c.authority.binding.tenantId='other',c=>c.authority.subject.actorId='other',c=>c.authority.policyRevision='0'.repeat(64),c=>c.authority.scopes=[],c=>c.authority.sourceIds=[]]){
    const f=storedCase(id),call=structuredClone(f.call());mutate(call);await assert.rejects(f.handler()(call));assert.equal(f.wire.length,0);assert.equal(f.credentialCalls.length,0);
   }
  });
@@ -69,9 +69,23 @@ test('market integer geography and unsupported vehicle fiscal-year requests stay
 });
 test('market oversized source HTTP errors and expired/aborted calls release no result',async()=>{
  const f=storedCase();await assert.rejects(f.handler({maxResponseBytes:16})(f.call()),{message:'RESOURCE_LIMIT'});
- const error=storedCase();error.state.responseFactory=()=>Response.json({error:'PRIVATE'},{status:403});await assert.rejects(error.handler()(error.call()),{message:'INVALID_RESULT'});
+ const error=storedCase();error.state.responseFactory=()=>Response.json({error:'PRIVATE'},{status:403});await assert.rejects(error.handler()(error.call()),{message:'ACCESS_DENIED'});
  const late=storedCase();late.state.now=late.authority.deadlineMs;await assert.rejects(late.handler()(late.call()),{message:'DEADLINE'});assert.equal(late.wire.length,0);
  const abort=storedCase();await assert.rejects(abort.handler()({...abort.call(),signal:AbortSignal.abort()}),{message:'CANCELLED'});assert.equal(abort.wire.length,0);
+});
+test('contract-award pages are distinct by row id: a shared PIID or a numeric PIID never refuses, a duplicate row id does',async()=>{
+ const shared=storedCase(ids[0]);shared.state.resultMutator=p=>{p.items=[{...p.items[0],id:'row-a',awardId:'0001'},{...p.items[0],id:'row-b',awardId:'0001'},{...p.items[0],id:'row-c',awardId:'7'}];p.total=3;};
+ const out=JSON.parse(await shared.handler()(shared.call()));assert.deepEqual(out.result.items.map(row=>row.awardId),['0001','0001','7']);
+ const duplicate=storedCase(ids[0]);duplicate.state.resultMutator=p=>{p.items=[{...p.items[0],id:'row-a'},{...p.items[0],id:'row-a'}];p.total=2;};
+ await assert.rejects(duplicate.handler()(duplicate.call()),{message:'INVALID_RESULT'});
+ const blank=storedCase(ids[0]);blank.state.resultMutator=p=>{p.items[0].awardId='   ';};
+ await assert.rejects(blank.handler()(blank.call()),{message:'INVALID_RESULT'});
+});
+test('source statuses keep their distinct closed meanings: denied, unsupported route and unanswered source are never an invalid result',async()=>{
+ for(const [status,code] of [[401,'ACCESS_DENIED'],[403,'ACCESS_DENIED'],[404,'UNAVAILABLE'],[501,'UNAVAILABLE'],[429,'SOURCE_UNAVAILABLE'],[503,'SOURCE_UNAVAILABLE'],[500,'SOURCE_UNAVAILABLE'],[400,'INVALID_RESULT']]){
+  const f=storedCase(ids[0]);f.state.responseFactory=()=>Response.json({error:'PRIVATE'},{status});
+  await assert.rejects(f.handler()(f.call()),{message:code},String(status));assert.equal(f.wire.length,1);
+ }
 });
 test('market construction rejects foreign duplicated and wrong-version references',()=>{
  const f=storedCase();for(const operations of [[],[f.operation,f.operation],[{id:'list_members',version:'0.2.0'}],[{id:ids[0],version:'0.1.0'}]])

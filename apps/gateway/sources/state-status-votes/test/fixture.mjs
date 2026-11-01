@@ -1,7 +1,7 @@
 /** Synthetic native status/vote DTO branches and credentials; no quota, sync, provider or DB work. */
 import schema from '../../../../../packages/contracts/retrieval-0.2/state-status-votes.schema.json' with {type:'json'};
 import {resolveOperationContract} from '../../../../../packages/contracts/retrieval-0.2/validate.mjs';
-import {billTextCase} from '../../bill-text/test/fixture.mjs';
+import {billTextCase,readContext} from '../../bill-text/test/fixture.mjs';
 import {createStateStatusVotesHandlers} from '../handler.mjs';
 
 export const ids=['get_state_bill_status','search_state_floor_votes'],billKey='tx-2025-hb1234';
@@ -49,7 +49,7 @@ export function storedCase(id=ids[0],options={}){
  }};
  const call=(args=request,current=authority,context={})=>{
   const result=contract.normalizeInput(args,context);
-  return {request:args,input:result.input,argumentsSha256:result.argumentsSha256,normalizationContext:context,authority:current};
+  return {request:args,input:result.input,argumentsSha256:result.argumentsSha256,normalizationContext:context,authority:readContext(current)};
  };
  return {...scene,family:'state-status-votes',operation,contract,arguments:request,normalizationContext,transport,page,nativeReadContextPorts,call,
   handler:(changes={})=>createStateStatusVotesHandlers({...transport,now,...changes},[operation])[0].execute};

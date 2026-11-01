@@ -1,4 +1,4 @@
-import {createSelectedTabBridge} from './bridge.mjs';
+import {createSelectedTabBridge,describeSelectedTabError} from './bridge.mjs';
 const patterns=chrome.runtime.getManifest().externally_connectable.matches;
 const origins=patterns.map(pattern=>{
  const url=new URL(pattern);if(url.protocol!=='https:'||url.hostname.includes('*')||url.pathname!=='/*')throw Error('Invalid app origin');return url.origin;
@@ -16,7 +16,7 @@ chrome.runtime.onConnect.addListener(port=>{
   if(!message||Object.keys(message).length!==1||!['approve','pause','revoke','capture','share'].includes(message.action))return;
   // The bridge serializes capture/share and invalidates their epoch on pause or
   // revoke. A popup mutex must not discard those controls while a read awaits.
-  try{await bridge[message.action]();}catch{try{port.postMessage({type:'error',message:'This selection is unavailable. Capture the current tab again or reconnect.'});}catch{}}
+  try{await bridge[message.action]();}catch(error){try{port.postMessage({type:'error',message:describeSelectedTabError(error)});}catch{}}
  });
  port.onDisconnect.addListener(unsubscribe);
 });

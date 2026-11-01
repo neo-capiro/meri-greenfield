@@ -4,7 +4,7 @@ import {own,data} from '../../../../packages/contracts/commands-0.2/execution-bo
 import {createOperationLifetime} from '../../../../packages/runtime/operation-lifetime.mjs';
 import {compileCommitmentsAudit} from '../../../../packages/skills/commitments/index.mjs';
 import {bindWorkflowReads} from '../../../../packages/skills/evidence/typed-reads.mjs';
-import {asset,input,selection,createCollection,same,fail} from './source.mjs';
+import {installed,input,selection,createCollection,same,fail} from './source.mjs';
 import {retainedAssetMap} from '../../intents/document-revision.mjs';
 import {blocks,marker} from './rendering.mjs';
 const prepared=new WeakMap(),defaults={maxCalls:24,maxPages:3,maxRecords:3,sectionCodeUnits:2000,maxBodyCodeUnits:120000,maxSourceBytes:2097152};
@@ -66,13 +66,13 @@ export function createCommitmentsAuditCompiler({readSource,readBase,now,limits={
   const i=input(raw),context=v.context(rawContext),opts=own(options,['selection'],['base','signal']),selected=selection(opts.selection,context),base=opts.base??null;
   if(Date.parse(i.asOf)>now()||context.assets.length||context.analysisAdmission||context.evidence.length)fail('COMMITMENTS_CONTEXT');
   if(base!==null){own(base,['versionId','specSha256']);if(!readBase||!/^[a-f0-9]{64}$/u.test(base.specSha256??''))fail('COMMITMENTS_BASE');}
-  const deadlineMs=Math.min(context.deadlineMs,now()+asset.manifest.budgets.maxRuntimeSeconds*1000),life=createOperationLifetime({deadlineMs,now,signal:opts.signal,
+  const deadlineMs=Math.min(context.deadlineMs,now()+installed(i.skill).manifest.budgets.maxRuntimeSeconds*1000),life=createOperationLifetime({deadlineMs,now,signal:opts.signal,
    errorFactory:code=>Object.assign(new Error('COMMITMENTS_'+code),{code:'COMMITMENTS_'+code})});
   try{
    let parent=null,retainedEvidence=[],retainedTracking=[];if(base){const retained=baseRecord(await life.run(signal=>readBase({versionId:base.versionId,context:v.snapshot(context),signal})),base,context,i,selected);parent=retained.parent;retainedEvidence=retained.evidence;retainedTracking=retained.tracking;}
    const collection=createCollection({readSource,context,selected,asOf:i.asOf,query:i.target.query,deadlineMs,life,now,limits:bounds});await collection.collect();
    const evidenceContext={binding:context.binding,subject:selected.subject,window:selected.window,asOf:new Date(now()).toISOString(),mondayBoardIds:selected.mondayBoardIds};
-   const bound=bindWorkflowReads(evidenceContext,collection.reads,{skillId:asset.manifest.skillId,skillVersion:asset.manifest.skillVersion});
+   const bound=bindWorkflowReads(evidenceContext,collection.reads,{skillId:i.skill.skillId,skillVersion:i.skill.skillVersion});
    const observations=[],unresolved=[];
    for(const row of i.observations){own(row,['id','kind','relatedPromiseId','owner','dueDate','passage']);own(row.passage,['sourceId','recordId','recordVersionId','start','end','quote']);
     const found=bound.records.get(v.hash([row.passage.sourceId,row.passage.recordId,row.passage.recordVersionId]));

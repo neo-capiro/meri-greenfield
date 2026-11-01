@@ -42,7 +42,7 @@ test('concurrent registry invocations using one original call retain separate cu
  assert.deepEqual(seen.map(v=>v.index).sort(),[0,1]);assert.ok(factories.every(v=>v.original===call));assert.ok(seen.every(v=>v.selection.clientIds[0]===clientId));
 });
 test('registry caller authority digest operation and source drift cannot reach native source',async()=>{
- for(const mutate of [c=>c.argumentsSha256='0'.repeat(64),c=>c.authority.decision.decision='denied',c=>c.authority.decision.operation='list_members@0.2.0',c=>c.authority.sourceIds=[],c=>c.authority.decision.scopes=[]]){
+ for(const mutate of [c=>c.argumentsSha256='0'.repeat(64),c=>c.authority.binding.tenantId='other',c=>c.authority.subject.actorId='other',c=>c.authority.policyRevision='0'.repeat(64),c=>c.authority.scopes=[],c=>c.authority.sourceIds=[]]){
   const f=storedCase(),call=structuredClone(f.call());mutate(call);await assert.rejects(f.handler()(call));assert.equal(f.wire.length,0);assert.equal(f.credentialCalls.length,0);assert.equal(f.state.visibilityCalls.length,0);
  }
  const f=storedCase();await assert.rejects(f.handler()({...f.call(),request:{name:'Synthetic',tenantId:'forged'}}),{message:'INVALID_ARGUMENTS'});assert.equal(f.wire.length,0);

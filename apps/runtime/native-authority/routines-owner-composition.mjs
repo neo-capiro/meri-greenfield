@@ -289,7 +289,9 @@ export function createNativeRoutinesOccurrenceOwners({configuration,native,store
    const executionId=hash(q.binding),result=await life.run(signal=>call('execution/kickoff/stop',{binding:q.binding,executionId},{signal}));
    if(!same(result.binding,q.binding)||result.executionId!==executionId)throw refuse();
    const saved=await life.run(()=>settlement(q.binding,life.check));life.check();
-   if(saved.settled!==true||!same(saved.run.binding,q.binding))throw refuse();return Object.freeze({physicalStopProven:true});
+   if(saved.settled!==true||!same(saved.run.binding,q.binding))throw refuse();
+   // Metadata settlement is not physical retirement: only a provider-confirmed stop proves it.
+   return Object.freeze({physicalStopProven:saved.stopped===true});
   }finally{life.close();}
  }})});
 }

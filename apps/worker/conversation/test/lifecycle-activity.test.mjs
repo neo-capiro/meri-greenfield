@@ -205,13 +205,15 @@ test('a refused publication of streamed deltas fences: the deltas read ahead are
  assert.equal(refused,1,'one refused publication, then nothing');assert.equal(f.state.claims,1);assert.equal(f.state.records,1);
  assert.deepEqual(f.state.events.map(e=>e.data.state),['starting','running']);
 });
+// The three in-flight cases below run without a fold window so they exercise exactly what happens between a publication and the
+// next one (a hold, a control failure, a result) once the window has elapsed; the window itself is covered by activity-delta-coalescing.
 test('a hold claimed while a delta publication is in flight ends display output: nothing read ahead is folded or published',async()=>{
  const f=fixture({action:'pause'});let gate=false,emitted=false;const stop=Promise.withResolvers(),published=[];
  f.runOwner.nextControls=async()=>{if(!gate||emitted)return [];emitted=true;return [f.entry];};
  f.runOwner.append=async({event})=>{if(event.type==='message.delta'){published.push(event.data.text);
    if(published.length===1){gate=true;while(f.state.claims===0)await new Promise(resolve=>setTimeout(resolve,5));await new Promise(resolve=>setTimeout(resolve,20));}}
   f.state.events.push(event);};
- const execute=createConversationActivity({runOwner:f.runOwner,prepareRuntime:f.prepareRuntime,lifecycle:{captureCheckpoint:f.captureCheckpoint,pollMs:5},query:()=>streamed(f,20,stop)});
+ const execute=createConversationActivity({runOwner:f.runOwner,prepareRuntime:f.prepareRuntime,lifecycle:{captureCheckpoint:f.captureCheckpoint,pollMs:5},deltaFoldWindowMs:0,query:()=>streamed(f,20,stop)});
  assert.deepEqual(await execute({binding:f.binding}),{state:'paused'});
  assert.deepEqual(published,['w0 '],'only the publication in flight when the hold was claimed');assert.equal(f.state.records,1);
 });
@@ -221,7 +223,7 @@ test('a lifecycle failure while a delta publication is in flight ends the run: n
  f.runOwner.append=async({event})=>{if(event.type==='message.delta'){published.push(event.data.text);
    if(published.length===1){gate=true;while(!refused)await new Promise(resolve=>setTimeout(resolve,5));await new Promise(resolve=>setTimeout(resolve,20));}}
   f.state.events.push(event);};
- const execute=createConversationActivity({runOwner:f.runOwner,prepareRuntime:f.prepareRuntime,lifecycle:{captureCheckpoint:f.captureCheckpoint,pollMs:5},query:()=>streamed(f,20,stop)});
+ const execute=createConversationActivity({runOwner:f.runOwner,prepareRuntime:f.prepareRuntime,lifecycle:{captureCheckpoint:f.captureCheckpoint,pollMs:5},deltaFoldWindowMs:0,query:()=>streamed(f,20,stop)});
  await assert.rejects(execute({binding:f.binding}),/EXECUTION_FAILED/);
  assert.deepEqual(published,['w0 '],'only the publication in flight when the control reader failed');assert.equal(f.state.events.at(-1).data.state,'failed');
 });
@@ -234,7 +236,7 @@ test('with a lifecycle the SDK is never read past the result, though it arrived 
   ...['w0 ','w1 ','w2 '].map(text),event({type:'content_block_stop',index:0}),{type:'assistant',parent_tool_use_id:null,message:{id:'m1',content:[{type:'text',text:'w0 w1 w2 '}]}},success];
  // After its result the SDK waits for input that never comes, as it does while the input is kept open.
  const sdk=(async function*(){yield* frames;await new Promise(()=>{});})();
- const execute=createConversationActivity({runOwner:f.runOwner,prepareRuntime:f.prepareRuntime,lifecycle:{captureCheckpoint:f.captureCheckpoint,pollMs:5},
+ const execute=createConversationActivity({runOwner:f.runOwner,prepareRuntime:f.prepareRuntime,lifecycle:{captureCheckpoint:f.captureCheckpoint,pollMs:5},deltaFoldWindowMs:0,
   query:()=>({[Symbol.asyncIterator]:()=>({next:()=>{reads++;return sdk.next();}}),async interrupt(){return {still_queued:[]};},close(){}})});
  assert.deepEqual(await execute({binding:f.binding}),{state:'completed'});
  assert.deepEqual(published,['w0 ','w1 w2 ']);assert.equal(reads,frames.length,'one read per message and none past the result');

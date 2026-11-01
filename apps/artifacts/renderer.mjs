@@ -20,7 +20,6 @@ export const RENDERER_SANDBOX_REQUIREMENTS=Object.freeze([
  'boundedResources',       // CPU, memory, process-count and file-size limits enforced by the host
  'noCredentials',          // no cloud, database, provider or session credential in env, files or metadata reach
 ]);
-export const RENDERER_UNAVAILABLE_REASONS=Object.freeze(['RENDERER_NOT_ADMITTED','RENDERER_ADMISSION_INVALID','RENDERER_SANDBOX_UNQUALIFIED']);
 const ADMISSION_KEYS=['rendererId','rendererVersion','executable','imageDigest','qualificationId','sandbox'];
 const ports=new WeakSet();
 const error=code=>Object.assign(new Error(code),{code});
@@ -63,10 +62,3 @@ export function createLibreOfficeRendererPort({admission,executable,tempRoot,run
 export const isRendererPort=value=>ports.has(value);
 /** The converter to hand to an executor or preview owner: the port when available, otherwise null (fail closed). */
 export const admittedConverter=port=>isRendererPort(port)&&port.state==='available'?port:null;
-/** Inert evidence projection of a port's state; no secret or path beyond the admitted record. */
-export function describeRenderer(port){
- if(!isRendererPort(port))return {state:'unavailable',reason:'RENDERER_NOT_ADMITTED',sandboxRequirements:RENDERER_SANDBOX_REQUIREMENTS};
- const a=port.admission;
- return {state:port.state,reason:port.reason,sandboxRequirements:RENDERER_SANDBOX_REQUIREMENTS,missingRequirements:port.missingRequirements,
-  ...(a?{rendererId:a.rendererId,rendererVersion:a.rendererVersion,imageDigest:a.imageDigest,qualificationId:a.qualificationId}:{})};
-}

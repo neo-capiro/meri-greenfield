@@ -103,7 +103,7 @@ test('delta news strict old API stays unscoped and native wall/feature failures 
  assert.throws(()=>assertUnscopedNewsRequest(f.operation,f.arguments),{message:'UNAVAILABLE'});
  assert.ok(Object.isFrozen(newsSliceContext(f.operation,f.arguments).clientResolution));
  for(const message of ['RESEARCH_CLIENT_UNAVAILABLE','FEATURE_DISABLED','CURRENT_MEMBER_REQUIRED']){
-  f.state.responseFactory=()=>Response.json({message},{status:404});await assert.rejects(f.handler()(f.call()),{message:'INVALID_RESULT'});
+  f.state.responseFactory=()=>Response.json({message},{status:404});await assert.rejects(f.handler()(f.call()),{message:'UNAVAILABLE'});
  }
  assert.equal(f.wire.length,3);
 });
