@@ -20,5 +20,9 @@ export const sourceRef=obj({section:text(128),ref:text(256)});
 export const coverage=obj({complete:{type:'boolean'},omitted:list(text(256)),assumptions:list(text(1000)),sources:list(sourceRef,256),pendingSources:list(sourceRef,256)});
 export const nodeFields={kind:choice(kinds),subject:choice(subjects),title:text(300),note:nullable(text(8000)),status:choice(statuses),ownerRef:nullable(text(128)),startsOn:date,endsOn:nullable(date),openEnded:{type:'boolean'},sources:list(sourceRef,64)};
 export const principal=obj({tenantId:text(128),actorId:text(128),clientId:uuid,ownerActorId:text(128)});
-export const objective=obj({kind:{const:'objective'},objectiveId:uuid,objectiveRevisionId:uuid,objectiveVersion:{type:'integer',minimum:1,maximum:Number.MAX_SAFE_INTEGER},snapshotSha256:sha,intent:obj({outcome:text(),governmentProblem:text(),askType:choice(['funding','policy_authority','both','protect_funding','meri_propose']),minimumWin:text(),limits:{type:'string',maxLength:4000}})});
+const legacyObjectiveIntent=obj({outcome:text(),governmentProblem:text(),askType:choice(['funding','policy_authority','both','protect_funding','meri_propose']),minimumWin:text(),limits:{type:'string',maxLength:4000}});
+// Complete saved intake only: draft Objectives may leave type/owner unset in Core,
+// but a generation request must carry the actual answers, never invented legacy fields.
+const strategyIntakeIntent=obj({kind:{const:'strategy-intake'},strategyIntake:obj({schemaVersion:{const:1},type:choice(strategyTypes),goal:text(4000),ownerUserId:text(120),targetDate:nullable(date),meriContext:{type:'string',maxLength:8000}})});
+export const objective=obj({kind:{const:'objective'},objectiveId:uuid,objectiveRevisionId:uuid,objectiveVersion:{type:'integer',minimum:1,maximum:Number.MAX_SAFE_INTEGER},snapshotSha256:sha,intent:{oneOf:[legacyObjectiveIntent,strategyIntakeIntent]}});
 export const manual=obj({kind:{const:'manual'},manualRequestId:uuid,goal:text()});
