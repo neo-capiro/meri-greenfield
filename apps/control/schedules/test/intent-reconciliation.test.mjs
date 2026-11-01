@@ -12,7 +12,7 @@ import {harness,createIntent,updateIntent,cancelIntent,configuration,occurrence,
 const scheduleId='application/schedule-a';
 function provider() {
  const service=temporalScheduleService(),runs=new Map();
- const workflowClient={connection:{withDeadline:(_d,fn)=>fn(),withAbortSignal:(_s,fn)=>fn()},getHandle(workflowId,runId){return {async describe(){return {workflowId,runId,status:{name:runs.get(runId)??'RUNNING',code:1}};}};}};
+ const workflowClient={connection:{withDeadline:(_d,fn)=>fn(),withAbortSignal:(_s,fn)=>fn()},getHandle(workflowId,runId){return {async describe(){return {workflowId,runId,status:runs.get(runId)??{name:'RUNNING',code:1}};}};}};
  // The production adapter applies the intent through the SDK, exactly as the lifecycle's execute does.
  const applied=intent=>mutateTemporalSchedule({scheduleClient:service.scheduleClient,workflowClient,binding:{intent},lifetime:{check(){}},effect:(_kind,fn)=>fn()});
  // A provider schedule created from SDK options that differ from the approved request.
@@ -162,14 +162,14 @@ test('unreadable provider evidence, a CLAIMED intent and a foreign tenant leave 
  assert.equal(c.p.calls.describe,before);assert.equal(intentState(c.h,ids.create),'CLAIMED');
 });
 
-test('delete is acknowledged only by typed not-found and, for request_cancel, only when every listed run has stopped running',async()=>{
+test('delete is acknowledged only by typed not-found and, for request_cancel, only when every listed run is terminal',async()=>{
  const run={workflowId:'schedule-a-2026-10-15T12:00:00Z',runId:ids.run};
  const {h,p,reconciler}=setup();await h.acknowledge(createIntent());await p.applied(createIntent());
  const cancel=cancelIntent({running:'request_cancel',runs:[run]});await uncertain(h,cancel);
  assert.equal((await reconciler.reconcile({tenantId:'tenant-a',intentId:ids.cancel})).outcome,'UNRESOLVED');
  await p.schedule().delete();
  assert.equal((await reconciler.reconcile({tenantId:'tenant-a',intentId:ids.cancel})).outcome,'UNRESOLVED');
- p.runs.set(ids.run,'CANCELLED');
+ p.runs.set(ids.run,{name:'CANCELLED',code:4});
  const done=await reconciler.reconcile({tenantId:'tenant-a',intentId:ids.cancel});
  assert.equal(done.outcome,'ACKNOWLEDGED');const f=await firing(h);assert.equal(f.projection.state,'cancelled');assert.equal(f.activeIntent,null);
 });
