@@ -135,7 +135,8 @@ export function createSourceReadContext({contract,proof,native,defaultCongress,n
  // Recompute on final release: membership changes must also fence aggregate rows with no client IDs.
  if(['capiro-data','capiro-data-v3'].includes(group)&&proof.request.source==='client_records')return privateDataContext(proof,native);
  if(group==='connected-apps'||group==='teams-channels'){
-  const selected=contract.normalizeInput(proof.request,{}).input.clientId??null;
+  // A URL, credential or malformed selector is an argument failure the model can correct, never an unavailable source.
+  let selected;try{selected=contract.normalizeInput(proof.request,{}).input.clientId??null;}catch{refuse('INVALID_ARGUMENTS');}
   if(proof.subject.kind==='client'||proof.subject.entityType==='client'){
    if(selected!==clientSubject(proof,native))refuse('ACCESS_DENIED');
   }else if(selected!==null)refuse('ACCESS_DENIED');

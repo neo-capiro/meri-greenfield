@@ -102,7 +102,8 @@ function port(f, {revoked = false, pages = {}} = {}) {
         call.operation.id === "list_connected_app_reads"
           ? (pages.list ?? listPage)
           : (pages.read ?? readPage);
-      return JSON.stringify(page);
+      // The production port returns the gateway envelope around the canonical page.
+      return JSON.stringify({binding: f.binding, operation: call.operation, result: page});
     },
   };
   return {calls, seam};
@@ -146,7 +147,7 @@ test("an approved connected read returns the canonical page with one delivery re
     const result = await mounted.call("read_connected_app", args, {toolUseId: "toolu_connected"});
     assert.equal(result.isError, undefined);
     const page = JSON.parse(result.content[0].text);
-    assert.deepEqual(page, readPage);
+    assert.deepEqual(page.result, readPage);
     assert.equal(calls.length, 1);
     assert.deepEqual(calls[0].operation, {id: "read_connected_app", version: "0.2.0"});
     assert.deepEqual(calls[0].arguments, args);
@@ -257,4 +258,77 @@ test("the server exposes only the operations the snapshot granted", async () => 
   } finally {
     await mounted.close();
   }
+});
+
+/** Mid-run availability transitions (M12). After the server is mounted from one snapshot, every later call rechecks
+ * current availability: a grant narrowed, revoked, expired, moved to another actor or re-issued under another policy
+ * revision refuses the read with a closed secret-free text before the gateway is called; a widened grant never adds a
+ * read mid-run. */
+const closedText=(r,code)=>{assert.equal(r.isError,true,JSON.stringify(r));assert.equal(r.content.length,1);
+ assert.match(r.content[0].text,new RegExp(`^${code}: mcp__meri_reads__read_connected_app `,'u'));
+ assert.match(r.content[0].text,/No evidence, absence or completeness is established\.$/u);};
+const MID_RUN=[
+ ["grant unchanged",f=>snapshot(f),null],
+ ["read grant narrowed to the list only",f=>snapshot(f,{operations:[OPERATIONS[0]]}),"UNAVAILABLE"],
+ ["grant revoked (discovery refuses)",()=>{throw Error("READ_AVAILABILITY_REFUSED");},"UNAVAILABLE"],
+ ["discovery grant expired",f=>{const s=snapshot(f);s.discovery.expiresAtMs=f.now();return s;},"UNAVAILABLE"],
+ ["installation receipt expired",f=>{const s=snapshot(f);s.installation.expiresAtMs=f.now();return s;},"UNAVAILABLE"],
+ ["grant re-issued to another actor",f=>snapshot(f,{binding:{...f.binding,actorId:"aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa"}}),"UNAVAILABLE"],
+ ["grant re-issued to another tenant",f=>snapshot(f,{binding:{...f.binding,tenantId:"bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb"}}),"UNAVAILABLE"],
+ ["grant under another policy revision",f=>{const s=snapshot(f);s.discovery.policyRevision="c".repeat(64);return s;},"UNAVAILABLE"],
+ ["discovery granting a foreign operation",f=>{const s=snapshot(f);s.discovery.operations=[{id:"search_gao_reports",version:"0.2.0"}];return s;},"UNAVAILABLE"],
+];
+for(const [label,after,code] of MID_RUN)test(`mid-run: ${label} -> ${code??"read proceeds"}`,async()=>{
+ const f=await generalReadFixture();
+ let first=true;const calls=[];
+ const mounted=await mountReads(f,{policy:{generalReads:true,readFamilies:["connected-apps"]},port:{
+  async readAvailability(){if(first){first=false;return snapshot(f);}return after(f);},
+  async execute(call){calls.push(call);return JSON.stringify({binding:f.binding,operation:call.operation,result:readPage});},
+ }});
+ assert.ok(mounted);
+ try{
+  const args={clientId:null,connectionId:capability.connectionId,provider:capability.provider,tool:capability.tool,schemaHash:capability.schemaHash,arguments:{query:"quarterly"}};
+  const result=await mounted.call("read_connected_app",args);
+  if(code===null){assert.equal(result.isError,undefined);assert.equal(calls.length,1);assert.equal(mounted.runtime.receipts().length,1);}
+  else{closedText(result,code);assert.equal(calls.length,0,"the gateway is never called for a read that is no longer available");assert.deepEqual(mounted.runtime.receipts(),[]);}
+  for(const part of result.content)assert.equal(/SYNTHETIC|https?:/u.test(part.text),false);
+ }finally{await mounted.close();}
+});
+
+test("mid-run: a widened grant never adds a read that was not mounted",async()=>{
+ const f=await generalReadFixture();
+ let first=true;const calls=[];
+ const mounted=await mountReads(f,{policy:{generalReads:true,readFamilies:["connected-apps"]},port:{
+  async readAvailability(){if(first){first=false;return snapshot(f,{operations:[OPERATIONS[0]]});}return snapshot(f);},
+  async execute(call){calls.push(call);return JSON.stringify({binding:f.binding,operation:call.operation,result:listPage});},
+ }});
+ assert.ok(mounted);
+ try{
+  assert.deepEqual((await mounted.client.listTools()).tools.map(t=>t.name),["list_connected_app_reads"]);
+  const denied=await mounted.call("read_connected_app",{clientId:null,connectionId:capability.connectionId,provider:capability.provider,tool:capability.tool,schemaHash:capability.schemaHash,arguments:{query:"q"}});
+  assert.match(denied.denied,/correlation unavailable/u);
+  const forced=await mounted.client.callTool({name:"read_connected_app",arguments:{arguments:{clientId:null}}});assert.equal(forced.isError,true);
+  assert.equal(calls.length,0);
+ }finally{await mounted.close();}
+});
+
+test("a disconnected or reauthorization page reaches the model with precise guidance and no secret",async()=>{
+ const f=await generalReadFixture();
+ for(const [status,reason,expected] of [["disconnected","connection_disconnected",/connect it under Connected apps/u],["permission_required","connection_permission_required",/reconnect it under Connected apps/u]]){
+  const page={...readPage,status,reason,content:null,providerResult:null};
+  const mounted=await mountReads(f,{policy:{generalReads:true,readFamilies:["connected-apps"]},port:port(f,{pages:{read:page}}).seam});
+  assert.ok(mounted);
+  try{
+   const result=await mounted.call("read_connected_app",{clientId:null,connectionId:capability.connectionId,provider:capability.provider,tool:capability.tool,schemaHash:capability.schemaHash,arguments:{query:"quarterly"}});
+   assert.equal(result.isError,undefined);assert.equal(result.content.length,2);
+   assert.deepEqual(JSON.parse(result.content[0].text).result,page);
+   assert.match(result.content[1].text,/^Notice: /u);assert.match(result.content[1].text,expected);assert.match(result.content[1].text,/Do not retry this call\.$/u);
+   assert.equal(/SYNTHETIC|https?:|token/u.test(result.content[1].text),false);
+   assert.equal(mounted.runtime.receipts()[0].resultSha256,canonicalSha256(JSON.parse(result.content[0].text)));
+  }finally{await mounted.close();}
+ }
+ const empty=await mountReads(f,{policy:{generalReads:true,readFamilies:["connected-apps"]},port:port(f,{pages:{list:{...listPage,status:"unavailable",managedAvailability:"no_eligible",capabilities:[]}}}).seam});
+ assert.ok(empty);
+ try{const result=await empty.call("list_connected_app_reads",{clientId:null});assert.equal(result.isError,undefined);assert.equal(result.content.length,2);assert.match(result.content[1].text,/No connected app is usable/u);}
+ finally{await empty.close();}
 });
