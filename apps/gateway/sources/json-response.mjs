@@ -3,6 +3,16 @@ import { types } from 'node:util';
 import { deny, parseRawJson } from '../dispatch/operation-result.mjs';
 
 export const cancelBody = body => { try { Promise.resolve(body?.cancel()).catch(() => {}); } catch {} };
+/** One closed meaning per non-200 source status, so a denied scope, an unsupported route and an unanswered
+ * source never collapse into one "invalid result": 401/403 denied; 404/410/501 the route is not served
+ * (unsupported operation); 408/425/429 and every 5xx the source did not answer this call; anything else is a
+ * malformed result. No status carries source detail and none is an empty result. */
+export function sourceStatusCode(status) {
+  if (status === 401 || status === 403) return 'ACCESS_DENIED';
+  if (status === 404 || status === 410 || status === 501) return 'UNAVAILABLE';
+  if (status === 408 || status === 425 || status === 429 || status >= 500) return 'SOURCE_UNAVAILABLE';
+  return 'INVALID_RESULT';
+}
 export function responseBody(response) {
   if (!response || types.isProxy(response) || !(response instanceof Response)) deny('INVALID_RESULT');
   return response.body;
@@ -11,9 +21,9 @@ export async function readJsonResponse(response, {lifetime, maxResponseBytes}) {
   let body, reader;
   try {
     body = responseBody(response);
-    if (response.status === 401 || response.status === 403) deny('ACCESS_DENIED');
-    if (response.status !== 200 || response.redirected ||
-        !/^application\/json(?:\s*;\s*charset=utf-8)?$/i.test(response.headers.get('content-type') ?? '') ||
+    if (response.redirected) deny('INVALID_RESULT');
+    if (response.status !== 200) deny(sourceStatusCode(response.status));
+    if (!/^application\/json(?:\s*;\s*charset=utf-8)?$/i.test(response.headers.get('content-type') ?? '') ||
         ![null,'identity'].includes(response.headers.get('content-encoding'))) deny('INVALID_RESULT');
     const length = response.headers.get('content-length');
     if (length !== null && (!/^\d+$/.test(length) || !Number.isSafeInteger(Number(length)) ||

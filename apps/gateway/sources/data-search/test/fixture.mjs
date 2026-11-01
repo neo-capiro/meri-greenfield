@@ -1,6 +1,6 @@
 /** Synthetic governed-retrieval DTOs and correlated credential ports; no Core or source qualification. */
 import {resolveOperationContract} from '../../../../../packages/contracts/retrieval-0.2/validate.mjs';
-import {billTextCase} from '../../bill-text/test/fixture.mjs';
+import {billTextCase,readContext} from '../../bill-text/test/fixture.mjs';
 import {createDataSearchHandlers} from '../handler.mjs';
 
 export const id='search_capiro_data',ids=[id];
@@ -49,7 +49,7 @@ export function storedCase(selected=id,options={}){
  }};
  const call=(args=original,current=authority,context={})=>{
   const normalized=contract.normalizeInput(args,context);
-  return {request:args,input:normalized.input,argumentsSha256:normalized.argumentsSha256,normalizationContext:context,authority:current};
+  return {request:args,input:normalized.input,argumentsSha256:normalized.argumentsSha256,normalizationContext:context,authority:readContext(current)};
  };
  return {...scene,family:'data-search',operation,contract,arguments:original,normalizationContext,transport,page,nativeReadContextPorts,call,
   handler:(changes={})=>createDataSearchHandlers({...transport,now,...changes},[operation])[0].execute};

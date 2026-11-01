@@ -108,9 +108,7 @@ test('unsupported selectors and model-supplied authority are rejected before cre
 });
 
 test('current tenant, actor, operation, grants and declared source set must match before credential IO',async()=>{
- for(const mutate of [a=>a.claims.audience='other',a=>a.claims.actions=[],a=>a.binding.tenantId='other',
-  a=>a.decision.actor.actorId='other',a=>a.decision.operation='other@0.2.0',a=>a.decision.decision='denied',
-  a=>a.decision.scopes=[],a=>a.sourceIds=['mail'],a=>a.claims.issuedAt=new Date(a.deadlineMs).toISOString()]){
+ for(const mutate of [a=>a.binding.tenantId='other',a=>a.subject.actorId='other',a=>a.policyRevision='0'.repeat(64),a=>a.scopes=[],a=>a.sourceIds=['other'],a=>a.subject.scopes=[{...a.subject.scopes[0],kind:'client',resourceId:'ffffffff-ffff-4fff-8fff-ffffffffffff'}],a=>a.executionSha256='not-a-digest']){
   const f=storedCase(),call=structuredClone(f.call());mutate(call.authority);await assert.rejects(f.handler()(call));
   assert.equal(f.credentialCalls.length,0);assert.equal(f.wire.length,0);
  }

@@ -1,7 +1,7 @@
 /** Synthetic source-shaped stored DTOs over real JSON bytes; no backend, provider or data qualification. */
 import schema from '../../../../../packages/contracts/retrieval-0.2/state-legislation.schema.json' with {type:'json'};
 import {resolveOperationContract} from '../../../../../packages/contracts/retrieval-0.2/validate.mjs';
-import {billTextCase} from '../../bill-text/test/fixture.mjs';
+import {billTextCase,readContext} from '../../bill-text/test/fixture.mjs';
 import {createStateLegislationHandlers} from '../handler.mjs';
 
 export const ids=['search_state_bills','get_state_legislator'];
@@ -48,7 +48,7 @@ export function storedCase(id=ids[0],options={}){
  }};
  const call=(args=request,current=authority,context={})=>{
   const normalized=contract.normalizeInput(args,context);
-  return {request:args,input:normalized.input,argumentsSha256:normalized.argumentsSha256,normalizationContext:context,authority:current};
+  return {request:args,input:normalized.input,argumentsSha256:normalized.argumentsSha256,normalizationContext:context,authority:readContext(current)};
  };
  return {...scene,family:'state-legislation',operation,contract,arguments:request,normalizationContext,transport,page,nativeReadContextPorts,call,
   handler:(changes={})=>createStateLegislationHandlers({...transport,now,...changes},[operation])[0].execute};

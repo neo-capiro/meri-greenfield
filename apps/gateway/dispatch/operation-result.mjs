@@ -1,8 +1,11 @@
 /** Raw external data and content-free failures; never establishes source truth. */
 import { canonicalSha256 } from '../../../packages/contracts/validate.mjs';
 
+// UNAVAILABLE: the read is not enabled, installed or served for this conversation (a missing Core route is
+// an unsupported operation). SOURCE_UNAVAILABLE: the read is served, but its source did not answer this call
+// (outage, overload or timeout upstream). Neither carries source detail; neither is an empty result.
 const CODES = new Set(['GATEWAY_CONFIGURATION', 'INVALID_ARGUMENTS', 'ACCESS_DENIED',
-  'UNAVAILABLE', 'DEADLINE', 'CANCELLED', 'INVALID_RESULT', 'RESOURCE_LIMIT',
+  'UNAVAILABLE', 'SOURCE_UNAVAILABLE', 'DEADLINE', 'CANCELLED', 'INVALID_RESULT', 'RESOURCE_LIMIT',
   'BUDGET_UNCERTAIN', 'INTERNAL_ERROR']);
 const ownedFailures = new WeakMap();
 

@@ -20,9 +20,9 @@ test('current graph carrier preserves the bounded connection window without inve
  assert.equal(f.wire.length,1);
 });
 
-for(const status of [408,429,500,502,503,504])test(`graph HTTP ${status} is unavailable rather than malformed or empty`,async()=>{
+for(const status of [408,429,500,502,503,504])test(`graph HTTP  is a source that did not answer, never malformed or empty`,async()=>{
  const f=currentFixture();f.state.responseFactory=()=>Response.json({code:'SYNTHETIC_UNAVAILABLE'},{status});
- await assert.rejects(f.handler()(f.call),{message:'UNAVAILABLE'});
+ await assert.rejects(f.handler()(f.call),{message:'SOURCE_UNAVAILABLE'});
  assert.equal(f.wire.length,1);
 });
 

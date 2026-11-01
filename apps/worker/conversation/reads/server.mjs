@@ -18,6 +18,7 @@ import {own,data} from '../../../../packages/contracts/commands-0.2/execution-bo
 import {canonicalSha256} from '../../../../packages/contracts/validate.mjs';
 import {createOperationLifetime} from '../../../../packages/runtime/operation-lifetime.mjs';
 import {READ_SERVER_NAME,READ_TOOL_PREFIX,readToolName,defineReadTool,assertConvertible} from './tools.mjs';
+import {RESULT_STATE_GUIDANCE} from './family-guidance.mjs';
 import {failureCode,failureResult,readNotices} from './results.mjs';
 import {createReadLedger,READ_TIMEOUT_MS} from './budget.mjs';
 const fault=(/** @type {string} */code)=>Object.assign(Error(code),{code});
@@ -77,9 +78,12 @@ export function createGeneralReadServer(c){
   }catch(error){return failureResult(failureCode(error),name);}finally{life?.close();}
  };
  // Profile mount: only reads exposed for this run may load eagerly; the others stay deferred and answer UNAVAILABLE.
- const alwaysLoad=c.available.length<=ALWAYS_LOAD_MAX,tools=registered.map(row=>defineReadTool(row,handler(row),alwaysLoad&&availableNames.has(readToolName(row))));
+ // Structured families route counts and filters to text-to-SQL first only when both SQL tools can answer in this run.
+ const sqlPrimary=['describe_capiro_data','query_capiro_data'].every(id=>c.available.some(row=>row.operation.id===id));
+ const alwaysLoad=c.available.length<=ALWAYS_LOAD_MAX,tools=registered.map(row=>defineReadTool(row,handler(row),alwaysLoad&&availableNames.has(readToolName(row)),{sqlPrimary}));
  for(const t of tools)assertConvertible(t.shape);
  const instructions=['Read-only Meri institutional sources for this conversation. Preserve exact source IDs, versions, hashes and scopes; separate inference; disclose partial or unavailable evidence. An error result establishes no evidence, absence or completeness. No write, external action or artifact is exposed here.',
+  RESULT_STATE_GUIDANCE,
   'In General, client profile, documents, meeting sources, knowledge search and tracked bills require one explicit client UUID. Resolve a named client with lookup_client_registry first and use its returned UUID; ask the user to disambiguate multiple matches. A registry result does not grant access and these reads do not search across all clients. In a selected-client conversation, keep that selected client.',
   ...(profile?[c.available.length?`Available now: ${c.available.map(row=>row.descriptor.displayName).join('; ')}.`:'No institutional source tool is available in this conversation right now.',
    'Every other tool of this server answers UNAVAILABLE in this conversation.']

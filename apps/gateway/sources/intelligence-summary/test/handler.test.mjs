@@ -37,7 +37,7 @@ test('summary callers cannot supply private identities, source policy or undecla
  await assert.rejects(f.handler()({...call,normalizationContext:{actorId:'other'}}),{message:'INVALID_ARGUMENTS'});assert.equal(f.credentialCalls.length,0);assert.equal(f.wire.length,0);
 });
 test('summary decision, tenant, source and read action authority must match current operation',async()=>{
- for(const mutate of [a=>a.decision.operation='search_intel_articles@0.2.0',a=>a.decision.decision='denied',a=>a.decision.scopes=[],a=>a.claims.binding.tenantId='other',a=>a.claims.actions=[],a=>a.sourceIds=['other']]){
+ for(const mutate of [a=>a.binding.tenantId='other',a=>a.subject.actorId='other',a=>a.policyRevision='0'.repeat(64),a=>a.scopes=[],a=>a.sourceIds=['other'],a=>a.subject.scopes=[{...a.subject.scopes[0],kind:'client',resourceId:'ffffffff-ffff-4fff-8fff-ffffffffffff'}],a=>a.executionSha256='not-a-digest']){
   const f=storedCase(),call=structuredClone(f.call());mutate(call.authority);await assert.rejects(f.handler()(call));assert.equal(f.credentialCalls.length,0);assert.equal(f.wire.length,0);
  }
 });

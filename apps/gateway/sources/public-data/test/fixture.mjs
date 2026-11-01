@@ -1,6 +1,6 @@
 /** Synthetic stored economic DTOs; no economic provider, SQL or audit execution. */
 import {resolveOperationContract} from '../../../../../packages/contracts/retrieval-0.2/validate.mjs';
-import {billTextCase} from '../../bill-text/test/fixture.mjs';
+import {billTextCase,readContext} from '../../bill-text/test/fixture.mjs';
 import {createPublicDataHandlers} from '../handler.mjs';
 import {storedModeCase,modeIds} from './mode-fixture.mjs';
 export {storedModePage,modeRequests} from './mode-fixture.mjs';
@@ -46,7 +46,7 @@ export function storedCase(selected=id,options={}){
  }};
  const call=(raw=request,current=authority,context=normalizationContext)=>{
   const normalized=contract.normalizeInput(raw,context);
-  return {request:raw,input:normalized.input,argumentsSha256:normalized.argumentsSha256,normalizationContext:context,authority:current};
+  return {request:raw,input:normalized.input,argumentsSha256:normalized.argumentsSha256,normalizationContext:context,authority:readContext(current)};
  };
  return {...scene,family:'public-data',operation,contract,arguments:request,normalizationContext,transport,page,nativeReadContextPorts,call,
   handler:(changes={})=>createPublicDataHandlers({...transport,now,...changes},[operation])[0].execute};

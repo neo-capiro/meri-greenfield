@@ -76,9 +76,7 @@ test('retained reference correlation and full current binding/subject cannot be 
 });
 
 test('current decision, user, tenant, source and capability mismatches prevent credential IO',async()=>{
- for(const mutate of [a=>a.claims.actions=[],a=>a.claims.audience='other',a=>a.decision.decision='denied',
-  a=>a.decision.operation='get_representation@0.2.0',a=>a.decision.actor.actorId='other',a=>a.decision.scopes=[],
-  a=>a.sourceIds=['other'],a=>a.claims.binding.tenantId='other']){
+ for(const mutate of [a=>a.binding.tenantId='other',a=>a.subject.actorId='other',a=>a.policyRevision='0'.repeat(64),a=>a.scopes=[],a=>a.sourceIds=['other'],a=>a.subject.scopes=[{...a.subject.scopes[0],kind:'client',resourceId:'ffffffff-ffff-4fff-8fff-ffffffffffff'}],a=>a.executionSha256='not-a-digest']){
   const f=storedCase(),call=structuredClone(f.call());mutate(call.authority);
   await assert.rejects(f.handler()(call));assert.equal(f.credentialCalls.length,0);assert.equal(f.wire.length,0);
  }
@@ -133,10 +131,11 @@ test('empty manual tracking stays a returned-set count and cannot claim exhausti
 });
 
 test('native missing-client errors and wrapped/private-column results never become accepted empty pages',async()=>{
- for(const response of [()=>Response.json({error:'PRIVATE_CLIENT_DETAIL'},{status:404}),page=>Response.json({output:page}),
+ for(const response of [page=>Response.json({output:page}),
   page=>Response.json({...page,tenantId:'private'}),page=>Response.json({...page,binding:{},subject:{}})]){
   const f=storedCase();f.state.responseFactory=response;await assert.rejects(f.handler()(f.call()),{message:'INVALID_RESULT'});
  }
+ const unserved=storedCase();unserved.state.responseFactory=()=>Response.json({error:'PRIVATE_CLIENT_DETAIL'},{status:404});await assert.rejects(unserved.handler()(unserved.call()),{message:'UNAVAILABLE'});
 });
 
 test('pre-abort, post-source cancellation and expired authority withhold all result bytes',async()=>{

@@ -1,6 +1,6 @@
 /** Synthetic stored facility rows and native HTTP only; no geography or access qualification. */
 import {resolveOperationContract} from '../../../../../packages/contracts/retrieval-0.2/validate.mjs';
-import {billTextCase} from '../../bill-text/test/fixture.mjs';
+import {billTextCase,readContext} from '../../bill-text/test/fixture.mjs';
 import {createFacilityRepresentationHandlers} from '../handler.mjs';
 export const id='get_representation',clientId='99999999-9999-4999-8999-999999999999';
 export function facility(){return {facilityId:'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa',facilityName:'Synthetic facility',city:null,state:'CA',
@@ -16,7 +16,7 @@ export function storedCase(selected=id,{request={clientId}}={}){
  const transport={...scene.transport,async fetchImpl(url,options){wire.push({url,options,body:JSON.parse(options.body)});const value=structuredClone(state.page??page);
   state.nativeValue=value;state.resultMutator?.(value);state.afterSource?.();return state.responseFactory?state.responseFactory(value):Response.json(value);}};
  const nativeReadContextPorts={async readCurrent({request:ignored,deadlineMs,signal,...proof}){if(signal?.aborted)throw Error('CANCELLED');return JSON.stringify({...proof,context:normalizationContext,checkedAtMs:now(),expiresAtMs:Math.min(deadlineMs,authority.deadlineMs)});}};
- const call=(raw=request,current=authority,context=normalizationContext)=>{const normalized=contract.normalizeInput(raw,context);return {request:raw,input:normalized.input,argumentsSha256:normalized.argumentsSha256,normalizationContext:context,authority:current};};
+ const call=(raw=request,current=authority,context=normalizationContext)=>{const normalized=contract.normalizeInput(raw,context);return {request:raw,input:normalized.input,argumentsSha256:normalized.argumentsSha256,normalizationContext:context,authority:readContext(current)};};
  return {...scene,family:'facility-representation',operation,contract,arguments:request,normalizationContext,transport,page,nativeReadContextPorts,call,visibleClientIds:[clientId],
   handler:(changes={})=>createFacilityRepresentationHandlers({...transport,now,...changes},[operation])[0].execute};
 }

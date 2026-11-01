@@ -1,7 +1,7 @@
 /** Synthetic source-shaped JSON pages; no backend, credentials or live qualification. */
 import schema from '../../../../../packages/contracts/retrieval-0.2/pe-references.schema.json' with {type:'json'};
 import {resolveOperationContract} from '../../../../../packages/contracts/retrieval-0.2/validate.mjs';
-import {billTextCase} from '../../bill-text/test/fixture.mjs';
+import {billTextCase,readContext} from '../../bill-text/test/fixture.mjs';
 import {createPeReferenceHandlers} from '../handler.mjs';
 
 export const ids=['get_pe_bills','get_pe_contractors','get_pe_report_language'];
@@ -55,7 +55,7 @@ export function storedCase(id=ids[0],{request={peCode:'0601234A'}}={}){
  }};
  const call=(raw=request,current=authority,context=normalizationContext)=>{
   const normalized=contract.normalizeInput(raw,context);
-  return {request:raw,input:normalized.input,argumentsSha256:normalized.argumentsSha256,normalizationContext:context,authority:current};
+  return {request:raw,input:normalized.input,argumentsSha256:normalized.argumentsSha256,normalizationContext:context,authority:readContext(current)};
  };
  return {...scene,family:'pe-references',operation,contract,arguments:request,normalizationContext,transport,page,nativeReadContextPorts,call,
   handler:(changes={})=>createPeReferenceHandlers({...transport,now,...changes},[operation])[0].execute};

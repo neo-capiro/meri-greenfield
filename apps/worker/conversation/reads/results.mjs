@@ -5,8 +5,9 @@
 const NOTHING='No evidence, absence or completeness is established.';
 /** @type {Readonly<Record<string,(tool:string)=>string>>} */
 const TEXTS=Object.freeze({
- UNAVAILABLE:tool=>`UNAVAILABLE: ${tool} is not available in this conversation. ${NOTHING}`,
- ACCESS_DENIED:tool=>`ACCESS_DENIED: ${tool} is not permitted for this user, client or conversation now. ${NOTHING}`,
+ UNAVAILABLE:tool=>`UNAVAILABLE: ${tool} is not enabled, installed or served for this request in this conversation (an unsupported operation or a source-side refusal that is neither a denied scope nor an outage). ${NOTHING}`,
+ SOURCE_UNAVAILABLE:tool=>`SOURCE_UNAVAILABLE: ${tool} is served, but its source did not answer this call (outage, overload or upstream timeout). This is not an empty result. ${NOTHING}`,
+ ACCESS_DENIED:tool=>`ACCESS_DENIED: ${tool} is not permitted for this user, client or conversation now (denied scope, not absent data). ${NOTHING}`,
  DEADLINE:tool=>`DEADLINE: ${tool} did not finish within its time limit. ${NOTHING}`,
  CANCELLED:tool=>`CANCELLED: ${tool} was cancelled before it finished. ${NOTHING}`,
  INVALID_ARGUMENTS:tool=>`INVALID_ARGUMENTS: ${tool} refused these arguments; supply literal arguments matching its input schema. ${tool==='mcp__meri_reads__meeting_read_client_meetings'?'For a continued meeting list, restart without the cursor; if the continuation limit was reached, narrow the from/to time range and restart. ':''}${NOTHING}`,

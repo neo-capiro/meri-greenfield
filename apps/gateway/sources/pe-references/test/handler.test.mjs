@@ -27,9 +27,7 @@ for(const id of ids){
   if(id==='get_pe_report_language')assert.equal(out.result.peCode,call.input.peCode);
  });
  test(`${id}: denied, foreign and incoherent authority reaches no credential or HTTP IO`,async()=>{
-  for(const mutate of [a=>a.claims.audience='other',a=>a.claims.actions=[],a=>a.decision.decision='denied',
-   a=>a.decision.operation='other@0.2.0',a=>a.decision.actor.actorId='other',a=>a.decision.scopes=[],
-   a=>a.sourceIds=['other'],a=>a.claims.binding.tenantId='other',a=>a.claims.issuedAt=new Date(a.deadlineMs).toISOString()]){
+  for(const mutate of [a=>a.binding.tenantId='other',a=>a.subject.actorId='other',a=>a.policyRevision='0'.repeat(64),a=>a.scopes=[],a=>a.sourceIds=['other'],a=>a.subject.scopes=[{...a.subject.scopes[0],kind:'client',resourceId:'ffffffff-ffff-4fff-8fff-ffffffffffff'}],a=>a.executionSha256='not-a-digest']){
    const f=storedCase(id),call=structuredClone(f.call());mutate(call.authority);
    await assert.rejects(f.handler()(call));assert.equal(f.credentialCalls.length,0);assert.equal(f.wire.length,0);
   }
@@ -63,11 +61,12 @@ for(const id of ids){
   assert.equal(k.wire.length,0);
  });
  test(`${id}: domain HTTP errors and invented source completeness cannot become accepted pages`,async()=>{
-  for(const response of [()=>Response.json({error:'PRIVATE'}),()=>Response.json({},{status:404}),
+  for(const response of [()=>Response.json({error:'PRIVATE'}),
    page=>Response.json({...page,tool:'other'}),page=>Response.json({...page,complete:true}),page=>Response.json({output:page})]){
    const f=storedCase(id);f.state.responseFactory=response;
    await assert.rejects(f.handler()(f.call()),{message:'INVALID_RESULT'});
   }
+  const unserved=storedCase(id);unserved.state.responseFactory=()=>Response.json({},{status:404});await assert.rejects(unserved.handler()(unserved.call()),{message:'UNAVAILABLE'});
  });
  test(`${id}: per-call native credential composition receives the exact original call`,async()=>{
   const f=storedCase(id),call=f.call(),{getCredentials,...configuration}=f.transport;let captured;
