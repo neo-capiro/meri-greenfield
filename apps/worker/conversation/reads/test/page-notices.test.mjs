@@ -38,3 +38,13 @@ test('an empty candidate page says stale only when the source state says so, wit
  assert.match(text(unknownWhen),/stale \(last synchronized at an unknown time\)/);
  assert.doesNotMatch(text({...empty,sources:[{...empty.sources[0],freshness:'fresh',synchronizedAt:'2026-11-01T00:00:00.000Z'}]}),/stale/);
 });
+
+test('a stale source and stale message states produce one sentence with one reconnect hint, on candidate and thread pages',()=>{
+ const search={id:'mail.search_messages'},candidates=createMailFixture('mail.search_messages').page();
+ const both={...candidates,sources:[{...candidates.sources[0],freshness:'stale',synchronizedAt:'2026-10-01T00:00:00.000Z'}]};
+ const text=readNotices(search,JSON.stringify(both),both)[0].text;
+ assert.match(text,/The mail source reports its stored mail as stale \(last synchronized 2026-10-01T00:00:00\.000Z\), and the mailbox connection status is disabled; the user can reconnect the mailbox in Capiro's mail integration settings\.$/);
+ assert.equal(text.split('reconnect').length,2,'the reconnect hint appears once');
+ const staleThread={...base,sources:[{...base.sources[0],freshness:'stale',synchronizedAt:null}],messages:[message({connectionStatus:'connected',bodyCompleteness:'full',section:{...base.messages[0].section,hasMore:false}})]};
+ assert.equal(notice(staleThread),'Notice: 1 message(s) of 1 in this thread. The mail source reports its stored mail as stale (last synchronized at an unknown time); the user can reconnect the mailbox in Capiro\'s mail integration settings.');
+});

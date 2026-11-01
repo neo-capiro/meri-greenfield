@@ -85,7 +85,7 @@ test('relation refusals render Core\'s restated message verbatim: Core, not Meri
  const line=text=>notices(query,text)[0].text;
  // translateDatabaseError (Core sql-reader-connection.ts) replaces PostgreSQL's text with the name the model wrote, or none.
  const restated=sqlRefusal({code:'UNKNOWN_RELATION',message:'clients is not published in this source; use only the relations describe_capiro_data lists.',sqlstate:'42501',position:12,hint:undefined,candidates:['client_objectives']});delete restated.error.hint;
- assert.match(line(restated),/PostgreSQL 42501: clients is not published in this source; use only the relations describe_capiro_data lists\. at character 12\. Did you mean: client_objectives\./);
+ assert.match(line(restated),/PostgreSQL 42501: clients is not published in this source; use only the relations describe_capiro_data lists at character 12\. Did you mean: client_objectives\./);
  const locking=sqlRefusal({code:'UNKNOWN_RELATION',message:'Only a read-only SELECT is permitted on congress_bills; locking and write clauses are refused.',sqlstate:'42501',position:undefined,hint:undefined,candidates:undefined});for(const k of ['position','hint','candidates'])delete locking.error[k];
  assert.match(line(locking),/PostgreSQL 42501: Only a read-only SELECT is permitted on congress_bills; locking and write clauses are refused\./);
  // PostgreSQL's own report of the model's statement still renders in full.
