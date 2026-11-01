@@ -16,7 +16,7 @@ import official from '../../../../packages/contracts/test/fixtures/federal-draft
 
 export const bytes=value=>new TextEncoder().encode(JSON.stringify(value));
 export async function ok(response){const body=await response.json();assert.equal(response.status,200,JSON.stringify(body));return body;}
-export const publication=(selection,revisionSha256,output,extra={})=>({selection,revisionSha256,output,deliveryId:randomUUID(),baseVersionId:null,baseRevisionSha256:null,reviewVersionId:null,...extra});
+export const publication=(selection,revisionSha256,output,extra={})=>({selection,revisionSha256,output,deliveryId:randomUUID(),baseVersionId:null,baseRevisionSha256:null,...extra});
 export const importedSelection=(result,over={})=>({versionId:result.publication.version.versionId,expectedArtifactSha256:result.publication.version.object.sha256,
  operations:[opFor(result.source,{scopeId:'document',expectedText:'$20',text:'$25',...over})]});
 

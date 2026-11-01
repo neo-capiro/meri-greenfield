@@ -38,12 +38,15 @@ export function federalWorkbenchInput(intent,raw){
   own(q,['versionId','limit','cursor']);
   if(!uuid(q.versionId)||!Number.isInteger(q.limit)||q.limit<1||q.limit>100||q.cursor!==null&&!sha(q.cursor))fail('INVALID_REQUEST');return q;
  }
- own(q,intent==='federal-prepare'?['selection']:['selection','revisionSha256','output','deliveryId','baseVersionId','baseRevisionSha256','reviewVersionId']);
+ own(q,intent==='federal-prepare'?['selection']:['selection','revisionSha256','output','deliveryId','baseVersionId','baseRevisionSha256'],intent==='federal-prepare'?[]:['reviewVersionId']);
  const selected=selection(q.selection);
  if(intent==='federal-publish'){
-  if(!sha(q.revisionSha256)||!kinds.includes(q.output)||!delivery(q.deliveryId)||q.reviewVersionId!==null&&!uuid(q.reviewVersionId)||
+  // Absent is the ordinary unapproved export: the deployed client sends no citation until its own release adds it.
+  const reviewVersionId=q.reviewVersionId??null;
+  if(!sha(q.revisionSha256)||!kinds.includes(q.output)||!delivery(q.deliveryId)||reviewVersionId!==null&&!uuid(reviewVersionId)||
    (q.baseVersionId===null?q.baseRevisionSha256!==null:!uuid(q.baseVersionId)||!sha(q.baseRevisionSha256)||q.output!=='draft')||
-   q.output==='draft'&&q.reviewVersionId!==null)fail('INVALID_REQUEST');
+   q.output==='draft'&&reviewVersionId!==null)fail('INVALID_REQUEST');
+  return {...q,selection:selected,reviewVersionId};
  }
  return {...q,selection:selected};
 }

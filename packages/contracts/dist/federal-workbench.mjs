@@ -14613,7 +14613,7 @@ function validate92(data, { instancePath = "", parentData, parentDataProperty, r
 }
 validate92.evaluated = { "props": true, "dynamicProps": false, "dynamicItems": false };
 var validatePublish = validate93;
-var schema90 = { "type": "object", "properties": { "selection": { "$ref": "#/$defs/FederalSelection" }, "revisionSha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" }, "output": { "enum": ["draft", "operative", "consolidated", "redline", "docx"] }, "deliveryId": { "type": "string", "pattern": "^[A-Za-z0-9_.:@/-]{1,255}$" }, "baseVersionId": { "anyOf": [{ "type": "string", "format": "uuid" }, { "type": "null" }] }, "baseRevisionSha256": { "anyOf": [{ "type": "string", "pattern": "^[a-f0-9]{64}$" }, { "type": "null" }] }, "reviewVersionId": { "anyOf": [{ "type": "string", "format": "uuid" }, { "type": "null" }] } }, "required": ["selection", "revisionSha256", "output", "deliveryId", "baseVersionId", "baseRevisionSha256", "reviewVersionId"], "additionalProperties": false };
+var schema90 = { "type": "object", "properties": { "selection": { "$ref": "#/$defs/FederalSelection" }, "revisionSha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" }, "output": { "enum": ["draft", "operative", "consolidated", "redline", "docx"] }, "deliveryId": { "type": "string", "pattern": "^[A-Za-z0-9_.:@/-]{1,255}$" }, "baseVersionId": { "anyOf": [{ "type": "string", "format": "uuid" }, { "type": "null" }] }, "baseRevisionSha256": { "anyOf": [{ "type": "string", "pattern": "^[a-f0-9]{64}$" }, { "type": "null" }] }, "reviewVersionId": { "anyOf": [{ "type": "string", "format": "uuid" }, { "type": "null" }] } }, "required": ["selection", "revisionSha256", "output", "deliveryId", "baseVersionId", "baseRevisionSha256"], "additionalProperties": false };
 function validate93(data, { instancePath = "", parentData, parentDataProperty, rootData = data, dynamicAnchors = {} } = {}) {
   let vErrors = null;
   let errors2 = 0;
@@ -14627,7 +14627,7 @@ function validate93(data, { instancePath = "", parentData, parentDataProperty, r
   if (errors2 === 0) {
     if (data && typeof data == "object" && !Array.isArray(data)) {
       let missing0;
-      if (data.selection === void 0 && (missing0 = "selection") || data.revisionSha256 === void 0 && (missing0 = "revisionSha256") || data.output === void 0 && (missing0 = "output") || data.deliveryId === void 0 && (missing0 = "deliveryId") || data.baseVersionId === void 0 && (missing0 = "baseVersionId") || data.baseRevisionSha256 === void 0 && (missing0 = "baseRevisionSha256") || data.reviewVersionId === void 0 && (missing0 = "reviewVersionId")) {
+      if (data.selection === void 0 && (missing0 = "selection") || data.revisionSha256 === void 0 && (missing0 = "revisionSha256") || data.output === void 0 && (missing0 = "output") || data.deliveryId === void 0 && (missing0 = "deliveryId") || data.baseVersionId === void 0 && (missing0 = "baseVersionId") || data.baseRevisionSha256 === void 0 && (missing0 = "baseRevisionSha256")) {
         validate93.errors = [{ instancePath, schemaPath: "#/required", keyword: "required", params: { missingProperty: missing0 }, message: "must have required property '" + missing0 + "'" }];
         return false;
       } else {
@@ -19969,7 +19969,7 @@ function receiveFederalRequest(route, bytes) {
   if (!Object.hasOwn(validators, route) || !validators[route](request)) fail2("INVALID_REQUEST");
   if (route === "federal-publish") {
     if (request.baseVersionId === null ? request.baseRevisionSha256 !== null : request.baseRevisionSha256 === null || request.output !== "draft") fail2("INVALID_REQUEST");
-    if (request.output === "draft" && request.reviewVersionId !== null) fail2("INVALID_REQUEST");
+    if (request.output === "draft" && (request.reviewVersionId ?? null) !== null) fail2("INVALID_REQUEST");
   }
   requests.set(request, route);
   return request;
@@ -20048,7 +20048,7 @@ async function receiveFederalResponse(route, status, bytes, request, review) {
     reviews.add(result);
     return result;
   }
-  const reviewVersionId = request.reviewVersionId, expectedReview = request.output === "draft" ? "unapproved" : result.approval === null ? "confirmed-for-export" : "approved";
+  const reviewVersionId = request.reviewVersionId ?? null, expectedReview = request.output === "draft" ? "unapproved" : result.approval === null ? "confirmed-for-export" : "approved";
   if (!reviews.has(review) || !validatePublication(result) || !same(request.selection, review.selection) || request.revisionSha256 !== review.prepared.revisionSha256 || result.revisionSha256 !== request.revisionSha256 || !same(result.sourceArtifact, review.prepared.sourceArtifact) || result.output !== request.output || result.review !== expectedReview || request.output === "draft" && result.approval !== null || reviewVersionId === null && result.approval !== null || !approvalBinds(result.approval, request.revisionSha256) || result.approval !== null && result.approval.reviewVersionId === reviewVersionId) fail2("REVIEW_MISMATCH");
   const { version: v, inspection, execution } = result.publication, format = request.output === "docx" ? "docx" : "txt";
   const content = request.output === "draft" ? reviewContent(review.schema, review.prepared, null) : request.output === "docx" ? null : review.prepared.draft.outputs[request.output];

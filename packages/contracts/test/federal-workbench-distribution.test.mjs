@@ -91,8 +91,9 @@ test('approval, history and refusal reasons are closed public shapes', async () 
   const publish = (output, extra = {}) => ({selection, revisionSha256, output, deliveryId: randomUUID(), baseVersionId: null, baseRevisionSha256: null, reviewVersionId: null, ...extra});
   assert.equal(receiveFederalRequest('federal-publish', bytes(publish('docx', {reviewVersionId: randomUUID()}))).output, 'docx');
   assert.equal(receiveFederalRequest('federal-publish', bytes(publish('operative'))).reviewVersionId, null);
+  // The deployed client sends no citation: that request stays admitted as the ordinary unapproved export.
   const {reviewVersionId: omitted, ...withoutCitation} = publish('operative');
-  assert.throws(() => receiveFederalRequest('federal-publish', bytes(withoutCitation)));
+  assert.equal(receiveFederalRequest('federal-publish', bytes(withoutCitation)).reviewVersionId, undefined);
   assert.throws(() => receiveFederalRequest('federal-publish', bytes(publish('draft', {reviewVersionId: randomUUID()}))));
   assert.throws(() => receiveFederalRequest('federal-publish', bytes(publish('operative', {reviewVersionId: 'latest'}))));
 });
