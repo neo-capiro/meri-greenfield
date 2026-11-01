@@ -15,7 +15,7 @@ test('search_public_web tells the model the query bound, the row limit, the row 
  assert.ok(text.startsWith(`${d.displayName}. ${d.whenToUse}`),'the catalog head line is kept');
  assert.match(text,/1-200 characters/);assert.match(text,/refused, never truncated/);
  assert.match(text,/limit \(optional integer 1-12, default 6\)/);
- assert.match(text,/publishedAt \(publication date, YYYY-MM-DD when the index has one, or null when it has none\)/);
+ assert.match(text,/publishedAt \(publication date, YYYY-MM-DD when the index has one, else null\)/);
  assert.match(text,/A search row is deliverable on its own/);assert.match(text,/when that read fails, keep the row/);
  assert.match(text,/title \(string or null\)/);assert.match(text,/url \(exact locator/);assert.match(text,/snippet \(string or null/);
  assert.match(text,/empty list is an honest empty discovery/);
@@ -63,7 +63,8 @@ test('public-web failures carry a precise next step between the closed head and 
  // next step is the search row it already holds, not a "timed out" report and not an empty answer.
  const refused=failureResult('SOURCE_UNAVAILABLE','mcp__meri_reads__scrape_web_page').content[0].text;
  assert.match(refused,/a refusal by the source or an upstream timeout/);assert.match(refused,/Do not retry the same URL/);
- assert.match(refused,/deliver the search result you already hold \(title, url, publishedAt\)/);
+ assert.match(refused,/If a search row for this item exists, deliver that row \(title, url, publishedAt\)/);assert.match(refused,/one alternate official URL at most once/);
+ assert.doesNotMatch(refused,/page reader itself is working/);assert.match(failureResult('INVALID_RESULT','mcp__meri_reads__scrape_web_page').content[0].text,/one different URL at most once/);
  assert.match(failureResult('SOURCE_UNAVAILABLE','mcp__meri_reads__search_public_web').content[0].text,/retry once with the same terms/);
  assert.equal(readGuidance('search_public_web'),READ_GUIDANCE.search_public_web);
  assert.equal(readGuidance('mcp__other_server__search_public_web'),READ_GUIDANCE.search_public_web,'guidance is keyed by the read, not the server');

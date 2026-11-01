@@ -369,15 +369,18 @@ test('a row cut at a space or inside a surrogate pair is trimmed, so the receivi
  assert.throws(()=>contract.assertOutput({...out.result,total:1,results:[{...out.result.results[0],snippet:'a'.repeat(319)+' '}]},{request:{query:'recent announcements'}}),/normalized/u);
 });
 
-test('a publication date is projected only as the date it names; an unparseable value is kept whole or stays null',()=>{
+test('a publication date is projected only when it names one calendar date; anything else is absence, never a wrong date',()=>{
  const at=publishedDate=>projectRow({url:'https://public.example.invalid/a',publishedDate}).publishedAt;
- assert.equal(at('2026-10-28T14:00:00Z'),'2026-10-28T14:00:00Z','an ISO instant is kept');
+ assert.equal(at('2026-10-28T14:00:00Z'),'2026-10-28T14:00:00Z','an ISO instant is kept whole');
  assert.equal(at('2026-10-01'),'2026-10-01');
  assert.equal(at('July 12 2026'),'2026-07-12');assert.equal(at('Sunday, July 12, 2026'),'2026-07-12');
  assert.equal(at('05:00PM, Sunday, July 12 2026, PDT'),'2026-07-12');
- assert.equal(at('Fall 2026'),'Fall 2026','a short unparseable value is kept whole');
- assert.equal(at('05:00PM, Wednesday, Septembre 29 2021, PDT'),null,'a value that neither parses nor fits the 40-character cap is never cut into a different date');
- assert.equal(at('11:00AM, Monday, Smarch 45 2026, PDT'),'11:00AM, Monday, Smarch 45 2026, PDT','an impossible day or month is not a date; the short original is kept whole, never repaired');
+ assert.equal(at('Sep 29 2021, PDT'),'2021-09-29','a three-letter month is unambiguous');
+ assert.equal(at('02:00AM, Thursday, February 29 2024, PST'),'2024-02-29','a leap day in a leap year');
+ for(const [value,why] of [['February 31 2026','an impossible day'],['February 29 2023','no leap day in 2023'],['April 31 2026','thirty days hath April'],['2026-02-30','an impossible ISO day'],
+  ['03/04/2026','a numeric date is ambiguous between day-first and month-first'],['2 days ago','a relative phrase names no date'],['Fall 2026','a season is not a date'],
+  ['Sept 29 2021','a four-letter abbreviation is not a month name'],['11:00AM, Monday, Smarch 45 2026, PDT','an unknown month'],['05:00PM, Wednesday, Septembre 29 2021, PDT','a misspelt month'],['x'.repeat(45),'over the cap and meaningless']])
+  assert.equal(at(value),null,why);
  for(const absent of ['unknown','UNKNOWN','n/a','none','null','  ',undefined,null,12])assert.equal(at(absent),null,String(absent));
  assert.equal(projectRow({url:'https://public.example.invalid/a',publishedAt:'2026-10-02'}).publishedAt,'2026-10-02','the documented alias is read too');
 });
