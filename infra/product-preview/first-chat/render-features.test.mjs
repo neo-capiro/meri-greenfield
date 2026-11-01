@@ -17,7 +17,8 @@ const RV=await import('./runtime-values.mjs');
 const {validateConfiguration}=await import('../../../apps/runtime/config.mjs');
 const {compileProductMaterialPlan}=await import('../../../apps/runtime/material-init-plan.mjs');
 const {validateStaticProductDelivery}=await import('../../../apps/runtime/material-init.mjs');
-const {PROPOSED_PREVIEW_CAPABILITY_PLATFORM,NO_CAPABILITY_PLATFORM}=await import('../../../apps/runtime/product-ports/capability-policy.mjs');
+const {PROPOSED_PREVIEW_CAPABILITY_PLATFORM,NO_CAPABILITY_PLATFORM,CORE_ROLES,APPROVED_READS_LITERAL,compileCapabilityPlatform}=await import('../../../apps/runtime/product-ports/capability-policy.mjs');
+const {resolveCapabilityPolicy}=await import('../../../apps/worker/conversation/capabilities/policy-resolution.mjs');
 const {canonicalSha256}=await import('../../../packages/contracts/validate.mjs');
 
 const NOW=Date.now();
@@ -330,8 +331,16 @@ test('approved reads allow valid narrowed role capabilities and reject invalid a
  const approvedReads={...structuredClone(APPROVED_READS),operations};
  const features={sourceEnabled:true,capabilityPlatform:platform,reads:{...structuredClone(READS),approvedReads}};
  const rendered=await render(withFeatures(features),{featureSecrets:featureSecrets()});
- assert.deepEqual(config(rendered,'control').agentcore.approvedReads,approvedReads);
- assert.deepEqual(config(rendered,'control').capabilityPlatform.roleCeilings.standard_user.activeReadOperations,APPROVED_READS.operations);
+ const control=config(rendered,'control');assert.deepEqual(control.agentcore.approvedReads,approvedReads);
+ // Lists equal to the roster render as the literal; the narrowed role keeps its explicit list; the control compiles both to the input lists.
+ for(const policy of [control.capabilityPlatform.maximum,control.capabilityPlatform.defaults,control.capabilityPlatform.roleCeilings.user_admin,control.capabilityPlatform.roleCeilings.capiro_admin])assert.equal(policy.activeReadOperations,APPROVED_READS_LITERAL);
+ assert.deepEqual(control.capabilityPlatform.roleCeilings.standard_user.activeReadOperations,APPROVED_READS.operations);
+ assert.deepEqual(compileCapabilityPlatform(control),compileCapabilityPlatform({capabilityPlatform:platform,agentcore:{approvedReads}}));
+ // The literal is also an accepted input form; it needs the approved roster beside it and never widens past the ordinary validation.
+ const literal=structuredClone(features);for(const policy of [literal.capabilityPlatform.maximum,literal.capabilityPlatform.defaults])policy.activeReadOperations=APPROVED_READS_LITERAL;
+ assert.deepEqual(config(await render(withFeatures(literal),{featureSecrets:featureSecrets()}),'control').capabilityPlatform,control.capabilityPlatform);
+ await assert.rejects(render(withFeatures({sourceEnabled:true,capabilityPlatform:literal.capabilityPlatform,reads:{enabled:true,serviceSecretArn:ARN.service,readModeServiceSecretArn:ARN.readMode,defaultCongress:119}}),{featureSecrets:featureSecrets()}),/features\.capabilityPlatform/);
+ assert.throws(()=>parseFeatures({capabilityPlatform:literal.capabilityPlatform}),/features\.capabilityPlatform/);
  const bad=structuredClone(features);bad.reads.approvedReads.operations=[{id:'unknown_read',version:'0.2.0'}];
  await assert.rejects(render(withFeatures(bad),{featureSecrets:featureSecrets()}),/features\.reads\.approvedReads/);
  const policy=JSON.parse(await readFile(join(here,'policy.json'),'utf8'));
@@ -339,7 +348,7 @@ test('approved reads allow valid narrowed role capabilities and reject invalid a
  for(const extra of [{maxTurns:20},{model:'deployment-model'}])assert.throws(()=>RV.parsePolicy({...policy,runtime:{...policy.runtime,...extra}}),{code:'RUNTIME_VALUES_REFUSED'});
 });
 
-test('the committed deployment inputs render every approved read into all six control lists under the material caps',async()=>{
+test('the committed deployment inputs render the approved roster once; the control resolves every platform list to it under the material caps',async()=>{
  // Render the example exactly as the operator does: its own reads roster and capability platform, no synthetic overlay.
  const example=JSON.parse(await readFile(new URL('deployment-inputs.json',import.meta.url),'utf8'));
  const operations=example.features.reads.approvedReads.operations,key=x=>`${x.id}@${x.version}`;
@@ -349,8 +358,15 @@ test('the committed deployment inputs render every approved read into all six co
  const secrets={'reads.serviceSecret':{secretArn:example.features.reads.serviceSecretArn,versionId:VERSION,bytes:Buffer.from(SECRET.service)}};
  const rendered=await render(i=>{i.deployment.features=structuredClone(example.features);},{featureSecrets:secrets});
  const control=config(rendered,'control'),platform=control.capabilityPlatform;
- for(const list of [control.agentcore.approvedReads.operations,platform.maximum.activeReadOperations,platform.defaults.activeReadOperations,...Object.values(platform.roleCeilings).map(x=>x.activeReadOperations)])assert.deepEqual(list,operations);
- assert.ok(rendered.roles.control.configBytes.length<=40*1024);
+ assert.deepEqual(control.agentcore.approvedReads.operations,operations);
+ for(const list of [platform.maximum.activeReadOperations,platform.defaults.activeReadOperations,...Object.values(platform.roleCeilings).map(x=>x.activeReadOperations)])assert.equal(list,APPROVED_READS_LITERAL);
+ // Compiled both ways (the example's explicit lists and the rendered literal), the platform and every role's effective policy are identical.
+ withPosixPaths(()=>validateConfiguration(control,'control'));
+ const compiled=compileCapabilityPlatform(control),explicit=compileCapabilityPlatform({capabilityPlatform:example.features.capabilityPlatform,agentcore:control.agentcore});
+ assert.deepEqual(compiled,explicit);
+ for(const role of CORE_ROLES){const effective=resolveCapabilityPolicy({platform:compiled,tenant:{},role});assert.deepEqual(effective,resolveCapabilityPolicy({platform:explicit,tenant:{},role}));assert.deepEqual(effective.activeReadOperations,operations);}
+ // The roster is 109 operations today; carried once it leaves ample room under the control cap for the next approved reads.
+ assert.ok(rendered.roles.control.configBytes.length<=24*1024,`control.json is ${rendered.roles.control.configBytes.length} bytes`);
  assert.ok(Buffer.byteLength(JSON.stringify(rendered.roles.control.bundle))<=65536);
 });
 

@@ -6,6 +6,7 @@ import {own,data,nativeSignal} from '../../../packages/contracts/commands-0.2/ex
 import {POLICY_FLAGS,SUBAGENT_TYPES,WORKSPACE_TOOLS,MAX_PARALLEL_SUBAGENTS} from '../../worker/conversation/capabilities/policy.mjs';
 import {assertPlatformCapabilityLimits,resolveCapabilityPolicy} from '../../worker/conversation/capabilities/policy-resolution.mjs';
 import {READ_FAMILY_IDS} from '../../worker/conversation/reads/families.mjs';
+import {assertNativeReadConfiguration} from '../../../packages/contracts/runtime-0.2/reads.mjs';
 import {createPostgresSettingsStore} from '../../control/settings/postgres-store.mjs';
 const fault=code=>Object.assign(new Error(code),{code});
 const freeze=value=>{if(value&&typeof value==='object'){Object.values(value).forEach(freeze);Object.freeze(value);}return value;};
@@ -34,11 +35,26 @@ const PREVIEW_PROFILE={generalReads:true,readFamilies:[...READ_FAMILY_IDS],gover
 export const PROPOSED_PREVIEW_CAPABILITY_PLATFORM=freeze({maximum:structuredClone(PREVIEW_PROFILE),defaults:structuredClone(PREVIEW_PROFILE),
  roleCeilings:Object.fromEntries(CORE_ROLES.map(role=>[role,structuredClone(PREVIEW_PROFILE)]))});
 
+/** A platform policy's `activeReadOperations` is either an explicit list (a narrowing) or this literal: exactly the control's
+ * approved reads roster (`agentcore.approvedReads.operations`), so the rendered configuration carries that roster once. */
+export const APPROVED_READS_LITERAL='approved';
+/** The literal resolved against the roster the same configuration declares; it is a contradiction without one. */
+function resolveApprovedReads(policy,configuration){
+ if(policy?.activeReadOperations!==APPROVED_READS_LITERAL)return policy;
+ const approvedReads=configuration?.agentcore?.approvedReads;if(approvedReads===undefined)throw Error();
+ return {...policy,activeReadOperations:assertNativeReadConfiguration(approvedReads).operations.map(({id,version})=>({id,version}))};
+}
 /** The control's validated platform record from its closed configuration; absent means NO_CAPABILITY_PLATFORM. Also the config.mjs
- * validator for the `capabilityPlatform` key (no I/O, no clock). */
+ * validator for the `capabilityPlatform` key (no I/O, no clock). Every `activeReadOperations` is a list once compiled. */
 export function compileCapabilityPlatform(configuration){
  const raw=configuration?.capabilityPlatform;
- try{return assertPlatformCapabilityLimits(raw===undefined?NO_CAPABILITY_PLATFORM:data(raw));}catch{throw fault('CAPABILITY_PLATFORM_CONFIGURATION');}
+ try{
+  if(raw===undefined)return assertPlatformCapabilityLimits(NO_CAPABILITY_PLATFORM);
+  const p=own(data(raw),['maximum','defaults','roleCeilings']),resolve=policy=>resolveApprovedReads(policy,configuration);
+  if(!p.roleCeilings||typeof p.roleCeilings!=='object'||Array.isArray(p.roleCeilings))throw Error();
+  return assertPlatformCapabilityLimits({maximum:resolve(p.maximum),defaults:resolve(p.defaults),
+   roleCeilings:Object.fromEntries(Object.entries(p.roleCeilings).map(([role,ceiling])=>[role,resolve(ceiling)]))});
+ }catch{throw fault('CAPABILITY_PLATFORM_CONFIGURATION');}
 }
 /** `readPlatformLimits` for `createSettingsService`: the trusted static record. No producer of it existed; this is that producer. */
 export function createStaticPlatformLimits(platform){
