@@ -2,7 +2,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {failureResult,readNotices,SQL_REFUSAL_GUIDANCE,READ_FAILURE_CODES} from '../results.mjs';
-import {capiroDataPage} from '../../../../gateway/sources/capiro-data/test/fixture.mjs';
+import {capiroDataPage,sqlRefusal} from '../../../../gateway/sources/capiro-data/test/fixture.mjs';
 
 const NOTHING='No evidence, absence or completeness is established.';
 const query={id:'query_capiro_data'},describe={id:'describe_capiro_data'};
@@ -29,7 +29,11 @@ test('every closed Core SQL refusal code yields one fixed correction notice and 
   assert.equal(notice.text,`Notice: ${operation.id} refused this request with ${code}. ${SQL_REFUSAL_GUIDANCE[code]} ${NOTHING}`);
   assert.equal(notice.text.includes('PRIVATE'),false);
  }
- assert.match(SQL_REFUSAL_GUIDANCE.UNSUPPORTED_SQL,/No string literals, SELECT \*, IN, BETWEEN, NOT, LIKE, CASE, COALESCE, casts, arithmetic, functions, window or FILTER clauses, subqueries, OFFSET, UNION or NULLS LAST/);
+ assert.match(SQL_REFUSAL_GUIDANCE.UNSUPPORTED_SQL,/exactly one read-only SELECT or WITH \.\.\. SELECT: no second statement, SET, SHOW, COPY, LISTEN, EXPLAIN or transaction control/);
+ assert.match(SQL_REFUSAL_GUIDANCE.UNSUPPORTED_SQL,/set_config, pg_sleep\*, pg_terminate_backend, pg_cancel_backend, advisory locks, pg_notify, lo_\*, pg_read_file, pg_ls_dir or dblink/);
+ assert.match(SQL_REFUSAL_GUIDANCE.UNKNOWN_RELATION,/one query reads one source/);
+ assert.match(SQL_REFUSAL_GUIDANCE.INVALID_QUERY,/PostgreSQL syntax or type error names the character position/);
+ for(const text of Object.values(SQL_REFUSAL_GUIDANCE))assert.doesNotMatch(text,/No string literals|SELECT \*|accepted grammar|key equality|base columns|NULLS LAST/);
  assert.match(SQL_REFUSAL_GUIDANCE.UNKNOWN_FIELD,/describe_capiro_data relations:\[\.\.\.\]/);
  assert.match(SQL_REFUSAL_GUIDANCE.PARAMETER_MISMATCH,/\$1\.\.\$n contiguously/);
  const [unknown]=notices(query,{version:'0.1.0',generatedAt:'2026-10-26T12:00:00.000Z',ok:false,error:{code:'OTHER',message:'x'}});
@@ -53,4 +57,20 @@ test('notices never touch other tools or malformed envelopes',()=>{
  assert.deepEqual(readNotices(query,'null',null),[]);
  assert.deepEqual(readNotices({id:'find_contacts'},'{"result":{"contacts":[]}}',{result:{contacts:[]}}),[]);
  assert.equal(readNotices({id:'find_contacts'},'update_client_profile',{})[0].text.startsWith('Notice: update_client_profile is not available in Meri.'),true);
+});
+
+test('PostgreSQL diagnostics on a Core 362 refusal follow the fixed notice; the gate\'s own and pre-362 refusals stay fixed',()=>{
+ const line=text=>notices(query,text)[0].text;
+ assert.equal(line(sqlRefusal()),`Notice: query_capiro_data refused this request with UNKNOWN_FIELD. ${SQL_REFUSAL_GUIDANCE.UNKNOWN_FIELD} PostgreSQL 42703: column b.titel does not exist at character 8. Hint: Perhaps you meant "b.title". Did you mean: title. ${NOTHING}`);
+ const relation=sqlRefusal({code:'UNKNOWN_RELATION',message:'relation "congress_bill" does not exist',sqlstate:'42P01',candidates:['congress_bills','congress_members'],position:31});delete relation.error.hint;
+ assert.equal(line(relation),`Notice: query_capiro_data refused this request with UNKNOWN_RELATION. ${SQL_REFUSAL_GUIDANCE.UNKNOWN_RELATION} PostgreSQL 42P01: relation "congress_bill" does not exist at character 31. Did you mean: congress_bills, congress_members. ${NOTHING}`);
+ const syntax=sqlRefusal({code:'INVALID_QUERY',message:'syntax error at or near ")"',sqlstate:'42601',position:3});delete syntax.error.hint;delete syntax.error.candidates;
+ assert.equal(line(syntax),`Notice: query_capiro_data refused this request with INVALID_QUERY. ${SQL_REFUSAL_GUIDANCE.INVALID_QUERY} PostgreSQL 42601: syntax error at or near ")" at character 3. ${NOTHING}`);
+ const describeRefusal=sqlRefusal({code:'UNKNOWN_RELATION',message:'congress_bill is not a published relation.',candidates:['congress_bills']});for(const key of ['position','hint','sqlstate'])delete describeRefusal.error[key];
+ assert.equal(notices(describe,describeRefusal)[0].text,`Notice: describe_capiro_data refused this request with UNKNOWN_RELATION. ${SQL_REFUSAL_GUIDANCE.UNKNOWN_RELATION} PostgreSQL: congress_bill is not a published relation. Did you mean: congress_bills. ${NOTHING}`);
+ // A SQLSTATE alone (sanitized SOURCE_UNAVAILABLE), empty candidates or the gate's own refusal render no diagnostic line and never echo the message.
+ for(const refusal of [sqlRefusal({code:'SOURCE_UNAVAILABLE',message:'Data is currently unavailable.',sqlstate:'53200',position:undefined,hint:undefined,candidates:undefined}),
+  sqlRefusal({code:'UNSUPPORTED_SQL',message:'PRIVATE gate text',position:undefined,hint:undefined,sqlstate:undefined,candidates:[]})]){
+  const text=line(refusal);assert.doesNotMatch(text,/PostgreSQL|PRIVATE|unavailable\./);assert.match(text,new RegExp(`^Notice: query_capiro_data refused this request with ${refusal.error.code}\\. `));
+ }
 });

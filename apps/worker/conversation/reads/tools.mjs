@@ -8,11 +8,14 @@ import {sdkToolName} from '../skills/mcp.mjs';
 import {advertisedArguments} from './schema.mjs';
 export const READ_SERVER_NAME='meri_reads';
 export const READ_TOOL_PREFIX=`mcp__${READ_SERVER_NAME}__`;
-const MAX_DESCRIPTION=2048,MAX_LIMITS=4;
+/** The SDK tool description. 4096 holds the longest catalog descriptor (query_capiro_data@0.3.0, which states the
+ * PostgreSQL contract); `tools.test.mjs` proves no rendered description reaches the slice. */
+export const MAX_DESCRIPTION=4096;
+const MAX_LIMITS=4;
 /** @param {{operation:{id:string,version:string}}} row */
 export const readToolName=row=>`${READ_TOOL_PREFIX}${sdkToolName(row.operation)}`;
 /** @param {any} d */
-function description(d){
+export function readToolDescription(d){
  const lines=[`${d.displayName}. ${d.whenToUse}`];
  if(d.limitations?.length)lines.push(`Limits: ${d.limitations.slice(0,MAX_LIMITS).join(' ')}`);
  for(const example of d.negativeExamples??[])lines.push(`Do not: ${example}`);
@@ -25,7 +28,7 @@ export function defineReadTool(row,handler,alwaysLoad){
  const d=row.descriptor,advertised=advertisedArguments(d.inputSchema);
  const shape={arguments:advertised.arguments,_meriInvocation:z.string().optional().describe('Reserved correlation supplied only by the trusted SDK hook')};
  const searchHint=(d.positiveExamples??[]).join(' ').slice(0,512);
- const definition=tool(sdkToolName(row.operation),description(d),shape,handler,{annotations:{readOnlyHint:true,destructiveHint:false,idempotentHint:true,openWorldHint:true},alwaysLoad,...(searchHint?{searchHint}:{})});
+ const definition=tool(sdkToolName(row.operation),readToolDescription(d),shape,handler,{annotations:{readOnlyHint:true,destructiveHint:false,idempotentHint:true,openWorldHint:true},alwaysLoad,...(searchHint?{searchHint}:{})});
  return Object.freeze({definition,mode:advertised.mode,shape});
 }
 /** The SDK leaves a tool out of its list when its input schema cannot become JSON Schema; that is a configuration

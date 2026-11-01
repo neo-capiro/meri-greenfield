@@ -4,7 +4,7 @@ import assert from 'node:assert/strict';
 import {canonicalSha256} from '../../../../../packages/contracts/validate.mjs';
 import {selectSkill} from '../../../../../packages/skills/index.mjs';
 import {fixture} from '../../../../runtime/test/reads-native-fixture.mjs';
-import {capiroDataCase,ids} from '../../../../gateway/sources/capiro-data/test/fixture.mjs';
+import {capiroDataCase,ids,nextGenerationPage,sqlRefusal} from '../../../../gateway/sources/capiro-data/test/fixture.mjs';
 import {connect} from './native-mcp-fixture.mjs';
 import {advertisedArguments} from '../schema.mjs';
 import {assertNativeReadResponse} from '../../../../../packages/contracts/runtime-0.2/reads.mjs';
@@ -39,6 +39,17 @@ test('a Core SQL refusal reaches the model with its code and message plus fixed 
   const envelope=JSON.parse(out.content[0].text);assert.deepEqual(envelope.result,scene.state.page);
   assert.match(out.content[1].text,/^Notice: query_capiro_data refused this request with UNKNOWN_FIELD\. Use column names exactly as describe_capiro_data lists them/);
   assert.equal(m.runtime.receipts()[0].resultSha256,canonicalSha256(envelope));
+});
+test('a Core 362 refusal reaches the model with PostgreSQL diagnostics rendered after the fixed notice, and its result passes unchanged',async t=>{
+  const scene=capiroDataCase();scene.state.page=sqlRefusal();
+  const f=await fixture('capiro-data','query_capiro_data',{scene}),m=await connect(t,f),out=await m.call();
+  assert.equal(out.isError,undefined,JSON.stringify(out));assert.equal(out.content.length,2);
+  const envelope=JSON.parse(out.content[0].text);assert.deepEqual(envelope.result,scene.state.page);
+  assert.match(out.content[1].text,/ PostgreSQL 42703: column b\.titel does not exist at character 8\. Hint: Perhaps you meant "b\.title"\. Did you mean: title\. /);
+  assert.equal(m.runtime.receipts()[0].resultSha256,canonicalSha256(envelope));
+  const next=capiroDataCase();next.state.page=nextGenerationPage(next.page);
+  const g=await fixture('capiro-data','query_capiro_data',{scene:next}),n=await connect(t,g),page=await n.call();
+  assert.equal(page.isError,undefined,JSON.stringify(page));assert.deepEqual(JSON.parse(page.content[0].text).result,next.state.page);
 });
 test('a successful query carries a separate count line that names truncation without touching the canonical bytes',async t=>{
   const scene=capiroDataCase();scene.page.rowLimitReached=true;
