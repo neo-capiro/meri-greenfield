@@ -3,12 +3,10 @@
  *
  * Every record the registry keeps becomes one run event appended through `runOwner.append` — the same durable,
  * ordered, replayable journal the conversation already uses. That is what makes the question survive a reconnect, a
- * refresh or a restart: the client re-reads its own run events and finds the pending question instead of an in-memory
- * map. The registry's shape is mapped here, once, so neither module has to know the other's vocabulary.
- *
- * `read` is deliberately the event owner's, not this adapter's: a worker does not re-read its own journal, and the
- * recovery path is the client/control readback of the same events. A caller that does need to re-read supplies its own
- * journal (tests do).
+ * refresh or a restart: the client re-reads its own run events and finds the pending question (and, once the run ends,
+ * its outcome) instead of an in-memory map. The registry's shape is mapped here, once, so neither module has to know the
+ * other's vocabulary. The worker never reads its own journal: a suspended native `canUseTool` callback does not survive
+ * the process that was suspended in it, so recovery is the client/control readback of these events.
  */
 import {QUESTION_PENDING_RECORD,QUESTION_ANSWERED_RECORD,QUESTION_CANCELLED_RECORD} from './registry.mjs';
 export const USER_QUESTION_PENDING_EVENT='question.pending';
@@ -23,11 +21,7 @@ export function createQuestionEventJournal({runOwner,binding,now,newId}){
   if(event===null)return;
   await runOwner.append({binding,event:{eventId:newId(),createdAt:new Date(now()).toISOString(),...event}});
  }
- /** The worker cannot read its own event journal: a suspended native `canUseTool` callback does not survive the process
-  * that was suspended in it, and a display event is not a resumable SDK owner. This refuses explicitly instead of
-  * returning an empty answer that a caller could mistake for "nothing pending". */
- async function read(){throw Object.assign(Error('USER_QUESTION_RECOVERY_UNAVAILABLE'),{code:'USER_QUESTION_RECOVERY_UNAVAILABLE'});}
- return Object.freeze({record,read});
+ return Object.freeze({record});
 }
 /** @param {{type:string,data:object}} entry */
 function toEvent(entry){

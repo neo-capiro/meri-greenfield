@@ -42,12 +42,18 @@ const CAPABILITY_RUNTIME_FACTS=Object.freeze(['skillPluginDirectory','bashSandbo
 export const TERMINAL_ATTEMPT_MS=3000;
 /** Text one folded `message.delta` publication carries at most: even fully JSON-escaped it stays inside the 128 KiB event bound. */
 export const DELTA_FOLD_MAX_BYTES=16384;
+/** Least time one fold stays open for more deltas of the same content block (clock-based): a fast reply still reaches the
+ * reader in regular publications instead of one control round per delta, while a block that ends, a non-text frame, the
+ * byte bound, a hold or the result end the fold at once. 0 folds only what was read during the previous publication. */
+export const DELTA_FOLD_WINDOW_MS=200;
+const DELTA_FOLD_WINDOW_MAX_MS=1000;
 // A streamed text delta outside any subagent; only these fold, and only with deltas of the same content block.
 const textDelta=m=>m?.type==='stream_event'&&!m.parent_tool_use_id&&m.event?.type==='content_block_delta'&&m.event.delta?.type==='text_delta';
-export function createConversationActivity({runOwner,prepareRuntime,query=sdkQuery,heartbeat=()=>{},now=Date.now,newId=randomUUID,lifecycle,selectedSkills,procedures,siteWorkflows,generalReads,governedIntents,browser,objectiveGeneration,outreachGeneration,terminalAttemptMs=TERMINAL_ATTEMPT_MS,cleanupAttemptMs=CLEANUP_ATTEMPT_MS,loadMaxMs=3000,loadExpiresAtMs,runtimeMaxMs=3000,runtimeExpiresAtMs,setupBudget,modelDeadlineMs,executionDeadlineMs,diagnostics}){
+export function createConversationActivity({runOwner,prepareRuntime,query=sdkQuery,heartbeat=()=>{},now=Date.now,newId=randomUUID,lifecycle,selectedSkills,procedures,siteWorkflows,generalReads,governedIntents,browser,objectiveGeneration,outreachGeneration,terminalAttemptMs=TERMINAL_ATTEMPT_MS,cleanupAttemptMs=CLEANUP_ATTEMPT_MS,loadMaxMs=3000,loadExpiresAtMs,runtimeMaxMs=3000,runtimeExpiresAtMs,setupBudget,modelDeadlineMs,executionDeadlineMs,deltaFoldWindowMs=DELTA_FOLD_WINDOW_MS,diagnostics}){
  // Optional trusted observers cannot affect execution, publication or bounded cleanup.
  const diagnostic=(method,value)=>{try{Promise.resolve(diagnostics?.[method]?.(value)).catch(()=>{});}catch{}};
  if(['load','append'].some(k=>typeof runOwner?.[k]!=='function')||typeof prepareRuntime!=='function'||typeof query!=='function'||typeof heartbeat!=='function'||!Number.isSafeInteger(terminalAttemptMs)||terminalAttemptMs<1||terminalAttemptMs>30000)throw fault('ACTIVITY_CONFIGURATION');
+ if(!Number.isSafeInteger(deltaFoldWindowMs)||deltaFoldWindowMs<0||deltaFoldWindowMs>DELTA_FOLD_WINDOW_MAX_MS)throw fault('ACTIVITY_CONFIGURATION');
  if(!Number.isSafeInteger(cleanupAttemptMs)||cleanupAttemptMs<1||cleanupAttemptMs>30000)throw fault('ACTIVITY_CONFIGURATION');
  if(!Number.isSafeInteger(loadMaxMs)||loadMaxMs<1||loadMaxMs>RUNNER_LOAD_STAGE_MAX_MS||loadExpiresAtMs!==undefined&&!Number.isSafeInteger(loadExpiresAtMs))throw fault('ACTIVITY_CONFIGURATION');
  if(!Number.isSafeInteger(runtimeMaxMs)||runtimeMaxMs<1||runtimeMaxMs>30000||runtimeExpiresAtMs!==undefined&&!Number.isSafeInteger(runtimeExpiresAtMs)||setupBudget!==undefined&&(!Number.isSafeInteger(setupBudget.maxMs)||setupBudget.maxMs<1||setupBudget.maxMs>30000||!Number.isSafeInteger(setupBudget.expiresAtMs)))throw fault('ACTIVITY_CONFIGURATION');
@@ -67,7 +73,7 @@ export function createConversationActivity({runOwner,prepareRuntime,query=sdkQue
  return async function executeConversation({binding,signal}){
   const nativeAudit=createNativeHookBatch();
   const drained=Promise.withResolvers();drained.promise.catch(()=>{});
-  diagnostic('stage','activity-input');validateShape('RunBinding',binding);let preparation,life,setupLife,modelLife,stream,controls,input,outreachRuntime,skillRuntime,procedureRuntime,readRuntime,intentRuntime,uploadRuntime,browserRun,browserOutcome='ended',browserPreparationCleanupUnknown=false,skillOutput,terminalResult,usageBasis,usageAttempted=false,claimed=false,closed=false,resultSeen=false,bytes=0,heartbeatTimer;const controller=new AbortController();let failure;let closing,iterator;const closeQuery=()=>{if(!closing&&stream&&!closed){closed=true;closing=Promise.resolve().then(async()=>{await stream.close?.();
+  diagnostic('stage','activity-input');validateShape('RunBinding',binding);let preparation,life,setupLife,modelLife,stream,controls,input,outreachRuntime,skillRuntime,procedureRuntime,readRuntime,intentRuntime,uploadRuntime,questionRegistry,browserRun,browserOutcome='ended',browserPreparationCleanupUnknown=false,skillOutput,terminalResult,usageBasis,usageAttempted=false,claimed=false,closed=false,resultSeen=false,bytes=0,heartbeatTimer;const controller=new AbortController();let failure;let closing,iterator;const closeQuery=()=>{if(!closing&&stream&&!closed){closed=true;closing=Promise.resolve().then(async()=>{await stream.close?.();
     // The pinned SDK's close() starts cleanup but returns void. Query.return()
    // awaits that same cleanup (including its transcript batch flush), then ends
    // the iterator. The fallback is for ordinary AsyncIterable test adapters.
@@ -128,8 +134,10 @@ export function createConversationActivity({runOwner,prepareRuntime,query=sdkQue
     dispatch:input=>runOwner.dispatchChild({binding,input}),settle:input=>runOwner.settleChild({binding,input})}):undefined;
    // One durable question registry per run: its records are run events, so a pending question survives reconnect and
    // restart. Without a question port the capability layer refuses the call rather than offering an unanswerable question.
-   const questionRegistry=policy?.userQuestions===true?createQuestionRegistry({journal:createQuestionEventJournal({runOwner,binding,now,newId}),now}):undefined;
-   const capabilities=policy===undefined?undefined:createSdkCapabilities(policy,{runOwner,binding,cwd:runtime.cwd,...(childAssignments===undefined?{}:{childAssignments}),...(questionRegistry===undefined?{}:{userQuestions:{ask:questionRegistry.ask}}),...Object.fromEntries(CAPABILITY_RUNTIME_FACTS.flatMap(k=>runtime[k]===undefined?[]:[[k,runtime[k]]])),now,newId});
+   questionRegistry=policy?.userQuestions===true?createQuestionRegistry({journal:createQuestionEventJournal({runOwner,binding,now,newId}),now}):undefined;
+   // The run's own abort signal reaches the question gate: a Stop or deadline ends a suspended question wait even if the SDK
+   // does not abort the tool call's signal, so no answer can be fabricated and the registry records the cancellation.
+   const capabilities=policy===undefined?undefined:createSdkCapabilities(policy,{runOwner,binding,cwd:runtime.cwd,signal:controller.signal,...(childAssignments===undefined?{}:{childAssignments}),...(questionRegistry===undefined?{}:{userQuestions:{ask:questionRegistry.ask}}),...Object.fromEntries(CAPABILITY_RUNTIME_FACTS.flatMap(k=>runtime[k]===undefined?[]:[[k,runtime[k]]])),now,newId});
    if(browser!==undefined){
     // The lifetime may reject before the preparation promise settles. Keep ownership of a late run handle so it can
     // still be cleaned up; until then the outcome is unknown and the disposable host must be quarantined.
@@ -189,12 +197,23 @@ export function createConversationActivity({runOwner,prepareRuntime,query=sdkQue
    // next one instead of each waiting for its own. Each folded message is still observed, projected and counted in order; nothing is
    // read past a result, and a message read early is used only while a read could still be made (deadline, lifecycle failure).
    const readLife=modelLife??life,ahead=createSdkReadAhead(()=>readLife.run(()=>iterator.next()),{last:m=>m?.type==='result',check:()=>{readLife.check();controls?.check();uploadRuntime?.check();}});
+   // Waits at most `ms` for the next SDK message to land, reading ahead meanwhile; the read lifetime's deadline or cancellation ends it.
+   const foldWait=ms=>ahead.during(()=>readLife.run(signal=>new Promise((resolve,reject)=>{const timer=setTimeout(done,ms);const cancel=()=>{clearTimeout(timer);reject(signal.reason);};
+    function done(){clearTimeout(timer);signal.removeEventListener('abort',cancel);resolve();}
+    signal.addEventListener('abort',cancel,{once:true});if(signal.aborted)cancel();else ahead.arrival().then(done);})));
    async function foldDeltas(first,text){
-    for(let m=ahead.peek();textDelta(m)&&m.event.index===first.event.index&&Buffer.byteLength(text)<DELTA_FOLD_MAX_BYTES;m=ahead.peek()){
-     ahead.take();capabilities?.check();uploadRuntime?.check();await controls?.observe(m);if(controls?.isHeld())break;
-     for(const part of textParts(m)){bytes+=Buffer.byteLength(part.text);if(bytes>runtime.maxOutputBytes)throw fault('OUTPUT_LIMIT');capabilities?.check();uploadRuntime?.check();text+=part.text;}
+    const began=now();
+    while(true){
+     for(let m=ahead.peek();textDelta(m)&&m.event.index===first.event.index&&Buffer.byteLength(text)<DELTA_FOLD_MAX_BYTES;m=ahead.peek()){
+      ahead.take();capabilities?.check();uploadRuntime?.check();await controls?.observe(m);if(controls?.isHeld())return text;
+      for(const part of textParts(m)){bytes+=Buffer.byteLength(part.text);if(bytes>runtime.maxOutputBytes)throw fault('OUTPUT_LIMIT');capabilities?.check();uploadRuntime?.check();text+=part.text;}
+     }
+     // The fold ends at the byte bound, when the next frame read is not a delta of this block (or the end or a failure), once nothing
+     // more can land, or when the window has elapsed; otherwise it stays open for the deltas the SDK produces within the window.
+     const left=began+deltaFoldWindowMs-now();
+     if(left<=0||Buffer.byteLength(text)>=DELTA_FOLD_MAX_BYTES||ahead.queued()>0||ahead.settled())return text;
+     await foldWait(left);
     }
-    return text;
    }
    // A claimed answer control resolves the suspended question call instead of steering or holding the run; every other
    // claim is passed to the lifecycle owner unchanged.
@@ -232,6 +251,10 @@ export function createConversationActivity({runOwner,prepareRuntime,query=sdkQue
    // so the second round is an idempotent replay that reads back a write whose acknowledgement was lost. When nothing
    // is acknowledged the run stays nonterminal, and the run reconciler settles it after the original is retired.
     if(claimed&&outreachRuntime)await attemptCleanup(signal=>outreachRuntime.failed({signal}),{now,timeoutMs:terminalAttemptMs,onFailure:error=>diagnostic('failure',error)});
+    // A question still pending when the run ends gets its durable cancelled outcome before the terminal event, so a reload never
+    // shows an answerable question on a run that can no longer take an answer. A user Stop already terminalized the run; the
+    // store then settles the pending questions itself and refuses this late write, which is why the attempt is bounded.
+    if(claimed&&questionRegistry)await attemptCleanup(()=>questionRegistry.close(),{now,timeoutMs:terminalAttemptMs,onFailure:error=>diagnostic('failure',error)});
     if(claimed){diagnostic('stage','activity-terminal');const ordinary={state:cancelled?'cancelled':'failed',reasonCode:cancelled?'EXECUTION_STOPPED':'EXECUTION_FAILED'},hold={state:'failed',reasonCode:HOLD_CHECKPOINT_FAILED},createdAt=new Date(now()).toISOString();
     const candidates=(controls?.isHeld()?[hold,ordinary]:[ordinary,hold]).map(data=>({eventId:newId(),createdAt,type:'run.status',data}));
     const terminal=async event=>{const attempt=createOperationLifetime({deadlineMs:now()+terminalAttemptMs,now,errorFactory:fault});try{await attempt.run(signal=>runOwner.append({binding,event,signal}));return true;}catch{return false;}finally{attempt.close();}};

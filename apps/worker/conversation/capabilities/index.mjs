@@ -20,8 +20,8 @@ const fail=code=>{throw Object.assign(Error(code),{code});};
 const withoutBash=p=>p.bash?assertCapabilityPolicy({...p,bash:false}):p;
 /** @param {unknown} policy @param {unknown} facts */
 export function createSdkCapabilities(policy,facts){
- const requested=assertCapabilityPolicy(policy),f=own(facts,['runOwner','binding','cwd','now','newId'],['skillPluginDirectory','bashSandbox','bashEgress','bashApprovals','sdkConfigDirectory','sdkSecureStorageDirectory','brokerSocketDirectory','childAssignments','userQuestions']);
- if(typeof f.runOwner?.append!=='function'||typeof f.now!=='function'||typeof f.newId!=='function')fail('CAPABILITY_CONFIGURATION');validateShape('RunBinding',f.binding);assertWorkspaceRoot(f.cwd);
+ const requested=assertCapabilityPolicy(policy),f=own(facts,['runOwner','binding','cwd','now','newId'],['skillPluginDirectory','bashSandbox','bashEgress','bashApprovals','sdkConfigDirectory','sdkSecureStorageDirectory','brokerSocketDirectory','childAssignments','userQuestions','signal']);
+ if(typeof f.runOwner?.append!=='function'||typeof f.now!=='function'||typeof f.newId!=='function'||f.signal!==undefined&&!(f.signal instanceof AbortSignal))fail('CAPABILITY_CONFIGURATION');validateShape('RunBinding',f.binding);assertWorkspaceRoot(f.cwd);
  const protectedPaths={...(f.sdkConfigDirectory===undefined?{}:{sdkConfigDirectory:f.sdkConfigDirectory}),...(f.sdkSecureStorageDirectory===undefined?{}:{sdkSecureStorageDirectory:f.sdkSecureStorageDirectory}),
   ...(f.brokerSocketDirectory===undefined?{}:{brokerSocketDirectory:f.brokerSocketDirectory})};
  // Networked Bash also needs the run's egress proxy fact and the approval port (bash-sandbox.mjs); both are trusted runtime facts.
@@ -37,7 +37,7 @@ export function createSdkCapabilities(policy,facts){
  // answer can arrive, so the run would offer a question it could never resume. The piece declares the tool so it is not
  // disallowed, and its permission callback is the sole authority for the call.
  if(p.userQuestions){if(!isQuestionPort(f.userQuestions))fail('USER_QUESTION_PORT_REQUIRED');
-  const gate=createUserQuestionGate({binding:f.binding,questions:Object.freeze({ask:f.userQuestions.ask.bind(f.userQuestions)}),now:f.now,newId:f.newId});
+  const gate=createUserQuestionGate({binding:f.binding,questions:Object.freeze({ask:f.userQuestions.ask.bind(f.userQuestions)}),now:f.now,newId:f.newId,...(f.signal===undefined?{}:{signal:f.signal})});
   pieces.push({tools:[USER_QUESTION_TOOL],allowedTools:[],canUseTool:gate});}
  if(bash)pieces.push(bash);
  // A subagent dispatch is durable before it happens: without the run owner's child port no Agent call is admitted.
