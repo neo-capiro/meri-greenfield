@@ -62,6 +62,6 @@ for(const selected of [old,current])test(`Q04: ${selected.pin.skillVersion} narr
 test('Q04: ordinary guidance uses only mounted tools, preserves partial coverage and client boundaries',()=>{
  const prefix='mcp__meri_reads__',tools=['describe_capiro_data','query_capiro_data','read_saved_record','read_saved_strategy_records'].map(n=>prefix+n);
  const prompt=readPromptSentence(true,tools);for(const word of ['describe_capiro_data once per conversation and then query_capiro_data','client_records','never switch to another source','say which path you used','General-only','exact client and parent'])assert.ok(prompt.includes(word),word);
- assert.equal(readPromptSentence(false,tools),'No institutional source tool is enabled for this activity.');
+ assert.equal(readPromptSentence(false,tools),`Capiro's data is not connected in this conversation: tell the user so in their own terms and answer from general knowledge with that caveat. Never quote internal words such as bounded, read-disabled, UNAVAILABLE, tool or activity to the user, and never recommend a third-party API or scraping as a workaround.`);
  assert.doesNotMatch(readPromptSentence(true,[prefix+'query_capiro_data']),/Structured questions about Capiro data/);
 });

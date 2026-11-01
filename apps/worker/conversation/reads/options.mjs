@@ -24,12 +24,16 @@ export function mergeReadOptions(mounted,reads){
  return {...mounted,mcpServers:{...(mounted.mcpServers??{}),...reads.mcpServers},allowedTools:[...(mounted.allowedTools??[]),...reads.allowedTools],
   hooks:mergeHookSets([mounted.hooks??{},reads.hooks]),canUseTool:mounted.canUseTool===undefined?reads.canUseTool:chainPermissions([mounted.canUseTool,reads.canUseTool])};
 }
+const USER_TERMS='Never quote internal words such as bounded, read-disabled, UNAVAILABLE, tool or activity to the user, and never recommend a third-party API or scraping as a workaround.';
 /** Guidance follows the mounted tools; it cannot widen the profile or a selected skill.
  * @param {boolean} mounted @param {readonly string[]} [tools] */
 export function readPromptSentence(mounted,tools=[]){
- if(!mounted)return 'No institutional source tool is enabled for this activity.';
+ // The user hears about Capiro's data in their own terms: never the harness vocabulary (bounded session, read-disabled,
+ // UNAVAILABLE, tool, activity) and never a third-party API or scraping as a substitute for Capiro data.
+ if(!mounted)return `Capiro's data is not connected in this conversation: tell the user so in their own terms and answer from general knowledge with that caveat. ${USER_TERMS}`;
  const has=(/** @type {string} */name)=>tools.includes(READ_TOOL_PREFIX+name);
- const guidance=['Only the read-only institutional source tools listed for this activity are enabled; every other institutional source is unavailable.'];
+ const guidance=['Only the read-only institutional source tools listed for this activity are enabled; every other institutional source is unavailable.',
+  `When a call answers UNAVAILABLE or ACCESS_DENIED, tell the user in their own terms that this Capiro data is not connected or not permitted in this conversation and answer from general knowledge with that caveat. ${USER_TERMS}`];
  // Routing only: each tool's own description states its arguments, result shape, SQL rules and refusal codes.
  if(has('describe_capiro_data')&&has('query_capiro_data'))guidance.push('Structured questions about Capiro data (counts, totals, rankings, trends and filters over federal bills, cosponsors, members, program elements and budget positions, or over the saved client records of source client_records) go to describe_capiro_data once per conversation and then query_capiro_data; public is the default source and clientId only narrows access. Before querying, settle any ambiguity that changes the answer (client, fiscal versus calendar period, units, budget cycle). A refusal names its correction: fix the SQL and run it again, and never switch to another source to evade a refusal or a timeout. Use a typed reader only when the described relations do not cover the question or original bill text, report passages or consolidated PE funding are needed, and say which path you used. Query results are query-bounded rows, not source completeness; generatedAt is query time, not source freshness.');
  if(has('search_memory'))guidance.push('Saved knowledge: when the user asks what Meri, they or the firm have saved, noted or remembered (including "what do we have on client X"), call search_memory first and attribute each item as saved memory by title, scope and approval date, then use SQL or typed readers for current records and say which came from memory. Saving or correcting memory is a write request that only prepares a proposal for the user\'s approval: never say a memory was saved or remembered.');
