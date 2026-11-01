@@ -44,12 +44,12 @@ test('synthetic atomic read: recovery cannot enter between the memory projection
  assert.deepEqual(f.journal.lock.state(),{readers:0,writer:false,waiting:0});
 });
 
-test('synthetic atomic read: split-read and malformed snapshot stores fail closed rather than guessing unsuppressed',async()=>{
+test('synthetic atomic read: split-read stores are refused at composition and malformed snapshots refuse the request rather than guessing unsuppressed',async()=>{
  const f=composeStartup(),subject=subjectOf();const {readProjection,...legacy}=f.watermark;
  assert.throws(()=>createRetentionStartup({journal:f.journal,watermark:legacy,ledgerSink:f.sink,purge:{enabled:false}}),/RETENTION_CONFIGURATION/);
  for(const snapshot of [{watermark:{sequence:0,entrySha256:null}},{projection:undefined,watermark:{sequence:0,entrySha256:null}},{projection:null,watermark:null}]){
   const startup=createRetentionStartup({journal:f.journal,watermark:{...f.watermark,async readProjection(){return snapshot;}},ledgerSink:f.sink,purge:{enabled:false},now:f.clock.now});
-  await startup.start();await assert.rejects(startup.gate.assertServable(subject),/RETENTION_RECOVERY_BARRIER/);assert.equal(startup.state().enabled,false);
+  await startup.start();await assert.rejects(startup.gate.assertServable(subject),/RETENTION_READ_UNAVAILABLE/);assert.equal(startup.state().enabled,true,'a malformed snapshot proves nothing: its request is refused and the fence stays open');
  }
 });
 

@@ -11,11 +11,19 @@ export const refusingOwnerMediation=Object.freeze({async ownerMediated(){fail('R
 /** The canonical trusted read gate every serving owner consults (conversations, lifecycle, artifacts). It reads the same journal
  * rows the suppression owner writes (no parallel store): refused while the recovery barrier is closed, refused when the journal cannot
  * answer (never "unsuppressed" by default), refused when the subject is suppressed. Subjects are trusted identities resolved by the
- * owner after its own authentication, never caller claims. */
-export function createRetentionReadGate({journal,serving}){
- if(typeof journal?.get!=='function'||typeof serving?.isEnabled!=='function')fail('RETENTION_CONFIGURATION');
- const barrier=()=>{if(!serving.isEnabled())fail('RETENTION_RECOVERY_BARRIER');};
- async function isSuppressed(rawSubject,read=journal.get){barrier();const s=subject(rawSubject);let current;try{current=await read(subjectKey(s));}catch(error){if(!serving.isEnabled()||error?.code==='RETENTION_RECOVERY_BARRIER')fail('RETENTION_RECOVERY_BARRIER');fail('RETENTION_READ_UNAVAILABLE');}barrier();return Boolean(current&&current.state!=='RELEASED');}
+ * owner after its own authentication, never caller claims. Every refusal that is not a suppression writes one terminal line (capped
+ * like the history diagnostics) naming the fence state and the innermost cause code, so operators can tell a per-request read
+ * failure (`fence:"open"`) from a latched fence (`fence:"closed"` with its reason). */
+const causeCode=error=>{let code=null;for(let e=error,i=0;e&&i<8;e=e.cause,i++)if(typeof e.code==='string'&&e.code)code=e.code.slice(0,64);return code;};
+export function createRetentionReadGate({journal,serving,log=line=>process.stderr.write(line+'\n')}){
+ if(typeof journal?.get!=='function'||typeof serving?.isEnabled!=='function'||typeof log!=='function')fail('RETENTION_CONFIGURATION');
+ let windowStart=-Infinity,count=0;
+ const report=(code,cause)=>{try{const at=Date.now();if(at-windowStart>=60000){windowStart=at;count=0;}if(count>20)return;if(count++===20){log('MERI_RETENTION_GATE_SUPPRESSED');return;}
+  const state=typeof serving.state==='function'?serving.state():{enabled:serving.isEnabled(),reason:null};
+  log(JSON.stringify({event:'MERI_RETENTION_GATE',stage:'retention',outcome:'refused',code,cause:causeCode(cause),fence:state.enabled?'open':'closed',reason:state.enabled?null:state.reason??'RETENTION_RECOVERY_BARRIER'}));}catch{/* Observability cannot affect the refusal. */}};
+ const refuse=(code,cause)=>{report(code,cause);fail(code,cause);};
+ const barrier=()=>{if(!serving.isEnabled())refuse('RETENTION_RECOVERY_BARRIER');};
+ async function isSuppressed(rawSubject,read=journal.get){barrier();const s=subject(rawSubject);let current;try{current=await read(subjectKey(s));}catch(error){refuse(!serving.isEnabled()||error?.code==='RETENTION_RECOVERY_BARRIER'?'RETENTION_RECOVERY_BARRIER':'RETENTION_READ_UNAVAILABLE',error);}barrier();return Boolean(current&&current.state!=='RELEASED');}
  async function assertServable(rawSubject,read=journal.get){if(await isSuppressed(rawSubject,read))fail('RETENTION_SUPPRESSED');}
  /** Serving owners provide authenticated subject identities and serialize their response inside this transition exclusion. */
  async function withRelease(rawSubjects,release,options){

@@ -4,7 +4,11 @@
  * database's persisted watermark with that position and, for serving/readiness/append proofs, the current external ledger head:
  * another owner may have acknowledged a decision this process never observed. A restore rolls the persisted watermark back, so
  * the fence closes (`RETENTION_WATERMARK_STALE`) and stays closed until reconciliation runs again. Any closure keeps its first reason
- * until a proven reopening. Same `isEnabled`/`disable` surface as the plain serving gate, so every existing owner composes over it. */
+ * until a proven reopening. The fence closes only on a verified inconsistency: a persisted watermark behind a position this process
+ * observed (`RETENTION_WATERMARK_STALE`) or ahead of / hash-divergent from the current ledger head (`RETENTION_WATERMARK_UNVERIFIED`).
+ * A read that cannot complete (store timeout, lock timeout, transport, external ledger error, malformed value) proves nothing, so it
+ * refuses only that request (`RETENTION_READ_UNAVAILABLE`, cause attached) and leaves the fence as it was. Same `isEnabled`/`disable`
+ * surface as the plain serving gate, so every existing owner composes over it. */
 import {fail} from './boundary.mjs';
 const position=value=>{if(!value||!Number.isSafeInteger(value.sequence)||value.sequence<0||value.entrySha256!==null&&typeof value.entrySha256!=='string')fail('RETENTION_WATERMARK_UNVERIFIED');return Object.freeze({sequence:value.sequence,entrySha256:value.entrySha256});};
 export function createServingFence(){
@@ -20,8 +24,8 @@ export function createServingFence(){
   observe(sequence){if(Number.isSafeInteger(sequence)&&sequence>highWater)highWater=sequence;},
   /** A serving/readiness/append proof also reads the current durable ledger head: local observations alone cannot detect
    * another owner's acknowledged decision after both restorable stores roll back. The head is read after the DB observation. */
-  async verify(read,readHead=null){if(!enabled)fail(reason??'RETENTION_RECOVERY_BARRIER');let persisted,current;try{persisted=position(await read());}catch{fence.disable('RETENTION_WATERMARK_UNVERIFIED');fail('RETENTION_WATERMARK_UNVERIFIED');}
-   if(readHead!==null){try{current=position(await readHead());}catch{fence.disable('RETENTION_LEDGER_UNVERIFIED');fail('RETENTION_LEDGER_UNVERIFIED');}
+  async verify(read,readHead=null){if(!enabled)fail(reason??'RETENTION_RECOVERY_BARRIER');let persisted,current;try{persisted=position(await read());}catch(error){fail('RETENTION_READ_UNAVAILABLE',error);}
+   if(readHead!==null){try{current=position(await readHead());}catch(error){fail('RETENTION_READ_UNAVAILABLE',error);}
     highWater=Math.max(highWater,current.sequence);
     if(persisted.sequence>current.sequence||persisted.sequence===current.sequence&&persisted.entrySha256!==null&&persisted.entrySha256!==current.entrySha256){fence.disable('RETENTION_WATERMARK_UNVERIFIED');fail('RETENTION_WATERMARK_UNVERIFIED');}}
    if(persisted.sequence<highWater){fence.disable('RETENTION_WATERMARK_STALE');fail('RETENTION_WATERMARK_STALE');}if(!enabled)fail(reason);highWater=Math.max(highWater,persisted.sequence);return persisted;},
