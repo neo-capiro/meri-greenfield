@@ -18,7 +18,7 @@ Still proposed, not implemented:
 
 ## Whole-source removal / proposed repeal
 
-Decision: explicit refusal, `DRAFT_WHOLE_SOURCE_REPEAL_UNSUPPORTED`, released to the UI with that reason. The amendment grammar amends text; an operation that leaves no consolidated text (or removes a USLM root element) is a proposed repeal of the whole instrument, for which there is no exact consolidated text to retain and no empty-document artifact contract. No placeholder bytes are produced. Whole-section repeal is supported and tested. The earlier proposal for an explicit `remove_source_text` operation and a versioned empty-output artifact contract remains open for coordination with the artifact and frontend owners; nothing in this change narrows it.
+Implemented in the retained workbench successor: explicit terminal `remove_source_text` binds original source and current intermediate text hashes and all preceding dependencies, requires complete coverage, and produces typed `source-text-removed` with genuine zero-byte consolidated TXT. The existing generic TXT artifact path already supports empty bytes; no generic storage/schema relaxation was necessary. Old saved revision hashes and the frozen SDK operation grammar remain unchanged. Ordinary delete-to-empty still refuses `DRAFT_WHOLE_SOURCE_REPEAL_UNSUPPORTED`; a typed removal is a distinct proposed outcome and never an enactment claim. The public receiver, immutable review/load/history and byte-exact export tests cover the new semantics. Package shipment, physical rendering and deployed acceptance remain separate requirements.
 
 ## Review approval
 

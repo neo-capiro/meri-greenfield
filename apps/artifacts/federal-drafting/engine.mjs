@@ -49,8 +49,17 @@ export function federalDraftSource(raw){
 }
 
 function operation(raw,seen){
- let op;try{op=data(own(raw,['id','kind','scopeId','expectedScopeSha256','expectedText','expectedTextSha256','dependsOn'],['text','position']));}catch{fault('DRAFT_OPERATION_INVALID');}
+ let op;try{
+  const candidate=data(own(raw,['id','kind','expectedTextSha256','dependsOn'],['scopeId','expectedScopeSha256','expectedText','text','position','expectedSourceSha256']));
+  op=data(candidate.kind==='remove_source_text'?own(candidate,['id','kind','expectedSourceSha256','expectedTextSha256','dependsOn']):
+   own(candidate,['id','kind','scopeId','expectedScopeSha256','expectedText','expectedTextSha256','dependsOn'],['text','position']));
+ }catch{fault('DRAFT_OPERATION_INVALID');}
  const refuse=code=>fault(code,op.id);
+ if(op.kind==='remove_source_text'){
+  if(!ID.test(op.id)||seen.has(op.id)||!SHA.test(op.expectedSourceSha256)||!SHA.test(op.expectedTextSha256))refuse('DRAFT_OPERATION_INVALID');
+  if(!Array.isArray(op.dependsOn)||new Set(op.dependsOn).size!==op.dependsOn.length||op.dependsOn.some(id=>!seen.has(id)))refuse('DRAFT_DEPENDENCY_INVALID');
+  return op;
+ }
  if(!ID.test(op.id)||seen.has(op.id)||!ID.test(op.scopeId)||!['replace','insert','delete'].includes(op.kind)
   ||!SHA.test(op.expectedScopeSha256)||!text(op.expectedText,DRAFT_LIMITS.operationBytes)||!SHA.test(op.expectedTextSha256)
   ||textSha256(op.expectedText)!==op.expectedTextSha256)refuse('DRAFT_OPERATION_INVALID');
@@ -101,8 +110,13 @@ function outputs(source,ops,working,scoped){
   parts.push(...(before===after?[{kind:'unchanged',text:before}]:redline(before,after)));cursor=scope.end;
  }
  if(!scoped&&cursor<source.text.length)parts.push({kind:'unchanged',text:source.text.slice(cursor)});
- const segments=merged(parts);
- for(const op of ops){const label=source.scopes.find(scope=>scope.id===op.scopeId).label;
+ const segments=ops.at(-1)?.kind==='remove_source_text'?[{kind:'delete',text:source.text}]:merged(parts);
+ for(const op of ops){
+  if(op.kind==='remove_source_text'){
+   amendment.push(`${op.id}. Proposed removal of all selected source text from ${source.documentId}, bound to original SHA-256 ${op.expectedSourceSha256} and current text SHA-256 ${op.expectedTextSha256}. Consolidated source text is empty. This proposal does not establish enactment or legal effect.`);
+   continue;
+  }
+  const label=source.scopes.find(scope=>scope.id===op.scopeId).label;
   const action=op.kind==='replace'?`strike ${JSON.stringify(op.expectedText)} and insert ${JSON.stringify(op.text)}`
    :op.kind==='delete'?`strike ${JSON.stringify(op.expectedText)}`:`insert ${JSON.stringify(op.text)} ${op.position} ${JSON.stringify(op.expectedText)}`;
   amendment.push(`${op.id}. In ${label}, ${action}.`);
@@ -120,23 +134,36 @@ export function compileFederalDraft(rawSource,rawOperations){
  const scoped=source.parserVersion===FEDERAL_TEXT_PARSER?null:scopedApplication(source);
  const working=new Map(source.scopes.map(scope=>[scope.id,source.text.slice(scope.start,scope.end)])),last=new Map(),seen=new Set(),operations=[];
  for(const raw of rawOperations){
-  const op=operation(raw,seen),current=scoped?.read(op),before=current?current.text:working.get(op.scopeId);if(before===undefined)fault('DRAFT_SCOPE_UNKNOWN',op.id);
+  const op=operation(raw,seen);
+  if(operations.at(-1)?.kind==='remove_source_text')fault('DRAFT_SOURCE_REMOVED',op.id);
+  if(op.kind==='remove_source_text'){
+   if(!source.coverage.complete)fault('DRAFT_SOURCE_INCOMPLETE',op.id);
+   if(op.expectedSourceSha256!==source.sha256)fault('DRAFT_SOURCE_MISMATCH',op.id);
+   const closure=new Set(),include=id=>{if(closure.has(id))return;closure.add(id);operations.find(previous=>previous.id===id).dependsOn.forEach(include);};
+   op.dependsOn.forEach(include);
+   if([...seen].some(id=>!closure.has(id)))fault('DRAFT_DEPENDENCY_REQUIRED',op.id);
+   const current=outputs(source,operations,working,scoped).consolidated;
+   if(textSha256(current)!==op.expectedTextSha256)fault('DRAFT_ANCESTOR_CHANGED',op.id);
+   if(!current.length)fault('DRAFT_NO_CHANGE',op.id);
+   operations.push(op);seen.add(op.id);continue;
+  }
+  const current=scoped?.read(op),before=current?current.text:working.get(op.scopeId);if(before===undefined)fault('DRAFT_SCOPE_UNKNOWN',op.id);
   if(!scoped&&last.has(op.scopeId)&&!op.dependsOn.includes(last.get(op.scopeId)))fault('DRAFT_DEPENDENCY_REQUIRED',op.id);
   const edit=apply(before,op),after=edit.text;if(Buffer.byteLength(after)>DRAFT_LIMITS.sourceBytes)fault('DRAFT_OUTPUT_LIMIT',op.id);
   if(scoped){scoped.apply(op,edit,current.closure);if(Buffer.byteLength(scoped.text)>DRAFT_LIMITS.sourceBytes)fault('DRAFT_OUTPUT_LIMIT',op.id);}
   working.set(op.scopeId,after);seen.add(op.id);last.set(op.scopeId,op.id);operations.push(op);
  }
- const result=outputs(source,operations,working,scoped);
+ const result=outputs(source,operations,working,scoped),removed=operations.at(-1).kind==='remove_source_text';
  if(Buffer.byteLength(result.consolidated)>DRAFT_LIMITS.sourceBytes)fault('DRAFT_OUTPUT_LIMIT');
  // Removing the entire source is a proposed repeal, not a text amendment: there is no exact consolidated text to
  // retain, so it is an explicit refusal rather than an empty document or a placeholder that falsifies bytes.
- if(!result.consolidated.length||source.parserVersion===FEDERAL_USLM_XML_PARSER&&working.get(USLM_ROOT_SCOPE)==='')fault('DRAFT_WHOLE_SOURCE_REPEAL_UNSUPPORTED');
+ if(!removed&&(!result.consolidated.length||source.parserVersion===FEDERAL_USLM_XML_PARSER&&working.get(USLM_ROOT_SCOPE)===''))fault('DRAFT_WHOLE_SOURCE_REPEAL_UNSUPPORTED');
  if(result.consolidated===source.text)fault('DRAFT_NO_CHANGE');
- if(source.parserVersion===FEDERAL_USLM_XML_PARSER)assertUslmResult(result.consolidated,deriveUslmScopes(source.text).root,DRAFT_LIMITS.uslmScopes);
+ if(!removed&&source.parserVersion===FEDERAL_USLM_XML_PARSER)assertUslmResult(result.consolidated,deriveUslmScopes(source.text).root,DRAFT_LIMITS.uslmScopes);
  const findings=[{category:'source-integrity',status:'passed',location:source.documentId,severity:'info'},
-  ...operations.map(op=>({category:'exact-target',status:'passed',location:op.scopeId,operationId:op.id,severity:'info'})),
+  ...operations.map(op=>({category:'exact-target',status:'passed',location:op.scopeId??source.documentId,operationId:op.id,severity:'info'})),
   ...['numbering','cross-references','arithmetic','substantive-law'].map(category=>({category,status:'unresolved',location:source.documentId,severity:'review-required'}))];
- const revision={parserVersion:source.parserVersion,source,operations,outputs:result,findings,
+ const revision={parserVersion:source.parserVersion,source,operations,outputs:result,findings,...(removed?{resultKind:'source-text-removed'}:{}),
   outputHashes:Object.fromEntries(['operative','consolidated','redline'].map(kind=>[kind,textSha256(result[kind])]))};
  return freeze({...revision,revisionSha256:canonicalSha256(revision),approval:'unapproved'});
 }
