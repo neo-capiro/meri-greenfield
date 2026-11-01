@@ -3,7 +3,7 @@ import {canonicalSha256 as hash,validateShape} from '../../packages/contracts/va
 import {createIntentJournal} from '../control/intents/journal.mjs';
 import {createPostgresIntentJournalStore} from '../control/intents/postgres-journal.mjs';
 import {createArtifactService} from './service.mjs';
-import {officeEditSource,officeEditRequestSha256} from '../../packages/contracts/office-edit.mjs';
+import {officeRevisionSource,officeRevisionDeliveryId,officeRevisionOutputSha256,officeEditRequestSha256} from '../../packages/contracts/office-edit.mjs';
 import {inspectOfficeEdit} from './edit-sessions/inspect-office.mjs';
 import {createOfficeOriginalPublisher} from './office-original.mjs';
 const fail=code=>{throw Object.assign(new Error(code),{code});};
@@ -62,15 +62,15 @@ export function createPostgresArtifactService(options){
   catch(cause){throw Object.assign(Error('ARTIFACT_EFFECT_UNKNOWN'),{code:'ARTIFACT_EFFECT_UNKNOWN',cause,versionId:invocation.versionId,versionCommitted:true});}
   return result;
  }
- /** Private explicit Publish only. The browser/model never supplies this port or
-  * its source record. A draft sequence has one durable attempt across reconnects. */
+ /** Private explicit Publish (an editor draft sequence) or an approved Meri proposal, one durable attempt
+  * each across reconnects. The browser/model never supplies this port or its source record. */
  async function executeOfficeEdit(value,byteValue,signal,recoveryOnly=false){
   if(c.officeEditWrites!==true||c.selectedInvocationId!==undefined||context.analysisAdmission)fail('EDITOR_PUBLISH_UNAVAILABLE');
-  const call=v.snapshot(own(value,['deliveryId','baseVersionId','request']));call.request=officeEditSource(call.request);
-  const edit=call.request.edit,binding=context.binding;
-  if(call.deliveryId!==`office:${edit.sessionId}:${edit.draftSequence}`||call.baseVersionId!==edit.baseVersionId||!Buffer.isBuffer(byteValue))fail('EDITOR_SAVE_INVALID');
+  const call=v.snapshot(own(value,['deliveryId','baseVersionId','request']));call.request=officeRevisionSource(call.request);
+  const binding=context.binding;
+  if(call.deliveryId!==officeRevisionDeliveryId(call.request)||!Buffer.isBuffer(byteValue))fail('EDITOR_SAVE_INVALID');
   const bytes=Buffer.from(byteValue),requestSha256=officeEditRequestSha256(v,call.request,context,call.baseVersionId);
-  if(bytes.length>context.maxBytes||inspectOfficeEdit(bytes,call.request.format).sha256!==edit.draftSha256)fail('EDITOR_SAVE_INVALID');
+  if(bytes.length>context.maxBytes||inspectOfficeEdit(bytes,call.request.format).sha256!==officeRevisionOutputSha256(call.request))fail('EDITOR_SAVE_INVALID');
   const invocationId='sdk:'+hash({kind:'office-edit',tenantId:binding.tenantId,actorId:binding.actorId,conversationId:binding.conversationId,deliveryId:call.deliveryId});
   const invocation={invocationId,versionId:id(invocationId,'version'),requestSha256};
   const record={operation:{id:call.request.operation,version:'0.2.0'},argumentsSha256:requestSha256},key={binding,deliveryId:invocationId,record,signal};

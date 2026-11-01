@@ -7,8 +7,6 @@ import {assertNativeConversationScope} from '../../../packages/contracts/runtime
 import {officeEditSource,officeEditRequestSha256,OFFICE_EDIT_KIND,OFFICE_OPERATIONS} from '../../../packages/contracts/office-edit.mjs';
 import {createOperationLifetime} from '../../../packages/runtime/operation-lifetime.mjs';
 import {officeDraftRequest} from './core-draft-wire.mjs';
-import {inspectOfficeEdit} from './inspect-office.mjs';
-import {assertOfficeWorkbooksPreserved} from './chart-workbooks.mjs';
 const fail=code=>{throw Object.assign(Error(code),{code});};
 const codeOf=e=>e&&typeof e==='object'&&!types.isProxy(e)?Object.getOwnPropertyDescriptor(e,'code')?.value:undefined;
 export function createOfficeDraftPublisher({drafts,artifacts,publisherFor,validators:v,generation,now,maxRequestMs=30000}){
@@ -29,10 +27,11 @@ export function createOfficeDraftPublisher({drafts,artifacts,publisherFor,valida
    // Reject the immutable owner's smaller publication ceiling before either
    // owner claims a Publish. Larger private drafts remain intact and editable.
    if(bytes.length>context.maxBytes)fail('EDITOR_PUBLISH_TOO_LARGE');
-   const inspection=inspectOfficeEdit(bytes,draft.format);if(inspection.sha256!==draft.sha256||bytes.length!==draft.byteLength)fail('EDITOR_SOURCE_MISMATCH');
+   // The draft bytes were admitted when they were saved: the WOPI save owner is Core's only writer and refuses a
+   // malformed package or a dropped chart workbook before Core stores anything, the draft wire receiver refuses a
+   // byte/digest mismatch on every read, and the artifact owner inspects the bytes again before any object write.
    const base=await life.run(signal=>artifacts.revisionSource(draft.baseVersionId,currentContext,{signal}));
    const permitted=await life.run(signal=>artifacts.editorSource(draft.baseVersionId,currentContext,{write:true,signal}));
-   if(draft.format==='pptx')assertOfficeWorkbooksPreserved(inspectOfficeEdit(permitted.bytes,draft.format),inspection);
    if(v.hash(base.version)!==v.hash(permitted.version)||base.version.artifactId!==draft.artifactId||base.version.versionId!==draft.baseVersionId||
      base.version.object.sha256!==draft.baseSha256||base.version.filename!==draft.filename||base.request.format!==draft.format)fail('EDITOR_SOURCE_MISMATCH');
    const request=officeEditSource({sourceKind:OFFICE_EDIT_KIND,operation:OFFICE_OPERATIONS[draft.format],format:draft.format,title:base.request.title,
@@ -55,10 +54,12 @@ export function createOfficeDraftPublisher({drafts,artifacts,publisherFor,valida
    try{
     result=await life.run(signal=>begun.dispatch?publisher.executeOfficeEdit(delivery,bytes,signal):publisher.recoverOfficeEdit(delivery,bytes,signal));
    }catch(error){
-    // Only the canonical stale-parent refusal proves a terminal conflict. A
+    // Only the canonical stale-parent refusal proves a terminal conflict, and only the artifact owner's own
+    // byte refusal (raised before it claims its journal or writes an object) proves a definite refusal. A
     // late authority/error code cannot establish that no write happened.
     if(begun.receipt.state!=='published'){
-     try{await settle(codeOf(error)==='ARTIFACT_STALE_PARENT'?'conflict':'unknown');}catch{}
+     const code=codeOf(error);
+     try{await settle(code==='ARTIFACT_STALE_PARENT'?'conflict':['EDITOR_STRUCTURE_REFUSED','EDITOR_SAVE_INVALID'].includes(code)?'refused':'unknown');}catch{}
     }
     throw error;
    }

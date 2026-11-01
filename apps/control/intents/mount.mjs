@@ -21,7 +21,8 @@ import {DOCUMENT_INTENT_OPERATIONS} from './document-preparer.mjs';
 import {ANALYSIS_INTENT_OPERATIONS} from './analysis-preparer.mjs';
 import {MEMORY_COMMAND_OPERATION} from '../memory/command-options.mjs';
 import {RESEARCH_ACTION_INTENTS} from '../../../packages/contracts/retrieval-0.2/research-portfolio-action-validation.mjs';
-import {researchActionValidators} from '../../../packages/contracts/retrieval-0.2/validate.mjs';
+import {researchActionValidators,officeEditValidators} from '../../../packages/contracts/retrieval-0.2/validate.mjs';
+import {OFFICE_EDIT_ACTION} from '../../../packages/contracts/retrieval-0.2/office-edit-action-validation.mjs';
 // A composed preparer advertises its own operation version and the caller must ask for exactly that
 // version. The mount does not pin one version: a canonical owner may publish a successor (the catalog
 // keeps the earlier version resolvable), and the worker's intent catalog is what decides which
@@ -31,7 +32,7 @@ import {researchActionValidators} from '../../../packages/contracts/retrieval-0.
 // exact family pin that owner declares (`scheduleOperationDeclared`), never by a semver shape and never
 // by "the current family". Every other owner kind keeps the shape rule above unchanged.
 const VERSION=/^\d+\.\d+\.\d+$/u,DELIVERY=/^sdk:[a-f0-9]{64}$/u,AVAILABILITY_MS=30000;
-const OWNERS=Object.freeze({note:['save_note'],watch:['watch_action'],'legislative-document':['prepare_legiwatch_briefing','save_legislative_research'],bizdev:['save_business_development_brief'],'client-record':['create_client','update_client_profile'],legiwatch:['apply_legiwatch_suggestion','save_legiwatch_relevance'],'research-sharing':['publish_research_portfolio_share_link','revoke_research_portfolio_share_link'],'research-action':RESEARCH_ACTION_INTENTS,command:Object.keys(COMMAND_INTENT_OPERATIONS),schedule:SCHEDULE_INTENT_OPERATIONS,document:DOCUMENT_INTENT_OPERATIONS,artifact:ANALYSIS_INTENT_OPERATIONS,memory:[MEMORY_COMMAND_OPERATION.id]});
+const OWNERS=Object.freeze({note:['save_note'],office:[OFFICE_EDIT_ACTION],watch:['watch_action'],'legislative-document':['prepare_legiwatch_briefing','save_legislative_research'],bizdev:['save_business_development_brief'],'client-record':['create_client','update_client_profile'],legiwatch:['apply_legiwatch_suggestion','save_legiwatch_relevance'],'research-sharing':['publish_research_portfolio_share_link','revoke_research_portfolio_share_link'],'research-action':RESEARCH_ACTION_INTENTS,command:Object.keys(COMMAND_INTENT_OPERATIONS),schedule:SCHEDULE_INTENT_OPERATIONS,document:DOCUMENT_INTENT_OPERATIONS,artifact:ANALYSIS_INTENT_OPERATIONS,memory:[MEMORY_COMMAND_OPERATION.id]});
 const CODES=new Set(INTENT_FAILURE_CODES);
 const closed=code=>CODES.has(code)?code:'UNKNOWN';
 /** @param {{binding:object,preparers:readonly object[],journalStore:object,now:()=>number,limits:{maxRequestMs:number},enabled?:boolean,resultRelease?:object}} configuration */
@@ -65,11 +66,12 @@ export function createIntentMount(configuration){
    const record=data({operation:preparer.operation,argumentsSha256:canonicalSha256(v.arguments)}),life=lifetime(signal),key={binding,deliveryId:v.deliveryId,record};
    try{
     // Pure management reads use fresh result-release authority and never create an approval/journal row.
-    let managementRead=false;try{managementRead=preparer.owner==='research-action'&&researchActionValidators.isManagementRead(v.operation.id,v.arguments,{binding});}catch{throw intentFault('INVALID_ARGUMENTS');}
+    let managementRead=false;try{managementRead=preparer.owner==='research-action'&&researchActionValidators.isManagementRead(v.operation.id,v.arguments,{binding})||preparer.owner==='office'&&officeEditValidators.isRead(v.arguments);}catch{throw intentFault('INVALID_ARGUMENTS');}
     if(managementRead){
      if(typeof preparer.read!=='function')throw intentFault('UNAVAILABLE');
      const selected={operation:preparer.operation,deliveryId:v.deliveryId,argumentsSha256:record.argumentsSha256,life},original=await release.capture(selected);
-     let result;try{result=researchActionValidators.managementRead(await life.run(signal=>preparer.read({arguments:v.arguments,signal})));}
+     const admit=preparer.owner==='office'?officeEditValidators.readResult:researchActionValidators.managementRead;
+     let result;try{result=admit(await life.run(signal=>preparer.read({arguments:v.arguments,signal})));}
      catch(error){throw intentFault(error?.code&&CODES.has(error.code)?error.code:'REFUSED');}
      return await release.release({...selected,owner:preparer.owner,result,original});
     }

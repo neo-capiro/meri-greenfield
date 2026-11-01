@@ -6,8 +6,6 @@ import {ARTIFACT_MIME_TYPES} from '../../../packages/contracts/artifacts-0.2/art
 import {MAX_TTL_MS} from './wopi-access-token.mjs';
 import {officeDraftRequest} from './core-draft-wire.mjs';
 import {createOfficeDraftPublisher} from './publish-draft.mjs';
-import {inspectOfficeEdit} from './inspect-office.mjs';
-import {assertOfficeWorkbooksPreserved} from './chart-workbooks.mjs';
 const fail=code=>{throw Object.assign(Error(code),{code});};
 const metadata=draft=>{const {bytesBase64,...receipt}=draft;return receipt;};
 const routes=Object.freeze({open:'revise',read:'download',launch:'revise',renew:'revise',release:'download',discard:'revise',publish:'revise'});
@@ -41,11 +39,6 @@ export function createAttendedOffice({drafts,launch,generation,now}){
    return draft;
   }
   let draft=route==='open'?null:correlate(await call('read'));
-  const admit=(baseValue,draftValue)=>{
-   const original=inspectOfficeEdit(baseValue.bytes,format);
-   if(draftValue?.bytesBase64)assertOfficeWorkbooksPreserved(original,inspectOfficeEdit(Buffer.from(draftValue.bytesBase64,'base64'),format));
-  };
-  if(write)admit(base,draft);
   if(['launch','renew'].includes(route)&&!launch.supports(format,q.mode))fail('EDITOR_CODE_ACTION_UNAVAILABLE');
   if(['launch','renew','release'].includes(route))officeDraftRequest('editor',{...key,
    operation:route==='launch'?q.operation:route==='renew'?'refresh':'release',editorId:q.editorId,expectedEpoch:q.expectedEpoch});
@@ -72,7 +65,6 @@ export function createAttendedOffice({drafts,launch,generation,now}){
   if(!['discard','publish'].includes(route)){
    draft=correlate(await call(['launch','renew'].includes(route)?'editorRead':'read',
     ['launch','renew'].includes(route)?{editorId:editor.editorId,editorEpoch:editor.epoch}:{}));
-   if(write)admit(finalBase,draft);
    const currentEditor=await call('editor',{operation:'inspect'});
    if(['launch','renew'].includes(route)&&(currentEditor.editorId!==editor.editorId||currentEditor.epoch!==editor.epoch||currentEditor.expiresAt!==editor.expiresAt))fail('OFFICE_DRAFT_CONFLICT');
    editor=currentEditor;

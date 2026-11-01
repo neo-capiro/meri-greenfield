@@ -9,13 +9,13 @@ import historical from '../../contracts/retrieval-0.2/catalog.json' with {type:'
 import current from '../../contracts/retrieval-0.3/catalog.json' with {type:'json'};
 import {canonicalSha256 as hash} from '../../contracts/validate.mjs';
 import {assertSkillInstallation} from '../../contracts/selected-skills/validate.mjs';
-const currentHash='930dd735b233c7d51506215fd18bfe4bdc7af15b5c42e4bcf184192e1960c2f9';
+const currentHash='2b8f757a4d4485906e00bdf62d02cc27d8f7bd0e1590e454d44029d431392f4d';
 
 test('all thirty-five original asset identities survive the exact additive installation without added grants',()=>{
  assert.equal(createHash('sha256').update(readFileSync(new URL('../assets.json',import.meta.url))).digest('hex'),'6a2349e3b6828fa49bdf672633db7ba4db85b1b9fb904557ee55a7f11fa4eab8');
  assert.equal(hash(historical),assets.installationCatalogSha256);assert.equal(hash(current),currentHash);
  assert.equal(current.sourceRegistryCommit,historical.sourceRegistryCommit);
- assert.equal(historical.operations.length,142);assert.equal(current.operations.length,160);
+ assert.equal(historical.operations.length,142);assert.equal(current.operations.length,161);
  const oldRows=new Map(historical.operations.map(row=>[hash(row.operation),row])),newRows=new Map(current.operations.map(row=>[hash(row.operation),row]));
  for(const [key,row]of oldRows)assert.deepEqual(newRows.get(key),row);
  assert.equal(listSkills().length,35);

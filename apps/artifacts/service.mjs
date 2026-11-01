@@ -5,9 +5,9 @@ import {recoverArtifact,recoverOfficeEdit,recoverOfficeOriginal} from './recover
 import {readArtifactLibrary} from './library.mjs';
 import {readPagedArtifactHistory} from './history-page.mjs';
 import {prepareFederalDraft} from './federal-drafting/preparation.mjs';
-import {officeEditSource,isOfficeEdit,storedArtifactSource,storedArtifactInspection,assertOfficeEditRecord,officeEditRequestSha256,officeEditParentMatches} from '../../packages/contracts/office-edit.mjs';
+import {officeRevisionSource,officeRevisionOutputSha256,isOfficeRetained,storedArtifactSource,storedArtifactInspection,assertOfficeEditRecord,officeEditRequestSha256,officeEditParentMatches} from '../../packages/contracts/office-edit.mjs';
 import {inspectOfficeEdit} from './edit-sessions/inspect-office.mjs';
-import {isOfficeOriginal,officeOriginalSource,officeOriginalRequestSha256} from '../../packages/contracts/office-edit.mjs';
+import {officeOriginalSource,officeOriginalRequestSha256} from '../../packages/contracts/office-edit.mjs';
 // The canonical immutable-spec asset identification the intent layer already owns, so a retained
 // revision and this write identify exactly the same references instead of two walks that can drift.
 import {referencedAssetIds} from '../control/intents/document-revision.mjs';
@@ -73,8 +73,8 @@ export function createArtifactService({validators:v,authorize,versions,objects,e
     // The retained map is emitted only under the deployment's explicit write activation: with it off (the
     // default) no new map-bearing record is produced, while the declared assets still reach the executor
     // with their actual verified bytes exactly as before.
-    const request=original?officeOriginalSource(requestValue):office?officeEditSource(requestValue):v.request(requestValue),context=v.context(contextValue),pins=!office&&!original&&retainedAssetMapWrites===true?assetPins(request,context):undefined;
-    if((office||original)&&(!Buffer.isBuffer(editedBytes)||sha(editedBytes)!==(original?request.original.sha256:request.edit.draftSha256)||editedBytes.length>context.maxBytes||original&&editedBytes.length!==request.original.bytes))fail('EDITOR_SAVE_INVALID');
+    const request=original?officeOriginalSource(requestValue):office?officeRevisionSource(requestValue):v.request(requestValue),context=v.context(contextValue),pins=!office&&!original&&retainedAssetMapWrites===true?assetPins(request,context):undefined;
+    if((office||original)&&(!Buffer.isBuffer(editedBytes)||sha(editedBytes)!==(original?request.original.sha256:officeRevisionOutputSha256(request))||editedBytes.length>context.maxBytes||original&&editedBytes.length!==request.original.bytes))fail('EDITOR_SAVE_INVALID');
     if(office||original)editedBytes=Buffer.from(editedBytes);
     if(request.format==='sandbox')fail('ANALYSIS_SANDBOX_DISPATCH_REQUIRED');
     if(context.analysisAdmission)fail('IRRELEVANT_ANALYSIS_ADMISSION');
@@ -97,7 +97,9 @@ export function createArtifactService({validators:v,authorize,versions,objects,e
       if(baseVersionId!==null){
         readBase=scopeVersion(await life.run(signal=>versions.read(baseVersionId,signal)),baseVersionId,context);
         if(readBase.spec.operation!==request.operation||readBase.spec.format!==request.format)fail('ARTIFACT_REVISION_FORMAT');
-        if(!office&&(isOfficeEdit(readBase.spec)||isOfficeOriginal(readBase.spec)))fail('EDITOR_TYPED_REVISION_UNAVAILABLE');
+        // A typed body regenerated from a model request cannot preserve manual OOXML. The retained-byte owner
+        // paths (editor Publish, or an approved propose_office_edit proposal) are the only revisions of such a parent.
+        if(!office&&isOfficeRetained(readBase.spec))throw Object.assign(new Error('EDITOR_TYPED_REVISION_UNAVAILABLE: this version holds retained Office bytes; revise it in the editor or through propose_office_edit, not by typed regeneration'),{code:'EDITOR_TYPED_REVISION_UNAVAILABLE'});
         if(office&&(!officeEditParentMatches(readBase,{spec:request})||!same(readBase.version.evidence,context.evidence)))fail('EDITOR_SOURCE_MISMATCH');
         // Revision consumes the exact original bytes as well as retained spec; a suppressed base is never read.
         await servable(life,context,readBase);baseBytes=await bytesFor(life,readBase.version.object,context.maxBytes);

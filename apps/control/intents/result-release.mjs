@@ -1,7 +1,7 @@
 /** Current canonical result-release authorization. LOCAL PROPOSAL: the trusted startup must supply this owner;
  * listing availability or retaining a proposal never supplies authority. Original grant expiry is journaled once. */
 import {canonicalSha256 as hash,validateShape} from '../../../packages/contracts/validate.mjs';
-import {savedNoteValidators,researchActionValidators} from '../../../packages/contracts/retrieval-0.2/validate.mjs';
+import {savedNoteValidators,researchActionValidators,officeEditValidators} from '../../../packages/contracts/retrieval-0.2/validate.mjs';
 import {data,own} from '../../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {intentFault} from './faults.mjs';
 import {assertMemoryReviewResult} from '../../../packages/contracts/commands-0.2/memory-review-result.mjs';
@@ -14,6 +14,7 @@ function scopes(raw,binding){
 }
 function resultScopes(owner,result,original){
  if(owner==='research-action'&&result.status==='read'){const read=researchActionValidators.managementRead(result);if(hash(read.binding)!==hash(original.binding))deny();return read.scopes;}
+ if(owner==='office'&&result.status==='read'){const read=officeEditValidators.readResult(result);if(hash(read.binding)!==hash(original.binding))deny();return read.scopes;}
  if(owner==='note'){
   // A saved note is a static PASS, not a proposal: the recorded result is a closed saved-note envelope, and
   // only its own scopes — still inside the original grant and the current check — may be released.
@@ -21,7 +22,7 @@ function resultScopes(owner,result,original){
   if(hash(envelope.binding)!==hash(original.binding))deny();
   return envelope.scopes;
  }
- if((owner==='research-sharing'||owner==='research-action'||owner==='legiwatch'||owner==='watch'||owner==='client-record'||owner==='bizdev'||owner==='legislative-document')){if(result.status!=='approval_required'||hash(result.proposal?.binding)!==hash(original.binding))deny();return result.proposal.scopes;}
+ if((owner==='research-sharing'||owner==='research-action'||owner==='legiwatch'||owner==='watch'||owner==='client-record'||owner==='bizdev'||owner==='legislative-document'||owner==='office')){if(result.status!=='approval_required'||hash(result.proposal?.binding)!==hash(original.binding))deny();return result.proposal.scopes;}
  if(owner==='memory'&&result.status!=='approval_required'){
   const review=assertMemoryReviewResult(result);
   if(hash(review.binding)!==hash(original.binding))deny();return review.scopes;
@@ -69,8 +70,8 @@ export function createIntentResultRelease({authority,binding,now}){
    const {receipt,prior}=await check({...call,result});if(prior===null)deny();
    const ss=scopes(resultScopes(owner,result,prior),binding),originalScopes=new Set(prior.scopes.map(hash)),currentScopes=new Set(receipt.scopes.map(hash));
    if(ss.some(s=>!originalScopes.has(hash(s))||!currentScopes.has(hash(s))))deny();
-   if(owner==='research-action'&&result.status==='read'){const expiry=Date.parse(result.expiresAt);if(expiry<=now())deny();call.life.limitDeadline(expiry);}
-   else if(owner==='command'||owner==='memory'&&result.status==='approval_required'||(owner==='research-sharing'||owner==='research-action'||owner==='legiwatch'||owner==='watch'||owner==='client-record'||owner==='bizdev'||owner==='legislative-document')){
+   if((owner==='research-action'||owner==='office')&&result.status==='read'){const expiry=Date.parse(result.expiresAt);if(expiry<=now())deny();call.life.limitDeadline(expiry);}
+   else if(owner==='command'||owner==='memory'&&result.status==='approval_required'||(owner==='research-sharing'||owner==='research-action'||owner==='legiwatch'||owner==='watch'||owner==='client-record'||owner==='bizdev'||owner==='legislative-document'||owner==='office')){
     const expiry=Date.parse(result.proposal.expiresAt);if(!Number.isSafeInteger(expiry)||expiry<=now())deny();call.life.limitDeadline(expiry);
    }
    call.life.check();return result;

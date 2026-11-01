@@ -20,7 +20,7 @@ import catalog from '../../../../packages/contracts/retrieval-0.3/catalog.json' 
 export const INTENT_SERVER_NAME='meri_intents';
 export const INTENT_TOOL_PREFIX=`mcp__${INTENT_SERVER_NAME}__`;
 /** @typedef {{id:string,version:string}} OperationRef */
-/** @typedef {'command'|'schedule'|'document'|'artifact'|'memory'|'research-sharing'|'research-action'|'legiwatch'|'client-record'|'bizdev'|'legislative-document'|'watch'|'note'} OwnerKind */
+/** @typedef {'command'|'schedule'|'document'|'artifact'|'memory'|'research-sharing'|'research-action'|'legiwatch'|'client-record'|'bizdev'|'legislative-document'|'watch'|'note'|'office'} OwnerKind */
 /** @typedef {{operation:OperationRef,tool:string,owner:OwnerKind,unavailable:string|null}} IntentRow */
 /** The version each advertised intent resolves at. `create_client` crossed to the 0.3 client-record input;
  * an id not listed here keeps the original 0.2.0 owner, and a stored 0.2.0 reference still resolves to it.
@@ -65,6 +65,7 @@ export const INTENT_ROWS=Object.freeze([
  row('create_word','request_document','document'),
  row('create_excel','request_document','document'),
  row('create_powerpoint','request_document','document'),
+ row('propose_office_edit','propose_office_edit','office'),
  row('run_analysis','request_analysis','artifact'),
  row('schedule_task','propose_schedule','schedule'),
  row('update_scheduled_task','propose_schedule_change','schedule'),

@@ -19,7 +19,7 @@ import {nativeMemoryOutcome} from './memory-outcome.mjs';
  * Construction is inert. `enabled` defaults to false. */
 import {canonicalSha256 as hash,validateShape} from '../../../packages/contracts/validate.mjs';
 import {assertNativeApprovalProposal} from '../../../packages/contracts/commands-0.2/validate.mjs';
-import {artifactValidators as artifacts,scheduleToolValidators,researchShareValidators,researchActionValidators,legiwatchValidators,savedNoteValidators,watchValidators,bizdevValidators,legislativeDocumentValidators,validateShape as artifactShape} from '../../../packages/contracts/retrieval-0.2/validate.mjs';
+import {artifactValidators as artifacts,scheduleToolValidators,researchShareValidators,researchActionValidators,legiwatchValidators,savedNoteValidators,watchValidators,bizdevValidators,legislativeDocumentValidators,officeEditValidators,validateShape as artifactShape} from '../../../packages/contracts/retrieval-0.2/validate.mjs';
 // Client-record reads the disjoint 0.3 family: the retained proposal shape is identical, while the create input may
 // carry the bounded source provenance and the live answer may carry the bounded preflight. Every other owner above
 // keeps its frozen 0.2 reading.
@@ -83,7 +83,7 @@ function commandProposal(entry){
  return result.proposal;
 }
 export function createIntentApprovalOwner(configuration){
- const c=own(configuration,['journal','now','limits'],['decisions','documents','tasks','filing','mail','memory','sharing','researchAction','legiwatch','watch','clientRecord','bizdev','legislativeDocument','browser','enabled']);
+ const c=own(configuration,['journal','now','limits'],['decisions','documents','tasks','filing','mail','memory','sharing','researchAction','legiwatch','watch','clientRecord','bizdev','legislativeDocument','office','browser','enabled']);
  const journal=own(c.journal,['read','list'],['claim','settle']),limits=data(c.limits);own(limits,['maxRequestMs']);
  if(typeof journal.read!=='function'||typeof journal.list!=='function'||typeof c.now!=='function'||typeof(c.enabled??false)!=='boolean'||
   !Number.isSafeInteger(limits.maxRequestMs)||limits.maxRequestMs<1||limits.maxRequestMs>30000)throw new ProductError('PRODUCT_CONFIGURATION');
@@ -105,6 +105,8 @@ export function createIntentApprovalOwner(configuration){
  if(c.legiwatch!==undefined)own(c.legiwatch,['decide','read']);
  if(c.bizdev!==undefined)own(c.bizdev,['decide','read']);
  if(c.legislativeDocument!==undefined)own(c.legislativeDocument,['decide','read']);
+ const office=c.office===undefined?undefined:own(c.office,['apply','read']);
+ if(office&&Object.values(office).some(f=>typeof f!=='function'))throw new ProductError('PRODUCT_CONFIGURATION');
 if(c.watch!==undefined)own(c.watch,['decide','read']);
  if(sharing&&Object.values(sharing).some(f=>typeof f!=='function'))throw new ProductError('PRODUCT_CONFIGURATION');
  if(filing&&Object.values(filing).some(f=>typeof f!=='function'))throw new ProductError('PRODUCT_CONFIGURATION');
@@ -165,6 +167,7 @@ if(c.watch!==undefined)own(c.watch,['decide','read']);
    if(entry?.state==='PREPARED'&&entry.outcome?.result?.proposal?.kind==='client_record_action')return await decideClientRecord(life,principal,entry,r);
    if(entry?.state==='PREPARED'&&entry.outcome?.result?.proposal?.kind==='bizdev_action')return await decideBizdev(life,principal,entry,r);
    if(entry?.state==='PREPARED'&&entry.outcome?.result?.proposal?.kind==='legislative_document_action')return await decideLegislativeDocument(life,principal,entry,r);
+   if(entry?.state==='PREPARED'&&entry.outcome?.result?.proposal?.kind==='office_edit')return await decideOfficeEdit(life,principal,entry,r);
    if(entry?.state==='PREPARED'&&entry.outcome?.result?.proposal?.kind==='research_share')return await decideSharing(life,principal,entry,r);
    if(entry?.state==='PREPARED'&&entry.outcome?.result?.proposal?.kind==='research_action')return await decideResearchAction(life,principal,entry,r);
    const proposal=approvable(entry,r,principal);
@@ -196,6 +199,54 @@ if(c.watch!==undefined)own(c.watch,['decide','read']);
    if(r.decision==='rejected')return data({status:'rejected',deliveryId:r.deliveryId,proposalId:proposal.proposalId,decision});
    return await execute(life,principal,proposal,decision,r.deliveryId);
   }catch(error){throw owned(error,'INTENT_EXECUTION_UNKNOWN','UNKNOWN');}finally{life.close();}
+ }
+ /** The retained office proposal: Meri's own artifact owner applies it, so no Core decision ledger exists for it. */
+ function officeEditProposal(entry,principal,conversationId){
+  let p;try{officeEditValidators.assertOutput(entry.outcome.result);p=entry.outcome.result.proposal;
+   if(entry.record.operation.id!==p.operation||entry.record.operation.version!=='0.2.0'||hash({action:'propose',summary:p.summary,operations:p.operations})!==entry.record.argumentsSha256||
+    !same(p.binding,entry.outcome.release.binding)||p.scopes.some(scope=>!entry.outcome.release.scopes.some(original=>same(scope,original)))||
+    !same(conversationOf(p.binding),{tenantId:principal.tenantId,actorId:principal.actorId,conversationId}))throw Error();
+  }catch{fail('INTENT_JOURNAL_UNAVAILABLE');}return p;
+ }
+ const officeEditVisible=(p,principal)=>visible(p.scopes,principal)&&(p.context.selectedClientId===null||principal.clientIds.includes(p.context.selectedClientId));
+ /** Apply publishes through the artifact owner (one durable attempt per proposal); reject records nothing and the
+  * proposal simply expires. A definite refusal (stale head, mismatch, expiry) is answered as its own status so the
+  * browser can explain it; an uncertain publication stays UNKNOWN exactly as a document delivery does. */
+ async function decideOfficeEdit(life,principal,entry,r){
+  const p=officeEditProposal(entry,principal,r.conversationId);
+  if(p.proposalId!==r.proposalId||p.commandSha256!==r.commandSha256)fail('INTENT_MISMATCH','NOT_DISPATCHED');
+  if(!officeEditVisible(p,principal))fail('INTENT_SCOPE_WITHHELD','NOT_DISPATCHED');
+  if(r.decision==='rejected')return data({status:'office_edit_decided',deliveryId:r.deliveryId,proposalId:p.proposalId,result:officeEditValidators.result({proposalId:p.proposalId,proposalStatus:'rejected',version:null,code:null},p)});
+  if(!office)fail('EXECUTION_OWNER_UNAVAILABLE','NOT_DISPATCHED');
+  if(!(instant(p.expiresAt)>c.now())){
+   const current=await officeEditStatus(life,p);
+   if(current.proposalStatus==='applied')return data({status:'office_edit_decided',deliveryId:r.deliveryId,proposalId:p.proposalId,result:current});
+   fail('INTENT_EXPIRED','NOT_DISPATCHED');
+  }
+  life.limitDeadline(instant(p.expiresAt));
+  let outcome;
+  try{outcome=await life.run(signal=>office.apply.call(c.office,{proposal:p,principal,signal,deadlineMs:life.deadline()}));}
+  catch(error){
+   const code=error?.code;
+   if(['OFFICE_EDIT_STALE_HEAD','OFFICE_EDIT_PROPOSAL_MISMATCH','OFFICE_EDIT_TOO_LARGE','INTENT_EXPIRED'].includes(code))
+    return data({status:'office_edit_decided',deliveryId:r.deliveryId,proposalId:p.proposalId,result:officeEditValidators.result({proposalId:p.proposalId,proposalStatus:code==='OFFICE_EDIT_STALE_HEAD'?'conflict':code==='INTENT_EXPIRED'?'expired':'refused',version:null,code},p)});
+   if(code==='ACCESS_DENIED'||code==='UNAVAILABLE'||error?.effect==='none')fail(code==='UNAVAILABLE'?'EXECUTION_OWNER_UNAVAILABLE':'EXECUTION_AUTHORITY_REFUSED','NOT_DISPATCHED');
+   if(['DEADLINE','CANCELLED'].includes(productFailure(error)?.code))throw error;
+   fail('INTENT_EXECUTION_UNKNOWN','UNKNOWN');
+  }
+  return data({status:'office_edit_decided',deliveryId:r.deliveryId,proposalId:p.proposalId,result:officeEditOutcome(outcome,p)});
+ }
+ function officeEditOutcome(raw,p){
+  let outcome;try{outcome=data(own(raw,['status','publication']));}catch{fail('INTENT_RESULT_NOT_RELEASED','RESULT_NOT_RELEASED');}
+  if(outcome.status!=='applied')return officeEditValidators.result({proposalId:p.proposalId,proposalStatus:outcome.status,version:null,code:null},p);
+  let version;try{const v=artifacts.version(outcome.publication.version);version={artifactId:v.artifactId,versionId:v.versionId,parentVersionId:v.parentVersionId,sha256:v.object.sha256,bytes:v.object.bytes,filename:v.filename};}
+  catch{fail('INTENT_RESULT_NOT_RELEASED','RESULT_NOT_RELEASED');}
+  try{return officeEditValidators.result({proposalId:p.proposalId,proposalStatus:'applied',version,code:null},p);}catch{fail('INTENT_RESULT_NOT_RELEASED','RESULT_NOT_RELEASED');}
+ }
+ async function officeEditStatus(life,p){
+  if(!office)return 'unavailable';
+  try{return officeEditOutcome(await life.run(signal=>office.read.call(c.office,{proposal:p,signal,deadlineMs:life.deadline()})),p);}
+  catch(error){const f=productFailure(error);if(f&&['DEADLINE','CANCELLED'].includes(f.code))throw error;return 'unavailable';}
  }
  function legiwatchProposal(entry,principal,conversationId){
   let p;try{legiwatchValidators.assertOutput(entry.outcome.result);p=entry.outcome.result.proposal;
@@ -440,6 +491,11 @@ async function decideWatch(life,principal,entry,r){
    if(!bizdevVisible(proposal,principal))return {...base,state:'prepared',kind:'bizdev_action',withheld:true};
    let current='unavailable';if(typeof c.bizdev?.read==='function')try{current=bizdevValidators.coreResult(await life.run(signal=>c.bizdev.read({proposal,signal,deadlineMs:life.deadline()})),proposal);}catch(error){if(['DEADLINE','CANCELLED'].includes(error?.code))throw error;}
    return {...base,state:'prepared',kind:'bizdev_action',proposal,result:current};
+  }
+  if(result?.proposal?.kind==='office_edit'){
+   const proposal=officeEditProposal(entry,principal,conversationId);
+   if(!officeEditVisible(proposal,principal))return {...base,state:'prepared',kind:'office_edit',withheld:true};
+   return {...base,state:'prepared',kind:'office_edit',proposal,result:await officeEditStatus(life,proposal)};
   }
   if(result?.proposal?.kind==='legislative_document_action'){
    const proposal=legislativeDocumentProposal(entry,principal,conversationId);

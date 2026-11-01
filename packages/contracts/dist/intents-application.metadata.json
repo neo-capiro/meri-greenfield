@@ -118,8 +118,8 @@
     },
     {
       "path": "../../apps/control/intents/approval.mjs",
-      "sha256": "253a91dd08bff7757fe7844f47a821af82b70427f4163f105346d2cb18c71045",
-      "bytes": 51025
+      "sha256": "4cc8c4effa573c8ff7a3a016903187a5366398066b08b7d4ddbd7bd2208a4d6b",
+      "bytes": 56147
     },
     {
       "path": "../../apps/control/intents/faults.mjs",
@@ -218,8 +218,8 @@
     },
     {
       "path": "generate-intents.mjs",
-      "sha256": "11398e0def4474f8356fba984ad17a65b4954e332ec1762904b7eb337cd08e71",
-      "bytes": 15164
+      "sha256": "41b146205c937a36789c40c4bd37f819a09768874ebb08927034c9d6d4e4855d",
+      "bytes": 15211
     },
     {
       "path": "intents-application/boundary.mjs",
@@ -248,13 +248,13 @@
     },
     {
       "path": "intents-application/schema.mjs",
-      "sha256": "bbaaa06a9f8a7a0c8747be9bf8a65e32d76c8d0cdcef466e2646737109791094",
-      "bytes": 25865
+      "sha256": "2021f0078fe3e6121e5782e2083fdcd1774f334800b9722b5284e07349584173",
+      "bytes": 26498
     },
     {
       "path": "intents-application/semantics.mjs",
-      "sha256": "d3261a00f1f4741c5c6e5914fc53ca7557ab7288a35b67a654c4c9f72bb5c374",
-      "bytes": 31750
+      "sha256": "404a3afa4971e359d9dc4fe5344eddcc14010a600945dd930534e547ea119da1",
+      "bytes": 33937
     },
     {
       "path": "meri.schema.json",
@@ -290,6 +290,11 @@
       "path": "retrieval-0.2/note-action.schema.json",
       "sha256": "beeb0b46232b0ae4078e44b9bd99b3c85687b46d434d9a88c0c072c77a879a43",
       "bytes": 10098
+    },
+    {
+      "path": "retrieval-0.2/office-edit-action.schema.json",
+      "sha256": "03675d380592a6f0198a7fac2c187def4d80fa5a225190f6fb23154087b83b37",
+      "bytes": 7853
     },
     {
       "path": "retrieval-0.2/research-portfolio-action.schema.json",
@@ -352,7 +357,7 @@
       "bytes": 3041
     }
   ],
-  "schemaSha256": "884b9247cb41de4459fb75bcbd94b34c13f756052c48ddc8923fc1054bef0235",
+  "schemaSha256": "895a087110aa580e1131e6ec854b404c80b93e09f04b14e0e243e9ca26ebf204",
   "browserInputs": [
     "artifacts-0.2/artifact-formats.mjs",
     "commands-0.2/mail-send-validation.mjs",

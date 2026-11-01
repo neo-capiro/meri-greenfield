@@ -54,6 +54,7 @@ export function createRuntimeOfficeAccess(value){
     async editorSource(id,ctx,options){const o=await owner(options.write?'revise':'download',id);return o.service.editorSource(id,{...ctx,maxBytes:Math.min(ctx.maxBytes,o.context.maxBytes)},options);},
     async revisionSource(id,ctx,options){const o=await owner('inspect',id);return o.service.revisionSource(id,{...ctx,maxBytes:Math.min(ctx.maxBytes,o.context.maxBytes)},options);},
     async inspect(id,ctx,options){const o=await owner('inspect',id);return o.service.inspect(id,{...ctx,maxBytes:Math.min(ctx.maxBytes,o.context.maxBytes)},options);},
+    async history(query,ctx,options){const o=await owner('inspect',query.versionId);return o.service.history(query,{...ctx,maxBytes:Math.min(ctx.maxBytes,o.context.maxBytes)},options);},
    });
    const publisherFor=(publicationContext,retained)=>{
     if(q.intent!=='revise')fail('ACCESS_DENIED');

@@ -10,6 +10,8 @@ import {createCoreOfficeDraftClient} from '../../artifacts/edit-sessions/core-dr
 import {createCollaboraCodeLaunch,CODE_DISCOVERY_MAX_BYTES} from '../../artifacts/edit-sessions/collabora-code.mjs';
 import {createSuppressionGeneration} from './suppression-generation.mjs';
 import {createRuntimeOfficeApplication} from './office-application.mjs';
+import {createOfficeIntentOwner} from './office-intents.mjs';
+import {registerOfficeIntentOwner} from './intent-binding.mjs';
 import {createOperationLifetime} from '../../../packages/runtime/operation-lifetime.mjs';
 
 const fault=()=>Object.assign(new Error('OFFICE_CONFIGURATION'),{code:'OFFICE_CONFIGURATION'});
@@ -56,7 +58,7 @@ export async function prepareOfficeMaterial({configuration,office,signal,now=Dat
 }
 
 /** Synchronous assembly from already prepared material; returns null when disabled. */
-export function composeOffice({configuration,office,ports,sessions,retention,now,material}){
+export function composeOffice({configuration,office,ports,sessions,retention,now,material,context=null,store=null}){
  if(office===null||office===undefined||office.enabled!==true)return null;
  const optionsOwner=ports?.artifactOptionsOwner;
  if(material===null||typeof material!=='object'||!Buffer.isBuffer(material.key)||material.key.byteLength<32||
@@ -81,6 +83,9 @@ export function composeOffice({configuration,office,ports,sessions,retention,now
  const application=createRuntimeOfficeApplication({optionsOwner,sessions,now,originalSource,
   limits:{maxRequestMs:configuration.limits.requestMs,maxRequestBytes:configuration.limits.requestBytes,maxResponseBytes:configuration.native.maxResponseBytes},drafts,codec,launch,generation,browserOrigin:office.browserOrigin});
  if(typeof application.handleControl!=='function'||typeof application.handleWopi!=='function')throw fault();
+ // The governed same-document bridge: listed to the model only for a run with a selected Office document, applied only
+ // through the approval route. Without a product context (no intents) nothing is registered.
+ if(context!==null)registerOfficeIntentOwner(context,createOfficeIntentOwner({context,application,sessions,store,retention:retention.gate,now,limits:{maxRequestMs:configuration.limits.requestMs}}));
  return Object.freeze({application,codec,close(){try{codec.close();}finally{key.fill(0);}}});
  }catch(error){try{codec?.close();}finally{key.fill(0);}throw error;}
 }
