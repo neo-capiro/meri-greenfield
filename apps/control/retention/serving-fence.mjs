@@ -6,13 +6,19 @@
  * the fence closes (`RETENTION_WATERMARK_STALE`) and stays closed until reconciliation runs again. Any closure keeps its first reason
  * until a proven reopening. The fence closes only on a verified inconsistency: a persisted watermark behind a position this process
  * observed (`RETENTION_WATERMARK_STALE`) or ahead of / hash-divergent from the current ledger head (`RETENTION_WATERMARK_UNVERIFIED`).
- * A read that cannot complete (store timeout, lock timeout, transport, external ledger error, malformed value) proves nothing, so it
- * refuses only that request (`RETENTION_READ_UNAVAILABLE`, cause attached) and leaves the fence as it was. Same `isEnabled`/`disable`
- * surface as the plain serving gate, so every existing owner composes over it. */
+ * A read that cannot complete (store timeout, lock timeout, transport, external ledger error) proves nothing, so it refuses only
+ * that request (`RETENTION_READ_UNAVAILABLE`, cause attached) and leaves the fence as it was. An answer that is itself invalid (a
+ * corrupt watermark row or ledger, a malformed position) is a proven fault: it closes the fence with that code so readiness
+ * reconciles and repairs it. Same `isEnabled`/`disable` surface as the plain serving gate, so every existing owner composes over it. */
 import {fail} from './boundary.mjs';
+/** Adapter codes that mean the stored answer itself is invalid rather than unavailable. */
+export const CORRUPT_READ=new Set(['RETENTION_STORE_CORRUPT','RETENTION_LEDGER_CORRUPT','RETENTION_WATERMARK_UNVERIFIED']);
 const position=value=>{if(!value||!Number.isSafeInteger(value.sequence)||value.sequence<0||value.entrySha256!==null&&typeof value.entrySha256!=='string')fail('RETENTION_WATERMARK_UNVERIFIED');return Object.freeze({sequence:value.sequence,entrySha256:value.entrySha256});};
 export function createServingFence(){
  let enabled=false,reason='RETENTION_STARTUP_FENCE',opened=null,highWater=-1;
+ /** One proof read: unavailable refuses this request only; a corrupt answer or malformed position closes the fence. */
+ async function observe(read){let value;try{value=await read();}catch(error){if(CORRUPT_READ.has(error?.code)){fence.disable(error.code);throw error;}fail('RETENTION_READ_UNAVAILABLE',error);}
+  try{return position(value);}catch(error){fence.disable('RETENTION_WATERMARK_UNVERIFIED');throw error;}}
  const fence=Object.freeze({
   isEnabled:()=>enabled,
   /** Closes the fence; the first reason since the last opening is the one reported. */
@@ -24,8 +30,8 @@ export function createServingFence(){
   observe(sequence){if(Number.isSafeInteger(sequence)&&sequence>highWater)highWater=sequence;},
   /** A serving/readiness/append proof also reads the current durable ledger head: local observations alone cannot detect
    * another owner's acknowledged decision after both restorable stores roll back. The head is read after the DB observation. */
-  async verify(read,readHead=null){if(!enabled)fail(reason??'RETENTION_RECOVERY_BARRIER');let persisted,current;try{persisted=position(await read());}catch(error){fail('RETENTION_READ_UNAVAILABLE',error);}
-   if(readHead!==null){try{current=position(await readHead());}catch(error){fail('RETENTION_READ_UNAVAILABLE',error);}
+  async verify(read,readHead=null){if(!enabled)fail(reason??'RETENTION_RECOVERY_BARRIER');const persisted=await observe(read);
+   if(readHead!==null){const current=await observe(readHead);
     highWater=Math.max(highWater,current.sequence);
     if(persisted.sequence>current.sequence||persisted.sequence===current.sequence&&persisted.entrySha256!==null&&persisted.entrySha256!==current.entrySha256){fence.disable('RETENTION_WATERMARK_UNVERIFIED');fail('RETENTION_WATERMARK_UNVERIFIED');}}
    if(persisted.sequence<highWater){fence.disable('RETENTION_WATERMARK_STALE');fail('RETENTION_WATERMARK_STALE');}if(!enabled)fail(reason);highWater=Math.max(highWater,persisted.sequence);return persisted;},

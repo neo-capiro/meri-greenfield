@@ -4,7 +4,7 @@
  * recovery lock; an acknowledged transition whose projection write fails closes the serving barrier until reconciliation. In-flight
  * work is cancelled through the existing authenticated cancellation port; already-issued signed URLs cannot be recalled and are
  * recorded with their latest expiry. The serving gate is mandatory. */
-import {own,data,fail,subject,subjectKey,clock,text,uuid} from './boundary.mjs';
+import {own,data,fail,causeCode,subject,subjectKey,clock,text,uuid} from './boundary.mjs';
 import {projectionToken} from './memory-journal.mjs';
 const principalOf=value=>{const p=own(data(value),['tenantId','actorId']);text(p.tenantId);text(p.actorId);return p;};
 export const refusingOwnerMediation=Object.freeze({async ownerMediated(){fail('RETENTION_AUTHORIZATION_REFUSED');}});
@@ -14,7 +14,6 @@ export const refusingOwnerMediation=Object.freeze({async ownerMediated(){fail('R
  * owner after its own authentication, never caller claims. Every refusal that is not a suppression writes one terminal line (capped
  * like the history diagnostics) naming the fence state and the innermost cause code, so operators can tell a per-request read
  * failure (`fence:"open"`) from a latched fence (`fence:"closed"` with its reason). */
-const causeCode=error=>{let code=null;for(let e=error,i=0;e&&i<8;e=e.cause,i++)if(typeof e.code==='string'&&e.code)code=e.code.slice(0,64);return code;};
 export function createRetentionReadGate({journal,serving,log=line=>process.stderr.write(line+'\n')}){
  if(typeof journal?.get!=='function'||typeof serving?.isEnabled!=='function'||typeof log!=='function')fail('RETENTION_CONFIGURATION');
  let windowStart=-Infinity,count=0;
@@ -30,10 +29,10 @@ export function createRetentionReadGate({journal,serving,log=line=>process.stder
   if(!Array.isArray(rawSubjects)||rawSubjects.length>100||typeof release!=='function'||typeof journal.withServing!=='function')fail('RETENTION_CONFIGURATION');
   barrier();const keys=[...new Set(rawSubjects.map(s=>subjectKey(subject(s))))].sort(),locked=new Set(keys);
   return journal.withServing(keys,async(signal,scoped)=>{if(scoped!==undefined&&typeof scoped?.get!=='function')fail('RETENTION_CONFIGURATION');
-   let active=true;const assertLockedServable=raw=>{if(!active)fail('RETENTION_READ_UNAVAILABLE');const s=subject(raw);
+   let active=true;const assertLockedServable=raw=>{if(!active)refuse('RETENTION_READ_UNAVAILABLE');const s=subject(raw);
     if(!locked.has(subjectKey(s)))fail('RETENTION_INVALID_REQUEST');return assertServable(s,scoped?.get??journal.get);};
    const readScheduleOriginRows=scoped?.readScheduleOriginRows&&((selection)=>{
-    if(!active)fail('RETENTION_READ_UNAVAILABLE');return scoped.readScheduleOriginRows(selection);
+    if(!active)refuse('RETENTION_READ_UNAVAILABLE');return scoped.readScheduleOriginRows(selection);
    });
    try{barrier();const result=await release(signal,assertLockedServable,readScheduleOriginRows);barrier();return result;}finally{active=false;}},options);
  }

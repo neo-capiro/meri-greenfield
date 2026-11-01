@@ -3,6 +3,8 @@ import {canonicalSha256} from '../../../packages/contracts/validate.mjs';
 import {data, own} from '../../../packages/contracts/commands-0.2/execution-boundary.mjs';
 export {canonicalSha256 as hash, data, own};
 export function fail(code,cause){throw Object.assign(new Error(code),{code},cause===undefined?{}:{cause});}
+/** The innermost code on an error's cause chain, for diagnostics; codes only, never messages. */
+export const causeCode=error=>{let code=null;for(let e=error,i=0;e&&i<8;e=e.cause,i++)if(typeof e.code==='string'&&e.code)code=e.code.slice(0,64);return code;};
 export const same=(a,b)=>canonicalSha256(a)===canonicalSha256(b);
 export function uuid(value){if(typeof value!=='string'||!/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/u.test(value))fail('RETENTION_INVALID_REQUEST');return value;}
 export function digest(value){if(typeof value!=='string'||!/^[a-f0-9]{64}$/u.test(value))fail('RETENTION_INVALID_REQUEST');return value;}

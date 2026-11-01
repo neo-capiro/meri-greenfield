@@ -30,8 +30,11 @@ test('synthetic current head: each served observation reads the durable owner an
   const startup=createRetentionStartup({journal:f.journal,watermark:f.watermark,ledgerSink:sink,ownership,purge:{enabled:false},now:f.clock.now});await startup.start();
   await startup.suppression.suppress({principal:f.principal,subject,reason:'retained suppression'});reads=0;
   for(let i=0;i<2;i++){await assert.rejects(startup.gate.assertServable(subject),/RETENTION_SUPPRESSED/);assert.equal(reads,i+1,'no process-local head cache');}
-  failRead=true;await assert.rejects(startup.gate.assertServable(subject),/RETENTION_READ_UNAVAILABLE/);assert.equal(startup.state().enabled,true,`an ${failure} head refuses its request without closing the fence`);
-  failRead=false;reads=0;await assert.rejects(startup.gate.assertServable(subject),/RETENTION_SUPPRESSED/);assert.equal(reads,1,'the next read serves with one head read and no replay');
+  failRead=true;
+  if(failure==='unavailable'){await assert.rejects(startup.gate.assertServable(subject),/RETENTION_READ_UNAVAILABLE/);assert.equal(startup.state().enabled,true,'an unavailable head refuses its request without closing the fence');
+   failRead=false;reads=0;await assert.rejects(startup.gate.assertServable(subject),/RETENTION_SUPPRESSED/);assert.equal(reads,1,'the next read serves with one head read and no replay');}
+  else{await assert.rejects(startup.gate.assertServable(subject),/RETENTION_RECOVERY_BARRIER/);assert.equal(startup.state().reason,'RETENTION_LEDGER_CORRUPT','a corrupt ledger answer is a proven fault that closes the fence');
+   failRead=false;await startup.ensureServing();await assert.rejects(startup.gate.assertServable(subject),/RETENTION_SUPPRESSED/);}
  }
 });
 
