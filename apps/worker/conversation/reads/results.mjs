@@ -36,10 +36,8 @@ function sqlDiagnostics(error,code){
  const postgres=typeof error.sqlstate==='string'&&typeof code==='string'&&POSTGRES_REFUSALS.has(code);
  if(position===null&&hint===null&&!candidates.length&&!postgres)return null;
  const sentence=text=>/[.!?]$/u.test(text)?text:`${text}.`;
- // Core 362 passes PostgreSQL's message through unsanitized. A permission or schema error confirms that something the model
- // named exists outside the published source; the model only needs to know it is outside, never the object itself.
- const message=typeof error.message!=='string'?'query failed':/permission denied|schema .* does not exist/iu.test(error.message)?'the statement named a relation or schema outside the published source; use only the relations describe_capiro_data lists':error.message;
- const parts=[sentence(`PostgreSQL${typeof error.sqlstate==='string'?` ${error.sqlstate}`:''}: ${message}${position===null?'':` at character ${position}`}`)];
+ // Core's translateDatabaseError already replaces permission and missing-schema text with the name the model wrote or none.
+ const parts=[sentence(`PostgreSQL${typeof error.sqlstate==='string'?` ${error.sqlstate}`:''}: ${typeof error.message==='string'?error.message:'query failed'}${position===null?'':` at character ${position}`}`)];
  if(hint!==null)parts.push(sentence(`Hint: ${hint}`));
  if(candidates.length)parts.push(`Did you mean: ${candidates.join(', ')}.`);
  return parts.join(' ');
@@ -71,9 +69,12 @@ function mailNotice(page){
  if(page?.kind==='mail-candidate-source-page'){
   const messages=Array.isArray(page.messages)?page.messages:[],n=messages.length;
   const parts=[`${n} stored message candidate(s)${Number.isInteger(page.totalMatches)?` of ${page.totalMatches} matching`:''}${page.hasMore===true&&Number.isInteger(page.nextOffset)?`; more exist, continue with offset ${page.nextOffset}`:''}.`];
-  // The page carries the mailbox connection state only per returned message; an empty page cannot report it.
-  parts.push(n===0?'An empty page is absence within this subject, folder, window and filter only, not proof that no email exists; widen withinDays or the folder, or search by from or participant, and if the user expects mail here ask them to check the mailbox connection in Capiro\'s mail integration settings.'
+  parts.push(n===0?'An empty page is absence within this subject, folder, window and filter only, not proof that no email exists; widen withinDays or the folder, or search by from or participant.'
    :'Previews are incomplete excerpts: read a thread with mail_read_thread before quoting or summarizing its content.');
+  // Source-level staleness comes from the contract's SourceState (freshness, synchronizedAt), so an empty page can report it too;
+  // the per-message connectionStatus is the mailbox state of the messages actually returned.
+  const staleSource=(Array.isArray(page.sources)?page.sources:[]).find(s=>s?.freshness==='stale');
+  if(staleSource)parts.push(`The mail source reports its stored mail as stale (last synchronized ${typeof staleSource.synchronizedAt==='string'?staleSource.synchronizedAt:'at an unknown time'}); ${RECONNECT}.`);
   const stale=staleStatuses(messages);if(stale.length)parts.push(`Mailbox connection status ${stale.join(', ')}: stored mail up to the last synchronization, possibly stale; ${RECONNECT}.`);
   return parts.join(' ');
  }

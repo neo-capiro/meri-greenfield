@@ -26,3 +26,15 @@ test('a connected mailbox adds no stale hint; the mailbox state is read only fro
  assert.equal(connected,'Notice: 1 message(s) of 1 in this thread.');
  assert.match(notice({...base,messages:[message({connectionStatus:'needs_configuration'})]}),/Mailbox connection status needs_configuration: stored mail up to the last synchronization, possibly stale; the user can reconnect the mailbox/);
 });
+
+test('an empty candidate page says stale only when the source state says so, with its synchronization time',()=>{
+ const search={id:'mail.search_messages'},candidates=createMailFixture('mail.search_messages'),page=candidates.page();
+ const empty={...page,messages:[],totalMatches:0,hasMore:false,nextOffset:null,continuation:{...page.continuation,requiredReads:[]}};
+ const text=p=>readNotices(search,JSON.stringify(p),p)[0].text;
+ assert.equal(text(empty),'Notice: 0 stored message candidate(s) of 0 matching. An empty page is absence within this subject, folder, window and filter only, not proof that no email exists; widen withinDays or the folder, or search by from or participant.');
+ const stale={...empty,sources:[{...empty.sources[0],freshness:'stale',synchronizedAt:'2026-10-01T00:00:00.000Z'}]};
+ assert.match(text(stale),/\. The mail source reports its stored mail as stale \(last synchronized 2026-10-01T00:00:00\.000Z\); the user can reconnect the mailbox in Capiro's mail integration settings\.$/);
+ const unknownWhen={...empty,sources:[{...empty.sources[0],freshness:'stale'}]};
+ assert.match(text(unknownWhen),/stale \(last synchronized at an unknown time\)/);
+ assert.doesNotMatch(text({...empty,sources:[{...empty.sources[0],freshness:'fresh',synchronizedAt:'2026-11-01T00:00:00.000Z'}]}),/stale/);
+});

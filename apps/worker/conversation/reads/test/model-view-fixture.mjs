@@ -1,8 +1,7 @@
 /** Exactly what the model receives for a set of reads, produced by the production composition: the `meri_reads`
  * server instructions and each tool's name, description and input schema as a real MCP client lists them, the
  * system-prompt sentence `options.mjs` appends for those tools, and the result notices `results.mjs` adds to sample
- * Core envelopes. `model-view.test.mjs` asserts on it; `node model-view-fixture.mjs > view.md` snapshots it
- * (docs/handover/20261101/READ-MODEL-VIEW-*.md). */
+ * Core envelopes. `model-view.test.mjs` asserts on it; `node model-view-fixture.mjs` prints it as Markdown for review. */
 import {pathToFileURL} from 'node:url';
 import {Client} from '@modelcontextprotocol/sdk/client/index.js';
 import {InMemoryTransport} from '@modelcontextprotocol/sdk/inMemory.js';
