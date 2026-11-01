@@ -300,3 +300,54 @@ columns, so a table-only startup readiness check is insufficient for activation.
 `meri_memory` candidate columns and the pinned `guard_conversation_tombstone` shape (`conversations/0030`), rely on the surviving
 `receipts`-class approval/command/intent tombstones rather than authoring held per-class schemas, and teach intent replay/readers to
 withhold `REDACTED` payloads before enabling memory. See `docs/coordination/handoffs/MEMORY-COMPOSITION-20261018.md` for exact gates and tests.
+
+### Lifecycle stages, recall and evidence seams, 1 November 2026 (packet M18–M22 source map)
+
+Five stages are distinct owners and never collapse into one another. A list label or a successful chat is evidence of none of them.
+
+| Stage | Meri owner | What exists afterwards |
+|---|---|---|
+| 1. Explicit intent | `mcp__meri_intents__propose_memory` → `createMemoryIntentPreparer` (`command-options.mjs`) | immutable `memory.propose` approval metadata; no candidate, no memory |
+| 2. Submission approval | `apps/control/intents/approval.mjs` (`memory.propose`) → native memory execution port | one Core candidate (addition) under the exact proposal provenance; `review_pending` |
+| 3. Governed candidate | `producer.mjs` + `postgres-journal.mjs` (surface and command paths) | journaled immutable candidate, submission state PREPARED/SUBMITTED/SUBMISSION_UNKNOWN |
+| 4. Publication | Core's owners only (`core-decisions.mjs` forwards the proposer's own decision) | `review.status` approved with a scoped `publishedMemoryId`; a correction becomes an `item:` successor |
+| 5. Recall | gateway `search_memory` (`apps/gateway/sources/client-knowledge/http-adapter.mjs` + `memory-eligibility.mjs`), worker family `client-knowledge-memory` | approved records only, each released against Core's per-record eligibility receipt |
+
+`review-state.mjs` is the proposer-side state machine for stages 3–4: the view status table over journal submission state × Core
+answer, decision admission (repeat a terminal receipt, refuse an unreadable review, otherwise forward: Core locks the pending row and
+refuses or recovers a decided candidate itself, so Meri keeps no duplicate "not pending" gate) and the correction invariant (the pin `{memoryId, memorySha256}` beside the
+proposed content; nothing changes the active record until Core approves). `test/review-state.test.mjs` is table-driven over every
+combination, the personal/client/firm walls, target hiding/ineligibility, conflict (stale pin → Core 409, nothing recorded), client
+revocation (hidden on status, reload, decision and inbox) and pending-never-overwrites (keyed surface addition refused; keyed command
+becomes a pinned correction).
+
+Pending material is never recall: `memory.list_own_proposals` (`memory-proposals` family) carries `claimsAreApprovedFacts:false`, and
+the `search_memory` output contract (`packages/contracts/retrieval-0.2/client-knowledge-memory.schema.json`) states that pending,
+rejected, withdrawn, revoked, superseded and non-controlling records are not active recall.
+
+**History and evidence (M20).** The frontend reads Core's owner routes directly (`GET /api/memory/owner/items`,
+`items/{id}/versions`, `items/{id}/evidence`, Core `memory-owner-items.controller.ts`) through its own same-origin admission; Meri
+proxies none of them, and adding a second proxy would duplicate that hop. Meri's part is the independently authorized provenance:
+Core's evidence reader (`memory-owner-evidence.sources.ts`) POSTs `/api/conversations/transcript` `{conversationId, after:0, limit:1}`
+with the member's own bearer and the frontend `Origin`, and accepts only `meri.conversation-transcript/1` whose `conversation.owner`
+is the caller and whose single scope is the caller's private scope or one visible client. Meri answers 200 for the owner, 403 for a
+removed member or a client mismatch, 404 for an unknown conversation and 503 `CONVERSATION_UNAVAILABLE` while suppressed, archived or
+otherwise unservable (`apps/control/conversations/test/history-http.test.mjs`). Core maps 401/403/404/410 to
+`availability:'unavailable', reason:'source_unavailable'`, any other failure to its own 503, and an anchor change during the read to
+409 `HISTORY_CHANGED`. The only Meri public contract the memory UI consumes is `@capiro/meri-contracts/conversation-history`
+(notification projection); the owner history page shape is Core's (`schemaVersion:1`), received by the frontend's own receiver.
+
+**Notifications (M22).** Core owns the feed and acknowledgements (`memory/review/notifications`, `unread-count`, `read-all`,
+`{id}/read`; `memory-review-inbox.controller.ts`). The frontend's `memory.notifications.*` operations call Core directly; the
+same-origin adapter `/api/meri/notifications` proxies only the list. Meri has no notification route or store, so the historical ACK
+404s cannot originate here. Core answers 404 from `markNotificationRead` when the tenant's memory review switch is off, when the row
+is not addressed to `recipient_user_id = ctx.userId`, when `notificationVisibleInTx` no longer admits the candidate (participant or
+client-state change), or when the UPDATE affected no row. `unreadNotificationCount` and `markAllNotificationsRead` both walk every
+unread page (200 rows per page) with the same visibility rule, so the count and read-all share one complete population.
+
+**Learning producer and memory retention windows (M21).** The learning producer, its CRM completion tasks and their deferral bound
+are Core (`apps/api/src/learning/*`, `clients/client-profile-fill-completion*.ts`), as are the memory retention windows
+(`memory/memory-retention-policy.controller.ts`). Meri's retained memory payload is the `meriMemoryCandidates` class only:
+30-day class retention under `conversationTrashPolicy` (`retention/inventory-source.mjs`), content tombstone and same-transaction
+target rule in `retention-payload-owner.mjs`, inventory/readback/redaction tests in `test/retention-seam.test.mjs` and the expired
+Trash row transaction in `retention/test/expired-trash-pg.test.mjs`.
