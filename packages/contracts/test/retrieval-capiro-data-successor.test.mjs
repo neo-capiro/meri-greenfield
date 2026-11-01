@@ -14,10 +14,12 @@ const privateNames=['client_objectives','client_activity','client_team_roster','
 const describe=version=>resolveOperationContract({id:'describe_capiro_data',version});
 const context={capiroDataScope:{clientId:null,identityRevision:'a'.repeat(64),membershipRevision:'b'.repeat(64)}};
 
-test('retained SQL schema bytes and descriptor remain frozen while successor advertises larger bounds',()=>{
+// The retained 0.2 schema bytes were repinned once for the Core 362 envelope (capiro-backend#362): the 0.2.0 rows stay
+// live for exact-pinned skills, so they must admit the added pgType/enum/diagnostic fields and the next version too.
+test('retained SQL schema bytes carry the single Core 362 repin and the successor advertises larger bounds',()=>{
  const bytes=readFileSync(new URL('../retrieval-0.2/capiro-data.schema.json',import.meta.url));
- assert.equal(createHash('sha256').update(bytes).digest('hex'),'862b0f2e22bb6208a0f0396d173fd96fb3b8ccd9fd0f3590da512d440f3c6c43');
- assert.equal(describe('0.2.0').descriptor.inputSchema.sha256,'862b0f2e22bb6208a0f0396d173fd96fb3b8ccd9fd0f3590da512d440f3c6c43');
+ assert.equal(createHash('sha256').update(bytes).digest('hex'),'ad67f7aa301f5a3d4b62af010590735a965bd5730eedf8cb145740b40f0b6bc6');
+ assert.equal(describe('0.2.0').descriptor.inputSchema.sha256,'ad67f7aa301f5a3d4b62af010590735a965bd5730eedf8cb145740b40f0b6bc6');
  assert.equal(describe('0.3.0').binding.group,'capiro-data-v3');
  assert.throws(()=>describe('0.2.0').normalizeInput({relations:publicNames}));
  assert.deepEqual(describe('0.3.0').normalizeInput({relations:publicNames}).input,{relations:publicNames});
@@ -28,10 +30,14 @@ test('successor schema and descriptors state the SQL grammar, binding rules and 
  const sha=createHash('sha256').update(bytes).digest('hex'),query=resolveOperationContract({id:'query_capiro_data',version:'0.3.0'});
  assert.equal(describe('0.3.0').descriptor.inputSchema.sha256,sha);assert.equal(query.descriptor.inputSchema.sha256,sha);
  const request=schema.$defs.CapiroDataQueryRequest.properties;
- assert.match(request.sql.description,/One read-only PostgreSQL SELECT.*non-recursive CTEs/);
- assert.match(request.sql.description,/INNER JOIN or LEFT JOIN \.\.\. ON equality of declared key columns/);
- assert.match(request.sql.description,/=, <>, <, <=, >, >=, AND, OR, ILIKE, IS NULL and IS NOT NULL/);
- assert.match(request.sql.description,/String literals, IN, BETWEEN, NOT, LIKE, CASE, COALESCE, casts, arithmetic, functions, window or FILTER clauses, subqueries, OFFSET, UNION, NULLS LAST/);
+ assert.match(request.sql.description,/One read-only PostgreSQL 16 statement, SELECT or WITH \.\.\. SELECT/);
+ assert.match(request.sql.description,/runs verbatim under a read-only role/);
+ assert.match(request.sql.description,/more than one statement; SET, SHOW, COPY, LISTEN, EXPLAIN or transaction control; INSERT, UPDATE, DELETE, MERGE or SELECT INTO \(also inside a CTE\)/);
+ assert.match(request.sql.description,/set_config, pg_sleep\*, pg_terminate_backend, pg_cancel_backend, advisory locks, pg_notify, lo_\*, pg_read_file, pg_ls_dir and dblink/);
+ assert.match(request.sql.description,/mixes public and client_records relations/);
+ assert.match(request.sql.description,/outer LIMIT caps rows at rowLimit \(default 200, at most 1000\)/);
+ assert.match(request.sql.description,/PostgreSQL's own message with the 1-based character position, hint, SQLSTATE and the nearest published relation or column names/);
+ assert.doesNotMatch(request.sql.description,/non-recursive CTEs|declared key columns|No string literals|are refused before execution with an error code/);
  assert.match(request.parameters.description,/pass \[\] when the SQL binds nothing/);
  assert.match(request.rowLimit.description,/1-1000 \(default 200\)/);
  assert.match(schema.$defs.CapiroDataDescribeRequest.properties.relations.description,/omit to list every published relation/);
@@ -41,10 +47,16 @@ test('successor schema and descriptors state the SQL grammar, binding rules and 
  assert.deepEqual(strip(request.sql),strip(retained.$defs.CapiroDataQueryRequest.properties.sql));
  assert.deepEqual(strip(request.parameters),strip(retained.$defs.CapiroDataQueryRequest.properties.parameters));
  assert.deepEqual(strip(request.rowLimit),strip(retained.$defs.CapiroDataQueryRequest.properties.rowLimit));
+ assert.match(request.parameters.description,/cast it \(\$1::date\) when the context does not fix the type/);
  assert.match(query.descriptor.whenToUse,/INVALID_QUERY, UNSUPPORTED_SQL, UNKNOWN_RELATION, UNKNOWN_FIELD or PARAMETER_MISMATCH/);
- assert.match(query.descriptor.whenToUse,/fix the SQL and run again, not switch sources/);
- assert.match(query.descriptor.whenToUse,/rowLimit default 200, max 1000/);
+ assert.match(query.descriptor.whenToUse,/carries PostgreSQL's own message, 1-based character position, hint, SQLSTATE and nearest published names: fix the SQL and run again, do not switch sources/);
+ assert.match(query.descriptor.whenToUse,/rowLimit default 200, max 1000, applied as an outer LIMIT/);
+ assert.match(query.descriptor.whenToUse,/typed columns \(name, type, pgType\)/);
+ assert.doesNotMatch(query.descriptor.whenToUse+query.descriptor.negativeExamples.join(''),/SELECT \*|IN lists|string literals, SELECT/);
  assert.match(describe('0.3.0').descriptor.whenToUse,/once before the first query/);
+ assert.match(describe('0.3.0').descriptor.whenToUse,/pgType, nullable, unit, enum values/);
+ assert.match(describe('0.3.0').descriptor.whenToUse,/its candidates name the nearest published relations or columns/);
+ assert.doesNotMatch(describe('0.3.0').descriptor.whenToUse,/state bills|SAM\.gov/);
  for(const version of ['0.2.0','0.3.0'])assert.equal(resolveOperationContract({id:'query_capiro_data',version}).descriptor.sideEffect,'none');
 });
 

@@ -9,6 +9,14 @@ const integer=/^-?(?:0|[1-9]\d*)$/u;
 const decimal=/^-?(?:0|[1-9]\d*)(?:\.\d+)?(?:[eE][+-]?\d+)?$/u;
 const instant=value=>typeof value==='string'&&Number.isFinite(Date.parse(value));
 const uuid=/^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/u;
+// Core 362 (capiro-backend#362) returns timestamp cells as PostgreSQL text in UTC with microseconds
+// (`2025-01-04 01:02:03.123456+00`; plain `timestamp` carries no offset) and moves the envelope version
+// public 0.1.0 -> 0.2.0, private 0.2.0 -> 0.3.0. The two services deploy separately, so both generations
+// are accepted here. TRANSITIONAL: the ISO timestamp form, the first version of each pair and their
+// fixtures are deleted by the follow-up fable/sql-envelope-retire-old-generation once Core 362 is live.
+const pgTimestamp=/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}(?:\.\d{1,6})?(?:[+-]\d{2}(?::\d{2})?)?$/u;
+const isoTimestamp=/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{1,6})?(?:Z|[+-]\d{2}:\d{2})$/u;
+const ENVELOPE_VERSIONS=Object.freeze({public:Object.freeze(['0.1.0','0.2.0']),client_records:Object.freeze(['0.2.0','0.3.0'])});
 
 function privateScope(input,context){
  const scope=context.capiroDataScope;
@@ -28,7 +36,7 @@ function cell(column,value){
     case 'decimal':if(typeof value!=='string'||!decimal.test(value))fail();break;
     case 'boolean':if(typeof value!=='boolean')fail();break;
     case 'date':if(typeof value!=='string'||!/^\d{4}-\d{2}-\d{2}$/u.test(value)||!instant(value)||new Date(value).toISOString().slice(0,10)!==value)fail();break;
-    case 'timestamp':if(!instant(value)||!/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{1,6})?(?:Z|[+-]\d{2}:\d{2})$/u.test(value))fail();break;
+    case 'timestamp':if(!instant(value)||!(pgTimestamp.test(value)||isoTimestamp.test(value)))fail();break;
     default:fail();
   }
 }
@@ -76,7 +84,7 @@ export function createCapiroDataValidators({validateShape}){
   function assertOutput(id,raw,request,context={}){
     const {input}=normalizeInput(id,request,context),page=snapshotOperationData(raw);validateShape(definition(id,true),page);
     const scope=privateScope(input,context);
-    if(page.version!==(scope?'0.2.0':'0.1.0')||page.ok&&scope&&page.scope.clientId!==scope.clientId)fail();
+    if(!ENVELOPE_VERSIONS[scope?'client_records':'public'].includes(page.version)||page.ok&&scope&&page.scope.clientId!==scope.clientId)fail();
     if(!instant(page.generatedAt)||bytes(page)>262144)fail();
     if(!page.ok)return page;
     if(id==='describe_capiro_data')describe(page,input);else query(page,input);

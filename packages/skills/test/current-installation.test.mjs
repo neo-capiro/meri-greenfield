@@ -9,10 +9,10 @@ import historical from '../../contracts/retrieval-0.2/catalog.json' with {type:'
 import current from '../../contracts/retrieval-0.3/catalog.json' with {type:'json'};
 import {canonicalSha256 as hash} from '../../contracts/validate.mjs';
 import {assertSkillInstallation} from '../../contracts/selected-skills/validate.mjs';
-const currentHash='a63009c43b190f18e78f9e1a348e3b3db17e367220511b9871286a85e9d05c11';
+const currentHash='76a7e8cdaa84daa7437c874debc9b5aafd3f8b75eeea700df515790418687d34';
 
 test('all nineteen original asset identities survive the exact additive installation without added grants',()=>{
- assert.equal(createHash('sha256').update(readFileSync(new URL('../assets.json',import.meta.url))).digest('hex'),'f3be2619e1df98cbe02c6f0b036645f74b32396aa230b22ee972273d15a27745');
+ assert.equal(createHash('sha256').update(readFileSync(new URL('../assets.json',import.meta.url))).digest('hex'),'cf07474e7bf56b25c7bd556fa18496709bd2c4d5a7151398dee7d88e8b722ca6');
  assert.equal(hash(historical),assets.installationCatalogSha256);assert.equal(hash(current),currentHash);
  assert.equal(current.sourceRegistryCommit,historical.sourceRegistryCommit);
  assert.equal(historical.operations.length,142);assert.equal(current.operations.length,156);

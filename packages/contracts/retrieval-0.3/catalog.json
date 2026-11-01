@@ -8535,11 +8535,11 @@
       ],
       "inputSchema": {
         "id": "urn:meri:retrieval:capiro-data:0.2.0#/$defs/CapiroDataDescribeRequest",
-        "sha256": "862b0f2e22bb6208a0f0396d173fd96fb3b8ccd9fd0f3590da512d440f3c6c43"
+        "sha256": "ad67f7aa301f5a3d4b62af010590735a965bd5730eedf8cb145740b40f0b6bc6"
       },
       "outputSchema": {
         "id": "urn:meri:retrieval:capiro-data:0.2.0#/$defs/CapiroDataDescribeOutput",
-        "sha256": "862b0f2e22bb6208a0f0396d173fd96fb3b8ccd9fd0f3590da512d440f3c6c43"
+        "sha256": "ad67f7aa301f5a3d4b62af010590735a965bd5730eedf8cb145740b40f0b6bc6"
       },
       "aliases": [],
       "sideEffect": "none",
@@ -8601,11 +8601,11 @@
       ],
       "inputSchema": {
         "id": "urn:meri:retrieval:capiro-data:0.2.0#/$defs/CapiroDataQueryRequest",
-        "sha256": "862b0f2e22bb6208a0f0396d173fd96fb3b8ccd9fd0f3590da512d440f3c6c43"
+        "sha256": "ad67f7aa301f5a3d4b62af010590735a965bd5730eedf8cb145740b40f0b6bc6"
       },
       "outputSchema": {
         "id": "urn:meri:retrieval:capiro-data:0.2.0#/$defs/CapiroDataQueryOutput",
-        "sha256": "862b0f2e22bb6208a0f0396d173fd96fb3b8ccd9fd0f3590da512d440f3c6c43"
+        "sha256": "ad67f7aa301f5a3d4b62af010590735a965bd5730eedf8cb145740b40f0b6bc6"
       },
       "aliases": [],
       "sideEffect": "none",
@@ -12005,7 +12005,7 @@
         "version": "0.3.0"
       },
       "displayName": "Describe Capiro data",
-      "whenToUse": "List the SQL relations query_capiro_data can read, with each relation's columns (name, type, nullable, unit, meaning), primary key, declared join relationships, grain, coverage limitations and freshness field. Call it once before the first query of a conversation, or with relations:[...] to re-read specific relations after an UNKNOWN_RELATION or UNKNOWN_FIELD refusal; the public catalog is static, so do not repeat it for every query. Public relations (the default) cover federal bills, bill subjects, cosponsors and members, DoD program elements, projects and budget positions, state bills, committee hearings, agenda items, state bill calendar events, Grants.gov opportunities and SAM.gov notices. source client_records lists the fourteen client projections the current conversation may read. Publication is not evidence of populated rows or current grants.",
+      "whenToUse": "List the SQL relations query_capiro_data can read, with each relation's columns (name, type, PostgreSQL pgType, nullable, unit, enum values, meaning), primary key, declared join relationships, grain, coverage limitations and freshness field. Call it once before the first query of a conversation, or with relations:[...] to re-read specific relations after an UNKNOWN_RELATION or UNKNOWN_FIELD refusal (its candidates name the nearest published relations or columns); the public catalog is static, so do not repeat it for every query. Public relations (the default) currently cover federal bills, bill subjects, cosponsors and members and DoD program elements, projects and budget positions; the list this tool returns is authoritative. source client_records lists the fourteen client projections the current conversation may read. Publication is not evidence of populated rows or current grants.",
       "limitations": [
         "Current installation, authorization and source availability are required; publication alone enables nothing.",
         "Coverage is ingested and query-bounded with unknown (null) freshness; an empty result is not proof of absence.",
@@ -12013,7 +12013,7 @@
         "Client-record SQL covers the fourteen published projections of the current authorized scope; General may narrow with clientId, selected-client chat cannot broaden, saved jobs have no private SQL admission."
       ],
       "positiveExamples": [
-        "Discover relation names, column types, join keys and grains before authoring SQL; re-read one relation after an unknown column refusal."
+        "Discover relation names, column types, enum values, join keys and grains before authoring SQL; re-read one relation after an unknown column refusal."
       ],
       "negativeExamples": [
         "Treat a listed relation as proof of populated rows, current grants or source freshness."
@@ -12027,11 +12027,11 @@
       ],
       "inputSchema": {
         "id": "urn:meri:retrieval:capiro-data:0.3.0#/$defs/CapiroDataDescribeRequest",
-        "sha256": "cbd596476a7d7fe13b18254a806a2f96ab2db7e10138fa0e076b79d68562eb64"
+        "sha256": "43bf68dc7044a48eb68bf8cb088b302f92689637cb29b99ada5aaa2c067c63fb"
       },
       "outputSchema": {
         "id": "urn:meri:retrieval:capiro-data:0.3.0#/$defs/CapiroDataDescribeOutput",
-        "sha256": "cbd596476a7d7fe13b18254a806a2f96ab2db7e10138fa0e076b79d68562eb64"
+        "sha256": "43bf68dc7044a48eb68bf8cb088b302f92689637cb29b99ada5aaa2c067c63fb"
       },
       "aliases": [],
       "sideEffect": "none",
@@ -12071,7 +12071,7 @@
         "version": "0.3.0"
       },
       "displayName": "Query Capiro data",
-      "whenToUse": "Run one read-only PostgreSQL 16 SELECT over the relations describe_capiro_data lists: public by default, or source client_records for the authorized client projections. The sql argument states the grammar, checked before execution; a refusal (ok:false with error code INVALID_QUERY, UNSUPPORTED_SQL, UNKNOWN_RELATION, UNKNOWN_FIELD or PARAMETER_MISMATCH and a message) means fix the SQL and run again, not switch sources. Bind every text, date, UUID and decimal value as $1..$n and filter in WHERE, never in SQL literals or ON. A result carries typed columns, rows as objects with exact-string integer, decimal and timestamp cells and explicit nulls, rowCount, relationsUsed, rowLimitReached (rowLimit default 200, max 1000) and byteTruncated (256 KiB cap). Page by keyset: ORDER BY the full key and WHERE key > $n. Filter value_kind, position_cycle and asserted_fy before summing budget positions, aggregate parent amounts before joining projects, and join on canonical bill IDs and Bioguide IDs, not names.",
+      "whenToUse": "Run one read-only PostgreSQL 16 SELECT or WITH ... SELECT over the relations describe_capiro_data lists: public by default, or source client_records for the authorized client projections; one query reads one source. The statement runs verbatim under a read-only role, so ordinary PostgreSQL (joins, subqueries, CASE, casts, functions, window functions, IN, LIKE/ILIKE, string literals, UNION) works; the sql argument states the few hard limits. A refusal (ok:false with error code INVALID_QUERY, UNSUPPORTED_SQL, UNKNOWN_RELATION, UNKNOWN_FIELD or PARAMETER_MISMATCH) carries PostgreSQL's own message, 1-based character position, hint, SQLSTATE and nearest published names: fix the SQL and run again, do not switch sources. Bind text, date, UUID and decimal values as $1..$n. A result carries typed columns (name, type, pgType), rows as objects with exact-string integer, decimal and timestamp cells and explicit nulls, rowCount, relationsUsed, rowLimitReached (rowLimit default 200, max 1000, applied as an outer LIMIT) and byteTruncated (256 KiB cap). Page by keyset: ORDER BY the full key and WHERE key > $n. Filter value_kind, position_cycle and asserted_fy before summing budget positions, aggregate parent amounts before joining projects, and join on canonical bill IDs and Bioguide IDs, not names.",
       "limitations": [
         "Current installation, authorization and source availability are required; publication alone enables nothing.",
         "Coverage is ingested and query-bounded with unknown (null) freshness; an empty result is not proof of absence.",
@@ -12079,10 +12079,10 @@
         "Client-record SQL covers the fourteen published projections of the current authorized scope; General may narrow with clientId, selected-client chat cannot broaden, saved jobs have no private SQL admission."
       ],
       "positiveExamples": [
-        "Count bills by congress; list active cosponsors of a bill by Bioguide ID; sum PE budget positions for one position_cycle, asserted_fy and value_kind; list a client's objectives or tracked bills."
+        "Count bills by congress; list active cosponsors of a bill by Bioguide ID; sum PE budget positions for one position_cycle, asserted_fy and value_kind with a CASE or FILTER clause; rank projects with a window function; list a client's objectives or tracked bills."
       ],
       "negativeExamples": [
-        "Put string literals, SELECT *, IN lists, functions or expressions in the SQL text; treat an empty page or reported coverage as proof of authorization, freshness or absence."
+        "Send more than one statement, SET, EXPLAIN, a data-modifying CTE or a blocked function; mix public and client_records relations in one query; treat an empty page or reported coverage as proof of authorization, freshness or absence."
       ],
       "sourceRequirements": [
         {
@@ -12093,11 +12093,11 @@
       ],
       "inputSchema": {
         "id": "urn:meri:retrieval:capiro-data:0.3.0#/$defs/CapiroDataQueryRequest",
-        "sha256": "cbd596476a7d7fe13b18254a806a2f96ab2db7e10138fa0e076b79d68562eb64"
+        "sha256": "43bf68dc7044a48eb68bf8cb088b302f92689637cb29b99ada5aaa2c067c63fb"
       },
       "outputSchema": {
         "id": "urn:meri:retrieval:capiro-data:0.3.0#/$defs/CapiroDataQueryOutput",
-        "sha256": "cbd596476a7d7fe13b18254a806a2f96ab2db7e10138fa0e076b79d68562eb64"
+        "sha256": "43bf68dc7044a48eb68bf8cb088b302f92689637cb29b99ada5aaa2c067c63fb"
       },
       "aliases": [],
       "sideEffect": "none",
