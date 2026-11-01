@@ -2,7 +2,7 @@ import test from 'node:test';import assert from 'node:assert/strict';
 import {mkdtemp,mkdir,writeFile,rm,realpath,symlink,access} from 'node:fs/promises';import {tmpdir} from 'node:os';import {join} from 'node:path';
 import {createBrowserCapability} from '../index.mjs';
 import {DEFAULT_BROWSER_POLICY,INTERACTION_TOOLS,BROWSER_TOOLS} from '../policy.mjs';
-import {HELD_BROWSER_ACTIVATION,EGRESS_REQUIREMENTS,EGRESS_REQUIREMENTS_SHA256,activationOpen,compileBrowserActivation} from '../activation.mjs';
+import {HELD_BROWSER_ACTIVATION,EGRESS_REQUIREMENTS,EGRESS_REQUIREMENTS_SHA256,BROWSER_ACTIVATION_RENDER_VERIFICATION,activationOpen,compileBrowserActivation,compileBrowserActivationInput} from '../activation.mjs';
 import {canonicalSha256} from '../../../../../packages/contracts/validate.mjs';
 import {PLATFORM_BLOCKED_ORIGINS} from '../public-web.mjs';
 import {playwrightHostCommand,validateBrowserInstallation} from '../server.mjs';
@@ -35,20 +35,29 @@ test('a tenant-disabled policy contributes nothing; a partial disabled shape ref
  await assert.rejects(cap.downloads.accept({filename:'a.pdf',url:'https://records.example/a.pdf'}),/BROWSER_DOWNLOADS_DISABLED/);
  assert.throws(()=>createBrowserCapability({binding,cwd,policy:{enabled:false,tools:['browser_navigate']},now:clock}),/BROWSER_POLICY/);
 });
-test('an absent or held configuration compiles to the held record; only a complete open record of the exact requirements opens; malformed records refuse',()=>{
+test('an absent or held configuration compiles to the held record; only a complete, render-verified open record of the exact requirements opens; malformed records refuse',()=>{
  assert.equal(HELD_BROWSER_ACTIVATION.state,'held');assert.equal(HELD_BROWSER_ACTIVATION.evidence,null);assert.equal(HELD_BROWSER_ACTIVATION.reason,'BROWSER_EGRESS_UNQUALIFIED');
  assert.equal(compileBrowserActivation(undefined),HELD_BROWSER_ACTIVATION);assert.equal(compileBrowserActivation({state:'held'}),HELD_BROWSER_ACTIVATION);
+ assert.equal(compileBrowserActivationInput(undefined),HELD_BROWSER_ACTIVATION);assert.equal(compileBrowserActivationInput({state:'held'}),HELD_BROWSER_ACTIVATION);
  assert.equal(activationOpen(HELD_BROWSER_ACTIVATION),false);assert.equal(activationOpen(undefined),false);
  assert.ok(Object.isFrozen(HELD_BROWSER_ACTIVATION)&&Object.isFrozen(EGRESS_REQUIREMENTS));
  assert.equal(EGRESS_REQUIREMENTS_SHA256,canonicalSha256(EGRESS_REQUIREMENTS));
  for(const id of ['deny-non-public-destinations','enforce-on-resolved-address','dns-rebinding','redirects','no-proxy-bypass','evidence'])assert.ok(EGRESS_REQUIREMENTS.some(r=>r.startsWith(`${id}:`)),id);
  for(const range of ['169.254','10/8','172.16/12','192.168/16','127/8','fc00::/7','fe80::/10','2000::/3'])assert.ok(EGRESS_REQUIREMENTS[0].includes(range),range);
- const open={state:'open',evidence:'docs/qualification/browser-egress/BROWSER-EGRESS-EVIDENCE-20261101.md',evidenceSha256:'a'.repeat(64),requirementsSha256:EGRESS_REQUIREMENTS_SHA256};
- const compiled=compileBrowserActivation(open);assert.equal(activationOpen(compiled),true);assert.deepEqual(compiled,open);assert.ok(Object.isFrozen(compiled));
+ const input={state:'open',evidence:'docs/qualification/browser-egress/BROWSER-EGRESS-EVIDENCE-20261101.md',evidenceSha256:'a'.repeat(64),requirementsSha256:EGRESS_REQUIREMENTS_SHA256};
+ const receipt={schema:BROWSER_ACTIVATION_RENDER_VERIFICATION,sourceCommit:'0'.repeat(40),renderedAtMs:1},open={...input,renderVerification:receipt};
+ // The deployment-input shape is exactly the four fields; the control shape additionally carries the renderer's receipt.
+ assert.deepEqual(compileBrowserActivationInput(input),input);assert.throws(()=>compileBrowserActivationInput(open),{code:'BROWSER_ACTIVATION_CONFIGURATION'});
+ assert.throws(()=>compileBrowserActivation(input),{code:'BROWSER_ACTIVATION_CONFIGURATION'},'control refuses an open record the renderer did not verify');
+ const compiled=compileBrowserActivation(open);assert.equal(activationOpen(compiled),true);assert.deepEqual(compiled,open);assert.ok(Object.isFrozen(compiled)&&Object.isFrozen(compiled.renderVerification));
  for(const bad of [{state:'open'},{...open,evidence:null},{...open,evidence:'../evidence'},{...open,evidence:'a b'},{...open,evidenceSha256:'A'.repeat(64)},
-  {...open,requirementsSha256:'b'.repeat(64)},{state:'held',evidence:'x'},{state:'opened'},{...open,extra:true},'open',null])
+  {...open,requirementsSha256:'b'.repeat(64)},{...open,renderVerification:{...receipt,schema:'other/1'}},{...open,renderVerification:{...receipt,sourceCommit:'0'.repeat(39)}},
+  {...open,renderVerification:{...receipt,renderedAtMs:0}},{...open,renderVerification:{...receipt,extra:1}},{state:'held',evidence:'x'},{state:'opened'},{...open,extra:true},'open',null])
   assert.throws(()=>compileBrowserActivation(bad),{code:'BROWSER_ACTIVATION_CONFIGURATION'},JSON.stringify(bad));
+ for(const bad of [{...input,evidence:'../evidence'},{...input,evidenceSha256:'nope'},{...input,requirementsSha256:'b'.repeat(64)},{state:'held',evidence:'x'}])
+  assert.throws(()=>compileBrowserActivationInput(bad),{code:'BROWSER_ACTIVATION_CONFIGURATION'},JSON.stringify(bad));
  assert.equal(activationOpen({...open,requirementsSha256:'b'.repeat(64)}),false,'a record measured against other requirements never opens');
+ assert.equal(activationOpen(input),false,'the unverified input shape never opens');
  assert.equal(activationOpen({...open,evidence:''}),false);
 });
 test('the SDK sees only the run-bound shim; native context preparation owns the separate profile and proxy',()=>{

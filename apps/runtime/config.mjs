@@ -11,7 +11,7 @@ import {compileScheduleServiceConfiguration} from './schedule-service-configurat
 import {compileCapabilityPlatform} from './product-ports/capability-policy.mjs';
 import {compileBrowserPlatform} from './product-ports/browser-policy.mjs';
 import {compileBrowserHostConfiguration} from './browser-host-configuration.mjs';
-import {compileBrowserActivation,activationOpen} from '../worker/conversation/browser/activation.mjs';
+import {compileBrowserActivation} from '../worker/conversation/browser/activation.mjs';
 import {compileRuntimeArtifactsConfiguration} from './artifacts/configuration.mjs';
 import {compileOfficeConfiguration} from './artifacts/office-configuration.mjs';
 import {compileIntentsConfiguration} from './product-ports/intents.mjs';
@@ -57,7 +57,7 @@ export function validateConfiguration(raw,role){
  // (control's host currentness and runner admission consume it); an open record requires the browser-host family it routes to,
  // so an opened gate can never leave every run failing at browser preparation against a Control with no host router.
  if(c.browserActivation!==undefined){requireValue(role==='control','BROWSER_ACTIVATION_CONFIGURATION');const activation=compileBrowserActivation(c.browserActivation);
-  requireValue(!activationOpen(activation)||compileBrowserHostConfiguration(c)!==null,'BROWSER_ACTIVATION_CONFIGURATION');}
+  requireValue(activation.state!=='open'||compileBrowserHostConfiguration(c)!==null,'BROWSER_ACTIVATION_CONFIGURATION');}
  // Objective generation opt-ins (objective-generation/configuration.mjs): control `runs`/`start`, worker `runs`. Absent = disabled.
  if(c.objectiveGeneration!==undefined)compileObjectiveGenerationConfiguration(c,role);
  // Retention serving is an explicit declaration: when enabled, control composes the canonical read gate over its own database and

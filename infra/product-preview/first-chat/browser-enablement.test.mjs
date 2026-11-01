@@ -7,17 +7,19 @@
  * `cryptography`; no live readback, host or network is involved. */
 import test,{after} from 'node:test';
 import assert from 'node:assert/strict';
-import {readFile} from 'node:fs/promises';
+import {readFile,mkdtemp,writeFile,rm} from 'node:fs/promises';
+import {createHash} from 'node:crypto';
+import {tmpdir} from 'node:os';
 import {join} from 'node:path';
 import {fileURLToPath} from 'node:url';
 import {createRenderFixture} from './render-material.fixture.mjs';
 import {nativeProcessingInputs} from './native-processing-material.fixture.mjs';
-import {renderMaterial} from './render-material.mjs';
+import {renderMaterial,readBrowserActivationEvidence} from './render-material.mjs';
 import {NATIVE_PATHS} from './native-processing-material.mjs';
 import {configurationMaxBytes,validateConfiguration} from '../../../apps/runtime/config.mjs';
 import {compileBrowserPlatform} from '../../../apps/runtime/product-ports/browser-policy.mjs';
 import {isPublicOrigin} from '../../../apps/worker/conversation/browser/public-web.mjs';
-import {EGRESS_REQUIREMENTS_SHA256} from '../../../apps/worker/conversation/browser/activation.mjs';
+import {EGRESS_REQUIREMENTS_SHA256,BROWSER_ACTIVATION_RENDER_VERIFICATION} from '../../../apps/worker/conversation/browser/activation.mjs';
 import {startControl,assembleControl} from '../../../apps/runtime/control.mjs';
 import {agentcoreControlFixture} from '../../../apps/runtime/test/agentcore-fixture.mjs';
 import {PROPOSED_PREVIEW_CAPABILITY_PLATFORM} from '../../../apps/runtime/product-ports/capability-policy.mjs';
@@ -25,8 +27,13 @@ import {PROPOSED_PREVIEW_CAPABILITY_PLATFORM} from '../../../apps/runtime/produc
 const here=fileURLToPath(new URL('.',import.meta.url));
 const fixture=createRenderFixture();after(()=>fixture.cleanup());
 const committed=JSON.parse(await readFile(join(here,'deployment-inputs.json'),'utf8')).features.browserPlatform;
-const OPEN=Object.freeze({state:'open',evidence:'docs/qualification/browser-egress/BROWSER-EGRESS-EVIDENCE-20261101.md',evidenceSha256:'a'.repeat(64),requirementsSha256:EGRESS_REQUIREMENTS_SHA256});
-const withNative=async change=>{const i=await nativeProcessingInputs(fixture);change?.(i);return i;};
+const EVIDENCE=Buffer.from('# Synthetic browser egress evidence record (test bytes only)\n');
+const sha=b=>createHash('sha256').update(b).digest('hex');
+const OPEN=Object.freeze({state:'open',evidence:'docs/qualification/browser-egress/BROWSER-EGRESS-EVIDENCE-20261101.md',evidenceSha256:sha(EVIDENCE),requirementsSha256:EGRESS_REQUIREMENTS_SHA256});
+const receiptFor=i=>({schema:BROWSER_ACTIVATION_RENDER_VERIFICATION,sourceCommit:i.deployment.images.nodeRuntimeSourceCommit,renderedAtMs:i.nowMs});
+// Render inputs plus the evidence bytes the CLI reads from the source root; renderMaterial itself never touches the filesystem.
+// nowMs is taken after the fixture issued its short-lived native client leaf, which is valid only from that moment on.
+const withNative=async change=>{const i=await nativeProcessingInputs(fixture);change?.(i);return {...i,browserEvidence:EVIDENCE,nowMs:Date.now()};};
 
 test('the committed browserPlatform renders into control as the runtime compiles it, with only canonical https origins, beside the native router',async()=>{
  const i=await withNative(v=>{v.deployment.features.browserPlatform=structuredClone(committed);v.deployment.features.browserActivation=structuredClone(OPEN);});
@@ -35,7 +42,8 @@ test('the committed browserPlatform renders into control as the runtime compiles
  assert.ok(committed.maximum.allowedOrigins.length>0);
  for(const policy of [committed.maximum,committed.defaults,...Object.values(committed.roleCeilings)])for(const origin of policy.allowedOrigins)assert.ok(isPublicOrigin(origin)&&origin.startsWith('https://'),origin);
  assert.deepEqual(Object.keys(committed.roleCeilings).sort(),['capiro_admin','standard_user','user_admin']);
- assert.deepEqual(c.browserActivation,OPEN);
+ assert.deepEqual(c.browserActivation,{...OPEN,renderVerification:receiptFor(i)},'the control record carries the renderer\'s verification receipt');
+ assert.deepEqual(r.summary.features.browserActivation,{state:'open',evidence:OPEN.evidence,evidenceSha256:OPEN.evidenceSha256,evidenceVerified:true});
  // The router pins the SAME control-to-host identity the native inspection host already uses: same client leaf and key,
  // same issuer root for the host certificates, same client name.
  const t=c.uploads.native.host.tls;
@@ -46,18 +54,36 @@ test('the committed browserPlatform renders into control as the runtime compiles
  assert.ok(Buffer.byteLength(r.roles.control.configBytes)<=configurationMaxBytes('control'));
  assert.equal(r.roles['temporal-worker'].config.browserActivation,undefined);assert.equal(r.roles['temporal-worker'].config.browserPlatform,undefined);
  // Held renders as exactly {state:'held'}; absent renders nothing; the router follows the native family, not the record.
- const held=renderMaterial(await withNative(v=>{v.deployment.features.browserActivation={state:'held'};})).roles.control.config;
+ const {browserEvidence:_h,...heldInputs}=await withNative(v=>{v.deployment.features.browserActivation={state:'held'};});const held=renderMaterial(heldInputs).roles.control.config;
  assert.deepEqual(held.browserActivation,{state:'held'});assert.ok(held.browserHosts);
- const absent=renderMaterial(await withNative()).roles.control.config;
+ const {browserEvidence:_a,...absentInputs}=await withNative();const absent=renderMaterial(absentInputs).roles.control.config;
  assert.equal(absent.browserActivation,undefined);assert.ok(absent.browserHosts);
  assert.doesNotThrow(()=>validateConfiguration(c,'control'));
 });
 
-test('an open record refuses without the native family, with another requirement digest or malformed; a widening or malformed platform refuses',async()=>{
+test('an open record refuses without the evidence bytes, with a wrong hash, with a missing file, without the native family, with another requirement digest or malformed; a widening or malformed platform refuses',async()=>{
+ // Evidence verification: bytes are mandatory for an open record, must hash to evidenceSha256, and are a mistake without one.
+ for(const [label,change] of [['no bytes',i=>{delete i.browserEvidence;}],['wrong hash',i=>{i.browserEvidence=Buffer.from('a different file');}],['bytes with a held record',i=>{i.deployment.features.browserActivation={state:'held'};}]]){
+  const i=await withNative(v=>{v.deployment.features.browserActivation=structuredClone(OPEN);});change(i);
+  assert.throws(()=>renderMaterial(i),{code:'RENDER_INPUT_REFUSED'},label);
+ }
+ // A pre-verified control record (with the receipt) is not a deployment input.
+ const preVerified=await withNative(v=>{v.deployment.features.browserActivation={...OPEN,renderVerification:{schema:BROWSER_ACTIVATION_RENDER_VERIFICATION,sourceCommit:v.deployment.images.nodeRuntimeSourceCommit,renderedAtMs:1}};});
+ assert.throws(()=>renderMaterial(preVerified),{code:'RENDER_INPUT_REFUSED'});
+ // The CLI reader: the exact repository path under the source root, refusing a missing file, an escape and a non-file.
+ const root=await mkdtemp(join(tmpdir(),'meri-browser-evidence-'));
+ try{
+  await assert.rejects(readBrowserActivationEvidence(root,OPEN.evidence),{code:'RENDER_INPUT_REFUSED'},'missing evidence file refuses');
+  await writeFile(join(root,'record.md'),EVIDENCE);
+  assert.deepEqual(await readBrowserActivationEvidence(root,'record.md'),EVIDENCE);
+  await assert.rejects(readBrowserActivationEvidence(root,'../record.md'),{code:'RENDER_INPUT_REFUSED'});
+  await assert.rejects(readBrowserActivationEvidence(root,'.'),{code:'RENDER_INPUT_REFUSED'});
+  await writeFile(join(root,'empty.md'),'');await assert.rejects(readBrowserActivationEvidence(root,'empty.md'),{code:'RENDER_INPUT_REFUSED'});
+ }finally{await rm(root,{recursive:true,force:true});}
  const plain=await fixture.render(i=>{i.deployment.features={browserPlatform:structuredClone(committed)};});
  assert.equal(plain.roles.control.config.browserHosts,undefined,'no native family, no router');
  assert.deepEqual(plain.roles.control.config.browserPlatform,structuredClone(compileBrowserPlatform({browserPlatform:committed})));
- await assert.rejects(fixture.render(i=>{i.deployment.features={browserActivation:structuredClone(OPEN)};}),{code:'RENDER_INPUT_REFUSED'});
+ await assert.rejects(fixture.render(i=>{i.deployment.features={browserActivation:structuredClone(OPEN)};},{browserEvidence:EVIDENCE}),{code:'RENDER_INPUT_REFUSED'},'open without the native family');
  assert.deepEqual((await fixture.render(i=>{i.deployment.features={browserActivation:{state:'held'}};})).roles.control.config.browserActivation,{state:'held'});
  for(const bad of [{...OPEN,requirementsSha256:'b'.repeat(64)},{state:'open'},{state:'held',evidence:'x'},{...OPEN,evidence:'../x'}]){
   const i=await withNative(v=>{v.deployment.features.browserActivation=bad;});

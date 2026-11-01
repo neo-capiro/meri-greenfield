@@ -1,7 +1,7 @@
 import test from 'node:test';import assert from 'node:assert/strict';
 import {admitInputBatch,createInputLimiter,INPUT_LIMITS,REFUSED_INPUT_TYPES} from '../input.mjs';
 import {takeoverActivationOpen,TAKEOVER_ACTIVATION,TAKEOVER_REQUIREMENTS} from '../activation.mjs';
-import {HELD_BROWSER_ACTIVATION,EGRESS_REQUIREMENTS_SHA256} from '../../activation.mjs';
+import {HELD_BROWSER_ACTIVATION,EGRESS_REQUIREMENTS_SHA256,BROWSER_ACTIVATION_RENDER_VERIFICATION} from '../../activation.mjs';
 const code=c=>e=>e.code===c;
 const clock=()=>{let t=0;const now=()=>t;now.advance=ms=>{t+=ms;};return now;};
 const viewport={width:1280,height:800};
@@ -11,7 +11,7 @@ test('takeover activation is held, and cannot open while the browser gate is hel
  assert.equal(TAKEOVER_ACTIVATION.state,'held');assert.equal(takeoverActivationOpen(),false);
  const open={state:'open',evidence:'evidence/takeover-d005.json',requirements:TAKEOVER_REQUIREMENTS};
  assert.equal(takeoverActivationOpen(open),false,'browser gate still held');
- const browser={state:'open',evidence:'evidence/d005.json',evidenceSha256:'a'.repeat(64),requirementsSha256:EGRESS_REQUIREMENTS_SHA256};
+ const browser={state:'open',evidence:'evidence/d005.json',evidenceSha256:'a'.repeat(64),requirementsSha256:EGRESS_REQUIREMENTS_SHA256,renderVerification:{schema:BROWSER_ACTIVATION_RENDER_VERIFICATION,sourceCommit:'0'.repeat(40),renderedAtMs:1}};
  assert.equal(takeoverActivationOpen(open,browser),true,'only both open records with evidence open it');
  assert.equal(takeoverActivationOpen({...open,evidence:null},browser),false);
  assert.equal(takeoverActivationOpen({...open,requirements:[...TAKEOVER_REQUIREMENTS]},browser),false,'a copied requirement list is not the reviewed one');

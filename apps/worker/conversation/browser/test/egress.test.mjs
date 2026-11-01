@@ -1,5 +1,5 @@
 import test from 'node:test';import assert from 'node:assert/strict';
-import {EGRESS_REQUIREMENTS,EGRESS_REQUIREMENTS_SHA256,HELD_BROWSER_ACTIVATION,activationOpen,compileBrowserActivation} from '../activation.mjs';
+import {EGRESS_REQUIREMENTS,EGRESS_REQUIREMENTS_SHA256,HELD_BROWSER_ACTIVATION,BROWSER_ACTIVATION_RENDER_VERIFICATION,activationOpen,compileBrowserActivation} from '../activation.mjs';
 import {canonicalSha256} from '../../../../../packages/contracts/validate.mjs';
 import {egressDecision,egressRedirectChain,EGRESS_CONNECTION_KINDS} from '../egress.mjs';
 import {validateBrowserPolicy,DEFAULT_BROWSER_POLICY} from '../policy.mjs';
@@ -15,7 +15,9 @@ test('H3: the activation record makes the effective origin allowlist mandatory f
  for(const probe of ['allowlisted-to-unlisted public redirect','unlisted public sub-resource','unlisted public WebSocket','narrowed away by tenant or role'])assert.ok(requirement('evidence').includes(probe),probe);
  assert.equal(activationOpen(HELD_BROWSER_ACTIVATION),false,'still held');
  assert.equal(activationOpen({state:'open',evidence:'qualification/browser-egress.json',evidenceSha256:'a'.repeat(64),requirementsSha256:canonicalSha256(EGRESS_REQUIREMENTS.filter(r=>!r.startsWith('effective-origin-allowlist:')))}),false,'a record measured without the allowlist requirement never opens');
- assert.equal(activationOpen({state:'open',evidence:'qualification/browser-egress.json',evidenceSha256:'a'.repeat(64),requirementsSha256:EGRESS_REQUIREMENTS_SHA256}),true);
+ const receipt={schema:BROWSER_ACTIVATION_RENDER_VERIFICATION,sourceCommit:'0'.repeat(40),renderedAtMs:1};
+ assert.equal(activationOpen({state:'open',evidence:'qualification/browser-egress.json',evidenceSha256:'a'.repeat(64),requirementsSha256:EGRESS_REQUIREMENTS_SHA256}),false,'no render verification receipt, no open');
+ assert.equal(activationOpen({state:'open',evidence:'qualification/browser-egress.json',evidenceSha256:'a'.repeat(64),requirementsSha256:EGRESS_REQUIREMENTS_SHA256,renderVerification:receipt}),true);
 });
 test('H3: an allowlisted public origin redirecting to an unlisted public origin is refused at the redirect hop',()=>{
  const p=validateBrowserPolicy(enabledPolicy());

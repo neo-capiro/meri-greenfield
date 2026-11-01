@@ -6,7 +6,9 @@
  * The gate is a CONTROL configuration value (`browserActivation`, config.mjs), rendered from the deployment inputs
  * (`features.browserActivation`, infra/product-preview/first-chat/render-material.mjs). Absent or `{state:'held'}` is
  * the held record below. An open record must cite the evidence record measured on the approved isolated browser host
- * (D005) for every requirement below and pin the exact requirement list it was measured against: a source change to
+ * (D005) for every requirement below and pin the exact requirement list it was measured against; the renderer reads that
+ * file from the source root and refuses a record whose SHA-256 does not match, then attaches its verification receipt,
+ * without which control refuses the open record. A source change to
  * `EGRESS_REQUIREMENTS` changes `EGRESS_REQUIREMENTS_SHA256`, so every previously rendered open record refuses at
  * render and at startup until the evidence is re-recorded. Control is the single owner: its host currentness answers
  * `browserAdmitted:false` while held (apps/control/browser-hosts/currentness.mjs), which refuses every host-side
@@ -41,23 +43,42 @@ export const EGRESS_REQUIREMENTS=Object.freeze([
 export const EGRESS_REQUIREMENTS_SHA256=canonicalSha256(EGRESS_REQUIREMENTS);
 /** The record an absent or `{state:'held'}` configuration compiles to; also what every malformed record is refused as. */
 export const HELD_BROWSER_ACTIVATION=Object.freeze({state:'held',reason:'BROWSER_EGRESS_UNQUALIFIED',evidence:null});
-const EVIDENCE=/^[A-Za-z0-9._/-]{1,200}$/u,HEX64=/^[a-f0-9]{64}$/u;
+const EVIDENCE=/^[A-Za-z0-9._/-]{1,200}$/u,HEX64=/^[a-f0-9]{64}$/u,COMMIT=/^[0-9a-f]{40}$/u;
+/** Schema of the receipt the renderer attaches after it has read the evidence file and matched its SHA-256. */
+export const BROWSER_ACTIVATION_RENDER_VERIFICATION='meri-browser-activation-render-verification/1';
 const fail=()=>{throw Object.assign(new Error('BROWSER_ACTIVATION_CONFIGURATION'),{code:'BROWSER_ACTIVATION_CONFIGURATION'});};
-/** Compiles the configured `browserActivation` record. `undefined` and `{state:'held'}` are the held record. An open
- * record is exactly `{state:'open',evidence,evidenceSha256,requirementsSha256}`: `evidence` is the repository path of
- * the ACTIVATION-CHECKLIST.md measurement record, `evidenceSha256` the SHA-256 of that record's bytes, and
- * `requirementsSha256` must equal `EGRESS_REQUIREMENTS_SHA256`. Anything else refuses (never "held by accident"), so a
- * typo in a deliberate opening is reported instead of silently keeping the browser off. */
-export function compileBrowserActivation(raw){
- if(raw===undefined)return HELD_BROWSER_ACTIVATION;
- let v;try{v=own(raw,['state'],['evidence','evidenceSha256','requirementsSha256']);}catch{fail();}
- if(v.state==='held'){if(Object.keys(v).length!==1)fail();return HELD_BROWSER_ACTIVATION;}
+const held=v=>{if(v.state==='held'){if(Object.keys(v).length!==1)fail();return HELD_BROWSER_ACTIVATION;}return null;};
+const openFields=v=>{
  if(v.state!=='open'||typeof v.evidence!=='string'||!EVIDENCE.test(v.evidence)||v.evidence.includes('..')||
   !HEX64.test(v.evidenceSha256)||v.requirementsSha256!==EGRESS_REQUIREMENTS_SHA256)fail();
- return Object.freeze({state:'open',evidence:v.evidence,evidenceSha256:v.evidenceSha256,requirementsSha256:v.requirementsSha256});
+ return {state:'open',evidence:v.evidence,evidenceSha256:v.evidenceSha256,requirementsSha256:v.requirementsSha256};
+};
+/** The DEPLOYMENT-INPUT record (`features.browserActivation`). `undefined` and `{state:'held'}` are the held record. An
+ * open record is exactly `{state:'open',evidence,evidenceSha256,requirementsSha256}`: `evidence` is the repository
+ * path of the ACTIVATION-CHECKLIST.md measurement record, `evidenceSha256` the SHA-256 the renderer must find when it
+ * reads that file from the source root, and `requirementsSha256` must equal `EGRESS_REQUIREMENTS_SHA256`. Anything
+ * else refuses (never "held by accident"), so a typo in a deliberate opening is reported instead of silently keeping
+ * the browser off. This function checks shape only; the renderer reads and hashes the file. */
+export function compileBrowserActivationInput(raw){
+ if(raw===undefined)return HELD_BROWSER_ACTIVATION;
+ let v;try{v=own(raw,['state'],['evidence','evidenceSha256','requirementsSha256']);}catch{fail();}
+ return held(v)??Object.freeze(openFields(v));
 }
-/** True only for a compiled open record of the exact current requirements. Pure, so tests prove that a record
- * without evidence or measured against other requirements never opens. */
+/** The CONTROL record (`browserActivation` in control configuration): the input record plus the renderer's
+ * verification receipt `renderVerification:{schema,sourceCommit,renderedAtMs}`. Control cannot read the repository,
+ * so an open record without that receipt refuses here: only the rendered material path, which read the evidence file
+ * and matched its SHA-256, produces an open control record. */
+export function compileBrowserActivation(raw){
+ if(raw===undefined)return HELD_BROWSER_ACTIVATION;
+ let v;try{v=own(raw,['state'],['evidence','evidenceSha256','requirementsSha256','renderVerification']);}catch{fail();}
+ const h=held(v);if(h)return h;
+ const open=openFields(v);let r;try{r=own(v.renderVerification,['schema','sourceCommit','renderedAtMs']);}catch{fail();}
+ if(r.schema!==BROWSER_ACTIVATION_RENDER_VERIFICATION||!COMMIT.test(r.sourceCommit)||!Number.isSafeInteger(r.renderedAtMs)||r.renderedAtMs<1)fail();
+ return Object.freeze({...open,renderVerification:Object.freeze({schema:r.schema,sourceCommit:r.sourceCommit,renderedAtMs:r.renderedAtMs})});
+}
+/** True only for a compiled, render-verified open record of the exact current requirements. Pure, so tests prove
+ * that a record without evidence, without the renderer's receipt or measured against other requirements never opens. */
 export function activationOpen(record){
- return record?.state==='open'&&typeof record.evidence==='string'&&EVIDENCE.test(record.evidence)&&record.requirementsSha256===EGRESS_REQUIREMENTS_SHA256;
+ return record?.state==='open'&&typeof record.evidence==='string'&&EVIDENCE.test(record.evidence)&&record.requirementsSha256===EGRESS_REQUIREMENTS_SHA256&&
+  record.renderVerification?.schema===BROWSER_ACTIVATION_RENDER_VERIFICATION;
 }

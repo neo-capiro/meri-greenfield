@@ -4,10 +4,11 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {validateConfiguration} from '../config.mjs';
 import {agentcoreControlFixture} from './agentcore-fixture.mjs';
-import {EGRESS_REQUIREMENTS_SHA256,HELD_BROWSER_ACTIVATION,compileBrowserActivation,activationOpen} from '../../worker/conversation/browser/activation.mjs';
+import {EGRESS_REQUIREMENTS_SHA256,HELD_BROWSER_ACTIVATION,BROWSER_ACTIVATION_RENDER_VERIFICATION,compileBrowserActivation,activationOpen} from '../../worker/conversation/browser/activation.mjs';
 
 const tls={privateClient:{clientName:'control.private.invalid',certFile:'/run/meri/native-control-client.pem',keyFile:'/run/meri/native-control-client.key',caFile:'/run/meri/native-issuer-ca.pem'}};
-const OPEN=Object.freeze({state:'open',evidence:'docs/qualification/browser-egress/BROWSER-EGRESS-EVIDENCE-20261101.md',evidenceSha256:'a'.repeat(64),requirementsSha256:EGRESS_REQUIREMENTS_SHA256});
+const OPEN=Object.freeze({state:'open',evidence:'docs/qualification/browser-egress/BROWSER-EGRESS-EVIDENCE-20261101.md',evidenceSha256:'a'.repeat(64),requirementsSha256:EGRESS_REQUIREMENTS_SHA256,
+ renderVerification:Object.freeze({schema:BROWSER_ACTIVATION_RENDER_VERIFICATION,sourceCommit:'0'.repeat(40),renderedAtMs:1})});
 const control=()=>structuredClone(agentcoreControlFixture().configuration);
 
 test('absent and held records validate; an open record needs the browser-host family it routes through',()=>{
@@ -24,7 +25,8 @@ test('absent and held records validate; an open record needs the browser-host fa
 });
 
 test('malformed records refuse at configuration time instead of silently holding, and only control carries the key',()=>{
- for(const bad of [{state:'open'},{...OPEN,requirementsSha256:'b'.repeat(64)},{...OPEN,evidenceSha256:'nope'},{...OPEN,evidence:'../x'},{state:'held',evidence:'x'},{state:'opened'},true,null]){
+ const {renderVerification,...unverified}=OPEN;
+ for(const bad of [{state:'open'},unverified,{...OPEN,renderVerification:{...renderVerification,schema:'other/1'}},{...OPEN,renderVerification:{...renderVerification,sourceCommit:'short'}},{...OPEN,requirementsSha256:'b'.repeat(64)},{...OPEN,evidenceSha256:'nope'},{...OPEN,evidence:'../x'},{state:'held',evidence:'x'},{state:'opened'},true,null]){
   const c=control();c.browserHosts={enabled:true,tls};c.browserActivation=bad;
   assert.throws(()=>validateConfiguration(c,'control'),{code:'BROWSER_ACTIVATION_CONFIGURATION'},JSON.stringify(bad));
  }

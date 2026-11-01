@@ -14,7 +14,7 @@ import {assertBrowserHostFacts,browserHostFactsDigest,BROWSER_HOST_FACTS_SCHEMA,
   from '../../../packages/contracts/runtime-0.2/browser-host-facts.mjs';
 import {canonicalSha256 as hash} from '../../../packages/contracts/validate.mjs';
 import {validateBrowserPolicy} from '../../worker/conversation/browser/policy.mjs';
-import {compileBrowserActivation,EGRESS_REQUIREMENTS_SHA256} from '../../worker/conversation/browser/activation.mjs';
+import {compileBrowserActivation,EGRESS_REQUIREMENTS_SHA256,BROWSER_ACTIVATION_RENDER_VERIFICATION} from '../../worker/conversation/browser/activation.mjs';
 import {hostClientDnsName} from '../../worker/conversation/host/control/protocol.mjs';
 import {lifecycleFixture,binding as fixtureBinding,id} from '../../control/conversations/test/lifecycle-fixture.mjs';
 
@@ -92,7 +92,7 @@ test('real readFacts keeps row.request as the saved selection while readHost kee
   assert.deepEqual(facts.scopes,rtScopes,'scopes come from the canonical execution read boundary');
   assert.equal(facts.browserAdmitted,false,'no configured activation record, so browser admission is truthfully false');
   const open=currentnessFor({runRow,allocationRowValue:row,now,scopesFor:rtScopes,bindingFor:rtBinding,
-   activation:compileBrowserActivation({state:'open',evidence:'docs/qualification/browser-egress/record.md',evidenceSha256:'a'.repeat(64),requirementsSha256:EGRESS_REQUIREMENTS_SHA256})});
+   activation:compileBrowserActivation({state:'open',evidence:'docs/qualification/browser-egress/record.md',evidenceSha256:'a'.repeat(64),requirementsSha256:EGRESS_REQUIREMENTS_SHA256,renderVerification:{schema:BROWSER_ACTIVATION_RENDER_VERIFICATION,sourceCommit:'0'.repeat(40),renderedAtMs:1}})});
   const admitted=await open.currentness.readFacts(open.client,{allocation:allocation,binding:rtBinding});
   assert.equal(admitted.browserAdmitted,true,'the same read admits the browser under control\'s open record');
   assert.equal(admitted.sdkAdmitted,true);assert.deepEqual(admitted.browserPolicy,facts.browserPolicy);
