@@ -5,7 +5,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {createCongressionalReportCompiler} from '../compose.mjs';
-import {reportSkillPin} from '../skill.mjs';
+import {selectSkill} from '../../../../../packages/skills/index.mjs';
+const reportSkillPin=()=>selectSkill('quick_skill.bill_watch','2.0.0').pin;
 import {artifactValidators as v} from '../../../../../packages/contracts/retrieval-0.2/validate.mjs';
 import {canonicalSha256} from '../../../../../packages/contracts/validate.mjs';
 import {nativeReportPort,REVISION,sha} from './native-source-fixture.mjs';

@@ -3,11 +3,13 @@
 import {artifactValidators as v} from '../../../../packages/contracts/retrieval-0.2/validate.mjs';
 import {own} from '../../../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {fail,text,hash,subject} from '../research-brief/input.mjs';
+import {selectCompilerSkill} from '../../../../packages/skills/index.mjs';
 export {fail,text,hash,subject};
 export const REPORT_SECTIONS=Object.freeze(['Summary','Scope and as-of','Findings','Conflicting evidence','Recommendations','Limitations','References']);
-export function reportInput(value,pin){
+/** The input's skill must be an exact installed version registered to this recipe's compiler. */
+export function reportInput(value){
   const i=own(v.snapshot(value),['skill','title','subject','asOf','summary','findings','conflicts','recommendations','limitations']);
-  own(i.skill,Object.keys(pin));if(v.hash(i.skill)!==v.hash(pin))fail('REPORT_SKILL_PIN');
+  try{selectCompilerSkill(i.skill,'quick_skill.bill_watch');}catch{fail('REPORT_SKILL_PIN');}
   text(i.title,200);i.subject=subject(i.subject);text(i.summary,2000);
   if(typeof i.asOf!=='string'||new Date(Date.parse(i.asOf)).toISOString()!==i.asOf)fail('REPORT_AS_OF');
   if(!Array.isArray(i.findings)||i.findings.length<1||i.findings.length>40)fail('REPORT_INPUT');

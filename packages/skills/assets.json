@@ -158,10 +158,173 @@
       "manifestSha256": "ed25117407946264ef62a916377ffeec0ceca30ca54a97ab0983c797fb6a685a",
       "proseSha256": "6637bc1bd277ad758a2f3c301480b5756a931e09ec2fab7408092ebf475771cd",
       "catalogSha256": "1f901f26ec134e1585ff12541c3344fda77da1fb07f599f8d59e9338ecaa6eb6"
+    },
+    {
+      "skillId": "quick_skill.client_changes",
+      "skillVersion": "1.0.2",
+      "manifestPath": "./originals/client_changes/1.0.2/manifest.json",
+      "prosePath": "./originals/client_changes/1.0.2/SKILL.md",
+      "manifestSha256": "79f30854ded70832a73c841282468c057ef15bf78470d5fe243fa187d4de7091",
+      "proseSha256": "5f934f6859c627530a034f62bf3f40b5bbe946263cf1621d21fbd35ae40c4d2f"
+    },
+    {
+      "skillId": "quick_skill.funding_opportunity_match",
+      "skillVersion": "1.0.2",
+      "manifestPath": "./originals/funding_opportunity_match/1.0.2/manifest.json",
+      "prosePath": "./originals/funding_opportunity_match/1.0.2/SKILL.md",
+      "manifestSha256": "815fee81d2c0d4c20584ce16c366f0de38abbe252e2310fa028723ea8f872083",
+      "proseSha256": "bf9d6ef48e83118d852425ee05352c5fc9c80b96bbd69b154775d1bd40c1c5bb"
+    },
+    {
+      "skillId": "quick_skill.hearing_watch",
+      "skillVersion": "1.0.2",
+      "manifestPath": "./originals/hearing_watch/1.0.2/manifest.json",
+      "prosePath": "./originals/hearing_watch/1.0.2/SKILL.md",
+      "manifestSha256": "e6738aee05950404421c52de23957faad8d8d51e08bf4df4d398ad8661484701",
+      "proseSha256": "0c3c11be88fab201d37659b8471752661bf9852105b14cc784fc36cae02404fc"
+    },
+    {
+      "skillId": "quick_skill.meeting_prep",
+      "skillVersion": "1.0.2",
+      "manifestPath": "./originals/meeting_prep/1.0.2/manifest.json",
+      "prosePath": "./originals/meeting_prep/1.0.2/SKILL.md",
+      "manifestSha256": "f4fff97b22dc1cc283f180271161403c1f8fbc3a66ddb22991fc1c7a16696e40",
+      "proseSha256": "34e583f94718971d97bc3205425be48e46d269f3a128ba94473cdc9147cf5721"
+    },
+    {
+      "skillId": "quick_skill.portfolio_changes",
+      "skillVersion": "1.0.2",
+      "manifestPath": "./originals/portfolio_changes/1.0.2/manifest.json",
+      "prosePath": "./originals/portfolio_changes/1.0.2/SKILL.md",
+      "manifestSha256": "40beb69ab3a4989d10a131527c6ff1b809e63d4860f4a44a465a3da80360b7e0",
+      "proseSha256": "a9867a4d7469a589a3b1f4bdf7f7d504bee4347e642d1c6c0e42b67060724520"
+    },
+    {
+      "skillId": "quick_skill.portfolio_overlap",
+      "skillVersion": "1.0.2",
+      "manifestPath": "./originals/portfolio_overlap/1.0.2/manifest.json",
+      "prosePath": "./originals/portfolio_overlap/1.0.2/SKILL.md",
+      "manifestSha256": "4238039d0ad82650c5d990e66a3b0d3c0a8934894e9bed6125261c9733ee5416",
+      "proseSha256": "92514c3334d10259cf49b4cc7f543346105e7104ea9cc17bc2dca64348b5eab6"
+    },
+    {
+      "skillId": "quick_skill.regulatory_docket_brief",
+      "skillVersion": "1.0.2",
+      "manifestPath": "./originals/regulatory_docket_brief/1.0.2/manifest.json",
+      "prosePath": "./originals/regulatory_docket_brief/1.0.2/SKILL.md",
+      "manifestSha256": "4cbae26f6130e022df889d71bed93dea5c1bd3c1f971bd56184cf31823a29982",
+      "proseSha256": "78f9c4c5282952871cff282c6ed4bc748af7ece0fd78bb7edbe3008047f3b253"
+    },
+    {
+      "skillId": "quick_skill.representation_lookup",
+      "skillVersion": "1.0.2",
+      "manifestPath": "./originals/representation_lookup/1.0.2/manifest.json",
+      "prosePath": "./originals/representation_lookup/1.0.2/SKILL.md",
+      "manifestSha256": "300b9c2500c0c4ed92372dfe18879286ff3560223b5b619544472928106e8b26",
+      "proseSha256": "ac8952637683ed3204d2a638569fd2ed082298c13ac4a4fdcf68dce4242f8b00"
+    },
+    {
+      "skillId": "quick_skill.research_company",
+      "skillVersion": "1.0.2",
+      "manifestPath": "./originals/research_company/1.0.2/manifest.json",
+      "prosePath": "./originals/research_company/1.0.2/SKILL.md",
+      "manifestSha256": "940a3dc0ac1b50821714bc39ce911a96edb2726707a4161b4471dd38d1a0f372",
+      "proseSha256": "e71f5f443dbdea2a7e6afe0f571d8c8ccedcdb726fe440c81098e8023b5b6b8f"
+    },
+    {
+      "skillId": "quick_skill.commitments_audit",
+      "skillVersion": "1.0.1",
+      "manifestPath": "./originals/commitments_audit/1.0.1/manifest.json",
+      "prosePath": "./originals/commitments_audit/1.0.1/SKILL.md",
+      "manifestSha256": "e4be9b3181cea9f4acaae96a1f4f92b8785655763f054a01180a0cd6c3203ee6",
+      "proseSha256": "2c10ab3773beaa1232c7f09f4164d989e01ab8ead91f7032a8b5ad33d7fc60f7"
+    },
+    {
+      "skillId": "quick_skill.relationship_brief",
+      "skillVersion": "1.0.1",
+      "manifestPath": "./originals/relationship_brief/1.0.1/manifest.json",
+      "prosePath": "./originals/relationship_brief/1.0.1/SKILL.md",
+      "manifestSha256": "92fcfbc559c12ee26e3ac52c13ade4c7b732b6e6aaad1e79a72a852cc75c3d09",
+      "proseSha256": "feae5345c55bb3ba51d7567c72bc58911d584eacc4e2b5d5c21258e757c1cfad"
+    },
+    {
+      "skillId": "quick_skill.mail_history",
+      "skillVersion": "1.0.1",
+      "manifestPath": "./originals/mail_history/1.0.1/manifest.json",
+      "prosePath": "./originals/mail_history/1.0.1/SKILL.md",
+      "manifestSha256": "7e177a8418172c7fdd7b8e1bd9364ba04b4d3d17b5ab2ad9cff06d3c1b046910",
+      "proseSha256": "c4b1409c0cf66843f198429d43eb67a56284a9195de214f6320c5d7c66e6677d"
+    },
+    {
+      "skillId": "quick_skill.pe_deep_dive",
+      "skillVersion": "1.1.1",
+      "manifestPath": "./originals/pe_deep_dive/1.1.1/manifest.json",
+      "prosePath": "./originals/pe_deep_dive/1.1.1/SKILL.md",
+      "manifestSha256": "0581f7d33c4818070ed4ce10fc3199ebbb4c055cfafed182820a39735ed8c964",
+      "proseSha256": "4f8b6d7d404da2bea6d366321f843ee0611957272cf8a1b40a3c38ce71c1e6e3",
+      "catalogSha256": "56bd5d1eef3de6a36cdd2d73fa39d993f4e17eaad95d4a46024f17035d9d15cf"
+    },
+    {
+      "skillId": "quick_skill.bill_watch",
+      "skillVersion": "1.1.1",
+      "manifestPath": "./originals/bill_watch/1.1.1/manifest.json",
+      "prosePath": "./originals/bill_watch/1.1.1/SKILL.md",
+      "manifestSha256": "6018db978452742a9f567bff2fd30ed1a462ff2acc1dda5e44c14c9208f9b14c",
+      "proseSha256": "046e2dd3a69af62f819b32385bc001fb9abe2d2027ddb0f3b357e1e166337377",
+      "catalogSha256": "1f901f26ec134e1585ff12541c3344fda77da1fb07f599f8d59e9338ecaa6eb6"
+    },
+    {
+      "skillId": "quick_skill.bill_watch",
+      "skillVersion": "2.0.1",
+      "manifestPath": "./originals/bill_watch/2.0.1/manifest.json",
+      "prosePath": "./originals/bill_watch/2.0.1/SKILL.md",
+      "manifestSha256": "d2680ac965f576a7b74601de8450726885b5569445cb68db031b5888ca714e16",
+      "proseSha256": "24070822e604cec0244731134d33ee3848c50c19ba19d7fbf0f97f9528b7a27f",
+      "catalogSha256": "1f901f26ec134e1585ff12541c3344fda77da1fb07f599f8d59e9338ecaa6eb6"
+    },
+    {
+      "skillId": "quick_skill.cited_report",
+      "skillVersion": "1.0.1",
+      "manifestPath": "./originals/cited_report/1.0.1/manifest.json",
+      "prosePath": "./originals/cited_report/1.0.1/SKILL.md",
+      "manifestSha256": "afbadc871df57afabb4fcb1bdc2389d83d1650d470b2275f0401fe4aa3c5cfd1",
+      "proseSha256": "b5d52d6576142d2abdac658cd8ff468614c56119f0a14bb03b71b97b2aa9499f",
+      "catalogSha256": "1f901f26ec134e1585ff12541c3344fda77da1fb07f599f8d59e9338ecaa6eb6"
     }
   ],
   "sdkDefaults": {
-    "quick_skill.pe_deep_dive": "1.1.0",
-    "quick_skill.bill_watch": "1.1.0"
+    "quick_skill.client_changes": "1.0.2",
+    "quick_skill.funding_opportunity_match": "1.0.2",
+    "quick_skill.hearing_watch": "1.0.2",
+    "quick_skill.meeting_prep": "1.0.2",
+    "quick_skill.portfolio_changes": "1.0.2",
+    "quick_skill.portfolio_overlap": "1.0.2",
+    "quick_skill.regulatory_docket_brief": "1.0.2",
+    "quick_skill.representation_lookup": "1.0.2",
+    "quick_skill.research_company": "1.0.2",
+    "quick_skill.commitments_audit": "1.0.1",
+    "quick_skill.relationship_brief": "1.0.1",
+    "quick_skill.mail_history": "1.0.1",
+    "quick_skill.pe_deep_dive": "1.1.1",
+    "quick_skill.bill_watch": "1.1.1",
+    "quick_skill.cited_report": "1.0.1"
+  },
+  "documentCompilers": {
+    "quick_skill.commitments_audit": [
+      "1.0.0",
+      "1.0.1"
+    ],
+    "quick_skill.relationship_brief": [
+      "1.0.0",
+      "1.0.1"
+    ],
+    "quick_skill.bill_watch": [
+      "2.0.0",
+      "2.0.1"
+    ],
+    "quick_skill.cited_report": [
+      "1.0.0",
+      "1.0.1"
+    ]
   }
 }

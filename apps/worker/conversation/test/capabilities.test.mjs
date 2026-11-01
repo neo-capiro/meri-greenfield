@@ -11,6 +11,7 @@ import {createSkillPlugin} from '../capabilities/skill-plugin.mjs';
 import {createProgressProjector} from '../capabilities/progress.mjs';
 import {createSdkCapabilities} from '../capabilities/index.mjs';
 import {describeSkillPlugin} from '../../../../packages/skills/plugin.mjs';
+import {listSkills} from '../../../../packages/skills/index.mjs';
 import {binding,id} from '../../../control/conversations/test/application-fixture.mjs';
 import {plugin,preparedWorkspace} from './capability-fixture.mjs';
 const cwd=preparedWorkspace(binding.conversationId),sha=v=>createHash('sha256').update(canonicalize(v),'utf8').digest('hex');
@@ -66,7 +67,7 @@ test('subagent definitions use declared SDK fields and the Agent gate bounds typ
 });
 
 test('skill plugin binds the immutable image path and the original names; cwd discovery is refused',async()=>{
- const described=describeSkillPlugin();assert.equal(described.skills.length,15);assert.deepEqual(described.excluded,[{skillId:'quick_skill.bill_watch',skillVersion:'1.0.0',reason:'NO_SDK_FRONTMATTER'},{skillId:'quick_skill.pe_deep_dive',skillVersion:'1.0.0',reason:'NOT_SELECTED_SDK_VERSION'},{skillId:'quick_skill.bill_watch',skillVersion:'1.0.1',reason:'NOT_SELECTED_SDK_VERSION'},{skillId:'quick_skill.bill_watch',skillVersion:'2.0.0',reason:'NOT_SELECTED_SDK_VERSION'}]);
+ const described=describeSkillPlugin();assert.equal(described.skills.length,15);assert.deepEqual(described.excluded.filter(row=>row.reason!=='NOT_SELECTED_SDK_VERSION'),[{skillId:'quick_skill.bill_watch',skillVersion:'1.0.0',reason:'NO_SDK_FRONTMATTER'}]);assert.equal(described.excluded.length,listSkills().length-15,'every installed version that is not the offered default is excluded by name, never dropped');
  const s=createSkillPlugin(assertCapabilityPolicy({skillPlugin:true}),{skillPluginDirectory:plugin,cwd});
  assert.deepEqual(s.plugins,[{type:'local',path:plugin,skipMcpDiscovery:true}]);assert.deepEqual(s.skills,described.skills.map(k=>`meri-original-skills:${k.name}`));assert.deepEqual(s.tools,['Skill']);assert.deepEqual(s.allowedTools,[],'Skill is enabled through the skills option, never the deprecated allowedTools entry');
  assert.deepEqual(createSkillPlugin(assertCapabilityPolicy({skillPlugin:true,skillNames:['meri-meeting-prep']}),{skillPluginDirectory:plugin,cwd}).skills,['meri-original-skills:meri-meeting-prep']);

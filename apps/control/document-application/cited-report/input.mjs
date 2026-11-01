@@ -4,6 +4,7 @@
  * record — never a free-form claim of authority. The public WordRequest and its routes stay unchanged. */
 import {artifactValidators as v,assertSubject,assertWindow} from '../../../../packages/contracts/retrieval-0.2/validate.mjs';
 import {own} from '../../../../packages/contracts/commands-0.2/execution-boundary.mjs';
+import {selectCompilerSkill} from '../../../../packages/skills/index.mjs';
 export const fail = code => {throw Object.assign(new Error(code),{code});};
 export const text = (value,max=4000) => {
   if(typeof value!=='string'||!value.trim()||value.length>max||!value.isWellFormed()||/[\u0000-\u0008\u000b\u000c\u000e-\u001f]/u.test(value))fail('CITED_REPORT_INPUT');
@@ -55,9 +56,10 @@ export function citedReportCitation(value){
  }
  fail('CITED_REPORT_CITATION');
 }
-export function citedReportInput(value,pin){
+/** The input's skill must be an exact installed version registered to this recipe's compiler. */
+export function citedReportInput(value){
  const i=own(v.snapshot(value),['skill','title','asOf','summary','findings','conflicts','recommendations','limitations']);
- own(i.skill,Object.keys(pin));if(v.hash(i.skill)!==v.hash(pin))fail('CITED_REPORT_SKILL_PIN');
+ try{selectCompilerSkill(i.skill,'quick_skill.cited_report');}catch{fail('CITED_REPORT_SKILL_PIN');}
  text(i.title,200);text(i.summary,2000);
  if(typeof i.asOf!=='string'||new Date(Date.parse(i.asOf)).toISOString()!==i.asOf)fail('CITED_REPORT_AS_OF');
  if(!Array.isArray(i.findings)||i.findings.length<1||i.findings.length>40)fail('CITED_REPORT_INPUT');

@@ -9,7 +9,7 @@ import {sha} from '../../../artifacts/test/native-document-fixture.mjs';
 import {selectSkill} from '../../../../packages/skills/index.mjs';
 import {versions} from '../../../control/conversations/test/store-fixture.mjs';
 import {createExecutionBinding} from '../../../control/conversations/execution-boundary.mjs';
-import {reportSkillPin} from '../../../control/document-application/report-brief/skill.mjs';
+export const reportSkillPin=()=>selectSkill('quick_skill.bill_watch','2.0.0').pin;
 import {createToolDispatch} from '../../../gateway/dispatch/tool-dispatch.mjs';
 import {billTextCase} from '../../../gateway/sources/bill-text/test/fixture.mjs';
 import {createBillTextHandlers} from '../../../gateway/sources/bill-text/handler.mjs';

@@ -29,6 +29,18 @@ test('loaded configuration forwards admitted provider/model/effort and tenant pe
  assert.throws(()=>resolveSdkModelConfiguration({provider:'other',modelId:api,effort:null},{maxTurns:20,maxBudgetMicroUsd:1}));
 });
 
+test('a qualified Bedrock Opus row forwards its explicit effort and is accounted as the same SDK list-price estimate, never a provider bill',()=>{
+ const opus='us.anthropic.claude-opus-4-6';
+ const model=resolveSdkModelConfiguration({provider:'bedrock',modelId:opus,effort:'high'},{maxTurns:20,maxBudgetMicroUsd:2000000,monthlyCapMicroUsd:5000000});
+ assert.equal(model.model,opus);assert.equal(model.effort,'high');assert.equal(model.provider,'bedrock');assert.deepEqual(model.usageBasis,SDK_USAGE_BASIS);
+ assert.equal(resolveSdkModelConfiguration({provider:'bedrock',modelId:opus,effort:null},{maxTurns:20,maxBudgetMicroUsd:2000000}).effort,null,'the model default effort is forwarded as null, never invented');
+ assert.throws(()=>resolveSdkModelConfiguration({provider:'bedrock',modelId:opus,effort:'ultra'},{maxTurns:20,maxBudgetMicroUsd:2000000}),/SDK_MODEL_CONFIGURATION_REFUSED/);
+ const value=accountSdkUsage({mode:'new',result:result({[opus]:row('bedrock',0.3)},0.3)});
+ assert.equal(value.status,'recorded');assert.equal(value.chargeMicroUsd,300000);assert.equal(value.sdkEstimateUsd,0.3);assert.equal(value.priceRevision,'sdk-list-estimate-0.3.295');
+ assert.equal(value.cumulative.models[opus].provider,'bedrock');assert.equal(value.cumulative.models[opus].costBasis,'list');
+ assert.equal(Object.hasOwn(value,'providerBilledUsd'),false,'accounting carries the SDK estimate only; the provider bill is a separate, unresolved fact');
+});
+
 test('resumed entry with omitted native costBasis retains the documented list-price meaning',()=>{
  const baseline=sdkUsageSnapshot(result({[bedrock]:row('bedrock',0.1)},0.1));
  const old=row('bedrock',0.1);delete old.costBasis;

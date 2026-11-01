@@ -4,7 +4,7 @@ import {readFile} from 'node:fs/promises';import {createHash} from 'node:crypto'
 import {join} from 'node:path';import {pathToFileURL} from 'node:url';
 import * as app from '../dist/conversation-application.mjs';import * as input from '../dist/conversation-input.mjs';import * as initial from '../dist/conversation-initial-input.mjs';import * as history from '../dist/conversation-history.mjs';
 import {id,bytes,binding,run,transcript,resumed} from './conversation-history-fixture.mjs';
-const skills=[{skillId:'quick_skill.bill_watch',skillVersion:'2.0.0'},{skillId:'quick_skill.cited_report',skillVersion:'1.0.0'}];
+const skills=[{skillId:'quick_skill.bill_watch',skillVersion:'2.0.0'},{skillId:'quick_skill.cited_report',skillVersion:'1.0.0'},{skillId:'quick_skill.bill_watch',skillVersion:'2.0.1'},{skillId:'quick_skill.cited_report',skillVersion:'1.0.1'}];
 const revision={artifactId:id(800),versionId:id(801),objectSha256:'a'.repeat(64)},uploads=[{uploadId:id(802),sha256:'b'.repeat(64)}];
 const request=skill=>({requestId:id(6),prompt:'Revise the cited document',skill,documentRevision:revision,uploads});
 const pin=skill=>({...skill,manifestSha256:'c'.repeat(64),proseSha256:'d'.repeat(64),catalogSha256:'e'.repeat(64)});
@@ -12,9 +12,9 @@ const stored=skill=>({...request(skill),skill:pin(skill),window:null,windowReque
 const context={tenantId:binding.tenantId,actorId:binding.actorId,conversationId:binding.conversationId,runId:binding.runId,clientId:id(5)};
 const receiveRequests=[b=>app.receiveConversationRequest('submit',b),input.receiveConversationInputRequest,initial.receiveConversationInitialInputRequest];
 
-test('all three request receivers admit only the two eligible exact recipe/revision pairs and keep uploads',()=>{
+test('all three request receivers admit only the four eligible exact recipe/revision pairs and keep uploads',()=>{
  for(const skill of skills)for(const receive of receiveRequests)assert.deepEqual(receive(bytes(request(skill))),request(skill));
- const wrong=[{...skills[0],skillVersion:'1.1.0'},{...skills[0],skillVersion:'2.0.1'},{...skills[1],skillVersion:'1.1.0'},{skillId:'quick_skill.commitments_audit',skillVersion:'1.0.0'}];
+ const wrong=[{...skills[0],skillVersion:'1.1.0'},{...skills[0],skillVersion:'1.1.1'},{...skills[0],skillVersion:'2.0.2'},{...skills[1],skillVersion:'1.1.0'},{...skills[1],skillVersion:'1.0.2'},{skillId:'quick_skill.commitments_audit',skillVersion:'1.0.0'},{skillId:'quick_skill.commitments_audit',skillVersion:'1.0.1'}];
  for(const skill of wrong)for(const receive of receiveRequests)assert.throws(()=>receive(bytes(request(skill))));
  for(const receive of receiveRequests){assert.throws(()=>receive(bytes({...request(skills[1]),procedure:{source:'builtin',id:'briefing',version:1,manifestDigest:'f'.repeat(64)}})));assert.throws(()=>receive(bytes({...request(skills[1]),skill:{...skills[1],allowedTools:['*']}})));}
 });
@@ -32,7 +32,8 @@ test('admission and history retain the exact selected pin, revision and ordered 
 });
 
 test('cited report is an actual advertised immutable asset and new manifest sources remain recorded',async()=>{
- const descriptor=app.CONVERSATION_SKILLS.find(s=>s.skillId===skills[1].skillId&&s.version===skills[1].skillVersion);assert.ok(descriptor);assert.match(descriptor.manifestSha256,/^[a-f0-9]{64}$/u);
+ // The picker advertises the runtime-budget successor; the original 1.0.0 pin is still received above.
+ const descriptor=app.CONVERSATION_SKILLS.find(s=>s.skillId===skills[1].skillId);assert.ok(descriptor);assert.equal(descriptor.version,'1.0.1');assert.match(descriptor.manifestSha256,/^[a-f0-9]{64}$/u);
  const metadata=JSON.parse(await readFile(new URL('../dist/conversation-application.metadata.json',import.meta.url),'utf8'));
  for(const path of ['retrieval-0.3/skill-manifest.schema.json','retrieval-0.3/installed-skill.mjs']){const row=metadata.sources.find(r=>r.path===path),source=await readFile(new URL('../'+path,import.meta.url));assert.ok(row,path);assert.equal(row.sha256,createHash('sha256').update(source).digest('hex'));assert.equal(row.bytes,source.length);}
 });

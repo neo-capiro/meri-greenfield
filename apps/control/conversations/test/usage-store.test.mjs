@@ -60,6 +60,19 @@ test('new admission refuses missing/malformed policy and cap cutoff, while histo
  }
  const f=fixture();f.state.spent='99999999';await f.store.accept(f.input,check);f.state.modelPolicy=null;assert.equal((await f.store.accept(f.input,check)).replayed,true);
 });
+test('a refused monthly-cap admission leaves no run, event or charge; raising the cap admits the same request once',async()=>{
+ const f=fixture();f.state.modelPolicy={monthly_cap_micro_usd:100,sdk_max_turns:20,sdk_max_budget_micro_usd:2000000};f.state.spent='100';
+ await assert.rejects(f.store.accept(f.input,check),/TENANT_MONTHLY_CAP_REACHED/);
+ assert.equal(f.state.runs.size,0);assert.equal(f.state.events.size,0);assert.equal(f.state.conversations.size,0,'no side effect after refusal');
+ // Recovery after a permitted budget change: the tenant cap is raised above the recorded spend.
+ f.state.modelPolicy={monthly_cap_micro_usd:1000,sdk_max_turns:20,sdk_max_budget_micro_usd:2000000};
+ const accepted=await f.store.accept(f.input,check);assert.equal(accepted.replayed,false);assert.equal(f.state.runs.size,1);
+ assert.equal((await f.store.accept(f.input,check)).replayed,true,'the same request is admitted exactly once');
+ // The per-run SDK limits ride the admitted policy to execution; the monthly cap only gates admission.
+ assert.deepEqual(await f.store.readModelPolicy(binding,check),{monthlyCapMicroUsd:1000,maxTurns:20,maxBudgetMicroUsd:2000000});
+ await f.start();assert.deepEqual(await f.record(),{status:'recorded',reason:null,replayed:false});assert.equal(f.saved().sdk_charge_micro_usd,100000);
+ f.state.spent='1000';await assert.rejects(f.store.readModelPolicy(binding,check).then(()=>f.store.accept({...f.input,run:{...f.input.run,binding:{...binding,runId:id(77)}},request:{...f.input.request,requestId:id(78)},event:{...f.input.event,eventId:id(79),binding:{...binding,runId:id(77)}}},check)),/TENANT_MONTHLY_CAP_REACHED/,'later admissions are refused once the recorded estimates reach the cap');
+});
 test('resume/fork use only the exact persisted parent cumulative snapshot; rewind stays unavailable',async()=>{
  for(const mode of ['resume','fork','rewind']){
   const f=fixture();await f.start();await f.record();const parent=structuredClone(f.saved()),target={...binding,runId:id(60),attemptId:id(61),workerId:id(62),writerFence:2};

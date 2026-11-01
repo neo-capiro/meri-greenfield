@@ -14,6 +14,10 @@ const digest=bytes=>createHash('sha256').update(bytes).digest('hex');
 const fail=code=>{throw new Error(code);};
 const index=new Map(assets.assets.map(asset=>[key(asset.skillId,asset.skillVersion),asset]));
 const cache=new Map();
+// Installed versions that have a separately approved document compiler, keyed by identity. Every other installed
+// version runs through the ordinary native SDK plugin and output capture.
+const compilers=new Map(Object.entries(assets.documentCompilers??{}).flatMap(([skillId,versions])=>versions.map(version=>[key(skillId,version),skillId])));
+for(const identity of compilers.keys())if(!index.has(identity))fail('SKILL_COMPILER_REGISTRY');
 // Current process installation, distinct from immutable persisted selection pins.
 const installationCatalogSha256='d580d51e549dbf706ff0b94728adbb29a339f08ca861df61ee531c3000cdcece';
 
@@ -53,6 +57,19 @@ export function selectSkill(skillId,skillVersion){
   if(!asset)fail('SKILL_VERSION_UNAVAILABLE');
   if(!cache.has(identity))cache.set(identity,load(asset));
   return cache.get(identity);
+}
+/** The document-compiler identity an installed version is admitted to, or null. Explicit per version: a successor
+ * is listed only when its compiler was reviewed for it, and no latest-version fallback exists here either. */
+export function documentCompiler({skillId,skillVersion}){
+ return typeof skillId==='string'&&typeof skillVersion==='string'?compilers.get(key(skillId,skillVersion))??null:null;
+}
+/** The installed asset for a full pin that is registered to `compilerId`; any other value, including a stale or
+ * unregistered version of the same identity, is refused before the compiler reads anything. */
+export function selectCompilerSkill(pin,compilerId){
+ if(pin===null||typeof pin!=='object'||Array.isArray(pin)||documentCompiler(pin)!==compilerId)fail('SKILL_COMPILER_PIN');
+ const selected=selectSkill(pin.skillId,pin.skillVersion);
+ if(canonicalSha256(pin)!==canonicalSha256(selected.pin))fail('SKILL_COMPILER_PIN');
+ return selected;
 }
 export function listSkills(){
   verifyCatalog();

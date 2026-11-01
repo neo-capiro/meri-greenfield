@@ -37,8 +37,8 @@ test('the original fourteen identities plus the one additive identity retain exp
  // The r2 coordination inventory documents the original fourteen; the added identity is recorded in the
  // general cited report claim rather than by rewriting that original inventory.
  assert.deepEqual([...new Set(listSkills().map(s=>s.skillId))].sort(),[...inventory.records.map(row=>row.fields.ID),'quick_skill.cited_report'].sort());
- assert.deepEqual(listSkills().filter(s=>s.skillId==='quick_skill.bill_watch').map(s=>s.skillVersion).sort(),['1.0.0','1.0.1','1.1.0','2.0.0']);
- assert.equal(listSkills().length,19);
+ assert.deepEqual(listSkills().filter(s=>s.skillId==='quick_skill.bill_watch').map(s=>s.skillVersion).sort(),['1.0.0','1.0.1','1.1.0','1.1.1','2.0.0','2.0.1']);
+ assert.equal(listSkills().length,35);
  assert.equal(Object.keys(evidence).length,14);
  for(const entry of listSkills()){
   const asset=selectSkill(entry.skillId,entry.skillVersion);
@@ -71,7 +71,7 @@ test('existing bounded Bill Watch bytes, manifest and accepted pins stay exact',
 });
 
 test('asset selection has no implicit latest, fuzzy identity, mutable pin or shared returned state',()=>{
- for(const args of [['quick_skill.mail_history'],['mail_history','1.0.0'],['quick_skill.mail_history','latest'],['quick_skill.mail_history','1.0.1'],[{},'1.0.0']])assert.throws(()=>selectSkill(...args),/SKILL_/u);
+ for(const args of [['quick_skill.mail_history'],['mail_history','1.0.0'],['quick_skill.mail_history','latest'],['quick_skill.mail_history','1.0.9'],[{},'1.0.0']])assert.throws(()=>selectSkill(...args),/SKILL_/u);
  const asset=selectSkill('quick_skill.mail_history','1.0.0');
  assert.throws(()=>asset.manifest.requiredSources.push({sourceId:'foreign'}),TypeError);
  assert.throws(()=>asset.pin.proseSha256='a'.repeat(64),TypeError);

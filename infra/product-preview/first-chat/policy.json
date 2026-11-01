@@ -4,8 +4,14 @@
  "purpose": "meri-first-chat-preview",
  "models": {
   "defaultSelection": {"provider":"bedrock","modelId":"us.anthropic.claude-sonnet-4-6","effort":null},
-  "models": [{"provider":"bedrock","modelId":"us.anthropic.claude-sonnet-4-6","label":"Claude Sonnet 4.6","efforts":[null],"available":true,"unavailableReason":null}]
+  "models": [
+   {"provider":"bedrock","modelId":"us.anthropic.claude-sonnet-4-6","label":"Claude Sonnet 4.6","efforts":[null],"available":true,"unavailableReason":null},
+   {"provider":"bedrock","modelId":"us.anthropic.claude-opus-4-6","label":"Claude Opus 4.6","efforts":[null,"high","max"],"available":false,"unavailableReason":"model_unqualified"}
+  ]
  },
+ "pendingModels": [
+  {"provider":"bedrock","modelId":"us.anthropic.claude-sonnet-4-6","label":"Claude Sonnet 4.6","efforts":["high","max"],"available":false,"unavailableReason":"model_unqualified"}
+ ],
  "runtime": {
   "runWindowMs": 900000,
   "maxOutputBytes": 262144
