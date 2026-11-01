@@ -1,12 +1,15 @@
 /** Deterministic amendments for an exact UTF-8 plain-text federal source snapshot. This private compiler neither
  * fetches legislation nor decides legal correctness. Canonical source custody and publication stay with artifacts.
- * Flat v1 and explicitly nested scoped-text v2 retain separate parser identities. */
+ * Flat v1, explicitly nested scoped-text v2 and raw USLM XML v1 retain separate parser identities. USLM scopes are
+ * the declared element spans derived by `uslm-source.mjs`; a compiled USLM result must still read as one document. */
 import {createHash} from 'node:crypto';
 import {own,data} from '../../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {canonicalSha256} from '../../../packages/contracts/validate.mjs';
-import {assertFederalTextLayout,FEDERAL_SCOPED_TEXT_PARSER} from '../../../packages/contracts/federal-workbench/source-layout.mjs';
+import {assertFederalTextLayout,FEDERAL_SCOPED_TEXT_PARSER,FEDERAL_USLM_XML_PARSER,FEDERAL_PARSERS} from '../../../packages/contracts/federal-workbench/source-layout.mjs';
 import {scopedApplication} from './scoped-application.mjs';
-export {FEDERAL_SCOPED_TEXT_PARSER};
+import {deriveUslmScopes,assertUslmResult,USLM_SCOPE_LIMIT,USLM_ROOT_SCOPE} from './uslm-source.mjs';
+import canonicalize from 'canonicalize';
+export {FEDERAL_SCOPED_TEXT_PARSER,FEDERAL_USLM_XML_PARSER};
 
 export const FEDERAL_TEXT_PARSER='federal-plain-text/1';
 export const DRAFT_LIMITS=Object.freeze({sourceBytes:131072,scopes:128,operations:64,operationBytes:16384});
@@ -24,11 +27,12 @@ export function federalDraftSource(raw){
  if(url.protocol!=='https:'||url.username||url.password||url.hash||url.search||!text(source.sourceUrl,2048))fault('DRAFT_SOURCE_INVALID');
  const date=typeof source.publishedAt==='string'?Date.parse(source.publishedAt+'T00:00:00Z'):NaN;
  if(source.publishedAt!==null&&(!/^\d{4}-\d{2}-\d{2}$/u.test(source.publishedAt)||!Number.isFinite(date)||new Date(date).toISOString().slice(0,10)!==source.publishedAt))fault('DRAFT_SOURCE_INVALID');
- if(![FEDERAL_TEXT_PARSER,FEDERAL_SCOPED_TEXT_PARSER].includes(source.parserVersion)||!SHA.test(source.sha256)||!text(source.text,DRAFT_LIMITS.sourceBytes)||textSha256(source.text)!==source.sha256)fault('DRAFT_SOURCE_MISMATCH');
+ if(!FEDERAL_PARSERS.includes(source.parserVersion)||!SHA.test(source.sha256)||!text(source.text,DRAFT_LIMITS.sourceBytes)||textSha256(source.text)!==source.sha256)fault('DRAFT_SOURCE_MISMATCH');
  let coverage;try{coverage=own(source.coverage,['complete','limitations']);}catch{fault('DRAFT_SOURCE_INVALID');}
  if(typeof coverage.complete!=='boolean'||!Array.isArray(coverage.limitations)||coverage.limitations.length>32||coverage.limitations.some(v=>!text(v,1000))||!coverage.complete&&!coverage.limitations.length)fault('DRAFT_SOURCE_INVALID');
- if(!Array.isArray(source.scopes)||!source.scopes.length||source.scopes.length>DRAFT_LIMITS.scopes)fault('DRAFT_SOURCE_INVALID');
- const seen=new Set(),nested=source.parserVersion===FEDERAL_SCOPED_TEXT_PARSER;
+ const uslm=source.parserVersion===FEDERAL_USLM_XML_PARSER,nested=uslm||source.parserVersion===FEDERAL_SCOPED_TEXT_PARSER;
+ if(!Array.isArray(source.scopes)||!source.scopes.length||source.scopes.length>(uslm?USLM_SCOPE_LIMIT:DRAFT_LIMITS.scopes))fault('DRAFT_SOURCE_INVALID');
+ const seen=new Set();
  for(const rawScope of source.scopes){
   let scope;try{scope=own(rawScope,['id','label','start','end','sha256',...(nested?['ancestorPath']:[])]);}catch{fault('DRAFT_SCOPE_INVALID');}
   if(!ID.test(scope.id)||seen.has(scope.id)||!text(scope.label,512)||!Number.isSafeInteger(scope.start)||!Number.isSafeInteger(scope.end)
@@ -38,6 +42,9 @@ export function federalDraftSource(raw){
  assertFederalTextLayout(source);
  for(const scope of source.scopes){const slice=source.text.slice(scope.start,scope.end);
   if(Buffer.from(slice).toString('utf8')!==slice||textSha256(slice)!==scope.sha256)fault('DRAFT_SCOPE_MISMATCH');}
+ // Declared USLM identity must be exactly what the one derivation owner reads from the bytes; no custodian may
+ // declare an element span, identifier or ancestry the markup does not carry.
+ if(uslm&&canonicalize(deriveUslmScopes(source.text).scopes)!==canonicalize(source.scopes))fault('DRAFT_USLM_SCOPES_MISMATCH');
  return freeze(source);
 }
 
@@ -74,15 +81,27 @@ function redline(before,after){
   {kind:'insert',text:revised.slice(left,revised.length-right).join('')},{kind:'unchanged',text:original.slice(original.length-right).join('')}].filter(part=>part.text);
 }
 
+/** Adjacent segments of one kind are one segment: the comparison depends on the exact text and operations alone,
+ * never on how scopes or surviving pieces happened to partition it. */
+function merged(parts){
+ const segments=[];
+ for(const part of parts){
+  if(!part.text)continue;
+  if(segments.length&&segments.at(-1).kind===part.kind)segments[segments.length-1]={kind:part.kind,text:segments.at(-1).text+part.text};
+  else segments.push({kind:part.kind,text:part.text});
+ }
+ return segments;
+}
 function outputs(source,ops,working,scoped){
- const amendment=[],segments=[];let cursor=0;
- if(scoped)for(const {before,after} of scoped.comparisons())segments.push(...(before===after?[{kind:'unchanged',text:before}]:redline(before,after)));
+ const amendment=[],parts=[];let cursor=0;
+ if(scoped)for(const {before,after} of scoped.comparisons())parts.push(...(before===after?[{kind:'unchanged',text:before}]:redline(before,after)));
  else for(const scope of source.scopes){
   const before=source.text.slice(scope.start,scope.end),after=working.get(scope.id);
-  if(scope.start>cursor)segments.push({kind:'unchanged',text:source.text.slice(cursor,scope.start)});
-  segments.push(...(before===after?[{kind:'unchanged',text:before}]:redline(before,after)));cursor=scope.end;
+  if(scope.start>cursor)parts.push({kind:'unchanged',text:source.text.slice(cursor,scope.start)});
+  parts.push(...(before===after?[{kind:'unchanged',text:before}]:redline(before,after)));cursor=scope.end;
  }
- if(!scoped&&cursor<source.text.length)segments.push({kind:'unchanged',text:source.text.slice(cursor)});
+ if(!scoped&&cursor<source.text.length)parts.push({kind:'unchanged',text:source.text.slice(cursor)});
+ const segments=merged(parts);
  for(const op of ops){const label=source.scopes.find(scope=>scope.id===op.scopeId).label;
   const action=op.kind==='replace'?`strike ${JSON.stringify(op.expectedText)} and insert ${JSON.stringify(op.text)}`
    :op.kind==='delete'?`strike ${JSON.stringify(op.expectedText)}`:`insert ${JSON.stringify(op.text)} ${op.position} ${JSON.stringify(op.expectedText)}`;
@@ -98,7 +117,7 @@ function outputs(source,ops,working,scoped){
 export function compileFederalDraft(rawSource,rawOperations){
  const source=federalDraftSource(rawSource);
  if(!Array.isArray(rawOperations)||!rawOperations.length||rawOperations.length>DRAFT_LIMITS.operations)fault('DRAFT_OPERATION_INVALID');
- const scoped=source.parserVersion===FEDERAL_SCOPED_TEXT_PARSER?scopedApplication(source):null;
+ const scoped=source.parserVersion===FEDERAL_TEXT_PARSER?null:scopedApplication(source);
  const working=new Map(source.scopes.map(scope=>[scope.id,source.text.slice(scope.start,scope.end)])),last=new Map(),seen=new Set(),operations=[];
  for(const raw of rawOperations){
   const op=operation(raw,seen),current=scoped?.read(op),before=current?current.text:working.get(op.scopeId);if(before===undefined)fault('DRAFT_SCOPE_UNKNOWN',op.id);
@@ -109,8 +128,11 @@ export function compileFederalDraft(rawSource,rawOperations){
  }
  const result=outputs(source,operations,working,scoped);
  if(Buffer.byteLength(result.consolidated)>DRAFT_LIMITS.sourceBytes)fault('DRAFT_OUTPUT_LIMIT');
- if(!result.consolidated.length)fault('DRAFT_EMPTY_RESULT');
+ // Removing the entire source is a proposed repeal, not a text amendment: there is no exact consolidated text to
+ // retain, so it is an explicit refusal rather than an empty document or a placeholder that falsifies bytes.
+ if(!result.consolidated.length||source.parserVersion===FEDERAL_USLM_XML_PARSER&&working.get(USLM_ROOT_SCOPE)==='')fault('DRAFT_WHOLE_SOURCE_REPEAL_UNSUPPORTED');
  if(result.consolidated===source.text)fault('DRAFT_NO_CHANGE');
+ if(source.parserVersion===FEDERAL_USLM_XML_PARSER)assertUslmResult(result.consolidated,deriveUslmScopes(source.text).root);
  const findings=[{category:'source-integrity',status:'passed',location:source.documentId,severity:'info'},
   ...operations.map(op=>({category:'exact-target',status:'passed',location:op.scopeId,operationId:op.id,severity:'info'})),
   ...['numbering','cross-references','arithmetic','substantive-law'].map(category=>({category,status:'unresolved',location:source.documentId,severity:'review-required'}))];

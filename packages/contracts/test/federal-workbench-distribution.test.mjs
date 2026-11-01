@@ -68,6 +68,29 @@ test('distributed receiver runs with browser globals and no external imports', a
   const source = sourceFor();
   const received = await module.namespace.receiveFederalSource(bytes(source));
   assert.equal(received.sha256, source.sha256);
-  assert.equal(module.namespace.federalWorkbenchVersion, '1.2.0');
+  assert.equal(module.namespace.federalWorkbenchVersion, '1.3.0');
   await assert.rejects(module.namespace.receiveFederalSource(bytes({...source, sha256: '0'.repeat(64)})));
+});
+
+test('approval, history and refusal reasons are closed public shapes', async () => {
+  const source = sourceFor(), versionId = randomUUID(), revisionSha256 = source.sha256;
+  const approve = receiveFederalRequest('federal-approve', bytes({versionId, expectedArtifactSha256: source.sha256, revisionSha256, deliveryId: randomUUID()}));
+  assert.equal(approve.versionId, versionId);
+  assert.throws(() => receiveFederalRequest('federal-approve', bytes({versionId, expectedArtifactSha256: source.sha256, revisionSha256, deliveryId: randomUUID(), approved: true})));
+  const history = receiveFederalRequest('federal-history', bytes({versionId, limit: 10, cursor: null}));
+  assert.equal(history.limit, 10);
+  assert.throws(() => receiveFederalRequest('federal-history', bytes({versionId, limit: 0, cursor: null})));
+  assert.throws(() => receiveFederalRequest('federal-history', bytes({versionId, limit: 1, cursor: 'cursor'})));
+  // A refusal carries its exact reason and, when known, the refused operation.
+  const refused = await receiveFederalResponse('federal-history', 422, bytes({error: {code: 'DRAFT_SCOPE_INVALIDATED', outcome: 'READ_UNAVAILABLE', operationId: 'use-child'}}), history);
+  assert.deepEqual(refused, {error: {code: 'DRAFT_SCOPE_INVALIDATED', outcome: 'READ_UNAVAILABLE', operationId: 'use-child'}});
+  await assert.rejects(receiveFederalResponse('federal-history', 422, bytes({error: {code: 'DRAFT_SCOPE_INVALIDATED', outcome: 'READ_UNAVAILABLE', reason: 'x'}}), history), /INVALID_ERROR_RESPONSE/);
+  await assert.rejects(receiveFederalResponse('federal-history', 200, bytes({}), history), /INVALID_RESPONSE/);
+  // An export may cite the saved review it comes from; a draft save never does. The Word dossier is an export.
+  const selection = {versionId, expectedArtifactSha256: source.sha256, operations: [opFor(source)]};
+  const publish = (output, extra = {}) => ({selection, revisionSha256, output, deliveryId: randomUUID(), baseVersionId: null, baseRevisionSha256: null, ...extra});
+  assert.equal(receiveFederalRequest('federal-publish', bytes(publish('docx', {reviewVersionId: randomUUID()}))).output, 'docx');
+  assert.equal(receiveFederalRequest('federal-publish', bytes(publish('operative'))).reviewVersionId, undefined);
+  assert.throws(() => receiveFederalRequest('federal-publish', bytes(publish('draft', {reviewVersionId: randomUUID()}))));
+  assert.throws(() => receiveFederalRequest('federal-publish', bytes(publish('operative', {reviewVersionId: 'latest'}))));
 });

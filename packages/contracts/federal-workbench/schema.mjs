@@ -12,12 +12,18 @@ const scoped=structuredClone(flat);
 scoped.properties.parserVersion={const:'federal-scoped-text/2'};
 scoped.properties.scopes.items.properties.ancestorPath={type:'array',maxItems:127,items:{type:'string',pattern:'^[A-Za-z0-9][A-Za-z0-9_.:-]{0,127}$'}};
 scoped.properties.scopes.items.required.push('ancestorPath');
-retainedFederalSchema.$defs.FederalDraftCompilerSource={oneOf:[flat,scoped]};
-retainedFederalSchema.$defs.FederalDraftCompilation.properties.parserVersion={enum:['federal-plain-text/1','federal-scoped-text/2']};
+// Raw USLM XML: the same declared nested locations, derived from element identifiers by the server compiler.
+const uslm=structuredClone(scoped);
+uslm.properties.parserVersion={const:'federal-uslm-xml/1'};
+uslm.properties.scopes.maxItems=1024;
+retainedFederalSchema.$defs.FederalDraftCompilerSource={oneOf:[flat,scoped,uslm]};
+retainedFederalSchema.$defs.FederalDraftCompilation.properties.parserVersion={enum:['federal-plain-text/1','federal-scoped-text/2','federal-uslm-xml/1']};
 
 const object=properties=>({type:'object',properties,required:Object.keys(properties),additionalProperties:false});
 const ref=name=>({$ref:'#/$defs/'+name});
-const sha={type:'string',pattern:'^[a-f0-9]{64}$'},uuid={type:'string',format:'uuid'};
+const sha={type:'string',pattern:'^[a-f0-9]{64}$'},uuid={type:'string',format:'uuid'},nullable=schema=>({anyOf:[schema,{type:'null'}]});
+const deliveryId={type:'string',pattern:'^[A-Za-z0-9_.:@/-]{1,255}$'},operationId={type:'string',pattern:'^[A-Za-z0-9][A-Za-z0-9_.:-]{0,127}$'};
+const outputs=['draft','operative','consolidated','redline','docx'];
 const artifact=name=>({$ref:'urn:meri:artifacts:0.2.0#/$defs/'+name});
 const federal=name=>({$ref:'urn:meri:federal-retained-source:1#/$defs/'+name});
 export const federalWorkbenchSchema={
@@ -26,19 +32,34 @@ export const federalWorkbenchSchema={
   FederalCompilerSource:federal('FederalDraftCompilerSource'),
   FederalNativeSelection:{$ref:nativeFederalSchema.$id+'#/$defs/FederalDraftSourceInput'},
   FederalSourceEnvelope:object({schema:{const:'meri.federal-source.v1'},selection:ref('FederalNativeSelection'),source:ref('FederalCompilerSource')}),
-  FederalImportRequest:object({selection:ref('FederalNativeSelection'),deliveryId:{type:'string',pattern:'^[A-Za-z0-9_.:@/-]{1,255}$'}}),
+  FederalImportRequest:object({selection:ref('FederalNativeSelection'),deliveryId}),
   FederalImportResult:object({schema:{const:'meri.federal-source.v1'},selection:ref('FederalNativeSelection'),source:ref('FederalCompilerSource'),publication:artifact('ArtifactCreatedResult')}),
   FederalSelection:object({versionId:uuid,expectedArtifactSha256:sha,operations:{type:'array',minItems:1,maxItems:64,items:federal('FederalDraftOperation')}}),
   FederalSourceArtifact:object({versionId:uuid,sha256:sha,specSha256:sha}),
   FederalPrepareRequest:object({selection:ref('FederalSelection')}),
   FederalLoadRequest:object({versionId:uuid,expectedArtifactSha256:sha}),
-  FederalPublishRequest:object({selection:ref('FederalSelection'),revisionSha256:sha,output:{enum:['draft','operative','consolidated','redline']},
-   deliveryId:{type:'string',pattern:'^[A-Za-z0-9_.:@/-]{1,255}$'},baseVersionId:{anyOf:[uuid,{type:'null'}]},baseRevisionSha256:{anyOf:[sha,{type:'null'}]}}),
+  // `reviewVersionId` (optional, default null) cites the saved review an export comes from; only that exact version's
+  // own approval, for this exact revision, makes the export approved. A draft save never cites one.
+  FederalPublishRequest:{type:'object',properties:{selection:ref('FederalSelection'),revisionSha256:sha,output:{enum:outputs},deliveryId,
+   baseVersionId:nullable(uuid),baseRevisionSha256:nullable(sha),reviewVersionId:nullable(uuid)},
+   required:['selection','revisionSha256','output','deliveryId','baseVersionId','baseRevisionSha256'],additionalProperties:false},
+  FederalApproveRequest:object({versionId:uuid,expectedArtifactSha256:sha,revisionSha256:sha,deliveryId}),
+  FederalHistoryRequest:object({versionId:uuid,limit:{type:'integer',minimum:1,maximum:100},cursor:nullable(sha)}),
   FederalRetainedPreparation:object({sourceArtifact:ref('FederalSourceArtifact'),draft:federal('FederalDraftCompilation'),revisionSha256:sha,approval:{const:'unapproved'}}),
+  // An approval binds exactly one compiled revision hash to the saved review version it approved; it is recorded as
+  // that version's own immutable child and never carried by a later revision.
+  FederalApproval:object({revisionSha256:sha,reviewVersionId:uuid}),
   FederalReview:object({schema:{const:'meri.federal-review.v1'},selection:ref('FederalSelection'),prepared:ref('FederalRetainedPreparation'),
-   savedDraft:{anyOf:[artifact('ArtifactVersion'),{type:'null'}]}}),
+   savedDraft:nullable(artifact('ArtifactVersion')),approval:nullable(ref('FederalApproval'))}),
   FederalPublication:object({schema:{const:'meri.federal-review.v1'},sourceArtifact:ref('FederalSourceArtifact'),revisionSha256:sha,
-   output:{enum:['draft','operative','consolidated','redline']},review:{enum:['unapproved','confirmed-for-export']},publication:artifact('ArtifactCreatedResult')}),
-  FederalError:object({error:object({code:{type:'string',pattern:'^[A-Z_]{1,80}$'},outcome:{enum:['NOT_DISPATCHED','READ_UNAVAILABLE','UNKNOWN','RESULT_NOT_RELEASED']}})})
+   output:{enum:outputs},review:{enum:['unapproved','confirmed-for-export','approved']},approval:nullable(ref('FederalApproval')),publication:artifact('ArtifactCreatedResult')}),
+  FederalHistoryEntry:object({version:artifact('ArtifactVersion'),revisionSha256:sha,sourceArtifact:ref('FederalSourceArtifact'),approval:nullable(ref('FederalApproval'))}),
+  FederalHistory:object({schema:{const:'meri.federal-review.v1'},artifactId:uuid,anchorVersionId:uuid,headVersionId:uuid,
+   revisions:{type:'array',minItems:1,maxItems:100,items:ref('FederalHistoryEntry')},nextCursor:nullable(sha)}),
+  // `code` is the exact refusal reason (for example DRAFT_SCOPE_INVALIDATED or DRAFT_SOURCE_FORMAT_UNSUPPORTED);
+  // `operationId` names the refused operation when the compiler identified one.
+  FederalError:{type:'object',properties:{error:{type:'object',properties:{code:{type:'string',pattern:'^[A-Z_]{1,80}$'},
+   outcome:{enum:['NOT_DISPATCHED','READ_UNAVAILABLE','UNKNOWN','RESULT_NOT_RELEASED']},operationId:nullable(operationId)},
+   required:['code','outcome'],additionalProperties:false}},required:['error'],additionalProperties:false}
  }
 };
