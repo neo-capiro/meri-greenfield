@@ -132,7 +132,7 @@ export function compileFederalDraft(rawSource,rawOperations){
  // retain, so it is an explicit refusal rather than an empty document or a placeholder that falsifies bytes.
  if(!result.consolidated.length||source.parserVersion===FEDERAL_USLM_XML_PARSER&&working.get(USLM_ROOT_SCOPE)==='')fault('DRAFT_WHOLE_SOURCE_REPEAL_UNSUPPORTED');
  if(result.consolidated===source.text)fault('DRAFT_NO_CHANGE');
- if(source.parserVersion===FEDERAL_USLM_XML_PARSER)assertUslmResult(result.consolidated,deriveUslmScopes(source.text).root);
+ if(source.parserVersion===FEDERAL_USLM_XML_PARSER)assertUslmResult(result.consolidated,deriveUslmScopes(source.text).root,DRAFT_LIMITS.uslmScopes);
  const findings=[{category:'source-integrity',status:'passed',location:source.documentId,severity:'info'},
   ...operations.map(op=>({category:'exact-target',status:'passed',location:op.scopeId,operationId:op.id,severity:'info'})),
   ...['numbering','cross-references','arithmetic','substantive-law'].map(category=>({category,status:'unresolved',location:source.documentId,severity:'review-required'}))];
