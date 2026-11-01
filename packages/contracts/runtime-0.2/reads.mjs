@@ -5,7 +5,7 @@ import {validateShape as readShape,resolveOperationContract} from '../retrieval-
 export const NATIVE_READS_SCHEMA_VERSION='meri-native-general-reads/1';
 export const nativeReadOperations=Object.freeze(['runner/reads/availability','runner/reads/execute']);
 const DIGEST=/^[a-f0-9]{64}$/u,UUID=/^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/u;
-const codes=new Set(['CONFIGURATION','INVALID_ARGUMENTS','ACCESS_DENIED','UNAVAILABLE','DEADLINE','CANCELLED','INVALID_RESULT','RESOURCE_LIMIT','BUDGET_UNCERTAIN','SOURCE_PUBLICATION_UNKNOWN','SOURCE_PUBLICATION_CONFLICT']);
+const codes=new Set(['CONFIGURATION','INVALID_ARGUMENTS','ACCESS_DENIED','UNAVAILABLE','SOURCE_UNAVAILABLE','DEADLINE','CANCELLED','INVALID_RESULT','RESOURCE_LIMIT','BUDGET_UNCERTAIN','SOURCE_PUBLICATION_UNKNOWN','SOURCE_PUBLICATION_CONFLICT']);
 const failures=new WeakMap();
 export function nativeReadFault(code){const safe=codes.has(code)?code:'UNAVAILABLE',error=Object.assign(Error(safe),{code:safe});failures.set(error,safe);return error;}
 export const nativeReadFailureCode=error=>error!==null&&typeof error==='object'?failures.get(error):undefined;

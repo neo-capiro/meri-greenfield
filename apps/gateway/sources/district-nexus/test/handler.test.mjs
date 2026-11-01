@@ -11,7 +11,7 @@ for(const id of ids){
   assert.equal(f.credentialCalls[0].requestSha256,hash(f.arguments));assert.deepEqual(f.credentialCalls[0].normalizationContext,f.normalizationContext);
  });
  test(`${id}: foreign subject/context grants and source mismatch cannot reach credentials`,async()=>{
-  for(const mutate of [c=>c.request.clientId='foreign',c=>c.normalizationContext={...c.normalizationContext,binding:{...c.normalizationContext.binding,writerFence:2}},c=>c.authority.decision.decision='denied',c=>c.authority.decision.operation='list_members@0.2.0',c=>c.authority.decision.scopes=[],c=>c.authority.sourceIds=[]]){
+  for(const mutate of [c=>c.request.clientId='foreign',c=>c.normalizationContext={...c.normalizationContext,binding:{...c.normalizationContext.binding,writerFence:2}},c=>c.authority.binding.tenantId='other',c=>c.authority.subject.actorId='other',c=>c.authority.policyRevision='0'.repeat(64),c=>c.authority.scopes=[],c=>c.authority.sourceIds=[]]){
    const f=storedCase(id),call=structuredClone(f.call());mutate(call);await assert.rejects(f.handler()(call));assert.equal(f.wire.length,0);assert.equal(f.credentialCalls.length,0);
   }
  });

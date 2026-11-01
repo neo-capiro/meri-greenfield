@@ -43,15 +43,16 @@ for(const id of ids){
    const f=storedCase(id);f.state.credentialMutator=receipt=>receipt[key]=key==='expiresAtMs'?f.now():null;
    await assert.rejects(f.handler()(f.call()),{message:'ACCESS_DENIED'});assert.equal(f.wire.length,0);
   }
-  for(const mutate of [a=>a.sourceIds=['foreign'],a=>a.claims.actions=[],a=>a.decision.decision='denied',a=>a.decision.actor.actorId='foreign']){
+  for(const mutate of [a=>a.binding.tenantId='other',a=>a.subject.actorId='other',a=>a.policyRevision='0'.repeat(64),a=>a.scopes=[],a=>a.sourceIds=['other'],a=>a.subject.scopes=[{...a.subject.scopes[0],kind:'client',resourceId:'ffffffff-ffff-4fff-8fff-ffffffffffff'}],a=>a.executionSha256='not-a-digest']){
    const f=storedCase(id),call=structuredClone(f.call());mutate(call.authority);await assert.rejects(f.handler()(call));assert.equal(f.credentialCalls.length,0);assert.equal(f.wire.length,0);
   }
   const f=storedCase(id);f.state.resourceDenied=true;await assert.rejects(f.handler()(f.call()),{message:'ACCESS_DENIED'});assert.equal(f.credentialCalls.length,0);assert.equal(f.wire.length,0);
  });
  test(`${id}: errors, oversize, expired and cancelled requests cannot release source bytes`,async()=>{
-  for(const responseFactory of [page=>Response.json({output:page}),page=>Response.json({...page,tool:'query_economic_data'}),()=>Response.json({error:'PRIVATE'},{status:503})]){
+  for(const responseFactory of [page=>Response.json({output:page}),page=>Response.json({...page,tool:'query_economic_data'})]){
    const f=storedCase(id);f.state.responseFactory=responseFactory;await assert.rejects(f.handler()(f.call()),{message:'INVALID_RESULT'});
   }
+  const outage=storedCase(id);outage.state.responseFactory=()=>Response.json({error:'PRIVATE'},{status:503});await assert.rejects(outage.handler()(outage.call()),{message:'SOURCE_UNAVAILABLE'});
   const f=storedCase(id);await assert.rejects(f.handler({maxResponseBytes:16})(f.call()),{message:'RESOURCE_LIMIT'});
   const g=storedCase(id),controller=new AbortController();g.state.afterSource=()=>controller.abort();await assert.rejects(g.handler()({...g.call(),signal:controller.signal}),{message:'CANCELLED'});
   const h=storedCase(id);await assert.rejects(h.handler()({...h.call(),signal:AbortSignal.abort()}),{message:'CANCELLED'});assert.equal(h.credentialCalls.length,0);

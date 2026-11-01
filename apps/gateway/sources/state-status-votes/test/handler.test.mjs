@@ -37,9 +37,7 @@ for(const id of ids){
   const g=storedCase(id,{request:{billId:'X'.repeat(60)+billKey}});assert.deepEqual(JSON.parse(await g.handler()(g.call())).result,g.page);assert.equal(g.credentialCalls.length,1);
  });
  test(`${id}: current actor, tenant, operation and source grants remain required before credentials`,async()=>{
-  for(const mutate of [a=>a.claims.audience='other',a=>a.claims.actions=[],a=>a.binding.tenantId='other',
-   a=>a.decision.actor.actorId='other',a=>a.decision.operation='other@0.2.0',a=>a.decision.decision='denied',
-   a=>a.decision.scopes=[],a=>a.sourceIds=[]]){
+  for(const mutate of [a=>a.binding.tenantId='other',a=>a.subject.actorId='other',a=>a.policyRevision='0'.repeat(64),a=>a.scopes=[],a=>a.sourceIds=['other'],a=>a.subject.scopes=[{...a.subject.scopes[0],kind:'client',resourceId:'ffffffff-ffff-4fff-8fff-ffffffffffff'}],a=>a.executionSha256='not-a-digest']){
    const f=storedCase(id),call=structuredClone(f.call());mutate(call.authority);await assert.rejects(f.handler()(call));
    assert.equal(f.credentialCalls.length,0);assert.equal(f.wire.length,0);
   }
@@ -70,10 +68,11 @@ for(const id of ids){
   await assert.rejects(k.handler()({...k.call(),signal:controller.signal}),{message:'CANCELLED'});
  });
  test(`${id}: malformed native errors, new completeness fields and foreign selected keys cannot be released`,async()=>{
-  for(const response of [()=>Response.json({error:'SYNTHETIC_PRIVATE'}),()=>Response.json({},{status:503}),
+  for(const response of [()=>Response.json({error:'SYNTHETIC_PRIVATE'}),
    page=>Response.json({...page,complete:true}),page=>Response.json({...page,tool:'other'})]){
    const f=storedCase(id);f.state.responseFactory=response;await assert.rejects(f.handler()(f.call()),{message:'INVALID_RESULT'});
   }
+  const outage=storedCase(id);outage.state.responseFactory=()=>Response.json({},{status:503});await assert.rejects(outage.handler()(outage.call()),{message:'SOURCE_UNAVAILABLE'});
   const f=storedCase(id);f.state.resultMutator=page=>{if(id==='get_state_bill_status')page.billId='tx-2025-hb9999';else page.votes[0].billKey='tx-2025-hb9999';};
   await assert.rejects(f.handler()(f.call()),{message:'INVALID_RESULT'});
  });

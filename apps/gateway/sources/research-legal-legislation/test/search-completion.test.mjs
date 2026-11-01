@@ -117,7 +117,7 @@ test('reference/context/input/hash substitution and fake trust fields fail witho
 test('native folder/client/feature/member/resolver/cursor failures remain failures rather than a successful empty DTO',async()=>{
  for(const message of ['RESEARCH_FOLDER_CLIENT_MISMATCH','RESEARCH_CLIENT_UNAVAILABLE','FOLDER_NOT_FOUND','FEATURE_DISABLED','CURRENT_MEMBER_REQUIRED','CLIENT_AMBIGUOUS','SEARCH_CHANGED_RESTART']){
   const f=namedCase();f.state.responseFactory=()=>Response.json({message},{status:404});
-  await assert.rejects(perCall(f)(f.call()),{message:'INVALID_RESULT'});assert.equal(f.wire.length,1);assert.equal(f.credentialCalls.length,1);
+  await assert.rejects(perCall(f)(f.call()),{message:'UNAVAILABLE'});assert.equal(f.wire.length,1);assert.equal(f.credentialCalls.length,1);
  }
 });
 

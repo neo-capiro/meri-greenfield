@@ -4,7 +4,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {familyReads} from '../availability.mjs';
-import {defineReadTool} from '../tools.mjs';
+import {defineReadTool,MAX_DESCRIPTION} from '../tools.mjs';
 import {failureResult,READ_FAILURE_CODES} from '../results.mjs';
 import {READ_GUIDANCE,readGuidance} from '../guidance.mjs';
 const row=id=>{const found=familyReads().find(r=>r.operation.id===id);assert.ok(found,id);return found;};
@@ -21,7 +21,8 @@ test('search_public_web tells the model the query bound, the row limit, the row 
  assert.doesNotMatch(text,/null handler|no enabled source|Pending private contract/,'the placeholder limitation never reaches the model');
  assert.match(text,/^Limits: Discovery only/mu);
  assert.ok(text.includes(d.inputSchema.sha256)&&text.includes('Supply literal arguments only'),'the canonical tail lines are kept');
- assert.ok(text.length<=2048,`${text.length} chars`);
+ assert.match(text,/Covers: /);assert.match(text,/Returns: /);assert.match(text,/Result states: /);
+ assert.ok(text.length<=MAX_DESCRIPTION,`${text.length} chars`);
 });
 
 test('scrape_web_page tells the model the URL, mode and size bounds, the result shape and the trust label',()=>{
@@ -32,13 +33,16 @@ test('scrape_web_page tells the model the URL, mode and size bounds, the result 
  assert.match(text,/Only HTML\/XHTML and PDF are read/);assert.match(text,/external_untrusted/);
  assert.doesNotMatch(text,/null handler|no enabled source/);
  assert.match(text,/^Limits: The page reader refuses private, loopback/mu);
- assert.ok(text.length<=2048,`${text.length} chars`);
+ assert.match(text,/Covers: /);assert.match(text,/Returns: /);assert.match(text,/Result states: /);
+ assert.ok(text.length<=MAX_DESCRIPTION,`${text.length} chars`);
 });
 
-test('a read without guidance keeps its catalog-only description',()=>{
+test('a read without operation guidance keeps its catalog identity and family description',()=>{
  const text=describe('search_congress_bills'),d=row('search_congress_bills').descriptor;
  assert.equal(readGuidance('search_congress_bills'),undefined);
- assert.ok(text.startsWith(`${d.displayName}. ${d.whenToUse}\nLimits: ${d.limitations.slice(0,4).join(' ')}`));
+ assert.ok(text.startsWith(`${d.displayName}. ${d.whenToUse}\nCovers: `));
+ assert.match(text,/Returns: /);assert.match(text,/Result states: /);
+ assert.ok(text.includes(d.inputSchema.sha256));
 });
 
 test('public-web failures carry a precise next step between the closed head and the evidence tail',()=>{

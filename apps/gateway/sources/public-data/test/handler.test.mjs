@@ -78,9 +78,7 @@ test('malformed selectors refuse before source effects instead of being coerced 
 });
 
 test('denied or incoherent current actor, decision, allocation action or source reaches no credentials',async()=>{
- for(const mutate of [a=>a.claims.audience='other',a=>a.claims.actions=[],a=>a.decision.decision='denied',
-  a=>a.decision.operation='search_federal_grants@0.2.0',a=>a.decision.actor.actorId='other',a=>a.decision.scopes=[],
-  a=>a.sourceIds=['other'],a=>a.claims.binding.tenantId='other',a=>a.claims.issuedAt=new Date(a.deadlineMs).toISOString()]){
+ for(const mutate of [a=>a.binding.tenantId='other',a=>a.subject.actorId='other',a=>a.policyRevision='0'.repeat(64),a=>a.scopes=[],a=>a.sourceIds=['other'],a=>a.subject.scopes=[{...a.subject.scopes[0],kind:'client',resourceId:'ffffffff-ffff-4fff-8fff-ffffffffffff'}],a=>a.executionSha256='not-a-digest']){
   const f=storedCase(),call=structuredClone(f.call());mutate(call.authority);
   await assert.rejects(f.handler()(call));assert.equal(f.credentialCalls.length,0);assert.equal(f.wire.length,0);
  }
@@ -113,10 +111,11 @@ test('cancelled, expired and oversized economic reads withhold source bytes',asy
 });
 
 test('HTTP failures and wrapped/foreign output cannot replace a known stored-source result',async()=>{
- for(const response of [()=>Response.json({error:'PRIVATE_SOURCE_DETAIL'},{status:503}),()=>Response.json({tool:id,error:'PRIVATE_SOURCE_DETAIL'}),
+ for(const response of [()=>Response.json({tool:id,error:'PRIVATE_SOURCE_DETAIL'}),
   page=>Response.json({output:page}),page=>Response.json({...page,tool:'search_federal_awards'})]){
   const f=storedCase();f.state.responseFactory=response;await assert.rejects(f.handler()(f.call()),{message:'INVALID_RESULT'});
  }
+ const outage=storedCase();outage.state.responseFactory=()=>Response.json({error:'PRIVATE_SOURCE_DETAIL'},{status:503});await assert.rejects(outage.handler()(outage.call()),{message:'SOURCE_UNAVAILABLE'});
 });
 
 test('unknown source retains the bounded native error branch without a timestamp or invented rows',async()=>{

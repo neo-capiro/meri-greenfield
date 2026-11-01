@@ -48,7 +48,7 @@ test('wrong native refusal and transformed empty/nonempty envelopes are invalid 
 });
 
 test('authority/selector substitution and malformed contexts cannot reach credentials or HTTP',async()=>{
- for(const change of [c=>c.authority.decision.decision='denied',c=>c.authority.sourceIds=['foreign'],c=>c.argumentsSha256='a'.repeat(64),c=>c.request={...c.request,tenantId:'foreign'},c=>c.normalizationContext={clientIds:[clientId]}]){
+ for(const change of [c=>c.authority.binding.tenantId='other',c=>c.authority.subject.actorId='other',c=>c.authority.policyRevision='0'.repeat(64),c=>c.authority.scopes=[],c=>c.authority.sourceIds=[],c=>c.argumentsSha256='a'.repeat(64),c=>c.request={...c.request,tenantId:'foreign'},c=>c.normalizationContext={clientIds:[clientId]}]){
   const f=storedCase(),call=structuredClone(f.call());change(call);await assert.rejects(f.handler()(call));assert.equal(f.credentialCalls.length,0);assert.equal(f.wire.length,0);
  }
 });

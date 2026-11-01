@@ -49,7 +49,7 @@ for(const id of ids){
  });
  test(`delta ${id}: native scope failure and foreign-client receiving never become successful results`,async()=>{
   const f=storedCase(id,{request:{...storedCase(id).arguments,clientId}});f.state.responseFactory=()=>Response.json({message:'RESEARCH_CLIENT_UNAVAILABLE'},{status:404});
-  await assert.rejects(f.handler()(f.call()),{message:'INVALID_RESULT'});assert.equal(f.wire.length,1);
+  await assert.rejects(f.handler()(f.call()),{message:'UNAVAILABLE'});assert.equal(f.wire.length,1);
   f.state.responseFactory=undefined;f.state.resultMutator=page=>page.result.scope.clientId=foreign;
   await assert.rejects(f.handler()(f.call()),{message:'INVALID_RESULT'});assert.equal(f.wire.length,2);
  });

@@ -116,7 +116,7 @@ test('meeting recovery classification preserves noncursor, body and permission f
   [{clientId},400,'INVALID_RESULT'],
   [{clientId,meetingId,sourceKind:'note',sourceId:noteId,cursor:'synthetic-body-cursor'},400,'INVALID_RESULT'],
   [{clientId,cursor:'synthetic-list-cursor'},403,'ACCESS_DENIED'],
-  [{clientId,cursor:'synthetic-list-cursor'},500,'INVALID_RESULT'],
+  [{clientId,cursor:'synthetic-list-cursor'},500,'SOURCE_UNAVAILABLE'],
  ]){
   const f=await setup('meeting-source','meeting.read_client_meetings',{request,
    sourceResponse:async()=>Response.json({message:'WITHHELD_SOURCE_DETAIL'},{status})});

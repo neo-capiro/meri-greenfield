@@ -1,6 +1,6 @@
 /** Synthetic stored market page variants; no SQL, private client query, or live source. */
 import {resolveOperationContract} from '../../../../../packages/contracts/retrieval-0.2/validate.mjs';
-import {billTextCase} from '../../bill-text/test/fixture.mjs';
+import {billTextCase,readContext} from '../../bill-text/test/fixture.mjs';
 import {createFederalMarketHandlers} from '../handler.mjs';
 export const ids=['search_federal_contract_awards','search_federal_subawards','search_contract_vehicles','search_procurement_forecasts','get_district_federal_market'];
 export const clientId='99999999-9999-4999-8999-999999999999';
@@ -27,7 +27,7 @@ export function storedCase(id=ids[0],{request=id===ids[4]?{state:'NY',district:'
  const transport={...scene.transport,async fetchImpl(url,options){wire.push({url,options,body:JSON.parse(options.body)});const value=structuredClone(state.page??page);
   state.nativeValue=value;state.resultMutator?.(value);state.afterSource?.();return state.responseFactory?state.responseFactory(value):Response.json(value);}};
  const nativeReadContextPorts={async readCurrent({request:ignored,deadlineMs,signal,...proof}){if(signal?.aborted)throw Error('CANCELLED');return JSON.stringify({...proof,context:{},checkedAtMs:now(),expiresAtMs:Math.min(deadlineMs,authority.deadlineMs)});}};
- const call=(raw=request,current=authority,context={})=>{const normalized=contract.normalizeInput(raw,context);return {request:raw,input:normalized.input,argumentsSha256:normalized.argumentsSha256,normalizationContext:context,authority:current};};
+ const call=(raw=request,current=authority,context={})=>{const normalized=contract.normalizeInput(raw,context);return {request:raw,input:normalized.input,argumentsSha256:normalized.argumentsSha256,normalizationContext:context,authority:readContext(current)};};
  return {...scene,family:'federal-market',operation,contract,arguments:request,normalizationContext,transport,page,nativeReadContextPorts,call,visibleClientIds,
   handler:(changes={})=>createFederalMarketHandlers({...transport,now,...changes},[operation])[0].execute};
 }

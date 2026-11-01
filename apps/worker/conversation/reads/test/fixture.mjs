@@ -25,7 +25,7 @@ export async function generalReadFixture({client=false,id='mail.search_messages'
  const composer=await createControlReadsComposer({coreOrigin:'https://core.example.invalid',familyIds:['mail'],
   nativeCredentials:{async nativeCredentialFor(){return {credential:'SYNTHETIC_USER',expiresAtMs:identity.expiresAtMs};}},
   readSecret:async()=>Buffer.from('SYNTHETIC_SERVICE'),serviceSecretFile:'synthetic',now:()=>source.state.now,newId:()=>binding.attemptId,
-  capabilityPolicy:{async forRun(){return {generalReads:enabled,readFamilies:['mail']};}},
+  capabilityPolicy:{async forRun(){return {generalReads:enabled,readFamilies:['mail'],activeReadOperations:operations};}},
   memoryContexts:{forTask(){throw Error('Memory is not selected');},forMail(task){assert.equal(task.clientId,current.selectedClientId);return {
    async retain({record}){records.set(hash(record.key),structuredClone(record));return JSON.stringify({decision:'retained',keySha256:hash(record.key),previousSha256:record.previousSha256,checkedAtMs:source.state.now});},
    async loadPrevious({key}){return JSON.stringify({record:records.get(hash(key)),checkedAtMs:source.state.now});},

@@ -51,7 +51,7 @@ test('docket selectors cannot inject authority or coerce branch and numeric limi
  await assert.rejects(f.handler()({...call,normalizationContext:{asOf:f.page.generatedAt}}),{message:'INVALID_ARGUMENTS'});assert.equal(f.credentialCalls.length,0);assert.equal(f.wire.length,0);
 });
 test('docket current operation and scope decisions precede credentials and expired bytes are withheld',async()=>{
- const f=storedCase(),call=structuredClone(f.call());call.authority.decision.operation='search_intel_articles@0.2.0';await assert.rejects(f.handler()(call),{message:'ACCESS_DENIED'});assert.equal(f.credentialCalls.length,0);
+ const f=storedCase(),call=structuredClone(f.call());call.authority.sourceIds=['stored_intelligence'];await assert.rejects(f.handler()(call),{message:'ACCESS_DENIED'});assert.equal(f.credentialCalls.length,0);
  const g=storedCase();g.state.afterSource=()=>g.state.now=g.authority.deadlineMs;await assert.rejects(g.handler()(g.call()),{message:'DEADLINE'});
 });
 test('docket constructor refuses arbitrary native tools, duplicates and old contracts',()=>{

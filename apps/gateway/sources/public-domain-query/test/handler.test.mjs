@@ -87,7 +87,7 @@ test('SQL projection cannot hide malformed frozen rows, aliases, counts, truncat
  const f=storedCase();f.state.page={tool:id,generatedAt:f.page.generatedAt,ok:false,error:'failed',sql:nativeSql};await assert.rejects(f.handler()(f.call()),{message:'INVALID_RESULT'});
 });
 test('query current operation, tenant, source and scopes precede native credential acquisition',async()=>{
- for(const mutate of [a=>a.decision.operation='list_global_datasets@0.2.0',a=>a.decision.decision='denied',a=>a.decision.scopes=[],a=>a.claims.binding.tenantId='other',a=>a.claims.actions=[],a=>a.sourceIds=['other']]){
+ for(const mutate of [a=>a.binding.tenantId='other',a=>a.subject.actorId='other',a=>a.policyRevision='0'.repeat(64),a=>a.scopes=[],a=>a.sourceIds=['other'],a=>a.subject.scopes=[{...a.subject.scopes[0],kind:'client',resourceId:'ffffffff-ffff-4fff-8fff-ffffffffffff'}],a=>a.executionSha256='not-a-digest']){
   const f=storedCase(),call=structuredClone(f.call());mutate(call.authority);await assert.rejects(f.handler()(call));assert.equal(f.credentialCalls.length,0);assert.equal(f.wire.length,0);
  }
 });

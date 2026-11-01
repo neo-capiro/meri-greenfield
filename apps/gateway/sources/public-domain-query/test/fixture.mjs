@@ -1,6 +1,6 @@
 /** Synthetic typed rows and native SQL-bearing HTTP DTOs; never executes analytics or audit writes. */
 import {resolveOperationContract,publicDomainDatasetRegistry} from '../../../../../packages/contracts/retrieval-0.2/validate.mjs';
-import {billTextCase} from '../../bill-text/test/fixture.mjs';
+import {billTextCase,readContext} from '../../bill-text/test/fixture.mjs';
 import {createPublicDomainQueryHandlers} from '../handler.mjs';
 export const id='query_global_data',nativeSql='SELECT synthetic_projection FROM synthetic_global_dataset';
 export function storedCase(selected=id,options={}){
@@ -25,7 +25,7 @@ export function storedCase(selected=id,options={}){
  const nativeReadContextPorts={async readCurrent({request:ignored,deadlineMs,signal,...proof}){
   if(signal?.aborted)throw Error('CANCELLED');return JSON.stringify({...proof,context:normalizationContext,checkedAtMs:now(),expiresAtMs:Math.min(deadlineMs,authority.deadlineMs)});
  }};
- const call=(original=request,current=authority,context=normalizationContext)=>{const normalized=contract.normalizeInput(original,context);return {request:original,input:normalized.input,argumentsSha256:normalized.argumentsSha256,normalizationContext:context,authority:current};};
+ const call=(original=request,current=authority,context=normalizationContext)=>{const normalized=contract.normalizeInput(original,context);return {request:original,input:normalized.input,argumentsSha256:normalized.argumentsSha256,normalizationContext:context,authority:readContext(current)};};
  return {...scene,family:'public-domain-query',operation,contract,arguments:request,normalizationContext,transport,page,nativePage,nativeReadContextPorts,call,
   handler:(changes={})=>createPublicDomainQueryHandlers({...transport,now,...changes},[operation])[0].execute};
 }

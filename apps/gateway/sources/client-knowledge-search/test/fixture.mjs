@@ -1,7 +1,7 @@
 /** Synthetic semantic/graph DTOs across JSON HTTP; no installed bridge, SQL, embedding or provider. */
 import schema from '../../../../../packages/contracts/retrieval-0.2/client-knowledge-search.schema.json' with {type:'json'};
 import {resolveOperationContract} from '../../../../../packages/contracts/retrieval-0.2/validate.mjs';
-import {billTextCase} from '../../bill-text/test/fixture.mjs';
+import {billTextCase,readContext} from '../../bill-text/test/fixture.mjs';
 import {deny} from '../../../dispatch/operation-result.mjs';
 import {createClientKnowledgeSearchHandlers} from '../handler.mjs';
 
@@ -45,7 +45,7 @@ export function storedCase(selected=id,options={}){
   if(signal?.aborted)throw Error('CANCELLED');
   return JSON.stringify({...proof,context:normalizationContext,checkedAtMs:now(),expiresAtMs:Math.min(deadlineMs,authority.deadlineMs)});
  }};
- const call=(raw=request,current=authority,context=normalizationContext)=>{const normalized=contract.normalizeInput(raw,context);return {request:raw,input:normalized.input,argumentsSha256:normalized.argumentsSha256,normalizationContext:context,authority:current};};
+ const call=(raw=request,current=authority,context=normalizationContext)=>{const normalized=contract.normalizeInput(raw,context);return {request:raw,input:normalized.input,argumentsSha256:normalized.argumentsSha256,normalizationContext:context,authority:readContext(current)};};
  return {...scene,family:'client-knowledge-search',operation,contract,arguments:request,normalizationContext,transport,page:received,call,visibleClientIds,nativeReadContextPorts,
   handler:(changes={})=>createClientKnowledgeSearchHandlers({...transport,now,...changes},[operation])[0].execute};
 }

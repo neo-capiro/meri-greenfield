@@ -3,7 +3,7 @@ import schema from '../../../../../packages/contracts/retrieval-0.2/funding-oppo
 import {FUNDING_OPPORTUNITY_OPERATION_IDS} from '../../../../../packages/contracts/retrieval-0.2/funding-opportunities-validation.mjs';
 import {resolveOperationContract} from '../../../../../packages/contracts/retrieval-0.2/validate.mjs';
 import {deny} from '../../../dispatch/operation-result.mjs';
-import {billTextCase} from '../../bill-text/test/fixture.mjs';
+import {billTextCase,readContext} from '../../bill-text/test/fixture.mjs';
 import {createFundingOpportunitiesHandlers} from '../handler.mjs';
 export const ids=FUNDING_OPPORTUNITY_OPERATION_IDS;
 export const clientId='a1234567-b123-4c12-8d12-e123456789ab',recordId='b1234567-b123-4c12-8d12-e123456789ab';
@@ -61,7 +61,7 @@ export function storedCase(id=ids[0],options={}){
   state.nativeValue=value;state.resultMutator?.(value);state.afterSource?.();return state.responseFactory?state.responseFactory(value):Response.json(value);
  }};
  const call=(raw=request,current=authority,context=normalizationContext)=>{const normalized=contract.normalizeInput(raw,context);
-  return {request:raw,input:normalized.input,argumentsSha256:normalized.argumentsSha256,normalizationContext:context,authority:current};};
+  return {request:raw,input:normalized.input,argumentsSha256:normalized.argumentsSha256,normalizationContext:context,authority:readContext(current)};};
  const nativeReadContextPorts={async readCurrent({request:ignored,deadlineMs,signal,...proof}){if(signal?.aborted)throw Error('CANCELLED');
   return JSON.stringify({...proof,context:normalizationContext,checkedAtMs:now(),expiresAtMs:Math.min(deadlineMs,authority.deadlineMs)});
  }};

@@ -1,6 +1,6 @@
 /** Synthetic manual tracking DTO and echo-only context; no client resolver or database. */
 import {resolveOperationContract} from '../../../../../packages/contracts/retrieval-0.2/validate.mjs';
-import {billTextCase} from '../../bill-text/test/fixture.mjs';
+import {billTextCase,readContext} from '../../bill-text/test/fixture.mjs';
 import {createTrackedBillsHandlers} from '../handler.mjs';
 
 export const id='search_tracked_bills',ids=[id],clientId='a1234567-b123-4c12-8d12-e123456789ab';
@@ -33,7 +33,7 @@ export function storedCase(selected=id,{request={clientId}}={}){
  }};
  const call=(raw=request,current=authority,context=normalizationContext)=>{
   const normalized=contract.normalizeInput(raw,context);
-  return {request:raw,input:normalized.input,argumentsSha256:normalized.argumentsSha256,normalizationContext:context,authority:current};
+  return {request:raw,input:normalized.input,argumentsSha256:normalized.argumentsSha256,normalizationContext:context,authority:readContext(current)};
  };
  return {...scene,family:'tracked-bills',operation,contract,arguments:request,normalizationContext,transport,page,nativeReadContextPorts,call,visibleClientIds:[clientId],
   handler:(changes={})=>createTrackedBillsHandlers({...transport,now,...changes},[operation])[0].execute};

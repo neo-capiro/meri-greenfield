@@ -23,7 +23,7 @@ for(const id of ids){
  test(`${id}: tenant/user/operation read-context mismatches reach no credential or HTTP IO`,async()=>{
   for(const mutate of [a=>a.subject.tenantId='other',a=>a.subject.actorId='other',a=>a.binding.tenantId='other',a=>a.policyRevision='other',
    a=>a.scopes=[],a=>a.subject.scopes=[{...a.scopes[0],resourceId:'other'}],a=>a.sourceIds=['other'],a=>a.executionSha256='not-a-digest',
-   a=>a.maxOutputBytes=0,a=>a.deadlineMs=0]){
+   a=>a.policyRevision='0'.repeat(64),a=>a.subject.scopes=[{...a.subject.scopes[0],kind:'client',resourceId:'ffffffff-ffff-4fff-8fff-ffffffffffff'}],a=>a.maxOutputBytes=0,a=>a.deadlineMs=0]){
    const f=storedCase(id),call=structuredClone(f.call());mutate(call.authority);
    await assert.rejects(f.handler()(call));assert.equal(f.credentialCalls.length,0);assert.equal(f.wire.length,0);
   }

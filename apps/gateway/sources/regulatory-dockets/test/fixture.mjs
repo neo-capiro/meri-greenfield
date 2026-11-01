@@ -1,6 +1,6 @@
 /** Synthetic stored docket JSON, including dates serialized by native HTTP. */
 import {resolveOperationContract} from '../../../../../packages/contracts/retrieval-0.2/validate.mjs';
-import {billTextCase} from '../../bill-text/test/fixture.mjs';
+import {billTextCase,readContext} from '../../bill-text/test/fixture.mjs';
 import {createRegulatoryDocketsHandlers} from '../handler.mjs';
 export const id='query_regulatory_dockets';
 export function storedCase(selected=id,{request={agencyId:'Synthetic',documentType:'Notice',limit:1}}={}){
@@ -17,7 +17,7 @@ export function storedCase(selected=id,{request={agencyId:'Synthetic',documentTy
  const nativeReadContextPorts={async readCurrent({request:ignored,deadlineMs,signal,...proof}){
   if(signal?.aborted)throw Error('CANCELLED');return JSON.stringify({...proof,context:{},checkedAtMs:now(),expiresAtMs:Math.min(deadlineMs,authority.deadlineMs)});
  }};
- const call=(original=request,current=authority,context={})=>{const normalized=contract.normalizeInput(original,context);return {request:original,input:normalized.input,argumentsSha256:normalized.argumentsSha256,normalizationContext:context,authority:current};};
+ const call=(original=request,current=authority,context={})=>{const normalized=contract.normalizeInput(original,context);return {request:original,input:normalized.input,argumentsSha256:normalized.argumentsSha256,normalizationContext:context,authority:readContext(current)};};
  return {...scene,family:'regulatory-dockets',operation,contract,arguments:request,normalizationContext,transport,page,nativeReadContextPorts,call,
   handler:(changes={})=>createRegulatoryDocketsHandlers({...transport,now,...changes},[operation])[0].execute};
 }

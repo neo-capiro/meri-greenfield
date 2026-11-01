@@ -70,11 +70,11 @@ for(const outcome of READ_OUTCOMES)test(`read_connected_app: ${outcome.connectio
  assert.equal(receipt.deliveryId,'sdk:'+canonicalSha256({binding:f.binding,sessionId:'71000000-0000-4000-8000-000000000091',toolUseId:'toolu_connected'}));
 });
 
-test('a grant revoked after mount refuses the next call before any Core request, with precise secret-free text',async t=>{
+test('execution revoked after mount is refused by control as ACCESS_DENIED before any Core request, with secret-free text',async t=>{
  const {s,f,m}=await mount(t,'read_connected_app');
  assert.equal((await m.call()).isError,undefined);
  f.revoke();
- closed(await m.call(),'read_connected_app',['UNAVAILABLE']);
+ closed(await m.call(),'read_connected_app',['ACCESS_DENIED']);
  assert.equal(sourceCalls(f,'read_connected_app'),1);assert.equal(s.wire.length,1);assert.equal(m.runtime.receipts().length,1);
 });
 
