@@ -6,7 +6,7 @@ import {artifactValidators as v} from '../../../../packages/contracts/retrieval-
 import {own} from '../../../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {createOperationLifetime} from '../../../../packages/runtime/operation-lifetime.mjs';
 import {fail,hash,CITED_REPORT_SECTIONS,citedReportInput,reportSelection} from './input.mjs';
-import {citedReportManifest,citedReportSkillPin} from './skill.mjs';
+import {citedReportManifest} from './skill.mjs';
 import {admitRead,assessFindings,citedReportReadGroups} from './sources.mjs';
 import {admitRetainedDocumentAssets,retainedAssetBlocks} from '../retained-assets.mjs';
 const prepared=new WeakMap();
@@ -101,7 +101,7 @@ export function createCitedReportCompiler({readSource,readBase,now}){
  if(typeof readSource!=='function'||typeof now!=='function'||readBase!==undefined&&typeof readBase!=='function')fail('CITED_REPORT_CONFIGURATION');
  return Object.freeze({async prepare(inputValue,contextValue,{base=null,selection,signal}={}){
   if(signal?.aborted)fail('CITED_REPORT_CANCELLED');
-  const input=citedReportInput(inputValue,citedReportSkillPin()),context=v.context(contextValue),selected=reportSelection(selection,context,citedReportManifest());
+  const input=citedReportInput(inputValue),context=v.context(contextValue),selected=reportSelection(selection,context,citedReportManifest());
   if(Date.parse(input.asOf)>now()||context.assets.length||context.analysisAdmission)fail('CITED_REPORT_CONTEXT');
   if(base!==null){own(base,['versionId','specSha256']);if(!hash(base.specSha256)||typeof base.versionId!=='string'||!readBase)fail('CITED_REPORT_BASE');}
   const life=createOperationLifetime({deadlineMs:context.deadlineMs,now,signal,errorFactory:code=>Object.assign(new Error('CITED_REPORT_'+code),{code:'CITED_REPORT_'+code})});

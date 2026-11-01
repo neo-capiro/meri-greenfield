@@ -3,10 +3,13 @@ import {data,own} from './commands-0.2/execution-boundary.mjs';
 const uuid={type:'string',pattern:'^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$'};
 const digest={type:'string',pattern:'^[0-9a-f]{64}$'};
 export const DOCUMENT_REVISION_SELECTION_SCHEMA=Object.freeze({type:'object',properties:{artifactId:uuid,versionId:uuid,objectSha256:digest},required:['artifactId','versionId','objectSha256'],additionalProperties:false});
-/** Recipe compatibility only. Installed manifest pins and current source access remain separate checks. */
+/** Recipe compatibility only. Installed manifest pins and current source access remain separate checks. Every
+ * version listed here is also registered with its document compiler in packages/skills/assets.json. */
 const selectedRevisionSkills=Object.freeze([
  Object.freeze({skillId:'quick_skill.bill_watch',skillVersion:'2.0.0'}),
+ Object.freeze({skillId:'quick_skill.bill_watch',skillVersion:'2.0.1'}),
  Object.freeze({skillId:'quick_skill.cited_report',skillVersion:'1.0.0'}),
+ Object.freeze({skillId:'quick_skill.cited_report',skillVersion:'1.0.1'}),
 ]);
 export const supportsSelectedDocumentRevision=skill=>selectedRevisionSkills.some(pin=>skill?.skillId===pin.skillId&&skill.skillVersion===pin.skillVersion);
 /** A subset constraint, usable for both a browser selection and its fully pinned stored form. */

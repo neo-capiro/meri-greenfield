@@ -5,15 +5,18 @@ import {z} from 'zod';
 import {own,data} from '../../../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {resolveOperationContract} from '../../../../packages/contracts/retrieval-0.2/validate.mjs';
 import {canonicalSha256,validateShape} from '../../../../packages/contracts/validate.mjs';
-import {selectSkill} from '../../../../packages/skills/index.mjs';
+import {selectSkill,documentCompiler} from '../../../../packages/skills/index.mjs';
 const fault=code=>Object.assign(Error(code),{code});
 export const sdkToolName=operation=>operation.id.replaceAll('.','_');
-/** The ordinary original recipes keep their admission; the sourced cited report is admitted only as its own installed version. */
-export const admitOriginalSkill=pin=>['quick_skill.relationship_brief','quick_skill.commitments_audit'].includes(pin.skillId)||(pin.skillId==='quick_skill.bill_watch'&&pin.skillVersion==='2.0.0')||(pin.skillId==='quick_skill.cited_report'&&pin.skillVersion==='1.0.0');
+/** The per-call tool timeout follows the selected manifest's whole-run budget (`budgets.maxRuntimeSeconds`); the largest
+ * installed budget is ten minutes, and anything above that is a configuration fault rather than a longer wait. */
+export const MAX_ORIGINAL_SKILL_TOOL_TIMEOUT_MS=600000;
+/** Only an installed version with its own reviewed document compiler mounts the original read server. */
+export const admitOriginalSkill=pin=>documentCompiler(pin)!==null;
 export function createOriginalSkillServer({selected,read,timeoutMs,binding,expectedSessionId}) {
  const original=selectSkill(selected.pin.skillId,selected.pin.skillVersion);
  if(!admitOriginalSkill(original.pin)||
- canonicalSha256(selected)!==canonicalSha256(original)||typeof read!=='function'||!Number.isSafeInteger(timeoutMs)||timeoutMs<1||timeoutMs>60000)throw fault('SKILL_SERVER_CONFIGURATION');
+ canonicalSha256(selected)!==canonicalSha256(original)||typeof read!=='function'||!Number.isSafeInteger(timeoutMs)||timeoutMs<1||timeoutMs>MAX_ORIGINAL_SKILL_TOOL_TIMEOUT_MS)throw fault('SKILL_SERVER_CONFIGURATION');
  validateShape('RunBinding',binding);const correlations=new Map();let session=expectedSessionId??null;
  const hook=async(raw,toolUseID,options)=>{try{if(options.signal?.aborted)throw fault('CANCELLED');const input=data(raw),op=original.manifest.allowedOperations.find(o=>`mcp__meri_original_reads__${sdkToolName(o)}`===input.tool_name);
   if(input.hook_event_name!=='PreToolUse'||!op||typeof input.tool_use_id!=='string'||!/^[A-Za-z0-9_-]{1,128}$/u.test(input.tool_use_id)||toolUseID!==undefined&&toolUseID!==input.tool_use_id||typeof input.session_id!=='string'||!/^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/u.test(input.session_id)||session!==null&&session!==input.session_id||correlations.size>=original.manifest.budgets.maxToolCalls)throw fault('SKILL_HOOK_REFUSED');

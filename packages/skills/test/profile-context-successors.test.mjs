@@ -26,7 +26,7 @@ for(const [id,[manifestSha256,proseSha256]]of Object.entries(originals))test(`${
  const originalProse=await readFile(new URL('SKILL.md',folder),'utf8');
  assert.equal(canonicalSha256(original),manifestSha256);
  assert.equal(sha(originalProse),proseSha256);
- assert.deepEqual(listSkills().filter(row=>row.skillId===original.skillId).map(row=>row.skillVersion),['1.0.1']);
+ assert.deepEqual(listSkills().filter(row=>row.skillId===original.skillId).map(row=>row.skillVersion),['1.0.1','1.0.2']);
  assert.throws(()=>selectSkill(original.skillId,'1.0.0'),/SKILL_VERSION_UNAVAILABLE/u);
  const {manifest,prose,pin}=selectSkill(original.skillId,'1.0.1');
  assert.equal(manifest.contractVersion,original.contractVersion);
@@ -47,5 +47,6 @@ for(const [id,[manifestSha256,proseSha256]]of Object.entries(originals))test(`${
 test('the native plugin selects all nine successors once with unique names',()=>{
  const plugin=describeSkillPlugin();
  assert.equal(new Set(plugin.skills.map(row=>row.name)).size,plugin.skills.length);
- for(const id of Object.keys(originals))assert.deepEqual(plugin.skills.filter(row=>row.skillId===`quick_skill.${id}`).map(row=>row.skillVersion),['1.0.1']);
+ for(const id of Object.keys(originals))assert.deepEqual(plugin.skills.filter(row=>row.skillId===`quick_skill.${id}`).map(row=>row.skillVersion),['1.0.2'],'new selections are offered the runtime-budget successor of the profile successor');
+ for(const id of Object.keys(originals)){const pin=selectSkill(`quick_skill.${id}`,'1.0.1').pin;assert.deepEqual(describeSkillPlugin({selection:pin}).skills.filter(row=>row.skillId===pin.skillId).map(row=>row.skillVersion),['1.0.1'],'a persisted 1.0.1 pin still launches as itself');}
 });
