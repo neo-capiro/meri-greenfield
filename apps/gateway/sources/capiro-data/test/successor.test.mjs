@@ -11,7 +11,7 @@ test('retained default public description works after Core publishes fifteen rel
  const f=capiroDataCase('describe_capiro_data',{request:{}});descriptions(f,expanded);
  const result=JSON.parse(await f.handler()(f.call()));
  assert.deepEqual(result.result.relations.map(row=>row.name),original);
- assert.deepEqual(f.wire[0].body,{});assert.equal(result.operation.version,'0.2.0');
+ assert.deepEqual(f.wire[0].body,{relations:original});assert.equal(result.operation.version,'0.2.0');
 });
 for(const names of [original,expanded])test(`successor works with old/new Core (${names.length} public relations)`,async()=>{
  const f=capiroDataCase('describe_capiro_data',{version:'0.3.0',request:{}});descriptions(f,names);

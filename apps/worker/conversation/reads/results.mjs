@@ -60,6 +60,10 @@ export function readNotices(operation,result,parsed){
   const diagnostics=page.error&&typeof page.error==='object'?sqlDiagnostics(page.error):null;
   return [notice(`Notice: ${operation.id} refused this request with ${code}.${guidance}${diagnostics===null?'':` ${diagnostics}`} ${NOTHING}`)];
  }
+ if(operation.id==='describe_capiro_data'&&page?.ok===true&&page.contract){
+  const {version,revisionSha256,source,grammar,limits}=page.contract;
+  return [notice(`Notice: Core SQL contract ${version} revision ${revisionSha256} for ${source}; it describes exactly the returned relations. Grammar ${grammar.version}: ${grammar.statements.join(' or ')}, parameters ${grammar.parameterStyle}. Blocked keywords: ${grammar.blockedKeywords.join(', ')||'none'}. Blocked functions (exact names): ${grammar.blockedFunctions.join(', ')||'none'}. No blocked function patterns. Never mix sources. Limits: ${JSON.stringify(limits)}; no column-count cap. Use this descriptor with the returned relation fields, keys, relationships and coverage; it grants no authority and establishes no source freshness or completeness.`)];
+ }
  if(operation.id!=='query_capiro_data'||page?.ok!==true)return [];
  const lines=[`Notice: ${page.rowCount} row(s) returned of rowLimit ${page.limits?.rowLimit} from ${(page.relationsUsed??[]).join(', ')}.`];
  if(page.rowLimitReached)lines.push('rowLimitReached: more rows matched; narrow the filters, aggregate, or page by keyset (ORDER BY the full key, WHERE key > $n).');

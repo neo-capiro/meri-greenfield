@@ -566,6 +566,9 @@
         },
         "limits": {
           "$ref": "#/$defs/CapiroDataDescribeLimits"
+        },
+        "contract": {
+          "$ref": "#/$defs/CapiroDataSqlContract"
         }
       },
       "required": [
@@ -599,15 +602,13 @@
           "items": {
             "$ref": "#/$defs/CapiroDataColumn"
           },
-          "minItems": 1,
-          "maxItems": 32
+          "minItems": 1
         },
         "rows": {
           "type": "array",
           "items": {
             "type": "object",
             "minProperties": 1,
-            "maxProperties": 32,
             "additionalProperties": {
               "anyOf": [
                 {
@@ -1038,6 +1039,9 @@
         },
         "scope": {
           "$ref": "#/$defs/CapiroDataPrivateScope"
+        },
+        "contract": {
+          "$ref": "#/$defs/CapiroDataSqlContract"
         }
       },
       "required": [
@@ -1072,15 +1076,13 @@
           "items": {
             "$ref": "#/$defs/CapiroDataColumn"
           },
-          "minItems": 1,
-          "maxItems": 32
+          "minItems": 1
         },
         "rows": {
           "type": "array",
           "items": {
             "type": "object",
             "minProperties": 1,
-            "maxProperties": 32,
             "additionalProperties": {
               "anyOf": [
                 {
@@ -1159,6 +1161,119 @@
         "coverage",
         "limits",
         "scope"
+      ]
+    },
+    "CapiroDataSqlContract": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "version": {
+          "const": "capiro.sql-contract/1"
+        },
+        "revisionSha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "source": {
+          "enum": [
+            "public",
+            "client_records"
+          ]
+        },
+        "grammar": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "version": {
+              "const": "postgresql-select/1"
+            },
+            "statements": {
+              "const": [
+                "SELECT",
+                "WITH_SELECT"
+              ]
+            },
+            "parameterStyle": {
+              "const": "dollar-numbered-contiguous"
+            },
+            "blockedKeywords": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "pattern": "^[a-z_][a-z0-9_]*$",
+                "maxLength": 128
+              },
+              "uniqueItems": true
+            },
+            "blockedFunctions": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "pattern": "^[a-z_][a-z0-9_]*$",
+                "maxLength": 128
+              },
+              "uniqueItems": true
+            },
+            "blockedFunctionPatterns": {
+              "const": []
+            },
+            "sourceMixing": {
+              "const": false
+            }
+          },
+          "required": [
+            "version",
+            "statements",
+            "parameterStyle",
+            "blockedKeywords",
+            "blockedFunctions",
+            "blockedFunctionPatterns",
+            "sourceMixing"
+          ]
+        },
+        "limits": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "defaultRowLimit": {
+              "const": 200
+            },
+            "maxRowLimit": {
+              "const": 1000
+            },
+            "maxOutputBytes": {
+              "const": 262144
+            },
+            "maxSqlBytes": {
+              "const": 16384
+            },
+            "maxParameters": {
+              "const": 64
+            },
+            "maxParameterBytes": {
+              "const": 32768
+            }
+          },
+          "required": [
+            "defaultRowLimit",
+            "maxRowLimit",
+            "maxOutputBytes",
+            "maxSqlBytes",
+            "maxParameters",
+            "maxParameterBytes"
+          ]
+        },
+        "columnCountLimit": {
+          "type": "null"
+        }
+      },
+      "required": [
+        "version",
+        "revisionSha256",
+        "source",
+        "grammar",
+        "limits",
+        "columnCountLimit"
       ]
     }
   }

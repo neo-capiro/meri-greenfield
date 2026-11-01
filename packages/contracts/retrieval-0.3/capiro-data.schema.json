@@ -42,7 +42,7 @@
           "type": "string",
           "minLength": 1,
           "maxLength": 16384,
-          "description": "One read-only PostgreSQL 16 statement, SELECT or WITH ... SELECT, over the relations describe_capiro_data lists. It runs verbatim under a read-only role, so ordinary PostgreSQL works: any join, subqueries, CASE, COALESCE, casts, string literals, IN, BETWEEN, LIKE/ILIKE, arithmetic, aggregate and window functions, UNION, OFFSET. Alias every expression column (AS name) and select at most 32 columns. Refused before execution: more than one statement; SET, SHOW, COPY, LISTEN, EXPLAIN or transaction control; INSERT, UPDATE, DELETE, MERGE or SELECT INTO (also inside a CTE); set_config, pg_sleep*, pg_terminate_backend, pg_cancel_backend, advisory locks, pg_notify, lo_*, pg_read_file, pg_ls_dir and dblink; a query that mixes public and client_records relations. Bind values as $1..$n (cast where PostgreSQL cannot infer the type, e.g. $1::int). An outer LIMIT caps rows at rowLimit (default 200, at most 1000) whether or not the SQL has its own LIMIT. Any other failure returns PostgreSQL's own message with the 1-based character position, hint, SQLSTATE and the nearest published relation or column names: rewrite the SQL and run it again."
+          "description": "One read-only PostgreSQL statement over the relations describe_capiro_data returns. Use its optional versioned contract for the current grammar, blocked keywords/functions and limits; the descriptor is metadata, never an authorization grant. Bind values as $1..$n and alias expression columns. Core owns SQL admission and returns diagnostic refusals to correct and retry; Meri does not parse SQL. When an older Core omits contract, use one SELECT or WITH ... SELECT and follow its refusal message. Public and client_records are separate sources."
         },
         "parameters": {
           "type": "array",
@@ -570,6 +570,9 @@
         },
         "limits": {
           "$ref": "#/$defs/CapiroDataDescribeLimits"
+        },
+        "contract": {
+          "$ref": "#/$defs/CapiroDataSqlContract"
         }
       },
       "required": [
@@ -603,15 +606,13 @@
           "items": {
             "$ref": "#/$defs/CapiroDataColumn"
           },
-          "minItems": 1,
-          "maxItems": 32
+          "minItems": 1
         },
         "rows": {
           "type": "array",
           "items": {
             "type": "object",
             "minProperties": 1,
-            "maxProperties": 32,
             "additionalProperties": {
               "anyOf": [
                 {
@@ -1042,6 +1043,9 @@
         },
         "scope": {
           "$ref": "#/$defs/CapiroDataPrivateScope"
+        },
+        "contract": {
+          "$ref": "#/$defs/CapiroDataSqlContract"
         }
       },
       "required": [
@@ -1076,15 +1080,13 @@
           "items": {
             "$ref": "#/$defs/CapiroDataColumn"
           },
-          "minItems": 1,
-          "maxItems": 32
+          "minItems": 1
         },
         "rows": {
           "type": "array",
           "items": {
             "type": "object",
             "minProperties": 1,
-            "maxProperties": 32,
             "additionalProperties": {
               "anyOf": [
                 {
@@ -1163,6 +1165,119 @@
         "coverage",
         "limits",
         "scope"
+      ]
+    },
+    "CapiroDataSqlContract": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "version": {
+          "const": "capiro.sql-contract/1"
+        },
+        "revisionSha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "source": {
+          "enum": [
+            "public",
+            "client_records"
+          ]
+        },
+        "grammar": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "version": {
+              "const": "postgresql-select/1"
+            },
+            "statements": {
+              "const": [
+                "SELECT",
+                "WITH_SELECT"
+              ]
+            },
+            "parameterStyle": {
+              "const": "dollar-numbered-contiguous"
+            },
+            "blockedKeywords": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "pattern": "^[a-z_][a-z0-9_]*$",
+                "maxLength": 128
+              },
+              "uniqueItems": true
+            },
+            "blockedFunctions": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "pattern": "^[a-z_][a-z0-9_]*$",
+                "maxLength": 128
+              },
+              "uniqueItems": true
+            },
+            "blockedFunctionPatterns": {
+              "const": []
+            },
+            "sourceMixing": {
+              "const": false
+            }
+          },
+          "required": [
+            "version",
+            "statements",
+            "parameterStyle",
+            "blockedKeywords",
+            "blockedFunctions",
+            "blockedFunctionPatterns",
+            "sourceMixing"
+          ]
+        },
+        "limits": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "defaultRowLimit": {
+              "const": 200
+            },
+            "maxRowLimit": {
+              "const": 1000
+            },
+            "maxOutputBytes": {
+              "const": 262144
+            },
+            "maxSqlBytes": {
+              "const": 16384
+            },
+            "maxParameters": {
+              "const": 64
+            },
+            "maxParameterBytes": {
+              "const": 32768
+            }
+          },
+          "required": [
+            "defaultRowLimit",
+            "maxRowLimit",
+            "maxOutputBytes",
+            "maxSqlBytes",
+            "maxParameters",
+            "maxParameterBytes"
+          ]
+        },
+        "columnCountLimit": {
+          "type": "null"
+        }
+      },
+      "required": [
+        "version",
+        "revisionSha256",
+        "source",
+        "grammar",
+        "limits",
+        "columnCountLimit"
       ]
     }
   }

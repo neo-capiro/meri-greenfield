@@ -5,6 +5,7 @@ import {canonicalSha256} from '../../../../../packages/contracts/validate.mjs';
 import {selectSkill} from '../../../../../packages/skills/index.mjs';
 import {fixture} from '../../../../runtime/test/reads-native-fixture.mjs';
 import {capiroDataCase,ids,nextGenerationPage,sqlRefusal} from '../../../../gateway/sources/capiro-data/test/fixture.mjs';
+import {withSqlContract} from '../../../../gateway/sources/capiro-data/test/sql-contract-fixture.mjs';
 import {connect} from './native-mcp-fixture.mjs';
 import {advertisedArguments} from '../schema.mjs';
 import {assertNativeReadResponse} from '../../../../../packages/contracts/runtime-0.2/reads.mjs';
@@ -95,4 +96,16 @@ for(const id of ids)test(`${id}: private wire uses one existing SDK tool name an
   const envelope=JSON.parse(out.content[0].text);assert.deepEqual(envelope.result,scene.page);assert.equal(envelope.operation.version,'0.2.0');
   assert.equal(m.runtime.receipts().length,1);assert.equal(scene.wire.length,1);
   assert.ok(scene.wire[0].options.headers['x-meri-read-correlation']);
+});
+
+test('Core descriptor reaches the model as current grammar while canonical source and receipt bytes remain exact',async t=>{
+ const scene=capiroDataCase('describe_capiro_data');scene.state.page=withSqlContract(nextGenerationPage(scene.page));
+ const f=await fixture('capiro-data','describe_capiro_data',{scene}),m=await connect(t,f),out=await m.call();
+ assert.equal(out.isError,undefined,JSON.stringify(out));assert.equal(out.content.length,2);
+ const envelope=JSON.parse(out.content[0].text);assert.deepEqual(envelope.result,scene.state.page);
+ assert.match(out.content[1].text,/Core SQL contract capiro.sql-contract\/1 revision/);
+ assert.ok(out.content[1].text.includes(scene.state.page.contract.revisionSha256));
+ assert.match(out.content[1].text,/Blocked functions \(exact names\): set_config, pg_sleep,/);
+ assert.match(out.content[1].text,/no column-count cap/);assert.match(out.content[1].text,/grants no authority/);
+ assert.equal(m.runtime.receipts()[0].resultSha256,canonicalSha256(envelope));
 });

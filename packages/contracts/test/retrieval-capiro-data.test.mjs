@@ -107,3 +107,15 @@ for(const version of ['0.2.0','0.3.0'])test(`${version}: both envelope generatio
     const bad=structuredClone(page);bad.rows[0].last_synced_at=value;assert.throws(()=>q.assertOutput(bad,publicQuery),String(value));
   }
 });
+
+for(const version of ['0.2.0','0.3.0'])for(const privateSource of [false,true])test(`${version}: ${privateSource?'private':'public'} output width is bounded by bytes, not an invented column count`,()=>{
+ const q=resolveOperationContract({id:'query_capiro_data',version});
+ const page=nextGenerationPage(privateSource?privateCapiroDataPage():capiroDataPage());
+ page.columns=Array.from({length:40},(_,i)=>({name:'field_'+i,type:'string',pgType:'text',nullable:false}));
+ page.rows=page.rows.map(()=>Object.fromEntries(page.columns.map(column=>[column.name,'value'])));
+ const options=privateSource?{request:privateRequest,...context}:{request:requests.query_capiro_data};
+ assert.deepEqual(q.assertOutput(page,options),page);
+ const duplicate=structuredClone(page);duplicate.columns[39].name='field_0';assert.throws(()=>q.assertOutput(duplicate,options));
+ const extra=structuredClone(page);extra.rows[0].undisclosed='value';assert.throws(()=>q.assertOutput(extra,options));
+ page.rows[0].field_0='界'.repeat(90000);assert.throws(()=>q.assertOutput(page,options));
+});

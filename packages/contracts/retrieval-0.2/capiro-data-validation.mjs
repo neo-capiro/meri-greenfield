@@ -1,4 +1,5 @@
 /** Validate Core's bounded public/private SQL wire. Core alone parses SQL and admits private scope. */
+import {canonicalSha256} from '../validate.mjs';
 import {snapshotOperationData} from './operation-contracts.mjs';
 
 const fail=()=>{throw Error('Invalid Capiro data contract');};
@@ -42,6 +43,12 @@ function cell(column,value){
 }
 
 function describe(page,input){
+  if(page.contract!==undefined){
+    const {revisionSha256,...contract}=page.contract;
+    const {maxColumns,...limits}=page.limits;
+    if(contract.source!==(input.source??'public')||canonicalSha256(contract.limits)!==canonicalSha256(limits)||
+      canonicalSha256({...contract,relations:page.relations})!==revisionSha256)fail();
+  }
   const names=page.relations.map(relation=>relation.name);
   if(!unique(names)||input.relations&&!sameSet(input.relations,names))fail();
   for(const relation of page.relations){
