@@ -4,7 +4,7 @@ import assert from 'node:assert/strict';
 import {canonicalSha256} from '../../../../../packages/contracts/validate.mjs';
 import {selectSkill} from '../../../../../packages/skills/index.mjs';
 import {fixture} from '../../../../runtime/test/reads-native-fixture.mjs';
-import {capiroDataCase,ids,nextGenerationPage,sqlRefusal} from '../../../../gateway/sources/capiro-data/test/fixture.mjs';
+import {capiroDataCase,ids,sqlRefusal} from '../../../../gateway/sources/capiro-data/test/fixture.mjs';
 import {withSqlContract} from '../../../../gateway/sources/capiro-data/test/sql-contract-fixture.mjs';
 import {connect} from './native-mcp-fixture.mjs';
 import {advertisedArguments} from '../schema.mjs';
@@ -34,7 +34,7 @@ test('row and byte truncation remain independent through the mounted receiving b
   }
 });
 test('a Core SQL refusal reaches the model with its code and message plus fixed correction guidance, and is still receipted',async t=>{
-  const scene=capiroDataCase();scene.state.page={version:'0.1.0',generatedAt:scene.page.generatedAt,ok:false,error:{code:'UNKNOWN_FIELD',message:'Unknown or ambiguous published column.'}};
+  const scene=capiroDataCase();scene.state.page={version:'0.2.0',generatedAt:scene.page.generatedAt,ok:false,error:{code:'UNKNOWN_FIELD',message:'Unknown or ambiguous published column.'}};
   const f=await fixture('capiro-data','query_capiro_data',{scene}),m=await connect(t,f),out=await m.call();
   assert.equal(out.isError,undefined,JSON.stringify(out));assert.equal(out.content.length,2);
   const envelope=JSON.parse(out.content[0].text);assert.deepEqual(envelope.result,scene.state.page);
@@ -48,9 +48,6 @@ test('a Core 362 refusal reaches the model with PostgreSQL diagnostics rendered 
   const envelope=JSON.parse(out.content[0].text);assert.deepEqual(envelope.result,scene.state.page);
   assert.match(out.content[1].text,/ PostgreSQL 42703: column b\.titel does not exist at character 8\. Hint: Perhaps you meant "b\.title"\. Did you mean: title\. /);
   assert.equal(m.runtime.receipts()[0].resultSha256,canonicalSha256(envelope));
-  const next=capiroDataCase();next.state.page=nextGenerationPage(next.page);
-  const g=await fixture('capiro-data','query_capiro_data',{scene:next}),n=await connect(t,g),page=await n.call();
-  assert.equal(page.isError,undefined,JSON.stringify(page));assert.deepEqual(JSON.parse(page.content[0].text).result,next.state.page);
 });
 test('a successful query carries a separate count line that names truncation without touching the canonical bytes',async t=>{
   const scene=capiroDataCase();scene.page.rowLimitReached=true;
@@ -99,7 +96,7 @@ for(const id of ids)test(`${id}: private wire uses one existing SDK tool name an
 });
 
 test('Core descriptor reaches the model as current grammar while canonical source and receipt bytes remain exact',async t=>{
- const scene=capiroDataCase('describe_capiro_data');scene.state.page=withSqlContract(nextGenerationPage(scene.page));
+ const scene=capiroDataCase('describe_capiro_data');scene.state.page=withSqlContract(scene.page);
  const f=await fixture('capiro-data','describe_capiro_data',{scene}),m=await connect(t,f),out=await m.call();
  assert.equal(out.isError,undefined,JSON.stringify(out));assert.equal(out.content.length,2);
  const envelope=JSON.parse(out.content[0].text);assert.deepEqual(envelope.result,scene.state.page);
@@ -108,4 +105,15 @@ test('Core descriptor reaches the model as current grammar while canonical sourc
  assert.match(out.content[1].text,/Blocked functions \(exact names\): set_config, pg_sleep,/);
  assert.match(out.content[1].text,/no column-count cap/);assert.match(out.content[1].text,/grants no authority/);
  assert.equal(m.runtime.receipts()[0].resultSha256,canonicalSha256(envelope));
+});
+
+for(const version of ['0.2.0','0.3.0'])for(const source of ['public','client_records'])test(`${version} fresh ${source} calls withhold obsolete success and refusal envelopes without receipts`,async t=>{
+ for(const ok of [true,false]){
+  const request=source==='client_records'?{source,relations:['client_objectives']}:{relations:['program_elements']};
+  const scene=capiroDataCase('describe_capiro_data',{version,request});
+  scene.state.page=ok?{...scene.page,version:source==='public'?'0.1.0':'0.2.0'}:
+   {version:source==='public'?'0.1.0':'0.2.0',generatedAt:scene.page.generatedAt,ok:false,error:{code:'QUERY_TIMEOUT',message:'Synthetic old refusal'}};
+  const f=await fixture(scene.family,'describe_capiro_data',{scene,privateUser:true}),m=await connect(t,f),out=await m.call();
+  assert.equal(out.isError,true);assert.match(out.content[0].text,/^INVALID_RESULT:/);assert.deepEqual(m.runtime.receipts(),[]);
+ }
 });

@@ -5,31 +5,15 @@ import {createCapiroDataHandlers,createCapiroData3Handlers} from '../handler.mjs
 export const ids=['describe_capiro_data','query_capiro_data'];
 export const requests={describe_capiro_data:{relations:['program_elements']},query_capiro_data:{sql:'SELECT pe_code, total, count, absent FROM program_elements WHERE pe_code = $1',parameters:['0600001A'],rowLimit:2}};
 export function capiroDataPage(id=ids[1]){
-  const head={version:'0.1.0',generatedAt:'2026-10-26T12:00:00.000Z',ok:true};
-  if(id===ids[0])return {...head,relations:[{name:'program_elements',description:'Synthetic relation',fields:[{name:'pe_code',type:'string',nullable:false,description:'Canonical PE code'}],primaryKey:['pe_code'],relationships:[],grain:'One row per PE code',coverage:{basis:'ingested_public_records',limitations:['Ingested records only']},freshness:{field:null,sourceAsOf:null,sourceVersion:null}}],limits:{defaultRowLimit:200,maxRowLimit:1000,maxOutputBytes:262144,maxSqlBytes:16384,maxParameters:64,maxParameterBytes:32768,maxColumns:32}};
-  return {...head,columns:[{name:'pe_code',type:'string',nullable:false},{name:'total',type:'decimal',nullable:false,unit:'USD millions'},{name:'count',type:'integer',nullable:false},{name:'absent',type:'decimal',nullable:true}],rows:[{pe_code:'0600001A',total:'100.10',count:'9007199254740993',absent:null},{pe_code:'0600002A',total:'0',count:'0',absent:null}],rowCount:2,relationsUsed:['program_elements'],rowLimitReached:false,byteTruncated:false,coverage:{basis:'query_bounded',sourceUniverseComplete:false,sqlLimit:null,relations:[{name:'program_elements',sourceAsOf:null,sourceVersion:null,limitations:['Ingested records only; no complete-source inference']}]},limits:{rowLimit:2,maxOutputBytes:262144}};
+  const head={version:'0.2.0',generatedAt:'2026-10-26T12:00:00.000Z',ok:true};
+  if(id===ids[0])return {...head,relations:[{name:'program_elements',description:'Synthetic relation',fields:[{name:'pe_code',type:'string',pgType:'text',nullable:false,description:'Canonical PE code'},{name:'value_kind',type:'string',pgType:'text',nullable:false,description:'total, quantity or unit_cost',enum:['total','quantity','unit_cost']}],primaryKey:['pe_code'],relationships:[],grain:'One row per PE code',coverage:{basis:'ingested_public_records',limitations:['Ingested records only']},freshness:{field:null,sourceAsOf:null,sourceVersion:null}}],limits:{defaultRowLimit:200,maxRowLimit:1000,maxOutputBytes:262144,maxSqlBytes:16384,maxParameters:64,maxParameterBytes:32768}};
+  return {...head,columns:[{name:'pe_code',type:'string',pgType:'text',nullable:false},{name:'total',type:'decimal',pgType:'numeric',nullable:false,unit:'USD millions'},{name:'count',type:'integer',pgType:'int8',nullable:false},{name:'absent',type:'decimal',pgType:'numeric',nullable:true},{name:'last_synced_at',type:'timestamp',pgType:'timestamptz',nullable:true}],rows:[{pe_code:'0600001A',total:'100.10',count:'9007199254740993',absent:null,last_synced_at:'2026-01-01 00:00:00.123456+00'},{pe_code:'0600002A',total:'0',count:'0',absent:null,last_synced_at:null}],rowCount:2,relationsUsed:['program_elements'],rowLimitReached:false,byteTruncated:false,coverage:{basis:'query_bounded',sourceUniverseComplete:false,sqlLimit:null,relations:[{name:'program_elements',sourceAsOf:null,sourceVersion:null,limitations:['Ingested records only; no complete-source inference']}]},limits:{rowLimit:2,maxOutputBytes:262144}};
 }
 export function privateCapiroDataPage(id=ids[1],clientId=null){
-  const page=capiroDataPage(id);page.version='0.2.0';page.scope={kind:'client_records',clientId};
-  if(id===ids[0]){page.relations[0].name='client_objectives';page.relations[0].fields=['client_id','id','outcome'].map(name=>({name,type:'string',nullable:false,description:'Synthetic stored field'}));page.relations[0].primaryKey=['client_id','id'];page.relations[0].coverage.basis='authorized_client_records';}
+  const page=capiroDataPage(id);page.version='0.3.0';page.scope={kind:'client_records',clientId};
+  if(id===ids[0]){page.relations[0].name='client_objectives';page.relations[0].fields=['client_id','id','outcome'].map(name=>({name,type:'string',pgType:'text',nullable:false,description:'Synthetic stored field'}));page.relations[0].fields.push({name:'value_kind',type:'string',pgType:'text',nullable:false,description:'total, quantity or unit_cost',enum:['total','quantity','unit_cost']});page.relations[0].primaryKey=['client_id','id'];page.relations[0].coverage.basis='authorized_client_records';}
   else{page.relationsUsed=['client_objectives'];page.coverage.relations[0].name='client_objectives';page.columns[0].name='outcome';delete page.columns[1].unit;for(const row of page.rows){row.outcome=row.pe_code;delete row.pe_code;}}
   return page;
-}
-/** The Core 362 generation of a synthetic page: the next envelope version, the catalog pgType on every column and field,
- * an enumerated describe field, a timestamp cell as PostgreSQL text and describe limits without maxColumns. TRANSITIONAL:
- * deleted together with the pre-362 pages above by fable/sql-envelope-retire-old-generation. */
-export function nextGenerationPage(page){
-  const next=structuredClone(page);next.version=next.version==='0.1.0'?'0.2.0':'0.3.0';
-  if(next.ok!==true)return next;
-  if(next.relations){
-    for(const relation of next.relations)for(const field of relation.fields)field.pgType='text';
-    next.relations[0].fields.push({name:'value_kind',type:'string',pgType:'text',nullable:false,description:'total, quantity or unit_cost',enum:['total','quantity','unit_cost']});
-    delete next.limits.maxColumns;return next;
-  }
-  for(const [column,pgType] of next.columns.map((column,i)=>[column,['text','numeric','int8','numeric'][i]]))column.pgType=pgType;
-  next.columns.push({name:'last_synced_at',type:'timestamp',pgType:'timestamptz',nullable:true});
-  next.rows[0].last_synced_at='2026-01-01 00:00:00.123456+00';next.rows[1].last_synced_at=null;
-  return next;
 }
 /** A Core 362 refusal carrying PostgreSQL's own diagnostics for the model's SQL. */
 export function sqlRefusal(error={},version='0.2.0'){

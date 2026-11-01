@@ -2,12 +2,12 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {hash} from 'node:crypto';
 import {canonicalSha256} from '../../../../../packages/contracts/validate.mjs';
-import {capiroDataCase,nextGenerationPage} from './fixture.mjs';
+import {capiroDataCase} from './fixture.mjs';
 import {withSqlContract} from './sql-contract-fixture.mjs';
 const original=['congress_bills','congress_bill_subjects','congress_bill_cosponsors','congress_members','program_elements','program_element_projects','program_element_budget_positions','program_element_project_budget_positions'];
 function scene(request={}){
  const f=capiroDataCase('describe_capiro_data',{request});
- const page=nextGenerationPage(f.page);page.relations=original.map(name=>({...structuredClone(page.relations[0]),name}));
+ const page=f.page;page.relations=original.map(name=>({...structuredClone(page.relations[0]),name}));
  f.state.page=withSqlContract(page);return f;
 }
 test('retained default selects eight at Core before digesting, binding wire credentials but preserving original evidence',async()=>{
@@ -32,7 +32,7 @@ test('credential target cannot bind the original body instead of the actual expl
 });
 test('private describe preserves exact request, current correlation and descriptor through per-call credentials',async()=>{
  const request={source:'client_records',relations:['client_objectives']},f=capiroDataCase('describe_capiro_data',{request});
- f.state.page=withSqlContract(nextGenerationPage(f.page));
+ f.state.page=withSqlContract(f.page);
  const result=JSON.parse(await f.handler({credentialsForCall:()=>f.transport.getCredentials})(f.call()));
  assert.deepEqual(f.wire[0].body,request);assert.deepEqual(result.result,f.state.page);
  const context=JSON.parse(Buffer.from(f.wire[0].options.headers['x-meri-read-correlation'],'base64url'));

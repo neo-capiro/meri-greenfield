@@ -14,12 +14,11 @@ const privateNames=['client_objectives','client_activity','client_team_roster','
 const describe=version=>resolveOperationContract({id:'describe_capiro_data',version});
 const context={capiroDataScope:{clientId:null,identityRevision:'a'.repeat(64),membershipRevision:'b'.repeat(64)}};
 
-// The retained 0.2 schema bytes were repinned once for the Core 362 envelope (capiro-backend#362): the 0.2.0 rows stay
-// live for exact-pinned skills, so they must admit the added pgType/enum/diagnostic fields and the next version too.
-test('retained SQL schema bytes carry the single Core 362 repin and the successor advertises larger bounds',()=>{
+// Exact-pinned operation versions remain installed; their live schemas admit the current Core source generation.
+test('retained SQL schema bytes carry the current Core retirement pin and the successor advertises larger bounds',()=>{
  const bytes=readFileSync(new URL('../retrieval-0.2/capiro-data.schema.json',import.meta.url));
- assert.equal(createHash('sha256').update(bytes).digest('hex'),'ad67f7aa301f5a3d4b62af010590735a965bd5730eedf8cb145740b40f0b6bc6');
- assert.equal(describe('0.2.0').descriptor.inputSchema.sha256,'ad67f7aa301f5a3d4b62af010590735a965bd5730eedf8cb145740b40f0b6bc6');
+ assert.equal(createHash('sha256').update(bytes).digest('hex'),'58e0935a0d113adc1a48ec0f557d232ab9d980ee13737efbafd5bfa0dc0da2ae');
+ assert.equal(describe('0.2.0').descriptor.inputSchema.sha256,'58e0935a0d113adc1a48ec0f557d232ab9d980ee13737efbafd5bfa0dc0da2ae');
  assert.equal(describe('0.3.0').binding.group,'capiro-data-v3');
  assert.throws(()=>describe('0.2.0').normalizeInput({relations:publicNames}));
  assert.deepEqual(describe('0.3.0').normalizeInput({relations:publicNames}).input,{relations:publicNames});
@@ -30,13 +29,13 @@ test('successor schema and descriptors state the SQL grammar, binding rules and 
  const sha=createHash('sha256').update(bytes).digest('hex'),query=resolveOperationContract({id:'query_capiro_data',version:'0.3.0'});
  assert.equal(describe('0.3.0').descriptor.inputSchema.sha256,sha);assert.equal(query.descriptor.inputSchema.sha256,sha);
  const request=schema.$defs.CapiroDataQueryRequest.properties;
- assert.match(request.sql.description,/One read-only PostgreSQL 16 statement, SELECT or WITH \.\.\. SELECT/);
- assert.match(request.sql.description,/runs verbatim under a read-only role/);
- assert.match(request.sql.description,/more than one statement; SET, SHOW, COPY, LISTEN, EXPLAIN or transaction control; INSERT, UPDATE, DELETE, MERGE or SELECT INTO \(also inside a CTE\)/);
- assert.match(request.sql.description,/set_config, pg_sleep\*, pg_terminate_backend, pg_cancel_backend, advisory locks, pg_notify, lo_\*, pg_read_file, pg_ls_dir and dblink/);
- assert.match(request.sql.description,/mixes public and client_records relations/);
- assert.match(request.sql.description,/outer LIMIT caps rows at rowLimit \(default 200, at most 1000\)/);
- assert.match(request.sql.description,/PostgreSQL's own message with the 1-based character position, hint, SQLSTATE and the nearest published relation or column names/);
+ assert.match(request.sql.description,/One read-only PostgreSQL statement over the relations describe_capiro_data returns/);
+ assert.match(request.sql.description,/optional versioned contract for the current grammar, blocked keywords\/functions and limits/);
+ assert.match(request.sql.description,/never an authorization grant/);
+ assert.match(request.sql.description,/Bind values as \$1\.\.\$n and alias expression columns/);
+ assert.match(request.sql.description,/Core owns SQL admission.*Meri does not parse SQL/);
+ assert.match(request.sql.description,/Public and client_records are separate sources/);
+ assert.doesNotMatch(request.sql.description,/at most 32 columns|pg_sleep|set_config/);
  assert.doesNotMatch(request.sql.description,/non-recursive CTEs|declared key columns|No string literals|are refused before execution with an error code/);
  assert.match(request.parameters.description,/pass \[\] when the SQL binds nothing/);
  assert.match(request.rowLimit.description,/1-1000 \(default 200\)/);

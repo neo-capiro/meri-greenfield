@@ -363,9 +363,6 @@
         },
         "maxParameterBytes": {
           "const": 32768
-        },
-        "maxColumns": {
-          "const": 32
         }
       },
       "required": [
@@ -469,10 +466,7 @@
       "additionalProperties": false,
       "properties": {
         "version": {
-          "enum": [
-            "0.1.0",
-            "0.2.0"
-          ]
+          "const": "0.2.0"
         },
         "generatedAt": {
           "type": "string",
@@ -547,10 +541,7 @@
       "additionalProperties": false,
       "properties": {
         "version": {
-          "enum": [
-            "0.1.0",
-            "0.2.0"
-          ]
+          "const": "0.2.0"
         },
         "generatedAt": {
           "type": "string",
@@ -588,10 +579,7 @@
       "additionalProperties": false,
       "properties": {
         "version": {
-          "enum": [
-            "0.1.0",
-            "0.2.0"
-          ]
+          "const": "0.2.0"
         },
         "generatedAt": {
           "type": "string",
@@ -939,10 +927,7 @@
       "additionalProperties": false,
       "properties": {
         "version": {
-          "enum": [
-            "0.2.0",
-            "0.3.0"
-          ]
+          "const": "0.3.0"
         },
         "generatedAt": {
           "type": "string",
@@ -1017,10 +1002,7 @@
       "additionalProperties": false,
       "properties": {
         "version": {
-          "enum": [
-            "0.2.0",
-            "0.3.0"
-          ]
+          "const": "0.3.0"
         },
         "generatedAt": {
           "type": "string",
@@ -1062,10 +1044,7 @@
       "additionalProperties": false,
       "properties": {
         "version": {
-          "enum": [
-            "0.2.0",
-            "0.3.0"
-          ]
+          "const": "0.3.0"
         },
         "generatedAt": {
           "type": "string",

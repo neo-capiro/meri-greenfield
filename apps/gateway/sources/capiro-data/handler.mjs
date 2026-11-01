@@ -13,14 +13,11 @@ function retainedRequest(current){
 }
 function retainedDescription(current,result){
  // A descriptor binds Core's exact returned relations. Never post-filter digest-bound metadata.
- if(retainedDefault(current)&&result?.ok===true&&Object.hasOwn(result,'contract')){
+ if(retainedDefault(current)&&result?.ok===true){
   if(!Array.isArray(result.relations)||result.relations.length!==retainedPublicRelations.size||
    result.relations.some(relation=>!retainedPublicRelations.has(relation.name)))deny('INVALID_RESULT');
   return result;
  }
- if(current.operation.id==='describe_capiro_data'&&current.request.source!=='client_records'&&
-  current.request.relations===undefined&&result?.ok===true&&Array.isArray(result.relations))
-  return {...result,relations:result.relations.filter(relation=>retainedPublicRelations.has(relation.name))};
  return result;
 }
 export const createCapiroDataHandlers=(configuration,operations)=>
