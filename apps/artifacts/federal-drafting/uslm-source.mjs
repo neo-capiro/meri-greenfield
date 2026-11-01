@@ -55,10 +55,13 @@ export function deriveUslmScopes(text){
  return Object.freeze({root:Object.freeze(root),scopes:Object.freeze(scopes.map(s=>Object.freeze({...s,ancestorPath:Object.freeze(s.ancestorPath)})))});
 }
 
-/** A compiled result must still be one well-formed document with the original root; otherwise no output exists. */
-export function assertUslmResult(text,expectedRoot){
- let root;
- try{root=parse(text,()=>{});}catch(error){fault(error?.code==='DRAFT_XML_DOCTYPE_UNSUPPORTED'?error.code:'DRAFT_XML_RESULT_MALFORMED');}
- if(root.uri!==expectedRoot.uri||root.local!==expectedRoot.local)fault('DRAFT_XML_RESULT_MALFORMED');
+/** A compiled result retains the original root and an importable declared-identifier tree. */
+export function assertUslmResult(text,expectedRoot,maxScopes=Infinity){
+ let derived;
+ try{derived=deriveUslmScopes(text);}catch(error){
+  fault(['DRAFT_XML_DOCTYPE_UNSUPPORTED','DRAFT_USLM_IDENTIFIER_INVALID','DRAFT_USLM_IDENTIFIER_DUPLICATE'].includes(error?.code)?error.code:'DRAFT_XML_RESULT_MALFORMED');
+ }
+ if(derived.root.uri!==expectedRoot.uri||derived.root.local!==expectedRoot.local)fault('DRAFT_XML_RESULT_MALFORMED');
+ if(derived.scopes.length>maxScopes)fault('DRAFT_OUTPUT_LIMIT');
  return true;
 }

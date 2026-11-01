@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {compileFederalDraft,federalDraftSource,textSha256} from '../engine.mjs';
+import {compileFederalDraft,federalDraftSource,textSha256,DRAFT_LIMITS} from '../engine.mjs';
 import {deriveUslmScopes,assertUslmResult,FEDERAL_USLM_XML_PARSER} from '../uslm-source.mjs';
 import {projectNativeFederalSource,prepareNativeFederalDraft} from '../native-source.mjs';
 import {USLM_TEXT,uslmSource,opFor,slice,S1,A,B,S2,S3} from './uslm-fixture.mjs';
@@ -74,6 +74,33 @@ test('whole-subsection repeal removes the element; the consumed identity cannot 
  compile(source,[repeal,opFor(source,{id:'sibling',scopeId:A,expectedText:'$100',text:'$1'})],expected.replace('Pay $100 😀','Pay $1 😀'));
  // The whole source of a USLM document is its root element; removing it is a proposed repeal, not an amendment.
  assert.throws(()=>compileFederalDraft(source,[opFor(source,{scopeId:'document',kind:'delete',expectedText:slice(source,'document')})]),{code:'DRAFT_WHOLE_SOURCE_REPEAL_UNSUPPORTED',operationId:null});
+});
+
+test('final XML refuses duplicate or invalid declared identifiers atomically',()=>{
+ const source=uslmSource(),snapshot=structuredClone(source);
+ for(const [text,code] of [['/us/bill/119/hr/1/s3','DRAFT_USLM_IDENTIFIER_DUPLICATE'],['/bad id','DRAFT_USLM_IDENTIFIER_INVALID']]){
+  const ops=[opFor(source,{scopeId:A,expectedText:'$100',text:'$150'}),
+   opFor(source,{id:'op-2',scopeId:S2,expectedText:'/us/bill/119/hr/1/s2',text})];
+  const original=structuredClone(ops);
+  assert.throws(()=>compileFederalDraft(source,ops),{code,operationId:null});
+  assert.deepEqual(source,snapshot);assert.deepEqual(ops,original);
+ }
+ const draft=compileFederalDraft(source,[opFor(source,{scopeId:S2,expectedText:'/us/bill/119/hr/1/s2',text:'/us/bill/119/hr/1/s4'})]);
+ assert.doesNotThrow(()=>federalDraftSource(uslmSource(draft.outputs.consolidated)));
+});
+
+test('final XML respects the same scope count bound as a newly imported source',()=>{
+ const prefix='<bill xmlns="http://xml.house.gov/schemas/uslm/1.0">';
+ const text=prefix+Array.from({length:DRAFT_LIMITS.uslmScopes-2},(_,i)=>`<section identifier="/s${i}"/>`).join('')+'</bill>';
+ const source=uslmSource(text);
+ const append=identifier=>opFor(source,{scopeId:'document',kind:'insert',expectedText:'</bill>',position:'before',text:`<section identifier="/${identifier}"/>`});
+ const accepted=compileFederalDraft(source,[append('new')]);
+ const imported=federalDraftSource(uslmSource(accepted.outputs.consolidated));
+ assert.equal(imported.scopes.length,DRAFT_LIMITS.uslmScopes);
+ const overflow=opFor(imported,{scopeId:'document',kind:'insert',expectedText:'</bill>',position:'before',text:'<section identifier="/overflow"/>'});
+ const original=structuredClone({imported,overflow});
+ assert.throws(()=>compileFederalDraft(imported,[overflow]),{code:'DRAFT_OUTPUT_LIMIT',operationId:null});
+ assert.deepEqual({imported,overflow},original);
 });
 
 test('official USLM extractions import as structured sources only through the workbench; the frozen SDK tool stays flat',()=>{
