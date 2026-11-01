@@ -1,16 +1,19 @@
 /** Release-only finite product-port driver. Mutations are each sent once; no retry/resume mode. */
 import {resolve} from 'node:path';import {fileURLToPath} from 'node:url';import {setTimeout as delay} from 'node:timers/promises';
-import {readPlan,validatePlan,LIMITS,PAIRS,requestFor,selectionFor,selectionEqual,credential,journal,fail,sha} from './plan.mjs';
+import {readPlan,validatePlan,LIMITS,PAIRS,requestFor,selectionFor,selectionEqual,credential,journal,fail,sha,commitment} from './plan.mjs';
 import {verifyMethod,post} from './transport.mjs';
+import {readNativeReceipt} from './native-receipt.mjs';
+import {assessCase} from './review.mjs';
 const encode=v=>new TextEncoder().encode(JSON.stringify(v));
 async function receivers(){const [initial,conversation,usage,models]=await Promise.all([import('../../../packages/contracts/dist/conversation-initial-input.mjs'),import('../../../packages/contracts/dist/conversation-application.mjs'),import('../../../packages/contracts/dist/conversation-usage.mjs'),import('../../../packages/contracts/model-selection.mjs')]);return {...initial,...conversation,...usage,...models};}
-export async function runBatch({plan,append,readCredential=credential,send=post,contracts,now=Date.now,pause=delay}){
- validatePlan(plan,now());const r=contracts??await receivers();let estimate=0,historyReads=0;
+export async function runBatch({plan,append,readCredential=credential,send=post,readRuntime=readNativeReceipt,contracts,now=Date.now,pause=delay}){
+ validatePlan(plan,now());const r=contracts??await receivers(),product=[],allocationSha256=plan.allocationSha256;let estimate=0,historyReads=0,sdkTurns=0;
+ const record=value=>{append(value);product.push(value);};
  const call=async(c,path,body,session,deadline)=>{
   if(now()>=deadline)fail('QUALIFICATION_DEADLINE');const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),Math.min(LIMITS.requestMs,deadline-now()));
   // Persist intent before any network call. Never log credentials.
-  append({event:'http-intent',caseId:c.id,path,requestSha256:sha(JSON.stringify(body)),atMs:now()});
-  try{const out=await send(plan.controlOrigin,path,readCredential(session?c.sessionCredentialFile:c.nativeCredentialFile),body,{signal:controller.signal});append({event:'http-receipt',caseId:c.id,path,status:out.status,response:out.value,atMs:now()});if(out.status!==200||out.value?.error)fail('QUALIFICATION_HTTP_REFUSAL');return out;}
+  record({event:'http-intent',caseId:c.id,path,requestSha256:sha(JSON.stringify(body)),atMs:now()});
+  try{const out=await send(plan.controlOrigin,path,readCredential(session?c.sessionCredentialFile:c.nativeCredentialFile),body,{signal:controller.signal});record({event:'http-receipt',caseId:c.id,path,status:out.status,response:out.value,atMs:now()});if(out.status!==200||out.value?.error)fail('QUALIFICATION_HTTP_REFUSAL');return out;}
   finally{clearTimeout(timer);}
  };
  for(const c of plan.cases){
@@ -48,14 +51,32 @@ export async function runBatch({plan,append,readCredential=credential,send=post,
   const amount=usage.usage?.runDelta?.sdkEstimateUsd;
   if(usage.recording!=='recorded'||usage.usage?.status!=='recorded'||usage.usage.providerBilledUsd!==null||typeof amount!=='number'||!Number.isFinite(amount)||amount<0||amount>LIMITS.estimateMicroUsdPerCase/1e6||usage.toolAudit?.tools?.length!==0||usage.toolAudit.omitted!==0)fail('QUALIFICATION_USAGE_OR_TOOLS');
   estimate+=amount;if(estimate>LIMITS.aggregateEstimateMicroUsd/1e6)fail('QUALIFICATION_AGGREGATE');
-  append({event:'case-product-complete',caseId:c.id,selection,estimateUsd:amount,aggregateEstimateUsd:estimate,qualification:'PENDING_RUNTIME_RECEIPT_REVIEW',providerEffortAcknowledgement:'UNKNOWN'});
+  // Public completion precedes native cleanup. Only the existing query owner's retained
+  // post-cleanup settlement, with effective effort and accounting, permits another case.
+  let verified=false;
+  for(let count=0;count<LIMITS.runtimeReceiptReads;count++){
+   if(now()>=deadline)break;const evidence=readRuntime(c.nativeReceiptFile,{plan,c,deadline,submitAtMs:product.find(e=>e.caseId===c.id&&e.event==='http-intent'&&e.path==='/api/conversations/submit').atMs}),runtime=evidence?.events??[];
+   if(runtime.some(e=>e.allocationSha256!==allocationSha256||!plan.cases.some(c=>c.id===e.caseId)))fail('QUALIFICATION_RECEIPT_BINDING');
+   const events=runtime.filter(e=>e.caseId===c.id);
+   if(events.some(e=>e.event==='unknown-or-failed'))fail('QUALIFICATION_NATIVE_UNKNOWN');
+   if(events.some(e=>e.event==='settled')){
+    if(evidence?.collectionComplete!==true||! /^[a-f0-9]{64}$/.test(evidence.receiptSha256??''))fail('QUALIFICATION_COLLECTION_UNKNOWN');
+    const assessed=assessCase(PAIRS.find(p=>p.id===c.id),c,product,events,allocationSha256,plan);
+    if(now()>=deadline||assessed.status!=='RUNTIME_CASE_PASS')fail('QUALIFICATION_NATIVE_UNVERIFIED');
+    sdkTurns+=assessed.sdkTurns;if(sdkTurns>LIMITS.aggregateSdkTurns)fail('QUALIFICATION_AGGREGATE');
+    record({event:'native-case-verified',caseId:c.id,allocationSha256,collectionReceiptSha256:evidence.receiptSha256,runtimeReceiptSha256:sha(JSON.stringify(events)),sdkTurns:assessed.sdkTurns,estimateUsd:assessed.estimateUsd});verified=true;break;
+   }
+   if(count+1<LIMITS.runtimeReceiptReads&&now()<deadline)await pause(Math.min(1000,deadline-now()),undefined,{signal:AbortSignal.timeout(Math.max(1,deadline-now()))});
+  }
+  if(!verified)fail('QUALIFICATION_NATIVE_UNKNOWN');
+  record({event:'case-product-complete',caseId:c.id,selection,estimateUsd:amount,aggregateEstimateUsd:estimate,qualification:'PENDING_RUNTIME_RECEIPT_REVIEW',providerEffortAcknowledgement:'UNKNOWN'});
  }
- return {cases:5,historyReads,estimateUsd:estimate,qualification:'PENDING_RUNTIME_RECEIPT_REVIEW'};
+ return {cases:5,historyReads,sdkTurns,estimateUsd:estimate,qualification:'PENDING_RUNTIME_RECEIPT_REVIEW'};
 }
 export async function main(args=process.argv.slice(2)){
  if(args.length===1&&args[0]==='--help'){process.stdout.write('Release only: node driver.mjs <allocation.json> <new-exclusive-private-journal.jsonl>. No retry/resume. Offline controls use runBatch with synthetic ports.\n');return 0;}
  if(args.length!==2)return 2;let log,claim;
- try{const plan=readPlan(resolve(args[0]));verifyMethod(plan.methodSha256);claim=journal(resolve(args[0])+'.attempted');claim.append({allocationSha256:sha(JSON.stringify(plan)),atMs:Date.now()});claim.close();log=journal(resolve(args[1]));log.append({event:'allocation-started',allocationSha256:sha(JSON.stringify(plan)),limits:LIMITS});const result=await runBatch({plan,append:v=>log.append(v)});log.append({event:'product-batch-complete',...result});return 0;}
+ try{const plan=readPlan(resolve(args[0]));verifyMethod(plan.methodSha256);claim=journal(resolve(args[0])+'.attempted');claim.append({allocationSha256:plan.allocationSha256,privateEnvelopeSha256:commitment(plan),atMs:Date.now()});claim.close();log=journal(resolve(args[1]));log.append({event:'allocation-started',allocationSha256:plan.allocationSha256,privateEnvelopeSha256:commitment(plan),limits:LIMITS});const result=await runBatch({plan,append:v=>log.append(v)});log.append({event:'product-batch-complete',...result});return 0;}
  catch(error){log?.append({event:'STOP_NO_RESEND',code:/^[A-Z0-9_]{1,100}$/.test(error?.code??'')?error.code:'QUALIFICATION_UNKNOWN'});return log?3:2;}
  finally{claim?.close();log?.close();}
 }

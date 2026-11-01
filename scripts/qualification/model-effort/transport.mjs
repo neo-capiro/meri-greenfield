@@ -1,9 +1,10 @@
 import {readFileSync} from 'node:fs';import {fileURLToPath} from 'node:url';import {resolve} from 'node:path';
-import {sha,fail,privateRead} from './plan.mjs';
+import {sha,fail,privateRead,SOURCE,SOURCE_TREE,IMAGE} from './plan.mjs';
 const directory=fileURLToPath(new URL('.',import.meta.url)),root=resolve(directory,'../../..');
 export function verifyMethod(expected){
  const bytes=privateRead(resolve(directory,'METHOD-PINS.json'));if(sha(bytes)!==expected)fail('QUALIFICATION_METHOD');
- const pins=JSON.parse(bytes);for(const item of pins.files){if(typeof item.path!=='string'||item.path.includes('..')||item.path.startsWith('/')||!/^[a-f0-9]{64}$/.test(item.sha256)||sha(readFileSync(resolve(root,item.path)))!==item.sha256)fail('QUALIFICATION_SOURCE_PIN');}
+ const pins=JSON.parse(bytes);if(pins.schema!=='meri.model-qualification-method/2'||pins.baseSourceCommit!==SOURCE||pins.baseSourceTree!==SOURCE_TREE||pins.baseImageDigest!==IMAGE||pins.sdk!=='0.3.295'||pins.cli!=='2.1.295')fail('QUALIFICATION_METHOD_BINDING');
+ for(const item of pins.files){if(typeof item.path!=='string'||item.path.includes('..')||item.path.startsWith('/')||!/^[a-f0-9]{64}$/.test(item.sha256)||sha(readFileSync(resolve(root,item.path)))!==item.sha256)fail('QUALIFICATION_SOURCE_PIN');}
  return pins;
 }
 export async function boundedJson(response,max=2097152){

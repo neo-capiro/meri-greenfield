@@ -1,7 +1,8 @@
 {
-  "schema": "meri.model-qualification-method/1",
-  "sourceCommit": "d8cdbca1db57e8c2f3a51a7a74f5014e6fc3f34d",
-  "imageDigest": "sha256:3b2ee09f99d75d1647c3a1206cdf16bbe7836bb52b8debc56cdd548e221e2037",
+  "schema": "meri.model-qualification-method/2",
+  "baseSourceCommit": "d8cdbca1db57e8c2f3a51a7a74f5014e6fc3f34d",
+  "baseSourceTree": "514245eca0ff473fb84c7fd089dd9e8a8f957aaf",
+  "baseImageDigest": "sha256:3b2ee09f99d75d1647c3a1206cdf16bbe7836bb52b8debc56cdd548e221e2037",
   "sdk": "0.3.295",
   "cli": "2.1.295",
   "sdkTypeEvidenceSha256": "e4d91d71404ce4ffc918aa590f545c7a67df6a1dfe5de8cd28a05db0a7fe872b",
@@ -59,40 +60,48 @@
       "sha256": "403fb77243ee1f7649d958e9536f08bb3f9d590707c9045f74c197bb5b16a18b"
     },
     {
+      "path": "packages/contracts/validate.mjs",
+      "sha256": "583a9135486b38d130492377e3db732fc845f8651aff941a1163bd551a8dab60"
+    },
+    {
       "path": "scripts/qualification/model-effort/.gitattributes",
       "sha256": "a79691a93b46e49ce460c26ef22afcc03d6eca1e63bf2edbc20e96159510f6c9"
     },
     {
       "path": "scripts/qualification/model-effort/README.md",
-      "sha256": "dc89cef82e64fc4d27b5a8fd038ff6d637b5a8fc87a27d0934e6baba3ae08049"
+      "sha256": "05f18d70e7416dcbdf4c5c2636959e3d6bf07d03d977927108e00f380d419935"
     },
     {
       "path": "scripts/qualification/model-effort/controls.test.mjs",
-      "sha256": "9c24cb3b4062583fe99f7ca0ca6304031822e2b9e598f5499a2e144fbf7b2486"
+      "sha256": "24b316f6debc4912c6d703d765b7209e30f3eaa88b790e2ac8315c55f16d80e2"
     },
     {
       "path": "scripts/qualification/model-effort/driver.mjs",
-      "sha256": "df52a7fa75db8411ae1f5b95a9e7719dbd0804b44db9094f8718347169f20fa1"
+      "sha256": "b73c246c4c5769c0852873760b00ce0d9de186ceedccf35c27f2896032b77c48"
+    },
+    {
+      "path": "scripts/qualification/model-effort/native-receipt.mjs",
+      "sha256": "e4624ae4a982c0523bd79c2270010d322d38d7af598dfb7ef594a3ff1c239a76"
     },
     {
       "path": "scripts/qualification/model-effort/observe.mjs",
-      "sha256": "4cbe5d9153b022f31e9a34beb7385242ea5cdd25319a5b715ebfcf80c920a19e"
+      "sha256": "67d2aa7b952304b88318d5509ba54a40e9d5779ebd562b2046b84b9bf87fe9d5"
     },
     {
       "path": "scripts/qualification/model-effort/plan.mjs",
-      "sha256": "d9fa13deaf4e21f94ff75165b0fa9104fe0a922395029a1366c58ed236a6dc2f"
+      "sha256": "f60f7127a37bf02eb83fc91dec05ccc990a4b918302efe00d297b8a6c35f8e4c"
     },
     {
       "path": "scripts/qualification/model-effort/review.mjs",
-      "sha256": "86f21a12f6fa024d85f0a23bf3936387ad5b88bb094f4fb6bfa27e85175b5469"
+      "sha256": "b4a4301c3b23d3e007a86f2bf159852b255d799a507d9f24ec0f73dc4a615842"
     },
     {
       "path": "scripts/qualification/model-effort/runtime.mjs",
-      "sha256": "9cb7b61fcbd34d28e1ec79a6c5942159c82129ea6b5860d3732ce2c4e8fbb618"
+      "sha256": "8658f478f7800ce3ba96d0f22a7e4d8feaa2b1af7003e7639ac075ac1b617654"
     },
     {
       "path": "scripts/qualification/model-effort/transport.mjs",
-      "sha256": "85de3b94539aeb0b08ab200f363518a81a37a2d023106baa99f7d96754caac62"
+      "sha256": "10f7bdde216bdb71c8db5bab839628481c64a2006837a9cb2925a26e9a9746a9"
     }
   ]
 }

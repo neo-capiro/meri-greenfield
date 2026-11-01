@@ -1,26 +1,26 @@
 /** Candidate-only entrypoint using the unchanged AgentCore HTTP/query/runner owners. */
 import {fileURLToPath} from 'node:url';
 import {resolve} from 'node:path';
-import {readPlan,LIMITS,fail,sha} from './plan.mjs';
+import {takeRuntimeManifest,LIMITS,fail,commitment} from './plan.mjs';
 import {assertLoaded,observeQuery} from './observe.mjs';
 import {verifyMethod,boundedJson} from './transport.mjs';
 export async function main(args=process.argv.slice(2)){
- if(args.length===1&&args[0]==='--help'){process.stdout.write('Candidate runtime: node runtime.mjs <absolute Release allocation.json>. Existing HTTP port8080; no allocation or model call on startup.\n');return 0;}
- if(args.length!==1)return 2;
+ if(args.length===1&&args[0]==='--help'){process.stdout.write('Candidate runtime: node runtime.mjs. Reads credential-free MERI_MODEL_QUALIFICATION_MANIFEST, deletes it before SDK loading. No file fallback.\n');return 0;}
+ if(args.length!==0)return 2;
  let transport,listener,app;const stop=new AbortController(),shutdown=()=>stop.abort();let timer,result=0;
  try{
-  const plan=readPlan(resolve(args[0]));verifyMethod(plan.methodSha256);
+  const {manifest:plan,allocationSha256}=takeRuntimeManifest();verifyMethod(plan.methodSha256);
   const [{agentcoreEnvironment,createAgentCoreControlTransport},{createAgentCoreQuery},{createAgentCoreWorkspace},{createAgentCoreApplication},{listenRuntime},{sdkQuery}]=await Promise.all([
    import('../../../apps/runtime/agentcore-control-client.mjs'),import('../../../apps/runtime/agentcore-query.mjs'),import('../../../apps/runtime/agentcore-workspace.mjs'),import('../../../apps/runtime/agentcore-http.mjs'),import('../../../apps/runtime/http-server.mjs'),import('../../../apps/worker/conversation/activity.mjs')]);
-  const environment=agentcoreEnvironment();if(environment.origin!==plan.controlOrigin)fail('QUALIFICATION_CONTROL_ORIGIN');
+  const environment=agentcoreEnvironment();if(commitment(environment.origin)!==plan.controlOriginSha256)fail('QUALIFICATION_CONTROL_ORIGIN');
   transport=createAgentCoreControlTransport(environment);
   let used=false,caseId=null;
   // Logs contain bounded factual observations, never credentials, prompt, thinking or tool arguments.
-  const emit=value=>process.stdout.write(JSON.stringify({eventNamespace:'meri-model-qualification/1',allocationSha256:sha(JSON.stringify(plan)),caseId,...value})+'\n');
+  const emit=value=>process.stdout.write(JSON.stringify({eventNamespace:'meri-model-qualification/1',allocationSha256,caseId,...value})+'\n');
   const execute=async(raw,{signal})=>{
    if(used)fail('QUALIFICATION_ALREADY_ATTEMPTED');
-   const c=plan.cases.find(c=>Object.keys(c.binding).every(k=>raw.execution?.binding?.[k]===c.binding[k]));
-   if(!c||raw.sourceEnabled===true||raw.approvedReads?.enabled===true||raw.intents?.enabled===true||Date.now()>=plan.expiresAtMs-LIMITS.cleanupMs)fail('QUALIFICATION_INVOCATION');
+   const selected=plan.cases.find(c=>commitment(raw.execution?.binding)===c.bindingSha256),c=selected?{...selected,binding:raw.execution.binding}:null;
+   if(!c||raw.versions?.imageDigest!==plan.candidateImageDigest||raw.sourceEnabled===true||raw.approvedReads?.enabled===true||raw.intents?.enabled===true||Date.now()>=plan.expiresAtMs-LIMITS.cleanupMs)fail('QUALIFICATION_INVOCATION');
    used=true;caseId=c.id;
    const cutoff=Math.min(Date.now()+LIMITS.caseMs,plan.expiresAtMs-LIMITS.cleanupMs),cancel=new AbortController(),joined=AbortSignal.any([signal,stop.signal,cancel.signal]);
    const deadline=setTimeout(()=>cancel.abort(),Math.max(1,cutoff-Date.now()));let calls=0;
@@ -28,7 +28,7 @@ export async function main(args=process.argv.slice(2)){
    const tapped=async(url,options)=>{
     if(++calls>150)fail('QUALIFICATION_NATIVE_CALL_LIMIT');
     const response=await transport.fetch(url,options),path=new URL(url).pathname;
-    if(path==='/v1/runner/load'&&response.status===200)emit({event:'loaded-request',...assertLoaded(await boundedJson(response.clone(),2097152),c)});
+    if(path==='/v1/runner/load'&&response.status===200){const loaded=await boundedJson(response.clone(),2097152);if(loaded.run?.versions?.imageDigest!==plan.candidateImageDigest)fail('QUALIFICATION_LOADED_IMAGE');emit({event:'loaded-request',...assertLoaded(loaded,c),imageDigest:loaded.run.versions.imageDigest});}
     if(path==='/v1/runner/record-usage'){
      const request=JSON.parse(options.body);
      if(Object.keys(c.binding).some(k=>request.binding?.[k]!==c.binding[k]))fail('QUALIFICATION_USAGE_BINDING');
@@ -37,7 +37,7 @@ export async function main(args=process.argv.slice(2)){
     return response;
    };
    const run=createAgentCoreQuery({origin:environment.origin,fetchImpl:tapped,workspace:createAgentCoreWorkspace(),query:observer.query});
-   emit({event:'attempt-started',requestId:c.requestId,binding:c.binding,cutoffMs:cutoff,releaseBindingSha256:plan.releaseBindingSha256,declaredSource:plan.sourceCommit,declaredImage:plan.imageDigest,methodSha256:plan.methodSha256});
+   emit({event:'attempt-started',requestId:c.requestId,binding:c.binding,cutoffMs:cutoff,releaseBindingSha256:plan.releaseBindingSha256,buildBindingSha256:plan.buildBindingSha256,methodSha256:plan.methodSha256,invocationImageDigest:raw.versions.imageDigest});
    try{const receipt=await run(raw,{signal:joined});emit({event:'settled',receipt,observation:observer.summary(),nativeCalls:calls});return receipt;}
    catch(error){emit({event:'unknown-or-failed',code:/^[A-Z0-9_]{1,100}$/.test(error?.code??'')?error.code:'QUALIFICATION_UNKNOWN',observation:observer.summary(),nativeCalls:calls});throw error;}
    finally{clearTimeout(deadline);}

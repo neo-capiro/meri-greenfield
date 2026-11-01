@@ -10,6 +10,7 @@ export function observeQuery({query,caseId,emit,abort}){
  const expected=selectionFor(caseId);let calls=0,terminal=null,init=null,toolAttempts=0;const efforts=[];
  const observed=input=>{
   if(++calls!==1)fail('QUALIFICATION_SECOND_QUERY');const o=input.options;
+  if(o?.env?.MERI_MODEL_QUALIFICATION_MANIFEST!==undefined)fail('QUALIFICATION_MANIFEST_CHILD_LEAK');
   if(o?.model!==expected.modelId||(expected.effort===null?Object.hasOwn(o,'effort'):o.effort!==expected.effort)||o.env?.CLAUDE_CODE_USE_BEDROCK!=='1'||o.env.AWS_REGION!=='us-east-1'||o.env.CLAUDE_CODE_MAX_OUTPUT_TOKENS!=='32000'||o.env.ANTHROPIC_API_KEY!==undefined||!Number.isInteger(o.maxTurns)||o.maxTurns<1||o.maxTurns>LIMITS.sdkTurnsPerCase||typeof o.maxBudgetUsd!=='number'||o.maxBudgetUsd<=0||o.maxBudgetUsd>LIMITS.estimateMicroUsdPerCase/1e6||o.systemPrompt?.preset!=='claude_code'||o.tools?.preset!=='claude_code')fail('QUALIFICATION_OPTIONS');
   // The sole qualification restriction: deny every tool at the SDK's existing hook boundary.
   const deny=async()=>{toolAttempts++;emit({event:'tool-attempt-denied'});abort();return {hookSpecificOutput:{hookEventName:'PreToolUse',permissionDecision:'deny',permissionDecisionReason:'Qualification forbids all tools and delegation.'}};};
