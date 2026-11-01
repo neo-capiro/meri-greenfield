@@ -17,7 +17,7 @@ import {bareReadToolName} from './vocabulary.mjs';
  * PARAMETER_MISMATCH are the gate's own rules. */
 export const SQL_REFUSAL_GUIDANCE=Object.freeze({
  INVALID_QUERY:'rowLimit must be an integer 1-1000 and sql 1-16384 UTF-8 bytes; a PostgreSQL syntax or type error names the character position to fix. Correct the SQL or the request and run it again.',
- UNSUPPORTED_SQL:'Send exactly one read-only SELECT or WITH ... SELECT: no second statement, SET, SHOW, COPY, LISTEN, EXPLAIN or transaction control, no INSERT, UPDATE, DELETE, MERGE (also inside a CTE) or SELECT INTO, and none of set_config, pg_sleep*, pg_terminate_backend, pg_cancel_backend, advisory locks, pg_notify, lo_*, pg_read_file, pg_ls_dir or dblink. Rewrite the statement and run it again.',
+ UNSUPPORTED_SQL:'Use the current describe_capiro_data contract grammar and Core refusal message to correct the statement. If an older Core omits contract, send exactly one read-only SELECT or WITH ... SELECT. Rewrite the statement and run it again.',
  UNKNOWN_RELATION:'Use a relation name exactly as describe_capiro_data lists it (lowercase, unqualified); one query reads one source, so client projections need source client_records on both calls and never mix with public relations.',
  UNKNOWN_FIELD:'Use column names exactly as describe_capiro_data lists them, qualified by the relation alias when two relations share a name. Re-read the relation with describe_capiro_data relations:[...] when unsure.',
  PARAMETER_MISMATCH:'parameters must bind $1..$n contiguously with every entry referenced; use strings for exact decimals, large integers, dates and UUIDs and numbers only for safe integers.',

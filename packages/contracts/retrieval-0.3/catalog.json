@@ -8535,11 +8535,11 @@
       ],
       "inputSchema": {
         "id": "urn:meri:retrieval:capiro-data:0.2.0#/$defs/CapiroDataDescribeRequest",
-        "sha256": "ad67f7aa301f5a3d4b62af010590735a965bd5730eedf8cb145740b40f0b6bc6"
+        "sha256": "a64acc8c28d245ca40e43820faec41d31c2e8f7cb2945de575b8d8d8c97d3c65"
       },
       "outputSchema": {
         "id": "urn:meri:retrieval:capiro-data:0.2.0#/$defs/CapiroDataDescribeOutput",
-        "sha256": "ad67f7aa301f5a3d4b62af010590735a965bd5730eedf8cb145740b40f0b6bc6"
+        "sha256": "a64acc8c28d245ca40e43820faec41d31c2e8f7cb2945de575b8d8d8c97d3c65"
       },
       "aliases": [],
       "sideEffect": "none",
@@ -8601,11 +8601,11 @@
       ],
       "inputSchema": {
         "id": "urn:meri:retrieval:capiro-data:0.2.0#/$defs/CapiroDataQueryRequest",
-        "sha256": "ad67f7aa301f5a3d4b62af010590735a965bd5730eedf8cb145740b40f0b6bc6"
+        "sha256": "a64acc8c28d245ca40e43820faec41d31c2e8f7cb2945de575b8d8d8c97d3c65"
       },
       "outputSchema": {
         "id": "urn:meri:retrieval:capiro-data:0.2.0#/$defs/CapiroDataQueryOutput",
-        "sha256": "ad67f7aa301f5a3d4b62af010590735a965bd5730eedf8cb145740b40f0b6bc6"
+        "sha256": "a64acc8c28d245ca40e43820faec41d31c2e8f7cb2945de575b8d8d8c97d3c65"
       },
       "aliases": [],
       "sideEffect": "none",
@@ -12025,11 +12025,11 @@
       ],
       "inputSchema": {
         "id": "urn:meri:retrieval:capiro-data:0.3.0#/$defs/CapiroDataDescribeRequest",
-        "sha256": "43bf68dc7044a48eb68bf8cb088b302f92689637cb29b99ada5aaa2c067c63fb"
+        "sha256": "791dbc39ca84fe4870ae1a29f290667dca58517d892ba83e995aad5f840e6081"
       },
       "outputSchema": {
         "id": "urn:meri:retrieval:capiro-data:0.3.0#/$defs/CapiroDataDescribeOutput",
-        "sha256": "43bf68dc7044a48eb68bf8cb088b302f92689637cb29b99ada5aaa2c067c63fb"
+        "sha256": "791dbc39ca84fe4870ae1a29f290667dca58517d892ba83e995aad5f840e6081"
       },
       "aliases": [],
       "sideEffect": "none",
@@ -12091,11 +12091,11 @@
       ],
       "inputSchema": {
         "id": "urn:meri:retrieval:capiro-data:0.3.0#/$defs/CapiroDataQueryRequest",
-        "sha256": "43bf68dc7044a48eb68bf8cb088b302f92689637cb29b99ada5aaa2c067c63fb"
+        "sha256": "791dbc39ca84fe4870ae1a29f290667dca58517d892ba83e995aad5f840e6081"
       },
       "outputSchema": {
         "id": "urn:meri:retrieval:capiro-data:0.3.0#/$defs/CapiroDataQueryOutput",
-        "sha256": "43bf68dc7044a48eb68bf8cb088b302f92689637cb29b99ada5aaa2c067c63fb"
+        "sha256": "791dbc39ca84fe4870ae1a29f290667dca58517d892ba83e995aad5f840e6081"
       },
       "aliases": [],
       "sideEffect": "none",

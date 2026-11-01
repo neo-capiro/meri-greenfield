@@ -31,8 +31,8 @@ test('every closed Core SQL refusal code yields one fixed correction notice and 
   assert.equal(notice.text,`Notice: ${operation.id} refused this request with ${code}. ${SQL_REFUSAL_GUIDANCE[code]} ${NOTHING}`);
   assert.equal(notice.text.includes('PRIVATE'),false);
  }
- assert.match(SQL_REFUSAL_GUIDANCE.UNSUPPORTED_SQL,/exactly one read-only SELECT or WITH \.\.\. SELECT: no second statement, SET, SHOW, COPY, LISTEN, EXPLAIN or transaction control/);
- assert.match(SQL_REFUSAL_GUIDANCE.UNSUPPORTED_SQL,/set_config, pg_sleep\*, pg_terminate_backend, pg_cancel_backend, advisory locks, pg_notify, lo_\*, pg_read_file, pg_ls_dir or dblink/);
+ assert.match(SQL_REFUSAL_GUIDANCE.UNSUPPORTED_SQL,/current describe_capiro_data contract grammar and Core refusal message/);
+ assert.doesNotMatch(SQL_REFUSAL_GUIDANCE.UNSUPPORTED_SQL,/pg_sleep|dblink|lo_\*/);
  assert.match(SQL_REFUSAL_GUIDANCE.UNKNOWN_RELATION,/one query reads one source/);
  assert.match(SQL_REFUSAL_GUIDANCE.INVALID_QUERY,/PostgreSQL syntax or type error names the character position/);
  for(const text of Object.values(SQL_REFUSAL_GUIDANCE))assert.doesNotMatch(text,/No string literals|SELECT \*|accepted grammar|key equality|base columns|NULLS LAST/);
