@@ -8,21 +8,24 @@ import {createPreparedSchedulePoolFixture} from '../../../control/intents/test/p
 import {binding as seedBinding,scopes as seedScopes,id} from '../../../control/conversations/test/application-fixture.mjs';
 import {canonicalSha256 as hash} from '../../../../packages/contracts/validate.mjs';
 import {createMetadataPoolFixture} from '../../../control/commands/approval-metadata/test/fixture.mjs';
+import {createTurnTelemetry} from '../../telemetry/turn-context.mjs';
+import {INTENT_AVAILABILITY_CONTROL_MS} from '../../../../packages/runtime/runner-load-budget.mjs';
 
 const binding={...seedBinding,tenantId:id(80),actorId:id(81)},clientScopes=seedScopes.map(s=>({...s,tenantId:binding.tenantId}));
 const at=1800000000000,operation={id:'create_word',version:'0.2.0'},deliveryId='sdk:'+'a'.repeat(64);
-function fixture({enabled=true,documents=true,tasks=false,general=false,retention,resolveClients=false}={}){
+/** `state.now` is the one clock of the context, the transport and any telemetry; `state.afterCore` runs inside the authority read. */
+function fixture({enabled=true,documents=true,tasks=false,general=false,retention,resolveClients=false,telemetry}={}){
  const scopes=general?[{tenantId:binding.tenantId,kind:'private-user',resourceId:binding.actorId,policyRevision:clientScopes[0].policyRevision}]:clientScopes,selectedClientId=general?null:id(5);
- const sql=createPreparedSchedulePoolFixture(),state={auth:0,core:0,prepared:0,revoked:false,changed:false,afterPrepare:null};
+ const sql=createPreparedSchedulePoolFixture(),state={auth:0,core:0,prepared:0,revoked:false,changed:false,afterPrepare:null,afterCore:null,now:at};
  const metadata=createMetadataPoolFixture(),pool={options:{connectionTimeoutMillis:30000,query_timeout:30000},async connect(){const intent=await sql.pool.connect(),meta=await metadata.pool.connect();return {async query(q,args){
   if((typeof q==='string'?q:q.text).includes('meri_commands.approval_metadata')){const answer=await meta.query(q);await state.afterMetadata?.();return answer;}
   return intent.query(q,args);
  },release(){intent.release();meta.release();}};}};
  const executionIdentity={binding,executionKey:hash(binding),executionId:hash(binding),planSha256:'a'.repeat(64),expiresAtMs:at+60000,runtimeSessionId:id(50)};
- const context={configuration:{sourceEnabled:true,intents:{enabled,...(tasks?{core:{origin:'https://core.invalid',serviceSecretFile:'/synthetic'}}:{})},limits:{requestMs:3000}},pool,now:()=>at};
+ const context={configuration:{sourceEnabled:true,intents:{enabled,...(tasks?{core:{origin:'https://core.invalid',serviceSecretFile:'/synthetic'}}:{})},limits:{requestMs:3000}},pool,now:()=>state.now};
  const current={execution:executionIdentity,scopes,selectedClientId,policyRevision:scopes[0].policyRevision,state:'running'};
  const execution={async authenticate({binding:b,credential}){state.auth++;if(credential!=='actual-execution'||hash(b)!==hash(binding)||state.revoked)throw Error('refused');return structuredClone(state.changed?{...current,selectedClientId:id(6)}:current);}};
- const transitionAuthority={async readCurrent(value){state.core++;assert.deepEqual(value.binding,binding);if(state.revoked)throw Error('revoked');return {binding,scopes,selectedClientId,policyRevision:current.policyRevision,checkedAtMs:at,expiresAtMs:at+30000};}};
+ const transitionAuthority={async readCurrent(value){state.core++;assert.deepEqual(value.binding,binding);if(state.revoked)throw Error('revoked');await state.afterCore?.();return {binding,scopes,selectedClientId,policyRevision:current.policyRevision,checkedAtMs:state.now,expiresAtMs:state.now+30000};}};
  if(documents)registerDocumentIntentOwner(context,value=>{assert.deepEqual(value.clientResolution,{clientId:selectedClientId});return [{operation,owner:'document',binding,async prepare(){state.prepared++;await state.afterPrepare?.();return {status:'draft',version:{binding,scopes}};}}];});
  state.nativeCredential='synthetic-native';state.clientLookups=0;state.visibleClients=[id(5)];
  const nativeCredentials={nativeCredentialFor(){if(!state.nativeCredential)throw Error('no session');return {credential:state.nativeCredential,expiresAtMs:at+30000};}};
@@ -34,7 +37,7 @@ function fixture({enabled=true,documents=true,tasks=false,general=false,retentio
   assert(path.endsWith('/current'));return Response.json({...identity,role:'standard_user',permissions:[],clientIds:state.visibleClients,membershipRevision:'b'.repeat(64),contextRevision:'c'.repeat(64),conversationId:binding.conversationId,selectedClientId});
  }
  const resolveRun=createAgentCoreIntentResolver({context,execution,transitionAuthority,...(resolveClients?{nativeCredentials,fetchImpl}:{})});
- const app=createRunnerIntentsApplication({resolveRun,enabled:true,now:()=>at,...(retention?{retention}:{}),limits:{maxRequestBytes:65536,maxResponseBytes:262144,maxPrepareMs:3000}});
+ const app=createRunnerIntentsApplication({resolveRun,enabled:true,now:()=>state.now,...(retention?{retention}:{}),...(telemetry?{telemetry}:{}),limits:{maxRequestBytes:65536,maxResponseBytes:262144,maxPrepareMs:3000}});
  const post=(route='prepare',extra={},credential='actual-execution')=>app.handle(new Request('https://control.invalid/v1/runner/intents/'+route,{method:'POST',headers:{authorization:'Bearer '+credential,'content-type':'application/json'},body:JSON.stringify({binding,...(route==='prepare'?{operation,deliveryId,arguments:{title:'reviewed'}}:{}),...extra})}));
  return {state,sql,metadata,post,resolveRun,context,scopes};
 }
@@ -70,6 +73,26 @@ test('current authority loss after preparation retains custody and does not rele
 });
 test('changed selected client is refused before any SQL or document work',async()=>{
  const f=fixture();f.state.changed=true;assert.notEqual((await f.post()).status,200);assert.equal(f.sql.state.connects,0);assert.equal(f.state.prepared,0);
+});
+test('availability authenticates the execution once and reads current authority once',async()=>{
+ const f=fixture();const available=await f.post('availability');assert.equal(available.status,200,await available.clone().text());
+ assert.equal(f.state.auth,1);assert.equal(f.state.core,1);
+ // Preparation still runs the preparer's own fresh/authority/fresh check on top of the entry check.
+ assert.equal((await f.post()).status,200);assert.ok(f.state.auth>=1+1+2,String(f.state.auth));assert.ok(f.state.core>=1+1+1,String(f.state.core));
+});
+test('a 4 s authority chain answers within the shared control bound; past it the offer is DEADLINE and explained once',async t=>{
+ const lines=[],telemetry=createTurnTelemetry({service:'control',write:line=>lines.push(JSON.parse(line)),now:()=>at});t.after(()=>telemetry.close());
+ const slow=fixture({telemetry});slow.state.afterCore=()=>{slow.state.now+=4000;};
+ const answered=await slow.post('availability');assert.equal(answered.status,200,await answered.clone().text());assert.deepEqual((await answered.json()).operations,[operation]);assert.deepEqual(lines,[]);
+ const late=fixture({telemetry});late.state.afterCore=()=>{late.state.now+=INTENT_AVAILABILITY_CONTROL_MS+1000;};
+ const refused=await late.post('availability');assert.equal(refused.status,408);assert.deepEqual(await refused.json(),{error:{code:'DEADLINE'}});
+ assert.equal(lines.length,1);const [line]=lines;
+ assert.equal(line.event,'meri.intent.availability');assert.equal(line.layer,'control');assert.equal(line.code,'DEADLINE');assert.equal(line.elapsedMs,INTENT_AVAILABILITY_CONTROL_MS+1000);
+ assert.equal(line.runId,binding.runId);assert.equal(line.attemptId,binding.attemptId);assert.equal(JSON.stringify(line).includes(binding.tenantId),false);
+});
+test('availability verifies the serving fence once and never takes the release lock',async()=>{
+ let verified=0;const f=fixture({retention:{async assertServable(subject){verified++;assert.deepEqual(subject,{tenantId:binding.tenantId,kind:'conversation',subjectId:binding.conversationId});},withRelease(){assert.fail('availability retains nothing to release');}}});
+ assert.equal((await f.post('availability')).status,200);assert.equal(verified,1);
 });
 test('suppression after authentication but before preparation performs no journal work',async()=>{
  const f=fixture({retention:{async assertServable(){throw Error('suppressed');},withRelease(){assert.fail('no release');}}});

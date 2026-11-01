@@ -10,7 +10,7 @@ const fields={runId,attemptId,conversationId:runId,requestId:'a'.repeat(32),stag
  runOwner:{'runner/load':{'2xx':1}},runOwnerMs:3,origin:'runtime',code:'DEADLINE',class:'ERROR',exit:'none',signal:'none',cause:'none',
  msgHash:'012345abcdef',outcome:'completed',refusal:{gate:'pair',step:'anything-private',code:'DEADLINE'},bootstrapMs:2,bedrockHeadersMs:3,
  firstChunkMs:4,streamEndMs:5,settleMs:6,ownerExchanges:{operation:{OPEN:1}},ownerExchangeMs:2,inputTokens:3,outputTokens:4,
- component:'pair',transition:'quarantined',reason:'PRODUCT_MODEL_ACCOUNTING_QUARANTINED',windowMs:60000,telemetryDropped:0,statusClass:'503',count:1,attribution:'turn'};
+ component:'pair',transition:'quarantined',reason:'PRODUCT_MODEL_ACCOUNTING_QUARANTINED',windowMs:60000,telemetryDropped:0,statusClass:'503',count:1,attribution:'turn',layer:'control',elapsedMs:8123};
 
 for(const event of Object.keys(LINE_SCHEMAS))test(`${event}: explicit schema and poison pin`,()=>{
  const output=[],emitter=createTurnLineEmitter({service:event==='meri.model.request'?'proxy':'control',write:line=>output.push(line),now:()=>123});
