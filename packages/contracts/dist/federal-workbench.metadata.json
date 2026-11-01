@@ -1,5 +1,5 @@
 {
-  "version": "1.6.0",
+  "version": "1.7.0",
   "sources": [
     {
       "path": "meri.schema.json",
@@ -19,27 +19,39 @@
     },
     {
       "path": "federal-workbench/schema.mjs",
-      "sha256": "605f846ca0ebe84487153995c1a8fd89079373bf5d86f71e9975a9d18d4016e0"
+      "sha256": "ac19b8a83e2d55f86fb6a7dc4426fc6227f417b8b190c8d365a743076ebda590"
     },
     {
       "path": "federal-workbench/receive.mjs",
-      "sha256": "a1dc59bd696f35224ae77e137d9367de96257ac1e803cb2fb1b46a4231362e53"
+      "sha256": "259b10d845c7a79f165ac4d7793e167918200a0351fdb5373f321924c0a031f0"
     },
     {
       "path": "federal-workbench/source-layout.mjs",
-      "sha256": "25ccefd4352a6308a60045be90db90d786c93e6ec345d9bbb1325cbad9a7999f"
+      "sha256": "9a9bcc57abe841bc0694b9662de7f8ec7f98a0228a0b5bccc8a2e0188f336185"
     },
     {
       "path": "federal-workbench/schema-receipt.mjs",
-      "sha256": "0f5e32be322378fe37a634f47733d42621917120c0a510c27d342c987c28d8c3"
+      "sha256": "8a8ffcff8e8bf60ebe9da272bee3fd017a593c3fddf7a07d1d362881f47972c6"
+    },
+    {
+      "path": "federal-workbench/xml-text-runs.mjs",
+      "sha256": "5e38101fd0ba58944c54f95e747cd7193863ca45b234461fb1e89526fa223de1"
+    },
+    {
+      "path": "federal-workbench/structural-dossier.mjs",
+      "sha256": "24345e511fdb441884012f278b64a4fec1dd4ed2ef9c1160003705f523a5d388"
+    },
+    {
+      "path": "federal-workbench/structural-receipt.mjs",
+      "sha256": "ae606978e6bd381fe02126a712ceea3c98ac445db93b4b6b398bf4e0db27794a"
     },
     {
       "path": "federal-workbench/api.d.ts",
-      "sha256": "5d982efedbbd460d405253b03d9348bf07259379133e92562cf09f6661ade705"
+      "sha256": "6fc1590758c20902af4d6be78c29ca73a754aff5eb6fb77dffc3726d0d664d00"
     },
     {
       "path": "generate-federal-workbench.mjs",
-      "sha256": "cc19482661c2746c6522d3d7e71cf89cd586f0ec1d612288c38bafe641cd3635"
+      "sha256": "df0100a0bcf1557f01a99ff1ad7a5a44c93589c161d9f4065bb243d3a26a6036"
     }
   ]
 }

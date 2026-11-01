@@ -1,6 +1,6 @@
 /** Deterministic identity of the pinned, offline USLM schema closure. A receipt is bound to exact UTF-8 bytes;
  * checking its shape here does not run XSD validation. The server's configured validator owns that execution. */
-import {FEDERAL_USLM_SCHEMA_PARSER} from './source-layout.mjs';
+import {isSchemaUslm} from './source-layout.mjs';
 export const USLM_SCHEMA_PROFILE='uslm-2.1.0';
 export const USLM_SCHEMA_SHA256='c68c058345f99689144c183c99d47552f3d56aa365ff1380127a9180fe18ce44';
 const fault=()=>{throw Object.assign(Error('DRAFT_SCHEMA_RECEIPT_INVALID'),{code:'DRAFT_SCHEMA_RECEIPT_INVALID'});};
@@ -13,7 +13,7 @@ export function assertSchemaReceipt(receipt,sha256,length){
 }
 export function assertPreparedSchema(prepared){
  const {draft,schemaValidation}=prepared;
- if(draft.source.parserVersion!==FEDERAL_USLM_SCHEMA_PARSER){if(Object.hasOwn(prepared,'schemaValidation'))fault();return;}
+ if(!isSchemaUslm(draft.source.parserVersion)){if(Object.hasOwn(prepared,'schemaValidation'))fault();return;}
  if(!schemaValidation||Object.keys(schemaValidation).sort().join(',')!=='consolidated,source')fault();
  assertSchemaReceipt(draft.source.validation,draft.source.sha256,bytes(draft.source.text));
  assertSchemaReceipt(schemaValidation.source,draft.source.sha256,bytes(draft.source.text));

@@ -76,6 +76,9 @@
         },
         "validationProfile": {
           "const": "uslm-2.1.0"
+        },
+        "sourceProfile": {
+          "const": "uslm-text-runs/1"
         }
       },
       "required": [
@@ -240,7 +243,9 @@
             "operative",
             "consolidated",
             "redline",
-            "docx"
+            "docx",
+            "xml",
+            "pdf"
           ]
         },
         "deliveryId": {
@@ -533,7 +538,9 @@
             "operative",
             "consolidated",
             "redline",
-            "docx"
+            "docx",
+            "xml",
+            "pdf"
           ]
         },
         "review": {
@@ -555,6 +562,291 @@
         },
         "publication": {
           "$ref": "#/$defs/ArtifactCreatedResult_183a755e"
+        },
+        "structuralReceipt": {
+          "type": "object",
+          "properties": {
+            "profile": {
+              "const": "uslm-word/1"
+            },
+            "sourceSha256": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            "consolidatedSha256": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            "revisionSha256": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            "specSha256": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            "executionRequestSha256": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            "mappingSha256": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            "mapping": {
+              "type": "array",
+              "maxItems": 393216,
+              "items": {
+                "oneOf": [
+                  {
+                    "type": "object",
+                    "properties": {
+                      "kind": {
+                        "const": "run"
+                      },
+                      "blockIndex": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 131072
+                      },
+                      "runIndex": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 131072
+                      },
+                      "sourceStart": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 131072
+                      },
+                      "sourceEnd": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 131072
+                      },
+                      "rawStart": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 131072
+                      },
+                      "rawEnd": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 131072
+                      },
+                      "decodedStart": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 131072
+                      },
+                      "decodedEnd": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 131072
+                      },
+                      "textKind": {
+                        "enum": [
+                          "text",
+                          "cdata"
+                        ]
+                      },
+                      "part": {
+                        "enum": [
+                          "consolidated",
+                          "original",
+                          "revised"
+                        ]
+                      }
+                    },
+                    "required": [
+                      "kind",
+                      "blockIndex",
+                      "runIndex",
+                      "sourceStart",
+                      "sourceEnd",
+                      "rawStart",
+                      "rawEnd",
+                      "decodedStart",
+                      "decodedEnd",
+                      "textKind",
+                      "part"
+                    ],
+                    "additionalProperties": false
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "kind": {
+                        "const": "cell"
+                      },
+                      "blockIndex": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 131072
+                      },
+                      "rowIndex": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 131072
+                      },
+                      "columnIndex": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 131072
+                      },
+                      "rawStart": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 131072
+                      },
+                      "rawEnd": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 131072
+                      },
+                      "decodedStart": {
+                        "const": 0
+                      },
+                      "decodedEnd": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 131072
+                      },
+                      "segments": {
+                        "type": "array",
+                        "maxItems": 131072,
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "sourceStart": {
+                              "type": "integer",
+                              "minimum": 0,
+                              "maximum": 131072
+                            },
+                            "sourceEnd": {
+                              "type": "integer",
+                              "minimum": 0,
+                              "maximum": 131072
+                            },
+                            "rawStart": {
+                              "type": "integer",
+                              "minimum": 0,
+                              "maximum": 131072
+                            },
+                            "rawEnd": {
+                              "type": "integer",
+                              "minimum": 0,
+                              "maximum": 131072
+                            },
+                            "decodedStart": {
+                              "type": "integer",
+                              "minimum": 0,
+                              "maximum": 131072
+                            },
+                            "decodedEnd": {
+                              "type": "integer",
+                              "minimum": 0,
+                              "maximum": 131072
+                            },
+                            "textKind": {
+                              "enum": [
+                                "text",
+                                "cdata"
+                              ]
+                            }
+                          },
+                          "required": [
+                            "sourceStart",
+                            "sourceEnd",
+                            "rawStart",
+                            "rawEnd",
+                            "decodedStart",
+                            "decodedEnd",
+                            "textKind"
+                          ],
+                          "additionalProperties": false
+                        }
+                      },
+                      "part": {
+                        "enum": [
+                          "consolidated",
+                          "original",
+                          "revised"
+                        ]
+                      }
+                    },
+                    "required": [
+                      "kind",
+                      "blockIndex",
+                      "rowIndex",
+                      "columnIndex",
+                      "rawStart",
+                      "rawEnd",
+                      "decodedStart",
+                      "decodedEnd",
+                      "segments",
+                      "part"
+                    ],
+                    "additionalProperties": false
+                  }
+                ]
+              }
+            },
+            "omissions": {
+              "type": "array",
+              "maxItems": 393216,
+              "items": {
+                "type": "object",
+                "properties": {
+                  "rawStart": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 131072
+                  },
+                  "rawEnd": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 131072
+                  },
+                  "reason": {
+                    "enum": [
+                      "metadata",
+                      "display-no",
+                      "indentation-whitespace",
+                      "prolog",
+                      "trailing-trivia"
+                    ]
+                  },
+                  "part": {
+                    "enum": [
+                      "consolidated",
+                      "original",
+                      "revised"
+                    ]
+                  }
+                },
+                "required": [
+                  "rawStart",
+                  "rawEnd",
+                  "reason",
+                  "part"
+                ],
+                "additionalProperties": false
+              }
+            }
+          },
+          "required": [
+            "profile",
+            "sourceSha256",
+            "consolidatedSha256",
+            "revisionSha256",
+            "specSha256",
+            "executionRequestSha256",
+            "mappingSha256",
+            "mapping",
+            "omissions"
+          ],
+          "additionalProperties": false
         }
       },
       "required": [
@@ -1180,6 +1472,235 @@
                     "items": {
                       "type": "string",
                       "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]{0,127}$"
+                    }
+                  }
+                },
+                "required": [
+                  "id",
+                  "label",
+                  "start",
+                  "end",
+                  "sha256",
+                  "ancestorPath"
+                ],
+                "additionalProperties": false
+              },
+              "minItems": 1,
+              "maxItems": 1024
+            },
+            "validation": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "profile",
+                "schemaSha256",
+                "sourceSha256",
+                "bytes",
+                "valid"
+              ],
+              "properties": {
+                "profile": {
+                  "const": "uslm-2.1.0"
+                },
+                "schemaSha256": {
+                  "const": "c68c058345f99689144c183c99d47552f3d56aa365ff1380127a9180fe18ce44"
+                },
+                "sourceSha256": {
+                  "type": "string",
+                  "pattern": "^[a-f0-9]{64}$"
+                },
+                "bytes": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 131072
+                },
+                "valid": {
+                  "const": true
+                }
+              }
+            }
+          },
+          "required": [
+            "documentId",
+            "publisher",
+            "sourceVersion",
+            "sourceUrl",
+            "publishedAt",
+            "parserVersion",
+            "sha256",
+            "text",
+            "coverage",
+            "scopes",
+            "validation"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "documentId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 512
+            },
+            "publisher": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 512
+            },
+            "sourceVersion": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 512
+            },
+            "sourceUrl": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 2048
+            },
+            "publishedAt": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "parserVersion": {
+              "const": "federal-uslm-xml/3"
+            },
+            "sha256": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            "text": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 131072
+            },
+            "coverage": {
+              "type": "object",
+              "properties": {
+                "complete": {
+                  "type": "boolean"
+                },
+                "limitations": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 1000
+                  },
+                  "minItems": 1,
+                  "maxItems": 32
+                }
+              },
+              "required": [
+                "complete",
+                "limitations"
+              ],
+              "additionalProperties": false
+            },
+            "scopes": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]{0,127}$"
+                  },
+                  "label": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 512
+                  },
+                  "start": {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  "end": {
+                    "type": "integer",
+                    "minimum": 1
+                  },
+                  "sha256": {
+                    "type": "string",
+                    "pattern": "^[a-f0-9]{64}$"
+                  },
+                  "ancestorPath": {
+                    "type": "array",
+                    "maxItems": 127,
+                    "items": {
+                      "type": "string",
+                      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]{0,127}$"
+                    }
+                  },
+                  "textRun": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "kind",
+                      "decoded",
+                      "spans"
+                    ],
+                    "properties": {
+                      "kind": {
+                        "enum": [
+                          "text",
+                          "cdata"
+                        ]
+                      },
+                      "decoded": {
+                        "type": "string",
+                        "maxLength": 131072
+                      },
+                      "spans": {
+                        "type": "array",
+                        "maxItems": 131072,
+                        "items": {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "required": [
+                            "kind",
+                            "rawStart",
+                            "rawEnd",
+                            "decodedStart",
+                            "decodedEnd"
+                          ],
+                          "properties": {
+                            "kind": {
+                              "enum": [
+                                "literal",
+                                "entity",
+                                "newline"
+                              ]
+                            },
+                            "rawStart": {
+                              "type": "integer",
+                              "minimum": 0,
+                              "maximum": 131072
+                            },
+                            "rawEnd": {
+                              "type": "integer",
+                              "minimum": 0,
+                              "maximum": 131072
+                            },
+                            "decodedStart": {
+                              "type": "integer",
+                              "minimum": 0,
+                              "maximum": 131072
+                            },
+                            "decodedEnd": {
+                              "type": "integer",
+                              "minimum": 0,
+                              "maximum": 131072
+                            }
+                          }
+                        }
+                      }
                     }
                   }
                 },
@@ -2482,6 +3003,9 @@
                 "before",
                 "after"
               ]
+            },
+            "textMode": {
+              "const": "decoded-xml"
             }
           },
           "required": [
@@ -2556,6 +3080,211 @@
       ],
       "additionalProperties": false
     },
+    "Run_4453fced": {
+      "type": "object",
+      "properties": {
+        "text": {
+          "type": "string",
+          "maxLength": 100000
+        },
+        "bold": {
+          "type": "boolean"
+        },
+        "italic": {
+          "type": "boolean"
+        },
+        "strike": {
+          "type": "boolean"
+        },
+        "underline": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "text"
+      ],
+      "additionalProperties": false
+    },
+    "Paragraph_a313d7be": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "const": "paragraph"
+        },
+        "quoteDepth": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 8
+        },
+        "runs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Run_4453fced"
+          },
+          "minItems": 1,
+          "maxItems": 100
+        },
+        "style": {
+          "enum": [
+            "Normal",
+            "Title",
+            "Heading 1",
+            "Heading 2",
+            "List Bullet"
+          ]
+        }
+      },
+      "required": [
+        "kind",
+        "runs"
+      ],
+      "additionalProperties": false
+    },
+    "Table_02fd45f0": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "const": "table"
+        },
+        "rows": {
+          "type": "array",
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "maxLength": 100000
+            },
+            "minItems": 1,
+            "maxItems": 40
+          },
+          "minItems": 1,
+          "maxItems": 1000
+        }
+      },
+      "required": [
+        "kind",
+        "rows"
+      ],
+      "additionalProperties": false
+    },
+    "Image_1ed45a41": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "const": "image"
+        },
+        "assetId": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_-]{1,64}$"
+        },
+        "widthInches": {
+          "type": "number",
+          "exclusiveMinimum": 0,
+          "maximum": 12
+        },
+        "heightInches": {
+          "type": "number",
+          "exclusiveMinimum": 0,
+          "maximum": 12
+        }
+      },
+      "required": [
+        "kind",
+        "assetId",
+        "widthInches",
+        "heightInches"
+      ],
+      "additionalProperties": false
+    },
+    "Chart_b9b96b0e": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "enum": [
+            "bar",
+            "line"
+          ]
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "categories": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "maxLength": 100000
+          },
+          "minItems": 1,
+          "maxItems": 100
+        },
+        "series": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 200
+              },
+              "values": {
+                "type": "array",
+                "items": {
+                  "type": "number"
+                },
+                "minItems": 1,
+                "maxItems": 100
+              }
+            },
+            "required": [
+              "name",
+              "values"
+            ],
+            "additionalProperties": false
+          },
+          "minItems": 1,
+          "maxItems": 10
+        }
+      },
+      "required": [
+        "kind",
+        "title",
+        "categories",
+        "series"
+      ],
+      "additionalProperties": false
+    },
+    "items_c92293cc": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/Paragraph_a313d7be"
+        },
+        {
+          "$ref": "#/$defs/Table_02fd45f0"
+        },
+        {
+          "$ref": "#/$defs/Image_1ed45a41"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "chart"
+            },
+            "chart": {
+              "$ref": "#/$defs/Chart_b9b96b0e"
+            }
+          },
+          "required": [
+            "kind",
+            "chart"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    },
     "FederalDraftCompilation_66ff9248": {
       "oneOf": [
         {
@@ -2566,7 +3295,8 @@
                 "federal-plain-text/1",
                 "federal-scoped-text/2",
                 "federal-uslm-xml/1",
-                "federal-uslm-xml/2"
+                "federal-uslm-xml/2",
+                "federal-uslm-xml/3"
               ]
             },
             "source": {
@@ -2627,7 +3357,8 @@
                       "numbering",
                       "cross-references",
                       "arithmetic",
-                      "substantive-law"
+                      "substantive-law",
+                      "structural-export"
                     ]
                   },
                   "status": {
@@ -2692,6 +3423,774 @@
             },
             "approval": {
               "const": "unapproved"
+            },
+            "structuralProjection": {
+              "oneOf": [
+                {
+                  "type": "object",
+                  "properties": {
+                    "profile": {
+                      "const": "uslm-word/1"
+                    },
+                    "status": {
+                      "const": "supported"
+                    },
+                    "consolidated": {
+                      "anyOf": [
+                        {
+                          "type": "object",
+                          "properties": {
+                            "blocks": {
+                              "type": "array",
+                              "minItems": 0,
+                              "maxItems": 1000,
+                              "items": {
+                                "$ref": "#/$defs/items_c92293cc"
+                              }
+                            },
+                            "mapping": {
+                              "type": "array",
+                              "maxItems": 131072,
+                              "items": {
+                                "oneOf": [
+                                  {
+                                    "type": "object",
+                                    "properties": {
+                                      "kind": {
+                                        "const": "run"
+                                      },
+                                      "blockIndex": {
+                                        "type": "integer",
+                                        "minimum": 0,
+                                        "maximum": 131072
+                                      },
+                                      "runIndex": {
+                                        "type": "integer",
+                                        "minimum": 0,
+                                        "maximum": 131072
+                                      },
+                                      "sourceStart": {
+                                        "type": "integer",
+                                        "minimum": 0,
+                                        "maximum": 131072
+                                      },
+                                      "sourceEnd": {
+                                        "type": "integer",
+                                        "minimum": 0,
+                                        "maximum": 131072
+                                      },
+                                      "rawStart": {
+                                        "type": "integer",
+                                        "minimum": 0,
+                                        "maximum": 131072
+                                      },
+                                      "rawEnd": {
+                                        "type": "integer",
+                                        "minimum": 0,
+                                        "maximum": 131072
+                                      },
+                                      "decodedStart": {
+                                        "type": "integer",
+                                        "minimum": 0,
+                                        "maximum": 131072
+                                      },
+                                      "decodedEnd": {
+                                        "type": "integer",
+                                        "minimum": 0,
+                                        "maximum": 131072
+                                      },
+                                      "textKind": {
+                                        "enum": [
+                                          "text",
+                                          "cdata"
+                                        ]
+                                      }
+                                    },
+                                    "required": [
+                                      "kind",
+                                      "blockIndex",
+                                      "runIndex",
+                                      "sourceStart",
+                                      "sourceEnd",
+                                      "rawStart",
+                                      "rawEnd",
+                                      "decodedStart",
+                                      "decodedEnd",
+                                      "textKind"
+                                    ],
+                                    "additionalProperties": false
+                                  },
+                                  {
+                                    "type": "object",
+                                    "properties": {
+                                      "kind": {
+                                        "const": "cell"
+                                      },
+                                      "blockIndex": {
+                                        "type": "integer",
+                                        "minimum": 0,
+                                        "maximum": 131072
+                                      },
+                                      "rowIndex": {
+                                        "type": "integer",
+                                        "minimum": 0,
+                                        "maximum": 131072
+                                      },
+                                      "columnIndex": {
+                                        "type": "integer",
+                                        "minimum": 0,
+                                        "maximum": 131072
+                                      },
+                                      "rawStart": {
+                                        "type": "integer",
+                                        "minimum": 0,
+                                        "maximum": 131072
+                                      },
+                                      "rawEnd": {
+                                        "type": "integer",
+                                        "minimum": 0,
+                                        "maximum": 131072
+                                      },
+                                      "decodedStart": {
+                                        "const": 0
+                                      },
+                                      "decodedEnd": {
+                                        "type": "integer",
+                                        "minimum": 0,
+                                        "maximum": 131072
+                                      },
+                                      "segments": {
+                                        "type": "array",
+                                        "maxItems": 131072,
+                                        "items": {
+                                          "type": "object",
+                                          "properties": {
+                                            "sourceStart": {
+                                              "type": "integer",
+                                              "minimum": 0,
+                                              "maximum": 131072
+                                            },
+                                            "sourceEnd": {
+                                              "type": "integer",
+                                              "minimum": 0,
+                                              "maximum": 131072
+                                            },
+                                            "rawStart": {
+                                              "type": "integer",
+                                              "minimum": 0,
+                                              "maximum": 131072
+                                            },
+                                            "rawEnd": {
+                                              "type": "integer",
+                                              "minimum": 0,
+                                              "maximum": 131072
+                                            },
+                                            "decodedStart": {
+                                              "type": "integer",
+                                              "minimum": 0,
+                                              "maximum": 131072
+                                            },
+                                            "decodedEnd": {
+                                              "type": "integer",
+                                              "minimum": 0,
+                                              "maximum": 131072
+                                            },
+                                            "textKind": {
+                                              "enum": [
+                                                "text",
+                                                "cdata"
+                                              ]
+                                            }
+                                          },
+                                          "required": [
+                                            "sourceStart",
+                                            "sourceEnd",
+                                            "rawStart",
+                                            "rawEnd",
+                                            "decodedStart",
+                                            "decodedEnd",
+                                            "textKind"
+                                          ],
+                                          "additionalProperties": false
+                                        }
+                                      }
+                                    },
+                                    "required": [
+                                      "kind",
+                                      "blockIndex",
+                                      "rowIndex",
+                                      "columnIndex",
+                                      "rawStart",
+                                      "rawEnd",
+                                      "decodedStart",
+                                      "decodedEnd",
+                                      "segments"
+                                    ],
+                                    "additionalProperties": false
+                                  }
+                                ]
+                              }
+                            },
+                            "omissions": {
+                              "type": "array",
+                              "maxItems": 131072,
+                              "items": {
+                                "type": "object",
+                                "properties": {
+                                  "rawStart": {
+                                    "type": "integer",
+                                    "minimum": 0,
+                                    "maximum": 131072
+                                  },
+                                  "rawEnd": {
+                                    "type": "integer",
+                                    "minimum": 0,
+                                    "maximum": 131072
+                                  },
+                                  "reason": {
+                                    "enum": [
+                                      "metadata",
+                                      "display-no",
+                                      "indentation-whitespace",
+                                      "prolog",
+                                      "trailing-trivia"
+                                    ]
+                                  }
+                                },
+                                "required": [
+                                  "rawStart",
+                                  "rawEnd",
+                                  "reason"
+                                ],
+                                "additionalProperties": false
+                              }
+                            }
+                          },
+                          "required": [
+                            "blocks",
+                            "mapping",
+                            "omissions"
+                          ],
+                          "additionalProperties": false
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    },
+                    "original": {
+                      "type": "object",
+                      "properties": {
+                        "blocks": {
+                          "type": "array",
+                          "minItems": 0,
+                          "maxItems": 1000,
+                          "items": {
+                            "$ref": "#/$defs/items_c92293cc"
+                          }
+                        },
+                        "mapping": {
+                          "type": "array",
+                          "maxItems": 131072,
+                          "items": {
+                            "oneOf": [
+                              {
+                                "type": "object",
+                                "properties": {
+                                  "kind": {
+                                    "const": "run"
+                                  },
+                                  "blockIndex": {
+                                    "type": "integer",
+                                    "minimum": 0,
+                                    "maximum": 131072
+                                  },
+                                  "runIndex": {
+                                    "type": "integer",
+                                    "minimum": 0,
+                                    "maximum": 131072
+                                  },
+                                  "sourceStart": {
+                                    "type": "integer",
+                                    "minimum": 0,
+                                    "maximum": 131072
+                                  },
+                                  "sourceEnd": {
+                                    "type": "integer",
+                                    "minimum": 0,
+                                    "maximum": 131072
+                                  },
+                                  "rawStart": {
+                                    "type": "integer",
+                                    "minimum": 0,
+                                    "maximum": 131072
+                                  },
+                                  "rawEnd": {
+                                    "type": "integer",
+                                    "minimum": 0,
+                                    "maximum": 131072
+                                  },
+                                  "decodedStart": {
+                                    "type": "integer",
+                                    "minimum": 0,
+                                    "maximum": 131072
+                                  },
+                                  "decodedEnd": {
+                                    "type": "integer",
+                                    "minimum": 0,
+                                    "maximum": 131072
+                                  },
+                                  "textKind": {
+                                    "enum": [
+                                      "text",
+                                      "cdata"
+                                    ]
+                                  }
+                                },
+                                "required": [
+                                  "kind",
+                                  "blockIndex",
+                                  "runIndex",
+                                  "sourceStart",
+                                  "sourceEnd",
+                                  "rawStart",
+                                  "rawEnd",
+                                  "decodedStart",
+                                  "decodedEnd",
+                                  "textKind"
+                                ],
+                                "additionalProperties": false
+                              },
+                              {
+                                "type": "object",
+                                "properties": {
+                                  "kind": {
+                                    "const": "cell"
+                                  },
+                                  "blockIndex": {
+                                    "type": "integer",
+                                    "minimum": 0,
+                                    "maximum": 131072
+                                  },
+                                  "rowIndex": {
+                                    "type": "integer",
+                                    "minimum": 0,
+                                    "maximum": 131072
+                                  },
+                                  "columnIndex": {
+                                    "type": "integer",
+                                    "minimum": 0,
+                                    "maximum": 131072
+                                  },
+                                  "rawStart": {
+                                    "type": "integer",
+                                    "minimum": 0,
+                                    "maximum": 131072
+                                  },
+                                  "rawEnd": {
+                                    "type": "integer",
+                                    "minimum": 0,
+                                    "maximum": 131072
+                                  },
+                                  "decodedStart": {
+                                    "const": 0
+                                  },
+                                  "decodedEnd": {
+                                    "type": "integer",
+                                    "minimum": 0,
+                                    "maximum": 131072
+                                  },
+                                  "segments": {
+                                    "type": "array",
+                                    "maxItems": 131072,
+                                    "items": {
+                                      "type": "object",
+                                      "properties": {
+                                        "sourceStart": {
+                                          "type": "integer",
+                                          "minimum": 0,
+                                          "maximum": 131072
+                                        },
+                                        "sourceEnd": {
+                                          "type": "integer",
+                                          "minimum": 0,
+                                          "maximum": 131072
+                                        },
+                                        "rawStart": {
+                                          "type": "integer",
+                                          "minimum": 0,
+                                          "maximum": 131072
+                                        },
+                                        "rawEnd": {
+                                          "type": "integer",
+                                          "minimum": 0,
+                                          "maximum": 131072
+                                        },
+                                        "decodedStart": {
+                                          "type": "integer",
+                                          "minimum": 0,
+                                          "maximum": 131072
+                                        },
+                                        "decodedEnd": {
+                                          "type": "integer",
+                                          "minimum": 0,
+                                          "maximum": 131072
+                                        },
+                                        "textKind": {
+                                          "enum": [
+                                            "text",
+                                            "cdata"
+                                          ]
+                                        }
+                                      },
+                                      "required": [
+                                        "sourceStart",
+                                        "sourceEnd",
+                                        "rawStart",
+                                        "rawEnd",
+                                        "decodedStart",
+                                        "decodedEnd",
+                                        "textKind"
+                                      ],
+                                      "additionalProperties": false
+                                    }
+                                  }
+                                },
+                                "required": [
+                                  "kind",
+                                  "blockIndex",
+                                  "rowIndex",
+                                  "columnIndex",
+                                  "rawStart",
+                                  "rawEnd",
+                                  "decodedStart",
+                                  "decodedEnd",
+                                  "segments"
+                                ],
+                                "additionalProperties": false
+                              }
+                            ]
+                          }
+                        },
+                        "omissions": {
+                          "type": "array",
+                          "maxItems": 131072,
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "rawStart": {
+                                "type": "integer",
+                                "minimum": 0,
+                                "maximum": 131072
+                              },
+                              "rawEnd": {
+                                "type": "integer",
+                                "minimum": 0,
+                                "maximum": 131072
+                              },
+                              "reason": {
+                                "enum": [
+                                  "metadata",
+                                  "display-no",
+                                  "indentation-whitespace",
+                                  "prolog",
+                                  "trailing-trivia"
+                                ]
+                              }
+                            },
+                            "required": [
+                              "rawStart",
+                              "rawEnd",
+                              "reason"
+                            ],
+                            "additionalProperties": false
+                          }
+                        }
+                      },
+                      "required": [
+                        "blocks",
+                        "mapping",
+                        "omissions"
+                      ],
+                      "additionalProperties": false
+                    },
+                    "revised": {
+                      "anyOf": [
+                        {
+                          "type": "object",
+                          "properties": {
+                            "blocks": {
+                              "type": "array",
+                              "minItems": 0,
+                              "maxItems": 1000,
+                              "items": {
+                                "$ref": "#/$defs/items_c92293cc"
+                              }
+                            },
+                            "mapping": {
+                              "type": "array",
+                              "maxItems": 131072,
+                              "items": {
+                                "oneOf": [
+                                  {
+                                    "type": "object",
+                                    "properties": {
+                                      "kind": {
+                                        "const": "run"
+                                      },
+                                      "blockIndex": {
+                                        "type": "integer",
+                                        "minimum": 0,
+                                        "maximum": 131072
+                                      },
+                                      "runIndex": {
+                                        "type": "integer",
+                                        "minimum": 0,
+                                        "maximum": 131072
+                                      },
+                                      "sourceStart": {
+                                        "type": "integer",
+                                        "minimum": 0,
+                                        "maximum": 131072
+                                      },
+                                      "sourceEnd": {
+                                        "type": "integer",
+                                        "minimum": 0,
+                                        "maximum": 131072
+                                      },
+                                      "rawStart": {
+                                        "type": "integer",
+                                        "minimum": 0,
+                                        "maximum": 131072
+                                      },
+                                      "rawEnd": {
+                                        "type": "integer",
+                                        "minimum": 0,
+                                        "maximum": 131072
+                                      },
+                                      "decodedStart": {
+                                        "type": "integer",
+                                        "minimum": 0,
+                                        "maximum": 131072
+                                      },
+                                      "decodedEnd": {
+                                        "type": "integer",
+                                        "minimum": 0,
+                                        "maximum": 131072
+                                      },
+                                      "textKind": {
+                                        "enum": [
+                                          "text",
+                                          "cdata"
+                                        ]
+                                      }
+                                    },
+                                    "required": [
+                                      "kind",
+                                      "blockIndex",
+                                      "runIndex",
+                                      "sourceStart",
+                                      "sourceEnd",
+                                      "rawStart",
+                                      "rawEnd",
+                                      "decodedStart",
+                                      "decodedEnd",
+                                      "textKind"
+                                    ],
+                                    "additionalProperties": false
+                                  },
+                                  {
+                                    "type": "object",
+                                    "properties": {
+                                      "kind": {
+                                        "const": "cell"
+                                      },
+                                      "blockIndex": {
+                                        "type": "integer",
+                                        "minimum": 0,
+                                        "maximum": 131072
+                                      },
+                                      "rowIndex": {
+                                        "type": "integer",
+                                        "minimum": 0,
+                                        "maximum": 131072
+                                      },
+                                      "columnIndex": {
+                                        "type": "integer",
+                                        "minimum": 0,
+                                        "maximum": 131072
+                                      },
+                                      "rawStart": {
+                                        "type": "integer",
+                                        "minimum": 0,
+                                        "maximum": 131072
+                                      },
+                                      "rawEnd": {
+                                        "type": "integer",
+                                        "minimum": 0,
+                                        "maximum": 131072
+                                      },
+                                      "decodedStart": {
+                                        "const": 0
+                                      },
+                                      "decodedEnd": {
+                                        "type": "integer",
+                                        "minimum": 0,
+                                        "maximum": 131072
+                                      },
+                                      "segments": {
+                                        "type": "array",
+                                        "maxItems": 131072,
+                                        "items": {
+                                          "type": "object",
+                                          "properties": {
+                                            "sourceStart": {
+                                              "type": "integer",
+                                              "minimum": 0,
+                                              "maximum": 131072
+                                            },
+                                            "sourceEnd": {
+                                              "type": "integer",
+                                              "minimum": 0,
+                                              "maximum": 131072
+                                            },
+                                            "rawStart": {
+                                              "type": "integer",
+                                              "minimum": 0,
+                                              "maximum": 131072
+                                            },
+                                            "rawEnd": {
+                                              "type": "integer",
+                                              "minimum": 0,
+                                              "maximum": 131072
+                                            },
+                                            "decodedStart": {
+                                              "type": "integer",
+                                              "minimum": 0,
+                                              "maximum": 131072
+                                            },
+                                            "decodedEnd": {
+                                              "type": "integer",
+                                              "minimum": 0,
+                                              "maximum": 131072
+                                            },
+                                            "textKind": {
+                                              "enum": [
+                                                "text",
+                                                "cdata"
+                                              ]
+                                            }
+                                          },
+                                          "required": [
+                                            "sourceStart",
+                                            "sourceEnd",
+                                            "rawStart",
+                                            "rawEnd",
+                                            "decodedStart",
+                                            "decodedEnd",
+                                            "textKind"
+                                          ],
+                                          "additionalProperties": false
+                                        }
+                                      }
+                                    },
+                                    "required": [
+                                      "kind",
+                                      "blockIndex",
+                                      "rowIndex",
+                                      "columnIndex",
+                                      "rawStart",
+                                      "rawEnd",
+                                      "decodedStart",
+                                      "decodedEnd",
+                                      "segments"
+                                    ],
+                                    "additionalProperties": false
+                                  }
+                                ]
+                              }
+                            },
+                            "omissions": {
+                              "type": "array",
+                              "maxItems": 131072,
+                              "items": {
+                                "type": "object",
+                                "properties": {
+                                  "rawStart": {
+                                    "type": "integer",
+                                    "minimum": 0,
+                                    "maximum": 131072
+                                  },
+                                  "rawEnd": {
+                                    "type": "integer",
+                                    "minimum": 0,
+                                    "maximum": 131072
+                                  },
+                                  "reason": {
+                                    "enum": [
+                                      "metadata",
+                                      "display-no",
+                                      "indentation-whitespace",
+                                      "prolog",
+                                      "trailing-trivia"
+                                    ]
+                                  }
+                                },
+                                "required": [
+                                  "rawStart",
+                                  "rawEnd",
+                                  "reason"
+                                ],
+                                "additionalProperties": false
+                              }
+                            }
+                          },
+                          "required": [
+                            "blocks",
+                            "mapping",
+                            "omissions"
+                          ],
+                          "additionalProperties": false
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    }
+                  },
+                  "required": [
+                    "profile",
+                    "status",
+                    "consolidated",
+                    "original",
+                    "revised"
+                  ],
+                  "additionalProperties": false
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "profile": {
+                      "const": "uslm-word/1"
+                    },
+                    "status": {
+                      "const": "unsupported"
+                    },
+                    "code": {
+                      "enum": [
+                        "DRAFT_STRUCTURAL_UNSUPPORTED",
+                        "DRAFT_OUTPUT_LIMIT"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "profile",
+                    "status",
+                    "code"
+                  ],
+                  "additionalProperties": false
+                }
+              ]
             }
           },
           "required": [
@@ -2714,7 +4213,8 @@
                 "federal-plain-text/1",
                 "federal-scoped-text/2",
                 "federal-uslm-xml/1",
-                "federal-uslm-xml/2"
+                "federal-uslm-xml/2",
+                "federal-uslm-xml/3"
               ]
             },
             "source": {
@@ -2773,7 +4273,8 @@
                       "numbering",
                       "cross-references",
                       "arithmetic",
-                      "substantive-law"
+                      "substantive-law",
+                      "structural-export"
                     ]
                   },
                   "status": {
@@ -2837,6 +4338,774 @@
             },
             "approval": {
               "const": "unapproved"
+            },
+            "structuralProjection": {
+              "oneOf": [
+                {
+                  "type": "object",
+                  "properties": {
+                    "profile": {
+                      "const": "uslm-word/1"
+                    },
+                    "status": {
+                      "const": "supported"
+                    },
+                    "consolidated": {
+                      "anyOf": [
+                        {
+                          "type": "object",
+                          "properties": {
+                            "blocks": {
+                              "type": "array",
+                              "minItems": 0,
+                              "maxItems": 1000,
+                              "items": {
+                                "$ref": "#/$defs/items_c92293cc"
+                              }
+                            },
+                            "mapping": {
+                              "type": "array",
+                              "maxItems": 131072,
+                              "items": {
+                                "oneOf": [
+                                  {
+                                    "type": "object",
+                                    "properties": {
+                                      "kind": {
+                                        "const": "run"
+                                      },
+                                      "blockIndex": {
+                                        "type": "integer",
+                                        "minimum": 0,
+                                        "maximum": 131072
+                                      },
+                                      "runIndex": {
+                                        "type": "integer",
+                                        "minimum": 0,
+                                        "maximum": 131072
+                                      },
+                                      "sourceStart": {
+                                        "type": "integer",
+                                        "minimum": 0,
+                                        "maximum": 131072
+                                      },
+                                      "sourceEnd": {
+                                        "type": "integer",
+                                        "minimum": 0,
+                                        "maximum": 131072
+                                      },
+                                      "rawStart": {
+                                        "type": "integer",
+                                        "minimum": 0,
+                                        "maximum": 131072
+                                      },
+                                      "rawEnd": {
+                                        "type": "integer",
+                                        "minimum": 0,
+                                        "maximum": 131072
+                                      },
+                                      "decodedStart": {
+                                        "type": "integer",
+                                        "minimum": 0,
+                                        "maximum": 131072
+                                      },
+                                      "decodedEnd": {
+                                        "type": "integer",
+                                        "minimum": 0,
+                                        "maximum": 131072
+                                      },
+                                      "textKind": {
+                                        "enum": [
+                                          "text",
+                                          "cdata"
+                                        ]
+                                      }
+                                    },
+                                    "required": [
+                                      "kind",
+                                      "blockIndex",
+                                      "runIndex",
+                                      "sourceStart",
+                                      "sourceEnd",
+                                      "rawStart",
+                                      "rawEnd",
+                                      "decodedStart",
+                                      "decodedEnd",
+                                      "textKind"
+                                    ],
+                                    "additionalProperties": false
+                                  },
+                                  {
+                                    "type": "object",
+                                    "properties": {
+                                      "kind": {
+                                        "const": "cell"
+                                      },
+                                      "blockIndex": {
+                                        "type": "integer",
+                                        "minimum": 0,
+                                        "maximum": 131072
+                                      },
+                                      "rowIndex": {
+                                        "type": "integer",
+                                        "minimum": 0,
+                                        "maximum": 131072
+                                      },
+                                      "columnIndex": {
+                                        "type": "integer",
+                                        "minimum": 0,
+                                        "maximum": 131072
+                                      },
+                                      "rawStart": {
+                                        "type": "integer",
+                                        "minimum": 0,
+                                        "maximum": 131072
+                                      },
+                                      "rawEnd": {
+                                        "type": "integer",
+                                        "minimum": 0,
+                                        "maximum": 131072
+                                      },
+                                      "decodedStart": {
+                                        "const": 0
+                                      },
+                                      "decodedEnd": {
+                                        "type": "integer",
+                                        "minimum": 0,
+                                        "maximum": 131072
+                                      },
+                                      "segments": {
+                                        "type": "array",
+                                        "maxItems": 131072,
+                                        "items": {
+                                          "type": "object",
+                                          "properties": {
+                                            "sourceStart": {
+                                              "type": "integer",
+                                              "minimum": 0,
+                                              "maximum": 131072
+                                            },
+                                            "sourceEnd": {
+                                              "type": "integer",
+                                              "minimum": 0,
+                                              "maximum": 131072
+                                            },
+                                            "rawStart": {
+                                              "type": "integer",
+                                              "minimum": 0,
+                                              "maximum": 131072
+                                            },
+                                            "rawEnd": {
+                                              "type": "integer",
+                                              "minimum": 0,
+                                              "maximum": 131072
+                                            },
+                                            "decodedStart": {
+                                              "type": "integer",
+                                              "minimum": 0,
+                                              "maximum": 131072
+                                            },
+                                            "decodedEnd": {
+                                              "type": "integer",
+                                              "minimum": 0,
+                                              "maximum": 131072
+                                            },
+                                            "textKind": {
+                                              "enum": [
+                                                "text",
+                                                "cdata"
+                                              ]
+                                            }
+                                          },
+                                          "required": [
+                                            "sourceStart",
+                                            "sourceEnd",
+                                            "rawStart",
+                                            "rawEnd",
+                                            "decodedStart",
+                                            "decodedEnd",
+                                            "textKind"
+                                          ],
+                                          "additionalProperties": false
+                                        }
+                                      }
+                                    },
+                                    "required": [
+                                      "kind",
+                                      "blockIndex",
+                                      "rowIndex",
+                                      "columnIndex",
+                                      "rawStart",
+                                      "rawEnd",
+                                      "decodedStart",
+                                      "decodedEnd",
+                                      "segments"
+                                    ],
+                                    "additionalProperties": false
+                                  }
+                                ]
+                              }
+                            },
+                            "omissions": {
+                              "type": "array",
+                              "maxItems": 131072,
+                              "items": {
+                                "type": "object",
+                                "properties": {
+                                  "rawStart": {
+                                    "type": "integer",
+                                    "minimum": 0,
+                                    "maximum": 131072
+                                  },
+                                  "rawEnd": {
+                                    "type": "integer",
+                                    "minimum": 0,
+                                    "maximum": 131072
+                                  },
+                                  "reason": {
+                                    "enum": [
+                                      "metadata",
+                                      "display-no",
+                                      "indentation-whitespace",
+                                      "prolog",
+                                      "trailing-trivia"
+                                    ]
+                                  }
+                                },
+                                "required": [
+                                  "rawStart",
+                                  "rawEnd",
+                                  "reason"
+                                ],
+                                "additionalProperties": false
+                              }
+                            }
+                          },
+                          "required": [
+                            "blocks",
+                            "mapping",
+                            "omissions"
+                          ],
+                          "additionalProperties": false
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    },
+                    "original": {
+                      "type": "object",
+                      "properties": {
+                        "blocks": {
+                          "type": "array",
+                          "minItems": 0,
+                          "maxItems": 1000,
+                          "items": {
+                            "$ref": "#/$defs/items_c92293cc"
+                          }
+                        },
+                        "mapping": {
+                          "type": "array",
+                          "maxItems": 131072,
+                          "items": {
+                            "oneOf": [
+                              {
+                                "type": "object",
+                                "properties": {
+                                  "kind": {
+                                    "const": "run"
+                                  },
+                                  "blockIndex": {
+                                    "type": "integer",
+                                    "minimum": 0,
+                                    "maximum": 131072
+                                  },
+                                  "runIndex": {
+                                    "type": "integer",
+                                    "minimum": 0,
+                                    "maximum": 131072
+                                  },
+                                  "sourceStart": {
+                                    "type": "integer",
+                                    "minimum": 0,
+                                    "maximum": 131072
+                                  },
+                                  "sourceEnd": {
+                                    "type": "integer",
+                                    "minimum": 0,
+                                    "maximum": 131072
+                                  },
+                                  "rawStart": {
+                                    "type": "integer",
+                                    "minimum": 0,
+                                    "maximum": 131072
+                                  },
+                                  "rawEnd": {
+                                    "type": "integer",
+                                    "minimum": 0,
+                                    "maximum": 131072
+                                  },
+                                  "decodedStart": {
+                                    "type": "integer",
+                                    "minimum": 0,
+                                    "maximum": 131072
+                                  },
+                                  "decodedEnd": {
+                                    "type": "integer",
+                                    "minimum": 0,
+                                    "maximum": 131072
+                                  },
+                                  "textKind": {
+                                    "enum": [
+                                      "text",
+                                      "cdata"
+                                    ]
+                                  }
+                                },
+                                "required": [
+                                  "kind",
+                                  "blockIndex",
+                                  "runIndex",
+                                  "sourceStart",
+                                  "sourceEnd",
+                                  "rawStart",
+                                  "rawEnd",
+                                  "decodedStart",
+                                  "decodedEnd",
+                                  "textKind"
+                                ],
+                                "additionalProperties": false
+                              },
+                              {
+                                "type": "object",
+                                "properties": {
+                                  "kind": {
+                                    "const": "cell"
+                                  },
+                                  "blockIndex": {
+                                    "type": "integer",
+                                    "minimum": 0,
+                                    "maximum": 131072
+                                  },
+                                  "rowIndex": {
+                                    "type": "integer",
+                                    "minimum": 0,
+                                    "maximum": 131072
+                                  },
+                                  "columnIndex": {
+                                    "type": "integer",
+                                    "minimum": 0,
+                                    "maximum": 131072
+                                  },
+                                  "rawStart": {
+                                    "type": "integer",
+                                    "minimum": 0,
+                                    "maximum": 131072
+                                  },
+                                  "rawEnd": {
+                                    "type": "integer",
+                                    "minimum": 0,
+                                    "maximum": 131072
+                                  },
+                                  "decodedStart": {
+                                    "const": 0
+                                  },
+                                  "decodedEnd": {
+                                    "type": "integer",
+                                    "minimum": 0,
+                                    "maximum": 131072
+                                  },
+                                  "segments": {
+                                    "type": "array",
+                                    "maxItems": 131072,
+                                    "items": {
+                                      "type": "object",
+                                      "properties": {
+                                        "sourceStart": {
+                                          "type": "integer",
+                                          "minimum": 0,
+                                          "maximum": 131072
+                                        },
+                                        "sourceEnd": {
+                                          "type": "integer",
+                                          "minimum": 0,
+                                          "maximum": 131072
+                                        },
+                                        "rawStart": {
+                                          "type": "integer",
+                                          "minimum": 0,
+                                          "maximum": 131072
+                                        },
+                                        "rawEnd": {
+                                          "type": "integer",
+                                          "minimum": 0,
+                                          "maximum": 131072
+                                        },
+                                        "decodedStart": {
+                                          "type": "integer",
+                                          "minimum": 0,
+                                          "maximum": 131072
+                                        },
+                                        "decodedEnd": {
+                                          "type": "integer",
+                                          "minimum": 0,
+                                          "maximum": 131072
+                                        },
+                                        "textKind": {
+                                          "enum": [
+                                            "text",
+                                            "cdata"
+                                          ]
+                                        }
+                                      },
+                                      "required": [
+                                        "sourceStart",
+                                        "sourceEnd",
+                                        "rawStart",
+                                        "rawEnd",
+                                        "decodedStart",
+                                        "decodedEnd",
+                                        "textKind"
+                                      ],
+                                      "additionalProperties": false
+                                    }
+                                  }
+                                },
+                                "required": [
+                                  "kind",
+                                  "blockIndex",
+                                  "rowIndex",
+                                  "columnIndex",
+                                  "rawStart",
+                                  "rawEnd",
+                                  "decodedStart",
+                                  "decodedEnd",
+                                  "segments"
+                                ],
+                                "additionalProperties": false
+                              }
+                            ]
+                          }
+                        },
+                        "omissions": {
+                          "type": "array",
+                          "maxItems": 131072,
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "rawStart": {
+                                "type": "integer",
+                                "minimum": 0,
+                                "maximum": 131072
+                              },
+                              "rawEnd": {
+                                "type": "integer",
+                                "minimum": 0,
+                                "maximum": 131072
+                              },
+                              "reason": {
+                                "enum": [
+                                  "metadata",
+                                  "display-no",
+                                  "indentation-whitespace",
+                                  "prolog",
+                                  "trailing-trivia"
+                                ]
+                              }
+                            },
+                            "required": [
+                              "rawStart",
+                              "rawEnd",
+                              "reason"
+                            ],
+                            "additionalProperties": false
+                          }
+                        }
+                      },
+                      "required": [
+                        "blocks",
+                        "mapping",
+                        "omissions"
+                      ],
+                      "additionalProperties": false
+                    },
+                    "revised": {
+                      "anyOf": [
+                        {
+                          "type": "object",
+                          "properties": {
+                            "blocks": {
+                              "type": "array",
+                              "minItems": 0,
+                              "maxItems": 1000,
+                              "items": {
+                                "$ref": "#/$defs/items_c92293cc"
+                              }
+                            },
+                            "mapping": {
+                              "type": "array",
+                              "maxItems": 131072,
+                              "items": {
+                                "oneOf": [
+                                  {
+                                    "type": "object",
+                                    "properties": {
+                                      "kind": {
+                                        "const": "run"
+                                      },
+                                      "blockIndex": {
+                                        "type": "integer",
+                                        "minimum": 0,
+                                        "maximum": 131072
+                                      },
+                                      "runIndex": {
+                                        "type": "integer",
+                                        "minimum": 0,
+                                        "maximum": 131072
+                                      },
+                                      "sourceStart": {
+                                        "type": "integer",
+                                        "minimum": 0,
+                                        "maximum": 131072
+                                      },
+                                      "sourceEnd": {
+                                        "type": "integer",
+                                        "minimum": 0,
+                                        "maximum": 131072
+                                      },
+                                      "rawStart": {
+                                        "type": "integer",
+                                        "minimum": 0,
+                                        "maximum": 131072
+                                      },
+                                      "rawEnd": {
+                                        "type": "integer",
+                                        "minimum": 0,
+                                        "maximum": 131072
+                                      },
+                                      "decodedStart": {
+                                        "type": "integer",
+                                        "minimum": 0,
+                                        "maximum": 131072
+                                      },
+                                      "decodedEnd": {
+                                        "type": "integer",
+                                        "minimum": 0,
+                                        "maximum": 131072
+                                      },
+                                      "textKind": {
+                                        "enum": [
+                                          "text",
+                                          "cdata"
+                                        ]
+                                      }
+                                    },
+                                    "required": [
+                                      "kind",
+                                      "blockIndex",
+                                      "runIndex",
+                                      "sourceStart",
+                                      "sourceEnd",
+                                      "rawStart",
+                                      "rawEnd",
+                                      "decodedStart",
+                                      "decodedEnd",
+                                      "textKind"
+                                    ],
+                                    "additionalProperties": false
+                                  },
+                                  {
+                                    "type": "object",
+                                    "properties": {
+                                      "kind": {
+                                        "const": "cell"
+                                      },
+                                      "blockIndex": {
+                                        "type": "integer",
+                                        "minimum": 0,
+                                        "maximum": 131072
+                                      },
+                                      "rowIndex": {
+                                        "type": "integer",
+                                        "minimum": 0,
+                                        "maximum": 131072
+                                      },
+                                      "columnIndex": {
+                                        "type": "integer",
+                                        "minimum": 0,
+                                        "maximum": 131072
+                                      },
+                                      "rawStart": {
+                                        "type": "integer",
+                                        "minimum": 0,
+                                        "maximum": 131072
+                                      },
+                                      "rawEnd": {
+                                        "type": "integer",
+                                        "minimum": 0,
+                                        "maximum": 131072
+                                      },
+                                      "decodedStart": {
+                                        "const": 0
+                                      },
+                                      "decodedEnd": {
+                                        "type": "integer",
+                                        "minimum": 0,
+                                        "maximum": 131072
+                                      },
+                                      "segments": {
+                                        "type": "array",
+                                        "maxItems": 131072,
+                                        "items": {
+                                          "type": "object",
+                                          "properties": {
+                                            "sourceStart": {
+                                              "type": "integer",
+                                              "minimum": 0,
+                                              "maximum": 131072
+                                            },
+                                            "sourceEnd": {
+                                              "type": "integer",
+                                              "minimum": 0,
+                                              "maximum": 131072
+                                            },
+                                            "rawStart": {
+                                              "type": "integer",
+                                              "minimum": 0,
+                                              "maximum": 131072
+                                            },
+                                            "rawEnd": {
+                                              "type": "integer",
+                                              "minimum": 0,
+                                              "maximum": 131072
+                                            },
+                                            "decodedStart": {
+                                              "type": "integer",
+                                              "minimum": 0,
+                                              "maximum": 131072
+                                            },
+                                            "decodedEnd": {
+                                              "type": "integer",
+                                              "minimum": 0,
+                                              "maximum": 131072
+                                            },
+                                            "textKind": {
+                                              "enum": [
+                                                "text",
+                                                "cdata"
+                                              ]
+                                            }
+                                          },
+                                          "required": [
+                                            "sourceStart",
+                                            "sourceEnd",
+                                            "rawStart",
+                                            "rawEnd",
+                                            "decodedStart",
+                                            "decodedEnd",
+                                            "textKind"
+                                          ],
+                                          "additionalProperties": false
+                                        }
+                                      }
+                                    },
+                                    "required": [
+                                      "kind",
+                                      "blockIndex",
+                                      "rowIndex",
+                                      "columnIndex",
+                                      "rawStart",
+                                      "rawEnd",
+                                      "decodedStart",
+                                      "decodedEnd",
+                                      "segments"
+                                    ],
+                                    "additionalProperties": false
+                                  }
+                                ]
+                              }
+                            },
+                            "omissions": {
+                              "type": "array",
+                              "maxItems": 131072,
+                              "items": {
+                                "type": "object",
+                                "properties": {
+                                  "rawStart": {
+                                    "type": "integer",
+                                    "minimum": 0,
+                                    "maximum": 131072
+                                  },
+                                  "rawEnd": {
+                                    "type": "integer",
+                                    "minimum": 0,
+                                    "maximum": 131072
+                                  },
+                                  "reason": {
+                                    "enum": [
+                                      "metadata",
+                                      "display-no",
+                                      "indentation-whitespace",
+                                      "prolog",
+                                      "trailing-trivia"
+                                    ]
+                                  }
+                                },
+                                "required": [
+                                  "rawStart",
+                                  "rawEnd",
+                                  "reason"
+                                ],
+                                "additionalProperties": false
+                              }
+                            }
+                          },
+                          "required": [
+                            "blocks",
+                            "mapping",
+                            "omissions"
+                          ],
+                          "additionalProperties": false
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    }
+                  },
+                  "required": [
+                    "profile",
+                    "status",
+                    "consolidated",
+                    "original",
+                    "revised"
+                  ],
+                  "additionalProperties": false
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "profile": {
+                      "const": "uslm-word/1"
+                    },
+                    "status": {
+                      "const": "unsupported"
+                    },
+                    "code": {
+                      "enum": [
+                        "DRAFT_STRUCTURAL_UNSUPPORTED",
+                        "DRAFT_OUTPUT_LIMIT"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "profile",
+                    "status",
+                    "code"
+                  ],
+                  "additionalProperties": false
+                }
+              ]
             },
             "resultKind": {
               "const": "source-text-removed"

@@ -5,15 +5,16 @@ import {canonicalSha256 as hash} from '../../../packages/contracts/validate.mjs'
 import {resolveOperationContract} from '../../../packages/contracts/retrieval-0.2/validate.mjs';
 import {projectNativeFederalSource,projectRawFederalSource} from './native-source.mjs';
 import {FEDERAL_RAW_REPRESENTATION,assertFederalRawSource} from '../../../packages/contracts/federal-workbench/raw-source.mjs';
-import {FEDERAL_USLM_SCHEMA_PARSER} from '../../../packages/contracts/federal-workbench/source-layout.mjs';
+import {FEDERAL_USLM_RUN_PARSER,isSchemaUslm} from '../../../packages/contracts/federal-workbench/source-layout.mjs';
 import {qualifyFederalSchemaSource} from './schema-qualification.mjs';
 export const FEDERAL_SOURCE_SCHEMA='meri.federal-source.v1';
 export const FEDERAL_RAW_SOURCE_SCHEMA='meri.federal-source.v2';
 const contract=resolveOperationContract({id:'read_federal_draft_source',version:'0.2.0'});
 const fault=code=>{throw Object.assign(Error(code),{code});};
 export function federalSourceSelection(raw){return contract.normalizeInput(data(raw)).input;}
-export async function readFederalSourceEnvelope(read,selection,{deadlineMs,signal,representation,validationProfile,federalValidator}){
+export async function readFederalSourceEnvelope(read,selection,{deadlineMs,signal,representation,validationProfile,federalValidator,sourceProfile}){
  if(typeof read!=='function')fault('DRAFT_SOURCE_READER_UNAVAILABLE');
+ if(sourceProfile!==undefined&&(sourceProfile!=='uslm-text-runs/1'||validationProfile!=='uslm-2.1.0'))fault('DRAFT_SOURCE_FORMAT');
  if(validationProfile!==undefined&&(validationProfile!=='uslm-2.1.0'||representation!==FEDERAL_RAW_REPRESENTATION))fault('DRAFT_SOURCE_FORMAT');
  if(representation!==undefined&&representation!==FEDERAL_RAW_REPRESENTATION)fault('DRAFT_SOURCE_FORMAT');
  const exact=federalSourceSelection(selection),result=await read({selection:exact,deadlineMs,signal,...(representation===undefined?{}:{representation})});
@@ -21,7 +22,8 @@ export async function readFederalSourceEnvelope(read,selection,{deadlineMs,signa
   assertFederalRawSource(result,{...exact,representation});
   if(result.currentStatus!=='available')fault('DRAFT_SOURCE_STALE');
   let source=projectRawFederalSource(exact,result);
-  if(validationProfile!==undefined)source=await qualifyFederalSchemaSource(source,federalValidator,{deadlineMs,signal});
+  if(sourceProfile!==undefined&&(sourceProfile!=='uslm-text-runs/1'||validationProfile!=='uslm-2.1.0'))fault('DRAFT_SOURCE_FORMAT');
+ if(validationProfile!==undefined)source=await qualifyFederalSchemaSource(source,federalValidator,{deadlineMs,signal,sourceProfile});
   return {schema:FEDERAL_RAW_SOURCE_SCHEMA,representation,capture:result.raw.capture,selection:exact,source};
  }
  contract.assertOutput(result,{request:exact});
@@ -33,7 +35,7 @@ export async function currentFederalSource(raw,read,options){
  if(![FEDERAL_SOURCE_SCHEMA,FEDERAL_RAW_SOURCE_SCHEMA].includes(raw?.schema))return raw;
  const qualified=raw.schema===FEDERAL_RAW_SOURCE_SCHEMA;
  let stored;try{stored=data(own(raw,['schema','selection','source',...(qualified?['representation','capture']:[])]));}catch{fault('DRAFT_SOURCE_FORMAT');}
- const current=await readFederalSourceEnvelope(read,stored.selection,{...options,...(qualified?{representation:stored.representation,...(stored.source?.parserVersion===FEDERAL_USLM_SCHEMA_PARSER?{validationProfile:'uslm-2.1.0'}:{})}:{})});
+ const current=await readFederalSourceEnvelope(read,stored.selection,{...options,...(qualified?{representation:stored.representation,...(isSchemaUslm(stored.source?.parserVersion)?{validationProfile:'uslm-2.1.0',...(stored.source.parserVersion===FEDERAL_USLM_RUN_PARSER?{sourceProfile:'uslm-text-runs/1'}:{})}:{})}:{})});
  if(hash(current)!==hash(stored))fault('DRAFT_SOURCE_STALE');
  return current.source;
 }

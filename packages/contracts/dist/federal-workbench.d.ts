@@ -190,6 +190,87 @@ export type FederalCompilerSource =
         bytes: number;
         valid: true;
       };
+    }
+  | {
+      documentId: string;
+      publisher: string;
+      sourceVersion: string;
+      sourceUrl: string;
+      publishedAt: string | null;
+      parserVersion: "federal-uslm-xml/3";
+      sha256: string;
+      text: string;
+      coverage: {
+        complete: boolean;
+        /**
+         * @minItems 1
+         * @maxItems 32
+         */
+        limitations: [string, ...string[]];
+      };
+      /**
+       * @minItems 1
+       * @maxItems 1024
+       */
+      scopes: [
+        {
+          id: string;
+          label: string;
+          start: number;
+          end: number;
+          sha256: string;
+          /**
+           * @maxItems 127
+           */
+          ancestorPath: string[];
+          textRun?: {
+            kind: "text" | "cdata";
+            decoded: string;
+            /**
+             * @maxItems 131072
+             */
+            spans: {
+              kind: "literal" | "entity" | "newline";
+              rawStart: number;
+              rawEnd: number;
+              decodedStart: number;
+              decodedEnd: number;
+            }[];
+          };
+        },
+        ...{
+          id: string;
+          label: string;
+          start: number;
+          end: number;
+          sha256: string;
+          /**
+           * @maxItems 127
+           */
+          ancestorPath: string[];
+          textRun?: {
+            kind: "text" | "cdata";
+            decoded: string;
+            /**
+             * @maxItems 131072
+             */
+            spans: {
+              kind: "literal" | "entity" | "newline";
+              rawStart: number;
+              rawEnd: number;
+              decodedStart: number;
+              decodedEnd: number;
+            }[];
+          };
+        }[]
+      ];
+      validation: {
+        profile: "uslm-2.1.0";
+        schemaSha256: "c68c058345f99689144c183c99d47552f3d56aa365ff1380127a9180fe18ce44";
+        sourceSha256: string;
+        bytes: number;
+        valid: true;
+      };
     };
 /**
  * This interface was referenced by `FederalWorkbench`'s JSON-Schema
@@ -476,6 +557,7 @@ export type FederalDraftOperationEcfa206F =
       dependsOn: string[];
       text?: string;
       position?: "before" | "after";
+      textMode?: "decoded-xml";
     }
   | {
       id: string;
@@ -493,7 +575,12 @@ export type FederalDraftOperationEcfa206F =
  */
 export type FederalDraftCompilation_66Ff9248 =
   | {
-      parserVersion: "federal-plain-text/1" | "federal-scoped-text/2" | "federal-uslm-xml/1" | "federal-uslm-xml/2";
+      parserVersion:
+        | "federal-plain-text/1"
+        | "federal-scoped-text/2"
+        | "federal-uslm-xml/1"
+        | "federal-uslm-xml/2"
+        | "federal-uslm-xml/3";
       source: FederalCompilerSource;
       /**
        * @minItems 1
@@ -517,7 +604,13 @@ export type FederalDraftCompilation_66Ff9248 =
       findings: [
         {
           category:
-            "source-integrity" | "exact-target" | "numbering" | "cross-references" | "arithmetic" | "substantive-law";
+            | "source-integrity"
+            | "exact-target"
+            | "numbering"
+            | "cross-references"
+            | "arithmetic"
+            | "substantive-law"
+            | "structural-export";
           status: "passed" | "unresolved";
           location: string;
           severity: "info" | "review-required";
@@ -525,7 +618,13 @@ export type FederalDraftCompilation_66Ff9248 =
         },
         ...{
           category:
-            "source-integrity" | "exact-target" | "numbering" | "cross-references" | "arithmetic" | "substantive-law";
+            | "source-integrity"
+            | "exact-target"
+            | "numbering"
+            | "cross-references"
+            | "arithmetic"
+            | "substantive-law"
+            | "structural-export";
           status: "passed" | "unresolved";
           location: string;
           severity: "info" | "review-required";
@@ -539,9 +638,186 @@ export type FederalDraftCompilation_66Ff9248 =
       };
       revisionSha256: string;
       approval: "unapproved";
+      structuralProjection?:
+        | {
+            profile: "uslm-word/1";
+            status: "supported";
+            consolidated: {
+              /**
+               * @minItems 0
+               * @maxItems 1000
+               */
+              blocks: ItemsC92293Cc[];
+              /**
+               * @maxItems 131072
+               */
+              mapping: (
+                | {
+                    kind: "run";
+                    blockIndex: number;
+                    runIndex: number;
+                    sourceStart: number;
+                    sourceEnd: number;
+                    rawStart: number;
+                    rawEnd: number;
+                    decodedStart: number;
+                    decodedEnd: number;
+                    textKind: "text" | "cdata";
+                  }
+                | {
+                    kind: "cell";
+                    blockIndex: number;
+                    rowIndex: number;
+                    columnIndex: number;
+                    rawStart: number;
+                    rawEnd: number;
+                    decodedStart: 0;
+                    decodedEnd: number;
+                    /**
+                     * @maxItems 131072
+                     */
+                    segments: {
+                      sourceStart: number;
+                      sourceEnd: number;
+                      rawStart: number;
+                      rawEnd: number;
+                      decodedStart: number;
+                      decodedEnd: number;
+                      textKind: "text" | "cdata";
+                    }[];
+                  }
+              )[];
+              /**
+               * @maxItems 131072
+               */
+              omissions: {
+                rawStart: number;
+                rawEnd: number;
+                reason: "metadata" | "display-no" | "indentation-whitespace" | "prolog" | "trailing-trivia";
+              }[];
+            } | null;
+            original: {
+              /**
+               * @minItems 0
+               * @maxItems 1000
+               */
+              blocks: ItemsC92293Cc[];
+              /**
+               * @maxItems 131072
+               */
+              mapping: (
+                | {
+                    kind: "run";
+                    blockIndex: number;
+                    runIndex: number;
+                    sourceStart: number;
+                    sourceEnd: number;
+                    rawStart: number;
+                    rawEnd: number;
+                    decodedStart: number;
+                    decodedEnd: number;
+                    textKind: "text" | "cdata";
+                  }
+                | {
+                    kind: "cell";
+                    blockIndex: number;
+                    rowIndex: number;
+                    columnIndex: number;
+                    rawStart: number;
+                    rawEnd: number;
+                    decodedStart: 0;
+                    decodedEnd: number;
+                    /**
+                     * @maxItems 131072
+                     */
+                    segments: {
+                      sourceStart: number;
+                      sourceEnd: number;
+                      rawStart: number;
+                      rawEnd: number;
+                      decodedStart: number;
+                      decodedEnd: number;
+                      textKind: "text" | "cdata";
+                    }[];
+                  }
+              )[];
+              /**
+               * @maxItems 131072
+               */
+              omissions: {
+                rawStart: number;
+                rawEnd: number;
+                reason: "metadata" | "display-no" | "indentation-whitespace" | "prolog" | "trailing-trivia";
+              }[];
+            };
+            revised: {
+              /**
+               * @minItems 0
+               * @maxItems 1000
+               */
+              blocks: ItemsC92293Cc[];
+              /**
+               * @maxItems 131072
+               */
+              mapping: (
+                | {
+                    kind: "run";
+                    blockIndex: number;
+                    runIndex: number;
+                    sourceStart: number;
+                    sourceEnd: number;
+                    rawStart: number;
+                    rawEnd: number;
+                    decodedStart: number;
+                    decodedEnd: number;
+                    textKind: "text" | "cdata";
+                  }
+                | {
+                    kind: "cell";
+                    blockIndex: number;
+                    rowIndex: number;
+                    columnIndex: number;
+                    rawStart: number;
+                    rawEnd: number;
+                    decodedStart: 0;
+                    decodedEnd: number;
+                    /**
+                     * @maxItems 131072
+                     */
+                    segments: {
+                      sourceStart: number;
+                      sourceEnd: number;
+                      rawStart: number;
+                      rawEnd: number;
+                      decodedStart: number;
+                      decodedEnd: number;
+                      textKind: "text" | "cdata";
+                    }[];
+                  }
+              )[];
+              /**
+               * @maxItems 131072
+               */
+              omissions: {
+                rawStart: number;
+                rawEnd: number;
+                reason: "metadata" | "display-no" | "indentation-whitespace" | "prolog" | "trailing-trivia";
+              }[];
+            } | null;
+          }
+        | {
+            profile: "uslm-word/1";
+            status: "unsupported";
+            code: "DRAFT_STRUCTURAL_UNSUPPORTED" | "DRAFT_OUTPUT_LIMIT";
+          };
     }
   | {
-      parserVersion: "federal-plain-text/1" | "federal-scoped-text/2" | "federal-uslm-xml/1" | "federal-uslm-xml/2";
+      parserVersion:
+        | "federal-plain-text/1"
+        | "federal-scoped-text/2"
+        | "federal-uslm-xml/1"
+        | "federal-uslm-xml/2"
+        | "federal-uslm-xml/3";
       source: FederalCompilerSource;
       /**
        * @minItems 1
@@ -565,7 +841,13 @@ export type FederalDraftCompilation_66Ff9248 =
       findings: [
         {
           category:
-            "source-integrity" | "exact-target" | "numbering" | "cross-references" | "arithmetic" | "substantive-law";
+            | "source-integrity"
+            | "exact-target"
+            | "numbering"
+            | "cross-references"
+            | "arithmetic"
+            | "substantive-law"
+            | "structural-export";
           status: "passed" | "unresolved";
           location: string;
           severity: "info" | "review-required";
@@ -573,7 +855,13 @@ export type FederalDraftCompilation_66Ff9248 =
         },
         ...{
           category:
-            "source-integrity" | "exact-target" | "numbering" | "cross-references" | "arithmetic" | "substantive-law";
+            | "source-integrity"
+            | "exact-target"
+            | "numbering"
+            | "cross-references"
+            | "arithmetic"
+            | "substantive-law"
+            | "structural-export";
           status: "passed" | "unresolved";
           location: string;
           severity: "info" | "review-required";
@@ -587,7 +875,191 @@ export type FederalDraftCompilation_66Ff9248 =
       };
       revisionSha256: string;
       approval: "unapproved";
+      structuralProjection?:
+        | {
+            profile: "uslm-word/1";
+            status: "supported";
+            consolidated: {
+              /**
+               * @minItems 0
+               * @maxItems 1000
+               */
+              blocks: ItemsC92293Cc[];
+              /**
+               * @maxItems 131072
+               */
+              mapping: (
+                | {
+                    kind: "run";
+                    blockIndex: number;
+                    runIndex: number;
+                    sourceStart: number;
+                    sourceEnd: number;
+                    rawStart: number;
+                    rawEnd: number;
+                    decodedStart: number;
+                    decodedEnd: number;
+                    textKind: "text" | "cdata";
+                  }
+                | {
+                    kind: "cell";
+                    blockIndex: number;
+                    rowIndex: number;
+                    columnIndex: number;
+                    rawStart: number;
+                    rawEnd: number;
+                    decodedStart: 0;
+                    decodedEnd: number;
+                    /**
+                     * @maxItems 131072
+                     */
+                    segments: {
+                      sourceStart: number;
+                      sourceEnd: number;
+                      rawStart: number;
+                      rawEnd: number;
+                      decodedStart: number;
+                      decodedEnd: number;
+                      textKind: "text" | "cdata";
+                    }[];
+                  }
+              )[];
+              /**
+               * @maxItems 131072
+               */
+              omissions: {
+                rawStart: number;
+                rawEnd: number;
+                reason: "metadata" | "display-no" | "indentation-whitespace" | "prolog" | "trailing-trivia";
+              }[];
+            } | null;
+            original: {
+              /**
+               * @minItems 0
+               * @maxItems 1000
+               */
+              blocks: ItemsC92293Cc[];
+              /**
+               * @maxItems 131072
+               */
+              mapping: (
+                | {
+                    kind: "run";
+                    blockIndex: number;
+                    runIndex: number;
+                    sourceStart: number;
+                    sourceEnd: number;
+                    rawStart: number;
+                    rawEnd: number;
+                    decodedStart: number;
+                    decodedEnd: number;
+                    textKind: "text" | "cdata";
+                  }
+                | {
+                    kind: "cell";
+                    blockIndex: number;
+                    rowIndex: number;
+                    columnIndex: number;
+                    rawStart: number;
+                    rawEnd: number;
+                    decodedStart: 0;
+                    decodedEnd: number;
+                    /**
+                     * @maxItems 131072
+                     */
+                    segments: {
+                      sourceStart: number;
+                      sourceEnd: number;
+                      rawStart: number;
+                      rawEnd: number;
+                      decodedStart: number;
+                      decodedEnd: number;
+                      textKind: "text" | "cdata";
+                    }[];
+                  }
+              )[];
+              /**
+               * @maxItems 131072
+               */
+              omissions: {
+                rawStart: number;
+                rawEnd: number;
+                reason: "metadata" | "display-no" | "indentation-whitespace" | "prolog" | "trailing-trivia";
+              }[];
+            };
+            revised: {
+              /**
+               * @minItems 0
+               * @maxItems 1000
+               */
+              blocks: ItemsC92293Cc[];
+              /**
+               * @maxItems 131072
+               */
+              mapping: (
+                | {
+                    kind: "run";
+                    blockIndex: number;
+                    runIndex: number;
+                    sourceStart: number;
+                    sourceEnd: number;
+                    rawStart: number;
+                    rawEnd: number;
+                    decodedStart: number;
+                    decodedEnd: number;
+                    textKind: "text" | "cdata";
+                  }
+                | {
+                    kind: "cell";
+                    blockIndex: number;
+                    rowIndex: number;
+                    columnIndex: number;
+                    rawStart: number;
+                    rawEnd: number;
+                    decodedStart: 0;
+                    decodedEnd: number;
+                    /**
+                     * @maxItems 131072
+                     */
+                    segments: {
+                      sourceStart: number;
+                      sourceEnd: number;
+                      rawStart: number;
+                      rawEnd: number;
+                      decodedStart: number;
+                      decodedEnd: number;
+                      textKind: "text" | "cdata";
+                    }[];
+                  }
+              )[];
+              /**
+               * @maxItems 131072
+               */
+              omissions: {
+                rawStart: number;
+                rawEnd: number;
+                reason: "metadata" | "display-no" | "indentation-whitespace" | "prolog" | "trailing-trivia";
+              }[];
+            } | null;
+          }
+        | {
+            profile: "uslm-word/1";
+            status: "unsupported";
+            code: "DRAFT_STRUCTURAL_UNSUPPORTED" | "DRAFT_OUTPUT_LIMIT";
+          };
       resultKind: "source-text-removed";
+    };
+/**
+ * This interface was referenced by `FederalWorkbench`'s JSON-Schema
+ * via the `definition` "items_c92293cc".
+ */
+export type ItemsC92293Cc =
+  | ParagraphA313D7Be
+  | Table_02Fd45F0
+  | Image_1Ed45A41
+  | {
+      kind: "chart";
+      chart: ChartB9B96B0E;
     };
 
 export interface FederalWorkbench {
@@ -630,6 +1102,7 @@ export interface FederalImportRequest {
   deliveryId: string;
   representation?: "retained-raw-utf8/1";
   validationProfile?: "uslm-2.1.0";
+  sourceProfile?: "uslm-text-runs/1";
 }
 /**
  * This interface was referenced by `FederalWorkbench`'s JSON-Schema
@@ -826,7 +1299,7 @@ export interface FederalLoadRequest {
 export interface FederalPublishRequest {
   selection: FederalSelection;
   revisionSha256: string;
-  output: "draft" | "operative" | "consolidated" | "redline" | "docx";
+  output: "draft" | "operative" | "consolidated" | "redline" | "docx" | "xml" | "pdf";
   deliveryId: string;
   baseVersionId: string | null;
   baseRevisionSha256: string | null;
@@ -887,6 +1360,531 @@ export interface FederalDraftSegmentE752Af1D {
 }
 /**
  * This interface was referenced by `FederalWorkbench`'s JSON-Schema
+ * via the `definition` "Paragraph_a313d7be".
+ */
+export interface ParagraphA313D7Be {
+  kind: "paragraph";
+  quoteDepth?: number;
+  /**
+   * @minItems 1
+   * @maxItems 100
+   */
+  runs: [Run_4453Fced, ...Run_4453Fced[]];
+  style?: "Normal" | "Title" | "Heading 1" | "Heading 2" | "List Bullet";
+}
+/**
+ * This interface was referenced by `FederalWorkbench`'s JSON-Schema
+ * via the `definition` "Run_4453fced".
+ */
+export interface Run_4453Fced {
+  text: string;
+  bold?: boolean;
+  italic?: boolean;
+  strike?: boolean;
+  underline?: boolean;
+}
+/**
+ * This interface was referenced by `FederalWorkbench`'s JSON-Schema
+ * via the `definition` "Table_02fd45f0".
+ */
+export interface Table_02Fd45F0 {
+  kind: "table";
+  /**
+   * @minItems 1
+   * @maxItems 1000
+   */
+  rows: [[string, ...string[]], ...[string, ...string[]][]];
+}
+/**
+ * This interface was referenced by `FederalWorkbench`'s JSON-Schema
+ * via the `definition` "Image_1ed45a41".
+ */
+export interface Image_1Ed45A41 {
+  kind: "image";
+  assetId: string;
+  widthInches: number;
+  heightInches: number;
+}
+/**
+ * This interface was referenced by `FederalWorkbench`'s JSON-Schema
+ * via the `definition` "Chart_b9b96b0e".
+ */
+export interface ChartB9B96B0E {
+  kind: "bar" | "line";
+  title: string;
+  /**
+   * @minItems 1
+   * @maxItems 100
+   */
+  categories: [string, ...string[]];
+  /**
+   * @minItems 1
+   * @maxItems 10
+   */
+  series:
+    | [
+        {
+          name: string;
+          /**
+           * @minItems 1
+           * @maxItems 100
+           */
+          values: [number, ...number[]];
+        }
+      ]
+    | [
+        {
+          name: string;
+          /**
+           * @minItems 1
+           * @maxItems 100
+           */
+          values: [number, ...number[]];
+        },
+        {
+          name: string;
+          /**
+           * @minItems 1
+           * @maxItems 100
+           */
+          values: [number, ...number[]];
+        }
+      ]
+    | [
+        {
+          name: string;
+          /**
+           * @minItems 1
+           * @maxItems 100
+           */
+          values: [number, ...number[]];
+        },
+        {
+          name: string;
+          /**
+           * @minItems 1
+           * @maxItems 100
+           */
+          values: [number, ...number[]];
+        },
+        {
+          name: string;
+          /**
+           * @minItems 1
+           * @maxItems 100
+           */
+          values: [number, ...number[]];
+        }
+      ]
+    | [
+        {
+          name: string;
+          /**
+           * @minItems 1
+           * @maxItems 100
+           */
+          values: [number, ...number[]];
+        },
+        {
+          name: string;
+          /**
+           * @minItems 1
+           * @maxItems 100
+           */
+          values: [number, ...number[]];
+        },
+        {
+          name: string;
+          /**
+           * @minItems 1
+           * @maxItems 100
+           */
+          values: [number, ...number[]];
+        },
+        {
+          name: string;
+          /**
+           * @minItems 1
+           * @maxItems 100
+           */
+          values: [number, ...number[]];
+        }
+      ]
+    | [
+        {
+          name: string;
+          /**
+           * @minItems 1
+           * @maxItems 100
+           */
+          values: [number, ...number[]];
+        },
+        {
+          name: string;
+          /**
+           * @minItems 1
+           * @maxItems 100
+           */
+          values: [number, ...number[]];
+        },
+        {
+          name: string;
+          /**
+           * @minItems 1
+           * @maxItems 100
+           */
+          values: [number, ...number[]];
+        },
+        {
+          name: string;
+          /**
+           * @minItems 1
+           * @maxItems 100
+           */
+          values: [number, ...number[]];
+        },
+        {
+          name: string;
+          /**
+           * @minItems 1
+           * @maxItems 100
+           */
+          values: [number, ...number[]];
+        }
+      ]
+    | [
+        {
+          name: string;
+          /**
+           * @minItems 1
+           * @maxItems 100
+           */
+          values: [number, ...number[]];
+        },
+        {
+          name: string;
+          /**
+           * @minItems 1
+           * @maxItems 100
+           */
+          values: [number, ...number[]];
+        },
+        {
+          name: string;
+          /**
+           * @minItems 1
+           * @maxItems 100
+           */
+          values: [number, ...number[]];
+        },
+        {
+          name: string;
+          /**
+           * @minItems 1
+           * @maxItems 100
+           */
+          values: [number, ...number[]];
+        },
+        {
+          name: string;
+          /**
+           * @minItems 1
+           * @maxItems 100
+           */
+          values: [number, ...number[]];
+        },
+        {
+          name: string;
+          /**
+           * @minItems 1
+           * @maxItems 100
+           */
+          values: [number, ...number[]];
+        }
+      ]
+    | [
+        {
+          name: string;
+          /**
+           * @minItems 1
+           * @maxItems 100
+           */
+          values: [number, ...number[]];
+        },
+        {
+          name: string;
+          /**
+           * @minItems 1
+           * @maxItems 100
+           */
+          values: [number, ...number[]];
+        },
+        {
+          name: string;
+          /**
+           * @minItems 1
+           * @maxItems 100
+           */
+          values: [number, ...number[]];
+        },
+        {
+          name: string;
+          /**
+           * @minItems 1
+           * @maxItems 100
+           */
+          values: [number, ...number[]];
+        },
+        {
+          name: string;
+          /**
+           * @minItems 1
+           * @maxItems 100
+           */
+          values: [number, ...number[]];
+        },
+        {
+          name: string;
+          /**
+           * @minItems 1
+           * @maxItems 100
+           */
+          values: [number, ...number[]];
+        },
+        {
+          name: string;
+          /**
+           * @minItems 1
+           * @maxItems 100
+           */
+          values: [number, ...number[]];
+        }
+      ]
+    | [
+        {
+          name: string;
+          /**
+           * @minItems 1
+           * @maxItems 100
+           */
+          values: [number, ...number[]];
+        },
+        {
+          name: string;
+          /**
+           * @minItems 1
+           * @maxItems 100
+           */
+          values: [number, ...number[]];
+        },
+        {
+          name: string;
+          /**
+           * @minItems 1
+           * @maxItems 100
+           */
+          values: [number, ...number[]];
+        },
+        {
+          name: string;
+          /**
+           * @minItems 1
+           * @maxItems 100
+           */
+          values: [number, ...number[]];
+        },
+        {
+          name: string;
+          /**
+           * @minItems 1
+           * @maxItems 100
+           */
+          values: [number, ...number[]];
+        },
+        {
+          name: string;
+          /**
+           * @minItems 1
+           * @maxItems 100
+           */
+          values: [number, ...number[]];
+        },
+        {
+          name: string;
+          /**
+           * @minItems 1
+           * @maxItems 100
+           */
+          values: [number, ...number[]];
+        },
+        {
+          name: string;
+          /**
+           * @minItems 1
+           * @maxItems 100
+           */
+          values: [number, ...number[]];
+        }
+      ]
+    | [
+        {
+          name: string;
+          /**
+           * @minItems 1
+           * @maxItems 100
+           */
+          values: [number, ...number[]];
+        },
+        {
+          name: string;
+          /**
+           * @minItems 1
+           * @maxItems 100
+           */
+          values: [number, ...number[]];
+        },
+        {
+          name: string;
+          /**
+           * @minItems 1
+           * @maxItems 100
+           */
+          values: [number, ...number[]];
+        },
+        {
+          name: string;
+          /**
+           * @minItems 1
+           * @maxItems 100
+           */
+          values: [number, ...number[]];
+        },
+        {
+          name: string;
+          /**
+           * @minItems 1
+           * @maxItems 100
+           */
+          values: [number, ...number[]];
+        },
+        {
+          name: string;
+          /**
+           * @minItems 1
+           * @maxItems 100
+           */
+          values: [number, ...number[]];
+        },
+        {
+          name: string;
+          /**
+           * @minItems 1
+           * @maxItems 100
+           */
+          values: [number, ...number[]];
+        },
+        {
+          name: string;
+          /**
+           * @minItems 1
+           * @maxItems 100
+           */
+          values: [number, ...number[]];
+        },
+        {
+          name: string;
+          /**
+           * @minItems 1
+           * @maxItems 100
+           */
+          values: [number, ...number[]];
+        }
+      ]
+    | [
+        {
+          name: string;
+          /**
+           * @minItems 1
+           * @maxItems 100
+           */
+          values: [number, ...number[]];
+        },
+        {
+          name: string;
+          /**
+           * @minItems 1
+           * @maxItems 100
+           */
+          values: [number, ...number[]];
+        },
+        {
+          name: string;
+          /**
+           * @minItems 1
+           * @maxItems 100
+           */
+          values: [number, ...number[]];
+        },
+        {
+          name: string;
+          /**
+           * @minItems 1
+           * @maxItems 100
+           */
+          values: [number, ...number[]];
+        },
+        {
+          name: string;
+          /**
+           * @minItems 1
+           * @maxItems 100
+           */
+          values: [number, ...number[]];
+        },
+        {
+          name: string;
+          /**
+           * @minItems 1
+           * @maxItems 100
+           */
+          values: [number, ...number[]];
+        },
+        {
+          name: string;
+          /**
+           * @minItems 1
+           * @maxItems 100
+           */
+          values: [number, ...number[]];
+        },
+        {
+          name: string;
+          /**
+           * @minItems 1
+           * @maxItems 100
+           */
+          values: [number, ...number[]];
+        },
+        {
+          name: string;
+          /**
+           * @minItems 1
+           * @maxItems 100
+           */
+          values: [number, ...number[]];
+        },
+        {
+          name: string;
+          /**
+           * @minItems 1
+           * @maxItems 100
+           */
+          values: [number, ...number[]];
+        }
+      ];
+}
+/**
+ * This interface was referenced by `FederalWorkbench`'s JSON-Schema
  * via the `definition` "FederalApproval".
  */
 export interface FederalApproval {
@@ -912,10 +1910,69 @@ export interface FederalPublication {
   schema: "meri.federal-review.v1";
   sourceArtifact: FederalSourceArtifact;
   revisionSha256: string;
-  output: "draft" | "operative" | "consolidated" | "redline" | "docx";
+  output: "draft" | "operative" | "consolidated" | "redline" | "docx" | "xml" | "pdf";
   review: "unapproved" | "confirmed-for-export" | "approved";
   approval: FederalApproval | null;
   publication: ArtifactCreatedResult_183A755E;
+  structuralReceipt?: {
+    profile: "uslm-word/1";
+    sourceSha256: string;
+    consolidatedSha256: string;
+    revisionSha256: string;
+    specSha256: string;
+    executionRequestSha256: string;
+    mappingSha256: string;
+    /**
+     * @maxItems 393216
+     */
+    mapping: (
+      | {
+          kind: "run";
+          blockIndex: number;
+          runIndex: number;
+          sourceStart: number;
+          sourceEnd: number;
+          rawStart: number;
+          rawEnd: number;
+          decodedStart: number;
+          decodedEnd: number;
+          textKind: "text" | "cdata";
+          part: "consolidated" | "original" | "revised";
+        }
+      | {
+          kind: "cell";
+          blockIndex: number;
+          rowIndex: number;
+          columnIndex: number;
+          rawStart: number;
+          rawEnd: number;
+          decodedStart: 0;
+          decodedEnd: number;
+          /**
+           * @maxItems 131072
+           */
+          segments: {
+            sourceStart: number;
+            sourceEnd: number;
+            rawStart: number;
+            rawEnd: number;
+            decodedStart: number;
+            decodedEnd: number;
+            textKind: "text" | "cdata";
+          }[];
+          part: "consolidated" | "original" | "revised";
+        }
+    )[];
+    /**
+     * @maxItems 393216
+     */
+    omissions: {
+      rawStart: number;
+      rawEnd: number;
+      reason: "metadata" | "display-no" | "indentation-whitespace" | "prolog" | "trailing-trivia";
+      part: "consolidated" | "original" | "revised";
+    }[];
+  };
 }
 /**
  * This interface was referenced by `FederalWorkbench`'s JSON-Schema
@@ -963,7 +2020,15 @@ declare const federalReview:unique symbol;
 export type AdmittedFederalRequest<R extends FederalRoute>=Readonly<FederalRequest<R>>&{readonly[federalRequest]:R};
 export type AdmittedFederalReview=Readonly<FederalReview>&{readonly[federalReview]:true};
 export type FederalResponse<R extends FederalRoute>=(R extends 'federal-import'?Readonly<FederalImportResult>:R extends 'federal-publish'?Readonly<FederalPublication>:R extends 'federal-history'?Readonly<FederalHistory>:AdmittedFederalReview)|Readonly<FederalError>;
-export declare const federalWorkbenchVersion:'1.6.0';
+export declare const federalWorkbenchVersion:'1.7.0';
 export declare function receiveFederalSource(bytes:Uint8Array):Promise<Readonly<FederalCompilerSource>>;
 export declare function receiveFederalRequest<R extends FederalRoute>(route:R,bytes:Uint8Array):AdmittedFederalRequest<R>;
 export declare function receiveFederalResponse<R extends FederalRoute>(route:R,status:number,bytes:Uint8Array,request:AdmittedFederalRequest<R>,review?:AdmittedFederalReview):Promise<FederalResponse<R>>;
+export type FederalXmlRunKind='text'|'cdata';
+export interface FederalXmlRunSpan {kind:'literal'|'entity'|'newline';rawStart:number;rawEnd:number;decodedStart:number;decodedEnd:number;}
+export interface FederalXmlTextRun {kind:FederalXmlRunKind;decoded:string;spans:FederalXmlRunSpan[];}
+/** Pure lexical projection only; these helpers do not authenticate a source, validate XSD or authorize an edit. */
+export declare function decodeXmlTextRun(raw:string,kind?:FederalXmlRunKind,expectedDecoded?:string):FederalXmlTextRun;
+export declare function mapDecodedRange(raw:string,kind:FederalXmlRunKind,start:number,end:number):{start:number;end:number};
+export declare function encodeDecodedText(text:string,kind?:FederalXmlRunKind):string;
+export declare function applyDecodedXmlEdit(raw:string,kind:FederalXmlRunKind,op:{kind:'replace'|'insert'|'delete';expectedText:string;text?:string;position?:'before'|'after'}):{text:string;start:number;end:number;replacement:string;textRun:FederalXmlTextRun};

@@ -23,8 +23,13 @@ const schemaReceipt={type:'object',additionalProperties:false,required:['profile
 const schemaUslm=structuredClone(uslm);
 schemaUslm.properties.parserVersion={const:'federal-uslm-xml/2'};
 schemaUslm.properties.validation=schemaReceipt;schemaUslm.required.push('validation');
-retainedFederalSchema.$defs.FederalDraftCompilerSource={oneOf:[flat,scoped,uslm,schemaUslm]};
-retainedFederalSchema.$defs.FederalDraftCompilation.properties.parserVersion={enum:['federal-plain-text/1','federal-scoped-text/2','federal-uslm-xml/1','federal-uslm-xml/2']};
+const runUslm=structuredClone(schemaUslm);
+runUslm.properties.parserVersion={const:'federal-uslm-xml/3'};
+runUslm.properties.scopes.items.properties.textRun={type:'object',additionalProperties:false,required:['kind','decoded','spans'],properties:{
+ kind:{enum:['text','cdata']},decoded:{type:'string',maxLength:131072},spans:{type:'array',maxItems:131072,items:{type:'object',additionalProperties:false,required:['kind','rawStart','rawEnd','decodedStart','decodedEnd'],properties:{
+ kind:{enum:['literal','entity','newline']},...Object.fromEntries(['rawStart','rawEnd','decodedStart','decodedEnd'].map(name=>[name,{type:'integer',minimum:0,maximum:131072}]))}}}}};
+retainedFederalSchema.$defs.FederalDraftCompilerSource={oneOf:[flat,scoped,uslm,schemaUslm,runUslm]};
+retainedFederalSchema.$defs.FederalDraftCompilation.properties.parserVersion={enum:['federal-plain-text/1','federal-scoped-text/2','federal-uslm-xml/1','federal-uslm-xml/2','federal-uslm-xml/3']};
 
 const object=properties=>({type:'object',properties,required:Object.keys(properties),additionalProperties:false});
 const ref=name=>({$ref:'#/$defs/'+name});
@@ -32,29 +37,47 @@ const sha={type:'string',pattern:'^[a-f0-9]{64}$'},uuid={type:'string',format:'u
 const deliveryId={type:'string',pattern:'^[A-Za-z0-9_.:@/-]{1,255}$'},operationId={type:'string',pattern:'^[A-Za-z0-9][A-Za-z0-9_.:-]{0,127}$'};
 // The dedicated workbench admits a terminal full-source operation. The SDK's original schema stays frozen.
 const amendment=retainedFederalSchema.$defs.FederalDraftOperation;
+amendment.properties.textMode={const:'decoded-xml'};
 const removal=object({id:operationId,kind:{const:'remove_source_text'},expectedSourceSha256:sha,expectedTextSha256:sha,
  dependsOn:{type:'array',maxItems:64,uniqueItems:true,items:operationId}});
 retainedFederalSchema.$defs.FederalDraftOperation={oneOf:[amendment,removal]};
 const compilation=retainedFederalSchema.$defs.FederalDraftCompilation;
+const index={type:'integer',minimum:0,maximum:131072};
+const coordinates=Object.fromEntries(['sourceStart','sourceEnd','rawStart','rawEnd','decodedStart','decodedEnd'].map(name=>[name,index]));
+const segment=object({...coordinates,textKind:{enum:['text','cdata']}});
+const mappingProperties=[{kind:{const:'run'},blockIndex:index,runIndex:index,...coordinates,textKind:{enum:['text','cdata']}},
+ {kind:{const:'cell'},blockIndex:index,rowIndex:index,columnIndex:index,rawStart:index,rawEnd:index,decodedStart:{const:0},decodedEnd:index,
+  segments:{type:'array',maxItems:131072,items:segment}}];
+const omissionProperties={rawStart:index,rawEnd:index,reason:{enum:['metadata','display-no','indentation-whitespace','prolog','trailing-trivia']}};
+const projection=object({blocks:{type:'array',minItems:0,maxItems:1000,items:{$ref:'urn:meri:artifacts:0.2.0#/$defs/WordContent/properties/blocks/items'}},
+ mapping:{type:'array',maxItems:131072,items:{oneOf:mappingProperties.map(object)}},
+ omissions:{type:'array',maxItems:131072,items:object(omissionProperties)}});
+compilation.properties.structuralProjection={oneOf:[object({profile:{const:'uslm-word/1'},status:{const:'supported'},consolidated:nullable(projection),original:projection,revised:nullable(projection)}),
+ object({profile:{const:'uslm-word/1'},status:{const:'unsupported'},code:{enum:['DRAFT_STRUCTURAL_UNSUPPORTED','DRAFT_OUTPUT_LIMIT']}})]};
+compilation.properties.findings.items.properties.category.enum.push('structural-export');
 const removedCompilation=structuredClone(compilation);
 removedCompilation.properties.resultKind={const:'source-text-removed'};
 removedCompilation.required.push('resultKind');
 removedCompilation.properties.outputs.properties.consolidated={const:''};
 removedCompilation.properties.outputHashes.properties.consolidated={const:'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855'};
 retainedFederalSchema.$defs.FederalDraftCompilation={oneOf:[compilation,removedCompilation]};
-const outputs=['draft','operative','consolidated','redline','docx'];
+const outputs=['draft','operative','consolidated','redline','docx','xml','pdf'];
 const artifact=name=>({$ref:'urn:meri:artifacts:0.2.0#/$defs/'+name});
 const federal=name=>({$ref:'urn:meri:federal-retained-source:1#/$defs/'+name});
 const representation={const:'retained-raw-utf8/1'};
 const legacyEnvelope={schema:{const:'meri.federal-source.v1'},selection:ref('FederalNativeSelection'),source:ref('FederalCompilerSource')};
 const rawEnvelope={schema:{const:'meri.federal-source.v2'},representation,capture:{$ref:rawFederalSchema.$id+'#/$defs/FederalSourceCapture'},selection:ref('FederalNativeSelection'),source:ref('FederalCompilerSource')};
+const part={enum:['consolidated','original','revised']};
+const structuralReceipt=object({profile:{const:'uslm-word/1'},sourceSha256:sha,consolidatedSha256:sha,revisionSha256:sha,specSha256:sha,executionRequestSha256:sha,mappingSha256:sha,
+ mapping:{type:'array',maxItems:393216,items:{oneOf:mappingProperties.map(properties=>object({...properties,part}))}},
+ omissions:{type:'array',maxItems:393216,items:object({...omissionProperties,part})}});
 export const federalWorkbenchSchema={
  $schema:'https://json-schema.org/draft/2020-12/schema',$id:'urn:meri:federal-workbench:1',title:'Federal workbench',
  $defs:{
   FederalCompilerSource:federal('FederalDraftCompilerSource'),
   FederalNativeSelection:{$ref:nativeFederalSchema.$id+'#/$defs/FederalDraftSourceInput'},
   FederalSourceEnvelope:{oneOf:[object(legacyEnvelope),object(rawEnvelope)]},
-  FederalImportRequest:{...object({selection:ref('FederalNativeSelection'),deliveryId}),properties:{selection:ref('FederalNativeSelection'),deliveryId,representation,validationProfile:{const:USLM_SCHEMA_PROFILE}}},
+  FederalImportRequest:{...object({selection:ref('FederalNativeSelection'),deliveryId}),properties:{selection:ref('FederalNativeSelection'),deliveryId,representation,validationProfile:{const:USLM_SCHEMA_PROFILE},sourceProfile:{const:'uslm-text-runs/1'}}},
   FederalImportResult:{oneOf:[object({...legacyEnvelope,publication:artifact('ArtifactCreatedResult')}),object({...rawEnvelope,publication:artifact('ArtifactCreatedResult')})]},
   FederalSelection:object({versionId:uuid,expectedArtifactSha256:sha,operations:{type:'array',minItems:1,maxItems:64,items:federal('FederalDraftOperation')}}),
   FederalSourceArtifact:object({versionId:uuid,sha256:sha,specSha256:sha}),
@@ -74,8 +97,9 @@ export const federalWorkbenchSchema={
   FederalApproval:object({revisionSha256:sha,reviewVersionId:uuid}),
   FederalReview:object({schema:{const:'meri.federal-review.v1'},selection:ref('FederalSelection'),prepared:ref('FederalRetainedPreparation'),
    savedDraft:nullable(artifact('ArtifactVersion')),approval:nullable(ref('FederalApproval'))}),
-  FederalPublication:object({schema:{const:'meri.federal-review.v1'},sourceArtifact:ref('FederalSourceArtifact'),revisionSha256:sha,
+  FederalPublication:{...object({schema:{const:'meri.federal-review.v1'},sourceArtifact:ref('FederalSourceArtifact'),revisionSha256:sha,
    output:{enum:outputs},review:{enum:['unapproved','confirmed-for-export','approved']},approval:nullable(ref('FederalApproval')),publication:artifact('ArtifactCreatedResult')}),
+   properties:{schema:{const:'meri.federal-review.v1'},sourceArtifact:ref('FederalSourceArtifact'),revisionSha256:sha,output:{enum:outputs},review:{enum:['unapproved','confirmed-for-export','approved']},approval:nullable(ref('FederalApproval')),publication:artifact('ArtifactCreatedResult'),structuralReceipt}},
   FederalHistoryEntry:object({version:artifact('ArtifactVersion'),revisionSha256:sha,sourceArtifact:ref('FederalSourceArtifact'),approval:nullable(ref('FederalApproval'))}),
   FederalHistory:object({schema:{const:'meri.federal-review.v1'},artifactId:uuid,anchorVersionId:uuid,headVersionId:uuid,
    revisions:{type:'array',minItems:1,maxItems:100,items:ref('FederalHistoryEntry')},nextCursor:nullable(sha)}),
