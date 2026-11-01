@@ -82,7 +82,8 @@ test('pending, unknown, failed, draft and schedule-proposal items from the actua
  const rows=[...s.store.rows.values()],scope={tenantId:'tenant',kind:'tenant',resourceId:'tenant',policyRevision:'p1'};
  rows[0].state='PENDING';rows[0].outcome=null;rows[1].state='UNKNOWN';rows[1].outcome=null;rows[2].state='FAILED';rows[2].outcome={code:'REFUSED'};
  rows[3].outcome={result:{status:'draft',version:{versionId:id(700),scopes:[scope]}}};
- rows[4].outcome={result:{status:'approval_required',proposal:{proposalId:id(701)}}};
+ // A proposal without a retained request is admitted only under a schedule operation; any other operation is a journal fault.
+ rows[4].record={...rows[4].record,operation:{id:'schedule_task',version:'0.2.0'}};rows[4].outcome={result:{status:'approval_required',proposal:{proposalId:id(701)}}};
  const listed=(await s.exchange('list',s.listBody())).admitted.intents,by=Object.fromEntries(listed.map(i=>[i.state+(i.kind?':'+i.kind:''),i]));
  assert.deepEqual(Object.keys(by).sort(),['failed','pending','prepared:draft','prepared:schedule_proposal','unknown']);
  assert.equal(by.failed.code,'REFUSED');assert.equal(by['prepared:draft'].versionId,id(700));assert.equal(by['prepared:schedule_proposal'].proposalId,id(701));

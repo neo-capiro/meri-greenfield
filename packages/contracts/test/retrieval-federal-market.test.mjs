@@ -480,3 +480,13 @@ test('canonical structural checks compose with federal paging rules rather than 
     assert.equal(validateFederalMarketShape(def, terminal), terminal);
   }
 });
+
+// M40: no named forecast event, launch scope or confidence exists in the producer contract. If Core later adds them, the
+// closed row/page shapes refuse the payload (INVALID_RESULT at the gateway) instead of silently dropping the new facts.
+test('forecast rows and pages refuse undeclared launch-scope/confidence facts instead of discarding them', () => {
+  const def = outputDefinition.search_procurement_forecasts;
+  validateFederalMarketShape(def, pageOutput('search_procurement_forecasts', forecastRow()));
+  assert.throws(() => validateFederalMarketShape(def, pageOutput('search_procurement_forecasts', forecastRow({ launchScope: 'tenant' }))), /additional properties/);
+  assert.throws(() => validateFederalMarketShape(def, pageOutput('search_procurement_forecasts', forecastRow({ confidence: 0.8 }))), /additional properties/);
+  assert.throws(() => validateFederalMarketShape(def, { ...pageOutput('search_procurement_forecasts', forecastRow()), launchScope: 'tenant', confidence: 0.8 }), /additional properties/);
+});

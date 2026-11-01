@@ -23,8 +23,8 @@ const meetingSchema = JSON.parse(readFileSync(new URL('../retrieval-0.2/meeting-
 
 const binding = () => ({ tenantId: 'synthetic', actorId: 'reader', conversationId: uuid, runId: uuid, attemptId: uuid, workerId: uuid, writerFence: 1 });
 const scope = (resourceId = clientId) => ({ tenantId: 'synthetic', kind: 'client', resourceId, policyRevision: 'policy-v1' });
-const clientSubject = () => ({ kind: 'client', entityType: 'client', entityIds: [clientId], tenantId: 'synthetic', actorId: 'reader', authorizationDecisionId: uuid, policyRevision: 'policy-v1', scopes: [scope(clientId)], rosterVersionId: null });
-const personalSubject = () => ({ kind: 'personal', entityType: 'user', entityIds: ['reader'], tenantId: 'synthetic', actorId: 'reader', authorizationDecisionId: uuid, policyRevision: 'policy-v1', scopes: [{ tenantId: 'synthetic', kind: 'private-user', resourceId: 'reader', policyRevision: 'policy-v1' }], rosterVersionId: null });
+const clientSubject = () => ({ kind: 'client', entityType: 'client', entityIds: [clientId], tenantId: 'synthetic', actorId: 'reader', policyRevision: 'policy-v1', scopes: [scope(clientId)], rosterVersionId: null });
+const personalSubject = () => ({ kind: 'personal', entityType: 'user', entityIds: ['reader'], tenantId: 'synthetic', actorId: 'reader', policyRevision: 'policy-v1', scopes: [{ tenantId: 'synthetic', kind: 'private-user', resourceId: 'reader', policyRevision: 'policy-v1' }], rosterVersionId: null });
 const sources = () => [{ sourceId: 'meeting', authority: 'authoritative', snapshotVersionId: null, adapterVersion: '0.2.0', status: 'partial', synchronizedAt: null, asOf: null, retrievedAt: '2026-01-01T00:00:00Z', freshness: 'unknown' }];
 const coverage = (over = {}) => ({ sourcesRequested: ['meeting'], sourcesChecked: ['meeting'], sourcesUnavailable: [], enumeration: 'unknown', enumerableTotal: null, returnedCount: 0, truncated: true, historySupport: 'bounded', limitations: ['Synthetic pending meeting transport; snapshot and record immutability unknown.'], ...over });
 const continuation = (requiredReads = []) => ({ cursor: null, requiredReads, remainingSources: [] });
@@ -362,7 +362,7 @@ test('meeting schema objects stay closed and package public exports stay 0.1 onl
   const walk = node => { if (!node || typeof node !== 'object') return; if (node.type === 'object') assert.equal(node.additionalProperties, false); for (const child of Object.values(node)) if (child && typeof child === 'object') walk(child); };
   walk(meetingSchema);
   const pkg = JSON.parse(readFileSync(new URL('../package.json', import.meta.url)));
-  assert.equal(pkg.version, '0.1.10');
+  assert.match(pkg.version, /^0\.1\.\d+$/u);
   assert(!JSON.stringify(pkg.exports).includes('retrieval-0.2'));
   assert(!pkg.files.includes('retrieval-0.2'));
 });

@@ -27,7 +27,7 @@ export function feedbackRevision(run,rows,input){
  }
  let sourceRevision={status:'not_applicable',reason:'no_source_selected'};
  if(input.sourceEventId!==null){
-  const source=events.find(e=>e.eventId===input.sourceEventId&&['source.available','source.native-bill-text','source.native-hearing-record'].includes(e.type));
+  const source=events.find(e=>e.eventId===input.sourceEventId&&['source.available','source.native-bill-text','source.native-hearing-record','source.native-upload'].includes(e.type));
   if(!source)fail('FEEDBACK_SOURCE_REFUSED');
   if(source.type==='source.available'&&source.data.scopes.some(scope=>!run.projection.scopes.some(parent=>same(parent,scope))))fail('FEEDBACK_SOURCE_REFUSED');
   sourceRevision={status:'bound',eventId:source.eventId,eventSha256:hash(source)};

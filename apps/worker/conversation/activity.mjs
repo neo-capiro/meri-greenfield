@@ -152,7 +152,10 @@ export function createConversationActivity({runOwner,prepareRuntime,query=sdkQue
     finally{browserLife?.close();}
    }
    const objectiveRuntime=objectiveGeneration===undefined?null:await setupRun(signal=>objectiveGeneration.prepare({binding,request:saved.request,versions:saved.run.versions,scopes:saved.run.scopes,cwd:runtime.cwd,model:runtime.model,deadlineMs:runtime.deadlineMs,signal}));
-   if(objectiveRuntime){if(lineage||saved.request.skill||typeof lifecycle?.captureCompletion!=='function'||typeof objectiveRuntime.capture!=='function')throw fault('OBJECTIVE_COMPLETION_UNAVAILABLE');life.limitDeadline(objectiveRuntime.deadlineMs);}
+   if(objectiveRuntime){if(lineage||saved.request.skill||typeof lifecycle?.captureCompletion!=='function'||typeof objectiveRuntime.capture!=='function')throw fault('OBJECTIVE_COMPLETION_UNAVAILABLE');
+    // Objective Questions are a Core-defined lifecycle, not the SDK's clarifying-question tool: a headless Objective run has
+    // no human to answer it, so a policy that admits the tool is refused here instead of hanging until its deadline.
+    if(policy?.userQuestions===true)throw fault('OBJECTIVE_QUESTIONS_UNSUPPORTED');life.limitDeadline(objectiveRuntime.deadlineMs);}
    outreachRuntime=outreachGeneration===undefined?null:await setupRun(signal=>outreachGeneration.prepare({binding,request:saved.request,scopes:saved.run.scopes,model:runtime.model,signal}));
    if(outreachRuntime&&(objectiveRuntime||lineage||saved.request.skill))throw fault('OUTREACH_COMPLETION_UNAVAILABLE');
    const {automaticClientContext,...sdkRuntime}=runtime;

@@ -15,10 +15,10 @@ function syntheticDescriptor(binding,request,sessionId){
  descriptor.execution.receiptSha256=hash(typedExecutionWitness(descriptor));return descriptor;
 }
 
-function fixture({objectiveGeneration,captureEnabled=true}={}){
+function fixture({objectiveGeneration,captureEnabled=true,capabilities}={}){
  const f=continuationFixture(),binding=f.binding,versions=f.target.versions,scopes=f.target.scopes;
  const request={...f.target.sourceRequest,skill:null},contextSha256=hash({window:request.window,skill:request.skill,scopes}),sessionId=f.continuation.checkpoint.sessionId;
- const saved={run:{binding,versions,scopes,policyRevision:scopes[0].policyRevision,state:'queued',createdAt:new Date(NOW).toISOString()},request};
+ const saved={run:{binding,versions,scopes,policyRevision:scopes[0].policyRevision,state:'queued',createdAt:new Date(NOW).toISOString()},request,...(capabilities===undefined?{}:{capabilities})};
  const observed={queries:0,captures:0,typed:undefined,options:undefined,events:[]};
  const owner={async load(){return saved;},async append({event}){observed.events.push(event);},async nextControls(){return [];},async claimControl(){throw Error('no control');},async ackControl(){throw Error('no control');},async recordCheckpoint(){throw Error('no lifecycle control');}};
  const lifecycle={async captureCheckpoint(){throw Error('no pause');},...(captureEnabled?{async captureCompletion(input){observed.captures++;observed.typed=input.typedResult;assert.equal(input.sessionId,sessionId);const sdkSession={binding,key:{projectKey:'synthetic-project',sessionId},ownerSha256:'a'.repeat(64),entriesCount:2},files={workspace:{contractVersion:'0.1.0',manifestId:id(901),binding,logicalCwd:'/workspace/conversation',entries:[],scopes,createdAt:new Date(NOW).toISOString()},tasks:[]};return {binding,state:'completed',proof:{kind:'native-session',sdkSession,files,checkpointId:binding.runId,checkpointSha256:hash({sdkSession,files}),sourceRequestSha256:hash(request),contextSha256,versions,scopes,lastEventSequence:3}};}}:{})};
@@ -52,4 +52,9 @@ test('Objective output format is opt-in and refuses a conflicting or malformed f
  const format={type:'json_schema',schema:{type:'object'}},selected=buildConversationOptions(runtime,new AbortController(),undefined,undefined,undefined,undefined,undefined,undefined,format);
  assert.deepEqual(selected.outputFormat,format);
  assert.throws(()=>buildConversationOptions(runtime,new AbortController(),undefined,undefined,undefined,undefined,undefined,undefined,{type:'json',schema:{type:'object'}}),/RUNTIME_CONFIGURATION/);
+});
+test('an Objective run never admits the SDK clarifying-question tool; such a policy is refused before any SDK query',async()=>{
+ const f=fixture({objectiveGeneration:{async prepare(){return {deadlineMs:NOW+900,outputFormat:{type:'json_schema',schema:{type:'object'}},capture(){}};}},capabilities:{userQuestions:true}});
+ await assert.rejects(f.execute({binding:f.binding}),/EXECUTION_FAILED/);
+ assert.equal(f.observed.queries,0);assert.deepEqual(f.observed.events.map(e=>e.data.state),['starting','failed']);
 });
